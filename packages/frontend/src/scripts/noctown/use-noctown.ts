@@ -26,6 +26,7 @@ interface NoctownPlayerResponse {
 	balance: string;
 	totalScore: number;
 	createdAt: string;
+	worldId: string;
 }
 
 interface NoctownNearbyPlayer {
@@ -89,7 +90,8 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 	const RECONNECT_DELAY_MS = 3000;
 
 	// FR-014: Ping/Pongオフライン検出
-	const PING_TIMEOUT_MS = 3000; // 3秒タイムアウト
+	const PING_TIMEOUT_MS = 5000; // 5秒タイムアウト（ネットワーク遅延を考慮）
+	// pingId -> { playerId, timeoutId } のマッピング（各プレイヤーごとに個別のpingIdを使用）
 	const pendingPings = new Map<string, { playerId: string; timeoutId: ReturnType<typeof setTimeout> }>();
 
 	// Movement state
@@ -103,6 +105,7 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 	const loadedChunks = new Set<string>();
 	const CHUNK_SIZE = 16;
 	const CHUNK_LOAD_DISTANCE = 2; // Load chunks 2 chunks ahead
+	let worldId = 'default'; // Will be set from player data
 
 	async function initialize(): Promise<void> {
 		try {
@@ -174,8 +177,13 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 			channel.on('playerLeft', (body: { playerId: string }) => {
 				handlePlayerLeft(body);
 			});
-			channel.on('playerOnline', (body: { playerId: string; userId: string }) => {
+			// SC-011: View Distance外プレイヤーのオンライン同期（完全なPlayerDataを受信）
+			channel.on('playerOnline', (body: PlayerData) => {
 				handlePlayerOnline(body);
+			});
+			// SC-012: プレイヤーがオフラインになった時の処理
+			channel.on('playerOffline', (body: { playerId: string }) => {
+				handlePlayerOffline(body);
 			});
 
 			// T038: Handle chunkGenerated event and render terrain
@@ -261,30 +269,25 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 		engine.removeRemotePlayer(data.playerId);
 	}
 
-	async function handlePlayerOnline(data: { playerId: string; userId: string }): Promise<void> {
-		if (!engine || data.playerId === playerData.value?.id) return;
+	// SC-011: View Distance外プレイヤーのオンライン同期
+	// playerOnlineイベントには完全なPlayerDataが含まれているので直接追加
+	function handlePlayerOnline(data: PlayerData): void {
+		if (!engine || data.id === playerData.value?.id) return;
 
-		// Fetch the player's current data and add/update in scene
-		try {
-			const res = await window.fetch('/api/noctown/players/nearby', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				credentials: 'same-origin',
-				body: JSON.stringify({ i: getToken(), x: currentX, z: currentZ, radius: 100 }),
-			});
+		console.log(`Player ${data.username || data.id} came online, adding to scene`);
 
-			if (!res.ok) return;
+		// 完全なPlayerDataを使用して直接プレイヤーを追加/更新
+		engine.addRemotePlayer(data);
+	}
 
-			const players: NoctownNearbyPlayer[] = await res.json();
-			const onlinePlayer = players.find(p => p.id === data.playerId);
+	// SC-012: プレイヤーがオフラインになった時の処理
+	function handlePlayerOffline(data: { playerId: string }): void {
+		if (!engine) return;
 
-			if (onlinePlayer) {
-				// Re-add or update player in the scene
-				engine.addRemotePlayer(onlinePlayer);
-			}
-		} catch (e) {
-			console.error('Failed to fetch online player data:', e);
-		}
+		console.log(`Player ${data.playerId} went offline, removing from scene`);
+
+		// オフラインプレイヤーをシーンから削除
+		engine.removeRemotePlayer(data.playerId);
 	}
 
 	// T038: Handle chunkGenerated event and render terrain
@@ -332,15 +335,19 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 		const visiblePlayerIds = engine.getVisiblePlayerIds();
 		if (visiblePlayerIds.length === 0) return;
 
-		// 一意のpingIdを生成
-		const pingId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+		// 送信するpingIdリストを収集
+		const pingData: { targetPlayerId: string; pingId: string }[] = [];
 
-		// 各プレイヤーに対してタイムアウトを設定
+		// 各プレイヤーに対して個別のpingIdを生成しタイムアウトを設定
 		for (const targetPlayerId of visiblePlayerIds) {
 			if (targetPlayerId === playerData.value.id) continue; // 自分自身はスキップ
 
+			// 各プレイヤーごとに一意のpingIdを生成
+			const pingId = `${Date.now()}-${targetPlayerId}-${Math.random().toString(36).substr(2, 9)}`;
+
 			const timeoutId = setTimeout(() => {
-				// FR-014: 3秒以内にpongが返ってこなかった場合、画面から削除
+				// SC-012: 5秒以内にpongが返ってこなかった場合、画面から削除
+				console.log(`Player ${targetPlayerId} did not respond to ping, removing from view`);
 				if (engine) {
 					engine.removeRemotePlayer(targetPlayerId);
 				}
@@ -348,21 +355,24 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 			}, PING_TIMEOUT_MS);
 
 			pendingPings.set(pingId, { playerId: targetPlayerId, timeoutId });
+			pingData.push({ targetPlayerId, pingId });
 		}
 
-		// WebSocketでpingを送信
-		try {
-			channel.send('playerPing', {
-				targetPlayerIds: visiblePlayerIds.filter(id => id !== playerData.value?.id),
-				pingId,
-			});
-		} catch (e) {
-			console.error('Failed to send ping:', e);
-			// エラー時はタイムアウトをクリア
-			const pendingPing = pendingPings.get(pingId);
-			if (pendingPing) {
-				clearTimeout(pendingPing.timeoutId);
-				pendingPings.delete(pingId);
+		// WebSocketでpingを送信（各プレイヤーに個別のpingIdを送信）
+		for (const { targetPlayerId, pingId } of pingData) {
+			try {
+				channel.send('playerPing', {
+					targetPlayerIds: [targetPlayerId],
+					pingId,
+				});
+			} catch (e) {
+				console.error('Failed to send ping:', e);
+				// エラー時はタイムアウトをクリア
+				const pendingPing = pendingPings.get(pingId);
+				if (pendingPing) {
+					clearTimeout(pendingPing.timeoutId);
+					pendingPings.delete(pingId);
+				}
 			}
 		}
 	}
