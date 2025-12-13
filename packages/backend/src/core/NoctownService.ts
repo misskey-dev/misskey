@@ -414,6 +414,12 @@ export class NoctownService {
 			.getMany();
 	}
 
+	@bindThis
+	public async getOnlinePlayers(): Promise<NoctownPlayer[]> {
+		// Get all currently online players
+		return this.noctownPlayersRepository.findBy({ isOnline: true });
+	}
+
 	// =============================================
 	// Quest System Methods
 	// =============================================

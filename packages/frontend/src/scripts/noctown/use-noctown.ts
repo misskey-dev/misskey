@@ -80,6 +80,7 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 	let channel: any = null;
 	let moveInterval: ReturnType<typeof setInterval> | null = null;
 	let heartbeatInterval: ReturnType<typeof setInterval> | null = null;
+	let playerSyncInterval: ReturnType<typeof setInterval> | null = null;
 	let reconnectTimeout: ReturnType<typeof setTimeout> | null = null;
 	let reconnectAttempts = 0;
 	const MAX_RECONNECT_ATTEMPTS = 10;
@@ -190,8 +191,8 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 			// Start heartbeat
 			startHeartbeat();
 
-			// Fetch nearby players
-			await fetchNearbyPlayers();
+			// Start periodic player sync (includes initial fetch)
+			startPlayerSync();
 		} catch (e) {
 			console.error('Failed to connect to stream:', e);
 			scheduleReconnect();
@@ -307,6 +308,54 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 		}
 	}
 
+	/**
+	 * Fetch all currently online players and add them to the scene
+	 * This is used for:
+	 * 1. Initial player load on connection
+	 * 2. Periodic sync to catch players that joined while WebSocket was disconnected
+	 */
+	async function fetchAllOnlinePlayers(): Promise<void> {
+		try {
+			const res = await window.fetch('/api/noctown/players/online', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				credentials: 'same-origin',
+				body: JSON.stringify({ i: getToken() }),
+			});
+
+			if (!res.ok) {
+				console.error('Failed to fetch online players:', res.status, res.statusText);
+				return;
+			}
+
+			const players: NoctownNearbyPlayer[] = await res.json();
+
+			if (!engine) return;
+
+			console.log(`Syncing ${players.length} online players`);
+
+			for (const player of players) {
+				engine.addRemotePlayer(player);
+			}
+		} catch (e) {
+			console.error('Failed to fetch all online players:', e);
+		}
+	}
+
+	/**
+	 * Start periodic player sync to ensure all online players are displayed
+	 * Runs every 30 seconds to catch players that joined while WebSocket was disconnected
+	 */
+	function startPlayerSync(): void {
+		// Initial fetch
+		fetchAllOnlinePlayers();
+
+		// Periodic sync every 30 seconds
+		playerSyncInterval = setInterval(() => {
+			fetchAllOnlinePlayers();
+		}, 30000); // 30 seconds
+	}
+
 	// T036-T037: Load nearby chunks using WebSocket chunk generation
 	async function loadNearbyChunks(x: number, z: number): Promise<void> {
 		if (!channel || !isConnected.value) return;
@@ -412,6 +461,11 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 		if (heartbeatInterval) {
 			clearInterval(heartbeatInterval);
 			heartbeatInterval = null;
+		}
+
+		if (playerSyncInterval) {
+			clearInterval(playerSyncInterval);
+			playerSyncInterval = null;
 		}
 
 		if (reconnectTimeout) {
