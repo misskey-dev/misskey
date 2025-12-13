@@ -236,30 +236,21 @@ export class Character {
 	}
 
 	/**
-	 * Update animation based on movement (call this from engine's animate loop)
+	 * Update animation based on movement direction (improved smooth animation)
+	 * @param moveX Normalized movement direction X (-1 to 1)
+	 * @param moveZ Normalized movement direction Z (-1 to 1)
+	 * @param deltaTime Delta time in seconds
 	 */
-	public updateAnimation(): void {
-		const now = Date.now();
-		const deltaTime = (now - this.lastUpdateTime) / 1000;
-		this.lastUpdateTime = now;
-
-		// Detect movement by comparing current position with last position
-		const currentPos = this.group.position.clone();
-		const moved = currentPos.distanceTo(this.lastPosition) > 0.01;
-		this.isMoving = moved;
+	public updateAnimation(moveX: number = 0, moveZ: number = 0, deltaTime: number = 0.016): void {
+		// Determine if moving based on movement input
+		const moveLength = Math.sqrt(moveX * moveX + moveZ * moveZ);
+		this.isMoving = moveLength > 0.01;
 
 		if (this.isMoving) {
-			// Calculate movement direction for rotation
-			const moveDir = new THREE.Vector3();
-			moveDir.subVectors(currentPos, this.lastPosition);
-			moveDir.y = 0; // Ignore vertical movement for rotation
-			moveDir.normalize();
+			// Calculate target rotation from movement direction
+			this.targetRotation = Math.atan2(moveX, moveZ);
 
-			if (moveDir.length() > 0) {
-				this.targetRotation = Math.atan2(moveDir.x, moveDir.z);
-			}
-
-			// Walk animation
+			// Walk animation with smooth cycle
 			const walkSpeed = 12;
 			this.walkCycle += deltaTime * walkSpeed;
 			const swing = Math.sin(this.walkCycle) * 0.6;
@@ -273,7 +264,7 @@ export class Character {
 			this.torso.position.y = 1.5 + Math.abs(Math.sin(this.walkCycle * 2)) * 0.05;
 			this.head.position.y = 2.55 + Math.abs(Math.sin(this.walkCycle * 2)) * 0.05;
 		} else {
-			// Idle - return to neutral pose
+			// Idle - return to neutral pose smoothly
 			this.walkCycle = 0;
 			this.leftArmPivot.rotation.x *= 0.85;
 			this.rightArmPivot.rotation.x *= 0.85;
@@ -284,14 +275,11 @@ export class Character {
 			this.head.position.y = 2.55;
 		}
 
-		// Smooth rotation
+		// Smooth rotation towards target
 		let rotDiff = this.targetRotation - this.group.rotation.y;
 		while (rotDiff > Math.PI) rotDiff -= Math.PI * 2;
 		while (rotDiff < -Math.PI) rotDiff += Math.PI * 2;
 		this.group.rotation.y += rotDiff * 0.15;
-
-		// Update last position for next frame
-		this.lastPosition.copy(currentPos);
 	}
 
 	/**

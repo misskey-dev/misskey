@@ -74,6 +74,8 @@ export class NoctownEngine {
 	private localPlayer: Character | null = null;
 	private remotePlayers: Map<string, Character> = new Map();
 	private playerLabels: Map<string, CSS2DObject> = new Map();
+	private lastMoveDirection: { x: number; z: number } = { x: 0, z: 0 };
+	private lastFrameTime: number = 0;
 
 	// World management
 	private chunks: Map<string, THREE.Group> = new Map();
@@ -211,14 +213,23 @@ export class NoctownEngine {
 		if (this.isDisposed) return;
 		this.animationId = requestAnimationFrame(this.animate);
 
-		// T088: Update character animations
+		// Calculate delta time
+		const now = performance.now();
+		const deltaTime = this.lastFrameTime > 0 ? (now - this.lastFrameTime) / 1000 : 0.016;
+		this.lastFrameTime = now;
+
+		// T088: Update character animations with movement direction and delta time
 		if (this.localPlayer) {
-			this.localPlayer.updateAnimation();
+			this.localPlayer.updateAnimation(
+				this.lastMoveDirection.x,
+				this.lastMoveDirection.z,
+				deltaTime,
+			);
 		}
 
-		// Update remote player animations
+		// Update remote player animations (no movement direction, just idle animation)
 		for (const [, character] of this.remotePlayers) {
-			character.updateAnimation();
+			character.updateAnimation(0, 0, deltaTime);
 		}
 
 		// Update camera to follow player
@@ -254,6 +265,22 @@ export class NoctownEngine {
 
 	public updateLocalPlayerPosition(x: number, y: number, z: number, rotation: number): void {
 		if (!this.localPlayer) return;
+
+		// Calculate movement direction from position change
+		const oldPos = this.localPlayer.getPosition();
+		const dx = x - oldPos.x;
+		const dz = z - oldPos.z;
+		const moveLength = Math.sqrt(dx * dx + dz * dz);
+
+		// Normalize movement direction for animation
+		if (moveLength > 0.001) {
+			this.lastMoveDirection.x = dx / moveLength;
+			this.lastMoveDirection.z = dz / moveLength;
+		} else {
+			this.lastMoveDirection.x = 0;
+			this.lastMoveDirection.z = 0;
+		}
+
 		this.localPlayer.setPosition(x, y, z);
 		this.localPlayer.setRotation(rotation);
 	}

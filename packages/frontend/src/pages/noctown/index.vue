@@ -761,7 +761,7 @@ definePage(() => ({
 .container {
 	display: flex;
 	flex-direction: column;
-	height: calc(100vh - 80px); // Increased from 60px to 80px to prevent scrollbar
+	height: calc(100vh - 100px); // Increased to 100px to prevent scrollbar
 	min-height: 400px;
 	overflow: hidden; // Prevent scrollbar
 
