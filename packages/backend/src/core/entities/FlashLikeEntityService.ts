@@ -10,7 +10,7 @@ import type { FlashLikesRepository } from '@/models/_.js';
 import type { } from '@/models/Blocking.js';
 import type { MiFlashLike } from '@/models/FlashLike.js';
 import type { MiUser } from '@/models/User.js';
-import type { FlashEntityService } from './FlashEntityService.js';
+import { FlashEntityService } from './FlashEntityService.js';
 
 @Injectable()
 export class FlashLikeEntityService {

@@ -4,8 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { InstanceEntityService } from '@/core/entities/InstanceEntityService.js';
-import type { UtilityService } from '@/core/UtilityService.js';
+import { InstanceEntityService } from '@/core/entities/InstanceEntityService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import { DI } from '@/di-symbols.js';
 import type { InstancesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

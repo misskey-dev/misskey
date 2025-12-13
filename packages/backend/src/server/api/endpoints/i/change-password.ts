@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
-import type { UserAuthService } from '@/core/UserAuthService.js';
+import { UserAuthService } from '@/core/UserAuthService.js';
 import { DI } from '@/di-symbols.js';
 import type { UserProfilesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

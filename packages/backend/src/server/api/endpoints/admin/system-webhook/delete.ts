@@ -4,7 +4,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { SystemWebhookService } from '@/core/SystemWebhookService.js';
+import { SystemWebhookService } from '@/core/SystemWebhookService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {

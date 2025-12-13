@@ -10,7 +10,7 @@ import si from 'systeminformation';
 import Xev from 'xev';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
-import type { MiMeta } from '@/models/_.js';
+import { MiMeta } from '@/models/_.js';
 
 const ev = new Xev();
 

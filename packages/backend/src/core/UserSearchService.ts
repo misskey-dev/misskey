@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { SelectQueryBuilder } from 'typeorm';
 import { Brackets, } from 'typeorm';
 import type { Config } from '@/config.js';
-import type { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { Packed } from '@/misc/json-schema.js';

@@ -4,7 +4,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { AchievementService } from '@/core/AchievementService.js';
+import { AchievementService } from '@/core/AchievementService.js';
 import { ACHIEVEMENT_TYPES } from '@/models/UserProfile.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 

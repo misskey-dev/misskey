@@ -5,13 +5,13 @@
 
 import { URLSearchParams } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
-import type { NoteEntityService } from '@/core/entities/NoteEntityService.js';
-import type { HttpRequestService } from '@/core/HttpRequestService.js';
-import type { RoleService } from '@/core/RoleService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { HttpRequestService } from '@/core/HttpRequestService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { DI } from '@/di-symbols.js';
 import type { MiMeta } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { GetterService } from '@/server/api/GetterService.js';
+import { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {

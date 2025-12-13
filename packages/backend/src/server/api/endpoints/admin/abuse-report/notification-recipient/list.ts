@@ -4,7 +4,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { AbuseReportNotificationService } from '@/core/AbuseReportNotificationService.js';
+import { AbuseReportNotificationService } from '@/core/AbuseReportNotificationService.js';
 import type {
 	AbuseReportNotificationRecipientEntityService,
 } from '@/core/entities/AbuseReportNotificationRecipientEntityService.js';

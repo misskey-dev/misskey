@@ -6,10 +6,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { Index, MeiliSearch } from 'meilisearch';
 import type { Config, FulltextSearchProvider } from '@/config.js';
-import type { CacheService } from '@/core/CacheService.js';
-import type { IdService } from '@/core/IdService.js';
-import type { LoggerService } from '@/core/LoggerService.js';
-import type { QueryService } from '@/core/QueryService.js';
+import { CacheService } from '@/core/CacheService.js';
+import { IdService } from '@/core/IdService.js';
+import { LoggerService } from '@/core/LoggerService.js';
+import { QueryService } from '@/core/QueryService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import { isUserRelated } from '@/misc/is-user-related.js';

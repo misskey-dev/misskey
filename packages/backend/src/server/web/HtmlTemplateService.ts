@@ -10,7 +10,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { FastifyReply } from 'fastify';
 import { languages } from 'i18n/const';
 import type { Config } from '@/config.js';
-import type { MetaEntityService } from '@/core/entities/MetaEntityService.js';
+import { MetaEntityService } from '@/core/entities/MetaEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import { htmlSafeJsonStringify } from '@/misc/json-stringify-html-safe.js';

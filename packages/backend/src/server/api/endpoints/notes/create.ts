@@ -6,8 +6,8 @@
 import { Injectable } from '@nestjs/common';
 import ms from 'ms';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
-import type { NoteEntityService } from '@/core/entities/NoteEntityService.js';
-import type { NoteCreateService } from '@/core/NoteCreateService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { NoteCreateService } from '@/core/NoteCreateService.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../error.js';

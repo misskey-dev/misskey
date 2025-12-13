@@ -6,7 +6,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 import type { Config } from '@/config.js';
-import type { IdService } from '@/core/IdService.js';
+import { IdService } from '@/core/IdService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import { deepClone } from '@/misc/clone.js';
@@ -17,9 +17,9 @@ import { appendQuery, query } from '@/misc/prelude/url.js';
 import type { DriveFilesRepository, MiMeta } from '@/models/_.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiUser } from '@/models/User.js';
-import type { UtilityService } from '../UtilityService.js';
-import type { VideoProcessingService } from '../VideoProcessingService.js';
-import type { DriveFolderEntityService } from './DriveFolderEntityService.js';
+import { UtilityService } from '../UtilityService.js';
+import { VideoProcessingService } from '../VideoProcessingService.js';
+import { DriveFolderEntityService } from './DriveFolderEntityService.js';
 import { UserEntityService } from './UserEntityService.js';
 
 type PackOptions = {

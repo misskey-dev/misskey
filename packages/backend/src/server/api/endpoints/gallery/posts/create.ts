@@ -5,8 +5,8 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
-import type { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
-import type { IdService } from '@/core/IdService.js';
+import { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
+import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
 import type { DriveFilesRepository, GalleryPostsRepository } from '@/models/_.js';
 import { MiGalleryPost } from '@/models/GalleryPost.js';

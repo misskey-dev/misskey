@@ -4,13 +4,13 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
-import type { ApRendererService } from '@/core/activitypub/ApRendererService.js';
-import type { UserEntityService } from '@/core/entities/UserEntityService.js';
-import type { GlobalEventService } from '@/core/GlobalEventService.js';
-import type { IdService } from '@/core/IdService.js';
-import type { RelayService } from '@/core/RelayService.js';
-import type { UserBlockingService } from '@/core/UserBlockingService.js';
+import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
+import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { IdService } from '@/core/IdService.js';
+import { RelayService } from '@/core/RelayService.js';
+import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { MiUser, NotesRepository, PollsRepository, PollVotesRepository, UsersRepository } from '@/models/_.js';

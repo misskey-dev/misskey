@@ -5,10 +5,10 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets, EntityNotFoundError } from 'typeorm';
-import type { AnnouncementEntityService } from '@/core/entities/AnnouncementEntityService.js';
-import type { GlobalEventService } from '@/core/GlobalEventService.js';
-import type { IdService } from '@/core/IdService.js';
-import type { ModerationLogService } from '@/core/ModerationLogService.js';
+import { AnnouncementEntityService } from '@/core/entities/AnnouncementEntityService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { IdService } from '@/core/IdService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { Packed } from '@/misc/json-schema.js';

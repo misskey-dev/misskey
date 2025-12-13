@@ -12,7 +12,7 @@ import { Upload } from '@aws-sdk/lib-storage';
 import { Injectable } from '@nestjs/common';
 import type { NodeHttpHandlerOptions } from '@smithy/node-http-handler';
 import { NodeHttpHandler, } from '@smithy/node-http-handler';
-import type { HttpRequestService } from '@/core/HttpRequestService.js';
+import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
 import type { MiMeta } from '@/models/Meta.js';
 

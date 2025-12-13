@@ -4,8 +4,8 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { SystemWebhookEntityService } from '@/core/entities/SystemWebhookEntityService.js';
-import type { SystemWebhookService } from '@/core/SystemWebhookService.js';
+import { SystemWebhookEntityService } from '@/core/entities/SystemWebhookEntityService.js';
+import { SystemWebhookService } from '@/core/SystemWebhookService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '@/server/api/error.js';
 

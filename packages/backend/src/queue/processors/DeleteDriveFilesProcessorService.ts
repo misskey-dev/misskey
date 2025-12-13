@@ -6,12 +6,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type * as Bull from 'bullmq';
 import { MoreThan } from 'typeorm';
-import type { DriveService } from '@/core/DriveService.js';
+import { DriveService } from '@/core/DriveService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import type { DriveFilesRepository, MiDriveFile, UsersRepository } from '@/models/_.js';
-import type { QueueLoggerService } from '../QueueLoggerService.js';
+import { QueueLoggerService } from '../QueueLoggerService.js';
 import type { DbJobDataWithUser } from '../types.js';
 
 @Injectable()

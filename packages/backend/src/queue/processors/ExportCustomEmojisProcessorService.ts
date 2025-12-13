@@ -11,15 +11,15 @@ import { format as dateFormat } from 'date-fns';
 import mime from 'mime-types';
 import { IsNull } from 'typeorm';
 import type { Config } from '@/config.js';
-import type { DownloadService } from '@/core/DownloadService.js';
-import type { DriveService } from '@/core/DriveService.js';
-import type { NotificationService } from '@/core/NotificationService.js';
+import { DownloadService } from '@/core/DownloadService.js';
+import { DriveService } from '@/core/DriveService.js';
+import { NotificationService } from '@/core/NotificationService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import { createTemp, createTempDir } from '@/misc/create-temp.js';
 import type { EmojisRepository, UsersRepository } from '@/models/_.js';
-import type { QueueLoggerService } from '../QueueLoggerService.js';
+import { QueueLoggerService } from '../QueueLoggerService.js';
 
 @Injectable()
 export class ExportCustomEmojisProcessorService {

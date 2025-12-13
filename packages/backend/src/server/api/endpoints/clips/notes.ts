@@ -5,8 +5,8 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
-import type { NoteEntityService } from '@/core/entities/NoteEntityService.js';
-import type { QueryService } from '@/core/QueryService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 import type { ClipNotesRepository, ClipsRepository, NotesRepository } from '@/models/_.js';

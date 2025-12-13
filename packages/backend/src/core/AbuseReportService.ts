@@ -5,15 +5,15 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
-import type { AbuseReportNotificationService } from '@/core/AbuseReportNotificationService.js';
-import type { ApRendererService } from '@/core/activitypub/ApRendererService.js';
-import type { ModerationLogService } from '@/core/ModerationLogService.js';
-import type { QueueService } from '@/core/QueueService.js';
-import type { SystemAccountService } from '@/core/SystemAccountService.js';
+import { AbuseReportNotificationService } from '@/core/AbuseReportNotificationService.js';
+import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
+import { IdService } from '@/core/IdService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { QueueService } from '@/core/QueueService.js';
+import { SystemAccountService } from '@/core/SystemAccountService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { AbuseUserReportsRepository, MiAbuseUserReport, MiUser, UsersRepository } from '@/models/_.js';
-import type { IdService } from './IdService.js';
 
 @Injectable()
 export class AbuseReportService {

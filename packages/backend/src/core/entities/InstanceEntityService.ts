@@ -4,8 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { RoleService } from '@/core/RoleService.js';
-import type { UtilityService } from '@/core/UtilityService.js';
+import { RoleService } from '@/core/RoleService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { Packed } from '@/misc/json-schema.js';

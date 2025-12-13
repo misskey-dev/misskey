@@ -4,9 +4,9 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { NotificationEntityService } from '@/core/entities/NotificationEntityService.js';
-import type { IdService } from '@/core/IdService.js';
-import type { NotificationService } from '@/core/NotificationService.js';
+import { NotificationEntityService } from '@/core/entities/NotificationEntityService.js';
+import { IdService } from '@/core/IdService.js';
+import { NotificationService } from '@/core/NotificationService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { notificationTypes, obsoleteNotificationTypes } from '@/types.js';
 

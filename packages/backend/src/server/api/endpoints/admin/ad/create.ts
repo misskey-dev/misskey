@@ -4,8 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { IdService } from '@/core/IdService.js';
-import type { ModerationLogService } from '@/core/ModerationLogService.js';
+import { IdService } from '@/core/IdService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { DI } from '@/di-symbols.js';
 import type { AdsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

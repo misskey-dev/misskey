@@ -4,8 +4,8 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { MetaService } from '@/core/MetaService.js';
-import type { ModerationLogService } from '@/core/ModerationLogService.js';
+import { MetaService } from '@/core/MetaService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 import type { MiMeta } from '@/models/Meta.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 

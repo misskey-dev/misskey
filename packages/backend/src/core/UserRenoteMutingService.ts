@@ -5,8 +5,8 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
-import type { CacheService } from '@/core/CacheService.js';
-import type { IdService } from '@/core/IdService.js';
+import { CacheService } from '@/core/CacheService.js';
+import { IdService } from '@/core/IdService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { RenoteMutingsRepository } from '@/models/_.js';

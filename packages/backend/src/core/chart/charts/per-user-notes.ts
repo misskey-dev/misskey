@@ -12,7 +12,7 @@ import { acquireChartInsertLock } from '@/misc/distributed-lock.js';
 import type { NotesRepository } from '@/models/_.js';
 import type { MiNote } from '@/models/Note.js';
 import type { MiUser } from '@/models/User.js';
-import type { ChartLoggerService } from '../ChartLoggerService.js';
+import { ChartLoggerService } from '../ChartLoggerService.js';
 import type { KVs } from '../core.js';
 import Chart from '../core.js';
 import { name, schema } from './entities/per-user-notes.js';

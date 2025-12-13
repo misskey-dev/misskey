@@ -4,7 +4,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { DriveService } from '@/core/DriveService.js';
+import { DriveService } from '@/core/DriveService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {

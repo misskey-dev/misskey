@@ -4,10 +4,10 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { ApRendererService } from '@/core/activitypub/ApRendererService.js';
-import type { IdService } from '@/core/IdService.js';
-import type { QueueService } from '@/core/QueueService.js';
-import type { SystemAccountService } from '@/core/SystemAccountService.js';
+import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
+import { IdService } from '@/core/IdService.js';
+import { QueueService } from '@/core/QueueService.js';
+import { SystemAccountService } from '@/core/SystemAccountService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import { MemorySingleCache } from '@/misc/cache.js';

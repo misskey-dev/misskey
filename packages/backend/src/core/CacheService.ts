@@ -6,8 +6,8 @@
 import type { OnApplicationShutdown } from '@nestjs/common';
 import { Inject, Injectable } from '@nestjs/common';
 import type * as Redis from 'ioredis';
-import type { UserEntityService } from '@/core/entities/UserEntityService.js';
-import type { GlobalEvents } from '@/core/GlobalEventService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { GlobalEvents } from '@/core/GlobalEventService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import { MemoryKVCache, RedisKVCache } from '@/misc/cache.js';

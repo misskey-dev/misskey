@@ -8,16 +8,16 @@ import { Inject, Injectable } from '@nestjs/common';
 import type * as Bull from 'bullmq';
 import { format as dateFormat } from 'date-fns';
 import { In, MoreThan, Not } from 'typeorm';
-import type { DriveService } from '@/core/DriveService.js';
-import type { NotificationService } from '@/core/NotificationService.js';
-import type { UtilityService } from '@/core/UtilityService.js';
+import { DriveService } from '@/core/DriveService.js';
+import { NotificationService } from '@/core/NotificationService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import { createTemp } from '@/misc/create-temp.js';
 import type { FollowingsRepository, MutingsRepository, UsersRepository } from '@/models/_.js';
 import type { MiFollowing } from '@/models/Following.js';
-import type { QueueLoggerService } from '../QueueLoggerService.js';
+import { QueueLoggerService } from '../QueueLoggerService.js';
 import type { DbExportFollowingData } from '../types.js';
 
 @Injectable()

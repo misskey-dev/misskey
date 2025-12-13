@@ -6,9 +6,10 @@
 import type { OnApplicationShutdown } from '@nestjs/common';
 import { Inject, Injectable, } from '@nestjs/common';
 import type * as Redis from 'ioredis';
-import type { GlobalEventService, GlobalEvents } from '@/core/GlobalEventService.js';
-import type { IdService } from '@/core/IdService.js';
-import type { ModerationLogService } from '@/core/ModerationLogService.js';
+import type { GlobalEvents } from '@/core/GlobalEventService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { IdService } from '@/core/IdService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import { MemorySingleCache } from '@/misc/cache.js';

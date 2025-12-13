@@ -6,9 +6,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { DataSource, } from 'typeorm';
 import { In, Not } from 'typeorm';
-import type { IdService } from '@/core/IdService.js';
-import type { ModerationLogService } from '@/core/ModerationLogService.js';
-import type { RoleService } from '@/core/RoleService.js';
+import { IdService } from '@/core/IdService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';

@@ -4,8 +4,8 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { RoleEntityService } from '@/core/entities/RoleEntityService.js';
-import type { RoleService } from '@/core/RoleService.js';
+import { RoleEntityService } from '@/core/entities/RoleEntityService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {

@@ -8,7 +8,7 @@ import bcrypt from 'bcryptjs';
 import * as OTPAuth from 'otpauth';
 import * as QRCode from 'qrcode';
 import type { Config } from '@/config.js';
-import type { UserAuthService } from '@/core/UserAuthService.js';
+import { UserAuthService } from '@/core/UserAuthService.js';
 import { DI } from '@/di-symbols.js';
 import type { UserProfilesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

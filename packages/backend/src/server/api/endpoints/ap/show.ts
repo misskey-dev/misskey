@@ -5,15 +5,15 @@
 
 import { Injectable } from '@nestjs/common';
 import ms from 'ms';
-import type { ApDbResolverService } from '@/core/activitypub/ApDbResolverService.js';
-import type { ApResolverService } from '@/core/activitypub/ApResolverService.js';
+import { ApDbResolverService } from '@/core/activitypub/ApDbResolverService.js';
+import { ApResolverService } from '@/core/activitypub/ApResolverService.js';
 import { FetchAllowSoftFailMask } from '@/core/activitypub/misc/check-against-url.js';
-import type { ApNoteService } from '@/core/activitypub/models/ApNoteService.js';
-import type { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
+import { ApNoteService } from '@/core/activitypub/models/ApNoteService.js';
+import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import { getApId, isActor, isPost } from '@/core/activitypub/type.js';
-import type { NoteEntityService } from '@/core/entities/NoteEntityService.js';
-import type { UserEntityService } from '@/core/entities/UserEntityService.js';
-import type { UtilityService } from '@/core/UtilityService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type { SchemaType } from '@/misc/json-schema.js';

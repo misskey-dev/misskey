@@ -4,8 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { FlashEntityService } from '@/core/entities/FlashEntityService.js';
-import type { QueryService } from '@/core/QueryService.js';
+import { FlashEntityService } from '@/core/entities/FlashEntityService.js';
+import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import type { FlashsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -38,7 +38,7 @@ export const paramDef = {
 	},
 	required: ['userId'],
 } as const;
- 
+
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(

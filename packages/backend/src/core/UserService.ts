@@ -4,8 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserEntityService } from '@/core/entities/UserEntityService.js';
-import type { SystemWebhookService } from '@/core/SystemWebhookService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { SystemWebhookService } from '@/core/SystemWebhookService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository, UsersRepository } from '@/models/_.js';

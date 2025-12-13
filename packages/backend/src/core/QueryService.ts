@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { ObjectLiteral, SelectQueryBuilder } from 'typeorm';
 import { Brackets, } from 'typeorm';
-import type { IdService } from '@/core/IdService.js';
+import { IdService } from '@/core/IdService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { BlockingsRepository, ChannelFollowingsRepository, FollowingsRepository, MiMeta, MutingsRepository, NoteThreadMutingsRepository, RenoteMutingsRepository, UserProfilesRepository } from '@/models/_.js';

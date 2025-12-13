@@ -5,7 +5,7 @@
 
 import type { OnApplicationShutdown } from '@nestjs/common';
 import { Inject, Injectable, } from '@nestjs/common';
-import type { CacheService } from '@/core/CacheService.js';
+import { CacheService } from '@/core/CacheService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import { MemoryKVCache } from '@/misc/cache.js';

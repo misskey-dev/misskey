@@ -5,8 +5,8 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
-import type { SystemWebhookEntityService } from '@/core/entities/SystemWebhookEntityService.js';
-import type { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { SystemWebhookEntityService } from '@/core/entities/SystemWebhookEntityService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { Packed } from '@/misc/json-schema.js';

@@ -6,13 +6,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import * as Bull from 'bullmq';
 import type { Config } from '@/config.js';
-import type { HttpRequestService } from '@/core/HttpRequestService.js';
+import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import { StatusError } from '@/misc/status-error.js';
 import type { SystemWebhooksRepository } from '@/models/_.js';
-import type { QueueLoggerService } from '../QueueLoggerService.js';
+import { QueueLoggerService } from '../QueueLoggerService.js';
 import type { SystemWebhookDeliverJobData } from '../types.js';
 
 @Injectable()

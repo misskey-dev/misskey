@@ -10,7 +10,7 @@ import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import { acquireChartInsertLock } from '@/misc/distributed-lock.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
-import type { ChartLoggerService } from '../ChartLoggerService.js';
+import { ChartLoggerService } from '../ChartLoggerService.js';
 import type { KVs } from '../core.js';
 import Chart from '../core.js';
 import { name, schema } from './entities/drive.js';

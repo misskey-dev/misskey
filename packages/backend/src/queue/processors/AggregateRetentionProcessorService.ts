@@ -5,14 +5,14 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, MoreThan } from 'typeorm';
-import type { IdService } from '@/core/IdService.js';
+import { IdService } from '@/core/IdService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import { deepClone } from '@/misc/clone.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import type { RetentionAggregationsRepository, UsersRepository } from '@/models/_.js';
-import type { QueueLoggerService } from '../QueueLoggerService.js';
+import { QueueLoggerService } from '../QueueLoggerService.js';
 
 @Injectable()
 export class AggregateRetentionProcessorService {

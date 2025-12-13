@@ -8,7 +8,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import type * as Redis from 'ioredis';
 import type { Config } from '@/config.js';
 import { PER_NOTE_REACTION_USER_PAIR_CACHE_MAX } from '@/const.js';
-import type { GlobalEvents } from '@/core/GlobalEventService.js';
+import { GlobalEvents } from '@/core/GlobalEventService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { MiUser, NotesRepository } from '@/models/_.js';

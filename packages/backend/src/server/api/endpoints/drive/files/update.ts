@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { DriveService } from '@/core/DriveService.js';
-import type { RoleService } from '@/core/RoleService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { DI } from '@/di-symbols.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { DriveFilesRepository } from '@/models/_.js';

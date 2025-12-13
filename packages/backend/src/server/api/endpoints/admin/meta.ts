@@ -5,9 +5,9 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import type { Config } from '@/config.js';
-import type { MetaService } from '@/core/MetaService.js';
+import { MetaService } from '@/core/MetaService.js';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
-import type { SystemAccountService } from '@/core/SystemAccountService.js';
+import { SystemAccountService } from '@/core/SystemAccountService.js';
 import { DI } from '@/di-symbols.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 

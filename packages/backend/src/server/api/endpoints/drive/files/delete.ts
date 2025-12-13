@@ -4,9 +4,9 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { DriveService } from '@/core/DriveService.js';
-import type { GlobalEventService } from '@/core/GlobalEventService.js';
-import type { RoleService } from '@/core/RoleService.js';
+import { DriveService } from '@/core/DriveService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { DI } from '@/di-symbols.js';
 import type { DriveFilesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

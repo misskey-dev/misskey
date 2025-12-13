@@ -6,14 +6,14 @@
 import { Inject, Injectable } from '@nestjs/common';
 import _Ajv from 'ajv';
 import type * as Bull from 'bullmq';
-import type { GlobalEventService } from '@/core/GlobalEventService.js';
-import type { IdService } from '@/core/IdService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { IdService } from '@/core/IdService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import type { Schema, SchemaType } from '@/misc/json-schema.js';
 import type { AntennasRepository } from '@/models/_.js';
-import type { QueueLoggerService } from '../QueueLoggerService.js';
+import { QueueLoggerService } from '../QueueLoggerService.js';
 import type { DBAntennaImportJobData } from '../types.js';
 
 const Ajv = _Ajv.default;

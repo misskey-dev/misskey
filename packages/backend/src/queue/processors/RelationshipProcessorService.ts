@@ -5,14 +5,14 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import type * as Bull from 'bullmq';
-import type { UserBlockingService } from '@/core/UserBlockingService.js';
-import type { UserFollowingService } from '@/core/UserFollowingService.js';
+import { UserBlockingService } from '@/core/UserBlockingService.js';
+import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import type { UsersRepository } from '@/models/_.js';
 import type { MiLocalUser, MiRemoteUser } from '@/models/User.js';
-import type { QueueLoggerService } from '../QueueLoggerService.js';
+import { QueueLoggerService } from '../QueueLoggerService.js';
 import type { RelationshipJobData } from '../types.js';
 
 @Injectable()

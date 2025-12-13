@@ -4,7 +4,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { MetaEntityService } from '@/core/entities/MetaEntityService.js';
+import { MetaEntityService } from '@/core/entities/MetaEntityService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {

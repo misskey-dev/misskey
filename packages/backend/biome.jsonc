@@ -41,6 +41,10 @@
 	],
 	"linter": {
 		"rules": {
+			"style": {
+				// We disable prefer import-type to preserve decorator metadata
+				"useImportType": "off"
+			},
 			"complexity": {
 				// for services, we declare constructors without parameters
 				"noUselessConstructor": {

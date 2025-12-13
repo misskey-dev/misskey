@@ -17,7 +17,7 @@ import fetch from 'node-fetch';
 import type { Config } from '@/config.js';
 import { assertActivityMatchesUrl, FetchAllowSoftFailMask } from '@/core/activitypub/misc/check-against-url.js';
 import { validateContentTypeSetAsActivityPub } from '@/core/activitypub/misc/validator.js';
-import type { IObject } from '@/core/activitypub/type.js';
+import { IObject } from '@/core/activitypub/type.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import { StatusError } from '@/misc/status-error.js';

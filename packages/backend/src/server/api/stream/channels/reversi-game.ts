@@ -5,7 +5,7 @@
 
 import { Injectable } from '@nestjs/common';
 import type { reversiUpdateKeys } from 'misskey-js';
-import type { ReversiService } from '@/core/ReversiService.js';
+import { ReversiService } from '@/core/ReversiService.js';
 import { bindThis } from '@/decorators.js';
 import type { JsonObject, JsonValue } from '@/misc/json-value.js';
 import { isJsonObject } from '@/misc/json-value.js';

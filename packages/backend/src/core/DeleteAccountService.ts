@@ -5,11 +5,11 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, Not } from 'typeorm';
-import type { ApRendererService } from '@/core/activitypub/ApRendererService.js';
-import type { UserEntityService } from '@/core/entities/UserEntityService.js';
-import type { GlobalEventService } from '@/core/GlobalEventService.js';
-import type { ModerationLogService } from '@/core/ModerationLogService.js';
-import type { QueueService } from '@/core/QueueService.js';
+import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { QueueService } from '@/core/QueueService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository, MiMeta, MiUser, UsersRepository } from '@/models/_.js';

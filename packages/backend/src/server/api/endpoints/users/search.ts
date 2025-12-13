@@ -4,8 +4,8 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { UserEntityService } from '@/core/entities/UserEntityService.js';
-import type { UserSearchService } from '@/core/UserSearchService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { UserSearchService } from '@/core/UserSearchService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {

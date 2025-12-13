@@ -4,9 +4,9 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { ChatService } from '@/core/ChatService.js';
-import type { ChatEntityService } from '@/core/entities/ChatEntityService.js';
-import type { RoleService } from '@/core/RoleService.js';
+import { ChatService } from '@/core/ChatService.js';
+import { ChatEntityService } from '@/core/entities/ChatEntityService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '@/server/api/error.js';
 

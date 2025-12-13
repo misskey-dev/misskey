@@ -11,14 +11,14 @@ import type * as Redis from 'ioredis';
 import { In } from 'typeorm';
 import type { Config } from '@/config.js';
 import { USER_ACTIVE_THRESHOLD, USER_ONLINE_THRESHOLD } from '@/const.js';
-import type { AnnouncementService } from '@/core/AnnouncementService.js';
-import type { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
-import type { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
-import type { ChatService } from '@/core/ChatService.js';
-import type { CustomEmojiService } from '@/core/CustomEmojiService.js';
-import type { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
-import type { IdService } from '@/core/IdService.js';
-import type { RoleService } from '@/core/RoleService.js';
+import { AnnouncementService } from '@/core/AnnouncementService.js';
+import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
+import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
+import { ChatService } from '@/core/ChatService.js';
+import { CustomEmojiService } from '@/core/CustomEmojiService.js';
+import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
+import { IdService } from '@/core/IdService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { Packed } from '@/misc/json-schema.js';
@@ -49,8 +49,8 @@ import {
 	nameSchema,
 	passwordSchema,
 } from '@/models/User.js';
-import type { NoteEntityService } from './NoteEntityService.js';
-import type { PageEntityService } from './PageEntityService.js';
+import { NoteEntityService } from './NoteEntityService.js';
+import { PageEntityService } from './PageEntityService.js';
 
 const Ajv = _Ajv.default;
 const ajv = new Ajv();

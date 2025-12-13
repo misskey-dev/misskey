@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { IdService } from '@/core/IdService.js';
+import { IdService } from '@/core/IdService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { Packed } from '@/misc/json-schema.js';
@@ -13,8 +13,8 @@ import type { GalleryLikesRepository, GalleryPostsRepository } from '@/models/_.
 import type { } from '@/models/Blocking.js';
 import type { MiGalleryPost } from '@/models/GalleryPost.js';
 import type { MiUser } from '@/models/User.js';
-import type { DriveFileEntityService } from './DriveFileEntityService.js';
-import type { UserEntityService } from './UserEntityService.js';
+import { DriveFileEntityService } from './DriveFileEntityService.js';
+import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
 export class GalleryPostEntityService {

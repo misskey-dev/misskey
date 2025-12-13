@@ -5,8 +5,8 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
-import type { PageEntityService } from '@/core/entities/PageEntityService.js';
-import type { PageService } from '@/core/PageService.js';
+import { PageEntityService } from '@/core/entities/PageEntityService.js';
+import { PageService } from '@/core/PageService.js';
 import { DI } from '@/di-symbols.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type { DriveFilesRepository, MiDriveFile, PagesRepository } from '@/models/_.js';

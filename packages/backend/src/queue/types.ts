@@ -4,9 +4,9 @@
  */
 
 import type httpSignature from '@peertube/http-signature';
-import type { IActivity } from '@/core/activitypub/type.js';
-import type { SystemWebhookPayload } from '@/core/SystemWebhookService.js';
-import type { UserWebhookPayload } from '@/core/UserWebhookService.js';
+import { IActivity } from '@/core/activitypub/type.js';
+import { SystemWebhookPayload } from '@/core/SystemWebhookService.js';
+import { UserWebhookPayload } from '@/core/UserWebhookService.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiNote } from '@/models/Note.js';
 import type { SystemWebhookEventType } from '@/models/SystemWebhook.js';

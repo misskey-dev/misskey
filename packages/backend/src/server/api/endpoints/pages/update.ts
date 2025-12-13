@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
-import type { PageService } from '@/core/PageService.js';
+import { PageService } from '@/core/PageService.js';
 import { DI } from '@/di-symbols.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type { DriveFilesRepository, MiDriveFile } from '@/models/_.js';

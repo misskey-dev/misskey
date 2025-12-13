@@ -5,9 +5,9 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { MoreThan } from 'typeorm';
-import type { InviteCodeEntityService } from '@/core/entities/InviteCodeEntityService.js';
-import type { IdService } from '@/core/IdService.js';
-import type { RoleService } from '@/core/RoleService.js';
+import { InviteCodeEntityService } from '@/core/entities/InviteCodeEntityService.js';
+import { IdService } from '@/core/IdService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { DI } from '@/di-symbols.js';
 import { generateInviteCode } from '@/misc/generate-invite-code.js';
 import type { RegistrationTicketsRepository } from '@/models/_.js';

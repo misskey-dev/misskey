@@ -4,8 +4,8 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { FeaturedService } from '@/core/FeaturedService.js';
-import type { HashtagService } from '@/core/HashtagService.js';
+import { FeaturedService } from '@/core/FeaturedService.js';
+import { HashtagService } from '@/core/HashtagService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {

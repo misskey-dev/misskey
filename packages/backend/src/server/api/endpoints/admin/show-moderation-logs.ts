@@ -4,8 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { ModerationLogEntityService } from '@/core/entities/ModerationLogEntityService.js';
-import type { QueryService } from '@/core/QueryService.js';
+import { ModerationLogEntityService } from '@/core/entities/ModerationLogEntityService.js';
+import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 import type { ModerationLogsRepository } from '@/models/_.js';

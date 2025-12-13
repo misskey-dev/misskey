@@ -4,11 +4,12 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { CacheService } from '@/core/CacheService.js';
-import type { ChannelMutingService } from '@/core/ChannelMutingService.js';
-import type { NoteEntityService } from '@/core/entities/NoteEntityService.js';
-import type { FanoutTimelineName, FanoutTimelineService } from '@/core/FanoutTimelineService.js';
-import type { UtilityService } from '@/core/UtilityService.js';
+import { CacheService } from '@/core/CacheService.js';
+import { ChannelMutingService } from '@/core/ChannelMutingService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import type { FanoutTimelineName } from '@/core/FanoutTimelineService.js';
+import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import { isChannelRelated } from '@/misc/is-channel-related.js';

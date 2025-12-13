@@ -5,8 +5,8 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { QueryFailedError } from 'typeorm';
-import type { IdService } from '@/core/IdService.js';
-import type { RoleService } from '@/core/RoleService.js';
+import { IdService } from '@/core/IdService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';

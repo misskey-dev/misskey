@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
+import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
 import { DI } from '@/di-symbols.js';
 import type { ChannelsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

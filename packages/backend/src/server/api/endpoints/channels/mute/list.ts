@@ -4,8 +4,8 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { ChannelMutingService } from '@/core/ChannelMutingService.js';
-import type { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
+import { ChannelMutingService } from '@/core/ChannelMutingService.js';
+import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {

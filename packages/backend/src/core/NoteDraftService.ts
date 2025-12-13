@@ -5,10 +5,10 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
-import type { NoteEntityService } from '@/core/entities/NoteEntityService.js';
-import type { IdService } from '@/core/IdService.js';
-import type { QueueService } from '@/core/QueueService.js';
-import type { RoleService } from '@/core/RoleService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { IdService } from '@/core/IdService.js';
+import { QueueService } from '@/core/QueueService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';

@@ -5,12 +5,12 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
-import type { NoteDeleteService } from '@/core/NoteDeleteService.js';
-import type { RoleService } from '@/core/RoleService.js';
+import { NoteDeleteService } from '@/core/NoteDeleteService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { DI } from '@/di-symbols.js';
 import type { UsersRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { GetterService } from '@/server/api/GetterService.js';
+import { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {

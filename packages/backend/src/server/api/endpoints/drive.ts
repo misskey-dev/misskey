@@ -4,8 +4,8 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
-import type { RoleService } from '@/core/RoleService.js';
+import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {

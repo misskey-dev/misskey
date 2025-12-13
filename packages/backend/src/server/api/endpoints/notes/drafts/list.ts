@@ -4,8 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { NoteDraftEntityService } from '@/core/entities/NoteDraftEntityService.js';
-import type { QueryService } from '@/core/QueryService.js';
+import { NoteDraftEntityService } from '@/core/entities/NoteDraftEntityService.js';
+import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import type { MiNoteDraft, NoteDraftsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

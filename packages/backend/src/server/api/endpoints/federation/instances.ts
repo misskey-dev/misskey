@@ -4,8 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { InstanceEntityService } from '@/core/entities/InstanceEntityService.js';
-import type { MetaService } from '@/core/MetaService.js';
+import { InstanceEntityService } from '@/core/entities/InstanceEntityService.js';
+import { MetaService } from '@/core/MetaService.js';
 import { DI } from '@/di-symbols.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 import type { InstancesRepository } from '@/models/_.js';

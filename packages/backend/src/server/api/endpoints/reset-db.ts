@@ -6,9 +6,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type * as Redis from 'ioredis';
 import type { DataSource } from 'typeorm';
-import type { GlobalEventService } from '@/core/GlobalEventService.js';
-import type { LoggerService } from '@/core/LoggerService.js';
-import type { MetaService } from '@/core/MetaService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { LoggerService } from '@/core/LoggerService.js';
+import { MetaService } from '@/core/MetaService.js';
 import { DI } from '@/di-symbols.js';
 import { resetDb } from '@/misc/reset-db.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

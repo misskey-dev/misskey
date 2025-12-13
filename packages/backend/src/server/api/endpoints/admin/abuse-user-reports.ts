@@ -4,8 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { AbuseUserReportEntityService } from '@/core/entities/AbuseUserReportEntityService.js';
-import type { QueryService } from '@/core/QueryService.js';
+import { AbuseUserReportEntityService } from '@/core/entities/AbuseUserReportEntityService.js';
+import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import type { AbuseUserReportsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

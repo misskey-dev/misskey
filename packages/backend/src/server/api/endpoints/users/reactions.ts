@@ -4,11 +4,11 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { CacheService } from '@/core/CacheService.js';
-import type { NoteReactionEntityService } from '@/core/entities/NoteReactionEntityService.js';
-import type { UserEntityService } from '@/core/entities/UserEntityService.js';
-import type { QueryService } from '@/core/QueryService.js';
-import type { RoleService } from '@/core/RoleService.js';
+import { CacheService } from '@/core/CacheService.js';
+import { NoteReactionEntityService } from '@/core/entities/NoteReactionEntityService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { QueryService } from '@/core/QueryService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { DI } from '@/di-symbols.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import type { NoteReactionsRepository, UserProfilesRepository } from '@/models/_.js';

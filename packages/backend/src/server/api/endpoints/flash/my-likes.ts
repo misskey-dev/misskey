@@ -4,8 +4,8 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { FlashLikeEntityService } from '@/core/entities/FlashLikeEntityService.js';
-import type { FlashService } from '@/core/FlashService.js';
+import { FlashLikeEntityService } from '@/core/entities/FlashLikeEntityService.js';
+import { FlashService } from '@/core/FlashService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {

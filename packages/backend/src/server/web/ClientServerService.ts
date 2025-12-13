@@ -15,15 +15,15 @@ import sharp from 'sharp';
 import { In, IsNull } from 'typeorm';
 import vary from 'vary';
 import type { Config } from '@/config.js';
-import type { AnnouncementEntityService } from '@/core/entities/AnnouncementEntityService.js';
-import type { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
-import type { ClipEntityService } from '@/core/entities/ClipEntityService.js';
-import type { FlashEntityService } from '@/core/entities/FlashEntityService.js';
-import type { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
-import type { NoteEntityService } from '@/core/entities/NoteEntityService.js';
-import type { PageEntityService } from '@/core/entities/PageEntityService.js';
-import type { ReversiGameEntityService } from '@/core/entities/ReversiGameEntityService.js';
-import type { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { AnnouncementEntityService } from '@/core/entities/AnnouncementEntityService.js';
+import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
+import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
+import { FlashEntityService } from '@/core/entities/FlashEntityService.js';
+import { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { PageEntityService } from '@/core/entities/PageEntityService.js';
+import { ReversiGameEntityService } from '@/core/entities/ReversiGameEntityService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
@@ -43,10 +43,10 @@ import type {
 	UserProfilesRepository,
 	UsersRepository,
 } from '@/models/_.js';
-import type { ClientLoggerService } from './ClientLoggerService.js';
-import type { FeedService } from './FeedService.js';
+import { ClientLoggerService } from './ClientLoggerService.js';
+import { FeedService } from './FeedService.js';
 import { HtmlTemplateService } from './HtmlTemplateService.js';
-import type { UrlPreviewService } from './UrlPreviewService.js';
+import { UrlPreviewService } from './UrlPreviewService.js';
 import { AnnouncementPage } from './views/announcement.js';
 import { BasePage } from './views/base.js';
 import { BaseEmbed } from './views/base-embed.js';

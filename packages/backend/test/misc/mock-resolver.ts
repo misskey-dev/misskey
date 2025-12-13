@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { ApDbResolverService } from '@/core/activitypub/ApDbResolverService.js';
-import type { ApRendererService } from '@/core/activitypub/ApRendererService.js';
-import type { ApRequestService } from '@/core/activitypub/ApRequestService.js';
+import { ApDbResolverService } from '@/core/activitypub/ApDbResolverService.js';
+import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
+import { ApRequestService } from '@/core/activitypub/ApRequestService.js';
 import { Resolver } from '@/core/activitypub/ApResolverService.js';
-import type { IObject } from '@/core/activitypub/type.js';
-import type { HttpRequestService } from '@/core/HttpRequestService.js';
-import type { SystemAccountService } from '@/core/SystemAccountService.js';
-import type { UtilityService } from '@/core/UtilityService.js';
+import { IObject } from '@/core/activitypub/type.js';
+import { HttpRequestService } from '@/core/HttpRequestService.js';
+import { SystemAccountService } from '@/core/SystemAccountService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import type {
 	FollowRequestsRepository,

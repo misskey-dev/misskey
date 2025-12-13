@@ -5,8 +5,8 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
-import type { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
-import type { QueryService } from '@/core/QueryService.js';
+import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
+import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 import type { ChannelsRepository } from '@/models/_.js';

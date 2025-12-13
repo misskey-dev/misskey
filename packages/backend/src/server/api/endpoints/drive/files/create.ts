@@ -6,8 +6,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import { DB_MAX_IMAGE_COMMENT_LENGTH } from '@/const.js';
-import type { DriveService } from '@/core/DriveService.js';
-import type { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
+import { DriveService } from '@/core/DriveService.js';
+import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type { MiMeta } from '@/models/_.js';

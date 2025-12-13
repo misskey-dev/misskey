@@ -6,8 +6,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type Redis from 'ioredis';
 import { Brackets, In } from 'typeorm';
-import type { GlobalEventService, GlobalEvents } from '@/core/GlobalEventService.js';
-import type { IdService } from '@/core/IdService.js';
+import type { GlobalEvents } from '@/core/GlobalEventService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { IdService } from '@/core/IdService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import { RedisKVCache } from '@/misc/cache.js';

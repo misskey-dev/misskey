@@ -4,8 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { GalleryLikeEntityService } from '@/core/entities/GalleryLikeEntityService.js';
-import type { QueryService } from '@/core/QueryService.js';
+import { GalleryLikeEntityService } from '@/core/entities/GalleryLikeEntityService.js';
+import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import type { GalleryLikesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

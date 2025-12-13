@@ -4,7 +4,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { CustomEmojiService } from '@/core/CustomEmojiService.js';
+import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {

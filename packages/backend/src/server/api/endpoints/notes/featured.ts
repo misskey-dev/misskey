@@ -4,10 +4,10 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { CacheService } from '@/core/CacheService.js';
-import type { NoteEntityService } from '@/core/entities/NoteEntityService.js';
-import type { FeaturedService } from '@/core/FeaturedService.js';
-import type { QueryService } from '@/core/QueryService.js';
+import { CacheService } from '@/core/CacheService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { FeaturedService } from '@/core/FeaturedService.js';
+import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import type { NotesRepository } from '@/models/_.js';

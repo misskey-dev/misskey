@@ -5,7 +5,7 @@
 
 import { Injectable } from '@nestjs/common';
 import { ClipService } from '@/core/ClipService.js';
-import type { ClipEntityService } from '@/core/entities/ClipEntityService.js';
+import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../error.js';
 

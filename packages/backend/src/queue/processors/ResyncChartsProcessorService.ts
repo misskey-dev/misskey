@@ -9,7 +9,7 @@ import type NotesChart from '@/core/chart/charts/notes.js';
 import type UsersChart from '@/core/chart/charts/users.js';
 import { bindThis } from '@/decorators.js';
 import type Logger from '@/logger.js';
-import type { QueueLoggerService } from '../QueueLoggerService.js';
+import { QueueLoggerService } from '../QueueLoggerService.js';
 
 @Injectable()
 export class ResyncChartsProcessorService {

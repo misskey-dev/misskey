@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { DriveFolderEntityService } from '@/core/entities/DriveFolderEntityService.js';
+import { DriveFolderEntityService } from '@/core/entities/DriveFolderEntityService.js';
 import { DI } from '@/di-symbols.js';
 import type { DriveFoldersRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

@@ -5,12 +5,12 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
-import type { UserEntityService } from '@/core/entities/UserEntityService.js';
-import type { UserBlockingService } from '@/core/UserBlockingService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { DI } from '@/di-symbols.js';
 import type { BlockingsRepository, UsersRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { GetterService } from '@/server/api/GetterService.js';
+import { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {

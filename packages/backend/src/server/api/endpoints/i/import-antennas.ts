@@ -5,9 +5,9 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
-import type { DownloadService } from '@/core/DownloadService.js';
-import type { QueueService } from '@/core/QueueService.js';
-import type { RoleService } from '@/core/RoleService.js';
+import { DownloadService } from '@/core/DownloadService.js';
+import { QueueService } from '@/core/QueueService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { DI } from '@/di-symbols.js';
 import type { MiAntenna as _Antenna, AntennasRepository, DriveFilesRepository, UsersRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

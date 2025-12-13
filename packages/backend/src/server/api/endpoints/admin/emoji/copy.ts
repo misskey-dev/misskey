@@ -4,9 +4,9 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { CustomEmojiService } from '@/core/CustomEmojiService.js';
-import type { DriveService } from '@/core/DriveService.js';
-import type { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
+import { CustomEmojiService } from '@/core/CustomEmojiService.js';
+import { DriveService } from '@/core/DriveService.js';
+import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { DI } from '@/di-symbols.js';
 import type { EmojisRepository } from '@/models/_.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';

@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { ChannelMutingService } from '@/core/ChannelMutingService.js';
+import { ChannelMutingService } from '@/core/ChannelMutingService.js';
 import { DI } from '@/di-symbols.js';
 import type { ChannelsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

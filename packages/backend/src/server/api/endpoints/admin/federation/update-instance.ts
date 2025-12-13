@@ -4,9 +4,9 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
-import type { ModerationLogService } from '@/core/ModerationLogService.js';
-import type { UtilityService } from '@/core/UtilityService.js';
+import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import { DI } from '@/di-symbols.js';
 import type { InstancesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

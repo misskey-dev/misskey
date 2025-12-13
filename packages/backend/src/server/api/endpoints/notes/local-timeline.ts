@@ -5,13 +5,13 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
-import type { ChannelMutingService } from '@/core/ChannelMutingService.js';
+import { ChannelMutingService } from '@/core/ChannelMutingService.js';
 import type ActiveUsersChart from '@/core/chart/charts/active-users.js';
-import type { NoteEntityService } from '@/core/entities/NoteEntityService.js';
-import type { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
-import type { IdService } from '@/core/IdService.js';
-import type { QueryService } from '@/core/QueryService.js';
-import type { RoleService } from '@/core/RoleService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
+import { IdService } from '@/core/IdService.js';
+import { QueryService } from '@/core/QueryService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { DI } from '@/di-symbols.js';
 import type { MiMeta, NotesRepository } from '@/models/_.js';
 import type { MiLocalUser } from '@/models/User.js';

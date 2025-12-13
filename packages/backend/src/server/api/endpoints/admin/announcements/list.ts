@@ -4,8 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { IdService } from '@/core/IdService.js';
-import type { QueryService } from '@/core/QueryService.js';
+import { IdService } from '@/core/IdService.js';
+import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import type { AnnouncementReadsRepository, AnnouncementsRepository } from '@/models/_.js';
 import type { MiAnnouncement } from '@/models/Announcement.js';

@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { AuthSessionEntityService } from '@/core/entities/AuthSessionEntityService.js';
+import { AuthSessionEntityService } from '@/core/entities/AuthSessionEntityService.js';
 import { DI } from '@/di-symbols.js';
 import type { AuthSessionsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

@@ -7,14 +7,14 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { FindOptionsWhere } from 'typeorm';
 import { In, IsNull } from 'typeorm';
 import type PerUserPvChart from '@/core/chart/charts/per-user-pv.js';
-import type { UserEntityService } from '@/core/entities/UserEntityService.js';
-import type { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
-import type { RoleService } from '@/core/RoleService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { DI } from '@/di-symbols.js';
 import type { MiMeta, UsersRepository } from '@/models/_.js';
 import type { MiUser } from '@/models/User.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { ApiLoggerService } from '../../ApiLoggerService.js';
+import { ApiLoggerService } from '../../ApiLoggerService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {

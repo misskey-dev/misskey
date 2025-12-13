@@ -5,8 +5,8 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { MoreThan } from 'typeorm';
-import type { IdService } from '@/core/IdService.js';
-import type { RoleService } from '@/core/RoleService.js';
+import { IdService } from '@/core/IdService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { DI } from '@/di-symbols.js';
 import type { RegistrationTicketsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

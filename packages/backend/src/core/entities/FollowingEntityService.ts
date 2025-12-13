@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { IdService } from '@/core/IdService.js';
+import { IdService } from '@/core/IdService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { Packed } from '@/misc/json-schema.js';
@@ -13,7 +13,7 @@ import type { FollowingsRepository } from '@/models/_.js';
 import type { } from '@/models/Blocking.js';
 import type { MiFollowing } from '@/models/Following.js';
 import type { MiUser } from '@/models/User.js';
-import type { UserEntityService } from './UserEntityService.js';
+import { UserEntityService } from './UserEntityService.js';
 
 type LocalFollowerFollowing = MiFollowing & {
 	followerHost: null;

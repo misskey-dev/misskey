@@ -5,9 +5,9 @@
 
 import { Injectable } from '@nestjs/common';
 import ms from 'ms';
-import type { DriveService } from '@/core/DriveService.js';
-import type { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
-import type { GlobalEventService } from '@/core/GlobalEventService.js';
+import { DriveService } from '@/core/DriveService.js';
+import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {

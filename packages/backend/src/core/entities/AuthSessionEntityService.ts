@@ -10,7 +10,7 @@ import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { AuthSessionsRepository } from '@/models/_.js';
 import type { MiAuthSession } from '@/models/AuthSession.js';
 import type { MiUser } from '@/models/User.js';
-import type { AppEntityService } from './AppEntityService.js';
+import { AppEntityService } from './AppEntityService.js';
 
 @Injectable()
 export class AuthSessionEntityService {

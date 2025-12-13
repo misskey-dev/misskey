@@ -9,9 +9,10 @@ import type * as Redis from 'ioredis';
 import { reversiUpdateKeys } from 'misskey-js';
 import * as Reversi from 'misskey-reversi';
 import { LessThan, MoreThan } from 'typeorm';
-import type { UserEntityService } from '@/core/entities/UserEntityService.js';
-import type { GlobalEventService } from '@/core/GlobalEventService.js';
-import type { IdService } from '@/core/IdService.js';
+import { ReversiGameEntityService } from '@/core/entities/ReversiGameEntityService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { IdService } from '@/core/IdService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type {
@@ -20,7 +21,6 @@ import type {
 } from '@/models/_.js';
 import type { MiUser } from '@/models/User.js';
 import type { Serialized } from '@/types.js';
-import type { ReversiGameEntityService } from './entities/ReversiGameEntityService.js';
 
 const INVITATION_TIMEOUT_MS = 1000 * 20; // 20sec
 

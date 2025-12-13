@@ -5,15 +5,16 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import type { Config } from '@/config.js';
-import type { UtilityService } from '@/core/UtilityService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import type { NotesRepository, PollsRepository, UsersRepository } from '@/models/_.js';
 import type { IPoll } from '@/models/Poll.js';
 import type { MiRemoteUser } from '@/models/User.js';
-import type { ApLoggerService } from '../ApLoggerService.js';
-import type { ApResolverService, Resolver } from '../ApResolverService.js';
+import { ApLoggerService } from '../ApLoggerService.js';
+import type { Resolver } from '../ApResolverService.js';
+import { ApResolverService } from '../ApResolverService.js';
 import type { IObject } from '../type.js';
 import { getOneApId, isQuestion } from '../type.js';
 

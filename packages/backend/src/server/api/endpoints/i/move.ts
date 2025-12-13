@@ -5,18 +5,18 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
-import type { AccountMoveService } from '@/core/AccountMoveService.js';
-import type { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
-import type { UserEntityService } from '@/core/entities/UserEntityService.js';
-import type { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
+import { AccountMoveService } from '@/core/AccountMoveService.js';
+import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { DI } from '@/di-symbols.js';
 import * as Acct from '@/misc/acct.js';
 import type { MiMeta } from '@/models/_.js';
 import type { MiLocalUser, MiRemoteUser } from '@/models/User.js';
-import type { ApiLoggerService } from '@/server/api/ApiLoggerService.js';
+import { ApiLoggerService } from '@/server/api/ApiLoggerService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '@/server/api/error.js';
-import type { GetterService } from '@/server/api/GetterService.js';
+import { GetterService } from '@/server/api/GetterService.js';
 
 export const meta = {
 	tags: ['users'],

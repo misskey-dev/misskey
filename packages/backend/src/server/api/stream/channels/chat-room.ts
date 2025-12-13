@@ -4,8 +4,8 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { ChatService } from '@/core/ChatService.js';
-import type { GlobalEvents } from '@/core/GlobalEventService.js';
+import { ChatService } from '@/core/ChatService.js';
+import { GlobalEvents } from '@/core/GlobalEventService.js';
 import { bindThis } from '@/decorators.js';
 import type { JsonObject } from '@/misc/json-value.js';
 import Channel, { type MiChannelService } from '../channel.js';

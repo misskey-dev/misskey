@@ -10,7 +10,7 @@ import type { PageLikesRepository } from '@/models/_.js';
 import type { } from '@/models/Blocking.js';
 import type { MiPageLike } from '@/models/PageLike.js';
 import type { MiUser } from '@/models/User.js';
-import type { PageEntityService } from './PageEntityService.js';
+import { PageEntityService } from './PageEntityService.js';
 
 @Injectable()
 export class PageLikeEntityService {

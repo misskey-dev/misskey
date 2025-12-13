@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
-import type { IdService } from '@/core/IdService.js';
+import { IdService } from '@/core/IdService.js';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';

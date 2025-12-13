@@ -4,14 +4,14 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { IdService } from '@/core/IdService.js';
+import { IdService } from '@/core/IdService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { FlashLikesRepository, FlashsRepository } from '@/models/_.js';
 import type { MiFlash } from '@/models/Flash.js';
 import type { MiUser } from '@/models/User.js';
-import type { UserEntityService } from './UserEntityService.js';
+import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
 export class FlashEntityService {

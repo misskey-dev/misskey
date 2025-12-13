@@ -5,8 +5,8 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
-import type { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
-import type { IdService } from '@/core/IdService.js';
+import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
+import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
 import type { ChannelsRepository, DriveFilesRepository } from '@/models/_.js';
 import type { MiChannel } from '@/models/Channel.js';

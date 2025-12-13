@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { safeForSql } from "@/misc/safe-for-sql.js";

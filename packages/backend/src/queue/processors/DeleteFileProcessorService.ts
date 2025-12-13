@@ -5,10 +5,10 @@
 
 import { Injectable } from '@nestjs/common';
 import type * as Bull from 'bullmq';
-import type { DriveService } from '@/core/DriveService.js';
+import { DriveService } from '@/core/DriveService.js';
 import { bindThis } from '@/decorators.js';
 import type Logger from '@/logger.js';
-import type { QueueLoggerService } from '../QueueLoggerService.js';
+import { QueueLoggerService } from '../QueueLoggerService.js';
 import type { ObjectStorageFileJobData } from '../types.js';
 
 @Injectable()

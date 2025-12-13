@@ -11,7 +11,7 @@ import type { FollowRequestsRepository } from '@/models/_.js';
 import type { } from '@/models/Blocking.js';
 import type { MiFollowRequest } from '@/models/FollowRequest.js';
 import type { MiUser } from '@/models/User.js';
-import type { UserEntityService } from './UserEntityService.js';
+import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
 export class FollowRequestEntityService {

@@ -6,8 +6,8 @@
 import type { OnApplicationShutdown } from '@nestjs/common';
 import { Inject, Injectable, } from '@nestjs/common';
 import type { Config } from '@/config.js';
-import type { CacheService } from '@/core/CacheService.js';
-import type { UtilityService } from '@/core/UtilityService.js';
+import { CacheService } from '@/core/CacheService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import { MemoryKVCache } from '@/misc/cache.js';
@@ -15,7 +15,7 @@ import type { NotesRepository, UserPublickeysRepository, UsersRepository } from 
 import type { MiNote } from '@/models/Note.js';
 import type { MiLocalUser, MiRemoteUser } from '@/models/User.js';
 import type { MiUserPublickey } from '@/models/UserPublickey.js';
-import type { ApPersonService } from './models/ApPersonService.js';
+import { ApPersonService } from './models/ApPersonService.js';
 import type { IObject } from './type.js';
 import { getApId } from './type.js';
 

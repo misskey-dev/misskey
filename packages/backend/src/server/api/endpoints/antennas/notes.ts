@@ -5,12 +5,12 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
-import type { ChannelMutingService } from '@/core/ChannelMutingService.js';
-import type { NoteEntityService } from '@/core/entities/NoteEntityService.js';
-import type { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
-import type { GlobalEventService } from '@/core/GlobalEventService.js';
-import type { IdService } from '@/core/IdService.js';
-import type { QueryService } from '@/core/QueryService.js';
+import { ChannelMutingService } from '@/core/ChannelMutingService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { IdService } from '@/core/IdService.js';
+import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import { trackPromise } from '@/misc/promise-tracker.js';
 import type { AntennasRepository, NotesRepository } from '@/models/_.js';

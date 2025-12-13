@@ -4,8 +4,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { CaptchaService, } from '@/core/CaptchaService.js';
-import { captchaErrorCodes, supportedCaptchaProviders } from '@/core/CaptchaService.js';
+import { CaptchaService, captchaErrorCodes, supportedCaptchaProviders } from '@/core/CaptchaService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '@/server/api/error.js';
 

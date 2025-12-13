@@ -4,12 +4,12 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { ChatService } from '@/core/ChatService.js';
-import type { ChatEntityService } from '@/core/entities/ChatEntityService.js';
-import type { IdService } from '@/core/IdService.js';
+import { ChatService } from '@/core/ChatService.js';
+import { ChatEntityService } from '@/core/entities/ChatEntityService.js';
+import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '@/server/api/error.js';
-import type { GetterService } from '@/server/api/GetterService.js';
+import { GetterService } from '@/server/api/GetterService.js';
 
 export const meta = {
 	tags: ['chat'],

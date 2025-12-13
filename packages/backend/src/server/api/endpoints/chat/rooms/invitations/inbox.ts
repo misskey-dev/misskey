@@ -4,9 +4,9 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { ChatService } from '@/core/ChatService.js';
-import type { ChatEntityService } from '@/core/entities/ChatEntityService.js';
-import type { IdService } from '@/core/IdService.js';
+import { ChatService } from '@/core/ChatService.js';
+import { ChatEntityService } from '@/core/entities/ChatEntityService.js';
+import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {

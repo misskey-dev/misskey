@@ -6,12 +6,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { In, LessThan } from 'typeorm';
 import type { Config } from '@/config.js';
-import type { ReversiService } from '@/core/ReversiService.js';
+import { ReversiService } from '@/core/ReversiService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import type { AntennasRepository, RoleAssignmentsRepository, UserIpsRepository } from '@/models/_.js';
-import type { QueueLoggerService } from '../QueueLoggerService.js';
+import { QueueLoggerService } from '../QueueLoggerService.js';
 
 @Injectable()
 export class CleanProcessorService {

@@ -4,7 +4,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { MetaService } from '@/core/MetaService.js';
+import { MetaService } from '@/core/MetaService.js';
 import { bindThis } from '@/decorators.js';
 
 @Injectable()

@@ -9,7 +9,7 @@ import { bindThis } from '@/decorators.js';
 import { concat, unique } from '@/misc/prelude/array.js';
 import type { MiRemoteUser, MiUser } from '@/models/User.js';
 import type { Resolver } from './ApResolverService.js';
-import type { ApPersonService } from './models/ApPersonService.js';
+import { ApPersonService } from './models/ApPersonService.js';
 import type { ApObject } from './type.js';
 import { getApIds } from './type.js';
 

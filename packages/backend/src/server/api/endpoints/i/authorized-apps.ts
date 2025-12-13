@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull, Not } from 'typeorm';
-import type { AppEntityService } from '@/core/entities/AppEntityService.js';
+import { AppEntityService } from '@/core/entities/AppEntityService.js';
 import { DI } from '@/di-symbols.js';
 import type { AccessTokensRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

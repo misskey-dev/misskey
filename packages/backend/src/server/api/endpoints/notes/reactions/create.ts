@@ -4,9 +4,9 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { ReactionService } from '@/core/ReactionService.js';
+import { ReactionService } from '@/core/ReactionService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { GetterService } from '@/server/api/GetterService.js';
+import { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../../error.js';
 
 export const meta = {

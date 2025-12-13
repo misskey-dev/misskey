@@ -6,13 +6,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import * as Bull from 'bullmq';
 import { Not } from 'typeorm';
-import type { ApRequestService } from '@/core/activitypub/ApRequestService.js';
+import { ApRequestService } from '@/core/activitypub/ApRequestService.js';
 import type ApRequestChart from '@/core/chart/charts/ap-request.js';
 import type FederationChart from '@/core/chart/charts/federation.js';
 import type InstanceChart from '@/core/chart/charts/instance.js';
-import type { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
-import type { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
-import type { UtilityService } from '@/core/UtilityService.js';
+import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
+import { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import { MemorySingleCache } from '@/misc/cache.js';

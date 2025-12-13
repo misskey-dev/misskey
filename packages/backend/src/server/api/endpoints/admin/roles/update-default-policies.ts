@@ -4,9 +4,9 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { GlobalEventService } from '@/core/GlobalEventService.js';
-import type { MetaService } from '@/core/MetaService.js';
-import type { ModerationLogService } from '@/core/ModerationLogService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { MetaService } from '@/core/MetaService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {

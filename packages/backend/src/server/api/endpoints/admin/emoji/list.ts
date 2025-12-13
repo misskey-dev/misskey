@@ -4,8 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
-import type { QueryService } from '@/core/QueryService.js';
+import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
+import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import type { EmojisRepository } from '@/models/_.js';
 import type { MiEmoji } from '@/models/Emoji.js';

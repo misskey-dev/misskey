@@ -6,8 +6,8 @@
 import type { OnApplicationShutdown } from '@nestjs/common';
 import { Inject, Injectable } from '@nestjs/common';
 import type * as Redis from 'ioredis';
-import type { GlobalEvents } from '@/core/GlobalEventService.js';
-import type { QueueService } from '@/core/QueueService.js';
+import { GlobalEvents } from '@/core/GlobalEventService.js';
+import { QueueService } from '@/core/QueueService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { Packed } from '@/misc/json-schema.js';

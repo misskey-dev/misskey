@@ -5,10 +5,10 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import type * as Redis from 'ioredis';
-import type { UserEntityService } from '@/core/entities/UserEntityService.js';
-import type { FeaturedService } from '@/core/FeaturedService.js';
-import type { IdService } from '@/core/IdService.js';
-import type { UtilityService } from '@/core/UtilityService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { FeaturedService } from '@/core/FeaturedService.js';
+import { IdService } from '@/core/IdService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';

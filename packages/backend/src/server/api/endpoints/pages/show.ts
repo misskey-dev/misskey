@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
-import type { PageEntityService } from '@/core/entities/PageEntityService.js';
+import { PageEntityService } from '@/core/entities/PageEntityService.js';
 import { DI } from '@/di-symbols.js';
 import type { PagesRepository, UsersRepository } from '@/models/_.js';
 import type { MiPage } from '@/models/Page.js';

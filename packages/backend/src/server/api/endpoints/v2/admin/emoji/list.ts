@@ -4,10 +4,9 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { CustomEmojiService, } from '@/core/CustomEmojiService.js';
-import { fetchEmojisHostTypes, fetchEmojisSortKeys } from '@/core/CustomEmojiService.js';
-import type { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
-import type { IdService } from '@/core/IdService.js';
+import { CustomEmojiService, fetchEmojisHostTypes, fetchEmojisSortKeys } from '@/core/CustomEmojiService.js';
+import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
+import { IdService } from '@/core/IdService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {

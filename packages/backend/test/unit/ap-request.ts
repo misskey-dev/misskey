@@ -7,7 +7,7 @@ import * as assert from 'node:assert';
 import httpSignature from '@peertube/http-signature';
 import { ApRequestCreator } from '@/core/activitypub/ApRequestService.js';
 import { assertActivityMatchesUrl, FetchAllowSoftFailMask } from '@/core/activitypub/misc/check-against-url.js';
-import type { IObject } from '@/core/activitypub/type.js';
+import { IObject } from '@/core/activitypub/type.js';
 import { genRsaKeyPair } from '@/misc/gen-key-pair.js';
 
 const buildParsedSignature = (signingString: string, signature: string, algorithm: string) => {

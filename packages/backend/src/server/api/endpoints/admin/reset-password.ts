@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
-import type { ModerationLogService } from '@/core/ModerationLogService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { DI } from '@/di-symbols.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import type { MiMeta, UserProfilesRepository, UsersRepository } from '@/models/_.js';

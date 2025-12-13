@@ -7,7 +7,7 @@ import * as crypto from 'node:crypto';
 import { Injectable } from '@nestjs/common';
 import type { JsonLdDocument } from 'jsonld';
 import type { JsonLd as JsonLdObject, RemoteDocument } from 'jsonld/jsonld-spec.js';
-import type { HttpRequestService } from '@/core/HttpRequestService.js';
+import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
 import { CONTEXT, PRELOADED_CONTEXTS } from './misc/contexts.js';
 import { validateContentTypeSetAsJsonLD } from './misc/validator.js';

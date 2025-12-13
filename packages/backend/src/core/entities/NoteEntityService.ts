@@ -7,8 +7,8 @@ import type { OnModuleInit } from '@nestjs/common';
 import { Inject, Injectable } from '@nestjs/common';
 import type { ModuleRef } from '@nestjs/core';
 import { EntityNotFoundError, In } from 'typeorm';
-import type { IdService } from '@/core/IdService.js';
-import type { ReactionsBufferingService } from '@/core/ReactionsBufferingService.js';
+import { IdService } from '@/core/IdService.js';
+import { ReactionsBufferingService } from '@/core/ReactionsBufferingService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { Packed } from '@/misc/json-schema.js';
@@ -18,10 +18,10 @@ import { shouldHideNoteByTime } from '@/misc/should-hide-note-by-time.js';
 import type { ChannelsRepository, FollowingsRepository, MiMeta, NoteReactionsRepository, NotesRepository, PollsRepository, PollVotesRepository, UsersRepository } from '@/models/_.js';
 import type { MiNote } from '@/models/Note.js';
 import type { MiUser } from '@/models/User.js';
-import type { CustomEmojiService } from '../CustomEmojiService.js';
-import type { ReactionService } from '../ReactionService.js';
-import type { DriveFileEntityService } from './DriveFileEntityService.js';
-import type { UserEntityService } from './UserEntityService.js';
+import { CustomEmojiService } from '../CustomEmojiService.js';
+import { ReactionService } from '../ReactionService.js';
+import { DriveFileEntityService } from './DriveFileEntityService.js';
+import { UserEntityService } from './UserEntityService.js';
 
 // is-renote.tsとよしなにリンク
 function isPureRenote(note: MiNote): note is MiNote & { renoteId: MiNote['id']; renote: MiNote } {

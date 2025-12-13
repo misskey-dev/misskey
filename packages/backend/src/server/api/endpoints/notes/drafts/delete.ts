@@ -4,7 +4,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { NoteDraftService } from '@/core/NoteDraftService.js';
+import { NoteDraftService } from '@/core/NoteDraftService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../../error.js';
 

@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
-import type { IdService } from '@/core/IdService.js';
+import { IdService } from '@/core/IdService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { Packed } from '@/misc/json-schema.js';
@@ -20,8 +20,8 @@ import type {
 } from '@/models/_.js';
 import type { MiChannel } from '@/models/Channel.js';
 import type { MiUser } from '@/models/User.js';
-import type { DriveFileEntityService } from './DriveFileEntityService.js';
-import type { NoteEntityService } from './NoteEntityService.js';
+import { DriveFileEntityService } from './DriveFileEntityService.js';
+import { NoteEntityService } from './NoteEntityService.js';
 
 @Injectable()
 export class ChannelEntityService {

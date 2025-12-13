@@ -8,15 +8,15 @@ import { Inject, Injectable } from '@nestjs/common';
 import type * as Bull from 'bullmq';
 import { ZipReader } from 'slacc';
 import { IsNull } from 'typeorm';
-import type { CustomEmojiService } from '@/core/CustomEmojiService.js';
-import type { DownloadService } from '@/core/DownloadService.js';
-import type { DriveService } from '@/core/DriveService.js';
+import { CustomEmojiService } from '@/core/CustomEmojiService.js';
+import { DownloadService } from '@/core/DownloadService.js';
+import { DriveService } from '@/core/DriveService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import { createTempDir } from '@/misc/create-temp.js';
 import type { DriveFilesRepository, EmojisRepository } from '@/models/_.js';
-import type { QueueLoggerService } from '../QueueLoggerService.js';
+import { QueueLoggerService } from '../QueueLoggerService.js';
 import type { DbUserImportJobData } from '../types.js';
 
 // TODO: 名前衝突時の動作を選べるようにする

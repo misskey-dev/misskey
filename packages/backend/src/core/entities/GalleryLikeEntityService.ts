@@ -9,7 +9,7 @@ import { DI } from '@/di-symbols.js';
 import type { GalleryLikesRepository } from '@/models/_.js';
 import type { } from '@/models/Blocking.js';
 import type { MiGalleryLike } from '@/models/GalleryLike.js';
-import type { GalleryPostEntityService } from './GalleryPostEntityService.js';
+import { GalleryPostEntityService } from './GalleryPostEntityService.js';
 
 @Injectable()
 export class GalleryLikeEntityService {

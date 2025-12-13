@@ -4,9 +4,9 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserListEntityService } from '@/core/entities/UserListEntityService.js';
-import type { IdService } from '@/core/IdService.js';
-import type { RoleService } from '@/core/RoleService.js';
+import { UserListEntityService } from '@/core/entities/UserListEntityService.js';
+import { IdService } from '@/core/IdService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { DI } from '@/di-symbols.js';
 import type { UserListsRepository } from '@/models/_.js';
 import type { MiUserList } from '@/models/UserList.js';

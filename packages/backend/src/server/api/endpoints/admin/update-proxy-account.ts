@@ -4,9 +4,9 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { UserEntityService } from '@/core/entities/UserEntityService.js';
-import type { ModerationLogService } from '@/core/ModerationLogService.js';
-import type { SystemAccountService } from '@/core/SystemAccountService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { SystemAccountService } from '@/core/SystemAccountService.js';
 import {
 	descriptionSchema,
 } from '@/models/User.js';

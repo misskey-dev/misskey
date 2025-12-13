@@ -4,8 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
-import type { QueryService } from '@/core/QueryService.js';
+import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
+import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import type { DriveFilesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

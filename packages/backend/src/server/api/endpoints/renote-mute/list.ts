@@ -4,8 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { RenoteMutingEntityService } from '@/core/entities/RenoteMutingEntityService.js';
-import type { QueryService } from '@/core/QueryService.js';
+import { RenoteMutingEntityService } from '@/core/entities/RenoteMutingEntityService.js';
+import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import type { RenoteMutingsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

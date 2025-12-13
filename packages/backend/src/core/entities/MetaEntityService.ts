@@ -9,7 +9,7 @@ import { Brackets } from 'typeorm';
 import type { Config } from '@/config.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
-import type { SystemAccountService } from '@/core/SystemAccountService.js';
+import { SystemAccountService } from '@/core/SystemAccountService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { Packed } from '@/misc/json-schema.js';

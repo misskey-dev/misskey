@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { QueueService } from '@/core/QueueService.js';
+import { QueueService } from '@/core/QueueService.js';
 import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository, UsersRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

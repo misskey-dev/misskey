@@ -5,10 +5,10 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { IsNull } from 'typeorm';
-import type { FollowingEntityService } from '@/core/entities/FollowingEntityService.js';
-import type { QueryService } from '@/core/QueryService.js';
-import type { RoleService } from '@/core/RoleService.js';
-import type { UtilityService } from '@/core/UtilityService.js';
+import { FollowingEntityService } from '@/core/entities/FollowingEntityService.js';
+import { QueryService } from '@/core/QueryService.js';
+import { RoleService } from '@/core/RoleService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import { birthdaySchema } from '@/models/User.js';

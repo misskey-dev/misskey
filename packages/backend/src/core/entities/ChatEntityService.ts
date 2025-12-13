@@ -5,14 +5,14 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
-import type { IdService } from '@/core/IdService.js';
+import { IdService } from '@/core/IdService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { ChatMessagesRepository, ChatRoomInvitationsRepository, ChatRoomMembershipsRepository, ChatRoomsRepository, MiChatMessage, MiChatRoom, MiChatRoomInvitation, MiChatRoomMembership, MiUser } from '@/models/_.js';
 import type { } from '@/models/Blocking.js';
-import type { DriveFileEntityService } from './DriveFileEntityService.js';
-import type { UserEntityService } from './UserEntityService.js';
+import { DriveFileEntityService } from './DriveFileEntityService.js';
+import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
 export class ChatEntityService {

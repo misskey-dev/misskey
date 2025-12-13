@@ -10,10 +10,10 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import type * as Misskey from 'misskey-js';
 import { IsNull } from 'typeorm';
 import type { Config } from '@/config.js';
-import type { CaptchaService } from '@/core/CaptchaService.js';
-import type { IdService } from '@/core/IdService.js';
-import type { UserAuthService } from '@/core/UserAuthService.js';
-import type { WebAuthnService } from '@/core/WebAuthnService.js';
+import { CaptchaService } from '@/core/CaptchaService.js';
+import { IdService } from '@/core/IdService.js';
+import { UserAuthService } from '@/core/UserAuthService.js';
+import { WebAuthnService } from '@/core/WebAuthnService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
@@ -26,8 +26,8 @@ import type {
 	UsersRepository,
 } from '@/models/_.js';
 import type { MiLocalUser } from '@/models/User.js';
-import type { RateLimiterService } from './RateLimiterService.js';
-import type { SigninService } from './SigninService.js';
+import { RateLimiterService } from './RateLimiterService.js';
+import { SigninService } from './SigninService.js';
 
 @Injectable()
 export class SigninApiService {

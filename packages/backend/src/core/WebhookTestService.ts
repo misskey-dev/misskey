@@ -4,10 +4,12 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { CustomEmojiService } from '@/core/CustomEmojiService.js';
-import type { QueueService } from '@/core/QueueService.js';
-import type { AbuseReportPayload, SystemWebhookPayload, SystemWebhookService } from '@/core/SystemWebhookService.js';
-import type { UserWebhookPayload, UserWebhookService } from '@/core/UserWebhookService.js';
+import { CustomEmojiService } from '@/core/CustomEmojiService.js';
+import { QueueService } from '@/core/QueueService.js';
+import type { AbuseReportPayload, SystemWebhookPayload } from '@/core/SystemWebhookService.js';
+import { SystemWebhookService } from '@/core/SystemWebhookService.js';
+import type { UserWebhookPayload } from '@/core/UserWebhookService.js';
+import { UserWebhookService } from '@/core/UserWebhookService.js';
 import { bindThis } from '@/decorators.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { MiAbuseUserReport, MiNote, MiUser, MiWebhook } from '@/models/_.js';

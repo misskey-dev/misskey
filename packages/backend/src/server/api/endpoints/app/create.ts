@@ -4,8 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { AppEntityService } from '@/core/entities/AppEntityService.js';
-import type { IdService } from '@/core/IdService.js';
+import { AppEntityService } from '@/core/entities/AppEntityService.js';
+import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
 import { unique } from '@/misc/prelude/array.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';

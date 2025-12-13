@@ -5,18 +5,18 @@
 
 import type { EventEmitter } from 'node:events';
 import type * as WebSocket from 'ws';
-import type { CacheService } from '@/core/CacheService.js';
-import type { ChannelFollowingService } from '@/core/ChannelFollowingService.js';
-import type { ChannelMutingService } from '@/core/ChannelMutingService.js';
+import { CacheService } from '@/core/CacheService.js';
+import { ChannelFollowingService } from '@/core/ChannelFollowingService.js';
+import { ChannelMutingService } from '@/core/ChannelMutingService.js';
 import type { GlobalEvents, StreamEventEmitter } from '@/core/GlobalEventService.js';
-import type { NotificationService } from '@/core/NotificationService.js';
+import { NotificationService } from '@/core/NotificationService.js';
 import { bindThis } from '@/decorators.js';
 import type { JsonObject, JsonValue } from '@/misc/json-value.js';
 import { isJsonObject } from '@/misc/json-value.js';
 import type { MiFollowing, MiUserProfile } from '@/models/_.js';
 import type { MiAccessToken } from '@/models/AccessToken.js';
 import type { MiUser } from '@/models/User.js';
-import type { ChannelsService } from './ChannelsService.js';
+import { ChannelsService } from './ChannelsService.js';
 import type Channel from './channel.js';
 
 const MAX_CHANNELS_PER_CONNECTION = 32;

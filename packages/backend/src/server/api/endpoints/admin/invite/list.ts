@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { InviteCodeEntityService } from '@/core/entities/InviteCodeEntityService.js';
+import { InviteCodeEntityService } from '@/core/entities/InviteCodeEntityService.js';
 import { DI } from '@/di-symbols.js';
 import type { RegistrationTicketsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

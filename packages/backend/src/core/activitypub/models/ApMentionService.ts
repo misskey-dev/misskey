@@ -11,7 +11,7 @@ import type { MiUser } from '@/models/_.js';
 import type { Resolver } from '../ApResolverService.js';
 import type { IApMention, IObject } from '../type.js';
 import { isMention } from '../type.js';
-import type { ApPersonService } from './ApPersonService.js';
+import { ApPersonService } from './ApPersonService.js';
 
 @Injectable()
 export class ApMentionService {

@@ -10,7 +10,7 @@ import type { OnApplicationShutdown } from '@nestjs/common';
 import { Inject, Injectable } from '@nestjs/common';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import type { Config } from '@/config.js';
-import type { RoleService } from '@/core/RoleService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
@@ -19,12 +19,11 @@ import { getIpHash } from '@/misc/get-ip-hash.js';
 import type { MiMeta, UserIpsRepository } from '@/models/_.js';
 import type { MiAccessToken } from '@/models/AccessToken.js';
 import type { MiLocalUser, MiUser } from '@/models/User.js';
-import type { ApiLoggerService } from './ApiLoggerService.js';
-import type { AuthenticateService, } from './AuthenticateService.js';
-import { AuthenticationError } from './AuthenticateService.js';
+import { ApiLoggerService } from './ApiLoggerService.js';
+import { AuthenticateService, AuthenticationError } from './AuthenticateService.js';
 import type { IEndpoint, IEndpointMeta } from './endpoints.js';
 import { ApiError } from './error.js';
-import type { RateLimiterService } from './RateLimiterService.js';
+import { RateLimiterService } from './RateLimiterService.js';
 
 const accessDenied = {
 	message: 'Access denied.',

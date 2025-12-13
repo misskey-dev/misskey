@@ -7,9 +7,11 @@ import type { OnApplicationShutdown } from '@nestjs/common';
 import { Inject, Injectable } from '@nestjs/common';
 import type * as Redis from 'ioredis';
 import { In } from 'typeorm';
-import type { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
-import type { GlobalEventService, GlobalEvents } from '@/core/GlobalEventService.js';
-import type { UtilityService } from '@/core/UtilityService.js';
+import { CacheService } from '@/core/CacheService.js';
+import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
+import type { GlobalEvents } from '@/core/GlobalEventService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import * as Acct from '@/misc/acct.js';
@@ -18,7 +20,6 @@ import type { AntennasRepository, UserListMembershipsRepository } from '@/models
 import type { MiAntenna } from '@/models/Antenna.js';
 import type { MiNote } from '@/models/Note.js';
 import type { MiUser } from '@/models/User.js';
-import type { CacheService } from './CacheService.js';
 
 @Injectable()
 export class AntennaService implements OnApplicationShutdown {

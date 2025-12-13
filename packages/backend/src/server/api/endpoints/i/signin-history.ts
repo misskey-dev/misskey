@@ -4,8 +4,8 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { SigninEntityService } from '@/core/entities/SigninEntityService.js';
-import type { QueryService } from '@/core/QueryService.js';
+import { SigninEntityService } from '@/core/entities/SigninEntityService.js';
+import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import type { SigninsRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';

@@ -8,7 +8,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import * as Bull from 'bullmq';
 import Xev from 'xev';
 import type { Config } from '@/config.js';
-import type { QueueService } from '@/core/QueueService.js';
+import { QueueService } from '@/core/QueueService.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import { baseQueueOptions, QUEUE } from '@/queue/const.js';

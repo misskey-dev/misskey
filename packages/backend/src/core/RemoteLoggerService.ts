@@ -4,7 +4,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { LoggerService } from '@/core/LoggerService.js';
+import { LoggerService } from '@/core/LoggerService.js';
 import type Logger from '@/logger.js';
 
 @Injectable()
