@@ -258,7 +258,7 @@ export class Character {
 		// Create sprite
 		this.chatSprite = new THREE.Sprite(material);
 		this.chatSprite.position.y = 4; // T140: Above head
-		this.chatSprite.scale.set(3, 1.5, 1);
+		this.chatSprite.scale.set(5, 2.5, 1); // Scale 5x2.5 for 512x256 canvas
 		this.chatSprite.visible = false;
 		this.group.add(this.chatSprite);
 	}
