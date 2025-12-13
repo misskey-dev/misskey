@@ -4,7 +4,7 @@
  */
 
 import { shallowRef, watch } from 'vue';
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import { misskeyApi, misskeyApiGet } from '@/misskey-api.js';
 
 function get(key: string) {
@@ -31,7 +31,7 @@ watch(customEmojis, emojis => {
 export async function fetchCustomEmojis(force = false) {
 	const now = Date.now();
 
-	let res;
+	let res: Misskey.entities.EmojisResponse;
 	if (force) {
 		res = await misskeyApi('emojis', {});
 	} else {
@@ -45,11 +45,11 @@ export async function fetchCustomEmojis(force = false) {
 	set('lastEmojisFetchedAt', now);
 }
 
-let cachedTags;
+let cachedTags: string[] | null = null;
 export function getCustomEmojiTags() {
 	if (cachedTags) return cachedTags;
 
-	const tags = new Set();
+	const tags = new Set<string>();
 	for (const emoji of customEmojis.value) {
 		for (const tag of emoji.aliases) {
 			tags.add(tag);

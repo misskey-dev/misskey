@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import EmMediaList from '@/components/EmMediaList.vue';
 import EmPoll from '@/components/EmPoll.vue';
 import { i18n } from '@/i18n.js';

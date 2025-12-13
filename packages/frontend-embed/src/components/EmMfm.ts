@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { h, provide } from 'vue';
+import { h } from 'vue';
 import type { VNode, SetupContext } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
@@ -19,7 +19,7 @@ import EmA from '@/components/EmA.vue';
 function safeParseFloat(str: unknown): number | null {
 	if (typeof str !== 'string' || str === '') return null;
 	const num = parseFloat(str);
-	if (isNaN(num)) return null;
+	if (Number.isNaN(num)) return null;
 	return num;
 }
 
@@ -61,7 +61,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 	const validTime = (t: string | boolean | null | undefined) => {
 		if (t == null) return null;
 		if (typeof t === 'boolean') return null;
-		return t.match(/^\-?[0-9.]+s$/) ? t : null;
+		return t.match(/^-?[0-9.]+s$/) ? t : null;
 	};
 
 	const validColor = (c: unknown): string | null => {
@@ -403,7 +403,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 						return [h(EmCustomEmoji, {
 							key: Math.random(),
 							name: token.props.name,
-							url: props.emojiUrls && props.emojiUrls[token.props.name],
+							url: props.emojiUrls?.[token.props.name],
 							normal: props.plain,
 							host: props.author.host,
 							useOriginalSize: scale >= 2.5,

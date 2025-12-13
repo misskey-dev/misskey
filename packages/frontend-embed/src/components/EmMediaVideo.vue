@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 
 defineProps<{
 	video: Misskey.entities.DriveFile;

@@ -22,7 +22,7 @@ import { applyTheme, assertIsTheme } from '@/theme.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
 import { DI } from '@/di.js';
 import { serverMetadata } from '@/server-metadata.js';
-import { url, version, lang } from '@@/js/config.js';
+import { url } from '@@/js/config.js';
 import { parseEmbedParams } from '@@/js/embed-page.js';
 import { postMessageToParentWindow, setIframeId } from '@/post-message.js';
 import { serverContext } from '@/server-context.js';
@@ -48,7 +48,7 @@ function parseThemeOrNull(theme: string | null): Theme | null {
 		} else {
 			return null;
 		}
-	} catch (err) {
+	} catch (_) {
 		return null;
 	}
 }
@@ -95,7 +95,7 @@ window.addEventListener('message', setIframeIdHandler);
 
 try {
 	await fetchCustomEmojis();
-} catch (err) { /* empty */ }
+} catch (_) { /* empty */ }
 
 const app = createApp(
 	defineAsyncComponent(() => import('@/ui.vue')),

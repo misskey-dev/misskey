@@ -39,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { ref, computed, inject, useTemplateRef } from 'vue';
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import { scrollToTop } from '@@/js/scroll.js';
 import { url, instanceName } from '@@/js/config.js';
 import { isLink } from '@@/js/is-link.js';

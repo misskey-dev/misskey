@@ -1,9 +1,9 @@
 // Original: https://github.com/rollup/plugins/tree/8835dd2aed92f408d7dc72d7cc25a9728e16face/packages/json
 
 import JSON5 from 'json5';
-import { Plugin } from 'rollup';
+import type { Plugin } from 'rollup';
 import { createFilter, dataToEsm } from '@rollup/pluginutils';
-import { RollupJsonOptions } from '@rollup/plugin-json';
+import type { RollupJsonOptions } from '@rollup/plugin-json';
 
 // json5 extends SyntaxError with additional fields (without subclassing)
 // https://github.com/json5/json5/blob/de344f0619bda1465a6e25c76f1c0c3dda8108d9/lib/parse.js#L1111-L1112

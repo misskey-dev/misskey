@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { inject, ref } from 'vue';
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import EmNoteDetailed from '@/components/EmNoteDetailed.vue';
 import XNotFound from '@/pages/not-found.vue';
 import { DI } from '@/di.js';

@@ -1,4 +1,4 @@
-import * as fs from 'fs/promises';
+import * as fs from 'node:fs/promises';
 import url from 'node:url';
 import path from 'node:path';
 import { execa } from 'execa';
