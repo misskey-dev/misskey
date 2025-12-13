@@ -125,6 +125,7 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 			}
 
 			const data: NoctownPlayerResponse = await res.json();
+			worldId = data.worldId; // Set worldId from server response
 			playerData.value = {
 				id: data.id,
 				userId: '',
@@ -473,7 +474,7 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 					channel.send('generateChunk', {
 						chunkX,
 						chunkZ,
-						worldId: 'default',
+						worldId,
 					});
 
 					// Optimistically mark as requested (will be added to loadedChunks when chunkGenerated event arrives)

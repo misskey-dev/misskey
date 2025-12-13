@@ -13,6 +13,7 @@ import type {
 	NoctownWalletsRepository,
 	NoctownPlayerItemsRepository,
 	NoctownPlayerScoresRepository,
+	NoctownWorldsRepository,
 	UsersRepository,
 } from '@/models/_.js';
 
@@ -39,6 +40,7 @@ export const meta = {
 			createdAt: { type: 'string', format: 'date-time' },
 			isSuspended: { type: 'boolean' },
 			isSilenced: { type: 'boolean' },
+			worldId: { type: 'string' },
 		},
 	},
 } as const;
@@ -60,6 +62,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		@Inject(DI.noctownPlayerScoresRepository)
 		private noctownPlayerScoresRepository: NoctownPlayerScoresRepository,
+
+		@Inject(DI.noctownWorldsRepository)
+		private noctownWorldsRepository: NoctownWorldsRepository,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -87,6 +92,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const policies = await this.roleService.getUserPolicies(me.id);
 			const isSilenced = !policies.canPublicNote;
 
+			// Get default world ID
+			const defaultWorld = await this.noctownWorldsRepository.findOne({
+				order: { createdAt: 'ASC' },
+			});
+			const worldId = defaultWorld?.id ?? 'default';
+
 			return {
 				id: player.id,
 				username: user?.username ?? '',
@@ -101,6 +112,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				createdAt: player.createdAt.toISOString(),
 				isSuspended: user?.isSuspended ?? false,
 				isSilenced,
+				worldId,
 			};
 		});
 	}
