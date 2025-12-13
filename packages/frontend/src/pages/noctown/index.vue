@@ -89,6 +89,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<i class="ti ti-box"></i>
 					<span>クリックで設置 / ESCでキャンセル</span>
 				</div>
+
+				<!-- Emotion buttons -->
+				<div :class="$style.emotionPanel">
+					<button
+						v-for="emoji in emotionEmojis"
+						:key="emoji"
+						:class="$style.emotionBtn"
+						@click="showEmotion(emoji)"
+					>
+						{{ emoji }}
+					</button>
+				</div>
 			</div>
 			<div :class="$style.controls">
 				<div :class="$style.controlHint">
@@ -127,6 +139,9 @@ const noctownI18n = {
 	loading: 'ゲームを読み込み中...',
 	moveHint: 'で移動',
 };
+
+// Emotion emojis (6 emotions: 😊❗❓💢💕👋)
+const emotionEmojis = ['😊', '❗', '❓', '💢', '💕', '👋'];
 
 const canvasContainer = ref<HTMLElement | null>(null);
 const isConnected = ref(false);
@@ -308,6 +323,9 @@ async function connectStream(): Promise<void> {
 	connection.value.on('itemPicked', (body: { droppedItemId: string }) => {
 		if (engine) engine.removeDroppedItem(body.droppedItemId);
 	});
+	connection.value.on('playerEmoted', (body: { playerId: string; emoji: string }) => {
+		handlePlayerEmoted(body);
+	});
 
 	isConnected.value = true;
 
@@ -353,6 +371,11 @@ function handleChunkGenerated(data: ChunkData): void {
 
 	// Render terrain
 	engine.loadChunk(data);
+}
+
+function handlePlayerEmoted(data: { playerId: string; emoji: string }): void {
+	if (!engine) return;
+	engine.showRemotePlayerEmote(data.playerId, data.emoji);
 }
 
 async function fetchNearbyPlayers(): Promise<void> {
@@ -455,18 +478,30 @@ function startMovementLoop(): void {
 
 		// Merge keyboard and joystick inputs
 		let finalInput = { x: 0, z: 0, rotation: currentRotation };
+		let hasJoystickInput = false;
 
 		if (joystickMovement.x !== 0 || joystickMovement.z !== 0) {
 			// Use joystick input (mobile)
 			finalInput.x = joystickMovement.x;
 			finalInput.z = joystickMovement.z;
+			hasJoystickInput = true;
 			// Calculate rotation from joystick direction
 			if (joystickMovement.x !== 0 || joystickMovement.z !== 0) {
 				finalInput.rotation = Math.atan2(joystickMovement.x, joystickMovement.z);
 			}
+
+			// Update engine input for joystick (for animation)
+			engine.setInput({
+				up: joystickMovement.z < -0.1,
+				down: joystickMovement.z > 0.1,
+				left: joystickMovement.x < -0.1,
+				right: joystickMovement.x > 0.1,
+				sprint: false,
+			});
 		} else if (engine.isMoving()) {
 			// Use keyboard input (PC)
 			finalInput = keyboardInput;
+			// Keyboard input is already tracked by engine.ts via keys Set
 		} else {
 			// No movement - but still check for chunk loading
 			const now = Date.now();
@@ -548,6 +583,18 @@ function handleKeyDown(e: KeyboardEvent): void {
 		} else if (showFarmPanel.value) {
 			showFarmPanel.value = false;
 		}
+	} else if (e.code === 'Digit1') {
+		showEmotion(emotionEmojis[0]);
+	} else if (e.code === 'Digit2') {
+		showEmotion(emotionEmojis[1]);
+	} else if (e.code === 'Digit3') {
+		showEmotion(emotionEmojis[2]);
+	} else if (e.code === 'Digit4') {
+		showEmotion(emotionEmojis[3]);
+	} else if (e.code === 'Digit5') {
+		showEmotion(emotionEmojis[4]);
+	} else if (e.code === 'Digit6') {
+		showEmotion(emotionEmojis[5]);
 	}
 }
 
@@ -572,6 +619,20 @@ function toggleFarmPanel(): void {
 	showFarmPanel.value = !showFarmPanel.value;
 	showInventory.value = false;
 	showQuestPanel.value = false;
+}
+
+function showEmotion(emoji: string): void {
+	if (!engine) return;
+
+	// Show emotion on local player
+	engine.showLocalPlayerEmote(emoji);
+
+	// Send emotion event to server via WebSocket
+	if (connection.value) {
+		connection.value.send('playerEmoted', {
+			emoji,
+		});
+	}
 }
 
 function handleFarmUpdated(): void {
@@ -689,6 +750,17 @@ function handleJoystickMove(direction: { x: number; z: number }): void {
 function handleJoystickEnd(): void {
 	// Reset joystick movement when released
 	joystickMovement = { x: 0, z: 0 };
+
+	// Reset engine input (animation will return to idle)
+	if (engine) {
+		engine.setInput({
+			up: false,
+			down: false,
+			left: false,
+			right: false,
+			sprint: false,
+		});
+	}
 }
 
 function cleanup(): void {
@@ -876,6 +948,40 @@ definePage(() => ({
 	gap: 8px;
 	font-size: 14px;
 	z-index: 50;
+}
+
+.emotionPanel {
+	position: absolute;
+	bottom: 80px;
+	right: 20px;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 8px;
+	z-index: 50;
+}
+
+.emotionBtn {
+	width: 48px;
+	height: 48px;
+	font-size: 28px;
+	background: rgba(255, 255, 255, 0.9);
+	border: 2px solid rgba(0, 0, 0, 0.2);
+	border-radius: 8px;
+	cursor: pointer;
+	transition: all 0.2s;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	&:hover {
+		background: rgba(255, 255, 255, 1);
+		border-color: rgba(0, 0, 0, 0.4);
+		transform: scale(1.1);
+	}
+
+	&:active {
+		transform: scale(0.95);
+	}
 }
 
 .controls {

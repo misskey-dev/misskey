@@ -76,6 +76,13 @@ export class NoctownEngine {
 	private playerLabels: Map<string, CSS2DObject> = new Map();
 	private lastMoveDirection: { x: number; z: number } = { x: 0, z: 0 };
 	private lastFrameTime: number = 0;
+	private currentInput: { up: boolean; down: boolean; left: boolean; right: boolean; sprint: boolean } = {
+		up: false,
+		down: false,
+		left: false,
+		right: false,
+		sprint: false,
+	};
 
 	// World management
 	private chunks: Map<string, THREE.Group> = new Map();
@@ -218,16 +225,24 @@ export class NoctownEngine {
 		const deltaTime = this.lastFrameTime > 0 ? (now - this.lastFrameTime) / 1000 : 0.016;
 		this.lastFrameTime = now;
 
-		// T088: Update character animations with movement direction and delta time
+		// Update currentInput from keyboard state
+		this.currentInput.up = this.keys.has('KeyW') || this.keys.has('ArrowUp');
+		this.currentInput.down = this.keys.has('KeyS') || this.keys.has('ArrowDown');
+		this.currentInput.left = this.keys.has('KeyA') || this.keys.has('ArrowLeft');
+		this.currentInput.right = this.keys.has('KeyD') || this.keys.has('ArrowRight');
+		this.currentInput.sprint = this.keys.has('ShiftLeft') || this.keys.has('ShiftRight');
+
+		// T088: Update character animations with input-based animation (like character-demo.html)
+		// Note: Character.update() handles both movement and animation, but in Noctown,
+		// movement is handled by index.vue. We only need animation updates here.
 		if (this.localPlayer) {
-			this.localPlayer.updateAnimation(
-				this.lastMoveDirection.x,
-				this.lastMoveDirection.z,
-				deltaTime,
-			);
+			// Use currentInput to determine if player is moving
+			const moveX = (this.currentInput.right ? 1 : 0) - (this.currentInput.left ? 1 : 0);
+			const moveZ = (this.currentInput.down ? 1 : 0) - (this.currentInput.up ? 1 : 0);
+			this.localPlayer.updateAnimation(moveX, moveZ, deltaTime);
 		}
 
-		// Update remote player animations (no movement direction, just idle animation)
+		// Update remote player animations (idle animation only)
 		for (const [, character] of this.remotePlayers) {
 			character.updateAnimation(0, 0, deltaTime);
 		}
@@ -283,6 +298,21 @@ export class NoctownEngine {
 
 		this.localPlayer.setPosition(x, y, z);
 		this.localPlayer.setRotation(rotation);
+	}
+
+	public showLocalPlayerEmote(emoji: string): void {
+		if (!this.localPlayer) return;
+		this.localPlayer.showEmote(emoji);
+	}
+
+	public showRemotePlayerEmote(playerId: string, emoji: string): void {
+		const character = this.remotePlayers.get(playerId);
+		if (!character) return;
+		character.showEmote(emoji);
+	}
+
+	public setInput(input: { up: boolean; down: boolean; left: boolean; right: boolean; sprint: boolean }): void {
+		this.currentInput = { ...input };
 	}
 
 	public addRemotePlayer(data: PlayerData): void {

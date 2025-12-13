@@ -220,12 +220,16 @@ export class NoctownService {
 		});
 
 		this.globalEventService.publishNoctownStream('playerMoved', {
-			playerId,
+			id: playerId, // プレイヤー識別子 - フロントエンドで自分のプレイヤーかどうか判定するために使用
+			playerId, // 後方互換性のため残す
 			userId,
-			x,
-			y,
-			z,
+			username: '', // 後でユーザー名を取得して設定
+			avatarUrl: null, // 後でアバターURLを取得して設定
+			positionX: x,
+			positionY: y,
+			positionZ: z,
 			rotation: rotation ?? 0,
+			isOnline: true,
 		});
 	}
 

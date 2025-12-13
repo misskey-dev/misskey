@@ -46,6 +46,15 @@ export class Character {
 	private rightLegPivot!: THREE.Group;
 	private rightLeg!: THREE.Mesh;
 
+	// Emotion sprite
+	private emoteSprite!: THREE.Sprite;
+	private emoteCanvas!: HTMLCanvasElement;
+	private emoteContext!: CanvasRenderingContext2D;
+	private emoteTexture!: THREE.CanvasTexture;
+	private emoteTimer: number = 0;
+	private emoteDuration: number = 2.0;
+	private emoteScale: number = 0;
+
 	constructor() {
 		this.group = new THREE.Group();
 		this.velocity = new THREE.Vector3();
@@ -60,6 +69,7 @@ export class Character {
 		this.headMaterials = [];
 
 		this.createBody();
+		this.createEmoteSprite();
 	}
 
 	private createBody(): void {
@@ -136,6 +146,81 @@ export class Character {
 		this.rightLeg.castShadow = true;
 		this.rightLegPivot.add(this.rightLeg);
 		this.group.add(this.rightLegPivot);
+	}
+
+	/**
+	 * Create emotion sprite above character head
+	 */
+	private createEmoteSprite(): void {
+		// Create 128x128 canvas for emotion bubble
+		this.emoteCanvas = document.createElement('canvas');
+		this.emoteCanvas.width = 128;
+		this.emoteCanvas.height = 128;
+		this.emoteContext = this.emoteCanvas.getContext('2d')!;
+
+		// Create texture from canvas
+		this.emoteTexture = new THREE.CanvasTexture(this.emoteCanvas);
+		this.emoteTexture.minFilter = THREE.LinearFilter;
+		this.emoteTexture.magFilter = THREE.LinearFilter;
+
+		// Create sprite material
+		const material = new THREE.SpriteMaterial({
+			map: this.emoteTexture,
+			transparent: true,
+			opacity: 0,
+		});
+
+		// Create sprite
+		this.emoteSprite = new THREE.Sprite(material);
+		this.emoteSprite.position.y = 4; // Above head
+		this.emoteSprite.scale.set(1.5, 1.5, 1);
+		this.emoteSprite.visible = false;
+		this.group.add(this.emoteSprite);
+	}
+
+	/**
+	 * Show emotion above character head
+	 * @param emoji Emoji character to display (😊❗❓💢💕👋)
+	 */
+	public showEmote(emoji: string): void {
+		// Reset timer and make sprite visible
+		this.emoteTimer = 0;
+		this.emoteSprite.visible = true;
+
+		// Clear canvas
+		this.emoteContext.clearRect(0, 0, 128, 128);
+
+		// Draw white circle background
+		this.emoteContext.fillStyle = '#ffffff';
+		this.emoteContext.beginPath();
+		this.emoteContext.arc(64, 54, 40, 0, Math.PI * 2);
+		this.emoteContext.fill();
+
+		// Draw black border
+		this.emoteContext.strokeStyle = '#000000';
+		this.emoteContext.lineWidth = 3;
+		this.emoteContext.beginPath();
+		this.emoteContext.arc(64, 54, 40, 0, Math.PI * 2);
+		this.emoteContext.stroke();
+
+		// Draw triangle tail at bottom
+		this.emoteContext.fillStyle = '#ffffff';
+		this.emoteContext.beginPath();
+		this.emoteContext.moveTo(64, 94);
+		this.emoteContext.lineTo(54, 104);
+		this.emoteContext.lineTo(74, 104);
+		this.emoteContext.closePath();
+		this.emoteContext.fill();
+		this.emoteContext.stroke();
+
+		// Draw emoji
+		this.emoteContext.font = '48px Arial';
+		this.emoteContext.textAlign = 'center';
+		this.emoteContext.textBaseline = 'middle';
+		this.emoteContext.fillText(emoji, 64, 54);
+
+		// Update texture
+		this.emoteTexture.needsUpdate = true;
 	}
 
 	/**
@@ -280,6 +365,36 @@ export class Character {
 		while (rotDiff > Math.PI) rotDiff -= Math.PI * 2;
 		while (rotDiff < -Math.PI) rotDiff += Math.PI * 2;
 		this.group.rotation.y += rotDiff * 0.15;
+
+		// Update emotion animation if visible
+		if (this.emoteSprite.visible) {
+			this.emoteTimer += deltaTime;
+			const t = this.emoteTimer;
+			const material = this.emoteSprite.material as THREE.SpriteMaterial;
+
+			if (t < 0.125) {
+				// Pop-in phase (0 - 0.125s): scale 0 → 1.5
+				const progress = t / 0.125;
+				this.emoteScale = progress * 1.5;
+				material.opacity = 1;
+			} else if (t < 1.7) {
+				// Bounce phase (0.125 - 1.7s): slight bounce effect
+				this.emoteScale = 1.5 + Math.sin((t - 0.125) * 10) * 0.1;
+				material.opacity = 1;
+			} else if (t < this.emoteDuration) {
+				// Fade-out phase (1.7 - 2.0s): opacity 1 → 0
+				const fadeProgress = (t - 1.7) / (this.emoteDuration - 1.7);
+				this.emoteScale = 1.5;
+				material.opacity = 1 - fadeProgress;
+			} else {
+				// Animation complete - hide sprite
+				this.emoteSprite.visible = false;
+				material.opacity = 0;
+			}
+
+			// Apply scale
+			this.emoteSprite.scale.set(this.emoteScale, this.emoteScale, 1);
+		}
 	}
 
 	/**
@@ -348,6 +463,14 @@ export class Character {
 		}
 		if (this.rightLeg.material instanceof THREE.Material) {
 			this.rightLeg.material.dispose();
+		}
+
+		// Dispose emotion sprite
+		if (this.emoteSprite.material instanceof THREE.Material) {
+			this.emoteSprite.material.dispose();
+		}
+		if (this.emoteTexture) {
+			this.emoteTexture.dispose();
 		}
 	}
 }
