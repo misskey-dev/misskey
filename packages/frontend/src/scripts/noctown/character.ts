@@ -574,6 +574,11 @@ export class Character {
 			const img = new Image();
 			img.crossOrigin = 'anonymous';
 			img.onload = () => {
+				// 仕様: 画像読み込み完了後に吹き出し背景を再描画してから画像を描画
+				// これにより、非同期読み込み中にtextureが更新されても画像が確実に表示される
+				this.drawEmoteBubble();
+				// globalAlphaを1.0に設定して完全不透明で描画
+				this.emoteContext.globalAlpha = 1.0;
 				// Draw custom emoji image centered in bubble
 				this.emoteContext.drawImage(img, 64 - 24, 54 - 24, 48, 48);
 				this.emoteTexture.needsUpdate = true;
