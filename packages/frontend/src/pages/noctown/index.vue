@@ -122,6 +122,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 					@ping="handleManualPing"
 				/>
 
+				<!-- FR-022, FR-023: Pet info floating window -->
+				<MkNoctownPetInfoWindow
+					v-if="showPetInfoWindow && selectedPetInfo"
+					:petId="selectedPetInfo.id"
+					:type="selectedPetInfo.type"
+					:name="selectedPetInfo.name"
+					:ownerName="selectedPetInfo.ownerName ?? null"
+					:flavorText="selectedPetInfo.flavorText"
+					:hunger="selectedPetInfo.hunger"
+					:happiness="selectedPetInfo.happiness"
+					@close="handleClosePetInfoWindow"
+				/>
+
 				<!-- Emotion buttons -->
 				<div :class="$style.emotionPanel">
 					<button
@@ -159,13 +172,14 @@ import MkNoctownQuestPanel from '@/components/MkNoctownQuestPanel.vue';
 import MkNoctownNpcDialog from '@/components/MkNoctownNpcDialog.vue';
 import MkNoctownFarmPanel from '@/components/MkNoctownFarmPanel.vue';
 import MkNoctownPlayerInfoWindow from '@/components/MkNoctownPlayerInfoWindow.vue';
+import MkNoctownPetInfoWindow from '@/components/MkNoctownPetInfoWindow.vue';
 import NoctownJoystick from '@/components/MkNoctown/NoctownJoystick.vue';
 import NoctownChatInput from '@/components/MkNoctown/NoctownChatInput.vue';
 import { useStream } from '@/stream.js';
 import { isMobileDevice, hasPhysicalKeyboard } from '@/scripts/noctown/use-noctown.js';
 import { $i } from '@/i.js';
 import { apiUrl } from '@@/js/config.js';
-import type { PlayerData, ChunkData, DroppedItemData, PlacedItemData, NpcData } from '@/scripts/noctown/engine.js';
+import type { PlayerData, ChunkData, DroppedItemData, PlacedItemData, NpcData, PetInfo } from '@/scripts/noctown/engine.js';
 
 // Noctown locale (type-safe access)
 const noctownI18n = {
@@ -227,6 +241,10 @@ const selectedPlayerPingTime = ref<number | null>(null);
 const isPlayerInfoPinging = ref(false);
 // Track pending pings for player info window (separate from status mark pings)
 const pendingPlayerInfoPings = new Map<string, { playerId: string; sentTime: number; timeoutId: ReturnType<typeof setTimeout> }>();
+
+// FR-022, FR-023: Pet info floating window
+const showPetInfoWindow = ref(false);
+const selectedPetInfo = ref<PetInfo | null>(null);
 
 // FR-019: Typing indicator state
 let isTyping = false;
@@ -356,6 +374,9 @@ async function initialize(): Promise<void> {
 
 			// Load nearby NPCs
 			await loadNearbyNpcs(currentX.value, currentZ.value);
+
+			// FR-022: Load nearby pets
+			await loadNearbyPets(currentX.value, currentZ.value);
 		}
 
 		// Connect to WebSocket
@@ -932,20 +953,35 @@ function handlePlayerPingReceived(data: { senderPlayerId: string; pingId: string
 	}
 }
 
-// FR-018: Handle canvas click/touch for player info window
+// FR-018, FR-022: Handle canvas click/touch for player/pet info window
 function handleCanvasClick(event: MouseEvent | TouchEvent): void {
 	if (!engine) return;
 
-	// Don't open player info if in place mode
+	// Don't open info windows if in place mode
 	if (placeMode.value) return;
 
-	// Check if clicked/touched on a remote player
+	// FR-022: Check if clicked/touched on a pet first
+	const petInfo = engine.getClickedPet(event);
+	if (petInfo) {
+		// Prevent default to avoid click event firing after touchend
+		event.preventDefault();
+		openPetInfoWindow(petInfo);
+		return;
+	}
+
+	// FR-018: Check if clicked/touched on a remote player
 	const playerId = engine.getClickedPlayerId(event);
 	if (playerId) {
 		// Prevent default to avoid click event firing after touchend
 		event.preventDefault();
 		openPlayerInfoWindow(playerId);
 	}
+}
+
+// FR-022: Open pet info window
+function openPetInfoWindow(pet: PetInfo): void {
+	selectedPetInfo.value = pet;
+	showPetInfoWindow.value = true;
 }
 
 // FR-018: Open player info window
@@ -999,6 +1035,12 @@ function handleClosePlayerInfoWindow(): void {
 	showPlayerInfoWindow.value = false;
 	selectedPlayerInfo.value = null;
 	selectedPlayerPingTime.value = null;
+}
+
+// FR-022, FR-023: Close pet info window
+function handleClosePetInfoWindow(): void {
+	showPetInfoWindow.value = false;
+	selectedPetInfo.value = null;
 }
 
 // FR-018: Handle manual ping from player info window
@@ -1254,6 +1296,22 @@ async function loadNearbyNpcs(x: number, z: number): Promise<void> {
 		}
 	} catch (e) {
 		console.error('Failed to load NPCs:', e);
+	}
+}
+
+// FR-022: Load nearby pets (cows and chickens)
+async function loadNearbyPets(x: number, z: number): Promise<void> {
+	if (!engine) return;
+
+	try {
+		const pets = await noctownApi<PetInfo[]>('noctown/pets/nearby', {
+			centerX: x,
+			centerZ: z,
+			radius: 50,
+		});
+		engine.addPets(pets);
+	} catch (e) {
+		console.error('Failed to load nearby pets:', e);
 	}
 }
 

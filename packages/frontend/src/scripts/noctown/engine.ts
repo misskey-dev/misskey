@@ -13,6 +13,9 @@ import { createFarmPlotMesh } from './farm-plot.js';
 import { ChunkEnvironmentRenderer, type EnvironmentObjectData } from './environment-objects.js';
 import { PetManager, type PetInfo } from './pet.js';
 
+// FR-022: PetInfo型をre-export
+export type { PetInfo } from './pet.js';
+
 // FR-008: 時間帯別ライティング設定
 type TimePeriod = 'morning' | 'day' | 'evening' | 'night';
 
@@ -681,6 +684,11 @@ export class NoctownEngine {
 		// FR-008: 時間帯別ライティング更新
 		this.updateLighting();
 
+		// FR-022: ペットアニメーション更新
+		if (this.petManager) {
+			this.petManager.update();
+		}
+
 		this.renderer.render(this.scene, this.camera);
 		this.labelRenderer.render(this.scene, this.camera);
 	};
@@ -786,6 +794,7 @@ export class NoctownEngine {
 			localPlayerId: this.localPlayerId,
 			isLocalPlayer: data.id === this.localPlayerId,
 			username: data.username,
+			data,
 		});
 
 		// 自プレイヤーは追加しない
@@ -886,6 +895,20 @@ export class NoctownEngine {
 	}
 
 	public removeRemotePlayer(playerId: string): void {
+
+		// デバッグログ: removeRemotePlayer呼び出し内容を確認
+		console.log('[removeRemotePlayer] Called with:', {
+			playerId,
+			localPlayerId: this.localPlayerId,
+			isLocalPlayer: playerId === this.localPlayerId,
+		});
+		
+		// 自プレイヤーは削除しない
+		if (playerId === this.localPlayerId) {
+			console.warn('[removeRemotePlayer] Attempted to remove local player, skipping');
+			return;
+		}
+
 		const character = this.remotePlayers.get(playerId);
 		if (character) {
 			this.scene.remove(character.group);
@@ -1376,6 +1399,67 @@ export class NoctownEngine {
 		return this.renderer.domElement;
 	}
 
+	// FR-022: ペット追加
+	public addPet(pet: PetInfo): void {
+		if (this.petManager) {
+			this.petManager.addPet(pet);
+		}
+	}
+
+	// FR-022: ペット削除
+	public removePet(petId: string): void {
+		if (this.petManager) {
+			this.petManager.removePet(petId);
+		}
+	}
+
+	// FR-022: 複数ペット追加
+	public addPets(pets: PetInfo[]): void {
+		if (this.petManager) {
+			this.petManager.addPets(pets);
+		}
+	}
+
+	// FR-022: ペット情報取得
+	public getPetData(petId: string): PetInfo | null {
+		return this.petManager?.getPet(petId) ?? null;
+	}
+
+	// FR-022: 全ペットIDを取得
+	public getAllPetIds(): string[] {
+		return this.petManager?.getAllPetIds() ?? [];
+	}
+
+	// FR-022: クリック位置のペットを取得
+	public getClickedPet(event: MouseEvent | TouchEvent): PetInfo | null {
+		if (!this.petManager) return null;
+
+		const rect = this.renderer.domElement.getBoundingClientRect();
+
+		let clientX: number;
+		let clientY: number;
+
+		if ('touches' in event || 'changedTouches' in event) {
+			const touch = (event as TouchEvent).changedTouches[0] || (event as TouchEvent).touches[0];
+			if (!touch) return null;
+			clientX = touch.clientX;
+			clientY = touch.clientY;
+		} else {
+			clientX = (event as MouseEvent).clientX;
+			clientY = (event as MouseEvent).clientY;
+		}
+
+		this.mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+		this.mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+
+		return this.petManager.getClickedPet(this.raycaster, this.camera, this.mouse);
+	}
+
+	// FR-022: 近くのペットを取得
+	public getNearbyPet(x: number, z: number, radius: number = 2): PetInfo | null {
+		return this.petManager?.getNearbyPet(x, z, radius) ?? null;
+	}
+
 	public dispose(): void {
 		this.isDisposed = true;
 
@@ -1386,6 +1470,12 @@ export class NoctownEngine {
 		window.removeEventListener('resize', this.onResize);
 		window.removeEventListener('keydown', this.onKeyDown);
 		window.removeEventListener('keyup', this.onKeyUp);
+
+		// FR-022: ペット管理のクリーンアップ
+		if (this.petManager) {
+			this.petManager.dispose();
+			this.petManager = null;
+		}
 
 		// Cleanup Three.js resources
 		this.scene.traverse((object) => {

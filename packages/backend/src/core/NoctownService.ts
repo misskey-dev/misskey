@@ -206,7 +206,8 @@ export class NoctownService {
 
 		const user = await this.usersRepository.findOneBy({ id: userId });
 
-		this.globalEventService.publishNoctownStream('playerOnline', {
+		// FR-007: プレイヤー参加イベントを送信（フロントエンドのplayerJoinedリスナーと一致）
+		this.globalEventService.publishNoctownStream('playerJoined', {
 			id: playerId,
 			playerId,
 			userId,
@@ -243,12 +244,12 @@ export class NoctownService {
 			lastActiveAt: new Date(),
 		});
 
-		// オフラインからオンラインに変わった場合は playerOnline イベントを送信
+		// オフラインからオンラインに変わった場合は playerJoined イベントを送信（フロントエンドと統一）
 		if (wasOffline) {
 			// FR-010: ユーザー情報を取得
 			const user = await this.usersRepository.findOneBy({ id: userId });
 
-			this.globalEventService.publishNoctownStream('playerOnline', {
+			this.globalEventService.publishNoctownStream('playerJoined', {
 				id: playerId,
 				playerId,
 				userId,
@@ -425,8 +426,8 @@ export class NoctownService {
 			// FR-010: ユーザー情報を取得
 			const user = await this.usersRepository.findOneBy({ id: userId });
 
-			// オフラインからオンラインに変わった場合は playerOnline イベントを送信
-			this.globalEventService.publishNoctownStream('playerOnline', {
+			// オフラインからオンラインに変わった場合は playerJoined イベントを送信（フロントエンドと統一）
+			this.globalEventService.publishNoctownStream('playerJoined', {
 				id: playerId,
 				playerId,
 				userId,
@@ -475,8 +476,8 @@ export class NoctownService {
 			// FR-010: ユーザー情報を取得
 			const user = await this.usersRepository.findOneBy({ id: userId });
 
-			// オフラインからオンラインに変わった場合は playerOnline イベントを送信
-			this.globalEventService.publishNoctownStream('playerOnline', {
+			// オフラインからオンラインに変わった場合は playerJoined イベントを送信（フロントエンドと統一）
+			this.globalEventService.publishNoctownStream('playerJoined', {
 				id: playerId,
 				playerId,
 				userId,
@@ -1822,8 +1823,8 @@ export class NoctownService {
 			{ isOnline: false },
 		);
 
-		// FR-007-6: playerIdのみを送信してフロントエンドで削除させる
-		this.globalEventService.publishNoctownStream('playerOffline', {
+		// FR-007-6: playerIdのみを送信してフロントエンドで削除させる（イベント名をplayerLeftに統一）
+		this.globalEventService.publishNoctownStream('playerLeft', {
 			playerId,
 		});
 	}
