@@ -561,10 +561,17 @@ export class Character {
 	 * @param isCustom Whether this is a custom emoji
 	 * @param url URL for custom emoji image
 	 */
+	// 仕様: エモーションを頭上に表示する
+	// isCustom=trueかつurlがある場合はカスタム絵文字画像を描画
+	// それ以外はテキストとして絵文字を描画
 	public showEmote(emoji: string, isCustom?: boolean, url?: string): void {
 		// Reset timer and make sprite visible
 		this.emoteTimer = 0;
 		this.emoteSprite.visible = true;
+		// 仕様: spriteのmaterial.opacityを1に設定し、完全不透明で表示開始
+		// アニメーション側でopacityは制御されるが、showEmote呼び出し時点で即座に表示する
+		const material = this.emoteSprite.material as THREE.SpriteMaterial;
+		material.opacity = 1;
 
 		// Draw bubble background first
 		this.drawEmoteBubble();
@@ -579,8 +586,10 @@ export class Character {
 				this.drawEmoteBubble();
 				// globalAlphaを1.0に設定して完全不透明で描画
 				this.emoteContext.globalAlpha = 1.0;
-				// Draw custom emoji image centered in bubble
-				this.emoteContext.drawImage(img, 64 - 24, 54 - 24, 48, 48);
+				// 仕様: カスタム絵文字を吹き出しの中央（64, 54）に描画
+				// 48x48の画像なので、左上座標は(64-24, 54-24) = (40, 30)
+				// Y座標を+2して視覚的に中央に見えるよう微調整
+				this.emoteContext.drawImage(img, 64 - 24, 54 - 24 + 2, 48, 48);
 				this.emoteTexture.needsUpdate = true;
 			};
 			// T016: Fallback on error - draw emoji text or placeholder
