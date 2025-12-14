@@ -192,6 +192,8 @@ onUnmounted(() => {
 	height: 120px;
 	touch-action: none;
 	z-index: 100;
+	user-select: none;
+	-webkit-user-select: none;
 }
 
 .base {

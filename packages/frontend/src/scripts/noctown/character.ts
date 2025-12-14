@@ -528,6 +528,11 @@ export class Character {
 	/**
 	 * Create emotion sprite above character head
 	 */
+	// 仕様: エモーションスプライトを作成
+	// 名前スプライトやチャット吹き出しと同様の設定を使用
+	// - colorSpace: SRGBColorSpace（正しい色表示のため）
+	// - opacity: 1（初期値。0で初期化するとブレンディング計算に影響が出る）
+	// - depthTest: false（他のオブジェクトに隠れないように）
 	private createEmoteSprite(): void {
 		// Create 128x128 canvas for emotion bubble
 		this.emoteCanvas = document.createElement('canvas');
@@ -539,12 +544,15 @@ export class Character {
 		this.emoteTexture = new THREE.CanvasTexture(this.emoteCanvas);
 		this.emoteTexture.minFilter = THREE.LinearFilter;
 		this.emoteTexture.magFilter = THREE.LinearFilter;
+		this.emoteTexture.colorSpace = THREE.SRGBColorSpace;
 
 		// Create sprite material
+		// 仕様: opacity: 1で初期化（0で初期化するとブレンディング計算に影響が出る）
+		// visible: falseで非表示にし、showEmote()で表示する
 		const material = new THREE.SpriteMaterial({
 			map: this.emoteTexture,
 			transparent: true,
-			opacity: 0,
+			depthTest: false,
 		});
 
 		// Create sprite

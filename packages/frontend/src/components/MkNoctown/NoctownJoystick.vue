@@ -64,6 +64,7 @@ onUnmounted(() => {
 /* FR-024: Position joystick higher to avoid overlap with chat input on mobile */
 /* touch-action: manipulation でiOSダブルタップズームを無効化 */
 /* PWA safe-area-inset-bottom を考慮してジョイスティックの位置を調整 */
+/* user-select: none でテキスト選択を無効化 */
 .joystickContainer {
 	position: fixed;
 	bottom: calc(69px + env(safe-area-inset-bottom, 0px));
@@ -73,5 +74,7 @@ onUnmounted(() => {
 	z-index: 1000;
 	pointer-events: auto;
 	touch-action: manipulation;
+	user-select: none;
+	-webkit-user-select: none;
 }
 </style>
