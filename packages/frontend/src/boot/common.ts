@@ -117,6 +117,22 @@ export async function common(createVue: () => Promise<App<Element>>) {
 		const viewport = window.document.getElementsByName('viewport').item(0);
 		viewport.setAttribute('content',
 			`${viewport.getAttribute('content')}, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover`);
+
+		// iOS Safari: ダブルタップによる自動スクロール（下に空間が生まれる問題）を防止
+		// touch-action: manipulation だけでは防げないiOS特有の挙動を無効化
+		let lastTouchEnd = 0;
+		document.addEventListener('touchend', (event) => {
+			const now = Date.now();
+			// 300ms以内の連続タップをダブルタップと判定
+			if (now - lastTouchEnd <= 300) {
+				// input/textarea以外でのダブルタップを無効化
+				const target = event.target as HTMLElement;
+				if (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA') {
+					event.preventDefault();
+				}
+			}
+			lastTouchEnd = now;
+		}, { passive: false });
 	}
 
 	//#region Set lang attr

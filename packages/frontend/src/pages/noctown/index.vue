@@ -1673,12 +1673,17 @@ definePage(() => ({
 	opacity: 0.8;
 }
 
+// 仕様: ゲームキャンバス領域
+// touch-action: manipulation でiOSのダブルタップズームを無効化
+// これにより、ダブルタップ時のビューポートシフトを防ぎ、
+// fixed要素（ジョイスティック、絵文字ボタン）の当たり判定ずれを解消
 .gameCanvas {
 	flex: 1;
 	position: relative;
 	background: linear-gradient(180deg, #87ceeb 0%, #e0f0ff 100%);
 	border-radius: 8px;
 	overflow: hidden;
+	touch-action: manipulation;
 }
 
 .overlay {
@@ -1789,6 +1794,8 @@ definePage(() => ({
 }
 
 /* FR-010: Emotion panel positioned higher for better visibility */
+/* touch-action: manipulation でiOSダブルタップズームを無効化 */
+/* PWA safe-area-inset-bottom を考慮して絵文字パネルの位置を調整 */
 .emotionPanel {
 	position: absolute;
 	bottom: 18px;
@@ -1797,19 +1804,20 @@ definePage(() => ({
 	grid-template-columns: repeat(3, 1fr);
 	gap: 8px;
 	z-index: 50;
+	touch-action: manipulation;
 
 	// FR-007-2: モバイルで親指操作しやすいよう位置を調整
-	// デスクトップ（18px）→ モバイル（150px）→ 小型（150px）
+	// デスクトップ（18px）→ モバイル（150px + safe-area）→ 小型（150px + safe-area）
 	/* Mobile: Adjusted position for better thumb reach (PWA safe area aware) */
 	@media (max-width: 768px) {
-		bottom: 150px;
+		bottom: calc(116px + env(safe-area-inset-bottom, 0px));
 		right: 16px;
 	}
 
 	// 小型モバイル: 親指で届きやすく配置
 	/* Small mobile screens: Positioned for easier reach */
 	@media (max-width: 480px) {
-		bottom: 150px;
+		bottom: calc(116px + env(safe-area-inset-bottom, 0px));
 		right: 12px;
 		gap: 6px;
 	}

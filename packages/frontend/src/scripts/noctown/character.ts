@@ -589,7 +589,7 @@ export class Character {
 				// 仕様: カスタム絵文字を吹き出しの中央（64, 54）に描画
 				// 48x48の画像なので、左上座標は(64-24, 54-24) = (40, 30)
 				// Y座標を+2して視覚的に中央に見えるよう微調整
-				this.emoteContext.drawImage(img, 64 - 24, 54 - 24 + 2, 48, 48);
+				this.emoteContext.drawImage(img, 64 - 24, 54 - 24 + 4, 48, 48);
 				this.emoteTexture.needsUpdate = true;
 			};
 			// T016: Fallback on error - draw emoji text or placeholder
