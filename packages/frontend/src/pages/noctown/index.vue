@@ -1108,52 +1108,86 @@ function handleFarmUpdated(): void {
 	loadNearbyItems(currentX.value, currentZ.value);
 }
 
-// FR-016: Reload button handler
+/**
+ * 仕様: リロードボタンのハンドラー
+ * - 全てのインターバルとリソースを完全にクリーンアップしてから再接続
+ * - moveInterval、heartbeatInterval、pingIntervalの重複登録を防止
+ * 修正日: 2025-12-14
+ * 修正内容: リロード時に既存のインターバルをクリアしないため移動速度が倍々に増えるバグを修正
+ */
 async function handleReload(): Promise<void> {
 	if (isReloading.value || reloadCooldown.value) return;
 
 	isReloading.value = true;
 	try {
-		// 1. Unload all chunks
+		// 1. Clear all intervals and timeouts FIRST
+		if (moveInterval) {
+			clearInterval(moveInterval);
+			moveInterval = null;
+		}
+		if (heartbeatInterval) {
+			clearInterval(heartbeatInterval);
+			heartbeatInterval = null;
+		}
+		if (pingInterval) {
+			clearInterval(pingInterval);
+			pingInterval = null;
+		}
+		if (warningCheckInterval) {
+			clearInterval(warningCheckInterval);
+			warningCheckInterval = null;
+		}
+		// Clear all pending ping timeouts
+		for (const pending of pendingPings.values()) {
+			clearTimeout(pending.timeoutId);
+		}
+		pendingPings.clear();
+		// Clear pending player info pings
+		for (const pending of pendingPlayerInfoPings.values()) {
+			clearTimeout(pending.timeoutId);
+		}
+		pendingPlayerInfoPings.clear();
+
+		// 2. Unload all chunks
 		if (engine) {
 			engine.unloadAllChunks();
 		}
 
-		// 2. Remove all remote players
+		// 3. Remove all remote players
 		if (engine) {
 			engine.removeAllRemotePlayers();
 		}
 
-		// 3. Clear loaded chunks cache
+		// 4. Clear loaded chunks cache
 		loadedChunks.clear();
 
-		// 4. Disconnect WebSocket
+		// 5. Disconnect WebSocket
 		if (connection.value) {
 			connection.value.dispose();
 			connection.value = null;
 		}
 		isConnected.value = false;
 
-		// 5. Re-fetch player position from server
+		// 6. Re-fetch player position from server
 		const data = await noctownApi<NoctownPlayerResponse>('noctown/player');
 		currentX.value = data.positionX;
 		currentY.value = data.positionY;
 		currentZ.value = data.positionZ;
 		currentRotation = data.rotation;
 
-		// 6. Reconnect WebSocket
+		// 7. Reconnect WebSocket (this will create new intervals)
 		await connectStream();
 
-		// 7. Reload chunks around player
+		// 8. Reload chunks around player
 		await loadNearbyChunks(currentX.value, currentZ.value);
 
-		// 8. Reload nearby players
+		// 9. Reload nearby players
 		await fetchNearbyPlayers();
 
-		// 9. Reload nearby items
+		// 10. Reload nearby items
 		await loadNearbyItems(currentX.value, currentZ.value);
 
-		// 10. Reload nearby NPCs
+		// 11. Reload nearby NPCs
 		await loadNearbyNpcs(currentX.value, currentZ.value);
 	} catch (e) {
 		console.error('Failed to reload:', e);
