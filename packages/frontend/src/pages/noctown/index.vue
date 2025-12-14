@@ -540,7 +540,7 @@ function handleChatSend(message: string): void {
 
 // FR-019: Handle chat input changes for typing indicator
 function handleChatInput(hasText: boolean): void {
-	if (!connection.value) return;
+	if (!connection.value || !engine) return;
 
 	// Clear existing timeouts
 	if (typingDebounceTimeout) {
@@ -553,6 +553,7 @@ function handleChatInput(hasText: boolean): void {
 		if (!isTyping) {
 			isTyping = true;
 			connection.value.send('typingStart', {});
+			engine.showLocalPlayerTyping(true);
 		}
 
 		// Reset auto-hide timeout (3 seconds after last input)
@@ -563,6 +564,7 @@ function handleChatInput(hasText: boolean): void {
 			if (isTyping) {
 				isTyping = false;
 				connection.value?.send('typingEnd', {});
+				engine?.showLocalPlayerTyping(false);
 			}
 			typingAutoHideTimeout = null;
 		}, 3000);
@@ -572,6 +574,7 @@ function handleChatInput(hasText: boolean): void {
 			if (isTyping) {
 				isTyping = false;
 				connection.value?.send('typingEnd', {});
+				engine?.showLocalPlayerTyping(false);
 			}
 			if (typingAutoHideTimeout) {
 				clearTimeout(typingAutoHideTimeout);

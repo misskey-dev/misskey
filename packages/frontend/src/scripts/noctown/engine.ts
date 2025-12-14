@@ -719,6 +719,12 @@ export class NoctownEngine {
 		character.showChatMessage(message);
 	}
 
+	// FR-019: Show/hide typing indicator for local player
+	public showLocalPlayerTyping(isTyping: boolean): void {
+		if (!this.localPlayer) return;
+		this.localPlayer.showTypingIndicator(isTyping);
+	}
+
 	// FR-019: Show/hide typing indicator for remote player
 	public showRemotePlayerTyping(playerId: string, isTyping: boolean): void {
 		const character = this.remotePlayers.get(playerId);
