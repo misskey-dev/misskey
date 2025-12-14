@@ -1368,19 +1368,20 @@ function handleJoystickMove(direction: { x: number; z: number }): void {
 	joystickMovement = direction;
 }
 
+/**
+ * 仕様: ジョイスティックを離した時の処理
+ * - joystickMovementをリセット
+ * - clearInput()を呼んでジョイスティック入力モードを終了
+ * 修正日: 2025-12-14
+ */
 function handleJoystickEnd(): void {
 	// Reset joystick movement when released
 	joystickMovement = { x: 0, z: 0 };
 
 	// Reset engine input (animation will return to idle)
+	// clearInput()を使用してisJoystickActiveフラグもリセット
 	if (engine) {
-		engine.setInput({
-			up: false,
-			down: false,
-			left: false,
-			right: false,
-			sprint: false,
-		});
+		engine.clearInput();
 	}
 }
 
