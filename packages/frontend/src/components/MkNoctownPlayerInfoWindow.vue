@@ -17,8 +17,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<img :src="avatarUrl || defaultAvatar" :class="$style.avatar" alt="avatar" />
 			</a>
 
-			<!-- Name (shown if not empty) -->
-			<div v-if="name" :class="$style.name">{{ name }}</div>
+			<!-- Name (shown if not empty, MFM rendered) -->
+			<!-- 仕様: nameにはMFMを適用してカスタム絵文字などを表示可能にする -->
+			<div v-if="name" :class="$style.name">
+				<Mfm :text="name" :plain="true" :nowrap="true"/>
+			</div>
 
 			<!-- Username (always shown) -->
 			<!-- nameが空の場合は通常サイズ、nameがある場合は小さめフォント -->

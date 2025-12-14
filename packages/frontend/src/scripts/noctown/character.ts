@@ -586,13 +586,21 @@ export class Character {
 				this.drawEmoteBubble();
 				// globalAlphaを1.0に設定して完全不透明で描画
 				this.emoteContext.globalAlpha = 1.0;
+				// 仕様: 画像スケーリング時のアンチエイリアスを無効化
+				// これにより画像がぼやけず、くっきり描画される
+				this.emoteContext.imageSmoothingEnabled = false;
 				// 仕様: カスタム絵文字を吹き出しの中央（64, 54）に描画
 				// 48x48の画像なので、左上座標は(64-24, 54-24) = (40, 30)
 				// Y座標を微調整して視覚的に中央に見えるよう調整
 				// iOSの場合はオフセット2、それ以外は5
 				const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 				const offset = isIOS ? 2 : 5;
-				this.emoteContext.drawImage(img, 64 - 24, 54 - 24 + offset, 48, 48);
+				const drawX = 64 - 24;
+				const drawY = 54 - 24 + offset;
+				this.emoteContext.drawImage(img, drawX, drawY, 48, 48);
+				// 仕様: 画像描画領域のアルファ値を強制的に不透明にする
+				// PNG画像の半透明ピクセルによるぼやけを防止
+				this.forceOpaqueAlpha(drawX, drawY, 48, 48);
 				this.emoteTexture.needsUpdate = true;
 			};
 			// T016: Fallback on error - draw emoji text or placeholder
@@ -642,6 +650,8 @@ export class Character {
 	/**
 	 * T014: Draw emoji text on emote bubble
 	 * 仕様: globalAlphaを1.0に設定して完全不透明で描画
+	 * 仕様: 描画後にImageDataを操作し、不透明ピクセルのアルファ値を255に強制設定
+	 *       これによりフォントレンダリングによる半透明化を防止
 	 */
 	private drawEmojiText(emoji: string): void {
 		this.emoteContext.globalAlpha = 1.0;
@@ -649,7 +659,31 @@ export class Character {
 		this.emoteContext.textAlign = 'center';
 		this.emoteContext.textBaseline = 'middle';
 		this.emoteContext.fillText(emoji, 64, 54);
+
+		// 仕様: 絵文字描画領域のアルファ値を強制的に不透明にする
+		// フォントレンダリングで半透明になる問題を修正
+		this.forceOpaqueAlpha(24, 14, 80, 80);
+
 		this.emoteTexture.needsUpdate = true;
+	}
+
+	/**
+	 * 指定領域の不透明ピクセル（alpha > 閾値）のアルファ値を255に強制設定
+	 * 仕様: アンチエイリアシングのエッジ（alpha < 128）は保持し、
+	 *       それ以上のピクセルは完全不透明にする
+	 */
+	private forceOpaqueAlpha(x: number, y: number, width: number, height: number): void {
+		const imageData = this.emoteContext.getImageData(x, y, width, height);
+		const data = imageData.data;
+		const threshold = 128;
+
+		for (let i = 3; i < data.length; i += 4) {
+			if (data[i] > threshold) {
+				data[i] = 255;
+			}
+		}
+
+		this.emoteContext.putImageData(imageData, x, y);
 	}
 
 	/**
@@ -1149,31 +1183,60 @@ export class Character {
 
 	/**
 	 * Set icon texture on head front face
+	 * 仕様: 画像をCanvasに描画し、アルファ値を強制的に不透明にしてからテクスチャ化
+	 *       これによりアイコンが半透明になる問題を防止
 	 * @param url Icon image URL (nullの場合はデフォルトアイコンを使用)
 	 * @param username ユーザー名（デフォルトアイコン生成用）
 	 */
 	public setIcon(url: string | null, username: string): void {
 		const host = location.host;
 		const iconUrl = url || `https://${host}/identicon/${username}@${host}`;
-		const loader = new THREE.TextureLoader();
-		loader.crossOrigin = 'anonymous';
-		loader.load(
-			iconUrl,
-			(texture) => {
-				texture.minFilter = THREE.LinearFilter;
-				texture.magFilter = THREE.LinearFilter;
-				// Apply to front face (index 4 = +Z)
-				this.headMaterials[4] = new THREE.MeshStandardMaterial({
-					map: texture,
-					roughness: 0.5,
-				});
-				this.head.material = this.headMaterials;
-			},
-			undefined,
-			(err) => {
-				console.log('Icon load failed, using default color');
-			},
-		);
+
+		// 画像をImageとして読み込み、Canvasでアルファ値を処理
+		const img = new Image();
+		img.crossOrigin = 'anonymous';
+		img.onload = () => {
+			// Canvasを作成（アイコンサイズに合わせる）
+			const canvas = document.createElement('canvas');
+			const size = Math.max(img.width, img.height) || 128;
+			canvas.width = size;
+			canvas.height = size;
+			const ctx = canvas.getContext('2d')!;
+
+			// 画像スケーリング時のアンチエイリアスを無効化
+			ctx.imageSmoothingEnabled = false;
+
+			// 画像を描画
+			ctx.drawImage(img, 0, 0, size, size);
+
+			// アルファ値を強制的に不透明にする
+			const imageData = ctx.getImageData(0, 0, size, size);
+			const data = imageData.data;
+			const threshold = 128;
+			for (let i = 3; i < data.length; i += 4) {
+				if (data[i] > threshold) {
+					data[i] = 255;
+				}
+			}
+			ctx.putImageData(imageData, 0, 0);
+
+			// CanvasからTextureを作成
+			const texture = new THREE.CanvasTexture(canvas);
+			texture.minFilter = THREE.LinearFilter;
+			texture.magFilter = THREE.LinearFilter;
+			texture.needsUpdate = true;
+
+			// Apply to front face (index 4 = +Z)
+			this.headMaterials[4] = new THREE.MeshStandardMaterial({
+				map: texture,
+				roughness: 0.5,
+			});
+			this.head.material = this.headMaterials;
+		};
+		img.onerror = () => {
+			console.log('Icon load failed, using default color');
+		};
+		img.src = iconUrl;
 	}
 
 	/**
