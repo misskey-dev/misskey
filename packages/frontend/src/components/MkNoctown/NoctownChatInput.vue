@@ -79,7 +79,7 @@ defineExpose({
 // This prevents overlap with joystick (200px) and emotion panel (200px)
 .chatContainer {
 	position: absolute;
-	bottom: 10px;
+	bottom: 20px;
 	left: 50%;
 	transform: translateX(-50%);
 	display: flex;

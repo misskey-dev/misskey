@@ -175,6 +175,7 @@ export class NoctownEngine {
 
 	// Player management
 	private localPlayer: Character | null = null;
+	private localPlayerId: string | null = null; // 自プレイヤーのID
 	private remotePlayers: Map<string, Character> = new Map();
 	private lastMoveDirection: { x: number; z: number } = { x: 0, z: 0 };
 	private lastFrameTime: number = 0;
@@ -654,6 +655,9 @@ export class NoctownEngine {
 			this.scene.remove(this.localPlayer.group);
 		}
 
+		// 自プレイヤーのIDを保存
+		this.localPlayerId = data.id;
+
 		// Create Character instance
 		this.localPlayer = new Character();
 		this.localPlayer.setPosition(data.positionX, data.positionY, data.positionZ);
@@ -737,6 +741,11 @@ export class NoctownEngine {
 	}
 
 	public addRemotePlayer(data: PlayerData): void {
+		// 自プレイヤーは追加しない
+		if (data.id === this.localPlayerId) {
+			return;
+		}
+
 		if (this.remotePlayers.has(data.id)) {
 			this.updateRemotePlayer(data);
 			return;
@@ -778,6 +787,11 @@ export class NoctownEngine {
 	}
 
 	public updateRemotePlayer(data: PlayerData): void {
+		// 自プレイヤーの位置は更新しない
+		if (data.id === this.localPlayerId) {
+			return;
+		}
+
 		const character = this.remotePlayers.get(data.id);
 		if (!character) return;
 

@@ -1923,6 +1923,8 @@ export class NoctownService {
 	 */
 	@bindThis
 	public async generateChunk(worldId: string, chunkX: number, chunkZ: number) {
+		console.log('[NoctownService] generateChunk: start', { worldId, chunkX, chunkZ });
+
 		// T034: Check if chunk already exists (UNIQUE constraint handling)
 		const existingChunk = await this.noctownWorldChunksRepository.findOneBy({
 			worldId,
@@ -1930,9 +1932,18 @@ export class NoctownService {
 			chunkZ,
 		});
 
+		console.log('[NoctownService] generateChunk: existing check', {
+			worldId,
+			chunkX,
+			chunkZ,
+			exists: !!existingChunk,
+			hasEnvironmentObjects: existingChunk ? !!existingChunk.environmentObjects : false,
+		});
+
 		if (existingChunk) {
 			// FR-010: チャンクにenvironmentObjectsがない場合は、決定論的に再生成して保存
 			if (!existingChunk.environmentObjects || (Array.isArray(existingChunk.environmentObjects) && (existingChunk.environmentObjects as any[]).length === 0)) {
+				console.log('[NoctownService] generateChunk: regenerating environment objects for existing chunk', { worldId, chunkX, chunkZ });
 				const generator = getChunkGenerator(12345);
 				const chunkTerrainData = generator.generateChunk(chunkX, chunkZ);
 
@@ -1946,15 +1957,27 @@ export class NoctownService {
 
 				(existingChunk as any).environmentObjects = environmentObjects;
 				await this.noctownWorldChunksRepository.save(existingChunk);
+				console.log('[NoctownService] generateChunk: saved environment objects', { worldId, chunkX, chunkZ, count: environmentObjects.length });
 			}
 
 			// Chunk already exists - return existing chunk data
+			console.log('[NoctownService] generateChunk: returning existing chunk', { worldId, chunkX, chunkZ });
 			return existingChunk;
 		}
 
 		// T032: Generate chunk using Perlin noise
+		console.log('[NoctownService] generateChunk: generating new chunk', { worldId, chunkX, chunkZ });
 		const generator = getChunkGenerator(12345); // Use consistent seed for deterministic generation
 		const chunkTerrainData = generator.generateChunk(chunkX, chunkZ);
+
+		console.log('[NoctownService] generateChunk: chunk generated from generator', {
+			worldId,
+			chunkX,
+			chunkZ,
+			biome: chunkTerrainData.biome,
+			hasTerrainData: !!chunkTerrainData.terrainData,
+			environmentObjectsCount: chunkTerrainData.environmentObjects.length,
+		});
 
 		// FR-001: chunk-generator.tsのterrainDataを1次元配列に変換（16×16 = 256要素）
 		const terrainData = new Array(256);
@@ -1987,7 +2010,17 @@ export class NoctownService {
 		(newChunk as any).terrainData = terrainData;
 		// FR-010: environmentObjectsをデータベースに保存
 		(newChunk as any).environmentObjects = environmentObjects;
+
+		console.log('[NoctownService] generateChunk: saving to database', { worldId, chunkX, chunkZ, chunkId });
 		const chunk = await this.noctownWorldChunksRepository.save(newChunk);
+		console.log('[NoctownService] generateChunk: saved successfully', {
+			worldId,
+			chunkX,
+			chunkZ,
+			chunkId: chunk.id,
+			hasTerrainData: !!(chunk as any).terrainData,
+			hasEnvironmentObjects: !!(chunk as any).environmentObjects,
+		});
 
 		return chunk;
 	}

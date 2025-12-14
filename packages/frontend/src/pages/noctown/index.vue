@@ -463,14 +463,31 @@ function handlePlayerLeft(data: { playerId: string }): void {
 // FR-073, FR-074: Handle chunkGenerated event and render terrain with grid
 // FR-001: async修正（terrainDataに基づく地形生成のため）
 async function handleChunkGenerated(data: ChunkData): Promise<void> {
-	if (!engine) return;
+	console.log('[Noctown] handleChunkGenerated: received chunk data', {
+		chunkX: data.chunkX,
+		chunkZ: data.chunkZ,
+		worldId: data.worldId,
+		biome: data.biome,
+		hasTerrainData: !!data.terrainData,
+		hasEnvironmentObjects: !!data.environmentObjects,
+		terrainDataLength: Array.isArray(data.terrainData) ? data.terrainData.length : 'not array',
+		environmentObjectsCount: Array.isArray(data.environmentObjects) ? data.environmentObjects.length : 'not array',
+	});
+
+	if (!engine) {
+		console.warn('[Noctown] handleChunkGenerated: engine not initialized');
+		return;
+	}
 
 	// Mark chunk as loaded (T039: cache)
 	const chunkKey = `${data.chunkX},${data.chunkZ}`;
 	loadedChunks.add(chunkKey);
+	console.log('[Noctown] handleChunkGenerated: marked chunk as loaded', { chunkKey, totalLoadedChunks: loadedChunks.size });
 
 	// FR-001: terrainDataに基づいて地形を生成（await追加）
+	console.log('[Noctown] handleChunkGenerated: calling engine.renderChunk', { chunkX: data.chunkX, chunkZ: data.chunkZ });
 	await engine.renderChunk(data);
+	console.log('[Noctown] handleChunkGenerated: chunk rendered successfully', { chunkX: data.chunkX, chunkZ: data.chunkZ });
 
 	// FR-074: VIEW_DISTANCE=2 chunk management (remove chunks outside view distance)
 	const VIEW_DISTANCE = 2;
@@ -606,12 +623,30 @@ async function fetchNearbyPlayers(): Promise<void> {
 
 // T036-T037: Load nearby chunks using WebSocket chunk generation
 async function loadNearbyChunks(x: number, z: number): Promise<void> {
-	if (!connection.value || !isConnected.value || !worldId) return;
+	if (!connection.value || !isConnected.value || !worldId) {
+		console.warn('[Noctown] loadNearbyChunks: precondition failed', {
+			hasConnection: !!connection.value,
+			isConnected: isConnected.value,
+			hasWorldId: !!worldId,
+			worldId,
+		});
+		return;
+	}
 
 	const playerChunkX = Math.floor(x / CHUNK_SIZE);
 	const playerChunkZ = Math.floor(z / CHUNK_SIZE);
 
+	console.log('[Noctown] loadNearbyChunks: loading chunks around player', {
+		playerX: x,
+		playerZ: z,
+		playerChunkX,
+		playerChunkZ,
+		worldId,
+		loadedChunksCount: loadedChunks.size,
+	});
+
 	// T037: Request chunk generation when player approaches ungenerated area (2 chunks ahead)
+	let requestedCount = 0;
 	for (let dx = -CHUNK_LOAD_DISTANCE; dx <= CHUNK_LOAD_DISTANCE; dx++) {
 		for (let dz = -CHUNK_LOAD_DISTANCE; dz <= CHUNK_LOAD_DISTANCE; dz++) {
 			const chunkX = playerChunkX + dx;
@@ -626,18 +661,25 @@ async function loadNearbyChunks(x: number, z: number): Promise<void> {
 			// Request chunk generation via WebSocket
 			// T040: Concurrent request limit is handled in websocket-sync.ts (MAX_CONCURRENT_CHUNK_REQUESTS = 5)
 			try {
+				console.log('[Noctown] loadNearbyChunks: requesting chunk', { chunkX, chunkZ, worldId });
 				connection.value.send('generateChunk', {
 					chunkX,
 					chunkZ,
 					worldId,
 				});
+				requestedCount++;
 
 				// Optimistically mark as requested (will be added to loadedChunks when chunkGenerated event arrives)
 			} catch (e) {
-				console.error(`Failed to request chunk ${chunkX},${chunkZ}:`, e);
+				console.error('[Noctown] loadNearbyChunks: failed to request chunk', { chunkX, chunkZ, error: e });
 			}
 		}
 	}
+
+	console.log('[Noctown] loadNearbyChunks: finished requesting chunks', {
+		requestedCount,
+		totalLoadedChunks: loadedChunks.size,
+	});
 }
 
 async function loadNearbyItems(x: number, z: number): Promise<void> {
@@ -1408,7 +1450,7 @@ definePage(() => ({
 // FR-016: Reload button (top-right, safe-area aware)
 .reloadButton {
 	position: absolute;
-	top: env(safe-area-inset-top, 16px);
+	top: calc(env(safe-area-inset-top, 16px) + 10px);
 	right: 16px;
 	width: 44px;
 	height: 44px;
@@ -1482,7 +1524,7 @@ definePage(() => ({
 /* FR-010: Emotion panel positioned higher for better visibility */
 .emotionPanel {
 	position: absolute;
-	bottom: 100px;
+	bottom: 18px;
 	right: 20px;
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
@@ -1490,7 +1532,7 @@ definePage(() => ({
 	z-index: 50;
 
 	// FR-007-2: モバイルで親指操作しやすいよう位置を調整
-	// デスクトップ（250px）→ モバイル（150px）→ 小型（120px）
+	// デスクトップ（18px）→ モバイル（150px）→ 小型（150px）
 	/* Mobile: Adjusted position for better thumb reach (PWA safe area aware) */
 	@media (max-width: 768px) {
 		bottom: 150px;
