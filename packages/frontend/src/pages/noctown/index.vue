@@ -956,7 +956,7 @@ function openPlayerInfoWindow(playerId: string): void {
 
 	selectedPlayerInfo.value = {
 		playerId: playerData.id,
-		name: null, // PlayerData doesn't have name field
+		name: playerData.name,
 		username: playerData.username,
 		avatarUrl: playerData.avatarUrl,
 	};

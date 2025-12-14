@@ -116,6 +116,7 @@ export interface PlayerData {
 	id: string;
 	userId: string;
 	username: string;
+	name: string | null;
 	avatarUrl: string | null;
 	positionX: number;
 	positionY: number;
