@@ -54,32 +54,33 @@ export class SoundManager {
 	/**
 	 * sourceNodeを作成
 	 */
-	public createSourceNode(buffer: AudioBuffer, opts: {
-		volume?: number;
-		pan?: number;
-		playbackRate?: number;
-	}): {
-		soundSource: AudioBufferSourceNode;
+	public createSourceNode(buffer: AudioBuffer, opts: AudioOptions): {
+		sourceNode: AudioBufferSourceNode;
 		panNode: StereoPannerNode;
 		gainNode: GainNode;
 	} {
 		const ctx = this.getContext();
+
+		if (ctx.state === 'suspended') {
+			void ctx.resume();
+		}
+
+		const sourceNode = ctx.createBufferSource();
+		sourceNode.buffer = buffer;
+		sourceNode.playbackRate.value = opts.playbackRate ?? 1;
+
 		const panNode = ctx.createStereoPanner();
 		panNode.pan.value = opts.pan ?? 0;
 
 		const gainNode = ctx.createGain();
-
 		gainNode.gain.value = opts.volume ?? 1;
 
-		const soundSource = ctx.createBufferSource();
-		soundSource.buffer = buffer;
-		soundSource.playbackRate.value = opts.playbackRate ?? 1;
-		soundSource
+		sourceNode
 			.connect(panNode)
 			.connect(gainNode)
 			.connect(ctx.destination);
 
-		return { soundSource, panNode, gainNode };
+		return { sourceNode, panNode, gainNode };
 	}
 
 	/**
@@ -193,28 +194,8 @@ export class SoundManager {
 	 * AudioBufferの再生実行
 	 */
 	private playBuffer(buffer: AudioBuffer, opts: AudioOptions) {
-		const ctx = this.getContext();
-
-		if (ctx.state === 'suspended') {
-			void ctx.resume();
-		}
-
-		const source = ctx.createBufferSource();
-		source.buffer = buffer;
-		source.playbackRate.value = opts.playbackRate ?? 1;
-
-		const panNode = ctx.createStereoPanner();
-		panNode.pan.value = opts.pan ?? 0;
-
-		const gainNode = ctx.createGain();
-		gainNode.gain.value = opts.volume ?? 1;
-
-		source
-			.connect(panNode)
-			.connect(gainNode)
-			.connect(ctx.destination);
-
-		source.start();
+		const { sourceNode } = this.createSourceNode(buffer, opts);
+		sourceNode.start();
 	}
 
 	/**

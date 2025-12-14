@@ -1214,18 +1214,18 @@ onMounted(async () => {
 		volume: props.mute ? 0 : bgmVolume.value,
 	});
 	if (!bgmNodes) return;
-	bgmNodes.soundSource.loop = true;
-	bgmNodes.soundSource.start();
+	bgmNodes.sourceNode.loop = true;
+	bgmNodes.sourceNode.start();
 });
 
 onUnmounted(() => {
 	dispose();
-	bgmNodes?.soundSource.stop();
+	bgmNodes?.sourceNode.stop();
 });
 
 onDeactivated(() => {
 	dispose();
-	bgmNodes?.soundSource.stop();
+	bgmNodes?.sourceNode.stop();
 });
 
 definePage(() => ({
