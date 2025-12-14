@@ -261,7 +261,7 @@ const moveSpeed = 0.15;
 
 // T027, T028: Mobile/tablet device detection for virtual joystick
 // Show joystick on mobile/tablet devices that don't have a physical keyboard
-// Also show on tablet-sized windows (768px or smaller)
+// Also show on tablet-sized windows (1024px or smaller)
 const shouldShowJoystick = ref(false);
 
 // Window resize handler to show/hide joystick based on window size
@@ -354,12 +354,12 @@ async function initialize(): Promise<void> {
 		// FR-025: Determine if virtual joystick should be shown
 		// Priority order:
 		// 1. localStorage has noctown:forceJoystick set to 'true' → show immediately
-		// 2. Window width is tablet size or smaller (768px) → show immediately
+		// 2. Window width is tablet size or smaller (1024px) → show immediately
 		// 3. UserAgent detects mobile/tablet → show immediately
 		// 4. Navigator Keyboard API detects no keyboard → show immediately
 		// 5. None of the above → wait for touchstart event to show
 		const forceEnabled = isForceJoystickEnabled();
-		const isTabletOrSmallerWindow = window.innerWidth <= 768;
+		const isTabletOrSmallerWindow = window.innerWidth <= 1024;
 		if (forceEnabled || isTabletOrSmallerWindow) {
 			// FR-025: localStorage flag is set or window is tablet size or smaller, show joystick immediately
 			shouldShowJoystick.value = true;
@@ -377,7 +377,7 @@ async function initialize(): Promise<void> {
 
 		// Set up resize handler to show/hide joystick based on window size
 		resizeHandler = () => {
-			const isTabletOrSmaller = window.innerWidth <= 768;
+			const isTabletOrSmaller = window.innerWidth <= 1024;
 			if (isTabletOrSmaller && !shouldShowJoystick.value) {
 				shouldShowJoystick.value = true;
 			}
