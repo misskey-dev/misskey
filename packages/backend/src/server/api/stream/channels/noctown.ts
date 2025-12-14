@@ -244,20 +244,43 @@ class NoctownChannel extends Channel {
 
 	@bindThis
 	private async handleGenerateChunk(body: JsonObject) {
-		if (this.user == null || this.playerId == null) return;
+		if (this.user == null || this.playerId == null) {
+			console.log('[Noctown] handleGenerateChunk: user or playerId is null', { user: this.user?.id, playerId: this.playerId });
+			return;
+		}
 
 		const chunkX = typeof body.chunkX === 'number' ? body.chunkX : null;
 		const chunkZ = typeof body.chunkZ === 'number' ? body.chunkZ : null;
 		const worldId = typeof body.worldId === 'string' ? body.worldId : 'default';
 
-		if (chunkX == null || chunkZ == null) return;
+		console.log('[Noctown] handleGenerateChunk: received request', { chunkX, chunkZ, worldId, userId: this.user.id, playerId: this.playerId });
+
+		if (chunkX == null || chunkZ == null) {
+			console.log('[Noctown] handleGenerateChunk: invalid chunk coordinates', { chunkX, chunkZ });
+			return;
+		}
 
 		// Validate chunk coordinates (security check)
-		if (!Number.isInteger(chunkX) || !Number.isInteger(chunkZ)) return;
-		if (chunkX < -1000 || chunkX > 1000 || chunkZ < -1000 || chunkZ > 1000) return;
+		if (!Number.isInteger(chunkX) || !Number.isInteger(chunkZ)) {
+			console.log('[Noctown] handleGenerateChunk: non-integer coordinates', { chunkX, chunkZ });
+			return;
+		}
+		if (chunkX < -1000 || chunkX > 1000 || chunkZ < -1000 || chunkZ > 1000) {
+			console.log('[Noctown] handleGenerateChunk: coordinates out of range', { chunkX, chunkZ });
+			return;
+		}
 
 		try {
+			console.log('[Noctown] handleGenerateChunk: calling generateChunk service', { worldId, chunkX, chunkZ });
 			const chunk = await this.noctownService.generateChunk(worldId, chunkX, chunkZ);
+			console.log('[Noctown] handleGenerateChunk: chunk generated', {
+				worldId,
+				chunkX,
+				chunkZ,
+				hasChunk: !!chunk,
+				hasTerrainData: chunk && 'terrainData' in chunk,
+				hasBiome: chunk && 'biome' in chunk,
+			});
 			if (chunk && 'terrainData' in chunk && 'biome' in chunk) {
 				// Send generated chunk data back to requesting client only
 				this.send('chunkGenerated', {
@@ -268,11 +291,14 @@ class NoctownChannel extends Channel {
 					biome: chunk.biome as JsonValue,
 					environmentObjects: chunk.environmentObjects as JsonValue,
 				} as JsonValue);
+				console.log('[Noctown] handleGenerateChunk: sent chunkGenerated event', { chunkX, chunkZ, worldId });
+			} else {
+				console.log('[Noctown] handleGenerateChunk: chunk missing required fields', { chunk });
 			}
 		} catch (error) {
 			// If chunk already exists or generation failed, silently fail
 			// (client will retry if needed)
-			console.error('Chunk generation error:', error);
+			console.error('[Noctown] handleGenerateChunk: error', { worldId, chunkX, chunkZ, error });
 		}
 	}
 

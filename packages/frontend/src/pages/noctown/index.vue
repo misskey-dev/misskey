@@ -519,6 +519,7 @@ function handleChatSend(message: string): void {
 	if (isTyping) {
 		isTyping = false;
 		connection.value.send('typingEnd', {});
+		engine.showLocalPlayerTyping(false);
 	}
 	if (typingDebounceTimeout) {
 		clearTimeout(typingDebounceTimeout);
