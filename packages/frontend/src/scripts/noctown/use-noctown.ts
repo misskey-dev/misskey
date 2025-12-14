@@ -53,6 +53,39 @@ function getToken(): string | null {
 }
 
 /**
+ * FR-025: Local storage key for forced joystick display
+ * When user touches the screen on a device not detected as mobile/tablet,
+ * this flag is set to force joystick display on subsequent visits
+ */
+const FORCE_JOYSTICK_STORAGE_KEY = 'noctown:forceJoystick';
+
+/**
+ * FR-025: Check if forced joystick display is enabled via localStorage
+ * @returns true if localStorage has noctown:forceJoystick set to 'true'
+ */
+export function isForceJoystickEnabled(): boolean {
+	try {
+		return localStorage.getItem(FORCE_JOYSTICK_STORAGE_KEY) === 'true';
+	} catch {
+		// localStorage is unavailable (e.g., private browsing mode, storage quota exceeded)
+		return false;
+	}
+}
+
+/**
+ * FR-025: Enable forced joystick display and persist to localStorage
+ * Called when touchstart event is detected on a non-mobile device
+ */
+export function enableForceJoystick(): void {
+	try {
+		localStorage.setItem(FORCE_JOYSTICK_STORAGE_KEY, 'true');
+	} catch {
+		// localStorage is unavailable, setting will not persist
+		console.debug('Failed to persist forceJoystick setting to localStorage');
+	}
+}
+
+/**
  * T027: Mobile device detection utility
  * Detects mobile phones and tablets based on UserAgent patterns
  * @returns true if the device is a mobile device (phone or tablet)

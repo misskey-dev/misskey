@@ -176,7 +176,7 @@ import MkNoctownPetInfoWindow from '@/components/MkNoctownPetInfoWindow.vue';
 import NoctownJoystick from '@/components/MkNoctown/NoctownJoystick.vue';
 import NoctownChatInput from '@/components/MkNoctown/NoctownChatInput.vue';
 import { useStream } from '@/stream.js';
-import { isMobileDevice, hasPhysicalKeyboard } from '@/scripts/noctown/use-noctown.js';
+import { isMobileDevice, hasPhysicalKeyboard, isForceJoystickEnabled, enableForceJoystick } from '@/scripts/noctown/use-noctown.js';
 import { $i } from '@/i.js';
 import { apiUrl } from '@@/js/config.js';
 import type { PlayerData, ChunkData, DroppedItemData, PlacedItemData, NpcData, PetInfo } from '@/scripts/noctown/engine.js';
@@ -323,16 +323,51 @@ async function noctownApi<T>(endpoint: string, data: Record<string, unknown> = {
 	return res.json();
 }
 
+/**
+ * FR-025: Set up touchstart event listener for fallback detection
+ * When touchstart is detected on a device not identified as mobile/tablet,
+ * force-enable the virtual joystick and persist the setting to localStorage
+ */
+function setupTouchEventFallback(): void {
+	const handleTouchStart = (): void => {
+		// FR-025: Touch detected - force enable joystick
+		shouldShowJoystick.value = true;
+		// FR-025: Persist setting to localStorage for future visits
+		enableForceJoystick();
+		console.log('FR-025: Touch event detected, force-enabled virtual joystick');
+	};
+
+	// Use { once: true } to automatically remove listener after first touch
+	// This prevents repeated calls and optimizes performance
+	document.addEventListener('touchstart', handleTouchStart, { once: true });
+}
+
 async function initialize(): Promise<void> {
 	try {
 		isLoading.value = true;
 		error.value = null;
 
-		// T027-2: Determine if virtual joystick should be shown
-		// Show on mobile/tablet devices without physical keyboard
-		const isMobile = isMobileDevice();
-		const hasKeyboard = await hasPhysicalKeyboard();
-		shouldShowJoystick.value = isMobile && !hasKeyboard;
+		// FR-025: Determine if virtual joystick should be shown
+		// Priority order:
+		// 1. localStorage has noctown:forceJoystick set to 'true' → show immediately
+		// 2. UserAgent detects mobile/tablet → show immediately
+		// 3. Navigator Keyboard API detects no keyboard → show immediately
+		// 4. None of the above → wait for touchstart event to show
+		const forceEnabled = isForceJoystickEnabled();
+		if (forceEnabled) {
+			// FR-025: localStorage flag is set, show joystick immediately
+			shouldShowJoystick.value = true;
+		} else {
+			const isMobile = isMobileDevice();
+			const hasKeyboard = await hasPhysicalKeyboard();
+			shouldShowJoystick.value = isMobile && !hasKeyboard;
+		}
+
+		// FR-025: Set up touchstart event listener for fallback detection
+		// If joystick is not shown yet, detect touchstart to force-enable joystick
+		if (!shouldShowJoystick.value) {
+			setupTouchEventFallback();
+		}
 
 		// Check if user is logged in
 		if (!$i) {
