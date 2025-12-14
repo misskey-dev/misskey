@@ -328,6 +328,7 @@ async function initialize(): Promise<void> {
 			id: data.id,
 			userId: '',
 			username: data.username,
+			name: null,
 			avatarUrl: data.avatarUrl,
 			positionX: data.positionX,
 			positionY: data.positionY,
@@ -342,7 +343,7 @@ async function initialize(): Promise<void> {
 		currentRotation = data.rotation;
 
 		// Dynamically import engine to avoid SSR issues
-		if (canvasContainer.value) {
+		if (canvasContainer.value && playerData.value) {
 			const { NoctownEngine } = await import('@/scripts/noctown/engine.js');
 			engine = new NoctownEngine(canvasContainer.value);
 			engine.createLocalPlayer(playerData.value);

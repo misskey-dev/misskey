@@ -13,8 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.content">
 			<!-- Avatar -->
 			<div :class="$style.avatarWrapper">
-				<img v-if="avatarUrl" :src="avatarUrl" :class="$style.avatar" alt="avatar" />
-				<i v-else class="ti ti-user" :class="$style.avatarPlaceholder"></i>
+				<img :src="avatarUrl || defaultAvatar" :class="$style.avatar" alt="avatar" />
 			</div>
 
 			<!-- Name (shown if not empty) -->
@@ -61,6 +60,11 @@ const emit = defineEmits<{
 }>();
 
 const overlayRef = ref<HTMLElement | null>(null);
+
+const defaultAvatar = computed(() => {
+	const host = location.host;
+	return `https://${host}/identicon/${props.username}@${host}`;
+});
 
 const pingColorClass = computed(() => {
 	if (props.pingTime === null) return '';
@@ -148,12 +152,6 @@ onMounted(() => {
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
-}
-
-.avatarPlaceholder {
-	font-size: 40px;
-	opacity: 0.5;
-	color: var(--MI_THEME-fg);
 }
 
 .name {

@@ -33,6 +33,7 @@ interface NoctownNearbyPlayer {
 	id: string;
 	userId: string;
 	username: string;
+	name: string | null;
 	avatarUrl: string | null;
 	positionX: number;
 	positionY: number;
@@ -168,6 +169,7 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 				id: data.id,
 				userId: '',
 				username: '',
+				name: null,
 				avatarUrl: null,
 				positionX: data.positionX,
 				positionY: data.positionY,

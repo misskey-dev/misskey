@@ -687,10 +687,8 @@ export class NoctownEngine {
 		// FR-017: Mark as local player (always green status mark)
 		this.localPlayer.setAsLocalPlayer();
 
-		// Set icon if available
-		if (data.avatarUrl) {
-			this.localPlayer.setIcon(data.avatarUrl);
-		}
+		// Set icon (always set, using identicon as fallback)
+		this.localPlayer.setIcon(data.avatarUrl, data.username);
 
 		this.scene.add(this.localPlayer.group);
 	}
@@ -795,10 +793,8 @@ export class NoctownEngine {
 		character.setName(data.username);
 		character.setOnline(data.isOnline);
 
-		// Set icon if available
-		if (data.avatarUrl) {
-			character.setIcon(data.avatarUrl);
-		}
+		// Set icon (always set, using identicon as fallback)
+		character.setIcon(data.avatarUrl, data.username);
 
 		this.scene.add(character.group);
 		this.remotePlayers.set(data.id, character);

@@ -1088,13 +1088,16 @@ export class Character {
 
 	/**
 	 * Set icon texture on head front face
-	 * @param url Icon image URL
+	 * @param url Icon image URL (nullの場合はデフォルトアイコンを使用)
+	 * @param username ユーザー名（デフォルトアイコン生成用）
 	 */
-	public setIcon(url: string): void {
+	public setIcon(url: string | null, username: string): void {
+		const host = location.host;
+		const iconUrl = url || `https://${host}/identicon/${username}@${host}`;
 		const loader = new THREE.TextureLoader();
 		loader.crossOrigin = 'anonymous';
 		loader.load(
-			url,
+			iconUrl,
 			(texture) => {
 				texture.minFilter = THREE.LinearFilter;
 				texture.magFilter = THREE.LinearFilter;
