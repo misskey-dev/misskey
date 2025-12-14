@@ -36,6 +36,7 @@ export class Resolver {
 	private history: Set<string>;
 	private user?: MiLocalUser;
 	private logger: Logger;
+	private recursionLimit = 256;
 
 	constructor(
 		@Inject(DI.config)
@@ -66,7 +67,6 @@ export class Resolver {
 		private apRendererService: ApRendererService,
 		private apDbResolverService: ApDbResolverService,
 		private loggerService: LoggerService,
-		private recursionLimit = 256,
 	) {
 		this.history = new Set();
 		this.logger = this.loggerService.getLogger('ap-resolve');
