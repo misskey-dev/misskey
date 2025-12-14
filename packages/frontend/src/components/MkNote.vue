@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div
-	v-if="!hardMuted && muted === false"
+	v-if="!hardMuted && !hideByPlugin && muted === false"
 	ref="rootEl"
 	v-hotkey="keymap"
 	:class="[$style.root, { [$style.showActionsOnlyHover]: prefer.s.showNoteActionsOnlyHover, [$style.skipRender]: prefer.s.skipNoteRender }]"
@@ -39,7 +39,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span v-if="note.channel" style="margin-left: 0.5em;" :title="note.channel.name"><i class="ti ti-device-tv"></i></span>
 		</div>
 	</div>
-	<div v-if="renoteCollapsed" :class="$style.collapsedRenoteTarget">
+	<div v-if="isRenote && note.renote == null" :class="$style.deleted">
+		{{ i18n.ts.deletedNote }}
+	</div>
+	<div v-else-if="renoteCollapsed" :class="$style.collapsedRenoteTarget">
 		<MkAvatar :class="$style.collapsedRenoteTargetAvatar" :user="appearNote.user" link preview/>
 		<Mfm :text="getNoteSummary(appearNote)" :plain="true" :nowrap="true" :author="appearNote.user" :nyaize="'respect'" :class="$style.collapsedRenoteTargetText" @click="renoteCollapsed = false"/>
 	</div>
@@ -160,7 +163,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</article>
 </div>
-<div v-else-if="!hardMuted" :class="$style.muted" @click="muted = false">
+<div v-else-if="!hardMuted && !hideByPlugin" :class="$style.muted" @click="muted = false">
 	<I18n v-if="muted === 'sensitiveMute'" :src="i18n.ts.userSaysSomethingSensitive" tag="small">
 		<template #name>
 			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
@@ -262,6 +265,7 @@ let note = deepClone(props.note);
 
 // plugin
 const noteViewInterruptors = getPluginHandlers('note_view_interruptor');
+const hideByPlugin = ref(false);
 if (noteViewInterruptors.length > 0) {
 	let result: Misskey.entities.Note | null = deepClone(note);
 	for (const interruptor of noteViewInterruptors) {
@@ -271,7 +275,11 @@ if (noteViewInterruptors.length > 0) {
 			console.error(err);
 		}
 	}
-	note = result as Misskey.entities.Note;
+	if (result == null) {
+		hideByPlugin.value = true;
+	} else {
+		note = result as Misskey.entities.Note;
+	}
 }
 
 const isRenote = Misskey.note.isPureRenote(note);
@@ -1157,5 +1165,15 @@ function emitUpdReaction(emoji: string, delta: number) {
 	margin-left: 8px;
 	opacity: .8;
 	font-size: 95%;
+}
+
+.deleted {
+	text-align: center;
+	padding: 32px;
+	margin: 6px 32px 28px;
+	--color: light-dark(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.15));
+	background-size: auto auto;
+	background-image: repeating-linear-gradient(135deg, transparent, transparent 10px, var(--color) 4px, var(--color) 14px);
+	border-radius: 8px;
 }
 </style>

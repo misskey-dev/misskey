@@ -83,34 +83,58 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<MkButton v-if="foldersPaginator.canFetchOlder.value" primary rounded @click="foldersPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
 
-			<MkStickyContainer v-for="(item, i) in filesTimeline" :key="`${item.date.getFullYear()}/${item.date.getMonth() + 1}`">
-				<template #header>
-					<div :class="$style.date">
-						<span><i class="ti ti-chevron-down"></i> {{ item.date.getFullYear() }}/{{ item.date.getMonth() + 1 }}</span>
-					</div>
-				</template>
+			<template v-if="shouldBeGroupedByDate">
+				<MkStickyContainer v-for="(item, i) in filesTimeline" :key="`${item.date.getFullYear()}/${item.date.getMonth() + 1}`">
+					<template #header>
+						<div :class="$style.date">
+							<span><i class="ti ti-chevron-down"></i> {{ item.date.getFullYear() }}/{{ item.date.getMonth() + 1 }}</span>
+						</div>
+					</template>
 
-				<TransitionGroup
-					tag="div"
-					:enterActiveClass="prefer.s.animation ? $style.transition_files_enterActive : ''"
-					:leaveActiveClass="prefer.s.animation ? $style.transition_files_leaveActive : ''"
-					:enterFromClass="prefer.s.animation ? $style.transition_files_enterFrom : ''"
-					:leaveToClass="prefer.s.animation ? $style.transition_files_leaveTo : ''"
-					:moveClass="prefer.s.animation ? $style.transition_files_move : ''"
-					:class="$style.files"
-				>
-					<XFile
-						v-for="file in item.items" :key="file.id"
-						:class="$style.file"
-						:file="file"
-						:folder="folder"
-						:isSelected="selectedFiles.some(x => x.id === file.id)"
-						@click="onFileClick($event, file)"
-						@dragstart="onFileDragstart(file, $event)"
-						@dragend="isDragSource = false"
-					/>
-				</TransitionGroup>
-			</MkStickyContainer>
+					<TransitionGroup
+						tag="div"
+						:enterActiveClass="prefer.s.animation ? $style.transition_files_enterActive : ''"
+						:leaveActiveClass="prefer.s.animation ? $style.transition_files_leaveActive : ''"
+						:enterFromClass="prefer.s.animation ? $style.transition_files_enterFrom : ''"
+						:leaveToClass="prefer.s.animation ? $style.transition_files_leaveTo : ''"
+						:moveClass="prefer.s.animation ? $style.transition_files_move : ''"
+						:class="$style.files"
+					>
+						<XFile
+							v-for="file in item.items" :key="file.id"
+							:class="$style.file"
+							:file="file"
+							:folder="folder"
+							:isSelected="selectedFiles.some(x => x.id === file.id)"
+							@click="onFileClick($event, file)"
+							@dragstart="onFileDragstart(file, $event)"
+							@dragend="isDragSource = false"
+						/>
+					</TransitionGroup>
+				</MkStickyContainer>
+			</template>
+			<TransitionGroup
+				v-else
+				tag="div"
+				:enterActiveClass="prefer.s.animation ? $style.transition_files_enterActive : ''"
+				:leaveActiveClass="prefer.s.animation ? $style.transition_files_leaveActive : ''"
+				:enterFromClass="prefer.s.animation ? $style.transition_files_enterFrom : ''"
+				:leaveToClass="prefer.s.animation ? $style.transition_files_leaveTo : ''"
+				:moveClass="prefer.s.animation ? $style.transition_files_move : ''"
+				:class="$style.files"
+			>
+				<XFile
+					v-for="file in filesPaginator.items.value" :key="file.id"
+					:class="$style.file"
+					:file="file"
+					:folder="folder"
+					:isSelected="selectedFiles.some(x => x.id === file.id)"
+					@click="onFileClick($event, file)"
+					@dragstart="onFileDragstart(file, $event)"
+					@dragend="isDragSource = false"
+				/>
+			</TransitionGroup>
+
 			<MkButton v-show="filesPaginator.canFetchOlder.value" :class="$style.loadMore" primary rounded @click="filesPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
 
 			<div v-if="filesPaginator.items.value.length == 0 && foldersPaginator.items.value.length == 0 && !fetching" :class="$style.empty">
@@ -217,6 +241,7 @@ const foldersPaginator = markRaw(new Paginator('drive/folders', {
 }));
 
 const filesTimeline = makeDateGroupedTimelineComputedRef(filesPaginator.items, 'month');
+const shouldBeGroupedByDate = computed(() => ['+createdAt', '-createdAt'].includes(sortModeSelect.value));
 
 watch(folder, () => emit('cd', folder.value));
 watch(sortModeSelect, () => {
