@@ -536,12 +536,9 @@ export class Character {
 		this.emoteContext = this.emoteCanvas.getContext('2d')!;
 
 		// Create texture from canvas
-		// 仕様: premultipliedAlpha: false でアルファ値の事前乗算を無効化
-		// これにより描画したピクセルのアルファ値がそのまま使用される
 		this.emoteTexture = new THREE.CanvasTexture(this.emoteCanvas);
 		this.emoteTexture.minFilter = THREE.LinearFilter;
 		this.emoteTexture.magFilter = THREE.LinearFilter;
-		this.emoteTexture.premultiplyAlpha = false;
 
 		// Create sprite material
 		const material = new THREE.SpriteMaterial({
@@ -589,25 +586,16 @@ export class Character {
 			img.crossOrigin = 'anonymous';
 			img.onload = () => {
 				// 仕様: 画像読み込み完了後に吹き出し背景を再描画してから画像を描画
-				// これにより、非同期読み込み中にtextureが更新されても画像が確実に表示される
 				this.drawEmoteBubble();
-				// globalAlphaを1.0に設定して完全不透明で描画
 				this.emoteContext.globalAlpha = 1.0;
-				// 仕様: 画像スケーリング時のアンチエイリアスを無効化
-				// これにより画像がぼやけず、くっきり描画される
-				this.emoteContext.imageSmoothingEnabled = false;
 				// 仕様: カスタム絵文字を吹き出しの中央（64, 54）に描画
 				// 48x48の画像なので、左上座標は(64-24, 54-24) = (40, 30)
-				// Y座標を微調整して視覚的に中央に見えるよう調整
-				// iOSの場合はオフセット2、それ以外は5
+				// iOSの場合はオフセット0、それ以外は4
 				const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 				const offset = isIOS ? 0 : 4;
 				const drawX = 64 - 24;
 				const drawY = 54 - 24 + offset;
 				this.emoteContext.drawImage(img, drawX, drawY, 48, 48);
-				// 仕様: 画像描画領域のアルファ値を強制的に不透明にする
-				// PNG画像の半透明ピクセルによるぼやけを防止
-				this.forceOpaqueAlpha(drawX, drawY, 48, 48);
 				this.emoteTexture.needsUpdate = true;
 			};
 			// T016: Fallback on error - draw emoji text or placeholder
@@ -661,8 +649,6 @@ export class Character {
 	/**
 	 * T014: Draw emoji text on emote bubble
 	 * 仕様: globalAlphaを1.0に設定して完全不透明で描画
-	 * 仕様: 描画後にImageDataを操作し、不透明ピクセルのアルファ値を255に強制設定
-	 *       これによりフォントレンダリングによる半透明化を防止
 	 */
 	private drawEmojiText(emoji: string): void {
 		this.emoteContext.globalAlpha = 1.0;
@@ -674,31 +660,7 @@ export class Character {
 		const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 		const offset = isIOS ? 0 : 4;
 		this.emoteContext.fillText(emoji, 64, 54 + offset);
-
-		// 仕様: 絵文字描画領域のアルファ値を強制的に不透明にする
-		// フォントレンダリングで半透明になる問題を修正
-		this.forceOpaqueAlpha(24, 14, 80, 80);
-
 		this.emoteTexture.needsUpdate = true;
-	}
-
-	/**
-	 * 指定領域の不透明ピクセル（alpha > 閾値）のアルファ値を255に強制設定
-	 * 仕様: アンチエイリアシングのエッジ（alpha < 128）は保持し、
-	 *       それ以上のピクセルは完全不透明にする
-	 */
-	private forceOpaqueAlpha(x: number, y: number, width: number, height: number): void {
-		const imageData = this.emoteContext.getImageData(x, y, width, height);
-		const data = imageData.data;
-		const threshold = 128;
-
-		for (let i = 3; i < data.length; i += 4) {
-			if (data[i] > threshold) {
-				data[i] = 255;
-			}
-		}
-
-		this.emoteContext.putImageData(imageData, x, y);
 	}
 
 	/**

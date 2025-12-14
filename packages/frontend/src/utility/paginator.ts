@@ -268,7 +268,7 @@ export class Paginator<
 			}),
 		};
 
-		const apiRes = (await misskeyApi<T[]>(this.endpoint, data).catch(err => {
+		const apiRes = (await misskeyApi<T[]>(this.endpoint, data as E['req'] & { i?: string | null }).catch(err => {
 			return null;
 		})) as T[] | null;
 
@@ -321,7 +321,7 @@ export class Paginator<
 			}),
 		};
 
-		const apiRes = (await misskeyApi<T[]>(this.endpoint, data).catch(err => {
+		const apiRes = (await misskeyApi<T[]>(this.endpoint, data as E['req'] & { i?: string | null }).catch(err => {
 			return null;
 		})) as T[] | null;
 

@@ -57,20 +57,20 @@ const props = defineProps<{
 	antennaId?: string;
 }>();
 
-type TimelinePageSrc = BasicTimelineType | `list:${string}` | `role:${string}`;
+type TimelinePageSrc = BasicTimelineType | `list:${string}` | `role:${string}` | `antenna:${string}`;
 
 const srcWhenNotSignin = ref<'local' | 'global'>(isAvailableBasicTimeline('local') ? 'local' : 'global');
 const src = computed<TimelinePageSrc>({
-	get: () => {
+	get: (): TimelinePageSrc => {
 		// URLパラメータから優先的に取得
-		if (props.roleId) return `role:${props.roleId}`;
-		if (props.listId) return `list:${props.listId}`;
-		if (props.antennaId) return `antenna:${props.antennaId}`;
-		
+		if (props.roleId) return `role:${props.roleId}` as TimelinePageSrc;
+		if (props.listId) return `list:${props.listId}` as TimelinePageSrc;
+		if (props.antennaId) return `antenna:${props.antennaId}` as TimelinePageSrc;
+
 		// ストアから取得
-		return $i ? store.r.tl.value.src : srcWhenNotSignin.value;
+		return $i ? (store.r.tl.value.src as TimelinePageSrc) : srcWhenNotSignin.value;
 	},
-	set: (x) => saveSrc(x),
+	set: (x: TimelinePageSrc) => saveSrc(x),
 });
 const withRenotes = computed<boolean>({
 	get: () => store.r.tl.value.filter.withRenotes,
@@ -218,13 +218,13 @@ function saveSrc(newSrc: TimelinePageSrc): void {
 	// ナビゲーションでURLを更新
 	if (newSrc.startsWith('role:')) {
 		// ロールタイムラインへ遷移
-		router.push(`/timeline/role/${newSrc.split(':')[1]}`);
+		router.push(`/timeline/role/${newSrc.split(':')[1]}` as '/timeline');
 	} else {
 		// 基本タイムラインへ遷移
 		router.push('/timeline');
-		
+
 		// ストアに状態を保存
-		const out = deepMerge({ src: newSrc }, store.s.tl);
+		const out = deepMerge({ src: newSrc as typeof store.s.tl.src }, store.s.tl);
 
 		if (newSrc.startsWith('userList:')) {
 			const id = newSrc.substring('userList:'.length);
@@ -247,7 +247,7 @@ function saveTlFilter(key: keyof typeof store.s.tl.filter, newValue: boolean) {
 
 function switchTlIfNeeded() {
 	if (isBasicTimeline(src.value) && !isAvailableBasicTimeline(src.value)) {
-		src.value = availableBasicTimelines()[0];
+		src.value = availableBasicTimelines()[0] as TimelinePageSrc;
 	}
 }
 
