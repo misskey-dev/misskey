@@ -22,12 +22,6 @@ importers:
       execa:
         specifier: 9.6.0
         version: 9.6.0
-      fast-glob:
-        specifier: 3.3.3
-        version: 3.3.3
-      glob:
-        specifier: 13.0.0
-        version: 13.0.0
       ignore-walk:
         specifier: 8.0.0
         version: 8.0.0
@@ -105,9 +99,6 @@ importers:
       '@fastify/accepts':
         specifier: 5.0.3
         version: 5.0.3
-      '@fastify/cookie':
-        specifier: 11.0.2
-        version: 11.0.2
       '@fastify/cors':
         specifier: 11.1.0
         version: 11.1.0
@@ -201,9 +192,6 @@ importers:
       cacheable-lookup:
         specifier: 7.0.0
         version: 7.0.0
-      cbor:
-        specifier: 10.0.11
-        version: 10.0.11
       chalk:
         specifier: 5.6.2
         version: 5.6.2
@@ -273,9 +261,6 @@ importers:
       jsonld:
         specifier: 9.0.0
         version: 9.0.0
-      jsrsasign:
-        specifier: 11.1.0
-        version: 11.1.0
       juice:
         specifier: 11.0.3
         version: 11.0.3
@@ -315,9 +300,6 @@ importers:
       nsfwjs:
         specifier: 4.2.0
         version: 4.2.0(@tensorflow/tfjs@4.22.0(encoding@0.1.13)(seedrandom@3.0.5))(buffer@6.0.3)
-      oauth:
-        specifier: 0.10.2
-        version: 0.10.2
       oauth2orize:
         specifier: 1.12.0
         version: 1.12.0
@@ -402,9 +384,6 @@ importers:
       tsc-alias:
         specifier: 1.8.16
         version: 1.8.16
-      tsconfig-paths:
-        specifier: 4.2.0
-        version: 4.2.0
       typeorm:
         specifier: 0.3.27
         version: 0.3.27(ioredis@5.8.2)(pg@8.16.3)(reflect-metadata@0.2.2)
@@ -472,9 +451,6 @@ importers:
       '@types/jsonld':
         specifier: 1.5.15
         version: 1.5.15
-      '@types/jsrsasign':
-        specifier: 10.5.15
-        version: 10.5.15
       '@types/mime-types':
         specifier: 3.0.1
         version: 3.0.1
@@ -487,9 +463,6 @@ importers:
       '@types/nodemailer':
         specifier: 7.0.4
         version: 7.0.4
-      '@types/oauth':
-        specifier: 0.9.6
-        version: 0.9.6
       '@types/oauth2orize':
         specifier: 1.11.5
         version: 1.11.5
@@ -550,6 +523,9 @@ importers:
       aws-sdk-client-mock:
         specifier: 4.1.0
         version: 4.1.0
+      cbor:
+        specifier: 10.0.11
+        version: 10.0.11
       cross-env:
         specifier: 10.1.0
         version: 10.1.0
@@ -566,9 +542,6 @@ importers:
         specifier: 29.7.0
         version: 29.7.0(@types/node@24.10.1)
       jest-mock:
-        specifier: 29.7.0
-        version: 29.7.0
-      jest-util:
         specifier: 29.7.0
         version: 29.7.0
       js-yaml:
@@ -719,18 +692,12 @@ importers:
       '@vitejs/plugin-vue':
         specifier: 6.0.2
         version: 6.0.2(vite@7.2.4(@types/node@24.10.1)(sass@1.94.2)(terser@5.44.1)(tsx@4.20.6))(vue@3.5.25(typescript@5.9.3))
-      '@vue/compiler-sfc':
-        specifier: 3.5.25
-        version: 3.5.25
       aiscript-vscode:
         specifier: github:aiscript-dev/aiscript-vscode#v0.1.15
         version: https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/c3cde89e79a41d93540cf8a48cd619c3f2dcb1b7
       analytics:
         specifier: 0.8.19
         version: 0.8.19(@types/dlv@1.1.5)
-      astring:
-        specifier: 1.9.0
-        version: 1.9.0
       broadcast-channel:
         specifier: 7.2.0
         version: 7.2.0
@@ -767,9 +734,6 @@ importers:
       date-fns:
         specifier: 4.1.0
         version: 4.1.0
-      estree-walker:
-        specifier: 3.0.3
-        version: 3.0.3
       eventemitter3:
         specifier: 5.0.1
         version: 5.0.1
@@ -803,9 +767,6 @@ importers:
       json5:
         specifier: 2.2.3
         version: 2.2.3
-      magic-string:
-        specifier: 0.30.21
-        version: 0.30.21
       matter-js:
         specifier: 0.20.0
         version: 0.20.0
@@ -848,9 +809,6 @@ importers:
       shiki:
         specifier: 3.17.0
         version: 3.17.0
-      strict-event-emitter-types:
-        specifier: 2.0.0
-        version: 2.0.0
       textarea-caret:
         specifier: 3.1.0
         version: 3.1.0
@@ -863,15 +821,6 @@ importers:
       tinycolor2:
         specifier: 1.6.0
         version: 1.6.0
-      tsc-alias:
-        specifier: 1.8.16
-        version: 1.8.16
-      tsconfig-paths:
-        specifier: 4.2.0
-        version: 4.2.0
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
       v-code-diff:
         specifier: 1.13.1
         version: 1.13.1(vue@3.5.25(typescript@5.9.3))
@@ -978,9 +927,6 @@ importers:
       '@types/tinycolor2':
         specifier: 1.4.6
         version: 1.4.6
-      '@types/ws':
-        specifier: 8.18.1
-        version: 8.18.1
       '@typescript-eslint/eslint-plugin':
         specifier: 8.48.0
         version: 8.48.0(@typescript-eslint/parser@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(typescript@5.9.3)
@@ -993,12 +939,12 @@ importers:
       '@vue/compiler-core':
         specifier: 3.5.25
         version: 3.5.25
-      '@vue/runtime-core':
-        specifier: 3.5.25
-        version: 3.5.25
       acorn:
         specifier: 8.15.0
         version: 8.15.0
+      astring:
+        specifier: 1.9.0
+        version: 1.9.0
       cross-env:
         specifier: 10.1.0
         version: 10.1.0
@@ -1011,15 +957,18 @@ importers:
       eslint-plugin-vue:
         specifier: 10.6.2
         version: 10.6.2(@stylistic/eslint-plugin@5.5.0(eslint@9.39.1))(@typescript-eslint/parser@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(vue-eslint-parser@10.2.0(eslint@9.39.1))
-      fast-glob:
-        specifier: 3.3.3
-        version: 3.3.3
+      estree-walker:
+        specifier: 3.0.3
+        version: 3.0.3
       happy-dom:
         specifier: 20.0.11
         version: 20.0.11
       intersection-observer:
         specifier: 0.12.2
         version: 0.12.2
+      magic-string:
+        specifier: 0.30.21
+        version: 0.30.21
       micromatch:
         specifier: 4.0.8
         version: 4.0.8
@@ -1059,6 +1008,9 @@ importers:
       tsx:
         specifier: 4.20.6
         version: 4.20.6
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
       vite-plugin-glsl:
         specifier: 1.5.4
         version: 1.5.4(@rollup/pluginutils@5.3.0(rollup@4.53.3))(esbuild@0.27.0)(vite@7.2.4(@types/node@24.10.1)(sass@1.94.2)(terser@5.44.1)(tsx@4.20.6))
@@ -1135,12 +1087,6 @@ importers:
       '@vitejs/plugin-vue':
         specifier: 6.0.2
         version: 6.0.2(vite@7.2.4(@types/node@24.10.1)(sass@1.94.2)(terser@5.44.1)(tsx@4.20.6))(vue@3.5.25(typescript@5.9.3))
-      '@vue/compiler-sfc':
-        specifier: 3.5.25
-        version: 3.5.25
-      astring:
-        specifier: 1.9.0
-        version: 1.9.0
       buraha:
         specifier: 0.0.1
         version: 0.0.1
@@ -1180,15 +1126,6 @@ importers:
       tinycolor2:
         specifier: 1.6.0
         version: 1.6.0
-      tsc-alias:
-        specifier: 1.8.16
-        version: 1.8.16
-      tsconfig-paths:
-        specifier: 4.2.0
-        version: 4.2.0
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
       uuid:
         specifier: 13.0.0
         version: 13.0.0
@@ -1250,9 +1187,6 @@ importers:
       eslint-plugin-vue:
         specifier: 10.6.2
         version: 10.6.2(@stylistic/eslint-plugin@5.5.0(eslint@9.39.1))(@typescript-eslint/parser@8.48.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)(vue-eslint-parser@10.2.0(eslint@9.39.1))
-      fast-glob:
-        specifier: 3.3.3
-        version: 3.3.3
       happy-dom:
         specifier: 20.0.11
         version: 20.0.11
@@ -1277,6 +1211,9 @@ importers:
       tsx:
         specifier: 4.20.6
         version: 4.20.6
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
       vite-plugin-turbosnap:
         specifier: 1.0.3
         version: 1.0.3
@@ -1354,9 +1291,6 @@ importers:
       execa:
         specifier: 9.6.0
         version: 9.6.0
-      glob:
-        specifier: 11.1.0
-        version: 11.1.0
       nodemon:
         specifier: 3.1.11
         version: 3.1.11
@@ -1375,9 +1309,6 @@ importers:
       harfbuzzjs:
         specifier: 0.4.13
         version: 0.4.13
-      tiny-glob:
-        specifier: 0.2.9
-        version: 0.2.9
       tsx:
         specifier: 4.20.6
         version: 4.20.6
@@ -1434,9 +1365,6 @@ importers:
       execa:
         specifier: 9.6.0
         version: 9.6.0
-      glob:
-        specifier: 11.1.0
-        version: 11.1.0
       nodemon:
         specifier: 3.1.11
         version: 3.1.11
@@ -1477,9 +1405,6 @@ importers:
       execa:
         specifier: 9.6.0
         version: 9.6.0
-      glob:
-        specifier: 13.0.0
-        version: 13.0.0
       ncp:
         specifier: 2.0.0
         version: 2.0.0
@@ -1553,9 +1478,6 @@ importers:
       execa:
         specifier: 9.6.0
         version: 9.6.0
-      glob:
-        specifier: 11.1.0
-        version: 11.1.0
       nodemon:
         specifier: 3.1.11
         version: 3.1.11
@@ -2526,9 +2448,6 @@ packages:
 
   '@fastify/busboy@3.2.0':
     resolution: {integrity: sha512-m9FVDXU3GT2ITSe0UaMA5rU3QkfC/UXtCU8y0gSN/GugTqtVldOBWIB5V6V3sbmenVZUIpU6f+mPEO2+m5iTaA==}
-
-  '@fastify/cookie@11.0.2':
-    resolution: {integrity: sha512-GWdwdGlgJxyvNv+QcKiGNevSspMQXncjMZ1J8IvuDQk0jvkzgWWZFNC2En3s+nHndZBGV8IbLwOI/sxCZw/mzA==}
 
   '@fastify/cors@11.1.0':
     resolution: {integrity: sha512-sUw8ed8wP2SouWZTIbA7V2OQtMNpLj2W6qJOYhNdcmINTu6gsxVYXjQiM9mdi8UUDlcoDDJ/W2syPo1WB2QjYA==}
@@ -4801,9 +4720,6 @@ packages:
   '@types/jsonld@1.5.15':
     resolution: {integrity: sha512-PlAFPZjL+AuGYmwlqwKEL0IMP8M8RexH0NIPGfCVWSQ041H2rR/8OlyZSD7KsCVoN8vCfWdtWDBxX8yBVP+xow==}
 
-  '@types/jsrsasign@10.5.15':
-    resolution: {integrity: sha512-3stUTaSRtN09PPzVWR6aySD9gNnuymz+WviNHoTb85dKu+BjaV4uBbWWGykBBJkfwPtcNZVfTn2lbX00U+yhpQ==}
-
   '@types/long@4.0.2':
     resolution: {integrity: sha512-MqTGEo5bj5t157U6fA/BiDynNkn0YknVdh48CMPkTSpFTVmvao5UQmm7uEF6xBEo7qIMAlY/JSleYaE6VOdpaA==}
 
@@ -4857,9 +4773,6 @@ packages:
 
   '@types/oauth2orize@1.11.5':
     resolution: {integrity: sha512-C6hrRoh9hCnqis39OpeUZSwgw+TIzcV0CsxwJMGfQjTx4I1r+CLmuEPzoDJr5NRTfc7OMwHNLkQwrGFLKrJjMQ==}
-
-  '@types/oauth@0.9.6':
-    resolution: {integrity: sha512-H9TRCVKBNOhZZmyHLqFt9drPM9l+ShWiqqJijU1B8P3DX3ub84NjxDuy+Hjrz+fEca5Kwip3qPMKNyiLgNJtIA==}
 
   '@types/offscreencanvas@2019.3.0':
     resolution: {integrity: sha512-esIJx9bQg+QYF0ra8GnvfianIY8qWB0GBx54PK5Eps6m+xTj86KLavHv6qDhzKcu5UUOgNfJ2pWaIIV7TRUd9Q==}
@@ -5262,14 +5175,8 @@ packages:
   '@volar/typescript@2.4.23':
     resolution: {integrity: sha512-lAB5zJghWxVPqfcStmAP1ZqQacMpe90UrP5RJ3arDyrhy4aCUQqmxPPLB2PWDKugvylmO41ljK7vZ+t6INMTag==}
 
-  '@vue/compiler-core@3.5.24':
-    resolution: {integrity: sha512-eDl5H57AOpNakGNAkFDH+y7kTqrQpJkZFXhWZQGyx/5Wh7B1uQYvcWkvZi11BDhscPgj8N7XV3oRwiPnx1Vrig==}
-
   '@vue/compiler-core@3.5.25':
     resolution: {integrity: sha512-vay5/oQJdsNHmliWoZfHPoVZZRmnSWhug0BYT34njkYTPqClh3DNWLkZNJBVSjsNMrg0CCrBfoKkjZQPM/QVUw==}
-
-  '@vue/compiler-dom@3.5.24':
-    resolution: {integrity: sha512-1QHGAvs53gXkWdd3ZMGYuvQFXHW4ksKWPG8HP8/2BscrbZ0brw183q2oNWjMrSWImYLHxHrx1ItBQr50I/q2zw==}
 
   '@vue/compiler-dom@3.5.25':
     resolution: {integrity: sha512-4We0OAcMZsKgYoGlMjzYvaoErltdFI2/25wqanuTu+S4gismOTRTBPi4IASOjxWdzIwrYSjnqONfKvuqkXzE2Q==}
@@ -5312,9 +5219,6 @@ packages:
     resolution: {integrity: sha512-UJaXR54vMG61i8XNIzTSf2Q7MOqZHpp8+x3XLGtE3+fL+nQd+k7O5+X3D/uWrnQXOdMw5VPih+Uremcw+u1woQ==}
     peerDependencies:
       vue: 3.5.25
-
-  '@vue/shared@3.5.24':
-    resolution: {integrity: sha512-9cwHL2EsJBdi8NY22pngYYWzkTDhld6fAD6jlaeloNGciNSJL6bLpbxVgXl96X00Jtc6YWQv96YA/0sxex/k1A==}
 
   '@vue/shared@3.5.25':
     resolution: {integrity: sha512-AbOPdQQnAnzs58H2FrrDxYj/TJfmeS2jdfEEhgiKINy+bnOANmVizIEgq1r+C5zsbs6l1CCQxtcj71rwNQ4jWg==}
@@ -7283,10 +7187,6 @@ packages:
     engines: {node: 20 || >=22}
     hasBin: true
 
-  glob@13.0.0:
-    resolution: {integrity: sha512-tvZgpqk6fz4BaNZ66ZsRaZnbHvP/jG3uKJvAZOwEVUL4RTA5nJeeLYfyN9/VA8NX/V3IBG+hkeuGpKjvELkVhA==}
-    engines: {node: 20 || >=22}
-
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
     deprecated: Glob versions prior to v9 are no longer supported
@@ -7307,15 +7207,9 @@ packages:
     resolution: {integrity: sha512-DpLKbNU4WylpxJykQujfCcwYWiV/Jhm50Goo0wrVILAv5jOr9d+H+UR3PhSCD2rCCEIg0uc+G+muBTwD54JhDQ==}
     engines: {node: '>= 0.4'}
 
-  globalyzer@0.1.0:
-    resolution: {integrity: sha512-40oNTM9UfG6aBmuKxk/giHn5nQ8RVz/SS4Ir6zgzOv9/qC3kKZ9v4etGTcJbEl/NyVQH7FGU7d+X1egr57Md2Q==}
-
   globby@11.1.0:
     resolution: {integrity: sha512-jhIXaOzy1sb8IyocaruWSn1TjmnBVs8Ayhcy83rmxNJ8q2uWKCAj3CnJY+KpGSXCueAPc0i05kVvVKtP1t9S3g==}
     engines: {node: '>=10'}
-
-  globrex@0.1.2:
-    resolution: {integrity: sha512-uHJgbwAMwNFf5mLst7IWLNg14x1CkeqglJb/K3doi4dw6q2IvAAmM/Y81kevy83wP+Sst+nutFTYOGg3d1lsxg==}
 
   google-protobuf@3.21.4:
     resolution: {integrity: sha512-MnG7N936zcKTco4Jd2PX2U96Kf9PxygAPKBug+74LHzmHXmceN16MmRcdgZv+DGef/S9YvQAfRsNCn4cjf9yyQ==}
@@ -8133,9 +8027,6 @@ packages:
     resolution: {integrity: sha512-gqXddjPqQ6G40VdnI6T6yObEC+pDNvyP95wdQhkWkg7crHH3km5qP1FsOXEkzEQwnz6gz5qGTn1c2Y52wP3OyQ==}
     engines: {'0': node >=0.6.0}
 
-  jsrsasign@11.1.0:
-    resolution: {integrity: sha512-Ov74K9GihaK9/9WncTe1mPmvrO7Py665TUfUKvraXBpu+xcTWitrtuOwcjf4KMU9maPaYn0OuaWy0HOzy/GBXg==}
-
   jstransformer@1.0.0:
     resolution: {integrity: sha512-C9YK3Rf8q6VAPDCCU9fnqo3mAfOH6vUGnMcP4AQAYIEpWtfGLpwOTmZ+igtdK5y+VvI2n3CyYSzy4Qh34eq24A==}
 
@@ -8872,9 +8763,6 @@ packages:
   oauth2orize@1.12.0:
     resolution: {integrity: sha512-j4XtFDQUBsvUHPjUmvmNDUDMYed2MphMIJBhyxVVe8hGCjkuYnjIsW+D9qk8c5ciXRdnk6x6tEbiO6PLeOZdCQ==}
     engines: {node: '>= 0.4.0'}
-
-  oauth@0.10.2:
-    resolution: {integrity: sha512-JtFnB+8nxDEXgNyniwz573xxbKSOu3R8D40xQKqcjwJ2CDkYqUDI53o6IuzDJBx60Z8VKCm271+t8iFjakrl8Q==}
 
   object-assign@4.1.1:
     resolution: {integrity: sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==}
@@ -10508,9 +10396,6 @@ packages:
 
   through@2.3.8:
     resolution: {integrity: sha512-w89qg7PI8wAdvX60bMDP+bFoD5Dvhm9oLheFp5O4a2QF0cSBGsBX4qZmadPMvVqlLJBBci+WqGGOAPvcDeNSVg==}
-
-  tiny-glob@0.2.9:
-    resolution: {integrity: sha512-g/55ssRPUjShh+xkfx9UPDXqhckHEsHr4Vd9zX55oSdGZc/MD0m3sferOkwWtp98bv+kcVfEHtRJgBVJzelrzg==}
 
   tiny-invariant@1.3.3:
     resolution: {integrity: sha512-+FbBPE1o9QAYvviau/qC5SE3caw21q3xkvWKBtja5vgqOWIHHJ3ioaq1VPfn/Szqctz2bU/oYeKd9/z5BL+PVg==}
@@ -12904,11 +12789,6 @@ snapshots:
       fast-uri: 3.1.0
 
   '@fastify/busboy@3.2.0': {}
-
-  '@fastify/cookie@11.0.2':
-    dependencies:
-      cookie: 1.0.2
-      fastify-plugin: 5.1.0
 
   '@fastify/cors@11.1.0':
     dependencies:
@@ -15582,8 +15462,6 @@ snapshots:
 
   '@types/jsonld@1.5.15': {}
 
-  '@types/jsrsasign@10.5.15': {}
-
   '@types/long@4.0.2': {}
 
   '@types/matter-js@0.20.2': {}
@@ -15641,10 +15519,6 @@ snapshots:
   '@types/oauth2orize@1.11.5':
     dependencies:
       '@types/express': 5.0.4
-      '@types/node': 24.10.1
-
-  '@types/oauth@0.9.6':
-    dependencies:
       '@types/node': 24.10.1
 
   '@types/offscreencanvas@2019.3.0': {}
@@ -16181,14 +16055,6 @@ snapshots:
       path-browserify: 1.0.1
       vscode-uri: 3.1.0
 
-  '@vue/compiler-core@3.5.24':
-    dependencies:
-      '@babel/parser': 7.28.5
-      '@vue/shared': 3.5.24
-      entities: 4.5.0
-      estree-walker: 2.0.2
-      source-map-js: 1.2.1
-
   '@vue/compiler-core@3.5.25':
     dependencies:
       '@babel/parser': 7.28.5
@@ -16196,11 +16062,6 @@ snapshots:
       entities: 4.5.0
       estree-walker: 2.0.2
       source-map-js: 1.2.1
-
-  '@vue/compiler-dom@3.5.24':
-    dependencies:
-      '@vue/compiler-core': 3.5.24
-      '@vue/shared': 3.5.24
 
   '@vue/compiler-dom@3.5.25':
     dependencies:
@@ -16232,9 +16093,9 @@ snapshots:
   '@vue/language-core@2.2.12(typescript@5.9.3)':
     dependencies:
       '@volar/language-core': 2.4.15
-      '@vue/compiler-dom': 3.5.24
+      '@vue/compiler-dom': 3.5.25
       '@vue/compiler-vue2': 2.7.16
-      '@vue/shared': 3.5.24
+      '@vue/shared': 3.5.25
       alien-signals: 1.0.13
       minimatch: 9.0.5
       muggle-string: 0.4.1
@@ -16245,8 +16106,8 @@ snapshots:
   '@vue/language-core@3.1.5(typescript@5.9.3)':
     dependencies:
       '@volar/language-core': 2.4.23
-      '@vue/compiler-dom': 3.5.24
-      '@vue/shared': 3.5.24
+      '@vue/compiler-dom': 3.5.25
+      '@vue/shared': 3.5.25
       alien-signals: 3.1.0
       muggle-string: 0.4.1
       path-browserify: 1.0.1
@@ -16275,8 +16136,6 @@ snapshots:
       '@vue/compiler-ssr': 3.5.25
       '@vue/shared': 3.5.25
       vue: 3.5.25(typescript@5.9.3)
-
-  '@vue/shared@3.5.24': {}
 
   '@vue/shared@3.5.25': {}
 
@@ -18789,12 +18648,6 @@ snapshots:
       package-json-from-dist: 1.0.1
       path-scurry: 2.0.1
 
-  glob@13.0.0:
-    dependencies:
-      minimatch: 10.1.1
-      minipass: 7.1.2
-      path-scurry: 2.0.1
-
   glob@7.2.3:
     dependencies:
       fs.realpath: 1.0.0
@@ -18817,8 +18670,6 @@ snapshots:
       define-properties: 1.2.1
       gopd: 1.2.0
 
-  globalyzer@0.1.0: {}
-
   globby@11.1.0:
     dependencies:
       array-union: 2.1.0
@@ -18827,8 +18678,6 @@ snapshots:
       ignore: 5.3.2
       merge2: 1.4.1
       slash: 3.0.0
-
-  globrex@0.1.2: {}
 
   google-protobuf@3.21.4:
     optional: true
@@ -19860,8 +19709,6 @@ snapshots:
       json-schema: 0.4.0
       verror: 1.10.0
 
-  jsrsasign@11.1.0: {}
-
   jstransformer@1.0.0:
     dependencies:
       is-promise: 2.2.2
@@ -20783,8 +20630,6 @@ snapshots:
       utils-merge: 1.0.1
     transitivePeerDependencies:
       - supports-color
-
-  oauth@0.10.2: {}
 
   object-assign@4.1.1: {}
 
@@ -22588,11 +22433,6 @@ snapshots:
 
   through@2.3.8: {}
 
-  tiny-glob@0.2.9:
-    dependencies:
-      globalyzer: 0.1.0
-      globrex: 0.1.2
-
   tiny-invariant@1.3.3: {}
 
   tinybench@2.9.0: {}
@@ -23168,7 +23008,7 @@ snapshots:
     dependencies:
       '@babel/parser': 7.28.5
       '@babel/types': 7.28.5
-      '@vue/compiler-dom': 3.5.24
+      '@vue/compiler-dom': 3.5.25
       '@vue/compiler-sfc': 3.5.25
       ast-types: 0.16.1
       esm-resolve: 1.0.11
