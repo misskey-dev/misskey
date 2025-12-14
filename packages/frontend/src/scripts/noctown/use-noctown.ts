@@ -53,22 +53,60 @@ function getToken(): string | null {
 
 /**
  * T027: Mobile device detection utility
+ * Detects mobile phones and tablets based on UserAgent patterns
  * @returns true if the device is a mobile device (phone or tablet)
  */
 export function isMobileDevice(): boolean {
-	// Check user agent for mobile devices
 	const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
 
-	// Match common mobile device patterns
-	const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
+	// Tablet-specific patterns (iPad, Android tablets, Kindle, etc.)
+	const tabletRegex = /iPad|Android.*Tablet|Kindle|Silk|PlayBook|BB10.*Touch/i;
 
-	// Check for touch support
-	const hasTouchSupport = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+	// Mobile phone patterns
+	const mobileRegex = /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i;
 
-	// Check screen width (mobile devices typically have smaller screens)
-	const isSmallScreen = window.innerWidth <= 768;
+	// iPadOS 13+ detection: Safari on iPad reports as "Macintosh" but has touch support
+	const isMacWithTouch = /Macintosh/i.test(userAgent) && navigator.maxTouchPoints > 1;
 
-	return mobileRegex.test(userAgent) || (hasTouchSupport && isSmallScreen);
+	// Return true for tablets, mobile phones, or iPadOS devices
+	// Note: Screen width condition removed to support tablets with larger screens (768px+)
+	return mobileRegex.test(userAgent) || tabletRegex.test(userAgent) || isMacWithTouch;
+}
+
+/**
+ * T027-2: Physical keyboard detection utility
+ * Uses Navigator Keyboard API when available, falls back to UserAgent detection
+ * @returns Promise resolving to true if a physical keyboard is detected
+ */
+export async function hasPhysicalKeyboard(): Promise<boolean> {
+	// Try Navigator Keyboard API (experimental, limited browser support)
+	if ('keyboard' in navigator && 'getLayoutMap' in (navigator as any).keyboard) {
+		try {
+			const layoutMap = await (navigator as any).keyboard.getLayoutMap();
+			// If we can get a layout map with entries, a keyboard is connected
+			return layoutMap.size > 0;
+		} catch (e) {
+			// API call failed, fall back to UserAgent detection
+			console.debug('Navigator Keyboard API unavailable, using fallback:', e);
+		}
+	}
+
+	// Fallback: UserAgent-based detection
+	// Tablets without keyboard = no physical keyboard
+	// Desktop/laptop = has physical keyboard
+	const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
+
+	// Tablet patterns
+	const tabletRegex = /iPad|Android.*Tablet|Kindle|Silk|PlayBook|BB10.*Touch/i;
+
+	// iPadOS 13+ detection
+	const isMacWithTouch = /Macintosh/i.test(userAgent) && navigator.maxTouchPoints > 1;
+
+	// If it's a tablet or iPadOS device, assume no physical keyboard (conservative default)
+	const isTablet = tabletRegex.test(userAgent) || isMacWithTouch;
+
+	// Tablets default to no keyboard, desktops default to keyboard
+	return !isTablet && !isMobileDevice();
 }
 
 export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState {

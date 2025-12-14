@@ -202,6 +202,7 @@ export class NoctownEngine {
 
 	// Camera follow
 	private cameraOffset = new THREE.Vector3(0, 10, 15);
+	private cameraLookAtTarget = new THREE.Vector3(0, 0, 0);
 
 	// Input state
 	private keys: Set<string> = new Set();
@@ -630,7 +631,10 @@ export class NoctownEngine {
 		if (this.localPlayer) {
 			const targetPos = this.localPlayer.group.position.clone().add(this.cameraOffset);
 			this.camera.position.lerp(targetPos, 0.1);
-			this.camera.lookAt(this.localPlayer.group.position);
+
+			// Smoothly interpolate camera lookAt target to avoid sudden camera jerks
+			this.cameraLookAtTarget.lerp(this.localPlayer.group.position, 0.1);
+			this.camera.lookAt(this.cameraLookAtTarget);
 		}
 
 		// FR-008: 時間帯別ライティング更新

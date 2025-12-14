@@ -88,9 +88,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					@farmUpdated="handleFarmUpdated"
 				/>
 
-				<!-- T028: Virtual joystick for mobile devices -->
+				<!-- T028: Virtual joystick for mobile/tablet devices without physical keyboard -->
 				<NoctownJoystick
-					v-if="isMobile"
+					v-if="shouldShowJoystick"
 					@move="handleJoystickMove"
 					@end="handleJoystickEnd"
 				/>
@@ -149,7 +149,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted, computed } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import MkLoading from '@/components/global/MkLoading.vue';
@@ -162,7 +162,7 @@ import MkNoctownPlayerInfoWindow from '@/components/MkNoctownPlayerInfoWindow.vu
 import NoctownJoystick from '@/components/MkNoctown/NoctownJoystick.vue';
 import NoctownChatInput from '@/components/MkNoctown/NoctownChatInput.vue';
 import { useStream } from '@/stream.js';
-import { isMobileDevice } from '@/scripts/noctown/use-noctown.js';
+import { isMobileDevice, hasPhysicalKeyboard } from '@/scripts/noctown/use-noctown.js';
 import { $i } from '@/i.js';
 import { apiUrl } from '@@/js/config.js';
 import type { PlayerData, ChunkData, DroppedItemData, PlacedItemData, NpcData } from '@/scripts/noctown/engine.js';
@@ -239,8 +239,9 @@ const currentZ = ref(0);
 let currentRotation = 0;
 const moveSpeed = 0.15;
 
-// T027, T028: Mobile device detection
-const isMobile = computed(() => isMobileDevice());
+// T027, T028: Mobile/tablet device detection for virtual joystick
+// Show joystick on mobile/tablet devices that don't have a physical keyboard
+const shouldShowJoystick = ref(false);
 
 // T030: Joystick movement state
 let joystickMovement = { x: 0, z: 0 };
@@ -305,6 +306,12 @@ async function initialize(): Promise<void> {
 	try {
 		isLoading.value = true;
 		error.value = null;
+
+		// T027-2: Determine if virtual joystick should be shown
+		// Show on mobile/tablet devices without physical keyboard
+		const isMobile = isMobileDevice();
+		const hasKeyboard = await hasPhysicalKeyboard();
+		shouldShowJoystick.value = isMobile && !hasKeyboard;
 
 		// Check if user is logged in
 		if (!$i) {
