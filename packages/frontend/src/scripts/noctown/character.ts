@@ -601,7 +601,7 @@ export class Character {
 				// Y座標を微調整して視覚的に中央に見えるよう調整
 				// iOSの場合はオフセット2、それ以外は5
 				const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-				const offset = isIOS ? 0 : 6;
+				const offset = isIOS ? 0 : 4;
 				const drawX = 64 - 24;
 				const drawY = 54 - 24 + offset;
 				this.emoteContext.drawImage(img, drawX, drawY, 48, 48);
@@ -669,7 +669,11 @@ export class Character {
 		this.emoteContext.font = '48px Arial';
 		this.emoteContext.textAlign = 'center';
 		this.emoteContext.textBaseline = 'middle';
-		this.emoteContext.fillText(emoji, 64, 54);
+		// 仕様: iOSとそれ以外でY座標オフセットを調整
+		// iOSの場合は0、それ以外は4
+		const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+		const offset = isIOS ? 0 : 4;
+		this.emoteContext.fillText(emoji, 64, 54 + offset);
 
 		// 仕様: 絵文字描画領域のアルファ値を強制的に不透明にする
 		// フォントレンダリングで半透明になる問題を修正
