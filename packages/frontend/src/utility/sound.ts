@@ -208,7 +208,7 @@ export class SoundManager {
 
 	private shouldMute(): boolean {
 		if (prefer.s['sound.notUseSound']) return true;
-		if (prefer.s['sound.useSoundOnlyWhenActive'] && document.visibilityState === 'hidden') return true;
+		if (prefer.s['sound.useSoundOnlyWhenActive'] && window.document.visibilityState === 'hidden') return true;
 		return false;
 	}
 }
