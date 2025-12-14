@@ -125,9 +125,14 @@ export async function common(createVue: () => Promise<App<Element>>) {
 			const now = Date.now();
 			// 300ms以内の連続タップをダブルタップと判定
 			if (now - lastTouchEnd <= 300) {
-				// input/textarea以外でのダブルタップを無効化
+				// 仕様: インタラクティブ要素（input/textarea/button/a）は連打を許可
+				// これらの要素は連続タップが必要な操作（絵文字エモーション連打など）で使用される
 				const target = event.target as HTMLElement;
-				if (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA') {
+				const interactiveTags = ['INPUT', 'TEXTAREA', 'BUTTON', 'A'];
+				const isInteractive = interactiveTags.includes(target.tagName) ||
+					target.closest('button') !== null ||
+					target.closest('a') !== null;
+				if (!isInteractive) {
 					event.preventDefault();
 				}
 			}

@@ -565,13 +565,17 @@ export class Character {
 	// isCustom=trueかつurlがある場合はカスタム絵文字画像を描画
 	// それ以外はテキストとして絵文字を描画
 	public showEmote(emoji: string, isCustom?: boolean, url?: string): void {
-		// Reset timer and make sprite visible
+		// 仕様: タイマーとスケールをリセットしてアニメーションを最初から開始
+		// これにより連打時も毎回ポップインアニメーションが再生される
 		this.emoteTimer = 0;
+		this.emoteScale = 0;
 		this.emoteSprite.visible = true;
 		// 仕様: spriteのmaterial.opacityを1に設定し、完全不透明で表示開始
 		// アニメーション側でopacityは制御されるが、showEmote呼び出し時点で即座に表示する
 		const material = this.emoteSprite.material as THREE.SpriteMaterial;
 		material.opacity = 1;
+		// 仕様: スケールも即座にリセットして小さい状態から開始
+		this.emoteSprite.scale.set(0, 0, 1);
 
 		// Draw bubble background first
 		this.drawEmoteBubble();
@@ -594,7 +598,7 @@ export class Character {
 				// Y座標を微調整して視覚的に中央に見えるよう調整
 				// iOSの場合はオフセット2、それ以外は5
 				const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-				const offset = isIOS ? 2 : 5;
+				const offset = isIOS ? 0 : 5;
 				const drawX = 64 - 24;
 				const drawY = 54 - 24 + offset;
 				this.emoteContext.drawImage(img, drawX, drawY, 48, 48);
