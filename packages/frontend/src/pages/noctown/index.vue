@@ -443,8 +443,33 @@ async function connectStream(): Promise<void> {
 	await fetchNearbyPlayers();
 }
 
+/**
+ * 仕様: WebSocketでplayerMovedイベントを受信した際の処理
+ * 修正: 自プレイヤーの判定を強化し、デバッグログを追加
+ * 修正日: 2025-12-14
+ */
 function handlePlayerMoved(data: PlayerData): void {
-	if (!engine || data.id === playerData.value?.id) return;
+	// デバッグログ: playerMovedイベントの受信内容を確認
+	console.log('[handlePlayerMoved] Received playerMoved event:', {
+		receivedId: data.id,
+		localPlayerId: playerData.value?.id,
+		isLocalPlayer: data.id === playerData.value?.id,
+		username: data.username,
+		position: { x: data.positionX, y: data.positionY, z: data.positionZ },
+		rotation: data.rotation,
+	});
+
+	if (!engine) {
+		console.warn('[handlePlayerMoved] Engine not initialized');
+		return;
+	}
+
+	// 自プレイヤーの場合はスキップ
+	if (data.id === playerData.value?.id) {
+		console.log('[handlePlayerMoved] Skipping local player update');
+		return;
+	}
+
 	engine.updateRemotePlayer(data);
 }
 
@@ -720,6 +745,14 @@ function startMovementLoop(): void {
 	let lastChunkCheckTime = 0;
 	const chunkCheckInterval = 1000; // Check for new chunks every 1 second
 
+	/**
+	 * 仕様: プレイヤー移動ループ（60fps）
+	 * - キーボード入力とジョイスティック入力を統合
+	 * - 移動がある場合のみ位置を更新してサーバーに送信（100ms間隔でスロットル）
+	 * - 移動がない場合はチャンクロードのみ実行（1秒間隔）
+	 * 修正日: 2025-12-14
+	 * 修正内容: プレイヤーが移動していない場合は位置送信をスキップ
+	 */
 	moveInterval = setInterval(() => {
 		if (!engine || !isConnected.value) return;
 
@@ -729,12 +762,14 @@ function startMovementLoop(): void {
 		// Merge keyboard and joystick inputs
 		let finalInput = { x: 0, z: 0, rotation: currentRotation };
 		let hasJoystickInput = false;
+		let isMoving = false;
 
 		if (joystickMovement.x !== 0 || joystickMovement.z !== 0) {
 			// Use joystick input (mobile)
 			finalInput.x = joystickMovement.x;
 			finalInput.z = joystickMovement.z;
 			hasJoystickInput = true;
+			isMoving = true;
 			// Calculate rotation from joystick direction
 			if (joystickMovement.x !== 0 || joystickMovement.z !== 0) {
 				finalInput.rotation = Math.atan2(joystickMovement.x, joystickMovement.z);
@@ -751,9 +786,12 @@ function startMovementLoop(): void {
 		} else if (engine.isMoving()) {
 			// Use keyboard input (PC)
 			finalInput = keyboardInput;
+			isMoving = true;
 			// Keyboard input is already tracked by engine.ts via keys Set
-		} else {
-			// No movement - but still check for chunk loading
+		}
+
+		// 移動がない場合はチャンクロードのみ実行してreturn
+		if (!isMoving) {
 			const now = Date.now();
 			if (now - lastChunkCheckTime >= chunkCheckInterval) {
 				loadNearbyChunks(currentX.value, currentZ.value);
@@ -761,6 +799,8 @@ function startMovementLoop(): void {
 			}
 			return;
 		}
+
+		// 移動がある場合のみ以下を実行
 
 		// Update local position
 		currentX.value += finalInput.x * moveSpeed;
@@ -846,7 +886,7 @@ function startPingPong(): void {
 				pingId,
 			});
 		}
-	}, 1000); // Every 1 second
+	}, 30000); // Every 30 seconds
 }
 
 // FR-017: Handle pong response and update player mark color
