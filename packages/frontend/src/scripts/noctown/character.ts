@@ -588,8 +588,11 @@ export class Character {
 				this.emoteContext.globalAlpha = 1.0;
 				// 仕様: カスタム絵文字を吹き出しの中央（64, 54）に描画
 				// 48x48の画像なので、左上座標は(64-24, 54-24) = (40, 30)
-				// Y座標を+2して視覚的に中央に見えるよう微調整
-				this.emoteContext.drawImage(img, 64 - 24, 54 - 24 + 4, 48, 48);
+				// Y座標を微調整して視覚的に中央に見えるよう調整
+				// iOSの場合はオフセット2、それ以外は5
+				const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+				const offset = isIOS ? 2 : 5;
+				this.emoteContext.drawImage(img, 64 - 24, 54 - 24 + offset, 48, 48);
 				this.emoteTexture.needsUpdate = true;
 			};
 			// T016: Fallback on error - draw emoji text or placeholder
@@ -638,8 +641,10 @@ export class Character {
 
 	/**
 	 * T014: Draw emoji text on emote bubble
+	 * 仕様: globalAlphaを1.0に設定して完全不透明で描画
 	 */
 	private drawEmojiText(emoji: string): void {
+		this.emoteContext.globalAlpha = 1.0;
 		this.emoteContext.font = '48px Arial';
 		this.emoteContext.textAlign = 'center';
 		this.emoteContext.textBaseline = 'middle';
