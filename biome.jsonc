@@ -89,6 +89,7 @@
 	],
 	"formatter": {
 		"enabled": false,
+		"useEditorconfig": true,
 		"indentStyle": "tab"
 	},
 	"linter": {
