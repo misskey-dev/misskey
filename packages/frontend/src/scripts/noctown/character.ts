@@ -77,6 +77,13 @@ export class Character {
 	private chatTimer: number = 0;
 	private chatDuration: number = 5.0;
 
+	// FR-019: Typing indicator sprite
+	private typingSprite!: THREE.Sprite;
+	private typingCanvas!: HTMLCanvasElement;
+	private typingContext!: CanvasRenderingContext2D;
+	private typingTexture!: THREE.CanvasTexture;
+	private typingAnimationPhase: number = 0;
+
 	// Name display (character-demo+9-player-name.html準拠)
 	private nameSprite!: THREE.Sprite;
 	private nameCanvas!: HTMLCanvasElement;
@@ -107,6 +114,7 @@ export class Character {
 		this.createBody();
 		this.createEmoteSprite();
 		this.createChatSprite();
+		this.createTypingSprite();
 		this.createNameSprite();
 	}
 
@@ -345,6 +353,103 @@ export class Character {
 		this.chatSprite.scale.set(5, 2.5, 1); // Scale 5x2.5 for 512x256 canvas
 		this.chatSprite.visible = false;
 		this.group.add(this.chatSprite);
+	}
+
+	/**
+	 * FR-019: Create typing indicator sprite above character head
+	 * Displays animated speech bubble icon while player is typing
+	 */
+	private createTypingSprite(): void {
+		// Create 128x128 canvas for typing indicator
+		this.typingCanvas = document.createElement('canvas');
+		this.typingCanvas.width = 128;
+		this.typingCanvas.height = 128;
+		this.typingContext = this.typingCanvas.getContext('2d')!;
+
+		// Create texture from canvas
+		this.typingTexture = new THREE.CanvasTexture(this.typingCanvas);
+		this.typingTexture.minFilter = THREE.LinearFilter;
+		this.typingTexture.magFilter = THREE.LinearFilter;
+
+		// Create sprite material
+		const material = new THREE.SpriteMaterial({
+			map: this.typingTexture,
+			transparent: true,
+			opacity: 1,
+		});
+
+		// Create sprite
+		this.typingSprite = new THREE.Sprite(material);
+		this.typingSprite.position.y = 4; // Above head (same as emote/chat)
+		this.typingSprite.scale.set(1.5, 1.5, 1);
+		this.typingSprite.visible = false;
+		this.group.add(this.typingSprite);
+	}
+
+	/**
+	 * FR-019: Render typing indicator to canvas
+	 * Draws a speech bubble icon with animated dots
+	 */
+	private renderTypingIndicator(): void {
+		const ctx = this.typingContext;
+		ctx.clearRect(0, 0, 128, 128);
+
+		// Draw white circle background
+		ctx.fillStyle = '#ffffff';
+		ctx.beginPath();
+		ctx.arc(64, 54, 40, 0, Math.PI * 2);
+		ctx.fill();
+
+		// Draw black border
+		ctx.strokeStyle = '#000000';
+		ctx.lineWidth = 3;
+		ctx.beginPath();
+		ctx.arc(64, 54, 40, 0, Math.PI * 2);
+		ctx.stroke();
+
+		// Draw triangle tail at bottom
+		ctx.fillStyle = '#ffffff';
+		ctx.beginPath();
+		ctx.moveTo(64, 94);
+		ctx.lineTo(54, 104);
+		ctx.lineTo(74, 104);
+		ctx.closePath();
+		ctx.fill();
+		ctx.stroke();
+
+		// Draw animated three dots (...)
+		// Phase cycles 0 -> 1 -> 2 -> 0
+		const dotRadius = 6;
+		const dotY = 54;
+		const dotSpacing = 20;
+		const baseX = 64 - dotSpacing;
+
+		for (let i = 0; i < 3; i++) {
+			// Calculate opacity based on animation phase
+			// Each dot fades in sequence
+			const dotPhase = (this.typingAnimationPhase + i * 0.33) % 1;
+			const opacity = 0.3 + 0.7 * Math.sin(dotPhase * Math.PI);
+
+			ctx.fillStyle = `rgba(102, 102, 102, ${opacity})`;
+			ctx.beginPath();
+			ctx.arc(baseX + i * dotSpacing, dotY, dotRadius, 0, Math.PI * 2);
+			ctx.fill();
+		}
+
+		// Update texture
+		this.typingTexture.needsUpdate = true;
+	}
+
+	/**
+	 * FR-019: Show or hide typing indicator
+	 * @param show Whether to show the typing indicator
+	 */
+	public showTypingIndicator(show: boolean): void {
+		this.typingSprite.visible = show;
+		if (show) {
+			this.typingAnimationPhase = 0;
+			this.renderTypingIndicator();
+		}
 	}
 
 	/**
@@ -932,6 +1037,13 @@ export class Character {
 			if (this.chatTimer >= this.chatDuration) {
 				this.chatSprite.visible = false;
 			}
+		}
+
+		// FR-019: Update typing indicator animation
+		if (this.typingSprite.visible) {
+			// Animate dots at 2Hz (phase cycles 0 -> 1 every 0.5 seconds)
+			this.typingAnimationPhase = (this.typingAnimationPhase + deltaTime * 2) % 1;
+			this.renderTypingIndicator();
 		}
 	}
 

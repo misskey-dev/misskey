@@ -519,6 +519,22 @@ export class NoctownService {
 		return this.noctownPlayersRepository.findBy({ isOnline: true });
 	}
 
+	// FR-019: Typing indicator - broadcast when player starts typing
+	@bindThis
+	public broadcastTypingStart(playerId: string): void {
+		this.globalEventService.publishNoctownStream('typingStart', {
+			playerId,
+		});
+	}
+
+	// FR-019: Typing indicator - broadcast when player stops typing
+	@bindThis
+	public broadcastTypingEnd(playerId: string): void {
+		this.globalEventService.publishNoctownStream('typingEnd', {
+			playerId,
+		});
+	}
+
 	// =============================================
 	// Quest System Methods
 	// =============================================

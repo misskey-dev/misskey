@@ -13,6 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:placeholder="'メッセージを入力...'"
 		maxlength="100"
 		@keydown="handleKeydown"
+		@input="handleInput"
 		@compositionstart="composing = true"
 		@compositionend="composing = false"
 		@focus="emit('focused')"
@@ -35,6 +36,7 @@ const emit = defineEmits<{
 	(ev: 'send', message: string): void;
 	(ev: 'focused'): void;
 	(ev: 'blurred'): void;
+	(ev: 'input', hasText: boolean): void;
 }>();
 
 const chatInputRef = ref<HTMLInputElement>();
@@ -49,6 +51,12 @@ function handleKeydown(event: KeyboardEvent): void {
 		event.preventDefault();
 		sendMessage();
 	}
+}
+
+// FR-019: Emit input event for typing indicator
+function handleInput(): void {
+	const hasText = message.value.trim().length > 0;
+	emit('input', hasText);
 }
 
 function sendMessage(): void {

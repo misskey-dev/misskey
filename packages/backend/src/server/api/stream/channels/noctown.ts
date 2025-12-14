@@ -99,6 +99,12 @@ class NoctownChannel extends Channel {
 				if (!isJsonObject(body)) return;
 				this.handlePlayerPong(body);
 				break;
+			case 'typingStart':
+				this.handleTypingStart();
+				break;
+			case 'typingEnd':
+				this.handleTypingEnd();
+				break;
 		}
 	}
 
@@ -220,6 +226,20 @@ class NoctownChannel extends Channel {
 
 		// ping送信元にpongを返送
 		this.noctownService.sendPlayerPong(this.playerId, senderPlayerId, pingId);
+	}
+
+	// FR-019: Typing indicator - broadcast when player starts typing
+	@bindThis
+	private handleTypingStart(): void {
+		if (this.playerId == null) return;
+		this.noctownService.broadcastTypingStart(this.playerId);
+	}
+
+	// FR-019: Typing indicator - broadcast when player stops typing
+	@bindThis
+	private handleTypingEnd(): void {
+		if (this.playerId == null) return;
+		this.noctownService.broadcastTypingEnd(this.playerId);
 	}
 
 	@bindThis

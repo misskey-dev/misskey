@@ -106,6 +106,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					@send="handleChatSend"
 					@focused="chatInputFocused = true"
 					@blurred="chatInputFocused = false"
+					@input="handleChatInput"
 				/>
 
 				<!-- FR-018: Player info floating window -->
@@ -224,6 +225,11 @@ const selectedPlayerPingTime = ref<number | null>(null);
 const isPlayerInfoPinging = ref(false);
 // Track pending pings for player info window (separate from status mark pings)
 const pendingPlayerInfoPings = new Map<string, { playerId: string; sentTime: number; timeoutId: ReturnType<typeof setTimeout> }>();
+
+// FR-019: Typing indicator state
+let isTyping = false;
+let typingDebounceTimeout: ReturnType<typeof setTimeout> | null = null;
+let typingAutoHideTimeout: ReturnType<typeof setTimeout> | null = null;
 
 // Movement state
 // T045: Make coordinates reactive for UI display
@@ -392,6 +398,14 @@ async function connectStream(): Promise<void> {
 		handlePlayerChatted(body);
 	});
 
+	// FR-019: Handle typing indicator events
+	connection.value.on('typingStart', (body: { playerId: string }) => {
+		handleTypingStart(body);
+	});
+	connection.value.on('typingEnd', (body: { playerId: string }) => {
+		handleTypingEnd(body);
+	});
+
 	// FR-017: Handle pong response for player status mark color
 	connection.value.on('pong', (body: { playerId: string }) => {
 		handlePongReceived(body);
@@ -470,8 +484,34 @@ function handlePlayerChatted(data: { playerId: string; message: string }): void 
 	engine.showRemotePlayerChat(data.playerId, data.message);
 }
 
+// FR-019: Handle typing indicator start event
+function handleTypingStart(data: { playerId: string }): void {
+	if (!engine) return;
+	engine.showRemotePlayerTyping(data.playerId, true);
+}
+
+// FR-019: Handle typing indicator end event
+function handleTypingEnd(data: { playerId: string }): void {
+	if (!engine) return;
+	engine.showRemotePlayerTyping(data.playerId, false);
+}
+
 function handleChatSend(message: string): void {
 	if (!engine || !connection.value) return;
+
+	// FR-019: Clear typing state when sending
+	if (isTyping) {
+		isTyping = false;
+		connection.value.send('typingEnd', {});
+	}
+	if (typingDebounceTimeout) {
+		clearTimeout(typingDebounceTimeout);
+		typingDebounceTimeout = null;
+	}
+	if (typingAutoHideTimeout) {
+		clearTimeout(typingAutoHideTimeout);
+		typingAutoHideTimeout = null;
+	}
 
 	// Show chat on local player
 	engine.showLocalPlayerChat(message);
@@ -480,6 +520,50 @@ function handleChatSend(message: string): void {
 	connection.value.send('chat', {
 		message,
 	});
+}
+
+// FR-019: Handle chat input changes for typing indicator
+function handleChatInput(hasText: boolean): void {
+	if (!connection.value) return;
+
+	// Clear existing timeouts
+	if (typingDebounceTimeout) {
+		clearTimeout(typingDebounceTimeout);
+		typingDebounceTimeout = null;
+	}
+
+	if (hasText) {
+		// User is typing - send typingStart if not already typing
+		if (!isTyping) {
+			isTyping = true;
+			connection.value.send('typingStart', {});
+		}
+
+		// Reset auto-hide timeout (3 seconds after last input)
+		if (typingAutoHideTimeout) {
+			clearTimeout(typingAutoHideTimeout);
+		}
+		typingAutoHideTimeout = setTimeout(() => {
+			if (isTyping) {
+				isTyping = false;
+				connection.value?.send('typingEnd', {});
+			}
+			typingAutoHideTimeout = null;
+		}, 3000);
+	} else {
+		// User cleared input - debounce typingEnd by 500ms
+		typingDebounceTimeout = setTimeout(() => {
+			if (isTyping) {
+				isTyping = false;
+				connection.value?.send('typingEnd', {});
+			}
+			if (typingAutoHideTimeout) {
+				clearTimeout(typingAutoHideTimeout);
+				typingAutoHideTimeout = null;
+			}
+			typingDebounceTimeout = null;
+		}, 500);
+	}
 }
 
 async function fetchNearbyPlayers(): Promise<void> {
