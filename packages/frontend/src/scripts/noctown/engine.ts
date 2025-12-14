@@ -582,7 +582,20 @@ export class NoctownEngine {
 		this.labelRenderer.setSize(width, height);
 	};
 
+	/**
+	 * 仕様: キーダウンイベントハンドラー
+	 * - テキスト入力フィールド（input, textarea）にフォーカスがある場合は無視
+	 * - contentEditable要素にフォーカスがある場合も無視
+	 * - それ以外の場合のみキー入力を記録
+	 * 修正日: 2025-12-14
+	 * 修正内容: チャット入力中に矢印キーで移動してしまう問題を修正
+	 */
 	private onKeyDown = (e: KeyboardEvent): void => {
+		// チャット入力などのテキストフィールドにフォーカスがある場合は移動キーを無視
+		const target = e.target as HTMLElement;
+		if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
+			return;
+		}
 		this.keys.add(e.code);
 	};
 

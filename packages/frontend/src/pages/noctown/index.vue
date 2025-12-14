@@ -261,7 +261,11 @@ const moveSpeed = 0.15;
 
 // T027, T028: Mobile/tablet device detection for virtual joystick
 // Show joystick on mobile/tablet devices that don't have a physical keyboard
+// Also show on tablet-sized windows (768px or smaller)
 const shouldShowJoystick = ref(false);
+
+// Window resize handler to show/hide joystick based on window size
+let resizeHandler: (() => void) | null = null;
 
 // T030: Joystick movement state
 let joystickMovement = { x: 0, z: 0 };
@@ -350,12 +354,14 @@ async function initialize(): Promise<void> {
 		// FR-025: Determine if virtual joystick should be shown
 		// Priority order:
 		// 1. localStorage has noctown:forceJoystick set to 'true' → show immediately
-		// 2. UserAgent detects mobile/tablet → show immediately
-		// 3. Navigator Keyboard API detects no keyboard → show immediately
-		// 4. None of the above → wait for touchstart event to show
+		// 2. Window width is tablet size or smaller (768px) → show immediately
+		// 3. UserAgent detects mobile/tablet → show immediately
+		// 4. Navigator Keyboard API detects no keyboard → show immediately
+		// 5. None of the above → wait for touchstart event to show
 		const forceEnabled = isForceJoystickEnabled();
-		if (forceEnabled) {
-			// FR-025: localStorage flag is set, show joystick immediately
+		const isTabletOrSmallerWindow = window.innerWidth <= 768;
+		if (forceEnabled || isTabletOrSmallerWindow) {
+			// FR-025: localStorage flag is set or window is tablet size or smaller, show joystick immediately
 			shouldShowJoystick.value = true;
 		} else {
 			const isMobile = isMobileDevice();
@@ -368,6 +374,17 @@ async function initialize(): Promise<void> {
 		if (!shouldShowJoystick.value) {
 			setupTouchEventFallback();
 		}
+
+		// Set up resize handler to show/hide joystick based on window size
+		resizeHandler = () => {
+			const isTabletOrSmaller = window.innerWidth <= 768;
+			if (isTabletOrSmaller && !shouldShowJoystick.value) {
+				shouldShowJoystick.value = true;
+			}
+			// Note: Don't hide joystick on resize to larger window if it was already shown
+			// This prevents jarring UX when user rotates device or adjusts window
+		};
+		window.addEventListener('resize', resizeHandler);
 
 		// Check if user is logged in
 		if (!$i) {
@@ -1467,6 +1484,12 @@ function cleanup(): void {
 	pendingPlayerInfoPings.clear();
 
 	window.removeEventListener('keydown', handleKeyDown);
+
+	// Remove resize handler
+	if (resizeHandler) {
+		window.removeEventListener('resize', resizeHandler);
+		resizeHandler = null;
+	}
 
 	isConnected.value = false;
 }
