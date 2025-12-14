@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 2025.12.1-yami-1.9.29
+
 ### Misskey 2025.12.1への追従
 
 本家Misskey 2025.12.1をdevelopブランチにマージしました。詳細はCHANGELOG.mdを参照してください。
