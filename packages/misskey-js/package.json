@@ -1,7 +1,7 @@
 {
 	"type": "module",
 	"name": "misskey-js",
-	"version": "2025.12.0",
+	"version": "2025.12.1",
 	"description": "Misskey SDK for JavaScript",
 	"license": "MIT",
 	"main": "./built/index.js",
@@ -44,7 +44,6 @@
 		"@vitest/coverage-v8": "4.0.13",
 		"esbuild": "0.27.0",
 		"execa": "9.6.0",
-		"glob": "13.0.0",
 		"ncp": "2.0.0",
 		"nodemon": "3.1.11",
 		"tsd": "0.33.0",
