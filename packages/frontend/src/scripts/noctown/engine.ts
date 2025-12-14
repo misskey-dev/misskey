@@ -24,14 +24,14 @@ interface LightingConfig {
 
 const LIGHTING_CONFIG: Record<TimePeriod, LightingConfig> = {
 	morning: {
-		ambient: { color: 0xffd4a6, intensity: 0.6 },
-		directional: { color: 0xffaa77, intensity: 0.7, position: [-20, 15, 0] },
+		ambient: { color: 0xffd4a6, intensity: 0.9 }, // 0.6 → 0.9 に明るく
+		directional: { color: 0xffaa77, intensity: 1.0, position: [-20, 15, 0] }, // 0.7 → 1.0 に明るく
 		background: 0x87ceeb, // 朝の空
 		fog: 0x87ceeb,
 	},
 	day: {
-		ambient: { color: 0xffffff, intensity: 0.8 },
-		directional: { color: 0xffffee, intensity: 1.0, position: [0, 25, 0] },
+		ambient: { color: 0xffffff, intensity: 1.1 }, // 0.8 → 1.1 に明るく
+		directional: { color: 0xffffee, intensity: 1.3, position: [0, 25, 0] }, // 1.0 → 1.3 に明るく
 		background: 0x87ceeb, // 昼の空
 		fog: 0x87ceeb,
 	},
@@ -52,8 +52,11 @@ const LIGHTING_CONFIG: Record<TimePeriod, LightingConfig> = {
 // 時間帯判定関数（日本時間 JST=UTC+9 を基準とする）
 function getCurrentTimePeriod(): TimePeriod {
 	const now = new Date();
-	// 日本時間（JST）の時刻を取得
-	const jstHour = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Tokyo' })).getHours();
+	// 日本時間（JST）の時刻を取得：UTC + 9時間
+	const jstHour = (now.getUTCHours() + 9) % 24;
+
+	console.log('[Noctown Lighting] Current JST hour:', jstHour); // デバッグログ
+
 	if (jstHour >= 6 && jstHour < 9) return 'morning';
 	if (jstHour >= 9 && jstHour < 17) return 'day';
 	if (jstHour >= 17 && jstHour < 19) return 'evening';
@@ -81,11 +84,10 @@ function lerpColor(colorA: number, colorB: number, t: number): number {
 // 時間帯境界でのグラデーション遷移を計算（日本時間基準）
 function getTransitionProgress(): { from: TimePeriod; to: TimePeriod; progress: number } | null {
 	const now = new Date();
-	// 日本時間（JST）の時刻を取得
-	const jstDate = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
-	const hour = jstDate.getHours();
-	const minute = jstDate.getMinutes();
-	const totalMinutes = hour * 60 + minute;
+	// 日本時間（JST）の時刻を取得：UTC + 9時間
+	const jstHour = (now.getUTCHours() + 9) % 24;
+	const minute = now.getUTCMinutes();
+	const totalMinutes = jstHour * 60 + minute;
 
 	// 各境界時刻（分）: 朝6:00, 昼9:00, 夕17:00, 夜19:00
 	const transitions: { time: number; from: TimePeriod; to: TimePeriod }[] = [
@@ -753,13 +755,28 @@ export class NoctownEngine {
 		this.currentInput = { ...input };
 	}
 
+	/**
+	 * 仕様: リモートプレイヤーを追加
+	 * 修正: 自プレイヤーの判定を強化し、デバッグログを追加
+	 * 修正日: 2025-12-14
+	 */
 	public addRemotePlayer(data: PlayerData): void {
+		// デバッグログ: addRemotePlayer呼び出し内容を確認
+		console.log('[addRemotePlayer] Called with:', {
+			dataId: data.id,
+			localPlayerId: this.localPlayerId,
+			isLocalPlayer: data.id === this.localPlayerId,
+			username: data.username,
+		});
+
 		// 自プレイヤーは追加しない
 		if (data.id === this.localPlayerId) {
+			console.warn('[addRemotePlayer] Attempted to add local player, skipping');
 			return;
 		}
 
 		if (this.remotePlayers.has(data.id)) {
+			console.log('[addRemotePlayer] Player already exists, updating instead:', data.id);
 			this.updateRemotePlayer(data);
 			return;
 		}
@@ -799,14 +816,33 @@ export class NoctownEngine {
 		}
 	}
 
+	/**
+	 * 仕様: リモートプレイヤーの位置を更新
+	 * 修正: 自プレイヤーの判定を強化し、デバッグログを追加
+	 * 修正日: 2025-12-14
+	 */
 	public updateRemotePlayer(data: PlayerData): void {
+		// デバッグログ: updateRemotePlayer呼び出し内容を確認
+		console.log('[updateRemotePlayer] Called with:', {
+			dataId: data.id,
+			localPlayerId: this.localPlayerId,
+			isLocalPlayer: data.id === this.localPlayerId,
+			username: data.username,
+			position: { x: data.positionX, y: data.positionY, z: data.positionZ },
+			rotation: data.rotation,
+		});
+
 		// 自プレイヤーの位置は更新しない
 		if (data.id === this.localPlayerId) {
+			console.warn('[updateRemotePlayer] Attempted to update local player, skipping');
 			return;
 		}
 
 		const character = this.remotePlayers.get(data.id);
-		if (!character) return;
+		if (!character) {
+			console.warn('[updateRemotePlayer] Character not found:', data.id);
+			return;
+		}
 
 		// Get previous position to calculate movement direction
 		const lastPos = this.remotePlayerLastPos.get(data.id);
