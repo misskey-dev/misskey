@@ -1239,6 +1239,13 @@ export class NoctownService {
 	// Livestock System Methods
 	// =============================================
 
+	/**
+	 * 仕様: ニワトリ配置
+	 * - spawnX, spawnZ: 配置位置をスポーン位置として保存（NPC移動の中心点）
+	 * - flavorText: マルコフ連鎖で自動生成
+	 * 修正日: 2025-12-14
+	 * 修正内容: spawnX, spawnZ, flavorTextカラムの値を追加
+	 */
 	@bindThis
 	public async placeChicken(
 		playerId: string,
@@ -1253,6 +1260,10 @@ export class NoctownService {
 			return { success: false, error: 'MAX_CHICKENS_REACHED' };
 		}
 
+		// フレーバーテキスト生成（markov-flavor-text.tsから動的インポート）
+		const { generateFlavorText } = await import('./markov-flavor-text.js');
+		const flavorText = generateFlavorText('chicken');
+
 		const chickenId = this.idService.gen();
 		await this.noctownChickensRepository.insert({
 			id: chickenId,
@@ -1261,6 +1272,9 @@ export class NoctownService {
 			positionX: x,
 			positionY: y,
 			positionZ: z,
+			spawnX: x,
+			spawnZ: z,
+			flavorText,
 			hunger: 100,
 			happiness: 100,
 			eggsReady: 0,
@@ -1394,6 +1408,13 @@ export class NoctownService {
 		return { success: true, quantity: eggsCollected };
 	}
 
+	/**
+	 * 仕様: ウシ配置
+	 * - spawnX, spawnZ: 配置位置をスポーン位置として保存（NPC移動の中心点）
+	 * - flavorText: マルコフ連鎖で自動生成
+	 * 修正日: 2025-12-14
+	 * 修正内容: spawnX, spawnZ, flavorTextカラムの値を追加
+	 */
 	@bindThis
 	public async placeCow(
 		playerId: string,
@@ -1408,6 +1429,10 @@ export class NoctownService {
 			return { success: false, error: 'MAX_COWS_REACHED' };
 		}
 
+		// フレーバーテキスト生成（markov-flavor-text.tsから動的インポート）
+		const { generateFlavorText } = await import('./markov-flavor-text.js');
+		const flavorText = generateFlavorText('cow');
+
 		const cowId = this.idService.gen();
 		await this.noctownCowsRepository.insert({
 			id: cowId,
@@ -1416,6 +1441,9 @@ export class NoctownService {
 			positionX: x,
 			positionY: y,
 			positionZ: z,
+			spawnX: x,
+			spawnZ: z,
+			flavorText,
 			hunger: 100,
 			happiness: 100,
 			milkReady: 0,

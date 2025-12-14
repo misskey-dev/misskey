@@ -25,7 +25,7 @@ export const meta = {
 			id: { type: 'string' },
 			userId: { type: 'string' },
 			username: { type: 'string' },
-			displayName: { type: 'string' },
+			name: { type: 'string', nullable: true },
 			avatarUrl: { type: 'string', nullable: true },
 			positionX: { type: 'number' },
 			positionY: { type: 'number' },
@@ -77,11 +77,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const policies = await this.roleService.getUserPolicies(player.userId);
 			const isSilenced = !policies.canPublicNote;
 
+			// name: Misskeyユーザーの表示名（設定されていない場合はnull）
 			return {
 				id: player.id,
 				userId: player.userId,
 				username: user?.username ?? 'unknown',
-				displayName: user?.name ?? user?.username ?? 'unknown',
+				name: user?.name ?? null,
 				avatarUrl: user?.avatarUrl ?? null,
 				positionX: player.positionX,
 				positionY: player.positionY,

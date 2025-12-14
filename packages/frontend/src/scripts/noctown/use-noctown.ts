@@ -218,14 +218,6 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 			channel.on('playerLeft', (body: { playerId: string }) => {
 				handlePlayerLeft(body);
 			});
-			// SC-011: View Distance外プレイヤーのオンライン同期（完全なPlayerDataを受信）
-			channel.on('playerOnline', (body: PlayerData) => {
-				handlePlayerOnline(body);
-			});
-			// SC-012: プレイヤーがオフラインになった時の処理
-			channel.on('playerOffline', (body: { playerId: string }) => {
-				handlePlayerOffline(body);
-			});
 
 			// T038: Handle chunkGenerated event and render terrain
 			channel.on('chunkGenerated', (body: ChunkData) => {
@@ -307,27 +299,6 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 
 	function handlePlayerLeft(data: { playerId: string }): void {
 		if (!engine) return;
-		engine.removeRemotePlayer(data.playerId);
-	}
-
-	// SC-011: View Distance外プレイヤーのオンライン同期
-	// playerOnlineイベントには完全なPlayerDataが含まれているので直接追加
-	function handlePlayerOnline(data: PlayerData): void {
-		if (!engine || data.id === playerData.value?.id) return;
-
-		console.log(`Player ${data.username || data.id} came online, adding to scene`);
-
-		// 完全なPlayerDataを使用して直接プレイヤーを追加/更新
-		engine.addRemotePlayer(data);
-	}
-
-	// SC-012: プレイヤーがオフラインになった時の処理
-	function handlePlayerOffline(data: { playerId: string }): void {
-		if (!engine) return;
-
-		console.log(`Player ${data.playerId} went offline, removing from scene`);
-
-		// オフラインプレイヤーをシーンから削除
 		engine.removeRemotePlayer(data.playerId);
 	}
 
