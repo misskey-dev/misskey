@@ -9,7 +9,6 @@ import { dirname } from 'node:path';
 import { Injectable } from '@nestjs/common';
 import si from 'systeminformation';
 import { Mutex } from 'async-mutex';
-import fetch from 'node-fetch';
 import { bindThis } from '@/decorators.js';
 import type { NSFWJS, PredictionType } from 'nsfwjs';
 

@@ -5,7 +5,6 @@
 
 import { afterAll, beforeAll, beforeEach, describe, expect, jest } from '@jest/globals';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Response } from 'node-fetch';
 import {
 	CaptchaError,
 	CaptchaErrorCode,

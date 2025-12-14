@@ -9,7 +9,6 @@ import * as net from 'node:net';
 import * as stream from 'node:stream';
 import ipaddr from 'ipaddr.js';
 import CacheableLookup from 'cacheable-lookup';
-import fetch from 'node-fetch';
 import { HttpProxyAgent, HttpsProxyAgent } from 'hpagent';
 import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
@@ -19,7 +18,6 @@ import { bindThis } from '@/decorators.js';
 import { validateContentTypeSetAsActivityPub } from '@/core/activitypub/misc/validator.js';
 import { assertActivityMatchesUrl, FetchAllowSoftFailMask } from '@/core/activitypub/misc/check-against-url.js';
 import type { IObject } from '@/core/activitypub/type.js';
-import type { Response } from 'node-fetch';
 import type { URL } from 'node:url';
 
 export type HttpRequestSendOptions = {

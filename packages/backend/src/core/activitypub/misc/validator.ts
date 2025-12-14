@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { Response } from 'node-fetch';
-
 export function validateContentTypeSetAsActivityPub(response: Response): void {
 	const contentType = (response.headers.get('content-type') ?? '').toLowerCase();
 
