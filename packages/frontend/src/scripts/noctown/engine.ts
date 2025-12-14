@@ -194,6 +194,8 @@ export class NoctownEngine {
 		right: false,
 		sprint: false,
 	};
+	// ジョイスティック入力がアクティブかどうか（setInput()で設定され、clearInput()でリセット）
+	private isJoystickActive: boolean = false;
 	// Track remote player positions for movement direction calculation
 	private remotePlayerLastPos: Map<string, { x: number; z: number; time: number }> = new Map();
 
@@ -596,35 +598,21 @@ export class NoctownEngine {
 
 		/**
 		 * 仕様: キーボード入力の状態をcurrentInputに反映
-		 * - キーボード入力がある場合: キー状態をそのまま反映
-		 * - キーボード入力がない場合かつジョイスティック入力もない場合: 全てfalseにリセット
-		 * - ジョイスティック入力がある場合: setInput()で設定された値をそのまま使用
+		 * - ジョイスティック入力がアクティブな場合: setInput()で設定された値を維持
+		 * - キーボード入力のみの場合: keys Setの状態を反映
 		 * 修正: キーを離した時にcurrentInputがリセットされない問題を修正
+		 *       isJoystickActiveフラグを使用してジョイスティック入力時はキーボード処理をスキップ
 		 * 修正日: 2025-12-14
 		 */
-		// キーボード入力の状態を常にcurrentInputに反映（押されているキーのみtrue）
-		// ジョイスティック入力がある場合はsetInput()で上書きされる
-		const hasJoystickInput = this.currentInput.up || this.currentInput.down ||
-			this.currentInput.left || this.currentInput.right;
-		const hasKeyboardInput = this.keys.has('ArrowUp') || this.keys.has('ArrowDown') ||
-			this.keys.has('ArrowLeft') || this.keys.has('ArrowRight');
-
-		if (hasKeyboardInput) {
-			// キーボード入力がある場合: 現在押されているキーの状態を反映
+		// ジョイスティック入力がアクティブな場合はsetInput()で設定された値を使用
+		// キーボード入力のみの場合はkeys Setの状態を反映
+		if (!this.isJoystickActive) {
 			this.currentInput.up = this.keys.has('ArrowUp');
 			this.currentInput.down = this.keys.has('ArrowDown');
 			this.currentInput.left = this.keys.has('ArrowLeft');
 			this.currentInput.right = this.keys.has('ArrowRight');
 			this.currentInput.sprint = this.keys.has('ShiftLeft') || this.keys.has('ShiftRight');
-		} else if (!hasJoystickInput) {
-			// キーボード入力もジョイスティック入力もない場合: 全てリセット
-			this.currentInput.up = false;
-			this.currentInput.down = false;
-			this.currentInput.left = false;
-			this.currentInput.right = false;
-			this.currentInput.sprint = false;
 		}
-		// else: ジョイスティック入力がある場合はsetInput()で設定された値をそのまま使用
 
 		// T088: Update character animations with input-based animation (like character-demo.html)
 		// Note: Character.update() handles both movement and animation, but in Noctown,
@@ -778,8 +766,31 @@ export class NoctownEngine {
 		character.showTypingIndicator(isTyping);
 	}
 
+	/**
+	 * 仕様: ジョイスティック入力を設定
+	 * - isJoystickActiveフラグをtrueにして、キーボード処理をスキップ
+	 * 修正日: 2025-12-14
+	 */
 	public setInput(input: { up: boolean; down: boolean; left: boolean; right: boolean; sprint: boolean }): void {
 		this.currentInput = { ...input };
+		this.isJoystickActive = true;
+	}
+
+	/**
+	 * 仕様: ジョイスティック入力をクリア（ジョイスティックを離した時に呼ぶ）
+	 * - isJoystickActiveフラグをfalseにして、キーボード処理を再開
+	 * - currentInputを全てfalseにリセット
+	 * 修正日: 2025-12-14
+	 */
+	public clearInput(): void {
+		this.currentInput = {
+			up: false,
+			down: false,
+			left: false,
+			right: false,
+			sprint: false,
+		};
+		this.isJoystickActive = false;
 	}
 
 	/**
