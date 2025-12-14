@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineAsyncComponent, ref, watch } from 'vue';
-import type { Ref } from 'vue';
+import { defineAsyncComponent, ref, shallowRef, watch } from 'vue';
+import type { Ref, ShallowRef } from 'vue';
+import type MkEmojiPickerWindow_TypeOnly from '@/components/MkEmojiPickerWindow.vue';
 import { popup } from '@/os.js';
 import { prefer } from '@/preferences.js';
 
@@ -16,7 +17,15 @@ import { prefer } from '@/preferences.js';
  */
 class EmojiPicker {
 	private anchorElement: Ref<HTMLElement | null> = ref(null);
-	private manualShowing = ref(false);
+
+	private isWindow: boolean = false;
+	private windowComponentEl: ShallowRef<InstanceType<typeof MkEmojiPickerWindow_TypeOnly> | null> = shallowRef(null);
+	private windowShowing: boolean = false;
+
+	private dialogShowing = ref(false);
+
+	private emojisRef = ref<string[]>([]);
+
 	private onChosen?: (emoji: string) => void;
 	private onClosed?: () => void;
 
@@ -25,43 +34,73 @@ class EmojiPicker {
 	}
 
 	public async init() {
-		const emojisRef = ref<string[]>([]);
-
 		watch([prefer.r.emojiPaletteForMain, prefer.r.emojiPalettes], () => {
-			emojisRef.value = prefer.s.emojiPaletteForMain == null ? prefer.s.emojiPalettes[0].emojis : prefer.s.emojiPalettes.find(palette => palette.id === prefer.s.emojiPaletteForMain)?.emojis ?? [];
+			this.emojisRef.value = prefer.s.emojiPaletteForMain == null ? prefer.s.emojiPalettes[0].emojis : prefer.s.emojiPalettes.find(palette => palette.id === prefer.s.emojiPaletteForMain)?.emojis ?? [];
 		}, {
 			immediate: true,
 		});
 
-		await popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerDialog.vue')), {
-			anchorElement: this.anchorElement,
-			pinnedEmojis: emojisRef,
-			asReactionPicker: false,
-			manualShowing: this.manualShowing,
-			choseAndClose: false,
-		}, {
-			done: emoji => {
-				if (this.onChosen) this.onChosen(emoji);
-			},
-			close: () => {
-				this.manualShowing.value = false;
-			},
-			closed: () => {
-				this.anchorElement.value = null;
-				if (this.onClosed) this.onClosed();
-			},
-		});
+		if (prefer.s.emojiPickerStyle === 'window') {
+			// init後にemojiPickerStyleが変わった場合、drawer/popup用の初期化をスキップするため、
+			// 正常に絵文字ピッカーが表示されない。
+			// なので一度initされたらwindow表示で固定する（設定を変更したら要リロード）
+			this.isWindow = true;
+		} else {
+			await popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerDialog.vue')), {
+				anchorElement: this.anchorElement,
+				pinnedEmojis: this.emojisRef,
+				asReactionPicker: false,
+				manualShowing: this.dialogShowing,
+				choseAndClose: false,
+			}, {
+				done: emoji => {
+					if (this.onChosen) this.onChosen(emoji);
+				},
+				close: () => {
+					this.dialogShowing.value = false;
+				},
+				closed: () => {
+					this.anchorElement.value = null;
+					if (this.onClosed) this.onClosed();
+				},
+			});
+		}
 	}
 
-	public show(
+	public show(opts: {
 		anchorElement: HTMLElement,
 		onChosen?: EmojiPicker['onChosen'],
 		onClosed?: EmojiPicker['onClosed'],
-	) {
-		this.anchorElement.value = anchorElement;
-		this.manualShowing.value = true;
-		this.onChosen = onChosen;
-		this.onClosed = onClosed;
+	}) {
+		if (this.isWindow) {
+			if (this.windowShowing) return;
+			this.windowShowing = true;
+			const { dispose, componentRef } = popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerWindow.vue')), {
+				pinnedEmojis: this.emojisRef,
+				asReactionPicker: false,
+			}, {
+				chosen: (emoji) => {
+					if (opts.onChosen) opts.onChosen(emoji);
+				},
+				closed: () => {
+					if (opts.onClosed) opts.onClosed();
+					this.windowShowing = false;
+					dispose();
+				},
+			});
+			this.windowComponentEl = componentRef;
+		} else {
+			this.anchorElement.value = opts.anchorElement;
+			this.dialogShowing.value = true;
+			this.onChosen = opts.onChosen;
+			this.onClosed = opts.onClosed;
+		}
+	}
+
+	public closeWindow() {
+		if (this.isWindow && this.windowComponentEl.value) {
+			this.windowComponentEl.value.close();
+		}
 	}
 }
 

@@ -5,10 +5,10 @@
 
 // TODO: なんでもかんでもos.tsに突っ込むのやめたいのでよしなに分割する
 
-import { markRaw, ref, defineAsyncComponent, nextTick } from 'vue';
+import { markRaw, ref, shallowRef, defineAsyncComponent, nextTick } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import * as Misskey from 'misskey-js';
-import type { Component, Ref } from 'vue';
+import type { Component, Ref, ShallowRef } from 'vue';
 import type { ComponentEmit, ComponentProps as CP } from 'vue-component-type-helpers';
 import type { Form, GetFormResultType } from '@/utility/form.js';
 import type { MenuItem } from '@/types/menu.js';
@@ -143,6 +143,7 @@ let popupIdCount = 0;
 export const popups = ref<{
 	id: number;
 	component: Component;
+	componentRef: ShallowRef<Component | null>;
 	props: Record<string, any>;
 	events: Record<string, any>;
 }[]>([]);
@@ -161,12 +162,20 @@ export function claimZIndex(priority: keyof typeof zIndexes = 'low'): number {
 // props に ref を許可するようにする
 type ComponentProps<T extends Component> = { [K in keyof CP<T>]: CP<T>[K] | Ref<CP<T>[K]> };
 
-export function popup<T extends Component>(
+export function popup<
+	T extends Component,
+	TI extends T extends new (...args: unknown[]) => infer I ? I : T,
+>(
 	component: T,
 	props: ComponentProps<T>,
 	events: Partial<ComponentEmit<T>> = {},
-): { dispose: () => void } {
+): {
+	dispose: () => void;
+	componentRef: ShallowRef<TI | null>;
+} {
 	markRaw(component);
+
+	const componentRef = shallowRef<TI | null>(null);
 
 	const id = ++popupIdCount;
 	const dispose = () => {
@@ -177,6 +186,7 @@ export function popup<T extends Component>(
 	};
 	const state = {
 		component,
+		componentRef,
 		props,
 		events,
 		id,
@@ -186,10 +196,14 @@ export function popup<T extends Component>(
 
 	return {
 		dispose,
+		componentRef,
 	};
 }
 
-export async function popupAsyncWithDialog<T extends Component>(
+export async function popupAsyncWithDialog<
+	T extends Component,
+	TI extends T extends new (...args: unknown[]) => infer I ? I : T,
+>(
 	componentFetching: Promise<T>,
 	props: ComponentProps<T>,
 	events: Partial<ComponentEmit<T>> = {},
@@ -219,6 +233,8 @@ export async function popupAsyncWithDialog<T extends Component>(
 
 	markRaw(component);
 
+	const componentRef = shallowRef<TI | null>(null);
+
 	const id = ++popupIdCount;
 	const dispose = () => {
 		// このsetTimeoutが無いと挙動がおかしくなる(autocompleteが閉じなくなる)。Vueのバグ？
@@ -226,8 +242,10 @@ export async function popupAsyncWithDialog<T extends Component>(
 			popups.value = popups.value.filter(p => p.id !== id);
 		}, 0);
 	};
+
 	const state = {
 		component,
+		componentRef,
 		props,
 		events,
 		id,
