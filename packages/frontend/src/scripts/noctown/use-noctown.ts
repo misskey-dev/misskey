@@ -143,7 +143,7 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 	const loadedChunks = new Set<string>();
 	const CHUNK_SIZE = 16;
 	const CHUNK_LOAD_DISTANCE = 2; // Load chunks 2 chunks ahead
-	let worldId = 'default'; // Will be set from player data
+	let worldId: string | null = null; // Set from player data
 
 	async function initialize(): Promise<void> {
 		try {
@@ -489,7 +489,7 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 
 	// T036-T037: Load nearby chunks using WebSocket chunk generation
 	async function loadNearbyChunks(x: number, z: number): Promise<void> {
-		if (!channel || !isConnected.value) return;
+		if (!channel || !isConnected.value || !worldId) return;
 
 		const playerChunkX = Math.floor(x / CHUNK_SIZE);
 		const playerChunkZ = Math.floor(z / CHUNK_SIZE);

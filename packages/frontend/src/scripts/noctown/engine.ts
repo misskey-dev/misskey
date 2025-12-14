@@ -49,12 +49,14 @@ const LIGHTING_CONFIG: Record<TimePeriod, LightingConfig> = {
 	},
 };
 
-// 時間帯判定関数
+// 時間帯判定関数（日本時間 JST=UTC+9 を基準とする）
 function getCurrentTimePeriod(): TimePeriod {
-	const hour = new Date().getHours();
-	if (hour >= 6 && hour < 9) return 'morning';
-	if (hour >= 9 && hour < 17) return 'day';
-	if (hour >= 17 && hour < 19) return 'evening';
+	const now = new Date();
+	// 日本時間（JST）の時刻を取得
+	const jstHour = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Tokyo' })).getHours();
+	if (jstHour >= 6 && jstHour < 9) return 'morning';
+	if (jstHour >= 9 && jstHour < 17) return 'day';
+	if (jstHour >= 17 && jstHour < 19) return 'evening';
 	return 'night';
 }
 
@@ -76,11 +78,13 @@ function lerpColor(colorA: number, colorB: number, t: number): number {
 	return (r << 16) | (g << 8) | b;
 }
 
-// 時間帯境界でのグラデーション遷移を計算
+// 時間帯境界でのグラデーション遷移を計算（日本時間基準）
 function getTransitionProgress(): { from: TimePeriod; to: TimePeriod; progress: number } | null {
 	const now = new Date();
-	const hour = now.getHours();
-	const minute = now.getMinutes();
+	// 日本時間（JST）の時刻を取得
+	const jstDate = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
+	const hour = jstDate.getHours();
+	const minute = jstDate.getMinutes();
 	const totalMinutes = hour * 60 + minute;
 
 	// 各境界時刻（分）: 朝6:00, 昼9:00, 夕17:00, 夜19:00

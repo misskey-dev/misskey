@@ -191,6 +191,7 @@ const inventoryRef = ref<{ refresh: () => void } | null>(null);
 const questPanelRef = ref<{ refresh: () => void } | null>(null);
 const selectedNpc = ref<NpcData | null>(null);
 const chatInputFocused = ref(false);
+let worldId: string | null = null; // Set from player data
 
 // FR-016: Reload button state
 const isReloading = ref(false);
@@ -210,8 +211,9 @@ let heartbeatInterval: ReturnType<typeof setInterval> | null = null;
 // FR-017: Ping/pong for player status mark color
 let pingInterval: ReturnType<typeof setInterval> | null = null;
 let warningCheckInterval: ReturnType<typeof setInterval> | null = null;
-// Track pending pings: playerId -> sendTime
-const pendingPings = new Map<string, number>();
+// Track pending pings: pingId -> { playerId, timeoutId }
+const pendingPings = new Map<string, { playerId: string; timeoutId: ReturnType<typeof setTimeout> }>();
+const PING_TIMEOUT_MS = 5000; // 5秒タイムアウト
 
 // FR-018: Player info floating window
 const showPlayerInfoWindow = ref(false);
@@ -263,6 +265,7 @@ interface NoctownPlayerResponse {
 	balance: string;
 	totalScore: number;
 	createdAt: string;
+	worldId: string;
 }
 
 interface InventoryItem {
@@ -320,6 +323,7 @@ async function initialize(): Promise<void> {
 
 		// Fetch player data using noctownApi helper
 		const data = await noctownApi<NoctownPlayerResponse>('noctown/player');
+		worldId = data.worldId; // Set worldId from server response
 		playerData.value = {
 			id: data.id,
 			userId: '',
@@ -414,8 +418,13 @@ async function connectStream(): Promise<void> {
 	});
 
 	// FR-017: Handle pong response for player status mark color
-	connection.value.on('pong', (body: { playerId: string }) => {
+	connection.value.on('playerPongReceived', (body: { responderPlayerId: string; pingId: string }) => {
 		handlePongReceived(body);
+	});
+
+	// FR-014: Ping受信時に即座にPongを返送
+	connection.value.on('playerPingReceived', (body: { senderPlayerId: string; pingId: string }) => {
+		handlePlayerPingReceived(body);
 	});
 
 	isConnected.value = true;
@@ -593,7 +602,7 @@ async function fetchNearbyPlayers(): Promise<void> {
 
 // T036-T037: Load nearby chunks using WebSocket chunk generation
 async function loadNearbyChunks(x: number, z: number): Promise<void> {
-	if (!connection.value || !isConnected.value) return;
+	if (!connection.value || !isConnected.value || !worldId) return;
 
 	const playerChunkX = Math.floor(x / CHUNK_SIZE);
 	const playerChunkZ = Math.floor(z / CHUNK_SIZE);
@@ -616,7 +625,7 @@ async function loadNearbyChunks(x: number, z: number): Promise<void> {
 				connection.value.send('generateChunk', {
 					chunkX,
 					chunkZ,
-					worldId: 'default',
+					worldId,
 				});
 
 				// Optimistically mark as requested (will be added to loadedChunks when chunkGenerated event arrives)
@@ -770,32 +779,47 @@ function startPingPong(): void {
 		const remotePlayerIds = engine.getRemotePlayerIds();
 
 		for (const playerId of remotePlayerIds) {
-			// Record ping send time
-			pendingPings.set(playerId, Date.now());
+			// 各プレイヤーごとに一意のpingIdを生成
+			const pingId = `${Date.now()}-${playerId}-${Math.random().toString(36).substr(2, 9)}`;
+
+			// タイムアウト設定
+			const timeoutId = setTimeout(() => {
+				// 5秒以内にpongが返ってこなかった場合、画面から削除
+				if (engine) {
+					engine.removeRemotePlayer(playerId);
+				}
+				pendingPings.delete(pingId);
+			}, PING_TIMEOUT_MS);
+
+			// Record pending ping
+			pendingPings.set(pingId, { playerId, timeoutId });
 
 			// Send ping to each remote player
-			connection.value.send('ping', { targetPlayerId: playerId });
+			connection.value.send('playerPing', {
+				targetPlayerIds: [playerId],
+				pingId,
+			});
 		}
 	}, 1000); // Every 1 second
 }
 
 // FR-017: Handle pong response and update player mark color
-function handlePongReceived(data: { playerId: string }): void {
+function handlePongReceived(data: { responderPlayerId: string; pingId: string }): void {
 	if (!engine) return;
 
-	const sendTime = pendingPings.get(data.playerId);
-	if (sendTime) {
-		// Calculate response time
-		const responseTime = Date.now() - sendTime;
-		pendingPings.delete(data.playerId);
+	const pendingPing = pendingPings.get(data.pingId);
+	if (pendingPing) {
+		// タイムアウトをクリア
+		clearTimeout(pendingPing.timeoutId);
+		pendingPings.delete(data.pingId);
 
-		// Update player mark color based on response time
-		engine.updateRemotePlayerPingStatus(data.playerId, responseTime);
+		// Update player mark color (pongが返ってきたので正常)
+		engine.updateRemotePlayerPingStatus(data.responderPlayerId, 0);
 	}
 
 	// FR-018: Check if this pong is for player info window
 	for (const [pingId, pending] of pendingPlayerInfoPings) {
-		if (pending.playerId === data.playerId) {
+		if (pending.playerId === data.responderPlayerId) {
 			clearTimeout(pending.timeoutId);
 			const responseTime = Date.now() - pending.sentTime;
 			selectedPlayerPingTime.value = responseTime;
@@ -803,6 +827,21 @@ function handlePongReceived(data: { playerId: string }): void {
 			pendingPlayerInfoPings.delete(pingId);
 			break;
 		}
+	}
+}
+
+// FR-014: Ping受信時に即座にPongを返送
+function handlePlayerPingReceived(data: { senderPlayerId: string; pingId: string }): void {
+	if (!connection.value || !isConnected.value) return;
+
+	// 即座にpongを返送
+	try {
+		connection.value.send('playerPong', {
+			senderPlayerId: data.senderPlayerId,
+			pingId: data.pingId,
+		});
+	} catch (e) {
+		console.error('Failed to send pong:', e);
 	}
 }
 
@@ -862,7 +901,10 @@ function sendPlayerInfoPing(playerId: string): void {
 	}, 3000);
 
 	pendingPlayerInfoPings.set(pingId, { playerId, sentTime, timeoutId });
-	connection.value.send('ping', { targetPlayerId: playerId });
+	connection.value.send('playerPing', {
+		targetPlayerIds: [playerId],
+		pingId,
+	});
 }
 
 // FR-018: Close player info window
@@ -1182,6 +1224,10 @@ function cleanup(): void {
 	if (warningCheckInterval) {
 		clearInterval(warningCheckInterval);
 		warningCheckInterval = null;
+	}
+	// Clear all pending ping timeouts
+	for (const pending of pendingPings.values()) {
+		clearTimeout(pending.timeoutId);
 	}
 	pendingPings.clear();
 
