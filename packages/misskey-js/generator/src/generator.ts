@@ -138,8 +138,6 @@ async function generateEndpoints(
 
 	const entitiesOutputLine: string[] = [];
 
-	entitiesOutputLine.push('/* eslint @typescript-eslint/naming-convention: 0 */');
-
 	entitiesOutputLine.push(`import { operations } from '${toImportPath(typeFileName)}';`);
 	entitiesOutputLine.push('');
 

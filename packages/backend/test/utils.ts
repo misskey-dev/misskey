@@ -659,7 +659,6 @@ export async function captureWebhook<T = SystemWebhookPayload>(postAction: () =>
 			fastify.all('/', async (req, res) => {
 				const body = JSON.stringify(req.body);
 				res.status(200).send('ok');
-				await fastify.close();
 				resolve(body);
 			});
 		});
@@ -667,7 +666,10 @@ export async function captureWebhook<T = SystemWebhookPayload>(postAction: () =>
 		await fastify.listen({ port });
 
 		await postAction();
-		result = await timeoutPromise(receivePromise, 3000);
+		result = await Promise.race([
+			receivePromise,
+			new Promise<never>((_, reject) => { setTimeout(() => { reject(new Error('timeout')); }, 3000); }),
+		]);
 	} finally {
 		await fastify.close();
 	}
