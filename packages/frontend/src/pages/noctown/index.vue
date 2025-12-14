@@ -385,11 +385,12 @@ async function initialize(): Promise<void> {
 		// Add keyboard shortcuts
 		window.addEventListener('keydown', handleKeyDown);
 
-		// FR-018: Add canvas click/touch listener for player info window
+		// FR-018: Add canvas click listener for player info window
+		// Note: 'click' event is sufficient for both mouse and touch devices
+		// Mobile browsers synthesize 'click' events after 'touchend'
 		if (engine) {
 			const rendererElement = engine.getRendererDomElement();
 			rendererElement.addEventListener('click', handleCanvasClick);
-			rendererElement.addEventListener('touchend', handleCanvasClick, { passive: false });
 		}
 
 		isLoading.value = false;
@@ -1416,11 +1417,10 @@ function cleanup(): void {
 		connection.value = null;
 	}
 
-	// FR-018: Remove canvas click/touch listeners
+	// FR-018: Remove canvas click listener
 	if (engine) {
 		const rendererElement = engine.getRendererDomElement();
 		rendererElement.removeEventListener('click', handleCanvasClick);
-		rendererElement.removeEventListener('touchend', handleCanvasClick);
 		engine.dispose();
 		engine = null;
 	}
