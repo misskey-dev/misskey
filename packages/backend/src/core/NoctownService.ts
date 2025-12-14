@@ -2029,4 +2029,358 @@ export class NoctownService {
 
 		return chunk;
 	}
+
+	// =============================================
+	// Pet Map Display System Methods (User Story 14)
+	// =============================================
+
+	/**
+	 * PetInfo型定義（フロントエンドと共有）
+	 */
+	private toCowPetInfo(cow: any, player?: any, user?: any): {
+		id: string;
+		type: 'cow';
+		name: string | null;
+		positionX: number;
+		positionY: number;
+		positionZ: number;
+		spawnX: number;
+		spawnZ: number;
+		ownerId: string;
+		ownerName: string;
+		ownerUsername: string;
+		ownerAvatarUrl: string | null;
+		flavorText: string;
+		hunger: number;
+		happiness: number;
+		milkReady: number;
+		createdAt: Date;
+	} {
+		const p = player || cow.player;
+		const u = user || p?.user;
+		return {
+			id: cow.id,
+			type: 'cow' as const,
+			name: cow.name,
+			positionX: cow.positionX,
+			positionY: cow.positionY,
+			positionZ: cow.positionZ,
+			spawnX: cow.spawnX,
+			spawnZ: cow.spawnZ,
+			ownerId: cow.playerId,
+			ownerName: u?.name ?? '',
+			ownerUsername: u?.username ?? '',
+			ownerAvatarUrl: u?.avatarUrl ?? null,
+			flavorText: cow.flavorText,
+			hunger: cow.hunger,
+			happiness: cow.happiness,
+			milkReady: cow.milkReady,
+			createdAt: cow.createdAt,
+		};
+	}
+
+	private toChickenPetInfo(chicken: any, player?: any, user?: any): {
+		id: string;
+		type: 'chicken';
+		name: string | null;
+		positionX: number;
+		positionY: number;
+		positionZ: number;
+		spawnX: number;
+		spawnZ: number;
+		ownerId: string;
+		ownerName: string;
+		ownerUsername: string;
+		ownerAvatarUrl: string | null;
+		flavorText: string;
+		hunger: number;
+		happiness: number;
+		eggsReady: number;
+		createdAt: Date;
+	} {
+		const p = player || chicken.player;
+		const u = user || p?.user;
+		return {
+			id: chicken.id,
+			type: 'chicken' as const,
+			name: chicken.name,
+			positionX: chicken.positionX,
+			positionY: chicken.positionY,
+			positionZ: chicken.positionZ,
+			spawnX: chicken.spawnX,
+			spawnZ: chicken.spawnZ,
+			ownerId: chicken.playerId,
+			ownerName: u?.name ?? '',
+			ownerUsername: u?.username ?? '',
+			ownerAvatarUrl: u?.avatarUrl ?? null,
+			flavorText: chicken.flavorText,
+			hunger: chicken.hunger,
+			happiness: chicken.happiness,
+			eggsReady: chicken.eggsReady,
+			createdAt: chicken.createdAt,
+		};
+	}
+
+	/**
+	 * プレイヤーのペット総数を取得（上限チェック用）
+	 */
+	@bindThis
+	public async getPetCount(playerId: string): Promise<number> {
+		const cowCount = await this.noctownCowsRepository.countBy({ playerId });
+		const chickenCount = await this.noctownChickensRepository.countBy({ playerId });
+		return cowCount + chickenCount;
+	}
+
+	/**
+	 * ペット作成（FR-022, FR-024）
+	 * マルコフ連鎖でフレーバーテキストを生成し、ペットを作成する
+	 */
+	@bindThis
+	public async createPet(
+		playerId: string,
+		type: 'cow' | 'chicken',
+		name: string | null,
+		positionX: number,
+		positionZ: number,
+	): Promise<{ success: boolean; pet?: any; error?: string }> {
+		// 上限チェック（10匹まで）
+		const petCount = await this.getPetCount(playerId);
+		if (petCount >= 10) {
+			return { success: false, error: 'PET_LIMIT_EXCEEDED' };
+		}
+
+		// フレーバーテキスト生成（markov-flavor-text.tsから動的インポート）
+		const { generateFlavorText } = await import('./markov-flavor-text.js');
+		const flavorText = generateFlavorText(type);
+
+		const positionY = 0; // 地面レベル
+		const player = await this.noctownPlayersRepository.findOneBy({ id: playerId });
+		const user = player ? await this.usersRepository.findOneBy({ id: player.userId }) : null;
+
+		if (type === 'cow') {
+			const cowId = this.idService.gen();
+			await this.noctownCowsRepository.insert({
+				id: cowId,
+				playerId,
+				name: name ?? null,
+				positionX,
+				positionY,
+				positionZ,
+				spawnX: positionX,
+				spawnZ: positionZ,
+				flavorText,
+				hunger: 100,
+				happiness: 100,
+				milkReady: 0,
+				createdAt: new Date(),
+			});
+
+			const cow = await this.noctownCowsRepository.findOneBy({ id: cowId });
+			if (!cow) {
+				return { success: false, error: 'CREATE_FAILED' };
+			}
+
+			const petInfo = this.toCowPetInfo(cow, player, user);
+
+			// ペット作成イベントをブロードキャスト
+			this.globalEventService.publishNoctownStream('petCreated', {
+				playerId,
+				pet: petInfo,
+			});
+
+			return { success: true, pet: petInfo };
+		} else {
+			const chickenId = this.idService.gen();
+			await this.noctownChickensRepository.insert({
+				id: chickenId,
+				playerId,
+				name: name ?? null,
+				positionX,
+				positionY,
+				positionZ,
+				spawnX: positionX,
+				spawnZ: positionZ,
+				flavorText,
+				hunger: 100,
+				happiness: 100,
+				eggsReady: 0,
+				createdAt: new Date(),
+			});
+
+			const chicken = await this.noctownChickensRepository.findOneBy({ id: chickenId });
+			if (!chicken) {
+				return { success: false, error: 'CREATE_FAILED' };
+			}
+
+			const petInfo = this.toChickenPetInfo(chicken, player, user);
+
+			// ペット作成イベントをブロードキャスト
+			this.globalEventService.publishNoctownStream('petCreated', {
+				playerId,
+				pet: petInfo,
+			});
+
+			return { success: true, pet: petInfo };
+		}
+	}
+
+	/**
+	 * プレイヤーのペット一覧取得
+	 */
+	@bindThis
+	public async getMyPets(playerId: string): Promise<any[]> {
+		const player = await this.noctownPlayersRepository.findOneBy({ id: playerId });
+		const user = player ? await this.usersRepository.findOneBy({ id: player.userId }) : null;
+
+		const cows = await this.noctownCowsRepository.findBy({ playerId });
+		const chickens = await this.noctownChickensRepository.findBy({ playerId });
+
+		const cowInfos = cows.map(cow => this.toCowPetInfo(cow, player, user));
+		const chickenInfos = chickens.map(chicken => this.toChickenPetInfo(chicken, player, user));
+
+		return [...cowInfos, ...chickenInfos];
+	}
+
+	/**
+	 * 近隣ペット取得（FR-022）
+	 * 指定座標から半径内のペットを取得
+	 */
+	@bindThis
+	public async getNearbyPets(centerX: number, centerZ: number, radius: number = 20): Promise<any[]> {
+		// 牛を取得
+		const cows = await this.noctownCowsRepository
+			.createQueryBuilder('cow')
+			.leftJoinAndSelect('cow.player', 'player')
+			.where('cow."positionX" BETWEEN :minX AND :maxX', { minX: centerX - radius, maxX: centerX + radius })
+			.andWhere('cow."positionZ" BETWEEN :minZ AND :maxZ', { minZ: centerZ - radius, maxZ: centerZ + radius })
+			.getMany();
+
+		// 鶏を取得
+		const chickens = await this.noctownChickensRepository
+			.createQueryBuilder('chicken')
+			.leftJoinAndSelect('chicken.player', 'player')
+			.where('chicken."positionX" BETWEEN :minX AND :maxX', { minX: centerX - radius, maxX: centerX + radius })
+			.andWhere('chicken."positionZ" BETWEEN :minZ AND :maxZ', { minZ: centerZ - radius, maxZ: centerZ + radius })
+			.getMany();
+
+		const results: any[] = [];
+
+		// 牛のPetInfoを生成
+		for (const cow of cows) {
+			const player = cow.player;
+			const user = player ? await this.usersRepository.findOneBy({ id: player.userId }) : null;
+			results.push(this.toCowPetInfo(cow, player, user));
+		}
+
+		// 鶏のPetInfoを生成
+		for (const chicken of chickens) {
+			const player = chicken.player;
+			const user = player ? await this.usersRepository.findOneBy({ id: player.userId }) : null;
+			results.push(this.toChickenPetInfo(chicken, player, user));
+		}
+
+		return results;
+	}
+
+	/**
+	 * ペット取得（ID指定）
+	 */
+	@bindThis
+	public async getPetById(petId: string): Promise<any | null> {
+		// 牛を検索
+		const cow = await this.noctownCowsRepository
+			.createQueryBuilder('cow')
+			.leftJoinAndSelect('cow.player', 'player')
+			.where('cow.id = :id', { id: petId })
+			.getOne();
+
+		if (cow) {
+			const player = cow.player;
+			const user = player ? await this.usersRepository.findOneBy({ id: player.userId }) : null;
+			return this.toCowPetInfo(cow, player, user);
+		}
+
+		// 鶏を検索
+		const chicken = await this.noctownChickensRepository
+			.createQueryBuilder('chicken')
+			.leftJoinAndSelect('chicken.player', 'player')
+			.where('chicken.id = :id', { id: petId })
+			.getOne();
+
+		if (chicken) {
+			const player = chicken.player;
+			const user = player ? await this.usersRepository.findOneBy({ id: player.userId }) : null;
+			return this.toChickenPetInfo(chicken, player, user);
+		}
+
+		return null;
+	}
+
+	/**
+	 * ペット削除
+	 */
+	@bindThis
+	public async deletePet(playerId: string, petId: string): Promise<{ success: boolean; error?: string }> {
+		// 牛を検索
+		const cow = await this.noctownCowsRepository.findOneBy({ id: petId, playerId });
+		if (cow) {
+			await this.noctownCowsRepository.delete(petId);
+
+			this.globalEventService.publishNoctownStream('petDeleted', {
+				playerId,
+				petId,
+			});
+
+			return { success: true };
+		}
+
+		// 鶏を検索
+		const chicken = await this.noctownChickensRepository.findOneBy({ id: petId, playerId });
+		if (chicken) {
+			await this.noctownChickensRepository.delete(petId);
+
+			this.globalEventService.publishNoctownStream('petDeleted', {
+				playerId,
+				petId,
+			});
+
+			return { success: true };
+		}
+
+		return { success: false, error: 'NOT_FOUND' };
+	}
+
+	/**
+	 * ペット名変更
+	 */
+	@bindThis
+	public async renamePet(playerId: string, petId: string, name: string | null): Promise<{ success: boolean; pet?: any; error?: string }> {
+		// 牛を検索
+		const cow = await this.noctownCowsRepository.findOneBy({ id: petId, playerId });
+		if (cow) {
+			await this.noctownCowsRepository.update(petId, { name });
+			const updatedCow = await this.noctownCowsRepository.findOneBy({ id: petId });
+			if (!updatedCow) {
+				return { success: false, error: 'UPDATE_FAILED' };
+			}
+			const player = await this.noctownPlayersRepository.findOneBy({ id: playerId });
+			const user = player ? await this.usersRepository.findOneBy({ id: player.userId }) : null;
+			return { success: true, pet: this.toCowPetInfo(updatedCow, player, user) };
+		}
+
+		// 鶏を検索
+		const chicken = await this.noctownChickensRepository.findOneBy({ id: petId, playerId });
+		if (chicken) {
+			await this.noctownChickensRepository.update(petId, { name });
+			const updatedChicken = await this.noctownChickensRepository.findOneBy({ id: petId });
+			if (!updatedChicken) {
+				return { success: false, error: 'UPDATE_FAILED' };
+			}
+			const player = await this.noctownPlayersRepository.findOneBy({ id: playerId });
+			const user = player ? await this.usersRepository.findOneBy({ id: player.userId }) : null;
+			return { success: true, pet: this.toChickenPetInfo(updatedChicken, player, user) };
+		}
+
+		return { success: false, error: 'NOT_FOUND' };
+	}
 }

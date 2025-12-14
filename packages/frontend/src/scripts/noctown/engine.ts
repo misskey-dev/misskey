@@ -11,6 +11,7 @@ import { createPondMesh } from './pond.js';
 import { createLakeMesh } from './lake.js';
 import { createFarmPlotMesh } from './farm-plot.js';
 import { ChunkEnvironmentRenderer, type EnvironmentObjectData } from './environment-objects.js';
+import { PetManager, type PetInfo } from './pet.js';
 
 // FR-008: 時間帯別ライティング設定
 type TimePeriod = 'morning' | 'day' | 'evening' | 'night';
@@ -223,6 +224,9 @@ export class NoctownEngine {
 	private currentTimePeriod: TimePeriod = 'night';
 	private lastTimeCheck: number = 0;
 
+	// FR-022: ペット管理
+	private petManager: PetManager | null = null;
+
 	constructor(container: HTMLElement) {
 		this.container = container;
 
@@ -265,6 +269,9 @@ export class NoctownEngine {
 
 		// Ground plane (temporary)
 		this.createGroundPlane();
+
+		// FR-022: ペット管理の初期化
+		this.petManager = new PetManager(this.scene);
 
 		// Event listeners
 		this.setupEventListeners();
@@ -493,17 +500,17 @@ export class NoctownEngine {
 					const seed = worldX * 1000 + worldZ;
 
 					if (terrainType === 1) {
-						// FR-001: 池を生成
+						// FR-001: 池を生成（chunkGroupに追加してリロード時に削除されるようにする）
 						const pond = createPondMesh(worldX, worldZ, seed);
-						this.scene.add(pond);
+						chunkGroup.add(pond);
 					} else if (terrainType === 2) {
-						// FR-001: 湖を生成
+						// FR-001: 湖を生成（chunkGroupに追加してリロード時に削除されるようにする）
 						const lake = createLakeMesh(worldX, worldZ, seed);
-						this.scene.add(lake);
+						chunkGroup.add(lake);
 					} else if (terrainType === 3) {
-						// FR-001: 農園プロットを生成
+						// FR-001: 農園プロットを生成（chunkGroupに追加してリロード時に削除されるようにする）
 						const farmPlot = createFarmPlotMesh(worldX, worldZ);
-						this.scene.add(farmPlot.group);
+						chunkGroup.add(farmPlot.group);
 					}
 				}
 			}
@@ -512,7 +519,7 @@ export class NoctownEngine {
 		this.scene.add(chunkGroup);
 		this.chunks.set(key, chunkGroup);
 
-		// FR-010: Add environment entities from backend data
+		// FR-010: Add environment entities from backend data（chunkGroupに追加してリロード時に削除されるようにする）
 		if (chunkData.environmentObjects && Array.isArray(chunkData.environmentObjects)) {
 			const { addTree, addRock } = await import('./environment.js');
 			for (const obj of chunkData.environmentObjects) {
@@ -520,15 +527,15 @@ export class NoctownEngine {
 				const worldZ = offsetZ + obj.localZ;
 
 				if (obj.type === 'tree') {
-					addTree(this.scene, worldX, worldZ);
+					addTree(chunkGroup, worldX, worldZ);
 				} else if (obj.type === 'rock') {
 					const scale = obj.scale ?? 1.0;
-					addRock(this.scene, worldX, worldZ, scale);
+					addRock(chunkGroup, worldX, worldZ, scale);
 				}
 			}
 		} else {
-			// Fallback: Use client-side generation if no backend data
-			addRandomEnvironmentEntities(this.scene, chunkData.chunkX, chunkData.chunkZ, CHUNK_SIZE);
+			// Fallback: Use client-side generation if no backend data（chunkGroupに追加）
+			addRandomEnvironmentEntities(chunkGroup, chunkData.chunkX, chunkData.chunkZ, CHUNK_SIZE);
 		}
 	}
 

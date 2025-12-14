@@ -9,6 +9,7 @@ import { NoctownPlayer } from './NoctownPlayer.js';
 
 @Entity('noctown_cow')
 @Index(['positionX', 'positionZ'])
+@Index(['spawnX', 'spawnZ'])
 export class NoctownCow {
 	@PrimaryColumn(id())
 	public id: string;
@@ -47,6 +48,24 @@ export class NoctownCow {
 		comment: 'Z coordinate',
 	})
 	public positionZ: number;
+
+	// スポーン位置（NPC移動の中心点）
+	@Column('real', {
+		comment: 'Spawn X coordinate (NPC movement center)',
+	})
+	public spawnX: number;
+
+	@Column('real', {
+		comment: 'Spawn Z coordinate (NPC movement center)',
+	})
+	public spawnZ: number;
+
+	// フレーバーテキスト（ペット作成時にマルコフ連鎖で生成）
+	@Column('varchar', {
+		length: 256,
+		comment: 'Markov-chain generated flavor text',
+	})
+	public flavorText: string;
 
 	@Column('smallint', {
 		default: 100,
