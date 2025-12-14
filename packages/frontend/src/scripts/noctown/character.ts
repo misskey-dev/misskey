@@ -574,14 +574,13 @@ export class Character {
 		this.emoteContext.stroke();
 
 		// 仕様: 吹き出しの三角形（しっぽ）を下向きに描画
-		// Canvas座標系とThree.jsテクスチャの関係で上下反転するため、
-		// Canvasでは上向き（頂点が上）に描画することで、表示時に下向きになる
-		// 修正日: 2025-12-14
+		// 円の中心はy=54、半径40なので円の底はy=94
+		// 三角形は円の底から下に向かって伸びる（頂点が下）
 		this.emoteContext.fillStyle = '#ffffff';
 		this.emoteContext.beginPath();
-		this.emoteContext.moveTo(64, 14);  // 頂点（Canvas上では上、表示時は下）
-		this.emoteContext.lineTo(54, 4);   // 左
-		this.emoteContext.lineTo(74, 4);   // 右
+		this.emoteContext.moveTo(64, 104);  // 頂点（下向き）
+		this.emoteContext.lineTo(54, 94);   // 左上（円の底に接続）
+		this.emoteContext.lineTo(74, 94);   // 右上（円の底に接続）
 		this.emoteContext.closePath();
 		this.emoteContext.fill();
 		this.emoteContext.stroke();
@@ -680,14 +679,13 @@ export class Character {
 		ctx.stroke();
 
 		// 仕様: 吹き出しの三角形（しっぽ）を下向きに描画
-		// Canvas座標系とThree.jsテクスチャの関係で上下反転するため、
-		// Canvasでは上向き（頂点が上）に描画することで、表示時に下向きになる
-		// 修正日: 2025-12-14
+		// 円の中心はy=54、半径40なので円の底はy=94
+		// 三角形は円の底から下に向かって伸びる（頂点が下）
 		ctx.fillStyle = '#ffffff';
 		ctx.beginPath();
-		ctx.moveTo(64, 14);  // 頂点（Canvas上では上、表示時は下）
-		ctx.lineTo(54, 4);   // 左
-		ctx.lineTo(74, 4);   // 右
+		ctx.moveTo(64, 104);  // 頂点（下向き）
+		ctx.lineTo(54, 94);   // 左上（円の底に接続）
+		ctx.lineTo(74, 94);   // 右上（円の底に接続）
 		ctx.closePath();
 		ctx.fill();
 		ctx.stroke();
