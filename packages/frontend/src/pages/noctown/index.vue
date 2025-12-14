@@ -176,7 +176,7 @@ import MkNoctownPetInfoWindow from '@/components/MkNoctownPetInfoWindow.vue';
 import NoctownJoystick from '@/components/MkNoctown/NoctownJoystick.vue';
 import NoctownChatInput from '@/components/MkNoctown/NoctownChatInput.vue';
 import { useStream } from '@/stream.js';
-import { isMobileDevice, hasPhysicalKeyboard, isForceJoystickEnabled, enableForceJoystick } from '@/scripts/noctown/use-noctown.js';
+import { isMobileDevice, hasPhysicalKeyboard, isForceJoystickEnabled, enableForceJoystick, isDesktopDevice } from '@/scripts/noctown/use-noctown.js';
 import { $i } from '@/i.js';
 import { apiUrl } from '@@/js/config.js';
 import type { PlayerData, ChunkData, DroppedItemData, PlacedItemData, NpcData, PetInfo } from '@/scripts/noctown/engine.js';
@@ -353,20 +353,27 @@ async function initialize(): Promise<void> {
 
 		// FR-025: Determine if virtual joystick should be shown
 		// Priority order:
+		// 0. UserAgent detects desktop PC (Windows/Mac/Linux) → never show (skip all other checks)
 		// 1. localStorage has noctown:forceJoystick set to 'true' → show immediately
 		// 2. Window width is tablet size or smaller (1024px) → show immediately
 		// 3. UserAgent detects mobile/tablet → show immediately
 		// 4. Navigator Keyboard API detects no keyboard → show immediately
 		// 5. None of the above → wait for touchstart event to show
-		const forceEnabled = isForceJoystickEnabled();
-		const isTabletOrSmallerWindow = window.innerWidth <= 1024;
-		if (forceEnabled || isTabletOrSmallerWindow) {
-			// FR-025: localStorage flag is set or window is tablet size or smaller, show joystick immediately
-			shouldShowJoystick.value = true;
+		const isDesktop = isDesktopDevice();
+		if (isDesktop) {
+			// Desktop PC detected - don't show joystick
+			shouldShowJoystick.value = false;
 		} else {
-			const isMobile = isMobileDevice();
-			const hasKeyboard = await hasPhysicalKeyboard();
-			shouldShowJoystick.value = isMobile && !hasKeyboard;
+			const forceEnabled = isForceJoystickEnabled();
+			const isTabletOrSmallerWindow = window.innerWidth <= 1024;
+			if (forceEnabled || isTabletOrSmallerWindow) {
+				// FR-025: localStorage flag is set or window is tablet size or smaller, show joystick immediately
+				shouldShowJoystick.value = true;
+			} else {
+				const isMobile = isMobileDevice();
+				const hasKeyboard = await hasPhysicalKeyboard();
+				shouldShowJoystick.value = isMobile && !hasKeyboard;
+			}
 		}
 
 		// FR-025: Set up touchstart event listener for fallback detection
@@ -376,15 +383,18 @@ async function initialize(): Promise<void> {
 		}
 
 		// Set up resize handler to show/hide joystick based on window size
-		resizeHandler = () => {
-			const isTabletOrSmaller = window.innerWidth <= 1024;
-			if (isTabletOrSmaller && !shouldShowJoystick.value) {
-				shouldShowJoystick.value = true;
-			}
-			// Note: Don't hide joystick on resize to larger window if it was already shown
-			// This prevents jarring UX when user rotates device or adjusts window
-		};
-		window.addEventListener('resize', resizeHandler);
+		// Note: Desktop PCs don't need joystick even with small windows
+		if (!isDesktop) {
+			resizeHandler = () => {
+				const isTabletOrSmaller = window.innerWidth <= 1024;
+				if (isTabletOrSmaller && !shouldShowJoystick.value) {
+					shouldShowJoystick.value = true;
+				}
+				// Note: Don't hide joystick on resize to larger window if it was already shown
+				// This prevents jarring UX when user rotates device or adjusts window
+			};
+			window.addEventListener('resize', resizeHandler);
+		}
 
 		// Check if user is logged in
 		if (!$i) {

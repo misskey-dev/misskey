@@ -86,6 +86,33 @@ export function enableForceJoystick(): void {
 }
 
 /**
+ * Desktop device detection utility
+ * Detects desktop PCs (Windows, Mac, Linux) based on UserAgent patterns
+ * @returns true if the device is clearly a desktop PC
+ */
+export function isDesktopDevice(): boolean {
+	const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
+
+	// Desktop OS patterns (Windows, Mac without touch, Linux desktop)
+	const windowsRegex = /Windows NT/i;
+	const macRegex = /Macintosh.*Mac OS X/i;
+	const linuxDesktopRegex = /Linux.*X11/i;
+	const chromeOsRegex = /CrOS/i;
+
+	// Check for desktop OS
+	const isWindows = windowsRegex.test(userAgent);
+	const isMac = macRegex.test(userAgent);
+	const isLinuxDesktop = linuxDesktopRegex.test(userAgent);
+	const isChromeOs = chromeOsRegex.test(userAgent);
+
+	// Mac with touch support is iPad (iPadOS 13+), not desktop
+	const isMacWithTouch = isMac && navigator.maxTouchPoints > 1;
+
+	// Return true for desktop OS, but exclude Mac with touch (iPad)
+	return (isWindows || (isMac && !isMacWithTouch) || isLinuxDesktop || isChromeOs);
+}
+
+/**
  * T027: Mobile device detection utility
  * Detects mobile phones and tablets based on UserAgent patterns
  * @returns true if the device is a mobile device (phone or tablet)
