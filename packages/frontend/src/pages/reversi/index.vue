@@ -119,7 +119,7 @@ import MkPagination from '@/components/MkPagination.vue';
 import { useRouter } from '@/router.js';
 import * as os from '@/os.js';
 import { pleaseLogin } from '@/utility/please-login.js';
-import { sound } from '@/sound.js';
+import { soundManager } from '@/sound.js';
 import { Paginator } from '@/utility/paginator.js';
 
 const myGamesPaginator = markRaw(new Paginator('reversi/games', {
@@ -163,7 +163,7 @@ function startGame(game: Misskey.entities.ReversiGameDetailed) {
 	matchingUser.value = null;
 	matchingAny.value = false;
 
-	sound.playUrl('/client-assets/reversi/matched.mp3', {
+	soundManager.playUrl('/client-assets/reversi/matched.mp3', {
 		volume: 1,
 		playbackRate: 1,
 	});

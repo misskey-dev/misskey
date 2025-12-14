@@ -5,4 +5,4 @@
 
 import { SoundManager } from '@/utility/sound.js';
 
-export const sound = new SoundManager();
+export const soundManager = new SoundManager();

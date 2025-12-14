@@ -8,7 +8,7 @@ import type { Ref } from 'vue';
 import type { SoundType } from '@/utility/sound.js';
 import type { SoundStore } from '@/preferences/def.js';
 import { soundsTypes } from '@/utility/sound.js';
-import { sound as soundManager } from '@/sound.js';
+import { soundManager } from '@/sound.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 

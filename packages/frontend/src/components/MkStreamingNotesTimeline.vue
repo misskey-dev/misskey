@@ -66,7 +66,7 @@ import type { SoundStore } from '@/preferences/def.js';
 import type { IPaginator, MisskeyEntity } from '@/utility/paginator.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import { useStream } from '@/stream.js';
-import { sound } from '@/sound.js';
+import { soundManager } from '@/sound.js';
 import { $i } from '@/i.js';
 import { instance } from '@/instance.js';
 import { prefer } from '@/preferences.js';
@@ -290,9 +290,9 @@ function prepend(note: Misskey.entities.Note & MisskeyEntity) {
 
 	if (props.sound) {
 		if (props.customSound) {
-			sound.playSfxFile(props.customSound);
+			soundManager.playSfxFile(props.customSound);
 		} else {
-			sound.playSfx($i && (note.userId === $i.id) ? 'noteMy' : 'note');
+			soundManager.playSfx($i && (note.userId === $i.id) ? 'noteMy' : 'note');
 		}
 	}
 }

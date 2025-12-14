@@ -68,7 +68,7 @@ import * as os from '@/os.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import MkMediaList from '@/components/MkMediaList.vue';
 import { reactionPicker } from '@/utility/reaction-picker.js';
-import { sound } from '@/sound.js';
+import { soundManager } from '@/sound.js';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
@@ -87,7 +87,7 @@ const urls = computed(() => props.message.text ? extractUrlFromMfm(mfm.parse(pro
 provide(DI.mfmEmojiReactCallback, (reaction) => {
 	if ($i.policies.chatAvailability !== 'available') return;
 
-	sound.playSfx('reaction');
+	soundManager.playSfx('reaction');
 	misskeyApi('chat/messages/react', {
 		messageId: props.message.id,
 		reaction: reaction,
@@ -101,7 +101,7 @@ function react(ev: MouseEvent) {
 	if (!targetEl) return;
 
 	reactionPicker.show(targetEl, null, async (reaction) => {
-		sound.playSfx('reaction');
+		soundManager.playSfx('reaction');
 		misskeyApi('chat/messages/react', {
 			messageId: props.message.id,
 			reaction: reaction,
@@ -119,7 +119,7 @@ function onReactionClick(record: Misskey.entities.ChatMessage['reactions'][0]) {
 		});
 	} else {
 		if (!props.message.reactions.some(r => r.user.id === $i.id && r.reaction === record.reaction)) {
-			sound.playSfx('reaction');
+			soundManager.playSfx('reaction');
 			misskeyApi('chat/messages/react', {
 				messageId: props.message.id,
 				reaction: record.reaction,

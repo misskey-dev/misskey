@@ -209,7 +209,7 @@ import { store } from '@/store.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/i.js';
-import { sound } from '@/sound.js';
+import { soundManager } from '@/sound.js';
 import MkRange from '@/components/MkRange.vue';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { prefer } from '@/preferences.js';
@@ -555,7 +555,7 @@ let seed: string = Date.now().toString();
 let containerElRect: DOMRect | null = null;
 let logs: ReturnType<DropAndFusionGame['getLogs']> | null = null;
 let endedAtFrame = 0;
-let bgmNodes: ReturnType<typeof sound.createSourceNode> | null = null;
+let bgmNodes: ReturnType<typeof soundManager.createSourceNode> | null = null;
 let renderer: Matter.Render | null = null;
 let monoTextures: Record<string, Blob> = {};
 let monoTextureUrls: Record<string, string> = {};
@@ -964,7 +964,7 @@ function attachGameEvents() {
 		holdingStock.value = value;
 
 		if (!props.mute) {
-			sound.playUrl('/client-assets/drop-and-fusion/hold.mp3', {
+			soundManager.playUrl('/client-assets/drop-and-fusion/hold.mp3', {
 				volume: 0.5 * sfxVolume.value,
 				playbackRate: replayPlaybackRate.value,
 			});
@@ -977,13 +977,13 @@ function attachGameEvents() {
 			const panW = game.GAME_WIDTH - game.PLAYAREA_MARGIN - game.PLAYAREA_MARGIN;
 			const pan = ((panV / panW) - 0.5) * 2;
 			if (props.gameMode === 'yen') {
-				sound.playUrl('/client-assets/drop-and-fusion/drop_yen.mp3', {
+				soundManager.playUrl('/client-assets/drop-and-fusion/drop_yen.mp3', {
 					volume: sfxVolume.value,
 					pan,
 					playbackRate: replayPlaybackRate.value,
 				});
 			} else {
-				sound.playUrl('/client-assets/drop-and-fusion/drop.mp3', {
+				soundManager.playUrl('/client-assets/drop-and-fusion/drop.mp3', {
 					volume: sfxVolume.value,
 					pan,
 					playbackRate: replayPlaybackRate.value,
@@ -1029,13 +1029,13 @@ function attachGameEvents() {
 				const pan = ((panV / panW) - 0.5) * 2;
 				const pitch = def.sfxPitch;
 				if (props.gameMode === 'yen') {
-					sound.playUrl('/client-assets/drop-and-fusion/fusion_yen.mp3', {
+					soundManager.playUrl('/client-assets/drop-and-fusion/fusion_yen.mp3', {
 						volume: 0.25 * sfxVolume.value,
 						pan: pan,
 						playbackRate: (pitch / 4) * replayPlaybackRate.value,
 					});
 				} else {
-					sound.playUrl('/client-assets/drop-and-fusion/fusion.mp3', {
+					soundManager.playUrl('/client-assets/drop-and-fusion/fusion.mp3', {
 						volume: sfxVolume.value,
 						pan: pan,
 						playbackRate: pitch * replayPlaybackRate.value,
@@ -1066,13 +1066,13 @@ function attachGameEvents() {
 			const pitch = soundPitchMin + ((soundPitchMax - soundPitchMin) * (1 - (Math.min(10, energy) / 10)));
 
 			if (props.gameMode === 'yen') {
-				sound.playUrl('/client-assets/drop-and-fusion/collision_yen.mp3', {
+				soundManager.playUrl('/client-assets/drop-and-fusion/collision_yen.mp3', {
 					volume: volume * sfxVolume.value,
 					pan: pan,
 					playbackRate: Math.max(1, pitch) * replayPlaybackRate.value,
 				});
 			} else {
-				sound.playUrl('/client-assets/drop-and-fusion/collision.mp3', {
+				soundManager.playUrl('/client-assets/drop-and-fusion/collision.mp3', {
 					volume: volume * sfxVolume.value,
 					pan: pan,
 					playbackRate: pitch * replayPlaybackRate.value,
@@ -1098,11 +1098,11 @@ function attachGameEvents() {
 	game.addListener('gameOver', () => {
 		if (!props.mute) {
 			if (props.gameMode === 'yen') {
-				sound.playUrl('/client-assets/drop-and-fusion/gameover_yen.mp3', {
+				soundManager.playUrl('/client-assets/drop-and-fusion/gameover_yen.mp3', {
 					volume: 0.5 * sfxVolume.value,
 				});
 			} else {
-				sound.playUrl('/client-assets/drop-and-fusion/gameover.mp3', {
+				soundManager.playUrl('/client-assets/drop-and-fusion/gameover.mp3', {
 					volume: sfxVolume.value,
 				});
 			}
@@ -1208,9 +1208,9 @@ onMounted(async () => {
 
 	await start();
 
-	const bgmBuffer = await sound.loadAudio('/client-assets/drop-and-fusion/bgm_1.mp3');
+	const bgmBuffer = await soundManager.loadAudio('/client-assets/drop-and-fusion/bgm_1.mp3');
 	if (!bgmBuffer) return;
-	bgmNodes = sound.createSourceNode(bgmBuffer, {
+	bgmNodes = soundManager.createSourceNode(bgmBuffer, {
 		volume: props.mute ? 0 : bgmVolume.value,
 	});
 	if (!bgmNodes) return;

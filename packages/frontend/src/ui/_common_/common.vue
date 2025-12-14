@@ -111,7 +111,7 @@ import { popups } from '@/os.js';
 import { unisonReload } from '@/utility/unison-reload.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { pendingApiRequestsCount } from '@/utility/misskey-api.js';
-import { sound } from '@/sound.js';
+import { soundManager } from '@/sound.js';
 import { $i } from '@/i.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
@@ -149,7 +149,7 @@ function onNotification(notification: Misskey.entities.Notification, isClient = 
 		}, 6000);
 	}
 
-	sound.playSfx('notification');
+	soundManager.playSfx('notification');
 }
 
 function exitSafeMode() {

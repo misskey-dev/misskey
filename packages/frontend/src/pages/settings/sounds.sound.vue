@@ -40,7 +40,7 @@ import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { sound } from '@/sound.js';
+import { soundManager } from '@/sound.js';
 import { selectFile } from '@/utility/drive.js';
 import type { SoundStore } from '@/preferences/def.js';
 
@@ -115,7 +115,7 @@ function selectSound(ev) {
 			});
 			return;
 		}
-		const duration = await sound.getDuration(file.url);
+		const duration = await soundManager.getDuration(file.url);
 		if (duration >= 2000) {
 			const { canceled } = await os.confirm({
 				type: 'warning',
@@ -154,7 +154,7 @@ function listen() {
 		return;
 	}
 
-	sound.playSfxFile(type.value === '_driveFile_' ? {
+	soundManager.playSfxFile(type.value === '_driveFile_' ? {
 		type: '_driveFile_',
 		fileId: fileId.value as string,
 		fileUrl: fileUrl.value as string,

@@ -57,7 +57,7 @@ import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps 
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import { useStream } from '@/stream.js';
 import kmg from '@/filters/kmg.js';
-import { sound } from '@/sound.js';
+import { soundManager } from '@/sound.js';
 import { deepClone } from '@/utility/clone.js';
 import { prefer } from '@/preferences.js';
 import { genId } from '@/utility/id.js';
@@ -106,7 +106,7 @@ const jammedAudioBuffer = ref<AudioBuffer | null>(null);
 const jammedSoundNodePlaying = ref<boolean>(false);
 
 if (prefer.s['sound.masterVolume']) {
-	sound.loadAudio('/client-assets/sounds/syuilo/queue-jammed.mp3').then(buf => {
+	soundManager.loadAudio('/client-assets/sounds/syuilo/queue-jammed.mp3').then(buf => {
 		if (!buf) throw new Error('[WidgetJobQueue] Failed to initialize AudioBuffer');
 		jammedAudioBuffer.value = buf;
 	});
@@ -125,7 +125,7 @@ const onStats = (stats) => {
 		current[domain].delayed = stats[domain].delayed;
 
 		if (current[domain].waiting > 0 && widgetProps.sound && jammedAudioBuffer.value && !jammedSoundNodePlaying.value) {
-			const soundNode = sound.createSourceNode(jammedAudioBuffer.value, {}).sourceNode;
+			const soundNode = soundManager.createSourceNode(jammedAudioBuffer.value, {}).sourceNode;
 			if (soundNode) {
 				jammedSoundNodePlaying.value = true;
 				soundNode.onended = () => jammedSoundNodePlaying.value = false;
