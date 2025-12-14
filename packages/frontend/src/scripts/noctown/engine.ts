@@ -195,6 +195,11 @@ export class NoctownEngine {
 	private npcs: Map<string, THREE.Group> = new Map();
 	private npcLabels: Map<string, THREE.Sprite> = new Map();
 
+	// FR-018: Raycaster for player click detection
+	private raycaster: THREE.Raycaster = new THREE.Raycaster();
+	private mouse: THREE.Vector2 = new THREE.Vector2();
+	private remotePlayerData: Map<string, PlayerData> = new Map();
+
 	// Camera follow
 	private cameraOffset = new THREE.Vector3(0, 10, 15);
 
@@ -737,6 +742,9 @@ export class NoctownEngine {
 		this.scene.add(character.group);
 		this.remotePlayers.set(data.id, character);
 
+		// FR-018: Store player data for info window
+		this.remotePlayerData.set(data.id, data);
+
 		// FR-022: Apply visual effects for offline players (NPC)
 		if (!data.isOnline) {
 			character.group.traverse((child) => {
@@ -771,6 +779,9 @@ export class NoctownEngine {
 
 		// Update online status
 		character.setOnline(data.isOnline);
+
+		// FR-018: Update player data for info window
+		this.remotePlayerData.set(data.id, data);
 	}
 
 	public removeRemotePlayer(playerId: string): void {
@@ -778,6 +789,8 @@ export class NoctownEngine {
 		if (character) {
 			this.scene.remove(character.group);
 			this.remotePlayers.delete(playerId);
+			// FR-018: Remove player data for info window
+			this.remotePlayerData.delete(playerId);
 		}
 	}
 
@@ -1186,6 +1199,75 @@ export class NoctownEngine {
 		}
 		this.remotePlayers.clear();
 		this.remotePlayerLastPos.clear();
+		// FR-018: Clear player data for info window
+		this.remotePlayerData.clear();
+	}
+
+	// FR-018: Get clicked player ID using Raycaster (supports both mouse and touch events)
+	public getClickedPlayerId(event: MouseEvent | TouchEvent): string | null {
+		// Convert mouse/touch coordinates to normalized device coordinates
+		const rect = this.renderer.domElement.getBoundingClientRect();
+
+		let clientX: number;
+		let clientY: number;
+
+		if ('touches' in event || 'changedTouches' in event) {
+			// TouchEvent - use changedTouches for touchend
+			const touch = (event as TouchEvent).changedTouches[0] || (event as TouchEvent).touches[0];
+			if (!touch) return null;
+			clientX = touch.clientX;
+			clientY = touch.clientY;
+		} else {
+			// MouseEvent
+			clientX = (event as MouseEvent).clientX;
+			clientY = (event as MouseEvent).clientY;
+		}
+
+		this.mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+		this.mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+
+		// Set up raycaster
+		this.raycaster.setFromCamera(this.mouse, this.camera);
+
+		// Collect all remote player groups
+		const playerGroups: THREE.Object3D[] = [];
+		for (const [playerId, character] of this.remotePlayers) {
+			playerGroups.push(character.group);
+		}
+
+		// Perform intersection test (recursive: true to check child meshes)
+		const intersects = this.raycaster.intersectObjects(playerGroups, true);
+
+		if (intersects.length > 0) {
+			// Find which player was clicked by traversing parent hierarchy
+			const clickedObject = intersects[0].object;
+			for (const [playerId, character] of this.remotePlayers) {
+				if (this.isDescendantOf(clickedObject, character.group)) {
+					return playerId;
+				}
+			}
+		}
+		return null;
+	}
+
+	// FR-018: Helper to check if an object is a descendant of another
+	private isDescendantOf(child: THREE.Object3D, parent: THREE.Object3D): boolean {
+		let current: THREE.Object3D | null = child;
+		while (current) {
+			if (current === parent) return true;
+			current = current.parent;
+		}
+		return false;
+	}
+
+	// FR-018: Get remote player data for info window
+	public getRemotePlayerData(playerId: string): PlayerData | null {
+		return this.remotePlayerData.get(playerId) || null;
+	}
+
+	// FR-018: Get renderer DOM element for event listener attachment
+	public getRendererDomElement(): HTMLCanvasElement {
+		return this.renderer.domElement;
 	}
 
 	public dispose(): void {

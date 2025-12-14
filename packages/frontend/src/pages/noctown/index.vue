@@ -108,6 +108,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 					@blurred="chatInputFocused = false"
 				/>
 
+				<!-- FR-018: Player info floating window -->
+				<MkNoctownPlayerInfoWindow
+					v-if="showPlayerInfoWindow && selectedPlayerInfo"
+					:playerId="selectedPlayerInfo.playerId"
+					:name="selectedPlayerInfo.name"
+					:username="selectedPlayerInfo.username"
+					:avatarUrl="selectedPlayerInfo.avatarUrl"
+					:pingTime="selectedPlayerPingTime"
+					:isPinging="isPlayerInfoPinging"
+					@close="handleClosePlayerInfoWindow"
+					@ping="handleManualPing"
+				/>
+
 				<!-- Emotion buttons -->
 				<div :class="$style.emotionPanel">
 					<button
@@ -144,6 +157,7 @@ import MkNoctownInventory from '@/components/MkNoctownInventory.vue';
 import MkNoctownQuestPanel from '@/components/MkNoctownQuestPanel.vue';
 import MkNoctownNpcDialog from '@/components/MkNoctownNpcDialog.vue';
 import MkNoctownFarmPanel from '@/components/MkNoctownFarmPanel.vue';
+import MkNoctownPlayerInfoWindow from '@/components/MkNoctownPlayerInfoWindow.vue';
 import NoctownJoystick from '@/components/MkNoctown/NoctownJoystick.vue';
 import NoctownChatInput from '@/components/MkNoctown/NoctownChatInput.vue';
 import { useStream } from '@/stream.js';
@@ -197,6 +211,19 @@ let pingInterval: ReturnType<typeof setInterval> | null = null;
 let warningCheckInterval: ReturnType<typeof setInterval> | null = null;
 // Track pending pings: playerId -> sendTime
 const pendingPings = new Map<string, number>();
+
+// FR-018: Player info floating window
+const showPlayerInfoWindow = ref(false);
+const selectedPlayerInfo = ref<{
+	playerId: string;
+	name: string | null;
+	username: string;
+	avatarUrl: string | null;
+} | null>(null);
+const selectedPlayerPingTime = ref<number | null>(null);
+const isPlayerInfoPinging = ref(false);
+// Track pending pings for player info window (separate from status mark pings)
+const pendingPlayerInfoPings = new Map<string, { playerId: string; sentTime: number; timeoutId: ReturnType<typeof setTimeout> }>();
 
 // Movement state
 // T045: Make coordinates reactive for UI display
@@ -318,6 +345,13 @@ async function initialize(): Promise<void> {
 
 		// Add keyboard shortcuts
 		window.addEventListener('keydown', handleKeyDown);
+
+		// FR-018: Add canvas click/touch listener for player info window
+		if (engine) {
+			const rendererElement = engine.getRendererDomElement();
+			rendererElement.addEventListener('click', handleCanvasClick);
+			rendererElement.addEventListener('touchend', handleCanvasClick, { passive: false });
+		}
 
 		isLoading.value = false;
 	} catch (e) {
@@ -659,14 +693,99 @@ function handlePongReceived(data: { playerId: string }): void {
 	if (!engine) return;
 
 	const sendTime = pendingPings.get(data.playerId);
-	if (!sendTime) return;
+	if (sendTime) {
+		// Calculate response time
+		const responseTime = Date.now() - sendTime;
+		pendingPings.delete(data.playerId);
 
-	// Calculate response time
-	const responseTime = Date.now() - sendTime;
-	pendingPings.delete(data.playerId);
+		// Update player mark color based on response time
+		engine.updateRemotePlayerPingStatus(data.playerId, responseTime);
+	}
 
-	// Update player mark color based on response time
-	engine.updateRemotePlayerPingStatus(data.playerId, responseTime);
+	// FR-018: Check if this pong is for player info window
+	for (const [pingId, pending] of pendingPlayerInfoPings) {
+		if (pending.playerId === data.playerId) {
+			clearTimeout(pending.timeoutId);
+			const responseTime = Date.now() - pending.sentTime;
+			selectedPlayerPingTime.value = responseTime;
+			isPlayerInfoPinging.value = false;
+			pendingPlayerInfoPings.delete(pingId);
+			break;
+		}
+	}
+}
+
+// FR-018: Handle canvas click/touch for player info window
+function handleCanvasClick(event: MouseEvent | TouchEvent): void {
+	if (!engine) return;
+
+	// Don't open player info if in place mode
+	if (placeMode.value) return;
+
+	// Check if clicked/touched on a remote player
+	const playerId = engine.getClickedPlayerId(event);
+	if (playerId) {
+		// Prevent default to avoid click event firing after touchend
+		event.preventDefault();
+		openPlayerInfoWindow(playerId);
+	}
+}
+
+// FR-018: Open player info window
+function openPlayerInfoWindow(playerId: string): void {
+	if (!engine) return;
+
+	const playerData = engine.getRemotePlayerData(playerId);
+	if (!playerData) return;
+
+	selectedPlayerInfo.value = {
+		playerId: playerData.id,
+		name: null, // PlayerData doesn't have name field
+		username: playerData.username,
+		avatarUrl: playerData.avatarUrl,
+	};
+	selectedPlayerPingTime.value = null;
+	showPlayerInfoWindow.value = true;
+
+	// Send ping when window opens
+	sendPlayerInfoPing(playerId);
+}
+
+// FR-018: Send ping for player info window
+function sendPlayerInfoPing(playerId: string): void {
+	if (!connection.value) return;
+
+	isPlayerInfoPinging.value = true;
+	const pingId = `info-${Date.now()}-${playerId}`;
+	const sentTime = Date.now();
+
+	const timeoutId = setTimeout(() => {
+		// 3 second timeout - mark as offline and close window
+		isPlayerInfoPinging.value = false;
+		if (engine) {
+			engine.removeRemotePlayer(playerId);
+		}
+		showPlayerInfoWindow.value = false;
+		selectedPlayerInfo.value = null;
+		pendingPlayerInfoPings.delete(pingId);
+	}, 3000);
+
+	pendingPlayerInfoPings.set(pingId, { playerId, sentTime, timeoutId });
+	connection.value.send('ping', { targetPlayerId: playerId });
+}
+
+// FR-018: Close player info window
+function handleClosePlayerInfoWindow(): void {
+	showPlayerInfoWindow.value = false;
+	selectedPlayerInfo.value = null;
+	selectedPlayerPingTime.value = null;
+}
+
+// FR-018: Handle manual ping from player info window
+function handleManualPing(): void {
+	if (selectedPlayerInfo.value) {
+		sendPlayerInfoPing(selectedPlayerInfo.value.playerId);
+	}
 }
 
 // FR-017: Start warning check interval for 3+ seconds since last ping
@@ -704,6 +823,9 @@ function handleKeyDown(e: KeyboardEvent): void {
 	} else if (e.code === 'Escape') {
 		if (placeMode.value) {
 			cancelPlaceMode();
+		} else if (showPlayerInfoWindow.value) {
+			// FR-018: Close player info window on Escape
+			handleClosePlayerInfoWindow();
 		} else if (showNpcDialog.value) {
 			closeNpcDialog();
 		} else if (showFarmPanel.value) {
@@ -977,10 +1099,20 @@ function cleanup(): void {
 		connection.value = null;
 	}
 
+	// FR-018: Remove canvas click/touch listeners
 	if (engine) {
+		const rendererElement = engine.getRendererDomElement();
+		rendererElement.removeEventListener('click', handleCanvasClick);
+		rendererElement.removeEventListener('touchend', handleCanvasClick);
 		engine.dispose();
 		engine = null;
 	}
+
+	// FR-018: Clear pending player info pings
+	for (const [pingId, pending] of pendingPlayerInfoPings) {
+		clearTimeout(pending.timeoutId);
+	}
+	pendingPlayerInfoPings.clear();
 
 	window.removeEventListener('keydown', handleKeyDown);
 
