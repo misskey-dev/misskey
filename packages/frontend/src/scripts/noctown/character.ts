@@ -536,9 +536,12 @@ export class Character {
 		this.emoteContext = this.emoteCanvas.getContext('2d')!;
 
 		// Create texture from canvas
+		// 仕様: premultipliedAlpha: false でアルファ値の事前乗算を無効化
+		// これにより描画したピクセルのアルファ値がそのまま使用される
 		this.emoteTexture = new THREE.CanvasTexture(this.emoteCanvas);
 		this.emoteTexture.minFilter = THREE.LinearFilter;
 		this.emoteTexture.magFilter = THREE.LinearFilter;
+		this.emoteTexture.premultiplyAlpha = false;
 
 		// Create sprite material
 		const material = new THREE.SpriteMaterial({
@@ -598,7 +601,7 @@ export class Character {
 				// Y座標を微調整して視覚的に中央に見えるよう調整
 				// iOSの場合はオフセット2、それ以外は5
 				const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-				const offset = isIOS ? 0 : 5;
+				const offset = isIOS ? 0 : 6;
 				const drawX = 64 - 24;
 				const drawY = 54 - 24 + offset;
 				this.emoteContext.drawImage(img, drawX, drawY, 48, 48);
@@ -620,10 +623,14 @@ export class Character {
 
 	/**
 	 * T014: Draw emote bubble background (circle with tail)
+	 * 仕様: globalAlphaを1.0にリセットして完全不透明で描画
 	 */
 	private drawEmoteBubble(): void {
 		// Clear canvas
 		this.emoteContext.clearRect(0, 0, 128, 128);
+
+		// 仕様: globalAlphaをリセットして完全不透明で描画
+		this.emoteContext.globalAlpha = 1.0;
 
 		// Draw white circle background
 		this.emoteContext.fillStyle = '#ffffff';
