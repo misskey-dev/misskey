@@ -64,8 +64,10 @@ export class WebSocketSyncManager {
 	private heartbeatIntervalMs = 30000;
 
 	// Chunk generation (T040: concurrent request limit)
-	private pendingChunkRequests: Set<string> = new Set();
+	private pendingChunkRequests: Map<string, { retryCount: number; timeoutId: ReturnType<typeof setTimeout> | null }> = new Map();
 	private static readonly MAX_CONCURRENT_CHUNK_REQUESTS = 5;
+	private static readonly MAX_CHUNK_REQUEST_RETRIES = 10;
+	private static readonly CHUNK_REQUEST_RETRY_INTERVAL_MS = 2000; // 2秒ごとにリトライ
 
 	// Reconnection settings (Misskey stream handles actual reconnection)
 	private static readonly MAX_RECONNECT_ATTEMPTS = 3;
@@ -192,6 +194,10 @@ export class WebSocketSyncManager {
 		this.connection.on('chunkGenerated', (data: ChunkData) => {
 			// Remove from pending requests
 			const key = `${data.chunkX},${data.chunkZ}`;
+			const pending = this.pendingChunkRequests.get(key);
+			if (pending?.timeoutId) {
+				clearTimeout(pending.timeoutId);
+			}
 			this.pendingChunkRequests.delete(key);
 
 			this.emit('chunkGenerated', data);
@@ -325,12 +331,59 @@ export class WebSocketSyncManager {
 
 		try {
 			this.connection.send('generateChunk', { chunkX, chunkZ, worldId });
-			this.pendingChunkRequests.add(key);
+
+			// Start retry mechanism with timeout
+			this.scheduleChunkRequestRetry(chunkX, chunkZ, worldId, 0);
+
 			return true;
 		} catch (e) {
 			console.error('Failed to send generate chunk:', e);
 			return false;
 		}
+	}
+
+	/**
+	 * Schedule a retry for chunk generation request
+	 * Retries up to MAX_CHUNK_REQUEST_RETRIES times with CHUNK_REQUEST_RETRY_INTERVAL_MS interval
+	 */
+	private scheduleChunkRequestRetry(chunkX: number, chunkZ: number, worldId: string, retryCount: number): void {
+		const key = `${chunkX},${chunkZ}`;
+
+		const timeoutId = setTimeout(() => {
+			// Check if chunk was already received
+			if (!this.pendingChunkRequests.has(key)) {
+				return;
+			}
+
+			// Check retry limit
+			if (retryCount >= WebSocketSyncManager.MAX_CHUNK_REQUEST_RETRIES) {
+				console.warn(`Chunk request timeout after ${retryCount} retries: ${key}`);
+				this.pendingChunkRequests.delete(key);
+				return;
+			}
+
+			// Check connection state
+			if (!this.connection || !this.state.isConnected) {
+				console.warn(`Connection lost while retrying chunk request: ${key}`);
+				this.pendingChunkRequests.delete(key);
+				return;
+			}
+
+			// Retry the request
+			try {
+				console.log(`Retrying chunk request (${retryCount + 1}/${WebSocketSyncManager.MAX_CHUNK_REQUEST_RETRIES}): ${key}`);
+				this.connection.send('generateChunk', { chunkX, chunkZ, worldId });
+
+				// Schedule next retry
+				this.scheduleChunkRequestRetry(chunkX, chunkZ, worldId, retryCount + 1);
+			} catch (e) {
+				console.error(`Failed to retry chunk request: ${key}`, e);
+				this.pendingChunkRequests.delete(key);
+			}
+		}, WebSocketSyncManager.CHUNK_REQUEST_RETRY_INTERVAL_MS);
+
+		// Store the timeout ID so it can be cancelled if the chunk arrives
+		this.pendingChunkRequests.set(key, { retryCount, timeoutId });
 	}
 
 	private startHeartbeat(): void {
@@ -362,6 +415,14 @@ export class WebSocketSyncManager {
 			clearInterval(this.heartbeatInterval);
 			this.heartbeatInterval = null;
 		}
+
+		// Clear all pending chunk request timeouts
+		for (const [key, pending] of this.pendingChunkRequests.entries()) {
+			if (pending.timeoutId) {
+				clearTimeout(pending.timeoutId);
+			}
+		}
+		this.pendingChunkRequests.clear();
 
 		// Flush any pending position
 		this.flushPendingPosition();
