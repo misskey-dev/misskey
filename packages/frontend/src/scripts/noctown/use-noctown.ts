@@ -342,8 +342,35 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 	}
 
 	// FR-014: Ping受信時に即座にPongを返送
-	function handlePlayerPingReceived(data: { senderPlayerId: string; pingId: string }): void {
-		if (!channel || !isConnected.value || !playerData.value) return;
+	// 送信者が画面に表示されていなければ、PlayerDataを取得して追加する
+	async function handlePlayerPingReceived(data: { senderPlayerId: string; pingId: string }): Promise<void> {
+		if (!channel || !isConnected.value || !playerData.value || !engine) return;
+
+		// 送信者が既に画面に表示されているか確認
+		const senderExists = engine.hasRemotePlayer(data.senderPlayerId);
+
+		// 表示されていなければ、PlayerDataを取得して追加
+		if (!senderExists) {
+			try {
+				const res = await window.fetch('/api/noctown/players/get', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					credentials: 'same-origin',
+					body: JSON.stringify({
+						i: getToken(),
+						playerId: data.senderPlayerId,
+					}),
+				});
+
+				if (res.ok) {
+					const playerInfo: NoctownNearbyPlayer = await res.json();
+					console.log(`Player ${playerInfo.username} was not visible, adding to scene from ping`);
+					engine.addRemotePlayer(playerInfo);
+				}
+			} catch (e) {
+				console.error('Failed to fetch sender player data:', e);
+			}
+		}
 
 		// 即座にpongを返送
 		try {

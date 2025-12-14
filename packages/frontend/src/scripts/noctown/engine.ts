@@ -917,6 +917,11 @@ export class NoctownEngine {
 		return Array.from(this.remotePlayers.keys());
 	}
 
+	// 指定されたプレイヤーIDがリモートプレイヤーとして存在するか確認
+	public hasRemotePlayer(playerId: string): boolean {
+		return this.remotePlayers.has(playerId);
+	}
+
 	// FR-017: Update remote player ping status and mark color
 	public updateRemotePlayerPingStatus(playerId: string, responseTimeMs: number): void {
 		const character = this.remotePlayers.get(playerId);

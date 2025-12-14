@@ -21,7 +21,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-if="name" :class="$style.name">{{ name }}</div>
 
 			<!-- Username (always shown) -->
-			<div :class="$style.username">@{{ username }}</div>
+			<!-- nameが空の場合は通常サイズ、nameがある場合は小さめフォント -->
+			<div :class="name ? $style.username : $style.usernameOnly">@{{ username }}</div>
 
 			<!-- Ping info -->
 			<div :class="$style.pingInfo">
@@ -165,6 +166,12 @@ onMounted(() => {
 	font-size: 14px;
 	color: var(--MI_THEME-fg);
 	opacity: 0.7;
+}
+
+.usernameOnly {
+	font-size: 18px;
+	font-weight: bold;
+	color: var(--MI_THEME-fg);
 }
 
 .pingInfo {

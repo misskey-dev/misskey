@@ -1,4 +1,8 @@
 /**
+ * このファイルはgirl1アバターデザインのバックアップです
+ * 現在は使用されていません（girl2に移行済み）
+ * 将来的にアバター選択機能を追加する場合に参照してください
+ *
  * Character class - 3D character model with animations
  * Based on character-demo.html implementation
  *
@@ -119,12 +123,11 @@ export class Character {
 	}
 
 	private createBody(): void {
-		// Girl2 color scheme (character-cute-v4.html)
-		const bodyColor = 0xff91a4;    // Pink dress
+		const bodyColor = 0x4a90d9;
 		const skinColor = 0xffdbac;
-		const hairColor = 0x5c3317;    // Brown hair
-		const pantsColor = 0x4a5568;
-		const shoeColor = 0x2a2a2a;
+		const hairColor = 0x3a2010;
+		const shoeColor = 0x1a1a1a;
+		const pantsColor = 0x2a2a3a;
 
 		// Torso (body)
 		const torsoGeo = new THREE.BoxGeometry(0.8, 1, 0.5);
@@ -158,26 +161,6 @@ export class Character {
 		this.head.castShadow = true;
 		this.headGroup.add(this.head);
 
-		// Cheeks (ほっぺ)
-		const cheekGeo = new THREE.BoxGeometry(0.02, 0.12, 0.15);
-		const cheekMat = new THREE.MeshStandardMaterial({
-			color: 0xffaaaa,
-			transparent: true,
-			opacity: 0.7,
-		});
-
-		// Left cheek
-		const leftCheek = new THREE.Mesh(cheekGeo, cheekMat);
-		leftCheek.position.set(-0.46, -0.1, 0.2);
-		leftCheek.castShadow = true;
-		this.headGroup.add(leftCheek);
-
-		// Right cheek
-		const rightCheek = new THREE.Mesh(cheekGeo, cheekMat.clone());
-		rightCheek.position.set(0.46, -0.1, 0.2);
-		rightCheek.castShadow = true;
-		this.headGroup.add(rightCheek);
-
 		// Hair parts
 		const hairMat = new THREE.MeshStandardMaterial({ color: hairColor });
 
@@ -209,28 +192,9 @@ export class Character {
 		this.rightSideHair.castShadow = true;
 		this.headGroup.add(this.rightSideHair);
 
-		// Bangs (前髪)
-		const bangsGeo = new THREE.BoxGeometry(0.95, 0.2, 0.15);
-		const bangs = new THREE.Mesh(bangsGeo, hairMat);
-		bangs.position.set(0, 0.38, 0.48);
-		bangs.castShadow = true;
-		this.headGroup.add(bangs);
-
-		// Ribbon (リボン) - BufferGeometry implementation
-		const ribbonMat = new THREE.MeshStandardMaterial({ color: 0xff1493 }); // Deep pink
-
-		// Create ribbon geometry
-		const ribbonGeometry = this.createRibbonGeometry();
-		const ribbon = new THREE.Mesh(ribbonGeometry, ribbonMat);
-		ribbon.position.set(0, 0.05, -0.55);
-		ribbon.castShadow = true;
-		this.headGroup.add(ribbon);
-
-		// Arms with pivot groups and sleeves
+		// Arms with pivot groups
 		const armGeo = new THREE.BoxGeometry(0.25, 0.8, 0.25);
 		const armMat = new THREE.MeshStandardMaterial({ color: skinColor });
-		const sleeveGeo = new THREE.BoxGeometry(0.28, 0.4, 0.28);
-		const sleeveMat = new THREE.MeshStandardMaterial({ color: bodyColor });
 
 		// Left arm pivot
 		this.leftArmPivot = new THREE.Group();
@@ -239,13 +203,6 @@ export class Character {
 		this.leftArm.position.y = -0.4;
 		this.leftArm.castShadow = true;
 		this.leftArmPivot.add(this.leftArm);
-
-		// Left sleeve
-		const leftSleeve = new THREE.Mesh(sleeveGeo, sleeveMat.clone());
-		leftSleeve.position.y = -0.2;
-		leftSleeve.castShadow = true;
-		this.leftArmPivot.add(leftSleeve);
-
 		this.group.add(this.leftArmPivot);
 
 		// Right arm pivot
@@ -255,13 +212,6 @@ export class Character {
 		this.rightArm.position.y = -0.4;
 		this.rightArm.castShadow = true;
 		this.rightArmPivot.add(this.rightArm);
-
-		// Right sleeve
-		const rightSleeve = new THREE.Mesh(sleeveGeo, sleeveMat.clone());
-		rightSleeve.position.y = -0.2;
-		rightSleeve.castShadow = true;
-		this.rightArmPivot.add(rightSleeve);
-
 		this.group.add(this.rightArmPivot);
 
 		// Legs with pivot groups
@@ -301,221 +251,6 @@ export class Character {
 		this.rightShoe.position.set(0.2, 0.08, 0.02);
 		this.rightShoe.castShadow = true;
 		this.group.add(this.rightShoe);
-
-		// Collar (襟)
-		const collarGeo = new THREE.BoxGeometry(0.46, 0.08, 0.54);
-		const collarMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
-		const collar = new THREE.Mesh(collarGeo, collarMat);
-		collar.position.set(0, 2.01, 0.02);
-		collar.castShadow = true;
-		this.group.add(collar);
-
-		// Chest ribbon (胸元リボン)
-		const chestRibbonMat = new THREE.MeshStandardMaterial({ color: 0xff1493 });
-
-		// Center knot
-		const chestRibbonCenter = new THREE.Mesh(
-			new THREE.BoxGeometry(0.08, 0.08, 0.06),
-			chestRibbonMat,
-		);
-		chestRibbonCenter.position.set(0, 1.88, 0.26);
-		chestRibbonCenter.castShadow = true;
-		this.group.add(chestRibbonCenter);
-
-		// Left wing
-		const chestRibbonLeft = new THREE.Mesh(
-			new THREE.BoxGeometry(0.14, 0.06, 0.04),
-			chestRibbonMat.clone(),
-		);
-		chestRibbonLeft.position.set(-0.11, 1.88, 0.26);
-		chestRibbonLeft.rotation.z = 0.3;
-		chestRibbonLeft.castShadow = true;
-		this.group.add(chestRibbonLeft);
-
-		// Right wing
-		const chestRibbonRight = new THREE.Mesh(
-			new THREE.BoxGeometry(0.14, 0.06, 0.04),
-			chestRibbonMat.clone(),
-		);
-		chestRibbonRight.position.set(0.11, 1.88, 0.26);
-		chestRibbonRight.rotation.z = -0.3;
-		chestRibbonRight.castShadow = true;
-		this.group.add(chestRibbonRight);
-	}
-
-	/**
-	 * Create ribbon geometry using BufferGeometry
-	 * Based on character-cute-v4.html implementation
-	 */
-	private createRibbonGeometry(): THREE.BufferGeometry {
-		const geometry = new THREE.BufferGeometry();
-		const vertices: number[] = [];
-		const indices: number[] = [];
-
-		// Ribbon wing parameters
-		const wingSegments = 24;
-		const wingRows = 8;
-		const wingWidth = 0.14;
-		const wingHeight = 0.09;
-
-		// Left wing
-		for (let row = 0; row <= wingRows; row++) {
-			const rowT = row / wingRows;
-			const thickness = Math.sin(rowT * Math.PI) * 0.025;
-
-			for (let i = 0; i <= wingSegments; i++) {
-				const t = i / wingSegments;
-				const x = -t * wingWidth;
-				const y = Math.sin(t * Math.PI) * wingHeight * (1 - rowT * 0.3);
-				const z = thickness - 0.0125;
-
-				vertices.push(x, y, z);
-			}
-		}
-
-		// Left wing indices
-		for (let row = 0; row < wingRows; row++) {
-			for (let i = 0; i < wingSegments; i++) {
-				const a = row * (wingSegments + 1) + i;
-				const b = a + 1;
-				const c = a + wingSegments + 1;
-				const d = c + 1;
-				indices.push(a, c, b);
-				indices.push(b, c, d);
-			}
-		}
-
-		// Right wing (mirror left wing)
-		const leftWingVertexCount = vertices.length / 3;
-		for (let row = 0; row <= wingRows; row++) {
-			const rowT = row / wingRows;
-			const thickness = Math.sin(rowT * Math.PI) * 0.025;
-
-			for (let i = 0; i <= wingSegments; i++) {
-				const t = i / wingSegments;
-				const x = t * wingWidth;
-				const y = Math.sin(t * Math.PI) * wingHeight * (1 - rowT * 0.3);
-				const z = thickness - 0.0125;
-
-				vertices.push(x, y, z);
-			}
-		}
-
-		// Right wing indices
-		for (let row = 0; row < wingRows; row++) {
-			for (let i = 0; i < wingSegments; i++) {
-				const a = leftWingVertexCount + row * (wingSegments + 1) + i;
-				const b = a + 1;
-				const c = a + wingSegments + 1;
-				const d = c + 1;
-				indices.push(a, c, b);
-				indices.push(b, c, d);
-			}
-		}
-
-		// Ribbon tail parameters
-		const tailSegments = 16;
-		const tailRows = 6;
-		const tailWidth = 0.08;
-		const tailLength = 0.2;
-
-		// Left tail
-		const tailStartVertexCount = vertices.length / 3;
-		for (let row = 0; row <= tailRows; row++) {
-			const rowT = row / tailRows;
-			const thickness = Math.sin(rowT * Math.PI) * 0.02;
-
-			for (let i = 0; i <= tailSegments; i++) {
-				const t = i / tailSegments;
-				const x = -t * tailWidth;
-				const y = -t * tailLength;
-				const z = thickness - 0.01;
-
-				vertices.push(x, y, z);
-			}
-		}
-
-		// Left tail indices
-		for (let row = 0; row < tailRows; row++) {
-			for (let i = 0; i < tailSegments; i++) {
-				const a = tailStartVertexCount + row * (tailSegments + 1) + i;
-				const b = a + 1;
-				const c = a + tailSegments + 1;
-				const d = c + 1;
-				indices.push(a, c, b);
-				indices.push(b, c, d);
-			}
-		}
-
-		// Right tail
-		const rightTailStartVertexCount = vertices.length / 3;
-		for (let row = 0; row <= tailRows; row++) {
-			const rowT = row / tailRows;
-			const thickness = Math.sin(rowT * Math.PI) * 0.02;
-
-			for (let i = 0; i <= tailSegments; i++) {
-				const t = i / tailSegments;
-				const x = t * tailWidth;
-				const y = -t * tailLength;
-				const z = thickness - 0.01;
-
-				vertices.push(x, y, z);
-			}
-		}
-
-		// Right tail indices
-		for (let row = 0; row < tailRows; row++) {
-			for (let i = 0; i < tailSegments; i++) {
-				const a = rightTailStartVertexCount + row * (tailSegments + 1) + i;
-				const b = a + 1;
-				const c = a + tailSegments + 1;
-				const d = c + 1;
-				indices.push(a, c, b);
-				indices.push(b, c, d);
-			}
-		}
-
-		// Center knot
-		const knotSegments = 8;
-		const knotRadius = 0.05;
-		const knotStartVertexCount = vertices.length / 3;
-
-		// Front layer
-		for (let i = 0; i <= knotSegments; i++) {
-			const angle = (i / knotSegments) * Math.PI * 2;
-			const x = Math.cos(angle) * knotRadius;
-			const y = Math.sin(angle) * knotRadius;
-			const z = 0.02;
-
-			vertices.push(x, y, z);
-		}
-
-		// Back layer
-		for (let i = 0; i <= knotSegments; i++) {
-			const angle = (i / knotSegments) * Math.PI * 2;
-			const x = Math.cos(angle) * knotRadius;
-			const y = Math.sin(angle) * knotRadius;
-			const z = -0.02;
-
-			vertices.push(x, y, z);
-		}
-
-		// Knot indices (connect front and back layers)
-		for (let i = 0; i < knotSegments; i++) {
-			const a = knotStartVertexCount + i;
-			const b = a + 1;
-			const c = knotStartVertexCount + knotSegments + 1 + i;
-			const d = c + 1;
-			indices.push(a, c, b);
-			indices.push(b, c, d);
-		}
-
-		// Set attributes
-		geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-		geometry.setIndex(indices);
-		geometry.computeVertexNormals();
-
-		return geometry;
 	}
 
 	/**

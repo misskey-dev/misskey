@@ -211,6 +211,7 @@ export class NoctownService {
 			playerId,
 			userId,
 			username: user?.username ?? '',
+			name: user?.name ?? null,
 			avatarUrl: user?.avatarUrl ?? null,
 			positionX: player.positionX,
 			positionY: player.positionY,
@@ -252,6 +253,7 @@ export class NoctownService {
 				playerId,
 				userId,
 				username: user?.username ?? '',
+				name: user?.name ?? null,
 				avatarUrl: user?.avatarUrl ?? null,
 				positionX: x,
 				positionY: y,
@@ -269,6 +271,7 @@ export class NoctownService {
 			playerId, // 後方互換性のため残す
 			userId,
 			username: user?.username ?? '',
+			name: user?.name ?? null,
 			avatarUrl: user?.avatarUrl ?? null,
 			positionX: x,
 			positionY: y,
