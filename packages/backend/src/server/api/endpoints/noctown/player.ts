@@ -93,8 +93,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const isSilenced = !policies.canPublicNote;
 
 			// Get default world ID
-			const defaultWorld = await this.noctownWorldsRepository.findOne({
+			const [defaultWorld] = await this.noctownWorldsRepository.find({
 				order: { createdAt: 'ASC' },
+				take: 1,
 			});
 			const worldId = defaultWorld?.id ?? 'default';
 
