@@ -604,7 +604,9 @@ export class Character {
 	}
 
 	/**
-	 * FR-017: Check if player needs warning color (3+ seconds since last ping)
+	 * 仕様: プレイヤーが警告色（黄色）を表示すべきかチェック
+	 * 変更: ping間隔を30秒に変更したため、警告時間も30秒に延長
+	 * 修正日: 2025-12-14
 	 * @returns true if warning should be displayed
 	 */
 	public needsWarningColor(): boolean {
@@ -612,7 +614,7 @@ export class Character {
 		if (this.lastPingTime === 0) return false;
 
 		const timeSinceLastPing = Date.now() - this.lastPingTime;
-		return timeSinceLastPing >= 3000; // 3 seconds
+		return timeSinceLastPing >= 30000; // 30 seconds
 	}
 
 	/**
