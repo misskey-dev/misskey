@@ -135,15 +135,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 					@close="handleClosePetInfoWindow"
 				/>
 
-				<!-- Emotion buttons -->
+				<!-- T009-T011: Emotion buttons with favorite emoji support -->
 				<div :class="$style.emotionPanel">
 					<button
-						v-for="emoji in emotionEmojis"
-						:key="emoji"
+						v-for="(item, index) in emotionEmojis"
+						:key="index"
 						:class="$style.emotionBtn"
-						@click="showEmotion(emoji)"
+						@click="showEmotion(item)"
 					>
-						{{ emoji }}
+						<template v-if="item.isCustom && item.url">
+							<img :src="item.url" :alt="item.emoji" :class="$style.customEmoji" />
+						</template>
+						<template v-else>
+							{{ item.display }}
+						</template>
 					</button>
 				</div>
 			</div>
@@ -162,7 +167,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import MkLoading from '@/components/global/MkLoading.vue';
@@ -179,6 +184,8 @@ import { useStream } from '@/stream.js';
 import { isMobileDevice, hasPhysicalKeyboard, isForceJoystickEnabled, enableForceJoystick, isDesktopDevice } from '@/scripts/noctown/use-noctown.js';
 import { $i } from '@/i.js';
 import { apiUrl } from '@@/js/config.js';
+import { prefer } from '@/preferences.js';
+import { customEmojisMap } from '@/custom-emojis.js';
 import type { PlayerData, ChunkData, DroppedItemData, PlacedItemData, NpcData, PetInfo } from '@/scripts/noctown/engine.js';
 
 // Noctown locale (type-safe access)
@@ -188,8 +195,55 @@ const noctownI18n = {
 	moveHint: 'で移動',
 };
 
-// Emotion emojis (6 emotions: 😊❗❓💢💕👋)
-const emotionEmojis = ['😊', '❗', '❓', '💢', '💕', '👋'];
+// T005: EmotionEmoji type interface for favorite emoji support
+interface EmotionEmoji {
+	emoji: string;      // Original emoji string (Unicode or :custom_name:)
+	isCustom: boolean;  // Whether this is a custom emoji
+	url?: string;       // URL for custom emoji image
+	display: string;    // Display text (Unicode emoji or empty for custom)
+}
+
+// T006: Get favorite emojis from Misskey emoji picker settings
+function getFavoriteEmojis(): EmotionEmoji[] {
+	const palette = prefer.s.emojiPalettes[0]?.emojis ?? [];
+	const result: EmotionEmoji[] = [];
+
+	for (const emoji of palette.slice(0, 6)) {
+		if (emoji.startsWith(':') && emoji.endsWith(':')) {
+			// Custom emoji (e.g., :custom_name:)
+			const name = emoji.slice(1, -1);
+			const customEmoji = customEmojisMap.get(name);
+			result.push({
+				emoji,
+				isCustom: true,
+				url: customEmoji?.url,
+				display: '',
+			});
+		} else {
+			// Unicode emoji
+			result.push({
+				emoji,
+				isCustom: false,
+				display: emoji,
+			});
+		}
+	}
+
+	// Fill with defaults if fewer than 6 emojis
+	const defaults = ['😊', '❗', '❓', '💢', '💕', '👋'];
+	while (result.length < 6) {
+		result.push({
+			emoji: defaults[result.length],
+			isCustom: false,
+			display: defaults[result.length],
+		});
+	}
+
+	return result;
+}
+
+// T008: emotionEmojis as computed property for reactive updates
+const emotionEmojis = computed(() => getFavoriteEmojis());
 
 const canvasContainer = ref<HTMLElement | null>(null);
 const isConnected = ref(false);
@@ -487,7 +541,8 @@ async function connectStream(): Promise<void> {
 	connection.value.on('itemPicked', (body: { droppedItemId: string }) => {
 		if (engine) engine.removeDroppedItem(body.droppedItemId);
 	});
-	connection.value.on('playerEmotion', (body: { playerId: string; emoji: string }) => {
+	// T017: Updated to receive isCustomEmoji flag from server
+	connection.value.on('playerEmotion', (body: { playerId: string; emoji: string; isCustomEmoji?: boolean }) => {
 		handlePlayerEmoted(body);
 	});
 	connection.value.on('playerChatted', (body: { playerId: string; message: string }) => {
@@ -617,9 +672,18 @@ async function handleChunkGenerated(data: ChunkData): Promise<void> {
 	}
 }
 
-function handlePlayerEmoted(data: { playerId: string; emoji: string }): void {
+// T017-T018: handlePlayerEmoted updated for custom emoji support
+function handlePlayerEmoted(data: { playerId: string; emoji: string; isCustomEmoji?: boolean }): void {
 	if (!engine) return;
-	engine.showRemotePlayerEmote(data.playerId, data.emoji);
+
+	if (data.isCustomEmoji) {
+		// T018: Resolve custom emoji URL from customEmojisMap
+		const name = data.emoji.slice(1, -1); // Remove : from :emoji_name:
+		const customEmoji = customEmojisMap.get(name);
+		engine.showRemotePlayerEmote(data.playerId, data.emoji, true, customEmoji?.url);
+	} else {
+		engine.showRemotePlayerEmote(data.playerId, data.emoji, false);
+	}
 }
 
 function handlePlayerChatted(data: { playerId: string; message: string }): void {
@@ -1157,17 +1221,17 @@ function handleKeyDown(e: KeyboardEvent): void {
 			showFarmPanel.value = false;
 		}
 	} else if (e.code === 'Digit1') {
-		showEmotion(emotionEmojis[0]);
+		showEmotion(emotionEmojis.value[0]);
 	} else if (e.code === 'Digit2') {
-		showEmotion(emotionEmojis[1]);
+		showEmotion(emotionEmojis.value[1]);
 	} else if (e.code === 'Digit3') {
-		showEmotion(emotionEmojis[2]);
+		showEmotion(emotionEmojis.value[2]);
 	} else if (e.code === 'Digit4') {
-		showEmotion(emotionEmojis[3]);
+		showEmotion(emotionEmojis.value[3]);
 	} else if (e.code === 'Digit5') {
-		showEmotion(emotionEmojis[4]);
+		showEmotion(emotionEmojis.value[4]);
 	} else if (e.code === 'Digit6') {
-		showEmotion(emotionEmojis[5]);
+		showEmotion(emotionEmojis.value[5]);
 	}
 }
 
@@ -1194,17 +1258,18 @@ function toggleFarmPanel(): void {
 	showQuestPanel.value = false;
 }
 
-function showEmotion(emoji: string): void {
+// T012-T013: showEmotion function updated for EmotionEmoji type
+function showEmotion(item: EmotionEmoji): void {
 	if (!engine) return;
 
-	// Show emotion on local player
-	engine.showLocalPlayerEmote(emoji);
+	// Show emotion on local player (pass emoji data for custom emoji support)
+	engine.showLocalPlayerEmote(item.emoji, item.isCustom, item.url);
 
-	// Send emotion event to server via WebSocket
+	// Send emotion event to server via WebSocket with isCustomEmoji flag
 	if (connection.value) {
 		connection.value.send('emotion', {
-			emoji,
-			isCustomEmoji: false,
+			emoji: item.emoji,
+			isCustomEmoji: item.isCustom,
 		});
 	}
 }
@@ -1750,6 +1815,7 @@ definePage(() => ({
 	}
 }
 
+// 仕様: 絵文字ボタン。overflow: hiddenで大きな画像がはみ出さないようにする
 .emotionBtn {
 	width: 48px;
 	height: 48px;
@@ -1762,6 +1828,7 @@ definePage(() => ({
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	overflow: hidden;
 
 	&:hover {
 		background: rgba(255, 255, 255, 1);
@@ -1788,6 +1855,28 @@ definePage(() => ({
 		width: 40px;
 		height: 40px;
 		font-size: 24px;
+	}
+}
+
+// T011: Custom emoji image style
+// 仕様: アスペクト比1:1で固定し、大きな画像でもボタンからはみ出さないようにする
+// object-fit: coverで画像を1:1の領域にフィットさせる（歪みなし）
+.customEmoji {
+	width: 24px;
+	height: 24px;
+	max-width: 100%;
+	max-height: 100%;
+	aspect-ratio: 1 / 1;
+	object-fit: cover;
+
+	@media (max-width: 768px) {
+		width: 22px;
+		height: 22px;
+	}
+
+	@media (max-width: 480px) {
+		width: 20px;
+		height: 20px;
 	}
 }
 

@@ -766,15 +766,17 @@ export class NoctownEngine {
 		this.localPlayer.setRotation(rotation);
 	}
 
-	public showLocalPlayerEmote(emoji: string): void {
+	// T014-T016: showLocalPlayerEmote updated for custom emoji support
+	public showLocalPlayerEmote(emoji: string, isCustom?: boolean, url?: string): void {
 		if (!this.localPlayer) return;
-		this.localPlayer.showEmote(emoji);
+		this.localPlayer.showEmote(emoji, isCustom, url);
 	}
 
-	public showRemotePlayerEmote(playerId: string, emoji: string): void {
+	// T014-T016: showRemotePlayerEmote updated for custom emoji support
+	public showRemotePlayerEmote(playerId: string, emoji: string, isCustom?: boolean, url?: string): void {
 		const character = this.remotePlayers.get(playerId);
 		if (!character) return;
-		character.showEmote(emoji);
+		character.showEmote(emoji, isCustom, url);
 	}
 
 	public showLocalPlayerChat(message: string): void {

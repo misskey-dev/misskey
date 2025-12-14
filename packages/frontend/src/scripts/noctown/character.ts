@@ -556,14 +556,43 @@ export class Character {
 	}
 
 	/**
-	 * Show emotion above character head
-	 * @param emoji Emoji character to display (😊❗❓💢💕👋)
+	 * T014-T016: Show emotion above character head with custom emoji support
+	 * @param emoji Emoji character to display (Unicode or :custom_name:)
+	 * @param isCustom Whether this is a custom emoji
+	 * @param url URL for custom emoji image
 	 */
-	public showEmote(emoji: string): void {
+	public showEmote(emoji: string, isCustom?: boolean, url?: string): void {
 		// Reset timer and make sprite visible
 		this.emoteTimer = 0;
 		this.emoteSprite.visible = true;
 
+		// Draw bubble background first
+		this.drawEmoteBubble();
+
+		if (isCustom && url) {
+			// T015: Custom emoji - load and draw image
+			const img = new Image();
+			img.crossOrigin = 'anonymous';
+			img.onload = () => {
+				// Draw custom emoji image centered in bubble
+				this.emoteContext.drawImage(img, 64 - 24, 54 - 24, 48, 48);
+				this.emoteTexture.needsUpdate = true;
+			};
+			// T016: Fallback on error - draw emoji text or placeholder
+			img.onerror = () => {
+				this.drawEmojiText(emoji.startsWith(':') ? '?' : emoji);
+			};
+			img.src = url;
+		} else {
+			// Unicode emoji - draw as text
+			this.drawEmojiText(emoji);
+		}
+	}
+
+	/**
+	 * T014: Draw emote bubble background (circle with tail)
+	 */
+	private drawEmoteBubble(): void {
 		// Clear canvas
 		this.emoteContext.clearRect(0, 0, 128, 128);
 
@@ -591,14 +620,16 @@ export class Character {
 		this.emoteContext.closePath();
 		this.emoteContext.fill();
 		this.emoteContext.stroke();
+	}
 
-		// Draw emoji
+	/**
+	 * T014: Draw emoji text on emote bubble
+	 */
+	private drawEmojiText(emoji: string): void {
 		this.emoteContext.font = '48px Arial';
 		this.emoteContext.textAlign = 'center';
 		this.emoteContext.textBaseline = 'middle';
 		this.emoteContext.fillText(emoji, 64, 54);
-
-		// Update texture
 		this.emoteTexture.needsUpdate = true;
 	}
 
