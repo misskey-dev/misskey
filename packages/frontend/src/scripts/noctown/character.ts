@@ -573,12 +573,15 @@ export class Character {
 		this.emoteContext.arc(64, 54, 40, 0, Math.PI * 2);
 		this.emoteContext.stroke();
 
-		// Draw triangle tail at bottom
+		// 仕様: 吹き出しの三角形（しっぽ）を下向きに描画
+		// Canvas座標系とThree.jsテクスチャの関係で上下反転するため、
+		// Canvasでは上向き（頂点が上）に描画することで、表示時に下向きになる
+		// 修正日: 2025-12-14
 		this.emoteContext.fillStyle = '#ffffff';
 		this.emoteContext.beginPath();
-		this.emoteContext.moveTo(64, 94);
-		this.emoteContext.lineTo(54, 104);
-		this.emoteContext.lineTo(74, 104);
+		this.emoteContext.moveTo(64, 14);  // 頂点（Canvas上では上、表示時は下）
+		this.emoteContext.lineTo(54, 4);   // 左
+		this.emoteContext.lineTo(74, 4);   // 右
 		this.emoteContext.closePath();
 		this.emoteContext.fill();
 		this.emoteContext.stroke();
@@ -676,12 +679,15 @@ export class Character {
 		ctx.arc(64, 54, 40, 0, Math.PI * 2);
 		ctx.stroke();
 
-		// Draw triangle tail at bottom
+		// 仕様: 吹き出しの三角形（しっぽ）を下向きに描画
+		// Canvas座標系とThree.jsテクスチャの関係で上下反転するため、
+		// Canvasでは上向き（頂点が上）に描画することで、表示時に下向きになる
+		// 修正日: 2025-12-14
 		ctx.fillStyle = '#ffffff';
 		ctx.beginPath();
-		ctx.moveTo(64, 94);
-		ctx.lineTo(54, 104);
-		ctx.lineTo(74, 104);
+		ctx.moveTo(64, 14);  // 頂点（Canvas上では上、表示時は下）
+		ctx.lineTo(54, 4);   // 左
+		ctx.lineTo(74, 4);   // 右
 		ctx.closePath();
 		ctx.fill();
 		ctx.stroke();
@@ -1116,7 +1122,9 @@ export class Character {
 	}
 
 	/**
-	 * Update character with input and delta time
+	 * 仕様: 入力とデルタ時間に基づいてキャラクターを更新
+	 * 修正: 向き計算を修正（マイナス符号を削除）
+	 * 修正日: 2025-12-14
 	 * @param deltaTime Time since last frame (seconds)
 	 * @param input Movement input
 	 */
@@ -1141,10 +1149,10 @@ export class Character {
 			// Move character
 			this.group.position.add(this.velocity);
 
-			// Rotate to face movement direction
-			// Face icon is on +Z face, so rotate to point +Z toward movement direction
-			// In Three.js, rotation.y = atan2(-x, -z) makes +Z point toward (x, z)
-			this.targetRotation = Math.atan2(-moveDir.x, -moveDir.z);
+			// 仕様: 移動方向にキャラクターを向かせる
+			// キャラクターの顔（アイコン）は+Z方向にあるため、
+			// 移動方向(moveDir.x, moveDir.z)に向かせるにはatan2(moveDir.x, moveDir.z)を使用
+			this.targetRotation = Math.atan2(moveDir.x, moveDir.z);
 
 			// Walk animation
 			const walkSpeed = input.sprint ? 18 : 12;
@@ -1224,7 +1232,10 @@ export class Character {
 	}
 
 	/**
-	 * Update animation based on movement direction (improved smooth animation)
+	 * 仕様: 移動方向に基づいてアニメーションを更新
+	 * 修正: 向き計算を修正（マイナス符号を削除）- キャラクターの顔は+Z方向にあるため、
+	 *       移動方向にそのまま向かせる（atan2(moveX, moveZ)）
+	 * 修正日: 2025-12-14
 	 * @param moveX Normalized movement direction X (-1 to 1)
 	 * @param moveZ Normalized movement direction Z (-1 to 1)
 	 * @param deltaTime Delta time in seconds
@@ -1237,9 +1248,10 @@ export class Character {
 		// Update target rotation even when not moving (for remote players)
 		// This ensures rotation updates when receiving small position changes from WebSocket
 		if (moveLength > 0.0001) {
-			// Calculate target rotation from movement direction
-			// Face icon is on +Z face, so rotate to point +Z toward movement direction
-			this.targetRotation = Math.atan2(-moveX, -moveZ);
+			// 仕様: 移動方向にキャラクターを向かせる
+			// キャラクターの顔（アイコン）は+Z方向にあるため、
+			// 移動方向(moveX, moveZ)に向かせるにはatan2(moveX, moveZ)を使用
+			this.targetRotation = Math.atan2(moveX, moveZ);
 		}
 
 		if (this.isMoving) {

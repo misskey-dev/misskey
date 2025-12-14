@@ -585,23 +585,36 @@ export class NoctownEngine {
 		this.lastFrameTime = now;
 
 		/**
-		 * キーボード入力がある場合のみcurrentInputを更新
-		 * ジョイスティック入力はsetInput()で設定されるため、キーボード入力で上書きしない
-		 * 仕様: キーボード入力とジョイスティック入力の両立を実現
+		 * 仕様: キーボード入力の状態をcurrentInputに反映
+		 * - キーボード入力がある場合: キー状態をそのまま反映
+		 * - キーボード入力がない場合かつジョイスティック入力もない場合: 全てfalseにリセット
+		 * - ジョイスティック入力がある場合: setInput()で設定された値をそのまま使用
+		 * 修正: キーを離した時にcurrentInputがリセットされない問題を修正
 		 * 修正日: 2025-12-14
 		 */
+		// キーボード入力の状態を常にcurrentInputに反映（押されているキーのみtrue）
+		// ジョイスティック入力がある場合はsetInput()で上書きされる
+		const hasJoystickInput = this.currentInput.up || this.currentInput.down ||
+			this.currentInput.left || this.currentInput.right;
 		const hasKeyboardInput = this.keys.has('ArrowUp') || this.keys.has('ArrowDown') ||
 			this.keys.has('ArrowLeft') || this.keys.has('ArrowRight');
 
 		if (hasKeyboardInput) {
-			// Update currentInput from keyboard state (WASD removed, arrow keys only)
+			// キーボード入力がある場合: 現在押されているキーの状態を反映
 			this.currentInput.up = this.keys.has('ArrowUp');
 			this.currentInput.down = this.keys.has('ArrowDown');
 			this.currentInput.left = this.keys.has('ArrowLeft');
 			this.currentInput.right = this.keys.has('ArrowRight');
 			this.currentInput.sprint = this.keys.has('ShiftLeft') || this.keys.has('ShiftRight');
+		} else if (!hasJoystickInput) {
+			// キーボード入力もジョイスティック入力もない場合: 全てリセット
+			this.currentInput.up = false;
+			this.currentInput.down = false;
+			this.currentInput.left = false;
+			this.currentInput.right = false;
+			this.currentInput.sprint = false;
 		}
-		// else: currentInputはsetInput()で設定されたジョイスティック入力をそのまま使用
+		// else: ジョイスティック入力がある場合はsetInput()で設定された値をそのまま使用
 
 		// T088: Update character animations with input-based animation (like character-demo.html)
 		// Note: Character.update() handles both movement and animation, but in Noctown,
