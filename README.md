@@ -6,6 +6,7 @@
 ---
 
 <a href="https://flatt.tech/oss/gmo/trampoline" target="_blank"><img src="https://flatt.tech/assets/images/badges/gmo-oss.svg" height="24px"/></a>
+<a href="https://deepwiki.com/yamisskey-dev/yamisskey" target="_blank"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki" height="24px"/></a>
 
 </div>
 
