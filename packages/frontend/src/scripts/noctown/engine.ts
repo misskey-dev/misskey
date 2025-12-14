@@ -197,6 +197,9 @@ export class NoctownEngine {
 	// ジョイスティック入力がアクティブかどうか（setInput()で設定され、clearInput()でリセット）
 	private isJoystickActive: boolean = false;
 	// Track remote player positions for movement direction calculation
+	// 仕様: animateループで前回の実際の描画位置を保存し、次フレームで移動方向を計算する
+	// 修正日: 2025-12-14
+	// 修正内容: updateRemotePlayerで目標位置を保存していたため、lerp中に逆方向を計算してしまう問題を修正
 	private remotePlayerLastPos: Map<string, { x: number; z: number; time: number }> = new Map();
 
 	// World management
@@ -624,27 +627,39 @@ export class NoctownEngine {
 			this.localPlayer.updateAnimation(moveX, moveZ, deltaTime);
 		}
 
-		// Update remote player animations based on their movement
+		/**
+		 * 仕様: リモートプレイヤーのアニメーション更新
+		 * - lerp位置を更新し、前フレームの位置との差分から移動方向を計算
+		 * - 位置の保存はアニメーション更新後に行う（実際の描画位置を使用）
+		 * 修正日: 2025-12-14
+		 * 修正内容: updateRemotePlayerで目標位置を保存していたためlerp中に逆方向を計算していた問題を修正
+		 */
 		for (const [playerId, character] of this.remotePlayers) {
 			// FR-070: Update lerp position for smooth WebSocket sync
 			character.updateLerp();
 
+			// Get current position (actual rendered position after lerp update)
+			const currentPos = character.getPosition();
+			const now = Date.now();
+
 			const lastPos = this.remotePlayerLastPos.get(playerId);
 			if (!lastPos) {
-				// No previous position data, assume idle
+				// No previous position data - initialize and assume idle
+				this.remotePlayerLastPos.set(playerId, {
+					x: currentPos.x,
+					z: currentPos.z,
+					time: now,
+				});
 				character.updateAnimation(0, 0, deltaTime);
 				continue;
 			}
 
-			// Get current position
-			const currentPos = character.getPosition();
-			const now = Date.now();
 			const timeDiff = now - lastPos.time;
 
 			// Calculate movement direction (if moved recently)
 			let moveX = 0;
 			let moveZ = 0;
-			if (timeDiff < 500) { // Only animate if position updated within last 500ms (increased from 200ms)
+			if (timeDiff < 500) { // Only animate if position updated within last 500ms
 				const dx = currentPos.x - lastPos.x;
 				const dz = currentPos.z - lastPos.z;
 				const moveLength = Math.sqrt(dx * dx + dz * dz);
@@ -655,6 +670,13 @@ export class NoctownEngine {
 					moveZ = dz / moveLength;
 				}
 			}
+
+			// Save current position for next frame's direction calculation
+			this.remotePlayerLastPos.set(playerId, {
+				x: currentPos.x,
+				z: currentPos.z,
+				time: now,
+			});
 
 			character.updateAnimation(moveX, moveZ, deltaTime);
 		}
@@ -881,22 +903,10 @@ export class NoctownEngine {
 			return;
 		}
 
-		// Get previous position to calculate movement direction
-		const lastPos = this.remotePlayerLastPos.get(data.id);
-		const now = Date.now();
-
-		// Store current position for next update
-		this.remotePlayerLastPos.set(data.id, {
-			x: data.positionX,
-			z: data.positionZ,
-			time: now,
-		});
-
+		// 仕様: リモートプレイヤーの位置を更新
+		// 注意: 位置の保存はanimateループで行う（lerp中の実際の描画位置を使用するため）
+		// 修正日: 2025-12-14
 		character.setPosition(data.positionX, data.positionY, data.positionZ);
-
-		// Let Character.updateAnimation() handle rotation based on movement direction
-		// This prevents rotation jitter from frequent WebSocket updates
-		// Rotation is calculated in animate() loop (lines 327-357) from position deltas
 
 		// Update online status
 		character.setOnline(data.isOnline);
