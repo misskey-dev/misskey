@@ -268,6 +268,13 @@ export class Character {
 		const legGeo = new THREE.BoxGeometry(0.3, 0.8, 0.3);
 		const legMat = new THREE.MeshStandardMaterial({ color: pantsColor });
 
+		// Shoes geometry and material
+		const shoeGeo = new THREE.BoxGeometry(0.32, 0.15, 0.38);
+		const shoeMat = new THREE.MeshStandardMaterial({ color: shoeColor });
+
+		// 仕様: 脚のピボットグループに靴を含めることで歩行アニメーションに連動させる
+		// 修正日: 2025-12-14
+
 		// Left leg pivot
 		this.leftLegPivot = new THREE.Group();
 		this.leftLegPivot.position.set(-0.2, 1, 0);
@@ -275,6 +282,14 @@ export class Character {
 		this.leftLeg.position.y = -0.4;
 		this.leftLeg.castShadow = true;
 		this.leftLegPivot.add(this.leftLeg);
+
+		// Left shoe (脚のピボットに追加)
+		this.leftShoe = new THREE.Mesh(shoeGeo, shoeMat.clone());
+		// 脚のピボット座標系での位置: 脚の底（y=-0.8）に靴を配置
+		this.leftShoe.position.set(0, -0.92, 0.02);
+		this.leftShoe.castShadow = true;
+		this.leftLegPivot.add(this.leftShoe);
+
 		this.group.add(this.leftLegPivot);
 
 		// Right leg pivot
@@ -284,23 +299,15 @@ export class Character {
 		this.rightLeg.position.y = -0.4;
 		this.rightLeg.castShadow = true;
 		this.rightLegPivot.add(this.rightLeg);
-		this.group.add(this.rightLegPivot);
 
-		// Shoes (独立メッシュ)
-		const shoeGeo = new THREE.BoxGeometry(0.32, 0.15, 0.38);
-		const shoeMat = new THREE.MeshStandardMaterial({ color: shoeColor });
-
-		// Left shoe
-		this.leftShoe = new THREE.Mesh(shoeGeo, shoeMat);
-		this.leftShoe.position.set(-0.2, 0.08, 0.02);
-		this.leftShoe.castShadow = true;
-		this.group.add(this.leftShoe);
-
-		// Right shoe
-		this.rightShoe = new THREE.Mesh(shoeGeo, shoeMat);
-		this.rightShoe.position.set(0.2, 0.08, 0.02);
+		// Right shoe (脚のピボットに追加)
+		this.rightShoe = new THREE.Mesh(shoeGeo, shoeMat.clone());
+		// 脚のピボット座標系での位置: 脚の底（y=-0.8）に靴を配置
+		this.rightShoe.position.set(0, -0.92, 0.02);
 		this.rightShoe.castShadow = true;
-		this.group.add(this.rightShoe);
+		this.rightLegPivot.add(this.rightShoe);
+
+		this.group.add(this.rightLegPivot);
 
 		// Collar (襟)
 		const collarGeo = new THREE.BoxGeometry(0.46, 0.08, 0.54);
