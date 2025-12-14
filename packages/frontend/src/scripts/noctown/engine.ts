@@ -125,6 +125,7 @@ export interface PlayerData {
 export interface ChunkData {
 	chunkX: number;
 	chunkZ: number;
+	worldId?: string;
 	terrainData: number[] | {
 		heightMap: number[][];
 		version: number;
@@ -580,12 +581,24 @@ export class NoctownEngine {
 		const deltaTime = this.lastFrameTime > 0 ? (now - this.lastFrameTime) / 1000 : 0.016;
 		this.lastFrameTime = now;
 
-		// Update currentInput from keyboard state (WASD removed, arrow keys only)
-		this.currentInput.up = this.keys.has('ArrowUp');
-		this.currentInput.down = this.keys.has('ArrowDown');
-		this.currentInput.left = this.keys.has('ArrowLeft');
-		this.currentInput.right = this.keys.has('ArrowRight');
-		this.currentInput.sprint = this.keys.has('ShiftLeft') || this.keys.has('ShiftRight');
+		/**
+		 * キーボード入力がある場合のみcurrentInputを更新
+		 * ジョイスティック入力はsetInput()で設定されるため、キーボード入力で上書きしない
+		 * 仕様: キーボード入力とジョイスティック入力の両立を実現
+		 * 修正日: 2025-12-14
+		 */
+		const hasKeyboardInput = this.keys.has('ArrowUp') || this.keys.has('ArrowDown') ||
+			this.keys.has('ArrowLeft') || this.keys.has('ArrowRight');
+
+		if (hasKeyboardInput) {
+			// Update currentInput from keyboard state (WASD removed, arrow keys only)
+			this.currentInput.up = this.keys.has('ArrowUp');
+			this.currentInput.down = this.keys.has('ArrowDown');
+			this.currentInput.left = this.keys.has('ArrowLeft');
+			this.currentInput.right = this.keys.has('ArrowRight');
+			this.currentInput.sprint = this.keys.has('ShiftLeft') || this.keys.has('ShiftRight');
+		}
+		// else: currentInputはsetInput()で設定されたジョイスティック入力をそのまま使用
 
 		// T088: Update character animations with input-based animation (like character-demo.html)
 		// Note: Character.update() handles both movement and animation, but in Noctown,
