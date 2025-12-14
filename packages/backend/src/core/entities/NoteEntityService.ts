@@ -17,6 +17,7 @@ import { DebounceLoader } from '@/misc/loader.js';
 import { IdService } from '@/core/IdService.js';
 import { shouldHideNoteByTime } from '@/misc/should-hide-note-by-time.js';
 import { ReactionsBufferingService } from '@/core/ReactionsBufferingService.js';
+import { CacheService } from '@/core/CacheService.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { ReactionService } from '../ReactionService.js';
@@ -101,6 +102,7 @@ export class NoteEntityService implements OnModuleInit {
 		//private reactionService: ReactionService,
 		//private reactionsBufferingService: ReactionsBufferingService,
 		//private idService: IdService,
+		private cacheService: CacheService,
 	) {
 	}
 
@@ -376,7 +378,46 @@ export class NoteEntityService implements OnModuleInit {
 			: this.meta.enableReactionsBuffering
 				? await this.reactionsBufferingService.get(note.id)
 				: { deltas: {}, pairs: [] };
-		const reactions = this.reactionService.convertLegacyReactions(this.reactionsBufferingService.mergeReactions(note.reactions, bufferedReactions.deltas ?? {}));
+
+		let reactions = this.reactionService.convertLegacyReactions(this.reactionsBufferingService.mergeReactions(note.reactions, bufferedReactions.deltas ?? {}));
+		if (meId) {
+			// ログインユーザーがいる場合のみ、ブロック/ミュートユーザーを除外して集計し直す
+			// 1. ブロック・ミュートリストを取得
+			const [mutedIds, blockedIds] = await Promise.all([
+				this.cacheService.userMutingsCache.fetch(meId),
+				this.cacheService.userBlockingCache.fetch(meId),
+			]);
+
+			// 2. DBとバッファから、フィルタリングに必要な全ユーザー/リアクションペアを取得
+			// DBからの全リアクションレコードを取得
+			const dbReactions = await this.noteReactionsRepository.findBy({ noteId: note.id });
+
+			// バッファリングされたペアを追加
+			const bufferedPairs = bufferedReactions.pairs ?? []; // pairs: ([MiUser['id'], string])[]
+
+			// 3. フィルタリングして再集計
+			const filteredReactions: Record<string, number> = {};
+
+			// 3a. DBからのリアクションをフィルタリング
+			for (const reaction of dbReactions) {
+				const isBlockedOrMuted = blockedIds.has(reaction.userId) || mutedIds.has(reaction.userId);
+				if (!isBlockedOrMuted) {
+					const reactionName = this.reactionService.convertLegacyReaction(reaction.reaction);
+					filteredReactions[reactionName] = (filteredReactions[reactionName] || 0) + 1;
+				}
+			}
+
+			// 3b. バッファからのリアクションをフィルタリング
+			for (const [userId, reactionName] of bufferedPairs) {
+				const isBlockedOrMuted = blockedIds.has(userId) || mutedIds.has(userId);
+				if (!isBlockedOrMuted) {
+					const normalizedReaction = this.reactionService.convertLegacyReaction(reactionName);
+					filteredReactions[normalizedReaction] = (filteredReactions[normalizedReaction] || 0) + 1;
+				}
+			}
+
+			reactions = filteredReactions;
+		}
 
 		const reactionAndUserPairCache = note.reactionAndUserPairCache.concat(bufferedReactions.pairs.map(x => x.join('/')));
 
@@ -600,7 +641,7 @@ export class NoteEntityService implements OnModuleInit {
 	}
 
 	@bindThis
-	public async fetchDiffs(noteIds: MiNote['id'][]) {
+	public async fetchDiffs(noteIds: MiNote['id'][], meId: MiUser['id'] | null) {
 		if (noteIds.length === 0) return [];
 
 		const notes = await this.notesRepository.find({
@@ -617,12 +658,43 @@ export class NoteEntityService implements OnModuleInit {
 
 		const bufferedReactionsMap = this.meta.enableReactionsBuffering ? await this.reactionsBufferingService.getMany(noteIds) : null;
 
-		const packings = notes.map(note => {
+		const packings = notes.map(async note => {
 			const bufferedReactions = bufferedReactionsMap?.get(note.id);
 			//const reactionAndUserPairCache = note.reactionAndUserPairCache.concat(bufferedReactions.pairs.map(x => x.join('/')));
 
-			const reactions = this.reactionService.convertLegacyReactions(this.reactionsBufferingService.mergeReactions(note.reactions, bufferedReactions?.deltas ?? {}));
+			let reactions = this.reactionService.convertLegacyReactions(this.reactionsBufferingService.mergeReactions(note.reactions, bufferedReactions?.deltas ?? {}));
 
+			if (meId) {
+				const [mutedIds, blockedIds] = await Promise.all([
+					this.cacheService.userMutingsCache.fetch(meId),
+					this.cacheService.userBlockingCache.fetch(meId),
+				]);
+
+				// 2. DBとバッファから、フィルタリングに必要な全ユーザー/リアクションペアを取得
+				const dbReactions = await this.noteReactionsRepository.findBy({ noteId: note.id });
+				const bufferedPairs = bufferedReactions?.pairs ?? [];
+
+				const filteredReactions: Record<string, number> = {};
+
+				// 3a. DBからのリアクションをフィルタリング
+				for (const reaction of dbReactions) {
+					const isBlockedOrMuted = blockedIds.has(reaction.userId) || mutedIds.has(reaction.userId);
+					if (!isBlockedOrMuted) {
+						const reactionName = this.reactionService.convertLegacyReaction(reaction.reaction);
+						filteredReactions[reactionName] = (filteredReactions[reactionName] || 0) + 1;
+					}
+				}
+				// 3b. バッファからのリアクションをフィルタリング
+				for (const [userId, reactionName] of bufferedPairs) {
+					const isBlockedOrMuted = blockedIds.has(userId) || mutedIds.has(userId);
+					if (!isBlockedOrMuted) {
+						const normalizedReaction = this.reactionService.convertLegacyReaction(reactionName);
+						filteredReactions[normalizedReaction] = (filteredReactions[normalizedReaction] || 0) + 1;
+					}
+				}
+
+				reactions = filteredReactions;
+			}
 			const reactionEmojiNames = Object.keys(reactions)
 				.filter(x => x.startsWith(':') && x.includes('@') && !x.includes('@.')) // リモートカスタム絵文字のみ
 				.map(x => this.reactionService.decodeReaction(x).reaction.replaceAll(':', ''));
