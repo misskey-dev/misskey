@@ -1,5 +1,15 @@
 # DIFFRENCE
 
+## Unreleased
+
+### Misskey 2025.12.1への追従
+
+本家Misskey 2025.12.1をdevelopブランチにマージしました。詳細はCHANGELOG.mdを参照してください。
+
+#### yamisskey独自機能への影響
+
+今回のマージではコンフリクトはほぼなく、yamisskey独自機能（やみノート、時限消滅ノート、予約投稿等）への影響はありません。
+
 ## 2025.12.0-yami-1.9.29
 
 ### Misskey 2025.12.0への追従
