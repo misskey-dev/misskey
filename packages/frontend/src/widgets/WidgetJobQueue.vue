@@ -57,7 +57,7 @@ import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps 
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import { useStream } from '@/stream.js';
 import kmg from '@/filters/kmg.js';
-import * as sound from '@/utility/sound.js';
+import { sound } from '@/sound.js';
 import { deepClone } from '@/utility/clone.js';
 import { prefer } from '@/preferences.js';
 import { genId } from '@/utility/id.js';

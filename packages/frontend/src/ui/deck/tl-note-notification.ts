@@ -7,7 +7,8 @@ import * as Misskey from 'misskey-js';
 import type { Ref } from 'vue';
 import type { SoundType } from '@/utility/sound.js';
 import type { SoundStore } from '@/preferences/def.js';
-import { getSoundDuration, playMisskeySfxFile, soundsTypes } from '@/utility/sound.js';
+import { soundsTypes } from '@/utility/sound.js';
+import { sound as soundManager } from '@/sound.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 
@@ -48,7 +49,7 @@ export async function soundSettingsButton(soundSetting: Ref<SoundStore>): Promis
 					return false;
 				}
 
-				const duration = await getSoundDuration(file.url);
+				const duration = await soundManager.getDuration(file.url);
 				if (duration >= 2000) {
 					const { canceled } = await os.confirm({
 						type: 'warning',
@@ -78,7 +79,7 @@ export async function soundSettingsButton(soundSetting: Ref<SoundStore>): Promis
 			action: (_, v) => {
 				const sound = buildSoundStore(v);
 				if (!sound) return;
-				playMisskeySfxFile(sound);
+				soundManager.playSfxFile(sound);
 			},
 		},
 	});

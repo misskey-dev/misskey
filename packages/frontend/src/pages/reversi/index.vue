@@ -119,7 +119,7 @@ import MkPagination from '@/components/MkPagination.vue';
 import { useRouter } from '@/router.js';
 import * as os from '@/os.js';
 import { pleaseLogin } from '@/utility/please-login.js';
-import * as sound from '@/utility/sound.js';
+import { sound } from '@/sound.js';
 import { Paginator } from '@/utility/paginator.js';
 
 const myGamesPaginator = markRaw(new Paginator('reversi/games', {

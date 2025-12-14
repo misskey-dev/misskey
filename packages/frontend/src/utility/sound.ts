@@ -5,12 +5,232 @@
 
 import type { SoundStore } from '@/preferences/def.js';
 import { prefer } from '@/preferences.js';
-import { PREF_DEF } from '@/preferences/def.js';
 import { getInitialPrefValue } from '@/preferences/manager.js';
 
-let ctx: AudioContext;
-const cache = new Map<string, AudioBuffer>();
-let canPlay = true;
+// 型定義
+interface AudioOptions {
+	volume?: number;
+	pan?: number;
+	playbackRate?: number;
+}
+
+export type OperationType = typeof operationTypes[number];
+export type SoundType = typeof soundsTypes[number];
+
+// 定数定義
+const THROTTLE_TIME_MS = 25;
+const ASSETS_PATH = '/client-assets/sounds';
+
+export class SoundManager {
+	private ctx: AudioContext | null = null;
+	private bufferCache = new Map<string, AudioBuffer>();
+	private isThrottled = false;
+
+	constructor() {
+		if (typeof window !== 'undefined') {
+			window.addEventListener('beforeunload', () => this.dispose());
+		}
+	}
+
+	/**
+	 * AudioContextの取得
+	 */
+	private getContext(): AudioContext {
+		if (!this.ctx) {
+			this.ctx = new AudioContext();
+		}
+		return this.ctx;
+	}
+
+	/**
+	 * リソースの解放
+	 */
+	public dispose() {
+		void this.ctx?.close();
+		this.ctx = null;
+		this.bufferCache.clear();
+	}
+
+	/**
+	 * sourceNodeを作成
+	 */
+	public createSourceNode(buffer: AudioBuffer, opts: {
+		volume?: number;
+		pan?: number;
+		playbackRate?: number;
+	}): {
+		soundSource: AudioBufferSourceNode;
+		panNode: StereoPannerNode;
+		gainNode: GainNode;
+	} {
+		const ctx = this.getContext();
+		const panNode = ctx.createStereoPanner();
+		panNode.pan.value = opts.pan ?? 0;
+
+		const gainNode = ctx.createGain();
+
+		gainNode.gain.value = opts.volume ?? 1;
+
+		const soundSource = ctx.createBufferSource();
+		soundSource.buffer = buffer;
+		soundSource.playbackRate.value = opts.playbackRate ?? 1;
+		soundSource
+			.connect(panNode)
+			.connect(gainNode)
+			.connect(ctx.destination);
+
+		return { soundSource, panNode, gainNode };
+	}
+
+	/**
+	 * 音声の読み込み
+	 */
+	public async loadAudio(url: string, useCache = true): Promise<AudioBuffer | undefined> {
+		if (useCache && this.bufferCache.has(url)) {
+			return this.bufferCache.get(url);
+		}
+
+		try {
+			const ctx = this.getContext();
+			const response = await window.fetch(url);
+			const arrayBuffer = await response.arrayBuffer();
+			const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
+
+			if (useCache) {
+				this.bufferCache.set(url, audioBuffer);
+			}
+
+			return audioBuffer;
+		} catch (err) {
+			console.error(`Failed to load audio: ${url}`, err);
+			return undefined;
+		}
+	}
+
+	/**
+	 * オペレーションに応じて音声を再生する
+	 */
+	public async playSfx(operationType: OperationType): Promise<void> {
+		const soundPref = prefer.s[`sound.on.${operationType}`];
+		const success = await this.playSfxFile(soundPref);
+
+		// ドライブファイル失敗時のフォールバック
+		if (!success && soundPref.type === '_driveFile_') {
+			const defaultSound = getInitialPrefValue(`sound.on.${operationType}`);
+			const soundName = defaultSound.type as Exclude<SoundType, '_driveFile_'>;
+
+			if (typeof _DEV_ !== 'undefined' && _DEV_) {
+				console.warn(`Fallback to default sound: ${soundName}`);
+			}
+
+			await this.playSfxFileInternal({
+				type: soundName,
+				volume: soundPref.volume,
+			});
+		}
+	}
+
+	/**
+	 * SoundStore設定に基づく再生
+	 */
+	public async playSfxFile(soundStore: SoundStore): Promise<boolean> {
+		if (this.isThrottled) return false;
+
+		// ユーザーインタラクション判定
+		if ('userActivation' in navigator && !navigator.userActivation.hasBeenActive) {
+			return false;
+		}
+
+		if (soundStore.type === null || (soundStore.type === '_driveFile_' && !soundStore.fileUrl)) {
+			return false;
+		}
+
+		this.isThrottled = true;
+		try {
+			return await this.playSfxFileInternal(soundStore);
+		} finally {
+			window.setTimeout(() => {
+				this.isThrottled = false;
+			}, THROTTLE_TIME_MS);
+		}
+	}
+
+	/**
+	 * 内部再生ロジック
+	 */
+	private async playSfxFileInternal(soundStore: SoundStore): Promise<boolean> {
+		const masterVolume = prefer.s['sound.masterVolume'];
+
+		if (this.shouldMute() || masterVolume === 0 || soundStore.volume === 0) {
+			return true;
+		}
+
+		const url = soundStore.type === '_driveFile_'
+			? soundStore.fileUrl
+			: `${ASSETS_PATH}/${soundStore.type}.mp3`;
+
+		if (!url) return false;
+
+		const buffer = await this.loadAudio(url);
+		if (!buffer) return false;
+
+		this.playBuffer(buffer, { volume: soundStore.volume * masterVolume });
+		return true;
+	}
+
+	/**
+	 * 直接URLを指定して再生
+	 */
+	public async playUrl(url: string, opts: AudioOptions) {
+		if (opts.volume === 0) return;
+		const buffer = await this.loadAudio(url);
+		if (buffer) {
+			this.playBuffer(buffer, opts);
+		}
+	}
+
+	/**
+	 * AudioBufferの再生実行
+	 */
+	private playBuffer(buffer: AudioBuffer, opts: AudioOptions) {
+		const ctx = this.getContext();
+
+		if (ctx.state === 'suspended') {
+			void ctx.resume();
+		}
+
+		const source = ctx.createBufferSource();
+		source.buffer = buffer;
+		source.playbackRate.value = opts.playbackRate ?? 1;
+
+		const panNode = ctx.createStereoPanner();
+		panNode.pan.value = opts.pan ?? 0;
+
+		const gainNode = ctx.createGain();
+		gainNode.gain.value = opts.volume ?? 1;
+
+		source
+			.connect(panNode)
+			.connect(gainNode)
+			.connect(ctx.destination);
+
+		source.start();
+	}
+
+	/**
+	 * 音声の長さを取得
+	 */
+	public async getDuration(fileUrl: string): Promise<number> {
+		const buffer = await this.loadAudio(fileUrl);
+		return buffer ? buffer.duration * 1000 : 0;
+	}
+
+	private shouldMute(): boolean {
+		if (prefer.s['sound.notUseSound']) return true;
+		if (prefer.s['sound.useSoundOnlyWhenActive'] && document.visibilityState === 'hidden') return true;
+		return false;
+	}
+}
 
 export const soundsTypes = [
 	// 音声なし
@@ -80,182 +300,3 @@ export const operationTypes = [
 	'reaction',
 	'chatMessage',
 ] as const;
-
-/** サウンドの種類 */
-export type SoundType = typeof soundsTypes[number];
-
-/** スプライトの種類 */
-export type OperationType = typeof operationTypes[number];
-
-/**
- * 音声を読み込む
- * @param url url
- * @param options `useCache`: デフォルトは`true` 一度再生した音声はキャッシュする
- */
-export async function loadAudio(url: string, options?: { useCache?: boolean; }) {
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	if (ctx == null) {
-		ctx = new AudioContext();
-
-		window.addEventListener('beforeunload', () => {
-			ctx.close();
-		});
-	}
-	if (options?.useCache ?? true) {
-		if (cache.has(url)) {
-			return cache.get(url) as AudioBuffer;
-		}
-	}
-
-	let response: Response;
-
-	try {
-		response = await window.fetch(url);
-	} catch (err) {
-		return;
-	}
-
-	const arrayBuffer = await response.arrayBuffer();
-	const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
-
-	if (options?.useCache ?? true) {
-		cache.set(url, audioBuffer);
-	}
-
-	return audioBuffer;
-}
-
-/**
- * 既定のスプライトを再生する
- * @param type スプライトの種類を指定
- */
-export function playMisskeySfx(operationType: OperationType) {
-	const sound = prefer.s[`sound.on.${operationType}`];
-	playMisskeySfxFile(sound).then((succeed) => {
-		if (!succeed && sound.type === '_driveFile_') {
-			// ドライブファイルが存在しない場合はデフォルトのサウンドを再生する
-			const default_ = getInitialPrefValue(`sound.on.${operationType}`);
-			const soundName = default_.type as Exclude<SoundType, '_driveFile_'>;
-			if (_DEV_) console.log(`Failed to play sound: ${sound.fileUrl}, so play default sound: ${soundName}`);
-			playMisskeySfxFileInternal({
-				type: soundName,
-				volume: sound.volume,
-			});
-		}
-	});
-}
-
-/**
- * サウンド設定形式で指定された音声を再生する
- * @param soundStore サウンド設定
- */
-export async function playMisskeySfxFile(soundStore: SoundStore): Promise<boolean> {
-	// 連続して再生しない
-	if (!canPlay) return false;
-	// ユーザーアクティベーションが必要な場合はそれがない場合は再生しない
-	if ('userActivation' in navigator && !navigator.userActivation.hasBeenActive) return false;
-	// サウンドがない場合は再生しない
-	if (soundStore.type === null || soundStore.type === '_driveFile_' && !soundStore.fileUrl) return false;
-
-	canPlay = false;
-	return await playMisskeySfxFileInternal(soundStore).finally(() => {
-		// ごく短時間に音が重複しないように
-		window.setTimeout(() => {
-			canPlay = true;
-		}, 25);
-	});
-}
-
-async function playMisskeySfxFileInternal(soundStore: SoundStore): Promise<boolean> {
-	if (soundStore.type === null || (soundStore.type === '_driveFile_' && !soundStore.fileUrl)) {
-		return false;
-	}
-	const masterVolume = prefer.s['sound.masterVolume'];
-	if (isMute() || masterVolume === 0 || soundStore.volume === 0) {
-		return true; // ミュート時は成功として扱う
-	}
-	const url = soundStore.type === '_driveFile_' ? soundStore.fileUrl : `/client-assets/sounds/${soundStore.type}.mp3`;
-	const buffer = await loadAudio(url).catch(() => {
-		return undefined;
-	});
-	if (!buffer) return false;
-	const volume = soundStore.volume * masterVolume;
-	createSourceNode(buffer, { volume }).soundSource.start();
-	return true;
-}
-
-export async function playUrl(url: string, opts: {
-	volume?: number;
-	pan?: number;
-	playbackRate?: number;
-}) {
-	if (opts.volume === 0) {
-		return;
-	}
-	const buffer = await loadAudio(url);
-	if (!buffer) return;
-	createSourceNode(buffer, opts).soundSource.start();
-}
-
-export function createSourceNode(buffer: AudioBuffer, opts: {
-	volume?: number;
-	pan?: number;
-	playbackRate?: number;
-}): {
-		soundSource: AudioBufferSourceNode;
-		panNode: StereoPannerNode;
-		gainNode: GainNode;
-	} {
-	const panNode = ctx.createStereoPanner();
-	panNode.pan.value = opts.pan ?? 0;
-
-	const gainNode = ctx.createGain();
-
-	gainNode.gain.value = opts.volume ?? 1;
-
-	const soundSource = ctx.createBufferSource();
-	soundSource.buffer = buffer;
-	soundSource.playbackRate.value = opts.playbackRate ?? 1;
-	soundSource
-		.connect(panNode)
-		.connect(gainNode)
-		.connect(ctx.destination);
-
-	return { soundSource, panNode, gainNode };
-}
-
-/**
- * 音声の長さをミリ秒で取得する
- * @param file ファイルのURL（ドライブIDではない）
- */
-export async function getSoundDuration(file: string): Promise<number> {
-	const audioEl = window.document.createElement('audio');
-	audioEl.src = file;
-	return new Promise((resolve) => {
-		const si = window.setInterval(() => {
-			if (audioEl.readyState > 0) {
-				resolve(audioEl.duration * 1000);
-				window.clearInterval(si);
-				audioEl.remove();
-			}
-		}, 100);
-	});
-}
-
-/**
- * ミュートすべきかどうかを判断する
- */
-export function isMute(): boolean {
-	if (prefer.s['sound.notUseSound']) {
-		// サウンドを出力しない
-		return true;
-	}
-
-	// noinspection RedundantIfStatementJS
-	if (prefer.s['sound.useSoundOnlyWhenActive'] && window.document.visibilityState === 'hidden') {
-		// ブラウザがアクティブな時のみサウンドを出力する
-		return true;
-	}
-
-	return false;
-}

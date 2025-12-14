@@ -31,7 +31,7 @@ import { useTooltip } from '@/composables/use-tooltip.js';
 import { $i } from '@/i.js';
 import MkReactionEffect from '@/components/MkReactionEffect.vue';
 import { i18n } from '@/i18n.js';
-import * as sound from '@/utility/sound.js';
+import { sound } from '@/sound.js';
 import { checkReactionPermissions } from '@/utility/check-reaction-permissions.js';
 import { customEmojisMap } from '@/custom-emojis.js';
 import { prefer } from '@/preferences.js';
@@ -84,7 +84,7 @@ async function toggleReaction() {
 		if (confirm.canceled) return;
 
 		if (oldReaction !== props.reaction) {
-			sound.playMisskeySfx('reaction');
+			sound.playSfx('reaction');
 			haptic();
 		}
 
@@ -125,7 +125,7 @@ async function toggleReaction() {
 			if (confirm.canceled) return;
 		}
 
-		sound.playMisskeySfx('reaction');
+		sound.playSfx('reaction');
 		haptic();
 
 		if (mock) {

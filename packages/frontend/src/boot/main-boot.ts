@@ -13,7 +13,7 @@ import type { Keymap } from '@/utility/hotkey.js';
 import { i18n } from '@/i18n.js';
 import { alert, confirm, popup, post } from '@/os.js';
 import { useStream } from '@/stream.js';
-import * as sound from '@/utility/sound.js';
+import { sound } from '@/sound.js';
 import { $i } from '@/i.js';
 import { instance } from '@/instance.js';
 import { store } from '@/store.js';
@@ -363,7 +363,7 @@ export async function mainBoot() {
 
 			main.on('newChatMessage', () => {
 				updateCurrentAccountPartial({ hasUnreadChatMessages: true });
-				sound.playMisskeySfx('chatMessage');
+				sound.playSfx('chatMessage');
 			});
 
 			main.on('readAllAnnouncements', () => {

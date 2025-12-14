@@ -155,7 +155,7 @@ import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { userPage } from '@/filters/user.js';
-import * as sound from '@/utility/sound.js';
+import { sound } from '@/sound.js';
 import * as os from '@/os.js';
 import { confetti } from '@/utility/confetti.js';
 import { genId } from '@/utility/id.js';
