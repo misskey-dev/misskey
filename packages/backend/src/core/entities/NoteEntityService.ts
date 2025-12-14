@@ -300,7 +300,7 @@ export class NoteEntityService implements OnModuleInit {
 			} else if (note.reply && (meId === note.reply.userId)) {
 				// 自分の投稿に対するリプライ
 				return true;
-			} else if (note.mentions.some(id => meId === id)) {
+			} else if (note.mentions?.some(id => meId === id)) {
 				// 自分へのメンション
 				return true;
 			} else {

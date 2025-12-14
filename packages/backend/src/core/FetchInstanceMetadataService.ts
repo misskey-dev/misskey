@@ -83,7 +83,7 @@ export class FetchInstanceMetadataService {
 			if (!force) {
 				const _instance = await this.federatedInstanceService.fetchOrRegister(host);
 				const now = Date.now();
-				if (_instance.infoUpdatedAt && (now - _instance.infoUpdatedAt.getTime() < 1000 * 60 * 60 * 24)) {
+				if (_instance?.infoUpdatedAt && (now - _instance.infoUpdatedAt.getTime() < 1000 * 60 * 60 * 24)) {
 					// unlock at the finally caluse
 					return;
 				}

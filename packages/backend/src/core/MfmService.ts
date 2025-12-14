@@ -90,7 +90,7 @@ export class MfmService {
 					if (normalizedHashtagNames && href != null && normalizedHashtagNames.has(normalizeForSearch(txt))) {
 						text += txt;
 						// メンション
-					} else if (txt.startsWith('@') && !(rel.startsWith('me '))) {
+					} else if (txt.startsWith('@') && !(rel?.startsWith('me '))) {
 						const part = txt.split('@');
 
 						if (part.length === 2 && href) {
