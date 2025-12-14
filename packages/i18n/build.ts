@@ -10,7 +10,6 @@ import { watch as chokidarWatch } from 'chokidar';
 import * as esbuild from 'esbuild';
 import { build } from 'esbuild';
 import { execa } from 'execa';
-import { globSync } from 'glob';
 import { generateLocaleInterface } from './scripts/generateLocaleInterface.js';
 import type { BuildOptions, BuildResult, Plugin, PluginBuild } from 'esbuild';
 
@@ -22,7 +21,7 @@ const _rootPackage = JSON.parse(fs.readFileSync(resolve(_rootPackageDir, 'packag
 const _frontendLocalesDir = resolve(_dirname, '../../built/_frontend_dist_/locales');
 const _localesDir = resolve(_rootPackageDir, 'locales');
 
-const entryPoints = globSync('./src/**/**.{ts,tsx}');
+const entryPoints = fs.globSync('./src/**/**.{ts,tsx}');
 
 const options: BuildOptions = {
 	entryPoints,
