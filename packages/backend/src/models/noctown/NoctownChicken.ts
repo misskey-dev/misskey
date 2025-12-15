@@ -102,4 +102,17 @@ export class NoctownChicken {
 		comment: 'Created timestamp',
 	})
 	public createdAt: Date;
+
+	// 外見情報（色など）をJSONBで保存
+	// color: 'white' | 'brown' | 'black' | 'golden' | 'spotted'
+	// isRooster: boolean
+	// 設定がない場合はwhiteとして扱う
+	@Column('jsonb', {
+		default: { color: 'white', isRooster: false },
+		comment: 'Appearance data (color, isRooster)',
+	})
+	public appearance: {
+		color: 'white' | 'brown' | 'black' | 'golden' | 'spotted';
+		isRooster: boolean;
+	};
 }

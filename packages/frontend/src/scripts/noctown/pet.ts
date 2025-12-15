@@ -14,7 +14,20 @@ import * as THREE from 'three';
 import { ChickenRenderer } from './chicken-renderer.js';
 import { CowRenderer } from './cow-renderer.js';
 
+// 鶏の外見情報型
+export interface ChickenAppearance {
+	color: 'white' | 'brown' | 'black' | 'golden' | 'spotted';
+	isRooster: boolean;
+}
+
+// 牛の外見情報型
+export interface CowAppearance {
+	color: 'holsteinBW' | 'holsteinRW' | 'jersey' | 'angus' | 'highland';
+}
+
 // FR-022: ペット情報インターフェース
+// appearance: 外見情報（色、オンドリかどうか）をDBから取得
+// 修正日: 2025-12-16
 export interface PetInfo {
 	id: string;
 	type: 'cow' | 'chicken';
@@ -29,6 +42,7 @@ export interface PetInfo {
 	flavorText: string;
 	hunger?: number;
 	happiness?: number;
+	appearance?: ChickenAppearance | CowAppearance;
 }
 
 // NPC移動設定
@@ -58,6 +72,9 @@ export class PetManager {
 	/**
 	 * ペットをシーンに追加
 	 * @param pet ペット情報
+	 * 仕様: DBから取得したappearance情報を使用して色を決定
+	 * 設定がない場合はデフォルト値（白）を使用
+	 * 修正日: 2025-12-16
 	 */
 	public addPet(pet: PetInfo): void {
 		// 既存のペットがあれば削除
@@ -72,21 +89,22 @@ export class PetManager {
 		const position = new THREE.Vector3(pet.positionX, pet.positionY, pet.positionZ);
 
 		if (pet.type === 'chicken') {
-			// 鶏を作成（色はランダム）
+			// 鶏を作成（DBの色情報を使用、未設定の場合は白）
 			// サイズ1.2: プレイヤーモデルとのバランスを考慮
-			const colors = ['white', 'brown', 'black', 'golden', 'spotted'] as const;
-			const color = colors[Math.floor(Math.random() * colors.length)];
+			const chickenAppearance = pet.appearance as ChickenAppearance | undefined;
+			const color = chickenAppearance?.color ?? 'white';
+			const isRooster = chickenAppearance?.isRooster ?? false;
 			this.chickenRenderer.createChicken(pet.id, {
 				position,
 				color,
-				isRooster: Math.random() < 0.3, // 30%の確率でオンドリ
+				isRooster,
 				size: 1.2,
 			});
 		} else {
-			// 牛を作成（色はランダム）
+			// 牛を作成（DBの色情報を使用、未設定の場合はholsteinBW）
 			// サイズ1.4: プレイヤーモデルとのバランスを考慮（牛は鶏より大きめ）
-			const colors = ['holsteinBW', 'holsteinRW', 'jersey', 'angus', 'highland'] as const;
-			const color = colors[Math.floor(Math.random() * colors.length)];
+			const cowAppearance = pet.appearance as CowAppearance | undefined;
+			const color = cowAppearance?.color ?? 'holsteinBW';
 			this.cowRenderer.createCow(pet.id, {
 				position,
 				color,

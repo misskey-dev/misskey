@@ -1321,8 +1321,9 @@ export class NoctownService {
 	 * 仕様: ニワトリ配置
 	 * - spawnX, spawnZ: 配置位置をスポーン位置として保存（NPC移動の中心点）
 	 * - flavorText: マルコフ連鎖で自動生成
-	 * 修正日: 2025-12-14
-	 * 修正内容: spawnX, spawnZ, flavorTextカラムの値を追加
+	 * - appearance: 生成時にランダムで決定し、DBに保存（色が変わらないようにするため）
+	 * 修正日: 2025-12-16
+	 * 修正内容: appearanceカラムを追加（色、オンドリかどうかを保存）
 	 */
 	@bindThis
 	public async placeChicken(
@@ -1342,6 +1343,13 @@ export class NoctownService {
 		const { generateFlavorText } = await import('./markov-flavor-text.js');
 		const flavorText = generateFlavorText('chicken');
 
+		// 外見情報を生成時に決定（ランダム）
+		const chickenColors = ['white', 'brown', 'black', 'golden', 'spotted'] as const;
+		const appearance = {
+			color: chickenColors[Math.floor(Math.random() * chickenColors.length)],
+			isRooster: Math.random() < 0.3, // 30%の確率でオンドリ
+		};
+
 		const chickenId = this.idService.gen();
 		await this.noctownChickensRepository.insert({
 			id: chickenId,
@@ -1356,6 +1364,7 @@ export class NoctownService {
 			hunger: 100,
 			happiness: 100,
 			eggsReady: 0,
+			appearance,
 			createdAt: new Date(),
 		});
 
@@ -1490,8 +1499,9 @@ export class NoctownService {
 	 * 仕様: ウシ配置
 	 * - spawnX, spawnZ: 配置位置をスポーン位置として保存（NPC移動の中心点）
 	 * - flavorText: マルコフ連鎖で自動生成
-	 * 修正日: 2025-12-14
-	 * 修正内容: spawnX, spawnZ, flavorTextカラムの値を追加
+	 * - appearance: 生成時にランダムで決定し、DBに保存（色が変わらないようにするため）
+	 * 修正日: 2025-12-16
+	 * 修正内容: appearanceカラムを追加（色を保存）
 	 */
 	@bindThis
 	public async placeCow(
@@ -1511,6 +1521,12 @@ export class NoctownService {
 		const { generateFlavorText } = await import('./markov-flavor-text.js');
 		const flavorText = generateFlavorText('cow');
 
+		// 外見情報を生成時に決定（ランダム）
+		const cowColors = ['holsteinBW', 'holsteinRW', 'jersey', 'angus', 'highland'] as const;
+		const appearance = {
+			color: cowColors[Math.floor(Math.random() * cowColors.length)],
+		};
+
 		const cowId = this.idService.gen();
 		await this.noctownCowsRepository.insert({
 			id: cowId,
@@ -1525,6 +1541,7 @@ export class NoctownService {
 			hunger: 100,
 			happiness: 100,
 			milkReady: 0,
+			appearance,
 			createdAt: new Date(),
 		});
 
@@ -2143,6 +2160,8 @@ export class NoctownService {
 
 	/**
 	 * PetInfo型定義（フロントエンドと共有）
+	 * appearance: 外見情報（色など）を含む
+	 * 修正日: 2025-12-16
 	 */
 	private toCowPetInfo(cow: any, player?: any, user?: any): {
 		id: string;
@@ -2162,9 +2181,12 @@ export class NoctownService {
 		happiness: number;
 		milkReady: number;
 		createdAt: Date;
+		appearance: { color: 'holsteinBW' | 'holsteinRW' | 'jersey' | 'angus' | 'highland' };
 	} {
 		const p = player || cow.player;
 		const u = user || p?.user;
+		// appearanceが未設定の場合はデフォルト値（白黒ホルスタイン）を使用
+		const appearance = cow.appearance ?? { color: 'holsteinBW' };
 		return {
 			id: cow.id,
 			type: 'cow' as const,
@@ -2183,9 +2205,15 @@ export class NoctownService {
 			happiness: cow.happiness,
 			milkReady: cow.milkReady,
 			createdAt: cow.createdAt,
+			appearance,
 		};
 	}
 
+	/**
+	 * ChickenPetInfo変換
+	 * appearance: 外見情報（色、オンドリかどうか）を含む
+	 * 修正日: 2025-12-16
+	 */
 	private toChickenPetInfo(chicken: any, player?: any, user?: any): {
 		id: string;
 		type: 'chicken';
@@ -2204,9 +2232,12 @@ export class NoctownService {
 		happiness: number;
 		eggsReady: number;
 		createdAt: Date;
+		appearance: { color: 'white' | 'brown' | 'black' | 'golden' | 'spotted'; isRooster: boolean };
 	} {
 		const p = player || chicken.player;
 		const u = user || p?.user;
+		// appearanceが未設定の場合はデフォルト値（白）を使用
+		const appearance = chicken.appearance ?? { color: 'white', isRooster: false };
 		return {
 			id: chicken.id,
 			type: 'chicken' as const,
@@ -2225,6 +2256,7 @@ export class NoctownService {
 			happiness: chicken.happiness,
 			eggsReady: chicken.eggsReady,
 			createdAt: chicken.createdAt,
+			appearance,
 		};
 	}
 
@@ -2241,6 +2273,8 @@ export class NoctownService {
 	/**
 	 * ペット作成（FR-022, FR-024）
 	 * マルコフ連鎖でフレーバーテキストを生成し、ペットを作成する
+	 * appearance: 生成時にランダムで決定し、DBに保存（色が変わらないようにするため）
+	 * 修正日: 2025-12-16
 	 */
 	@bindThis
 	public async createPet(
@@ -2265,6 +2299,12 @@ export class NoctownService {
 		const user = player ? await this.usersRepository.findOneBy({ id: player.userId }) : null;
 
 		if (type === 'cow') {
+			// 外見情報を生成時に決定（ランダム）
+			const cowColors = ['holsteinBW', 'holsteinRW', 'jersey', 'angus', 'highland'] as const;
+			const appearance = {
+				color: cowColors[Math.floor(Math.random() * cowColors.length)],
+			};
+
 			const cowId = this.idService.gen();
 			await this.noctownCowsRepository.insert({
 				id: cowId,
@@ -2279,6 +2319,7 @@ export class NoctownService {
 				hunger: 100,
 				happiness: 100,
 				milkReady: 0,
+				appearance,
 				createdAt: new Date(),
 			});
 
@@ -2297,6 +2338,13 @@ export class NoctownService {
 
 			return { success: true, pet: petInfo };
 		} else {
+			// 外見情報を生成時に決定（ランダム）
+			const chickenColors = ['white', 'brown', 'black', 'golden', 'spotted'] as const;
+			const appearance = {
+				color: chickenColors[Math.floor(Math.random() * chickenColors.length)],
+				isRooster: Math.random() < 0.3, // 30%の確率でオンドリ
+			};
+
 			const chickenId = this.idService.gen();
 			await this.noctownChickensRepository.insert({
 				id: chickenId,
@@ -2311,6 +2359,7 @@ export class NoctownService {
 				hunger: 100,
 				happiness: 100,
 				eggsReady: 0,
+				appearance,
 				createdAt: new Date(),
 			});
 

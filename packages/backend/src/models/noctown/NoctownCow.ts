@@ -102,4 +102,15 @@ export class NoctownCow {
 		comment: 'Created timestamp',
 	})
 	public createdAt: Date;
+
+	// 外見情報（色など）をJSONBで保存
+	// color: 'holsteinBW' | 'holsteinRW' | 'jersey' | 'angus' | 'highland'
+	// 設定がない場合はholsteinBW（白黒）として扱う
+	@Column('jsonb', {
+		default: { color: 'holsteinBW' },
+		comment: 'Appearance data (color)',
+	})
+	public appearance: {
+		color: 'holsteinBW' | 'holsteinRW' | 'jersey' | 'angus' | 'highland';
+	};
 }
