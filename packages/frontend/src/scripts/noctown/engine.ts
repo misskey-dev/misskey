@@ -141,11 +141,16 @@ export interface ChunkData {
 	environmentObjects?: EnvironmentObjectData[];
 }
 
+// 仕様: FR-030 ドロップアイテムの絵文字表現と拾得システム
 export interface DroppedItemData {
 	id: string;
 	itemId: string;
 	itemName: string;
 	itemType: string;
+	emoji: string | null;
+	imageUrl: string | null;
+	rarity: number;
+	quantity: number;
 	positionX: number;
 	positionY: number;
 	positionZ: number;
@@ -206,7 +211,11 @@ export class NoctownEngine {
 	private chunks: Map<string, THREE.Group> = new Map();
 
 	// Item management
-	private droppedItems: Map<string, THREE.Mesh> = new Map();
+	// 仕様: FR-030 ドロップアイテムは3Dグループ（球体 + CSS2D絵文字ラベル）で管理
+	private droppedItems: Map<string, THREE.Group> = new Map();
+	private droppedItemLabels: Map<string, CSS2DObject> = new Map();
+	// 仕様: ふわふわアニメーション用の基準位置とオフセット
+	private droppedItemBaseY: Map<string, number> = new Map();
 	private placedItems: Map<string, THREE.Group> = new Map();
 
 	// NPC management
@@ -759,6 +768,20 @@ export class NoctownEngine {
 			this.petManager.update();
 		}
 
+		// 仕様: FR-030 ドロップアイテムのふわふわアニメーション
+		// Math.sin(time * 2) * 0.1 で上下に揺れる
+		const time = now * 0.001; // Convert to seconds
+		for (const [itemId, group] of this.droppedItems) {
+			const baseY = this.droppedItemBaseY.get(itemId);
+			if (baseY !== undefined) {
+				// 各アイテムにオフセットを追加（個体差のため）
+				const offset = (parseInt(itemId, 36) % 100) / 100 * Math.PI * 2;
+				group.position.y = baseY + Math.sin(time * 2 + offset) * 0.1;
+				// Y軸方向に緩やかに回転（0.5rad/sec）
+				group.rotation.y = time * 0.5 + offset;
+			}
+		}
+
 		this.renderer.render(this.scene, this.camera);
 		this.labelRenderer.render(this.scene, this.camera);
 	};
@@ -1157,29 +1180,81 @@ export class NoctownEngine {
 	}
 
 	// Item management
+	// 仕様: FR-030 ドロップアイテムの絵文字表現と拾得システム
+	// 絵文字またはデフォルト絵文字（📦）で地面に表示
 	public addDroppedItem(data: DroppedItemData): void {
 		if (this.droppedItems.has(data.id)) return;
 
-		const geometry = new THREE.SphereGeometry(0.3, 16, 16);
+		const group = new THREE.Group();
+		const baseY = data.positionY + 0.5;
+		group.position.set(data.positionX, baseY, data.positionZ);
+		group.userData = { type: 'droppedItem', data };
+
+		// 仕様: 小さな光る球体（視認性向上）
+		const geometry = new THREE.SphereGeometry(0.15, 12, 12);
 		const material = new THREE.MeshStandardMaterial({
 			color: this.getItemColor(data.itemType),
 			emissive: this.getItemColor(data.itemType),
-			emissiveIntensity: 0.3,
+			emissiveIntensity: 0.5,
+			transparent: true,
+			opacity: 0.6,
 		});
-		const mesh = new THREE.Mesh(geometry, material);
-		mesh.position.set(data.positionX, data.positionY + 0.5, data.positionZ);
-		mesh.castShadow = true;
-		mesh.userData = { type: 'droppedItem', data };
-		this.scene.add(mesh);
-		this.droppedItems.set(data.id, mesh);
+		const sphere = new THREE.Mesh(geometry, material);
+		sphere.castShadow = true;
+		group.add(sphere);
+
+		// 仕様: FR-030 絵文字ラベル（CSS2DObject）
+		// emoji > imageUrl > デフォルト📦 の優先順位
+		const displayEmoji = data.emoji ?? '📦';
+		const labelDiv = document.createElement('div');
+		labelDiv.className = 'noctown-dropped-item-label';
+		labelDiv.style.cssText = `
+			font-size: 32px;
+			text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+			pointer-events: none;
+			user-select: none;
+		`;
+		labelDiv.textContent = displayEmoji;
+
+		// 仕様: 数量が2以上の場合は数量バッジを表示
+		if (data.quantity > 1) {
+			const quantityBadge = document.createElement('span');
+			quantityBadge.style.cssText = `
+				position: absolute;
+				bottom: -4px;
+				right: -8px;
+				background: rgba(0,0,0,0.7);
+				color: #fff;
+				font-size: 12px;
+				font-weight: bold;
+				padding: 1px 4px;
+				border-radius: 4px;
+				min-width: 16px;
+				text-align: center;
+			`;
+			quantityBadge.textContent = `x${data.quantity}`;
+			labelDiv.style.position = 'relative';
+			labelDiv.appendChild(quantityBadge);
+		}
+
+		const label = new CSS2DObject(labelDiv);
+		label.position.set(0, 0.3, 0);
+		group.add(label);
+
+		this.scene.add(group);
+		this.droppedItems.set(data.id, group);
+		this.droppedItemLabels.set(data.id, label);
+		this.droppedItemBaseY.set(data.id, baseY);
 	}
 
 	public removeDroppedItem(itemId: string): void {
-		const mesh = this.droppedItems.get(itemId);
-		if (mesh) {
-			this.scene.remove(mesh);
+		const group = this.droppedItems.get(itemId);
+		if (group) {
+			this.scene.remove(group);
 			this.droppedItems.delete(itemId);
 		}
+		this.droppedItemLabels.delete(itemId);
+		this.droppedItemBaseY.delete(itemId);
 	}
 
 	public addPlacedItem(data: PlacedItemData): void {
@@ -1215,10 +1290,42 @@ export class NoctownEngine {
 	}
 
 	public clearItems(): void {
-		this.droppedItems.forEach((mesh) => this.scene.remove(mesh));
+		this.droppedItems.forEach((group) => this.scene.remove(group));
 		this.droppedItems.clear();
+		this.droppedItemLabels.clear();
+		this.droppedItemBaseY.clear();
 		this.placedItems.forEach((group) => this.scene.remove(group));
 		this.placedItems.clear();
+	}
+
+	// 仕様: FR-030 プレイヤー近くのドロップアイテムを取得（拾得範囲: 半径2マス）
+	public getNearestDroppedItem(maxDistance: number = 2): DroppedItemData | null {
+		if (!this.localPlayer) return null;
+
+		const playerPos = this.localPlayer.getPosition();
+		let nearestItem: DroppedItemData | null = null;
+		let nearestDistance = maxDistance;
+
+		for (const [itemId, group] of this.droppedItems) {
+			const dx = group.position.x - playerPos.x;
+			const dz = group.position.z - playerPos.z;
+			const distance = Math.sqrt(dx * dx + dz * dz);
+
+			if (distance < nearestDistance) {
+				nearestDistance = distance;
+				const userData = group.userData as { type: string; data: DroppedItemData };
+				if (userData && userData.data) {
+					nearestItem = userData.data;
+				}
+			}
+		}
+
+		return nearestItem;
+	}
+
+	// 仕様: FR-030 拾得範囲内にドロップアイテムがあるかチェック
+	public hasNearbyDroppedItem(maxDistance: number = 2): boolean {
+		return this.getNearestDroppedItem(maxDistance) !== null;
 	}
 
 	private getItemColor(type: string): number {

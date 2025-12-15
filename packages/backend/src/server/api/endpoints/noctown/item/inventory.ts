@@ -25,6 +25,8 @@ export const meta = {
 				itemName: { type: 'string' },
 				itemType: { type: 'string' },
 				imageUrl: { type: 'string', nullable: true },
+				// 仕様: FR-030 画像がない場合のUnicode絵文字
+				emoji: { type: 'string', nullable: true },
 				rarity: { type: 'number' },
 				quantity: { type: 'number' },
 				acquiredAt: { type: 'string', format: 'date-time' },
@@ -71,6 +73,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						itemName: item?.name ?? 'Unknown',
 						itemType: item?.itemType ?? 'normal',
 						imageUrl: item?.imageUrl ?? null,
+						// 仕様: FR-030 画像がない場合のUnicode絵文字
+						emoji: item?.emoji ?? null,
 						rarity: item?.rarity ?? 0,
 						quantity: pi.quantity,
 						acquiredAt: pi.acquiredAt.toISOString(),

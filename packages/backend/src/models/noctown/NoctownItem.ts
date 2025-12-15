@@ -54,6 +54,15 @@ export class NoctownItem {
 	})
 	public fullImageUrl: string | null;
 
+	// 仕様: 画像がない場合に使用するUnicode絵文字（1-2文字）
+	// FR-030: ドロップアイテムの絵文字表現
+	@Column('varchar', {
+		length: 8,
+		nullable: true,
+		comment: 'Unicode emoji for display when no image (e.g. 🪓)',
+	})
+	public emoji: string | null;
+
 	@Column('smallint', {
 		default: 0,
 		comment: 'Rarity (0:N, 1:R, 2:SR, 3:SSR, 4:UR, 5:LR)',

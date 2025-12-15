@@ -10,11 +10,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div :class="$style.header">
 				<img src="https://noc.ski/files/cbb6135b-31f5-4367-8702-8910c72c8d62" :class="$style.logo"/>
 				<div :class="$style.headerActions">
+					<button :class="$style.iconBtn" @click="toggleChatHistoryPanel">
+						<i class="ti ti-messages"></i>
+					</button>
 					<button :class="$style.iconBtn" @click="toggleQuestPanel">
 						<i class="ti ti-list-check"></i>
-					</button>
-					<button :class="$style.iconBtn" @click="toggleInventory">
-						<i class="ti ti-backpack"></i>
 					</button>
 					<button :class="$style.iconBtn" @click="toggleFarmPanel">
 						<i class="ti ti-plant"></i>
@@ -33,16 +33,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 					X: {{ currentX.toFixed(1) }}, Y: {{ currentY.toFixed(1) }}, Z: {{ currentZ.toFixed(1) }}
 				</div>
 
-				<!-- FR-016: Reload button (top-right, safe-area aware) -->
+				<!-- Inventory button (top-right, left of button group) -->
+				<!-- @click.stop: キャンバスのクリックイベントへの伝播を防止 -->
 				<button
 					v-if="!isLoading && !error"
-					:class="[$style.reloadButton, { [$style.reloadButtonDisabled]: isReloading || reloadCooldown }]"
-					:disabled="isReloading || reloadCooldown"
-					@click="handleReload"
+					:class="$style.inventoryButton"
+					@click.stop="toggleInventory"
 				>
-					<i v-if="isReloading" class="ti ti-loader-2" :class="$style.reloadSpinner"></i>
-					<i v-else class="ti ti-refresh"></i>
+					<i class="ti ti-backpack"></i>
 				</button>
+
+				<!-- FR-016: Top-right button group (reload + settings) -->
+				<div v-if="!isLoading && !error" :class="$style.topRightButtonGroup">
+					<button
+						:class="[$style.groupButton, { [$style.groupButtonDisabled]: isReloading || reloadCooldown }]"
+						:disabled="isReloading || reloadCooldown"
+						@click="handleReload"
+					>
+						<i v-if="isReloading" class="ti ti-loader-2" :class="$style.reloadSpinner"></i>
+						<i v-else class="ti ti-refresh"></i>
+					</button>
+					<button
+						:class="$style.groupButton"
+						@click="toggleSettingsPanel"
+					>
+						<i class="ti ti-settings"></i>
+					</button>
+				</div>
 
 				<div v-if="isLoading" :class="$style.overlay">
 					<MkLoading/>
@@ -71,6 +88,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 					@questCompleted="handleQuestCompleted"
 				/>
 
+				<!-- FR-029: Chat History panel -->
+				<MkNoctownChatHistoryPanel
+					v-if="showChatHistoryPanel"
+					ref="chatHistoryPanelRef"
+					@close="showChatHistoryPanel = false"
+				/>
+
 				<!-- NPC Dialog -->
 				<MkNoctownNpcDialog
 					v-if="showNpcDialog && selectedNpc"
@@ -89,11 +113,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 				/>
 
 				<!-- T028: Virtual joystick for mobile/tablet devices without physical keyboard -->
+				<!-- layoutSwapped: false = left (default), true = right -->
 				<NoctownJoystick
 					v-if="shouldShowJoystick"
+					:position="layoutSwapped ? 'right' : 'left'"
 					@move="handleJoystickMove"
 					@end="handleJoystickEnd"
 				/>
+
+				<!-- 仕様: FR-030 拾うボタン（近くにドロップアイテムがある場合に表示） -->
+				<div v-if="nearbyDroppedItem" :class="$style.pickupButton" @click="tryPickupDroppedItem">
+					<div :class="$style.pickupButtonContent">
+						<span :class="$style.pickupEmoji">{{ nearbyDroppedItem.emoji || '📦' }}</span>
+						<span :class="$style.pickupText">拾う</span>
+						<span v-if="nearbyDroppedItem.quantity > 1" :class="$style.pickupQuantity">x{{ nearbyDroppedItem.quantity }}</span>
+					</div>
+					<div :class="$style.pickupItemName">{{ nearbyDroppedItem.itemName }}</div>
+				</div>
 
 				<!-- Place mode indicator -->
 				<div v-if="placeMode" :class="$style.placeModeIndicator">
@@ -136,7 +172,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				/>
 
 				<!-- T009-T011: Emotion buttons with favorite emoji support -->
-				<div :class="$style.emotionPanel">
+				<!-- layoutSwapped: false = right (default), true = left -->
+				<div :class="[$style.emotionPanel, { [$style.emotionPanelLeft]: layoutSwapped }]">
 					<button
 						v-for="(item, index) in emotionEmojis"
 						:key="index"
@@ -150,6 +187,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 							{{ item.display }}
 						</template>
 					</button>
+				</div>
+
+				<!-- Settings panel overlay -->
+				<div v-if="showSettingsPanel" :class="$style.settingsPanelOverlay" @click="showSettingsPanel = false">
+					<div :class="$style.settingsPanel" @click.stop>
+						<div :class="$style.settingsHeader">
+							<span>Noctown Settings</span>
+							<button :class="$style.settingsCloseBtn" @click="showSettingsPanel = false">
+								<i class="ti ti-x"></i>
+							</button>
+						</div>
+						<div :class="$style.settingsContent">
+							<div :class="$style.settingsItem">
+								<div :class="$style.settingsItemLabel">
+									<i class="ti ti-arrows-exchange"></i>
+									<span>UIレイアウト入れ替え</span>
+								</div>
+								<div :class="$style.settingsItemDescription">
+									ジョイスティックと絵文字ボタンの左右位置を入れ替えます
+								</div>
+								<label :class="$style.toggle">
+									<input type="checkbox" v-model="layoutSwapped" @change="saveLayoutSetting" />
+									<span :class="$style.toggleSlider"></span>
+								</label>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 			<div :class="$style.controls">
@@ -176,6 +240,7 @@ import MkNoctownInventory from '@/components/MkNoctownInventory.vue';
 import MkNoctownQuestPanel from '@/components/MkNoctownQuestPanel.vue';
 import MkNoctownNpcDialog from '@/components/MkNoctownNpcDialog.vue';
 import MkNoctownFarmPanel from '@/components/MkNoctownFarmPanel.vue';
+import MkNoctownChatHistoryPanel from '@/components/MkNoctownChatHistoryPanel.vue';
 import MkNoctownPlayerInfoWindow from '@/components/MkNoctownPlayerInfoWindow.vue';
 import MkNoctownPetInfoWindow from '@/components/MkNoctownPetInfoWindow.vue';
 import NoctownJoystick from '@/components/MkNoctown/NoctownJoystick.vue';
@@ -254,9 +319,13 @@ const showInventory = ref(false);
 const showQuestPanel = ref(false);
 const showNpcDialog = ref(false);
 const showFarmPanel = ref(false);
+const showChatHistoryPanel = ref(false);
+// 仕様: FR-030 近くにあるドロップアイテムの情報（拾うボタン表示用）
+const nearbyDroppedItem = ref<{ id: string; itemName: string; emoji: string | null; quantity: number } | null>(null);
 const placeMode = ref(false);
 const inventoryRef = ref<{ refresh: () => void } | null>(null);
 const questPanelRef = ref<{ refresh: () => void } | null>(null);
+const chatHistoryPanelRef = ref<{ refresh: () => void } | null>(null);
 const selectedNpc = ref<NpcData | null>(null);
 const chatInputFocused = ref(false);
 let worldId: string | null = null; // Set from player data
@@ -318,6 +387,41 @@ const moveSpeed = 0.15;
 // Also show on tablet-sized windows (1024px or smaller)
 const shouldShowJoystick = ref(false);
 
+// Settings panel state
+const showSettingsPanel = ref(false);
+
+// Layout setting: swap joystick and emotion panel positions
+// false = default (joystick: left, emotion: right)
+// true = swapped (joystick: right, emotion: left)
+const LAYOUT_STORAGE_KEY = 'noctown:layoutSwapped';
+const layoutSwapped = ref(false);
+
+// Load layout setting from localStorage on startup
+function loadLayoutSetting(): void {
+	try {
+		const saved = localStorage.getItem(LAYOUT_STORAGE_KEY);
+		if (saved !== null) {
+			layoutSwapped.value = saved === 'true';
+		}
+	} catch (e) {
+		console.error('Failed to load layout setting:', e);
+	}
+}
+
+// Save layout setting to localStorage
+function saveLayoutSetting(): void {
+	try {
+		localStorage.setItem(LAYOUT_STORAGE_KEY, String(layoutSwapped.value));
+	} catch (e) {
+		console.error('Failed to save layout setting:', e);
+	}
+}
+
+// Toggle settings panel
+function toggleSettingsPanel(): void {
+	showSettingsPanel.value = !showSettingsPanel.value;
+}
+
 // Window resize handler to show/hide joystick based on window size
 let resizeHandler: (() => void) | null = null;
 
@@ -344,11 +448,16 @@ interface NoctownPlayerResponse {
 	worldId: string;
 }
 
+// 仕様: FR-030 インベントリアイテムのインターフェース
 interface InventoryItem {
 	id: string;
 	itemId: string;
 	itemName: string;
 	itemType: string;
+	imageUrl: string | null;
+	// 仕様: FR-030 画像がない場合のUnicode絵文字
+	emoji: string | null;
+	rarity: number;
 	quantity: number;
 	acquiredAt: string;
 }
@@ -404,6 +513,9 @@ async function initialize(): Promise<void> {
 	try {
 		isLoading.value = true;
 		error.value = null;
+
+		// Load layout setting from localStorage
+		loadLayoutSetting();
 
 		// FR-025: Determine if virtual joystick should be shown
 		// Priority order:
@@ -980,6 +1092,9 @@ function startMovementLoop(): void {
 			loadNearbyChunks(currentX.value, currentZ.value);
 			lastChunkCheckTime = now;
 		}
+
+		// 仕様: FR-030 近くのドロップアイテムをチェック（拾うボタン表示用）
+		updateNearbyDroppedItem();
 	}, 16); // ~60fps
 }
 
@@ -1188,6 +1303,9 @@ function startWarningCheck(): void {
 }
 
 function handleKeyDown(e: KeyboardEvent): void {
+	// 仕様: キーリピートを無視（キー押しっぱなしで連続発火を防止）
+	if (e.repeat) return;
+
 	// FR-072: Disable Misskey global shortcuts when chat input is focused
 	if (chatInputFocused.value) {
 		// Stop event propagation to prevent Misskey shortcuts (n, p, t, etc.)
@@ -1238,6 +1356,7 @@ function handleKeyDown(e: KeyboardEvent): void {
 function toggleInventory(): void {
 	showInventory.value = !showInventory.value;
 	showQuestPanel.value = false;
+	showChatHistoryPanel.value = false;
 	if (showInventory.value && inventoryRef.value) {
 		inventoryRef.value.refresh();
 	}
@@ -1247,6 +1366,7 @@ function toggleQuestPanel(): void {
 	showQuestPanel.value = !showQuestPanel.value;
 	showInventory.value = false;
 	showFarmPanel.value = false;
+	showChatHistoryPanel.value = false;
 	if (showQuestPanel.value && questPanelRef.value) {
 		questPanelRef.value.refresh();
 	}
@@ -1256,6 +1376,18 @@ function toggleFarmPanel(): void {
 	showFarmPanel.value = !showFarmPanel.value;
 	showInventory.value = false;
 	showQuestPanel.value = false;
+	showChatHistoryPanel.value = false;
+}
+
+// FR-029: Toggle chat history panel
+function toggleChatHistoryPanel(): void {
+	showChatHistoryPanel.value = !showChatHistoryPanel.value;
+	showInventory.value = false;
+	showQuestPanel.value = false;
+	showFarmPanel.value = false;
+	if (showChatHistoryPanel.value && chatHistoryPanelRef.value) {
+		chatHistoryPanelRef.value.refresh();
+	}
 }
 
 // T012-T013: showEmotion function updated for EmotionEmoji type
@@ -1375,6 +1507,7 @@ async function handleReload(): Promise<void> {
 	}
 }
 
+// 仕様: FR-030 Eキーでのインタラクション（NPC会話、アイテム拾得）
 async function tryInteract(): Promise<void> {
 	if (!engine) return;
 
@@ -1389,11 +1522,54 @@ async function tryInteract(): Promise<void> {
 		return;
 	}
 
-	// If no NPC, try to pick up item
-	if (!connection.value) return;
-	connection.value.send('pickItem', {
-		droppedItemId: 'nearest',
-	});
+	// 仕様: FR-030 近くにドロップアイテムがあれば拾う
+	await tryPickupDroppedItem();
+}
+
+// 仕様: FR-030 ドロップアイテムを拾う処理
+async function tryPickupDroppedItem(): Promise<void> {
+	if (!engine) return;
+
+	const item = engine.getNearestDroppedItem(2);
+	if (!item) return;
+
+	try {
+		const result = await noctownApi<{ success: boolean; item?: { name: string } }>('noctown/item/pickup', {
+			droppedItemId: item.id,
+		});
+
+		if (result.success) {
+			// 仕様: FR-030 拾得成功時にエンジンからドロップアイテムを削除
+			engine.removeDroppedItem(item.id);
+			nearbyDroppedItem.value = null;
+			// インベントリを更新
+			if (inventoryRef.value) {
+				inventoryRef.value.refresh();
+			}
+		}
+	} catch (error) {
+		console.error('Failed to pick up item:', error);
+	}
+}
+
+// 仕様: FR-030 近くのドロップアイテム情報を更新（毎フレーム呼び出し）
+function updateNearbyDroppedItem(): void {
+	if (!engine) {
+		nearbyDroppedItem.value = null;
+		return;
+	}
+
+	const item = engine.getNearestDroppedItem(2);
+	if (item) {
+		nearbyDroppedItem.value = {
+			id: item.id,
+			itemName: item.itemName,
+			emoji: item.emoji,
+			quantity: item.quantity,
+		};
+	} else {
+		nearbyDroppedItem.value = null;
+	}
 }
 
 function closeNpcDialog(): void {
@@ -1487,9 +1663,51 @@ function cancelPlaceMode(): void {
 	canvasContainer.value?.removeEventListener('click', onPlaceClick);
 }
 
+// 仕様: FR-030 インベントリからアイテムを捨てる（地面にドロップ）
 async function handleDropItem(item: InventoryItem): Promise<void> {
-	// For now, dropping is not implemented (would need a drop endpoint)
-	console.log('Drop item:', item);
+	if (!engine) return;
+
+	const pos = engine.getLocalPlayerPosition();
+	if (!pos) return;
+
+	// プレイヤーの少し前方にドロップ（回転を考慮）
+	const dropDistance = 1.5;
+	const dropX = pos.x + Math.sin(currentRotation) * dropDistance;
+	const dropZ = pos.z + Math.cos(currentRotation) * dropDistance;
+
+	try {
+		const result = await noctownApi<{ droppedItemId: string }>('noctown/item/drop', {
+			playerItemId: item.id,
+			quantity: 1, // 1個ずつドロップ
+			positionX: dropX,
+			positionY: pos.y,
+			positionZ: dropZ,
+		});
+
+		if (result.droppedItemId) {
+			// 仕様: FR-030 ドロップ成功時にエンジンにアイテムを追加
+			engine.addDroppedItem({
+				id: result.droppedItemId,
+				itemId: item.itemId,
+				itemName: item.itemName,
+				itemType: item.itemType,
+				emoji: item.emoji,
+				imageUrl: item.imageUrl,
+				rarity: item.rarity,
+				quantity: 1,
+				positionX: dropX,
+				positionY: pos.y,
+				positionZ: dropZ,
+			});
+
+			// インベントリを更新
+			if (inventoryRef.value) {
+				inventoryRef.value.refresh();
+			}
+		}
+	} catch (error) {
+		console.error('Failed to drop item:', error);
+	}
 }
 
 // T030: Joystick event handlers
@@ -1721,11 +1939,11 @@ definePage(() => ({
 	user-select: none;
 }
 
-// FR-016: Reload button (top-right, safe-area aware)
-.reloadButton {
+// Inventory button (top-right, left of button group)
+.inventoryButton {
 	position: absolute;
 	top: calc(env(safe-area-inset-top, 16px) + 10px);
-	right: 16px;
+	right: 116px; // 16px + 92px (button group width) + 8px gap
 	width: 44px;
 	height: 44px;
 	border-radius: 50%;
@@ -1752,16 +1970,57 @@ definePage(() => ({
 	// Mobile: ensure minimum touch target and safe area
 	@media (max-width: 768px) {
 		top: calc(env(safe-area-inset-top, 10px) + 10px);
+		right: 106px; // 10px + 88px + 8px gap
+	}
+}
+
+// FR-016: Top-right button group (reload + settings)
+.topRightButtonGroup {
+	position: absolute;
+	top: calc(env(safe-area-inset-top, 16px) + 10px);
+	right: 16px;
+	display: flex;
+	gap: 4px;
+	z-index: 100;
+	background: rgba(0, 0, 0, 0.5);
+	border-radius: 22px;
+	padding: 0;
+
+	@media (max-width: 768px) {
+		top: calc(env(safe-area-inset-top, 10px) + 10px);
 		right: 10px;
 	}
 }
 
-.reloadButtonDisabled {
+.groupButton {
+	width: 44px;
+	height: 44px;
+	border-radius: 50%;
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: white;
+	font-size: 20px;
+	transition: background 0.2s, transform 0.2s;
+
+	&:hover {
+		background: rgba(255, 255, 255, 0.2);
+	}
+
+	&:active {
+		transform: scale(0.95);
+	}
+}
+
+.groupButtonDisabled {
 	opacity: 0.5;
 	cursor: not-allowed;
 
 	&:hover {
-		background: rgba(0, 0, 0, 0.5);
+		background: transparent;
 		transform: none;
 	}
 }
@@ -1776,6 +2035,86 @@ definePage(() => ({
 	}
 	to {
 		transform: rotate(360deg);
+	}
+}
+
+/* 仕様: FR-030 拾うボタンスタイル */
+.pickupButton {
+	position: absolute;
+	bottom: 180px;
+	left: 50%;
+	transform: translateX(-50%);
+	background: linear-gradient(135deg, rgba(76, 175, 80, 0.95), rgba(46, 125, 50, 0.95));
+	color: white;
+	padding: 12px 24px;
+	border-radius: 16px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 4px;
+	font-size: 16px;
+	z-index: 100;
+	cursor: pointer;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+	transition: transform 0.15s ease, box-shadow 0.15s ease;
+	animation: pickupBounce 1s ease-in-out infinite;
+	touch-action: manipulation;
+
+	&:hover {
+		transform: translateX(-50%) scale(1.05);
+		box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+	}
+
+	&:active {
+		transform: translateX(-50%) scale(0.95);
+	}
+
+	@media (max-width: 768px) {
+		bottom: calc(200px + env(safe-area-inset-bottom, 0px));
+		padding: 10px 20px;
+		font-size: 14px;
+	}
+}
+
+.pickupButtonContent {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-weight: bold;
+}
+
+.pickupEmoji {
+	font-size: 24px;
+	filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.pickupText {
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.pickupQuantity {
+	font-size: 14px;
+	background: rgba(255, 255, 255, 0.3);
+	padding: 2px 6px;
+	border-radius: 8px;
+}
+
+.pickupItemName {
+	font-size: 12px;
+	opacity: 0.9;
+	max-width: 150px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+@keyframes pickupBounce {
+	0%, 100% {
+		transform: translateX(-50%) translateY(0);
+	}
+	50% {
+		transform: translateX(-50%) translateY(-4px);
 	}
 }
 
@@ -1802,6 +2141,7 @@ definePage(() => ({
 	position: absolute;
 	bottom: 18px;
 	right: 20px;
+	left: auto;
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
 	gap: 8px;
@@ -1822,6 +2162,22 @@ definePage(() => ({
 		bottom: calc(116px + env(safe-area-inset-bottom, 0px));
 		right: 12px;
 		gap: 6px;
+	}
+}
+
+/* Swapped layout: emotion panel on left side */
+.emotionPanelLeft {
+	right: auto;
+	left: 20px;
+
+	@media (max-width: 768px) {
+		right: auto;
+		left: 16px;
+	}
+
+	@media (max-width: 480px) {
+		right: auto;
+		left: 12px;
 	}
 }
 
@@ -1888,6 +2244,133 @@ definePage(() => ({
 		width: 20px;
 		height: 20px;
 	}
+}
+
+/* Settings panel overlay */
+.settingsPanelOverlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.5);
+	z-index: 1000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.settingsPanel {
+	background: var(--MI_THEME-panel);
+	border-radius: 12px;
+	width: 90%;
+	max-width: 400px;
+	max-height: 80vh;
+	overflow: hidden;
+	box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+}
+
+.settingsHeader {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 16px;
+	border-bottom: 1px solid var(--MI_THEME-divider);
+	font-weight: 600;
+	font-size: 16px;
+}
+
+.settingsCloseBtn {
+	background: none;
+	border: none;
+	cursor: pointer;
+	color: var(--MI_THEME-fg);
+	font-size: 20px;
+	padding: 4px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	opacity: 0.6;
+
+	&:hover {
+		opacity: 1;
+	}
+}
+
+.settingsContent {
+	padding: 16px;
+}
+
+.settingsItem {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.settingsItemLabel {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-weight: 500;
+	color: var(--MI_THEME-fg);
+
+	i {
+		font-size: 18px;
+		opacity: 0.8;
+	}
+}
+
+.settingsItemDescription {
+	font-size: 12px;
+	color: var(--MI_THEME-fg);
+	opacity: 0.6;
+	margin-bottom: 8px;
+}
+
+/* Toggle switch */
+.toggle {
+	position: relative;
+	display: inline-block;
+	width: 50px;
+	height: 28px;
+
+	input {
+		opacity: 0;
+		width: 0;
+		height: 0;
+	}
+}
+
+.toggleSlider {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: var(--MI_THEME-divider);
+	transition: 0.3s;
+	border-radius: 28px;
+
+	&::before {
+		position: absolute;
+		content: "";
+		height: 22px;
+		width: 22px;
+		left: 3px;
+		bottom: 3px;
+		background-color: white;
+		transition: 0.3s;
+		border-radius: 50%;
+	}
+}
+
+.toggle input:checked + .toggleSlider {
+	background-color: var(--MI_THEME-accent);
+}
+
+.toggle input:checked + .toggleSlider::before {
+	transform: translateX(22px);
 }
 
 .controls {

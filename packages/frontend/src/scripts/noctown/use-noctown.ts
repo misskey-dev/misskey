@@ -94,6 +94,12 @@ function getToken(): string | null {
 const FORCE_JOYSTICK_STORAGE_KEY = 'noctown:forceJoystick';
 
 /**
+ * FR-029: Distance threshold for recording chat messages (in blocks)
+ * Messages from players further than this distance are not recorded
+ */
+const CHAT_HISTORY_DISTANCE_THRESHOLD = 50;
+
+/**
  * FR-025: Check if forced joystick display is enabled via localStorage
  * @returns true if localStorage has noctown:forceJoystick set to 'true'
  */
@@ -116,6 +122,27 @@ export function enableForceJoystick(): void {
 	} catch {
 		// localStorage is unavailable, setting will not persist
 		console.debug('Failed to persist forceJoystick setting to localStorage');
+	}
+}
+
+/**
+ * FR-029: Record a received chat message to the server (noctown_chat_log_recipient table)
+ * Called when a message is received within 50 blocks distance
+ * @param messageId The message ID to record as received
+ */
+async function recordChatReceipt(messageId: string): Promise<void> {
+	try {
+		await window.fetch('/api/noctown/chat-log/receive', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			credentials: 'same-origin',
+			body: JSON.stringify({
+				i: getToken(),
+				messageId,
+			}),
+		});
+	} catch (e) {
+		console.debug('Failed to record chat receipt:', e);
 	}
 }
 
@@ -332,6 +359,19 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 				handlePlayerPongReceived(body);
 			});
 
+			// FR-029: チャットメッセージ受信時の距離判定・履歴記録
+			channel.on('playerChatted', (body: {
+				playerId: string;
+				userId: string;
+				message: string;
+				messageId?: string;
+				positionX: number;
+				positionY: number;
+				positionZ: number;
+			}) => {
+				handlePlayerChatted(body);
+			});
+
 			// Monitor connection state (check if stream object exists and has state)
 			if (stream && typeof stream.on === 'function') {
 				stream.on('_disconnected_', handleDisconnect);
@@ -463,6 +503,31 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 			// タイムアウトをクリア
 			clearTimeout(pendingPing.timeoutId);
 			pendingPings.delete(data.pingId);
+		}
+	}
+
+	// FR-029: チャットメッセージ受信時の距離判定・履歴記録
+	// 自分の位置から50ブロック以内のメッセージのみlocalStorageに記録
+	function handlePlayerChatted(data: {
+		playerId: string;
+		userId: string;
+		message: string;
+		messageId?: string;
+		positionX: number;
+		positionY: number;
+		positionZ: number;
+	}): void {
+		// messageIdがない場合は記録しない（旧バージョン互換）
+		if (!data.messageId) return;
+
+		// 距離を計算（XZ平面での距離）
+		const dx = data.positionX - currentX;
+		const dz = data.positionZ - currentZ;
+		const distance = Math.sqrt(dx * dx + dz * dz);
+
+		// 50ブロック以内の場合のみサーバーに受信記録を送信
+		if (distance <= CHAT_HISTORY_DISTANCE_THRESHOLD) {
+			recordChatReceipt(data.messageId);
 		}
 	}
 

@@ -23,27 +23,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div
 				v-for="item in items"
 				:key="item.id"
-				:class="[$style.item, $style[`rarity${item.rarity}`], { [$style.selected]: selectedItem?.id === item.id }]"
+				:class="[$style.item, $style[getRarityClass(item.rarity)], { [$style.selected]: selectedItem?.id === item.id }]"
 				@click="selectItem(item)"
 			>
+				<!-- 仕様: FR-030 画像>絵文字>アイコンの優先順位で表示 -->
 				<div :class="$style.itemIcon">
 					<img
 						v-if="item.imageUrl"
 						:src="item.imageUrl"
-						:alt="item.itemName"
+						:alt="item.itemName || 'item'"
 						:class="$style.itemImage"
 					/>
+					<span v-else-if="item.emoji" :class="$style.itemEmoji">{{ item.emoji }}</span>
 					<i v-else :class="getItemIcon(item.itemType)"></i>
 				</div>
-				<div :class="$style.itemQuantity">{{ item.quantity }}</div>
+				<div :class="$style.itemQuantity">{{ item.quantity ?? 1 }}</div>
 			</div>
 		</div>
 	</div>
 	<div v-if="selectedItem" :class="$style.selectedInfo">
-		<div :class="$style.selectedName">{{ selectedItem.itemName }}</div>
+		<div :class="$style.selectedName">{{ selectedItem.itemName || 'Unknown Item' }}</div>
 		<div :class="$style.selectedMeta">
-			<span :class="[$style.rarityBadge, $style[`rarity${selectedItem.rarity}`]]">{{ getRarityLabel(selectedItem.rarity) }}</span>
-			<span>x{{ selectedItem.quantity }}</span>
+			<span :class="[$style.rarityBadge, $style[getRarityClass(selectedItem.rarity)]]">{{ getRarityLabel(selectedItem.rarity) }}</span>
+			<span>x{{ selectedItem.quantity ?? 1 }}</span>
 		</div>
 	</div>
 	<div v-if="selectedItem" :class="$style.actions">
@@ -64,6 +66,7 @@ import MkButton from '@/components/MkButton.vue';
 
 // インベントリアイテムのインターフェース
 // imageUrl: アイテム画像URL（nullの場合はitemTypeに基づくアイコンを表示）
+// emoji: 仕様FR-030 画像がない場合のUnicode絵文字
 // rarity: レアリティ（0:N, 1:R, 2:SR, 3:SSR, 4:UR, 5:LR）
 interface InventoryItem {
 	id: string;
@@ -71,6 +74,8 @@ interface InventoryItem {
 	itemName: string;
 	itemType: string;
 	imageUrl: string | null;
+	// 仕様: FR-030 画像がない場合のUnicode絵文字
+	emoji: string | null;
 	rarity: number;
 	quantity: number;
 	acquiredAt: string;
@@ -107,7 +112,26 @@ async function fetchInventory(): Promise<void> {
 		});
 
 		if (res.ok) {
-			items.value = await res.json();
+			const data = await res.json();
+			// 仕様: APIレスポンスのバリデーション（配列かどうか確認）
+			if (Array.isArray(data)) {
+				// 各アイテムのデータを正規化（undefinedやnullを防止）
+				items.value = data.map(item => ({
+					id: item.id ?? '',
+					itemId: item.itemId ?? '',
+					itemName: item.itemName ?? 'Unknown Item',
+					itemType: item.itemType ?? 'misc',
+					imageUrl: item.imageUrl ?? null,
+					// 仕様: FR-030 画像がない場合のUnicode絵文字
+					emoji: item.emoji ?? null,
+					rarity: typeof item.rarity === 'number' ? item.rarity : 0,
+					quantity: typeof item.quantity === 'number' ? item.quantity : 1,
+					acquiredAt: item.acquiredAt ?? '',
+				}));
+			} else {
+				console.error('Invalid inventory response: expected array', data);
+				items.value = [];
+			}
 		}
 	} catch (e) {
 		console.error('Failed to fetch inventory:', e);
@@ -145,6 +169,13 @@ function getItemIcon(type: string): string {
 function getRarityLabel(rarity: number): string {
 	const labels = ['N', 'R', 'SR', 'SSR', 'UR', 'LR'];
 	return labels[rarity] || 'N';
+}
+
+// 仕様: レアリティに対応するCSSクラス名を安全に取得
+// rarityが範囲外の場合はrarity0（N）にフォールバック
+function getRarityClass(rarity: number | undefined | null): string {
+	const safeRarity = typeof rarity === 'number' && rarity >= 0 && rarity <= 5 ? rarity : 0;
+	return `rarity${safeRarity}`;
 }
 
 function placeItem(): void {
@@ -281,6 +312,12 @@ defineExpose({
 	width: 80%;
 	height: 80%;
 	object-fit: contain;
+	filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+// 仕様: FR-030 アイテム絵文字
+.itemEmoji {
+	font-size: 32px;
 	filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
 }
 

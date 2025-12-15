@@ -133,6 +133,8 @@ import { NoctownEventReward } from '@/models/noctown/NoctownEventReward.js';
 import { NoctownEventParticipation } from '@/models/noctown/NoctownEventParticipation.js';
 import { NoctownUniqueItem } from '@/models/noctown/NoctownUniqueItem.js';
 import { NoctownRankingBoard } from '@/models/noctown/NoctownRankingBoard.js';
+import { NoctownChatLog } from '@/models/noctown/NoctownChatLog.js';
+import { NoctownChatLogRecipient } from '@/models/noctown/NoctownChatLogRecipient.js';
 import type { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity.js';
 
 export interface MiRepository<T extends ObjectLiteral> {
@@ -316,6 +318,8 @@ export {
 	NoctownEventParticipation,
 	NoctownUniqueItem,
 	NoctownRankingBoard,
+	NoctownChatLog,
+	NoctownChatLogRecipient,
 };
 
 export type AbuseUserReportsRepository = Repository<MiAbuseUserReport> & MiRepository<MiAbuseUserReport>;
@@ -436,3 +440,5 @@ export type NoctownEventRewardsRepository = Repository<NoctownEventReward> & MiR
 export type NoctownEventParticipationsRepository = Repository<NoctownEventParticipation> & MiRepository<NoctownEventParticipation>;
 export type NoctownUniqueItemsRepository = Repository<NoctownUniqueItem> & MiRepository<NoctownUniqueItem>;
 export type NoctownRankingBoardsRepository = Repository<NoctownRankingBoard> & MiRepository<NoctownRankingBoard>;
+export type NoctownChatLogsRepository = Repository<NoctownChatLog> & MiRepository<NoctownChatLog>;
+export type NoctownChatLogRecipientsRepository = Repository<NoctownChatLogRecipient> & MiRepository<NoctownChatLogRecipient>;

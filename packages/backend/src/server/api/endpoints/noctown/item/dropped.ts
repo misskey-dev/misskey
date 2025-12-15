@@ -8,6 +8,8 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import type { NoctownDroppedItemsRepository, NoctownItemsRepository } from '@/models/_.js';
 
+// 仕様: FR-030 ドロップアイテムの絵文字表現と拾得システム
+// 範囲内のドロップアイテム一覧を取得
 export const meta = {
 	tags: ['noctown'],
 
@@ -24,6 +26,10 @@ export const meta = {
 				itemId: { type: 'string' },
 				itemName: { type: 'string' },
 				itemType: { type: 'string' },
+				emoji: { type: 'string', nullable: true },
+				imageUrl: { type: 'string', nullable: true },
+				rarity: { type: 'number' },
+				quantity: { type: 'number' },
 				positionX: { type: 'number' },
 				positionY: { type: 'number' },
 				positionZ: { type: 'number' },
@@ -78,6 +84,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						itemId: di.itemId,
 						itemName: item?.name ?? 'Unknown',
 						itemType: item?.itemType ?? 'normal',
+						// 仕様: FR-030 画像がない場合はemoji、両方ない場合は📦をデフォルト表示
+						emoji: item?.emoji ?? null,
+						imageUrl: item?.imageUrl ?? null,
+						rarity: item?.rarity ?? 0,
+						quantity: di.quantity ?? 1,
 						positionX: di.positionX,
 						positionY: di.positionY,
 						positionZ: di.positionZ,

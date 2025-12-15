@@ -124,6 +124,8 @@ import {
 	NoctownEventParticipation,
 	NoctownUniqueItem,
 	NoctownRankingBoard,
+	NoctownChatLog,
+	NoctownChatLogRecipient,
 } from './_.js';
 import type { Provider } from '@nestjs/common';
 import type { DataSource } from 'typeorm';
@@ -824,6 +826,18 @@ const $noctownRankingBoardsRepository: Provider = {
 	inject: [DI.db],
 };
 
+const $noctownChatLogsRepository: Provider = {
+	provide: DI.noctownChatLogsRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownChatLog).extend(miRepository as MiRepository<NoctownChatLog>),
+	inject: [DI.db],
+};
+
+const $noctownChatLogRecipientsRepository: Provider = {
+	provide: DI.noctownChatLogRecipientsRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownChatLogRecipient).extend(miRepository as MiRepository<NoctownChatLogRecipient>),
+	inject: [DI.db],
+};
+
 @Module({
 	imports: [],
 	providers: [
@@ -943,6 +957,8 @@ const $noctownRankingBoardsRepository: Provider = {
 		$noctownEventParticipationsRepository,
 		$noctownUniqueItemsRepository,
 		$noctownRankingBoardsRepository,
+		$noctownChatLogsRepository,
+		$noctownChatLogRecipientsRepository,
 	],
 	exports: [
 		$usersRepository,
@@ -1061,6 +1077,8 @@ const $noctownRankingBoardsRepository: Provider = {
 		$noctownEventParticipationsRepository,
 		$noctownUniqueItemsRepository,
 		$noctownRankingBoardsRepository,
+		$noctownChatLogsRepository,
+		$noctownChatLogRecipientsRepository,
 	],
 })
 export class RepositoryModule {

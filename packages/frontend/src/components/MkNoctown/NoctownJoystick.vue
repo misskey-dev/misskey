@@ -4,15 +4,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-	<!-- T024, T029: Virtual joystick component positioned at bottom-left -->
-	<div ref="joystickContainer" :class="$style.joystickContainer"></div>
+	<!-- T024, T029: Virtual joystick component positioned at bottom-left/right -->
+	<div
+		ref="joystickContainer"
+		:class="[$style.joystickContainer, position === 'right' ? $style.joystickRight : $style.joystickLeft]"
+	></div>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, watch } from 'vue';
 // T025: Import nipplejs for virtual joystick
 import nipplejs from 'nipplejs';
 import type { JoystickManager, JoystickOutputData } from 'nipplejs';
+
+const props = defineProps<{
+	position?: 'left' | 'right';
+}>();
 
 const emit = defineEmits<{
 	(e: 'move', direction: { x: number; z: number }): void;
@@ -22,14 +29,26 @@ const emit = defineEmits<{
 const joystickContainer = ref<HTMLDivElement | null>(null);
 let manager: JoystickManager | null = null;
 
-onMounted(() => {
+// Create joystick manager with position based on prop
+function createJoystick(): void {
 	if (!joystickContainer.value) return;
+
+	// Destroy existing manager if any
+	if (manager) {
+		manager.destroy();
+		manager = null;
+	}
+
+	// Calculate position based on prop
+	const positionConfig = props.position === 'right'
+		? { right: '80px', bottom: '80px' }
+		: { left: '80px', bottom: '80px' };
 
 	// T025: Create nipplejs joystick instance
 	manager = nipplejs.create({
 		zone: joystickContainer.value,
 		mode: 'static',
-		position: { left: '80px', bottom: '80px' },
+		position: positionConfig,
 		color: 'rgba(255, 255, 255, 0.5)',
 		size: 120,
 	});
@@ -50,6 +69,15 @@ onMounted(() => {
 	manager.on('end', () => {
 		emit('end');
 	});
+}
+
+// Watch for position changes and recreate joystick
+watch(() => props.position, () => {
+	createJoystick();
+});
+
+onMounted(() => {
+	createJoystick();
 });
 
 onUnmounted(() => {
@@ -68,7 +96,6 @@ onUnmounted(() => {
 .joystickContainer {
 	position: fixed;
 	bottom: calc(69px + env(safe-area-inset-bottom, 0px));
-	left: 20px;
 	width: 160px;
 	height: 160px;
 	z-index: 1000;
@@ -76,5 +103,17 @@ onUnmounted(() => {
 	touch-action: manipulation;
 	user-select: none;
 	-webkit-user-select: none;
+}
+
+/* Default position: left */
+.joystickLeft {
+	left: 20px;
+	right: auto;
+}
+
+/* Swapped position: right */
+.joystickRight {
+	right: 20px;
+	left: auto;
 }
 </style>

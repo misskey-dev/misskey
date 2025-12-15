@@ -27,6 +27,7 @@ import type {
 	NoctownCowsRepository,
 	NoctownHousesRepository,
 	NoctownWorldChunksRepository,
+	NoctownChatLogsRepository,
 	UsersRepository,
 } from '@/models/_.js';
 import type { NoctownCropStage } from '@/models/noctown/NoctownCrop.js';
@@ -84,6 +85,9 @@ export class NoctownService {
 
 		@Inject(DI.noctownWorldChunksRepository)
 		private noctownWorldChunksRepository: NoctownWorldChunksRepository,
+
+		@Inject(DI.noctownChatLogsRepository)
+		private noctownChatLogsRepository: NoctownChatLogsRepository,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -283,10 +287,15 @@ export class NoctownService {
 	}
 
 	@bindThis
+	// 仕様: FR-030 ドロップアイテムの拾得
+	// ドロップアイテムの数量を考慮してインベントリに追加
 	public async pickUpItem(playerId: string, droppedItemId: string): Promise<boolean> {
 		// Find the dropped item
 		const droppedItem = await this.noctownDroppedItemsRepository.findOneBy({ id: droppedItemId });
 		if (!droppedItem) return false;
+
+		// 仕様: ドロップアイテムの数量（デフォルト1）
+		const pickupQuantity = droppedItem.quantity ?? 1;
 
 		// Check if player already has this item type
 		const existingPlayerItem = await this.noctownPlayerItemsRepository.findOneBy({
@@ -306,17 +315,17 @@ export class NoctownService {
 		}
 
 		if (existingPlayerItem) {
-			// Increment quantity
+			// Increment quantity by dropped item's quantity
 			await this.noctownPlayerItemsRepository.update(existingPlayerItem.id, {
-				quantity: existingPlayerItem.quantity + 1,
+				quantity: existingPlayerItem.quantity + pickupQuantity,
 			});
 		} else {
-			// Add new item to inventory
+			// Add new item to inventory with dropped quantity
 			await this.noctownPlayerItemsRepository.insert({
 				id: this.idService.gen(),
 				playerId,
 				itemId: droppedItem.itemId,
-				quantity: 1,
+				quantity: pickupQuantity,
 				acquiredAt: new Date(),
 			});
 		}
@@ -332,6 +341,67 @@ export class NoctownService {
 		});
 
 		return true;
+	}
+
+	// 仕様: FR-030 インベントリからアイテムをドロップ
+	// プレイヤーがインベントリからアイテムを地面に捨てる
+	@bindThis
+	public async dropItemFromInventory(
+		playerId: string,
+		playerItemId: string,
+		quantity: number,
+		x: number,
+		y: number,
+		z: number,
+	): Promise<{ droppedItemId: string } | null> {
+		// Find the player item
+		const playerItem = await this.noctownPlayerItemsRepository.findOne({
+			where: { id: playerItemId, playerId },
+			relations: ['item'],
+		});
+		if (!playerItem || !playerItem.item) return null;
+
+		// 仕様: 要求された数量がインベントリの数量を超えていないか確認
+		const dropQuantity = Math.min(quantity, playerItem.quantity);
+		if (dropQuantity <= 0) return null;
+
+		// Create dropped item on the ground
+		const droppedItemId = this.idService.gen();
+		await this.noctownDroppedItemsRepository.insert({
+			id: droppedItemId,
+			itemId: playerItem.itemId,
+			droppedByPlayerId: playerId,
+			quantity: dropQuantity,
+			positionX: x,
+			positionY: y,
+			positionZ: z,
+			droppedAt: new Date(),
+		});
+
+		// Decrement or remove from inventory
+		if (playerItem.quantity > dropQuantity) {
+			await this.noctownPlayerItemsRepository.update(playerItemId, {
+				quantity: playerItem.quantity - dropQuantity,
+			});
+		} else {
+			await this.noctownPlayerItemsRepository.delete(playerItemId);
+		}
+
+		// Broadcast item drop
+		this.globalEventService.publishNoctownStream('itemDropped', {
+			playerId,
+			droppedItemId,
+			itemId: playerItem.itemId,
+			itemName: playerItem.item.name,
+			emoji: playerItem.item.emoji,
+			imageUrl: playerItem.item.imageUrl,
+			quantity: dropQuantity,
+			positionX: x,
+			positionY: y,
+			positionZ: z,
+		});
+
+		return { droppedItemId };
 	}
 
 	@bindThis
@@ -454,15 +524,17 @@ export class NoctownService {
 		});
 	}
 
+	// FR-029: チャットメッセージのDB保存と履歴表示
+	// broadcastChat()でメッセージをDBに保存し、messageIdをイベントに含めて送信
 	@bindThis
 	public async broadcastChat(
 		playerId: string,
 		userId: string,
 		message: string,
-	): Promise<void> {
+	): Promise<string | null> {
 		// Get player position for proximity-based broadcast
 		const player = await this.noctownPlayersRepository.findOneBy({ id: playerId });
-		if (!player) return;
+		if (!player) return null;
 
 		// FR-007-4: プレイヤーがオフライン状態の場合、チャット時にオンライン化して他のプレイヤーに表示
 		const wasOffline = !player.isOnline;
@@ -492,15 +564,29 @@ export class NoctownService {
 			});
 		}
 
+		// FR-029: チャットメッセージをDBに保存
+		const messageId = this.idService.gen();
+		await this.noctownChatLogsRepository.insert({
+			id: messageId,
+			playerId,
+			content: message,
+			positionX: player.positionX,
+			positionZ: player.positionZ,
+		});
+
 		// T143, T144: Broadcast chat to all connected players
+		// FR-029: messageIdをイベントに追加（フロントエンドで距離判定後にlocalStorageに記録）
 		this.globalEventService.publishNoctownStream('playerChatted', {
 			playerId,
 			userId,
 			message,
+			messageId,
 			positionX: player.positionX,
 			positionY: player.positionY,
 			positionZ: player.positionZ,
 		});
+
+		return messageId;
 	}
 
 	@bindThis

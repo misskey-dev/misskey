@@ -131,5 +131,7 @@ export const DI = {
 	noctownEventParticipationsRepository: Symbol('noctownEventParticipationsRepository'),
 	noctownUniqueItemsRepository: Symbol('noctownUniqueItemsRepository'),
 	noctownRankingBoardsRepository: Symbol('noctownRankingBoardsRepository'),
+	noctownChatLogsRepository: Symbol('noctownChatLogsRepository'),
+	noctownChatLogRecipientsRepository: Symbol('noctownChatLogRecipientsRepository'),
 	//#endregion
 };
