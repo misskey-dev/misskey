@@ -412,7 +412,9 @@ export class FarmRenderer {
 	}
 
 	/**
-	 * Update animations for all farms.
+	 * T045-T046: Update animations for all farms.
+	 * - 全作物: 軽い揺れアニメーション
+	 * - 収穫可能な作物(growthStage=4): 上下に揺れる動き（ユーザーに収穫可能を知らせる）
 	 */
 	public update(): void {
 		const delta = this.clock.getDelta();
@@ -425,6 +427,13 @@ export class FarmRenderer {
 					const offset = i * 0.1;
 					crop.rotation.x = Math.sin(elapsed * 1.5 + offset) * 0.05;
 					crop.rotation.z = Math.cos(elapsed * 1.2 + offset) * 0.03;
+
+					// T046: 収穫可能な作物は上下に揺れる動きを追加
+					if (farm.growthStage >= 4) {
+						const baseY = crop.userData.baseY ?? crop.position.y;
+						crop.userData.baseY = baseY;
+						crop.position.y = baseY + Math.sin(elapsed * 3 + offset) * 0.05;
+					}
 				}
 			});
 		}

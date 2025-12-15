@@ -73,22 +73,24 @@ export class PetManager {
 
 		if (pet.type === 'chicken') {
 			// 鶏を作成（色はランダム）
+			// サイズ1.2: プレイヤーモデルとのバランスを考慮
 			const colors = ['white', 'brown', 'black', 'golden', 'spotted'] as const;
 			const color = colors[Math.floor(Math.random() * colors.length)];
 			this.chickenRenderer.createChicken(pet.id, {
 				position,
 				color,
 				isRooster: Math.random() < 0.3, // 30%の確率でオンドリ
-				size: 0.8,
+				size: 1.2,
 			});
 		} else {
 			// 牛を作成（色はランダム）
+			// サイズ1.4: プレイヤーモデルとのバランスを考慮（牛は鶏より大きめ）
 			const colors = ['holsteinBW', 'holsteinRW', 'jersey', 'angus', 'highland'] as const;
 			const color = colors[Math.floor(Math.random() * colors.length)];
 			this.cowRenderer.createCow(pet.id, {
 				position,
 				color,
-				size: 0.8,
+				size: 1.4,
 			});
 		}
 

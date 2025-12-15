@@ -24,6 +24,8 @@ export const meta = {
 				itemId: { type: 'string' },
 				itemName: { type: 'string' },
 				itemType: { type: 'string' },
+				imageUrl: { type: 'string', nullable: true },
+				rarity: { type: 'number' },
 				quantity: { type: 'number' },
 				acquiredAt: { type: 'string', format: 'date-time' },
 			},
@@ -68,6 +70,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						itemId: pi.itemId,
 						itemName: item?.name ?? 'Unknown',
 						itemType: item?.itemType ?? 'normal',
+						imageUrl: item?.imageUrl ?? null,
+						rarity: item?.rarity ?? 0,
 						quantity: pi.quantity,
 						acquiredAt: pi.acquiredAt.toISOString(),
 					};

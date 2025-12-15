@@ -385,7 +385,8 @@ export class CowRenderer {
 						cow.group.position.z += direction.z * cow.walkSpeed * delta;
 
 						// Face walking direction
-						cow.group.rotation.y = Math.atan2(direction.x, direction.z);
+						// 牛のモデルはX+方向が正面なので、-90度（-PI/2）のオフセットが必要
+						cow.group.rotation.y = Math.atan2(direction.x, direction.z) - Math.PI / 2;
 					} else {
 						cow.state = 'idle';
 						cow.legs.forEach(leg => { leg.rotation.x = 0; });

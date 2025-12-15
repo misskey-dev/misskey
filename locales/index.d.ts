@@ -11612,6 +11612,122 @@ export interface Locale extends ILocale {
          * エサがありません
          */
         "noFeedItems": string;
+        /**
+         * 釣り
+         */
+        "fishing": string;
+        /**
+         * 釣りをする
+         */
+        "goFishing": string;
+        /**
+         * 釣り中...
+         */
+        "fishingInProgress": string;
+        /**
+         * を釣り上げた！
+         */
+        "fishCaught": string;
+        /**
+         * 釣りに失敗しました
+         */
+        "fishingFailed": string;
+        /**
+         * 水辺に近づいてください
+         */
+        "goNearWater": string;
+        /**
+         * 水辺の近くではありません
+         */
+        "notNearWater": string;
+        /**
+         * 魚を待っています...
+         */
+        "waitingForFish": string;
+        /**
+         * 釣りをキャンセルしました
+         */
+        "fishingCancelled": string;
+        /**
+         * ステータス
+         */
+        "farmStatus": string;
+        /**
+         * 種まき
+         */
+        "actionPlant": string;
+        /**
+         * 水やり
+         */
+        "actionWater": string;
+        /**
+         * 収穫
+         */
+        "actionHarvest": string;
+        /**
+         * 釣り
+         */
+        "actionFish": string;
+        /**
+         * アクションを選択
+         */
+        "selectAction": string;
+        /**
+         * 池の近く
+         */
+        "nearPond": string;
+        /**
+         * 湖の近く
+         */
+        "nearLake": string;
+        /**
+         * 畑の近く
+         */
+        "nearFarmPlot": string;
+        /**
+         * 釣り竿が必要です
+         */
+        "needFishingRod": string;
+        /**
+         * すでに釣りをしています
+         */
+        "alreadyFishing": string;
+        /**
+         * 早すぎた！魚がまだ食いついていない...
+         */
+        "tooEarly": string;
+        /**
+         * 遅すぎた！魚に逃げられた...
+         */
+        "tooLate": string;
+        /**
+         * 釣りセッションが見つかりません
+         */
+        "fishingSessionNotFound": string;
+        /**
+         * 作物が見つかりません
+         */
+        "cropNotFound": string;
+        /**
+         * まだ収穫できません
+         */
+        "cropNotReady": string;
+        /**
+         * 畑が見つかりません
+         */
+        "plotNotFound": string;
+        /**
+         * この畑には既に作物があります
+         */
+        "plotHasCrop": string;
+        /**
+         * 種が見つかりません
+         */
+        "seedNotFound": string;
+        /**
+         * 作物が枯れてしまいました
+         */
+        "cropWithered": string;
     };
     "_offlineScreen": {
         /**

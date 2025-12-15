@@ -1277,6 +1277,8 @@ function showEmotion(item: EmotionEmoji): void {
 function handleFarmUpdated(): void {
 	// Refresh nearby items when farm is updated
 	loadNearbyItems(currentX.value, currentZ.value);
+	// Refresh nearby pets when chicken/cow is placed
+	loadNearbyPets(currentX.value, currentZ.value);
 }
 
 /**

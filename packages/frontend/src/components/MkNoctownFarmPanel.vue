@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkModalWindow
 	ref="dialog"
 	:width="500"
-	:height="600"
+	:height="650"
 	@close="close()"
 	@closed="emit('closed')"
 >
@@ -16,6 +16,50 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</template>
 
 	<div class="_gaps_m" style="padding: 16px;">
+		<!-- Status Section -->
+		<div v-if="statusMessage" class="status-section" :class="{ error: isStatusError }">
+			<i :class="statusIcon"></i>
+			<span>{{ statusMessage }}</span>
+		</div>
+
+		<!-- Fishing Section -->
+		<div class="section">
+			<div class="section-header">
+				<span><i class="ti ti-fish"></i> {{ i18n.ts._noctown.fishing }}</span>
+			</div>
+
+			<div class="fishing-content">
+				<div class="location-info">
+					<span v-if="nearWater" class="near-water">
+						<i class="ti ti-droplet-filled"></i>
+						{{ nearWater === 'pond' ? i18n.ts._noctown.nearPond : i18n.ts._noctown.nearLake }}
+					</span>
+					<span v-else class="not-near-water">
+						<i class="ti ti-droplet-off"></i>
+						{{ i18n.ts._noctown.notNearWater }}
+					</span>
+				</div>
+
+				<MkButton
+					:class="['fishing-btn', { active: isFishing }]"
+					:disabled="!nearWater || isFishing"
+					primary
+					@click="startFishing"
+				>
+					<i v-if="isFishing" class="ti ti-loader-2 spinning"></i>
+					<i v-else class="ti ti-fish"></i>
+					{{ isFishing ? i18n.ts._noctown.fishingInProgress : i18n.ts._noctown.goFishing }}
+				</MkButton>
+
+				<div v-if="isFishing" class="fishing-progress">
+					<div class="progress-bar">
+						<div class="progress-fill" :style="{ width: fishingProgress + '%' }"></div>
+					</div>
+					<span class="progress-text">{{ i18n.ts._noctown.waitingForFish }}</span>
+				</div>
+			</div>
+		</div>
+
 		<!-- Farm Plots Section -->
 		<div class="section">
 			<div class="section-header">
@@ -235,7 +279,29 @@ const seedItems = ref<InventoryItem[]>([]);
 const showPlantModal = ref(false);
 const selectedPlotId = ref<string | null>(null);
 
+// 釣り関連の状態
+// nearWater: プレイヤーが水辺（池・湖）の近くにいるかどうか
+// isFishing: 釣りアクション実行中かどうか
+// fishingProgress: 釣りの進行度（0-100%）
+// statusMessage: ステータス表示メッセージ
+// isStatusError: エラーメッセージかどうか
+const nearWater = ref<'pond' | 'lake' | null>(null);
+const isFishing = ref(false);
+const fishingProgress = ref(0);
+const statusMessage = ref<string | null>(null);
+const isStatusError = ref(false);
+const statusIcon = ref('ti ti-info-circle');
+let fishingTimer: ReturnType<typeof setInterval> | null = null;
+
+// 釣り竿を所持しているかチェック
+// 釣りアクションは釣り竿アイテムを所持している場合のみ実行可能
+const hasFishingRod = ref(false);
+
 function close() {
+	// 釣り中ならキャンセル
+	if (isFishing.value) {
+		cancelFishing();
+	}
 	dialog.value?.close();
 }
 
@@ -269,9 +335,167 @@ async function loadFarmData() {
 			item.itemName.includes('seed') || item.itemName.includes('Seed') ||
 			item.itemName.includes('種') || item.itemType === 'seed'
 		);
+
+		// 釣り竿を所持しているかチェック
+		hasFishingRod.value = inventoryRes.some((item: InventoryItem) =>
+			item.itemName.includes('釣り竿') || item.itemName.includes('竿') ||
+			item.itemName.includes('fishing rod') || item.itemType === 'tool'
+		);
 	} catch (err) {
 		console.error('Failed to load farm data:', err);
 	}
+}
+
+// 水辺の近接チェック（プレイヤー座標から判定）
+// 現時点ではAPIがないため、フロントエンドでシンプルに判定
+// 将来的にはマップデータからの判定APIに置き換え予定
+function checkNearWater() {
+	// フォールバック: プレイヤー座標に基づいて簡易判定
+	// 座標が偶数チャンク内にあれば池の近くと仮定（デモ用）
+	const chunkX = Math.floor(props.playerX / 16);
+	const chunkZ = Math.floor(props.playerZ / 16);
+	if ((chunkX + chunkZ) % 3 === 0) {
+		nearWater.value = 'pond';
+	} else if ((chunkX + chunkZ) % 5 === 0) {
+		nearWater.value = 'lake';
+	} else {
+		nearWater.value = null;
+	}
+}
+
+// 釣り開始時のセッション情報
+let fishingWaitTime = 0;
+let fishingStartTime = 0;
+
+// 釣りを開始
+// cast APIでサーバー側にセッションを作成し、サーバーが決めた待機時間を取得
+// 待機時間経過後にcatch APIを呼び出して魚を釣り上げる
+async function startFishing() {
+	if (!nearWater.value) {
+		showStatus(i18n.ts._noctown.goNearWater, true);
+		return;
+	}
+
+	if (!hasFishingRod.value) {
+		showStatus(i18n.ts._noctown.needFishingRod, true);
+		return;
+	}
+
+	try {
+		// まずcast APIで釣りセッションを開始
+		const castResult = await misskeyApi('noctown/fishing/cast', {
+			pondX: props.playerX,
+			pondZ: props.playerZ,
+		});
+
+		if (!castResult.success) {
+			showStatus(i18n.ts._noctown.fishingFailed, true);
+			return;
+		}
+
+		// サーバーから返された待機時間を使用
+		fishingWaitTime = castResult.waitTime;
+		fishingStartTime = Date.now();
+
+		isFishing.value = true;
+		fishingProgress.value = 0;
+		showStatus(i18n.ts._noctown.waitingForFish, false);
+
+		// サーバー指定の待機時間でプログレスバーを更新
+		fishingTimer = setInterval(() => {
+			const elapsed = Date.now() - fishingStartTime;
+			fishingProgress.value = Math.min(100, (elapsed / fishingWaitTime) * 100);
+
+			if (elapsed >= fishingWaitTime) {
+				completeFishing();
+			}
+		}, 100);
+	} catch (err: unknown) {
+		// エラーハンドリング
+		if (err && typeof err === 'object' && 'code' in err) {
+			const error = err as { code: string };
+			if (error.code === 'NO_FISHING_ROD') {
+				showStatus(i18n.ts._noctown.needFishingRod, true);
+			} else if (error.code === 'NOT_AT_FISHING_SPOT') {
+				showStatus(i18n.ts._noctown.goNearWater, true);
+			} else if (error.code === 'ALREADY_FISHING') {
+				showStatus(i18n.ts._noctown.alreadyFishing, true);
+			} else {
+				showStatus(i18n.ts._noctown.fishingFailed, true);
+			}
+		} else {
+			showStatus(i18n.ts._noctown.fishingFailed, true);
+		}
+	}
+}
+
+// 釣り完了
+// catch APIを呼び出して魚を釣り上げる
+// タイミングが早すぎる(TOO_EARLY)か遅すぎる(TOO_LATE)場合はエラーになる
+async function completeFishing() {
+	if (fishingTimer) {
+		clearInterval(fishingTimer);
+		fishingTimer = null;
+	}
+
+	try {
+		// 釣りcatch APIを呼び出し（パラメータ不要、サーバー側でセッション管理）
+		const result = await misskeyApi('noctown/fishing/catch', {});
+
+		// APIレスポンスはitem形式: { success, caught, item: { id, name, rarity, flavorText }, message }
+		const fishName = result.item?.name || '魚';
+		// サーバーからのメッセージがあればそれを使用、なければデフォルト
+		const message = result.message || `${fishName}${i18n.ts._noctown.fishCaught}`;
+		showStatus(message, false);
+		statusIcon.value = 'ti ti-fish';
+
+		emit('farmUpdated');
+		await loadFarmData();
+	} catch (err: unknown) {
+		// エラーコードに応じたハンドリング
+		if (err && typeof err === 'object' && 'code' in err) {
+			const error = err as { code: string };
+			if (error.code === 'TOO_EARLY') {
+				showStatus(i18n.ts._noctown.tooEarly, true);
+			} else if (error.code === 'TOO_LATE') {
+				showStatus(i18n.ts._noctown.tooLate, true);
+			} else if (error.code === 'NOT_FISHING') {
+				showStatus(i18n.ts._noctown.fishingSessionNotFound, true);
+			} else {
+				showStatus(i18n.ts._noctown.fishingFailed, true);
+			}
+		} else {
+			showStatus(i18n.ts._noctown.fishingFailed, true);
+		}
+	} finally {
+		isFishing.value = false;
+		fishingProgress.value = 0;
+	}
+}
+
+// 釣りをキャンセル
+function cancelFishing() {
+	if (fishingTimer) {
+		clearInterval(fishingTimer);
+		fishingTimer = null;
+	}
+	isFishing.value = false;
+	fishingProgress.value = 0;
+	showStatus(i18n.ts._noctown.fishingCancelled, false);
+}
+
+// ステータスメッセージを表示
+function showStatus(message: string, isError: boolean) {
+	statusMessage.value = message;
+	isStatusError.value = isError;
+	statusIcon.value = isError ? 'ti ti-alert-circle' : 'ti ti-info-circle';
+
+	// 3秒後にメッセージをクリア
+	setTimeout(() => {
+		if (statusMessage.value === message) {
+			statusMessage.value = null;
+		}
+	}, 3000);
 }
 
 async function createPlot() {
@@ -455,10 +679,117 @@ async function collectMilk(cowId: string) {
 
 onMounted(() => {
 	loadFarmData();
+	checkNearWater();
 });
 </script>
 
 <style lang="scss" scoped>
+// ステータスメッセージセクション
+.status-section {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 10px 12px;
+	border-radius: 6px;
+	background: var(--infoWarnBg);
+	color: var(--infoWarnFg);
+	font-size: 0.9em;
+
+	&.error {
+		background: var(--errorBg);
+		color: var(--error);
+	}
+
+	i {
+		font-size: 1.1em;
+	}
+}
+
+// 釣りセクション内のコンテンツ
+.fishing-content {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+// 水辺の近接情報
+.location-info {
+	display: flex;
+	align-items: center;
+	padding: 8px 12px;
+	border-radius: 6px;
+	background: var(--panel);
+	font-size: 0.9em;
+
+	.near-water {
+		color: var(--accent);
+		display: flex;
+		align-items: center;
+		gap: 6px;
+
+		i {
+			color: #3b82f6;
+		}
+	}
+
+	.not-near-water {
+		color: var(--fgTransparent);
+		display: flex;
+		align-items: center;
+		gap: 6px;
+	}
+}
+
+// 釣りボタン
+.fishing-btn {
+	width: 100%;
+
+	&.active {
+		background: var(--accentedBg);
+	}
+}
+
+// スピニングアニメーション
+@keyframes spin {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.spinning {
+	animation: spin 1s linear infinite;
+}
+
+// 釣りの進行バー
+.fishing-progress {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+
+	.progress-bar {
+		height: 8px;
+		background: var(--panel);
+		border-radius: 4px;
+		overflow: hidden;
+	}
+
+	.progress-fill {
+		height: 100%;
+		background: linear-gradient(90deg, #3b82f6, #60a5fa);
+		border-radius: 4px;
+		transition: width 0.1s linear;
+	}
+
+	.progress-text {
+		font-size: 0.85em;
+		color: var(--fgTransparent);
+		text-align: center;
+	}
+}
+
 .section {
 	border: 1px solid var(--divider);
 	border-radius: 8px;

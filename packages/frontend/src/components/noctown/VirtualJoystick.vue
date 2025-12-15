@@ -196,6 +196,7 @@ onUnmounted(() => {
 	-webkit-user-select: none;
 }
 
+/* ジョイスティックのベース部分（外側の円） - 選択不可 */
 .base {
 	width: 100%;
 	height: 100%;
@@ -206,8 +207,12 @@ onUnmounted(() => {
 	align-items: center;
 	justify-content: center;
 	position: relative;
+	user-select: none;
+	-webkit-user-select: none;
+	-webkit-touch-callout: none;
 }
 
+/* ジョイスティックのノブ部分（中央の操作円） - 選択不可 */
 .knob {
 	width: 50px;
 	height: 50px;
@@ -215,5 +220,8 @@ onUnmounted(() => {
 	background: rgba(255, 255, 255, 0.8);
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 	position: absolute;
+	user-select: none;
+	-webkit-user-select: none;
+	-webkit-touch-callout: none;
 }
 </style>

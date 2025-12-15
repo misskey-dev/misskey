@@ -1022,6 +1022,9 @@ export class NoctownService {
 		return { success: true, plotId };
 	}
 
+	// T041-T042: 作物取得時に時間経過による成長状態を自動判定
+	// growthTime: 作物ごとの成長時間（秒）、デフォルト300秒（5分）
+	// 水レベルが50以上なら成長速度2倍
 	@bindThis
 	public async getPlayerFarmPlots(playerId: string): Promise<Array<{
 		id: string;
@@ -1043,22 +1046,97 @@ export class NoctownService {
 		const result = [];
 		for (const plot of plots) {
 			const crop = await this.noctownCropsRepository.findOneBy({ plotId: plot.id });
-			result.push({
-				id: plot.id,
-				positionX: plot.positionX,
-				positionY: plot.positionY,
-				positionZ: plot.positionZ,
-				size: plot.size,
-				crop: crop ? {
-					id: crop.id,
-					stage: crop.stage as NoctownCropStage,
-					waterLevel: crop.waterLevel,
-					growthProgress: crop.growthProgress,
-				} : null,
-			});
+
+			if (crop && crop.stage !== 'harvestable' && crop.stage !== 'withered') {
+				// T041: 時間経過による成長判定
+				await this.updateCropGrowthByTime(crop.id);
+				// 更新後の作物データを再取得
+				const updatedCrop = await this.noctownCropsRepository.findOneBy({ id: crop.id });
+				result.push({
+					id: plot.id,
+					positionX: plot.positionX,
+					positionY: plot.positionY,
+					positionZ: plot.positionZ,
+					size: plot.size,
+					crop: updatedCrop ? {
+						id: updatedCrop.id,
+						stage: updatedCrop.stage as NoctownCropStage,
+						waterLevel: updatedCrop.waterLevel,
+						growthProgress: updatedCrop.growthProgress,
+					} : null,
+				});
+			} else {
+				result.push({
+					id: plot.id,
+					positionX: plot.positionX,
+					positionY: plot.positionY,
+					positionZ: plot.positionZ,
+					size: plot.size,
+					crop: crop ? {
+						id: crop.id,
+						stage: crop.stage as NoctownCropStage,
+						waterLevel: crop.waterLevel,
+						growthProgress: crop.growthProgress,
+					} : null,
+				});
+			}
 		}
 
 		return result;
+	}
+
+	// T041-T042: 時間経過による成長更新
+	// 植えてからの経過時間に基づいて成長進度を計算
+	// DEFAULT_GROWTH_TIME_SECONDS: 完全成長までの時間（秒）
+	@bindThis
+	private async updateCropGrowthByTime(cropId: string): Promise<void> {
+		const crop = await this.noctownCropsRepository.findOneBy({ id: cropId });
+		if (!crop || crop.stage === 'harvestable' || crop.stage === 'withered') return;
+
+		const DEFAULT_GROWTH_TIME_SECONDS = 300; // 5分で完全成長
+		const now = Date.now();
+		const plantedTime = new Date(crop.plantedAt).getTime();
+		const elapsedSeconds = (now - plantedTime) / 1000;
+
+		// 水レベルが50以上なら成長速度2倍
+		const growthMultiplier = crop.waterLevel >= 50 ? 2 : 1;
+		const effectiveElapsed = elapsedSeconds * growthMultiplier;
+
+		// 成長進度を計算（0-100）
+		const newProgress = Math.min(100, Math.floor((effectiveElapsed / DEFAULT_GROWTH_TIME_SECONDS) * 100));
+
+		// 進度が変わっていなければ更新不要
+		if (newProgress <= crop.growthProgress) return;
+
+		// 水レベルが0になったら枯れる
+		if (crop.waterLevel <= 0 && elapsedSeconds > 60) {
+			await this.noctownCropsRepository.update(cropId, {
+				stage: 'withered',
+			});
+			return;
+		}
+
+		// 時間経過で水レベルを減少（1分ごとに5減少）
+		const waterDecay = Math.floor(elapsedSeconds / 60) * 5;
+		const newWaterLevel = Math.max(0, crop.waterLevel - waterDecay);
+
+		// 成長段階を判定
+		let newStage: NoctownCropStage = crop.stage as NoctownCropStage;
+		if (newProgress >= 100) {
+			newStage = 'harvestable';
+		} else if (newProgress >= 75) {
+			newStage = 'mature';
+		} else if (newProgress >= 50) {
+			newStage = 'growing';
+		} else if (newProgress >= 25) {
+			newStage = 'sprout';
+		}
+
+		await this.noctownCropsRepository.update(cropId, {
+			growthProgress: newProgress,
+			stage: newStage,
+			waterLevel: newWaterLevel,
+		});
 	}
 
 	@bindThis

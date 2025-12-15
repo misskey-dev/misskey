@@ -68,6 +68,7 @@ export class Character {
 	private emoteTimer: number = 0;
 	private emoteDuration: number = 2.0;
 	private emoteScale: number = 0;
+	private lastEmoteKey: string = ''; // 前回表示した絵文字のキー（emoji + url）
 
 	// Chat bubble sprite
 	private chatSprite!: THREE.Sprite;
@@ -585,8 +586,18 @@ export class Character {
 		// 仕様: スケールも即座にリセットして小さい状態から開始
 		this.emoteSprite.scale.set(0, 0, 1);
 
-		// Draw bubble background first
-		this.drawEmoteBubble();
+		// 仕様: 前回と異なる絵文字の場合のみキャンバスをクリア
+		// 同じ絵文字の連打時は前回の表示をそのまま使用（画像ロード待ち中の空白表示を防ぐ）
+		const currentEmoteKey = url || emoji;
+		const isSameEmote = this.lastEmoteKey === currentEmoteKey;
+		this.lastEmoteKey = currentEmoteKey;
+
+		if (!isSameEmote) {
+			// 異なる絵文字の場合: キャンバスをクリアして吹き出し背景のみを描画
+			this.emoteContext.clearRect(0, 0, 128, 128);
+			this.drawEmoteBubble();
+			this.emoteTexture.needsUpdate = true;
+		}
 
 		if (isCustom && url) {
 			// T015: Custom emoji - load and draw image
@@ -599,7 +610,9 @@ export class Character {
 				// 仕様: カスタム絵文字を吹き出しの中央（64, 54）に描画
 				// 48x48の画像なので、左上座標は(64-24, 54-24) = (40, 30)
 				// iOSの場合はオフセット0、それ以外は4
-				const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+				// iPadOS 13+はUserAgentが「Macintosh」と報告されるため、ontouchendで判定
+				const ua = navigator.userAgent.toLowerCase();
+				const isIOS = /ipad|iphone|ipod/.test(ua) || (ua.indexOf('macintosh') > -1 && 'ontouchend' in document);
 				const offset = isIOS ? 0 : 4;
 				const drawX = 64 - 24;
 				const drawY = 54 - 24 + offset;
@@ -665,7 +678,9 @@ export class Character {
 		this.emoteContext.textBaseline = 'middle';
 		// 仕様: iOSとそれ以外でY座標オフセットを調整
 		// iOSの場合は0、それ以外は4
-		const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+		// iPadOS 13+はUserAgentが「Macintosh」と報告されるため、ontouchendで判定
+		const ua = navigator.userAgent.toLowerCase();
+		const isIOS = /ipad|iphone|ipod/.test(ua) || (ua.indexOf('macintosh') > -1 && 'ontouchend' in document);
 		const offset = isIOS ? 0 : 4;
 		this.emoteContext.fillText(emoji, 64, 54 + offset);
 		this.emoteTexture.needsUpdate = true;

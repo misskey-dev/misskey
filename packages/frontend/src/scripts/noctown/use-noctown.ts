@@ -7,13 +7,47 @@ import { ref, onMounted, onUnmounted, type Ref } from 'vue';
 import { useStream } from '@/stream.js';
 import { NoctownEngine, type PlayerData, type ChunkData } from './engine.js';
 
+// T015: インベントリアイテムの型定義
+export interface InventoryItem {
+	id: string;
+	itemId: string;
+	itemName: string;
+	itemType: string;
+	imageUrl: string | null;
+	rarity: number;
+	quantity: number;
+	acquiredAt: string;
+}
+
+// T017: ファームアクションの種類
+export type FarmActionType = 'fish' | 'plant' | 'water' | 'harvest';
+
+// T017: ファームアクション結果の型定義
+export interface FarmActionResult {
+	success: boolean;
+	message: string;
+	item?: {
+		id: string;
+		name: string;
+		rarity: number;
+	} | null;
+}
+
 export interface NoctownState {
 	isConnected: Ref<boolean>;
 	isLoading: Ref<boolean>;
 	error: Ref<string | null>;
 	playerData: Ref<PlayerData | null>;
+	// T015: インベントリ状態
+	inventory: Ref<InventoryItem[]>;
+	// プレイヤー座標を公開（FarmPanel等で使用）
+	playerPosition: Ref<{ x: number; y: number; z: number }>;
 	// FR-014: エモーション/チャット時に表示中プレイヤーにPingを送信
 	sendPingToVisiblePlayers: () => void;
+	// T016: インベントリを取得
+	fetchInventory: () => Promise<void>;
+	// T017: ファームアクションを実行
+	performFarmAction: (action: FarmActionType, params?: Record<string, unknown>) => Promise<FarmActionResult>;
 }
 
 interface NoctownPlayerResponse {
@@ -105,8 +139,8 @@ export function isDesktopDevice(): boolean {
 	const isLinuxDesktop = linuxDesktopRegex.test(userAgent);
 	const isChromeOs = chromeOsRegex.test(userAgent);
 
-	// Mac with touch support is iPad (iPadOS 13+), not desktop
-	const isMacWithTouch = isMac && navigator.maxTouchPoints > 1;
+	// 仕様: iPadOS 13+はUserAgentが「Macintosh」と報告されるため、ontouchendとmaxTouchPointsで判定
+	const isMacWithTouch = isMac && ('ontouchend' in document || navigator.maxTouchPoints > 1);
 
 	// Return true for desktop OS, but exclude Mac with touch (iPad)
 	return (isWindows || (isMac && !isMacWithTouch) || isLinuxDesktop || isChromeOs);
@@ -126,8 +160,8 @@ export function isMobileDevice(): boolean {
 	// Mobile phone patterns
 	const mobileRegex = /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i;
 
-	// iPadOS 13+ detection: Safari on iPad reports as "Macintosh" but has touch support
-	const isMacWithTouch = /Macintosh/i.test(userAgent) && navigator.maxTouchPoints > 1;
+	// 仕様: iPadOS 13+はUserAgentが「Macintosh」と報告されるため、ontouchendとmaxTouchPointsで判定
+	const isMacWithTouch = /Macintosh/i.test(userAgent) && ('ontouchend' in document || navigator.maxTouchPoints > 1);
 
 	// Return true for tablets, mobile phones, or iPadOS devices
 	// Note: Screen width condition removed to support tablets with larger screens (768px+)
@@ -160,8 +194,8 @@ export async function hasPhysicalKeyboard(): Promise<boolean> {
 	// Tablet patterns
 	const tabletRegex = /iPad|Android.*Tablet|Kindle|Silk|PlayBook|BB10.*Touch/i;
 
-	// iPadOS 13+ detection
-	const isMacWithTouch = /Macintosh/i.test(userAgent) && navigator.maxTouchPoints > 1;
+	// 仕様: iPadOS 13+はUserAgentが「Macintosh」と報告されるため、ontouchendとmaxTouchPointsで判定
+	const isMacWithTouch = /Macintosh/i.test(userAgent) && ('ontouchend' in document || navigator.maxTouchPoints > 1);
 
 	// If it's a tablet or iPadOS device, assume no physical keyboard (conservative default)
 	const isTablet = tabletRegex.test(userAgent) || isMacWithTouch;
@@ -175,6 +209,10 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 	const isLoading = ref(true);
 	const error = ref<string | null>(null);
 	const playerData = ref<PlayerData | null>(null);
+	// T015: インベントリ状態
+	const inventory = ref<InventoryItem[]>([]);
+	// プレイヤー座標を公開（FarmPanel等で使用）
+	const playerPosition = ref({ x: 0, y: 0, z: 0 });
 
 	let engine: NoctownEngine | null = null;
 	let stream: ReturnType<typeof useStream> | null = null;
@@ -242,6 +280,8 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 			currentY = data.positionY;
 			currentZ = data.positionZ;
 			currentRotation = data.rotation;
+			// プレイヤー座標を公開用refに反映
+			playerPosition.value = { x: currentX, y: currentY, z: currentZ };
 
 			// Initialize engine
 			if (containerRef.value) {
@@ -547,6 +587,74 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 		}, 30000); // 30 seconds
 	}
 
+	// T016: インベントリを取得
+	async function fetchInventory(): Promise<void> {
+		try {
+			const res = await window.fetch('/api/noctown/item/inventory', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				credentials: 'same-origin',
+				body: JSON.stringify({ i: getToken() }),
+			});
+
+			if (res.ok) {
+				inventory.value = await res.json();
+			}
+		} catch (e) {
+			console.error('Failed to fetch inventory:', e);
+		}
+	}
+
+	// T017: ファームアクションを実行
+	// action: 'fish' | 'plant' | 'water' | 'harvest'
+	// params: アクション固有のパラメータ（例: plantの場合はseedItemId）
+	async function performFarmAction(action: FarmActionType, params?: Record<string, unknown>): Promise<FarmActionResult> {
+		const endpoints: Record<FarmActionType, string> = {
+			fish: '/api/noctown/fishing/catch',
+			plant: '/api/noctown/farm/plant',
+			water: '/api/noctown/farm/water',
+			harvest: '/api/noctown/farm/harvest',
+		};
+
+		try {
+			const res = await window.fetch(endpoints[action], {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				credentials: 'same-origin',
+				body: JSON.stringify({
+					i: getToken(),
+					x: currentX,
+					z: currentZ,
+					...params,
+				}),
+			});
+
+			if (!res.ok) {
+				const errorData = await res.json().catch(() => ({}));
+				return {
+					success: false,
+					message: errorData.error?.message || 'アクションに失敗しました',
+				};
+			}
+
+			const data = await res.json();
+			// アクション成功後、インベントリを更新
+			await fetchInventory();
+
+			return {
+				success: true,
+				message: data.message || 'アクションが完了しました',
+				item: data.item || null,
+			};
+		} catch (e) {
+			console.error(`Failed to perform farm action ${action}:`, e);
+			return {
+				success: false,
+				message: 'ネットワークエラーが発生しました',
+			};
+		}
+	}
+
 	// T036-T037: Load nearby chunks using WebSocket chunk generation
 	async function loadNearbyChunks(x: number, z: number): Promise<void> {
 		if (!channel || !isConnected.value || !worldId) return;
@@ -604,6 +712,9 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 
 			// Update engine
 			engine.updateLocalPlayerPosition(currentX, currentY, currentZ, currentRotation);
+
+			// プレイヤー座標を公開用refに反映
+			playerPosition.value = { x: currentX, y: currentY, z: currentZ };
 
 			// Send to server (throttled)
 			const now = Date.now();
@@ -690,7 +801,15 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 		isLoading,
 		error,
 		playerData,
+		// T015: インベントリ状態
+		inventory,
+		// プレイヤー座標を公開（FarmPanel等で使用）
+		playerPosition,
 		// FR-014: エモーション/チャット時に表示中プレイヤーにPingを送信
 		sendPingToVisiblePlayers,
+		// T016: インベントリを取得
+		fetchInventory,
+		// T017: ファームアクションを実行
+		performFarmAction,
 	};
 }

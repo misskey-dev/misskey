@@ -494,29 +494,76 @@ export class NoctownEngine {
 		chunkGroup.add(gridHelper);
 
 		// FR-001: terrainDataに基づいて地形を生成
+		// 池・湖は連続領域の中心に1つだけ配置する（重複生成を防ぐ）
 		if (chunkData.terrainData && Array.isArray(chunkData.terrainData)) {
 			const { createPondMesh } = await import('./pond.js');
 			const { createLakeMesh } = await import('./lake.js');
 			const { createFarmPlotMesh } = await import('./farm-plot.js');
 
+			// 池・湖の領域を検出して中心座標を計算
+			const processedTiles = new Set<string>();
+			const findTerrainCenter = (startX: number, startZ: number, targetType: number): { centerX: number; centerZ: number } | null => {
+				const tiles: Array<{ x: number; z: number }> = [];
+				const stack: Array<{ x: number; z: number }> = [{ x: startX, z: startZ }];
+
+				while (stack.length > 0) {
+					const { x, z } = stack.pop()!;
+					const key = `${x},${z}`;
+					if (processedTiles.has(key)) continue;
+					if (x < 0 || x >= CHUNK_SIZE || z < 0 || z >= CHUNK_SIZE) continue;
+					if (chunkData.terrainData[x * CHUNK_SIZE + z] !== targetType) continue;
+
+					processedTiles.add(key);
+					tiles.push({ x, z });
+
+					// 4方向を探索
+					stack.push({ x: x + 1, z });
+					stack.push({ x: x - 1, z });
+					stack.push({ x, z: z + 1 });
+					stack.push({ x, z: z - 1 });
+				}
+
+				if (tiles.length === 0) return null;
+
+				// 中心座標を計算
+				const sumX = tiles.reduce((sum, t) => sum + t.x, 0);
+				const sumZ = tiles.reduce((sum, t) => sum + t.z, 0);
+				return {
+					centerX: sumX / tiles.length,
+					centerZ: sumZ / tiles.length,
+				};
+			};
+
 			// terrainDataを走査して地形タイプに応じたメッシュを追加
 			for (let x = 0; x < CHUNK_SIZE; x++) {
 				for (let z = 0; z < CHUNK_SIZE; z++) {
 					const terrainType = chunkData.terrainData[x * CHUNK_SIZE + z];
-					const worldX = offsetX + x;
-					const worldZ = offsetZ + z;
-					const seed = worldX * 1000 + worldZ;
+					const tileKey = `${x},${z}`;
 
-					if (terrainType === 1) {
-						// FR-001: 池を生成（chunkGroupに追加してリロード時に削除されるようにする）
-						const pond = createPondMesh(worldX, worldZ, seed);
-						chunkGroup.add(pond);
-					} else if (terrainType === 2) {
-						// FR-001: 湖を生成（chunkGroupに追加してリロード時に削除されるようにする）
-						const lake = createLakeMesh(worldX, worldZ, seed);
-						chunkGroup.add(lake);
+					if (terrainType === 1 && !processedTiles.has(tileKey)) {
+						// FR-001: 池領域の中心に1つだけ生成
+						const center = findTerrainCenter(x, z, 1);
+						if (center) {
+							const worldX = offsetX + center.centerX;
+							const worldZ = offsetZ + center.centerZ;
+							const seed = Math.floor(worldX) * 1000 + Math.floor(worldZ);
+							const pond = createPondMesh(worldX, worldZ, seed);
+							chunkGroup.add(pond);
+						}
+					} else if (terrainType === 2 && !processedTiles.has(tileKey)) {
+						// FR-001: 湖領域の中心に1つだけ生成
+						const center = findTerrainCenter(x, z, 2);
+						if (center) {
+							const worldX = offsetX + center.centerX;
+							const worldZ = offsetZ + center.centerZ;
+							const seed = Math.floor(worldX) * 1000 + Math.floor(worldZ);
+							const lake = createLakeMesh(worldX, worldZ, seed);
+							chunkGroup.add(lake);
+						}
 					} else if (terrainType === 3) {
-						// FR-001: 農園プロットを生成（chunkGroupに追加してリロード時に削除されるようにする）
+						// FR-001: 農園プロットはタイルごとに生成
+						const worldX = offsetX + x;
+						const worldZ = offsetZ + z;
 						const farmPlot = createFarmPlotMesh(worldX, worldZ);
 						chunkGroup.add(farmPlot.group);
 					}
@@ -1030,35 +1077,10 @@ export class NoctownEngine {
 		group.add(gridHelper);
 
 		// Check if terrainData is an array (new format) or object (old format)
+		// 注意: 池・湖・農園プロットの生成はrenderChunk()で行うため、ここでは行わない
 		if (Array.isArray(data.terrainData)) {
 			// New format: terrainData is number[] (地形タイプ配列)
-			const terrainTypes = data.terrainData;
-
-			for (let i = 0; i < terrainTypes.length; i++) {
-				const terrainType = terrainTypes[i];
-				const localX = i % 16;
-				const localZ = Math.floor(i / 16);
-
-				// seed値の計算（チャンク座標から決定論的に生成）
-				const worldX = data.chunkX * 16 + localX;
-				const worldZ = data.chunkZ * 16 + localZ;
-				const seed = worldX * 1000 + worldZ;
-
-				if (terrainType === 1) {
-					// 池を生成
-					const pond = createPondMesh(localX, localZ, seed);
-					group.add(pond);
-				} else if (terrainType === 2) {
-					// 湖を生成
-					const lake = createLakeMesh(localX, localZ, seed);
-					group.add(lake);
-				} else if (terrainType === 3) {
-					// 農園プロットを生成
-					const farmPlot = createFarmPlotMesh(localX, localZ);
-					group.add(farmPlot.group);
-				}
-				// terrainType === 0（草原）は既存のグラス生成ロジックで処理
-			}
+			// 地形メッシュの生成はrenderChunk()に委譲
 		} else {
 			// Old format: terrainData is { heightMap, version }
 			const heightMap = data.terrainData.heightMap;
