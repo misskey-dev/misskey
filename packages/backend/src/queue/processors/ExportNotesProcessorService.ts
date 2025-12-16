@@ -5,24 +5,24 @@
 
 import { ReadableStream, TextEncoderStream } from 'node:stream/web';
 import { Inject, Injectable } from '@nestjs/common';
-import { MoreThan } from 'typeorm';
+import type * as Bull from 'bullmq';
 import { format as dateFormat } from 'date-fns';
-import { DI } from '@/di-symbols.js';
-import type { NotesRepository, PollsRepository, UsersRepository } from '@/models/_.js';
-import type Logger from '@/logger.js';
+import { MoreThan } from 'typeorm';
 import { DriveService } from '@/core/DriveService.js';
-import { createTemp } from '@/misc/create-temp.js';
-import type { MiPoll } from '@/models/Poll.js';
-import type { MiNote } from '@/models/Note.js';
-import { bindThis } from '@/decorators.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
-import { Packed } from '@/misc/json-schema.js';
 import { IdService } from '@/core/IdService.js';
 import { NotificationService } from '@/core/NotificationService.js';
-import { JsonArrayStream } from '@/misc/JsonArrayStream.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type Logger from '@/logger.js';
+import { createTemp } from '@/misc/create-temp.js';
 import { FileWriterStream } from '@/misc/FileWriterStream.js';
+import { JsonArrayStream } from '@/misc/JsonArrayStream.js';
+import type { Packed } from '@/misc/json-schema.js';
+import type { NotesRepository, PollsRepository, UsersRepository } from '@/models/_.js';
+import type { MiNote } from '@/models/Note.js';
+import type { MiPoll } from '@/models/Poll.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
-import type * as Bull from 'bullmq';
 import type { DbJobDataWithUser } from '../types.js';
 
 class NoteStream extends ReadableStream<Record<string, unknown>> {
@@ -150,7 +150,7 @@ export class ExportNotesProcessorService {
 
 			this.logger.succ(`Exported to: ${path}`);
 
-			const fileName = 'notes-' + dateFormat(new Date(), 'yyyy-MM-dd-HH-mm-ss') + '.json';
+			const fileName = `notes-${dateFormat(new Date(), 'yyyy-MM-dd-HH-mm-ss')}.json`;
 			const driveFile = await this.driveService.addFile({ user, path, name: fileName, force: true, ext: 'json' });
 
 			this.logger.succ(`Exported to: ${driveFile.id}`);

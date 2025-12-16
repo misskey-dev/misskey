@@ -79,19 +79,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
-import { toUnicode } from 'punycode.js';
+import { computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
+import { toUnicode } from 'punycode.js';
 import * as config from '@@/js/config.js';
-import MkButton from './MkButton.vue';
-import MkInput from './MkInput.vue';
-import type { Captcha } from '@/components/MkCaptcha.vue';
-import MkCaptcha from '@/components/MkCaptcha.vue';
+import { login } from '@/accounts.js';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { instance } from '@/instance.js';
-import { i18n } from '@/i18n.js';
-import { login } from '@/accounts.js';
+import type { Captcha } from '@/components/MkCaptcha.vue';
+import MkCaptcha from '@/components/MkCaptcha.vue';
+import MkButton from './MkButton.vue';
+import MkInput from './MkInput.vue';
 
 const props = withDefaults(defineProps<{
 	autoSet?: boolean;
@@ -158,7 +158,7 @@ function getPasswordStrength(source: string): number {
 	}
 
 	// 記号が混ざってたら
-	if (/[!\x22\#$%&@'()*+,-./_]/.test(source)) {
+	if (/[!\x22#$%&@'()*+,-./_]/.test(source)) {
 		power += 0.02;
 	}
 
@@ -279,7 +279,7 @@ async function onSubmit(): Promise<void> {
 		return null;
 	});
 
-	if (res && res.ok) {
+	if (res?.ok) {
 		if (res.status === 204 || instance.emailRequiredForSignup) {
 			os.alert({
 				type: 'success',

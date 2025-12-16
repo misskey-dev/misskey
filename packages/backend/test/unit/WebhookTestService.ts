@@ -4,17 +4,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
 import { beforeAll, describe, jest } from '@jest/globals';
-import { WebhookTestService } from '@/core/WebhookTestService.js';
-import { UserWebhookPayload, UserWebhookService } from '@/core/UserWebhookService.js';
-import { SystemWebhookService } from '@/core/SystemWebhookService.js';
-import { GlobalModule } from '@/GlobalModule.js';
-import { MiSystemWebhook, MiUser, MiWebhook, UserProfilesRepository, UsersRepository } from '@/models/_.js';
-import { IdService } from '@/core/IdService.js';
-import { DI } from '@/di-symbols.js';
-import { QueueService } from '@/core/QueueService.js';
+import type { TestingModule } from '@nestjs/testing';
+import { Test, } from '@nestjs/testing';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
+import { IdService } from '@/core/IdService.js';
+import { QueueService } from '@/core/QueueService.js';
+import { SystemWebhookService } from '@/core/SystemWebhookService.js';
+import type { UserWebhookPayload, } from '@/core/UserWebhookService.js';
+import { UserWebhookService } from '@/core/UserWebhookService.js';
+import { WebhookTestService } from '@/core/WebhookTestService.js';
+import { DI } from '@/di-symbols.js';
+import { GlobalModule } from '@/GlobalModule.js';
+import type { MiSystemWebhook, MiUser, MiWebhook, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 
 describe('WebhookTestService', () => {
 	let app: TestingModule;

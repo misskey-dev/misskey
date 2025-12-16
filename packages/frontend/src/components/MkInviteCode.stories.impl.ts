@@ -3,10 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import type { StoryObj } from '@storybook/vue3';
 import { HttpResponse, http } from 'msw';
-import { userDetailed, inviteCode } from '../../.storybook/fakes.js';
+import { inviteCode, userDetailed } from '../../.storybook/fakes.js';
 import { commonHandlers } from '../../.storybook/mocks.js';
 import MkInviteCode from './MkInviteCode.vue';
 

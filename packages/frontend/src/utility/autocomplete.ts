@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { nextTick, ref, defineAsyncComponent } from 'vue';
-import getCaretCoordinates from 'textarea-caret';
-import { toASCII } from 'punycode.js';
 import type { Ref } from 'vue';
-import type { CompleteInfo } from '@/components/MkAutocomplete.vue';
+import { defineAsyncComponent, nextTick, ref } from 'vue';
+import { toASCII } from 'punycode.js';
+import getCaretCoordinates from 'textarea-caret';
 import { popup } from '@/os.js';
+import type { CompleteInfo } from '@/components/MkAutocomplete.vue';
 
 export type SuggestionType = 'user' | 'hashtag' | 'emoji' | 'mfmTag' | 'mfmParam';
 
@@ -79,7 +79,7 @@ export class Autocomplete {
 		const text = this.text.substring(0, caretPos).split('\n').pop()!;
 
 		// メンションに含められる文字のみで構成された、最も末尾にある文字列を抽出
-		const mentionCandidate = text.split(/[^a-zA-Z0-9_@.\-]+/).pop()!;
+		const mentionCandidate = text.split(/[^a-zA-Z0-9_@.-]+/).pop()!;
 
 		const mentionIndex = mentionCandidate.lastIndexOf('@');
 		const hashtagIndex = text.lastIndexOf('#');
@@ -104,7 +104,7 @@ export class Autocomplete {
 		const isHashtag = hashtagIndex !== -1;
 		const isMfmParam = mfmParamIndex !== -1 && afterLastMfmParam?.includes('.') && !afterLastMfmParam.includes(' ');
 		const isMfmTag = mfmTagIndex !== -1 && !isMfmParam;
-		const isEmoji = emojiIndex !== -1 && text.split(/:[a-z0-9_+\-]+:/).pop()!.includes(':');
+		const isEmoji = emojiIndex !== -1 && text.split(/:[a-z0-9_+-]+:/).pop()!.includes(':');
 		// :ok:などを🆗にするたいおぷ
 		const isEmojiCompleteToUnicode = !isEmoji && emojiIndex === text.length - 1;
 
@@ -124,7 +124,7 @@ export class Autocomplete {
 
 			if (isMention) {
 				const username = mentionCandidate.substring(mentionIndexLeft + 1);
-				if (username !== '' && username.match(/^[a-zA-Z0-9_@.\-]+$/)) {
+				if (username !== '' && username.match(/^[a-zA-Z0-9_@.-]+$/)) {
 					this.open('user', username);
 					opened = true;
 				} else if (username === '') {

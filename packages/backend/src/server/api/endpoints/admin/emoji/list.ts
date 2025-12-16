@@ -4,12 +4,12 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { EmojisRepository } from '@/models/_.js';
-import type { MiEmoji } from '@/models/Emoji.js';
+import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
 import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
-import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
+import type { EmojisRepository } from '@/models/_.js';
+import type { MiEmoji } from '@/models/Emoji.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 //import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
 
 export const meta = {
@@ -75,7 +75,7 @@ export const paramDef = {
 } as const;
 
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
@@ -94,7 +94,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				//const emojis = await q.limit(ps.limit).getMany();
 
 				emojis = await q.getMany();
-				const queryarry = ps.query.match(/\:([a-z0-9_]*)\:/g);
+				const queryarry = ps.query.match(/:([a-z0-9_]*):/g);
 
 				if (queryarry) {
 					emojis = emojis.filter(emoji =>

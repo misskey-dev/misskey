@@ -5,18 +5,18 @@
 
 import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
-import { MoreThan } from 'typeorm';
-import { format as dateFormat } from 'date-fns';
-import { DI } from '@/di-symbols.js';
-import type { UsersRepository, BlockingsRepository, MiBlocking } from '@/models/_.js';
-import type Logger from '@/logger.js';
-import { DriveService } from '@/core/DriveService.js';
-import { createTemp } from '@/misc/create-temp.js';
-import { UtilityService } from '@/core/UtilityService.js';
-import { NotificationService } from '@/core/NotificationService.js';
-import { bindThis } from '@/decorators.js';
-import { QueueLoggerService } from '../QueueLoggerService.js';
 import type * as Bull from 'bullmq';
+import { format as dateFormat } from 'date-fns';
+import { MoreThan } from 'typeorm';
+import { DriveService } from '@/core/DriveService.js';
+import { NotificationService } from '@/core/NotificationService.js';
+import { UtilityService } from '@/core/UtilityService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type Logger from '@/logger.js';
+import { createTemp } from '@/misc/create-temp.js';
+import type { BlockingsRepository, MiBlocking, UsersRepository } from '@/models/_.js';
+import { QueueLoggerService } from '../QueueLoggerService.js';
 import type { DbJobDataWithUser } from '../types.js';
 
 @Injectable()
@@ -89,7 +89,7 @@ export class ExportBlockingProcessorService {
 
 					const content = this.utilityService.getFullApAccount(u.username, u.host);
 					await new Promise<void>((res, rej) => {
-						stream.write(content + '\n', err => {
+						stream.write(`${content}\n`, err => {
 							if (err) {
 								this.logger.error(err);
 								rej(err);
@@ -107,7 +107,7 @@ export class ExportBlockingProcessorService {
 			stream.end();
 			this.logger.succ(`Exported to: ${path}`);
 
-			const fileName = 'blocking-' + dateFormat(new Date(), 'yyyy-MM-dd-HH-mm-ss') + '.csv';
+			const fileName = `blocking-${dateFormat(new Date(), 'yyyy-MM-dd-HH-mm-ss')}.csv`;
 			const driveFile = await this.driveService.addFile({ user, path, name: fileName, force: true, ext: 'csv' });
 
 			this.logger.succ(`Exported to: ${driveFile.id}`);

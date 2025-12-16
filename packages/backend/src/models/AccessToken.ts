@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Entity, PrimaryColumn, Index, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { id } from './util/id.js';
-import { MiUser } from './User.js';
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { MiApp } from './App.js';
+import { MiUser } from './User.js';
+import { id } from './util/id.js';
 
 @Entity('access_token')
 export class MiAccessToken {
@@ -41,7 +41,7 @@ export class MiAccessToken {
 	@Column(id())
 	public userId: MiUser['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(() => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
@@ -53,7 +53,7 @@ export class MiAccessToken {
 	})
 	public appId: MiApp['id'] | null;
 
-	@ManyToOne(type => MiApp, {
+	@ManyToOne(() => MiApp, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()

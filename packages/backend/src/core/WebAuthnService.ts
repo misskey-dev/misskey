@@ -4,19 +4,14 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import * as Redis from 'ioredis';
+import type { VerifiedAuthenticationResponse, VerifiedRegistrationResponse } from '@simplewebauthn/server';
 import {
 	generateAuthenticationOptions,
 	generateRegistrationOptions, verifyAuthenticationResponse,
 	verifyRegistrationResponse,
 } from '@simplewebauthn/server';
-import { AttestationFormat, isoCBOR, isoUint8Array } from '@simplewebauthn/server/helpers';
-import { DI } from '@/di-symbols.js';
-import type { MiMeta, UserSecurityKeysRepository } from '@/models/_.js';
-import type { Config } from '@/config.js';
-import { bindThis } from '@/decorators.js';
-import { MiUser } from '@/models/_.js';
-import { IdentifiableError } from '@/misc/identifiable-error.js';
+import type { AttestationFormat, } from '@simplewebauthn/server/helpers';
+import { isoCBOR, isoUint8Array } from '@simplewebauthn/server/helpers';
 import type {
 	AuthenticationResponseJSON,
 	AuthenticatorTransportFuture,
@@ -25,6 +20,12 @@ import type {
 	PublicKeyCredentialRequestOptionsJSON,
 	RegistrationResponseJSON,
 } from '@simplewebauthn/types';
+import type * as Redis from 'ioredis';
+import type { Config } from '@/config.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
+import type { MiMeta, MiUser, UserSecurityKeysRepository } from '@/models/_.js';
 
 @Injectable()
 export class WebAuthnService {
@@ -103,7 +104,7 @@ export class WebAuthnService {
 
 		const relyingParty = this.getRelyingParty();
 
-		let verification;
+		let verification: VerifiedRegistrationResponse;
 		try {
 			verification = await verifyRegistrationResponse({
 				response: response,
@@ -204,7 +205,7 @@ export class WebAuthnService {
 
 		const relyingParty = await this.getRelyingParty();
 
-		let verification;
+		let verification: VerifiedAuthenticationResponse;
 		try {
 			verification = await verifyAuthenticationResponse({
 				response: response,
@@ -284,7 +285,7 @@ export class WebAuthnService {
 
 		const relyingParty = this.getRelyingParty();
 
-		let verification;
+		let verification: VerifiedAuthenticationResponse;
 		try {
 			verification = await verifyAuthenticationResponse({
 				response: response,

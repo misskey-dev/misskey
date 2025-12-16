@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { shallowRef, computed, markRaw, watch } from 'vue';
-import * as Misskey from 'misskey-js';
-import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
+import { computed, markRaw, shallowRef, watch } from 'vue';
+import type * as Misskey from 'misskey-js';
 import { get, set } from '@/utility/idb-proxy.js';
+import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
 
 const storageCache = await get('emojis');
 export const customEmojis = shallowRef<Misskey.entities.EmojiSimple[]>(Array.isArray(storageCache) ? storageCache : []);
@@ -46,7 +46,7 @@ export function removeCustomEmojis(emojis: Misskey.entities.EmojiSimple[]) {
 export async function fetchCustomEmojis(force = false) {
 	const now = Date.now();
 
-	let res;
+	let res: { emojis: Misskey.entities.EmojiSimple[] };
 	if (force) {
 		res = await misskeyApi('emojis', {});
 	} else {
@@ -60,7 +60,7 @@ export async function fetchCustomEmojis(force = false) {
 	set('lastEmojisFetchedAt', now);
 }
 
-let cachedTags;
+let cachedTags: FIXME;
 export function getCustomEmojiTags() {
 	if (cachedTags) return cachedTags;
 

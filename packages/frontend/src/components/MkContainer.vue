@@ -40,8 +40,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
-import { prefer } from '@/preferences.js';
 import { i18n } from '@/i18n.js';
+import { prefer } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{
 	showHeader?: boolean;
@@ -120,7 +120,7 @@ onMounted(() => {
 		immediate: true,
 	});
 
-	if (rootEl.value) rootEl.value.style.setProperty('--maxHeight', props.maxHeight + 'px');
+	if (rootEl.value) rootEl.value.style.setProperty('--maxHeight', `${props.maxHeight}px`);
 
 	calcOmit();
 

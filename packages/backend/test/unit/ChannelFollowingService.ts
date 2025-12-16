@@ -6,13 +6,16 @@
 /* eslint-disable */
 
 import { afterEach, beforeEach, describe, expect } from '@jest/globals';
-import { Test, TestingModule } from '@nestjs/testing';
-import { GlobalModule } from '@/GlobalModule.js';
+import type { TestingModule } from '@nestjs/testing';
+import { Test, } from '@nestjs/testing';
+import { ChannelFollowingService } from "@/core/ChannelFollowingService.js";
 import { CoreModule } from '@/core/CoreModule.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { IdService } from '@/core/IdService.js';
-import {
-	type ChannelFollowingsRepository,
+import { DI } from '@/di-symbols.js';
+import { GlobalModule } from '@/GlobalModule.js';
+import type {
+	ChannelFollowingsRepository,
 	ChannelsRepository,
 	DriveFilesRepository,
 	MiChannel,
@@ -22,9 +25,7 @@ import {
 	UserProfilesRepository,
 	UsersRepository,
 } from '@/models/_.js';
-import { DI } from '@/di-symbols.js';
-import { ChannelFollowingService } from "@/core/ChannelFollowingService.js";
-import { MiLocalUser } from "@/models/User.js";
+import type { MiLocalUser } from "@/models/User.js";
 
 describe('ChannelFollowingService', () => {
 	let app: TestingModule;

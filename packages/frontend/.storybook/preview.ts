@@ -5,7 +5,8 @@
 
 import { FORCE_RE_RENDER, FORCE_REMOUNT } from '@storybook/core-events';
 import { addons } from '@storybook/preview-api';
-import { type Preview, setup } from '@storybook/vue3';
+import type { Preview, } from '@storybook/vue3';
+import { setup } from '@storybook/vue3';
 import isChromatic from 'chromatic/isChromatic';
 import { initialize, mswLoader } from 'msw-storybook-addon';
 import { userDetailed } from './fakes.js';
@@ -97,7 +98,7 @@ const preview = {
 				const channel = addons.getChannel();
 				const resetIndexedDBPromise = globalThis.indexedDB?.databases
 					? indexedDB.databases().then((r) => {
-							for (var i = 0; i < r.length; i++) {
+							for (let i = 0; i < r.length; i++) {
 								indexedDB.deleteDatabase(r[i].name!);
 							}
 						}).catch(() => {})
@@ -114,7 +115,7 @@ const preview = {
 			const story = Story();
 			if (!moduleInitialized) {
 				const channel = addons.getChannel();
-				(globalThis.requestIdleCallback || setTimeout)(() => {
+				(globalThis.requestIdleCallback || window.setTimeout)(() => {
 					channel.emit(FORCE_REMOUNT, { storyId: context.id });
 				});
 			}
@@ -145,4 +146,5 @@ const preview = {
 	},
 } satisfies Preview;
 
+// biome-ignore lint/style/noDefaultExport: historical reason
 export default preview;

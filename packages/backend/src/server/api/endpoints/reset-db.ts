@@ -4,14 +4,14 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { DataSource } from 'typeorm';
-import * as Redis from 'ioredis';
+import type * as Redis from 'ioredis';
+import type { DataSource } from 'typeorm';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { LoggerService } from '@/core/LoggerService.js';
-import { Endpoint } from '@/server/api/endpoint-base.js';
+import { MetaService } from '@/core/MetaService.js';
 import { DI } from '@/di-symbols.js';
 import { resetDb } from '@/misc/reset-db.js';
-import { MetaService } from '@/core/MetaService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
 	tags: ['non-productive'],
@@ -32,7 +32,7 @@ export const paramDef = {
 } as const;
 
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.db)
 		private db: DataSource,

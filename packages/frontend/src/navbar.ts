@@ -5,21 +5,21 @@
 
 import { computed, reactive } from 'vue';
 import { ui } from '@@/js/config.js';
-import { clearCache } from './utility/clear-cache.js';
 import { $i } from '@/i.js';
+import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
+import * as os from '@/os.js';
 import { openInstanceMenu, openToolsMenu } from '@/ui/_common_/common.js';
 import { lookup } from '@/utility/lookup.js';
-import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
 import { unisonReload } from '@/utility/unison-reload.js';
+import { clearCache } from './utility/clear-cache.js';
 
 export const navbarItemDef = reactive({
 	notifications: {
 		title: i18n.ts.notifications,
 		icon: 'ti ti-bell',
 		show: computed(() => $i != null),
-		indicated: computed(() => $i != null && $i.hasUnreadNotification),
+		indicated: computed(() => $i?.hasUnreadNotification),
 		indicateValue: computed(() => {
 			if (!$i || $i.unreadNotificationsCount === 0) return '';
 
@@ -40,7 +40,7 @@ export const navbarItemDef = reactive({
 	followRequests: {
 		title: i18n.ts.followRequests,
 		icon: 'ti ti-user-plus',
-		indicated: computed(() => $i != null && $i.hasPendingReceivedFollowRequest),
+		indicated: computed(() => $i?.hasPendingReceivedFollowRequest),
 		to: '/my/follow-requests',
 	},
 	explore: {
@@ -51,7 +51,7 @@ export const navbarItemDef = reactive({
 	announcements: {
 		title: i18n.ts.announcements,
 		icon: 'ti ti-speakerphone',
-		indicated: computed(() => $i != null && $i.hasUnreadAnnouncement),
+		indicated: computed(() => $i?.hasUnreadAnnouncement),
 		to: '/announcements',
 	},
 	search: {
@@ -121,7 +121,7 @@ export const navbarItemDef = reactive({
 		icon: 'ti ti-messages',
 		to: '/chat',
 		show: computed(() => $i != null && $i.policies.chatAvailability !== 'unavailable'),
-		indicated: computed(() => $i != null && $i.hasUnreadChatMessages),
+		indicated: computed(() => $i?.hasUnreadChatMessages),
 	},
 	achievements: {
 		title: i18n.ts.achievements,

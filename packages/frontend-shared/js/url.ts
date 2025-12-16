@@ -10,8 +10,8 @@
  */
 export function query(obj: Record<string, string | number | boolean>): string {
 	const params = Object.entries(obj)
-		.filter(([, v]) => Array.isArray(v) ? v.length : v !== undefined) // eslint-disable-line @typescript-eslint/no-unnecessary-condition
-		.reduce<Record<string, string | number | boolean>>((a, [k, v]) => (a[k] = v, a), {});
+		.filter(([, v]) => Array.isArray(v) ? v.length : v !== undefined)
+		.reduce<Record<string, string | number | boolean>>((a, [k, v]) => Object.assign(a, { [k]: v }), {});
 
 	return Object.entries(params)
 		.map((p) => `${p[0]}=${encodeURIComponent(p[1])}`)
@@ -23,7 +23,7 @@ export function appendQuery(url: string, queryString: string): string {
 }
 
 export function extractDomain(url: string) {
-	const match = url.match(/^(?:https?:)?(?:\/\/)?(?:[^@\n]+@)?([^:\/\n]+)/im);
+	const match = url.match(/^(?:https?:)?(?:\/\/)?(?:[^@\n]+@)?([^:/\n]+)/im);
 	return match ? match[1] : null;
 }
 

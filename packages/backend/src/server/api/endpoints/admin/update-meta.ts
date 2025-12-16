@@ -4,10 +4,10 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { MiMeta } from '@/models/Meta.js';
-import { ModerationLogService } from '@/core/ModerationLogService.js';
-import { Endpoint } from '@/server/api/endpoint-base.js';
 import { MetaService } from '@/core/MetaService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
+import type { MiMeta } from '@/models/Meta.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
 	tags: ['admin'],
@@ -215,7 +215,7 @@ export const paramDef = {
 } as const;
 
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		private metaService: MetaService,
 		private moderationLogService: ModerationLogService,
@@ -402,7 +402,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.googleAnalyticsMeasurementId !== undefined) {
 				// 空文字列をnullにしたいので??は使わない
-				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 				set.googleAnalyticsMeasurementId = ps.googleAnalyticsMeasurementId || null;
 			}
 

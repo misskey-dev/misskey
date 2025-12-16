@@ -27,23 +27,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, provide, useTemplateRef, ref, onMounted, onActivated } from 'vue';
-import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
-import type { MenuItem } from '@/types/menu.js';
-import type { BasicTimelineType } from '@/timelines.js';
-import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
-import MkPostForm from '@/components/MkPostForm.vue';
-import * as os from '@/os.js';
-import { store } from '@/store.js';
-import { i18n } from '@/i18n.js';
+import { computed, onActivated, onMounted, provide, ref, useTemplateRef, watch } from 'vue';
+import { antennasCache, favoritedChannelsCache, userListsCache } from '@/cache.js';
 import { $i } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import { miLocalStorage } from '@/local-storage.js';
+import * as os from '@/os.js';
 import { definePage } from '@/page.js';
-import { antennasCache, userListsCache, favoritedChannelsCache } from '@/cache.js';
+import { prefer } from '@/preferences.js';
+import { store } from '@/store.js';
+import type { BasicTimelineType } from '@/timelines.js';
+import { availableBasicTimelines, basicTimelineIconClass, hasWithReplies, isAvailableBasicTimeline, isBasicTimeline } from '@/timelines.js';
+import type { MenuItem } from '@/types/menu.js';
 import { deviceKind } from '@/utility/device-kind.js';
 import { deepMerge } from '@/utility/merge.js';
-import { miLocalStorage } from '@/local-storage.js';
-import { availableBasicTimelines, hasWithReplies, isAvailableBasicTimeline, isBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
-import { prefer } from '@/preferences.js';
+import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
+import MkPostForm from '@/components/MkPostForm.vue';
+import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
 
 const tlComponent = useTemplateRef('tlComponent');
 
@@ -264,7 +264,7 @@ const headerActions = computed(() => {
 });
 
 const headerTabs = computed(() => [...(prefer.r.pinnedUserLists.value.map(l => ({
-	key: 'list:' + l.id,
+	key: `list:${l.id}`,
 	title: l.name,
 	icon: 'ti ti-star',
 	iconOnly: true,

@@ -6,9 +6,9 @@
 process.env.NODE_ENV = 'test';
 
 import { readFile } from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
-import { describe, test, expect } from '@jest/globals';
+import { fileURLToPath } from 'node:url';
+import { describe, expect, test } from '@jest/globals';
 import { getValidator } from '../../../../../test/prelude/get-api-validator.js';
 import { paramDef } from './create.js';
 
@@ -21,7 +21,7 @@ const INVALID = false;
 describe('api:notes/create', () => {
 	describe('validation', () => {
 		const v = getValidator(paramDef);
-		const tooLong = readFile(_dirname + '/../../../../../test/resources/misskey.svg', 'utf-8');
+		const tooLong = readFile(`${_dirname}/../../../../../test/resources/misskey.svg`, 'utf-8');
 
 		test('reject empty', () => {
 			const valid = v({ });

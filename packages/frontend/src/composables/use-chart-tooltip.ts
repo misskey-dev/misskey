@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { onUnmounted, onDeactivated, ref } from 'vue';
+import { onDeactivated, onUnmounted, ref } from 'vue';
 import * as os from '@/os.js';
 import MkChartTooltip from '@/components/MkChartTooltip.vue';
 

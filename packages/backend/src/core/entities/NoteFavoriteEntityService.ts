@@ -4,13 +4,13 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import { IdService } from '@/core/IdService.js';
+import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { NoteFavoritesRepository } from '@/models/_.js';
 import type { } from '@/models/Blocking.js';
-import type { MiUser } from '@/models/User.js';
 import type { MiNoteFavorite } from '@/models/NoteFavorite.js';
-import { bindThis } from '@/decorators.js';
-import { IdService } from '@/core/IdService.js';
+import type { MiUser } from '@/models/User.js';
 import { NoteEntityService } from './NoteEntityService.js';
 
 @Injectable()

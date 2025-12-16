@@ -43,8 +43,8 @@ import { computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import { acct } from '@/filters/user.js';
 import { i18n } from '@/i18n.js';
-import MkKeyValue from '@/components/MkKeyValue.vue';
 import FormSection from '@/components/form/section.vue';
+import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkObjectView from '@/components/MkObjectView.vue';
 
 const props = defineProps<{

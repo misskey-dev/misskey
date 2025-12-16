@@ -5,44 +5,44 @@
 
 import { randomUUID } from 'node:crypto';
 import * as fs from 'node:fs';
+import type { DeleteObjectCommandInput, PutObjectCommandInput } from '@aws-sdk/client-s3';
+import { sharpBmp } from '@misskey-dev/sharp-read-bmp';
 import { Inject, Injectable } from '@nestjs/common';
 import sharp from 'sharp';
-import { sharpBmp } from '@misskey-dev/sharp-read-bmp';
 import { In, IsNull } from 'typeorm';
-import { DeleteObjectCommandInput, PutObjectCommandInput, NoSuchKey } from '@aws-sdk/client-s3';
-import { DI } from '@/di-symbols.js';
-import type { DriveFilesRepository, UsersRepository, DriveFoldersRepository, UserProfilesRepository, MiMeta } from '@/models/_.js';
 import type { Config } from '@/config.js';
-import Logger from '@/logger.js';
-import type { MiRemoteUser, MiUser } from '@/models/User.js';
-import { MiDriveFile } from '@/models/DriveFile.js';
-import { IdService } from '@/core/IdService.js';
-import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
-import { IdentifiableError } from '@/misc/identifiable-error.js';
-import { contentDisposition } from '@/misc/content-disposition.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { VideoProcessingService } from '@/core/VideoProcessingService.js';
-import { ImageProcessingService } from '@/core/ImageProcessingService.js';
-import type { IImage } from '@/core/ImageProcessingService.js';
-import { QueueService } from '@/core/QueueService.js';
-import type { MiDriveFolder } from '@/models/DriveFolder.js';
-import { createTemp } from '@/misc/create-temp.js';
 import DriveChart from '@/core/chart/charts/drive.js';
-import PerUserDriveChart from '@/core/chart/charts/per-user-drive.js';
 import InstanceChart from '@/core/chart/charts/instance.js';
+import PerUserDriveChart from '@/core/chart/charts/per-user-drive.js';
 import { DownloadService } from '@/core/DownloadService.js';
-import { S3Service } from '@/core/S3Service.js';
-import { InternalStorageService } from '@/core/InternalStorageService.js';
 import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { FileInfoService } from '@/core/FileInfoService.js';
-import { bindThis } from '@/decorators.js';
-import { RoleService } from '@/core/RoleService.js';
-import { correctFilename } from '@/misc/correct-filename.js';
-import { isMimeImage } from '@/misc/is-mime-image.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { IdService } from '@/core/IdService.js';
+import type { IImage } from '@/core/ImageProcessingService.js';
+import { ImageProcessingService } from '@/core/ImageProcessingService.js';
+import { InternalStorageService } from '@/core/InternalStorageService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { QueueService } from '@/core/QueueService.js';
+import { RoleService } from '@/core/RoleService.js';
+import { S3Service } from '@/core/S3Service.js';
 import { UtilityService } from '@/core/UtilityService.js';
+import { VideoProcessingService } from '@/core/VideoProcessingService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import Logger from '@/logger.js';
+import { contentDisposition } from '@/misc/content-disposition.js';
+import { correctFilename } from '@/misc/correct-filename.js';
+import { createTemp } from '@/misc/create-temp.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
+import { isMimeImage } from '@/misc/is-mime-image.js';
+import type { DriveFilesRepository, DriveFoldersRepository, MiMeta, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import { MiDriveFile } from '@/models/DriveFile.js';
+import type { MiDriveFolder } from '@/models/DriveFolder.js';
+import type { MiRemoteUser, MiUser } from '@/models/User.js';
 
 type AddFileArgs = {
 	/** User who wish to add file */
@@ -225,8 +225,8 @@ export class DriveService {
 			return await this.driveFilesRepository.insertOne(file);
 		} else { // use internal storage
 			const accessKey = randomUUID();
-			const thumbnailAccessKey = 'thumbnail-' + randomUUID();
-			const webpublicAccessKey = 'webpublic-' + randomUUID();
+			const thumbnailAccessKey = `thumbnail-${randomUUID()}`;
+			const webpublicAccessKey = `webpublic-${randomUUID()}`;
 
 			const url = this.internalStorageService.saveFromPath(accessKey, path);
 
@@ -373,7 +373,9 @@ export class DriveService {
 	 */
 	@bindThis
 	private async upload(key: string, stream: fs.ReadStream | Buffer, type: string, ext?: string | null, filename?: string) {
+		// biome-ignore lint/style/noParameterAssign: parameter sanitization
 		if (type === 'image/apng') type = 'image/png';
+		// biome-ignore lint/style/noParameterAssign: parameter sanitization
 		if (!FILE_TYPE_BROWSERSAFE.includes(type)) type = 'application/octet-stream';
 
 		const params = {
@@ -621,8 +623,8 @@ export class DriveService {
 				file.url = url;
 				// ローカルプロキシ用
 				file.accessKey = randomUUID();
-				file.thumbnailAccessKey = 'thumbnail-' + randomUUID();
-				file.webpublicAccessKey = 'webpublic-' + randomUUID();
+				file.thumbnailAccessKey = `thumbnail-${randomUUID()}`;
+				file.webpublicAccessKey = `webpublic-${randomUUID()}`;
 			}
 		}
 
@@ -821,8 +823,8 @@ export class DriveService {
 				storedInternal: false,
 				// ローカルプロキシ用
 				accessKey: randomUUID(),
-				thumbnailAccessKey: 'thumbnail-' + randomUUID(),
-				webpublicAccessKey: 'webpublic-' + randomUUID(),
+				thumbnailAccessKey: `thumbnail-${randomUUID()}`,
+				webpublicAccessKey: `webpublic-${randomUUID()}`,
 			});
 		} else {
 			await this.driveFilesRepository.delete(file.id);

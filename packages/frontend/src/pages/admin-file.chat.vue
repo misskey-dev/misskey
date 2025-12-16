@@ -16,12 +16,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, markRaw } from 'vue';
-import XMessage from './chat/XMessage.vue';
+import { computed, markRaw, ref } from 'vue';
 import { i18n } from '@/i18n.js';
-import MkInfo from '@/components/MkInfo.vue';
 import { Paginator } from '@/utility/paginator.js';
+import MkInfo from '@/components/MkInfo.vue';
 import MkPagination from '@/components/MkPagination.vue';
+import XMessage from './chat/XMessage.vue';
 
 const props = defineProps<{
 	fileId: string;

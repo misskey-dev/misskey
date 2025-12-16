@@ -4,17 +4,17 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import * as Redis from 'ioredis';
-import { DI } from '@/di-symbols.js';
-import type { MiUser } from '@/models/User.js';
-import { normalizeForSearch } from '@/misc/normalize-for-search.js';
-import { IdService } from '@/core/IdService.js';
-import type { MiHashtag } from '@/models/Hashtag.js';
-import type { HashtagsRepository, MiMeta } from '@/models/_.js';
+import type * as Redis from 'ioredis';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { bindThis } from '@/decorators.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
+import { IdService } from '@/core/IdService.js';
 import { UtilityService } from '@/core/UtilityService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import { normalizeForSearch } from '@/misc/normalize-for-search.js';
+import type { HashtagsRepository, MiMeta } from '@/models/_.js';
+import type { MiHashtag } from '@/models/Hashtag.js';
+import type { MiUser } from '@/models/User.js';
 
 @Injectable()
 export class HashtagService {
@@ -55,6 +55,7 @@ export class HashtagService {
 
 	@bindThis
 	public async updateHashtag(user: { id: MiUser['id']; host: MiUser['host']; }, tag: string, isUserAttached = false, inc = true) {
+		// biome-ignore lint/style/noParameterAssign: parameter normalization
 		tag = normalizeForSearch(tag);
 
 		// TODO: サンプリング

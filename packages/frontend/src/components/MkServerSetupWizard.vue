@@ -191,16 +191,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/MkInput.vue';
+import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
+import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
+import MkInfo from '@/components/MkInfo.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkLink from '@/components/MkLink.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import MkInfo from '@/components/MkInfo.vue';
-import MkLink from '@/components/MkLink.vue';
 
 const emit = defineEmits<{
 	(ev: 'finished'): void;
@@ -220,7 +220,7 @@ const q_adminName = ref('');
 const q_adminEmail = ref('');
 
 const serverSettings = computed<Misskey.entities.AdminUpdateMetaRequest>(() => {
-	let enableReactionsBuffering;
+	let enableReactionsBuffering: boolean;
 	if (q_use.value === 'single') {
 		enableReactionsBuffering = false;
 	} else {

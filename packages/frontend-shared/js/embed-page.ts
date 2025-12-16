@@ -73,7 +73,7 @@ export function parseEmbedParams(searchParams: URLSearchParams | string): Parsed
 	}
 
 	function convertNumber(value: string | null): number | undefined {
-		if (value != null && !isNaN(Number(value))) {
+		if (value != null && !Number.isNaN(Number(value))) {
 			return Number(value);
 		}
 		return undefined;

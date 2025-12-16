@@ -4,19 +4,19 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import type * as Bull from 'bullmq';
 import { MoreThan } from 'typeorm';
-import { DI } from '@/di-symbols.js';
-import type { DriveFilesRepository, NotesRepository, PagesRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
-import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
+import { EmailService } from '@/core/EmailService.js';
+import { PageService } from '@/core/PageService.js';
+import { SearchService } from '@/core/SearchService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type Logger from '@/logger.js';
+import type { DriveFilesRepository, NotesRepository, PagesRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiNote } from '@/models/Note.js';
-import { EmailService } from '@/core/EmailService.js';
-import { bindThis } from '@/decorators.js';
-import { SearchService } from '@/core/SearchService.js';
-import { PageService } from '@/core/PageService.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
-import type * as Bull from 'bullmq';
 import type { DbUserDeleteJobData } from '../types.js';
 
 @Injectable()
@@ -49,7 +49,7 @@ export class DeleteAccountProcessorService {
 	}
 
 	@bindThis
-	public async process(job: Bull.Job<DbUserDeleteJobData>): Promise<string | void> {
+	public async process(job: Bull.Job<DbUserDeleteJobData>): Promise<string | undefined> {
 		this.logger.info(`Deleting account of ${job.data.user.id} ...`);
 
 		const user = await this.usersRepository.findOneBy({ id: job.data.user.id });
@@ -116,8 +116,6 @@ export class DeleteAccountProcessorService {
 
 			this.logger.succ('All of files deleted');
 		}
-
-		{
 			// delete pages. Necessary for decrementing pageCount of notes.
 			while (true) {
 				const pages = await this.pagesRepository.find({
@@ -137,7 +135,6 @@ export class DeleteAccountProcessorService {
 					await this.pageService.delete(user, page.id);
 				}
 			}
-		}
 
 		{ // Send email notification
 			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });

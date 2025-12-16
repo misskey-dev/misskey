@@ -3,16 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
-import * as Redis from 'ioredis';
-import type { BlockingsRepository, FollowingsRepository, MutingsRepository, RenoteMutingsRepository, MiUserProfile, UserProfilesRepository, UsersRepository, MiFollowing } from '@/models/_.js';
-import { MemoryKVCache, RedisKVCache } from '@/misc/cache.js';
-import type { MiLocalUser, MiUser } from '@/models/User.js';
-import { DI } from '@/di-symbols.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { bindThis } from '@/decorators.js';
-import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import type * as Redis from 'ioredis';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { GlobalEvents } from '@/core/GlobalEventService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import { MemoryKVCache, RedisKVCache } from '@/misc/cache.js';
+import type { BlockingsRepository, FollowingsRepository, MiFollowing, MiUserProfile, MutingsRepository, RenoteMutingsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import type { MiLocalUser, MiUser } from '@/models/User.js';
 
 @Injectable()
 export class CacheService implements OnApplicationShutdown {

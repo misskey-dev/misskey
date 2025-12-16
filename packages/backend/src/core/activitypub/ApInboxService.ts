@@ -4,42 +4,41 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import type * as Redis from 'ioredis';
 import { In } from 'typeorm';
-import * as Redis from 'ioredis';
-import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import { UserFollowingService } from '@/core/UserFollowingService.js';
-import { ReactionService } from '@/core/ReactionService.js';
-import { RelayService } from '@/core/RelayService.js';
-import { NotePiningService } from '@/core/NotePiningService.js';
-import { UserBlockingService } from '@/core/UserBlockingService.js';
-import { NoteDeleteService } from '@/core/NoteDeleteService.js';
-import { NoteCreateService } from '@/core/NoteCreateService.js';
-import { acquireApObjectLock } from '@/misc/distributed-lock.js';
-import { concat, toArray, toSingle, unique } from '@/misc/prelude/array.js';
-import type Logger from '@/logger.js';
-import { IdService } from '@/core/IdService.js';
-import { StatusError } from '@/misc/status-error.js';
-import { UtilityService } from '@/core/UtilityService.js';
+import { AbuseReportService } from '@/core/AbuseReportService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { QueueService } from '@/core/QueueService.js';
-import type { UsersRepository, NotesRepository, FollowingsRepository, AbuseUserReportsRepository, FollowRequestsRepository, MiMeta } from '@/models/_.js';
-import { bindThis } from '@/decorators.js';
-import type { MiRemoteUser } from '@/models/User.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { AbuseReportService } from '@/core/AbuseReportService.js';
+import { IdService } from '@/core/IdService.js';
+import { NoteCreateService } from '@/core/NoteCreateService.js';
+import { NoteDeleteService } from '@/core/NoteDeleteService.js';
+import { NotePiningService } from '@/core/NotePiningService.js';
+import { QueueService } from '@/core/QueueService.js';
+import { ReactionService } from '@/core/ReactionService.js';
+import { RelayService } from '@/core/RelayService.js';
+import { UserBlockingService } from '@/core/UserBlockingService.js';
+import { UserFollowingService } from '@/core/UserFollowingService.js';
+import { UtilityService } from '@/core/UtilityService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type Logger from '@/logger.js';
+import { acquireApObjectLock } from '@/misc/distributed-lock.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-import { getApHrefNullable, getApId, getApIds, getApType, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isMove, isPost, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
-import { ApNoteService } from './models/ApNoteService.js';
-import { ApLoggerService } from './ApLoggerService.js';
-import { ApDbResolverService } from './ApDbResolverService.js';
-import { ApResolverService } from './ApResolverService.js';
+import { concat, toArray, toSingle, unique } from '@/misc/prelude/array.js';
+import { StatusError } from '@/misc/status-error.js';
+import type { FollowingsRepository, FollowRequestsRepository, MiNote, NotesRepository, UsersRepository } from '@/models/_.js';
+import type { MiRemoteUser } from '@/models/User.js';
 import { ApAudienceService } from './ApAudienceService.js';
+import { ApDbResolverService } from './ApDbResolverService.js';
+import { ApLoggerService } from './ApLoggerService.js';
+import { ApResolverService, Resolver } from './ApResolverService.js';
+import { ApNoteService } from './models/ApNoteService.js';
 import { ApPersonService } from './models/ApPersonService.js';
 import { ApQuestionService } from './models/ApQuestionService.js';
-import type { Resolver } from './ApResolverService.js';
-import type { IAccept, IAdd, IAnnounce, IBlock, ICreate, IDelete, IFlag, IFollow, ILike, IObject, IReject, IRemove, IUndo, IUpdate, IMove, IPost } from './type.js';
+import type { IAccept, IAdd, IAnnounce, IBlock, ICreate, IDelete, IFlag, IFollow, ILike, IMove, IObject, IPost, IReject, IRemove, IUndo, IUpdate } from './type.js';
+import { getApHrefNullable, getApId, getApIds, getApType, isAccept, isActor, isAdd, isAnnounce, isBlock, isCollection, isCollectionOrOrderedCollection, isCreate, isDelete, isFlag, isFollow, isLike, isMove, isPost, isReject, isRemove, isTombstone, isUndo, isUpdate, validActor, validPost } from './type.js';
 
 @Injectable()
 export class ApInboxService {
@@ -90,11 +89,11 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	public async performActivity(actor: MiRemoteUser, activity: IObject, resolver?: Resolver): Promise<string | void> {
-		let result = undefined as string | void;
+	public async performActivity(actor: MiRemoteUser, activity: IObject, resolver?: Resolver): Promise<string | undefined> {
+		let result = undefined as string | undefined;
 		if (isCollectionOrOrderedCollection(activity)) {
-			const results = [] as [string, string | void][];
-			// eslint-disable-next-line no-param-reassign
+			const results = [] as [string, string | undefined][];
+			// biome-ignore lint/style/noParameterAssign: parameter normalization
 			resolver ??= this.apResolverService.createResolver();
 
 			const items = toArray(isCollection(activity) ? activity.items : activity.orderedItems);
@@ -140,7 +139,7 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	public async performOneActivity(actor: MiRemoteUser, activity: IObject, resolver?: Resolver): Promise<string | void> {
+	public async performOneActivity(actor: MiRemoteUser, activity: IObject, resolver?: Resolver): Promise<string | undefined> {
 		if (actor.isSuspended) return;
 
 		if (isCreate(activity)) {
@@ -220,7 +219,7 @@ export class ApInboxService {
 
 		this.logger.info(`Accept: ${uri}`);
 
-		// eslint-disable-next-line no-param-reassign
+		// biome-ignore lint/style/noParameterAssign: parameter normalization
 		resolver ??= this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(activity.object).catch(err => {
@@ -258,7 +257,7 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async add(actor: MiRemoteUser, activity: IAdd, resolver?: Resolver): Promise<string | void> {
+	private async add(actor: MiRemoteUser, activity: IAdd, resolver?: Resolver): Promise<string | undefined> {
 		if (actor.uri !== activity.actor) {
 			return 'invalid actor';
 		}
@@ -278,12 +277,12 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async announce(actor: MiRemoteUser, activity: IAnnounce, resolver?: Resolver): Promise<string | void> {
+	private async announce(actor: MiRemoteUser, activity: IAnnounce, resolver?: Resolver): Promise<string | undefined> {
 		const uri = getApId(activity);
 
 		this.logger.info(`Announce: ${uri}`);
 
-		// eslint-disable-next-line no-param-reassign
+		// biome-ignore lint/style/noParameterAssign: parameter normalization
 		resolver ??= this.apResolverService.createResolver();
 
 		if (!activity.object) return 'skip: activity has no object property';
@@ -301,7 +300,7 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async announceNote(actor: MiRemoteUser, activity: IAnnounce, target: IPost, resolver?: Resolver): Promise<string | void> {
+	private async announceNote(actor: MiRemoteUser, activity: IAnnounce, target: IPost, resolver?: Resolver): Promise<string | undefined> {
 		const uri = getApId(activity);
 
 		if (actor.isSuspended) {
@@ -321,7 +320,7 @@ export class ApInboxService {
 			}
 
 			// Announce対象をresolve
-			let renote;
+			let renote: MiNote | null;
 			try {
 				renote = await this.apNoteService.resolveNote(target, { resolver });
 				if (renote == null) return 'announce target is null';
@@ -356,6 +355,7 @@ export class ApInboxService {
 				visibleUsers: activityAudience.visibleUsers,
 				uri,
 			});
+			return undefined;
 		} finally {
 			unlock();
 		}
@@ -380,7 +380,7 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async create(actor: MiRemoteUser, activity: ICreate, resolver?: Resolver): Promise<string | void> {
+	private async create(actor: MiRemoteUser, activity: ICreate, resolver?: Resolver): Promise<string | undefined> {
 		const uri = getApId(activity);
 
 		this.logger.info(`Create: ${uri}`);
@@ -405,7 +405,7 @@ export class ApInboxService {
 			activity.object.attributedTo = activity.actor;
 		}
 
-		// eslint-disable-next-line no-param-reassign
+		// biome-ignore lint/style/noParameterAssign: parameter normalization
 		resolver ??= this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(activity.object).catch(e => {
@@ -415,6 +415,7 @@ export class ApInboxService {
 
 		if (isPost(object)) {
 			await this.createNote(resolver, actor, object, false, activity);
+			return undefined;
 		} else {
 			return `Unknown type: ${getApType(object)}`;
 		}
@@ -549,7 +550,7 @@ export class ApInboxService {
 		const uris = getApIds(activity.object);
 
 		const userIds = uris
-			.filter(uri => uri.startsWith(this.config.url + '/users/'))
+			.filter(uri => uri.startsWith(`${this.config.url}/users/`))
 			.map(uri => uri.split('/').at(-1))
 			.filter(x => x != null);
 		const users = await this.usersRepository.findBy({
@@ -574,7 +575,7 @@ export class ApInboxService {
 
 		this.logger.info(`Reject: ${uri}`);
 
-		// eslint-disable-next-line no-param-reassign
+		// biome-ignore lint/style/noParameterAssign: parameter normalization
 		resolver ??= this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(activity.object).catch(e => {
@@ -612,7 +613,7 @@ export class ApInboxService {
 	}
 
 	@bindThis
-	private async remove(actor: MiRemoteUser, activity: IRemove, resolver?: Resolver): Promise<string | void> {
+	private async remove(actor: MiRemoteUser, activity: IRemove, resolver?: Resolver): Promise<string | undefined> {
 		if (actor.uri !== activity.actor) {
 			return 'invalid actor';
 		}
@@ -641,7 +642,7 @@ export class ApInboxService {
 
 		this.logger.info(`Undo: ${uri}`);
 
-		// eslint-disable-next-line no-param-reassign
+		// biome-ignore lint/style/noParameterAssign: parameter normalization
 		resolver ??= this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(activity.object).catch(e => {
@@ -773,7 +774,7 @@ export class ApInboxService {
 
 		this.logger.debug('Update');
 
-		// eslint-disable-next-line no-param-reassign
+		// biome-ignore lint/style/noParameterAssign: parameter normalization
 		resolver ??= this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(activity.object).catch(e => {

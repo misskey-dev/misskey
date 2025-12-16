@@ -92,21 +92,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, useTemplateRef, toRefs } from 'vue';
+import { computed, onMounted, ref, toRefs, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import MkButton from '@/components/MkButton.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkModalWindow from '@/components/MkModalWindow.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import type {
 	MkSystemWebhookEditorProps,
 	MkSystemWebhookResult,
 	SystemWebhookEventType,
 } from '@/components/MkSystemWebhookEditor.impl.js';
-import MkInput from '@/components/MkInput.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
-import { i18n } from '@/i18n.js';
-import MkButton from '@/components/MkButton.vue';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import MkModalWindow from '@/components/MkModalWindow.vue';
-import MkFolder from '@/components/MkFolder.vue';
-import * as os from '@/os.js';
 
 type EventType = {
 	abuseReport: boolean;
@@ -247,7 +247,6 @@ onMounted(async () => {
 					for (const ev of Object.keys(events.value)) {
 						events.value[ev] = res.on.includes(ev as SystemWebhookEventType);
 					}
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				} catch (ex: any) {
 					const msg = ex.message ?? i18n.ts.internalServerErrorDescription;
 					await os.alert({ type: 'error', title: i18n.ts.error, text: msg });

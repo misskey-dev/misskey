@@ -4,14 +4,14 @@
  */
 
 import { BroadcastChannel } from 'broadcast-channel';
-import type { StorageProvider } from '@/preferences/manager.js';
-import { cloudBackup } from '@/preferences/utility.js';
-import { miLocalStorage } from '@/local-storage.js';
-import { isSameScope, PreferencesManager } from '@/preferences/manager.js';
-import { store } from '@/store.js';
 import { $i } from '@/i.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
+import { miLocalStorage } from '@/local-storage.js';
+import type { StorageProvider } from '@/preferences/manager.js';
+import { isSameScope, PreferencesManager } from '@/preferences/manager.js';
+import { cloudBackup } from '@/preferences/utility.js';
+import { store } from '@/store.js';
 import { TAB_ID } from '@/tab-id.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 // クラウド同期用グループ名
 const syncGroup = 'default';
@@ -36,7 +36,7 @@ const io: StorageProvider = {
 		try {
 			const cloudData = await misskeyApi('i/registry/get', {
 				scope: ['client', 'preferences', 'sync'],
-				key: syncGroup + ':' + ctx.key,
+				key: `${syncGroup}:${ctx.key}`,
 			}) as [any, any][];
 			const target = cloudData.find(([scope]) => isSameScope(scope, ctx.scope));
 			if (target == null) return null;
@@ -57,7 +57,7 @@ const io: StorageProvider = {
 		try {
 			cloudData = await misskeyApi('i/registry/get', {
 				scope: ['client', 'preferences', 'sync'],
-				key: syncGroup + ':' + ctx.key,
+				key: `${syncGroup}:${ctx.key}`,
 			}) as [any, any][];
 		} catch (err: any) {
 			if (err.code === 'NO_SUCH_KEY') { // TODO: いちいちエラーキャッチするのは面倒なのでキーが無くてもエラーにならない maybe-get のようなエンドポイントをバックエンドに実装する
@@ -77,7 +77,7 @@ const io: StorageProvider = {
 
 		await misskeyApi('i/registry/set', {
 			scope: ['client', 'preferences', 'sync'],
-			key: syncGroup + ':' + ctx.key,
+			key: `${syncGroup}:${ctx.key}`,
 			value: cloudData,
 		});
 	},

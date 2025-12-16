@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 const address = new URL(window.document.querySelector<HTMLMetaElement>('meta[property="instance_url"]')?.content || window.location.href);
 const siteName = window.document.querySelector<HTMLMetaElement>('meta[property="og:site_name"]')?.content;
 
@@ -11,7 +10,7 @@ export const host = address.host;
 export const hostname = address.hostname;
 export const url = address.origin;
 export const port = address.port;
-export const apiUrl = window.location.origin + '/api';
+export const apiUrl = `${window.location.origin}/api`;
 export const wsOrigin = window.location.origin;
 export const lang = localStorage.getItem('lang') ?? 'en-US';
 export const langs = _LANGS_;

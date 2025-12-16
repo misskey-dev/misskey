@@ -9,10 +9,10 @@ const TIME2000 = 946684800000;
 let counter = Math.floor(Math.random() * 10000);
 
 function getTime(time: number): string {
-	time = time - TIME2000;
-	if (time < 0) time = 0;
+	let offsetTime = time - TIME2000;
+	if (offsetTime < 0) offsetTime = 0;
 
-	return time.toString(36).padStart(8, '0');
+	return offsetTime.toString(36).padStart(8, '0');
 }
 
 function getNoise(): string {

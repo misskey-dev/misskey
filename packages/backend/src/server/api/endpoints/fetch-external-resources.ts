@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { createHash } from 'crypto';
-import ms from 'ms';
+import { createHash } from 'node:crypto';
 import { Injectable } from '@nestjs/common';
-import { Endpoint } from '@/server/api/endpoint-base.js';
+import ms from 'ms';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../error.js';
 
 export const meta = {
@@ -57,7 +57,7 @@ export const paramDef = {
 } as const;
 
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		private httpRequestService: HttpRequestService,
 	) {

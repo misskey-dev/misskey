@@ -10,7 +10,7 @@ import { Layout } from '@/server/web/views/base.js';
 export function AnnouncementPage(props: CommonProps<{
 	announcement: Packed<'Announcement'>;
 }>) {
-	const description = props.announcement.text.length > 100 ? props.announcement.text.slice(0, 100) + '…' : props.announcement.text;
+	const description = props.announcement.text.length > 100 ? `${props.announcement.text.slice(0, 100)}…` : props.announcement.text;
 
 	function ogBlock() {
 		return (

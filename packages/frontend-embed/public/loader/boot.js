@@ -16,19 +16,19 @@
 		renderError('SOMETHING_HAPPENED_IN_PROMISE');
 	};
 
-	let forceError = localStorage.getItem('forceError');
+	const forceError = localStorage.getItem('forceError');
 	if (forceError != null) {
 		renderError('FORCED_ERROR', 'This error is forced by having forceError in local storage.');
 		return;
 	}
 
 	// パラメータに応じてsplashのスタイルを変更
-	const params = new URLSearchParams(location.search);
+	const params = new URLSearchParams(window.location.search);
 	if (params.has('rounded') && params.get('rounded') === 'false') {
-		document.documentElement.classList.add('norounded');
+		window.document.documentElement.classList.add('norounded');
 	}
 	if (params.has('border') && params.get('border') === 'false') {
-		document.documentElement.classList.add('noborder');
+		window.document.documentElement.classList.add('noborder');
 	}
 
 	//#region Detect language & fetch translations
@@ -63,7 +63,7 @@
 	}
 
 	// タイミングによっては、この時点でDOMの構築が済んでいる場合とそうでない場合とがある
-	if (document.readyState !== 'loading') {
+	if (window.document.readyState !== 'loading') {
 		importAppScript();
 	} else {
 		window.addEventListener('DOMContentLoaded', () => {
@@ -75,14 +75,14 @@
 	//#endregion
 
 	async function addStyle(styleText) {
-		let css = document.createElement('style');
-		css.appendChild(document.createTextNode(styleText));
-		document.head.appendChild(css);
+		const css = window.document.createElement('style');
+		css.appendChild(window.document.createTextNode(styleText));
+		window.document.head.appendChild(css);
 	}
 
 	async function renderError(code) {
 		// Cannot set property 'innerHTML' of null を回避
-		if (document.readyState === 'loading') {
+		if (window.document.readyState === 'loading') {
 			await new Promise(resolve => window.addEventListener('DOMContentLoaded', resolve));
 		}
 
@@ -107,7 +107,7 @@
 		const title = messages?.title || 'Failed to initialize Misskey';
 		const reload = messages?.reload || 'Reload';
 
-		document.body.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 9v4" /><path d="M12 16v.01" /></svg>
+		window.document.body.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 9v4" /><path d="M12 16v.01" /></svg>
 		<div class="message">${title}</div>
 		<div class="submessage">Error Code: ${code}</div>
 		<button onclick="location.reload(!0)">

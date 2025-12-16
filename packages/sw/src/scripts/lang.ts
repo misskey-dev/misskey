@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { Locale } from 'i18n';
 /*
  * Language manager for SW
  */
 import { get, set } from 'idb-keyval';
 import { I18n } from '@@/js/i18n.js';
 import { FETCH_TIMEOUT_MS } from '@/const.js';
-import type { Locale } from 'i18n';
 
 class SwLang {
 	public cacheName = `mk-cache-${_VERSION_}`;

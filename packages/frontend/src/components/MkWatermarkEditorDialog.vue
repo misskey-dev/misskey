@@ -64,21 +64,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick } from 'vue';
+import { nextTick, onMounted, onUnmounted, reactive, ref, useTemplateRef, watch } from 'vue';
+import { useMkSelect } from '@/composables/use-mkselect.js';
+import { ensureSignin } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { prefer } from '@/preferences.js';
+import { deepClone } from '@/utility/clone.js';
+import { genId } from '@/utility/id.js';
 import type { WatermarkLayers, WatermarkPreset } from '@/utility/watermark/WatermarkRenderer.js';
 import { WatermarkRenderer } from '@/utility/watermark/WatermarkRenderer.js';
-import { i18n } from '@/i18n.js';
-import MkModalWindow from '@/components/MkModalWindow.vue';
-import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
+import MkModalWindow from '@/components/MkModalWindow.vue';
+import MkSelect from '@/components/MkSelect.vue';
 import XLayer from '@/components/MkWatermarkEditorDialog.Layer.vue';
-import * as os from '@/os.js';
-import { deepClone } from '@/utility/clone.js';
-import { ensureSignin } from '@/i.js';
-import { genId } from '@/utility/id.js';
-import { useMkSelect } from '@/composables/use-mkselect.js';
-import { prefer } from '@/preferences.js';
 
 const $i = ensureSignin();
 

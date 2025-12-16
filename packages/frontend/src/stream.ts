@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as Misskey from 'misskey-js';
 import { markRaw } from 'vue';
-import { $i } from '@/i.js';
+import * as Misskey from 'misskey-js';
 import { wsOrigin } from '@@/js/config.js';
+import { $i } from '@/i.js';
 
 // heart beat interval in ms
 const HEART_BEAT_INTERVAL = 1000 * 60;

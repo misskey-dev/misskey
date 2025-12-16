@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
-import { id } from './util/id.js';
-import { MiUser } from './User.js';
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { MiGalleryPost } from './GalleryPost.js';
+import { MiUser } from './User.js';
+import { id } from './util/id.js';
 
 @Entity('gallery_like')
 @Index(['userId', 'postId'], { unique: true })
@@ -18,7 +18,7 @@ export class MiGalleryLike {
 	@Column(id())
 	public userId: MiUser['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(() => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
@@ -27,7 +27,7 @@ export class MiGalleryLike {
 	@Column(id())
 	public postId: MiGalleryPost['id'];
 
-	@ManyToOne(type => MiGalleryPost, {
+	@ManyToOne(() => MiGalleryPost, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()

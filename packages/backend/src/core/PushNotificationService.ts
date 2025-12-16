@@ -3,16 +3,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
+import type { OnApplicationShutdown } from '@nestjs/common';
+import { Inject, Injectable, } from '@nestjs/common';
+import type * as Redis from 'ioredis';
 import push from 'web-push';
-import * as Redis from 'ioredis';
-import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import type { Packed } from '@/misc/json-schema.js';
-import { getNoteSummary } from '@/misc/get-note-summary.js';
-import type { MiMeta, MiSwSubscription, SwSubscriptionsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
 import { RedisKVCache } from '@/misc/cache.js';
+import { getNoteSummary } from '@/misc/get-note-summary.js';
+import type { Packed } from '@/misc/json-schema.js';
+import type { MiMeta, MiSwSubscription, SwSubscriptionsRepository } from '@/models/_.js';
 
 // Defined also packages/sw/types.ts#L13
 type PushNotificationsTypes = {

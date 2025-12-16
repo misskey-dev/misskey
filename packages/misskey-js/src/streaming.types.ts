@@ -1,4 +1,4 @@
-import {
+import type {
 	Antenna,
 	ChatMessage,
 	ChatMessageLite,
@@ -12,20 +12,20 @@ import {
 	UserDetailedNotMe,
 	UserLite,
 } from './autogen/models.js';
-import {
+import type {
+	ReversiUpdateKey,
+} from './consts.js';
+import type {
 	AnnouncementCreated,
 	EmojiAdded, EmojiDeleted,
 	EmojiUpdated,
 	PageEvent,
 	QueueStats,
 	QueueStatsLog,
+	ReversiGameDetailed,
 	ServerStats,
 	ServerStatsLog,
-	ReversiGameDetailed,
 } from './entities.js';
-import {
-	ReversiUpdateKey,
-} from './consts.js';
 
 type ReversiUpdateSettings<K extends ReversiUpdateKey> = {
 	key: K;
@@ -57,7 +57,6 @@ export type Channels = {
 			registryUpdated: (payload: {
 				scope?: string[];
 				key: string;
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				value: any | null;
 			}) => void;
 			driveFileCreated: (payload: DriveFile) => void;

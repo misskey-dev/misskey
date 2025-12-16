@@ -44,17 +44,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { watch, computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import JSON5 from 'json5';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 import { definePage } from '@/page.js';
-import MkButton from '@/components/MkButton.vue';
-import MkKeyValue from '@/components/MkKeyValue.vue';
-import MkCodeEditor from '@/components/MkCodeEditor.vue';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import FormSplit from '@/components/form/split.vue';
+import MkButton from '@/components/MkButton.vue';
+import MkCodeEditor from '@/components/MkCodeEditor.vue';
 import FormInfo from '@/components/MkInfo.vue';
+import MkKeyValue from '@/components/MkKeyValue.vue';
 
 const props = defineProps<{
 	path: string;

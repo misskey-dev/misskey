@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineAsyncComponent } from 'vue';
 import type { AsyncComponentLoader } from 'vue';
-import type { RouteDef } from '@/lib/nirax.js';
+import { defineAsyncComponent } from 'vue';
 import { $i, iAmModerator } from '@/i.js';
-import MkLoading from '@/pages/_loading_.vue';
+import type { RouteDef } from '@/lib/nirax.js';
 import MkError from '@/pages/_error_.vue';
+import MkLoading from '@/pages/_loading_.vue';
 import PageTimeline from '@/pages/timeline.vue';
 
 export const page = (loader: AsyncComponentLoader) => defineAsyncComponent({

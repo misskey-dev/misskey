@@ -4,12 +4,12 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
-import type { AuthSessionsRepository } from '@/models/_.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
+import type { AuthSessionsRepository } from '@/models/_.js';
 import type { MiAuthSession } from '@/models/AuthSession.js';
 import type { MiUser } from '@/models/User.js';
-import { bindThis } from '@/decorators.js';
 import { AppEntityService } from './AppEntityService.js';
 
 @Injectable()

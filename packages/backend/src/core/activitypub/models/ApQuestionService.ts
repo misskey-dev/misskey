@@ -4,19 +4,19 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { DI } from '@/di-symbols.js';
-import type { UsersRepository, NotesRepository, PollsRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
+import { UtilityService } from '@/core/UtilityService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type Logger from '@/logger.js';
+import type { NotesRepository, PollsRepository, UsersRepository } from '@/models/_.js';
 import type { IPoll } from '@/models/Poll.js';
 import type { MiRemoteUser } from '@/models/User.js';
-import type Logger from '@/logger.js';
-import { bindThis } from '@/decorators.js';
-import { getOneApId, isQuestion } from '../type.js';
-import { UtilityService } from '@/core/UtilityService.js';
 import { ApLoggerService } from '../ApLoggerService.js';
-import { ApResolverService } from '../ApResolverService.js';
 import type { Resolver } from '../ApResolverService.js';
+import { ApResolverService } from '../ApResolverService.js';
 import type { IObject } from '../type.js';
+import { getOneApId, isQuestion } from '../type.js';
 
 @Injectable()
 export class ApQuestionService {
@@ -44,7 +44,7 @@ export class ApQuestionService {
 
 	@bindThis
 	public async extractPollFromQuestion(source: string | IObject, resolver?: Resolver): Promise<IPoll> {
-		// eslint-disable-next-line no-param-reassign
+		// biome-ignore lint/style/noParameterAssign: parameter fallback
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 
 		const question = await resolver.resolve(source);
@@ -90,7 +90,7 @@ export class ApQuestionService {
 		//#endregion
 
 		// resolve new Question object
-		// eslint-disable-next-line no-param-reassign
+		// biome-ignore lint/style/noParameterAssign: parameter fallback
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 		const question = await resolver.resolve(value);
 		this.logger.debug(`fetched question: ${JSON.stringify(question, null, 2)}`);
@@ -106,14 +106,14 @@ export class ApQuestionService {
 		}
 
 		const apChoices = question.oneOf ?? question.anyOf;
-		if (apChoices == null) throw new Error('invalid apChoices: ' + apChoices);
+		if (apChoices == null) throw new Error(`invalid apChoices: ${apChoices}`);
 
 		let changed = false;
 
 		for (const choice of poll.choices) {
 			const oldCount = poll.votes[poll.choices.indexOf(choice)];
 			const newCount = apChoices.filter(ap => ap.name === choice).at(0)?.replies?.totalItems;
-			if (newCount == null || !(Number.isInteger(newCount) && newCount >= 0)) throw new Error('invalid newCount: ' + newCount);
+			if (newCount == null || !(Number.isInteger(newCount) && newCount >= 0)) throw new Error(`invalid newCount: ${newCount}`);
 
 			if (oldCount !== newCount) {
 				changed = true;

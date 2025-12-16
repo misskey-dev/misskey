@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { HttpResponse, http } from 'msw';
 import { action } from 'storybook/actions';
+import type { StoryObj } from '@storybook/vue3';
+import { HttpResponse, http } from 'msw';
 import { file } from '../../.storybook/fakes.js';
 import { commonHandlers } from '../../.storybook/mocks.js';
 import MkCropperDialog from './MkCropperDialog.vue';
-import type { StoryObj } from '@storybook/vue3';
 export const Default = {
 	render(args) {
 		return {

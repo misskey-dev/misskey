@@ -3,13 +3,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable, type OnApplicationShutdown } from '@nestjs/common';
-import { Brackets, In, IsNull, Not } from 'typeorm';
-import * as Redis from 'ioredis';
+import type { OnApplicationShutdown } from '@nestjs/common';
+import { Inject, Injectable, } from '@nestjs/common';
+import type * as Redis from 'ioredis';
 import sanitizeHtml from 'sanitize-html';
-import { DI } from '@/di-symbols.js';
+import { Brackets, In, IsNull, Not } from 'typeorm';
+import { EmailService } from '@/core/EmailService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { GlobalEventService, GlobalEvents } from '@/core/GlobalEventService.js';
+import { IdService } from '@/core/IdService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { RoleService } from '@/core/RoleService.js';
+import { SystemWebhookService } from '@/core/SystemWebhookService.js';
 import { bindThis } from '@/decorators.js';
-import { GlobalEvents, GlobalEventService } from '@/core/GlobalEventService.js';
+import { DI } from '@/di-symbols.js';
 import type {
 	AbuseReportNotificationRecipientRepository,
 	MiAbuseReportNotificationRecipient,
@@ -17,13 +24,7 @@ import type {
 	MiMeta,
 	MiUser,
 } from '@/models/_.js';
-import { EmailService } from '@/core/EmailService.js';
-import { RoleService } from '@/core/RoleService.js';
 import { RecipientMethod } from '@/models/AbuseReportNotificationRecipient.js';
-import { ModerationLogService } from '@/core/ModerationLogService.js';
-import { SystemWebhookService } from '@/core/SystemWebhookService.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { IdService } from './IdService.js';
 
 @Injectable()
 export class AbuseReportNotificationService implements OnApplicationShutdown {

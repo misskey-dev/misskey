@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { MiNote } from '@/models/Note.js';
-import { Packed } from '@/misc/json-schema.js';
+import type { Packed } from '@/misc/json-schema.js';
+import type { MiNote } from '@/models/Note.js';
 
 /**
  * {@link note}が{@link channelIds}のチャンネルに関連するかどうかを判定し、関連する場合はtrueを返します。

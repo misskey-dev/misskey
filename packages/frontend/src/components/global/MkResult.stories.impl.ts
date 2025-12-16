@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import MkResult from './MkResult.vue';
 import type { StoryObj } from '@storybook/vue3';
+import MkResult from './MkResult.vue';
 export const Default = {
 	render(args) {
 		return {

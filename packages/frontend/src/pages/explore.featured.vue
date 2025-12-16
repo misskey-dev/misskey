@@ -21,10 +21,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { markRaw, ref } from 'vue';
-import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
-import MkTab from '@/components/MkTab.vue';
 import { i18n } from '@/i18n.js';
 import { Paginator } from '@/utility/paginator.js';
+import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
+import MkTab from '@/components/MkTab.vue';
 
 const paginatorForNotes = markRaw(new Paginator('notes/featured', {
 	limit: 10,

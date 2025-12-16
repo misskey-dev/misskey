@@ -2,13 +2,12 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { defineAsyncComponent } from 'vue';
-import { genId } from '@/utility/id.js';
 import { url } from '@@/js/config.js';
+import type { EmbeddableEntity, EmbedParams } from '@@/js/embed-page.js';
 import { defaultEmbedParams, embedRouteWithScrollbar } from '@@/js/embed-page.js';
-import type { EmbedParams, EmbeddableEntity } from '@@/js/embed-page.js';
 import * as os from '@/os.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { genId } from '@/utility/id.js';
 
 const MOBILE_THRESHOLD = 500;
 
@@ -44,12 +43,12 @@ export function normalizeEmbedParams(params: EmbedParams): Record<string, string
  * 埋め込みコードを生成（iframe IDの発番もやる）
  */
 export function getEmbedCode(path: string, params?: EmbedParams): string {
-	const iframeId = 'v1_' + genId(); // 将来embed.jsのバージョンが上がったとき用にv1_を付けておく
+	const iframeId = `v1_${genId()}`; // 将来embed.jsのバージョンが上がったとき用にv1_を付けておく
 
 	let paramString = '';
 	if (params) {
 		const searchParams = new URLSearchParams(normalizeEmbedParams(params));
-		paramString = searchParams.toString() === '' ? '' : '?' + searchParams.toString();
+		paramString = searchParams.toString() === '' ? '' : `?${searchParams.toString()}`;
 	}
 
 	const iframeCode = [

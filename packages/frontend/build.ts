@@ -1,6 +1,6 @@
-import * as fs from 'fs/promises';
-import url from 'node:url';
+import * as fs from 'node:fs/promises';
 import path from 'node:path';
+import url from 'node:url';
 import { execa } from 'execa';
 import locales from 'i18n';
 import { LocaleInliner } from '../frontend-builder/locale-inliner.js'
@@ -8,7 +8,7 @@ import { createLogger } from '../frontend-builder/logger';
 
 // requires node 21 or later
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
-const outputDir = __dirname + '/../../built/_frontend_vite_';
+const outputDir = `${__dirname}/../../built/_frontend_vite_`;
 
 /**
  * @return {Promise<void>}

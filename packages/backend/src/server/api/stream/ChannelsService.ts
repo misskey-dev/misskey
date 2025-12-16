@@ -5,25 +5,25 @@
 
 import { Injectable } from '@nestjs/common';
 import { bindThis } from '@/decorators.js';
+import type { MiChannelService } from './channel.js';
+import { AdminChannelService } from './channels/admin.js';
+import { AntennaChannelService } from './channels/antenna.js';
+import { ChannelChannelService } from './channels/channel.js';
+import { ChatRoomChannelService } from './channels/chat-room.js';
+import { ChatUserChannelService } from './channels/chat-user.js';
+import { DriveChannelService } from './channels/drive.js';
+import { GlobalTimelineChannelService } from './channels/global-timeline.js';
+import { HashtagChannelService } from './channels/hashtag.js';
+import { HomeTimelineChannelService } from './channels/home-timeline.js';
 import { HybridTimelineChannelService } from './channels/hybrid-timeline.js';
 import { LocalTimelineChannelService } from './channels/local-timeline.js';
-import { HomeTimelineChannelService } from './channels/home-timeline.js';
-import { GlobalTimelineChannelService } from './channels/global-timeline.js';
 import { MainChannelService } from './channels/main.js';
-import { ChannelChannelService } from './channels/channel.js';
-import { AdminChannelService } from './channels/admin.js';
-import { ServerStatsChannelService } from './channels/server-stats.js';
 import { QueueStatsChannelService } from './channels/queue-stats.js';
-import { UserListChannelService } from './channels/user-list.js';
-import { AntennaChannelService } from './channels/antenna.js';
-import { DriveChannelService } from './channels/drive.js';
-import { HashtagChannelService } from './channels/hashtag.js';
-import { RoleTimelineChannelService } from './channels/role-timeline.js';
-import { ChatUserChannelService } from './channels/chat-user.js';
-import { ChatRoomChannelService } from './channels/chat-room.js';
 import { ReversiChannelService } from './channels/reversi.js';
 import { ReversiGameChannelService } from './channels/reversi-game.js';
-import { type MiChannelService } from './channel.js';
+import { RoleTimelineChannelService } from './channels/role-timeline.js';
+import { ServerStatsChannelService } from './channels/server-stats.js';
+import { UserListChannelService } from './channels/user-list.js';
 
 @Injectable()
 export class ChannelsService {

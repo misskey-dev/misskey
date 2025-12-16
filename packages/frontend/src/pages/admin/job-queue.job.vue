@@ -163,29 +163,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
-import * as Misskey from 'misskey-js';
+import { computed, ref } from 'vue';
 import JSON5 from 'json5';
-import type { TlEvent } from '@/components/MkTl.vue';
-import * as os from '@/os.js';
+import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
-import MkButton from '@/components/MkButton.vue';
-import MkTabs from '@/components/MkTabs.vue';
-import MkFolder from '@/components/MkFolder.vue';
-import MkCode from '@/components/MkCode.vue';
-import MkKeyValue from '@/components/MkKeyValue.vue';
-import MkCodeEditor from '@/components/MkCodeEditor.vue';
-import MkTl from '@/components/MkTl.vue';
+import * as os from '@/os.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import MkButton from '@/components/MkButton.vue';
+import MkCode from '@/components/MkCode.vue';
+import MkCodeEditor from '@/components/MkCodeEditor.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkKeyValue from '@/components/MkKeyValue.vue';
+import MkTabs from '@/components/MkTabs.vue';
+import type { TlEvent } from '@/components/MkTl.vue';
+import MkTl from '@/components/MkTl.vue';
 
 function msSMH(v: number | null) {
 	if (v == null) return 'N/A';
 	if (v === 0) return '0';
 	const suffixes = ['ms', 's', 'm', 'h'];
 	const isMinus = v < 0;
+	// biome-ignore lint/style/noParameterAssign: allow
 	if (isMinus) v = -v;
 	const i = Math.floor(Math.log(v) / Math.log(1000));
-	const value = v / Math.pow(1000, i);
+	const value = v / 1000 ** i;
 	const suffix = suffixes[i];
 	return `${isMinus ? '-' : ''}${value.toFixed(1)}${suffix}`;
 }

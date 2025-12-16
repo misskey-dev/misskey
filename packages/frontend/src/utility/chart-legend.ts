@@ -4,7 +4,7 @@
  */
 
 import type { Plugin } from 'chart.js';
-import MkChartLegend from '@/components/MkChartLegend.vue';
+import type MkChartLegend from '@/components/MkChartLegend.vue';
 
 export const chartLegend = (legend: InstanceType<typeof MkChartLegend> | null | undefined) => ({
 	id: 'htmlLegend',

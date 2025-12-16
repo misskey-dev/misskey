@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { post } from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { $i } from '@/i.js';
-import { getAccountFromId } from '@/utility/get-account-from-id.js';
-import { deepClone } from '@/utility/clone.js';
-import { mainRouter } from '@/router.js';
 import { login } from '@/accounts.js';
+import { $i } from '@/i.js';
+import { post } from '@/os.js';
+import { mainRouter } from '@/router.js';
+import { deepClone } from '@/utility/clone.js';
+import { getAccountFromId } from '@/utility/get-account-from-id.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 export function swInject() {
 	navigator.serviceWorker.addEventListener('message', async ev => {

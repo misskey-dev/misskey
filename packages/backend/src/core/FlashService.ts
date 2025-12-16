@@ -5,10 +5,10 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
-import { DI } from '@/di-symbols.js';
-import { type FlashLikesRepository, MiUser, type FlashsRepository } from '@/models/_.js';
 import { QueryService } from '@/core/QueryService.js';
+import { DI } from '@/di-symbols.js';
 import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
+import type { FlashLikesRepository, FlashsRepository, MiUser } from '@/models/_.js';
 
 /**
  * MisskeyPlay関係のService

@@ -11,9 +11,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, useTemplateRef } from 'vue';
-import MkModal from './MkModal.vue';
-import MkMenu from './MkMenu.vue';
 import type { MenuItem } from '@/types/menu.js';
+import MkMenu from './MkMenu.vue';
+import MkModal from './MkModal.vue';
 
 defineProps<{
 	items: MenuItem[];

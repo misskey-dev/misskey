@@ -4,12 +4,12 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { SystemWebhookService } from '@/core/SystemWebhookService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
 import type { FollowingsRepository, UsersRepository } from '@/models/_.js';
 import type { MiUser } from '@/models/User.js';
-import { DI } from '@/di-symbols.js';
-import { bindThis } from '@/decorators.js';
-import { SystemWebhookService } from '@/core/SystemWebhookService.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
 
 @Injectable()
 export class UserService {

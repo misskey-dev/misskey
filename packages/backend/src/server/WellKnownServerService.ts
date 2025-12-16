@@ -3,22 +3,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import fastifyAccepts from '@fastify/accepts';
 import { Inject, Injectable } from '@nestjs/common';
+import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
+import type { FindOptionsWhere } from 'typeorm';
 import { IsNull } from 'typeorm';
 import vary from 'vary';
-import fastifyAccepts from '@fastify/accepts';
-import { DI } from '@/di-symbols.js';
-import type { MiMeta, UsersRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
-import { escapeAttribute, escapeValue } from '@/misc/prelude/xml.js';
-import type { MiUser } from '@/models/User.js';
-import * as Acct from '@/misc/acct.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import * as Acct from '@/misc/acct.js';
+import { escapeAttribute, escapeValue } from '@/misc/prelude/xml.js';
+import type { MiMeta, UsersRepository } from '@/models/_.js';
+import type { MiUser } from '@/models/User.js';
 import { NodeinfoServerService } from './NodeinfoServerService.js';
 import { OAuth2ProviderService } from './oauth/OAuth2ProviderService.js';
-import type { FindOptionsWhere } from 'typeorm';
-import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
 
 @Injectable()
 export class WellKnownServerService {

@@ -116,32 +116,32 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, useTemplateRef, computed, watch, onMounted } from 'vue';
+import { computed, onMounted, ref, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
+import type {
+	CustomEmojiFolderTree,
+	UnicodeEmojiDef,
+} from '@@/js/emojilist.js';
 import {
-	emojilist,
-	emojiCharByCategory,
 	unicodeEmojiCategories as categories,
+	emojiCharByCategory,
+	emojilist,
 	getEmojiName,
 	getUnicodeEmoji,
 } from '@@/js/emojilist.js';
-import type {
-	UnicodeEmojiDef,
-	CustomEmojiFolderTree,
-} from '@@/js/emojilist.js';
-import XSection from '@/components/MkEmojiPicker.section.vue';
-import MkRippleEffect from '@/components/MkRippleEffect.vue';
-import * as os from '@/os.js';
-import { isTouchUsing } from '@/utility/touch.js';
-import { deviceKind } from '@/utility/device-kind.js';
-import { i18n } from '@/i18n.js';
-import { store } from '@/store.js';
 import { customEmojiCategories, customEmojis, customEmojisMap } from '@/custom-emojis.js';
 import { $i } from '@/i.js';
-import { checkReactionPermissions } from '@/utility/check-reaction-permissions.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 import { prefer } from '@/preferences.js';
 import { useRouter } from '@/router.js';
+import { store } from '@/store.js';
+import { checkReactionPermissions } from '@/utility/check-reaction-permissions.js';
+import { deviceKind } from '@/utility/device-kind.js';
 import { haptic } from '@/utility/haptic.js';
+import { isTouchUsing } from '@/utility/touch.js';
+import XSection from '@/components/MkEmojiPicker.section.vue';
+import MkRippleEffect from '@/components/MkRippleEffect.vue';
 
 const router = useRouter();
 
@@ -471,9 +471,10 @@ function onKeydown(ev: KeyboardEvent) {
 	}
 }
 
-function done(query?: string): boolean | void {
+function done(query?: string): boolean {
+	// biome-ignore lint/style/noParameterAssign: parameter fallback
 	if (query == null) query = q.value;
-	if (query == null || typeof query !== 'string') return;
+	if (query == null || typeof query !== 'string') return false;
 
 	const q2 = query.replace(/:/g, '');
 	const exactMatchCustom = customEmojisMap.get(q2);
@@ -494,6 +495,7 @@ function done(query?: string): boolean | void {
 		chosen(searchResultUnicode.value[0]);
 		return true;
 	}
+	return false;
 }
 
 function settings() {

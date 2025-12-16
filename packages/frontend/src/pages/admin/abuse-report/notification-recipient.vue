@@ -38,17 +38,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { entities } from 'misskey-js';
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue';
-import XRecipient from './notification-recipient.item.vue';
+import { entities } from 'misskey-js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import MkButton from '@/components/MkButton.vue';
+import MkDivider from '@/components/MkDivider.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os.js';
-import MkDivider from '@/components/MkDivider.vue';
-import { i18n } from '@/i18n.js';
-import { useMkSelect } from '@/composables/use-mkselect.js';
+import XRecipient from './notification-recipient.item.vue';
 
 const recipients = ref<entities.AbuseReportNotificationRecipient[]>([]);
 
@@ -111,7 +111,7 @@ async function onDeleteButtonClicked(id: string) {
 }
 
 async function showEditor(mode: 'create' | 'edit', id?: string) {
-	const { needLoad } = await new Promise<{ needLoad: boolean }>(async resolve => {
+	const { needLoad } = await new Promise<{ needLoad: boolean }>(resolve => {
 		const { dispose } = os.popup(
 			defineAsyncComponent(() => import('./notification-recipient.editor.vue')),
 			{

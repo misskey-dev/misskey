@@ -43,15 +43,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { watch, ref, computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { extractAvgColorFromBlurhash } from '@@/js/extract-avg-color-from-blurhash.js';
+import { acct, userPage } from '@/filters/user.js';
+import { prefer } from '@/preferences.js';
+import { getStaticImageUrl } from '@/utility/media-proxy.js';
+import MkUserOnlineIndicator from '@/components/MkUserOnlineIndicator.vue';
 import MkImgWithBlurhash from '../MkImgWithBlurhash.vue';
 import MkA from './MkA.vue';
-import { getStaticImageUrl } from '@/utility/media-proxy.js';
-import { acct, userPage } from '@/filters/user.js';
-import MkUserOnlineIndicator from '@/components/MkUserOnlineIndicator.vue';
-import { prefer } from '@/preferences.js';
 
 const animation = ref(prefer.s.animation);
 const squareAvatars = ref(prefer.s.squareAvatars);

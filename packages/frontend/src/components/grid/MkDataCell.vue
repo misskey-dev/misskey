@@ -91,14 +91,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, useTemplateRef, toRefs, watch } from 'vue';
-import type { Size } from '@/components/grid/grid.js';
-import type { CellValue, GridCell } from '@/components/grid/cell.js';
-import type { GridRowSetting } from '@/components/grid/row.js';
-import { GridEventEmitter } from '@/components/grid/grid.js';
+import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, toRefs, useTemplateRef, watch } from 'vue';
 import { useTooltip } from '@/composables/use-tooltip.js';
 import * as os from '@/os.js';
+import type { CellValue, GridCell } from '@/components/grid/cell.js';
+import type { Size } from '@/components/grid/grid.js';
+import { GridEventEmitter } from '@/components/grid/grid.js';
 import { equalCellAddress, getCellAddress } from '@/components/grid/grid-utils.js';
+import type { GridRowSetting } from '@/components/grid/row.js';
 
 const emit = defineEmits<{
 	(ev: 'operation:beginEdit', sender: GridCell): void;

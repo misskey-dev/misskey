@@ -4,30 +4,28 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import * as Redis from 'ioredis';
+import type * as Redis from 'ioredis';
 import { Brackets } from 'typeorm';
-import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import { QueueService } from '@/core/QueueService.js';
-import { IdService } from '@/core/IdService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { ChatEntityService } from '@/core/entities/ChatEntityService.js';
-import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { IdService } from '@/core/IdService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { NotificationService } from '@/core/NotificationService.js';
 import { PushNotificationService } from '@/core/PushNotificationService.js';
-import { bindThis } from '@/decorators.js';
-import type { ChatApprovalsRepository, ChatMessagesRepository, ChatRoomInvitationsRepository, ChatRoomMembershipsRepository, ChatRoomsRepository, MiChatMessage, MiChatRoom, MiChatRoomMembership, MiDriveFile, MiUser, MutingsRepository, UsersRepository } from '@/models/_.js';
-import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { QueryService } from '@/core/QueryService.js';
 import { RoleService } from '@/core/RoleService.js';
+import { UserBlockingService } from '@/core/UserBlockingService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
-import { MiChatRoomInvitation } from '@/models/ChatRoomInvitation.js';
-import { Packed } from '@/misc/json-schema.js';
-import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
-import { CustomEmojiService } from '@/core/CustomEmojiService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
 import { emojiRegex } from '@/misc/emoji-regex.js';
-import { NotificationService } from '@/core/NotificationService.js';
-import { ModerationLogService } from '@/core/ModerationLogService.js';
+import type { Packed } from '@/misc/json-schema.js';
+import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
+import type { ChatApprovalsRepository, ChatMessagesRepository, ChatRoomInvitationsRepository, ChatRoomMembershipsRepository, ChatRoomsRepository, MiChatMessage, MiChatRoom, MiChatRoomMembership, MiDriveFile, MiUser, MutingsRepository, UsersRepository } from '@/models/_.js';
+import type { MiChatRoomInvitation } from '@/models/ChatRoomInvitation.js';
 
 const MAX_ROOM_MEMBERS = 50;
 const MAX_REACTIONS_PER_MESSAGE = 100;
@@ -81,8 +79,6 @@ export class ChatService {
 		private chatEntityService: ChatEntityService,
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
-		private apRendererService: ApRendererService,
-		private queueService: QueueService,
 		private pushNotificationService: PushNotificationService,
 		private notificationService: NotificationService,
 		private userBlockingService: UserBlockingService,
@@ -833,7 +829,7 @@ export class ChatService {
 
 	@bindThis
 	public async react(messageId: MiChatMessage['id'], userId: MiUser['id'], reaction_: string) {
-		let reaction;
+		let reaction: string;
 
 		const custom = reaction_.match(isCustomEmojiRegexp);
 
@@ -899,7 +895,7 @@ export class ChatService {
 
 	@bindThis
 	public async unreact(messageId: MiChatMessage['id'], userId: MiUser['id'], reaction_: string) {
-		let reaction;
+		let reaction: string;
 
 		const custom = reaction_.match(isCustomEmojiRegexp);
 

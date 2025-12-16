@@ -5,7 +5,6 @@
 
 process.env.NODE_ENV = 'test';
 
-import { Test } from '@nestjs/testing';
 import {
 	CompleteMultipartUploadCommand,
 	CreateMultipartUploadCommand,
@@ -13,12 +12,13 @@ import {
 	S3Client,
 	UploadPartCommand,
 } from '@aws-sdk/client-s3';
+import type { TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
 import { mockClient } from 'aws-sdk-client-mock';
-import { GlobalModule } from '@/GlobalModule.js';
 import { CoreModule } from '@/core/CoreModule.js';
 import { S3Service } from '@/core/S3Service.js';
-import { MiMeta } from '@/models/_.js';
-import type { TestingModule } from '@nestjs/testing';
+import { GlobalModule } from '@/GlobalModule.js';
+import type { MiMeta } from '@/models/_.js';
 
 describe('S3Service', () => {
 	let app: TestingModule;

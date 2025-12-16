@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
-import { id } from './util/id.js';
-import { MiUser } from './User.js';
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { MiNote } from './Note.js';
+import { MiUser } from './User.js';
+import { id } from './util/id.js';
 
 @Entity('poll_vote')
 @Index(['userId', 'noteId', 'choice'], { unique: true })
@@ -18,7 +18,7 @@ export class MiPollVote {
 	@Column(id())
 	public userId: MiUser['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(() => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
@@ -28,7 +28,7 @@ export class MiPollVote {
 	@Column(id())
 	public noteId: MiNote['id'];
 
-	@ManyToOne(type => MiNote, {
+	@ManyToOne(() => MiNote, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()

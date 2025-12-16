@@ -3,9 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { OnApplicationShutdown } from '@nestjs/common';
 import { Inject, Injectable } from '@nestjs/common';
-import * as Redis from 'ioredis';
+import type * as Redis from 'ioredis';
 import { In } from 'typeorm';
+import { CacheService } from '@/core/CacheService.js';
 import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
@@ -18,8 +20,6 @@ import type { AntennasRepository, UserListMembershipsRepository } from '@/models
 import type { MiAntenna } from '@/models/Antenna.js';
 import type { MiNote } from '@/models/Note.js';
 import type { MiUser } from '@/models/User.js';
-import { CacheService } from './CacheService.js';
-import type { OnApplicationShutdown } from '@nestjs/common';
 
 @Injectable()
 export class AntennaService implements OnApplicationShutdown {
@@ -167,7 +167,7 @@ export class AntennaService implements OnApplicationShutdown {
 		if (keywords.length > 0) {
 			if (note.text == null && note.cw == null) return false;
 
-			const _text = (note.text ?? '') + '\n' + (note.cw ?? '');
+			const _text = `${note.text ?? ''}\n${note.cw ?? ''}`;
 
 			const matched = keywords.some(and =>
 				and.every(keyword =>
@@ -187,7 +187,7 @@ export class AntennaService implements OnApplicationShutdown {
 		if (excludeKeywords.length > 0) {
 			if (note.text == null && note.cw == null) return false;
 
-			const _text = (note.text ?? '') + '\n' + (note.cw ?? '');
+			const _text = `${note.text ?? ''}\n${note.cw ?? ''}`;
 
 			const matched = excludeKeywords.some(and =>
 				and.every(keyword =>
@@ -238,7 +238,7 @@ export class AntennaService implements OnApplicationShutdown {
 		const antennaIds = antennasToMigrate.map(x => x.id);
 
 		// Update the antennas by appending dst users acct to the users list
-		const dstUserAcct = '@' + Acct.toString({ username: dst.username, host: dst.host });
+		const dstUserAcct = `@${Acct.toString({ username: dst.username, host: dst.host })}`;
 
 		await this.antennasRepository.createQueryBuilder('antenna')
 			.update()

@@ -4,22 +4,21 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type Logger from '@/logger.js';
-import FederationChart from '@/core/chart/charts/federation.js';
-import NotesChart from '@/core/chart/charts/notes.js';
-import UsersChart from '@/core/chart/charts/users.js';
 import ActiveUsersChart from '@/core/chart/charts/active-users.js';
+import ApRequestChart from '@/core/chart/charts/ap-request.js';
+import DriveChart from '@/core/chart/charts/drive.js';
+import FederationChart from '@/core/chart/charts/federation.js';
 import InstanceChart from '@/core/chart/charts/instance.js';
+import NotesChart from '@/core/chart/charts/notes.js';
+import PerUserDriveChart from '@/core/chart/charts/per-user-drive.js';
+import PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
 import PerUserNotesChart from '@/core/chart/charts/per-user-notes.js';
 import PerUserPvChart from '@/core/chart/charts/per-user-pv.js';
-import DriveChart from '@/core/chart/charts/drive.js';
 import PerUserReactionsChart from '@/core/chart/charts/per-user-reactions.js';
-import PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
-import PerUserDriveChart from '@/core/chart/charts/per-user-drive.js';
-import ApRequestChart from '@/core/chart/charts/ap-request.js';
+import UsersChart from '@/core/chart/charts/users.js';
 import { bindThis } from '@/decorators.js';
+import type Logger from '@/logger.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
-import type * as Bull from 'bullmq';
 
 @Injectable()
 export class CleanChartsProcessorService {

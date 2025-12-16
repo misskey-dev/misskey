@@ -12,10 +12,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import XRoot from './admin-file.root.vue';
-import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import XRoot from './admin-file.root.vue';
 
 const props = defineProps<{
 	fileId: string,

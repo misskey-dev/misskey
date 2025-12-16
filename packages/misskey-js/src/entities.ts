@@ -1,5 +1,5 @@
-import { ModerationLogPayloads } from './consts.js';
-import {
+import type { AuthenticationResponseJSON, PublicKeyCredentialRequestOptionsJSON } from '@simplewebauthn/types';
+import type {
 	Announcement,
 	EmojiDetailed,
 	MeDetailed,
@@ -10,7 +10,7 @@ import {
 	User,
 	UserDetailedNotMe,
 } from './autogen/models.js';
-import type { AuthenticationResponseJSON, PublicKeyCredentialRequestOptionsJSON } from '@simplewebauthn/types';
+import type { ModerationLogPayloads } from './consts.js';
 
 export * from './autogen/entities.js';
 export * from './autogen/models.js';
@@ -39,7 +39,6 @@ export type PureRenote =
 export type PageEvent = {
 	pageId: Page['id'];
 	event: string;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	var: any;
 	userId: User['id'];
 	user: User;

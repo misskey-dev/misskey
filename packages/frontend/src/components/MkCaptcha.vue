@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, useTemplateRef, computed, onMounted, onBeforeUnmount, watch, onUnmounted } from 'vue';
+import { computed, onBeforeUnmount, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
 import { store } from '@/store.js';
 
 // APIs provided by Captcha services
@@ -51,7 +51,6 @@ type CaptchaContainer = {
 
 declare global {
 	// Window を拡張してるため、空ではない
-	// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 	interface Window extends CaptchaContainer { }
 }
 

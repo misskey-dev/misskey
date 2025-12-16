@@ -32,11 +32,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
-import MkWindow from '@/components/MkWindow.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
-import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import MkButton from '@/components/MkButton.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
+import MkWindow from '@/components/MkWindow.vue';
 
 const props = defineProps<{
 	user: Misskey.entities.UserLite;

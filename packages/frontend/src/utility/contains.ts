@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+// biome-ignore lint/style/noDefaultExport: historical reason
 export default (parent, child, checkSame = true) => {
 	if (checkSame && parent === child) return true;
 	let node = child.parentNode;

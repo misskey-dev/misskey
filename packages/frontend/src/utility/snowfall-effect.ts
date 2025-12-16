@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import vertexSource from './snowfall-effect.vertex.glsl';
 import fragmentSource from './snowfall-effect.fragment.glsl';
+import vertexSource from './snowfall-effect.vertex.glsl';
 
 export class SnowfallEffect {
 	private VERTEX_SOURCE = vertexSource;
 	private FRAGMENT_SOURCE = fragmentSource;
 
+	// biome-ignore-start lint/correctness/noUnusedPrivateClassMembers: https://github.com/biomejs/biome/issues/6974
 	private gl: WebGLRenderingContext;
 	private program: WebGLProgram;
 	private canvas: HTMLCanvasElement;
@@ -48,6 +49,7 @@ export class SnowfallEffect {
 			previous: 0,
 		};
 	private raf = 0;
+	// biome-ignore-end lint/correctness/noUnusedPrivateClassMembers: https://github.com/biomejs/biome/issues/6974
 
 	private density: number = 1 / 90;
 	private depth = 100;

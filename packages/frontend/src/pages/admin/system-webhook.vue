@@ -28,14 +28,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue';
 import { entities } from 'misskey-js';
-import XItem from './system-webhook.item.vue';
-import FormSection from '@/components/form/section.vue';
-import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
-import MkButton from '@/components/MkButton.vue';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { showSystemWebhookEditorDialog } from '@/components/MkSystemWebhookEditor.impl.js';
 import * as os from '@/os.js';
+import { definePage } from '@/page.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import FormSection from '@/components/form/section.vue';
+import MkButton from '@/components/MkButton.vue';
+import { showSystemWebhookEditorDialog } from '@/components/MkSystemWebhookEditor.impl.js';
+import XItem from './system-webhook.item.vue';
 
 const webhooks = ref<entities.SystemWebhook[]>([]);
 

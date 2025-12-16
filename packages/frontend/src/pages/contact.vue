@@ -45,12 +45,12 @@ import { ref } from 'vue';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { definePage } from '@/page.js';
-import { getUserEnvironment } from '@/utility/get-user-environment.js';
 import type { UserEnvironment } from '@/utility/get-user-environment.js';
-import MkKeyValue from '@/components/MkKeyValue.vue';
-import MkFolder from '@/components/MkFolder.vue';
-import MkLink from '@/components/MkLink.vue';
+import { getUserEnvironment } from '@/utility/get-user-environment.js';
 import MkCode from '@/components/MkCode.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkKeyValue from '@/components/MkKeyValue.vue';
+import MkLink from '@/components/MkLink.vue';
 
 const userEnv = ref<UserEnvironment | null>(null);
 

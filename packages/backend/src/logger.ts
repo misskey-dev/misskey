@@ -6,10 +6,10 @@
 import cluster from 'node:cluster';
 import chalk from 'chalk';
 import { default as convertColor } from 'color-convert';
+import type { KEYWORD } from 'color-convert/conversions.js';
 import { format as dateFormat } from 'date-fns';
 import { bindThis } from '@/decorators.js';
 import { envOption } from './env.js';
-import type { KEYWORD } from 'color-convert/conversions.js';
 
 type Context = {
 	name: string;
@@ -18,7 +18,7 @@ type Context = {
 
 type Level = 'error' | 'success' | 'warning' | 'debug' | 'info';
 
-// eslint-disable-next-line import/no-default-export
+// biome-ignore lint/style/noDefaultExport: historical reason
 export default class Logger {
 	private context: Context;
 	private parentLogger: Logger | null = null;
@@ -65,7 +65,7 @@ export default class Logger {
 			null;
 
 		let log = `${l} ${worker}\t[${contexts.join(' ')}]\t${m}`;
-		if (envOption.withLogTime) log = chalk.gray(time) + ' ' + log;
+		if (envOption.withLogTime) log = `${chalk.gray(time)} ${log}`;
 
 		const args: unknown[] = [important ? chalk.bold(log) : log];
 		if (data != null) {
@@ -77,6 +77,7 @@ export default class Logger {
 	@bindThis
 	public error(x: string | Error, data?: Record<string, any> | null, important = false): void { // 実行を継続できない状況で使う
 		if (x instanceof Error) {
+			// biome-ignore lint/style/noParameterAssign: parameter fallback
 			data = data ?? {};
 			data.e = x;
 			this.log('error', x.toString(), data, important);

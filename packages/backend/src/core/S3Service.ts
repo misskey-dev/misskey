@@ -3,17 +3,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type * as http from 'node:http';
+import type * as https from 'node:https';
 import { URL } from 'node:url';
-import * as http from 'node:http';
-import * as https from 'node:https';
-import { Injectable } from '@nestjs/common';
+import type { DeleteObjectCommandInput, PutObjectCommandInput } from '@aws-sdk/client-s3';
 import { DeleteObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
-import { NodeHttpHandler, NodeHttpHandlerOptions } from '@smithy/node-http-handler';
-import type { MiMeta } from '@/models/Meta.js';
+import { Injectable } from '@nestjs/common';
+import type { NodeHttpHandlerOptions } from '@smithy/node-http-handler';
+import { NodeHttpHandler, } from '@smithy/node-http-handler';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
-import type { DeleteObjectCommandInput, PutObjectCommandInput } from '@aws-sdk/client-s3';
+import type { MiMeta } from '@/models/Meta.js';
 
 @Injectable()
 export class S3Service {

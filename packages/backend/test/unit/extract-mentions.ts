@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as assert from 'assert';
-
+import * as assert from 'node:assert';
 import { parse } from 'mfm-js';
 import { extractMentions } from '@/misc/extract-mentions.js';
 

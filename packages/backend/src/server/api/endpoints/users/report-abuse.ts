@@ -4,10 +4,10 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import { AbuseReportService } from '@/core/AbuseReportService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GetterService } from '@/server/api/GetterService.js';
-import { RoleService } from '@/core/RoleService.js';
-import { AbuseReportService } from '@/core/AbuseReportService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -49,7 +49,7 @@ export const paramDef = {
 } as const;
 
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		private getterService: GetterService,
 		private roleService: RoleService,

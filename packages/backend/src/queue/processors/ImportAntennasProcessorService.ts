@@ -3,18 +3,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Injectable, Inject } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import _Ajv from 'ajv';
-import { IdService } from '@/core/IdService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import Logger from '@/logger.js';
-import type { AntennasRepository } from '@/models/_.js';
-import { DI } from '@/di-symbols.js';
-import { bindThis } from '@/decorators.js';
-import { Schema, SchemaType } from '@/misc/json-schema.js';
-import { QueueLoggerService } from '../QueueLoggerService.js';
-import { DBAntennaImportJobData } from '../types.js';
 import type * as Bull from 'bullmq';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { IdService } from '@/core/IdService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type Logger from '@/logger.js';
+import type { Schema, SchemaType } from '@/misc/json-schema.js';
+import type { AntennasRepository } from '@/models/_.js';
+import { QueueLoggerService } from '../QueueLoggerService.js';
+import type { DBAntennaImportJobData } from '../types.js';
 
 const Ajv = _Ajv.default;
 
@@ -99,7 +99,7 @@ export class ImportAntennasProcessorService {
 					withFile: antenna.withFile,
 					excludeNotesInSensitiveChannel: antenna.excludeNotesInSensitiveChannel,
 				});
-				this.logger.succ('Antenna created: ' + result.id);
+				this.logger.succ(`Antenna created: ${result.id}`);
 				this.globalEventService.publishInternalEvent('antennaCreated', result);
 			}
 		} catch (err: any) {

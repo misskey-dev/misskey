@@ -6,10 +6,10 @@
 // FirefoxのプライベートモードなどではindexedDBが使用不可能なので、
 // indexedDBが使えない環境ではlocalStorageを使う
 import {
+	clear as iclear,
+	del as idel,
 	get as iget,
 	set as iset,
-	del as idel,
-	clear as iclear,
 } from 'idb-keyval';
 import { miLocalStorage } from '@/local-storage.js';
 
@@ -20,7 +20,6 @@ let idbAvailable = typeof window !== 'undefined' ? !!(window.indexedDB && typeof
 // iframe.contentWindow.indexedDB.deleteDatabase() がchromeのバグで使用できないため、indexedDBを無効化している。
 // バグが治って再度有効化するのであれば、cypressのコマンド内のコメントアウトを外すこと
 // see https://github.com/misskey-dev/misskey/issues/13605#issuecomment-2053652123
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
 if (window.Cypress) {
 	idbAvailable = false;

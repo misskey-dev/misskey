@@ -3,11 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as assert from 'assert';
+import * as assert from 'node:assert';
 import { Test } from '@nestjs/testing';
-
-import { CoreModule } from '@/core/CoreModule.js';
 import { ApMfmService } from '@/core/activitypub/ApMfmService.js';
+import { CoreModule } from '@/core/CoreModule.js';
 import { GlobalModule } from '@/GlobalModule.js';
 
 describe('ApMfmService', () => {

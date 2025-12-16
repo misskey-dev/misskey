@@ -4,5 +4,5 @@
  */
 
 export { Game } from './game.js';
-export * as Serializer from './serializer.js';
 export * as maps from './maps.js';
+export * as Serializer from './serializer.js';

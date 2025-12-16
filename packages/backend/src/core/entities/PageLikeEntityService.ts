@@ -4,12 +4,12 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { PageLikesRepository } from '@/models/_.js';
 import type { } from '@/models/Blocking.js';
-import type { MiUser } from '@/models/User.js';
 import type { MiPageLike } from '@/models/PageLike.js';
-import { bindThis } from '@/decorators.js';
+import type { MiUser } from '@/models/User.js';
 import { PageEntityService } from './PageEntityService.js';
 
 @Injectable()

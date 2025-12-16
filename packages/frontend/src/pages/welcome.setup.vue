@@ -127,12 +127,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { host, version } from '@@/js/config.js';
-import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/MkInput.vue';
+import { login } from '@/accounts.js';
+import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
-import { login } from '@/accounts.js';
+import MkButton from '@/components/MkButton.vue';
+import MkInput from '@/components/MkInput.vue';
 import MkLink from '@/components/MkLink.vue';
 import MkServerSetupWizard from '@/components/MkServerSetupWizard.vue';
 
@@ -143,7 +143,7 @@ const accountCreating = ref(false);
 const accountCreated = ref(false);
 const step = ref(0);
 
-let token;
+let token : string;
 
 function createAccount() {
 	if (accountCreating.value) return;
@@ -162,7 +162,7 @@ function createAccount() {
 		accountCreating.value = false;
 
 		let title = i18n.ts.somethingHappened;
-		let text = err.message + '\n' + err.id;
+		let text = `${err.message}\n${err.id}`;
 
 		if (err.code === 'ACCESS_DENIED') {
 			title = i18n.ts.permissionDeniedError;

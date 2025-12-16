@@ -23,10 +23,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { nextTick, onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
-import { calcPopupPosition } from '@/utility/popup-position.js';
-import * as os from '@/os.js';
-import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { calcPopupPosition } from '@/utility/popup-position.js';
+import MkButton from '@/components/MkButton.vue';
 
 const props = withDefaults(defineProps<{
 	title: string;
@@ -84,11 +84,11 @@ function setPosition() {
 	});
 
 	bodyEl.value.style.transformOrigin = data.transformOrigin;
-	bodyEl.value.style.left = data.left + 'px';
-	bodyEl.value.style.top = data.top + 'px';
+	bodyEl.value.style.left = `${data.left}px`;
+	bodyEl.value.style.top = `${data.top}px`;
 }
 
-let loopHandler;
+let loopHandler: number;
 
 onMounted(() => {
 	nextTick(() => {

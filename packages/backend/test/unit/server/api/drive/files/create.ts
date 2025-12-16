@@ -3,19 +3,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
-import { FastifyInstance } from 'fastify';
+import type { TestingModule } from '@nestjs/testing';
+import { Test, } from '@nestjs/testing';
+import type { FastifyInstance } from 'fastify';
 import request from 'supertest';
-import { randomString } from '../../../../../utils.js';
 import { CoreModule } from '@/core/CoreModule.js';
+import { IdService } from '@/core/IdService.js';
 import { RoleService } from '@/core/RoleService.js';
 import { DI } from '@/di-symbols.js';
 import { GlobalModule } from '@/GlobalModule.js';
-import { DriveFoldersRepository, MiDriveFolder, MiRole, UserProfilesRepository, UsersRepository } from '@/models/_.js';
-import { MiUser } from '@/models/User.js';
+import type { DriveFoldersRepository, MiDriveFolder, MiRole, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import type { MiUser } from '@/models/User.js';
 import { ServerModule } from '@/server/ServerModule.js';
 import { ServerService } from '@/server/ServerService.js';
-import { IdService } from '@/core/IdService.js';
+import { randomString } from '../../../../../utils.js';
 
 // TODO: uploadableFileTypes で許可されていないファイルが弾かれるかのテスト
 
@@ -155,7 +156,7 @@ describe('/drive/files/create', () => {
 			fileContent: Buffer.from('a'.repeat(1000 * 1000)),
 		});
 		expect(result.statusCode).toBe(200);
-		expect(result.body.name).toBe(name + '.unknown');
+		expect(result.body.name).toBe(`${name}.unknown`);
 		expect(result.body.comment).toBe(comment);
 		expect(result.body.isSensitive).toBe(true);
 		expect(result.body.folderId).toBe(folder.id);
@@ -191,7 +192,7 @@ describe('/drive/files/create', () => {
 			fileContent: Buffer.from('a'.repeat(10)),
 		});
 		expect(result.statusCode).toBe(200);
-		expect(result.body.name).toBe(name + '.unknown');
+		expect(result.body.name).toBe(`${name}.unknown`);
 		expect(result.body.comment).toBe(comment);
 		expect(result.body.isSensitive).toBe(true);
 		expect(result.body.folderId).toBe(folder.id);

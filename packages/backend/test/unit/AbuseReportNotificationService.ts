@@ -4,10 +4,20 @@
  */
 
 import { describe, jest } from '@jest/globals';
-import { Test, TestingModule } from '@nestjs/testing';
-import { randomString } from '../utils.js';
+import type { TestingModule } from '@nestjs/testing';
+import { Test, } from '@nestjs/testing';
 import { AbuseReportNotificationService } from '@/core/AbuseReportNotificationService.js';
-import {
+import { EmailService } from '@/core/EmailService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { IdService } from '@/core/IdService.js';
+import { MetaService } from '@/core/MetaService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { RoleService } from '@/core/RoleService.js';
+import { SystemWebhookService } from '@/core/SystemWebhookService.js';
+import { DI } from '@/di-symbols.js';
+import { GlobalModule } from '@/GlobalModule.js';
+import type {
 	AbuseReportNotificationRecipientRepository,
 	MiAbuseReportNotificationRecipient,
 	MiAbuseUserReport,
@@ -17,17 +27,8 @@ import {
 	UserProfilesRepository,
 	UsersRepository,
 } from '@/models/_.js';
-import { DI } from '@/di-symbols.js';
-import { GlobalModule } from '@/GlobalModule.js';
-import { IdService } from '@/core/IdService.js';
-import { EmailService } from '@/core/EmailService.js';
-import { RoleService } from '@/core/RoleService.js';
-import { MetaService } from '@/core/MetaService.js';
-import { ModerationLogService } from '@/core/ModerationLogService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { RecipientMethod } from '@/models/AbuseReportNotificationRecipient.js';
-import { SystemWebhookService } from '@/core/SystemWebhookService.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import type { RecipientMethod } from '@/models/AbuseReportNotificationRecipient.js';
+import { randomString } from '../utils.js';
 
 process.env.NODE_ENV = 'test';
 

@@ -823,33 +823,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
-import { langs } from '@@/js/config.js';
 import * as Misskey from 'misskey-js';
-import MkSwitch from '@/components/MkSwitch.vue';
-import MkSelect from '@/components/MkSelect.vue';
-import MkRadios from '@/components/MkRadios.vue';
-import MkRange from '@/components/MkRange.vue';
-import MkFolder from '@/components/MkFolder.vue';
+import { langs } from '@@/js/config.js';
+import { globalEvents } from '@/events.js';
+import { ensureSignin } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
+import { miLocalStorage } from '@/local-storage.js';
+import * as os from '@/os.js';
+import { definePage } from '@/page.js';
+import { prefer } from '@/preferences.js';
+import { store } from '@/store.js';
+import { claimAchievement } from '@/utility/achievements.js';
+import { genId } from '@/utility/id.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { suggestReload } from '@/utility/reload-suggest.js';
+import FormLink from '@/components/form/link.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkDisableSection from '@/components/MkDisableSection.vue';
-import FormLink from '@/components/form/link.vue';
-import MkLink from '@/components/MkLink.vue';
-import MkInfo from '@/components/MkInfo.vue';
-import { store } from '@/store.js';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
-import { definePage } from '@/page.js';
-import { miLocalStorage } from '@/local-storage.js';
-import { prefer } from '@/preferences.js';
-import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
-import { globalEvents } from '@/events.js';
-import { claimAchievement } from '@/utility/achievements.js';
-import { instance } from '@/instance.js';
-import { ensureSignin } from '@/i.js';
-import { genId } from '@/utility/id.js';
-import { suggestReload } from '@/utility/reload-suggest.js';
+import MkFolder from '@/components/MkFolder.vue';
+import MkInfo from '@/components/MkInfo.vue';
+import MkLink from '@/components/MkLink.vue';
+import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
+import MkRadios from '@/components/MkRadios.vue';
+import MkRange from '@/components/MkRange.vue';
+import MkSelect from '@/components/MkSelect.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 
 const $i = ensureSignin();
 
@@ -1001,7 +1001,7 @@ function downloadEmojiIndex(lang: typeof emojiIndexLangs[number]) {
 				case 'en-US': return import('../../unicode-emoji-indexes/en-US.json').then(x => x.default);
 				case 'ja-JP': return import('../../unicode-emoji-indexes/ja-JP.json').then(x => x.default);
 				case 'ja-JP_hira': return import('../../unicode-emoji-indexes/ja-JP_hira.json').then(x => x.default);
-				default: throw new Error('unrecognized lang: ' + lang);
+				default: throw new Error(`unrecognized lang: ${lang}`);
 			}
 		}
 

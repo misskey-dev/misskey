@@ -4,4 +4,5 @@
  */
 
 import MkAuthConfirm from './MkAuthConfirm.vue';
+
 void MkAuthConfirm;

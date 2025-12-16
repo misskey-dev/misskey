@@ -14,19 +14,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, useTemplateRef, watch, defineAsyncComponent } from 'vue';
-import XColumn from './column.vue';
+import { defineAsyncComponent, onMounted, ref, useTemplateRef, watch } from 'vue';
 import type { entities as MisskeyEntities } from 'misskey-js';
-import type { Column } from '@/deck.js';
-import type { MenuItem } from '@/types/menu.js';
-import type { SoundStore } from '@/preferences/def.js';
-import { updateColumn } from '@/deck.js';
-import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
 import { antennasCache } from '@/cache.js';
+import type { Column } from '@/deck.js';
+import { updateColumn } from '@/deck.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import type { SoundStore } from '@/preferences/def.js';
+import type { MenuItem } from '@/types/menu.js';
 import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
+import XColumn from './column.vue';
 
 const props = defineProps<{
 	column: Column;
@@ -93,7 +93,7 @@ async function setAntenna() {
 }
 
 function editAntenna() {
-	os.pageWindow('my/antennas/' + props.column.antennaId);
+	os.pageWindow(`my/antennas/${props.column.antennaId}`);
 }
 
 const menu: MenuItem[] = [

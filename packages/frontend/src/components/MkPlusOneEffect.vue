@@ -27,7 +27,7 @@ const emit = defineEmits<{
 
 const up = ref(false);
 const zIndex = os.claimZIndex('middle');
-const angle = (45 - (Math.random() * 90)) + 'deg';
+const angle = `${45 - (Math.random() * 90)}deg`;
 
 onMounted(() => {
 	window.setTimeout(() => {

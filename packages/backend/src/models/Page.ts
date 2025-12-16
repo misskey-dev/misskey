@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Entity, Index, JoinColumn, Column, PrimaryColumn, ManyToOne } from 'typeorm';
-import { id } from './util/id.js';
-import { MiUser } from './User.js';
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { MiDriveFile } from './DriveFile.js';
+import { MiUser } from './User.js';
+import { id } from './util/id.js';
 
 @Entity('page')
 @Index(['userId', 'name'], { unique: true })
@@ -56,7 +56,7 @@ export class MiPage {
 	})
 	public userId: MiUser['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(() => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
@@ -68,7 +68,7 @@ export class MiPage {
 	})
 	public eyeCatchingImageId: MiDriveFile['id'] | null;
 
-	@ManyToOne(type => MiDriveFile, {
+	@ManyToOne(() => MiDriveFile, {
 		onDelete: 'SET NULL',
 	})
 	@JoinColumn()
@@ -119,4 +119,4 @@ export class MiPage {
 	}
 }
 
-export const pageNameSchema = { type: 'string', pattern: /^[^\s:\/?#\[\]@!$&'()*+,;=\\%\x00-\x20]{1,256}$/.source } as const;
+export const pageNameSchema = { type: 'string', pattern: /^[^\s:/?#[\]@!$&'()*+,;=\\%\x00-\x20]{1,256}$/.source } as const;

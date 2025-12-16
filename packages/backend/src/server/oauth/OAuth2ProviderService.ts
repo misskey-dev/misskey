@@ -4,35 +4,35 @@
  */
 
 import dns from 'node:dns/promises';
-import { fileURLToPath } from 'node:url';
+import type { ServerResponse } from 'node:http';
+import fastifyCors from '@fastify/cors';
+import fastifyExpress from '@fastify/express';
 import { Inject, Injectable } from '@nestjs/common';
-import * as htmlParser from 'node-html-parser';
+import bodyParser from 'body-parser';
+import type { FastifyInstance } from 'fastify';
 import httpLinkHeader from 'http-link-header';
 import ipaddr from 'ipaddr.js';
-import oauth2orize, { type OAuth2, AuthorizationError, ValidateFunctionArity2, OAuth2Req, MiddlewareRequest } from 'oauth2orize';
-import oauth2Pkce from 'oauth2orize-pkce';
-import fastifyCors from '@fastify/cors';
-import bodyParser from 'body-parser';
-import fastifyExpress from '@fastify/express';
-import { verifyChallenge } from 'pkce-challenge';
 import { permissions as kinds } from 'misskey-js';
-import { secureRndstr } from '@/misc/secure-rndstr.js';
-import { HttpRequestService } from '@/core/HttpRequestService.js';
+import * as htmlParser from 'node-html-parser';
+import type { MiddlewareRequest, OAuth2, OAuth2Req, ValidateFunctionArity2 } from 'oauth2orize';
+import oauth2orize, { AuthorizationError } from 'oauth2orize';
+import oauth2Pkce from 'oauth2orize-pkce';
+import { verifyChallenge } from 'pkce-challenge';
 import type { Config } from '@/config.js';
-import { DI } from '@/di-symbols.js';
-import { bindThis } from '@/decorators.js';
-import type { AccessTokensRepository, UsersRepository } from '@/models/_.js';
-import { IdService } from '@/core/IdService.js';
 import { CacheService } from '@/core/CacheService.js';
-import type { MiLocalUser } from '@/models/User.js';
-import { MemoryKVCache } from '@/misc/cache.js';
+import { HttpRequestService } from '@/core/HttpRequestService.js';
+import { IdService } from '@/core/IdService.js';
 import { LoggerService } from '@/core/LoggerService.js';
-import Logger from '@/logger.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type Logger from '@/logger.js';
+import { MemoryKVCache } from '@/misc/cache.js';
+import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { StatusError } from '@/misc/status-error.js';
+import type { AccessTokensRepository, UsersRepository } from '@/models/_.js';
+import type { MiLocalUser } from '@/models/User.js';
 import { HtmlTemplateService } from '@/server/web/HtmlTemplateService.js';
 import { OAuthPage } from '@/server/web/views/oauth.js';
-import type { ServerResponse } from 'node:http';
-import type { FastifyInstance } from 'fastify';
 
 // TODO: Consider migrating to @node-oauth/oauth2-server once
 // https://github.com/node-oauth/node-oauth2-server/issues/180 is figured out.
@@ -213,7 +213,7 @@ function getQueryMode(issuerUrl: string): oauth2orize.grant.Options['modes'] {
 				parsed.searchParams.append(key, value as string);
 			}
 
-			return (res as OAuthHttpResponse).redirect(parsed.toString());
+			(res as OAuthHttpResponse).redirect(parsed.toString());
 		},
 	};
 }

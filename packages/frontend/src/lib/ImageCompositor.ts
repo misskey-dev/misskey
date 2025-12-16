@@ -124,7 +124,7 @@ export class ImageCompositor<FNS extends Record<string, ImageCompositorFunction<
 	private extractUniformNamesFromShader(shader: string): string[] {
 		const uniformRegex = /uniform\s+\w+\s+(\w+)\s*;/g;
 		const uniforms: string[] = [];
-		let match;
+		let match: RegExpExecArray | null;
 		while ((match = uniformRegex.exec(shader)) !== null) {
 			uniforms.push(match[1].replace(/^u_/, ''));
 		}
@@ -169,7 +169,7 @@ export class ImageCompositor<FNS extends Record<string, ImageCompositorFunction<
 			gl: gl,
 			program: shaderProgram,
 			params: layer.params,
-			u: Object.fromEntries(fn.uniforms.map(u => [u, gl.getUniformLocation(shaderProgram, 'u_' + u)!])),
+			u: Object.fromEntries(fn.uniforms.map(u => [u, gl.getUniformLocation(shaderProgram, `u_${u}`)!])),
 			width: this.renderWidth,
 			height: this.renderHeight,
 			textures: this.registeredTextures,

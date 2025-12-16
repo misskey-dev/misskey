@@ -8,5 +8,6 @@ declare module '@@/themes/*.json5' {
 
 	const theme: Theme;
 
+	// biome-ignore lint/style/noDefaultExport: vue convention
 	export default theme;
 }

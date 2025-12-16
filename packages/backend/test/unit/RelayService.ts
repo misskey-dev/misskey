@@ -6,18 +6,18 @@
 process.env.NODE_ENV = 'test';
 
 import { jest } from '@jest/globals';
-import { Test } from '@nestjs/testing';
-import { ModuleMocker } from 'jest-mock';
 import type { TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
 import type { MockMetadata } from 'jest-mock';
+import { ModuleMocker } from 'jest-mock';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { IdService } from '@/core/IdService.js';
 import { QueueService } from '@/core/QueueService.js';
 import { RelayService } from '@/core/RelayService.js';
 import { SystemAccountService } from '@/core/SystemAccountService.js';
-import { GlobalModule } from '@/GlobalModule.js';
 import { UtilityService } from '@/core/UtilityService.js';
+import { GlobalModule } from '@/GlobalModule.js';
 
 const moduleMocker = new ModuleMocker(global);
 

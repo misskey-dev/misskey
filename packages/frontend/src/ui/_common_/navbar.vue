@@ -102,17 +102,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, ref, watch } from 'vue';
-import { openInstanceMenu } from './common.js';
-import * as os from '@/os.js';
-import { navbarItemDef } from '@/navbar.js';
-import { store } from '@/store.js';
-import { i18n } from '@/i18n.js';
-import { instance } from '@/instance.js';
-import { getHTMLElementOrNull } from '@/utility/get-dom-node-or-null.js';
-import { useRouter } from '@/router.js';
-import { prefer } from '@/preferences.js';
 import { getAccountMenu } from '@/accounts.js';
 import { $i } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
+import { navbarItemDef } from '@/navbar.js';
+import * as os from '@/os.js';
+import { prefer } from '@/preferences.js';
+import { useRouter } from '@/router.js';
+import { store } from '@/store.js';
+import { getHTMLElementOrNull } from '@/utility/get-dom-node-or-null.js';
+import { openInstanceMenu } from './common.js';
 
 const router = useRouter();
 

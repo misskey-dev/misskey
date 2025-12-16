@@ -31,12 +31,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, useTemplateRef, onUpdated, onMounted } from 'vue';
+import { onMounted, onUpdated, ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
-import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
+import MkCwButton from '@/components/MkCwButton.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkPoll from '@/components/MkPoll.vue';
-import MkCwButton from '@/components/MkCwButton.vue';
+import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
 
 defineProps<{
 	note: Misskey.entities.Note;

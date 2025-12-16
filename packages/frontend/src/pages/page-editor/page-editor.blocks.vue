@@ -17,10 +17,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { defineAsyncComponent } from 'vue';
 import * as Misskey from 'misskey-js';
-import XSection from './els/page-editor.el.section.vue';
-import XText from './els/page-editor.el.text.vue';
 import XImage from './els/page-editor.el.image.vue';
 import XNote from './els/page-editor.el.note.vue';
+import XSection from './els/page-editor.el.section.vue';
+import XText from './els/page-editor.el.text.vue';
 
 function getComponent(type: string) {
 	switch (type) {

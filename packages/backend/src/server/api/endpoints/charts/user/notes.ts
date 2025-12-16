@@ -4,10 +4,10 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import { schema } from '@/core/chart/charts/entities/per-user-notes.js';
+import PerUserNotesChart from '@/core/chart/charts/per-user-notes.js';
 import { getJsonSchema } from '@/core/chart/core.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import PerUserNotesChart from '@/core/chart/charts/per-user-notes.js';
-import { schema } from '@/core/chart/charts/entities/per-user-notes.js';
 
 export const meta = {
 	tags: ['charts', 'users', 'notes'],
@@ -30,7 +30,7 @@ export const paramDef = {
 } as const;
 
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		private perUserNotesChart: PerUserNotesChart,
 	) {

@@ -7,7 +7,7 @@
 	/** @type {NodeListOf<HTMLIFrameElement>} */
 	const els = document.querySelectorAll('iframe[data-misskey-embed-id]');
 
-	window.addEventListener('message', function (event) {
+	window.addEventListener('message', (event) => {
 		els.forEach((el) => {
 			if (event.source !== el.contentWindow) {
 				return;
@@ -24,7 +24,7 @@
 				}, '*');
 			}
 			if (event.data.type === 'misskey:embed:changeHeight' && event.data.iframeId === id) {
-				el.style.height = event.data.payload.height + 'px';
+				el.style.height = `${event.data.payload.height}px`;
 			}
 		});
 	});

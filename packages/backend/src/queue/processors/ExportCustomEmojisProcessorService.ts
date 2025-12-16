@@ -5,21 +5,21 @@
 
 import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
-import { IsNull } from 'typeorm';
+import archiver from 'archiver';
+import type * as Bull from 'bullmq';
 import { format as dateFormat } from 'date-fns';
 import mime from 'mime-types';
-import archiver from 'archiver';
-import { DI } from '@/di-symbols.js';
-import type { EmojisRepository, UsersRepository } from '@/models/_.js';
+import { IsNull } from 'typeorm';
 import type { Config } from '@/config.js';
-import type Logger from '@/logger.js';
-import { DriveService } from '@/core/DriveService.js';
-import { createTemp, createTempDir } from '@/misc/create-temp.js';
 import { DownloadService } from '@/core/DownloadService.js';
+import { DriveService } from '@/core/DriveService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type Logger from '@/logger.js';
+import { createTemp, createTempDir } from '@/misc/create-temp.js';
+import type { EmojisRepository, UsersRepository } from '@/models/_.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
-import type * as Bull from 'bullmq';
 
 @Injectable()
 export class ExportCustomEmojisProcessorService {
@@ -56,7 +56,7 @@ export class ExportCustomEmojisProcessorService {
 
 		this.logger.info(`Temp dir is ${path}`);
 
-		const metaPath = path + '/meta.json';
+		const metaPath = `${path}/meta.json`;
 
 		fs.writeFileSync(metaPath, '', 'utf-8');
 
@@ -92,8 +92,8 @@ export class ExportCustomEmojisProcessorService {
 				continue;
 			}
 			const ext = mime.extension(emoji.type ?? 'image/png');
-			const fileName = emoji.name + (ext ? '.' + ext : '');
-			const emojiPath = path + '/' + fileName;
+			const fileName = emoji.name + (ext ? `.${ext}` : '');
+			const emojiPath = `${path}/${fileName}`;
 			fs.writeFileSync(emojiPath, '', 'binary');
 			let downloaded = false;
 
@@ -115,7 +115,7 @@ export class ExportCustomEmojisProcessorService {
 			});
 			const isFirst = customEmojis.indexOf(emoji) === 0;
 
-			await writeMeta(isFirst ? content : ',\n' + content);
+			await writeMeta(isFirst ? content : `,\n${content}`);
 		}
 
 		await writeMeta(']}');
@@ -123,8 +123,8 @@ export class ExportCustomEmojisProcessorService {
 		metaStream.end();
 
 		// Create archive
-		await new Promise<void>(async (resolve) => {
-			const [archivePath, archiveCleanup] = await createTemp();
+		const [archivePath, archiveCleanup] = await createTemp();
+		await new Promise<void>((resolve) => {
 			const archiveStream = fs.createWriteStream(archivePath);
 			const archive = archiver('zip', {
 				zlib: { level: 0 },
@@ -132,7 +132,7 @@ export class ExportCustomEmojisProcessorService {
 			archiveStream.on('close', async () => {
 				this.logger.succ(`Exported to: ${archivePath}`);
 
-				const fileName = 'custom-emojis-' + dateFormat(new Date(), 'yyyy-MM-dd-HH-mm-ss') + '.zip';
+				const fileName = `custom-emojis-${dateFormat(new Date(), 'yyyy-MM-dd-HH-mm-ss')}.zip`;
 				const driveFile = await this.driveService.addFile({ user, path: archivePath, name: fileName, force: true });
 
 				this.logger.succ(`Exported to: ${driveFile.id}`);

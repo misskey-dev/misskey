@@ -6,8 +6,8 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { MiSystemWebhook } from '@/models/SystemWebhook.js';
 import { MiUserProfile } from '@/models/UserProfile.js';
-import { id } from './util/id.js';
 import { MiUser } from './User.js';
+import { id } from './util/id.js';
 
 /**
  * 通報受信時に通知を送信する方法.
@@ -67,7 +67,7 @@ export class MiAbuseReportNotificationRecipient {
 	/**
 	 * 通知先のユーザ.
 	 */
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(() => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn({ name: 'userId', referencedColumnName: 'id', foreignKeyConstraintName: 'FK_abuse_report_notification_recipient_userId1' })
@@ -76,7 +76,7 @@ export class MiAbuseReportNotificationRecipient {
 	/**
 	 * 通知先のユーザプロフィール.
 	 */
-	@ManyToOne(type => MiUserProfile, {
+	@ManyToOne(() => MiUserProfile, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn({ name: 'userId', referencedColumnName: 'userId', foreignKeyConstraintName: 'FK_abuse_report_notification_recipient_userId2' })
@@ -96,7 +96,7 @@ export class MiAbuseReportNotificationRecipient {
 	/**
 	 * 通知先のシステムWebhook.
 	 */
-	@ManyToOne(type => MiSystemWebhook, {
+	@ManyToOne(() => MiSystemWebhook, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn({ name: 'systemWebhookId', referencedColumnName: 'id', foreignKeyConstraintName: 'FK_abuse_report_notification_recipient_systemWebhookId' })

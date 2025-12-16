@@ -51,20 +51,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick } from 'vue';
-import type { ImageEffectorLayer } from '@/utility/image-effector/ImageEffector.js';
+import { nextTick, onMounted, onUnmounted, reactive, ref, useTemplateRef, watch } from 'vue';
 import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { prefer } from '@/preferences.js';
+import { deepClone } from '@/utility/clone.js';
+import { genId } from '@/utility/id.js';
+import { FXS } from '@/utility/image-effector/fxs.js';
+import type { ImageEffectorLayer } from '@/utility/image-effector/ImageEffector.js';
 import { ImageEffector } from '@/utility/image-effector/ImageEffector.js';
+import MkButton from '@/components/MkButton.vue';
+import XLayer from '@/components/MkImageEffectorDialog.Layer.vue';
+import MkInput from '@/components/MkInput.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/MkInput.vue';
-import XLayer from '@/components/MkImageEffectorDialog.Layer.vue';
-import * as os from '@/os.js';
-import { deepClone } from '@/utility/clone.js';
-import { FXS } from '@/utility/image-effector/fxs.js';
-import { genId } from '@/utility/id.js';
-import { prefer } from '@/preferences.js';
 
 const props = defineProps<{
 	image: File;

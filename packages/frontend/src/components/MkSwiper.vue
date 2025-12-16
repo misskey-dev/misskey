@@ -26,10 +26,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 </template>
 <script lang="ts" setup>
-import { ref, useTemplateRef, computed, nextTick, watch } from 'vue';
-import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
-import { isHorizontalSwipeSwiping as isSwiping } from '@/utility/touch.js';
+import { computed, nextTick, ref, useTemplateRef, watch } from 'vue';
 import { prefer } from '@/preferences.js';
+import { isHorizontalSwipeSwiping as isSwiping } from '@/utility/touch.js';
+import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
 
 const rootEl = useTemplateRef('rootEl');
 

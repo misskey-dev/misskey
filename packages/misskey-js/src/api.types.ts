@@ -1,13 +1,13 @@
-import { Endpoints as Gen } from './autogen/endpoint.js';
-import { UserDetailed } from './autogen/models.js';
-import {
+import type { Endpoints as Gen } from './autogen/endpoint.js';
+import type {
 	AdminRolesCreateRequest,
 	AdminRolesCreateResponse,
 	EmptyRequest,
 	EmptyResponse,
 	UsersShowRequest,
 } from './autogen/entities.js';
-import {
+import type { UserDetailed } from './autogen/models.js';
+import type {
 	PartialRolePolicyOverride,
 	SigninFlowRequest,
 	SigninFlowResponse,
@@ -37,13 +37,11 @@ type StrictExtract<Union, Cond> = Cond extends Union ? Union : never;
 
 type IsCaseMatched<E extends keyof Endpoints, P extends Endpoints[E]['req'], C extends number> =
 	Endpoints[E]['res'] extends SwitchCase
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		? IsNeverType<StrictExtract<Endpoints[E]['res']['$switch']['$cases'][C], [P, any]>> extends false ? true : false
 		: false;
 
 type GetCaseResult<E extends keyof Endpoints, P extends Endpoints[E]['req'], C extends number> =
 	Endpoints[E]['res'] extends SwitchCase
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		? StrictExtract<Endpoints[E]['res']['$switch']['$cases'][C], [P, any]>[1]
 		: never;
 

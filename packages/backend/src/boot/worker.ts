@@ -4,8 +4,8 @@
  */
 
 import cluster from 'node:cluster';
-import { envOption } from '@/env.js';
 import { loadConfig } from '@/config.js';
+import { envOption } from '@/env.js';
 import { jobQueue, server } from './common.js';
 
 /**

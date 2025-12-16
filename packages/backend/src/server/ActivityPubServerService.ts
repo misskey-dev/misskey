@@ -4,35 +4,35 @@
  */
 
 import * as crypto from 'node:crypto';
-import { IncomingMessage } from 'node:http';
-import { Inject, Injectable } from '@nestjs/common';
+import type { IncomingMessage } from 'node:http';
 import fastifyAccepts from '@fastify/accepts';
-import httpSignature from '@peertube/http-signature';
-import { Brackets, In, IsNull, LessThan, Not } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
+import httpSignature, { type IParsedSignature } from '@peertube/http-signature';
 import accepts from 'accepts';
-import vary from 'vary';
+import type { FastifyBodyParser, FastifyInstance, FastifyPluginOptions, FastifyReply, FastifyRequest } from 'fastify';
 import secureJson from 'secure-json-parse';
-import { DI } from '@/di-symbols.js';
-import type { FollowingsRepository, NotesRepository, EmojisRepository, NoteReactionsRepository, UserProfilesRepository, UserNotePiningsRepository, UsersRepository, FollowRequestsRepository, MiMeta } from '@/models/_.js';
-import * as url from '@/misc/prelude/url.js';
+import type { FindOptionsWhere } from 'typeorm';
+import { Brackets, In, IsNull, LessThan, Not } from 'typeorm';
+import vary from 'vary';
 import type { Config } from '@/config.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
-import { QueueService } from '@/core/QueueService.js';
-import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/User.js';
-import { UserKeypairService } from '@/core/UserKeypairService.js';
-import type { MiFollowing } from '@/models/Following.js';
-import { countIf } from '@/misc/prelude/array.js';
-import type { MiNote } from '@/models/Note.js';
-import { QueryService } from '@/core/QueryService.js';
-import { UtilityService } from '@/core/UtilityService.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { bindThis } from '@/decorators.js';
 import { IActivity } from '@/core/activitypub/type.js';
-import { isQuote, isRenote } from '@/misc/is-renote.js';
-import * as Acct from '@/misc/acct.js';
-import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions, FastifyBodyParser } from 'fastify';
-import type { FindOptionsWhere } from 'typeorm';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
+import { QueryService } from '@/core/QueryService.js';
+import { QueueService } from '@/core/QueueService.js';
+import { UserKeypairService } from '@/core/UserKeypairService.js';
+import { UtilityService } from '@/core/UtilityService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import * as Acct from '@/misc/acct.js';
+import { isQuote, isRenote } from '@/misc/is-renote.js';
+import { countIf } from '@/misc/prelude/array.js';
+import * as url from '@/misc/prelude/url.js';
+import type { EmojisRepository, FollowingsRepository, FollowRequestsRepository, MiMeta, NoteReactionsRepository, NotesRepository, UserNotePiningsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import type { MiFollowing } from '@/models/Following.js';
+import type { MiNote } from '@/models/Note.js';
+import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/User.js';
 
 const ACTIVITY_JSON = 'application/activity+json; charset=utf-8';
 const LD_JSON = 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8';
@@ -112,11 +112,11 @@ export class ActivityPubServerService {
 			return;
 		}
 
-		let signature;
+		let signature: IParsedSignature;
 
 		try {
 			signature = httpSignature.parseRequest(request.raw, { 'headers': ['(request-target)', 'host', 'date'], authorizationHeaderName: 'signature' });
-		} catch (e) {
+		} catch (_) {
 			reply.code(401);
 			return;
 		}
@@ -140,7 +140,7 @@ export class ActivityPubServerService {
 				return;
 			}
 
-			const re = /^([a-zA-Z0-9\-]+)=(.+)$/;
+			const re = /^([a-zA-Z0-9-]+)=(.+)$/;
 			const match = digest.match(re);
 
 			if (match == null) {
@@ -600,7 +600,7 @@ export class ActivityPubServerService {
 			},
 		});
 
-		const almostDefaultJsonParser: FastifyBodyParser<Buffer> = function (request, rawBody, done) {
+		const almostDefaultJsonParser: FastifyBodyParser<Buffer> = (request, rawBody, done) => {
 			if (rawBody.length === 0) {
 				const err = new Error('Body cannot be empty!') as any;
 				err.statusCode = 400;

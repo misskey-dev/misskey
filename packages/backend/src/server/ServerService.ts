@@ -6,31 +6,31 @@
 import cluster from 'node:cluster';
 import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
-import Fastify, { type FastifyInstance } from 'fastify';
 import fastifyStatic from '@fastify/static';
+import type { OnApplicationShutdown } from '@nestjs/common';
+import { Inject, Injectable, } from '@nestjs/common';
+import Fastify, { type FastifyInstance } from 'fastify';
 import fastifyRawBody from 'fastify-raw-body';
 import { IsNull } from 'typeorm';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { Config } from '@/config.js';
-import type { EmojisRepository, MiMeta, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { LoggerService } from '@/core/LoggerService.js';
+import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import * as Acct from '@/misc/acct.js';
 import { genIdenticon } from '@/misc/gen-identicon.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { LoggerService } from '@/core/LoggerService.js';
-import { bindThis } from '@/decorators.js';
+import type { EmojisRepository, MiMeta, UsersRepository } from '@/models/_.js';
 import { ActivityPubServerService } from './ActivityPubServerService.js';
-import { NodeinfoServerService } from './NodeinfoServerService.js';
 import { ApiServerService } from './api/ApiServerService.js';
+import { OpenApiServerService } from './api/openapi/OpenApiServerService.js';
 import { StreamingApiServerService } from './api/StreamingApiServerService.js';
-import { WellKnownServerService } from './WellKnownServerService.js';
 import { FileServerService } from './FileServerService.js';
 import { HealthServerService } from './HealthServerService.js';
-import { ClientServerService } from './web/ClientServerService.js';
-import { OpenApiServerService } from './api/openapi/OpenApiServerService.js';
+import { NodeinfoServerService } from './NodeinfoServerService.js';
 import { OAuth2ProviderService } from './oauth/OAuth2ProviderService.js';
+import { WellKnownServerService } from './WellKnownServerService.js';
+import { ClientServerService } from './web/ClientServerService.js';
 
 const _dirname = fileURLToPath(new URL('.', import.meta.url));
 
@@ -49,9 +49,6 @@ export class ServerService implements OnApplicationShutdown {
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
-		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: UserProfilesRepository,
-
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
 
@@ -65,7 +62,6 @@ export class ServerService implements OnApplicationShutdown {
 		private fileServerService: FileServerService,
 		private healthServerService: HealthServerService,
 		private clientServerService: ClientServerService,
-		private globalEventService: GlobalEventService,
 		private loggerService: LoggerService,
 		private oauth2ProviderService: OAuth2ProviderService,
 	) {
@@ -155,7 +151,7 @@ export class ServerService implements OnApplicationShutdown {
 
 			reply.header('Cache-Control', 'public, max-age=86400');
 
-			if (!path.match(/^[a-zA-Z0-9\-_@\.]+?\.webp$/)) {
+			if (!path.match(/^[a-zA-Z0-9\-_@.]+?\.webp$/)) {
 				reply.code(404);
 				return;
 			}

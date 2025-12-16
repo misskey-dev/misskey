@@ -4,13 +4,11 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Brackets, type FindOptionsWhere } from 'typeorm';
-import type { NoteReactionsRepository } from '@/models/_.js';
-import type { MiNoteReaction } from '@/models/NoteReaction.js';
-import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteReactionEntityService } from '@/core/entities/NoteReactionEntityService.js';
-import { DI } from '@/di-symbols.js';
 import { QueryService } from '@/core/QueryService.js';
+import { DI } from '@/di-symbols.js';
+import type { NoteReactionsRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
 	tags: ['notes', 'reactions'],
@@ -54,7 +52,7 @@ export const paramDef = {
 } as const;
 
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.noteReactionsRepository)
 		private noteReactionsRepository: NoteReactionsRepository,
@@ -72,7 +70,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				// ローカルリアクションはホスト名が . とされているが
 				// DB 上ではそうではないので、必要に応じて変換
 				const suffix = '@.:';
-				const type = ps.type.endsWith(suffix) ? ps.type.slice(0, ps.type.length - suffix.length) + ':' : ps.type;
+				const type = ps.type.endsWith(suffix) ? `${ps.type.slice(0, ps.type.length - suffix.length)}:` : ps.type;
 				query.andWhere('reaction.reaction = :type', { type });
 			}
 

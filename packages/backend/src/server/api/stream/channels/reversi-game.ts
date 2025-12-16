@@ -3,16 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
-import type { MiReversiGame } from '@/models/_.js';
-import { DI } from '@/di-symbols.js';
-import { bindThis } from '@/decorators.js';
+import { Injectable } from '@nestjs/common';
+import type { reversiUpdateKeys } from 'misskey-js';
 import { ReversiService } from '@/core/ReversiService.js';
-import { ReversiGameEntityService } from '@/core/entities/ReversiGameEntityService.js';
-import { isJsonObject } from '@/misc/json-value.js';
+import { bindThis } from '@/decorators.js';
 import type { JsonObject, JsonValue } from '@/misc/json-value.js';
+import { isJsonObject } from '@/misc/json-value.js';
+import type { MiReversiGame } from '@/models/_.js';
 import Channel, { type MiChannelService } from '../channel.js';
-import { reversiUpdateKeys } from 'misskey-js';
 
 class ReversiGameChannel extends Channel {
 	public readonly chName = 'reversiGame';
@@ -22,7 +20,6 @@ class ReversiGameChannel extends Channel {
 
 	constructor(
 		private reversiService: ReversiService,
-		private reversiGameEntityService: ReversiGameEntityService,
 
 		id: string,
 		connection: Channel['connection'],
@@ -115,7 +112,6 @@ export class ReversiGameChannelService implements MiChannelService<false> {
 
 	constructor(
 		private reversiService: ReversiService,
-		private reversiGameEntityService: ReversiGameEntityService,
 	) {
 	}
 
@@ -123,7 +119,6 @@ export class ReversiGameChannelService implements MiChannelService<false> {
 	public create(id: string, connection: Channel['connection']): ReversiGameChannel {
 		return new ReversiGameChannel(
 			this.reversiService,
-			this.reversiGameEntityService,
 			id,
 			connection,
 		);

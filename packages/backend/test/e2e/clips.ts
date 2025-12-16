@@ -5,10 +5,11 @@
 
 process.env.NODE_ENV = 'test';
 
-import * as assert from 'assert';
-import { DEFAULT_POLICIES } from '@/core/RoleService.js';
-import { api, ApiRequest, failedApiCall, hiddenNote, post, signup, successfulApiCall } from '../utils.js';
+import * as assert from 'node:assert';
 import type * as Misskey from 'misskey-js';
+import { DEFAULT_POLICIES } from '@/core/RoleService.js';
+import type { ApiRequest, } from '../utils.js';
+import { api, failedApiCall, post, signup, successfulApiCall } from '../utils.js';
 
 type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>;
 
@@ -440,7 +441,7 @@ describe('クリップ', () => {
 		assert.deepStrictEqual(
 			res.sort(compareBy<Misskey.entities.Clip>(s => s.id)),
 			[clips[2], clips[3], clips[4]], // sinceIdとuntilId自体は結果に含まれない
-			clips[1].id + ' ... ' + clips[3].id + ' with ' + clips.map(s => s.id) + ' vs. ' + res.map(s => s.id));
+			`${clips[1].id} ... ${clips[3].id} with ${clips.map(s => s.id)} vs. ${res.map(s => s.id)}`);
 	});
 
 	test.each([
@@ -671,25 +672,25 @@ describe('クリップ', () => {
 		];
 
 		const addNote = async (parameters: Misskey.entities.ClipsAddNoteRequest, request: Partial<ApiRequest<'clips/add-note'>> = {}): Promise<void> => {
-			return successfulApiCall({
+			await successfulApiCall({
 				endpoint: 'clips/add-note',
 				parameters,
 				user: alice,
 				...request,
 			}, {
 				status: 204,
-			}) as any as void;
+			});
 		};
 
 		const removeNote = async (parameters: Misskey.entities.ClipsRemoveNoteRequest, request: Partial<ApiRequest<'clips/remove-note'>> = {}): Promise<void> => {
-			return successfulApiCall({
+			await successfulApiCall({
 				endpoint: 'clips/remove-note',
 				parameters,
 				user: alice,
 				...request,
 			}, {
 				status: 204,
-			}) as any as void;
+			});
 		};
 
 		const notes = async (parameters: Misskey.entities.ClipsNotesRequest, request: Partial<ApiRequest<'clips/notes'>> = {}): Promise<Misskey.entities.Note[]> => {

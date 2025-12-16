@@ -4,10 +4,10 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import * as Redis from 'ioredis';
-import type { MiGalleryPost, MiNote, MiUser } from '@/models/_.js';
-import { DI } from '@/di-symbols.js';
+import type * as Redis from 'ioredis';
 import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type { MiGalleryPost, MiNote, MiUser } from '@/models/_.js';
 
 const GLOBAL_NOTES_RANKING_WINDOW = 1000 * 60 * 60 * 24 * 3; // 3日ごと
 export const GALLERY_POSTS_RANKING_WINDOW = 1000 * 60 * 60 * 24 * 3; // 3日ごと
@@ -26,7 +26,7 @@ export class FeaturedService {
 
 	@bindThis
 	private getCurrentWindow(windowRange: number): number {
-		const passed = new Date().getTime() - featuredEpoc;
+		const passed = Date.now() - featuredEpoc;
 		return Math.floor(passed / windowRange);
 	}
 

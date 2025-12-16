@@ -4,12 +4,12 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { Packed } from '@/misc/json-schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
-import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
 import { isInstanceMuted } from '@/misc/is-instance-muted.js';
+import { isQuotePacked, isRenotePacked } from '@/misc/is-renote.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
+import type { Packed } from '@/misc/json-schema.js';
 import type { JsonObject } from '@/misc/json-value.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
@@ -42,8 +42,8 @@ class ChannelChannel extends Channel {
 		if (note.channelId !== this.channelId) return;
 
 		if (note.user.requireSigninToViewContents && this.user == null) return;
-		if (note.renote && note.renote.user.requireSigninToViewContents && this.user == null) return;
-		if (note.reply && note.reply.user.requireSigninToViewContents && this.user == null) return;
+		if (note.renote?.user.requireSigninToViewContents && this.user == null) return;
+		if (note.reply?.user.requireSigninToViewContents && this.user == null) return;
 
 		if (this.isNoteMutedOrBlocked(note)) return;
 

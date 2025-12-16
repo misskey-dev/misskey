@@ -39,13 +39,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup generic="T extends IPaginator">
 import { ref, watch } from 'vue';
+import { useMkSelect } from '@/composables/use-mkselect.js';
+import { i18n } from '@/i18n.js';
+import { formatDateTimeString } from '@/utility/format-time-string.js';
 import type { IPaginator } from '@/utility/paginator.js';
 import MkButton from '@/components/MkButton.vue';
-import { i18n } from '@/i18n.js';
-import MkSelect from '@/components/MkSelect.vue';
 import MkInput from '@/components/MkInput.vue';
-import { formatDateTimeString } from '@/utility/format-time-string.js';
-import { useMkSelect } from '@/composables/use-mkselect.js';
+import MkSelect from '@/components/MkSelect.vue';
 
 const props = withDefaults(defineProps<{
 	paginator: T;

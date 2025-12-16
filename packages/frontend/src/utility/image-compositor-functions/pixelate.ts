@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import shader from './pixelate.glsl';
-import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
-import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
 import { i18n } from '@/i18n.js';
+import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
+import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
+import shader from './pixelate.glsl';
 
 export const fn = defineImageCompositorFunction<{
 	offsetX: number;
@@ -32,40 +32,40 @@ export const uiDefinition = {
 	name: i18n.ts._imageEffector._fxs.pixelate,
 	params: {
 		offsetX: {
-			label: i18n.ts._imageEffector._fxProps.offset + ' X',
+			label: `${i18n.ts._imageEffector._fxProps.offset} X`,
 			type: 'number',
 			default: 0.0,
 			min: -1.0,
 			max: 1.0,
 			step: 0.01,
-			toViewValue: v => Math.round(v * 100) + '%',
+			toViewValue: v => `${Math.round(v * 100)}%`,
 		},
 		offsetY: {
-			label: i18n.ts._imageEffector._fxProps.offset + ' Y',
+			label: `${i18n.ts._imageEffector._fxProps.offset} Y`,
 			type: 'number',
 			default: 0.0,
 			min: -1.0,
 			max: 1.0,
 			step: 0.01,
-			toViewValue: v => Math.round(v * 100) + '%',
+			toViewValue: v => `${Math.round(v * 100)}%`,
 		},
 		scaleX: {
-			label: i18n.ts._imageEffector._fxProps.scale + ' W',
+			label: `${i18n.ts._imageEffector._fxProps.scale} W`,
 			type: 'number',
 			default: 0.5,
 			min: 0.0,
 			max: 1.0,
 			step: 0.01,
-			toViewValue: v => Math.round(v * 100) + '%',
+			toViewValue: v => `${Math.round(v * 100)}%`,
 		},
 		scaleY: {
-			label: i18n.ts._imageEffector._fxProps.scale + ' H',
+			label: `${i18n.ts._imageEffector._fxProps.scale} H`,
 			type: 'number',
 			default: 0.5,
 			min: 0.0,
 			max: 1.0,
 			step: 0.01,
-			toViewValue: v => Math.round(v * 100) + '%',
+			toViewValue: v => `${Math.round(v * 100)}%`,
 		},
 		ellipse: {
 			label: i18n.ts._imageEffector._fxProps.circle,
@@ -79,7 +79,7 @@ export const uiDefinition = {
 			min: -1.0,
 			max: 1.0,
 			step: 0.01,
-			toViewValue: v => Math.round(v * 90) + '°',
+			toViewValue: v => `${Math.round(v * 90)}°`,
 		},
 		strength: {
 			label: i18n.ts._imageEffector._fxProps.strength,

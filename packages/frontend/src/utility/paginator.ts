@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ref, shallowRef, triggerRef } from 'vue';
-import * as Misskey from 'misskey-js';
 import type { ComputedRef, Ref, ShallowRef, UnwrapRef } from 'vue';
+import { ref, shallowRef, triggerRef } from 'vue';
+import type * as Misskey from 'misskey-js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 
 const MAX_ITEMS = 30;
@@ -213,7 +213,7 @@ export class Paginator<
 			} : {}),
 		};
 
-		const apiRes = (await misskeyApi(this.endpoint, data).catch(err => {
+		const apiRes = (await misskeyApi(this.endpoint, data).catch(_ => {
 			this.error.value = true;
 			this.fetching.value = false;
 			return null;
@@ -273,7 +273,7 @@ export class Paginator<
 			}),
 		};
 
-		const apiRes = (await misskeyApi<T[]>(this.endpoint, data).catch(err => {
+		const apiRes = (await misskeyApi<T[]>(this.endpoint, data).catch(_ => {
 			return null;
 		})) as T[] | null;
 
@@ -326,7 +326,7 @@ export class Paginator<
 			}),
 		};
 
-		const apiRes = (await misskeyApi<T[]>(this.endpoint, data).catch(err => {
+		const apiRes = (await misskeyApi<T[]>(this.endpoint, data).catch(_ => {
 			return null;
 		})) as T[] | null;
 

@@ -23,15 +23,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 /* eslint-disable vue/no-mutating-props */
-import { watch, ref } from 'vue';
+
+import { ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import XContainer from '../page-editor.container.vue';
+import { i18n } from '@/i18n.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import MkInput from '@/components/MkInput.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
 import MkNote from '@/components/MkNote.vue';
 import MkNoteDetailed from '@/components/MkNoteDetailed.vue';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
+import MkSwitch from '@/components/MkSwitch.vue';
+import XContainer from '../page-editor.container.vue';
 
 const props = defineProps<{
 	modelValue: Misskey.entities.PageBlock & { type: 'note' };

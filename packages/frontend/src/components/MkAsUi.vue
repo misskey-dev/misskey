@@ -62,18 +62,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
 import type { Ref } from 'vue';
+import { computed, ref } from 'vue';
+import type { AsUiComponent, AsUiPostFormButton, AsUiRoot } from '@/aiscript/ui.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 import * as os from '@/os.js';
 import MkButton from '@/components/MkButton.vue';
+import MkFolder from '@/components/MkFolder.vue';
 import MkInput from '@/components/MkInput.vue';
+import MkPostForm from '@/components/MkPostForm.vue';
+import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
-import MkSelect from '@/components/MkSelect.vue';
-import type { AsUiComponent, AsUiRoot, AsUiPostFormButton } from '@/aiscript/ui.js';
-import MkFolder from '@/components/MkFolder.vue';
-import MkPostForm from '@/components/MkPostForm.vue';
-import { useMkSelect } from '@/composables/use-mkselect.js';
 
 const props = withDefaults(defineProps<{
 	component: AsUiComponent;
@@ -116,7 +116,7 @@ const containerStyle = computed(() => {
 		backgroundColor: c.bgColor,
 		color: c.fgColor,
 		padding: c.padding ? `${c.padding}px` : 0,
-		borderRadius: (c.borderRadius ?? (c.rounded ? 8 : 0)) + 'px',
+		borderRadius: `${c.borderRadius ?? (c.rounded ? 8 : 0)}px`,
 		...border,
 	};
 });

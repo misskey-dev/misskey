@@ -32,27 +32,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, provide, onMounted, computed, ref } from 'vue';
+import { computed, defineAsyncComponent, onMounted, provide, ref } from 'vue';
 import { instanceName } from '@@/js/config.js';
 import { isLink } from '@@/js/is-link.js';
-import XCommon from './_common_/common.vue';
+import { DI } from '@/di.js';
+import { $i } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import { miLocalStorage } from '@/local-storage.js';
+import * as os from '@/os.js';
 import type { PageMetadata } from '@/page.js';
+import { provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
+import { shouldSuggestRestoreBackup } from '@/preferences/utility.js';
+import { prefer } from '@/preferences.js';
+import { mainRouter } from '@/router.js';
 import XMobileFooterMenu from '@/ui/_common_/mobile-footer-menu.vue';
+import XSidebar from '@/ui/_common_/navbar.vue';
 import XPreferenceRestore from '@/ui/_common_/PreferenceRestore.vue';
 import XReloadSuggestion from '@/ui/_common_/ReloadSuggestion.vue';
 import XTitlebar from '@/ui/_common_/titlebar.vue';
-import XSidebar from '@/ui/_common_/navbar.vue';
-import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
-import { $i } from '@/i.js';
-import { provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
 import { deviceKind } from '@/utility/device-kind.js';
-import { miLocalStorage } from '@/local-storage.js';
-import { mainRouter } from '@/router.js';
-import { prefer } from '@/preferences.js';
-import { shouldSuggestRestoreBackup } from '@/preferences/utility.js';
-import { DI } from '@/di.js';
 import { shouldSuggestReload } from '@/utility/reload-suggest.js';
+import XCommon from './_common_/common.vue';
 
 const XWidgets = defineAsyncComponent(() => import('./_common_/widgets.vue'));
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));

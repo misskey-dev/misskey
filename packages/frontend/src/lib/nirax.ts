@@ -5,9 +5,9 @@
 
 // NIRAX --- A lightweight router
 
-import { onBeforeUnmount, onMounted, shallowRef } from 'vue';
-import { EventEmitter } from 'eventemitter3';
 import type { Component, ShallowRef } from 'vue';
+import { onBeforeUnmount, shallowRef } from 'vue';
+import { EventEmitter } from 'eventemitter3';
 
 function safeURIDecode(str: string): string {
 	try {
@@ -172,12 +172,12 @@ function buildFullPath(args: {
 	if (args.query) {
 		const queryString = new URLSearchParams(args.query).toString();
 		if (queryString) {
-			fullPath += '?' + queryString;
+			fullPath += `?${queryString}`;
 		}
 	}
 
 	if (args.hash) {
-		fullPath += '#' + encodeURIComponent(args.hash);
+		fullPath += `#${encodeURIComponent(args.hash)}`;
 	}
 
 	return fullPath;
@@ -186,6 +186,7 @@ function buildFullPath(args: {
 function parsePath(path: string): ParsedPath {
 	const res = [] as ParsedPath;
 
+	// biome-ignore lint/style/noParameterAssign: allow
 	path = path.substring(1);
 
 	for (const part of path.split('/')) {
@@ -265,7 +266,6 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 				let parts = [..._parts];
 				const props = new Map<string, string>();
 
-				pathMatchLoop:
 				for (const p of parsePath(route.path)) {
 					if (typeof p === 'string') {
 						if (p === parts[0]) {
@@ -282,7 +282,7 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 								props.set(p.name, safeURIDecode(parts.join('/')));
 								parts = [];
 							}
-							break pathMatchLoop;
+							break;
 						} else {
 							if (p.startsWith) {
 								if (parts[0] == null || !parts[0].startsWith(p.startsWith)) continue forEachRouteLoop;
@@ -310,7 +310,7 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 								_parsedRoute,
 							};
 						} else {
-							continue forEachRouteLoop;
+							continue;
 						}
 					}
 
@@ -320,7 +320,7 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 
 					if (route.query != null && queryString != null) {
 						const queryObject = [...new URLSearchParams(queryString).entries()]
-							.reduce((obj, entry) => ({ ...obj, [entry[0]]: entry[1] }), {});
+							.reduce((obj, entry) => Object.assign(obj, { [entry[0]]: entry[1] }), {});
 
 						for (const q in route.query) {
 							const as = route.query[q];
@@ -346,10 +346,8 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 								_parsedRoute,
 							};
 						} else {
-							continue forEachRouteLoop;
 						}
 					} else {
-						continue forEachRouteLoop;
 					}
 				}
 			}
@@ -369,7 +367,7 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 		const res = this.resolve(this.currentFullPath);
 
 		if (res == null) {
-			throw new Error('no route found for: ' + fullPath);
+			throw new Error(`no route found for: ${fullPath}`);
 		}
 
 		for (let current: PathResolvedResult | undefined = res; current; current = current.child) {
@@ -378,7 +376,7 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 				if (typeof current.route.redirect === 'function') {
 					redirectPath = current.route.redirect(current.props);
 				} else {
-					redirectPath = current.route.redirect + (current._parsedRoute.queryString ? '?' + current._parsedRoute.queryString : '') + (current._parsedRoute.hash ? '#' + current._parsedRoute.hash : '');
+					redirectPath = current.route.redirect + (current._parsedRoute.queryString ? `?${current._parsedRoute.queryString}` : '') + (current._parsedRoute.hash ? `#${current._parsedRoute.hash}` : '');
 				}
 				if (_DEV_) console.log('Redirecting to: ', redirectPath);
 				if (_redirected && this.redirectCount++ > 10) {

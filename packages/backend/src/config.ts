@@ -4,11 +4,11 @@
  */
 
 import * as fs from 'node:fs';
-import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
-import { type FastifyServerOptions } from 'fastify';
+import { fileURLToPath } from 'node:url';
 import type * as Sentry from '@sentry/node';
 import type * as SentryVue from '@sentry/vue';
+import type { FastifyServerOptions } from 'fastify';
 import type { RedisOptions } from 'ioredis';
 import type { ManifestChunk } from 'vite';
 
@@ -228,8 +228,8 @@ export function loadConfig(): Config {
 
 	const meta = JSON.parse(fs.readFileSync(`${_dirname}/../../../built/meta.json`, 'utf-8'));
 
-	const frontendManifestExists = fs.existsSync(_dirname + '/../../../built/_frontend_vite_/manifest.json');
-	const frontendEmbedManifestExists = fs.existsSync(_dirname + '/../../../built/_frontend_embed_vite_/manifest.json');
+	const frontendManifestExists = fs.existsSync(`${_dirname}/../../../built/_frontend_vite_/manifest.json`);
+	const frontendEmbedManifestExists = fs.existsSync(`${_dirname}/../../../built/_frontend_embed_vite_/manifest.json`);
 	const frontendManifest = frontendManifestExists ?
 		JSON.parse(fs.readFileSync(`${_dirname}/../../../built/_frontend_vite_/manifest.json`, 'utf-8'))
 		: { 'src/_boot_.ts': { file: null } };
@@ -324,7 +324,7 @@ export function loadConfig(): Config {
 function tryCreateUrl(url: string) {
 	try {
 		return new URL(url);
-	} catch (e) {
+	} catch (_) {
 		throw new Error(`url="${url}" is not a valid URL.`);
 	}
 }

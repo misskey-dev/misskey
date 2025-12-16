@@ -63,20 +63,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref, useTemplateRef, toRefs } from 'vue';
+import { computed, onMounted, ref, toRefs, useTemplateRef } from 'vue';
 import { entities } from 'misskey-js';
-import type { MkSystemWebhookResult } from '@/components/MkSystemWebhookEditor.impl.js';
-import MkButton from '@/components/MkButton.vue';
-import MkModalWindow from '@/components/MkModalWindow.vue';
-import { i18n } from '@/i18n.js';
-import MkInput from '@/components/MkInput.vue';
-import { misskeyApi } from '@/utility/misskey-api.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
-import MkSelect from '@/components/MkSelect.vue';
-import { showSystemWebhookEditorDialog } from '@/components/MkSystemWebhookEditor.impl.js';
-import MkSwitch from '@/components/MkSwitch.vue';
-import MkDivider from '@/components/MkDivider.vue';
+import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import MkButton from '@/components/MkButton.vue';
+import MkDivider from '@/components/MkDivider.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkModalWindow from '@/components/MkModalWindow.vue';
+import MkSelect from '@/components/MkSelect.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import type { MkSystemWebhookResult } from '@/components/MkSystemWebhookEditor.impl.js';
+import { showSystemWebhookEditorDialog } from '@/components/MkSystemWebhookEditor.impl.js';
 
 const emit = defineEmits<{
 	(ev: 'submitted'): void;
@@ -174,7 +174,6 @@ async function onSubmitClicked() {
 					break;
 				}
 				case 'edit': {
-					// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 					await misskeyApi('admin/abuse-report/notification-recipient/update', { id: id.value!, ...params });
 					break;
 				}
@@ -182,7 +181,6 @@ async function onSubmitClicked() {
 
 			dialogEl.value?.close();
 			emit('submitted');
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (ex: any) {
 			const msg = ex.message ?? i18n.ts.internalServerErrorDescription;
 			await os.alert({ type: 'error', title: i18n.ts.error, text: msg });

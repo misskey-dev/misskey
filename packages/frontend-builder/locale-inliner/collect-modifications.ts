@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { parseAst } from 'vite';
-import * as estreeWalker from 'estree-walker';
-import { assertNever, assertType } from '../utils.js';
-import type { AstNode, ProgramNode } from 'rollup';
 import type * as estree from 'estree';
+import * as estreeWalker from 'estree-walker';
+import type { AstNode, ProgramNode } from 'rollup';
+import { parseAst } from 'vite';
 import type { LocaleInliner, TextModification } from '../locale-inliner.js';
 import type { Logger } from '../logger.js';
+import { assertNever, assertType } from '../utils.js';
 
 // WalkerContext is not exported from estree-walker, so we define it here
 interface WalkerContext {
@@ -131,7 +131,6 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 		},
 	});
 
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (!isSupported) {
 		fileLogger.error(`Duplicated identifier "${localI18nIdentifier}" in variable declaration. Skipping inlining.`);
 		return modifications;
@@ -206,7 +205,6 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 		},
 	});
 
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (!preserveI18nImport) {
 		fileLogger.debug('removing i18n import statement');
 		modifications.push({

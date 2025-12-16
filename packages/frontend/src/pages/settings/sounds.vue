@@ -58,24 +58,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
-import XSound from './sounds.sound.vue';
 import type { Ref } from 'vue';
-import type { SoundType, OperationType } from '@/utility/sound.js';
-import type { SoundStore } from '@/preferences/def.js';
-import { prefer } from '@/preferences.js';
-import MkRange from '@/components/MkRange.vue';
-import MkButton from '@/components/MkButton.vue';
-import FormSection from '@/components/form/section.vue';
-import MkFolder from '@/components/MkFolder.vue';
+import { computed, ref } from 'vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
-import { operationTypes } from '@/utility/sound.js';
-import MkSwitch from '@/components/MkSwitch.vue';
-import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
+import type { SoundStore } from '@/preferences/def.js';
 import { PREF_DEF } from '@/preferences/def.js';
-import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 import { getInitialPrefValue } from '@/preferences/manager.js';
+import { prefer } from '@/preferences.js';
+import type { OperationType, SoundType } from '@/utility/sound.js';
+import { operationTypes } from '@/utility/sound.js';
+import FormSection from '@/components/form/section.vue';
+import MkButton from '@/components/MkButton.vue';
+import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
+import MkRange from '@/components/MkRange.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import XSound from './sounds.sound.vue';
 
 const notUseSound = prefer.model('sound.notUseSound');
 const useSoundOnlyWhenActive = prefer.model('sound.useSoundOnlyWhenActive');

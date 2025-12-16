@@ -16,9 +16,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import XRoom from './XRoom.vue';
 import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import XRoom from './XRoom.vue';
 
 const fetching = ref(true);
 const rooms = ref<Misskey.entities.ChatRoom[]>([]);

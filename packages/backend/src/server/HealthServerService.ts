@@ -4,13 +4,13 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import * as Redis from 'ioredis';
-import { DataSource } from 'typeorm';
+import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
+import type * as Redis from 'ioredis';
+import type { MeiliSearch } from 'meilisearch';
+import type { DataSource } from 'typeorm';
+import { readyRef } from '@/boot/ready.js';
 import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
-import { readyRef } from '@/boot/ready.js';
-import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
-import type { MeiliSearch } from 'meilisearch';
 
 @Injectable()
 export class HealthServerService {

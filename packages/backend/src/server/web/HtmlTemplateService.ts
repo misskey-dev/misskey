@@ -3,17 +3,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { promises as fsp } from 'node:fs';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { promises as fsp } from 'node:fs';
-import { languages } from 'i18n/const';
-import { Injectable, Inject } from '@nestjs/common';
-import { DI } from '@/di-symbols.js';
-import { bindThis } from '@/decorators.js';
-import { htmlSafeJsonStringify } from '@/misc/json-stringify-html-safe.js';
-import { MetaEntityService } from '@/core/entities/MetaEntityService.js';
+import { Inject, Injectable } from '@nestjs/common';
 import type { FastifyReply } from 'fastify';
+import { languages } from 'i18n/const';
 import type { Config } from '@/config.js';
+import { MetaEntityService } from '@/core/entities/MetaEntityService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import { htmlSafeJsonStringify } from '@/misc/json-stringify-html-safe.js';
 import type { MiMeta } from '@/models/Meta.js';
 import type { CommonData } from './views/_.js';
 

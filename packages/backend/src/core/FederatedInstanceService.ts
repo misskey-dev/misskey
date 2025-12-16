@@ -3,15 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
-import * as Redis from 'ioredis';
-import type { InstancesRepository } from '@/models/_.js';
-import type { MiInstance } from '@/models/Instance.js';
-import { MemoryKVCache, RedisKVCache } from '@/misc/cache.js';
+import type { OnApplicationShutdown } from '@nestjs/common';
+import { Inject, Injectable, } from '@nestjs/common';
+import type * as Redis from 'ioredis';
 import { IdService } from '@/core/IdService.js';
-import { DI } from '@/di-symbols.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import { RedisKVCache } from '@/misc/cache.js';
+import type { InstancesRepository } from '@/models/_.js';
+import type { MiInstance } from '@/models/Instance.js';
 
 @Injectable()
 export class FederatedInstanceService implements OnApplicationShutdown {
@@ -48,6 +49,7 @@ export class FederatedInstanceService implements OnApplicationShutdown {
 
 	@bindThis
 	public async fetchOrRegister(host: string): Promise<MiInstance> {
+		// biome-ignore lint/style/noParameterAssign: parameter normalization
 		host = this.utilityService.toPuny(host);
 
 		const cached = await this.federatedInstanceCache.get(host);
@@ -72,6 +74,7 @@ export class FederatedInstanceService implements OnApplicationShutdown {
 
 	@bindThis
 	public async fetch(host: string): Promise<MiInstance | null> {
+		// biome-ignore lint/style/noParameterAssign: parameter normalization
 		host = this.utilityService.toPuny(host);
 
 		const cached = await this.federatedInstanceCache.get(host);

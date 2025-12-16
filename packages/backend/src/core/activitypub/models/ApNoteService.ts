@@ -4,39 +4,39 @@
  */
 
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import type * as Redis from 'ioredis';
 import { In } from 'typeorm';
-import * as Redis from 'ioredis';
-import { DI } from '@/di-symbols.js';
-import type { PollsRepository, EmojisRepository, MiMeta } from '@/models/_.js';
 import type { Config } from '@/config.js';
-import type { MiRemoteUser } from '@/models/User.js';
-import type { MiNote } from '@/models/Note.js';
-import { acquireApObjectLock } from '@/misc/distributed-lock.js';
-import { toArray, toSingle, unique } from '@/misc/prelude/array.js';
-import type { MiEmoji } from '@/models/Emoji.js';
-import type { MiDriveFile } from '@/models/DriveFile.js';
-import { NoteCreateService } from '@/core/NoteCreateService.js';
-import type Logger from '@/logger.js';
 import { IdService } from '@/core/IdService.js';
+import { NoteCreateService } from '@/core/NoteCreateService.js';
 import { PollService } from '@/core/PollService.js';
-import { StatusError } from '@/misc/status-error.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type Logger from '@/logger.js';
 import { checkHttps } from '@/misc/check-https.js';
+import { acquireApObjectLock } from '@/misc/distributed-lock.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-import { getOneApId, getApId, getOneApHrefNullable, validPost, isEmoji, getApType } from '../type.js';
+import { toArray, toSingle, unique } from '@/misc/prelude/array.js';
+import { StatusError } from '@/misc/status-error.js';
+import type { EmojisRepository, MiMeta, PollsRepository } from '@/models/_.js';
+import type { MiDriveFile } from '@/models/DriveFile.js';
+import type { MiEmoji } from '@/models/Emoji.js';
+import type { MiNote } from '@/models/Note.js';
+import type { MiRemoteUser } from '@/models/User.js';
+import { ApAudienceService } from '../ApAudienceService.js';
+import { ApDbResolverService } from '../ApDbResolverService.js';
 import { ApLoggerService } from '../ApLoggerService.js';
 import { ApMfmService } from '../ApMfmService.js';
-import { ApDbResolverService } from '../ApDbResolverService.js';
-import { ApResolverService } from '../ApResolverService.js';
-import { ApAudienceService } from '../ApAudienceService.js';
-import { ApPersonService } from './ApPersonService.js';
-import { extractApHashtags } from './tag.js';
-import { ApMentionService } from './ApMentionService.js';
-import { ApQuestionService } from './ApQuestionService.js';
-import { ApImageService } from './ApImageService.js';
 import type { Resolver } from '../ApResolverService.js';
+import { ApResolverService } from '../ApResolverService.js';
 import type { IObject, IPost } from '../type.js';
+import { getApId, getApType, getOneApHrefNullable, getOneApId, isEmoji, validPost } from '../type.js';
+import { ApImageService } from './ApImageService.js';
+import { ApMentionService } from './ApMentionService.js';
+import { ApPersonService } from './ApPersonService.js';
+import { ApQuestionService } from './ApQuestionService.js';
+import { extractApHashtags } from './tag.js';
 
 @Injectable()
 export class ApNoteService {
@@ -127,7 +127,7 @@ export class ApNoteService {
 	 */
 	@bindThis
 	public async createNote(value: string | IObject, actor?: MiRemoteUser, resolver?: Resolver, silent = false): Promise<MiNote | null> {
-		// eslint-disable-next-line no-param-reassign
+		// biome-ignore lint/style/noParameterAssign: parameter fallback
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(value);
@@ -152,28 +152,28 @@ export class ApNoteService {
 		}
 
 		if (!checkHttps(note.id)) {
-			throw new Error('unexpected schema of note.id: ' + note.id);
+			throw new Error(`unexpected schema of note.id: ${note.id}`);
 		}
 
 		const url = getOneApHrefNullable(note.url);
 
 		if (url && !checkHttps(url)) {
-			throw new Error('unexpected schema of note url: ' + url);
+			throw new Error(`unexpected schema of note url: ${url}`);
 		}
 
 		this.logger.info(`Creating the Note: ${note.id}`);
 
 		// 投稿者をフェッチ
 		if (note.attributedTo == null) {
-			throw new Error('invalid note.attributedTo: ' + note.attributedTo);
+			throw new Error(`invalid note.attributedTo: ${note.attributedTo}`);
 		}
 
 		const uri = getOneApId(note.attributedTo);
 
 		// ローカルで投稿者を検索し、もし凍結されていたらスキップ
-		// eslint-disable-next-line no-param-reassign
+		// biome-ignore lint/style/noParameterAssign: parameter fallback
 		actor ??= await this.apPersonService.fetchPerson(uri) as MiRemoteUser | undefined;
-		if (actor && actor.isSuspended) {
+		if (actor?.isSuspended) {
 			throw new IdentifiableError('85ab9bd7-3a41-4530-959d-f07073900109', 'actor has been suspended');
 		}
 
@@ -205,7 +205,7 @@ export class ApNoteService {
 		}
 		//#endregion
 
-		// eslint-disable-next-line no-param-reassign
+		// biome-ignore lint/style/noParameterAssign: parameter fallback
 		actor ??= await this.apPersonService.resolvePerson(uri, resolver) as MiRemoteUser;
 
 		// 解決した投稿者が凍結されていたらスキップ
@@ -283,7 +283,7 @@ export class ApNoteService {
 		}
 
 		// vote
-		if (reply && reply.hasPoll) {
+		if (reply?.hasPoll) {
 			const poll = await this.pollsRepository.findOneByOrFail({ noteId: reply.id });
 
 			const tryCreateVote = async (name: string, index: number): Promise<null> => {
@@ -300,7 +300,7 @@ export class ApNoteService {
 			};
 
 			if (note.name) {
-				return await tryCreateVote(note.name, poll.choices.findIndex(x => x === note.name));
+				return await tryCreateVote(note.name, poll.choices.indexOf(note.name));
 			}
 		}
 
@@ -381,7 +381,7 @@ export class ApNoteService {
 
 	@bindThis
 	public async extractEmojis(tags: IObject | IObject[], host: string): Promise<MiEmoji[]> {
-		// eslint-disable-next-line no-param-reassign
+		// biome-ignore lint/style/noParameterAssign: parameter normalization
 		host = this.utilityService.toPuny(host);
 
 		const eomjiTags = toArray(tags).filter(isEmoji);

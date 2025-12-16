@@ -5,12 +5,12 @@
 
 import * as fs from 'node:fs';
 import * as Path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
-import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);

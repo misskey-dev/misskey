@@ -3,16 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as Misskey from 'misskey-js';
-import { defineAsyncComponent } from 'vue';
-import { selectDriveFolder } from './drive.js';
-import type { MenuItem } from '@/types/menu.js';
-import { i18n } from '@/i18n.js';
-import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { prefer } from '@/preferences.js';
+import type * as Misskey from 'misskey-js';
 import { globalEvents } from '@/events.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { prefer } from '@/preferences.js';
+import type { MenuItem } from '@/types/menu.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { selectDriveFolder } from './drive.js';
 
 function rename(file: Misskey.entities.DriveFile) {
 	os.inputText({
@@ -89,7 +88,7 @@ async function deleteFile(file: Misskey.entities.DriveFile) {
 }
 
 export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Misskey.entities.DriveFolder | null): MenuItem[] {
-	const isImage = file.type.startsWith('image/');
+	const _isImage = file.type.startsWith('image/');
 
 	const menuItems: MenuItem[] = [];
 

@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { Children, PropsWithChildren } from '@kitajs/html';
+import type { CommonProps } from '@/server/web/views/_.js';
 import { comment, defaultDescription } from '@/server/web/views/_.js';
 import { Splash } from '@/server/web/views/_splash.js';
-import type { CommonProps } from '@/server/web/views/_.js';
-import type { PropsWithChildren, Children } from '@kitajs/html';
 
 export function Layout(props: PropsWithChildren<CommonProps<{
 	title?: string;

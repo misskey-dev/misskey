@@ -23,11 +23,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import * as Misskey from 'misskey-js';
 import { computed } from 'vue';
-import { i18n } from '@/i18n.js';
-import { $i } from '@/i.js';
+import * as Misskey from 'misskey-js';
 import number from '@/filters/number.js';
+import { $i } from '@/i.js';
+import { i18n } from '@/i18n.js';
 
 const props = withDefaults(defineProps<{
 	clip: Misskey.entities.Clip;

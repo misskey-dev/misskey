@@ -154,27 +154,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick } from 'vue';
+import { nextTick, onMounted, onUnmounted, reactive, ref, useTemplateRef, watch } from 'vue';
 import ExifReader from 'exifreader';
 import { throttle } from 'throttle-debounce';
+import { useMkSelect } from '@/composables/use-mkselect.js';
+import { ensureSignin } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { prefer } from '@/preferences.js';
+import { deepClone } from '@/utility/clone.js';
+import { genId } from '@/utility/id.js';
 import type { ImageFrameParams, ImageFramePreset } from '@/utility/image-frame-renderer/ImageFrameRenderer.js';
 import { ImageFrameRenderer } from '@/utility/image-frame-renderer/ImageFrameRenderer.js';
-import { i18n } from '@/i18n.js';
-import MkModalWindow from '@/components/MkModalWindow.vue';
-import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
-import MkRange from '@/components/MkRange.vue';
-import MkInput from '@/components/MkInput.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import * as os from '@/os.js';
-import { deepClone } from '@/utility/clone.js';
-import { ensureSignin } from '@/i.js';
-import { genId } from '@/utility/id.js';
-import { useMkSelect } from '@/composables/use-mkselect.js';
-import { prefer } from '@/preferences.js';
+import MkInput from '@/components/MkInput.vue';
+import MkModalWindow from '@/components/MkModalWindow.vue';
+import MkRange from '@/components/MkRange.vue';
+import MkSelect from '@/components/MkSelect.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 
 const $i = ensureSignin();
 

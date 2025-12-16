@@ -42,13 +42,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, ref, computed } from 'vue';
-import * as os from '@/os.js';
-import { fetchInstance, instance } from '@/instance.js';
+import { computed, defineAsyncComponent, ref } from 'vue';
 import { i18n } from '@/i18n.js';
+import { fetchInstance, instance } from '@/instance.js';
+import * as os from '@/os.js';
 import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/MkInput.vue';
 import MkFolder from '@/components/MkFolder.vue';
+import MkInput from '@/components/MkInput.vue';
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 

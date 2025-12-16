@@ -26,8 +26,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { nextTick, onMounted, onUnmounted, useTemplateRef } from 'vue';
 import * as os from '@/os.js';
-import { calcPopupPosition } from '@/utility/popup-position.js';
 import { prefer } from '@/preferences.js';
+import { calcPopupPosition } from '@/utility/popup-position.js';
 
 const props = withDefaults(defineProps<{
 	showing: boolean;
@@ -67,11 +67,11 @@ function setPosition() {
 	});
 
 	el.value.style.transformOrigin = data.transformOrigin;
-	el.value.style.left = data.left + 'px';
-	el.value.style.top = data.top + 'px';
+	el.value.style.left = `${data.left}px`;
+	el.value.style.top = `${data.top}px`;
 }
 
-let loopHandler;
+let loopHandler: number;
 
 onMounted(() => {
 	nextTick(() => {

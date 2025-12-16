@@ -30,23 +30,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, provide, ref, markRaw } from 'vue';
+import { computed, markRaw, provide, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
-import type { MenuItem } from '@/types/menu.js';
-import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
+import { clipsCache } from '@/cache.js';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
-import MkButton from '@/components/MkButton.vue';
-import { clipsCache } from '@/cache.js';
-import { isSupportShare } from '@/utility/navigator.js';
+import { assertServerContext, serverContext } from '@/server-context.js';
+import type { MenuItem } from '@/types/menu.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { genEmbedCode } from '@/utility/get-embed-code.js';
-import { assertServerContext, serverContext } from '@/server-context.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { isSupportShare } from '@/utility/navigator.js';
 import { Paginator } from '@/utility/paginator.js';
+import MkButton from '@/components/MkButton.vue';
+import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
 
 // contextは非ログイン状態の情報しかないためログイン時は利用できない
 const CTX_CLIP = !$i && assertServerContext(serverContext, 'clip') ? serverContext.clip : null;

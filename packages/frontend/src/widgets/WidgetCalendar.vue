@@ -39,11 +39,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
-import { useWidgetPropsManager } from './widget.js';
-import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
+import { TIME_UPDATE_INTERVAL, useLowresTime } from '@/composables/use-lowres-time.js';
 import { i18n } from '@/i18n.js';
-import { useLowresTime, TIME_UPDATE_INTERVAL } from '@/composables/use-lowres-time.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
+import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import { useWidgetPropsManager } from './widget.js';
 
 const name = 'calendar';
 

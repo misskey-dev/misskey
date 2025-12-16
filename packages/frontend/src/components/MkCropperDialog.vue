@@ -29,13 +29,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, useTemplateRef, ref, onUnmounted } from 'vue';
-import * as Misskey from 'misskey-js';
+import { onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
 import Cropper from 'cropperjs';
+import * as Misskey from 'misskey-js';
 import tinycolor from 'tinycolor2';
-import MkModalWindow from '@/components/MkModalWindow.vue';
-import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import MkModalWindow from '@/components/MkModalWindow.vue';
 
 const props = defineProps<{
 	imageFile: File | Blob;
@@ -56,17 +56,17 @@ let cropper: Cropper | null = null;
 const loading = ref(true);
 
 async function ok() {
-	const promise = new Promise<Blob>(async (res) => {
-		if (cropper == null) throw new Error('Cropper is not initialized');
+	if (cropper == null) throw new Error('Cropper is not initialized');
 
-		const croppedImage = await cropper.getCropperImage()!;
-		const croppedSection = await cropper.getCropperSelection()!;
+	const croppedImage = await cropper.getCropperImage()!;
+	const croppedSection = await cropper.getCropperSelection()!;
 
-		// 拡大率を計算し、(ほぼ)元の大きさに戻す
-		const zoomedRate = croppedImage.getBoundingClientRect().width / croppedImage.clientWidth;
-		const widthToRender = croppedSection.getBoundingClientRect().width / zoomedRate;
+	// 拡大率を計算し、(ほぼ)元の大きさに戻す
+	const zoomedRate = croppedImage.getBoundingClientRect().width / croppedImage.clientWidth;
+	const widthToRender = croppedSection.getBoundingClientRect().width / zoomedRate;
 
-		const croppedCanvas = await croppedSection.$toCanvas({ width: widthToRender });
+	const croppedCanvas = await croppedSection.$toCanvas({ width: widthToRender });
+	const promise = new Promise<Blob>((res) => {
 		croppedCanvas.toBlob(blob => {
 			if (!blob) return;
 			res(blob);

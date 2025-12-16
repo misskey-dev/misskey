@@ -112,22 +112,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, markRaw, ref, shallowRef, toRef } from 'vue';
-import { host as localHost } from '@@/js/config.js';
 import type * as Misskey from 'misskey-js';
+import { host as localHost } from '@@/js/config.js';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { apLookup } from '@/utility/lookup.js';
 import { useRouter } from '@/router.js';
+import { apLookup } from '@/utility/lookup.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { Paginator } from '@/utility/paginator.js';
 import MkButton from '@/components/MkButton.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
-import { Paginator } from '@/utility/paginator.js';
 
 const props = withDefaults(defineProps<{
 	query?: string;
@@ -151,7 +151,6 @@ const hostInput = ref(toRef(props, 'host').value);
 
 const user = shallowRef<Misskey.entities.UserDetailed | null>(null);
 
-// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 const noteSearchableScope = instance.noteSearchableScope ?? 'local';
 
 //#region set user
@@ -269,7 +268,6 @@ async function search() {
 						acct: `${res.object.username}@${res.object.host}`,
 					},
 				});
-			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 			} else if (res.type === 'Note') {
 				router.push('/notes/:noteId/:initialTab?', {
 					params: {

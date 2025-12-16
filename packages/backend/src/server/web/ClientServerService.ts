@@ -6,22 +6,30 @@
 import { randomUUID } from 'node:crypto';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import fastifyProxy from '@fastify/http-proxy';
+import fastifyStatic from '@fastify/static';
 import { Inject, Injectable } from '@nestjs/common';
+import type { FastifyError, FastifyInstance, FastifyPluginOptions, FastifyReply } from 'fastify';
 import ms from 'ms';
 import sharp from 'sharp';
 import { In, IsNull } from 'typeorm';
-import fastifyStatic from '@fastify/static';
-import fastifyProxy from '@fastify/http-proxy';
 import vary from 'vary';
 import type { Config } from '@/config.js';
-import { DI } from '@/di-symbols.js';
-import * as Acct from '@/misc/acct.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { AnnouncementEntityService } from '@/core/entities/AnnouncementEntityService.js';
+import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
+import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
+import { FlashEntityService } from '@/core/entities/FlashEntityService.js';
+import { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { PageEntityService } from '@/core/entities/PageEntityService.js';
-import { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
-import { ClipEntityService } from '@/core/entities/ClipEntityService.js';
-import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
+import { ReversiGameEntityService } from '@/core/entities/ReversiGameEntityService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type Logger from '@/logger.js';
+import * as Acct from '@/misc/acct.js';
+import { handleRequestRedirectToOmitSearch } from '@/misc/fastify-hook-handlers.js';
+import { htmlSafeJsonStringify } from '@/misc/json-stringify-html-safe.js';
 import type {
 	AnnouncementsRepository,
 	ChannelsRepository,
@@ -35,36 +43,26 @@ import type {
 	UserProfilesRepository,
 	UsersRepository,
 } from '@/models/_.js';
-import type Logger from '@/logger.js';
-import { handleRequestRedirectToOmitSearch } from '@/misc/fastify-hook-handlers.js';
-import { htmlSafeJsonStringify } from '@/misc/json-stringify-html-safe.js';
-import { bindThis } from '@/decorators.js';
-import { FlashEntityService } from '@/core/entities/FlashEntityService.js';
-import { ReversiGameEntityService } from '@/core/entities/ReversiGameEntityService.js';
-import { AnnouncementEntityService } from '@/core/entities/AnnouncementEntityService.js';
-import { FeedService } from './FeedService.js';
-import { UrlPreviewService } from './UrlPreviewService.js';
 import { ClientLoggerService } from './ClientLoggerService.js';
+import { FeedService } from './FeedService.js';
 import { HtmlTemplateService } from './HtmlTemplateService.js';
-
+import { UrlPreviewService } from './UrlPreviewService.js';
+import { AnnouncementPage } from './views/announcement.js';
 import { BasePage } from './views/base.js';
-import { UserPage } from './views/user.js';
+import { BaseEmbed } from './views/base-embed.js';
+import { BiosPage } from './views/bios.js';
+import { ChannelPage } from './views/channel.js';
+import { CliPage } from './views/cli.js';
+import { ClipPage } from './views/clip.js';
+import { ErrorPage } from './views/error.js';
+import { FlashPage } from './views/flash.js';
+import { FlushPage } from './views/flush.js';
+import { GalleryPostPage } from './views/gallery-post.js';
+import { InfoCardPage } from './views/info-card.js';
 import { NotePage } from './views/note.js';
 import { PagePage } from './views/page.js';
-import { ClipPage } from './views/clip.js';
-import { FlashPage } from './views/flash.js';
-import { GalleryPostPage } from './views/gallery-post.js';
-import { ChannelPage } from './views/channel.js';
 import { ReversiGamePage } from './views/reversi-game.js';
-import { AnnouncementPage } from './views/announcement.js';
-import { BaseEmbed } from './views/base-embed.js';
-import { InfoCardPage } from './views/info-card.js';
-import { BiosPage } from './views/bios.js';
-import { CliPage } from './views/cli.js';
-import { FlushPage } from './views/flush.js';
-import { ErrorPage } from './views/error.js';
-
-import type { FastifyError, FastifyInstance, FastifyPluginOptions, FastifyReply } from 'fastify';
+import { UserPage } from './views/user.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -139,27 +137,22 @@ export class ClientServerService {
 	private async manifestHandler(reply: FastifyReply) {
 		let manifest = {
 			// 空文字列の場合右辺を使いたいため
-			// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 			'short_name': this.meta.shortName || this.meta.name || this.config.host,
 			// 空文字列の場合右辺を使いたいため
-			// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 			'name': this.meta.name || this.config.host,
 			'start_url': '/',
 			'display': 'standalone',
 			'background_color': '#313a42',
 			// 空文字列の場合右辺を使いたいため
-			// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 			'theme_color': this.meta.themeColor || '#86b300',
 			'icons': [{
 				// 空文字列の場合右辺を使いたいため
-				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 				'src': this.meta.app192IconUrl || '/static-assets/icons/192.png',
 				'sizes': '192x192',
 				'type': 'image/png',
 				'purpose': 'maskable',
 			}, {
 				// 空文字列の場合右辺を使いたいため
-				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 				'src': this.meta.app512IconUrl || '/static-assets/icons/512.png',
 				'sizes': '512x512',
 				'type': 'image/png',
@@ -230,14 +223,14 @@ export class ClientServerService {
 
 			const port = (process.env.VITE_PORT ?? '5173');
 			fastify.register(fastifyProxy, {
-				upstream: urlOriginWithoutPort + ':' + port,
+				upstream: `${urlOriginWithoutPort}:${port}`,
 				prefix: '/vite',
 				rewritePrefix: '/vite',
 			});
 
 			const embedPort = (process.env.EMBED_VITE_PORT ?? '5174');
 			fastify.register(fastifyProxy, {
-				upstream: urlOriginWithoutPort + ':' + embedPort,
+				upstream: `${urlOriginWithoutPort}:${embedPort}`,
 				prefix: '/embed_vite',
 				rewritePrefix: '/embed_vite',
 			});
@@ -531,7 +524,7 @@ export class ClientServerService {
 
 			vary(reply.raw, 'Accept');
 
-			reply.redirect(`/@${user.username}${ user.host == null ? '' : '@' + user.host}`);
+			reply.redirect(`/@${user.username}${ user.host == null ? '' : `@${user.host}`}`);
 		});
 
 		// Note
@@ -640,7 +633,7 @@ export class ClientServerService {
 				id: request.params.clip,
 			});
 
-			if (clip && clip.isPublic) {
+			if (clip?.isPublic) {
 				const _clip = await this.clipEntityService.pack(clip);
 				const profile = await this.userProfilesRepository.findOneByOrFail({ userId: clip.userId });
 				reply.header('Cache-Control', 'public, max-age=15');
@@ -853,9 +846,6 @@ export class ClientServerService {
 				version: this.config.version,
 			}));
 		});
-
-		const override = (source: string, target: string, depth = 0) =>
-			[, ...target.split('/').filter(x => x), ...source.split('/').filter(x => x).splice(depth)].join('/');
 
 		fastify.get('/flush', async (request, reply) => {
 			let sendHeader = true;

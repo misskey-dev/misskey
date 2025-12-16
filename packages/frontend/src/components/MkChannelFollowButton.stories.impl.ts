@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { HttpResponse, http } from 'msw';
 import { action } from 'storybook/actions';
 import { expect, userEvent, within } from '@storybook/test';
+import type { StoryObj } from '@storybook/vue3';
+import { HttpResponse, http } from 'msw';
+import { i18n } from '@/i18n.js';
 import { channel } from '../../.storybook/fakes.js';
 import { commonHandlers } from '../../.storybook/mocks.js';
 import MkChannelFollowButton from './MkChannelFollowButton.vue';
-import type { StoryObj } from '@storybook/vue3';
-import { i18n } from '@/i18n.js';
 
 function sleep(ms: number) {
 	return new Promise(resolve => window.setTimeout(resolve, ms));

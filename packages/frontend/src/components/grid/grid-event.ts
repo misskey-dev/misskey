@@ -4,9 +4,9 @@
  */
 
 import type { CellAddress, CellValue, GridCell } from '@/components/grid/cell.js';
-import type { GridState } from '@/components/grid/grid.js';
 import type { ValidateViolation } from '@/components/grid/cell-validators.js';
 import type { GridColumn } from '@/components/grid/column.js';
+import type { GridState } from '@/components/grid/grid.js';
 import type { GridRow } from '@/components/grid/row.js';
 
 export type GridContext = {

@@ -4,13 +4,12 @@
  */
 
 import { Test } from '@nestjs/testing';
-
 import { CoreModule } from '@/core/CoreModule.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
 import { GlobalModule } from '@/GlobalModule.js';
-import { MiNote } from '@/models/Note.js';
-import { IPoll } from '@/models/Poll.js';
-import { MiDriveFile } from '@/models/DriveFile.js';
+import type { MiDriveFile } from '@/models/DriveFile.js';
+import type { MiNote } from '@/models/Note.js';
+import type { IPoll } from '@/models/Poll.js';
 
 describe('NoteCreateService', () => {
 	let noteCreateService: NoteCreateService;

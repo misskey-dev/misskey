@@ -3,11 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { expect, userEvent, within } from '@storybook/test';
 import type { StoryObj } from '@storybook/vue3';
 import MkA from './MkA.vue';
-import { tick } from '@/utility/test-utils.js';
 export const Default = {
 	render(args) {
 		return {

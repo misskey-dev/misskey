@@ -4,17 +4,18 @@
  */
 
 import { afterEach, beforeEach, describe, expect, jest } from '@jest/globals';
-import { Test, TestingModule } from '@nestjs/testing';
-import { randomString } from '../utils.js';
-import { MiUser } from '@/models/User.js';
-import { MiWebhook, UsersRepository, WebhooksRepository } from '@/models/_.js';
-import { IdService } from '@/core/IdService.js';
-import { GlobalModule } from '@/GlobalModule.js';
+import type { TestingModule } from '@nestjs/testing';
+import { Test, } from '@nestjs/testing';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { DI } from '@/di-symbols.js';
-import { QueueService } from '@/core/QueueService.js';
+import { IdService } from '@/core/IdService.js';
 import { LoggerService } from '@/core/LoggerService.js';
+import { QueueService } from '@/core/QueueService.js';
 import { UserWebhookService } from '@/core/UserWebhookService.js';
+import { DI } from '@/di-symbols.js';
+import { GlobalModule } from '@/GlobalModule.js';
+import type { MiWebhook, UsersRepository, WebhooksRepository } from '@/models/_.js';
+import type { MiUser } from '@/models/User.js';
+import { randomString } from '../utils.js';
 
 describe('UserWebhookService', () => {
 	let app: TestingModule;

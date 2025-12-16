@@ -42,21 +42,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onUnmounted, onMounted, computed, useTemplateRef, TransitionGroup, markRaw, watch } from 'vue';
+import { computed, markRaw, onMounted, onUnmounted, TransitionGroup, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { notificationTypes } from 'misskey-js';
-import { useInterval } from '@@/js/use-interval.js';
-import { useDocumentVisibility } from '@@/js/use-document-visibility.js';
 import { getScrollContainer, scrollToTop } from '@@/js/scroll.js';
-import XNotification from '@/components/MkNotification.vue';
-import MkNote from '@/components/MkNote.vue';
-import { useStream } from '@/stream.js';
+import { useDocumentVisibility } from '@@/js/use-document-visibility.js';
+import { useInterval } from '@@/js/use-interval.js';
 import { i18n } from '@/i18n.js';
-import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import { prefer } from '@/preferences.js';
 import { store } from '@/store.js';
-import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-separate.js';
+import { useStream } from '@/stream.js';
 import { Paginator } from '@/utility/paginator.js';
+import { getSeparatorInfo, isSeparatorNeeded } from '@/utility/timeline-date-separate.js';
+import MkNote from '@/components/MkNote.vue';
+import XNotification from '@/components/MkNotification.vue';
+import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 
 const props = defineProps<{
 	excludeTypes?: typeof notificationTypes[number][] | null;

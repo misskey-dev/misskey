@@ -3,16 +3,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
-import * as Redis from 'ioredis';
-import type { AvatarDecorationsRepository, MiAvatarDecoration, MiUser } from '@/models/_.js';
-import { IdService } from '@/core/IdService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { DI } from '@/di-symbols.js';
-import { bindThis } from '@/decorators.js';
-import { MemorySingleCache } from '@/misc/cache.js';
+import type { OnApplicationShutdown } from '@nestjs/common';
+import { Inject, Injectable, } from '@nestjs/common';
+import type * as Redis from 'ioredis';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { IdService } from '@/core/IdService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import { MemorySingleCache } from '@/misc/cache.js';
+import type { AvatarDecorationsRepository, MiAvatarDecoration, MiUser } from '@/models/_.js';
 
 @Injectable()
 export class AvatarDecorationService implements OnApplicationShutdown {
@@ -39,7 +40,7 @@ export class AvatarDecorationService implements OnApplicationShutdown {
 		const obj = JSON.parse(data);
 
 		if (obj.channel === 'internal') {
-			const { type, body } = obj.message as GlobalEvents['internal']['payload'];
+			const { type, body: _ } = obj.message as GlobalEvents['internal']['payload'];
 			switch (type) {
 				case 'avatarDecorationCreated':
 				case 'avatarDecorationUpdated':

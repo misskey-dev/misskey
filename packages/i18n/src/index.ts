@@ -9,8 +9,8 @@
 
 import * as fs from 'node:fs';
 import * as yaml from 'js-yaml';
-import { languages, primaries } from './const.js';
 import type { Locale } from './autogen/locale.js';
+import { languages, primaries } from './const.js';
 import type { ILocale, ParameterizedString } from './types.js';
 
 type Language = typeof languages[number];
@@ -23,16 +23,16 @@ type Locales = Record<Language, ILocale>;
  * オブジェクトを再帰的にマージする
  */
 function merge<T extends ILocale>(...args: (T | ILocale | undefined)[]): T {
-	return args.reduce<ILocale>((a, c) => ({
-		...a,
-		...c,
-		...Object.entries(a)
+	return args.reduce<ILocale>((a, c) => Object.assign(
+		a,
+		c,
+		Object.entries(a)
 			.filter(([k]) => c && typeof c[k] === 'object')
 			.reduce<Record<string, ILocale[string]>>((acc, [k, v]) => {
 				acc[k] = merge(v as ILocale, (c as ILocale)[k] as ILocale);
 				return acc;
 			}, {}),
-	}), {} as ILocale) as T;
+	), {} as ILocale) as T;
 }
 
 /**
@@ -127,4 +127,6 @@ async function writeFrontendLocalesJson(destDir: string, version: string): Promi
 
 export { locales, languages, build, writeFrontendLocalesJson };
 export type { Language, Locale, ILocale, ParameterizedString };
+
+// biome-ignore lint/style/noDefaultExport: the (almost) only export so allowed
 export default locales;

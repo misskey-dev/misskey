@@ -3,20 +3,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as Misskey from 'misskey-js';
-import { hemisphere } from '@@/js/intl-const.js';
+import type * as Misskey from 'misskey-js';
 import { prefersReducedMotion } from '@@/js/config.js';
-import { definePreferences } from './manager.js';
-import type { Theme } from '@/theme.js';
-import type { SoundType } from '@/utility/sound.js';
-import type { Plugin } from '@/plugin.js';
-import type { DeviceKind } from '@/utility/device-kind.js';
+import { hemisphere } from '@@/js/intl-const.js';
 import type { DeckProfile } from '@/deck.js';
-import type { WatermarkPreset } from '@/utility/watermark/WatermarkRenderer.js';
-import type { ImageFramePreset } from '@/utility/image-frame-renderer/ImageFrameRenderer.js';
-import { genId } from '@/utility/id.js';
-import { DEFAULT_DEVICE_KIND } from '@/utility/device-kind.js';
+import type { Plugin } from '@/plugin.js';
+import type { Theme } from '@/theme.js';
 import { deepEqual } from '@/utility/deep-equal.js';
+import type { DeviceKind } from '@/utility/device-kind.js';
+import { DEFAULT_DEVICE_KIND } from '@/utility/device-kind.js';
+import { genId } from '@/utility/id.js';
+import type { ImageFramePreset } from '@/utility/image-frame-renderer/ImageFrameRenderer.js';
+import type { SoundType } from '@/utility/sound.js';
+import type { WatermarkPreset } from '@/utility/watermark/WatermarkRenderer.js';
+import { definePreferences } from './manager.js';
 
 /** サウンド設定 */
 export type SoundStore = {

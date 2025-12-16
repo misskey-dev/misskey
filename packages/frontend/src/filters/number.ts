@@ -5,4 +5,5 @@
 
 import { numberFormat } from '@@/js/intl-const.js';
 
+// biome-ignore lint/style/noDefaultExport: historical reason
 export default (n?: number) => n == null ? 'N/A' : numberFormat.format(n);

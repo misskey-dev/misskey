@@ -5,11 +5,11 @@
 
 import { assert, beforeEach, describe, test } from 'vitest';
 import {
-	normalizeString,
-	initIntlString,
-	normalizeStringWithHiragana,
 	compareStringEquals,
 	compareStringIncludes,
+	initIntlString,
+	normalizeString,
+	normalizeStringWithHiragana,
 } from '@/utility/intl-string.js';
 
 // 共通のテストを実行するヘルパー関数

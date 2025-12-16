@@ -17,14 +17,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
-import MkCodeEditor from '@/components/MkCodeEditor.vue';
-import MkButton from '@/components/MkButton.vue';
-import { parseThemeCode, previewTheme, installTheme } from '@/theme.js';
-import * as os from '@/os.js';
+import { computed, ref } from 'vue';
 import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 import { definePage } from '@/page.js';
 import { useRouter } from '@/router.js';
+import { installTheme, parseThemeCode, previewTheme } from '@/theme.js';
+import MkButton from '@/components/MkButton.vue';
+import MkCodeEditor from '@/components/MkCodeEditor.vue';
 
 const router = useRouter();
 const installThemeCode = ref<string | null>(null);

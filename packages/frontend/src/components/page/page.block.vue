@@ -10,11 +10,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { } from 'vue';
 import * as Misskey from 'misskey-js';
-import XText from './page.text.vue';
-import XSection from './page.section.vue';
+import XDynamic from './page.dynamic.vue';
 import XImage from './page.image.vue';
 import XNote from './page.note.vue';
-import XDynamic from './page.dynamic.vue';
+import XSection from './page.section.vue';
+import XText from './page.text.vue';
 
 function getComponent(type: string) {
 	switch (type) {

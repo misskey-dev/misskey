@@ -17,10 +17,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import MkFeaturedPhotos from '@/components/MkFeaturedPhotos.vue';
-import misskeysvg from '/client-assets/misskey.svg';
-import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
 import { instance as meta } from '@/instance.js';
+import MkFeaturedPhotos from '@/components/MkFeaturedPhotos.vue';
+import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
+import misskeysvg from '/client-assets/misskey.svg';
 </script>
 
 <style lang="scss" module>

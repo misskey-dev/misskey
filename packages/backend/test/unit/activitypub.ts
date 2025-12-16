@@ -5,31 +5,29 @@
 
 process.env.NODE_ENV = 'test';
 
-import * as assert from 'assert';
+import * as assert from 'node:assert';
 import * as fs from 'node:fs';
-import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
-import { Test } from '@nestjs/testing';
+import { fileURLToPath } from 'node:url';
 import { jest } from '@jest/globals';
-
-import { MockResolver } from '../misc/mock-resolver.js';
-import type { IActor, IApDocument, ICollection, IObject, IPost } from '@/core/activitypub/type.js';
-import type { MiRemoteUser } from '@/models/User.js';
-import { ApImageService } from '@/core/activitypub/models/ApImageService.js';
-import { ApNoteService } from '@/core/activitypub/models/ApNoteService.js';
-import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
+import { Test } from '@nestjs/testing';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { JsonLdService } from '@/core/activitypub/JsonLdService.js';
 import { CONTEXT } from '@/core/activitypub/misc/contexts.js';
-import { GlobalModule } from '@/GlobalModule.js';
+import { ApImageService } from '@/core/activitypub/models/ApImageService.js';
+import { ApNoteService } from '@/core/activitypub/models/ApNoteService.js';
+import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
+import type { IActor, IApDocument, ICollection, IObject, IPost } from '@/core/activitypub/type.js';
 import { CoreModule } from '@/core/CoreModule.js';
-import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
-import { LoggerService } from '@/core/LoggerService.js';
-import { MiMeta, MiNote, UserProfilesRepository } from '@/models/_.js';
-import { DI } from '@/di-symbols.js';
-import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { DownloadService } from '@/core/DownloadService.js';
+import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
+import { DI } from '@/di-symbols.js';
+import { GlobalModule } from '@/GlobalModule.js';
 import { genAidx } from '@/misc/id/aidx.js';
+import { secureRndstr } from '@/misc/secure-rndstr.js';
+import type { MiMeta, MiNote, UserProfilesRepository } from '@/models/_.js';
+import type { MiRemoteUser } from '@/models/User.js';
+import { MockResolver } from '../misc/mock-resolver.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -129,7 +127,7 @@ describe('ActivityPub', () => {
 				async downloadUrl(url: string, path: string): Promise<{ filename: string }> {
 					if (url.endsWith('.png')) {
 						fs.copyFileSync(
-							_dirname + '/../resources/hw.png',
+							`${_dirname}/../resources/hw.png`,
 							path,
 						);
 					}
@@ -151,7 +149,7 @@ describe('ActivityPub', () => {
 		rendererService = app.get<ApRendererService>(ApRendererService);
 		imageService = app.get<ApImageService>(ApImageService);
 		jsonLdService = app.get<JsonLdService>(JsonLdService);
-		resolver = new MockResolver(await app.resolve<LoggerService>(LoggerService));
+		resolver = new MockResolver();
 
 		// Prevent ApPersonService from fetching instance, as it causes Jest import-after-test error
 		const federatedInstanceService = app.get<FederatedInstanceService>(FederatedInstanceService);
@@ -394,7 +392,7 @@ describe('ActivityPub', () => {
 				await createRandomRemoteUser(resolver, personService),
 				imageObject,
 			);
-			assert.ok(driveFile && driveFile.isLink);
+			assert.ok(driveFile?.isLink);
 
 			const sensitiveImageObject: IApDocument = {
 				type: 'Document',
@@ -407,7 +405,7 @@ describe('ActivityPub', () => {
 				await createRandomRemoteUser(resolver, personService),
 				sensitiveImageObject,
 			);
-			assert.ok(sensitiveDriveFile && sensitiveDriveFile.isLink);
+			assert.ok(sensitiveDriveFile?.isLink);
 		});
 
 		test('cacheRemoteSensitiveFiles=false only affects sensitive files', async () => {
@@ -436,7 +434,7 @@ describe('ActivityPub', () => {
 				await createRandomRemoteUser(resolver, personService),
 				sensitiveImageObject,
 			);
-			assert.ok(sensitiveDriveFile && sensitiveDriveFile.isLink);
+			assert.ok(sensitiveDriveFile?.isLink);
 		});
 
 		test('Link is not an attachment files', async () => {

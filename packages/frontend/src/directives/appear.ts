@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { throttle } from 'throttle-debounce';
 import type { Directive } from 'vue';
+import { throttle } from 'throttle-debounce';
 import type { Awaitable } from '@/types/misc.js';
 
 interface HTMLElementWithObserver extends HTMLElement {

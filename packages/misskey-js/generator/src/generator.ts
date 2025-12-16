@@ -1,10 +1,10 @@
-import assert from 'assert';
-import { mkdir, readFile, writeFile } from 'fs/promises';
-import type { OpenAPIV3_1 } from 'openapi-types';
-import { toPascal } from 'ts-case-convert';
+import assert from 'node:assert';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { parse } from '@readme/openapi-parser';
-import openapiTS, { astToString } from 'openapi-typescript';
+import type { OpenAPIV3_1 } from 'openapi-types';
 import type { OpenAPI3, OperationObject, PathItemObject } from 'openapi-typescript';
+import openapiTS, { astToString } from 'openapi-typescript';
+import { toPascal } from 'ts-case-convert';
 import ts from 'typescript';
 import { removeNeverPropertiesFromAST } from './ast-transformer.js';
 
@@ -13,27 +13,15 @@ async function generateBaseTypes(
 	openApiJsonPath: string,
 	typeFileName: string,
 ) {
-	const disabledLints = [
-		'@typescript-eslint/naming-convention',
-		'@typescript-eslint/no-explicit-any',
-	];
-
 	const lines: string[] = [];
-	for (const lint of disabledLints) {
-		lines.push(`/* eslint ${lint}: 0 */`);
-	}
-	lines.push('');
 
 	// NOTE: Align `operationId` of GET and POST to avoid duplication of type definitions
 	const openApi = JSON.parse(await readFile(openApiJsonPath, 'utf8')) as OpenAPI3;
-	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 	for (const [key, item] of Object.entries(openApi.paths!)) {
 		assert('post' in item);
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		openApi.paths![key] = {
 			post: {
 				...item.post,
-				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 				operationId: ((item as PathItemObject).post as OperationObject).operationId!.replaceAll('post___', ''),
 			},
 		};
@@ -150,8 +138,6 @@ async function generateEndpoints(
 
 	const entitiesOutputLine: string[] = [];
 
-	entitiesOutputLine.push('/* eslint @typescript-eslint/naming-convention: 0 */');
-
 	entitiesOutputLine.push(`import { operations } from '${toImportPath(typeFileName)}';`);
 	entitiesOutputLine.push('');
 
@@ -171,14 +157,14 @@ async function generateEndpoints(
 
 	endpointOutputLine.push('import type {');
 	endpointOutputLine.push(
-		...[emptyRequest, emptyResponse, ...entities].map(it => '\t' + it.generateName() + ','),
+		...[emptyRequest, emptyResponse, ...entities].map(it => `\t${it.generateName()},`),
 	);
 	endpointOutputLine.push(`} from '${toImportPath(entitiesOutputPath)}';`);
 	endpointOutputLine.push('');
 
 	endpointOutputLine.push('export type Endpoints = {');
 	endpointOutputLine.push(
-		...endpoints.map(it => '\t' + it.toLine()),
+		...endpoints.map(it => `\t${it.toLine()}`),
 	);
 	endpointOutputLine.push('};');
 	endpointOutputLine.push('');
@@ -193,7 +179,7 @@ async function generateEndpoints(
 	endpointOutputLine.push('export const endpointReqTypes = {');
 
 	endpointOutputLine.push(
-		...endpointReqMediaTypes.map(it => '\t' + it.toLine()),
+		...endpointReqMediaTypes.map(it => `\t${it.toLine()}`),
 	);
 
 	endpointOutputLine.push(`} as const satisfies ${generateEndpointReqMediaTypesType()};`);
@@ -251,7 +237,7 @@ async function generateApiClientJSDoc(
 			'    /**',
 			`     * ${endpoint.description.split('\n').join('\n     * ')}`,
 			'     */',
-			`    request<E extends '${endpoint.path}', P extends Endpoints[E][\'req\']>(`,
+			`    request<E extends '${endpoint.path}', P extends Endpoints[E]['req']>(`,
 			'      endpoint: E,',
 			'      params: P,',
 			'      credential?: string | null,',
@@ -347,7 +333,7 @@ class EmptyTypeAlias implements IOperationTypeAlias {
 	}
 
 	generateName(): string {
-		return 'Empty' + this.type;
+		return `Empty${this.type}`;
 	}
 
 	toLine(): string {

@@ -7,7 +7,8 @@ import { createRequire } from 'node:module';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { StorybookConfig } from '@storybook/vue3-vite';
-import { type Plugin, mergeConfig } from 'vite';
+import type { Plugin } from 'vite';
+import { mergeConfig, } from 'vite';
 import turbosnap from 'vite-plugin-turbosnap';
 
 const require = createRequire(import.meta.url);
@@ -63,6 +64,8 @@ const config = {
 		});
 	},
 } satisfies StorybookConfig;
+
+// biome-ignore lint/style/noDefaultExport: historical reason
 export default config;
 
 function getAbsolutePath(value: string): string {

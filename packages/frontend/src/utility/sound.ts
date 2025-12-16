@@ -4,9 +4,8 @@
  */
 
 import type { SoundStore } from '@/preferences/def.js';
-import { prefer } from '@/preferences.js';
-import { PREF_DEF } from '@/preferences/def.js';
 import { getInitialPrefValue } from '@/preferences/manager.js';
+import { prefer } from '@/preferences.js';
 
 let ctx: AudioContext;
 const cache = new Map<string, AudioBuffer>();
@@ -93,7 +92,6 @@ export type OperationType = typeof operationTypes[number];
  * @param options `useCache`: デフォルトは`true` 一度再生した音声はキャッシュする
  */
 export async function loadAudio(url: string, options?: { useCache?: boolean; }) {
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (ctx == null) {
 		ctx = new AudioContext();
 
@@ -111,7 +109,7 @@ export async function loadAudio(url: string, options?: { useCache?: boolean; }) 
 
 	try {
 		response = await window.fetch(url);
-	} catch (err) {
+	} catch (_) {
 		return;
 	}
 

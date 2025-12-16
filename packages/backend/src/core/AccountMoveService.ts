@@ -4,28 +4,26 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { IsNull, In, MoreThan, Not } from 'typeorm';
-
-import { bindThis } from '@/decorators.js';
-import { DI } from '@/di-symbols.js';
-import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/User.js';
-import type { BlockingsRepository, FollowingsRepository, InstancesRepository, MiMeta, MutingsRepository, UserListMembershipsRepository, UsersRepository } from '@/models/_.js';
-import type { RelationshipJobData, ThinUser } from '@/queue/types.js';
-
-import { IdService } from '@/core/IdService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { QueueService } from '@/core/QueueService.js';
-import { RelayService } from '@/core/RelayService.js';
-import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
+import { In, IsNull, MoreThan, Not } from 'typeorm';
+import { AntennaService } from '@/core/AntennaService.js';
 import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
+import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import InstanceChart from '@/core/chart/charts/instance.js';
 import PerUserFollowingChart from '@/core/chart/charts/per-user-following.js';
-import { SystemAccountService } from '@/core/SystemAccountService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { IdService } from '@/core/IdService.js';
+import { QueueService } from '@/core/QueueService.js';
+import { RelayService } from '@/core/RelayService.js';
 import { RoleService } from '@/core/RoleService.js';
-import { AntennaService } from '@/core/AntennaService.js';
+import { SystemAccountService } from '@/core/SystemAccountService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type { BlockingsRepository, FollowingsRepository, InstancesRepository, MiMeta, MutingsRepository, UserListMembershipsRepository, UsersRepository } from '@/models/_.js';
+import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/User.js';
+import type { RelationshipJobData, ThinUser } from '@/queue/types.js';
 
 @Injectable()
 export class AccountMoveService {
@@ -75,7 +73,7 @@ export class AccountMoveService {
 	 */
 	@bindThis
 	public async moveFromLocal(src: MiLocalUser, dst: MiLocalUser | MiRemoteUser): Promise<unknown> {
-		const srcUri = this.userEntityService.getUserUri(src);
+		const _srcUri = this.userEntityService.getUserUri(src);
 		const dstUri = this.userEntityService.getUserUri(dst);
 
 		// add movedToUri to indicate that the user has moved
@@ -341,6 +339,7 @@ export class AccountMoveService {
 			if (Date.now() - (dst.lastFetchedAt?.getTime() ?? 0) > 10 * 1000) {
 				await this.apPersonService.updatePerson(dst.uri);
 			}
+			// biome-ignore lint/style/noParameterAssign: intended
 			dst = await this.apPersonService.fetchPerson(dst.uri) ?? dst;
 		}
 

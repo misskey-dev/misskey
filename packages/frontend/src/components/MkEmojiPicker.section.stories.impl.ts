@@ -4,4 +4,5 @@
  */
 
 import MkEmojiPicker_section from './MkEmojiPicker.section.vue';
+
 void MkEmojiPicker_section;

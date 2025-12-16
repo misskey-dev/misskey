@@ -4,9 +4,9 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { isInstanceMuted, isUserFromMutedInstance } from '@/misc/is-instance-muted.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
+import { isInstanceMuted, isUserFromMutedInstance } from '@/misc/is-instance-muted.js';
 import type { JsonObject } from '@/misc/json-value.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
@@ -35,7 +35,7 @@ class MainChannel extends Channel {
 					if (isUserFromMutedInstance(data.body, new Set<string>(this.userProfile?.mutedInstances ?? []))) return;
 					if (data.body.userId && this.userIdsWhoMeMuting.has(data.body.userId)) return;
 
-					if (data.body.note && data.body.note.isHidden) {
+					if (data.body.note?.isHidden) {
 						const note = await this.noteEntityService.pack(data.body.note.id, this.user, {
 							detail: true,
 						});

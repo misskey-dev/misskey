@@ -165,26 +165,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref, watch, defineAsyncComponent } from 'vue';
-import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/MkInput.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
-import MkSelect from '@/components/MkSelect.vue';
-import FormSplit from '@/components/form/split.vue';
-import MkFolder from '@/components/MkFolder.vue';
-import FormSlot from '@/components/form/slot.vue';
-import FormLink from '@/components/form/link.vue';
-import { chooseDriveFile } from '@/utility/drive.js';
-import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
+import { computed, defineAsyncComponent, reactive, ref, watch } from 'vue';
 import { ensureSignin } from '@/i.js';
-import { langmap } from '@/utility/langmap.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 import { definePage } from '@/page.js';
-import { claimAchievement } from '@/utility/achievements.js';
 import { store } from '@/store.js';
-import MkInfo from '@/components/MkInfo.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
+import { claimAchievement } from '@/utility/achievements.js';
+import { chooseDriveFile } from '@/utility/drive.js';
 import { genId } from '@/utility/id.js';
+import { langmap } from '@/utility/langmap.js';
+import FormLink from '@/components/form/link.vue';
+import FormSlot from '@/components/form/slot.vue';
+import FormSplit from '@/components/form/split.vue';
+import MkButton from '@/components/MkButton.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkInfo from '@/components/MkInfo.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkSelect from '@/components/MkSelect.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 
 const $i = ensureSignin();
 
@@ -241,17 +241,11 @@ function saveFields() {
 function save() {
 	os.apiWithDialog('i/update', {
 		// 空文字列をnullにしたいので??は使うな
-		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		name: profile.name || null,
-		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		description: profile.description || null,
-		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		followedMessage: profile.followedMessage || null,
-		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		location: profile.location || null,
-		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		birthday: profile.birthday || null,
-		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		lang: profile.lang || null,
 		isBot: !!profile.isBot,
 		isCat: !!profile.isCat,

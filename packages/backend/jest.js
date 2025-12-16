@@ -2,7 +2,6 @@
 import child_process from 'node:child_process';
 import path from 'node:path';
 import url from 'node:url';
-
 import semver from 'semver';
 
 const __filename = url.fileURLToPath(import.meta.url);

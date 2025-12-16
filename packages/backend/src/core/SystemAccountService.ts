@@ -4,21 +4,23 @@
  */
 
 import { randomUUID } from 'node:crypto';
-import { Inject, Injectable } from '@nestjs/common';
 import type { OnApplicationShutdown } from '@nestjs/common';
-import { DataSource, IsNull } from 'typeorm';
-import * as Redis from 'ioredis';
+import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
-import { MiLocalUser, MiUser } from '@/models/User.js';
-import { MiSystemAccount, MiUsedUsername, MiUserKeypair, MiUserProfile, type UsersRepository, type SystemAccountsRepository } from '@/models/_.js';
-import type { MiMeta, UserProfilesRepository } from '@/models/_.js';
-import type { GlobalEvents } from '@/core/GlobalEventService.js';
-import { MemoryKVCache } from '@/misc/cache.js';
-import { DI } from '@/di-symbols.js';
-import { bindThis } from '@/decorators.js';
-import { generateNativeUserToken } from '@/misc/token.js';
+import type * as Redis from 'ioredis';
+import type { DataSource, } from 'typeorm';
+import { IsNull } from 'typeorm';
+import { GlobalEvents } from '@/core/GlobalEventService.js';
 import { IdService } from '@/core/IdService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import { MemoryKVCache } from '@/misc/cache.js';
 import { genRsaKeyPair } from '@/misc/gen-key-pair.js';
+import { generateNativeUserToken } from '@/misc/token.js';
+import type { MiMeta, SystemAccountsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import { MiSystemAccount, MiUsedUsername, MiUserKeypair, MiUserProfile, } from '@/models/_.js';
+import type { MiLocalUser, } from '@/models/User.js';
+import { MiUser } from '@/models/User.js';
 
 export const SYSTEM_ACCOUNT_TYPES = ['actor', 'relay', 'proxy'] as const;
 

@@ -3,13 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import type { StoryObj } from '@storybook/vue3';
 import { HttpResponse, http } from 'msw';
+import { ACHIEVEMENT_TYPES } from '@/utility/achievements.js';
 import { userDetailed } from '../../.storybook/fakes.js';
 import { commonHandlers } from '../../.storybook/mocks.js';
 import MkAchievements from './MkAchievements.vue';
-import { ACHIEVEMENT_TYPES } from '@/utility/achievements.js';
 export const Empty = {
 	render(args) {
 		return {

@@ -17,10 +17,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
-import MkTextarea from '@/components/MkTextarea.vue';
-import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import MkButton from '@/components/MkButton.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 
 const props = defineProps<{
 	muted: (string[] | string)[];
@@ -64,7 +64,7 @@ async function save() {
 					os.alert({
 						type: 'error',
 						title: i18n.ts.regexpError,
-						text: i18n.tsx.regexpErrorDescription({ tab: 'word mute', line: i + 1 }) + '\n' + err.toString(),
+						text: `${i18n.tsx.regexpErrorDescription({ tab: 'word mute', line: i + 1 })}\n${err.toString()}`,
 					});
 					// re-throw error so these invalid settings are not saved
 					throw err;
@@ -77,7 +77,7 @@ async function save() {
 		return lines;
 	};
 
-	let parsed;
+	let parsed: (string[] | string)[];
 	try {
 		parsed = parseMutes(mutedWords.value);
 	} catch (err) {

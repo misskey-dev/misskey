@@ -4,7 +4,7 @@
  */
 
 import { reactive } from 'vue';
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import { miLocalStorage } from '@/local-storage.js';
 
 // TODO: 他のタブと永続化されたstateを同期
@@ -17,7 +17,7 @@ const accountData = miLocalStorage.getItem('account');
 export const $i = accountData ? reactive(JSON.parse(accountData) as AccountWithToken) : null;
 
 export const iAmModerator = $i != null && ($i.isAdmin === true || $i.isModerator === true);
-export const iAmAdmin = $i != null && $i.isAdmin;
+export const iAmAdmin = $i?.isAdmin;
 
 export function ensureSignin() {
 	if ($i == null) throw new Error('signin required');

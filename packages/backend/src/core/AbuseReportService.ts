@@ -5,15 +5,15 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
-import { DI } from '@/di-symbols.js';
-import { bindThis } from '@/decorators.js';
-import type { AbuseUserReportsRepository, MiAbuseUserReport, MiUser, UsersRepository } from '@/models/_.js';
 import { AbuseReportNotificationService } from '@/core/AbuseReportNotificationService.js';
-import { QueueService } from '@/core/QueueService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
+import { IdService } from '@/core/IdService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { QueueService } from '@/core/QueueService.js';
 import { SystemAccountService } from '@/core/SystemAccountService.js';
-import { IdService } from './IdService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type { AbuseUserReportsRepository, MiAbuseUserReport, MiUser, UsersRepository } from '@/models/_.js';
 
 @Injectable()
 export class AbuseReportService {
@@ -96,7 +96,6 @@ export class AbuseReportService {
 		});
 
 		for (const report of reports) {
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			const ps = paramsMap.get(report.id)!;
 
 			await this.abuseUserReportsRepository.update(report.id, {

@@ -5,9 +5,9 @@
 
 process.env.NODE_ENV = 'test';
 
-import * as assert from 'assert';
-import { api, host, origin, relativeFetch, signup } from '../utils.js';
+import * as assert from 'node:assert';
 import type * as misskey from 'misskey-js';
+import { api, host, origin, relativeFetch, signup } from '../utils.js';
 
 describe('.well-known', () => {
 	let alice: misskey.entities.User;

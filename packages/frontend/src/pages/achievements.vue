@@ -13,11 +13,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onActivated, onDeactivated, onMounted, onUnmounted } from 'vue';
-import MkAchievements from '@/components/MkAchievements.vue';
+import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
-import { ensureSignin } from '@/i.js';
 import { claimAchievement } from '@/utility/achievements.js';
+import MkAchievements from '@/components/MkAchievements.vue';
 
 const $i = ensureSignin();
 

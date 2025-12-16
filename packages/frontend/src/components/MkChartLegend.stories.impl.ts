@@ -4,4 +4,5 @@
  */
 
 import MkChartLegend from './MkChartLegend.vue';
+
 void MkChartLegend;

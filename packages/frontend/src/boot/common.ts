@@ -3,33 +3,33 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { watch, version as vueVersion } from 'vue';
-import { compareVersions } from 'compare-versions';
-import { version, lang, apiUrl, isSafeMode } from '@@/js/config.js';
-import defaultLightTheme from '@@/themes/l-light.json5';
-import defaultDarkTheme from '@@/themes/d-green-lime.json5';
-import { storeBootloaderErrors } from '@@/js/store-boot-errors';
 import type { App } from 'vue';
-import widgets from '@/widgets/index.js';
-import directives from '@/directives/index.js';
-import components from '@/components/index.js';
-import { applyTheme } from '@/theme.js';
-import { isDeviceDarkmode } from '@/utility/is-device-darkmode.js';
-import { i18n } from '@/i18n.js';
-import { refreshCurrentAccount, login } from '@/accounts.js';
-import { store } from '@/store.js';
-import { fetchInstance, instance } from '@/instance.js';
-import { updateDeviceKind } from '@/utility/device-kind.js';
-import { reloadChannel } from '@/utility/unison-reload.js';
-import { getUrlWithoutLoginId } from '@/utility/login-id.js';
-import { getAccountFromId } from '@/utility/get-account-from-id.js';
-import { deckStore } from '@/ui/deck/deck-store.js';
+import { version as vueVersion, watch } from 'vue';
+import { compareVersions } from 'compare-versions';
+import { apiUrl, isSafeMode, lang, version } from '@@/js/config.js';
+import { storeBootloaderErrors } from '@@/js/store-boot-errors';
+import defaultDarkTheme from '@@/themes/d-green-lime.json5';
+import defaultLightTheme from '@@/themes/l-light.json5';
+import { login, refreshCurrentAccount } from '@/accounts.js';
 import { analytics, initAnalytics } from '@/analytics.js';
-import { miLocalStorage } from '@/local-storage.js';
 import { fetchCustomEmojis } from '@/custom-emojis.js';
-import { prefer } from '@/preferences.js';
+import directives from '@/directives/index.js';
 import { $i } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import { fetchInstance, instance } from '@/instance.js';
+import { miLocalStorage } from '@/local-storage.js';
 import { launchPlugins } from '@/plugin.js';
+import { prefer } from '@/preferences.js';
+import { store } from '@/store.js';
+import { applyTheme } from '@/theme.js';
+import { deckStore } from '@/ui/deck/deck-store.js';
+import { updateDeviceKind } from '@/utility/device-kind.js';
+import { getAccountFromId } from '@/utility/get-account-from-id.js';
+import { isDeviceDarkmode } from '@/utility/is-device-darkmode.js';
+import { getUrlWithoutLoginId } from '@/utility/login-id.js';
+import { reloadChannel } from '@/utility/unison-reload.js';
+import widgets from '@/widgets/index.js';
+import components from '@/components/index.js';
 
 export async function common(createVue: () => Promise<App<Element>>) {
 	console.info(`Misskey v${version}`);
@@ -73,7 +73,7 @@ export async function common(createVue: () => Promise<App<Element>>) {
 			if (lastVersion != null && compareVersions(version, lastVersion) === 1) {
 				isClientUpdated = true;
 			}
-		} catch (err) { /* empty */ }
+		} catch (_) { /* empty */ }
 	}
 	//#endregion
 
@@ -232,7 +232,7 @@ export async function common(createVue: () => Promise<App<Element>>) {
 	}
 
 	//#region Fetch user
-	if ($i && $i.token) {
+	if ($i?.token) {
 		if (_DEV_) {
 			console.log('account cache found. refreshing...');
 		}
@@ -243,7 +243,7 @@ export async function common(createVue: () => Promise<App<Element>>) {
 
 	try {
 		await fetchCustomEmojis();
-	} catch (err) { /* empty */ }
+	} catch (_) { /* empty */ }
 
 	// analytics
 	fetchInstanceMetaPromise.then(async () => {

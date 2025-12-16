@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { MaybeRefOrGetter, Ref } from 'vue';
 import { ref } from 'vue';
-import type { Ref, MaybeRefOrGetter } from 'vue';
-import type { MkSelectItem, OptionValue, GetMkSelectValueTypesFromDef } from '@/components/MkSelect.vue';
+import type { GetMkSelectValueTypesFromDef, MkSelectItem, OptionValue } from '@/components/MkSelect.vue';
 
 type UnwrapReadonlyItems<T> = T extends readonly (infer U)[] ? U[] : T;
 
@@ -13,6 +13,7 @@ type UnwrapReadonlyItems<T> = T extends readonly (infer U)[] ? U[] : T;
 export function useMkSelect<
 	const TItemsInput extends MaybeRefOrGetter<MkSelectItem[]>,
 	const TItems extends TItemsInput extends MaybeRefOrGetter<infer U> ? U : never,
+	// biome-ignore lint/suspicious/noConfusingVoidType: option value can be omitted and in that case void is used
 	TInitialValue extends OptionValue | void = void,
 	TItemsValue = GetMkSelectValueTypesFromDef<UnwrapReadonlyItems<TItems>>,
 	ModelType = TInitialValue extends void

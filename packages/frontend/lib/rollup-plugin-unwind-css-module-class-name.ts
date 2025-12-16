@@ -4,10 +4,10 @@
  */
 
 import { generate } from 'astring';
-import { walk } from '../node_modules/estree-walker/src/index.js';
 import type * as estree from 'estree';
 import type * as estreeWalker from 'estree-walker';
 import type { Plugin } from 'vite';
+import { walk } from '../node_modules/estree-walker/src/index.js';
 
 function isFalsyIdentifier(identifier: estree.Identifier): boolean {
 	return identifier.name === 'undefined' || identifier.name === 'NaN';
@@ -80,7 +80,7 @@ function normalizeClassWalker(tree: estree.Node, stack: string | undefined): str
 
 export function normalizeClass(tree: estree.Node, stack?: string): string | null {
 	const walked = normalizeClassWalker(tree, stack);
-	return walked && walked.replace(/^\s+|\s+(?=\s)|\s+$/g, '');
+	return walked?.replace(/^\s+|\s+(?=\s)|\s+$/g, '') ?? null;
 }
 
 export function unwindCssModuleClassName(ast: estree.Node): void {
@@ -470,7 +470,6 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 	});
 }
 
-// eslint-disable-next-line import/no-default-export
 export default function pluginUnwindCssModuleClassName(): Plugin {
 	return {
 		name: 'UnwindCssModuleClassName',

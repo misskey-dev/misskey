@@ -3,16 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { notificationTypes } from 'misskey-js';
 import { ref } from 'vue';
-import { i18n } from './i18n.js';
-import type { BasicTimelineType } from '@/timelines.js';
-import type { SoundStore } from '@/preferences/def.js';
-import type { MenuItem } from '@/types/menu.js';
-import { genId } from '@/utility/id.js';
-import { deepClone } from '@/utility/clone.js';
-import { prefer } from '@/preferences.js';
+import type { notificationTypes } from 'misskey-js';
 import * as os from '@/os.js';
+import type { SoundStore } from '@/preferences/def.js';
+import { prefer } from '@/preferences.js';
+import type { BasicTimelineType } from '@/timelines.js';
+import type { MenuItem } from '@/types/menu.js';
+import { deepClone } from '@/utility/clone.js';
+import { genId } from '@/utility/id.js';
+import { i18n } from './i18n.js';
 
 export type DeckProfile = {
 	name: string;
@@ -144,9 +144,9 @@ export function removeColumn(id: Column['id']) {
 
 export function swapColumn(a: Column['id'], b: Column['id']) {
 	const aX = layout.value.findIndex(ids => ids.indexOf(a) !== -1);
-	const aY = layout.value[aX].findIndex(id => id === a);
+	const aY = layout.value[aX].indexOf(a);
 	const bX = layout.value.findIndex(ids => ids.indexOf(b) !== -1);
-	const bY = layout.value[bX].findIndex(id => id === b);
+	const bY = layout.value[bX].indexOf(b);
 	const newLayout = deepClone(layout.value);
 	newLayout[aX][aY] = b;
 	newLayout[bX][bY] = a;

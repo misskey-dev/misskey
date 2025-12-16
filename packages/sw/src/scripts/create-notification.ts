@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { getAccountFromId } from '@/scripts/get-account-from-id.js';
+import { getUserName } from '@/scripts/get-user-name.js';
+import { swLang } from '@/scripts/lang.js';
+import { cli } from '@/scripts/operations.js';
+import { char2fileName } from '@/scripts/twemoji-base.js';
 /*
  * Notification manager for SW
  */
 import type { BadgeNames, PushNotificationDataMap } from '@/types.js';
-import { char2fileName } from '@/scripts/twemoji-base.js';
-import { cli } from '@/scripts/operations.js';
-import { getAccountFromId } from '@/scripts/get-account-from-id.js';
-import { swLang } from '@/scripts/lang.js';
-import { getUserName } from '@/scripts/get-user-name.js';
 
 const closeNotificationsByTags = async (tags: string[]): Promise<void> => {
 	for (const n of (await Promise.all(tags.map(tag => globalThis.registration.getNotifications({ tag })))).flat()) {
@@ -134,7 +134,7 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 					}];
 
 				case 'note':
-					return [i18n.ts._notification.newNote + ': ' + getUserName(data.body.user), {
+					return [`${i18n.ts._notification.newNote}: ${getUserName(data.body.user)}`, {
 						body: data.body.note.text ?? '',
 						icon: data.body.user.avatarUrl ?? undefined,
 						data,
@@ -292,30 +292,28 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 }
 
 export async function createEmptyNotification(): Promise<void> {
-	return new Promise<void>(async res => {
-		const i18n = await (swLang.i18n ?? swLang.fetchLocale());
-
-		await globalThis.registration.showNotification(
-			(new URL(origin)).host,
-			{
-				body: `Misskey v${_VERSION_}`,
-				silent: true,
-				badge: iconUrl('null'),
-				tag: 'read_notification',
-				actions: [
-					{
-						action: 'markAllAsRead',
-						title: i18n.ts.markAllAsRead,
-					},
-					{
-						action: 'settings',
-						title: i18n.ts.notificationSettings,
-					},
-				],
-				data: {},
-			},
-		);
-
+	const i18n = await (swLang.i18n ?? swLang.fetchLocale());
+	await globalThis.registration.showNotification(
+		(new URL(origin)).host,
+		{
+			body: `Misskey v${_VERSION_}`,
+			silent: true,
+			badge: iconUrl('null'),
+			tag: 'read_notification',
+			actions: [
+				{
+					action: 'markAllAsRead',
+					title: i18n.ts.markAllAsRead,
+				},
+				{
+					action: 'settings',
+					title: i18n.ts.notificationSettings,
+				},
+			],
+			data: {},
+		},
+	);
+	return new Promise<void>(res => {
 		setTimeout(async () => {
 			try {
 				await closeNotificationsByTags(['user_visible_auto_notification']);

@@ -14,6 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts">
 import { computed, ref } from 'vue';
+
 const editMode = ref(false);
 </script>
 <script lang="ts" setup>

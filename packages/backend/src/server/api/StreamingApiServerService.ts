@@ -3,23 +3,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
+import type * as http from 'node:http';
 import { Inject, Injectable } from '@nestjs/common';
-import * as Redis from 'ioredis';
+import type * as Redis from 'ioredis';
 import * as WebSocket from 'ws';
-import { DI } from '@/di-symbols.js';
-import type { UsersRepository, MiAccessToken } from '@/models/_.js';
-import { NotificationService } from '@/core/NotificationService.js';
-import { bindThis } from '@/decorators.js';
 import { CacheService } from '@/core/CacheService.js';
-import { MiLocalUser } from '@/models/User.js';
-import { UserService } from '@/core/UserService.js';
 import { ChannelFollowingService } from '@/core/ChannelFollowingService.js';
 import { ChannelMutingService } from '@/core/ChannelMutingService.js';
+import { NotificationService } from '@/core/NotificationService.js';
+import { UserService } from '@/core/UserService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type { MiAccessToken, UsersRepository } from '@/models/_.js';
+import type { MiLocalUser } from '@/models/User.js';
 import { AuthenticateService, AuthenticationError } from './AuthenticateService.js';
-import MainStreamConnection from './stream/Connection.js';
 import { ChannelsService } from './stream/ChannelsService.js';
-import type * as http from 'node:http';
+import MainStreamConnection from './stream/Connection.js';
 
 @Injectable()
 export class StreamingApiServerService {
@@ -77,10 +77,10 @@ export class StreamingApiServerService {
 				}
 			} catch (e) {
 				if (e instanceof AuthenticationError) {
-					socket.write([
+					socket.write(`${[
 						'HTTP/1.1 401 Unauthorized',
 						'WWW-Authenticate: Bearer realm="Misskey", error="invalid_token", error_description="Failed to authenticate"',
-					].join('\r\n') + '\r\n\r\n');
+					].join('\r\n')}\r\n\r\n`);
 				} else {
 					socket.write('HTTP/1.1 500 Internal Server Error\r\n\r\n');
 				}
@@ -124,7 +124,7 @@ export class StreamingApiServerService {
 			user: MiLocalUser | null;
 			app: MiAccessToken | null
 		}) => {
-			const { stream, user, app } = ctx;
+			const { stream, user } = ctx;
 
 			const ev = new EventEmitter();
 

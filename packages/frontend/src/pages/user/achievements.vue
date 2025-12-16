@@ -12,9 +12,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onActivated, onDeactivated, onMounted, onUnmounted } from 'vue';
 import * as Misskey from 'misskey-js';
-import MkAchievements from '@/components/MkAchievements.vue';
-import { claimAchievement } from '@/utility/achievements.js';
 import { $i } from '@/i.js';
+import { claimAchievement } from '@/utility/achievements.js';
+import MkAchievements from '@/components/MkAchievements.vue';
 
 const props = defineProps<{
 	user: Misskey.entities.User;

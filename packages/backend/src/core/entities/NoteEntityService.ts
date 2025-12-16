@@ -3,25 +3,25 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { OnModuleInit } from '@nestjs/common';
 import { Inject, Injectable } from '@nestjs/common';
-import { EntityNotFoundError, In } from 'typeorm';
 import { ModuleRef } from '@nestjs/core';
+import { EntityNotFoundError, In } from 'typeorm';
+import { IdService } from '@/core/IdService.js';
+import { ReactionsBufferingService } from '@/core/ReactionsBufferingService.js';
+import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type { Packed } from '@/misc/json-schema.js';
-import { awaitAll } from '@/misc/prelude/await-all.js';
-import type { MiUser } from '@/models/User.js';
-import type { MiNote } from '@/models/Note.js';
-import type { UsersRepository, NotesRepository, FollowingsRepository, PollsRepository, PollVotesRepository, NoteReactionsRepository, ChannelsRepository, MiMeta } from '@/models/_.js';
-import { bindThis } from '@/decorators.js';
 import { DebounceLoader } from '@/misc/loader.js';
-import { IdService } from '@/core/IdService.js';
+import { awaitAll } from '@/misc/prelude/await-all.js';
 import { shouldHideNoteByTime } from '@/misc/should-hide-note-by-time.js';
-import { ReactionsBufferingService } from '@/core/ReactionsBufferingService.js';
-import type { OnModuleInit } from '@nestjs/common';
-import type { CustomEmojiService } from '../CustomEmojiService.js';
-import type { ReactionService } from '../ReactionService.js';
-import type { UserEntityService } from './UserEntityService.js';
-import type { DriveFileEntityService } from './DriveFileEntityService.js';
+import type { ChannelsRepository, FollowingsRepository, MiMeta, NoteReactionsRepository, NotesRepository, PollsRepository, PollVotesRepository, UsersRepository } from '@/models/_.js';
+import type { MiNote } from '@/models/Note.js';
+import type { MiUser } from '@/models/User.js';
+import { CustomEmojiService } from '../CustomEmojiService.js';
+import { ReactionService } from '../ReactionService.js';
+import { DriveFileEntityService } from './DriveFileEntityService.js';
+import { UserEntityService } from './UserEntityService.js';
 
 // is-renote.tsとよしなにリンク
 function isPureRenote(note: MiNote): note is MiNote & { renoteId: MiNote['id']; renote: MiNote } {
@@ -166,7 +166,7 @@ export class NoteEntityService implements OnModuleInit {
 				} else if (packedNote.reply && (meId === packedNote.reply.userId)) {
 					// 自分の投稿に対するリプライ
 					hide = false;
-				} else if (packedNote.mentions && packedNote.mentions.some(id => meId === id)) {
+				} else if (packedNote.mentions?.some(id => meId === id)) {
 					// 自分へのメンション
 					hide = false;
 				} else {
@@ -300,7 +300,7 @@ export class NoteEntityService implements OnModuleInit {
 			} else if (note.reply && (meId === note.reply.userId)) {
 				// 自分の投稿に対するリプライ
 				return true;
-			} else if (note.mentions && note.mentions.some(id => meId === id)) {
+			} else if (note.mentions?.some(id => meId === id)) {
 				// 自分へのメンション
 				return true;
 			} else {

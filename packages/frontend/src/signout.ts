@@ -4,12 +4,12 @@
  */
 
 import { apiUrl } from '@@/js/config.js';
+import { $i } from '@/i.js';
+import { waiting } from '@/os.js';
 import { cloudBackup } from '@/preferences/utility.js';
 import { store } from '@/store.js';
-import { waiting } from '@/os.js';
-import { unisonReload } from '@/utility/unison-reload.js';
 import { clear } from '@/utility/idb-proxy.js';
-import { $i } from '@/i.js';
+import { unisonReload } from '@/utility/unison-reload.js';
 
 export async function signout() {
 	if (!$i) return;

@@ -5,14 +5,14 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { ulid } from 'ulid';
-import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
 import { genAid, isSafeAidT, parseAid, parseAidFull } from '@/misc/id/aid.js';
 import { genAidx, isSafeAidxT, parseAidx, parseAidxFull } from '@/misc/id/aidx.js';
 import { genMeid, isSafeMeidT, parseMeid, parseMeidFull } from '@/misc/id/meid.js';
 import { genMeidg, isSafeMeidgT, parseMeidg, parseMeidgFull } from '@/misc/id/meidg.js';
 import { genObjectId, isSafeObjectIdT, parseObjectId, parseObjectIdFull } from '@/misc/id/object-id.js';
-import { bindThis } from '@/decorators.js';
 import { parseUlid, parseUlidFull } from '@/misc/id/ulid.js';
 
 @Injectable()

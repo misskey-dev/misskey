@@ -3,16 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { OnApplicationShutdown } from '@nestjs/common';
 import { Inject, Injectable } from '@nestjs/common';
-import { DataSource } from 'typeorm';
-import * as Redis from 'ioredis';
-import { DI } from '@/di-symbols.js';
-import { MiMeta } from '@/models/Meta.js';
+import type * as Redis from 'ioredis';
+import type { DataSource } from 'typeorm';
+import { FeaturedService } from '@/core/FeaturedService.js';
+import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { bindThis } from '@/decorators.js';
-import type { GlobalEvents } from '@/core/GlobalEventService.js';
-import { FeaturedService } from '@/core/FeaturedService.js';
-import type { OnApplicationShutdown } from '@nestjs/common';
+import { DI } from '@/di-symbols.js';
+import { MiMeta } from '@/models/Meta.js';
 
 @Injectable()
 export class MetaService implements OnApplicationShutdown {

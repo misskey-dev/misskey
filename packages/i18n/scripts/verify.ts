@@ -23,7 +23,7 @@ function writeError(type: string, lang: string, tree: string, data: ErrorData): 
 
 function verify(expected: LocaleRecord, actual: LocaleRecord, lang: string, trace?: string): void {
 	for (const key in expected) {
-		if (!Object.prototype.hasOwnProperty.call(actual, key)) {
+		if (!Object.hasOwn(actual, key)) {
 			continue;
 		}
 		if (typeof expected[key] === 'object') {
@@ -59,7 +59,7 @@ const locales = await import('../built/index.js');
 const { 'ja-JP': original, ...verifiees } = locales as unknown as Record<string, LocaleRecord>;
 
 for (const lang in verifiees) {
-	if (!Object.prototype.hasOwnProperty.call(locales, lang)) {
+	if (!Object.hasOwn(locales, lang)) {
 		continue;
 	}
 	verify(original, verifiees[lang], lang);

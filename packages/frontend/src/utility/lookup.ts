@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { Router } from '@/router.js';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
-import { mainRouter } from '@/router.js';
 import { acct } from '@/filters/user';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import type { Router } from '@/router.js';
+import { mainRouter } from '@/router.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 export async function lookup(router?: Router) {
 	const _router = router ?? mainRouter;
@@ -61,7 +61,7 @@ export async function apLookup(query: string) {
 
 	os.promiseDialog(promise, null, (err) => {
 		let title = i18n.ts.somethingHappened;
-		let text = err.message + '\n' + err.id;
+		let text = `${err.message}\n${err.id}`;
 
 		switch (err.id) {
 			case '974b799e-1a29-4889-b706-18d4dd93e266':

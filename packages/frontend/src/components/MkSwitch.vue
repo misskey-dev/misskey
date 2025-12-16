@@ -27,10 +27,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { toRefs } from 'vue';
 import type { Ref } from 'vue';
-import XButton from '@/components/MkSwitch.button.vue';
+import { toRefs } from 'vue';
 import { haptic } from '@/utility/haptic.js';
+import XButton from '@/components/MkSwitch.button.vue';
 
 const props = defineProps<{
 	modelValue: boolean | Ref<boolean>;

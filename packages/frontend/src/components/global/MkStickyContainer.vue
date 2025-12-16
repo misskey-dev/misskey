@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, provide, inject, ref, watch, useTemplateRef } from 'vue';
+import { inject, onMounted, onUnmounted, provide, ref, useTemplateRef, watch } from 'vue';
 import { DI } from '@/di.js';
 
 const rootEl = useTemplateRef('rootEl');

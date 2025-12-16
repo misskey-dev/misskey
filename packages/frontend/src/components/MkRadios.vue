@@ -4,9 +4,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <script lang="ts">
+import type { VNode } from 'vue';
 import { Comment, defineComponent, h, ref, watch } from 'vue';
 import MkRadio from './MkRadio.vue';
-import type { VNode } from 'vue';
 
 export default defineComponent({
 	props: {
@@ -28,8 +28,8 @@ export default defineComponent({
 		});
 		if (!context.slots.default) return null;
 		let options = context.slots.default();
-		const label = context.slots.label && context.slots.label();
-		const caption = context.slots.caption && context.slots.caption();
+		const label = context.slots.label?.();
+		const caption = context.slots.caption?.();
 
 		// なぜかFragmentになることがあるため
 		if (options.length === 1 && options[0].props == null) options = options[0].children as VNode[];

@@ -3,25 +3,25 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as fs from 'node:fs';
 import * as crypto from 'node:crypto';
+import * as fs from 'node:fs';
 import { join } from 'node:path';
 import * as stream from 'node:stream/promises';
+import { sharpBmp } from '@misskey-dev/sharp-read-bmp';
 import { Injectable } from '@nestjs/common';
+import * as blurhash from 'blurhash';
 import { FSWatcher } from 'chokidar';
 import * as fileType from 'file-type';
 import FFmpeg from 'fluent-ffmpeg';
 import isSvg from 'is-svg';
+import type { PredictionType } from 'nsfwjs';
 import probeImageSize from 'probe-image-size';
-import { sharpBmp } from '@misskey-dev/sharp-read-bmp';
-import * as blurhash from 'blurhash';
-import { createTempDir } from '@/misc/create-temp.js';
 import { AiService } from '@/core/AiService.js';
 import { LoggerService } from '@/core/LoggerService.js';
-import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
+import type Logger from '@/logger.js';
+import { createTempDir } from '@/misc/create-temp.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
-import type { PredictionType } from 'nsfwjs';
 
 export type FileInfo = {
 	size: number;
@@ -305,13 +305,13 @@ export class FileInfoService {
 			watcher.close();
 		});
 		command.run();
-		for (let i = 1; true; i++) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
+		for (let i = 1; ; i++) {
 			const current = `${i}.png`;
 			const next = `${i + 1}.png`;
 			const framePath = join(cwd, current);
 			if (await this.exists(join(cwd, next))) {
 				yield framePath;
-			} else if (!finished) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
+			} else if (!finished) {
 				watcher.add(next);
 				await new Promise<void>((resolve, reject) => {
 					watcher.on('add', function onAdd(path) {
@@ -484,25 +484,13 @@ export class FileInfoService {
 	 * Calculate blurhash string of image
 	 */
 	@bindThis
-	private getBlurhash(path: string, type: string): Promise<string> {
-		return new Promise(async (resolve, reject) => {
-			(await sharpBmp(path, type))
-				.raw()
-				.ensureAlpha()
-				.resize(64, 64, { fit: 'inside' })
-				.toBuffer((err, buffer, info) => {
-					if (err) return reject(err);
-
-					let hash;
-
-					try {
-						hash = blurhash.encode(new Uint8ClampedArray(buffer), info.width, info.height, 5, 5);
-					} catch (e) {
-						return reject(e);
-					}
-
-					resolve(hash);
-				});
-		});
+	private async getBlurhash(path: string, type: string): Promise<string> {
+		const sharp = await sharpBmp(path, type);
+		const { data: buffer, info } = await sharp
+			.raw()
+			.ensureAlpha()
+			.resize(64, 64, { fit: 'inside' })
+			.toBuffer({ resolveWithObject: true });
+		return blurhash.encode(new Uint8ClampedArray(buffer), info.width, info.height, 5, 5);
 	}
 }

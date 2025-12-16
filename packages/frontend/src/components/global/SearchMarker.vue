@@ -11,15 +11,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import {
+	computed,
+	inject,
 	onActivated,
+	onBeforeUnmount,
 	onDeactivated,
 	onMounted,
-	onBeforeUnmount,
-	watch,
-	computed,
 	ref,
 	useTemplateRef,
-	inject,
+	watch,
 } from 'vue';
 import { DI } from '@/di.js';
 

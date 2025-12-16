@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type ExifReader from 'exifreader';
 import QRCodeStyling from 'qr-code-styling';
 import { url } from '@@/js/config.js';
-import ExifReader from 'exifreader';
-import { FN_frame } from './frame.js';
-import { ImageCompositor } from '@/lib/ImageCompositor.js';
 import { ensureSignin } from '@/i.js';
+import { ImageCompositor } from '@/lib/ImageCompositor.js';
+import { FN_frame } from './frame.js';
 
 const $i = ensureSignin();
 
@@ -201,12 +201,12 @@ export class ImageFrameRenderer {
 					qrSize,
 				);
 				qrImageBitmap.close();
-			} catch (err) {
+			} catch (_) {
 				// nop
 			}
 		}
 
-		return labelCanvasCtx.getImageData(0, 0, labelCanvasCtx.canvas.width, labelCanvasCtx.canvas.height); ;
+		return labelCanvasCtx.getImageData(0, 0, labelCanvasCtx.canvas.width, labelCanvasCtx.canvas.height);
 	}
 
 	public async render(params: ImageFrameParams): Promise<void> {

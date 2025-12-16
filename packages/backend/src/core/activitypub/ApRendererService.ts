@@ -5,32 +5,32 @@
 
 import { createPublicKey, randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
-import { In } from 'typeorm';
 import * as mfm from 'mfm-js';
-import { DI } from '@/di-symbols.js';
+import { In } from 'typeorm';
 import type { Config } from '@/config.js';
-import type { MiPartialLocalUser, MiLocalUser, MiPartialRemoteUser, MiRemoteUser, MiUser } from '@/models/User.js';
-import type { IMentionedRemoteUsers, MiNote } from '@/models/Note.js';
+import { CustomEmojiService } from '@/core/CustomEmojiService.js';
+import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { IdService } from '@/core/IdService.js';
+import { MfmService } from '@/core/MfmService.js';
+import { UserKeypairService } from '@/core/UserKeypairService.js';
+import { UtilityService } from '@/core/UtilityService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import { escapeHtml } from '@/misc/escape-html.js';
+import type { DriveFilesRepository, MiMeta, NotesRepository, PollsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import type { MiBlocking } from '@/models/Blocking.js';
-import type { MiRelay } from '@/models/Relay.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
-import type { MiNoteReaction } from '@/models/NoteReaction.js';
 import type { MiEmoji } from '@/models/Emoji.js';
+import type { IMentionedRemoteUsers, MiNote } from '@/models/Note.js';
+import type { MiNoteReaction } from '@/models/NoteReaction.js';
 import type { MiPoll } from '@/models/Poll.js';
 import type { MiPollVote } from '@/models/PollVote.js';
-import { UserKeypairService } from '@/core/UserKeypairService.js';
-import { MfmService } from '@/core/MfmService.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
+import type { MiRelay } from '@/models/Relay.js';
+import type { MiLocalUser, MiPartialLocalUser, MiPartialRemoteUser, MiRemoteUser, MiUser } from '@/models/User.js';
 import type { MiUserKeypair } from '@/models/UserKeypair.js';
-import type { UsersRepository, UserProfilesRepository, NotesRepository, DriveFilesRepository, PollsRepository, MiMeta } from '@/models/_.js';
-import { bindThis } from '@/decorators.js';
-import { CustomEmojiService } from '@/core/CustomEmojiService.js';
-import { IdService } from '@/core/IdService.js';
-import { UtilityService } from '@/core/UtilityService.js';
-import { escapeHtml } from '@/misc/escape-html.js';
-import { JsonLdService } from './JsonLdService.js';
 import { ApMfmService } from './ApMfmService.js';
+import { JsonLdService } from './JsonLdService.js';
 import { CONTEXT } from './misc/contexts.js';
 import type { IAccept, IActivity, IAdd, IAnnounce, IApDocument, IApEmoji, IApHashtag, IApImage, IApMention, IBlock, ICreate, IDelete, IFlag, IFollow, IKey, ILike, IMove, IObject, IPost, IQuestion, IReject, IRemove, ITombstone, IUndo, IUpdate } from './type.js';
 
@@ -360,7 +360,7 @@ export class ApRendererService {
 			return ids.map(id => items.find(item => item.id === id)).filter(x => x != null);
 		};
 
-		let inReplyTo;
+		let inReplyTo: string | IPost | null | undefined;
 		let inReplyToNote: MiNote | null;
 
 		if (note.replyId) {
@@ -504,7 +504,7 @@ export class ApRendererService {
 		]);
 
 		const tryRewriteUrl = (maybeUrl: string) => {
-			const urlSafeRegex = /^(?:http[s]?:\/\/.)?(?:www\.)?[-a-zA-Z0-9@%._\+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)/;
+			const urlSafeRegex = /^(?:http[s]?:\/\/.)?(?:www\.)?[-a-zA-Z0-9@%._+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_+.~#?&//=]*)/;
 			try {
 				const match = maybeUrl.match(urlSafeRegex);
 				if (!match) {
@@ -515,7 +515,7 @@ export class ApRendererService {
 				const restPart = maybeUrl.slice(match[0].length);
 
 				return `<a href="${urlPartParsed.href}" rel="me nofollow noopener" target="_blank">${urlPart}</a>${restPart}`;
-			} catch (e) {
+			} catch (_) {
 				return maybeUrl;
 			}
 		};
@@ -649,7 +649,7 @@ export class ApRendererService {
 	@bindThis
 	public renderUpdate(object: string | IObject, user: { id: MiUser['id'] }): IUpdate {
 		return {
-			id: `${this.config.url}/users/${user.id}#updates/${new Date().getTime()}`,
+			id: `${this.config.url}/users/${user.id}#updates/${Date.now()}`,
 			actor: this.userEntityService.genLocalUserUri(user.id),
 			type: 'Update',
 			to: ['https://www.w3.org/ns/activitystreams#Public'],
@@ -692,9 +692,7 @@ export class ApRendererService {
 
 		const jsonLd = this.jsonLdService.use();
 		jsonLd.debug = false;
-		activity = await jsonLd.signRsaSignature2017(activity, keypair.privateKey, `${this.config.url}/users/${user.id}#main-key`);
-
-		return activity;
+		return await jsonLd.signRsaSignature2017(activity, keypair.privateKey, `${this.config.url}/users/${user.id}#main-key`);
 	}
 
 	/**

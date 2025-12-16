@@ -13,15 +13,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, useTemplateRef, ref, nextTick } from 'vue';
+import { nextTick, onMounted, ref, useTemplateRef } from 'vue';
 import { Chart } from 'chart.js';
 import gradient from 'chartjs-plugin-gradient';
 import tinycolor from 'tinycolor2';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { store } from '@/store.js';
 import { useChartTooltip } from '@/composables/use-chart-tooltip.js';
+import { store } from '@/store.js';
 import { chartVLine } from '@/utility/chart-vline.js';
 import { initChart } from '@/utility/init-chart.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 initChart();
 

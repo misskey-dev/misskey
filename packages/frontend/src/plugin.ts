@@ -4,17 +4,23 @@
  */
 
 import { ref } from 'vue';
+import type {
+	Ast,
+	Interpreter,
+	Parser,
+	utils as utils_TypeReferenceOnly,
+	values
+} from '@syuilo/aiscript';
 import { compareVersions } from 'compare-versions';
+import type * as Misskey from 'misskey-js';
 import { isSafeMode } from '@@/js/config.js';
-import * as Misskey from 'misskey-js';
-import type { Parser, Interpreter, values, utils as utils_TypeReferenceOnly } from '@syuilo/aiscript';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { prefer } from '@/preferences.js';
+import { store } from '@/store.js';
 import type { FormWithDefault } from '@/utility/form.js';
 import { genId } from '@/utility/id.js';
-import { store } from '@/store.js';
-import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
-import { prefer } from '@/preferences.js';
 
 export type Plugin = {
 	installId: string;
@@ -49,7 +55,7 @@ async function getParser(): Promise<Parser> {
 export function isSupportedAiScriptVersion(version: string): boolean {
 	try {
 		return (compareVersions(version, '0.12.0') >= 0);
-	} catch (err) {
+	} catch (_) {
 		return false;
 	}
 }
@@ -68,11 +74,11 @@ export async function parsePluginMeta(code: string): Promise<AiScriptPluginMeta>
 		throw new Error(`Aiscript version '${lv}' is not supported`);
 	}
 
-	let ast;
+	let ast: Ast.Node[];
 	try {
 		const parser = await getParser();
 		ast = parser.parse(code);
-	} catch (err) {
+	} catch (_) {
 		throw new Error('Aiscript syntax error');
 	}
 
@@ -106,8 +112,9 @@ export async function authorizePlugin(plugin: Plugin) {
 	if (plugin.permissions == null || plugin.permissions.length === 0) return;
 	if (Object.hasOwn(store.s.pluginTokens, plugin.installId)) return;
 
-	const token = await new Promise<string>(async (res, rej) => {
-		const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkTokenGenerateWindow.vue').then(x => x.default), {
+	const token = await new Promise<string>((res, rej) => {
+		let dispose: () => void;
+		os.popupAsyncWithDialog(import('@/components/MkTokenGenerateWindow.vue').then(x => x.default), {
 			title: i18n.ts.tokenRequested,
 			information: i18n.ts.pluginTokenRequestedDescription,
 			initialName: plugin.name,
@@ -123,7 +130,7 @@ export async function authorizePlugin(plugin: Plugin) {
 				res(token);
 			},
 			closed: () => dispose(),
-		});
+		}).then(d => dispose = d.dispose, err => rej(err));
 	});
 
 	store.set('pluginTokens', {
@@ -169,7 +176,7 @@ export async function uninstallPlugin(plugin: Plugin) {
 	prefer.commit('plugins', prefer.s.plugins.filter(x => x.installId !== plugin.installId));
 
 	Object.keys(window.localStorage).forEach(key => {
-		if (key.startsWith('aiscript:plugins:' + plugin.installId)) {
+		if (key.startsWith(`aiscript:plugins:${plugin.installId}`)) {
 			window.localStorage.removeItem(key);
 		}
 	});
@@ -272,7 +279,7 @@ async function launchPlugin(id: Plugin['installId']): Promise<void> {
 
 	const aiscript = new Interpreter(await createPluginEnv({
 		plugin: plugin,
-		storageKey: 'plugins:' + plugin.installId,
+		storageKey: `plugins:${plugin.installId}`,
 	}), {
 		in: aiScriptReadline,
 		out: (value): void => {
@@ -298,11 +305,11 @@ async function launchPlugin(id: Plugin['installId']): Promise<void> {
 	const parser = await getParser();
 	await aiscript.exec(parser.parse(plugin.src)).then(
 		() => {
-			console.info('Plugin installed:', plugin.name, 'v' + plugin.version);
+			console.info('Plugin installed:', plugin.name, `v${plugin.version}`);
 			systemLog('Plugin started');
 		},
 		(err) => {
-			console.error('Plugin install failed:', plugin.name, 'v' + plugin.version);
+			console.error('Plugin install failed:', plugin.name, `v${plugin.version}`);
 			systemLog(`${err}`, true);
 			throw err;
 		},

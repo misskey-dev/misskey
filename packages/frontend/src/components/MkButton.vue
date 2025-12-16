@@ -96,8 +96,8 @@ function onMousedown(evt: MouseEvent): void {
 
 	const ripple = window.document.createElement('div');
 	ripple.classList.add(ripples.value!.dataset.childrenClass!);
-	ripple.style.top = (evt.clientY - rect.top - 1).toString() + 'px';
-	ripple.style.left = (evt.clientX - rect.left - 1).toString() + 'px';
+	ripple.style.top = `${(evt.clientY - rect.top - 1).toString()}px`;
+	ripple.style.left = `${(evt.clientX - rect.left - 1).toString()}px`;
 
 	ripples.value!.appendChild(ripple);
 
@@ -107,7 +107,7 @@ function onMousedown(evt: MouseEvent): void {
 	const scale = calcCircleScale(target.clientWidth, target.clientHeight, circleCenterX, circleCenterY);
 
 	window.setTimeout(() => {
-		ripple.style.transform = 'scale(' + (scale / 2) + ')';
+		ripple.style.transform = `scale(${scale / 2})`;
 	}, 1);
 	window.setTimeout(() => {
 		ripple.style.transition = 'all 1s ease';

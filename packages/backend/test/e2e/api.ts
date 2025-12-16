@@ -5,8 +5,9 @@
 
 process.env.NODE_ENV = 'test';
 
-import * as assert from 'assert';
-import { IncomingMessage } from 'http';
+import * as assert from 'node:assert';
+import type { IncomingMessage } from 'node:http';
+import type * as misskey from 'misskey-js';
 import {
 	api,
 	connectStream,
@@ -18,7 +19,6 @@ import {
 	uploadFile,
 	waitFire,
 } from '../utils.js';
-import type * as misskey from 'misskey-js';
 
 describe('API', () => {
 	let alice: misskey.entities.SignupResponse;

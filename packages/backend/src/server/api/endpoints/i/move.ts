@@ -5,22 +5,18 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
-
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import { ApiError } from '@/server/api/error.js';
-
-import { MiLocalUser, MiRemoteUser } from '@/models/User.js';
-
 import { AccountMoveService } from '@/core/AccountMoveService.js';
-import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
-import { ApiLoggerService } from '@/server/api/ApiLoggerService.js';
-import { GetterService } from '@/server/api/GetterService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-
-import * as Acct from '@/misc/acct.js';
+import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { DI } from '@/di-symbols.js';
-import { MiMeta } from '@/models/_.js';
+import * as Acct from '@/misc/acct.js';
+import type { MiMeta } from '@/models/_.js';
+import type { MiLocalUser, MiRemoteUser } from '@/models/User.js';
+import { ApiLoggerService } from '@/server/api/ApiLoggerService.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { ApiError } from '@/server/api/error.js';
+import { GetterService } from '@/server/api/GetterService.js';
 
 export const meta = {
 	tags: ['users'],
@@ -81,7 +77,7 @@ export const paramDef = {
 } as const;
 
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.meta)
 		private serverSettings: MiMeta,

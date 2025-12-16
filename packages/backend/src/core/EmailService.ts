@@ -3,19 +3,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { URLSearchParams } from 'node:url';
-import * as nodemailer from 'nodemailer';
-import juice from 'juice';
 import { Inject, Injectable } from '@nestjs/common';
 import { validate as validateEmail } from 'deep-email-validator';
-import { UtilityService } from '@/core/UtilityService.js';
-import { DI } from '@/di-symbols.js';
+import juice from 'juice';
+import * as nodemailer from 'nodemailer';
 import type { Config } from '@/config.js';
+import { HttpRequestService } from '@/core/HttpRequestService.js';
+import { LoggerService } from '@/core/LoggerService.js';
+import { UtilityService } from '@/core/UtilityService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import type { MiMeta, UserProfilesRepository } from '@/models/_.js';
-import { LoggerService } from '@/core/LoggerService.js';
-import { bindThis } from '@/decorators.js';
-import { HttpRequestService } from '@/core/HttpRequestService.js';
 
 @Injectable()
 export class EmailService {
@@ -244,7 +243,7 @@ export class EmailService {
 		valid: boolean;
 		reason: 'used' | 'format' | 'disposable' | 'mx' | 'smtp' | null;
 	}> {
-		const endpoint = 'https://verifymail.io/api/' + emailAddress + '?key=' + verifymailAuthKey;
+		const endpoint = `https://verifymail.io/api/${emailAddress}?key=${verifymailAuthKey}`;
 		const res = await this.httpRequestService.send(endpoint, {
 			method: 'GET',
 			headers: {
@@ -313,7 +312,7 @@ export class EmailService {
 		valid: boolean;
 		reason: 'used' | 'format' | 'blacklist' | 'mx' | 'smtp' | 'network' | T | null;
 	}> {
-		const endpoint = truemailInstance + '?email=' + emailAddress;
+		const endpoint = `${truemailInstance}?email=${emailAddress}`;
 		try {
 			const res = await this.httpRequestService.send(endpoint, {
 				method: 'POST',
@@ -366,7 +365,7 @@ export class EmailService {
 				valid: true,
 				reason: null,
 			};
-		} catch (error) {
+		} catch (_) {
 			return {
 				valid: false,
 				reason: 'network',

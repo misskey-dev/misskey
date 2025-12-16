@@ -17,12 +17,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
-import { useWidgetPropsManager } from './widget.js';
-import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import { i18n } from '@/i18n.js';
+import { store } from '@/store.js';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
-import { store } from '@/store.js';
-import { i18n } from '@/i18n.js';
+import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import { useWidgetPropsManager } from './widget.js';
 
 const name = 'memo';
 
@@ -50,7 +50,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 
 const text = ref<string | null>(store.s.memo);
 const changed = ref(false);
-let timeoutId;
+let timeoutId: number;
 
 const saveMemo = () => {
 	store.set('memo', text.value);

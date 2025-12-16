@@ -3,23 +3,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { ref, watch } from 'vue';
+import type * as Misskey from 'misskey-js';
 import { toUnicode } from 'punycode.js';
-import { defineAsyncComponent, ref, watch } from 'vue';
-import * as Misskey from 'misskey-js';
 import { host, url } from '@@/js/config.js';
-import type { Router } from '@/router.js';
-import type { MenuItem } from '@/types/menu.js';
-import { i18n } from '@/i18n.js';
-import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { $i, iAmModerator } from '@/i.js';
-import { notesSearchAvailable, canSearchNonLocalNotes } from '@/utility/check-permissions.js';
 import { antennasCache, rolesCache, userListsCache } from '@/cache.js';
-import { mainRouter } from '@/router.js';
-import { genEmbedCode } from '@/utility/get-embed-code.js';
-import { prefer } from '@/preferences.js';
+import { $i, iAmModerator } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 import { getPluginHandlers } from '@/plugin.js';
+import { prefer } from '@/preferences.js';
+import type { Router } from '@/router.js';
+import { mainRouter } from '@/router.js';
+import type { MenuItem } from '@/types/menu.js';
+import { canSearchNonLocalNotes, notesSearchAvailable } from '@/utility/check-permissions.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { genEmbedCode } from '@/utility/get-embed-code.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router = mainRouter) {
 	const meId = $i ? $i.id : null;
@@ -325,7 +325,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 						text: r.name,
 						action: async () => {
 							const { canceled, result: period } = await os.select({
-								title: i18n.ts.period + ': ' + r.name,
+								title: `${i18n.ts.period}: ${r.name}`,
 								items: [{
 									value: 'indefinitely', label: i18n.ts.indefinitely,
 								}, {

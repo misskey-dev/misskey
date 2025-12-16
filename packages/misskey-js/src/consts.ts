@@ -1,8 +1,8 @@
-import type { operations } from './autogen/types.js';
 import type {
 	AbuseReportNotificationRecipient,
 	Ad,
 	Announcement,
+	ChatRoom,
 	EmojiDetailed,
 	Flash,
 	GalleryPost,
@@ -10,12 +10,11 @@ import type {
 	MetaDetailed,
 	Note,
 	Page,
-	Role,
 	ReversiGameDetailed,
+	Role,
 	SystemWebhook,
-	UserLite,
-	ChatRoom,
 } from './autogen/models.js';
+import type { operations } from './autogen/types.js';
 
 export const notificationTypes = [
 	'note',

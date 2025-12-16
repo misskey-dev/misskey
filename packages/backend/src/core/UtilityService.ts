@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { URL, domainToASCII } from 'node:url';
+import { domainToASCII, URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import RE2 from 're2';
 import semver from 'semver';
-import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';
-import { MiMeta, SoftwareSuspension } from '@/models/Meta.js';
-import { MiInstance } from '@/models/Instance.js';
+import { DI } from '@/di-symbols.js';
+import type { MiInstance } from '@/models/Instance.js';
+import type { MiMeta, SoftwareSuspension } from '@/models/Meta.js';
 
 @Injectable()
 export class UtilityService {
@@ -44,7 +44,7 @@ export class UtilityService {
 	// https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address
 	@bindThis
 	public validateEmailFormat(email: string): boolean {
-		const regexp = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+		const regexp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 		return regexp.test(email);
 	}
 
@@ -98,7 +98,7 @@ export class UtilityService {
 			try {
 				// TODO: RE2インスタンスをキャッシュ
 				return new RE2(regexp[1], regexp[2]).test(text);
-			} catch (err) {
+			} catch (_) {
 				// This should never happen due to input sanitisation.
 				return false;
 			}
@@ -127,7 +127,7 @@ export class UtilityService {
 	@bindThis
 	public punyHost(url: string): string {
 		const urlObj = new URL(url);
-		const host = `${this.toPuny(urlObj.hostname)}${urlObj.port.length > 0 ? ':' + urlObj.port : ''}`;
+		const host = `${this.toPuny(urlObj.hostname)}${urlObj.port.length > 0 ? `:${urlObj.port}` : ''}`;
 		return host;
 	}
 

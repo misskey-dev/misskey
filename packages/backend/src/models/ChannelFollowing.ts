@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
-import { id } from './util/id.js';
-import { MiUser } from './User.js';
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { MiChannel } from './Channel.js';
+import { MiUser } from './User.js';
+import { id } from './util/id.js';
 
 @Entity('channel_following')
 @Index(['followerId', 'followeeId'], { unique: true })
@@ -21,7 +21,7 @@ export class MiChannelFollowing {
 	})
 	public followeeId: MiChannel['id'];
 
-	@ManyToOne(type => MiChannel, {
+	@ManyToOne(() => MiChannel, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
@@ -34,7 +34,7 @@ export class MiChannelFollowing {
 	})
 	public followerId: MiUser['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(() => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()

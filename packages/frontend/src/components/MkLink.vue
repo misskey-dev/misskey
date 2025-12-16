@@ -18,10 +18,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { defineAsyncComponent, ref } from 'vue';
 import { url as local } from '@@/js/config.js';
 import { maybeMakeRelative } from '@@/js/url.js';
-import type { MkABehavior } from '@/components/global/MkA.vue';
 import { useTooltip } from '@/composables/use-tooltip.js';
 import * as os from '@/os.js';
 import { isEnabledUrlPreview } from '@/utility/url-preview.js';
+import type { MkABehavior } from '@/components/global/MkA.vue';
 
 const props = withDefaults(defineProps<{
 	url: string;

@@ -849,22 +849,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { watch, ref, computed } from 'vue';
-import { throttle } from 'throttle-debounce';
+import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import RolesEditorFormula from './RolesEditorFormula.vue';
-import type { MkSelectItem, GetMkSelectValueTypesFromDef } from '@/components/MkSelect.vue';
-import MkInput from '@/components/MkInput.vue';
-import MkColorInput from '@/components/MkColorInput.vue';
-import MkSelect from '@/components/MkSelect.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
-import MkFolder from '@/components/MkFolder.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
-import MkRange from '@/components/MkRange.vue';
-import FormSlot from '@/components/form/slot.vue';
+import { throttle } from 'throttle-debounce';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { deepClone } from '@/utility/clone.js';
+import FormSlot from '@/components/form/slot.vue';
+import MkColorInput from '@/components/MkColorInput.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkRange from '@/components/MkRange.vue';
+import type { GetMkSelectValueTypesFromDef, MkSelectItem } from '@/components/MkSelect.vue';
+import MkSelect from '@/components/MkSelect.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
+import RolesEditorFormula from './RolesEditorFormula.vue';
 
 const emit = defineEmits<{
 	(ev: 'update:modelValue', v: any): void;

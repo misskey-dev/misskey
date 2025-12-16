@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { reactive, watch } from 'vue';
 import type { Reactive } from 'vue';
+import { reactive, watch } from 'vue';
 import { throttle } from 'throttle-debounce';
-import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import * as os from '@/os.js';
 import { deepClone } from '@/utility/clone.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 
 export type Widget<P extends Record<string, unknown>> = {
 	id: string;

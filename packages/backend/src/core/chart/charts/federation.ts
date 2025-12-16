@@ -3,23 +3,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Injectable, Inject } from '@nestjs/common';
-import { DataSource } from 'typeorm';
-import * as Redis from 'ioredis';
-import type { FollowingsRepository, InstancesRepository, MiMeta } from '@/models/_.js';
-import { DI } from '@/di-symbols.js';
+import { Inject, Injectable } from '@nestjs/common';
+import type * as Redis from 'ioredis';
+import type { DataSource } from 'typeorm';
 import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
 import { acquireChartInsertLock } from '@/misc/distributed-lock.js';
-import Chart from '../core.js';
+import type { FollowingsRepository, InstancesRepository, MiMeta } from '@/models/_.js';
 import { ChartLoggerService } from '../ChartLoggerService.js';
-import { name, schema } from './entities/federation.js';
 import type { KVs } from '../core.js';
+import Chart from '../core.js';
+import { name, schema } from './entities/federation.js';
 
 /**
  * フェデレーションに関するチャート
  */
 @Injectable()
-export default class FederationChart extends Chart<typeof schema> { // eslint-disable-line import/no-default-export
+export default class FederationChart extends Chart<typeof schema> {
 	constructor(
 		@Inject(DI.db)
 		private db: DataSource,

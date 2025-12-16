@@ -3,20 +3,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineAsyncComponent } from 'vue';
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import { apiUrl } from '@@/js/config.js';
 import type { UploaderFeatures } from '@/composables/use-uploader.js';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { useStream } from '@/stream.js';
-import { i18n } from '@/i18n.js';
-import { prefer } from '@/preferences.js';
-import { $i } from '@/i.js';
-import { instance } from '@/instance.js';
 import { globalEvents } from '@/events.js';
-import { getProxiedImageUrl } from '@/utility/media-proxy.js';
+import { $i } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
+import * as os from '@/os.js';
+import { prefer } from '@/preferences.js';
+import { useStream } from '@/stream.js';
 import { genId } from '@/utility/id.js';
+import { getProxiedImageUrl } from '@/utility/media-proxy.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 type UploadReturnType = {
 	filePromise: Promise<Misskey.entities.DriveFile>;
@@ -73,7 +72,7 @@ export function uploadFile(file: File | Blob, options: {
 			reject(new UploadAbortedError());
 		}, { once: true });
 
-		xhr.open('POST', apiUrl + '/drive/files/create', true);
+		xhr.open('POST', `${apiUrl}/drive/files/create`, true);
 		xhr.onload = ((ev: ProgressEvent<XMLHttpRequest>) => {
 			if (xhr.status !== 200 || ev.target == null || ev.target.response == null) {
 				if (xhr.status === 413) {
@@ -180,8 +179,9 @@ export function chooseFileFromPcAndUpload(
 export function chooseDriveFile(options: {
 	multiple?: boolean;
 } = {}): Promise<Misskey.entities.DriveFile[]> {
-	return new Promise(async resolve => {
-		const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkDriveFileSelectDialog.vue').then(x => x.default), {
+	return new Promise((resolve, rej) => {
+		let dispose: () => void;
+		os.popupAsyncWithDialog(import('@/components/MkDriveFileSelectDialog.vue').then(x => x.default), {
 			multiple: options.multiple ?? false,
 		}, {
 			done: files => {
@@ -190,7 +190,7 @@ export function chooseDriveFile(options: {
 				}
 			},
 			closed: () => dispose(),
-		});
+		}).then((d) => dispose = d.dispose, rej);
 	});
 }
 
@@ -301,14 +301,15 @@ export async function createCroppedImageDriveFileFromImageDriveFile(imageDriveFi
 }
 
 export async function selectDriveFolder(initialFolder: Misskey.entities.DriveFolder['id'] | null): Promise<(Misskey.entities.DriveFolder | null)[]> {
-	return new Promise(async resolve => {
-		const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkDriveFolderSelectDialog.vue').then(x => x.default), {
+	return new Promise((resolve, reject) => {
+		let dispose: () => void;
+		os.popupAsyncWithDialog(import('@/components/MkDriveFolderSelectDialog.vue').then(x => x.default), {
 			initialFolder,
 		}, {
 			done: folders => {
 				resolve(folders);
 			},
 			closed: () => dispose(),
-		});
+		}).then(d => dispose = d.dispose, reject);
 	});
 }

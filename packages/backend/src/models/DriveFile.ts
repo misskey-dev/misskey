@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
-import { id } from './util/id.js';
-import { MiUser } from './User.js';
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { MiDriveFolder } from './DriveFolder.js';
+import { MiUser } from './User.js';
+import { id } from './util/id.js';
 
 @Entity('drive_file')
 @Index(['userId', 'folderId', 'id'])
@@ -22,7 +22,7 @@ export class MiDriveFile {
 	})
 	public userId: MiUser['id'] | null;
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(() => MiUser, {
 		onDelete: 'SET NULL',
 	})
 	@JoinColumn()
@@ -142,7 +142,7 @@ export class MiDriveFile {
 	})
 	public folderId: MiDriveFolder['id'] | null;
 
-	@ManyToOne(type => MiDriveFolder, {
+	@ManyToOne(() => MiDriveFolder, {
 		onDelete: 'SET NULL',
 	})
 	@JoinColumn()

@@ -6,19 +6,20 @@
 
 import { setTimeout } from 'node:timers/promises';
 import { afterEach, beforeEach, describe, expect, jest } from '@jest/globals';
-import { Test, TestingModule } from '@nestjs/testing';
-import { randomString } from '../utils.js';
-import { MiUser } from '@/models/User.js';
-import { MiSystemWebhook, SystemWebhookEventType } from '@/models/SystemWebhook.js';
-import { SystemWebhooksRepository, UsersRepository } from '@/models/_.js';
-import { IdService } from '@/core/IdService.js';
-import { GlobalModule } from '@/GlobalModule.js';
-import { ModerationLogService } from '@/core/ModerationLogService.js';
+import type { TestingModule } from '@nestjs/testing';
+import { Test, } from '@nestjs/testing';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { DI } from '@/di-symbols.js';
-import { QueueService } from '@/core/QueueService.js';
+import { IdService } from '@/core/IdService.js';
 import { LoggerService } from '@/core/LoggerService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { QueueService } from '@/core/QueueService.js';
 import { SystemWebhookService } from '@/core/SystemWebhookService.js';
+import { DI } from '@/di-symbols.js';
+import { GlobalModule } from '@/GlobalModule.js';
+import type { SystemWebhooksRepository, UsersRepository } from '@/models/_.js';
+import type { MiSystemWebhook, SystemWebhookEventType } from '@/models/SystemWebhook.js';
+import type { MiUser } from '@/models/User.js';
+import { randomString } from '../utils.js';
 
 describe('SystemWebhookService', () => {
 	let app: TestingModule;

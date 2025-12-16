@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Entity, Index, JoinColumn, Column, PrimaryColumn, ManyToOne } from 'typeorm';
-import { noteVisibilities, noteReactionAcceptances } from '@/types.js';
-import { id } from './util/id.js';
-import { MiUser } from './User.js';
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import type { noteReactionAcceptances, } from '@/types.js';
+import { noteVisibilities } from '@/types.js';
 import { MiChannel } from './Channel.js';
 import type { MiDriveFile } from './DriveFile.js';
+import { MiUser } from './User.js';
+import { id } from './util/id.js';
 
 // Note: When you create a new index for existing column of this table,
 // it might be better to index concurrently under isConcurrentIndexMigrationEnabled flag
@@ -35,7 +36,7 @@ export class MiNote {
 	})
 	public replyId: MiNote['id'] | null;
 
-	@ManyToOne(type => MiNote, {
+	@ManyToOne(() => MiNote, {
 		createForeignKeyConstraints: false,
 	})
 	@JoinColumn()
@@ -49,7 +50,7 @@ export class MiNote {
 	})
 	public renoteId: MiNote['id'] | null;
 
-	@ManyToOne(type => MiNote, {
+	@ManyToOne(() => MiNote, {
 		createForeignKeyConstraints: false,
 	})
 	@JoinColumn()
@@ -83,7 +84,7 @@ export class MiNote {
 	})
 	public userId: MiUser['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(() => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
@@ -208,7 +209,7 @@ export class MiNote {
 	})
 	public channelId: MiChannel['id'] | null;
 
-	@ManyToOne(type => MiChannel, {
+	@ManyToOne(() => MiChannel, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()

@@ -18,12 +18,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, ref, useTemplateRef } from 'vue';
-import XFeatured from './explore.featured.vue';
-import XUsers from './explore.users.vue';
-import XRoles from './explore.roles.vue';
-import { definePage } from '@/page.js';
+import { computed, ref, useTemplateRef, watch } from 'vue';
 import { i18n } from '@/i18n.js';
+import { definePage } from '@/page.js';
+import XFeatured from './explore.featured.vue';
+import XRoles from './explore.roles.vue';
+import XUsers from './explore.users.vue';
 
 const props = withDefaults(defineProps<{
 	initialTab?: string;

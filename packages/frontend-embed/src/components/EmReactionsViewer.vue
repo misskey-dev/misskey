@@ -11,8 +11,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import * as Misskey from 'misskey-js';
-import { watch, ref } from 'vue';
+import { ref, watch } from 'vue';
+import type * as Misskey from 'misskey-js';
 import XReaction from '@/components/EmReactionsViewer.reaction.vue';
 
 const props = withDefaults(defineProps<{

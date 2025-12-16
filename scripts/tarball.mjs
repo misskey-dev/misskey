@@ -19,6 +19,7 @@ const ignore = [
 	// Exclude files you don't want to include in the tarball here
 ];
 
+// biome-ignore lint/style/noDefaultExport: historical reason
 export default async function build() {
 	const mkdirPromise = mkdir(resolve(cwd, 'built', 'tarball'), { recursive: true });
 	const pack = new Pack({ cwd, gzip: true });

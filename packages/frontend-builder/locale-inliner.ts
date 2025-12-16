@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as fs from 'fs/promises';
+import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
-import MagicString from 'magic-string';
-import { collectModifications } from './locale-inliner/collect-modifications.js';
-import { applyWithLocale } from './locale-inliner/apply-with-locale.js';
-import { blankLogger } from './logger.js';
-import type { Logger } from './logger.js';
 import type { Locale } from 'i18n';
+import MagicString from 'magic-string';
 import type { Manifest as ViteManifest } from 'vite';
+import { applyWithLocale } from './locale-inliner/apply-with-locale.js';
+import { collectModifications } from './locale-inliner/collect-modifications.js';
+import type { Logger } from './logger.js';
+import { blankLogger } from './logger.js';
 
 export class LocaleInliner {
 	outputDir: string;
@@ -92,11 +92,11 @@ export class LocaleInliner {
 	}
 
 	isScriptFile(fileName: string) {
-		return fileName.startsWith(this.scriptsDir + '/') && fileName.endsWith('.js');
+		return fileName.startsWith(`${this.scriptsDir}/`) && fileName.endsWith('.js');
 	}
 
 	stripScriptDir(fileName: string) {
-		if (!fileName.startsWith(this.scriptsDir + '/')) {
+		if (!fileName.startsWith(`${this.scriptsDir}/`)) {
 			throw new Error(`${fileName} does not start with ${this.scriptsDir}/`);
 		}
 		return fileName.slice(this.scriptsDir.length + 1);

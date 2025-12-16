@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { computed } from 'vue';
 import type { Ref, ShallowRef } from 'vue';
+import { computed } from 'vue';
 
 export function getDateText(dateInstance: Date) {
 	const date = dateInstance.getDate();
@@ -104,7 +104,7 @@ export function makeDateGroupedTimelineComputedRef<T extends { id: string; creat
 		for (let i = 0; i < items.value.length; i++) {
 			const item = items.value[i];
 			const date = new Date(item.createdAt);
-			const nextDate = items.value[i + 1] ? new Date(items.value[i + 1].createdAt) : null;
+			const _nextDate = items.value[i + 1] ? new Date(items.value[i + 1].createdAt) : null;
 
 			if (tl.length === 0 || (
 				span === 'day' && tl[tl.length - 1].date.getTime() !== date.getTime()

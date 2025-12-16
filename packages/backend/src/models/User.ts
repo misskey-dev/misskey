@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Entity, Column, Index, OneToOne, JoinColumn, PrimaryColumn } from 'typeorm';
-import { id } from './util/id.js';
+import { Column, Entity, Index, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { MiDriveFile } from './DriveFile.js';
+import { id } from './util/id.js';
 
 @Entity('user')
 @Index(['usernameLower', 'host'], { unique: true })
@@ -99,7 +99,7 @@ export class MiUser {
 	})
 	public avatarId: MiDriveFile['id'] | null;
 
-	@OneToOne(type => MiDriveFile, {
+	@OneToOne(() => MiDriveFile, {
 		onDelete: 'SET NULL',
 	})
 	@JoinColumn()
@@ -112,7 +112,7 @@ export class MiUser {
 	})
 	public bannerId: MiDriveFile['id'] | null;
 
-	@OneToOne(type => MiDriveFile, {
+	@OneToOne(() => MiDriveFile, {
 		onDelete: 'SET NULL',
 	})
 	@JoinColumn()

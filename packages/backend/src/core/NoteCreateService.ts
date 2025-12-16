@@ -4,59 +4,61 @@
  */
 
 import { setImmediate } from 'node:timers/promises';
+import type { OnApplicationShutdown } from '@nestjs/common';
+import { Inject, Injectable, } from '@nestjs/common';
+import type * as Redis from 'ioredis';
 import * as mfm from 'mfm-js';
-import { In, DataSource, IsNull, LessThan } from 'typeorm';
-import * as Redis from 'ioredis';
-import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
-import { extractMentions } from '@/misc/extract-mentions.js';
-import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
-import { extractHashtags } from '@/misc/extract-hashtags.js';
-import type { IMentionedRemoteUsers } from '@/models/Note.js';
-import { MiNote } from '@/models/Note.js';
-import type { BlockingsRepository, ChannelFollowingsRepository, ChannelsRepository, DriveFilesRepository, FollowingsRepository, InstancesRepository, MiFollowing, MiMeta, MutingsRepository, NotesRepository, NoteThreadMutingsRepository, UserListMembershipsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
-import type { MiDriveFile } from '@/models/DriveFile.js';
-import type { MiApp } from '@/models/App.js';
-import { concat } from '@/misc/prelude/array.js';
-import { IdService } from '@/core/IdService.js';
-import type { MiUser, MiLocalUser, MiRemoteUser } from '@/models/User.js';
-import type { IPoll } from '@/models/Poll.js';
-import { MiPoll } from '@/models/Poll.js';
-import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
-import type { MiChannel } from '@/models/Channel.js';
-import { normalizeForSearch } from '@/misc/normalize-for-search.js';
-import { RelayService } from '@/core/RelayService.js';
-import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
-import { DI } from '@/di-symbols.js';
+import type { DataSource, } from 'typeorm';
+import { In, IsNull, LessThan } from 'typeorm';
 import type { Config } from '@/config.js';
+import { DB_MAX_NOTE_TEXT_LENGTH } from '@/const.js';
+import { AntennaService } from '@/core/AntennaService.js';
+import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
+import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
+import { CacheService } from '@/core/CacheService.js';
+import ActiveUsersChart from '@/core/chart/charts/active-users.js';
+import InstanceChart from '@/core/chart/charts/instance.js';
 import NotesChart from '@/core/chart/charts/notes.js';
 import PerUserNotesChart from '@/core/chart/charts/per-user-notes.js';
-import InstanceChart from '@/core/chart/charts/instance.js';
-import ActiveUsersChart from '@/core/chart/charts/active-users.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { NotificationService } from '@/core/NotificationService.js';
-import { UserWebhookService } from '@/core/UserWebhookService.js';
-import { HashtagService } from '@/core/HashtagService.js';
-import { AntennaService } from '@/core/AntennaService.js';
-import { QueueService } from '@/core/QueueService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
-import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
+import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
+import { FeaturedService } from '@/core/FeaturedService.js';
+import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { HashtagService } from '@/core/HashtagService.js';
+import { IdService } from '@/core/IdService.js';
+import { NotificationService } from '@/core/NotificationService.js';
+import { QueueService } from '@/core/QueueService.js';
+import { RelayService } from '@/core/RelayService.js';
 import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
-import { bindThis } from '@/decorators.js';
-import { DB_MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { RoleService } from '@/core/RoleService.js';
 import { SearchService } from '@/core/SearchService.js';
-import { FeaturedService } from '@/core/FeaturedService.js';
-import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
-import { UtilityService } from '@/core/UtilityService.js';
 import { UserBlockingService } from '@/core/UserBlockingService.js';
-import { isReply } from '@/misc/is-reply.js';
-import { trackPromise } from '@/misc/promise-tracker.js';
-import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { UserWebhookService } from '@/core/UserWebhookService.js';
+import { UtilityService } from '@/core/UtilityService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
 import { CollapsedQueue } from '@/misc/collapsed-queue.js';
-import { CacheService } from '@/core/CacheService.js';
+import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
+import { extractHashtags } from '@/misc/extract-hashtags.js';
+import { extractMentions } from '@/misc/extract-mentions.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
 import { isQuote, isRenote } from '@/misc/is-renote.js';
+import { isReply } from '@/misc/is-reply.js';
+import { normalizeForSearch } from '@/misc/normalize-for-search.js';
+import { concat } from '@/misc/prelude/array.js';
+import { trackPromise } from '@/misc/promise-tracker.js';
+import type { BlockingsRepository, ChannelFollowingsRepository, ChannelsRepository, DriveFilesRepository, FollowingsRepository, InstancesRepository, MiFollowing, MiMeta, NotesRepository, NoteThreadMutingsRepository, UserListMembershipsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import type { MiApp } from '@/models/App.js';
+import type { MiChannel } from '@/models/Channel.js';
+import type { MiDriveFile } from '@/models/DriveFile.js';
+import type { IMentionedRemoteUsers } from '@/models/Note.js';
+import { MiNote } from '@/models/Note.js';
+import type { IPoll } from '@/models/Poll.js';
+import { MiPoll } from '@/models/Poll.js';
+import type { MiLocalUser, MiRemoteUser, MiUser } from '@/models/User.js';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -69,7 +71,6 @@ class NotificationManager {
 	}[];
 
 	constructor(
-		private mutingsRepository: MutingsRepository,
 		private notificationService: NotificationService,
 		notifier: { id: MiUser['id']; },
 		note: MiNote,
@@ -168,9 +169,6 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
-
-		@Inject(DI.mutingsRepository)
-		private mutingsRepository: MutingsRepository,
 
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
@@ -489,12 +487,12 @@ export class NoteCreateService implements OnApplicationShutdown {
 		}
 
 		// ローカルのみをRenoteしたらローカルのみにする
-		if (data.renote && data.renote.localOnly && data.channel == null) {
+		if (data.renote?.localOnly && data.channel == null) {
 			data.localOnly = true;
 		}
 
 		// ローカルのみにリプライしたらローカルのみにする
-		if (data.reply && data.reply.localOnly && data.channel == null) {
+		if (data.reply?.localOnly && data.channel == null) {
 			data.localOnly = true;
 		}
 
@@ -518,7 +516,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		if (!tags || !emojis || !mentionedUsers) {
 			const tokens = (data.text ? mfm.parse(data.text)! : []);
 			const cwTokens = data.cw ? mfm.parse(data.cw)! : [];
-			const choiceTokens = data.poll && data.poll.choices
+			const choiceTokens = data.poll?.choices
 				? concat(data.poll.choices.map(choice => mfm.parse(choice)!))
 				: [];
 
@@ -721,7 +719,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 				notify: 'normal',
 			}).then(async followings => {
 				if (note.visibility !== 'specified') {
-					const isPureRenote = this.isRenote(data) && !this.isQuote(data) ? true : false;
+					const isPureRenote = this.isRenote(data) && !this.isQuote(data);
 					for (const following of followings) {
 						// TODO: ワードミュート考慮
 						let isRenoteMuted = false;
@@ -743,7 +741,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			this.incRenoteCount(data.renote);
 		}
 
-		if (data.poll && data.poll.expiresAt) {
+		if (data.poll?.expiresAt) {
 			const delay = data.poll.expiresAt.getTime() - Date.now();
 			this.queueService.endedPollNotificationQueue.add(note.id, {
 				noteId: note.id,
@@ -772,7 +770,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 			this.webhookService.enqueueUserWebhook(user.id, 'note', { note: noteObj });
 
-			const nm = new NotificationManager(this.mutingsRepository, this.notificationService, user, note);
+			const nm = new NotificationManager(this.notificationService, user, note);
 
 			await this.createMentionedEvents(mentionedUsers, note, nm);
 
@@ -1159,6 +1157,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 	public checkProhibitedWordsContain(content: Parameters<UtilityService['concatNoteContentsForKeyWordCheck']>[0], prohibitedWords?: string[]) {
 		if (prohibitedWords == null) {
+			// biome-ignore lint/style/noParameterAssign: parameter fallback
 			prohibitedWords = this.meta.prohibitedWords;
 		}
 

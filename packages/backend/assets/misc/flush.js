@@ -35,7 +35,7 @@
 
 			console.error(e);
 			setTimeout(() => {
-				location = '/';
+				location.href = '/';
 			}, 10000)
 		}
 	}

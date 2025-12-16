@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { AhoCorasick } from 'slacc';
 import RE2 from 're2';
+import { AhoCorasick } from 'slacc';
 import type { MiNote } from '@/models/Note.js';
 import type { MiUser } from '@/models/User.js';
 
@@ -25,7 +25,7 @@ export async function checkWordMute(note: NoteLike, me: UserLike | null | undefi
 	if (me && (note.userId === me.id)) return false;
 
 	if (mutedWords.length > 0) {
-		const text = ((note.cw ?? '') + '\n' + (note.text ?? '')).trim();
+		const text = (`${note.cw ?? ''}\n${note.text ?? ''}`).trim();
 
 		if (text === '') return false;
 
@@ -56,7 +56,7 @@ export async function checkWordMute(note: NoteLike, me: UserLike | null | undefi
 
 				try {
 					return new RE2(regexp[1], regexp[2]).test(text);
-				} catch (err) {
+				} catch (_) {
 					// This should never happen due to input sanitisation.
 					return false;
 				}

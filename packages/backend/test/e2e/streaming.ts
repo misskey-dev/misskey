@@ -5,11 +5,11 @@
 
 process.env.NODE_ENV = 'test';
 
-import * as assert from 'assert';
+import * as assert from 'node:assert';
+import type * as misskey from 'misskey-js';
 import { WebSocket } from 'ws';
 import { MiFollowing } from '@/models/Following.js';
 import { api, createAppToken, initTestDb, port, post, signup, waitFire } from '../utils.js';
-import type * as misskey from 'misskey-js';
 
 describe('Streaming', () => {
 	let Followings: any;

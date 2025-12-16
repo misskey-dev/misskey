@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { ParameterizedString } from 'i18n';
 import { describe, expect, it } from 'vitest';
 import { I18n } from '../../frontend-shared/js/i18n.js'; // @@で参照できなかったので
-import type { ParameterizedString } from 'i18n';
 
 // TODO: このテストはfrontend-sharedに移動する
 

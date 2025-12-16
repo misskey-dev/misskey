@@ -19,20 +19,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, shallowRef, watch, useTemplateRef } from 'vue';
+import { onMounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import XColumn from './column.vue';
-import type { Column } from '@/deck.js';
-import type { MenuItem } from '@/types/menu.js';
-import type { SoundStore } from '@/preferences/def.js';
-import { updateColumn } from '@/deck.js';
-import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
-import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os.js';
 import { favoritedChannelsCache } from '@/cache.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
+import type { Column } from '@/deck.js';
+import { updateColumn } from '@/deck.js';
 import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import type { SoundStore } from '@/preferences/def.js';
+import type { MenuItem } from '@/types/menu.js';
 import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import MkButton from '@/components/MkButton.vue';
+import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
+import XColumn from './column.vue';
 
 const props = defineProps<{
 	column: Column;

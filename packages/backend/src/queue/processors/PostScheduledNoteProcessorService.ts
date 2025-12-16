@@ -4,14 +4,14 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { DI } from '@/di-symbols.js';
-import type { NoteDraftsRepository } from '@/models/_.js';
-import type Logger from '@/logger.js';
+import type * as Bull from 'bullmq';
+import { NoteCreateService } from '@/core/NoteCreateService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { bindThis } from '@/decorators.js';
-import { NoteCreateService } from '@/core/NoteCreateService.js';
+import { DI } from '@/di-symbols.js';
+import type Logger from '@/logger.js';
+import type { NoteDraftsRepository } from '@/models/_.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
-import type * as Bull from 'bullmq';
 import type { PostScheduledNoteJobData } from '../types.js';
 
 @Injectable()
@@ -63,7 +63,7 @@ export class PostScheduledNoteProcessorService {
 			this.notificationService.createNotification(draft.userId, 'scheduledNotePosted', {
 				noteId: note.id,
 			});
-		} catch (err) {
+		} catch (_) {
 			this.notificationService.createNotification(draft.userId, 'scheduledNotePostFailed', {
 				noteDraftId: draft.id,
 			});

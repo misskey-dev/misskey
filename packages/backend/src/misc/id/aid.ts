@@ -15,10 +15,10 @@ const TIME2000 = 946684800000;
 let counter = crypto.randomBytes(2).readUInt16LE(0);
 
 function getTime(time: number): string {
-	time = time - TIME2000;
-	if (time < 0) time = 0;
+	let offsetTime = time - TIME2000;
+	if (offsetTime < 0) offsetTime = 0;
 
-	return time.toString(36).padStart(8, '0');
+	return offsetTime.toString(36).padStart(8, '0');
 }
 
 function getNoise(): string {
@@ -26,7 +26,7 @@ function getNoise(): string {
 }
 
 export function genAid(t: number): string {
-	if (isNaN(t)) throw new Error('Failed to create AID: Invalid Date');
+	if (Number.isNaN(t)) throw new Error('Failed to create AID: Invalid Date');
 	counter++;
 	return getTime(t) + getNoise();
 }

@@ -4,32 +4,32 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { DI } from '@/di-symbols.js';
-import type { EmojisRepository, NoteReactionsRepository, UsersRepository, NotesRepository, MiMeta } from '@/models/_.js';
-import { IdentifiableError } from '@/misc/identifiable-error.js';
-import type { MiRemoteUser, MiUser } from '@/models/User.js';
-import type { MiNote } from '@/models/Note.js';
-import { IdService } from '@/core/IdService.js';
-import type { MiNoteReaction } from '@/models/NoteReaction.js';
-import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { NotificationService } from '@/core/NotificationService.js';
-import PerUserReactionsChart from '@/core/chart/charts/per-user-reactions.js';
-import { emojiRegex } from '@/misc/emoji-regex.js';
+import { PER_NOTE_REACTION_USER_PAIR_CACHE_MAX } from '@/const.js';
 import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
+import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
+import { CustomEmojiService } from '@/core/CustomEmojiService.js';
+import PerUserReactionsChart from '@/core/chart/charts/per-user-reactions.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
-import { bindThis } from '@/decorators.js';
-import { UtilityService } from '@/core/UtilityService.js';
-import { UserBlockingService } from '@/core/UserBlockingService.js';
-import { CustomEmojiService } from '@/core/CustomEmojiService.js';
-import { RoleService } from '@/core/RoleService.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
-import { trackPromise } from '@/misc/promise-tracker.js';
-import { isQuote, isRenote } from '@/misc/is-renote.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { IdService } from '@/core/IdService.js';
+import { NotificationService } from '@/core/NotificationService.js';
 import { ReactionsBufferingService } from '@/core/ReactionsBufferingService.js';
-import { PER_NOTE_REACTION_USER_PAIR_CACHE_MAX } from '@/const.js';
+import { RoleService } from '@/core/RoleService.js';
+import { UserBlockingService } from '@/core/UserBlockingService.js';
+import { UtilityService } from '@/core/UtilityService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import { emojiRegex } from '@/misc/emoji-regex.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
+import { isQuote, isRenote } from '@/misc/is-renote.js';
+import { trackPromise } from '@/misc/promise-tracker.js';
+import type { EmojisRepository, MiMeta, NoteReactionsRepository, NotesRepository, UsersRepository } from '@/models/_.js';
+import type { MiNote } from '@/models/Note.js';
+import type { MiNoteReaction } from '@/models/NoteReaction.js';
+import type { MiRemoteUser, MiUser } from '@/models/User.js';
 
 const FALLBACK = '\u2764';
 
@@ -343,6 +343,7 @@ export class ReactionService {
 	 */
 	@bindThis
 	public convertLegacyReaction(reaction: string): string {
+		// biome-ignore lint/style/noParameterAssign: parameter normalization
 		reaction = this.decodeReaction(reaction).reaction;
 		if (Object.keys(legacies).includes(reaction)) return legacies[reaction];
 		return reaction;

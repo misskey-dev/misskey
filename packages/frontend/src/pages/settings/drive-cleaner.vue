@@ -47,21 +47,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import * as Misskey from 'misskey-js';
-import { computed, markRaw, ref, watch } from 'vue';
-import tinycolor from 'tinycolor2';
 import type { StyleValue } from 'vue';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import MkPagination from '@/components/MkPagination.vue';
-import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
-import { i18n } from '@/i18n.js';
-import bytes from '@/filters/bytes.js';
-import { definePage } from '@/page.js';
-import MkSelect from '@/components/MkSelect.vue';
+import { computed, markRaw, ref, watch } from 'vue';
+import * as Misskey from 'misskey-js';
+import tinycolor from 'tinycolor2';
 import { useMkSelect } from '@/composables/use-mkselect.js';
+import bytes from '@/filters/bytes.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { definePage } from '@/page.js';
 import { getDriveFileMenu } from '@/utility/get-drive-file-menu.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { Paginator } from '@/utility/paginator.js';
+import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
+import MkPagination from '@/components/MkPagination.vue';
+import MkSelect from '@/components/MkSelect.vue';
 
 const sortMode = ref<Misskey.entities.DriveFilesRequest['sort']>('+size');
 const paginator = markRaw(new Paginator('drive/files', {

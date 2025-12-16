@@ -22,11 +22,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onActivated, computed } from 'vue';
-import MkButton from '@/components/MkButton.vue';
+import { computed, onActivated } from 'vue';
+import { antennasCache } from '@/cache.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
-import { antennasCache } from '@/cache.js';
+import MkButton from '@/components/MkButton.vue';
 
 const antennas = computed(() => antennasCache.value.value ?? []);
 

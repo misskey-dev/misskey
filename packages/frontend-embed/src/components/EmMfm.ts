@@ -3,23 +3,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { h, provide } from 'vue';
-import type { VNode, SetupContext } from 'vue';
+import type { SetupContext, VNode } from 'vue';
+import { h } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { host } from '@@/js/config.js';
-import EmUrl from '@/components/EmUrl.vue';
-import EmTime from '@/components/EmTime.vue';
+import EmA from '@/components/EmA.vue';
+import EmCustomEmoji from '@/components/EmCustomEmoji.vue';
+import EmEmoji from '@/components/EmEmoji.vue';
 import EmLink from '@/components/EmLink.vue';
 import EmMention from '@/components/EmMention.vue';
-import EmEmoji from '@/components/EmEmoji.vue';
-import EmCustomEmoji from '@/components/EmCustomEmoji.vue';
-import EmA from '@/components/EmA.vue';
+import EmTime from '@/components/EmTime.vue';
+import EmUrl from '@/components/EmUrl.vue';
 
 function safeParseFloat(str: unknown): number | null {
 	if (typeof str !== 'string' || str === '') return null;
 	const num = parseFloat(str);
-	if (isNaN(num)) return null;
+	if (Number.isNaN(num)) return null;
 	return num;
 }
 
@@ -48,12 +48,10 @@ type MfmEvents = {
 	clickEv(id: string): void;
 };
 
-// eslint-disable-next-line import/no-default-export
 export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEvents>['emit'] }) {
 	const isNote = props.isNote ?? true;
 	const shouldNyaize = props.nyaize ? props.nyaize === 'respect' ? props.author?.isCat : false : false;
 
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (props.text == null || props.text === '') return;
 
 	const rootAst = props.parsedNodes ?? (props.plain ? mfm.parseSimple : mfm.parse)(props.text);
@@ -61,7 +59,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 	const validTime = (t: string | boolean | null | undefined) => {
 		if (t == null) return null;
 		if (typeof t === 'boolean') return null;
-		return t.match(/^\-?[0-9.]+s$/) ? t : null;
+		return t.match(/^-?[0-9.]+s$/) ? t : null;
 	};
 
 	const validColor = (c: unknown): string | null => {
@@ -74,10 +72,11 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 	/**
 	 * Gen Vue Elements from MFM AST
 	 * @param ast MFM AST
-	 * @param scale How times large the text is
+	 * @param initialScale How times large the text is
 	 * @param disableNyaize Whether nyaize is disabled or not
 	 */
-	const genEl = (ast: mfm.MfmNode[], scale: number, disableNyaize = false) => ast.map((token): VNode | string | (VNode | string)[] => {
+	const genEl = (ast: mfm.MfmNode[], initialScale: number, disableNyaize = false) => ast.map((token): VNode | string | (VNode | string)[] => {
+		let scale = initialScale;
 		switch (token.type) {
 			case 'text': {
 				let text = token.props.text.replace(/(\r\n|\n|\r)/g, '\n');
@@ -119,7 +118,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 					case 'tada': {
 						const speed = validTime(token.props.args.speed) ?? '1s';
 						const delay = validTime(token.props.args.delay) ?? '0s';
-						style = 'font-size: 150%;' + (useAnim ? `animation: global-tada ${speed} linear infinite both; animation-delay: ${delay};` : '');
+						style = `font-size: 150%;${useAnim ? `animation: global-tada ${speed} linear infinite both; animation-delay: ${delay};` : ''}`;
 						break;
 					}
 					case 'jelly': {
@@ -311,7 +310,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 					return h('span', {}, ['$[', token.props.name, ' ', ...genEl(token.children, scale), ']']);
 				} else {
 					return h('span', {
-						style: 'display: inline-block; ' + style,
+						style: `display: inline-block; ${style}`,
 					}, genEl(token.children, scale));
 				}
 			}
@@ -396,14 +395,13 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 						fallbackToImage: false,
 					})];
 				} else {
-					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 					if (props.emojiUrls && (props.emojiUrls[token.props.name] == null)) {
 						return [h('span', `:${token.props.name}:`)];
 					} else {
 						return [h(EmCustomEmoji, {
 							key: Math.random(),
 							name: token.props.name,
-							url: props.emojiUrls && props.emojiUrls[token.props.name],
+							url: props.emojiUrls?.[token.props.name],
 							normal: props.plain,
 							host: props.author.host,
 							useOriginalSize: scale >= 2.5,
@@ -438,7 +436,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 			}
 
 			default: {
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				console.error('unrecognized ast type:', (token as any).type);
 
 				return [];

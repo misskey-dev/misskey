@@ -4,8 +4,8 @@
  */
 
 import type { Directive } from 'vue';
-import { makeHotkey } from '@/utility/hotkey.js';
 import type { Keymap } from '@/utility/hotkey.js';
+import { makeHotkey } from '@/utility/hotkey.js';
 
 interface HTMLElementWithHotkey extends HTMLElement {
 	_hotkey_global?: boolean;

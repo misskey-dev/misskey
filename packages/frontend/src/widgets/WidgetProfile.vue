@@ -22,11 +22,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { useWidgetPropsManager } from './widget.js';
-import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
-import { ensureSignin } from '@/i.js';
 import { userPage } from '@/filters/user.js';
+import { ensureSignin } from '@/i.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
+import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import { useWidgetPropsManager } from './widget.js';
 
 const $i = ensureSignin();
 

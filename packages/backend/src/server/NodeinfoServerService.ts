@@ -4,17 +4,17 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { DI } from '@/di-symbols.js';
+import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
 import type { Config } from '@/config.js';
-import { MetaService } from '@/core/MetaService.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
-import { MemorySingleCache } from '@/misc/cache.js';
-import { bindThis } from '@/decorators.js';
 import NotesChart from '@/core/chart/charts/notes.js';
 import UsersChart from '@/core/chart/charts/users.js';
+import { MetaService } from '@/core/MetaService.js';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 import { SystemAccountService } from '@/core/SystemAccountService.js';
-import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import { MemorySingleCache } from '@/misc/cache.js';
 
 const nodeinfo2_1path = '/nodeinfo/2.1';
 const nodeinfo2_0path = '/nodeinfo/2.0';
@@ -48,8 +48,6 @@ export class NodeinfoServerService {
 	@bindThis
 	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
 		const nodeinfo2 = async (version: number) => {
-			const now = Date.now();
-
 			const notesChart = await this.notesChart.getChart('hour', 1, null);
 			const localPosts = notesChart.local.total[0];
 
@@ -74,7 +72,6 @@ export class NodeinfoServerService {
 
 			const basePolicies = { ...DEFAULT_POLICIES, ...meta.policies };
 
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const document: any = {
 				software: {
 					name: 'misskey',

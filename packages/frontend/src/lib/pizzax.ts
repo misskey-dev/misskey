@@ -7,15 +7,15 @@
 
 // TODO: Misskeyのドメイン知識があるのでutilityなどに移動する
 
+import type { Ref } from 'vue';
 import { onUnmounted, ref, watch } from 'vue';
 import { BroadcastChannel } from 'broadcast-channel';
-import type { Ref } from 'vue';
 import { $i } from '@/i.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { get, set } from '@/utility/idb-proxy.js';
 import { store } from '@/store.js';
 import { deepClone } from '@/utility/clone.js';
+import { get, set } from '@/utility/idb-proxy.js';
 import { deepMerge } from '@/utility/merge.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 type StateDef = Record<string, {
 	where: 'account' | 'device' | 'deviceAccount';
@@ -113,11 +113,11 @@ export class Pizzax<T extends StateDef> {
 		const registryCache = $i ? await get(this.registryCacheKeyName) || {} : {};
 
 		for (const [k, v] of Object.entries(this.def) as [keyof T, T[keyof T]['default']][]) {
-			if (v.where === 'device' && Object.prototype.hasOwnProperty.call(deviceState, k)) {
+			if (v.where === 'device' && Object.hasOwn(deviceState, k)) {
 				this.r[k].value = this.s[k] = this.mergeState<T[keyof T]['default']>(deviceState[k], v.default);
-			} else if (v.where === 'account' && $i && Object.prototype.hasOwnProperty.call(registryCache, k)) {
+			} else if (v.where === 'account' && $i && Object.hasOwn(registryCache, k)) {
 				this.r[k].value = this.s[k] = this.mergeState<T[keyof T]['default']>(registryCache[k], v.default);
-			} else if (v.where === 'deviceAccount' && Object.prototype.hasOwnProperty.call(deviceAccountState, k)) {
+			} else if (v.where === 'deviceAccount' && Object.hasOwn(deviceAccountState, k)) {
 				this.r[k].value = this.s[k] = this.mergeState<T[keyof T]['default']>(deviceAccountState[k], v.default);
 			} else {
 				this.r[k].value = this.s[k] = v.default;
@@ -144,7 +144,7 @@ export class Pizzax<T extends StateDef> {
 							const cache: Partial<T> = {};
 							for (const [k, v] of Object.entries(this.def) as [keyof T, T[keyof T]['default']][]) {
 								if (v.where === 'account') {
-									if (Object.prototype.hasOwnProperty.call(kvs, k)) {
+									if (Object.hasOwn(kvs, k)) {
 										this.r[k].value = this.s[k] = (kvs as Partial<T>)[k];
 										cache[k] = (kvs as Partial<T>)[k];
 									} else {

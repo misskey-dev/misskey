@@ -4,14 +4,14 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import { IdService } from '@/core/IdService.js';
+import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
-import type { ReversiGamesRepository } from '@/models/_.js';
-import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { Packed } from '@/misc/json-schema.js';
+import { awaitAll } from '@/misc/prelude/await-all.js';
+import type { ReversiGamesRepository } from '@/models/_.js';
 import type { } from '@/models/Blocking.js';
 import type { MiReversiGame } from '@/models/ReversiGame.js';
-import { bindThis } from '@/decorators.js';
-import { IdService } from '@/core/IdService.js';
 import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
@@ -41,8 +41,8 @@ export class ReversiGameEntityService {
 		return await awaitAll({
 			id: game.id,
 			createdAt: this.idService.parse(game.id).date.toISOString(),
-			startedAt: game.startedAt && game.startedAt.toISOString(),
-			endedAt: game.endedAt && game.endedAt.toISOString(),
+			startedAt: game.startedAt?.toISOString() ?? null,
+			endedAt: game.endedAt?.toISOString() ?? null,
 			isStarted: game.isStarted,
 			isEnded: game.isEnded,
 			form1: game.form1,
@@ -103,8 +103,8 @@ export class ReversiGameEntityService {
 		return await awaitAll({
 			id: game.id,
 			createdAt: this.idService.parse(game.id).date.toISOString(),
-			startedAt: game.startedAt && game.startedAt.toISOString(),
-			endedAt: game.endedAt && game.endedAt.toISOString(),
+			startedAt: game.startedAt?.toISOString() ?? null,
+			endedAt: game.endedAt?.toISOString() ?? null,
 			isStarted: game.isStarted,
 			isEnded: game.isEnded,
 			user1Id: game.user1Id,

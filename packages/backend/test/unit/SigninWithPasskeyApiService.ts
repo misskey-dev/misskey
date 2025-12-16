@@ -3,24 +3,26 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { IncomingHttpHeaders } from 'node:http';
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, jest, test } from '@jest/globals';
-import { Test, TestingModule } from '@nestjs/testing';
-import { FastifyReply, FastifyRequest } from 'fastify';
-import { AuthenticationResponseJSON } from '@simplewebauthn/types';
-import { HttpHeader } from 'fastify/types/utils.js';
-import { MockMetadata, ModuleMocker } from 'jest-mock';
-import { MiUser } from '@/models/User.js';
-import { MiUserProfile, UserProfilesRepository, UsersRepository } from '@/models/_.js';
-import { IdService } from '@/core/IdService.js';
-import { GlobalModule } from '@/GlobalModule.js';
-import { DI } from '@/di-symbols.js';
+import type { IncomingHttpHeaders } from 'node:http';
+import { afterAll, beforeAll, beforeEach, describe, expect, jest, } from '@jest/globals';
+import type { TestingModule } from '@nestjs/testing';
+import { Test, } from '@nestjs/testing';
+import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
+import type { FastifyReply, FastifyRequest } from 'fastify';
+import type { HttpHeader } from 'fastify/types/utils.js';
+import type { MockMetadata, } from 'jest-mock';
+import { ModuleMocker } from 'jest-mock';
 import { CoreModule } from '@/core/CoreModule.js';
-import { SigninWithPasskeyApiService } from '@/server/api/SigninWithPasskeyApiService.js';
-import { RateLimiterService } from '@/server/api/RateLimiterService.js';
+import { IdService } from '@/core/IdService.js';
 import { WebAuthnService } from '@/core/WebAuthnService.js';
-import { SigninService } from '@/server/api/SigninService.js';
+import { DI } from '@/di-symbols.js';
+import { GlobalModule } from '@/GlobalModule.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
+import type { MiUserProfile, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import type { MiUser } from '@/models/User.js';
+import { RateLimiterService } from '@/server/api/RateLimiterService.js';
+import { SigninService } from '@/server/api/SigninService.js';
+import { SigninWithPasskeyApiService } from '@/server/api/SigninWithPasskeyApiService.js';
 
 const moduleMocker = new ModuleMocker(global);
 

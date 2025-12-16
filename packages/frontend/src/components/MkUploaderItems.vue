@@ -48,9 +48,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { isLink } from '@@/js/is-link.js';
 import type { UploaderItem } from '@/composables/use-uploader.js';
+import bytes from '@/filters/bytes.js';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
-import bytes from '@/filters/bytes.js';
 
 const props = defineProps<{
 	items: UploaderItem[];

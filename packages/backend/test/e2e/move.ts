@@ -3,18 +3,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { INestApplicationContext } from '@nestjs/common';
+import type { INestApplicationContext } from '@nestjs/common';
 
 process.env.NODE_ENV = 'test';
 
+import * as assert from 'node:assert';
 import { setTimeout } from 'node:timers/promises';
-import * as assert from 'assert';
-import { loadConfig } from '@/config.js';
-import { MiRepository, MiUser, UsersRepository, miRepository } from '@/models/_.js';
-import { secureRndstr } from '@/misc/secure-rndstr.js';
-import { jobQueue } from '@/boot/common.js';
-import { api, castAsError, initTestDb, signup, successfulApiCall, uploadFile } from '../utils.js';
 import type * as misskey from 'misskey-js';
+import { jobQueue } from '@/boot/common.js';
+import { loadConfig } from '@/config.js';
+import { secureRndstr } from '@/misc/secure-rndstr.js';
+import type { MiRepository, UsersRepository } from '@/models/_.js';
+import { MiUser, miRepository, } from '@/models/_.js';
+import { api, castAsError, initTestDb, signup, successfulApiCall, uploadFile } from '../utils.js';
 
 describe('Account Move', () => {
 	let jq: INestApplicationContext;

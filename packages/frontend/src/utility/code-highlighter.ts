@@ -3,20 +3,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { HighlighterCore, LanguageRegistration, ThemeRegistration, ThemeRegistrationRaw } from 'shiki/core';
 import { createHighlighterCore } from 'shiki/core';
 import { createJavaScriptRegexEngine } from 'shiki/engine/javascript';
-import darkPlus from 'shiki/themes/dark-plus.mjs';
-import { bundledThemesInfo } from 'shiki/themes';
 import { bundledLanguagesInfo } from 'shiki/langs';
-import lightTheme from '@@/themes/_light.json5';
+import { bundledThemesInfo } from 'shiki/themes';
+import darkPlus from 'shiki/themes/dark-plus.mjs';
 import darkTheme from '@@/themes/_dark.json5';
-import defaultLightTheme from '@@/themes/l-light.json5';
+import lightTheme from '@@/themes/_light.json5';
 import defaultDarkTheme from '@@/themes/d-green-lime.json5';
+import defaultLightTheme from '@@/themes/l-light.json5';
+import { prefer } from '@/preferences.js';
 import { unique } from './array.js';
 import { deepClone } from './clone.js';
 import { deepMerge } from './merge.js';
-import type { HighlighterCore, LanguageRegistration, ThemeRegistration, ThemeRegistrationRaw } from 'shiki/core';
-import { prefer } from '@/preferences.js';
 
 let _highlighter: HighlighterCore | null = null;
 
@@ -27,7 +27,7 @@ export async function getTheme(mode: 'light' | 'dark', getName = false): Promise
 
 	if (theme.base) {
 		const base = [lightTheme, darkTheme].find(x => x.id === theme.base);
-		if (base && base.codeHighlighter) theme.codeHighlighter = Object.assign({}, base.codeHighlighter, theme.codeHighlighter);
+		if (base?.codeHighlighter) theme.codeHighlighter = Object.assign({}, base.codeHighlighter, theme.codeHighlighter);
 	}
 
 	if (theme.codeHighlighter) {

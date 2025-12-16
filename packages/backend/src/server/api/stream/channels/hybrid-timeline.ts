@@ -4,12 +4,11 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { Packed } from '@/misc/json-schema.js';
-import { MetaService } from '@/core/MetaService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
-import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
-import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
+import { bindThis } from '@/decorators.js';
+import { isQuotePacked, isRenotePacked } from '@/misc/is-renote.js';
+import type { Packed } from '@/misc/json-schema.js';
 import type { JsonObject } from '@/misc/json-value.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
@@ -23,7 +22,6 @@ class HybridTimelineChannel extends Channel {
 	private withFiles: boolean;
 
 	constructor(
-		private metaService: MetaService,
 		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
 
@@ -126,7 +124,6 @@ export class HybridTimelineChannelService implements MiChannelService<true> {
 	public readonly kind = HybridTimelineChannel.kind;
 
 	constructor(
-		private metaService: MetaService,
 		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
 	) {
@@ -135,7 +132,6 @@ export class HybridTimelineChannelService implements MiChannelService<true> {
 	@bindThis
 	public create(id: string, connection: Channel['connection']): HybridTimelineChannel {
 		return new HybridTimelineChannel(
-			this.metaService,
 			this.roleService,
 			this.noteEntityService,
 			id,

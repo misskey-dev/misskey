@@ -3,20 +3,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
-import { DI } from '@/di-symbols.js';
-import type { NoteReactionsRepository } from '@/models/_.js';
-import type { Packed } from '@/misc/json-schema.js';
-import { bindThis } from '@/decorators.js';
-import { IdService } from '@/core/IdService.js';
 import type { OnModuleInit } from '@nestjs/common';
-import type { } from '@/models/Blocking.js';
-import type { MiUser } from '@/models/User.js';
-import type { MiNoteReaction } from '@/models/NoteReaction.js';
-import type { ReactionService } from '../ReactionService.js';
-import type { UserEntityService } from './UserEntityService.js';
-import type { NoteEntityService } from './NoteEntityService.js';
+import { Inject, Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
+import { IdService } from '@/core/IdService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type { Packed } from '@/misc/json-schema.js';
+import type { NoteReactionsRepository } from '@/models/_.js';
+import type { } from '@/models/Blocking.js';
+import type { MiNoteReaction } from '@/models/NoteReaction.js';
+import type { MiUser } from '@/models/User.js';
+import { ReactionService } from '../ReactionService.js';
+import { NoteEntityService } from './NoteEntityService.js';
+import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
 export class NoteReactionEntityService implements OnModuleInit {
@@ -54,7 +54,7 @@ export class NoteReactionEntityService implements OnModuleInit {
 			packedUser?: Packed<'UserLite'>
 		},
 	): Promise<Packed<'NoteReaction'>> {
-		const opts = Object.assign({
+		const _opts = Object.assign({
 		}, options);
 
 		const reaction = typeof src === 'object' ? src : await this.noteReactionsRepository.findOneByOrFail({ id: src });
@@ -90,7 +90,7 @@ export class NoteReactionEntityService implements OnModuleInit {
 			packedUser?: Packed<'UserLite'>
 		},
 	): Promise<Packed<'NoteReactionWithNote'>> {
-		const opts = Object.assign({
+		const _opts = Object.assign({
 		}, options);
 
 		const reaction = typeof src === 'object' ? src : await this.noteReactionsRepository.findOneByOrFail({ id: src });

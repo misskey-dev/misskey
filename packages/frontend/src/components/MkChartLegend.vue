@@ -14,15 +14,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { shallowRef } from 'vue';
-import { Chart } from 'chart.js';
 import type { LegendItem } from 'chart.js';
+import { Chart } from 'chart.js';
 
 const chart = shallowRef<Chart>();
 const type = shallowRef<string>();
 const items = shallowRef<LegendItem[]>([]);
 
 function update(_chart: Chart, _items: LegendItem[]) {
-	chart.value = _chart,
+	chart.value = _chart;
 	items.value = _items;
 	if ('type' in _chart.config) type.value = _chart.config.type;
 }

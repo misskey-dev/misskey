@@ -4,9 +4,9 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ChannelMutingService } from '@/core/ChannelMutingService.js';
 import { ChannelEntityService } from '@/core/entities/ChannelEntityService.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
 	tags: ['channels', 'mute'],
@@ -34,7 +34,7 @@ export const paramDef = {
 } as const;
 
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		private channelMutingService: ChannelMutingService,
 		private channelEntityService: ChannelEntityService,

@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import Parser from 'rss-parser';
 import { Injectable } from '@nestjs/common';
-import { Endpoint } from '@/server/api/endpoint-base.js';
+import Parser from 'rss-parser';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 
 const rssParser = new Parser();
 
@@ -214,7 +214,7 @@ export const paramDef = {
 } as const;
 
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		private httpRequestService: HttpRequestService,
 	) {

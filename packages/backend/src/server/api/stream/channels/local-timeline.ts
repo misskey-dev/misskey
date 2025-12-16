@@ -4,12 +4,11 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type { Packed } from '@/misc/json-schema.js';
-import { MetaService } from '@/core/MetaService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
-import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
+import { bindThis } from '@/decorators.js';
 import { isQuotePacked, isRenotePacked } from '@/misc/is-renote.js';
+import type { Packed } from '@/misc/json-schema.js';
 import type { JsonObject } from '@/misc/json-value.js';
 import Channel, { type MiChannelService } from '../channel.js';
 
@@ -22,7 +21,6 @@ class LocalTimelineChannel extends Channel {
 	private withFiles: boolean;
 
 	constructor(
-		private metaService: MetaService,
 		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
 
@@ -54,8 +52,8 @@ class LocalTimelineChannel extends Channel {
 		if (note.visibility !== 'public') return;
 		if (note.channelId != null) return;
 		if (note.user.requireSigninToViewContents && this.user == null) return;
-		if (note.renote && note.renote.user.requireSigninToViewContents && this.user == null) return;
-		if (note.reply && note.reply.user.requireSigninToViewContents && this.user == null) return;
+		if (note.renote?.user.requireSigninToViewContents && this.user == null) return;
+		if (note.reply?.user.requireSigninToViewContents && this.user == null) return;
 
 		// 関係ない返信は除外
 		if (note.reply && this.user && !this.following[note.userId]?.withReplies && !this.withReplies) {
@@ -92,7 +90,6 @@ export class LocalTimelineChannelService implements MiChannelService<false> {
 	public readonly kind = LocalTimelineChannel.kind;
 
 	constructor(
-		private metaService: MetaService,
 		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
 	) {
@@ -101,7 +98,6 @@ export class LocalTimelineChannelService implements MiChannelService<false> {
 	@bindThis
 	public create(id: string, connection: Channel['connection']): LocalTimelineChannel {
 		return new LocalTimelineChannel(
-			this.metaService,
 			this.roleService,
 			this.noteEntityService,
 			id,

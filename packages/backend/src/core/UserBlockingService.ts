@@ -3,23 +3,24 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import type { OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
-import { IdService } from '@/core/IdService.js';
-import type { MiUser } from '@/models/User.js';
-import type { MiBlocking } from '@/models/Blocking.js';
-import { QueueService } from '@/core/QueueService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { DI } from '@/di-symbols.js';
-import type { FollowRequestsRepository, BlockingsRepository, UserListsRepository, UserListMembershipsRepository } from '@/models/_.js';
-import Logger from '@/logger.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
+import { CacheService } from '@/core/CacheService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { IdService } from '@/core/IdService.js';
 import { LoggerService } from '@/core/LoggerService.js';
+import { QueueService } from '@/core/QueueService.js';
+import { UserFollowingService } from '@/core/UserFollowingService.js';
 import { UserWebhookService } from '@/core/UserWebhookService.js';
 import { bindThis } from '@/decorators.js';
-import { CacheService } from '@/core/CacheService.js';
-import { UserFollowingService } from '@/core/UserFollowingService.js';
+import { DI } from '@/di-symbols.js';
+import type Logger from '@/logger.js';
+import type { BlockingsRepository, FollowRequestsRepository, UserListMembershipsRepository, UserListsRepository } from '@/models/_.js';
+import type { MiBlocking } from '@/models/Blocking.js';
+import type { MiUser } from '@/models/User.js';
 
 @Injectable()
 export class UserBlockingService implements OnModuleInit {

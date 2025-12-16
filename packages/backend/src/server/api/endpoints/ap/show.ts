@@ -3,23 +3,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import ms from 'ms';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { MiNote } from '@/models/Note.js';
-import type { MiLocalUser, MiUser } from '@/models/User.js';
-import { isActor, isPost, getApId } from '@/core/activitypub/type.js';
-import type { SchemaType } from '@/misc/json-schema.js';
-import { ApResolverService } from '@/core/activitypub/ApResolverService.js';
 import { ApDbResolverService } from '@/core/activitypub/ApDbResolverService.js';
-import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
+import { ApResolverService } from '@/core/activitypub/ApResolverService.js';
+import { FetchAllowSoftFailMask } from '@/core/activitypub/misc/check-against-url.js';
 import { ApNoteService } from '@/core/activitypub/models/ApNoteService.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
+import { getApId, isActor, isPost } from '@/core/activitypub/type.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-import { FetchAllowSoftFailMask } from '@/core/activitypub/misc/check-against-url.js';
+import type { SchemaType } from '@/misc/json-schema.js';
+import type { MiNote } from '@/models/Note.js';
+import type { MiLocalUser, MiUser } from '@/models/User.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -107,7 +107,7 @@ export const paramDef = {
 } as const;
 
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		private utilityService: UtilityService,
 		private userEntityService: UserEntityService,
@@ -215,7 +215,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					type: 'Note',
 					object,
 				};
-			} catch (e) {
+			} catch (_) {
 				return null;
 			}
 		}

@@ -16,7 +16,7 @@
 		renderError('SOMETHING_HAPPENED_IN_PROMISE', e.reason || e);
 	};
 
-	let forceError = localStorage.getItem('forceError');
+	const forceError = localStorage.getItem('forceError');
 	if (forceError != null) {
 		renderError('FORCED_ERROR', 'This error is forced by having forceError in local storage.');
 		return;
@@ -56,7 +56,7 @@
 	}
 
 	// タイミングによっては、この時点でDOMの構築が済んでいる場合とそうでない場合とがある
-	if (document.readyState !== 'loading') {
+	if (window.document.readyState !== 'loading') {
 		importAppScript();
 	} else {
 		window.addEventListener('DOMContentLoaded', () => {
@@ -81,11 +81,11 @@
 		const theme = localStorage.getItem('theme');
 		if (theme) {
 			for (const [k, v] of Object.entries(JSON.parse(theme))) {
-				document.documentElement.style.setProperty(`--MI_THEME-${k}`, v.toString());
+				window.document.documentElement.style.setProperty(`--MI_THEME-${k}`, v.toString());
 
 				// HTMLの theme-color 適用
 				if (k === 'htmlThemeColor') {
-					for (const tag of document.head.children) {
+					for (const tag of window.document.head.children) {
 						if (tag.tagName === 'META' && tag.getAttribute('name') === 'theme-color') {
 							tag.setAttribute('content', v);
 							break;
@@ -98,38 +98,38 @@
 
 	const colorScheme = localStorage.getItem('colorScheme');
 	if (colorScheme) {
-		document.documentElement.style.setProperty('color-scheme', colorScheme);
+		window.document.documentElement.style.setProperty('color-scheme', colorScheme);
 	}
 	//#endregion
 
 	const fontSize = localStorage.getItem('fontSize');
 	if (fontSize) {
-		document.documentElement.classList.add('f-' + fontSize);
+		window.document.documentElement.classList.add(`f-${fontSize}`);
 	}
 
 	const useSystemFont = localStorage.getItem('useSystemFont');
 	if (useSystemFont) {
-		document.documentElement.classList.add('useSystemFont');
+		window.document.documentElement.classList.add('useSystemFont');
 	}
 
 	if (!isSafeMode) {
 		const customCss = localStorage.getItem('customCss');
 		if (customCss && customCss.length > 0) {
-			const style = document.createElement('style');
+			const style = window.document.createElement('style');
 			style.innerHTML = customCss;
-			document.head.appendChild(style);
+			window.document.head.appendChild(style);
 		}
 	}
 
 	async function addStyle(styleText) {
-		let css = document.createElement('style');
-		css.appendChild(document.createTextNode(styleText));
-		document.head.appendChild(css);
+		const css = window.document.createElement('style');
+		css.appendChild(window.document.createTextNode(styleText));
+		window.document.head.appendChild(css);
 	}
 
 	async function renderError(code, details) {
 		// Cannot set property 'innerHTML' of null を回避
-		if (document.readyState === 'loading') {
+		if (window.document.readyState === 'loading') {
 			await new Promise(resolve => window.addEventListener('DOMContentLoaded', resolve));
 		}
 
@@ -169,10 +169,10 @@
 		const safeModeUrl = new URL(window.location.href);
 		safeModeUrl.searchParams.set('safemode', 'true');
 
-		let errorsElement = document.getElementById('errors');
+		let errorsElement = window.document.getElementById('errors');
 
 		if (!errorsElement) {
-			document.body.innerHTML = `
+			window.document.body.innerHTML = `
 			<svg class="icon-warning" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
 				<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
 				<path d="M12 9v2m0 4v.01"></path>
@@ -216,9 +216,9 @@
 			<br>
 			<div id="errors"></div>
 			`;
-			errorsElement = document.getElementById('errors');
+			errorsElement = window.document.getElementById('errors');
 		}
-		const detailsElement = document.createElement('details');
+		const detailsElement = window.document.createElement('details');
 		detailsElement.id = 'errorInfo';
 		detailsElement.innerHTML = `
 		<br>

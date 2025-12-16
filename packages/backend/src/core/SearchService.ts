@@ -4,20 +4,18 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { In } from 'typeorm';
-import { DI } from '@/di-symbols.js';
-import { type Config, FulltextSearchProvider } from '@/config.js';
-import { bindThis } from '@/decorators.js';
-import { MiNote } from '@/models/Note.js';
-import type { NotesRepository } from '@/models/_.js';
-import { MiUser } from '@/models/_.js';
-import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
-import { isUserRelated } from '@/misc/is-user-related.js';
+import type { Index, MeiliSearch } from 'meilisearch';
+import type { Config, FulltextSearchProvider } from '@/config.js';
 import { CacheService } from '@/core/CacheService.js';
-import { QueryService } from '@/core/QueryService.js';
 import { IdService } from '@/core/IdService.js';
 import { LoggerService } from '@/core/LoggerService.js';
-import type { Index, MeiliSearch } from 'meilisearch';
+import { QueryService } from '@/core/QueryService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import { isUserRelated } from '@/misc/is-user-related.js';
+import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
+import type { MiUser, NotesRepository } from '@/models/_.js';
+import type { MiNote } from '@/models/Note.js';
 
 type K = string;
 type V = string | number | boolean;
@@ -190,8 +188,7 @@ export class SearchService {
 				return this.searchNoteByMeiliSearch(q, me, opts, pagination);
 			}
 			default: {
-				// eslint-disable-next-line @typescript-eslint/no-unused-vars
-				const typeCheck: never = this.provider;
+				const _: never = this.provider;
 				return [];
 			}
 		}

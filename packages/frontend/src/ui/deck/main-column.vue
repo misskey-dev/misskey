@@ -26,17 +26,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { provide, useTemplateRef, ref } from 'vue';
+import { provide, ref, useTemplateRef } from 'vue';
 import { isLink } from '@@/js/is-link.js';
-import XColumn from './column.vue';
 import type { Column } from '@/deck.js';
-import type { PageMetadata } from '@/page.js';
-import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
-import { provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
-import { mainRouter } from '@/router.js';
-import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import type { PageMetadata } from '@/page.js';
+import { provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
+import { prefer } from '@/preferences.js';
+import { mainRouter } from '@/router.js';
+import XColumn from './column.vue';
 
 defineProps<{
 	column: Column;

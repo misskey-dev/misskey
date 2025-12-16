@@ -31,14 +31,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
+import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import FormSlot from '@/components/form/slot.vue';
 import MkButton from '@/components/MkButton.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
-import FormSlot from '@/components/form/slot.vue';
-import MkInfo from '@/components/MkInfo.vue';
-import * as os from '@/os.js';
-import { ensureSignin } from '@/i.js';
 
 const $i = ensureSignin();
 

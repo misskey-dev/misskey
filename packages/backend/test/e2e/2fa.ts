@@ -5,12 +5,8 @@
 
 process.env.NODE_ENV = 'test';
 
-import * as assert from 'assert';
+import * as assert from 'node:assert';
 import * as crypto from 'node:crypto';
-import cbor from 'cbor';
-import * as OTPAuth from 'otpauth';
-import { loadConfig } from '@/config.js';
-import { api, signup } from '../utils.js';
 import type {
 	AuthenticationResponseJSON,
 	AuthenticatorAssertionResponseJSON,
@@ -19,7 +15,11 @@ import type {
 	PublicKeyCredentialRequestOptionsJSON,
 	RegistrationResponseJSON,
 } from '@simplewebauthn/types';
+import cbor from 'cbor';
 import type * as misskey from 'misskey-js';
+import * as OTPAuth from 'otpauth';
+import { loadConfig } from '@/config.js';
+import { api, signup } from '../utils.js';
 
 describe('2要素認証', () => {
 	let alice: misskey.entities.SignupResponse;
@@ -103,7 +103,7 @@ describe('2要素認証', () => {
 					clientDataJSON: Buffer.from(JSON.stringify({
 						type: 'webauthn.create',
 						challenge: param.creationOptions.challenge,
-						origin: config.scheme + '://' + config.host,
+						origin: `${config.scheme}://${config.host}`,
 						androidPackageName: 'org.mozilla.firefox',
 					}), 'utf-8').toString('base64url'),
 					attestationObject: cbor.encode({
@@ -147,7 +147,7 @@ describe('2要素認証', () => {
 		const clientDataJSONBuffer = Buffer.from(JSON.stringify({
 			type: 'webauthn.get',
 			challenge: param.requestOptions.challenge,
-			origin: config.scheme + '://' + config.host,
+			origin: `${config.scheme}://${config.host}`,
 			androidPackageName: 'org.mozilla.firefox',
 		}), 'utf-8');
 		const hashedclientDataJSON = crypto.createHash('sha256')
@@ -259,7 +259,7 @@ describe('2要素認証', () => {
 		assert.strictEqual(signinResponse.body.next, 'passkey');
 		assert.notEqual(signinResponse.body.authRequest.challenge, undefined);
 		assert.notEqual(signinResponse.body.authRequest.allowCredentials, undefined);
-		assert.strictEqual(signinResponse.body.authRequest.allowCredentials && signinResponse.body.authRequest.allowCredentials[0]?.id, credentialId.toString('base64url'));
+		assert.strictEqual(signinResponse.body.authRequest.allowCredentials?.[0]?.id, credentialId.toString('base64url'));
 
 		const signinResponse2 = await api('signin-flow', signinWithSecurityKeyParam({
 			keyName,

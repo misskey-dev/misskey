@@ -1,0 +1,264 @@
+{
+	"$schema": "https://biomejs.dev/schemas/latest/schema.json",
+	"root": true,
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true
+	},
+	"files": {
+		"ignoreUnknown": false
+	},
+	"overrides": [
+		// disable linting for minified files
+		{
+			"includes": ["**/*.min.js"],
+			"linter": {
+				"enabled": false
+			},
+			"formatter": {
+				"enabled": false
+			}
+		},
+		// relax rules for vue files as biome support is not complete
+		{
+			"includes": ["**/*.svelte", "**/*.astro", "**/*.vue"],
+			"linter": {
+				"rules": {
+					"style": {
+						"useConst": "off",
+						"useImportType": "off"
+					},
+					"correctness": {
+						"noUnusedVariables": "off",
+						"noUnusedImports": "off"
+					}
+				}
+			}
+		},
+		// restrict usage of certain globals in frontend packages
+		{
+			"includes": ["packages/frontend*/**"],
+			"linter": {
+				"domains": {
+					"vue": "recommended"
+				},
+				"rules": {
+					"style": {
+						"noRestrictedGlobals": {
+							"level": "on",
+							"options": {
+								"deniedGlobals": {
+									"open": "Use `window.open`.",
+									"close": "Use `window.close`.",
+									"fetch": "Use `window.fetch`.",
+									"location": "Use `window.location`.",
+									"document": "Use `window.document`.",
+									"history": "Use `window.history`.",
+									"scroll": "Use `window.scroll`.",
+									"setTimeout": "Use `window.setTimeout`.",
+									"setInterval": "Use `window.setInterval`.",
+									"clearTimeout": "Use `window.clearTimeout`.",
+									"clearInterval": "Use `window.clearInterval`.",
+									"name": "Use `window.name`. もしくは name という変数名を定義し忘れている"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		{
+			"includes": [
+				// config files will include global exports
+				"**/*.config.{js,ts}",
+				"ormconfig.{js,ts}",
+				// rollup/vue plugin files use default exports
+				"**/{rollup,vite}-plugin-*.{js,ts}",
+				// vue component files use default exports
+				"**/components/**/*.{js,ts,vue}"
+			],
+			"linter": {
+				"rules": {
+					"style": {
+						"noDefaultExport": "off"
+					}
+				}
+			}
+		}
+	],
+	"formatter": {
+		"enabled": false,
+		"useEditorconfig": true,
+		"indentStyle": "tab"
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"a11y": {
+				"useHtmlLang": {
+					"level": "off"
+				},
+				"useAltText": {
+					"level": "off"
+				},
+				"noSvgWithoutTitle": {
+					"level": "off"
+				},
+				"useButtonType": {
+					"level": "off"
+				}
+			},
+			"complexity": {
+				// with nested ifs, continue is useful to understand the end of flow
+				"noUselessContinue": {
+					"level": "off"
+				},
+				// We are carefully with important styles but sometimes they are necessary
+				"noImportantStyles": {
+					"level": "off"
+				},
+				// we prefer A["key"] if A is a string-keyed dictionary
+				"useLiteralKeys": {
+					"level": "off"
+				}
+			},
+			"correctness": {
+				"noUnusedFunctionParameters": {
+					"level": "off"
+				},
+				"noUnusedVariables": {
+					"level": "warn",
+					"options": {
+						// https://github.com/biomejs/biome/issues/8353
+						// https://github.com/biomejs/biome/pull/8398
+						"ignoreRestSiblings": true
+					}
+				},
+				"useParseIntRadix": {
+					"level": "off"
+				}
+			},
+			"style": {
+				// enables
+				// we never use require import.
+				"noCommonJs": {
+					"level": "on"
+				},
+				// we prefer named exports, except for certain cases
+				// global exclusion defined above in overrides
+				"noDefaultExport": {
+					"level": "on"
+				},
+				// omit type as possible
+				"noInferrableTypes": {
+					"level": "on"
+				},
+				// we should redeclare variables instead of reassigning them
+				"noParameterAssign": {
+					"level": "on"
+				},
+				// prefer `` over '' or ""
+				"useTemplate": {
+					"level": "on",
+					"fix": "safe"
+				},
+				"useThrowOnlyError": {
+					"level": "on"
+				},
+
+				// disables
+				// non null assertion is necessary because of lack of control flow analysis in typescript
+				"noNonNullAssertion": {
+					"level": "off",
+					"fix": "none"
+				},
+				// nuxt service definition use parameter properties
+				"noParameterProperties": {
+					"level": "off"
+				},
+				// not always better. especially when we except extending function type
+				"useShorthandFunctionType": {
+					"level": "off"
+				},
+				// we prefer import type {T} from 'mod' instead of import {type T} from 'mod'
+				"useImportType": {
+					"level": "error",
+					"options": {
+						"style": "separatedType"
+					}
+				}
+			},
+			"suspicious": {
+				// not always suspicious
+				"noAssignInExpressions": {
+					"level": "off"
+				},
+				// we sometimes want to check control characters with regex, and why not?
+				"noControlCharactersInRegex": {
+					"level": "off"
+				},
+				// we still use any in some cases.
+				"noExplicitAny": {
+					"level": "off"
+				},
+				// we want to allow toString, Error, etc., especially for exports
+				"noShadowRestrictedNames": {
+					"level": "off"
+				},
+				// false positive in script tag
+				// https://github.com/biomejs/biome/issues/8431
+				"noSuspiciousSemicolonInJsx": {
+					"level": "off"
+				},
+				// Do ${} in '' is suspicious? We don't think so. In addition, we cannot avoid that.
+				"noTemplateCurlyInString": {
+					"level": "off"
+				},
+				// the endpoint meta object use 'then' object
+				"noThenProperty": {
+					"level": "off"
+				},
+				// false positives with .forEach.
+				// https://github.com/biomejs/biome/issues/8024
+				"useIterableCallbackReturn": {
+					"level": "off"
+				}
+			}
+		}
+	},
+	"javascript": {
+		"parser": {
+			"unsafeParameterDecoratorsEnabled": true
+		},
+		"formatter": {
+			"quoteStyle": "double"
+		}
+	},
+	"assist": {
+		"enabled": true,
+		"actions": {
+			"source": {
+				"organizeImports": {
+					"level": "on",
+					"options": {
+						"groups": [
+							":NODE:",
+							"storybook/**",
+							"@storybook/**",
+							"vue",
+							":PACKAGE:",
+							"@@/**",
+							["@/**", "!@/components/**"],
+							"@/components/**",
+							"../**",
+							"./**",
+							{ "type": true }
+						]
+					}
+				}
+			}
+		}
+	}
+}

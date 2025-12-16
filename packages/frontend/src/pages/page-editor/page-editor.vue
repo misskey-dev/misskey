@@ -58,24 +58,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, provide, watch, ref } from 'vue';
+import { computed, provide, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
-import XBlocks from './page-editor.blocks.vue';
+import { useMkSelect } from '@/composables/use-mkselect.js';
+import { $i } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { definePage } from '@/page.js';
+import { getPageBlockList } from '@/pages/page-editor/common.js';
+import { mainRouter } from '@/router.js';
+import { selectFile } from '@/utility/drive.js';
 import { genId } from '@/utility/id.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import MkButton from '@/components/MkButton.vue';
+import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import MkInput from '@/components/MkInput.vue';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { selectFile } from '@/utility/drive.js';
-import { i18n } from '@/i18n.js';
-import { definePage } from '@/page.js';
-import { $i } from '@/i.js';
-import { mainRouter } from '@/router.js';
-import { useMkSelect } from '@/composables/use-mkselect.js';
-import { getPageBlockList } from '@/pages/page-editor/common.js';
+import XBlocks from './page-editor.blocks.vue';
 
 const props = defineProps<{
 	initPageId?: string;
@@ -188,8 +188,8 @@ async function del() {
 }
 
 async function duplicate() {
-	title.value = title.value + ' - copy';
-	name.value = name.value + '-copy';
+	title.value = `${title.value} - copy`;
+	name.value = `${name.value}-copy`;
 
 	const created = await os.apiWithDialog('pages/create', getSaveOptions(), undefined, {
 		'4650348e-301c-499a-83c9-6aa988c66bc1': {

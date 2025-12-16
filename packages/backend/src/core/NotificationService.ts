@@ -4,24 +4,24 @@
  */
 
 import { setTimeout } from 'node:timers/promises';
-import * as Redis from 'ioredis';
-import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
-import { In } from 'typeorm';
+import type { OnApplicationShutdown } from '@nestjs/common';
+import { Inject, Injectable, } from '@nestjs/common';
+import type * as Redis from 'ioredis';
 import { ReplyError } from 'ioredis';
-import { DI } from '@/di-symbols.js';
-import type { UsersRepository } from '@/models/_.js';
-import type { MiUser } from '@/models/User.js';
-import type { MiNotification } from '@/models/Notification.js';
-import { bindThis } from '@/decorators.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { PushNotificationService } from '@/core/PushNotificationService.js';
-import { NotificationEntityService } from '@/core/entities/NotificationEntityService.js';
-import { IdService } from '@/core/IdService.js';
-import { CacheService } from '@/core/CacheService.js';
 import type { Config } from '@/config.js';
+import { CacheService } from '@/core/CacheService.js';
+import { NotificationEntityService } from '@/core/entities/NotificationEntityService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { IdService } from '@/core/IdService.js';
+import { PushNotificationService } from '@/core/PushNotificationService.js';
 import { UserListService } from '@/core/UserListService.js';
-import { FilterUnionByProperty, groupedNotificationTypes, obsoleteNotificationTypes } from '@/types.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
 import { trackPromise } from '@/misc/promise-tracker.js';
+import type { UsersRepository } from '@/models/_.js';
+import type { MiNotification } from '@/models/Notification.js';
+import type { MiUser } from '@/models/User.js';
+import type { FilterUnionByProperty, } from '@/types.js';
 
 @Injectable()
 export class NotificationService implements OnApplicationShutdown {
@@ -96,8 +96,7 @@ export class NotificationService implements OnApplicationShutdown {
 		const profile = await this.cacheService.userProfileCache.fetch(notifieeId);
 
 		// 古いMisskeyバージョンのキャッシュが残っている可能性がある
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-		const recieveConfig = (profile.notificationRecieveConfig ?? {})[type];
+		const recieveConfig = profile.notificationRecieveConfig?.[type];
 		if (recieveConfig?.type === 'never') {
 			return null;
 		}
@@ -150,7 +149,7 @@ export class NotificationService implements OnApplicationShutdown {
 		let notification: FilterUnionByProperty<MiNotification, 'type', T>;
 		let redisId: string;
 
-		do {
+		while (true) {
 			notification = {
 				id: this.idService.gen(),
 				createdAt,
@@ -174,8 +173,7 @@ export class NotificationService implements OnApplicationShutdown {
 			}
 
 			break;
-			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-		} while (true);
+		}
 
 		const packed = await this.notificationEntityService.pack(notification, notifieeId, {});
 
@@ -246,7 +244,7 @@ export class NotificationService implements OnApplicationShutdown {
 
 	private toXListId(id: string): string {
 		const { date, additional } = this.idService.parseFull(id);
-		return date.toString() + '-' + additional.toString();
+		return `${date.toString()}-${additional.toString()}`;
 	}
 
 	@bindThis
@@ -278,14 +276,14 @@ export class NotificationService implements OnApplicationShutdown {
 			if (sinceTime && !untilTime) {
 				notificationsRes = await this.redisClient.xrange(
 					`notificationTimeline:${userId}`,
-					'(' + sinceTime,
+					`(${sinceTime}`,
 					'+',
 					'COUNT', limit);
 			} else {
 				notificationsRes = await this.redisClient.xrevrange(
 					`notificationTimeline:${userId}`,
-					untilTime ? '(' + untilTime : '+',
-					sinceTime ? '(' + sinceTime : '-',
+					untilTime ? `(${untilTime}` : '+',
+					sinceTime ? `(${sinceTime}` : '-',
 					'COUNT', limit);
 			}
 

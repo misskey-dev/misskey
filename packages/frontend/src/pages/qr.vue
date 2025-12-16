@@ -18,12 +18,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent, ref, shallowRef } from 'vue';
-import MkQrShow from './qr.show.vue';
-import { definePage } from '@/page.js';
-import { i18n } from '@/i18n.js';
 import { ensureSignin } from '@/i';
+import { i18n } from '@/i18n.js';
+import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
 import MkPolkadots from '@/components/MkPolkadots.vue';
+import MkQrShow from './qr.show.vue';
 
 // router definitionでloginRequiredが設定されているためエラーハンドリングしない
 const $i = ensureSignin();

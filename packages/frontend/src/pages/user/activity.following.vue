@@ -14,17 +14,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, useTemplateRef, ref } from 'vue';
-import { Chart } from 'chart.js';
-import * as Misskey from 'misskey-js';
-import gradient from 'chartjs-plugin-gradient';
+import { onMounted, ref, useTemplateRef } from 'vue';
 import type { ChartDataset } from 'chart.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { store } from '@/store.js';
+import { Chart } from 'chart.js';
+import gradient from 'chartjs-plugin-gradient';
+import * as Misskey from 'misskey-js';
 import { useChartTooltip } from '@/composables/use-chart-tooltip.js';
+import { store } from '@/store.js';
+import { chartLegend } from '@/utility/chart-legend.js';
 import { chartVLine } from '@/utility/chart-vline.js';
 import { initChart } from '@/utility/init-chart.js';
-import { chartLegend } from '@/utility/chart-legend.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import MkChartLegend from '@/components/MkChartLegend.vue';
 
 initChart();

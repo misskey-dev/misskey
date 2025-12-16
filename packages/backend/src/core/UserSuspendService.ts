@@ -4,17 +4,17 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Not, IsNull } from 'typeorm';
-import type { FollowingsRepository, FollowRequestsRepository, UsersRepository } from '@/models/_.js';
-import type { MiUser } from '@/models/User.js';
-import { QueueService } from '@/core/QueueService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { DI } from '@/di-symbols.js';
+import { IsNull, Not } from 'typeorm';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { bindThis } from '@/decorators.js';
-import { RelationshipJobData } from '@/queue/types.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { QueueService } from '@/core/QueueService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type { FollowingsRepository, FollowRequestsRepository, UsersRepository } from '@/models/_.js';
+import type { MiUser } from '@/models/User.js';
+import type { RelationshipJobData } from '@/queue/types.js';
 
 @Injectable()
 export class UserSuspendService {
@@ -49,8 +49,8 @@ export class UserSuspendService {
 		});
 
 		(async () => {
-			await this.postSuspend(user).catch(e => {});
-			await this.unFollowAll(user).catch(e => {});
+			await this.postSuspend(user).catch(_ => {});
+			await this.unFollowAll(user).catch(_ => {});
 		})();
 	}
 
@@ -67,7 +67,7 @@ export class UserSuspendService {
 		});
 
 		(async () => {
-			await this.postUnsuspend(user).catch(e => {});
+			await this.postUnsuspend(user).catch(_ => {});
 		})();
 	}
 

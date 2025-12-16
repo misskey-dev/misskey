@@ -14,15 +14,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import * as Misskey from 'misskey-js';
 import { defineAsyncComponent } from 'vue';
-import type { MenuItem } from '@/types/menu.js';
-import * as os from '@/os.js';
-import { misskeyApiGet } from '@/utility/misskey-api.js';
-import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
-import { i18n } from '@/i18n.js';
-import MkCustomEmojiDetailedDialog from '@/components/MkCustomEmojiDetailedDialog.vue';
+import * as Misskey from 'misskey-js';
 import { $i } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import type { MenuItem } from '@/types/menu.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { misskeyApiGet } from '@/utility/misskey-api.js';
+import MkCustomEmojiDetailedDialog from '@/components/MkCustomEmojiDetailedDialog.vue';
 
 const props = defineProps<{
 	emoji: Misskey.entities.EmojiSimple;
@@ -32,7 +32,7 @@ function menu(ev) {
 	const menuItems: MenuItem[] = [];
 	menuItems.push({
 		type: 'label',
-		text: ':' + props.emoji.name + ':',
+		text: `:${props.emoji.name}:`,
 	}, {
 		text: i18n.ts.copy,
 		icon: 'ti ti-copy',

@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { Locale } from 'i18n';
 import { get } from 'idb-keyval';
 import * as Misskey from 'misskey-js';
-import { FETCH_TIMEOUT_MS } from '@/const.js';
-import type { PushNotificationDataMap } from '@/types.js';
 import type { I18n } from '@@/js/i18n.js';
-import type { Locale } from 'i18n';
+import { FETCH_TIMEOUT_MS } from '@/const.js';
 import { createEmptyNotification, createNotification } from '@/scripts/create-notification.js';
 import { swLang } from '@/scripts/lang.js';
 import * as swos from '@/scripts/operations.js';
+import type { PushNotificationDataMap } from '@/types.js';
 
 async function respondToNavigation(request: Request): Promise<Response> {
 	const controller = new AbortController();

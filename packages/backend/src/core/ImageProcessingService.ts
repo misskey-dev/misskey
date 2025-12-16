@@ -43,8 +43,8 @@ export const avifDefault: sharp.AvifOptions = {
 	effort: 2,
 };
 
+import type { Readable } from 'node:stream';
 import { bindThis } from '@/decorators.js';
-import { Readable } from 'node:stream';
 
 @Injectable()
 export class ImageProcessingService {

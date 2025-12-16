@@ -31,14 +31,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import XTimeline from './welcome.timeline.vue';
-import MkMarqueeText from '@/components/MkMarqueeText.vue';
-import MkFeaturedPhotos from '@/components/MkFeaturedPhotos.vue';
-import misskeysvg from '/client-assets/misskey.svg';
-import { misskeyApiGet } from '@/utility/misskey-api.js';
-import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
-import { getProxiedImageUrl } from '@/utility/media-proxy.js';
 import { instance as meta } from '@/instance.js';
+import { getProxiedImageUrl } from '@/utility/media-proxy.js';
+import { misskeyApiGet } from '@/utility/misskey-api.js';
+import MkFeaturedPhotos from '@/components/MkFeaturedPhotos.vue';
+import MkMarqueeText from '@/components/MkMarqueeText.vue';
+import MkVisitorDashboard from '@/components/MkVisitorDashboard.vue';
+import XTimeline from './welcome.timeline.vue';
+import misskeysvg from '/client-assets/misskey.svg';
 
 const instances = ref<Misskey.entities.FederationInstance[]>();
 

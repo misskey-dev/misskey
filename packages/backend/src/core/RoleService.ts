@@ -3,10 +3,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
 import { Inject, Injectable } from '@nestjs/common';
-import * as Redis from 'ioredis';
-import { In } from 'typeorm';
 import { ModuleRef } from '@nestjs/core';
+import type * as Redis from 'ioredis';
+import { In } from 'typeorm';
+import { CacheService } from '@/core/CacheService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
+import type { GlobalEvents } from '@/core/GlobalEventService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { IdService } from '@/core/IdService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { NotificationService } from '@/core/NotificationService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import { MemoryKVCache, MemorySingleCache } from '@/misc/cache.js';
+import type { Packed } from '@/misc/json-schema.js';
 import type {
 	MiMeta,
 	MiRole,
@@ -15,21 +28,8 @@ import type {
 	RolesRepository,
 	UsersRepository,
 } from '@/models/_.js';
-import { MemoryKVCache, MemorySingleCache } from '@/misc/cache.js';
-import type { MiUser } from '@/models/User.js';
-import { DI } from '@/di-symbols.js';
-import { bindThis } from '@/decorators.js';
-import { CacheService } from '@/core/CacheService.js';
 import type { RoleCondFormulaValue } from '@/models/Role.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import type { GlobalEvents } from '@/core/GlobalEventService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { IdService } from '@/core/IdService.js';
-import { ModerationLogService } from '@/core/ModerationLogService.js';
-import type { Packed } from '@/misc/json-schema.js';
-import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
-import { NotificationService } from '@/core/NotificationService.js';
-import type { OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
+import type { MiUser } from '@/models/User.js';
 
 // misskey-js の rolePolicies と同期すべし
 export type RolePolicies = {
@@ -314,7 +314,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 				default:
 					return false;
 			}
-		} catch (err) {
+		} catch (_) {
 			// TODO: log error
 			return false;
 		}

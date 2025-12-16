@@ -4,9 +4,9 @@
  */
 
 import type { Config } from '@/config.js';
-import endpoints, { IEndpoint } from '../endpoints.js';
+import endpoints, { type IEndpoint } from '../endpoints.js';
 import { errors as basicErrors } from './errors.js';
-import { getSchemas, convertSchemaToOpenApiSchema } from './schemas.js';
+import { convertSchemaToOpenApiSchema, getSchemas } from './schemas.js';
 
 export function genOpenapiSpec(config: Config, includeSelfRef = false) {
 	const spec = {
@@ -57,7 +57,7 @@ export function genOpenapiSpec(config: Config, includeSelfRef = false) {
 
 		const resSchema = endpoint.meta.res ? convertSchemaToOpenApiSchema(endpoint.meta.res, 'res', includeSelfRef) : {};
 
-		let desc = (endpoint.meta.description ? endpoint.meta.description : 'No description provided.') + '\n\n';
+		let desc = `${endpoint.meta.description ? endpoint.meta.description : 'No description provided.'}\n\n`;
 
 		if (endpoint.meta.secure) {
 			desc += '**Internal Endpoint**: This endpoint is an API for the misskey mainframe and is not intended for use by third parties.\n';
@@ -209,16 +209,16 @@ export function genOpenapiSpec(config: Config, includeSelfRef = false) {
 			},
 		};
 
-		spec.paths['/' + endpoint.name] = {
+		spec.paths[`/${endpoint.name}`] = {
 			...(endpoint.meta.allowGet ? {
 				get: {
 					...info,
-					operationId: 'get___' + info.operationId,
+					operationId: `get___${info.operationId}`,
 				},
 			} : {}),
 			post: {
 				...info,
-				operationId: 'post___' + info.operationId,
+				operationId: `post___${info.operationId}`,
 			},
 		};
 	}

@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { MetricsTime } from 'bullmq';
-import { Config } from '@/config.js';
 import type * as Bull from 'bullmq';
+import { MetricsTime } from 'bullmq';
+import type { Config } from '@/config.js';
 
 export const QUEUE = {
 	DELIVER: 'deliver',

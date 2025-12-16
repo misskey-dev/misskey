@@ -21,14 +21,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { get as webAuthnRequest } from '@github/webauthn-json/browser-ponyfill';
-
-import { i18n } from '@/i18n.js';
-
-import MkButton from '@/components/MkButton.vue';
-
+import { onMounted, ref } from 'vue';
 import type { AuthenticationPublicKeyCredential } from '@github/webauthn-json/browser-ponyfill';
+import { get as webAuthnRequest } from '@github/webauthn-json/browser-ponyfill';
+import { i18n } from '@/i18n.js';
+import MkButton from '@/components/MkButton.vue';
 
 const props = defineProps<{
 	credentialRequest: CredentialRequestOptions;

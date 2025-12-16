@@ -70,18 +70,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { ref, computed, defineAsyncComponent, onMounted } from 'vue';
+import { computed, defineAsyncComponent, onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import MkInfo from '@/components/MkInfo.vue';
-import MkMediaList from '@/components/MkMediaList.vue';
-import MkKeyValue from '@/components/MkKeyValue.vue';
+import { globalEvents } from '@/events.js';
 import bytes from '@/filters/bytes.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
 import { useRouter } from '@/router.js';
 import { selectDriveFolder } from '@/utility/drive.js';
-import { globalEvents } from '@/events.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import MkInfo from '@/components/MkInfo.vue';
+import MkKeyValue from '@/components/MkKeyValue.vue';
+import MkMediaList from '@/components/MkMediaList.vue';
 
 const router = useRouter();
 

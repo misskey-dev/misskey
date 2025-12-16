@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { misskeyApi } from '@/utility/misskey-api.js';
 import { $i } from '@/i.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 export const ACHIEVEMENT_TYPES = [
 	'notes1',
@@ -487,7 +487,7 @@ export const ACHIEVEMENT_BADGES = {
  */
 } as const;
 
-export const claimedAchievements: typeof ACHIEVEMENT_TYPES[number][] = ($i && $i.achievements) ? $i.achievements.map(x => x.name) : [];
+export const claimedAchievements: typeof ACHIEVEMENT_TYPES[number][] = ($i?.achievements) ? $i.achievements.map(x => x.name) : [];
 
 const claimingQueue = new Set<string>();
 

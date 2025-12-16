@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Entity, PrimaryColumn, Index, Column } from 'typeorm';
-import { id } from './util/id.js';
+import { Column, Entity, Index, PrimaryColumn } from 'typeorm';
 import type { MiUser } from './User.js';
+import { id } from './util/id.js';
 
 @Entity('retention_aggregation')
 export class MiRetentionAggregation {

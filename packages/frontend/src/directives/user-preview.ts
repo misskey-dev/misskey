@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineAsyncComponent, ref } from 'vue';
 import type { Directive } from 'vue';
-import * as Misskey from 'misskey-js';
+import { defineAsyncComponent, ref } from 'vue';
+import type * as Misskey from 'misskey-js';
 import { popup } from '@/os.js';
 import { isTouchUsing } from '@/utility/touch.js';
 

@@ -7,17 +7,18 @@ import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
 import chalk from 'chalk';
 import { IsNull } from 'typeorm';
-import { DI } from '@/di-symbols.js';
-import type { UsersRepository } from '@/models/_.js';
-import type { MiLocalUser, MiRemoteUser } from '@/models/User.js';
 import type { Config } from '@/config.js';
-import type Logger from '@/logger.js';
-import { UtilityService } from '@/core/UtilityService.js';
-import { ILink, WebfingerService } from '@/core/WebfingerService.js';
-import { RemoteLoggerService } from '@/core/RemoteLoggerService.js';
 import { ApDbResolverService } from '@/core/activitypub/ApDbResolverService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
+import { RemoteLoggerService } from '@/core/RemoteLoggerService.js';
+import { UtilityService } from '@/core/UtilityService.js';
+import type { ILink } from '@/core/WebfingerService.js';
+import { WebfingerService } from '@/core/WebfingerService.js';
 import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type Logger from '@/logger.js';
+import type { UsersRepository } from '@/models/_.js';
+import type { MiLocalUser, MiRemoteUser } from '@/models/User.js';
 
 @Injectable()
 export class RemoteUserResolveService {
@@ -54,6 +55,7 @@ export class RemoteUserResolveService {
 			}) as MiLocalUser;
 		}
 
+		// biome-ignore lint/style/noParameterAssign: parameter normalization
 		host = this.utilityService.toPuny(host);
 
 		if (host === this.utilityService.toPuny(this.config.host)) {

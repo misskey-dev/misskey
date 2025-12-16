@@ -4,9 +4,9 @@
  */
 
 import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
-import { id } from './util/id.js';
-import { MiUser } from './User.js';
 import { MiChannel } from './Channel.js';
+import { MiUser } from './User.js';
+import { id } from './util/id.js';
 
 @Entity('channel_muting')
 @Index(['userId', 'channelId'], {})
@@ -20,7 +20,7 @@ export class MiChannelMuting {
 	})
 	public userId: MiUser['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(() => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
@@ -32,7 +32,7 @@ export class MiChannelMuting {
 	})
 	public channelId: MiChannel['id'];
 
-	@ManyToOne(type => MiChannel, {
+	@ManyToOne(() => MiChannel, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()

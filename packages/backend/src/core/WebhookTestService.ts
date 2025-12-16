@@ -4,16 +4,18 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import { MiAbuseUserReport, MiNote, MiUser, MiWebhook } from '@/models/_.js';
-import { bindThis } from '@/decorators.js';
-import { MiSystemWebhook, type SystemWebhookEventType } from '@/models/SystemWebhook.js';
-import { type AbuseReportPayload, SystemWebhookPayload, SystemWebhookService } from '@/core/SystemWebhookService.js';
-import { type Packed } from '@/misc/json-schema.js';
-import { type WebhookEventTypes } from '@/models/Webhook.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
-import { type UserWebhookPayload, UserWebhookService } from '@/core/UserWebhookService.js';
 import { QueueService } from '@/core/QueueService.js';
-import { ModeratorInactivityRemainingTime } from '@/queue/processors/CheckModeratorsActivityProcessorService.js';
+import type { AbuseReportPayload, SystemWebhookPayload } from '@/core/SystemWebhookService.js';
+import { SystemWebhookService } from '@/core/SystemWebhookService.js';
+import type { UserWebhookPayload } from '@/core/UserWebhookService.js';
+import { UserWebhookService } from '@/core/UserWebhookService.js';
+import { bindThis } from '@/decorators.js';
+import type { Packed } from '@/misc/json-schema.js';
+import type { MiAbuseUserReport, MiNote, MiUser, MiWebhook } from '@/models/_.js';
+import type { MiSystemWebhook, SystemWebhookEventType } from '@/models/SystemWebhook.js';
+import type { WebhookEventTypes } from '@/models/Webhook.js';
+import type { ModeratorInactivityRemainingTime } from '@/queue/processors/CheckModeratorsActivityProcessorService.js';
 
 const oneDayMillis = 24 * 60 * 60 * 1000;
 

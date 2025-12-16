@@ -4,9 +4,9 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import Logger from '@/logger.js';
-import { bindThis } from '@/decorators.js';
 import type { KEYWORD } from 'color-convert/conversions.js';
+import { bindThis } from '@/decorators.js';
+import Logger from '@/logger.js';
 
 @Injectable()
 export class LoggerService {

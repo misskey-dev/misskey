@@ -19,7 +19,7 @@ export function nyaize(text: string): string {
 		.replace(enRegex2, x => x === 'ING' ? 'YAN' : 'yan')
 		.replace(enRegex3, x => x === 'ONE' ? 'NYAN' : 'nyan')
 		// ko-KR
-		.replace(koRegex1, match => !isNaN(match.charCodeAt(0)) ? String.fromCharCode(
+		.replace(koRegex1, match => !Number.isNaN(match.charCodeAt(0)) ? String.fromCharCode(
 			match.charCodeAt(0) + '냐'.charCodeAt(0) - '나'.charCodeAt(0),
 		) : match)
 		.replace(koRegex2, '다냥')

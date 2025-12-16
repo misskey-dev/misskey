@@ -35,6 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
+
 const props = defineProps<{
 	activity: {
 		total: number;

@@ -4,14 +4,15 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Brackets, SelectQueryBuilder } from 'typeorm';
-import { DI } from '@/di-symbols.js';
-import { type FollowingsRepository, MiUser, type MutingsRepository, type UserProfilesRepository, type UsersRepository } from '@/models/_.js';
-import { bindThis } from '@/decorators.js';
-import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
+import type { SelectQueryBuilder } from 'typeorm';
+import { Brackets, } from 'typeorm';
 import type { Config } from '@/config.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { Packed } from '@/misc/json-schema.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type { Packed } from '@/misc/json-schema.js';
+import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
+import type { FollowingsRepository, MiUser, MutingsRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 
 function defaultActiveThreshold() {
 	return new Date(Date.now() - 1000 * 60 * 60 * 24 * 30);
@@ -194,7 +195,7 @@ export class UserSearchService {
 		const userQuery = this.usersRepository.createQueryBuilder('user');
 
 		if (params.username) {
-			userQuery.andWhere('user.usernameLower LIKE :username', { username: sqlLikeEscape(params.username.toLowerCase()) + '%' });
+			userQuery.andWhere('user.usernameLower LIKE :username', { username: `${sqlLikeEscape(params.username.toLowerCase())}%` });
 		}
 
 		if (params.host) {
@@ -202,7 +203,7 @@ export class UserSearchService {
 				userQuery.andWhere('user.host IS NULL');
 			} else {
 				userQuery.andWhere('user.host LIKE :host', {
-					host: sqlLikeEscape(params.host.toLowerCase()) + '%',
+					host: `${sqlLikeEscape(params.host.toLowerCase())}%`,
 				});
 			}
 		}
@@ -230,12 +231,12 @@ export class UserSearchService {
 
 		const nameQuery = this.usersRepository.createQueryBuilder('user')
 			.where(new Brackets(qb => {
-				qb.where('user.name ILIKE :query', { query: '%' + sqlLikeEscape(query) + '%' });
+				qb.where('user.name ILIKE :query', { query: `%${sqlLikeEscape(query)}%` });
 
 				if (isUsername) {
-					qb.orWhere('user.usernameLower LIKE :username', { username: sqlLikeEscape(query.replace('@', '').toLowerCase()) + '%' });
+					qb.orWhere('user.usernameLower LIKE :username', { username: `${sqlLikeEscape(query.replace('@', '').toLowerCase())}%` });
 				} else if (this.userEntityService.validateLocalUsername(query)) { // Also search username if it qualifies as username
-					qb.orWhere('user.usernameLower LIKE :username', { username: '%' + sqlLikeEscape(query.toLowerCase()) + '%' });
+					qb.orWhere('user.usernameLower LIKE :username', { username: `%${sqlLikeEscape(query.toLowerCase())}%` });
 				}
 			}))
 			.andWhere(new Brackets(qb => {
@@ -265,7 +266,7 @@ export class UserSearchService {
 		if (users.length < (options.limit ?? 30)) {
 			const profQuery = this.userProfilesRepository.createQueryBuilder('prof')
 				.select('prof.userId')
-				.where('prof.description ILIKE :query', { query: '%' + sqlLikeEscape(query) + '%' });
+				.where('prof.description ILIKE :query', { query: `%${sqlLikeEscape(query)}%` });
 
 			if (mutingQuery) {
 				profQuery.andWhere(`prof.userId NOT IN (${mutingQuery.getQuery()})`);

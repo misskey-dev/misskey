@@ -4,12 +4,12 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { DI } from '@/di-symbols.js';
-import type { MutingsRepository } from '@/models/_.js';
-import type Logger from '@/logger.js';
-import { bindThis } from '@/decorators.js';
-import { UserMutingService } from '@/core/UserMutingService.js';
 import { ChannelMutingService } from '@/core/ChannelMutingService.js';
+import { UserMutingService } from '@/core/UserMutingService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type Logger from '@/logger.js';
+import type { MutingsRepository } from '@/models/_.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 
 @Injectable()

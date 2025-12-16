@@ -4,11 +4,11 @@
  */
 
 import { Injectable } from '@nestjs/common';
-import type Logger from '@/logger.js';
+import type * as Bull from 'bullmq';
 import { DriveService } from '@/core/DriveService.js';
 import { bindThis } from '@/decorators.js';
+import type Logger from '@/logger.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
-import type * as Bull from 'bullmq';
 import type { ObjectStorageFileJobData } from '../types.js';
 
 @Injectable()

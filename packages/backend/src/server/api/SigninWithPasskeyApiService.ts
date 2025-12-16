@@ -3,28 +3,28 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { randomUUID } from 'crypto';
+import { randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
+import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
+import type { FastifyReply, FastifyRequest } from 'fastify';
 import { IsNull } from 'typeorm';
+import type { Config } from '@/config.js';
+import { IdService } from '@/core/IdService.js';
+import { LoggerService } from '@/core/LoggerService.js';
+import { WebAuthnService } from '@/core/WebAuthnService.js';
+import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
+import type Logger from '@/logger.js';
+import { getIpHash } from '@/misc/get-ip-hash.js';
+import type { IdentifiableError } from '@/misc/identifiable-error.js';
 import type {
 	SigninsRepository,
 	UserProfilesRepository,
 	UsersRepository,
 } from '@/models/_.js';
-import type { Config } from '@/config.js';
-import { getIpHash } from '@/misc/get-ip-hash.js';
 import type { MiLocalUser, MiUser } from '@/models/User.js';
-import { IdService } from '@/core/IdService.js';
-import { bindThis } from '@/decorators.js';
-import { WebAuthnService } from '@/core/WebAuthnService.js';
-import Logger from '@/logger.js';
-import { LoggerService } from '@/core/LoggerService.js';
-import type { IdentifiableError } from '@/misc/identifiable-error.js';
 import { RateLimiterService } from './RateLimiterService.js';
 import { SigninService } from './SigninService.js';
-import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
-import type { FastifyReply, FastifyRequest } from 'fastify';
 
 @Injectable()
 export class SigninWithPasskeyApiService {
@@ -88,7 +88,7 @@ export class SigninWithPasskeyApiService {
 			// Not more than 1 API call per 250ms and not more than 100 attempts per 30min
 			// NOTE: 1 Sign-in require 2 API calls
 			await this.rateLimiterService.limit({ key: 'signin-with-passkey', duration: 60 * 30 * 1000, max: 200, minInterval: 250 }, getIpHash(request.ip));
-		} catch (err) {
+		} catch (_) {
 			reply.code(429);
 			return {
 				error: {

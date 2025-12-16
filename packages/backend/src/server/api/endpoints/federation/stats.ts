@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { IsNull, MoreThan, Not } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { FollowingsRepository, InstancesRepository } from '@/models/_.js';
-import { awaitAll } from '@/misc/prelude/await-all.js';
-import { Endpoint } from '@/server/api/endpoint-base.js';
+import { IsNull, MoreThan, Not } from 'typeorm';
 import { InstanceEntityService } from '@/core/entities/InstanceEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { awaitAll } from '@/misc/prelude/await-all.js';
+import type { FollowingsRepository, InstancesRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
 	tags: ['federation'],
@@ -61,7 +61,7 @@ export const paramDef = {
 } as const;
 
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,

@@ -26,17 +26,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import tinycolor from 'tinycolor2';
-import QRCodeStyling from 'qr-code-styling';
-import { computed, ref, shallowRef, watch, onMounted, onUnmounted, useTemplateRef } from 'vue';
-import { url, host } from '@@/js/config.js';
 import type { Directive } from 'vue';
-import { instance } from '@/instance.js';
+import { computed, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
+import QRCodeStyling from 'qr-code-styling';
+import tinycolor from 'tinycolor2';
+import { host, url } from '@@/js/config.js';
+import { userName, userPage } from '@/filters/user.js';
 import { ensureSignin } from '@/i.js';
-import { userPage, userName } from '@/filters/user.js';
-import misskeysvg from '/client-assets/misskey.svg';
-import { getStaticImageUrl } from '@/utility/media-proxy.js';
 import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
+import { getStaticImageUrl } from '@/utility/media-proxy.js';
+import misskeysvg from '/client-assets/misskey.svg';
 
 const $i = ensureSignin();
 
@@ -47,7 +47,7 @@ const shareData = computed(() => ({
 	text: i18n.ts._qr.shareText,
 	url: userProfileUrl.value,
 }));
-const canShare = computed(() => navigator.canShare && navigator.canShare(shareData.value));
+const canShare = computed(() => navigator.canShare?.(shareData.value));
 
 const qrCodeEl = useTemplateRef('qrCodeEl');
 

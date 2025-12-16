@@ -114,50 +114,50 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { inject, watch, nextTick, onMounted, defineAsyncComponent, provide, shallowRef, ref, computed, useTemplateRef, onUnmounted } from 'vue';
+import type { ShallowRef } from 'vue';
+import { computed, defineAsyncComponent, inject, nextTick, onMounted, onUnmounted, provide, ref, shallowRef, useTemplateRef, watch } from 'vue';
+import insertTextAtCursor from 'insert-text-at-cursor';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
-import insertTextAtCursor from 'insert-text-at-cursor';
 import { toASCII } from 'punycode.js';
 import { host, url } from '@@/js/config.js';
-import MkUploaderItems from './MkUploaderItems.vue';
-import type { ShallowRef } from 'vue';
-import type { PostFormProps } from '@/types/post-form.js';
-import type { MenuItem } from '@/types/menu.js';
-import type { PollEditorModelValue } from '@/components/MkPollEditor.vue';
+import { getAccountMenu, getAccounts } from '@/accounts.js';
 import type { UploaderItem } from '@/composables/use-uploader.js';
-import MkNotePreview from '@/components/MkNotePreview.vue';
-import XPostFormAttaches from '@/components/MkPostFormAttaches.vue';
-import XTextCounter from '@/components/MkPostForm.TextCounter.vue';
-import MkPollEditor from '@/components/MkPollEditor.vue';
-import MkNoteSimple from '@/components/MkNoteSimple.vue';
-import { erase, unique } from '@/utility/array.js';
-import { extractMentions } from '@/utility/extract-mentions.js';
-import { formatTimeString } from '@/utility/format-time-string.js';
-import { Autocomplete } from '@/utility/autocomplete.js';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { chooseDriveFile } from '@/utility/drive.js';
-import { store } from '@/store.js';
-import MkInfo from '@/components/MkInfo.vue';
+import { useUploader } from '@/composables/use-uploader.js';
+import { DI } from '@/di.js';
+import { checkDragDataType, getDragData } from '@/drag-and-drop.js';
+import { globalEvents } from '@/events.js';
+import { ensureSignin, incNotesCount, notesCount } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
-import { ensureSignin, notesCount, incNotesCount } from '@/i.js';
-import { getAccounts, getAccountMenu } from '@/accounts.js';
-import { deepClone } from '@/utility/clone.js';
-import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { miLocalStorage } from '@/local-storage.js';
-import { claimAchievement } from '@/utility/achievements.js';
-import { emojiPicker } from '@/utility/emoji-picker.js';
-import { mfmFunctionPicker } from '@/utility/mfm-function-picker.js';
-import { prefer } from '@/preferences.js';
+import * as os from '@/os.js';
 import { getPluginHandlers } from '@/plugin.js';
-import { DI } from '@/di.js';
-import { globalEvents } from '@/events.js';
-import { checkDragDataType, getDragData } from '@/drag-and-drop.js';
-import { useUploader } from '@/composables/use-uploader.js';
-import { startTour } from '@/utility/tour.js';
+import { prefer } from '@/preferences.js';
+import { store } from '@/store.js';
 import { closeTip } from '@/tips.js';
+import type { MenuItem } from '@/types/menu.js';
+import type { PostFormProps } from '@/types/post-form.js';
+import { claimAchievement } from '@/utility/achievements.js';
+import { erase, unique } from '@/utility/array.js';
+import { Autocomplete } from '@/utility/autocomplete.js';
+import { deepClone } from '@/utility/clone.js';
+import { chooseDriveFile } from '@/utility/drive.js';
+import { emojiPicker } from '@/utility/emoji-picker.js';
+import { extractMentions } from '@/utility/extract-mentions.js';
+import { formatTimeString } from '@/utility/format-time-string.js';
+import { mfmFunctionPicker } from '@/utility/mfm-function-picker.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { startTour } from '@/utility/tour.js';
+import MkInfo from '@/components/MkInfo.vue';
+import MkNotePreview from '@/components/MkNotePreview.vue';
+import MkNoteSimple from '@/components/MkNoteSimple.vue';
+import type { PollEditorModelValue } from '@/components/MkPollEditor.vue';
+import MkPollEditor from '@/components/MkPollEditor.vue';
+import XTextCounter from '@/components/MkPostForm.TextCounter.vue';
+import XPostFormAttaches from '@/components/MkPostFormAttaches.vue';
+import MkRippleEffect from '@/components/MkRippleEffect.vue';
+import MkUploaderItems from './MkUploaderItems.vue';
 
 const $i = ensureSignin();
 
@@ -354,7 +354,7 @@ if (props.mention) {
 }
 
 if (replyTargetNote.value && (replyTargetNote.value.user.username !== $i.username || (replyTargetNote.value.user.host != null && replyTargetNote.value.user.host !== host))) {
-	text.value = `@${replyTargetNote.value.user.username}${replyTargetNote.value.user.host != null ? '@' + toASCII(replyTargetNote.value.user.host) : ''} `;
+	text.value = `@${replyTargetNote.value.user.username}${replyTargetNote.value.user.host != null ? `@${toASCII(replyTargetNote.value.user.host)}` : ''} `;
 }
 
 if (replyTargetNote.value && replyTargetNote.value.text != null) {
@@ -662,7 +662,7 @@ function showOtherSettings() {
 		},
 	}, ...($i.policies.scheduledNoteLimit > 0 ? [{
 		icon: 'ti ti-calendar-time',
-		text: i18n.ts.schedulePost + '...',
+		text: `${i18n.ts.schedulePost}...`,
 		action: () => {
 			schedule();
 		},
@@ -766,7 +766,7 @@ async function onPaste(ev: ClipboardEvent) {
 
 	const paste = ev.clipboardData.getData('text');
 
-	if (!renoteTargetNote.value && !quoteId.value && paste.startsWith(url + '/notes/')) {
+	if (!renoteTargetNote.value && !quoteId.value && paste.startsWith(`${url}/notes/`)) {
 		ev.preventDefault();
 
 		os.confirm({
@@ -1008,7 +1008,7 @@ async function post(ev?: MouseEvent) {
 	};
 
 	if (withHashtags.value && hashtags.value && hashtags.value.trim() !== '') {
-		const hashtags_ = hashtags.value.trim().split(' ').map(x => x.startsWith('#') ? x : '#' + x).join(' ');
+		const hashtags_ = hashtags.value.trim().split(' ').map(x => x.startsWith('#') ? x : `#${x}`).join(' ');
 		if (!postData.text) {
 			postData.text = hashtags_;
 		} else {
@@ -1016,7 +1016,7 @@ async function post(ev?: MouseEvent) {
 			if (postTextLines[postTextLines.length - 1].trim() === '') {
 				postTextLines[postTextLines.length - 1] += hashtags_;
 			} else {
-				postTextLines[postTextLines.length - 1] += ' ' + hashtags_;
+				postTextLines[postTextLines.length - 1] += ` ${hashtags_}`;
 			}
 			postData.text = postTextLines.join('\n');
 		}
@@ -1034,7 +1034,7 @@ async function post(ev?: MouseEvent) {
 		}
 	}
 
-	let token: string | undefined = undefined;
+	let token: string | undefined;
 
 	if (postAccount.value) {
 		const storedAccounts = await getAccounts();
@@ -1121,7 +1121,7 @@ async function post(ev?: MouseEvent) {
 		posting.value = false;
 		os.alert({
 			type: 'error',
-			text: err.message + '\n' + (err as any).id,
+			text: `${err.message}\n${(err as any).id}`,
 		});
 	});
 }
@@ -1140,7 +1140,7 @@ function cancel() {
 
 function insertMention() {
 	os.selectUser({ localOnly: localOnly.value, includeSelf: true }).then(user => {
-		insertTextAtCursor(textareaEl.value, '@' + Misskey.acct.toString(user) + ' ');
+		insertTextAtCursor(textareaEl.value, `@${Misskey.acct.toString(user)} `);
 	});
 }
 

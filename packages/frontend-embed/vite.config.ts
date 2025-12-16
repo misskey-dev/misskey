@@ -1,14 +1,14 @@
-import path from 'path';
+import { promises as fsp } from 'node:fs';
+import path from 'node:path';
 import pluginVue from '@vitejs/plugin-vue';
-import { defineConfig, type UserConfig } from 'vite';
-import * as yaml from 'js-yaml';
-import { promises as fsp } from 'fs';
-
 import locales from 'i18n';
+import * as yaml from 'js-yaml';
+import type { UserConfig } from 'vite';
+import { defineConfig, } from 'vite';
 import meta from '../../package.json';
+import { pluginRemoveUnrefI18n } from '../frontend-builder/rollup-plugin-remove-unref-i18n';
 import packageInfo from './package.json' with { type: 'json' };
 import pluginJson5 from './vite.json5.js';
-import { pluginRemoveUnrefI18n } from '../frontend-builder/rollup-plugin-remove-unref-i18n';
 
 const url = process.env.NODE_ENV === 'development' ? yaml.load(await fsp.readFile('../../.config/default.yml', 'utf-8')).url : null;
 const host = url ? (new URL(url)).hostname : undefined;
@@ -36,8 +36,8 @@ const externalPackages = [
 const hash = (str: string, seed = 0): number => {
 	let h1 = 0xdeadbeef ^ seed,
 		h2 = 0x41c6ce57 ^ seed;
-	for (let i = 0, ch; i < str.length; i++) {
-		ch = str.charCodeAt(i);
+	for (let i = 0; i < str.length; i++) {
+		const ch = str.charCodeAt(i);
 		h1 = Math.imul(h1 ^ ch, 2654435761);
 		h2 = Math.imul(h2 ^ ch, 1597334677);
 	}
@@ -50,7 +50,8 @@ const hash = (str: string, seed = 0): number => {
 
 const BASE62_DIGITS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-function toBase62(n: number): string {
+function toBase62(value: number): string {
+	let n = value;
 	if (n === 0) {
 		return '0';
 	}
@@ -95,19 +96,19 @@ export function getConfig(): UserConfig {
 		resolve: {
 			extensions,
 			alias: {
-				'@/': __dirname + '/src/',
-				'@@/': __dirname + '/../frontend-shared/',
-				'/client-assets/': __dirname + '/assets/',
-				'/static-assets/': __dirname + '/../backend/assets/'
+				'@/': `${__dirname}/src/`,
+				'@@/': `${__dirname}/../frontend-shared/`,
+				'/client-assets/': `${__dirname}/assets/`,
+				'/static-assets/': `${__dirname}/../backend/assets/`
 			},
 		},
 
 		css: {
 			modules: {
 				generateScopedName(name, filename, _css): string {
-					const id = (path.relative(__dirname, filename.split('?')[0]) + '-' + name).replace(/[\\\/\.\?&=]/g, '-').replace(/(src-|vue-)/g, '');
+					const id = (`${path.relative(__dirname, filename.split('?')[0])}-${name}`).replace(/[\\/.?&=]/g, '-').replace(/(src-|vue-)/g, '');
 					if (process.env.NODE_ENV === 'production') {
-						return 'x' + toBase62(hash(id)).substring(0, 4);
+						return `x${toBase62(hash(id)).substring(0, 4)}`;
 					} else {
 						return id;
 					}
@@ -165,7 +166,7 @@ export function getConfig(): UserConfig {
 				},
 			},
 			cssCodeSplit: true,
-			outDir: __dirname + '/../../built/_frontend_embed_vite_',
+			outDir: `${__dirname}/../../built/_frontend_embed_vite_`,
 			assetsDir: '.',
 			emptyOutDir: false,
 			sourcemap: process.env.NODE_ENV === 'development',

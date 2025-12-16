@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Entity, Index, JoinColumn, Column, ManyToOne, PrimaryColumn } from 'typeorm';
-import { id } from './util/id.js';
-import { MiNote } from './Note.js';
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { MiClip } from './Clip.js';
+import { MiNote } from './Note.js';
+import { id } from './util/id.js';
 
 @Entity('clip_note')
 @Index(['noteId', 'clipId'], { unique: true })
@@ -21,7 +21,7 @@ export class MiClipNote {
 	})
 	public noteId: MiNote['id'];
 
-	@ManyToOne(type => MiNote, {
+	@ManyToOne(() => MiNote, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
@@ -34,7 +34,7 @@ export class MiClipNote {
 	})
 	public clipId: MiClip['id'];
 
-	@ManyToOne(type => MiClip, {
+	@ManyToOne(() => MiClip, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()

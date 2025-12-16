@@ -172,25 +172,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch, markRaw } from 'vue';
+import { computed, markRaw, ref, watch } from 'vue';
+import { userPage } from '@/filters/user.js';
+import { ensureSignin } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
+import * as os from '@/os.js';
+import { definePage } from '@/page.js';
+import { prefer } from '@/preferences.js';
+import { Paginator } from '@/utility/paginator.js';
+import { suggestReload } from '@/utility/reload-suggest.js';
+import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkInfo from '@/components/MkInfo.vue';
+import MkPagination from '@/components/MkPagination.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import XEmojiMute from './mute-block.emoji-mute.vue';
 import XInstanceMute from './mute-block.instance-mute.vue';
 import XWordMute from './mute-block.word-mute.vue';
-import MkPagination from '@/components/MkPagination.vue';
-import { userPage } from '@/filters/user.js';
-import { i18n } from '@/i18n.js';
-import { definePage } from '@/page.js';
-import MkUserCardMini from '@/components/MkUserCardMini.vue';
-import * as os from '@/os.js';
-import { instance } from '@/instance.js';
-import { ensureSignin } from '@/i.js';
-import MkInfo from '@/components/MkInfo.vue';
-import MkFolder from '@/components/MkFolder.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
-import { prefer } from '@/preferences.js';
-import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
-import { Paginator } from '@/utility/paginator.js';
-import { suggestReload } from '@/utility/reload-suggest.js';
 
 const $i = ensureSignin();
 

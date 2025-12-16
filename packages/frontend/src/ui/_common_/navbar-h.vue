@@ -48,16 +48,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, onMounted, ref } from 'vue';
-import { openInstanceMenu } from './common.js';
-import * as os from '@/os.js';
-import { navbarItemDef } from '@/navbar.js';
-import MkButton from '@/components/MkButton.vue';
-import { instance } from '@/instance.js';
-import { i18n } from '@/i18n.js';
-import { prefer } from '@/preferences.js';
 import { getAccountMenu } from '@/accounts.js';
 import { $i } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
+import { navbarItemDef } from '@/navbar.js';
+import * as os from '@/os.js';
+import { prefer } from '@/preferences.js';
 import { getHTMLElementOrNull } from '@/utility/get-dom-node-or-null.js';
+import MkButton from '@/components/MkButton.vue';
+import { openInstanceMenu } from './common.js';
 
 const WINDOW_THRESHOLD = 1400;
 

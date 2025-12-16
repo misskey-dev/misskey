@@ -3,21 +3,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as WebSocket from 'ws';
-import type { MiUser } from '@/models/User.js';
-import type { MiAccessToken } from '@/models/AccessToken.js';
-import type { Packed } from '@/misc/json-schema.js';
-import type { NotificationService } from '@/core/NotificationService.js';
-import { bindThis } from '@/decorators.js';
+import type { EventEmitter } from 'node:events';
+import type * as WebSocket from 'ws';
 import { CacheService } from '@/core/CacheService.js';
-import { MiFollowing, MiUserProfile } from '@/models/_.js';
-import type { GlobalEvents, StreamEventEmitter } from '@/core/GlobalEventService.js';
 import { ChannelFollowingService } from '@/core/ChannelFollowingService.js';
 import { ChannelMutingService } from '@/core/ChannelMutingService.js';
-import { isJsonObject } from '@/misc/json-value.js';
+import type { GlobalEvents, StreamEventEmitter } from '@/core/GlobalEventService.js';
+import { NotificationService } from '@/core/NotificationService.js';
+import { bindThis } from '@/decorators.js';
 import type { JsonObject, JsonValue } from '@/misc/json-value.js';
-import type { ChannelsService } from './ChannelsService.js';
-import type { EventEmitter } from 'events';
+import { isJsonObject } from '@/misc/json-value.js';
+import type { MiFollowing, MiUserProfile } from '@/models/_.js';
+import type { MiAccessToken } from '@/models/AccessToken.js';
+import type { MiUser } from '@/models/User.js';
+import { ChannelsService } from './ChannelsService.js';
 import type Channel from './channel.js';
 
 const MAX_CHANNELS_PER_CONNECTION = 32;
@@ -25,7 +24,6 @@ const MAX_CHANNELS_PER_CONNECTION = 32;
 /**
  * Main stream connection
  */
-// eslint-disable-next-line import/no-default-export
 export default class Connection {
 	public user?: MiUser;
 	public token?: MiAccessToken;
@@ -118,7 +116,7 @@ export default class Connection {
 
 		try {
 			obj = JSON.parse(data.toString());
-		} catch (e) {
+		} catch (_) {
 			return;
 		}
 

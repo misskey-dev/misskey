@@ -3,53 +3,41 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { OnApplicationShutdown } from '@nestjs/common';
 import { Inject, Injectable } from '@nestjs/common';
-import * as Redis from 'ioredis';
-import { ModuleRef } from '@nestjs/core';
+import type * as Redis from 'ioredis';
 import { reversiUpdateKeys } from 'misskey-js';
 import * as Reversi from 'misskey-reversi';
-import { IsNull, LessThan, MoreThan } from 'typeorm';
+import { LessThan, MoreThan } from 'typeorm';
+import { ReversiGameEntityService } from '@/core/entities/ReversiGameEntityService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { IdService } from '@/core/IdService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
 import type {
 	MiReversiGame,
 	ReversiGamesRepository,
 } from '@/models/_.js';
 import type { MiUser } from '@/models/User.js';
-import { DI } from '@/di-symbols.js';
-import { bindThis } from '@/decorators.js';
-import { CacheService } from '@/core/CacheService.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { IdService } from '@/core/IdService.js';
-import { NotificationService } from '@/core/NotificationService.js';
-import { Serialized } from '@/types.js';
-import { ReversiGameEntityService } from './entities/ReversiGameEntityService.js';
-import type { OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
+import type { Serialized } from '@/types.js';
 
 const INVITATION_TIMEOUT_MS = 1000 * 20; // 20sec
 
 @Injectable()
-export class ReversiService implements OnApplicationShutdown, OnModuleInit {
-	private notificationService: NotificationService;
-
+export class ReversiService implements OnApplicationShutdown {
 	constructor(
-		private moduleRef: ModuleRef,
-
 		@Inject(DI.redis)
 		private redisClient: Redis.Redis,
 
 		@Inject(DI.reversiGamesRepository)
 		private reversiGamesRepository: ReversiGamesRepository,
 
-		private cacheService: CacheService,
 		private userEntityService: UserEntityService,
 		private globalEventService: GlobalEventService,
 		private reversiGameEntityService: ReversiGameEntityService,
 		private idService: IdService,
 	) {
-	}
-
-	async onModuleInit() {
-		this.notificationService = this.moduleRef.get(NotificationService.name);
 	}
 
 	@bindThis
@@ -191,8 +179,8 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 			await this.redisClient.zrem('reversi:matchAny',
 				me.id,
 				matchedUserId,
-				me.id + ':noIrregularRules',
-				matchedUserId + ':noIrregularRules');
+				`${me.id}:noIrregularRules`,
+				`${matchedUserId}:noIrregularRules`);
 
 			const game = await this.matched(matchedUserId, me.id, {
 				noIrregularRules: options.noIrregularRules || option === 'noIrregularRules',
@@ -202,7 +190,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		} else {
 			const redisPipeline = this.redisClient.pipeline();
 			if (options.noIrregularRules) {
-				redisPipeline.zadd('reversi:matchAny', Date.now(), me.id + ':noIrregularRules');
+				redisPipeline.zadd('reversi:matchAny', Date.now(), `${me.id}:noIrregularRules`);
 			} else {
 				redisPipeline.zadd('reversi:matchAny', Date.now(), me.id);
 			}
@@ -219,7 +207,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 
 	@bindThis
 	public async matchAnyUserCancel(user: MiUser) {
-		await this.redisClient.zrem('reversi:matchAny', user.id, user.id + ':noIrregularRules');
+		await this.redisClient.zrem('reversi:matchAny', user.id, `${user.id}:noIrregularRules`);
 	}
 
 	@bindThis
@@ -341,7 +329,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 
 		//#region 盤面に最初から石がないなどして始まった瞬間に勝敗が決定する場合があるのでその処理
 		if (engine.isEnded) {
-			let winnerId;
+			let winnerId: string | null;
 			if (engine.winner === true) {
 				winnerId = bw === 1 ? updatedGame.user1Id : updatedGame.user2Id;
 			} else if (engine.winner === false) {
@@ -455,10 +443,9 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		if (game.isEnded) return;
 		if ((game.user1Id !== user.id) && (game.user2Id !== user.id)) return;
 
-		const myColor =
-			((game.user1Id === user.id) && game.black === 1) || ((game.user2Id === user.id) && game.black === 2)
-				? true
-				: false;
+		const myColor = game.user1Id === user.id ? game.black === 1
+			: game.user2Id === user.id ? game.black === 2
+			: false;
 
 		const engine = Reversi.Serializer.restoreGame({
 			map: game.map,
@@ -501,7 +488,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		});
 
 		if (engine.isEnded) {
-			let winnerId;
+			let winnerId: string | null;
 			if (engine.winner === true) {
 				winnerId = game.black === 1 ? game.user1Id : game.user2Id;
 			} else if (engine.winner === false) {

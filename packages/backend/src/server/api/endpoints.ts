@@ -3,9 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { permissions } from 'misskey-js';
+import type { permissions } from 'misskey-js';
 import type { KeyOf, Schema } from '@/misc/json-schema.js';
-
 import * as endpointsObject from './endpoint-list.js';
 
 interface IEndpointMetaBase {
@@ -142,5 +141,4 @@ const endpoints: IEndpoint[] = Object.entries(endpointsObject).map(([name, ep]) 
 	};
 });
 
-// eslint-disable-next-line import/no-default-export
 export default endpoints;

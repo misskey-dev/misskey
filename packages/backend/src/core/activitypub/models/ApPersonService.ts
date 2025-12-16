@@ -3,51 +3,51 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { OnModuleInit } from '@nestjs/common';
 import { Inject, Injectable } from '@nestjs/common';
-import promiseLimit from 'promise-limit';
-import { DataSource } from 'typeorm';
 import { ModuleRef } from '@nestjs/core';
-import { DI } from '@/di-symbols.js';
-import type { FollowingsRepository, InstancesRepository, MiMeta, UserProfilesRepository, UserPublickeysRepository, UsersRepository } from '@/models/_.js';
+import promiseLimit from 'promise-limit';
+import type { DataSource } from 'typeorm';
 import type { Config } from '@/config.js';
+import { AccountMoveService } from '@/core/AccountMoveService.js';
+import { CacheService } from '@/core/CacheService.js';
+import InstanceChart from '@/core/chart/charts/instance.js';
+import UsersChart from '@/core/chart/charts/users.js';
+import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
+import { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { HashtagService } from '@/core/HashtagService.js';
+import { IdService } from '@/core/IdService.js';
+import { MfmService } from '@/core/MfmService.js';
+import { RoleService } from '@/core/RoleService.js';
+import { UtilityService } from '@/core/UtilityService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type Logger from '@/logger.js';
+import { checkHttps } from '@/misc/check-https.js';
+import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
+import { normalizeForSearch } from '@/misc/normalize-for-search.js';
+import { toArray } from '@/misc/prelude/array.js';
+import { StatusError } from '@/misc/status-error.js';
+import { truncate } from '@/misc/truncate.js';
+import type { FollowingsRepository, InstancesRepository, MiMeta, UserProfilesRepository, UserPublickeysRepository, UsersRepository } from '@/models/_.js';
+import type { MiNote } from '@/models/Note.js';
 import type { MiLocalUser, MiRemoteUser } from '@/models/User.js';
 import { MiUser } from '@/models/User.js';
-import { truncate } from '@/misc/truncate.js';
-import type { CacheService } from '@/core/CacheService.js';
-import { normalizeForSearch } from '@/misc/normalize-for-search.js';
-import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
-import type Logger from '@/logger.js';
-import type { MiNote } from '@/models/Note.js';
-import type { IdService } from '@/core/IdService.js';
-import type { MfmService } from '@/core/MfmService.js';
-import { toArray } from '@/misc/prelude/array.js';
-import type { GlobalEventService } from '@/core/GlobalEventService.js';
-import type { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
-import type { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
+import { MiUserNotePining } from '@/models/UserNotePining.js';
 import { MiUserProfile } from '@/models/UserProfile.js';
 import { MiUserPublickey } from '@/models/UserPublickey.js';
-import type UsersChart from '@/core/chart/charts/users.js';
-import type InstanceChart from '@/core/chart/charts/instance.js';
-import type { HashtagService } from '@/core/HashtagService.js';
-import { MiUserNotePining } from '@/models/UserNotePining.js';
-import { StatusError } from '@/misc/status-error.js';
-import type { UtilityService } from '@/core/UtilityService.js';
-import type { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { bindThis } from '@/decorators.js';
-import { RoleService } from '@/core/RoleService.js';
-import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
-import type { AccountMoveService } from '@/core/AccountMoveService.js';
-import { checkHttps } from '@/misc/check-https.js';
-import { getApId, getApType, getOneApHrefNullable, isActor, isCollection, isCollectionOrOrderedCollection, isPropertyValue } from '../type.js';
-import { extractApHashtags } from './tag.js';
-import type { OnModuleInit } from '@nestjs/common';
-import type { ApNoteService } from './ApNoteService.js';
-import type { ApMfmService } from '../ApMfmService.js';
-import type { ApResolverService, Resolver } from '../ApResolverService.js';
-import type { ApLoggerService } from '../ApLoggerService.js';
-
-import type { ApImageService } from './ApImageService.js';
+import { ApLoggerService } from '../ApLoggerService.js';
+import { ApMfmService } from '../ApMfmService.js';
+import type { Resolver } from '../ApResolverService.js';
+import { ApResolverService } from '../ApResolverService.js';
 import type { IActor, ICollection, IObject, IOrderedCollection } from '../type.js';
+import { getApId, getApType, getOneApHrefNullable, isActor, isCollection, isCollectionOrOrderedCollection, isPropertyValue } from '../type.js';
+import { ApImageService } from './ApImageService.js';
+import { ApNoteService } from './ApNoteService.js';
+import { extractApHashtags } from './tag.js';
 
 const nameLength = 128;
 const summaryLength = 2048;
@@ -259,7 +259,8 @@ export class ApPersonService implements OnModuleInit {
 			// icon and image may be arrays
 			// see https://www.w3.org/TR/activitystreams-vocabulary/#dfn-icon
 			if (Array.isArray(img)) {
-				img = img.find(item => item && item.url) ?? null;
+				// biome-ignore lint/style/noParameterAssign: parameter normalization
+				img = img.find(item => item?.url) ?? null;
 			}
 
 			// if we have an explicitly missing image, return an
@@ -309,11 +310,11 @@ export class ApPersonService implements OnModuleInit {
 			throw new StatusError('cannot resolve local user', 400, 'cannot resolve local user');
 		}
 
-		// eslint-disable-next-line no-param-reassign
+		// biome-ignore lint/style/noParameterAssign: parameter fallback
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(uri);
-		if (object.id == null) throw new Error('invalid object.id: ' + object.id);
+		if (object.id == null) throw new Error(`invalid object.id: ${object.id}`);
 
 		const person = this.validateActor(object, uri);
 
@@ -349,7 +350,7 @@ export class ApPersonService implements OnModuleInit {
 		}
 
 		if (url && !checkHttps(url)) {
-			throw new Error('unexpected schema of person url: ' + url);
+			throw new Error(`unexpected schema of person url: ${url}`);
 		}
 
 		// Create user
@@ -488,7 +489,7 @@ export class ApPersonService implements OnModuleInit {
 	 * @param movePreventUris ここに指定されたURIがPersonのmovedToに指定されていたり10回より多く回っている場合これ以上アカウント移行を行わない（無限ループ防止）
 	 */
 	@bindThis
-	public async updatePerson(uri: string, resolver?: Resolver | null, hint?: IObject, movePreventUris: string[] = []): Promise<string | void> {
+	public async updatePerson(uri: string, resolver?: Resolver | null, hint?: IObject, movePreventUris: string[] = []): Promise<string | undefined> {
 		if (typeof uri !== 'string') throw new Error('uri is not string');
 
 		// URIがこのサーバーを指しているならスキップ
@@ -499,7 +500,7 @@ export class ApPersonService implements OnModuleInit {
 		if (exist === null) return;
 		//#endregion
 
-		// eslint-disable-next-line no-param-reassign
+		// biome-ignore lint/style/noParameterAssign: parameter fallback
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 
 		const object = hint ?? await resolver.resolve(uri);
@@ -547,7 +548,7 @@ export class ApPersonService implements OnModuleInit {
 
 		if (url != null) {
 			if (!checkHttps(url)) {
-				throw new Error('unexpected schema of person url: ' + url);
+				throw new Error(`unexpected schema of person url: ${url}`);
 			}
 
 			if (this.utilityService.punyHost(url) !== this.utilityService.punyHost(person.id)) {
@@ -657,6 +658,7 @@ export class ApPersonService implements OnModuleInit {
 				})
 				.catch(e => {
 					this.logger.info(`Processing Move Failed @${updated.username}@${updated.host} (${uri})`, { stack: e });
+					return undefined;
 				});
 		}
 
@@ -677,7 +679,7 @@ export class ApPersonService implements OnModuleInit {
 		//#endregion
 
 		// リモートサーバーからフェッチしてきて登録
-		// eslint-disable-next-line no-param-reassign
+		// biome-ignore lint/style/noParameterAssign: parameter fallback
 		if (resolver == null) resolver = this.apResolverService.createResolver();
 		return await this.createPerson(uri, resolver);
 	}

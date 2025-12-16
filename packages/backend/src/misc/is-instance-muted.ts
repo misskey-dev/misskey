@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { MiNote } from '@/models/Note.js';
+import type { MiNote } from '@/models/Note.js';
 import type { Packed } from './json-schema.js';
 
 export function isInstanceMuted(note: Packed<'Note'> | MiNote, mutedInstances: Set<string>): boolean {

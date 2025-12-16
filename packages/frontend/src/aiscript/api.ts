@@ -5,13 +5,13 @@
 
 import { errors, utils, values } from '@syuilo/aiscript';
 import * as Misskey from 'misskey-js';
-import { url, lang } from '@@/js/config.js';
-import { assertStringAndIsIn } from './common.js';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
+import { lang, url } from '@@/js/config.js';
+import { customEmojis } from '@/custom-emojis.js';
 import { $i } from '@/i.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { customEmojis } from '@/custom-emojis.js';
+import * as os from '@/os.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { assertStringAndIsIn } from './common.js';
 
 const DIALOG_TYPES = [
 	'error',
@@ -41,8 +41,8 @@ export function createAiScriptEnv(opts: { storageKey: string, token?: string }) 
 		LOCALE: values.STR(lang),
 		SERVER_URL: values.STR(url),
 		'Mk:dialog': values.FN_NATIVE(async ([_title, _text, _type]) => {
-			let title: string | undefined = undefined;
-			let text: string | undefined = undefined;
+			let title: string | undefined;
+			let text: string | undefined;
 			let type: typeof DIALOG_TYPES[number] = 'info';
 
 			if (_title != null) {
@@ -78,8 +78,8 @@ export function createAiScriptEnv(opts: { storageKey: string, token?: string }) 
 			return values.NULL;
 		}),
 		'Mk:confirm': values.FN_NATIVE(async ([_title, _text, _type]) => {
-			let title: string | undefined = undefined;
-			let text: string | undefined = undefined;
+			let title: string | undefined;
+			let text: string | undefined;
 			let type: typeof DIALOG_TYPES[number] = 'question';
 
 			if (_title != null) {

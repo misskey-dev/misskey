@@ -5,15 +5,15 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
-import type Logger from '@/logger.js';
-import { bindThis } from '@/decorators.js';
+import { AnnouncementService } from '@/core/AnnouncementService.js';
+import { EmailService } from '@/core/EmailService.js';
 import { MetaService } from '@/core/MetaService.js';
 import { RoleService } from '@/core/RoleService.js';
-import { EmailService } from '@/core/EmailService.js';
-import { MiUser, type UserProfilesRepository } from '@/models/_.js';
-import { DI } from '@/di-symbols.js';
 import { SystemWebhookService } from '@/core/SystemWebhookService.js';
-import { AnnouncementService } from '@/core/AnnouncementService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type Logger from '@/logger.js';
+import type { MiUser, UserProfilesRepository } from '@/models/_.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 
 // モデレーターが不在と判断する日付の閾値
@@ -186,11 +186,9 @@ export class CheckModeratorsActivityProcessorService {
 		const moderators = await this.fetchModerators()
 			.then(it => it.filter(it => it.lastActiveDate != null));
 		const inactiveModerators = moderators
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			.filter(it => it.lastActiveDate!.getTime() < inactivePeriod.getTime());
 
 		// 残りの猶予を示したいので、最終アクティブ日時が一番若いモデレータの日数を基準に猶予を計算する
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const newestLastActiveDate = new Date(Math.max(...moderators.map(it => it.lastActiveDate!.getTime())));
 		const remainingTime = newestLastActiveDate.getTime() - inactivePeriod.getTime();
 		const remainingTimeAsDays = Math.floor(remainingTime / ONE_DAY_MILLI_SEC);
@@ -224,7 +222,7 @@ export class CheckModeratorsActivityProcessorService {
 		const mail = generateModeratorInactivityMail(remainingTime);
 		for (const moderator of moderators) {
 			const profile = moderatorProfiles.get(moderator.id);
-			if (profile && profile.email && profile.emailVerified) {
+			if (profile?.email && profile.emailVerified) {
 				this.emailService.sendEmail(profile.email, mail.subject, mail.html, mail.text);
 			}
 		}
@@ -257,7 +255,7 @@ export class CheckModeratorsActivityProcessorService {
 			});
 
 			const profile = moderatorProfiles.get(moderator.id);
-			if (profile && profile.email && profile.emailVerified) {
+			if (profile?.email && profile.emailVerified) {
 				this.emailService.sendEmail(profile.email, mail.subject, mail.html, mail.text);
 			}
 		}

@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
-import { id } from './util/id.js';
-import { MiUser } from './User.js';
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { MiAnnouncement } from './Announcement.js';
+import { MiUser } from './User.js';
+import { id } from './util/id.js';
 
 @Entity('announcement_read')
 @Index(['userId', 'announcementId'], { unique: true })
@@ -18,7 +18,7 @@ export class MiAnnouncementRead {
 	@Column(id())
 	public userId: MiUser['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(() => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
@@ -28,7 +28,7 @@ export class MiAnnouncementRead {
 	@Column(id())
 	public announcementId: MiAnnouncement['id'];
 
-	@ManyToOne(type => MiAnnouncement, {
+	@ManyToOne(() => MiAnnouncement, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()

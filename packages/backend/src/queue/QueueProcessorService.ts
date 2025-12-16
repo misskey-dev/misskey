@@ -3,55 +3,56 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
+import type { OnApplicationShutdown } from '@nestjs/common';
+import { Inject, Injectable, } from '@nestjs/common';
 import * as Bull from 'bullmq';
 import type { Config } from '@/config.js';
+import { bindThis } from '@/decorators.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
-import { bindThis } from '@/decorators.js';
 import { CheckModeratorsActivityProcessorService } from '@/queue/processors/CheckModeratorsActivityProcessorService.js';
-import { UserWebhookDeliverProcessorService } from './processors/UserWebhookDeliverProcessorService.js';
-import { SystemWebhookDeliverProcessorService } from './processors/SystemWebhookDeliverProcessorService.js';
-import { EndedPollNotificationProcessorService } from './processors/EndedPollNotificationProcessorService.js';
-import { PostScheduledNoteProcessorService } from './processors/PostScheduledNoteProcessorService.js';
-import { DeliverProcessorService } from './processors/DeliverProcessorService.js';
-import { InboxProcessorService } from './processors/InboxProcessorService.js';
+import { baseWorkerOptions, QUEUE } from './const.js';
+import { AggregateRetentionProcessorService } from './processors/AggregateRetentionProcessorService.js';
+import { BakeBufferedReactionsProcessorService } from './processors/BakeBufferedReactionsProcessorService.js';
+import { CheckExpiredMutingsProcessorService } from './processors/CheckExpiredMutingsProcessorService.js';
+import { CleanChartsProcessorService } from './processors/CleanChartsProcessorService.js';
+import { CleanProcessorService } from './processors/CleanProcessorService.js';
+import { CleanRemoteFilesProcessorService } from './processors/CleanRemoteFilesProcessorService.js';
+import { CleanRemoteNotesProcessorService } from './processors/CleanRemoteNotesProcessorService.js';
+import { DeleteAccountProcessorService } from './processors/DeleteAccountProcessorService.js';
 import { DeleteDriveFilesProcessorService } from './processors/DeleteDriveFilesProcessorService.js';
-import { ExportCustomEmojisProcessorService } from './processors/ExportCustomEmojisProcessorService.js';
-import { ExportNotesProcessorService } from './processors/ExportNotesProcessorService.js';
+import { DeleteFileProcessorService } from './processors/DeleteFileProcessorService.js';
+import { DeliverProcessorService } from './processors/DeliverProcessorService.js';
+import { EndedPollNotificationProcessorService } from './processors/EndedPollNotificationProcessorService.js';
+import { ExportAntennasProcessorService } from './processors/ExportAntennasProcessorService.js';
+import { ExportBlockingProcessorService } from './processors/ExportBlockingProcessorService.js';
 import { ExportClipsProcessorService } from './processors/ExportClipsProcessorService.js';
+import { ExportCustomEmojisProcessorService } from './processors/ExportCustomEmojisProcessorService.js';
+import { ExportFavoritesProcessorService } from './processors/ExportFavoritesProcessorService.js';
 import { ExportFollowingProcessorService } from './processors/ExportFollowingProcessorService.js';
 import { ExportMutingProcessorService } from './processors/ExportMutingProcessorService.js';
-import { ExportBlockingProcessorService } from './processors/ExportBlockingProcessorService.js';
+import { ExportNotesProcessorService } from './processors/ExportNotesProcessorService.js';
 import { ExportUserListsProcessorService } from './processors/ExportUserListsProcessorService.js';
-import { ExportAntennasProcessorService } from './processors/ExportAntennasProcessorService.js';
+import { ImportAntennasProcessorService } from './processors/ImportAntennasProcessorService.js';
+import { ImportBlockingProcessorService } from './processors/ImportBlockingProcessorService.js';
+import { ImportCustomEmojisProcessorService } from './processors/ImportCustomEmojisProcessorService.js';
 import { ImportFollowingProcessorService } from './processors/ImportFollowingProcessorService.js';
 import { ImportMutingProcessorService } from './processors/ImportMutingProcessorService.js';
-import { ImportBlockingProcessorService } from './processors/ImportBlockingProcessorService.js';
 import { ImportUserListsProcessorService } from './processors/ImportUserListsProcessorService.js';
-import { ImportCustomEmojisProcessorService } from './processors/ImportCustomEmojisProcessorService.js';
-import { ImportAntennasProcessorService } from './processors/ImportAntennasProcessorService.js';
-import { DeleteAccountProcessorService } from './processors/DeleteAccountProcessorService.js';
-import { ExportFavoritesProcessorService } from './processors/ExportFavoritesProcessorService.js';
-import { CleanRemoteFilesProcessorService } from './processors/CleanRemoteFilesProcessorService.js';
-import { DeleteFileProcessorService } from './processors/DeleteFileProcessorService.js';
+import { InboxProcessorService } from './processors/InboxProcessorService.js';
+import { PostScheduledNoteProcessorService } from './processors/PostScheduledNoteProcessorService.js';
 import { RelationshipProcessorService } from './processors/RelationshipProcessorService.js';
-import { TickChartsProcessorService } from './processors/TickChartsProcessorService.js';
 import { ResyncChartsProcessorService } from './processors/ResyncChartsProcessorService.js';
-import { CleanChartsProcessorService } from './processors/CleanChartsProcessorService.js';
-import { CheckExpiredMutingsProcessorService } from './processors/CheckExpiredMutingsProcessorService.js';
-import { BakeBufferedReactionsProcessorService } from './processors/BakeBufferedReactionsProcessorService.js';
-import { CleanProcessorService } from './processors/CleanProcessorService.js';
-import { AggregateRetentionProcessorService } from './processors/AggregateRetentionProcessorService.js';
-import { CleanRemoteNotesProcessorService } from './processors/CleanRemoteNotesProcessorService.js';
+import { SystemWebhookDeliverProcessorService } from './processors/SystemWebhookDeliverProcessorService.js';
+import { TickChartsProcessorService } from './processors/TickChartsProcessorService.js';
+import { UserWebhookDeliverProcessorService } from './processors/UserWebhookDeliverProcessorService.js';
 import { QueueLoggerService } from './QueueLoggerService.js';
-import { QUEUE, baseWorkerOptions } from './const.js';
 
 // ref. https://github.com/misskey-dev/misskey/pull/7635#issue-971097019
 function httpRelatedBackoff(attemptsMade: number) {
 	const baseDelay = 60 * 1000;	// 1min
 	const maxBackoff = 8 * 60 * 60 * 1000;	// 8hours
-	let backoff = (Math.pow(2, attemptsMade) - 1) * baseDelay;
+	let backoff = (2 ** attemptsMade - 1) * baseDelay;
 	backoff = Math.min(backoff, maxBackoff);
 	backoff += Math.round(backoff * Math.random() * 0.2);
 	return backoff;
@@ -182,7 +183,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 
 			this.systemQueueWorker = new Bull.Worker(QUEUE.SYSTEM, (job) => {
 				if (Sentry != null) {
-					return Sentry.startSpan({ name: 'Queue: System: ' + job.name }, () => processer(job));
+					return Sentry.startSpan({ name: `Queue: System: ${job.name}` }, () => processer(job));
 				} else {
 					return processer(job);
 				}
@@ -239,7 +240,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 
 			this.dbQueueWorker = new Bull.Worker(QUEUE.DB, (job) => {
 				if (Sentry != null) {
-					return Sentry.startSpan({ name: 'Queue: DB: ' + job.name }, () => processer(job));
+					return Sentry.startSpan({ name: `Queue: DB: ${job.name}` }, () => processer(job));
 				} else {
 					return processer(job);
 				}
@@ -441,7 +442,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 
 			this.relationshipQueueWorker = new Bull.Worker(QUEUE.RELATIONSHIP, (job) => {
 				if (Sentry != null) {
-					return Sentry.startSpan({ name: 'Queue: Relationship: ' + job.name }, () => processer(job));
+					return Sentry.startSpan({ name: `Queue: Relationship: ${job.name}` }, () => processer(job));
 				} else {
 					return processer(job);
 				}
@@ -486,7 +487,7 @@ export class QueueProcessorService implements OnApplicationShutdown {
 
 			this.objectStorageQueueWorker = new Bull.Worker(QUEUE.OBJECT_STORAGE, (job) => {
 				if (Sentry != null) {
-					return Sentry.startSpan({ name: 'Queue: ObjectStorage: ' + job.name }, () => processer(job));
+					return Sentry.startSpan({ name: `Queue: ObjectStorage: ${job.name}` }, () => processer(job));
 				} else {
 					return processer(job);
 				}
@@ -513,10 +514,6 @@ export class QueueProcessorService implements OnApplicationShutdown {
 				.on('error', (err: Error) => logger.error(`error ${err.name}: ${err.message}`, { e: renderError(err) }))
 				.on('stalled', (jobId) => logger.warn(`stalled id=${jobId}`));
 		}
-		//#endregion
-
-		//#region ended poll notification
-		{
 			this.endedPollNotificationQueueWorker = new Bull.Worker(QUEUE.ENDED_POLL_NOTIFICATION, (job) => {
 				if (Sentry != null) {
 					return Sentry.startSpan({ name: 'Queue: EndedPollNotification' }, () => this.endedPollNotificationProcessorService.process(job));
@@ -527,11 +524,6 @@ export class QueueProcessorService implements OnApplicationShutdown {
 				...baseWorkerOptions(this.config, QUEUE.ENDED_POLL_NOTIFICATION),
 				autorun: false,
 			});
-		}
-		//#endregion
-
-		//#region post scheduled note
-		{
 			this.postScheduledNoteQueueWorker = new Bull.Worker(QUEUE.POST_SCHEDULED_NOTE, async (job) => {
 				if (Sentry != null) {
 					return Sentry.startSpan({ name: 'Queue: PostScheduledNote' }, () => this.postScheduledNoteProcessorService.process(job));
@@ -542,7 +534,6 @@ export class QueueProcessorService implements OnApplicationShutdown {
 				...baseWorkerOptions(this.config, QUEUE.POST_SCHEDULED_NOTE),
 				autorun: false,
 			});
-		}
 		//#endregion
 	}
 

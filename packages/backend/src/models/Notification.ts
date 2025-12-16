@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { userExportableEntities } from '@/types.js';
-import { MiUser } from './User.js';
-import { MiNote } from './Note.js';
-import { MiAccessToken } from './AccessToken.js';
-import { MiRole } from './Role.js';
-import { MiDriveFile } from './DriveFile.js';
-import { MiNoteDraft } from './NoteDraft.js';
+import type { userExportableEntities } from '@/types.js';
+import type { MiAccessToken } from './AccessToken.js';
+import type { MiDriveFile } from './DriveFile.js';
+import type { MiNote } from './Note.js';
+import type { MiNoteDraft } from './NoteDraft.js';
+import type { MiRole } from './Role.js';
+import type { MiUser } from './User.js';
 
 // misskey-js の notificationTypes と同期すべし
 export type MiNotification = {

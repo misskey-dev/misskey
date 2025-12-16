@@ -34,13 +34,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
-import { computed, isRef, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onDeactivated, ref, shallowRef, watch } from 'vue';
-import * as Misskey from 'misskey-js';
-import { useDocumentVisibility } from '@@/js/use-document-visibility.js';
-import { onScrollTop, getBodyScrollHeight, getScrollContainer, onScrollBottom, scrollToBottom, scrollInContainer, isTailVisible, isHeadVisible } from '@@/js/scroll.js';
 import type { ComputedRef } from 'vue';
-import { misskeyApi } from '@/misskey-api.js';
+import { computed, isRef, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onDeactivated, ref, shallowRef, watch } from 'vue';
+import type * as Misskey from 'misskey-js';
+import { getBodyScrollHeight, getScrollContainer, isHeadVisible, isTailVisible, onScrollBottom, onScrollTop, scrollInContainer, scrollToBottom } from '@@/js/scroll.js';
+import { useDocumentVisibility } from '@@/js/use-document-visibility.js';
 import { i18n } from '@/i18n.js';
+import { misskeyApi } from '@/misskey-api.js';
 
 const SECOND_FETCH_LIMIT = 30;
 const TOLERANCE = 16;

@@ -2,14 +2,14 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 
 export function checkWordMute(note: Misskey.entities.Note, me: Misskey.entities.UserLite | null | undefined, mutedWords: Array<string | string[]>): Array<string | string[]> | false {
 	// 自分自身
 	if (me && (note.userId === me.id)) return false;
 
 	if (mutedWords.length > 0) {
-		const text = ((note.cw ?? '') + '\n' + (note.text ?? '')).trim();
+		const text = (`${note.cw ?? ''}\n${note.text ?? ''}`).trim();
 
 		if (text === '') return false;
 
@@ -29,7 +29,7 @@ export function checkWordMute(note: Misskey.entities.Note, me: Misskey.entities.
 
 				try {
 					return new RegExp(regexp[1], regexp[2]).test(text);
-				} catch (err) {
+				} catch (_) {
 					// This should never happen due to input sanitisation.
 					return false;
 				}

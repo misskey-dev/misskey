@@ -4,15 +4,15 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { DI } from '@/di-symbols.js';
-import type { FollowingsRepository } from '@/models/_.js';
-import { awaitAll } from '@/misc/prelude/await-all.js';
-import type { Packed } from '@/misc/json-schema.js';
-import type { } from '@/models/Blocking.js';
-import type { MiUser } from '@/models/User.js';
-import type { MiFollowing } from '@/models/Following.js';
-import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type { Packed } from '@/misc/json-schema.js';
+import { awaitAll } from '@/misc/prelude/await-all.js';
+import type { FollowingsRepository } from '@/models/_.js';
+import type { } from '@/models/Blocking.js';
+import type { MiFollowing } from '@/models/Following.js';
+import type { MiUser } from '@/models/User.js';
 import { UserEntityService } from './UserEntityService.js';
 
 type LocalFollowerFollowing = MiFollowing & {
@@ -85,6 +85,7 @@ export class FollowingEntityService {
 	): Promise<Packed<'Following'>> {
 		const following = typeof src === 'object' ? src : await this.followingsRepository.findOneByOrFail({ id: src });
 
+		// biome-ignore lint/style/noParameterAssign: parameter fallback
 		if (opts == null) opts = {};
 
 		return await awaitAll({

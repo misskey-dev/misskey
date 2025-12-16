@@ -1,0 +1,61 @@
+{
+	"$schema": "https://biomejs.dev/schemas/latest/schema.json",
+	"extends": "//",
+	"overrides": [
+		{
+			"includes": [
+				"migration/**/*",
+				"test/**/*",
+				"test-federation/test/**/*",
+				"test-server/**/*"
+			],
+			"linter": {
+				"rules": {
+					"correctness": {
+						// in migration, we often have catch without using the error
+						"noUnusedVariables": "off"
+					},
+					"style": {
+						// migration class have different naming convention
+						"useNamingConvention": "off"
+					}
+				}
+			}
+		},
+		{
+			"includes": [
+				// endpoints and chart will use default exports
+				"src/core/chart/**/*.ts",
+				"src/server/api/stream/*.ts",
+				"src/server/api/endpoints/**/*.ts",
+				"src/server/api/endpoints.ts"
+			],
+			"linter": {
+				"rules": {
+					"style": {
+						"noDefaultExport": "off"
+					}
+				}
+			}
+		}
+	],
+	"linter": {
+		"rules": {
+			"style": {
+				// We disable prefer import-type to preserve decorator metadata
+				"useImportType": "off"
+			},
+			"complexity": {
+				// for services, we declare constructors without parameters
+				"noUselessConstructor": {
+					"level": "off"
+				}
+			},
+			"correctness": {
+				"noGlobalDirnameFilename": {
+					"level": "on"
+				}
+			}
+		}
+	}
+}

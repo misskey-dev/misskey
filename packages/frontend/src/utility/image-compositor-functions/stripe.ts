@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import shader from './stripe.glsl';
-import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
-import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
 import { i18n } from '@/i18n.js';
+import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
+import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
+import shader from './stripe.glsl';
 
 export const fn = defineImageCompositorFunction<{
 	angle: number;
@@ -36,7 +36,7 @@ export const uiDefinition = {
 			min: -1.0,
 			max: 1.0,
 			step: 0.01,
-			toViewValue: v => Math.round(v * 90) + '°',
+			toViewValue: v => `${Math.round(v * 90)}°`,
 		},
 		frequency: {
 			label: i18n.ts._watermarkEditor.stripeFrequency,
@@ -53,7 +53,7 @@ export const uiDefinition = {
 			min: 0.0,
 			max: 1.0,
 			step: 0.01,
-			toViewValue: v => Math.round(v * 100) + '%',
+			toViewValue: v => `${Math.round(v * 100)}%`,
 		},
 		color: {
 			label: i18n.ts._imageEffector._fxProps.color,
@@ -67,7 +67,7 @@ export const uiDefinition = {
 			min: 0.0,
 			max: 1.0,
 			step: 0.01,
-			toViewValue: v => Math.round(v * 100) + '%',
+			toViewValue: v => `${Math.round(v * 100)}%`,
 		},
 	},
 } satisfies ImageEffectorUiDefinition<typeof fn>;

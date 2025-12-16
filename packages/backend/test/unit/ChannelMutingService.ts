@@ -5,14 +5,17 @@
 
 /* eslint-disable */
 
+import { setTimeout } from 'node:timers/promises';
 import { afterEach, beforeEach, describe, expect } from '@jest/globals';
-import { Test, TestingModule } from '@nestjs/testing';
-import { GlobalModule } from '@/GlobalModule.js';
+import type { TestingModule } from '@nestjs/testing';
+import { Test, } from '@nestjs/testing';
+import { ChannelMutingService } from '@/core/ChannelMutingService.js';
 import { CoreModule } from '@/core/CoreModule.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { IdService } from '@/core/IdService.js';
-import { ChannelMutingService } from '@/core/ChannelMutingService.js';
-import {
+import { DI } from '@/di-symbols.js';
+import { GlobalModule } from '@/GlobalModule.js';
+import type {
 	ChannelMutingRepository,
 	ChannelsRepository,
 	DriveFilesRepository,
@@ -23,8 +26,6 @@ import {
 	UserProfilesRepository,
 	UsersRepository,
 } from '@/models/_.js';
-import { DI } from '@/di-symbols.js';
-import { setTimeout } from 'node:timers/promises';
 
 describe('ChannelMutingService', () => {
 	let app: TestingModule;

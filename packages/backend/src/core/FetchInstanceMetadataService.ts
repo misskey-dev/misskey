@@ -5,16 +5,16 @@
 
 import { URL } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
-import tinycolor from 'tinycolor2';
-import * as Redis from 'ioredis';
+import type * as Redis from 'ioredis';
 import * as htmlParser from 'node-html-parser';
-import type { MiInstance } from '@/models/Instance.js';
-import type Logger from '@/logger.js';
-import { DI } from '@/di-symbols.js';
-import { LoggerService } from '@/core/LoggerService.js';
-import { HttpRequestService } from '@/core/HttpRequestService.js';
-import { bindThis } from '@/decorators.js';
+import tinycolor from 'tinycolor2';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
+import { HttpRequestService } from '@/core/HttpRequestService.js';
+import { LoggerService } from '@/core/LoggerService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type Logger from '@/logger.js';
+import type { MiInstance } from '@/models/Instance.js';
 
 type NodeInfo = {
 	openRegistrations?: unknown;
@@ -83,7 +83,7 @@ export class FetchInstanceMetadataService {
 			if (!force) {
 				const _instance = await this.federatedInstanceService.fetchOrRegister(host);
 				const now = Date.now();
-				if (_instance && _instance.infoUpdatedAt && (now - _instance.infoUpdatedAt.getTime() < 1000 * 60 * 60 * 24)) {
+				if (_instance?.infoUpdatedAt && (now - _instance.infoUpdatedAt.getTime() < 1000 * 60 * 60 * 24)) {
 					// unlock at the finally caluse
 					return;
 				}
@@ -140,7 +140,7 @@ export class FetchInstanceMetadataService {
 		this.logger.info(`Fetching nodeinfo of ${instance.host} ...`);
 
 		try {
-			const wellknown = await this.httpRequestService.getJson('https://' + instance.host + '/.well-known/nodeinfo')
+			const wellknown = await this.httpRequestService.getJson(`https://${instance.host}/.well-known/nodeinfo`)
 				.catch(err => {
 					if (err.statusCode === 404) {
 						throw new Error('No nodeinfo provided');
@@ -183,7 +183,7 @@ export class FetchInstanceMetadataService {
 	private async fetchDom(instance: MiInstance): Promise<htmlParser.HTMLElement> {
 		this.logger.info(`Fetching HTML of ${instance.host} ...`);
 
-		const url = 'https://' + instance.host;
+		const url = `https://${instance.host}`;
 
 		const html = await this.httpRequestService.getHtml(url);
 
@@ -194,9 +194,9 @@ export class FetchInstanceMetadataService {
 
 	@bindThis
 	private async fetchManifest(instance: MiInstance): Promise<Record<string, unknown> | null> {
-		const url = 'https://' + instance.host;
+		const url = `https://${instance.host}`;
 
-		const manifestUrl = url + '/manifest.json';
+		const manifestUrl = `${url}/manifest.json`;
 
 		const manifest = await this.httpRequestService.getJson(manifestUrl) as Record<string, unknown>;
 
@@ -205,7 +205,7 @@ export class FetchInstanceMetadataService {
 
 	@bindThis
 	private async fetchFaviconUrl(instance: MiInstance, doc: htmlParser.HTMLElement | null): Promise<string | null> {
-		const url = 'https://' + instance.host;
+		const url = `https://${instance.host}`;
 
 		if (doc) {
 			// https://github.com/misskey-dev/misskey/pull/8220#issuecomment-1025104043
@@ -216,7 +216,7 @@ export class FetchInstanceMetadataService {
 			}
 		}
 
-		const faviconUrl = url + '/favicon.ico';
+		const faviconUrl = `${url}/favicon.ico`;
 
 		const favicon = await this.httpRequestService.send(faviconUrl, {
 			method: 'HEAD',
@@ -231,13 +231,13 @@ export class FetchInstanceMetadataService {
 
 	@bindThis
 	private async fetchIconUrl(instance: MiInstance, doc: htmlParser.HTMLElement | null, manifest: Record<string, any> | null): Promise<string | null> {
-		if (manifest && manifest.icons && manifest.icons.length > 0 && manifest.icons[0].src) {
-			const url = 'https://' + instance.host;
+		if (manifest?.icons && manifest.icons.length > 0 && manifest.icons[0].src) {
+			const url = `https://${instance.host}`;
 			return (new URL(manifest.icons[0].src, url)).href;
 		}
 
 		if (doc) {
-			const url = 'https://' + instance.host;
+			const url = `https://${instance.host}`;
 
 			// https://github.com/misskey-dev/misskey/pull/8220#issuecomment-1025104043
 			const links = Array.from(doc.getElementsByTagName('link')).reverse();
@@ -272,7 +272,7 @@ export class FetchInstanceMetadataService {
 
 	@bindThis
 	private async getSiteName(info: NodeInfo | null, doc: htmlParser.HTMLElement | null, manifest: Record<string, any> | null): Promise<string | null> {
-		if (info && info.metadata) {
+		if (info?.metadata) {
 			if (typeof info.metadata.nodeName === 'string') {
 				return info.metadata.nodeName;
 			} else if (typeof info.metadata.name === 'string') {
@@ -297,7 +297,7 @@ export class FetchInstanceMetadataService {
 
 	@bindThis
 	private async getDescription(info: NodeInfo | null, doc: htmlParser.HTMLElement | null, manifest: Record<string, any> | null): Promise<string | null> {
-		if (info && info.metadata) {
+		if (info?.metadata) {
 			if (typeof info.metadata.nodeDescription === 'string') {
 				return info.metadata.nodeDescription;
 			} else if (typeof info.metadata.description === 'string') {

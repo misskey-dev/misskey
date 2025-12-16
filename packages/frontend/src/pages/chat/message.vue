@@ -17,12 +17,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import XMessage from './XMessage.vue';
 import { i18n } from '@/i18n.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import XMessage from './XMessage.vue';
 
 const props = defineProps<{
 	messageId: string;

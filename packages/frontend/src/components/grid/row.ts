@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { AdditionalStyle } from '@/components/grid/grid.js';
+import type { MenuItem } from '@/types/menu.js';
 import type { GridCell } from '@/components/grid/cell.js';
 import type { GridColumn } from '@/components/grid/column.js';
-import type { MenuItem } from '@/types/menu.js';
+import type { AdditionalStyle } from '@/components/grid/grid.js';
 import type { GridContext } from '@/components/grid/grid-event.js';
 
 export const defaultGridRowSetting: Required<GridRowSetting> = {

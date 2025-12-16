@@ -38,15 +38,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { host } from '@@/js/config.js';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { useStream } from '@/stream.js';
-import { i18n } from '@/i18n.js';
-import { claimAchievement } from '@/utility/achievements.js';
-import { pleaseLogin } from '@/utility/please-login.js';
 import { $i } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 import { prefer } from '@/preferences.js';
+import { useStream } from '@/stream.js';
+import { claimAchievement } from '@/utility/achievements.js';
 import { haptic } from '@/utility/haptic.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { pleaseLogin } from '@/utility/please-login.js';
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.UserDetailed,

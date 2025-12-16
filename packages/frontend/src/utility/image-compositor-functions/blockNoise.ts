@@ -4,10 +4,10 @@
  */
 
 import seedrandom from 'seedrandom';
-import shader from './blockNoise.glsl';
-import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
-import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
 import { i18n } from '@/i18n.js';
+import { defineImageCompositorFunction } from '@/lib/ImageCompositor.js';
+import type { ImageEffectorUiDefinition } from '../image-effector/ImageEffector.js';
+import shader from './blockNoise.glsl';
 
 export const fn = defineImageCompositorFunction<{
 	amount: number;
@@ -40,7 +40,7 @@ export const fn = defineImageCompositorFunction<{
 });
 
 export const uiDefinition = {
-	name: i18n.ts._imageEffector._fxs.glitch + ': ' + i18n.ts._imageEffector._fxs.blockNoise,
+	name: `${i18n.ts._imageEffector._fxs.glitch}: ${i18n.ts._imageEffector._fxs.blockNoise}`,
 	params: {
 		amount: {
 			label: i18n.ts._imageEffector._fxProps.amount,
@@ -57,7 +57,7 @@ export const uiDefinition = {
 			min: -1,
 			max: 1,
 			step: 0.01,
-			toViewValue: v => Math.round(v * 100) + '%',
+			toViewValue: v => `${Math.round(v * 100)}%`,
 		},
 		width: {
 			label: i18n.ts.width,
@@ -66,7 +66,7 @@ export const uiDefinition = {
 			min: 0.01,
 			max: 1,
 			step: 0.01,
-			toViewValue: v => Math.round(v * 100) + '%',
+			toViewValue: v => `${Math.round(v * 100)}%`,
 		},
 		height: {
 			label: i18n.ts.height,
@@ -75,7 +75,7 @@ export const uiDefinition = {
 			min: 0.01,
 			max: 1,
 			step: 0.01,
-			toViewValue: v => Math.round(v * 100) + '%',
+			toViewValue: v => `${Math.round(v * 100)}%`,
 		},
 		channelShift: {
 			label: i18n.ts._imageEffector._fxProps.glitchChannelShift,
@@ -84,7 +84,7 @@ export const uiDefinition = {
 			min: 0,
 			max: 10,
 			step: 0.01,
-			toViewValue: v => Math.round(v * 100) + '%',
+			toViewValue: v => `${Math.round(v * 100)}%`,
 		},
 		seed: {
 			label: i18n.ts._imageEffector._fxProps.seed,

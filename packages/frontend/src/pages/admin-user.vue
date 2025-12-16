@@ -206,32 +206,32 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, watch, ref, markRaw } from 'vue';
+import { computed, defineAsyncComponent, markRaw, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
-import MkChart from '@/components/MkChart.vue';
-import MkObjectView from '@/components/MkObjectView.vue';
-import MkTextarea from '@/components/MkTextarea.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
+import { useMkSelect } from '@/composables/use-mkselect.js';
+import { acct } from '@/filters/user.js';
+import { ensureSignin, iAmAdmin, iAmModerator } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { definePage } from '@/page.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { Paginator } from '@/utility/paginator.js';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
-import MkFolder from '@/components/MkFolder.vue';
-import MkKeyValue from '@/components/MkKeyValue.vue';
-import MkSelect from '@/components/MkSelect.vue';
-import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
-import MkInfo from '@/components/MkInfo.vue';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { acct } from '@/filters/user.js';
-import { definePage } from '@/page.js';
-import { i18n } from '@/i18n.js';
-import { useMkSelect } from '@/composables/use-mkselect.js';
-import { ensureSignin, iAmAdmin, iAmModerator } from '@/i.js';
-import MkRolePreview from '@/components/MkRolePreview.vue';
-import MkPagination from '@/components/MkPagination.vue';
-import { Paginator } from '@/utility/paginator.js';
 import type { ChartSrc } from '@/components/MkChart.vue';
+import MkChart from '@/components/MkChart.vue';
+import MkFileListForAdmin from '@/components/MkFileListForAdmin.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkInfo from '@/components/MkInfo.vue';
+import MkKeyValue from '@/components/MkKeyValue.vue';
+import MkObjectView from '@/components/MkObjectView.vue';
+import MkPagination from '@/components/MkPagination.vue';
+import MkRolePreview from '@/components/MkRolePreview.vue';
+import MkSelect from '@/components/MkSelect.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
+import MkTextarea from '@/components/MkTextarea.vue';
 
 const $i = ensureSignin();
 
@@ -448,7 +448,7 @@ async function assignRole() {
 	if (canceled || roleId == null) return;
 
 	const { canceled: canceled2, result: period } = await os.select({
-		title: i18n.ts.period + ': ' + roles.find(r => r.id === roleId)!.name,
+		title: `${i18n.ts.period}: ${roles.find(r => r.id === roleId)!.name}`,
 		items: [{
 			value: 'indefinitely', label: i18n.ts.indefinitely,
 		}, {

@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
-import { id } from './util/id.js';
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { MiRole } from './Role.js';
 import { MiUser } from './User.js';
+import { id } from './util/id.js';
 
 @Entity('role_assignment')
 @Index(['userId', 'roleId'], { unique: true })
@@ -21,7 +21,7 @@ export class MiRoleAssignment {
 	})
 	public userId: MiUser['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(() => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
@@ -34,7 +34,7 @@ export class MiRoleAssignment {
 	})
 	public roleId: MiRole['id'];
 
-	@ManyToOne(type => MiRole, {
+	@ManyToOne(() => MiRole, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()

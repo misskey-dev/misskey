@@ -3,19 +3,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { In, IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
+import type { FindOptionsWhere } from 'typeorm';
+import { In, IsNull } from 'typeorm';
+import PerUserPvChart from '@/core/chart/charts/per-user-pv.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
+import { RoleService } from '@/core/RoleService.js';
+import { DI } from '@/di-symbols.js';
 import type { MiMeta, UsersRepository } from '@/models/_.js';
 import type { MiUser } from '@/models/User.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
-import { DI } from '@/di-symbols.js';
-import PerUserPvChart from '@/core/chart/charts/per-user-pv.js';
-import { RoleService } from '@/core/RoleService.js';
-import { ApiError } from '../../error.js';
 import { ApiLoggerService } from '../../ApiLoggerService.js';
-import type { FindOptionsWhere } from 'typeorm';
+import { ApiError } from '../../error.js';
 
 export const meta = {
 	tags: ['users'],
@@ -101,7 +101,7 @@ export const paramDef = {
 } as const;
 
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.meta)
 		private serverSettings: MiMeta,
@@ -121,7 +121,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			//	throw new ApiError(meta.errors.noSuchUser);
 			//}
 
-			let user;
+			let user: MiUser | null;
 
 			const isModerator = await this.roleService.isModerator(me);
 			if ('username' in ps) {

@@ -1,21 +1,20 @@
-import path from 'path';
+import { promises as fsp } from 'node:fs';
+import path from 'node:path';
 import pluginReplace from '@rollup/plugin-replace';
 import pluginVue from '@vitejs/plugin-vue';
-import pluginGlsl from 'vite-plugin-glsl';
+import locales from 'i18n';
+import * as yaml from 'js-yaml';
 import type { UserConfig } from 'vite';
 import { defineConfig } from 'vite';
-import * as yaml from 'js-yaml';
-import { promises as fsp } from 'fs';
-
-import locales from 'i18n';
+import pluginGlsl from 'vite-plugin-glsl';
 import meta from '../../package.json';
-import packageInfo from './package.json' with { type: 'json' };
+import { pluginRemoveUnrefI18n } from '../frontend-builder/rollup-plugin-remove-unref-i18n.js';
 import pluginUnwindCssModuleClassName from './lib/rollup-plugin-unwind-css-module-class-name.js';
-import pluginJson5 from './vite.json5.js';
 import type { Options as SearchIndexOptions } from './lib/vite-plugin-create-search-index.js';
 import pluginCreateSearchIndex from './lib/vite-plugin-create-search-index.js';
 import pluginWatchLocales from './lib/vite-plugin-watch-locales.js';
-import { pluginRemoveUnrefI18n } from '../frontend-builder/rollup-plugin-remove-unref-i18n.js';
+import packageInfo from './package.json' with { type: 'json' };
+import pluginJson5 from './vite.json5.js';
 
 const url = process.env.NODE_ENV === 'development' ? yaml.load(await fsp.readFile('../../.config/default.yml', 'utf-8')).url : null;
 const host = url ? (new URL(url)).hostname : undefined;
@@ -58,8 +57,8 @@ const externalPackages = [
 export const hash = (str: string, seed = 0): number => {
 	let h1 = 0xdeadbeef ^ seed,
 		h2 = 0x41c6ce57 ^ seed;
-	for (let i = 0, ch; i < str.length; i++) {
-		ch = str.charCodeAt(i);
+	for (let i = 0; i < str.length; i++) {
+		const ch = str.charCodeAt(i);
 		h1 = Math.imul(h1 ^ ch, 2654435761);
 		h2 = Math.imul(h2 ^ ch, 1597334677);
 	}
@@ -72,7 +71,8 @@ export const hash = (str: string, seed = 0): number => {
 
 export const BASE62_DIGITS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-export function toBase62(n: number): string {
+export function toBase62(value: number): string {
+	let n = value;
 	if (n === 0) {
 		return '0';
 	}
@@ -134,21 +134,21 @@ export function getConfig(): UserConfig {
 		resolve: {
 			extensions,
 			alias: {
-				'@/': __dirname + '/src/',
-				'@@/': __dirname + '/../frontend-shared/',
-				'/client-assets/': __dirname + '/assets/',
-				'/static-assets/': __dirname + '/../backend/assets/',
-				'/fluent-emojis/': __dirname + '/../../fluent-emojis/dist/',
-				'/fluent-emoji/': __dirname + '/../../fluent-emojis/dist/',
+				'@/': `${__dirname}/src/`,
+				'@@/': `${__dirname}/../frontend-shared/`,
+				'/client-assets/': `${__dirname}/assets/`,
+				'/static-assets/': `${__dirname}/../backend/assets/`,
+				'/fluent-emojis/': `${__dirname}/../../fluent-emojis/dist/`,
+				'/fluent-emoji/': `${__dirname}/../../fluent-emojis/dist/`,
 			},
 		},
 
 		css: {
 			modules: {
 				generateScopedName(name, filename, _css): string {
-					const id = (path.relative(__dirname, filename.split('?')[0]) + '-' + name).replace(/[\\\/\.\?&=]/g, '-').replace(/(src-|vue-)/g, '');
+					const id = (`${path.relative(__dirname, filename.split('?')[0])}-${name}`).replace(/[\\/.?&=]/g, '-').replace(/(src-|vue-)/g, '');
 					if (process.env.NODE_ENV === 'production') {
-						return 'x' + toBase62(hash(id)).substring(0, 4);
+						return `x${toBase62(hash(id)).substring(0, 4)}`;
 					} else {
 						return id;
 					}
@@ -207,7 +207,7 @@ export function getConfig(): UserConfig {
 				},
 			},
 			cssCodeSplit: true,
-			outDir: __dirname + '/../../built/_frontend_vite_',
+			outDir: `${__dirname}/../../built/_frontend_vite_`,
 			assetsDir: '.',
 			emptyOutDir: false,
 			sourcemap: process.env.NODE_ENV === 'development',

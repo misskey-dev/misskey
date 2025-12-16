@@ -40,18 +40,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import type { MenuItem } from '@/types/menu';
-import MkButton from '@/components/MkButton.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
-import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 import { prefer } from '@/preferences.js';
+import type { MenuItem } from '@/types/menu';
 import {
+	extractCustomEmojiHost as customEmojiHost,
+	extractCustomEmojiName as customEmojiName,
 	mute as muteEmoji,
 	unmute as unmuteEmoji,
-	extractCustomEmojiName as customEmojiName,
-	extractCustomEmojiHost as customEmojiHost,
 } from '@/utility/emoji-mute.js';
+import MkButton from '@/components/MkButton.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 
 const emojis = prefer.model('mutingEmojis');
 

@@ -36,12 +36,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onUnmounted, nextTick, ref, watch, computed, toRefs, useTemplateRef } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref, toRefs, useTemplateRef, watch } from 'vue';
 import { debounce } from 'throttle-debounce';
-import type { SuggestionType } from '@/utility/autocomplete.js';
-import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
+import type { SuggestionType } from '@/utility/autocomplete.js';
 import { Autocomplete } from '@/utility/autocomplete.js';
+import MkButton from '@/components/MkButton.vue';
 
 const props = defineProps<{
 	modelValue: string | null;
@@ -96,7 +96,7 @@ const onKeydown = (ev: KeyboardEvent) => {
 	if (props.code && ev.key === 'Tab') {
 		const pos = inputEl.value?.selectionStart ?? 0;
 		const posEnd = inputEl.value?.selectionEnd ?? v.value.length;
-		v.value = v.value.slice(0, pos) + '\t' + v.value.slice(posEnd);
+		v.value = `${v.value.slice(0, pos)}\t${v.value.slice(posEnd)}`;
 		nextTick(() => {
 			inputEl.value?.setSelectionRange(pos + 1, pos + 1);
 		});

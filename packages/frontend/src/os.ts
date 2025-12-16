@@ -5,33 +5,33 @@
 
 // TODO: なんでもかんでもos.tsに突っ込むのやめたいのでよしなに分割する
 
-import { markRaw, ref, defineAsyncComponent, nextTick } from 'vue';
-import { EventEmitter } from 'eventemitter3';
-import * as Misskey from 'misskey-js';
 import type { Component, Ref } from 'vue';
+import { defineAsyncComponent, markRaw, nextTick, ref } from 'vue';
+import { EventEmitter } from 'eventemitter3';
+import type * as Misskey from 'misskey-js';
 import type { ComponentEmit, ComponentProps as CP } from 'vue-component-type-helpers';
-import type { Form, GetFormResultType } from '@/utility/form.js';
+import type { UploaderFeatures } from '@/composables/use-uploader.js';
+import { i18n } from '@/i18n.js';
+import { prefer } from '@/preferences.js';
 import type { MenuItem } from '@/types/menu.js';
 import type { PostFormProps } from '@/types/post-form.js';
-import type { UploaderFeatures } from '@/composables/use-uploader.js';
-import type { MkSelectItem, OptionValue } from '@/components/MkSelect.vue';
-import type MkRoleSelectDialog_TypeReferenceOnly from '@/components/MkRoleSelectDialog.vue';
-import type MkEmojiPickerDialog_TypeReferenceOnly from '@/components/MkEmojiPickerDialog.vue';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { prefer } from '@/preferences.js';
-import { i18n } from '@/i18n.js';
-import MkPostFormDialog from '@/components/MkPostFormDialog.vue';
-import MkWaitingDialog from '@/components/MkWaitingDialog.vue';
-import MkPageWindow from '@/components/MkPageWindow.vue';
-import MkToast from '@/components/MkToast.vue';
-import MkDialog from '@/components/MkDialog.vue';
-import MkPopupMenu from '@/components/MkPopupMenu.vue';
-import MkContextMenu from '@/components/MkContextMenu.vue';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { focusParent } from '@/utility/focus.js';
+import type { Form, GetFormResultType } from '@/utility/form.js';
+import { getHTMLElementOrNull } from '@/utility/get-dom-node-or-null.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { pleaseLogin } from '@/utility/please-login.js';
 import { showMovedDialog } from '@/utility/show-moved-dialog.js';
-import { getHTMLElementOrNull } from '@/utility/get-dom-node-or-null.js';
-import { focusParent } from '@/utility/focus.js';
+import MkContextMenu from '@/components/MkContextMenu.vue';
+import MkDialog from '@/components/MkDialog.vue';
+import type MkEmojiPickerDialog_TypeReferenceOnly from '@/components/MkEmojiPickerDialog.vue';
+import MkPageWindow from '@/components/MkPageWindow.vue';
+import MkPopupMenu from '@/components/MkPopupMenu.vue';
+import MkPostFormDialog from '@/components/MkPostFormDialog.vue';
+import type MkRoleSelectDialog_TypeReferenceOnly from '@/components/MkRoleSelectDialog.vue';
+import type { MkSelectItem, OptionValue } from '@/components/MkSelect.vue';
+import MkToast from '@/components/MkToast.vue';
+import MkWaitingDialog from '@/components/MkWaitingDialog.vue';
 
 export const openingWindowsCount = ref(0);
 
@@ -45,7 +45,7 @@ export const apiWithDialog = (<E extends keyof Misskey.Endpoints>(
 	const promise = misskeyApi(endpoint, data, token);
 	promiseDialog(promise, null, async (err) => {
 		let title: string | undefined;
-		let text = err.message + '\n' + err.id;
+		let text = `${err.message}\n${err.id}`;
 		if (err.code === 'INTERNAL_ERROR') {
 			title = i18n.ts.internalServerError;
 			text = i18n.ts.internalServerErrorDescription;
@@ -656,6 +656,7 @@ export function popupMenu(items: (MenuItem | null)[], anchorElement?: HTMLElemen
 	onClosing?: () => void;
 }): Promise<void> {
 	if (!(anchorElement instanceof HTMLElement)) {
+		// biome-ignore lint/style/noParameterAssign: parameter sanitization
 		anchorElement = null;
 	}
 
@@ -779,7 +780,7 @@ export function chooseFileFromPc(
 	});
 }
 
-export function launchUploader(
+export async function launchUploader(
 	files: File[],
 	options?: {
 		folderId?: string | null;
@@ -787,9 +788,10 @@ export function launchUploader(
 		features?: UploaderFeatures;
 	},
 ): Promise<Misskey.entities.DriveFile[]> {
-	return new Promise(async (res, rej) => {
+	return new Promise((res, rej) => {
 		if (files.length === 0) return rej();
-		const { dispose } = await popupAsyncWithDialog(import('@/components/MkUploaderDialog.vue').then(x => x.default), {
+		let dispose: () => void;
+		popupAsyncWithDialog(import('@/components/MkUploaderDialog.vue').then(x => x.default), {
 			files: markRaw(files),
 			folderId: options?.folderId,
 			multiple: options?.multiple,
@@ -800,7 +802,7 @@ export function launchUploader(
 				res(driveFiles);
 			},
 			closed: () => dispose(),
-		});
+		}).then(d => dispose = d.dispose, rej);
 	});
 }
 

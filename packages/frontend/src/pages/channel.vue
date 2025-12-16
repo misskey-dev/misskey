@@ -71,34 +71,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, ref, markRaw, shallowRef } from 'vue';
+import { computed, markRaw, ref, shallowRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
 import { useInterval } from '@@/js/use-interval.js';
-import type { PageHeaderItem } from '@/types/page-header.js';
-import MkPostForm from '@/components/MkPostForm.vue';
-import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
-import XChannelFollowButton from '@/components/MkChannelFollowButton.vue';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
+import { favoritedChannelsCache } from '@/cache.js';
 import { $i, iAmModerator } from '@/i.js';
 import { i18n } from '@/i18n.js';
-import { definePage } from '@/page.js';
-import { deviceKind } from '@/utility/device-kind.js';
-import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
-import { favoritedChannelsCache } from '@/cache.js';
-import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/MkInput.vue';
-import { prefer } from '@/preferences.js';
-import MkNote from '@/components/MkNote.vue';
-import MkInfo from '@/components/MkInfo.vue';
-import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import { isSupportShare } from '@/utility/navigator.js';
-import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
-import { notesSearchAvailable } from '@/utility/check-permissions.js';
 import { miLocalStorage } from '@/local-storage.js';
+import * as os from '@/os.js';
+import { definePage } from '@/page.js';
+import { prefer } from '@/preferences.js';
 import { useRouter } from '@/router.js';
+import type { PageHeaderItem } from '@/types/page-header.js';
+import { notesSearchAvailable } from '@/utility/check-permissions.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { deviceKind } from '@/utility/device-kind.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { isSupportShare } from '@/utility/navigator.js';
 import { Paginator } from '@/utility/paginator.js';
+import MkButton from '@/components/MkButton.vue';
+import XChannelFollowButton from '@/components/MkChannelFollowButton.vue';
+import MkFoldableSection from '@/components/MkFoldableSection.vue';
+import MkInfo from '@/components/MkInfo.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkNote from '@/components/MkNote.vue';
+import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
+import MkPostForm from '@/components/MkPostForm.vue';
+import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
 
 const router = useRouter();
 

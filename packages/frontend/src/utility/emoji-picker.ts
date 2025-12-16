@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineAsyncComponent, ref, watch } from 'vue';
 import type { Ref } from 'vue';
+import { defineAsyncComponent, ref, watch } from 'vue';
 import { popup } from '@/os.js';
 import { prefer } from '@/preferences.js';
 
@@ -19,10 +19,6 @@ class EmojiPicker {
 	private manualShowing = ref(false);
 	private onChosen?: (emoji: string) => void;
 	private onClosed?: () => void;
-
-	constructor() {
-		// nop
-	}
 
 	public async init() {
 		const emojisRef = ref<string[]>([]);

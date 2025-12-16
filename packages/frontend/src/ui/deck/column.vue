@@ -43,15 +43,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted, provide, watch, useTemplateRef, ref, computed } from 'vue';
+import { computed, onBeforeUnmount, onMounted, provide, ref, useTemplateRef, watch } from 'vue';
 import type { Column } from '@/deck.js';
-import type { MenuItem } from '@/types/menu.js';
-import { updateColumn, swapLeftColumn, swapRightColumn, swapUpColumn, swapDownColumn, stackLeftColumn, popRightColumn, removeColumn, swapColumn } from '@/deck.js';
-import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
-import { prefer } from '@/preferences.js';
+import { popRightColumn, removeColumn, stackLeftColumn, swapColumn, swapDownColumn, swapLeftColumn, swapRightColumn, swapUpColumn, updateColumn } from '@/deck.js';
 import { DI } from '@/di.js';
 import { checkDragDataType, getDragData, setDragData } from '@/drag-and-drop.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
+import { prefer } from '@/preferences.js';
+import type { MenuItem } from '@/types/menu.js';
 
 provide('shouldHeaderThin', true);
 provide('shouldOmitHeaderTitle', true);
@@ -214,7 +214,7 @@ function getMenu() {
 
 	menuItems.push({
 		type: 'parent',
-		text: i18n.ts.move + '...',
+		text: `${i18n.ts.move}...`,
 		icon: 'ti ti-arrows-move',
 		children: moveToMenuItems,
 	}, {

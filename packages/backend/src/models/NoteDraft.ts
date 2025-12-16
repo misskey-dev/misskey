@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Entity, Index, JoinColumn, Column, PrimaryColumn, ManyToOne } from 'typeorm';
-import { noteVisibilities, noteReactionAcceptances } from '@/types.js';
-import { id } from './util/id.js';
-import { MiUser } from './User.js';
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import type { noteReactionAcceptances, } from '@/types.js';
+import { noteVisibilities } from '@/types.js';
 import { MiChannel } from './Channel.js';
-import { MiNote } from './Note.js';
 import type { MiDriveFile } from './DriveFile.js';
+import { MiNote } from './Note.js';
+import { MiUser } from './User.js';
+import { id } from './util/id.js';
 
 @Entity('note_draft')
 @Index('IDX_NOTE_DRAFT_FILE_IDS', { synchronize: false }) // GIN for fileIds in production
@@ -27,7 +28,7 @@ export class MiNoteDraft {
 	public replyId: MiNote['id'] | null;
 
 	// There is a possibility that replyId is not null but reply is null when the reply note is deleted.
-	@ManyToOne(type => MiNote, {
+	@ManyToOne(() => MiNote, {
 		createForeignKeyConstraints: false,
 	})
 	@JoinColumn()
@@ -42,7 +43,7 @@ export class MiNoteDraft {
 	public renoteId: MiNote['id'] | null;
 
 	// There is a possibility that renoteId is not null but renote is null when the renote note is deleted.
-	@ManyToOne(type => MiNote, {
+	@ManyToOne(() => MiNote, {
 		createForeignKeyConstraints: false,
 	})
 	@JoinColumn()
@@ -66,7 +67,7 @@ export class MiNoteDraft {
 	})
 	public userId: MiUser['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(() => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
@@ -120,7 +121,7 @@ export class MiNoteDraft {
 
 	// There is a possibility that channelId is not null but channel is null when the channel is deleted.
 	// (deleting channel is not implemented so it's not happening now but may happen in the future)
-	@ManyToOne(type => MiChannel, {
+	@ManyToOne(() => MiChannel, {
 		createForeignKeyConstraints: false,
 	})
 	@JoinColumn()

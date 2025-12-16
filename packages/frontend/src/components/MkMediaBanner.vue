@@ -28,8 +28,8 @@ import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
-import MkMediaAudio from '@/components/MkMediaAudio.vue';
 import { prefer } from '@/preferences.js';
+import MkMediaAudio from '@/components/MkMediaAudio.vue';
 
 const props = defineProps<{
 	media: Misskey.entities.DriveFile;

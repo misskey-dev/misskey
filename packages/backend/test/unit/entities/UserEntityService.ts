@@ -3,14 +3,47 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Test, TestingModule } from '@nestjs/testing';
-import type { MiUser } from '@/models/User.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { GlobalModule } from '@/GlobalModule.js';
+import type { TestingModule } from '@nestjs/testing';
+import { Test, } from '@nestjs/testing';
+import { AccountMoveService } from '@/core/AccountMoveService.js';
+import { AnnouncementService } from '@/core/AnnouncementService.js';
+import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
+import { ApLoggerService } from '@/core/activitypub/ApLoggerService.js';
+import { ApMfmService } from '@/core/activitypub/ApMfmService.js';
+import { ApResolverService } from '@/core/activitypub/ApResolverService.js';
+import { ApImageService } from '@/core/activitypub/models/ApImageService.js';
+import { ApNoteService } from '@/core/activitypub/models/ApNoteService.js';
+import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
+import { CacheService } from '@/core/CacheService.js';
+import { ChatService } from '@/core/ChatService.js';
 import { CoreModule } from '@/core/CoreModule.js';
-import { secureRndstr } from '@/misc/secure-rndstr.js';
+import { CustomEmojiService } from '@/core/CustomEmojiService.js';
+import { ChartLoggerService } from '@/core/chart/ChartLoggerService.js';
+import InstanceChart from '@/core/chart/charts/instance.js';
+import UsersChart from '@/core/chart/charts/users.js';
+import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
+import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { PageEntityService } from '@/core/entities/PageEntityService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
+import { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { HashtagService } from '@/core/HashtagService.js';
+import { IdService } from '@/core/IdService.js';
+import { MetaService } from '@/core/MetaService.js';
+import { MfmService } from '@/core/MfmService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { NotificationService } from '@/core/NotificationService.js';
+import { ReactionService } from '@/core/ReactionService.js';
+import { ReactionsBufferingService } from '@/core/ReactionsBufferingService.js';
+import { RoleService } from '@/core/RoleService.js';
+import { UtilityService } from '@/core/UtilityService.js';
+import { DI } from '@/di-symbols.js';
+import { GlobalModule } from '@/GlobalModule.js';
 import { genAidx } from '@/misc/id/aidx.js';
-import {
+import { secureRndstr } from '@/misc/secure-rndstr.js';
+import type {
 	BlockingsRepository,
 	FollowingsRepository, FollowRequestsRepository,
 	MiUserProfile, MutingsRepository, RenoteMutingsRepository,
@@ -18,39 +51,7 @@ import {
 	UserProfilesRepository,
 	UsersRepository,
 } from '@/models/_.js';
-import { DI } from '@/di-symbols.js';
-import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
-import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
-import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
-import { PageEntityService } from '@/core/entities/PageEntityService.js';
-import { CustomEmojiService } from '@/core/CustomEmojiService.js';
-import { AnnouncementService } from '@/core/AnnouncementService.js';
-import { RoleService } from '@/core/RoleService.js';
-import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
-import { IdService } from '@/core/IdService.js';
-import { UtilityService } from '@/core/UtilityService.js';
-import { EmojiEntityService } from '@/core/entities/EmojiEntityService.js';
-import { ModerationLogService } from '@/core/ModerationLogService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { DriveFileEntityService } from '@/core/entities/DriveFileEntityService.js';
-import { MetaService } from '@/core/MetaService.js';
-import { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataService.js';
-import { CacheService } from '@/core/CacheService.js';
-import { ApResolverService } from '@/core/activitypub/ApResolverService.js';
-import { ApNoteService } from '@/core/activitypub/models/ApNoteService.js';
-import { ApImageService } from '@/core/activitypub/models/ApImageService.js';
-import { ApMfmService } from '@/core/activitypub/ApMfmService.js';
-import { MfmService } from '@/core/MfmService.js';
-import { HashtagService } from '@/core/HashtagService.js';
-import UsersChart from '@/core/chart/charts/users.js';
-import { ChartLoggerService } from '@/core/chart/ChartLoggerService.js';
-import InstanceChart from '@/core/chart/charts/instance.js';
-import { ApLoggerService } from '@/core/activitypub/ApLoggerService.js';
-import { AccountMoveService } from '@/core/AccountMoveService.js';
-import { ReactionService } from '@/core/ReactionService.js';
-import { NotificationService } from '@/core/NotificationService.js';
-import { ReactionsBufferingService } from '@/core/ReactionsBufferingService.js';
-import { ChatService } from '@/core/ChatService.js';
+import type { MiUser } from '@/models/User.js';
 
 process.env.NODE_ENV = 'test';
 
@@ -232,7 +233,7 @@ describe('UserEntityService', () => {
 		});
 
 		test('MeDetailed', async() => {
-			const achievements = [{ name: 'iLoveMisskey' as const, unlockedAt: new Date().getTime() }];
+			const achievements = [{ name: 'iLoveMisskey' as const, unlockedAt: Date.now() }];
 			const me = await createUser({}, {
 				birthday: '2000-01-01',
 				achievements: achievements,

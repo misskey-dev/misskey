@@ -4,4 +4,5 @@
  */
 
 import MkDivider from './MkDivider.vue';
+
 void MkDivider;

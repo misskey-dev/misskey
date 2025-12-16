@@ -64,12 +64,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
-import MkNumberDiff from '@/components/MkNumberDiff.vue';
-import MkNumber from '@/components/MkNumber.vue';
-import { i18n } from '@/i18n.js';
 import { customEmojis } from '@/custom-emojis.js';
+import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
+import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
+import MkNumber from '@/components/MkNumber.vue';
+import MkNumberDiff from '@/components/MkNumberDiff.vue';
 
 const stats = ref<Misskey.entities.StatsResponse | null>(null);
 const usersComparedToThePrevDay = ref<number | null>(null);

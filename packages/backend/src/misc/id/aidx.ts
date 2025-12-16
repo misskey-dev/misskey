@@ -23,10 +23,10 @@ const nodeId = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', NODE_LENGT
 let counter = 0;
 
 function getTime(time: number): string {
-	time = time - TIME2000;
-	if (time < 0) time = 0;
+	let offsetTime = time - TIME2000;
+	if (offsetTime < 0) offsetTime = 0;
 
-	return time.toString(36).padStart(TIME_LENGTH, '0').slice(-TIME_LENGTH);
+	return offsetTime.toString(36).padStart(TIME_LENGTH, '0').slice(-TIME_LENGTH);
 }
 
 function getNoise(): string {
@@ -34,7 +34,7 @@ function getNoise(): string {
 }
 
 export function genAidx(t: number): string {
-	if (isNaN(t)) throw new Error('Failed to create AIDX: Invalid Date');
+	if (Number.isNaN(t)) throw new Error('Failed to create AIDX: Invalid Date');
 	counter++;
 	return getTime(t) + nodeId + getNoise();
 }

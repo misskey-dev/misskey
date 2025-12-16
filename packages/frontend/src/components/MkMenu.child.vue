@@ -11,8 +11,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { nextTick, onMounted, onUnmounted, provide, useTemplateRef, watch } from 'vue';
-import MkMenu from './MkMenu.vue';
 import type { MenuItem } from '@/types/menu.js';
+import MkMenu from './MkMenu.vue';
 
 const props = defineProps<{
 	items: MenuItem[];
@@ -47,8 +47,8 @@ function setPosition() {
 	if (rootRect.top + top + myRect.height >= (window.innerHeight - SCROLLBAR_THICKNESS)) {
 		top = top - ((rootRect.top + top + myRect.height) - (window.innerHeight - SCROLLBAR_THICKNESS));
 	}
-	el.value.style.left = left + 'px';
-	el.value.style.top = top + 'px';
+	el.value.style.left = `${left}px`;
+	el.value.style.top = `${top}px`;
 }
 
 function onChildClosed(actioned?: boolean) {

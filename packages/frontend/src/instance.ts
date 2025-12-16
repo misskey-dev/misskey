@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { computed, reactive } from 'vue';
-import * as Misskey from 'misskey-js';
-import { misskeyApi } from '@/utility/misskey-api.js';
+import { reactive } from 'vue';
+import type * as Misskey from 'misskey-js';
 import { miLocalStorage } from '@/local-storage.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 // TODO: 他のタブと永続化されたstateを同期
 
@@ -15,8 +15,8 @@ const providedMetaEl = window.document.getElementById('misskey_meta');
 
 let cachedMeta = miLocalStorage.getItem('instance') ? JSON.parse(miLocalStorage.getItem('instance')!) : null;
 let cachedAt = miLocalStorage.getItem('instanceCachedAt') ? parseInt(miLocalStorage.getItem('instanceCachedAt')!) : 0;
-const providedMeta = providedMetaEl && providedMetaEl.textContent ? JSON.parse(providedMetaEl.textContent) : null;
-const providedAt = providedMetaEl && providedMetaEl.dataset.generatedAt ? parseInt(providedMetaEl.dataset.generatedAt) : 0;
+const providedMeta = providedMetaEl?.textContent ? JSON.parse(providedMetaEl.textContent) : null;
+const providedAt = providedMetaEl?.dataset.generatedAt ? parseInt(providedMetaEl.dataset.generatedAt) : 0;
 if (providedAt > cachedAt) {
 	miLocalStorage.setItem('instance', JSON.stringify(providedMeta));
 	miLocalStorage.setItem('instanceCachedAt', providedAt.toString());

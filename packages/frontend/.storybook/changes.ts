@@ -4,8 +4,8 @@
  */
 
 import fs from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import micromatch from 'micromatch';
 import main from './main.js';
 

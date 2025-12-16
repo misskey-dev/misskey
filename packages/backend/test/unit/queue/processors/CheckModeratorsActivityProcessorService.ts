@@ -4,21 +4,22 @@
  */
 
 import { jest } from '@jest/globals';
-import { Test, TestingModule } from '@nestjs/testing';
+import type { TestingModule } from '@nestjs/testing';
+import { Test, } from '@nestjs/testing';
 import * as lolex from '@sinonjs/fake-timers';
 import { addHours, addSeconds, subDays, subHours, subSeconds } from 'date-fns';
-import { CheckModeratorsActivityProcessorService } from '@/queue/processors/CheckModeratorsActivityProcessorService.js';
-import { MiSystemWebhook, MiUser, MiUserProfile, UserProfilesRepository, UsersRepository } from '@/models/_.js';
-import { IdService } from '@/core/IdService.js';
-import { RoleService } from '@/core/RoleService.js';
-import { GlobalModule } from '@/GlobalModule.js';
-import { MetaService } from '@/core/MetaService.js';
-import { DI } from '@/di-symbols.js';
-import { QueueLoggerService } from '@/queue/QueueLoggerService.js';
-import { EmailService } from '@/core/EmailService.js';
-import { SystemWebhookService } from '@/core/SystemWebhookService.js';
 import { AnnouncementService } from '@/core/AnnouncementService.js';
-import { SystemWebhookEventType } from '@/models/SystemWebhook.js';
+import { EmailService } from '@/core/EmailService.js';
+import { IdService } from '@/core/IdService.js';
+import { MetaService } from '@/core/MetaService.js';
+import { RoleService } from '@/core/RoleService.js';
+import { SystemWebhookService } from '@/core/SystemWebhookService.js';
+import { DI } from '@/di-symbols.js';
+import { GlobalModule } from '@/GlobalModule.js';
+import type { MiSystemWebhook, MiUser, MiUserProfile, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import type { SystemWebhookEventType } from '@/models/SystemWebhook.js';
+import { CheckModeratorsActivityProcessorService } from '@/queue/processors/CheckModeratorsActivityProcessorService.js';
+import { QueueLoggerService } from '@/queue/QueueLoggerService.js';
 
 const baseDate = new Date(Date.UTC(2000, 11, 15, 12, 0, 0));
 

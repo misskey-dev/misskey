@@ -346,21 +346,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, reactive, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import MkInput from '@/components/MkInput.vue';
-import MkFolder from '@/components/MkFolder.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
-import MkButton from '@/components/MkButton.vue';
-import MkSelect from '@/components/MkSelect.vue';
-import MkRange from '@/components/MkRange.vue';
-import MkRolePreview from '@/components/MkRolePreview.vue';
-import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
+import { fetchInstance, instance } from '@/instance.js';
+import * as os from '@/os.js';
 import { definePage } from '@/page.js';
-import { instance, fetchInstance } from '@/instance.js';
-import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { useRouter } from '@/router.js';
 import { deepClone } from '@/utility/clone.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import MkButton from '@/components/MkButton.vue';
+import MkFoldableSection from '@/components/MkFoldableSection.vue';
+import MkFolder from '@/components/MkFolder.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkRange from '@/components/MkRange.vue';
+import MkRolePreview from '@/components/MkRolePreview.vue';
+import MkSelect from '@/components/MkSelect.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 
 const router = useRouter();

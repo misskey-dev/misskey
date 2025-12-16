@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import bcrypt from 'bcryptjs';
 import { Inject, Injectable } from '@nestjs/common';
-import type { UserProfilesRepository, PasswordResetRequestsRepository } from '@/models/_.js';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import { DI } from '@/di-symbols.js';
+import bcrypt from 'bcryptjs';
 import { IdService } from '@/core/IdService.js';
+import { DI } from '@/di-symbols.js';
+import type { PasswordResetRequestsRepository, UserProfilesRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 
 export const meta = {
 	tags: ['reset password'],
@@ -32,7 +32,7 @@ export const paramDef = {
 } as const;
 
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.passwordResetRequestsRepository)
 		private passwordResetRequestsRepository: PasswordResetRequestsRepository,

@@ -42,15 +42,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, normalizeClass, onMounted, onUnmounted, provide, watch, ref, useTemplateRef, computed } from 'vue';
-import type { Keymap } from '@/utility/hotkey.js';
-import * as os from '@/os.js';
-import { isTouchUsing } from '@/utility/touch.js';
-import { deviceKind } from '@/utility/device-kind.js';
-import { focusTrap } from '@/utility/focus-trap.js';
-import { focusParent } from '@/utility/focus.js';
-import { prefer } from '@/preferences.js';
+import { computed, nextTick, normalizeClass, onMounted, onUnmounted, provide, ref, useTemplateRef, watch } from 'vue';
 import { DI } from '@/di.js';
+import * as os from '@/os.js';
+import { prefer } from '@/preferences.js';
+import { deviceKind } from '@/utility/device-kind.js';
+import { focusParent } from '@/utility/focus.js';
+import { focusTrap } from '@/utility/focus-trap.js';
+import type { Keymap } from '@/utility/hotkey.js';
+import { isTouchUsing } from '@/utility/touch.js';
 
 function getFixedContainer(el: Element | null): Element | null {
 	if (el == null || el.tagName === 'BODY') return null;
@@ -184,8 +184,8 @@ const align = () => {
 	const width = content.value!.offsetWidth;
 	const height = content.value!.offsetHeight;
 
-	let left;
-	let top;
+	let left: number;
+	let top: number;
 
 	const x = anchorRect.left + (fixed.value ? 0 : window.scrollX);
 	const y = anchorRect.top + (fixed.value ? 0 : window.scrollY);
@@ -194,16 +194,22 @@ const align = () => {
 		left = x + (props.anchorElement.offsetWidth / 2) - (width / 2);
 	} else if (props.anchor.x === 'left') {
 		// TODO
+		throw new Error(`Unsupported anchor.x value: ${props.anchor.x}`);
 	} else if (props.anchor.x === 'right') {
 		left = x + props.anchorElement.offsetWidth;
+	} else {
+		throw new Error(`Invalid anchor.x value: ${props.anchor.x}`);
 	}
 
 	if (props.anchor.y === 'center') {
 		top = (y - (height / 2));
 	} else if (props.anchor.y === 'top') {
 		// TODO
+		throw new Error(`Unsupported anchor.y value: ${props.anchor.y}`);
 	} else if (props.anchor.y === 'bottom') {
 		top = y + props.anchorElement.offsetHeight;
+	} else {
+		throw new Error(`Invalid anchor.y value: ${props.anchor.y}`);
 	}
 
 	if (fixed.value) {
@@ -281,8 +287,8 @@ const align = () => {
 
 	transformOrigin.value = `${transformOriginX} ${transformOriginY}`;
 
-	content.value.style.left = left + 'px';
-	content.value.style.top = top + 'px';
+	content.value.style.left = `${left}px`;
+	content.value.style.top = `${top}px`;
 };
 
 const onOpened = () => {

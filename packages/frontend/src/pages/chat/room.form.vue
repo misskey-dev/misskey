@@ -34,19 +34,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, watch, ref, shallowRef, computed, nextTick, readonly, onBeforeUnmount } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, readonly, ref, shallowRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-//import insertTextAtCursor from 'insert-text-at-cursor';
-import { formatTimeString } from '@/utility/format-time-string.js';
-import { selectFile } from '@/utility/drive.js';
-import * as os from '@/os.js';
+import { checkDragDataType, getDragData } from '@/drag-and-drop.js';
 import { i18n } from '@/i18n.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
+import * as os from '@/os.js';
 import { prefer } from '@/preferences.js';
 import { Autocomplete } from '@/utility/autocomplete.js';
+import { selectFile } from '@/utility/drive.js';
 import { emojiPicker } from '@/utility/emoji-picker.js';
-import { checkDragDataType, getDragData } from '@/drag-and-drop.js';
+//import insertTextAtCursor from 'insert-text-at-cursor';
+import { formatTimeString } from '@/utility/format-time-string.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 const props = defineProps<{
 	user?: Misskey.entities.UserDetailed | null;
@@ -65,7 +65,7 @@ let autocompleteInstance: Autocomplete | null = null;
 const canSend = computed(() => (text.value != null && text.value !== '') || file.value != null);
 
 function getDraftKey() {
-	return props.user ? 'user:' + props.user.id : 'room:' + props.room?.id;
+	return props.user ? `user:${props.user.id}` : `room:${props.room?.id}`;
 }
 
 watch([text, file], saveDraft);

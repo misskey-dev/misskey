@@ -1,6 +1,3 @@
-/* eslint @typescript-eslint/naming-convention: 0 */
-/* eslint @typescript-eslint/no-explicit-any: 0 */
-
 export type paths = {
     '/admin/abuse-report/notification-recipient/create': {
         /**

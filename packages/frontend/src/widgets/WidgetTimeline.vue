@@ -36,18 +36,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { useWidgetPropsManager } from './widget.js';
-import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
+import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
+import { availableBasicTimelines, basicTimelineIconClass, basicTimelineTypes, isAvailableBasicTimeline, isBasicTimeline } from '@/timelines.js';
+import type { MenuItem } from '@/types/menu.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
-import { i18n } from '@/i18n.js';
-import { availableBasicTimelines, isAvailableBasicTimeline, isBasicTimeline, basicTimelineIconClass, basicTimelineTypes } from '@/timelines.js';
-import type { MenuItem } from '@/types/menu.js';
+import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import { useWidgetPropsManager } from './widget.js';
 
 const name = 'timeline';
 

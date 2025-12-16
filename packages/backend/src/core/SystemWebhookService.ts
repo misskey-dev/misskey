@@ -3,22 +3,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
-import * as Redis from 'ioredis';
-import type { MiUser, SystemWebhooksRepository } from '@/models/_.js';
-import { DI } from '@/di-symbols.js';
-import { bindThis } from '@/decorators.js';
-import { GlobalEvents, GlobalEventService } from '@/core/GlobalEventService.js';
-import { MiSystemWebhook, type SystemWebhookEventType } from '@/models/SystemWebhook.js';
-import { IdService } from '@/core/IdService.js';
-import { QueueService } from '@/core/QueueService.js';
-import { ModerationLogService } from '@/core/ModerationLogService.js';
-import { LoggerService } from '@/core/LoggerService.js';
-import Logger from '@/logger.js';
-import { Packed } from '@/misc/json-schema.js';
-import { AbuseReportResolveType } from '@/models/AbuseUserReport.js';
-import { ModeratorInactivityRemainingTime } from '@/queue/processors/CheckModeratorsActivityProcessorService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import type * as Redis from 'ioredis';
+import type { GlobalEvents } from '@/core/GlobalEventService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { IdService } from '@/core/IdService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { QueueService } from '@/core/QueueService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type { Packed } from '@/misc/json-schema.js';
+import type { MiUser, SystemWebhooksRepository } from '@/models/_.js';
+import type { AbuseReportResolveType } from '@/models/AbuseUserReport.js';
+import type { SystemWebhookEventType } from '@/models/SystemWebhook.js';
+import { MiSystemWebhook, } from '@/models/SystemWebhook.js';
+import type { ModeratorInactivityRemainingTime } from '@/queue/processors/CheckModeratorsActivityProcessorService.js';
 
 export type AbuseReportPayload = {
 	id: string;

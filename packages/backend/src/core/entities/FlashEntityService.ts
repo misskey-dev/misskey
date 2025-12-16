@@ -4,13 +4,13 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { DI } from '@/di-symbols.js';
-import type { FlashLikesRepository, FlashsRepository } from '@/models/_.js';
-import type { Packed } from '@/misc/json-schema.js';
-import type { MiUser } from '@/models/User.js';
-import type { MiFlash } from '@/models/Flash.js';
-import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import type { Packed } from '@/misc/json-schema.js';
+import type { FlashLikesRepository, FlashsRepository } from '@/models/_.js';
+import type { MiFlash } from '@/models/Flash.js';
+import type { MiUser } from '@/models/User.js';
 import { UserEntityService } from './UserEntityService.js';
 
 @Injectable()
@@ -40,7 +40,7 @@ export class FlashEntityService {
 		// { schema: 'UserDetailed' } すると無限ループするので注意
 		const user = hint?.packedUser ?? await this.userEntityService.pack(flash.user ?? flash.userId, me);
 
-		let isLiked = undefined;
+		let isLiked: boolean | undefined;
 		if (meId) {
 			isLiked = hint?.likedFlashIds
 				? hint.likedFlashIds.includes(flash.id)

@@ -4,8 +4,8 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import { CaptchaService, captchaErrorCodes, supportedCaptchaProviders } from '@/core/CaptchaService.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import { captchaErrorCodes, CaptchaService, supportedCaptchaProviders } from '@/core/CaptchaService.js';
 import { ApiError } from '@/server/api/error.js';
 
 export const meta = {
@@ -81,7 +81,7 @@ export const paramDef = {
 } as const;
 
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		private captchaService: CaptchaService,
 	) {

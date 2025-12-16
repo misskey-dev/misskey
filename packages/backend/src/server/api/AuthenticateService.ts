@@ -3,16 +3,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
-import { DI } from '@/di-symbols.js';
-import type { AccessTokensRepository, AppsRepository, UsersRepository } from '@/models/_.js';
-import type { MiLocalUser } from '@/models/User.js';
-import type { MiAccessToken } from '@/models/AccessToken.js';
-import { MemoryKVCache } from '@/misc/cache.js';
-import type { MiApp } from '@/models/App.js';
+import type { OnApplicationShutdown } from '@nestjs/common';
+import { Inject, Injectable, } from '@nestjs/common';
 import { CacheService } from '@/core/CacheService.js';
-import { isNativeUserToken } from '@/misc/token.js';
 import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import { MemoryKVCache } from '@/misc/cache.js';
+import { isNativeUserToken } from '@/misc/token.js';
+import type { AccessTokensRepository, AppsRepository, UsersRepository } from '@/models/_.js';
+import type { MiAccessToken } from '@/models/AccessToken.js';
+import type { MiApp } from '@/models/App.js';
+import type { MiLocalUser } from '@/models/User.js';
 
 export class AuthenticationError extends Error {
 	constructor(message: string) {

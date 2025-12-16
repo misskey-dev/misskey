@@ -4,7 +4,7 @@
  */
 
 import { defineAsyncComponent } from 'vue';
-import * as Misskey from 'misskey-js';
+import type * as Misskey from 'misskey-js';
 import * as os from '@/os.js';
 
 export type SystemWebhookEventType = Misskey.entities.SystemWebhook['on'][number];
@@ -25,7 +25,7 @@ export type MkSystemWebhookResult = {
 };
 
 export async function showSystemWebhookEditorDialog(props: MkSystemWebhookEditorProps): Promise<MkSystemWebhookResult | null> {
-	const { result } = await new Promise<{ result: MkSystemWebhookResult | null }>(async resolve => {
+	const { result } = await new Promise<{ result: MkSystemWebhookResult | null }>(resolve => {
 		const { dispose } = os.popup(
 			defineAsyncComponent(() => import('@/components/MkSystemWebhookEditor.vue')),
 			props,

@@ -1,5 +1,5 @@
-import { describe, test } from 'vitest';
 import { expectType } from 'tsd';
+import { describe, test } from 'vitest';
 import * as Misskey from '../src/index.js';
 
 describe('API', () => {

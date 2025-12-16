@@ -4,12 +4,12 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Endpoint } from '@/server/api/endpoint-base.js';
+import { UserRenoteMutingService } from "@/core/UserRenoteMutingService.js";
 import { DI } from '@/di-symbols.js';
+import type { RenoteMutingsRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { ApiError } from '../../error.js';
-import { UserRenoteMutingService } from "@/core/UserRenoteMutingService.js";
-import type { RenoteMutingsRepository } from '@/models/_.js';
 
 export const meta = {
 	tags: ['account'],
@@ -48,7 +48,7 @@ export const paramDef = {
 } as const;
 
 @Injectable()
-export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
+export default class extends Endpoint<typeof meta, typeof paramDef> {
 	constructor(
 		@Inject(DI.renoteMutingsRepository)
 		private renoteMutingsRepository: RenoteMutingsRepository,

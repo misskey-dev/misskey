@@ -11,109 +11,109 @@ const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 
 await execa('pnpm', ['clean'], {
-	cwd: _dirname + '/../',
+	cwd: `${_dirname}/../`,
 	stdout: process.stdout,
 	stderr: process.stderr,
 });
 
 // アセットのビルドで依存しているので一番最初に必要
 await execa('pnpm', ['--filter', 'i18n', 'build'], {
-	cwd: _dirname + '/../',
+	cwd: `${_dirname}/../`,
 	stdout: process.stdout,
 	stderr: process.stderr,
 });
 
 await Promise.all([
 	execa('pnpm', ['build-pre'], {
-		cwd: _dirname + '/../',
+		cwd: `${_dirname}/../`,
 		stdout: process.stdout,
 		stderr: process.stderr,
 	}),
 	execa('pnpm', ['build-assets'], {
-		cwd: _dirname + '/../',
+		cwd: `${_dirname}/../`,
 		stdout: process.stdout,
 		stderr: process.stderr,
 	}),
 	execa('pnpm', ['--filter', 'backend...', 'build'], {
-		cwd: _dirname + '/../',
+		cwd: `${_dirname}/../`,
 		stdout: process.stdout,
 		stderr: process.stderr,
 	}),
 	// icons-subsetterは開発段階では使用されないが、型エラーを抑制するためにはじめの一度だけビルドする
 	execa('pnpm', ['--filter', 'icons-subsetter', 'build'], {
-		cwd: _dirname + '/../',
+		cwd: `${_dirname}/../`,
 		stdout: process.stdout,
 		stderr: process.stderr,
 	}),
 	execa('pnpm', ['--filter', 'misskey-js', 'build'], {
-		cwd: _dirname + '/../',
+		cwd: `${_dirname}/../`,
 		stdout: process.stdout,
 		stderr: process.stderr,
 	}),
 ]);
 
 execa('pnpm', ['build-pre', '--watch'], {
-	cwd: _dirname + '/../',
+	cwd: `${_dirname}/../`,
 	stdout: process.stdout,
 	stderr: process.stderr,
 });
 
 execa('pnpm', ['build-assets', '--watch'], {
-	cwd: _dirname + '/../',
+	cwd: `${_dirname}/../`,
 	stdout: process.stdout,
 	stderr: process.stderr,
 });
 
 execa('pnpm', ['--filter', 'backend', 'dev'], {
-	cwd: _dirname + '/../',
+	cwd: `${_dirname}/../`,
 	stdout: process.stdout,
 	stderr: process.stderr,
 });
 
 execa('pnpm', ['--filter', 'frontend-shared', 'watch', '--no-clean'], {
-	cwd: _dirname + '/../',
+	cwd: `${_dirname}/../`,
 	stdout: process.stdout,
 	stderr: process.stderr,
 });
 
 execa('pnpm', ['--filter', 'frontend', 'watch'], {
-	cwd: _dirname + '/../',
+	cwd: `${_dirname}/../`,
 	stdout: process.stdout,
 	stderr: process.stderr,
 });
 
 execa('pnpm', ['--filter', 'frontend-embed', 'watch'], {
-	cwd: _dirname + '/../',
+	cwd: `${_dirname}/../`,
 	stdout: process.stdout,
 	stderr: process.stderr,
 });
 
 execa('pnpm', ['--filter', 'sw', 'watch'], {
-	cwd: _dirname + '/../',
+	cwd: `${_dirname}/../`,
 	stdout: process.stdout,
 	stderr: process.stderr,
 });
 
 execa('pnpm', ['--filter', 'misskey-js', 'watch', '--no-clean'], {
-	cwd: _dirname + '/../',
+	cwd: `${_dirname}/../`,
 	stdout: process.stdout,
 	stderr: process.stderr,
 });
 
 execa('pnpm', ['--filter', 'i18n', 'watch', '--no-clean'], {
-	cwd: _dirname + '/../',
+	cwd: `${_dirname}/../`,
 	stdout: process.stdout,
 	stderr: process.stderr,
 });
 
 execa('pnpm', ['--filter', 'misskey-reversi', 'watch', '--no-clean'], {
-	cwd: _dirname + '/../',
+	cwd: `${_dirname}/../`,
 	stdout: process.stdout,
 	stderr: process.stderr,
 });
 
 execa('pnpm', ['--filter', 'misskey-bubble-game', 'watch', '--no-clean'], {
-	cwd: _dirname + '/../',
+	cwd: `${_dirname}/../`,
 	stdout: process.stdout,
 	stderr: process.stderr,
 });

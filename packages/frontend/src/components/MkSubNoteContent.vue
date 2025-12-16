@@ -41,9 +41,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { shouldCollapsed } from '@@/js/collapsed.js';
+import { i18n } from '@/i18n.js';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkPoll from '@/components/MkPoll.vue';
-import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
 	note: Misskey.entities.Note;

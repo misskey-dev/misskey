@@ -27,17 +27,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { markRaw, ref, shallowRef, toRef } from 'vue';
 import type { Endpoints } from 'misskey-js';
-import MkUserList from '@/components/MkUserList.vue';
-import MkInput from '@/components/MkInput.vue';
-import MkRadios from '@/components/MkRadios.vue';
-import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import * as os from '@/os.js';
-import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import { misskeyApi } from '@/utility/misskey-api.js';
 import { useRouter } from '@/router.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { Paginator } from '@/utility/paginator.js';
+import MkButton from '@/components/MkButton.vue';
+import MkFoldableSection from '@/components/MkFoldableSection.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkRadios from '@/components/MkRadios.vue';
+import MkUserList from '@/components/MkUserList.vue';
 
 const props = withDefaults(defineProps<{
 	query?: string,
@@ -58,7 +58,6 @@ const searchOrigin = ref(toRef(props, 'origin').value);
 async function search() {
 	const query = searchQuery.value.toString().trim();
 
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (query == null || query === '') return;
 
 	//#region AP lookup
@@ -82,7 +81,6 @@ async function search() {
 						acct: `${res.object.username}@${res.object.host}`,
 					},
 				});
-			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 			} else if (res.type === 'Note') {
 				router.push('/notes/:noteId/:initialTab?', {
 					params: {

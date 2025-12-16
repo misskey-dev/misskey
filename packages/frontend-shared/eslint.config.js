@@ -1,16 +1,14 @@
-import globals from 'globals';
 import tsParser from '@typescript-eslint/parser';
-import parser from 'vue-eslint-parser';
 import pluginVue from 'eslint-plugin-vue';
-import pluginMisskey from '@misskey-dev/eslint-plugin';
-import sharedConfig from '../shared/eslint.config.js';
+import globals from 'globals';
+import parser from 'vue-eslint-parser';
+import sharedConfig, { typescriptConfig } from '../shared/eslint.config.js';
 
-// eslint-disable-next-line import/no-default-export
 export default [
 	...sharedConfig,
 	{
 		files: ['**/*.vue'],
-		...pluginMisskey.configs.typescript,
+		...typescriptConfig,
 	},
 	...pluginVue.configs['flat/recommended'],
 	{
@@ -46,11 +44,6 @@ export default [
 			},
 		},
 		rules: {
-			'@typescript-eslint/no-unused-vars': 'off',
-			'@typescript-eslint/no-empty-interface': ['error', {
-				allowSingleExtends: true,
-			}],
-			'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
 			// window ... グローバルスコープと衝突し、予期せぬ結果を招くため
 			// e ... error や event など、複数のキーワードの頭文字であり分かりにくいため
 			// close ... window.closeと衝突 or 紛らわしい
@@ -65,58 +58,6 @@ export default [
 			// clearTimeout ... window.clearTimeoutと衝突 or 紛らわしい
 			// clearInterval ... window.clearIntervalと衝突 or 紛らわしい
 			'id-denylist': ['error', 'window', 'e', 'close', 'open', 'fetch', 'location', 'document', 'history', 'scroll', 'setTimeout', 'setInterval', 'clearTimeout', 'clearInterval'],
-			'no-restricted-globals': [
-				'error',
-				{
-					'name': 'open',
-					'message': 'Use `window.open`.',
-				},
-				{
-					'name': 'close',
-					'message': 'Use `window.close`.',
-				},
-				{
-					'name': 'fetch',
-					'message': 'Use `window.fetch`.',
-				},
-				{
-					'name': 'location',
-					'message': 'Use `window.location`.',
-				},
-				{
-					'name': 'document',
-					'message': 'Use `window.document`.',
-				},
-				{
-					'name': 'history',
-					'message': 'Use `window.history`.',
-				},
-				{
-					'name': 'scroll',
-					'message': 'Use `window.scroll`.',
-				},
-				{
-					'name': 'setTimeout',
-					'message': 'Use `window.setTimeout`.',
-				},
-				{
-					'name': 'setInterval',
-					'message': 'Use `window.setInterval`.',
-				},
-				{
-					'name': 'clearTimeout',
-					'message': 'Use `window.clearTimeout`.',
-				},
-				{
-					'name': 'clearInterval',
-					'message': 'Use `window.clearInterval`.',
-				},
-				{
-					'name': 'name',
-					'message': 'Use `window.name`. もしくは name という変数名を定義し忘れている',
-				},
-			],
-			'no-shadow': ['warn'],
 			'vue/attributes-order': ['error', {
 				alphabetical: false,
 			}],

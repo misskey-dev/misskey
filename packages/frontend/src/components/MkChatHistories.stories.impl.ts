@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { http, HttpResponse } from 'msw';
 import { action } from 'storybook/actions';
-import { chatMessage } from '../../.storybook/fakes';
-import MkChatHistories from './MkChatHistories.vue';
 import type { StoryObj } from '@storybook/vue3';
 import type * as Misskey from 'misskey-js';
+import { HttpResponse, http } from 'msw';
+import { chatMessage } from '../../.storybook/fakes';
+import MkChatHistories from './MkChatHistories.vue';
 export const Default = {
 	render(args) {
 		return {

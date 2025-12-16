@@ -42,14 +42,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, useTemplateRef, computed } from 'vue';
-import MkModal from '@/components/MkModal.vue';
-import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/MkInput.vue';
-import MkSelect from '@/components/MkSelect.vue';
-import type { MkSelectItem, OptionValue } from '@/components/MkSelect.vue';
+import { computed, ref, useTemplateRef } from 'vue';
 import { useMkSelect } from '@/composables/use-mkselect.js';
 import { i18n } from '@/i18n.js';
+import MkButton from '@/components/MkButton.vue';
+import MkInput from '@/components/MkInput.vue';
+import MkModal from '@/components/MkModal.vue';
+import type { MkSelectItem, OptionValue } from '@/components/MkSelect.vue';
+import MkSelect from '@/components/MkSelect.vue';
 
 type Input = {
 	type?: 'text' | 'number' | 'password' | 'email' | 'url' | 'date' | 'time' | 'search' | 'datetime-local';

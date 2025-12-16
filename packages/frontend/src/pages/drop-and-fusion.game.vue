@@ -191,28 +191,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onDeactivated, onMounted, onUnmounted, ref, shallowRef, watch, useTemplateRef } from 'vue';
+import { computed, onDeactivated, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import * as Matter from 'matter-js';
-import * as Misskey from 'misskey-js';
-import { DropAndFusionGame } from 'misskey-bubble-game';
-import { useInterval } from '@@/js/use-interval.js';
-import { apiUrl } from '@@/js/config.js';
 import type { Mono } from 'misskey-bubble-game';
-import { definePage } from '@/page.js';
-import MkRippleEffect from '@/components/MkRippleEffect.vue';
+import { DropAndFusionGame } from 'misskey-bubble-game';
+import * as Misskey from 'misskey-js';
+import { apiUrl } from '@@/js/config.js';
+import { useInterval } from '@@/js/use-interval.js';
+import { $i } from '@/i.js';
+import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
+import { definePage } from '@/page.js';
+import { prefer } from '@/preferences.js';
+import { store } from '@/store.js';
+import { claimAchievement } from '@/utility/achievements.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import * as sound from '@/utility/sound.js';
+import MkButton from '@/components/MkButton.vue';
 import MkNumber from '@/components/MkNumber.vue';
 import MkPlusOneEffect from '@/components/MkPlusOneEffect.vue';
-import MkButton from '@/components/MkButton.vue';
-import { claimAchievement } from '@/utility/achievements.js';
-import { store } from '@/store.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { i18n } from '@/i18n.js';
-import { $i } from '@/i.js';
-import * as sound from '@/utility/sound.js';
 import MkRange from '@/components/MkRange.vue';
-import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
-import { prefer } from '@/preferences.js';
+import MkRippleEffect from '@/components/MkRippleEffect.vue';
 
 type FrontendMonoDefinition = {
 	id: string;
@@ -627,7 +627,6 @@ function loadMonoTextures() {
 
 		if (monoTextureUrls[mono.img]) {
 			src = monoTextureUrls[mono.img];
-			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		} else if (monoTextures[mono.img]) {
 			src = URL.createObjectURL(monoTextures[mono.img]);
 			monoTextureUrls[mono.img] = src;
@@ -652,8 +651,6 @@ function getTextureImageUrl(mono: Mono) {
 
 	if (monoTextureUrls[def.img]) {
 		return monoTextureUrls[def.img];
-
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	} else if (monoTextures[def.img]) {
 		// Gameクラス内にキャッシュがある場合はそれを使う
 		const out = URL.createObjectURL(monoTextures[def.img]);
@@ -674,7 +671,7 @@ function tick() {
 }
 
 function tickReplay() {
-	let hasNextTick;
+	let hasNextTick = false;
 	for (let i = 0; i < replayPlaybackRate.value; i++) {
 		const log = logs!.find(x => x.frame === game.frame);
 		if (log) {
@@ -912,7 +909,7 @@ function getGameImageDriveFile() {
 					formData.append('folderId', prefer.s.uploadFolder);
 				}
 
-				window.fetch(apiUrl + '/drive/files/create', {
+				window.fetch(`${apiUrl}/drive/files/create`, {
 					method: 'POST',
 					body: formData,
 				})
@@ -1141,7 +1138,7 @@ function attachGameEvents() {
 
 			misskeyApi('i/registry/set', {
 				scope: ['dropAndFusionGame'],
-				key: 'highScore:' + props.gameMode,
+				key: `highScore:${props.gameMode}`,
 				value: highScore.value,
 			});
 		}
@@ -1160,7 +1157,7 @@ onMounted(async () => {
 	try {
 		highScore.value = await misskeyApi('i/registry/get', {
 			scope: ['dropAndFusionGame'],
-			key: 'highScore:' + props.gameMode,
+			key: `highScore:${props.gameMode}`,
 		});
 	} catch (err) {
 		highScore.value = null;

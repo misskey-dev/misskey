@@ -4,9 +4,8 @@
  */
 
 import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
-import { Serialized } from '@/types.js';
-import { id } from './util/id.js';
 import { MiUser } from './User.js';
+import { id } from './util/id.js';
 
 @Entity('system_account')
 @Index(['type'], { unique: true })
@@ -18,7 +17,7 @@ export class MiSystemAccount {
 	@Column(id())
 	public userId: MiUser['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(() => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()

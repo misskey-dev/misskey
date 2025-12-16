@@ -42,9 +42,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, onMounted, onUnmounted, onBeforeUnmount, ref, useTemplateRef, watch } from 'vue';
-import { isTouchUsing } from '@/utility/touch.js';
+import { computed, defineAsyncComponent, onBeforeUnmount, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue';
 import * as os from '@/os.js';
+import { isTouchUsing } from '@/utility/touch.js';
 
 const props = withDefaults(defineProps<{
 	modelValue: number;
@@ -75,16 +75,16 @@ const maxRatio = computed(() => Math.abs(props.max) / (props.max + Math.abs(Math
 const minRatio = computed(() => Math.abs(Math.min(0, props.min)) / (props.max + Math.abs(Math.min(0, props.min))));
 
 const rightTrackWidth = computed(() => {
-	return Math.max(0, (steppedRawValue.value - minRatio.value) * 100) + '%';
+	return `${Math.max(0, (steppedRawValue.value - minRatio.value) * 100)}%`;
 });
 const leftTrackWidth = computed(() => {
-	return Math.max(0, (minRatio.value - steppedRawValue.value) * 100) + '%';
+	return `${Math.max(0, (minRatio.value - steppedRawValue.value) * 100)}%`;
 });
 const rightTrackPosition = computed(() => {
-	return (Math.abs(Math.min(0, props.min)) / (props.max + Math.abs(Math.min(0, props.min)))) * 100 + '%';
+	return `${(Math.abs(Math.min(0, props.min)) / (props.max + Math.abs(Math.min(0, props.min)))) * 100}%`;
 });
 const leftTrackPosition = computed(() => {
-	return (Math.min(minRatio.value, steppedRawValue.value) * 100) + '%';
+	return `${Math.min(minRatio.value, steppedRawValue.value) * 100}%`;
 });
 
 const calcRawValue = (value: number) => {

@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { existsSync, readFileSync, globSync } from 'node:fs';
+import { existsSync, globSync, readFileSync } from 'node:fs';
 import { writeFile } from 'node:fs/promises';
 import { basename, dirname } from 'node:path/posix';
-import { GENERATOR, type State, generate } from 'astring';
+import type { State } from 'astring';
+import { GENERATOR, generate, } from 'astring';
 import type * as estree from 'estree';
 import { format } from 'prettier';
 
@@ -71,7 +72,7 @@ const generator = {
 				break;
 			}
 			default: {
-				// @ts-ignore
+				// @ts-expect-error
 				this[node.expression.type](node.expression, state);
 				break;
 			}
@@ -93,7 +94,8 @@ type SplitCamel<
 		: SplitCamel<XR, `${YC}${XH}`, YN>
 	: YN;
 
-// @ts-ignore
+// @ts-expect-error
+// biome-ignore lint/correctness/noUnusedVariables: ignore
 type SplitKebab<T extends string> = T extends `${infer XH}-${infer XR}`
 	? [XH, ...SplitKebab<XR>]
 	: [T];
@@ -109,7 +111,8 @@ type ToKebab<T extends readonly string[]> = T extends readonly [
 	? `${XH}${XR extends readonly string[] ? `-${ToKebab<XR>}` : ''}`
 	: '';
 
-// @ts-ignore
+// @ts-expect-error
+// biome-ignore lint/correctness/noUnusedVariables: ignore
 type ToPascal<T extends readonly string[]> = T extends readonly [
 	infer XH extends string,
 	...infer XR extends readonly string[]
@@ -117,6 +120,7 @@ type ToPascal<T extends readonly string[]> = T extends readonly [
 	? `${Capitalize<XH>}${ToPascal<XR>}`
 	: '';
 
+// biome-ignore lint/correctness/noUnusedVariables: ignore
 function h<T extends estree.Node>(
 	component: T['type'],
 	props: Omit<T, 'type'>

@@ -41,15 +41,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, computed } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import XForm from './auth.form.vue';
-import MkSignin from '@/components/MkSignin.vue';
-import { misskeyApi } from '@/utility/misskey-api.js';
-import { $i } from '@/i.js';
-import { definePage } from '@/page.js';
-import { i18n } from '@/i18n.js';
 import { login } from '@/accounts.js';
+import { $i } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import { definePage } from '@/page.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import MkSignin from '@/components/MkSignin.vue';
+import XForm from './auth.form.vue';
 
 const props = defineProps<{
 	token: string;
@@ -60,7 +60,7 @@ const session = ref<Misskey.entities.AuthSessionShowResponse | null>(null);
 
 function accepted() {
 	state.value = 'accepted';
-	if (session.value && session.value.app.callbackUrl) {
+	if (session.value?.app.callbackUrl) {
 		const url = new URL(session.value.app.callbackUrl);
 		if (['javascript:', 'file:', 'data:', 'mailto:', 'tel:', 'vbscript:'].includes(url.protocol)) throw new Error('invalid url');
 		window.location.href = `${session.value.app.callbackUrl}?token=${session.value.token}`;

@@ -3,23 +3,24 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable, OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
-import * as Redis from 'ioredis';
+import type { OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
+import type * as Redis from 'ioredis';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import type { GlobalEvents } from '@/core/GlobalEventService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { IdService } from '@/core/IdService.js';
+import { QueueService } from '@/core/QueueService.js';
+import { RoleService } from '@/core/RoleService.js';
+import { SystemAccountService } from '@/core/SystemAccountService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
+import { RedisKVCache } from '@/misc/cache.js';
 import type { UserListMembershipsRepository } from '@/models/_.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiUserList } from '@/models/UserList.js';
 import type { MiUserListMembership } from '@/models/UserListMembership.js';
-import { IdService } from '@/core/IdService.js';
-import type { GlobalEvents } from '@/core/GlobalEventService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
-import { DI } from '@/di-symbols.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { bindThis } from '@/decorators.js';
-import { QueueService } from '@/core/QueueService.js';
-import { RedisKVCache } from '@/misc/cache.js';
-import { RoleService } from '@/core/RoleService.js';
-import { SystemAccountService } from '@/core/SystemAccountService.js';
 
 @Injectable()
 export class UserListService implements OnApplicationShutdown, OnModuleInit {

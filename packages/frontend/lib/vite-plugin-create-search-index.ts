@@ -5,32 +5,37 @@
 
 /// <reference lib="esnext" />
 
-import { parse as vueSfcParse } from 'vue/compiler-sfc';
-import {
-	createLogger,
-	type EnvironmentModuleGraph,
-	type LogErrorOptions,
-	type LogOptions,
-	normalizePath,
-	type Plugin,
-	type PluginOption
-} from 'vite';
 import fs from 'node:fs';
-import JSON5 from 'json5';
-import MagicString, { SourceMap } from 'magic-string';
 import path from 'node:path'
-import { hash, toBase62 } from '../vite.config';
-import { minimatch } from 'minimatch';
+import type {
+	AttributeNode,
+	DirectiveNode,
+	ElementNode,
+	RootNode,
+	SimpleExpressionNode,
+	TemplateChildNode,
+} from '@vue/compiler-core';
 import {
-	type AttributeNode,
-	type DirectiveNode,
-	type ElementNode,
 	ElementTypes,
 	NodeTypes,
-	type RootNode,
-	type SimpleExpressionNode,
-	type TemplateChildNode,
 } from '@vue/compiler-core';
+import JSON5 from 'json5';
+import type { SourceMap } from 'magic-string';
+import MagicString from 'magic-string';
+import { minimatch } from 'minimatch';
+import type {
+	EnvironmentModuleGraph,
+	LogErrorOptions,
+	LogOptions,
+	Plugin,
+	PluginOption
+} from 'vite';
+import {
+	createLogger,
+	normalizePath,
+} from 'vite';
+import { parse as vueSfcParse } from 'vue/compiler-sfc';
+import { hash, toBase62 } from '../vite.config';
 
 export interface SearchIndexItem {
 	id: string;
@@ -60,7 +65,7 @@ interface MarkerRelation {
 }
 
 // ロガー
-let logger = {
+const logger = {
 	info: (msg: string, options?: LogOptions) => { },
 	warn: (msg: string, options?: LogOptions) => { },
 	error: (msg: string, options?: LogErrorOptions | unknown) => { },
@@ -73,18 +78,15 @@ function initLogger(options: Options) {
 	const viteLogger = createLogger(options.verbose ? 'info' : 'warn');
 
 	logger.info = (msg, options) => {
-		msg = `[create-search-index] ${msg}`;
-		viteLogger.info(msg, options);
+		viteLogger.info(`[create-search-index] ${msg}`, options);
 	}
 
 	logger.warn = (msg, options) => {
-		msg = `[create-search-index] ${msg}`;
-		viteLogger.warn(msg, options);
+		viteLogger.warn(`[create-search-index] ${msg}`, options);
 	}
 
 	logger.error = (msg, options) => {
-		msg = `[create-search-index] ${msg}`;
-		viteLogger.error(msg, options);
+		viteLogger.error(`[create-search-index] ${msg}`, options);
 	}
 }
 
@@ -98,6 +100,8 @@ type WalkVueNode = RootNode | TemplateChildNode | SimpleExpressionNode;
  * @param context The context value passed to callback. you can update context for children by returning value in callback
  * @param callback Returns false if you don't want to walk inner tree
  */
+// biome-ignore lint/complexity/noBannedTypes: Possibly false positive: this is type constraint https://github.com/biomejs/biome/issues/8434
+// biome-ignore lint/suspicious/noConfusingVoidType: We do allow returning void
 function walkVueElements<C extends {} | null>(nodes: WalkVueNode[], context: C, callback: (node: ElementNode, context: C) => C | undefined | void | false): void {
 	for (const node of nodes) {
 		let currentContext = context;
@@ -164,7 +168,7 @@ function customStringify(obj: unknown): string {
 		// propertyAccessProxy が i18n 参照を "${i18n.xxx}"のような形に変換してるので、これをそのまま`${i18n.xxx}`
 		// のような形にすると、実行時にi18nのプロパティにアクセスするようになる。
 		// objectのkeyでは``が使えないので、${ が使われている場合にのみ``に置き換えるようにする
-		return group.includes('${') ? '`' + group + '`' : all;
+		return group.includes('${') ? `\`${group}\`` : all;
 	});
 }
 
@@ -230,8 +234,8 @@ function extractElementText2Inner(node: TemplateChildNode, processingNodeName: s
  * SearchLabel/SearchText/SearchIconを探して抽出する関数
  */
 function extractSugarTags(nodes: TemplateChildNode[], id: string): { label: string | null; texts: string[]; icon: string | null; } {
-	let label: string | null | undefined = undefined;
-	let icon: string | null | undefined = undefined;
+	let label: string | null | undefined ;
+	let icon: string | null | undefined ;
 	const texts: string[] = [];
 
 	logger.info(`Extracting labels and texts from ${nodes.length} nodes`);
@@ -248,13 +252,14 @@ function extractSugarTags(nodes: TemplateChildNode[], id: string): { label: stri
 
 				label = extractElementText(node, id);
 				return;
-			case 'SearchText':
+			case 'SearchText': {
 				const content = extractElementText(node, id);
 				if (content) {
 					texts.push(content);
 				}
 				return;
-			case 'SearchIcon':
+			}
+			case 'SearchIcon': {
 				if (icon !== undefined) {
 					logger.warn(`Duplicate SearchIcon found, ignoring the second one at ${id}:${node.loc.start.line}`);
 					break; // 2つ目のSearchIconは無視
@@ -272,6 +277,7 @@ function extractSugarTags(nodes: TemplateChildNode[], id: string): { label: stri
 				}
 				icon = getStringProp(findAttribute(iconNode.props, 'class'), id);
 				return;
+			}
 		}
 
 		return;
@@ -289,7 +295,7 @@ function getStringProp(attr: AttributeNode | DirectiveNode | null, id: string): 
 			return null;
 		case NodeTypes.ATTRIBUTE:
 			return attr.value?.content ?? null;
-		case NodeTypes.DIRECTIVE:
+		case NodeTypes.DIRECTIVE: {
 			if (attr.exp == null) return null;
 			if (attr.exp.type === NodeTypes.COMPOUND_EXPRESSION) throw new Error('Unexpected COMPOUND_EXPRESSION');
 			const value = evalExpression(attr.exp.content ?? '');
@@ -298,6 +304,7 @@ function getStringProp(attr: AttributeNode | DirectiveNode | null, id: string): 
 				return null;
 			}
 			return value;
+		}
 	}
 }
 
@@ -309,7 +316,7 @@ function getStringArrayProp(attr: AttributeNode | DirectiveNode | null, id: stri
 		case NodeTypes.ATTRIBUTE:
 			logger.error(`Expected directive, got attribute at ${id}:${attr.loc.start.line}`);
 			return null;
-		case NodeTypes.DIRECTIVE:
+		case NodeTypes.DIRECTIVE: {
 			if (attr.exp == null) return null;
 			if (attr.exp.type === NodeTypes.COMPOUND_EXPRESSION) throw new Error('Unexpected COMPOUND_EXPRESSION');
 			const value = evalExpression(attr.exp.content ?? '');
@@ -318,6 +325,7 @@ function getStringArrayProp(attr: AttributeNode | DirectiveNode | null, id: stri
 				return null;
 			}
 			return value;
+		}
 	}
 }
 
@@ -337,7 +345,7 @@ function extractUsageInfoFromTemplateAst(
 
 		// マーカーID取得
 		const markerIdProp = node.props?.find(p => p.name === 'markerId');
-		const markerId = markerIdProp?.type == NodeTypes.ATTRIBUTE ? markerIdProp.value?.content : null;
+		const markerId = markerIdProp?.type === NodeTypes.ATTRIBUTE ? markerIdProp.value?.content : null;
 
 		// SearchMarkerにマーカーIDがない場合はエラー
 		if (markerId == null) {
@@ -371,7 +379,7 @@ function extractUsageInfoFromTemplateAst(
 
 		// pathがない場合はファイルパスを設定
 		if (markerInfo.path == null && parentId == null) {
-			markerInfo.path = id.match(/.*(\/(admin|settings)\/[^\/]+)\.vue$/)?.[1];
+			markerInfo.path = id.match(/.*(\/(admin|settings)\/[^/]+)\.vue$/)?.[1];
 		}
 
 		// SearchLabelとSearchTextを抽出 (AST全体を探索)
@@ -424,10 +432,10 @@ const propertyAccessProxyHandler: ProxyHandler<AccessProxy> = {
 		if (p in target) {
 			return (target as any)[p];
 		}
-		if (p == "toJSON" || p == Symbol.toPrimitive) {
+		if (p === "toJSON" || p === Symbol.toPrimitive) {
 			return propertyAccessProxyToJSON;
 		}
-		if (typeof p == 'string') {
+		if (typeof p === 'string') {
 			return target[p] = propertyAccessProxy([...target[propertyAccessProxySymbol], p]);
 		}
 		return undefined;
@@ -442,7 +450,7 @@ function propertyAccessProxyToJSON(this: AccessProxy, hint: string) {
 			return `${prev}['${current}']`;
 		}
 	});
-	return '$\{' + expression + '}';
+	return `$\{${expression}}`;
 }
 
 /**
@@ -710,8 +718,8 @@ export function pluginCreateSearchIndexVirtualModule(options: Options, asigner: 
 		enforce: 'post',
 
 		async resolveId(id) {
-			if (id == allSearchIndexFile) {
-				return '\0' + allSearchIndexFile;
+			if (id === allSearchIndexFile) {
+				return `\0${allSearchIndexFile}`;
 			}
 
 			const searchIndexFilePath = parseSearchIndexFileId(id);
@@ -722,14 +730,14 @@ export function pluginCreateSearchIndexVirtualModule(options: Options, asigner: 
 		},
 
 		async load(id) {
-			if (id == '\0' + allSearchIndexFile) {
-				const files = options.targetFilePaths.map((filePathPattern) => fs.globSync(filePathPattern)).flat();
+			if (id === `\0${allSearchIndexFile}`) {
+				const files = options.targetFilePaths.flatMap((filePathPattern) => fs.globSync(filePathPattern));
 				let generatedFile = '';
 				let arrayElements = '';
-				for (let file of files) {
+				for (const file of files) {
 					const normalizedRelative = normalizePath(file);
 					const absoluteId = normalizePath(path.join(process.cwd(), normalizedRelative)) + searchIndexSuffix;
-					const variableName = normalizedRelative.replace(/[\/.-]/g, '_');
+					const variableName = normalizedRelative.replace(/[/.-]/g, '_');
 					generatedFile += `import { searchIndexes as ${variableName} } from '${searchIndexPrefix}${absoluteId}';\n`;
 					arrayElements += `  ...${variableName},\n`;
 				}

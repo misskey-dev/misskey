@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { delay, http, HttpResponse } from 'msw';
 import type { StoryObj } from '@storybook/vue3';
-import { entities } from 'misskey-js';
-import { commonHandlers } from '../../../.storybook/mocks.js';
-import { emoji } from '../../../.storybook/fakes.js';
+import type { entities } from 'misskey-js';
+import { delay, HttpResponse, http } from 'msw';
 import { fakeId } from '../../../.storybook/fake-utils.js';
+import { emoji } from '../../../.storybook/fakes.js';
+import { commonHandlers } from '../../../.storybook/mocks.js';
 import custom_emojis_manager2 from './custom-emojis-manager2.vue';
 
 function createRender(params: {
@@ -118,7 +118,6 @@ function createRender(params: {
 						const body = await new Response(bodyStream).json() as entities.AdminEmojiAddRequest;
 
 						const fileId = body.fileId;
-						// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 						const file = storedDriveFiles.find(f => f.id === fileId)!;
 
 						const em = emoji({

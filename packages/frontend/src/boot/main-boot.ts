@@ -3,32 +3,32 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { createApp, defineAsyncComponent, markRaw } from 'vue';
-import { ui } from '@@/js/config.js';
-import * as Misskey from 'misskey-js';
-import { compareVersions } from 'compare-versions';
-import { common } from './common.js';
 import type { Component } from 'vue';
-import type { Keymap } from '@/utility/hotkey.js';
-import { i18n } from '@/i18n.js';
-import { alert, confirm, popup, post } from '@/os.js';
-import { useStream } from '@/stream.js';
-import * as sound from '@/utility/sound.js';
-import { $i } from '@/i.js';
-import { instance } from '@/instance.js';
-import { store } from '@/store.js';
-import { reactionPicker } from '@/utility/reaction-picker.js';
-import { miLocalStorage } from '@/local-storage.js';
-import { claimAchievement, claimedAchievements } from '@/utility/achievements.js';
-import { initializeSw } from '@/utility/initialize-sw.js';
-import { emojiPicker } from '@/utility/emoji-picker.js';
-import { mainRouter } from '@/router.js';
-import { makeHotkey } from '@/utility/hotkey.js';
-import { addCustomEmoji, removeCustomEmojis, updateCustomEmojis } from '@/custom-emojis.js';
-import { prefer } from '@/preferences.js';
+import { createApp, defineAsyncComponent, markRaw } from 'vue';
+import { compareVersions } from 'compare-versions';
+import type * as Misskey from 'misskey-js';
+import { ui } from '@@/js/config.js';
 import { updateCurrentAccountPartial } from '@/accounts.js';
+import { addCustomEmoji, removeCustomEmojis, updateCustomEmojis } from '@/custom-emojis.js';
+import { $i } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import { instance } from '@/instance.js';
+import { miLocalStorage } from '@/local-storage.js';
+import { alert, confirm, popup, post } from '@/os.js';
 import { migrateOldSettings } from '@/pref-migrate.js';
+import { prefer } from '@/preferences.js';
+import { mainRouter } from '@/router.js';
+import { store } from '@/store.js';
+import { useStream } from '@/stream.js';
+import { claimAchievement, claimedAchievements } from '@/utility/achievements.js';
+import { emojiPicker } from '@/utility/emoji-picker.js';
+import type { Keymap } from '@/utility/hotkey.js';
+import { makeHotkey } from '@/utility/hotkey.js';
+import { initializeSw } from '@/utility/initialize-sw.js';
+import { reactionPicker } from '@/utility/reaction-picker.js';
+import * as sound from '@/utility/sound.js';
 import { unisonReload } from '@/utility/unison-reload.js';
+import { common } from './common.js';
 
 export async function mainBoot() {
 	const { isClientUpdated, lastVersion } = await common(async () => {

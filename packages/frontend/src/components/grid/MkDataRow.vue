@@ -37,11 +37,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
+import type { CellValue, GridCell } from '@/components/grid/cell.js';
+import type { Size } from '@/components/grid/grid.js';
 import { GridEventEmitter } from '@/components/grid/grid.js';
 import MkDataCell from '@/components/grid/MkDataCell.vue';
 import MkNumberCell from '@/components/grid/MkNumberCell.vue';
-import type { Size } from '@/components/grid/grid.js';
-import type { CellValue, GridCell } from '@/components/grid/cell.js';
 import type { GridRow, GridRowSetting } from '@/components/grid/row.js';
 
 const emit = defineEmits<{

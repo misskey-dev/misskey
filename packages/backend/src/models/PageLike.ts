@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { PrimaryColumn, Entity, Index, JoinColumn, Column, ManyToOne } from 'typeorm';
-import { id } from './util/id.js';
-import { MiUser } from './User.js';
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { MiPage } from './Page.js';
+import { MiUser } from './User.js';
+import { id } from './util/id.js';
 
 @Entity('page_like')
 @Index(['userId', 'pageId'], { unique: true })
@@ -18,7 +18,7 @@ export class MiPageLike {
 	@Column(id())
 	public userId: MiUser['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(() => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
@@ -27,7 +27,7 @@ export class MiPageLike {
 	@Column(id())
 	public pageId: MiPage['id'];
 
-	@ManyToOne(type => MiPage, {
+	@ManyToOne(() => MiPage, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()

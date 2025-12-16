@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { LoggerService } from '@nestjs/common';
+import type { LoggerService } from '@nestjs/common';
 import Logger from '@/logger.js';
 
 const logger = new Logger('core', 'cyan');
@@ -15,7 +15,7 @@ export class NestLogger implements LoggerService {
    */
 	log(message: any, ...optionalParams: any[]) {
 		const ctx = optionalParams[0];
-		nestLogger.info(ctx + ': ' + message);
+		nestLogger.info(`${ctx}: ${message}`);
 	}
 
 	/**
@@ -23,7 +23,7 @@ export class NestLogger implements LoggerService {
    */
 	error(message: any, ...optionalParams: any[]) {
 		const ctx = optionalParams[0];
-		nestLogger.error(ctx + ': ' + message);
+		nestLogger.error(`${ctx}: ${message}`);
 	}
 
 	/**
@@ -31,7 +31,7 @@ export class NestLogger implements LoggerService {
    */
 	warn(message: any, ...optionalParams: any[]) {
 		const ctx = optionalParams[0];
-		nestLogger.warn(ctx + ': ' + message);
+		nestLogger.warn(`${ctx}: ${message}`);
 	}
 
 	/**
@@ -40,7 +40,7 @@ export class NestLogger implements LoggerService {
 	debug?(message: any, ...optionalParams: any[]) {
 		if (process.env.NODE_ENV === 'production') return;
 		const ctx = optionalParams[0];
-		nestLogger.debug(ctx + ': ' + message);
+		nestLogger.debug(`${ctx}: ${message}`);
 	}
 
 	/**
@@ -49,6 +49,6 @@ export class NestLogger implements LoggerService {
 	verbose?(message: any, ...optionalParams: any[]) {
 		if (process.env.NODE_ENV === 'production') return;
 		const ctx = optionalParams[0];
-		nestLogger.debug(ctx + ': ' + message);
+		nestLogger.debug(`${ctx}: ${message}`);
 	}
 }

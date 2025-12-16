@@ -5,20 +5,22 @@
 
 import { randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
-import { MetricsTime, type JobType } from 'bullmq';
+import type httpSignature from '@peertube/http-signature';
+import type * as Bull from 'bullmq';
+import type { JobType, } from 'bullmq';
+import { MetricsTime } from 'bullmq';
 import { parse as parseRedisInfo } from 'redis-info';
-import type { IActivity } from '@/core/activitypub/type.js';
-import type { MiDriveFile } from '@/models/DriveFile.js';
-import type { MiWebhook, WebhookEventTypes } from '@/models/Webhook.js';
-import type { MiSystemWebhook, SystemWebhookEventType } from '@/models/SystemWebhook.js';
 import type { Config } from '@/config.js';
-import { DI } from '@/di-symbols.js';
-import { bindThis } from '@/decorators.js';
-import type { Antenna } from '@/server/api/endpoints/i/import-antennas.js';
 import { ApRequestCreator } from '@/core/activitypub/ApRequestService.js';
-import { type SystemWebhookPayload } from '@/core/SystemWebhookService.js';
+import type { IActivity } from '@/core/activitypub/type.js';
+import type { SystemWebhookPayload } from '@/core/SystemWebhookService.js';
+import { bindThis } from '@/decorators.js';
+import { DI } from '@/di-symbols.js';
 import type { Packed } from '@/misc/json-schema.js';
-import { type UserWebhookPayload } from './UserWebhookService.js';
+import type { MiDriveFile } from '@/models/DriveFile.js';
+import type { MiSystemWebhook, SystemWebhookEventType } from '@/models/SystemWebhook.js';
+import type { MiWebhook, WebhookEventTypes } from '@/models/Webhook.js';
+import type { Antenna } from '@/server/api/endpoints/i/import-antennas.js';
 import type {
 	DbJobData,
 	DeliverJobData,
@@ -31,16 +33,15 @@ import type {
 	DbQueue,
 	DeliverQueue,
 	EndedPollNotificationQueue,
-	PostScheduledNoteQueue,
 	InboxQueue,
 	ObjectStorageQueue,
+	PostScheduledNoteQueue,
 	RelationshipQueue,
 	SystemQueue,
 	SystemWebhookDeliverQueue,
 	UserWebhookDeliverQueue,
 } from './QueueModule.js';
-import type httpSignature from '@peertube/http-signature';
-import type * as Bull from 'bullmq';
+import type { UserWebhookPayload } from './UserWebhookService.js';
 
 export const QUEUE_TYPES = [
 	'system',
@@ -781,7 +782,6 @@ export class QueueService {
 
 	@bindThis
 	private packJobData(job: Bull.Job): Packed<'QueueJob'> {
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		const stacktrace = job.stacktrace ? job.stacktrace.filter(Boolean) : [];
 		stacktrace.reverse();
 
