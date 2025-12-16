@@ -117,7 +117,7 @@ function getDecorationOffset(decoration: Decoration | DecorationEditorDecoration
 	return offsetX === 0 && offsetY === 0 ? undefined : `${offsetX * 100}% ${offsetY * 100}%`;
 }
 
-function getDecorationIsBrink(decoration: Omit<Decoration, 'id'> | DecorationEditorDecoration) {
+function getDecorationIsBrink(decoration: Decoration | DecorationEditorDecoration) {
 	return 'blink' in decoration && decoration.blink === true;
 }
 
