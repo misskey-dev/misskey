@@ -241,6 +241,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<MkPreferenceContainer k="collapseSensitiveChannel">
 										<MkSwitch v-model="collapseSensitiveChannel">
 											<template #label><SearchLabel>{{ i18n.ts.collapseSensitiveChannel }}</SearchLabel></template>
+											<template #caption>{{ i18n.ts.collapseSensitiveChannelDescription }}</template>
 										</MkSwitch>
 									</MkPreferenceContainer>
 								</SearchMarker>

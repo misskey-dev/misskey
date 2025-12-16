@@ -3369,9 +3369,13 @@ export interface Locale extends ILocale {
      */
     "useReactionPickerForContextMenu": string;
     /**
-     * ほとんどのタイムラインでセンシティブチャンネルの投稿を隠す
+     * センシティブチャンネルの投稿を隠す
      */
     "collapseSensitiveChannel": string;
+    /**
+     * そのチャンネル内・通知・ホームタイムラインなど、一部の場所では引き続き表示されます。
+     */
+    "collapseSensitiveChannelDescription": string;
     /**
      * {users}が入力中
      */
