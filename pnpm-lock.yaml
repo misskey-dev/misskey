@@ -1504,8 +1504,8 @@ importers:
         specifier: 8.49.0
         version: 8.49.0(eslint@9.39.1)(typescript@5.9.3)
       '@typescript/lib-webworker':
-        specifier: npm:@types/serviceworker@0.0.168
-        version: '@types/serviceworker@0.0.168'
+        specifier: npm:@types/serviceworker@0.0.74
+        version: '@types/serviceworker@0.0.74'
       eslint-plugin-import:
         specifier: 2.32.0
         version: 2.32.0(@typescript-eslint/parser@8.49.0(eslint@9.39.1)(typescript@5.9.3))(eslint@9.39.1)
@@ -4847,8 +4847,8 @@ packages:
   '@types/serve-static@1.15.10':
     resolution: {integrity: sha512-tRs1dB+g8Itk72rlSI2ZrW6vZg0YrLI81iQSTkMmOqnqCaNr/8Ek4VwWcN5vZgCYWbg/JJSGBlUaYGAOP73qBw==}
 
-  '@types/serviceworker@0.0.168':
-    resolution: {integrity: sha512-/uKxoeJbW0cMlDSE+ubMvZEObJKAPNs4nQSguywPfDjT1F4t/7rJilde/hfpiwoaTbnjknvP43DFWbrxx7QQeQ==}
+  '@types/serviceworker@0.0.74':
+    resolution: {integrity: sha512-HNt7NJHrjGtCmI3h1+rsb1g/ZY0iy5KaeenfEV7zAWPSaCs49hEUvgH++V1BHNwlLfB3sbjPh3pSiNixfYjb1w==}
 
   '@types/simple-oauth2@5.0.7':
     resolution: {integrity: sha512-8JbWVJbiTSBQP/7eiyGKyXWAqp3dKQZpaA+pdW16FCi32ujkzRMG8JfjoAzdWt6W8U591ZNdHcPtP2D7ILTKuA==}
@@ -15593,7 +15593,7 @@ snapshots:
       '@types/node': 24.10.2
       '@types/send': 0.17.6
 
-  '@types/serviceworker@0.0.168': {}
+  '@types/serviceworker@0.0.74': {}
 
   '@types/simple-oauth2@5.0.7': {}
 
