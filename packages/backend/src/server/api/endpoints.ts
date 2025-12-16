@@ -134,7 +134,7 @@ const endpoints: IEndpoint[] = Object.entries(endpointsObject).map(([name, ep]) 
 	return {
 		name: name,
 		get meta() {
-			return ep.meta ?? {};
+			return ep?.meta ?? {};
 		},
 		get params() {
 			return ep.paramDef;
