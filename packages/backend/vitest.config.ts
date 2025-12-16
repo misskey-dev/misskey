@@ -4,7 +4,11 @@ import { defineConfig } from 'vitest/config';
 
 export const baseConfig = defineConfig({
 	plugins: [
-		swc.vite(),
+		// swcがbuilt内容をトランスパイルすると不具合を起こすため、built配下は除外する
+		swc.vite({
+			include: [/\.[cm]?tsx?$/],
+			exclude: ['/node_modules/', '/\/built\//', '/\/built-test\//'],
+		}),
 	],
 	test: {
 		exclude: ['node_modules', 'dist'],
