@@ -35,3 +35,5 @@ ignorePatchFailures: false
 minimumReleaseAge: 10080 # delay 7days to mitigate supply-chain attack
 minimumReleaseAgeExclude:
   - '@syuilo/aiscript'
+  - vue-tsc
+  - '@vue/language-core'

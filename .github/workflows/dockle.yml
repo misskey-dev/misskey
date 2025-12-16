@@ -16,7 +16,7 @@ jobs:
       DOCKLE_VERSION: 0.4.15
 
     steps:
-      - uses: actions/checkout@v4.3.0
+      - uses: actions/checkout@v6.0.1
 
       - name: Download and install dockle v${{ env.DOCKLE_VERSION }}
         run: |

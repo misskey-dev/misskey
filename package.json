@@ -6,7 +6,7 @@
 		"type": "git",
 		"url": "https://github.com/misskey-dev/misskey.git"
 	},
-	"packageManager": "pnpm@10.24.0",
+	"packageManager": "pnpm@10.25.0",
 	"workspaces": [
 		"packages/misskey-js",
 		"packages/i18n",
@@ -53,13 +53,13 @@
 		"cleanall": "pnpm clean-all"
 	},
 	"resolutions": {
-		"chokidar": "4.0.3",
+		"chokidar": "5.0.0",
 		"lodash": "4.17.21"
 	},
 	"dependencies": {
 		"cssnano": "7.1.2",
-		"esbuild": "0.27.0",
-		"execa": "9.6.0",
+		"esbuild": "0.27.1",
+		"execa": "9.6.1",
 		"ignore-walk": "8.0.0",
 		"js-yaml": "4.1.1",
 		"postcss": "8.5.6",
@@ -71,15 +71,15 @@
 		"@eslint/js": "9.39.1",
 		"@misskey-dev/eslint-plugin": "2.2.0",
 		"@types/js-yaml": "4.0.9",
-		"@types/node": "24.10.1",
-		"@typescript-eslint/eslint-plugin": "8.47.0",
-		"@typescript-eslint/parser": "8.47.0",
+		"@types/node": "24.10.2",
+		"@typescript-eslint/eslint-plugin": "8.49.0",
+		"@typescript-eslint/parser": "8.49.0",
 		"cross-env": "10.1.0",
-		"cypress": "15.7.0",
+		"cypress": "15.7.1",
 		"eslint": "9.39.1",
 		"globals": "16.5.0",
 		"ncp": "2.0.0",
-		"pnpm": "10.24.0",
+		"pnpm": "10.25.0",
 		"start-server-and-test": "2.1.3"
 	},
 	"optionalDependencies": {
