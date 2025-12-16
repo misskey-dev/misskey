@@ -115,7 +115,7 @@ jobs:
         if: steps.check-changes.outputs.changes == 'true'
         uses: thollander/actions-comment-pull-request@v3
         with:
-          comment_tag: check-misskey-js-autogen
+          comment-tag: check-misskey-js-autogen
           message: |-
             Thank you for sending us a great Pull Request! 👍
             Please regenerate misskey-js type definitions! 🙏
