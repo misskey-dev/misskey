@@ -67,7 +67,7 @@ jobs:
         # Start the server and measure memory usage
         node packages/backend/scripts/measure-memory.mjs > ${{ matrix.memory-json-name }}
     - name: Upload Artifact
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: memory-artifact-${{ matrix.memory-json-name }}
         path: ${{ matrix.memory-json-name }}
@@ -81,7 +81,7 @@ jobs:
           PR_NUMBER: ${{ github.event.number }}
         run: |
           echo "$PR_NUMBER" > ./pr_number
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         with:
           name: memory-artifact-pr-number
           path: pr_number

@@ -53,7 +53,7 @@ jobs:
 
       # packages/misskey-js/generator/built/autogen
       - name: Upload Generated
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: generated-misskey-js
           path: packages/misskey-js/generator/built/autogen
@@ -73,7 +73,7 @@ jobs:
           ref: refs/pull/${{ github.event.pull_request.number }}/merge
 
       - name: Upload From Merged
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: actual-misskey-js
           path: packages/misskey-js/src/autogen

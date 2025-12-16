@@ -48,7 +48,7 @@ jobs:
     - name: Copy API.json
       run: cp packages/backend/built/api.json ${{ matrix.api-json-name }}
     - name: Upload Artifact
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: api-artifact-${{ matrix.api-json-name }}
         path: ${{ matrix.api-json-name }}
@@ -61,7 +61,7 @@ jobs:
           PR_NUMBER: ${{ github.event.number }}
         run: |
           echo "$PR_NUMBER" > ./pr_number
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         with:
           name: api-artifact-pr-number
           path: pr_number
