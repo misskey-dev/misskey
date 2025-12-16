@@ -209,7 +209,7 @@
 		"@types/ws": "8.18.1",
 		"@typescript-eslint/eslint-plugin": "8.49.0",
 		"@typescript-eslint/parser": "8.49.0",
-		"@vitest/coverage-v8": "4.0.13",
+		"@vitest/coverage-v8": "4.0.15",
 		"aws-sdk-client-mock": "4.1.0",
 		"cbor": "10.0.11",
 		"cross-env": "10.1.0",
@@ -221,9 +221,9 @@
 		"pid-port": "2.0.0",
 		"simple-oauth2": "5.1.0",
 		"supertest": "7.1.4",
-		"unplugin-swc": "1.5.8",
+		"unplugin-swc": "1.5.9",
 		"vite": "7.2.7",
-		"vitest": "4.0.13",
+		"vitest": "4.0.15",
 		"vitest-mock-extended": "3.1.0"
 	}
 }
