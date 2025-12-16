@@ -99,6 +99,7 @@ import { notesSearchAvailable } from '@/utility/check-permissions.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { useRouter } from '@/router.js';
 import { Paginator } from '@/utility/paginator.js';
+import { DI } from '@/di';
 
 const router = useRouter();
 
@@ -107,7 +108,7 @@ const props = defineProps<{
 }>();
 
 // チャンネルタイムラインには目的のチャンネルしか原則表示されないので、折りたたみを無効化する
-provide('collapseSensitiveChannel', false);
+provide(DI.collapseSensitiveChannel, false);
 
 const tab = ref('overview');
 

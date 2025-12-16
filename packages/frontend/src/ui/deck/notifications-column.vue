@@ -19,6 +19,7 @@ import { updateColumn } from '@/deck.js';
 import MkStreamingNotificationsTimeline from '@/components/MkStreamingNotificationsTimeline.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
+import { DI } from '@/di';
 
 const props = defineProps<{
 	column: Column;
@@ -26,7 +27,7 @@ const props = defineProps<{
 }>();
 
 // 通知では自分がセンシティブタイムラインにした投稿の反応が表示される可能性があるため、折りたたみを無効化する
-provide('collapseSensitiveChannel', false);
+provide(DI.collapseSensitiveChannel, false);
 
 const notificationsComponent = useTemplateRef('notificationsComponent');
 

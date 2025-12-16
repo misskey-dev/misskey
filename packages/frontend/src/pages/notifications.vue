@@ -28,13 +28,14 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { Paginator } from '@/utility/paginator.js';
+import { DI } from '@/di';
 
 const tab = ref('all');
 const includeTypes = ref<string[] | null>(null);
 const excludeTypes = computed(() => includeTypes.value ? notificationTypes.filter(t => !includeTypes.value!.includes(t)) : null);
 
 // 通知では自分がセンシティブタイムラインにした投稿の反応が表示される可能性があるため、折りたたみを無効化する
-provide('collapseSensitiveChannel', false);
+provide(DI.collapseSensitiveChannel, false);
 
 const mentionsPaginator = markRaw(new Paginator('notes/mentions', {
 	limit: 10,

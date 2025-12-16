@@ -44,11 +44,12 @@ import { deepMerge } from '@/utility/merge.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { availableBasicTimelines, hasWithReplies, isAvailableBasicTimeline, isBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
 import { prefer } from '@/preferences.js';
+import { DI } from '@/di';
 
 const tlComponent = useTemplateRef('tlComponent');
 
-// ホームタイムラインにはフォロー中のチャンネルしか原則表示されないので、折りたたみを無効化する
-provide('collapseSensitiveChannel', false);
+// ホームタイムラインにはフォロー中のチャンネルし以外の場合に折りたたみを無効化する。
+provide(DI.collapseSensitiveChannel, 'renote-only');
 
 type TimelinePageSrc = BasicTimelineType | `list:${string}`;
 

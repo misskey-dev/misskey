@@ -44,14 +44,15 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { hasWithReplies, isAvailableBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
 import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
+import { DI } from '@/di';
 
 const props = defineProps<{
 	column: Column;
 	isStacked: boolean;
 }>();
 
-// ホームタイムラインにはフォロー中のチャンネルしか原則表示されないので、折りたたみを無効化する
-provide('collapseSensitiveChannel', false);
+// ホームタイムラインにはフォロー中のチャンネルし以外の場合に折りたたみを無効化する。
+provide(DI.collapseSensitiveChannel, 'renote-only');
 
 const timeline = useTemplateRef('timeline');
 

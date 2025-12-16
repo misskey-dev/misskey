@@ -33,6 +33,7 @@ import { favoritedChannelsCache } from '@/cache.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
+import { DI } from '@/di';
 
 const props = defineProps<{
 	column: Column;
@@ -40,7 +41,7 @@ const props = defineProps<{
 }>();
 
 // チャンネルタイムラインには目的のチャンネルしか原則表示されないので、折りたたみを無効化する
-provide('collapseSensitiveChannel', false);
+provide(DI.collapseSensitiveChannel, false);
 
 const timeline = useTemplateRef('timeline');
 const channel = shallowRef<Misskey.entities.Channel>();

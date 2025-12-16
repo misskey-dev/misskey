@@ -270,7 +270,7 @@ const emit = defineEmits<{
 
 // for some timelines, like home timeline which only shows the following channels,
 // we never collapse sensitive channel notes so we allow inject to override the preference
-const collapseSensitiveChannel: boolean = inject<boolean | undefined>('collapseSensitiveChannel', undefined) ?? prefer.s.collapseSensitiveChannel;
+const collapseSensitiveChannelContext = inject(DI.collapseSensitiveChannel, true);
 const inTimeline = inject<boolean>('inTimeline', false);
 const tl_withSensitive = inject<Ref<boolean>>('tl_withSensitive', ref(true));
 const inChannel = inject('inChannel', null);
@@ -362,7 +362,20 @@ function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string 
 
 	if (checkOnly) return false;
 
-	if (collapseSensitiveChannel && noteToCheck.channel?.isSensitive) return 'sensitiveChannel';
+	if (noteToCheck.channel?.isSensitive) {
+		if (prefer.s.collapseSensitiveChannel) {
+			switch (collapseSensitiveChannelContext) {
+				case true: return 'sensitiveChannel';
+				case 'renote-only':
+					if (note.channel?.id !== appearNote.channel?.id) {
+						return 'sensitiveChannel';
+					}
+					break;
+				case false:
+					break;
+			}
+		}
+	}
 	if (inTimeline && tl_withSensitive.value === false && noteToCheck.files?.some((v) => v.isSensitive)) {
 		return 'sensitiveMute';
 	}
