@@ -209,6 +209,7 @@
 		"@types/ws": "8.18.1",
 		"@typescript-eslint/eslint-plugin": "8.48.0",
 		"@typescript-eslint/parser": "8.48.0",
+		"@vitest/coverage-v8": "4.0.13",
 		"aws-sdk-client-mock": "4.1.0",
 		"cbor": "10.0.11",
 		"cross-env": "10.1.0",
