@@ -19,13 +19,24 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
 
-function mockRedis() {
-	const hash = {} as any;
-	const set = vi.fn<Redis['set']>((key: string, value) => {
-		hash[key] = value;
-		return Promise.resolve('OK');
+function createMockRedis() {
+	const store = new Map<string, string>();
+
+	const del = vi.fn((key: string) => {
+		const existed = store.delete(key);
+		return Promise.resolve(existed ? 1 : 0);
 	});
-	return set;
+
+	const set = vi.fn((key: string, value: string, ...args: any[]) => {
+		const prev = store.get(key) ?? null;
+		store.set(key, value);
+
+		// ioredis: SET key value ... GET => returns old value or null
+		const hasGet = args.some(a => typeof a === 'string' && a.toUpperCase() === 'GET');
+		return Promise.resolve(hasGet ? prev : 'OK');
+	});
+
+	return { set, del };
 }
 
 describe('FetchInstanceMetadataService', () => {
@@ -54,7 +65,7 @@ describe('FetchInstanceMetadataService', () => {
 				} else if (token === FederatedInstanceService) {
 					return { fetchOrRegister: vi.fn() };
 				} else if (token === DI.redis) {
-					return mockRedis;
+					return createMockRedis();
 				}
 				return null;
 			})
@@ -75,7 +86,6 @@ describe('FetchInstanceMetadataService', () => {
 	});
 
 	test('Lock and update', async () => {
-		redisClient.set = mockRedis() as any;
 		const now = Date.now();
 		federatedInstanceService.fetchOrRegister.mockResolvedValue({ infoUpdatedAt: { getTime: () => { return now - 10 * 1000 * 60 * 60 * 24; } } } as any);
 		httpRequestService.getJson.mockImplementation(() => { throw Error(); });
@@ -90,7 +100,6 @@ describe('FetchInstanceMetadataService', () => {
 	});
 
 	test('Lock and don\'t update', async () => {
-		redisClient.set = mockRedis() as any;
 		const now = Date.now();
 		federatedInstanceService.fetchOrRegister.mockResolvedValue({ infoUpdatedAt: { getTime: () => now } } as any);
 		httpRequestService.getJson.mockImplementation(() => { throw Error(); });
@@ -105,7 +114,6 @@ describe('FetchInstanceMetadataService', () => {
 	});
 
 	test('Do nothing when lock not acquired', async () => {
-		redisClient.set = mockRedis() as any;
 		const now = Date.now();
 		federatedInstanceService.fetchOrRegister.mockResolvedValue({ infoUpdatedAt: { getTime: () => now - 10 * 1000 * 60 * 60 * 24 } } as any);
 		httpRequestService.getJson.mockImplementation(() => { throw Error(); });
@@ -121,7 +129,6 @@ describe('FetchInstanceMetadataService', () => {
 	});
 
 	test('Do when lock not acquired but forced', async () => {
-		redisClient.set = mockRedis() as any;
 		const now = Date.now();
 		federatedInstanceService.fetchOrRegister.mockResolvedValue({ infoUpdatedAt: { getTime: () => now - 10 * 1000 * 60 * 60 * 24 } } as any);
 		httpRequestService.getJson.mockImplementation(() => { throw Error(); });
