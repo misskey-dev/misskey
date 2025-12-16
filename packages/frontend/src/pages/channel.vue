@@ -71,7 +71,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, ref, markRaw, shallowRef } from 'vue';
+import { computed, watch, ref, markRaw, shallowRef, provide } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
 import { useInterval } from '@@/js/use-interval.js';
@@ -105,6 +105,9 @@ const router = useRouter();
 const props = defineProps<{
 	channelId: string;
 }>();
+
+// チャンネルタイムラインには目的のチャンネルしか原則表示されないので、折りたたみを無効化する
+provide('collapseSensitiveChannel', false);
 
 const tab = ref('overview');
 

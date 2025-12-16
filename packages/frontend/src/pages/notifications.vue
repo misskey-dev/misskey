@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, markRaw, ref } from 'vue';
+import { computed, markRaw, provide, ref } from 'vue';
 import { notificationTypes } from 'misskey-js';
 import MkStreamingNotificationsTimeline from '@/components/MkStreamingNotificationsTimeline.vue';
 import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
@@ -32,6 +32,9 @@ import { Paginator } from '@/utility/paginator.js';
 const tab = ref('all');
 const includeTypes = ref<string[] | null>(null);
 const excludeTypes = computed(() => includeTypes.value ? notificationTypes.filter(t => !includeTypes.value!.includes(t)) : null);
+
+// 通知では自分がセンシティブタイムラインにした投稿の反応が表示される可能性があるため、折りたたみを無効化する
+provide('collapseSensitiveChannel', false);
 
 const mentionsPaginator = markRaw(new Paginator('notes/mentions', {
 	limit: 10,

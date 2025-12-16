@@ -3369,6 +3369,10 @@ export interface Locale extends ILocale {
      */
     "useReactionPickerForContextMenu": string;
     /**
+     * ほとんどのタイムラインでセンシティブチャンネルの投稿を隠す
+     */
+    "collapseSensitiveChannel": string;
+    /**
      * {users}が入力中
      */
     "typingUsers": ParameterizedString<"users">;
@@ -5136,6 +5140,10 @@ export interface Locale extends ILocale {
      * {name}のセンシティブなファイルを含む投稿
      */
     "userSaysSomethingSensitive": ParameterizedString<"name">;
+    /**
+     * {name}のセンシティブチャンネルでの投稿
+     */
+    "userSaysSomethingInSensitiveChannel": ParameterizedString<"name">;
     /**
      * スワイプしてタブを切り替える
      */

@@ -47,6 +47,9 @@ import { prefer } from '@/preferences.js';
 
 const tlComponent = useTemplateRef('tlComponent');
 
+// ホームタイムラインにはフォロー中のチャンネルしか原則表示されないので、折りたたみを無効化する
+provide('collapseSensitiveChannel', false);
+
 type TimelinePageSrc = BasicTimelineType | `list:${string}`;
 
 const srcWhenNotSignin = ref<'local' | 'global'>(isAvailableBasicTimeline('local') ? 'local' : 'global');

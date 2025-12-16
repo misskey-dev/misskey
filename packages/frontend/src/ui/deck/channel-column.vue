@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, shallowRef, watch, useTemplateRef } from 'vue';
+import { onMounted, ref, shallowRef, watch, useTemplateRef, provide } from 'vue';
 import * as Misskey from 'misskey-js';
 import XColumn from './column.vue';
 import type { Column } from '@/deck.js';
@@ -38,6 +38,9 @@ const props = defineProps<{
 	column: Column;
 	isStacked: boolean;
 }>();
+
+// チャンネルタイムラインには目的のチャンネルしか原則表示されないので、折りたたみを無効化する
+provide('collapseSensitiveChannel', false);
 
 const timeline = useTemplateRef('timeline');
 const channel = shallowRef<Misskey.entities.Channel>();

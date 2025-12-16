@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, useTemplateRef } from 'vue';
+import { defineAsyncComponent, provide, useTemplateRef } from 'vue';
 import XColumn from './column.vue';
 import type { Column } from '@/deck.js';
 import { updateColumn } from '@/deck.js';
@@ -24,6 +24,9 @@ const props = defineProps<{
 	column: Column;
 	isStacked: boolean;
 }>();
+
+// 通知では自分がセンシティブタイムラインにした投稿の反応が表示される可能性があるため、折りたたみを無効化する
+provide('collapseSensitiveChannel', false);
 
 const notificationsComponent = useTemplateRef('notificationsComponent');
 

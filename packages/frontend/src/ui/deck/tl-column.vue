@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, watch, ref, useTemplateRef, computed } from 'vue';
+import { onMounted, watch, ref, useTemplateRef, computed, provide } from 'vue';
 import XColumn from './column.vue';
 import type { Column } from '@/deck.js';
 import type { MenuItem } from '@/types/menu.js';
@@ -49,6 +49,9 @@ const props = defineProps<{
 	column: Column;
 	isStacked: boolean;
 }>();
+
+// ホームタイムラインにはフォロー中のチャンネルしか原則表示されないので、折りたたみを無効化する
+provide('collapseSensitiveChannel', false);
 
 const timeline = useTemplateRef('timeline');
 
