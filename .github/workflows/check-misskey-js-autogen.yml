@@ -86,13 +86,13 @@ jobs:
       pull-requests: write
     steps:
       - name: download generated-misskey-js
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: generated-misskey-js
           path: misskey-js-generated
 
       - name: download actual-misskey-js
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: actual-misskey-js
           path: misskey-js-actual
