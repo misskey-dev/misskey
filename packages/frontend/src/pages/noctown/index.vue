@@ -1838,7 +1838,7 @@ function cancelPlaceMode(): void {
 	// 仕様: クリックハンドラはhandleCanvasClick内で処理するため、別途削除不要
 }
 
-/// 仕様: FR-030 インベントリからアイテムを捨てる（地面にドロップ）
+// 仕様: FR-030 インベントリからアイテムを捨てる（地面にドロップ）
 // quantity: 捨てる数量（デフォルト1）
 async function handleDropItem(item: InventoryItem, quantity: number = 1): Promise<void> {
 	if (!engine) return;

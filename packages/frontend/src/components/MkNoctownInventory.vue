@@ -62,7 +62,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkButton :class="$style.actionBtn" @click.stop="placeItem">
 			<i class="ti ti-box"></i> 設置
 		</MkButton>
-		<MkButton :class="$style.actionBtn" danger @click.stop="dropItem">
+		<MkButton :class="$style.actionBtn" danger @click="onDropClick">
 			<i class="ti ti-trash"></i> 捨てる{{ dropQuantity > 1 ? ` (${dropQuantity})` : '' }}
 		</MkButton>
 	</div>
@@ -243,11 +243,20 @@ function placeItem(): void {
 // 仕様: アイテムを指定数量でドロップ
 function dropItem(): void {
 	if (selectedItem.value) {
-		emit('drop', selectedItem.value, dropQuantity.value);
+		const itemToEmit = { ...selectedItem.value };
+		const quantityToEmit = dropQuantity.value;
+		emit('drop', itemToEmit, quantityToEmit);
 		selectedItem.value = null;
 		dropQuantity.value = 1;
 		fetchInventory();
 	}
+}
+
+// 仕様: ドロップボタンクリック時のイベントハンドラ
+function onDropClick(ev: MouseEvent): void {
+	ev.stopPropagation();
+	ev.preventDefault();
+	dropItem();
 }
 
 onMounted(async () => {
