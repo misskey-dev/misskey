@@ -116,14 +116,13 @@ port: 3000
 # Incorrect configuration can cause issues such as difficulty signing in,
 # so please configure your settings carefully.
 #
-#trustProxy: [
-#  '10.0.0.0/8'
-#  '172.16.0.0/12'
-#  '192.168.0.0/16'
-#  '127.0.0.1/32'
-#  '::1/128'
-#  'fc00::/7'
-#]
+#trustProxy:
+#  - '10.0.0.0/8'
+#  - '172.16.0.0/12'
+#  - '192.168.0.0/16'
+#  - '127.0.0.1/32'
+#  - '::1/128'
+#  - 'fc00::/7'
 
 #   ┌──────────────────────────┐
 #───┘ PostgreSQL configuration └────────────────────────────────
