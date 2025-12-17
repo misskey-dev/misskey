@@ -44,7 +44,7 @@ import { deepMerge } from '@/utility/merge.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { availableBasicTimelines, hasWithReplies, isAvailableBasicTimeline, isBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
 import { prefer } from '@/preferences.js';
-import { DI } from '@/di';
+import { DI } from '@/di.js';
 
 const tlComponent = useTemplateRef('tlComponent');
 

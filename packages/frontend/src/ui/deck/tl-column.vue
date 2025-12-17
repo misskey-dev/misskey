@@ -44,7 +44,7 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { hasWithReplies, isAvailableBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
 import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
-import { DI } from '@/di';
+import { DI } from '@/di.js';
 
 const props = defineProps<{
 	column: Column;

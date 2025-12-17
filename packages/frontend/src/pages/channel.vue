@@ -99,7 +99,7 @@ import { notesSearchAvailable } from '@/utility/check-permissions.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { useRouter } from '@/router.js';
 import { Paginator } from '@/utility/paginator.js';
-import { DI } from '@/di';
+import { DI } from '@/di.js';
 
 const router = useRouter();
 
