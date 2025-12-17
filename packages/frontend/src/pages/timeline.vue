@@ -48,7 +48,7 @@ import { DI } from '@/di';
 
 const tlComponent = useTemplateRef('tlComponent');
 
-// ホームタイムラインにはフォロー中のチャンネルし以外の場合に折りたたみを無効化する。
+// ホームタイムラインにはフォロー中のチャンネル以外の場合に折りたたみを無効化する。
 provide(DI.collapseSensitiveChannel, 'renote-only');
 
 type TimelinePageSrc = BasicTimelineType | `list:${string}`;
