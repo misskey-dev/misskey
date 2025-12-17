@@ -89,17 +89,21 @@ export class SigninApiService {
 			return { error };
 		}
 
+		if (request.ip === '::1' || request.ip === '127.0.0.1') {
+			console.warn('request ip is localhost, maybe caused by misconfiguration of trustProxy or reverse proxy');
+		} else {
 		// not more than 1 attempt per second and not more than 10 attempts per hour
-		const rateLimit = await this.rateLimiterService.limit({ key: 'signin', duration: 60 * 60 * 1000, max: 10, minInterval: 1000 }, getIpHash(request.ip));
-		if (rateLimit != null) {
-			reply.code(429);
-			return {
-				error: {
-					message: 'Too many failed attempts to sign in. Try again later.',
-					code: 'TOO_MANY_AUTHENTICATION_FAILURES',
-					id: '22d05606-fbcf-421a-a2db-b32610dcfd1b',
-				},
-			};
+			const rateLimit = await this.rateLimiterService.limit({ key: 'signin', duration: 60 * 60 * 1000, max: 10, minInterval: 1000 }, getIpHash(request.ip));
+			if (rateLimit != null) {
+				reply.code(429);
+				return {
+					error: {
+						message: 'Too many failed attempts to sign in. Try again later.',
+						code: 'TOO_MANY_AUTHENTICATION_FAILURES',
+						id: '22d05606-fbcf-421a-a2db-b32610dcfd1b',
+					},
+				};
+			}
 		}
 
 		if (typeof username !== 'string') {

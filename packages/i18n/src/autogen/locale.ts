@@ -10936,6 +10936,36 @@ export interface Locale extends ILocale {
          * プロファイル情報のデバイス間同期を有効にする
          */
         "enableSyncBetweenDevicesForProfiles": string;
+        /**
+         * UIの説明を見る
+         */
+        "showHowToUse": string;
+        "_howToUse": {
+            /**
+             * カラム追加
+             */
+            "addColumn_title": string;
+            /**
+             * カラムの種類を選んで追加できます。
+             */
+            "addColumn_description": string;
+            /**
+             * UI設定
+             */
+            "settings_title": string;
+            /**
+             * デッキUIの詳細設定を行えます。
+             */
+            "settings_description": string;
+            /**
+             * プロファイル切り替え
+             */
+            "switchProfile_title": string;
+            /**
+             * UIのレイアウトをプロファイルとして保存し、いつでも切り替えられるようにできます。
+             */
+            "switchProfile_description": string;
+        };
         "_columns": {
             /**
              * メイン
