@@ -24,6 +24,8 @@ export const meta = {
 				itemId: { type: 'string' },
 				itemName: { type: 'string' },
 				itemType: { type: 'string' },
+				// FR-032: 設置者のプレイヤーIDを追加（回収権限判定用）
+				ownerId: { type: 'string' },
 				ownerUsername: { type: 'string' },
 				positionX: { type: 'number' },
 				positionY: { type: 'number' },
@@ -93,6 +95,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						itemId: pi.itemId,
 						itemName: item?.name ?? 'Unknown',
 						itemType: item?.itemType ?? 'normal',
+						// FR-032: 設置者のプレイヤーIDを追加（回収権限判定用）
+						ownerId: pi.playerId,
 						ownerUsername,
 						positionX: pi.positionX,
 						positionY: pi.positionY,

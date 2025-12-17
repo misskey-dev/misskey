@@ -28,6 +28,7 @@ import type {
 	NoctownHousesRepository,
 	NoctownWorldChunksRepository,
 	NoctownChatLogsRepository,
+	NoctownChatLogRecipientsRepository,
 	UsersRepository,
 } from '@/models/_.js';
 import type { NoctownCropStage } from '@/models/noctown/NoctownCrop.js';
@@ -88,6 +89,10 @@ export class NoctownService {
 
 		@Inject(DI.noctownChatLogsRepository)
 		private noctownChatLogsRepository: NoctownChatLogsRepository,
+
+		// FR-029: チャット履歴記録用の中間テーブルRepository
+		@Inject(DI.noctownChatLogRecipientsRepository)
+		private noctownChatLogRecipientsRepository: NoctownChatLogRecipientsRepository,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -420,8 +425,10 @@ export class NoctownService {
 		});
 		if (!playerItem || !playerItem.item) return false;
 
-		// Check if item is placeable
-		if (playerItem.item.itemType !== 'placeable') return false;
+		// 仕様: FR-032 設置可能なアイテムタイプを判定
+		// placeable, stone, rock, wood, log, furniture, decoration は設置可能
+		const placeableTypes = ['placeable', 'stone', 'rock', 'wood', 'log', 'furniture', 'decoration'];
+		if (!placeableTypes.includes(playerItem.item.itemType)) return false;
 
 		// Check placement limit (max 10 per player)
 		const placedCount = await this.noctownPlacedItemsRepository.countBy({ playerId });
@@ -572,6 +579,15 @@ export class NoctownService {
 			content: message,
 			positionX: player.positionX,
 			positionZ: player.positionZ,
+		});
+
+		// FR-029: 送信者自身も中間テーブルに登録する
+		// これにより、チャット履歴パネルで自分の発言も表示される
+		await this.noctownChatLogRecipientsRepository.insert({
+			id: this.idService.gen(),
+			chatLogId: messageId,
+			recipientPlayerId: playerId,
+			receivedAt: new Date(),
 		});
 
 		// T143, T144: Broadcast chat to all connected players

@@ -130,6 +130,8 @@ import { NoctownEventReward } from '@/models/noctown/NoctownEventReward.js';
 import { NoctownEventParticipation } from '@/models/noctown/NoctownEventParticipation.js';
 import { NoctownUniqueItem } from '@/models/noctown/NoctownUniqueItem.js';
 import { NoctownRankingBoard } from '@/models/noctown/NoctownRankingBoard.js';
+import { NoctownChatLog } from '@/models/noctown/NoctownChatLog.js';
+import { NoctownChatLogRecipient } from '@/models/noctown/NoctownChatLogRecipient.js';
 
 pg.types.setTypeParser(20, Number);
 
@@ -344,6 +346,8 @@ export const entities = [
 	NoctownEventParticipation,
 	NoctownUniqueItem,
 	NoctownRankingBoard,
+	NoctownChatLog,
+	NoctownChatLogRecipient,
 	...charts,
 ];
 

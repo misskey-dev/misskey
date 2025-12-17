@@ -161,6 +161,8 @@ export interface PlacedItemData {
 	itemId: string;
 	itemName: string;
 	itemType: string;
+	// FR-032: 設置者のプレイヤーID（回収権限判定用）
+	ownerId: string;
 	ownerUsername: string;
 	positionX: number;
 	positionY: number;
@@ -271,6 +273,9 @@ export class NoctownEngine {
 		this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 		this.renderer.shadowMap.enabled = true;
 		this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+		// 仕様: z-indexを明示的に設定してUIパネルより下になるようにする
+		this.renderer.domElement.style.position = 'relative';
+		this.renderer.domElement.style.zIndex = '1';
 		container.appendChild(this.renderer.domElement);
 
 		// CSS2D Renderer for labels
@@ -279,6 +284,8 @@ export class NoctownEngine {
 		this.labelRenderer.domElement.style.position = 'absolute';
 		this.labelRenderer.domElement.style.top = '0';
 		this.labelRenderer.domElement.style.pointerEvents = 'none';
+		// 仕様: ラベルレンダラーもz-indexを設定
+		this.labelRenderer.domElement.style.zIndex = '2';
 		container.appendChild(this.labelRenderer.domElement);
 
 		// Lights
@@ -486,8 +493,9 @@ export class NoctownEngine {
 	 * @param chunkData Chunk data from server
 	 */
 	// FR-001: terrainDataに基づいてチャンクを生成
+	// 修正: チャンクキー形式をカンマ区切りに統一（他のモジュールと一致させる）
 	public async renderChunk(chunkData: ChunkData): Promise<void> {
-		const key = `${chunkData.chunkX}_${chunkData.chunkZ}`;
+		const key = `${chunkData.chunkX},${chunkData.chunkZ}`;
 		if (this.chunks.has(key)) return; // Already rendered
 
 		const CHUNK_SIZE = 16;
@@ -607,9 +615,10 @@ export class NoctownEngine {
 	 * Remove chunk from scene (FR-074: VIEW_DISTANCE management)
 	 * @param chunkX Chunk X coordinate
 	 * @param chunkZ Chunk Z coordinate
+	 * 修正: チャンクキー形式をカンマ区切りに統一（他のモジュールと一致させる）
 	 */
 	public removeChunk(chunkX: number, chunkZ: number): void {
-		const key = `${chunkX}_${chunkZ}`;
+		const key = `${chunkX},${chunkZ}`;
 		const chunk = this.chunks.get(key);
 		if (chunk) {
 			this.scene.remove(chunk);
@@ -1264,14 +1273,8 @@ export class NoctownEngine {
 		group.position.set(data.positionX, data.positionY, data.positionZ);
 		group.rotation.y = data.rotation;
 
-		// Create item mesh based on type
-		const geometry = new THREE.BoxGeometry(1, 1, 1);
-		const material = new THREE.MeshStandardMaterial({
-			color: this.getItemColor(data.itemType),
-			roughness: 0.6,
-		});
-		const mesh = new THREE.Mesh(geometry, material);
-		mesh.position.y = 0.5;
+		// 仕様: アイテムタイプに応じた専用メッシュを生成
+		const mesh = this.createPlacedItemMesh(data.itemType);
 		mesh.castShadow = true;
 		mesh.receiveShadow = true;
 		group.add(mesh);
@@ -1279,6 +1282,43 @@ export class NoctownEngine {
 		group.userData = { type: 'placedItem', data };
 		this.scene.add(group);
 		this.placedItems.set(data.id, group);
+	}
+
+	// 仕様: 設置アイテムのタイプに応じた専用メッシュを生成
+	private createPlacedItemMesh(itemType: string): THREE.Mesh {
+		switch (itemType) {
+			case 'stone':
+			case 'rock': {
+				// 岩: 環境オブジェクトと同じDodecahedronGeometryを使用
+				const rockGeo = new THREE.DodecahedronGeometry(0.5, 0);
+				const rockMat = new THREE.MeshStandardMaterial({ color: 0x808080, roughness: 0.9 });
+				const rock = new THREE.Mesh(rockGeo, rockMat);
+				rock.position.y = 0.25;
+				rock.rotation.set(Math.random() * 0.5, Math.random() * Math.PI, Math.random() * 0.5);
+				return rock;
+			}
+			case 'wood':
+			case 'log': {
+				// 木材: 横倒しの円柱
+				const logGeo = new THREE.CylinderGeometry(0.2, 0.2, 1, 8);
+				const logMat = new THREE.MeshStandardMaterial({ color: 0x8b4513, roughness: 0.8 });
+				const log = new THREE.Mesh(logGeo, logMat);
+				log.position.y = 0.2;
+				log.rotation.z = Math.PI / 2;
+				return log;
+			}
+			default: {
+				// デフォルト: 立方体
+				const geometry = new THREE.BoxGeometry(1, 1, 1);
+				const material = new THREE.MeshStandardMaterial({
+					color: this.getItemColor(itemType),
+					roughness: 0.6,
+				});
+				const mesh = new THREE.Mesh(geometry, material);
+				mesh.position.y = 0.5;
+				return mesh;
+			}
+		}
 	}
 
 	public removePlacedItem(itemId: string): void {
@@ -1623,6 +1663,99 @@ export class NoctownEngine {
 	// FR-022: 近くのペットを取得
 	public getNearbyPet(x: number, z: number, radius: number = 2): PetInfo | null {
 		return this.petManager?.getNearbyPet(x, z, radius) ?? null;
+	}
+
+	// FR-032: クリックされた設置アイテムを取得
+	public getClickedPlacedItem(event: MouseEvent | TouchEvent): PlacedItemData | null {
+		const rect = this.renderer.domElement.getBoundingClientRect();
+
+		let clientX: number;
+		let clientY: number;
+
+		if ('touches' in event || 'changedTouches' in event) {
+			const touch = (event as TouchEvent).changedTouches[0] || (event as TouchEvent).touches[0];
+			if (!touch) return null;
+			clientX = touch.clientX;
+			clientY = touch.clientY;
+		} else {
+			clientX = (event as MouseEvent).clientX;
+			clientY = (event as MouseEvent).clientY;
+		}
+
+		this.mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+		this.mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+
+		this.raycaster.setFromCamera(this.mouse, this.camera);
+
+		// 設置アイテムのグループを収集
+		const placedItemGroups: THREE.Object3D[] = [];
+		for (const [, group] of this.placedItems) {
+			placedItemGroups.push(group);
+		}
+
+		const intersects = this.raycaster.intersectObjects(placedItemGroups, true);
+
+		if (intersects.length > 0) {
+			// 親階層をたどって設置アイテムを特定
+			let obj: THREE.Object3D | null = intersects[0].object;
+			while (obj) {
+				if (obj.userData?.type === 'placedItem' && obj.userData?.data) {
+					return obj.userData.data as PlacedItemData;
+				}
+				obj = obj.parent;
+			}
+		}
+
+		return null;
+	}
+
+	// FR-032: 設置アイテムを削除（回収時に使用）
+	public removePlacedItemById(itemId: string): void {
+		this.removePlacedItem(itemId);
+	}
+
+	// FR-032: クリックされたドロップアイテムを取得
+	public getClickedDroppedItem(event: MouseEvent | TouchEvent): DroppedItemData | null {
+		const rect = this.renderer.domElement.getBoundingClientRect();
+
+		let clientX: number;
+		let clientY: number;
+
+		if ('touches' in event || 'changedTouches' in event) {
+			const touch = (event as TouchEvent).changedTouches[0] || (event as TouchEvent).touches[0];
+			if (!touch) return null;
+			clientX = touch.clientX;
+			clientY = touch.clientY;
+		} else {
+			clientX = (event as MouseEvent).clientX;
+			clientY = (event as MouseEvent).clientY;
+		}
+
+		this.mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+		this.mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+
+		this.raycaster.setFromCamera(this.mouse, this.camera);
+
+		// ドロップアイテムのグループを収集
+		const droppedItemGroups: THREE.Object3D[] = [];
+		for (const [, group] of this.droppedItems) {
+			droppedItemGroups.push(group);
+		}
+
+		const intersects = this.raycaster.intersectObjects(droppedItemGroups, true);
+
+		if (intersects.length > 0) {
+			// 親階層をたどってドロップアイテムを特定
+			let obj: THREE.Object3D | null = intersects[0].object;
+			while (obj) {
+				if (obj.userData?.type === 'droppedItem' && obj.userData?.data) {
+					return obj.userData.data as DroppedItemData;
+				}
+				obj = obj.parent;
+			}
+		}
+
+		return null;
 	}
 
 	public dispose(): void {

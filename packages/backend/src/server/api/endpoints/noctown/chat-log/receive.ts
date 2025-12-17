@@ -69,9 +69,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				return { success: false };
 			}
 
-			// 自分自身のメッセージは記録しない
+			// FR-029: 自分自身のメッセージはバックエンドで自動登録されるため
+			// ここでは既に登録済みとして成功を返す
 			if (chatLog.playerId === player.id) {
-				return { success: false };
+				return { success: true };
 			}
 
 			// 既に記録済みかチェック

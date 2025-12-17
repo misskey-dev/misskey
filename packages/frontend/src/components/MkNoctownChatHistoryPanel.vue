@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div
 				v-for="msg in messages"
 				:key="msg.id"
-				:class="$style.message"
+				:class="[$style.message, { [$style.myMessage]: msg.isMine }]"
 			>
 				<div :class="$style.messageHeader">
 					<img v-if="msg.avatarUrl" :src="msg.avatarUrl" :class="$style.avatar"/>
@@ -66,6 +66,7 @@ interface ChatMessage {
 	positionX: number;
 	positionZ: number;
 	createdAt: string;
+	isMine: boolean;
 }
 
 defineEmits<{
@@ -85,28 +86,37 @@ function getToken(): string | null {
 	}
 }
 
-// FR-029: サーバーから受信記録を元にチャット履歴を取得
-// noctown_chat_log_recipientテーブルから自分が受信したメッセージを取得
+// FR-029: サーバーからチャット履歴を取得
+// 自分が送信したメッセージ + 50ブロック以内で受信したメッセージを取得
 async function fetchChatHistory(): Promise<void> {
 	try {
 		loading.value = true;
 
-		// サーバーから直接チャット履歴を取得（中間テーブル使用）
+		const token = getToken();
+		console.log('[ChatHistory] Fetching chat history, token exists:', !!token);
+
 		const res = await window.fetch('/api/noctown/chat-history', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			credentials: 'same-origin',
 			body: JSON.stringify({
-				i: getToken(),
+				i: token,
 				limit: 50,
 			}),
 		});
 
+		console.log('[ChatHistory] Response status:', res.status);
+
 		if (res.ok) {
-			messages.value = await res.json();
+			const data = await res.json();
+			console.log('[ChatHistory] Received messages:', data.length, data);
+			messages.value = data;
+		} else {
+			const errorText = await res.text();
+			console.error('[ChatHistory] API error:', res.status, errorText);
 		}
 	} catch (e) {
-		console.error('Failed to fetch chat history:', e);
+		console.error('[ChatHistory] Failed to fetch chat history:', e);
 	} finally {
 		loading.value = false;
 	}
@@ -214,6 +224,12 @@ defineExpose({
 	padding: 10px 12px;
 	border-radius: 8px;
 	background: var(--MI_THEME-bg);
+}
+
+// 仕様: 自分のメッセージは右寄せで背景色を変える
+.myMessage {
+	background: color-mix(in srgb, var(--MI_THEME-accent) 15%, var(--MI_THEME-bg));
+	border-left: 3px solid var(--MI_THEME-accent);
 }
 
 .messageHeader {

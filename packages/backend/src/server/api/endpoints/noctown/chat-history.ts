@@ -4,8 +4,8 @@
  */
 
 // FR-029: チャットメッセージ履歴取得エンドポイント
-// 中間テーブル（noctown_chat_log_recipient）を使用して、
-// 自分が50ブロック以内で受信したメッセージを取得する
+// 中間テーブル(noctown_chat_log_recipient)から自分が受信したメッセージを取得する
+// 自分の発言も送信時に中間テーブルに登録されるため、全ての発言を一貫して取得可能
 
 import { Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
@@ -39,6 +39,7 @@ export const meta = {
 				positionX: { type: 'number' },
 				positionZ: { type: 'number' },
 				createdAt: { type: 'string', format: 'date-time' },
+				isMine: { type: 'boolean' },
 			},
 		},
 	},
@@ -73,29 +74,43 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private usersRepository: UsersRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			console.log('[chat-history] API called, userId:', me.id);
+
 			// プレイヤー情報を取得
 			const player = await this.noctownPlayersRepository.findOneBy({ userId: me.id });
+			console.log('[chat-history] Player found:', player?.id ?? 'null');
 			if (!player) {
+				console.log('[chat-history] No player found, returning empty array');
 				return [];
 			}
 
-			// 受信記録から自分が受信したメッセージIDを取得（最新順）
+			const limit = ps.limit ?? 50;
+
+			// FR-029: 中間テーブルから自分が受信したメッセージIDを取得（最新順）
+			// 自分の発言も送信時に中間テーブルに登録されるため、全てのメッセージを一貫して取得可能
 			const recipients = await this.noctownChatLogRecipientsRepository.find({
 				where: { recipientPlayerId: player.id },
 				order: { receivedAt: 'DESC' },
-				take: ps.limit ?? 50,
+				take: limit,
 			});
+			console.log('[chat-history] Recipients count:', recipients.length);
 
 			if (recipients.length === 0) {
+				console.log('[chat-history] No recipients found, returning empty array');
 				return [];
 			}
 
+			// 受信記録からチャットログIDを取得
 			const chatLogIds = recipients.map(r => r.chatLogId);
 
 			// チャットログを取得
 			const chatLogs = await this.noctownChatLogsRepository.find({
 				where: { id: In(chatLogIds) },
 			});
+
+			if (chatLogs.length === 0) {
+				return [];
+			}
 
 			// receivedAt順に並び替えるためのマップ
 			const receivedAtMap = new Map(recipients.map(r => [r.chatLogId, r.receivedAt]));
@@ -118,10 +133,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 			const userMap = new Map(users.map(u => [u.id, u]));
 
-			// レスポンスを構築（receivedAt順に並び替え）
+			// レスポンスを構築（receivedAt順でソート）
 			const results = chatLogs.map(log => {
 				const logPlayer = playerMap.get(log.playerId);
 				const user = logPlayer ? userMap.get(logPlayer.userId) : null;
+				const isMine = log.playerId === player.id;
+				const receivedAt = receivedAtMap.get(log.id) ?? log.createdAt;
+
 				return {
 					id: log.id,
 					playerId: log.playerId,
@@ -132,7 +150,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					positionX: log.positionX,
 					positionZ: log.positionZ,
 					createdAt: log.createdAt.toISOString(),
-					_receivedAt: receivedAtMap.get(log.id) ?? new Date(0),
+					isMine,
+					_receivedAt: receivedAt,
 				};
 			});
 

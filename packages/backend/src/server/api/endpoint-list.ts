@@ -395,6 +395,7 @@ export * as 'noctown/item/pickup' from './endpoints/noctown/item/pickup.js';
 export * as 'noctown/item/place' from './endpoints/noctown/item/place.js';
 export * as 'noctown/item/dropped' from './endpoints/noctown/item/dropped.js';
 export * as 'noctown/item/placed' from './endpoints/noctown/item/placed.js';
+export * as 'noctown/item/pickup-placed' from './endpoints/noctown/item/pickup-placed.js';
 export * as 'noctown/quest/list' from './endpoints/noctown/quest/list.js';
 export * as 'noctown/quest/start' from './endpoints/noctown/quest/start.js';
 export * as 'noctown/quest/complete' from './endpoints/noctown/quest/complete.js';
@@ -478,6 +479,8 @@ export * as 'noctown/event/progress' from './endpoints/noctown/event/progress.js
 export * as 'noctown/event/claim-reward' from './endpoints/noctown/event/claim-reward.js';
 export * as 'noctown/ranking/total' from './endpoints/noctown/ranking/total.js';
 export * as 'noctown/ranking/category' from './endpoints/noctown/ranking/category.js';
+export * as 'noctown/chat-history' from './endpoints/noctown/chat-history.js';
+export * as 'noctown/chat-log/receive' from './endpoints/noctown/chat-log/receive.js';
 export * as 'roles/list' from './endpoints/roles/list.js';
 export * as 'roles/notes' from './endpoints/roles/notes.js';
 export * as 'roles/show' from './endpoints/roles/show.js';

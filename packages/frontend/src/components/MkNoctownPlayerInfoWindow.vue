@@ -54,6 +54,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i v-else class="ti ti-radar-2"></i>
 				<span>Ping</span>
 			</button>
+
+			<!-- Trade button -->
+			<!-- 仕様: オンラインプレイヤーとトレードを開始する -->
+			<button :class="$style.tradeButton" @click="handleTrade">
+				<i class="ti ti-arrows-exchange"></i>
+				<span>トレード</span>
+			</button>
 		</div>
 	</div>
 </div>
@@ -81,6 +88,7 @@ const props = defineProps<{
 const emit = defineEmits<{
 	(e: 'close'): void;
 	(e: 'ping'): void;
+	(e: 'trade', playerId: string): void;
 }>();
 
 const overlayRef = ref<HTMLElement | null>(null);
@@ -135,6 +143,12 @@ function handleClose() {
 
 function handlePing() {
 	emit('ping');
+}
+
+// 仕様: トレードボタンクリック時の処理
+function handleTrade() {
+	emit('trade', props.playerId);
+	emit('close');
 }
 
 // 仕様: アバタークリック時にプロフィールページに遷移
@@ -409,5 +423,30 @@ watch(() => props.username, () => {
 @keyframes spin {
 	from { transform: rotate(0deg); }
 	to { transform: rotate(360deg); }
+}
+
+// 仕様: トレードボタン
+.tradeButton {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 10px 20px;
+	background: #22c55e;
+	color: #fff;
+	border: none;
+	border-radius: 8px;
+	cursor: pointer;
+	font-size: 14px;
+	margin-top: 8px;
+	transition: opacity 0.15s, transform 0.15s;
+
+	&:hover {
+		opacity: 0.9;
+		transform: scale(1.02);
+	}
+
+	&:active {
+		transform: scale(0.98);
+	}
 }
 </style>

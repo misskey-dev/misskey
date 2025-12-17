@@ -4,29 +4,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.inventory">
+<!-- 仕様: イベント伝播を防止してキャンバスへの伝播を阻止 -->
+<div :class="$style.inventory" @click.stop @mousedown.stop @touchstart.stop>
 	<div :class="$style.header">
 		<i class="ti ti-backpack"></i>
 		<span>インベントリ</span>
-		<button :class="$style.closeBtn" @click="$emit('close')">
+		<button :class="$style.closeBtn" @click.stop="$emit('close')">
 			<i class="ti ti-x"></i>
 		</button>
 	</div>
 	<div :class="$style.content">
 		<div v-if="loading" :class="$style.loading">
-			<MkLoading/>
+			読込中...
 		</div>
 		<div v-else-if="items.length === 0" :class="$style.empty">
 			空っぽ
 		</div>
+		<!-- グリッド表示 -->
 		<div v-else :class="$style.grid">
 			<div
 				v-for="item in items"
 				:key="item.id"
-				:class="[$style.item, $style[getRarityClass(item.rarity)], { [$style.selected]: selectedItem?.id === item.id }]"
+				:class="$style.item"
+				:style="{ background: getRarityBackground(item.rarity) }"
 				@click="selectItem(item)"
 			>
-				<!-- 仕様: FR-030 画像>絵文字>アイコンの優先順位で表示 -->
 				<div :class="$style.itemIcon">
 					<img
 						v-if="item.imageUrl"
@@ -44,16 +46,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-if="selectedItem" :class="$style.selectedInfo">
 		<div :class="$style.selectedName">{{ selectedItem.itemName || 'Unknown Item' }}</div>
 		<div :class="$style.selectedMeta">
-			<span :class="[$style.rarityBadge, $style[getRarityClass(selectedItem.rarity)]]">{{ getRarityLabel(selectedItem.rarity) }}</span>
+			<!-- 仕様: インラインスタイルでレアリティ背景色を適用（動的CSSモジュール参照を回避） -->
+			<span :class="$style.rarityBadge" :style="{ background: getRarityBadgeColor(selectedItem.rarity) }">{{ getRarityLabel(selectedItem.rarity) }}</span>
 			<span>x{{ selectedItem.quantity ?? 1 }}</span>
+		</div>
+		<!-- 仕様: 数量選択（2個以上所持している場合のみ表示） -->
+		<div v-if="(selectedItem.quantity ?? 1) > 1" :class="$style.quantitySelector">
+			<span :class="$style.quantityLabel">数量:</span>
+			<button :class="$style.quantityBtn" @click.stop="decrementDropQuantity" :disabled="dropQuantity <= 1">-</button>
+			<span :class="$style.quantityValue">{{ dropQuantity }}</span>
+			<button :class="$style.quantityBtn" @click.stop="incrementDropQuantity" :disabled="dropQuantity >= (selectedItem.quantity ?? 1)">+</button>
 		</div>
 	</div>
 	<div v-if="selectedItem" :class="$style.actions">
-		<MkButton :class="$style.actionBtn" @click="placeItem">
+		<MkButton :class="$style.actionBtn" @click.stop="placeItem">
 			<i class="ti ti-box"></i> 設置
 		</MkButton>
-		<MkButton :class="$style.actionBtn" danger @click="dropItem">
-			<i class="ti ti-trash"></i> 捨てる
+		<MkButton :class="$style.actionBtn" danger @click.stop="dropItem">
+			<i class="ti ti-trash"></i> 捨てる{{ dropQuantity > 1 ? ` (${dropQuantity})` : '' }}
 		</MkButton>
 	</div>
 </div>
@@ -61,7 +71,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
-import MkLoading from '@/components/global/MkLoading.vue';
 import MkButton from '@/components/MkButton.vue';
 
 // インベントリアイテムのインターフェース
@@ -84,12 +93,14 @@ interface InventoryItem {
 const emit = defineEmits<{
 	(e: 'close'): void;
 	(e: 'place', item: InventoryItem): void;
-	(e: 'drop', item: InventoryItem): void;
+	(e: 'drop', item: InventoryItem, quantity: number): void;
 }>();
 
 const loading = ref(true);
 const items = ref<InventoryItem[]>([]);
 const selectedItem = ref<InventoryItem | null>(null);
+// 仕様: ドロップ時の数量（デフォルト1）
+const dropQuantity = ref(1);
 
 function getToken(): string | null {
 	const account = localStorage.getItem('account');
@@ -104,11 +115,17 @@ function getToken(): string | null {
 async function fetchInventory(): Promise<void> {
 	try {
 		loading.value = true;
+		const token = getToken();
+		if (!token) {
+			items.value = [];
+			return;
+		}
+
 		const res = await window.fetch('/api/noctown/item/inventory', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			credentials: 'same-origin',
-			body: JSON.stringify({ i: getToken() }),
+			body: JSON.stringify({ i: token }),
 		});
 
 		if (res.ok) {
@@ -129,22 +146,40 @@ async function fetchInventory(): Promise<void> {
 					acquiredAt: item.acquiredAt ?? '',
 				}));
 			} else {
-				console.error('Invalid inventory response: expected array', data);
 				items.value = [];
 			}
+		} else {
+			items.value = [];
 		}
 	} catch (e) {
-		console.error('Failed to fetch inventory:', e);
+		items.value = [];
 	} finally {
 		loading.value = false;
 	}
 }
 
+// 仕様: アイテム選択時にドロップ数量を1にリセット
 function selectItem(item: InventoryItem): void {
 	if (selectedItem.value?.id === item.id) {
 		selectedItem.value = null;
+		dropQuantity.value = 1;
 	} else {
 		selectedItem.value = item;
+		dropQuantity.value = 1;
+	}
+}
+
+// 仕様: ドロップ数量を増加
+function incrementDropQuantity(): void {
+	if (selectedItem.value && dropQuantity.value < (selectedItem.value.quantity ?? 1)) {
+		dropQuantity.value++;
+	}
+}
+
+// 仕様: ドロップ数量を減少
+function decrementDropQuantity(): void {
+	if (dropQuantity.value > 1) {
+		dropQuantity.value--;
 	}
 }
 
@@ -178,22 +213,49 @@ function getRarityClass(rarity: number | undefined | null): string {
 	return `rarity${safeRarity}`;
 }
 
+// レアリティに対応する背景グラデーションを取得（アイテムグリッド用）
+function getRarityBackground(rarity: number | undefined | null): string {
+	const safeRarity = typeof rarity === 'number' && rarity >= 0 && rarity <= 5 ? rarity : 0;
+	const backgrounds = [
+		'linear-gradient(135deg, #4a5568 0%, #2d3748 100%)', // N - グレー
+		'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)', // R - 青
+		'linear-gradient(135deg, #a855f7 0%, #7c3aed 100%)', // SR - 紫
+		'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)', // SSR - 金
+		'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)', // UR - 赤
+		'linear-gradient(135deg, #ec4899 0%, #db2777 100%)', // LR - ピンク
+	];
+	return backgrounds[safeRarity];
+}
+
+// 仕様: レアリティバッジ用の単色背景を取得（動的CSSモジュール参照を回避）
+function getRarityBadgeColor(rarity: number | undefined | null): string {
+	const safeRarity = typeof rarity === 'number' && rarity >= 0 && rarity <= 5 ? rarity : 0;
+	const colors = ['#4a5568', '#3b82f6', '#a855f7', '#f59e0b', '#ef4444', '#ec4899'];
+	return colors[safeRarity];
+}
+
 function placeItem(): void {
 	if (selectedItem.value) {
 		emit('place', selectedItem.value);
 	}
 }
 
+// 仕様: アイテムを指定数量でドロップ
 function dropItem(): void {
 	if (selectedItem.value) {
-		emit('drop', selectedItem.value);
+		emit('drop', selectedItem.value, dropQuantity.value);
 		selectedItem.value = null;
+		dropQuantity.value = 1;
 		fetchInventory();
 	}
 }
 
-onMounted(() => {
-	fetchInventory();
+onMounted(async () => {
+	try {
+		await fetchInventory();
+	} catch (e) {
+		console.error('[MkNoctownInventory] onMounted error:', e);
+	}
 });
 
 defineExpose({
@@ -202,6 +264,7 @@ defineExpose({
 </script>
 
 <style lang="scss" module>
+// 仕様: z-indexを高く設定してThree.jsキャンバスより確実に上に表示
 .inventory {
 	position: absolute;
 	right: 16px;
@@ -213,7 +276,7 @@ defineExpose({
 	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 	display: flex;
 	flex-direction: column;
-	z-index: 100;
+	z-index: 10000;
 }
 
 .header {
@@ -370,6 +433,54 @@ defineExpose({
 	&.rarity3 { background: #f59e0b; }
 	&.rarity4 { background: #ef4444; }
 	&.rarity5 { background: #ec4899; }
+}
+
+// 仕様: 数量セレクター（2個以上所持時のみ表示）
+.quantitySelector {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-top: 8px;
+	padding: 6px 0;
+}
+
+.quantityLabel {
+	font-size: 12px;
+	color: var(--MI_THEME-fg);
+	opacity: 0.8;
+}
+
+.quantityBtn {
+	width: 28px;
+	height: 28px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: var(--MI_THEME-buttonBg);
+	border: 1px solid var(--MI_THEME-divider);
+	border-radius: 6px;
+	color: var(--MI_THEME-fg);
+	font-size: 16px;
+	font-weight: bold;
+	cursor: pointer;
+	transition: all 0.15s ease;
+
+	&:hover:not(:disabled) {
+		background: var(--MI_THEME-buttonHoverBg);
+	}
+
+	&:disabled {
+		opacity: 0.4;
+		cursor: not-allowed;
+	}
+}
+
+.quantityValue {
+	min-width: 32px;
+	text-align: center;
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--MI_THEME-fg);
 }
 
 .actions {

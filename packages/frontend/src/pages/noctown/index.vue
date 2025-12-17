@@ -10,9 +10,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div :class="$style.header">
 				<img src="https://noc.ski/files/cbb6135b-31f5-4367-8702-8910c72c8d62" :class="$style.logo"/>
 				<div :class="$style.headerActions">
-					<button :class="$style.iconBtn" @click="toggleChatHistoryPanel">
-						<i class="ti ti-messages"></i>
-					</button>
 					<button :class="$style.iconBtn" @click="toggleQuestPanel">
 						<i class="ti ti-list-check"></i>
 					</button>
@@ -33,18 +30,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 					X: {{ currentX.toFixed(1) }}, Y: {{ currentY.toFixed(1) }}, Z: {{ currentZ.toFixed(1) }}
 				</div>
 
-				<!-- Inventory button (top-right, left of button group) -->
-				<!-- @click.stop: キャンバスのクリックイベントへの伝播を防止 -->
-				<button
-					v-if="!isLoading && !error"
-					:class="$style.inventoryButton"
-					@click.stop="toggleInventory"
-				>
-					<i class="ti ti-backpack"></i>
-				</button>
-
-				<!-- FR-016: Top-right button group (reload + settings) -->
+				<!-- FR-016: Top-right button group (inventory + chat history + reload + settings) -->
 				<div v-if="!isLoading && !error" :class="$style.topRightButtonGroup">
+					<button
+						:class="$style.groupButton"
+						@click="toggleInventory"
+					>
+						<i class="ti ti-backpack"></i>
+					</button>
+					<button
+						:class="$style.groupButton"
+						@click="toggleChatHistoryPanel"
+					>
+						<i class="ti ti-messages"></i>
+					</button>
 					<button
 						:class="[$style.groupButton, { [$style.groupButtonDisabled]: isReloading || reloadCooldown }]"
 						:disabled="isReloading || reloadCooldown"
@@ -156,7 +155,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:isPinging="isPlayerInfoPinging"
 					@close="handleClosePlayerInfoWindow"
 					@ping="handleManualPing"
+					@trade="handleStartTrade"
 				/>
+
+				<!-- FR-070: Trade panel overlay -->
+				<!-- 仕様: トレードパネルはオーバーレイ表示、対象プレイヤーがいる場合は新規トレード申請モード -->
+				<div v-if="showTradePanel" :class="$style.tradePanelOverlay" @click.self="showTradePanel = false">
+					<TradePanel
+						:targetPlayer="tradeTargetPlayer"
+						@close="handleCloseTradePanel"
+						@trade-sent="handleTradeSent"
+						@trade-completed="handleTradeCompleted"
+					/>
+				</div>
 
 				<!-- FR-022, FR-023: Pet info floating window -->
 				<MkNoctownPetInfoWindow
@@ -169,6 +180,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:hunger="selectedPetInfo.hunger"
 					:happiness="selectedPetInfo.happiness"
 					@close="handleClosePetInfoWindow"
+				/>
+
+				<!-- FR-032: Placed item info floating window -->
+				<MkNoctownPlacedItemInfoWindow
+					v-if="showPlacedItemInfoWindow && selectedPlacedItem"
+					:placedItemId="selectedPlacedItem.id"
+					:itemId="selectedPlacedItem.itemId"
+					:itemName="selectedPlacedItem.itemName"
+					:itemType="selectedPlacedItem.itemType"
+					:ownerId="selectedPlacedItem.ownerId"
+					:ownerUsername="selectedPlacedItem.ownerUsername"
+					:isOwner="isOwnerOfPlacedItem"
+					@close="handleClosePlacedItemInfoWindow"
+					@pickup="handlePickupPlacedItem"
 				/>
 
 				<!-- T009-T011: Emotion buttons with favorite emoji support -->
@@ -231,7 +256,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import MkLoading from '@/components/global/MkLoading.vue';
@@ -243,6 +268,8 @@ import MkNoctownFarmPanel from '@/components/MkNoctownFarmPanel.vue';
 import MkNoctownChatHistoryPanel from '@/components/MkNoctownChatHistoryPanel.vue';
 import MkNoctownPlayerInfoWindow from '@/components/MkNoctownPlayerInfoWindow.vue';
 import MkNoctownPetInfoWindow from '@/components/MkNoctownPetInfoWindow.vue';
+import MkNoctownPlacedItemInfoWindow from '@/components/MkNoctownPlacedItemInfoWindow.vue';
+import TradePanel from '@/components/noctown/TradePanel.vue';
 import NoctownJoystick from '@/components/MkNoctown/NoctownJoystick.vue';
 import NoctownChatInput from '@/components/MkNoctown/NoctownChatInput.vue';
 import { useStream } from '@/stream.js';
@@ -310,6 +337,12 @@ function getFavoriteEmojis(): EmotionEmoji[] {
 // T008: emotionEmojis as computed property for reactive updates
 const emotionEmojis = computed(() => getFavoriteEmojis());
 
+// FR-032: Check if current player is the owner of selected placed item
+const isOwnerOfPlacedItem = computed(() => {
+	if (!selectedPlacedItem.value || !playerData.value) return false;
+	return selectedPlacedItem.value.ownerId === playerData.value.id;
+});
+
 const canvasContainer = ref<HTMLElement | null>(null);
 const isConnected = ref(false);
 const isLoading = ref(true);
@@ -368,6 +401,26 @@ const pendingPlayerInfoPings = new Map<string, { playerId: string; sentTime: num
 // FR-022, FR-023: Pet info floating window
 const showPetInfoWindow = ref(false);
 const selectedPetInfo = ref<PetInfo | null>(null);
+
+// FR-032: Placed item info window state
+const showPlacedItemInfoWindow = ref(false);
+const selectedPlacedItem = ref<{
+	id: string;
+	itemId: string;
+	itemName: string;
+	itemType: string;
+	ownerId: string;
+	ownerUsername: string;
+} | null>(null);
+
+// FR-070: Trade panel state
+// 仕様: トレードパネルの表示状態とトレード対象プレイヤー情報
+const showTradePanel = ref(false);
+const tradeTargetPlayer = ref<{
+	id: string;
+	username: string;
+	avatarUrl: string | null;
+} | null>(null);
 
 // FR-019: Typing indicator state
 let isTyping = false;
@@ -766,21 +819,31 @@ async function handleChunkGenerated(data: ChunkData): Promise<void> {
 	await engine.renderChunk(data);
 	console.log('[Noctown] handleChunkGenerated: chunk rendered successfully', { chunkX: data.chunkX, chunkZ: data.chunkZ });
 
-	// FR-074: VIEW_DISTANCE=2 chunk management (remove chunks outside view distance)
-	const VIEW_DISTANCE = 2;
+	// FR-074: VIEW_DISTANCE management (remove chunks outside view distance)
+	// 修正: VIEW_DISTANCEをCHUNK_LOAD_DISTANCE(=2)より1大きくしてマージンを確保
+	// これにより、チャンク境界付近でのエンティティ消失を防ぐ
+	const VIEW_DISTANCE = 3;
 	const playerChunkX = Math.floor(currentX.value / CHUNK_SIZE);
 	const playerChunkZ = Math.floor(currentZ.value / CHUNK_SIZE);
 
 	// Remove chunks outside VIEW_DISTANCE
+	// 修正: イテレーション中の削除を避けるため、削除対象を先に収集
+	const chunksToRemove: string[] = [];
 	for (const chunkKey of loadedChunks) {
 		const [cx, cz] = chunkKey.split(',').map(Number);
 		const dx = Math.abs(cx - playerChunkX);
 		const dz = Math.abs(cz - playerChunkZ);
 
 		if (dx > VIEW_DISTANCE || dz > VIEW_DISTANCE) {
-			engine.removeChunk(cx, cz);
-			loadedChunks.delete(chunkKey);
+			chunksToRemove.push(chunkKey);
 		}
+	}
+
+	// 収集した削除対象を一括削除
+	for (const chunkKey of chunksToRemove) {
+		const [cx, cz] = chunkKey.split(',').map(Number);
+		engine.removeChunk(cx, cz);
+		loadedChunks.delete(chunkKey);
 	}
 }
 
@@ -1199,8 +1262,11 @@ function handlePlayerPingReceived(data: { senderPlayerId: string; pingId: string
 function handleCanvasClick(event: MouseEvent | TouchEvent): void {
 	if (!engine) return;
 
-	// Don't open info windows if in place mode
-	if (placeMode.value) return;
+	// 仕様: FR-032 設置モード中はアイテム設置を実行
+	if (placeMode.value) {
+		onPlaceClick();
+		return;
+	}
 
 	// FR-022: Check if clicked/touched on a pet first
 	const petInfo = engine.getClickedPet(event);
@@ -1208,6 +1274,22 @@ function handleCanvasClick(event: MouseEvent | TouchEvent): void {
 		// Prevent default to avoid click event firing after touchend
 		event.preventDefault();
 		openPetInfoWindow(petInfo);
+		return;
+	}
+
+	// FR-032: Check if clicked/touched on a dropped item (pickup on click)
+	const droppedItem = engine.getClickedDroppedItem(event);
+	if (droppedItem) {
+		event.preventDefault();
+		handlePickupDroppedItem(droppedItem);
+		return;
+	}
+
+	// FR-032: Check if clicked/touched on a placed item
+	const placedItem = engine.getClickedPlacedItem(event);
+	if (placedItem) {
+		event.preventDefault();
+		openPlacedItemInfoWindow(placedItem);
 		return;
 	}
 
@@ -1285,11 +1367,107 @@ function handleClosePetInfoWindow(): void {
 	selectedPetInfo.value = null;
 }
 
+// FR-032: Open placed item info window
+function openPlacedItemInfoWindow(item: { id: string; itemId: string; itemName: string; itemType: string; ownerId: string; ownerUsername: string }): void {
+	selectedPlacedItem.value = item;
+	showPlacedItemInfoWindow.value = true;
+}
+
+// FR-032: Close placed item info window
+function handleClosePlacedItemInfoWindow(): void {
+	showPlacedItemInfoWindow.value = false;
+	selectedPlacedItem.value = null;
+}
+
+// FR-032: Handle pickup placed item
+async function handlePickupPlacedItem(placedItemId: string): Promise<void> {
+	if (!engine) return;
+
+	try {
+		await noctownApi('noctown/item/pickup-placed', {
+			placedItemId,
+		});
+
+		// Remove from 3D scene
+		engine.removePlacedItemById(placedItemId);
+
+		// Close info window
+		handleClosePlacedItemInfoWindow();
+
+		// Refresh inventory if open
+		inventoryRef.value?.refresh();
+	} catch (e) {
+		console.error('Failed to pickup placed item:', e);
+	}
+}
+
+// FR-032: Handle click pickup of dropped item
+async function handlePickupDroppedItem(item: { id: string; itemName: string }): Promise<void> {
+	if (!engine) return;
+
+	try {
+		const result = await noctownApi<{ success: boolean }>('noctown/item/pickup', {
+			droppedItemId: item.id,
+		});
+
+		if (result.success) {
+			// 仕様: 拾得成功時にエンジンからドロップアイテムを削除
+			engine.removeDroppedItem(item.id);
+			nearbyDroppedItem.value = null;
+			// インベントリを更新
+			if (inventoryRef.value) {
+				inventoryRef.value.refresh();
+			}
+		}
+	} catch (error) {
+		console.error('Failed to pick up dropped item:', error);
+	}
+}
+
 // FR-018: Handle manual ping from player info window
 function handleManualPing(): void {
 	if (selectedPlayerInfo.value) {
 		sendPlayerInfoPing(selectedPlayerInfo.value.playerId);
 	}
+}
+
+// FR-070: Start trade with a player
+// 仕様: プレイヤー情報ウィンドウからトレードボタンを押すとトレードパネルを開く
+function handleStartTrade(playerId: string): void {
+	if (!engine) return;
+
+	const playerData = engine.getRemotePlayerData(playerId);
+	if (!playerData) return;
+
+	tradeTargetPlayer.value = {
+		id: playerData.id,
+		username: playerData.username,
+		avatarUrl: playerData.avatarUrl,
+	};
+	showTradePanel.value = true;
+}
+
+// FR-070: Close trade panel
+function handleCloseTradePanel(): void {
+	showTradePanel.value = false;
+	tradeTargetPlayer.value = null;
+}
+
+// FR-070: Handle trade request sent
+// 仕様: トレードリクエスト送信後の処理
+function handleTradeSent(): void {
+	console.log('Trade request sent');
+	// トレードリストモードに切り替え（新規申請モードを終了）
+	tradeTargetPlayer.value = null;
+}
+
+// FR-070: Handle trade completed
+// 仕様: トレード完了後の処理（インベントリ更新など）
+function handleTradeCompleted(): void {
+	console.log('Trade completed');
+	showTradePanel.value = false;
+	tradeTargetPlayer.value = null;
+	// TODO: インベントリの更新通知
 }
 
 // FR-017: Start warning check interval for 3+ seconds since last ping
@@ -1353,13 +1531,12 @@ function handleKeyDown(e: KeyboardEvent): void {
 	}
 }
 
+// 仕様: インベントリパネルの表示/非表示をトグル
 function toggleInventory(): void {
 	showInventory.value = !showInventory.value;
 	showQuestPanel.value = false;
+	showFarmPanel.value = false;
 	showChatHistoryPanel.value = false;
-	if (showInventory.value && inventoryRef.value) {
-		inventoryRef.value.refresh();
-	}
 }
 
 function toggleQuestPanel(): void {
@@ -1625,9 +1802,7 @@ function handlePlaceItem(item: InventoryItem): void {
 	selectedItemForPlace = { id: item.id, itemId: item.itemId };
 	placeMode.value = true;
 	showInventory.value = false;
-
-	// Add click handler for placing
-	canvasContainer.value?.addEventListener('click', onPlaceClick);
+	// 仕様: クリックハンドラはhandleCanvasClick内で処理するため、別途追加不要
 }
 
 async function onPlaceClick(): Promise<void> {
@@ -1660,11 +1835,12 @@ async function onPlaceClick(): Promise<void> {
 function cancelPlaceMode(): void {
 	placeMode.value = false;
 	selectedItemForPlace = null;
-	canvasContainer.value?.removeEventListener('click', onPlaceClick);
+	// 仕様: クリックハンドラはhandleCanvasClick内で処理するため、別途削除不要
 }
 
-// 仕様: FR-030 インベントリからアイテムを捨てる（地面にドロップ）
-async function handleDropItem(item: InventoryItem): Promise<void> {
+/// 仕様: FR-030 インベントリからアイテムを捨てる（地面にドロップ）
+// quantity: 捨てる数量（デフォルト1）
+async function handleDropItem(item: InventoryItem, quantity: number = 1): Promise<void> {
 	if (!engine) return;
 
 	const pos = engine.getLocalPlayerPosition();
@@ -1678,7 +1854,7 @@ async function handleDropItem(item: InventoryItem): Promise<void> {
 	try {
 		const result = await noctownApi<{ droppedItemId: string }>('noctown/item/drop', {
 			playerItemId: item.id,
-			quantity: 1, // 1個ずつドロップ
+			quantity: quantity,
 			positionX: dropX,
 			positionY: pos.y,
 			positionZ: dropZ,
@@ -1694,7 +1870,7 @@ async function handleDropItem(item: InventoryItem): Promise<void> {
 				emoji: item.emoji,
 				imageUrl: item.imageUrl,
 				rarity: item.rarity,
-				quantity: 1,
+				quantity: quantity,
 				positionX: dropX,
 				positionY: pos.y,
 				positionZ: dropZ,
@@ -1923,58 +2099,24 @@ definePage(() => ({
 }
 
 // T048: Style coordinate display with readable font and background
+// 修正: フォントサイズを小さくして目立たなくする
 .coordinateDisplay {
 	position: absolute;
 	top: 16px;
 	left: 16px;
-	background: rgba(0, 0, 0, 0.6);
-	color: white;
-	padding: 8px 12px;
-	border-radius: 6px;
+	background: rgba(0, 0, 0, 0.5);
+	color: rgba(255, 255, 255, 0.8);
+	padding: 4px 8px;
+	border-radius: 4px;
 	font-family: 'Courier New', monospace;
-	font-size: 14px;
-	font-weight: 600;
+	font-size: 11px;
+	font-weight: 500;
 	z-index: 100;
 	pointer-events: none;
 	user-select: none;
 }
 
-// Inventory button (top-right, left of button group)
-.inventoryButton {
-	position: absolute;
-	top: calc(env(safe-area-inset-top, 16px) + 10px);
-	right: 116px; // 16px + 92px (button group width) + 8px gap
-	width: 44px;
-	height: 44px;
-	border-radius: 50%;
-	background: rgba(0, 0, 0, 0.5);
-	border: none;
-	cursor: pointer;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	color: white;
-	font-size: 20px;
-	z-index: 100;
-	transition: opacity 0.2s, transform 0.2s;
-
-	&:hover {
-		background: rgba(0, 0, 0, 0.7);
-		transform: scale(1.05);
-	}
-
-	&:active {
-		transform: scale(0.95);
-	}
-
-	// Mobile: ensure minimum touch target and safe area
-	@media (max-width: 768px) {
-		top: calc(env(safe-area-inset-top, 10px) + 10px);
-		right: 106px; // 10px + 88px + 8px gap
-	}
-}
-
-// FR-016: Top-right button group (reload + settings)
+// FR-016: Top-right button group (inventory + reload + settings)
 .topRightButtonGroup {
 	position: absolute;
 	top: calc(env(safe-area-inset-top, 16px) + 10px);
@@ -1992,9 +2134,10 @@ definePage(() => ({
 	}
 }
 
+// 仕様: 右上ボタングループのボタンサイズ（4ボタン用に小さめ）
 .groupButton {
-	width: 44px;
-	height: 44px;
+	width: 36px;
+	height: 36px;
 	border-radius: 50%;
 	background: transparent;
 	border: none;
@@ -2003,7 +2146,7 @@ definePage(() => ({
 	align-items: center;
 	justify-content: center;
 	color: white;
-	font-size: 20px;
+	font-size: 17px;
 	transition: background 0.2s, transform 0.2s;
 
 	&:hover {
@@ -2395,5 +2538,20 @@ definePage(() => ({
 		font-family: monospace;
 		font-size: 11px;
 	}
+}
+
+// FR-070: Trade panel overlay
+// 仕様: トレードパネルのオーバーレイ表示
+.tradePanelOverlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.5);
+	z-index: 1001;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 </style>

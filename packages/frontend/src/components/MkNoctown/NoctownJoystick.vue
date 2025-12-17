@@ -116,4 +116,19 @@ onUnmounted(() => {
 	right: 20px;
 	left: auto;
 }
+
+/* nipplejs が生成する内部要素に対してテキスト選択を無効化 */
+.joystickContainer :global(.nipple) {
+	user-select: none !important;
+	-webkit-user-select: none !important;
+	-webkit-touch-callout: none !important;
+}
+
+.joystickContainer :global(.front),
+.joystickContainer :global(.back) {
+	user-select: none !important;
+	-webkit-user-select: none !important;
+	-webkit-touch-callout: none !important;
+	pointer-events: none;
+}
 </style>
