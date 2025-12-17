@@ -120,16 +120,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 					@end="handleJoystickEnd"
 				/>
 
-				<!-- 仕様: FR-030 拾うボタン（近くにドロップアイテムがある場合に表示） -->
-				<div v-if="nearbyDroppedItem" :class="$style.pickupButton" @click="tryPickupDroppedItem">
-					<div :class="$style.pickupButtonContent">
-						<span :class="$style.pickupEmoji">{{ nearbyDroppedItem.emoji || '📦' }}</span>
-						<span :class="$style.pickupText">拾う</span>
-						<span v-if="nearbyDroppedItem.quantity > 1" :class="$style.pickupQuantity">x{{ nearbyDroppedItem.quantity }}</span>
-					</div>
-					<div :class="$style.pickupItemName">{{ nearbyDroppedItem.itemName }}</div>
-				</div>
-
 				<!-- Place mode indicator -->
 				<div v-if="placeMode" :class="$style.placeModeIndicator">
 					<i class="ti ti-box"></i>
@@ -353,8 +343,6 @@ const showQuestPanel = ref(false);
 const showNpcDialog = ref(false);
 const showFarmPanel = ref(false);
 const showChatHistoryPanel = ref(false);
-// 仕様: FR-030 近くにあるドロップアイテムの情報（拾うボタン表示用）
-const nearbyDroppedItem = ref<{ id: string; itemName: string; emoji: string | null; quantity: number } | null>(null);
 const placeMode = ref(false);
 const inventoryRef = ref<{ refresh: () => void } | null>(null);
 const questPanelRef = ref<{ refresh: () => void } | null>(null);
@@ -1156,8 +1144,6 @@ function startMovementLoop(): void {
 			lastChunkCheckTime = now;
 		}
 
-		// 仕様: FR-030 近くのドロップアイテムをチェック（拾うボタン表示用）
-		updateNearbyDroppedItem();
 	}, 16); // ~60fps
 }
 
@@ -1413,7 +1399,6 @@ async function handlePickupDroppedItem(item: { id: string; itemName: string }): 
 		if (result.success) {
 			// 仕様: 拾得成功時にエンジンからドロップアイテムを削除
 			engine.removeDroppedItem(item.id);
-			nearbyDroppedItem.value = null;
 			// インベントリを更新
 			if (inventoryRef.value) {
 				inventoryRef.value.refresh();
@@ -1718,7 +1703,6 @@ async function tryPickupDroppedItem(): Promise<void> {
 		if (result.success) {
 			// 仕様: FR-030 拾得成功時にエンジンからドロップアイテムを削除
 			engine.removeDroppedItem(item.id);
-			nearbyDroppedItem.value = null;
 			// インベントリを更新
 			if (inventoryRef.value) {
 				inventoryRef.value.refresh();
@@ -1726,26 +1710,6 @@ async function tryPickupDroppedItem(): Promise<void> {
 		}
 	} catch (error) {
 		console.error('Failed to pick up item:', error);
-	}
-}
-
-// 仕様: FR-030 近くのドロップアイテム情報を更新（毎フレーム呼び出し）
-function updateNearbyDroppedItem(): void {
-	if (!engine) {
-		nearbyDroppedItem.value = null;
-		return;
-	}
-
-	const item = engine.getNearestDroppedItem(2);
-	if (item) {
-		nearbyDroppedItem.value = {
-			id: item.id,
-			itemName: item.itemName,
-			emoji: item.emoji,
-			quantity: item.quantity,
-		};
-	} else {
-		nearbyDroppedItem.value = null;
 	}
 }
 
@@ -2178,86 +2142,6 @@ definePage(() => ({
 	}
 	to {
 		transform: rotate(360deg);
-	}
-}
-
-/* 仕様: FR-030 拾うボタンスタイル */
-.pickupButton {
-	position: absolute;
-	bottom: 180px;
-	left: 50%;
-	transform: translateX(-50%);
-	background: linear-gradient(135deg, rgba(76, 175, 80, 0.95), rgba(46, 125, 50, 0.95));
-	color: white;
-	padding: 12px 24px;
-	border-radius: 16px;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: 4px;
-	font-size: 16px;
-	z-index: 100;
-	cursor: pointer;
-	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-	transition: transform 0.15s ease, box-shadow 0.15s ease;
-	animation: pickupBounce 1s ease-in-out infinite;
-	touch-action: manipulation;
-
-	&:hover {
-		transform: translateX(-50%) scale(1.05);
-		box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-	}
-
-	&:active {
-		transform: translateX(-50%) scale(0.95);
-	}
-
-	@media (max-width: 768px) {
-		bottom: calc(200px + env(safe-area-inset-bottom, 0px));
-		padding: 10px 20px;
-		font-size: 14px;
-	}
-}
-
-.pickupButtonContent {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	font-weight: bold;
-}
-
-.pickupEmoji {
-	font-size: 24px;
-	filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-}
-
-.pickupText {
-	font-size: 18px;
-	font-weight: bold;
-}
-
-.pickupQuantity {
-	font-size: 14px;
-	background: rgba(255, 255, 255, 0.3);
-	padding: 2px 6px;
-	border-radius: 8px;
-}
-
-.pickupItemName {
-	font-size: 12px;
-	opacity: 0.9;
-	max-width: 150px;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-}
-
-@keyframes pickupBounce {
-	0%, 100% {
-		transform: translateX(-50%) translateY(0);
-	}
-	50% {
-		transform: translateX(-50%) translateY(-4px);
 	}
 }
 
