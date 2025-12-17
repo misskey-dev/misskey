@@ -148,8 +148,9 @@ port: 3000
 #  - '127.0.0.1/32'
 #  - '::1/128'
 #  - 'fc00::/7'
-#  # Example: If you are using Cloudflare, add the CDN IP ranges here.
-#  # You can find the latest list of Cloudflare IP ranges at:
+#  # Example: If you are using some external reverse proxies like CDNs, 
+#  # you may need to add the CDN IP ranges here.
+#  # If you're using Cloudflare, you can find IP Ranges at:
 #  # https://www.cloudflare.com/ips/
 
 #   ┌──────────────────────────┐
