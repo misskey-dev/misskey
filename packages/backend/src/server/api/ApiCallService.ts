@@ -313,16 +313,11 @@ export class ApiCallService implements OnApplicationShutdown {
 		}
 
 		if (ep.meta.limit) {
-			let limitActor: string | null;
+			let limitActor: string | null = null;
 			if (user) {
 				limitActor = user.id;
-			} else {
-				if (request.ip === '::1' || request.ip === '127.0.0.1') {
-					console.warn('request ip is localhost, maybe caused by misconfiguration of trustProxy or reverse proxy');
-					limitActor = null;
-				} else {
-					limitActor = getIpHash(request.ip);
-				}
+			} else if (!this.config.disableIpRateLimit) {
+				limitActor = getIpHash(request.ip);
 			}
 
 			const limit = Object.assign({}, ep.meta.limit);

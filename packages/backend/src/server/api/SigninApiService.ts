@@ -89,10 +89,8 @@ export class SigninApiService {
 			return { error };
 		}
 
-		if (request.ip === '::1' || request.ip === '127.0.0.1') {
-			console.warn('request ip is localhost, maybe caused by misconfiguration of trustProxy or reverse proxy');
-		} else {
 		// not more than 1 attempt per second and not more than 10 attempts per hour
+		if (!this.config.disableIpRateLimit) {
 			const rateLimit = await this.rateLimiterService.limit({ key: 'signin', duration: 60 * 60 * 1000, max: 10, minInterval: 1000 }, getIpHash(request.ip));
 			if (rateLimit != null) {
 				reply.code(429);
