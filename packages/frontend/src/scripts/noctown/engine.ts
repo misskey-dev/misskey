@@ -1773,8 +1773,7 @@ export class NoctownEngine {
 			coinGroup.add(notch);
 		}
 
-		// コインを少し傾ける
-		coinGroup.rotation.x = Math.PI / 6;
+		// コインを垂直に配置
 		coinGroup.position.y = 0.15;
 
 		return coinGroup;
