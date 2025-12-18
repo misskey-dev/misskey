@@ -127,6 +127,7 @@ export interface PlayerData {
 	positionZ: number;
 	rotation: number;
 	isOnline: boolean;
+	isTrading?: boolean;
 }
 
 export interface ChunkData {
@@ -949,6 +950,11 @@ export class NoctownEngine {
 		character.setName(data.username);
 		character.setOnline(data.isOnline);
 
+		// 仕様: トレード中状態を設定
+		if (data.isTrading !== undefined) {
+			character.setTrading(data.isTrading);
+		}
+
 		// Set icon (always set, using identicon as fallback)
 		character.setIcon(data.avatarUrl, data.username);
 
@@ -1004,6 +1010,11 @@ export class NoctownEngine {
 
 		// Update online status
 		character.setOnline(data.isOnline);
+
+		// 仕様: トレード中状態を更新
+		if (data.isTrading !== undefined) {
+			character.setTrading(data.isTrading);
+		}
 
 		// FR-018: Update player data for info window
 		this.remotePlayerData.set(data.id, data);
@@ -1083,6 +1094,20 @@ export class NoctownEngine {
 		if (!character) return;
 
 		character.updatePingStatus(responseTimeMs);
+	}
+
+	// 仕様: プレイヤーのトレード中状態を更新
+	public updatePlayerTradingStatus(playerId: string, isTrading: boolean): void {
+		const character = this.remotePlayers.get(playerId);
+		if (!character) return;
+
+		character.setTrading(isTrading);
+
+		// Update player data for info window
+		const playerData = this.remotePlayerData.get(playerId);
+		if (playerData) {
+			playerData.isTrading = isTrading;
+		}
 	}
 
 	// FR-017: Check all remote players for warning status (3+ seconds since last ping)

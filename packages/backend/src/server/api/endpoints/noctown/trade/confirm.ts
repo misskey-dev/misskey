@@ -6,6 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
+import { NoctownTransactionService } from '@/core/NoctownTransactionService.js';
 import type {
 	NoctownTradesRepository,
 	NoctownTradeItemsRepository,
@@ -101,6 +102,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private walletsRepository: NoctownWalletsRepository,
 
 		private idService: IdService,
+		private noctownTransactionService: NoctownTransactionService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Get player
@@ -293,5 +295,29 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				},
 			);
 		});
+
+		// 仕様: FR-034 トレード完了のトランザクションログ
+		await this.noctownTransactionService.createLog(
+			'TRADE_COMPLETE',
+			trade.initiatorId,
+			tradeId,
+			trade.initiatorCurrency + trade.targetCurrency,
+			{
+				status: 'pending',
+			},
+			{
+				status: 'traded',
+			},
+			{
+				initiatorCurrency: trade.initiatorCurrency,
+				targetCurrency: trade.targetCurrency,
+				tradeItems: tradeItems.map(ti => ({
+					itemId: ti.itemId,
+					quantity: ti.quantity,
+					isFromInitiator: ti.isFromInitiator,
+				})),
+			},
+			trade.targetId,
+		);
 	}
 }

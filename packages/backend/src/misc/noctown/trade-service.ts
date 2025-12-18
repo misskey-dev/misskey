@@ -191,6 +191,69 @@ export class TradeService {
 	}
 
 	/**
+	 * 仕様: プレイヤーが現在トレード中かどうかを判定
+	 * pending または accepted ステータスのトレードに参加している場合はトレード中
+	 */
+	public async isPlayerTrading(playerId: string): Promise<boolean> {
+		const count = await this.tradesRepository.count({
+			where: [
+				{ initiatorId: playerId, status: In(['pending', 'accepted']) },
+				{ targetId: playerId, status: In(['pending', 'accepted']) },
+			],
+		});
+		return count > 0;
+	}
+
+	/**
+	 * 仕様: 複数プレイヤーのトレード中状態を一括取得
+	 * パフォーマンス最適化: nearby players取得時に使用
+	 */
+	public async getPlayersTradeStatus(playerIds: string[]): Promise<Map<string, boolean>> {
+		if (playerIds.length === 0) {
+			return new Map();
+		}
+
+		// アクティブなトレードに参加しているプレイヤーIDを取得
+		const activeTrades = await this.tradesRepository.find({
+			where: [
+				{ initiatorId: In(playerIds), status: In(['pending', 'accepted']) },
+				{ targetId: In(playerIds), status: In(['pending', 'accepted']) },
+			],
+			select: ['initiatorId', 'targetId'],
+		});
+
+		const tradingPlayerIds = new Set<string>();
+		for (const trade of activeTrades) {
+			if (playerIds.includes(trade.initiatorId)) {
+				tradingPlayerIds.add(trade.initiatorId);
+			}
+			if (playerIds.includes(trade.targetId)) {
+				tradingPlayerIds.add(trade.targetId);
+			}
+		}
+
+		const result = new Map<string, boolean>();
+		for (const playerId of playerIds) {
+			result.set(playerId, tradingPlayerIds.has(playerId));
+		}
+		return result;
+	}
+
+	/**
+	 * 仕様: プレイヤーが他にトレード中でなければ、トレード状態変更イベントを発行
+	 * トレード終了時に呼び出す（複数トレードに参加している場合を考慮）
+	 */
+	private async publishTradeStatusChangedIfNotTrading(playerId: string): Promise<void> {
+		const stillTrading = await this.isPlayerTrading(playerId);
+		if (!stillTrading) {
+			this.globalEventService.publishNoctownStream('playerTradingStatusChanged', {
+				playerId,
+				isTrading: false,
+			});
+		}
+	}
+
+	/**
 	 * Check if players can trade (e.g., not blocked, not in cooldown)
 	 */
 	public async canPlayersTraded(
@@ -242,6 +305,10 @@ export class TradeService {
 			this.globalEventService.publishNoctownPlayerStream(trade.initiatorId, 'tradeDeclined', {
 				tradeId,
 			});
+
+			// 仕様: トレード状態変更イベントを発行（両プレイヤーがトレード終了）
+			await this.publishTradeStatusChangedIfNotTrading(trade.initiatorId);
+			await this.publishTradeStatusChangedIfNotTrading(trade.targetId);
 
 			return { success: true };
 		}
@@ -434,6 +501,10 @@ export class TradeService {
 		this.globalEventService.publishNoctownPlayerStream(trade.initiatorId, 'tradeCompleted', { tradeId });
 		this.globalEventService.publishNoctownPlayerStream(trade.targetId, 'tradeCompleted', { tradeId });
 
+		// 仕様: トレード状態変更イベントを発行（両プレイヤーがトレード終了）
+		await this.publishTradeStatusChangedIfNotTrading(trade.initiatorId);
+		await this.publishTradeStatusChangedIfNotTrading(trade.targetId);
+
 		return { success: true };
 	}
 
@@ -495,6 +566,10 @@ export class TradeService {
 		// Notify other party
 		const otherPlayerId = trade.initiatorId === playerId ? trade.targetId : trade.initiatorId;
 		this.globalEventService.publishNoctownPlayerStream(otherPlayerId, 'tradeCancelled', { tradeId });
+
+		// 仕様: トレード状態変更イベントを発行（両プレイヤーがトレード終了）
+		await this.publishTradeStatusChangedIfNotTrading(trade.initiatorId);
+		await this.publishTradeStatusChangedIfNotTrading(trade.targetId);
 
 		return { success: true };
 	}

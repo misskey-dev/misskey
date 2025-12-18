@@ -39,7 +39,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:class="$style.offerItem"
 				>
 					<span>{{ item.name }}</span>
-					<span :class="$style.quantity">x{{ item.quantity }}</span>
+					<!-- 仕様: 個数指定入力 -->
+					<input
+						v-model.number="item.quantity"
+						type="number"
+						min="1"
+						:max="getMaxQuantityForItem(item.itemId)"
+						:class="$style.quantityInput"
+					/>
 					<button :class="$style.removeBtn" @click="removeFromOffer(index)">
 						<i class="ti ti-x"></i>
 					</button>
@@ -90,6 +97,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 				トレードリクエストを送る
 			</template>
 		</button>
+
+		<!-- 仕様: 初回オファー用のアイテムセレクターモーダル -->
+		<div v-if="showItemSelector" :class="$style.inventoryModal">
+			<div :class="$style.inventoryHeader">
+				<span>インベントリから選択</span>
+				<button @click="showItemSelector = false">
+					<i class="ti ti-x"></i>
+				</button>
+			</div>
+			<div :class="$style.inventoryGrid">
+				<div
+					v-for="item in inventory"
+					:key="item.id"
+					:class="$style.inventoryItem"
+					@click="addItemToOffer(item)"
+				>
+					<span>{{ item.itemName }}</span>
+					<span :class="$style.qty">x{{ item.quantity }}</span>
+				</div>
+				<div v-if="inventory.length === 0" :class="$style.noItems">
+					インベントリが空です
+				</div>
+			</div>
+		</div>
 	</div>
 
 	<!-- Trade Detail View (Barter Mode) -->
@@ -337,6 +368,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import MkLoading from '@/components/global/MkLoading.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import * as os from '@/os.js';
+
+// 仕様: APIエラーコードとメッセージのマッピング
+const errorMessages: Record<string, string> = {
+	PLAYER_NOT_FOUND: 'プレイヤーが見つかりません',
+	TARGET_NOT_FOUND: '相手プレイヤーが見つかりません',
+	TARGET_OFFLINE: '相手プレイヤーはオフラインです',
+	CANNOT_TRADE_WITH_SELF: '自分自身とはトレードできません',
+	ITEM_NOT_OWNED: 'アイテムを所有していません',
+	INSUFFICIENT_QUANTITY: 'アイテムの数量が不足しています',
+	ACTIVE_TRADE_PENDING: '既に進行中のトレードがあります',
+	TRADE_NOT_FOUND: 'トレードが見つかりません',
+	NOT_PART_OF_TRADE: 'このトレードの参加者ではありません',
+	TRADE_EXPIRED: 'トレードの有効期限が切れています',
+	TRADE_NOT_CONFIRMABLE: 'このトレードは確認できません',
+	INSUFFICIENT_FUNDS: '通貨が不足しています',
+	INSUFFICIENT_ITEMS: 'アイテムが不足しています',
+};
 
 interface TradeItem {
 	itemId: string;
@@ -537,8 +586,17 @@ async function respondToTradeRequest(tradeId: string, response: 'accept' | 'decl
 		} else {
 			await loadTrades();
 		}
-	} catch (e) {
+	} catch (e: unknown) {
 		console.error('Failed to respond to trade:', e);
+		const errorCode = (e as { code?: string })?.code;
+		const message = errorCode && errorMessages[errorCode]
+			? errorMessages[errorCode]
+			: 'トレードへの応答に失敗しました';
+		await os.alert({
+			type: 'error',
+			title: 'トレードエラー',
+			text: message,
+		});
 	}
 }
 
@@ -572,8 +630,17 @@ async function addItemsAndConfirm(): Promise<void> {
 			closeTradeDetail();
 			await loadTrades();
 		}
-	} catch (e) {
+	} catch (e: unknown) {
 		console.error('Failed to confirm trade:', e);
+		const errorCode = (e as { code?: string })?.code;
+		const message = errorCode && errorMessages[errorCode]
+			? errorMessages[errorCode]
+			: 'トレードの確認に失敗しました';
+		await os.alert({
+			type: 'error',
+			title: 'トレードエラー',
+			text: message,
+		});
 	} finally {
 		isSending.value = false;
 	}
@@ -581,6 +648,30 @@ async function addItemsAndConfirm(): Promise<void> {
 
 function removeFromOffer(index: number): void {
 	myOffer.value.splice(index, 1);
+}
+
+// 仕様: インベントリから指定アイテムの最大数量を取得
+function getMaxQuantityForItem(itemId: string): number {
+	const item = inventory.value.find(i => i.itemId === itemId);
+	return item?.quantity ?? 1;
+}
+
+// 仕様: 初回オファーにアイテムを追加
+function addItemToOffer(item: InventoryItem): void {
+	const existing = myOffer.value.find(i => i.itemId === item.itemId);
+	if (existing) {
+		if (existing.quantity < item.quantity) {
+			existing.quantity++;
+		}
+	} else {
+		myOffer.value.push({
+			itemId: item.itemId,
+			playerItemId: item.id,
+			name: item.itemName,
+			quantity: 1,
+		});
+	}
+	showItemSelector.value = false;
 }
 
 async function sendTradeRequest(): Promise<void> {
@@ -601,8 +692,18 @@ async function sendTradeRequest(): Promise<void> {
 
 		emit('trade-sent');
 		emit('close');
-	} catch (e) {
+	} catch (e: unknown) {
 		console.error('Failed to send trade:', e);
+		// 仕様: エラーメッセージをアラート表示
+		const errorCode = (e as { code?: string })?.code;
+		const message = errorCode && errorMessages[errorCode]
+			? errorMessages[errorCode]
+			: 'トレードリクエストの送信に失敗しました';
+		await os.alert({
+			type: 'error',
+			title: 'トレードエラー',
+			text: message,
+		});
 	} finally {
 		isSending.value = false;
 	}
@@ -617,8 +718,17 @@ async function confirmTrade(tradeId: string): Promise<void> {
 		}
 
 		await loadTrades();
-	} catch (e) {
+	} catch (e: unknown) {
 		console.error('Failed to confirm trade:', e);
+		const errorCode = (e as { code?: string })?.code;
+		const message = errorCode && errorMessages[errorCode]
+			? errorMessages[errorCode]
+			: 'トレードの確認に失敗しました';
+		await os.alert({
+			type: 'error',
+			title: 'トレードエラー',
+			text: message,
+		});
 	}
 }
 
@@ -631,8 +741,17 @@ async function cancelTrade(tradeId: string): Promise<void> {
 		}
 
 		await loadTrades();
-	} catch (e) {
+	} catch (e: unknown) {
 		console.error('Failed to cancel trade:', e);
+		const errorCode = (e as { code?: string })?.code;
+		const message = errorCode && errorMessages[errorCode]
+			? errorMessages[errorCode]
+			: 'トレードのキャンセルに失敗しました';
+		await os.alert({
+			type: 'error',
+			title: 'トレードエラー',
+			text: message,
+		});
 	}
 }
 
@@ -640,6 +759,8 @@ onMounted(() => {
 	if (!props.targetPlayer) {
 		loadTrades();
 	} else {
+		// 仕様: トレード作成モードではインベントリをロード
+		loadInventory();
 		isLoading.value = false;
 	}
 });
@@ -748,6 +869,24 @@ onMounted(() => {
 	margin-left: auto;
 	color: var(--MI_THEME-fg);
 	opacity: 0.6;
+}
+
+// 仕様: 個数指定入力フィールド
+.quantityInput {
+	width: 60px;
+	margin-left: auto;
+	padding: 4px 8px;
+	background: var(--MI_THEME-panel);
+	border: 1px solid var(--MI_THEME-divider);
+	border-radius: 4px;
+	color: var(--MI_THEME-fg);
+	text-align: center;
+	font-size: 14px;
+
+	&:focus {
+		outline: none;
+		border-color: var(--MI_THEME-accent);
+	}
 }
 
 .removeBtn {

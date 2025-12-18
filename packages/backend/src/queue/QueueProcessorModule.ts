@@ -44,6 +44,7 @@ import { ExportFavoritesProcessorService } from './processors/ExportFavoritesPro
 import { RelationshipProcessorService } from './processors/RelationshipProcessorService.js';
 import { CleanExpiredChatMessagesProcessorService } from './processors/CleanExpiredChatMessagesProcessorService.js';
 import { CleanNoctownChatLogsProcessorService } from './processors/CleanNoctownChatLogsProcessorService.js';
+import { CleanExpiredNoctownTradesProcessorService } from './processors/CleanExpiredNoctownTradesProcessorService.js';
 
 @Module({
 	imports: [
@@ -88,6 +89,7 @@ import { CleanNoctownChatLogsProcessorService } from './processors/CleanNoctownC
 		CleanRemoteNotesProcessorService,
 		CleanExpiredChatMessagesProcessorService,
 		CleanNoctownChatLogsProcessorService,
+		CleanExpiredNoctownTradesProcessorService,
 		QueueProcessorService,
 	],
 	exports: [

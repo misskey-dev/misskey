@@ -90,6 +90,10 @@ const REPEATABLE_SYSTEM_JOB_DEF = [{
 	name: 'cleanNoctownChatLogs',
 	// FR-029: 1時間ごとに24時間以上前のNoctownチャットログを削除
 	pattern: '0 * * * *',
+}, {
+	name: 'cleanExpiredNoctownTrades',
+	// 1分ごとに期限切れのNoctownトレードをexpiredステータスに更新
+	pattern: '* * * * *',
 }];
 
 @Injectable()

@@ -5,7 +5,19 @@
 
 import { ref, onMounted, onUnmounted, type Ref } from 'vue';
 import { useStream } from '@/stream.js';
+import * as os from '@/os.js';
 import { NoctownEngine, type PlayerData, type ChunkData } from './engine.js';
+
+// 仕様: トレードリクエストイベントの型定義
+interface TradeRequestEvent {
+	tradeId: string;
+	initiatorId: string;
+	initiatorUserId: string;
+	offeredItems: Array<{ itemId: string; quantity: number }>;
+	offeredCurrency: number;
+	message: string | null;
+	expiresAt: string;
+}
 
 // T015: インベントリアイテムの型定義
 export interface InventoryItem {
@@ -97,7 +109,7 @@ const FORCE_JOYSTICK_STORAGE_KEY = 'noctown:forceJoystick';
  * FR-029: Distance threshold for recording chat messages (in blocks)
  * Messages from players further than this distance are not recorded
  */
-const CHAT_HISTORY_DISTANCE_THRESHOLD = 50;
+const CHAT_HISTORY_DISTANCE_THRESHOLD = 20;
 
 /**
  * FR-025: Check if forced joystick display is enabled via localStorage
@@ -132,17 +144,30 @@ export function enableForceJoystick(): void {
  */
 async function recordChatReceipt(messageId: string): Promise<void> {
 	try {
-		await window.fetch('/api/noctown/chat-log/receive', {
+		const token = getToken();
+		if (!token) {
+			console.warn('[Noctown Chat] No token available for recording chat receipt');
+			return;
+		}
+
+		const response = await window.fetch('/api/noctown/chat-log/receive', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			credentials: 'same-origin',
 			body: JSON.stringify({
-				i: getToken(),
+				i: token,
 				messageId,
 			}),
 		});
+
+		if (!response.ok) {
+			console.warn('[Noctown Chat] Failed to record chat receipt:', response.status, await response.text());
+		} else {
+			const result = await response.json();
+			console.debug('[Noctown Chat] Receipt recorded:', result);
+		}
 	} catch (e) {
-		console.debug('Failed to record chat receipt:', e);
+		console.warn('[Noctown Chat] Error recording chat receipt:', e);
 	}
 }
 
@@ -372,6 +397,19 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 				handlePlayerChatted(body);
 			});
 
+			// 仕様: トレード状態変更イベント
+			channel.on('playerTradingStatusChanged', (body: {
+				playerId: string;
+				isTrading: boolean;
+			}) => {
+				handlePlayerTradingStatusChanged(body);
+			});
+
+			// 仕様: トレードリクエスト受信イベント
+			channel.on('tradeRequest', (body: TradeRequestEvent) => {
+				handleTradeRequest(body);
+			});
+
 			// Monitor connection state (check if stream object exists and has state)
 			if (stream && typeof stream.on === 'function') {
 				stream.on('_disconnected_', handleDisconnect);
@@ -452,6 +490,55 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 
 		// Render terrain
 		engine.loadChunk(data);
+
+		// FR-035: チャンク領域のアイテムもロード
+		loadItemsInChunk(data.chunkX, data.chunkZ);
+	}
+
+	// FR-035: チャンク領域のドロップアイテムと設置アイテムをロード
+	async function loadItemsInChunk(chunkX: number, chunkZ: number): Promise<void> {
+		if (!engine) return;
+
+		const token = getToken();
+		if (!token) return;
+
+		const centerX = (chunkX + 0.5) * CHUNK_SIZE;
+		const centerZ = (chunkZ + 0.5) * CHUNK_SIZE;
+		const radius = CHUNK_SIZE;
+
+		try {
+			// ドロップアイテム取得
+			const droppedRes = await window.fetch('/api/noctown/item/dropped', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				credentials: 'same-origin',
+				body: JSON.stringify({ i: token, x: centerX, z: centerZ, radius }),
+			});
+
+			if (droppedRes.ok) {
+				const droppedItems = await droppedRes.json();
+				for (const item of droppedItems) {
+					engine.addDroppedItem(item);
+				}
+			}
+
+			// 設置アイテム取得
+			const placedRes = await window.fetch('/api/noctown/item/placed', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				credentials: 'same-origin',
+				body: JSON.stringify({ i: token, x: centerX, z: centerZ, radius }),
+			});
+
+			if (placedRes.ok) {
+				const placedItems = await placedRes.json();
+				for (const item of placedItems) {
+					engine.addPlacedItem(item);
+				}
+			}
+		} catch (e) {
+			console.error('[Noctown] Failed to load items in chunk:', chunkX, chunkZ, e);
+		}
 	}
 
 	// FR-014: Ping受信時に即座にPongを返送
@@ -507,7 +594,7 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 	}
 
 	// FR-029: チャットメッセージ受信時の距離判定・履歴記録
-	// 自分の位置から50ブロック以内のメッセージのみlocalStorageに記録
+	// 自分の位置から50ブロック以内のメッセージのみサーバーに記録
 	function handlePlayerChatted(data: {
 		playerId: string;
 		userId: string;
@@ -520,15 +607,59 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 		// messageIdがない場合は記録しない（旧バージョン互換）
 		if (!data.messageId) return;
 
+		// 自分自身のメッセージはバックエンドで自動登録されるためスキップ
+		if (playerData.value && data.playerId === playerData.value.id) {
+			return;
+		}
+
 		// 距離を計算（XZ平面での距離）
 		const dx = data.positionX - currentX;
 		const dz = data.positionZ - currentZ;
 		const distance = Math.sqrt(dx * dx + dz * dz);
 
+		// 仕様: FR-029 デバッグ用ログ
+		console.debug('[Noctown Chat] Received chat from player:', data.playerId,
+			'at', data.positionX, data.positionZ,
+			'my position:', currentX, currentZ,
+			'distance:', distance.toFixed(2),
+			'threshold:', CHAT_HISTORY_DISTANCE_THRESHOLD);
+
 		// 50ブロック以内の場合のみサーバーに受信記録を送信
 		if (distance <= CHAT_HISTORY_DISTANCE_THRESHOLD) {
+			console.debug('[Noctown Chat] Recording receipt for messageId:', data.messageId);
 			recordChatReceipt(data.messageId);
+		} else {
+			console.debug('[Noctown Chat] Message too far, not recording. Distance:', distance.toFixed(2));
 		}
+	}
+
+	// 仕様: プレイヤーのトレード状態変更を処理
+	function handlePlayerTradingStatusChanged(data: {
+		playerId: string;
+		isTrading: boolean;
+	}): void {
+		if (!engine) return;
+		console.debug('[Noctown Trade] Trading status changed:', data.playerId, data.isTrading);
+		engine.updatePlayerTradingStatus(data.playerId, data.isTrading);
+	}
+
+	// 仕様: トレードリクエスト受信時の処理
+	async function handleTradeRequest(data: TradeRequestEvent): Promise<void> {
+		console.log('[Noctown Trade] Received trade request:', data);
+
+		// アイテム数と通貨のサマリーを作成
+		const itemCount = data.offeredItems.reduce((sum, item) => sum + item.quantity, 0);
+		let summary = `${itemCount}個のアイテム`;
+		if (data.offeredCurrency > 0) {
+			summary += ` + ${data.offeredCurrency}G`;
+		}
+
+		// 通知を表示
+		await os.alert({
+			type: 'info',
+			title: 'トレードリクエスト',
+			text: `新しいトレードリクエストが届きました！\n${summary}\n\nトレードパネルを開いて確認してください。`,
+		});
 	}
 
 	// FR-014: 表示中の全プレイヤーにPingを送信

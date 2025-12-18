@@ -718,7 +718,14 @@ async function connectStream(): Promise<void> {
 	connection.value.on('playerEmotion', (body: { playerId: string; emoji: string; isCustomEmoji?: boolean }) => {
 		handlePlayerEmoted(body);
 	});
-	connection.value.on('playerChatted', (body: { playerId: string; message: string }) => {
+	// FR-029: playerChattedイベントに位置情報とmessageIdが含まれる
+	connection.value.on('playerChatted', (body: {
+		playerId: string;
+		message: string;
+		messageId?: string;
+		positionX?: number;
+		positionZ?: number;
+	}) => {
 		handlePlayerChatted(body);
 	});
 
@@ -869,9 +876,69 @@ function handlePlayerEmoted(data: { playerId: string; emoji: string; isCustomEmo
 	}
 }
 
-function handlePlayerChatted(data: { playerId: string; message: string }): void {
+// FR-029: チャット履歴記録用の距離閾値（20ブロック）
+const CHAT_HISTORY_DISTANCE_THRESHOLD = 20;
+
+// FR-029: チャット受信時に距離判定を行い、受信記録をサーバーに送信
+function handlePlayerChatted(data: {
+	playerId: string;
+	message: string;
+	messageId?: string;
+	positionX?: number;
+	positionZ?: number;
+}): void {
 	if (!engine) return;
 	engine.showRemotePlayerChat(data.playerId, data.message);
+
+	// FR-029: messageIdがない場合は記録しない（旧バージョン互換）
+	if (!data.messageId) return;
+
+	// 自分自身のメッセージはバックエンドで自動登録されるためスキップ
+	if (playerData.value && data.playerId === playerData.value.id) return;
+
+	// 位置情報がない場合は記録しない
+	if (data.positionX === undefined || data.positionZ === undefined) return;
+
+	// 距離を計算（XZ平面での距離）
+	const dx = data.positionX - currentX.value;
+	const dz = data.positionZ - currentZ.value;
+	const distance = Math.sqrt(dx * dx + dz * dz);
+
+	console.debug('[Noctown Chat] Distance check:', {
+		senderPos: { x: data.positionX, z: data.positionZ },
+		myPos: { x: currentX.value, z: currentZ.value },
+		distance: distance.toFixed(2),
+		threshold: CHAT_HISTORY_DISTANCE_THRESHOLD,
+	});
+
+	// 50ブロック以内の場合のみサーバーに受信記録を送信
+	if (distance <= CHAT_HISTORY_DISTANCE_THRESHOLD) {
+		recordChatReceipt(data.messageId);
+	}
+}
+
+// FR-029: チャット受信記録をサーバーに送信
+async function recordChatReceipt(messageId: string): Promise<void> {
+	try {
+		const token = getToken();
+		if (!token) return;
+
+		const response = await window.fetch('/api/noctown/chat-log/receive', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			credentials: 'same-origin',
+			body: JSON.stringify({
+				i: token,
+				messageId,
+			}),
+		});
+
+		if (!response.ok) {
+			console.warn('[Noctown Chat] Failed to record chat receipt:', response.status);
+		}
+	} catch (e) {
+		console.warn('[Noctown Chat] Error recording chat receipt:', e);
+	}
 }
 
 // FR-019: Handle typing indicator start event
@@ -908,8 +975,11 @@ function handleChatSend(message: string): void {
 	engine.showLocalPlayerChat(message);
 
 	// Send chat event to server via WebSocket
+	// FR-029: チャット送信時に現在の位置情報も送信（距離判定の精度向上）
 	connection.value.send('chat', {
 		message,
+		positionX: currentX.value,
+		positionZ: currentZ.value,
 	});
 }
 

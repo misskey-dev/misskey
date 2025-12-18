@@ -26,3 +26,4 @@ export { NoctownTradeItem } from './NoctownTradeItem.js';
 export { NoctownInteriorMap, interiorMapTypes, type InteriorMapType, type InteriorTile, type InteriorNpc, type InteriorFurniture } from './NoctownInteriorMap.js';
 export { NoctownShopInventory } from './NoctownShopInventory.js';
 export { NoctownTreasureChest, treasureChestRarities, type TreasureChestRarity } from './NoctownTreasureChest.js';
+export { NoctownTransactionLog, noctownTransactionTypes, type NoctownTransactionType, type NoctownTransactionState } from './NoctownTransactionLog.js';

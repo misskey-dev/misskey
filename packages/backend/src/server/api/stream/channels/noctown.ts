@@ -181,8 +181,13 @@ class NoctownChannel extends Channel {
 		if (message == null || message.trim().length === 0) return;
 		if (message.length > 100) return; // T131: Max 100 characters
 
+		// FR-029: フロントエンドから送信された位置情報を取得
+		const positionX = typeof body.positionX === 'number' ? body.positionX : null;
+		const positionZ = typeof body.positionZ === 'number' ? body.positionZ : null;
+
 		// T143, T144: Broadcast chat to nearby players
-		await this.noctownService.broadcastChat(this.playerId, this.user.id, message.trim());
+		// FR-029: 位置情報も渡す（nullの場合はDB内の位置を使用）
+		await this.noctownService.broadcastChat(this.playerId, this.user.id, message.trim(), positionX, positionZ);
 	}
 
 	// FR-007-6: ハートビートでオンライン状態を維持

@@ -135,6 +135,7 @@ import { NoctownUniqueItem } from '@/models/noctown/NoctownUniqueItem.js';
 import { NoctownRankingBoard } from '@/models/noctown/NoctownRankingBoard.js';
 import { NoctownChatLog } from '@/models/noctown/NoctownChatLog.js';
 import { NoctownChatLogRecipient } from '@/models/noctown/NoctownChatLogRecipient.js';
+import { NoctownTransactionLog } from '@/models/noctown/NoctownTransactionLog.js';
 import type { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity.js';
 
 export interface MiRepository<T extends ObjectLiteral> {
@@ -320,6 +321,7 @@ export {
 	NoctownRankingBoard,
 	NoctownChatLog,
 	NoctownChatLogRecipient,
+	NoctownTransactionLog,
 };
 
 export type AbuseUserReportsRepository = Repository<MiAbuseUserReport> & MiRepository<MiAbuseUserReport>;
@@ -442,3 +444,4 @@ export type NoctownUniqueItemsRepository = Repository<NoctownUniqueItem> & MiRep
 export type NoctownRankingBoardsRepository = Repository<NoctownRankingBoard> & MiRepository<NoctownRankingBoard>;
 export type NoctownChatLogsRepository = Repository<NoctownChatLog> & MiRepository<NoctownChatLog>;
 export type NoctownChatLogRecipientsRepository = Repository<NoctownChatLogRecipient> & MiRepository<NoctownChatLogRecipient>;
+export type NoctownTransactionLogsRepository = Repository<NoctownTransactionLog> & MiRepository<NoctownTransactionLog>;

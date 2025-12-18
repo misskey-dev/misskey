@@ -33,6 +33,7 @@ export interface PlayerData {
 	skinId: string | null;
 	skinData: SkinData | null;
 	isOnline: boolean;
+	isTrading?: boolean;
 }
 
 interface PlayerMesh extends THREE.Group {

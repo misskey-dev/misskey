@@ -19,7 +19,19 @@ export type NoctownEventType =
 	| 'questCompleted'
 	| 'emotionBroadcast'
 	| 'noteBubble'
-	| 'chunkGenerated';
+	| 'chunkGenerated'
+	| 'tradeRequest';
+
+// 仕様: トレードリクエストイベントの型定義
+export interface TradeRequestData {
+	tradeId: string;
+	initiatorId: string;
+	initiatorUserId: string;
+	offeredItems: Array<{ itemId: string; quantity: number }>;
+	offeredCurrency: number;
+	message: string | null;
+	expiresAt: string;
+}
 
 export interface NoctownSyncState {
 	isConnected: boolean;
@@ -81,6 +93,7 @@ export class WebSocketSyncManager {
 			'itemDropped', 'itemPicked', 'itemPlaced',
 			'npcSpawned', 'npcDespawned', 'questCompleted',
 			'emotionBroadcast', 'noteBubble', 'chunkGenerated',
+			'tradeRequest',
 		];
 		for (const type of eventTypes) {
 			this.handlers.set(type, new Set());
@@ -201,6 +214,12 @@ export class WebSocketSyncManager {
 			this.pendingChunkRequests.delete(key);
 
 			this.emit('chunkGenerated', data);
+		});
+
+		// 仕様: トレードリクエストイベント
+		this.connection.on('tradeRequest', (data: TradeRequestData) => {
+			console.log('[Noctown Trade] Received trade request:', data);
+			this.emit('tradeRequest', data);
 		});
 	}
 

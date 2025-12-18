@@ -80,4 +80,11 @@ export class NoctownPlayer {
 		comment: 'Created timestamp',
 	})
 	public createdAt: Date;
+
+	// 仕様: FR-034 ウォレット操作の楽観的ロック用バージョン
+	@Column('integer', {
+		default: 1,
+		comment: 'Optimistic lock version for wallet operations',
+	})
+	public walletVersion: number;
 }

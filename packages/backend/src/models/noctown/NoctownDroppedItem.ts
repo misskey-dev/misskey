@@ -71,4 +71,11 @@ export class NoctownDroppedItem {
 		comment: 'Dropped timestamp',
 	})
 	public droppedAt: Date;
+
+	// 仕様: FR-034 楽観的ロック用バージョン（拾得時の競合防止）
+	@Column('integer', {
+		default: 1,
+		comment: 'Optimistic lock version',
+	})
+	public version: number;
 }

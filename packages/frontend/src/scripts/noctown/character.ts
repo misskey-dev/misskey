@@ -92,6 +92,7 @@ export class Character {
 	private nameTexture!: THREE.CanvasTexture;
 	private accountName: string = 'Player'; // Default name
 	private isOnline: boolean = true; // Default online status
+	private isTrading: boolean = false; // 仕様: トレード中フラグ
 
 	// FR-017: プレイヤー名前マークの色仕様
 	public lastPingTime: number = 0; // Date.now()のタイムスタンプ
@@ -865,7 +866,9 @@ export class Character {
 		const circleRadius = 12;
 		const padding = 30;
 		const gap = 15;
-		const totalWidth = circleRadius * 2 + gap + textWidth + padding * 2;
+		// 仕様: トレード中アイコンのスペースを追加
+		const tradingIconWidth = this.isTrading ? 45 : 0;
+		const totalWidth = circleRadius * 2 + gap + textWidth + tradingIconWidth + padding * 2;
 		const bgX = 256 - totalWidth / 2;
 
 		// T005: Draw background (semi-transparent black with rounded corners)
@@ -889,6 +892,14 @@ export class Character {
 		ctx.textBaseline = 'middle';
 		ctx.fillText(displayName, circleX + circleRadius + gap, 64);
 
+		// 仕様: トレード中アイコンを表示（双方向矢印）
+		if (this.isTrading) {
+			const iconX = circleX + circleRadius + gap + textWidth + 15;
+			ctx.fillStyle = '#f59e0b'; // オレンジ色
+			ctx.font = 'bold 32px Arial';
+			ctx.fillText('\u21c4', iconX, 64); // Unicode 双方向矢印
+		}
+
 		// T009: Mark texture as needing update
 		this.nameTexture.needsUpdate = true;
 	}
@@ -909,6 +920,15 @@ export class Character {
 	 */
 	public setOnline(online: boolean): void {
 		this.isOnline = online;
+		this.updateNameSprite();
+	}
+
+	/**
+	 * 仕様: トレード中状態を設定し、名前スプライトを更新
+	 * @param trading トレード中かどうか
+	 */
+	public setTrading(trading: boolean): void {
+		this.isTrading = trading;
 		this.updateNameSprite();
 	}
 
@@ -998,7 +1018,9 @@ export class Character {
 		const circleRadius = 12;
 		const padding = 30;
 		const gap = 15;
-		const totalWidth = circleRadius * 2 + gap + textWidth + padding * 2;
+		// 仕様: トレード中アイコンのスペースを追加
+		const tradingIconWidth = this.isTrading ? 45 : 0;
+		const totalWidth = circleRadius * 2 + gap + textWidth + tradingIconWidth + padding * 2;
 		const bgX = 256 - totalWidth / 2;
 
 		// Draw background (semi-transparent black with rounded corners)
@@ -1021,6 +1043,14 @@ export class Character {
 		ctx.textAlign = 'left';
 		ctx.textBaseline = 'middle';
 		ctx.fillText(displayName, circleX + circleRadius + gap, 64);
+
+		// 仕様: トレード中アイコンを表示（双方向矢印）
+		if (this.isTrading) {
+			const iconX = circleX + circleRadius + gap + textWidth + 15;
+			ctx.fillStyle = '#f59e0b'; // オレンジ色
+			ctx.font = 'bold 32px Arial';
+			ctx.fillText('\u21c4', iconX, 64); // Unicode 双方向矢印
+		}
 
 		// Mark texture as needing update
 		this.nameTexture.needsUpdate = true;

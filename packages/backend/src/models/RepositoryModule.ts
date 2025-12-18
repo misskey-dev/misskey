@@ -126,6 +126,7 @@ import {
 	NoctownRankingBoard,
 	NoctownChatLog,
 	NoctownChatLogRecipient,
+	NoctownTransactionLog,
 } from './_.js';
 import type { Provider } from '@nestjs/common';
 import type { DataSource } from 'typeorm';
@@ -838,6 +839,12 @@ const $noctownChatLogRecipientsRepository: Provider = {
 	inject: [DI.db],
 };
 
+const $noctownTransactionLogsRepository: Provider = {
+	provide: DI.noctownTransactionLogsRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoctownTransactionLog).extend(miRepository as MiRepository<NoctownTransactionLog>),
+	inject: [DI.db],
+};
+
 @Module({
 	imports: [],
 	providers: [
@@ -959,6 +966,7 @@ const $noctownChatLogRecipientsRepository: Provider = {
 		$noctownRankingBoardsRepository,
 		$noctownChatLogsRepository,
 		$noctownChatLogRecipientsRepository,
+		$noctownTransactionLogsRepository,
 	],
 	exports: [
 		$usersRepository,
@@ -1079,6 +1087,7 @@ const $noctownChatLogRecipientsRepository: Provider = {
 		$noctownRankingBoardsRepository,
 		$noctownChatLogsRepository,
 		$noctownChatLogRecipientsRepository,
+		$noctownTransactionLogsRepository,
 	],
 })
 export class RepositoryModule {

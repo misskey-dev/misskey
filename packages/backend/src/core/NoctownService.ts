@@ -35,6 +35,8 @@ import type { NoctownCropStage } from '@/models/noctown/NoctownCrop.js';
 import type { NoctownQuestType, NoctownQuestStatus } from '@/models/noctown/NoctownQuest.js';
 import type { NoctownPlayer } from '@/models/noctown/NoctownPlayer.js';
 import type { MiUser } from '@/models/User.js';
+import { NoctownTransactionService } from '@/core/NoctownTransactionService.js';
+import type { NoctownTransactionState } from '@/models/noctown/NoctownTransactionLog.js';
 
 @Injectable()
 export class NoctownService {
@@ -99,6 +101,7 @@ export class NoctownService {
 
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
+		private noctownTransactionService: NoctownTransactionService,
 	) {}
 
 	@bindThis
@@ -293,6 +296,7 @@ export class NoctownService {
 
 	@bindThis
 	// 仕様: FR-030 ドロップアイテムの拾得
+	// 仕様: FR-034 トランザクションログ統合
 	// ドロップアイテムの数量を考慮してインベントリに追加
 	// 通貨アイテムの場合はウォレットに加算
 	public async pickUpItem(playerId: string, droppedItemId: string): Promise<boolean> {
@@ -302,6 +306,18 @@ export class NoctownService {
 
 		// 仕様: ドロップアイテムの数量（デフォルト1）
 		const pickupQuantity = droppedItem.quantity ?? 1;
+
+		// 仕様: FR-034 beforeState を記録
+		const beforeState: NoctownTransactionState = {
+			location: 'ground',
+			status: 'dropped',
+			ownerId: droppedItem.droppedByPlayerId ?? undefined,
+			quantity: pickupQuantity,
+			version: droppedItem.version,
+			positionX: droppedItem.positionX,
+			positionY: droppedItem.positionY,
+			positionZ: droppedItem.positionZ,
+		};
 
 		// アイテム情報を取得してタイプを確認
 		const item = await this.noctownItemsRepository.findOneBy({ id: droppedItem.itemId });
@@ -318,7 +334,35 @@ export class NoctownService {
 						updatedAt: new Date(),
 					},
 				);
+
+				// 仕様: FR-034 通貨拾得のトランザクションログ
+				await this.noctownTransactionService.createLog(
+					'CURRENCY_DEPOSIT',
+					playerId,
+					droppedItemId,
+					pickupQuantity,
+					beforeState,
+					{
+						location: 'inventory',
+						status: 'picked_up',
+						ownerId: playerId,
+						quantity: currentBalance + pickupQuantity,
+					},
+					{ itemId: droppedItem.itemId, balanceBefore: currentBalance, balanceAfter: currentBalance + pickupQuantity },
+					droppedItem.droppedByPlayerId,
+				);
 			}
+			// Remove dropped item from map
+			await this.noctownDroppedItemsRepository.delete(droppedItemId);
+
+			// Broadcast item pickup
+			this.globalEventService.publishNoctownStream('itemPicked', {
+				playerId,
+				droppedItemId,
+				itemId: droppedItem.itemId,
+			});
+
+			return true;
 		} else {
 			// 通常アイテムの場合はインベントリに追加
 			// Check if player already has this item type
@@ -358,6 +402,25 @@ export class NoctownService {
 		// Remove dropped item from map
 		await this.noctownDroppedItemsRepository.delete(droppedItemId);
 
+		// 仕様: FR-034 afterState を記録しトランザクションログを作成
+		const afterState: NoctownTransactionState = {
+			location: 'inventory',
+			status: 'picked_up',
+			ownerId: playerId,
+			quantity: pickupQuantity,
+		};
+
+		await this.noctownTransactionService.createLog(
+			'ITEM_PICKUP',
+			playerId,
+			droppedItemId,
+			pickupQuantity,
+			beforeState,
+			afterState,
+			{ itemId: droppedItem.itemId, itemType: item?.itemType },
+			droppedItem.droppedByPlayerId,
+		);
+
 		// Broadcast item pickup
 		this.globalEventService.publishNoctownStream('itemPicked', {
 			playerId,
@@ -369,6 +432,7 @@ export class NoctownService {
 	}
 
 	// 仕様: FR-030 インベントリからアイテムをドロップ
+	// 仕様: FR-034 トランザクションログ統合
 	// プレイヤーがインベントリからアイテムを地面に捨てる
 	@bindThis
 	public async dropItemFromInventory(
@@ -389,6 +453,16 @@ export class NoctownService {
 		// 仕様: 要求された数量がインベントリの数量を超えていないか確認
 		const dropQuantity = Math.min(quantity, playerItem.quantity);
 		if (dropQuantity <= 0) return null;
+
+		// 仕様: FR-034 beforeState を記録
+		const beforeState: NoctownTransactionState = {
+			location: 'inventory',
+			status: 'active',
+			ownerId: playerId,
+			quantity: playerItem.quantity,
+			version: playerItem.version,
+			itemType: playerItem.item.itemType,
+		};
 
 		// Create dropped item on the ground
 		const droppedItemId = this.idService.gen();
@@ -412,14 +486,38 @@ export class NoctownService {
 			await this.noctownPlayerItemsRepository.delete(playerItemId);
 		}
 
-		// Broadcast item drop
-		this.globalEventService.publishNoctownStream('itemDropped', {
+		// 仕様: FR-034 afterState を記録しトランザクションログを作成
+		const afterState: NoctownTransactionState = {
+			location: 'ground',
+			status: 'dropped',
+			ownerId: playerId,
+			quantity: dropQuantity,
+			positionX: x,
+			positionY: y,
+			positionZ: z,
+		};
+
+		await this.noctownTransactionService.createLog(
+			'ITEM_DROP',
 			playerId,
 			droppedItemId,
+			dropQuantity,
+			beforeState,
+			afterState,
+			{ itemId: playerItem.itemId, playerItemId, itemType: playerItem.item.itemType },
+		);
+
+		// Broadcast item drop
+		// 仕様: フロントエンドのDroppedItemData型に合わせたフィールド名で送信
+		this.globalEventService.publishNoctownStream('itemDropped', {
+			id: droppedItemId,
+			playerId,
 			itemId: playerItem.itemId,
 			itemName: playerItem.item.name,
+			itemType: playerItem.item.itemType,
 			emoji: playerItem.item.emoji,
 			imageUrl: playerItem.item.imageUrl,
+			rarity: playerItem.item.rarity,
 			quantity: dropQuantity,
 			positionX: x,
 			positionY: y,
@@ -430,6 +528,7 @@ export class NoctownService {
 	}
 
 	// 仕様: ウォレットからノクタコインを地面にドロップ
+	// 仕様: FR-034 トランザクションログ統合
 	@bindThis
 	public async dropCurrencyFromWallet(
 		playerId: string,
@@ -444,6 +543,14 @@ export class NoctownService {
 
 		const currentBalance = Number(wallet.balance);
 		if (amount <= 0 || amount > currentBalance) return null;
+
+		// 仕様: FR-034 beforeState を記録
+		const beforeState: NoctownTransactionState = {
+			location: 'inventory',
+			status: 'active',
+			ownerId: playerId,
+			quantity: currentBalance,
+		};
 
 		// Find or create the "ノクタコイン" item
 		let coinItem = await this.noctownItemsRepository.findOneBy({ itemType: 'currency' });
@@ -488,14 +595,38 @@ export class NoctownService {
 			},
 		);
 
-		// Broadcast currency drop
-		this.globalEventService.publishNoctownStream('itemDropped', {
+		// 仕様: FR-034 afterState を記録しトランザクションログを作成
+		const afterState: NoctownTransactionState = {
+			location: 'ground',
+			status: 'dropped',
+			ownerId: playerId,
+			quantity: amount,
+			positionX: x,
+			positionY: y,
+			positionZ: z,
+		};
+
+		await this.noctownTransactionService.createLog(
+			'CURRENCY_WITHDRAW',
 			playerId,
 			droppedItemId,
+			amount,
+			beforeState,
+			afterState,
+			{ coinItemId: coinItem.id, balanceBefore: currentBalance, balanceAfter: currentBalance - amount },
+		);
+
+		// Broadcast currency drop
+		// 仕様: フロントエンドのDroppedItemData型に合わせたフィールド名で送信
+		this.globalEventService.publishNoctownStream('itemDropped', {
+			id: droppedItemId,
+			playerId,
 			itemId: coinItem.id,
 			itemName: coinItem.name,
+			itemType: 'currency',
 			emoji: coinItem.emoji,
 			imageUrl: coinItem.imageUrl,
+			rarity: coinItem.rarity,
 			quantity: amount,
 			positionX: x,
 			positionY: y,
@@ -505,6 +636,7 @@ export class NoctownService {
 		return { droppedItemId };
 	}
 
+	// 仕様: FR-034 トランザクションログ統合
 	@bindThis
 	public async placeItem(
 		playerId: string,
@@ -513,7 +645,7 @@ export class NoctownService {
 		y: number,
 		z: number,
 		rotation: number,
-	): Promise<{ success: boolean; error?: 'not_found' | 'not_placeable' | 'limit_reached' }> {
+	): Promise<{ success: boolean; error?: 'not_found' | 'not_placeable' | 'limit_reached'; placedItemId?: string }> {
 		// Find the player item
 		const playerItem = await this.noctownPlayerItemsRepository.findOne({
 			where: { id: playerItemId, playerId },
@@ -529,6 +661,16 @@ export class NoctownService {
 		// 仕様: FR-032 設置上限100個/プレイヤー
 		const placedCount = await this.noctownPlacedItemsRepository.countBy({ playerId });
 		if (placedCount >= 100) return { success: false, error: 'limit_reached' };
+
+		// 仕様: FR-034 beforeState を記録
+		const beforeState: NoctownTransactionState = {
+			location: 'inventory',
+			status: 'active',
+			ownerId: playerId,
+			quantity: playerItem.quantity,
+			version: playerItem.version,
+			itemType: playerItem.item.itemType,
+		};
 
 		// Decrement or remove from inventory
 		if (playerItem.quantity > 1) {
@@ -552,6 +694,27 @@ export class NoctownService {
 			placedAt: new Date(),
 		});
 
+		// 仕様: FR-034 afterState を記録しトランザクションログを作成
+		const afterState: NoctownTransactionState = {
+			location: 'map',
+			status: 'placed',
+			ownerId: playerId,
+			quantity: 1,
+			positionX: x,
+			positionY: y,
+			positionZ: z,
+		};
+
+		await this.noctownTransactionService.createLog(
+			'ITEM_PLACE',
+			playerId,
+			placedItemId,
+			1,
+			beforeState,
+			afterState,
+			{ itemId: playerItem.itemId, playerItemId, itemType: playerItem.item.itemType, rotation },
+		);
+
 		// Broadcast item placement
 		this.globalEventService.publishNoctownStream('itemPlaced', {
 			playerId,
@@ -563,7 +726,7 @@ export class NoctownService {
 			rotation,
 		});
 
-		return { success: true };
+		return { success: true, placedItemId };
 	}
 
 	@bindThis
@@ -629,15 +792,22 @@ export class NoctownService {
 
 	// FR-029: チャットメッセージのDB保存と履歴表示
 	// broadcastChat()でメッセージをDBに保存し、messageIdをイベントに含めて送信
+	// FR-029: 位置情報を引数で受け取り、距離判定の精度を向上
 	@bindThis
 	public async broadcastChat(
 		playerId: string,
 		userId: string,
 		message: string,
+		clientPositionX: number | null = null,
+		clientPositionZ: number | null = null,
 	): Promise<string | null> {
 		// Get player position for proximity-based broadcast
 		const player = await this.noctownPlayersRepository.findOneBy({ id: playerId });
 		if (!player) return null;
+
+		// FR-029: フロントエンドから送信された位置情報を優先し、なければDBの位置を使用
+		const chatPositionX = clientPositionX ?? player.positionX;
+		const chatPositionZ = clientPositionZ ?? player.positionZ;
 
 		// FR-007-4: プレイヤーがオフライン状態の場合、チャット時にオンライン化して他のプレイヤーに表示
 		const wasOffline = !player.isOnline;
@@ -659,22 +829,22 @@ export class NoctownService {
 				username: user?.username ?? '',
 				name: user?.name ?? null,
 				avatarUrl: user?.avatarUrl ?? null,
-				positionX: player.positionX,
+				positionX: chatPositionX,
 				positionY: player.positionY,
-				positionZ: player.positionZ,
+				positionZ: chatPositionZ,
 				rotation: player.rotation,
 				isOnline: true,
 			});
 		}
 
-		// FR-029: チャットメッセージをDBに保存
+		// FR-029: チャットメッセージをDBに保存（フロントエンドから送信された位置を使用）
 		const messageId = this.idService.gen();
 		await this.noctownChatLogsRepository.insert({
 			id: messageId,
 			playerId,
 			content: message,
-			positionX: player.positionX,
-			positionZ: player.positionZ,
+			positionX: chatPositionX,
+			positionZ: chatPositionZ,
 		});
 
 		// FR-029: 送信者自身も中間テーブルに登録する
@@ -688,14 +858,15 @@ export class NoctownService {
 
 		// T143, T144: Broadcast chat to all connected players
 		// FR-029: messageIdをイベントに追加（フロントエンドで距離判定後にlocalStorageに記録）
+		// フロントエンドから送信された位置情報を使用
 		this.globalEventService.publishNoctownStream('playerChatted', {
 			playerId,
 			userId,
 			message,
 			messageId,
-			positionX: player.positionX,
+			positionX: chatPositionX,
 			positionY: player.positionY,
-			positionZ: player.positionZ,
+			positionZ: chatPositionZ,
 		});
 
 		return messageId;

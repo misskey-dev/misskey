@@ -7,6 +7,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { IdService } from '@/core/IdService.js';
+import { NoctownTransactionService } from '@/core/NoctownTransactionService.js';
+import type { NoctownTransactionState } from '@/models/noctown/NoctownTransactionLog.js';
 import type {
 	NoctownPlayersRepository,
 	NoctownPlacedItemsRepository,
@@ -76,6 +78,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private noctownPlayerItemsRepository: NoctownPlayerItemsRepository,
 
 		private idService: IdService,
+		private noctownTransactionService: NoctownTransactionService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Get player
@@ -109,6 +112,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.tooFar);
 			}
 
+			// 仕様: FR-034 beforeState を記録
+			const beforeState: NoctownTransactionState = {
+				location: 'map',
+				status: 'placed',
+				ownerId: player.id,
+				quantity: 1,
+				version: placedItem.version,
+				positionX: placedItem.positionX,
+				positionY: placedItem.positionY,
+				positionZ: placedItem.positionZ,
+			};
+
 			// Return item to inventory
 			const existingPlayerItem = await this.noctownPlayerItemsRepository.findOneBy({
 				playerId: player.id,
@@ -137,6 +152,24 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			// Remove placed item
 			await this.noctownPlacedItemsRepository.delete({ id: ps.placedItemId });
+
+			// 仕様: FR-034 afterState を記録しトランザクションログを作成
+			const afterState: NoctownTransactionState = {
+				location: 'inventory',
+				status: 'retrieved',
+				ownerId: player.id,
+				quantity: 1,
+			};
+
+			await this.noctownTransactionService.createLog(
+				'ITEM_RETRIEVE',
+				player.id,
+				ps.placedItemId,
+				1,
+				beforeState,
+				afterState,
+				{ itemId: placedItem.itemId, playerItemId },
+			);
 
 			return {
 				success: true,

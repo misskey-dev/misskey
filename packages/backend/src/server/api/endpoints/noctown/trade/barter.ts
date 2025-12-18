@@ -215,6 +215,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				expiresAt: expiresAt.toISOString(),
 			});
 
+			// 仕様: トレード状態変更イベントを発行（両プレイヤーがトレード中になった）
+			this.globalEventService.publishNoctownStream('playerTradingStatusChanged', {
+				playerId: initiator.id,
+				isTrading: true,
+			});
+			this.globalEventService.publishNoctownStream('playerTradingStatusChanged', {
+				playerId: target.id,
+				isTrading: true,
+			});
+
 			return {
 				success: true,
 				tradeId,

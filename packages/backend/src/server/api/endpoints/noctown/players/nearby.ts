@@ -8,6 +8,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { NoctownService } from '@/core/NoctownService.js';
 import { RoleService } from '@/core/RoleService.js';
+import { TradeService } from '@/misc/noctown/trade-service.js';
 import type { NoctownPlayersRepository, UsersRepository } from '@/models/_.js';
 
 export const meta = {
@@ -34,6 +35,7 @@ export const meta = {
 				isOnline: { type: 'boolean' },
 				isSuspended: { type: 'boolean' },
 				isSilenced: { type: 'boolean' },
+				isTrading: { type: 'boolean' },
 			},
 		},
 	},
@@ -60,16 +62,23 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private noctownService: NoctownService,
 		private roleService: RoleService,
+		private tradeService: TradeService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const radius = Math.min(ps.radius ?? 50, 100); // Max radius 100
 
 			const nearbyPlayers = await this.noctownService.getNearbyPlayers(ps.x, ps.z, radius);
 
+			// 自分以外のプレイヤーをフィルタ
+			const filteredPlayers = nearbyPlayers.filter(player => player.userId !== me.id);
+
+			// 仕様: 複数プレイヤーのトレード状態を一括取得（パフォーマンス最適化）
+			const playerIds = filteredPlayers.map(p => p.id);
+			const tradeStatusMap = await this.tradeService.getPlayersTradeStatus(playerIds);
+
 			// Get user info for each player
 			const results = await Promise.all(
-				nearbyPlayers
-					.filter(player => player.userId !== me.id) // Exclude self
+				filteredPlayers
 					.map(async (player) => {
 						const user = await this.usersRepository.findOneBy({ id: player.userId });
 						const policies = await this.roleService.getUserPolicies(player.userId);
@@ -88,6 +97,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 							isOnline: player.isOnline,
 							isSuspended: user?.isSuspended ?? false,
 							isSilenced,
+							isTrading: tradeStatusMap.get(player.id) ?? false,
 						};
 					}),
 			);

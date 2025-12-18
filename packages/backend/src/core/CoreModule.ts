@@ -81,6 +81,7 @@ import { DrawingSettingsService } from './DrawingSettingsService.js';
 import { RegistryApiService } from './RegistryApiService.js';
 import { ReversiService } from './ReversiService.js';
 import { NoctownService } from './NoctownService.js';
+import { NoctownTransactionService } from './NoctownTransactionService.js';
 import { PageService } from './PageService.js';
 
 // Noctown misc services
@@ -247,6 +248,7 @@ const $DrawingSettingsService: Provider = { provide: 'DrawingSettingsService', u
 const $RegistryApiService: Provider = { provide: 'RegistryApiService', useExisting: RegistryApiService };
 const $ReversiService: Provider = { provide: 'ReversiService', useExisting: ReversiService };
 const $NoctownService: Provider = { provide: 'NoctownService', useExisting: NoctownService };
+const $NoctownTransactionService: Provider = { provide: 'NoctownTransactionService', useExisting: NoctownTransactionService };
 const $PageService: Provider = { provide: 'PageService', useExisting: PageService };
 
 // Noctown misc services providers
@@ -416,6 +418,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		RegistryApiService,
 		ReversiService,
 		NoctownService,
+		NoctownTransactionService,
 		PageService,
 
 		// Noctown misc services
@@ -581,6 +584,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$RegistryApiService,
 		$ReversiService,
 		$NoctownService,
+		$NoctownTransactionService,
 		$PageService,
 
 		// Noctown misc services (string-based)
@@ -747,6 +751,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		RegistryApiService,
 		ReversiService,
 		NoctownService,
+		NoctownTransactionService,
 		PageService,
 
 		// Noctown misc services
@@ -910,6 +915,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$RegistryApiService,
 		$ReversiService,
 		$NoctownService,
+		$NoctownTransactionService,
 		$PageService,
 
 		// Noctown misc services (string-based)
