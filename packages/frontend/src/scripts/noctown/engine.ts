@@ -1318,13 +1318,8 @@ export class NoctownEngine {
 			}
 			case 'wood':
 			case 'log': {
-				// 木材: 横倒しの円柱
-				const logGeo = new THREE.CylinderGeometry(0.2, 0.2, 1, 8);
-				const logMat = new THREE.MeshStandardMaterial({ color: 0x8b4513, roughness: 0.8 });
-				const log = new THREE.Mesh(logGeo, logMat);
-				log.position.y = 0.2;
-				log.rotation.z = Math.PI / 2;
-				return log;
+				// 仕様: 木材の3Dモデル（5枚の板が重なった状態）
+				return this.createWoodMesh();
 			}
 			case 'axe': {
 				// 仕様: 斧の3Dモデル
@@ -1426,6 +1421,173 @@ export class NoctownEngine {
 		axeGroup.position.y = 0.06;
 
 		return axeGroup;
+	}
+
+	// 仕様: 木目テクスチャをプロシージャル生成
+	private createWoodTexture(width = 256, height = 256, seed = 12345): THREE.CanvasTexture {
+		const canvas = document.createElement('canvas');
+		canvas.width = width;
+		canvas.height = height;
+		const ctx = canvas.getContext('2d')!;
+
+		// シード付き乱数生成器
+		let currentSeed = seed;
+		const seededRandom = () => {
+			currentSeed = (currentSeed * 9301 + 49297) % 233280;
+			return currentSeed / 233280;
+		};
+
+		// ベースカラー（明るい木材色）
+		const baseColor = { r: 180, g: 130, b: 80 };
+		const darkColor = { r: 120, g: 75, b: 40 };
+
+		// グラデーション背景
+		const gradient = ctx.createLinearGradient(0, 0, width, 0);
+		gradient.addColorStop(0, `rgb(${baseColor.r}, ${baseColor.g}, ${baseColor.b})`);
+		gradient.addColorStop(0.5, `rgb(${baseColor.r + 20}, ${baseColor.g + 15}, ${baseColor.b + 10})`);
+		gradient.addColorStop(1, `rgb(${baseColor.r - 10}, ${baseColor.g - 10}, ${baseColor.b - 5})`);
+		ctx.fillStyle = gradient;
+		ctx.fillRect(0, 0, width, height);
+
+		// 木目の線を描画
+		ctx.strokeStyle = `rgba(${darkColor.r}, ${darkColor.g}, ${darkColor.b}, 0.3)`;
+		for (let i = 0; i < 40; i++) {
+			const y = seededRandom() * height;
+			const thickness = seededRandom() * 3 + 0.5;
+			const waviness = seededRandom() * 8 + 2;
+			const frequency = seededRandom() * 0.02 + 0.005;
+
+			ctx.lineWidth = thickness;
+			ctx.beginPath();
+			ctx.moveTo(0, y);
+			for (let x = 0; x < width; x += 2) {
+				const yOffset = Math.sin(x * frequency) * waviness +
+					Math.sin(x * frequency * 2.3) * (waviness * 0.5);
+				ctx.lineTo(x, y + yOffset);
+			}
+			ctx.stroke();
+		}
+
+		// 節（ふし）を追加
+		for (let i = 0; i < 1; i++) {
+			const knotX = seededRandom() * width;
+			const knotY = seededRandom() * height;
+			const knotSize = seededRandom() * 12 + 6;
+
+			const knotGradient = ctx.createRadialGradient(knotX, knotY, 0, knotX, knotY, knotSize);
+			knotGradient.addColorStop(0, `rgba(${darkColor.r - 30}, ${darkColor.g - 30}, ${darkColor.b - 20}, 0.8)`);
+			knotGradient.addColorStop(0.5, `rgba(${darkColor.r}, ${darkColor.g}, ${darkColor.b}, 0.5)`);
+			knotGradient.addColorStop(1, 'rgba(0,0,0,0)');
+
+			ctx.fillStyle = knotGradient;
+			ctx.beginPath();
+			ctx.ellipse(knotX, knotY, knotSize, knotSize * 0.7, 0, 0, Math.PI * 2);
+			ctx.fill();
+		}
+
+		return new THREE.CanvasTexture(canvas);
+	}
+
+	// 仕様: 端面用テクスチャ（年輪）
+	private createEndGrainTexture(size = 128, seed = 54321): THREE.CanvasTexture {
+		const canvas = document.createElement('canvas');
+		canvas.width = size;
+		canvas.height = size;
+		const ctx = canvas.getContext('2d')!;
+
+		let currentSeed = seed;
+		const seededRandom = () => {
+			currentSeed = (currentSeed * 9301 + 49297) % 233280;
+			return currentSeed / 233280;
+		};
+
+		// ベース
+		ctx.fillStyle = '#b8956a';
+		ctx.fillRect(0, 0, size, size);
+
+		const centerX = size / 2;
+		const centerY = size / 2;
+
+		// 年輪を描画
+		for (let r = 3; r < size * 0.45; r += 2 + seededRandom() * 2) {
+			const alpha = 0.2 + seededRandom() * 0.15;
+			ctx.strokeStyle = `rgba(90, 55, 30, ${alpha})`;
+			ctx.lineWidth = 0.5 + seededRandom() * 0.5;
+			ctx.beginPath();
+			ctx.arc(centerX, centerY, r, 0, Math.PI * 2);
+			ctx.stroke();
+		}
+
+		return new THREE.CanvasTexture(canvas);
+	}
+
+	// 仕様: 木材の3Dモデル生成（5枚の板が重なった状態）
+	private createWoodMesh(): THREE.Group {
+		const woodGroup = new THREE.Group();
+
+		// シード付き乱数生成器
+		let seed = 12345;
+		const seededRandom = () => {
+			seed = (seed * 9301 + 49297) % 233280;
+			return seed / 233280;
+		};
+
+		const plankHeight = 0.06;
+		const plankCount = 5;
+
+		for (let i = 0; i < plankCount; i++) {
+			// 各板で少し異なるテクスチャを生成
+			const woodTexture = this.createWoodTexture(256, 256, 12345 + i * 1000);
+			woodTexture.wrapS = THREE.RepeatWrapping;
+			woodTexture.wrapT = THREE.RepeatWrapping;
+
+			const endGrainTexture = this.createEndGrainTexture(128, 54321 + i * 500);
+
+			const woodMaterial = new THREE.MeshStandardMaterial({
+				map: woodTexture,
+				roughness: 0.7,
+				metalness: 0.0,
+			});
+
+			const endGrainMaterial = new THREE.MeshStandardMaterial({
+				map: endGrainTexture,
+				roughness: 0.8,
+				metalness: 0.0,
+			});
+
+			// 板のジオメトリ（斧より少し小さめ）
+			const geometry = new THREE.BoxGeometry(0.8, plankHeight, 0.5);
+
+			// 各面にマテリアルを割り当て（右端面、左端面、上面、下面、前面、後面）
+			const materials = [
+				endGrainMaterial,
+				endGrainMaterial,
+				woodMaterial,
+				woodMaterial,
+				woodMaterial,
+				woodMaterial,
+			];
+
+			const plank = new THREE.Mesh(geometry, materials);
+			plank.castShadow = true;
+			plank.receiveShadow = true;
+
+			// 乱雑だけど少し揃えた配置
+			const offsetX = (seededRandom() - 0.5) * 0.3;
+			const offsetZ = (seededRandom() - 0.5) * 0.15;
+			const rotY = (seededRandom() - 0.5) * 0.4;
+			const rotZ = (seededRandom() - 0.5) * 0.08;
+			const rotX = (seededRandom() - 0.5) * 0.06;
+
+			const gap = 0.02;
+			const heightVariation = seededRandom() * 0.03;
+			plank.position.set(offsetX, plankHeight / 2 + i * (plankHeight + gap) + heightVariation, offsetZ);
+			plank.rotation.set(rotX, rotY, rotZ);
+
+			woodGroup.add(plank);
+		}
+
+		return woodGroup;
 	}
 
 	public removePlacedItem(itemId: string): void {
