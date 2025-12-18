@@ -13,6 +13,32 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<i class="ti ti-x"></i>
 		</button>
 	</div>
+	<!-- 仕様: ウォレット残高（ノクタ）表示 -->
+	<div :class="$style.walletSection">
+		<div :class="$style.walletBalance">
+			<i class="ti ti-coin"></i>
+			<span>{{ balance.toLocaleString() }} ノクタ</span>
+		</div>
+		<button v-if="balance > 0" :class="$style.currencyDropBtn" @click.stop="toggleCurrencyDrop">
+			<i class="ti ti-cash"></i> 捨てる
+		</button>
+	</div>
+	<!-- 仕様: ノクタコイン捨てUI -->
+	<div v-if="showCurrencyDrop" :class="$style.currencyDropSection">
+		<div :class="$style.currencyDropHeader">ノクタを捨てる</div>
+		<div :class="$style.quantitySelector">
+			<span :class="$style.quantityLabel">数量:</span>
+			<button :class="$style.quantityBtn" @click.stop="decrementCurrencyAmount" :disabled="currencyDropAmount <= 1">-</button>
+			<span :class="$style.quantityValue">{{ currencyDropAmount }}</span>
+			<button :class="$style.quantityBtn" @click.stop="incrementCurrencyAmount" :disabled="currencyDropAmount >= balance">+</button>
+		</div>
+		<div :class="$style.currencyDropActions">
+			<MkButton :class="$style.actionBtn" @click.stop="showCurrencyDrop = false">キャンセル</MkButton>
+			<MkButton :class="$style.actionBtn" danger @click.stop="dropCurrency">
+				<i class="ti ti-trash"></i> 捨てる
+			</MkButton>
+		</div>
+	</div>
 	<div :class="$style.content">
 		<div v-if="loading" :class="$style.loading">
 			読込中...
@@ -94,6 +120,7 @@ const emit = defineEmits<{
 	(e: 'close'): void;
 	(e: 'place', item: InventoryItem): void;
 	(e: 'drop', item: InventoryItem, quantity: number): void;
+	(e: 'dropCurrency', amount: number): void;
 }>();
 
 const loading = ref(true);
@@ -101,6 +128,11 @@ const items = ref<InventoryItem[]>([]);
 const selectedItem = ref<InventoryItem | null>(null);
 // 仕様: ドロップ時の数量（デフォルト1）
 const dropQuantity = ref(1);
+// 仕様: ウォレット残高（ノクタ）
+const balance = ref(0);
+// 仕様: ノクタコイン捨てモード
+const showCurrencyDrop = ref(false);
+const currencyDropAmount = ref(1);
 
 function getToken(): string | null {
 	const account = localStorage.getItem('account');
@@ -130,10 +162,13 @@ async function fetchInventory(): Promise<void> {
 
 		if (res.ok) {
 			const data = await res.json();
-			// 仕様: APIレスポンスのバリデーション（配列かどうか確認）
-			if (Array.isArray(data)) {
+			// 仕様: APIレスポンス形式は { balance: number, items: array }
+			if (data && typeof data === 'object' && !Array.isArray(data)) {
+				// ウォレット残高を取得
+				balance.value = typeof data.balance === 'number' ? data.balance : 0;
 				// 各アイテムのデータを正規化（undefinedやnullを防止）
-				items.value = data.map(item => ({
+				const itemsData = Array.isArray(data.items) ? data.items : [];
+				items.value = itemsData.map(item => ({
 					id: item.id ?? '',
 					itemId: item.itemId ?? '',
 					itemName: item.itemName ?? 'Unknown Item',
@@ -146,12 +181,15 @@ async function fetchInventory(): Promise<void> {
 					acquiredAt: item.acquiredAt ?? '',
 				}));
 			} else {
+				balance.value = 0;
 				items.value = [];
 			}
 		} else {
+			balance.value = 0;
 			items.value = [];
 		}
 	} catch (e) {
+		balance.value = 0;
 		items.value = [];
 	} finally {
 		loading.value = false;
@@ -259,6 +297,39 @@ function onDropClick(ev: MouseEvent): void {
 	dropItem();
 }
 
+// 仕様: ノクタコイン捨てモードの切り替え
+function toggleCurrencyDrop(): void {
+	showCurrencyDrop.value = !showCurrencyDrop.value;
+	if (showCurrencyDrop.value) {
+		selectedItem.value = null;
+		currencyDropAmount.value = 1;
+	}
+}
+
+// 仕様: ノクタコイン捨て数量の増加
+function incrementCurrencyAmount(): void {
+	if (currencyDropAmount.value < balance.value) {
+		currencyDropAmount.value++;
+	}
+}
+
+// 仕様: ノクタコイン捨て数量の減少
+function decrementCurrencyAmount(): void {
+	if (currencyDropAmount.value > 1) {
+		currencyDropAmount.value--;
+	}
+}
+
+// 仕様: ノクタコインを捨てる
+function dropCurrency(): void {
+	if (currencyDropAmount.value > 0 && currencyDropAmount.value <= balance.value) {
+		emit('dropCurrency', currencyDropAmount.value);
+		showCurrencyDrop.value = false;
+		currencyDropAmount.value = 1;
+		fetchInventory();
+	}
+}
+
 onMounted(async () => {
 	try {
 		await fetchInventory();
@@ -309,6 +380,71 @@ defineExpose({
 	&:hover {
 		background: var(--MI_THEME-buttonHoverBg);
 	}
+}
+
+// 仕様: ウォレット残高セクション
+.walletSection {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 8px 16px;
+	background: var(--MI_THEME-bg);
+	border-bottom: 1px solid var(--MI_THEME-divider);
+}
+
+.walletBalance {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--MI_THEME-fg);
+
+	i {
+		color: #f59e0b;
+	}
+}
+
+.currencyDropBtn {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	padding: 4px 8px;
+	background: var(--MI_THEME-buttonBg);
+	border: 1px solid var(--MI_THEME-divider);
+	border-radius: 6px;
+	color: var(--MI_THEME-fg);
+	font-size: 11px;
+	cursor: pointer;
+	transition: all 0.15s ease;
+
+	&:hover {
+		background: var(--MI_THEME-buttonHoverBg);
+	}
+
+	i {
+		color: #f59e0b;
+	}
+}
+
+// 仕様: ノクタコイン捨てセクション
+.currencyDropSection {
+	padding: 12px 16px;
+	background: rgba(245, 158, 11, 0.1);
+	border-bottom: 1px solid var(--MI_THEME-divider);
+}
+
+.currencyDropHeader {
+	font-size: 13px;
+	font-weight: 600;
+	margin-bottom: 8px;
+	color: var(--MI_THEME-fg);
+}
+
+.currencyDropActions {
+	display: flex;
+	gap: 8px;
+	margin-top: 8px;
 }
 
 .content {

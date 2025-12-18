@@ -394,6 +394,7 @@ export * as 'noctown/item/inventory' from './endpoints/noctown/item/inventory.js
 export * as 'noctown/item/pickup' from './endpoints/noctown/item/pickup.js';
 export * as 'noctown/item/place' from './endpoints/noctown/item/place.js';
 export * as 'noctown/item/drop' from './endpoints/noctown/item/drop.js';
+export * as 'noctown/item/drop-currency' from './endpoints/noctown/item/drop-currency.js';
 export * as 'noctown/item/dropped' from './endpoints/noctown/item/dropped.js';
 export * as 'noctown/item/placed' from './endpoints/noctown/item/placed.js';
 export * as 'noctown/item/pickup-placed' from './endpoints/noctown/item/pickup-placed.js';

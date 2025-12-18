@@ -77,6 +77,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					@close="showInventory = false"
 					@place="handlePlaceItem"
 					@drop="handleDropItem"
+					@dropCurrency="handleDropCurrency"
 				/>
 
 				<!-- Quest panel -->
@@ -688,8 +689,26 @@ async function connectStream(): Promise<void> {
 	connection.value.on('chunkGenerated', (body: ChunkData) => {
 		handleChunkGenerated(body);
 	});
-	connection.value.on('itemDropped', (body: DroppedItemData) => {
-		if (engine) engine.addDroppedItem(body);
+	// 仕様: itemDroppedイベント - 自分がドロップしたアイテムはローカルで追加済みなのでスキップ
+	connection.value.on('itemDropped', (body: { playerId: string; droppedItemId: string; itemId: string; itemName: string; itemType: string; emoji: string | null; imageUrl: string | null; quantity: number; positionX: number; positionY: number; positionZ: number }) => {
+		if (!engine) return;
+		// 自分がドロップしたアイテムはローカルで追加済み
+		const localPlayerId = engine.getLocalPlayerId();
+		if (localPlayerId && body.playerId === localPlayerId) return;
+		// 他プレイヤーがドロップしたアイテムを追加
+		engine.addDroppedItem({
+			id: body.droppedItemId,
+			itemId: body.itemId,
+			itemName: body.itemName,
+			itemType: body.itemType,
+			emoji: body.emoji,
+			imageUrl: body.imageUrl,
+			rarity: 0,
+			quantity: body.quantity,
+			positionX: body.positionX,
+			positionY: body.positionY,
+			positionZ: body.positionZ,
+		});
 	});
 	connection.value.on('itemPicked', (body: { droppedItemId: string }) => {
 		if (engine) engine.removeDroppedItem(body.droppedItemId);
@@ -1847,6 +1866,52 @@ async function handleDropItem(item: InventoryItem, quantity: number = 1): Promis
 		}
 	} catch (error) {
 		console.error('Failed to drop item:', error);
+	}
+}
+
+// 仕様: ウォレットからノクタコインを捨てる（地面にドロップ）
+async function handleDropCurrency(amount: number): Promise<void> {
+	if (!engine) return;
+
+	const pos = engine.getLocalPlayerPosition();
+	if (!pos) return;
+
+	// プレイヤーの少し前方にドロップ（回転を考慮）
+	const dropDistance = 1.5;
+	const dropX = pos.x + Math.sin(currentRotation) * dropDistance;
+	const dropZ = pos.z + Math.cos(currentRotation) * dropDistance;
+
+	try {
+		const result = await noctownApi<{ droppedItemId: string }>('noctown/item/drop-currency', {
+			amount: amount,
+			positionX: dropX,
+			positionY: pos.y,
+			positionZ: dropZ,
+		});
+
+		if (result.droppedItemId) {
+			// 仕様: ドロップ成功時にエンジンにコインを追加
+			engine.addDroppedItem({
+				id: result.droppedItemId,
+				itemId: 'currency',
+				itemName: 'ノクタコイン',
+				itemType: 'currency',
+				emoji: '🪙',
+				imageUrl: null,
+				rarity: 1,
+				quantity: amount,
+				positionX: dropX,
+				positionY: pos.y,
+				positionZ: dropZ,
+			});
+
+			// インベントリを更新
+			if (inventoryRef.value) {
+				inventoryRef.value.refresh();
+			}
+		}
+	} catch (error) {
+		console.error('Failed to drop currency:', error);
 	}
 }
 

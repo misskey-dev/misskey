@@ -294,6 +294,7 @@ export class NoctownService {
 	@bindThis
 	// 仕様: FR-030 ドロップアイテムの拾得
 	// ドロップアイテムの数量を考慮してインベントリに追加
+	// 通貨アイテムの場合はウォレットに加算
 	public async pickUpItem(playerId: string, droppedItemId: string): Promise<boolean> {
 		// Find the dropped item
 		const droppedItem = await this.noctownDroppedItemsRepository.findOneBy({ id: droppedItemId });
@@ -302,37 +303,56 @@ export class NoctownService {
 		// 仕様: ドロップアイテムの数量（デフォルト1）
 		const pickupQuantity = droppedItem.quantity ?? 1;
 
-		// Check if player already has this item type
-		const existingPlayerItem = await this.noctownPlayerItemsRepository.findOneBy({
-			playerId,
-			itemId: droppedItem.itemId,
-		});
+		// アイテム情報を取得してタイプを確認
+		const item = await this.noctownItemsRepository.findOneBy({ id: droppedItem.itemId });
 
-		// Check inventory capacity (max 300 unique item types)
-		if (!existingPlayerItem) {
-			const INVENTORY_MAX_CAPACITY = 300;
-			const currentItemCount = await this.noctownPlayerItemsRepository.count({
-				where: { playerId },
-			});
-			if (currentItemCount >= INVENTORY_MAX_CAPACITY) {
-				return false; // Inventory full
+		// 仕様: 通貨アイテムの場合はウォレットに加算
+		if (item && item.itemType === 'currency') {
+			const wallet = await this.noctownWalletsRepository.findOneBy({ playerId });
+			if (wallet) {
+				const currentBalance = Number(wallet.balance);
+				await this.noctownWalletsRepository.update(
+					{ playerId },
+					{
+						balance: String(currentBalance + pickupQuantity),
+						updatedAt: new Date(),
+					},
+				);
 			}
-		}
-
-		if (existingPlayerItem) {
-			// Increment quantity by dropped item's quantity
-			await this.noctownPlayerItemsRepository.update(existingPlayerItem.id, {
-				quantity: existingPlayerItem.quantity + pickupQuantity,
-			});
 		} else {
-			// Add new item to inventory with dropped quantity
-			await this.noctownPlayerItemsRepository.insert({
-				id: this.idService.gen(),
+			// 通常アイテムの場合はインベントリに追加
+			// Check if player already has this item type
+			const existingPlayerItem = await this.noctownPlayerItemsRepository.findOneBy({
 				playerId,
 				itemId: droppedItem.itemId,
-				quantity: pickupQuantity,
-				acquiredAt: new Date(),
 			});
+
+			// Check inventory capacity (max 300 unique item types)
+			if (!existingPlayerItem) {
+				const INVENTORY_MAX_CAPACITY = 300;
+				const currentItemCount = await this.noctownPlayerItemsRepository.count({
+					where: { playerId },
+				});
+				if (currentItemCount >= INVENTORY_MAX_CAPACITY) {
+					return false; // Inventory full
+				}
+			}
+
+			if (existingPlayerItem) {
+				// Increment quantity by dropped item's quantity
+				await this.noctownPlayerItemsRepository.update(existingPlayerItem.id, {
+					quantity: existingPlayerItem.quantity + pickupQuantity,
+				});
+			} else {
+				// Add new item to inventory with dropped quantity
+				await this.noctownPlayerItemsRepository.insert({
+					id: this.idService.gen(),
+					playerId,
+					itemId: droppedItem.itemId,
+					quantity: pickupQuantity,
+					acquiredAt: new Date(),
+				});
+			}
 		}
 
 		// Remove dropped item from map
@@ -401,6 +421,82 @@ export class NoctownService {
 			emoji: playerItem.item.emoji,
 			imageUrl: playerItem.item.imageUrl,
 			quantity: dropQuantity,
+			positionX: x,
+			positionY: y,
+			positionZ: z,
+		});
+
+		return { droppedItemId };
+	}
+
+	// 仕様: ウォレットからノクタコインを地面にドロップ
+	@bindThis
+	public async dropCurrencyFromWallet(
+		playerId: string,
+		amount: number,
+		x: number,
+		y: number,
+		z: number,
+	): Promise<{ droppedItemId: string } | null> {
+		// Find the wallet
+		const wallet = await this.noctownWalletsRepository.findOneBy({ playerId });
+		if (!wallet) return null;
+
+		const currentBalance = Number(wallet.balance);
+		if (amount <= 0 || amount > currentBalance) return null;
+
+		// Find or create the "ノクタコイン" item
+		let coinItem = await this.noctownItemsRepository.findOneBy({ itemType: 'currency' });
+		if (!coinItem) {
+			// Create currency item if it doesn't exist
+			const coinItemId = this.idService.gen();
+			await this.noctownItemsRepository.insert({
+				id: coinItemId,
+				name: 'ノクタコイン',
+				itemType: 'currency',
+				rarity: 1,
+				emoji: '🪙',
+				imageUrl: null,
+				flavorText: 'ノクタウンの通貨',
+				shopPrice: null,
+				shopSellPrice: null,
+				createdAt: new Date(),
+			});
+			coinItem = await this.noctownItemsRepository.findOneBy({ id: coinItemId });
+		}
+		if (!coinItem) return null;
+
+		// Create dropped currency on the ground
+		const droppedItemId = this.idService.gen();
+		await this.noctownDroppedItemsRepository.insert({
+			id: droppedItemId,
+			itemId: coinItem.id,
+			droppedByPlayerId: playerId,
+			quantity: amount,
+			positionX: x,
+			positionY: y,
+			positionZ: z,
+			droppedAt: new Date(),
+		});
+
+		// Deduct from wallet
+		await this.noctownWalletsRepository.update(
+			{ playerId },
+			{
+				balance: String(currentBalance - amount),
+				updatedAt: new Date(),
+			},
+		);
+
+		// Broadcast currency drop
+		this.globalEventService.publishNoctownStream('itemDropped', {
+			playerId,
+			droppedItemId,
+			itemId: coinItem.id,
+			itemName: coinItem.name,
+			emoji: coinItem.emoji,
+			imageUrl: coinItem.imageUrl,
+			quantity: amount,
 			positionX: x,
 			positionY: y,
 			positionZ: z,

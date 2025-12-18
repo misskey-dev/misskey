@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
-import type { NoctownPlayersRepository, NoctownPlayerItemsRepository, NoctownItemsRepository } from '@/models/_.js';
+import type { NoctownPlayersRepository, NoctownPlayerItemsRepository, NoctownItemsRepository, NoctownWalletsRepository } from '@/models/_.js';
 
 export const meta = {
 	tags: ['noctown'],
@@ -15,21 +15,27 @@ export const meta = {
 	kind: 'read:account',
 
 	res: {
-		type: 'array',
+		type: 'object',
 		optional: false, nullable: false,
-		items: {
-			type: 'object',
-			properties: {
-				id: { type: 'string' },
-				itemId: { type: 'string' },
-				itemName: { type: 'string' },
-				itemType: { type: 'string' },
-				imageUrl: { type: 'string', nullable: true },
-				// 仕様: FR-030 画像がない場合のUnicode絵文字
-				emoji: { type: 'string', nullable: true },
-				rarity: { type: 'number' },
-				quantity: { type: 'number' },
-				acquiredAt: { type: 'string', format: 'date-time' },
+		properties: {
+			balance: { type: 'number' },
+			items: {
+				type: 'array',
+				items: {
+					type: 'object',
+					properties: {
+						id: { type: 'string' },
+						itemId: { type: 'string' },
+						itemName: { type: 'string' },
+						itemType: { type: 'string' },
+						imageUrl: { type: 'string', nullable: true },
+						// 仕様: FR-030 画像がない場合のUnicode絵文字
+						emoji: { type: 'string', nullable: true },
+						rarity: { type: 'number' },
+						quantity: { type: 'number' },
+						acquiredAt: { type: 'string', format: 'date-time' },
+					},
+				},
 			},
 		},
 	},
@@ -52,19 +58,26 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		@Inject(DI.noctownItemsRepository)
 		private noctownItemsRepository: NoctownItemsRepository,
+
+		@Inject(DI.noctownWalletsRepository)
+		private noctownWalletsRepository: NoctownWalletsRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const player = await this.noctownPlayersRepository.findOneBy({ userId: me.id });
 			if (!player) {
-				return [];
+				return { balance: 0, items: [] };
 			}
+
+			// 仕様: ウォレット残高を取得
+			const wallet = await this.noctownWalletsRepository.findOneBy({ playerId: player.id });
+			const balance = wallet ? Number(wallet.balance) : 0;
 
 			const playerItems = await this.noctownPlayerItemsRepository.find({
 				where: { playerId: player.id },
 				order: { acquiredAt: 'DESC' },
 			});
 
-			const results = await Promise.all(
+			const items = await Promise.all(
 				playerItems.map(async (pi) => {
 					const item = await this.noctownItemsRepository.findOneBy({ id: pi.itemId });
 					return {
@@ -82,7 +95,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}),
 			);
 
-			return results;
+			return { balance, items };
 		});
 	}
 }

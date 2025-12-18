@@ -1271,6 +1271,11 @@ export class NoctownEngine {
 			this.scene.remove(group);
 			this.droppedItems.delete(itemId);
 		}
+		// 仕様: CSS2DObjectのDOM要素を明示的に削除（シーンから削除しただけではDOMに残る）
+		const label = this.droppedItemLabels.get(itemId);
+		if (label && label.element && label.element.parentNode) {
+			label.element.parentNode.removeChild(label.element);
+		}
 		this.droppedItemLabels.delete(itemId);
 		this.droppedItemBaseY.delete(itemId);
 	}
@@ -1283,10 +1288,15 @@ export class NoctownEngine {
 		group.rotation.y = data.rotation;
 
 		// 仕様: アイテムタイプに応じた専用メッシュを生成
-		const mesh = this.createPlacedItemMesh(data.itemType);
-		mesh.castShadow = true;
-		mesh.receiveShadow = true;
-		group.add(mesh);
+		const itemObject = this.createPlacedItemMesh(data.itemType);
+		// 仕様: 全ての子メッシュに影設定を適用（Groupの場合も対応）
+		itemObject.traverse((child) => {
+			if (child instanceof THREE.Mesh) {
+				child.castShadow = true;
+				child.receiveShadow = true;
+			}
+		});
+		group.add(itemObject);
 
 		group.userData = { type: 'placedItem', data };
 		this.scene.add(group);
@@ -1294,7 +1304,7 @@ export class NoctownEngine {
 	}
 
 	// 仕様: 設置アイテムのタイプに応じた専用メッシュを生成
-	private createPlacedItemMesh(itemType: string): THREE.Mesh {
+	private createPlacedItemMesh(itemType: string): THREE.Object3D {
 		switch (itemType) {
 			case 'stone':
 			case 'rock': {
@@ -1316,6 +1326,10 @@ export class NoctownEngine {
 				log.rotation.z = Math.PI / 2;
 				return log;
 			}
+			case 'axe': {
+				// 仕様: 斧の3Dモデル
+				return this.createAxeMesh();
+			}
 			default: {
 				// デフォルト: 立方体
 				const geometry = new THREE.BoxGeometry(1, 1, 1);
@@ -1330,6 +1344,90 @@ export class NoctownEngine {
 		}
 	}
 
+	// 仕様: 斧の3Dモデル生成
+	private createAxeMesh(): THREE.Group {
+		const axeGroup = new THREE.Group();
+
+		// マテリアル
+		const woodMaterial = new THREE.MeshStandardMaterial({
+			color: 0x8B5A2B,
+			roughness: 0.8,
+			metalness: 0.0,
+		});
+		const bladeMaterial = new THREE.MeshStandardMaterial({
+			color: 0xb0b0b0,
+			roughness: 0.4,
+			metalness: 0.5,
+		});
+		const edgeMaterial = new THREE.MeshStandardMaterial({
+			color: 0xe8e8e8,
+			roughness: 0.2,
+			metalness: 0.6,
+		});
+
+		// 柄
+		const handleGeometry = new THREE.CylinderGeometry(0.03, 0.035, 0.9, 16);
+		const handle = new THREE.Mesh(handleGeometry, woodMaterial);
+		handle.castShadow = true;
+		axeGroup.add(handle);
+
+		// 斧頭（湾曲した刃先）
+		const bladeShape = new THREE.Shape();
+		bladeShape.moveTo(-0.03, -0.04);
+		bladeShape.lineTo(-0.03, 0.04);
+		bladeShape.lineTo(0.0, 0.07);
+		bladeShape.lineTo(0.12, 0.11);
+		bladeShape.quadraticCurveTo(0.22, 0.08, 0.24, 0.0);
+		bladeShape.quadraticCurveTo(0.22, -0.08, 0.12, -0.11);
+		bladeShape.lineTo(0.0, -0.07);
+		bladeShape.lineTo(-0.03, -0.04);
+
+		const bladeGeometry = new THREE.ExtrudeGeometry(bladeShape, {
+			steps: 1,
+			depth: 0.03,
+			bevelEnabled: true,
+			bevelThickness: 0.005,
+			bevelSize: 0.005,
+			bevelSegments: 2,
+		});
+		const axeBlade = new THREE.Mesh(bladeGeometry, bladeMaterial);
+		axeBlade.position.set(0.03, 0.42, -0.015);
+		axeBlade.castShadow = true;
+		axeGroup.add(axeBlade);
+
+		// 刃先の白いエッジ（湾曲）
+		const edgeShape = new THREE.Shape();
+		edgeShape.moveTo(0.12, 0.105);
+		edgeShape.quadraticCurveTo(0.22, 0.075, 0.24, 0.0);
+		edgeShape.quadraticCurveTo(0.22, -0.075, 0.12, -0.105);
+		edgeShape.quadraticCurveTo(0.20, -0.065, 0.215, 0.0);
+		edgeShape.quadraticCurveTo(0.20, 0.065, 0.12, 0.105);
+
+		const edgeGeometry = new THREE.ExtrudeGeometry(edgeShape, {
+			steps: 1,
+			depth: 0.032,
+			bevelEnabled: false,
+		});
+		const axeEdge = new THREE.Mesh(edgeGeometry, edgeMaterial);
+		axeEdge.position.set(0.03, 0.42, -0.016);
+		axeEdge.castShadow = true;
+		axeGroup.add(axeEdge);
+
+		// 柄と頭の接続部
+		const collarGeometry = new THREE.CylinderGeometry(0.035, 0.035, 0.05, 16);
+		const collar = new THREE.Mesh(collarGeometry, bladeMaterial);
+		collar.position.set(0, 0.42, 0);
+		axeGroup.add(collar);
+
+		// 斧を横に倒す
+		axeGroup.rotation.z = Math.PI / 2;
+		axeGroup.rotation.x = -Math.PI / 2;
+		axeGroup.rotation.y = 0.15;
+		axeGroup.position.y = 0.06;
+
+		return axeGroup;
+	}
+
 	public removePlacedItem(itemId: string): void {
 		const group = this.placedItems.get(itemId);
 		if (group) {
@@ -1341,6 +1439,12 @@ export class NoctownEngine {
 	public clearItems(): void {
 		this.droppedItems.forEach((group) => this.scene.remove(group));
 		this.droppedItems.clear();
+		// 仕様: CSS2DObjectのDOM要素を明示的に削除
+		this.droppedItemLabels.forEach((label) => {
+			if (label.element && label.element.parentNode) {
+				label.element.parentNode.removeChild(label.element);
+			}
+		});
 		this.droppedItemLabels.clear();
 		this.droppedItemBaseY.clear();
 		this.placedItems.forEach((group) => this.scene.remove(group));
@@ -1398,6 +1502,11 @@ export class NoctownEngine {
 			y: pos.y,
 			z: pos.z,
 		};
+	}
+
+	// 仕様: ローカルプレイヤーのIDを取得
+	public getLocalPlayerId(): string | null {
+		return this.localPlayerId;
 	}
 
 	// NPC management
@@ -1783,6 +1892,9 @@ export class NoctownEngine {
 			this.petManager.dispose();
 			this.petManager = null;
 		}
+
+		// 仕様: ドロップアイテム・設置アイテムのクリーンアップ（CSS2DObject DOM要素含む）
+		this.clearItems();
 
 		// Cleanup Three.js resources
 		this.scene.traverse((object) => {

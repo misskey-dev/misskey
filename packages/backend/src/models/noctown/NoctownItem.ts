@@ -19,6 +19,13 @@ export const noctownItemTypes = [
 	'furniture',
 	'wallpaper',
 	'frame',
+	// 仕様: 採取可能リソースアイテム
+	'stone',
+	'wood',
+	// 仕様: 道具アイテム
+	'axe',
+	// 仕様: 通貨アイテム
+	'currency',
 ] as const;
 
 export type NoctownItemType = typeof noctownItemTypes[number];
