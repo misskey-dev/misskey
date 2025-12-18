@@ -4,7 +4,7 @@
  */
 
 import { Injectable, Inject } from '@nestjs/common';
-import { LessThan, In } from 'typeorm';
+import { LessThan, MoreThan, In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import { IdService } from '@/core/IdService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
@@ -61,12 +61,18 @@ export class TradeService {
 
 	/**
 	 * Get active trades for a player
+	 * 仕様: pending, accepted のトレードに加え、5分以内に拒否されたトレードも返す
 	 */
 	public async getActiveTrades(playerId: string): Promise<TradeListItem[]> {
+		// 5分以内に拒否されたトレードも取得
+		const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+
 		const trades = await this.tradesRepository.find({
 			where: [
 				{ initiatorId: playerId, status: In(['pending', 'accepted']) },
 				{ targetId: playerId, status: In(['pending', 'accepted']) },
+				// 自分が送信したトレードで最近拒否されたもの
+				{ initiatorId: playerId, status: 'declined', completedAt: MoreThan(fiveMinutesAgo) },
 			],
 			order: { createdAt: 'DESC' },
 		});

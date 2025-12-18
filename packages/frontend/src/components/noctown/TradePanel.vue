@@ -294,7 +294,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				>
 					<div :class="$style.tradeInfo">
 						<span :class="$style.tradeName">{{ trade.otherPlayerName }}</span>
-						<span :class="$style.tradeDetails">待機中</span>
+						<span :class="[$style.statusLabel, $style.pendingLabel]">
+							<i class="ti ti-clock"></i>
+							承認待ち
+						</span>
 					</div>
 					<button :class="$style.cancelBtn" @click="cancelTrade(trade.id)">
 						キャンセル
@@ -302,8 +305,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 
+			<!-- Declined trades -->
+			<div v-if="declinedTrades.length > 0" :class="$style.tradeSection">
+				<h3>拒否されたトレード</h3>
+				<div
+					v-for="trade in declinedTrades"
+					:key="trade.id"
+					:class="$style.tradeItem"
+				>
+					<div :class="$style.tradeInfo">
+						<span :class="$style.tradeName">{{ trade.otherPlayerName }}</span>
+						<span :class="[$style.statusLabel, $style.declinedLabel]">
+							<i class="ti ti-x"></i>
+							拒否されました
+						</span>
+					</div>
+				</div>
+			</div>
+
 			<!-- Empty state -->
-			<div v-if="pendingTrades.length === 0 && sentTrades.length === 0 && acceptedTrades.length === 0" :class="$style.empty">
+			<div v-if="pendingTrades.length === 0 && sentTrades.length === 0 && acceptedTrades.length === 0 && declinedTrades.length === 0" :class="$style.empty">
 				<i class="ti ti-arrows-exchange"></i>
 				<p>アクティブなトレードはありません</p>
 			</div>
@@ -385,6 +406,8 @@ const isSending = ref(false);
 const pendingTrades = ref<Trade[]>([]);
 const sentTrades = ref<Trade[]>([]);
 const acceptedTrades = ref<Trade[]>([]);
+// 仕様: 最近拒否されたトレード（5分以内）
+const declinedTrades = ref<Trade[]>([]);
 const myOffer = ref<TradeItem[]>([]);
 const offeredCurrency = ref(0);
 const message = ref('');
@@ -431,15 +454,21 @@ async function loadTrades(): Promise<void> {
 		const result = await misskeyApi('noctown/trade/list', {});
 		const trades = result.trades || [];
 
-		// Separate trades by type
+		// 仕様: トレードを種類別に分類
+		// - 受信: 相手からのpendingトレード
+		// - 送信: 自分からのpendingトレード
+		// - 交渉中: acceptedトレード
+		// - 拒否: declinedトレード（5分以内）
 		pendingTrades.value = trades.filter((t: Trade) => t.status === 'pending' && !t.isInitiator);
 		sentTrades.value = trades.filter((t: Trade) => t.status === 'pending' && t.isInitiator);
 		acceptedTrades.value = trades.filter((t: Trade) => t.status === 'accepted');
+		declinedTrades.value = trades.filter((t: Trade) => t.status === 'declined' && t.isInitiator);
 	} catch (e) {
 		console.error('Failed to load trades:', e);
 		pendingTrades.value = [];
 		sentTrades.value = [];
 		acceptedTrades.value = [];
+		declinedTrades.value = [];
 	} finally {
 		isLoading.value = false;
 	}
@@ -1155,6 +1184,51 @@ onMounted(() => {
 
 	&:hover:not(.disabled) {
 		opacity: 0.9;
+	}
+}
+
+// 仕様: トレードステータスラベル（背景色あり、ゆっくり点滅）
+.statusLabel {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	padding: 4px 10px;
+	border-radius: 12px;
+	font-size: 12px;
+	font-weight: 600;
+}
+
+.pendingLabel {
+	background: rgba(251, 191, 36, 0.2);
+	color: #f59e0b;
+	animation: pulse-pending 2s ease-in-out infinite;
+}
+
+.declinedLabel {
+	background: rgba(239, 68, 68, 0.2);
+	color: #ef4444;
+	animation: pulse-declined 2s ease-in-out infinite;
+}
+
+@keyframes pulse-pending {
+	0%, 100% {
+		opacity: 1;
+		background: rgba(251, 191, 36, 0.2);
+	}
+	50% {
+		opacity: 0.6;
+		background: rgba(251, 191, 36, 0.35);
+	}
+}
+
+@keyframes pulse-declined {
+	0%, 100% {
+		opacity: 1;
+		background: rgba(239, 68, 68, 0.2);
+	}
+	50% {
+		opacity: 0.6;
+		background: rgba(239, 68, 68, 0.35);
 	}
 }
 </style>
