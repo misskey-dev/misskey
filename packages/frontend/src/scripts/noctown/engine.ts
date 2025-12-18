@@ -1212,6 +1212,15 @@ export class NoctownEngine {
 		sphere.castShadow = true;
 		group.add(sphere);
 
+		// 仕様: クリック検出用の透明ヒットボックス（絵文字ラベルはCSS2DObjectでレイキャスト不可のため）
+		const hitboxGeometry = new THREE.SphereGeometry(0.6, 8, 8);
+		const hitboxMaterial = new THREE.MeshBasicMaterial({
+			visible: false,
+		});
+		const hitbox = new THREE.Mesh(hitboxGeometry, hitboxMaterial);
+		hitbox.position.set(0, 0.2, 0);
+		group.add(hitbox);
+
 		// 仕様: FR-030 絵文字ラベル（CSS2DObject）
 		// emoji > imageUrl > デフォルト📦 の優先順位
 		const displayEmoji = data.emoji ?? '📦';
