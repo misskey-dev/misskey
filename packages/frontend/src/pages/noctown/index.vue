@@ -250,6 +250,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 import MkLoading from '@/components/global/MkLoading.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkNoctownInventory from '@/components/MkNoctownInventory.vue';
@@ -1810,6 +1811,11 @@ async function onPlaceClick(): Promise<void> {
 		await loadNearbyItems(currentX.value, currentZ.value);
 	} catch (e) {
 		console.error('Failed to place item:', e);
+		// 仕様: 設置できないアイテムの場合はエラーメッセージを表示
+		os.alert({
+			type: 'error',
+			text: 'このアイテムは設置できません',
+		});
 	}
 
 	cancelPlaceMode();
