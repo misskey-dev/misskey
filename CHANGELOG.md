@@ -8,6 +8,9 @@ v2025.12.0で行われた「configの`trustProxy`のデフォルト値を`false`
 ### General
 - 依存関係の更新
 
+### Server
+- Fix: コントロールパネルのジョブキューページで使用される一部APIの応答速度を改善
+
 ### Client
 - Enhance: デッキのUI説明を追加
 - Fix: バージョン表記のないPlayが正しく動作しない問題を修正  
