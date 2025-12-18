@@ -522,8 +522,8 @@ export class NoctownService {
 		if (!playerItem || !playerItem.item) return false;
 
 		// 仕様: FR-032 設置可能なアイテムタイプを判定
-		// placeable, stone, rock, wood, log, furniture, decoration は設置可能
-		const placeableTypes = ['placeable', 'stone', 'rock', 'wood', 'log', 'furniture', 'decoration'];
+		// placeable, stone, rock, wood, log, axe, furniture, decoration は設置可能
+		const placeableTypes = ['placeable', 'stone', 'rock', 'wood', 'log', 'axe', 'furniture', 'decoration'];
 		if (!placeableTypes.includes(playerItem.item.itemType)) return false;
 
 		// Check placement limit (max 10 per player)
