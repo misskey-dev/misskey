@@ -1349,6 +1349,10 @@ export class NoctownEngine {
 				// 仕様: ノクタコインの3Dモデル
 				return this.createCoinMesh();
 			}
+			case 'fishing_rod': {
+				// 仕様: 釣り竿の3Dモデル
+				return this.createFishingRodMesh();
+			}
 			default: {
 				// デフォルト: 立方体
 				const geometry = new THREE.BoxGeometry(1, 1, 1);
@@ -1777,6 +1781,187 @@ export class NoctownEngine {
 		coinGroup.position.y = 0.15;
 
 		return coinGroup;
+	}
+
+	// 仕様: 釣り竿の3Dモデル生成
+	private createFishingRodMesh(): THREE.Group {
+		const rodGroup = new THREE.Group();
+
+		// スケール（設置アイテム用に縮小）
+		const scale = 0.25;
+
+		// マテリアル定義
+		const carbonMaterial = new THREE.MeshStandardMaterial({
+			color: 0x2c3e50,
+			metalness: 0.3,
+			roughness: 0.4,
+		});
+
+		const corkMaterial = new THREE.MeshStandardMaterial({
+			color: 0xd4a574,
+			roughness: 0.9,
+			metalness: 0.0,
+		});
+
+		const metalMaterial = new THREE.MeshStandardMaterial({
+			color: 0xc0c0c0,
+			metalness: 0.8,
+			roughness: 0.2,
+		});
+
+		const goldMaterial = new THREE.MeshStandardMaterial({
+			color: 0xffd700,
+			metalness: 0.9,
+			roughness: 0.1,
+		});
+
+		const lineMaterial = new THREE.MeshBasicMaterial({
+			color: 0x00ffff,
+			transparent: true,
+			opacity: 0.7,
+		});
+
+		// ロッド本体（テーパー形状）
+		const rodSegments = 12;
+		const rodLength = 4;
+
+		for (let i = 0; i < rodSegments; i++) {
+			const t = i / rodSegments;
+			const radius = 0.03 * (1 - t * 0.7);
+			const segmentLength = rodLength / rodSegments;
+
+			const segmentGeo = new THREE.CylinderGeometry(
+				radius * 0.9 * scale, radius * scale, segmentLength * scale, 8
+			);
+			const segment = new THREE.Mesh(segmentGeo, carbonMaterial);
+			segment.position.x = t * rodLength * scale + segmentLength * scale / 2;
+			segment.rotation.z = -Math.PI / 2;
+			segment.castShadow = true;
+			rodGroup.add(segment);
+		}
+
+		// コルクグリップ
+		const gripLength = 0.5 * scale;
+		const gripGeo = new THREE.CylinderGeometry(0.045 * scale, 0.04 * scale, gripLength, 8);
+		const grip = new THREE.Mesh(gripGeo, corkMaterial);
+		grip.position.x = -gripLength / 2;
+		grip.rotation.z = -Math.PI / 2;
+		grip.castShadow = true;
+		rodGroup.add(grip);
+
+		// リアグリップ
+		const rearGripGeo = new THREE.CylinderGeometry(0.035 * scale, 0.04 * scale, 0.25 * scale, 8);
+		const rearGrip = new THREE.Mesh(rearGripGeo, corkMaterial);
+		rearGrip.position.x = -gripLength - 0.15 * scale;
+		rearGrip.rotation.z = -Math.PI / 2;
+		rearGrip.castShadow = true;
+		rodGroup.add(rearGrip);
+
+		// エンドキャップ
+		const endCapGeo = new THREE.SphereGeometry(0.04 * scale, 8, 8, 0, Math.PI * 2, 0, Math.PI / 2);
+		const endCap = new THREE.Mesh(endCapGeo, metalMaterial);
+		endCap.position.x = -gripLength - 0.27 * scale;
+		endCap.rotation.z = Math.PI / 2;
+		rodGroup.add(endCap);
+
+		// リールシート
+		const reelSeatGeo = new THREE.CylinderGeometry(0.038 * scale, 0.038 * scale, 0.15 * scale, 8);
+		const reelSeat = new THREE.Mesh(reelSeatGeo, metalMaterial);
+		reelSeat.position.x = 0.1 * scale;
+		reelSeat.rotation.z = -Math.PI / 2;
+		rodGroup.add(reelSeat);
+
+		// リール本体
+		const reelGroup = new THREE.Group();
+
+		const reelBodyGeo = new THREE.CylinderGeometry(0.08 * scale, 0.08 * scale, 0.04 * scale, 16);
+		const reelBody = new THREE.Mesh(reelBodyGeo, metalMaterial);
+		reelBody.rotation.x = Math.PI / 2;
+		reelGroup.add(reelBody);
+
+		const spoolGeo = new THREE.CylinderGeometry(0.06 * scale, 0.06 * scale, 0.035 * scale, 16);
+		const spool = new THREE.Mesh(spoolGeo, new THREE.MeshStandardMaterial({
+			color: 0x1a1a1a,
+			metalness: 0.5,
+			roughness: 0.3,
+		}));
+		spool.rotation.x = Math.PI / 2;
+		reelGroup.add(spool);
+
+		const handleArmGeo = new THREE.CylinderGeometry(0.008 * scale, 0.008 * scale, 0.08 * scale, 8);
+		const handleArm = new THREE.Mesh(handleArmGeo, metalMaterial);
+		handleArm.position.set(0, 0.06 * scale, 0);
+		handleArm.rotation.x = Math.PI / 2;
+		reelGroup.add(handleArm);
+
+		const handleKnobGeo = new THREE.SphereGeometry(0.015 * scale, 8, 8);
+		const handleKnob = new THREE.Mesh(handleKnobGeo, corkMaterial);
+		handleKnob.position.set(0, 0.06 * scale, 0.045 * scale);
+		reelGroup.add(handleKnob);
+
+		reelGroup.position.set(0.1 * scale, -0.09 * scale, 0);
+		rodGroup.add(reelGroup);
+
+		// ガイド（ラインを通すリング）
+		const guidePositions = [0.3, 0.7, 1.2, 1.8, 2.5, 3.2, 3.8];
+		guidePositions.forEach((pos, i) => {
+			const guideScale = 1 - (i / guidePositions.length) * 0.6;
+
+			const frameGeo = new THREE.TorusGeometry(0.025 * guideScale * scale, 0.003 * scale, 4, 8);
+			const frame = new THREE.Mesh(frameGeo, goldMaterial);
+			frame.position.set(pos * scale, 0.04 * guideScale * scale, 0);
+			frame.rotation.y = Math.PI / 2;
+			rodGroup.add(frame);
+
+			const legGeo = new THREE.CylinderGeometry(0.003 * scale, 0.003 * scale, 0.03 * guideScale * scale, 4);
+			const leg = new THREE.Mesh(legGeo, metalMaterial);
+			leg.position.set(pos * scale, 0.02 * guideScale * scale, 0);
+			rodGroup.add(leg);
+		});
+
+		// トップガイド
+		const topGuideGeo = new THREE.TorusGeometry(0.008 * scale, 0.002 * scale, 4, 8);
+		const topGuide = new THREE.Mesh(topGuideGeo, goldMaterial);
+		topGuide.position.set(rodLength * scale, 0.015 * scale, 0);
+		topGuide.rotation.y = Math.PI / 2;
+		rodGroup.add(topGuide);
+
+		// 釣り糸
+		const linePoints: THREE.Vector3[] = [];
+		linePoints.push(new THREE.Vector3(0.1 * scale, -0.09 * scale, 0.04 * scale));
+		guidePositions.forEach((pos, i) => {
+			const guideScale = 1 - (i / guidePositions.length) * 0.6;
+			linePoints.push(new THREE.Vector3(pos * scale, 0.04 * guideScale * scale + 0.025 * guideScale * scale, 0));
+		});
+		linePoints.push(new THREE.Vector3(rodLength * scale, 0.023 * scale, 0));
+
+		const lineExtension = 0.3;
+		linePoints.push(new THREE.Vector3(rodLength * scale + lineExtension, 0.02 * scale, 0));
+
+		const lineCurve = new THREE.CatmullRomCurve3(linePoints);
+		const lineGeo = new THREE.TubeGeometry(lineCurve, 32, 0.002 * scale, 4, false);
+		const line = new THREE.Mesh(lineGeo, lineMaterial);
+		rodGroup.add(line);
+
+		// 針（フック）
+		const hookCurvePoints = [
+			new THREE.Vector3(0, 0, 0),
+			new THREE.Vector3(0.03 * scale, -0.01 * scale, 0),
+			new THREE.Vector3(0.05 * scale, -0.03 * scale, 0),
+			new THREE.Vector3(0.04 * scale, -0.05 * scale, 0),
+			new THREE.Vector3(0.02 * scale, -0.04 * scale, 0),
+		];
+		const hookCurve = new THREE.CatmullRomCurve3(hookCurvePoints);
+		const hookGeo = new THREE.TubeGeometry(hookCurve, 16, 0.002 * scale, 4, false);
+		const hook = new THREE.Mesh(hookGeo, metalMaterial);
+		hook.position.set(rodLength * scale + lineExtension, 0.02 * scale, 0);
+		rodGroup.add(hook);
+
+		// 地面に横たわる配置
+		rodGroup.rotation.y = 0.3;
+		rodGroup.position.y = 0.05;
+
+		return rodGroup;
 	}
 
 	public removePlacedItem(itemId: string): void {

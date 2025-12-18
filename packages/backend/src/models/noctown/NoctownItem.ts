@@ -24,6 +24,7 @@ export const noctownItemTypes = [
 	'wood',
 	// 仕様: 道具アイテム
 	'axe',
+	'fishing_rod',
 	// 仕様: 通貨アイテム
 	'currency',
 ] as const;
