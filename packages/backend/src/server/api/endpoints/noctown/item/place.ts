@@ -32,9 +32,21 @@ export const meta = {
 			id: 'a1b2c3d4-0002-0001-0001-000000000001',
 		},
 		itemNotOwned: {
-			message: 'Item not owned or not placeable.',
-			code: 'ITEM_NOT_OWNED',
+			message: 'Item not found in inventory.',
+			code: 'ITEM_NOT_FOUND',
 			id: 'a1b2c3d4-0002-0001-0001-000000000002',
+		},
+		// 仕様: FR-032 設置不可アイテムエラー
+		itemNotPlaceable: {
+			message: 'This item type cannot be placed.',
+			code: 'ITEM_NOT_PLACEABLE',
+			id: 'a1b2c3d4-0002-0001-0001-000000000003',
+		},
+		// 仕様: FR-032 設置上限到達エラー
+		placementLimitReached: {
+			message: 'Placement limit reached (max 100).',
+			code: 'PLACEMENT_LIMIT_REACHED',
+			id: 'a1b2c3d4-0002-0001-0001-000000000004',
 		},
 	},
 } as const;
@@ -65,7 +77,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.playerNotFound);
 			}
 
-			const success = await this.noctownService.placeItem(
+			// 仕様: FR-032 placeItem戻り値でエラー種別を判定
+			const result = await this.noctownService.placeItem(
 				player.id,
 				ps.playerItemId,
 				ps.x,
@@ -74,7 +87,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				ps.rotation ?? 0,
 			);
 
-			if (!success) {
+			if (!result.success) {
+				if (result.error === 'not_found') {
+					throw new ApiError(meta.errors.itemNotOwned);
+				} else if (result.error === 'not_placeable') {
+					throw new ApiError(meta.errors.itemNotPlaceable);
+				} else if (result.error === 'limit_reached') {
+					throw new ApiError(meta.errors.placementLimitReached);
+				}
 				throw new ApiError(meta.errors.itemNotOwned);
 			}
 

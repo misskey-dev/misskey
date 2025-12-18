@@ -513,22 +513,22 @@ export class NoctownService {
 		y: number,
 		z: number,
 		rotation: number,
-	): Promise<boolean> {
+	): Promise<{ success: boolean; error?: 'not_found' | 'not_placeable' | 'limit_reached' }> {
 		// Find the player item
 		const playerItem = await this.noctownPlayerItemsRepository.findOne({
 			where: { id: playerItemId, playerId },
 			relations: ['item'],
 		});
-		if (!playerItem || !playerItem.item) return false;
+		if (!playerItem || !playerItem.item) return { success: false, error: 'not_found' };
 
 		// 仕様: FR-032 設置可能なアイテムタイプを判定
 		// placeable, stone, rock, wood, log, axe, fishing_rod, furniture, decoration は設置可能
 		const placeableTypes = ['placeable', 'stone', 'rock', 'wood', 'log', 'axe', 'fishing_rod', 'furniture', 'decoration'];
-		if (!placeableTypes.includes(playerItem.item.itemType)) return false;
+		if (!placeableTypes.includes(playerItem.item.itemType)) return { success: false, error: 'not_placeable' };
 
-		// Check placement limit (max 10 per player)
+		// 仕様: FR-032 設置上限100個/プレイヤー
 		const placedCount = await this.noctownPlacedItemsRepository.countBy({ playerId });
-		if (placedCount >= 10) return false;
+		if (placedCount >= 100) return { success: false, error: 'limit_reached' };
 
 		// Decrement or remove from inventory
 		if (playerItem.quantity > 1) {
@@ -563,7 +563,7 @@ export class NoctownService {
 			rotation,
 		});
 
-		return true;
+		return { success: true };
 	}
 
 	@bindThis

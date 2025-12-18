@@ -1809,12 +1809,21 @@ async function onPlaceClick(): Promise<void> {
 		});
 		// Refresh items
 		await loadNearbyItems(currentX.value, currentZ.value);
-	} catch (e) {
+	} catch (e: unknown) {
 		console.error('Failed to place item:', e);
-		// 仕様: 設置できないアイテムの場合はエラーメッセージを表示
+		// 仕様: FR-032 エラーコードに応じたメッセージを表示
+		const apiError = e as { code?: string } | null;
+		let errorMessage = 'アイテムの設置に失敗しました';
+		if (apiError?.code === 'ITEM_NOT_PLACEABLE') {
+			errorMessage = 'このアイテムは設置できません';
+		} else if (apiError?.code === 'PLACEMENT_LIMIT_REACHED') {
+			errorMessage = '設置上限（100個）に達しています';
+		} else if (apiError?.code === 'ITEM_NOT_FOUND') {
+			errorMessage = 'アイテムが見つかりません';
+		}
 		os.alert({
 			type: 'error',
-			text: 'このアイテムは設置できません',
+			text: errorMessage,
 		});
 	}
 
