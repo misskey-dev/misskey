@@ -1199,18 +1199,28 @@ export class NoctownEngine {
 		group.position.set(data.positionX, baseY, data.positionZ);
 		group.userData = { type: 'droppedItem', data };
 
-		// 仕様: 小さな光る球体（視認性向上）
-		const geometry = new THREE.SphereGeometry(0.15, 12, 12);
-		const material = new THREE.MeshStandardMaterial({
-			color: this.getItemColor(data.itemType),
-			emissive: this.getItemColor(data.itemType),
-			emissiveIntensity: 0.5,
-			transparent: true,
-			opacity: 0.6,
-		});
-		const sphere = new THREE.Mesh(geometry, material);
-		sphere.castShadow = true;
-		group.add(sphere);
+		// 仕様: ノクタコイン（currency）は3Dモデルを使用、それ以外は絵文字
+		const isCurrency = data.itemType === 'currency';
+
+		if (isCurrency) {
+			// 仕様: ノクタコインは3Dモデルで表示
+			const coinMesh = this.createCoinMesh();
+			coinMesh.scale.set(0.8, 0.8, 0.8);
+			group.add(coinMesh);
+		} else {
+			// 仕様: 小さな光る球体（視認性向上）
+			const geometry = new THREE.SphereGeometry(0.15, 12, 12);
+			const material = new THREE.MeshStandardMaterial({
+				color: this.getItemColor(data.itemType),
+				emissive: this.getItemColor(data.itemType),
+				emissiveIntensity: 0.5,
+				transparent: true,
+				opacity: 0.6,
+			});
+			const sphere = new THREE.Mesh(geometry, material);
+			sphere.castShadow = true;
+			group.add(sphere);
+		}
 
 		// 仕様: クリック検出用の透明ヒットボックス（絵文字ラベルはCSS2DObjectでレイキャスト不可のため）
 		const hitboxGeometry = new THREE.SphereGeometry(0.6, 8, 8);
@@ -1222,25 +1232,35 @@ export class NoctownEngine {
 		group.add(hitbox);
 
 		// 仕様: FR-030 絵文字ラベル（CSS2DObject）
-		// emoji > imageUrl > デフォルト📦 の優先順位
-		const displayEmoji = data.emoji ?? '📦';
+		// ノクタコインは3Dモデルなので絵文字は表示しない
 		const labelDiv = document.createElement('div');
 		labelDiv.className = 'noctown-dropped-item-label';
-		labelDiv.style.cssText = `
-			font-size: 32px;
-			text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-			pointer-events: none;
-			user-select: none;
-		`;
-		labelDiv.textContent = displayEmoji;
+
+		if (isCurrency) {
+			// 仕様: ノクタコインは数量バッジのみ表示
+			labelDiv.style.cssText = `
+				pointer-events: none;
+				user-select: none;
+			`;
+		} else {
+			// emoji > imageUrl > デフォルト📦 の優先順位
+			const displayEmoji = data.emoji ?? '📦';
+			labelDiv.style.cssText = `
+				font-size: 32px;
+				text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+				pointer-events: none;
+				user-select: none;
+			`;
+			labelDiv.textContent = displayEmoji;
+		}
 
 		// 仕様: 数量が2以上の場合は数量バッジを表示
 		if (data.quantity > 1) {
 			const quantityBadge = document.createElement('span');
 			quantityBadge.style.cssText = `
 				position: absolute;
-				bottom: -4px;
-				right: -8px;
+				bottom: ${isCurrency ? '0px' : '-4px'};
+				right: ${isCurrency ? '0px' : '-8px'};
 				background: rgba(0,0,0,0.7);
 				color: #fff;
 				font-size: 12px;
@@ -1256,7 +1276,7 @@ export class NoctownEngine {
 		}
 
 		const label = new CSS2DObject(labelDiv);
-		label.position.set(0, 0.3, 0);
+		label.position.set(0, isCurrency ? 0.5 : 0.3, 0);
 		group.add(label);
 
 		this.scene.add(group);
@@ -1324,6 +1344,10 @@ export class NoctownEngine {
 			case 'axe': {
 				// 仕様: 斧の3Dモデル
 				return this.createAxeMesh();
+			}
+			case 'currency': {
+				// 仕様: ノクタコインの3Dモデル
+				return this.createCoinMesh();
 			}
 			default: {
 				// デフォルト: 立方体
@@ -1588,6 +1612,172 @@ export class NoctownEngine {
 		}
 
 		return woodGroup;
+	}
+
+	// 仕様: ノクタコインの3Dモデル生成
+	private createCoinMesh(): THREE.Group {
+		const coinGroup = new THREE.Group();
+
+		// コインのサイズ（ドロップアイテム用に小さめ）
+		const coinRadius = 0.3;
+		const coinThickness = 0.03;
+		const coinSegments = 32;
+
+		// ゴールドマテリアル
+		const goldMaterial = new THREE.MeshStandardMaterial({
+			color: 0xffd700,
+			metalness: 0.7,
+			roughness: 0.25,
+		});
+
+		// エンボス用マテリアル（暗めのゴールド）
+		const embossMaterial = new THREE.MeshBasicMaterial({
+			color: 0x996633,
+		});
+
+		// コインの縁（円柱）
+		const edgeGeometry = new THREE.CylinderGeometry(
+			coinRadius, coinRadius, coinThickness, coinSegments
+		);
+		const coinEdge = new THREE.Mesh(edgeGeometry, goldMaterial);
+		coinEdge.rotation.x = Math.PI / 2;
+		coinEdge.castShadow = true;
+		coinGroup.add(coinEdge);
+
+		// 表面
+		const faceGeometry = new THREE.CircleGeometry(coinRadius - 0.005, coinSegments);
+		const frontFace = new THREE.Mesh(faceGeometry, goldMaterial);
+		frontFace.position.z = coinThickness / 2 + 0.001;
+		coinGroup.add(frontFace);
+
+		// 裏面
+		const backFace = new THREE.Mesh(faceGeometry, goldMaterial);
+		backFace.position.z = -coinThickness / 2 - 0.001;
+		backFace.rotation.y = Math.PI;
+		coinGroup.add(backFace);
+
+		// 外側リム（表）
+		const rimGeometry = new THREE.RingGeometry(coinRadius - 0.045, coinRadius - 0.015, coinSegments);
+		const rimFront = new THREE.Mesh(rimGeometry, embossMaterial);
+		rimFront.position.z = coinThickness / 2 + 0.004;
+		coinGroup.add(rimFront);
+
+		// 外側リム（裏）
+		const rimBack = new THREE.Mesh(rimGeometry, embossMaterial);
+		rimBack.position.z = -coinThickness / 2 - 0.004;
+		coinGroup.add(rimBack);
+
+		// 内側リム（表）
+		const innerRimGeometry = new THREE.RingGeometry(0.17, 0.19, coinSegments);
+		const innerRimFront = new THREE.Mesh(innerRimGeometry, embossMaterial);
+		innerRimFront.position.z = coinThickness / 2 + 0.004;
+		coinGroup.add(innerRimFront);
+
+		// 内側リム（裏）
+		const innerRimBack = new THREE.Mesh(innerRimGeometry, embossMaterial);
+		innerRimBack.position.z = -coinThickness / 2 - 0.004;
+		coinGroup.add(innerRimBack);
+
+		// 表面: 三日月
+		const moonShape = new THREE.Shape();
+		moonShape.absarc(0, 0, 0.11, 0, Math.PI * 2, false);
+		const moonHole = new THREE.Path();
+		moonHole.absarc(0.045, 0.025, 0.09, 0, Math.PI * 2, true);
+		moonShape.holes.push(moonHole);
+
+		const moonGeometry = new THREE.ShapeGeometry(moonShape);
+		const moonMesh = new THREE.Mesh(moonGeometry, embossMaterial);
+		moonMesh.position.set(-0.01, 0.01, coinThickness / 2 + 0.005);
+		coinGroup.add(moonMesh);
+
+		// 表面: 星を作成する関数
+		const createStarShape = (outerRadius: number, innerRadius?: number): THREE.Shape => {
+			const ir = innerRadius ?? outerRadius * 0.4;
+			const shape = new THREE.Shape();
+			const spikes = 5;
+			for (let i = 0; i < spikes * 2; i++) {
+				const radius = i % 2 === 0 ? outerRadius : ir;
+				const angle = (i * Math.PI) / spikes - Math.PI / 2;
+				const x = Math.cos(angle) * radius;
+				const y = Math.sin(angle) * radius;
+				if (i === 0) shape.moveTo(x, y);
+				else shape.lineTo(x, y);
+			}
+			shape.closePath();
+			return shape;
+		};
+
+		// 表面: 星の配置
+		const starPositions = [
+			{ x: 0.125, y: 0.1, size: 0.03 },
+			{ x: -0.14, y: 0.11, size: 0.025 },
+			{ x: 0.11, y: -0.1, size: 0.028 },
+			{ x: -0.125, y: -0.11, size: 0.022 },
+			{ x: 0.15, y: -0.01, size: 0.02 },
+		];
+
+		starPositions.forEach(({ x, y, size }) => {
+			const starGeom = new THREE.ShapeGeometry(createStarShape(size));
+			const star = new THREE.Mesh(starGeom, embossMaterial);
+			star.position.set(x, y, coinThickness / 2 + 0.005);
+			coinGroup.add(star);
+		});
+
+		// 裏面: Nシンボル
+		const nShape = new THREE.Shape();
+		nShape.moveTo(-0.075, -0.1);
+		nShape.lineTo(-0.045, -0.1);
+		nShape.lineTo(-0.045, 0.025);
+		nShape.lineTo(0.045, -0.1);
+		nShape.lineTo(0.075, -0.1);
+		nShape.lineTo(0.075, 0.1);
+		nShape.lineTo(0.045, 0.1);
+		nShape.lineTo(0.045, -0.012);
+		nShape.lineTo(-0.045, 0.1);
+		nShape.lineTo(-0.075, 0.1);
+		nShape.closePath();
+
+		const nGeometry = new THREE.ShapeGeometry(nShape);
+		const nMesh = new THREE.Mesh(nGeometry, embossMaterial);
+		nMesh.position.z = -coinThickness / 2 - 0.005;
+		nMesh.rotation.y = Math.PI;
+		coinGroup.add(nMesh);
+
+		// 裏面: Nを囲む円
+		const nCircle = new THREE.Mesh(
+			new THREE.RingGeometry(0.14, 0.16, 32),
+			embossMaterial
+		);
+		nCircle.position.z = -coinThickness / 2 - 0.005;
+		coinGroup.add(nCircle);
+
+		// 裏面: 周囲のドット
+		for (let i = 0; i < 12; i++) {
+			const angle = (i / 12) * Math.PI * 2;
+			const dotGeom = new THREE.CircleGeometry(0.012, 8);
+			const dot = new THREE.Mesh(dotGeom, embossMaterial);
+			dot.position.x = Math.cos(angle) * 0.21;
+			dot.position.y = Math.sin(angle) * 0.21;
+			dot.position.z = -coinThickness / 2 - 0.005;
+			coinGroup.add(dot);
+		}
+
+		// 縁のノッチ
+		const notchCount = 40;
+		for (let i = 0; i < notchCount; i++) {
+			const angle = (i / notchCount) * Math.PI * 2;
+			const notchGeometry = new THREE.BoxGeometry(0.004, 0.004, coinThickness * 0.7);
+			const notch = new THREE.Mesh(notchGeometry, embossMaterial);
+			notch.position.x = Math.cos(angle) * coinRadius;
+			notch.position.y = Math.sin(angle) * coinRadius;
+			coinGroup.add(notch);
+		}
+
+		// コインを少し傾ける
+		coinGroup.rotation.x = Math.PI / 6;
+		coinGroup.position.y = 0.15;
+
+		return coinGroup;
 	}
 
 	public removePlacedItem(itemId: string): void {
