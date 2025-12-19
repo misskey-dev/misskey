@@ -509,8 +509,9 @@ export class NoctownService {
 
 		// Broadcast item drop
 		// 仕様: フロントエンドのDroppedItemData型に合わせたフィールド名で送信
+		// 仕様: フロントエンドはdroppedItemIdフィールドを期待するため、idではなくdroppedItemIdとして送信
 		this.globalEventService.publishNoctownStream('itemDropped', {
-			id: droppedItemId,
+			droppedItemId,
 			playerId,
 			itemId: playerItem.itemId,
 			itemName: playerItem.item.name,
@@ -618,8 +619,9 @@ export class NoctownService {
 
 		// Broadcast currency drop
 		// 仕様: フロントエンドのDroppedItemData型に合わせたフィールド名で送信
+		// 仕様: フロントエンドはdroppedItemIdフィールドを期待するため、idではなくdroppedItemIdとして送信
 		this.globalEventService.publishNoctownStream('itemDropped', {
-			id: droppedItemId,
+			droppedItemId,
 			playerId,
 			itemId: coinItem.id,
 			itemName: coinItem.name,

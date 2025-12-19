@@ -29,46 +29,76 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span>{{ targetPlayer.username }}</span>
 		</div>
 
-		<!-- My offer -->
-		<div :class="$style.section">
-			<h3>自分のオファー</h3>
-			<div :class="$style.offerList">
-				<div
-					v-for="(item, index) in myOffer"
-					:key="index"
-					:class="$style.offerItem"
-				>
-					<span>{{ item.name }}</span>
-					<!-- 仕様: 個数指定入力 -->
-					<input
-						v-model.number="item.quantity"
-						type="number"
-						min="1"
-						:max="getMaxQuantityForItem(item.itemId)"
-						:class="$style.quantityInput"
-					/>
-					<button :class="$style.removeBtn" @click="removeFromOffer(index)">
-						<i class="ti ti-x"></i>
-					</button>
+		<!-- 仕様: 2カラムレイアウト - 左がインベントリ、右がオファー -->
+		<div :class="$style.tradeColumns">
+			<!-- 左カラム: インベントリ（埋め込み） -->
+			<div :class="$style.inventoryColumn">
+				<h3 :class="$style.columnTitle">
+					<i class="ti ti-backpack"></i>
+					インベントリ
+				</h3>
+				<div :class="$style.embeddedInventory">
+					<div v-if="inventory.length === 0" :class="$style.noItems">
+						インベントリが空です
+					</div>
+					<div
+						v-for="item in inventory"
+						:key="item.id"
+						:class="[$style.inventoryItem, isItemInOffer(item.itemId) && $style.selected]"
+						@click="toggleItemInOffer(item)"
+					>
+						<div :class="$style.itemInfo">
+							<span :class="$style.itemName">{{ item.itemName }}</span>
+							<span :class="$style.itemType">{{ item.itemType }}</span>
+						</div>
+						<span :class="$style.qty">x{{ item.quantity }}</span>
+					</div>
 				</div>
-				<button :class="$style.addBtn" @click="showItemSelector = true">
-					<i class="ti ti-plus"></i>
-					アイテムを追加
-				</button>
 			</div>
 
-			<!-- Currency offer -->
-			<div :class="$style.currencyInput">
-				<label>
-					<i class="ti ti-coin"></i>
-					通貨:
-				</label>
-				<input
-					v-model.number="offeredCurrency"
-					type="number"
-					min="0"
-					:class="$style.input"
-				/>
+			<!-- 右カラム: オファー内容 -->
+			<div :class="$style.offerColumn">
+				<h3 :class="$style.columnTitle">
+					<i class="ti ti-gift"></i>
+					オファーするアイテム
+				</h3>
+				<div :class="$style.offerList">
+					<div v-if="myOffer.length === 0" :class="$style.emptyOffer">
+						左のインベントリからアイテムを選択してください
+					</div>
+					<div
+						v-for="(item, index) in myOffer"
+						:key="index"
+						:class="$style.offerItem"
+					>
+						<span :class="$style.offerItemName">{{ item.name }}</span>
+						<!-- 仕様: 個数指定入力 -->
+						<input
+							v-model.number="item.quantity"
+							type="number"
+							min="1"
+							:max="getMaxQuantityForItem(item.itemId)"
+							:class="$style.quantityInput"
+						/>
+						<button :class="$style.removeBtn" @click="removeFromOffer(index)">
+							<i class="ti ti-x"></i>
+						</button>
+					</div>
+				</div>
+
+				<!-- Currency offer -->
+				<div :class="$style.currencyInput">
+					<label>
+						<i class="ti ti-coin"></i>
+						通貨:
+					</label>
+					<input
+						v-model.number="offeredCurrency"
+						type="number"
+						min="0"
+						:class="$style.input"
+					/>
+				</div>
 			</div>
 		</div>
 
@@ -97,30 +127,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				トレードリクエストを送る
 			</template>
 		</button>
-
-		<!-- 仕様: 初回オファー用のアイテムセレクターモーダル -->
-		<div v-if="showItemSelector" :class="$style.inventoryModal">
-			<div :class="$style.inventoryHeader">
-				<span>インベントリから選択</span>
-				<button @click="showItemSelector = false">
-					<i class="ti ti-x"></i>
-				</button>
-			</div>
-			<div :class="$style.inventoryGrid">
-				<div
-					v-for="item in inventory"
-					:key="item.id"
-					:class="$style.inventoryItem"
-					@click="addItemToOffer(item)"
-				>
-					<span>{{ item.itemName }}</span>
-					<span :class="$style.qty">x{{ item.quantity }}</span>
-				</div>
-				<div v-if="inventory.length === 0" :class="$style.noItems">
-					インベントリが空です
-				</div>
-			</div>
-		</div>
 	</div>
 
 	<!-- Trade Detail View (Barter Mode) -->
@@ -460,7 +466,6 @@ const declinedTrades = ref<Trade[]>([]);
 const myOffer = ref<TradeItem[]>([]);
 const offeredCurrency = ref(0);
 const message = ref('');
-const showItemSelector = ref(false);
 const selectedTradeId = ref<string | null>(null);
 const tradeDetail = ref<TradeDetail | null>(null);
 const isLoadingDetail = ref(false);
@@ -656,6 +661,28 @@ function getMaxQuantityForItem(itemId: string): number {
 	return item?.quantity ?? 1;
 }
 
+// 仕様: アイテムがオファーに含まれているか確認
+function isItemInOffer(itemId: string): boolean {
+	return myOffer.value.some(i => i.itemId === itemId);
+}
+
+// 仕様: アイテムをオファーに追加/削除（トグル）
+function toggleItemInOffer(item: InventoryItem): void {
+	const existingIndex = myOffer.value.findIndex(i => i.itemId === item.itemId);
+	if (existingIndex >= 0) {
+		// 既にオファーにある場合は削除
+		myOffer.value.splice(existingIndex, 1);
+	} else {
+		// オファーにない場合は追加
+		myOffer.value.push({
+			itemId: item.itemId,
+			playerItemId: item.id,
+			name: item.itemName,
+			quantity: 1,
+		});
+	}
+}
+
 // 仕様: 初回オファーにアイテムを追加
 function addItemToOffer(item: InventoryItem): void {
 	const existing = myOffer.value.find(i => i.itemId === item.itemId);
@@ -671,7 +698,6 @@ function addItemToOffer(item: InventoryItem): void {
 			quantity: 1,
 		});
 	}
-	showItemSelector.value = false;
 }
 
 async function sendTradeRequest(): Promise<void> {
@@ -764,6 +790,11 @@ onMounted(() => {
 		isLoading.value = false;
 	}
 });
+
+// 仕様: 外部からトレードリストを更新できるように公開
+defineExpose({
+	refreshTrades: loadTrades,
+});
 </script>
 
 <style lang="scss" module>
@@ -848,6 +879,94 @@ onMounted(() => {
 		color: var(--MI_THEME-fg);
 		opacity: 0.7;
 	}
+}
+
+// 仕様: トレード作成時の2カラムレイアウト
+.tradeColumns {
+	display: flex;
+	gap: 16px;
+	margin-bottom: 16px;
+	min-height: 200px;
+	max-height: 300px;
+}
+
+.inventoryColumn,
+.offerColumn {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+}
+
+.columnTitle {
+	margin: 0 0 8px 0;
+	font-size: 13px;
+	color: var(--MI_THEME-fg);
+	opacity: 0.8;
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.embeddedInventory {
+	flex: 1;
+	overflow-y: auto;
+	background: var(--MI_THEME-bg);
+	border-radius: 8px;
+	padding: 8px;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.inventoryItem {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 10px 12px;
+	background: var(--MI_THEME-panel);
+	border-radius: 6px;
+	cursor: pointer;
+	transition: all 0.15s;
+
+	&:hover {
+		background: var(--MI_THEME-buttonHoverBg);
+	}
+
+	&.selected {
+		background: var(--MI_THEME-accentedBg);
+		border: 1px solid var(--MI_THEME-accent);
+	}
+}
+
+.itemInfo {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.itemName {
+	font-size: 13px;
+	font-weight: 500;
+}
+
+.itemType {
+	font-size: 11px;
+	color: var(--MI_THEME-fg);
+	opacity: 0.5;
+}
+
+.offerItemName {
+	flex: 1;
+	font-size: 13px;
+}
+
+.emptyOffer {
+	color: var(--MI_THEME-fg);
+	opacity: 0.4;
+	font-size: 12px;
+	text-align: center;
+	padding: 20px;
 }
 
 .offerList {

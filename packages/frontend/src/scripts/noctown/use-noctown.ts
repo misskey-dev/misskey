@@ -60,6 +60,8 @@ export interface NoctownState {
 	fetchInventory: () => Promise<void>;
 	// T017: ファームアクションを実行
 	performFarmAction: (action: FarmActionType, params?: Record<string, unknown>) => Promise<FarmActionResult>;
+	// 仕様: トレードリクエスト受信時のコールバックを設定
+	setOnTradeRequest: (callback: (() => void) | null) => void;
 }
 
 interface NoctownPlayerResponse {
@@ -282,6 +284,9 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 	const PING_TIMEOUT_MS = 5000; // 5秒タイムアウト（ネットワーク遅延を考慮）
 	// pingId -> { playerId, timeoutId } のマッピング（各プレイヤーごとに個別のpingIdを使用）
 	const pendingPings = new Map<string, { playerId: string; timeoutId: ReturnType<typeof setTimeout> }>();
+
+	// 仕様: トレードリクエスト受信時のコールバック
+	let onTradeRequestCallback: (() => void) | null = null;
 
 	// Movement state
 	let currentX = 0;
@@ -660,6 +665,16 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 			title: 'トレードリクエスト',
 			text: `新しいトレードリクエストが届きました！\n${summary}\n\nトレードパネルを開いて確認してください。`,
 		});
+
+		// 仕様: コールバックを呼び出してトレードリストを更新
+		if (onTradeRequestCallback) {
+			onTradeRequestCallback();
+		}
+	}
+
+	// 仕様: トレードリクエスト受信時のコールバックを設定
+	function setOnTradeRequest(callback: (() => void) | null): void {
+		onTradeRequestCallback = callback;
 	}
 
 	// FR-014: 表示中の全プレイヤーにPingを送信
@@ -1007,5 +1022,7 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 		fetchInventory,
 		// T017: ファームアクションを実行
 		performFarmAction,
+		// 仕様: トレードリクエスト受信時のコールバックを設定
+		setOnTradeRequest,
 	};
 }

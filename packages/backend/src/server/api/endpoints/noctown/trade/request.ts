@@ -7,6 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { NoctownTransactionService } from '@/core/NoctownTransactionService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type {
 	NoctownTradesRepository,
 	NoctownTradeItemsRepository,
@@ -105,6 +106,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private idService: IdService,
 		private noctownTransactionService: NoctownTransactionService,
+		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Get initiator player
@@ -203,6 +205,30 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				},
 				target.id,
 			);
+
+			// 仕様: トレードリクエストをWebSocketで相手に通知
+			this.globalEventService.publishNoctownPlayerStream(target.id, 'tradeRequest', {
+				tradeId,
+				initiatorId: initiator.id,
+				initiatorUserId: initiator.userId,
+				offeredItems: (ps.offeredItems ?? []).map(i => ({
+					itemId: i.itemId,
+					quantity: i.quantity,
+				})),
+				offeredCurrency: ps.offeredCurrency ?? 0,
+				message: ps.message ?? null,
+				expiresAt: expiresAt.toISOString(),
+			});
+
+			// 仕様: トレード状態変更イベントを発行（両プレイヤーがトレード中になった）
+			this.globalEventService.publishNoctownStream('playerTradingStatusChanged', {
+				playerId: initiator.id,
+				isTrading: true,
+			});
+			this.globalEventService.publishNoctownStream('playerTradingStatusChanged', {
+				playerId: target.id,
+				isTrading: true,
+			});
 
 			return {
 				tradeId,

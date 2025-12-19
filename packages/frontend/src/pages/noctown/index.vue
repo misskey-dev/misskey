@@ -153,6 +153,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<!-- 仕様: トレードパネルはオーバーレイ表示、対象プレイヤーがいる場合は新規トレード申請モード -->
 				<div v-if="showTradePanel" :class="$style.tradePanelOverlay" @click.self="showTradePanel = false">
 					<TradePanel
+						ref="tradePanelRef"
 						:targetPlayer="tradeTargetPlayer"
 						@close="handleCloseTradePanel"
 						@trade-sent="handleTradeSent"
@@ -411,6 +412,8 @@ const tradeTargetPlayer = ref<{
 	username: string;
 	avatarUrl: string | null;
 } | null>(null);
+// 仕様: TradePanelへの参照（外部からrefreshTradesを呼び出すため）
+const tradePanelRef = ref<InstanceType<typeof TradePanel> | null>(null);
 
 // FR-019: Typing indicator state
 let isTyping = false;
@@ -475,6 +478,12 @@ let joystickMovement = { x: 0, z: 0 };
 const loadedChunks = new Set<string>();
 const CHUNK_SIZE = 16;
 const CHUNK_LOAD_DISTANCE = 2; // Load chunks 2 chunks ahead
+
+// 仕様: 移動時のアイテムロード用の位置追跡
+// プレイヤーが一定距離（ITEM_RELOAD_DISTANCE）移動したらドロップアイテムと設置アイテムを再読み込み
+let lastItemLoadX = 0;
+let lastItemLoadZ = 0;
+const ITEM_RELOAD_DISTANCE = 20; // 20ブロック移動したらアイテムを再読み込み
 
 interface NoctownPlayerResponse {
 	id: string;
@@ -642,6 +651,9 @@ async function initialize(): Promise<void> {
 
 			// Load nearby items
 			await loadNearbyItems(currentX.value, currentZ.value);
+			// 仕様: 初期ロード位置を記録
+			lastItemLoadX = currentX.value;
+			lastItemLoadZ = currentZ.value;
 
 			// Load nearby NPCs
 			await loadNearbyNpcs(currentX.value, currentZ.value);
@@ -745,6 +757,11 @@ async function connectStream(): Promise<void> {
 	// FR-014: Ping受信時に即座にPongを返送
 	connection.value.on('playerPingReceived', (body: { senderPlayerId: string; pingId: string }) => {
 		handlePlayerPingReceived(body);
+	});
+
+	// 仕様: トレードリクエスト受信イベント（トレードパネルを自動更新）
+	connection.value.on('tradeRequest', (body: unknown) => {
+		handleTradeRequest(body);
 	});
 
 	isConnected.value = true;
@@ -1232,6 +1249,17 @@ function startMovementLoop(): void {
 		if (now - lastChunkCheckTime >= chunkCheckInterval) {
 			loadNearbyChunks(currentX.value, currentZ.value);
 			lastChunkCheckTime = now;
+
+			// 仕様: プレイヤーが一定距離移動したらドロップアイテムと設置アイテムを再読み込み
+			// 新しいチャンクに入った時にアイテムが表示されない問題を解決
+			const dx = currentX.value - lastItemLoadX;
+			const dz = currentZ.value - lastItemLoadZ;
+			const distanceFromLastLoad = Math.sqrt(dx * dx + dz * dz);
+			if (distanceFromLastLoad >= ITEM_RELOAD_DISTANCE) {
+				loadNearbyItems(currentX.value, currentZ.value);
+				lastItemLoadX = currentX.value;
+				lastItemLoadZ = currentZ.value;
+			}
 		}
 
 	}, 16); // ~60fps
@@ -1545,6 +1573,32 @@ function handleTradeCompleted(): void {
 	// TODO: インベントリの更新通知
 }
 
+// 仕様: トレードリクエスト受信時の処理（トレードパネルを自動更新）
+async function handleTradeRequest(data: unknown): Promise<void> {
+	console.log('[Noctown Trade] Received trade request:', data);
+
+	// トレードパネルが開いている場合は自動更新
+	if (tradePanelRef.value && showTradePanel.value) {
+		tradePanelRef.value.refreshTrades();
+	}
+
+	// 通知を表示
+	const typedData = data as { offeredItems?: Array<{ quantity: number }>; offeredCurrency?: number };
+	const itemCount = typedData.offeredItems?.reduce((sum, item) => sum + item.quantity, 0) ?? 0;
+	let summary = `${itemCount}個のアイテム`;
+	if ((typedData.offeredCurrency ?? 0) > 0) {
+		summary += ` + ${typedData.offeredCurrency}G`;
+	}
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const { alert: osAlert } = await import('@/os.js');
+	await osAlert({
+		type: 'info',
+		title: 'トレードリクエスト',
+		text: `新しいトレードリクエストが届きました！\n${summary}\n\nトレードパネルを開いて確認してください。`,
+	});
+}
+
 // FR-017: Start warning check interval for 3+ seconds since last ping
 function startWarningCheck(): void {
 	warningCheckInterval = setInterval(() => {
@@ -1743,6 +1797,9 @@ async function handleReload(): Promise<void> {
 
 		// 10. Reload nearby items
 		await loadNearbyItems(currentX.value, currentZ.value);
+		// 仕様: ハードリロード時にアイテムロード位置をリセット
+		lastItemLoadX = currentX.value;
+		lastItemLoadZ = currentZ.value;
 
 		// 11. Reload nearby NPCs
 		await loadNearbyNpcs(currentX.value, currentZ.value);
