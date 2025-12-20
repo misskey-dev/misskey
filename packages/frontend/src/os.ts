@@ -654,6 +654,7 @@ export function popupMenu(items: (MenuItem | null)[], anchorElement?: HTMLElemen
 	align?: string;
 	width?: number;
 	onClosing?: () => void;
+	onClosed?: () => void;
 }): Promise<void> {
 	if (!(anchorElement instanceof HTMLElement)) {
 		anchorElement = null;
@@ -672,6 +673,7 @@ export function popupMenu(items: (MenuItem | null)[], anchorElement?: HTMLElemen
 				resolve();
 				dispose();
 				returnFocusTo = null;
+				options?.onClosed?.();
 			},
 			closing: () => {
 				options?.onClosing?.();
