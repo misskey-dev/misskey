@@ -313,16 +313,15 @@ export class ApiCallService implements OnApplicationShutdown {
 		}
 
 		if (ep.meta.limit) {
-			let limitActor: string | null;
+			let limitActor: string | null = null;
 			if (user) {
 				limitActor = user.id;
-			} else {
-				if (request.ip === '::1' || request.ip === '127.0.0.1') {
-					console.warn('request ip is localhost, maybe caused by misconfiguration of trustProxy or reverse proxy');
-					limitActor = null;
-				} else {
-					limitActor = getIpHash(request.ip);
+			} else if (this.config.enableIpRateLimit) {
+				if (process.env.NODE_ENV === 'production' && (request.ip === '::1' || request.ip === '127.0.0.1')) {
+					this.logger.warn('Recieved API request from localhost IP address for rate limiting in production environment. This is likely due to an improper trustProxy setting in the config file.');
 				}
+
+				limitActor = getIpHash(request.ip);
 			}
 
 			const limit = Object.assign({}, ep.meta.limit);
