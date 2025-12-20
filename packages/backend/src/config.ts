@@ -30,7 +30,7 @@ type Source = {
 	socket?: string;
 	trustProxy?: FastifyServerOptions['trustProxy'];
 	chmodSocket?: string;
-	disableIpRateLimit?: boolean;
+	enableIpRateLimit?: boolean;
 	disableHsts?: boolean;
 	db: {
 		host: string;
@@ -123,7 +123,7 @@ export type Config = {
 	socket: string | undefined;
 	trustProxy: NonNullable<FastifyServerOptions['trustProxy']>;
 	chmodSocket: string | undefined;
-	disableIpRateLimit: boolean;
+	enableIpRateLimit: boolean;
 	disableHsts: boolean | undefined;
 	db: {
 		host: string;
@@ -275,7 +275,7 @@ export function loadConfig(): Config {
 		],
 		chmodSocket: config.chmodSocket,
 		disableHsts: config.disableHsts,
-		disableIpRateLimit: config.disableIpRateLimit ?? false,
+		enableIpRateLimit: config.enableIpRateLimit ?? true,
 		host,
 		hostname,
 		scheme,

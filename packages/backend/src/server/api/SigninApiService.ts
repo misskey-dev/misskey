@@ -96,7 +96,7 @@ export class SigninApiService {
 		}
 
 		// not more than 1 attempt per second and not more than 10 attempts per hour
-		if (!this.config.disableIpRateLimit) {
+		if (this.config.enableIpRateLimit) {
 			if (process.env.NODE_ENV === 'production' && (request.ip === '::1' || request.ip === '127.0.0.1')) {
 				this.logger.warn('Recieved signin request from localhost IP address for rate limiting in non-production environment. This is likely due to misconfiguration.');
 			}

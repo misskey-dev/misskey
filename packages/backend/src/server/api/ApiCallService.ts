@@ -316,7 +316,7 @@ export class ApiCallService implements OnApplicationShutdown {
 			let limitActor: string | null = null;
 			if (user) {
 				limitActor = user.id;
-			} else if (!this.config.disableIpRateLimit) {
+			} else if (this.config.enableIpRateLimit) {
 				if (process.env.NODE_ENV === 'production' && (request.ip === '::1' || request.ip === '127.0.0.1')) {
 					this.logger.warn('Recieved API request from localhost IP address for rate limiting in non-production environment. This is likely due to misconfiguration.');
 				}

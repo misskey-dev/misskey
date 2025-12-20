@@ -148,7 +148,7 @@ port: 3000
 #  - '127.0.0.1/32'
 #  - '::1/128'
 #  - 'fc00::/7'
-#  # Example: If you are using some external reverse proxies like CDNs, 
+#  # Example: If you are using some external reverse proxies like CDNs,
 #  # you may need to add the CDN IP ranges here.
 #  # If you're using Cloudflare, you can find IP Ranges at:
 #  # https://www.cloudflare.com/ips/
@@ -321,8 +321,9 @@ id: 'aidx'
 # Whether disable HSTS
 #disableHsts: true
 
-# Disable internal IP-based rate limiting to configure them in reverse proxy instead
-#disableIpRateLimit: false
+# Enable internal IP-based rate limiting (default: true)
+# To configure them in reverse proxy instead, set this to false.
+#disableIpRateLimit: true
 
 # Number of worker processes
 #clusterLimit: 1
