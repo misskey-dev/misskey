@@ -318,7 +318,7 @@ export class ApiCallService implements OnApplicationShutdown {
 				limitActor = user.id;
 			} else if (this.config.enableIpRateLimit) {
 				if (process.env.NODE_ENV === 'production' && (request.ip === '::1' || request.ip === '127.0.0.1')) {
-					this.logger.warn('Recieved API request from localhost IP address for rate limiting in production environment. This is likely due to misconfiguration.');
+					this.logger.warn('Recieved API request from localhost IP address for rate limiting in production environment. This is likely due to an improper trustProxy setting in the config file.');
 				}
 
 				limitActor = getIpHash(request.ip);
