@@ -6193,6 +6193,14 @@ export interface Locale extends ILocale {
          * アニメーション画像を有効にする
          */
         "enableAnimatedImages": string;
+        /**
+         * 設定の永続化
+         */
+        "settingsPersistence_title": string;
+        /**
+         * 設定の永続化を有効にすると、設定情報が失われるのを防止できます。
+         */
+        "settingsPersistence_description": string;
         "_chat": {
             /**
              * 送信者の名前を表示
