@@ -323,7 +323,7 @@ id: 'aidx'
 
 # Enable internal IP-based rate limiting (default: true)
 # To configure them in reverse proxy instead, set this to false.
-#disableIpRateLimit: true
+#enableIpRateLimit: true
 
 # Number of worker processes
 #clusterLimit: 1
