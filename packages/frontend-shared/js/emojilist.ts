@@ -72,7 +72,9 @@ export function getEmojiName(char: string): string {
  * テキストスタイル絵文字（U+260Eなどの1文字で表現される絵文字）をカラースタイル絵文字に変換します（VS16:U+FE0Fを付与）。
  */
 export function colorizeEmoji(char: string) {
-	return char.length === 1 ? `${char}\uFE0F` : char;
+	// <文字列>.length はコードポイント数ではなくUTF-16コードユニット数を返すため、サロゲートペアを含む絵文字で誤動作する。
+	// そのため、配列に変換してコードポイント数を数える方法を取る。
+	return Array.from(char).length === 1 ? `${char}\uFE0F` : char;
 }
 
 export interface CustomEmojiFolderTree {
