@@ -24,10 +24,10 @@ import { bindThis } from '@/decorators.js';
 import { WebAuthnService } from '@/core/WebAuthnService.js';
 import { UserAuthService } from '@/core/UserAuthService.js';
 import { CaptchaService } from '@/core/CaptchaService.js';
+import { LoggerService } from '@/core/LoggerService.js';
 import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
 import { RateLimiterService } from './RateLimiterService.js';
 import { SigninService } from './SigninService.js';
-import { ApiLoggerService } from './ApiLoggerService.js';
 import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
@@ -54,7 +54,7 @@ export class SigninApiService {
 		@Inject(DI.signinsRepository)
 		private signinsRepository: SigninsRepository,
 
-		private apiLoggerService: ApiLoggerService,
+		private loggerService: LoggerService,
 		private idService: IdService,
 		private rateLimiterService: RateLimiterService,
 		private signinService: SigninService,
@@ -62,7 +62,7 @@ export class SigninApiService {
 		private webAuthnService: WebAuthnService,
 		private captchaService: CaptchaService,
 	) {
-		this.logger = this.apiLoggerService.logger;
+		this.logger = this.loggerService.getLogger('Signin');
 	}
 
 	@bindThis
