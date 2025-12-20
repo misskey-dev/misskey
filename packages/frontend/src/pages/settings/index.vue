@@ -12,7 +12,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div class="_gaps_s">
 						<MkInfo v-if="emailNotConfigured" warn class="info">{{ i18n.ts.emailNotConfiguredWarning }} <MkA to="/settings/email" class="_link">{{ i18n.ts.configure }}</MkA></MkInfo>
 						<MkInfo v-if="!storagePersisted && store.r.showStoragePersistenceSuggestion.value" class="info">
-							<div>{{ i18n.ts._settings.settingsPersistence_description }}</div>
+							<div>{{ i18n.ts._settings.settingsPersistence_description1 }}</div>
+							<div>{{ i18n.ts._settings.settingsPersistence_description2 }}</div>
 							<div><button class="_textButton" @click="enableStoragePersistence">{{ i18n.ts.enable }}</button> | <button class="_textButton" @click="skipStoragePersistence">{{ i18n.ts.skip }}</button></div>
 						</MkInfo>
 						<MkInfo v-if="!store.r.enablePreferencesAutoCloudBackup.value && store.r.showPreferencesAutoCloudBackupSuggestion.value" class="info">

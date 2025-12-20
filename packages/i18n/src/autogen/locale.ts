@@ -6200,7 +6200,11 @@ export interface Locale extends ILocale {
         /**
          * 設定の永続化を有効にすると、設定情報が失われるのを防止できます。
          */
-        "settingsPersistence_description": string;
+        "settingsPersistence_description1": string;
+        /**
+         * 環境によっては有効化できない場合があります。
+         */
+        "settingsPersistence_description2": string;
         "_chat": {
             /**
              * 送信者の名前を表示
