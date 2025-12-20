@@ -2890,6 +2890,15 @@ _deck:
   usedAsMinWidthWhenFlexible: "「幅を自動調整」が有効の場合、これが幅の最小値となります"
   flexible: "幅を自動調整"
   enableSyncBetweenDevicesForProfiles: "プロファイル情報のデバイス間同期を有効にする"
+  showHowToUse: "UIの説明を見る"
+
+  _howToUse:
+    addColumn_title: "カラム追加"
+    addColumn_description: "カラムの種類を選んで追加できます。"
+    settings_title: "UI設定"
+    settings_description: "デッキUIの詳細設定を行えます。"
+    switchProfile_title: "プロファイル切り替え"
+    switchProfile_description: "UIのレイアウトをプロファイルとして保存し、いつでも切り替えられるようにできます。"
 
   _columns:
     main: "メイン"
