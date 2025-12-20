@@ -85,6 +85,10 @@ export class SigninWithPasskeyApiService {
 		};
 
 		if (!this.config.disableIpRateLimit) {
+			if (process.env.NODE_ENV !== 'production' && (request.ip === '::1' || request.ip === '127.0.0.1')) {
+				this.logger.warn('Recieved signin with passkey request from localhost IP address for rate limiting in non-production environment. This is likely due to misconfiguration.');
+			}
+
 			try {
 			// Not more than 1 API call per 250ms and not more than 100 attempts per 30min
 			// NOTE: 1 Sign-in require 2 API calls

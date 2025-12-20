@@ -15,6 +15,7 @@ import type {
 	UserSecurityKeysRepository,
 	UsersRepository,
 } from '@/models/_.js';
+import type Logger from '@/logger.js';
 import type { Config } from '@/config.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
 import type { MiLocalUser } from '@/models/User.js';
@@ -26,11 +27,14 @@ import { CaptchaService } from '@/core/CaptchaService.js';
 import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
 import { RateLimiterService } from './RateLimiterService.js';
 import { SigninService } from './SigninService.js';
+import { ApiLoggerService } from './ApiLoggerService.js';
 import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 @Injectable()
 export class SigninApiService {
+	private logger: Logger;
+
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
@@ -50,6 +54,7 @@ export class SigninApiService {
 		@Inject(DI.signinsRepository)
 		private signinsRepository: SigninsRepository,
 
+		private apiLoggerService: ApiLoggerService,
 		private idService: IdService,
 		private rateLimiterService: RateLimiterService,
 		private signinService: SigninService,
@@ -57,6 +62,7 @@ export class SigninApiService {
 		private webAuthnService: WebAuthnService,
 		private captchaService: CaptchaService,
 	) {
+		this.logger = this.apiLoggerService.logger;
 	}
 
 	@bindThis
@@ -91,6 +97,9 @@ export class SigninApiService {
 
 		// not more than 1 attempt per second and not more than 10 attempts per hour
 		if (!this.config.disableIpRateLimit) {
+			if (process.env.NODE_ENV !== 'production' && (request.ip === '::1' || request.ip === '127.0.0.1')) {
+				this.logger.warn('Recieved signin request from localhost IP address for rate limiting in non-production environment. This is likely due to misconfiguration.');
+			}
 			const rateLimit = await this.rateLimiterService.limit({ key: 'signin', duration: 60 * 60 * 1000, max: 10, minInterval: 1000 }, getIpHash(request.ip));
 			if (rateLimit != null) {
 				reply.code(429);
