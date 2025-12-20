@@ -3,14 +3,13 @@ import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import * as esbuild from 'esbuild';
 import { build } from 'esbuild';
-import { globSync } from 'glob';
 import { execa } from 'execa';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 const _package = JSON.parse(fs.readFileSync(_dirname + '/package.json', 'utf-8'));
 
-const entryPoints = globSync('./js/**/**.{ts,tsx}');
+const entryPoints = fs.globSync('./js/**/**.{ts,tsx}');
 
 /** @type {import('esbuild').BuildOptions} */
 const options = {

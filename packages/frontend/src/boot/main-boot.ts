@@ -331,8 +331,6 @@ export async function mainBoot() {
 			});
 		}
 
-		initialRequestPermissions();
-
 		if (store.s.realtimeMode) {
 			const stream = useStream();
 

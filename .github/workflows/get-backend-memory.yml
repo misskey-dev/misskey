@@ -1,0 +1,87 @@
+# this name is used in report-backend-memory.yml so be careful when change name
+name: Get backend memory usage
+
+on:
+  pull_request:
+    branches:
+      - master
+      - develop
+    paths:
+      - packages/backend/**
+      - packages/misskey-js/**
+      - .github/workflows/get-backend-memory.yml
+
+jobs:
+  get-memory-usage:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    strategy:
+      matrix:
+        memory-json-name: [memory-base.json, memory-head.json]
+        include:
+          - memory-json-name: memory-base.json
+            ref: ${{ github.base_ref }}
+          - memory-json-name: memory-head.json
+            ref: refs/pull/${{ github.event.number }}/merge
+
+    services:
+      postgres:
+        image: postgres:18
+        ports:
+          - 54312:5432
+        env:
+          POSTGRES_DB: test-misskey
+          POSTGRES_HOST_AUTH_METHOD: trust
+      redis:
+        image: redis:7
+        ports:
+          - 56312:6379
+
+    steps:
+    - uses: actions/checkout@v6.0.1
+      with:
+        ref: ${{ matrix.ref }}
+        submodules: true
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4.2.0
+    - name: Use Node.js
+      uses: actions/setup-node@v6.1.0
+      with:
+        node-version-file: '.node-version'
+        cache: 'pnpm'
+    - run: pnpm i --frozen-lockfile
+    - name: Check pnpm-lock.yaml
+      run: git diff --exit-code pnpm-lock.yaml
+    - name: Copy Configure
+      run: cp .github/misskey/test.yml .config/default.yml
+    - name: Compile Configure
+      run: pnpm compile-config
+    - name: Build
+      run: pnpm build
+    - name: Run migrations
+      run: pnpm --filter backend migrate
+    - name: Measure memory usage
+      run: |
+        # Start the server and measure memory usage
+        node packages/backend/scripts/measure-memory.mjs > ${{ matrix.memory-json-name }}
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v6
+      with:
+        name: memory-artifact-${{ matrix.memory-json-name }}
+        path: ${{ matrix.memory-json-name }}
+
+  save-pr-number:
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Save PR number
+        env:
+          PR_NUMBER: ${{ github.event.number }}
+        run: |
+          echo "$PR_NUMBER" > ./pr_number
+      - uses: actions/upload-artifact@v6
+        with:
+          name: memory-artifact-pr-number
+          path: pr_number

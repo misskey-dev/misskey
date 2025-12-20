@@ -6,18 +6,15 @@
 import dns from 'node:dns/promises';
 import { fileURLToPath } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
-import { JSDOM } from 'jsdom';
+import * as htmlParser from 'node-html-parser';
 import httpLinkHeader from 'http-link-header';
 import ipaddr from 'ipaddr.js';
 import oauth2orize, { type OAuth2, AuthorizationError, ValidateFunctionArity2, OAuth2Req, MiddlewareRequest } from 'oauth2orize';
 import oauth2Pkce from 'oauth2orize-pkce';
 import fastifyCors from '@fastify/cors';
-import fastifyView from '@fastify/view';
-import pug from 'pug';
 import bodyParser from 'body-parser';
 import fastifyExpress from '@fastify/express';
 import { verifyChallenge } from 'pkce-challenge';
-import { mf2 } from 'microformats-parser';
 import { permissions as kinds } from 'misskey-js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
@@ -32,6 +29,8 @@ import { MemoryKVCache } from '@/misc/cache.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import Logger from '@/logger.js';
 import { StatusError } from '@/misc/status-error.js';
+import { HtmlTemplateService } from '@/server/web/HtmlTemplateService.js';
+import { OAuthPage } from '@/server/web/views/oauth.js';
 import type { ServerResponse } from 'node:http';
 import type { FastifyInstance } from 'fastify';
 
@@ -98,6 +97,32 @@ interface ClientInformation {
 	logo: string | null;
 }
 
+function parseMicroformats(doc: htmlParser.HTMLElement, baseUrl: string, id: string): { name: string | null; logo: string | null; } {
+	let name: string | null = null;
+	let logo: string | null = null;
+
+	const hApp = doc.querySelector('.h-app');
+	if (hApp == null) return { name, logo };
+
+	const nameEl = hApp.querySelector('.p-name');
+	if (nameEl != null) {
+		const href = nameEl.attributes.href || nameEl.attributes.src;
+		if (href != null && new URL(href, baseUrl).toString() === new URL(id).toString()) {
+			name = nameEl.textContent.trim();
+		}
+	}
+
+	const logoEl = hApp.querySelector('.u-logo');
+	if (logoEl != null) {
+		const href = logoEl.attributes.href || logoEl.attributes.src;
+		if (href != null) {
+			logo = new URL(href, baseUrl).toString();
+		}
+	}
+
+	return { name, logo };
+}
+
 // https://indieauth.spec.indieweb.org/#client-information-discovery
 // "Authorization servers SHOULD support parsing the [h-app] Microformat from the client_id,
 // and if there is an [h-app] with a url property matching the client_id URL,
@@ -120,24 +145,19 @@ async function discoverClientInformation(logger: Logger, httpRequestService: Htt
 		}
 
 		const text = await res.text();
-		const fragment = JSDOM.fragment(text);
+		const doc = htmlParser.parse(`<div>${text}</div>`);
 
-		redirectUris.push(...[...fragment.querySelectorAll<HTMLLinkElement>('link[rel=redirect_uri][href]')].map(el => el.href));
+		redirectUris.push(...[...doc.querySelectorAll('link[rel=redirect_uri][href]')].map(el => el.attributes.href));
 
 		let name = id;
 		let logo: string | null = null;
 		if (text) {
-			const microformats = mf2(text, { baseUrl: res.url });
-			const correspondingProperties = microformats.items.find(item => item.type?.includes('h-app') && item.properties.url.includes(id));
-			if (correspondingProperties) {
-				const nameProperty = correspondingProperties.properties.name?.[0];
-				if (typeof nameProperty === 'string') {
-					name = nameProperty;
-				}
-				const logoProperty = correspondingProperties.properties.logo?.[0];
-				if (typeof logoProperty === 'string') {
-					logo = logoProperty;
-				}
+			const microformats = parseMicroformats(doc, res.url, id);
+			if (typeof microformats.name === 'string') {
+				name = microformats.name;
+			}
+			if (typeof microformats.logo === 'string') {
+				logo = microformats.logo;
 			}
 		}
 
@@ -253,6 +273,7 @@ export class OAuth2ProviderService {
 		private usersRepository: UsersRepository,
 		private cacheService: CacheService,
 		loggerService: LoggerService,
+		private htmlTemplateService: HtmlTemplateService,
 	) {
 		this.#logger = loggerService.getLogger('oauth');
 
@@ -386,23 +407,15 @@ export class OAuth2ProviderService {
 			this.#logger.info(`Rendering authorization page for "${oauth2.client.name}"`);
 
 			reply.header('Cache-Control', 'no-store');
-			return await reply.view('oauth', {
+			return await HtmlTemplateService.replyHtml(reply, OAuthPage({
+				...await this.htmlTemplateService.getCommonData(),
 				transactionId: oauth2.transactionID,
 				clientName: oauth2.client.name,
-				clientLogo: oauth2.client.logo,
-				scope: oauth2.req.scope.join(' '),
-			});
+				clientLogo: oauth2.client.logo ?? undefined,
+				scope: oauth2.req.scope,
+			}));
 		});
 		fastify.post('/decision', async () => { });
-
-		fastify.register(fastifyView, {
-			root: fileURLToPath(new URL('../web/views', import.meta.url)),
-			engine: { pug },
-			defaultContext: {
-				version: this.config.version,
-				config: this.config,
-			},
-		});
 
 		await fastify.register(fastifyExpress);
 		fastify.use('/authorize', this.#server.authorize(((areq, done) => {
