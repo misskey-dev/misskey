@@ -46,16 +46,6 @@ async function initialRequestPermissions() {
 			});
 		}
 	}
-
-	// Notification API
-	if ('Notification' in window) {
-		// 許可を得ていなかったらリクエスト
-		if (Notification.permission === 'default') {
-			await Notification.requestPermission().catch(() => {
-				// エラーを無視
-			});
-		}
-	}
 }
 
 export async function mainBoot() {
