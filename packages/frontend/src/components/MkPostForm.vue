@@ -1166,7 +1166,12 @@ async function insertEmoji(ev: MouseEvent) {
 		},
 		() => {
 			textAreaReadOnly.value = false;
-			nextTick(() => focus());
+			nextTick(() => {
+				if (textareaEl.value) {
+					textareaEl.value.focus();
+					textareaEl.value.setSelectionRange(pos, posEnd);
+				}
+			});
 		},
 	);
 }
