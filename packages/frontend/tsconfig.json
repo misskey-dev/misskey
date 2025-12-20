@@ -10,7 +10,7 @@
 		"declaration": false,
 		"sourceMap": false,
 		"target": "ES2022",
-		"module": "ES2022",
+		"module": "esnext",
 		"moduleResolution": "Bundler",
 		"removeComments": false,
 		"noLib": false,

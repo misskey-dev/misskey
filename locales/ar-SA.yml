@@ -1011,6 +1011,14 @@ information: "عن"
 inMinutes: "د"
 inDays: "ي"
 widgets: "التطبيقات المُصغّرة"
+presets: "إعدادات مسبقة"
+_imageEditing:
+  _vars:
+    filename: "اسم الملف"
+_imageFrameEditor:
+  font: "الخط"
+  fontSerif: "Serif"
+  fontSansSerif: "Sans Serif"
 _chat:
   invitations: "دعوة"
   noHistory: "السجل فارغ"
@@ -1397,6 +1405,9 @@ _postForm:
   replyPlaceholder: "رد على هذه الملاحظة…"
   quotePlaceholder: "اقتبس هذه الملاحظة…"
   channelPlaceholder: "انشر في قناة..."
+  _howToUse:
+    visibility_title: "الظهور"
+    menu_title: "القائمة"
   _placeholders:
     a: "ما الذي تنوي فعله؟"
     b: "ماذا يحدث حولك ؟"

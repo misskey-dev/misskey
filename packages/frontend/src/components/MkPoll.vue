@@ -58,7 +58,7 @@ const remaining = computed(() => {
 });
 
 const total = computed(() => sum(props.choices.map(x => x.votes)));
-const closed = computed(() => remaining.value <= 0);
+const closed = computed(() => props.expiresAt != null && remaining.value <= 0);
 const isVoted = computed(() => !props.multiple && props.choices.some(c => c.isVoted));
 const timer = computed(() => i18n.tsx._poll[
 	remaining.value >= 86400 ? 'remainingDays' :
