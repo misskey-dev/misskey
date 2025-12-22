@@ -6,12 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <template v-for="file in note.files">
 	<div
-		v-if="(((
-			(prefer.s.nsfw === 'force' || file.isSensitive) &&
-			prefer.s.nsfw !== 'ignore'
-		) || (prefer.s.dataSaver.media && file.type.startsWith('image/'))) &&
-			!showingFiles.has(file.id)
-		)"
+		v-if="isHiding(file)"
 		:class="[$style.filePreview, { [$style.square]: square }]"
 		@click="reveal(file)"
 	>
@@ -49,7 +44,7 @@ import * as Misskey from 'misskey-js';
 import { notePage } from '@/filters/note.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
-import * as os from '@/os.js';
+import { shouldHideFileByDefault, canRevealFile } from '@/utility/sensitive-file.js';
 import bytes from '@/filters/bytes.js';
 
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
@@ -61,13 +56,19 @@ defineProps<{
 
 const showingFiles = ref<Set<string>>(new Set());
 
+function isHiding(file: Misskey.entities.DriveFile) {
+	if (shouldHideFileByDefault(file) && !showingFiles.value.has(file.id)) {
+		if (!file.isSensitive && !file.type.startsWith('image/')) {
+			return false;
+		}
+		return true;
+	}
+	return false;
+}
+
 async function reveal(file: Misskey.entities.DriveFile) {
-	if (file.isSensitive && prefer.s.confirmWhenRevealingSensitiveMedia) {
-		const { canceled } = await os.confirm({
-			type: 'question',
-			text: i18n.ts.sensitiveMediaRevealConfirm,
-		});
-		if (canceled) return;
+	if (!(await canRevealFile(file))) {
+		return;
 	}
 
 	showingFiles.value.add(file.id);
