@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			!showingFiles.has(file.id)
 		)"
 		:class="[$style.filePreview, { [$style.square]: square }]"
-		@click="showingFiles.add(file.id)"
+		@click="reveal(file)"
 	>
 		<MkDriveFileThumbnail
 			:file="file"
@@ -49,6 +49,7 @@ import * as Misskey from 'misskey-js';
 import { notePage } from '@/filters/note.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
+import * as os from '@/os.js';
 import bytes from '@/filters/bytes.js';
 
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
@@ -59,6 +60,18 @@ defineProps<{
 }>();
 
 const showingFiles = ref<Set<string>>(new Set());
+
+async function reveal(file: Misskey.entities.DriveFile) {
+	if (file.isSensitive && prefer.s.confirmWhenRevealingSensitiveMedia) {
+		const { canceled } = await os.confirm({
+			type: 'question',
+			text: i18n.ts.sensitiveMediaRevealConfirm,
+		});
+		if (canceled) return;
+	}
+
+	showingFiles.value.add(file.id);
+}
 </script>
 
 <style lang="scss" module>
