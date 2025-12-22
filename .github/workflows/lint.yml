@@ -36,13 +36,13 @@ jobs:
   pnpm_install:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4.3.0
+    - uses: actions/checkout@v6.0.1
       with:
         fetch-depth: 0
         submodules: true
     - name: Setup pnpm
       uses: pnpm/action-setup@v4.2.0
-    - uses: actions/setup-node@v4.4.0
+    - uses: actions/setup-node@v6.1.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
@@ -69,13 +69,13 @@ jobs:
       eslint-cache-version: v1
       eslint-cache-path: ${{ github.workspace }}/node_modules/.cache/eslint-${{ matrix.workspace }}
     steps:
-    - uses: actions/checkout@v4.3.0
+    - uses: actions/checkout@v6.0.1
       with:
         fetch-depth: 0
         submodules: true
     - name: Setup pnpm
       uses: pnpm/action-setup@v4.2.0
-    - uses: actions/setup-node@v4.4.0
+    - uses: actions/setup-node@v6.1.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
@@ -100,13 +100,13 @@ jobs:
         - sw
         - misskey-js
     steps:
-    - uses: actions/checkout@v4.3.0
+    - uses: actions/checkout@v6.0.1
       with:
         fetch-depth: 0
         submodules: true
     - name: Setup pnpm
       uses: pnpm/action-setup@v4.2.0
-    - uses: actions/setup-node@v4.4.0
+    - uses: actions/setup-node@v6.1.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
