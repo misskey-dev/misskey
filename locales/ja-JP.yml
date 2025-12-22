@@ -1557,6 +1557,9 @@ _settings:
   showPageTabBarBottom: "ページのタブバーを下部に表示"
   emojiPaletteBanner: "絵文字ピッカーに固定表示するプリセットをパレットとして登録したり、ピッカーの表示方法をカスタマイズしたりできます。"
   enableAnimatedImages: "アニメーション画像を有効にする"
+  settingsPersistence_title: "設定の永続化"
+  settingsPersistence_description1: "設定の永続化を有効にすると、設定情報が失われるのを防止できます。"
+  settingsPersistence_description2: "環境によっては有効化できない場合があります。"
 
   _chat:
     showSenderName: "送信者の名前を表示"
