@@ -351,7 +351,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<SearchMarker :keywords="['ticker', 'information', 'label', 'instance', 'server', 'host', 'federation']">
 								<MkPreferenceContainer k="instanceTicker">
 									<MkSelect
-										v-if="instance.federation !== 'none'"
 										v-model="instanceTicker"
 										:items="[
 											{ label: i18n.ts._instanceTicker.none, value: 'none' },
@@ -361,16 +360,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 									>
 										<template #label><SearchLabel>{{ i18n.ts.instanceTicker }}</SearchLabel></template>
 									</MkSelect>
-								</MkPreferenceContainer>
-							</SearchMarker>
-
-							<!-- サーバー情報をアイコンのみにする（独自機能） -->
-							<SearchMarker :keywords="['instance', 'icon', 'server', 'information']">
-								<MkPreferenceContainer k="instanceIcon">
-									<MkSwitch v-if="instance.federation !== 'none' && instanceTicker !== 'none'" v-model="instanceIcon">
-										<template #label><SearchLabel>{{ i18n.ts.instanceIcon }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
-										<template #caption>{{ i18n.ts.instanceIconDescription }}</template>
-									</MkSwitch>
 								</MkPreferenceContainer>
 							</SearchMarker>
 
@@ -1179,7 +1168,6 @@ const rememberNoteVisibility = prefer.model('rememberNoteVisibility');
 const notificationPosition = prefer.model('notificationPosition');
 const notificationStackAxis = prefer.model('notificationStackAxis');
 const instanceTicker = prefer.model('instanceTicker');
-const instanceIcon = prefer.model('instanceIcon');
 const highlightSensitiveMedia = prefer.model('highlightSensitiveMedia');
 const mediaListWithOneImageAppearance = prefer.model('mediaListWithOneImageAppearance');
 const reactionsDisplaySize = prefer.model('reactionsDisplaySize');
@@ -1296,7 +1284,6 @@ watch([
 	mediaListWithOneImageAppearance,
 	limitWidthOfReaction,
 	instanceTicker,
-	instanceIcon,
 	squareAvatars,
 	highlightSensitiveMedia,
 	enableSeasonalScreenEffect,
