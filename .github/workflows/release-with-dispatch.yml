@@ -19,6 +19,7 @@ jobs:
     outputs:
       is_staging: ${{ steps.check.outputs.is_staging }}
     steps:
+      # headが$GITHUB_REF_NAME, baseが$STABLE_BRANCHかつopenのPRを1つ取得
       - name: Check if branch is staging
         id: check
         run: |
@@ -45,7 +46,7 @@ jobs:
     needs: check-branch
     if: ${{ needs.check-branch.outputs.is_staging == 'true' && inputs.merge == true }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Get and merge PR
         run: |
           pr_number=$(gh pr list --limit 1 --search "head:$GITHUB_REF_NAME base:master is:open" --json number --jq '.[] | .number')
