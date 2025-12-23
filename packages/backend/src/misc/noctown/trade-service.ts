@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { createHash } from 'node:crypto';
 import { Injectable, Inject } from '@nestjs/common';
 import { LessThan, MoreThan, In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
@@ -14,6 +15,7 @@ import type {
 	NoctownPlayersRepository,
 	NoctownPlayerItemsRepository,
 	NoctownWalletsRepository,
+	NoctownItemsRepository,
 } from '@/models/_.js';
 
 export type TradeResponse = 'accept' | 'decline';
@@ -54,6 +56,10 @@ export class TradeService {
 
 		@Inject(DI.noctownWalletsRepository)
 		private walletsRepository: NoctownWalletsRepository,
+
+		// T020: アイテム名取得用
+		@Inject(DI.noctownItemsRepository)
+		private itemsRepository: NoctownItemsRepository,
 
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
@@ -284,9 +290,13 @@ export class TradeService {
 	 * Target player responds to a trade request (dual-confirmation step 1)
 	 */
 	public async respondToTrade(tradeId: string, targetPlayerId: string, response: TradeResponse): Promise<TradeResult> {
+		console.log('[Trade Service] respondToTrade called:', { tradeId, targetPlayerId, response });
+
 		const trade = await this.tradesRepository.findOne({
 			where: { id: tradeId, targetId: targetPlayerId, status: 'pending' },
 		});
+
+		console.log('[Trade Service] Trade found:', trade ? { id: trade.id, initiatorId: trade.initiatorId, targetId: trade.targetId, status: trade.status } : 'null');
 
 		if (!trade) {
 			return { success: false, error: 'Trade not found or already processed' };
@@ -301,9 +311,17 @@ export class TradeService {
 		if (response === 'decline') {
 			await this.tradesRepository.update({ id: tradeId }, { status: 'declined', completedAt: new Date() });
 
-			// Notify initiator
+			// T016: 送信者と受信者の情報を取得
+			const [initiator, target] = await Promise.all([
+				this.playersRepository.findOne({ where: { id: trade.initiatorId }, relations: ['user'] }),
+				this.playersRepository.findOne({ where: { id: trade.targetId }, relations: ['user'] }),
+			]);
+
+			// T016: Notify initiator（送信者に拒否されたことを通知）
 			this.globalEventService.publishNoctownPlayerStream(trade.initiatorId, 'tradeDeclined', {
 				tradeId,
+				targetId: trade.targetId,
+				targetUsername: target?.user?.username ?? '',
 			});
 
 			// 仕様: トレード状態変更イベントを発行（両プレイヤーがトレード終了）
@@ -314,12 +332,37 @@ export class TradeService {
 		}
 
 		// Accept - move to accepted status
+		console.log('[Trade Service] Accepting trade:', tradeId);
 		await this.tradesRepository.update({ id: tradeId }, { status: 'accepted' });
 
-		// Notify initiator
-		this.globalEventService.publishNoctownPlayerStream(trade.initiatorId, 'tradeAccepted', {
+		// T016: 送信者と受信者の情報を取得
+		const [initiator, target] = await Promise.all([
+			this.playersRepository.findOne({ where: { id: trade.initiatorId }, relations: ['user'] }),
+			this.playersRepository.findOne({ where: { id: trade.targetId }, relations: ['user'] }),
+		]);
+		console.log('[Trade Service] Player info loaded:', {
+			initiator: initiator ? { id: initiator.id, username: initiator.user?.username } : 'null',
+			target: target ? { id: target.id, username: target.user?.username } : 'null',
+		});
+
+		// 仕様: トレード承認時に両者にイベント送信し、直接バーターモードでパネルを開く
+		// avatarUrlを含めることで、フロントエンドでPlayerDataとして使用可能
+		const acceptedEventData = {
+			tradeId,
+			initiatorId: trade.initiatorId,
+			targetId: trade.targetId,
+			initiatorUsername: initiator?.user?.username ?? '',
+			targetUsername: target?.user?.username ?? '',
+			initiatorAvatarUrl: initiator?.user?.avatarUrl ?? null,
+			targetAvatarUrl: target?.user?.avatarUrl ?? null,
+		};
+		console.log('[Trade Service] Publishing tradeAccepted event:', {
+			initiatorId: trade.initiatorId,
+			targetId: trade.targetId,
 			tradeId,
 		});
+		this.globalEventService.publishNoctownPlayerStream(trade.initiatorId, 'tradeAccepted', acceptedEventData);
+		this.globalEventService.publishNoctownPlayerStream(trade.targetId, 'tradeAccepted', acceptedEventData);
 
 		return { success: true };
 	}
@@ -378,20 +421,109 @@ export class TradeService {
 			await this.tradesRepository.update({ id: tradeId }, { targetCurrency: currency });
 		}
 
-		// Notify other party
+		// T026: アイテム/通貨が変更されたので確認状態をリセット
+		const wasConfirmed = trade.initiatorConfirmed || trade.targetConfirmed;
+		if (wasConfirmed) {
+			await this.tradesRepository.update({ id: tradeId }, {
+				initiatorConfirmed: false,
+				targetConfirmed: false,
+			});
+
+			// T027: 両者に確認リセットイベントを通知
+			const resetEventData = { tradeId, resetBy: playerId };
+			this.globalEventService.publishNoctownPlayerStream(trade.initiatorId, 'tradeConfirmReset', resetEventData);
+			this.globalEventService.publishNoctownPlayerStream(trade.targetId, 'tradeConfirmReset', resetEventData);
+		}
+
+		// T020: アイテム名を含む詳細情報を取得
+		const itemsWithDetails = await Promise.all(
+			items.map(async (item) => {
+				const playerItem = await this.playerItemsRepository.findOne({
+					where: { id: item.playerItemId },
+				});
+				const itemInfo = playerItem ? await this.itemsRepository.findOneBy({ id: playerItem.itemId }) : null;
+				return {
+					itemId: playerItem?.itemId ?? '',
+					itemName: itemInfo?.name ?? 'Unknown',
+					quantity: item.quantity,
+				};
+			}),
+		);
+
+		// T020: Notify other party with tradeItemsChanged event
 		const otherPlayerId = isInitiator ? trade.targetId : trade.initiatorId;
-		this.globalEventService.publishNoctownPlayerStream(otherPlayerId, 'tradeItemsAdded', {
+		this.globalEventService.publishNoctownPlayerStream(otherPlayerId, 'tradeItemsChanged', {
 			tradeId,
-			fromInitiator: isInitiator,
-			items: items.map(i => ({ itemId: i.playerItemId, quantity: i.quantity })),
+			items: itemsWithDetails,
 			currency,
+			isFromInitiator: isInitiator,
 		});
 
 		return { success: true };
 	}
 
 	/**
+	 * T041-T042: トランザクションID生成
+	 * 仕様: アイテムID一覧とノクタコイン金額を含むハッシュを生成
+	 */
+	private async generateTransactionId(tradeId: string, playerId: string): Promise<string> {
+		// トレードアイテムを取得
+		const tradeItems = await this.tradeItemsRepository.find({
+			where: { tradeId },
+			order: { itemId: 'ASC' }, // 一貫性のためソート
+		});
+
+		// トレード情報を取得
+		const trade = await this.tradesRepository.findOneBy({ id: tradeId });
+		if (!trade) {
+			throw new Error('Trade not found');
+		}
+
+		const isInitiator = trade.initiatorId === playerId;
+
+		// 自分が提供するアイテムのみを対象
+		const myItems = tradeItems.filter(item => item.isFromInitiator === isInitiator);
+		const myCurrency = isInitiator ? trade.initiatorCurrency : trade.targetCurrency;
+
+		// ハッシュ用データを構築
+		const hashData = {
+			tradeId,
+			playerId,
+			items: myItems.map(item => ({
+				itemId: item.itemId,
+				quantity: item.quantity,
+			})),
+			currency: myCurrency,
+			timestamp: Date.now(),
+		};
+
+		// SHA-256ハッシュを生成
+		const hash = createHash('sha256')
+			.update(JSON.stringify(hashData))
+			.digest('hex');
+
+		return hash;
+	}
+
+	/**
+	 * T043: トランザクションID検証
+	 * 仕様: 両者のトランザクションIDが記録されているか検証
+	 */
+	private async verifyTransactionIds(trade: { initiatorTransactionId: string | null; targetTransactionId: string | null }): Promise<{ valid: boolean; error?: string }> {
+		// T044: トランザクションID改ざん検知エラー処理
+		if (!trade.initiatorTransactionId) {
+			return { valid: false, error: 'Initiator transaction ID missing - possible tampering detected' };
+		}
+		if (!trade.targetTransactionId) {
+			return { valid: false, error: 'Target transaction ID missing - possible tampering detected' };
+		}
+		return { valid: true };
+	}
+
+	/**
 	 * Confirm trade (both parties must confirm) - dual-confirmation step 2
+	 * T041: 「交換OK」押下時のトランザクションID発行ロジック
+	 * T045: target側がトレード実行を行うロジックに変更
 	 */
 	public async confirmTrade(tradeId: string, playerId: string): Promise<TradeResult> {
 		const trade = await this.tradesRepository.findOne({
@@ -409,11 +541,20 @@ export class TradeService {
 			return { success: false, error: 'You are not part of this trade' };
 		}
 
-		// Update confirmation status
+		// T041: トランザクションID発行（「交換OK」押下時）
+		const transactionId = await this.generateTransactionId(tradeId, playerId);
+
+		// Update confirmation status with transaction ID
 		if (isInitiator) {
-			await this.tradesRepository.update({ id: tradeId }, { initiatorConfirmed: true });
+			await this.tradesRepository.update({ id: tradeId }, {
+				initiatorConfirmed: true,
+				initiatorTransactionId: transactionId,
+			});
 		} else {
-			await this.tradesRepository.update({ id: tradeId }, { targetConfirmed: true });
+			await this.tradesRepository.update({ id: tradeId }, {
+				targetConfirmed: true,
+				targetTransactionId: transactionId,
+			});
 		}
 
 		// Check if both confirmed
@@ -423,7 +564,15 @@ export class TradeService {
 		}
 
 		if (updatedTrade.initiatorConfirmed && updatedTrade.targetConfirmed) {
-			// Execute the trade
+			// T043: トランザクションID検証
+			const verification = await this.verifyTransactionIds(updatedTrade);
+			if (!verification.valid) {
+				// T044: 改ざん検知時はトレードを失敗させる
+				await this.tradesRepository.update({ id: tradeId }, { status: 'failed', completedAt: new Date() });
+				return { success: false, error: verification.error };
+			}
+
+			// T045: target側がトレード実行を行う（最後に確認した側が実行）
 			return await this.executeTrade(tradeId);
 		}
 
@@ -572,5 +721,36 @@ export class TradeService {
 		await this.publishTradeStatusChangedIfNotTrading(trade.targetId);
 
 		return { success: true };
+	}
+
+	/**
+	 * T034: プレイヤー切断時のアクティブトレードをキャンセル
+	 * 仕様: プレイヤーがオフラインになった際、進行中のトレードを自動キャンセル
+	 */
+	public async cancelActiveTradesOnDisconnect(playerId: string): Promise<void> {
+		// pending または accepted 状態のトレードを取得
+		const activeTrades = await this.tradesRepository.find({
+			where: [
+				{ initiatorId: playerId, status: In(['pending', 'accepted']) },
+				{ targetId: playerId, status: In(['pending', 'accepted']) },
+			],
+		});
+
+		for (const trade of activeTrades) {
+			// トレードをキャンセル
+			await this.tradesRepository.update({ id: trade.id }, { status: 'cancelled', completedAt: new Date() });
+
+			// 相手に切断によるキャンセルを通知
+			const otherPlayerId = trade.initiatorId === playerId ? trade.targetId : trade.initiatorId;
+			this.globalEventService.publishNoctownPlayerStream(otherPlayerId, 'tradeCancelled', {
+				tradeId: trade.id,
+				cancelledBy: playerId,
+				reason: 'disconnected',
+			});
+
+			// トレード状態変更イベントを発行
+			await this.publishTradeStatusChangedIfNotTrading(trade.initiatorId);
+			await this.publishTradeStatusChangedIfNotTrading(trade.targetId);
+		}
 	}
 }

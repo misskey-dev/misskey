@@ -74,7 +74,8 @@ async function loadAgents() {
 async function loadFeedItems() {
 	try {
 		const result = await misskeyApi('noctown/item/inventory', {});
-		feedItems.value = (result as InventoryItem[]).filter(item => item.itemType === 'feed');
+		// 仕様: APIレスポンスが{balance, items}形式なのでitemsを取り出す
+		feedItems.value = result.items.filter((item: InventoryItem) => item.itemType === 'feed');
 	} catch (err) {
 		console.error('Failed to load feed items:', err);
 	}

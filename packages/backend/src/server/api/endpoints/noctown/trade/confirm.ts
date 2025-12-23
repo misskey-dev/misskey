@@ -150,12 +150,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					: { targetConfirmed: true },
 			);
 
-			// Check if both confirmed - execute trade
-			if (trade.initiatorConfirmed && trade.targetConfirmed) {
-				await this.executeTrade(trade.id);
-				return { success: true, status: 'completed' };
-			}
-
+			// 仕様: 両者確認時は自動実行せず、confirmだけ行う
+			// 実際の交換は execute エンドポイントで行う
 			return { success: true, status: 'confirmed' };
 		});
 	}

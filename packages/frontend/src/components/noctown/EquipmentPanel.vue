@@ -69,7 +69,8 @@ async function loadInventory() {
 
 	try {
 		const result = await misskeyApi('noctown/item/inventory', {});
-		skinItems.value = (result as InventoryItem[]).filter((item: InventoryItem) => item.itemType === 'skin');
+		// 仕様: APIレスポンスが{balance, items}形式なのでitemsを取り出す
+		skinItems.value = result.items.filter((item: InventoryItem) => item.itemType === 'skin');
 	} catch (err) {
 		error.value = 'Failed to load inventory';
 		console.error('Failed to load inventory:', err);

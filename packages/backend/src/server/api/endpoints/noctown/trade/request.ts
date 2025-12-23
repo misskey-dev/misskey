@@ -115,8 +115,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.playerNotFound);
 			}
 
-			// Get target player
-			const target = await this.playersRepository.findOneBy({ id: ps.targetPlayerId });
+			// Get target player with user relation for username
+			const target = await this.playersRepository.findOne({
+				where: { id: ps.targetPlayerId },
+				relations: ['user'],
+			});
 			if (!target) {
 				throw new ApiError(meta.errors.targetNotFound);
 			}
@@ -217,6 +220,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				})),
 				offeredCurrency: ps.offeredCurrency ?? 0,
 				message: ps.message ?? null,
+				expiresAt: expiresAt.toISOString(),
+			});
+
+			// 仕様: T009 送信者にトレードリクエスト送信確認イベントを通知
+			this.globalEventService.publishNoctownPlayerStream(initiator.id, 'tradeRequestSent', {
+				tradeId,
+				targetId: target.id,
+				targetUsername: target.user?.username ?? '',
+				status: 'pending',
 				expiresAt: expiresAt.toISOString(),
 			});
 

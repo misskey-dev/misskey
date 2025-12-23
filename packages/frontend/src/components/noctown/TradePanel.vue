@@ -3,81 +3,100 @@ SPDX-FileCopyrightText: syuilo and misskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
+<!--
+仕様: トレードパネル（バーターモード）
+- 左カラム: 相手のオファー（表示のみ）
+- 右カラム: 自分のオファー（編集可能）
+- 交換OKボタン: 押すと自分のエリアがロック、もう一度押すとロック解除
+- 両者ロック時: 「交換」ボタンが出現
+- リアルタイム同期: WebSocketで相手の変更を即座に反映
+-->
+
 <template>
-<div :class="$style.container">
+<!-- 仕様: T004 イベント伝播制御でクリック時画面消失バグを修正 -->
+<div :class="$style.container" @click.stop @touchstart.stop @touchend.stop>
 	<div :class="$style.header">
 		<h2 :class="$style.title">
 			<i class="ti ti-arrows-exchange"></i>
 			トレード
 		</h2>
-		<button :class="$style.closeBtn" @click="$emit('close')">
+		<button :class="$style.closeBtn" @click="handleClose">
 			<i class="ti ti-x"></i>
 		</button>
 	</div>
 
-	<!-- Trade with specific player -->
-	<div v-if="targetPlayer" :class="$style.tradeWith">
+	<!-- ローディング状態 -->
+	<div v-if="isLoading" :class="$style.loading">
+		<MkLoading/>
+	</div>
+
+	<!-- エラー状態 -->
+	<div v-else-if="lastError" :class="$style.error">
+		<i class="ti ti-alert-circle"></i>
+		<p>{{ lastError }}</p>
+		<button :class="$style.retryBtn" @click="retryLoad">再読み込み</button>
+	</div>
+
+	<!-- トレードリクエスト送信モード（targetPlayerがある場合） -->
+	<div v-else-if="props.targetPlayer && !tradeDetail" :class="$style.requestMode">
 		<div :class="$style.playerInfo">
 			<img
-				v-if="targetPlayer.avatarUrl"
-				:src="targetPlayer.avatarUrl"
+				v-if="props.targetPlayer.avatarUrl"
+				:src="props.targetPlayer.avatarUrl"
 				:class="$style.avatar"
 			/>
 			<div v-else :class="$style.avatarPlaceholder">
 				<i class="ti ti-user"></i>
 			</div>
-			<span>{{ targetPlayer.username }}</span>
+			<span>{{ props.targetPlayer.username }}にトレードリクエストを送る</span>
 		</div>
 
-		<!-- 仕様: 2カラムレイアウト - 左がインベントリ、右がオファー -->
+		<!-- 2カラムレイアウト: 左インベントリ、右オファー -->
 		<div :class="$style.tradeColumns">
-			<!-- 左カラム: インベントリ（埋め込み） -->
-			<div :class="$style.inventoryColumn">
+			<!-- 左カラム: インベントリ -->
+			<div :class="$style.column">
 				<h3 :class="$style.columnTitle">
 					<i class="ti ti-backpack"></i>
 					インベントリ
 				</h3>
-				<div :class="$style.embeddedInventory">
-					<div v-if="inventory.length === 0" :class="$style.noItems">
+				<div :class="$style.itemList" @touchstart="handleTouchStart">
+					<div v-if="inventory.length === 0" :class="$style.emptyMessage">
 						インベントリが空です
 					</div>
 					<div
 						v-for="item in inventory"
 						:key="item.id"
-						:class="[$style.inventoryItem, isItemInOffer(item.itemId) && $style.selected]"
-						@click="toggleItemInOffer(item)"
+						:class="[$style.itemCard, isItemInOffer(item.itemId) && $style.selected]"
+						@click.stop="toggleItemInOffer(item)"
+						@touchend.stop.prevent="handleItemTouch($event, item)"
 					>
-						<div :class="$style.itemInfo">
-							<span :class="$style.itemName">{{ item.itemName }}</span>
-							<span :class="$style.itemType">{{ item.itemType }}</span>
-						</div>
-						<span :class="$style.qty">x{{ item.quantity }}</span>
+						<span :class="$style.itemName">{{ item.itemName }}</span>
+						<span :class="$style.itemQty">x{{ item.quantity }}</span>
 					</div>
 				</div>
 			</div>
 
-			<!-- 右カラム: オファー内容 -->
-			<div :class="$style.offerColumn">
+			<!-- 右カラム: オファー -->
+			<div :class="$style.column">
 				<h3 :class="$style.columnTitle">
 					<i class="ti ti-gift"></i>
-					オファーするアイテム
+					オファー
 				</h3>
 				<div :class="$style.offerList">
-					<div v-if="myOffer.length === 0" :class="$style.emptyOffer">
-						左のインベントリからアイテムを選択してください
+					<div v-if="myOffer.length === 0" :class="$style.emptyMessage">
+						左からアイテムを選択
 					</div>
 					<div
 						v-for="(item, index) in myOffer"
 						:key="index"
 						:class="$style.offerItem"
 					>
-						<span :class="$style.offerItemName">{{ item.name }}</span>
-						<!-- 仕様: 個数指定入力 -->
+						<span :class="$style.itemName">{{ item.name }}</span>
 						<input
 							v-model.number="item.quantity"
 							type="number"
 							min="1"
-							:max="getMaxQuantityForItem(item.itemId)"
+							:max="getMaxQuantity(item.itemId)"
 							:class="$style.quantityInput"
 						/>
 						<button :class="$style.removeBtn" @click="removeFromOffer(index)">
@@ -86,8 +105,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 
-				<!-- Currency offer -->
-				<div :class="$style.currencyInput">
+				<!-- 通貨入力 -->
+				<div :class="$style.currencySection">
 					<label>
 						<i class="ti ti-coin"></i>
 						通貨:
@@ -96,27 +115,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 						v-model.number="offeredCurrency"
 						type="number"
 						min="0"
-						:class="$style.input"
+						:class="$style.currencyInput"
 					/>
 				</div>
 			</div>
 		</div>
 
-		<!-- Message -->
-		<div :class="$style.section">
-			<h3>メッセージ (任意)</h3>
-			<textarea
-				v-model="message"
-				:class="$style.textarea"
-				placeholder="取引についてのメッセージ..."
-				maxlength="200"
-			></textarea>
-		</div>
-
-		<!-- Send button -->
+		<!-- 送信ボタン -->
 		<button
-			:class="[$style.sendBtn, !canSendTrade && $style.disabled]"
-			:disabled="!canSendTrade || isSending"
+			:class="[$style.actionBtn, $style.primary, !canSendRequest && $style.disabled]"
+			:disabled="!canSendRequest || isSending"
 			@click="sendTradeRequest"
 		>
 			<template v-if="isSending">
@@ -129,266 +137,234 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</button>
 	</div>
 
-	<!-- Trade Detail View (Barter Mode) -->
-	<div v-else-if="selectedTradeId && tradeDetail" :class="$style.tradeDetail">
-		<button :class="$style.backBtn" @click="closeTradeDetail">
-			<i class="ti ti-arrow-left"></i>
-			戻る
-		</button>
-
-		<div v-if="isLoadingDetail" :class="$style.loading">
-			<MkLoading/>
+	<!-- バーターモード（交渉中） -->
+	<div v-else-if="tradeDetail" :class="$style.barterMode">
+		<!-- ステータス表示 -->
+		<div v-if="tradeDetail.status === 'pending'" :class="[$style.statusBadge, $style.pending]">
+			承認待ち
+		</div>
+		<div v-else-if="tradeDetail.status === 'accepted'" :class="[$style.statusBadge, $style.accepted]">
+			交渉中
 		</div>
 
-		<template v-else>
-			<!-- Trade Status -->
-			<div :class="[$style.statusBadge, $style[tradeDetail.status]]">
-				{{ tradeDetail.status === 'pending' ? '承認待ち' : tradeDetail.status === 'accepted' ? '交渉中' : tradeDetail.status }}
-			</div>
+		<!-- 相手の情報 -->
+		<div :class="$style.partnerInfo">
+			<span>{{ otherPlayerName }}とのトレード</span>
+		</div>
 
-			<!-- Initiator's Offer -->
-			<div :class="$style.offerSection">
-				<h3>{{ tradeDetail.initiatorUsername }}のオファー</h3>
-				<div :class="$style.itemsList">
-					<div v-for="item in tradeDetail.initiatorItems" :key="item.itemId" :class="$style.itemRow">
-						<span>{{ item.name }}</span>
-						<span :class="$style.qty">x{{ item.quantity }}</span>
-					</div>
-					<div v-if="tradeDetail.initiatorCurrency > 0" :class="$style.currencyRow">
-						<i class="ti ti-coin"></i>
-						{{ tradeDetail.initiatorCurrency }}G
-					</div>
-					<div v-if="tradeDetail.initiatorItems.length === 0 && tradeDetail.initiatorCurrency === 0" :class="$style.noItems">
+		<!-- 2カラムレイアウト: 左=相手、右=自分 -->
+		<div :class="$style.barterColumns">
+			<!-- 左カラム: 相手のオファー（表示のみ） -->
+			<div :class="[$style.barterColumn, otherConfirmed && $style.locked]">
+				<h3 :class="$style.columnTitle">
+					{{ otherPlayerName }}のオファー
+					<span v-if="otherConfirmed" :class="$style.confirmedBadge">
+						<i class="ti ti-check"></i> 交換OK
+					</span>
+				</h3>
+				<div :class="$style.offerDisplay">
+					<div v-if="otherItems.length === 0 && otherCurrency === 0" :class="$style.emptyMessage">
 						アイテムなし
 					</div>
-				</div>
-				<div v-if="tradeDetail.initiatorConfirmed" :class="$style.confirmed">
-					<i class="ti ti-check"></i> 確認済み
-				</div>
-			</div>
-
-			<!-- Exchange Arrow -->
-			<div :class="$style.exchangeArrow">
-				<i class="ti ti-arrows-exchange"></i>
-			</div>
-
-			<!-- Target's Offer -->
-			<div :class="$style.offerSection">
-				<h3>{{ tradeDetail.targetUsername }}のオファー</h3>
-				<div :class="$style.itemsList">
-					<div v-for="item in tradeDetail.targetItems" :key="item.itemId" :class="$style.itemRow">
+					<div
+						v-for="item in otherItems"
+						:key="item.itemId"
+						:class="$style.displayItem"
+					>
 						<span>{{ item.name }}</span>
-						<span :class="$style.qty">x{{ item.quantity }}</span>
+						<span :class="$style.itemQty">x{{ item.quantity }}</span>
 					</div>
-					<div v-if="tradeDetail.targetCurrency > 0" :class="$style.currencyRow">
+					<div v-if="otherCurrency > 0" :class="$style.currencyDisplay">
 						<i class="ti ti-coin"></i>
-						{{ tradeDetail.targetCurrency }}G
+						{{ otherCurrency }}G
 					</div>
-					<div v-if="tradeDetail.targetItems.length === 0 && tradeDetail.targetCurrency === 0" :class="$style.noItems">
-						アイテムなし
-					</div>
-				</div>
-				<div v-if="tradeDetail.targetConfirmed" :class="$style.confirmed">
-					<i class="ti ti-check"></i> 確認済み
 				</div>
 			</div>
 
-			<!-- Add Counter Offer (if accepted and not confirmed) -->
-			<div v-if="tradeDetail.status === 'accepted'" :class="$style.counterOfferSection">
-				<h3>カウンターオファーを追加</h3>
-				<div :class="$style.counterItems">
-					<div v-for="(item, index) in myCounterOffer" :key="index" :class="$style.counterItem">
-						<span>{{ item.name }}</span>
-						<span :class="$style.qty">x{{ item.quantity }}</span>
-						<button :class="$style.removeBtn" @click="removeFromCounterOffer(index)">
-							<i class="ti ti-x"></i>
-						</button>
+			<!-- 右カラム: 自分のオファー（編集可能、ロック時はグレーアウト） -->
+			<div :class="[$style.barterColumn, myConfirmed && $style.locked]">
+				<h3 :class="$style.columnTitle">
+					あなたのオファー
+					<span v-if="myConfirmed" :class="$style.confirmedBadge">
+						<i class="ti ti-check"></i> 交換OK
+					</span>
+				</h3>
+
+				<!-- ロック解除状態: 編集可能 -->
+				<template v-if="!myConfirmed">
+					<div :class="$style.offerList">
+						<div v-if="myBarterOffer.length === 0" :class="$style.emptyMessage">
+							アイテムを追加
+						</div>
+						<div
+							v-for="(item, index) in myBarterOffer"
+							:key="index"
+							:class="$style.offerItem"
+						>
+							<span :class="$style.itemName">{{ item.name }}</span>
+							<input
+								v-model.number="item.quantity"
+								type="number"
+								min="1"
+								:max="getMaxQuantity(item.itemId)"
+								:class="$style.quantityInput"
+								@change="onOfferChanged"
+							/>
+							<button :class="$style.removeBtn" @click="removeFromBarterOffer(index)">
+								<i class="ti ti-x"></i>
+							</button>
+						</div>
 					</div>
-					<button :class="$style.addBtn" @click="showInventorySelector = true">
+
+					<!-- アイテム追加ボタン -->
+					<button :class="$style.addItemBtn" @click="showInventoryModal = true">
 						<i class="ti ti-plus"></i>
 						アイテム追加
 					</button>
-				</div>
-				<div :class="$style.currencyInput">
-					<label>
-						<i class="ti ti-coin"></i>
-						通貨:
-					</label>
-					<input v-model.number="myCounterCurrency" type="number" min="0" :class="$style.input"/>
-				</div>
-			</div>
 
-			<!-- Inventory Selector Modal -->
-			<div v-if="showInventorySelector" :class="$style.inventoryModal">
-				<div :class="$style.inventoryHeader">
-					<span>インベントリから選択</span>
-					<button @click="showInventorySelector = false">
-						<i class="ti ti-x"></i>
-					</button>
-				</div>
-				<div :class="$style.inventoryGrid">
-					<div
-						v-for="item in inventory"
-						:key="item.id"
-						:class="$style.inventoryItem"
-						@click="addItemToCounterOffer(item)"
-					>
-						<span>{{ item.itemName }}</span>
-						<span :class="$style.qty">x{{ item.quantity }}</span>
+					<!-- 通貨入力 -->
+					<div :class="$style.currencySection">
+						<label>
+							<i class="ti ti-coin"></i>
+							通貨:
+						</label>
+						<input
+							v-model.number="myBarterCurrency"
+							type="number"
+							min="0"
+							:class="$style.currencyInput"
+							@change="onOfferChanged"
+						/>
 					</div>
-				</div>
-			</div>
+				</template>
 
-			<!-- Message -->
-			<div v-if="tradeDetail.message" :class="$style.messageBox">
-				<i class="ti ti-message"></i>
-				{{ tradeDetail.message }}
+				<!-- ロック状態: 表示のみ -->
+				<template v-else>
+					<div :class="$style.offerDisplay">
+						<div v-if="myBarterOffer.length === 0 && myBarterCurrency === 0" :class="$style.emptyMessage">
+							アイテムなし
+						</div>
+						<div
+							v-for="item in myBarterOffer"
+							:key="item.itemId"
+							:class="$style.displayItem"
+						>
+							<span>{{ item.name }}</span>
+							<span :class="$style.itemQty">x{{ item.quantity }}</span>
+						</div>
+						<div v-if="myBarterCurrency > 0" :class="$style.currencyDisplay">
+							<i class="ti ti-coin"></i>
+							{{ myBarterCurrency }}G
+						</div>
+					</div>
+				</template>
 			</div>
-
-			<!-- Actions -->
-			<div :class="$style.detailActions">
-				<button
-					:class="[$style.confirmBtn, (!canConfirmTrade || isSending) && $style.disabled]"
-					:disabled="!canConfirmTrade || isSending"
-					@click="addItemsAndConfirm"
-				>
-					<template v-if="isSending">
-						<MkLoading :em="true"/>
-					</template>
-					<template v-else>
-						<i class="ti ti-check"></i>
-						確認して取引
-					</template>
-				</button>
-				<button :class="$style.cancelBtn" @click="cancelTrade(tradeDetail.id)">
-					キャンセル
-				</button>
-			</div>
-		</template>
-	</div>
-
-	<!-- Trade list -->
-	<div v-else :class="$style.tradeList">
-		<div v-if="isLoading" :class="$style.loading">
-			<MkLoading/>
 		</div>
 
-		<template v-else>
-			<!-- Pending trades (received) -->
-			<div v-if="pendingTrades.length > 0" :class="$style.tradeSection">
-				<h3>受信したトレード</h3>
+		<!-- 両者ロック時: 交換ボタン -->
+		<div v-if="myConfirmed && otherConfirmed" :class="$style.exchangeSection">
+			<button
+				:class="[$style.actionBtn, $style.exchange]"
+				:disabled="isSending"
+				@click="executeTrade"
+			>
+				<template v-if="isSending">
+					<MkLoading :em="true"/>
+				</template>
+				<template v-else>
+					<i class="ti ti-arrows-exchange"></i>
+					交換する
+				</template>
+			</button>
+		</div>
+
+		<!-- アクションボタン -->
+		<div :class="$style.actionButtons">
+			<!-- 交換OK / 交換OK解除ボタン -->
+			<button
+				v-if="tradeDetail.status === 'accepted'"
+				:class="[$style.actionBtn, myConfirmed ? $style.warning : $style.success]"
+				:disabled="isSending"
+				@click="toggleConfirm"
+			>
+				<template v-if="isSending">
+					<MkLoading :em="true"/>
+				</template>
+				<template v-else-if="myConfirmed">
+					<i class="ti ti-x"></i>
+					交換OK解除
+				</template>
+				<template v-else>
+					<i class="ti ti-check"></i>
+					交換OK
+				</template>
+			</button>
+
+			<!-- 交換拒否ボタン -->
+			<button
+				:class="[$style.actionBtn, $style.danger]"
+				:disabled="isSending"
+				@click="cancelTrade"
+			>
+				<i class="ti ti-x"></i>
+				交換拒否
+			</button>
+		</div>
+	</div>
+
+	<!-- フォールバック: トレード相手なし -->
+	<div v-else :class="$style.fallback">
+		<i class="ti ti-arrows-exchange"></i>
+		<p>トレード相手を選択してください</p>
+		<button :class="$style.historyBtn" @click="$emit('showHistory')">
+			<i class="ti ti-history"></i>
+			トレード履歴を見る
+		</button>
+	</div>
+
+	<!-- インベントリモーダル -->
+	<div v-if="showInventoryModal" :class="$style.modal" @click.self="showInventoryModal = false">
+		<div :class="$style.modalContent">
+			<div :class="$style.modalHeader">
+				<span>インベントリから選択</span>
+				<button @click="showInventoryModal = false">
+					<i class="ti ti-x"></i>
+				</button>
+			</div>
+			<div :class="$style.modalBody">
+				<div v-if="inventory.length === 0" :class="$style.emptyMessage">
+					インベントリが空です
+				</div>
 				<div
-					v-for="trade in pendingTrades"
-					:key="trade.id"
-					:class="$style.tradeItem"
+					v-for="item in inventory"
+					:key="item.id"
+					:class="$style.itemCard"
+					@click="addToBarterOffer(item)"
 				>
-					<div :class="$style.tradeInfo">
-						<span :class="$style.tradeName">{{ trade.otherPlayerName }}</span>
-						<span :class="$style.tradeDetails">
-							{{ trade.itemCount }}アイテム
-							<template v-if="trade.currencyRequested > 0">
-								+ {{ trade.currencyRequested }}G
-							</template>
-						</span>
-					</div>
-					<div :class="$style.tradeActions">
-						<button :class="$style.acceptBtn" @click="respondToTradeRequest(trade.id, 'accept')">
-							<i class="ti ti-check"></i>
-						</button>
-						<button :class="$style.rejectBtn" @click="respondToTradeRequest(trade.id, 'decline')">
-							<i class="ti ti-x"></i>
-						</button>
-					</div>
+					<span :class="$style.itemName">{{ item.itemName }}</span>
+					<span :class="$style.itemQty">x{{ item.quantity }}</span>
 				</div>
 			</div>
-
-			<!-- Accepted trades (in negotiation) -->
-			<div v-if="acceptedTrades.length > 0" :class="$style.tradeSection">
-				<h3>交渉中のトレード</h3>
-				<div
-					v-for="trade in acceptedTrades"
-					:key="trade.id"
-					:class="[$style.tradeItem, $style.clickable]"
-					@click="loadTradeDetail(trade.id)"
-				>
-					<div :class="$style.tradeInfo">
-						<span :class="$style.tradeName">{{ trade.otherPlayerName }}</span>
-						<span :class="$style.tradeDetails">
-							{{ trade.itemCount }}アイテム - タップして詳細
-						</span>
-					</div>
-					<i class="ti ti-chevron-right"></i>
-				</div>
-			</div>
-
-			<!-- Sent trades (waiting) -->
-			<div v-if="sentTrades.length > 0" :class="$style.tradeSection">
-				<h3>送信したトレード</h3>
-				<div
-					v-for="trade in sentTrades"
-					:key="trade.id"
-					:class="$style.tradeItem"
-				>
-					<div :class="$style.tradeInfo">
-						<span :class="$style.tradeName">{{ trade.otherPlayerName }}</span>
-						<span :class="[$style.statusLabel, $style.pendingLabel]">
-							<i class="ti ti-clock"></i>
-							承認待ち
-						</span>
-					</div>
-					<button :class="$style.cancelBtn" @click="cancelTrade(trade.id)">
-						キャンセル
-					</button>
-				</div>
-			</div>
-
-			<!-- Declined trades -->
-			<div v-if="declinedTrades.length > 0" :class="$style.tradeSection">
-				<h3>拒否されたトレード</h3>
-				<div
-					v-for="trade in declinedTrades"
-					:key="trade.id"
-					:class="$style.tradeItem"
-				>
-					<div :class="$style.tradeInfo">
-						<span :class="$style.tradeName">{{ trade.otherPlayerName }}</span>
-						<span :class="[$style.statusLabel, $style.declinedLabel]">
-							<i class="ti ti-x"></i>
-							拒否されました
-						</span>
-					</div>
-				</div>
-			</div>
-
-			<!-- Empty state -->
-			<div v-if="pendingTrades.length === 0 && sentTrades.length === 0 && acceptedTrades.length === 0 && declinedTrades.length === 0" :class="$style.empty">
-				<i class="ti ti-arrows-exchange"></i>
-				<p>アクティブなトレードはありません</p>
-			</div>
-		</template>
+		</div>
 	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import MkLoading from '@/components/global/MkLoading.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import { useStream } from '@/stream.js';
 import * as os from '@/os.js';
 
-// 仕様: APIエラーコードとメッセージのマッピング
+// 仕様: エラーメッセージのマッピング
 const errorMessages: Record<string, string> = {
 	PLAYER_NOT_FOUND: 'プレイヤーが見つかりません',
 	TARGET_NOT_FOUND: '相手プレイヤーが見つかりません',
 	TARGET_OFFLINE: '相手プレイヤーはオフラインです',
 	CANNOT_TRADE_WITH_SELF: '自分自身とはトレードできません',
-	ITEM_NOT_OWNED: 'アイテムを所有していません',
-	INSUFFICIENT_QUANTITY: 'アイテムの数量が不足しています',
 	ACTIVE_TRADE_PENDING: '既に進行中のトレードがあります',
 	TRADE_NOT_FOUND: 'トレードが見つかりません',
-	NOT_PART_OF_TRADE: 'このトレードの参加者ではありません',
-	TRADE_EXPIRED: 'トレードの有効期限が切れています',
-	TRADE_NOT_CONFIRMABLE: 'このトレードは確認できません',
 	INSUFFICIENT_FUNDS: '通貨が不足しています',
 	INSUFFICIENT_ITEMS: 'アイテムが不足しています',
 };
@@ -398,20 +374,6 @@ interface TradeItem {
 	playerItemId?: string;
 	name: string;
 	quantity: number;
-}
-
-interface Trade {
-	id: string;
-	otherPlayerName: string;
-	otherPlayerId: string;
-	isInitiator: boolean;
-	status: string;
-	itemCount: number;
-	currencyOffered: number;
-	currencyRequested: number;
-	message: string | null;
-	initiatorConfirmed?: boolean;
-	targetConfirmed?: boolean;
 }
 
 interface TradeDetail {
@@ -443,54 +405,85 @@ interface InventoryItem {
 	itemName: string;
 	itemType: string;
 	quantity: number;
-	acquiredAt: string;
 }
 
 const props = defineProps<{
 	targetPlayer?: PlayerData | null;
+	initialTradeId?: string | null;
 }>();
 
 const emit = defineEmits<{
 	(e: 'close'): void;
 	(e: 'trade-sent'): void;
 	(e: 'trade-completed'): void;
+	(e: 'showHistory'): void;
 }>();
 
+// 状態
 const isLoading = ref(true);
 const isSending = ref(false);
-const pendingTrades = ref<Trade[]>([]);
-const sentTrades = ref<Trade[]>([]);
-const acceptedTrades = ref<Trade[]>([]);
-// 仕様: 最近拒否されたトレード（5分以内）
-const declinedTrades = ref<Trade[]>([]);
+const lastError = ref<string | null>(null);
+const tradeDetail = ref<TradeDetail | null>(null);
+const inventory = ref<InventoryItem[]>([]);
+const showInventoryModal = ref(false);
+
+// トレードリクエスト送信モード用
 const myOffer = ref<TradeItem[]>([]);
 const offeredCurrency = ref(0);
-const message = ref('');
-const selectedTradeId = ref<string | null>(null);
-const tradeDetail = ref<TradeDetail | null>(null);
-const isLoadingDetail = ref(false);
-const myCounterOffer = ref<TradeItem[]>([]);
-const myCounterCurrency = ref(0);
-const inventory = ref<InventoryItem[]>([]);
-const showInventorySelector = ref(false);
 
-const canSendTrade = computed(() => {
+// バーターモード用
+const myBarterOffer = ref<TradeItem[]>([]);
+const myBarterCurrency = ref(0);
+
+// 自分のプレイヤーID
+const myPlayerId = ref<string | null>(null);
+
+// WebSocket接続
+let stream: ReturnType<typeof useStream> | null = null;
+let channel: ReturnType<ReturnType<typeof useStream>['useChannel']> | null = null;
+
+// 計算プロパティ
+const canSendRequest = computed(() => {
 	return (myOffer.value.length > 0 || offeredCurrency.value > 0) && !isSending.value;
 });
 
-const canConfirmTrade = computed(() => {
-	if (!tradeDetail.value) return false;
-	// Both parties can confirm once trade is accepted
-	return tradeDetail.value.status === 'accepted';
+// 自分がinitiatorかtargetかを判定
+const amInitiator = computed(() => {
+	if (!tradeDetail.value || !myPlayerId.value) return false;
+	return tradeDetail.value.initiatorId === myPlayerId.value;
 });
 
-const myConfirmStatus = computed(() => {
-	if (!tradeDetail.value) return false;
-	// Determine which confirmation applies to current user
-	// This would need playerId from context - simplified for now
-	return tradeDetail.value.initiatorConfirmed || tradeDetail.value.targetConfirmed;
+// 相手のプレイヤー名
+const otherPlayerName = computed(() => {
+	if (!tradeDetail.value) return '';
+	return amInitiator.value ? tradeDetail.value.targetUsername : tradeDetail.value.initiatorUsername;
 });
 
+// 自分の確認状態
+const myConfirmed = computed(() => {
+	if (!tradeDetail.value) return false;
+	return amInitiator.value ? tradeDetail.value.initiatorConfirmed : tradeDetail.value.targetConfirmed;
+});
+
+// 相手の確認状態
+const otherConfirmed = computed(() => {
+	if (!tradeDetail.value) return false;
+	return amInitiator.value ? tradeDetail.value.targetConfirmed : tradeDetail.value.initiatorConfirmed;
+});
+
+// 相手のオファーアイテム
+const otherItems = computed(() => {
+	if (!tradeDetail.value) return [];
+	return amInitiator.value ? tradeDetail.value.targetItems : tradeDetail.value.initiatorItems;
+});
+
+// 相手のオファー通貨
+const otherCurrency = computed(() => {
+	if (!tradeDetail.value) return 0;
+	return amInitiator.value ? tradeDetail.value.targetCurrency : tradeDetail.value.initiatorCurrency;
+});
+
+// ヘルパー関数
 function getToken(): string | null {
 	const account = localStorage.getItem('account');
 	if (!account) return null;
@@ -501,299 +494,425 @@ function getToken(): string | null {
 	}
 }
 
-async function loadTrades(): Promise<void> {
-	isLoading.value = true;
+// アイテムの最大数量を取得
+function getMaxQuantity(itemId: string): number {
+	const item = inventory.value.find(i => i.itemId === itemId);
+	return item?.quantity ?? 1;
+}
 
-	try {
-		const result = await misskeyApi('noctown/trade/list', {});
-		const trades = result.trades || [];
+// アイテムがオファーに含まれているか
+function isItemInOffer(itemId: string): boolean {
+	return myOffer.value.some(i => i.itemId === itemId);
+}
 
-		// 仕様: トレードを種類別に分類
-		// - 受信: 相手からのpendingトレード
-		// - 送信: 自分からのpendingトレード
-		// - 交渉中: acceptedトレード
-		// - 拒否: declinedトレード（5分以内）
-		pendingTrades.value = trades.filter((t: Trade) => t.status === 'pending' && !t.isInitiator);
-		sentTrades.value = trades.filter((t: Trade) => t.status === 'pending' && t.isInitiator);
-		acceptedTrades.value = trades.filter((t: Trade) => t.status === 'accepted');
-		declinedTrades.value = trades.filter((t: Trade) => t.status === 'declined' && t.isInitiator);
-	} catch (e) {
-		console.error('Failed to load trades:', e);
-		pendingTrades.value = [];
-		sentTrades.value = [];
-		acceptedTrades.value = [];
-		declinedTrades.value = [];
-	} finally {
-		isLoading.value = false;
+// アイテムをオファーに追加/削除（トグル）
+function toggleItemInOffer(item: InventoryItem): void {
+	const existingIndex = myOffer.value.findIndex(i => i.itemId === item.itemId);
+	if (existingIndex >= 0) {
+		myOffer.value.splice(existingIndex, 1);
+	} else {
+		myOffer.value.push({
+			itemId: item.itemId,
+			playerItemId: item.id,
+			name: item.itemName,
+			quantity: 1,
+		});
 	}
 }
 
-async function loadTradeDetail(tradeId: string): Promise<void> {
-	isLoadingDetail.value = true;
-	selectedTradeId.value = tradeId;
+// オファーから削除
+function removeFromOffer(index: number): void {
+	myOffer.value.splice(index, 1);
+}
 
-	try {
-		const result = await misskeyApi('noctown/trade/detail', { tradeId });
-		tradeDetail.value = result as TradeDetail;
-	} catch (e) {
-		console.error('Failed to load trade detail:', e);
-		tradeDetail.value = null;
-	} finally {
-		isLoadingDetail.value = false;
+// バーターオファーから削除
+function removeFromBarterOffer(index: number): void {
+	myBarterOffer.value.splice(index, 1);
+	onOfferChanged();
+}
+
+// バーターオファーに追加
+function addToBarterOffer(item: InventoryItem): void {
+	const existing = myBarterOffer.value.find(i => i.itemId === item.itemId);
+	if (existing) {
+		if (existing.quantity < item.quantity) {
+			existing.quantity++;
+		}
+	} else {
+		myBarterOffer.value.push({
+			itemId: item.itemId,
+			playerItemId: item.id,
+			name: item.itemName,
+			quantity: 1,
+		});
+	}
+	showInventoryModal.value = false;
+	onOfferChanged();
+}
+
+// タッチ操作のハンドリング
+let touchStartY = 0;
+let touchStartTime = 0;
+const SCROLL_THRESHOLD = 10;
+const TAP_MAX_DURATION = 300;
+
+function handleTouchStart(event: TouchEvent): void {
+	if (event.touches.length > 0) {
+		touchStartY = event.touches[0].clientY;
+		touchStartTime = Date.now();
 	}
 }
 
+function handleItemTouch(event: TouchEvent, item: InventoryItem): void {
+	if (event.changedTouches.length > 0) {
+		const touchEndY = event.changedTouches[0].clientY;
+		const deltaY = Math.abs(touchEndY - touchStartY);
+		const duration = Date.now() - touchStartTime;
+
+		if (deltaY > SCROLL_THRESHOLD || duration > TAP_MAX_DURATION) {
+			return;
+		}
+
+		toggleItemInOffer(item);
+	}
+}
+
+// インベントリ読み込み
 async function loadInventory(): Promise<void> {
 	try {
 		const result = await misskeyApi('noctown/item/inventory', {});
-		inventory.value = (result as InventoryItem[]) || [];
+		inventory.value = result.items || [];
 	} catch (e) {
 		console.error('Failed to load inventory:', e);
 	}
 }
 
-function closeTradeDetail(): void {
-	selectedTradeId.value = null;
-	tradeDetail.value = null;
-	myCounterOffer.value = [];
-	myCounterCurrency.value = 0;
-}
-
-function addItemToCounterOffer(item: InventoryItem): void {
-	const existing = myCounterOffer.value.find(i => i.itemId === item.itemId);
-	if (existing) {
-		if (existing.quantity < item.quantity) {
-			existing.quantity++;
-		}
-	} else {
-		myCounterOffer.value.push({
-			itemId: item.itemId,
-			playerItemId: item.id,
-			name: item.itemName,
-			quantity: 1,
-		});
-	}
-	showInventorySelector.value = false;
-}
-
-function removeFromCounterOffer(index: number): void {
-	myCounterOffer.value.splice(index, 1);
-}
-
-async function respondToTradeRequest(tradeId: string, response: 'accept' | 'decline'): Promise<void> {
+// トレード詳細読み込み
+async function loadTradeDetail(tradeId: string): Promise<void> {
 	try {
-		await misskeyApi('noctown/trade/respond', { tradeId, response });
+		const result = await misskeyApi('noctown/trade/detail', { tradeId });
+		tradeDetail.value = result as TradeDetail;
 
-		if (response === 'accept') {
-			// Load trade detail for adding counter items
-			await loadTradeDetail(tradeId);
-			await loadInventory();
+		// 自分のオファーを反映
+		if (amInitiator.value) {
+			myBarterOffer.value = tradeDetail.value?.initiatorItems.map(item => ({
+				itemId: item.itemId,
+				name: item.name,
+				quantity: item.quantity,
+			})) || [];
+			myBarterCurrency.value = tradeDetail.value?.initiatorCurrency || 0;
 		} else {
-			await loadTrades();
+			myBarterOffer.value = tradeDetail.value?.targetItems.map(item => ({
+				itemId: item.itemId,
+				name: item.name,
+				quantity: item.quantity,
+			})) || [];
+			myBarterCurrency.value = tradeDetail.value?.targetCurrency || 0;
 		}
 	} catch (e: unknown) {
-		console.error('Failed to respond to trade:', e);
-		const errorCode = (e as { code?: string })?.code;
-		const message = errorCode && errorMessages[errorCode]
-			? errorMessages[errorCode]
-			: 'トレードへの応答に失敗しました';
-		await os.alert({
-			type: 'error',
-			title: 'トレードエラー',
-			text: message,
-		});
+		console.error('Failed to load trade detail:', e);
+		const err = e as { code?: string; message?: string };
+		lastError.value = errorMessages[err.code || ''] || 'トレードの読み込みに失敗しました';
 	}
 }
 
-async function addItemsAndConfirm(): Promise<void> {
-	if (!tradeDetail.value) return;
-
-	isSending.value = true;
+// プレイヤーID取得
+async function fetchMyPlayerId(): Promise<void> {
 	try {
-		// Add counter offer items if any
-		if (myCounterOffer.value.length > 0 || myCounterCurrency.value > 0) {
-			await misskeyApi('noctown/trade/add-items', {
-				tradeId: tradeDetail.value.id,
-				items: myCounterOffer.value
-					.filter(i => i.playerItemId != null)
-					.map(i => ({
-						playerItemId: i.playerItemId!,
-						quantity: i.quantity,
-					})),
-				currency: myCounterCurrency.value,
-			});
-		}
-
-		// Confirm the trade
-		await misskeyApi('noctown/trade/confirm', { tradeId: tradeDetail.value.id });
-
-		// Reload to check if completed
-		await loadTradeDetail(tradeDetail.value.id);
-
-		if (tradeDetail.value?.status === 'completed') {
-			emit('trade-completed');
-			closeTradeDetail();
-			await loadTrades();
-		}
-	} catch (e: unknown) {
-		console.error('Failed to confirm trade:', e);
-		const errorCode = (e as { code?: string })?.code;
-		const message = errorCode && errorMessages[errorCode]
-			? errorMessages[errorCode]
-			: 'トレードの確認に失敗しました';
-		await os.alert({
-			type: 'error',
-			title: 'トレードエラー',
-			text: message,
+		const res = await window.fetch('/api/noctown/player', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			credentials: 'same-origin',
+			body: JSON.stringify({ i: getToken() }),
 		});
-	} finally {
-		isSending.value = false;
+		if (res.ok) {
+			const data = await res.json();
+			myPlayerId.value = data.id;
+		}
+	} catch (e) {
+		console.error('Failed to fetch player id:', e);
 	}
 }
 
-function removeFromOffer(index: number): void {
-	myOffer.value.splice(index, 1);
-}
-
-// 仕様: インベントリから指定アイテムの最大数量を取得
-function getMaxQuantityForItem(itemId: string): number {
-	const item = inventory.value.find(i => i.itemId === itemId);
-	return item?.quantity ?? 1;
-}
-
-// 仕様: アイテムがオファーに含まれているか確認
-function isItemInOffer(itemId: string): boolean {
-	return myOffer.value.some(i => i.itemId === itemId);
-}
-
-// 仕様: アイテムをオファーに追加/削除（トグル）
-function toggleItemInOffer(item: InventoryItem): void {
-	const existingIndex = myOffer.value.findIndex(i => i.itemId === item.itemId);
-	if (existingIndex >= 0) {
-		// 既にオファーにある場合は削除
-		myOffer.value.splice(existingIndex, 1);
-	} else {
-		// オファーにない場合は追加
-		myOffer.value.push({
-			itemId: item.itemId,
-			playerItemId: item.id,
-			name: item.itemName,
-			quantity: 1,
-		});
-	}
-}
-
-// 仕様: 初回オファーにアイテムを追加
-function addItemToOffer(item: InventoryItem): void {
-	const existing = myOffer.value.find(i => i.itemId === item.itemId);
-	if (existing) {
-		if (existing.quantity < item.quantity) {
-			existing.quantity++;
-		}
-	} else {
-		myOffer.value.push({
-			itemId: item.itemId,
-			playerItemId: item.id,
-			name: item.itemName,
-			quantity: 1,
-		});
-	}
-}
-
+// トレードリクエスト送信
 async function sendTradeRequest(): Promise<void> {
-	if (!props.targetPlayer || !canSendTrade.value) return;
+	if (!props.targetPlayer || !canSendRequest.value) return;
 
 	isSending.value = true;
-
 	try {
-		await misskeyApi('noctown/trade/barter', {
+		// 仕様: trade/requestはitemIdを使用（playerItemIdではない）
+		await misskeyApi('noctown/trade/request', {
 			targetPlayerId: props.targetPlayer.id,
 			offeredItems: myOffer.value.map(item => ({
-				playerItemId: item.playerItemId || item.itemId,
+				itemId: item.playerItemId || item.itemId,
 				quantity: item.quantity,
 			})),
 			offeredCurrency: offeredCurrency.value,
-			message: message.value || null,
 		});
 
 		emit('trade-sent');
 		emit('close');
 	} catch (e: unknown) {
 		console.error('Failed to send trade:', e);
-		// 仕様: エラーメッセージをアラート表示
-		const errorCode = (e as { code?: string })?.code;
-		const message = errorCode && errorMessages[errorCode]
-			? errorMessages[errorCode]
-			: 'トレードリクエストの送信に失敗しました';
+		const err = e as { code?: string };
 		await os.alert({
 			type: 'error',
 			title: 'トレードエラー',
-			text: message,
+			text: errorMessages[err.code || ''] || 'トレードリクエストの送信に失敗しました',
 		});
 	} finally {
 		isSending.value = false;
 	}
 }
 
-async function confirmTrade(tradeId: string): Promise<void> {
+// オファー変更時の処理（サーバーに同期）
+async function onOfferChanged(): Promise<void> {
+	if (!tradeDetail.value || tradeDetail.value.status !== 'accepted') return;
+
 	try {
-		const result = await misskeyApi('noctown/trade/confirm', { tradeId });
-
-		if (result.status === 'completed') {
-			emit('trade-completed');
-		}
-
-		await loadTrades();
-	} catch (e: unknown) {
-		console.error('Failed to confirm trade:', e);
-		const errorCode = (e as { code?: string })?.code;
-		const message = errorCode && errorMessages[errorCode]
-			? errorMessages[errorCode]
-			: 'トレードの確認に失敗しました';
-		await os.alert({
-			type: 'error',
-			title: 'トレードエラー',
-			text: message,
+		await misskeyApi('noctown/trade/add-items', {
+			tradeId: tradeDetail.value.id,
+			items: myBarterOffer.value
+				.filter(i => i.playerItemId != null)
+				.map(i => ({
+					playerItemId: i.playerItemId!,
+					quantity: i.quantity,
+				})),
+			currency: myBarterCurrency.value,
 		});
+	} catch (e) {
+		console.error('Failed to update offer:', e);
 	}
 }
 
-async function cancelTrade(tradeId: string): Promise<void> {
+// 交換OK/解除トグル
+async function toggleConfirm(): Promise<void> {
+	if (!tradeDetail.value) return;
+
+	isSending.value = true;
 	try {
-		await misskeyApi('noctown/trade/cancel', { tradeId });
-
-		if (selectedTradeId.value === tradeId) {
-			closeTradeDetail();
+		if (myConfirmed.value) {
+			// 仕様: 交換OK解除
+			await (misskeyApi as any)('noctown/trade/unconfirm', { tradeId: tradeDetail.value.id });
+		} else {
+			// 仕様: 交換OK
+			await misskeyApi('noctown/trade/confirm', { tradeId: tradeDetail.value.id });
 		}
+		// 詳細を再読み込み
+		await loadTradeDetail(tradeDetail.value.id);
+	} catch (e: unknown) {
+		console.error('Failed to toggle confirm:', e);
+		const err = e as { code?: string };
+		await os.alert({
+			type: 'error',
+			title: 'トレードエラー',
+			text: errorMessages[err.code || ''] || '操作に失敗しました',
+		});
+	} finally {
+		isSending.value = false;
+	}
+}
 
-		await loadTrades();
+// 仕様: 交換実行（両者がconfirmed状態の時のみ）
+async function executeTrade(): Promise<void> {
+	if (!tradeDetail.value) return;
+
+	isSending.value = true;
+	try {
+		await (misskeyApi as any)('noctown/trade/execute', { tradeId: tradeDetail.value.id });
+
+		await os.alert({
+			type: 'success',
+			title: '交換成功',
+			text: '交換が成功しました',
+		});
+
+		emit('trade-completed');
+		emit('close');
+	} catch (e: unknown) {
+		console.error('Failed to execute trade:', e);
+		const err = e as { code?: string };
+		await os.alert({
+			type: 'error',
+			title: '交換失敗',
+			text: errorMessages[err.code || ''] || '交換が行われませんでした',
+		});
+	} finally {
+		isSending.value = false;
+	}
+}
+
+// トレードキャンセル
+async function cancelTrade(): Promise<void> {
+	if (!tradeDetail.value) return;
+
+	isSending.value = true;
+	try {
+		await misskeyApi('noctown/trade/cancel', { tradeId: tradeDetail.value.id });
+		emit('close');
 	} catch (e: unknown) {
 		console.error('Failed to cancel trade:', e);
-		const errorCode = (e as { code?: string })?.code;
-		const message = errorCode && errorMessages[errorCode]
-			? errorMessages[errorCode]
-			: 'トレードのキャンセルに失敗しました';
+		const err = e as { code?: string };
 		await os.alert({
 			type: 'error',
 			title: 'トレードエラー',
-			text: message,
+			text: errorMessages[err.code || ''] || 'キャンセルに失敗しました',
 		});
+	} finally {
+		isSending.value = false;
 	}
 }
 
-onMounted(() => {
-	if (!props.targetPlayer) {
-		loadTrades();
+// パネルを閉じる（トレードキャンセルも同時に行う）
+function handleClose(): void {
+	if (tradeDetail.value && (tradeDetail.value.status === 'pending' || tradeDetail.value.status === 'accepted')) {
+		// 進行中のトレードをキャンセル
+		cancelTrade();
 	} else {
-		// 仕様: トレード作成モードではインベントリをロード
-		loadInventory();
+		emit('close');
+	}
+}
+
+// 再読み込み
+async function retryLoad(): Promise<void> {
+	lastError.value = null;
+	isLoading.value = true;
+	if (props.initialTradeId) {
+		await loadTradeDetail(props.initialTradeId);
+	}
+	isLoading.value = false;
+}
+
+// 仕様: WebSocketイベント設定
+function setupWebSocket(): void {
+	stream = useStream();
+	channel = stream.useChannel('noctown') as any;
+
+	// 仕様: トレードアイテム変更イベント（型はnoctownチャンネル固有なのでas anyでキャスト）
+	(channel as any).on('tradeItemsChanged', (body: {
+		tradeId: string;
+		items: Array<{ itemId: string; itemName: string; quantity: number }>;
+		currency: number;
+		isFromInitiator: boolean;
+	}) => {
+		if (tradeDetail.value && tradeDetail.value.id === body.tradeId) {
+			// 相手のオファーを更新
+			if ((amInitiator.value && !body.isFromInitiator) || (!amInitiator.value && body.isFromInitiator)) {
+				// これは相手からの変更
+				if (body.isFromInitiator) {
+					tradeDetail.value.initiatorItems = body.items.map(i => ({
+						itemId: i.itemId,
+						name: i.itemName,
+						quantity: i.quantity,
+					}));
+					tradeDetail.value.initiatorCurrency = body.currency;
+				} else {
+					tradeDetail.value.targetItems = body.items.map(i => ({
+						itemId: i.itemId,
+						name: i.itemName,
+						quantity: i.quantity,
+					}));
+					tradeDetail.value.targetCurrency = body.currency;
+				}
+			}
+		}
+	});
+
+	// 仕様: 相手が交換OKを押した
+	(channel as any).on('tradeConfirmed', (body: { tradeId: string; confirmedBy: string }) => {
+		if (tradeDetail.value && tradeDetail.value.id === body.tradeId) {
+			if (body.confirmedBy === 'initiator') {
+				tradeDetail.value.initiatorConfirmed = true;
+			} else {
+				tradeDetail.value.targetConfirmed = true;
+			}
+		}
+	});
+
+	// 仕様: 確認リセット（アイテム変更による）
+	(channel as any).on('tradeConfirmReset', (body: { tradeId: string; resetBy: string }) => {
+		if (tradeDetail.value && tradeDetail.value.id === body.tradeId) {
+			// 両者のconfirmedをリセット
+			tradeDetail.value.initiatorConfirmed = false;
+			tradeDetail.value.targetConfirmed = false;
+		}
+	});
+
+	// 仕様: トレード完了
+	(channel as any).on('tradeCompleted', (body: { tradeId: string }) => {
+		if (tradeDetail.value && tradeDetail.value.id === body.tradeId) {
+			os.alert({
+				type: 'success',
+				title: '交換成功',
+				text: '交換が成功しました',
+			});
+			emit('trade-completed');
+			emit('close');
+		}
+	});
+
+	// 仕様: トレードキャンセル
+	(channel as any).on('tradeCancelled', (body: { tradeId: string; reason?: string }) => {
+		if (tradeDetail.value && tradeDetail.value.id === body.tradeId) {
+			const message = body.reason === 'disconnected'
+				? '相手が切断しました'
+				: '相手がトレードをキャンセルしました';
+			os.alert({
+				type: 'warning',
+				title: 'トレードキャンセル',
+				text: message,
+			});
+			emit('close');
+		}
+	});
+}
+
+// 初期化
+onMounted(async () => {
+	isLoading.value = true;
+	lastError.value = null;
+
+	try {
+		await fetchMyPlayerId();
+		await loadInventory();
+
+		if (props.initialTradeId) {
+			await loadTradeDetail(props.initialTradeId);
+		}
+
+		setupWebSocket();
+	} catch (e: unknown) {
+		console.error('Failed to initialize:', e);
+		const err = e as { message?: string };
+		lastError.value = err.message || '初期化に失敗しました';
+	} finally {
 		isLoading.value = false;
 	}
 });
 
-// 仕様: 外部からトレードリストを更新できるように公開
+// initialTradeIdが変更された場合
+watch(() => props.initialTradeId, async (newId) => {
+	if (newId) {
+		isLoading.value = true;
+		await loadTradeDetail(newId);
+		isLoading.value = false;
+	}
+});
+
+onUnmounted(() => {
+	if (channel) {
+		channel.dispose();
+		channel = null;
+	}
+});
+
+// 外部から呼び出し可能なメソッド
 defineExpose({
-	refreshTrades: loadTrades,
+	refreshTrades: async () => {
+		if (tradeDetail.value) {
+			await loadTradeDetail(tradeDetail.value.id);
+		}
+	},
 });
 </script>
 
@@ -801,8 +920,9 @@ defineExpose({
 .container {
 	display: flex;
 	flex-direction: column;
-	height: 100%;
-	max-height: 600px;
+	width: 100%;
+	max-width: 600px;
+	max-height: 80vh;
 	background: var(--MI_THEME-panel);
 	border-radius: 12px;
 	overflow: hidden;
@@ -837,13 +957,49 @@ defineExpose({
 	}
 }
 
-.tradeWith {
+.loading, .error, .fallback {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 40px;
+	text-align: center;
+
+	i {
+		font-size: 48px;
+		margin-bottom: 12px;
+		opacity: 0.5;
+	}
+
+	p {
+		margin: 0 0 16px 0;
+		opacity: 0.8;
+	}
+}
+
+.error i {
+	color: #ef4444;
+}
+
+.retryBtn, .historyBtn {
+	padding: 10px 20px;
+	background: var(--MI_THEME-accent);
+	color: white;
+	border: none;
+	border-radius: 8px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.requestMode, .barterMode {
 	flex: 1;
 	overflow-y: auto;
 	padding: 16px;
 }
 
-.playerInfo {
+.playerInfo, .partnerInfo {
 	display: flex;
 	align-items: center;
 	gap: 12px;
@@ -870,60 +1026,69 @@ defineExpose({
 	justify-content: center;
 }
 
-.section {
-	margin-bottom: 16px;
-
-	h3 {
-		margin: 0 0 8px 0;
-		font-size: 14px;
-		color: var(--MI_THEME-fg);
-		opacity: 0.7;
-	}
-}
-
-// 仕様: トレード作成時の2カラムレイアウト
-.tradeColumns {
+// 2カラムレイアウト
+.tradeColumns, .barterColumns {
 	display: flex;
 	gap: 16px;
 	margin-bottom: 16px;
-	min-height: 200px;
-	max-height: 300px;
 }
 
-.inventoryColumn,
-.offerColumn {
+.column, .barterColumn {
 	flex: 1;
+	min-width: 0;
 	display: flex;
 	flex-direction: column;
-	min-width: 0;
+	background: var(--MI_THEME-bg);
+	border-radius: 8px;
+	padding: 12px;
+
+	&.locked {
+		opacity: 0.7;
+		background: var(--MI_THEME-divider);
+	}
 }
 
 .columnTitle {
-	margin: 0 0 8px 0;
-	font-size: 13px;
-	color: var(--MI_THEME-fg);
-	opacity: 0.8;
+	margin: 0 0 12px 0;
+	font-size: 14px;
 	display: flex;
 	align-items: center;
-	gap: 6px;
+	gap: 8px;
 }
 
-.embeddedInventory {
+.confirmedBadge {
+	margin-left: auto;
+	padding: 2px 8px;
+	background: #22c55e;
+	color: white;
+	border-radius: 10px;
+	font-size: 11px;
+	font-weight: 600;
+}
+
+.itemList, .offerList, .offerDisplay {
 	flex: 1;
 	overflow-y: auto;
-	background: var(--MI_THEME-bg);
-	border-radius: 8px;
-	padding: 8px;
 	display: flex;
 	flex-direction: column;
-	gap: 6px;
+	gap: 8px;
+	min-height: 120px;
+	max-height: 200px;
 }
 
-.inventoryItem {
+.emptyMessage {
+	text-align: center;
+	color: var(--MI_THEME-fg);
+	opacity: 0.5;
+	padding: 20px;
+}
+
+.itemCard {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	padding: 10px 12px;
+	min-height: 44px;
 	background: var(--MI_THEME-panel);
 	border-radius: 6px;
 	cursor: pointer;
@@ -939,73 +1104,46 @@ defineExpose({
 	}
 }
 
-.itemInfo {
+.displayItem {
 	display: flex;
-	flex-direction: column;
-	gap: 2px;
-}
-
-.itemName {
-	font-size: 13px;
-	font-weight: 500;
-}
-
-.itemType {
-	font-size: 11px;
-	color: var(--MI_THEME-fg);
-	opacity: 0.5;
-}
-
-.offerItemName {
-	flex: 1;
-	font-size: 13px;
-}
-
-.emptyOffer {
-	color: var(--MI_THEME-fg);
-	opacity: 0.4;
-	font-size: 12px;
-	text-align: center;
-	padding: 20px;
-}
-
-.offerList {
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
+	align-items: center;
+	justify-content: space-between;
+	padding: 8px 10px;
+	background: var(--MI_THEME-panel);
+	border-radius: 4px;
 }
 
 .offerItem {
 	display: flex;
 	align-items: center;
 	gap: 8px;
-	padding: 8px 12px;
-	background: var(--MI_THEME-bg);
-	border-radius: 6px;
+	padding: 8px 10px;
+	background: var(--MI_THEME-panel);
+	border-radius: 4px;
 }
 
-.quantity {
-	margin-left: auto;
+.itemName {
+	flex: 1;
+	font-size: 13px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.itemQty {
 	color: var(--MI_THEME-fg);
 	opacity: 0.6;
+	font-size: 12px;
 }
 
-// 仕様: 個数指定入力フィールド
 .quantityInput {
-	width: 60px;
-	margin-left: auto;
+	width: 50px;
 	padding: 4px 8px;
-	background: var(--MI_THEME-panel);
+	text-align: center;
+	background: var(--MI_THEME-bg);
 	border: 1px solid var(--MI_THEME-divider);
 	border-radius: 4px;
 	color: var(--MI_THEME-fg);
-	text-align: center;
-	font-size: 14px;
-
-	&:focus {
-		outline: none;
-		border-color: var(--MI_THEME-accent);
-	}
 }
 
 .removeBtn {
@@ -1021,19 +1159,19 @@ defineExpose({
 	}
 }
 
-.addBtn {
+.addItemBtn {
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	gap: 6px;
 	padding: 10px;
-	background: var(--MI_THEME-bg);
+	margin-top: 8px;
+	background: transparent;
 	border: 2px dashed var(--MI_THEME-divider);
 	border-radius: 6px;
 	cursor: pointer;
 	color: var(--MI_THEME-fg);
 	opacity: 0.6;
-	transition: all 0.15s;
 
 	&:hover {
 		opacity: 1;
@@ -1041,11 +1179,13 @@ defineExpose({
 	}
 }
 
-.currencyInput {
+.currencySection {
 	display: flex;
 	align-items: center;
 	gap: 8px;
 	margin-top: 12px;
+	padding-top: 12px;
+	border-top: 1px solid var(--MI_THEME-divider);
 
 	label {
 		display: flex;
@@ -1054,183 +1194,23 @@ defineExpose({
 	}
 }
 
-.input {
+.currencyInput {
 	width: 100px;
 	padding: 8px;
-	background: var(--MI_THEME-bg);
-	border: 1px solid var(--MI_THEME-divider);
-	border-radius: 6px;
-	color: var(--MI_THEME-fg);
-}
-
-.textarea {
-	width: 100%;
-	min-height: 80px;
-	padding: 10px;
-	background: var(--MI_THEME-bg);
-	border: 1px solid var(--MI_THEME-divider);
-	border-radius: 6px;
-	color: var(--MI_THEME-fg);
-	resize: vertical;
-}
-
-.sendBtn {
-	width: 100%;
-	padding: 12px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	gap: 8px;
-	background: var(--MI_THEME-accent);
-	border: none;
-	border-radius: 8px;
-	cursor: pointer;
-	color: white;
-	font-size: 15px;
-	font-weight: 600;
-	transition: opacity 0.15s;
-
-	&:hover:not(.disabled) {
-		opacity: 0.9;
-	}
-}
-
-.disabled {
-	opacity: 0.5;
-	cursor: not-allowed;
-}
-
-.tradeList {
-	flex: 1;
-	overflow-y: auto;
-	padding: 16px;
-}
-
-.loading, .empty {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	height: 200px;
-	color: var(--MI_THEME-fg);
-	opacity: 0.6;
-
-	i {
-		font-size: 48px;
-		margin-bottom: 8px;
-	}
-}
-
-.tradeSection {
-	margin-bottom: 20px;
-
-	h3 {
-		margin: 0 0 12px 0;
-		font-size: 14px;
-		color: var(--MI_THEME-fg);
-		opacity: 0.7;
-	}
-}
-
-.tradeItem {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding: 12px;
-	background: var(--MI_THEME-bg);
-	border-radius: 8px;
-	margin-bottom: 8px;
-}
-
-.tradeInfo {
-	display: flex;
-	flex-direction: column;
-	gap: 2px;
-}
-
-.tradeName {
-	font-weight: 600;
-}
-
-.tradeDetails {
-	font-size: 12px;
-	color: var(--MI_THEME-fg);
-	opacity: 0.6;
-}
-
-.tradeActions {
-	display: flex;
-	gap: 8px;
-}
-
-.acceptBtn, .rejectBtn {
-	width: 32px;
-	height: 32px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	border: none;
-	border-radius: 6px;
-	cursor: pointer;
-	transition: opacity 0.15s;
-
-	&:hover {
-		opacity: 0.8;
-	}
-}
-
-.acceptBtn {
-	background: #22c55e;
-	color: white;
-}
-
-.rejectBtn {
-	background: #ef4444;
-	color: white;
-}
-
-.cancelBtn {
-	padding: 6px 12px;
 	background: var(--MI_THEME-panel);
 	border: 1px solid var(--MI_THEME-divider);
 	border-radius: 6px;
-	cursor: pointer;
 	color: var(--MI_THEME-fg);
-	font-size: 13px;
-
-	&:hover {
-		background: var(--MI_THEME-buttonHoverBg);
-	}
 }
 
-.clickable {
-	cursor: pointer;
-
-	&:hover {
-		background: var(--MI_THEME-buttonHoverBg);
-	}
-}
-
-.tradeDetail {
-	flex: 1;
-	overflow-y: auto;
-	padding: 16px;
-}
-
-.backBtn {
+.currencyDisplay {
 	display: flex;
 	align-items: center;
-	gap: 6px;
-	padding: 8px 12px;
-	background: none;
-	border: none;
-	cursor: pointer;
-	color: var(--MI_THEME-fg);
-	margin-bottom: 16px;
-
-	&:hover {
-		opacity: 0.7;
-	}
+	gap: 4px;
+	padding: 8px 10px;
+	color: #f59e0b;
+	background: var(--MI_THEME-panel);
+	border-radius: 4px;
 }
 
 .statusBadge {
@@ -1239,7 +1219,7 @@ defineExpose({
 	border-radius: 20px;
 	font-size: 12px;
 	font-weight: 600;
-	margin-bottom: 16px;
+	margin-bottom: 12px;
 
 	&.pending {
 		background: #fbbf24;
@@ -1250,124 +1230,94 @@ defineExpose({
 		background: #3b82f6;
 		color: #fff;
 	}
-
-	&.completed {
-		background: #22c55e;
-		color: #fff;
-	}
 }
 
-.offerSection {
-	background: var(--MI_THEME-bg);
-	border-radius: 8px;
-	padding: 12px;
-	margin-bottom: 12px;
-
-	h3 {
-		margin: 0 0 8px 0;
-		font-size: 13px;
-		color: var(--MI_THEME-fg);
-		opacity: 0.8;
-	}
-}
-
-.itemsList {
-	display: flex;
-	flex-direction: column;
-	gap: 6px;
-}
-
-.itemRow, .currencyRow {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding: 6px 8px;
-	background: var(--MI_THEME-panel);
-	border-radius: 4px;
-}
-
-.currencyRow {
-	color: #f59e0b;
-	gap: 4px;
-	justify-content: flex-start;
-}
-
-.qty {
-	color: var(--MI_THEME-fg);
-	opacity: 0.6;
-	font-size: 12px;
-}
-
-.noItems {
-	color: var(--MI_THEME-fg);
-	opacity: 0.4;
-	font-size: 12px;
-	padding: 8px;
+.exchangeSection {
+	margin: 16px 0;
 	text-align: center;
 }
 
-.confirmed {
+.actionButtons {
+	display: flex;
+	gap: 12px;
+	margin-top: 16px;
+}
+
+.actionBtn {
+	flex: 1;
+	padding: 12px;
+	border: none;
+	border-radius: 8px;
+	cursor: pointer;
+	font-size: 14px;
+	font-weight: 600;
 	display: flex;
 	align-items: center;
-	gap: 4px;
-	margin-top: 8px;
-	color: #22c55e;
-	font-size: 12px;
-}
-
-.exchangeArrow {
-	display: flex;
 	justify-content: center;
-	padding: 8px;
-	color: var(--MI_THEME-fg);
-	opacity: 0.4;
-	font-size: 24px;
-}
+	gap: 8px;
+	transition: opacity 0.15s;
 
-.counterOfferSection {
-	background: var(--MI_THEME-accentedBg);
-	border-radius: 8px;
-	padding: 12px;
-	margin-bottom: 12px;
+	&:hover:not(.disabled) {
+		opacity: 0.9;
+	}
 
-	h3 {
-		margin: 0 0 8px 0;
-		font-size: 13px;
-		color: var(--MI_THEME-fg);
+	&.disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+
+	&.primary {
+		background: var(--MI_THEME-accent);
+		color: white;
+	}
+
+	&.success {
+		background: #22c55e;
+		color: white;
+	}
+
+	&.warning {
+		background: #f59e0b;
+		color: white;
+	}
+
+	&.danger {
+		background: #ef4444;
+		color: white;
+	}
+
+	&.exchange {
+		background: linear-gradient(135deg, #22c55e, #3b82f6);
+		color: white;
+		font-size: 16px;
+		padding: 16px;
 	}
 }
 
-.counterItems {
-	display: flex;
-	flex-direction: column;
-	gap: 6px;
-}
-
-.counterItem {
+// モーダル
+.modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.5);
 	display: flex;
 	align-items: center;
-	gap: 8px;
-	padding: 6px 8px;
-	background: var(--MI_THEME-panel);
-	border-radius: 4px;
+	justify-content: center;
+	z-index: 1000;
 }
 
-.inventoryModal {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
+.modalContent {
 	width: 90%;
-	max-width: 300px;
+	max-width: 350px;
 	max-height: 400px;
 	background: var(--MI_THEME-panel);
 	border-radius: 12px;
-	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 	overflow: hidden;
-	z-index: 100;
 }
 
-.inventoryHeader {
+.modalHeader {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -1382,111 +1332,12 @@ defineExpose({
 	}
 }
 
-.inventoryGrid {
+.modalBody {
 	padding: 12px;
 	max-height: 300px;
 	overflow-y: auto;
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
-}
-
-.inventoryItem {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	padding: 10px 12px;
-	background: var(--MI_THEME-bg);
-	border-radius: 6px;
-	cursor: pointer;
-
-	&:hover {
-		background: var(--MI_THEME-buttonHoverBg);
-	}
-}
-
-.messageBox {
-	display: flex;
-	align-items: flex-start;
-	gap: 8px;
-	padding: 12px;
-	background: var(--MI_THEME-bg);
-	border-radius: 8px;
-	margin-bottom: 16px;
-	font-size: 13px;
-	color: var(--MI_THEME-fg);
-	opacity: 0.8;
-}
-
-.detailActions {
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
-}
-
-.confirmBtn {
-	width: 100%;
-	padding: 12px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	gap: 8px;
-	background: #22c55e;
-	border: none;
-	border-radius: 8px;
-	cursor: pointer;
-	color: white;
-	font-size: 15px;
-	font-weight: 600;
-	transition: opacity 0.15s;
-
-	&:hover:not(.disabled) {
-		opacity: 0.9;
-	}
-}
-
-// 仕様: トレードステータスラベル（背景色あり、ゆっくり点滅）
-.statusLabel {
-	display: inline-flex;
-	align-items: center;
-	gap: 4px;
-	padding: 4px 10px;
-	border-radius: 12px;
-	font-size: 12px;
-	font-weight: 600;
-}
-
-.pendingLabel {
-	background: rgba(251, 191, 36, 0.2);
-	color: #f59e0b;
-	animation: pulse-pending 2s ease-in-out infinite;
-}
-
-.declinedLabel {
-	background: rgba(239, 68, 68, 0.2);
-	color: #ef4444;
-	animation: pulse-declined 2s ease-in-out infinite;
-}
-
-@keyframes pulse-pending {
-	0%, 100% {
-		opacity: 1;
-		background: rgba(251, 191, 36, 0.2);
-	}
-	50% {
-		opacity: 0.6;
-		background: rgba(251, 191, 36, 0.35);
-	}
-}
-
-@keyframes pulse-declined {
-	0%, 100% {
-		opacity: 1;
-		background: rgba(239, 68, 68, 0.2);
-	}
-	50% {
-		opacity: 0.6;
-		background: rgba(239, 68, 68, 0.35);
-	}
 }
 </style>

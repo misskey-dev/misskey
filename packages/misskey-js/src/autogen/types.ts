@@ -3247,6 +3247,24 @@ export type paths = {
          */
         post: operations['noctown___bulletin___unlike'];
     };
+    '/noctown/chat-history': {
+        /**
+         * noctown/chat-history
+         * @description No description provided.
+         *
+         *     **Credential required**: *Yes* / **Permission**: *read:account*
+         */
+        post: operations['noctown___chat-history'];
+    };
+    '/noctown/chat-log/receive': {
+        /**
+         * noctown/chat-log/receive
+         * @description No description provided.
+         *
+         *     **Credential required**: *Yes* / **Permission**: *write:account*
+         */
+        post: operations['noctown___chat-log___receive'];
+    };
     '/noctown/chest/open': {
         /**
          * noctown/chest/open
@@ -3625,6 +3643,24 @@ export type paths = {
          */
         post: operations['noctown___item___detail'];
     };
+    '/noctown/item/drop': {
+        /**
+         * noctown/item/drop
+         * @description No description provided.
+         *
+         *     **Credential required**: *Yes* / **Permission**: *write:account*
+         */
+        post: operations['noctown___item___drop'];
+    };
+    '/noctown/item/drop-currency': {
+        /**
+         * noctown/item/drop-currency
+         * @description No description provided.
+         *
+         *     **Credential required**: *Yes* / **Permission**: *write:account*
+         */
+        post: operations['noctown___item___drop-currency'];
+    };
     '/noctown/item/dropped': {
         /**
          * noctown/item/dropped
@@ -3660,6 +3696,15 @@ export type paths = {
          *     **Credential required**: *Yes* / **Permission**: *write:account*
          */
         post: operations['noctown___item___pickup'];
+    };
+    '/noctown/item/pickup-placed': {
+        /**
+         * noctown/item/pickup-placed
+         * @description No description provided.
+         *
+         *     **Credential required**: *Yes* / **Permission**: *write:account*
+         */
+        post: operations['noctown___item___pickup-placed'];
     };
     '/noctown/item/place': {
         /**
@@ -3714,6 +3759,60 @@ export type paths = {
          *     **Credential required**: *Yes* / **Permission**: *read:account*
          */
         post: operations['noctown___npc___nearby'];
+    };
+    '/noctown/pets/create': {
+        /**
+         * noctown/pets/create
+         * @description No description provided.
+         *
+         *     **Credential required**: *Yes* / **Permission**: *write:account*
+         */
+        post: operations['noctown___pets___create'];
+    };
+    '/noctown/pets/delete': {
+        /**
+         * noctown/pets/delete
+         * @description No description provided.
+         *
+         *     **Credential required**: *Yes* / **Permission**: *write:account*
+         */
+        post: operations['noctown___pets___delete'];
+    };
+    '/noctown/pets/list': {
+        /**
+         * noctown/pets/list
+         * @description No description provided.
+         *
+         *     **Credential required**: *Yes* / **Permission**: *read:account*
+         */
+        post: operations['noctown___pets___list'];
+    };
+    '/noctown/pets/nearby': {
+        /**
+         * noctown/pets/nearby
+         * @description No description provided.
+         *
+         *     **Credential required**: *Yes* / **Permission**: *read:account*
+         */
+        post: operations['noctown___pets___nearby'];
+    };
+    '/noctown/pets/rename': {
+        /**
+         * noctown/pets/rename
+         * @description No description provided.
+         *
+         *     **Credential required**: *Yes* / **Permission**: *write:account*
+         */
+        post: operations['noctown___pets___rename'];
+    };
+    '/noctown/pets/show': {
+        /**
+         * noctown/pets/show
+         * @description No description provided.
+         *
+         *     **Credential required**: *Yes* / **Permission**: *read:account*
+         */
+        post: operations['noctown___pets___show'];
     };
     '/noctown/player': {
         /**
@@ -32206,6 +32305,152 @@ export interface operations {
             };
         };
     };
+    'noctown___chat-history': {
+        requestBody: {
+            content: {
+                'application/json': {
+                    /** @default 50 */
+                    limit?: number;
+                };
+            };
+        };
+        responses: {
+            /** @description OK (with results) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': {
+                        id: string;
+                        playerId: string;
+                        username: string;
+                        name: string | null;
+                        avatarUrl: string | null;
+                        content: string;
+                        positionX: number;
+                        positionZ: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        isMine: boolean;
+                    }[];
+                };
+            };
+            /** @description Client error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Authentication error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Forbidden error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description I'm Ai */
+            418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
+    'noctown___chat-log___receive': {
+        requestBody: {
+            content: {
+                'application/json': {
+                    /** @description The chat log ID to record as received */
+                    messageId: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK (with results) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': {
+                        success: boolean;
+                    };
+                };
+            };
+            /** @description Client error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Authentication error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Forbidden error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description I'm Ai */
+            418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
     noctown___chest___open: {
         requestBody: {
             content: {
@@ -35259,6 +35504,150 @@ export interface operations {
             };
         };
     };
+    noctown___item___drop: {
+        requestBody: {
+            content: {
+                'application/json': {
+                    playerItemId: string;
+                    /** @default 1 */
+                    quantity?: number;
+                    positionX: number;
+                    positionY: number;
+                    positionZ: number;
+                };
+            };
+        };
+        responses: {
+            /** @description OK (with results) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': {
+                        success: boolean;
+                        droppedItemId: string | null;
+                    };
+                };
+            };
+            /** @description Client error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Authentication error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Forbidden error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description I'm Ai */
+            418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
+    'noctown___item___drop-currency': {
+        requestBody: {
+            content: {
+                'application/json': {
+                    amount: number;
+                    positionX: number;
+                    positionY: number;
+                    positionZ: number;
+                };
+            };
+        };
+        responses: {
+            /** @description OK (with results) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': {
+                        success: boolean;
+                        droppedItemId: string | null;
+                    };
+                };
+            };
+            /** @description Client error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Authentication error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Forbidden error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description I'm Ai */
+            418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
     noctown___item___dropped: {
         requestBody: {
             content: {
@@ -35282,6 +35671,10 @@ export interface operations {
                         itemId: string;
                         itemName: string;
                         itemType: string;
+                        emoji: string | null;
+                        imageUrl: string | null;
+                        rarity: number;
+                        quantity: number;
                         positionX: number;
                         positionY: number;
                         positionZ: number;
@@ -35346,14 +35739,20 @@ export interface operations {
                 };
                 content: {
                     'application/json': {
-                        id: string;
-                        itemId: string;
-                        itemName: string;
-                        itemType: string;
-                        quantity: number;
-                        /** Format: date-time */
-                        acquiredAt: string;
-                    }[];
+                        balance: number;
+                        items: {
+                            id: string;
+                            itemId: string;
+                            itemName: string;
+                            itemType: string;
+                            imageUrl: string | null;
+                            emoji: string | null;
+                            rarity: number;
+                            quantity: number;
+                            /** Format: date-time */
+                            acquiredAt: string;
+                        }[];
+                    };
                 };
             };
             /** @description Client error */
@@ -35550,6 +35949,73 @@ export interface operations {
             };
         };
     };
+    'noctown___item___pickup-placed': {
+        requestBody: {
+            content: {
+                'application/json': {
+                    placedItemId: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK (with results) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': {
+                        success: boolean;
+                    };
+                };
+            };
+            /** @description Client error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Authentication error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Forbidden error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description I'm Ai */
+            418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
     noctown___item___place: {
         requestBody: {
             content: {
@@ -35646,6 +36112,7 @@ export interface operations {
                         itemId: string;
                         itemName: string;
                         itemType: string;
+                        ownerId: string;
                         ownerUsername: string;
                         positionX: number;
                         positionY: number;
@@ -35985,6 +36452,449 @@ export interface operations {
             };
         };
     };
+    noctown___pets___create: {
+        requestBody: {
+            content: {
+                'application/json': {
+                    /** @enum {string} */
+                    type: 'cow' | 'chicken';
+                    name?: string;
+                    x: number;
+                    z: number;
+                };
+            };
+        };
+        responses: {
+            /** @description OK (with results) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': {
+                        id: string;
+                        type: string;
+                        name: string | null;
+                        positionX: number;
+                        positionY: number;
+                        positionZ: number;
+                        spawnX: number;
+                        spawnZ: number;
+                        flavorText: string;
+                    };
+                };
+            };
+            /** @description Client error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Authentication error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Forbidden error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description I'm Ai */
+            418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
+    noctown___pets___delete: {
+        requestBody: {
+            content: {
+                'application/json': {
+                    petId: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK (with results) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': {
+                        success: boolean;
+                    };
+                };
+            };
+            /** @description Client error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Authentication error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Forbidden error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description I'm Ai */
+            418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
+    noctown___pets___list: {
+        responses: {
+            /** @description OK (with results) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': {
+                        id: string;
+                        type: string;
+                        name: string | null;
+                        positionX: number;
+                        positionY: number;
+                        positionZ: number;
+                        spawnX: number;
+                        spawnZ: number;
+                        flavorText: string;
+                        hunger: number;
+                        happiness: number;
+                    }[];
+                };
+            };
+            /** @description Client error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Authentication error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Forbidden error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description I'm Ai */
+            418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
+    noctown___pets___nearby: {
+        requestBody: {
+            content: {
+                'application/json': {
+                    centerX: number;
+                    centerZ: number;
+                    /** @default 50 */
+                    radius?: number;
+                };
+            };
+        };
+        responses: {
+            /** @description OK (with results) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': {
+                        id: string;
+                        type: string;
+                        name: string | null;
+                        ownerName: string | null;
+                        positionX: number;
+                        positionY: number;
+                        positionZ: number;
+                        spawnX: number;
+                        spawnZ: number;
+                        flavorText: string;
+                    }[];
+                };
+            };
+            /** @description Client error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Authentication error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Forbidden error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description I'm Ai */
+            418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
+    noctown___pets___rename: {
+        requestBody: {
+            content: {
+                'application/json': {
+                    petId: string;
+                    name: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK (with results) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': {
+                        success: boolean;
+                        name: string;
+                    };
+                };
+            };
+            /** @description Client error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Authentication error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Forbidden error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description I'm Ai */
+            418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
+    noctown___pets___show: {
+        requestBody: {
+            content: {
+                'application/json': {
+                    petId: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK (with results) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': {
+                        id: string;
+                        type: string;
+                        name: string | null;
+                        ownerName: string | null;
+                        ownerId: string;
+                        positionX: number;
+                        positionY: number;
+                        positionZ: number;
+                        spawnX: number;
+                        spawnZ: number;
+                        flavorText: string;
+                        hunger: number;
+                        happiness: number;
+                    };
+                };
+            };
+            /** @description Client error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Authentication error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Forbidden error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description I'm Ai */
+            418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
     noctown___player: {
         responses: {
             /** @description OK (with results) */
@@ -35995,6 +36905,8 @@ export interface operations {
                 content: {
                     'application/json': {
                         id: string;
+                        username: string;
+                        avatarUrl: string | null;
                         positionX: number;
                         positionY: number;
                         positionZ: number;
@@ -36006,6 +36918,7 @@ export interface operations {
                         createdAt: string;
                         isSuspended: boolean;
                         isSilenced: boolean;
+                        worldId: string;
                     };
                 };
             };
@@ -36277,6 +37190,7 @@ export interface operations {
                         id: string;
                         userId: string;
                         username: string;
+                        name: string | null;
                         avatarUrl: string | null;
                         positionX: number;
                         positionY: number;
@@ -36285,6 +37199,7 @@ export interface operations {
                         isOnline: boolean;
                         isSuspended: boolean;
                         isSilenced: boolean;
+                        isTrading: boolean;
                     }[];
                 };
             };

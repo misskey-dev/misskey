@@ -35,6 +35,16 @@ export const meta = {
 			code: 'TRADE_FAILED',
 			id: 'c1d2e3f4-0016-0005-0001-000000000002',
 		},
+		tradeNotFound: {
+			message: 'Trade not found or already processed.',
+			code: 'TRADE_NOT_FOUND',
+			id: 'c1d2e3f4-0016-0005-0001-000000000003',
+		},
+		tradeExpired: {
+			message: 'Trade has expired.',
+			code: 'TRADE_EXPIRED',
+			id: 'c1d2e3f4-0016-0005-0001-000000000004',
+		},
 	},
 } as const;
 
@@ -56,11 +66,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private tradeService: TradeService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			console.log('[Trade Respond API] Called:', { tradeId: ps.tradeId, response: ps.response, userId: me.id });
+
 			// Get player
 			const player = await this.noctownPlayersRepository.findOneBy({ userId: me.id });
 			if (!player) {
+				console.log('[Trade Respond API] Player not found for userId:', me.id);
 				throw new ApiError(meta.errors.playerNotFound);
 			}
+
+			console.log('[Trade Respond API] Found player:', { playerId: player.id, userId: me.id });
 
 			// Respond to trade
 			const result = await this.tradeService.respondToTrade(
@@ -69,7 +84,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				ps.response as 'accept' | 'decline',
 			);
 
+			console.log('[Trade Respond API] Trade service result:', result);
+
 			if (!result.success) {
+				// 仕様: エラー理由に応じた詳細なエラーをスロー
+				if (result.error === 'Trade not found or already processed') {
+					throw new ApiError(meta.errors.tradeNotFound);
+				} else if (result.error === 'Trade has expired') {
+					throw new ApiError(meta.errors.tradeExpired);
+				}
 				throw new ApiError(meta.errors.tradeFailed);
 			}
 

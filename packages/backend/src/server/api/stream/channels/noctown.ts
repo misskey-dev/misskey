@@ -45,7 +45,8 @@ class NoctownChannel extends Channel {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		(this.subscriber as any).on('noctownStream', this.onNoctownEvent);
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		(this.subscriber as any).on(`noctownPlayerStream:${this.playerId}`, this.send);
+		// 仕様: noctownPlayerStreamのイベントをクライアントに転送
+		(this.subscriber as any).on(`noctownPlayerStream:${this.playerId}`, this.onPlayerStreamEvent);
 
 		// Mark player as online and broadcast
 		await this.noctownService.setPlayerOnline(this.playerId, this.user.id);
@@ -54,6 +55,14 @@ class NoctownChannel extends Channel {
 	@bindThis
 	private onNoctownEvent(data: { type: string; body: JsonValue }) {
 		// Filter events based on proximity or relevance
+		this.send(data.type, data.body);
+	}
+
+	// 仕様: プレイヤー固有のイベントをクライアントに転送
+	// トレード承認、トレードリクエスト等のイベントを処理
+	@bindThis
+	private onPlayerStreamEvent(data: { type: string; body: JsonValue }) {
+		console.log('[Noctown Channel] Player stream event received:', data.type, this.playerId);
 		this.send(data.type, data.body);
 	}
 
@@ -314,7 +323,7 @@ class NoctownChannel extends Channel {
 		(this.subscriber as any).off('noctownStream', this.onNoctownEvent);
 		if (this.playerId) {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			(this.subscriber as any).off(`noctownPlayerStream:${this.playerId}`, this.send);
+			(this.subscriber as any).off(`noctownPlayerStream:${this.playerId}`, this.onPlayerStreamEvent);
 
 			// Mark player as offline and broadcast full PlayerData
 			// Note: Offline transition now happens through background job (processOfflineTransitions)

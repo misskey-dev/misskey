@@ -541,6 +541,10 @@ import type {
 	NoctownBulletinPostsResponse,
 	NoctownBulletinUnlikeRequest,
 	NoctownBulletinUnlikeResponse,
+	NoctownChatHistoryRequest,
+	NoctownChatHistoryResponse,
+	NoctownChatLogReceiveRequest,
+	NoctownChatLogReceiveResponse,
 	NoctownChestOpenRequest,
 	NoctownChestOpenResponse,
 	NoctownChickenCollectEggsRequest,
@@ -618,6 +622,10 @@ import type {
 	NoctownItemCreateResponse,
 	NoctownItemDetailRequest,
 	NoctownItemDetailResponse,
+	NoctownItemDropRequest,
+	NoctownItemDropResponse,
+	NoctownItemDropCurrencyRequest,
+	NoctownItemDropCurrencyResponse,
 	NoctownItemDroppedRequest,
 	NoctownItemDroppedResponse,
 	NoctownItemInventoryResponse,
@@ -625,6 +633,8 @@ import type {
 	NoctownItemMyCreationsResponse,
 	NoctownItemPickupRequest,
 	NoctownItemPickupResponse,
+	NoctownItemPickupPlacedRequest,
+	NoctownItemPickupPlacedResponse,
 	NoctownItemPlaceRequest,
 	NoctownItemPlaceResponse,
 	NoctownItemPlacedRequest,
@@ -636,6 +646,17 @@ import type {
 	NoctownMapChunkResponse,
 	NoctownNpcNearbyRequest,
 	NoctownNpcNearbyResponse,
+	NoctownPetsCreateRequest,
+	NoctownPetsCreateResponse,
+	NoctownPetsDeleteRequest,
+	NoctownPetsDeleteResponse,
+	NoctownPetsListResponse,
+	NoctownPetsNearbyRequest,
+	NoctownPetsNearbyResponse,
+	NoctownPetsRenameRequest,
+	NoctownPetsRenameResponse,
+	NoctownPetsShowRequest,
+	NoctownPetsShowResponse,
 	NoctownPlayerResponse,
 	NoctownPlayerEquipSkinRequest,
 	NoctownPlayerEquipSkinResponse,
@@ -1214,6 +1235,8 @@ export type Endpoints = {
 	'noctown/bulletin/like': { req: NoctownBulletinLikeRequest; res: NoctownBulletinLikeResponse };
 	'noctown/bulletin/posts': { req: NoctownBulletinPostsRequest; res: NoctownBulletinPostsResponse };
 	'noctown/bulletin/unlike': { req: NoctownBulletinUnlikeRequest; res: NoctownBulletinUnlikeResponse };
+	'noctown/chat-history': { req: NoctownChatHistoryRequest; res: NoctownChatHistoryResponse };
+	'noctown/chat-log/receive': { req: NoctownChatLogReceiveRequest; res: NoctownChatLogReceiveResponse };
 	'noctown/chest/open': { req: NoctownChestOpenRequest; res: NoctownChestOpenResponse };
 	'noctown/chicken/collect-eggs': { req: NoctownChickenCollectEggsRequest; res: NoctownChickenCollectEggsResponse };
 	'noctown/chicken/feed': { req: NoctownChickenFeedRequest; res: NoctownChickenFeedResponse };
@@ -1256,16 +1279,25 @@ export type Endpoints = {
 	'noctown/house/wall/set': { req: NoctownHouseWallSetRequest; res: NoctownHouseWallSetResponse };
 	'noctown/item/create': { req: NoctownItemCreateRequest; res: NoctownItemCreateResponse };
 	'noctown/item/detail': { req: NoctownItemDetailRequest; res: NoctownItemDetailResponse };
+	'noctown/item/drop': { req: NoctownItemDropRequest; res: NoctownItemDropResponse };
+	'noctown/item/drop-currency': { req: NoctownItemDropCurrencyRequest; res: NoctownItemDropCurrencyResponse };
 	'noctown/item/dropped': { req: NoctownItemDroppedRequest; res: NoctownItemDroppedResponse };
 	'noctown/item/inventory': { req: EmptyRequest; res: NoctownItemInventoryResponse };
 	'noctown/item/my-creations': { req: NoctownItemMyCreationsRequest; res: NoctownItemMyCreationsResponse };
 	'noctown/item/pickup': { req: NoctownItemPickupRequest; res: NoctownItemPickupResponse };
+	'noctown/item/pickup-placed': { req: NoctownItemPickupPlacedRequest; res: NoctownItemPickupPlacedResponse };
 	'noctown/item/place': { req: NoctownItemPlaceRequest; res: NoctownItemPlaceResponse };
 	'noctown/item/placed': { req: NoctownItemPlacedRequest; res: NoctownItemPlacedResponse };
 	'noctown/item/retrieve': { req: NoctownItemRetrieveRequest; res: NoctownItemRetrieveResponse };
 	'noctown/item/update-creation': { req: NoctownItemUpdateCreationRequest; res: EmptyResponse };
 	'noctown/map/chunk': { req: NoctownMapChunkRequest; res: NoctownMapChunkResponse };
 	'noctown/npc/nearby': { req: NoctownNpcNearbyRequest; res: NoctownNpcNearbyResponse };
+	'noctown/pets/create': { req: NoctownPetsCreateRequest; res: NoctownPetsCreateResponse };
+	'noctown/pets/delete': { req: NoctownPetsDeleteRequest; res: NoctownPetsDeleteResponse };
+	'noctown/pets/list': { req: EmptyRequest; res: NoctownPetsListResponse };
+	'noctown/pets/nearby': { req: NoctownPetsNearbyRequest; res: NoctownPetsNearbyResponse };
+	'noctown/pets/rename': { req: NoctownPetsRenameRequest; res: NoctownPetsRenameResponse };
+	'noctown/pets/show': { req: NoctownPetsShowRequest; res: NoctownPetsShowResponse };
 	'noctown/player': { req: EmptyRequest; res: NoctownPlayerResponse };
 	'noctown/player/equip-skin': { req: NoctownPlayerEquipSkinRequest; res: NoctownPlayerEquipSkinResponse };
 	'noctown/player/position': { req: NoctownPlayerPositionRequest; res: NoctownPlayerPositionResponse };

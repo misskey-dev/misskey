@@ -81,6 +81,22 @@ export class NoctownTrade {
 	})
 	public targetConfirmed: boolean;
 
+	// T041-T043: トランザクションID管理（不正防止）
+	// 仕様: 「交換OK」押下時にトランザクションIDを発行し、トレード実行時に両者のIDを検証
+	@Column('varchar', {
+		length: 128,
+		nullable: true,
+		comment: 'Initiator transaction ID hash (items + currency snapshot)',
+	})
+	public initiatorTransactionId: string | null;
+
+	@Column('varchar', {
+		length: 128,
+		nullable: true,
+		comment: 'Target transaction ID hash (items + currency snapshot)',
+	})
+	public targetTransactionId: string | null;
+
 	@Column('text', {
 		nullable: true,
 		comment: 'Optional message from initiator',

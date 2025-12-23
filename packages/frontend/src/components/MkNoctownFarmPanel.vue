@@ -330,14 +330,17 @@ async function loadFarmData() {
 		chickens.value = chickensRes;
 		cows.value = cowsRes;
 
+		// 仕様: APIレスポンスが{balance, items}形式なのでitemsを取り出す
+		const inventoryItems = inventoryRes.items;
+
 		// Filter for seed items
-		seedItems.value = inventoryRes.filter((item: InventoryItem) =>
+		seedItems.value = inventoryItems.filter((item: InventoryItem) =>
 			item.itemName.includes('seed') || item.itemName.includes('Seed') ||
 			item.itemName.includes('種') || item.itemType === 'seed'
 		);
 
 		// 釣り竿を所持しているかチェック
-		hasFishingRod.value = inventoryRes.some((item: InventoryItem) =>
+		hasFishingRod.value = inventoryItems.some((item: InventoryItem) =>
 			item.itemName.includes('釣り竿') || item.itemName.includes('竿') ||
 			item.itemName.includes('fishing rod') || item.itemType === 'tool'
 		);

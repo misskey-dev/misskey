@@ -8,7 +8,9 @@ import { useStream } from '@/stream.js';
 import * as os from '@/os.js';
 import { NoctownEngine, type PlayerData, type ChunkData } from './engine.js';
 
-// 仕様: トレードリクエストイベントの型定義
+// 仕様: T008 WebSocket新規イベント用の型定義
+
+// トレードリクエストイベント（受信者向け）
 interface TradeRequestEvent {
 	tradeId: string;
 	initiatorId: string;
@@ -17,6 +19,72 @@ interface TradeRequestEvent {
 	offeredCurrency: number;
 	message: string | null;
 	expiresAt: string;
+}
+
+// T008: トレードリクエスト送信確認イベント（送信者向け）
+interface TradeRequestSentEvent {
+	tradeId: string;
+	targetId: string;
+	targetUsername: string;
+	status: 'pending';
+	expiresAt: string;
+}
+
+// T008: トレード承認イベント（両者向け）
+interface TradeAcceptedEvent {
+	tradeId: string;
+	initiatorId: string;
+	targetId: string;
+	initiatorUsername: string;
+	targetUsername: string;
+}
+
+// T008: トレード拒否イベント（送信者向け）
+interface TradeDeclinedEvent {
+	tradeId: string;
+	targetId: string;
+	targetUsername: string;
+}
+
+// T008: トレードアイテム変更イベント（相手向け）
+interface TradeItemsChangedEvent {
+	tradeId: string;
+	items: Array<{ itemId: string; itemName: string; quantity: number }>;
+	currency: number;
+	isFromInitiator: boolean;
+}
+
+// T008: トレード確認イベント（相手向け）
+interface TradeConfirmedEvent {
+	tradeId: string;
+	confirmedBy: string; // playerId
+	confirmedByUsername: string;
+}
+
+// T008: トレード確認リセットイベント（相手向け）
+interface TradeConfirmResetEvent {
+	tradeId: string;
+	resetBy: string; // playerId
+}
+
+// T008: トレード完了イベント（両者向け）
+interface TradeCompletedEvent {
+	tradeId: string;
+	initiatorId: string;
+	targetId: string;
+}
+
+// T008: トレードキャンセルイベント（相手向け）
+interface TradeCancelledEvent {
+	tradeId: string;
+	cancelledBy: string; // playerId
+	reason?: 'user_cancelled' | 'disconnected' | 'expired';
+}
+
+// T008: プレイヤートレード状態変更イベント（全員向け）
+interface PlayerTradingStatusChangedEvent {
+	playerId: string;
+	isTrading: boolean;
 }
 
 // T015: インベントリアイテムの型定義
@@ -45,6 +113,25 @@ export interface FarmActionResult {
 	} | null;
 }
 
+// T014: 送信済みトレードの状態（承認待ちトースト用）
+export interface PendingTradeState {
+	tradeId: string;
+	targetId: string;
+	targetUsername: string;
+	expiresAt: string;
+}
+
+// T014: 受信トレードリクエストの状態（承認確認トースト用）
+export interface IncomingTradeRequest {
+	tradeId: string;
+	initiatorId: string;
+	initiatorUsername: string;
+	itemCount: number;
+	currency: number;
+	message: string | null;
+	expiresAt: string;
+}
+
 export interface NoctownState {
 	isConnected: Ref<boolean>;
 	isLoading: Ref<boolean>;
@@ -62,6 +149,16 @@ export interface NoctownState {
 	performFarmAction: (action: FarmActionType, params?: Record<string, unknown>) => Promise<FarmActionResult>;
 	// 仕様: トレードリクエスト受信時のコールバックを設定
 	setOnTradeRequest: (callback: (() => void) | null) => void;
+	// T014: 送信済みトレード状態（承認待ちトースト表示用）
+	pendingTrade: Ref<PendingTradeState | null>;
+	// T014: 受信トレードリクエスト（承認確認トースト表示用）
+	incomingTradeRequest: Ref<IncomingTradeRequest | null>;
+	// T014: トレードリクエスト送信確認イベント時のコールバック
+	setOnTradeRequestSent: (callback: ((data: PendingTradeState) => void) | null) => void;
+	// T014: 送信済みトレードをクリア
+	clearPendingTrade: () => void;
+	// T014: 受信トレードリクエストをクリア
+	clearIncomingTradeRequest: () => void;
 }
 
 interface NoctownPlayerResponse {
@@ -267,6 +364,10 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 	const inventory = ref<InventoryItem[]>([]);
 	// プレイヤー座標を公開（FarmPanel等で使用）
 	const playerPosition = ref({ x: 0, y: 0, z: 0 });
+	// T014: 送信済みトレード状態（承認待ちトースト表示用）
+	const pendingTrade = ref<PendingTradeState | null>(null);
+	// T014: 受信トレードリクエスト（承認確認トースト表示用）
+	const incomingTradeRequest = ref<IncomingTradeRequest | null>(null);
 
 	let engine: NoctownEngine | null = null;
 	let stream: ReturnType<typeof useStream> | null = null;
@@ -287,6 +388,8 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 
 	// 仕様: トレードリクエスト受信時のコールバック
 	let onTradeRequestCallback: (() => void) | null = null;
+	// T014: トレードリクエスト送信確認イベント時のコールバック
+	let onTradeRequestSentCallback: ((data: PendingTradeState) => void) | null = null;
 
 	// Movement state
 	let currentX = 0;
@@ -413,6 +516,17 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 			// 仕様: トレードリクエスト受信イベント
 			channel.on('tradeRequest', (body: TradeRequestEvent) => {
 				handleTradeRequest(body);
+			});
+
+			// T014: トレードリクエスト送信確認イベント（送信者向け）
+			channel.on('tradeRequestSent', (body: {
+				tradeId: string;
+				targetId: string;
+				targetUsername: string;
+				status: string;
+				expiresAt: string;
+			}) => {
+				handleTradeRequestSent(body);
 			});
 
 			// Monitor connection state (check if stream object exists and has state)
@@ -675,6 +789,46 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 	// 仕様: トレードリクエスト受信時のコールバックを設定
 	function setOnTradeRequest(callback: (() => void) | null): void {
 		onTradeRequestCallback = callback;
+	}
+
+	// T014: トレードリクエスト送信確認イベント時のコールバックを設定
+	function setOnTradeRequestSent(callback: ((data: PendingTradeState) => void) | null): void {
+		onTradeRequestSentCallback = callback;
+	}
+
+	// T014: トレードリクエスト送信確認イベントの処理
+	function handleTradeRequestSent(data: {
+		tradeId: string;
+		targetId: string;
+		targetUsername: string;
+		status: string;
+		expiresAt: string;
+	}): void {
+		console.log('[Noctown Trade] Trade request sent:', data);
+
+		// 送信済みトレード状態を更新（承認待ちトースト表示用）
+		const pendingState: PendingTradeState = {
+			tradeId: data.tradeId,
+			targetId: data.targetId,
+			targetUsername: data.targetUsername,
+			expiresAt: data.expiresAt,
+		};
+		pendingTrade.value = pendingState;
+
+		// コールバックを呼び出し
+		if (onTradeRequestSentCallback) {
+			onTradeRequestSentCallback(pendingState);
+		}
+	}
+
+	// T014: 送信済みトレードをクリア
+	function clearPendingTrade(): void {
+		pendingTrade.value = null;
+	}
+
+	// T014: 受信トレードリクエストをクリア
+	function clearIncomingTradeRequest(): void {
+		incomingTradeRequest.value = null;
 	}
 
 	// FR-014: 表示中の全プレイヤーにPingを送信
@@ -1024,5 +1178,15 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 		performFarmAction,
 		// 仕様: トレードリクエスト受信時のコールバックを設定
 		setOnTradeRequest,
+		// T014: 送信済みトレード状態（承認待ちトースト表示用）
+		pendingTrade,
+		// T014: 受信トレードリクエスト（承認確認トースト表示用）
+		incomingTradeRequest,
+		// T014: トレードリクエスト送信確認イベント時のコールバック
+		setOnTradeRequestSent,
+		// T014: 送信済みトレードをクリア
+		clearPendingTrade,
+		// T014: 受信トレードリクエストをクリア
+		clearIncomingTradeRequest,
 	};
 }

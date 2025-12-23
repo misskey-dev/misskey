@@ -30,6 +30,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 					X: {{ currentX.toFixed(1) }}, Y: {{ currentY.toFixed(1) }}, Z: {{ currentZ.toFixed(1) }}
 				</div>
 
+				<!-- 仕様: TradePanelデバッグ情報（パネルが閉じても残る） -->
+				<div v-if="tradePanelDebug" :class="$style.tradePanelDebugPersistent">
+					{{ tradePanelDebug }}
+				</div>
+
 				<!-- FR-016: Top-right button group (inventory + chat history + reload + settings) -->
 				<div v-if="!isLoading && !error" :class="$style.topRightButtonGroup">
 					<button
@@ -152,14 +157,56 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<!-- FR-070: Trade panel overlay -->
 				<!-- 仕様: トレードパネルはオーバーレイ表示、対象プレイヤーがいる場合は新規トレード申請モード -->
 				<div v-if="showTradePanel" :class="$style.tradePanelOverlay" @click.self="showTradePanel = false">
+					<!-- デバッグ: オーバーレイに状態表示（パネルが消えても見える） -->
+					<div :class="$style.tradeDebugInfo">
+						showTradePanel: {{ showTradePanel }} |
+						activeTradeId: {{ activeTradeId }} |
+						tradeTargetPlayer: {{ !!tradeTargetPlayer }}
+					</div>
+					<!-- 仕様: keyでactiveTradeIdが変更されるたびにコンポーネントを再マウント -->
 					<TradePanel
+						:key="activeTradeId ?? 'new'"
 						ref="tradePanelRef"
 						:targetPlayer="tradeTargetPlayer"
+						:initialTradeId="activeTradeId"
 						@close="handleCloseTradePanel"
 						@trade-sent="handleTradeSent"
 						@trade-completed="handleTradeCompleted"
+						@showHistory="handleShowTradeHistory"
+						@debug-update="tradePanelDebug = $event"
 					/>
 				</div>
+
+				<!-- T040: Trade history overlay -->
+				<div v-if="showTradeHistory" :class="$style.tradePanelOverlay" @click.self="showTradeHistory = false">
+					<TradeHistory @close="showTradeHistory = false"/>
+				</div>
+
+				<!-- T015: 仕様 T010-T011 送信者向け「承認待ち」トースト -->
+				<TradePendingToast
+					v-if="pendingTradeToast"
+					:tradeId="pendingTradeToast.tradeId"
+					:targetId="pendingTradeToast.targetId"
+					:targetUsername="pendingTradeToast.targetUsername"
+					:expiresAt="pendingTradeToast.expiresAt"
+					@cancel="handlePendingTradeCancel"
+					@expired="handlePendingTradeExpired"
+				/>
+
+				<!-- T015: 仕様 T012-T013 受信者向け「承認確認」トースト -->
+				<TradeRequestToast
+					v-if="incomingTradeToast"
+					:tradeId="incomingTradeToast.tradeId"
+					:initiatorId="incomingTradeToast.initiatorId"
+					:initiatorUsername="incomingTradeToast.initiatorUsername"
+					:itemCount="incomingTradeToast.itemCount"
+					:currency="incomingTradeToast.currency"
+					:tradeMessage="incomingTradeToast.message"
+					:expiresAt="incomingTradeToast.expiresAt"
+					@accept="handleIncomingTradeAccept"
+					@decline="handleIncomingTradeDecline"
+					@expired="handleIncomingTradeExpired"
+				/>
 
 				<!-- FR-022, FR-023: Pet info floating window -->
 				<MkNoctownPetInfoWindow
@@ -252,6 +299,7 @@ import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import MkLoading from '@/components/global/MkLoading.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkNoctownInventory from '@/components/MkNoctownInventory.vue';
@@ -263,6 +311,11 @@ import MkNoctownPlayerInfoWindow from '@/components/MkNoctownPlayerInfoWindow.vu
 import MkNoctownPetInfoWindow from '@/components/MkNoctownPetInfoWindow.vue';
 import MkNoctownPlacedItemInfoWindow from '@/components/MkNoctownPlacedItemInfoWindow.vue';
 import TradePanel from '@/components/noctown/TradePanel.vue';
+// T039: トレード履歴コンポーネント
+import TradeHistory from '@/components/noctown/TradeHistory.vue';
+// T015: 仕様 T010-T013 トースト通知コンポーネント
+import TradePendingToast from '@/components/noctown/TradePendingToast.vue';
+import TradeRequestToast from '@/components/noctown/TradeRequestToast.vue';
 import NoctownJoystick from '@/components/MkNoctown/NoctownJoystick.vue';
 import NoctownChatInput from '@/components/MkNoctown/NoctownChatInput.vue';
 import { useStream } from '@/stream.js';
@@ -414,6 +467,31 @@ const tradeTargetPlayer = ref<{
 } | null>(null);
 // 仕様: TradePanelへの参照（外部からrefreshTradesを呼び出すため）
 const tradePanelRef = ref<InstanceType<typeof TradePanel> | null>(null);
+// T040: トレード履歴パネルの表示状態
+const showTradeHistory = ref(false);
+// 仕様: 承認済みトレードID（交渉モードで直接開く場合に使用）
+const activeTradeId = ref<string | null>(null);
+// 仕様: TradePanelからのデバッグ情報（パネルが閉じても残る）
+const tradePanelDebug = ref<string>('');
+
+// T015: 仕様 T010-T013 トースト通知用の状態
+// 送信者向け「承認待ち」トースト
+const pendingTradeToast = ref<{
+	tradeId: string;
+	targetId: string;
+	targetUsername: string;
+	expiresAt: string;
+} | null>(null);
+// 受信者向け「承認確認」トースト
+const incomingTradeToast = ref<{
+	tradeId: string;
+	initiatorId: string;
+	initiatorUsername: string;
+	itemCount: number;
+	currency: number;
+	message: string | null;
+	expiresAt: string;
+} | null>(null);
 
 // FR-019: Typing indicator state
 let isTyping = false;
@@ -759,9 +837,86 @@ async function connectStream(): Promise<void> {
 		handlePlayerPingReceived(body);
 	});
 
-	// 仕様: トレードリクエスト受信イベント（トレードパネルを自動更新）
+	// 仕様: トレードリクエスト受信イベント（受信者向けトースト表示）
 	connection.value.on('tradeRequest', (body: unknown) => {
 		handleTradeRequest(body);
+	});
+
+	// T015: 仕様 T009-T011 トレードリクエスト送信確認イベント（送信者向けトースト表示）
+	connection.value.on('tradeRequestSent', (body: {
+		tradeId: string;
+		targetId: string;
+		targetUsername: string;
+		status: string;
+		expiresAt: string;
+	}) => {
+		handleTradeRequestSent(body);
+	});
+
+	// 仕様: トレード承認イベント - 両者に直接バーターモードでパネルを開く
+	console.log('[Noctown Trade] Registering tradeAccepted event listener');
+	connection.value.on('tradeAccepted', (body: {
+		tradeId: string;
+		initiatorId: string;
+		targetId: string;
+		initiatorUsername: string;
+		targetUsername: string;
+		initiatorAvatarUrl: string | null;
+		targetAvatarUrl: string | null;
+	}) => {
+		console.log('[Noctown Trade] tradeAccepted event fired:', body);
+		handleTradeAccepted(body);
+	});
+
+	// T017: トレード拒否イベント（送信者に「拒否されました」通知）
+	connection.value.on('tradeDeclined', (body: {
+		tradeId: string;
+		targetId: string;
+		targetUsername: string;
+	}) => {
+		handleTradeDeclined(body);
+	});
+
+	// T021: トレードアイテム変更イベント（リアルタイム同期）
+	connection.value.on('tradeItemsChanged', (body: {
+		tradeId: string;
+		items: Array<{ itemId: string; itemName: string; quantity: number }>;
+		currency: number;
+		isFromInitiator: boolean;
+	}) => {
+		handleTradeItemsChanged(body);
+	});
+
+	// T025: トレード確認イベント（相手が「交換OK」を押した）
+	connection.value.on('tradeConfirmed', (body: {
+		tradeId: string;
+		confirmedBy: 'initiator' | 'target';
+	}) => {
+		handleTradeConfirmed(body);
+	});
+
+	// T027: トレード確認リセットイベント（アイテム変更で確認がリセットされた）
+	connection.value.on('tradeConfirmReset', (body: {
+		tradeId: string;
+		resetBy: string;
+	}) => {
+		handleTradeConfirmReset(body);
+	});
+
+	// T033: トレードキャンセルイベント（相手がキャンセルした）
+	connection.value.on('tradeCancelled', (body: {
+		tradeId: string;
+		cancelledBy: string;
+		reason: 'user_cancelled' | 'disconnected' | 'expired';
+	}) => {
+		handleTradeCancelled(body);
+	});
+
+	// tradeCompletedイベント（トレードが完了した）
+	connection.value.on('tradeCompleted', (body: {
+		tradeId: string;
+	}) => {
+		handleTradeCompletedEvent(body);
 	});
 
 	isConnected.value = true;
@@ -1535,33 +1690,50 @@ function handleManualPing(): void {
 }
 
 // FR-070: Start trade with a player
-// 仕様: プレイヤー情報ウィンドウからトレードボタンを押すとトレードパネルを開く
-function handleStartTrade(playerId: string): void {
+// 仕様: プレイヤー情報ウィンドウからトレードボタンを押すとトレードリクエストを送信
+// トレードパネルは開かない。相手が承認したらtradeAcceptedイベントで両者にパネルが開く
+async function handleStartTrade(playerId: string): Promise<void> {
 	if (!engine) return;
 
 	const playerData = engine.getRemotePlayerData(playerId);
 	if (!playerData) return;
 
-	tradeTargetPlayer.value = {
-		id: playerData.id,
-		username: playerData.username,
-		avatarUrl: playerData.avatarUrl,
-	};
-	showTradePanel.value = true;
+	try {
+		// トレードリクエストを送信（アイテムなし、承認後に交渉開始）
+		await os.apiWithDialog('noctown/trade/request', {
+			targetPlayerId: playerId,
+		});
+		// tradeRequestSentイベントがバックエンドから来るので、そこでpendingTradeToastが表示される
+		// プレイヤー情報ウィンドウを閉じる
+		selectedPlayerInfo.value = null;
+	} catch (err) {
+		console.error('[Noctown Trade] Failed to send trade request:', err);
+	}
 }
 
 // FR-070: Close trade panel
+// 仕様: パネルを閉じるときはすべての状態をリセット
 function handleCloseTradePanel(): void {
 	showTradePanel.value = false;
 	tradeTargetPlayer.value = null;
+	activeTradeId.value = null;
+}
+
+// T040: Show trade history panel
+function handleShowTradeHistory(): void {
+	showTradePanel.value = false;
+	activeTradeId.value = null;
+	showTradeHistory.value = true;
 }
 
 // FR-070: Handle trade request sent
-// 仕様: トレードリクエスト送信後の処理
+// 仕様: トレードリクエスト送信後の処理（TradePanel内での送信時）
 function handleTradeSent(): void {
 	console.log('Trade request sent');
-	// トレードリストモードに切り替え（新規申請モードを終了）
+	// パネルを閉じる（tradeRequestSentイベントでトーストが表示される）
+	showTradePanel.value = false;
 	tradeTargetPlayer.value = null;
+	activeTradeId.value = null;
 }
 
 // FR-070: Handle trade completed
@@ -1570,11 +1742,12 @@ function handleTradeCompleted(): void {
 	console.log('Trade completed');
 	showTradePanel.value = false;
 	tradeTargetPlayer.value = null;
+	activeTradeId.value = null;
 	// TODO: インベントリの更新通知
 }
 
-// 仕様: トレードリクエスト受信時の処理（トレードパネルを自動更新）
-async function handleTradeRequest(data: unknown): Promise<void> {
+// T015: 仕様 T012-T013 トレードリクエスト受信時の処理（受信者向けトースト表示）
+function handleTradeRequest(data: unknown): void {
 	console.log('[Noctown Trade] Received trade request:', data);
 
 	// トレードパネルが開いている場合は自動更新
@@ -1582,20 +1755,273 @@ async function handleTradeRequest(data: unknown): Promise<void> {
 		tradePanelRef.value.refreshTrades();
 	}
 
-	// 通知を表示
-	const typedData = data as { offeredItems?: Array<{ quantity: number }>; offeredCurrency?: number };
+	// T015: トーストで受信者向け承認確認UIを表示
+	const typedData = data as {
+		tradeId: string;
+		initiatorId: string;
+		initiatorUserId: string;
+		offeredItems?: Array<{ itemId: string; quantity: number }>;
+		offeredCurrency?: number;
+		message?: string | null;
+		expiresAt: string;
+	};
 	const itemCount = typedData.offeredItems?.reduce((sum, item) => sum + item.quantity, 0) ?? 0;
-	let summary = `${itemCount}個のアイテム`;
-	if ((typedData.offeredCurrency ?? 0) > 0) {
-		summary += ` + ${typedData.offeredCurrency}G`;
+
+	incomingTradeToast.value = {
+		tradeId: typedData.tradeId,
+		initiatorId: typedData.initiatorId,
+		initiatorUsername: typedData.initiatorUserId, // TODO: ユーザー名を取得する処理を追加
+		itemCount: itemCount,
+		currency: typedData.offeredCurrency ?? 0,
+		message: typedData.message ?? null,
+		expiresAt: typedData.expiresAt,
+	};
+}
+
+// T015: 仕様 T009-T011 トレードリクエスト送信確認イベント（送信者向けトースト表示）
+function handleTradeRequestSent(data: {
+	tradeId: string;
+	targetId: string;
+	targetUsername: string;
+	status: string;
+	expiresAt: string;
+}): void {
+	console.log('[Noctown Trade] Trade request sent:', data);
+
+	// 送信者向け「承認待ち」トーストを表示
+	pendingTradeToast.value = {
+		tradeId: data.tradeId,
+		targetId: data.targetId,
+		targetUsername: data.targetUsername,
+		expiresAt: data.expiresAt,
+	};
+}
+
+// T015: 仕様 T010-T011 送信者向けトーストのイベントハンドラー
+async function handlePendingTradeCancel(tradeId: string): Promise<void> {
+	console.log('[Noctown Trade] Cancelling pending trade:', tradeId);
+	try {
+		await os.apiWithDialog('noctown/trade/cancel', { tradeId });
+		pendingTradeToast.value = null;
+	} catch (err) {
+		console.error('[Noctown Trade] Failed to cancel trade:', err);
+	}
+}
+
+function handlePendingTradeExpired(): void {
+	console.log('[Noctown Trade] Pending trade expired');
+	pendingTradeToast.value = null;
+}
+
+// 仕様: トレードAPIエラーコードとメッセージのマッピング
+const tradeErrorMessages: Record<string, string> = {
+	TRADE_NOT_FOUND: 'トレードが見つからないか、既に処理済みです',
+	TRADE_EXPIRED: 'トレードの有効期限が切れました',
+	TRADE_FAILED: 'トレードの処理に失敗しました',
+	PLAYER_NOT_FOUND: 'プレイヤーが見つかりません',
+};
+
+// 仕様: 受信者向けトーストの承認ボタンハンドラー
+// APIを呼び出すとバックエンドがtradeAcceptedイベントを両者に送信するため、
+// ここではトーストを閉じるのみ。パネル表示はイベントハンドラーで行う。
+async function handleIncomingTradeAccept(tradeId: string): Promise<void> {
+	console.log('[Noctown Trade] Accepting trade:', tradeId);
+	try {
+		// 仕様: os.apiWithDialogではなくmisskeyApiを使用（ダイアログによるUI干渉を防止）
+		await misskeyApi('noctown/trade/respond', { tradeId, response: 'accept' });
+		console.log('[Noctown Trade] Trade accept API success');
+		// tradeAcceptedイベントがバックエンドから来るので、トーストはイベントハンドラーで閉じる
+		// ここでは念のため閉じておく
+		incomingTradeToast.value = null;
+	} catch (err: unknown) {
+		console.error('[Noctown Trade] Failed to accept trade:', err);
+		// エラー時はユーザーに通知（エラーコードに応じたメッセージを表示）
+		const errorCode = (err as { code?: string })?.code;
+		const message = errorCode && tradeErrorMessages[errorCode]
+			? tradeErrorMessages[errorCode]
+			: 'トレードの承認に失敗しました';
+		os.alert({
+			type: 'error',
+			title: 'トレードエラー',
+			text: message,
+		});
+		// エラー時はトーストを閉じる
+		incomingTradeToast.value = null;
+	}
+}
+
+async function handleIncomingTradeDecline(tradeId: string): Promise<void> {
+	console.log('[Noctown Trade] Declining trade:', tradeId);
+	try {
+		// 仕様: os.apiWithDialogではなくmisskeyApiを使用（ダイアログによるUI干渉を防止）
+		await misskeyApi('noctown/trade/respond', { tradeId, response: 'decline' });
+		console.log('[Noctown Trade] Trade decline API success');
+		incomingTradeToast.value = null;
+	} catch (err: unknown) {
+		console.error('[Noctown Trade] Failed to decline trade:', err);
+		const errorCode = (err as { code?: string })?.code;
+		const message = errorCode && tradeErrorMessages[errorCode]
+			? tradeErrorMessages[errorCode]
+			: 'トレードの拒否に失敗しました';
+		os.alert({
+			type: 'error',
+			title: 'トレードエラー',
+			text: message,
+		});
+		incomingTradeToast.value = null;
+	}
+}
+
+function handleIncomingTradeExpired(): void {
+	console.log('[Noctown Trade] Incoming trade request expired');
+	incomingTradeToast.value = null;
+}
+
+// 仕様: トレード承認イベントハンドラー - 両者に直接バーターモードでパネルを開く
+// リストモードは不要、承認時に即座に交渉画面を表示
+function handleTradeAccepted(data: {
+	tradeId: string;
+	initiatorId: string;
+	targetId: string;
+	initiatorUsername: string;
+	targetUsername: string;
+	initiatorAvatarUrl: string | null;
+	targetAvatarUrl: string | null;
+}): void {
+	console.log('[Noctown Trade] Trade accepted event received:', data);
+	console.log('[Noctown Trade] Current state:', {
+		pendingTradeToast: pendingTradeToast.value,
+		incomingTradeToast: incomingTradeToast.value,
+		showTradePanel: showTradePanel.value,
+		activeTradeId: activeTradeId.value,
+	});
+
+	// 承認待ちトーストを閉じる（送信者の場合）
+	if (pendingTradeToast.value?.tradeId === data.tradeId) {
+		console.log('[Noctown Trade] Closing pending trade toast');
+		pendingTradeToast.value = null;
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const { alert: osAlert } = await import('@/os.js');
-	await osAlert({
-		type: 'info',
-		title: 'トレードリクエスト',
-		text: `新しいトレードリクエストが届きました！\n${summary}\n\nトレードパネルを開いて確認してください。`,
+	// 受信者トーストを閉じる（受信者の場合）
+	if (incomingTradeToast.value?.tradeId === data.tradeId) {
+		console.log('[Noctown Trade] Closing incoming trade toast');
+		incomingTradeToast.value = null;
+	}
+
+	// 仕様: トレードIDを設定してバーターモードでパネルを開く
+	// targetPlayerはnull、initialTradeIdでTradePanelが交渉モードで開く
+	console.log('[Noctown Trade] Opening trade panel with tradeId:', data.tradeId);
+	activeTradeId.value = data.tradeId;
+	tradeTargetPlayer.value = null;
+	showTradePanel.value = true;
+	console.log('[Noctown Trade] Trade panel state after update:', {
+		showTradePanel: showTradePanel.value,
+		activeTradeId: activeTradeId.value,
+		tradeTargetPlayer: tradeTargetPlayer.value,
+	});
+}
+
+// T017: トレード拒否イベントハンドラー（送信者に通知）
+function handleTradeDeclined(data: {
+	tradeId: string;
+	targetId: string;
+	targetUsername: string;
+}): void {
+	console.log('[Noctown Trade] Trade declined:', data);
+
+	// 承認待ちトーストを閉じる
+	if (pendingTradeToast.value?.tradeId === data.tradeId) {
+		pendingTradeToast.value = null;
+	}
+
+	// 拒否通知を表示
+	os.alert({
+		type: 'warning',
+		title: 'トレードが拒否されました',
+		text: `${data.targetUsername} さんがトレードを拒否しました。`,
+	});
+}
+
+// T021: トレードアイテム変更イベントハンドラー
+function handleTradeItemsChanged(data: {
+	tradeId: string;
+	items: Array<{ itemId: string; itemName: string; quantity: number }>;
+	currency: number;
+	isFromInitiator: boolean;
+}): void {
+	console.log('[Noctown Trade] Trade items changed:', data);
+
+	// トレードパネルが開いている場合は更新
+	if (tradePanelRef.value && showTradePanel.value) {
+		tradePanelRef.value.refreshTrades();
+	}
+}
+
+// T025: トレード確認イベントハンドラー（相手が「交換OK」を押した）
+function handleTradeConfirmed(data: {
+	tradeId: string;
+	confirmedBy: 'initiator' | 'target';
+}): void {
+	console.log('[Noctown Trade] Trade confirmed by:', data.confirmedBy);
+
+	// トレードパネルが開いている場合は更新
+	if (tradePanelRef.value && showTradePanel.value) {
+		tradePanelRef.value.refreshTrades();
+	}
+}
+
+// T027: トレード確認リセットイベントハンドラー
+function handleTradeConfirmReset(data: {
+	tradeId: string;
+	resetBy: string;
+}): void {
+	console.log('[Noctown Trade] Trade confirm reset by:', data.resetBy);
+
+	// トレードパネルが開いている場合は更新
+	if (tradePanelRef.value && showTradePanel.value) {
+		tradePanelRef.value.refreshTrades();
+	}
+}
+
+// T033: トレードキャンセルイベントハンドラー
+function handleTradeCancelled(data: {
+	tradeId: string;
+	cancelledBy: string;
+	reason: 'user_cancelled' | 'disconnected' | 'expired';
+}): void {
+	console.log('[Noctown Trade] Trade cancelled:', data);
+
+	// トレードパネルを閉じる
+	showTradePanel.value = false;
+	tradeTargetPlayer.value = null;
+
+	// キャンセル通知を表示
+	const reasonText = data.reason === 'user_cancelled' ? '相手がトレードをキャンセルしました'
+		: data.reason === 'disconnected' ? '相手が切断したためトレードがキャンセルされました'
+		: 'トレードの有効期限が切れました';
+
+	os.alert({
+		type: 'warning',
+		title: 'トレードがキャンセルされました',
+		text: reasonText,
+	});
+}
+
+// トレード完了イベントハンドラー
+function handleTradeCompletedEvent(data: {
+	tradeId: string;
+}): void {
+	console.log('[Noctown Trade] Trade completed:', data);
+
+	// トレードパネルを閉じる
+	showTradePanel.value = false;
+	tradeTargetPlayer.value = null;
+
+	// 完了通知を表示
+	os.alert({
+		type: 'success',
+		title: 'トレード完了',
+		text: 'トレードが正常に完了しました。',
 	});
 }
 
@@ -2287,6 +2713,25 @@ definePage(() => ({
 	user-select: none;
 }
 
+// 仕様: TradePanelデバッグ情報（パネルが閉じても残る）
+.tradePanelDebugPersistent {
+	position: absolute;
+	top: 50px;
+	left: 10px;
+	right: 10px;
+	background: rgba(26, 26, 46, 0.95);
+	color: #00ff88;
+	padding: 8px 12px;
+	border-radius: 4px;
+	font-family: 'Courier New', monospace;
+	font-size: 10px;
+	z-index: 100;
+	pointer-events: none;
+	user-select: none;
+	word-break: break-all;
+	line-height: 1.4;
+}
+
 // FR-016: Top-right button group (inventory + reload + settings)
 .topRightButtonGroup {
 	position: absolute;
@@ -2629,6 +3074,22 @@ definePage(() => ({
 		font-family: monospace;
 		font-size: 11px;
 	}
+}
+
+// デバッグ用: トレード状態表示
+.tradeDebugInfo {
+	position: fixed;
+	top: 10px;
+	left: 50%;
+	transform: translateX(-50%);
+	background: #000;
+	color: #0f0;
+	padding: 8px 16px;
+	border-radius: 4px;
+	font-size: 12px;
+	font-family: monospace;
+	z-index: 1002;
+	white-space: nowrap;
 }
 
 // FR-070: Trade panel overlay

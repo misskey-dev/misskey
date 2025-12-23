@@ -36,6 +36,7 @@ import type { NoctownQuestType, NoctownQuestStatus } from '@/models/noctown/Noct
 import type { NoctownPlayer } from '@/models/noctown/NoctownPlayer.js';
 import type { MiUser } from '@/models/User.js';
 import { NoctownTransactionService } from '@/core/NoctownTransactionService.js';
+import { TradeService } from '@/misc/noctown/trade-service.js';
 import type { NoctownTransactionState } from '@/models/noctown/NoctownTransactionLog.js';
 
 @Injectable()
@@ -102,6 +103,7 @@ export class NoctownService {
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
 		private noctownTransactionService: NoctownTransactionService,
+		private tradeService: TradeService,
 	) {}
 
 	@bindThis
@@ -2311,6 +2313,9 @@ export class NoctownService {
 	@bindThis
 	// FR-007-6: オフライン時は画面からプレイヤーを削除
 	public async setPlayerOfflineAndBroadcast(playerId: string): Promise<void> {
+		// T034: 切断時のアクティブトレードを自動キャンセル
+		await this.tradeService.cancelActiveTradesOnDisconnect(playerId);
+
 		// Update database
 		await this.noctownPlayersRepository.update(
 			{ id: playerId },
