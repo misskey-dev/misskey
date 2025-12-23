@@ -84,9 +84,11 @@ export class SigninWithPasskeyApiService {
 			return error(status ?? 500, failure ?? { id: '4e30e80c-e338-45a0-8c8f-44455efa3b76' });
 		};
 
-		if (request.ip === '::1' || request.ip === '127.0.0.1') {
-			console.warn('request ip is localhost, maybe caused by misconfiguration of trustProxy or reverse proxy');
-		} else {
+		if (this.config.enableIpRateLimit) {
+			if (process.env.NODE_ENV === 'production' && (request.ip === '::1' || request.ip === '127.0.0.1')) {
+				this.logger.warn('Recieved signin with passkey request from localhost IP address for rate limiting in production environment. This is likely due to an improper trustProxy setting in the config file.');
+			}
+
 			try {
 			// Not more than 1 API call per 250ms and not more than 100 attempts per 30min
 			// NOTE: 1 Sign-in require 2 API calls

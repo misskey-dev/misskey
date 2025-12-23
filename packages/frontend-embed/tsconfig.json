@@ -22,7 +22,6 @@
 		"isolatedModules": true,
 		"useDefineForClassFields": true,
 		"verbatimModuleSyntax": true,
-		"baseUrl": ".",
 		"paths": {
 			"@/*": ["./src/*"],
 			"@@/*": ["../frontend-shared/*"]

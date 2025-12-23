@@ -7,7 +7,7 @@
 	"scripts": {
 		"build": "tsx src/generator.ts",
 		"eslint": "eslint src/**/*.ts",
-		"typecheck": "tsc --noEmit",
+		"typecheck": "tsgo --noEmit",
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"devDependencies": {
@@ -20,7 +20,6 @@
 		"@tabler/icons-webfont": "3.35.0",
 		"harfbuzzjs": "0.4.13",
 		"tsx": "4.21.0",
-		"typescript": "5.9.3",
 		"wawoff2": "2.0.1"
 	},
 	"files": [

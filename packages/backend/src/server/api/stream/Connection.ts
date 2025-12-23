@@ -6,19 +6,39 @@
 import * as WebSocket from 'ws';
 import type { MiUser } from '@/models/User.js';
 import type { MiAccessToken } from '@/models/AccessToken.js';
-import type { Packed } from '@/misc/json-schema.js';
-import type { NotificationService } from '@/core/NotificationService.js';
+import { NotificationService } from '@/core/NotificationService.js';
 import { bindThis } from '@/decorators.js';
 import { CacheService } from '@/core/CacheService.js';
 import { MiFollowing, MiUserProfile } from '@/models/_.js';
 import type { GlobalEvents, StreamEventEmitter } from '@/core/GlobalEventService.js';
 import { ChannelFollowingService } from '@/core/ChannelFollowingService.js';
 import { ChannelMutingService } from '@/core/ChannelMutingService.js';
-import { isJsonObject } from '@/misc/json-value.js';
 import type { JsonObject, JsonValue } from '@/misc/json-value.js';
-import type { ChannelsService } from './ChannelsService.js';
+import { isJsonObject } from '@/misc/json-value.js';
 import type { EventEmitter } from 'events';
 import type Channel from './channel.js';
+import type { ChannelConstructor } from './channel.js';
+import type { ChannelRequest } from './channel.js';
+import { ContextIdFactory, ModuleRef, REQUEST } from '@nestjs/core';
+import { Inject, Injectable, Scope } from '@nestjs/common';
+import { MainChannel } from '@/server/api/stream/channels/main.js';
+import { HomeTimelineChannel } from '@/server/api/stream/channels/home-timeline.js';
+import { LocalTimelineChannel } from '@/server/api/stream/channels/local-timeline.js';
+import { HybridTimelineChannel } from '@/server/api/stream/channels/hybrid-timeline.js';
+import { GlobalTimelineChannel } from '@/server/api/stream/channels/global-timeline.js';
+import { UserListChannel } from '@/server/api/stream/channels/user-list.js';
+import { HashtagChannel } from '@/server/api/stream/channels/hashtag.js';
+import { RoleTimelineChannel } from '@/server/api/stream/channels/role-timeline.js';
+import { AntennaChannel } from '@/server/api/stream/channels/antenna.js';
+import { ChannelChannel } from '@/server/api/stream/channels/channel.js';
+import { DriveChannel } from '@/server/api/stream/channels/drive.js';
+import { ServerStatsChannel } from '@/server/api/stream/channels/server-stats.js';
+import { QueueStatsChannel } from '@/server/api/stream/channels/queue-stats.js';
+import { AdminChannel } from '@/server/api/stream/channels/admin.js';
+import { ChatUserChannel } from '@/server/api/stream/channels/chat-user.js';
+import { ChatRoomChannel } from '@/server/api/stream/channels/chat-room.js';
+import { ReversiChannel } from '@/server/api/stream/channels/reversi.js';
+import { ReversiGameChannel } from '@/server/api/stream/channels/reversi-game.js';
 
 const MAX_CHANNELS_PER_CONNECTION = 32;
 
@@ -26,6 +46,7 @@ const MAX_CHANNELS_PER_CONNECTION = 32;
  * Main stream connection
  */
 // eslint-disable-next-line import/no-default-export
+@Injectable({ scope: Scope.TRANSIENT })
 export default class Connection {
 	public user?: MiUser;
 	public token?: MiAccessToken;
@@ -44,16 +65,16 @@ export default class Connection {
 	private fetchIntervalId: NodeJS.Timeout | null = null;
 
 	constructor(
-		private channelsService: ChannelsService,
+		private moduleRef: ModuleRef,
 		private notificationService: NotificationService,
 		private cacheService: CacheService,
 		private channelFollowingService: ChannelFollowingService,
 		private channelMutingService: ChannelMutingService,
-		user: MiUser | null | undefined,
-		token: MiAccessToken | null | undefined,
+		@Inject(REQUEST)
+		request: ConnectionRequest,
 	) {
-		if (user) this.user = user;
-		if (token) this.token = token;
+		if (request.user) this.user = request.user;
+		if (request.token) this.token = request.token;
 	}
 
 	@bindThis
@@ -232,28 +253,34 @@ export default class Connection {
 	 * チャンネルに接続
 	 */
 	@bindThis
-	public connectChannel(id: string, params: JsonObject | undefined, channel: string, pong = false) {
+	public async connectChannel(id: string, params: JsonObject | undefined, channel: string, pong = false) {
 		if (this.channels.length >= MAX_CHANNELS_PER_CONNECTION) {
 			return;
 		}
 
-		const channelService = this.channelsService.getChannelService(channel);
+		const channelConstructor = this.getChannelConstructor(channel);
 
-		if (channelService.requireCredential && this.user == null) {
+		if (channelConstructor.requireCredential && this.user == null) {
 			return;
 		}
 
-		if (this.token && ((channelService.kind && !this.token.permission.some(p => p === channelService.kind))
-			|| (!channelService.kind && channelService.requireCredential))) {
+		if (this.token && ((channelConstructor.kind && !this.token.permission.some(p => p === channelConstructor.kind))
+			|| (!channelConstructor.kind && channelConstructor.requireCredential))) {
 			return;
 		}
 
 		// 共有可能チャンネルに接続しようとしていて、かつそのチャンネルに既に接続していたら無意味なので無視
-		if (channelService.shouldShare && this.channels.some(c => c.chName === channel)) {
+		if (channelConstructor.shouldShare && this.channels.some(c => c.chName === channel)) {
 			return;
 		}
 
-		const ch: Channel = channelService.create(id, this);
+		const contextId = ContextIdFactory.create();
+		this.moduleRef.registerRequestByContextId<ChannelRequest>({
+			id: id,
+			connection: this,
+		}, contextId);
+		const ch: Channel = await this.moduleRef.create<Channel>(channelConstructor, contextId);
+
 		this.channels.push(ch);
 		ch.init(params ?? {});
 
@@ -261,6 +288,33 @@ export default class Connection {
 			this.sendMessageToWs('connected', {
 				id: id,
 			});
+		}
+	}
+
+	@bindThis
+	public getChannelConstructor(name: string): ChannelConstructor<boolean> {
+		switch (name) {
+			case 'main': return MainChannel;
+			case 'homeTimeline': return HomeTimelineChannel;
+			case 'localTimeline': return LocalTimelineChannel;
+			case 'hybridTimeline': return HybridTimelineChannel;
+			case 'globalTimeline': return GlobalTimelineChannel;
+			case 'userList': return UserListChannel;
+			case 'hashtag': return HashtagChannel;
+			case 'roleTimeline': return RoleTimelineChannel;
+			case 'antenna': return AntennaChannel;
+			case 'channel': return ChannelChannel;
+			case 'drive': return DriveChannel;
+			case 'serverStats': return ServerStatsChannel;
+			case 'queueStats': return QueueStatsChannel;
+			case 'admin': return AdminChannel;
+			case 'chatUser': return ChatUserChannel;
+			case 'chatRoom': return ChatRoomChannel;
+			case 'reversi': return ReversiChannel;
+			case 'reversiGame': return ReversiGameChannel;
+
+			default:
+				throw new Error(`no such channel: ${name}`);
 		}
 	}
 
@@ -305,4 +359,9 @@ export default class Connection {
 			if (c.dispose) c.dispose();
 		}
 	}
+}
+
+export interface ConnectionRequest {
+	user: MiUser | null | undefined,
+	token: MiAccessToken | null | undefined,
 }
