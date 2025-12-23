@@ -32,7 +32,7 @@ jobs:
           - .node-version
           - .github/min.node-version
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           submodules: true
       - name: Setup pnpm
@@ -68,7 +68,7 @@ jobs:
             fi
           done
       - name: Use Node.js
-        uses: actions/setup-node@v4.4.0
+        uses: actions/setup-node@v6.1.0
         with:
           node-version-file: ${{ matrix.node-version-file }}
           cache: 'pnpm'

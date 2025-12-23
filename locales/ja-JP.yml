@@ -1557,6 +1557,9 @@ _settings:
   showPageTabBarBottom: "ページのタブバーを下部に表示"
   emojiPaletteBanner: "絵文字ピッカーに固定表示するプリセットをパレットとして登録したり、ピッカーの表示方法をカスタマイズしたりできます。"
   enableAnimatedImages: "アニメーション画像を有効にする"
+  settingsPersistence_title: "設定の永続化"
+  settingsPersistence_description1: "設定の永続化を有効にすると、設定情報が失われるのを防止できます。"
+  settingsPersistence_description2: "環境によっては有効化できない場合があります。"
 
   _chat:
     showSenderName: "送信者の名前を表示"
@@ -2890,6 +2893,15 @@ _deck:
   usedAsMinWidthWhenFlexible: "「幅を自動調整」が有効の場合、これが幅の最小値となります"
   flexible: "幅を自動調整"
   enableSyncBetweenDevicesForProfiles: "プロファイル情報のデバイス間同期を有効にする"
+  showHowToUse: "UIの説明を見る"
+
+  _howToUse:
+    addColumn_title: "カラム追加"
+    addColumn_description: "カラムの種類を選んで追加できます。"
+    settings_title: "UI設定"
+    settings_description: "デッキUIの詳細設定を行えます。"
+    switchProfile_title: "プロファイル切り替え"
+    switchProfile_description: "UIのレイアウトをプロファイルとして保存し、いつでも切り替えられるようにできます。"
 
   _columns:
     main: "メイン"
