@@ -582,9 +582,6 @@ export const PREF_DEF = definePreferences({
 	customFont: {
 		default: 'kosugi-maru' as null | string,
 	},
-	instanceIcon: {
-		default: true,
-	},
 	reactionChecksMuting: {
 		default: true,
 	},

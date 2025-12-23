@@ -154,7 +154,6 @@ export function migrateOldSettings() {
 		prefer.commit('reactionChecksMuting', store.s.reactionChecksMuting);
 		prefer.commit('hideReactionUsers', store.s.hideReactionUsers);
 		prefer.commit('hideReactionCount', store.s.hideReactionCount);
-		prefer.commit('instanceIcon', store.s.instanceIcon);
 		prefer.commit('searchEngine', store.s.searchEngine);
 		prefer.commit('game.dropAndFusion', store.s.dropAndFusion);
 		prefer.commit('postFormActions', store.s.postFormActions);

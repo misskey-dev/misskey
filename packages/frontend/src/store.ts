@@ -372,10 +372,6 @@ export const store = markRaw(new Pizzax('base', {
 		where: 'device',
 		default: 'remote' as 'none' | 'remote' | 'always',
 	},
-	instanceIcon: {
-		where: 'device',
-		default: true,
-	},
 	emojiPickerScale: {
 		where: 'device',
 		default: 3,

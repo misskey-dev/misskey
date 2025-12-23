@@ -363,16 +363,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkPreferenceContainer>
 							</SearchMarker>
 
-							<!-- サーバー情報をアイコンのみにする（独自機能） -->
-							<SearchMarker :keywords="['instance', 'icon', 'server', 'information']">
-								<MkPreferenceContainer k="instanceIcon">
-									<MkSwitch v-if="instanceTicker !== 'none'" v-model="instanceIcon">
-										<template #label><SearchLabel>{{ i18n.ts.instanceIcon }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
-										<template #caption>{{ i18n.ts.instanceIconDescription }}</template>
-									</MkSwitch>
-								</MkPreferenceContainer>
-							</SearchMarker>
-
 							<SearchMarker :keywords="['attachment', 'image', 'photo', 'picture', 'media', 'thumbnail', 'nsfw', 'sensitive', 'display', 'show', 'hide', 'visibility']">
 								<MkPreferenceContainer k="nsfw">
 									<MkSelect
@@ -1178,7 +1168,6 @@ const rememberNoteVisibility = prefer.model('rememberNoteVisibility');
 const notificationPosition = prefer.model('notificationPosition');
 const notificationStackAxis = prefer.model('notificationStackAxis');
 const instanceTicker = prefer.model('instanceTicker');
-const instanceIcon = prefer.model('instanceIcon');
 const highlightSensitiveMedia = prefer.model('highlightSensitiveMedia');
 const mediaListWithOneImageAppearance = prefer.model('mediaListWithOneImageAppearance');
 const reactionsDisplaySize = prefer.model('reactionsDisplaySize');
@@ -1295,7 +1284,6 @@ watch([
 	mediaListWithOneImageAppearance,
 	limitWidthOfReaction,
 	instanceTicker,
-	instanceIcon,
 	squareAvatars,
 	highlightSensitiveMedia,
 	enableSeasonalScreenEffect,
