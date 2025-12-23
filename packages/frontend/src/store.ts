@@ -118,6 +118,10 @@ export const store = markRaw(new Pizzax('base', {
 		where: 'device',
 		default: true,
 	},
+	showStoragePersistenceSuggestion: {
+		where: 'device',
+		default: true,
+	},
 
 	//#region TODO: そのうち消す (preferに移行済み)
 	defaultWithReplies: {

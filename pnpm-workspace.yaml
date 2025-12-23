@@ -35,3 +35,4 @@ ignorePatchFailures: false
 minimumReleaseAge: 10080 # delay 7days to mitigate supply-chain attack
 minimumReleaseAgeExclude:
   - '@syuilo/aiscript'
+  - systeminformation # 脆弱性対応。そのうち消すこと

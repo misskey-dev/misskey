@@ -3,31 +3,33 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import type { JsonObject } from '@/misc/json-value.js';
-import Channel, { type MiChannelService } from '../channel.js';
+import Channel, { type ChannelRequest } from '../channel.js';
 import { NoteStreamingLockdownService } from '../NoteStreamingLockdownService.js';
+import { REQUEST } from '@nestjs/core';
 
-class RoleTimelineChannel extends Channel {
+@Injectable({ scope: Scope.TRANSIENT })
+export class RoleTimelineChannel extends Channel {
 	public readonly chName = 'roleTimeline';
 	public static shouldShare = false;
 	public static requireCredential = false as const;
 	private roleId: string;
 
 	constructor(
+		@Inject(REQUEST)
+		request: ChannelRequest,
+
 		private noteEntityService: NoteEntityService,
 		private roleservice: RoleService,
 		private noteStreamingFilterService: NoteStreamingLockdownService,
-
-		id: string,
-		connection: Channel['connection'],
 	) {
-		super(id, connection);
+		super(request);
 		//this.onNote = this.onNote.bind(this);
 	}
 
@@ -73,30 +75,5 @@ class RoleTimelineChannel extends Channel {
 	public dispose() {
 		// Unsubscribe events
 		this.subscriber.off(`roleTimelineStream:${this.roleId}`, this.onEvent);
-	}
-}
-
-@Injectable()
-export class RoleTimelineChannelService implements MiChannelService<false> {
-	public readonly shouldShare = RoleTimelineChannel.shouldShare;
-	public readonly requireCredential = RoleTimelineChannel.requireCredential;
-	public readonly kind = RoleTimelineChannel.kind;
-
-	constructor(
-		private noteEntityService: NoteEntityService,
-		private roleservice: RoleService,
-		private noteStreamingFilterService: NoteStreamingLockdownService,
-	) {
-	}
-
-	@bindThis
-	public create(id: string, connection: Channel['connection']): RoleTimelineChannel {
-		return new RoleTimelineChannel(
-			this.noteEntityService,
-			this.roleservice,
-			this.noteStreamingFilterService,
-			id,
-			connection,
-		);
 	}
 }

@@ -22,12 +22,12 @@ jobs:
       NODE_OPTIONS: "--max_old_space_size=7168"
 
     steps:
-    - uses: actions/checkout@v4.3.0
+    - uses: actions/checkout@v6.0.1
       if: github.event_name != 'pull_request_target'
       with:
         fetch-depth: 0
         submodules: true
-    - uses: actions/checkout@v4.3.0
+    - uses: actions/checkout@v6.0.1
       if: github.event_name == 'pull_request_target'
       with:
         fetch-depth: 0
@@ -39,7 +39,7 @@ jobs:
     - name: Setup pnpm
       uses: pnpm/action-setup@v4.2.0
     - name: Use Node.js
-      uses: actions/setup-node@v4.4.0
+      uses: actions/setup-node@v6.1.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
@@ -90,7 +90,7 @@ jobs:
       env:
         CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
     - name: Notify that Chromatic detects changes
-      uses: actions/github-script@v7.1.0
+      uses: actions/github-script@v8.0.0
       if: github.event_name != 'pull_request_target' && steps.chromatic_push.outputs.success == 'false'
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -102,7 +102,7 @@ jobs:
             body: 'Chromatic detects changes. Please [review the changes on Chromatic](https://www.chromatic.com/builds?appId=6428f7d7b962f0b79f97d6e4).'
           })
     - name: Upload Artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: storybook
         path: packages/frontend/storybook-static
