@@ -1,6 +1,6 @@
 # DIFFRENCE
 
-## Unreleased
+## 2025.12.2-yami-1.9.29
 
 ### Misskey 2025.12.2への追従
 
