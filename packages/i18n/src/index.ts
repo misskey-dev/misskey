@@ -9,47 +9,11 @@
 
 import * as fs from 'node:fs';
 import * as yaml from 'js-yaml';
+import { languages, primaries } from './const.js';
 import type { Locale } from './autogen/locale.js';
 import type { ILocale, ParameterizedString } from './types.js';
 
-const languages = [
-	'ar-SA',
-	'ca-ES',
-	'cs-CZ',
-	'da-DK',
-	'de-DE',
-	'en-US',
-	'es-ES',
-	'fr-FR',
-	'id-ID',
-	'it-IT',
-	'ja-JP',
-	'ja-KS',
-	'kab-KAB',
-	'kn-IN',
-	'ko-KR',
-	'nl-NL',
-	'no-NO',
-	'pl-PL',
-	'pt-PT',
-	'ru-RU',
-	'sk-SK',
-	'th-TH',
-	'tr-TR',
-	'ug-CN',
-	'uk-UA',
-	'vi-VN',
-	'zh-CN',
-	'zh-TW',
-] as const;
-
 type Language = typeof languages[number];
-
-const primaries = {
-	'en': 'US',
-	'ja': 'JP',
-	'zh': 'CN',
-} as const satisfies Record<string, string>;
 
 type PrimaryLang = keyof typeof primaries;
 
@@ -161,6 +125,6 @@ async function writeFrontendLocalesJson(destDir: string, version: string): Promi
 	}
 }
 
-export { locales, build, writeFrontendLocalesJson };
+export { locales, languages, build, writeFrontendLocalesJson };
 export type { Language, Locale, ILocale, ParameterizedString };
 export default locales;

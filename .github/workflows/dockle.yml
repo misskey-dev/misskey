@@ -11,38 +11,43 @@ on:
 jobs:
   dockle:
     runs-on: ubuntu-latest
+
     env:
       DOCKER_CONTENT_TRUST: 1
       DOCKLE_VERSION: 0.4.15
 
     steps:
-      - uses: actions/checkout@v4.3.0
+      - uses: actions/checkout@v6.0.1
 
       - name: Download and install dockle v${{ env.DOCKLE_VERSION }}
         run: |
+          set -eux
           curl -L -o dockle.deb "https://github.com/goodwithtech/dockle/releases/download/v${DOCKLE_VERSION}/dockle_${DOCKLE_VERSION}_Linux-64bit.deb"
           sudo dpkg -i dockle.deb
 
-      - run: |
-          cp .config/docker_example.env .config/docker.env
-          cp ./compose_example.yml ./compose.yml
-
-      - run: |
-          docker compose up -d web
-          IMAGE_ID=$(docker compose images --format json web | jq -r '.[0].ID')
-          docker tag "${IMAGE_ID}" misskey-web:latest
-
-      - name: Prune docker junk (optional but recommended)
+      - name: Build web image (docker build)
         run: |
-          docker system prune -af
-          docker volume prune -f
+          set -eux
+          docker build -t "misskey-web:ci" .
+          docker image ls
 
-      - name: Save image for Dockle
+      - name: Mount tmpfs for Dockle tar
+        env:
+          TMPFS_SIZE: 8G
         run: |
-          docker save misskey-web:latest -o ./misskey-web.tar
-          ls -lh ./misskey-web.tar
+          set -eux
+          sudo mkdir -p /mnt/dockle-tmp
+          sudo mount -t tmpfs -o size=${{ env.TMPFS_SIZE }} tmpfs /mnt/dockle-tmp
+          free -h
+          df -h
 
-      - name: Run Dockle with tar input
+      - name: Save image tar into tmpfs
         run: |
-          dockle --exit-code 1 --input ./misskey-web.tar
+          set -eux
+          docker save misskey-web:ci -o /mnt/dockle-tmp/misskey-web.tar
+          ls -lh /mnt/dockle-tmp/misskey-web.tar
 
+      - name: Run Dockle Scan (tar input)
+        run: |
+          set -eux
+          dockle --exit-code 1 --input /mnt/dockle-tmp/misskey-web.tar

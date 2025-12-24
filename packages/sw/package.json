@@ -4,22 +4,21 @@
 	"scripts": {
 		"watch": "nodemon -w ../../package.json -e json --exec \"node build.js watch\"",
 		"build": "node build.js",
-		"typecheck": "tsc --noEmit",
+		"typecheck": "tsgo --noEmit",
 		"eslint": "eslint --quiet src/**/*.ts",
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"dependencies": {
 		"i18n": "workspace:*",
-		"esbuild": "0.27.0",
+		"esbuild": "0.27.1",
 		"idb-keyval": "6.2.2",
 		"misskey-js": "workspace:*"
 	},
 	"devDependencies": {
-		"@typescript-eslint/parser": "8.47.0",
+		"@typescript-eslint/parser": "8.49.0",
 		"@typescript/lib-webworker": "npm:@types/serviceworker@0.0.74",
 		"eslint-plugin-import": "2.32.0",
-		"nodemon": "3.1.11",
-		"typescript": "5.9.3"
+		"nodemon": "3.1.11"
 	},
 	"type": "module"
 }

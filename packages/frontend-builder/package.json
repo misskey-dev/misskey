@@ -3,7 +3,7 @@
 	"type": "module",
 	"scripts": {
 		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
-		"typecheck": "tsc --noEmit",
+		"typecheck": "tsgo --noEmit",
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"exports": {
@@ -11,16 +11,15 @@
 	},
 	"devDependencies": {
 		"@types/estree": "1.0.8",
-		"@types/node": "24.10.1",
-		"@typescript-eslint/eslint-plugin": "8.47.0",
-		"@typescript-eslint/parser": "8.47.0",
-		"rollup": "4.53.3",
-		"typescript": "5.9.3"
+		"@types/node": "24.10.2",
+		"@typescript-eslint/eslint-plugin": "8.49.0",
+		"@typescript-eslint/parser": "8.49.0",
+		"rollup": "4.53.3"
 	},
 	"dependencies": {
 		"i18n": "workspace:*",
 		"estree-walker": "3.0.3",
 		"magic-string": "0.30.21",
-		"vite": "7.2.4"
+		"vite": "7.2.7"
 	}
 }

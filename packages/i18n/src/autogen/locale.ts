@@ -6193,6 +6193,18 @@ export interface Locale extends ILocale {
          * アニメーション画像を有効にする
          */
         "enableAnimatedImages": string;
+        /**
+         * 設定の永続化
+         */
+        "settingsPersistence_title": string;
+        /**
+         * 設定の永続化を有効にすると、設定情報が失われるのを防止できます。
+         */
+        "settingsPersistence_description1": string;
+        /**
+         * 環境によっては有効化できない場合があります。
+         */
+        "settingsPersistence_description2": string;
         "_chat": {
             /**
              * 送信者の名前を表示
@@ -10936,6 +10948,36 @@ export interface Locale extends ILocale {
          * プロファイル情報のデバイス間同期を有効にする
          */
         "enableSyncBetweenDevicesForProfiles": string;
+        /**
+         * UIの説明を見る
+         */
+        "showHowToUse": string;
+        "_howToUse": {
+            /**
+             * カラム追加
+             */
+            "addColumn_title": string;
+            /**
+             * カラムの種類を選んで追加できます。
+             */
+            "addColumn_description": string;
+            /**
+             * UI設定
+             */
+            "settings_title": string;
+            /**
+             * デッキUIの詳細設定を行えます。
+             */
+            "settings_description": string;
+            /**
+             * プロファイル切り替え
+             */
+            "switchProfile_title": string;
+            /**
+             * UIのレイアウトをプロファイルとして保存し、いつでも切り替えられるようにできます。
+             */
+            "switchProfile_description": string;
+        };
         "_columns": {
             /**
              * メイン

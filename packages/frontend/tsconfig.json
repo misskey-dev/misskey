@@ -23,7 +23,6 @@
 		"useDefineForClassFields": true,
 		"verbatimModuleSyntax": true,
 		"skipLibCheck": true,
-		"baseUrl": ".",
 		"paths": {
 			"@/*": ["./src/*"],
 			"@@/*": ["../frontend-shared/*"]

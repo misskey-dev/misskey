@@ -20,20 +20,18 @@
 		"build": "node ./build.js",
 		"watch": "nodemon -w package.json -e json --exec \"node ./build.js --watch\"",
 		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
-		"typecheck": "tsc --noEmit",
+		"typecheck": "tsgo --noEmit",
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"devDependencies": {
 		"@types/matter-js": "0.20.2",
-		"@types/node": "24.10.1",
+		"@types/node": "24.10.2",
 		"@types/seedrandom": "3.0.8",
-		"@typescript-eslint/eslint-plugin": "8.47.0",
-		"@typescript-eslint/parser": "8.47.0",
-		"esbuild": "0.27.0",
-		"execa": "9.6.0",
-		"glob": "11.1.0",
-		"nodemon": "3.1.11",
-		"typescript": "5.9.3"
+		"@typescript-eslint/eslint-plugin": "8.49.0",
+		"@typescript-eslint/parser": "8.49.0",
+		"esbuild": "0.27.1",
+		"execa": "9.6.1",
+		"nodemon": "3.1.11"
 	},
 	"files": [
 		"built"

@@ -6,11 +6,11 @@
 import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
-import * as yaml from 'js-yaml';
 import { type FastifyServerOptions } from 'fastify';
 import type * as Sentry from '@sentry/node';
 import type * as SentryVue from '@sentry/vue';
 import type { RedisOptions } from 'ioredis';
+import type { ManifestChunk } from 'vite';
 
 type RedisOptionsSource = Partial<RedisOptions> & {
 	host: string;
@@ -30,6 +30,7 @@ type Source = {
 	socket?: string;
 	trustProxy?: FastifyServerOptions['trustProxy'];
 	chmodSocket?: string;
+	enableIpRateLimit?: boolean;
 	disableHsts?: boolean;
 	db: {
 		host: string;
@@ -120,8 +121,9 @@ export type Config = {
 	url: string;
 	port: number;
 	socket: string | undefined;
-	trustProxy: FastifyServerOptions['trustProxy'];
+	trustProxy: NonNullable<FastifyServerOptions['trustProxy']>;
 	chmodSocket: string | undefined;
+	enableIpRateLimit: boolean;
 	disableHsts: boolean | undefined;
 	db: {
 		host: string;
@@ -187,9 +189,9 @@ export type Config = {
 	authUrl: string;
 	driveUrl: string;
 	userAgent: string;
-	frontendEntry: { file: string | null };
+	frontendEntry: ManifestChunk;
 	frontendManifestExists: boolean;
-	frontendEmbedEntry: { file: string | null };
+	frontendEmbedEntry: ManifestChunk;
 	frontendEmbedManifestExists: boolean;
 	mediaProxy: string;
 	externalMediaProxyEnabled: boolean;
@@ -224,16 +226,15 @@ const configDir = resolve(rootDir, '.config');
 /** Path of built directory */
 const projectBuiltDir = resolve(rootDir, 'built');
 
-/**
- * Path of configuration file
- */
-export const path = process.env.MISSKEY_CONFIG_YML
-	? resolve(configDir, process.env.MISSKEY_CONFIG_YML)
-	: process.env.NODE_ENV === 'test'
-		? resolve(configDir, 'test.yml')
-		: resolve(configDir, 'default.yml');
+const compiledConfigFilePathForTest = resolve(projectBuiltDir, '._config_.json');
+
+export const compiledConfigFilePath = fs.existsSync(compiledConfigFilePathForTest) ? compiledConfigFilePathForTest : resolve(_dirname, '../../../built/.config.json');
 
 export function loadConfig(): Config {
+	if (!fs.existsSync(compiledConfigFilePath)) {
+		throw new Error('Compiled configuration file not found. Try running \'pnpm compile-config\'.');
+	}
+
 	const meta = JSON.parse(fs.readFileSync(resolve(projectBuiltDir, 'meta.json'), 'utf-8'));
 
 	const frontendManifestExists = fs.existsSync(resolve(projectBuiltDir, '_frontend_vite_/manifest.json'));
@@ -245,7 +246,7 @@ export function loadConfig(): Config {
 		JSON.parse(fs.readFileSync(resolve(projectBuiltDir, '_frontend_embed_vite_/manifest.json'), 'utf-8'))
 		: { 'src/boot.ts': { file: null } };
 
-	const config = yaml.load(fs.readFileSync(path, 'utf-8')) as Source;
+	const config = JSON.parse(fs.readFileSync(compiledConfigFilePath, 'utf-8')) as Source;
 
 	const url = tryCreateUrl(config.url ?? process.env.MISSKEY_URL ?? '');
 	const version = meta.version;
@@ -271,9 +272,17 @@ export function loadConfig(): Config {
 		url: url.origin,
 		port: config.port ?? parseInt(process.env.PORT ?? '', 10),
 		socket: config.socket,
-		trustProxy: config.trustProxy,
+		trustProxy: config.trustProxy ?? [
+			'10.0.0.0/8',
+			'172.16.0.0/12',
+			'192.168.0.0/16',
+			'127.0.0.1/32',
+			'::1/128',
+			'fc00::/7',
+		],
 		chmodSocket: config.chmodSocket,
 		disableHsts: config.disableHsts,
+		enableIpRateLimit: config.enableIpRateLimit ?? true,
 		host,
 		hostname,
 		scheme,
