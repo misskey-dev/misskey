@@ -36,23 +36,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts._reversi.blackOrWhite }}</template>
 
 						<!-- TODO: 移行 -->
-						<MkRadios2 v-model="game.bw">
-							<option value="random">{{ i18n.ts.random }}</option>
-							<option :value="'1'">
+						<MkRadios
+							:options="[
+								{ value: 'random', label: i18n.ts.random },
+								{ value: '1', slotId: 'user1' },
+								{ value: '2', slotId: 'user2' },
+							]"
+							v-model="game.bw"
+						>
+							<template #option-user1>
 								<I18n :src="i18n.ts._reversi.blackIs" tag="span">
 									<template #name>
 										<b><MkUserName :user="game.user1"/></b>
 									</template>
 								</I18n>
-							</option>
-							<option :value="'2'">
+							</template>
+							<template #option-user2>
 								<I18n :src="i18n.ts._reversi.blackIs" tag="span">
 									<template #name>
 										<b><MkUserName :user="game.user2"/></b>
 									</template>
 								</I18n>
-							</option>
-						</MkRadios2>
+							</template>
+						</MkRadios>
 					</MkFolder>
 
 					<MkFolder :defaultOpen="true">
@@ -106,7 +112,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, ref, onMounted, shallowRef, onUnmounted } from 'vue';
+import { computed, watch, ref, onUnmounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as Reversi from 'misskey-reversi';
 import { i18n } from '@/i18n.js';
@@ -114,7 +120,6 @@ import { ensureSignin } from '@/i.js';
 import { deepClone } from '@/utility/clone.js';
 import MkButton from '@/components/MkButton.vue';
 import MkRadios from '@/components/MkRadios.vue';
-import MkRadios2 from '@/components/MkRadios2.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os.js';

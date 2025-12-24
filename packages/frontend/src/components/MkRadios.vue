@@ -19,8 +19,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div :class="$style.optionContent">
 				<i v-if="option.icon" :class="[$style.optionIcon, option.icon]" :style="option.iconStyle"></i>
 				<div>
-					<div :style="option.labelStyle">{{ option.label ?? option.value }}</div>
-					<div v-if="option.caption" :class="$style.optionCaption">{{ option.caption }}</div>
+					<slot v-if="option.slotId != null" :name="`option-${option.slotId}`"></slot>
+					<template v-else>
+						<div :style="option.labelStyle">{{ option.label ?? option.value }}</div>
+						<div v-if="option.caption" :class="$style.optionCaption">{{ option.caption }}</div>
+					</template>
 				</div>
 			</div>
 		</MkRadio>
@@ -35,8 +38,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import type { StyleValue } from 'vue';
 import type { OptionValue } from '@/types/option-value.js';
 
-export type RadioOption<T = OptionValue> = {
+export type RadioOption<T = OptionValue, S = string> = {
 	value: T;
+	slotId?: S;
 	label?: string;
 	labelStyle?: StyleValue;
 	icon?: string;
@@ -52,6 +56,13 @@ import MkRadio from './MkRadio.vue';
 defineProps<{
 	options: T[];
 	vertical?: boolean;
+}>();
+
+defineSlots<{
+	label?: () => any;
+	caption?: () => any
+} & {
+	[K in `option-${NonNullable<T['slotId']>}`]: () => any;
 }>();
 
 const model = defineModel<T['value']>({ required: true });
