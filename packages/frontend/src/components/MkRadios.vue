@@ -60,7 +60,7 @@ defineProps<{
 
 defineSlots<{
 	label?: () => any;
-	caption?: () => any
+	caption?: () => any;
 } & {
 	[K in `option-${NonNullable<T['slotId']>}`]: () => any;
 }>();
