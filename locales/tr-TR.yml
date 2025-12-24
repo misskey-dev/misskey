@@ -1343,6 +1343,7 @@ postForm: "Gönderim formu"
 textCount: "Karakter sayısı"
 information: "Hakkında"
 chat: "Sohbet"
+directMessage: "Kullanıcıyla sohbet et"
 migrateOldSettings: "Eski istemci ayarlarını taşıma"
 migrateOldSettings_description: "Bu işlem otomatik olarak yapılmalıdır, ancak herhangi bir nedenle geçiş başarısız olursa, geçiş işlemini manuel olarak kendin başlatabilirsin. Mevcut yapılandırma bilgileri üzerine yazılacaktır."
 compress: "Sıkıştır"
@@ -1377,6 +1378,17 @@ pluginsAreDisabledBecauseSafeMode: "Güvenli mod etkinleştirildiği için tüm 
 customCssIsDisabledBecauseSafeMode: "Güvenli mod etkin olduğu için özel CSS uygulanmıyor."
 themeIsDefaultBecauseSafeMode: "Güvenli mod etkinken, varsayılan tema kullanılır. Güvenli modu devre dışı bırakmak bu değişiklikleri geri alır."
 thankYouForTestingBeta: "Beta sürümünü test ettiğin için teşekkür ederiz!"
+widgets: "Widget'lar"
+presets: "Ön ayar"
+_imageEditing:
+  _vars:
+    filename: "Dosya adı"
+_imageFrameEditor:
+  header: "Başlık"
+  font: "Yazı tipi"
+  fontSerif: "Serif"
+  fontSansSerif: "Sans Serif"
+  quitWithoutSaveConfirm: "Kaydedilmemiş değişiklikleri silmek ister misin?"
 _order:
   newest: "Önce yeni"
   oldest: "Önce eski"
@@ -2498,6 +2510,9 @@ _postForm:
   replyPlaceholder: "Bu notu yanıtla..."
   quotePlaceholder: "Bu notu alıntı yap..."
   channelPlaceholder: "Bir kanala gönder..."
+  _howToUse:
+    visibility_title: "Görünürlük"
+    menu_title: "Menü"
   _placeholders:
     a: "Ne yapıyorsun?"
     b: "Çevrende neler oluyor?"
@@ -3209,6 +3224,7 @@ _imageEffector:
     angle: "Açı"
     scale: "Boyut"
     size: "Boyut"
+    offset: "Pozisyon"
     color: "Renk"
     opacity: "Opaklık"
     normalize: "Normalize"
@@ -3252,3 +3268,6 @@ _drafts:
   restoreFromDraft: "Taslaktan geri yükle"
   restore: "Geri yükle"
   listDrafts: "Taslaklar Listesi"
+_qr:
+  showTabTitle: "Ekran"
+  raw: "Metin"

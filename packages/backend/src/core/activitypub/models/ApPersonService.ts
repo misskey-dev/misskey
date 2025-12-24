@@ -310,7 +310,7 @@ export class ApPersonService implements OnModuleInit {
 		}
 
 		// eslint-disable-next-line no-param-reassign
-		if (resolver == null) resolver = this.apResolverService.createResolver();
+		if (resolver == null) resolver = await this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(uri);
 		if (object.id == null) throw new Error('invalid object.id: ' + object.id);
@@ -500,7 +500,7 @@ export class ApPersonService implements OnModuleInit {
 		//#endregion
 
 		// eslint-disable-next-line no-param-reassign
-		if (resolver == null) resolver = this.apResolverService.createResolver();
+		if (resolver == null) resolver = await this.apResolverService.createResolver();
 
 		const object = hint ?? await resolver.resolve(uri);
 
@@ -678,7 +678,7 @@ export class ApPersonService implements OnModuleInit {
 
 		// リモートサーバーからフェッチしてきて登録
 		// eslint-disable-next-line no-param-reassign
-		if (resolver == null) resolver = this.apResolverService.createResolver();
+		if (resolver == null) resolver = await this.apResolverService.createResolver();
 		return await this.createPerson(uri, resolver);
 	}
 
@@ -707,7 +707,7 @@ export class ApPersonService implements OnModuleInit {
 
 		this.logger.info(`Updating the featured: ${user.uri}`);
 
-		const _resolver = resolver ?? this.apResolverService.createResolver();
+		const _resolver = resolver ?? await this.apResolverService.createResolver();
 
 		// Resolve to (Ordered)Collection Object
 		const collection = await _resolver.resolveCollection(user.featured);

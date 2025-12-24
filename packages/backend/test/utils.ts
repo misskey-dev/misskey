@@ -10,8 +10,8 @@ import { randomUUID } from 'node:crypto';
 import { inspect } from 'node:util';
 import WebSocket, { ClientOptions } from 'ws';
 import fetch, { File, RequestInit, type Headers } from 'node-fetch';
+import * as htmlParser from 'node-html-parser';
 import { DataSource } from 'typeorm';
-import { JSDOM } from 'jsdom';
 import { type Response } from 'node-fetch';
 import Fastify from 'fastify';
 import { entities } from '../src/postgres.js';
@@ -316,8 +316,12 @@ export const uploadFile = async (user?: UserToken, { path, name, blob }: UploadO
 			: new URL(path, new URL('resources/', import.meta.url));
 
 	const formData = new FormData();
-	formData.append('file', blob ??
-		new File([new Uint8Array(await readFile(absPath))], basename(absPath.toString())));
+	formData.append(
+		'file',
+		blob ?? new Blob([new Uint8Array(await readFile(absPath))]),
+		basename(absPath.toString()),
+	);
+
 	formData.append('force', 'true');
 	if (name) {
 		formData.append('name', name);
@@ -464,7 +468,7 @@ export function makeStreamCatcher<T>(
 
 export type SimpleGetResponse = {
 	status: number,
-	body: any | JSDOM | null,
+	body: any | null,
 	type: string | null,
 	location: string | null
 };
@@ -495,7 +499,7 @@ export const simpleGet = async (path: string, accept = '*/*', cookie: any = unde
 
 	const body =
 		jsonTypes.includes(res.headers.get('content-type') ?? '') ? await res.json() :
-		htmlTypes.includes(res.headers.get('content-type') ?? '') ? new JSDOM(await res.text()) :
+		htmlTypes.includes(res.headers.get('content-type') ?? '') ? htmlParser.parse(await res.text()) :
 		await bodyExtractor(res);
 
 	return {

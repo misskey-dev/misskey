@@ -151,7 +151,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 
 		<div v-else-if="tab === 'announcements'" class="_gaps">
-			<MkButton primary rounded @click="createAnnouncement"><i class="ti ti-plus"></i> {{ i18n.ts.new }}</MkButton>
+			<MkButton primary rounded @click="createAnnouncement"><i class="ti ti-plus"></i> {{ i18n.ts.createNew }}</MkButton>
 
 			<MkSelect v-model="announcementsStatus" :items="announcementsStatusDef">
 				<template #label>{{ i18n.ts.filter }}</template>
@@ -257,7 +257,7 @@ const {
 const user = ref(result.user);
 const info = ref(result.info);
 const ips = ref(result.ips);
-const ap = ref<any>(null);
+const ap = ref<Misskey.entities.ApGetResponse | null>(null);
 const moderator = ref(info.value.isModerator);
 const silenced = ref(info.value.isSilenced);
 const suspended = ref(info.value.isSuspended);

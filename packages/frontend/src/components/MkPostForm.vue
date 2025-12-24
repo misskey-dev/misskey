@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div
-	:class="[$style.root, { [$style.modal]: modal, _popup: modal }]"
+	:class="[$style.root]"
 	@dragover.stop="onDragover"
 	@dragenter="onDragenter"
 	@dragleave="onDragleave"
@@ -14,10 +14,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<header :class="$style.header">
 		<div :class="$style.headerLeft">
 			<button v-if="!fixed" :class="$style.cancel" class="_button" @click="cancel"><i class="ti ti-x"></i></button>
-			<button v-click-anime v-tooltip="i18n.ts.switchAccount" :class="$style.account" class="_button" @click="openAccountMenu">
+			<button ref="accountMenuEl" v-click-anime v-tooltip="i18n.ts.account" :class="$style.account" class="_button" @click="openAccountMenu">
 				<img :class="$style.avatar" :src="(postAccount ?? $i).avatarUrl" style="border-radius: 100%;"/>
 			</button>
-			<button v-if="$i.policies.noteDraftLimit > 0" v-tooltip="(postAccount != null && postAccount.id !== $i.id) ? null : i18n.ts.draftsAndScheduledNotes" class="_button" :class="$style.draftButton" :disabled="postAccount != null && postAccount.id !== $i.id" @click="showDraftMenu"><i class="ti ti-list"></i></button>
 		</div>
 		<div :class="$style.headerRight">
 			<template v-if="!(targetChannel != null && fixed)">
@@ -38,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<span v-else><i class="ti ti-rocket-off"></i></span>
 			</button>
 			<button ref="otherSettingsButton" v-tooltip="i18n.ts.other" class="_button" :class="$style.headerRightItem" @click="showOtherSettings"><i class="ti ti-dots"></i></button>
-			<button v-click-anime class="_button" :class="$style.submit" :disabled="!canPost" data-cy-open-post-form-submit @click="post">
+			<button ref="submitButtonEl" v-click-anime class="_button" :class="$style.submit" :disabled="!canPost" data-cy-open-post-form-submit @click="post">
 				<div :class="$style.submitInner">
 					<template v-if="posted"></template>
 					<template v-else-if="posting"><MkEllipsis/></template>
@@ -61,6 +60,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button class="_buttonPrimary" style="padding: 4px; border-radius: 8px;" @click="addVisibleUser"><i class="ti ti-plus ti-fw"></i></button>
 		</div>
 	</div>
+	<MkInfo v-if="!store.r.tips.value.postForm" :class="$style.showHowToUse" closable @close="closeTip('postForm')">
+		<button class="_textButton" @click="showTour">{{ i18n.ts._postForm.showHowToUse }}</button>
+	</MkInfo>
 	<MkInfo v-if="scheduledAt != null" :class="$style.scheduledAt">
 		<I18n :src="i18n.ts.scheduleToPostOnX" tag="span">
 			<template #x>
@@ -90,7 +92,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkNotePreview v-if="showPreview" :class="$style.preview" :text="text" :files="files" :poll="poll ?? undefined" :useCw="useCw" :cw="cw" :user="postAccount ?? $i"/>
 	<div v-if="showingOptions" style="padding: 8px 16px;">
 	</div>
-	<footer :class="$style.footer">
+	<footer ref="footerEl" :class="$style.footer">
 		<div :class="$style.footerLeft">
 			<button v-tooltip="i18n.ts.attachFile + ' (' + i18n.ts.upload + ')'" class="_button" :class="$style.footerButton" @click="chooseFileFromPc"><i class="ti ti-photo-plus"></i></button>
 			<button v-tooltip="i18n.ts.attachFile + ' (' + i18n.ts.fromDrive + ')'" class="_button" :class="$style.footerButton" @click="chooseFileFromDrive"><i class="ti ti-cloud-download"></i></button>
@@ -112,7 +114,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { inject, watch, nextTick, onMounted, defineAsyncComponent, provide, shallowRef, ref, computed, useTemplateRef, onUnmounted } from 'vue';
+import { watch, nextTick, onMounted, defineAsyncComponent, provide, shallowRef, ref, computed, useTemplateRef, onUnmounted } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
@@ -141,7 +143,7 @@ import MkInfo from '@/components/MkInfo.vue';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { ensureSignin, notesCount, incNotesCount } from '@/i.js';
-import { getAccounts, openAccountMenu as openAccountMenu_ } from '@/accounts.js';
+import { getAccounts, getAccountMenu } from '@/accounts.js';
 import { deepClone } from '@/utility/clone.js';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { miLocalStorage } from '@/local-storage.js';
@@ -154,10 +156,10 @@ import { DI } from '@/di.js';
 import { globalEvents } from '@/events.js';
 import { checkDragDataType, getDragData } from '@/drag-and-drop.js';
 import { useUploader } from '@/composables/use-uploader.js';
+import { startTour } from '@/utility/tour.js';
+import { closeTip } from '@/tips.js';
 
 const $i = ensureSignin();
-
-const modal = inject(DI.inModal, false);
 
 const props = withDefaults(defineProps<PostFormProps & {
 	fixed?: boolean;
@@ -187,6 +189,9 @@ const cwInputEl = useTemplateRef('cwInputEl');
 const hashtagsInputEl = useTemplateRef('hashtagsInputEl');
 const visibilityButton = useTemplateRef('visibilityButton');
 const otherSettingsButton = useTemplateRef('otherSettingsButton');
+const accountMenuEl = useTemplateRef('accountMenuEl');
+const footerEl = useTemplateRef('footerEl');
+const submitButtonEl = useTemplateRef('submitButtonEl');
 
 const posting = ref(false);
 const posted = ref(false);
@@ -601,11 +606,30 @@ async function toggleReactionAcceptance() {
 //#region その他の設定メニューpopup
 function showOtherSettings() {
 	let reactionAcceptanceIcon = 'ti ti-icons';
+	let reactionAcceptanceCaption = '';
 
-	if (reactionAcceptance.value === 'likeOnly') {
-		reactionAcceptanceIcon = 'ti ti-heart _love';
-	} else if (reactionAcceptance.value === 'likeOnlyForRemote') {
-		reactionAcceptanceIcon = 'ti ti-heart-plus';
+	switch (reactionAcceptance.value) {
+		case 'likeOnly':
+			reactionAcceptanceIcon = 'ti ti-heart _love';
+			reactionAcceptanceCaption = i18n.ts.likeOnly;
+			break;
+
+		case 'likeOnlyForRemote':
+			reactionAcceptanceIcon = 'ti ti-heart-plus';
+			reactionAcceptanceCaption = i18n.ts.likeOnlyForRemote;
+			break;
+
+		case 'nonSensitiveOnly':
+			reactionAcceptanceCaption = i18n.ts.nonSensitiveOnly;
+			break;
+
+		case 'nonSensitiveOnlyForLocalLikeOnlyForRemote':
+			reactionAcceptanceCaption = i18n.ts.nonSensitiveOnlyForLocalLikeOnlyForRemote;
+			break;
+
+		default:
+			reactionAcceptanceCaption = i18n.ts.all;
+			break;
 	}
 
 	const menuItems = [{
@@ -617,8 +641,22 @@ function showOtherSettings() {
 	}, { type: 'divider' }, {
 		icon: reactionAcceptanceIcon,
 		text: i18n.ts.reactionAcceptance,
+		caption: reactionAcceptanceCaption,
 		action: () => {
 			toggleReactionAcceptance();
+		},
+	}, { type: 'divider' }, {
+		type: 'button',
+		text: i18n.ts._drafts.saveToDraft,
+		icon: 'ti ti-cloud-upload',
+		action: async () => {
+			if (!canSaveAsServerDraft.value) {
+				return os.alert({
+					type: 'error',
+					text: i18n.ts._drafts.cannotCreateDraft,
+				});
+			}
+			saveServerDraft();
 		},
 	}, ...($i.policies.scheduledNoteLimit > 0 ? [{
 		icon: 'ti ti-calendar-time',
@@ -672,6 +710,7 @@ function removeVisibleUser(user) {
 
 function clear() {
 	text.value = '';
+	cw.value = null;
 	files.value = [];
 	poll.value = null;
 	quoteId.value = null;
@@ -1159,34 +1198,9 @@ function showActions(ev: MouseEvent) {
 
 const postAccount = ref<Misskey.entities.UserDetailed | null>(null);
 
-function openAccountMenu(ev: MouseEvent) {
+async function openAccountMenu(ev: MouseEvent) {
 	if (props.mock) return;
 
-	openAccountMenu_({
-		withExtraOperation: false,
-		includeCurrentAccount: true,
-		active: postAccount.value != null ? postAccount.value.id : $i.id,
-		onChoose: (account) => {
-			if (account.id === $i.id) {
-				postAccount.value = null;
-			} else {
-				postAccount.value = account;
-			}
-		},
-	}, ev);
-}
-
-function showPerUploadItemMenu(item: UploaderItem, ev: MouseEvent) {
-	const menu = uploader.getMenu(item);
-	os.popupMenu(menu, ev.currentTarget ?? ev.target);
-}
-
-function showPerUploadItemMenuViaContextmenu(item: UploaderItem, ev: MouseEvent) {
-	const menu = uploader.getMenu(item);
-	os.contextMenu(menu, ev);
-}
-
-function showDraftMenu(ev: MouseEvent) {
 	function showDraftsDialog(scheduled: boolean) {
 		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkNoteDraftsDialog.vue')), {
 			scheduled,
@@ -1244,34 +1258,44 @@ function showDraftMenu(ev: MouseEvent) {
 		});
 	}
 
-	os.popupMenu([{
-		type: 'button',
-		text: i18n.ts._drafts.saveToDraft,
-		icon: 'ti ti-cloud-upload',
-		action: async () => {
-			if (!canSaveAsServerDraft.value) {
-				return os.alert({
-					type: 'error',
-					text: i18n.ts._drafts.cannotCreateDraft,
-				});
+	const items = await getAccountMenu({
+		withExtraOperation: false,
+		includeCurrentAccount: true,
+		active: postAccount.value != null ? postAccount.value.id : $i.id,
+		onChoose: (account) => {
+			if (account.id === $i.id) {
+				postAccount.value = null;
+			} else {
+				postAccount.value = account;
 			}
-			saveServerDraft();
 		},
-	}, {
+	});
+
+	os.popupMenu([{
 		type: 'button',
 		text: i18n.ts._drafts.listDrafts,
 		icon: 'ti ti-cloud-download',
 		action: () => {
 			showDraftsDialog(false);
 		},
-	}, { type: 'divider' }, {
+	}, {
 		type: 'button',
 		text: i18n.ts._drafts.listScheduledNotes,
 		icon: 'ti ti-clock-down',
 		action: () => {
 			showDraftsDialog(true);
 		},
-	}], (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
+	}, { type: 'divider' }, ...items], (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
+}
+
+function showPerUploadItemMenu(item: UploaderItem, ev: MouseEvent) {
+	const menu = uploader.getMenu(item);
+	os.popupMenu(menu, ev.currentTarget ?? ev.target);
+}
+
+function showPerUploadItemMenuViaContextmenu(item: UploaderItem, ev: MouseEvent) {
+	const menu = uploader.getMenu(item);
+	os.contextMenu(menu, ev);
 }
 
 async function schedule() {
@@ -1286,6 +1310,45 @@ async function schedule() {
 
 function cancelSchedule() {
 	scheduledAt.value = null;
+}
+
+function showTour() {
+	if (textareaEl.value == null ||
+		footerEl.value == null ||
+		accountMenuEl.value == null ||
+		visibilityButton.value == null ||
+		otherSettingsButton.value == null ||
+		submitButtonEl.value == null) {
+		return;
+	}
+
+	startTour([{
+		element: textareaEl.value,
+		title: i18n.ts._postForm._howToUse.content_title,
+		description: i18n.ts._postForm._howToUse.content_description,
+	}, {
+		element: footerEl.value,
+		title: i18n.ts._postForm._howToUse.toolbar_title,
+		description: i18n.ts._postForm._howToUse.toolbar_description,
+	}, {
+		element: accountMenuEl.value,
+		title: i18n.ts._postForm._howToUse.account_title,
+		description: i18n.ts._postForm._howToUse.account_description,
+	}, {
+		element: visibilityButton.value,
+		title: i18n.ts._postForm._howToUse.visibility_title,
+		description: i18n.ts._postForm._howToUse.visibility_description,
+	}, {
+		element: otherSettingsButton.value,
+		title: i18n.ts._postForm._howToUse.menu_title,
+		description: i18n.ts._postForm._howToUse.menu_description,
+	}, {
+		element: submitButtonEl.value,
+		title: i18n.ts._postForm._howToUse.submit_title,
+		description: i18n.ts._postForm._howToUse.submit_description,
+	}]).then(() => {
+		closeTip('postForm');
+	});
 }
 
 onMounted(() => {
@@ -1382,13 +1445,6 @@ defineExpose({
 .root {
 	position: relative;
 	container-type: inline-size;
-
-	&.modal {
-		width: 100%;
-		max-width: 520px;
-		overflow-x: clip;
-		overflow-y: auto;
-	}
 }
 
 //#region header
@@ -1417,23 +1473,11 @@ defineExpose({
 }
 
 .avatar {
+	display: block;
 	width: 28px;
 	height: 28px;
 	margin: auto;
-}
-
-.draftButton {
-	padding: 8px;
-	font-size: 90%;
-	border-radius: 6px;
-
-	&:hover {
-		background: light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.05));
-	}
-
-	&:disabled {
-		background: none;
-	}
+	object-fit: cover;
 }
 
 .headerRight {
@@ -1592,6 +1636,10 @@ html[data-color-scheme=light] .preview {
 	margin: 0 20px 16px 20px;
 }
 
+.showHowToUse {
+	margin: 0 20px 16px 20px;
+}
+
 .cw,
 .hashtags,
 .text {
@@ -1665,7 +1713,8 @@ html[data-color-scheme=light] .preview {
 	min-width: 100%;
 	width: 100%;
 	min-height: 90px;
-	height: 100%;
+	max-height: 500px;
+	field-sizing: content;
 }
 
 .textCount {

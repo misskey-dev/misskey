@@ -921,6 +921,15 @@ postForm: "Створення нотатки"
 information: "Інформація"
 inMinutes: "х"
 inDays: "д"
+widgets: "Віджети"
+_imageEditing:
+  _vars:
+    filename: "Ім'я файлу"
+_imageFrameEditor:
+  header: "Заголовок"
+  font: "Шрифт"
+  fontSerif: "Serif"
+  fontSansSerif: "Sans serif"
 _chat:
   invitations: "Запросити"
   noHistory: "Історія порожня"
@@ -1461,6 +1470,9 @@ _postForm:
   replyPlaceholder: "Відповідь на цю нотатку..."
   quotePlaceholder: "Прокоментуйте цю нотатку..."
   channelPlaceholder: "Опублікувати в каналі"
+  _howToUse:
+    visibility_title: "Видимість"
+    menu_title: "Меню"
   _placeholders:
     a: "Чим займаєтесь?"
     b: "Що відбувається навколо вас?"
@@ -1655,3 +1667,6 @@ _imageEffector:
     color: "Колір"
     opacity: "Непрозорість"
     lightness: "Яскравість"
+_qr:
+  showTabTitle: "Відображення"
+  raw: "Текст"

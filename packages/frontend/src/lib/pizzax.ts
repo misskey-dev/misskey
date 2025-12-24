@@ -5,6 +5,8 @@
 
 // PIZZAX --- A lightweight store
 
+// TODO: Misskeyのドメイン知識があるのでutilityなどに移動する
+
 import { onUnmounted, ref, watch } from 'vue';
 import { BroadcastChannel } from 'broadcast-channel';
 import type { Ref } from 'vue';
@@ -57,7 +59,7 @@ export class Pizzax<T extends StateDef> {
 	private pizzaxChannel: BroadcastChannel<PizzaxChannelMessage<T>>;
 
 	// 簡易的にキューイングして占有ロックとする
-	private currentIdbJob: Promise<any> = Promise.resolve();
+	private currentIdbJob: Promise<unknown> = Promise.resolve();
 	private addIdbSetJob<T>(job: () => Promise<T>) {
 		const promise = this.currentIdbJob.then(job, err => {
 			console.error('Pizzax failed to save data to idb!', err);
