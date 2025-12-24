@@ -76,8 +76,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkInfo>{{ i18n.ts._profile.verifiedLinkDescription }}</MkInfo>
 
 						<div ref="fieldsRootEl" class="_gaps_s">
-							<div v-for="field, index in fields" :key="field.id" :class="$style.fieldDragItem">
-								<button v-if="!fieldEditMode" class="_button handle" :class="$style.dragItemHandle" tabindex="-1"><i class="ti ti-menu"></i></button>
+							<div v-for="field, index in fields" v-panel :key="field.id" :class="$style.fieldDragItem">
+								<div v-if="!fieldEditMode" class="_button field-drag-handle" :class="$style.dragItemHandle"><i class="ti ti-menu"></i></div>
 								<button v-if="fieldEditMode" :disabled="fields.length <= 1" class="_button" :class="$style.dragItemRemove" @click="deleteField(index)"><i class="ti ti-x"></i></button>
 								<div :class="$style.dragItemForm">
 									<FormSplit :minWidth="200">
@@ -157,8 +157,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref, shallowRef, watch } from 'vue';
-import { animations } from '@formkit/drag-and-drop';
+import { computed, nextTick, reactive, ref, useTemplateRef, watch } from 'vue';
+import { animations, updateConfig } from '@formkit/drag-and-drop';
 import { dragAndDrop } from '@formkit/drag-and-drop/vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -205,18 +205,44 @@ watch(() => profile, () => {
 	deep: true,
 });
 
-const fields = ref($i.fields.map(field => ({ id: genId(), name: field.name, value: field.value })) ?? []);
+const fields = ref<{
+	id: string;
+	name: string;
+	value: string;
+}[]>((() => {
+	const savedFields = $i.fields.map(field => ({
+		id: genId(),
+		name: field.name,
+		value: field.value,
+	}));
+
+	while (savedFields.length < 4) {
+		savedFields.push({
+			id: genId(),
+			name: '',
+			value: '',
+		});
+	}
+
+	return savedFields;
+})());
 const fieldEditMode = ref(false);
 
-const fieldsRootEl = shallowRef<HTMLElement>();
+const fieldsRootEl = useTemplateRef('fieldsRootEl');
 
 dragAndDrop({
 	parent: fieldsRootEl,
 	values: fields,
 	plugins: [animations()],
-	dragHandle: '.handle',
-	draggable: () => !fieldEditMode.value,
+	dragHandle: '.field-drag-handle',
 });
+
+watch(fieldEditMode, (newVal) => {
+	if (fieldsRootEl.value == null) return;
+	updateConfig(fieldsRootEl.value, {
+		disabled: newVal,
+	});
+}, { immediate: true });
 
 function addField() {
 	fields.value.push({
@@ -224,10 +250,6 @@ function addField() {
 		name: '',
 		value: '',
 	});
-}
-
-while (fields.value.length < 4) {
-	addField();
 }
 
 function deleteField(index: number) {
