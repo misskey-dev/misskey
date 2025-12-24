@@ -175,7 +175,8 @@ async function discoverClientInformation(logger: Logger, httpRequestService: Htt
 			}
 
 			if (typeof json.logo_uri === 'string') {
-				logo = json.logo_uri;
+				// Since uri can be relative, resolve it against the document URL
+				logo = new URL(json.logo_uri, res.url).toString();
 			}
 
 			if (Array.isArray(json.redirect_uris)) {
@@ -214,6 +215,8 @@ async function discoverClientInformation(logger: Logger, httpRequestService: Htt
 		logger.error('Error while fetching client information', { err });
 		if (err instanceof StatusError) {
 			throw new AuthorizationError('Failed to fetch client information', 'invalid_request');
+		} else if (err instanceof AuthorizationError) {
+			throw err;
 		} else {
 			throw new AuthorizationError('Failed to parse client information', 'server_error');
 		}
