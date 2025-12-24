@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, shallowRef, watch } from 'vue';
+import { computed, ref, useTemplateRef } from 'vue';
 import { animations } from '@formkit/drag-and-drop';
 import { dragAndDrop } from '@formkit/drag-and-drop/vue';
 import MkRadios from '@/components/MkRadios.vue';
@@ -70,7 +70,7 @@ const items = ref(prefer.s.menu.map(x => ({
 })).filter(x => Object.keys(navbarItemDef).includes(x.type) || x.type === '-'));
 const itemTypeValues = computed(() => items.value.map(x => x.type));
 
-const dndParentEl = shallowRef<HTMLElement>();
+const dndParentEl = useTemplateRef('dndParentEl');
 
 dragAndDrop({
 	parent: dndParentEl,

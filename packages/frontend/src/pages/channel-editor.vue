@@ -61,7 +61,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, shallowRef, watch, defineAsyncComponent } from 'vue';
+import { computed, ref, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { animations } from '@formkit/drag-and-drop';
 import { dragAndDrop } from '@formkit/drag-and-drop/vue';
@@ -93,7 +93,7 @@ const color = ref('#000');
 const isSensitive = ref(false);
 const allowRenoteToExternal = ref(true);
 const pinnedNotes = ref<{ id: Misskey.entities.Note['id'] }[]>([]);
-const dndParentEl = shallowRef<HTMLElement>();
+const dndParentEl = useTemplateRef('dndParentEl');
 
 dragAndDrop({
 	parent: dndParentEl,

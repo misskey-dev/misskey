@@ -18,27 +18,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div>
 		<div v-panel style="border-radius: 6px;">
-			<Sortable
-				v-model="emojis"
-				:class="$style.emojis"
-				:itemKey="item => item"
-				:animation="150"
-				:delay="100"
-				:delayOnTouchOnly="true"
-				:group="{ name: 'SortableEmojiPalettes' }"
-			>
-				<template #item="{element}">
-					<button class="_button" :class="$style.emojisItem" @click="remove(element, $event)">
-						<MkCustomEmoji v-if="element[0] === ':'" :name="element" :normal="true" :fallbackToImage="true"/>
-						<MkEmoji v-else :emoji="element" :normal="true"/>
-					</button>
-				</template>
-				<template #footer>
-					<button class="_button" :class="$style.emojisAdd" @click="pick">
-						<i class="ti ti-plus"></i>
-					</button>
-				</template>
-			</Sortable>
+			<div ref="dndParentEl" :class="$style.emojis">
+				<button v-for="emoji in emojis" :key="emoji" class="_button" :class="$style.emojisItem" @click="remove(emoji, $event)">
+					<MkCustomEmoji v-if="emoji[0] === ':'" :name="emoji" :normal="true" :fallbackToImage="true"/>
+					<MkEmoji v-else :emoji="emoji" :normal="true"/>
+				</button>
+				<button class="_button" :class="$style.emojisAdd" @click="pick">
+					<i class="ti ti-plus"></i>
+				</button>
+			</div>
 		</div>
 		<div :class="$style.editorCaption">{{ i18n.ts.reactionSettingDescription2 }}</div>
 	</div>
@@ -46,8 +34,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue';
-import Sortable from 'vuedraggable';
+import { ref, useTemplateRef, watch } from 'vue';
+import { animations } from '@formkit/drag-and-drop';
+import { dragAndDrop } from '@formkit/drag-and-drop/vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
@@ -72,6 +61,14 @@ const emit = defineEmits<{
 }>();
 
 const emojis = ref<string[]>(deepClone(props.palette.emojis));
+
+const dndParentEl = useTemplateRef('dndParentEl');
+
+dragAndDrop({
+	parent: dndParentEl,
+	values: emojis,
+	plugins: [animations()],
+});
 
 watch(emojis, () => {
 	emit('updateEmojis', emojis.value);

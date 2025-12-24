@@ -51,7 +51,8 @@
 		"./src/**/*.vue",
 		"./test/**/*.ts",
 		"./test/**/*.vue",
-		"./@types/**/*.ts"
+		"./@types/**/*.ts",
+		"./@types/**/*.d.ts"
 	],
 	"exclude": [
 		"./src/**/*.stories.ts"

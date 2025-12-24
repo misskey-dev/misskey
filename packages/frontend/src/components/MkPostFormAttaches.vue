@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, computed, inject, shallowRef } from 'vue';
+import { computed, inject, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { animations } from '@formkit/drag-and-drop';
 import { dragAndDrop } from '@formkit/drag-and-drop/vue';
@@ -68,7 +68,7 @@ const emit = defineEmits<{
 	(ev: 'changeName', file: Misskey.entities.DriveFile, newName: string): void;
 }>();
 
-const dndParentEl = shallowRef<HTMLElement>();
+const dndParentEl = useTemplateRef('dndParentEl');
 
 const files = computed({
 	get: () => props.modelValue,
