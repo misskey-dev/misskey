@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </MkModalWindow>
 </template>
 <script lang="ts" setup>
-import { defineProps, ref } from 'vue';
+import { ref } from 'vue';
 import MkModalWindow from './MkModalWindow.vue';
 import type * as Misskey from 'misskey-js';
 
