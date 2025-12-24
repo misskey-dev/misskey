@@ -36,12 +36,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts._reversi.blackOrWhite }}</template>
 
 						<MkRadios
+							v-model="game.bw"
 							:options="[
 								{ value: 'random', label: i18n.ts.random },
 								{ value: '1', slotId: 'user1' },
 								{ value: '2', slotId: 'user2' },
 							]"
-							v-model="game.bw"
 						>
 							<template #option-user1>
 								<I18n :src="i18n.ts._reversi.blackIs" tag="span">
