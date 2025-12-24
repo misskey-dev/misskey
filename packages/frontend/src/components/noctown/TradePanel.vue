@@ -86,6 +86,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div v-if="myOffer.length === 0" :class="$style.emptyMessage">
 						左からアイテムを選択
 					</div>
+					<!-- 仕様: オファーアイテム（削除ボタン付き） -->
 					<div
 						v-for="(item, index) in myOffer"
 						:key="index"
@@ -95,27 +96,35 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<input
 							v-model.number="item.quantity"
 							type="number"
+							inputmode="numeric"
 							min="1"
 							:max="getMaxQuantity(item.itemId)"
 							:class="$style.quantityInput"
+							@touchstart.stop
 						/>
-						<button :class="$style.removeBtn" @click="removeFromOffer(index)">
+						<button
+							:class="$style.removeBtn"
+							@click.stop="removeFromOffer(index)"
+							@touchend.stop.prevent="removeFromOffer(index)"
+						>
 							<i class="ti ti-x"></i>
 						</button>
 					</div>
 				</div>
 
-				<!-- 通貨入力 -->
-				<div :class="$style.currencySection">
+				<!-- 仕様: 通貨入力（モバイル対応: type="text" + inputmode="numeric"） -->
+				<div :class="$style.currencySection" @click.stop>
 					<label>
 						<i class="ti ti-coin"></i>
 						通貨:
 					</label>
 					<input
-						v-model.number="offeredCurrency"
-						type="number"
-						min="0"
+						:value="offeredCurrency"
+						type="text"
+						inputmode="numeric"
+						pattern="[0-9]*"
 						:class="$style.currencyInput"
+						@input="offeredCurrency = parseInt(($event.target as HTMLInputElement).value) || 0"
 					/>
 				</div>
 			</div>
@@ -196,6 +205,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div v-if="myBarterOffer.length === 0" :class="$style.emptyMessage">
 							アイテムを追加
 						</div>
+						<!-- 仕様: バーターオファーアイテム（削除ボタン付き） -->
 						<div
 							v-for="(item, index) in myBarterOffer"
 							:key="index"
@@ -205,12 +215,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<input
 								v-model.number="item.quantity"
 								type="number"
+								inputmode="numeric"
 								min="1"
 								:max="getMaxQuantity(item.itemId)"
 								:class="$style.quantityInput"
 								@change="onOfferChanged"
+								@touchstart.stop
 							/>
-							<button :class="$style.removeBtn" @click="removeFromBarterOffer(index)">
+							<button
+								:class="$style.removeBtn"
+								@click.stop="removeFromBarterOffer(index)"
+								@touchend.stop.prevent="removeFromBarterOffer(index)"
+							>
 								<i class="ti ti-x"></i>
 							</button>
 						</div>
@@ -222,18 +238,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 						アイテム追加
 					</button>
 
-					<!-- 通貨入力 -->
-					<div :class="$style.currencySection">
+					<!-- 仕様: 通貨入力（モバイル対応: type="text" + inputmode="numeric"） -->
+					<div :class="$style.currencySection" @click.stop>
 						<label>
 							<i class="ti ti-coin"></i>
 							通貨:
 						</label>
 						<input
-							v-model.number="myBarterCurrency"
-							type="number"
-							min="0"
+							:value="myBarterCurrency"
+							type="text"
+							inputmode="numeric"
+							pattern="[0-9]*"
 							:class="$style.currencyInput"
-							@change="onOfferChanged"
+							@input="handleBarterCurrencyInput($event)"
 						/>
 					</div>
 				</template>
@@ -665,6 +682,14 @@ async function sendTradeRequest(): Promise<void> {
 	}
 }
 
+// 仕様: バーター通貨入力ハンドラ（モバイル対応）
+function handleBarterCurrencyInput(event: Event): void {
+	const input = event.target as HTMLInputElement;
+	const value = parseInt(input.value) || 0;
+	myBarterCurrency.value = Math.max(0, value);
+	onOfferChanged();
+}
+
 // オファー変更時の処理（サーバーに同期）
 async function onOfferChanged(): Promise<void> {
 	if (!tradeDetail.value || tradeDetail.value.status !== 'accepted') return;
@@ -714,21 +739,15 @@ async function toggleConfirm(): Promise<void> {
 }
 
 // 仕様: 交換実行（両者がconfirmed状態の時のみ）
+// アラートはtradeCompletedイベントハンドラで表示するため、ここでは表示しない
 async function executeTrade(): Promise<void> {
 	if (!tradeDetail.value) return;
 
 	isSending.value = true;
 	try {
 		await (misskeyApi as any)('noctown/trade/execute', { tradeId: tradeDetail.value.id });
-
-		await os.alert({
-			type: 'success',
-			title: '交換成功',
-			text: '交換が成功しました',
-		});
-
-		emit('trade-completed');
-		emit('close');
+		// 仕様: 成功時のアラートはWebSocketのtradeCompletedイベントで表示される
+		// ここではemitとcloseを行わない（イベントハンドラに任せる）
 	} catch (e: unknown) {
 		console.error('Failed to execute trade:', e);
 		const err = e as { code?: string };
@@ -838,13 +857,13 @@ function setupWebSocket(): void {
 		}
 	});
 
-	// 仕様: トレード完了
+	// 仕様: トレード完了（アラートはここで1回だけ表示）
 	(channel as any).on('tradeCompleted', (body: { tradeId: string }) => {
 		if (tradeDetail.value && tradeDetail.value.id === body.tradeId) {
 			os.alert({
 				type: 'success',
-				title: '交換成功',
-				text: '交換が成功しました',
+				title: 'トレード完了',
+				text: 'アイテムと通貨の交換が完了しました',
 			});
 			emit('trade-completed');
 			emit('close');
@@ -1146,16 +1165,24 @@ defineExpose({
 	color: var(--MI_THEME-fg);
 }
 
+/* 仕様: 削除ボタン（モバイルでタップしやすいサイズ） */
 .removeBtn {
 	background: none;
 	border: none;
-	padding: 4px;
+	padding: 8px;
+	min-width: 32px;
+	min-height: 32px;
 	cursor: pointer;
 	color: #ef4444;
-	opacity: 0.6;
+	opacity: 0.7;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 
-	&:hover {
+	&:hover, &:active {
 		opacity: 1;
+		background: rgba(239, 68, 68, 0.1);
+		border-radius: 4px;
 	}
 }
 
@@ -1194,6 +1221,7 @@ defineExpose({
 	}
 }
 
+/* 仕様: 通貨入力（font-size: 16px以上でiOSズーム防止） */
 .currencyInput {
 	width: 100px;
 	padding: 8px;
@@ -1201,6 +1229,9 @@ defineExpose({
 	border: 1px solid var(--MI_THEME-divider);
 	border-radius: 6px;
 	color: var(--MI_THEME-fg);
+	font-size: 16px;
+	-webkit-appearance: none;
+	-moz-appearance: textfield;
 }
 
 .currencyDisplay {

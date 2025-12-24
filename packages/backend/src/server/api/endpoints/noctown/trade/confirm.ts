@@ -7,6 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { NoctownTransactionService } from '@/core/NoctownTransactionService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type {
 	NoctownTradesRepository,
 	NoctownTradeItemsRepository,
@@ -103,6 +104,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		private idService: IdService,
 		private noctownTransactionService: NoctownTransactionService,
+		private globalEventService: GlobalEventService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			// Get player
@@ -149,6 +151,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					? { initiatorConfirmed: true }
 					: { targetConfirmed: true },
 			);
+
+			// 仕様: 相手に確認イベントを通知
+			const otherPlayerId = isInitiator ? trade.targetId : trade.initiatorId;
+			this.globalEventService.publishNoctownPlayerStream(otherPlayerId, 'tradeConfirmed', {
+				tradeId: trade.id,
+				confirmedBy: isInitiator ? 'initiator' : 'target',
+			});
 
 			// 仕様: 両者確認時は自動実行せず、confirmだけ行う
 			// 実際の交換は execute エンドポイントで行う
