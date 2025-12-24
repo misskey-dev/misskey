@@ -35,7 +35,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkFolder :defaultOpen="true">
 						<template #label>{{ i18n.ts._reversi.blackOrWhite }}</template>
 
-						<!-- TODO: 移行 -->
 						<MkRadios
 							:options="[
 								{ value: 'random', label: i18n.ts.random },
