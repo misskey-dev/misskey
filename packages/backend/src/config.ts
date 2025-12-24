@@ -228,7 +228,9 @@ const projectBuiltDir = resolve(rootDir, 'built');
 
 const compiledConfigFilePathForTest = resolve(projectBuiltDir, '._config_.json');
 
-export const compiledConfigFilePath = fs.existsSync(compiledConfigFilePathForTest) ? compiledConfigFilePathForTest : resolve(_dirname, '../../../built/.config.json');
+export const compiledConfigFilePath = fs.existsSync(compiledConfigFilePathForTest)
+	? compiledConfigFilePathForTest
+	: resolve(projectBuiltDir, '.config.json');
 
 export function loadConfig(): Config {
 	if (!fs.existsSync(compiledConfigFilePath)) {

@@ -15,7 +15,7 @@
 		"cli": "pnpm compile-config && node ./built/boot/cli.js",
 		"check:connect": "pnpm compile-config && node ./scripts/check_connect.js",
 		"compile-config": "node ./scripts/compile_config.js",
-		"build": "swc src -d built -D --strip-leading-paths",
+		"build": "node build.js",
 		"build:test": "swc test-server -d built-test -D --config-file test-server/.swcrc --strip-leading-paths",
 		"watch:swc": "swc src -d built -D -w --strip-leading-paths",
 		"build:tsc": "tsgo -p tsconfig.json && tsc-alias -p tsconfig.json",
