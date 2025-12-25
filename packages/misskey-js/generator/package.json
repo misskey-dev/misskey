@@ -15,7 +15,6 @@
 		"openapi-typescript": "7.10.1",
 		"ts-case-convert": "2.1.0",
 		"tsx": "4.21.0",
-		"typescript": "5.9.3",
 		"eslint": "9.39.1"
 	},
 	"files": [

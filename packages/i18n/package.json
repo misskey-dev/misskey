@@ -20,7 +20,7 @@
 		"build": "tsx ./build.ts",
 		"watch": "nodemon -w package.json -e json --exec \"tsx ./build.ts --watch\"",
 		"tsd": "tsd",
-		"typecheck": "tsc --noEmit",
+		"typecheck": "tsgo --noEmit",
 		"lint": "pnpm typecheck && pnpm eslint",
 		"lint:fix": "pnpm eslint --fix"
 	},
@@ -36,8 +36,7 @@
 		"esbuild": "0.27.1",
 		"execa": "9.6.1",
 		"nodemon": "3.1.11",
-		"tsx": "4.21.0",
-		"typescript": "5.9.3"
+		"tsx": "4.21.0"
 	},
 	"dependencies": {
 		"js-yaml": "4.1.1"
