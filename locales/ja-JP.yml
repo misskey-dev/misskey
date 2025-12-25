@@ -2601,6 +2601,42 @@ _widgets:
   clicker: "クリッカー"
   birthdayFollowings: "今日誕生日のユーザー"
   chat: "ダイレクトメッセージ"
+  _options:
+    showHeader: "ヘッダーを表示"
+    transparent: "背景を透明にする"
+    height: "高さ"
+    _button:
+      colored: "色付きボタン"
+    _clock:
+      size: "サイズ"
+      thickness: "指針の太さ"
+      thicknessThin: "細い"
+      thicknessMedium: "普通"
+      thicknessThick: "太い"
+      graduations: "文字盤の目盛り"
+      graduationDots: "ドット"
+      graduationNumbers: "数字"
+      fadeGraduations: "時針が指している目盛り周辺のみ表示"
+      sAnimation: "秒針のアニメーション"
+      sAnimationElastic: "リアル"
+      sAnimationEaseOut: "滑らか"
+      twentyFour: "24時間表示"
+      labelTime: "時刻"
+      labelTz: "タイムゾーン"
+      labelTimeAndTz: "時刻とタイムゾーン"
+      timezone: "タイムゾーン"
+      showMs: "ミリ秒を表示"
+      showLabel: "ラベルを表示"
+    _jobQueue:
+      sound: "音を鳴らす"
+    _rss:
+      url: "RSSフィードのURL"
+      refreshIntervalSec: "更新間隔(秒)"
+      maxEntries: "最大表示件数"
+    _rssTicker:
+      shuffle: "表示順をシャッフル"
+      duration: "ティッカーのスクロール速度(秒)"
+      reverse: "逆方向にスクロール"
 
 _cw:
   hide: "隠す"

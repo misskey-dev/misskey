@@ -35,6 +35,7 @@ import MkMarqueeText from '@/components/MkMarqueeText.vue';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import { shuffle } from '@/utility/shuffle.js';
+import { i18n } from '@/i18n.js';
 import { url as base } from '@@/js/config.js';
 import { useInterval } from '@@/js/use-interval.js';
 
@@ -43,22 +44,27 @@ const name = 'rssTicker';
 const widgetPropsDef = {
 	url: {
 		type: 'string',
+		label: i18n.ts._widgets._options._rss.url,
 		default: 'http://feeds.afpbb.com/rss/afpbb/afpbbnews',
 	},
 	shuffle: {
 		type: 'boolean',
+		label: i18n.ts._widgets._options._rssTicker.shuffle,
 		default: true,
 	},
 	refreshIntervalSec: {
 		type: 'number',
+		label: i18n.ts._widgets._options._rss.refreshIntervalSec,
 		default: 60,
 	},
 	maxEntries: {
 		type: 'number',
+		label: i18n.ts._widgets._options._rss.maxEntries,
 		default: 15,
 	},
 	duration: {
 		type: 'range',
+		label: i18n.ts._widgets._options._rssTicker.duration,
 		default: 70,
 		step: 1,
 		min: 5,
@@ -66,14 +72,17 @@ const widgetPropsDef = {
 	},
 	reverse: {
 		type: 'boolean',
+		label: i18n.ts._widgets._options._rssTicker.reverse,
 		default: false,
 	},
 	showHeader: {
 		type: 'boolean',
+		label: i18n.ts._widgets._options.showHeader,
 		default: false,
 	},
 	transparent: {
 		type: 'boolean',
+		label: i18n.ts._widgets._options.transparent,
 		default: false,
 	},
 } satisfies FormWithDefault;

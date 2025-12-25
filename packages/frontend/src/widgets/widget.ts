@@ -9,6 +9,7 @@ import { throttle } from 'throttle-debounce';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import * as os from '@/os.js';
 import { deepClone } from '@/utility/clone.js';
+import { i18n } from '@/i18n';
 
 export type Widget<P extends Record<string, unknown>> = {
 	id: string;
@@ -62,7 +63,7 @@ export const useWidgetPropsManager = <F extends FormWithDefault>(
 		for (const item of Object.keys(form)) {
 			form[item].default = widgetProps[item];
 		}
-		const { canceled, result } = await os.form(name, form);
+		const { canceled, result } = await os.form(i18n.ts._widgets[name] ?? name, form);
 		if (canceled) return;
 
 		for (const key of Object.keys(result)) {
