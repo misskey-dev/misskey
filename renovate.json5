@@ -106,6 +106,18 @@
 				'.devcontainer/**',
 			],
 		},
+		{
+			// devcontainer (Dockerfile用の設定)
+			groupName: '[devcontainer] Update dependencies',
+			matchFileNames: ['.devcontainer/Dockerfile'],
+			matchDepNames: ['mcr.microsoft.com/devcontainers/javascript-node'],
+			allowedVersions: '/-[0-9]+-trixie$/',
+
+			// major/minor/patch: devcontainer の semver
+			// build: Node メジャー
+			// dist: Debian codename (e.g., bullseye, bookworm)（比較には使わない）
+			versioning: 'regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)-(?<build>\\d+)-(?<dist>.+)$',
+		},
 	],
 	customManagers: [
 		{

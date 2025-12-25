@@ -14,7 +14,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Reply
-        uses: actions/github-script@v6
+        uses: actions/github-script@v8
         with:
           script: |
             const body = `To dev team (@misskey-dev/dev):
