@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+
 # CodeRabbit Configuration
 # https://docs.coderabbit.ai/guides/review-settings/
 
@@ -16,26 +18,14 @@ reviews:
     # Review PRs from bots
     drafts: false
 
-  # Don't skip bot users
-  filters:
-    - "!bot"  # Remove bot filter to allow bot PR reviews
-
-# File Patterns to Review
-path_filters:
-  - "packages/backend/**/*.ts"
-  - "packages/frontend/**/*.ts"
-  - "packages/frontend/**/*.vue"
-  - "!**/node_modules/**"
-  - "!**/dist/**"
-  - "!**/build/**"
-
-# Review Focus Areas
-review_focus:
-  - security
-  - performance
-  - best_practices
-  - type_safety
-  - error_handling
+  # Path instructions for specific file types
+  path_instructions:
+    - path: "packages/backend/**/*.ts"
+      instructions: "Focus on security, error handling, and type safety."
+    - path: "packages/frontend/**/*.ts"
+      instructions: "Focus on performance, best practices, and type safety."
+    - path: "packages/frontend/**/*.vue"
+      instructions: "Focus on Vue.js best practices and component design."
 
 # Chat Settings
 chat:
