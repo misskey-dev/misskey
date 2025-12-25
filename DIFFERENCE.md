@@ -1,6 +1,6 @@
 # DIFFRENCE
 
-## Unreleased
+## 2025.12.2-yami-1.9.30
 
 ### Fix
 - **mCaptchaが動作しない問題を修正**
