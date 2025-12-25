@@ -67,11 +67,18 @@ const $i = ensureSignin();
 
 const loading = ref(true);
 const avatarDecorations = ref<Misskey.entities.GetAvatarDecorationsResponse>([]);
-const groupedDecorations = ref<Record<string, Misskey.entities.GetAvatarDecorationsResponse>>({});
+const groupedDecorations = computed(() => {
+	const groups: Record<string, Misskey.entities.GetAvatarDecorationsResponse> = {};
+	for (const decoration of avatarDecorations.value) {
+		const category = decoration.category ?? '';
+		groups[category] ??= [];
+		groups[category].push(decoration);
+	}
+	return groups;
+});
 
 misskeyApi('get-avatar-decorations').then(_avatarDecorations => {
 	avatarDecorations.value = _avatarDecorations;
-	groupedDecorations.value = groupAvatarDecorations(_avatarDecorations);
 	loading.value = false;
 });
 
