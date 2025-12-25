@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { reactive, watch } from 'vue';
+import { defineAsyncComponent, reactive, watch } from 'vue';
 import type { Reactive } from 'vue';
 import { throttle } from 'throttle-debounce';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
@@ -62,11 +62,36 @@ export const useWidgetPropsManager = <F extends FormWithDefault>(
 		for (const item of Object.keys(form)) {
 			form[item].default = widgetProps[item];
 		}
-		const { canceled, result } = await os.form(name, form);
-		if (canceled) return;
 
-		for (const key of Object.keys(result)) {
-			widgetProps[key] = result[key];
+		const res = await new Promise<{
+			canceled: false;
+			result: GetFormResultType<F>;
+		} | {
+			canceled: true;
+		}>((resolve) => {
+			const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkWidgetSettingsDialog.vue')), {
+				widgetName: name,
+				form: form,
+				currentSettings: widgetProps,
+			}, {
+				saved: (newProps: GetFormResultType<F>) => {
+					resolve({ canceled: false, result: newProps });
+				},
+				canceled: () => {
+					resolve({ canceled: true });
+				},
+				closed: () => {
+					dispose();
+				},
+			});
+		});
+
+		if (res.canceled) {
+			return;
+		}
+
+		for (const key of Object.keys(res.result)) {
+			widgetProps[key] = res.result[key];
 		}
 
 		save();
