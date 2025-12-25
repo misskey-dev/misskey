@@ -1,0 +1,42 @@
+# CodeRabbit Configuration
+# https://docs.coderabbit.ai/guides/review-settings/
+
+# Language and Tone
+language: ja-JP
+tone_instructions: "日本語で丁寧なトーンでレビューしてください。建設的で親切なフィードバックを心がけてください。"
+
+# Review Settings
+reviews:
+  # Enable review status messages
+  review_status: true
+
+  # Review bot PRs
+  auto_review:
+    enabled: true
+    # Review PRs from bots
+    drafts: false
+
+  # Don't skip bot users
+  filters:
+    - "!bot"  # Remove bot filter to allow bot PR reviews
+
+# File Patterns to Review
+path_filters:
+  - "packages/backend/**/*.ts"
+  - "packages/frontend/**/*.ts"
+  - "packages/frontend/**/*.vue"
+  - "!**/node_modules/**"
+  - "!**/dist/**"
+  - "!**/build/**"
+
+# Review Focus Areas
+review_focus:
+  - security
+  - performance
+  - best_practices
+  - type_safety
+  - error_handling
+
+# Chat Settings
+chat:
+  auto_reply: true
