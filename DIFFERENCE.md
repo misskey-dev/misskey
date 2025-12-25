@@ -2,8 +2,6 @@
 
 ## Unreleased
 
-## 2025.12.2-yami-1.9.30
-
 ### Fix
 - **mCaptchaが動作しない問題を修正**
   - `@mcaptcha/vanilla-glue`を`0.1.0-rc2`から`0.1.0-alpha-3`にダウングレード
