@@ -39,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<template #controls>
 			<div class="_spacer">
-				<MkForm :form="form" v-model="settings" />
+				<MkForm v-model="settings" :form="form"/>
 			</div>
 		</template>
 	</MkPreviewWithControls>
@@ -102,6 +102,7 @@ const ro1 = new ResizeObserver(() => {
 const ro2 = new ResizeObserver(() => {
 	calcScale();
 });
+
 function calcScale() {
 	if (!resizerRootEl.value) return;
 	const previewWidth = resizerRootEl.value.clientWidth - 40; // 左右の余白 20pxずつ

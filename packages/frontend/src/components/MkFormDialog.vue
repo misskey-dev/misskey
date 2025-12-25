@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</template>
 
 	<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 32px;">
-		<MkForm :form="form" v-model="values"/>
+		<MkForm v-model="values" :form="form"/>
 	</div>
 </MkModalWindow>
 </template>
@@ -56,10 +56,8 @@ const values = reactive((() => {
 			obj[item] = null;
 		}
 	}
-
 	return obj;
 })());
-
 
 function ok() {
 	emit('done', {
