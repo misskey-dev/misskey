@@ -19100,6 +19100,8 @@ export interface operations {
                 'application/json': {
                     /** @default 10 */
                     limit?: number;
+                    /** @default 0 */
+                    offset?: number;
                     /** Format: misskey:id */
                     sinceId?: string;
                     /** Format: misskey:id */

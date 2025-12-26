@@ -225,6 +225,7 @@ const sortModeSelect = ref<NonNullable<Misskey.entities.DriveFilesRequest['sort'
 const filesPaginator = markRaw(new Paginator('drive/files', {
 	limit: 30,
 	canFetchDetection: 'limit',
+	offsetMode: true,
 	params: () => ({ // 自動でリロードしたくないためcomputedParamsは使わない
 		folderId: folder.value ? folder.value.id : null,
 		type: props.type,
