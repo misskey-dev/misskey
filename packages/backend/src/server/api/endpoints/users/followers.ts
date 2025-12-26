@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { IsNull } from 'typeorm';
+import { Brackets, IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import type { UsersRepository, FollowingsRepository, UserProfilesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
@@ -12,6 +12,8 @@ import { FollowingEntityService } from '@/core/entities/FollowingEntityService.j
 import { UtilityService } from '@/core/UtilityService.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
+import { sqlLikeEscape } from '@/misc/sql-like-escape.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -79,6 +81,7 @@ export const paramDef = {
 				sinceDate: { type: 'integer' },
 				untilDate: { type: 'integer' },
 				limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+				query: { type: 'string', nullable: true },
 			},
 		},
 	],
@@ -100,6 +103,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private followingEntityService: FollowingEntityService,
 		private queryService: QueryService,
 		private roleService: RoleService,
+		private userEntityService: UserEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const user = await this.usersRepository.findOneBy('userId' in ps
@@ -137,6 +141,21 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const query = this.queryService.makePaginationQuery(this.followingsRepository.createQueryBuilder('following'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
 				.andWhere('following.followeeId = :userId', { userId: user.id })
 				.innerJoinAndSelect('following.follower', 'follower');
+
+			if (ps.query) {
+				const searchQuery = ps.query;
+				const isUsername = searchQuery.startsWith('@') && !searchQuery.includes(' ') && searchQuery.indexOf('@', 1) === -1;
+
+				query.andWhere(new Brackets(qb => {
+					qb.where('follower.name ILIKE :query', { query: '%' + sqlLikeEscape(searchQuery) + '%' });
+
+					if (isUsername) {
+						qb.orWhere('follower.usernameLower LIKE :username', { username: sqlLikeEscape(searchQuery.replace('@', '').toLowerCase()) + '%' });
+					} else if (this.userEntityService.validateLocalUsername(searchQuery)) {
+						qb.orWhere('follower.usernameLower LIKE :username', { username: '%' + sqlLikeEscape(searchQuery.toLowerCase()) + '%' });
+					}
+				}));
+			}
 
 			const followings = await query
 				.limit(ps.limit)
