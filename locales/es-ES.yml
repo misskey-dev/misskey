@@ -3156,8 +3156,8 @@ _selfXssPrevention:
   description2: "Si no entiendes que estás pegando exactamente, %cdetente ahora mismo y cierra esta ventana"
   description3: "Para más información visita esto {link}"
 _followRequest:
-  recieved: "Petición de seguimiento recibida"
-  sent: "Petición de seguimiento enviada"
+  recieved: "Solicitud de seguimiento recibida"
+  sent: "Solicitud de seguimiento enviada"
 _remoteLookupErrors:
   _federationNotAllowed:
     title: "Incapaz de comunicarse con este servidor."
