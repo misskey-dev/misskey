@@ -1550,6 +1550,9 @@ _settings:
   showPageTabBarBottom: "在下方显示页面标签栏"
   emojiPaletteBanner: "可以将固定显示表情符号选择器的预设注册至调色板，也可以自定义表情符号选择器的显示方式。"
   enableAnimatedImages: "启用动画图像"
+  settingsPersistence_title: "设置持久化"
+  settingsPersistence_description1: "启用设置持久化可防止设置信息丢失。"
+  settingsPersistence_description2: "根据环境不同，有可能无法开启。"
   _chat:
     showSenderName: "显示发送者的名字"
     sendOnEnter: "回车键发送"
