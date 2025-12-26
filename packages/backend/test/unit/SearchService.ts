@@ -10,11 +10,14 @@ import { type Config, loadConfig } from '@/config.js';
 import { GlobalModule } from '@/GlobalModule.js';
 import { CoreModule } from '@/core/CoreModule.js';
 import { SearchService } from '@/core/SearchService.js';
+import { CacheService } from '@/core/CacheService.js';
 import { IdService } from '@/core/IdService.js';
 import { DI } from '@/di-symbols.js';
 import {
+	type BlockingsRepository,
 	type ChannelsRepository,
 	type FollowingsRepository,
+	type MutingsRepository,
 	type NotesRepository,
 	type UserProfilesRepository,
 	type UsersRepository,
@@ -27,7 +30,10 @@ describe('SearchService', () => {
 	type TestContext = {
 		app: TestingModule;
 		service: SearchService;
+		cacheService: CacheService;
 		idService: IdService;
+		mutingsRepository: MutingsRepository;
+		blockingsRepository: BlockingsRepository;
 		usersRepository: UsersRepository;
 		userProfilesRepository: UserProfilesRepository;
 		notesRepository: NotesRepository;
@@ -78,7 +84,10 @@ describe('SearchService', () => {
 		return {
 			app,
 			service: app.get(SearchService),
+			cacheService: app.get(CacheService),
 			idService: app.get(IdService),
+			mutingsRepository: app.get(DI.mutingsRepository),
+			blockingsRepository: app.get(DI.blockingsRepository),
 			usersRepository: app.get(DI.usersRepository),
 			userProfilesRepository: app.get(DI.userProfilesRepository),
 			notesRepository: app.get(DI.notesRepository),
@@ -89,6 +98,8 @@ describe('SearchService', () => {
 
 	async function cleanupContext(ctx: TestContext) {
 		await ctx.notesRepository.createQueryBuilder().delete().execute();
+		await ctx.mutingsRepository.createQueryBuilder().delete().execute();
+		await ctx.blockingsRepository.createQueryBuilder().delete().execute();
 		await ctx.followingsRepository.createQueryBuilder().delete().execute();
 		await ctx.channelsRepository.createQueryBuilder().delete().execute();
 		await ctx.userProfilesRepository.createQueryBuilder().delete().execute();
@@ -159,6 +170,31 @@ describe('SearchService', () => {
 			followerHost: follower.host,
 			followeeHost: followee.host,
 		});
+	}
+
+	function clearUserCaches(ctx: TestContext, userId: MiUser['id']) {
+		ctx.cacheService.userMutingsCache.delete(userId);
+		ctx.cacheService.userBlockedCache.delete(userId);
+		ctx.cacheService.userBlockingCache.delete(userId);
+	}
+
+	async function createMuting(ctx: TestContext, muter: MiUser, mutee: MiUser) {
+		await ctx.mutingsRepository.insert({
+			id: ctx.idService.gen(),
+			muterId: muter.id,
+			muteeId: mutee.id,
+		});
+		clearUserCaches(ctx, muter.id);
+	}
+
+	async function createBlocking(ctx: TestContext, blocker: MiUser, blockee: MiUser) {
+		await ctx.blockingsRepository.insert({
+			id: ctx.idService.gen(),
+			blockerId: blocker.id,
+			blockeeId: blockee.id,
+		});
+		clearUserCaches(ctx, blocker.id);
+		clearUserCaches(ctx, blockee.id);
 	}
 
 	function defineSearchNoteTests(
@@ -246,6 +282,55 @@ describe('SearchService', () => {
 
 				const remoteResult = await ctx.service.searchNote('hello', me, { host: 'example.com' }, { limit: 10 });
 				expect(remoteResult.map(note => note.id)).toEqual([remoteNote.id]);
+			});
+
+			describe('muting and blocking', () => {
+				test('filters out muted users', async () => {
+					const ctx = getCtx();
+					const me = await createUser(ctx, { username: 'me', usernameLower: 'me', host: null });
+					const muted = await createUser(ctx, { username: 'muted', usernameLower: 'muted', host: null });
+					const other = await createUser(ctx, { username: 'other', usernameLower: 'other', host: null });
+
+					const mutedNote = await createNote(ctx, muted, { text: 'hello muted', visibility: 'public' });
+					const otherNote = await createNote(ctx, other, { text: 'hello other', visibility: 'public' });
+
+					await createMuting(ctx, me, muted);
+
+					const result = await ctx.service.searchNote('hello', me, {}, { limit: 10 });
+					// NOTE: ミュートはsqlLike/meilisearchともに除外される前提。
+					expect(result.map(note => note.id)).toEqual([otherNote.id]);
+				});
+
+				test('filters out users who block me', async () => {
+					const ctx = getCtx();
+					const me = await createUser(ctx, { username: 'me', usernameLower: 'me', host: null });
+					const blocker = await createUser(ctx, { username: 'blocker', usernameLower: 'blocker', host: null });
+					const other = await createUser(ctx, { username: 'other', usernameLower: 'other', host: null });
+
+					await createNote(ctx, blocker, { text: 'hello blocker', visibility: 'public' });
+					const otherNote = await createNote(ctx, other, { text: 'hello other', visibility: 'public' });
+
+					await createBlocking(ctx, blocker, me);
+
+					const result = await ctx.service.searchNote('hello', me, {}, { limit: 10 });
+					// NOTE: 相手が自分をブロックしている場合はsqlLike/meilisearchともに除外される前提。
+					expect(result.map(note => note.id)).toEqual([otherNote.id]);
+				});
+
+				test('filters out users I block (both providers)', async () => {
+					const ctx = getCtx();
+					const me = await createUser(ctx, { username: 'me', usernameLower: 'me', host: null });
+					const blocked = await createUser(ctx, { username: 'blocked', usernameLower: 'blocked', host: null });
+					const other = await createUser(ctx, { username: 'other', usernameLower: 'other', host: null });
+
+					const blockedNote = await createNote(ctx, blocked, { text: 'hello blocked', visibility: 'public' });
+					const otherNote = await createNote(ctx, other, { text: 'hello other', visibility: 'public' });
+
+					await createBlocking(ctx, me, blocked);
+
+					const result = await ctx.service.searchNote('hello', me, {}, { limit: 10 });
+					expect(result.map(note => note.id).sort()).toEqual([otherNote.id, blockedNote.id].sort());
+				});
 			});
 
 			describe('pagination', () => {
