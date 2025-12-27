@@ -3983,11 +3983,7 @@ export interface Locale extends ILocale {
     /**
      * {username}からログアウトしますか？
      */
-    "removeAccountConfirm": ParameterizedString<"username">;
-    /**
-     * このアカウントを削除すると、このアカウントに関するクライアントの設定情報がブラウザから消去されます。再度このアカウントでログインする場合、設定情報を復元できるようにするためには、このアカウントに切り替えて、設定の自動バックアップを有効にしてください。
-     */
-    "removeAccountWillClearClientData": string;
+    "logoutFromOtherAccountConfirm": ParameterizedString<"username">;
     /**
      * 最終利用日時
      */

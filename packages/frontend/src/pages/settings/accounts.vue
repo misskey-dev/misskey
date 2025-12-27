@@ -87,8 +87,8 @@ function showMenu(a: AccountData, ev: MouseEvent) {
 			action: async () => {
 				const { canceled } = await os.confirm({
 					type: 'warning',
-					title: i18n.tsx.removeAccountConfirm({ username: `<plain>@${a.username}</plain>` }),
-					text: i18n.ts.removeAccountWillClearClientData,
+					title: i18n.tsx.logoutFromOtherAccountConfirm({ username: `<plain>@${a.username}</plain>` }),
+					text: i18n.ts.logoutWillClearClientData,
 				});
 				if (canceled) return;
 				await os.promiseDialog((async () => {
