@@ -330,6 +330,20 @@ export class NoteEntityService implements OnModuleInit {
 		return true;
 	}
 
+	/** CDNなどにキャッシュしても問題ないノートかどうか */
+	@bindThis
+	public canCache(note: MiNote | Packed<'Note'>): boolean {
+		const now = Date.now();
+		const createdAt = 'createdAt' in note ? note.createdAt : this.idService.parse(note.id).date.toISOString();
+		return (
+			(this.meta.ugcVisibilityForVisitor !== 'none') &&
+			(note.visibility === 'public' || note.visibility === 'home') &&
+			!shouldHideNoteByTime(note.user?.makeNotesFollowersOnlyBefore, createdAt, now) &&
+			!shouldHideNoteByTime(note.user?.makeNotesHiddenBefore, createdAt, now) &&
+			(note.user?.requireSigninToViewContents === false || note.user?.requireSigninToViewContents == null)
+		);
+	}
+
 	@bindThis
 	public async packAttachedFiles(fileIds: MiNote['fileIds'], packedFiles: Map<MiNote['fileIds'][number], Packed<'DriveFile'> | null>): Promise<Packed<'DriveFile'>[]> {
 		const missingIds = [];

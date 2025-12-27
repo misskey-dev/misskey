@@ -9,7 +9,7 @@
  * @param createdAt ノートの作成日時（ISO 8601形式の文字列 または Date オブジェクト）
  * @returns 非表示にすべき場合は true
  */
-export function shouldHideNoteByTime(hiddenBefore: number | null | undefined, createdAt: string | Date): boolean {
+export function shouldHideNoteByTime(hiddenBefore: number | null | undefined, createdAt: string | Date, now = Date.now()): boolean {
 	if (hiddenBefore == null) {
 		return false;
 	}
@@ -18,7 +18,7 @@ export function shouldHideNoteByTime(hiddenBefore: number | null | undefined, cr
 
 	if (hiddenBefore <= 0) {
 		// 負の値: 作成からの経過時間(秒)で判定
-		const elapsedSeconds = (Date.now() - createdAtTime) / 1000;
+		const elapsedSeconds = (now - createdAtTime) / 1000;
 		const hideAfterSeconds = Math.abs(hiddenBefore);
 		return elapsedSeconds >= hideAfterSeconds;
 	} else {

@@ -24,6 +24,7 @@ export class UserListChannel extends Channel {
 	private listUsersClock: NodeJS.Timeout;
 	private withFiles: boolean;
 	private withRenotes: boolean;
+	private minimize: boolean;
 
 	constructor(
 		@Inject(DI.userListsRepository)
@@ -48,6 +49,7 @@ export class UserListChannel extends Channel {
 		this.listId = params.listId;
 		this.withFiles = !!(params.withFiles ?? false);
 		this.withRenotes = !!(params.withRenotes ?? true);
+		this.minimize = !!(params.minimize ?? false);
 
 		// Check existence and owner
 		const listExist = await this.userListsRepository.exists({
@@ -124,7 +126,24 @@ export class UserListChannel extends Channel {
 			}
 		}
 
-		this.send('note', note);
+		if (this.minimize) {
+			if (this.noteEntityService.canCache(note)) {
+				this.send('note', {
+					id: note.id, myReaction: note.myReaction,
+					poll: note.poll?.choices ? { choices: note.poll.choices } : undefined,
+					reply: note.reply?.myReaction ? { myReaction: note.reply.myReaction } : undefined,
+					renote: note.renote?.myReaction ? { myReaction: note.renote.myReaction } : undefined,
+					_allowCached_: true,
+				});
+			} else {
+				this.send('note', {
+					id: note.id,
+					_allowCached_: false,
+				});
+			}
+		} else {
+			this.send('note', note);
+		}
 	}
 
 	@bindThis

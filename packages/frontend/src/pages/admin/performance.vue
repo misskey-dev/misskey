@@ -54,6 +54,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</SearchMarker>
 
 				<SearchMarker>
+					<div class="_panel _gaps_s" style="padding: 16px;">
+						<MkInfo v-if="meta.ugcVisibilityForVisitor === 'none'" warn>{{ i18n.ts._serverSettings.enableStreamNotesCdnCache_conflictedWithUgcSettings }}</MkInfo>
+						<MkSwitch v-model="enableStreamNotesCdnCache" @change="onChange_enableStreamNotesCdnCache">
+							<template #label><SearchLabel>{{ i18n.ts._serverSettings.enableStreamNotesCdnCache }}</SearchLabel><span class="_beta">{{ i18n.ts.beta }}</span></template>
+							<template #caption>{{ i18n.ts._serverSettings.enableStreamNotesCdnCache_description }}</template>
+						</MkSwitch>
+					</div>
+				</SearchMarker>
+
+				<SearchMarker>
 					<div class="_panel" style="padding: 16px;">
 						<MkSwitch v-model="showRoleBadgesOfRemoteUsers" @change="onChange_showRoleBadgesOfRemoteUsers">
 							<template #label><SearchLabel>{{ i18n.ts.showRoleBadgesOfRemoteUsers }}</SearchLabel></template>
@@ -187,6 +197,7 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkLink from '@/components/MkLink.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import { useForm } from '@/composables/use-form.js';
 import MkFormFooter from '@/components/MkFormFooter.vue';
 
@@ -197,6 +208,7 @@ const enableIdenticonGeneration = ref(meta.enableIdenticonGeneration);
 const enableChartsForRemoteUser = ref(meta.enableChartsForRemoteUser);
 const enableStatsForFederatedInstances = ref(meta.enableStatsForFederatedInstances);
 const enableChartsForFederatedInstances = ref(meta.enableChartsForFederatedInstances);
+const enableStreamNotesCdnCache = ref(meta.enableStreamNotesCdnCache);
 const showRoleBadgesOfRemoteUsers = ref(meta.showRoleBadgesOfRemoteUsers);
 
 function onChange_enableServerMachineStats(value: boolean) {
@@ -234,6 +246,14 @@ function onChange_enableStatsForFederatedInstances(value: boolean) {
 function onChange_enableChartsForFederatedInstances(value: boolean) {
 	os.apiWithDialog('admin/update-meta', {
 		enableChartsForFederatedInstances: value,
+	}).then(() => {
+		fetchInstance(true);
+	});
+}
+
+function onChange_enableStreamNotesCdnCache(value: boolean) {
+	os.apiWithDialog('admin/update-meta', {
+		enableStreamNotesCdnCache: value,
 	}).then(() => {
 		fetchInstance(true);
 	});

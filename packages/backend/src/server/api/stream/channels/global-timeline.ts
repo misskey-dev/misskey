@@ -21,6 +21,7 @@ export class GlobalTimelineChannel extends Channel {
 	public static requireCredential = false as const;
 	private withRenotes: boolean;
 	private withFiles: boolean;
+	private minimize: boolean;
 
 	constructor(
 		@Inject(REQUEST)
@@ -41,6 +42,7 @@ export class GlobalTimelineChannel extends Channel {
 
 		this.withRenotes = !!(params.withRenotes ?? true);
 		this.withFiles = !!(params.withFiles ?? false);
+		this.minimize = !!(params.minimize ?? false);
 
 		// Subscribe events
 		this.subscriber.on('notesStream', this.onNote);
@@ -67,7 +69,24 @@ export class GlobalTimelineChannel extends Channel {
 			}
 		}
 
-		this.send('note', note);
+		if (this.minimize) {
+			if (this.noteEntityService.canCache(note)) {
+				this.send('note', {
+					id: note.id, myReaction: note.myReaction,
+					poll: note.poll?.choices ? { choices: note.poll.choices } : undefined,
+					reply: note.reply?.myReaction ? { myReaction: note.reply.myReaction } : undefined,
+					renote: note.renote?.myReaction ? { myReaction: note.renote.myReaction } : undefined,
+					_allowCached_: true,
+				});
+			} else {
+				this.send('note', {
+					id: note.id,
+					_allowCached_: false,
+				});
+			}
+		} else {
+			this.send('note', note);
+		}
 	}
 
 	@bindThis
