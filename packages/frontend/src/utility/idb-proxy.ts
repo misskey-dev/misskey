@@ -9,6 +9,7 @@ import {
 	get as iget,
 	set as iset,
 	del as idel,
+	delMany as idelMany,
 	clear as iclear,
 } from 'idb-keyval';
 import { miLocalStorage } from '@/local-storage.js';
@@ -51,6 +52,13 @@ export async function set(key: string, val: any) {
 export async function del(key: string) {
 	if (idbAvailable) return idel(key);
 	return miLocalStorage.removeItem(`${PREFIX}${key}`);
+}
+
+export async function delMany(keys: string[]) {
+	if (idbAvailable) return idelMany(keys);
+	for (const key of keys) {
+		miLocalStorage.removeItem(`${PREFIX}${key}`);
+	}
 }
 
 export async function clear() {

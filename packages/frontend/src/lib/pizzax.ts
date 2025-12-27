@@ -12,7 +12,7 @@ import { BroadcastChannel } from 'broadcast-channel';
 import type { Ref } from 'vue';
 import { $i } from '@/i.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { get, set, del } from '@/utility/idb-proxy.js';
+import { get, set, delMany } from '@/utility/idb-proxy.js';
 import { store } from '@/store.js';
 import { deepClone } from '@/utility/clone.js';
 import { deepMerge } from '@/utility/merge.js';
@@ -230,8 +230,7 @@ export class Pizzax<T extends StateDef> {
 		const registryCacheKey = `pizzax::${this.key}::cache::${id}` satisfies typeof this.registryCacheKeyName;
 
 		await this.addIdbSetJob(async () => {
-			await del(deviceAccountStateKey);
-			await del(registryCacheKey);
+			await delMany([deviceAccountStateKey, registryCacheKey]);
 		});
 	}
 
