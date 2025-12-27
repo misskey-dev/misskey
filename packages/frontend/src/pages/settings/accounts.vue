@@ -8,8 +8,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_gaps">
 		<div class="_buttons">
 			<MkButton primary @click="addAccount"><i class="ti ti-plus"></i> {{ i18n.ts.addAccount }}</MkButton>
+			<MkButton @click="refreshAllAccounts"><i class="ti ti-refresh"></i> {{ i18n.ts.reloadAccountsList }}</MkButton>
 			<MkButton danger @click="logoutFromAll"><i class="ti ti-power"></i> {{ i18n.ts.logoutFromAll }}</MkButton>
-			<!--<MkButton @click="refreshAllAccounts"><i class="ti ti-refresh"></i></MkButton>-->
 		</div>
 
 		<template v-for="x in accounts" :key="x.host + x.id">
@@ -37,7 +37,7 @@ import type { MenuItem } from '@/types/menu.js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { $i } from '@/i.js';
-import { switchAccount, removeAccount, getAccountWithSigninDialog, getAccountWithSignupDialog, getAccounts } from '@/accounts.js';
+import { switchAccount, removeAccount, getAccountWithSigninDialog, getAccountWithSignupDialog, getAccounts, refreshAccounts } from '@/accounts.js';
 import type { AccountData } from '@/accounts.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
@@ -51,7 +51,10 @@ getAccounts().then((res) => {
 });
 
 function refreshAllAccounts() {
-	// TODO
+	os.promiseDialog((async () => {
+		await refreshAccounts();
+		accounts.value = await getAccounts();
+	})());
 }
 
 function showMenu(a: AccountData, ev: MouseEvent) {

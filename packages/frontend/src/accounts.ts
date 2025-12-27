@@ -164,6 +164,24 @@ export async function refreshCurrentAccount() {
 	});
 }
 
+export async function refreshAccounts() {
+	const accounts = await getAccounts();
+	for (const account of accounts) {
+		if (account.host === host && account.id === $i?.id) {
+			await refreshCurrentAccount();
+		} else if (account.token) {
+			try {
+				const user = await fetchAccount(account.token, account.id);
+				store.set('accountInfos', { ...store.s.accountInfos, [account.host + '/' + account.id]: user });
+			} catch (e) {
+				if (e === isAccountDeleted) {
+					await removeAccount(account.host, account.id);
+				}
+			}
+		}
+	}
+}
+
 export async function login(token: AccountWithToken['token'], redirect?: string, showWaiting = true) {
 	const showing = ref(true);
 
