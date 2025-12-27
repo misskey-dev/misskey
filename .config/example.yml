@@ -107,13 +107,51 @@ port: 3000
 
 # Proxy trust settings
 #
-# Changes how the server interpret the origin IP of the request.
+# Specifies the IP addresses that Misskey will use as trusted
+# reverse proxies (e.g., nginx, Cloudflare). This affects how
+# Misskey determines the source IP for each request and is used
+# for important rate limiting and security features. If the value
+# is not set correctly, Misskey may use the IP address of the
+# reverse proxy instead of the actual source IP, which may lead to
+# unintended rate limiting or security vulnerabilities.
+# By default, the loopback network and private network address
+# ranges shown below are trusted.
+# If you are using a single reverse proxy and it is on the same
+# machine or the same private network as Misskey, it is unlikely you
+# need to change this setting, and the default setting is fine.
+# Also, if you are using multiple reverse proxy servers and they are
+# all on the same private network as Misskey, the default setting
+# is fine.
+# However, if you are using a reverse proxy server that accesses
+# Misskey web servers and streaming servers via public IP addresses
+# (for example, Cloudflare), you must set this variable.
+# When changing this setting, you can use one of the following values:
 #
-# Any format supported by Fastify is accepted.
-# Default: do not trust any proxies (i.e. trustProxy: false)
-# See: https://fastify.dev/docs/latest/reference/server/#trustproxy
+# - true: Trust all proxies
+# - false: Do not trust any proxies
+# - IP address, IP address range, or array of them: Trust hops that
+#   match the specified criteria.
+# - Integer: Trust the nth hop from the front-facing proxy server as
+#   the client.
+# For more information on how to configure this setting, please refer
+# to the Fastify documentation:
+# https://fastify.dev/docs/latest/Reference/Server/#trustproxy
 #
-# trustProxy: false
+# Note that if this variable is set, it overrides the default range,
+# so if you have both an external reverse proxy and a proxy on the
+# local host, you must include both IPs (or IP ranges).
+#
+#trustProxy:
+#  - '10.0.0.0/8'
+#  - '172.16.0.0/12'
+#  - '192.168.0.0/16'
+#  - '127.0.0.1/32'
+#  - '::1/128'
+#  - 'fc00::/7'
+#  # Example: If you are using some external reverse proxies like CDNs,
+#  # you may need to add the CDN IP ranges here.
+#  # If you're using Cloudflare, you can find IP Ranges at:
+#  # https://www.cloudflare.com/ips/
 
 #   ┌──────────────────────────┐
 #───┘ PostgreSQL configuration └────────────────────────────────
@@ -282,6 +320,10 @@ id: 'aidx'
 
 # Whether disable HSTS
 #disableHsts: true
+
+# Enable internal IP-based rate limiting (default: true)
+# To configure them in reverse proxy instead, set this to false.
+#enableIpRateLimit: true
 
 # Number of worker processes
 #clusterLimit: 1
