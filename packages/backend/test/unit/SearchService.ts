@@ -291,13 +291,13 @@ describe('SearchService', () => {
 					const muted = await createUser(ctx, { username: 'muted', usernameLower: 'muted', host: null });
 					const other = await createUser(ctx, { username: 'other', usernameLower: 'other', host: null });
 
-					const mutedNote = await createNote(ctx, muted, { text: 'hello muted', visibility: 'public' });
+					await createNote(ctx, muted, { text: 'hello muted', visibility: 'public' });
 					const otherNote = await createNote(ctx, other, { text: 'hello other', visibility: 'public' });
 
 					await createMuting(ctx, me, muted);
 
 					const result = await ctx.service.searchNote('hello', me, {}, { limit: 10 });
-					// NOTE: ミュートはsqlLike/meilisearchともに除外される前提。
+
 					expect(result.map(note => note.id)).toEqual([otherNote.id]);
 				});
 
@@ -313,11 +313,11 @@ describe('SearchService', () => {
 					await createBlocking(ctx, blocker, me);
 
 					const result = await ctx.service.searchNote('hello', me, {}, { limit: 10 });
-					// NOTE: 相手が自分をブロックしている場合はsqlLike/meilisearchともに除外される前提。
+
 					expect(result.map(note => note.id)).toEqual([otherNote.id]);
 				});
 
-				test('filters out users I block (both providers)', async () => {
+				test('filters no out users I block', async () => {
 					const ctx = getCtx();
 					const me = await createUser(ctx, { username: 'me', usernameLower: 'me', host: null });
 					const blocked = await createUser(ctx, { username: 'blocked', usernameLower: 'blocked', host: null });
@@ -334,7 +334,7 @@ describe('SearchService', () => {
 			});
 
 			describe('pagination', () => {
-				test('paginates with sinceId (ASC order)', async () => {
+				test('paginates with sinceId', async () => {
 					const ctx = getCtx();
 					const me = await createUser(ctx, { username: 'me', usernameLower: 'me', host: null });
 					const author = await createUser(ctx, { username: 'author', usernameLower: 'author', host: null });
@@ -355,7 +355,7 @@ describe('SearchService', () => {
 					expect(result.map(note => note.id)).toEqual(expected);
 				});
 
-				test('paginates with untilId (DESC order)', async () => {
+				test('paginates with untilId', async () => {
 					const ctx = getCtx();
 					const me = await createUser(ctx, { username: 'me', usernameLower: 'me', host: null });
 					const author = await createUser(ctx, { username: 'author', usernameLower: 'author', host: null });

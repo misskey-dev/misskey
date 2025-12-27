@@ -51,7 +51,7 @@ jobs:
       meilisearch:
         image: getmeili/meilisearch:v1.3.4
         ports:
-          - "127.0.0.1:57712:7700"
+          - 57712:7700
         env:
           MEILI_NO_ANALYTICS: true
           MEILI_ENV: development
