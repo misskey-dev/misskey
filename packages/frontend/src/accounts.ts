@@ -19,13 +19,15 @@ import { signout } from '@/signout.js';
 
 type AccountWithToken = Misskey.entities.MeDetailed & { token: string };
 
-export async function getAccounts(): Promise<{
+export type AccountData = {
 	host: string;
 	id: Misskey.entities.User['id'];
 	username: Misskey.entities.User['username'];
 	user?: Misskey.entities.MeDetailed | null;
 	token: string | null;
-}[]> {
+};
+
+export async function getAccounts(): Promise<AccountData[]> {
 	const tokens = store.s.accountTokens;
 	const accountInfos = store.s.accountInfos;
 	const accounts = prefer.s.accounts;
@@ -162,14 +164,17 @@ export async function refreshCurrentAccount() {
 	});
 }
 
-export async function login(token: AccountWithToken['token'], redirect?: string) {
+export async function login(token: AccountWithToken['token'], redirect?: string, showWaiting = true) {
 	const showing = ref(true);
-	const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkWaitingDialog.vue')), {
-		success: false,
-		showing: showing,
-	}, {
-		closed: () => dispose(),
-	});
+
+	if (showWaiting) {
+		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkWaitingDialog.vue')), {
+			success: false,
+			showing: showing,
+		}, {
+			closed: () => dispose(),
+		});
+	}
 
 	const me = await fetchAccount(token, undefined, true).catch(reason => {
 		showing.value = false;

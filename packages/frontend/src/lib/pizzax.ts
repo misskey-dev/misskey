@@ -222,6 +222,45 @@ export class Pizzax<T extends StateDef> {
 		return this.def[key].default;
 	}
 
+	/** 現在のアカウントに紐づくデータをデバイスから削除します */
+	public async clearCurrentAccountDataFromDevice() {
+		if ($i == null) return;
+
+		// deviceAccount
+		{
+			const deviceAccountState = await get(this.deviceAccountStateKeyName) || {};
+			let changed = false;
+			for (const [k, v] of Object.entries(this.def) as [keyof T, T[keyof T]['default']][]) {
+				if (v.where === 'deviceAccount' && Object.prototype.hasOwnProperty.call(deviceAccountState, k)) {
+					delete deviceAccountState[k];
+					changed = true;
+				}
+			}
+			if (changed) {
+				await this.addIdbSetJob(async () => {
+					await set(this.deviceAccountStateKeyName, deviceAccountState);
+				});
+			}
+		}
+
+		// account (cacheを消す)
+		{
+			const registryCache = await get(this.registryCacheKeyName) || {};
+			let changed = false;
+			for (const [k, v] of Object.entries(this.def) as [keyof T, T[keyof T]['default']][]) {
+				if (v.where === 'account' && Object.prototype.hasOwnProperty.call(registryCache, k)) {
+					delete registryCache[k];
+					changed = true;
+				}
+			}
+			if (changed) {
+				await this.addIdbSetJob(async () => {
+					await set(this.registryCacheKeyName, registryCache);
+				});
+			}
+		}
+	}
+
 	/**
 	 * 特定のキーの、簡易的なgetter/setterを作ります
 	 * 主にvue上で設定コントロールのmodelとして使う用
