@@ -12,7 +12,7 @@ import { BroadcastChannel } from 'broadcast-channel';
 import type { Ref } from 'vue';
 import { $i } from '@/i.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { get, set } from '@/utility/idb-proxy.js';
+import { get, set, del } from '@/utility/idb-proxy.js';
 import { store } from '@/store.js';
 import { deepClone } from '@/utility/clone.js';
 import { deepMerge } from '@/utility/merge.js';
@@ -229,39 +229,10 @@ export class Pizzax<T extends StateDef> {
 		const deviceAccountStateKey = `pizzax::${this.key}::${id}` satisfies typeof this.deviceAccountStateKeyName;
 		const registryCacheKey = `pizzax::${this.key}::cache::${id}` satisfies typeof this.registryCacheKeyName;
 
-		// deviceAccount
-		const deviceAccountState = await get(deviceAccountStateKey);
-		if (deviceAccountState != null) {
-			let changed = false;
-			for (const [k, v] of Object.entries(this.def) as [keyof T, T[keyof T]['default']][]) {
-				if (v.where === 'deviceAccount' && Object.prototype.hasOwnProperty.call(deviceAccountState, k)) {
-					delete deviceAccountState[k];
-					changed = true;
-				}
-			}
-			if (changed) {
-				await this.addIdbSetJob(async () => {
-					await set(deviceAccountStateKey, deviceAccountState);
-				});
-			}
-		}
-
-		// account (cacheを消す)
-		const registryCache = await get(registryCacheKey);
-		if (registryCache != null) {
-			let changed = false;
-			for (const [k, v] of Object.entries(this.def) as [keyof T, T[keyof T]['default']][]) {
-				if (v.where === 'account' && Object.prototype.hasOwnProperty.call(registryCache, k)) {
-					delete registryCache[k];
-					changed = true;
-				}
-			}
-			if (changed) {
-				await this.addIdbSetJob(async () => {
-					await set(registryCacheKey, registryCache);
-				});
-			}
-		}
+		await this.addIdbSetJob(async () => {
+			await del(deviceAccountStateKey);
+			await del(registryCacheKey);
+		});
 	}
 
 	/**
