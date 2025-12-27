@@ -37,7 +37,7 @@ import type { MenuItem } from '@/types/menu.js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { $i } from '@/i.js';
-import { switchAccount, removeAccount, getAccountWithSigninDialog, getAccountWithSignupDialog, getAccounts, refreshAccounts } from '@/accounts.js';
+import { switchAccount, removeAccount, removeAccountData, getAccountWithSigninDialog, getAccountWithSignupDialog, getAccounts, refreshAccounts } from '@/accounts.js';
 import type { AccountData } from '@/accounts.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
@@ -93,6 +93,7 @@ function showMenu(a: AccountData, ev: MouseEvent) {
 				if (canceled) return;
 				await os.promiseDialog((async () => {
 					await removeAccount(a.host, a.id);
+					await removeAccountData(a.host, a.id);
 					accounts.value = await getAccounts();
 				})());
 			},
@@ -121,7 +122,7 @@ async function addExistingAccount() {
 }
 
 async function createAccount() {
-	const res = await getAccountWithSignupDialog()
+	const res = await getAccountWithSignupDialog();
 	if (res != null) {
 		os.success();
 	}

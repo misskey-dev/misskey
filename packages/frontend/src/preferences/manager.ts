@@ -449,10 +449,9 @@ export class PreferencesManager extends EventEmitter<PreferencesManagerEvents> {
 		this.save();
 	}
 
-	/** 現在の操作アカウントに紐づく設定値をデバイスから削除します（ログアウト時） */
-	public clearCurrentAccountSettingsFromDevice() {
-		const currentAccount = this.currentAccount; // TSを黙らせるため
-		if (currentAccount == null) return;
+	/** 現在の操作アカウントに紐づく設定値をデバイスから削除します（ログアウト時などに使用） */
+	public clearAccountSettingsFromDevice(targetHost = host, id = this.currentAccount?.id) {
+		if (id == null) return;
 
 		let changed = false;
 
@@ -462,7 +461,7 @@ export class PreferencesManager extends EventEmitter<PreferencesManagerEvents> {
 
 			const index = records.findIndex((record: PrefRecord<typeof key>) => {
 				const scope = parseScope(record[0]);
-				return scope.server === host && scope.account === currentAccount.id;
+				return scope.server === targetHost && scope.account === id;
 			});
 			if (index === -1) continue;
 

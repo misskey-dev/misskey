@@ -55,8 +55,13 @@ export async function removeAccount(host: string, id: AccountWithToken['id']) {
 	const accountInfos = JSON.parse(JSON.stringify(store.s.accountInfos));
 	delete accountInfos[host + '/' + id];
 	store.set('accountInfos', accountInfos);
-
 	prefer.commit('accounts', prefer.s.accounts.filter(x => x[0] !== host || x[1].id !== id));
+}
+
+export async function removeAccountData(host: string, id: AccountWithToken['id']) {
+	// 設定・状態を削除
+	prefer.clearAccountSettingsFromDevice(host, id);
+	await store.clearAccountDataFromDevice(id);
 }
 
 const isAccountDeleted = Symbol('isAccountDeleted');
@@ -176,6 +181,7 @@ export async function refreshAccounts() {
 			} catch (e) {
 				if (e === isAccountDeleted) {
 					await removeAccount(account.host, account.id);
+					await removeAccountData(account.host, account.id);
 				}
 			}
 		}

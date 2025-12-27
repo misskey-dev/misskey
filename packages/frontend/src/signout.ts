@@ -79,8 +79,8 @@ async function removeCurrentAccountData() {
 	if ($i == null) return;
 
 	// 設定・状態を削除
-	prefer.clearCurrentAccountSettingsFromDevice();
-	await store.clearCurrentAccountDataFromDevice();
+	prefer.clearAccountSettingsFromDevice();
+	await store.clearAccountDataFromDevice();
 }
 
 export async function signout(all = false) {

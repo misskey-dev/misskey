@@ -223,12 +223,15 @@ export class Pizzax<T extends StateDef> {
 	}
 
 	/** 現在のアカウントに紐づくデータをデバイスから削除します */
-	public async clearCurrentAccountDataFromDevice() {
-		if ($i == null) return;
+	public async clearAccountDataFromDevice(id = $i?.id) {
+		if (id == null) return;
+
+		const deviceAccountStateKey = `pizzax::${this.key}::${id}` satisfies typeof this.deviceAccountStateKeyName;
+		const registryCacheKey = `pizzax::${this.key}::cache::${id}` satisfies typeof this.registryCacheKeyName;
 
 		// deviceAccount
-		{
-			const deviceAccountState = await get(this.deviceAccountStateKeyName) || {};
+		const deviceAccountState = await get(deviceAccountStateKey);
+		if (deviceAccountState != null) {
 			let changed = false;
 			for (const [k, v] of Object.entries(this.def) as [keyof T, T[keyof T]['default']][]) {
 				if (v.where === 'deviceAccount' && Object.prototype.hasOwnProperty.call(deviceAccountState, k)) {
@@ -238,14 +241,14 @@ export class Pizzax<T extends StateDef> {
 			}
 			if (changed) {
 				await this.addIdbSetJob(async () => {
-					await set(this.deviceAccountStateKeyName, deviceAccountState);
+					await set(deviceAccountStateKey, deviceAccountState);
 				});
 			}
 		}
 
 		// account (cacheを消す)
-		{
-			const registryCache = await get(this.registryCacheKeyName) || {};
+		const registryCache = await get(registryCacheKey);
+		if (registryCache != null) {
 			let changed = false;
 			for (const [k, v] of Object.entries(this.def) as [keyof T, T[keyof T]['default']][]) {
 				if (v.where === 'account' && Object.prototype.hasOwnProperty.call(registryCache, k)) {
@@ -255,7 +258,7 @@ export class Pizzax<T extends StateDef> {
 			}
 			if (changed) {
 				await this.addIdbSetJob(async () => {
-					await set(this.registryCacheKeyName, registryCache);
+					await set(registryCacheKey, registryCache);
 				});
 			}
 		}
