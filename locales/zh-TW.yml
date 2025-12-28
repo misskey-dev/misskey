@@ -1406,6 +1406,7 @@ youAreAdmin: "您是管理員"
 frame: "邊框"
 presets: "預設值"
 zeroPadding: "補零"
+nothingToConfigure: "無可設定的項目"
 _imageEditing:
   _vars:
     caption: "檔案標題"
