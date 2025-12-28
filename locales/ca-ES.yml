@@ -1406,6 +1406,7 @@ youAreAdmin: "Ets l'administrador "
 frame: "Marc"
 presets: "Predefinit"
 zeroPadding: "Sense omplir"
+nothingToConfigure: "No hi ha res a configurar"
 _imageEditing:
   _vars:
     caption: "Títol de l'arxiu"
