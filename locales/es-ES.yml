@@ -1406,6 +1406,7 @@ youAreAdmin: "Eres administrador."
 frame: "Marco"
 presets: "Predefinido"
 zeroPadding: "Relleno cero"
+nothingToConfigure: "No hay nada que configurar"
 _imageEditing:
   _vars:
     caption: "Título del archivo"
