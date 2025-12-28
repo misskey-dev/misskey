@@ -3310,7 +3310,6 @@ _imageEffector:
   title: "效果"
   addEffect: "添加效果"
   discardChangesConfirm: "丢弃当前设置并退出？"
-  nothingToConfigure: "还没有设置"
   failedToLoadImage: "图片加载失败"
   _fxs:
     chromaticAberration: "色差"
