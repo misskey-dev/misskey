@@ -1406,6 +1406,7 @@ youAreAdmin: "你是管理员"
 frame: "边框"
 presets: "预设值"
 zeroPadding: "填充 0"
+nothingToConfigure: "没有项目"
 _imageEditing:
   _vars:
     caption: "文件标题"
