@@ -3310,7 +3310,6 @@ _imageEffector:
   title: "Efecto"
   addEffect: "Añadir Efecto"
   discardChangesConfirm: "¿Ignorar cambios y salir?"
-  nothingToConfigure: "No hay opciones configurables disponibles."
   failedToLoadImage: "Error al cargar la imagen"
   _fxs:
     chromaticAberration: "Aberración Cromática"
