@@ -3310,7 +3310,6 @@ _imageEffector:
   title: "이펙트"
   addEffect: "이펙트를 추가"
   discardChangesConfirm: "변경을 취소하고 종료하시겠습니까?"
-  nothingToConfigure: "설정 항목이 없습니다."
   failedToLoadImage: "이미지 로딩에 실패했습니다."
   _fxs:
     chromaticAberration: "색수차"
