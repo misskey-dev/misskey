@@ -3202,7 +3202,6 @@ _imageEffector:
   title: "Effektler"
   addEffect: "Efektler Ekle"
   discardChangesConfirm: "Cidden çıkmak istiyor musun? Kaydedilmemiş değişikliklerin var."
-  nothingToConfigure: "Yapılandırılabilir seçenekler mevcut değildir."
   _fxs:
     chromaticAberration: "Renk Sapması"
     glitch: "Bozulma"
