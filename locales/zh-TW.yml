@@ -3310,7 +3310,6 @@ _imageEffector:
   title: "特效"
   addEffect: "新增特效"
   discardChangesConfirm: "捨棄更改並退出嗎？"
-  nothingToConfigure: "無可設定的項目"
   failedToLoadImage: "圖片載入失敗"
   _fxs:
     chromaticAberration: "色差"
