@@ -3300,7 +3300,6 @@ _imageEffector:
   title: "Effects"
   addEffect: "Add Effects"
   discardChangesConfirm: "Are you sure you want to leave? You have unsaved changes."
-  nothingToConfigure: "No configurable options available"
   failedToLoadImage: "Failed to load image"
   _fxs:
     chromaticAberration: "Chromatic Aberration"
