@@ -3230,7 +3230,6 @@ _imageEffector:
   title: "Efeitos"
   addEffect: "Adicionar efeitos"
   discardChangesConfirm: "Tem certeza que deseja sair? Há mudanças não salvas."
-  nothingToConfigure: "Não há nada para configurar"
   _fxs:
     chromaticAberration: "Aberração cromática"
     glitch: "Glitch"
