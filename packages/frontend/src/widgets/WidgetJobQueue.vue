@@ -68,12 +68,12 @@ const name = 'jobQueue';
 const widgetPropsDef = {
 	transparent: {
 		type: 'boolean',
-		label: i18n.ts._widgets._options.transparent,
+		label: i18n.ts._widgetOptions.transparent,
 		default: false,
 	},
 	sound: {
 		type: 'boolean',
-		label: i18n.ts._widgets._options._jobQueue.sound,
+		label: i18n.ts._widgetOptions._jobQueue.sound,
 		default: false,
 	},
 } satisfies FormWithDefault;

@@ -38,7 +38,7 @@ const name = 'birthdayFollowings';
 const widgetPropsDef = {
 	showHeader: {
 		type: 'boolean',
-		label: i18n.ts._widgets._options.showHeader,
+		label: i18n.ts._widgetOptions.showHeader,
 		default: true,
 	},
 } satisfies FormWithDefault;

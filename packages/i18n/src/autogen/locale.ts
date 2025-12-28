@@ -9892,137 +9892,137 @@ export interface Locale extends ILocale {
          * ダイレクトメッセージ
          */
         "chat": string;
-        "_options": {
+    };
+    "_widgetOptions": {
+        /**
+         * ヘッダーを表示
+         */
+        "showHeader": string;
+        /**
+         * 背景を透明にする
+         */
+        "transparent": string;
+        /**
+         * 高さ
+         */
+        "height": string;
+        "_button": {
             /**
-             * ヘッダーを表示
+             * 色付きボタン
              */
-            "showHeader": string;
+            "colored": string;
+        };
+        "_clock": {
             /**
-             * 背景を透明にする
+             * サイズ
              */
-            "transparent": string;
+            "size": string;
             /**
-             * 高さ
+             * 指針の太さ
              */
-            "height": string;
-            "_button": {
-                /**
-                 * 色付きボタン
-                 */
-                "colored": string;
-            };
-            "_clock": {
-                /**
-                 * サイズ
-                 */
-                "size": string;
-                /**
-                 * 指針の太さ
-                 */
-                "thickness": string;
-                /**
-                 * 細い
-                 */
-                "thicknessThin": string;
-                /**
-                 * 普通
-                 */
-                "thicknessMedium": string;
-                /**
-                 * 太い
-                 */
-                "thicknessThick": string;
-                /**
-                 * 文字盤の目盛り
-                 */
-                "graduations": string;
-                /**
-                 * ドット
-                 */
-                "graduationDots": string;
-                /**
-                 * 数字
-                 */
-                "graduationNumbers": string;
-                /**
-                 * 時針が指している目盛り周辺のみ表示
-                 */
-                "fadeGraduations": string;
-                /**
-                 * 秒針のアニメーション
-                 */
-                "sAnimation": string;
-                /**
-                 * リアル
-                 */
-                "sAnimationElastic": string;
-                /**
-                 * 滑らか
-                 */
-                "sAnimationEaseOut": string;
-                /**
-                 * 24時間表示
-                 */
-                "twentyFour": string;
-                /**
-                 * 時刻
-                 */
-                "labelTime": string;
-                /**
-                 * タイムゾーン
-                 */
-                "labelTz": string;
-                /**
-                 * 時刻とタイムゾーン
-                 */
-                "labelTimeAndTz": string;
-                /**
-                 * タイムゾーン
-                 */
-                "timezone": string;
-                /**
-                 * ミリ秒を表示
-                 */
-                "showMs": string;
-                /**
-                 * ラベルを表示
-                 */
-                "showLabel": string;
-            };
-            "_jobQueue": {
-                /**
-                 * 音を鳴らす
-                 */
-                "sound": string;
-            };
-            "_rss": {
-                /**
-                 * RSSフィードのURL
-                 */
-                "url": string;
-                /**
-                 * 更新間隔(秒)
-                 */
-                "refreshIntervalSec": string;
-                /**
-                 * 最大表示件数
-                 */
-                "maxEntries": string;
-            };
-            "_rssTicker": {
-                /**
-                 * 表示順をシャッフル
-                 */
-                "shuffle": string;
-                /**
-                 * ティッカーのスクロール速度(秒)
-                 */
-                "duration": string;
-                /**
-                 * 逆方向にスクロール
-                 */
-                "reverse": string;
-            };
+            "thickness": string;
+            /**
+             * 細い
+             */
+            "thicknessThin": string;
+            /**
+             * 普通
+             */
+            "thicknessMedium": string;
+            /**
+             * 太い
+             */
+            "thicknessThick": string;
+            /**
+             * 文字盤の目盛り
+             */
+            "graduations": string;
+            /**
+             * ドット
+             */
+            "graduationDots": string;
+            /**
+             * 数字
+             */
+            "graduationNumbers": string;
+            /**
+             * 時針が指している目盛り周辺のみ表示
+             */
+            "fadeGraduations": string;
+            /**
+             * 秒針のアニメーション
+             */
+            "sAnimation": string;
+            /**
+             * リアル
+             */
+            "sAnimationElastic": string;
+            /**
+             * 滑らか
+             */
+            "sAnimationEaseOut": string;
+            /**
+             * 24時間表示
+             */
+            "twentyFour": string;
+            /**
+             * 時刻
+             */
+            "labelTime": string;
+            /**
+             * タイムゾーン
+             */
+            "labelTz": string;
+            /**
+             * 時刻とタイムゾーン
+             */
+            "labelTimeAndTz": string;
+            /**
+             * タイムゾーン
+             */
+            "timezone": string;
+            /**
+             * ミリ秒を表示
+             */
+            "showMs": string;
+            /**
+             * ラベルを表示
+             */
+            "showLabel": string;
+        };
+        "_jobQueue": {
+            /**
+             * 音を鳴らす
+             */
+            "sound": string;
+        };
+        "_rss": {
+            /**
+             * RSSフィードのURL
+             */
+            "url": string;
+            /**
+             * 更新間隔(秒)
+             */
+            "refreshIntervalSec": string;
+            /**
+             * 最大表示件数
+             */
+            "maxEntries": string;
+        };
+        "_rssTicker": {
+            /**
+             * 表示順をシャッフル
+             */
+            "shuffle": string;
+            /**
+             * ティッカーのスクロール速度(秒)
+             */
+            "duration": string;
+            /**
+             * 逆方向にスクロール
+             */
+            "reverse": string;
         };
     };
     "_cw": {

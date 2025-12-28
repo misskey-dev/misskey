@@ -32,7 +32,7 @@ const widgetPropsDef = {
 	},
 	colored: {
 		type: 'boolean',
-		label: i18n.ts._widgets._options._button.colored,
+		label: i18n.ts._widgetOptions._button.colored,
 		default: true,
 	},
 	script: {

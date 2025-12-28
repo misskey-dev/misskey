@@ -27,7 +27,7 @@ const name = 'digitalClock';
 const widgetPropsDef = {
 	transparent: {
 		type: 'boolean',
-		label: i18n.ts._widgets._options.transparent,
+		label: i18n.ts._widgetOptions.transparent,
 		default: false,
 	},
 	fontSize: {
@@ -38,17 +38,17 @@ const widgetPropsDef = {
 	},
 	showMs: {
 		type: 'boolean',
-		label: i18n.ts._widgets._options._clock.showMs,
+		label: i18n.ts._widgetOptions._clock.showMs,
 		default: true,
 	},
 	showLabel: {
 		type: 'boolean',
-		label: i18n.ts._widgets._options._clock.showLabel,
+		label: i18n.ts._widgetOptions._clock.showLabel,
 		default: true,
 	},
 	timezone: {
 		type: 'enum',
-		label: i18n.ts._widgets._options._clock.timezone,
+		label: i18n.ts._widgetOptions._clock.timezone,
 		default: null,
 		enum: [...timezones.map((tz) => ({
 			label: tz.name,

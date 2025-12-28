@@ -35,22 +35,22 @@ const name = 'rss';
 const widgetPropsDef = {
 	url: {
 		type: 'string',
-		label: i18n.ts._widgets._options._rss.url,
+		label: i18n.ts._widgetOptions._rss.url,
 		default: 'http://feeds.afpbb.com/rss/afpbb/afpbbnews',
 	},
 	refreshIntervalSec: {
 		type: 'number',
-		label: i18n.ts._widgets._options._rss.refreshIntervalSec,
+		label: i18n.ts._widgetOptions._rss.refreshIntervalSec,
 		default: 60,
 	},
 	maxEntries: {
 		type: 'number',
-		label: i18n.ts._widgets._options._rss.maxEntries,
+		label: i18n.ts._widgetOptions._rss.maxEntries,
 		default: 15,
 	},
 	showHeader: {
 		type: 'boolean',
-		label: i18n.ts._widgets._options.showHeader,
+		label: i18n.ts._widgetOptions.showHeader,
 		default: true,
 	},
 } satisfies FormWithDefault;

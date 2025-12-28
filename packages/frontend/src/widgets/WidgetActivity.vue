@@ -38,12 +38,12 @@ const name = 'activity';
 const widgetPropsDef = {
 	showHeader: {
 		type: 'boolean',
-		label: i18n.ts._widgets._options.showHeader,
+		label: i18n.ts._widgetOptions.showHeader,
 		default: true,
 	},
 	transparent: {
 		type: 'boolean',
-		label: i18n.ts._widgets._options.transparent,
+		label: i18n.ts._widgetOptions.transparent,
 		default: false,
 	},
 	view: {

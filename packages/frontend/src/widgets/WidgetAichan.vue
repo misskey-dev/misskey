@@ -21,7 +21,7 @@ const name = 'ai';
 const widgetPropsDef = {
 	transparent: {
 		type: 'boolean',
-		label: i18n.ts._widgets._options.transparent,
+		label: i18n.ts._widgetOptions.transparent,
 		default: false,
 	},
 } satisfies FormWithDefault;

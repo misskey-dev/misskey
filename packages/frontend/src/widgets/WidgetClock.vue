@@ -44,12 +44,12 @@ const name = 'clock';
 const widgetPropsDef = {
 	transparent: {
 		type: 'boolean',
-		label: i18n.ts._widgets._options.transparent,
+		label: i18n.ts._widgetOptions.transparent,
 		default: false,
 	},
 	size: {
 		type: 'radio',
-		label: i18n.ts._widgets._options._clock.size,
+		label: i18n.ts._widgetOptions._clock.size,
 		default: 'medium',
 		options: [{
 			value: 'small' as const,
@@ -64,57 +64,57 @@ const widgetPropsDef = {
 	},
 	thickness: {
 		type: 'radio',
-		label: i18n.ts._widgets._options._clock.thickness,
+		label: i18n.ts._widgetOptions._clock.thickness,
 		default: 0.2,
 		options: [{
 			value: 0.1 as const,
-			label: i18n.ts._widgets._options._clock.thicknessThin,
+			label: i18n.ts._widgetOptions._clock.thicknessThin,
 		}, {
 			value: 0.2 as const,
-			label: i18n.ts._widgets._options._clock.thicknessMedium,
+			label: i18n.ts._widgetOptions._clock.thicknessMedium,
 		}, {
 			value: 0.3 as const,
-			label: i18n.ts._widgets._options._clock.thicknessThick,
+			label: i18n.ts._widgetOptions._clock.thicknessThick,
 		}],
 	},
 	graduations: {
 		type: 'radio',
-		label: i18n.ts._widgets._options._clock.graduations,
+		label: i18n.ts._widgetOptions._clock.graduations,
 		default: 'numbers',
 		options: [{
 			value: 'none' as const,
 			label: i18n.ts.none,
 		}, {
 			value: 'dots' as const,
-			label: i18n.ts._widgets._options._clock.graduationDots,
+			label: i18n.ts._widgetOptions._clock.graduationDots,
 		}, {
 			value: 'numbers' as const,
-			label: i18n.ts._widgets._options._clock.graduationNumbers,
+			label: i18n.ts._widgetOptions._clock.graduationNumbers,
 		}],
 	},
 	fadeGraduations: {
 		type: 'boolean',
-		label: i18n.ts._widgets._options._clock.fadeGraduations,
+		label: i18n.ts._widgetOptions._clock.fadeGraduations,
 		default: true,
 	},
 	sAnimation: {
 		type: 'radio',
-		label: i18n.ts._widgets._options._clock.sAnimation,
+		label: i18n.ts._widgetOptions._clock.sAnimation,
 		default: 'elastic',
 		options: [{
 			value: 'none' as const,
 			label: i18n.ts.none,
 		}, {
 			value: 'elastic' as const,
-			label: i18n.ts._widgets._options._clock.sAnimationElastic,
+			label: i18n.ts._widgetOptions._clock.sAnimationElastic,
 		}, {
 			value: 'easeOut' as const,
-			label: i18n.ts._widgets._options._clock.sAnimationEaseOut,
+			label: i18n.ts._widgetOptions._clock.sAnimationEaseOut,
 		}],
 	},
 	twentyFour: {
 		type: 'boolean',
-		label: i18n.ts._widgets._options._clock.twentyFour,
+		label: i18n.ts._widgetOptions._clock.twentyFour,
 		default: false,
 	},
 	label: {
@@ -126,18 +126,18 @@ const widgetPropsDef = {
 			label: i18n.ts.none,
 		}, {
 			value: 'time' as const,
-			label: i18n.ts._widgets._options._clock.labelTime,
+			label: i18n.ts._widgetOptions._clock.labelTime,
 		}, {
 			value: 'tz' as const,
-			label: i18n.ts._widgets._options._clock.labelTz,
+			label: i18n.ts._widgetOptions._clock.labelTz,
 		}, {
 			value: 'timeAndTz' as const,
-			label: i18n.ts._widgets._options._clock.labelTimeAndTz,
+			label: i18n.ts._widgetOptions._clock.labelTimeAndTz,
 		}],
 	},
 	timezone: {
 		type: 'enum',
-		label: i18n.ts._widgets._options._clock.timezone,
+		label: i18n.ts._widgetOptions._clock.timezone,
 		default: null,
 		enum: [...timezones.map((tz) => ({
 			label: tz.name,
