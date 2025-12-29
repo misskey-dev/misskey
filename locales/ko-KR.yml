@@ -1406,6 +1406,7 @@ youAreAdmin: "당신은 관리자입니다."
 frame: "프레임"
 presets: "프리셋"
 zeroPadding: "0으로 채우기"
+nothingToConfigure: "설정 항목이 없습니다."
 _imageEditing:
   _vars:
     caption: "파일 설명"
