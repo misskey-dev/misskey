@@ -73,7 +73,7 @@ const emit = defineEmits<{
 const dialog = useTemplateRef('dialog');
 
 const settingsModel = ref<Record<string, any>>(deepClone(props.currentSettings));
-const settings = reactive(deepClone(props.currentSettings));
+const settings = ref(deepClone(props.currentSettings));
 const currentId = ref(genId());
 
 function applyToPreview() {
