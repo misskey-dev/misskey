@@ -48,7 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { reactive, useTemplateRef, ref, computed, onBeforeUnmount, onMounted } from 'vue';
+import { useTemplateRef, ref, computed, onBeforeUnmount, onMounted } from 'vue';
 import { deepClone } from '@/utility/clone.js';
 import { genId } from '@/utility/id.js';
 import { i18n } from '@/i18n.js';
