@@ -16,140 +16,139 @@ SPDX-License-Identifier: AGPL-3.0-only
 >
 	<template #header><i class="ti ti-device-ipad-horizontal"></i> {{ i18n.ts._imageFrameEditor.title }}</template>
 
-	<div :class="$style.root">
-		<div :class="$style.container">
-			<div :class="[$style.preview, prefer.s.animation ? $style.animatedBg : null]">
-				<canvas ref="canvasEl" :class="$style.previewCanvas"></canvas>
-				<div :class="$style.previewContainer">
-					<div class="_acrylic" :class="$style.previewTitle">{{ i18n.ts.preview }}</div>
-					<div v-if="props.image == null" class="_acrylic" :class="$style.previewControls">
-						<button class="_button" :class="[$style.previewControlsButton, sampleImageType === '3_2' ? $style.active : null]" @click="sampleImageType = '3_2'"><i class="ti ti-crop-landscape"></i></button>
-						<button class="_button" :class="[$style.previewControlsButton, sampleImageType === '2_3' ? $style.active : null]" @click="sampleImageType = '2_3'"><i class="ti ti-crop-portrait"></i></button>
-						<button class="_button" :class="[$style.previewControlsButton]" @click="choiceImage"><i class="ti ti-upload"></i></button>
+	<MkPreviewWithControls>
+		<template #preview>
+			<canvas ref="canvasEl" :class="$style.previewCanvas"></canvas>
+			<div :class="$style.previewContainer">
+				<div class="_acrylic" :class="$style.previewTitle">{{ i18n.ts.preview }}</div>
+				<div v-if="props.image == null" class="_acrylic" :class="$style.previewControls">
+					<button class="_button" :class="[$style.previewControlsButton, sampleImageType === '3_2' ? $style.active : null]" @click="sampleImageType = '3_2'"><i class="ti ti-crop-landscape"></i></button>
+					<button class="_button" :class="[$style.previewControlsButton, sampleImageType === '2_3' ? $style.active : null]" @click="sampleImageType = '2_3'"><i class="ti ti-crop-portrait"></i></button>
+					<button class="_button" :class="[$style.previewControlsButton]" @click="choiceImage"><i class="ti ti-upload"></i></button>
+				</div>
+			</div>
+		</template>
+
+		<template #controls>
+			<div class="_spacer _gaps">
+				<MkRange v-model="params.borderThickness" :min="0" :max="0.2" :step="0.01" :continuousUpdate="true">
+					<template #label>{{ i18n.ts._imageFrameEditor.borderThickness }}</template>
+				</MkRange>
+
+				<MkInput :modelValue="getHex(params.bgColor)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) params.bgColor = c; }">
+					<template #label>{{ i18n.ts._imageFrameEditor.backgroundColor }}</template>
+				</MkInput>
+
+				<MkInput :modelValue="getHex(params.fgColor)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) params.fgColor = c; }">
+					<template #label>{{ i18n.ts._imageFrameEditor.textColor }}</template>
+				</MkInput>
+
+				<MkSelect
+					v-model="params.font" :items="[
+						{ label: i18n.ts._imageFrameEditor.fontSansSerif, value: 'sans-serif' },
+						{ label: i18n.ts._imageFrameEditor.fontSerif, value: 'serif' },
+					]"
+				>
+					<template #label>{{ i18n.ts._imageFrameEditor.font }}</template>
+				</MkSelect>
+
+				<MkFolder :defaultOpen="params.labelTop.enabled">
+					<template #label>{{ i18n.ts._imageFrameEditor.header }}</template>
+
+					<div class="_gaps">
+						<MkSwitch v-model="params.labelTop.enabled">
+							<template #label>{{ i18n.ts.show }}</template>
+						</MkSwitch>
+
+						<MkRange v-model="params.labelTop.padding" :min="0.01" :max="0.5" :step="0.01" :continuousUpdate="true">
+							<template #label>{{ i18n.ts._imageFrameEditor.labelThickness }}</template>
+						</MkRange>
+
+						<MkRange v-model="params.labelTop.scale" :min="0.5" :max="2.0" :step="0.01" :continuousUpdate="true">
+							<template #label>{{ i18n.ts._imageFrameEditor.labelScale }}</template>
+						</MkRange>
+
+						<MkSwitch v-model="params.labelTop.centered">
+							<template #label>{{ i18n.ts._imageFrameEditor.centered }}</template>
+						</MkSwitch>
+
+						<MkInput v-model="params.labelTop.textBig">
+							<template #label>{{ i18n.ts._imageFrameEditor.captionMain }}</template>
+						</MkInput>
+
+						<MkTextarea v-model="params.labelTop.textSmall">
+							<template #label>{{ i18n.ts._imageFrameEditor.captionSub }}</template>
+						</MkTextarea>
+
+						<MkSwitch v-model="params.labelTop.withQrCode">
+							<template #label>{{ i18n.ts._imageFrameEditor.withQrCode }}</template>
+						</MkSwitch>
 					</div>
-				</div>
+				</MkFolder>
+
+				<MkFolder :defaultOpen="params.labelBottom.enabled">
+					<template #label>{{ i18n.ts._imageFrameEditor.footer }}</template>
+
+					<div class="_gaps">
+						<MkSwitch v-model="params.labelBottom.enabled">
+							<template #label>{{ i18n.ts.show }}</template>
+						</MkSwitch>
+
+						<MkRange v-model="params.labelBottom.padding" :min="0.01" :max="0.5" :step="0.01" :continuousUpdate="true">
+							<template #label>{{ i18n.ts._imageFrameEditor.labelThickness }}</template>
+						</MkRange>
+
+						<MkRange v-model="params.labelBottom.scale" :min="0.5" :max="2.0" :step="0.01" :continuousUpdate="true">
+							<template #label>{{ i18n.ts._imageFrameEditor.labelScale }}</template>
+						</MkRange>
+
+						<MkSwitch v-model="params.labelBottom.centered">
+							<template #label>{{ i18n.ts._imageFrameEditor.centered }}</template>
+						</MkSwitch>
+
+						<MkInput v-model="params.labelBottom.textBig">
+							<template #label>{{ i18n.ts._imageFrameEditor.captionMain }}</template>
+						</MkInput>
+
+						<MkTextarea v-model="params.labelBottom.textSmall">
+							<template #label>{{ i18n.ts._imageFrameEditor.captionSub }}</template>
+						</MkTextarea>
+
+						<MkSwitch v-model="params.labelBottom.withQrCode">
+							<template #label>{{ i18n.ts._imageFrameEditor.withQrCode }}</template>
+						</MkSwitch>
+					</div>
+				</MkFolder>
+
+				<MkInfo>
+					<div>{{ i18n.ts._imageFrameEditor.availableVariables }}:</div>
+					<div><code class="_selectableAtomic">{filename}</code> - {{ i18n.ts._imageEditing._vars.filename }}</div>
+					<div><code class="_selectableAtomic">{filename_without_ext}</code> - {{ i18n.ts._imageEditing._vars.filename_without_ext }}</div>
+					<div><code class="_selectableAtomic">{caption}</code> - {{ i18n.ts._imageEditing._vars.caption }}</div>
+					<div><code class="_selectableAtomic">{year}</code> - {{ i18n.ts._imageEditing._vars.year }}</div>
+					<div><code class="_selectableAtomic">{month}</code> - {{ i18n.ts._imageEditing._vars.month }}</div>
+					<div><code class="_selectableAtomic">{day}</code> - {{ i18n.ts._imageEditing._vars.day }}</div>
+					<div><code class="_selectableAtomic">{hour}</code> - {{ i18n.ts._imageEditing._vars.hour }}</div>
+					<div><code class="_selectableAtomic">{minute}</code> - {{ i18n.ts._imageEditing._vars.minute }}</div>
+					<div><code class="_selectableAtomic">{second}</code> - {{ i18n.ts._imageEditing._vars.second }}</div>
+					<div><code class="_selectableAtomic">{0month}</code> - {{ i18n.ts._imageEditing._vars.month }} ({{ i18n.ts.zeroPadding }})</div>
+					<div><code class="_selectableAtomic">{0day}</code> - {{ i18n.ts._imageEditing._vars.day }} ({{ i18n.ts.zeroPadding }})</div>
+					<div><code class="_selectableAtomic">{0hour}</code> - {{ i18n.ts._imageEditing._vars.hour }} ({{ i18n.ts.zeroPadding }})</div>
+					<div><code class="_selectableAtomic">{0minute}</code> - {{ i18n.ts._imageEditing._vars.minute }} ({{ i18n.ts.zeroPadding }})</div>
+					<div><code class="_selectableAtomic">{0second}</code> - {{ i18n.ts._imageEditing._vars.second }} ({{ i18n.ts.zeroPadding }})</div>
+					<div><code class="_selectableAtomic">{camera_model}</code> - {{ i18n.ts._imageEditing._vars.camera_model }}</div>
+					<div><code class="_selectableAtomic">{camera_lens_model}</code> - {{ i18n.ts._imageEditing._vars.camera_lens_model }}</div>
+					<div><code class="_selectableAtomic">{camera_mm}</code> - {{ i18n.ts._imageEditing._vars.camera_mm }}</div>
+					<div><code class="_selectableAtomic">{camera_mm_35}</code> - {{ i18n.ts._imageEditing._vars.camera_mm_35 }}</div>
+					<div><code class="_selectableAtomic">{camera_f}</code> - {{ i18n.ts._imageEditing._vars.camera_f }}</div>
+					<div><code class="_selectableAtomic">{camera_s}</code> - {{ i18n.ts._imageEditing._vars.camera_s }}</div>
+					<div><code class="_selectableAtomic">{camera_iso}</code> - {{ i18n.ts._imageEditing._vars.camera_iso }}</div>
+					<div><code class="_selectableAtomic">{gps_lat}</code> - {{ i18n.ts._imageEditing._vars.gps_lat }}</div>
+					<div><code class="_selectableAtomic">{gps_long}</code> - {{ i18n.ts._imageEditing._vars.gps_long }}</div>
+				</MkInfo>
 			</div>
-			<div :class="$style.controls">
-				<div class="_spacer _gaps">
-					<MkRange v-model="params.borderThickness" :min="0" :max="0.2" :step="0.01" :continuousUpdate="true">
-						<template #label>{{ i18n.ts._imageFrameEditor.borderThickness }}</template>
-					</MkRange>
-
-					<MkInput :modelValue="getHex(params.bgColor)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) params.bgColor = c; }">
-						<template #label>{{ i18n.ts._imageFrameEditor.backgroundColor }}</template>
-					</MkInput>
-
-					<MkInput :modelValue="getHex(params.fgColor)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) params.fgColor = c; }">
-						<template #label>{{ i18n.ts._imageFrameEditor.textColor }}</template>
-					</MkInput>
-
-					<MkSelect
-						v-model="params.font" :items="[
-							{ label: i18n.ts._imageFrameEditor.fontSansSerif, value: 'sans-serif' },
-							{ label: i18n.ts._imageFrameEditor.fontSerif, value: 'serif' },
-						]"
-					>
-						<template #label>{{ i18n.ts._imageFrameEditor.font }}</template>
-					</MkSelect>
-
-					<MkFolder :defaultOpen="params.labelTop.enabled">
-						<template #label>{{ i18n.ts._imageFrameEditor.header }}</template>
-
-						<div class="_gaps">
-							<MkSwitch v-model="params.labelTop.enabled">
-								<template #label>{{ i18n.ts.show }}</template>
-							</MkSwitch>
-
-							<MkRange v-model="params.labelTop.padding" :min="0.01" :max="0.5" :step="0.01" :continuousUpdate="true">
-								<template #label>{{ i18n.ts._imageFrameEditor.labelThickness }}</template>
-							</MkRange>
-
-							<MkRange v-model="params.labelTop.scale" :min="0.5" :max="2.0" :step="0.01" :continuousUpdate="true">
-								<template #label>{{ i18n.ts._imageFrameEditor.labelScale }}</template>
-							</MkRange>
-
-							<MkSwitch v-model="params.labelTop.centered">
-								<template #label>{{ i18n.ts._imageFrameEditor.centered }}</template>
-							</MkSwitch>
-
-							<MkInput v-model="params.labelTop.textBig">
-								<template #label>{{ i18n.ts._imageFrameEditor.captionMain }}</template>
-							</MkInput>
-
-							<MkTextarea v-model="params.labelTop.textSmall">
-								<template #label>{{ i18n.ts._imageFrameEditor.captionSub }}</template>
-							</MkTextarea>
-
-							<MkSwitch v-model="params.labelTop.withQrCode">
-								<template #label>{{ i18n.ts._imageFrameEditor.withQrCode }}</template>
-							</MkSwitch>
-						</div>
-					</MkFolder>
-
-					<MkFolder :defaultOpen="params.labelBottom.enabled">
-						<template #label>{{ i18n.ts._imageFrameEditor.footer }}</template>
-
-						<div class="_gaps">
-							<MkSwitch v-model="params.labelBottom.enabled">
-								<template #label>{{ i18n.ts.show }}</template>
-							</MkSwitch>
-
-							<MkRange v-model="params.labelBottom.padding" :min="0.01" :max="0.5" :step="0.01" :continuousUpdate="true">
-								<template #label>{{ i18n.ts._imageFrameEditor.labelThickness }}</template>
-							</MkRange>
-
-							<MkRange v-model="params.labelBottom.scale" :min="0.5" :max="2.0" :step="0.01" :continuousUpdate="true">
-								<template #label>{{ i18n.ts._imageFrameEditor.labelScale }}</template>
-							</MkRange>
-
-							<MkSwitch v-model="params.labelBottom.centered">
-								<template #label>{{ i18n.ts._imageFrameEditor.centered }}</template>
-							</MkSwitch>
-
-							<MkInput v-model="params.labelBottom.textBig">
-								<template #label>{{ i18n.ts._imageFrameEditor.captionMain }}</template>
-							</MkInput>
-
-							<MkTextarea v-model="params.labelBottom.textSmall">
-								<template #label>{{ i18n.ts._imageFrameEditor.captionSub }}</template>
-							</MkTextarea>
-
-							<MkSwitch v-model="params.labelBottom.withQrCode">
-								<template #label>{{ i18n.ts._imageFrameEditor.withQrCode }}</template>
-							</MkSwitch>
-						</div>
-					</MkFolder>
-
-					<MkInfo>
-						<div>{{ i18n.ts._imageFrameEditor.availableVariables }}:</div>
-						<div><code class="_selectableAtomic">{filename}</code> - {{ i18n.ts._imageEditing._vars.filename }}</div>
-						<div><code class="_selectableAtomic">{filename_without_ext}</code> - {{ i18n.ts._imageEditing._vars.filename_without_ext }}</div>
-						<div><code class="_selectableAtomic">{caption}</code> - {{ i18n.ts._imageEditing._vars.caption }}</div>
-						<div><code class="_selectableAtomic">{year}</code> - {{ i18n.ts._imageEditing._vars.year }}</div>
-						<div><code class="_selectableAtomic">{month}</code> - {{ i18n.ts._imageEditing._vars.month }}</div>
-						<div><code class="_selectableAtomic">{day}</code> - {{ i18n.ts._imageEditing._vars.day }}</div>
-						<div><code class="_selectableAtomic">{hour}</code> - {{ i18n.ts._imageEditing._vars.hour }}</div>
-						<div><code class="_selectableAtomic">{minute}</code> - {{ i18n.ts._imageEditing._vars.minute }}</div>
-						<div><code class="_selectableAtomic">{second}</code> - {{ i18n.ts._imageEditing._vars.second }}</div>
-						<div><code class="_selectableAtomic">{0month}</code> - {{ i18n.ts._imageEditing._vars.month }} ({{ i18n.ts.zeroPadding }})</div>
-						<div><code class="_selectableAtomic">{0day}</code> - {{ i18n.ts._imageEditing._vars.day }} ({{ i18n.ts.zeroPadding }})</div>
-						<div><code class="_selectableAtomic">{0hour}</code> - {{ i18n.ts._imageEditing._vars.hour }} ({{ i18n.ts.zeroPadding }})</div>
-						<div><code class="_selectableAtomic">{0minute}</code> - {{ i18n.ts._imageEditing._vars.minute }} ({{ i18n.ts.zeroPadding }})</div>
-						<div><code class="_selectableAtomic">{0second}</code> - {{ i18n.ts._imageEditing._vars.second }} ({{ i18n.ts.zeroPadding }})</div>
-						<div><code class="_selectableAtomic">{camera_model}</code> - {{ i18n.ts._imageEditing._vars.camera_model }}</div>
-						<div><code class="_selectableAtomic">{camera_lens_model}</code> - {{ i18n.ts._imageEditing._vars.camera_lens_model }}</div>
-						<div><code class="_selectableAtomic">{camera_mm}</code> - {{ i18n.ts._imageEditing._vars.camera_mm }}</div>
-						<div><code class="_selectableAtomic">{camera_mm_35}</code> - {{ i18n.ts._imageEditing._vars.camera_mm_35 }}</div>
-						<div><code class="_selectableAtomic">{camera_f}</code> - {{ i18n.ts._imageEditing._vars.camera_f }}</div>
-						<div><code class="_selectableAtomic">{camera_s}</code> - {{ i18n.ts._imageEditing._vars.camera_s }}</div>
-						<div><code class="_selectableAtomic">{camera_iso}</code> - {{ i18n.ts._imageEditing._vars.camera_iso }}</div>
-						<div><code class="_selectableAtomic">{gps_lat}</code> - {{ i18n.ts._imageEditing._vars.gps_lat }}</div>
-						<div><code class="_selectableAtomic">{gps_long}</code> - {{ i18n.ts._imageEditing._vars.gps_long }}</div>
-					</MkInfo>
-				</div>
-			</div>
-		</div>
-	</div>
+		</template>
+	</MkPreviewWithControls>
 </MkModalWindow>
 </template>
 
@@ -161,8 +160,8 @@ import type { ImageFrameParams, ImageFramePreset } from '@/utility/image-frame-r
 import { ImageFrameRenderer } from '@/utility/image-frame-renderer/ImageFrameRenderer.js';
 import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
+import MkPreviewWithControls from './MkPreviewWithControls.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRange from '@/components/MkRange.vue';
@@ -173,8 +172,6 @@ import * as os from '@/os.js';
 import { deepClone } from '@/utility/clone.js';
 import { ensureSignin } from '@/i.js';
 import { genId } from '@/utility/id.js';
-import { useMkSelect } from '@/composables/use-mkselect.js';
-import { prefer } from '@/preferences.js';
 
 const $i = ensureSignin();
 
@@ -412,33 +409,6 @@ function getRgb(hex: string | number): [number, number, number] | null {
 </script>
 
 <style module>
-.root {
-	container-type: inline-size;
-	height: 100%;
-}
-
-.container {
-	height: 100%;
-	display: grid;
-	grid-template-columns: 1fr 400px;
-}
-
-.preview {
-	position: relative;
-	background-color: var(--MI_THEME-bg);
-	background-image: linear-gradient(135deg, transparent 30%, var(--MI_THEME-panel) 30%, var(--MI_THEME-panel) 50%, transparent 50%, transparent 80%, var(--MI_THEME-panel) 80%, var(--MI_THEME-panel) 100%);
-	background-size: 20px 20px;
-}
-
-.animatedBg {
-	animation: bg 1.2s linear infinite;
-}
-
-@keyframes bg {
-	0% { background-position: 0 0; }
-	100% { background-position: -20px -20px; }
-}
-
 .previewContainer {
 	display: flex;
 	flex-direction: column;
@@ -494,16 +464,5 @@ function getRgb(hex: string | number): [number, number, number] | null {
 	padding: 20px;
 	box-sizing: border-box;
 	object-fit: contain;
-}
-
-.controls {
-	overflow-y: scroll;
-}
-
-@container (max-width: 800px) {
-	.container {
-		grid-template-columns: 1fr;
-		grid-template-rows: 1fr 1fr;
-	}
 }
 </style>

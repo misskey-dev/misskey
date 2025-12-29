@@ -5639,6 +5639,10 @@ export interface Locale extends ILocale {
      * ゼロ埋め
      */
     "zeroPadding": string;
+    /**
+     * 設定項目はありません
+     */
+    "nothingToConfigure": string;
     "_imageEditing": {
         "_vars": {
             /**
@@ -12763,10 +12767,6 @@ export interface Locale extends ILocale {
          * 変更を破棄して終了しますか？
          */
         "discardChangesConfirm": string;
-        /**
-         * 設定項目はありません
-         */
-        "nothingToConfigure": string;
         /**
          * 画像の読み込みに失敗しました
          */

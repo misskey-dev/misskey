@@ -4,7 +4,9 @@
 -
 
 ### Client
--
+- Enhance: ドライブのファイル一覧で自動でもっと見るを利用可能に
+- Enhance: ウィジェットの表示設定をプレビューを見ながら行えるように
+- Fix: ドライブクリーナーでファイルを削除しても画面に反映されない問題を修正 #16061
 
 ### Server
 - Enhance: OAuthのクライアント情報取得（Client Information Discovery）において、IndieWeb Living Standard 11 July 2024で定義されているJSONドキュメント形式に対応しました
