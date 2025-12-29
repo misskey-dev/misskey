@@ -810,7 +810,7 @@ describe('OAuth', () => {
 
 	describe('Client Information Discovery', () => {
 		// https://indieauth.spec.indieweb.org/#client-information-discovery
-		describe('JSON client metadata (Living Standard)', () => {
+		describe('JSON client metadata (11 July 2024)', () => {
 			test('Read JSON document', async () => {
 				sender = (reply): void => {
 					reply.header('content-type', 'application/json');
