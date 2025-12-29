@@ -1407,6 +1407,7 @@ frame: "フレーム"
 presets: "プリセット"
 zeroPadding: "ゼロ埋め"
 nothingToConfigure: "設定項目はありません"
+applyToPreview: "プレビューに反映"
 
 _imageEditing:
   _vars:
@@ -3241,7 +3242,6 @@ _embedCodeGen:
   previewIsNotActual: "プレビュー画面で表示可能な範囲を超えたため、実際に埋め込んだ際とは表示が異なります。"
   rounded: "角丸にする"
   border: "外枠に枠線をつける"
-  applyToPreview: "プレビューに反映"
   generateCode: "埋め込みコードを作成"
   codeGenerated: "コードが生成されました"
   codeGeneratedDescription: "生成されたコードをウェブサイトに貼り付けてご利用ください。"

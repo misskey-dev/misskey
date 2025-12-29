@@ -5643,6 +5643,10 @@ export interface Locale extends ILocale {
      * 設定項目はありません
      */
     "nothingToConfigure": string;
+    /**
+     * プレビューに反映
+     */
+    "applyToPreview": string;
     "_imageEditing": {
         "_vars": {
             /**
@@ -12155,10 +12159,6 @@ export interface Locale extends ILocale {
          * 外枠に枠線をつける
          */
         "border": string;
-        /**
-         * プレビューに反映
-         */
-        "applyToPreview": string;
         /**
          * 埋め込みコードを作成
          */

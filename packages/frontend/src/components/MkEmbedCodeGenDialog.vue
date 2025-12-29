@@ -59,7 +59,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkInfo v-if="isEmbedWithScrollbar && (!maxHeight || maxHeight <= 0)" warn>{{ i18n.ts._embedCodeGen.maxHeightWarn }}</MkInfo>
 						<MkInfo v-if="typeof maxHeight === 'number' && (maxHeight <= 0 || maxHeight > 700)">{{ i18n.ts._embedCodeGen.previewIsNotActual }}</MkInfo>
 						<div class="_buttons">
-							<MkButton :disabled="iframeLoading" @click="applyToPreview">{{ i18n.ts._embedCodeGen.applyToPreview }}</MkButton>
+							<MkButton :disabled="iframeLoading" @click="applyToPreview">{{ i18n.ts.applyToPreview }}</MkButton>
 							<MkButton :disabled="iframeLoading" primary @click="generate">{{ i18n.ts._embedCodeGen.generateCode }} <i class="ti ti-arrow-right"></i></MkButton>
 						</div>
 					</div>

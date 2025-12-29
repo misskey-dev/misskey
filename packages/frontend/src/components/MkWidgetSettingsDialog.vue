@@ -38,8 +38,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</template>
 
 		<template #controls>
-			<div class="_spacer">
+			<div class="_spacer _gaps">
 				<MkForm v-model="settings" :form="form"/>
+				<MkButton @click="applyToPreview">{{ i18n.ts.applyToPreview }}</MkButton>
 			</div>
 		</template>
 	</MkPreviewWithControls>
@@ -47,12 +48,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { reactive, useTemplateRef, ref, computed, watch, onBeforeUnmount, onMounted } from 'vue';
+import { reactive, useTemplateRef, ref, computed, onBeforeUnmount, onMounted } from 'vue';
 import { deepClone } from '@/utility/clone.js';
 import { genId } from '@/utility/id.js';
 import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import MkPreviewWithControls from './MkPreviewWithControls.vue';
+import MkPreviewWithControls from '@/components/MkPreviewWithControls.vue';
+import MkButton from '@/components/MkButton.vue';
 import MkForm from '@/components/MkForm.vue';
 import type { Form } from '@/utility/form.js';
 
@@ -70,15 +72,17 @@ const emit = defineEmits<{
 
 const dialog = useTemplateRef('dialog');
 
-const settings = reactive<Record<string, any>>(deepClone(props.currentSettings));
+const settingsModel = ref<Record<string, any>>(deepClone(props.currentSettings));
+const settings = reactive(deepClone(props.currentSettings));
 const currentId = ref(genId());
 
-watch(settings, () => {
+function applyToPreview() {
+	settings.value = deepClone(settingsModel.value);
 	currentId.value = genId();
-});
+}
 
 function save() {
-	emit('saved', deepClone(settings));
+	emit('saved', deepClone(settingsModel.value));
 	dialog.value?.close();
 }
 
