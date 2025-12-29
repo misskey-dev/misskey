@@ -12,6 +12,8 @@ import { createLakeMesh } from './lake.js';
 import { createFarmPlotMesh } from './farm-plot.js';
 import { ChunkEnvironmentRenderer, type EnvironmentObjectData } from './environment-objects.js';
 import { PetManager, type PetInfo } from './pet.js';
+import { WarpGate, WARP_GATE_COLLISION_RADIUS, type WarpGateConfig } from './warp-gate-object.js';
+import { buildShrineWorld, animateSuzu } from './shrine-objects.js';
 
 // FR-022: PetInfo型をre-export
 export type { PetInfo } from './pet.js';
@@ -247,6 +249,15 @@ export class NoctownEngine {
 
 	// FR-022: ペット管理
 	private petManager: PetManager | null = null;
+
+	// 仕様: 神社ワールド - ワープゲート管理
+	private warpGates: Map<string, WarpGate> = new Map();
+	private currentWorldType: 'default' | 'shrine' = 'default';
+	private currentWorldId: string | null = null;
+	private shrineObjects: THREE.Group | null = null;
+	private isWarping: boolean = false; // T026: ワープ中フラグ
+	private suzuAnimationData: { group: THREE.Group; startTime: number } | null = null;
+	private onWarpCollision: ((gateId: string, targetWorldId: string | null) => void) | null = null;
 
 	constructor(container: HTMLElement) {
 		this.container = container;
@@ -794,6 +805,10 @@ export class NoctownEngine {
 		}
 
 		// 仕様: ケーキのキャンドル炎アニメーションは負荷軽減のためOFF
+
+		// 仕様: T020 ワープゲート衝突チェックとアニメーション更新
+		this.checkWarpGateCollisions();
+		this.updateWarpGatesAndShrine(deltaTime);
 
 		this.renderer.render(this.scene, this.camera);
 		this.labelRenderer.render(this.scene, this.camera);
@@ -3135,6 +3150,205 @@ export class NoctownEngine {
 		return null;
 	}
 
+	// ============================================
+	// 神社ワールド・ワープゲート機能
+	// ============================================
+
+	/**
+	 * ワープ衝突コールバックを設定
+	 * 仕様: T022 ゲート衝突時にwarpStartを送信するコールバック
+	 */
+	public setWarpCollisionCallback(callback: (gateId: string, targetWorldId: string | null) => void): void {
+		this.onWarpCollision = callback;
+	}
+
+	/**
+	 * ワープゲートを追加
+	 * 仕様: T020 デフォルトワールドに神社へのゲート、神社に帰還ゲートを配置
+	 */
+	public addWarpGate(config: WarpGateConfig): void {
+		if (this.warpGates.has(config.id)) {
+			console.warn(`[Noctown Engine] WarpGate ${config.id} already exists`);
+			return;
+		}
+		const gate = new WarpGate(config);
+		this.warpGates.set(config.id, gate);
+		this.scene.add(gate.group);
+		console.log(`[Noctown Engine] Added warp gate: ${config.id} at`, config.position);
+	}
+
+	/**
+	 * ワープゲートを削除
+	 */
+	public removeWarpGate(gateId: string): void {
+		const gate = this.warpGates.get(gateId);
+		if (gate) {
+			this.scene.remove(gate.group);
+			gate.dispose();
+			this.warpGates.delete(gateId);
+		}
+	}
+
+	/**
+	 * 全ワープゲートをクリア
+	 */
+	public clearWarpGates(): void {
+		for (const gate of this.warpGates.values()) {
+			this.scene.remove(gate.group);
+			gate.dispose();
+		}
+		this.warpGates.clear();
+	}
+
+	/**
+	 * ワープ開始（アニメーション開始）
+	 * 仕様: T023 warpStartedイベント受信時に呼び出し
+	 */
+	public startWarp(): void {
+		this.isWarping = true;
+		// ワープエフェクトはフロントエンド側で別途処理
+	}
+
+	/**
+	 * ワープ完了・ワールド切り替え
+	 * 仕様: T024 worldJoinedイベント受信時にシーンを切り替え
+	 */
+	public switchWorld(
+		worldId: string | null,
+		worldType: 'default' | 'shrine',
+		spawnPosition: { x: number; y: number; z: number },
+		shrineData?: { saisenBoxPosition: { x: number; y: number; z: number }; suzuPosition: { x: number; y: number; z: number }; returnGatePosition: { x: number; y: number; z: number } },
+	): void {
+		console.log(`[Noctown Engine] Switching to world: ${worldType} (${worldId})`);
+
+		// 既存のワープゲートをクリア
+		this.clearWarpGates();
+
+		// 神社オブジェクトをクリア
+		if (this.shrineObjects) {
+			this.scene.remove(this.shrineObjects);
+			this.shrineObjects = null;
+		}
+
+		// チャンクをクリア
+		for (const chunk of this.chunks.values()) {
+			this.scene.remove(chunk);
+		}
+		this.chunks.clear();
+
+		this.currentWorldId = worldId;
+		this.currentWorldType = worldType;
+
+		if (worldType === 'shrine' && shrineData) {
+			// 神社ワールドのオブジェクトを配置
+			const shrineWorld = buildShrineWorld();
+			this.shrineObjects = shrineWorld.scene;
+			this.scene.add(this.shrineObjects);
+
+			// 帰還用ワープゲートを配置（warp_gate.html準拠: 白色）
+			this.addWarpGate({
+				id: 'warp-gate-to-default',
+				position: shrineData.returnGatePosition,
+				targetWorldId: null, // null = デフォルトワールド
+				color: 0xffffff,
+			});
+		} else {
+			// デフォルトワールドに神社へのワープゲートを配置
+			// 仕様: warp_gate.html準拠 - 白色、スポーン地点から離れた位置
+			this.addWarpGate({
+				id: 'warp-gate-to-shrine',
+				position: { x: 10, y: 0, z: -15 },
+				targetWorldId: 'shrine-world-001',
+				color: 0xffffff,
+			});
+		}
+
+		// プレイヤー位置を更新（カメラはanimate()内で自動追従）
+		if (this.localPlayer) {
+			this.localPlayer.setPosition(spawnPosition.x, spawnPosition.y, spawnPosition.z);
+		}
+
+		this.isWarping = false;
+		console.log(`[Noctown Engine] World switch complete: ${worldType}`);
+	}
+
+	/**
+	 * 現在のワールドタイプを取得
+	 */
+	public getCurrentWorldType(): 'default' | 'shrine' {
+		return this.currentWorldType;
+	}
+
+	/**
+	 * 現在のワールドIDを取得
+	 */
+	public getCurrentWorldId(): string | null {
+		return this.currentWorldId;
+	}
+
+	/**
+	 * ワープ中かどうか
+	 */
+	public getIsWarping(): boolean {
+		return this.isWarping;
+	}
+
+	/**
+	 * 鈴アニメーションを開始
+	 * 仕様: T037 bellRingイベント受信時に呼び出し
+	 */
+	public startBellAnimation(): void {
+		if (this.shrineObjects) {
+			// 神社オブジェクト内から鈴を探す
+			this.shrineObjects.traverse((child) => {
+				if (child.userData.type === 'suzu') {
+					this.suzuAnimationData = {
+						group: child as THREE.Group,
+						startTime: performance.now(),
+					};
+				}
+			});
+		}
+	}
+
+	/**
+	 * ワープゲート衝突チェック（animate内で呼び出し）
+	 * 仕様: T020 フレームごとにプレイヤーとゲートの衝突を判定
+	 */
+	private checkWarpGateCollisions(): void {
+		if (this.isWarping || !this.localPlayer || !this.onWarpCollision) return;
+
+		const playerPos = this.localPlayer.getPosition();
+		for (const gate of this.warpGates.values()) {
+			if (gate.checkCollision({ x: playerPos.x, z: playerPos.z })) {
+				console.log(`[Noctown Engine] Warp gate collision: ${gate.config.id}`);
+				this.isWarping = true; // 連続トリガー防止
+				this.onWarpCollision(gate.config.id, gate.config.targetWorldId);
+				break;
+			}
+		}
+	}
+
+	/**
+	 * ワープゲートとシュラインアニメーション更新（animate内で呼び出し）
+	 */
+	private updateWarpGatesAndShrine(deltaTime: number): void {
+		// ワープゲートアニメーション
+		for (const gate of this.warpGates.values()) {
+			gate.update(deltaTime);
+		}
+
+		// 鈴アニメーション
+		if (this.suzuAnimationData) {
+			const elapsed = (performance.now() - this.suzuAnimationData.startTime) / 1000;
+			animateSuzu(this.suzuAnimationData.group, elapsed);
+			// 2秒後にアニメーション終了
+			if (elapsed > 2) {
+				this.suzuAnimationData = null;
+			}
+		}
+	}
+
 	public dispose(): void {
 		this.isDisposed = true;
 
@@ -3150,6 +3364,13 @@ export class NoctownEngine {
 		if (this.petManager) {
 			this.petManager.dispose();
 			this.petManager = null;
+		}
+
+		// 仕様: 神社ワールド - ワープゲートのクリーンアップ
+		this.clearWarpGates();
+		if (this.shrineObjects) {
+			this.scene.remove(this.shrineObjects);
+			this.shrineObjects = null;
 		}
 
 		// 仕様: ドロップアイテム・設置アイテムのクリーンアップ（CSS2DObject DOM要素含む）

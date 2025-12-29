@@ -31,6 +31,7 @@ export const noctownTransactionTypes = [
 	'FISHING_CANCEL',
 	'CONTAINER_SET',
 	'CONTAINER_OPEN',
+	'SAISEN_OFFER', // 仕様: 神社ワールド - 賽銭奉納
 ] as const;
 
 export type NoctownTransactionType = typeof noctownTransactionTypes[number];

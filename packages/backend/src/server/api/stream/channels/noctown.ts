@@ -50,6 +50,27 @@ class NoctownChannel extends Channel {
 
 		// Mark player as online and broadcast
 		await this.noctownService.setPlayerOnline(this.playerId, this.user.id);
+
+		// 仕様: T019 再接続時にcurrentWorldIdを復元してクライアントに通知
+		if (player.currentWorldId) {
+			// プレイヤーが神社ワールドにいる場合、worldJoined イベントを送信
+			const worldInfo = await this.noctownService.getWorldInfo(player.currentWorldId);
+			if (worldInfo) {
+				this.send('worldJoined', {
+					worldId: player.currentWorldId,
+					worldType: worldInfo.worldType,
+					worldDisplayName: worldInfo.displayName,
+					spawnPosition: { x: player.positionX, y: player.positionY, z: player.positionZ },
+					playersInWorld: [], // 再接続時は空でもOK（既にplayerJoinedで通知される）
+					shrineData: worldInfo.worldType === 'shrine' ? {
+						saisenBoxPosition: { x: 0, y: 0, z: 16 },
+						suzuPosition: { x: 0, y: 0, z: -256 },
+						returnGatePosition: { x: 0, y: 0, z: 1760 },
+					} : undefined,
+					isReconnect: true,
+				});
+			}
+		}
 	}
 
 	@bindThis
@@ -113,6 +134,16 @@ class NoctownChannel extends Channel {
 				break;
 			case 'typingEnd':
 				this.handleTypingEnd();
+				break;
+			// 仕様: 神社ワールド - ワープ機能
+			case 'warpStart':
+				if (!isJsonObject(body)) return;
+				this.handleWarpStart(body);
+				break;
+			// 仕様: 神社ワールド - 賽銭機能
+			case 'saisenOffer':
+				if (!isJsonObject(body)) return;
+				this.handleSaisenOffer(body);
 				break;
 		}
 	}
@@ -254,6 +285,55 @@ class NoctownChannel extends Channel {
 	private handleTypingEnd(): void {
 		if (this.playerId == null) return;
 		this.noctownService.broadcastTypingEnd(this.playerId);
+	}
+
+	// 仕様: 神社ワールド - ワープ開始ハンドラー
+	@bindThis
+	private async handleWarpStart(body: JsonObject): Promise<void> {
+		if (this.user == null || this.playerId == null) return;
+
+		const gateId = typeof body.gateId === 'string' ? body.gateId : null;
+		const targetWorldId = typeof body.targetWorldId === 'string' ? body.targetWorldId : null;
+
+		if (gateId == null) {
+			this.send('warpFailed', { code: 'INVALID_GATE', message: 'Gate ID is required' });
+			return;
+		}
+
+		try {
+			const result = await this.noctownService.handleWarp(this.playerId, gateId, targetWorldId);
+			if (!result.success) {
+				this.send('warpFailed', { code: result.error, message: result.message ?? 'Warp failed' });
+			}
+			// 成功時はNoctownServiceからwarpStarted, worldJoinedイベントが発行される
+		} catch (error) {
+			console.error('[Noctown] handleWarpStart error:', error);
+			this.send('warpFailed', { code: 'INTERNAL_ERROR', message: 'Internal error' });
+		}
+	}
+
+	// 仕様: 神社ワールド - 賽銭奉納ハンドラー
+	@bindThis
+	private async handleSaisenOffer(body: JsonObject): Promise<void> {
+		if (this.user == null || this.playerId == null) return;
+
+		const amount = typeof body.amount === 'number' ? body.amount : null;
+
+		if (amount == null || !Number.isInteger(amount) || amount < 1) {
+			this.send('saisenFailed', { code: 'INVALID_AMOUNT', message: 'Invalid amount' });
+			return;
+		}
+
+		try {
+			const result = await this.noctownService.offerSaisen(this.playerId, amount);
+			if (!result.success) {
+				this.send('saisenFailed', { code: result.error, message: result.message ?? 'Saisen failed' });
+			}
+			// 成功時はNoctownServiceからsaisenCompletedイベントが発行される
+		} catch (error) {
+			console.error('[Noctown] handleSaisenOffer error:', error);
+			this.send('saisenFailed', { code: 'INTERNAL_ERROR', message: 'Internal error' });
+		}
 	}
 
 	@bindThis

@@ -4,7 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Not, LessThan } from 'typeorm';
+import { Not, LessThan, IsNull } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
@@ -29,6 +29,8 @@ import type {
 	NoctownWorldChunksRepository,
 	NoctownChatLogsRepository,
 	NoctownChatLogRecipientsRepository,
+	NoctownTransactionLogsRepository,
+	NoctownWorldsRepository,
 	UsersRepository,
 } from '@/models/_.js';
 import type { NoctownCropStage } from '@/models/noctown/NoctownCrop.js';
@@ -96,6 +98,14 @@ export class NoctownService {
 		// FR-029: チャット履歴記録用の中間テーブルRepository
 		@Inject(DI.noctownChatLogRecipientsRepository)
 		private noctownChatLogRecipientsRepository: NoctownChatLogRecipientsRepository,
+
+		// 仕様: 神社ワールド - 賽銭トランザクションログ用
+		@Inject(DI.noctownTransactionLogsRepository)
+		private noctownTransactionLogsRepository: NoctownTransactionLogsRepository,
+
+		// 仕様: 神社ワールド - ワールド情報取得用
+		@Inject(DI.noctownWorldsRepository)
+		private noctownWorldsRepository: NoctownWorldsRepository,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -2430,8 +2440,6 @@ export class NoctownService {
 	 */
 	@bindThis
 	public async generateChunk(worldId: string, chunkX: number, chunkZ: number) {
-		console.log('[NoctownService] generateChunk: start', { worldId, chunkX, chunkZ });
-
 		// T034: Check if chunk already exists (UNIQUE constraint handling)
 		const existingChunk = await this.noctownWorldChunksRepository.findOneBy({
 			worldId,
@@ -2439,18 +2447,9 @@ export class NoctownService {
 			chunkZ,
 		});
 
-		console.log('[NoctownService] generateChunk: existing check', {
-			worldId,
-			chunkX,
-			chunkZ,
-			exists: !!existingChunk,
-			hasEnvironmentObjects: existingChunk ? !!existingChunk.environmentObjects : false,
-		});
-
 		if (existingChunk) {
 			// FR-010: チャンクにenvironmentObjectsがない場合は、決定論的に再生成して保存
 			if (!existingChunk.environmentObjects || (Array.isArray(existingChunk.environmentObjects) && (existingChunk.environmentObjects as any[]).length === 0)) {
-				console.log('[NoctownService] generateChunk: regenerating environment objects for existing chunk', { worldId, chunkX, chunkZ });
 				const generator = getChunkGenerator(12345);
 				const chunkTerrainData = generator.generateChunk(chunkX, chunkZ);
 
@@ -2464,27 +2463,15 @@ export class NoctownService {
 
 				(existingChunk as any).environmentObjects = environmentObjects;
 				await this.noctownWorldChunksRepository.save(existingChunk);
-				console.log('[NoctownService] generateChunk: saved environment objects', { worldId, chunkX, chunkZ, count: environmentObjects.length });
 			}
 
 			// Chunk already exists - return existing chunk data
-			console.log('[NoctownService] generateChunk: returning existing chunk', { worldId, chunkX, chunkZ });
 			return existingChunk;
 		}
 
 		// T032: Generate chunk using Perlin noise
-		console.log('[NoctownService] generateChunk: generating new chunk', { worldId, chunkX, chunkZ });
 		const generator = getChunkGenerator(12345); // Use consistent seed for deterministic generation
 		const chunkTerrainData = generator.generateChunk(chunkX, chunkZ);
-
-		console.log('[NoctownService] generateChunk: chunk generated from generator', {
-			worldId,
-			chunkX,
-			chunkZ,
-			biome: chunkTerrainData.biome,
-			hasTerrainData: !!chunkTerrainData.terrainData,
-			environmentObjectsCount: chunkTerrainData.environmentObjects.length,
-		});
 
 		// FR-001: chunk-generator.tsのterrainDataを1次元配列に変換（16×16 = 256要素）
 		const terrainData = new Array(256);
@@ -2518,18 +2505,25 @@ export class NoctownService {
 		// FR-010: environmentObjectsをデータベースに保存
 		(newChunk as any).environmentObjects = environmentObjects;
 
-		console.log('[NoctownService] generateChunk: saving to database', { worldId, chunkX, chunkZ, chunkId });
-		const chunk = await this.noctownWorldChunksRepository.save(newChunk);
-		console.log('[NoctownService] generateChunk: saved successfully', {
-			worldId,
-			chunkX,
-			chunkZ,
-			chunkId: chunk.id,
-			hasTerrainData: !!(chunk as any).terrainData,
-			hasEnvironmentObjects: !!(chunk as any).environmentObjects,
-		});
-
-		return chunk;
+		// レース条件対策: UNIQUE制約違反時は既存チャンクを返す
+		try {
+			const chunk = await this.noctownWorldChunksRepository.save(newChunk);
+			return chunk;
+		} catch (error: any) {
+			// UNIQUE制約違反（23505）の場合は既存チャンクを取得して返す
+			if (error?.code === '23505' || error?.message?.includes('duplicate key')) {
+				const existingChunk = await this.noctownWorldChunksRepository.findOneBy({
+					worldId,
+					chunkX,
+					chunkZ,
+				});
+				if (existingChunk) {
+					return existingChunk;
+				}
+			}
+			// その他のエラーは再throw
+			throw error;
+		}
 	}
 
 	// =============================================
@@ -2916,5 +2910,371 @@ export class NoctownService {
 		}
 
 		return { success: false, error: 'NOT_FOUND' };
+	}
+
+	// ============================================
+	// 神社ワールド機能
+	// ============================================
+
+	/**
+	 * ワールド情報を取得
+	 * 仕様: T019 再接続時のワールド復元用
+	 * @param worldId ワールドID
+	 * @returns ワールド情報（存在しない場合はnull）
+	 */
+	@bindThis
+	public async getWorldInfo(worldId: string): Promise<{ worldType: string; displayName: string | null } | null> {
+		const world = await this.noctownWorldsRepository.findOneBy({ id: worldId });
+		if (!world) return null;
+		return {
+			worldType: world.worldType,
+			displayName: world.displayName,
+		};
+	}
+
+	/**
+	 * 累計賽銭額を取得
+	 * 仕様: 神社ワールド - SAISEN_OFFERトランザクションの合計額を計算
+	 * @param playerId プレイヤーID
+	 * @returns 累計賽銭額
+	 */
+	@bindThis
+	public async getTotalSaisen(playerId: string): Promise<number> {
+		const result = await this.noctownTransactionLogsRepository
+			.createQueryBuilder('log')
+			.select('COALESCE(SUM(log.amount), 0)', 'total')
+			.where('log.playerId = :playerId', { playerId })
+			.andWhere('log.type = :type', { type: 'SAISEN_OFFER' })
+			.andWhere('log.isValid = :isValid', { isValid: true })
+			.getRawOne<{ total: string }>();
+
+		return parseInt(result?.total ?? '0', 10);
+	}
+
+	/**
+	 * 鏡餅付与数を計算
+	 * 仕様: 神社ワールド - 初回賽銭で1個、累計500コインごとに1個追加
+	 * @param previousTotal 操作前の累計賽銭額
+	 * @param offerAmount 今回の賽銭額
+	 * @param isFirstOffer 初回賽銭かどうか
+	 * @returns 付与する鏡餅の数
+	 */
+	@bindThis
+	public calculateMochiReward(
+		previousTotal: number,
+		offerAmount: number,
+		isFirstOffer: boolean,
+	): { mochiCount: number; milestonesCrossed: number[] } {
+		let mochiCount = 0;
+		const milestonesCrossed: number[] = [];
+
+		// 初回賽銭ボーナス
+		if (isFirstOffer) {
+			mochiCount += 1;
+		}
+
+		// 500コインごとの閾値を計算
+		const newTotal = previousTotal + offerAmount;
+		const previousMilestones = Math.floor(previousTotal / 500);
+		const newMilestones = Math.floor(newTotal / 500);
+
+		// 新しく超えた閾値の数だけ鏡餅を付与
+		for (let i = previousMilestones + 1; i <= newMilestones; i++) {
+			mochiCount += 1;
+			milestonesCrossed.push(i * 500);
+		}
+
+		return { mochiCount, milestonesCrossed };
+	}
+
+	/**
+	 * 初回賽銭かどうかを判定
+	 * 仕様: 神社ワールド - SAISEN_OFFERトランザクションが0件なら初回
+	 * @param playerId プレイヤーID
+	 * @returns 初回賽銭かどうか
+	 */
+	@bindThis
+	public async isFirstSaisenOffer(playerId: string): Promise<boolean> {
+		const count = await this.noctownTransactionLogsRepository.countBy({
+			playerId,
+			type: 'SAISEN_OFFER',
+			isValid: true,
+		});
+		return count === 0;
+	}
+
+	/**
+	 * ワープ処理
+	 * 仕様: 神社ワールド - ワープゲートによる転移処理
+	 */
+	@bindThis
+	public async handleWarp(
+		playerId: string,
+		gateId: string,
+		targetWorldId: string | null,
+	): Promise<{ success: boolean; error?: string; message?: string }> {
+		console.log('[Noctown] handleWarp: Starting', { playerId, gateId, targetWorldId });
+
+		const player = await this.noctownPlayersRepository.findOneBy({ id: playerId });
+		if (!player) {
+			console.log('[Noctown] handleWarp: Player not found', { playerId });
+			return {
+				success: false,
+				error: 'PLAYER_NOT_FOUND',
+				message: `プレイヤーが見つかりません（ID: ${playerId}）`,
+			};
+		}
+
+		// ワープゲートの定義（ハードコード）
+		const warpGates: Record<string, {
+			worldId: string | null;
+			targetWorldId: string | null;
+			spawnPosition: { x: number; y: number; z: number; rotation: number };
+		}> = {
+			'warp-gate-to-shrine': {
+				worldId: null, // デフォルトワールド
+				targetWorldId: 'shrine-world-001',
+				spawnPosition: { x: 0, y: 0, z: 1700, rotation: 0 },
+			},
+			'warp-gate-to-default': {
+				worldId: 'shrine-world-001',
+				targetWorldId: null, // デフォルトワールド
+				spawnPosition: { x: 0, y: 0, z: 5, rotation: 0 },
+			},
+		};
+
+		const gate = warpGates[gateId];
+		if (!gate) {
+			const availableGates = Object.keys(warpGates);
+			console.log('[Noctown] handleWarp: Invalid gate ID', { gateId, availableGates });
+			return {
+				success: false,
+				error: 'INVALID_GATE',
+				message: `無効なゲートID: ${gateId}（有効: ${availableGates.join(', ')}）`,
+			};
+		}
+
+		// プレイヤーが正しいワールドにいるか確認
+		// 注意: DBのNULLはnullとして取得される、undefinedとの比較に注意
+		const playerWorld = player.currentWorldId ?? null;
+		const gateWorld = gate.worldId ?? null;
+		console.log('[Noctown] handleWarp: Checking world', {
+			playerId,
+			gateId,
+			playerCurrentWorldId: player.currentWorldId,
+			playerWorld,
+			gateWorldId: gate.worldId,
+			gateWorld,
+			match: playerWorld === gateWorld,
+		});
+		if (playerWorld !== gateWorld) {
+			const playerWorldName = playerWorld === null ? 'デフォルトワールド' : playerWorld;
+			const gateWorldName = gateWorld === null ? 'デフォルトワールド' : gateWorld;
+			return {
+				success: false,
+				error: 'WRONG_WORLD',
+				message: `このゲートは${gateWorldName}専用です（現在地: ${playerWorldName}）`,
+			};
+		}
+
+		const fromWorldId = player.currentWorldId;
+		const toWorldId = gate.targetWorldId;
+
+		// プレイヤーのワールドIDを更新
+		await this.noctownPlayersRepository.update(playerId, {
+			currentWorldId: toWorldId,
+			positionX: gate.spawnPosition.x,
+			positionY: gate.spawnPosition.y,
+			positionZ: gate.spawnPosition.z,
+			rotation: gate.spawnPosition.rotation,
+		});
+
+		// warpStartedイベントを送信
+		this.globalEventService.publishNoctownPlayerStream(playerId, 'warpStarted', {
+			fromWorldId,
+			toWorldId,
+		});
+
+		// 元のワールドにplayerWarpedを送信（退出）
+		this.globalEventService.publishNoctownStream('playerWarped', {
+			playerId,
+			direction: 'left',
+			toWorldId,
+		});
+
+		// 仕様: 新しいワールドの情報を取得（null の場合は IsNull() を使用）
+		const playersInNewWorld = await this.noctownPlayersRepository.find({
+			where: { currentWorldId: toWorldId === null ? IsNull() : toWorldId, isOnline: true },
+		});
+
+		// worldJoinedイベントを送信
+		this.globalEventService.publishNoctownPlayerStream(playerId, 'worldJoined', {
+			worldId: toWorldId,
+			worldType: toWorldId === 'shrine-world-001' ? 'shrine' : 'default',
+			worldDisplayName: toWorldId === 'shrine-world-001' ? '神社' : null,
+			spawnPosition: gate.spawnPosition,
+			playersInWorld: playersInNewWorld.map(p => ({
+				id: p.id,
+				playerId: p.id,
+				userId: p.userId,
+				positionX: p.positionX,
+				positionY: p.positionY,
+				positionZ: p.positionZ,
+				rotation: p.rotation,
+			})),
+			shrineData: toWorldId === 'shrine-world-001' ? {
+				saisenBoxPosition: { x: 0, y: 0, z: 16 },
+				suzuPosition: { x: 0, y: 0, z: -256 },
+				returnGatePosition: { x: 0, y: 0, z: 1760 },
+			} : undefined,
+		});
+
+		// 新しいワールドにplayerWarpedを送信（参加）
+		const user = await this.usersRepository.findOneBy({ id: player.userId });
+		this.globalEventService.publishNoctownStream('playerWarped', {
+			playerId,
+			direction: 'joined',
+			fromWorldId,
+			playerData: {
+				id: player.id,
+				playerId: player.id,
+				userId: player.userId,
+				username: user?.username ?? '',
+				name: user?.name ?? null,
+				avatarUrl: user?.avatarUrl ?? null,
+				positionX: gate.spawnPosition.x,
+				positionY: gate.spawnPosition.y,
+				positionZ: gate.spawnPosition.z,
+				rotation: gate.spawnPosition.rotation,
+			},
+		});
+
+		return { success: true };
+	}
+
+	/**
+	 * 賽銭奉納処理
+	 * 仕様: 神社ワールド - 賽銭を奉納して鏡餅を獲得
+	 */
+	@bindThis
+	public async offerSaisen(
+		playerId: string,
+		amount: number,
+	): Promise<{ success: boolean; error?: string; message?: string; mochiCount?: number; milestonesCrossed?: number[] }> {
+		const player = await this.noctownPlayersRepository.findOneBy({ id: playerId });
+		if (!player) {
+			return { success: false, error: 'PLAYER_NOT_FOUND', message: 'Player not found' };
+		}
+
+		// 神社ワールドにいるか確認
+		if (player.currentWorldId !== 'shrine-world-001') {
+			return { success: false, error: 'NOT_IN_SHRINE_WORLD', message: 'Player is not in shrine world' };
+		}
+
+		// 金額バリデーション
+		if (!Number.isInteger(amount) || amount < 1) {
+			return { success: false, error: 'INVALID_AMOUNT', message: 'Amount must be a positive integer' };
+		}
+
+		// ウォレット残高確認
+		const wallet = await this.noctownWalletsRepository.findOneBy({ playerId });
+		if (!wallet) {
+			return { success: false, error: 'WALLET_NOT_FOUND', message: 'Wallet not found' };
+		}
+
+		const currentBalance = parseInt(wallet.balance, 10);
+		if (currentBalance < amount) {
+			return { success: false, error: 'INSUFFICIENT_BALANCE', message: 'Insufficient balance' };
+		}
+
+		// 初回賽銭かどうか確認
+		const isFirstOffer = await this.isFirstSaisenOffer(playerId);
+
+		// 累計賽銭額を取得
+		const previousTotal = await this.getTotalSaisen(playerId);
+
+		// 鏡餅付与数を計算
+		const { mochiCount, milestonesCrossed } = this.calculateMochiReward(previousTotal, amount, isFirstOffer);
+
+		// 残高を減算
+		const newBalance = currentBalance - amount;
+		await this.noctownWalletsRepository.update(wallet.id, {
+			balance: newBalance.toString(),
+			updatedAt: new Date(),
+		});
+
+		// walletVersionをインクリメント
+		await this.noctownPlayersRepository.update(playerId, {
+			walletVersion: player.walletVersion + 1,
+		});
+
+		// 鏡餅アイテムを付与
+		if (mochiCount > 0) {
+			const mochiItem = await this.noctownItemsRepository.findOneBy({ id: 'shrine001mochi' });
+			if (mochiItem) {
+				// 既存のプレイヤーアイテムを確認
+				const existingPlayerItem = await this.noctownPlayerItemsRepository.findOneBy({
+					playerId,
+					itemId: mochiItem.id,
+				});
+
+				if (existingPlayerItem) {
+					// 数量を増加
+					await this.noctownPlayerItemsRepository.update(existingPlayerItem.id, {
+						quantity: existingPlayerItem.quantity + mochiCount,
+					});
+				} else {
+					// 新規作成
+					await this.noctownPlayerItemsRepository.insert({
+						id: this.idService.gen(),
+						playerId,
+						itemId: mochiItem.id,
+						quantity: mochiCount,
+						acquiredAt: new Date(),
+					});
+				}
+			}
+		}
+
+		// トランザクションログを記録
+		const newTotal = previousTotal + amount;
+		await this.noctownTransactionService.createLog(
+			'SAISEN_OFFER',
+			playerId,
+			null,
+			amount,
+			{
+				status: 'active',
+				ownerId: playerId,
+			},
+			{
+				status: 'completed',
+				ownerId: playerId,
+			},
+			{
+				worldId: 'shrine-world-001',
+				isFirstOffer,
+				milestonesCrossed,
+				previousTotal,
+				newTotal,
+				mochiAwarded: mochiCount,
+			},
+		);
+
+		// saisenCompletedイベントを送信
+		this.globalEventService.publishNoctownPlayerStream(playerId, 'saisenCompleted', {
+			amount,
+			totalSaisen: newTotal,
+			mochiAwarded: mochiCount,
+			newBalance,
+			isFirstOffer,
+		});
+
+		// bellRingイベントをブロードキャスト
+		this.globalEventService.publishNoctownStream('bellRing', {
+			playerId,
+		});
+
+		return { success: true, mochiCount, milestonesCrossed };
 	}
 }

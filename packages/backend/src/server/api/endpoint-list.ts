@@ -467,6 +467,9 @@ export * as 'noctown/trade/list' from './endpoints/noctown/trade/list.js';
 export * as 'noctown/trade/request' from './endpoints/noctown/trade/request.js';
 export * as 'noctown/trade/respond' from './endpoints/noctown/trade/respond.js';
 export * as 'noctown/trade/unconfirm' from './endpoints/noctown/trade/unconfirm.js';
+// 仕様: T033 神社ワールド - 賽銭エンドポイント
+export * as 'noctown/saisen/offer' from './endpoints/noctown/saisen/offer.js';
+export * as 'noctown/saisen/history' from './endpoints/noctown/saisen/history.js';
 export * as 'noctown/bulletin/boards' from './endpoints/noctown/bulletin/boards.js';
 export * as 'noctown/bulletin/posts' from './endpoints/noctown/bulletin/posts.js';
 export * as 'noctown/bulletin/create-post' from './endpoints/noctown/bulletin/create-post.js';

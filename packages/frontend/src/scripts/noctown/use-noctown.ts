@@ -399,9 +399,13 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 	const moveSpeed = 0.15;
 
 	// T039: Cache loaded chunks in memory to avoid redundant database queries
+	// loadedChunks: 実際にロード完了したチャンク
+	// pendingChunks: リクエスト中のチャンク（タイムスタンプ付きで重複リクエスト防止）
 	const loadedChunks = new Set<string>();
+	const pendingChunks = new Map<string, number>(); // chunkKey → requestTimestamp
 	const CHUNK_SIZE = 16;
 	const CHUNK_LOAD_DISTANCE = 2; // Load chunks 2 chunks ahead
+	const PENDING_CHUNK_TTL = 30000; // 30秒でpendingをタイムアウト（リトライ可能にする）
 	let worldId: string | null = null; // Set from player data
 
 	async function initialize(): Promise<void> {
@@ -605,6 +609,8 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 
 		// Mark chunk as loaded (T039: cache)
 		const chunkKey = `${data.chunkX},${data.chunkZ}`;
+		// pendingからloadedに移行（重複リクエスト防止用）
+		pendingChunks.delete(chunkKey);
 		loadedChunks.add(chunkKey);
 
 		// Render terrain
@@ -1026,6 +1032,14 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 
 		const playerChunkX = Math.floor(x / CHUNK_SIZE);
 		const playerChunkZ = Math.floor(z / CHUNK_SIZE);
+		const now = Date.now();
+
+		// TTLチェック: 古いpendingChunksをクリア（タイムアウトしたリクエストは再試行可能にする）
+		for (const [key, timestamp] of pendingChunks) {
+			if (now - timestamp > PENDING_CHUNK_TTL) {
+				pendingChunks.delete(key);
+			}
+		}
 
 		// T037: Request chunk generation when player approaches ungenerated area (2 chunks ahead)
 		for (let dx = -CHUNK_LOAD_DISTANCE; dx <= CHUNK_LOAD_DISTANCE; dx++) {
@@ -1039,17 +1053,25 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 					continue;
 				}
 
+				// 重複リクエスト防止: リクエスト中のチャンクはスキップ（TTLで自動解除）
+				if (pendingChunks.has(chunkKey)) {
+					continue;
+				}
+
 				// Request chunk generation via WebSocket
 				// T040: Concurrent request limit is handled in websocket-sync.ts (MAX_CONCURRENT_CHUNK_REQUESTS = 5)
 				try {
+					// リクエスト中として登録（タイムスタンプ付きで重複リクエスト防止）
+					pendingChunks.set(chunkKey, now);
+
 					channel.send('generateChunk', {
 						chunkX,
 						chunkZ,
 						worldId,
 					});
-
-					// Optimistically mark as requested (will be added to loadedChunks when chunkGenerated event arrives)
 				} catch (e) {
+					// リクエスト失敗時はpendingから削除（再試行可能にする）
+					pendingChunks.delete(chunkKey);
 					console.error(`Failed to request chunk ${chunkX},${chunkZ}:`, e);
 				}
 			}
@@ -1149,6 +1171,10 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 			engine.dispose();
 			engine = null;
 		}
+
+		// チャンクキャッシュをクリア（再接続時に再ロードが必要）
+		loadedChunks.clear();
+		pendingChunks.clear();
 
 		isConnected.value = false;
 	}

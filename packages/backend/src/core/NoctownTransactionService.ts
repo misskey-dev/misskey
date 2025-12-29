@@ -67,6 +67,8 @@ const stateTransitionRules: Record<NoctownTransactionType, {
 	CONTAINER_OPEN: {
 		checkOwner: true,
 	},
+	// 仕様: 神社ワールド - 賽銭奉納
+	SAISEN_OFFER: {},
 };
 
 @Injectable()

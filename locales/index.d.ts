@@ -11728,6 +11728,66 @@ export interface Locale extends ILocale {
          * 作物が枯れてしまいました
          */
         "cropWithered": string;
+        /**
+         * 神社ワールド
+         */
+        "shrineWorld": string;
+        /**
+         * お賽銭
+         */
+        "saisen": string;
+        /**
+         * 奉納する
+         */
+        "saisenOffer": string;
+        /**
+         * お賽銭を奉納しました！
+         */
+        "saisenOffered": string;
+        /**
+         * 鏡餅を{count}個手に入れた！
+         */
+        "saisenMochiReward": ParameterizedString<"count">;
+        /**
+         * 現在の残高
+         */
+        "saisenBalance": string;
+        /**
+         * 累計奉納額
+         */
+        "saisenTotalAmount": string;
+        /**
+         * 次のマイルストーンまで
+         */
+        "saisenNextMilestone": string;
+        /**
+         * カスタム金額
+         */
+        "saisenCustomAmount": string;
+        /**
+         * 残高が不足しています
+         */
+        "saisenInsufficientBalance": string;
+        /**
+         * 金額が正しくありません
+         */
+        "saisenInvalidAmount": string;
+        /**
+         * お賽銭は神社ワールドでのみ行えます
+         */
+        "saisenNotInShrineWorld": string;
+        /**
+         * 神社へ行く
+         */
+        "warpToShrine": string;
+        /**
+         * 元の場所に戻る
+         */
+        "warpToDefault": string;
+        /**
+         * 転移中...
+         */
+        "warping": string;
     };
     "_offlineScreen": {
         /**

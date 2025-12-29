@@ -6,6 +6,7 @@
 import { Entity, Column, PrimaryColumn, Index, ManyToOne, JoinColumn } from 'typeorm';
 import { id } from '../util/id.js';
 import { MiUser } from '../User.js';
+import { NoctownWorld } from './NoctownWorld.js';
 
 @Entity('noctown_player')
 export class NoctownPlayer {
@@ -87,4 +88,21 @@ export class NoctownPlayer {
 		comment: 'Optimistic lock version for wallet operations',
 	})
 	public walletVersion: number;
+
+	// 仕様: 神社ワールド機能 - 現在のワールドID
+	// null = デフォルトワールド、ワールド削除時は自動的にnullに戻る
+	@Index()
+	@Column({
+		...id(),
+		nullable: true,
+		comment: 'Current world ID (null = default world)',
+	})
+	public currentWorldId: NoctownWorld['id'] | null;
+
+	@ManyToOne(() => NoctownWorld, {
+		onDelete: 'SET NULL',
+		nullable: true,
+	})
+	@JoinColumn()
+	public currentWorld: NoctownWorld | null;
 }

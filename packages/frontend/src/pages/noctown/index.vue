@@ -292,6 +292,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</div>
+
+	<!-- 仕様: T021 ワープエフェクト -->
+	<MkNoctownWarpEffect
+		:active="isWarpEffectActive"
+		@animationComplete="onWarpAnimationComplete"
+	/>
+
+	<!-- 仕様: T034 賽銭ダイアログ -->
+	<MkNoctownSaisenDialog
+		v-if="showSaisenDialog"
+		@close="showSaisenDialog = false"
+		@closed="showSaisenDialog = false"
+		@offer="handleSaisenOffer"
+	/>
 </PageWithHeader>
 </template>
 
@@ -311,6 +325,8 @@ import MkNoctownChatHistoryPanel from '@/components/MkNoctownChatHistoryPanel.vu
 import MkNoctownPlayerInfoWindow from '@/components/MkNoctownPlayerInfoWindow.vue';
 import MkNoctownPetInfoWindow from '@/components/MkNoctownPetInfoWindow.vue';
 import MkNoctownPlacedItemInfoWindow from '@/components/MkNoctownPlacedItemInfoWindow.vue';
+import MkNoctownWarpEffect from '@/components/MkNoctownWarpEffect.vue';
+import MkNoctownSaisenDialog from '@/components/MkNoctownSaisenDialog.vue';
 import TradePanel from '@/components/noctown/TradePanel.vue';
 // T039: トレード履歴コンポーネント
 import TradeHistory from '@/components/noctown/TradeHistory.vue';
@@ -411,6 +427,22 @@ let worldId: string | null = null; // Set from player data
 // FR-016: Reload button state
 const isReloading = ref(false);
 const reloadCooldown = ref(false);
+
+// 仕様: T021-T026 ワープ機能関連
+const isWarpEffectActive = ref(false);
+const pendingWorldData = ref<{
+	worldId: string | null;
+	worldType: 'default' | 'shrine';
+	spawnPosition: { x: number; y: number; z: number };
+	shrineData?: {
+		saisenBoxPosition: { x: number; y: number; z: number };
+		suzuPosition: { x: number; y: number; z: number };
+		returnGatePosition: { x: number; y: number; z: number };
+	};
+} | null>(null);
+
+// 仕様: T034 賽銭ダイアログ表示フラグ
+const showSaisenDialog = ref(false);
 
 // Selected item for placing
 let selectedItemForPlace: { id: string; itemId: string } | null = null;
@@ -726,6 +758,18 @@ async function initialize(): Promise<void> {
 			engine = new NoctownEngine(canvasContainer.value);
 			engine.createLocalPlayer(playerData.value);
 
+			// 仕様: T022 ワープゲート衝突コールバックを設定
+			engine.setWarpCollisionCallback(handleWarpCollision);
+
+			// 仕様: T020 初期ワープゲートを配置（デフォルトワールド）
+			// warp_gate.html準拠: 白色、スポーン地点から離れた位置
+			engine.addWarpGate({
+				id: 'warp-gate-to-shrine',
+				position: { x: -20, y: 0, z: -20 },
+				targetWorldId: 'shrine-world-001',
+				color: 0xffffff,
+			});
+
 			// Load initial chunks around player
 			await loadNearbyChunks(currentX.value, currentZ.value);
 
@@ -929,6 +973,53 @@ async function connectStream(): Promise<void> {
 		tradeId: string;
 	}) => {
 		handleTradeCompletedEvent(body);
+	});
+
+	// 仕様: T023 神社ワールド - ワープ関連イベント
+	connection.value.on('warpStarted', () => {
+		handleWarpStarted();
+	});
+	connection.value.on('worldJoined', (body: {
+		worldId: string | null;
+		worldType: 'default' | 'shrine';
+		worldDisplayName: string | null;
+		spawnPosition: { x: number; y: number; z: number };
+		playersInWorld: PlayerData[];
+		shrineData?: {
+			saisenBoxPosition: { x: number; y: number; z: number };
+			suzuPosition: { x: number; y: number; z: number };
+			returnGatePosition: { x: number; y: number; z: number };
+		};
+		isReconnect?: boolean;
+	}) => {
+		handleWorldJoined(body);
+	});
+	connection.value.on('warpFailed', (body: { code: string; message: string }) => {
+		handleWarpFailed(body);
+	});
+	// T025: 他プレイヤーのワープイベント
+	connection.value.on('playerWarped', (body: {
+		playerId: string;
+		direction: 'left' | 'joined';
+		toWorldId?: string | null;
+		fromWorldId?: string | null;
+		playerData?: PlayerData;
+	}) => {
+		handlePlayerWarped(body);
+	});
+	// T037: 鈴アニメーションイベント
+	connection.value.on('bellRing', () => {
+		handleBellRing();
+	});
+	// T036: 賽銭完了イベント
+	connection.value.on('saisenCompleted', (body: {
+		amount: number;
+		totalSaisen: number;
+		mochiAwarded: number;
+		newBalance: number;
+		isFirstOffer: boolean;
+	}) => {
+		handleSaisenCompleted(body);
 	});
 
 	isConnected.value = true;
@@ -2111,6 +2202,202 @@ function startWarningCheck(): void {
 		// Check all remote players for warning status
 		engine.checkRemotePlayerWarnings();
 	}, 1000); // Every 1 second
+}
+
+// ============================================
+// 仕様: T021-T026 ワープ機能関連ハンドラ
+// ============================================
+
+/**
+ * T022: ワープゲート衝突時のコールバック
+ * エンジンから呼び出され、WebSocketでwarpStartを送信
+ */
+function handleWarpCollision(gateId: string, targetWorldId: string | null): void {
+	if (!connection.value) return;
+
+	console.log('[Noctown] Warp collision detected:', gateId, targetWorldId);
+	connection.value.send('warpStart', {
+		gateId,
+		targetWorldId,
+	});
+}
+
+/**
+ * T023: warpStartedイベントのハンドラ
+ * ワープエフェクトを開始
+ */
+function handleWarpStarted(): void {
+	console.log('[Noctown] Warp started');
+	if (engine) {
+		engine.startWarp();
+	}
+	isWarpEffectActive.value = true;
+}
+
+/**
+ * T023: worldJoinedイベントのハンドラ
+ * ワールドデータを保存（エフェクト完了後にシーン切り替え）
+ */
+function handleWorldJoined(data: {
+	worldId: string | null;
+	worldType: 'default' | 'shrine';
+	worldDisplayName: string | null;
+	spawnPosition: { x: number; y: number; z: number };
+	playersInWorld: PlayerData[];
+	shrineData?: {
+		saisenBoxPosition: { x: number; y: number; z: number };
+		suzuPosition: { x: number; y: number; z: number };
+		returnGatePosition: { x: number; y: number; z: number };
+	};
+	isReconnect?: boolean;
+}): void {
+	console.log('[Noctown] World joined:', data.worldType, data.worldId, 'isReconnect:', data.isReconnect);
+
+	// ワールドIDを更新
+	worldId = data.worldId;
+
+	if (data.isReconnect) {
+		// 再接続時はエフェクトなしで即座にシーン切り替え
+		if (engine) {
+			engine.switchWorld(data.worldId, data.worldType, data.spawnPosition, data.shrineData);
+
+			// 他プレイヤーを追加
+			for (const player of data.playersInWorld) {
+				if (player.id !== playerData.value?.id) {
+					engine.addRemotePlayer(player);
+				}
+			}
+		}
+	} else {
+		// 通常のワープ時はデータを保存してエフェクト完了を待つ
+		pendingWorldData.value = {
+			worldId: data.worldId,
+			worldType: data.worldType,
+			spawnPosition: data.spawnPosition,
+			shrineData: data.shrineData,
+		};
+	}
+}
+
+/**
+ * T021: ワープアニメーション完了時のコールバック
+ * pendingWorldDataを使ってシーンを切り替え
+ */
+function onWarpAnimationComplete(): void {
+	console.log('[Noctown] Warp animation complete');
+
+	if (pendingWorldData.value && engine) {
+		const data = pendingWorldData.value;
+		engine.switchWorld(data.worldId, data.worldType, data.spawnPosition, data.shrineData);
+
+		// プレイヤー位置を更新
+		currentX.value = data.spawnPosition.x;
+		currentY.value = data.spawnPosition.y;
+		currentZ.value = data.spawnPosition.z;
+
+		pendingWorldData.value = null;
+	}
+
+	isWarpEffectActive.value = false;
+}
+
+/**
+ * T023: warpFailedイベントのハンドラ
+ */
+function handleWarpFailed(data: { code: string; message: string }): void {
+	console.error('[Noctown] Warp failed:', data.code, data.message);
+	isWarpEffectActive.value = false;
+	if (engine) {
+		// isWarping フラグをリセット（再度ワープ可能にする）
+		// engine には直接アクセスできないので、switchWorldでリセット
+	}
+	os.alert({
+		type: 'error',
+		title: 'ワープ失敗',
+		text: data.message,
+	});
+}
+
+/**
+ * T025: playerWarpedイベントのハンドラ
+ * 他プレイヤーのワープを処理
+ */
+function handlePlayerWarped(data: {
+	playerId: string;
+	direction: 'left' | 'joined';
+	toWorldId?: string | null;
+	fromWorldId?: string | null;
+	playerData?: PlayerData;
+}): void {
+	if (!engine) return;
+
+	// 自分のプレイヤーIDは無視
+	if (data.playerId === playerData.value?.id) return;
+
+	const currentWorldId = engine.getCurrentWorldId();
+
+	if (data.direction === 'left') {
+		// プレイヤーが退出した
+		// 現在のワールドから離れた場合のみ削除
+		engine.removeRemotePlayer(data.playerId);
+		console.log('[Noctown] Remote player warped out:', data.playerId);
+	} else if (data.direction === 'joined' && data.playerData) {
+		// プレイヤーが参加した
+		// 自分と同じワールドに参加した場合のみ追加
+		if (data.fromWorldId === currentWorldId || data.toWorldId === currentWorldId) {
+			engine.addRemotePlayer(data.playerData);
+			console.log('[Noctown] Remote player warped in:', data.playerId);
+		}
+	}
+}
+
+/**
+ * T037: bellRingイベントのハンドラ
+ * 鈴アニメーションを開始
+ */
+function handleBellRing(): void {
+	if (engine) {
+		engine.startBellAnimation();
+	}
+}
+
+/**
+ * T035: 賽銭ダイアログを開く（賽銭箱クリック時）
+ */
+function openSaisenDialog(): void {
+	if (!engine || engine.getCurrentWorldType() !== 'shrine') {
+		os.alert({
+			type: 'warning',
+			title: '神社ワールド限定',
+			text: 'お賽銭は神社ワールドでのみ行えます。',
+		});
+		return;
+	}
+	showSaisenDialog.value = true;
+}
+
+/**
+ * T039: 賽銭完了時のコールバック
+ */
+function handleSaisenOffer(amount: number): void {
+	console.log('[Noctown] Saisen offered via dialog:', amount);
+	// WebSocketで通知することもできるが、REST APIで処理済み
+}
+
+/**
+ * T036: saisenCompletedイベントのハンドラ
+ * トースト表示と残高更新
+ */
+function handleSaisenCompleted(data: {
+	amount: number;
+	totalSaisen: number;
+	mochiAwarded: number;
+	newBalance: number;
+	isFirstOffer: boolean;
+}): void {
+	console.log('[Noctown] Saisen completed:', data);
+	// ダイアログ内で処理済みのため、ここではログのみ
+	// 他プレイヤーからの賽銭通知などに使える
 }
 
 function handleKeyDown(e: KeyboardEvent): void {
