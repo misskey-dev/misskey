@@ -57,4 +57,12 @@ export class NoctownPlayerItem {
 		comment: 'Optimistic lock version',
 	})
 	public version: number;
+
+	// 仕様: コンテナアイテム（宝箱など）の中身
+	// 形式: [{ itemId: string, quantity: number }, ...]
+	@Column('jsonb', {
+		nullable: true,
+		comment: 'Contained items for container type (treasure chest, etc.)',
+	})
+	public containedItems: Array<{ itemId: string; quantity: number }> | null;
 }

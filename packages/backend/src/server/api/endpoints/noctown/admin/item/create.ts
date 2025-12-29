@@ -64,6 +64,12 @@ export const paramDef = {
 			maxLength: 512,
 			nullable: true,
 		},
+		// 仕様: 画像がない場合に使用するUnicode絵文字（1-2文字）
+		emoji: {
+			type: 'string',
+			maxLength: 8,
+			nullable: true,
+		},
 		rarity: {
 			type: 'integer',
 			minimum: 0,
@@ -126,6 +132,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				flavorText: ps.flavorText ?? null,
 				imageUrl: ps.imageUrl ?? null,
 				fullImageUrl: ps.fullImageUrl ?? null,
+				emoji: ps.emoji ?? null,
 				rarity: ps.rarity ?? 0,
 				itemType: ps.itemType ?? 'normal',
 				isUnique: ps.isUnique ?? false,

@@ -29,6 +29,8 @@ export const noctownTransactionTypes = [
 	'FISHING_START',
 	'FISHING_COMPLETE',
 	'FISHING_CANCEL',
+	'CONTAINER_SET',
+	'CONTAINER_OPEN',
 ] as const;
 
 export type NoctownTransactionType = typeof noctownTransactionTypes[number];
@@ -37,7 +39,7 @@ export type NoctownTransactionType = typeof noctownTransactionTypes[number];
 // 操作前後の状態を記録し、状態遷移の整合性を検証可能にする
 export interface NoctownTransactionState {
 	location?: 'inventory' | 'ground' | 'map' | 'trade';
-	status?: 'active' | 'dropped' | 'picked_up' | 'placed' | 'retrieved' | 'traded' | 'deleted' | 'pending' | 'completed' | 'cancelled';
+	status?: 'active' | 'dropped' | 'picked_up' | 'placed' | 'retrieved' | 'traded' | 'deleted' | 'pending' | 'completed' | 'cancelled' | 'opened';
 	ownerId?: string;
 	quantity?: number;
 	version?: number;
@@ -48,6 +50,11 @@ export interface NoctownTransactionState {
 	positionZ?: number;
 	tradeId?: string;
 	itemType?: string;
+	// 仕様: コンテナ（宝箱）の中身を記録
+	containedItems?: Array<{ itemId: string; quantity: number }>;
+	// 仕様FR-045b: 操作時点のプレイヤー位置（不正検知用）
+	// noctown_playerテーブルのlastPositionX/Y/Zから取得（クライアント送信値は信頼しない）
+	playerPosition?: { x: number; y: number; z: number };
 }
 
 @Entity('noctown_transaction_log')

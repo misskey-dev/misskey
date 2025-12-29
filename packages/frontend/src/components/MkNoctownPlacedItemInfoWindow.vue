@@ -8,6 +8,7 @@ FR-032: 設置アイテム情報フローティングウィンドウ
 - 設置アイテムをクリック/タップすると表示
 - アイテム名、アイテムタイプ、設置者名を表示
 - 自分が設置したアイテムの場合は「回収」ボタンを表示
+- コンテナタイプ（宝箱）の場合は「開ける」ボタンを表示（誰でも開封可能）
 -->
 
 <template>
@@ -30,14 +31,22 @@ FR-032: 設置アイテム情報フローティングウィンドウ
 			<div :class="$style.type">{{ getItemTypeLabel(itemType) }}</div>
 
 			<!-- Owner info -->
+			<!-- 仕様: ownerUsernameがnullの場合は「不明」と表示 -->
 			<div :class="$style.ownerInfo">
 				<span :class="$style.ownerLabel">設置者:</span>
-				<span :class="$style.ownerName">@{{ ownerUsername }}</span>
+				<span v-if="ownerUsername" :class="$style.ownerName">@{{ ownerUsername }}</span>
+				<span v-else :class="$style.ownerUnknown">不明</span>
 			</div>
 
-			<!-- Pickup Button (only for own items) -->
-			<div v-if="isOwner" :class="$style.actions">
-				<MkButton :class="$style.pickupButton" @click="handlePickup" :disabled="isPickingUp">
+			<!-- Actions -->
+			<div :class="$style.actions">
+				<!-- 仕様: コンテナタイプ（宝箱）の場合は「開ける」ボタンを表示（誰でも開封可能） -->
+				<MkButton v-if="itemType === 'container'" :class="$style.actionButton" @click="handleOpen" :disabled="isOpening" primary>
+					<i class="ti ti-gift"></i>
+					{{ isOpening ? '開封中...' : '開ける' }}
+				</MkButton>
+				<!-- Pickup Button (only for own items) -->
+				<MkButton v-if="isOwner" :class="$style.actionButton" @click="handlePickup" :disabled="isPickingUp">
 					<i class="ti ti-package-import"></i>
 					{{ isPickingUp ? '回収中...' : '回収する' }}
 				</MkButton>
@@ -56,18 +65,21 @@ const props = defineProps<{
 	itemId: string;
 	itemName: string;
 	itemType: string;
-	ownerId: string;
-	ownerUsername: string;
+	// 仕様: nullの場合は「不明」として表示
+	ownerId: string | null;
+	ownerUsername: string | null;
 	isOwner: boolean;
 }>();
 
 const emit = defineEmits<{
 	(e: 'close'): void;
 	(e: 'pickup', placedItemId: string): void;
+	(e: 'openContainer', placedItemId: string): void;
 }>();
 
 const overlayRef = ref<HTMLElement | null>(null);
 const isPickingUp = ref(false);
+const isOpening = ref(false);
 
 // アイテムタイプに対応するアイコン
 function getItemIcon(type: string): string {
@@ -84,6 +96,8 @@ function getItemIcon(type: string): string {
 			return 'ti ti-armchair';
 		case 'decoration':
 			return 'ti ti-flower';
+		case 'container':
+			return 'ti ti-gift';
 		default:
 			return 'ti ti-box';
 	}
@@ -104,6 +118,8 @@ function getItemTypeColor(type: string): string {
 			return 'linear-gradient(135deg, #9b59b6, #8e44ad)';
 		case 'decoration':
 			return 'linear-gradient(135deg, #27ae60, #1e8449)';
+		case 'container':
+			return 'linear-gradient(135deg, #f39c12, #d68910)';
 		default:
 			return 'linear-gradient(135deg, #95a5a6, #7f8c8d)';
 	}
@@ -124,6 +140,8 @@ function getItemTypeLabel(type: string): string {
 			return '家具';
 		case 'decoration':
 			return '装飾';
+		case 'container':
+			return '宝箱';
 		case 'normal':
 			return 'アイテム';
 		default:
@@ -139,6 +157,13 @@ async function handlePickup() {
 	if (isPickingUp.value) return;
 	isPickingUp.value = true;
 	emit('pickup', props.placedItemId);
+}
+
+// 仕様: コンテナ（宝箱）を開ける
+async function handleOpen() {
+	if (isOpening.value) return;
+	isOpening.value = true;
+	emit('openContainer', props.placedItemId);
 }
 
 onMounted(() => {
@@ -247,12 +272,22 @@ onMounted(() => {
 	font-size: 14px;
 }
 
+.ownerUnknown {
+	color: var(--MI_THEME-fg);
+	opacity: 0.5;
+	font-style: italic;
+	font-size: 14px;
+}
+
 .actions {
 	margin-top: 16px;
 	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
 }
 
-.pickupButton {
+.actionButton {
 	width: 100%;
 }
 </style>

@@ -233,6 +233,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:isOwner="isOwnerOfPlacedItem"
 					@close="handleClosePlacedItemInfoWindow"
 					@pickup="handlePickupPlacedItem"
+					@openContainer="handleOpenPlacedContainer"
 				/>
 
 				<!-- T009-T011: Emotion buttons with favorite emoji support -->
@@ -453,8 +454,9 @@ const selectedPlacedItem = ref<{
 	itemId: string;
 	itemName: string;
 	itemType: string;
-	ownerId: string;
-	ownerUsername: string;
+	// 仕様: nullの場合は「不明」として表示
+	ownerId: string | null;
+	ownerUsername: string | null;
 } | null>(null);
 
 // FR-070: Trade panel state
@@ -803,6 +805,16 @@ async function connectStream(): Promise<void> {
 	});
 	connection.value.on('itemPicked', (body: { droppedItemId: string }) => {
 		if (engine) engine.removeDroppedItem(body.droppedItemId);
+	});
+	// 仕様FR-123〜FR-126: 他プレイヤーが宝箱を開封した際のイベント
+	connection.value.on('containerOpened', (body: {
+		placedItemId: string;
+		openedByPlayerId: string;
+		positionX: number;
+		positionY: number;
+		positionZ: number;
+	}) => {
+		handleContainerOpened(body);
 	});
 	// T017: Updated to receive isCustomEmoji flag from server
 	connection.value.on('playerEmotion', (body: { playerId: string; emoji: string; isCustomEmoji?: boolean }) => {
@@ -1627,7 +1639,8 @@ function handleClosePetInfoWindow(): void {
 }
 
 // FR-032: Open placed item info window
-function openPlacedItemInfoWindow(item: { id: string; itemId: string; itemName: string; itemType: string; ownerId: string; ownerUsername: string }): void {
+// 仕様: ownerIdがnullの場合は「不明」として表示
+function openPlacedItemInfoWindow(item: { id: string; itemId: string; itemName: string; itemType: string; ownerId: string | null; ownerUsername: string | null }): void {
 	selectedPlacedItem.value = item;
 	showPlacedItemInfoWindow.value = true;
 }
@@ -1658,6 +1671,71 @@ async function handlePickupPlacedItem(placedItemId: string): Promise<void> {
 	} catch (e) {
 		console.error('Failed to pickup placed item:', e);
 	}
+}
+
+// 仕様: 設置された宝箱（コンテナ）を開ける
+async function handleOpenPlacedContainer(placedItemId: string): Promise<void> {
+	if (!engine) return;
+
+	try {
+		const result = await noctownApi<{
+			success: boolean;
+			obtainedItems: Array<{
+				itemId: string;
+				itemName: string;
+				quantity: number;
+				rarity: number;
+				emoji: string | null;
+			}>;
+		}>('noctown/container/open-placed', {
+			placedItemId,
+		});
+
+		if (result.success) {
+			// 仕様: 情報ウィンドウを先に閉じる（アニメーションを見せるため）
+			handleClosePlacedItemInfoWindow();
+
+			// 仕様: 宝箱開封アニメーションを実行（蓋が開き、パーティクルが出現）
+			await engine.openTreasureChestWithAnimation(placedItemId);
+
+			// 仕様: インベントリを更新
+			inventoryRef.value?.refresh();
+
+			// 仕様FR-119: 獲得アイテム一覧をトースト通知で表示
+			if (result.obtainedItems && result.obtainedItems.length > 0) {
+				const itemNames = result.obtainedItems.map(item =>
+					`${item.emoji ?? ''} ${item.itemName} x${item.quantity}`,
+				).join(', ');
+				os.alert({
+					type: 'success',
+					title: '宝箱を開封しました',
+					text: `${itemNames} を獲得しました`,
+				});
+			}
+		}
+	} catch (e) {
+		console.error('Failed to open placed container:', e);
+	}
+}
+
+// 仕様FR-123〜FR-126: 他プレイヤーが宝箱を開封した際のハンドラー
+async function handleContainerOpened(body: {
+	placedItemId: string;
+	openedByPlayerId: string;
+	positionX: number;
+	positionY: number;
+	positionZ: number;
+}): Promise<void> {
+	if (!engine) return;
+
+	// 仕様FR-126: 自分が開封した場合は無視（既にローカルでアニメーション再生済み）
+	const localPlayerId = engine.getLocalPlayerId();
+	if (localPlayerId === body.openedByPlayerId) {
+		return;
+	}
+
+	// 仕様FR-125: 該当の宝箱で開封アニメーションを再生し、完了後に削除
+	await engine.openTreasureChestWithAnimation(body.placedItemId);
 }
 
 // FR-032: Handle click pickup of dropped item

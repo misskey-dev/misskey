@@ -25,8 +25,9 @@ export const meta = {
 				itemName: { type: 'string' },
 				itemType: { type: 'string' },
 				// FR-032: 設置者のプレイヤーIDを追加（回収権限判定用）
-				ownerId: { type: 'string' },
-				ownerUsername: { type: 'string' },
+				// 仕様: nullの場合は「不明」として表示
+				ownerId: { type: 'string', nullable: true },
+				ownerUsername: { type: 'string', nullable: true },
 				positionX: { type: 'number' },
 				positionY: { type: 'number' },
 				positionZ: { type: 'number' },
@@ -83,11 +84,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const results = await Promise.all(
 				placedItems.map(async (pi) => {
 					const item = await this.noctownItemsRepository.findOneBy({ id: pi.itemId });
-					const player = await this.noctownPlayersRepository.findOneBy({ id: pi.playerId });
-					let ownerUsername = 'Unknown';
-					if (player) {
-						const user = await this.usersRepository.findOneBy({ id: player.userId });
-						ownerUsername = user?.username ?? 'Unknown';
+
+					// 仕様: playerIdがnullの場合は設置者を「不明」として扱う
+					let ownerUsername: string | null = null;
+					if (pi.playerId) {
+						const player = await this.noctownPlayersRepository.findOneBy({ id: pi.playerId });
+						if (player) {
+							const user = await this.usersRepository.findOneBy({ id: player.userId });
+							ownerUsername = user?.username ?? null;
+						}
 					}
 
 					return {
@@ -96,6 +101,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						itemName: item?.name ?? 'Unknown',
 						itemType: item?.itemType ?? 'normal',
 						// FR-032: 設置者のプレイヤーIDを追加（回収権限判定用）
+						// 仕様: nullの場合は「不明」として表示
 						ownerId: pi.playerId,
 						ownerUsername,
 						positionX: pi.positionX,

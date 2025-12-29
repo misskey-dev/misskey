@@ -12,6 +12,7 @@ import type {
 	NoctownPlayerItemsRepository,
 	NoctownDroppedItemsRepository,
 	NoctownPlacedItemsRepository,
+	NoctownPlayersRepository,
 } from '@/models/_.js';
 import type { NoctownTransactionType, NoctownTransactionState } from '@/models/noctown/NoctownTransactionLog.js';
 import type { NoctownTransactionLog } from '@/models/noctown/NoctownTransactionLog.js';
@@ -60,6 +61,12 @@ const stateTransitionRules: Record<NoctownTransactionType, {
 	FISHING_START: {},
 	FISHING_COMPLETE: {},
 	FISHING_CANCEL: {},
+	CONTAINER_SET: {
+		checkOwner: true,
+	},
+	CONTAINER_OPEN: {
+		checkOwner: true,
+	},
 };
 
 @Injectable()
@@ -77,12 +84,16 @@ export class NoctownTransactionService {
 		@Inject(DI.noctownPlacedItemsRepository)
 		private noctownPlacedItemsRepository: NoctownPlacedItemsRepository,
 
+		@Inject(DI.noctownPlayersRepository)
+		private noctownPlayersRepository: NoctownPlayersRepository,
+
 		private idService: IdService,
 	) {}
 
 	/**
 	 * トランザクションログを作成
 	 * 仕様: FR-034 全操作をログに記録
+	 * 仕様: FR-045b プレイヤー位置を自動記録（不正検知用）
 	 */
 	@bindThis
 	public async createLog(
@@ -98,6 +109,25 @@ export class NoctownTransactionService {
 		const id = this.idService.gen();
 		const createdAt = new Date();
 
+		// 仕様FR-045b: プレイヤー位置をnoctown_playerテーブルから取得（クライアント送信値は信頼しない）
+		const player = await this.noctownPlayersRepository.findOneBy({ id: playerId });
+		const playerPosition = player ? {
+			x: player.positionX ?? 0,
+			y: player.positionY ?? 0,
+			z: player.positionZ ?? 0,
+		} : undefined;
+
+		// 仕様FR-045b: beforeState/afterStateにプレイヤー位置を追加
+		const beforeStateWithPosition: NoctownTransactionState | null = beforeState ? {
+			...beforeState,
+			playerPosition,
+		} : null;
+
+		const afterStateWithPosition: NoctownTransactionState | null = afterState ? {
+			...afterState,
+			playerPosition,
+		} : null;
+
 		// 仕様: FR-034 トランザクションログを作成
 		// JSONBカラムは as any でキャスト（ModerationLogService.ts と同様のパターン）
 		await this.noctownTransactionLogsRepository.insert({
@@ -107,8 +137,8 @@ export class NoctownTransactionService {
 			targetId,
 			targetPlayerId: targetPlayerId ?? null,
 			amount,
-			beforeState: (beforeState ?? null) as any,
-			afterState: (afterState ?? null) as any,
+			beforeState: (beforeStateWithPosition ?? null) as any,
+			afterState: (afterStateWithPosition ?? null) as any,
 			metadata: (metadata ?? null) as any,
 			isValid: true,
 			invalidReason: null,
@@ -122,6 +152,7 @@ export class NoctownTransactionService {
 	/**
 	 * 不正なトランザクションログを記録（操作は拒否）
 	 * 仕様: FR-034 不正検知時の対応
+	 * 仕様: FR-045b プレイヤー位置を自動記録（不正検知用）
 	 */
 	@bindThis
 	public async createInvalidLog(
@@ -135,6 +166,20 @@ export class NoctownTransactionService {
 		const id = this.idService.gen();
 		const createdAt = new Date();
 
+		// 仕様FR-045b: プレイヤー位置をnoctown_playerテーブルから取得（クライアント送信値は信頼しない）
+		const player = await this.noctownPlayersRepository.findOneBy({ id: playerId });
+		const playerPosition = player ? {
+			x: player.positionX ?? 0,
+			y: player.positionY ?? 0,
+			z: player.positionZ ?? 0,
+		} : undefined;
+
+		// 仕様FR-045b: beforeStateにプレイヤー位置を追加
+		const beforeStateWithPosition: NoctownTransactionState | null = beforeState ? {
+			...beforeState,
+			playerPosition,
+		} : null;
+
 		// 仕様: FR-034 不正なトランザクションログを作成（操作は拒否されるが記録は残す）
 		// JSONBカラムは as any でキャスト（ModerationLogService.ts と同様のパターン）
 		await this.noctownTransactionLogsRepository.insert({
@@ -144,7 +189,7 @@ export class NoctownTransactionService {
 			targetId,
 			targetPlayerId: null,
 			amount: null,
-			beforeState: (beforeState ?? null) as any,
+			beforeState: (beforeStateWithPosition ?? null) as any,
 			afterState: null,
 			metadata: (metadata ?? null) as any,
 			isValid: false,

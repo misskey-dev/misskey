@@ -27,6 +27,8 @@ export const noctownItemTypes = [
 	'fishing_rod',
 	// 仕様: 通貨アイテム
 	'currency',
+	// 仕様: コンテナアイテム（宝箱など、中に他のアイテムを入れられる）
+	'container',
 ] as const;
 
 export type NoctownItemType = typeof noctownItemTypes[number];
@@ -121,6 +123,20 @@ export class NoctownItem {
 		comment: 'Shop sell price (null = cannot sell)',
 	})
 	public shopSellPrice: number | null;
+
+	// 仕様: 設置時に誰でも拾えるフラグ（宝箱などのプレゼント用）
+	@Column('boolean', {
+		default: false,
+		comment: 'If true, anyone can pick up when placed (for gift items like treasure chest)',
+	})
+	public isTakeFree: boolean;
+
+	// 仕様: コンテナアイテムの最大容量（nullの場合はコンテナではない）
+	@Column('smallint', {
+		nullable: true,
+		comment: 'Max items that can be stored (for container items)',
+	})
+	public containerCapacity: number | null;
 
 	@Column('timestamp with time zone', {
 		default: () => 'CURRENT_TIMESTAMP',

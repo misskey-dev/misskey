@@ -163,8 +163,9 @@ export interface PlacedItemData {
 	itemName: string;
 	itemType: string;
 	// FR-032: 設置者のプレイヤーID（回収権限判定用）
-	ownerId: string;
-	ownerUsername: string;
+	// 仕様: nullの場合は「不明」として表示
+	ownerId: string | null;
+	ownerUsername: string | null;
 	positionX: number;
 	positionY: number;
 	positionZ: number;
@@ -792,6 +793,8 @@ export class NoctownEngine {
 			}
 		}
 
+		// 仕様: ケーキのキャンドル炎アニメーションは負荷軽減のためOFF
+
 		this.renderer.render(this.scene, this.camera);
 		this.labelRenderer.render(this.scene, this.camera);
 	};
@@ -1332,8 +1335,8 @@ export class NoctownEngine {
 		group.position.set(data.positionX, data.positionY, data.positionZ);
 		group.rotation.y = data.rotation;
 
-		// 仕様: アイテムタイプに応じた専用メッシュを生成
-		const itemObject = this.createPlacedItemMesh(data.itemType);
+		// 仕様: アイテムタイプまたはアイテム名に応じた専用メッシュを生成
+		const itemObject = this.createPlacedItemMesh(data.itemType, data.itemName);
 		// 仕様: 全ての子メッシュに影設定を適用（Groupの場合も対応）
 		itemObject.traverse((child) => {
 			if (child instanceof THREE.Mesh) {
@@ -1348,8 +1351,20 @@ export class NoctownEngine {
 		this.placedItems.set(data.id, group);
 	}
 
-	// 仕様: 設置アイテムのタイプに応じた専用メッシュを生成
-	private createPlacedItemMesh(itemType: string): THREE.Object3D {
+	// 仕様: 設置アイテムのタイプまたは名前に応じた専用メッシュを生成
+	private createPlacedItemMesh(itemType: string, itemName?: string): THREE.Object3D {
+		// 仕様: アイテム名による判定（特定アイテムは専用3Dモデル）
+		if (itemName === 'ケーキ') {
+			return this.createCakeMesh();
+		}
+		if (itemName === '宝箱') {
+			return this.createTreasureChestMesh();
+		}
+		// 仕様: 違反緩和チケットの専用3Dモデル
+		if (itemName === '違反緩和チケット') {
+			return this.createTicketMesh();
+		}
+
 		switch (itemType) {
 			case 'stone':
 			case 'rock': {
@@ -1806,6 +1821,595 @@ export class NoctownEngine {
 		coinGroup.position.y = 0.15;
 
 		return coinGroup;
+	}
+
+	// 仕様: ケーキの3Dモデル生成（軽量化版）
+	private createCakeMesh(): THREE.Group {
+		const cakeGroup = new THREE.Group();
+
+		// 仕様: ドロップアイテム用のスケール（サイズ調整）
+		const widthScale = 0.3;
+		const heightScale = 1.2 * 0.6;
+
+		// 仕様: マテリアル定義（MeshBasicMaterialで軽量化）
+		const plateMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+		const cakeMat = new THREE.MeshBasicMaterial({ color: 0xfffef8 });
+		const whippedCreamMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+		const strawberryMat = new THREE.MeshBasicMaterial({ color: 0xdc143c });
+		const seedMat = new THREE.MeshBasicMaterial({ color: 0xffeb3b });
+		const leafMat = new THREE.MeshBasicMaterial({ color: 0x228b22, side: THREE.DoubleSide });
+		const candleMat = new THREE.MeshBasicMaterial({ color: 0xffb6c1 });
+		const wickMat = new THREE.MeshBasicMaterial({ color: 0x222222 });
+		const flameInnerMat = new THREE.MeshBasicMaterial({
+			color: 0xffdd66,
+			transparent: true,
+			opacity: 0.4,
+		});
+		const flameOuterMat = new THREE.MeshBasicMaterial({
+			color: 0xff6600,
+			transparent: true,
+			opacity: 0.2,
+		});
+
+		// 仕様: ケーキ皿（セグメント数24で滑らかに）
+		const plateRadius = 3.2 * widthScale;
+		const plateGeom = new THREE.CylinderGeometry(plateRadius, plateRadius * 0.94, 0.08, 24);
+		const plate = new THREE.Mesh(plateGeom, plateMat);
+		plate.position.y = 0.04;
+		cakeGroup.add(plate);
+
+		// 仕様: 白いケーキ本体（1段）
+		const cakeRadius = 2.5 * widthScale;
+		const cakeHeight = 1.2 * heightScale;
+		const cakeGeom = new THREE.CylinderGeometry(cakeRadius, cakeRadius, cakeHeight, 24);
+		const cake = new THREE.Mesh(cakeGeom, cakeMat);
+		cake.position.y = 0.08 + cakeHeight / 2;
+		cakeGroup.add(cake);
+
+		const cakeTopY = 0.08 + cakeHeight;
+
+		// 仕様: トップのホイップクリーム（2リング）
+		for (let ring = 0; ring < 2; ring++) {
+			const ringRadius = (0.3 + ring * 0.35) * widthScale * 2;
+			const numCreams = 5 + ring * 4;
+			for (let i = 0; i < numCreams; i++) {
+				const angle = (i / numCreams) * Math.PI * 2;
+				const creamGeom = new THREE.SphereGeometry(0.08 * widthScale * 2, 8, 8);
+				const cream = new THREE.Mesh(creamGeom, whippedCreamMat);
+				cream.position.x = Math.cos(angle) * ringRadius;
+				cream.position.z = Math.sin(angle) * ringRadius;
+				cream.position.y = cakeTopY + 0.03;
+				cream.scale.y = 0.5;
+				cakeGroup.add(cream);
+			}
+		}
+
+		// 仕様: 側面のクリームデコレーション
+		const numSideDecos = 8;
+		for (let i = 0; i < numSideDecos; i++) {
+			const angle = (i / numSideDecos) * Math.PI * 2;
+			const decoGeom = new THREE.SphereGeometry(0.06, 8, 8);
+			const deco = new THREE.Mesh(decoGeom, whippedCreamMat);
+			deco.position.x = Math.cos(angle) * (cakeRadius + 0.01);
+			deco.position.z = Math.sin(angle) * (cakeRadius + 0.01);
+			deco.position.y = cakeTopY;
+			deco.scale.set(1.1, 0.6, 0.6);
+			deco.rotation.y = angle;
+			cakeGroup.add(deco);
+		}
+
+		// 仕様: イチゴ作成関数（LatheGeometryでリアルな形状）
+		const createStrawberry = (x: number, y: number, z: number, scale = 1): THREE.Group => {
+			const strawberryGroup = new THREE.Group();
+			const s = scale * 0.5 * 0.6;
+
+			// イチゴ本体（LatheGeometryで滑らかな形状）
+			const points: THREE.Vector2[] = [];
+			const segments = 10;
+			for (let i = 0; i <= segments; i++) {
+				const t = i / segments;
+				let radius;
+				if (t < 0.1) {
+					radius = 0.08 + t * 1.2;
+				} else if (t < 0.7) {
+					const tt = (t - 0.1) / 0.6;
+					radius = 0.2 + Math.sin(tt * Math.PI) * 0.15;
+				} else {
+					const tt = (t - 0.7) / 0.3;
+					radius = 0.2 * Math.cos(tt * Math.PI / 2);
+				}
+				points.push(new THREE.Vector2(radius * s, (0.5 - t) * 0.5 * s));
+			}
+
+			const strawberryGeom = new THREE.LatheGeometry(points, 12);
+			const berry = new THREE.Mesh(strawberryGeom, strawberryMat);
+			strawberryGroup.add(berry);
+
+			// 仕様: 種（黄色い点々）
+			const seedCount = 12;
+			for (let i = 0; i < seedCount; i++) {
+				const phi = Math.acos(1 - 2 * (i + 0.5) / seedCount);
+				const theta = Math.PI * (1 + Math.sqrt(5)) * i;
+				const seedRadius = 0.18 * s;
+				const seedX = seedRadius * Math.sin(phi) * Math.cos(theta);
+				const seedY = -0.05 * s + seedRadius * Math.cos(phi) * 0.8;
+				const seedZ = seedRadius * Math.sin(phi) * Math.sin(theta);
+
+				if (seedY < 0.18 * s && seedY > -0.18 * s) {
+					const seedGeom = new THREE.SphereGeometry(0.006 * s, 4, 4);
+					const seed = new THREE.Mesh(seedGeom, seedMat);
+					seed.position.set(seedX, seedY, seedZ);
+					seed.scale.y = 1.5;
+					strawberryGroup.add(seed);
+				}
+			}
+
+			// 仕様: ヘタ（5枚の葉）
+			for (let i = 0; i < 5; i++) {
+				const leafAngle = (i / 5) * Math.PI * 2;
+				const leafShape = new THREE.Shape();
+				leafShape.moveTo(0, 0);
+				leafShape.quadraticCurveTo(0.025 * s, 0.04 * s, 0, 0.08 * s);
+				leafShape.quadraticCurveTo(-0.025 * s, 0.04 * s, 0, 0);
+
+				const leafGeom = new THREE.ShapeGeometry(leafShape);
+				const leaf = new THREE.Mesh(leafGeom, leafMat);
+				leaf.position.y = 0.18 * s;
+				leaf.rotation.y = leafAngle;
+				leaf.rotation.x = -0.5;
+				strawberryGroup.add(leaf);
+			}
+
+			// 仕様: 茎
+			const stemGeom = new THREE.CylinderGeometry(0.01 * s, 0.012 * s, 0.04 * s, 8);
+			const stemMat = new THREE.MeshBasicMaterial({ color: 0x228b22 });
+			const stem = new THREE.Mesh(stemGeom, stemMat);
+			stem.position.y = 0.21 * s;
+			strawberryGroup.add(stem);
+
+			strawberryGroup.position.set(x, y, z);
+			strawberryGroup.rotation.x = Math.PI; // 逆さま
+
+			return strawberryGroup;
+		};
+
+		// 仕様: トップにイチゴを配置（外周5個 + 中央1個）
+		const strawberryRadius = cakeRadius * 0.6;
+		const strawberryHeight = 0.5 * 0.6 * 0.25;
+		const baseY = cakeTopY + strawberryHeight + 0.05;
+		const sinkAmount = baseY * 0.06;
+
+		for (let i = 0; i < 5; i++) {
+			const angle = (i / 5) * Math.PI * 2;
+			const strawberry = createStrawberry(
+				Math.cos(angle) * strawberryRadius,
+				baseY - sinkAmount,
+				Math.sin(angle) * strawberryRadius,
+				1.0,
+			);
+			cakeGroup.add(strawberry);
+		}
+
+		// 中央の大きいイチゴ
+		const centerBaseY = cakeTopY + strawberryHeight * 1.3 + 0.06;
+		const centerSinkAmount = centerBaseY * 0.06;
+		const centerStrawberry = createStrawberry(0, centerBaseY - centerSinkAmount, 0, 1.3);
+		cakeGroup.add(centerStrawberry);
+
+		// 仕様: キャンドル作成関数
+		const createCandle = (x: number, z: number, height = 0.4): THREE.Group => {
+			const candleGroup = new THREE.Group();
+			const h = height;
+
+			// キャンドル本体
+			const candleGeom = new THREE.CylinderGeometry(0.03, 0.03, h, 12);
+			const candle = new THREE.Mesh(candleGeom, candleMat);
+			candle.position.y = h / 2;
+			candleGroup.add(candle);
+
+			// 芯
+			const wickGeom = new THREE.CylinderGeometry(0.005, 0.005, 0.05, 8);
+			const wick = new THREE.Mesh(wickGeom, wickMat);
+			wick.position.y = h + 0.025;
+			candleGroup.add(wick);
+
+			// 炎の内側（黄色・半透明）
+			const flameInnerGeom = new THREE.SphereGeometry(0.025, 8, 8);
+			const flameInner = new THREE.Mesh(flameInnerGeom, flameInnerMat);
+			flameInner.scale.set(0.7, 2.0, 0.7);
+			flameInner.position.y = h + 0.08;
+			candleGroup.add(flameInner);
+
+			// 炎の外側（オレンジ・半透明）
+			const flameOuterGeom = new THREE.SphereGeometry(0.035, 8, 8);
+			const flameOuter = new THREE.Mesh(flameOuterGeom, flameOuterMat);
+			flameOuter.scale.set(1, 2.5, 1);
+			flameOuter.position.y = h + 0.08;
+			candleGroup.add(flameOuter);
+
+			candleGroup.position.set(x, cakeTopY + 0.02, z);
+
+			// アニメーション用データ
+			candleGroup.userData.flameInner = flameInner;
+			candleGroup.userData.flameOuter = flameOuter;
+			candleGroup.userData.flameBaseY = h + 0.08;
+
+			return candleGroup;
+		};
+
+		// 仕様: 5本のキャンドルをケーキの外周に配置
+		const candleRadius = cakeRadius * 0.75;
+		const candles: THREE.Group[] = [];
+		for (let i = 0; i < 5; i++) {
+			const angle = (i / 5) * Math.PI * 2 - Math.PI / 2;
+			const candle = createCandle(
+				Math.cos(angle) * candleRadius,
+				Math.sin(angle) * candleRadius,
+			);
+			cakeGroup.add(candle);
+			candles.push(candle);
+		}
+
+		// 仕様: 暗闘でローソクの明かりを楽しむためPointLight1つ追加（中央に配置）
+		const candleLight = new THREE.PointLight(0xff9944, 0.15, 1.5);
+		candleLight.position.set(0, cakeTopY + 0.5, 0);
+		cakeGroup.add(candleLight);
+
+		// 仕様: アニメーション用データ
+		cakeGroup.userData.candles = candles;
+		cakeGroup.userData.candleLight = candleLight;
+		cakeGroup.userData.isCake = true;
+
+		// 全体を少し上に配置
+		cakeGroup.position.y = 0.1;
+
+		return cakeGroup;
+	}
+
+	// 仕様: 宝箱の3Dモデル生成
+	private createTreasureChestMesh(): THREE.Group {
+		const chestGroup = new THREE.Group();
+
+		// スケール（設置アイテム用に縮小）
+		const scale = 0.25;
+
+		// 寸法
+		const W = 2.2 * scale;    // 幅
+		const H = 1.1 * scale;    // 高さ（本体）
+		const D = 1.5 * scale;    // 奥行き
+		const T = 0.1 * scale;    // 壁の厚さ
+
+		// マテリアル定義
+		const woodMaterial = new THREE.MeshStandardMaterial({
+			color: 0x6b3d1f,
+			roughness: 0.75,
+			metalness: 0.05,
+		});
+
+		const darkWoodMaterial = new THREE.MeshStandardMaterial({
+			color: 0x4a2810,
+			roughness: 0.8,
+			metalness: 0.05,
+		});
+
+		const goldMaterial = new THREE.MeshStandardMaterial({
+			color: 0xffd700,
+			roughness: 0.25,
+			metalness: 0.9,
+		});
+
+		const bronzeMaterial = new THREE.MeshStandardMaterial({
+			color: 0xcd7f32,
+			roughness: 0.4,
+			metalness: 0.85,
+		});
+
+		const velvetMaterial = new THREE.MeshStandardMaterial({
+			color: 0x8b0000,
+			roughness: 0.95,
+			metalness: 0,
+		});
+
+		// 本体（下部）
+		const bodyGroup = new THREE.Group();
+
+		// 底
+		const bottom = new THREE.Mesh(
+			new THREE.BoxGeometry(W, T, D),
+			woodMaterial
+		);
+		bottom.position.y = T / 2;
+		bottom.castShadow = true;
+		bottom.receiveShadow = true;
+		bodyGroup.add(bottom);
+
+		// 前後左右の壁
+		const frontGeom = new THREE.BoxGeometry(W - T * 2, H, T);
+		const sideGeom = new THREE.BoxGeometry(T, H, D);
+
+		const front = new THREE.Mesh(frontGeom, woodMaterial);
+		front.position.set(0, H / 2 + T, D / 2 - T / 2);
+		front.castShadow = true;
+		bodyGroup.add(front);
+
+		const back = new THREE.Mesh(frontGeom, woodMaterial);
+		back.position.set(0, H / 2 + T, -D / 2 + T / 2);
+		back.castShadow = true;
+		bodyGroup.add(back);
+
+		const left = new THREE.Mesh(sideGeom, woodMaterial);
+		left.position.set(-W / 2 + T / 2, H / 2 + T, 0);
+		left.castShadow = true;
+		bodyGroup.add(left);
+
+		const right = new THREE.Mesh(sideGeom, woodMaterial);
+		right.position.set(W / 2 - T / 2, H / 2 + T, 0);
+		right.castShadow = true;
+		bodyGroup.add(right);
+
+		// 内部のベルベット
+		const innerFloor = new THREE.Mesh(
+			new THREE.BoxGeometry(W - T * 2, 0.02 * scale, D - T * 2),
+			velvetMaterial
+		);
+		innerFloor.position.y = T + 0.01 * scale;
+		bodyGroup.add(innerFloor);
+
+		// 金属の装飾バンド
+		const createBand = (y: number, bandScale = 1): THREE.Mesh => {
+			const band = new THREE.Mesh(
+				new THREE.BoxGeometry(W + 0.08 * scale, 0.15 * scale * bandScale, D + 0.08 * scale),
+				goldMaterial
+			);
+			band.position.y = y;
+			band.castShadow = true;
+			return band;
+		};
+		bodyGroup.add(createBand(0.12 * scale));
+		bodyGroup.add(createBand(H + T - 0.08 * scale));
+
+		// コーナー装飾
+		const cornerGeo = new THREE.CylinderGeometry(0.08 * scale, 0.1 * scale, H + 0.1 * scale, 8);
+		[[-1, -1], [-1, 1], [1, -1], [1, 1]].forEach(([x, z]) => {
+			const corner = new THREE.Mesh(cornerGeo, bronzeMaterial);
+			corner.position.set(x * (W / 2 + 0.02 * scale), H / 2 + T, z * (D / 2 + 0.02 * scale));
+			corner.castShadow = true;
+			bodyGroup.add(corner);
+		});
+
+		// 足
+		const footGeo = new THREE.SphereGeometry(0.1 * scale, 16, 12, 0, Math.PI * 2, 0, Math.PI / 2);
+		[[-1, -1], [-1, 1], [1, -1], [1, 1]].forEach(([x, z]) => {
+			const foot = new THREE.Mesh(footGeo, bronzeMaterial);
+			foot.position.set(x * (W / 2 - 0.15 * scale), 0, z * (D / 2 - 0.15 * scale));
+			foot.castShadow = true;
+			bodyGroup.add(foot);
+		});
+
+		chestGroup.add(bodyGroup);
+
+		// 蓋
+		const lidPivot = new THREE.Group();
+		const lidGroup = new THREE.Group();
+
+		// 蓋本体（半円筒）
+		const lidRadius = D / 2;
+		const lidCurve = new THREE.Mesh(
+			new THREE.CylinderGeometry(lidRadius, lidRadius, W, 32, 1, false, 0, Math.PI),
+			woodMaterial
+		);
+		lidCurve.rotation.z = Math.PI / 2;
+		lidCurve.position.y = 0;
+		lidCurve.castShadow = true;
+		lidGroup.add(lidCurve);
+
+		// 蓋の側面
+		const lidSideShape = new THREE.Shape();
+		lidSideShape.absarc(0, 0, lidRadius, 0, Math.PI, false);
+		const lidSideGeo = new THREE.ExtrudeGeometry(lidSideShape, { depth: T, bevelEnabled: false });
+
+		const lidLeft = new THREE.Mesh(lidSideGeo, darkWoodMaterial);
+		lidLeft.rotation.y = -Math.PI / 2;
+		lidLeft.position.set(-W / 2, 0, 0);
+		lidLeft.castShadow = true;
+		lidGroup.add(lidLeft);
+
+		const lidRight = new THREE.Mesh(lidSideGeo, darkWoodMaterial);
+		lidRight.rotation.y = -Math.PI / 2;
+		lidRight.position.set(W / 2 + T, 0, 0);
+		lidRight.castShadow = true;
+		lidGroup.add(lidRight);
+
+		// 蓋の装飾バンド
+		const lidBandGeo = new THREE.CylinderGeometry(
+			lidRadius + 0.06 * scale, lidRadius + 0.06 * scale, 0.12 * scale, 32, 1, false, 0, Math.PI
+		);
+		[-W / 2 + 0.2 * scale, 0, W / 2 - 0.2 * scale].forEach(x => {
+			const band = new THREE.Mesh(lidBandGeo, goldMaterial);
+			band.rotation.z = Math.PI / 2;
+			band.position.set(x, 0, 0);
+			band.castShadow = true;
+			lidGroup.add(band);
+		});
+
+		// 蓋をピボットに配置（閉じた状態）
+		lidGroup.position.z = D / 2;
+		lidPivot.position.set(0, H + T, -D / 2);
+		lidPivot.name = 'lidPivot'; // 仕様: アニメーション用に名前を設定
+		lidPivot.add(lidGroup);
+		chestGroup.add(lidPivot);
+
+		// 錠前
+		const lockGroup = new THREE.Group();
+
+		const lockPlate = new THREE.Mesh(
+			new THREE.BoxGeometry(0.4 * scale, 0.5 * scale, 0.08 * scale),
+			goldMaterial
+		);
+		lockPlate.castShadow = true;
+		lockGroup.add(lockPlate);
+
+		// 装飾リング
+		const ringGeo = new THREE.TorusGeometry(0.12 * scale, 0.025 * scale, 16, 32);
+		const ring = new THREE.Mesh(ringGeo, bronzeMaterial);
+		ring.position.z = 0.04 * scale;
+		ring.castShadow = true;
+		lockGroup.add(ring);
+
+		// 鍵穴
+		const keyholeOuter = new THREE.Mesh(
+			new THREE.CircleGeometry(0.06 * scale, 16),
+			new THREE.MeshStandardMaterial({ color: 0x1a1a1a, metalness: 0.9, roughness: 0.3 })
+		);
+		keyholeOuter.position.z = 0.041 * scale;
+		lockGroup.add(keyholeOuter);
+
+		const keyholeSlot = new THREE.Mesh(
+			new THREE.PlaneGeometry(0.025 * scale, 0.08 * scale),
+			new THREE.MeshStandardMaterial({ color: 0x1a1a1a, metalness: 0.9, roughness: 0.3 })
+		);
+		keyholeSlot.position.set(0, -0.06 * scale, 0.041 * scale);
+		lockGroup.add(keyholeSlot);
+
+		lockGroup.position.set(0, H / 2 + 0.35 * scale, D / 2 + 0.04 * scale);
+		chestGroup.add(lockGroup);
+
+		// 全体を少し上に配置
+		chestGroup.position.y = 0.05;
+
+		return chestGroup;
+	}
+
+	// 仕様: 違反緩和チケットの3Dモデル生成
+	// FR-XXX: 黄色いチケット型アイテム、ミシン目とバーコード付き
+	private createTicketMesh(): THREE.Group {
+		const ticketGroup = new THREE.Group();
+
+		// スケール（設置アイテム用に縮小）
+		const scale = 0.15;
+
+		// 寸法（ユーザー提供モデルを参考）
+		const width = 4 * scale;
+		const height = 1.8 * scale;
+		const depth = 0.08 * scale;
+		const notchRadius = 0.15 * scale;
+		const notchPosition = width * 0.7;
+
+		// マテリアル定義
+		const ticketMaterial = new THREE.MeshStandardMaterial({
+			color: 0xffd54f, // 黄色
+			roughness: 0.3,
+			metalness: 0.1,
+		});
+
+		const goldMaterial = new THREE.MeshStandardMaterial({
+			color: 0xffb300, // ゴールドアクセント
+			roughness: 0.2,
+			metalness: 0.8,
+		});
+
+		const stubMaterial = new THREE.MeshStandardMaterial({
+			color: 0xffa000, // オレンジゴールド
+			roughness: 0.4,
+			metalness: 0.3,
+		});
+
+		const barcodeMaterial = new THREE.MeshStandardMaterial({
+			color: 0x1a1a1a, // 黒
+			roughness: 0.9,
+		});
+
+		// チケット本体（ミシン目付きの形状をExtrudeGeometryで作成）
+		const ticketShape = new THREE.Shape();
+		ticketShape.moveTo(0, 0);
+		ticketShape.lineTo(notchPosition - notchRadius, 0);
+		ticketShape.absarc(notchPosition, 0, notchRadius, Math.PI, 0, true);
+		ticketShape.lineTo(width, 0);
+		ticketShape.lineTo(width, height);
+		ticketShape.lineTo(notchPosition + notchRadius, height);
+		ticketShape.absarc(notchPosition, height, notchRadius, 0, Math.PI, true);
+		ticketShape.lineTo(0, height);
+		ticketShape.lineTo(0, 0);
+
+		const extrudeSettings = {
+			steps: 1,
+			depth: depth,
+			bevelEnabled: true,
+			bevelThickness: 0.02 * scale,
+			bevelSize: 0.02 * scale,
+			bevelSegments: 2,
+		};
+
+		const ticketGeometry = new THREE.ExtrudeGeometry(ticketShape, extrudeSettings);
+		ticketGeometry.center();
+		const ticket = new THREE.Mesh(ticketGeometry, ticketMaterial);
+		ticket.castShadow = true;
+		ticket.receiveShadow = true;
+		ticketGroup.add(ticket);
+
+		// ゴールドのアクセントライン（上部）
+		const accentGeometry = new THREE.BoxGeometry(2.5 * scale, 0.05 * scale, depth * 1.3);
+		const accentLine1 = new THREE.Mesh(accentGeometry, goldMaterial);
+		accentLine1.position.set(-0.35 * scale, 0.5 * scale, 0);
+		accentLine1.castShadow = true;
+		ticketGroup.add(accentLine1);
+
+		// ゴールドのアクセントライン（下部）
+		const accentLine2 = new THREE.Mesh(accentGeometry, goldMaterial);
+		accentLine2.position.set(-0.35 * scale, -0.5 * scale, 0);
+		accentLine2.castShadow = true;
+		ticketGroup.add(accentLine2);
+
+		// スタブ部分の装飾（右側）
+		const stubGeometry = new THREE.BoxGeometry(0.6 * scale, 1.2 * scale, depth * 1.3);
+		const stubDeco = new THREE.Mesh(stubGeometry, stubMaterial);
+		stubDeco.position.set(1.5 * scale, 0, 0);
+		stubDeco.castShadow = true;
+		ticketGroup.add(stubDeco);
+
+		// バーコード（右側スタブエリア）
+		for (let i = 0; i < 8; i++) {
+			const barWidth = (0.02 + Math.random() * 0.03) * scale;
+			const barGeometry = new THREE.BoxGeometry(barWidth, 0.3 * scale, 0.01 * scale);
+			const bar = new THREE.Mesh(barGeometry, barcodeMaterial);
+			bar.position.set((1.3 + i * 0.045) * scale, -0.15 * scale, depth * 0.6);
+			ticketGroup.add(bar);
+		}
+
+		// シリアルナンバー風のドット（左側）
+		const serialDots = [
+			[1, 1, 0, 1, 1, 0, 1, 0],
+			[1, 0, 1, 0, 1, 1, 0, 1],
+		];
+		serialDots.forEach((row, rowIndex) => {
+			row.forEach((val, colIndex) => {
+				if (val) {
+					const dotGeo = new THREE.BoxGeometry(0.03 * scale, 0.03 * scale, 0.01 * scale);
+					const dot = new THREE.Mesh(dotGeo, barcodeMaterial);
+					dot.position.set(
+						(-0.8 + colIndex * 0.06) * scale,
+						(0.1 - rowIndex * 0.06) * scale,
+						depth * 0.6
+					);
+					ticketGroup.add(dot);
+				}
+			});
+		});
+
+		// 裏面のバーコード（対称配置）
+		for (let i = 0; i < 8; i++) {
+			const barWidth = (0.02 + Math.random() * 0.03) * scale;
+			const barGeometry = new THREE.BoxGeometry(barWidth, 0.3 * scale, 0.01 * scale);
+			const bar = new THREE.Mesh(barGeometry, barcodeMaterial);
+			bar.position.set((1.3 + i * 0.045) * scale, -0.15 * scale, -depth * 0.6);
+			ticketGroup.add(bar);
+		}
+
+		// チケットを横に寝かせて配置（地面に置いた状態）
+		ticketGroup.rotation.x = -Math.PI / 2;
+		ticketGroup.position.y = depth + 0.02;
+
+		return ticketGroup;
 	}
 
 	// 仕様: 釣り竿の3Dモデル生成
@@ -2391,6 +2995,100 @@ export class NoctownEngine {
 	// FR-032: 設置アイテムを削除（回収時に使用）
 	public removePlacedItemById(itemId: string): void {
 		this.removePlacedItem(itemId);
+	}
+
+	// 仕様: 宝箱開封アニメーション
+	// 蓋が開き、光のパーティクルが出現し、その後宝箱が消滅する
+	public openTreasureChestWithAnimation(itemId: string): Promise<void> {
+		return new Promise((resolve) => {
+			const group = this.placedItems.get(itemId);
+			if (!group) {
+				resolve();
+				return;
+			}
+
+			// lidPivotを探す
+			const lidPivot = group.getObjectByName('lidPivot');
+			if (!lidPivot) {
+				// 宝箱でない場合は即座に削除
+				this.removePlacedItem(itemId);
+				resolve();
+				return;
+			}
+
+			// アニメーション用パラメータ
+			const duration = 800; // ミリ秒
+			const startTime = performance.now();
+			const maxRotation = -Math.PI * 0.7; // 約126度開く
+
+			// パーティクル（光の粒）を作成
+			const particles: THREE.Mesh[] = [];
+			const particleMaterial = new THREE.MeshBasicMaterial({
+				color: 0xffd700,
+				transparent: true,
+				opacity: 1,
+			});
+
+			for (let i = 0; i < 12; i++) {
+				const particleGeo = new THREE.SphereGeometry(0.03, 8, 8);
+				const particle = new THREE.Mesh(particleGeo, particleMaterial.clone());
+				particle.position.copy(group.position);
+				particle.position.y += 0.3;
+				particle.userData.velocity = new THREE.Vector3(
+					(Math.random() - 0.5) * 0.05,
+					Math.random() * 0.08 + 0.02,
+					(Math.random() - 0.5) * 0.05
+				);
+				particle.userData.life = 1.0;
+				this.scene.add(particle);
+				particles.push(particle);
+			}
+
+			// イージング関数（easeOutBack - 開いた後に少し戻る感じ）
+			const easeOutBack = (t: number): number => {
+				const c1 = 1.70158;
+				const c3 = c1 + 1;
+				return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+			};
+
+			// アニメーションループ
+			const animate = () => {
+				const elapsed = performance.now() - startTime;
+				const progress = Math.min(elapsed / duration, 1);
+
+				// 蓋を開く
+				const easedProgress = easeOutBack(progress);
+				lidPivot.rotation.x = maxRotation * easedProgress;
+
+				// パーティクルを更新
+				for (const particle of particles) {
+					particle.position.add(particle.userData.velocity);
+					particle.userData.velocity.y -= 0.002; // 重力
+					particle.userData.life -= 0.02;
+					(particle.material as THREE.MeshBasicMaterial).opacity = Math.max(0, particle.userData.life);
+				}
+
+				if (progress < 1) {
+					requestAnimationFrame(animate);
+				} else {
+					// アニメーション完了後、少し待ってから消滅
+					setTimeout(() => {
+						// パーティクルを削除
+						for (const particle of particles) {
+							this.scene.remove(particle);
+							particle.geometry.dispose();
+							(particle.material as THREE.Material).dispose();
+						}
+
+						// 宝箱を削除
+						this.removePlacedItem(itemId);
+						resolve();
+					}, 300);
+				}
+			};
+
+			animate();
+		});
 	}
 
 	// FR-032: クリックされたドロップアイテムを取得

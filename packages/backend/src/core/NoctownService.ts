@@ -658,8 +658,8 @@ export class NoctownService {
 		if (!playerItem || !playerItem.item) return { success: false, error: 'not_found' };
 
 		// 仕様: FR-032 設置可能なアイテムタイプを判定
-		// placeable, stone, rock, wood, log, axe, fishing_rod, furniture, decoration は設置可能
-		const placeableTypes = ['placeable', 'stone', 'rock', 'wood', 'log', 'axe', 'fishing_rod', 'furniture', 'decoration'];
+		// placeable, stone, rock, wood, log, axe, fishing_rod, furniture, decoration, container は設置可能
+		const placeableTypes = ['placeable', 'stone', 'rock', 'wood', 'log', 'axe', 'fishing_rod', 'furniture', 'decoration', 'container'];
 		if (!placeableTypes.includes(playerItem.item.itemType)) return { success: false, error: 'not_placeable' };
 
 		// 仕様: FR-032 設置上限100個/プレイヤー
@@ -686,6 +686,7 @@ export class NoctownService {
 		}
 
 		// Create placed item
+		// 仕様: コンテナの場合はcontainedItemsを引き継ぐ
 		const placedItemId = this.idService.gen();
 		await this.noctownPlacedItemsRepository.insert({
 			id: placedItemId,
@@ -696,6 +697,7 @@ export class NoctownService {
 			positionZ: z,
 			rotation,
 			placedAt: new Date(),
+			containedItems: playerItem.containedItems ?? null,
 		});
 
 		// 仕様: FR-034 afterState を記録しトランザクションログを作成

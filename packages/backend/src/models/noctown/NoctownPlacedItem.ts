@@ -14,15 +14,17 @@ export class NoctownPlacedItem {
 	@PrimaryColumn(id())
 	public id: string;
 
+	// 仕様: 設置者がnullの場合は「不明」として表示
 	@Index()
 	@Column({
 		...id(),
-		comment: 'Placer player ID',
+		nullable: true,
+		comment: 'Placer player ID (null = unknown placer)',
 	})
-	public playerId: NoctownPlayer['id'];
+	public playerId: NoctownPlayer['id'] | null;
 
 	@ManyToOne(() => NoctownPlayer, {
-		onDelete: 'CASCADE',
+		onDelete: 'SET NULL',
 	})
 	@JoinColumn()
 	public player: NoctownPlayer | null;
@@ -72,4 +74,13 @@ export class NoctownPlacedItem {
 		comment: 'Optimistic lock version',
 	})
 	public version: number;
+
+	// 仕様: コンテナタイプ（宝箱など）に格納されたアイテム情報
+	// 設置時にPlayerItemから引き継がれる
+	@Column('jsonb', {
+		nullable: true,
+		comment: 'Contained items for container type (treasure chest, etc.)',
+	})
+	public containedItems: Array<{ itemId: string; quantity: number }> | null;
 }
+
