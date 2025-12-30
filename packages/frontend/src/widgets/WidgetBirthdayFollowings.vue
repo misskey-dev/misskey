@@ -33,11 +33,12 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/i.js';
 
-const name = i18n.ts._widgets.birthdayFollowings;
+const name = 'birthdayFollowings';
 
 const widgetPropsDef = {
 	showHeader: {
 		type: 'boolean',
+		label: i18n.ts._widgetOptions.showHeader,
 		default: true,
 	},
 } satisfies FormWithDefault;
