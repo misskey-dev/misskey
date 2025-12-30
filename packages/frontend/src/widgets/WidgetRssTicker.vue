@@ -120,7 +120,7 @@ const tick = () => {
 		});
 };
 
-const tickManually = throttle(5000, tick);
+const tickManually = throttle(2000, tick);
 
 watch(fetchEndpoint, () => {
 	tickManually();
