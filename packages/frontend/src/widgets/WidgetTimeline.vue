@@ -93,17 +93,17 @@ const { widgetProps, configure, save } = useWidgetPropsManager(name,
 const menuOpened = ref(false);
 
 const headerTitle = computed<string>(() => {
-	if (widgetProps.value.src === 'list' && widgetProps.value.list != null) {
-		return widgetProps.value.list.name;
-	} else if (widgetProps.value.src === 'antenna' && widgetProps.value.antenna != null) {
-		return widgetProps.value.antenna.name;
+	if (widgetProps.src === 'list' && widgetProps.list != null) {
+		return widgetProps.list.name;
+	} else if (widgetProps.src === 'antenna' && widgetProps.antenna != null) {
+		return widgetProps.antenna.name;
 	} else {
-		return i18n.ts._timelines[widgetProps.value.src];
+		return i18n.ts._timelines[widgetProps.src];
 	}
 });
 
 const setSrc = (src: TlSrc) => {
-	widgetProps.value.src = src;
+	widgetProps.src = src;
 	save();
 };
 
@@ -117,7 +117,7 @@ const choose = async (ev: MouseEvent) => {
 		text: antenna.name,
 		icon: 'ti ti-antenna',
 		action: () => {
-			widgetProps.value.antenna = antenna;
+			widgetProps.antenna = antenna;
 			setSrc('antenna');
 		},
 	}));
@@ -125,7 +125,7 @@ const choose = async (ev: MouseEvent) => {
 		text: list.name,
 		icon: 'ti ti-list',
 		action: () => {
-			widgetProps.value.list = list;
+			widgetProps.list = list;
 			setSrc('list');
 		},
 	}));

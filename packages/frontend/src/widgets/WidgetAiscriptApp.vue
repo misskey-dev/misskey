@@ -82,7 +82,7 @@ async function run() {
 
 	let ast;
 	try {
-		ast = parser.parse(widgetProps.value.script);
+		ast = parser.parse(widgetProps.script);
 	} catch (err) {
 		isSyntaxError.value = true;
 		return;
@@ -98,7 +98,7 @@ async function run() {
 	}
 }
 
-watch(() => widgetProps.value.script, () => {
+watch(() => widgetProps.script, () => {
 	run();
 });
 

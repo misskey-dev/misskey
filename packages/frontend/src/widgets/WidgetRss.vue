@@ -63,11 +63,11 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 );
 
 const rawItems = ref<Misskey.entities.FetchRssResponse['items']>([]);
-const items = computed(() => rawItems.value.slice(0, widgetProps.value.maxEntries));
+const items = computed(() => rawItems.value.slice(0, widgetProps.maxEntries));
 const fetching = ref(true);
 const fetchEndpoint = computed(() => {
 	const url = new URL('/api/fetch-rss', base);
-	url.searchParams.set('url', widgetProps.value.url);
+	url.searchParams.set('url', widgetProps.url);
 	return url.toString();
 });
 const intervalClear = ref<(() => void) | undefined>();
@@ -87,11 +87,11 @@ const tickManually = throttle(5000, tick);
 watch(fetchEndpoint, () => {
 	tickManually();
 });
-watch(() => widgetProps.value.refreshIntervalSec, () => {
+watch(() => widgetProps.refreshIntervalSec, () => {
 	if (intervalClear.value) {
 		intervalClear.value();
 	}
-	intervalClear.value = useInterval(tick, Math.max(10000, widgetProps.value.refreshIntervalSec * 1000), {
+	intervalClear.value = useInterval(tick, Math.max(10000, widgetProps.refreshIntervalSec * 1000), {
 		immediate: true,
 		afterMounted: true,
 	});

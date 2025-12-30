@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineAsyncComponent, ref, watch } from 'vue';
+import { defineAsyncComponent, reactive, watch } from 'vue';
 import { throttle } from 'throttle-debounce';
 import { getDefaultFormValues } from '@/utility/form.js';
-import type { Ref } from 'vue';
+import type { Reactive } from 'vue';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import * as os from '@/os.js';
 import { deepClone } from '@/utility/clone.js';
@@ -36,28 +36,30 @@ export const useWidgetPropsManager = <F extends FormWithDefault>(
 	props: Readonly<WidgetComponentProps<GetFormResultType<F>>>,
 	emit: WidgetComponentEmits<GetFormResultType<F>>,
 ): {
-	widgetProps: Ref<GetFormResultType<F>>;
+	widgetProps: Reactive<GetFormResultType<F>>;
 	save: () => void;
 	configure: () => void;
 } => {
-	function updateProps(newProps: Partial<GetFormResultType<F>>): GetFormResultType<F> {
+	const widgetProps = reactive((() => {
 		const np = getDefaultFormValues(propsDef);
-		for (const key of Object.keys(newProps) as (keyof F)[]) {
-			np[key] = newProps[key] as GetFormResultType<F>[typeof key];
+		if (props.widget?.data != null) {
+			for (const key of Object.keys(props.widget.data) as (keyof F)[]) {
+				np[key] = props.widget.data[key] as GetFormResultType<F>[typeof key];
+			}
 		}
 		return np;
-	}
-
-	const widgetProps = ref(updateProps(props.widget?.data ?? {})) as Ref<GetFormResultType<F>>;
+	})());
 
 	watch(() => props.widget?.data, (to) => {
 		if (to != null) {
-			widgetProps.value = updateProps(to);
+			for (const key of Object.keys(propsDef)) {
+				widgetProps[key] = to[key];
+			}
 		}
 	}, { deep: true });
 
 	const save = throttle(3000, () => {
-		emit('updateProps', widgetProps.value);
+		emit('updateProps', widgetProps as GetFormResultType<F>);
 	});
 
 	const configure = async () => {

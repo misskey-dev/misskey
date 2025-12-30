@@ -65,13 +65,13 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
-const tzAbbrev = computed(() => (widgetProps.value.timezone === null
+const tzAbbrev = computed(() => (widgetProps.timezone === null
 	? timezones.find((tz) => tz.name.toLowerCase() === Intl.DateTimeFormat().resolvedOptions().timeZone.toLowerCase())?.abbrev
-	: timezones.find((tz) => tz.name.toLowerCase() === widgetProps.value.timezone)?.abbrev) ?? '?');
+	: timezones.find((tz) => tz.name.toLowerCase() === widgetProps.timezone)?.abbrev) ?? '?');
 
-const tzOffset = computed(() => widgetProps.value.timezone === null
+const tzOffset = computed(() => widgetProps.timezone === null
 	? 0 - new Date().getTimezoneOffset()
-	: timezones.find((tz) => tz.name.toLowerCase() === widgetProps.value.timezone)?.offset ?? 0);
+	: timezones.find((tz) => tz.name.toLowerCase() === widgetProps.timezone)?.offset ?? 0);
 
 const tzOffsetLabel = computed(() => (tzOffset.value >= 0 ? '+' : '-') + Math.floor(tzOffset.value / 60).toString().padStart(2, '0') + ':' + (tzOffset.value % 60).toString().padStart(2, '0'));
 

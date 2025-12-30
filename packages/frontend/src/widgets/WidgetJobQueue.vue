@@ -124,7 +124,7 @@ const onStats = (stats) => {
 		current[domain].waiting = stats[domain].waiting;
 		current[domain].delayed = stats[domain].delayed;
 
-		if (current[domain].waiting > 0 && widgetProps.value.sound && jammedAudioBuffer.value && !jammedSoundNodePlaying.value) {
+		if (current[domain].waiting > 0 && widgetProps.sound && jammedAudioBuffer.value && !jammedSoundNodePlaying.value) {
 			const soundNode = sound.createSourceNode(jammedAudioBuffer.value, {}).soundSource;
 			if (soundNode) {
 				jammedSoundNodePlaying.value = true;
