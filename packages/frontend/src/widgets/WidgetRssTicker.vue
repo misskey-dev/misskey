@@ -46,6 +46,7 @@ const widgetPropsDef = {
 		type: 'string',
 		label: i18n.ts._widgetOptions._rss.url,
 		default: 'http://feeds.afpbb.com/rss/afpbb/afpbbnews',
+		manualSave: true,
 	},
 	shuffle: {
 		type: 'boolean',
@@ -128,7 +129,7 @@ const tick = () => {
 		});
 };
 
-watch(() => fetchEndpoint, tick);
+watch(fetchEndpoint, tick);
 watch(() => widgetProps.refreshIntervalSec, () => {
 	if (intervalClear.value) {
 		intervalClear.value();

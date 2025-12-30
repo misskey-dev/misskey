@@ -29,7 +29,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 					>
 						<component
 							:is="`widget-${widgetName}`"
-							:key="currentId"
 							:widget="{ name: widgetName, id: '__PREVIEW__', data: settings }"
 						></component>
 					</div>
@@ -48,13 +47,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { reactive, useTemplateRef, ref, computed, watch, onBeforeUnmount, onMounted } from 'vue';
+import MkPreviewWithControls from './MkPreviewWithControls.vue';
+import type { Form } from '@/utility/form.js';
 import { deepClone } from '@/utility/clone.js';
-import { genId } from '@/utility/id.js';
 import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import MkPreviewWithControls from './MkPreviewWithControls.vue';
 import MkForm from '@/components/MkForm.vue';
-import type { Form } from '@/utility/form.js';
 
 const props = defineProps<{
 	widgetName: string;
@@ -71,11 +69,6 @@ const emit = defineEmits<{
 const dialog = useTemplateRef('dialog');
 
 const settings = reactive<Record<string, any>>(deepClone(props.currentSettings));
-const currentId = ref(genId());
-
-watch(settings, () => {
-	currentId.value = genId();
-});
 
 function save() {
 	emit('saved', deepClone(settings));

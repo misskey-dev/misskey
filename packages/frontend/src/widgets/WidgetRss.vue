@@ -28,7 +28,6 @@ import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
-import { i18n } from '@/i18n.js';
 
 const name = 'rss';
 
@@ -37,6 +36,7 @@ const widgetPropsDef = {
 		type: 'string',
 		label: i18n.ts._widgetOptions._rss.url,
 		default: 'http://feeds.afpbb.com/rss/afpbb/afpbbnews',
+		manualSave: true,
 	},
 	refreshIntervalSec: {
 		type: 'number',
@@ -72,7 +72,7 @@ const fetching = ref(true);
 const fetchEndpoint = computed(() => {
 	const url = new URL('/api/fetch-rss', base);
 	url.searchParams.set('url', widgetProps.url);
-	return url;
+	return url.toString();
 });
 const intervalClear = ref<(() => void) | undefined>();
 
@@ -87,7 +87,7 @@ const tick = () => {
 		});
 };
 
-watch(() => fetchEndpoint, tick);
+watch(fetchEndpoint, tick);
 watch(() => widgetProps.refreshIntervalSec, () => {
 	if (intervalClear.value) {
 		intervalClear.value();

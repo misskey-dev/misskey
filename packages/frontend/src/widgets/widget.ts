@@ -4,8 +4,9 @@
  */
 
 import { defineAsyncComponent, reactive, watch } from 'vue';
-import type { Reactive } from 'vue';
 import { throttle } from 'throttle-debounce';
+import { getDefaultFormValues } from '@/utility/form.js';
+import type { Reactive } from 'vue';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import * as os from '@/os.js';
 import { deepClone } from '@/utility/clone.js';
@@ -40,19 +41,23 @@ export const useWidgetPropsManager = <F extends FormWithDefault>(
 	save: () => void;
 	configure: () => void;
 } => {
-	const widgetProps = reactive<GetFormResultType<F>>((props.widget ? deepClone(props.widget.data) : {}) as GetFormResultType<F>);
-
-	const mergeProps = () => {
-		for (const prop of Object.keys(propsDef)) {
-			if (typeof widgetProps[prop] === 'undefined') {
-				widgetProps[prop] = propsDef[prop].default;
+	const widgetProps = reactive((() => {
+		const np = getDefaultFormValues(propsDef);
+		if (props.widget?.data != null) {
+			for (const key of Object.keys(props.widget.data) as (keyof F)[]) {
+				np[key] = props.widget.data[key] as GetFormResultType<F>[typeof key];
 			}
 		}
-	};
+		return np;
+	})());
 
-	watch(widgetProps, () => {
-		mergeProps();
-	}, { deep: true, immediate: true });
+	watch(() => props.widget?.data, (to) => {
+		if (to != null) {
+			for (const key of Object.keys(propsDef)) {
+				widgetProps[key] = to[key];
+			}
+		}
+	}, { deep: true });
 
 	const save = throttle(3000, () => {
 		emit('updateProps', widgetProps as GetFormResultType<F>);
