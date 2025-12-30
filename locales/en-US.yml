@@ -2545,6 +2545,13 @@ _widgets:
   clicker: "Clicker"
   birthdayFollowings: "Today's Birthdays"
   chat: "Chat with user"
+_widgetOptions:
+  showHeader: "Show header"
+  height: "Height"
+  _button:
+    colored: "Colored"
+  _clock:
+    size: "Size"
 _cw:
   hide: "Hide"
   show: "Show content"
