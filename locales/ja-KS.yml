@@ -2378,6 +2378,13 @@ _widgets:
   clicker: "クリッカー"
   birthdayFollowings: "今日誕生日のツレ"
   chat: "チャットしよか"
+_widgetOptions:
+  showHeader: "ヘッダー出す"
+  height: "高さ"
+  _button:
+    colored: "色付き"
+  _clock:
+    size: "大きさ"
 _cw:
   hide: "隠す"
   show: "続き見して！"
