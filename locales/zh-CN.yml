@@ -2545,6 +2545,13 @@ _widgets:
   clicker: "点击器"
   birthdayFollowings: "今天是他们的生日"
   chat: "私信"
+_widgetOptions:
+  showHeader: "显示标题"
+  height: "高度"
+  _button:
+    colored: "彩色"
+  _clock:
+    size: "大小"
 _cw:
   hide: "隐藏"
   show: "查看更多"
