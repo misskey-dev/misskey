@@ -2545,6 +2545,13 @@ _widgets:
   clicker: "Clicker"
   birthdayFollowings: "Usuaris que fan l'aniversari avui"
   chat: "Xateja amb aquest usuari"
+_widgetOptions:
+  showHeader: "Mostrar la capçalera"
+  height: "Alçària"
+  _button:
+    colored: "Colorit"
+  _clock:
+    size: "Mida"
 _cw:
   hide: "Amagar"
   show: "Carregar més"
