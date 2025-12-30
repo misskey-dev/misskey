@@ -2015,6 +2015,12 @@ _widgets:
   _userList:
     chooseList: "Sélectionner une liste"
   birthdayFollowings: "Utilisateurs qui fêtent l'anniversaire aujourd'hui"
+_widgetOptions:
+  height: "Hauteur"
+  _button:
+    colored: "Coloré"
+  _clock:
+    size: "Taille"
 _cw:
   hide: "Masquer"
   show: "Afficher le contenu"
