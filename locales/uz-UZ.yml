@@ -945,6 +945,10 @@ _widgets:
   jobQueue: "Vazifalar navbati"
   _userList:
     chooseList: "Ro'yxat tanlash"
+_widgetOptions:
+  height: "balandligi"
+  _button:
+    colored: "rangli"
 _cw:
   show: "Ko‘proq ko‘rish"
   chars: "{count} ta belgi(lar)"
