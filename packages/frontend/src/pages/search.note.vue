@@ -127,7 +127,7 @@ import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import { Paginator } from '@/utility/paginator.js';
-import type { RadioOption } from '@/components/MkRadios.vue';
+import type { MkRadiosOption } from '@/components/MkRadios.vue';
 
 const props = withDefaults(defineProps<{
 	query?: string;
@@ -184,8 +184,8 @@ const searchScope = ref<'all' | 'local' | 'server' | 'user'>((() => {
 	return 'all';
 })());
 
-const searchScopeDef = computed<RadioOption[]>(() => {
-	const options: RadioOption[] = [];
+const searchScopeDef = computed<MkRadiosOption[]>(() => {
+	const options: MkRadiosOption[] = [];
 
 	if (instance.federation !== 'none' && noteSearchableScope === 'global') {
 		options.push({ value: 'all', label: i18n.ts._search.searchScopeAll });

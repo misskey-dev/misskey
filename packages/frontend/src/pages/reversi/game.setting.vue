@@ -123,7 +123,7 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os.js';
 import type { MenuItem } from '@/types/menu.js';
-import type { RadioOption } from '@/components/MkRadios.vue';
+import type { MkRadiosOption } from '@/components/MkRadios.vue';
 import { useRouter } from '@/router.js';
 
 const $i = ensureSignin();
@@ -150,7 +150,7 @@ const gameTurnOptionsDef = [
 	{ value: 120, label: '120' + i18n.ts._time.second },
 	{ value: 180, label: '180' + i18n.ts._time.second },
 	{ value: 3600, label: '3600' + i18n.ts._time.second },
-] as RadioOption<number>[];
+] as MkRadiosOption<number>[];
 
 const mapName = computed(() => {
 	if (game.value.map == null) return 'Random';

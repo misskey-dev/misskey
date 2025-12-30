@@ -38,7 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import type { StyleValue } from 'vue';
 import type { OptionValue } from '@/types/option-value.js';
 
-export type RadioOption<T = OptionValue, S = string> = {
+export type MkRadiosOption<T = OptionValue, S = string> = {
 	value: T;
 	slotId?: S;
 	label?: string;
@@ -50,7 +50,7 @@ export type RadioOption<T = OptionValue, S = string> = {
 };
 </script>
 
-<script setup lang="ts" generic="const T extends RadioOption">
+<script setup lang="ts" generic="const T extends MkRadiosOption">
 import MkRadio from './MkRadio.vue';
 
 defineProps<{

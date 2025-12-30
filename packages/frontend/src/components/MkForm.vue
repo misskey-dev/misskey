@@ -58,7 +58,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import { i18n } from '@/i18n.js';
 import type { MkSelectItem } from '@/components/MkSelect.vue';
-import type { RadioOption } from '@/components/MkRadios.vue';
+import type { MkRadiosOption } from '@/components/MkRadios.vue';
 import type { Form, EnumFormItem, RadioFormItem } from '@/utility/form.js';
 
 const props = defineProps<{
@@ -78,8 +78,8 @@ function getMkSelectDef(def: EnumFormItem): MkSelectItem[] {
 	});
 }
 
-function getRadioOptionsDef(def: RadioFormItem): RadioOption[] {
-	return def.options.map<RadioOption>((v) => {
+function getRadioOptionsDef(def: RadioFormItem): MkRadiosOption[] {
+	return def.options.map<MkRadiosOption>((v) => {
 		if (typeof v === 'string') {
 			return { value: v, label: v };
 		} else {

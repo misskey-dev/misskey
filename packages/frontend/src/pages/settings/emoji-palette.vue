@@ -121,7 +121,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref, watch } from 'vue';
 import XPalette from './emoji-palette.palette.vue';
 import type { MkSelectItem } from '@/components/MkSelect.vue';
-import type { RadioOption } from '@/components/MkRadios.vue';
+import type { MkRadiosOption } from '@/components/MkRadios.vue';
 import { genId } from '@/utility/id.js';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 import MkRadios from '@/components/MkRadios.vue';
@@ -160,7 +160,7 @@ const emojiPickerScaleDef = [
 	{ label: i18n.ts.large, value: 3 },
 	{ label: i18n.ts.large + '+', value: 4 },
 	{ label: i18n.ts.large + '++', value: 5 },
-] as RadioOption<number>[];
+] as MkRadiosOption<number>[];
 
 const emojiPickerWidth = prefer.model('emojiPickerWidth');
 const emojiPickerWidthDef = [
@@ -169,7 +169,7 @@ const emojiPickerWidthDef = [
 	{ label: '7', value: 3 },
 	{ label: '8', value: 4 },
 	{ label: '9', value: 5 },
-] as RadioOption<number>[];
+] as MkRadiosOption<number>[];
 
 const emojiPickerHeight = prefer.model('emojiPickerHeight');
 const emojiPickerHeightDef = [
@@ -177,7 +177,7 @@ const emojiPickerHeightDef = [
 	{ label: i18n.ts.medium, value: 2 },
 	{ label: i18n.ts.large, value: 3 },
 	{ label: i18n.ts.large + '+', value: 4 },
-] as RadioOption<number>[];
+] as MkRadiosOption<number>[];
 
 const emojiPickerStyle = prefer.model('emojiPickerStyle');
 
