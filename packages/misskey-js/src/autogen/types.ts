@@ -6794,7 +6794,6 @@ export interface operations {
                         forExistingUsers: boolean;
                         silence: boolean;
                         needConfirmationToRead: boolean;
-                        /** Format: id */
                         userId: string | null;
                         imageUrl: string | null;
                         reads: number;
