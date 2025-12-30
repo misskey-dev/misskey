@@ -2547,11 +2547,40 @@ _widgets:
   chat: "Chatear"
 _widgetOptions:
   showHeader: "Mostrar encabezados"
+  transparent: "Hacer fondo transparente"
   height: "Altura"
   _button:
     colored: "Color"
   _clock:
     size: "Tamaño"
+    thickness: "Grosor de la aguja"
+    thicknessThin: "Delgada"
+    thicknessMedium: "Normal"
+    thicknessThick: "Gruesa"
+    graduations: "Marcas del dial"
+    graduationDots: "Puntos"
+    graduationArabic: "Números decimales"
+    fadeGraduations: "Desvanecer la escala"
+    sAnimation: "Animación de la manecilla de los segundos"
+    sAnimationElastic: "Real"
+    sAnimationEaseOut: "Suave"
+    twentyFour: "Formato 24 horas"
+    labelTime: "Hora"
+    labelTz: "Zona horaria"
+    labelTimeAndTz: "Hora y zona horaria"
+    timezone: "Zona horaria"
+    showMs: "Mostrar milisegundos"
+    showLabel: "Mostrar etiqueta"
+  _jobQueue:
+    sound: "Reproducir sonido"
+  _rss:
+    url: "URL del canal RSS"
+    refreshIntervalSec: "Intervalo de actualización (En segundos)"
+    maxEntries: "Número máximo de elementos a mostrar"
+  _rssTicker:
+    shuffle: "Orden de visualización aleatorio"
+    duration: "Velocidad de desplazamiento del baner (En segundos)"
+    reverse: "Desplázate en la dirección opuesta."
 _cw:
   hide: "Ocultar"
   show: "Ver más"
