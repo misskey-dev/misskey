@@ -2547,6 +2547,7 @@ _widgets:
   chat: "私信"
 _widgetOptions:
   showHeader: "显示标题"
+  transparent: "使背景透明"
   height: "高度"
   _button:
     colored: "彩色"
