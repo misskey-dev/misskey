@@ -9908,7 +9908,7 @@ export interface Locale extends ILocale {
         "height": string;
         "_button": {
             /**
-             * 色付きボタン
+             * 色付き
              */
             "colored": string;
         };
@@ -9918,7 +9918,7 @@ export interface Locale extends ILocale {
              */
             "size": string;
             /**
-             * 指針の太さ
+             * 針の太さ
              */
             "thickness": string;
             /**
@@ -9942,11 +9942,11 @@ export interface Locale extends ILocale {
              */
             "graduationDots": string;
             /**
-             * 数字
+             * アラビア数字
              */
-            "graduationNumbers": string;
+            "graduationArabic": string;
             /**
-             * 時針が指している目盛り周辺のみ表示
+             * 目盛りをフェード
              */
             "fadeGraduations": string;
             /**
