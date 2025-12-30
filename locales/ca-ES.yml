@@ -2547,11 +2547,40 @@ _widgets:
   chat: "Xateja amb aquest usuari"
 _widgetOptions:
   showHeader: "Mostrar la capçalera"
-  height: "Alçària"
+  transparent: "Fons transparent"
+  height: "Alçada "
   _button:
     colored: "Colorit"
   _clock:
     size: "Mida"
+    thickness: "Amplada de l'agulla "
+    thicknessThin: "Esvelt "
+    thicknessMedium: "Normal"
+    thicknessThick: "Gruixut "
+    graduations: "Marques de l'esfera "
+    graduationDots: "Punt"
+    graduationArabic: "Nombres àrabs "
+    fadeGraduations: "Efecte gradient "
+    sAnimation: "Animació de la maneta dels segons"
+    sAnimationElastic: "Real"
+    sAnimationEaseOut: "Suau"
+    twentyFour: "Format 24 hores"
+    labelTime: "Temps"
+    labelTz: "Fus horari"
+    labelTimeAndTz: "Hora i fus horari"
+    timezone: "Fus horari"
+    showMs: "Mostrar mil·lisegons"
+    showLabel: "Mostrar etiqueta"
+  _jobQueue:
+    sound: "Reprodueix so"
+  _rss:
+    url: "URL del canal RSS"
+    refreshIntervalSec: "Interval d'actualitzacions (segons)"
+    maxEntries: "Nombre màxim d'entrades a mostrar"
+  _rssTicker:
+    shuffle: "Visualització aleatòria "
+    duration: "Velocitat desplaçament bàner informatiu "
+    reverse: "Desplaçament contrari"
 _cw:
   hide: "Amagar"
   show: "Carregar més"
