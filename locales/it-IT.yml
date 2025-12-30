@@ -2544,6 +2544,13 @@ _widgets:
   clicker: "Cliccheria"
   birthdayFollowings: "Compleanni del giorno"
   chat: "Chatta con questa persona"
+_widgetOptions:
+  showHeader: "Mostra la testata"
+  height: "Altezza"
+  _button:
+    colored: "Colorato"
+  _clock:
+    size: "Dimensioni"
 _cw:
   hide: "Nascondere"
   show: "Continua la lettura..."
