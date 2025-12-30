@@ -24,11 +24,11 @@ import { ref, watch, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url as base } from '@@/js/config.js';
 import { useInterval } from '@@/js/use-interval.js';
+import { throttle } from 'throttle-debounce';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
-import { i18n } from '@/i18n.js';
 
 const name = 'rss';
 
@@ -63,12 +63,12 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 );
 
 const rawItems = ref<Misskey.entities.FetchRssResponse['items']>([]);
-const items = computed(() => rawItems.value.slice(0, widgetProps.maxEntries));
+const items = computed(() => rawItems.value.slice(0, widgetProps.value.maxEntries));
 const fetching = ref(true);
 const fetchEndpoint = computed(() => {
 	const url = new URL('/api/fetch-rss', base);
-	url.searchParams.set('url', widgetProps.url);
-	return url;
+	url.searchParams.set('url', widgetProps.value.url);
+	return url.toString();
 });
 const intervalClear = ref<(() => void) | undefined>();
 
@@ -82,13 +82,16 @@ const tick = () => {
 			fetching.value = false;
 		});
 };
+const tickManually = throttle(5000, tick);
 
-watch(() => fetchEndpoint, tick);
-watch(() => widgetProps.refreshIntervalSec, () => {
+watch(fetchEndpoint, () => {
+	tickManually();
+});
+watch(() => widgetProps.value.refreshIntervalSec, () => {
 	if (intervalClear.value) {
 		intervalClear.value();
 	}
-	intervalClear.value = useInterval(tick, Math.max(10000, widgetProps.refreshIntervalSec * 1000), {
+	intervalClear.value = useInterval(tick, Math.max(10000, widgetProps.value.refreshIntervalSec * 1000), {
 		immediate: true,
 		afterMounted: true,
 	});

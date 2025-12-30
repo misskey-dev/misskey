@@ -68,7 +68,7 @@ async function run() {
 
 	let ast;
 	try {
-		ast = parser.parse(widgetProps.script);
+		ast = parser.parse(widgetProps.value.script);
 	} catch (err) {
 		os.alert({
 			type: 'error',

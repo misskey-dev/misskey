@@ -145,3 +145,11 @@ type GetItemType<Item extends FormItem> =
 export type GetFormResultType<F extends Form> = {
 	[P in keyof F]: GetItemType<F[P]>;
 };
+
+export function getDefaultFormValues<F extends FormWithDefault>(form: F): GetFormResultType<F> {
+	const result = {} as GetFormResultType<F>;
+	for (const key of Object.keys(form) as (keyof F)[]) {
+		result[key] = form[key].default as GetItemType<F[typeof key]>;
+	}
+	return result;
+}

@@ -78,9 +78,9 @@ const tick = () => {
 
 tick();
 
-watch(() => widgetProps.showMs, () => {
+watch(() => widgetProps.value.showMs, () => {
 	if (intervalId) window.clearInterval(intervalId);
-	intervalId = window.setInterval(tick, widgetProps.showMs ? 10 : 1000);
+	intervalId = window.setInterval(tick, widgetProps.value.showMs ? 10 : 1000);
 }, { immediate: true });
 
 onUnmounted(() => {

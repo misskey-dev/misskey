@@ -71,10 +71,10 @@ const activity = ref<{
 const fetching = ref(true);
 
 const toggleView = () => {
-	if (widgetProps.view === 1) {
-		widgetProps.view = 0;
+	if (widgetProps.value.view === 1) {
+		widgetProps.value.view = 0;
 	} else {
-		widgetProps.view++;
+		widgetProps.value.view++;
 	}
 	save();
 };

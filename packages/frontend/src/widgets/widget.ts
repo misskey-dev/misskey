@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineAsyncComponent, reactive, watch } from 'vue';
+import { defineAsyncComponent, ref, watch } from 'vue';
 import { throttle } from 'throttle-debounce';
-import type { Reactive } from 'vue';
+import { getDefaultFormValues } from '@/utility/form.js';
+import type { Ref } from 'vue';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import * as os from '@/os.js';
 import { deepClone } from '@/utility/clone.js';
@@ -35,34 +36,28 @@ export const useWidgetPropsManager = <F extends FormWithDefault>(
 	props: Readonly<WidgetComponentProps<GetFormResultType<F>>>,
 	emit: WidgetComponentEmits<GetFormResultType<F>>,
 ): {
-	widgetProps: Reactive<GetFormResultType<F>>;
+	widgetProps: Ref<GetFormResultType<F>>;
 	save: () => void;
 	configure: () => void;
 } => {
-	const widgetProps = reactive<GetFormResultType<F>>((props.widget ? deepClone(props.widget.data) : {}) as GetFormResultType<F>);
-
-	const mergeProps = () => {
-		for (const prop of Object.keys(propsDef)) {
-			if (typeof widgetProps[prop] === 'undefined') {
-				widgetProps[prop] = propsDef[prop].default;
-			}
+	function updateProps(newProps: Partial<GetFormResultType<F>>): GetFormResultType<F> {
+		const np = getDefaultFormValues(propsDef);
+		for (const key of Object.keys(newProps) as (keyof F)[]) {
+			np[key] = newProps[key] as GetFormResultType<F>[typeof key];
 		}
-	};
+		return np;
+	}
 
-	watch(() => props.widget, () => {
-		if (props.widget) {
-			for (const key of Object.keys(propsDef)) {
-				widgetProps[key] = props.widget.data[key] ?? propsDef[key].default;
-			}
+	const widgetProps = ref(updateProps(props.widget?.data ?? {})) as Ref<GetFormResultType<F>>;
+
+	watch(() => props.widget?.data, (to) => {
+		if (to != null) {
+			widgetProps.value = updateProps(to);
 		}
 	}, { deep: true });
 
-	watch(widgetProps, () => {
-		mergeProps();
-	}, { deep: true, immediate: true });
-
 	const save = throttle(3000, () => {
-		emit('updateProps', widgetProps as GetFormResultType<F>);
+		emit('updateProps', widgetProps.value);
 	});
 
 	const configure = async () => {

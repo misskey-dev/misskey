@@ -37,6 +37,7 @@ import MkContainer from '@/components/MkContainer.vue';
 import { shuffle } from '@/utility/shuffle.js';
 import { url as base } from '@@/js/config.js';
 import { useInterval } from '@@/js/use-interval.js';
+import { throttle } from 'throttle-debounce';
 
 const name = 'rssTicker';
 
@@ -91,8 +92,8 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 
 const rawItems = ref<Misskey.entities.FetchRssResponse['items']>([]);
 const items = computed(() => {
-	const newItems = rawItems.value.slice(0, widgetProps.maxEntries);
-	if (widgetProps.shuffle) {
+	const newItems = rawItems.value.slice(0, widgetProps.value.maxEntries);
+	if (widgetProps.value.shuffle) {
 		shuffle(newItems);
 	}
 	return newItems;
@@ -100,7 +101,7 @@ const items = computed(() => {
 const fetching = ref(true);
 const fetchEndpoint = computed(() => {
 	const url = new URL('/api/fetch-rss', base);
-	url.searchParams.set('url', widgetProps.url);
+	url.searchParams.set('url', widgetProps.value.url);
 	return url;
 });
 const intervalClear = ref<(() => void) | undefined>();
@@ -119,12 +120,16 @@ const tick = () => {
 		});
 };
 
-watch(() => fetchEndpoint, tick);
-watch(() => widgetProps.refreshIntervalSec, () => {
+const tickManually = throttle(5000, tick);
+
+watch(fetchEndpoint, () => {
+	tickManually();
+});
+watch(() => widgetProps.value.refreshIntervalSec, () => {
 	if (intervalClear.value) {
 		intervalClear.value();
 	}
-	intervalClear.value = useInterval(tick, Math.max(10000, widgetProps.refreshIntervalSec * 1000), {
+	intervalClear.value = useInterval(tick, Math.max(10000, widgetProps.value.refreshIntervalSec * 1000), {
 		immediate: true,
 		afterMounted: true,
 	});

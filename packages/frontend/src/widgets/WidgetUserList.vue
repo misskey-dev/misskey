@@ -72,23 +72,23 @@ async function chooseList() {
 		items: lists.map(x => ({
 			value: x.id, label: x.name,
 		})),
-		default: widgetProps.listId,
+		default: widgetProps.value.listId,
 	});
 	if (canceled || listId == null) return;
 	const list = lists.find(x => x.id === listId)!;
-	widgetProps.listId = list.id;
+	widgetProps.value.listId = list.id;
 	save();
 	fetch();
 }
 
 const fetch = () => {
-	if (widgetProps.listId == null) {
+	if (widgetProps.value.listId == null) {
 		fetching.value = false;
 		return;
 	}
 
 	misskeyApi('users/lists/show', {
-		listId: widgetProps.listId,
+		listId: widgetProps.value.listId,
 	}).then(_list => {
 		list.value = _list;
 		misskeyApi('users/show', {

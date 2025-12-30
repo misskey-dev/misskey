@@ -57,11 +57,11 @@ const { widgetProps, configure, save } = useWidgetPropsManager(name,
 
 const configureNotification = async () => {
 	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkNotificationSelectWindow.vue').then(x => x.default), {
-		excludeTypes: widgetProps.excludeTypes,
+		excludeTypes: widgetProps.value.excludeTypes,
 	}, {
 		done: async (res) => {
 			const { excludeTypes } = res;
-			widgetProps.excludeTypes = excludeTypes;
+			widgetProps.value.excludeTypes = excludeTypes;
 			save();
 		},
 		closed: () => dispose(),

@@ -82,7 +82,7 @@ const fetch = () => {
 	fetching.value = true;
 
 	misskeyApi('drive/files', {
-		folderId: widgetProps.folderId,
+		folderId: widgetProps.value.folderId,
 		type: 'image/*',
 		limit: 100,
 	}).then(res => {
@@ -99,7 +99,7 @@ const choose = () => {
 		if (folder[0] == null) {
 			return;
 		}
-		widgetProps.folderId = folder[0].id;
+		widgetProps.value.folderId = folder[0].id;
 		save();
 		fetch();
 	});
@@ -111,7 +111,7 @@ useInterval(change, 10000, {
 });
 
 onMounted(() => {
-	if (widgetProps.folderId != null) {
+	if (widgetProps.value.folderId != null) {
 		fetch();
 	}
 });
