@@ -1826,6 +1826,12 @@ _widgets:
   _userList:
     chooseList: "Chọn danh sách"
   clicker: "clicker"
+_widgetOptions:
+  height: "Chiều cao"
+  _button:
+    colored: "Với màu"
+  _clock:
+    size: "Kích thước"
 _cw:
   hide: "Ẩn"
   show: "Tải thêm"
