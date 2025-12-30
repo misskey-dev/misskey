@@ -50,7 +50,6 @@ import { reactive, useTemplateRef, ref, computed, watch, onBeforeUnmount, onMoun
 import MkPreviewWithControls from './MkPreviewWithControls.vue';
 import type { Form } from '@/utility/form.js';
 import { deepClone } from '@/utility/clone.js';
-import { genId } from '@/utility/id.js';
 import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkForm from '@/components/MkForm.vue';
