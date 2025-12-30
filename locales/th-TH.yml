@@ -2489,6 +2489,13 @@ _widgets:
   clicker: "คลิกเกอร์"
   birthdayFollowings: "วันเกิดผู้ใช้ในวันนี้"
   chat: "แชตเลย"
+_widgetOptions:
+  showHeader: "แสดงส่วนหัว"
+  height: "ความสูง"
+  _button:
+    colored: "สี"
+  _clock:
+    size: "ขนาด"
 _cw:
   hide: "ซ่อน"
   show: "โหลดเพิ่มเติม"
