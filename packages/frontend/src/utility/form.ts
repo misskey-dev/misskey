@@ -25,6 +25,7 @@ export interface StringFormItem extends FormItemBase {
 	required?: boolean;
 	multiline?: boolean;
 	treatAsMfm?: boolean;
+	manualSave?: boolean;
 }
 
 export interface NumberFormItem extends FormItemBase {
@@ -33,6 +34,7 @@ export interface NumberFormItem extends FormItemBase {
 	description?: string;
 	required?: boolean;
 	step?: number;
+	manualSave?: boolean;
 }
 
 export interface BooleanFormItem extends FormItemBase {

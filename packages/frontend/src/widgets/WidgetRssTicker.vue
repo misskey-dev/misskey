@@ -37,7 +37,6 @@ import MkContainer from '@/components/MkContainer.vue';
 import { shuffle } from '@/utility/shuffle.js';
 import { url as base } from '@@/js/config.js';
 import { useInterval } from '@@/js/use-interval.js';
-import { throttle } from 'throttle-debounce';
 
 const name = 'rssTicker';
 
@@ -45,6 +44,7 @@ const widgetPropsDef = {
 	url: {
 		type: 'string',
 		default: 'http://feeds.afpbb.com/rss/afpbb/afpbbnews',
+		manualSave: true,
 	},
 	shuffle: {
 		type: 'boolean',
@@ -120,11 +120,7 @@ const tick = () => {
 		});
 };
 
-const tickManually = throttle(1000, tick);
-
-watch(fetchEndpoint, () => {
-	tickManually();
-});
+watch(fetchEndpoint, tick);
 watch(() => widgetProps.refreshIntervalSec, () => {
 	if (intervalClear.value) {
 		intervalClear.value();

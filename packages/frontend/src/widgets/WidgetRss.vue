@@ -24,7 +24,6 @@ import { ref, watch, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url as base } from '@@/js/config.js';
 import { useInterval } from '@@/js/use-interval.js';
-import { throttle } from 'throttle-debounce';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
@@ -36,6 +35,7 @@ const widgetPropsDef = {
 	url: {
 		type: 'string',
 		default: 'http://feeds.afpbb.com/rss/afpbb/afpbbnews',
+		manualSave: true,
 	},
 	refreshIntervalSec: {
 		type: 'number',
@@ -82,11 +82,8 @@ const tick = () => {
 			fetching.value = false;
 		});
 };
-const tickManually = throttle(1000, tick);
 
-watch(fetchEndpoint, () => {
-	tickManually();
-});
+watch(fetchEndpoint, tick);
 watch(() => widgetProps.refreshIntervalSec, () => {
 	if (intervalClear.value) {
 		intervalClear.value();
