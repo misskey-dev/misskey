@@ -1976,6 +1976,12 @@ _widgets:
     chooseList: "Выберите список"
   clicker: "Счётчик щелчков"
   birthdayFollowings: "Пользователи, у которых сегодня день рождения"
+_widgetOptions:
+  height: "Высота"
+  _button:
+    colored: "Выделена цветом"
+  _clock:
+    size: "Размер"
 _cw:
   hide: "Спрятать"
   show: "Показать"
