@@ -2545,6 +2545,13 @@ _widgets:
   clicker: "Cliqueador"
   birthdayFollowings: "Hoy cumplen años"
   chat: "Chatear"
+_widgetOptions:
+  showHeader: "Mostrar encabezados"
+  height: "Altura"
+  _button:
+    colored: "Color"
+  _clock:
+    size: "Tamaño"
 _cw:
   hide: "Ocultar"
   show: "Ver más"
