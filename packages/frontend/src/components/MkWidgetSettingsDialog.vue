@@ -68,10 +68,10 @@ const emit = defineEmits<{
 
 const dialog = useTemplateRef('dialog');
 
-const settings = reactive<Record<string, any>>(deepClone(props.currentSettings));
+const settings = ref<Record<string, any>>(deepClone(props.currentSettings));
 
 function save() {
-	emit('saved', deepClone(settings));
+	emit('saved', deepClone(settings.value));
 	dialog.value?.close();
 }
 
