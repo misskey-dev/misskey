@@ -266,21 +266,16 @@ const filesTimeline = makeDateGroupedTimelineComputedRef(filesPaginator.items, '
 const shouldBeGroupedByDate = computed(() => ['+createdAt', '-createdAt'].includes(sortModeSelect.value));
 
 watch(folder, () => emit('cd', folder.value));
-watch(sortModeSelect, async (to) => {
-	fetching.value = true;
-	await foldersPaginator.reload();
-	filesPaginator.initialDirection = to === '-createdAt' ? 'newer' : 'older';
-	filesPaginator.order.value = to === '-createdAt' ? 'oldest' : 'newest';
-	await filesPaginator.reload();
-	fetching.value = false;
+watch(sortModeSelect, () => {
+	initialize();
 });
 
 async function initialize() {
 	fetching.value = true;
-	await Promise.all([
-		foldersPaginator.init(),
-		filesPaginator.init(),
-	]);
+	await foldersPaginator.reload();
+	filesPaginator.initialDirection = sortModeSelect.value === '-createdAt' ? 'newer' : 'older';
+	filesPaginator.order.value = sortModeSelect.value === '-createdAt' ? 'oldest' : 'newest';
+	await filesPaginator.reload();
 	fetching.value = false;
 }
 
