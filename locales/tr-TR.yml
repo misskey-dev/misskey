@@ -2466,6 +2466,13 @@ _widgets:
   clicker: "Tıklayıcı"
   birthdayFollowings: "Bugünün Doğum Günleri"
   chat: "Sohbet"
+_widgetOptions:
+  showHeader: "Başlığı göster"
+  height: "Yükseklik"
+  _button:
+    colored: "Renkli"
+  _clock:
+    size: "Boyut"
 _cw:
   hide: "Gizle"
   show: "İçeriği göster"
