@@ -7,15 +7,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div v-if="Object.keys(form).filter(item => !form[item].hidden).length > 0" class="_gaps_m">
 	<template v-for="v, k in form">
 		<template v-if="typeof v.hidden == 'function' ? v.hidden(values) : v.hidden"></template>
-		<MkInput v-else-if="v.type === 'number'" v-model="values[k]" type="number" :step="v.step || 1">
+		<MkInput v-else-if="v.type === 'number'" v-model="values[k]" type="number" :step="v.step || 1" :manualSave="v.manualSave">
 			<template #label><span v-text="v.label || k"></span><span v-if="v.required === false"> ({{ i18n.ts.optional }})</span></template>
 			<template v-if="v.description" #caption>{{ v.description }}</template>
 		</MkInput>
-		<MkInput v-else-if="v.type === 'string' && !v.multiline" v-model="values[k]" type="text" :mfmAutocomplete="v.treatAsMfm">
+		<MkInput v-else-if="v.type === 'string' && !v.multiline" v-model="values[k]" type="text" :mfmAutocomplete="v.treatAsMfm" :manualSave="v.manualSave">
 			<template #label><span v-text="v.label || k"></span><span v-if="v.required === false"> ({{ i18n.ts.optional }})</span></template>
 			<template v-if="v.description" #caption>{{ v.description }}</template>
 		</MkInput>
-		<MkTextarea v-else-if="v.type === 'string' && v.multiline" v-model="values[k]" :mfmAutocomplete="v.treatAsMfm" :mfmPreview="v.treatAsMfm">
+		<MkTextarea v-else-if="v.type === 'string' && v.multiline" v-model="values[k]" :mfmAutocomplete="v.treatAsMfm" :mfmPreview="v.treatAsMfm" :manualSave="v.manualSave">
 			<template #label><span v-text="v.label || k"></span><span v-if="v.required === false"> ({{ i18n.ts.optional }})</span></template>
 			<template v-if="v.description" #caption>{{ v.description }}</template>
 		</MkTextarea>
