@@ -62,15 +62,18 @@ const props = withDefaults(defineProps<{
 	column: Column;
 	isStacked?: boolean;
 	naked?: boolean;
+	handleScrollToTop?: boolean;
 	menu?: MenuItem[];
 	refresher?: () => Promise<void>;
 }>(), {
 	isStacked: false,
 	naked: false,
+	handleScrollToTop: true,
 });
 
 const emit = defineEmits<{
 	(ev: 'headerWheel', ctx: WheelEvent): void;
+	(ev: 'headerClick', ctx: MouseEvent): void;
 }>();
 
 const body = useTemplateRef('body');
@@ -252,7 +255,10 @@ function onContextmenu(ev: MouseEvent) {
 	os.contextMenu(getMenu(), ev);
 }
 
-function goTop() {
+function goTop(ev: MouseEvent) {
+	emit('headerClick', ev);
+	if (!props.handleScrollToTop) return;
+
 	if (body.value) {
 		body.value.scrollTo({
 			top: 0,
@@ -368,10 +374,6 @@ function onDrop(ev) {
 		> .body {
 			background: transparent !important;
 			scrollbar-color: var(--MI_THEME-scrollbarHandle) transparent;
-
-			&::-webkit-scrollbar-track {
-				background: transparent;
-			}
 		}
 	}
 
@@ -397,10 +399,6 @@ function onDrop(ev) {
 		> .body {
 			background: var(--MI_THEME-bg) !important;
 			scrollbar-color: var(--MI_THEME-scrollbarHandle) transparent;
-
-			&::-webkit-scrollbar-track {
-				background: inherit;
-			}
 		}
 	}
 }
@@ -487,9 +485,5 @@ function onDrop(ev) {
 	container-type: size;
 	background-color: var(--MI_THEME-bg);
 	scrollbar-color: var(--MI_THEME-scrollbarHandle) var(--MI_THEME-panel);
-
-	&::-webkit-scrollbar-track {
-		background: var(--MI_THEME-panel);
-	}
 }
 </style>

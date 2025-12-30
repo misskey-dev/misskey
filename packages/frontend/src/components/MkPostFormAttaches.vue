@@ -126,7 +126,7 @@ async function rename(file) {
 async function describe(file: Misskey.entities.DriveFile) {
 	if (mock) return;
 
-	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkFileCaptionEditWindow.vue')), {
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkFileCaptionEditWindow.vue').then(x => x.default), {
 		default: file.comment !== null ? file.comment : '',
 		file: file,
 	}, {
@@ -168,9 +168,11 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent | Keyboar
 		menuItems.push({
 			text: i18n.ts.preview,
 			icon: 'ti ti-photo-search',
-			action: () => {
-				os.popup(defineAsyncComponent(() => import('@/components/MkImgPreviewDialog.vue')), {
+			action: async () => {
+				const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkImgPreviewDialog.vue').then(x => x.default), {
 					file: file,
+				}, {
+					closed: () => dispose(),
 				});
 			},
 		});

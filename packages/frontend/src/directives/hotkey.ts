@@ -5,8 +5,14 @@
 
 import type { Directive } from 'vue';
 import { makeHotkey } from '@/utility/hotkey.js';
+import type { Keymap } from '@/utility/hotkey.js';
 
-export default {
+interface HTMLElementWithHotkey extends HTMLElement {
+	_hotkey_global?: boolean;
+	_keyHandler?: (ev: KeyboardEvent) => void;
+}
+
+export const hotkeyDirective = {
 	mounted(el, binding) {
 		el._hotkey_global = binding.modifiers.global === true;
 
@@ -20,10 +26,11 @@ export default {
 	},
 
 	unmounted(el) {
+		if (el._keyHandler == null) return;
 		if (el._hotkey_global) {
 			window.document.removeEventListener('keydown', el._keyHandler);
 		} else {
 			el.removeEventListener('keydown', el._keyHandler);
 		}
 	},
-} as Directive;
+} as Directive<HTMLElementWithHotkey, Keymap>;

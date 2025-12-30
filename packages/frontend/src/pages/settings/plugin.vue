@@ -7,10 +7,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 <SearchMarker path="/settings/plugin" :label="i18n.ts.plugins" :keywords="['plugin', 'addon', 'extension']" icon="ti ti-plug">
 	<div class="_gaps_m">
 		<MkFeatureBanner icon="/client-assets/electric_plug_3d.png" color="#ffbb00">
-			<SearchKeyword>{{ i18n.ts._settings.pluginBanner }}</SearchKeyword>
+			<SearchText>{{ i18n.ts._settings.pluginBanner }}</SearchText>
 		</MkFeatureBanner>
 
-		<FormLink to="/settings/plugin/install"><template #icon><i class="ti ti-download"></i></template>{{ i18n.ts._plugin.install }}</FormLink>
+		<MkInfo v-if="isSafeMode" warn>{{ i18n.ts.pluginsAreDisabledBecauseSafeMode }}</MkInfo>
+
+		<FormLink v-else to="/settings/plugin/install"><template #icon><i class="ti ti-download"></i></template>{{ i18n.ts._plugin.install }}</FormLink>
 
 		<FormSection>
 			<template #label>{{ i18n.ts.manage }}</template>
@@ -103,10 +105,12 @@ import MkCode from '@/components/MkCode.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
+import MkInfo from '@/components/MkInfo.vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { changePluginActive, configPlugin, pluginLogs, uninstallPlugin, reloadPlugin } from '@/plugin.js';
 import { prefer } from '@/preferences.js';
+import { isSafeMode } from '@@/js/config.js';
 import * as os from '@/os.js';
 
 const plugins = prefer.r.plugins;

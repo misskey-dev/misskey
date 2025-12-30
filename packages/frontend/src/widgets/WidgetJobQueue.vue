@@ -54,25 +54,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { onUnmounted, reactive, ref } from 'vue';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import type { GetFormResultType } from '@/utility/form.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import { useStream } from '@/stream.js';
 import kmg from '@/filters/kmg.js';
 import * as sound from '@/utility/sound.js';
 import { deepClone } from '@/utility/clone.js';
 import { prefer } from '@/preferences.js';
+import { genId } from '@/utility/id.js';
+import { i18n } from '@/i18n.js';
 
 const name = 'jobQueue';
 
 const widgetPropsDef = {
 	transparent: {
-		type: 'boolean' as const,
+		type: 'boolean',
+		label: i18n.ts._widgetOptions.transparent,
 		default: false,
 	},
 	sound: {
-		type: 'boolean' as const,
+		type: 'boolean',
+		label: i18n.ts._widgetOptions._jobQueue.sound,
 		default: false,
 	},
-};
+} satisfies FormWithDefault;
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
@@ -144,7 +148,7 @@ connection.on('stats', onStats);
 connection.on('statsLog', onStatsLog);
 
 connection.send('requestLog', {
-	id: Math.random().toString().substring(2, 10),
+	id: genId(),
 	length: 1,
 });
 

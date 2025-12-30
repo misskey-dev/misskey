@@ -174,8 +174,8 @@ function setupComplete() {
 
 function launchTutorial() {
 	setupComplete();
-	nextTick(() => {
-		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkTutorialDialog.vue')), {
+	nextTick(async () => {
+		const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkTutorialDialog.vue').then(x => x.default), {
 			initialPage: 1,
 		}, {
 			closed: () => dispose(),

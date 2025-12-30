@@ -174,7 +174,10 @@ function setupGrid(): GridSetting {
 			{
 				bindTo: 'url', icon: 'ti-icons', type: 'image', editable: true, width: 'auto', validators: [required],
 				async customValueEditor(row, col, value, cellElement) {
-					const file = await selectFile(cellElement);
+					const file = await selectFile({
+						anchorElement: cellElement,
+						multiple: false,
+					});
 					gridItems.value[row.index].url = file.url;
 					gridItems.value[row.index].fileId = file.id;
 
@@ -500,7 +503,7 @@ function refreshGridItems() {
 		name: it.name,
 		host: it.host ?? '',
 		category: it.category ?? '',
-		aliases: it.aliases.join(','),
+		aliases: it.aliases.join(' '),
 		license: it.license ?? '',
 		isSensitive: it.isSensitive,
 		localOnly: it.localOnly,
@@ -525,10 +528,10 @@ const headerPageMetadata = computed(() => ({
 const headerActions = computed(() => [{
 	icon: 'ti ti-search',
 	text: i18n.ts.search,
-	handler: () => {
+	handler: async () => {
 		if (searchWindowOpening) return;
 		searchWindowOpening = true;
-		const { dispose } = os.popup(defineAsyncComponent(() => import('./custom-emojis-manager.local.list.search.vue')), {
+		const { dispose } = await os.popupAsyncWithDialog(import('./custom-emojis-manager.local.list.search.vue').then(x => x.default), {
 			query: searchQuery.value,
 		}, {
 			queryUpdated: (query: EmojiSearchQuery) => {
@@ -584,8 +587,8 @@ const headerActions = computed(() => [{
 }, {
 	icon: 'ti ti-notes',
 	text: i18n.ts._customEmojisManager._gridCommon.registrationLogs,
-	handler: () => {
-		const { dispose } = os.popup(defineAsyncComponent(() => import('./custom-emojis-manager.local.list.logs.vue')), {
+	handler: async () => {
+		const { dispose } = await os.popupAsyncWithDialog(import('./custom-emojis-manager.local.list.logs.vue').then(x => x.default), {
 			logs: requestLogs.value,
 		}, {
 			closed: () => {
@@ -597,16 +600,12 @@ const headerActions = computed(() => [{
 </script>
 
 <style module lang="scss">
-.violationRow {
-	background-color: var(--MI_THEME-infoWarnBg);
-}
-
 .changedRow {
-	background-color: var(--MI_THEME-infoBg);
+	background-color: var(--MI_THEME-infoBg) !important;
 }
 
-.editedRow {
-	background-color: var(--MI_THEME-infoBg);
+.violationRow {
+	background-color: var(--MI_THEME-infoWarnBg) !important;
 }
 
 .main {

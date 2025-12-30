@@ -23,8 +23,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</template>
 
 	<div :class="$style.root" class="_forceShrinkSpacer">
-		<StackingRouterView v-if="prefer.s['experimental.stackingRouterView']" :key="reloadCount" :router="windowRouter"/>
-		<RouterView v-else :key="reloadCount" :router="windowRouter"/>
+		<StackingRouterView v-if="prefer.s['experimental.stackingRouterView']" :key="reloadCount.toString() + ':stacking'" :router="windowRouter"/>
+		<RouterView v-else :key="reloadCount.toString() + ':non-stacking'" :router="windowRouter"/>
 	</div>
 </MkWindow>
 </template>
@@ -58,20 +58,15 @@ const windowRouter = createRouter(props.initialPath);
 
 const pageMetadata = ref<null | PageMetadata>(null);
 const windowEl = useTemplateRef('windowEl');
-const history = ref<{ path: string; }[]>([{
+const _history_ = ref<{ path: string; }[]>([{
 	path: windowRouter.getCurrentFullPath(),
 }]);
 const buttonsLeft = computed(() => {
-	const buttons: Record<string, unknown>[] = [];
-
-	if (history.value.length > 1) {
-		buttons.push({
-			icon: 'ti ti-arrow-left',
-			onClick: back,
-		});
-	}
-
-	return buttons;
+	return _history_.value.length > 1 ? [{
+		icon: 'ti ti-arrow-left',
+		title: i18n.ts.goBack,
+		onClick: back,
+	}] : [];
 });
 const buttonsRight = computed(() => {
 	const buttons = [{
@@ -97,12 +92,12 @@ function getSearchMarker(path: string) {
 const searchMarkerId = ref<string | null>(getSearchMarker(props.initialPath));
 
 windowRouter.addListener('push', ctx => {
-	history.value.push({ path: ctx.fullPath });
+	_history_.value.push({ path: ctx.fullPath });
 });
 
 windowRouter.addListener('replace', ctx => {
-	history.value.pop();
-	history.value.push({ path: ctx.fullPath });
+	_history_.value.pop();
+	_history_.value.push({ path: ctx.fullPath });
 });
 
 windowRouter.addListener('change', ctx => {
@@ -150,8 +145,8 @@ const contextmenu = computed(() => ([{
 }]));
 
 function back() {
-	history.value.pop();
-	windowRouter.replace(history.value.at(-1)!.path);
+	_history_.value.pop();
+	windowRouter.replaceByPath(_history_.value.at(-1)!.path);
 }
 
 function reload() {
@@ -163,7 +158,7 @@ function close() {
 }
 
 function expand() {
-	mainRouter.push(windowRouter.getCurrentFullPath(), 'forcePage');
+	mainRouter.pushByPath(windowRouter.getCurrentFullPath(), 'forcePage');
 	windowEl.value?.close();
 }
 

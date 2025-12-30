@@ -7,7 +7,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div v-if="!store.r.tips.value[props.k]" :class="[$style.root, { [$style.warn]: warn }]" class="_selectable _gaps_s">
 	<div style="font-weight: bold;"><i class="ti ti-bulb"></i> {{ i18n.ts.tip }}:</div>
 	<div><slot></slot></div>
-	<MkButton primary rounded small @click="closeTip()"><i class="ti ti-check"></i> {{ i18n.ts.gotIt }}</MkButton>
+	<div>
+		<MkButton inline primary rounded small @click="_closeTip()"><i class="ti ti-check"></i> {{ i18n.ts.gotIt }}</MkButton>
+		<button class="_button" style="padding: 8px; margin-left: 4px;" @click="showMenu"><i class="ti ti-dots"></i></button>
+	</div>
 </div>
 </template>
 
@@ -15,19 +18,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { i18n } from '@/i18n.js';
 import { store } from '@/store.js';
 import MkButton from '@/components/MkButton.vue';
+import * as os from '@/os.js';
+import { TIPS, hideAllTips, closeTip } from '@/tips.js';
 
 const props = withDefaults(defineProps<{
-	k: keyof (typeof store['s']['tips']);
+	k: typeof TIPS[number];
 	warn?: boolean;
 }>(), {
 	warn: false,
 });
 
-function closeTip() {
-	store.set('tips', {
-		...store.r.tips.value,
-		[props.k]: true,
-	});
+function _closeTip() {
+	closeTip(props.k);
+}
+
+function showMenu(ev: MouseEvent) {
+	os.popupMenu([{
+		icon: 'ti ti-bulb-off',
+		text: i18n.ts.hideAllTips,
+		danger: true,
+		action: () => {
+			hideAllTips();
+			os.success();
+		},
+	}], ev.currentTarget ?? ev.target);
 }
 </script>
 

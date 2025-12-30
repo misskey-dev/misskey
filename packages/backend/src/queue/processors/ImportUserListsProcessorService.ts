@@ -70,8 +70,19 @@ export class ImportUserListsProcessorService {
 			linenum++;
 
 			try {
-				const listName = line.split(',')[0].trim();
-				const { username, host } = Acct.parse(line.split(',')[1].trim());
+				const parts = line.split(',');
+				const listName = parts[0].trim();
+				const { username, host } = Acct.parse(parts[1].trim());
+				let withReplies = false;
+
+				for (const keyValue of parts.slice(2)) {
+					const [key, value] = keyValue.split('=');
+					switch (key) {
+						case 'withReplies':
+							withReplies = value === 'true';
+							break;
+					}
+				}
 
 				let list = await this.userListsRepository.findOneBy({
 					userId: user.id,
@@ -100,7 +111,9 @@ export class ImportUserListsProcessorService {
 
 				if (await this.userListMembershipsRepository.findOneBy({ userListId: list!.id, userId: target.id }) != null) continue;
 
-				this.userListService.addMember(target, list!, user);
+				await this.userListService.addMember(target, list, user, {
+					withReplies: withReplies,
+				});
 			} catch (e) {
 				this.logger.warn(`Error in line:${linenum} ${e}`);
 			}

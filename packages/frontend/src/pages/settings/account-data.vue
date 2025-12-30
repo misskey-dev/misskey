@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <SearchMarker path="/settings/account-data" :label="i18n.ts._settings.accountData" :keywords="['import', 'export', 'data', 'archive']" icon="ti ti-package">
 	<div class="_gaps_m">
 		<MkFeatureBanner icon="/client-assets/package_3d.png" color="#ff9100">
-			<SearchKeyword>{{ i18n.ts._settings.accountDataBanner }}</SearchKeyword>
+			<SearchText>{{ i18n.ts._settings.accountDataBanner }}</SearchText>
 		</MkFeatureBanner>
 
 		<div class="_gaps_s">
@@ -233,7 +233,10 @@ const exportAntennas = () => {
 };
 
 const importFollowing = async (ev) => {
-	const file = await selectFile(ev.currentTarget ?? ev.target);
+	const file = await selectFile({
+		anchorElement: ev.currentTarget ?? ev.target,
+		multiple: false,
+	});
 	misskeyApi('i/import-following', {
 		fileId: file.id,
 		withReplies: withReplies.value,
@@ -241,22 +244,34 @@ const importFollowing = async (ev) => {
 };
 
 const importUserLists = async (ev) => {
-	const file = await selectFile(ev.currentTarget ?? ev.target);
+	const file = await selectFile({
+		anchorElement: ev.currentTarget ?? ev.target,
+		multiple: false,
+	});
 	misskeyApi('i/import-user-lists', { fileId: file.id }).then(onImportSuccess).catch(onError);
 };
 
 const importMuting = async (ev) => {
-	const file = await selectFile(ev.currentTarget ?? ev.target);
+	const file = await selectFile({
+		anchorElement: ev.currentTarget ?? ev.target,
+		multiple: false,
+	});
 	misskeyApi('i/import-muting', { fileId: file.id }).then(onImportSuccess).catch(onError);
 };
 
 const importBlocking = async (ev) => {
-	const file = await selectFile(ev.currentTarget ?? ev.target);
+	const file = await selectFile({
+		anchorElement: ev.currentTarget ?? ev.target,
+		multiple: false,
+	});
 	misskeyApi('i/import-blocking', { fileId: file.id }).then(onImportSuccess).catch(onError);
 };
 
 const importAntennas = async (ev) => {
-	const file = await selectFile(ev.currentTarget ?? ev.target);
+	const file = await selectFile({
+		anchorElement: ev.currentTarget ?? ev.target,
+		multiple: false,
+	});
 	misskeyApi('i/import-antennas', { fileId: file.id }).then(onImportSuccess).catch(onError);
 };
 

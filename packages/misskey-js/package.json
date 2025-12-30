@@ -1,7 +1,7 @@
 {
 	"type": "module",
 	"name": "misskey-js",
-	"version": "2025.5.1-beta.0",
+	"version": "2025.12.2",
 	"description": "Misskey SDK for JavaScript",
 	"license": "MIT",
 	"main": "./built/index.js",
@@ -9,11 +9,13 @@
 	"exports": {
 		".": {
 			"import": "./built/index.js",
-			"types": "./built/index.d.ts"
+			"types": "./built/index.d.ts",
+			"default": "./built/index.js"
 		},
 		"./*": {
 			"import": "./built/*",
-			"types": "./built/*"
+			"types": "./built/*",
+			"default": "./built/*"
 		}
 	},
 	"scripts": {
@@ -23,10 +25,10 @@
 		"api": "pnpm api-extractor run --local --verbose",
 		"api-prod": "pnpm api-extractor run --verbose",
 		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
-		"typecheck": "tsc --noEmit",
+		"typecheck": "tsgo --noEmit",
 		"lint": "pnpm typecheck && pnpm eslint",
-		"jest": "jest --coverage --detectOpenHandles",
-		"test": "pnpm jest && pnpm tsd",
+		"vitest": "vitest run --coverage",
+		"test": "pnpm vitest && pnpm tsd",
 		"update-autogen-code": "pnpm --filter misskey-js-type-generator generate && ncp generator/built/autogen src/autogen"
 	},
 	"repository": {
@@ -35,23 +37,18 @@
 		"directory": "packages/misskey-js"
 	},
 	"devDependencies": {
-		"@microsoft/api-extractor": "7.52.8",
-		"@swc/jest": "0.2.38",
-		"@types/jest": "29.5.14",
-		"@types/node": "22.15.21",
-		"@typescript-eslint/eslint-plugin": "8.32.1",
-		"@typescript-eslint/parser": "8.32.1",
-		"jest": "29.7.0",
-		"jest-fetch-mock": "3.0.3",
-		"jest-websocket-mock": "2.5.0",
-		"mock-socket": "9.3.1",
+		"@microsoft/api-extractor": "7.55.2",
+		"@types/node": "24.10.2",
+		"@typescript-eslint/eslint-plugin": "8.49.0",
+		"@typescript-eslint/parser": "8.49.0",
+		"@vitest/coverage-v8": "4.0.15",
+		"esbuild": "0.27.1",
+		"execa": "9.6.1",
 		"ncp": "2.0.0",
-		"nodemon": "3.1.10",
-		"execa": "8.0.1",
-		"tsd": "0.32.0",
-		"typescript": "5.8.3",
-		"esbuild": "0.25.4",
-		"glob": "11.0.2"
+		"nodemon": "3.1.11",
+		"tsd": "0.33.0",
+		"vitest": "4.0.15",
+		"vitest-websocket-mock": "0.5.0"
 	},
 	"files": [
 		"built"

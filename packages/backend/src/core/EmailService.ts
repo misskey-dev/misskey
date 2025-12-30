@@ -145,7 +145,10 @@ export class EmailService {
 		try {
 			// TODO: htmlサニタイズ
 			const info = await transporter.sendMail({
-				from: this.meta.email!,
+				from: this.meta.name ? {
+					name: this.meta.name,
+					address: this.meta.email!,
+				} : this.meta.email!,
 				to: to,
 				subject: subject,
 				text: text,

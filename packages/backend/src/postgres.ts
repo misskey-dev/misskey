@@ -6,7 +6,6 @@
 // https://github.com/typeorm/typeorm/issues/2400
 import pg from 'pg';
 import { DataSource, Logger, type QueryRunner } from 'typeorm';
-import * as highlight from 'cli-highlight';
 import { entities as charts } from '@/core/chart/entities.js';
 import { Config } from '@/config.js';
 import MisskeyLogger from '@/logger.js';
@@ -25,6 +24,7 @@ import { MiAuthSession } from '@/models/AuthSession.js';
 import { MiBlocking } from '@/models/Blocking.js';
 import { MiChannelFollowing } from '@/models/ChannelFollowing.js';
 import { MiChannelFavorite } from '@/models/ChannelFavorite.js';
+import { MiChannelMuting } from '@/models/ChannelMuting.js';
 import { MiClip } from '@/models/Clip.js';
 import { MiClipNote } from '@/models/ClipNote.js';
 import { MiClipFavorite } from '@/models/ClipFavorite.js';
@@ -45,6 +45,7 @@ import { MiNote } from '@/models/Note.js';
 import { MiNoteFavorite } from '@/models/NoteFavorite.js';
 import { MiNoteReaction } from '@/models/NoteReaction.js';
 import { MiNoteThreadMuting } from '@/models/NoteThreadMuting.js';
+import { MiNoteDraft } from '@/models/NoteDraft.js';
 import { MiPage } from '@/models/Page.js';
 import { MiPageLike } from '@/models/PageLike.js';
 import { MiPasswordResetRequest } from '@/models/PasswordResetRequest.js';
@@ -99,12 +100,6 @@ export type LoggerProps = {
 	printReplicationMode?: boolean,
 };
 
-function highlightSql(sql: string) {
-	return highlight.highlight(sql, {
-		language: 'sql', ignoreIllegals: true,
-	});
-}
-
 function truncateSql(sql: string) {
 	return sql.length > 100 ? `${sql.substring(0, 100)}...` : sql;
 }
@@ -130,7 +125,7 @@ class MyCustomLogger implements Logger {
 			modded = truncateSql(modded);
 		}
 
-		return highlightSql(modded);
+		return modded;
 	}
 
 	@bindThis
@@ -210,6 +205,7 @@ export const entities = [
 	MiNoteFavorite,
 	MiNoteReaction,
 	MiNoteThreadMuting,
+	MiNoteDraft,
 	MiPage,
 	MiPageLike,
 	MiGalleryPost,
@@ -237,6 +233,7 @@ export const entities = [
 	MiChannel,
 	MiChannelFollowing,
 	MiChannelFavorite,
+	MiChannelMuting,
 	MiRegistryItem,
 	MiAd,
 	MiPasswordResetRequest,

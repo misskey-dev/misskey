@@ -17,6 +17,8 @@ import { ServerModule } from '@/server/ServerModule.js';
 import { ServerService } from '@/server/ServerService.js';
 import { IdService } from '@/core/IdService.js';
 
+// TODO: uploadableFileTypes で許可されていないファイルが弾かれるかのテスト
+
 describe('/drive/files/create', () => {
 	let module: TestingModule;
 	let server: FastifyInstance;
@@ -25,6 +27,8 @@ describe('/drive/files/create', () => {
 
 	let root: MiUser;
 	let role_tinyAttachment: MiRole;
+	let role_imageOnly: MiRole;
+	let role_allowAllTypes: MiRole;
 
 	let folder: MiDriveFolder;
 
@@ -41,7 +45,7 @@ describe('/drive/files/create', () => {
 		idService = module.get(IdService);
 
 		const usersRepository = module.get<UsersRepository>(DI.usersRepository);
-		await usersRepository.delete({});
+		await usersRepository.createQueryBuilder().delete().execute();
 		root = await usersRepository.insert({
 			id: idService.gen(),
 			username: 'root',
@@ -50,7 +54,7 @@ describe('/drive/files/create', () => {
 		}).then(x => usersRepository.findOneByOrFail(x.identifiers[0]));
 
 		const userProfilesRepository = module.get<UserProfilesRepository>(DI.userProfilesRepository);
-		await userProfilesRepository.delete({});
+		await userProfilesRepository.createQueryBuilder().delete().execute();
 		await userProfilesRepository.insert({
 			userId: root.id,
 		});
@@ -64,9 +68,33 @@ describe('/drive/files/create', () => {
 		});
 
 		roleService = module.get<RoleService>(RoleService);
-		role_tinyAttachment = await roleService.create({
+		role_imageOnly = await roleService.create({
 			name: 'test-role001',
 			description: 'Test role001 description',
+			target: 'manual',
+			policies: {
+				uploadableFileTypes: {
+					useDefault: false,
+					priority: 1,
+					value: ['image/png'],
+				},
+			},
+		});
+		role_allowAllTypes = await roleService.create({
+			name: 'test-role002',
+			description: 'Test role002 description',
+			target: 'manual',
+			policies: {
+				uploadableFileTypes: {
+					useDefault: false,
+					priority: 1,
+					value: ['*/*'],
+				},
+			},
+		});
+		role_tinyAttachment = await roleService.create({
+			name: 'test-role003',
+			description: 'Test role003 description',
 			target: 'manual',
 			policies: {
 				maxFileSizeMb: {
@@ -81,6 +109,10 @@ describe('/drive/files/create', () => {
 
 	beforeEach(async () => {
 		await roleService.unassign(root.id, role_tinyAttachment.id).catch(() => {
+		});
+		await roleService.unassign(root.id, role_imageOnly.id).catch(() => {
+		});
+		await roleService.unassign(root.id, role_allowAllTypes.id).catch(() => {
 		});
 	});
 
@@ -110,7 +142,9 @@ describe('/drive/files/create', () => {
 			.field('i', root.token ?? '');
 	}
 
-	test('200 ok', async () => {
+	test('200 ok (all types allowed)', async () => {
+		await roleService.assign(root.id, role_allowAllTypes.id);
+
 		const name = randomString();
 		const comment = randomString();
 		const result = await postFile({
@@ -127,7 +161,24 @@ describe('/drive/files/create', () => {
 		expect(result.body.folderId).toBe(folder.id);
 	});
 
-	test('200 ok(with role)', async () => {
+	test('400 when not allowed type', async () => {
+		await roleService.assign(root.id, role_imageOnly.id);
+
+		const name = randomString();
+		const comment = randomString();
+		const result = await postFile({
+			name: name,
+			comment: comment,
+			isSensitive: true,
+			force: true,
+			fileContent: Buffer.from('a'.repeat(10)),
+		});
+		expect(result.statusCode).toBe(400);
+		expect(result.body.error.code).toBe('UNALLOWED_FILE_TYPE');
+	});
+
+	test('200 ok (with size limited role)', async () => {
+		await roleService.assign(root.id, role_allowAllTypes.id);
 		await roleService.assign(root.id, role_tinyAttachment.id);
 
 		const name = randomString();
@@ -147,6 +198,7 @@ describe('/drive/files/create', () => {
 	});
 
 	test('413 too large', async () => {
+		await roleService.assign(root.id, role_allowAllTypes.id);
 		await roleService.assign(root.id, role_tinyAttachment.id);
 
 		const name = randomString();

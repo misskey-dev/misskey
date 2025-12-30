@@ -17,3 +17,11 @@ export const notesSearchAvailable = (
 export const canSearchNonLocalNotes = (
 	instance.noteSearchableScope === 'global'
 );
+
+export const usersSearchAvailable = (
+	// FIXME: instance.policies would be null in Vitest
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+	($i == null && instance.policies != null && instance.policies.canSearchUsers) ||
+	($i != null && $i.policies.canSearchUsers) ||
+	false
+);

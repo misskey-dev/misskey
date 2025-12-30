@@ -78,7 +78,10 @@ export class Autocomplete {
 		const caretPos = Number(this.textarea.selectionStart);
 		const text = this.text.substring(0, caretPos).split('\n').pop()!;
 
-		const mentionIndex = text.lastIndexOf('@');
+		// メンションに含められる文字のみで構成された、最も末尾にある文字列を抽出
+		const mentionCandidate = text.split(/[^a-zA-Z0-9_@.\-]+/).pop()!;
+
+		const mentionIndex = mentionCandidate.lastIndexOf('@');
 		const hashtagIndex = text.lastIndexOf('#');
 		const emojiIndex = text.lastIndexOf(':');
 		const mfmTagIndex = text.lastIndexOf('$');
@@ -97,7 +100,7 @@ export class Autocomplete {
 
 		const afterLastMfmParam = text.split(/\$\[[a-zA-Z]+/).pop();
 
-		const isMention = mentionIndex !== -1;
+		const maybeMention = mentionIndex !== -1;
 		const isHashtag = hashtagIndex !== -1;
 		const isMfmParam = mfmParamIndex !== -1 && afterLastMfmParam?.includes('.') && !afterLastMfmParam.includes(' ');
 		const isMfmTag = mfmTagIndex !== -1 && !isMfmParam;
@@ -107,20 +110,27 @@ export class Autocomplete {
 
 		let opened = false;
 
-		if (isMention && this.onlyType.includes('user')) {
+		if (maybeMention && this.onlyType.includes('user')) {
 			// ユーザのサジェスト中に@を入力すると、その位置から新たにユーザ名を取りなおそうとしてしまう
 			// この動きはリモートユーザのサジェストを阻害するので、@を検知したらその位置よりも前の@を探し、
 			// ホスト名を含むリモートのユーザ名を全て拾えるようにする
-			const mentionIndexAlt = text.lastIndexOf('@', mentionIndex - 1);
-			const username = mentionIndexAlt === -1
-				? text.substring(mentionIndex + 1)
-				: text.substring(mentionIndexAlt + 1);
-			if (username !== '' && username.match(/^[a-zA-Z0-9_@.]+$/)) {
-				this.open('user', username);
-				opened = true;
-			} else if (username === '') {
-				this.open('user', null);
-				opened = true;
+			const mentionIndexAlt = mentionCandidate.lastIndexOf('@', mentionIndex - 1);
+
+			// @が連続している場合、1つ目を無視する
+			const mentionIndexLeft = (mentionIndexAlt !== -1 && mentionIndexAlt !== mentionIndex - 1) ? mentionIndexAlt : mentionIndex;
+
+			// メンションを構成する条件を満たしているか確認する
+			const isMention = mentionIndexLeft === 0 || '_@.-'.includes(mentionCandidate[mentionIndexLeft - 1]);
+
+			if (isMention) {
+				const username = mentionCandidate.substring(mentionIndexLeft + 1);
+				if (username !== '' && username.match(/^[a-zA-Z0-9_@.\-]+$/)) {
+					this.open('user', username);
+					opened = true;
+				} else if (username === '') {
+					this.open('user', null);
+					opened = true;
+				}
 			}
 		}
 

@@ -1,18 +1,21 @@
 import path from 'path';
 import pluginReplace from '@rollup/plugin-replace';
 import pluginVue from '@vitejs/plugin-vue';
-import { defineConfig } from 'vite';
+import pluginGlsl from 'vite-plugin-glsl';
 import type { UserConfig } from 'vite';
+import { defineConfig } from 'vite';
 import * as yaml from 'js-yaml';
 import { promises as fsp } from 'fs';
 
-import locales from '../../locales/index.js';
+import locales from 'i18n';
 import meta from '../../package.json';
 import packageInfo from './package.json' with { type: 'json' };
 import pluginUnwindCssModuleClassName from './lib/rollup-plugin-unwind-css-module-class-name.js';
 import pluginJson5 from './vite.json5.js';
-import pluginCreateSearchIndex from './lib/vite-plugin-create-search-index.js';
 import type { Options as SearchIndexOptions } from './lib/vite-plugin-create-search-index.js';
+import pluginCreateSearchIndex from './lib/vite-plugin-create-search-index.js';
+import pluginWatchLocales from './lib/vite-plugin-watch-locales.js';
+import { pluginRemoveUnrefI18n } from '../frontend-builder/rollup-plugin-remove-unref-i18n.js';
 
 const url = process.env.NODE_ENV === 'development' ? yaml.load(await fsp.readFile('../../.config/default.yml', 'utf-8')).url : null;
 const host = url ? (new URL(url)).hostname : undefined;
@@ -26,6 +29,11 @@ export const searchIndexes = [{
 	targetFilePaths: ['src/pages/settings/*.vue'],
 	mainVirtualModule: 'search-index:settings',
 	modulesToHmrOnUpdate: ['src/pages/settings/index.vue'],
+	verbose: process.env.FRONTEND_SEARCH_INDEX_VERBOSE === 'true',
+}, {
+	targetFilePaths: ['src/pages/admin/*.vue'],
+	mainVirtualModule: 'search-index:admin',
+	modulesToHmrOnUpdate: ['src/pages/admin/index.vue'],
 	verbose: process.env.FRONTEND_SEARCH_INDEX_VERBOSE === 'true',
 }] satisfies SearchIndexOptions[];
 
@@ -78,12 +86,20 @@ export function toBase62(n: number): string {
 }
 
 export function getConfig(): UserConfig {
+	const localesHash = toBase62(hash(JSON.stringify(locales)));
+
 	return {
 		base: '/vite/',
 
+		// The console is shared with backend, so clearing the console will also clear the backend log.
+		clearScreen: false,
+
 		server: {
-			host,
+			// The backend allows access from any addresses, so vite also allows access from any addresses.
+			host: '0.0.0.0',
+			allowedHosts: host ? [host] : undefined,
 			port: 5173,
+			strictPort: true,
 			hmr: {
 				// バックエンド経由での起動時、Viteは5173経由でアセットを参照していると思い込んでいるが実際は3000から配信される
 				// そのため、バックエンドのWSサーバーにHMRのWSリクエストが吸収されてしまい、正しくHMRが機能しない
@@ -96,10 +112,13 @@ export function getConfig(): UserConfig {
 		},
 
 		plugins: [
+			pluginWatchLocales(),
 			...searchIndexes.map(options => pluginCreateSearchIndex(options)),
 			pluginVue(),
+			pluginRemoveUnrefI18n(),
 			pluginUnwindCssModuleClassName(),
 			pluginJson5(),
+			pluginGlsl({ minify: true }),
 			...process.env.NODE_ENV === 'production'
 				? [
 					pluginReplace({
@@ -161,16 +180,21 @@ export function getConfig(): UserConfig {
 			manifest: 'manifest.json',
 			rollupOptions: {
 				input: {
-					app: './src/_boot_.ts',
+					i18n: './src/i18n.ts',
+					entry: './src/_boot_.ts',
 				},
 				external: externalPackages.map(p => p.match),
+				preserveEntrySignatures: 'allow-extension',
 				output: {
 					manualChunks: {
 						vue: ['vue'],
 						photoswipe: ['photoswipe', 'photoswipe/lightbox', 'photoswipe/style.css'],
+						// dependencies of i18n.ts
+						'config': ['@@/js/config.js'],
 					},
-					chunkFileNames: process.env.NODE_ENV === 'production' ? '[hash:8].js' : '[name]-[hash:8].js',
-					assetFileNames: process.env.NODE_ENV === 'production' ? '[hash:8][extname]' : '[name]-[hash:8][extname]',
+					entryFileNames: `scripts/${localesHash}-[hash:8].js`,
+					chunkFileNames: `scripts/${localesHash}-[hash:8].js`,
+					assetFileNames: `assets/${localesHash}-[hash:8][extname]`,
 					paths(id) {
 						for (const p of externalPackages) {
 							if (p.match.test(id)) {

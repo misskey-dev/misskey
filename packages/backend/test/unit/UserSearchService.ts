@@ -127,7 +127,7 @@ describe('UserSearchService', () => {
 	});
 
 	afterEach(async () => {
-		await usersRepository.delete({});
+		await usersRepository.createQueryBuilder().delete().execute();
 	});
 
 	afterAll(async () => {

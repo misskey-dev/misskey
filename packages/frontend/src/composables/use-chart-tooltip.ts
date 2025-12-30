@@ -25,7 +25,14 @@ export function useChartTooltip(opts: { position: 'top' | 'middle' } = { positio
 		series: tooltipSeries,
 	}, {});
 
+	function windowTouchendHandler() {
+		tooltipShowing.value = false;
+	}
+
+	window.addEventListener('touchend', windowTouchendHandler, { passive: true });
+
 	onUnmounted(() => {
+		window.removeEventListener('touchend', windowTouchendHandler);
 		disposeTooltipComponent();
 	});
 

@@ -39,6 +39,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
 	(ev: 'update:modelValue', value: Misskey.entities.PageBlock & { type: 'note' }): void;
+	(ev: 'remove'): void;
 }>();
 
 const id = ref(props.modelValue.note);

@@ -23,14 +23,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 
-			<MkNotesTimeline :pagination="pagination" :detail="true"/>
+			<MkNotesTimeline :paginator="paginator" :detail="true"/>
 		</div>
 	</div>
 </PageWithHeader>
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, provide, ref } from 'vue';
+import { computed, watch, provide, ref, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
 import type { MenuItem } from '@/types/menu.js';
@@ -46,6 +46,7 @@ import { isSupportShare } from '@/utility/navigator.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { genEmbedCode } from '@/utility/get-embed-code.js';
 import { assertServerContext, serverContext } from '@/server-context.js';
+import { Paginator } from '@/utility/paginator.js';
 
 // contextは非ログイン状態の情報しかないためログイン時は利用できない
 const CTX_CLIP = !$i && assertServerContext(serverContext, 'clip') ? serverContext.clip : null;
@@ -56,13 +57,13 @@ const props = defineProps<{
 
 const clip = ref<Misskey.entities.Clip | null>(CTX_CLIP);
 const favorited = ref(false);
-const pagination = {
-	endpoint: 'clips/notes' as const,
+const paginator = markRaw(new Paginator('clips/notes', {
 	limit: 10,
-	params: computed(() => ({
+	canSearch: true,
+	computedParams: computed(() => ({
 		clipId: props.clipId,
 	})),
-};
+}));
 
 const isOwned = computed<boolean | null>(() => $i && clip.value && ($i.id === clip.value.userId));
 
@@ -75,7 +76,8 @@ watch(() => props.clipId, async () => {
 	clip.value = await misskeyApi('clips/show', {
 		clipId: props.clipId,
 	});
-	favorited.value = clip.value.isFavorited;
+
+	favorited.value = clip.value!.isFavorited ?? false;
 }, {
 	immediate: true,
 });
@@ -107,6 +109,8 @@ const headerActions = computed(() => clip.value && isOwned.value ? [{
 	icon: 'ti ti-pencil',
 	text: i18n.ts.edit,
 	handler: async (): Promise<void> => {
+		if (clip.value == null) return;
+
 		const { canceled, result } = await os.form(clip.value.name, {
 			name: {
 				type: 'string',
@@ -127,6 +131,7 @@ const headerActions = computed(() => clip.value && isOwned.value ? [{
 				default: clip.value.isPublic,
 			},
 		});
+
 		if (canceled) return;
 
 		os.apiWithDialog('clips/update', {
@@ -177,6 +182,8 @@ const headerActions = computed(() => clip.value && isOwned.value ? [{
 	text: i18n.ts.delete,
 	danger: true,
 	handler: async (): Promise<void> => {
+		if (clip.value == null) return;
+
 		const { canceled } = await os.confirm({
 			type: 'warning',
 			text: i18n.tsx.deleteAreYouSure({ x: clip.value.name }),

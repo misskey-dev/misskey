@@ -157,6 +157,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							timestamp: job.finishedOn ?? job.processedOn ?? job.timestamp,
 							data: job,
 						}))"
+						groupBy="h"
 						class="_monospace"
 					>
 						<template #right="{ event: job }">
@@ -209,6 +210,7 @@ async function fetchCurrentQueue() {
 }
 
 async function fetchJobs() {
+	if (tab.value === '-') return;
 	jobsFetching.value = true;
 	const state = jobState.value;
 	jobs.value = await misskeyApi('admin/queue/jobs', {
@@ -306,6 +308,7 @@ async function removeJobs() {
 }
 
 async function refreshJob(jobId: string) {
+	if (tab.value === '-') return;
 	const newJob = await misskeyApi('admin/queue/show-job', { queue: tab.value, jobId });
 	const index = jobs.value.findIndex((job) => job.id === jobId);
 	if (index !== -1) {
