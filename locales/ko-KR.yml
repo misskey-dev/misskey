@@ -2545,6 +2545,13 @@ _widgets:
   clicker: "클리커"
   birthdayFollowings: "오늘이 생일인 유저"
   chat: "채팅하기"
+_widgetOptions:
+  showHeader: "해더를 표시"
+  height: "높이"
+  _button:
+    colored: "색 입히기"
+  _clock:
+    size: "크기"
 _cw:
   hide: "숨기기"
   show: "더 보기"
