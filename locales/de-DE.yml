@@ -2493,6 +2493,13 @@ _widgets:
   clicker: "Klickzähler"
   birthdayFollowings: "Nutzer, die heute Geburtstag haben"
   chat: "Mit dem Benutzer chatten"
+_widgetOptions:
+  showHeader: "Kopfzeile anzeigen"
+  height: "Höhe"
+  _button:
+    colored: "Farbig"
+  _clock:
+    size: "Größe"
 _cw:
   hide: "Inhalt verbergen"
   show: "Inhalt anzeigen"
