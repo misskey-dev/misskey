@@ -1,7 +1,7 @@
 ## Unreleased
 
 ### General
--
+- Enhance: お知らせの既読をリセットできるように
 
 ### Client
 - Enhance: ドライブのファイル一覧で自動でもっと見るを利用可能に

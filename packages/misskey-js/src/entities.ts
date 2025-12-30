@@ -117,6 +117,12 @@ export type ModerationLog = {
 	type: 'deleteUserAnnouncement';
 	info: ModerationLogPayloads['deleteUserAnnouncement'];
 } | {
+	type: 'resetReadsForGlobalAnnouncement';
+	info: ModerationLogPayloads['resetReadsForGlobalAnnouncement'];
+} | {
+	type: 'resetReadsForUserAnnouncement';
+	info: ModerationLogPayloads['resetReadsForUserAnnouncement'];
+} | {
 	type: 'resetPassword';
 	info: ModerationLogPayloads['resetPassword'];
 } | {
