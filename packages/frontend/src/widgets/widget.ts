@@ -4,8 +4,8 @@
  */
 
 import { defineAsyncComponent, reactive, watch } from 'vue';
-import type { Reactive } from 'vue';
 import { throttle } from 'throttle-debounce';
+import type { Reactive } from 'vue';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import * as os from '@/os.js';
 import { deepClone } from '@/utility/clone.js';
@@ -48,6 +48,14 @@ export const useWidgetPropsManager = <F extends FormWithDefault>(
 			}
 		}
 	};
+
+	watch(() => props.widget, () => {
+		if (props.widget) {
+			for (const key of Object.keys(propsDef)) {
+				widgetProps[key] = props.widget.data[key] ?? propsDef[key].default;
+			}
+		}
+	}, { deep: true });
 
 	watch(widgetProps, () => {
 		mergeProps();
