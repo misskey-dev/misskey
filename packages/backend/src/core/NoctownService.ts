@@ -231,6 +231,7 @@ export class NoctownService {
 		const user = await this.usersRepository.findOneBy({ id: userId });
 
 		// FR-007: プレイヤー参加イベントを送信（フロントエンドのplayerJoinedリスナーと一致）
+		// 仕様: T084 currentWorldIdを含めてワールド別フィルタリングを可能にする
 		this.globalEventService.publishNoctownStream('playerJoined', {
 			id: playerId,
 			playerId,
@@ -243,6 +244,7 @@ export class NoctownService {
 			positionZ: player.positionZ,
 			rotation: player.rotation,
 			isOnline: true,
+			currentWorldId: player.currentWorldId ?? null,
 		});
 	}
 
@@ -476,6 +478,10 @@ export class NoctownService {
 			itemType: playerItem.item.itemType,
 		};
 
+		// 仕様: FR-025 プレイヤーの現在ワールドを取得
+		const player = await this.noctownPlayersRepository.findOneBy({ id: playerId });
+		const worldId = player?.currentWorldId ?? null;
+
 		// Create dropped item on the ground
 		const droppedItemId = this.idService.gen();
 		await this.noctownDroppedItemsRepository.insert({
@@ -487,6 +493,7 @@ export class NoctownService {
 			positionY: y,
 			positionZ: z,
 			droppedAt: new Date(),
+			worldId,
 		});
 
 		// Decrement or remove from inventory
@@ -586,6 +593,10 @@ export class NoctownService {
 		}
 		if (!coinItem) return null;
 
+		// 仕様: FR-025 プレイヤーの現在ワールドを取得
+		const player = await this.noctownPlayersRepository.findOneBy({ id: playerId });
+		const worldId = player?.currentWorldId ?? null;
+
 		// Create dropped currency on the ground
 		const droppedItemId = this.idService.gen();
 		await this.noctownDroppedItemsRepository.insert({
@@ -597,6 +608,7 @@ export class NoctownService {
 			positionY: y,
 			positionZ: z,
 			droppedAt: new Date(),
+			worldId,
 		});
 
 		// Deduct from wallet
@@ -695,6 +707,10 @@ export class NoctownService {
 			await this.noctownPlayerItemsRepository.delete(playerItemId);
 		}
 
+		// 仕様: FR-023 プレイヤーの現在ワールドを取得
+		const player = await this.noctownPlayersRepository.findOneBy({ id: playerId });
+		const worldId = player?.currentWorldId ?? null;
+
 		// Create placed item
 		// 仕様: コンテナの場合はcontainedItemsを引き継ぐ
 		const placedItemId = this.idService.gen();
@@ -708,6 +724,7 @@ export class NoctownService {
 			rotation,
 			placedAt: new Date(),
 			containedItems: playerItem.containedItems ?? null,
+			worldId,
 		});
 
 		// 仕様: FR-034 afterState を記録しトランザクションログを作成
@@ -1735,6 +1752,10 @@ export class NoctownService {
 			isRooster: Math.random() < 0.3, // 30%の確率でオンドリ
 		};
 
+		// 仕様: FR-024 プレイヤーの現在ワールドを取得
+		const player = await this.noctownPlayersRepository.findOneBy({ id: playerId });
+		const worldId = player?.currentWorldId ?? null;
+
 		const chickenId = this.idService.gen();
 		await this.noctownChickensRepository.insert({
 			id: chickenId,
@@ -1751,6 +1772,7 @@ export class NoctownService {
 			eggsReady: 0,
 			appearance,
 			createdAt: new Date(),
+			worldId,
 		});
 
 		this.globalEventService.publishNoctownStream('chickenPlaced', {
@@ -1912,6 +1934,10 @@ export class NoctownService {
 			color: cowColors[Math.floor(Math.random() * cowColors.length)],
 		};
 
+		// 仕様: FR-024 プレイヤーの現在ワールドを取得
+		const player = await this.noctownPlayersRepository.findOneBy({ id: playerId });
+		const worldId = player?.currentWorldId ?? null;
+
 		const cowId = this.idService.gen();
 		await this.noctownCowsRepository.insert({
 			id: cowId,
@@ -1928,6 +1954,7 @@ export class NoctownService {
 			milkReady: 0,
 			appearance,
 			createdAt: new Date(),
+			worldId,
 		});
 
 		this.globalEventService.publishNoctownStream('cowPlaced', {
@@ -2440,9 +2467,24 @@ export class NoctownService {
 	 */
 	@bindThis
 	public async generateChunk(worldId: string, chunkX: number, chunkZ: number) {
+		// 仕様: 'default'を実際のデフォルトワールドIDに変換
+		// フロントエンドがworldId: nullを送信した場合、WebSocketハンドラで'default'に変換される
+		// しかしDBには実際のワールドID（例: 'ag6hk9c4t92i022t'）で保存されている
+		let resolvedWorldId = worldId;
+		if (worldId === 'default') {
+			const defaultWorldId = await this.getDefaultWorldId();
+			if (defaultWorldId) {
+				resolvedWorldId = defaultWorldId;
+				console.log('[Noctown] generateChunk: resolved default worldId to', resolvedWorldId);
+			} else {
+				console.error('[Noctown] generateChunk: default world not found in database');
+				return null;
+			}
+		}
+
 		// T034: Check if chunk already exists (UNIQUE constraint handling)
 		const existingChunk = await this.noctownWorldChunksRepository.findOneBy({
-			worldId,
+			worldId: resolvedWorldId,
 			chunkX,
 			chunkZ,
 		});
@@ -2494,7 +2536,7 @@ export class NoctownService {
 		const chunkId = this.idService.gen();
 		const newChunk = this.noctownWorldChunksRepository.create({
 			id: chunkId,
-			worldId,
+			worldId: resolvedWorldId,
 			chunkX,
 			chunkZ,
 			biome: chunkTerrainData.biome,
@@ -2772,24 +2814,39 @@ export class NoctownService {
 	/**
 	 * 近隣ペット取得（FR-022）
 	 * 指定座標から半径内のペットを取得
+	 * 仕様: FR-024 worldIdでフィルタリング
 	 */
 	@bindThis
-	public async getNearbyPets(centerX: number, centerZ: number, radius: number = 20): Promise<any[]> {
+	public async getNearbyPets(centerX: number, centerZ: number, radius: number = 20, worldId: string | null = null): Promise<any[]> {
 		// 牛を取得
-		const cows = await this.noctownCowsRepository
+		const cowQuery = this.noctownCowsRepository
 			.createQueryBuilder('cow')
 			.leftJoinAndSelect('cow.player', 'player')
 			.where('cow."positionX" BETWEEN :minX AND :maxX', { minX: centerX - radius, maxX: centerX + radius })
-			.andWhere('cow."positionZ" BETWEEN :minZ AND :maxZ', { minZ: centerZ - radius, maxZ: centerZ + radius })
-			.getMany();
+			.andWhere('cow."positionZ" BETWEEN :minZ AND :maxZ', { minZ: centerZ - radius, maxZ: centerZ + radius });
+
+		// 仕様: FR-024 worldIdでフィルタリング（NULL = デフォルトワールド）
+		if (worldId === null) {
+			cowQuery.andWhere('cow."worldId" IS NULL');
+		} else {
+			cowQuery.andWhere('cow."worldId" = :worldId', { worldId });
+		}
+		const cows = await cowQuery.getMany();
 
 		// 鶏を取得
-		const chickens = await this.noctownChickensRepository
+		const chickenQuery = this.noctownChickensRepository
 			.createQueryBuilder('chicken')
 			.leftJoinAndSelect('chicken.player', 'player')
 			.where('chicken."positionX" BETWEEN :minX AND :maxX', { minX: centerX - radius, maxX: centerX + radius })
-			.andWhere('chicken."positionZ" BETWEEN :minZ AND :maxZ', { minZ: centerZ - radius, maxZ: centerZ + radius })
-			.getMany();
+			.andWhere('chicken."positionZ" BETWEEN :minZ AND :maxZ', { minZ: centerZ - radius, maxZ: centerZ + radius });
+
+		// 仕様: FR-024 worldIdでフィルタリング（NULL = デフォルトワールド）
+		if (worldId === null) {
+			chickenQuery.andWhere('chicken."worldId" IS NULL');
+		} else {
+			chickenQuery.andWhere('chicken."worldId" = :worldId', { worldId });
+		}
+		const chickens = await chickenQuery.getMany();
 
 		const results: any[] = [];
 
@@ -2933,6 +2990,17 @@ export class NoctownService {
 	}
 
 	/**
+	 * デフォルトワールドのIDを取得
+	 * 仕様: チャンク生成時に'default'を実際のワールドIDに変換するために使用
+	 * @returns デフォルトワールドのID（存在しない場合はnull）
+	 */
+	@bindThis
+	public async getDefaultWorldId(): Promise<string | null> {
+		const world = await this.noctownWorldsRepository.findOneBy({ worldType: 'default' });
+		return world?.id ?? null;
+	}
+
+	/**
 	 * 累計賽銭額を取得
 	 * 仕様: 神社ワールド - SAISEN_OFFERトランザクションの合計額を計算
 	 * @param playerId プレイヤーID
@@ -3025,21 +3093,26 @@ export class NoctownService {
 			};
 		}
 
-		// ワープゲートの定義（ハードコード）
+		// 仕様: FR-018a ワープゲートの定義
+		// 神社ワールドのワープゲートとスポーン位置は(0,0,57)に統一
 		const warpGates: Record<string, {
 			worldId: string | null;
 			targetWorldId: string | null;
 			spawnPosition: { x: number; y: number; z: number; rotation: number };
 		}> = {
+			// 仕様: FR-018a 神社ワールドへのワープゲート
+			// スポーン位置: 帰還ゲートの位置(0,0,57)に配置、向きは神社方向（rotation=0=北向き）
 			'warp-gate-to-shrine': {
 				worldId: null, // デフォルトワールド
 				targetWorldId: 'shrine-world-001',
-				spawnPosition: { x: 0, y: 0, z: 1700, rotation: 0 },
+				spawnPosition: { x: 0, y: 0, z: 57, rotation: 0 },
 			},
+			// 仕様: デフォルトワールドへの帰還ゲート
+			// 帰還時は神社へのワープゲート（x=10, z=-15）の近くにスポーン
 			'warp-gate-to-default': {
 				worldId: 'shrine-world-001',
 				targetWorldId: null, // デフォルトワールド
-				spawnPosition: { x: 0, y: 0, z: 5, rotation: 0 },
+				spawnPosition: { x: 10, y: 0, z: -12, rotation: 0 },
 			},
 		};
 
@@ -3107,6 +3180,29 @@ export class NoctownService {
 			where: { currentWorldId: toWorldId === null ? IsNull() : toWorldId, isOnline: true },
 		});
 
+		// 仕様: FR-027 ワールド切り替え時、切り替え先ワールドのデータを取得
+		const worldIdCondition = toWorldId === null ? IsNull() : toWorldId;
+
+		// 設置アイテムを取得（FR-023）
+		const placedItems = await this.noctownPlacedItemsRepository.find({
+			where: { worldId: worldIdCondition },
+			relations: ['item'],
+		});
+
+		// 落ちているアイテムを取得（FR-025）
+		const droppedItems = await this.noctownDroppedItemsRepository.find({
+			where: { worldId: worldIdCondition },
+			relations: ['item'],
+		});
+
+		// 動物を取得（FR-024）
+		const chickens = await this.noctownChickensRepository.find({
+			where: { worldId: worldIdCondition },
+		});
+		const cows = await this.noctownCowsRepository.find({
+			where: { worldId: worldIdCondition },
+		});
+
 		// worldJoinedイベントを送信
 		this.globalEventService.publishNoctownPlayerStream(playerId, 'worldJoined', {
 			worldId: toWorldId,
@@ -3122,10 +3218,58 @@ export class NoctownService {
 				positionZ: p.positionZ,
 				rotation: p.rotation,
 			})),
+			// 仕様: FR-023〜FR-027 ワールド別データを送信
+			placedItems: placedItems.map(item => ({
+				id: item.id,
+				itemId: item.itemId,
+				itemName: item.item?.name ?? '',
+				itemType: item.item?.itemType ?? '',
+				emoji: item.item?.emoji ?? null,
+				imageUrl: item.item?.imageUrl ?? null,
+				positionX: item.positionX,
+				positionY: item.positionY,
+				positionZ: item.positionZ,
+				rotation: item.rotation,
+				playerId: item.playerId,
+			})),
+			droppedItems: droppedItems.map(item => ({
+				droppedItemId: item.id,
+				itemId: item.itemId,
+				itemName: item.item?.name ?? '',
+				itemType: item.item?.itemType ?? '',
+				emoji: item.item?.emoji ?? null,
+				imageUrl: item.item?.imageUrl ?? null,
+				quantity: item.quantity,
+				positionX: item.positionX,
+				positionY: item.positionY,
+				positionZ: item.positionZ,
+			})),
+			chickens: chickens.map(c => ({
+				id: c.id,
+				name: c.name,
+				playerId: c.playerId,
+				positionX: c.positionX,
+				positionY: c.positionY,
+				positionZ: c.positionZ,
+				appearance: c.appearance,
+			})),
+			cows: cows.map(c => ({
+				id: c.id,
+				name: c.name,
+				playerId: c.playerId,
+				positionX: c.positionX,
+				positionY: c.positionY,
+				positionZ: c.positionZ,
+				appearance: c.appearance,
+			})),
+			// 仕様: 神社ワールドのオブジェクト位置（0,0,0中心配置、コンパクト配置）
+			// - 帰還ゲート: x=0, y=0, z=100（参道の中心、スポーン位置のすぐ後ろ）
+			// - 賽銭箱: z=-8（拝殿の手前）
+			// - 鈴: z=-15（拝殿の軒下）
 			shrineData: toWorldId === 'shrine-world-001' ? {
-				saisenBoxPosition: { x: 0, y: 0, z: 16 },
-				suzuPosition: { x: 0, y: 0, z: -256 },
-				returnGatePosition: { x: 0, y: 0, z: 1760 },
+				saisenBoxPosition: { x: 0, y: 0, z: -8 },
+				suzuPosition: { x: 0, y: 0, z: -15 },
+				returnGatePosition: { x: 0, y: 0, z: 57 },
 			} : undefined,
 		});
 

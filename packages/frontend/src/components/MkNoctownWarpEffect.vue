@@ -97,8 +97,11 @@ function onAnimationComplete(): void {
 	60% {
 		opacity: 1;
 	}
-	100% {
+	80% {
 		opacity: 1;
+	}
+	100% {
+		opacity: 0;
 	}
 }
 

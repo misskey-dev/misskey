@@ -10,6 +10,7 @@ import { NoctownItem } from './NoctownItem.js';
 
 @Entity('noctown_placed_item')
 @Index(['positionX', 'positionZ'])
+@Index(['worldId'])
 export class NoctownPlacedItem {
 	@PrimaryColumn(id())
 	public id: string;
@@ -82,5 +83,14 @@ export class NoctownPlacedItem {
 		comment: 'Contained items for container type (treasure chest, etc.)',
 	})
 	public containedItems: Array<{ itemId: string; quantity: number }> | null;
+
+	// 仕様: FR-023 設置アイテムをワールド別に管理
+	// null = デフォルトワールド（後方互換性のため）
+	@Column('varchar', {
+		length: 128,
+		nullable: true,
+		comment: 'World ID (null = default world)',
+	})
+	public worldId: string | null;
 }
 

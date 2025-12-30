@@ -6,9 +6,10 @@
 import * as THREE from 'three';
 
 // 仕様: 神社ワールド用3Dオブジェクト
-// G = グリッドサイズ（32ピクセル）
+// G = グリッドサイズ（0.5単位 = 通常のノクタウンスケールの半分）
+// 注意: 以前はG=32だったが、ノクタウンのスケールに合わせてG=0.5に修正
 
-const G = 32;
+const G = 0.5;
 
 // マテリアルキャッシュ
 const materials = {
@@ -376,22 +377,28 @@ export function createHaiden(x: number, z: number): THREE.Group {
 
 /**
  * 神社ワールドの地面を作成
+ * 仕様: mapSizeは半径（中心から端までの距離）、地面は-mapSizeからmapSizeまでをカバー
  */
 export function createShrineGround(mapSize: number): THREE.Group {
 	const ground = new THREE.Group();
 
-	// 草地
-	const grassGeo = new THREE.PlaneGeometry(G * mapSize, G * mapSize);
+	// 草地（mapSize * 2 の正方形）
+	const grassGeo = new THREE.PlaneGeometry(mapSize * 2, mapSize * 2);
 	const grass = new THREE.Mesh(grassGeo, materials.grass);
 	grass.rotation.x = -Math.PI / 2;
 	grass.receiveShadow = true;
 	ground.add(grass);
 
 	// 参道（砂利道）
-	const pathGeo = new THREE.PlaneGeometry(G * 10, G * 90);
+	// 仕様: スポーン位置(z=100)から拝殿(z=-20)までをカバー
+	// 長さ130、中心z=40で z=-25 から z=105 をカバー
+	// Y=0.3: Zファイティング（フリッカー）防止のため草地より十分上に配置
+	const pathLength = 130;
+	const pathWidth = 6;
+	const pathGeo = new THREE.PlaneGeometry(pathWidth, pathLength);
 	const path = new THREE.Mesh(pathGeo, materials.gravel);
 	path.rotation.x = -Math.PI / 2;
-	path.position.set(0, 0.5, G * 25);
+	path.position.set(0, 0.3, 40); // 中心 z=40、Y=0.3でフリッカー防止
 	path.receiveShadow = true;
 	ground.add(path);
 
@@ -402,6 +409,12 @@ export function createShrineGround(mapSize: number): THREE.Group {
  * 神社ワールド全体を構築
  * 仕様: 境内はXZ (0,0) を入口として配置、Zが正面
  */
+// 仕様: FR-018a 神社ワールドの配置（0,0,0中心）
+// - プレイヤーのスポーン・帰還ゲート: (0,0,57)に統一（ワープゲートの上にスポーン）
+// - 鳥居: z=50, 35, 20（参道に3つ、間隔を詰めて配置）
+// - 賽銭箱: z=-8（拝殿の手前）
+// - 鈴: z=-15（拝殿の軒下）
+// - 拝殿: z=-20（奥）
 export function buildShrineWorld(): {
 	scene: THREE.Group;
 	saisenBox: THREE.Group;
@@ -411,26 +424,26 @@ export function buildShrineWorld(): {
 	const scene = new THREE.Group();
 	const clickableObjects: THREE.Object3D[] = [];
 
-	// 地面
-	const ground = createShrineGround(200);
+	// 地面（半径150 = -150から150をカバー、スポーン位置z=100を含む）
+	const ground = createShrineGround(150);
 	scene.add(ground);
 
-	// 鳥居（参道に3つ配置）
-	scene.add(createTorii(0, G * 60, 1));
-	scene.add(createTorii(0, G * 40, 0.9));
-	scene.add(createTorii(0, G * 20, 0.85));
+	// 鳥居（参道に3つ配置）- 間隔を詰めてコンパクトに
+	scene.add(createTorii(0, 50, 1));      // 入口側（最大）
+	scene.add(createTorii(0, 35, 0.9));    // 中間
+	scene.add(createTorii(0, 20, 0.85));   // 拝殿側（最小）
 
-	// 拝殿（神社本殿）- 奥に配置
-	const haiden = createHaiden(0, -G * 16);
+	// 拝殿（神社本殿）- コンパクトに配置
+	const haiden = createHaiden(0, -20);
 	scene.add(haiden);
 
 	// 賽銭箱 - 拝殿の手前
-	const saisenBox = createSaisenBox(0, G * 0.5);
+	const saisenBox = createSaisenBox(0, -8);
 	scene.add(saisenBox);
 	clickableObjects.push(saisenBox);
 
 	// 鈴 - 拝殿の軒下
-	const suzu = createSuzu(0, -G * 8);
+	const suzu = createSuzu(0, -15);
 	scene.add(suzu);
 	clickableObjects.push(suzu);
 

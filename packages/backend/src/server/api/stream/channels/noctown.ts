@@ -62,10 +62,11 @@ class NoctownChannel extends Channel {
 					worldDisplayName: worldInfo.displayName,
 					spawnPosition: { x: player.positionX, y: player.positionY, z: player.positionZ },
 					playersInWorld: [], // 再接続時は空でもOK（既にplayerJoinedで通知される）
+					// 仕様: 神社ワールドのオブジェクト位置（shrine-objects.ts、NoctownService.tsと一致させる）
 					shrineData: worldInfo.worldType === 'shrine' ? {
-						saisenBoxPosition: { x: 0, y: 0, z: 16 },
-						suzuPosition: { x: 0, y: 0, z: -256 },
-						returnGatePosition: { x: 0, y: 0, z: 1760 },
+						saisenBoxPosition: { x: 0, y: 0, z: -8 },
+						suzuPosition: { x: 0, y: 0, z: -15 },
+						returnGatePosition: { x: 0, y: 0, z: 57 },
 					} : undefined,
 					isReconnect: true,
 				});

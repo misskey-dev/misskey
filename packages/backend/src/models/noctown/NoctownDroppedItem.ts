@@ -12,6 +12,7 @@ import { NoctownPlayer } from './NoctownPlayer.js';
 // ドロップされたアイテムは永続化され、消えることはない
 @Entity('noctown_dropped_item')
 @Index(['positionX', 'positionZ'])
+@Index(['worldId'])
 export class NoctownDroppedItem {
 	@PrimaryColumn(id())
 	public id: string;
@@ -78,4 +79,13 @@ export class NoctownDroppedItem {
 		comment: 'Optimistic lock version',
 	})
 	public version: number;
+
+	// 仕様: FR-025 落ちているアイテムをワールド別に管理
+	// null = デフォルトワールド（後方互換性のため）
+	@Column('varchar', {
+		length: 128,
+		nullable: true,
+		comment: 'World ID (null = default world)',
+	})
+	public worldId: string | null;
 }

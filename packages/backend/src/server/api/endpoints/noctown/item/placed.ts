@@ -66,8 +66,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		super(meta, paramDef, async (ps, me) => {
 			const radius = Math.min(ps.radius ?? 30, 50);
 
-			// Get placed items in range
-			const placedItems = await this.noctownPlacedItemsRepository
+			// 仕様: FR-023 プレイヤーの現在のワールドIDを取得してフィルタリング
+			const player = await this.noctownPlayersRepository.findOneBy({ userId: me.id });
+			const currentWorldId = player?.currentWorldId ?? null;
+
+			// Get placed items in range, filtered by worldId
+			const query = this.noctownPlacedItemsRepository
 				.createQueryBuilder('pi')
 				.where('pi."positionX" BETWEEN :minX AND :maxX', {
 					minX: ps.x - radius,
@@ -76,7 +80,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.andWhere('pi."positionZ" BETWEEN :minZ AND :maxZ', {
 					minZ: ps.z - radius,
 					maxZ: ps.z + radius,
-				})
+				});
+
+			// 仕様: FR-023 worldIdでフィルタリング（NULL = デフォルトワールド）
+			if (currentWorldId === null) {
+				query.andWhere('pi."worldId" IS NULL');
+			} else {
+				query.andWhere('pi."worldId" = :worldId', { worldId: currentWorldId });
+			}
+
+			const placedItems = await query
 				.orderBy('pi."placedAt"', 'DESC')
 				.limit(100)
 				.getMany();

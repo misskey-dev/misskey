@@ -14,6 +14,9 @@ import { ChunkEnvironmentRenderer, type EnvironmentObjectData } from './environm
 import { PetManager, type PetInfo } from './pet.js';
 import { WarpGate, WARP_GATE_COLLISION_RADIUS, type WarpGateConfig } from './warp-gate-object.js';
 import { buildShrineWorld, animateSuzu } from './shrine-objects.js';
+import { ChickenRenderer, type ChickenColor } from './chicken-renderer.js';
+import { CowRenderer, type CowColor } from './cow-renderer.js';
+import { createKagamiMochi } from './mochi-object.js';
 
 // FR-022: PetInfo型をre-export
 export type { PetInfo } from './pet.js';
@@ -184,6 +187,32 @@ export interface NpcData {
 	positionZ: number;
 }
 
+// 仕様: FR-024 鶏データ型
+export interface ChickenData {
+	id: string;
+	name: string | null;
+	playerId: string;
+	positionX: number;
+	positionY: number;
+	positionZ: number;
+	appearance: {
+		color: ChickenColor;
+	};
+}
+
+// 仕様: FR-024 牛データ型
+export interface CowData {
+	id: string;
+	name: string | null;
+	playerId: string;
+	positionX: number;
+	positionY: number;
+	positionZ: number;
+	appearance: {
+		color: CowColor;
+	};
+}
+
 export class NoctownEngine {
 	private scene: THREE.Scene;
 	private camera: THREE.OrthographicCamera;
@@ -250,14 +279,22 @@ export class NoctownEngine {
 	// FR-022: ペット管理
 	private petManager: PetManager | null = null;
 
+	// 仕様: FR-024 鶏・牛レンダラー
+	private chickenRenderer: ChickenRenderer | null = null;
+	private cowRenderer: CowRenderer | null = null;
+
 	// 仕様: 神社ワールド - ワープゲート管理
 	private warpGates: Map<string, WarpGate> = new Map();
 	private currentWorldType: 'default' | 'shrine' = 'default';
 	private currentWorldId: string | null = null;
 	private shrineObjects: THREE.Group | null = null;
+	private defaultGroundPlane: THREE.Mesh | null = null; // デフォルトワールドの地面（神社ワールドでは非表示）
 	private isWarping: boolean = false; // T026: ワープ中フラグ
 	private suzuAnimationData: { group: THREE.Group; startTime: number } | null = null;
 	private onWarpCollision: ((gateId: string, targetWorldId: string | null) => void) | null = null;
+	// 仕様: T035 神社オブジェクトのクリック判定用参照
+	private saisenBoxObject: THREE.Group | null = null;
+	private suzuObject: THREE.Group | null = null;
 
 	constructor(container: HTMLElement) {
 		this.container = container;
@@ -309,6 +346,10 @@ export class NoctownEngine {
 
 		// FR-022: ペット管理の初期化
 		this.petManager = new PetManager(this.scene);
+
+		// 仕様: FR-024 鶏・牛レンダラーの初期化
+		this.chickenRenderer = new ChickenRenderer(this.scene);
+		this.cowRenderer = new CowRenderer(this.scene);
 
 		// Event listeners
 		this.setupEventListeners();
@@ -488,6 +529,7 @@ export class NoctownEngine {
 		if (stars) stars.visible = isNight;
 	}
 
+	// 仕様: デフォルトワールドの地面（神社ワールドでは非表示にする）
 	private createGroundPlane(): void {
 		const geometry = new THREE.PlaneGeometry(500, 500);
 		const material = new THREE.MeshStandardMaterial({
@@ -498,6 +540,8 @@ export class NoctownEngine {
 		ground.rotation.x = -Math.PI / 2;
 		ground.position.y = 0;
 		ground.receiveShadow = true;
+		ground.name = 'defaultGroundPlane';
+		this.defaultGroundPlane = ground;
 		this.scene.add(ground);
 	}
 
@@ -790,6 +834,14 @@ export class NoctownEngine {
 			this.petManager.update();
 		}
 
+		// 仕様: FR-024 鶏・牛アニメーション更新
+		if (this.chickenRenderer) {
+			this.chickenRenderer.update();
+		}
+		if (this.cowRenderer) {
+			this.cowRenderer.update();
+		}
+
 		// 仕様: FR-030 ドロップアイテムのふわふわアニメーション
 		// Math.sin(time * 2) * 0.1 で上下に揺れる
 		const time = now * 0.001; // Convert to seconds
@@ -1060,6 +1112,16 @@ export class NoctownEngine {
 			// FR-018: Remove player data for info window
 			this.remotePlayerData.delete(playerId);
 		}
+	}
+
+	// 仕様: T083 ワールド切り替え時に全リモートプレイヤーをクリア
+	public clearRemotePlayers(): void {
+		console.log('[Noctown Engine] Clearing all remote players:', this.remotePlayers.size);
+		for (const [playerId, character] of this.remotePlayers) {
+			this.scene.remove(character.group);
+		}
+		this.remotePlayers.clear();
+		this.remotePlayerData.clear();
 	}
 
 	// T018: Set player online/offline status with visual effects
@@ -1343,6 +1405,13 @@ export class NoctownEngine {
 		this.droppedItemBaseY.delete(itemId);
 	}
 
+	// 仕様: FR-027 ワールド切り替え時に全ドロップアイテムをクリア
+	public clearDroppedItems(): void {
+		for (const itemId of this.droppedItems.keys()) {
+			this.removeDroppedItem(itemId);
+		}
+	}
+
 	public addPlacedItem(data: PlacedItemData): void {
 		if (this.placedItems.has(data.id)) return;
 
@@ -1378,6 +1447,10 @@ export class NoctownEngine {
 		// 仕様: 違反緩和チケットの専用3Dモデル
 		if (itemName === '違反緩和チケット') {
 			return this.createTicketMesh();
+		}
+		// 仕様: FR-015 鏡餅の専用3Dモデル（賽銭報酬アイテム）
+		if (itemName === '鏡餅') {
+			return createKagamiMochi(0.8);
 		}
 
 		switch (itemType) {
@@ -2616,6 +2689,13 @@ export class NoctownEngine {
 		}
 	}
 
+	// 仕様: FR-027 ワールド切り替え時に全設置アイテムをクリア
+	public clearPlacedItems(): void {
+		for (const itemId of this.placedItems.keys()) {
+			this.removePlacedItem(itemId);
+		}
+	}
+
 	public clearItems(): void {
 		this.droppedItems.forEach((group) => this.scene.remove(group));
 		this.droppedItems.clear();
@@ -2963,6 +3043,58 @@ export class NoctownEngine {
 		return this.petManager?.getNearbyPet(x, z, radius) ?? null;
 	}
 
+	// 仕様: FR-024 鶏を追加
+	public addChicken(data: ChickenData): void {
+		if (this.chickenRenderer) {
+			this.chickenRenderer.createChicken(data.id, {
+				position: new THREE.Vector3(data.positionX, data.positionY, data.positionZ),
+				color: data.appearance?.color ?? 'white',
+			});
+		}
+	}
+
+	// 仕様: FR-024 鶏を削除
+	public removeChicken(chickenId: string): void {
+		if (this.chickenRenderer) {
+			this.chickenRenderer.removeChicken(chickenId);
+		}
+	}
+
+	// 仕様: FR-027 ワールド切り替え時に全鶏をクリア
+	public clearChickens(): void {
+		if (this.chickenRenderer) {
+			this.chickenRenderer.dispose();
+			// disposeした後、再利用できるよう再初期化
+			this.chickenRenderer = new ChickenRenderer(this.scene);
+		}
+	}
+
+	// 仕様: FR-024 牛を追加
+	public addCow(data: CowData): void {
+		if (this.cowRenderer) {
+			this.cowRenderer.createCow(data.id, {
+				position: new THREE.Vector3(data.positionX, data.positionY, data.positionZ),
+				color: data.appearance?.color ?? 'holsteinBW',
+			});
+		}
+	}
+
+	// 仕様: FR-024 牛を削除
+	public removeCow(cowId: string): void {
+		if (this.cowRenderer) {
+			this.cowRenderer.removeCow(cowId);
+		}
+	}
+
+	// 仕様: FR-027 ワールド切り替え時に全牛をクリア
+	public clearCows(): void {
+		if (this.cowRenderer) {
+			this.cowRenderer.dispose();
+			// disposeした後、再利用できるよう再初期化
+			this.cowRenderer = new CowRenderer(this.scene);
+		}
+	}
+
 	// FR-032: クリックされた設置アイテムを取得
 	public getClickedPlacedItem(event: MouseEvent | TouchEvent): PlacedItemData | null {
 		const rect = this.renderer.domElement.getBoundingClientRect();
@@ -3155,6 +3287,73 @@ export class NoctownEngine {
 	// ============================================
 
 	/**
+	 * 仕様: T035 クリックされた神社オブジェクトを取得
+	 * @returns 'saisenBox' | 'suzu' | null
+	 */
+	public getClickedShrineObject(event: MouseEvent | TouchEvent): 'saisenBox' | 'suzu' | null {
+		if (this.currentWorldType !== 'shrine') return null;
+		if (!this.saisenBoxObject && !this.suzuObject) return null;
+
+		// Get renderer bounds
+		const rect = this.renderer.domElement.getBoundingClientRect();
+
+		// Get pointer position
+		let clientX: number;
+		let clientY: number;
+
+		if ('touches' in event && event.touches.length > 0) {
+			// TouchEvent
+			const touch = event.touches[0];
+			clientX = touch.clientX;
+			clientY = touch.clientY;
+		} else if ('changedTouches' in event && event.changedTouches.length > 0) {
+			// TouchEvent after touch ended
+			const touch = event.changedTouches[0];
+			clientX = touch.clientX;
+			clientY = touch.clientY;
+		} else {
+			// MouseEvent
+			clientX = (event as MouseEvent).clientX;
+			clientY = (event as MouseEvent).clientY;
+		}
+
+		this.mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+		this.mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+
+		this.raycaster.setFromCamera(this.mouse, this.camera);
+
+		// Check saisen box first
+		if (this.saisenBoxObject) {
+			const children: THREE.Object3D[] = [];
+			this.saisenBoxObject.traverse((child) => {
+				if (child instanceof THREE.Mesh) {
+					children.push(child);
+				}
+			});
+			const intersects = this.raycaster.intersectObjects(children, false);
+			if (intersects.length > 0) {
+				return 'saisenBox';
+			}
+		}
+
+		// Check suzu (bell)
+		if (this.suzuObject) {
+			const children: THREE.Object3D[] = [];
+			this.suzuObject.traverse((child) => {
+				if (child instanceof THREE.Mesh) {
+					children.push(child);
+				}
+			});
+			const intersects = this.raycaster.intersectObjects(children, false);
+			if (intersects.length > 0) {
+				return 'suzu';
+			}
+		}
+
+		return null;
+	}
+
+	/**
 	 * ワープ衝突コールバックを設定
 	 * 仕様: T022 ゲート衝突時にwarpStartを送信するコールバック
 	 */
@@ -3213,6 +3412,7 @@ export class NoctownEngine {
 	 * ワープ完了・ワールド切り替え
 	 * 仕様: T024 worldJoinedイベント受信時にシーンを切り替え
 	 */
+	// 仕様: ワールド切り替え時に全オブジェクトをクリアして新ワールドのデータをロード
 	public switchWorld(
 		worldId: string | null,
 		worldType: 'default' | 'shrine',
@@ -3236,30 +3436,60 @@ export class NoctownEngine {
 		}
 		this.chunks.clear();
 
+		// 仕様: 動物をクリア（ワールド別にロードし直すため）
+		this.clearChickens();
+		this.clearCows();
+
+		// 仕様: 設置アイテム・ドロップアイテムをクリア（ワールド別にロードし直すため）
+		this.clearPlacedItems();
+		this.clearDroppedItems();
+
+		// 仕様: T083 リモートプレイヤーをクリア（ワールド別にロードし直すため）
+		this.clearRemotePlayers();
+
 		this.currentWorldId = worldId;
 		this.currentWorldType = worldType;
 
 		if (worldType === 'shrine' && shrineData) {
+			// 仕様: デフォルト地面を非表示（神社ワールドは専用の地面を使用）
+			if (this.defaultGroundPlane) {
+				this.defaultGroundPlane.visible = false;
+			}
+
 			// 神社ワールドのオブジェクトを配置
 			const shrineWorld = buildShrineWorld();
 			this.shrineObjects = shrineWorld.scene;
 			this.scene.add(this.shrineObjects);
 
+			// 仕様: T035 賽銭箱と鈴への参照を保存（クリック判定用）
+			this.saisenBoxObject = shrineWorld.saisenBox;
+			this.suzuObject = shrineWorld.suzu;
+
 			// 帰還用ワープゲートを配置（warp_gate.html準拠: 白色）
+			// 仕様: FR-030b デフォルトワールド行きゲートには🌲アイコンを表示
+			console.log('[Noctown Engine] Adding return warp gate at:', shrineData.returnGatePosition);
 			this.addWarpGate({
 				id: 'warp-gate-to-default',
 				position: shrineData.returnGatePosition,
 				targetWorldId: null, // null = デフォルトワールド
 				color: 0xffffff,
+				icon: '🌲', // 仕様: FR-030b デフォルトワールド行き
 			});
 		} else {
+			// 仕様: デフォルト地面を表示
+			if (this.defaultGroundPlane) {
+				this.defaultGroundPlane.visible = true;
+			}
+
 			// デフォルトワールドに神社へのワープゲートを配置
 			// 仕様: warp_gate.html準拠 - 白色、スポーン地点から離れた位置
+			// 仕様: FR-030a 神社ワールド行きゲートには⛩️アイコンを表示
 			this.addWarpGate({
 				id: 'warp-gate-to-shrine',
 				position: { x: 10, y: 0, z: -15 },
 				targetWorldId: 'shrine-world-001',
 				color: 0xffffff,
+				icon: '⛩️', // 仕様: FR-030a 神社ワールド行き
 			});
 		}
 
@@ -3364,6 +3594,16 @@ export class NoctownEngine {
 		if (this.petManager) {
 			this.petManager.dispose();
 			this.petManager = null;
+		}
+
+		// 仕様: FR-024 鶏・牛レンダラーのクリーンアップ
+		if (this.chickenRenderer) {
+			this.chickenRenderer.dispose();
+			this.chickenRenderer = null;
+		}
+		if (this.cowRenderer) {
+			this.cowRenderer.dispose();
+			this.cowRenderer = null;
 		}
 
 		// 仕様: 神社ワールド - ワープゲートのクリーンアップ

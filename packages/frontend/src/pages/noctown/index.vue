@@ -302,15 +302,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<!-- 仕様: T034 賽銭ダイアログ -->
 	<MkNoctownSaisenDialog
 		v-if="showSaisenDialog"
-		@close="showSaisenDialog = false"
-		@closed="showSaisenDialog = false"
+		@close="closeSaisenDialog"
+		@closed="closeSaisenDialog"
 		@offer="handleSaisenOffer"
 	/>
 </PageWithHeader>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
@@ -341,7 +341,7 @@ import { $i } from '@/i.js';
 import { apiUrl } from '@@/js/config.js';
 import { prefer } from '@/preferences.js';
 import { customEmojisMap } from '@/custom-emojis.js';
-import type { PlayerData, ChunkData, DroppedItemData, PlacedItemData, NpcData, PetInfo } from '@/scripts/noctown/engine.js';
+import type { PlayerData, ChunkData, DroppedItemData, PlacedItemData, NpcData, PetInfo, ChickenData, CowData } from '@/scripts/noctown/engine.js';
 
 // Noctown locale (type-safe access)
 const noctownI18n = {
@@ -439,6 +439,12 @@ const pendingWorldData = ref<{
 		suzuPosition: { x: number; y: number; z: number };
 		returnGatePosition: { x: number; y: number; z: number };
 	};
+	playersInWorld?: PlayerData[];
+	// 仕様: FR-023〜FR-027 ワールド別データ
+	placedItems?: PlacedItemData[];
+	droppedItems?: DroppedItemData[];
+	chickens?: ChickenData[];
+	cows?: CowData[];
 } | null>(null);
 
 // 仕様: T034 賽銭ダイアログ表示フラグ
@@ -761,29 +767,39 @@ async function initialize(): Promise<void> {
 			// 仕様: T022 ワープゲート衝突コールバックを設定
 			engine.setWarpCollisionCallback(handleWarpCollision);
 
-			// 仕様: T020 初期ワープゲートを配置（デフォルトワールド）
-			// warp_gate.html準拠: 白色、スポーン地点から離れた位置
-			engine.addWarpGate({
-				id: 'warp-gate-to-shrine',
-				position: { x: -20, y: 0, z: -20 },
-				targetWorldId: 'shrine-world-001',
-				color: 0xffffff,
-			});
+			// 仕様: 初期ロード時のワールドタイプを判定
+			// worldIdがshrineワールドの場合は神社ワールドとして扱う
+			const initialWorldType = worldId === 'shrine-world-001' ? 'shrine' : 'default';
 
-			// Load initial chunks around player
-			await loadNearbyChunks(currentX.value, currentZ.value);
+			if (initialWorldType === 'shrine') {
+				// 仕様: 神社ワールドで開始した場合は神社オブジェクトを配置
+				// WebSocket接続後にworldJoinedイベントで正式にシーンがセットアップされる
+				console.log('[Noctown] Initial load in shrine world, skipping default world setup');
+			} else {
+				// 仕様: T020 初期ワープゲートを配置（デフォルトワールドのみ）
+				// warp_gate.html準拠: 白色、スポーン地点から離れた位置
+				engine.addWarpGate({
+					id: 'warp-gate-to-shrine',
+					position: { x: 10, y: 0, z: -15 },
+					targetWorldId: 'shrine-world-001',
+					color: 0xffffff,
+					icon: '⛩️',
+				});
 
-			// Load nearby items
-			await loadNearbyItems(currentX.value, currentZ.value);
-			// 仕様: 初期ロード位置を記録
-			lastItemLoadX = currentX.value;
-			lastItemLoadZ = currentZ.value;
+				// Load initial chunks around player（デフォルトワールドのみ）
+				await loadNearbyChunks(currentX.value, currentZ.value);
+				// Load nearby items（デフォルトワールドのみ）
+				await loadNearbyItems(currentX.value, currentZ.value);
+				// 仕様: 初期ロード位置を記録
+				lastItemLoadX = currentX.value;
+				lastItemLoadZ = currentZ.value;
 
-			// Load nearby NPCs
-			await loadNearbyNpcs(currentX.value, currentZ.value);
+				// Load nearby NPCs（デフォルトワールドのみ）
+				await loadNearbyNpcs(currentX.value, currentZ.value);
 
-			// FR-022: Load nearby pets
-			await loadNearbyPets(currentX.value, currentZ.value);
+				// FR-022: Load nearby pets（デフォルトワールドのみ）
+				await loadNearbyPets(currentX.value, currentZ.value);
+			}
 		}
 
 		// Connect to WebSocket
@@ -985,6 +1001,11 @@ async function connectStream(): Promise<void> {
 		worldDisplayName: string | null;
 		spawnPosition: { x: number; y: number; z: number };
 		playersInWorld: PlayerData[];
+		// 仕様: FR-023〜FR-027 ワールド別データ
+		placedItems?: PlacedItemData[];
+		droppedItems?: DroppedItemData[];
+		chickens?: ChickenData[];
+		cows?: CowData[];
 		shrineData?: {
 			saisenBoxPosition: { x: number; y: number; z: number };
 			suzuPosition: { x: number; y: number; z: number };
@@ -1069,8 +1090,15 @@ function handlePlayerMoved(data: PlayerData): void {
 }
 
 // FR-007-6: プレイヤー参加時は常に新規追加（オフライン時は既に削除されているため）
-function handlePlayerJoined(data: PlayerData): void {
+// 仕様: T084 ワールドIDでフィルタリング - 同じワールドのプレイヤーのみ表示
+function handlePlayerJoined(data: PlayerData & { currentWorldId?: string | null }): void {
 	if (!engine || data.id === playerData.value?.id) return;
+	// ワールドIDが異なるプレイヤーは追加しない
+	const playerWorldId = data.currentWorldId ?? null;
+	if (playerWorldId !== worldId) {
+		console.log('[Noctown] Skipping player from different world:', data.id, 'playerWorld:', playerWorldId, 'myWorld:', worldId);
+		return;
+	}
 	engine.addRemotePlayer(data);
 }
 
@@ -1083,6 +1111,12 @@ function handlePlayerLeft(data: { playerId: string }): void {
 // FR-073, FR-074: Handle chunkGenerated event and render terrain with grid
 // FR-001: async修正（terrainDataに基づく地形生成のため）
 async function handleChunkGenerated(data: ChunkData): Promise<void> {
+	// 仕様: 神社ワールドではチャンクイベントを無視（専用オブジェクトのみ使用）
+	if (engine?.getCurrentWorldType() === 'shrine' || worldId === 'shrine-world-001') {
+		console.log('[Noctown] handleChunkGenerated: skipping chunk in shrine world');
+		return;
+	}
+
 	console.log('[Noctown] handleChunkGenerated: received chunk data', {
 		chunkX: data.chunkX,
 		chunkZ: data.chunkZ,
@@ -1325,11 +1359,18 @@ async function fetchNearbyPlayers(): Promise<void> {
 
 // T036-T037: Load nearby chunks using WebSocket chunk generation
 async function loadNearbyChunks(x: number, z: number): Promise<void> {
-	if (!connection.value || !isConnected.value || !worldId) {
+	// 仕様: 神社ワールドではチャンクロードをスキップ（専用オブジェクトのみ使用）
+	// engineのworldTypeまたはworldIdで判定
+	if (engine?.getCurrentWorldType() === 'shrine' || worldId === 'shrine-world-001') {
+		return;
+	}
+
+	// 仕様: デフォルトワールドではworldIdがnull
+	// connection と isConnected のみチェック（worldId は null 許容）
+	if (!connection.value || !isConnected.value) {
 		console.warn('[Noctown] loadNearbyChunks: precondition failed', {
 			hasConnection: !!connection.value,
 			isConnected: isConnected.value,
-			hasWorldId: !!worldId,
 			worldId,
 		});
 		return;
@@ -1652,6 +1693,18 @@ function handleCanvasClick(event: MouseEvent | TouchEvent): void {
 	if (placedItem) {
 		event.preventDefault();
 		openPlacedItemInfoWindow(placedItem);
+		return;
+	}
+
+	// 仕様: T035 神社オブジェクトのクリック処理（賽銭箱・鈴）
+	const shrineObject = engine.getClickedShrineObject(event);
+	if (shrineObject) {
+		event.preventDefault();
+		if (shrineObject === 'saisenBox') {
+			openSaisenDialog();
+		} else if (shrineObject === 'suzu') {
+			handleSuzuClick();
+		}
 		return;
 	}
 
@@ -2237,6 +2290,7 @@ function handleWarpStarted(): void {
 /**
  * T023: worldJoinedイベントのハンドラ
  * ワールドデータを保存（エフェクト完了後にシーン切り替え）
+ * 仕様: FR-023〜FR-027 ワールド別データを含む
  */
 function handleWorldJoined(data: {
 	worldId: string | null;
@@ -2244,6 +2298,11 @@ function handleWorldJoined(data: {
 	worldDisplayName: string | null;
 	spawnPosition: { x: number; y: number; z: number };
 	playersInWorld: PlayerData[];
+	// 仕様: FR-023〜FR-027 ワールド別データ
+	placedItems?: PlacedItemData[];
+	droppedItems?: DroppedItemData[];
+	chickens?: ChickenData[];
+	cows?: CowData[];
 	shrineData?: {
 		saisenBoxPosition: { x: number; y: number; z: number };
 		suzuPosition: { x: number; y: number; z: number };
@@ -2261,11 +2320,28 @@ function handleWorldJoined(data: {
 		if (engine) {
 			engine.switchWorld(data.worldId, data.worldType, data.spawnPosition, data.shrineData);
 
+			// 仕様: FR-029 ワールド切り替え時にチャンクキャッシュをクリア
+			loadedChunks.clear();
+			console.log('[Noctown] handleWorldJoined (reconnect): cleared loadedChunks cache');
+
+			// プレイヤー位置を更新
+			currentX.value = data.spawnPosition.x;
+			currentY.value = data.spawnPosition.y;
+			currentZ.value = data.spawnPosition.z;
+
 			// 他プレイヤーを追加
 			for (const player of data.playersInWorld) {
 				if (player.id !== playerData.value?.id) {
 					engine.addRemotePlayer(player);
 				}
+			}
+
+			// 仕様: FR-023〜FR-027 ワールド別データをリロード
+			reloadWorldData(data);
+
+			// 仕様: デフォルトワールドの場合はチャンクをロード
+			if (data.worldType === 'default') {
+				loadNearbyChunks(currentX.value, currentZ.value);
 			}
 		}
 	} else {
@@ -2275,7 +2351,70 @@ function handleWorldJoined(data: {
 			worldType: data.worldType,
 			spawnPosition: data.spawnPosition,
 			shrineData: data.shrineData,
+			playersInWorld: data.playersInWorld,
+			// 仕様: FR-023〜FR-027 ワールド別データも保存
+			placedItems: data.placedItems,
+			droppedItems: data.droppedItems,
+			chickens: data.chickens,
+			cows: data.cows,
 		};
+
+		// 仕様: ワープエフェクトのアニメーション時間(0.8秒)後にフェードアウトを開始
+		// フェードアウト完了後に @after-leave で onWarpAnimationComplete が呼ばれる
+		window.setTimeout(() => {
+			isWarpEffectActive.value = false;
+		}, 800);
+	}
+}
+
+/**
+ * 仕様: FR-023〜FR-027 ワールド別データをリロード
+ * ワールド切り替え時に設置アイテム、落ちているアイテム、動物を更新
+ */
+function reloadWorldData(data: {
+	placedItems?: PlacedItemData[];
+	droppedItems?: DroppedItemData[];
+	chickens?: ChickenData[];
+	cows?: CowData[];
+}): void {
+	if (!engine) return;
+
+	console.log('[Noctown] Reloading world data:', {
+		placedItems: data.placedItems?.length ?? 0,
+		droppedItems: data.droppedItems?.length ?? 0,
+		chickens: data.chickens?.length ?? 0,
+		cows: data.cows?.length ?? 0,
+	});
+
+	// 設置アイテムをリロード（FR-023）
+	if (data.placedItems) {
+		engine.clearPlacedItems();
+		for (const item of data.placedItems) {
+			engine.addPlacedItem(item);
+		}
+	}
+
+	// 落ちているアイテムをリロード（FR-025）
+	if (data.droppedItems) {
+		engine.clearDroppedItems();
+		for (const item of data.droppedItems) {
+			engine.addDroppedItem(item);
+		}
+	}
+
+	// 動物をリロード（FR-024）
+	if (data.chickens) {
+		engine.clearChickens();
+		for (const chicken of data.chickens) {
+			engine.addChicken(chicken);
+		}
+	}
+
+	if (data.cows) {
+		engine.clearCows();
+		for (const cow of data.cows) {
+			engine.addCow(cow);
+		}
 	}
 }
 
@@ -2288,12 +2427,38 @@ function onWarpAnimationComplete(): void {
 
 	if (pendingWorldData.value && engine) {
 		const data = pendingWorldData.value;
+
+		// 仕様: ワールドIDを更新（チャンクロード時に必要）
+		worldId = data.worldId;
+
 		engine.switchWorld(data.worldId, data.worldType, data.spawnPosition, data.shrineData);
 
 		// プレイヤー位置を更新
 		currentX.value = data.spawnPosition.x;
 		currentY.value = data.spawnPosition.y;
 		currentZ.value = data.spawnPosition.z;
+
+		// 他プレイヤーを追加
+		if (data.playersInWorld) {
+			for (const player of data.playersInWorld) {
+				if (player.id !== playerData.value?.id) {
+					engine.addRemotePlayer(player);
+				}
+			}
+		}
+
+		// 仕様: FR-029 ワールド切り替え時にチャンクキャッシュをクリア
+		// エンジン側のチャンクはswitchWorldでクリアされるが、Vue側のキャッシュも同期する
+		loadedChunks.clear();
+		console.log('[Noctown] onWarpAnimationComplete: cleared loadedChunks cache');
+
+		// 仕様: FR-023〜FR-027 ワールド別データをリロード
+		reloadWorldData(data);
+
+		// 仕様: デフォルトワールドに戻った場合はチャンクをロード
+		if (data.worldType === 'default') {
+			loadNearbyChunks(currentX.value, currentZ.value);
+		}
 
 		pendingWorldData.value = null;
 	}
@@ -2374,6 +2539,27 @@ function openSaisenDialog(): void {
 		return;
 	}
 	showSaisenDialog.value = true;
+}
+
+/**
+ * 仕様: T086 賽銭ダイアログを閉じる
+ */
+function closeSaisenDialog(): void {
+	showSaisenDialog.value = false;
+}
+
+/**
+ * 仕様: T037 鈴クリック時の処理
+ * 鈴を鳴らすアニメーションとサウンドを再生
+ */
+function handleSuzuClick(): void {
+	if (!engine || engine.getCurrentWorldType() !== 'shrine') {
+		return;
+	}
+	console.log('[Noctown] Suzu clicked - ringing bell');
+	// 鈴のアニメーションを開始
+	engine.startBellAnimation();
+	// TODO: 将来的にはWebSocketでサーバーに通知して、他プレイヤーにも鈴の音が聞こえるようにする
 }
 
 /**

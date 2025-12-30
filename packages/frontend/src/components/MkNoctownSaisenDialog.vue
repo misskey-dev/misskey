@@ -11,11 +11,13 @@
  -->
 
 <template>
-<MkModal ref="modal" @click="$emit('close')" @closed="$emit('closed')">
+<!-- 仕様: T085 画面中央にモーダル表示、bodyに直接レンダリング -->
+<Teleport to="body">
+<MkModal ref="modal" @click="closeDialog" @closed="$emit('closed')">
 	<div :class="$style.root">
 		<div :class="$style.header">
 			<span :class="$style.title">お賽銭</span>
-			<button :class="$style.closeBtn" @click="$emit('close')">
+			<button :class="$style.closeBtn" @click="closeDialog">
 				<i class="ti ti-x"></i>
 			</button>
 		</div>
@@ -94,10 +96,11 @@
 		</div>
 	</div>
 </MkModal>
+</Teleport>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, shallowRef } from 'vue';
 import MkModal from '@/components/MkModal.vue';
 import MkLoading from '@/components/global/MkLoading.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -108,6 +111,9 @@ const emit = defineEmits<{
 	(e: 'closed'): void;
 	(e: 'offer', amount: number): void;
 }>();
+
+// 仕様: モーダルrefでfocusTrapを正しく解放するためclose()メソッドを使用
+const modal = shallowRef<InstanceType<typeof MkModal> | null>(null);
 
 // State
 const balance = ref(0);
@@ -162,6 +168,14 @@ async function fetchData(): Promise<void> {
 	}
 }
 
+/**
+ * 仕様: T086 ダイアログを閉じる
+ * MkModalのclose()を呼んでfocusTrapを正しく解放する
+ */
+function closeDialog(): void {
+	modal.value?.close();
+}
+
 async function offerSaisen(amount: number): Promise<void> {
 	if (isProcessing.value) return;
 	if (amount === null) return;
@@ -193,6 +207,9 @@ async function offerSaisen(amount: number): Promise<void> {
 
 		// WebSocket経由でも通知（親コンポーネントで処理）
 		emit('offer', amount);
+
+		// 仕様: T086修正 成功後にダイアログを閉じる
+		closeDialog();
 	} catch (error: unknown) {
 		const err = error as { code?: string; message?: string };
 		if (err.code === 'INSUFFICIENT_BALANCE') {

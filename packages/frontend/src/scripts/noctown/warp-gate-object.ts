@@ -8,10 +8,12 @@ import * as THREE from 'three';
 // 仕様: ワープゲート3Dオブジェクト
 // プレイヤーが触れると別ワールドに転移する
 
-const G = 32;
+// 仕様: ワープゲートのスケール（通常のノクタウンスケールに合わせる）
+// shrine-objects.tsのG=0.5と整合性を取るため、ゲートサイズを調整
+const G = 1;
 
-// 仕様: ワープゲートのスケール（1/4サイズ）
-const WARP_GATE_SCALE = 0.25;
+// 仕様: ワープゲートのスケール（適切なサイズに調整）
+const WARP_GATE_SCALE = 0.5;
 
 // ワープゲートの衝突判定半径（スケールに合わせて調整）
 export const WARP_GATE_COLLISION_RADIUS = 2.5 * WARP_GATE_SCALE;
@@ -97,6 +99,8 @@ export interface WarpGateConfig {
 	position: { x: number; y: number; z: number };
 	targetWorldId: string | null;
 	color?: number;
+	// 仕様: FR-030 ワープゲート上部に表示するUnicode絵文字アイコン
+	icon?: string;
 }
 
 /**
@@ -117,6 +121,12 @@ export class WarpGate {
 	private innerRing!: THREE.Mesh;
 	private particles!: THREE.Points;
 	private light!: THREE.PointLight;
+	// 仕様: ワープ後の無限ループ防止
+	// プレイヤーがゲート内にスポーンした場合、一度外に出るまで衝突を無効化
+	private playerInsideGate: boolean = true; // 初期状態はtrue（スポーン時は内側と仮定）
+	// 仕様: FR-030 ふわふわアイコン用
+	private iconSprite: THREE.Sprite | null = null;
+	private iconBaseY: number = 0;
 
 	constructor(config: WarpGateConfig) {
 		this.config = config;
@@ -131,6 +141,11 @@ export class WarpGate {
 		// 仕様: warp_gate.html準拠で白色をデフォルトに
 		const color = config.color ?? 0xffffff;
 		this.createGate(color);
+
+		// 仕様: FR-030 アイコンを作成
+		if (config.icon) {
+			this.createFloatingIcon(config.icon);
+		}
 	}
 
 	private createGate(color: number): void {
@@ -298,17 +313,113 @@ export class WarpGate {
 			positions.setY(i, y);
 		}
 		positions.needsUpdate = true;
+
+		// 仕様: FR-030 アイコンのふわふわアニメーション
+		this.updateFloatingIcon(time);
 	}
 
 	/**
 	 * プレイヤーとの衝突判定
 	 * 仕様: 半径2.5以内に入ったらワープトリガー
+	 * 仕様: 無限ループ防止 - 一度外に出てから再度入った時のみ発動
 	 */
 	public checkCollision(playerPosition: { x: number; z: number }): boolean {
 		const dx = playerPosition.x - this.group.position.x;
 		const dz = playerPosition.z - this.group.position.z;
 		const distance = Math.sqrt(dx * dx + dz * dz);
-		return distance < WARP_GATE_COLLISION_RADIUS;
+		const isInside = distance < WARP_GATE_COLLISION_RADIUS;
+
+		if (this.playerInsideGate) {
+			// プレイヤーがゲート内にいる状態
+			if (!isInside) {
+				// 外に出た → フラグをリセット
+				this.playerInsideGate = false;
+			}
+			// まだ外に出ていないので衝突判定しない
+			return false;
+		} else {
+			// プレイヤーがゲート外にいる状態
+			if (isInside) {
+				// 外から入った → ワープ発動、フラグを立てる
+				this.playerInsideGate = true;
+				return true;
+			}
+			return false;
+		}
+	}
+
+	/**
+	 * ゲート内フラグをリセット
+	 * 仕様: ワールド切り替え時に呼び出して、新しいゲートでの判定を正しく開始
+	 */
+	public resetInsideFlag(): void {
+		this.playerInsideGate = true; // 新しいワールドではゲート内にいると仮定
+	}
+
+	/**
+	 * 仕様: FR-030 ワープゲート上部に浮遊するUnicode絵文字アイコンを作成
+	 * Canvasに絵文字を描画してテクスチャ化し、Spriteとして表示
+	 */
+	private createFloatingIcon(emoji: string): void {
+		// Canvasで絵文字をテクスチャ化
+		const canvas = document.createElement('canvas');
+		const size = 128;
+		canvas.width = size;
+		canvas.height = size;
+		const ctx = canvas.getContext('2d');
+		if (!ctx) return;
+
+		// 背景を透明に
+		ctx.clearRect(0, 0, size, size);
+
+		// 絵文字を描画
+		ctx.font = `${size * 0.7}px sans-serif`;
+		ctx.textAlign = 'center';
+		ctx.textBaseline = 'middle';
+		ctx.fillText(emoji, size / 2, size / 2);
+
+		// テクスチャを作成
+		const texture = new THREE.CanvasTexture(canvas);
+		texture.needsUpdate = true;
+
+		// スプライトマテリアル
+		const material = new THREE.SpriteMaterial({
+			map: texture,
+			transparent: true,
+			depthWrite: false,
+		});
+
+		// スプライトを作成
+		this.iconSprite = new THREE.Sprite(material);
+
+		// 仕様: アイコンサイズと位置（WARP_GATE_SCALEを考慮して調整）
+		// groupにscaleが掛かっているので、逆数を掛けて実際のサイズを調整
+		// 仕様変更: サイズを1/4に縮小（ユーザー要望）
+		const iconSize = 1 / WARP_GATE_SCALE; // 実際に表示されるサイズが1程度になるよう調整（元の1/4）
+		this.iconSprite.scale.set(iconSize, iconSize, 1);
+
+		// 仕様: ワープゲートのすぐ上に配置（y=4）
+		// 仕様変更: 位置をさらに低く調整（ユーザー要望）
+		this.iconBaseY = 4 / WARP_GATE_SCALE;
+		this.iconSprite.position.set(0, this.iconBaseY, 0);
+
+		this.group.add(this.iconSprite);
+	}
+
+	/**
+	 * 仕様: FR-030 アイコンのふわふわアニメーション更新
+	 */
+	private updateFloatingIcon(time: number): void {
+		if (!this.iconSprite) return;
+
+		// 仕様: ふわふわ上下運動（sin波で滑らか）
+		// 振幅0.2、周期は約3秒（アイコンが小さくなったので振幅も調整）
+		const floatOffset = Math.sin(time * 2.0) * 0.2 / WARP_GATE_SCALE;
+		this.iconSprite.position.y = this.iconBaseY + floatOffset;
+
+		// 仕様: 軽い回転（カメラに対して常に正面を向くのでZ軸回転のみ）
+		// ゆっくり揺れる感じ
+		this.iconSprite.material.rotation = Math.sin(time * 1.5) * 0.1;
 	}
 
 	/**
@@ -322,6 +433,14 @@ export class WarpGate {
 					obj.material.dispose();
 				}
 			}
+			// 仕様: FR-030 アイコンスプライトのクリーンアップ
+			if (obj instanceof THREE.Sprite) {
+				obj.geometry.dispose();
+				if (obj.material instanceof THREE.SpriteMaterial) {
+					obj.material.map?.dispose();
+					obj.material.dispose();
+				}
+			}
 		});
 	}
 }
@@ -329,6 +448,7 @@ export class WarpGate {
 /**
  * デフォルトワールド→神社ワールドへのワープゲートを作成
  * 仕様: 位置は(0,0)ではなく少しずらした場所に配置（warp_gate.html準拠: 白色）
+ * 仕様: FR-030 アイコンは⛩️（神社ワールドへ行くゲート）
  */
 export function createDefaultToShrineGate(): WarpGate {
 	return new WarpGate({
@@ -336,18 +456,22 @@ export function createDefaultToShrineGate(): WarpGate {
 		position: { x: 10, y: 0, z: -15 }, // スポーン地点から少し離れた場所
 		targetWorldId: 'shrine-world-001',
 		color: 0xffffff, // 白色（warp_gate.html準拠）
+		icon: '⛩️', // 仕様: FR-030 神社ワールド行きを示すアイコン
 	});
 }
 
 /**
  * 神社ワールド→デフォルトワールドへのワープゲートを作成
  * 仕様: warp_gate.html準拠で白色
+ * 仕様: FR-030 アイコンは🌲（デフォルトワールドへ行くゲート）
+ * 仕様: FR-018a 位置は(0,0,57)に配置
  */
 export function createShrineToDefaultGate(): WarpGate {
 	return new WarpGate({
 		id: 'warp-gate-to-default',
-		position: { x: 0, y: 0, z: G * 55 }, // 神社入口付近
+		position: { x: 0, y: 0, z: 57 }, // 仕様: FR-018a 神社ワールドの(0,0,57)に配置
 		targetWorldId: null, // null = デフォルトワールド
 		color: 0xffffff, // 白色（warp_gate.html準拠）
+		icon: '🌲', // 仕様: FR-030 デフォルトワールド行きを示すアイコン
 	});
 }

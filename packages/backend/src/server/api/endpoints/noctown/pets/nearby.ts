@@ -67,7 +67,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 			}
 
 			const radius = ps.radius ?? 50;
-			return await this.noctownService.getNearbyPets(ps.centerX, ps.centerZ, radius);
+			// 仕様: FR-024 プレイヤーの現在のワールドIDでフィルタリング
+			return await this.noctownService.getNearbyPets(ps.centerX, ps.centerZ, radius, player.currentWorldId);
 		});
 	}
 }

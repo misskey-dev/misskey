@@ -6,7 +6,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
-import type { NoctownDroppedItemsRepository, NoctownItemsRepository } from '@/models/_.js';
+import type { NoctownDroppedItemsRepository, NoctownItemsRepository, NoctownPlayersRepository } from '@/models/_.js';
 
 // 仕様: FR-030 ドロップアイテムの絵文字表現と拾得システム
 // 範囲内のドロップアイテム一覧を取得
@@ -57,12 +57,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		@Inject(DI.noctownItemsRepository)
 		private noctownItemsRepository: NoctownItemsRepository,
+
+		@Inject(DI.noctownPlayersRepository)
+		private noctownPlayersRepository: NoctownPlayersRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const radius = Math.min(ps.radius ?? 30, 50);
 
-			// Get dropped items in range
-			const droppedItems = await this.noctownDroppedItemsRepository
+			// 仕様: FR-025 プレイヤーの現在のワールドIDを取得してフィルタリング
+			const player = await this.noctownPlayersRepository.findOneBy({ userId: me.id });
+			const currentWorldId = player?.currentWorldId ?? null;
+
+			// Get dropped items in range, filtered by worldId
+			const query = this.noctownDroppedItemsRepository
 				.createQueryBuilder('di')
 				.where('di."positionX" BETWEEN :minX AND :maxX', {
 					minX: ps.x - radius,
@@ -71,7 +78,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.andWhere('di."positionZ" BETWEEN :minZ AND :maxZ', {
 					minZ: ps.z - radius,
 					maxZ: ps.z + radius,
-				})
+				});
+
+			// 仕様: FR-025 worldIdでフィルタリング（NULL = デフォルトワールド）
+			if (currentWorldId === null) {
+				query.andWhere('di."worldId" IS NULL');
+			} else {
+				query.andWhere('di."worldId" = :worldId', { worldId: currentWorldId });
+			}
+
+			const droppedItems = await query
 				.orderBy('di."droppedAt"', 'DESC')
 				.limit(50)
 				.getMany();

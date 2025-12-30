@@ -10,6 +10,7 @@ import { NoctownPlayer } from './NoctownPlayer.js';
 @Entity('noctown_chicken')
 @Index(['positionX', 'positionZ'])
 @Index(['spawnX', 'spawnZ'])
+@Index(['worldId'])
 export class NoctownChicken {
 	@PrimaryColumn(id())
 	public id: string;
@@ -115,4 +116,13 @@ export class NoctownChicken {
 		color: 'white' | 'brown' | 'black' | 'golden' | 'spotted';
 		isRooster: boolean;
 	};
+
+	// 仕様: FR-024 動物をワールド別に管理
+	// null = デフォルトワールド（後方互換性のため）
+	@Column('varchar', {
+		length: 128,
+		nullable: true,
+		comment: 'World ID (null = default world)',
+	})
+	public worldId: string | null;
 }
