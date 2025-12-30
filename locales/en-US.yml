@@ -2547,11 +2547,40 @@ _widgets:
   chat: "Chat with user"
 _widgetOptions:
   showHeader: "Show header"
+  transparent: "Make background transparent"
   height: "Height"
   _button:
     colored: "Colored"
   _clock:
     size: "Size"
+    thickness: "Needle thickness"
+    thicknessThin: "Thin"
+    thicknessMedium: "Normal"
+    thicknessThick: "Thick"
+    graduations: "Dial markings"
+    graduationDots: "Dot"
+    graduationArabic: "Arabic numbers"
+    fadeGraduations: "Fade the scale"
+    sAnimation: "Second hand animation"
+    sAnimationElastic: "Real"
+    sAnimationEaseOut: "Smooth"
+    twentyFour: "24 Hour Format"
+    labelTime: "Time"
+    labelTz: "Timezone"
+    labelTimeAndTz: "Time and time zone"
+    timezone: "Timezone"
+    showMs: "Show Miliseconds"
+    showLabel: "Show Label"
+  _jobQueue:
+    sound: "Play Sounds"
+  _rss:
+    url: "RSS Feed Url"
+    refreshIntervalSec: "Update interval (in seconds)"
+    maxEntries: "Maximum number of items to display"
+  _rssTicker:
+    shuffle: "Random display order"
+    duration: "Banner scroll speed (in seconds)"
+    reverse: "Scroll in the opposite direction"
 _cw:
   hide: "Hide"
   show: "Show content"
