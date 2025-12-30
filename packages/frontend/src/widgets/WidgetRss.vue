@@ -82,7 +82,7 @@ const tick = () => {
 			fetching.value = false;
 		});
 };
-const tickManually = throttle(2000, tick);
+const tickManually = throttle(1000, tick);
 
 watch(fetchEndpoint, () => {
 	tickManually();
