@@ -136,12 +136,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</TransitionGroup>
 
 			<MkButton
-				v-show="filesPaginator.canFetchOlder.value"
-				v-appear="shouldEnableInfiniteScroll ? filesPaginator.fetchOlder : null"
+				v-show="filesCanFetch"
+				v-appear="shouldEnableInfiniteScroll ? fetchMore : null"
 				:class="$style.loadMore"
 				primary
 				rounded
-				@click="filesPaginator.fetchOlder()"
+				@click="fetchMore"
 			>{{ i18n.ts.loadMore }}</MkButton>
 
 			<div v-if="filesPaginator.items.value.length == 0 && foldersPaginator.items.value.length == 0 && !fetching" :class="$style.empty">
@@ -241,9 +241,17 @@ const filesPaginator = markRaw(new Paginator('drive/files', {
 	params: () => ({ // 自動でリロードしたくないためcomputedParamsは使わない
 		folderId: folder.value ? folder.value.id : null,
 		type: props.type,
-		sort: sortModeSelect.value,
+		sort: ['-createdAt', '+createdAt'].includes(sortModeSelect.value) ? null : sortModeSelect.value,
 	}),
 }));
+const filesCanFetch = computed(() => !fetching.value && (filesPaginator.order.value === 'oldest' ? filesPaginator.canFetchNewer.value : filesPaginator.canFetchOlder.value));
+async function fetchMore() {
+	if (filesPaginator.order.value === 'oldest') {
+		filesPaginator.fetchNewer();
+	} else {
+		filesPaginator.fetchOlder();
+	}
+}
 
 const foldersPaginator = markRaw(new Paginator('drive/folders', {
 	limit: 30,
@@ -257,8 +265,13 @@ const filesTimeline = makeDateGroupedTimelineComputedRef(filesPaginator.items, '
 const shouldBeGroupedByDate = computed(() => ['+createdAt', '-createdAt'].includes(sortModeSelect.value));
 
 watch(folder, () => emit('cd', folder.value));
-watch(sortModeSelect, () => {
-	initialize();
+watch(sortModeSelect, async (to) => {
+	fetching.value = true;
+	await foldersPaginator.reload();
+	filesPaginator.initialDirection = to === '-createdAt' ? 'newer' : 'older';
+	filesPaginator.order.value = to === '-createdAt' ? 'oldest' : 'newest';
+	await filesPaginator.reload();
+	fetching.value = false;
 });
 
 async function initialize() {
