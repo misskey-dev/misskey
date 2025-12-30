@@ -2545,6 +2545,13 @@ _widgets:
   clicker: "點擊器"
   birthdayFollowings: "今天生日的使用者"
   chat: "聊天"
+_widgetOptions:
+  showHeader: "檢視標頭 "
+  height: "高度"
+  _button:
+    colored: "彩色"
+  _clock:
+    size: "大小"
 _cw:
   hide: "隱藏"
   show: "顯示內容"
