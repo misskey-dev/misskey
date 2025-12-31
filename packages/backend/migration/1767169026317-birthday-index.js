@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export class BirthdayIndex1711478468155 {
-    name = 'BirthdayIndex1711478468155'
+export class BirthdayIndex1767169026317 {
+    name = 'BirthdayIndex1767169026317'
 
     async up(queryRunner) {
         await queryRunner.query(`DROP INDEX "public"."IDX_de22cd2b445eee31ae51cdbe99"`);
