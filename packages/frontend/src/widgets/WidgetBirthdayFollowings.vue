@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #func="{ buttonStyleClass }"><button class="_button" :class="buttonStyleClass" @click="fetch"><i class="ti ti-refresh"></i></button></template>
 
 	<MkPagination v-slot="{ items }" :paginator="birthdayUsersPaginator">
-		<div :class="$style.bdayUserRoot">
+		<div>
 			<template v-for="(user, i) in items" :key="user.id">
 				<div
 					v-if="i > 0 && isSeparatorNeeded(birthdayUsersPaginator.items.value[i - 1].birthday, user.birthday)"
