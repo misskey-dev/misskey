@@ -2496,6 +2496,8 @@ _widgetOptions:
     colored: "สี"
   _clock:
     size: "ขนาด"
+  _birthdayFollowings:
+    period: "ระยะเวลา"
 _cw:
   hide: "ซ่อน"
   show: "โหลดเพิ่มเติม"
