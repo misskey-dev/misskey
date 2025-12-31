@@ -4,15 +4,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div>
-	<MkA :to="userPage(item.user)" style="overflow: hidden;">
+<div :class="$style.root">
+	<MkA :to="userPage(item.user)" style="overflow: clip;">
 		<MkUserCardMini :user="item.user" :withChart="false" style="text-overflow: ellipsis; background: inherit; border-radius: unset;"/>
 	</MkA>
-	<div style="display: flex; margin-right: 16px;">
-		<button v-tooltip.noDelay="i18n.ts.note" class="_button" :class="$style.post" @click="os.post({initialText: `@${item.user.username}${item.user.host ? `@${item.user.host}` : ''} `})">
-			<i class="ti-fw ti ti-confetti" :class="$style.postIcon"></i>
-		</button>
-	</div>
+	<button v-tooltip.noDelay="i18n.ts.note" class="_button" :class="$style.post" @click="os.post({initialText: `@${item.user.username}${item.user.host ? `@${item.user.host}` : ''} `})">
+		<i class="ti-fw ti ti-confetti" :class="$style.postIcon"></i>
+	</button>
 </div>
 </template>
 
@@ -30,9 +28,10 @@ defineProps<{
 
 <style lang="scss" module>
 .root {
+	box-sizing: border-box;
 	display: grid;
+	align-items: center;
 	grid-template-columns: auto 56px;
-	gap: 8px;
 }
 
 .post {
@@ -40,19 +39,18 @@ defineProps<{
 	justify-content: center;
 	align-items: center;
 	height: 40px;
-	margin: auto;
+	width: 40px;
+	margin-right: 16px;
 	aspect-ratio: 1/1;
 	border-radius: 100%;
-	background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
+	background: linear-gradient(90deg, var(--MI_THEME-buttonGradateA), var(--MI_THEME-buttonGradateB));
 
-	&:hover, &.active {
-		&:before {
-			background: var(--accentLighten);
-		}
+	&:hover {
+		background: linear-gradient(90deg, hsl(from var(--MI_THEME-accent) h s calc(l + 5)), hsl(from var(--MI_THEME-accent) h s calc(l + 5)));
 	}
 }
 
 .postIcon {
-	color: var(--fgOnAccent);
+	color: var(--MI_THEME-fgOnAccent);
 }
 </style>
