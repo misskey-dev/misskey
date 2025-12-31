@@ -2547,6 +2547,7 @@ _widgets:
   chat: "聊天"
 _widgetOptions:
   showHeader: "檢視標頭 "
+  transparent: "使背景透明"
   height: "高度"
   _button:
     colored: "彩色"
