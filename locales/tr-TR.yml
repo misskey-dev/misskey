@@ -2473,6 +2473,8 @@ _widgetOptions:
     colored: "Renkli"
   _clock:
     size: "Boyut"
+  _birthdayFollowings:
+    period: "Süre"
 _cw:
   hide: "Gizle"
   show: "İçeriği göster"
