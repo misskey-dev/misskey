@@ -20,11 +20,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<span style="height: 1em; width: 1px; background: var(--MI_THEME-divider);"></span>
 						<span>{{ getSeparatorInfo(birthdayUsersPaginator.items.value[i - 1].birthday, user.birthday)?.nextText }} <i class="ti ti-chevron-down"></i></span>
 					</div>
-					<!-- user -->
+					<XUser :class="$style.user" :item="user" />
 				</div>
-				<div v-else>
-					<!-- user -->
-				</div>
+				<XUser v-else :class="$style.user" :item="user" />
 			</template>
 		</div>
 	</MkPagination>
@@ -40,6 +38,7 @@ import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps 
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkPagination from '@/components/MkPagination.vue';
+import XUser from './WidgetBirthdayFollowings.user.vue';
 import { i18n } from '@/i18n.js';
 import { Paginator } from '@/utility/paginator.js';
 
@@ -150,24 +149,24 @@ defineExpose<WidgetComponentExpose>({
 </script>
 
 <style lang="scss" module>
-.post {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	height: 40px;
-	margin: auto;
-	aspect-ratio: 1/1;
-	border-radius: 100%;
-	background: linear-gradient(90deg, var(--buttonGradateA), var(--buttonGradateB));
-
-	&:hover, &.active {
-		&:before {
-			background: var(--accentLighten);
-		}
-	}
+.root {
+	container-type: inline-size;
+	background: var(--MI_THEME-panel);
 }
 
-.postIcon {
-	color: var(--fgOnAccent);
+.user {
+	border-bottom: solid 0.5px var(--MI_THEME-divider);
+}
+
+.date {
+	display: flex;
+	font-size: 85%;
+	align-items: center;
+	justify-content: center;
+	gap: 1em;
+	opacity: 0.75;
+	padding: 8px 8px;
+	margin: 0 auto;
+	border-bottom: solid 0.5px var(--MI_THEME-divider);
 }
 </style>
