@@ -2581,6 +2581,8 @@ _widgetOptions:
     shuffle: "Random display order"
     duration: "Banner scroll speed (in seconds)"
     reverse: "Scroll in the opposite direction"
+  _birthdayFollowings:
+    period: "Duration"
 _cw:
   hide: "Hide"
   show: "Show content"
