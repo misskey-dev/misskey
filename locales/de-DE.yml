@@ -2500,6 +2500,8 @@ _widgetOptions:
     colored: "Farbig"
   _clock:
     size: "Größe"
+  _birthdayFollowings:
+    period: "Dauer"
 _cw:
   hide: "Inhalt verbergen"
   show: "Inhalt anzeigen"
