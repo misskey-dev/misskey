@@ -40,16 +40,15 @@ const nowDate = computed(() => {
 	return date;
 });
 const birthdayDate = computed(() => {
-	const nowDate = new Date(now.value);
-	const [_, month, day] = props.item.birthday.split('-').map((v) => parseInt(v, 10));
-	return new Date(nowDate.getFullYear(), month - 1, day, 0, 0, 0, 0);
+	const [year, month, day] = props.item.birthday.split('-').map((v) => parseInt(v, 10));
+	return new Date(year, month - 1, day, 0, 0, 0, 0);
 });
 
 const countdownDate = computed(() => {
 	const days = Math.floor((birthdayDate.value.getTime() - nowDate.value.getTime()) / (1000 * 60 * 60 * 24));
 	if (birthdayDate.value < nowDate.value) {
 		return i18n.tsx._timeIn.days({ n: 365 + days });
-	} else if (birthdayDate.value > nowDate.value) {
+	} else if (days > 0) {
 		return i18n.tsx._timeIn.days({ n: days });
 	} else {
 		return i18n.ts.today;
