@@ -1,7 +1,12 @@
 ## Unreleased
 
+### Note
+- `users/following` の `birthday` プロパティは非推奨になりました。代わりに `users/get-following-birthday-users` をご利用ください。
+
 ### General
--
+- Enhance: 「もうすぐ誕生日のユーザー」ウィジェットで、誕生日が至近のユーザーも表示できるように  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey)
+	- 「今日誕生日のユーザー」は「もうすぐ誕生日のユーザー」に名称変更されました
 
 ### Client
 - Enhance: ドライブのファイル一覧で自動でもっと見るを利用可能に
@@ -13,7 +18,9 @@
 - Fix: アカウント管理ページで、アカウントの追加・削除を行ってもリストに反映されない問題を修正
 
 ### Server
-- 
+- Enhance: OAuthのクライアント情報取得（Client Information Discovery）において、IndieWeb Living Standard 11 July 2024で定義されているJSONドキュメント形式に対応しました
+  - JSONによるClient Information Discoveryを行うには、レスポンスの`Content-Type`ヘッダーが`application/json`である必要があります
+  - 従来の実装（12 February 2022版・HTML Microformat形式）も引き続きサポートされます
 
 
 ## 2025.12.2
