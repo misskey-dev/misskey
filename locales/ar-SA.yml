@@ -1371,6 +1371,8 @@ _widgetOptions:
     colored: "ملوّن"
   _clock:
     size: "الحجم"
+  _birthdayFollowings:
+    period: "المدة"
 _cw:
   hide: "إخفاء"
   show: "عرض المزيد"
