@@ -1795,6 +1795,8 @@ _widgetOptions:
     colored: "Barevné"
   _clock:
     size: "Velikost"
+  _birthdayFollowings:
+    period: "Trvání"
 _cw:
   hide: "Skrýt"
   show: "Zobrazit více"
