@@ -97,7 +97,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #header>
 					<MkTabs
 						v-model:tab="jobState"
-						:class="$style.jobsTabs" :tabs="[{
+						:tabs="[{
 							key: 'all',
 							title: 'All',
 							icon: 'ti ti-code-asterisk',
@@ -358,9 +358,5 @@ definePage(() => ({
 	gap: 8px;
 	font-size: 85%;
 	margin: 6px 0;
-}
-
-.jobsTabs {
-
 }
 </style>

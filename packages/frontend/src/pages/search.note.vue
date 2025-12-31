@@ -71,7 +71,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<MkUserCardMini
 									:user="user"
 									:withChart="false"
-									:class="$style.userSelectedCard"
 								/>
 							</div>
 							<div>
