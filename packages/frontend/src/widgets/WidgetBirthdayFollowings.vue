@@ -9,53 +9,46 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header>{{ i18n.ts._widgets.birthdayFollowings }}</template>
 	<template #func="{ buttonStyleClass }"><button class="_button" :class="buttonStyleClass" @click="fetch(true)"><i class="ti ti-refresh"></i></button></template>
 
-	<MkPagination ref="paginationEl" :pagination="birthdayUsersPagination">
-		<template #empty>
-			<div :class="$style.emptyRoot" :style="`height: ${widgetProps.showHeader ? widgetProps.height - 38 : widgetProps.height}px;`">
-				<img :src="infoImageUrl" class="_ghost" :class="$style.emptyImg"/>
-				<div>{{ i18n.ts.nothing }}</div>
-			</div>
-		</template>
-
-		<template #default="{ items: users }">
-			<MkDateSeparatedList v-slot="{ item }" :items="toMisskeyEntity(users)" :noGap="true">
-				<div v-if="item.user" :key="item.id" style="display: grid; grid-template-columns: auto 56px; grid-column-gap: 8px;">
-					<MkA :to="userPage(item.user)" style="overflow: hidden;">
-						<MkUserCardMini :user="item.user" :withChart="false" style="text-overflow: ellipsis; background: inherit; border-radius: unset;"/>
-					</MkA>
-					<div style="display: flex; margin-right: 16px;">
-						<button v-tooltip.noDelay="i18n.ts.note" class="_button" :class="$style.post" @click="os.post({initialText: `@${item.user.username}${item.user.host ? `@${item.user.host}` : ''} `})">
-							<i class="ti-fw ti ti-confetti" :class="$style.postIcon"></i>
-						</button>
+	<MkPagination v-slot="{ items }" :paginator="birthdayUsersPaginator">
+		<div :class="$style.bdayUserRoot">
+			<template v-for="(user, i) in items" :key="user.id">
+				<div
+					v-if="i > 0 && isSeparatorNeeded(birthdayUsersPaginator.items.value[i - 1].birthday, user.birthday)"
+				>
+					<div :class="$style.date">
+						<span><i class="ti ti-chevron-up"></i> {{ getSeparatorInfo(birthdayUsersPaginator.items.value[i - 1].birthday, user.birthday)?.prevText }}</span>
+						<span style="height: 1em; width: 1px; background: var(--MI_THEME-divider);"></span>
+						<span>{{ getSeparatorInfo(birthdayUsersPaginator.items.value[i - 1].birthday, user.birthday)?.nextText }} <i class="ti ti-chevron-down"></i></span>
 					</div>
+					<!-- user -->
 				</div>
-			</MkDateSeparatedList>
-		</template>
+				<div v-else>
+					<!-- user -->
+				</div>
+			</template>
+		</div>
 	</MkPagination>
 </MkContainer>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
-import * as Misskey from 'misskey-js';
-import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import type { MisskeyEntity } from '@/types/date-separated-list.js';
-import * as os from '@/os.js';
-import { i18n } from '@/i18n.js';
-import { userPage } from '@/filters/user.js';
-import { infoImageUrl } from '@/instance.js';
-import { GetFormResultType } from '@/scripts/form.js';
-import { useInterval } from '@/scripts/use-interval.js';
+import { computed, markRaw, ref } from 'vue';
+import { useInterval } from '@@/js/use-interval.js';
+import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-separate.js';
+import { useWidgetPropsManager } from './widget.js';
+import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkPagination from '@/components/MkPagination.vue';
-import MkDateSeparatedList from '@/components/MkDateSeparatedList.vue';
-import MkUserCardMini from '@/components/MkUserCardMini.vue';
+import { i18n } from '@/i18n.js';
+import { Paginator } from '@/utility/paginator.js';
 
-const name = i18n.ts._widgets.birthdayFollowings;
+const name = 'birthdayFollowings';
 
 const widgetPropsDef = {
 	showHeader: {
-		type: 'boolean' as const,
+		type: 'boolean',
+		label: i18n.ts._widgetOptions.showHeader,
 		default: true,
 	},
 	height: {
@@ -66,16 +59,20 @@ const widgetPropsDef = {
 		type: 'radio' as const,
 		default: '3day',
 		options: [{
-			value: 'today', label: i18n.ts.today,
+			value: 'today' as const,
+			label: i18n.ts.today,
 		}, {
-			value: '3day', label: i18n.tsx.dayX({ day: 3 }),
+			value: '3day' as const,
+			label: i18n.tsx.dayX({ day: 3 }),
 		}, {
-			value: 'week', label: i18n.ts.oneWeek,
+			value: 'week' as const,
+			label: i18n.ts.oneWeek,
 		}, {
-			value: 'month', label: i18n.ts.oneMonth,
+			value: 'month' as const,
+			label: i18n.ts.oneMonth,
 		}],
 	},
-};
+} satisfies FormWithDefault;
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
@@ -103,12 +100,10 @@ const end = computed(() => {
 	}
 });
 
-const paginationEl = ref<InstanceType<typeof MkPagination>>();
-const birthdayUsersPagination = {
-	endpoint: 'users/get-following-birthday-users' as const,
+const birthdayUsersPaginator = markRaw(new Paginator('users/get-following-birthday-users', {
 	limit: 18,
 	offsetMode: true,
-	params: computed(() => {
+	computedParams: computed(() => {
 		if (widgetProps.period === 'today') {
 			return {
 				birthday: {
@@ -131,7 +126,7 @@ const birthdayUsersPagination = {
 			};
 		}
 	}),
-};
+}));
 
 function fetch(force = false) {
 	const now = new Date();
@@ -139,23 +134,6 @@ function fetch(force = false) {
 		// computed() で再評価されるので、paginationEl.value!.reload() は不要
 		begin.value = now;
 	}
-}
-
-function toMisskeyEntity(items): MisskeyEntity[] {
-	const r = items.map((item: { userId: string, birthday: string, user: Misskey.entities.UserLite }) => {
-		const bday = new Date();
-		const parsedBday = item.birthday.split('-').map((x) => parseInt(x, 10));
-		bday.setFullYear(parsedBday[0], parsedBday[1] - 1, parsedBday[2]);
-		bday.setHours(0, 0, 0, 0);
-
-		return {
-			id: item.user.id,
-			createdAt: bday.toISOString(),
-			user: item.user,
-		};
-	});
-
-	return [{ id: '_', createdAt: begin.value.toISOString() }, ...r];
 }
 
 useInterval(fetch, 1000 * 60, {
@@ -172,21 +150,6 @@ defineExpose<WidgetComponentExpose>({
 </script>
 
 <style lang="scss" module>
-.emptyRoot {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-}
-
-.emptyImg {
-	height: 96px;
-	width: auto;
-	max-width: 90%;
-	margin-bottom: 8px;
-	border-radius: var(--radius);
-}
-
 .post {
 	display: flex;
 	justify-content: center;

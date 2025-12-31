@@ -13,29 +13,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 </template>
 
-<script lang="ts" setup>
-/* eslint-disable id-denylist --
-  Chart.js has a `data` attribute in most chart definitions, which triggers the
-  id-denylist violation when setting it. This is causing about 60+ lint issues.
-  As this is part of Chart.js's API it makes sense to disable the check here.
-*/
-import { onMounted, ref, shallowRef, watch } from 'vue';
-import { Chart } from 'chart.js';
-import * as Misskey from 'misskey-js';
-import { misskeyApiGet } from '@/scripts/misskey-api.js';
-import { defaultStore } from '@/store.js';
-import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
-import { chartVLine } from '@/scripts/chart-vline.js';
-import { alpha } from '@/scripts/color.js';
-import date from '@/filters/date.js';
-import bytes from '@/filters/bytes.js';
-import { initChart } from '@/scripts/init-chart.js';
-import { chartLegend } from '@/scripts/chart-legend.js';
-import MkChartLegend from '@/components/MkChartLegend.vue';
-
-initChart();
-
-type ChartSrc =
+<script lang="ts">
+export type ChartSrc =
 	| 'federation'
 	| 'ap-request'
 	| 'users'
@@ -62,7 +41,26 @@ type ChartSrc =
 	| 'per-user-pv'
 	| 'per-user-following'
 	| 'per-user-followers'
-	| 'per-user-drive'
+	| 'per-user-drive';
+</script>
+
+<script lang="ts" setup>
+
+import { onMounted, ref, useTemplateRef, watch } from 'vue';
+import { Chart } from 'chart.js';
+import * as Misskey from 'misskey-js';
+import { misskeyApiGet } from '@/utility/misskey-api.js';
+import { store } from '@/store.js';
+import { useChartTooltip } from '@/composables/use-chart-tooltip.js';
+import { chartVLine } from '@/utility/chart-vline.js';
+import { alpha } from '@/utility/color.js';
+import date from '@/filters/date.js';
+import bytes from '@/filters/bytes.js';
+import { initChart } from '@/utility/init-chart.js';
+import { chartLegend } from '@/utility/chart-legend.js';
+import MkChartLegend from '@/components/MkChartLegend.vue';
+
+initChart();
 
 const props = withDefaults(defineProps<{
 	src: ChartSrc;
@@ -94,7 +92,7 @@ const props = withDefaults(defineProps<{
 	nowForChromatic: undefined,
 });
 
-const legendEl = shallowRef<InstanceType<typeof MkChartLegend>>();
+const legendEl = useTemplateRef('legendEl');
 
 const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
 const negate = arr => arr.map(x => -x);
@@ -132,7 +130,7 @@ let chartData: {
 	bytes?: boolean;
 } | null = null;
 
-const chartEl = shallowRef<HTMLCanvasElement | null>(null);
+const chartEl = useTemplateRef('chartEl');
 const fetching = ref(true);
 
 const getDate = (ago: number) => {
@@ -159,7 +157,7 @@ const render = () => {
 		chartInstance.destroy();
 	}
 
-	const vLineColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
+	const vLineColor = store.s.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
 
 	const maxes = chartData.series.map((x, i) => Math.max(...x.data.map(d => d.y)));
 
@@ -591,7 +589,10 @@ const fetchDriveFilesChart = async (): Promise<typeof chartData> => {
 };
 
 const fetchInstanceRequestsChart = async (): Promise<typeof chartData> => {
-	const raw = await misskeyApiGet('charts/instance', { host: props.args?.host, limit: props.limit, span: props.span });
+	const host = props.args?.host;
+	if (host == null) return { series: [] };
+
+	const raw = await misskeyApiGet('charts/instance', { host: host, limit: props.limit, span: props.span });
 	return {
 		series: [{
 			name: 'In',
@@ -613,7 +614,10 @@ const fetchInstanceRequestsChart = async (): Promise<typeof chartData> => {
 };
 
 const fetchInstanceUsersChart = async (total: boolean): Promise<typeof chartData> => {
-	const raw = await misskeyApiGet('charts/instance', { host: props.args?.host, limit: props.limit, span: props.span });
+	const host = props.args?.host;
+	if (host == null) return { series: [] };
+
+	const raw = await misskeyApiGet('charts/instance', { host: host, limit: props.limit, span: props.span });
 	return {
 		series: [{
 			name: 'Users',
@@ -628,7 +632,10 @@ const fetchInstanceUsersChart = async (total: boolean): Promise<typeof chartData
 };
 
 const fetchInstanceNotesChart = async (total: boolean): Promise<typeof chartData> => {
-	const raw = await misskeyApiGet('charts/instance', { host: props.args?.host, limit: props.limit, span: props.span });
+	const host = props.args?.host;
+	if (host == null) return { series: [] };
+
+	const raw = await misskeyApiGet('charts/instance', { host: host, limit: props.limit, span: props.span });
 	return {
 		series: [{
 			name: 'Notes',
@@ -643,7 +650,10 @@ const fetchInstanceNotesChart = async (total: boolean): Promise<typeof chartData
 };
 
 const fetchInstanceFfChart = async (total: boolean): Promise<typeof chartData> => {
-	const raw = await misskeyApiGet('charts/instance', { host: props.args?.host, limit: props.limit, span: props.span });
+	const host = props.args?.host;
+	if (host == null) return { series: [] };
+
+	const raw = await misskeyApiGet('charts/instance', { host: host, limit: props.limit, span: props.span });
 	return {
 		series: [{
 			name: 'Following',
@@ -666,7 +676,10 @@ const fetchInstanceFfChart = async (total: boolean): Promise<typeof chartData> =
 };
 
 const fetchInstanceDriveUsageChart = async (total: boolean): Promise<typeof chartData> => {
-	const raw = await misskeyApiGet('charts/instance', { host: props.args?.host, limit: props.limit, span: props.span });
+	const host = props.args?.host;
+	if (host == null) return { series: [] };
+
+	const raw = await misskeyApiGet('charts/instance', { host: host, limit: props.limit, span: props.span });
 	return {
 		bytes: true,
 		series: [{
@@ -682,7 +695,10 @@ const fetchInstanceDriveUsageChart = async (total: boolean): Promise<typeof char
 };
 
 const fetchInstanceDriveFilesChart = async (total: boolean): Promise<typeof chartData> => {
-	const raw = await misskeyApiGet('charts/instance', { host: props.args?.host, limit: props.limit, span: props.span });
+	const host = props.args?.host;
+	if (host == null) return { series: [] };
+
+	const raw = await misskeyApiGet('charts/instance', { host: host, limit: props.limit, span: props.span });
 	return {
 		series: [{
 			name: 'Drive files',
@@ -697,7 +713,10 @@ const fetchInstanceDriveFilesChart = async (total: boolean): Promise<typeof char
 };
 
 const fetchPerUserNotesChart = async (): Promise<typeof chartData> => {
-	const raw = await misskeyApiGet('charts/user/notes', { userId: props.args?.user?.id, limit: props.limit, span: props.span });
+	const userId = props.args?.user?.id;
+	if (userId == null) return { series: [] };
+
+	const raw = await misskeyApiGet('charts/user/notes', { userId: userId, limit: props.limit, span: props.span });
 	return {
 		series: [...(props.args?.withoutAll ? [] : [{
 			name: 'All',
@@ -729,7 +748,10 @@ const fetchPerUserNotesChart = async (): Promise<typeof chartData> => {
 };
 
 const fetchPerUserPvChart = async (): Promise<typeof chartData> => {
-	const raw = await misskeyApiGet('charts/user/pv', { userId: props.args?.user?.id, limit: props.limit, span: props.span });
+	const userId = props.args?.user?.id;
+	if (userId == null) return { series: [] };
+
+	const raw = await misskeyApiGet('charts/user/pv', { userId: userId, limit: props.limit, span: props.span });
 	return {
 		series: [{
 			name: 'Unique PV (user)',
@@ -756,7 +778,10 @@ const fetchPerUserPvChart = async (): Promise<typeof chartData> => {
 };
 
 const fetchPerUserFollowingChart = async (): Promise<typeof chartData> => {
-	const raw = await misskeyApiGet('charts/user/following', { userId: props.args?.user?.id, limit: props.limit, span: props.span });
+	const userId = props.args?.user?.id;
+	if (userId == null) return { series: [] };
+
+	const raw = await misskeyApiGet('charts/user/following', { userId: userId, limit: props.limit, span: props.span });
 	return {
 		series: [{
 			name: 'Local',
@@ -771,7 +796,10 @@ const fetchPerUserFollowingChart = async (): Promise<typeof chartData> => {
 };
 
 const fetchPerUserFollowersChart = async (): Promise<typeof chartData> => {
-	const raw = await misskeyApiGet('charts/user/following', { userId: props.args?.user?.id, limit: props.limit, span: props.span });
+	const userId = props.args?.user?.id;
+	if (userId == null) return { series: [] };
+
+	const raw = await misskeyApiGet('charts/user/following', { userId: userId, limit: props.limit, span: props.span });
 	return {
 		series: [{
 			name: 'Local',
@@ -786,7 +814,10 @@ const fetchPerUserFollowersChart = async (): Promise<typeof chartData> => {
 };
 
 const fetchPerUserDriveChart = async (): Promise<typeof chartData> => {
-	const raw = await misskeyApiGet('charts/user/drive', { userId: props.args?.user?.id, limit: props.limit, span: props.span });
+	const userId = props.args?.user?.id;
+	if (userId == null) return { series: [] };
+
+	const raw = await misskeyApiGet('charts/user/drive', { userId: userId, limit: props.limit, span: props.span });
 	return {
 		bytes: true,
 		series: [{
@@ -847,7 +878,7 @@ watch(() => [props.src, props.span], fetchAndRender);
 onMounted(() => {
 	fetchAndRender();
 });
-/* eslint-enable id-denylist */
+
 </script>
 
 <style lang="scss" module>
@@ -861,8 +892,8 @@ onMounted(() => {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	-webkit-backdrop-filter: var(--blur, blur(12px));
-	backdrop-filter: var(--blur, blur(12px));
+	-webkit-backdrop-filter: var(--MI-blur, blur(12px));
+	backdrop-filter: var(--MI-blur, blur(12px));
 	display: flex;
 	justify-content: center;
 	align-items: center;

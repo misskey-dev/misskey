@@ -22,10 +22,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import MkPlusOneEffect from '@/components/MkPlusOneEffect.vue';
 import * as os from '@/os.js';
-import { useInterval } from '@/scripts/use-interval.js';
-import * as game from '@/scripts/clicker-game.js';
+import { useInterval } from '@@/js/use-interval.js';
+import * as game from '@/utility/clicker-game.js';
 import number from '@/filters/number.js';
-import { claimAchievement } from '@/scripts/achievements.js';
+import { claimAchievement } from '@/utility/achievements.js';
 
 const saveData = game.saveData;
 const cookies = computed(() => saveData.value?.cookies);

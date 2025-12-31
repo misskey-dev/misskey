@@ -10,11 +10,22 @@ const fs = require('fs');
 	fs.rmSync(__dirname + '/../packages/backend/built', { recursive: true, force: true });
 	fs.rmSync(__dirname + '/../packages/backend/node_modules', { recursive: true, force: true });
 
+	fs.rmSync(__dirname + '/../packages/frontend-shared/built', { recursive: true, force: true });
+	fs.rmSync(__dirname + '/../packages/frontend-shared/node_modules', { recursive: true, force: true });
+
+	fs.rmSync(__dirname + '/../packages/frontend-builder/node_modules', { recursive: true, force: true });
+
 	fs.rmSync(__dirname + '/../packages/frontend/built', { recursive: true, force: true });
 	fs.rmSync(__dirname + '/../packages/frontend/node_modules', { recursive: true, force: true });
 
+	fs.rmSync(__dirname + '/../packages/frontend-embed/built', { recursive: true, force: true });
+	fs.rmSync(__dirname + '/../packages/frontend-embed/node_modules', { recursive: true, force: true });
+
 	fs.rmSync(__dirname + '/../packages/sw/built', { recursive: true, force: true });
 	fs.rmSync(__dirname + '/../packages/sw/node_modules', { recursive: true, force: true });
+
+	fs.rmSync(__dirname + '/../packages/i18n/built', { recursive: true, force: true });
+	fs.rmSync(__dirname + '/../packages/i18n/node_modules', { recursive: true, force: true });
 
 	fs.rmSync(__dirname + '/../packages/misskey-js/built', { recursive: true, force: true });
 	fs.rmSync(__dirname + '/../packages/misskey-js/node_modules', { recursive: true, force: true });

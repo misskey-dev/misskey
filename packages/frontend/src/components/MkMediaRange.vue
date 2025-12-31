@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <!-- Media系専用のinput range -->
 <template>
-<div :style="sliderBgWhite ? '--sliderBg: rgba(255,255,255,.25);' : '--sliderBg: var(--scrollbarHandle);'">
+<div :style="sliderBgWhite ? '--sliderBg: rgba(255,255,255,.25);' : '--sliderBg: var(--MI_THEME-scrollbarHandle);'">
 	<div :class="$style.controlsSeekbar">
 		<progress v-if="buffer !== undefined" :class="$style.buffer" :value="isNaN(buffer) ? 0 : buffer" min="0" max="1">{{ Math.round(buffer * 100) }}% buffered</progress>
 		<input v-model="model" :class="$style.seek" :style="`--value: ${modelValue * 100}%;`" type="range" min="0" max="1" step="any" @change="emit('dragEnded', modelValue)"/>
@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { computed, ModelRef } from 'vue';
+import { computed } from 'vue';
 
 withDefaults(defineProps<{
 	buffer?: number;
@@ -28,8 +28,7 @@ const emit = defineEmits<{
 	(ev: 'dragEnded', value: number): void;
 }>();
 
-// eslint-disable-next-line no-undef
-const model = defineModel({ required: true }) as ModelRef<string | number>;
+const model = defineModel<string | number>({ required: true });
 const modelValue = computed({
 	get: () => typeof model.value === 'number' ? model.value : parseFloat(model.value),
 	set: v => { model.value = v; },
@@ -48,7 +47,7 @@ const modelValue = computed({
 	background: transparent;
 	border: 0;
 	border-radius: 26px;
-	color: var(--accent);
+	color: var(--MI_THEME-accent);
 	display: block;
 	height: 19px;
 	margin: 0;

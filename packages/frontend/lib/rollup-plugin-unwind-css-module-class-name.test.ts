@@ -58,7 +58,7 @@ describe(normalizeClass.name, () => {
 
 it('Composition API (standard)', () => {
 	const ast = parse(`
-import { c as api, d as defaultStore, i as i18n, aD as notePage, bN as ImgWithBlurhash, bY as getStaticImageUrl, _ as _export_sfc } from './app-!~{001}~.js';
+import { c as api, d as store, i as i18n, aD as notePage, bN as ImgWithBlurhash, bY as getStaticImageUrl, _ as _export_sfc } from './app-!~{001}~.js';
 import { M as MkContainer } from './MkContainer-!~{03M}~.js';
 import { b as defineComponent, a as ref, e as onMounted, z as resolveComponent, g as openBlock, h as createBlock, i as withCtx, K as createTextVNode, E as toDisplayString, u as unref, l as createBaseVNode, q as normalizeClass, B as createCommentVNode, k as createElementBlock, F as Fragment, C as renderList, A as createVNode } from './vue-!~{002}~.js';
 import './photoswipe-!~{003}~.js';
@@ -74,7 +74,7 @@ const _sfc_main = /* @__PURE__ */ defineComponent({
     let fetching = ref(true);
     let images = ref([]);
     function thumbnail(image) {
-      return defaultStore.state.disableShowingAnimatedImages ? getStaticImageUrl(image.url) : image.thumbnailUrl;
+      return store.s.disableShowingAnimatedImages ? getStaticImageUrl(image.url) : image.thumbnailUrl;
     }
     onMounted(() => {
       const image = [
@@ -173,7 +173,7 @@ export { index_photos as default };
 `.slice(1), { ecmaVersion: 'latest', sourceType: 'module' });
 	unwindCssModuleClassName(ast);
 	expect(generate(ast)).toBe(`
-import {c as api, d as defaultStore, i as i18n, aD as notePage, bN as ImgWithBlurhash, bY as getStaticImageUrl, _ as _export_sfc} from './app-!~{001}~.js';
+import {c as api, d as store, i as i18n, aD as notePage, bN as ImgWithBlurhash, bY as getStaticImageUrl, _ as _export_sfc} from './app-!~{001}~.js';
 import {M as MkContainer} from './MkContainer-!~{03M}~.js';
 import {b as defineComponent, a as ref, e as onMounted, z as resolveComponent, g as openBlock, h as createBlock, i as withCtx, K as createTextVNode, E as toDisplayString, u as unref, l as createBaseVNode, q as normalizeClass, B as createCommentVNode, k as createElementBlock, F as Fragment, C as renderList, A as createVNode} from './vue-!~{002}~.js';
 import './photoswipe-!~{003}~.js';
@@ -190,7 +190,7 @@ const index_photos = defineComponent({
     let fetching = ref(true);
     let images = ref([]);
     function thumbnail(image) {
-      return defaultStore.state.disableShowingAnimatedImages ? getStaticImageUrl(image.url) : image.thumbnailUrl;
+      return store.s.disableShowingAnimatedImages ? getStaticImageUrl(image.url) : image.thumbnailUrl;
     }
     onMounted(() => {
       const image = ["image/jpeg", "image/webp", "image/avif", "image/png", "image/gif", "image/apng", "image/vnd.mozilla.apng"];
@@ -268,7 +268,7 @@ export {index_photos as default};
 it('Composition API (with `useCssModule()`)', () => {
 	const ast = parse(`
 import { a7 as getCurrentInstance, b as defineComponent, G as useCssModule, a1 as h, H as TransitionGroup } from './!~{002}~.js';
-import { d as defaultStore, aK as toast, b5 as MkAd, i as i18n, _ as _export_sfc } from './app-!~{001}~.js';
+import { d as store, aK as toast, b5 as MkAd, i as i18n, _ as _export_sfc } from './app-!~{001}~.js';
 
 function isDebuggerEnabled(id) {
   try {
@@ -393,7 +393,7 @@ const _sfc_main = defineComponent({
       el.style.left = "";
     }
     return () => h(
-      defaultStore.state.animation ? TransitionGroup : "div",
+      prefer.s.animation ? TransitionGroup : "div",
       {
         class: {
           [$style["date-separated-list"]]: true,
@@ -402,7 +402,7 @@ const _sfc_main = defineComponent({
           [$style["direction-down"]]: props.direction === "down",
           [$style["direction-up"]]: props.direction === "up"
         },
-        ...defaultStore.state.animation ? {
+        ...prefer.s.animation ? {
           name: "list",
           tag: "div",
           onBeforeLeave,
@@ -441,7 +441,7 @@ export { MkDateSeparatedList as M };
 	unwindCssModuleClassName(ast);
 	expect(generate(ast)).toBe(`
 import {a7 as getCurrentInstance, b as defineComponent, G as useCssModule, a1 as h, H as TransitionGroup} from './!~{002}~.js';
-import {d as defaultStore, aK as toast, b5 as MkAd, i as i18n, _ as _export_sfc} from './app-!~{001}~.js';
+import {d as store, aK as toast, b5 as MkAd, i as i18n, _ as _export_sfc} from './app-!~{001}~.js';
 function isDebuggerEnabled(id) {
   try {
     return localStorage.getItem(\`DEBUG_\${id}\`) !== null;
@@ -555,7 +555,7 @@ const _sfc_main = defineComponent({
       el.style.top = "";
       el.style.left = "";
     }
-    return () => h(defaultStore.state.animation ? TransitionGroup : "div", {
+    return () => h(prefer.s.animation ? TransitionGroup : "div", {
       class: {
         [$style["date-separated-list"]]: true,
         [$style["date-separated-list-nogap"]]: props.noGap,
@@ -563,7 +563,7 @@ const _sfc_main = defineComponent({
         [$style["direction-down"]]: props.direction === "down",
         [$style["direction-up"]]: props.direction === "up"
       },
-      ...defaultStore.state.animation ? {
+      ...prefer.s.animation ? {
         name: "list",
         tag: "div",
         onBeforeLeave,

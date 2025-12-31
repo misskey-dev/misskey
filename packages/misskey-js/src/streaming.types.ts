@@ -1,5 +1,7 @@
 import {
 	Antenna,
+	ChatMessage,
+	ChatMessageLite,
 	DriveFile,
 	DriveFolder,
 	Note,
@@ -21,6 +23,14 @@ import {
 	ServerStatsLog,
 	ReversiGameDetailed,
 } from './entities.js';
+import {
+	ReversiUpdateKey,
+} from './consts.js';
+
+type ReversiUpdateSettings<K extends ReversiUpdateKey> = {
+	key: K;
+	value: ReversiGameDetailed[K];
+};
 
 export type Channels = {
 	main: {
@@ -38,19 +48,16 @@ export type Channels = {
 			urlUploadFinished: (payload: { marker: string; file: DriveFile; }) => void;
 			readAllNotifications: () => void;
 			unreadNotification: (payload: Notification) => void;
-			unreadMention: (payload: Note['id']) => void;
-			readAllUnreadMentions: () => void;
 			notificationFlushed: () => void;
-			unreadSpecifiedNote: (payload: Note['id']) => void;
-			readAllUnreadSpecifiedNotes: () => void;
-			readAllAntennas: () => void;
 			unreadAntenna: (payload: Antenna) => void;
+			newChatMessage: (payload: ChatMessage) => void;
 			readAllAnnouncements: () => void;
 			myTokenRegenerated: () => void;
 			signin: (payload: Signin) => void;
 			registryUpdated: (payload: {
 				scope?: string[];
 				key: string;
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				value: any | null;
 			}) => void;
 			driveFileCreated: (payload: DriveFile) => void;
@@ -115,7 +122,7 @@ export type Channels = {
 	};
 	hashtag: {
 		params: {
-			q?: string;
+			q: string[][];
 		};
 		events: {
 			note: (payload: Note) => void;
@@ -199,6 +206,14 @@ export type Channels = {
 		};
 		receives: null;
 	};
+	reversi: {
+		params: null;
+		events: {
+			matched: (payload: { game: ReversiGameDetailed }) => void;
+			invited: (payload: { user: User }) => void;
+		};
+		receives: null;
+	};
 	reversiGame: {
 		params: {
 			gameId: string;
@@ -208,8 +223,8 @@ export type Channels = {
 			ended: (payload: { winnerId: User['id'] | null; game: ReversiGameDetailed; }) => void;
 			canceled: (payload: { userId: User['id']; }) => void;
 			changeReadyStates: (payload: { user1: boolean; user2: boolean; }) => void;
-			updateSettings: (payload: { userId: User['id']; key: string; value: any; }) => void;
-			log: (payload: Record<string, any>) => void;
+			updateSettings: <K extends ReversiUpdateKey>(payload: { userId: User['id']; key: K; value: ReversiGameDetailed[K]; }) => void;
+			log: (payload: Record<string, unknown>) => void;
 		};
 		receives: {
 			putStone: {
@@ -218,16 +233,61 @@ export type Channels = {
 			};
 			ready: boolean;
 			cancel: null | Record<string, never>;
-			updateSettings: {
-				key: string;
-				value: any;
-			};
+			updateSettings: ReversiUpdateSettings<ReversiUpdateKey>;
 			claimTimeIsUp: null | Record<string, never>;
 		}
-	}
+	};
+	chatUser: {
+		params: {
+			otherId: string;
+		};
+		events: {
+			message: (payload: ChatMessageLite) => void;
+			deleted: (payload: ChatMessageLite['id']) => void;
+			react: (payload: {
+				reaction: string;
+				user?: UserLite;
+				messageId: ChatMessageLite['id'];
+			}) => void;
+			unreact: (payload: {
+				reaction: string;
+				user?: UserLite;
+				messageId: ChatMessageLite['id'];
+			}) => void;
+		};
+		receives: {
+			read: {
+				id: ChatMessageLite['id'];
+			};
+		};
+	};
+	chatRoom: {
+		params: {
+			roomId: string;
+		};
+		events: {
+			message: (payload: ChatMessageLite) => void;
+			deleted: (payload: ChatMessageLite['id']) => void;
+			react: (payload: {
+				reaction: string;
+				user?: UserLite;
+				messageId: ChatMessageLite['id'];
+			}) => void;
+			unreact: (payload: {
+				reaction: string;
+				user?: UserLite;
+				messageId: ChatMessageLite['id'];
+			}) => void;
+		};
+		receives: {
+			read: {
+				id: ChatMessageLite['id'];
+			};
+		};
+	};
 };
 
-export type NoteUpdatedEvent = {
+export type NoteUpdatedEvent = { id: Note['id'] } & ({
 	type: 'reacted';
 	body: {
 		reaction: string;
@@ -251,7 +311,7 @@ export type NoteUpdatedEvent = {
 		choice: number;
 		userId: User['id'];
 	};
-};
+});
 
 export type BroadcastEvents = {
 	noteUpdated: (payload: NoteUpdatedEvent) => void;

@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						[$style.iconFrame_platinum]: ACHIEVEMENT_BADGES[achievement.name].frame === 'platinum',
 					}]"
 				>
-					<div :class="[$style.iconInner]" :style="{ background: ACHIEVEMENT_BADGES[achievement.name].bg }">
+					<div :class="[$style.iconInner]" :style="{ background: ACHIEVEMENT_BADGES[achievement.name].bg ?? '' }">
 						<img :class="$style.iconImg" :src="ACHIEVEMENT_BADGES[achievement.name].img">
 					</div>
 				</div>
@@ -55,14 +55,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 import * as Misskey from 'misskey-js';
 import { onMounted, ref, computed } from 'vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { ACHIEVEMENT_TYPES, ACHIEVEMENT_BADGES, claimAchievement } from '@/scripts/achievements.js';
+import { ACHIEVEMENT_TYPES, ACHIEVEMENT_BADGES, claimAchievement } from '@/utility/achievements.js';
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.User;
-	withLocked: boolean;
-	withDescription: boolean;
+	withLocked?: boolean;
+	withDescription?: boolean;
 }>(), {
 	withLocked: true,
 	withDescription: true,
@@ -71,7 +71,7 @@ const props = withDefaults(defineProps<{
 const achievements = ref<Misskey.entities.UsersAchievementsResponse | null>(null);
 const lockedAchievements = computed(() => ACHIEVEMENT_TYPES.filter(x => !(achievements.value ?? []).some(a => a.name === x)));
 
-function fetch() {
+function _fetch_() {
 	misskeyApi('users/achievements', { userId: props.user.id }).then(res => {
 		achievements.value = [];
 		for (const t of ACHIEVEMENT_TYPES) {
@@ -84,11 +84,11 @@ function fetch() {
 
 function clickHere() {
 	claimAchievement('clickedClickHere');
-	fetch();
+	_fetch_();
 }
 
 onMounted(() => {
-	fetch();
+	_fetch_();
 });
 </script>
 

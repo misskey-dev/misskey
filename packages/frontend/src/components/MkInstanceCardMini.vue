@@ -18,8 +18,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkMiniChart from '@/components/MkMiniChart.vue';
-import { misskeyApiGet } from '@/scripts/misskey-api.js';
-import { getProxiedImageUrlNullable } from '@/scripts/media-proxy.js';
+import { misskeyApiGet } from '@/utility/misskey-api.js';
+import { getProxiedImageUrlNullable } from '@/utility/media-proxy.js';
 
 const props = defineProps<{
 	instance: Misskey.entities.FederationInstance;
@@ -46,7 +46,7 @@ function getInstanceIcon(instance): string {
 	display: flex;
 	align-items: center;
 	padding: 16px;
-	background: var(--panel);
+	background: var(--MI_THEME-panel);
 	border-radius: 8px;
 
 	> :global(.icon) {
@@ -62,7 +62,7 @@ function getInstanceIcon(instance): string {
 		flex: 1;
 		overflow: hidden;
 		font-size: 0.9em;
-		color: var(--fg);
+		color: var(--MI_THEME-fg);
 		padding-right: 8px;
 
 		> :global(.host) {
@@ -109,7 +109,7 @@ function getInstanceIcon(instance): string {
 	}
 
 	&:global(.gray) {
-		--c: var(--bg);
+		--c: var(--MI_THEME-bg);
 		background-image: linear-gradient(45deg, var(--c) 16.67%, transparent 16.67%, transparent 50%, var(--c) 50%, var(--c) 66.67%, transparent 66.67%, transparent 100%);
 		background-size: 16px 16px;
 	}

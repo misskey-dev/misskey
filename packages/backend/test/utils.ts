@@ -10,15 +10,16 @@ import { randomUUID } from 'node:crypto';
 import { inspect } from 'node:util';
 import WebSocket, { ClientOptions } from 'ws';
 import fetch, { File, RequestInit, type Headers } from 'node-fetch';
+import * as htmlParser from 'node-html-parser';
 import { DataSource } from 'typeorm';
-import { JSDOM } from 'jsdom';
-import { DEFAULT_POLICIES } from '@/core/RoleService.js';
-import { validateContentTypeSetAsActivityPub } from '@/core/activitypub/misc/validator.js';
+import { type Response } from 'node-fetch';
+import Fastify from 'fastify';
 import { entities } from '../src/postgres.js';
 import { loadConfig } from '../src/config.js';
 import type * as misskey from 'misskey-js';
-import { type Response } from 'node-fetch';
-import { ApiError } from "@/server/api/error.js";
+import { DEFAULT_POLICIES } from '@/core/RoleService.js';
+import { validateContentTypeSetAsActivityPub } from '@/core/activitypub/misc/validator.js';
+import { ApiError } from '@/server/api/error.js';
 
 export { server as startServer, jobQueue as startJobQueue } from '@/boot/common.js';
 
@@ -27,14 +28,22 @@ export interface UserToken {
 	bearer?: boolean;
 }
 
+export type SystemWebhookPayload = {
+	server: string;
+	hookId: string;
+	eventId: string;
+	createdAt: string;
+	type: string;
+	body: any;
+};
+
 const config = loadConfig();
 export const port = config.port;
 export const origin = config.url;
 export const host = new URL(config.url).host;
 
-export const cookie = (me: UserToken): string => {
-	return `token=${me.token};`;
-};
+export const WEBHOOK_HOST = 'http://localhost:15080';
+export const WEBHOOK_PORT = 15080;
 
 export type ApiRequest<E extends keyof misskey.Endpoints, P extends misskey.Endpoints[E]['req'] = misskey.Endpoints[E]['req']> = {
 	endpoint: E,
@@ -307,8 +316,12 @@ export const uploadFile = async (user?: UserToken, { path, name, blob }: UploadO
 			: new URL(path, new URL('resources/', import.meta.url));
 
 	const formData = new FormData();
-	formData.append('file', blob ??
-		new File([await readFile(absPath)], basename(absPath.toString())));
+	formData.append(
+		'file',
+		blob ?? new Blob([new Uint8Array(await readFile(absPath))]),
+		basename(absPath.toString()),
+	);
+
 	formData.append('force', 'true');
 	if (name) {
 		formData.append('name', name);
@@ -455,7 +468,7 @@ export function makeStreamCatcher<T>(
 
 export type SimpleGetResponse = {
 	status: number,
-	body: any | JSDOM | null,
+	body: any | null,
 	type: string | null,
 	location: string | null
 };
@@ -486,7 +499,7 @@ export const simpleGet = async (path: string, accept = '*/*', cookie: any = unde
 
 	const body =
 		jsonTypes.includes(res.headers.get('content-type') ?? '') ? await res.json() :
-		htmlTypes.includes(res.headers.get('content-type') ?? '') ? new JSDOM(await res.text()) :
+		htmlTypes.includes(res.headers.get('content-type') ?? '') ? htmlParser.parse(await res.text()) :
 		await bodyExtractor(res);
 
 	return {
@@ -599,8 +612,8 @@ export async function initTestDb(justBorrow = false, initEntities?: any[]) {
 		username: config.db.user,
 		password: config.db.pass,
 		database: config.db.db,
-		synchronize: true && !justBorrow,
-		dropSchema: true && !justBorrow,
+		synchronize: !justBorrow,
+		dropSchema: !justBorrow,
 		entities: initEntities ?? entities,
 	});
 
@@ -644,4 +657,40 @@ export async function sendEnvResetRequest() {
 // FIXME(misskey-js): misskey-jsがエラー情報を公開するようになったらこの関数を廃止する
 export function castAsError(obj: Record<string, unknown>): { error: ApiError } {
 	return obj as { error: ApiError };
+}
+
+export async function captureWebhook<T = SystemWebhookPayload>(postAction: () => Promise<void>, port = WEBHOOK_PORT): Promise<T> {
+	const fastify = Fastify();
+
+	let timeoutHandle: NodeJS.Timeout | null = null;
+	const result = await new Promise<string>(async (resolve, reject) => {
+		fastify.all('/', async (req, res) => {
+			if (timeoutHandle) {
+				clearTimeout(timeoutHandle);
+			}
+
+			const body = JSON.stringify(req.body);
+			res.status(200).send('ok');
+			await fastify.close();
+			resolve(body);
+		});
+
+		await fastify.listen({ port });
+
+		timeoutHandle = setTimeout(async () => {
+			await fastify.close();
+			reject(new Error('timeout'));
+		}, 3000);
+
+		try {
+			await postAction();
+		} catch (e) {
+			await fastify.close();
+			reject(e);
+		}
+	});
+
+	await fastify.close();
+
+	return JSON.parse(result) as T;
 }

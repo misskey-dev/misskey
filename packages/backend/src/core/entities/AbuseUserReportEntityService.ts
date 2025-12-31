@@ -53,6 +53,8 @@ export class AbuseUserReportEntityService {
 				schema: 'UserDetailedNotMe',
 			}) : null,
 			forwarded: report.forwarded,
+			resolvedAs: report.resolvedAs,
+			moderationNote: report.moderationNote,
 		});
 	}
 

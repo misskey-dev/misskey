@@ -1,0 +1,111 @@
+name: Test (federation)
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+    paths:
+      - packages/backend/**
+      - packages/misskey-js/**
+      - .github/workflows/test-federation.yml
+  pull_request:
+    paths:
+      - packages/backend/**
+      - packages/misskey-js/**
+      - .github/workflows/test-federation.yml
+  workflow_dispatch:
+    inputs:
+      force_ffmpeg_cache_update:
+        description: 'Force update ffmpeg cache'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  test:
+    name: Federation test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version-file:
+          - .node-version
+          - .github/min.node-version
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4.2.0
+      - name: Get current date
+        id: current-date
+        run: echo "today=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+      - name: Setup and Restore ffmpeg/ffprobe Cache
+        id: cache-ffmpeg
+        uses: actions/cache@v4
+        with:
+          path: |
+            /usr/local/bin/ffmpeg
+            /usr/local/bin/ffprobe
+          # daily cache
+          key: ${{ runner.os }}-ffmpeg-${{ steps.current-date.outputs.today }}
+          restore-keys: |
+            ${{ runner.os }}-ffmpeg-${{ steps.current-date.outputs.today }}
+      - name: Install FFmpeg
+        if: steps.cache-ffmpeg.outputs.cache-hit != 'true' || github.event.inputs.force_ffmpeg_cache_update == true
+        run: |
+          for i in {1..3}; do
+            echo "Attempt $i: Installing FFmpeg..."
+            curl -s -L https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz -o ffmpeg.tar.xz && \
+            tar -xf ffmpeg.tar.xz && \
+            mv ffmpeg-*-static/ffmpeg /usr/local/bin/ && \
+            mv ffmpeg-*-static/ffprobe /usr/local/bin/ && \
+            rm -rf ffmpeg.tar.xz ffmpeg-*-static/ && \
+            break || sleep 10
+            if [ $i -eq 3 ]; then
+              echo "Failed to install FFmpeg after 3 attempts"
+              exit 1
+            fi
+          done
+      - name: Use Node.js
+        uses: actions/setup-node@v6.1.0
+        with:
+          node-version-file: ${{ matrix.node-version-file }}
+          cache: 'pnpm'
+      - name: Build Misskey
+        run: |
+          pnpm i --frozen-lockfile
+          pnpm build
+      - name: Setup
+        run: |
+          echo "NODE_VERSION=$(cat ${{ matrix.node-version-file }})" >> $GITHUB_ENV
+          cd packages/backend/test-federation
+          bash ./setup.sh
+          sudo chmod 644 ./certificates/*.test.key
+      - name: Start servers
+        id: start_servers
+        continue-on-error: true
+        # https://github.com/docker/compose/issues/1294#issuecomment-374847206
+        run: |
+          cd packages/backend/test-federation
+          docker compose up -d --scale tester=0
+      - name: Print start_servers error
+        if: ${{ steps.start_servers.outcome == 'failure' }}
+        run: |
+          cd packages/backend/test-federation
+          docker compose logs | tail -n 300
+          exit 1
+      - name: Test
+        run: |
+          cd packages/backend/test-federation
+          docker compose run --no-deps tester
+      - name: Log
+        if: always()
+        run: |
+          cd packages/backend/test-federation
+          docker compose logs
+      - name: Stop servers
+        if: always()
+        run: |
+          cd packages/backend/test-federation
+          docker compose down

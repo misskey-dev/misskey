@@ -6,23 +6,47 @@
 import * as WebSocket from 'ws';
 import type { MiUser } from '@/models/User.js';
 import type { MiAccessToken } from '@/models/AccessToken.js';
-import type { Packed } from '@/misc/json-schema.js';
-import type { NoteReadService } from '@/core/NoteReadService.js';
-import type { NotificationService } from '@/core/NotificationService.js';
+import { NotificationService } from '@/core/NotificationService.js';
 import { bindThis } from '@/decorators.js';
 import { CacheService } from '@/core/CacheService.js';
 import { MiFollowing, MiUserProfile } from '@/models/_.js';
-import type { StreamEventEmitter, GlobalEvents } from '@/core/GlobalEventService.js';
+import type { GlobalEvents, StreamEventEmitter } from '@/core/GlobalEventService.js';
 import { ChannelFollowingService } from '@/core/ChannelFollowingService.js';
-import type { JsonObject } from '@/misc/json-value.js';
-import type { ChannelsService } from './ChannelsService.js';
+import { ChannelMutingService } from '@/core/ChannelMutingService.js';
+import type { JsonObject, JsonValue } from '@/misc/json-value.js';
+import { isJsonObject } from '@/misc/json-value.js';
 import type { EventEmitter } from 'events';
 import type Channel from './channel.js';
+import type { ChannelConstructor } from './channel.js';
+import type { ChannelRequest } from './channel.js';
+import { ContextIdFactory, ModuleRef, REQUEST } from '@nestjs/core';
+import { Inject, Injectable, Scope } from '@nestjs/common';
+import { MainChannel } from '@/server/api/stream/channels/main.js';
+import { HomeTimelineChannel } from '@/server/api/stream/channels/home-timeline.js';
+import { LocalTimelineChannel } from '@/server/api/stream/channels/local-timeline.js';
+import { HybridTimelineChannel } from '@/server/api/stream/channels/hybrid-timeline.js';
+import { GlobalTimelineChannel } from '@/server/api/stream/channels/global-timeline.js';
+import { UserListChannel } from '@/server/api/stream/channels/user-list.js';
+import { HashtagChannel } from '@/server/api/stream/channels/hashtag.js';
+import { RoleTimelineChannel } from '@/server/api/stream/channels/role-timeline.js';
+import { AntennaChannel } from '@/server/api/stream/channels/antenna.js';
+import { ChannelChannel } from '@/server/api/stream/channels/channel.js';
+import { DriveChannel } from '@/server/api/stream/channels/drive.js';
+import { ServerStatsChannel } from '@/server/api/stream/channels/server-stats.js';
+import { QueueStatsChannel } from '@/server/api/stream/channels/queue-stats.js';
+import { AdminChannel } from '@/server/api/stream/channels/admin.js';
+import { ChatUserChannel } from '@/server/api/stream/channels/chat-user.js';
+import { ChatRoomChannel } from '@/server/api/stream/channels/chat-room.js';
+import { ReversiChannel } from '@/server/api/stream/channels/reversi.js';
+import { ReversiGameChannel } from '@/server/api/stream/channels/reversi-game.js';
+
+const MAX_CHANNELS_PER_CONNECTION = 32;
 
 /**
  * Main stream connection
  */
 // eslint-disable-next-line import/no-default-export
+@Injectable({ scope: Scope.TRANSIENT })
 export default class Connection {
 	public user?: MiUser;
 	public token?: MiAccessToken;
@@ -30,10 +54,10 @@ export default class Connection {
 	public subscriber: StreamEventEmitter;
 	private channels: Channel[] = [];
 	private subscribingNotes: Partial<Record<string, number>> = {};
-	private cachedNotes: Packed<'Note'>[] = [];
 	public userProfile: MiUserProfile | null = null;
 	public following: Record<string, Pick<MiFollowing, 'withReplies'> | undefined> = {};
 	public followingChannels: Set<string> = new Set();
+	public mutingChannels: Set<string> = new Set();
 	public userIdsWhoMeMuting: Set<string> = new Set();
 	public userIdsWhoBlockingMe: Set<string> = new Set();
 	public userIdsWhoMeMutingRenotes: Set<string> = new Set();
@@ -41,26 +65,34 @@ export default class Connection {
 	private fetchIntervalId: NodeJS.Timeout | null = null;
 
 	constructor(
-		private channelsService: ChannelsService,
-		private noteReadService: NoteReadService,
+		private moduleRef: ModuleRef,
 		private notificationService: NotificationService,
 		private cacheService: CacheService,
 		private channelFollowingService: ChannelFollowingService,
-
-		user: MiUser | null | undefined,
-		token: MiAccessToken | null | undefined,
+		private channelMutingService: ChannelMutingService,
+		@Inject(REQUEST)
+		request: ConnectionRequest,
 	) {
-		if (user) this.user = user;
-		if (token) this.token = token;
+		if (request.user) this.user = request.user;
+		if (request.token) this.token = request.token;
 	}
 
 	@bindThis
 	public async fetch() {
 		if (this.user == null) return;
-		const [userProfile, following, followingChannels, userIdsWhoMeMuting, userIdsWhoBlockingMe, userIdsWhoMeMutingRenotes] = await Promise.all([
+		const [
+			userProfile,
+			following,
+			followingChannels,
+			mutingChannels,
+			userIdsWhoMeMuting,
+			userIdsWhoBlockingMe,
+			userIdsWhoMeMutingRenotes,
+		] = await Promise.all([
 			this.cacheService.userProfileCache.fetch(this.user.id),
 			this.cacheService.userFollowingsCache.fetch(this.user.id),
 			this.channelFollowingService.userFollowingChannelsCache.fetch(this.user.id),
+			this.channelMutingService.mutingChannelsCache.fetch(this.user.id),
 			this.cacheService.userMutingsCache.fetch(this.user.id),
 			this.cacheService.userBlockedCache.fetch(this.user.id),
 			this.cacheService.renoteMutingsCache.fetch(this.user.id),
@@ -68,6 +100,7 @@ export default class Connection {
 		this.userProfile = userProfile;
 		this.following = following;
 		this.followingChannels = followingChannels;
+		this.mutingChannels = mutingChannels;
 		this.userIdsWhoMeMuting = userIdsWhoMeMuting;
 		this.userIdsWhoBlockingMe = userIdsWhoBlockingMe;
 		this.userIdsWhoMeMutingRenotes = userIdsWhoMeMutingRenotes;
@@ -112,13 +145,11 @@ export default class Connection {
 
 		const { type, body } = obj;
 
-		if (typeof body !== 'object' || body === null || Array.isArray(body)) return;
-
 		switch (type) {
 			case 'readNotification': this.onReadNotification(body); break;
 			case 'subNote': this.onSubscribeNote(body); break;
 			case 's': this.onSubscribeNote(body); break; // alias
-			case 'sr': this.onSubscribeNote(body); this.readNote(body); break;
+			case 'sr': this.onSubscribeNote(body); break;
 			case 'unsubNote': this.onUnsubscribeNote(body); break;
 			case 'un': this.onUnsubscribeNote(body); break; // alias
 			case 'connect': this.onChannelConnectRequested(body); break;
@@ -134,39 +165,7 @@ export default class Connection {
 	}
 
 	@bindThis
-	public cacheNote(note: Packed<'Note'>) {
-		const add = (note: Packed<'Note'>) => {
-			const existIndex = this.cachedNotes.findIndex(n => n.id === note.id);
-			if (existIndex > -1) {
-				this.cachedNotes[existIndex] = note;
-				return;
-			}
-
-			this.cachedNotes.unshift(note);
-			if (this.cachedNotes.length > 32) {
-				this.cachedNotes.splice(32);
-			}
-		};
-
-		add(note);
-		if (note.reply) add(note.reply);
-		if (note.renote) add(note.renote);
-	}
-
-	@bindThis
-	private readNote(body: JsonObject) {
-		const id = body.id;
-
-		const note = this.cachedNotes.find(n => n.id === id);
-		if (note == null) return;
-
-		if (this.user && (note.userId !== this.user.id)) {
-			this.noteReadService.read(this.user.id, [note]);
-		}
-	}
-
-	@bindThis
-	private onReadNotification(payload: JsonObject) {
+	private onReadNotification(payload: JsonValue | undefined) {
 		this.notificationService.readAllNotification(this.user!.id);
 	}
 
@@ -174,7 +173,8 @@ export default class Connection {
 	 * 投稿購読要求時
 	 */
 	@bindThis
-	private onSubscribeNote(payload: JsonObject) {
+	private onSubscribeNote(payload: JsonValue | undefined) {
+		if (!isJsonObject(payload)) return;
 		if (!payload.id || typeof payload.id !== 'string') return;
 
 		const current = this.subscribingNotes[payload.id] ?? 0;
@@ -190,7 +190,8 @@ export default class Connection {
 	 * 投稿購読解除要求時
 	 */
 	@bindThis
-	private onUnsubscribeNote(payload: JsonObject) {
+	private onUnsubscribeNote(payload: JsonValue | undefined) {
+		if (!isJsonObject(payload)) return;
 		if (!payload.id || typeof payload.id !== 'string') return;
 
 		const current = this.subscribingNotes[payload.id];
@@ -216,12 +217,13 @@ export default class Connection {
 	 * チャンネル接続要求時
 	 */
 	@bindThis
-	private onChannelConnectRequested(payload: JsonObject) {
+	private onChannelConnectRequested(payload: JsonValue | undefined) {
+		if (!isJsonObject(payload)) return;
 		const { channel, id, params, pong } = payload;
 		if (typeof id !== 'string') return;
 		if (typeof channel !== 'string') return;
 		if (typeof pong !== 'boolean' && typeof pong !== 'undefined' && pong !== null) return;
-		if (typeof params !== 'undefined' && (typeof params !== 'object' || params === null || Array.isArray(params))) return;
+		if (typeof params !== 'undefined' && !isJsonObject(params)) return;
 		this.connectChannel(id, params, channel, pong ?? undefined);
 	}
 
@@ -229,7 +231,8 @@ export default class Connection {
 	 * チャンネル切断要求時
 	 */
 	@bindThis
-	private onChannelDisconnectRequested(payload: JsonObject) {
+	private onChannelDisconnectRequested(payload: JsonValue | undefined) {
+		if (!isJsonObject(payload)) return;
 		const { id } = payload;
 		if (typeof id !== 'string') return;
 		this.disconnectChannel(id);
@@ -250,24 +253,34 @@ export default class Connection {
 	 * チャンネルに接続
 	 */
 	@bindThis
-	public connectChannel(id: string, params: JsonObject | undefined, channel: string, pong = false) {
-		const channelService = this.channelsService.getChannelService(channel);
-
-		if (channelService.requireCredential && this.user == null) {
+	public async connectChannel(id: string, params: JsonObject | undefined, channel: string, pong = false) {
+		if (this.channels.length >= MAX_CHANNELS_PER_CONNECTION) {
 			return;
 		}
 
-		if (this.token && ((channelService.kind && !this.token.permission.some(p => p === channelService.kind))
-			|| (!channelService.kind && channelService.requireCredential))) {
+		const channelConstructor = this.getChannelConstructor(channel);
+
+		if (channelConstructor.requireCredential && this.user == null) {
+			return;
+		}
+
+		if (this.token && ((channelConstructor.kind && !this.token.permission.some(p => p === channelConstructor.kind))
+			|| (!channelConstructor.kind && channelConstructor.requireCredential))) {
 			return;
 		}
 
 		// 共有可能チャンネルに接続しようとしていて、かつそのチャンネルに既に接続していたら無意味なので無視
-		if (channelService.shouldShare && this.channels.some(c => c.chName === channel)) {
+		if (channelConstructor.shouldShare && this.channels.some(c => c.chName === channel)) {
 			return;
 		}
 
-		const ch: Channel = channelService.create(id, this);
+		const contextId = ContextIdFactory.create();
+		this.moduleRef.registerRequestByContextId<ChannelRequest>({
+			id: id,
+			connection: this,
+		}, contextId);
+		const ch: Channel = await this.moduleRef.create<Channel>(channelConstructor, contextId);
+
 		this.channels.push(ch);
 		ch.init(params ?? {});
 
@@ -275,6 +288,33 @@ export default class Connection {
 			this.sendMessageToWs('connected', {
 				id: id,
 			});
+		}
+	}
+
+	@bindThis
+	public getChannelConstructor(name: string): ChannelConstructor<boolean> {
+		switch (name) {
+			case 'main': return MainChannel;
+			case 'homeTimeline': return HomeTimelineChannel;
+			case 'localTimeline': return LocalTimelineChannel;
+			case 'hybridTimeline': return HybridTimelineChannel;
+			case 'globalTimeline': return GlobalTimelineChannel;
+			case 'userList': return UserListChannel;
+			case 'hashtag': return HashtagChannel;
+			case 'roleTimeline': return RoleTimelineChannel;
+			case 'antenna': return AntennaChannel;
+			case 'channel': return ChannelChannel;
+			case 'drive': return DriveChannel;
+			case 'serverStats': return ServerStatsChannel;
+			case 'queueStats': return QueueStatsChannel;
+			case 'admin': return AdminChannel;
+			case 'chatUser': return ChatUserChannel;
+			case 'chatRoom': return ChatRoomChannel;
+			case 'reversi': return ReversiChannel;
+			case 'reversiGame': return ReversiGameChannel;
+
+			default:
+				throw new Error(`no such channel: ${name}`);
 		}
 	}
 
@@ -297,7 +337,8 @@ export default class Connection {
 	 * @param data メッセージ
 	 */
 	@bindThis
-	private onChannelMessageRequested(data: JsonObject) {
+	private onChannelMessageRequested(data: JsonValue | undefined) {
+		if (!isJsonObject(data)) return;
 		if (typeof data.id !== 'string') return;
 		if (typeof data.type !== 'string') return;
 		if (typeof data.body === 'undefined') return;
@@ -318,4 +359,9 @@ export default class Connection {
 			if (c.dispose) c.dispose();
 		}
 	}
+}
+
+export interface ConnectionRequest {
+	user: MiUser | null | undefined,
+	token: MiAccessToken | null | undefined,
 }

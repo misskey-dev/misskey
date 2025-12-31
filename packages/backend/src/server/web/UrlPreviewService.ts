@@ -4,11 +4,9 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { summaly } from '@misskey-dev/summaly';
-import { SummalyResult } from '@misskey-dev/summaly/built/summary.js';
+import type { SummalyResult } from '@misskey-dev/summaly/built/summary.js';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
-import { MetaService } from '@/core/MetaService.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import type Logger from '@/logger.js';
 import { query } from '@/misc/prelude/url.js';
@@ -26,7 +24,9 @@ export class UrlPreviewService {
 		@Inject(DI.config)
 		private config: Config,
 
-		private metaService: MetaService,
+		@Inject(DI.meta)
+		private meta: MiMeta,
+
 		private httpRequestService: HttpRequestService,
 		private loggerService: LoggerService,
 	) {
@@ -36,12 +36,10 @@ export class UrlPreviewService {
 	@bindThis
 	private wrap(url?: string | null): string | null {
 		return url != null
-			? url.match(/^https?:\/\//)
-				? `${this.config.mediaProxy}/preview.webp?${query({
-					url,
-					preview: '1',
-				})}`
-				: url
+			? `${this.config.mediaProxy}/preview.webp?${query({
+				url,
+				preview: '1',
+			})}`
 			: null;
 	}
 
@@ -62,9 +60,7 @@ export class UrlPreviewService {
 			return;
 		}
 
-		const meta = await this.metaService.fetch();
-
-		if (!meta.urlPreviewEnabled) {
+		if (!this.meta.urlPreviewEnabled) {
 			reply.code(403);
 			return {
 				error: new ApiError({
@@ -75,14 +71,14 @@ export class UrlPreviewService {
 			};
 		}
 
-		this.logger.info(meta.urlPreviewSummaryProxyUrl
+		this.logger.info(this.meta.urlPreviewSummaryProxyUrl
 			? `(Proxy) Getting preview of ${url}@${lang} ...`
 			: `Getting preview of ${url}@${lang} ...`);
 
 		try {
-			const summary = meta.urlPreviewSummaryProxyUrl
-				? await this.fetchSummaryFromProxy(url, meta, lang)
-				: await this.fetchSummary(url, meta, lang);
+			const summary = this.meta.urlPreviewSummaryProxyUrl
+				? await this.fetchSummaryFromProxy(url, this.meta, lang)
+				: await this.fetchSummary(url, this.meta, lang);
 
 			this.logger.succ(`Got preview of ${url}: ${summary.title}`);
 
@@ -97,8 +93,8 @@ export class UrlPreviewService {
 			summary.icon = this.wrap(summary.icon);
 			summary.thumbnail = this.wrap(summary.thumbnail);
 
-			// Cache 7days
-			reply.header('Cache-Control', 'max-age=604800, immutable');
+			// Cache 1day
+			reply.header('Cache-Control', 'max-age=86400, immutable');
 
 			return summary;
 		} catch (err) {
@@ -116,7 +112,7 @@ export class UrlPreviewService {
 		}
 	}
 
-	private fetchSummary(url: string, meta: MiMeta, lang?: string): Promise<SummalyResult> {
+	private async fetchSummary(url: string, meta: MiMeta, lang?: string): Promise<SummalyResult> {
 		const agent = this.config.proxy
 			? {
 				http: this.httpRequestService.httpAgent,
@@ -124,8 +120,10 @@ export class UrlPreviewService {
 			}
 			: undefined;
 
+		const { summaly } = await import('@misskey-dev/summaly');
+
 		return summaly(url, {
-			followRedirects: false,
+			followRedirects: this.meta.urlPreviewAllowRedirect,
 			lang: lang ?? 'ja-JP',
 			agent: agent,
 			userAgent: meta.urlPreviewUserAgent ?? undefined,
@@ -140,12 +138,13 @@ export class UrlPreviewService {
 		const queryStr = query({
 			url: url,
 			lang: lang ?? 'ja-JP',
+			followRedirects: this.meta.urlPreviewAllowRedirect,
 			userAgent: meta.urlPreviewUserAgent ?? undefined,
 			operationTimeout: meta.urlPreviewTimeout,
 			contentLengthLimit: meta.urlPreviewMaximumContentLength,
 			contentLengthRequired: meta.urlPreviewRequireContentLength,
 		});
 
-		return this.httpRequestService.getJson<SummalyResult>(`${proxy}?${queryStr}`);
+		return this.httpRequestService.getJson<SummalyResult>(`${proxy}?${queryStr}`, 'application/json, */*', undefined, true);
 	}
 }

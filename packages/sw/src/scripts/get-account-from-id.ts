@@ -4,9 +4,10 @@
  */
 
 import { get } from 'idb-keyval';
+import * as Misskey from 'misskey-js';
 
-export async function getAccountFromId(id: string): Promise<{ token: string; id: string } | void> {
-	const accounts = await get<{ token: string; id: string }[]>('accounts');
+export async function getAccountFromId(id: string): Promise<Pick<Misskey.entities.SignupResponse, 'id' | 'token'> | undefined> {
+	const accounts = await get<Pick<Misskey.entities.SignupResponse, 'id' | 'token'>[]>('accounts');
 	if (!accounts) {
 		console.log('Accounts are not recorded');
 		return;

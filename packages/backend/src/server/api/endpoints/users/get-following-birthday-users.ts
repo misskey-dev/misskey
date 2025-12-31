@@ -29,6 +29,11 @@ export const meta = {
 			type: 'object',
 			optional: false, nullable: false,
 			properties: {
+				id: {
+					type: 'string',
+					optional: false, nullable: false,
+					format: 'misskey:id',
+				},
 				birthday: {
 					type: 'string',
 					optional: false, nullable: false,
@@ -49,31 +54,35 @@ export const paramDef = {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
 		offset: { type: 'integer', default: 0 },
 		birthday: {
-			type: 'object',
-			properties: {
-				month: { type: 'integer', minimum: 1, maximum: 12 },
-				day: { type: 'integer', minimum: 1, maximum: 31 },
-				begin: {
-					type: 'object',
-					properties: {
-						month: { type: 'integer', minimum: 1, maximum: 12 },
-						day: { type: 'integer', minimum: 1, maximum: 31 },
-					},
-					required: ['month', 'day'],
+			oneOf: [{
+				type: 'object',
+				properties: {
+					month: { type: 'integer', minimum: 1, maximum: 12 },
+					day: { type: 'integer', minimum: 1, maximum: 31 },
 				},
-				end: {
-					type: 'object',
-					properties: {
-						month: { type: 'integer', minimum: 1, maximum: 12 },
-						day: { type: 'integer', minimum: 1, maximum: 31 },
+				required: ['month', 'day'],
+			}, {
+				type: 'object',
+				properties: {
+					begin: {
+						type: 'object',
+						properties: {
+							month: { type: 'integer', minimum: 1, maximum: 12 },
+							day: { type: 'integer', minimum: 1, maximum: 31 },
+						},
+						required: ['month', 'day'],
 					},
-					required: ['month', 'day'],
+					end: {
+						type: 'object',
+						properties: {
+							month: { type: 'integer', minimum: 1, maximum: 12 },
+							day: { type: 'integer', minimum: 1, maximum: 31 },
+						},
+						required: ['month', 'day'],
+					},
 				},
-			},
-			anyOf: [
-				{ required: ['month', 'day'] },
-				{ required: ['begin', 'end'] },
-			],
+				required: ['begin', 'end'],
+			}],
 		},
 	},
 	required: ['birthday'],
@@ -145,10 +154,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					}
 
 					const birthdayStr = `${birthday.getFullYear()}-${(birthday.getMonth() + 1).toString().padStart(2, '0')}-${(birthday.getDate()).toString().padStart(2, '0')}`;
-					return { birthday: birthdayStr, user: users.get(item.user_id) };
+					return {
+						id: item.user_id,
+						birthday: birthdayStr,
+						user: users.get(item.user_id),
+					};
 				})
-				.filter(item => item.user !== undefined)
-				.map(item => item as { birthday: string; user: Packed<'UserLite'> });
+				.filter(item => item.user != null)
+				.map(item => item as { id: string; birthday: string; user: Packed<'UserLite'> });
 		});
 	}
 }
