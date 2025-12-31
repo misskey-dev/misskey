@@ -1982,6 +1982,8 @@ _widgetOptions:
     colored: "Выделена цветом"
   _clock:
     size: "Размер"
+  _birthdayFollowings:
+    period: "Длительность"
 _cw:
   hide: "Спрятать"
   show: "Показать"
