@@ -2496,6 +2496,8 @@ _widgetOptions:
     colored: "Colorido"
   _clock:
     size: "Tamanho"
+  _birthdayFollowings:
+    period: "Duração"
 _cw:
   hide: "Esconder"
   show: "Carregar mais"
