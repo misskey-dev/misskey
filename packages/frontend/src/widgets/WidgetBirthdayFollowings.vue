@@ -57,7 +57,7 @@ const widgetPropsDef = {
 	},
 	period: {
 		type: 'radio' as const,
-		label: i18n.ts.period,
+		label: i18n.ts._widgetOptions._birthdayFollowings.period,
 		default: '3day',
 		options: [{
 			value: 'today' as const,

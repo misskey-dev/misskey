@@ -10024,6 +10024,12 @@ export interface Locale extends ILocale {
              */
             "reverse": string;
         };
+        "_birthdayFollowings": {
+            /**
+             * 期間
+             */
+            "period": string;
+        };
     };
     "_cw": {
         /**

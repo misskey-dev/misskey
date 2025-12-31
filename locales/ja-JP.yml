@@ -1407,7 +1407,6 @@ frame: "フレーム"
 presets: "プリセット"
 zeroPadding: "ゼロ埋め"
 nothingToConfigure: "設定項目はありません"
-period: "期間"
 
 _imageEditing:
   _vars:
@@ -2640,6 +2639,8 @@ _widgetOptions:
     shuffle: "表示順をシャッフル"
     duration: "ティッカーのスクロール速度(秒)"
     reverse: "逆方向にスクロール"
+  _birthdayFollowings:
+    period: "期間"
 
 _cw:
   hide: "隠す"
