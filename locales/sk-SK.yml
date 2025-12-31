@@ -1238,6 +1238,8 @@ _widgetOptions:
     colored: "Farebné"
   _clock:
     size: "Veľkosť"
+  _birthdayFollowings:
+    period: "Trvanie"
 _cw:
   hide: "Skryť"
   show: "Zobraziť viac"
