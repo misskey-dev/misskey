@@ -2552,6 +2552,8 @@ _widgetOptions:
     colored: "彩色"
   _clock:
     size: "大小"
+  _birthdayFollowings:
+    period: "時長"
 _cw:
   hide: "隱藏"
   show: "顯示內容"
