@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <MkContainer :style="`height: ${widgetProps.height}px;`" :showHeader="widgetProps.showHeader" :scrollable="true" class="mkw-bdayfollowings">
 	<template #icon><i class="ti ti-cake"></i></template>
 	<template #header>{{ i18n.ts._widgets.birthdayFollowings }}</template>
-	<template #func="{ buttonStyleClass }"><button class="_button" :class="buttonStyleClass" @click="fetch(true)"><i class="ti ti-refresh"></i></button></template>
+	<template #func="{ buttonStyleClass }"><button class="_button" :class="buttonStyleClass" @click="fetch"><i class="ti ti-refresh"></i></button></template>
 
 	<MkPagination v-slot="{ items }" :paginator="birthdayUsersPaginator">
 		<div :class="$style.bdayUserRoot">
@@ -30,8 +30,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, markRaw, ref } from 'vue';
-import { useInterval } from '@@/js/use-interval.js';
+import { computed, markRaw, ref, watch } from 'vue';
+import { useLowresTime } from '@/composables/use-lowres-time.js';
 import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-separate.js';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
@@ -87,6 +87,11 @@ const { widgetProps, configure } = useWidgetPropsManager(
 	emit,
 );
 
+const now = useLowresTime();
+const nextDay = new Date();
+nextDay.setHours(24, 0, 0, 0);
+let nextDayMidnightTime = nextDay.getTime();
+
 const begin = ref<Date>(new Date());
 const end = computed(() => {
 	switch (widgetProps.period) {
@@ -129,18 +134,30 @@ const birthdayUsersPaginator = markRaw(new Paginator('users/get-following-birthd
 	}),
 }));
 
-function fetch(force = false) {
+function fetch() {
 	const now = new Date();
-	if (force || now.getDate() !== begin.value.getDate()) {
-		// computed() で再評価されるので、paginationEl.value!.reload() は不要
-		begin.value = now;
-	}
+	begin.value = now;
 }
 
-useInterval(fetch, 1000 * 60, {
-	immediate: true,
-	afterMounted: true,
-});
+const UPDATE_INTERVAL = 1000 * 60;
+let nextDayTimer: number | null = null;
+
+watch(now, (to) => {
+	// 次回更新までに日付が変わる場合、日付が変わった直後に強制的に更新するタイマーをセットする
+	if (nextDayMidnightTime - to <= UPDATE_INTERVAL) {
+		if (nextDayTimer != null) {
+			window.clearTimeout(nextDayTimer);
+			nextDayTimer = null;
+		}
+
+		nextDayTimer = window.setTimeout(() => {
+			fetch();
+			nextDay.setHours(24, 0, 0, 0);
+			nextDayMidnightTime = nextDay.getTime();
+			nextDayTimer = null;
+		}, nextDayMidnightTime - to);
+	}
+}, { immediate: true });
 
 // eslint-disable-next-line vue/no-setup-props-destructure
 defineExpose<WidgetComponentExpose>({

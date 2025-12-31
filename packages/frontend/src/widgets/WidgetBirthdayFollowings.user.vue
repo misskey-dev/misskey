@@ -6,7 +6,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.root">
 	<MkA :to="userPage(item.user)" style="overflow: clip;">
-		<MkUserCardMini :user="item.user" :withChart="false" style="text-overflow: ellipsis; background: inherit; border-radius: unset;"/>
+		<MkUserCardMini :user="item.user" :withChart="false" style="text-overflow: ellipsis; background: inherit; border-radius: unset;">
+			<template #sub>
+				<span>{{ countdownDate }}</span>
+				<span> / </span>
+				<span class="_monospace">@{{ acct(item.user) }}</span>
+			</template>
+		</MkUserCardMini>
 	</MkA>
 	<button v-tooltip.noDelay="i18n.ts.note" class="_button" :class="$style.post" @click="os.post({initialText: `@${item.user.username}${item.user.host ? `@${item.user.host}` : ''} `})">
 		<i class="ti-fw ti ti-confetti" :class="$style.postIcon"></i>
@@ -15,15 +21,40 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { userPage } from '@/filters/user.js';
+import { useLowresTime } from '@/composables/use-lowres-time.js';
+import { userPage, acct } from '@/filters/user.js';
 
-defineProps<{
+const props = defineProps<{
 	item: Misskey.entities.UsersGetFollowingBirthdayUsersResponse[number];
 }>();
+
+const now = useLowresTime();
+const nowDate = computed(() => {
+	const date = new Date(now.value);
+	date.setHours(0, 0, 0, 0);
+	return date;
+});
+const birthdayDate = computed(() => {
+	const nowDate = new Date(now.value);
+	const [_, month, day] = props.item.birthday.split('-').map((v) => parseInt(v, 10));
+	return new Date(nowDate.getFullYear(), month - 1, day, 0, 0, 0, 0);
+});
+
+const countdownDate = computed(() => {
+	const days = Math.floor((birthdayDate.value.getTime() - nowDate.value.getTime()) / (1000 * 60 * 60 * 24));
+	if (birthdayDate.value < nowDate.value) {
+		return i18n.tsx._timeIn.days({ n: 365 + days });
+	} else if (birthdayDate.value > nowDate.value) {
+		return i18n.tsx._timeIn.days({ n: days });
+	} else {
+		return i18n.ts.today;
+	}
+});
 </script>
 
 <style lang="scss" module>
