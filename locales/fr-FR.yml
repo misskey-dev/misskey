@@ -2021,6 +2021,8 @@ _widgetOptions:
     colored: "Coloré"
   _clock:
     size: "Taille"
+  _birthdayFollowings:
+    period: "Durée"
 _cw:
   hide: "Masquer"
   show: "Afficher le contenu"
