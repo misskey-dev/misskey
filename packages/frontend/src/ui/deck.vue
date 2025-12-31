@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							v-for="id in ids"
 							:ref="id"
 							:key="id"
-							:class="[$style.column, { '_shadow': withWallpaper }]"
+							:class="{ '_shadow': withWallpaper }"
 							:column="columns.find(c => c.id === id)!"
 							:isStacked="ids.length > 1"
 							@headerWheel="onWheel"

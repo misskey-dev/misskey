@@ -60,6 +60,7 @@ import bytes from '@/filters/bytes.js';
 import { definePage } from '@/page.js';
 import MkSelect from '@/components/MkSelect.vue';
 import { useMkSelect } from '@/composables/use-mkselect.js';
+import { useGlobalEvent } from '@/events.js';
 import { getDriveFileMenu } from '@/utility/get-drive-file-menu.js';
 import { Paginator } from '@/utility/paginator.js';
 
@@ -122,6 +123,12 @@ function onClick(ev: MouseEvent, file) {
 function onContextMenu(ev: MouseEvent, file): void {
 	os.contextMenu(getDriveFileMenu(file), ev);
 }
+
+useGlobalEvent('driveFilesDeleted', (files) => {
+	for (const f of files) {
+		paginator.removeItem(f.id);
+	}
+});
 
 definePage(() => ({
 	title: i18n.ts.drivecleaner,

@@ -69,7 +69,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 					v-for="(f, i) in foldersPaginator.items.value"
 					:key="f.id"
 					v-anim="i"
-					:class="$style.folder"
 					:folder="f"
 					:selectMode="select === 'folder'"
 					:isSelected="selectedFolders.some(x => x.id === f.id)"
@@ -102,7 +101,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 					>
 						<XFile
 							v-for="file in item.items" :key="file.id"
-							:class="$style.file"
 							:file="file"
 							:folder="folder"
 							:isSelected="selectedFiles.some(x => x.id === file.id)"
@@ -125,7 +123,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			>
 				<XFile
 					v-for="file in filesPaginator.items.value" :key="file.id"
-					:class="$style.file"
 					:file="file"
 					:folder="folder"
 					:isSelected="selectedFiles.some(x => x.id === file.id)"
@@ -135,7 +132,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				/>
 			</TransitionGroup>
 
-			<MkButton v-show="filesPaginator.canFetchOlder.value" :class="$style.loadMore" primary rounded @click="filesPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
+			<MkButton
+				v-show="filesPaginator.canFetchOlder.value"
+				v-appear="shouldEnableInfiniteScroll ? filesPaginator.fetchOlder : null"
+				:class="$style.loadMore"
+				primary
+				rounded
+				@click="filesPaginator.fetchOlder()"
+			>{{ i18n.ts.loadMore }}</MkButton>
 
 			<div v-if="filesPaginator.items.value.length == 0 && foldersPaginator.items.value.length == 0 && !fetching" :class="$style.empty">
 				<div v-if="draghover">{{ i18n.ts.dropHereToUpload }}</div>
@@ -182,10 +186,12 @@ const props = withDefaults(defineProps<{
 	type?: string;
 	multiple?: boolean;
 	select?: 'file' | 'folder' | null;
+	forceDisableInfiniteScroll?: boolean;
 }>(), {
 	initialFolder: null,
 	multiple: false,
 	select: null,
+	forceDisableInfiniteScroll: false,
 });
 
 const emit = defineEmits<{
@@ -193,6 +199,10 @@ const emit = defineEmits<{
 	(ev: 'changeSelectedFolders', v: (Misskey.entities.DriveFolder | null)[]): void;
 	(ev: 'cd', v: Misskey.entities.DriveFolder | null): void;
 }>();
+
+const shouldEnableInfiniteScroll = computed(() => {
+	return prefer.r.enableInfiniteScroll.value && !props.forceDisableInfiniteScroll;
+});
 
 const folder = ref<Misskey.entities.DriveFolder | null>(null);
 const hierarchyFolders = ref<Misskey.entities.DriveFolder[]>([]);
