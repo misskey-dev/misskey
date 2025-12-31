@@ -219,6 +219,7 @@
 		"aws-sdk-client-mock": "4.1.0",
 		"cbor": "10.0.11",
 		"cross-env": "10.1.0",
+		"esbuild-plugin-swc": "1.0.1",
 		"eslint-plugin-import": "2.32.0",
 		"execa": "9.6.1",
 		"fkill": "10.0.1",
