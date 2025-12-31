@@ -2215,6 +2215,8 @@ _widgetOptions:
     colored: "Diwarnai"
   _clock:
     size: "Ukuran"
+  _birthdayFollowings:
+    period: "Durasi"
 _cw:
   hide: "Sembunyikan"
   show: "Lihat konten"
