@@ -2552,6 +2552,8 @@ _widgetOptions:
     colored: "색 입히기"
   _clock:
     size: "크기"
+  _birthdayFollowings:
+    period: "기간"
 _cw:
   hide: "숨기기"
   show: "더 보기"
