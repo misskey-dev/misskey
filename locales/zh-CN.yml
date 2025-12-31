@@ -1549,7 +1549,7 @@ _settings:
   showUrlPreview: "显示 URL 预览"
   showAvailableReactionsFirstInNote: "在顶部显示可用的回应"
   showPageTabBarBottom: "在下方显示页面标签栏"
-  emojiPaletteBanner: "可以将固定显示表情符号选择器的预设注册至调色板，也可以自定义表情符号选择器的显示方式。"
+  emojiPaletteBanner: "可以将固定显示在表情符号选择器中的预设注册为调色板，也可以自定义表情符号选择器的显示方式。"
   enableAnimatedImages: "启用动画图像"
   settingsPersistence_title: "设置持久化"
   settingsPersistence_description1: "启用设置持久化可防止设置信息丢失。"
@@ -2553,6 +2553,8 @@ _widgetOptions:
     colored: "彩色"
   _clock:
     size: "大小"
+  _birthdayFollowings:
+    period: "期限"
 _cw:
   hide: "隐藏"
   show: "查看更多"
