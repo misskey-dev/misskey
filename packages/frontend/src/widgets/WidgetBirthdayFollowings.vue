@@ -159,7 +159,6 @@ watch(now, (to) => {
 	}
 }, { immediate: true });
 
-// eslint-disable-next-line vue/no-setup-props-destructure
 defineExpose<WidgetComponentExpose>({
 	name,
 	configure,
