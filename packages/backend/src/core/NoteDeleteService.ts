@@ -120,18 +120,23 @@ export class NoteDeleteService {
 				id: note.id,
 				userId: user.id,
 			});
-			await transaction.save(MiDeletedNote, {
-				id: note.id,
-				deletedAt: new Date(),
-				replyId: note.replyId,
-				renoteId: note.renoteId,
-				localOnly: note.localOnly,
-				uri: note.uri,
-				url: note.url,
-				channelId: note.channelId,
-				replyUserId: note.replyUserId,
-				renoteUserId: note.renoteUserId,
-			});
+			// We keep some limited information about deleted renotes to preserve reply/renote chains
+			// We do not keep for pure renotes because it will not have any replies/renotes.
+			// (Historically we can renote pure renotes and can reply to pure renotes with API, but it was just a bug and fixed.)
+			if (!(isRenote(note) && !isQuote(note))) {
+				await transaction.save(MiDeletedNote, {
+					id: note.id,
+					deletedAt: new Date(),
+					replyId: note.replyId,
+					renoteId: note.renoteId,
+					localOnly: note.localOnly,
+					uri: note.uri,
+					url: note.url,
+					channelId: note.channelId,
+					replyUserId: note.replyUserId,
+					renoteUserId: note.renoteUserId,
+				});
+			}
 		});
 
 		if (deleter && (note.userId !== deleter.id)) {
