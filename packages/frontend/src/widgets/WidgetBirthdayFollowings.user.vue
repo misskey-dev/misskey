@@ -46,12 +46,12 @@ const birthdayDate = computed(() => {
 
 const countdownDate = computed(() => {
 	const days = Math.floor((birthdayDate.value.getTime() - nowDate.value.getTime()) / (1000 * 60 * 60 * 24));
-	if (birthdayDate.value < nowDate.value) {
-		return i18n.tsx._timeIn.days({ n: 365 + days });
+	if (days === 0) {
+		return i18n.ts.today;
 	} else if (days > 0) {
 		return i18n.tsx._timeIn.days({ n: days });
 	} else {
-		return i18n.ts.today;
+		return i18n.tsx._ago.daysAgo({ n: Math.abs(days) });
 	}
 });
 </script>
