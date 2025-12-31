@@ -468,19 +468,19 @@ export class NoteEntityService implements OnModuleInit {
 			...(opts.detail ? {
 				clippedCount: note.clippedCount,
 
-				reply: note.replyId ? this.pack(note.reply ?? note.replyId, me, {
+				reply: note.replyId ? nullIfEntityNotFound(this.pack(note.reply ?? note.replyId, me, {
 					detail: false,
 					skipHide: opts.skipHide,
 					withReactionAndUserPairCache: opts.withReactionAndUserPairCache,
 					_hint_: options?._hint_,
-				}) : undefined,
+				})) : undefined,
 
-				renote: note.renoteId ? this.pack(note.renote ?? note.renoteId, me, {
+				renote: note.renoteId ? nullIfEntityNotFound(this.pack(note.renote ?? note.renoteId, me, {
 					detail: true,
 					skipHide: opts.skipHide,
 					withReactionAndUserPairCache: opts.withReactionAndUserPairCache,
 					_hint_: options?._hint_,
-				}) : undefined,
+				})) : undefined,
 
 				poll: note.hasPoll ? this.populatePoll(note, meId) : undefined,
 
