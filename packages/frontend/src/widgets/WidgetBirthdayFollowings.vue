@@ -52,10 +52,12 @@ const widgetPropsDef = {
 	},
 	height: {
 		type: 'number' as const,
+		label: i18n.ts._widgetOptions.height,
 		default: 300,
 	},
 	period: {
 		type: 'radio' as const,
+		label: i18n.ts.period,
 		default: '3day',
 		options: [{
 			value: 'today' as const,

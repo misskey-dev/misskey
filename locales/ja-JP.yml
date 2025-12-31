@@ -1407,6 +1407,7 @@ frame: "フレーム"
 presets: "プリセット"
 zeroPadding: "ゼロ埋め"
 nothingToConfigure: "設定項目はありません"
+period: "期間"
 
 _imageEditing:
   _vars:
