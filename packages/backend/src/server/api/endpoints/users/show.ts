@@ -29,18 +29,7 @@ export const meta = {
 		oneOf: [
 			{
 				type: 'object',
-				ref: 'UserLite',
-			},
-			{
-				type: 'object',
 				ref: 'UserDetailed',
-			},
-			{
-				type: 'array',
-				items: {
-					type: 'object',
-					ref: 'UserLite',
-				},
 			},
 			{
 				type: 'array',
@@ -198,7 +187,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 
 				return await this.userEntityService.pack(user, me, {
-					schema: ps.detailed ? 'UserDetailed' : 'UserLite',
+					schema: 'UserDetailed',
 				});
 			}
 		});

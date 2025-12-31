@@ -36587,7 +36587,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': components['schemas']['UserLite'] | components['schemas']['UserDetailed'] | components['schemas']['UserLite'][] | components['schemas']['UserDetailed'][];
+                    'application/json': components['schemas']['UserDetailed'] | components['schemas']['UserDetailed'][];
                 };
             };
             /** @description Client error */
