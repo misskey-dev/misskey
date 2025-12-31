@@ -2581,6 +2581,8 @@ _widgetOptions:
     shuffle: "Visualització aleatòria "
     duration: "Velocitat desplaçament bàner informatiu "
     reverse: "Desplaçament contrari"
+  _birthdayFollowings:
+    period: "Duració "
 _cw:
   hide: "Amagar"
   show: "Carregar més"
