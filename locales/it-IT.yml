@@ -2551,6 +2551,8 @@ _widgetOptions:
     colored: "Colorato"
   _clock:
     size: "Dimensioni"
+  _birthdayFollowings:
+    period: "Durata"
 _cw:
   hide: "Nascondere"
   show: "Continua la lettura..."
