@@ -2582,7 +2582,7 @@ _widgetOptions:
     duration: "Velocitat desplaçament bàner informatiu "
     reverse: "Desplaçament contrari"
   _birthdayFollowings:
-    period: "Duració "
+    period: "Període"
 _cw:
   hide: "Amagar"
   show: "Carregar més"
