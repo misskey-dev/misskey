@@ -2581,6 +2581,8 @@ _widgetOptions:
     shuffle: "Orden de visualización aleatorio"
     duration: "Velocidad de desplazamiento del baner (En segundos)"
     reverse: "Desplázate en la dirección opuesta."
+  _birthdayFollowings:
+    period: "Duración"
 _cw:
   hide: "Ocultar"
   show: "Ver más"
