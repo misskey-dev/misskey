@@ -2560,6 +2560,23 @@ _widgetOptions:
     graduations: "刻度盤"
     graduationDots: "圓點"
     graduationArabic: "阿拉伯數字"
+    fadeGraduations: "刻度淡出"
+    sAnimation: "秒針的動畫效果"
+    sAnimationElastic: "真實的"
+    sAnimationEaseOut: "滑順"
+    twentyFour: "24 小時制"
+    labelTime: "時間"
+    labelTz: "時區"
+    labelTimeAndTz: "時間與時區"
+    timezone: "時區"
+    showMs: "顯示毫秒"
+    showLabel: "顯示標記"
+  _jobQueue:
+    sound: "播放音效"
+  _rss:
+    url: "RSS 訂閱網址"
+    refreshIntervalSec: "更新間隔（秒）"
+    maxEntries: "最大顯示數量"
   _birthdayFollowings:
     period: "時長"
 _cw:
