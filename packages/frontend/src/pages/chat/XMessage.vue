@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:enableEmojiMenu="true"
 				:enableEmojiMenuReaction="true"
 			/>
-			<MkMediaList v-if="message.file" :mediaList="[message.file]" :class="$style.file"/>
+			<MkMediaList v-if="message.file" :mediaList="[message.file]"/>
 		</MkFukidashi>
 		<MkUrlPreview v-for="url in urls" :key="url" :url="url" style="margin: 8px 0;"/>
 		<div :class="$style.footer">

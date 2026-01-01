@@ -29,12 +29,14 @@ import MkTagCloud from '@/components/MkTagCloud.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { getProxiedImageUrlNullable } from '@/utility/media-proxy.js';
+import { i18n } from '@/i18n.js';
 
 const name = 'instanceCloud';
 
 const widgetPropsDef = {
 	transparent: {
 		type: 'boolean',
+		label: i18n.ts._widgetOptions.transparent,
 		default: false,
 	},
 } satisfies FormWithDefault;
