@@ -2547,11 +2547,40 @@ _widgets:
   chat: "채팅하기"
 _widgetOptions:
   showHeader: "해더를 표시"
+  transparent: "배경을 투명하게 설정"
   height: "높이"
   _button:
     colored: "색 입히기"
   _clock:
     size: "크기"
+    thickness: "시곗바늘의 두께"
+    thicknessThin: "얇게"
+    thicknessMedium: "보통"
+    thicknessThick: "굵게"
+    graduations: "문자반의 눈금"
+    graduationDots: "도트"
+    graduationArabic: "아라비아 숫자"
+    fadeGraduations: "눈금 페이드"
+    sAnimation: "초침 애니메이션"
+    sAnimationElastic: "사실적으로"
+    sAnimationEaseOut: "매끄럽게"
+    twentyFour: "24시간 표시"
+    labelTime: "시각"
+    labelTz: "시간대"
+    labelTimeAndTz: "시각과 시간대"
+    timezone: "시간대"
+    showMs: "밀리초 표시"
+    showLabel: "레이블 표시"
+  _jobQueue:
+    sound: "소리 재생"
+  _rss:
+    url: "RSS 필드의 URL"
+    refreshIntervalSec: "갱신 간격(초)"
+    maxEntries: "최대 표시 건수"
+  _rssTicker:
+    shuffle: "표시 순서 셔플"
+    duration: "티커 스크롤 속도(초)"
+    reverse: "역방향으로 스크롤"
   _birthdayFollowings:
     period: "기간"
 _cw:
