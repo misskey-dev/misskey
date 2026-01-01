@@ -76,7 +76,7 @@ export const useWidgetPropsManager = <F extends FormWithDefault>(
 			canceled: true;
 		}>((resolve) => {
 			const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkWidgetSettingsDialog.vue')), {
-				widgetName: i18n.ts._widgets[name] ?? name,
+				widgetName: name,
 				form: form,
 				currentSettings: widgetProps,
 			}, {

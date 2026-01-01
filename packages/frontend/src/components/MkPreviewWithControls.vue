@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<slot name="preview"></slot>
 			</div>
 			<div v-if="previewLoading" :class="$style.previewLoading">
-				<MkLoading :class="$style.previewLoadingSpinner"/>
+				<MkLoading/>
 			</div>
 		</div>
 		<div :class="$style.controls">

@@ -720,7 +720,7 @@ export class UserEntityService implements OnModuleInit {
 				me,
 				{
 					...options,
-					userProfile: profilesMap.get(u.id),
+					userProfile: profilesMap?.get(u.id),
 					userRelations: userRelations,
 					userMemos: userMemos,
 					pinNotes: pinNotes,

@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@ok="save()"
 	@closed="emit('closed')"
 >
-	<template #header><i class="ti ti-icons"></i> {{ widgetName }}</template>
+	<template #header><i class="ti ti-icons"></i> {{ i18n.ts._widgets[widgetName] ?? widgetName }}</template>
 
 	<MkPreviewWithControls>
 		<template #preview>
@@ -68,10 +68,10 @@ const emit = defineEmits<{
 
 const dialog = useTemplateRef('dialog');
 
-const settings = reactive<Record<string, any>>(deepClone(props.currentSettings));
+const settings = ref<Record<string, any>>(deepClone(props.currentSettings));
 
 function save() {
-	emit('saved', deepClone(settings));
+	emit('saved', deepClone(settings.value));
 	dialog.value?.close();
 }
 
