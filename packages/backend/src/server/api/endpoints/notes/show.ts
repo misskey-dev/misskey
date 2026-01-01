@@ -68,7 +68,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw err;
 			});
 
-			if (note.user.requireSigninToViewContents && me == null) {
+			if ('user' in note && note.user.requireSigninToViewContents && me == null) {
 				throw new ApiError(meta.errors.contentRestrictedByUser);
 			}
 
@@ -76,7 +76,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.contentRestrictedByServer);
 			}
 
-			if (this.serverSettings.ugcVisibilityForVisitor === 'local' && note.user.host != null && me == null) {
+			if (this.serverSettings.ugcVisibilityForVisitor === 'local' && 'user' in note && note.user.host != null && me == null) {
 				throw new ApiError(meta.errors.contentRestrictedByServer);
 			}
 

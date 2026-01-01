@@ -22,6 +22,7 @@ import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { ReactionService } from '../ReactionService.js';
 import type { UserEntityService } from './UserEntityService.js';
 import type { DriveFileEntityService } from './DriveFileEntityService.js';
+import { SystemAccountService } from '@/core/SystemAccountService.js';
 
 // is-renote.tsとよしなにリンク
 function isPureRenote(note: MiNote): note is MiNote & { renoteId: MiNote['id']; renote: MiNote } {
@@ -110,6 +111,7 @@ export class NoteEntityService implements OnModuleInit {
 		@Inject(DI.channelsRepository)
 		private channelsRepository: ChannelsRepository,
 
+		private systemAccountService: SystemAccountService,
 		//private userEntityService: UserEntityService,
 		//private driveFileEntityService: DriveFileEntityService,
 		//private customEmojiService: CustomEmojiService,
@@ -518,21 +520,21 @@ export class NoteEntityService implements OnModuleInit {
 			where: {
 				id: srcId,
 			},
-			relations: ['user', 'renote', 'reply', 'channel'],
+			relations: ['renote', 'reply', 'channel'],
 		});
-
-		const packedUsers = options?._hint_?.packedUsers;
 
 		const channel = deletedNote.channelId
 			? deletedNote.channel ?? await this.channelsRepository.findOneBy({ id: deletedNote.channelId })
 			: null;
 
+		const ghostUser = await this.systemAccountService.fetch('ghost');
+
 		return await awaitAll({
 			id: deletedNote.id,
 			createdAt: this.idService.parse(deletedNote.id).date.toISOString(),
 			deletedAt: deletedNote.deletedAt?.toISOString() ?? undefined,
-			userId: deletedNote.userId,
-			user: packedUsers?.get(deletedNote.userId) ?? this.userEntityService.pack(deletedNote.user ?? deletedNote.userId, me),
+			userId: ghostUser.id,
+			user: this.userEntityService.pack(ghostUser, me),
 			text: deletedNote.deletedAt ? "<small>Deleted note</small>" : "<small>Forgotten remote note. View on remote instance to see contents.</small>",
 			cw: null,
 			visibility: 'public',
@@ -663,7 +665,7 @@ export class NoteEntityService implements OnModuleInit {
 		const fileIds = liveNotes.map(n => [n.fileIds, n.renote?.fileIds, n.reply?.fileIds]).flat(2).filter(x => x != null);
 		const packedFiles = fileIds.length > 0 ? await this.driveFileEntityService.packManyByIdsMap(fileIds) : new Map();
 		const users = [
-			...notes.map(({ user, userId }) => user ?? userId),
+			...liveNotes.map(({ user, userId }) => user ?? userId),
 			...notes.map(({ replyUserId }) => replyUserId).filter(x => x != null),
 			...notes.map(({ renoteUserId }) => renoteUserId).filter(x => x != null),
 		];

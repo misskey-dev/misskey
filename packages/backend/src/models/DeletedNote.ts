@@ -19,7 +19,6 @@ import { MiNote } from './Note.js';
  * - see the original url of the note if the note was remote
  */
 
-@Index(['userId', 'id']) // Note: this index is ("userId", "id" DESC) in production, but not in test.
 @Entity('deleted_note')
 export class MiDeletedNote {
 	// The id of the note must be same as the original note's id.
@@ -60,18 +59,6 @@ export class MiDeletedNote {
 	})
 	@JoinColumn()
 	public renote: MiNote | null;
-
-	@Column({
-		...id(),
-		comment: 'The ID of author.',
-	})
-	public userId: MiUser['id'];
-
-	@ManyToOne(type => MiUser, {
-		onDelete: 'CASCADE',
-	})
-	@JoinColumn()
-	public user: MiUser | null;
 
 	@Column('boolean', {
 		default: false,

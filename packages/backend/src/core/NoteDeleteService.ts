@@ -125,7 +125,6 @@ export class NoteDeleteService {
 				deletedAt: new Date(),
 				replyId: note.replyId,
 				renoteId: note.renoteId,
-				userId: note.userId,
 				localOnly: note.localOnly,
 				uri: note.uri,
 				url: note.url,
