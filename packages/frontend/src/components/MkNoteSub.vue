@@ -4,21 +4,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div v-if="note == null" :class="$style.deleted">
-	{{ i18n.ts.deletedNote }}
-</div>
-<div v-else-if="!muted" :class="[$style.root, { [$style.children]: depth > 1 }]">
+<div v-if="!muted" :class="[$style.root, { [$style.children]: depth > 1 }]">
 	<div :class="$style.main">
-		<div v-if="note.channel" :class="$style.colorBar" :style="{ background: note.channel.color }"></div>
-		<MkAvatar :class="$style.avatar" :user="note.user" link preview/>
+		<div v-if="note?.channel" :class="$style.colorBar" :style="{ background: note.channel.color }"></div>
+		<MkAvatar v-if="note && !note.deletedAt" :class="$style.avatar" :user="note.user" link preview/>
+		<div v-else :class="$style.avatar"></div>
 		<div :class="$style.body">
 			<MkNoteHeader :class="$style.header" :note="note" :mini="true"/>
 			<div>
-				<p v-if="note.cw != null" :class="$style.cw">
+				<p v-if="note?.cw != null" :class="$style.cw">
 					<Mfm v-if="note.cw != ''" style="margin-right: 8px;" :text="note.cw" :author="note.user" :nyaize="'respect'"/>
 					<MkCwButton v-model="showContent" :text="note.text" :files="note.files" :poll="note.poll"/>
 				</p>
-				<div v-show="note.cw == null || showContent">
+				<div v-show="note?.cw == null || showContent">
 					<MkSubNoteContent :class="$style.text" :note="note"/>
 				</div>
 			</div>
@@ -31,7 +29,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkA class="_link" :to="notePage(note)">{{ i18n.ts.continueThread }} <i class="ti ti-chevron-double-right"></i></MkA>
 	</div>
 </div>
-<div v-else :class="$style.muted" @click="muted = false">
+<!-- note must not be null if muted is false, but necessary for type checking. -->
+<div v-else-if="note" :class="$style.muted" @click="muted = false">
 	<I18n :src="i18n.ts.userSaysSomething" tag="small">
 		<template #name>
 			<MkA v-user-preview="note.userId" :to="userPage(note.user)">
@@ -161,16 +160,6 @@ if (props.detail && props.note) {
 	padding: 8px !important;
 	border: 1px solid var(--MI_THEME-divider);
 	margin: 8px 8px 0 8px;
-	border-radius: 8px;
-}
-
-.deleted {
-	text-align: center;
-	padding: 8px !important;
-	margin: 8px 8px 0 8px;
-	--color: light-dark(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.15));
-	background-size: auto auto;
-	background-image: repeating-linear-gradient(135deg, transparent, transparent 10px, var(--color) 4px, var(--color) 14px);
 	border-radius: 8px;
 }
 </style>
