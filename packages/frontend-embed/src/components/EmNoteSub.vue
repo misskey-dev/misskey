@@ -6,16 +6,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="[$style.root, { [$style.children]: depth > 1 }]">
 	<div :class="$style.main">
-		<div v-if="note.channel" :class="$style.colorBar" :style="{ background: note.channel.color }"></div>
-		<EmAvatar :class="$style.avatar" :user="note.user" link preview/>
+		<div v-if="note?.channel" :class="$style.colorBar" :style="{ background: note.channel.color }"></div>
+		<EmAvatar v-if="note && !note.deletedAt" :class="$style.avatar" :user="note.user" link preview/>
+		<div v-else :class="$style.avatar"></div>
 		<div :class="$style.body">
 			<EmNoteHeader :class="$style.header" :note="note" :mini="true"/>
 			<div>
-				<p v-if="note.cw != null" :class="$style.cw">
+				<p v-if="note?.cw != null" :class="$style.cw">
 					<EmMfm v-if="note.cw != ''" style="margin-right: 8px;" :text="note.cw" :author="note.user" :nyaize="'respect'"/>
 					<button style="display: block; width: 100%;" class="_buttonGray _buttonRounded" @click="showContent = !showContent">{{ showContent ? i18n.ts._cw.hide : i18n.ts._cw.show }}</button>
 				</p>
-				<div v-show="note.cw == null || showContent">
+				<div v-show="note?.cw == null || showContent">
 					<EmSubNoteContent :class="$style.text" :note="note"/>
 				</div>
 			</div>
@@ -43,7 +44,7 @@ import { i18n } from '@/i18n.js';
 import EmMfm from '@/components/EmMfm.js';
 
 const props = withDefaults(defineProps<{
-	note: Misskey.entities.Note;
+	note: Misskey.entities.Note | null;
 	detail?: boolean;
 
 	// how many notes are in between this one and the note being viewed in detail
