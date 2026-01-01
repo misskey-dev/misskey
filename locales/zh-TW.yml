@@ -2577,6 +2577,10 @@ _widgetOptions:
     url: "RSS 訂閱網址"
     refreshIntervalSec: "更新間隔（秒）"
     maxEntries: "最大顯示數量"
+  _rssTicker:
+    shuffle: "顯示順序隨機排列"
+    duration: "RSS 跑馬燈的捲動速度（秒）"
+    reverse: "反方向滾動"
   _birthdayFollowings:
     period: "時長"
 _cw:
