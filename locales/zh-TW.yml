@@ -2552,7 +2552,14 @@ _widgetOptions:
   _button:
     colored: "彩色"
   _clock:
-    size: "大小"
+    size: "尺寸"
+    thickness: "指針粗細"
+    thicknessThin: "細"
+    thicknessMedium: "普通"
+    thicknessThick: "粗"
+    graduations: "刻度盤"
+    graduationDots: "圓點"
+    graduationArabic: "阿拉伯數字"
   _birthdayFollowings:
     period: "時長"
 _cw:
