@@ -4,34 +4,43 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkContainer :showHeader="widgetProps.showHeader" class="mkw-bdayfollowings">
+<MkContainer :style="`height: ${widgetProps.height}px;`" :showHeader="widgetProps.showHeader" :scrollable="true" class="mkw-bdayfollowings">
 	<template #icon><i class="ti ti-cake"></i></template>
 	<template #header>{{ i18n.ts._widgets.birthdayFollowings }}</template>
-	<template #func="{ buttonStyleClass }"><button class="_button" :class="buttonStyleClass" @click="actualFetch()"><i class="ti ti-refresh"></i></button></template>
+	<template #func="{ buttonStyleClass }"><button class="_button" :class="buttonStyleClass" @click="fetch"><i class="ti ti-refresh"></i></button></template>
 
-	<div :class="$style.bdayFRoot">
-		<MkLoading v-if="fetching"/>
-		<div v-else-if="users.length > 0" :class="$style.bdayFGrid">
-			<MkAvatar v-for="user in users" :key="user.id" :user="user.followee!" link preview></MkAvatar>
+	<MkPagination v-slot="{ items }" :paginator="birthdayUsersPaginator">
+		<div>
+			<template v-for="(user, i) in items" :key="user.id">
+				<div
+					v-if="i > 0 && isSeparatorNeeded(birthdayUsersPaginator.items.value[i - 1].birthday, user.birthday)"
+				>
+					<div :class="$style.date">
+						<span><i class="ti ti-chevron-up"></i> {{ getSeparatorInfo(birthdayUsersPaginator.items.value[i - 1].birthday, user.birthday)?.prevText }}</span>
+						<span style="height: 1em; width: 1px; background: var(--MI_THEME-divider);"></span>
+						<span>{{ getSeparatorInfo(birthdayUsersPaginator.items.value[i - 1].birthday, user.birthday)?.nextText }} <i class="ti ti-chevron-down"></i></span>
+					</div>
+					<XUser :class="$style.user" :item="user" />
+				</div>
+				<XUser v-else :class="$style.user" :item="user" />
+			</template>
 		</div>
-		<div v-else :class="$style.bdayFFallback">
-			<MkResult type="empty"/>
-		</div>
-	</div>
+	</MkPagination>
 </MkContainer>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
-import * as Misskey from 'misskey-js';
-import { useInterval } from '@@/js/use-interval.js';
+import { computed, markRaw, ref, watch } from 'vue';
+import { useLowresTime } from '@/composables/use-lowres-time.js';
+import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-separate.js';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
-import { misskeyApi } from '@/utility/misskey-api.js';
+import MkPagination from '@/components/MkPagination.vue';
+import XUser from './WidgetBirthdayFollowings.user.vue';
 import { i18n } from '@/i18n.js';
-import { $i } from '@/i.js';
+import { Paginator } from '@/utility/paginator.js';
 
 const name = 'birthdayFollowings';
 
@@ -41,6 +50,29 @@ const widgetPropsDef = {
 		label: i18n.ts._widgetOptions.showHeader,
 		default: true,
 	},
+	height: {
+		type: 'number' as const,
+		label: i18n.ts._widgetOptions.height,
+		default: 300,
+	},
+	period: {
+		type: 'radio' as const,
+		label: i18n.ts._widgetOptions._birthdayFollowings.period,
+		default: '3day',
+		options: [{
+			value: 'today' as const,
+			label: i18n.ts.today,
+		}, {
+			value: '3day' as const,
+			label: i18n.tsx.dayX({ day: 3 }),
+		}, {
+			value: 'week' as const,
+			label: i18n.ts.oneWeek,
+		}, {
+			value: 'month' as const,
+			label: i18n.ts.oneMonth,
+		}],
+	},
 } satisfies FormWithDefault;
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
@@ -48,62 +80,84 @@ type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 const props = defineProps<WidgetComponentProps<WidgetProps>>();
 const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
 
-const { widgetProps, configure } = useWidgetPropsManager(name,
+const { widgetProps, configure } = useWidgetPropsManager(
+	name,
 	widgetPropsDef,
 	props,
 	emit,
 );
 
-const users = ref<Misskey.Endpoints['users/following']['res']>([]);
-const fetching = ref(true);
-let lastFetchedAt = '1970-01-01';
+const now = useLowresTime();
+const nextDay = new Date();
+nextDay.setHours(24, 0, 0, 0);
+let nextDayMidnightTime = nextDay.getTime();
 
-const fetch = () => {
-	if (!$i) {
-		users.value = [];
-		fetching.value = false;
-		return;
+const begin = ref<Date>(new Date());
+const end = computed(() => {
+	switch (widgetProps.period) {
+		case '3day':
+			return new Date(begin.value.getTime() + 1000 * 60 * 60 * 24 * 3);
+		case 'week':
+			return new Date(begin.value.getTime() + 1000 * 60 * 60 * 24 * 7);
+		case 'month':
+			return new Date(begin.value.getTime() + 1000 * 60 * 60 * 24 * 30);
+		default:
+			return begin.value;
 	}
+});
 
-	const lfAtD = new Date(lastFetchedAt);
-	lfAtD.setHours(0, 0, 0, 0);
+const birthdayUsersPaginator = markRaw(new Paginator('users/get-following-birthday-users', {
+	limit: 18,
+	offsetMode: true,
+	computedParams: computed(() => {
+		if (widgetProps.period === 'today') {
+			return {
+				birthday: {
+					month: begin.value.getMonth() + 1,
+					day: begin.value.getDate(),
+				},
+			};
+		} else {
+			return {
+				birthday: {
+					begin: {
+						month: begin.value.getMonth() + 1,
+						day: begin.value.getDate(),
+					},
+					end: {
+						month: end.value.getMonth() + 1,
+						day: end.value.getDate(),
+					},
+				},
+			};
+		}
+	}),
+}));
+
+function fetch() {
 	const now = new Date();
-	now.setHours(0, 0, 0, 0);
-
-	if (now > lfAtD) {
-		actualFetch();
-
-		lastFetchedAt = now.toISOString();
-	}
-};
-
-function actualFetch() {
-	if ($i == null) {
-		users.value = [];
-		fetching.value = false;
-		return;
-	}
-
-	const now = new Date();
-	now.setHours(0, 0, 0, 0);
-	fetching.value = true;
-	misskeyApi('users/following', {
-		limit: 18,
-		birthday: `${now.getFullYear().toString().padStart(4, '0')}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`,
-		userId: $i.id,
-	}).then(res => {
-		users.value = res;
-		window.setTimeout(() => {
-			// 早すぎるとチカチカする
-			fetching.value = false;
-		}, 100);
-	});
+	begin.value = now;
 }
 
-useInterval(fetch, 1000 * 60, {
-	immediate: true,
-	afterMounted: true,
-});
+const UPDATE_INTERVAL = 1000 * 60;
+let nextDayTimer: number | null = null;
+
+watch(now, (to) => {
+	// 次回更新までに日付が変わる場合、日付が変わった直後に強制的に更新するタイマーをセットする
+	if (nextDayMidnightTime - to <= UPDATE_INTERVAL) {
+		if (nextDayTimer != null) {
+			window.clearTimeout(nextDayTimer);
+			nextDayTimer = null;
+		}
+
+		nextDayTimer = window.setTimeout(() => {
+			fetch();
+			nextDay.setHours(24, 0, 0, 0);
+			nextDayMidnightTime = nextDay.getTime();
+			nextDayTimer = null;
+		}, nextDayMidnightTime - to);
+	}
+}, { immediate: true });
 
 defineExpose<WidgetComponentExpose>({
 	name,
@@ -113,24 +167,24 @@ defineExpose<WidgetComponentExpose>({
 </script>
 
 <style lang="scss" module>
-.bdayFRoot {
-	overflow: hidden;
-	min-height: calc(calc(calc(50px * 3) - 8px) + calc(var(--MI-margin) * 2));
-}
-.bdayFGrid {
-	display: grid;
-	grid-template-columns: repeat(6, 42px);
-	grid-template-rows: repeat(3, 42px);
-	place-content: center;
-	gap: 8px;
-	margin: var(--MI-margin) auto;
+.root {
+	container-type: inline-size;
+	background: var(--MI_THEME-panel);
 }
 
-.bdayFFallback {
-	height: 100%;
+.user {
+	border-bottom: solid 0.5px var(--MI_THEME-divider);
+}
+
+.date {
 	display: flex;
-	flex-direction: column;
-	justify-content: center;
+	font-size: 85%;
 	align-items: center;
+	justify-content: center;
+	gap: 1em;
+	opacity: 0.75;
+	padding: 8px 8px;
+	margin: 0 auto;
+	border-bottom: solid 0.5px var(--MI_THEME-divider);
 }
 </style>
