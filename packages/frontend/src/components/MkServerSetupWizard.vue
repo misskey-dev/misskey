@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.root" class="_gaps_m">
+<div class="_gaps_m">
 	<MkInput v-model="q_name" data-cy-server-name>
 		<template #label>{{ i18n.ts.instanceName }}</template>
 	</MkInput>
@@ -370,8 +370,3 @@ function applySettings() {
 	});
 }
 </script>
-
-<style lang="scss" module>
-.root {
-}
-</style>

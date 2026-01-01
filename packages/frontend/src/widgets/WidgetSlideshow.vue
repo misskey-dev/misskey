@@ -33,6 +33,7 @@ const name = 'slideshow';
 const widgetPropsDef = {
 	height: {
 		type: 'number',
+		label: i18n.ts._widgetOptions.height,
 		default: 300,
 	},
 	folderId: {
