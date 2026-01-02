@@ -1406,6 +1406,7 @@ youAreAdmin: "Sei un amministratore"
 frame: "Cornice"
 presets: "Preimpostato"
 zeroPadding: "Al vivo"
+nothingToConfigure: "Niente da configurare"
 _imageEditing:
   _vars:
     caption: "Didascalia dell'immagine"
@@ -2546,11 +2547,30 @@ _widgets:
   chat: "Chatta con questa persona"
 _widgetOptions:
   showHeader: "Mostra la testata"
+  transparent: "Sfondo trasparente"
   height: "Altezza"
   _button:
     colored: "Colorato"
   _clock:
     size: "Dimensioni"
+    thickness: "Spessore lancette"
+    thicknessThin: "Sottili"
+    thicknessMedium: "Medie"
+    thicknessThick: "Larghe"
+    graduations: "Quadrante"
+    graduationDots: "Punti"
+    graduationArabic: "Numeri"
+    fadeGraduations: "Sfumatura"
+    sAnimation: "Animazione dei secondi"
+    sAnimationElastic: "Realistica"
+    sAnimationEaseOut: "Morbida"
+    twentyFour: "Formato 24 ore"
+    labelTime: "Orario"
+    labelTz: "Fuso orario"
+    labelTimeAndTz: "Orario e fuso orario"
+    timezone: "Fuso orario"
+    showMs: "Millisecondi visibili"
+    showLabel: "Etichetta visibile"
   _birthdayFollowings:
     period: "Durata"
 _cw:
