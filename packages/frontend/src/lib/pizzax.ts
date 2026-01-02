@@ -255,7 +255,7 @@ export class Pizzax<T extends StateDef> {
 					return (getter != null ? getter(this.s[key]) : this.s[key]) as R;
 				},
 				set: (value) => {
-					const val = setter ? setter(value) : value;
+					const val = setter != null ? setter(value) : value;
 					this.set(key, val as T[K]['default']);
 				},
 			};
