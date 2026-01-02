@@ -855,7 +855,7 @@ const $i = ensureSignin();
 
 const lang = ref(miLocalStorage.getItem('lang'));
 const dataSaver = ref(prefer.s.dataSaver);
-const realtimeMode = computed(store.makeGetterSetter('realtimeMode'));
+const realtimeMode = store.model('realtimeMode');
 
 const overridedDeviceKind = prefer.model('overridedDeviceKind');
 const pollingInterval = prefer.model('pollingInterval');
