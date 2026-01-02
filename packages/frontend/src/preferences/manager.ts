@@ -320,7 +320,7 @@ export class PreferencesManager extends EventEmitter<PreferencesManagerEvents> {
 
 			onScopeDispose(() => {
 				watchStop();
-			});
+			}, true);
 
 			return {
 				get: () => {

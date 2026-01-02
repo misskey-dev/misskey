@@ -247,7 +247,7 @@ export class Pizzax<T extends StateDef> {
 
 			onScopeDispose(() => {
 				watchStop();
-			});
+			}, true);
 
 			return {
 				get: () => {
