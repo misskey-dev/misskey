@@ -2553,6 +2553,15 @@ _widgetOptions:
     colored: "彩色"
   _clock:
     size: "大小"
+    thicknessThin: "细"
+    thicknessMedium: "普通"
+    thicknessThick: "粗"
+    graduationArabic: "阿拉伯数字"
+    twentyFour: "24 小时制"
+    labelTz: "时区"
+    timezone: "时区"
+  _jobQueue:
+    sound: "播放音效"
   _birthdayFollowings:
     period: "期限"
 _cw:
