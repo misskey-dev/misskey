@@ -6,7 +6,7 @@
 		"type": "git",
 		"url": "https://github.com/misskey-dev/misskey.git"
 	},
-	"packageManager": "pnpm@10.25.0",
+	"packageManager": "pnpm@10.26.2",
 	"workspaces": [
 		"packages/misskey-js",
 		"packages/i18n",
@@ -58,7 +58,7 @@
 	},
 	"dependencies": {
 		"cssnano": "7.1.2",
-		"esbuild": "0.27.1",
+		"esbuild": "0.27.2",
 		"execa": "9.6.1",
 		"ignore-walk": "8.0.0",
 		"js-yaml": "4.1.1",
@@ -67,19 +67,19 @@
 		"terser": "5.44.1"
 	},
 	"devDependencies": {
-		"@eslint/js": "9.39.1",
+		"@eslint/js": "9.39.2",
 		"@misskey-dev/eslint-plugin": "2.2.0",
 		"@types/js-yaml": "4.0.9",
-		"@types/node": "24.10.2",
-		"@typescript-eslint/eslint-plugin": "8.49.0",
-		"@typescript-eslint/parser": "8.49.0",
-		"@typescript/native-preview": "7.0.0-dev.20251206.1",
+		"@types/node": "24.10.4",
+		"@typescript-eslint/eslint-plugin": "8.50.1",
+		"@typescript-eslint/parser": "8.50.1",
+		"@typescript/native-preview": "7.0.0-dev.20251226.1",
 		"cross-env": "10.1.0",
-		"cypress": "15.7.1",
-		"eslint": "9.39.1",
+		"cypress": "15.8.1",
+		"eslint": "9.39.2",
 		"globals": "16.5.0",
 		"ncp": "2.0.0",
-		"pnpm": "10.25.0",
+		"pnpm": "10.26.2",
 		"typescript": "5.9.3",
 		"start-server-and-test": "2.1.3"
 	},
