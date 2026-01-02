@@ -151,9 +151,11 @@ function shareWithNote() {
 	});
 }
 
-function like() {
+async function like() {
 	if (!flash.value) return;
-	pleaseLogin();
+
+	const isLoggedIn = await pleaseLogin();
+	if (!isLoggedIn) return;
 
 	os.apiWithDialog('flash/like', {
 		flashId: flash.value.id,
@@ -165,7 +167,9 @@ function like() {
 
 async function unlike() {
 	if (!flash.value) return;
-	pleaseLogin();
+
+	const isLoggedIn = await pleaseLogin();
+	if (!isLoggedIn) return;
 
 	const confirm = await os.confirm({
 		type: 'warning',
