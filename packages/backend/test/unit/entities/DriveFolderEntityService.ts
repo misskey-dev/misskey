@@ -165,7 +165,6 @@ describe('DriveFolderEntityService', () => {
 			const start = Date.now();
 			await service.packMany(folders, { detail: true });
 			const elapsed = Date.now() - start;
-			 
 			console.log(`DriveFolderEntityService.packMany benchmark: ${elapsed}ms`);
 		});
 	});
