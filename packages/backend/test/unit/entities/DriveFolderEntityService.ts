@@ -139,6 +139,7 @@ describe('DriveFolderEntityService', () => {
 			const root = await createFolder('root-many', null);
 			const childA = await createFolder('child-a', root.id);
 			const childB = await createFolder('child-b', root.id);
+			await createFolder('child-a-sub', childA.id);
 			await createFile(childA.id);
 
 			const packed = await service.packMany([childB, childA], { detail: true }) as any;
@@ -148,6 +149,8 @@ describe('DriveFolderEntityService', () => {
 			expect(packed[1].parent?.id).toBe(root.id);
 			expect(packed[0].filesCount).toBe(0);
 			expect(packed[1].filesCount).toBe(1);
+			expect(packed[0].foldersCount).toBe(0);
+			expect(packed[1].foldersCount).toBe(1);
 		});
 	});
 
