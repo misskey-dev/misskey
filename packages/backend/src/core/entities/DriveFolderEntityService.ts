@@ -154,17 +154,17 @@ export class DriveFolderEntityService {
 					.addSelect('COUNT(*)', 'count')
 					.where('folder.parentId IN (:...ids)', { ids })
 					.groupBy('folder.parentId')
-					.getRawMany<{ parentId: string; count: number }>();
+					.getRawMany<{ parentId: string; count: string }>();
 
 				const fileCounts = await this.driveFilesRepository.createQueryBuilder('file')
 					.select('file.folderId', 'folderId')
 					.addSelect('COUNT(*)', 'count')
 					.where('file.folderId IN (:...ids)', { ids })
 					.groupBy('file.folderId')
-					.getRawMany<{ folderId: string; count: number }>();
+					.getRawMany<{ folderId: string; count: string }>();
 
-				foldersCountMap = new Map(folderCounts.map(row => [row.parentId, row.count]));
-				filesCountMap = new Map(fileCounts.map(row => [row.folderId, row.count]));
+				foldersCountMap = new Map(folderCounts.map(row => [row.parentId, Number(row.count)]));
+				filesCountMap = new Map(fileCounts.map(row => [row.folderId, Number(row.count)]));
 			} else {
 				foldersCountMap = new Map();
 				filesCountMap = new Map();
