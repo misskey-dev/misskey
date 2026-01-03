@@ -38,16 +38,16 @@
 	},
 	"devDependencies": {
 		"@microsoft/api-extractor": "7.55.2",
-		"@types/node": "24.10.2",
-		"@typescript-eslint/eslint-plugin": "8.49.0",
-		"@typescript-eslint/parser": "8.49.0",
-		"@vitest/coverage-v8": "4.0.15",
-		"esbuild": "0.27.1",
+		"@types/node": "24.10.4",
+		"@typescript-eslint/eslint-plugin": "8.50.1",
+		"@typescript-eslint/parser": "8.50.1",
+		"@vitest/coverage-v8": "4.0.16",
+		"esbuild": "0.27.2",
 		"execa": "9.6.1",
 		"ncp": "2.0.0",
 		"nodemon": "3.1.11",
 		"tsd": "0.33.0",
-		"vitest": "4.0.15",
+		"vitest": "4.0.16",
 		"vitest-websocket-mock": "0.5.0"
 	},
 	"files": [
