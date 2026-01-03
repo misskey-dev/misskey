@@ -2571,6 +2571,16 @@ _widgetOptions:
     timezone: "Fuso orario"
     showMs: "Millisecondi visibili"
     showLabel: "Etichetta visibile"
+  _jobQueue:
+    sound: "Emetti un suono"
+  _rss:
+    url: "URL del Feed RSS"
+    refreshIntervalSec: "Intervallo di aggiornamento (in secondi)"
+    maxEntries: "Quantità massima visualizzabile"
+  _rssTicker:
+    shuffle: "Ordine casuale"
+    duration: "Velocità di scorrimento del ticker (in secondi)"
+    reverse: "Direzione inversa"
   _birthdayFollowings:
     period: "Durata"
 _cw:
