@@ -2553,6 +2553,7 @@ _widgetOptions:
     colored: "彩色"
   _clock:
     size: "大小"
+    thickness: "指针宽度"
     thicknessThin: "细"
     thicknessMedium: "普通"
     thicknessThick: "粗"
