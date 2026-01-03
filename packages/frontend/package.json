@@ -140,8 +140,8 @@
 		"vite-plugin-turbosnap": "1.0.3",
 		"vitest": "4.0.16",
 		"vitest-fetch-mock": "0.4.5",
-		"vue-component-type-helpers": "3.2.0",
+		"vue-component-type-helpers": "3.2.1",
 		"vue-eslint-parser": "10.2.0",
-		"vue-tsc": "3.2.0"
+		"vue-tsc": "3.2.1"
 	}
 }

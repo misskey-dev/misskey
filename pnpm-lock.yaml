@@ -1021,14 +1021,14 @@ importers:
         specifier: 0.4.5
         version: 0.4.5(vitest@4.0.16(@opentelemetry/api@1.9.0)(@types/node@24.10.4)(happy-dom@20.0.11)(jsdom@27.2.0(bufferutil@4.1.0)(utf-8-validate@6.0.6))(msw@2.12.6(@types/node@24.10.4)(typescript@5.9.3))(sass@1.97.1)(terser@5.44.1)(tsx@4.21.0))
       vue-component-type-helpers:
-        specifier: 3.2.0
-        version: 3.2.0
+        specifier: 3.2.1
+        version: 3.2.1
       vue-eslint-parser:
         specifier: 10.2.0
         version: 10.2.0(eslint@9.39.2)
       vue-tsc:
-        specifier: 3.2.0
-        version: 3.2.0(typescript@5.9.3)
+        specifier: 3.2.1
+        version: 3.2.1(typescript@5.9.3)
 
   packages/frontend-builder:
     dependencies:
@@ -1209,14 +1209,14 @@ importers:
         specifier: 1.0.3
         version: 1.0.3
       vue-component-type-helpers:
-        specifier: 3.2.0
-        version: 3.2.0
+        specifier: 3.2.1
+        version: 3.2.1
       vue-eslint-parser:
         specifier: 10.2.0
         version: 10.2.0(eslint@9.39.2)
       vue-tsc:
-        specifier: 3.2.0
-        version: 3.2.0(typescript@5.9.3)
+        specifier: 3.2.1
+        version: 3.2.1(typescript@5.9.3)
 
   packages/frontend-shared:
     dependencies:
@@ -5268,8 +5268,8 @@ packages:
       typescript:
         optional: true
 
-  '@vue/language-core@3.2.0':
-    resolution: {integrity: sha512-CHIuDtZ04CIElAgEuLbwmq3p7QcmYoVPmBPqtdvWJCflZE5W3KHT/5DRBvDv1r2TteCjN02uYHiaAEWq9hQNiA==}
+  '@vue/language-core@3.2.1':
+    resolution: {integrity: sha512-g6oSenpnGMtpxHGAwKuu7HJJkNZpemK/zg3vZzZbJ6cnnXq1ssxuNrXSsAHYM3NvH8p4IkTw+NLmuxyeYz4r8A==}
 
   '@vue/reactivity@3.5.26':
     resolution: {integrity: sha512-9EnYB1/DIiUYYnzlnUBgwU32NNvLp/nhxLXeWRhHUEeWNTn1ECxX8aGO7RTXeX6PPcxe3LLuNBFoJbV4QZ+CFQ==}
@@ -11237,9 +11237,6 @@ packages:
   vue-component-type-helpers@2.2.12:
     resolution: {integrity: sha512-YbGqHZ5/eW4SnkPNR44mKVc6ZKQoRs/Rux1sxC6rdwXb4qpbOSYfDr9DsTHolOTGmIKgM9j141mZbBeg05R1pw==}
 
-  vue-component-type-helpers@3.2.0:
-    resolution: {integrity: sha512-6o41sHNIAzqSjmXz+5nXjBCCVfjVB3qTfUJQslH979mTnPw0TKl/j3PfArKOwyP/nJKT/QhppfQE7zUgrCeBWA==}
-
   vue-component-type-helpers@3.2.1:
     resolution: {integrity: sha512-gKV7XOkQl4urSuLHNY1tnVQf7wVgtb/mKbRyxSLWGZUY9RK7aDPhBenTjm+i8ZFe0zC2PZeHMPtOZXZfyaFOzQ==}
 
@@ -11270,8 +11267,8 @@ packages:
     peerDependencies:
       vue: '>=2'
 
-  vue-tsc@3.2.0:
-    resolution: {integrity: sha512-NFhcKKQZeTuG8/gc8XwFANx/lC0Dd3dCZ97TWh1a63PcD22KkFy4QLeT8JMtduaQT1NzySWmx3qXm16Hj1Xsxg==}
+  vue-tsc@3.2.1:
+    resolution: {integrity: sha512-I23Rk8dkQfmcSbxDO0dmg9ioMLjKA1pjlU3Lz6Jfk2pMGu3Uryu9810XkcZH24IzPbhzPCnkKo2rEMRX0skSrw==}
     hasBin: true
     peerDependencies:
       typescript: '>=5.0.0'
@@ -16520,7 +16517,7 @@ snapshots:
     optionalDependencies:
       typescript: 5.9.3
 
-  '@vue/language-core@3.2.0':
+  '@vue/language-core@3.2.1':
     dependencies:
       '@volar/language-core': 2.4.27
       '@vue/compiler-dom': 3.5.26
@@ -23606,8 +23603,6 @@ snapshots:
 
   vue-component-type-helpers@2.2.12: {}
 
-  vue-component-type-helpers@3.2.0: {}
-
   vue-component-type-helpers@3.2.1: {}
 
   vue-demi@0.14.10(vue@3.5.26(typescript@5.9.3)):
@@ -23646,10 +23641,10 @@ snapshots:
     dependencies:
       vue: 3.5.26(typescript@5.9.3)
 
-  vue-tsc@3.2.0(typescript@5.9.3):
+  vue-tsc@3.2.1(typescript@5.9.3):
     dependencies:
       '@volar/typescript': 2.4.27
-      '@vue/language-core': 3.2.0
+      '@vue/language-core': 3.2.1
       typescript: 5.9.3
 
   vue@3.5.26(typescript@5.9.3):
