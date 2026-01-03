@@ -866,6 +866,42 @@ async function connectStream(): Promise<void> {
 	connection.value.on('itemPicked', (body: { droppedItemId: string }) => {
 		if (engine) engine.removeDroppedItem(body.droppedItemId);
 	});
+	// 仕様: FR-032 設置アイテムのリアルタイム同期
+	// 他プレイヤーがアイテムを設置した際にマップに追加
+	connection.value.on('itemPlaced', (body: {
+		playerId: string;
+		placedItemId: string;
+		itemId: string;
+		itemName: string;
+		itemType: string;
+		ownerUsername: string | null;
+		x: number;
+		y: number;
+		z: number;
+		rotation: number;
+		worldId: string | null;
+	}) => {
+		if (!engine) return;
+		// 自分が設置したアイテムはローカルで処理済み（APIレスポンス後にリロード）
+		const localPlayerId = engine.getLocalPlayerId();
+		if (localPlayerId && body.playerId === localPlayerId) return;
+		// 現在のワールドと異なる設置アイテムはスキップ
+		const currentWorldId = worldId ?? null;
+		if (body.worldId !== currentWorldId) return;
+		// 他プレイヤーが設置したアイテムを追加
+		engine.addPlacedItem({
+			id: body.placedItemId,
+			itemId: body.itemId,
+			itemName: body.itemName,
+			itemType: body.itemType,
+			ownerId: body.playerId,
+			ownerUsername: body.ownerUsername,
+			positionX: body.x,
+			positionY: body.y,
+			positionZ: body.z,
+			rotation: body.rotation,
+		});
+	});
 	// 仕様FR-123〜FR-126: 他プレイヤーが宝箱を開封した際のイベント
 	connection.value.on('containerOpened', (body: {
 		placedItemId: string;
@@ -2386,32 +2422,36 @@ function reloadWorldData(data: {
 		cows: data.cows?.length ?? 0,
 	});
 
+	// 仕様: FR-023〜FR-027 ワールド切り替え時は常にクリアしてからリロード
+	// データがundefinedの場合もクリアする（別ワールドのデータが残らないように）
+
 	// 設置アイテムをリロード（FR-023）
+	engine.clearPlacedItems();
 	if (data.placedItems) {
-		engine.clearPlacedItems();
 		for (const item of data.placedItems) {
 			engine.addPlacedItem(item);
 		}
 	}
 
 	// 落ちているアイテムをリロード（FR-025）
+	engine.clearDroppedItems();
 	if (data.droppedItems) {
-		engine.clearDroppedItems();
 		for (const item of data.droppedItems) {
 			engine.addDroppedItem(item);
 		}
 	}
 
 	// 動物をリロード（FR-024）
+	// 仕様: 神社ワールドでは動物データがないため、クリアだけ実行される
+	engine.clearChickens();
 	if (data.chickens) {
-		engine.clearChickens();
 		for (const chicken of data.chickens) {
 			engine.addChicken(chicken);
 		}
 	}
 
+	engine.clearCows();
 	if (data.cows) {
-		engine.clearCows();
 		for (const cow of data.cows) {
 			engine.addCow(cow);
 		}
@@ -2871,14 +2911,21 @@ async function loadNearbyNpcs(x: number, z: number): Promise<void> {
 }
 
 // FR-022: Load nearby pets (cows and chickens)
+// 仕様: FR-024 worldIdでフィルタリング
 async function loadNearbyPets(x: number, z: number): Promise<void> {
 	if (!engine) return;
+
+	// 仕様: 神社ワールドではペットをロードしない（動物はデフォルトワールドのみ）
+	if (engine.getCurrentWorldType() === 'shrine' || worldId === 'shrine-world-001') {
+		return;
+	}
 
 	try {
 		const pets = await noctownApi<PetInfo[]>('noctown/pets/nearby', {
 			centerX: x,
 			centerZ: z,
 			radius: 50,
+			worldId: worldId ?? undefined, // null → undefined（API側でNULL条件として処理）
 		});
 		engine.addPets(pets);
 	} catch (e) {

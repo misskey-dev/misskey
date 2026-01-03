@@ -748,15 +748,23 @@ export class NoctownService {
 			{ itemId: playerItem.itemId, playerItemId, itemType: playerItem.item.itemType, rotation },
 		);
 
+		// 仕様: FR-032 設置者情報をリアルタイム同期に含める
+		// itemPlacedイベントにitemName, itemType, ownerUsernameを追加
+		const ownerUser = player ? await this.usersRepository.findOneBy({ id: player.userId }) : null;
+
 		// Broadcast item placement
 		this.globalEventService.publishNoctownStream('itemPlaced', {
 			playerId,
 			placedItemId,
 			itemId: playerItem.itemId,
+			itemName: playerItem.item.name,
+			itemType: playerItem.item.itemType,
+			ownerUsername: ownerUser?.username ?? null,
 			x,
 			y,
 			z,
 			rotation,
+			worldId,
 		});
 
 		return { success: true, placedItemId };
@@ -3184,10 +3192,20 @@ export class NoctownService {
 		const worldIdCondition = toWorldId === null ? IsNull() : toWorldId;
 
 		// 設置アイテムを取得（FR-023）
+		// 仕様: 設置者情報を含めて取得（playerリレーション追加）
 		const placedItems = await this.noctownPlacedItemsRepository.find({
 			where: { worldId: worldIdCondition },
-			relations: ['item'],
+			relations: ['item', 'player'],
 		});
+
+		// 仕様: 設置者のユーザー名を効率的に取得（一括クエリ）
+		const placedItemOwnerUserIds = placedItems
+			.map(item => item.player?.userId)
+			.filter((userId): userId is string => userId != null);
+		const placedItemOwnerUsers = placedItemOwnerUserIds.length > 0
+			? await this.usersRepository.findBy(placedItemOwnerUserIds.map(id => ({ id })))
+			: [];
+		const placedItemOwnerUsernameMap = new Map(placedItemOwnerUsers.map(u => [u.id, u.username]));
 
 		// 落ちているアイテムを取得（FR-025）
 		const droppedItems = await this.noctownDroppedItemsRepository.find({
@@ -3219,6 +3237,7 @@ export class NoctownService {
 				rotation: p.rotation,
 			})),
 			// 仕様: FR-023〜FR-027 ワールド別データを送信
+			// 仕様: 設置者名（ownerUsername）を含める
 			placedItems: placedItems.map(item => ({
 				id: item.id,
 				itemId: item.itemId,
@@ -3231,6 +3250,10 @@ export class NoctownService {
 				positionZ: item.positionZ,
 				rotation: item.rotation,
 				playerId: item.playerId,
+				ownerId: item.playerId,
+				ownerUsername: item.player?.userId
+					? placedItemOwnerUsernameMap.get(item.player.userId) ?? null
+					: null,
 			})),
 			droppedItems: droppedItems.map(item => ({
 				droppedItemId: item.id,
