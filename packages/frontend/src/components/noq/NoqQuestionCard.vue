@@ -13,6 +13,7 @@ import MkUserName from '@/components/global/MkUserName.vue';
 import MkAvatar from '@/components/global/MkAvatar.vue';
 import MkTime from '@/components/global/MkTime.vue';
 import MkButton from '@/components/MkButton.vue';
+import Mfm from '@/components/global/MkMfm.js';
 import NoqMessageCard from './NoqMessageCard.vue';
 
 export interface NoqQuestion {
@@ -66,10 +67,10 @@ const emit = defineEmits<{
 				<MkAvatar :user="question.sender" class="avatar" />
 				<span class="username">@{{ question.sender.username }}</span>
 			</div>
-			<!-- 回答済みの場合: A: {回答テキスト} を表示 -->
-			<div v-else-if="question.status === 'answered' && question.answerText" class="sender answer-preview">
-				<span class="answer-label">A:</span>
-				<span class="answer-text-preview">{{ question.answerText.length > 50 ? question.answerText.slice(0, 50) + '...' : question.answerText }}</span>
+			<!-- 回答済みの場合: 「回答済み」ステータス表示（回答テキストは下部セクションで表示） -->
+			<div v-else-if="question.status === 'answered'" class="sender answered-status">
+				<i class="ti ti-check"></i>
+				<span>{{ i18n.ts._noq.statusAnswered }}</span>
 			</div>
 			<!-- 未回答かつ匿名の場合: 匿名表示 -->
 			<div v-else class="sender anonymous">
@@ -97,13 +98,15 @@ const emit = defineEmits<{
 		{{ i18n.ts._noq.noReplyRequested }}
 	</div>
 
-	<!-- 回答済みの場合: 回答テキストを直接表示 -->
+	<!-- 回答済みの場合: 回答テキストをMFM形式で表示 -->
 	<div v-if="question.status === 'answered' && question.answerText" class="answer-section">
 		<div class="answer-label">
 			<i class="ti ti-message-check"></i>
 			{{ i18n.ts._noq?.answerLabel ?? 'A:' }}
 		</div>
-		<div class="answer-text">{{ question.answerText }}</div>
+		<div class="answer-text">
+			<Mfm :text="question.answerText" />
+		</div>
 		<a v-if="question.answerNoteId" :href="`/notes/${question.answerNoteId}`" class="view-note-link">
 			{{ i18n.ts._noq?.viewAnswerNote ?? '回答ノートを見る' }}
 		</a>
@@ -194,15 +197,12 @@ const emit = defineEmits<{
 					}
 				}
 
-				&.answer-preview {
-					.answer-label {
-						color: var(--accent);
-						margin-right: 4px;
-					}
+				&.answered-status {
+					color: var(--accent);
+					gap: 6px;
 
-					.answer-text-preview {
-						font-weight: normal;
-						color: var(--fg);
+					i {
+						font-size: 1em;
 					}
 				}
 

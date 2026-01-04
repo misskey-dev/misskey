@@ -66,6 +66,7 @@ export const paramDef = {
 	properties: {
 		questionId: { type: 'string', format: 'misskey:id' },
 		noteId: { type: 'string', format: 'misskey:id' },
+		answerText: { type: 'string', maxLength: 10000 },
 		encryptedAnswer: { type: 'string', maxLength: 10000 },
 	},
 	required: ['questionId'],
@@ -138,6 +139,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					me.id,
 					'answered',
 					ps.noteId,
+					ps.answerText,
 				);
 
 				return {

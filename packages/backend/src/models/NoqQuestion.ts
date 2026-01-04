@@ -157,6 +157,12 @@ export class NoqQuestion {
 	@JoinColumn()
 	public answerNote: MiNote | null;
 
+	@Column('text', {
+		nullable: true,
+		comment: '回答テキスト（ノート削除時も保持）',
+	})
+	public answerText: string | null;
+
 	@Column('timestamp with time zone', {
 		default: () => 'CURRENT_TIMESTAMP',
 		comment: '作成日時',

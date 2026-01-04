@@ -331,6 +331,7 @@ export class NoqestionService {
 
 	/**
 	 * 質問のステータスを更新
+	 * - answerText: 回答テキストを直接保存（ノート削除時も保持するため）
 	 */
 	@bindThis
 	public async updateQuestionStatus(
@@ -338,6 +339,7 @@ export class NoqestionService {
 		userId: MiUser['id'],
 		status: NoqQuestionStatus,
 		answerNoteId?: string | null,
+		answerText?: string | null,
 	): Promise<NoqQuestion> {
 		const question = await this.noqQuestionsRepository.findOneBy({ id: questionId });
 
@@ -354,6 +356,7 @@ export class NoqestionService {
 		const updateData: Partial<NoqQuestion> = {
 			status,
 			answerNoteId: answerNoteId ?? null,
+			answerText: answerText ?? null,
 		};
 		if (status === 'answered') {
 			updateData.answeredAt = new Date();

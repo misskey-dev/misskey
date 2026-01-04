@@ -141,14 +141,23 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					}
 				}
 
-				// 回答済みの場合、回答ノートのテキストを取得
-				let answerText: string | null = null;
-				if (question.answerNoteId) {
-					const answerNote = await this.notesRepository.findOneBy({ id: question.answerNoteId });
-					if (answerNote?.text) {
+				// 回答テキストを取得
+			// 優先順位: 1. カラムに保存された値 2. ノートからの抽出（フォールバック）
+			let answerText: string | null = question.answerText;
+			if (!answerText && question.answerNoteId) {
+				// フォールバック: 古いデータ用にノートからテキストを抽出
+				const answerNote = await this.notesRepository.findOneBy({ id: question.answerNoteId });
+				if (answerNote?.text) {
+					// "A. "で始まる回答テキストを抽出
+					const match = answerNote.text.match(/^A\.\s*(.+?)(?=\n#Noquestion|\n\[質問する\]|$)/s);
+					if (match) {
+						answerText = match[1].trim();
+					} else {
+						// フォールバック: 全文を使用
 						answerText = answerNote.text;
 					}
 				}
+			}
 
 				result.push({
 					id: question.id,

@@ -178,10 +178,11 @@ async function postAnswer() {
 			fileIds,
 		});
 
-		// 質問ステータスを回答済みに更新
+		// 質問ステータスを回答済みに更新（回答テキストも保存）
 		await misskeyApi('noq/questions/answer', {
 			questionId: props.question.id,
 			noteId: note.createdNote.id,
+			answerText: pureAnswerText.value,
 		});
 
 		// 回答成功時はansweredを発火してモーダルを閉じる
