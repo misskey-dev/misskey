@@ -97,8 +97,13 @@ const cwText = computed(() => {
 });
 
 // 本文（回答 + 質問箱リンク + ハッシュタグ）
+// メッセージカード添付時はカードに回答が含まれるため、本文は簡略化
 const noteText = computed(() => {
 	const questionBoxUrl = `https://noc.ski/@${$i?.username}/noq`;
+	if (includeCard.value) {
+		// メッセージカード添付時は回答テキストを省略
+		return `#Noquestion\n[質問する](${questionBoxUrl})`;
+	}
 	return `A. ${answerText.value}\n#Noquestion\n[質問する](${questionBoxUrl})`;
 });
 
