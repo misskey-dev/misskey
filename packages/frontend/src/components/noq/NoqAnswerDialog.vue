@@ -263,7 +263,7 @@ async function postAnswer() {
 
 		<!-- アクションボタン -->
 		<div class="actions">
-			<MkButton @click="emit('close')">
+			<MkButton @click="modalRef?.close()">
 				{{ i18n.ts.cancel }}
 			</MkButton>
 			<MkButton primary :disabled="posting || !answerText.trim()" @click="postAnswer">

@@ -3495,6 +3495,8 @@ _noq:
   statusAll: "すべて"
   answer: "回答する"
   viewAnswer: "回答を見る"
+  answerLabel: "A:"
+  viewAnswerNote: "回答ノートを見る"
   answerPlaceholder: "回答を入力..."
   questionDate: "質問"
   answerDate: "回答"

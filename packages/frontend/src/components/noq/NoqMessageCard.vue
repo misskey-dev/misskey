@@ -361,8 +361,9 @@ async function generateCard(): Promise<string> {
 	ctx.globalAlpha = 0.6;
 	ctx.font = '24px "Hiragino Sans", "Meiryo", sans-serif';
 
+	// 日時表示（YYYY/M/D HH:mm形式）
 	const date = new Date(props.question.createdAt);
-	const dateStr = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+	const dateStr = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
 	ctx.fillText(dateStr, 80, CARD_HEIGHT - 60);
 
 	// サイト名（右下）

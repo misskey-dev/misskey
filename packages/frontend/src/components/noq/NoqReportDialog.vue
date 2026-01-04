@@ -68,7 +68,7 @@ async function submit() {
 		/>
 
 		<div class="actions">
-			<MkButton @click="emit('close')">
+			<MkButton @click="modalRef?.close()">
 				{{ i18n.ts.cancel }}
 			</MkButton>
 			<MkButton

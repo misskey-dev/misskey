@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { NoqQuestionsRepository, UsersRepository } from '@/models/_.js';
+import type { NoqQuestionsRepository, UsersRepository, NotesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { NoqestionService } from '@/core/NoqestionService.js';
 import { noqQuestionStatuses, noqCardDesigns } from '@/models/NoqQuestion.js';
@@ -77,6 +77,10 @@ export const meta = {
 					optional: false, nullable: true,
 					format: 'id',
 				},
+				answerText: {
+					type: 'string',
+					optional: false, nullable: true,
+				},
 				createdAt: {
 					type: 'string',
 					optional: false, nullable: false,
@@ -112,6 +116,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
+		@Inject(DI.notesRepository)
+		private notesRepository: NotesRepository,
+
 		private noqestionService: NoqestionService,
 		private userEntityService: UserEntityService,
 	) {
@@ -134,6 +141,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					}
 				}
 
+				// 回答済みの場合、回答ノートのテキストを取得
+				let answerText: string | null = null;
+				if (question.answerNoteId) {
+					const answerNote = await this.notesRepository.findOneBy({ id: question.answerNoteId });
+					if (answerNote?.text) {
+						answerText = answerNote.text;
+					}
+				}
+
 				result.push({
 					id: question.id,
 					text: question.text,
@@ -146,6 +162,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					senderId: question.senderId,
 					isE2EEncrypted: question.isE2EEncrypted,
 					answerNoteId: question.answerNoteId,
+					answerText,
 					createdAt: question.createdAt.toISOString(),
 					answeredAt: question.answeredAt?.toISOString() ?? null,
 				});

@@ -13080,6 +13080,14 @@ export interface Locale extends ILocale {
          */
         "viewAnswer": string;
         /**
+         * A:
+         */
+        "answerLabel": string;
+        /**
+         * 回答ノートを見る
+         */
+        "viewAnswerNote": string;
+        /**
          * 回答を入力...
          */
         "answerPlaceholder": string;

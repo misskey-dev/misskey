@@ -12,6 +12,7 @@ import { i18n } from '@/i18n.js';
 import MkUserName from '@/components/global/MkUserName.vue';
 import MkAvatar from '@/components/global/MkAvatar.vue';
 import MkTime from '@/components/global/MkTime.vue';
+import MkButton from '@/components/MkButton.vue';
 import NoqMessageCard from './NoqMessageCard.vue';
 
 export interface NoqQuestion {
@@ -30,6 +31,7 @@ export interface NoqQuestion {
 	senderUsername?: string | null;
 	senderHost?: string | null;
 	answerNoteId?: string | null;
+	answerText?: string | null;
 }
 
 const props = withDefaults(defineProps<{
@@ -46,7 +48,7 @@ const emit = defineEmits<{
 	(ev: 'delete', question: NoqQuestion): void;
 	(ev: 'report', question: NoqQuestion): void;
 	(ev: 'mute', question: NoqQuestion): void;
-}>;
+}>();
 </script>
 
 <template>
@@ -88,32 +90,40 @@ const emit = defineEmits<{
 		{{ i18n.ts._noq.noReplyRequested }}
 	</div>
 
-	<!-- 回答済みの場合: 回答ノートへのリンクを表示 -->
-	<div v-if="question.status === 'answered' && question.answerNoteId" class="answer-link">
-		<a :href="`/notes/${question.answerNoteId}`" class="view-answer">
+	<!-- 回答済みの場合: 回答テキストを直接表示 -->
+	<div v-if="question.status === 'answered' && question.answerText" class="answer-section">
+		<div class="answer-label">
 			<i class="ti ti-message-check"></i>
-			{{ i18n.ts._noq?.viewAnswer ?? '回答を見る' }}
+			{{ i18n.ts._noq?.answerLabel ?? 'A:' }}
+		</div>
+		<div class="answer-text">{{ question.answerText }}</div>
+		<a v-if="question.answerNoteId" :href="`/notes/${question.answerNoteId}`" class="view-note-link">
+			{{ i18n.ts._noq?.viewAnswerNote ?? '回答ノートを見る' }}
 		</a>
 	</div>
 
 	<!-- 未回答の場合: 回答ボタン -->
 	<div v-if="showActions && question.status === 'pending'" class="actions">
-		<button class="action answer" @click="emit('answer', question)">
+		<MkButton primary @click="emit('answer', question)">
+			<i class="ti ti-message-reply"></i>
 			{{ i18n.ts._noq.answer }}
-		</button>
+		</MkButton>
 	</div>
 
 	<!-- 削除・通報・ミュートボタン（ステータスに関係なく表示） -->
 	<div v-if="showActions" class="secondary-actions">
-		<button class="action delete" @click="emit('delete', question)">
+		<MkButton @click="emit('delete', question)">
+			<i class="ti ti-trash"></i>
 			{{ i18n.ts._noq.deleteQuestion }}
-		</button>
-		<button class="action report" @click="emit('report', question)">
+		</MkButton>
+		<MkButton danger @click="emit('report', question)">
+			<i class="ti ti-alert-triangle"></i>
 			{{ i18n.ts._noq.reportQuestion }}
-		</button>
-		<button v-if="question.sender" class="action mute" @click="emit('mute', question)">
+		</MkButton>
+		<MkButton v-if="question.sender" @click="emit('mute', question)">
+			<i class="ti ti-volume-off"></i>
 			{{ i18n.ts._noq.muteUser }}
-		</button>
+		</MkButton>
 	</div>
 
 	<!-- モデレーター向け: 送信者開示情報 -->
@@ -230,28 +240,47 @@ const emit = defineEmits<{
 		display: inline-block;
 	}
 
-	.answer-link {
+	.answer-section {
 		margin-top: 16px;
-		padding-top: 12px;
-		border-top: 1px solid var(--divider);
+		padding: 12px;
+		background: var(--bg);
+		border-radius: 8px;
+		border-left: 4px solid var(--accent);
 
-		.view-answer {
-			display: inline-flex;
+		.answer-label {
+			display: flex;
 			align-items: center;
 			gap: 6px;
-			padding: 8px 16px;
-			background: var(--accent);
-			color: var(--fgOnAccent);
-			border-radius: 4px;
-			text-decoration: none;
+			font-weight: bold;
+			color: var(--accent);
+			margin-bottom: 8px;
 			font-size: 0.9em;
 
+			i {
+				font-size: 1.1em;
+			}
+		}
+
+		.answer-text {
+			white-space: pre-wrap;
+			word-break: break-word;
+			line-height: 1.6;
+		}
+
+		.view-note-link {
+			display: inline-block;
+			margin-top: 8px;
+			font-size: 0.85em;
+			color: var(--accent);
+			text-decoration: none;
+
 			&:hover {
-				opacity: 0.8;
+				text-decoration: underline;
 			}
 		}
 	}
 
+	// アクションボタン（MkButton使用）
 	.actions {
 		display: flex;
 		flex-wrap: wrap;
@@ -259,62 +288,14 @@ const emit = defineEmits<{
 		margin-top: 16px;
 		padding-top: 12px;
 		border-top: 1px solid var(--divider);
-
-		.action {
-			padding: 8px 16px;
-			border-radius: 4px;
-			border: none;
-			cursor: pointer;
-			font-size: 0.9em;
-
-			&.answer {
-				background: var(--accent);
-				color: var(--fgOnAccent);
-			}
-
-			&.delete {
-				background: var(--buttonBg);
-				color: var(--fg);
-			}
-
-			&:hover {
-				opacity: 0.8;
-			}
-		}
 	}
 
+	// 削除・通報・ミュートボタン（MkButton使用）
 	.secondary-actions {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 8px;
 		margin-top: 8px;
-
-		.action {
-			padding: 6px 12px;
-			border-radius: 4px;
-			border: none;
-			cursor: pointer;
-			font-size: 0.85em;
-
-			&.delete {
-				background: var(--buttonBg);
-				color: var(--fg);
-			}
-
-			&.report {
-				background: var(--buttonBg);
-				color: var(--warn);
-			}
-
-			&.mute {
-				background: var(--buttonBg);
-				color: var(--fg);
-			}
-
-			&:hover {
-				opacity: 0.8;
-			}
-		}
 	}
 
 	.moderator-info {

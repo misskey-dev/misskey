@@ -251,7 +251,7 @@ export class NoqestionService {
 			: questionText;
 
 		// DM本文を作成
-		const dmText = `Noquestionで質問されたにゃん！\n質問：\n${truncatedQuestion}\nhttps://${this.config.host}/@${recipient.username}/noq`;
+		const dmText = `Noquestionで質問されたにゃん！\n質問： ${truncatedQuestion}\nhttps://${this.config.host}/@${recipient.username}/noq`;
 
 		try {
 			// visibility: specifiedのノートを作成（DM相当）
