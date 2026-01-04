@@ -138,7 +138,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			// セキュリティ: 回答済み質問のみ取得（status = 'answered'のみ）
 			const query = this.noqQuestionsRepository.createQueryBuilder('question')
-				.where('question.receiverId = :receiverId', { receiverId: targetUserId })
+				.where('question.recipientId = :recipientId', { recipientId: targetUserId })
 				.andWhere('question.status = :status', { status: 'answered' }) // 重要: 回答済みのみ
 				.orderBy('question.answeredAt', 'DESC');
 

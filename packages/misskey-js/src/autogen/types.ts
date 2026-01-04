@@ -4141,6 +4141,15 @@ export type paths = {
          */
         post: operations['noq___questions___answer'];
     };
+    '/noq/questions/answered': {
+        /**
+         * noq/questions/answered
+         * @description No description provided.
+         *
+         *     **Credential required**: *No*
+         */
+        post: operations['noq___questions___answered'];
+    };
     '/noq/questions/delete': {
         /**
          * noq/questions/delete
@@ -39617,6 +39626,7 @@ export interface operations {
                     questionId: string;
                     /** Format: misskey:id */
                     noteId?: string;
+                    answerText?: string;
                     encryptedAnswer?: string;
                 };
             };
@@ -39635,6 +39645,95 @@ export interface operations {
                         /** Format: id */
                         answerNoteId: string | null;
                     };
+                };
+            };
+            /** @description Client error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Authentication error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Forbidden error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description I'm Ai */
+            418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
+    noq___questions___answered: {
+        requestBody: {
+            content: {
+                'application/json': {
+                    /** Format: misskey:id */
+                    userId?: string;
+                    username?: string;
+                    host?: string | null;
+                    /** @default 20 */
+                    limit?: number;
+                    /** Format: misskey:id */
+                    sinceId?: string;
+                    /** Format: misskey:id */
+                    untilId?: string;
+                } | unknown | unknown;
+            };
+        };
+        responses: {
+            /** @description OK (with results) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': {
+                        /** Format: id */
+                        id: string;
+                        text: string;
+                        imageUrl: string | null;
+                        isUsernameDisclosed: boolean;
+                        cardDesign: string;
+                        sender: Record<string, never> | null;
+                        /** Format: id */
+                        answerNoteId: string | null;
+                        answerText: string | null;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        answeredAt: string | null;
+                    }[];
                 };
             };
             /** @description Client error */
@@ -39779,8 +39878,16 @@ export interface operations {
                         cardDesign: string;
                         status: string;
                         sender: Record<string, never> | null;
+                        /** Format: id */
+                        senderId: string | null;
+                        isE2EEncrypted: boolean;
+                        /** Format: id */
+                        answerNoteId: string | null;
+                        answerText: string | null;
                         /** Format: date-time */
                         createdAt: string;
+                        /** Format: date-time */
+                        answeredAt: string | null;
                     }[];
                 };
             };

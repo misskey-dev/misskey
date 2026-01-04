@@ -721,6 +721,8 @@ import type {
 	NoqMuteListResponse,
 	NoqQuestionsAnswerRequest,
 	NoqQuestionsAnswerResponse,
+	NoqQuestionsAnsweredRequest,
+	NoqQuestionsAnsweredResponse,
 	NoqQuestionsDeleteRequest,
 	NoqQuestionsReceivedRequest,
 	NoqQuestionsReceivedResponse,
@@ -1376,6 +1378,7 @@ export type Endpoints = {
 	'noq/mute/delete': { req: NoqMuteDeleteRequest; res: EmptyResponse };
 	'noq/mute/list': { req: EmptyRequest; res: NoqMuteListResponse };
 	'noq/questions/answer': { req: NoqQuestionsAnswerRequest; res: NoqQuestionsAnswerResponse };
+	'noq/questions/answered': { req: NoqQuestionsAnsweredRequest; res: NoqQuestionsAnsweredResponse };
 	'noq/questions/delete': { req: NoqQuestionsDeleteRequest; res: EmptyResponse };
 	'noq/questions/received': { req: NoqQuestionsReceivedRequest; res: NoqQuestionsReceivedResponse };
 	'noq/questions/report': { req: NoqQuestionsReportRequest; res: NoqQuestionsReportResponse };
