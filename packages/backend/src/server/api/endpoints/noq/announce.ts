@@ -84,7 +84,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const noqUrl = `${this.config.url}/@${me.username}/noq`;
 
 			// 投稿テキストを生成
-			const text = `質問募集中！\n匿名で質問できますにゃん！\n\n${noqUrl}\n\n#Noquestion`;
+			const text = `質問募集中！\n匿名で質問できます！\n\n${noqUrl}\n\n#Noquestion`;
 
 			// ノートを作成
 			const note = await this.noteCreateService.create(me, {
