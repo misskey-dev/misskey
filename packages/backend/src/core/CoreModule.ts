@@ -82,6 +82,7 @@ import { RegistryApiService } from './RegistryApiService.js';
 import { ReversiService } from './ReversiService.js';
 import { NoctownService } from './NoctownService.js';
 import { NoctownTransactionService } from './NoctownTransactionService.js';
+import { NoqestionService } from './NoqestionService.js';
 import { PageService } from './PageService.js';
 
 // Noctown misc services
@@ -249,6 +250,7 @@ const $RegistryApiService: Provider = { provide: 'RegistryApiService', useExisti
 const $ReversiService: Provider = { provide: 'ReversiService', useExisting: ReversiService };
 const $NoctownService: Provider = { provide: 'NoctownService', useExisting: NoctownService };
 const $NoctownTransactionService: Provider = { provide: 'NoctownTransactionService', useExisting: NoctownTransactionService };
+const $NoqestionService: Provider = { provide: 'NoqestionService', useExisting: NoqestionService };
 const $PageService: Provider = { provide: 'PageService', useExisting: PageService };
 
 // Noctown misc services providers
@@ -420,6 +422,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		NoctownService,
 		NoctownTransactionService,
 		PageService,
+		NoqestionService,
 
 		// Noctown misc services
 		ShopNpcService,
@@ -586,6 +589,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$NoctownService,
 		$NoctownTransactionService,
 		$PageService,
+		$NoqestionService,
 
 		// Noctown misc services (string-based)
 		$ShopNpcService,
@@ -753,6 +757,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		NoctownService,
 		NoctownTransactionService,
 		PageService,
+		NoqestionService,
 
 		// Noctown misc services
 		ShopNpcService,
@@ -917,6 +922,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$NoctownService,
 		$NoctownTransactionService,
 		$PageService,
+		$NoqestionService,
 
 		// Noctown misc services (string-based)
 		$ShopNpcService,

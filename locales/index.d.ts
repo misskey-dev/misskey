@@ -163,6 +163,14 @@ export interface Locale extends ILocale {
      */
     "uploading": string;
     /**
+     * 送信中
+     */
+    "sending": string;
+    /**
+     * 通報しました
+     */
+    "reported": string;
+    /**
      * 保存
      */
     "save": string;
@@ -12989,6 +12997,392 @@ export interface Locale extends ILocale {
          * 下書き一覧
          */
         "listDrafts": string;
+    };
+    "_noq": {
+        /**
+         * 質問箱
+         */
+        "questionBox": string;
+        /**
+         * 質問する
+         */
+        "askQuestion": string;
+        /**
+         * 質問を送信
+         */
+        "sendQuestion": string;
+        /**
+         * 質問を送信しました
+         */
+        "questionSent": string;
+        /**
+         * 質問内容
+         */
+        "questionText": string;
+        /**
+         * 質問を入力...
+         */
+        "questionTextPlaceholder": string;
+        /**
+         * ユーザー名を開示する
+         */
+        "discloseUsername": string;
+        /**
+         * 回答不要
+         */
+        "noReplyRequested": string;
+        /**
+         * この質問は回答不要としてマークされています。
+         */
+        "noReplyRequestedMessage": string;
+        /**
+         * メッセージカードデザイン
+         */
+        "cardDesign": string;
+        /**
+         * 受信した質問
+         */
+        "receivedQuestions": string;
+        /**
+         * 送信した質問
+         */
+        "sentQuestions": string;
+        /**
+         * 未回答の質問
+         */
+        "pendingQuestions": string;
+        /**
+         * 回答済みの質問
+         */
+        "answeredQuestions": string;
+        /**
+         * 質問はありません
+         */
+        "noQuestions": string;
+        /**
+         * 未回答
+         */
+        "statusPending": string;
+        /**
+         * 回答済み
+         */
+        "statusAnswered": string;
+        /**
+         * すべて
+         */
+        "statusAll": string;
+        /**
+         * 回答する
+         */
+        "answer": string;
+        /**
+         * 回答を入力...
+         */
+        "answerPlaceholder": string;
+        /**
+         * メッセージカードを含む
+         */
+        "includeMessageCard": string;
+        /**
+         * 質問を削除
+         */
+        "deleteQuestion": string;
+        /**
+         * この質問を削除しますか？
+         */
+        "deleteQuestionConfirm": string;
+        /**
+         * 質問を削除しました
+         */
+        "questionDeleted": string;
+        /**
+         * 質問箱設定
+         */
+        "settings": string;
+        /**
+         * 質問箱を有効にする
+         */
+        "enableQuestionBox": string;
+        /**
+         * ユーザー名開示を必須にする
+         */
+        "requireUsernameDisclosure": string;
+        /**
+         * センシティブな質問を非表示
+         */
+        "hideSensitiveQuestions": string;
+        /**
+         * 質問者への注意書き
+         */
+        "notice": string;
+        /**
+         * 質問前にユーザーに表示されるメッセージ...
+         */
+        "noticePlaceholder": string;
+        /**
+         * NGワードリスト
+         */
+        "ngWordList": string;
+        /**
+         * これらの単語を含む質問は自動的にブロックされます
+         */
+        "ngWordListDescription": string;
+        /**
+         * このユーザーをミュート
+         */
+        "muteUser": string;
+        /**
+         * ミュートを解除
+         */
+        "unmuteUser": string;
+        /**
+         * ミュートしたユーザー
+         */
+        "mutedUsers": string;
+        /**
+         * ミュートしているユーザーはいません
+         */
+        "noMutedUsers": string;
+        /**
+         * この質問箱は無効です
+         */
+        "questionBoxDisabled": string;
+        /**
+         * この質問箱ではユーザー名の開示が必須です
+         */
+        "usernameDisclosureRequired": string;
+        /**
+         * ブロックされているため質問できません
+         */
+        "blocked": string;
+        /**
+         * ミュートされているため質問できません
+         */
+        "muted": string;
+        /**
+         * 質問にNGワードが含まれています
+         */
+        "containsNgWord": string;
+        /**
+         * 匿名
+         */
+        "anonymous": string;
+        /**
+         * {user}からの質問
+         */
+        "from": ParameterizedString<"user">;
+        /**
+         * 質問を送信するにはログインが必要です
+         */
+        "loginRequired": string;
+        /**
+         * この質問を通報
+         */
+        "reportQuestion": string;
+        /**
+         * この質問を通報します。通報理由を入力してください。
+         */
+        "reportQuestionDescription": string;
+        /**
+         * 通報理由を詳しく入力...
+         */
+        "reportReasonPlaceholder": string;
+        /**
+         * 通報する
+         */
+        "submitReport": string;
+        /**
+         * 送信者
+         */
+        "disclosedSender": string;
+        /**
+         * この質問の送信者をミュートしますか？今後この送信者からの質問は受け取れなくなります。
+         */
+        "muteUserConfirm": string;
+        /**
+         * ユーザーをミュートしました
+         */
+        "userMuted": string;
+        "cardDesigns": {
+            /**
+             * デフォルト
+             */
+            "default": string;
+            /**
+             * 青空
+             */
+            "blueSky": string;
+            /**
+             * ラブ
+             */
+            "love": string;
+            /**
+             * ノクターン
+             */
+            "nocturne": string;
+            /**
+             * ロマンチック
+             */
+            "romantic": string;
+            /**
+             * 桜
+             */
+            "sakura": string;
+            /**
+             * 夜空
+             */
+            "nightSky": string;
+            /**
+             * パステル
+             */
+            "pastel": string;
+        };
+        /**
+         * 質問箱用ボットアカウント
+         */
+        "botAccountUsername": string;
+        /**
+         * DM通知を送信するアカウントのユーザー名を設定してください。設定しない場合、DM通知は送信されません。
+         */
+        "botAccountUsernameDescription": string;
+        /**
+         * 質問箱機能の管理者設定を行います。質問箱用ボットアカウントを設定すると、質問があった際にDM通知が送信されます。
+         */
+        "adminSettingsDescription": string;
+        /**
+         * 質問募集中を投稿
+         */
+        "announce": string;
+        /**
+         * フォロワーに質問箱の存在を知らせるノートを投稿します。
+         */
+        "announceDescription": string;
+        /**
+         * 質問募集中を投稿する
+         */
+        "postAnnounce": string;
+        /**
+         * 質問募集中を投稿しました
+         */
+        "announceSent": string;
+        /**
+         * E2E暗号化
+         */
+        "e2eEncryption": string;
+        /**
+         * 暗号化された質問は復号ツールでのみ読むことができます。画像添付・カードデザインは使用できません。
+         */
+        "e2eEncryptionNote": string;
+        /**
+         * 暗号化された質問
+         */
+        "encryptedQuestion": string;
+        /**
+         * これは暗号化された質問です。回答は質問者にのみDMで送信されます。
+         */
+        "e2eAnswerNote": string;
+        "e2e": {
+            /**
+             * E2E暗号化
+             */
+            "title": string;
+            /**
+             * E2E暗号化を使用すると、質問と回答をパスワードで保護できます。両者が公開鍵を持っている場合のみ暗号化された質問を送信できます。
+             */
+            "description": string;
+            /**
+             * この暗号化は遊び用途向けです。タイムラインを眺めている人からメッセージを隠すには十分ですが、本格的な暗号解析には耐えられません。
+             */
+            "securityWarning": string;
+            /**
+             * あなたの公開鍵
+             */
+            "yourPublicKey": string;
+            /**
+             * 公開鍵を生成
+             */
+            "generateKey": string;
+            /**
+             * 公開鍵を再生成
+             */
+            "regenerateKey": string;
+            /**
+             * 生成
+             */
+            "generate": string;
+            /**
+             * 再生成
+             */
+            "regenerate": string;
+            /**
+             * 暗号化用パスワード（4文字以上）
+             */
+            "passwordPlaceholder": string;
+            /**
+             * 暗号化用のパスワードを設定してください。このパスワードは保存されず、公開鍵の生成にのみ使用されます。復号時に同じパスワードが必要です。
+             */
+            "passwordNote": string;
+            /**
+             * パスワードが短すぎます
+             */
+            "passwordTooShort": string;
+            /**
+             * パスワードは4文字以上で入力してください
+             */
+            "passwordMinLength": string;
+            /**
+             * 公開鍵を生成しました
+             */
+            "keyGenerated": string;
+            /**
+             * 公開鍵を再生成しますか？
+             */
+            "regenerateWarningTitle": string;
+            /**
+             * 公開鍵を再生成すると、以前の公開鍵で暗号化されたメッセージは復号できなくなります。本当に再生成しますか？
+             */
+            "regenerateWarningText": string;
+            /**
+             * 暗号化して送信
+             */
+            "encryptQuestion": string;
+            /**
+             * 暗号化
+             */
+            "encryptionEnabled": string;
+            /**
+             * 復号ツール
+             */
+            "decryptionPage": string;
+            /**
+             * 暗号化された質問や回答を復号するには、ここにパスワードを入力してください。
+             */
+            "decryptionPageDescription": string;
+            /**
+             * パスワードを入力
+             */
+            "enterPassword": string;
+            /**
+             * 復号
+             */
+            "decrypt": string;
+            /**
+             * 復号されたテキスト
+             */
+            "decryptedText": string;
+            /**
+             * 復号に失敗しました。パスワードが正しいか確認してください。
+             */
+            "decryptionFailed": string;
+            /**
+             * 相手がE2E公開鍵を設定していません
+             */
+            "recipientHasNoKey": string;
+            /**
+             * あなたがE2E公開鍵を設定していません
+             */
+            "senderHasNoKey": string;
+        };
     };
 }
 declare const locales: {

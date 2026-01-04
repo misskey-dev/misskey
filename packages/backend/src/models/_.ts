@@ -136,6 +136,10 @@ import { NoctownRankingBoard } from '@/models/noctown/NoctownRankingBoard.js';
 import { NoctownChatLog } from '@/models/noctown/NoctownChatLog.js';
 import { NoctownChatLogRecipient } from '@/models/noctown/NoctownChatLogRecipient.js';
 import { NoctownTransactionLog } from '@/models/noctown/NoctownTransactionLog.js';
+import { NoqUserSetting } from '@/models/NoqUserSetting.js';
+import { NoqQuestion } from '@/models/NoqQuestion.js';
+import { NoqMutedUser } from '@/models/NoqMutedUser.js';
+import { NoqReportedQuestion } from '@/models/NoqReportedQuestion.js';
 import type { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity.js';
 
 export interface MiRepository<T extends ObjectLiteral> {
@@ -322,6 +326,10 @@ export {
 	NoctownChatLog,
 	NoctownChatLogRecipient,
 	NoctownTransactionLog,
+	NoqUserSetting,
+	NoqQuestion,
+	NoqMutedUser,
+	NoqReportedQuestion,
 };
 
 export type AbuseUserReportsRepository = Repository<MiAbuseUserReport> & MiRepository<MiAbuseUserReport>;
@@ -445,3 +453,7 @@ export type NoctownRankingBoardsRepository = Repository<NoctownRankingBoard> & M
 export type NoctownChatLogsRepository = Repository<NoctownChatLog> & MiRepository<NoctownChatLog>;
 export type NoctownChatLogRecipientsRepository = Repository<NoctownChatLogRecipient> & MiRepository<NoctownChatLogRecipient>;
 export type NoctownTransactionLogsRepository = Repository<NoctownTransactionLog> & MiRepository<NoctownTransactionLog>;
+export type NoqUserSettingsRepository = Repository<NoqUserSetting> & MiRepository<NoqUserSetting>;
+export type NoqQuestionsRepository = Repository<NoqQuestion> & MiRepository<NoqQuestion>;
+export type NoqMutedUsersRepository = Repository<NoqMutedUser> & MiRepository<NoqMutedUser>;
+export type NoqReportedQuestionsRepository = Repository<NoqReportedQuestion> & MiRepository<NoqReportedQuestion>;

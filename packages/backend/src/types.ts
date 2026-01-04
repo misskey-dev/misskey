@@ -42,6 +42,7 @@ export const notificationTypes = [
 	'createToken',
 	'app',
 	'test',
+	'noqQuestion',
 ] as const;
 
 export const groupedNotificationTypes = [

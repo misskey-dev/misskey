@@ -54,6 +54,7 @@ export class MetaService implements OnApplicationShutdown {
 					this.cache = { // TODO: このあたりのデシリアライズ処理は各modelファイル内に関数としてexportしたい
 						...(body.after),
 						rootUser: null, // joinなカラムは通常取ってこないので
+						noqBotAccount: null, // joinなカラムは通常取ってこないので
 					};
 					break;
 				}

@@ -127,6 +127,10 @@ import {
 	NoctownChatLog,
 	NoctownChatLogRecipient,
 	NoctownTransactionLog,
+	NoqUserSetting,
+	NoqQuestion,
+	NoqMutedUser,
+	NoqReportedQuestion,
 } from './_.js';
 import type { Provider } from '@nestjs/common';
 import type { DataSource } from 'typeorm';
@@ -845,6 +849,30 @@ const $noctownTransactionLogsRepository: Provider = {
 	inject: [DI.db],
 };
 
+const $noqUserSettingsRepository: Provider = {
+	provide: DI.noqUserSettingsRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoqUserSetting).extend(miRepository as MiRepository<NoqUserSetting>),
+	inject: [DI.db],
+};
+
+const $noqQuestionsRepository: Provider = {
+	provide: DI.noqQuestionsRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoqQuestion).extend(miRepository as MiRepository<NoqQuestion>),
+	inject: [DI.db],
+};
+
+const $noqMutedUsersRepository: Provider = {
+	provide: DI.noqMutedUsersRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoqMutedUser).extend(miRepository as MiRepository<NoqMutedUser>),
+	inject: [DI.db],
+};
+
+const $noqReportedQuestionsRepository: Provider = {
+	provide: DI.noqReportedQuestionsRepository,
+	useFactory: (db: DataSource) => db.getRepository(NoqReportedQuestion).extend(miRepository as MiRepository<NoqReportedQuestion>),
+	inject: [DI.db],
+};
+
 @Module({
 	imports: [],
 	providers: [
@@ -967,6 +995,10 @@ const $noctownTransactionLogsRepository: Provider = {
 		$noctownChatLogsRepository,
 		$noctownChatLogRecipientsRepository,
 		$noctownTransactionLogsRepository,
+		$noqUserSettingsRepository,
+		$noqQuestionsRepository,
+		$noqMutedUsersRepository,
+		$noqReportedQuestionsRepository,
 	],
 	exports: [
 		$usersRepository,
@@ -1088,6 +1120,10 @@ const $noctownTransactionLogsRepository: Provider = {
 		$noctownChatLogsRepository,
 		$noctownChatLogRecipientsRepository,
 		$noctownTransactionLogsRepository,
+		$noqUserSettingsRepository,
+		$noqQuestionsRepository,
+		$noqMutedUsersRepository,
+		$noqReportedQuestionsRepository,
 	],
 })
 export class RepositoryModule {

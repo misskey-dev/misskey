@@ -134,6 +134,12 @@ import { NoctownChatLog } from '@/models/noctown/NoctownChatLog.js';
 import { NoctownChatLogRecipient } from '@/models/noctown/NoctownChatLogRecipient.js';
 import { NoctownTransactionLog } from '@/models/noctown/NoctownTransactionLog.js';
 
+// Noqestion entities
+import { NoqUserSetting } from '@/models/NoqUserSetting.js';
+import { NoqQuestion } from '@/models/NoqQuestion.js';
+import { NoqMutedUser } from '@/models/NoqMutedUser.js';
+import { NoqReportedQuestion } from '@/models/NoqReportedQuestion.js';
+
 pg.types.setTypeParser(20, Number);
 
 export const dbLogger = new MisskeyLogger('db');
@@ -350,6 +356,11 @@ export const entities = [
 	NoctownChatLog,
 	NoctownChatLogRecipient,
 	NoctownTransactionLog,
+	// Noqestion entities
+	NoqUserSetting,
+	NoqQuestion,
+	NoqMutedUser,
+	NoqReportedQuestion,
 	...charts,
 ];
 

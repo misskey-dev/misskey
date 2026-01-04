@@ -131,6 +131,12 @@ export type MiNotification = {
 	type: 'test';
 	id: string;
 	createdAt: string;
+} | {
+	type: 'noqQuestion';
+	id: string;
+	createdAt: string;
+	notifierId: MiUser['id'];
+	questionId: string;
 };
 
 export type MiGroupedNotification = MiNotification | {

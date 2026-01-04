@@ -134,5 +134,9 @@ export const DI = {
 	noctownChatLogsRepository: Symbol('noctownChatLogsRepository'),
 	noctownChatLogRecipientsRepository: Symbol('noctownChatLogRecipientsRepository'),
 	noctownTransactionLogsRepository: Symbol('noctownTransactionLogsRepository'),
+	noqUserSettingsRepository: Symbol('noqUserSettingsRepository'),
+	noqQuestionsRepository: Symbol('noqQuestionsRepository'),
+	noqMutedUsersRepository: Symbol('noqMutedUsersRepository'),
+	noqReportedQuestionsRepository: Symbol('noqReportedQuestionsRepository'),
 	//#endregion
 };

@@ -86,6 +86,11 @@ import type {
 	AdminNoctownGachaListResponse,
 	AdminNoctownGachaRemoveItemRequest,
 	AdminNoctownGachaUpdateRequest,
+	AdminNoqDiscloseRequest,
+	AdminNoqDiscloseResponse,
+	AdminNoqSettingsResponse,
+	AdminNoqSettingsUpdateRequest,
+	AdminNoqSettingsUpdateResponse,
 	AdminPromoCreateRequest,
 	AdminQueueClearRequest,
 	AdminQueueDeliverDelayedResponse,
@@ -554,6 +559,12 @@ import type {
 	NoctownChickenListResponse,
 	NoctownChickenPlaceRequest,
 	NoctownChickenPlaceResponse,
+	NoctownContainerOpenRequest,
+	NoctownContainerOpenResponse,
+	NoctownContainerOpenPlacedRequest,
+	NoctownContainerOpenPlacedResponse,
+	NoctownContainerSetItemsRequest,
+	NoctownContainerSetItemsResponse,
 	NoctownCowCollectMilkRequest,
 	NoctownCowCollectMilkResponse,
 	NoctownCowFeedRequest,
@@ -676,6 +687,10 @@ import type {
 	NoctownRankingCategoryResponse,
 	NoctownRankingTotalRequest,
 	NoctownRankingTotalResponse,
+	NoctownSaisenHistoryRequest,
+	NoctownSaisenHistoryResponse,
+	NoctownSaisenOfferRequest,
+	NoctownSaisenOfferResponse,
 	NoctownShopBuyRequest,
 	NoctownShopBuyResponse,
 	NoctownShopSellRequest,
@@ -690,11 +705,38 @@ import type {
 	NoctownTradeConfirmResponse,
 	NoctownTradeDetailRequest,
 	NoctownTradeDetailResponse,
+	NoctownTradeExecuteRequest,
+	NoctownTradeExecuteResponse,
 	NoctownTradeListResponse,
 	NoctownTradeRequestRequest,
 	NoctownTradeRequestResponse,
 	NoctownTradeRespondRequest,
 	NoctownTradeRespondResponse,
+	NoctownTradeUnconfirmRequest,
+	NoctownTradeUnconfirmResponse,
+	NoqAnnounceRequest,
+	NoqAnnounceResponse,
+	NoqMuteCreateRequest,
+	NoqMuteDeleteRequest,
+	NoqMuteListResponse,
+	NoqQuestionsAnswerRequest,
+	NoqQuestionsAnswerResponse,
+	NoqQuestionsDeleteRequest,
+	NoqQuestionsReceivedRequest,
+	NoqQuestionsReceivedResponse,
+	NoqQuestionsReportRequest,
+	NoqQuestionsReportResponse,
+	NoqQuestionsSendRequest,
+	NoqQuestionsSendResponse,
+	NoqQuestionsSentRequest,
+	NoqQuestionsSentResponse,
+	NoqSettingsGenerateKeyRequest,
+	NoqSettingsGenerateKeyResponse,
+	NoqSettingsGetResponse,
+	NoqSettingsShowRequest,
+	NoqSettingsShowResponse,
+	NoqSettingsUpdateRequest,
+	NoqSettingsUpdateResponse,
 	NotesRequest,
 	NotesResponse,
 	NotesChildrenRequest,
@@ -941,6 +983,9 @@ export type Endpoints = {
 	'admin/noctown/gacha/list': { req: AdminNoctownGachaListRequest; res: AdminNoctownGachaListResponse };
 	'admin/noctown/gacha/remove-item': { req: AdminNoctownGachaRemoveItemRequest; res: EmptyResponse };
 	'admin/noctown/gacha/update': { req: AdminNoctownGachaUpdateRequest; res: EmptyResponse };
+	'admin/noq/disclose': { req: AdminNoqDiscloseRequest; res: AdminNoqDiscloseResponse };
+	'admin/noq/settings': { req: EmptyRequest; res: AdminNoqSettingsResponse };
+	'admin/noq/settings/update': { req: AdminNoqSettingsUpdateRequest; res: AdminNoqSettingsUpdateResponse };
 	'admin/promo/create': { req: AdminPromoCreateRequest; res: EmptyResponse };
 	'admin/queue/clear': { req: AdminQueueClearRequest; res: EmptyResponse };
 	'admin/queue/deliver-delayed': { req: EmptyRequest; res: AdminQueueDeliverDelayedResponse };
@@ -1242,6 +1287,9 @@ export type Endpoints = {
 	'noctown/chicken/feed': { req: NoctownChickenFeedRequest; res: NoctownChickenFeedResponse };
 	'noctown/chicken/list': { req: EmptyRequest; res: NoctownChickenListResponse };
 	'noctown/chicken/place': { req: NoctownChickenPlaceRequest; res: NoctownChickenPlaceResponse };
+	'noctown/container/open': { req: NoctownContainerOpenRequest; res: NoctownContainerOpenResponse };
+	'noctown/container/open-placed': { req: NoctownContainerOpenPlacedRequest; res: NoctownContainerOpenPlacedResponse };
+	'noctown/container/set-items': { req: NoctownContainerSetItemsRequest; res: NoctownContainerSetItemsResponse };
 	'noctown/cow/collect-milk': { req: NoctownCowCollectMilkRequest; res: NoctownCowCollectMilkResponse };
 	'noctown/cow/feed': { req: NoctownCowFeedRequest; res: NoctownCowFeedResponse };
 	'noctown/cow/list': { req: EmptyRequest; res: NoctownCowListResponse };
@@ -1309,6 +1357,8 @@ export type Endpoints = {
 	'noctown/quest/start': { req: NoctownQuestStartRequest; res: NoctownQuestStartResponse };
 	'noctown/ranking/category': { req: NoctownRankingCategoryRequest; res: NoctownRankingCategoryResponse };
 	'noctown/ranking/total': { req: NoctownRankingTotalRequest; res: NoctownRankingTotalResponse };
+	'noctown/saisen/history': { req: NoctownSaisenHistoryRequest; res: NoctownSaisenHistoryResponse };
+	'noctown/saisen/offer': { req: NoctownSaisenOfferRequest; res: NoctownSaisenOfferResponse };
 	'noctown/shop/buy': { req: NoctownShopBuyRequest; res: NoctownShopBuyResponse };
 	'noctown/shop/sell': { req: NoctownShopSellRequest; res: NoctownShopSellResponse };
 	'noctown/trade/add-items': { req: NoctownTradeAddItemsRequest; res: NoctownTradeAddItemsResponse };
@@ -1316,9 +1366,25 @@ export type Endpoints = {
 	'noctown/trade/cancel': { req: NoctownTradeCancelRequest; res: NoctownTradeCancelResponse };
 	'noctown/trade/confirm': { req: NoctownTradeConfirmRequest; res: NoctownTradeConfirmResponse };
 	'noctown/trade/detail': { req: NoctownTradeDetailRequest; res: NoctownTradeDetailResponse };
+	'noctown/trade/execute': { req: NoctownTradeExecuteRequest; res: NoctownTradeExecuteResponse };
 	'noctown/trade/list': { req: EmptyRequest; res: NoctownTradeListResponse };
 	'noctown/trade/request': { req: NoctownTradeRequestRequest; res: NoctownTradeRequestResponse };
 	'noctown/trade/respond': { req: NoctownTradeRespondRequest; res: NoctownTradeRespondResponse };
+	'noctown/trade/unconfirm': { req: NoctownTradeUnconfirmRequest; res: NoctownTradeUnconfirmResponse };
+	'noq/announce': { req: NoqAnnounceRequest; res: NoqAnnounceResponse };
+	'noq/mute/create': { req: NoqMuteCreateRequest; res: EmptyResponse };
+	'noq/mute/delete': { req: NoqMuteDeleteRequest; res: EmptyResponse };
+	'noq/mute/list': { req: EmptyRequest; res: NoqMuteListResponse };
+	'noq/questions/answer': { req: NoqQuestionsAnswerRequest; res: NoqQuestionsAnswerResponse };
+	'noq/questions/delete': { req: NoqQuestionsDeleteRequest; res: EmptyResponse };
+	'noq/questions/received': { req: NoqQuestionsReceivedRequest; res: NoqQuestionsReceivedResponse };
+	'noq/questions/report': { req: NoqQuestionsReportRequest; res: NoqQuestionsReportResponse };
+	'noq/questions/send': { req: NoqQuestionsSendRequest; res: NoqQuestionsSendResponse };
+	'noq/questions/sent': { req: NoqQuestionsSentRequest; res: NoqQuestionsSentResponse };
+	'noq/settings/generate-key': { req: NoqSettingsGenerateKeyRequest; res: NoqSettingsGenerateKeyResponse };
+	'noq/settings/get': { req: EmptyRequest; res: NoqSettingsGetResponse };
+	'noq/settings/show': { req: NoqSettingsShowRequest; res: NoqSettingsShowResponse };
+	'noq/settings/update': { req: NoqSettingsUpdateRequest; res: NoqSettingsUpdateResponse };
 	'notes': { req: NotesRequest; res: NotesResponse };
 	'notes/children': { req: NotesChildrenRequest; res: NotesChildrenResponse };
 	'notes/clips': { req: NotesClipsRequest; res: NotesClipsResponse };
