@@ -25,6 +25,9 @@ const emit = defineEmits<{
 const comment = ref('');
 const isSubmitting = ref(false);
 
+// モーダルウィンドウ参照
+const modalRef = ref<InstanceType<typeof MkModalWindow>>();
+
 async function submit() {
 	if (!comment.value.trim()) return;
 
@@ -34,8 +37,9 @@ async function submit() {
 			questionId: props.question.id,
 			comment: comment.value,
 		});
-		// 通報成功時はreportedのみ発火（closeはMkModalWindowのclosedイベントで発火される）
+		// 通報成功時はreportedを発火してモーダルを閉じる
 		emit('reported');
+		modalRef.value?.close();
 	} catch (err) {
 		console.error('[NoqReportDialog] Failed to report question:', err);
 	} finally {
@@ -46,6 +50,7 @@ async function submit() {
 
 <template>
 <MkModalWindow
+	ref="modalRef"
 	:width="400"
 	@closed="emit('close')"
 >

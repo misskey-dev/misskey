@@ -52,6 +52,9 @@ const includeCard = ref(false);
 // メッセージカードコンポーネント参照
 const messageCardRef = ref<InstanceType<typeof NoqMessageCard>>();
 
+// モーダルウィンドウ参照
+const modalRef = ref<InstanceType<typeof MkModalWindow>>();
+
 // 送信中フラグ
 const posting = ref(false);
 
@@ -93,10 +96,10 @@ const cwText = computed(() => {
 	return `Q. ${props.question.text}${senderInfo} #Noquestion`;
 });
 
-// 本文（回答 + 質問箱URL）
+// 本文（回答 + 質問箱リンク + ハッシュタグ）
 const noteText = computed(() => {
 	const questionBoxUrl = `https://noc.ski/@${$i?.username}/noq`;
-	return `A. ${answerText.value}\n\n${questionBoxUrl}`;
+	return `A. ${answerText.value}\n#Noquestion\n[質問する](${questionBoxUrl})`;
 });
 
 onMounted(() => {
@@ -142,8 +145,9 @@ async function postAnswer() {
 				encryptedAnswer,
 			});
 
-			// 回答成功時はansweredのみ発火（closeはMkModalWindowのclosedイベントで発火される）
+			// 回答成功時はansweredを発火してモーダルを閉じる
 			emit('answered', '');
+			modalRef.value?.close();
 			return;
 		}
 
@@ -178,8 +182,9 @@ async function postAnswer() {
 			noteId: note.createdNote.id,
 		});
 
-		// 回答成功時はansweredのみ発火（closeはMkModalWindowのclosedイベントで発火される）
+		// 回答成功時はansweredを発火してモーダルを閉じる
 		emit('answered', note.createdNote.id);
+		modalRef.value?.close();
 	} catch (err) {
 		console.error('[NoqAnswerDialog] Failed to post answer:', err);
 	} finally {
@@ -190,6 +195,7 @@ async function postAnswer() {
 
 <template>
 <MkModalWindow
+	ref="modalRef"
 	:width="600"
 	@closed="emit('close')"
 >
