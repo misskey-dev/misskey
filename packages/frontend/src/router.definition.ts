@@ -523,6 +523,10 @@ export const ROUTE_DEF = [{
 		component: page(() => import('@/pages/_empty_.vue')),
 	}],
 }, {
+	path: '/my/noq',
+	component: page(() => import('@/pages/my-noq.vue')),
+	loginRequired: true,
+}, {
 	path: '/my/notifications',
 	component: page(() => import('@/pages/notifications.vue')),
 	loginRequired: true,

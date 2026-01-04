@@ -34,8 +34,8 @@ async function submit() {
 			questionId: props.question.id,
 			comment: comment.value,
 		});
+		// 通報成功時はreportedのみ発火（closeはMkModalWindowのclosedイベントで発火される）
 		emit('reported');
-		emit('close');
 	} catch (err) {
 		console.error('[NoqReportDialog] Failed to report question:', err);
 	} finally {
@@ -47,7 +47,6 @@ async function submit() {
 <template>
 <MkModalWindow
 	:width="400"
-	@close="emit('close')"
 	@closed="emit('close')"
 >
 	<template #header>{{ i18n.ts._noq.reportQuestion }}</template>

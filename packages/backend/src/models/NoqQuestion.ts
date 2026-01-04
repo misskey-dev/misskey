@@ -163,6 +163,12 @@ export class NoqQuestion {
 	})
 	public createdAt: Date;
 
+	@Column('timestamp with time zone', {
+		nullable: true,
+		comment: '回答日時',
+	})
+	public answeredAt: Date | null;
+
 	constructor(data: Partial<NoqQuestion>) {
 		if (data == null) return;
 

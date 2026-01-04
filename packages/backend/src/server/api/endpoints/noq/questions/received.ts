@@ -63,9 +63,28 @@ export const meta = {
 					type: 'object',
 					optional: false, nullable: true,
 				},
+				senderId: {
+					type: 'string',
+					optional: false, nullable: true,
+					format: 'id',
+				},
+				isE2EEncrypted: {
+					type: 'boolean',
+					optional: false, nullable: false,
+				},
+				answerNoteId: {
+					type: 'string',
+					optional: false, nullable: true,
+					format: 'id',
+				},
 				createdAt: {
 					type: 'string',
 					optional: false, nullable: false,
+					format: 'date-time',
+				},
+				answeredAt: {
+					type: 'string',
+					optional: false, nullable: true,
 					format: 'date-time',
 				},
 			},
@@ -124,7 +143,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					cardDesign: question.cardDesign,
 					status: question.status,
 					sender,
+					senderId: question.senderId,
+					isE2EEncrypted: question.isE2EEncrypted,
+					answerNoteId: question.answerNoteId,
 					createdAt: question.createdAt.toISOString(),
+					answeredAt: question.answeredAt?.toISOString() ?? null,
 				});
 			}
 

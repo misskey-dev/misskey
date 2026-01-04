@@ -26,9 +26,11 @@ export interface NoqQuestion {
 	status: string;
 	sender: Misskey.entities.UserLite | null;
 	createdAt: string;
+	answeredAt?: string | null;
 	senderId?: string;
 	senderUsername?: string | null;
 	senderHost?: string | null;
+	answerNoteId?: string | null;
 }
 
 const props = withDefaults(defineProps<{
@@ -60,7 +62,15 @@ const cardClass = computed(() => `card-design-${props.question.cardDesign}`);
 		<div v-else class="sender anonymous">
 			{{ i18n.ts._noq.anonymous }}
 		</div>
-		<MkTime :time="question.createdAt" class="time" />
+		<div class="timestamps">
+			<div class="time">
+				<MkTime :time="question.createdAt" />
+			</div>
+			<div v-if="question.status === 'answered' && question.answeredAt" class="time answered">
+				<span class="label">{{ i18n.ts._noq?.answerDate ?? '回答' }}</span>
+				<MkTime :time="question.answeredAt" />
+			</div>
+		</div>
 	</div>
 
 	<div class="content">
@@ -77,17 +87,30 @@ const cardClass = computed(() => `card-design-${props.question.cardDesign}`);
 		{{ i18n.ts._noq.noReplyRequested }}
 	</div>
 
+	<!-- 回答済みの場合: 回答ノートへのリンクを表示 -->
+	<div v-if="question.status === 'answered' && question.answerNoteId" class="answer-link">
+		<a :href="`/notes/${question.answerNoteId}`" class="view-answer">
+			<i class="ti ti-message-check"></i>
+			{{ i18n.ts._noq?.viewAnswer ?? '回答を見る' }}
+		</a>
+	</div>
+
+	<!-- 未回答の場合: 回答ボタン -->
 	<div v-if="showActions && question.status === 'pending'" class="actions">
 		<button class="action answer" @click="emit('answer', question)">
 			{{ i18n.ts._noq.answer }}
 		</button>
+	</div>
+
+	<!-- 削除・通報・ミュートボタン（ステータスに関係なく表示） -->
+	<div v-if="showActions" class="secondary-actions">
 		<button class="action delete" @click="emit('delete', question)">
 			{{ i18n.ts._noq.deleteQuestion }}
 		</button>
 		<button class="action report" @click="emit('report', question)">
 			{{ i18n.ts._noq.reportQuestion }}
 		</button>
-		<button class="action mute" @click="emit('mute', question)">
+		<button v-if="question.sender" class="action mute" @click="emit('mute', question)">
 			{{ i18n.ts._noq.muteUser }}
 		</button>
 	</div>
@@ -152,7 +175,7 @@ const cardClass = computed(() => `card-design-${props.question.cardDesign}`);
 	.header {
 		display: flex;
 		justify-content: space-between;
-		align-items: center;
+		align-items: flex-start;
 		margin-bottom: 12px;
 
 		.sender {
@@ -172,9 +195,28 @@ const cardClass = computed(() => `card-design-${props.question.cardDesign}`);
 			}
 		}
 
-		.time {
-			font-size: 0.85em;
-			color: var(--fgTransparent);
+		.timestamps {
+			display: flex;
+			flex-direction: column;
+			align-items: flex-end;
+			gap: 4px;
+
+			.time {
+				display: flex;
+				align-items: center;
+				gap: 4px;
+				font-size: 0.8em;
+				color: var(--fgTransparent);
+
+				.label {
+					font-weight: bold;
+					opacity: 0.7;
+				}
+
+				&.answered {
+					color: var(--accent);
+				}
+			}
 		}
 	}
 
@@ -219,8 +261,31 @@ const cardClass = computed(() => `card-design-${props.question.cardDesign}`);
 		display: inline-block;
 	}
 
+	.answer-link {
+		margin-top: 16px;
+		padding-top: 12px;
+		border-top: 1px solid var(--divider);
+
+		.view-answer {
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			padding: 8px 16px;
+			background: var(--accent);
+			color: var(--fgOnAccent);
+			border-radius: 4px;
+			text-decoration: none;
+			font-size: 0.9em;
+
+			&:hover {
+				opacity: 0.8;
+			}
+		}
+	}
+
 	.actions {
 		display: flex;
+		flex-wrap: wrap;
 		gap: 8px;
 		margin-top: 16px;
 		padding-top: 12px;
@@ -243,9 +308,33 @@ const cardClass = computed(() => `card-design-${props.question.cardDesign}`);
 				color: var(--fg);
 			}
 
+			&:hover {
+				opacity: 0.8;
+			}
+		}
+	}
+
+	.secondary-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		margin-top: 8px;
+
+		.action {
+			padding: 6px 12px;
+			border-radius: 4px;
+			border: none;
+			cursor: pointer;
+			font-size: 0.85em;
+
+			&.delete {
+				background: var(--buttonBg);
+				color: var(--fg);
+			}
+
 			&.report {
-				background: var(--warn);
-				color: #fff;
+				background: var(--buttonBg);
+				color: var(--warn);
 			}
 
 			&.mute {

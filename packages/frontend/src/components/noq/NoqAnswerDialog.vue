@@ -1,12 +1,9 @@
 <script setup lang="ts">
 /**
- * NoqAnswerForm.vue
- * 質問に対する回答フォームコンポーネント
- * - 回答テキスト入力
- * - 公開範囲選択（LocalStorageで記憶）
- * - メッセージカード画像オプション
- * - 回答投稿後に質問ステータス更新
- * - E2E暗号化質問への回答対応（DMで暗号化回答を送信）
+ * NoqAnswerDialog.vue
+ * 回答フォームをモーダルウィンドウとして表示するダイアログ
+ * - MkModalWindowでラップしてサイドバーを考慮した中央表示
+ * - NoqAnswerFormの機能をそのまま使用
  */
 import { ref, computed, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
@@ -15,7 +12,8 @@ import { i18n } from '@/i18n.js';
 import { $i } from '@/i.js';
 import { uploadFile } from '@/utility/drive.js';
 import { emojiPicker } from '@/utility/emoji-picker.js';
-import { encrypt as encryptE2E, isValidPublicKey, generatePublicKey } from '@/utility/noq-crypto.js';
+import { encrypt as encryptE2E, isValidPublicKey } from '@/utility/noq-crypto.js';
+import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkSelect, { type MkSelectItem } from '@/components/MkSelect.vue';
@@ -31,7 +29,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
 	(ev: 'answered', noteId: string): void;
-	(ev: 'cancel'): void;
+	(ev: 'close'): void;
 }>();
 
 // 回答テキスト
@@ -86,10 +84,13 @@ const pureAnswerText = computed(() => {
 	return answerText.value.trim();
 });
 
-// CWテキスト（質問内容）
+// CWテキスト（質問内容 + ハッシュタグ）
+// 仕様: 「Q. {質問文} #Noquestion」形式
+// username開示ありの場合のみ質問者情報を表示
 const cwText = computed(() => {
-	const senderInfo = props.question.sender ? '' : '（匿名）';
-	return `Q. ${props.question.text}${senderInfo}`;
+	// 質問者情報は開示されている場合のみ表示（匿名の場合は表示しない）
+	const senderInfo = props.question.sender ? ` (@${props.question.sender.username})` : '';
+	return `Q. ${props.question.text}${senderInfo} #Noquestion`;
 });
 
 // 本文（回答 + 質問箱URL）
@@ -141,6 +142,7 @@ async function postAnswer() {
 				encryptedAnswer,
 			});
 
+			// 回答成功時はansweredのみ発火（closeはMkModalWindowのclosedイベントで発火される）
 			emit('answered', '');
 			return;
 		}
@@ -176,93 +178,98 @@ async function postAnswer() {
 			noteId: note.createdNote.id,
 		});
 
+		// 回答成功時はansweredのみ発火（closeはMkModalWindowのclosedイベントで発火される）
 		emit('answered', note.createdNote.id);
 	} catch (err) {
-		console.error('[NoqAnswerForm] Failed to post answer:', err);
+		console.error('[NoqAnswerDialog] Failed to post answer:', err);
 	} finally {
 		posting.value = false;
 	}
 }
-
-function cancel() {
-	emit('cancel');
-}
 </script>
 
 <template>
-<div class="noq-answer-form">
-	<!-- E2E暗号化質問の場合の注意 -->
-	<MkInfo v-if="isE2EQuestion" class="e2e-notice">
-		<i class="ti ti-lock"></i>
-		{{ i18n.ts._noq?.e2eAnswerNote ?? 'これは暗号化された質問です。回答は質問者にのみDMで送信されます。' }}
-	</MkInfo>
+<MkModalWindow
+	:width="600"
+	@closed="emit('close')"
+>
+	<template #header>
+		<i class="ti ti-message-reply"></i>
+		{{ i18n.ts._noq.answer }}
+	</template>
 
-	<!-- 質問内容プレビュー -->
-	<div class="question-preview">
-		<div class="label">{{ i18n.ts._noq.questionText }}</div>
-		<div v-if="isE2EQuestion" class="encrypted-text">
+	<div class="noq-answer-dialog">
+		<!-- E2E暗号化質問の場合の注意 -->
+		<MkInfo v-if="isE2EQuestion" class="e2e-notice">
 			<i class="ti ti-lock"></i>
-			{{ i18n.ts._noq?.encryptedQuestion ?? '暗号化された質問' }}
+			{{ i18n.ts._noq?.e2eAnswerNote ?? 'これは暗号化された質問です。回答は質問者にのみDMで送信されます。' }}
+		</MkInfo>
+
+		<!-- 質問内容プレビュー -->
+		<div class="question-preview">
+			<div class="label">{{ i18n.ts._noq.questionText }}</div>
+			<div v-if="isE2EQuestion" class="encrypted-text">
+				<i class="ti ti-lock"></i>
+				{{ i18n.ts._noq?.encryptedQuestion ?? '暗号化された質問' }}
+			</div>
+			<div v-else class="text">{{ question.text }}</div>
 		</div>
-		<div v-else class="text">{{ question.text }}</div>
-	</div>
 
-	<!-- 回答入力 -->
-	<MkTextarea
-		v-model="answerText"
-		:placeholder="i18n.ts._noq.answerPlaceholder ?? '回答を入力...'"
-		class="answer-textarea"
-	/>
+		<!-- 回答入力 -->
+		<MkTextarea
+			v-model="answerText"
+			:placeholder="i18n.ts._noq.answerPlaceholder ?? '回答を入力...'"
+			class="answer-textarea"
+		/>
 
-	<!-- ツールバー（絵文字ボタン） -->
-	<div class="toolbar">
-		<button ref="emojiButtonRef" class="emoji-button" type="button" @click="showEmojiPicker">
-			<i class="ti ti-mood-smile"></i>
-		</button>
-	</div>
+		<!-- ツールバー（絵文字ボタン） -->
+		<div class="toolbar">
+			<button ref="emojiButtonRef" class="emoji-button" type="button" @click="showEmojiPicker">
+				<i class="ti ti-mood-smile"></i>
+			</button>
+		</div>
 
-	<!-- 公開範囲選択 -->
-	<div class="visibility-row">
-		<MkSelect v-model="visibility" :items="visibilityItems" class="visibility-select">
-			<template #label>{{ i18n.ts.visibility }}</template>
-		</MkSelect>
-	</div>
+		<!-- 公開範囲選択 -->
+		<div class="visibility-row">
+			<MkSelect v-model="visibility" :items="visibilityItems" class="visibility-select">
+				<template #label>{{ i18n.ts.visibility }}</template>
+			</MkSelect>
+		</div>
 
-	<!-- メッセージカードオプション（E2E暗号化質問では無効） -->
-	<div v-if="!isE2EQuestion" class="card-option">
-		<MkSwitch v-model="includeCard">
-			<template #label>
-				<i class="ti ti-photo"></i>
-				{{ i18n.ts._noq.includeMessageCard ?? 'メッセージカードを添付' }}
-			</template>
-		</MkSwitch>
+		<!-- メッセージカードオプション（E2E暗号化質問では無効） -->
+		<div v-if="!isE2EQuestion" class="card-option">
+			<MkSwitch v-model="includeCard">
+				<template #label>
+					<i class="ti ti-photo"></i>
+					{{ i18n.ts._noq.includeMessageCard ?? 'メッセージカードを添付' }}
+				</template>
+			</MkSwitch>
 
-		<div v-if="includeCard" class="card-preview-container">
-			<NoqMessageCard
-				ref="messageCardRef"
-				:question="question"
-				:answer-text="pureAnswerText"
-			/>
+			<div v-if="includeCard" class="card-preview-container">
+				<NoqMessageCard
+					ref="messageCardRef"
+					:question="question"
+					:answer-text="pureAnswerText"
+				/>
+			</div>
+		</div>
+
+		<!-- アクションボタン -->
+		<div class="actions">
+			<MkButton @click="emit('close')">
+				{{ i18n.ts.cancel }}
+			</MkButton>
+			<MkButton primary :disabled="posting || !answerText.trim()" @click="postAnswer">
+				{{ posting ? i18n.ts.sending : i18n.ts._noq.answer }}
+			</MkButton>
 		</div>
 	</div>
-
-	<!-- アクションボタン -->
-	<div class="actions">
-		<MkButton @click="cancel">
-			{{ i18n.ts.cancel }}
-		</MkButton>
-		<MkButton primary :disabled="posting || !answerText.trim()" @click="postAnswer">
-			{{ posting ? i18n.ts.sending : i18n.ts._noq.answer }}
-		</MkButton>
-	</div>
-</div>
+</MkModalWindow>
 </template>
 
 <style scoped lang="scss">
-.noq-answer-form {
+.noq-answer-dialog {
 	padding: 16px;
-	background: var(--panel);
-	border-radius: 8px;
 
 	.e2e-notice {
 		margin-bottom: 16px;

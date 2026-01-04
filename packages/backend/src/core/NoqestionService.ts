@@ -24,7 +24,7 @@ import type { NoqQuestionStatus, NoqCardDesign } from '@/models/NoqQuestion.js';
 import { NoqMutedUser } from '@/models/NoqMutedUser.js';
 import { QueryService } from '@/core/QueryService.js';
 import { NotificationService } from '@/core/NotificationService.js';
-import { ChatService } from '@/core/ChatService.js';
+import { NoteCreateService } from '@/core/NoteCreateService.js';
 import { MetaService } from '@/core/MetaService.js';
 
 /**
@@ -62,7 +62,7 @@ export class NoqestionService {
 		private idService: IdService,
 		private queryService: QueryService,
 		private notificationService: NotificationService,
-		private chatService: ChatService,
+		private noteCreateService: NoteCreateService,
 		private metaService: MetaService,
 	) {
 	}
@@ -221,7 +221,7 @@ export class NoqestionService {
 
 	/**
 	 * DM通知を送信
-	 * - 質問箱用ボットアカウントから回答者へDMを送信
+	 * - 質問箱用ボットアカウントから回答者へvisibility: specifiedのノートを送信
 	 * - ボットアカウントが未設定の場合はスキップ
 	 */
 	@bindThis
@@ -254,12 +254,12 @@ export class NoqestionService {
 		const dmText = `Noquestionで質問されたにゃん！\n質問：\n${truncatedQuestion}\nhttps://${this.config.host}/@${recipient.username}/noq`;
 
 		try {
-			// ChatServiceを使ってDMを送信
-			await this.chatService.createMessageToUser(
-				{ id: botAccount.id, host: botAccount.host },
-				recipient,
-				{ text: dmText },
-			);
+			// visibility: specifiedのノートを作成（DM相当）
+			await this.noteCreateService.create(botAccount, {
+				text: dmText,
+				visibility: 'specified',
+				visibleUsers: [{ id: recipient.id, host: recipient.host, uri: recipient.uri, username: recipient.username }],
+			});
 		} catch (err) {
 			// DM送信に失敗してもエラーをログに記録するだけで処理を継続
 			console.error('[Noqestion] Failed to send DM notification:', err);
@@ -350,12 +350,18 @@ export class NoqestionService {
 			throw new Error('ACCESS_DENIED');
 		}
 
+		// 回答済みステータスの場合はansweredAtを更新
+		const updateData: Partial<NoqQuestion> = {
+			status,
+			answerNoteId: answerNoteId ?? null,
+		};
+		if (status === 'answered') {
+			updateData.answeredAt = new Date();
+		}
+
 		await this.noqQuestionsRepository.update(
 			{ id: questionId },
-			{
-				status,
-				answerNoteId: answerNoteId ?? null,
-			},
+			updateData,
 		);
 
 		// 回答済みステータスに変更された場合、質問者にDM通知を送信
@@ -371,7 +377,7 @@ export class NoqestionService {
 
 	/**
 	 * 回答DM通知を送信
-	 * - 質問箱用ボットアカウントから質問者へDMを送信
+	 * - 質問箱用ボットアカウントから質問者へvisibility: specifiedのノートを送信
 	 * - ボットアカウントが未設定の場合はスキップ
 	 */
 	@bindThis
@@ -399,12 +405,12 @@ export class NoqestionService {
 		const dmText = `質問に回答があったにゃん！\nhttps://${this.config.host}/notes/${noteId}`;
 
 		try {
-			// ChatServiceを使ってDMを送信
-			await this.chatService.createMessageToUser(
-				{ id: botAccount.id, host: botAccount.host },
-				sender,
-				{ text: dmText },
-			);
+			// visibility: specifiedのノートを作成（DM相当）
+			await this.noteCreateService.create(botAccount, {
+				text: dmText,
+				visibility: 'specified',
+				visibleUsers: [{ id: sender.id, host: sender.host, uri: sender.uri, username: sender.username }],
+			});
 		} catch (err) {
 			// DM送信に失敗してもエラーをログに記録するだけで処理を継続
 			console.error('[Noqestion] Failed to send answer DM notification:', err);
@@ -437,6 +443,7 @@ export class NoqestionService {
 			{
 				status: 'answered' as NoqQuestionStatus,
 				encryptedAnswer,
+				answeredAt: new Date(),
 			},
 		);
 
@@ -452,7 +459,7 @@ export class NoqestionService {
 
 	/**
 	 * 暗号化回答DM通知を送信
-	 * - 質問箱用ボットアカウントから質問者へDMを送信
+	 * - 質問箱用ボットアカウントから質問者へvisibility: specifiedのノートを送信
 	 * - 復号ツールリンクを含む
 	 */
 	@bindThis
@@ -480,12 +487,12 @@ export class NoqestionService {
 		const dmText = `暗号化された質問に回答があったにゃん！\n復号ツールで確認してね：\nhttps://${this.config.host}/noq/decryption`;
 
 		try {
-			// ChatServiceを使ってDMを送信
-			await this.chatService.createMessageToUser(
-				{ id: botAccount.id, host: botAccount.host },
-				sender,
-				{ text: dmText },
-			);
+			// visibility: specifiedのノートを作成（DM相当）
+			await this.noteCreateService.create(botAccount, {
+				text: dmText,
+				visibility: 'specified',
+				visibleUsers: [{ id: sender.id, host: sender.host, uri: sender.uri, username: sender.username }],
+			});
 		} catch (err) {
 			// DM送信に失敗してもエラーをログに記録するだけで処理を継続
 			console.error('[Noqestion] Failed to send encrypted answer DM notification:', err);

@@ -13076,9 +13076,21 @@ export interface Locale extends ILocale {
          */
         "answer": string;
         /**
+         * 回答を見る
+         */
+        "viewAnswer": string;
+        /**
          * 回答を入力...
          */
         "answerPlaceholder": string;
+        /**
+         * 質問
+         */
+        "questionDate": string;
+        /**
+         * 回答
+         */
+        "answerDate": string;
         /**
          * メッセージカードを含む
          */
@@ -13147,6 +13159,14 @@ export interface Locale extends ILocale {
          * この質問箱は無効です
          */
         "questionBoxDisabled": string;
+        /**
+         * 質問箱が有効になっていません
+         */
+        "questionBoxNotEnabled": string;
+        /**
+         * 設定の読み込みに失敗しました
+         */
+        "loadError": string;
         /**
          * この質問箱ではユーザー名の開示が必須です
          */

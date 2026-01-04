@@ -16,7 +16,7 @@ import MkContainer from '@/components/MkContainer.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import NoqQuestionForm from '@/components/noq/NoqQuestionForm.vue';
 import NoqQuestionList from '@/components/noq/NoqQuestionList.vue';
-import NoqAnswerForm from '@/components/noq/NoqAnswerForm.vue';
+import NoqAnswerDialog from '@/components/noq/NoqAnswerDialog.vue';
 import NoqReportDialog from '@/components/noq/NoqReportDialog.vue';
 import type { NoqQuestion } from '@/components/noq/NoqQuestionCard.vue';
 
@@ -96,16 +96,21 @@ async function handleAnswer(question: NoqQuestion) {
 	}
 
 	// 回答フォームをモーダルで表示
-	const { dispose } = os.popup(NoqAnswerForm, {
+	// disposeは一度だけ呼ばれるようにフラグで管理
+	let disposed = false;
+	const { dispose } = os.popup(NoqAnswerDialog, {
 		question,
 	}, {
-		answered: (noteId: string) => {
+		answered: (_noteId: string) => {
 			// 回答完了後、質問リストをリロード
 			questionListRef.value?.reload();
-			dispose();
 		},
-		cancel: () => {
-			dispose();
+		close: () => {
+			// disposeは一度だけ呼ぶ
+			if (!disposed) {
+				disposed = true;
+				dispose();
+			}
 		},
 	});
 }
@@ -117,15 +122,20 @@ async function handleDelete(question: NoqQuestion) {
 
 async function handleReport(question: NoqQuestion) {
 	// 通報ダイアログをモーダルで表示
+	// disposeは一度だけ呼ばれるようにフラグで管理
+	let disposed = false;
 	const { dispose } = os.popup(NoqReportDialog, {
 		question,
 	}, {
 		reported: () => {
 			os.toast(String(i18n.ts.reported));
-			dispose();
 		},
 		close: () => {
-			dispose();
+			// disposeは一度だけ呼ぶ
+			if (!disposed) {
+				disposed = true;
+				dispose();
+			}
 		},
 	});
 }
