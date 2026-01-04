@@ -5,6 +5,7 @@
  * - 質問送信フォーム
  * - 自分のページなら受信した質問一覧を表示（ステータスフィルタ付き）
  * - 回答フォームのモーダル表示
+ * - 全ユーザーに回答済み質問一覧を公開表示（セキュリティ: 未回答質問は非表示）
  */
 import { ref, computed, onMounted } from 'vue';
 import * as Misskey from 'misskey-js';
@@ -14,10 +15,12 @@ import { $i } from '@/i.js';
 import * as os from '@/os.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkInfo from '@/components/MkInfo.vue';
+import MkPagination from '@/components/MkPagination.vue';
 import NoqQuestionForm from '@/components/noq/NoqQuestionForm.vue';
 import NoqQuestionList from '@/components/noq/NoqQuestionList.vue';
 import NoqAnswerDialog from '@/components/noq/NoqAnswerDialog.vue';
 import NoqReportDialog from '@/components/noq/NoqReportDialog.vue';
+import NoqQuestionCard from '@/components/noq/NoqQuestionCard.vue';
 import type { NoqQuestion } from '@/components/noq/NoqQuestionCard.vue';
 
 const props = defineProps<{
@@ -44,6 +47,15 @@ const loading = ref(true);
 const error = ref<string | null>(null);
 const questionSent = ref(false);
 const questionListRef = ref<InstanceType<typeof NoqQuestionList>>();
+
+// 回答済み質問取得用のページネーション設定
+const answeredPagination = {
+	endpoint: 'noq/questions/answered' as const,
+	limit: 20,
+	params: computed(() => ({
+		userId: props.user.id,
+	})),
+};
 
 const isMyPage = computed(() => $i && $i.id === props.user.id);
 const canAsk = computed(() => {
@@ -223,6 +235,30 @@ onMounted(() => {
 				@mute="handleMute"
 			/>
 		</MkContainer>
+
+		<!-- 回答済み質問一覧（全ユーザーに公開表示） -->
+		<!-- セキュリティ: APIは回答済み(status='answered')の質問のみを返す -->
+		<MkContainer v-if="noqSettings?.isEnabled" :foldable="false" class="answered-questions">
+			<template #header>{{ i18n.ts._noq.answeredQuestions }}</template>
+
+			<MkPagination :pagination="answeredPagination">
+				<template #empty>
+					<div class="empty">
+						{{ i18n.ts._noq.noAnsweredQuestions }}
+					</div>
+				</template>
+				<template #default="{ items }">
+					<div class="answered-list">
+						<NoqQuestionCard
+							v-for="question in items"
+							:key="question.id"
+							:question="question as NoqQuestion"
+							:show-actions="false"
+						/>
+					</div>
+				</template>
+			</MkPagination>
+		</MkContainer>
 	</template>
 </div>
 </template>
@@ -247,6 +283,23 @@ onMounted(() => {
 
 	.received-questions {
 		margin-top: 24px;
+	}
+
+	.answered-questions {
+		margin-top: 24px;
+
+		.empty {
+			padding: 32px;
+			text-align: center;
+			color: var(--fgTransparent);
+		}
+
+		.answered-list {
+			padding: 16px;
+			display: flex;
+			flex-direction: column;
+			gap: 16px;
+		}
 	}
 }
 </style>

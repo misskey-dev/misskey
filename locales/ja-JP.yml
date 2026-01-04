@@ -3489,6 +3489,7 @@ _noq:
   sentQuestions: "送信した質問"
   pendingQuestions: "未回答の質問"
   answeredQuestions: "回答済みの質問"
+  noAnsweredQuestions: "まだ回答済みの質問はありません"
   noQuestions: "質問はありません"
   statusPending: "未回答"
   statusAnswered: "回答済み"

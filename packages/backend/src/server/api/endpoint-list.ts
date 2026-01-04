@@ -500,6 +500,7 @@ export * as 'noq/settings/show' from './endpoints/noq/settings/show.js';
 export * as 'noq/settings/generate-key' from './endpoints/noq/settings/generate-key.js';
 export * as 'noq/questions/send' from './endpoints/noq/questions/send.js';
 export * as 'noq/questions/received' from './endpoints/noq/questions/received.js';
+export * as 'noq/questions/answered' from './endpoints/noq/questions/answered.js';
 export * as 'noq/questions/sent' from './endpoints/noq/questions/sent.js';
 export * as 'noq/questions/answer' from './endpoints/noq/questions/answer.js';
 export * as 'noq/questions/delete' from './endpoints/noq/questions/delete.js';

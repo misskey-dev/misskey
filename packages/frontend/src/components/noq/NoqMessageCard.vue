@@ -398,10 +398,6 @@ onMounted(() => {
 	generateCard();
 });
 
-// 回答テキストが変更されたら再描画
-watch(() => props.answerText, () => {
-	generateCard();
-});
 
 // 外部から呼び出せるメソッドを公開
 defineExpose({

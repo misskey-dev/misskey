@@ -61,10 +61,17 @@ const emit = defineEmits<{
 	<!-- メタ情報（送信者・日時） -->
 	<div class="meta">
 		<div class="sender-info">
-			<div v-if="question.sender" class="sender">
+			<!-- 送信者が開示されている場合: @username形式で表示 -->
+			<div v-if="question.sender" class="sender with-avatar">
 				<MkAvatar :user="question.sender" class="avatar" />
-				<MkUserName :user="question.sender" />
+				<span class="username">@{{ question.sender.username }}</span>
 			</div>
+			<!-- 回答済みの場合: A: {回答テキスト} を表示 -->
+			<div v-else-if="question.status === 'answered' && question.answerText" class="sender answer-preview">
+				<span class="answer-label">A:</span>
+				<span class="answer-text-preview">{{ question.answerText.length > 50 ? question.answerText.slice(0, 50) + '...' : question.answerText }}</span>
+			</div>
+			<!-- 未回答かつ匿名の場合: 匿名表示 -->
 			<div v-else class="sender anonymous">
 				{{ i18n.ts._noq.anonymous }}
 			</div>
@@ -179,6 +186,24 @@ const emit = defineEmits<{
 				.avatar {
 					width: 28px;
 					height: 28px;
+				}
+
+				&.with-avatar {
+					.username {
+						color: var(--fg);
+					}
+				}
+
+				&.answer-preview {
+					.answer-label {
+						color: var(--accent);
+						margin-right: 4px;
+					}
+
+					.answer-text-preview {
+						font-weight: normal;
+						color: var(--fg);
+					}
 				}
 
 				&.anonymous {

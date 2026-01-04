@@ -13056,6 +13056,10 @@ export interface Locale extends ILocale {
          */
         "answeredQuestions": string;
         /**
+         * まだ回答済みの質問はありません
+         */
+        "noAnsweredQuestions": string;
+        /**
          * 質問はありません
          */
         "noQuestions": string;
