@@ -51,6 +51,10 @@ export const meta = {
 					type: 'string',
 					optional: false, nullable: false,
 				},
+				status: {
+					type: 'string',
+					optional: false, nullable: false,
+				},
 				sender: {
 					type: 'object',
 					optional: false, nullable: true,
@@ -188,6 +192,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					imageUrl: question.imageUrl,
 					isUsernameDisclosed: question.isUsernameDisclosed,
 					cardDesign: question.cardDesign,
+					status: question.status,
 					sender,
 					answerNoteId: question.answerNoteId,
 					answerText,

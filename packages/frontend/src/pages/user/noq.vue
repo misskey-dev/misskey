@@ -7,7 +7,7 @@
  * - 回答フォームのモーダル表示
  * - 全ユーザーに回答済み質問一覧を公開表示（セキュリティ: 未回答質問は非表示）
  */
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
@@ -16,6 +16,7 @@ import * as os from '@/os.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkPagination from '@/components/MkPagination.vue';
+import { Paginator } from '@/utility/paginator.js';
 import NoqQuestionForm from '@/components/noq/NoqQuestionForm.vue';
 import NoqQuestionList from '@/components/noq/NoqQuestionList.vue';
 import NoqAnswerDialog from '@/components/noq/NoqAnswerDialog.vue';
@@ -48,14 +49,15 @@ const error = ref<string | null>(null);
 const questionSent = ref(false);
 const questionListRef = ref<InstanceType<typeof NoqQuestionList>>();
 
-// 回答済み質問取得用のページネーション設定
-const answeredPagination = {
-	endpoint: 'noq/questions/answered' as const,
+// 回答済み質問取得用のPaginatorインスタンス
+// Paginatorクラスを使用し、computedParamsでuserIdを渡す
+const answeredPaginatorComputedParams = computed(() => ({
+	userId: props.user.id,
+}));
+const answeredPaginator = markRaw(new Paginator('noq/questions/answered', {
 	limit: 20,
-	params: computed(() => ({
-		userId: props.user.id,
-	})),
-};
+	computedParams: answeredPaginatorComputedParams,
+}));
 
 const isMyPage = computed(() => $i && $i.id === props.user.id);
 const canAsk = computed(() => {
@@ -241,7 +243,7 @@ onMounted(() => {
 		<MkContainer v-if="noqSettings?.isEnabled" :foldable="false" class="answered-questions">
 			<template #header>{{ i18n.ts._noq.answeredQuestions }}</template>
 
-			<MkPagination :pagination="answeredPagination">
+			<MkPagination :paginator="answeredPaginator">
 				<template #empty>
 					<div class="empty">
 						{{ i18n.ts._noq.noAnsweredQuestions }}
