@@ -225,6 +225,7 @@ async function postAnswer() {
 		<MkTextarea
 			v-model="answerText"
 			:placeholder="i18n.ts._noq.answerPlaceholder ?? '回答を入力...'"
+			:mfm-autocomplete="true"
 			class="answer-textarea"
 		/>
 

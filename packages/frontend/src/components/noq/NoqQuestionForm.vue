@@ -129,6 +129,7 @@ async function send() {
 		v-model="text"
 		:placeholder="i18n.ts._noq.questionTextPlaceholder"
 		:max="MAX_TEXT_LENGTH"
+		:mfm-autocomplete="true"
 		class="textarea"
 	/>
 
