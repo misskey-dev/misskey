@@ -19,6 +19,7 @@ import MkButton from '@/components/MkButton.vue';
 import MkSelect, { type MkSelectItem } from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInfo from '@/components/MkInfo.vue';
+import Mfm from '@/components/global/MkMfm.js';
 import NoqMessageCard from './NoqMessageCard.vue';
 import type { NoqQuestion } from './NoqQuestionCard.vue';
 
@@ -199,9 +200,11 @@ async function postAnswer() {
 </script>
 
 <template>
+<!-- withCloseButton=false: ヘッダーの閉じるボタンは機能しないため非表示、キャンセルボタンで代用 -->
 <MkModalWindow
 	ref="modalRef"
 	:width="600"
+	:with-close-button="false"
 	@closed="emit('close')"
 >
 	<template #header>
@@ -223,7 +226,7 @@ async function postAnswer() {
 				<i class="ti ti-lock"></i>
 				{{ i18n.ts._noq?.encryptedQuestion ?? '暗号化された質問' }}
 			</div>
-			<div v-else class="text">{{ question.text }}</div>
+			<Mfm v-else :text="question.text" class="text" />
 		</div>
 
 		<!-- 回答入力 -->
@@ -261,7 +264,6 @@ async function postAnswer() {
 				<NoqMessageCard
 					ref="messageCardRef"
 					:question="question"
-					:answer-text="pureAnswerText"
 				/>
 			</div>
 		</div>

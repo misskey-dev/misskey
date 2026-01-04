@@ -15,9 +15,9 @@ import { instance } from '@/instance.js';
 import { customEmojisMap } from '@/custom-emojis.js';
 import type { NoqQuestion } from './NoqQuestionCard.vue';
 
+// 仕様: メッセージカードには質問文のみ表示（回答テキストは含めない）
 const props = defineProps<{
 	question: NoqQuestion;
-	answerText?: string;
 }>();
 
 const emit = defineEmits<{
@@ -342,19 +342,7 @@ async function generateCard(): Promise<string> {
 	ctx.font = `${questionFontSize}px "Hiragino Sans", "Meiryo", sans-serif`;
 	const questionEndY = await wrapTextWithEmoji(ctx, props.question.text, 130, 120, CARD_WIDTH - 200, 50, questionFontSize);
 
-	// 回答テキスト（あれば、MFMカスタム絵文字対応）
-	if (props.answerText) {
-		const answerStartY = Math.max(questionEndY + 40, 300);
-		const answerFontSize = 32;
-
-		ctx.fillStyle = design.accentColor;
-		ctx.font = 'bold 28px "Hiragino Sans", "Meiryo", sans-serif';
-		ctx.fillText('A.', 80, answerStartY);
-
-		ctx.fillStyle = design.textColor;
-		ctx.font = `${answerFontSize}px "Hiragino Sans", "Meiryo", sans-serif`;
-		await wrapTextWithEmoji(ctx, props.answerText, 130, answerStartY, CARD_WIDTH - 200, 45, answerFontSize);
-	}
+	// 仕様: メッセージカードには質問文のみ表示、回答テキストは含めない
 
 	// フッター：日時とサイト名
 	ctx.fillStyle = design.textColor;
