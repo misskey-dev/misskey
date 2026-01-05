@@ -190,7 +190,7 @@ const $i = ensureSignin();
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
-const reactionAcceptance = computed(store.makeGetterSetter('reactionAcceptance'));
+const reactionAcceptance = store.model('reactionAcceptance');
 
 function assertVaildLang(lang: string | null): lang is keyof typeof langmap {
 	return lang != null && lang in langmap;

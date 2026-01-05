@@ -28,6 +28,7 @@ const host = `http://127.0.0.1:${port}`;
 
 const clientPort = port + 1;
 const redirect_uri = `http://127.0.0.1:${clientPort}/redirect`;
+const redirect_uri2 = `http://127.0.0.1:${clientPort}/redirect2`;
 
 const basicAuthParams: AuthorizationParamsExtended = {
 	redirect_uri,
@@ -807,65 +808,19 @@ describe('OAuth', () => {
 		});
 	});
 
-	// https://indieauth.spec.indieweb.org/#client-information-discovery
 	describe('Client Information Discovery', () => {
-		describe('Redirection', () => {
-			const tests: Record<string, (reply: FastifyReply) => void> = {
-				'Read HTTP header': reply => {
-					reply.header('Link', '</redirect>; rel="redirect_uri"');
-					reply.send(`
-						<!DOCTYPE html>
-						<div class="h-app"><a href="/" class="u-url p-name">Misklient
-					`);
-				},
-				'Mixed links': reply => {
-					reply.header('Link', '</redirect>; rel="redirect_uri"');
-					reply.send(`
-						<!DOCTYPE html>
-						<link rel="redirect_uri" href="/redirect2" />
-						<div class="h-app"><a href="/" class="u-url p-name">Misklient
-					`);
-				},
-				'Multiple items in Link header': reply => {
-					reply.header('Link', '</redirect2>; rel="redirect_uri",</redirect>; rel="redirect_uri"');
-					reply.send(`
-						<!DOCTYPE html>
-						<div class="h-app"><a href="/" class="u-url p-name">Misklient
-					`);
-				},
-				'Multiple items in HTML': reply => {
-					reply.send(`
-						<!DOCTYPE html>
-						<link rel="redirect_uri" href="/redirect2" />
-						<link rel="redirect_uri" href="/redirect" />
-						<div class="h-app"><a href="/" class="u-url p-name">Misklient
-					`);
-				},
-			};
-
-			for (const [title, replyFunc] of Object.entries(tests)) {
-				test(title, async () => {
-					sender = replyFunc;
-
-					const client = new AuthorizationCode(clientConfig);
-
-					const response = await fetch(client.authorizeURL({
-						redirect_uri,
-						scope: 'write:notes',
-						state: 'state',
-						code_challenge: 'code',
-						code_challenge_method: 'S256',
-					} as AuthorizationParamsExtended));
-					assert.strictEqual(response.status, 200);
-				});
-			}
-
-			test('No item', async () => {
+		// https://indieauth.spec.indieweb.org/#client-information-discovery
+		describe('JSON client metadata (11 July 2024)', () => {
+			test('Read JSON document', async () => {
 				sender = (reply): void => {
-					reply.send(`
-						<!DOCTYPE html>
-						<div class="h-app"><a href="/" class="u-url p-name">Misklient
-					`);
+					reply.header('content-type', 'application/json');
+					reply.send({
+						client_id: `http://127.0.0.1:${clientPort}/`,
+						client_uri: `http://127.0.0.1:${clientPort}/`,
+						client_name: 'Misklient JSON',
+						logo_uri: '/logo.png',
+						redirect_uris: ['/redirect'],
+					});
 				};
 
 				const client = new AuthorizationCode(clientConfig);
@@ -877,119 +832,294 @@ describe('OAuth', () => {
 					code_challenge: 'code',
 					code_challenge_method: 'S256',
 				} as AuthorizationParamsExtended));
+				assert.strictEqual(response.status, 200);
+				const meta = getMeta(await response.text());
+				assert.strictEqual(meta.clientName, 'Misklient JSON');
+				assert.strictEqual(meta.clientLogo, `http://127.0.0.1:${clientPort}/logo.png`);
+			});
 
-				// direct error because there's no redirect URI to ping
+			test('Merge Link header redirect_uri with JSON redirect_uris', async () => {
+				sender = (reply): void => {
+					reply.header('Link', '</redirect2>; rel="redirect_uri"');
+					reply.header('content-type', 'application/json');
+					reply.send({
+						client_id: `http://127.0.0.1:${clientPort}/`,
+						client_uri: `http://127.0.0.1:${clientPort}/`,
+						client_name: 'Misklient JSON',
+						redirect_uris: ['/redirect'],
+					});
+				};
+
+				const client = new AuthorizationCode(clientConfig);
+
+				const ok1 = await fetch(client.authorizeURL({
+					redirect_uri,
+					scope: 'write:notes',
+					state: 'state',
+					code_challenge: 'code',
+					code_challenge_method: 'S256',
+				} as AuthorizationParamsExtended));
+				assert.strictEqual(ok1.status, 200);
+
+				const ok2 = await fetch(client.authorizeURL({
+					redirect_uri: redirect_uri2,
+					scope: 'write:notes',
+					state: 'state',
+					code_challenge: 'code',
+					code_challenge_method: 'S256',
+				} as AuthorizationParamsExtended));
+				assert.strictEqual(ok2.status, 200);
+			});
+
+			test('Reject when client_id does not match retrieved URL', async () => {
+				sender = (reply): void => {
+					reply.header('content-type', 'application/json');
+					reply.send({
+						client_id: `http://127.0.0.1:${clientPort}/mismatch`,
+						client_uri: `http://127.0.0.1:${clientPort}/`,
+						redirect_uris: ['/redirect'],
+					});
+				};
+
+				const client = new AuthorizationCode(clientConfig);
+				const response = await fetch(client.authorizeURL({
+					redirect_uri,
+					scope: 'write:notes',
+					state: 'state',
+					code_challenge: 'code',
+					code_challenge_method: 'S256',
+				} as AuthorizationParamsExtended));
+				await assertDirectError(response, 400, 'invalid_request');
+			});
+
+			test('Reject when client_uri is not a prefix of client_id', async () => {
+				sender = (reply): void => {
+					reply.header('content-type', 'application/json');
+					reply.send({
+						client_id: `http://127.0.0.1:${clientPort}/`,
+						client_uri: `http://127.0.0.1:${clientPort}/no-prefix/`,
+						redirect_uris: ['/redirect'],
+					});
+				};
+
+				const client = new AuthorizationCode(clientConfig);
+				const response = await fetch(client.authorizeURL({
+					redirect_uri,
+					scope: 'write:notes',
+					state: 'state',
+					code_challenge: 'code',
+					code_challenge_method: 'S256',
+				} as AuthorizationParamsExtended));
+				await assertDirectError(response, 400, 'invalid_request');
+			});
+
+			test('Reject when JSON metadata has no redirect_uris and no Link header', async () => {
+				sender = (reply): void => {
+					reply.header('content-type', 'application/json');
+					reply.send({
+						client_id: `http://127.0.0.1:${clientPort}/`,
+						client_uri: `http://127.0.0.1:${clientPort}/`,
+						client_name: 'Misklient JSON',
+					});
+				};
+
+				const client = new AuthorizationCode(clientConfig);
+				const response = await fetch(client.authorizeURL({
+					redirect_uri,
+					scope: 'write:notes',
+					state: 'state',
+					code_challenge: 'code',
+					code_challenge_method: 'S256',
+				} as AuthorizationParamsExtended));
 				await assertDirectError(response, 400, 'invalid_request');
 			});
 		});
 
-		test('Disallow loopback', async () => {
-			await sendEnvUpdateRequest({ key: 'MISSKEY_TEST_CHECK_IP_RANGE', value: '1' });
+		// https://indieauth.spec.indieweb.org/20220212/#client-information-discovery
+		describe('HTML link client metadata (12 Feb 2022)', () => {
+			describe('Redirection', () => {
+				const tests: Record<string, (reply: FastifyReply) => void> = {
+					'Read HTTP header': reply => {
+						reply.header('Link', '</redirect>; rel="redirect_uri"');
+						reply.send(`
+							<!DOCTYPE html>
+							<div class="h-app"><a href="/" class="u-url p-name">Misklient
+						`);
+					},
+					'Mixed links': reply => {
+						reply.header('Link', '</redirect>; rel="redirect_uri"');
+						reply.send(`
+							<!DOCTYPE html>
+							<link rel="redirect_uri" href="/redirect2" />
+							<div class="h-app"><a href="/" class="u-url p-name">Misklient
+						`);
+					},
+					'Multiple items in Link header': reply => {
+						reply.header('Link', '</redirect2>; rel="redirect_uri",</redirect>; rel="redirect_uri"');
+						reply.send(`
+							<!DOCTYPE html>
+							<div class="h-app"><a href="/" class="u-url p-name">Misklient
+						`);
+					},
+					'Multiple items in HTML': reply => {
+						reply.send(`
+							<!DOCTYPE html>
+							<link rel="redirect_uri" href="/redirect2" />
+							<link rel="redirect_uri" href="/redirect" />
+							<div class="h-app"><a href="/" class="u-url p-name">Misklient
+						`);
+					},
+				};
 
-			const client = new AuthorizationCode(clientConfig);
-			const response = await fetch(client.authorizeURL({
-				redirect_uri,
-				scope: 'write:notes',
-				state: 'state',
-				code_challenge: 'code',
-				code_challenge_method: 'S256',
-			} as AuthorizationParamsExtended));
-			await assertDirectError(response, 400, 'invalid_request');
-		});
+				for (const [title, replyFunc] of Object.entries(tests)) {
+					test(title, async () => {
+						sender = replyFunc;
 
-		test('Missing name', async () => {
-			sender = (reply): void => {
-				reply.header('Link', '</redirect>; rel="redirect_uri"');
-				reply.send();
-			};
+						const client = new AuthorizationCode(clientConfig);
 
-			const client = new AuthorizationCode(clientConfig);
+						const response = await fetch(client.authorizeURL({
+							redirect_uri,
+							scope: 'write:notes',
+							state: 'state',
+							code_challenge: 'code',
+							code_challenge_method: 'S256',
+						} as AuthorizationParamsExtended));
+						assert.strictEqual(response.status, 200);
+					});
+				}
 
-			const response = await fetch(client.authorizeURL({
-				redirect_uri,
-				scope: 'write:notes',
-				state: 'state',
-				code_challenge: 'code',
-				code_challenge_method: 'S256',
-			} as AuthorizationParamsExtended));
-			assert.strictEqual(response.status, 200);
-			assert.strictEqual(getMeta(await response.text()).clientName, `http://127.0.0.1:${clientPort}/`);
-		});
+				test('No item', async () => {
+					sender = (reply): void => {
+						reply.send(`
+							<!DOCTYPE html>
+							<div class="h-app"><a href="/" class="u-url p-name">Misklient
+						`);
+					};
 
-		test('With Logo', async () => {
-			sender = (reply): void => {
-				reply.header('Link', '</redirect>; rel="redirect_uri"');
-				reply.send(`
-					<!DOCTYPE html>
-					<div class="h-app">
-						<a href="/" class="u-url p-name">Misklient</a>
-						<img src="/logo.png" class="u-logo" />
-					</div>
-				`);
-				reply.send();
-			};
+					const client = new AuthorizationCode(clientConfig);
 
-			const client = new AuthorizationCode(clientConfig);
+					const response = await fetch(client.authorizeURL({
+						redirect_uri,
+						scope: 'write:notes',
+						state: 'state',
+						code_challenge: 'code',
+						code_challenge_method: 'S256',
+					} as AuthorizationParamsExtended));
 
-			const response = await fetch(client.authorizeURL({
-				redirect_uri,
-				scope: 'write:notes',
-				state: 'state',
-				code_challenge: 'code',
-				code_challenge_method: 'S256',
-			} as AuthorizationParamsExtended));
-			assert.strictEqual(response.status, 200);
-			const meta = getMeta(await response.text());
-			assert.strictEqual(meta.clientName, 'Misklient');
-			assert.strictEqual(meta.clientLogo, `http://127.0.0.1:${clientPort}/logo.png`);
-		});
+					// direct error because there's no redirect URI to ping
+					await assertDirectError(response, 400, 'invalid_request');
+				});
+			});
 
-		test('Missing Logo', async () => {
-			sender = (reply): void => {
-				reply.header('Link', '</redirect>; rel="redirect_uri"');
-				reply.send(`
-					<!DOCTYPE html>
-					<div class="h-app"><a href="/" class="u-url p-name">Misklient
-				`);
-				reply.send();
-			};
 
-			const client = new AuthorizationCode(clientConfig);
+			test('Disallow loopback', async () => {
+				await sendEnvUpdateRequest({ key: 'MISSKEY_TEST_CHECK_IP_RANGE', value: '1' });
 
-			const response = await fetch(client.authorizeURL({
-				redirect_uri,
-				scope: 'write:notes',
-				state: 'state',
-				code_challenge: 'code',
-				code_challenge_method: 'S256',
-			} as AuthorizationParamsExtended));
-			assert.strictEqual(response.status, 200);
-			const meta = getMeta(await response.text());
-			assert.strictEqual(meta.clientName, 'Misklient');
-			assert.strictEqual(meta.clientLogo, undefined);
-		});
+				const client = new AuthorizationCode(clientConfig);
+				const response = await fetch(client.authorizeURL({
+					redirect_uri,
+					scope: 'write:notes',
+					state: 'state',
+					code_challenge: 'code',
+					code_challenge_method: 'S256',
+				} as AuthorizationParamsExtended));
+				await assertDirectError(response, 400, 'invalid_request');
+			});
 
-		test('Mismatching URL in h-app', async () => {
-			sender = (reply): void => {
-				reply.header('Link', '</redirect>; rel="redirect_uri"');
-				reply.send(`
-					<!DOCTYPE html>
-					<div class="h-app"><a href="/foo" class="u-url p-name">Misklient
-				`);
-				reply.send();
-			};
+			test('Missing name', async () => {
+				sender = (reply): void => {
+					reply.header('Link', '</redirect>; rel="redirect_uri"');
+					reply.send();
+				};
 
-			const client = new AuthorizationCode(clientConfig);
+				const client = new AuthorizationCode(clientConfig);
 
-			const response = await fetch(client.authorizeURL({
-				redirect_uri,
-				scope: 'write:notes',
-				state: 'state',
-				code_challenge: 'code',
-				code_challenge_method: 'S256',
-			} as AuthorizationParamsExtended));
-			assert.strictEqual(response.status, 200);
-			assert.strictEqual(getMeta(await response.text()).clientName, `http://127.0.0.1:${clientPort}/`);
+				const response = await fetch(client.authorizeURL({
+					redirect_uri,
+					scope: 'write:notes',
+					state: 'state',
+					code_challenge: 'code',
+					code_challenge_method: 'S256',
+				} as AuthorizationParamsExtended));
+				assert.strictEqual(response.status, 200);
+				assert.strictEqual(getMeta(await response.text()).clientName, `http://127.0.0.1:${clientPort}/`);
+			});
+
+			test('With Logo', async () => {
+				sender = (reply): void => {
+					reply.header('Link', '</redirect>; rel="redirect_uri"');
+					reply.send(`
+						<!DOCTYPE html>
+						<div class="h-app">
+							<a href="/" class="u-url p-name">Misklient</a>
+							<img src="/logo.png" class="u-logo" />
+						</div>
+					`);
+					reply.send();
+				};
+
+				const client = new AuthorizationCode(clientConfig);
+
+				const response = await fetch(client.authorizeURL({
+					redirect_uri,
+					scope: 'write:notes',
+					state: 'state',
+					code_challenge: 'code',
+					code_challenge_method: 'S256',
+				} as AuthorizationParamsExtended));
+				assert.strictEqual(response.status, 200);
+				const meta = getMeta(await response.text());
+				assert.strictEqual(meta.clientName, 'Misklient');
+				assert.strictEqual(meta.clientLogo, `http://127.0.0.1:${clientPort}/logo.png`);
+			});
+
+			test('Missing Logo', async () => {
+				sender = (reply): void => {
+					reply.header('Link', '</redirect>; rel="redirect_uri"');
+					reply.send(`
+						<!DOCTYPE html>
+						<div class="h-app"><a href="/" class="u-url p-name">Misklient
+					`);
+					reply.send();
+				};
+
+				const client = new AuthorizationCode(clientConfig);
+
+				const response = await fetch(client.authorizeURL({
+					redirect_uri,
+					scope: 'write:notes',
+					state: 'state',
+					code_challenge: 'code',
+					code_challenge_method: 'S256',
+				} as AuthorizationParamsExtended));
+				assert.strictEqual(response.status, 200);
+				const meta = getMeta(await response.text());
+				assert.strictEqual(meta.clientName, 'Misklient');
+				assert.strictEqual(meta.clientLogo, undefined);
+			});
+
+			test('Mismatching URL in h-app', async () => {
+				sender = (reply): void => {
+					reply.header('Link', '</redirect>; rel="redirect_uri"');
+					reply.send(`
+						<!DOCTYPE html>
+						<div class="h-app"><a href="/foo" class="u-url p-name">Misklient
+					`);
+					reply.send();
+				};
+
+				const client = new AuthorizationCode(clientConfig);
+
+				const response = await fetch(client.authorizeURL({
+					redirect_uri,
+					scope: 'write:notes',
+					state: 'state',
+					code_challenge: 'code',
+					code_challenge_method: 'S256',
+				} as AuthorizationParamsExtended));
+				assert.strictEqual(response.status, 200);
+				assert.strictEqual(getMeta(await response.text()).clientName, `http://127.0.0.1:${clientPort}/`);
+			});
 		});
 	});
 

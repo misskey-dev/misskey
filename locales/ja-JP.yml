@@ -2600,7 +2600,7 @@ _widgets:
   _userList:
     chooseList: "リストを選択"
   clicker: "クリッカー"
-  birthdayFollowings: "今日誕生日のユーザー"
+  birthdayFollowings: "もうすぐ誕生日のユーザー"
   chat: "ダイレクトメッセージ"
 
 _widgetOptions:
@@ -2639,6 +2639,8 @@ _widgetOptions:
     shuffle: "表示順をシャッフル"
     duration: "ティッカーのスクロール速度(秒)"
     reverse: "逆方向にスクロール"
+  _birthdayFollowings:
+    period: "期間"
 
 _cw:
   hide: "隠す"
