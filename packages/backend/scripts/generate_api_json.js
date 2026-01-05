@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { writeFileSync } from 'node:fs';
 import { execa } from 'execa';
+import { writeFileSync, existsSync } from "node:fs";
 
 async function main() {
 	if (!process.argv.includes('--no-build')) {
@@ -14,9 +14,15 @@ async function main() {
 		});
 	}
 
-	const { loadConfig } = await import('../src/config.ts');
+	if (!existsSync('./built')) {
+		throw new Error('`built` directory does not exist.');
+	}
 
-	const { genOpenapiSpec } = await import('../src/server/api/openapi/gen-spec.ts');
+	/** @type {import('../src/config.js')} */
+	const { loadConfig } = await import('../built/config.js');
+
+	/** @type {import('../src/server/api/openapi/gen-spec.js')} */
+	const { genOpenapiSpec } = await import('../built/server/api/openapi/gen-spec.js');
 
 	const config = loadConfig();
 	const spec = genOpenapiSpec(config, true);

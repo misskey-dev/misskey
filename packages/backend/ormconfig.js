@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm';
-import { loadConfig } from './src/config.ts';
-import { entities } from './src/postgres.ts';
+import { loadConfig } from './built/config.js';
+import { entities } from './built/postgres.js';
 
 const isConcurrentIndexMigrationEnabled = process.env.MISSKEY_MIGRATION_CREATE_INDEX_CONCURRENTLY === '1';
 
