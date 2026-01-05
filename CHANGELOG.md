@@ -23,7 +23,7 @@
 - Enhance: OAuthのクライアント情報取得（Client Information Discovery）において、IndieWeb Living Standard 11 July 2024で定義されているJSONドキュメント形式に対応しました
   - JSONによるClient Information Discoveryを行うには、レスポンスの`Content-Type`ヘッダーが`application/json`である必要があります
   - 従来の実装（12 February 2022版・HTML Microformat形式）も引き続きサポートされます
-
+- Enhance: メモリ使用量を削減
 
 ## 2025.12.2
 
