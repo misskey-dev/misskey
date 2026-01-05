@@ -17,7 +17,8 @@ const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 
 const configDir = resolve(_dirname, '../../../.config');
-const OUTPUT_PATH = resolve(_dirname, '../../../built/.config.json');
+const OUTPUT_PATH1 = resolve(_dirname, '../../../built/.config.json');
+const OUTPUT_PATH2 = resolve(_dirname, '../../../src-js/.config.json');
 
 // TODO: yamlのパースに失敗したときのエラーハンドリング
 
@@ -31,14 +32,22 @@ function yamlToJson(ymlPath) {
 		return;
 	}
 
-	console.log(`${ymlPath} → ${OUTPUT_PATH}`);
+	console.log(`${ymlPath} → ${OUTPUT_PATH1}`);
+	console.log(`${ymlPath} → ${OUTPUT_PATH2}`);
 
 	const yamlContent = fs.readFileSync(ymlPath, 'utf-8');
 	const jsonContent = yaml.load(yamlContent);
-	if (!fs.existsSync(dirname(OUTPUT_PATH))) {
-		fs.mkdirSync(dirname(OUTPUT_PATH), { recursive: true });
+	if (!fs.existsSync(dirname(OUTPUT_PATH1))) {
+		fs.mkdirSync(dirname(OUTPUT_PATH1), { recursive: true });
 	}
-	fs.writeFileSync(OUTPUT_PATH, JSON.stringify({
+	if (!fs.existsSync(dirname(OUTPUT_PATH2))) {
+		fs.mkdirSync(dirname(OUTPUT_PATH2), { recursive: true });
+	}
+	fs.writeFileSync(OUTPUT_PATH1, JSON.stringify({
+		'_NOTE_': 'This file is auto-generated from YAML file. DO NOT EDIT.',
+		...jsonContent,
+	}), 'utf-8');
+	fs.writeFileSync(OUTPUT_PATH2, JSON.stringify({
 		'_NOTE_': 'This file is auto-generated from YAML file. DO NOT EDIT.',
 		...jsonContent,
 	}), 'utf-8');
