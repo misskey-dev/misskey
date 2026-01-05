@@ -6,6 +6,7 @@
 import { randomUUID } from 'node:crypto';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import sharp from 'sharp';
@@ -69,7 +70,16 @@ import type { FastifyError, FastifyInstance, FastifyPluginOptions, FastifyReply 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 
-const rootDir = `${_dirname}/../../../../`;
+let rootDir = _dirname;
+// 見つかるまで上に遡る
+while (!fs.existsSync(resolve(rootDir, 'packages'))) {
+	const parentDir = dirname(rootDir);
+	if (parentDir === rootDir) {
+		throw new Error('Cannot find root directory');
+	}
+	rootDir = parentDir;
+}
+
 const backendRootDir = resolve(rootDir, 'packages/backend');
 const frontendRootDir = resolve(rootDir, 'packages/frontend');
 

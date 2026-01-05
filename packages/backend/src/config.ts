@@ -220,7 +220,16 @@ const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 
 /** Path of repository root directory */
-const rootDir = resolve(_dirname, '../../../../');
+let rootDir = _dirname;
+// 見つかるまで上に遡る
+while (!fs.existsSync(resolve(rootDir, 'packages'))) {
+	const parentDir = dirname(rootDir);
+	if (parentDir === rootDir) {
+		throw new Error('Cannot find root directory');
+	}
+	rootDir = parentDir;
+}
+
 /** Path of configuration directory */
 const configDir = resolve(rootDir, '.config');
 /** Path of built directory */

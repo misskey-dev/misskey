@@ -448,8 +448,10 @@ if (appearNote.reactionAcceptance === 'likeOnly') {
 	});
 }
 
-function renote() {
-	pleaseLogin({ openOnRemote: pleaseLoginContext.value });
+async function renote() {
+	const isLoggedIn = await pleaseLogin({ openOnRemote: pleaseLoginContext.value });
+	if (!isLoggedIn) return;
+
 	showMovedDialog();
 
 	const { menu } = getRenoteMenu({ note: note, renoteButton });
@@ -459,8 +461,10 @@ function renote() {
 	subscribeManuallyToNoteCapture();
 }
 
-function reply(): void {
-	pleaseLogin({ openOnRemote: pleaseLoginContext.value });
+async function reply() {
+	const isLoggedIn = await pleaseLogin({ openOnRemote: pleaseLoginContext.value });
+	if (!isLoggedIn) return;
+
 	showMovedDialog();
 	os.post({
 		reply: appearNote,
@@ -470,8 +474,10 @@ function reply(): void {
 	});
 }
 
-function react(): void {
-	pleaseLogin({ openOnRemote: pleaseLoginContext.value });
+async function react() {
+	const isLoggedIn = await pleaseLogin({ openOnRemote: pleaseLoginContext.value });
+	if (!isLoggedIn) return;
+
 	showMovedDialog();
 	if (appearNote.reactionAcceptance === 'likeOnly') {
 		sound.playMisskeySfx('reaction');
@@ -569,9 +575,12 @@ async function clip(): Promise<void> {
 	os.popupMenu(await getNoteClipMenu({ note: note }), clipButton.value).then(focus);
 }
 
-function showRenoteMenu(): void {
+async function showRenoteMenu() {
 	if (!isMyRenote) return;
-	pleaseLogin({ openOnRemote: pleaseLoginContext.value });
+
+	const isLoggedIn = await pleaseLogin({ openOnRemote: pleaseLoginContext.value });
+	if (!isLoggedIn) return;
+
 	os.popupMenu([{
 		text: i18n.ts.unrenote,
 		icon: 'ti ti-trash',

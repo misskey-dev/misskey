@@ -14,9 +14,11 @@ async function main() {
 		});
 	}
 
-	const { loadConfig } = await import('../src/config.ts');
+	/** @type {import('../src/config.js')} */
+	const { loadConfig } = await import('../src-js/config.js');
 
-	const { genOpenapiSpec } = await import('../src/server/api/openapi/gen-spec.ts');
+	/** @type {import('../src/server/api/openapi/gen-spec.js')} */
+	const { genOpenapiSpec } = await import('../src-js/server/api/openapi/gen-spec.js');
 
 	const config = loadConfig();
 	const spec = genOpenapiSpec(config, true);
