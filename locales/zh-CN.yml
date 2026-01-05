@@ -2516,7 +2516,7 @@ _weekday:
 _widgets:
   profile: "个人资料"
   instanceInfo: "服务器信息"
-  memo: "便签"
+  memo: "便利贴"
   notifications: "通知"
   timeline: "时间线"
   calendar: "日历"
