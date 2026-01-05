@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { writeFileSync } from 'node:fs';
+import { writeFileSync, existsSync } from 'node:fs';
 import { execa } from 'execa';
 
 async function main() {
@@ -12,6 +12,10 @@ async function main() {
 			stdout: process.stdout,
 			stderr: process.stderr,
 		});
+	}
+
+	if (!existsSync('./built')) {
+		throw new Error('`built` directory does not exist.');
 	}
 
 	/** @type {import('../src/config.js')} */
