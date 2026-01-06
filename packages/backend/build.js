@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
-import { build } from 'esbuild';
+import * as esbuild from 'esbuild';
 import { swcPlugin } from 'esbuild-plugin-swc';
 
 const _filename = fileURLToPath(import.meta.url);
@@ -103,12 +103,16 @@ if (!args.includes('--no-clean')) {
 	fs.rmSync('./built', { recursive: true, force: true });
 }
 
+//await minifyJsFiles(join(_dirname, 'node_modules'));
+
+await minifyJsFiles(join(_dirname, '../../node_modules'));
+
 await buildSrc();
 
 async function buildSrc() {
 	console.log(`[${_package.name}] start building...`);
 
-	await build(options)
+	await esbuild.build(options)
 		.then(() => {
 			console.log(`[${_package.name}] build succeeded.`);
 		})
@@ -118,4 +122,59 @@ async function buildSrc() {
 		});
 
 	console.log(`[${_package.name}] finish building.`);
+}
+
+async function minifyJsFile(fullPath) {
+	if (!fullPath.includes('node_modules') || fullPath.includes('storybook') || fullPath.includes('tensorflow') || fullPath.includes('vite') || fullPath.includes('vue') || fullPath.includes('esbuild') || fullPath.includes('typescript') || fullPath.includes('css') || fullPath.includes('lint') || fullPath.includes('roll') || fullPath.includes('sass')) {
+		console.log(`Skipped: ${fullPath}`);
+		return;
+	}
+	try {
+		const data = fs.readFileSync(fullPath, 'utf-8');
+		if (data.includes('0 && (module.exports')) {
+			console.log(`Skipped: ${fullPath}`);
+			return;
+		}
+		//await esbuild.build({
+		//	entryPoints: [fullPath],
+		//	minifyWhitespace: true,
+		//	outdir: dirname(fullPath),
+		//	allowOverwrite: true,
+		//});
+		const result = await esbuild.transform(data, {
+			minifyWhitespace: true,
+			minifyIdentifiers: true,
+			minifySyntax: false, // nestjsが壊れる
+			treeShaking: false,
+		});
+		fs.writeFileSync(fullPath, result.code, 'utf-8');
+		console.log(`Minified: ${fullPath}`);
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	} catch (err) {
+		console.log(`Skipped (error): ${fullPath}`);
+	}
+}
+
+async function minifyJsFiles(dir) {
+	const entries = fs.readdirSync(dir, { withFileTypes: true });
+	for (const entry of entries) {
+		const fullPath = join(dir, entry.name);
+		if (entry.isDirectory()) {
+			await minifyJsFiles(fullPath);
+		} else if (entry.isFile() && entry.name.endsWith('.js')) {
+			await minifyJsFile(fullPath);
+		} else {
+			// resolve symbolic link
+			const stats = fs.lstatSync(fullPath);
+			if (stats.isSymbolicLink()) {
+				const realPath = fs.realpathSync(fullPath);
+				const realStats = fs.statSync(realPath);
+				if (realStats.isDirectory()) {
+					await minifyJsFiles(realPath);
+				} else if (realStats.isFile() && realPath.endsWith('.js')) {
+					await minifyJsFile(realPath);
+				}
+			}
+		}
+	}
 }
