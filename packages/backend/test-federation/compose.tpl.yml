@@ -35,6 +35,10 @@ services:
         target: /misskey/packages/backend/built
         read_only: true
       - type: bind
+        source: ../src-js
+        target: /misskey/packages/backend/src-js
+        read_only: true
+      - type: bind
         source: ../migration
         target: /misskey/packages/backend/migration
         read_only: true

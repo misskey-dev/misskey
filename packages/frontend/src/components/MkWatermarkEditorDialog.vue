@@ -16,50 +16,49 @@ SPDX-License-Identifier: AGPL-3.0-only
 >
 	<template #header><i class="ti ti-copyright"></i> {{ i18n.ts._watermarkEditor.title }}</template>
 
-	<div :class="$style.root">
-		<div :class="$style.container">
-			<div :class="[$style.preview, prefer.s.animation ? $style.animatedBg : null]">
-				<canvas ref="canvasEl" :class="$style.previewCanvas"></canvas>
-				<div :class="$style.previewContainer">
-					<div class="_acrylic" :class="$style.previewTitle">{{ i18n.ts.preview }}</div>
-					<div v-if="props.image == null" class="_acrylic" :class="$style.previewControls">
-						<button class="_button" :class="[$style.previewControlsButton, sampleImageType === '3_2' ? $style.active : null]" @click="sampleImageType = '3_2'"><i class="ti ti-crop-landscape"></i></button>
-						<button class="_button" :class="[$style.previewControlsButton, sampleImageType === '2_3' ? $style.active : null]" @click="sampleImageType = '2_3'"><i class="ti ti-crop-portrait"></i></button>
-						<button class="_button" :class="[$style.previewControlsButton]" @click="choiceImage"><i class="ti ti-upload"></i></button>
-					</div>
+	<MkPreviewWithControls>
+		<template #preview>
+			<canvas ref="canvasEl" :class="$style.previewCanvas"></canvas>
+			<div :class="$style.previewContainer">
+				<div class="_acrylic" :class="$style.previewTitle">{{ i18n.ts.preview }}</div>
+				<div v-if="props.image == null" class="_acrylic" :class="$style.previewControls">
+					<button class="_button" :class="[$style.previewControlsButton, sampleImageType === '3_2' ? $style.active : null]" @click="sampleImageType = '3_2'"><i class="ti ti-crop-landscape"></i></button>
+					<button class="_button" :class="[$style.previewControlsButton, sampleImageType === '2_3' ? $style.active : null]" @click="sampleImageType = '2_3'"><i class="ti ti-crop-portrait"></i></button>
+					<button class="_button" :class="[$style.previewControlsButton]" @click="choiceImage"><i class="ti ti-upload"></i></button>
 				</div>
 			</div>
-			<div :class="$style.controls">
-				<div class="_spacer _gaps">
-					<div class="_gaps_s">
-						<MkFolder v-for="(layer, i) in layers" :key="layer.id" :defaultOpen="false" :canPage="false">
-							<template #label>
-								<div v-if="layer.type === 'text'">{{ i18n.ts._watermarkEditor.text }}</div>
-								<div v-if="layer.type === 'image'">{{ i18n.ts._watermarkEditor.image }}</div>
-								<div v-if="layer.type === 'qr'">{{ i18n.ts._watermarkEditor.qr }}</div>
-								<div v-if="layer.type === 'stripe'">{{ i18n.ts._watermarkEditor.stripe }}</div>
-								<div v-if="layer.type === 'polkadot'">{{ i18n.ts._watermarkEditor.polkadot }}</div>
-								<div v-if="layer.type === 'checker'">{{ i18n.ts._watermarkEditor.checker }}</div>
-							</template>
-							<template #footer>
-								<div class="_buttons">
-									<MkButton iconOnly @click="removeLayer(layer)"><i class="ti ti-trash"></i></MkButton>
-									<MkButton iconOnly @click="swapUpLayer(layer)"><i class="ti ti-arrow-up"></i></MkButton>
-									<MkButton iconOnly @click="swapDownLayer(layer)"><i class="ti ti-arrow-down"></i></MkButton>
-								</div>
-							</template>
+		</template>
 
-							<XLayer
-								v-model:layer="layers[i]"
-							></XLayer>
-						</MkFolder>
+		<template #controls>
+			<div class="_spacer _gaps">
+				<div class="_gaps_s">
+					<MkFolder v-for="(layer, i) in layers" :key="layer.id" :defaultOpen="false" :canPage="false">
+						<template #label>
+							<div v-if="layer.type === 'text'">{{ i18n.ts._watermarkEditor.text }}</div>
+							<div v-if="layer.type === 'image'">{{ i18n.ts._watermarkEditor.image }}</div>
+							<div v-if="layer.type === 'qr'">{{ i18n.ts._watermarkEditor.qr }}</div>
+							<div v-if="layer.type === 'stripe'">{{ i18n.ts._watermarkEditor.stripe }}</div>
+							<div v-if="layer.type === 'polkadot'">{{ i18n.ts._watermarkEditor.polkadot }}</div>
+							<div v-if="layer.type === 'checker'">{{ i18n.ts._watermarkEditor.checker }}</div>
+						</template>
+						<template #footer>
+							<div class="_buttons">
+								<MkButton iconOnly @click="removeLayer(layer)"><i class="ti ti-trash"></i></MkButton>
+								<MkButton iconOnly @click="swapUpLayer(layer)"><i class="ti ti-arrow-up"></i></MkButton>
+								<MkButton iconOnly @click="swapDownLayer(layer)"><i class="ti ti-arrow-down"></i></MkButton>
+							</div>
+						</template>
 
-						<MkButton rounded primary style="margin: 0 auto;" @click="addLayer"><i class="ti ti-plus"></i></MkButton>
-					</div>
+						<XLayer
+							v-model:layer="layers[i]"
+						></XLayer>
+					</MkFolder>
+
+					<MkButton rounded primary style="margin: 0 auto;" @click="addLayer"><i class="ti ti-plus"></i></MkButton>
 				</div>
 			</div>
-		</div>
-	</div>
+		</template>
+	</MkPreviewWithControls>
 </MkModalWindow>
 </template>
 
@@ -69,6 +68,7 @@ import type { WatermarkLayers, WatermarkPreset } from '@/utility/watermark/Water
 import { WatermarkRenderer } from '@/utility/watermark/WatermarkRenderer.js';
 import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
+import MkPreviewWithControls from '@/components/MkPreviewWithControls.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
@@ -411,33 +411,6 @@ function removeLayer(layer: WatermarkPreset['layers'][number]) {
 </script>
 
 <style module>
-.root {
-	container-type: inline-size;
-	height: 100%;
-}
-
-.container {
-	height: 100%;
-	display: grid;
-	grid-template-columns: 1fr 400px;
-}
-
-.preview {
-	position: relative;
-	background-color: var(--MI_THEME-bg);
-	background-image: linear-gradient(135deg, transparent 30%, var(--MI_THEME-panel) 30%, var(--MI_THEME-panel) 50%, transparent 50%, transparent 80%, var(--MI_THEME-panel) 80%, var(--MI_THEME-panel) 100%);
-	background-size: 20px 20px;
-}
-
-.animatedBg {
-	animation: bg 1.2s linear infinite;
-}
-
-@keyframes bg {
-	0% { background-position: 0 0; }
-	100% { background-position: -20px -20px; }
-}
-
 .previewContainer {
 	display: flex;
 	flex-direction: column;
@@ -474,16 +447,6 @@ function removeLayer(layer: WatermarkPreset['layers'][number]) {
 	}
 }
 
-.previewSpinner {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	pointer-events: none;
-	user-select: none;
-	-webkit-user-drag: none;
-}
-
 .previewCanvas {
 	position: absolute;
 	top: 0;
@@ -493,16 +456,5 @@ function removeLayer(layer: WatermarkPreset['layers'][number]) {
 	padding: 20px;
 	box-sizing: border-box;
 	object-fit: contain;
-}
-
-.controls {
-	overflow-y: scroll;
-}
-
-@container (max-width: 800px) {
-	.container {
-		grid-template-columns: 1fr;
-		grid-template-rows: 1fr 1fr;
-	}
 }
 </style>

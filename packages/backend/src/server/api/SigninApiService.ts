@@ -15,6 +15,7 @@ import type {
 	UserSecurityKeysRepository,
 	UsersRepository,
 } from '@/models/_.js';
+import type Logger from '@/logger.js';
 import type { Config } from '@/config.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
 import type { MiLocalUser } from '@/models/User.js';
@@ -23,6 +24,7 @@ import { bindThis } from '@/decorators.js';
 import { WebAuthnService } from '@/core/WebAuthnService.js';
 import { UserAuthService } from '@/core/UserAuthService.js';
 import { CaptchaService } from '@/core/CaptchaService.js';
+import { LoggerService } from '@/core/LoggerService.js';
 import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
 import { RateLimiterService } from './RateLimiterService.js';
 import { SigninService } from './SigninService.js';
@@ -31,6 +33,8 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 
 @Injectable()
 export class SigninApiService {
+	private logger: Logger;
+
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
@@ -50,6 +54,7 @@ export class SigninApiService {
 		@Inject(DI.signinsRepository)
 		private signinsRepository: SigninsRepository,
 
+		private loggerService: LoggerService,
 		private idService: IdService,
 		private rateLimiterService: RateLimiterService,
 		private signinService: SigninService,
@@ -57,6 +62,7 @@ export class SigninApiService {
 		private webAuthnService: WebAuthnService,
 		private captchaService: CaptchaService,
 	) {
+		this.logger = this.loggerService.getLogger('Signin');
 	}
 
 	@bindThis
@@ -90,16 +96,21 @@ export class SigninApiService {
 		}
 
 		// not more than 1 attempt per second and not more than 10 attempts per hour
-		const rateLimit = await this.rateLimiterService.limit({ key: 'signin', duration: 60 * 60 * 1000, max: 10, minInterval: 1000 }, getIpHash(request.ip));
-		if (rateLimit != null) {
-			reply.code(429);
-			return {
-				error: {
-					message: 'Too many failed attempts to sign in. Try again later.',
-					code: 'TOO_MANY_AUTHENTICATION_FAILURES',
-					id: '22d05606-fbcf-421a-a2db-b32610dcfd1b',
-				},
-			};
+		if (this.config.enableIpRateLimit) {
+			if (process.env.NODE_ENV === 'production' && (request.ip === '::1' || request.ip === '127.0.0.1')) {
+				this.logger.warn('Recieved signin request from localhost IP address for rate limiting in production environment. This is likely due to an improper trustProxy setting in the config file.');
+			}
+			const rateLimit = await this.rateLimiterService.limit({ key: 'signin', duration: 60 * 60 * 1000, max: 10, minInterval: 1000 }, getIpHash(request.ip));
+			if (rateLimit != null) {
+				reply.code(429);
+				return {
+					error: {
+						message: 'Too many failed attempts to sign in. Try again later.',
+						code: 'TOO_MANY_AUTHENTICATION_FAILURES',
+						id: '22d05606-fbcf-421a-a2db-b32610dcfd1b',
+					},
+				};
+			}
 		}
 
 		if (typeof username !== 'string') {

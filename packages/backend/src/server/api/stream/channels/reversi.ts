@@ -3,22 +3,24 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
 import { bindThis } from '@/decorators.js';
 import type { JsonObject } from '@/misc/json-value.js';
-import Channel, { type MiChannelService } from '../channel.js';
+import Channel, { type ChannelRequest } from '../channel.js';
+import { REQUEST } from '@nestjs/core';
 
-class ReversiChannel extends Channel {
+@Injectable({ scope: Scope.TRANSIENT })
+export class ReversiChannel extends Channel {
 	public readonly chName = 'reversi';
 	public static shouldShare = true;
 	public static requireCredential = true as const;
 	public static kind = 'read:account';
 
 	constructor(
-		id: string,
-		connection: Channel['connection'],
+		@Inject(REQUEST)
+		request: ChannelRequest,
 	) {
-		super(id, connection);
+		super(request);
 	}
 
 	@bindThis
@@ -30,24 +32,5 @@ class ReversiChannel extends Channel {
 	public dispose() {
 		// Unsubscribe events
 		this.subscriber.off(`reversiStream:${this.user!.id}`, this.send);
-	}
-}
-
-@Injectable()
-export class ReversiChannelService implements MiChannelService<true> {
-	public readonly shouldShare = ReversiChannel.shouldShare;
-	public readonly requireCredential = ReversiChannel.requireCredential;
-	public readonly kind = ReversiChannel.kind;
-
-	constructor(
-	) {
-	}
-
-	@bindThis
-	public create(id: string, connection: Channel['connection']): ReversiChannel {
-		return new ReversiChannel(
-			id,
-			connection,
-		);
 	}
 }

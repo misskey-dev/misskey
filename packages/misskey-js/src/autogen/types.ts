@@ -3717,6 +3717,15 @@ export type paths = {
          */
         post: operations['users___gallery___posts'];
     };
+    '/users/get-following-birthday-users': {
+        /**
+         * users/get-following-birthday-users
+         * @description Find users who have a birthday on the specified range.
+         *
+         *     **Credential required**: *Yes* / **Permission**: *read:account*
+         */
+        post: operations['users___get-following-birthday-users'];
+    };
     '/users/get-frequently-replied-users': {
         /**
          * users/get-frequently-replied-users
@@ -34847,6 +34856,7 @@ export interface operations {
                     untilDate?: number;
                     /** @default 10 */
                     limit?: number;
+                    /** @description @deprecated use get-following-birthday-users instead. */
                     birthday?: string | null;
                 };
             };
@@ -34933,6 +34943,92 @@ export interface operations {
                 };
                 content: {
                     'application/json': components['schemas']['GalleryPost'][];
+                };
+            };
+            /** @description Client error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Authentication error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Forbidden error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description I'm Ai */
+            418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
+    'users___get-following-birthday-users': {
+        requestBody: {
+            content: {
+                'application/json': {
+                    /** @default 10 */
+                    limit?: number;
+                    /** @default 0 */
+                    offset?: number;
+                    birthday: {
+                        month: number;
+                        day: number;
+                    } | {
+                        begin: {
+                            month: number;
+                            day: number;
+                        };
+                        end: {
+                            month: number;
+                            day: number;
+                        };
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description OK (with results) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': {
+                        /** Format: misskey:id */
+                        id: string;
+                        birthday: string;
+                        user: components['schemas']['UserLite'];
+                    }[];
                 };
             };
             /** @description Client error */
