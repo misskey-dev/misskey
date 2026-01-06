@@ -3,8 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-const { execSync } = require('child_process');
-const fs = require('fs');
+import { execSync } from 'note:child_process';
+import * as fs from 'note:fs';
+
+const __dirname = import.meta.dirname;
 
 (async () => {
 	fs.rmSync(__dirname + '/../packages/backend/built', { recursive: true, force: true });

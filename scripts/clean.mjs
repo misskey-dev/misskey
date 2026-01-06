@@ -3,7 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-const fs = require('fs');
+import * as fs from 'note:fs';
+
+const __dirname = import.meta.dirname;
 
 (async () => {
 	fs.rmSync(__dirname + '/../packages/backend/built', { recursive: true, force: true });
