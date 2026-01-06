@@ -19,7 +19,7 @@ async function execBuildAssets() {
 function execStart() {
 	// pnpm run start を呼び出したいが、windowsだとプロセスグループ単位でのkillが出来ずゾンビプロセス化するので
 	// 上記と同等の動きをするコマンドで子・孫プロセスを作らないようにしたい
-	backendProcess = execaNode('./built/boot/entry.js', [], {
+	backendProcess = execaNode('./built/entry.js', [], {
 		stdout: process.stdout,
 		stderr: process.stderr,
 		env: {

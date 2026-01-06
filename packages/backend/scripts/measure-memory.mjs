@@ -25,7 +25,7 @@ async function measureMemory() {
 	const startTime = Date.now();
 
 	// Start the Misskey backend server using fork to enable IPC
-	const serverProcess = fork(join(__dirname, '../built/boot/entry.js'), [], {
+	const serverProcess = fork(join(__dirname, '../built/entry.js'), [], {
 		cwd: join(__dirname, '..'),
 		env: {
 			...process.env,
