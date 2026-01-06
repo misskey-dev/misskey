@@ -39,7 +39,7 @@
 		"migrateandstart": "pnpm migrate && pnpm start",
 		"watch": "pnpm dev",
 		"dev": "node scripts/dev.mjs",
-		"lint": "pnpm -r lint",
+		"lint": "pnpm --no-bail -r lint",
 		"cy:open": "pnpm cypress open --config-file=cypress.config.ts",
 		"cy:run": "pnpm cypress run",
 		"e2e": "pnpm start-server-and-test start:test http://localhost:61812 cy:run",
