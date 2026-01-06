@@ -3,11 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { createWriteStream } from 'node:fs';
+import { createWriteStream, promises as fsp } from 'node:fs';
 import { mkdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import glob from 'fast-glob';
 import walk from 'ignore-walk';
 import { Pack } from 'tar/pack';
 import meta from '../package.json' with { type: "json" };
@@ -25,7 +24,7 @@ export default async function build() {
 	const pack = new Pack({ cwd, gzip: true });
 	const patterns = await walk({ path: cwd, ignoreFiles: ['.gitignore'] });
 
-	for await (const entry of glob.stream(patterns, { cwd, ignore, dot: true })) {
+	for await (const entry of fsp.glob(patterns, { cwd, ignore, dot: true })) {
 		pack.add(entry);
 	}
 

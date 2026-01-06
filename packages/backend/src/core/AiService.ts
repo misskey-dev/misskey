@@ -7,7 +7,6 @@ import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import { Injectable } from '@nestjs/common';
-import si from 'systeminformation';
 import { Mutex } from 'async-mutex';
 import fetch from 'node-fetch';
 import { bindThis } from '@/decorators.js';
@@ -84,6 +83,7 @@ export class AiService {
 
 	@bindThis
 	private async getCpuFlags(): Promise<string[]> {
+		const si = await import('systeminformation');
 		const str = await si.cpuFlags();
 		return str.split(/\s+/);
 	}

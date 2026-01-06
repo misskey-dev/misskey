@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="[$style.root, acrylic ? $style.acrylic : null]">
 	<div :class="$style.body">
-		<div :class="$style.left">
+		<div>
 			<button v-click-anime :class="[$style.item, $style.instance]" class="_button" @click="openInstanceMenu">
 				<img :class="$style.instanceIcon" :src="instance.iconUrl ?? '/favicon.ico'" draggable="false"/>
 			</button>
@@ -67,7 +67,7 @@ const props = defineProps<{
 
 const settingsWindowed = ref(window.innerWidth > WINDOW_THRESHOLD);
 const menu = ref(prefer.s.menu);
-// const menuDisplay = computed(store.makeGetterSetter('menuDisplay'));
+// const menuDisplay = store.model('menuDisplay');
 const otherNavItemIndicated = computed<boolean>(() => {
 	for (const def in navbarItemDef) {
 		if (menu.value.includes(def)) continue;

@@ -77,6 +77,7 @@ import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { $i, iAmModerator } from '@/i.js';
 import { prefer } from '@/preferences.js';
+import { shouldHideFileByDefault, canRevealFile } from '@/utility/sensitive-file.js';
 
 const props = withDefaults(defineProps<{
 	image: Misskey.entities.DriveFile;
@@ -106,12 +107,8 @@ async function reveal(ev: MouseEvent) {
 
 	if (hide.value) {
 		ev.stopPropagation();
-		if (props.image.isSensitive && prefer.s.confirmWhenRevealingSensitiveMedia) {
-			const { canceled } = await os.confirm({
-				type: 'question',
-				text: i18n.ts.sensitiveMediaRevealConfirm,
-			});
-			if (canceled) return;
+		if (!(await canRevealFile(props.image))) {
+			return;
 		}
 
 		hide.value = false;
@@ -119,8 +116,8 @@ async function reveal(ev: MouseEvent) {
 }
 
 // Plugin:register_note_view_interruptor を使って書き換えられる可能性があるためwatchする
-watch(() => props.image, () => {
-	hide.value = (prefer.s.nsfw === 'force' || prefer.s.dataSaver.media) ? true : (props.image.isSensitive && prefer.s.nsfw !== 'ignore');
+watch(() => props.image, (newImage) => {
+	hide.value = shouldHideFileByDefault(newImage);
 }, {
 	deep: true,
 	immediate: true,

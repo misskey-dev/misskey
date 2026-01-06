@@ -107,7 +107,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<SearchMarker :keywords="['follow', 'message']">
 			<MkInput v-model="profile.followedMessage" :max="200" manualSave :mfmPreview="false">
-				<template #label><SearchLabel>{{ i18n.ts._profile.followedMessage }}</SearchLabel><span class="_beta">{{ i18n.ts.beta }}</span></template>
+				<template #label><SearchLabel>{{ i18n.ts._profile.followedMessage }}</SearchLabel></template>
 				<template #caption>
 					<div><SearchText>{{ i18n.ts._profile.followedMessageDescription }}</SearchText></div>
 					<div>{{ i18n.ts._profile.followedMessageDescriptionForLockedAccount }}</div>
@@ -190,7 +190,7 @@ const $i = ensureSignin();
 
 const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
-const reactionAcceptance = computed(store.makeGetterSetter('reactionAcceptance'));
+const reactionAcceptance = store.model('reactionAcceptance');
 
 function assertVaildLang(lang: string | null): lang is keyof typeof langmap {
 	return lang != null && lang in langmap;

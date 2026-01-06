@@ -151,9 +151,11 @@ function shareWithNote() {
 	});
 }
 
-function like() {
+async function like() {
 	if (!flash.value) return;
-	pleaseLogin();
+
+	const isLoggedIn = await pleaseLogin();
+	if (!isLoggedIn) return;
 
 	os.apiWithDialog('flash/like', {
 		flashId: flash.value.id,
@@ -165,7 +167,9 @@ function like() {
 
 async function unlike() {
 	if (!flash.value) return;
-	pleaseLogin();
+
+	const isLoggedIn = await pleaseLogin();
+	if (!isLoggedIn) return;
 
 	const confirm = await os.confirm({
 		type: 'warning',
@@ -193,7 +197,7 @@ function start() {
 }
 
 function getIsLegacy(version: string | null): boolean {
-	if (version == null) return false;
+	if (version == null) return true;
 	try {
 		return compareVersions(version, '1.0.0') < 0;
 	} catch {
@@ -206,7 +210,7 @@ async function run() {
 	if (!flash.value) return;
 
 	const version = utils.getLangVersion(flash.value.script);
-	const isLegacy = version != null && getIsLegacy(version);
+	const isLegacy = getIsLegacy(version);
 
 	const { Interpreter, Parser, values } = isLegacy ? (await import('@syuilo/aiscript-0-19-0') as any) : await import('@syuilo/aiscript');
 
