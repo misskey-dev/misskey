@@ -9,6 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:modelValue="props.modelValue"
 		:class="$style.files"
 		direction="horizontal"
+		withGaps
 		@update:modelValue="v => emit('update:modelValue', v)"
 	>
 		<template #default="{ item }">
@@ -226,7 +227,6 @@ function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent | Keyboar
 	position: relative;
 	width: 64px;
 	height: 64px;
-	margin-right: 4px;
 	border-radius: 4px;
 	overflow: hidden;
 	cursor: move;
