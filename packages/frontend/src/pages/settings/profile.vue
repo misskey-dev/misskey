@@ -75,30 +75,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div :class="$style.metadataRoot" class="_gaps_s">
 						<MkInfo>{{ i18n.ts._profile.verifiedLinkDescription }}</MkInfo>
 
-						<Sortable
+						<MkDraggable
 							v-model="fields"
-							class="_gaps_s"
-							itemKey="id"
-							:animation="150"
-							:handle="'.' + $style.dragItemHandle"
-							@start="e => e.item.classList.add('active')"
-							@end="e => e.item.classList.remove('active')"
+							direction="vertical"
+							withGaps
+							manualDragStart
 						>
-							<template #item="{element, index}">
+							<template #default="{ item, dragStart }">
 								<div v-panel :class="$style.fieldDragItem">
-									<button v-if="!fieldEditMode" class="_button" :class="$style.dragItemHandle" tabindex="-1"><i class="ti ti-menu"></i></button>
-									<button v-if="fieldEditMode" :disabled="fields.length <= 1" class="_button" :class="$style.dragItemRemove" @click="deleteField(index)"><i class="ti ti-x"></i></button>
+									<button v-if="!fieldEditMode" class="_button" :class="$style.dragItemHandle" tabindex="-1" :draggable="true" @dragstart.stop="dragStart"><i class="ti ti-menu"></i></button>
+									<button v-if="fieldEditMode" :disabled="fields.length <= 1" class="_button" :class="$style.dragItemRemove" @click="deleteField(item.id)"><i class="ti ti-x"></i></button>
 									<div :class="$style.dragItemForm">
 										<FormSplit :minWidth="200">
-											<MkInput v-model="element.name" small :placeholder="i18n.ts._profile.metadataLabel">
+											<MkInput v-model="item.name" small :placeholder="i18n.ts._profile.metadataLabel">
 											</MkInput>
-											<MkInput v-model="element.value" small :placeholder="i18n.ts._profile.metadataContent">
+											<MkInput v-model="item.value" small :placeholder="i18n.ts._profile.metadataContent">
 											</MkInput>
 										</FormSplit>
 									</div>
 								</div>
 							</template>
-						</Sortable>
+						</MkDraggable>
 					</div>
 				</MkFolder>
 				<template #caption>{{ i18n.ts._profile.metadataDescription }}</template>
@@ -165,7 +162,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref, watch, defineAsyncComponent } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -174,6 +171,7 @@ import FormSplit from '@/components/form/split.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import FormSlot from '@/components/form/slot.vue';
 import FormLink from '@/components/form/link.vue';
+import MkDraggable from '@/components/MkDraggable.vue';
 import { chooseDriveFile } from '@/utility/drive.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
@@ -187,8 +185,6 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import { genId } from '@/utility/id.js';
 
 const $i = ensureSignin();
-
-const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
 const reactionAcceptance = store.model('reactionAcceptance');
 
@@ -228,8 +224,8 @@ while (fields.value.length < 4) {
 	addField();
 }
 
-function deleteField(index: number) {
-	fields.value.splice(index, 1);
+function deleteField(itemId: string) {
+	fields.value = fields.value.filter(f => f.id !== itemId);
 }
 
 function saveFields() {

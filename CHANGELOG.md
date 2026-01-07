@@ -14,6 +14,7 @@
 - Enhance: ウィジェットの表示設定をプレビューを見ながら行えるように
 - Enhance: ウィジェットの設定項目のラベルの多言語対応
 - Enhance: アカウント管理ページで、全てのアカウントから一括でログアウトできるように
+- Enhance: パフォーマンスの向上
 - Fix: ドライブクリーナーでファイルを削除しても画面に反映されない問題を修正 #16061
 - Fix: 非ログイン時にログインを求めるダイアログが表示された後にダイアログのぼかしが解除されず操作不能になることがある問題を修正
 - Fix: ドライブのソートが「登録日（昇順）」の場合に正しく動作しない問題を修正
@@ -26,7 +27,7 @@
 - Enhance: OAuthのクライアント情報取得（Client Information Discovery）において、IndieWeb Living Standard 11 July 2024で定義されているJSONドキュメント形式に対応しました
   - JSONによるClient Information Discoveryを行うには、レスポンスの`Content-Type`ヘッダーが`application/json`である必要があります
   - 従来の実装（12 February 2022版・HTML Microformat形式）も引き続きサポートされます
-
+- Enhance: メモリ使用量を削減
 
 ## 2025.12.2
 
