@@ -13,13 +13,6 @@
 			"types": "./js-built/*"
 		}
 	},
-	"engines": {
-		"runtime": {
-			"name": "node",
-			"version": "^22.15.0",
-			"onFail": "download"
-		}
-	},
 	"scripts": {
 		"build": "node ./build.js",
 		"watch": "nodemon -w package.json -e json --exec \"node ./build.js --watch\"",

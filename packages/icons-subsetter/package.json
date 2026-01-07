@@ -4,13 +4,6 @@
 	"private": true,
 	"description": "Subset tabler-icons webfont",
 	"type": "module",
-	"engines": {
-		"runtime": {
-			"name": "node",
-			"version": "^22.15.0",
-			"onFail": "download"
-		}
-	},
 	"scripts": {
 		"build": "tsx src/generator.ts",
 		"eslint": "eslint src/**/*.ts",

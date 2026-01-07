@@ -3,13 +3,6 @@
 	"version": "0.0.0",
 	"description": "Misskey TypeGenerator",
 	"type": "module",
-	"engines": {
-		"runtime": {
-			"name": "node",
-			"version": "^22.15.0",
-			"onFail": "download"
-		}
-	},
 	"scripts": {
 		"generate": "tsx src/generator.ts && eslint ./built/**/*.ts --fix"
 	},
