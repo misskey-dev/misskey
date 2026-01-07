@@ -10,9 +10,9 @@
 	"engines": {
     "runtime": {
       "name": "node",
-      "version": "^22.15.0 || ^24.10.0",
+      "version": "^22.15.0",
       "onFail": "download"
-    },
+    }
 	},
 	"workspaces": [
 		"packages/misskey-js",
