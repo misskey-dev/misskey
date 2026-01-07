@@ -20,8 +20,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				@keydown.space.enter="showFileMenu(item, $event)"
 				@contextmenu.prevent="showFileMenu(item, $event)"
 			>
-				<MkDriveFileThumbnail :data-id="item.id" :class="$style.thumbnail" :file="item" fit="cover"/>
-				<div v-if="item.isSensitive" :class="$style.sensitive">
+				<!-- pointer-eventsをnoneにしておかないとiOSなどでドラッグしたときに画像の方に判定が持ってかれる -->
+				<MkDriveFileThumbnail style="pointer-events: none;" :data-id="item.id" :class="$style.thumbnail" :file="item" fit="cover"/>
+				<div v-if="item.isSensitive" :class="$style.sensitive" style="pointer-events: none;">
 					<i class="ti ti-eye-exclamation" style="margin: auto;"></i>
 				</div>
 			</div>
