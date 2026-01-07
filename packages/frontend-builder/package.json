@@ -1,6 +1,13 @@
 {
 	"name": "frontend-builder",
 	"type": "module",
+	"engines": {
+		"runtime": {
+			"name": "node",
+			"version": "^22.15.0",
+			"onFail": "download"
+		}
+	},
 	"scripts": {
 		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
 		"typecheck": "tsgo --noEmit",

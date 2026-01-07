@@ -1,4 +1,3 @@
-useNodeVersion: 24.12.0
 packages:
   - packages/backend
   - packages/frontend-shared

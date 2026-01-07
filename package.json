@@ -7,6 +7,13 @@
 		"url": "https://github.com/misskey-dev/misskey.git"
 	},
 	"packageManager": "pnpm@10.26.2",
+	"engines": {
+		"runtime": {
+			"name": "node",
+			"version": "^22.15.0",
+			"onFail": "download"
+		}
+	},
 	"workspaces": [
 		"packages/misskey-js",
 		"packages/i18n",
