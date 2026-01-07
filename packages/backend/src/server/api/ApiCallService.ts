@@ -313,11 +313,14 @@ export class ApiCallService implements OnApplicationShutdown {
 		}
 
 		if (ep.meta.limit) {
-			// koa will automatically load the `X-Forwarded-For` header if `proxy: true` is configured in the app.
-			let limitActor: string;
+			let limitActor: string | null = null;
 			if (user) {
 				limitActor = user.id;
-			} else {
+			} else if (this.config.enableIpRateLimit) {
+				if (process.env.NODE_ENV === 'production' && (request.ip === '::1' || request.ip === '127.0.0.1')) {
+					this.logger.warn('Recieved API request from localhost IP address for rate limiting in production environment. This is likely due to an improper trustProxy setting in the config file.');
+				}
+
 				limitActor = getIpHash(request.ip);
 			}
 
@@ -330,7 +333,7 @@ export class ApiCallService implements OnApplicationShutdown {
 			// TODO: 毎リクエスト計算するのもあれだしキャッシュしたい
 			const factor = user ? (await this.roleService.getUserPolicies(user.id)).rateLimitFactor : 1;
 
-			if (factor > 0) {
+			if (limitActor != null && factor > 0) {
 				// Rate limit
 				const rateLimit = await this.rateLimiterService.limit(limit as IEndpointMeta['limit'] & { key: NonNullable<string> }, limitActor, factor);
 				if (rateLimit != null) {

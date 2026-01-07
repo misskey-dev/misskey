@@ -4,8 +4,8 @@
  */
 
 import Redis from 'ioredis';
-import { loadConfig } from '../built/config.js';
-import { createPostgresDataSource } from '../built/postgres.js';
+import { loadConfig } from '../src-js/config.js';
+import { createPostgresDataSource } from '../src-js/postgres.js';
 
 const config = loadConfig();
 
@@ -28,10 +28,8 @@ async function connectToRedis(redisOptions) {
 		try {
 			await redis.connect();
 			resolve();
-
 		} catch (e) {
 			reject(e);
-
 		} finally {
 			redis.disconnect(false);
 		}
@@ -50,7 +48,7 @@ const promises = Array
 	]))
 	.map(connectToRedis)
 	.concat([
-		connectToPostgres()
+		connectToPostgres(),
 	]);
 
 await Promise.all(promises);

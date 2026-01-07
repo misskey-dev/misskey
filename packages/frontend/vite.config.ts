@@ -167,7 +167,7 @@ export function getConfig(): UserConfig {
 			_ENV_: JSON.stringify(process.env.NODE_ENV),
 			_DEV_: process.env.NODE_ENV !== 'production',
 			_PERF_PREFIX_: JSON.stringify('Misskey:'),
-			__VUE_OPTIONS_API__: true,
+			__VUE_OPTIONS_API__: false,
 			__VUE_PROD_DEVTOOLS__: false,
 		},
 
