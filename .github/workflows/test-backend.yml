@@ -64,7 +64,7 @@ jobs:
       uses: pnpm/action-setup@1e1c8eafbd745f64b1ef30a7d7ed7965034c486c
       with:
         standalone: true
-        cache: true
+        #cache: true
     - name: Get current date
       id: current-date
       run: echo "today=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
@@ -141,7 +141,7 @@ jobs:
         uses: pnpm/action-setup@1e1c8eafbd745f64b1ef30a7d7ed7965034c486c
         with:
           standalone: true
-          cache: true
+          #cache: true
       - run: pnpm i --frozen-lockfile
       - name: Check pnpm-lock.yaml
         run: git diff --exit-code pnpm-lock.yaml
@@ -183,7 +183,7 @@ jobs:
         uses: pnpm/action-setup@1e1c8eafbd745f64b1ef30a7d7ed7965034c486c
         with:
           standalone: true
-          cache: true
+          #cache: true
       - name: Get current date
         id: current-date
         run: echo "today=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
