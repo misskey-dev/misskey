@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:enterFromClass="$style.transition_items_enterFrom"
 	:leaveToClass="$style.transition_items_leaveTo"
 	:moveClass="$style.transition_items_move"
-	:class="[$style.items, { [$style.dragging]: dragging, [$style.horizontal]: direction === 'horizontal', [$style.vertical]: direction === 'vertical' }]"
+	:class="[$style.items, { [$style.dragging]: dragging, [$style.horizontal]: direction === 'horizontal', [$style.vertical]: direction === 'vertical', [$style.withGaps]: withGaps }]"
 >
 	<slot name="header"></slot>
 	<div
@@ -51,9 +51,11 @@ const props = withDefaults(defineProps<{
 	direction: 'horizontal' | 'vertical';
 	group?: string | null;
 	manualDragStart?: boolean;
+	withGaps?: boolean;
 }>(), {
 	group: null,
 	manualDragStart: false,
+	withGaps: false,
 });
 
 const emit = defineEmits<{
@@ -176,6 +178,16 @@ function onBackwardDrop(ev: DragEvent, k: string) {
 	width: 100%;
 }
 
+.items.vertical.withGaps .item {
+	padding-top: calc(var(--MI-margin) / 2);
+	padding-bottom: calc(var(--MI-margin) / 2);
+}
+
+.items.horizontal.withGaps .item {
+	padding-left: calc(var(--MI-margin) / 2);
+	padding-right: calc(var(--MI-margin) / 2);
+}
+
 .forwardArea, .backwardArea {
 	position: absolute;
 	z-index: 1;
@@ -223,6 +235,7 @@ function onBackwardDrop(ev: DragEvent, k: string) {
 .dropReady::before {
 	content: '';
 	position: absolute;
+	z-index: 99999;
 	background: var(--MI_THEME-accent);
 	border-radius: 999px;
 	pointer-events: none;

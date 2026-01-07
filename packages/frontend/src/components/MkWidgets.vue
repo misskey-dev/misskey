@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.root">
+<div :class="$style.root" class="_gaps_s">
 	<template v-if="edit">
 		<header :class="$style.editHeader">
 			<MkSelect v-model="widgetAdderSelected" :items="widgetAdderSelectedDef" style="margin-bottom: var(--MI-margin)" data-cy-widget-select>
@@ -16,15 +16,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkDraggable
 			:modelValue="props.widgets.map(w => w.id)"
 			direction="vertical"
+			withGaps
 			group="MkWidgets"
-			:class="$style.editEditing"
 			@update:modelValue="v => emit('updateWidgets', v.map(id => props.widgets.find(w => w.id === id)!))"
 		>
 			<template #default="{ k }">
 				<div :class="[$style.widget, $style.customizeContainer]" data-cy-customize-container>
 					<button :class="$style.customizeContainerConfig" class="_button" @click.prevent.stop="configWidget(k)"><i class="ti ti-settings"></i></button>
 					<button :class="$style.customizeContainerRemove" data-cy-customize-container-remove class="_button" @click.prevent.stop="removeWidget(props.widgets.find(x => x.id === k)!)"><i class="ti ti-x"></i></button>
-					<component :is="`widget-${props.widgets.find(x => x.id === k)!.name}`" :ref="el => widgetRefs[k] = el" class="widget" :class="$style.customizeContainerHandleWidget" :widget="props.widgets.find(x => x.id === k)!" @updateProps="updateWidget(k, $event)"/>
+					<component :is="`widget-${props.widgets.find(x => x.id === k)!.name}`" :ref="el => widgetRefs[k] = el" :class="$style.customizeContainerHandleWidget" :widget="props.widgets.find(x => x.id === k)!" @updateProps="updateWidget(k, $event)"/>
 				</div>
 			</template>
 		</MkDraggable>
@@ -137,11 +137,6 @@ function onContextmenu(widget: Widget, ev: MouseEvent) {
 
 .widget {
 	contain: content;
-	margin: var(--MI-margin) 0;
-
-	&:first-of-type {
-		margin-top: 0;
-	}
 }
 
 .edit {
@@ -152,10 +147,6 @@ function onContextmenu(widget: Widget, ev: MouseEvent) {
 			width: 100%;
 			padding: 4px;
 		}
-	}
-
-	&Editing {
-		min-height: 100px;
 	}
 }
 
