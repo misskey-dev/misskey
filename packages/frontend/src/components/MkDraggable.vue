@@ -92,7 +92,7 @@ const group = props.group ?? instanceId;
 function onDragstart(ev: DragEvent, item: T) {
 	if (ev.dataTransfer == null) return;
 	ev.dataTransfer.effectAllowed = 'move';
-	setDragData(ev, 'MkDraggable', { item, instanceId });
+	setDragData(ev, 'MkDraggable', { item, instanceId, group });
 
 	const target = ev.target as HTMLElement;
 	target.addEventListener('dragend', (ev) => {
@@ -126,7 +126,7 @@ function onDragleave(ev: DragEvent, item: T) {
 function onDrop(ev: DragEvent, item: T, backward: boolean) {
 	const dragged = getDragData(ev, 'MkDraggable');
 	dropReadyArea.value = [null, null];
-	if (dragged == null || dragged.item.id === item.id) return;
+	if (dragged == null || dragged.group !== group || dragged.item.id === item.id) return;
 	dropCallback?.(instanceId);
 
 	const fromIndex = props.modelValue.findIndex(x => x.id === dragged.item.id);
