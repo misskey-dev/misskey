@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { execSync } from 'note:child_process';
-import * as fs from 'note:fs';
+import { execSync } from 'node:child_process';
+import * as fs from 'node:fs';
 
 const __dirname = import.meta.dirname;
 
