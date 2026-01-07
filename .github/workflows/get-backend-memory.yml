@@ -62,7 +62,7 @@ jobs:
     - name: Measure memory usage
       run: |
         # Start the server and measure memory usage
-        node packages/backend/scripts/measure-memory.mjs > ${{ matrix.memory-json-name }}
+        pnpm node packages/backend/scripts/measure-memory.mjs > ${{ matrix.memory-json-name }}
     - name: Upload Artifact
       uses: actions/upload-artifact@v6
       with:

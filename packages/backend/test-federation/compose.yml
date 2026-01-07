@@ -144,7 +144,7 @@ services:
         npm install -g pnpm
         pnpm -F backend i --frozen-lockfile
         pnpm exec tsgo -p ./packages/backend/test-federation
-        node ./packages/backend/test-federation/built/daemon.js
+        pnpm node ./packages/backend/test-federation/built/daemon.js
       "
 
   redis.test:
