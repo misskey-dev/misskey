@@ -9,7 +9,7 @@ type DragDataMap = {
 	driveFiles: Misskey.entities.DriveFile[];
 	driveFolders: Misskey.entities.DriveFolder[];
 	deckColumn: string;
-	MkDraggable: { id: string };
+	MkDraggable: { item: { id: string }; instanceId: string };
 };
 
 // NOTE: dataTransfer の format は大文字小文字区別されないっぽいので toLowerCase が必要
