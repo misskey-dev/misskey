@@ -41,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="_gaps">
 					<MkButton primary rounded @click="addPinnedNote()"><i class="ti ti-plus"></i></MkButton>
 
-					<Sortable
+					<MkDraggable
 						v-model="pinnedNotes"
 						itemKey="id"
 						:handle="'.' + $style.pinnedNoteHandle"
@@ -54,7 +54,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<button class="_button" :class="$style.pinnedNoteRemove" @click="removePinnedNote(index)"><i class="ti ti-x"></i></button>
 							</div>
 						</template>
-					</Sortable>
+					</MkDraggable>
 				</div>
 			</MkFolder>
 
@@ -68,7 +68,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch, defineAsyncComponent } from 'vue';
+import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -81,9 +81,8 @@ import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
+import MkDraggable from '@/components/MkDraggable.vue';
 import { useRouter } from '@/router.js';
-
-const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
 const router = useRouter();
 

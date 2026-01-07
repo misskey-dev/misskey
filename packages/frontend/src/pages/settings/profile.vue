@@ -75,7 +75,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div :class="$style.metadataRoot" class="_gaps_s">
 						<MkInfo>{{ i18n.ts._profile.verifiedLinkDescription }}</MkInfo>
 
-						<Sortable
+						<MkDraggable
 							v-model="fields"
 							class="_gaps_s"
 							itemKey="id"
@@ -98,7 +98,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 									</div>
 								</div>
 							</template>
-						</Sortable>
+						</MkDraggable>
 					</div>
 				</MkFolder>
 				<template #caption>{{ i18n.ts._profile.metadataDescription }}</template>
@@ -165,7 +165,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref, watch, defineAsyncComponent } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -174,6 +174,7 @@ import FormSplit from '@/components/form/split.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import FormSlot from '@/components/form/slot.vue';
 import FormLink from '@/components/form/link.vue';
+import MkDraggable from '@/components/MkDraggable.vue';
 import { chooseDriveFile } from '@/utility/drive.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
@@ -187,8 +188,6 @@ import MkTextarea from '@/components/MkTextarea.vue';
 import { genId } from '@/utility/id.js';
 
 const $i = ensureSignin();
-
-const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
 const reactionAcceptance = store.model('reactionAcceptance');
 

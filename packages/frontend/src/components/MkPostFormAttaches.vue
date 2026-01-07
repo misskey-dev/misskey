@@ -5,23 +5,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div v-show="props.modelValue.length != 0" :class="$style.root">
-	<Sortable :modelValue="props.modelValue" :class="$style.files" itemKey="id" :animation="150" :delay="100" :delayOnTouchOnly="true" @update:modelValue="v => emit('update:modelValue', v)">
-		<template #item="{ element }">
+	<MkDraggable
+		:modelValue="props.modelValue.map(f => f.id)"
+		:class="$style.files"
+		direction="horizontal"
+		@update:modelValue="v => emit('update:modelValue', v.map(id => props.modelValue.find(f => f.id === id)!))"
+	>
+		<template #default="{ k }">
 			<div
 				:class="$style.file"
 				role="button"
 				tabindex="0"
-				@click="showFileMenu(element, $event)"
-				@keydown.space.enter="showFileMenu(element, $event)"
-				@contextmenu.prevent="showFileMenu(element, $event)"
+				@click="showFileMenu(props.modelValue.find(f => f.id === k)!, $event)"
+				@keydown.space.enter="showFileMenu(props.modelValue.find(f => f.id === k)!, $event)"
+				@contextmenu.prevent="showFileMenu(props.modelValue.find(f => f.id === k)!, $event)"
 			>
-				<MkDriveFileThumbnail :data-id="element.id" :class="$style.thumbnail" :file="element" fit="cover"/>
-				<div v-if="element.isSensitive" :class="$style.sensitive">
+				<MkDriveFileThumbnail :data-id="props.modelValue.find(f => f.id === k)!.id" :class="$style.thumbnail" :file="props.modelValue.find(f => f.id === k)!" fit="cover"/>
+				<div v-if="props.modelValue.find(f => f.id === k)!.isSensitive" :class="$style.sensitive">
 					<i class="ti ti-eye-exclamation" style="margin: auto;"></i>
 				</div>
 			</div>
 		</template>
-	</Sortable>
+	</MkDraggable>
 	<p
 		:class="[$style.remain, {
 			[$style.exceeded]: props.modelValue.length > 16,
@@ -33,19 +38,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, inject } from 'vue';
+import { inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu';
 import { copyToClipboard } from '@/utility/copy-to-clipboard';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
+import MkDraggable from '@/components/MkDraggable.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
 import { globalEvents } from '@/events.js';
-
-const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
 const props = defineProps<{
 	modelValue: Misskey.entities.DriveFile[];

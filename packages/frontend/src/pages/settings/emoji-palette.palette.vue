@@ -18,19 +18,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div>
 		<div v-panel style="border-radius: 6px;">
-			<Sortable
+			<MkDraggable
 				v-model="emojis"
+				direction="horizontal"
 				:class="$style.emojis"
-				:itemKey="item => item"
-				:animation="150"
-				:delay="100"
-				:delayOnTouchOnly="true"
-				:group="{ name: 'SortableEmojiPalettes' }"
+				group="emojiPalettes"
 			>
-				<template #item="{element}">
-					<button class="_button" :class="$style.emojisItem" @click="remove(element, $event)">
-						<MkCustomEmoji v-if="element[0] === ':'" :name="element" :normal="true" :fallbackToImage="true"/>
-						<MkEmoji v-else :emoji="element" :normal="true"/>
+				<template #default="{k}">
+					<button class="_button" :class="$style.emojisItem" @click="remove(k, $event)">
+						<MkCustomEmoji v-if="k[0] === ':'" :name="k" :normal="true" :fallbackToImage="true"/>
+						<MkEmoji v-else :emoji="k" :normal="true"/>
 					</button>
 				</template>
 				<template #footer>
@@ -38,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<i class="ti ti-plus"></i>
 					</button>
 				</template>
-			</Sortable>
+			</MkDraggable>
 		</div>
 		<div :class="$style.editorCaption">{{ i18n.ts.reactionSettingDescription2 }}</div>
 	</div>
@@ -47,7 +44,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
-import Sortable from 'vuedraggable';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
@@ -55,6 +51,7 @@ import { deepClone } from '@/utility/clone.js';
 import MkCustomEmoji from '@/components/global/MkCustomEmoji.vue';
 import MkEmoji from '@/components/global/MkEmoji.vue';
 import MkFolder from '@/components/MkFolder.vue';
+import MkDraggable from '@/components/MkDraggable.vue';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 
 const props = defineProps<{

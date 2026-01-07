@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div class="_gaps_m">
 			<div><SearchText>{{ i18n.ts._serverRules.description }}</SearchText></div>
 
-			<Sortable
+			<MkDraggable
 				v-model="serverRules"
 				class="_gaps_m"
 				:itemKey="(_, i) => i"
@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkInput v-model="serverRules[index]"/>
 					</div>
 				</template>
-			</Sortable>
+			</MkDraggable>
 			<div :class="$style.commands">
 				<MkButton rounded @click="serverRules.push('')"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 				<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
@@ -42,15 +42,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, ref, computed } from 'vue';
+import { ref } from 'vue';
 import * as os from '@/os.js';
 import { fetchInstance, instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkFolder from '@/components/MkFolder.vue';
-
-const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
+import MkDraggable from '@/components/MkDraggable.vue';
 
 const serverRules = ref<string[]>(instance.serverRules);
 

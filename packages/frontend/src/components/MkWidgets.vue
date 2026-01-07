@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton inline primary data-cy-widget-add @click="addWidget"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 			<MkButton inline @click="emit('exit')">{{ i18n.ts.close }}</MkButton>
 		</header>
-		<Sortable
+		<MkDraggable
 			:modelValue="props.widgets"
 			itemKey="id"
 			handle=".handle"
@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 			</template>
-		</Sortable>
+		</MkDraggable>
 	</template>
 	<component :is="`widget-${widget.name}`" v-for="widget in _widgets" v-else :key="widget.id" :ref="el => widgetRefs[widget.id] = el" :class="$style.widget" :widget="widget" @updateProps="updateWidget(widget.id, $event)" @contextmenu.stop="onContextmenu(widget, $event)"/>
 </div>
@@ -49,18 +49,17 @@ export type DefaultStoredWidget = {
 </script>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, ref, computed } from 'vue';
+import { computed } from 'vue';
 import { isLink } from '@@/js/is-link.js';
 import { genId } from '@/utility/id.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
+import MkDraggable from '@/components/MkDraggable.vue';
 import { widgets as widgetDefs, federationWidgets } from '@/widgets/index.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
-
-const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
 const props = defineProps<{
 	widgets: Widget[];

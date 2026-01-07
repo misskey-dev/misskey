@@ -1,0 +1,213 @@
+<!--
+SPDX-FileCopyrightText: syuilo and misskey-project
+SPDX-License-Identifier: AGPL-3.0-only
+-->
+
+<template>
+<TransitionGroup
+	tag="div"
+	:enterActiveClass="$style.transition_items_enterActive"
+	:leaveActiveClass="$style.transition_items_leaveActive"
+	:enterFromClass="$style.transition_items_enterFrom"
+	:leaveToClass="$style.transition_items_leaveTo"
+	:moveClass="$style.transition_items_move"
+	:class="[$style.items, { [$style.dragging]: dragging, [$style.horizontal]: direction === 'horizontal', [$style.vertical]: direction === 'vertical' }]"
+>
+	<slot name="header"></slot>
+	<div
+		v-for="(item, i) in modelValue"
+		:key="item"
+		:class="$style.item"
+		draggable="true"
+		@dragstart="onDragstart($event, item)"
+		@dragend="onDragend($event, item)"
+	>
+		<div
+			:class="[$style.forwardArea, { [$style.dropReady]: dropReadyArea[0] === item && dropReadyArea[1] === 'forward' }]"
+			@dragover.prevent.stop="onForwardDragover($event, item)"
+			@dragleave="onForwardDragleave($event, item)"
+			@drop.prevent.stop="onForwardDrop($event, item)"
+		></div>
+		<div style="position: relative; z-index: 0;">
+			<slot :k="item"></slot>
+		</div>
+		<div
+			:class="[$style.backwardArea, { [$style.dropReady]: dropReadyArea[0] === item && dropReadyArea[1] === 'backward' }]"
+			@dragover.prevent.stop="onBackwardDragover($event, item)"
+			@dragleave="onBackwardDragleave($event, item)"
+			@drop.prevent.stop="onBackwardDrop($event, item)"
+		></div>
+	</div>
+	<slot name="footer"></slot>
+</TransitionGroup>
+</template>
+
+<script lang="ts" setup>
+import { nextTick, ref } from 'vue';
+import { getDragData, setDragData } from '@/drag-and-drop.js';
+
+const props = withDefaults(defineProps<{
+	modelValue: string[];
+	direction: 'horizontal' | 'vertical';
+	group?: string | null;
+}>(), {
+	group: null,
+});
+
+const emit = defineEmits<{
+	(ev: 'update:modelValue', value: string[]): void;
+}>();
+
+const dragging = ref(false);
+const dropReadyArea = ref<[string | null, 'forward' | 'backward' | null]>([null, null]);
+const group = props.group ?? Math.random().toString(36);
+
+function onDragstart(ev: DragEvent, k: string) {
+	ev.dataTransfer.effectAllowed = 'move';
+	setDragData(ev, 'MkDraggable', k);
+
+	// Chromeのバグで、Dragstartハンドラ内ですぐにDOMを変更する(=リアクティブなプロパティを変更する)とDragが終了してしまう
+	// SEE: https://stackoverflow.com/questions/19639969/html5-dragend-event-firing-immediately
+	window.setTimeout(() => {
+		dragging.value = true;
+	}, 10);
+}
+
+function onDragend(ev: DragEvent, k: string) {
+	dragging.value = false;
+	dropReadyArea.value = [null, null];
+}
+
+function onForwardDragover(ev: DragEvent, k: string) {
+	nextTick(() => {
+		dropReadyArea.value = [k, 'forward'];
+	});
+}
+
+function onForwardDragleave(ev: DragEvent, k: string) {
+	dropReadyArea.value = [null, null];
+}
+
+function onForwardDrop(ev: DragEvent, k: string) {
+	const dragged = getDragData(ev, 'MkDraggable');
+	dropReadyArea.value = [null, null];
+	if (!dragged) return;
+	if (dragged === k) return;
+
+	const fromIndex = props.modelValue.indexOf(dragged);
+	let toIndex = props.modelValue.indexOf(k);
+
+	if (fromIndex === -1 || toIndex === -1) return;
+
+	const newValue = [...props.modelValue];
+	newValue.splice(fromIndex, 1);
+	toIndex = newValue.indexOf(k);
+	newValue.splice(toIndex, 0, dragged);
+
+	emit('update:modelValue', newValue);
+}
+
+function onBackwardDragover(ev: DragEvent, k: string) {
+	nextTick(() => {
+		dropReadyArea.value = [k, 'backward'];
+	});
+}
+
+function onBackwardDragleave(ev: DragEvent, k: string) {
+	dropReadyArea.value = [null, null];
+}
+
+function onBackwardDrop(ev: DragEvent, k: string) {
+	const dragged = getDragData(ev, 'MkDraggable');
+	dropReadyArea.value = [null, null];
+	if (!dragged) return;
+	if (dragged === k) return;
+
+	const fromIndex = props.modelValue.indexOf(dragged);
+	let toIndex = props.modelValue.indexOf(k);
+
+	if (fromIndex === -1 || toIndex === -1) return;
+
+	const newValue = [...props.modelValue];
+	newValue.splice(fromIndex, 1);
+	toIndex = newValue.indexOf(k);
+	newValue.splice(toIndex + 1, 0, dragged);
+
+	emit('update:modelValue', newValue);
+}
+</script>
+
+<style lang="scss" module>
+.transition_items_move,
+.transition_items_enterActive,
+.transition_items_leaveActive {
+	transition: all 0.15s ease;
+}
+.transition_items_enterFrom,
+.transition_items_leaveTo {
+	opacity: 0;
+}
+.transition_items_leaveActive {
+	position: absolute;
+}
+
+.items {
+	display: flex;
+	align-items: center;
+	justify-content: left;
+	flex-wrap: wrap;
+}
+
+.items.horizontal {
+	flex-direction: row;
+}
+.items.vertical {
+	flex-direction: column;
+}
+
+.item {
+	position: relative;
+}
+
+.forwardArea, .backwardArea {
+	position: absolute;
+	z-index: 1;
+	top: 0;
+	width: 50%;
+	height: 100%;
+	pointer-events: none;
+}
+
+.items.dragging {
+	.forwardArea, .backwardArea {
+		pointer-events: auto;
+	}
+}
+
+.forwardArea {
+	left: 0;
+}
+
+.backwardArea {
+	right: 0;
+}
+
+.dropReady::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	width: 2px;
+	height: 100%;
+	background: var(--MI_THEME-accent);
+	border-radius: 999px;
+	pointer-events: none;
+}
+
+.forwardArea.dropReady::before {
+	left: -1px;
+}
+
+.backwardArea.dropReady::before {
+	right: -1px;
+}
+</style>

@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<FormSlot>
 			<template #label>{{ i18n.ts.navbar }}</template>
 			<MkContainer :showHeader="false">
-				<Sortable
+				<MkDraggable
 					v-model="items"
 					itemKey="id"
 					:animation="150"
@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<button class="_button" :class="$style.itemRemove" @click="removeItem(index)"><i class="ti ti-x"></i></button>
 						</div>
 					</template>
-				</Sortable>
+				</MkDraggable>
 			</MkContainer>
 		</FormSlot>
 		<div class="_buttons">
@@ -54,13 +54,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSlot from '@/components/form/slot.vue';
 import MkContainer from '@/components/MkContainer.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
+import MkDraggable from '@/components/MkDraggable.vue';
 import * as os from '@/os.js';
 import { navbarItemDef } from '@/navbar.js';
 import { store } from '@/store.js';
@@ -69,8 +70,6 @@ import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
 import { getInitialPrefValue } from '@/preferences/manager.js';
 import { genId } from '@/utility/id.js';
-
-const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
 const items = ref(prefer.s.menu.map(x => ({
 	id: genId(),

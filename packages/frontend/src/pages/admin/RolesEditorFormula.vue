@@ -17,14 +17,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 
 	<div v-if="type === 'and' || type === 'or'" class="_gaps">
-		<Sortable v-model="v.values" tag="div" class="_gaps" itemKey="id" handle=".drag-handle" :group="{ name: 'roleFormula' }" :animation="150" :swapThreshold="0.5">
+		<MkDraggable v-model="v.values" tag="div" class="_gaps" itemKey="id" handle=".drag-handle" :group="{ name: 'roleFormula' }" :animation="150" :swapThreshold="0.5">
 			<template #item="{element}">
 				<div :class="$style.item">
 					<!-- divが無いとエラーになる https://github.com/SortableJS/vue.draggable.next/issues/189 -->
 					<RolesEditorFormula :modelValue="element" draggable @update:modelValue="updated => valuesItemUpdated(updated)" @remove="removeItem(element)"/>
 				</div>
 			</template>
-		</Sortable>
+		</MkDraggable>
 		<MkButton rounded style="margin: 0 auto;" @click="addValue"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 	</div>
 
@@ -45,17 +45,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
+import type { GetMkSelectValueTypesFromDef, MkSelectItem } from '@/components/MkSelect.vue';
 import { genId } from '@/utility/id.js';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import type { GetMkSelectValueTypesFromDef, MkSelectItem } from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
+import MkDraggable from '@/components/MkDraggable.vue';
 import { i18n } from '@/i18n.js';
 import { deepClone } from '@/utility/clone.js';
 import { rolesCache } from '@/cache.js';
-
-const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
 const emit = defineEmits<{
 	(ev: 'update:modelValue', value: any): void;
