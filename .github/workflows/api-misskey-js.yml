@@ -22,7 +22,7 @@ jobs:
         uses: pnpm/action-setup@1e1c8eafbd745f64b1ef30a7d7ed7965034c486c
         with:
           standalone: true
-          #cache: true
+          cache: true
 
       - name: Install dependencies
         run: pnpm i --frozen-lockfile
