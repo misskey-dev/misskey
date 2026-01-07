@@ -28,6 +28,9 @@ importers:
       js-yaml:
         specifier: 4.1.1
         version: 4.1.1
+      node:
+        specifier: runtime:^22.15.0
+        version: runtime:22.21.1
       postcss:
         specifier: 8.5.6
         version: 8.5.6
@@ -291,6 +294,9 @@ importers:
       nested-property:
         specifier: 4.0.0
         version: 4.0.0
+      node:
+        specifier: runtime:^22.15.0
+        version: runtime:22.21.1
       node-fetch:
         specifier: 3.3.2
         version: 3.3.2
@@ -788,6 +794,9 @@ importers:
       misskey-reversi:
         specifier: workspace:*
         version: link:../misskey-reversi
+      node:
+        specifier: runtime:^22.15.0
+        version: runtime:22.21.1
       photoswipe:
         specifier: 5.4.4
         version: 5.4.4
@@ -1041,6 +1050,9 @@ importers:
       magic-string:
         specifier: 0.30.21
         version: 0.30.21
+      node:
+        specifier: runtime:^22.15.0
+        version: runtime:22.21.1
       vite:
         specifier: 7.3.0
         version: 7.3.0(@types/node@24.10.4)(sass@1.97.1)(terser@5.44.1)(tsx@4.21.0)
@@ -1105,6 +1117,9 @@ importers:
       misskey-js:
         specifier: workspace:*
         version: link:../misskey-js
+      node:
+        specifier: runtime:^22.15.0
+        version: runtime:22.21.1
       punycode.js:
         specifier: 2.3.1
         version: 2.3.1
@@ -1226,6 +1241,9 @@ importers:
       misskey-js:
         specifier: workspace:*
         version: link:../misskey-js
+      node:
+        specifier: runtime:^22.15.0
+        version: runtime:22.21.1
       vue:
         specifier: 3.5.26
         version: 3.5.26(typescript@5.9.3)
@@ -1257,6 +1275,9 @@ importers:
       js-yaml:
         specifier: 4.1.1
         version: 4.1.1
+      node:
+        specifier: runtime:^22.15.0
+        version: runtime:22.21.1
     devDependencies:
       '@types/js-yaml':
         specifier: 4.0.9
@@ -1294,6 +1315,9 @@ importers:
       harfbuzzjs:
         specifier: 0.4.14
         version: 0.4.14
+      node:
+        specifier: runtime:^22.15.0
+        version: runtime:22.21.1
       tsx:
         specifier: 4.21.0
         version: 4.21.0
@@ -1322,6 +1346,9 @@ importers:
       matter-js:
         specifier: 0.20.0
         version: 0.20.0
+      node:
+        specifier: runtime:^22.15.0
+        version: runtime:22.21.1
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
@@ -1359,6 +1386,9 @@ importers:
       eventemitter3:
         specifier: 5.0.1
         version: 5.0.1
+      node:
+        specifier: runtime:^22.15.0
+        version: runtime:22.21.1
       reconnecting-websocket:
         specifier: 4.4.0
         version: 4.4.0
@@ -1401,6 +1431,10 @@ importers:
         version: 0.5.0(vitest@4.0.16(@opentelemetry/api@1.9.0)(@types/node@24.10.4)(happy-dom@20.0.11)(jsdom@27.2.0(bufferutil@4.1.0)(utf-8-validate@6.0.6))(msw@2.12.6(@types/node@24.10.4)(typescript@5.9.3))(sass@1.97.1)(terser@5.44.1)(tsx@4.21.0))
 
   packages/misskey-js/generator:
+    dependencies:
+      node:
+        specifier: runtime:^22.15.0
+        version: runtime:22.21.1
     devDependencies:
       '@readme/openapi-parser':
         specifier: 5.4.0
@@ -1435,6 +1469,9 @@ importers:
       crc-32:
         specifier: 1.2.2
         version: 1.2.2
+      node:
+        specifier: runtime:^22.15.0
+        version: runtime:22.21.1
     devDependencies:
       '@types/node':
         specifier: 24.10.4
@@ -1469,6 +1506,9 @@ importers:
       misskey-js:
         specifier: workspace:*
         version: link:../misskey-js
+      node:
+        specifier: runtime:^22.15.0
+        version: runtime:22.21.1
     devDependencies:
       '@typescript-eslint/parser':
         specifier: 8.50.1
@@ -8716,6 +8756,115 @@ packages:
   node-releases@2.0.27:
     resolution: {integrity: sha512-nmh3lCkYZ3grZvqcCH+fjmQ7X+H0OeZgP40OierEaAptX4XofMh5kwNbWh7lBduUzCcV/8kZ+NDLCwm2iorIlA==}
 
+  node@runtime:22.21.1:
+    resolution:
+      type: variations
+      variants:
+        - resolution:
+            archive: tarball
+            bin: bin/node
+            integrity: sha256-nk72dIu8Vefev3klKaEIvCY1hZ9M5G0HdWaLJ8xcx1A=
+            type: binary
+            url: https://nodejs.org/download/release/v22.21.1/node-v22.21.1-aix-ppc64.tar.gz
+          targets:
+            - cpu: ppc64
+              os: aix
+        - resolution:
+            archive: tarball
+            bin: bin/node
+            integrity: sha256-wXDWVU+6g9QdJads262FSHwHflH6c1GeQayIWqQp2K8=
+            type: binary
+            url: https://nodejs.org/download/release/v22.21.1/node-v22.21.1-darwin-arm64.tar.gz
+          targets:
+            - cpu: arm64
+              os: darwin
+        - resolution:
+            archive: tarball
+            bin: bin/node
+            integrity: sha256-jj3IlhTevmbCpq0jE6GtsG6zfbbNbEDX3m99mH99Gv0=
+            type: binary
+            url: https://nodejs.org/download/release/v22.21.1/node-v22.21.1-darwin-x64.tar.gz
+          targets:
+            - cpu: x64
+              os: darwin
+        - resolution:
+            archive: tarball
+            bin: bin/node
+            integrity: sha256-yGgw3t93+JQfqmxanIY7390ZJ6M2pGlD3swGo4+Av7I=
+            type: binary
+            url: https://nodejs.org/download/release/v22.21.1/node-v22.21.1-linux-arm64.tar.gz
+          targets:
+            - cpu: arm64
+              os: linux
+        - resolution:
+            archive: tarball
+            bin: bin/node
+            integrity: sha256-QNPQmu5VarwpfdeChk/Ma55grNQ4/wZgup3c1WnACSA=
+            type: binary
+            url: https://nodejs.org/download/release/v22.21.1/node-v22.21.1-linux-armv7l.tar.gz
+          targets:
+            - cpu: armv7l
+              os: linux
+        - resolution:
+            archive: tarball
+            bin: bin/node
+            integrity: sha256-sk9MGdVUbNQYZ06DveVtUKfCtl+ux6ZcNQLyhe6zqnA=
+            type: binary
+            url: https://nodejs.org/download/release/v22.21.1/node-v22.21.1-linux-ppc64le.tar.gz
+          targets:
+            - cpu: ppc64le
+              os: linux
+        - resolution:
+            archive: tarball
+            bin: bin/node
+            integrity: sha256-fEa9SlErNfA6y5crKwT+zC1MR+NQaauajdXNjwCRGVo=
+            type: binary
+            url: https://nodejs.org/download/release/v22.21.1/node-v22.21.1-linux-s390x.tar.gz
+          targets:
+            - cpu: s390x
+              os: linux
+        - resolution:
+            archive: tarball
+            bin: bin/node
+            integrity: sha256-IZoVLqhZhh11repXi97D3OgUOFPBPFGH9AxA53sBQ7I=
+            type: binary
+            url: https://nodejs.org/download/release/v22.21.1/node-v22.21.1-linux-x64.tar.gz
+          targets:
+            - cpu: x64
+              os: linux
+        - resolution:
+            archive: zip
+            bin: node.exe
+            integrity: sha256-udf6rNC1QLi0ZkDbyPVvQgX/Y7ed7HANTwPTZZGwMY8=
+            prefix: node-v22.21.1-win-arm64
+            type: binary
+            url: https://nodejs.org/download/release/v22.21.1/node-v22.21.1-win-arm64.zip
+          targets:
+            - cpu: arm64
+              os: win32
+        - resolution:
+            archive: zip
+            bin: node.exe
+            integrity: sha256-PGJOn74H4yF1UuxSoPhOK9wub/pzSPP9+5+/j0LiP88=
+            prefix: node-v22.21.1-win-x64
+            type: binary
+            url: https://nodejs.org/download/release/v22.21.1/node-v22.21.1-win-x64.zip
+          targets:
+            - cpu: x64
+              os: win32
+        - resolution:
+            archive: zip
+            bin: node.exe
+            integrity: sha256-/K279FdbtlSulN5TKOd+Mj/zzqY2ByXQc7pW4sl1PlI=
+            prefix: node-v22.21.1-win-x86
+            type: binary
+            url: https://nodejs.org/download/release/v22.21.1/node-v22.21.1-win-x86.zip
+          targets:
+            - cpu: x86
+              os: win32
+    version: 22.21.1
+    hasBin: true
+
   nodemailer@7.0.12:
     resolution: {integrity: sha512-H+rnK5bX2Pi/6ms3sN4/jRQvYSMltV6vqup/0SFOrxYYY/qoNvhXPlYq3e+Pm9RFJRwrMGbMIwi81M4dxpomhA==}
     engines: {node: '>=6.0.0'}
@@ -11158,10 +11307,12 @@ packages:
   whatwg-encoding@2.0.0:
     resolution: {integrity: sha512-p41ogyeMUrw3jWclHWTQg1k05DSVXPLcVxRTYsXUk+ZooOCZLcoYgPZ/HL/D/N+uQPOtcp1me1WhBEaX02mhWg==}
     engines: {node: '>=12'}
+    deprecated: Use @exodus/bytes instead for a more spec-conformant and faster implementation
 
   whatwg-encoding@3.1.1:
     resolution: {integrity: sha512-6qN4hJdMwfYBtE3YBTTHhoeuUrDBPZmbQaxWAqSALV/MeEnR5z1xd8UKud2RAkFoPkmB+hli1TZSnyi84xz1vQ==}
     engines: {node: '>=18'}
+    deprecated: Use @exodus/bytes instead for a more spec-conformant and faster implementation
 
   whatwg-mimetype@3.0.0:
     resolution: {integrity: sha512-nt+N2dzIutVRxARx1nghPKGv1xHikU7HKdfafKkLNLindmPU/ch3U31NOCGGA/dmPcmb1VlofO0vnKAcsm0o/Q==}
@@ -20751,6 +20902,8 @@ snapshots:
   node-int64@0.4.0: {}
 
   node-releases@2.0.27: {}
+
+  node@runtime:22.21.1: {}
 
   nodemailer@7.0.12: {}
 

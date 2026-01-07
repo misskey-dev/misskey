@@ -1,6 +1,13 @@
 {
 	"name": "sw",
 	"private": true,
+	"engines": {
+		"runtime": {
+			"name": "node",
+			"version": "^22.15.0",
+			"onFail": "download"
+		}
+	},
 	"scripts": {
 		"watch": "nodemon -w ../../package.json -e json --exec \"node build.js watch\"",
 		"build": "node build.js",
@@ -9,8 +16,8 @@
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"dependencies": {
-		"i18n": "workspace:*",
 		"esbuild": "0.27.2",
+		"i18n": "workspace:*",
 		"idb-keyval": "6.2.2",
 		"misskey-js": "workspace:*"
 	},

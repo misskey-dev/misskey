@@ -33,8 +33,6 @@ COPY --link ["packages/misskey-bubble-game/package.json", "./packages/misskey-bu
 
 ARG NODE_ENV=production
 
-RUN node -e "console.log(JSON.parse(require('node:fs').readFileSync('./package.json')).packageManager)" | xargs npm install -g
-
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store,sharing=locked \
 	pnpm i --frozen-lockfile --aggregate-output
 

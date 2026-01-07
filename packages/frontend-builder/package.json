@@ -1,6 +1,13 @@
 {
 	"name": "frontend-builder",
 	"type": "module",
+	"engines": {
+		"runtime": {
+			"name": "node",
+			"version": "^22.15.0",
+			"onFail": "download"
+		}
+	},
 	"scripts": {
 		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
 		"typecheck": "tsgo --noEmit",
@@ -17,8 +24,8 @@
 		"rollup": "4.54.0"
 	},
 	"dependencies": {
-		"i18n": "workspace:*",
 		"estree-walker": "3.0.3",
+		"i18n": "workspace:*",
 		"magic-string": "0.30.21",
 		"vite": "7.3.0"
 	}

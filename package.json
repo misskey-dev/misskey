@@ -8,11 +8,11 @@
 	},
 	"packageManager": "pnpm@10.26.2",
 	"engines": {
-    "runtime": {
-      "name": "node",
-      "version": "^22.15.0",
-      "onFail": "download"
-    }
+		"runtime": {
+			"name": "node",
+			"version": "^22.15.0",
+			"onFail": "download"
+		}
 	},
 	"workspaces": [
 		"packages/misskey-js",
@@ -87,8 +87,8 @@
 		"globals": "16.5.0",
 		"ncp": "2.0.0",
 		"pnpm": "10.26.2",
-		"typescript": "5.9.3",
-		"start-server-and-test": "2.1.3"
+		"start-server-and-test": "2.1.3",
+		"typescript": "5.9.3"
 	},
 	"optionalDependencies": {
 		"@tensorflow/tfjs-core": "4.22.0"

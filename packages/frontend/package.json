@@ -2,6 +2,13 @@
 	"name": "frontend",
 	"private": true,
 	"type": "module",
+	"engines": {
+		"runtime": {
+			"name": "node",
+			"version": "^22.15.0",
+			"onFail": "download"
+		}
+	},
 	"scripts": {
 		"watch": "vite",
 		"build": "tsx build.ts",
@@ -20,7 +27,6 @@
 		"@discordapp/twemoji": "16.0.1",
 		"@github/webauthn-json": "2.1.1",
 		"@mcaptcha/vanilla-glue": "0.1.0-rc2",
-		"i18n": "workspace:*",
 		"@misskey-dev/browser-image-resizer": "2024.1.0",
 		"@rollup/plugin-json": "6.1.0",
 		"@rollup/plugin-replace": "6.0.3",
@@ -48,6 +54,7 @@
 		"execa": "9.6.1",
 		"exifreader": "4.33.1",
 		"frontend-shared": "workspace:*",
+		"i18n": "workspace:*",
 		"icons-subsetter": "workspace:*",
 		"idb-keyval": "6.2.2",
 		"insert-text-at-cursor": "0.3.0",

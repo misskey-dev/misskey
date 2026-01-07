@@ -3,6 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "type": "module",
+	"engines": {
+		"runtime": {
+			"name": "node",
+			"version": "^22.15.0",
+			"onFail": "download"
+		}
+	},
   "scripts": {
     "run": "vite-node src/index.ts",
     "test": "vitest run",

@@ -14,6 +14,13 @@
 			"import": "./built/const.js"
 		}
 	},
+	"engines": {
+		"runtime": {
+			"name": "node",
+			"version": "^22.15.0",
+			"onFail": "download"
+		}
+	},
 	"scripts": {
 		"generate": "tsx scripts/generateLocaleInterface.ts",
 		"verify": "tsx scripts/verify.ts",
