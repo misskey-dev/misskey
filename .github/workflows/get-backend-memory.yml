@@ -44,13 +44,10 @@ jobs:
       with:
         ref: ${{ matrix.ref }}
         submodules: true
-    - name: Setup pnpm
-      uses: pnpm/action-setup@v4.2.0
-    - name: Use Node.js
-      uses: actions/setup-node@v6.1.0
+    - name: Use pnpm
+      uses: pnpm/action-setup@v4
       with:
-        node-version-file: '.node-version'
-        cache: 'pnpm'
+        cache: true
     - run: pnpm i --frozen-lockfile
     - name: Check pnpm-lock.yaml
       run: git diff --exit-code pnpm-lock.yaml
