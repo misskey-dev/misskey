@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.header">
 		<MkSelect v-model="type" :items="typeDef" :class="$style.typeSelect">
 		</MkSelect>
-		<button v-if="draggable" class="drag-handle _button" :class="$style.dragHandle">
+		<button v-if="draggable" class="_button" :class="$style.dragHandle">
 			<i class="ti ti-menu-2"></i>
 		</button>
 		<button v-if="draggable" class="_button" :class="$style.remove" @click="removeSelf">
@@ -17,11 +17,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 
 	<div v-if="type === 'and' || type === 'or'" class="_gaps">
-		<MkDraggable v-model="v.values" tag="div" class="_gaps" itemKey="id" handle=".drag-handle" :group="{ name: 'roleFormula' }" :animation="150" :swapThreshold="0.5">
-			<template #item="{element}">
+		<MkDraggable
+			v-model="v.values"
+			direction="vertical"
+			withGaps
+			manualDragStart
+			group="roleFormula"
+		>
+			<template #default="{ item }">
 				<div :class="$style.item">
 					<!-- divが無いとエラーになる https://github.com/SortableJS/vue.draggable.next/issues/189 -->
-					<RolesEditorFormula :modelValue="element" draggable @update:modelValue="updated => valuesItemUpdated(updated)" @remove="removeItem(element)"/>
+					<RolesEditorFormula :modelValue="item" draggable @update:modelValue="updated => valuesItemUpdated(updated)" @remove="removeItem(item.id)"/>
 				</div>
 			</template>
 		</MkDraggable>
@@ -131,8 +137,8 @@ function valuesItemUpdated(item) {
 	v.value.values[i] = item;
 }
 
-function removeItem(item) {
-	v.value.values = v.value.values.filter(_item => _item.id !== item.id);
+function removeItem(itemId) {
+	v.value.values = v.value.values.filter(_item => _item.id !== itemId);
 }
 
 function removeSelf() {

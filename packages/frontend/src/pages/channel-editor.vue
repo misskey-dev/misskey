@@ -42,14 +42,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkButton primary rounded @click="addPinnedNote()"><i class="ti ti-plus"></i></MkButton>
 
 					<MkDraggable
-						v-model="pinnedNoteIds"
+						:modelValue="pinnedNoteIds.map(id => ({ id }))"
 						direction="vertical"
+						@update:modelValue="v => pinnedNoteIds = v.map(x => x.id)"
 					>
-						<template #default="{ k }">
+						<template #default="{ item }">
 							<div :class="$style.pinnedNote">
 								<button class="_button" :class="$style.pinnedNoteHandle"><i class="ti ti-menu"></i></button>
-								{{ k }}
-								<button class="_button" :class="$style.pinnedNoteRemove" @click="removePinnedNote(k)"><i class="ti ti-x"></i></button>
+								{{ item.id }}
+								<button class="_button" :class="$style.pinnedNoteRemove" @click="removePinnedNote(item.id)"><i class="ti ti-x"></i></button>
 							</div>
 						</template>
 					</MkDraggable>

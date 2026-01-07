@@ -19,15 +19,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div>
 		<div v-panel style="border-radius: 6px;">
 			<MkDraggable
-				v-model="emojis"
+				:modelValue="emojis.map(emoji => ({ id: emoji, emoji }))"
 				direction="horizontal"
 				:class="$style.emojis"
 				group="emojiPalettes"
+				@update:modelValue="v => emojis = v.map(x => x.emoji)"
 			>
-				<template #default="{k}">
-					<button class="_button" :class="$style.emojisItem" @click="remove(k, $event)">
-						<MkCustomEmoji v-if="k[0] === ':'" :name="k" :normal="true" :fallbackToImage="true"/>
-						<MkEmoji v-else :emoji="k" :normal="true"/>
+				<template #default="{ item }">
+					<button class="_button" :class="$style.emojisItem" @click="remove(item.emoji, $event)">
+						<MkCustomEmoji v-if="item.emoji[0] === ':'" :name="item.emoji" :normal="true" :fallbackToImage="true"/>
+						<MkEmoji v-else :emoji="item.emoji" :normal="true"/>
 					</button>
 				</template>
 				<template #footer>

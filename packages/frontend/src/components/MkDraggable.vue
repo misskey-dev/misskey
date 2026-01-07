@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<slot name="header"></slot>
 	<div
 		v-for="(item, i) in modelValue"
-		:key="item"
+		:key="item.id"
 		:class="$style.item"
 		:draggable="!manualDragStart"
 		@dragstart="onDragstart($event, item)"
@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@drop.prevent.stop="onForwardDrop($event, item)"
 		></div>
 		<div style="position: relative; z-index: 0;">
-			<slot :k="item"></slot>
+			<slot :item="item"></slot>
 		</div>
 		<div
 			:class="[$style.backwardArea, { [$style.dropReady]: dropReadyArea[0] === item && dropReadyArea[1] === 'backward' }]"
@@ -42,12 +42,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 </TransitionGroup>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup generic="T extends { id: string; }">
 import { nextTick, ref } from 'vue';
 import { getDragData, setDragData } from '@/drag-and-drop.js';
 
+const slots = defineSlots<{
+	default(props: { item: T }): any;
+	header(): any;
+	footer(): any;
+}>();
+
 const props = withDefaults(defineProps<{
-	modelValue: string[];
+	modelValue: T[];
 	direction: 'horizontal' | 'vertical';
 	group?: string | null;
 	manualDragStart?: boolean;
@@ -59,17 +65,17 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'update:modelValue', value: string[]): void;
+	(ev: 'update:modelValue', value: T[]): void;
 }>();
 
 const dragging = ref(false);
-const dropReadyArea = ref<[string | null, 'forward' | 'backward' | null]>([null, null]);
+const dropReadyArea = ref<[T['id'] | null, 'forward' | 'backward' | null]>([null, null]);
 const group = props.group ?? Math.random().toString(36);
 
-function onDragstart(ev: DragEvent, k: string) {
+function onDragstart(ev: DragEvent, item: T) {
 	if (ev.dataTransfer == null) return;
 	ev.dataTransfer.effectAllowed = 'move';
-	setDragData(ev, 'MkDraggable', k);
+	setDragData(ev, 'MkDraggable', item);
 
 	// Chromeのバグで、Dragstartハンドラ内ですぐにDOMを変更する(=リアクティブなプロパティを変更する)とDragが終了してしまう
 	// SEE: https://stackoverflow.com/questions/19639969/html5-dragend-event-firing-immediately
@@ -78,65 +84,65 @@ function onDragstart(ev: DragEvent, k: string) {
 	}, 10);
 }
 
-function onDragend(ev: DragEvent, k: string) {
+function onDragend(ev: DragEvent, item: T) {
 	dragging.value = false;
 	dropReadyArea.value = [null, null];
 }
 
-function onForwardDragover(ev: DragEvent, k: string) {
+function onForwardDragover(ev: DragEvent, item: T) {
 	nextTick(() => {
-		dropReadyArea.value = [k, 'forward'];
+		dropReadyArea.value = [item.id, 'forward'];
 	});
 }
 
-function onForwardDragleave(ev: DragEvent, k: string) {
+function onForwardDragleave(ev: DragEvent, item: T) {
 	dropReadyArea.value = [null, null];
 }
 
-function onForwardDrop(ev: DragEvent, k: string) {
+function onForwardDrop(ev: DragEvent, item: T) {
 	const dragged = getDragData(ev, 'MkDraggable');
 	dropReadyArea.value = [null, null];
 	if (!dragged) return;
-	if (dragged === k) return;
+	if (dragged.id === item.id) return;
 
-	const fromIndex = props.modelValue.indexOf(dragged);
-	let toIndex = props.modelValue.indexOf(k);
+	const fromIndex = props.modelValue.findIndex(x => x.id === dragged.id);
+	let toIndex = props.modelValue.findIndex(x => x.id === item.id);
 
-	if (fromIndex === -1 || toIndex === -1) return;
+	if (toIndex === -1) return;
 
 	const newValue = [...props.modelValue];
-	newValue.splice(fromIndex, 1);
-	toIndex = newValue.indexOf(k);
-	newValue.splice(toIndex, 0, dragged);
+	if (fromIndex > -1) newValue.splice(fromIndex, 1);
+	toIndex = newValue.findIndex(x => x.id === item.id);
+	newValue.splice(toIndex, 0, dragged as T);
 
 	emit('update:modelValue', newValue);
 }
 
-function onBackwardDragover(ev: DragEvent, k: string) {
+function onBackwardDragover(ev: DragEvent, item: T) {
 	nextTick(() => {
-		dropReadyArea.value = [k, 'backward'];
+		dropReadyArea.value = [item.id, 'backward'];
 	});
 }
 
-function onBackwardDragleave(ev: DragEvent, k: string) {
+function onBackwardDragleave(ev: DragEvent, item: T) {
 	dropReadyArea.value = [null, null];
 }
 
-function onBackwardDrop(ev: DragEvent, k: string) {
+function onBackwardDrop(ev: DragEvent, item: T) {
 	const dragged = getDragData(ev, 'MkDraggable');
 	dropReadyArea.value = [null, null];
 	if (!dragged) return;
-	if (dragged === k) return;
+	if (dragged.id === item.id) return;
 
-	const fromIndex = props.modelValue.indexOf(dragged);
-	let toIndex = props.modelValue.indexOf(k);
+	const fromIndex = props.modelValue.findIndex(x => x.id === dragged.id);
+	let toIndex = props.modelValue.findIndex(x => x.id === item.id);
 
-	if (fromIndex === -1 || toIndex === -1) return;
+	if (toIndex === -1) return;
 
 	const newValue = [...props.modelValue];
-	newValue.splice(fromIndex, 1);
-	toIndex = newValue.indexOf(k);
-	newValue.splice(toIndex + 1, 0, dragged);
+	if (fromIndex > -1) newValue.splice(fromIndex, 1);
+	toIndex = newValue.findIndex(x => x.id === item.id);
+	newValue.splice(toIndex + 1, 0, dragged as T);
 
 	emit('update:modelValue', newValue);
 }
