@@ -14,18 +14,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<MkDraggable
 				v-model="serverRules"
-				class="_gaps_m"
-				:itemKey="(_, i) => i"
+				withGaps
+				direction="vertical"
 				:animation="150"
 				:handle="'.' + $style.itemHandle"
 				@start="e => e.item.classList.add('active')"
 				@end="e => e.item.classList.remove('active')"
 			>
-				<template #item="{element,index}">
+				<template #default="{ index }">
 					<div :class="$style.item">
 						<div :class="$style.itemHeader">
-							<div :class="$style.itemNumber" v-text="String(index + 1)"/>
-							<span :class="$style.itemHandle"><i class="ti ti-menu"/></span>
+							<div :class="$style.itemNumber" v-text="String(index + 1)"></div>
+							<span :class="$style.itemHandle"><i class="ti ti-menu"></i></span>
 							<button class="_button" :class="$style.itemRemove" @click="remove(index)"><i class="ti ti-x"></i></button>
 						</div>
 						<MkInput v-model="serverRules[index]"/>

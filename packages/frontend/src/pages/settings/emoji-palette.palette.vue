@@ -24,10 +24,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:class="$style.emojis"
 				group="emojiPalettes"
 			>
-				<template #default="{k}">
-					<button class="_button" :class="$style.emojisItem" @click="remove(k, $event)">
-						<MkCustomEmoji v-if="k[0] === ':'" :name="k" :normal="true" :fallbackToImage="true"/>
-						<MkEmoji v-else :emoji="k" :normal="true"/>
+				<template #default="{ item }">
+					<button class="_button" :class="$style.emojisItem" @click="remove(item, $event)">
+						<MkCustomEmoji v-if="item[0] === ':'" :name="item" :normal="true" :fallbackToImage="true"/>
+						<MkEmoji v-else :emoji="item" :normal="true"/>
 					</button>
 				</template>
 				<template #footer>

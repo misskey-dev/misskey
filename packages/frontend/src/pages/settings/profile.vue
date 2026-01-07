@@ -77,22 +77,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 						<MkDraggable
 							v-model="fields"
+							direction="vertical"
+							withGaps
 							class="_gaps_s"
-							itemKey="id"
 							:animation="150"
 							:handle="'.' + $style.dragItemHandle"
 							@start="e => e.item.classList.add('active')"
 							@end="e => e.item.classList.remove('active')"
 						>
-							<template #item="{element, index}">
+							<template #default="{ item, index }">
 								<div v-panel :class="$style.fieldDragItem">
 									<button v-if="!fieldEditMode" class="_button" :class="$style.dragItemHandle" tabindex="-1"><i class="ti ti-menu"></i></button>
 									<button v-if="fieldEditMode" :disabled="fields.length <= 1" class="_button" :class="$style.dragItemRemove" @click="deleteField(index)"><i class="ti ti-x"></i></button>
 									<div :class="$style.dragItemForm">
 										<FormSplit :minWidth="200">
-											<MkInput v-model="element.name" small :placeholder="i18n.ts._profile.metadataLabel">
+											<MkInput v-model="item.name" small :placeholder="i18n.ts._profile.metadataLabel">
 											</MkInput>
-											<MkInput v-model="element.value" small :placeholder="i18n.ts._profile.metadataContent">
+											<MkInput v-model="item.value" small :placeholder="i18n.ts._profile.metadataContent">
 											</MkInput>
 										</FormSplit>
 									</div>

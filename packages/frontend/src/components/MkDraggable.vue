@@ -15,39 +15,40 @@ SPDX-License-Identifier: AGPL-3.0-only
 >
 	<slot name="header"></slot>
 	<div
-		v-for="(item, i) in modelValue"
-		:key="item"
+		v-for="(id, i) in ids"
+		:key="id"
 		:class="$style.item"
 		:draggable="!manualDragStart"
-		@dragstart="onDragstart($event, item)"
-		@dragend="onDragend($event, item)"
+		@dragstart="onDragstart($event, id)"
+		@dragend="onDragend($event, id)"
 	>
 		<div
-			:class="[$style.forwardArea, { [$style.dropReady]: dropReadyArea[0] === item && dropReadyArea[1] === 'forward' }]"
-			@dragover.prevent.stop="onForwardDragover($event, item)"
-			@dragleave="onForwardDragleave($event, item)"
-			@drop.prevent.stop="onForwardDrop($event, item)"
+			:class="[$style.forwardArea, { [$style.dropReady]: dropReadyArea[0] === id && dropReadyArea[1] === 'forward' }]"
+			@dragover.prevent.stop="onForwardDragover($event, id)"
+			@dragleave="onForwardDragleave($event, id)"
+			@drop.prevent.stop="onForwardDrop($event, id)"
 		></div>
 		<div style="position: relative; z-index: 0;">
-			<slot :k="item"></slot>
+			<slot :item="modelValue[i]" :index="i"></slot>
 		</div>
 		<div
-			:class="[$style.backwardArea, { [$style.dropReady]: dropReadyArea[0] === item && dropReadyArea[1] === 'backward' }]"
-			@dragover.prevent.stop="onBackwardDragover($event, item)"
-			@dragleave="onBackwardDragleave($event, item)"
-			@drop.prevent.stop="onBackwardDrop($event, item)"
+			:class="[$style.backwardArea, { [$style.dropReady]: dropReadyArea[0] === id && dropReadyArea[1] === 'backward' }]"
+			@dragover.prevent.stop="onBackwardDragover($event, id)"
+			@dragleave="onBackwardDragleave($event, id)"
+			@drop.prevent.stop="onBackwardDrop($event, id)"
 		></div>
 	</div>
 	<slot name="footer"></slot>
 </TransitionGroup>
 </template>
 
-<script lang="ts" setup>
-import { nextTick, ref } from 'vue';
+<script lang="ts" setup generic="T extends string | { id: string; }">
+import { nextTick, computed, ref } from 'vue';
 import { getDragData, setDragData } from '@/drag-and-drop.js';
+import { genId } from '@/utility/id.js';
 
 const props = withDefaults(defineProps<{
-	modelValue: string[];
+	modelValue: T[];
 	direction: 'horizontal' | 'vertical';
 	group?: string | null;
 	manualDragStart?: boolean;
@@ -59,12 +60,16 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'update:modelValue', value: string[]): void;
+	(ev: 'update:modelValue', value: T[]): void;
 }>();
+
+const ids = computed(() => {
+	return props.modelValue.map((item) => (typeof item === 'string' ? item : item.id));
+});
 
 const dragging = ref(false);
 const dropReadyArea = ref<[string | null, 'forward' | 'backward' | null]>([null, null]);
-const group = props.group ?? Math.random().toString(36);
+const group = props.group != null ? `MkDraggable-${props.group}` : `MkDraggable-${genId()}`;
 
 function onDragstart(ev: DragEvent, k: string) {
 	if (ev.dataTransfer == null) return;
@@ -99,15 +104,15 @@ function onForwardDrop(ev: DragEvent, k: string) {
 	if (!dragged) return;
 	if (dragged === k) return;
 
-	const fromIndex = props.modelValue.indexOf(dragged);
-	let toIndex = props.modelValue.indexOf(k);
+	const fromIndex = ids.value.indexOf(dragged);
+	let toIndex = ids.value.indexOf(k);
 
 	if (fromIndex === -1 || toIndex === -1) return;
 
 	const newValue = [...props.modelValue];
 	newValue.splice(fromIndex, 1);
-	toIndex = newValue.indexOf(k);
-	newValue.splice(toIndex, 0, dragged);
+	toIndex = newValue.findIndex((item) => (typeof item === 'string' ? item : item.id) === k);
+	newValue.splice(toIndex, 0, props.modelValue[fromIndex]);
 
 	emit('update:modelValue', newValue);
 }
@@ -128,15 +133,15 @@ function onBackwardDrop(ev: DragEvent, k: string) {
 	if (!dragged) return;
 	if (dragged === k) return;
 
-	const fromIndex = props.modelValue.indexOf(dragged);
-	let toIndex = props.modelValue.indexOf(k);
+	const fromIndex = ids.value.indexOf(dragged);
+	let toIndex = ids.value.indexOf(k);
 
 	if (fromIndex === -1 || toIndex === -1) return;
 
 	const newValue = [...props.modelValue];
 	newValue.splice(fromIndex, 1);
-	toIndex = newValue.indexOf(k);
-	newValue.splice(toIndex + 1, 0, dragged);
+	toIndex = newValue.findIndex((item) => (typeof item === 'string' ? item : item.id) === k);
+	newValue.splice(toIndex + 1, 0, props.modelValue[fromIndex]);
 
 	emit('update:modelValue', newValue);
 }

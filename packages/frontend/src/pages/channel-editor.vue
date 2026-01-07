@@ -43,14 +43,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 					<MkDraggable
 						v-model="pinnedNotes"
-						itemKey="id"
+						direction="vertical"
 						:handle="'.' + $style.pinnedNoteHandle"
 						:animation="150"
 					>
-						<template #item="{element,index}">
+						<template #default="{ item, index }">
 							<div :class="$style.pinnedNote">
 								<button class="_button" :class="$style.pinnedNoteHandle"><i class="ti ti-menu"></i></button>
-								{{ element.id }}
+								{{ item.id }}
 								<button class="_button" :class="$style.pinnedNoteRemove" @click="removePinnedNote(index)"><i class="ti ti-x"></i></button>
 							</div>
 						</template>

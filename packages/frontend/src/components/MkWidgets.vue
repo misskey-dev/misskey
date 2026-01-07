@@ -14,17 +14,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton inline @click="emit('exit')">{{ i18n.ts.close }}</MkButton>
 		</header>
 		<MkDraggable
-			:modelValue="props.widgets.map(w => w.id)"
+			:modelValue="props.widgets"
 			direction="vertical"
 			withGaps
 			group="MkWidgets"
-			@update:modelValue="v => emit('updateWidgets', v.map(id => props.widgets.find(w => w.id === id)!))"
+			@update:modelValue="v => emit('updateWidgets', v)"
 		>
-			<template #default="{ k }">
+			<template #default="{ item }">
 				<div :class="[$style.widget, $style.customizeContainer]" data-cy-customize-container>
-					<button :class="$style.customizeContainerConfig" class="_button" @click.prevent.stop="configWidget(k)"><i class="ti ti-settings"></i></button>
-					<button :class="$style.customizeContainerRemove" data-cy-customize-container-remove class="_button" @click.prevent.stop="removeWidget(props.widgets.find(x => x.id === k)!)"><i class="ti ti-x"></i></button>
-					<component :is="`widget-${props.widgets.find(x => x.id === k)!.name}`" :ref="el => widgetRefs[k] = el" :class="$style.customizeContainerHandleWidget" :widget="props.widgets.find(x => x.id === k)!" @updateProps="updateWidget(k, $event)"/>
+					<button :class="$style.customizeContainerConfig" class="_button" @click.prevent.stop="configWidget(item.id)"><i class="ti ti-settings"></i></button>
+					<button :class="$style.customizeContainerRemove" data-cy-customize-container-remove class="_button" @click.prevent.stop="removeWidget(item)"><i class="ti ti-x"></i></button>
+					<component :is="`widget-${item.name}`" :ref="el => widgetRefs[item.id] = el" :class="$style.customizeContainerHandleWidget" :widget="item" @updateProps="updateWidget(item.id, $event)"/>
 				</div>
 			</template>
 		</MkDraggable>

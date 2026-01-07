@@ -6,22 +6,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div v-show="props.modelValue.length != 0" :class="$style.root">
 	<MkDraggable
-		:modelValue="props.modelValue.map(f => f.id)"
+		:modelValue="props.modelValue"
 		:class="$style.files"
 		direction="horizontal"
-		@update:modelValue="v => emit('update:modelValue', v.map(id => props.modelValue.find(f => f.id === id)!))"
+		@update:modelValue="v => emit('update:modelValue', v)"
 	>
-		<template #default="{ k }">
+		<template #default="{ item }">
 			<div
 				:class="$style.file"
 				role="button"
 				tabindex="0"
-				@click="showFileMenu(props.modelValue.find(f => f.id === k)!, $event)"
-				@keydown.space.enter="showFileMenu(props.modelValue.find(f => f.id === k)!, $event)"
-				@contextmenu.prevent="showFileMenu(props.modelValue.find(f => f.id === k)!, $event)"
+				@click="showFileMenu(item, $event)"
+				@keydown.space.enter="showFileMenu(item, $event)"
+				@contextmenu.prevent="showFileMenu(item, $event)"
 			>
-				<MkDriveFileThumbnail :data-id="props.modelValue.find(f => f.id === k)!.id" :class="$style.thumbnail" :file="props.modelValue.find(f => f.id === k)!" fit="cover"/>
-				<div v-if="props.modelValue.find(f => f.id === k)!.isSensitive" :class="$style.sensitive">
+				<MkDriveFileThumbnail :data-id="item.id" :class="$style.thumbnail" :file="item" fit="cover"/>
+				<div v-if="item.isSensitive" :class="$style.sensitive">
 					<i class="ti ti-eye-exclamation" style="margin: auto;"></i>
 				</div>
 			</div>

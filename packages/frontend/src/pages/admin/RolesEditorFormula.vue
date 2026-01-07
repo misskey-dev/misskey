@@ -17,11 +17,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 
 	<div v-if="type === 'and' || type === 'or'" class="_gaps">
-		<MkDraggable v-model="v.values" tag="div" class="_gaps" itemKey="id" handle=".drag-handle" :group="{ name: 'roleFormula' }" :animation="150" :swapThreshold="0.5">
-			<template #item="{element}">
+		<MkDraggable
+			v-model="v.values"
+			handle=".drag-handle"
+			group="roleFormula"
+			direction="vertical"
+			:animation="150"
+			:swapThreshold="0.5"
+		>
+			<template #default="{ item }">
 				<div :class="$style.item">
 					<!-- divが無いとエラーになる https://github.com/SortableJS/vue.draggable.next/issues/189 -->
-					<RolesEditorFormula :modelValue="element" draggable @update:modelValue="updated => valuesItemUpdated(updated)" @remove="removeItem(element)"/>
+					<RolesEditorFormula :modelValue="item" draggable @update:modelValue="updated => valuesItemUpdated(updated)" @remove="removeItem(item)"/>
 				</div>
 			</template>
 		</MkDraggable>
