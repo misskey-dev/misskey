@@ -132,8 +132,6 @@ function onDrop(ev: DragEvent, item: T, forward: boolean) {
 	const fromIndex = props.modelValue.findIndex(x => x.id === dragged.item.id);
 	let toIndex = props.modelValue.findIndex(x => x.id === item.id);
 
-	if (toIndex === -1) return;
-
 	const newValue = [...props.modelValue];
 	if (fromIndex > -1) newValue.splice(fromIndex, 1);
 	toIndex = newValue.findIndex(x => x.id === item.id);
