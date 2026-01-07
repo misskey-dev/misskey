@@ -21,6 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			v-model="v.values"
 			direction="vertical"
 			withGaps
+			canNest
 			manualDragStart
 			group="roleFormula"
 		>

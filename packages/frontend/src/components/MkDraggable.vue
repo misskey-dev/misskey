@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:enterFromClass="$style.transition_items_enterFrom"
 	:leaveToClass="$style.transition_items_leaveTo"
 	:moveClass="$style.transition_items_move"
-	:class="[$style.items, { [$style.dragging]: dragging, [$style.horizontal]: direction === 'horizontal', [$style.vertical]: direction === 'vertical', [$style.withGaps]: withGaps }]"
+	:class="[$style.items, { [$style.dragging]: dragging, [$style.horizontal]: direction === 'horizontal', [$style.vertical]: direction === 'vertical', [$style.withGaps]: withGaps, [$style.canNest]: canNest }]"
 >
 	<slot name="header"></slot>
 	<div
@@ -73,10 +73,12 @@ const props = withDefaults(defineProps<{
 	group?: string | null;
 	manualDragStart?: boolean;
 	withGaps?: boolean;
+	canNest?: boolean;
 }>(), {
 	group: null,
 	manualDragStart: false,
 	withGaps: false,
+	canNest: false,
 });
 
 const emit = defineEmits<{
@@ -270,6 +272,26 @@ function onEmptyDrop(ev: DragEvent) {
 		left: 0;
 		width: 100%;
 		height: 50%;
+	}
+}
+
+.items.canNest.horizontal {
+	.forwardArea {
+		width: 30px;
+	}
+
+	.backwardArea {
+		width: 30px;
+	}
+}
+
+.items.canNest.vertical {
+	.forwardArea {
+		height: 30px;
+	}
+
+	.backwardArea {
+		height: 30px;
 	}
 }
 
