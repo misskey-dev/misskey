@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v6.0.1
 
       - name: Use pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@1e1c8eafbd745f64b1ef30a7d7ed7965034c486c
         with:
           cache: true
 

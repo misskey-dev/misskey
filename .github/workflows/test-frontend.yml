@@ -32,7 +32,7 @@ jobs:
       with:
         submodules: true
     - name: Use pnpm
-      uses: pnpm/action-setup@v4
+      uses: pnpm/action-setup@1e1c8eafbd745f64b1ef30a7d7ed7965034c486c
       with:
         cache: true
     - run: pnpm i --frozen-lockfile
@@ -83,7 +83,7 @@ jobs:
     #- uses: browser-actions/setup-firefox@latest
     #  if: ${{ matrix.browser == 'firefox' }}
     - name: Use pnpm
-      uses: pnpm/action-setup@v4
+      uses: pnpm/action-setup@1e1c8eafbd745f64b1ef30a7d7ed7965034c486c
       with:
         cache: true
     - run: pnpm i --frozen-lockfile
