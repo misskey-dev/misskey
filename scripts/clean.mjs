@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as fs from 'note:fs';
+import * as fs from 'node:fs';
 
 const __dirname = import.meta.dirname;
 
