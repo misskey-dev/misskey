@@ -14,26 +14,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<MkDraggable
 				v-model="serverRules"
-				class="_gaps_m"
-				:itemKey="(_, i) => i"
-				:animation="150"
-				:handle="'.' + $style.itemHandle"
-				@start="e => e.item.classList.add('active')"
-				@end="e => e.item.classList.remove('active')"
+				direction="vertical"
+				withGaps
+				manualDragStart
 			>
-				<template #item="{element,index}">
+				<template #default="{ item, index, dragStart }">
 					<div :class="$style.item">
 						<div :class="$style.itemHeader">
 							<div :class="$style.itemNumber" v-text="String(index + 1)"/>
-							<span :class="$style.itemHandle"><i class="ti ti-menu"/></span>
-							<button class="_button" :class="$style.itemRemove" @click="remove(index)"><i class="ti ti-x"></i></button>
+							<span :class="$style.itemHandle" :draggable="true" @dragstart.stop="dragStart"><i class="ti ti-menu"/></span>
+							<button class="_button" :class="$style.itemRemove" @click="remove(item.id)"><i class="ti ti-x"></i></button>
 						</div>
-						<MkInput v-model="serverRules[index]"/>
+						<MkInput :modelValue="item.text" @update:modelValue="serverRules[index].text = $event"/>
 					</div>
 				</template>
 			</MkDraggable>
 			<div :class="$style.commands">
-				<MkButton rounded @click="serverRules.push('')"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
+				<MkButton rounded @click="add"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 				<MkButton primary rounded @click="save"><i class="ti ti-check"></i> {{ i18n.ts.save }}</MkButton>
 			</div>
 		</div>
@@ -51,18 +48,22 @@ import MkInput from '@/components/MkInput.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkDraggable from '@/components/MkDraggable.vue';
 
-const serverRules = ref<string[]>(instance.serverRules);
+const serverRules = ref<{ text: string; id: string; }[]>(instance.serverRules.map(text => ({ text, id: Math.random().toString() })));
 
-const save = async () => {
+async function save() {
 	await os.apiWithDialog('admin/update-meta', {
-		serverRules: serverRules.value,
+		serverRules: serverRules.value.map(r => r.text),
 	});
 	fetchInstance(true);
-};
+}
 
-const remove = (index: number): void => {
-	serverRules.value.splice(index, 1);
-};
+function add(): void {
+	serverRules.value.push({ text: '', id: Math.random().toString() });
+}
+
+function remove(id: string): void {
+	serverRules.value = serverRules.value.filter(r => r.id !== id);
+}
 </script>
 
 <style lang="scss" module>

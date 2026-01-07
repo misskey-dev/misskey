@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@drop.prevent.stop="onForwardDrop($event, item)"
 		></div>
 		<div style="position: relative; z-index: 0;">
-			<slot :item="item" :dragStart="(ev) => onDragstart(ev, item)"></slot>
+			<slot :item="item" :index="i" :dragStart="(ev) => onDragstart(ev, item)"></slot>
 		</div>
 		<div
 			:class="[$style.backwardArea, { [$style.dropReady]: dropReadyArea[0] === item.id && dropReadyArea[1] === 'backward' }]"
@@ -62,7 +62,7 @@ import { nextTick } from 'vue';
 import { getDragData, setDragData } from '@/drag-and-drop.js';
 
 const slots = defineSlots<{
-	default(props: { item: T; dragStart: (ev: DragEvent) => void }): any;
+	default(props: { item: T; index: number; dragStart: (ev: DragEvent) => void }): any;
 	header(): any;
 	footer(): any;
 }>();
@@ -276,21 +276,13 @@ function onEmptyDrop(ev: DragEvent) {
 }
 
 .items.canNest.horizontal {
-	.forwardArea {
-		width: 30px;
-	}
-
-	.backwardArea {
+	.forwardArea, .backwardArea {
 		width: 30px;
 	}
 }
 
 .items.canNest.vertical {
-	.forwardArea {
-		height: 30px;
-	}
-
-	.backwardArea {
+	.forwardArea, .backwardArea {
 		height: 30px;
 	}
 }
