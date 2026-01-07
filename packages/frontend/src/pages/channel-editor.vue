@@ -42,16 +42,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkButton primary rounded @click="addPinnedNote()"><i class="ti ti-plus"></i></MkButton>
 
 					<MkDraggable
-						v-model="pinnedNotes"
-						itemKey="id"
-						:handle="'.' + $style.pinnedNoteHandle"
-						:animation="150"
+						v-model="pinnedNoteIds"
+						direction="vertical"
 					>
-						<template #item="{element,index}">
+						<template #default="{ k }">
 							<div :class="$style.pinnedNote">
 								<button class="_button" :class="$style.pinnedNoteHandle"><i class="ti ti-menu"></i></button>
-								{{ element.id }}
-								<button class="_button" :class="$style.pinnedNoteRemove" @click="removePinnedNote(index)"><i class="ti ti-x"></i></button>
+								{{ k }}
+								<button class="_button" :class="$style.pinnedNoteRemove" @click="removePinnedNote(k)"><i class="ti ti-x"></i></button>
 							</div>
 						</template>
 					</MkDraggable>
@@ -98,7 +96,7 @@ const bannerId = ref<string | null>(null);
 const color = ref('#000');
 const isSensitive = ref(false);
 const allowRenoteToExternal = ref(true);
-const pinnedNotes = ref<{ id: Misskey.entities.Note['id'] }[]>([]);
+const pinnedNoteIds = ref<Misskey.entities.Note['id'][]>([]);
 
 watch(() => bannerId.value, async () => {
 	if (bannerId.value == null) {
@@ -122,9 +120,7 @@ async function fetchChannel() {
 	bannerId.value = result.bannerId;
 	bannerUrl.value = result.bannerUrl;
 	isSensitive.value = result.isSensitive;
-	pinnedNotes.value = result.pinnedNoteIds.map(id => ({
-		id,
-	}));
+	pinnedNoteIds.value = result.pinnedNoteIds;
 	color.value = result.color;
 	allowRenoteToExternal.value = result.allowRenoteToExternal;
 
@@ -142,13 +138,11 @@ async function addPinnedNote() {
 	const note = await os.apiWithDialog('notes/show', {
 		noteId: fromUrl ?? value,
 	});
-	pinnedNotes.value = [{
-		id: note.id,
-	}, ...pinnedNotes.value];
+	pinnedNoteIds.value.unshift(note.id);
 }
 
-function removePinnedNote(index: number) {
-	pinnedNotes.value.splice(index, 1);
+function removePinnedNote(id: string) {
+	pinnedNoteIds.value = pinnedNoteIds.value.filter(x => x !== id);
 }
 
 function save() {
@@ -165,7 +159,7 @@ function save() {
 		os.apiWithDialog('channels/update', {
 			...params,
 			channelId: props.channelId,
-			pinnedNoteIds: pinnedNotes.value.map(x => x.id),
+			pinnedNoteIds: pinnedNoteIds.value,
 		});
 	} else {
 		os.apiWithDialog('channels/create', params).then(created => {
