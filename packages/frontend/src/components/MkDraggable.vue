@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:class="[$style.forwardArea, { [$style.dropReady]: dropReadyArea[0] === item.id && dropReadyArea[1] === 'forward' }]"
 			@dragover.prevent.stop="onForwardDragover($event, item)"
 			@dragleave="onForwardDragleave($event, item)"
-			@drop.prevent.stop="onForwardDrop($event, item)"
+			@drop.prevent.stop="onDrop($event, item, true)"
 		></div>
 		<div style="position: relative; z-index: 0;">
 			<slot :item="item" :index="i" :dragStart="(ev) => onDragstart(ev, item)"></slot>
@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:class="[$style.backwardArea, { [$style.dropReady]: dropReadyArea[0] === item.id && dropReadyArea[1] === 'backward' }]"
 			@dragover.prevent.stop="onBackwardDragover($event, item)"
 			@dragleave="onBackwardDragleave($event, item)"
-			@drop.prevent.stop="onBackwardDrop($event, item)"
+			@drop.prevent.stop="onDrop($event, item, false)"
 		></div>
 	</div>
 	<slot name="footer"></slot>
@@ -113,11 +113,6 @@ function onDragstart(ev: DragEvent, item: T) {
 	}, 10);
 }
 
-function onDragend(ev: DragEvent, item: T) {
-	dragging.value = false;
-	dropReadyArea.value = [null, null];
-}
-
 function onForwardDragover(ev: DragEvent, item: T) {
 	nextTick(() => {
 		dropReadyArea.value = [item.id, 'forward'];
@@ -128,7 +123,7 @@ function onForwardDragleave(ev: DragEvent, item: T) {
 	dropReadyArea.value = [null, null];
 }
 
-function onForwardDrop(ev: DragEvent, item: T) {
+function onDrop(ev: DragEvent, item: T, forward: boolean) {
 	const dragged = getDragData(ev, 'MkDraggable');
 	dropReadyArea.value = [null, null];
 	if (dragged == null || dragged.item.id === item.id) return;
@@ -142,6 +137,7 @@ function onForwardDrop(ev: DragEvent, item: T) {
 	const newValue = [...props.modelValue];
 	if (fromIndex > -1) newValue.splice(fromIndex, 1);
 	toIndex = newValue.findIndex(x => x.id === item.id);
+	if (!forward) toIndex += 1;
 	newValue.splice(toIndex, 0, dragged.item as T);
 
 	emit('update:modelValue', newValue);
@@ -155,25 +151,6 @@ function onBackwardDragover(ev: DragEvent, item: T) {
 
 function onBackwardDragleave(ev: DragEvent, item: T) {
 	dropReadyArea.value = [null, null];
-}
-
-function onBackwardDrop(ev: DragEvent, item: T) {
-	const dragged = getDragData(ev, 'MkDraggable');
-	dropReadyArea.value = [null, null];
-	if (dragged == null || dragged.item.id === item.id) return;
-	dropCallback?.(instanceId);
-
-	const fromIndex = props.modelValue.findIndex(x => x.id === dragged.item.id);
-	let toIndex = props.modelValue.findIndex(x => x.id === item.id);
-
-	if (toIndex === -1) return;
-
-	const newValue = [...props.modelValue];
-	if (fromIndex > -1) newValue.splice(fromIndex, 1);
-	toIndex = newValue.findIndex(x => x.id === item.id);
-	newValue.splice(toIndex + 1, 0, dragged.item as T);
-
-	emit('update:modelValue', newValue);
 }
 
 function onEmptyDrop(ev: DragEvent) {
