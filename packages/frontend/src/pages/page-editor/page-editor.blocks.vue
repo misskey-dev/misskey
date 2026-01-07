@@ -4,11 +4,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkDraggable :modelValue="modelValue" tag="div" itemKey="id" handle=".drag-handle" :group="{ name: 'blocks' }" :animation="150" :swapThreshold="0.5" @update:modelValue="v => emit('update:modelValue', v)">
-	<template #item="{element}">
-		<div :class="$style.item">
+<MkDraggable
+	:modelValue="modelValue"
+	direction="vertical"
+	withGaps
+	canNest
+	group="pageBlocks"
+	@update:modelValue="v => emit('update:modelValue', v)"
+>
+	<template #default="{ item }">
+		<div>
 			<!-- divが無いとエラーになる https://github.com/SortableJS/vue.draggable.next/issues/189 -->
-			<component :is="getComponent(element.type)" :modelValue="element" @update:modelValue="updateItem" @remove="() => removeItem(element)"/>
+			<component :is="getComponent(item.type)" :modelValue="item" @update:modelValue="updateItem" @remove="() => removeItem(item)"/>
 		</div>
 	</template>
 </MkDraggable>
@@ -22,13 +29,13 @@ import XImage from './els/page-editor.el.image.vue';
 import XNote from './els/page-editor.el.note.vue';
 import MkDraggable from '@/components/MkDraggable.vue';
 
-function getComponent(type: string) {
+function getComponent(type: Misskey.entities.Page['content'][number]['type']) {
 	switch (type) {
 		case 'section': return XSection;
 		case 'text': return XText;
 		case 'image': return XImage;
 		case 'note': return XNote;
-		default: return null;
+		default: return XText;
 	}
 }
 
@@ -59,11 +66,3 @@ function removeItem(el) {
 	emit('update:modelValue', newValue);
 }
 </script>
-
-<style lang="scss" module>
-.item {
-	& + .item {
-		margin-top: 16px;
-	}
-}
-</style>
