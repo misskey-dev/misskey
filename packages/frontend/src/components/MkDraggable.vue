@@ -187,14 +187,18 @@ function onEmptyDrop(ev: DragEvent) {
 	width: 100%;
 }
 
-.items.vertical.withGaps .item {
-	padding-top: calc(var(--MI-margin) / 2);
-	padding-bottom: calc(var(--MI-margin) / 2);
+.items.horizontal.withGaps {
+	row-gap: var(--MI-margin);
 }
 
 .items.horizontal.withGaps .item {
 	padding-left: calc(var(--MI-margin) / 2);
 	padding-right: calc(var(--MI-margin) / 2);
+}
+
+.items.vertical.withGaps .item {
+	padding-top: calc(var(--MI-margin) / 2);
+	padding-bottom: calc(var(--MI-margin) / 2);
 }
 
 .forwardArea, .backwardArea {
