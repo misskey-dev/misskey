@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.header">
 		<MkSelect v-model="type" :items="typeDef" :class="$style.typeSelect">
 		</MkSelect>
-		<button v-if="draggable" class="_button" :class="$style.dragHandle">
+		<button v-if="draggable" class="_button" :class="$style.dragHandle" :draggable="true" @dragstart.stop="dragStartCallback">
 			<i class="ti ti-menu-2"></i>
 		</button>
 		<button v-if="draggable" class="_button" :class="$style.remove" @click="removeSelf">
@@ -24,10 +24,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 			manualDragStart
 			group="roleFormula"
 		>
-			<template #default="{ item }">
+			<template #default="{ item, dragStart }">
 				<div :class="$style.item">
 					<!-- divが無いとエラーになる https://github.com/SortableJS/vue.draggable.next/issues/189 -->
-					<RolesEditorFormula :modelValue="item" draggable @update:modelValue="updated => valuesItemUpdated(updated)" @remove="removeItem(item.id)"/>
+					<RolesEditorFormula
+						:modelValue="item"
+						:dragStartCallback="dragStart"
+						draggable
+						@update:modelValue="updated => valuesItemUpdated(updated)"
+						@remove="removeItem(item.id)"
+					/>
 				</div>
 			</template>
 		</MkDraggable>
@@ -70,6 +76,7 @@ const emit = defineEmits<{
 const props = defineProps<{
 	modelValue: any;
 	draggable?: boolean;
+	dragStartCallback?: (ev: DragEvent) => void;
 }>();
 
 const v = ref(deepClone(props.modelValue));

@@ -15,12 +15,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 >
 	<slot name="header"></slot>
 	<div
+		v-if="modelValue.length === 0"
+		:class="$style.emptyDropArea"
+		@dragover.prevent.stop="() => {}"
+		@dragleave="() => {}"
+		@drop.prevent.stop="onEmptyDrop($event)"
+	>
+	</div>
+	<div
 		v-for="(item, i) in modelValue"
 		:key="item.id"
 		:class="$style.item"
 		:draggable="!manualDragStart"
-		@dragstart="onDragstart($event, item)"
-		@dragend="onDragend($event, item)"
+		@dragstart.stop="onDragstart($event, item)"
 	>
 		<div
 			:class="[$style.forwardArea, { [$style.dropReady]: dropReadyArea[0] === item.id && dropReadyArea[1] === 'forward' }]"
@@ -29,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@drop.prevent.stop="onForwardDrop($event, item)"
 		></div>
 		<div style="position: relative; z-index: 0;">
-			<slot :item="item"></slot>
+			<slot :item="item" :dragStart="(ev) => onDragstart(ev, item)"></slot>
 		</div>
 		<div
 			:class="[$style.backwardArea, { [$style.dropReady]: dropReadyArea[0] === item.id && dropReadyArea[1] === 'backward' }]"
@@ -55,7 +62,7 @@ import { nextTick } from 'vue';
 import { getDragData, setDragData } from '@/drag-and-drop.js';
 
 const slots = defineSlots<{
-	default(props: { item: T }): any;
+	default(props: { item: T; dragStart: (ev: DragEvent) => void }): any;
 	header(): any;
 	footer(): any;
 }>();
@@ -84,6 +91,13 @@ function onDragstart(ev: DragEvent, item: T) {
 	if (ev.dataTransfer == null) return;
 	ev.dataTransfer.effectAllowed = 'move';
 	setDragData(ev, 'MkDraggable', { item, instanceId });
+
+	const target = ev.target as HTMLElement;
+	target.addEventListener('dragend', (ev) => {
+		dragging.value = false;
+		dropReadyArea.value = [null, null];
+	}, { once: true });
+
 	dropCallback = (targetInstanceId) => {
 		if (targetInstanceId === instanceId) return;
 		const newValue = props.modelValue.filter(x => x.id !== item.id);
@@ -158,6 +172,14 @@ function onBackwardDrop(ev: DragEvent, item: T) {
 	newValue.splice(toIndex + 1, 0, dragged.item as T);
 
 	emit('update:modelValue', newValue);
+}
+
+function onEmptyDrop(ev: DragEvent) {
+	const dragged = getDragData(ev, 'MkDraggable');
+	if (dragged == null) return;
+	dropCallback?.(instanceId);
+
+	emit('update:modelValue', [dragged.item as T]);
 }
 </script>
 
@@ -290,5 +312,15 @@ function onBackwardDrop(ev: DragEvent, item: T) {
 		width: 100%;
 		height: 2px;
 	}
+}
+
+.items.horizontal .emptyDropArea {
+	width: 40px;
+	height: 40px;
+}
+
+.items.vertical .emptyDropArea {
+	width: 100%;
+	height: 50px;
 }
 </style>
