@@ -31,18 +31,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 	>
 		<div
 			:class="[$style.forwardArea, { [$style.dropReady]: dropReadyArea[0] === item.id && dropReadyArea[1] === 'forward' }]"
-			@dragover.prevent.stop="onForwardDragover($event, item)"
-			@dragleave="onForwardDragleave($event, item)"
-			@drop.prevent.stop="onDrop($event, item, true)"
+			@dragover.prevent.stop="onDragover($event, item, false)"
+			@dragleave="onDragleave($event, item)"
+			@drop.prevent.stop="onDrop($event, item, false)"
 		></div>
 		<div style="position: relative; z-index: 0;">
 			<slot :item="item" :index="i" :dragStart="(ev) => onDragstart(ev, item)"></slot>
 		</div>
 		<div
 			:class="[$style.backwardArea, { [$style.dropReady]: dropReadyArea[0] === item.id && dropReadyArea[1] === 'backward' }]"
-			@dragover.prevent.stop="onBackwardDragover($event, item)"
-			@dragleave="onBackwardDragleave($event, item)"
-			@drop.prevent.stop="onDrop($event, item, false)"
+			@dragover.prevent.stop="onDragover($event, item, true)"
+			@dragleave="onDragleave($event, item)"
+			@drop.prevent.stop="onDrop($event, item, true)"
 		></div>
 	</div>
 	<slot name="footer"></slot>
@@ -113,17 +113,17 @@ function onDragstart(ev: DragEvent, item: T) {
 	}, 10);
 }
 
-function onForwardDragover(ev: DragEvent, item: T) {
+function onDragover(ev: DragEvent, item: T, backward: boolean) {
 	nextTick(() => {
-		dropReadyArea.value = [item.id, 'forward'];
+		dropReadyArea.value = [item.id, backward ? 'backward' : 'forward'];
 	});
 }
 
-function onForwardDragleave(ev: DragEvent, item: T) {
+function onDragleave(ev: DragEvent, item: T) {
 	dropReadyArea.value = [null, null];
 }
 
-function onDrop(ev: DragEvent, item: T, forward: boolean) {
+function onDrop(ev: DragEvent, item: T, backward: boolean) {
 	const dragged = getDragData(ev, 'MkDraggable');
 	dropReadyArea.value = [null, null];
 	if (dragged == null || dragged.item.id === item.id) return;
@@ -135,20 +135,10 @@ function onDrop(ev: DragEvent, item: T, forward: boolean) {
 	const newValue = [...props.modelValue];
 	if (fromIndex > -1) newValue.splice(fromIndex, 1);
 	toIndex = newValue.findIndex(x => x.id === item.id);
-	if (!forward) toIndex += 1;
+	if (backward) toIndex += 1;
 	newValue.splice(toIndex, 0, dragged.item as T);
 
 	emit('update:modelValue', newValue);
-}
-
-function onBackwardDragover(ev: DragEvent, item: T) {
-	nextTick(() => {
-		dropReadyArea.value = [item.id, 'backward'];
-	});
-}
-
-function onBackwardDragleave(ev: DragEvent, item: T) {
-	dropReadyArea.value = [null, null];
 }
 
 function onEmptyDrop(ev: DragEvent) {
