@@ -155,7 +155,7 @@ import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { userPage } from '@/filters/user.js';
-import * as sound from '@/utility/sound.js';
+import { soundManager } from '@/sound.js';
 import * as os from '@/os.js';
 import { confetti } from '@/utility/confetti.js';
 import { genId } from '@/utility/id.js';
@@ -269,7 +269,7 @@ function putStone(pos: number) {
 
 	triggerRef(engine);
 
-	sound.playUrl('/client-assets/reversi/put.mp3', {
+	soundManager.playUrl('/client-assets/reversi/put.mp3', {
 		volume: 1,
 		playbackRate: 1,
 	});
@@ -319,7 +319,7 @@ async function onStreamLog(log) {
 	if (log.id == null || !appliedOps.includes(log.id)) {
 		switch (log.operation) {
 			case 'put': {
-				sound.playUrl('/client-assets/reversi/put.mp3', {
+				soundManager.playUrl('/client-assets/reversi/put.mp3', {
 					volume: 1,
 					playbackRate: 1,
 				});
@@ -356,12 +356,12 @@ function onStreamEnded(x) {
 			duration: 1000 * 3,
 		});
 
-		sound.playUrl('/client-assets/reversi/win.mp3', {
+		soundManager.playUrl('/client-assets/reversi/win.mp3', {
 			volume: 1,
 			playbackRate: 1,
 		});
 	} else {
-		sound.playUrl('/client-assets/reversi/lose.mp3', {
+		soundManager.playUrl('/client-assets/reversi/lose.mp3', {
 			volume: 1,
 			playbackRate: 1,
 		});

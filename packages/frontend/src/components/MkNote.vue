@@ -223,7 +223,7 @@ import { notePage } from '@/filters/note.js';
 import { userPage } from '@/filters/user.js';
 import number from '@/filters/number.js';
 import * as os from '@/os.js';
-import * as sound from '@/utility/sound.js';
+import { soundManager } from '@/sound.js';
 import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
 import { reactionPicker } from '@/utility/reaction-picker.js';
 import { extractUrlFromMfm } from '@/utility/extract-url-from-mfm.js';
@@ -410,7 +410,7 @@ const keymap = {
 } as const satisfies Keymap;
 
 provide(DI.mfmEmojiReactCallback, (reaction) => {
-	sound.playMisskeySfx('reaction');
+	soundManager.playSfx('reaction');
 	misskeyApi('notes/reactions/create', {
 		noteId: appearNote.id,
 		reaction: reaction,
@@ -502,7 +502,7 @@ async function react() {
 
 	showMovedDialog();
 	if (appearNote.reactionAcceptance === 'likeOnly') {
-		sound.playMisskeySfx('reaction');
+		soundManager.playSfx('reaction');
 
 		if (props.mock) {
 			return;
@@ -538,7 +538,7 @@ async function react() {
 				if (confirm.canceled) return;
 			}
 
-			sound.playMisskeySfx('reaction');
+			soundManager.playSfx('reaction');
 
 			if (props.mock) {
 				emit('reaction', reaction);

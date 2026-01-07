@@ -100,7 +100,7 @@ import type { MenuItem } from '@/types/menu.js';
 import type { PageHeaderItem } from '@/types/page-header.js';
 import * as os from '@/os.js';
 import { useStream } from '@/stream.js';
-import * as sound from '@/utility/sound.js';
+import { soundManager } from '@/sound.js';
 import { i18n } from '@/i18n.js';
 import { ensureSignin } from '@/i.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -288,7 +288,7 @@ async function fetchMore() {
 }
 
 function onMessage(message: Misskey.entities.ChatMessageLite) {
-	sound.playMisskeySfx('chatMessage');
+	soundManager.playSfx('chatMessage');
 
 	messages.value.unshift(normalizeMessage(message));
 
