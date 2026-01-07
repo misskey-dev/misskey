@@ -11,20 +11,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkContainer :showHeader="false">
 				<MkDraggable
 					v-model="items"
-					itemKey="id"
-					:animation="150"
-					:handle="'.' + $style.itemHandle"
-					@start="e => e.item.classList.add('active')"
-					@end="e => e.item.classList.remove('active')"
+					direction="vertical"
 				>
-					<template #item="{element,index}">
+					<template #default="{ item }">
 						<div
-							v-if="element.type === '-' || navbarItemDef[element.type]"
+							v-if="item.type === '-' || navbarItemDef[item.type]"
 							:class="$style.item"
 						>
 							<button class="_button" :class="$style.itemHandle"><i class="ti ti-menu"></i></button>
-							<i class="ti-fw" :class="[$style.itemIcon, navbarItemDef[element.type]?.icon]"></i><span :class="$style.itemText">{{ navbarItemDef[element.type]?.title ?? i18n.ts.divider }}</span>
-							<button class="_button" :class="$style.itemRemove" @click="removeItem(index)"><i class="ti ti-x"></i></button>
+							<i class="ti-fw" :class="[$style.itemIcon, navbarItemDef[item.type]?.icon]"></i><span :class="$style.itemText">{{ navbarItemDef[item.type]?.title ?? i18n.ts.divider }}</span>
+							<button class="_button" :class="$style.itemRemove" @click="removeItem(item.id)"><i class="ti ti-x"></i></button>
 						</div>
 					</template>
 				</MkDraggable>
@@ -97,8 +93,8 @@ async function addItem() {
 	}];
 }
 
-function removeItem(index: number) {
-	items.value.splice(index, 1);
+function removeItem(itemId: string) {
+	items.value = items.value.filter(i => i.id !== itemId);
 }
 
 function save() {
