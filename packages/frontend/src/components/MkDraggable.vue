@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		v-for="(item, i) in modelValue"
 		:key="item"
 		:class="$style.item"
-		draggable="true"
+		:draggable="!manualDragStart"
 		@dragstart="onDragstart($event, item)"
 		@dragend="onDragend($event, item)"
 	>
@@ -50,8 +50,10 @@ const props = withDefaults(defineProps<{
 	modelValue: string[];
 	direction: 'horizontal' | 'vertical';
 	group?: string | null;
+	manualDragStart?: boolean;
 }>(), {
 	group: null,
+	manualDragStart: false,
 });
 
 const emit = defineEmits<{
@@ -63,6 +65,7 @@ const dropReadyArea = ref<[string | null, 'forward' | 'backward' | null]>([null,
 const group = props.group ?? Math.random().toString(36);
 
 function onDragstart(ev: DragEvent, k: string) {
+	if (ev.dataTransfer == null) return;
 	ev.dataTransfer.effectAllowed = 'move';
 	setDragData(ev, 'MkDraggable', k);
 
@@ -169,12 +172,13 @@ function onBackwardDrop(ev: DragEvent, k: string) {
 	position: relative;
 }
 
+.items.vertical .item {
+	width: 100%;
+}
+
 .forwardArea, .backwardArea {
 	position: absolute;
 	z-index: 1;
-	top: 0;
-	width: 50%;
-	height: 100%;
 	pointer-events: none;
 }
 
@@ -184,30 +188,75 @@ function onBackwardDrop(ev: DragEvent, k: string) {
 	}
 }
 
-.forwardArea {
-	left: 0;
+.items.horizontal {
+	.forwardArea {
+		top: 0;
+		left: 0;
+		width: 50%;
+		height: 100%;
+	}
+
+	.backwardArea {
+		top: 0;
+		right: 0;
+		width: 50%;
+		height: 100%;
+	}
 }
 
-.backwardArea {
-	right: 0;
+.items.vertical {
+	.forwardArea {
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 50%;
+	}
+
+	.backwardArea {
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		height: 50%;
+	}
 }
 
 .dropReady::before {
 	content: '';
 	position: absolute;
-	top: 0;
-	width: 2px;
-	height: 100%;
 	background: var(--MI_THEME-accent);
 	border-radius: 999px;
 	pointer-events: none;
 }
 
-.forwardArea.dropReady::before {
-	left: -1px;
+.items.horizontal {
+	.forwardArea.dropReady::before {
+		top: 0;
+		left: -1px;
+		width: 2px;
+		height: 100%;
+	}
+
+	.backwardArea.dropReady::before {
+		top: 0;
+		right: -1px;
+		width: 2px;
+		height: 100%;
+	}
 }
 
-.backwardArea.dropReady::before {
-	right: -1px;
+.items.vertical {
+	.forwardArea.dropReady::before {
+		top: -1px;
+		left: 0;
+		width: 100%;
+		height: 2px;
+	}
+
+	.backwardArea.dropReady::before {
+		bottom: -1px;
+		left: 0;
+		width: 100%;
+		height: 2px;
+	}
 }
 </style>
