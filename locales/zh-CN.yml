@@ -700,7 +700,7 @@ showMutedWord: "显示已折叠的关键词"
 hardWordMuteDescription: "屏蔽包含指定关键词的帖子。与折叠关键词不同，帖子将完全不会显示。"
 regexpError: "正则表达式错误"
 regexpErrorDescription: "{tab} 折叠关键词的第 {line} 行的正则表达式有错误："
-instanceMute: "已隐藏的服务器"
+instanceMute: "已屏蔽的服务器"
 userSaysSomething: "{name} 说了什么,但是被屏蔽词过滤了"
 userSaysSomethingAbout: "{name} 说了关于「{word}」的什么"
 makeActive: "启用"
@@ -2255,7 +2255,7 @@ _menuDisplay:
   top: "顶部"
   hide: "隐藏"
 _wordMute:
-  muteWords: "要隐藏的词"
+  muteWords: "要屏蔽的词"
   muteWordsDescription: "AND 条件用空格分隔，OR 条件用换行符分隔。"
   muteWordsDescription2: "正则表达式用斜线包裹"
 _instanceMute:
