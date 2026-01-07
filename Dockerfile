@@ -10,7 +10,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache \
 	&& apt-get update \
 	&& apt-get install -yqq --no-install-recommends \
-	build-essential
+	build-essential wget
 
 WORKDIR /misskey
 
@@ -48,7 +48,7 @@ FROM --platform=$TARGETPLATFORM debian:bookworm AS target-builder
 
 RUN apt-get update \
 	&& apt-get install -yqq --no-install-recommends \
-	build-essential
+	build-essential wget
 
 WORKDIR /misskey
 
@@ -85,7 +85,7 @@ RUN apt-get update \
 
 # add package.json to add pnpm
 COPY ./package.json ./package.json
-RUN wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
+RUN curl -fsSL https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
 
 USER misskey
 WORKDIR /misskey
