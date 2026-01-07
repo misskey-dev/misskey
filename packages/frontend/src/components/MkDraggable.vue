@@ -60,7 +60,7 @@ let dropCallback: ((targetInstanceId: string) => void) | null = null;
 <script lang="ts" setup generic="T extends { id: string; }">
 import { nextTick } from 'vue';
 import { getDragData, setDragData } from '@/drag-and-drop.js';
-import { randomId } from '@/utility/random-id.js';
+import { genId } from '@/utility/id.js';
 
 const slots = defineSlots<{
 	default(props: { item: T; index: number; dragStart: (ev: DragEvent) => void }): any;
@@ -87,7 +87,7 @@ const emit = defineEmits<{
 }>();
 
 const dropReadyArea = ref<[T['id'] | null, 'forward' | 'backward' | null]>([null, null]);
-const instanceId = randomId();
+const instanceId = genId();
 const group = props.group ?? instanceId;
 
 function onDragstart(ev: DragEvent, item: T) {
