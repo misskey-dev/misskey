@@ -16,7 +16,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref } from 'vue';
 const editMode = ref(false);
 </script>
+
 <script lang="ts" setup>
+import type { Widget } from '@/components/MkWidgets.vue';
 import XWidgets from '@/components/MkWidgets.vue';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
@@ -36,26 +38,26 @@ const widgets = computed(() => {
 	return prefer.r.widgets.value.filter(w => w.place !== 'left');
 });
 
-function addWidget(widget) {
+function addWidget(widget: Widget) {
 	prefer.commit('widgets', [{
 		...widget,
 		place: props.place,
 	}, ...prefer.s.widgets]);
 }
 
-function removeWidget(widget) {
+function removeWidget(widget: Widget) {
 	prefer.commit('widgets', prefer.s.widgets.filter(w => w.id !== widget.id));
 }
 
-function updateWidget({ id, data }) {
-	prefer.commit('widgets', prefer.s.widgets.map(w => w.id === id ? {
+function updateWidget(widget: { id: Widget['id']; data: Widget['data']; }) {
+	prefer.commit('widgets', prefer.s.widgets.map(w => w.id === widget.id ? {
 		...w,
-		data,
+		data: widget.data,
 		place: props.place,
 	} : w));
 }
 
-function updateWidgets(thisWidgets) {
+function updateWidgets(thisWidgets: Widget[]) {
 	if (props.place === null) {
 		prefer.commit('widgets', thisWidgets);
 		return;

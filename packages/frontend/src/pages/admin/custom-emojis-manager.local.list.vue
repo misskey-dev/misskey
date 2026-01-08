@@ -51,6 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts">
 import type { SortOrder } from '@/components/MkSortOrderEditor.define.js';
 import type { GridSortOrderKey } from './custom-emojis-manager.impl.js';
+import type { PageHeaderItem } from '@/types/page-header.js';
 
 export type EmojiSearchQuery = {
 	name: string | null;
@@ -525,7 +526,7 @@ const headerPageMetadata = computed(() => ({
 	icon: 'ti ti-icons',
 }));
 
-const headerActions = computed(() => [{
+const headerActions = computed<PageHeaderItem[]>(() => [{
 	icon: 'ti ti-search',
 	text: i18n.ts.search,
 	handler: async () => {
@@ -552,7 +553,7 @@ const headerActions = computed(() => [{
 }, {
 	icon: 'ti ti-list-numbers',
 	text: i18n.ts._customEmojisManager._gridCommon.searchLimit,
-	handler: (ev: MouseEvent) => {
+	handler: (ev) => {
 		async function changeSearchLimit(to: number) {
 			if (updatedItemsCount.value > 0) {
 				const { canceled } = await os.confirm({

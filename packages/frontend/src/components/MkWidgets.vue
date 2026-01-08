@@ -81,9 +81,10 @@ const emit = defineEmits<{
 }>();
 
 const widgetRefs = {};
-const configWidget = (id: string) => {
+
+function configWidget(id: string) {
 	widgetRefs[id].configure();
-};
+}
 
 const {
 	model: widgetAdderSelected,
@@ -93,7 +94,7 @@ const {
 	initialValue: null,
 });
 
-const addWidget = () => {
+function addWidget() {
 	if (widgetAdderSelected.value == null) return;
 
 	emit('addWidget', {
@@ -103,13 +104,15 @@ const addWidget = () => {
 	});
 
 	widgetAdderSelected.value = null;
-};
-const removeWidget = (widget) => {
+}
+
+function removeWidget(widget: Widget) {
 	emit('removeWidget', widget);
-};
-const updateWidget = (id: Widget['id'], data: Widget['data']) => {
+}
+
+function updateWidget(id: Widget['id'], data: Widget['data']) {
 	emit('updateWidget', { id, data });
-};
+}
 
 function onContextmenu(widget: Widget, ev: MouseEvent) {
 	const element = ev.target as HTMLElement | null;
