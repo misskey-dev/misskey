@@ -910,7 +910,7 @@ const rolePermission = computed<GetMkSelectValueTypesFromDef<typeof rolePermissi
 
 const q = ref('');
 
-function getPriorityIcon(option) {
+function getPriorityIcon(option: { priority: number }): string {
 	if (option.priority === 2) return 'ti ti-arrows-up';
 	if (option.priority === 1) return 'ti ti-arrow-narrow-up';
 	return 'ti ti-point';
