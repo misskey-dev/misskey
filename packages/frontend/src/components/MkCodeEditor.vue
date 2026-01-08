@@ -68,7 +68,7 @@ function focus() {
 }
 
 function onInput(ev: InputEvent) {
-	v.value = ev.target?.value ?? v.value;
+	v.value = (inputEl.value?.value) ?? '';
 	changed.value = true;
 	emit('change', ev);
 }
