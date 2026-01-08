@@ -62,7 +62,7 @@ export const navbarItemDef = reactive({
 	lookup: {
 		title: i18n.ts.lookup,
 		icon: 'ti ti-world-search',
-		action: (ev) => {
+		action: (ev: MouseEvent) => {
 			lookup();
 		},
 	},
@@ -158,21 +158,21 @@ export const navbarItemDef = reactive({
 	about: {
 		title: i18n.ts.about,
 		icon: 'ti ti-info-circle',
-		action: (ev) => {
+		action: (ev: MouseEvent) => {
 			openInstanceMenu(ev);
 		},
 	},
 	tools: {
 		title: i18n.ts.tools,
 		icon: 'ti ti-tool',
-		action: (ev) => {
+		action: (ev: MouseEvent) => {
 			openToolsMenu(ev);
 		},
 	},
 	reload: {
 		title: i18n.ts.reload,
 		icon: 'ti ti-refresh',
-		action: (ev) => {
+		action: (ev: MouseEvent) => {
 			window.location.reload();
 		},
 	},
@@ -185,7 +185,7 @@ export const navbarItemDef = reactive({
 	cacheClear: {
 		title: i18n.ts.clearCache,
 		icon: 'ti ti-trash',
-		action: (ev) => {
+		action: (ev: MouseEvent) => {
 			clearCache();
 		},
 	},
