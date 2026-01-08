@@ -798,8 +798,10 @@ async function onPaste(ev: ClipboardEvent) {
 	}
 }
 
-function onDragover(ev) {
+function onDragover(ev: DragEvent) {
+	if (ev.dataTransfer == null) return;
 	if (!ev.dataTransfer.items[0]) return;
+
 	const isFile = ev.dataTransfer.items[0].kind === 'file';
 	if (isFile || checkDragDataType(ev, ['driveFiles'])) {
 		ev.preventDefault();
@@ -925,7 +927,7 @@ async function uploadFiles() {
 }
 
 async function post(ev?: MouseEvent) {
-	if (ev) {
+	if (ev != null) {
 		const el = (ev.currentTarget ?? ev.target) as HTMLElement | null;
 
 		if (el && prefer.s.animation) {

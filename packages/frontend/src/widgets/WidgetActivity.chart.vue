@@ -53,7 +53,7 @@ const pointsReply = ref<string>();
 const pointsRenote = ref<string>();
 const pointsTotal = ref<string>();
 
-function dragListen(fn) {
+function dragListen(fn: (ev: MouseEvent) => void) {
 	window.addEventListener('mousemove', fn);
 	window.addEventListener('mouseleave', dragClear.bind(null, fn));
 	window.addEventListener('mouseup', dragClear.bind(null, fn));
@@ -65,7 +65,7 @@ function dragClear(fn) {
 	window.removeEventListener('mouseup', dragClear);
 }
 
-function onMousedown(ev) {
+function onMousedown(ev: MouseEvent) {
 	const clickX = ev.clientX;
 	const clickY = ev.clientY;
 	const baseZoom = zoom.value;
