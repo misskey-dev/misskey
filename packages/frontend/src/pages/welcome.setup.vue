@@ -89,7 +89,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 					<Suspense>
 						<template #default>
-							<MkServerSetupWizard :token="token" @finished="onWizardFinished"/>
+							<MkServerSetupWizard :token="token!" @finished="onWizardFinished"/>
 						</template>
 						<template #fallback>
 							<MkLoading/>
@@ -190,6 +190,7 @@ function skipSettings() {
 }
 
 function finish() {
+	if (token == null) return;
 	login(token);
 }
 </script>
