@@ -81,7 +81,7 @@ export type PreferencesProfile = {
 };
 
 export type PossiblyNonNormalizedPreferencesProfile = Omit<PreferencesProfile, 'preferences'> & {
-	preferences: Record<string, any>;
+	preferences: Record<string, [scope: Scope, value: any, meta: ValueMeta][]>;
 };
 
 export type StorageProvider = {
@@ -112,17 +112,17 @@ type PreferencesManagerEvents = {
 export function definePreferences<T extends Record<string, unknown>>(x: {
 	[K in keyof T]: PreferencesDefinitionRecord<T[K]>
 }): {
-		[K in keyof T]: PreferencesDefinitionRecord<T[K]>
-	} {
+	[K in keyof T]: PreferencesDefinitionRecord<T[K]>
+} {
 	return x;
 }
 
 export function getInitialPrefValue<K extends keyof PREF>(k: K): ValueOf<K> {
-	const _default = PREF_DEF[k as string].default;
+	const _default = PREF_DEF[k].default;
 	if (typeof _default === 'function') { // factory
-		return _default();
+		return _default() as ValueOf<K>;
 	} else {
-		return _default;
+		return _default as unknown as ValueOf<K>;
 	}
 }
 
@@ -146,7 +146,7 @@ function createEmptyProfile(): PossiblyNonNormalizedPreferencesProfile {
 }
 
 function normalizePreferences(preferences: PossiblyNonNormalizedPreferencesProfile['preferences'], account: { id: string } | null): PreferencesProfile['preferences'] {
-	const data = {} as PreferencesProfile['preferences'];
+	const data = {} as Record<string, [scope: Scope, value: any, meta: ValueMeta][]>;
 	for (const key in PREF_DEF) {
 		const records = preferences[key];
 		if (records == null || records.length === 0) {
@@ -183,7 +183,7 @@ function normalizePreferences(preferences: PossiblyNonNormalizedPreferencesProfi
 		}
 	}
 
-	return data;
+	return data as PreferencesProfile['preferences'];
 }
 
 // TODO: PreferencesManagerForGuest のような非ログイン専用のクラスを分離すればthis.currentAccountのnullチェックやaccountがnullであるスコープのレコード挿入などが不要になり綺麗になるかもしれない
@@ -223,9 +223,10 @@ export class PreferencesManager extends EventEmitter<PreferencesManagerEvents> {
 
 		const states = this.genStates();
 
+		// apply states
 		for (const key in states) {
-			this.s[key] = states[key];
-			this.r[key] = ref(this.s[key]);
+			(this.s[key as keyof PREF] as any) = states[key as keyof PREF];
+			(this.r[key as keyof PREF] as Ref<any>) = ref(this.s[key as keyof PREF]);
 		}
 
 		// normalizeの結果変わっていたら保存
