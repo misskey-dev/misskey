@@ -239,11 +239,11 @@ function cancelMatching() {
 	}
 }
 
-async function accept(user) {
+async function accept(user: Misskey.entities.UserLite) {
 	const game = await misskeyApi('reversi/match', {
 		userId: user.id,
 	});
-	if (game) {
+	if (game != null) {
 		startGame(game);
 	}
 }
