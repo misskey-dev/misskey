@@ -44,9 +44,9 @@ export class SnowfallEffect {
 		start: number;
 		previous: number;
 	} = {
-			start: 0,
-			previous: 0,
-		};
+		start: 0,
+		previous: 0,
+	};
 	private raf = 0;
 
 	private density: number = 1 / 90;
@@ -167,7 +167,7 @@ export class SnowfallEffect {
 		return { ...this.WIND };
 	}
 
-	private initShader(type, source): WebGLShader {
+	private initShader(type: number, source: string): WebGLShader {
 		const { gl } = this;
 		const shader = gl.createShader(type);
 		if (shader == null) throw new Error('Failed to create shader');
@@ -224,7 +224,7 @@ export class SnowfallEffect {
 		}
 	}
 
-	private setBuffer(name: string, value?) {
+	private setBuffer(name: string, value?: number[] | undefined) {
 		const { gl, buffers } = this;
 		const buffer = buffers[name];
 
@@ -253,7 +253,7 @@ export class SnowfallEffect {
 		}
 	}
 
-	private setUniform(name: string, value?) {
+	private setUniform(name: string, value?: number | number[] | Float32Array<ArrayBufferLike> | undefined) {
 		const { gl, uniforms } = this;
 		const uniform = uniforms[name];
 		const setter = this.UNIFORM_SETTERS[uniform.type];
