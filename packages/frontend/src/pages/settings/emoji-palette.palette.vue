@@ -18,19 +18,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div>
 		<div v-panel style="border-radius: 6px;">
-			<Sortable
-				v-model="emojis"
+			<MkDraggable
+				:modelValue="emojis.map(emoji => ({ id: emoji, emoji }))"
+				direction="horizontal"
 				:class="$style.emojis"
-				:itemKey="item => item"
-				:animation="150"
-				:delay="100"
-				:delayOnTouchOnly="true"
-				:group="{ name: 'SortableEmojiPalettes' }"
+				group="emojiPalettes"
+				@update:modelValue="v => emojis = v.map(x => x.emoji)"
 			>
-				<template #item="{element}">
-					<button class="_button" :class="$style.emojisItem" @click="remove(element, $event)">
-						<MkCustomEmoji v-if="element[0] === ':'" :name="element" :normal="true" :fallbackToImage="true"/>
-						<MkEmoji v-else :emoji="element" :normal="true"/>
+				<template #default="{ item }">
+					<button class="_button" :class="$style.emojisItem" @click="remove(item.emoji, $event)">
+						<!-- pointer-eventsをnoneにしておかないとiOSなどでドラッグしたときに画像の方に判定が持ってかれる -->
+						<MkCustomEmoji v-if="item.emoji[0] === ':'" style="pointer-events: none;" :name="item.emoji" :normal="true" :fallbackToImage="true"/>
+						<MkEmoji v-else style="pointer-events: none;" :emoji="item.emoji" :normal="true"/>
 					</button>
 				</template>
 				<template #footer>
@@ -38,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<i class="ti ti-plus"></i>
 					</button>
 				</template>
-			</Sortable>
+			</MkDraggable>
 		</div>
 		<div :class="$style.editorCaption">{{ i18n.ts.reactionSettingDescription2 }}</div>
 	</div>
@@ -47,7 +46,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
-import Sortable from 'vuedraggable';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
@@ -55,6 +53,7 @@ import { deepClone } from '@/utility/clone.js';
 import MkCustomEmoji from '@/components/global/MkCustomEmoji.vue';
 import MkEmoji from '@/components/global/MkEmoji.vue';
 import MkFolder from '@/components/MkFolder.vue';
+import MkDraggable from '@/components/MkDraggable.vue';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 
 const props = defineProps<{

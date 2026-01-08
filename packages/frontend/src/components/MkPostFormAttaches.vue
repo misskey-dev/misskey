@@ -5,37 +5,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div v-show="props.modelValue.length != 0" :class="$style.root">
-	<Sortable
+	<MkDraggable
 		:modelValue="props.modelValue"
 		:class="$style.files"
-		itemKey="id"
-		:animation="150"
-		:delay="100"
-		:delayOnTouchOnly="true"
-		:disabled="props.draggable === false"
+		direction="horizontal"
+		withGaps
 		@update:modelValue="v => emit('update:modelValue', v)"
 	>
-		<template #item="{ element }">
+		<template #default="{ item }">
 			<div
 				:class="[$style.file, { [$style.dragEnabled]: props.draggable !== false }]"
 				role="button"
 				tabindex="0"
-				@click="handleClick(element, $event)"
-				@keydown.space.enter="showFileMenu(element, $event)"
-				@contextmenu.prevent="showFileMenu(element, $event)"
+				@click="handleClick(item, $event)"
+				@keydown.space.enter="showFileMenu(item, $event)"
+				@contextmenu.prevent="showFileMenu(item, $event)"
 			>
-				<MkDriveFileThumbnail v-if="element.type === 'driveFile'" :data-id="element.id" :class="$style.thumbnail" :file="element.file" fit="cover"/>
-				<template v-else-if="element.type === 'uploaderItem'">
-					<img v-if="element.file.thumbnail" :src="element.file.thumbnail" :class="[$style.thumbnail, $style.uploaderThumbnail]" />
+				<MkDriveFileThumbnail v-if="item.type === 'driveFile'" :data-id="item.id" :class="$style.thumbnail" :file="item.file" fit="cover"/>
+				<template v-else-if="item.type === 'uploaderItem'">
+					<img v-if="item.file.thumbnail" :src="item.file.thumbnail" :class="[$style.thumbnail, $style.uploaderThumbnail]" />
 					<div v-else v-panel :class="[$style.thumbnail, $style.uploaderThumbnailIcon]">
-						<i :class="[$style.icon, getFileTypeIcon(getFileType(element.file.file.type))]"></i>
+						<i :class="[$style.icon, getFileTypeIcon(getFileType(item.file.file.type))]"></i>
 					</div>
-					<div :class="[$style.uploadProgressWrapper, { uploading: element.file.uploading }]">
+					<div :class="[$style.uploadProgressWrapper, { uploading: item.file.uploading }]">
 						<svg :class="$style.uploadProgressSvg" viewBox="0 0 64 64">
 							<circle
 								:class="$style.uploadProgressFg"
 								cx="32" cy="32" r="16"
-								:stroke-dasharray="progressDashArray(element.file)"
+								:stroke-dasharray="progressDashArray(item.file)"
 							/>
 						</svg>
 						<div :class="$style.uploadAbortButton">
@@ -44,12 +41,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</div>
 				</template>
-				<div v-if="(element.type === 'driveFile' && element.file.isSensitive) || (element.type === 'uploaderItem' && element.file.isSensitive)" :class="$style.sensitive">
+				<div v-if="(item.type === 'driveFile' && item.file.isSensitive) || (item.type === 'uploaderItem' && item.file.isSensitive)" :class="$style.sensitive">
 					<i class="ti ti-eye-exclamation" style="margin: auto;"></i>
 				</div>
 			</div>
 		</template>
-	</Sortable>
+	</MkDraggable>
 	<p
 		:class="[$style.remain, {
 			[$style.exceeded]: props.modelValue.length > 16,
@@ -75,20 +72,19 @@ export type Attach = {
 </script>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, inject } from 'vue';
+import { inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { getFileType, getFileTypeIcon } from '@/utility/file-type.js';
 import MkDriveFileThumbnail from '@/components/MkDriveFileThumbnail.vue';
+import MkDraggable from '@/components/MkDraggable.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
 import { globalEvents } from '@/events.js';
-
-const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
 const props = defineProps<{
 	draggable?: boolean;
@@ -281,8 +277,7 @@ function showFileMenu(attach: Attach, ev: MouseEvent | KeyboardEvent): void {
 	position: relative;
 	width: 64px;
 	height: 64px;
-	margin-right: 4px;
-	border-radius: 8px;
+	border-radius: 4px;
 	overflow: hidden;
 
 	&:focus-visible {

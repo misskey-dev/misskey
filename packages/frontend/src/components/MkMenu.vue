@@ -39,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<span><MkEllipsis/></span>
 			</span>
 
-			<div v-else-if="item.type === 'component'" role="menuitem" tabindex="-1" :class="[$style.componentItem]">
+			<div v-else-if="item.type === 'component'" role="menuitem" tabindex="-1">
 				<component :is="item.component" v-bind="item.props"/>
 			</div>
 

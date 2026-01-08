@@ -35,18 +35,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="select === 'folder'">
 			<template v-if="folder == null">
 				<MkButton v-if="!isRootSelected" @click="isRootSelected = true">
-					<i class="ti ti-square"></i> {{ i18n.ts.selectThisFolder }}
+					<i class="ti ti-square"></i> {{ i18n.ts.selectFolder }}
 				</MkButton>
 				<MkButton v-else @click="isRootSelected = false">
-					<i class="ti ti-checkbox"></i> {{ i18n.ts.unselectThisFolder }}
+					<i class="ti ti-checkbox"></i> {{ i18n.ts.unselectFolder }}
 				</MkButton>
 			</template>
 			<template v-else>
 				<MkButton v-if="!selectedFolders.some(f => f.id === folder!.id)" @click="selectedFolders.push(folder)">
-					<i class="ti ti-square"></i> {{ i18n.ts.selectThisFolder }}
+					<i class="ti ti-square"></i> {{ i18n.ts.selectFolder }}
 				</MkButton>
 				<MkButton v-else @click="selectedFolders = selectedFolders.filter(f => f.id !== folder!.id)">
-					<i class="ti ti-checkbox"></i> {{ i18n.ts.unselectThisFolder }}
+					<i class="ti ti-checkbox"></i> {{ i18n.ts.unselectFolder }}
 				</MkButton>
 			</template>
 		</div>
@@ -60,14 +60,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@drop.prevent.stop="onDrop"
 			@contextmenu.stop="onContextmenu"
 		>
-			<MkTip k="drive"><div v-html="i18n.ts.driveAboutTip"></div></MkTip>
+			<div :class="$style.tipContainer">
+				<MkTip k="drive"><div v-html="i18n.ts.driveAboutTip"></div></MkTip>
+			</div>
 
 			<div :class="$style.folders">
 				<XFolder
 					v-for="(f, i) in foldersPaginator.items.value"
 					:key="f.id"
 					v-anim="i"
-					:class="$style.folder"
 					:folder="f"
 					:selectMode="select === 'folder'"
 					:isSelected="selectedFolders.some(x => x.id === f.id)"
@@ -81,38 +82,67 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<MkButton v-if="foldersPaginator.canFetchOlder.value" primary rounded @click="foldersPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
 
-			<MkStickyContainer v-for="(item, i) in filesTimeline" :key="`${item.date.getFullYear()}/${item.date.getMonth() + 1}`">
-				<template #header>
-					<div :class="$style.date">
-						<span><i class="ti ti-chevron-down"></i> {{ item.date.getFullYear() }}/{{ item.date.getMonth() + 1 }}</span>
-					</div>
-				</template>
+			<template v-if="shouldBeGroupedByDate">
+				<MkStickyContainer v-for="(item, i) in filesTimeline" :key="`${item.date.getFullYear()}/${item.date.getMonth() + 1}`">
+					<template #header>
+						<div :class="$style.date">
+							<span><i class="ti ti-chevron-down"></i> {{ item.date.getFullYear() }}/{{ item.date.getMonth() + 1 }}</span>
+						</div>
+					</template>
 
-				<TransitionGroup
-					tag="div"
-					:enterActiveClass="prefer.s.animation ? $style.transition_files_enterActive : ''"
-					:leaveActiveClass="prefer.s.animation ? $style.transition_files_leaveActive : ''"
-					:enterFromClass="prefer.s.animation ? $style.transition_files_enterFrom : ''"
-					:leaveToClass="prefer.s.animation ? $style.transition_files_leaveTo : ''"
-					:moveClass="prefer.s.animation ? $style.transition_files_move : ''"
-					:class="$style.files"
-				>
-					<XFile
-						v-for="file in item.items" :key="file.id"
-						:class="$style.file"
-						:file="file"
-						:folder="folder"
-						:isSelected="selectedFiles.some(x => x.id === file.id)"
-						@click="onFileClick($event, file)"
-						@dragstart="onFileDragstart(file, $event)"
-						@dragend="isDragSource = false"
-					/>
-				</TransitionGroup>
-			</MkStickyContainer>
-			<MkButton v-show="filesPaginator.canFetchOlder.value" :class="$style.loadMore" primary rounded @click="filesPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
+					<TransitionGroup
+						tag="div"
+						:enterActiveClass="prefer.s.animation ? $style.transition_files_enterActive : ''"
+						:leaveActiveClass="prefer.s.animation ? $style.transition_files_leaveActive : ''"
+						:enterFromClass="prefer.s.animation ? $style.transition_files_enterFrom : ''"
+						:leaveToClass="prefer.s.animation ? $style.transition_files_leaveTo : ''"
+						:moveClass="prefer.s.animation ? $style.transition_files_move : ''"
+						:class="$style.files"
+					>
+						<XFile
+							v-for="file in item.items" :key="file.id"
+							:file="file"
+							:folder="folder"
+							:isSelected="selectedFiles.some(x => x.id === file.id)"
+							@click="onFileClick($event, file)"
+							@dragstart="onFileDragstart(file, $event)"
+							@dragend="isDragSource = false"
+						/>
+					</TransitionGroup>
+				</MkStickyContainer>
+			</template>
+			<TransitionGroup
+				v-else
+				tag="div"
+				:enterActiveClass="prefer.s.animation ? $style.transition_files_enterActive : ''"
+				:leaveActiveClass="prefer.s.animation ? $style.transition_files_leaveActive : ''"
+				:enterFromClass="prefer.s.animation ? $style.transition_files_enterFrom : ''"
+				:leaveToClass="prefer.s.animation ? $style.transition_files_leaveTo : ''"
+				:moveClass="prefer.s.animation ? $style.transition_files_move : ''"
+				:class="$style.files"
+			>
+				<XFile
+					v-for="file in filesPaginator.items.value" :key="file.id"
+					:file="file"
+					:folder="folder"
+					:isSelected="selectedFiles.some(x => x.id === file.id)"
+					@click="onFileClick($event, file)"
+					@dragstart="onFileDragstart(file, $event)"
+					@dragend="isDragSource = false"
+				/>
+			</TransitionGroup>
+
+			<MkButton
+				v-show="canFetchFiles"
+				v-appear="shouldEnableInfiniteScroll ? fetchMoreFiles : null"
+				:class="$style.loadMore"
+				primary
+				rounded
+				@click="fetchMoreFiles"
+			>{{ i18n.ts.loadMore }}</MkButton>
 
 			<div v-if="filesPaginator.items.value.length == 0 && foldersPaginator.items.value.length == 0 && !fetching" :class="$style.empty">
-				<div v-if="draghover">{{ i18n.ts['empty-draghover'] }}</div>
+				<div v-if="draghover">{{ i18n.ts.dropHereToUpload }}</div>
 				<div v-if="!draghover && folder == null"><strong>{{ i18n.ts.emptyDrive }}</strong></div>
 				<div v-if="!draghover && folder != null">{{ i18n.ts.emptyFolder }}</div>
 			</div>
@@ -156,10 +186,12 @@ const props = withDefaults(defineProps<{
 	type?: string;
 	multiple?: boolean;
 	select?: 'file' | 'folder' | null;
+	forceDisableInfiniteScroll?: boolean;
 }>(), {
 	initialFolder: null,
 	multiple: false,
 	select: null,
+	forceDisableInfiniteScroll: false,
 });
 
 const emit = defineEmits<{
@@ -167,6 +199,10 @@ const emit = defineEmits<{
 	(ev: 'changeSelectedFolders', v: (Misskey.entities.DriveFolder | null)[]): void;
 	(ev: 'cd', v: Misskey.entities.DriveFolder | null): void;
 }>();
+
+const shouldEnableInfiniteScroll = computed(() => {
+	return prefer.r.enableInfiniteScroll.value && !props.forceDisableInfiniteScroll;
+});
 
 const folder = ref<Misskey.entities.DriveFolder | null>(null);
 const hierarchyFolders = ref<Misskey.entities.DriveFolder[]>([]);
@@ -202,10 +238,9 @@ const filesPaginator = markRaw(new Paginator('drive/files', {
 	params: () => ({ // 自動でリロードしたくないためcomputedParamsは使わない
 		folderId: folder.value ? folder.value.id : null,
 		type: props.type,
-		sort: sortModeSelect.value,
+		sort: ['-createdAt', '+createdAt'].includes(sortModeSelect.value) ? null : sortModeSelect.value,
 	}),
 }));
-
 const foldersPaginator = markRaw(new Paginator('drive/folders', {
 	limit: 30,
 	canFetchDetection: 'limit',
@@ -214,7 +249,18 @@ const foldersPaginator = markRaw(new Paginator('drive/folders', {
 	}),
 }));
 
+const canFetchFiles = computed(() => !fetching.value && (filesPaginator.order.value === 'oldest' ? filesPaginator.canFetchNewer.value : filesPaginator.canFetchOlder.value));
+
+async function fetchMoreFiles() {
+	if (filesPaginator.order.value === 'oldest') {
+		filesPaginator.fetchNewer();
+	} else {
+		filesPaginator.fetchOlder();
+	}
+}
+
 const filesTimeline = makeDateGroupedTimelineComputedRef(filesPaginator.items, 'month');
+const shouldBeGroupedByDate = computed(() => ['+createdAt', '-createdAt'].includes(sortModeSelect.value));
 
 watch(folder, () => emit('cd', folder.value));
 watch(sortModeSelect, () => {
@@ -223,10 +269,10 @@ watch(sortModeSelect, () => {
 
 async function initialize() {
 	fetching.value = true;
-	await Promise.all([
-		foldersPaginator.init(),
-		filesPaginator.init(),
-	]);
+	await foldersPaginator.reload();
+	filesPaginator.initialDirection = sortModeSelect.value === '-createdAt' ? 'newer' : 'older';
+	filesPaginator.order.value = sortModeSelect.value === '-createdAt' ? 'oldest' : 'newest';
+	await filesPaginator.reload();
 	fetching.value = false;
 }
 
@@ -802,6 +848,10 @@ onBeforeUnmount(() => {
 	}
 }
 
+.tipContainer:not(:empty) {
+	padding: 16px 32px;
+}
+
 .folders,
 .files {
 	display: grid;
@@ -811,6 +861,10 @@ onBeforeUnmount(() => {
 }
 
 @container (max-width: 600px) {
+	.tipContainer:not(:empty) {
+		padding: 16px;
+	}
+
 	.folders,
 	.files {
 		padding: 16px;

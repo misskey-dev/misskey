@@ -7,6 +7,7 @@ import { markRaw, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import lightTheme from '@@/themes/l-light.json5';
 import darkTheme from '@@/themes/d-green-lime.json5';
+import { prefersReducedMotion } from '@@/js/config.js';
 import { hemisphere } from '@@/js/intl-const.js';
 import type { DeviceKind } from '@/utility/device-kind.js';
 import type { Plugin } from '@/plugin.js';
@@ -117,6 +118,10 @@ export const store = markRaw(new Pizzax('base', {
 		where: 'device',
 		default: true,
 	},
+	showStoragePersistenceSuggestion: {
+		where: 'device',
+		default: true,
+	},
 
 	//#region TODO: そのうち消す (preferに移行済み)
 	defaultWithReplies: {
@@ -220,11 +225,11 @@ export const store = markRaw(new Pizzax('base', {
 	},
 	animation: {
 		where: 'device',
-		default: !window.matchMedia('(prefers-reduced-motion)').matches,
+		default: !prefersReducedMotion,
 	},
 	animatedMfm: {
 		where: 'device',
-		default: !window.matchMedia('(prefers-reduced-motion)').matches,
+		default: !prefersReducedMotion,
 	},
 	advancedMfm: {
 		where: 'device',
@@ -248,7 +253,7 @@ export const store = markRaw(new Pizzax('base', {
 	},
 	disableShowingAnimatedImages: {
 		where: 'device',
-		default: window.matchMedia('(prefers-reduced-motion)').matches,
+		default: prefersReducedMotion,
 	},
 	emojiStyle: {
 		where: 'device',

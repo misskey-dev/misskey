@@ -1273,6 +1273,16 @@ postForm: "Formulaire de publication"
 information: "Informations"
 inMinutes: "min"
 inDays: "j"
+widgets: "Widgets"
+presets: "Préréglage"
+_imageEditing:
+  _vars:
+    filename: "Nom du fichier"
+_imageFrameEditor:
+  header: "Entête"
+  font: "Police de caractères"
+  fontSerif: "Serif"
+  fontSansSerif: "Sans Serif"
 _chat:
   invitations: "Inviter"
   noHistory: "Pas d'historique"
@@ -2036,6 +2046,9 @@ _postForm:
   replyPlaceholder: "Répondre à cette note ..."
   quotePlaceholder: "Citez cette note ..."
   channelPlaceholder: "Publier au canal…"
+  _howToUse:
+    visibility_title: "Visibilité"
+    menu_title: "Menu"
   _placeholders:
     a: "Quoi de neuf ?"
     b: "Il s'est passé quelque chose ?"
@@ -2376,6 +2389,10 @@ _imageEffector:
     angle: "Angle"
     scale: "Taille"
     size: "Taille"
+    offset: "Position"
     color: "Couleur"
     opacity: "Transparence"
     lightness: "Clair"
+_qr:
+  showTabTitle: "Affichage"
+  raw: "Texte"
