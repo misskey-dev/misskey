@@ -97,7 +97,7 @@ async function detachAndDeleteMedia(file: Misskey.entities.DriveFile) {
 	globalEvents.emit('driveFilesDeleted', [file]);
 }
 
-function toggleSensitive(file) {
+function toggleSensitive(file: Misskey.entities.DriveFile) {
 	if (mock) {
 		emit('changeSensitive', file, !file.isSensitive);
 		return;
@@ -111,7 +111,7 @@ function toggleSensitive(file) {
 	});
 }
 
-async function rename(file) {
+async function rename(file: Misskey.entities.DriveFile) {
 	if (mock) return;
 
 	const { canceled, result } = await os.inputText({
