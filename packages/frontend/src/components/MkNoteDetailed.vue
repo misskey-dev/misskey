@@ -144,7 +144,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:myReaction="$appearNote.myReaction"
 					:noteId="appearNote.id"
 					:maxNumber="16"
-					@mockUpdateMyReaction="emitUpdReaction"
 				/>
 				<button class="_button" :class="$style.noteFooterButton" @click="reply()">
 					<i class="ti ti-arrow-back-up"></i>
@@ -233,7 +232,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, markRaw, onMounted, provide, ref, useTemplateRef } from 'vue';
+import { computed, inject, markRaw, provide, ref, useTemplateRef } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { isLink } from '@@/js/is-link.js';
