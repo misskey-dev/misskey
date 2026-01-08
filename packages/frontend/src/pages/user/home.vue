@@ -186,6 +186,7 @@ import { getStaticImageUrl } from '@/utility/media-proxy.js';
 import MkSparkle from '@/components/MkSparkle.vue';
 import { prefer } from '@/preferences.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
+import { isBirthday } from '@/utility/is-birthday.js';
 
 function calcAge(birthdate: string): number {
 	const date = new Date(birthdate);
@@ -319,16 +320,10 @@ function disposeBannerParallaxResizeObserver() {
 onMounted(() => {
 	narrow.value = rootEl.value!.clientWidth < 1000;
 
-	if (props.user.birthday) {
-		const m = new Date().getMonth() + 1;
-		const d = new Date().getDate();
-		const bm = parseInt(props.user.birthday.split('-')[1]);
-		const bd = parseInt(props.user.birthday.split('-')[2]);
-		if (m === bm && d === bd) {
-			confetti({
-				duration: 1000 * 4,
-			});
-		}
+	if (isBirthday(user.value)) {
+		confetti({
+			duration: 1000 * 4,
+		});
 	}
 
 	nextTick(() => {
