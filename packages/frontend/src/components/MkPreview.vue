@@ -89,7 +89,7 @@ const selectUser = async () => {
 	await os.selectUser();
 };
 
-const openMenu = async (ev: Event) => {
+const openMenu = async (ev: MouseEvent) => {
 	os.popupMenu([{
 		type: 'label',
 		text: 'Fruits',

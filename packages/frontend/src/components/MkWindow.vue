@@ -55,7 +55,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, provide, useTemplateRef, ref } from 'vue';
 import type { MenuItem } from '@/types/menu.js';
-import contains from '@/utility/contains.js';
+import { elementContains } from '@/utility/element-contains.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
@@ -240,7 +240,7 @@ function onHeaderMousedown(evt: MouseEvent | TouchEvent) {
 	const main = rootEl.value;
 	if (main == null) return;
 
-	if (!contains(main, window.document.activeElement)) main.focus();
+	if (!elementContains(main, window.document.activeElement)) main.focus();
 
 	const position = main.getBoundingClientRect();
 

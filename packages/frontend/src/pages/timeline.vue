@@ -254,7 +254,7 @@ const headerActions = computed(() => {
 		items.unshift({
 			icon: 'ti ti-refresh',
 			text: i18n.ts.reload,
-			handler: (ev: Event) => {
+			handler: () => {
 				tlComponent.value?.reloadTimeline();
 			},
 		});
