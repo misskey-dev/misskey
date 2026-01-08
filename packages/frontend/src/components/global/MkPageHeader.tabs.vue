@@ -70,8 +70,8 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'update:tab', key: string);
-	(ev: 'tabClick', key: string);
+	(ev: 'update:tab', key: string): void;
+	(ev: 'tabClick', key: string): void;
 }>();
 
 const el = useTemplateRef('el');

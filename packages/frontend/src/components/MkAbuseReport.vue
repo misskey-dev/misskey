@@ -115,7 +115,7 @@ watch(moderationNote, async () => {
 	});
 });
 
-function resolve(resolvedAs) {
+function resolve(resolvedAs: 'accept' | 'reject' | null) {
 	os.apiWithDialog('admin/resolve-abuse-user-report', {
 		reportId: props.report.id,
 		resolvedAs,
