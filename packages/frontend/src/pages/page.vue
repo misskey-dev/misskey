@@ -237,7 +237,7 @@ async function unlike() {
 	});
 }
 
-function pin(pin) {
+function pin(pin: boolean) {
 	if (!page.value) return;
 
 	os.apiWithDialog('i/update', {
