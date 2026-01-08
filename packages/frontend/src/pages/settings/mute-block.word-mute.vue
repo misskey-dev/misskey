@@ -30,7 +30,7 @@ const emit = defineEmits<{
 	(ev: 'save', value: (string[] | string)[]): void;
 }>();
 
-const render = (mutedWords) => mutedWords.map(x => {
+const render = (mutedWords: (string | string[])[]) => mutedWords.map(x => {
 	if (Array.isArray(x)) {
 		return x.join(' ');
 	} else {
@@ -46,7 +46,7 @@ watch(mutedWords, () => {
 });
 
 async function save() {
-	const parseMutes = (mutes) => {
+	const parseMutes = (mutes: string) => {
 		// split into lines, remove empty lines and unnecessary whitespace
 		let lines = mutes.trim().split('\n').map(line => line.trim()).filter(line => line !== '');
 
