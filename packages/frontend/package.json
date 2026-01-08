@@ -75,7 +75,6 @@
 		"v-code-diff": "1.13.1",
 		"vite": "7.3.0",
 		"vue": "3.5.26",
-		"vuedraggable": "next",
 		"wanakana": "5.3.1"
 	},
 	"devDependencies": {

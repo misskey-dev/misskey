@@ -89,7 +89,7 @@ async function deleteFile(file: Misskey.entities.DriveFile) {
 }
 
 export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Misskey.entities.DriveFolder | null): MenuItem[] {
-	const isImage = file.type.startsWith('image/');
+	const _isImage = file.type.startsWith('image/');
 
 	const menuItems: MenuItem[] = [];
 

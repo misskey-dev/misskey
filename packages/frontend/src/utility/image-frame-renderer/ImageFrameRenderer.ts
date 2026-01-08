@@ -201,7 +201,7 @@ export class ImageFrameRenderer {
 					qrSize,
 				);
 				qrImageBitmap.close();
-			} catch (err) {
+			} catch (_) {
 				// nop
 			}
 		}

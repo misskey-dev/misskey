@@ -75,20 +75,18 @@ export async function readDataTransferItems(itemList: DataTransferItemList): Pro
 		});
 	}
 
-	function readDirectory(fileSystemDirectoryEntry: FileSystemDirectoryEntry): Promise<DroppedItem[]> {
-		return new Promise(async (resolve) => {
-			const allEntries = Array.of<FileSystemEntry>();
-			const reader = fileSystemDirectoryEntry.createReader();
-			while (true) {
-				const entries = await new Promise<FileSystemEntry[]>((res, rej) => reader.readEntries(res, rej));
-				if (entries.length === 0) {
-					break;
-				}
-				allEntries.push(...entries);
+	async function readDirectory(fileSystemDirectoryEntry: FileSystemDirectoryEntry): Promise<DroppedItem[]> {
+		const allEntries = Array.of<FileSystemEntry>();
+		const reader = fileSystemDirectoryEntry.createReader();
+		while (true) {
+			const entries = await new Promise<FileSystemEntry[]>((res, rej) => reader.readEntries(res, rej));
+			if (entries.length === 0) {
+				break;
 			}
+			allEntries.push(...entries);
+		}
 
-			resolve(await Promise.all(allEntries.map(readEntry)));
-		});
+		return await Promise.all(allEntries.map(readEntry));
 	}
 
 	// 扱いにくいので配列に変換
