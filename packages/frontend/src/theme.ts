@@ -204,7 +204,7 @@ export function compile(theme: Theme): Record<string, string> {
 		return tinycolor(val);
 	}
 
-	const props = {};
+	const props = {} as Record<string, string>;
 
 	for (const [k, v] of Object.entries(theme.props)) {
 		if (k.startsWith('$')) continue; // ignore const
@@ -247,12 +247,12 @@ export function parseThemeCode(code: string): Theme {
 
 export function previewTheme(code: string): void {
 	const theme = parseThemeCode(code);
-	if (theme) applyTheme(theme, false);
+	if (theme != null) applyTheme(theme, false);
 }
 
 export async function installTheme(code: string): Promise<void> {
 	const theme = parseThemeCode(code);
-	if (!theme) return;
+	if (theme == null) return;
 	await addTheme(theme);
 }
 
