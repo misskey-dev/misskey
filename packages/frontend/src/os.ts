@@ -16,6 +16,7 @@ import type { PostFormProps } from '@/types/post-form.js';
 import type { UploaderFeatures } from '@/composables/use-uploader.js';
 import type { MkSelectItem, OptionValue } from '@/components/MkSelect.vue';
 import type { MkDialogReturnType } from '@/components/MkDialog.vue';
+import type { OverloadToUnion } from '@/types/overload-to-union.js';
 import type MkRoleSelectDialog_TypeReferenceOnly from '@/components/MkRoleSelectDialog.vue';
 import type MkEmojiPickerDialog_TypeReferenceOnly from '@/components/MkEmojiPickerDialog.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -163,19 +164,29 @@ export function claimZIndex(priority: keyof typeof zIndexes = 'low'): number {
 type PropsWithRefs<P> = { [K in keyof P]: MaybeRef<P[K]> };
 type ComponentProps<T extends Component> = PropsWithRefs<CP<T>>;
 
-type Decrement = [never, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-type OverloadToUnion<T, D extends number = 10> = D extends 0 ? never : T extends (...args: infer A) => infer R ? ((...args: A) => R) | OverloadToUnion<T extends ((...args: A) => R) & infer Rest ? Rest : never, Decrement[D]> : never;
+// 1. 関数の引数が any[] (もっとも広義なもの) かどうかを判定し、
+//    any[] の場合は排除 (never) するヘルパー
+type FilterSpecificFunc<T> = T extends (...args: any[]) => void
+	? (any[] extends Parameters<T> ? never : T)
+	: T;
 
-type ComponentEmitsObject<C extends Component, IE = OverloadToUnion<ComponentEmit<C>>> = {
-	[K in IE extends (evName: infer U, ...args: any[]) => any ? U extends string ? U : never : never]: IE extends (evName: K, ...args: infer A) => infer R ? (...args: A) => R : never;
+// 2. オブジェクトの各プロパティに対して再帰的、あるいは単純に適用する型関数
+type CleanFunctions<T> = {
+	[K in keyof T]: T[K] extends Function
+		? FilterSpecificFunc<T[K]>
+		: T[K];
 };
+
+type ComponentEmitsObject<C extends Component, IE = OverloadToUnion<ComponentEmit<C>>> = CleanFunctions<{
+	[K in IE extends (evName: infer U, ...args: any[]) => any ? U & PropertyKey : never]: IE extends (evName: K, ...args: infer A) => infer R ? (...args: A) => R : (...args: any[]) => void;
+}>;
 
 // NOTE: ジェネリック型つきのコンポーネントでは、emitsの型推論がうまく働かない（型変数を取り出すことはできないため）
 // OverloadToUnionに再帰回数の制限を設けているのもそのため
 export function popup<T extends Component, P extends CP<T> = CP<T>>(
 	component: T,
 	props: PropsWithRefs<P>,
-	events: Partial<ComponentEmitsObject<T & Component<P>>> = {},
+	events: Partial<ComponentEmitsObject<T>> = {},
 ): { dispose: () => void } {
 	markRaw(component);
 
@@ -614,7 +625,7 @@ export async function cropImageFile<F extends File | Blob>(imageFile: F, options
 			aspectRatio: options.aspectRatio,
 		}, {
 			ok: x => {
-				resolve(x);
+				resolve(x as F);
 			},
 			closed: () => dispose(),
 		});
