@@ -251,7 +251,7 @@ function showSettingsMenu(ev: MouseEvent) {
 	os.popupMenu(getMenu(), ev.currentTarget ?? ev.target);
 }
 
-function onContextmenu(ev: MouseEvent) {
+function onContextmenu(ev: PointerEvent) {
 	os.contextMenu(getMenu(), ev);
 }
 

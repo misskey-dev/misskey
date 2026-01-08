@@ -14,7 +14,7 @@ export async function lookupUser() {
 	});
 	if (canceled || result == null) return;
 
-	const show = (user) => {
+	const show = (user: Misskey.entities.UserDetailed) => {
 		os.pageWindow(`/admin/user/${user.id}`);
 	};
 
@@ -71,12 +71,8 @@ export async function lookupFile() {
 	});
 	if (canceled) return;
 
-	const show = (file) => {
-		os.pageWindow(`/admin/file/${file.id}`);
-	};
-
 	misskeyApi('admin/drive/show-file', q.startsWith('http://') || q.startsWith('https://') ? { url: q.trim() } : { fileId: q.trim() }).then(file => {
-		show(file);
+		os.pageWindow(`/admin/file/${file.id}`);
 	}).catch(err => {
 		if (err.code === 'NO_SUCH_FILE') {
 			os.alert({

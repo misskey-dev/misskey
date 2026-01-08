@@ -277,7 +277,7 @@ function setAsUploadFolder() {
 	prefer.commit('uploadFolder', props.folder.id);
 }
 
-function onContextmenu(ev: MouseEvent) {
+function onContextmenu(ev: PointerEvent) {
 	let menu: MenuItem[];
 	menu = [{
 		text: i18n.ts.openInWindow,

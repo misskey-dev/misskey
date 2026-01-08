@@ -128,7 +128,7 @@ function onReactionClick(record: Misskey.entities.ChatMessage['reactions'][0]) {
 	}
 }
 
-function onContextmenu(ev: MouseEvent) {
+function onContextmenu(ev: PointerEvent) {
 	if (ev.target && isLink(ev.target as HTMLElement)) return;
 	if (window.getSelection()?.toString() !== '') return;
 

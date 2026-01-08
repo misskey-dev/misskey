@@ -192,7 +192,7 @@ async function addColumn(ev: MouseEvent) {
 	});
 }
 
-function onContextmenu(ev: MouseEvent) {
+function onContextmenu(ev: PointerEvent) {
 	os.contextMenu([{
 		text: i18n.ts._deck.addColumn,
 		action: addColumn,

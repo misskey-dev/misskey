@@ -136,7 +136,7 @@ function onKeydown(evt) {
 	}
 }
 
-function onContextmenu(ev: MouseEvent) {
+function onContextmenu(ev: PointerEvent) {
 	if (props.contextmenu) {
 		os.contextMenu(props.contextmenu, ev);
 	}
