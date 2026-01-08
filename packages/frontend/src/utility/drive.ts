@@ -309,7 +309,8 @@ export async function selectDriveFolder(initialFolder: Misskey.entities.DriveFol
 	folders: undefined;
 }> {
 	return new Promise((resolve, reject) => {
-		const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkDriveFolderSelectDialog.vue').then(x => x.default), {
+		let dispose: () => void;
+		os.popupAsyncWithDialog(import('@/components/MkDriveFolderSelectDialog.vue').then(x => x.default), {
 			initialFolder,
 		}, {
 			done: folders => {
