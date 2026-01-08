@@ -52,6 +52,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onUnmounted, reactive, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
@@ -120,7 +121,7 @@ for (const domain of ['inbox', 'deliver']) {
 	prev[d] = deepClone(current[d]);
 }
 
-const onStats = (stats) => {
+const onStats = (stats: Misskey.entities.QueueStats) => {
 	for (const domain of ['inbox', 'deliver']) {
 		const d = domain as 'inbox' | 'deliver';
 		prev[d] = deepClone(current[d]);
@@ -140,7 +141,7 @@ const onStats = (stats) => {
 	}
 };
 
-const onStatsLog = (statsLog) => {
+const onStatsLog = (statsLog: Misskey.entities.QueueStatsLog) => {
 	for (const stats of [...statsLog].reverse()) {
 		onStats(stats);
 	}
