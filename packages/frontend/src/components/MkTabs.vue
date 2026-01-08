@@ -74,7 +74,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'tabClick', key: string);
+	(ev: 'tabClick', key: string): void;
 }>();
 
 const tab = defineModel<T['key']>('tab');
