@@ -116,20 +116,22 @@ if (prefer.s['sound.masterVolume']) {
 }
 
 for (const domain of ['inbox', 'deliver']) {
-	prev[domain] = deepClone(current[domain]);
+	const d = domain as 'inbox' | 'deliver';
+	prev[d] = deepClone(current[d]);
 }
 
 const onStats = (stats) => {
 	for (const domain of ['inbox', 'deliver']) {
-		prev[domain] = deepClone(current[domain]);
-		current[domain].activeSincePrevTick = stats[domain].activeSincePrevTick;
-		current[domain].active = stats[domain].active;
-		current[domain].waiting = stats[domain].waiting;
-		current[domain].delayed = stats[domain].delayed;
+		const d = domain as 'inbox' | 'deliver';
+		prev[d] = deepClone(current[d]);
+		current[d].activeSincePrevTick = stats[d].activeSincePrevTick;
+		current[d].active = stats[d].active;
+		current[d].waiting = stats[d].waiting;
+		current[d].delayed = stats[d].delayed;
 
-		if (current[domain].waiting > 0 && widgetProps.sound && jammedAudioBuffer.value && !jammedSoundNodePlaying.value) {
+		if (current[d].waiting > 0 && widgetProps.sound && jammedAudioBuffer.value && !jammedSoundNodePlaying.value) {
 			const soundNode = sound.createSourceNode(jammedAudioBuffer.value, {}).soundSource;
-			if (soundNode) {
+			if (soundNode != null) {
 				jammedSoundNodePlaying.value = true;
 				soundNode.onended = () => jammedSoundNodePlaying.value = false;
 				soundNode.start();
