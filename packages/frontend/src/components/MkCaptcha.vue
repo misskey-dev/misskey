@@ -84,7 +84,7 @@ const variable = computed(() => {
 	}
 });
 
-const loaded = !!window[variable.value];
+const loaded = !!(window as any)[variable.value];
 
 const src = computed(() => {
 	switch (props.provider) {
@@ -98,7 +98,7 @@ const src = computed(() => {
 
 const scriptId = computed(() => `script-${props.provider}`);
 
-const captcha = computed<Captcha>(() => window[variable.value] || {} as unknown as Captcha);
+const captcha = computed<Captcha>(() => (window as any)[variable.value] ?? {} as unknown as Captcha);
 
 watch(() => [props.instanceUrl, props.sitekey, props.secretKey], async () => {
 	// 変更があったときはリフレッシュと再レンダリングをしておかないと、変更後の値で再検証が出来ない

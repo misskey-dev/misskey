@@ -5,12 +5,11 @@
 
 import { defineAsyncComponent, reactive, watch } from 'vue';
 import { throttle } from 'throttle-debounce';
-import { getDefaultFormValues } from '@/utility/form.js';
 import type { Reactive } from 'vue';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
+import { getDefaultFormValues } from '@/utility/form.js';
 import * as os from '@/os.js';
 import { deepClone } from '@/utility/clone.js';
-import { i18n } from '@/i18n';
 
 export type Widget<P extends Record<string, unknown>> = {
 	id: string;
@@ -22,7 +21,7 @@ export type WidgetComponentProps<P extends Record<string, unknown>> = {
 };
 
 export type WidgetComponentEmits<P extends Record<string, unknown>> = {
-	(ev: 'updateProps', props: P);
+	(ev: 'updateProps', props: P): void;
 };
 
 export type WidgetComponentExpose = {
@@ -54,7 +53,7 @@ export const useWidgetPropsManager = <F extends FormWithDefault>(
 	watch(() => props.widget?.data, (to) => {
 		if (to != null) {
 			for (const key of Object.keys(propsDef)) {
-				widgetProps[key] = to[key];
+				(widgetProps as any)[key] = to[key];
 			}
 		}
 	}, { deep: true });
@@ -66,7 +65,7 @@ export const useWidgetPropsManager = <F extends FormWithDefault>(
 	const configure = async () => {
 		const form = deepClone(propsDef);
 		for (const item of Object.keys(form)) {
-			form[item].default = widgetProps[item];
+			form[item].default = (widgetProps as any)[item];
 		}
 
 		const res = await new Promise<{
@@ -97,7 +96,7 @@ export const useWidgetPropsManager = <F extends FormWithDefault>(
 		}
 
 		for (const key of Object.keys(res.result)) {
-			widgetProps[key] = res.result[key];
+			(widgetProps as any)[key] = res.result[key];
 		}
 
 		save();

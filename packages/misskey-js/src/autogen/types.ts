@@ -4276,6 +4276,33 @@ export type components = {
                     /** Format: misskey:id */
                     userListId: string;
                 };
+                login?: {
+                    /** @enum {string} */
+                    type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+                } | {
+                    /** @enum {string} */
+                    type: 'list';
+                    /** Format: misskey:id */
+                    userListId: string;
+                };
+                createToken?: {
+                    /** @enum {string} */
+                    type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+                } | {
+                    /** @enum {string} */
+                    type: 'list';
+                    /** Format: misskey:id */
+                    userListId: string;
+                };
+                exportCompleted?: {
+                    /** @enum {string} */
+                    type: 'all' | 'following' | 'follower' | 'mutualFollow' | 'followingOrFollower' | 'never';
+                } | {
+                    /** @enum {string} */
+                    type: 'list';
+                    /** Format: misskey:id */
+                    userListId: string;
+                };
             };
             emailNotificationTypes: string[];
             achievements: components['schemas']['Achievement'][];
@@ -6786,8 +6813,10 @@ export interface operations {
                         updatedAt: string | null;
                         text: string;
                         title: string;
-                        icon: string | null;
-                        display: string;
+                        /** @enum {string} */
+                        icon: 'info' | 'warning' | 'error' | 'success';
+                        /** @enum {string} */
+                        display: 'normal' | 'banner' | 'dialog';
                         isActive: boolean;
                         forExistingUsers: boolean;
                         silence: boolean;
@@ -8305,16 +8334,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': {
-                        /** Format: id */
-                        id: string;
-                        aliases: string[];
-                        name: string;
-                        category: string | null;
-                        /** @description The local host is represented with `null`. */
-                        host: string | null;
-                        url: string;
-                    }[];
+                    'application/json': components['schemas']['EmojiDetailed'][];
                 };
             };
             /** @description Client error */

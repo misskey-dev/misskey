@@ -104,7 +104,7 @@ function fetchFlash() {
 	});
 }
 
-function share(ev: MouseEvent) {
+function share(ev: PointerEvent) {
 	if (!flash.value) return;
 
 	const menuItems: MenuItem[] = [];
@@ -229,10 +229,10 @@ async function run() {
 		THIS_URL: values.STR(`${url}/play/${flash.value.id}`),
 	}, {
 		in: aiScriptReadline,
-		out: (value) => {
+		out: () => {
 			// nop
 		},
-		log: (type, params) => {
+		log: () => {
 			// nop
 		},
 	});
@@ -273,7 +273,7 @@ async function reportAbuse() {
 	});
 }
 
-function showMenu(ev: MouseEvent) {
+function showMenu(ev: PointerEvent) {
 	if (!flash.value) return;
 
 	const menu: MenuItem[] = [

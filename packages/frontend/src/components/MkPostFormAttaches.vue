@@ -97,7 +97,7 @@ async function detachAndDeleteMedia(file: Misskey.entities.DriveFile) {
 	globalEvents.emit('driveFilesDeleted', [file]);
 }
 
-function toggleSensitive(file) {
+function toggleSensitive(file: Misskey.entities.DriveFile) {
 	if (mock) {
 		emit('changeSensitive', file, !file.isSensitive);
 		return;
@@ -111,7 +111,7 @@ function toggleSensitive(file) {
 	});
 }
 
-async function rename(file) {
+async function rename(file: Misskey.entities.DriveFile) {
 	if (mock) return;
 
 	const { canceled, result } = await os.inputText({
@@ -149,7 +149,7 @@ async function describe(file: Misskey.entities.DriveFile) {
 	});
 }
 
-function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent | KeyboardEvent): void {
+function showFileMenu(file: Misskey.entities.DriveFile, ev: PointerEvent | KeyboardEvent): void {
 	if (menuShowing) return;
 
 	const isImage = file.type.startsWith('image/');

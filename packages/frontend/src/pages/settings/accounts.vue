@@ -57,7 +57,7 @@ function refreshAllAccounts() {
 	})());
 }
 
-function showMenu(a: AccountData, ev: MouseEvent) {
+function showMenu(a: AccountData, ev: PointerEvent) {
 	const menu: MenuItem[] = [];
 
 	if ($i != null && $i.id === a.id && ($i.host ?? local) === a.host) {
@@ -103,7 +103,7 @@ function showMenu(a: AccountData, ev: MouseEvent) {
 	os.popupMenu(menu, ev.currentTarget ?? ev.target);
 }
 
-function addAccount(ev: MouseEvent) {
+function addAccount(ev: PointerEvent) {
 	os.popupMenu([{
 		text: i18n.ts.existingAccount,
 		action: () => { addExistingAccount(); },

@@ -666,7 +666,7 @@ export function popupMenu(items: (MenuItem | null)[], anchorElement?: HTMLElemen
 	}));
 }
 
-export function contextMenu(items: MenuItem[], ev: MouseEvent): Promise<void> {
+export function contextMenu(items: MenuItem[], ev: PointerEvent): Promise<void> {
 	if (
 		prefer.s.contextMenu === 'native' ||
 		(prefer.s.contextMenu === 'appWithShift' && !ev.shiftKey)

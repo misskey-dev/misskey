@@ -63,7 +63,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'change', _ev: KeyboardEvent): void;
+	(ev: 'change', _ev: InputEvent): void;
 	(ev: 'keydown', _ev: KeyboardEvent): void;
 	(ev: 'enter'): void;
 	(ev: 'update:modelValue', value: string): void;
@@ -79,12 +79,16 @@ const inputEl = useTemplateRef('inputEl');
 const preview = ref(false);
 let autocompleteWorker: Autocomplete | null = null;
 
-const focus = () => inputEl.value?.focus();
-const onInput = (ev) => {
+function focus() {
+	inputEl.value?.focus();
+}
+
+function onInput(ev: InputEvent) {
 	changed.value = true;
 	emit('change', ev);
-};
-const onKeydown = (ev: KeyboardEvent) => {
+}
+
+function onKeydown(ev: KeyboardEvent) {
 	if (ev.isComposing || ev.key === 'Process' || ev.keyCode === 229) return;
 
 	emit('keydown', ev);
@@ -102,12 +106,12 @@ const onKeydown = (ev: KeyboardEvent) => {
 		});
 		ev.preventDefault();
 	}
-};
+}
 
-const updated = () => {
+function updated() {
 	changed.value = false;
 	emit('update:modelValue', v.value ?? '');
-};
+}
 
 const debouncedUpdated = debounce(1000, updated);
 

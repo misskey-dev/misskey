@@ -113,7 +113,7 @@ watch(wallpaper, () => {
 	suggestReload();
 });
 
-function setWallpaper(ev: MouseEvent) {
+function setWallpaper(ev: PointerEvent) {
 	selectFile({
 		anchorElement: ev.currentTarget ?? ev.target,
 		multiple: false,

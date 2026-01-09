@@ -903,6 +903,9 @@ importers:
       '@types/estree':
         specifier: 1.0.8
         version: 1.0.8
+      '@types/insert-text-at-cursor':
+        specifier: 0.3.2
+        version: 0.3.2
       '@types/matter-js':
         specifier: 0.20.2
         version: 0.20.2
@@ -921,6 +924,9 @@ importers:
       '@types/seedrandom':
         specifier: 3.0.8
         version: 3.0.8
+      '@types/textarea-caret':
+        specifier: 3.0.4
+        version: 3.0.4
       '@types/throttle-debounce':
         specifier: 5.0.2
         version: 5.0.2
@@ -4667,6 +4673,9 @@ packages:
   '@types/http-link-header@1.0.7':
     resolution: {integrity: sha512-snm5oLckop0K3cTDAiBnZDy6ncx9DJ3mCRDvs42C884MbVYPP74Tiq2hFsSDRTyjK6RyDYDIulPiW23ge+g5Lw==}
 
+  '@types/insert-text-at-cursor@0.3.2':
+    resolution: {integrity: sha512-S80ZeMGJ1YMwF/CwvvGNCoWS0klVpJmjtyEL1kbYgYXRMPMEfNWXXnnnLQaim3FNp6tJzOhy/yeQXInfC6o1sA==}
+
   '@types/istanbul-lib-coverage@2.0.6':
     resolution: {integrity: sha512-2QF/t/auWm0lsy8XtKVPG19v3sSOQlJe/YHZgfjb/KBBHOGSV+J2q/S671rcq9uTBrLAXmZpqJiaQbMT+zNU1w==}
 
@@ -4849,6 +4858,9 @@ packages:
 
   '@types/tedious@4.0.14':
     resolution: {integrity: sha512-KHPsfX/FoVbUGbyYvk1q9MMQHLPeRZhRJZdO45Q4YjvFkv4hMNghCWTvy7rdKessBsmtz4euWCWAB6/tVpI1Iw==}
+
+  '@types/textarea-caret@3.0.4':
+    resolution: {integrity: sha512-epJGYB37/sNrTDbhfyRjHkXsQSAcO6zby0JBDS0QMt6HQ1f1W2E4YpSc7TQkNmWaWmYXv92zOIfN5PHA8CmThg==}
 
   '@types/throttle-debounce@5.0.2':
     resolution: {integrity: sha512-pDzSNulqooSKvSNcksnV72nk8p7gRqN8As71Sp28nov1IgmPKWbOEIwAWvBME5pPTtaXJAvG3O4oc76HlQ4kqQ==}
@@ -15665,6 +15677,8 @@ snapshots:
     dependencies:
       '@types/node': 24.10.4
 
+  '@types/insert-text-at-cursor@0.3.2': {}
+
   '@types/istanbul-lib-coverage@2.0.6': {}
 
   '@types/istanbul-lib-report@3.0.3':
@@ -15859,6 +15873,8 @@ snapshots:
   '@types/tedious@4.0.14':
     dependencies:
       '@types/node': 24.10.4
+
+  '@types/textarea-caret@3.0.4': {}
 
   '@types/throttle-debounce@5.0.2': {}
 

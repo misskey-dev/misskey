@@ -84,7 +84,7 @@ export interface ArrayFormItem extends FormItemBase {
 export interface ButtonFormItem extends FormItemBase {
 	type: 'button';
 	content?: string;
-	action: (ev: MouseEvent, v: any) => void;
+	action: (ev: PointerEvent, v: any) => void;
 }
 
 export interface DriveFileFormItem extends FormItemBase {
@@ -126,23 +126,23 @@ type NonNullableIfRequired<T, Item extends FormItem> =
 type GetItemType<Item extends FormItem> =
 	Item extends StringFormItem
 		? NonNullableIfRequired<InferDefault<Item, string>, Item>
-	: Item extends NumberFormItem
-		? NonNullableIfRequired<InferDefault<Item, number>, Item>
-	: Item extends BooleanFormItem
-		? boolean
-	: Item extends RadioFormItem
-		? GetRadioItemType<Item>
-	: Item extends RangeFormItem
-		? NonNullableIfRequired<InferDefault<Item, number>, Item>
-	: Item extends EnumFormItem
-		? GetEnumItemType<Item>
-	: Item extends ArrayFormItem
-		? NonNullableIfRequired<InferDefault<Item, unknown[]>, Item>
-	: Item extends ObjectFormItem
-		? NonNullableIfRequired<InferDefault<Item, Record<string, unknown>>, Item>
-	: Item extends DriveFileFormItem
-		? Misskey.entities.DriveFile | undefined
-	: never;
+		: Item extends NumberFormItem
+			? NonNullableIfRequired<InferDefault<Item, number>, Item>
+			: Item extends BooleanFormItem
+				? boolean
+				: Item extends RadioFormItem
+					? GetRadioItemType<Item>
+					: Item extends RangeFormItem
+						? NonNullableIfRequired<InferDefault<Item, number>, Item>
+						: Item extends EnumFormItem
+							? GetEnumItemType<Item>
+							: Item extends ArrayFormItem
+								? NonNullableIfRequired<InferDefault<Item, unknown[]>, Item>
+								: Item extends ObjectFormItem
+									? NonNullableIfRequired<InferDefault<Item, Record<string, unknown>>, Item>
+									: Item extends DriveFileFormItem
+										? Misskey.entities.DriveFile | undefined
+										: never;
 
 export type GetFormResultType<F extends Form> = {
 	[P in keyof F]: GetItemType<F[P]>;

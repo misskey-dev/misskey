@@ -58,7 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 						<div v-for="role in rolesThatCanBeUsedThisEmojiAsReaction" :key="role.id" :class="$style.roleItem">
 							<MkRolePreview :class="$style.role" :role="role" :forModeration="true" :detailed="false" style="pointer-events: none;"/>
-							<button v-if="role.target === 'manual'" class="_button" :class="$style.roleUnassign" @click="removeRole(role, $event)"><i class="ti ti-x"></i></button>
+							<button v-if="role.target === 'manual'" class="_button" :class="$style.roleUnassign" @click="removeRole(role)"><i class="ti ti-x"></i></button>
 							<button v-else class="_button" :class="$style.roleUnassign" disabled><i class="ti ti-ban"></i></button>
 						</div>
 
@@ -120,7 +120,7 @@ watch(roleIdsThatCanBeUsedThisEmojiAsReaction, async () => {
 
 const imgUrl = computed(() => file.value ? file.value.url : props.emoji ? props.emoji.url : null);
 
-async function changeImage(ev: Event) {
+async function changeImage(ev: PointerEvent) {
 	file.value = await selectFile({
 		anchorElement: ev.currentTarget ?? ev.target,
 		multiple: false,
@@ -143,7 +143,7 @@ async function addRole() {
 	rolesThatCanBeUsedThisEmojiAsReaction.value.push(roles.find(r => r.id === roleId)!);
 }
 
-async function removeRole(role: Misskey.entities.RoleLite, ev: Event) {
+async function removeRole(role: Misskey.entities.RoleLite) {
 	rolesThatCanBeUsedThisEmojiAsReaction.value = rolesThatCanBeUsedThisEmojiAsReaction.value.filter(x => x.id !== role.id);
 }
 

@@ -594,7 +594,7 @@ function toggleReact() {
 	}
 }
 
-function onContextmenu(ev: MouseEvent): void {
+function onContextmenu(ev: PointerEvent): void {
 	if (props.mock) {
 		return;
 	}

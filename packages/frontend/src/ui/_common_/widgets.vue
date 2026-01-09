@@ -5,7 +5,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div>
-	<XWidgets :edit="editMode" :widgets="widgets" @addWidget="addWidget" @removeWidget="removeWidget" @updateWidget="updateWidget" @updateWidgets="updateWidgets" @exit="editMode = false"/>
+	<XWidgets
+		:edit="editMode"
+		:widgets="widgets"
+		@addWidget="addWidget"
+		@removeWidget="removeWidget"
+		@updateWidget="updateWidget"
+		@updateWidgets="updateWidgets"
+		@exit="editMode = false"
+	/>
 
 	<button v-if="editMode" class="_textButton" style="font-size: 0.9em;" @click="editMode = false"><i class="ti ti-check"></i> {{ i18n.ts.editWidgetsExit }}</button>
 	<button v-else class="_textButton" data-cy-widget-edit :class="$style.edit" style="font-size: 0.9em; margin-top: 16px;" @click="editMode = true"><i class="ti ti-pencil"></i> {{ i18n.ts.editWidgets }}</button>
@@ -16,7 +24,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref } from 'vue';
 const editMode = ref(false);
 </script>
+
 <script lang="ts" setup>
+import type { DefaultStoredWidget, Widget } from '@/components/MkWidgets.vue';
 import XWidgets from '@/components/MkWidgets.vue';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
@@ -36,30 +46,31 @@ const widgets = computed(() => {
 	return prefer.r.widgets.value.filter(w => w.place !== 'left');
 });
 
-function addWidget(widget) {
+function addWidget(widget: Widget) {
 	prefer.commit('widgets', [{
 		...widget,
 		place: props.place,
 	}, ...prefer.s.widgets]);
 }
 
-function removeWidget(widget) {
+function removeWidget(widget: Widget) {
 	prefer.commit('widgets', prefer.s.widgets.filter(w => w.id !== widget.id));
 }
 
-function updateWidget({ id, data }) {
-	prefer.commit('widgets', prefer.s.widgets.map(w => w.id === id ? {
+function updateWidget(widget: { id: Widget['id']; data: Widget['data']; }) {
+	prefer.commit('widgets', prefer.s.widgets.map(w => w.id === widget.id ? {
 		...w,
-		data,
+		data: widget.data,
 		place: props.place,
 	} : w));
 }
 
-function updateWidgets(thisWidgets) {
+function updateWidgets(thisWidgets: Widget[]) {
 	if (props.place === null) {
-		prefer.commit('widgets', thisWidgets);
+		prefer.commit('widgets', thisWidgets as DefaultStoredWidget[]);
 		return;
 	}
+
 	if (props.place === 'left') {
 		prefer.commit('widgets', [
 			...thisWidgets.map(w => ({ ...w, place: 'left' })),
@@ -67,6 +78,7 @@ function updateWidgets(thisWidgets) {
 		]);
 		return;
 	}
+
 	prefer.commit('widgets', [
 		...prefer.s.widgets.filter(w => w.place === 'left' && !thisWidgets.some(t => w.id === t.id)),
 		...thisWidgets.map(w => ({ ...w, place: 'right' })),

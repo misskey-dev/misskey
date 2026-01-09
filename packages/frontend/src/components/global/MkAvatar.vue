@@ -77,7 +77,7 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'click', v: MouseEvent): void;
+	(ev: 'click', v: PointerEvent): void;
 }>();
 
 const showDecoration = props.forceShowDecoration || prefer.s.showAvatarDecorations;
@@ -91,7 +91,7 @@ const url = computed(() => {
 	return props.user.avatarUrl;
 });
 
-function onClick(ev: MouseEvent): void {
+function onClick(ev: PointerEvent): void {
 	if (props.link) return;
 	emit('click', ev);
 }

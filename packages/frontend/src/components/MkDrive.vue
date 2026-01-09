@@ -139,7 +139,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				primary
 				rounded
 				@click="fetchMoreFiles"
-			>{{ i18n.ts.loadMore }}</MkButton>
+			>
+				{{ i18n.ts.loadMore }}
+			</MkButton>
 
 			<div v-if="filesPaginator.items.value.length == 0 && foldersPaginator.items.value.length == 0 && !fetching" :class="$style.empty">
 				<div v-if="draghover">{{ i18n.ts.dropHereToUpload }}</div>
@@ -491,7 +493,7 @@ function deleteFolder(folderToDelete: Misskey.entities.DriveFolder) {
 	});
 }
 
-function onFileClick(ev: MouseEvent, file: Misskey.entities.DriveFile) {
+function onFileClick(ev: PointerEvent, file: Misskey.entities.DriveFile) {
 	if (ev.shiftKey) {
 		isEditMode.value = true;
 	}
@@ -563,7 +565,7 @@ function cd(target?: Misskey.entities.DriveFolder | Misskey.entities.DriveFolder
 		folder.value = folderToMove;
 		hierarchyFolders.value = [];
 
-		const dive = folderToDive => {
+		const dive = (folderToDive: Misskey.entities.DriveFolder) => {
 			hierarchyFolders.value.unshift(folderToDive);
 			if (folderToDive.parent) dive(folderToDive.parent);
 		};
@@ -689,11 +691,11 @@ function getMenu() {
 	return menu;
 }
 
-function showMenu(ev: MouseEvent) {
+function showMenu(ev: PointerEvent) {
 	os.popupMenu(getMenu(), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
 }
 
-function onContextmenu(ev: MouseEvent) {
+function onContextmenu(ev: PointerEvent) {
 	os.contextMenu(getMenu(), ev);
 }
 
