@@ -185,9 +185,9 @@ type ComponentEmitsObject<C extends Component, IE = OverloadToUnion<ComponentEmi
 
 // NOTE: ジェネリック型つきのコンポーネントでは、emitsの型推論がうまく働かない（型変数を取り出すことはできないため）
 // NOTE: emitsがOverloadToUnionで対応しているオーバーロードの数を超える場合は、OverloadToUnionの個数を増やせばOK
-export function popup<T extends Component, P extends CP<T> = CP<T>>(
+export function popup<T extends Component>(
 	component: T,
-	props: PropsWithRefs<P>,
+	props: ComponentProps<T>,
 	events: Partial<ComponentEmitsObject<T>> = {},
 ): { dispose: () => void } {
 	markRaw(component);
