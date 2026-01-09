@@ -194,7 +194,7 @@ export class Autocomplete {
 		this.currentType = type;
 
 		//#region サジェストを表示すべき位置を計算
-		const caretPosition = getCaretCoordinates(this.textarea, this.textarea.selectionStart);
+		const caretPosition = getCaretCoordinates(this.textarea, this.textarea.selectionStart ?? 0);
 
 		const rect = this.textarea.getBoundingClientRect();
 

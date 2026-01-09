@@ -476,6 +476,7 @@ function togglePoll() {
 }
 
 function addTag(tag: string) {
+	if (textareaEl.value == null) return;
 	insertTextAtCursor(textareaEl.value, ` #${tag} `);
 }
 
@@ -742,7 +743,8 @@ const pastedFileName = 'yyyy-MM-dd HH-mm-ss [{{number}}]';
 
 async function onPaste(ev: ClipboardEvent) {
 	if (props.mock) return;
-	if (!ev.clipboardData) return;
+	if (ev.clipboardData == null) return;
+	if (textareaEl.value == null) return;
 
 	let pastedFiles: File[] = [];
 	for (const { item, i } of Array.from(ev.clipboardData.items, (data, x) => ({ item: data, i: x }))) {
@@ -767,40 +769,41 @@ async function onPaste(ev: ClipboardEvent) {
 	if (!renoteTargetNote.value && !quoteId.value && paste.startsWith(url + '/notes/')) {
 		ev.preventDefault();
 
-		os.confirm({
+		const { canceled } = await os.confirm({
 			type: 'info',
 			text: i18n.ts.quoteQuestion,
-		}).then(({ canceled }) => {
-			if (canceled) {
-				insertTextAtCursor(textareaEl.value, paste);
-				return;
-			}
-
-			quoteId.value = paste.substring(url.length).match(/^\/notes\/(.+?)\/?$/)?.[1] ?? null;
 		});
+
+		if (canceled) {
+			insertTextAtCursor(textareaEl.value, paste);
+			return;
+		}
+
+		quoteId.value = paste.substring(url.length).match(/^\/notes\/(.+?)\/?$/)?.[1] ?? null;
 	}
 
 	if (paste.length > 1000) {
 		ev.preventDefault();
-		os.confirm({
+
+		const { canceled } = await os.confirm({
 			type: 'info',
 			text: i18n.ts.attachAsFileQuestion,
-		}).then(({ canceled }) => {
-			if (canceled) {
-				insertTextAtCursor(textareaEl.value, paste);
-				return;
-			}
-
-			const fileName = formatTimeString(new Date(), pastedFileName).replace(/{{number}}/g, '0');
-			const file = new File([paste], `${fileName}.txt`, { type: 'text/plain' });
-			uploader.addFiles([file]);
 		});
+
+		if (canceled) {
+			insertTextAtCursor(textareaEl.value, paste);
+			return;
+		}
+
+		const fileName = formatTimeString(new Date(), pastedFileName).replace(/{{number}}/g, '0');
+		const file = new File([paste], `${fileName}.txt`, { type: 'text/plain' });
+		uploader.addFiles([file]);
 	}
 }
 
 function onDragover(ev: DragEvent) {
 	if (ev.dataTransfer == null) return;
-	if (!ev.dataTransfer.items[0]) return;
+	if (ev.dataTransfer.items[0] == null) return;
 
 	const isFile = ev.dataTransfer.items[0].kind === 'file';
 	if (isFile || checkDragDataType(ev, ['driveFiles'])) {
@@ -1159,6 +1162,7 @@ function cancel() {
 
 function insertMention() {
 	os.selectUser({ localOnly: localOnly.value, includeSelf: true }).then(user => {
+		if (textareaEl.value == null) return;
 		insertTextAtCursor(textareaEl.value, '@' + Misskey.acct.toString(user) + ' ');
 	});
 }
