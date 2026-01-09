@@ -301,14 +301,26 @@ export async function createCroppedImageDriveFileFromImageDriveFile(imageDriveFi
 	});
 }
 
-export async function selectDriveFolder(initialFolder: Misskey.entities.DriveFolder['id'] | null): Promise<(Misskey.entities.DriveFolder | null)[]> {
+export async function selectDriveFolder(initialFolder: Misskey.entities.DriveFolder['id'] | null): Promise<{
+	canceled: false;
+	folders: (Misskey.entities.DriveFolder | null)[];
+} | {
+	canceled: true;
+	folders: undefined;
+}> {
 	return new Promise((resolve, reject) => {
 		let dispose: () => void;
 		os.popupAsyncWithDialog(import('@/components/MkDriveFolderSelectDialog.vue').then(x => x.default), {
 			initialFolder,
 		}, {
 			done: folders => {
-				resolve(folders);
+				resolve(folders == null ? {
+					canceled: true,
+					folders: undefined,
+				} : {
+					canceled: false,
+					folders,
+				});
 			},
 			closed: () => dispose(),
 		}).then(d => dispose = d.dispose, reject);

@@ -1,7 +1,7 @@
 {
 	"type": "module",
 	"name": "misskey-js",
-	"version": "2026.1.0-alpha.2",
+	"version": "2026.1.0-alpha.3",
 	"description": "Misskey SDK for JavaScript",
 	"license": "MIT",
 	"main": "./built/index.js",

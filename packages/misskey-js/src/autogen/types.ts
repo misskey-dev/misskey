@@ -8226,16 +8226,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': {
-                        /** Format: id */
-                        id: string;
-                        aliases: string[];
-                        name: string;
-                        category: string | null;
-                        /** @description The local host is represented with `null`. The field exists for compatibility with other API endpoints that return files. */
-                        host: string | null;
-                        url: string;
-                    }[];
+                    'application/json': components['schemas']['EmojiDetailed'][];
                 };
             };
             /** @description Client error */
