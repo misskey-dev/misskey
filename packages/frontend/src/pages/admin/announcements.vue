@@ -83,6 +83,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -112,7 +113,12 @@ const {
 const loading = ref(true);
 const loadingMore = ref(false);
 
-const announcements = ref<any[]>([]);
+const announcements = ref<(Omit<Misskey.entities.AdminAnnouncementsListResponse[number], 'id' | 'createdAt' | 'updatedAt' | 'reads' | 'isActive'> & {
+	id: string | null;
+	_id?: string;
+	isActive?: Misskey.entities.AdminAnnouncementsListResponse[number]['isActive'];
+	reads?: Misskey.entities.AdminAnnouncementsListResponse[number]['reads'];
+})[]>([]);
 
 watch(announcementsStatus, (to) => {
 	loading.value = true;
@@ -136,42 +142,55 @@ function add() {
 		forExistingUsers: false,
 		silence: false,
 		needConfirmationToRead: false,
+		userId: null,
 	});
 }
 
-function del(announcement) {
-	os.confirm({
+async function del(announcement: (typeof announcements)['value'][number]) {
+	if (announcement.id == null) return;
+	const { canceled } = await os.confirm({
 		type: 'warning',
 		text: i18n.tsx.deleteAreYouSure({ x: announcement.title }),
-	}).then(({ canceled }) => {
-		if (canceled) return;
-		announcements.value = announcements.value.filter(x => x !== announcement);
-		misskeyApi('admin/announcements/delete', announcement);
+	});
+	if (canceled) return;
+	announcements.value = announcements.value.filter(x => x !== announcement);
+	misskeyApi('admin/announcements/delete', {
+		id: announcement.id,
 	});
 }
 
-async function archive(announcement) {
+async function archive(announcement: (typeof announcements)['value'][number]) {
+	if (announcement.id == null) return;
+	const { _id, ...data } = announcement; // _idを消す
 	await os.apiWithDialog('admin/announcements/update', {
-		...announcement,
+		...data,
+		id: announcement.id, // TSを黙らすため
 		isActive: false,
 	});
 	refresh();
 }
 
-async function unarchive(announcement) {
+async function unarchive(announcement: (typeof announcements)['value'][number]) {
+	if (announcement.id == null) return;
+	const { _id, ...data } = announcement; // _idを消す
 	await os.apiWithDialog('admin/announcements/update', {
-		...announcement,
+		...data,
+		id: announcement.id, // TSを黙らすため
 		isActive: true,
 	});
 	refresh();
 }
 
-async function save(announcement) {
+async function save(announcement: (typeof announcements)['value'][number]) {
+	const { _id, ...data } = announcement; // _idを消す
 	if (announcement.id == null) {
-		await os.apiWithDialog('admin/announcements/create', announcement);
+		await os.apiWithDialog('admin/announcements/create', data);
 		refresh();
 	} else {
-		os.apiWithDialog('admin/announcements/update', announcement);
+		os.apiWithDialog('admin/announcements/update', {
+			...data,
+			id: announcement.id, // TSを黙らすため
+		});
 	}
 }
 
@@ -179,7 +198,7 @@ function more() {
 	loadingMore.value = true;
 	misskeyApi('admin/announcements/list', {
 		status: announcementsStatus.value,
-		untilId: announcements.value.reduce((acc, announcement) => announcement.id != null ? announcement : acc).id,
+		untilId: announcements.value.reduce((acc, announcement) => announcement.id != null ? announcement : acc).id!,
 	}).then(announcementResponse => {
 		announcements.value = announcements.value.concat(announcementResponse);
 		loadingMore.value = false;

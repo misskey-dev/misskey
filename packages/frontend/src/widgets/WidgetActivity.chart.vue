@@ -53,16 +53,24 @@ const pointsReply = ref<string>();
 const pointsRenote = ref<string>();
 const pointsTotal = ref<string>();
 
-function dragListen(fn: (ev: MouseEvent) => void) {
+function dragListen(fn: (ev: MouseEvent | TouchEvent) => void) {
 	window.addEventListener('mousemove', fn);
 	window.addEventListener('mouseleave', dragClear.bind(null, fn));
 	window.addEventListener('mouseup', dragClear.bind(null, fn));
 }
 
-function dragClear(fn) {
+function dragClear(fn: (ev: MouseEvent | TouchEvent) => void) {
 	window.removeEventListener('mousemove', fn);
-	window.removeEventListener('mouseleave', dragClear);
-	window.removeEventListener('mouseup', dragClear);
+	window.removeEventListener('mouseleave', dragClear as any);
+	window.removeEventListener('mouseup', dragClear as any);
+}
+
+function getPositionX(event: MouseEvent | TouchEvent) {
+	return 'touches' in event && event.touches.length > 0 ? event.touches[0].clientX : 'clientX' in event ? event.clientX : 0;
+}
+
+function getPositionY(event: MouseEvent | TouchEvent) {
+	return 'touches' in event && event.touches.length > 0 ? event.touches[0].clientY : 'clientY' in event ? event.clientY : 0;
 }
 
 function onMousedown(ev: MouseEvent) {
@@ -73,8 +81,11 @@ function onMousedown(ev: MouseEvent) {
 
 	// 動かした時
 	dragListen(me => {
-		let moveLeft = me.clientX - clickX;
-		let moveTop = me.clientY - clickY;
+		const x = getPositionX(me);
+		const y = getPositionY(me);
+
+		let moveLeft = x - clickX;
+		let moveTop = y - clickY;
 
 		zoom.value = Math.max(1, baseZoom + (-moveTop / 20));
 		pos.value = Math.min(0, basePos + moveLeft);

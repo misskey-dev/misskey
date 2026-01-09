@@ -251,7 +251,7 @@ function setupGrid(): GridSetting {
 						icon: 'ti ti-trash',
 						action: () => {
 							removeDataFromGrid(context, (cell) => {
-								gridItems.value[cell.row.index][cell.column.setting.bindTo] = undefined;
+								(gridItems.value[cell.row.index] as any)[cell.column.setting.bindTo] = undefined;
 							});
 						},
 					},
@@ -455,7 +455,7 @@ function onGridCellValidation(event: GridCellValidationEvent) {
 function onGridCellValueChange(event: GridCellValueChangeEvent) {
 	const { row, column, newValue } = event;
 	if (gridItems.value.length > row.index && column.setting.bindTo in gridItems.value[row.index]) {
-		gridItems.value[row.index][column.setting.bindTo] = newValue;
+		(gridItems.value[row.index] as any)[column.setting.bindTo] = newValue;
 	}
 }
 

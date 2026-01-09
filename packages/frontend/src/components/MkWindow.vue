@@ -78,12 +78,12 @@ function dragListen(fn: (ev: MouseEvent | TouchEvent) => void) {
 	window.addEventListener('touchend', dragClear.bind(null, fn));
 }
 
-function dragClear(fn) {
+function dragClear(fn: (ev: MouseEvent | TouchEvent) => void) {
 	window.removeEventListener('mousemove', fn);
 	window.removeEventListener('touchmove', fn);
-	window.removeEventListener('mouseleave', dragClear);
-	window.removeEventListener('mouseup', dragClear);
-	window.removeEventListener('touchend', dragClear);
+	window.removeEventListener('mouseleave', dragClear as any);
+	window.removeEventListener('mouseup', dragClear as any);
+	window.removeEventListener('touchend', dragClear as any);
 }
 
 const props = withDefaults(defineProps<{

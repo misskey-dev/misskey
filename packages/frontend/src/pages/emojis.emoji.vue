@@ -57,8 +57,11 @@ function menu(ev: PointerEvent) {
 			text: i18n.ts.edit,
 			icon: 'ti ti-pencil',
 			action: async () => {
+				const detailedEmoji = await misskeyApiGet('emoji', {
+					name: props.emoji.name,
+				});
 				const { dispose } = await os.popupAsyncWithDialog(import('@/pages/emoji-edit-dialog.vue').then(x => x.default), {
-					emoji: props.emoji,
+					emoji: detailedEmoji,
 				}, {
 					closed: () => dispose(),
 				});

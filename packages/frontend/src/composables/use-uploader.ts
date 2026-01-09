@@ -664,7 +664,7 @@ export function useUploader(options: {
 
 		if (needsCompress) {
 			const config = {
-				mimeType: isWebpSupported() ? 'image/webp' : 'image/jpeg',
+				mimeType: (isWebpSupported() ? 'image/webp' : 'image/jpeg') as 'image/webp' | 'image/jpeg',
 				maxWidth: compressionSettings.maxWidth,
 				maxHeight: compressionSettings.maxHeight,
 				quality: isWebpSupported() ? 0.85 : 0.8,
