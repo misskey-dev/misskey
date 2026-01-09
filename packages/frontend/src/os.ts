@@ -171,7 +171,7 @@ type FilterSpecificFunc<T> = T extends (...args: any[]) => void
 
 // オブジェクトの各プロパティに対して再帰的、あるいは単純に適用する型関数
 type CleanFunctions<T> = {
-	[K in keyof T]: T[K] extends Function
+	[K in keyof T]: T[K] extends (...args: any[]) => any
 		? FilterSpecificFunc<T[K]>
 		: T[K];
 };
