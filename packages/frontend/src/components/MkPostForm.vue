@@ -55,7 +55,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.visibleUsers">
 			<span v-for="u in visibleUsers" :key="u.id" :class="$style.visibleUser">
 				<MkAcct :user="u"/>
-				<button class="_button" style="padding: 4px 8px;" @click="removeVisibleUser(u)"><i class="ti ti-x"></i></button>
+				<button class="_button" style="padding: 4px 8px;" @click="removeVisibleUser(u.id)"><i class="ti ti-x"></i></button>
 			</span>
 			<button class="_buttonPrimary" style="padding: 4px; border-radius: 8px;" @click="addVisibleUser"><i class="ti ti-plus ti-fw"></i></button>
 		</div>
@@ -503,18 +503,18 @@ function chooseFileFromDrive(ev: MouseEvent) {
 	});
 }
 
-function detachFile(id) {
+function detachFile(id: Misskey.entities.DriveFile['id']) {
 	files.value = files.value.filter(x => x.id !== id);
 }
 
-function updateFileSensitive(file, sensitive) {
+function updateFileSensitive(file: Misskey.entities.DriveFile, isSensitive: boolean) {
 	if (props.mock) {
-		emit('fileChangeSensitive', file.id, sensitive);
+		emit('fileChangeSensitive', file.id, isSensitive);
 	}
-	files.value[files.value.findIndex(x => x.id === file.id)].isSensitive = sensitive;
+	files.value[files.value.findIndex(x => x.id === file.id)].isSensitive = isSensitive;
 }
 
-function updateFileName(file, name) {
+function updateFileName(file: Misskey.entities.DriveFile, name: Misskey.entities.DriveFile['name']) {
 	files.value[files.value.findIndex(x => x.id === file.id)].name = name;
 }
 
@@ -704,8 +704,8 @@ function addVisibleUser() {
 	});
 }
 
-function removeVisibleUser(user) {
-	visibleUsers.value = erase(user, visibleUsers.value);
+function removeVisibleUser(id: string) {
+	visibleUsers.value = visibleUsers.value.filter(u => u.id !== id);
 }
 
 function clear() {

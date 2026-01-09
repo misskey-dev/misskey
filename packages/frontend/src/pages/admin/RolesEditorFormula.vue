@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div class="_gaps">
 	<div :class="$style.header">
-		<MkSelect v-model="type" :items="typeDef" :class="$style.typeSelect">
+		<MkSelect v-model="typeModelForMkSelect" :items="typeDef" :class="$style.typeSelect">
 		</MkSelect>
 		<button v-if="draggable" class="_button" :class="$style.dragHandle" :draggable="true" @dragstart.stop="dragStartCallback">
 			<i class="ti ti-menu-2"></i>
@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</button>
 	</div>
 
-	<div v-if="type === 'and' || type === 'or'" class="_gaps">
+	<div v-if="v.type === 'and' || v.type === 'or'" class="_gaps">
 		<MkDraggable
 			v-model="v.values"
 			direction="vertical"
@@ -32,33 +32,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 						:modelValue="item"
 						:dragStartCallback="dragStart"
 						draggable
-						@update:modelValue="updated => valuesItemUpdated(updated)"
-						@remove="removeItem(item.id)"
+						@update:modelValue="updated => childValuesItemUpdated(updated)"
+						@remove="removeChildItem(item.id)"
 					/>
 				</div>
 			</template>
 		</MkDraggable>
-		<MkButton rounded style="margin: 0 auto;" @click="addValue"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
+		<MkButton rounded style="margin: 0 auto;" @click="addChildValue"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 	</div>
 
-	<div v-else-if="type === 'not'" :class="$style.item">
+	<div v-else-if="v.type === 'not'" :class="$style.item">
 		<RolesEditorFormula v-model="v.value"/>
 	</div>
 
-	<MkInput v-else-if="type === 'createdLessThan' || type === 'createdMoreThan'" v-model="v.sec" type="number">
+	<MkInput v-else-if="v.type === 'createdLessThan' || v.type === 'createdMoreThan'" v-model="v.sec" type="number">
 		<template #suffix>sec</template>
 	</MkInput>
 
-	<MkInput v-else-if="['followersLessThanOrEq', 'followersMoreThanOrEq', 'followingLessThanOrEq', 'followingMoreThanOrEq', 'notesLessThanOrEq', 'notesMoreThanOrEq'].includes(type)" v-model="v.value" type="number">
+	<MkInput v-else-if="v.type === 'followersLessThanOrEq' || v.type === 'followersMoreThanOrEq' || v.type === 'followingLessThanOrEq' || v.type === 'followingMoreThanOrEq' || v.type === 'notesLessThanOrEq' || v.type === 'notesMoreThanOrEq'" v-model="v.value" type="number">
 	</MkInput>
 
-	<MkSelect v-else-if="type === 'roleAssignedTo'" v-model="v.roleId" :items="assignedToDef">
+	<MkSelect v-else-if="v.type === 'roleAssignedTo'" v-model="v.roleId" :items="assignedToDef">
 	</MkSelect>
 </div>
 </template>
 
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
+import * as Misskey from 'misskey-js';
 import type { GetMkSelectValueTypesFromDef, MkSelectItem } from '@/components/MkSelect.vue';
 import { genId } from '@/utility/id.js';
 import MkInput from '@/components/MkInput.vue';
@@ -70,12 +71,12 @@ import { deepClone } from '@/utility/clone.js';
 import { rolesCache } from '@/cache.js';
 
 const emit = defineEmits<{
-	(ev: 'update:modelValue', value: any): void;
+	(ev: 'update:modelValue', value: Misskey.entities.Role['condFormula']): void;
 	(ev: 'remove'): void;
 }>();
 
 const props = defineProps<{
-	modelValue: any;
+	modelValue: Misskey.entities.Role['condFormula'];
 	draggable?: boolean;
 	dragStartCallback?: (ev: DragEvent) => void;
 }>();
@@ -115,37 +116,50 @@ const typeDef = [
 	{ label: i18n.ts._role._condition.not, value: 'not' },
 ] as const satisfies MkSelectItem[];
 
-const type = computed<GetMkSelectValueTypesFromDef<typeof typeDef>>({
+type KeyOfUnion<T> = T extends T ? keyof T : never;
+
+type DistributiveOmit<T, K extends KeyOfUnion<T>> = T extends T
+	? Omit<T, K>
+	: never;
+
+const typeModelForMkSelect = computed<GetMkSelectValueTypesFromDef<typeof typeDef>>({
 	get: () => v.value.type,
 	set: (t) => {
-		if (t === 'and') v.value.values = [];
-		if (t === 'or') v.value.values = [];
-		if (t === 'not') v.value.value = { id: genId(), type: 'isRemote' };
-		if (t === 'roleAssignedTo') v.value.roleId = '';
-		if (t === 'createdLessThan') v.value.sec = 86400;
-		if (t === 'createdMoreThan') v.value.sec = 86400;
-		if (t === 'followersLessThanOrEq') v.value.value = 10;
-		if (t === 'followersMoreThanOrEq') v.value.value = 10;
-		if (t === 'followingLessThanOrEq') v.value.value = 10;
-		if (t === 'followingMoreThanOrEq') v.value.value = 10;
-		if (t === 'notesLessThanOrEq') v.value.value = 10;
-		if (t === 'notesMoreThanOrEq') v.value.value = 10;
-		v.value.type = t;
+		let newValue: DistributiveOmit<Misskey.entities.Role['condFormula'], 'id'>;
+		switch (t) {
+			case 'and': newValue = { type: 'and', values: [] }; break;
+			case 'or': newValue = { type: 'or', values: [] }; break;
+			case 'not': newValue = { type: 'not', value: { id: genId(), type: 'isRemote' } }; break;
+			case 'roleAssignedTo': newValue = { type: 'roleAssignedTo', roleId: '' }; break;
+			case 'createdLessThan': newValue = { type: 'createdLessThan', sec: 86400 }; break;
+			case 'createdMoreThan': newValue = { type: 'createdMoreThan', sec: 86400 }; break;
+			case 'followersLessThanOrEq': newValue = { type: 'followersLessThanOrEq', value: 10 }; break;
+			case 'followersMoreThanOrEq': newValue = { type: 'followersMoreThanOrEq', value: 10 }; break;
+			case 'followingLessThanOrEq': newValue = { type: 'followingLessThanOrEq', value: 10 }; break;
+			case 'followingMoreThanOrEq': newValue = { type: 'followingMoreThanOrEq', value: 10 }; break;
+			case 'notesLessThanOrEq': newValue = { type: 'notesLessThanOrEq', value: 10 }; break;
+			case 'notesMoreThanOrEq': newValue = { type: 'notesMoreThanOrEq', value: 10 }; break;
+			default: newValue = { type: t }; break;
+		}
+		v.value = { id: v.value.id, ...newValue };
 	},
 });
 
 const assignedToDef = computed(() => roles.filter(r => r.target === 'manual').map(r => ({ label: r.name, value: r.id })) satisfies MkSelectItem[]);
 
-function addValue() {
+function addChildValue() {
+	if (v.value.type !== 'and' && v.value.type !== 'or') return;
 	v.value.values.push({ id: genId(), type: 'isRemote' });
 }
 
-function valuesItemUpdated(item) {
+function childValuesItemUpdated(item: Misskey.entities.Role['condFormula']) {
+	if (v.value.type !== 'and' && v.value.type !== 'or') return;
 	const i = v.value.values.findIndex(_item => _item.id === item.id);
 	v.value.values[i] = item;
 }
 
-function removeItem(itemId) {
+function removeChildItem(itemId: string) {
+	if (v.value.type !== 'and' && v.value.type !== 'or') return;
 	v.value.values = v.value.values.filter(_item => _item.id !== itemId);
 }
 
