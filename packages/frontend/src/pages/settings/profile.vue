@@ -267,7 +267,7 @@ function save() {
 	}
 }
 
-function changeAvatar(ev: MouseEvent) {
+function changeAvatar(ev: PointerEvent) {
 	async function done(driveFile: Misskey.entities.DriveFile) {
 		const i = await os.apiWithDialog('i/update', {
 			avatarId: driveFile.id,
@@ -316,7 +316,7 @@ function changeAvatar(ev: MouseEvent) {
 	}], ev.currentTarget ?? ev.target);
 }
 
-function changeBanner(ev: MouseEvent) {
+function changeBanner(ev: PointerEvent) {
 	async function done(driveFile: Misskey.entities.DriveFile) {
 		const i = await os.apiWithDialog('i/update', {
 			bannerId: driveFile.id,

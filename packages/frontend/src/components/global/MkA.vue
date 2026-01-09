@@ -85,7 +85,7 @@ function openWindow() {
 	os.pageWindow(props.to);
 }
 
-function nav(ev: MouseEvent) {
+function nav(ev: PointerEvent) {
 	// 制御キーとの組み合わせは無視（shiftを除く）
 	if (ev.metaKey || ev.altKey || ev.ctrlKey) return;
 

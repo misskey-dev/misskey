@@ -252,7 +252,7 @@ const age = computed(() => {
 	return props.user.birthday ? calcAge(props.user.birthday) : NaN;
 });
 
-function menu(ev: MouseEvent) {
+function menu(ev: PointerEvent) {
 	const { menu, cleanup } = getUserMenu(user.value, router);
 	os.popupMenu(menu, ev.currentTarget ?? ev.target).finally(cleanup);
 }

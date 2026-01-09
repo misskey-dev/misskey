@@ -163,7 +163,7 @@ function fetchPage() {
 	});
 }
 
-function share(ev: MouseEvent) {
+function share(ev: PointerEvent) {
 	if (!page.value) return;
 
 	const menuItems: MenuItem[] = [];
@@ -258,7 +258,7 @@ async function reportAbuse() {
 	});
 }
 
-function showMenu(ev: MouseEvent) {
+function showMenu(ev: PointerEvent) {
 	if (!page.value) return;
 
 	const menuItems: MenuItem[] = [];

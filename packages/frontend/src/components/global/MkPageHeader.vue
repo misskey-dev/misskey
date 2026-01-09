@@ -99,7 +99,7 @@ const top = () => {
 	}
 };
 
-async function openAccountMenu(ev: MouseEvent) {
+async function openAccountMenu(ev: PointerEvent) {
 	const menuItems = await getAccountMenu({
 		withExtraOperation: true,
 	});

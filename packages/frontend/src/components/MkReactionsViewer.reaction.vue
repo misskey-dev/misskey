@@ -153,7 +153,7 @@ async function toggleReaction() {
 	}
 }
 
-async function menu(ev: MouseEvent) {
+async function menu(ev: PointerEvent) {
 	let menuItems: MenuItem[] = [];
 
 	if (canGetInfo.value) {

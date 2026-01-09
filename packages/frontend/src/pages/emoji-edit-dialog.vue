@@ -120,7 +120,7 @@ watch(roleIdsThatCanBeUsedThisEmojiAsReaction, async () => {
 
 const imgUrl = computed(() => file.value ? file.value.url : props.emoji ? props.emoji.url : null);
 
-async function changeImage(ev: MouseEvent) {
+async function changeImage(ev: PointerEvent) {
 	file.value = await selectFile({
 		anchorElement: ev.currentTarget ?? ev.target,
 		multiple: false,

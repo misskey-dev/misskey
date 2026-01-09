@@ -149,7 +149,7 @@ async function describe(file: Misskey.entities.DriveFile) {
 	});
 }
 
-function showFileMenu(file: Misskey.entities.DriveFile, ev: MouseEvent | KeyboardEvent): void {
+function showFileMenu(file: Misskey.entities.DriveFile, ev: PointerEvent | KeyboardEvent): void {
 	if (menuShowing) return;
 
 	const isImage = file.type.startsWith('image/');

@@ -8305,16 +8305,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': {
-                        /** Format: id */
-                        id: string;
-                        aliases: string[];
-                        name: string;
-                        category: string | null;
-                        /** @description The local host is represented with `null`. */
-                        host: string | null;
-                        url: string;
-                    }[];
+                    'application/json': components['schemas']['EmojiDetailed'][];
                 };
             };
             /** @description Client error */

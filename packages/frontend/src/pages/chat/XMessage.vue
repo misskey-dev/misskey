@@ -94,7 +94,7 @@ provide(DI.mfmEmojiReactCallback, (reaction) => {
 	});
 });
 
-function react(ev: MouseEvent) {
+function react(ev: PointerEvent) {
 	if ($i.policies.chatAvailability !== 'available') return;
 
 	const targetEl = getHTMLElementOrNull(ev.currentTarget ?? ev.target);
@@ -135,7 +135,7 @@ function onContextmenu(ev: PointerEvent) {
 	showMenu(ev, true);
 }
 
-function showMenu(ev: MouseEvent, contextmenu = false) {
+function showMenu(ev: PointerEvent, contextmenu = false) {
 	const menu: MenuItem[] = [];
 
 	if (!isMe.value && $i.policies.chatAvailability === 'available') {

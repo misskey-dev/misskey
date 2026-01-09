@@ -247,7 +247,7 @@ async function add() {
 	}
 }
 
-function setEyeCatchingImage(ev: MouseEvent) {
+function setEyeCatchingImage(ev: PointerEvent) {
 	selectFile({
 		anchorElement: ev.currentTarget ?? ev.target,
 		multiple: false,

@@ -50,7 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts">
 export type Tab<K = string> = {
 	key: K;
-	onClick?: (ev: MouseEvent) => void;
+	onClick?: (ev: PointerEvent) => void;
 	iconOnly?: boolean;
 	title: string;
 	icon?: string;
@@ -100,7 +100,7 @@ function onTabMousedown(selectedTab: Tab, ev: MouseEvent): void {
 	}
 }
 
-function onTabClick(t: Tab, ev: MouseEvent): void {
+function onTabClick(t: Tab, ev: PointerEvent): void {
 	emit('tabClick', t.key);
 
 	if (t.onClick) {

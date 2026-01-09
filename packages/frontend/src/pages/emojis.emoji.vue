@@ -27,7 +27,7 @@ const props = defineProps<{
 	emoji: Misskey.entities.EmojiSimple;
 }>();
 
-function menu(ev: MouseEvent) {
+function menu(ev: PointerEvent) {
 	const menuItems: MenuItem[] = [];
 	menuItems.push({
 		type: 'label',

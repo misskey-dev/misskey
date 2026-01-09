@@ -165,7 +165,7 @@ watch(() => game.value.timeLimitForEachTurn, () => {
 	updateSettings('timeLimitForEachTurn');
 });
 
-function chooseMap(ev: MouseEvent) {
+function chooseMap(ev: PointerEvent) {
 	const menu: MenuItem[] = [];
 
 	for (const c of mapCategories) {

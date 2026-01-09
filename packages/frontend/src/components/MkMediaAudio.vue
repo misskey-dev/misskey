@@ -168,7 +168,7 @@ async function reveal() {
 // Menu
 const menuShowing = ref(false);
 
-function showMenu(ev: MouseEvent) {
+function showMenu(ev: PointerEvent) {
 	const menu: MenuItem[] = [
 		// TODO: 再生キューに追加
 		{

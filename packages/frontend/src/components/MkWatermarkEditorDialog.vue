@@ -350,7 +350,7 @@ async function save() {
 	}
 }
 
-function addLayer(ev: MouseEvent) {
+function addLayer(ev: PointerEvent) {
 	os.popupMenu([{
 		text: i18n.ts._watermarkEditor.text,
 		action: () => {

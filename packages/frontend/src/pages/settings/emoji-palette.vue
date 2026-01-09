@@ -226,12 +226,12 @@ function delPalette(id: string) {
 	}
 }
 
-function getHTMLElement(ev: MouseEvent): HTMLElement {
+function getHTMLElement(ev: PointerEvent): HTMLElement {
 	const target = ev.currentTarget ?? ev.target;
 	return target as HTMLElement;
 }
 
-function previewPicker(ev: MouseEvent) {
+function previewPicker(ev: PointerEvent) {
 	emojiPicker.show(getHTMLElement(ev));
 }
 

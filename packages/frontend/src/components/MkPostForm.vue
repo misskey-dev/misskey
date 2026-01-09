@@ -486,7 +486,7 @@ function focus() {
 	}
 }
 
-function chooseFileFromPc(ev: MouseEvent) {
+function chooseFileFromPc(ev: PointerEvent) {
 	if (props.mock) return;
 
 	os.chooseFileFromPc({ multiple: true }).then(files => {
@@ -495,7 +495,7 @@ function chooseFileFromPc(ev: MouseEvent) {
 	});
 }
 
-function chooseFileFromDrive(ev: MouseEvent) {
+function chooseFileFromDrive(ev: PointerEvent) {
 	if (props.mock) return;
 
 	chooseDriveFile({ multiple: true }).then(driveFiles => {
@@ -926,7 +926,7 @@ async function uploadFiles() {
 	}
 }
 
-async function post(ev?: MouseEvent) {
+async function post(ev?: PointerEvent) {
 	if (ev != null) {
 		const el = (ev.currentTarget ?? ev.target) as HTMLElement | null;
 
@@ -1144,7 +1144,7 @@ function insertMention() {
 	});
 }
 
-async function insertEmoji(ev: MouseEvent) {
+async function insertEmoji(ev: PointerEvent) {
 	textAreaReadOnly.value = true;
 	const target = ev.currentTarget ?? ev.target;
 	if (target == null) return;
@@ -1178,7 +1178,7 @@ async function insertEmoji(ev: MouseEvent) {
 	);
 }
 
-async function insertMfmFunction(ev: MouseEvent) {
+async function insertMfmFunction(ev: PointerEvent) {
 	if (textareaEl.value == null) return;
 	let pos = textareaEl.value.selectionStart ?? 0;
 	let posEnd = textareaEl.value.selectionEnd ?? text.value.length;
@@ -1206,7 +1206,7 @@ async function insertMfmFunction(ev: MouseEvent) {
 	);
 }
 
-function showActions(ev: MouseEvent) {
+function showActions(ev: PointerEvent) {
 	os.popupMenu(postFormActions.map(action => ({
 		text: action.title,
 		action: () => {
@@ -1224,7 +1224,7 @@ function showActions(ev: MouseEvent) {
 
 const postAccount = ref<Misskey.entities.UserDetailed | null>(null);
 
-async function openAccountMenu(ev: MouseEvent) {
+async function openAccountMenu(ev: PointerEvent) {
 	if (props.mock) return;
 
 	function showDraftsDialog(scheduled: boolean) {
@@ -1314,12 +1314,12 @@ async function openAccountMenu(ev: MouseEvent) {
 	}, { type: 'divider' }, ...items], (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
 }
 
-function showPerUploadItemMenu(item: UploaderItem, ev: MouseEvent) {
+function showPerUploadItemMenu(item: UploaderItem, ev: PointerEvent) {
 	const menu = uploader.getMenu(item);
 	os.popupMenu(menu, ev.currentTarget ?? ev.target);
 }
 
-function showPerUploadItemMenuViaContextmenu(item: UploaderItem, ev: MouseEvent) {
+function showPerUploadItemMenuViaContextmenu(item: UploaderItem, ev: PointerEvent) {
 	const menu = uploader.getMenu(item);
 	os.contextMenu(menu, ev);
 }

@@ -132,7 +132,7 @@ function forward() {
 	});
 }
 
-function showMenu(ev: MouseEvent) {
+function showMenu(ev: PointerEvent) {
 	os.popupMenu([{
 		icon: 'ti ti-hash',
 		text: 'Copy ID',

@@ -63,7 +63,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'click', payload: MouseEvent): void;
+	(ev: 'click', payload: PointerEvent): void;
 }>();
 
 const el = useTemplateRef('el');

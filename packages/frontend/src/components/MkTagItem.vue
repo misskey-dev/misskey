@@ -17,8 +17,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import MkButton from '@/components/MkButton.vue';
 
 const emit = defineEmits<{
-	(ev: 'click', payload: MouseEvent): void;
-	(ev: 'exButtonClick', payload: MouseEvent): void;
+	(ev: 'click', payload: PointerEvent): void;
+	(ev: 'exButtonClick', payload: PointerEvent): void;
 }>();
 
 defineProps<{

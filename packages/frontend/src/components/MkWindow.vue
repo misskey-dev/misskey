@@ -128,7 +128,7 @@ function close() {
 	showing.value = false;
 }
 
-function onKeydown(evt) {
+function onKeydown(evt: KeyboardEvent) {
 	if (evt.which === 27) { // Esc
 		evt.preventDefault();
 		evt.stopPropagation();
@@ -418,24 +418,24 @@ function onBottomLeftHandleMousedown(evt: MouseEvent | TouchEvent) {
 }
 
 // 高さを適用
-function applyTransformHeight(height) {
+function applyTransformHeight(height: number) {
 	if (height > window.innerHeight) height = window.innerHeight;
 	if (rootEl.value) rootEl.value.style.height = height + 'px';
 }
 
 // 幅を適用
-function applyTransformWidth(width) {
+function applyTransformWidth(width: number) {
 	if (width > window.innerWidth) width = window.innerWidth;
 	if (rootEl.value) rootEl.value.style.width = width + 'px';
 }
 
 // Y座標を適用
-function applyTransformTop(top) {
+function applyTransformTop(top: number) {
 	if (rootEl.value) rootEl.value.style.top = top + 'px';
 }
 
 // X座標を適用
-function applyTransformLeft(left) {
+function applyTransformLeft(left: number) {
 	if (rootEl.value) rootEl.value.style.left = left + 'px';
 }
 

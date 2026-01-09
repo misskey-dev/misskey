@@ -114,7 +114,7 @@ function updateWidget(id: Widget['id'], data: Widget['data']) {
 	emit('updateWidget', { id, data });
 }
 
-function onContextmenu(widget: Widget, ev: MouseEvent) {
+function onContextmenu(widget: Widget, ev: PointerEvent) {
 	const element = ev.target as HTMLElement | null;
 	if (element && isLink(element)) return;
 	if (element && (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes(element.tagName) || element.attributes.getNamedItem('contenteditable') != null)) return;

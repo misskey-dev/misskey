@@ -27,7 +27,7 @@ import * as os from '@/os.js';
 
 const props = defineProps<{
 	items: MenuItem[];
-	ev: MouseEvent;
+	ev: PointerEvent;
 }>();
 
 const emit = defineEmits<{

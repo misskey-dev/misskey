@@ -219,7 +219,7 @@ watch([
 	suggestReload();
 });
 
-async function unrenoteMute(user: Misskey.entities.UserDetailed, ev: MouseEvent) {
+async function unrenoteMute(user: Misskey.entities.UserDetailed, ev: PointerEvent) {
 	os.popupMenu([{
 		text: i18n.ts.renoteUnmute,
 		icon: 'ti ti-x',
@@ -230,7 +230,7 @@ async function unrenoteMute(user: Misskey.entities.UserDetailed, ev: MouseEvent)
 	}], ev.currentTarget ?? ev.target);
 }
 
-async function unmute(user: Misskey.entities.UserDetailed, ev: MouseEvent) {
+async function unmute(user: Misskey.entities.UserDetailed, ev: PointerEvent) {
 	os.popupMenu([{
 		text: i18n.ts.unmute,
 		icon: 'ti ti-x',
@@ -241,7 +241,7 @@ async function unmute(user: Misskey.entities.UserDetailed, ev: MouseEvent) {
 	}], ev.currentTarget ?? ev.target);
 }
 
-async function unblock(user: Misskey.entities.UserDetailed, ev: MouseEvent) {
+async function unblock(user: Misskey.entities.UserDetailed, ev: PointerEvent) {
 	os.popupMenu([{
 		text: i18n.ts.unblock,
 		icon: 'ti ti-x',

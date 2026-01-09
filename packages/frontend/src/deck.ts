@@ -323,7 +323,7 @@ export function updateColumn(id: Column['id'], column: Partial<Column>) {
 	saveCurrentDeckProfile();
 }
 
-export function switchProfileMenu(ev: MouseEvent) {
+export function switchProfileMenu(ev: PointerEvent) {
 	const items: MenuItem[] = prefer.s['deck.profile'] ? [{
 		text: prefer.s['deck.profile'],
 		active: true,

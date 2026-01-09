@@ -208,7 +208,7 @@ async function matchUser() {
 	matchHeatbeat();
 }
 
-async function matchAny(ev: MouseEvent) {
+async function matchAny(ev: PointerEvent) {
 	const isLoggedIn = await pleaseLogin();
 	if (!isLoggedIn) return;
 

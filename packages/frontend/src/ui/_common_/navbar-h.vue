@@ -76,7 +76,7 @@ const otherNavItemIndicated = computed<boolean>(() => {
 	return false;
 });
 
-async function more(ev: MouseEvent) {
+async function more(ev: PointerEvent) {
 	const target = getHTMLElementOrNull(ev.currentTarget ?? ev.target);
 	if (!target) return;
 
@@ -88,7 +88,7 @@ async function more(ev: MouseEvent) {
 	});
 }
 
-async function openAccountMenu(ev: MouseEvent) {
+async function openAccountMenu(ev: PointerEvent) {
 	const menuItems = await getAccountMenu({
 		withExtraOperation: true,
 	});

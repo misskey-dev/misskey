@@ -116,11 +116,11 @@ function genUsageBar(fsize: number): StyleValue {
 	};
 }
 
-function onClick(ev: MouseEvent, file: Misskey.entities.DriveFile) {
+function onClick(ev: PointerEvent, file: Misskey.entities.DriveFile) {
 	os.popupMenu(getDriveFileMenu(file), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
 }
 
-function onContextMenu(ev: MouseEvent, file: Misskey.entities.DriveFile): void {
+function onContextMenu(ev: PointerEvent, file: Misskey.entities.DriveFile): void {
 	os.contextMenu(getDriveFileMenu(file), ev);
 }
 

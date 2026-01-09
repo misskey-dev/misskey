@@ -371,7 +371,7 @@ async function showChildren(item: MenuParent, ev: MouseEvent | PointerEvent | Ke
 	}
 }
 
-function clicked(fn: MenuAction, ev: MouseEvent, doClose = true) {
+function clicked(fn: MenuAction, ev: PointerEvent, doClose = true) {
 	fn(ev);
 
 	if (!doClose) return;

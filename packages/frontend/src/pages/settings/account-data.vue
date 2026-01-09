@@ -232,7 +232,7 @@ const exportAntennas = () => {
 	misskeyApi('i/export-antennas', {}).then(onExportSuccess).catch(onError);
 };
 
-const importFollowing = async (ev: MouseEvent) => {
+const importFollowing = async (ev: PointerEvent) => {
 	const file = await selectFile({
 		anchorElement: ev.currentTarget ?? ev.target,
 		multiple: false,
@@ -243,7 +243,7 @@ const importFollowing = async (ev: MouseEvent) => {
 	}).then(onImportSuccess).catch(onError);
 };
 
-const importUserLists = async (ev: MouseEvent) => {
+const importUserLists = async (ev: PointerEvent) => {
 	const file = await selectFile({
 		anchorElement: ev.currentTarget ?? ev.target,
 		multiple: false,
@@ -251,7 +251,7 @@ const importUserLists = async (ev: MouseEvent) => {
 	misskeyApi('i/import-user-lists', { fileId: file.id }).then(onImportSuccess).catch(onError);
 };
 
-const importMuting = async (ev: MouseEvent) => {
+const importMuting = async (ev: PointerEvent) => {
 	const file = await selectFile({
 		anchorElement: ev.currentTarget ?? ev.target,
 		multiple: false,
@@ -259,7 +259,7 @@ const importMuting = async (ev: MouseEvent) => {
 	misskeyApi('i/import-muting', { fileId: file.id }).then(onImportSuccess).catch(onError);
 };
 
-const importBlocking = async (ev: MouseEvent) => {
+const importBlocking = async (ev: PointerEvent) => {
 	const file = await selectFile({
 		anchorElement: ev.currentTarget ?? ev.target,
 		multiple: false,
@@ -267,7 +267,7 @@ const importBlocking = async (ev: MouseEvent) => {
 	misskeyApi('i/import-blocking', { fileId: file.id }).then(onImportSuccess).catch(onError);
 };
 
-const importAntennas = async (ev: MouseEvent) => {
+const importAntennas = async (ev: PointerEvent) => {
 	const file = await selectFile({
 		anchorElement: ev.currentTarget ?? ev.target,
 		multiple: false,

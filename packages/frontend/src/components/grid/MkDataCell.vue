@@ -145,7 +145,7 @@ watch(() => cell.value.selected, () => {
 	}
 });
 
-function onCellDoubleClick(ev: MouseEvent) {
+function onCellDoubleClick(ev: PointerEvent) {
 	switch (ev.type) {
 		case 'dblclick': {
 			beginEditing(ev.target as HTMLElement);

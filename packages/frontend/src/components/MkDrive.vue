@@ -493,7 +493,7 @@ function deleteFolder(folderToDelete: Misskey.entities.DriveFolder) {
 	});
 }
 
-function onFileClick(ev: MouseEvent, file: Misskey.entities.DriveFile) {
+function onFileClick(ev: PointerEvent, file: Misskey.entities.DriveFile) {
 	if (ev.shiftKey) {
 		isEditMode.value = true;
 	}
@@ -691,7 +691,7 @@ function getMenu() {
 	return menu;
 }
 
-function showMenu(ev: MouseEvent) {
+function showMenu(ev: PointerEvent) {
 	os.popupMenu(getMenu(), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
 }
 

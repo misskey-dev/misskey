@@ -109,7 +109,7 @@ async function addRole() {
 	rolesThatCanBeUsedThisDecoration.value.push(roles.find(r => r.id === roleId)!);
 }
 
-async function removeRole(role: Misskey.entities.Role, ev: MouseEvent) {
+async function removeRole(role: Misskey.entities.Role, ev: PointerEvent) {
 	rolesThatCanBeUsedThisDecoration.value = rolesThatCanBeUsedThisDecoration.value.filter(x => x.id !== role.id);
 }
 

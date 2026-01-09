@@ -76,7 +76,7 @@ watch(emojis, () => {
 	emit('updateEmojis', emojis.value);
 }, { deep: true });
 
-function remove(reaction: string, ev: MouseEvent) {
+function remove(reaction: string, ev: PointerEvent) {
 	os.popupMenu([{
 		text: i18n.ts.remove,
 		action: () => {
@@ -85,7 +85,7 @@ function remove(reaction: string, ev: MouseEvent) {
 	}], getHTMLElement(ev));
 }
 
-function pick(ev: MouseEvent) {
+function pick(ev: PointerEvent) {
 	os.pickEmoji(getHTMLElement(ev), {
 		showPinned: false,
 	}).then(it => {
@@ -96,7 +96,7 @@ function pick(ev: MouseEvent) {
 	});
 }
 
-function getHTMLElement(ev: MouseEvent): HTMLElement {
+function getHTMLElement(ev: PointerEvent): HTMLElement {
 	const target = ev.currentTarget ?? ev.target;
 	return target as HTMLElement;
 }
@@ -124,7 +124,7 @@ function paste() {
 	});
 }
 
-function del(ev: MouseEvent) {
+function del(ev: PointerEvent) {
 	os.popupMenu([{
 		text: i18n.ts.delete,
 		action: () => {

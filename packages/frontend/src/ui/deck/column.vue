@@ -247,7 +247,7 @@ function getMenu() {
 	return menuItems;
 }
 
-function showSettingsMenu(ev: MouseEvent) {
+function showSettingsMenu(ev: PointerEvent) {
 	os.popupMenu(getMenu(), ev.currentTarget ?? ev.target);
 }
 
@@ -255,7 +255,7 @@ function onContextmenu(ev: PointerEvent) {
 	os.contextMenu(getMenu(), ev);
 }
 
-function goTop(ev: MouseEvent) {
+function goTop(ev: PointerEvent) {
 	emit('headerClick', ev);
 	if (!props.handleScrollToTop) return;
 

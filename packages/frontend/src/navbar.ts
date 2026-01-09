@@ -23,7 +23,7 @@ export const navbarItemDef = reactive<{
 		indicated?: ComputedRef<boolean>;
 		indicateValue?: ComputedRef<string>;
 		to?: string;
-		action?: (ev: MouseEvent) => void;
+		action?: (ev: PointerEvent) => void;
 	};
 }>({
 	notifications: {
@@ -73,7 +73,7 @@ export const navbarItemDef = reactive<{
 	lookup: {
 		title: i18n.ts.lookup,
 		icon: 'ti ti-world-search',
-		action: (ev: MouseEvent) => {
+		action: (ev) => {
 			lookup();
 		},
 	},
@@ -148,7 +148,7 @@ export const navbarItemDef = reactive<{
 	ui: {
 		title: i18n.ts.switchUi,
 		icon: 'ti ti-devices',
-		action: (ev: MouseEvent) => {
+		action: (ev) => {
 			os.popupMenu([{
 				text: i18n.ts.default,
 				active: ui === 'default' || ui === null,
@@ -169,21 +169,21 @@ export const navbarItemDef = reactive<{
 	about: {
 		title: i18n.ts.about,
 		icon: 'ti ti-info-circle',
-		action: (ev: MouseEvent) => {
+		action: (ev) => {
 			openInstanceMenu(ev);
 		},
 	},
 	tools: {
 		title: i18n.ts.tools,
 		icon: 'ti ti-tool',
-		action: (ev: MouseEvent) => {
+		action: (ev) => {
 			openToolsMenu(ev);
 		},
 	},
 	reload: {
 		title: i18n.ts.reload,
 		icon: 'ti ti-refresh',
-		action: (ev: MouseEvent) => {
+		action: (ev) => {
 			window.location.reload();
 		},
 	},
@@ -196,7 +196,7 @@ export const navbarItemDef = reactive<{
 	cacheClear: {
 		title: i18n.ts.clearCache,
 		icon: 'ti ti-trash',
-		action: (ev: MouseEvent) => {
+		action: (ev) => {
 			clearCache();
 		},
 	},
