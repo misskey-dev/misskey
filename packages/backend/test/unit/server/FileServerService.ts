@@ -187,9 +187,9 @@ describe('FileServerService', () => {
 			driveFilesRepository as any,
 			fileInfoService,
 			downloadService,
-			internalStorageService,
 			imageProcessingService,
 			videoProcessingService,
+			internalStorageService,
 			loggerService,
 		);
 		externalFastify = Fastify();
