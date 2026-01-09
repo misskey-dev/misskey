@@ -98,7 +98,7 @@ async function renderChart() {
 				data: data as any,
 				borderWidth: 0,
 				borderRadius: 3,
-				backgroundColor(c) {
+				backgroundColor(c: any) {
 					const v = c.dataset.data[c.dataIndex] as unknown as typeof data[0];
 					const value = v.v;
 					const m = max(v.y);

@@ -98,7 +98,7 @@ const headerTitle = computed<string>(() => {
 	} else if (widgetProps.src === 'antenna' && widgetProps.antenna != null) {
 		return widgetProps.antenna.name;
 	} else {
-		return i18n.ts._timelines[widgetProps.src];
+		return (i18n.ts._timelines as any)[widgetProps.src] ?? '?';
 	}
 });
 
