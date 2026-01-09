@@ -176,7 +176,7 @@ type CleanFunctions<T> = {
 		: T[K];
 };
 
-// emitの関数群をオブジェクト型に変換する
+// emitの関数群をオブジェクト型に変換する（InstanceType<Component>['$emit']はFunctionalComponent = ジェネリックコンポーネントでは使用できない）
 type ComponentEmitsObject<C extends Component, IE = OverloadToUnion<ComponentEmit<C>>> = CleanFunctions<{
 	[K in IE extends (evName: infer U, ...args: any[]) => any ? U & PropertyKey : never]: IE extends (evName: K, ...args: infer A) => infer R
 		? (...args: A) => R
