@@ -21,7 +21,7 @@ export class SnowfallEffect {
 	}>;
 	private uniforms: Record<string, {
 		type: string;
-		value: number[] | Float32Array;
+		value: number | number[] | Float32Array;
 		location: WebGLUniformLocation;
 	}>;
 	private texture: WebGLTexture;
@@ -90,7 +90,7 @@ export class SnowfallEffect {
 		mat2: 'uniformMatrix2fv',
 		mat3: 'uniformMatrix3fv',
 		mat4: 'uniformMatrix4fv',
-	};
+	} as const;
 
 	private CAMERA = {
 		fov: 60,
@@ -256,15 +256,15 @@ export class SnowfallEffect {
 	private setUniform(name: string, value?: number | number[] | Float32Array<ArrayBufferLike> | undefined) {
 		const { gl, uniforms } = this;
 		const uniform = uniforms[name];
-		const setter = this.UNIFORM_SETTERS[uniform.type];
+		const setter = this.UNIFORM_SETTERS[uniform.type as keyof typeof this.UNIFORM_SETTERS];
 		const isMatrix = /^mat[2-4]$/i.test(uniform.type);
 
 		uniform.value = value ?? uniform.value;
 
 		if (isMatrix) {
-			gl[setter](uniform.location, false, uniform.value);
+			(gl as any)[setter](uniform.location, false, uniform.value);
 		} else {
-			gl[setter](uniform.location, uniform.value);
+			(gl as any)[setter](uniform.location, uniform.value);
 		}
 	}
 
