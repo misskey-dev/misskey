@@ -60,8 +60,7 @@ async function createRemoteFileServer() {
 		return reply.send(flatPngBuffer);
 	});
 
-	const address = await server.listen({ port: 0, host: '127.0.0.1' });
-	const baseUrl = typeof address === 'string' ? address : `http://127.0.0.1:${address.port}`;
+	const baseUrl = await server.listen({ port: 0, host: '127.0.0.1' });
 
 	return {
 		server,
