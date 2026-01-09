@@ -213,10 +213,10 @@ export function popup<T extends Component>(
 	};
 }
 
-export async function popupAsyncWithDialog<T extends Component, P extends CP<T>>(
+export async function popupAsyncWithDialog<T extends Component>(
 	componentFetching: Promise<T>,
-	props: PropsWithRefs<P>,
-	events: Partial<ComponentEmitsObject<T & Component<P>>> = {},
+	props: ComponentProps<T>,
+	events: Partial<ComponentEmitsObject<T>> = {},
 ): Promise<{ dispose: () => void }> {
 	let component: T;
 	let closeWaiting = () => { };
