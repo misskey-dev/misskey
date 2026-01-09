@@ -229,10 +229,10 @@ async function run() {
 		THIS_URL: values.STR(`${url}/play/${flash.value.id}`),
 	}, {
 		in: aiScriptReadline,
-		out: (value) => {
+		out: () => {
 			// nop
 		},
-		log: (type, params) => {
+		log: () => {
 			// nop
 		},
 	});
