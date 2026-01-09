@@ -854,13 +854,32 @@ function onDrop(ev: DragEvent): void {
 	//#endregion
 }
 
+type StoredDrafts = {
+	[key: string]: {
+		updatedAt: string;
+		data: {
+			text: string;
+			useCw: boolean;
+			cw: string | null;
+			visibility: 'public' | 'home' | 'followers' | 'specified';
+			localOnly: boolean;
+			files: Misskey.entities.DriveFile[];
+			poll: PollEditorModelValue | null;
+			visibleUserIds?: string[];
+			quoteId: string | null;
+			reactionAcceptance: 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote' | null;
+			scheduledAt: number | null;
+		};
+	};
+};
+
 function saveDraft() {
 	if (props.instant || props.mock) return;
 
-	const draftData = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}');
+	const draftsData = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}') as StoredDrafts;
 
-	draftData[draftKey.value] = {
-		updatedAt: new Date(),
+	draftsData[draftKey.value] = {
+		updatedAt: new Date().toISOString(),
 		data: {
 			text: text.value,
 			useCw: useCw.value,
@@ -876,15 +895,15 @@ function saveDraft() {
 		},
 	};
 
-	miLocalStorage.setItem('drafts', JSON.stringify(draftData));
+	miLocalStorage.setItem('drafts', JSON.stringify(draftsData));
 }
 
 function deleteDraft() {
-	const draftData = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}');
+	const draftsData = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}') as StoredDrafts;
 
-	delete draftData[draftKey.value];
+	delete draftsData[draftKey.value];
 
-	miLocalStorage.setItem('drafts', JSON.stringify(draftData));
+	miLocalStorage.setItem('drafts', JSON.stringify(draftsData));
 }
 
 async function saveServerDraft(options: {
@@ -1394,8 +1413,8 @@ onMounted(() => {
 	nextTick(() => {
 		// 書きかけの投稿を復元
 		if (!props.instant && !props.mention && !props.specified && !props.mock) {
-			const draft = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}')[draftKey.value];
-			if (draft) {
+			const draft = JSON.parse(miLocalStorage.getItem('drafts') ?? '{}')[draftKey.value] as StoredDrafts[string] | undefined;
+			if (draft != null) {
 				text.value = draft.data.text;
 				useCw.value = draft.data.useCw;
 				cw.value = draft.data.cw;
