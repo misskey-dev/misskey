@@ -6786,8 +6786,10 @@ export interface operations {
                         updatedAt: string | null;
                         text: string;
                         title: string;
-                        icon: string | null;
-                        display: string;
+                        /** @enum {string} */
+                        icon: 'info' | 'warning' | 'error' | 'success';
+                        /** @enum {string} */
+                        display: 'normal' | 'banner' | 'dialog';
                         isActive: boolean;
                         forExistingUsers: boolean;
                         silence: boolean;
