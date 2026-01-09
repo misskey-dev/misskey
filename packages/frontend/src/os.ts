@@ -164,25 +164,27 @@ export function claimZIndex(priority: keyof typeof zIndexes = 'low'): number {
 type PropsWithRefs<P> = { [K in keyof P]: MaybeRef<P[K]> };
 type ComponentProps<T extends Component> = PropsWithRefs<CP<T>>;
 
-// 1. 関数の引数が any[] (もっとも広義なもの) かどうかを判定し、
-//    any[] の場合は排除 (never) するヘルパー
+// 関数の引数が any[] (もっとも広義なもの) かどうかを判定し、any[] の場合は排除 (never) するヘルパー
 type FilterSpecificFunc<T> = T extends (...args: any[]) => void
 	? (any[] extends Parameters<T> ? never : T)
 	: T;
 
-// 2. オブジェクトの各プロパティに対して再帰的、あるいは単純に適用する型関数
+// オブジェクトの各プロパティに対して再帰的、あるいは単純に適用する型関数
 type CleanFunctions<T> = {
 	[K in keyof T]: T[K] extends Function
 		? FilterSpecificFunc<T[K]>
 		: T[K];
 };
 
+// emitの関数群をオブジェクト型に変換する
 type ComponentEmitsObject<C extends Component, IE = OverloadToUnion<ComponentEmit<C>>> = CleanFunctions<{
-	[K in IE extends (evName: infer U, ...args: any[]) => any ? U & PropertyKey : never]: IE extends (evName: K, ...args: infer A) => infer R ? (...args: A) => R : (...args: any[]) => void;
+	[K in IE extends (evName: infer U, ...args: any[]) => any ? U & PropertyKey : never]: IE extends (evName: K, ...args: infer A) => infer R
+		? (...args: A) => R
+		: (...args: any[]) => void;
 }>;
 
 // NOTE: ジェネリック型つきのコンポーネントでは、emitsの型推論がうまく働かない（型変数を取り出すことはできないため）
-// OverloadToUnionに再帰回数の制限を設けているのもそのため
+// NOTE: emitsがOverloadToUnionで対応しているオーバーロードの数を超える場合は、OverloadToUnionの個数を増やせばOK
 export function popup<T extends Component, P extends CP<T> = CP<T>>(
 	component: T,
 	props: PropsWithRefs<P>,
