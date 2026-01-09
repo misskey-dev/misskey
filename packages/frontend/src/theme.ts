@@ -232,7 +232,7 @@ export function parseThemeCode(code: string): Theme {
 
 	try {
 		theme = JSON5.parse(code);
-	} catch (err) {
+	} catch (_) {
 		throw new Error('Failed to parse theme json');
 	}
 	if (!validateTheme(theme)) {

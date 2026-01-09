@@ -352,7 +352,7 @@ export function loadConfig(): Config {
 function tryCreateUrl(url: string) {
 	try {
 		return new URL(url);
-	} catch (e) {
+	} catch (_) {
 		throw new Error(`url="${url}" is not a valid URL.`);
 	}
 }

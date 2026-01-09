@@ -80,8 +80,8 @@ export const useWidgetPropsManager = <F extends FormWithDefault>(
 				form: form,
 				currentSettings: widgetProps,
 			}, {
-				saved: (newProps: GetFormResultType<F>) => {
-					resolve({ canceled: false, result: newProps });
+				saved: (newProps) => {
+					resolve({ canceled: false, result: newProps as GetFormResultType<F> });
 				},
 				canceled: () => {
 					resolve({ canceled: true });

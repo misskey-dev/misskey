@@ -577,17 +577,19 @@ function cd(target?: Misskey.entities.DriveFolder | Misskey.entities.DriveFolder
 async function moveFilesBulk() {
 	if (selectedFiles.value.length === 0) return;
 
-	const toFolder = await selectDriveFolder(folder.value ? folder.value.id : null);
+	const { canceled, folders } = await selectDriveFolder(folder.value ? folder.value.id : null);
+
+	if (canceled) return;
 
 	await os.apiWithDialog('drive/files/move-bulk', {
 		fileIds: selectedFiles.value.map(f => f.id),
-		folderId: toFolder[0] ? toFolder[0].id : null,
+		folderId: folders[0] ? folders[0].id : null,
 	});
 
 	globalEvents.emit('driveFilesUpdated', selectedFiles.value.map(x => ({
 		...x,
-		folderId: toFolder[0] ? toFolder[0].id : null,
-		folder: toFolder[0] ?? null,
+		folderId: folders[0] ? folders[0].id : null,
+		folder: folders[0] ?? null,
 	})));
 }
 

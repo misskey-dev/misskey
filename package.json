@@ -1,12 +1,12 @@
 {
 	"name": "misskey",
-	"version": "2026.1.0-alpha.2",
+	"version": "2026.1.0-alpha.3",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/misskey-dev/misskey.git"
 	},
-	"packageManager": "pnpm@10.26.2",
+	"packageManager": "pnpm@10.27.0",
 	"workspaces": [
 		"packages/misskey-js",
 		"packages/i18n",
@@ -39,7 +39,7 @@
 		"migrateandstart": "pnpm migrate && pnpm start",
 		"watch": "pnpm dev",
 		"dev": "node scripts/dev.mjs",
-		"lint": "pnpm -r lint",
+		"lint": "pnpm --no-bail -r lint",
 		"cy:open": "pnpm cypress open --config-file=cypress.config.ts",
 		"cy:run": "pnpm cypress run",
 		"e2e": "pnpm start-server-and-test start:test http://localhost:61812 cy:run",
@@ -79,7 +79,7 @@
 		"eslint": "9.39.2",
 		"globals": "16.5.0",
 		"ncp": "2.0.0",
-		"pnpm": "10.26.2",
+		"pnpm": "10.27.0",
 		"typescript": "5.9.3",
 		"start-server-and-test": "2.1.3"
 	},

@@ -213,10 +213,11 @@ export class Autocomplete {
 			const _y = ref(y);
 			const _q = ref(q);
 
-			const { dispose } = await popup(defineAsyncComponent(() => import('@/components/MkAutocomplete.vue')), {
+			const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkAutocomplete.vue')), {
 				textarea: this.textarea,
 				close: this.close,
 				type: type,
+				//@ts-expect-error popupは今のところジェネリック型のコンポーネントに対応していない
 				q: _q,
 				x: _x,
 				y: _y,

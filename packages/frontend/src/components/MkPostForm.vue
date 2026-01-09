@@ -1166,17 +1166,41 @@ async function insertEmoji(ev: MouseEvent) {
 		},
 		() => {
 			textAreaReadOnly.value = false;
-			nextTick(() => focus());
+			nextTick(() => {
+				if (textareaEl.value) {
+					textareaEl.value.focus();
+					textareaEl.value.setSelectionRange(pos, posEnd);
+				}
+			});
 		},
 	);
 }
 
 async function insertMfmFunction(ev: MouseEvent) {
 	if (textareaEl.value == null) return;
+	let pos = textareaEl.value.selectionStart ?? 0;
+	let posEnd = textareaEl.value.selectionEnd ?? text.value.length;
 	mfmFunctionPicker(
 		ev.currentTarget ?? ev.target,
-		textareaEl.value,
-		text,
+		(tag) => {
+			if (pos === posEnd) {
+				text.value = `${text.value.substring(0, pos)}$[${tag} ]${text.value.substring(pos)}`;
+				pos += tag.length + 3;
+				posEnd = pos;
+			} else {
+				text.value = `${text.value.substring(0, pos)}$[${tag} ${text.value.substring(pos, posEnd)}]${text.value.substring(posEnd)}`;
+				pos += tag.length + 3;
+				posEnd = pos;
+			}
+		},
+		() => {
+			nextTick(() => {
+				if (textareaEl.value) {
+					textareaEl.value.focus();
+					textareaEl.value.setSelectionRange(pos, posEnd);
+				}
+			});
+		},
 	);
 }
 
