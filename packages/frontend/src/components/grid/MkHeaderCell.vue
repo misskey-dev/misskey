@@ -65,7 +65,7 @@ watch(column, () => {
 	nextTick(emitContentSizeChanged);
 }, { immediate: true });
 
-function onHandleDoubleClick(ev: PointerEvent) {
+function onHandleDoubleClick(ev: MouseEvent) {
 	switch (ev.type) {
 		case 'dblclick': {
 			emit('operation:widthLargest', column.value);
