@@ -54,7 +54,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #empty><span>{{ i18n.ts.noCustomEmojis }}</span></template>
 					<template #default="{items}">
 						<div class="ldhfsamy">
-							<div v-for="emoji in items" :key="emoji.id" class="emoji _panel _button" @click="remoteMenu(emoji, $event)">
+							<div v-for="emoji in items" :key="emoji.id" class="emoji _panel _button" @click="remoteMenu(emoji as RemoteEmoji, $event)">
 								<img :src="getProxiedImageUrl(emoji.url, 'emoji')" class="img" :alt="emoji.name"/>
 								<div class="body">
 									<div class="name _monospace">{{ emoji.name }}</div>
@@ -93,6 +93,8 @@ const queryRemote = ref<string | null>(null);
 const host = ref<string | null>(null);
 const selectMode = ref(false);
 const selectedEmojis = ref<string[]>([]);
+
+type RemoteEmoji = Misskey.entities.AdminEmojiListRemoteResponse[number] & { host: string };
 
 const paginator = markRaw(new Paginator('admin/emoji/list', {
 	limit: 30,
