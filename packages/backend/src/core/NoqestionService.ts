@@ -200,17 +200,7 @@ export class NoqestionService {
 
 		await this.noqQuestionsRepository.insert(question);
 
-		// 回答者に通知を送信
-		// 通知元はusername開示時は送信者、非開示時はnull（システム通知）
-		this.notificationService.createNotification(
-			recipientId,
-			'noqQuestion',
-			{
-				questionId: question.id,
-			},
-			isUsernameDisclosed ? senderId : null,
-		);
-
+		// 通知はボットからのDMで行う（noqQuestion通知は使用しない）
 		// DM通知を送信（非同期で実行、エラーが発生しても質問送信は成功させる）
 		this.sendDmNotification(recipientId, question.text).catch(err => {
 			console.error('[Noqestion] DM notification failed:', err);

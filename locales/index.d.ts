@@ -13108,6 +13108,10 @@ export interface Locale extends ILocale {
          */
         "includeMessageCard": string;
         /**
+         * 質問文が長いため、CWでは省略されます。メッセージカードの添付がおすすめです。
+         */
+        "longQuestionHint": string;
+        /**
          * 質問を削除
          */
         "deleteQuestion": string;
@@ -13199,6 +13203,10 @@ export interface Locale extends ILocale {
          * 匿名
          */
         "anonymous": string;
+        /**
+         * 回答の送信に失敗しました
+         */
+        "answerFailed": string;
         /**
          * {user}からの質問
          */

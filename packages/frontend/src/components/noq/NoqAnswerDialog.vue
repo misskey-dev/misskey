@@ -10,6 +10,7 @@ import * as Misskey from 'misskey-js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/i.js';
+import * as os from '@/os.js';
 import { uploadFile } from '@/utility/drive.js';
 import { emojiPicker } from '@/utility/emoji-picker.js';
 import { encrypt as encryptE2E, isValidPublicKey } from '@/utility/noq-crypto.js';
@@ -69,6 +70,11 @@ const canE2EAnswer = computed(() => {
 		isValidPublicKey(props.senderE2EPublicKey);
 });
 
+// 質問文が長い（CW省略が発生する）かどうか
+// CW形式: 「Q. {質問文} (@username) #Noquestion」で100文字制限
+// 質問文が約85文字を超えるとCWで省略される
+const isQuestionTextLong = computed(() => props.question.text.length > 85);
+
 // 絵文字ピッカーボタン参照
 const emojiButtonRef = ref<HTMLButtonElement>();
 
@@ -90,11 +96,21 @@ const pureAnswerText = computed(() => {
 
 // CWテキスト（質問内容 + ハッシュタグ）
 // 仕様: 「Q. {質問文} #Noquestion」形式
+// CWは最大100文字制限があるため、長い質問は省略する
 // username開示ありの場合のみ質問者情報を表示
 const cwText = computed(() => {
 	// 質問者情報は開示されている場合のみ表示（匿名の場合は表示しない）
 	const senderInfo = props.question.sender ? ` (@${props.question.sender.username})` : '';
-	return `Q. ${props.question.text}${senderInfo} #Noquestion`;
+	const suffix = `${senderInfo} #Noquestion`;
+	const prefix = 'Q. ';
+	// CW上限100文字から prefix と suffix の長さを引いた残りが質問文に使える文字数
+	const maxQuestionLength = 100 - prefix.length - suffix.length;
+	let questionText = props.question.text;
+	if (questionText.length > maxQuestionLength) {
+		// 省略する場合は「...」を付加（3文字分確保）
+		questionText = questionText.substring(0, maxQuestionLength - 3) + '...';
+	}
+	return `${prefix}${questionText}${suffix}`;
 });
 
 // 本文（回答 + 質問箱リンク + ハッシュタグ）
@@ -188,8 +204,28 @@ async function postAnswer() {
 		// 回答成功時はansweredを発火してモーダルを閉じる
 		emit('answered', note.createdNote.id);
 		modalRef.value?.close();
-	} catch (err) {
+	} catch (err: unknown) {
 		console.error('[NoqAnswerDialog] Failed to post answer:', err);
+		// ユーザーにエラーを表示
+		// Misskey APIエラーは { message, code, id, info } 形式
+		let errorMessage: string;
+		if (err && typeof err === 'object') {
+			const apiErr = err as { message?: string; code?: string; id?: string; info?: unknown };
+			if (apiErr.message) {
+				errorMessage = apiErr.code ? `${apiErr.message} (${apiErr.code})` : apiErr.message;
+			} else if (apiErr.code) {
+				errorMessage = apiErr.code;
+			} else {
+				errorMessage = JSON.stringify(err);
+			}
+		} else {
+			errorMessage = String(err);
+		}
+		os.alert({
+			type: 'error',
+			title: i18n.ts._noq?.answerFailed ?? '回答の送信に失敗しました',
+			text: errorMessage,
+		});
 	} finally {
 		posting.value = false;
 	}
@@ -250,6 +286,11 @@ async function postAnswer() {
 
 		<!-- メッセージカードオプション（E2E暗号化質問では無効） -->
 		<div v-if="!isE2EQuestion" class="card-option">
+			<!-- 長い質問文の場合、メッセージカード添付を推奨 -->
+			<MkInfo v-if="isQuestionTextLong && !includeCard" class="long-question-hint">
+				{{ i18n.ts._noq?.longQuestionHint ?? '質問文が長いため、CWでは省略されます。メッセージカードの添付がおすすめです。' }}
+			</MkInfo>
+
 			<MkSwitch v-model="includeCard">
 				<template #label>
 					<i class="ti ti-photo"></i>
@@ -349,6 +390,10 @@ async function postAnswer() {
 
 	.card-option {
 		margin-bottom: 16px;
+
+		.long-question-hint {
+			margin-bottom: 8px;
+		}
 
 		.card-preview-container {
 			margin-top: 12px;
