@@ -72,6 +72,7 @@ const dialog = useTemplateRef('dialog');
 const settings = ref<Record<string, any>>(deepClone(props.currentSettings));
 
 const canSave = ref(true);
+
 function onCanSaveStateChanged(newCanSave: boolean) {
 	canSave.value = newCanSave;
 }

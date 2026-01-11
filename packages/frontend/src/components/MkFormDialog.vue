@@ -60,6 +60,7 @@ const values = ref((() => {
 })());
 
 const canSave = ref(true);
+
 function onCanSaveStateChanged(newCanSave: boolean) {
 	canSave.value = newCanSave;
 }
