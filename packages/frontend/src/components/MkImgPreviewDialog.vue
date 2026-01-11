@@ -11,6 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@close="close"
 	@esc="close"
 	@click="close"
+	@closed="emit('closed')"
 >
 	<template #header>{{ file.name }}</template>
 	<div :class="$style.container">
@@ -25,6 +26,10 @@ import type * as Misskey from 'misskey-js';
 
 defineProps<{
 	file: Misskey.entities.DriveFile;
+}>();
+
+const emit = defineEmits<{
+	(ev: 'closed'): void;
 }>();
 
 const modal = ref<typeof MkModalWindow | null>(null);

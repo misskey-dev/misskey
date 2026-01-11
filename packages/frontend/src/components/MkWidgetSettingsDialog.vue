@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@ok="save()"
 	@closed="emit('closed')"
 >
-	<template #header><i class="ti ti-icons"></i> {{ i18n.ts._widgets[widgetName] ?? widgetName }}</template>
+	<template #header><i class="ti ti-icons"></i> {{ (i18n.ts._widgets as any)[widgetName] ?? widgetName }}</template>
 
 	<MkPreviewWithControls>
 		<template #preview>

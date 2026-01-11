@@ -308,7 +308,7 @@ if (!props.game.isEnded) {
 	}, TIMER_INTERVAL_SEC * 1000, { immediate: false, afterMounted: true });
 }
 
-async function onStreamLog(log) {
+async function onStreamLog(log: Reversi.Serializer.Log & { id: string | null }) {
 	game.value.logs = Reversi.Serializer.serializeLogs([
 		...Reversi.Serializer.deserializeLogs(game.value.logs),
 		log,
@@ -348,7 +348,10 @@ async function onStreamLog(log) {
 	}
 }
 
-function onStreamEnded(x) {
+function onStreamEnded(x: {
+	winnerId: Misskey.entities.User['id'] | null;
+	game: Misskey.entities.ReversiGameDetailed;
+}) {
 	game.value = deepClone(x.game);
 
 	if (game.value.winnerId === $i.id) {
@@ -384,7 +387,7 @@ function checkEnd() {
 	}
 }
 
-function restoreGame(_game) {
+function restoreGame(_game: Misskey.entities.ReversiGameDetailed) {
 	game.value = deepClone(_game);
 
 	engine.value = Reversi.Serializer.restoreGame({

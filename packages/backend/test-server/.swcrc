@@ -13,7 +13,7 @@
 		"experimental": {
 			"keepImportAssertions": true
 		},
-		"baseUrl": "../built",
+		"baseUrl": "../src-js",
 		"paths": {
 			"@/*": ["*"]
 		},

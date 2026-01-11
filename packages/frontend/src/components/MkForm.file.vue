@@ -50,7 +50,7 @@ if (props.fileId) {
 	});
 }
 
-function selectButton(ev: MouseEvent) {
+function selectButton(ev: PointerEvent) {
 	selectFile({
 		anchorElement: ev.currentTarget ?? ev.target,
 		multiple: false,

@@ -296,8 +296,9 @@ if (prefer.s.uploadFolder) {
 }
 
 function chooseUploadFolder() {
-	selectDriveFolder(null).then(async folder => {
-		prefer.commit('uploadFolder', folder[0] ? folder[0].id : null);
+	selectDriveFolder(null).then(async ({ canceled, folders }) => {
+		if (canceled) return;
+		prefer.commit('uploadFolder', folders[0] ? folders[0].id : null);
 		os.success();
 		if (prefer.s.uploadFolder) {
 			uploadFolder.value = await misskeyApi('drive/folders/show', {

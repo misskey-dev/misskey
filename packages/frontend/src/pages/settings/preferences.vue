@@ -855,7 +855,7 @@ const $i = ensureSignin();
 
 const lang = ref(miLocalStorage.getItem('lang'));
 const dataSaver = ref(prefer.s.dataSaver);
-const realtimeMode = computed(store.makeGetterSetter('realtimeMode'));
+const realtimeMode = store.model('realtimeMode');
 
 const overridedDeviceKind = prefer.model('overridedDeviceKind');
 const pollingInterval = prefer.model('pollingInterval');
@@ -1042,7 +1042,7 @@ function removePinnedList() {
 function enableAllDataSaver() {
 	const g = { ...prefer.s.dataSaver };
 
-	Object.keys(g).forEach((key) => { g[key] = true; });
+	Object.keys(g).forEach((key) => { (g as any)[key] = true; });
 
 	dataSaver.value = g;
 }
@@ -1050,7 +1050,7 @@ function enableAllDataSaver() {
 function disableAllDataSaver() {
 	const g = { ...prefer.s.dataSaver };
 
-	Object.keys(g).forEach((key) => { g[key] = false; });
+	Object.keys(g).forEach((key) => { (g as any)[key] = false; });
 
 	dataSaver.value = g;
 }
