@@ -35,8 +35,8 @@ export async function getAccounts(): Promise<AccountData[]> {
 		host,
 		id: user.id,
 		username: user.username,
-		user: accountInfos[host + '/' + user.id],
-		token: tokens[host + '/' + user.id] ?? null,
+		user: accountInfos[`${host}/${user.id}`],
+		token: tokens[`${host}/${user.id}`] ?? null,
 	}));
 }
 
@@ -224,7 +224,7 @@ export async function login(token: AccountWithToken['token'], redirect?: string,
 }
 
 export async function switchAccount(host: string, id: string) {
-	const token = store.s.accountTokens[host + '/' + id];
+	const token = store.s.accountTokens[`${host}/${id}`];
 	if (token) {
 		login(token);
 	} else {
