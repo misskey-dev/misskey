@@ -67,6 +67,7 @@ const emit = defineEmits<{
 	(ev: 'keydown', _ev: KeyboardEvent): void;
 	(ev: 'enter'): void;
 	(ev: 'update:modelValue', value: string): void;
+	(ev: 'savingStateChange', saved: boolean, invalid: boolean): void;
 }>();
 
 const { modelValue, autofocus } = toRefs(props);
@@ -130,6 +131,10 @@ watch(v, () => {
 
 	invalid.value = inputEl.value?.validity.badInput ?? true;
 });
+
+watch([changed, invalid], ([newChanged, newInvalid]) => {
+	emit('savingStateChange', newChanged, newInvalid);
+}, { immediate: true });
 
 onMounted(() => {
 	nextTick(() => {
