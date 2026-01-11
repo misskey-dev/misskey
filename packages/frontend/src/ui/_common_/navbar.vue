@@ -40,11 +40,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<i v-else class="_indicatorCircle"></i>
 					</span>
 				</component>
+				<!-- Output IRC after the message link -->
+				<LinkButton v-if="item == 'chat'" v-tooltip.noDelay.right="'Neondystopia IRC Chat'" :class="$style.item" :activeClass="$style.active" to="https://irc-chat.neondystopia.world/">
+					<i :class="$style.itemIcon" class="ti ti-message-circle ti-fw" style="viewTransitionName: navbar-settings;"></i><span :class="$style.itemText">IRC</span>
+				</LinkButton>
 			</template>
 			<div :class="$style.divider"></div>
-			<DonateButton v-tooltip.noDelay.right="'Donate to support NeonDystopia'" :class="$style.item" :activeClass="$style.active" to="https://donate.neondystopia.world/">
+			<LinkButton v-tooltip.noDelay.right="'Donate to support NeonDystopia'" :class="$style.item" :activeClass="$style.active" to="https://donate.neondystopia.world/">
 				<i :class="$style.itemIcon" class="ti ti-heart ti-fw" style="viewTransitionName: navbar-settings;"></i><span :class="$style.itemText">Donate</span>
-			</DonateButton>
+			</LinkButton>
 			<MkA v-if="$i != null && ($i.isAdmin || $i.isModerator)" v-tooltip.noDelay.right="i18n.ts.controlPanel" :class="$style.item" :activeClass="$style.active" to="/admin">
 				<i :class="$style.itemIcon" class="ti ti-dashboard ti-fw" style="viewTransitionName: navbar-controlPanel;"></i><span :class="$style.itemText">{{ i18n.ts.controlPanel }}</span>
 			</MkA>
@@ -119,7 +123,7 @@ import { useRouter } from '@/router.js';
 import { prefer } from '@/preferences.js';
 import { getAccountMenu } from '@/accounts.js';
 import { $i } from '@/i.js';
-import DonateButton from '@/components/neondystopia/DonateButton.vue';
+import LinkButton from '@/components/neondystopia/LinkButton.vue';
 
 const router = useRouter();
 

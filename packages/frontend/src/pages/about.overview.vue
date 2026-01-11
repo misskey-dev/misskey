@@ -32,6 +32,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				Donate to support NeonDystopia
 				<template #suffix>Donations</template>
 			</FormLink>
+			<FormLink to="https://irc-chat.neondystopia.world/" external>
+				<template #icon><i class="ti ti-message-circle" style="color: #289404;"></i></template>
+				IRC Chat of NeonDystopia
+				<template #suffix>IRC</template>
+			</FormLink>
 			<FormLink to="/about-misskey">
 				<template #icon><i class="ti ti-info-circle"></i></template>
 				{{ i18n.ts.aboutMisskey }}
