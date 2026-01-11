@@ -114,6 +114,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, watch, ref, onUnmounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as Reversi from 'misskey-reversi';
+import type { MenuItem } from '@/types/menu.js';
 import { i18n } from '@/i18n.js';
 import { ensureSignin } from '@/i.js';
 import { deepClone } from '@/utility/clone.js';
@@ -178,7 +179,7 @@ watch(() => game.value.timeLimitForEachTurn, () => {
 	updateSettings('timeLimitForEachTurn');
 });
 
-function chooseMap(ev: MouseEvent) {
+function chooseMap(ev: PointerEvent) {
 	const menu: MenuItem[] = [];
 
 	for (const c of mapCategories) {
@@ -225,7 +226,10 @@ function unready() {
 	props.connection.send('ready', false);
 }
 
-function onChangeReadyStates(states) {
+function onChangeReadyStates(states: {
+	user1: boolean;
+	user2: boolean;
+}) {
 	game.value.user1Ready = states.user1;
 	game.value.user2Ready = states.user2;
 }

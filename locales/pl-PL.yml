@@ -1361,6 +1361,14 @@ _widgets:
   _userList:
     chooseList: "Wybierz listę"
   clicker: "Clicker"
+_widgetOptions:
+  height: "Wysokość"
+  _button:
+    colored: "Kolorowe"
+  _clock:
+    size: "Rozmiar"
+  _birthdayFollowings:
+    period: "Czas trwania"
 _cw:
   hide: "Ukryj"
   show: "Załaduj więcej"

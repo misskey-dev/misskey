@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #key>{{ i18n.ts.permission }}</template>
 					<template #value>
 						<ul v-if="extension.meta.permissions && extension.meta.permissions.length > 0" :class="$style.extInstallerKVList">
-							<li v-for="permission in extension.meta.permissions" :key="permission">{{ i18n.ts._permissions[permission] }}</li>
+							<li v-for="permission in extension.meta.permissions" :key="permission">{{ (i18n.ts._permissions as any)[permission] ?? permission }}</li>
 						</ul>
 						<template v-else>{{ i18n.ts.none }}</template>
 					</template>

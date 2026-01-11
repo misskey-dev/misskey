@@ -14,7 +14,7 @@ type MenuRadioOptionsDef = Record<string, OptionValue>;
 
 type Text = string | ComputedRef<string>;
 
-export type MenuAction = (ev: MouseEvent) => void;
+export type MenuAction = (ev: PointerEvent) => void;
 
 export interface MenuButton {
 	type?: 'button';

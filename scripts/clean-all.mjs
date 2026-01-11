@@ -3,11 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-const { execSync } = require('child_process');
-const fs = require('fs');
+import { execSync } from 'node:child_process';
+import * as fs from 'node:fs';
+
+const __dirname = import.meta.dirname;
 
 (async () => {
 	fs.rmSync(__dirname + '/../packages/backend/built', { recursive: true, force: true });
+	fs.rmSync(__dirname + '/../packages/backend/src-js', { recursive: true, force: true });
 	fs.rmSync(__dirname + '/../packages/backend/node_modules', { recursive: true, force: true });
 
 	fs.rmSync(__dirname + '/../packages/frontend-shared/built', { recursive: true, force: true });

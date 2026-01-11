@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { reactive, useTemplateRef } from 'vue';
+import { ref, useTemplateRef } from 'vue';
 import type { Form } from '@/utility/form.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkForm from '@/components/MkForm.vue';
@@ -47,7 +47,7 @@ const emit = defineEmits<{
 
 const dialog = useTemplateRef('dialog');
 
-const values = reactive((() => {
+const values = ref((() => {
 	const obj: Record<string, any> = {};
 	for (const item in props.form) {
 		if ('default' in props.form[item]) {
@@ -61,7 +61,7 @@ const values = reactive((() => {
 
 function ok() {
 	emit('done', {
-		result: values,
+		result: values.value,
 	});
 	dialog.value?.close();
 }
