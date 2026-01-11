@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { computed, onUnmounted, ref, watch } from 'vue';
+import { customRef, ref, watch, onScopeDispose } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import { host, version } from '@@/js/config.js';
 import { PREF_DEF } from './def.js';
-import type { Ref, WritableComputedRef } from 'vue';
+import type { Ref } from 'vue';
 import type { MenuItem } from '@/types/menu.js';
 import { genId } from '@/utility/id.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
@@ -81,7 +81,7 @@ export type PreferencesProfile = {
 };
 
 export type PossiblyNonNormalizedPreferencesProfile = Omit<PreferencesProfile, 'preferences'> & {
-	preferences: Record<string, any>;
+	preferences: Record<string, [scope: Scope, value: any, meta: ValueMeta][]>;
 };
 
 export type StorageProvider = {
@@ -112,17 +112,17 @@ type PreferencesManagerEvents = {
 export function definePreferences<T extends Record<string, unknown>>(x: {
 	[K in keyof T]: PreferencesDefinitionRecord<T[K]>
 }): {
-		[K in keyof T]: PreferencesDefinitionRecord<T[K]>
-	} {
+	[K in keyof T]: PreferencesDefinitionRecord<T[K]>
+} {
 	return x;
 }
 
 export function getInitialPrefValue<K extends keyof PREF>(k: K): ValueOf<K> {
-	const _default = PREF_DEF[k as string].default;
+	const _default = PREF_DEF[k].default;
 	if (typeof _default === 'function') { // factory
-		return _default();
+		return _default() as ValueOf<K>;
 	} else {
-		return _default;
+		return _default as unknown as ValueOf<K>;
 	}
 }
 
@@ -146,7 +146,7 @@ function createEmptyProfile(): PossiblyNonNormalizedPreferencesProfile {
 }
 
 function normalizePreferences(preferences: PossiblyNonNormalizedPreferencesProfile['preferences'], account: { id: string } | null): PreferencesProfile['preferences'] {
-	const data = {} as PreferencesProfile['preferences'];
+	const data = {} as Record<string, [scope: Scope, value: any, meta: ValueMeta][]>;
 	for (const key in PREF_DEF) {
 		const records = preferences[key];
 		if (records == null || records.length === 0) {
@@ -183,7 +183,7 @@ function normalizePreferences(preferences: PossiblyNonNormalizedPreferencesProfi
 		}
 	}
 
-	return data;
+	return data as PreferencesProfile['preferences'];
 }
 
 // TODO: PreferencesManagerForGuest のような非ログイン専用のクラスを分離すればthis.currentAccountのnullチェックやaccountがnullであるスコープのレコード挿入などが不要になり綺麗になるかもしれない
@@ -223,9 +223,10 @@ export class PreferencesManager extends EventEmitter<PreferencesManagerEvents> {
 
 		const states = this.genStates();
 
+		// apply states
 		for (const key in states) {
-			this.s[key] = states[key];
-			this.r[key] = ref(this.s[key]);
+			(this.s[key as keyof PREF] as any) = states[key as keyof PREF];
+			(this.r[key as keyof PREF] as Ref<any>) = ref(this.s[key as keyof PREF]);
 		}
 
 		// normalizeの結果変わっていたら保存
@@ -299,36 +300,39 @@ export class PreferencesManager extends EventEmitter<PreferencesManagerEvents> {
 	 * 特定のキーの、簡易的なcomputed refを作ります
 	 * 主にvue上で設定コントロールのmodelとして使う用
 	 */
-	public model<K extends keyof PREF, V extends ValueOf<K> = ValueOf<K>>(
+	public model<K extends keyof PREF, V = ValueOf<K>>(
+		key: K,
+	): Ref<V>;
+	public model<K extends keyof PREF, V extends Exclude<any, ValueOf<K>>>(
+		key: K,
+		getter: (v: ValueOf<K>) => V,
+		setter: (v: V) => ValueOf<K>,
+	): Ref<V>;
+
+	public model<K extends keyof PREF, V>(
 		key: K,
 		getter?: (v: ValueOf<K>) => V,
 		setter?: (v: V) => ValueOf<K>,
-	): WritableComputedRef<V> {
-		const valueRef = ref(this.s[key]);
+	): Ref<V> {
+		return customRef<V>((track, trigger) => {
+			const watchStop = watch(this.r[key], () => {
+				trigger();
+			});
 
-		const stop = watch(this.r[key], val => {
-			valueRef.value = val;
-		});
+			onScopeDispose(() => {
+				watchStop();
+			}, true);
 
-		// NOTE: vueコンポーネント内で呼ばれない限りは、onUnmounted は無意味なのでメモリリークする
-		onUnmounted(() => {
-			stop();
-		});
-
-		// TODO: VueのcustomRef使うと良い感じになるかも
-		return computed({
-			get: () => {
-				if (getter) {
-					return getter(valueRef.value);
-				} else {
-					return valueRef.value;
-				}
-			},
-			set: (value) => {
-				const val = setter ? setter(value) : value;
-				this.commit(key, val);
-				valueRef.value = val;
-			},
+			return {
+				get: () => {
+					track();
+					return (getter != null ? getter(this.s[key]) : this.s[key]) as V;
+				},
+				set: (value) => {
+					const val = setter != null ? setter(value) : value;
+					this.commit(key, val as ValueOf<K>);
+				},
+			};
 		});
 	}
 
@@ -460,7 +464,7 @@ export class PreferencesManager extends EventEmitter<PreferencesManagerEvents> {
 			let mergedValue: ValueOf<K> | undefined = undefined; // null と区別したいため
 			try {
 				if (merge != null) mergedValue = merge(local, remote);
-			} catch (err) {
+			} catch (_) {
 				// nop
 			}
 			const { canceled, result: choice } = await os.select({

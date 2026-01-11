@@ -23,13 +23,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 			<div :class="$style.body">
 				<div :class="$style.header">
-					<span :class="$style.title">{{ i18n.ts._achievements._types['_' + achievement.name].title }}</span>
+					<span :class="$style.title">{{ (i18n.ts._achievements._types as any)['_' + achievement.name].title }}</span>
 					<span :class="$style.time">
 						<time v-tooltip="new Date(achievement.unlockedAt).toLocaleString()">{{ new Date(achievement.unlockedAt).getFullYear() }}/{{ new Date(achievement.unlockedAt).getMonth() + 1 }}/{{ new Date(achievement.unlockedAt).getDate() }}</time>
 					</span>
 				</div>
-				<div :class="$style.description">{{ withDescription ? i18n.ts._achievements._types['_' + achievement.name].description : '???' }}</div>
-				<div v-if="i18n.ts._achievements._types['_' + achievement.name].flavor && withDescription" :class="$style.flavor">{{ i18n.ts._achievements._types['_' + achievement.name].flavor }}</div>
+				<div :class="$style.description">{{ withDescription ? (i18n.ts._achievements._types as any)['_' + achievement.name].description : '???' }}</div>
+				<div v-if="(i18n.ts._achievements._types as any)['_' + achievement.name].flavor && withDescription" :class="$style.flavor">{{ (i18n.ts._achievements._types as any)['_' + achievement.name].flavor }}</div>
 			</div>
 		</div>
 		<template v-if="withLocked">
@@ -54,7 +54,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import * as Misskey from 'misskey-js';
 import { onMounted, ref, computed } from 'vue';
-import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { ACHIEVEMENT_TYPES, ACHIEVEMENT_BADGES, claimAchievement } from '@/utility/achievements.js';

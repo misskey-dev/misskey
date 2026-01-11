@@ -89,7 +89,7 @@ async function cancel(user: Misskey.entities.UserLite) {
 	});
 }
 
-function displayUser(req) {
+function displayUser(req: Misskey.entities.FollowingRequestsListResponse[number]) {
 	return tab.value === 'list' ? req.follower : req.followee;
 }
 

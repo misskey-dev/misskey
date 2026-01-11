@@ -48,7 +48,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkInput>
 	</div>
 	<div v-if="Object.keys(paramDefs).length === 0" :class="$style.nothingToConfigure">
-		{{ i18n.ts._imageEffector.nothingToConfigure }}
+		{{ i18n.ts.nothingToConfigure }}
 	</div>
 </div>
 </template>

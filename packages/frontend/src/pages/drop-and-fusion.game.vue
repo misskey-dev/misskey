@@ -729,7 +729,7 @@ async function start() {
 	}, 1500);
 }
 
-function onClick(ev: MouseEvent) {
+function onClick(ev: PointerEvent) {
 	if (!containerElRect) return;
 	if (replaying.value) return;
 	const x = (ev.clientX - containerElRect.left) / viewScale;

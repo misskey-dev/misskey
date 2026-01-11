@@ -88,7 +88,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'change', _ev: KeyboardEvent): void;
+	(ev: 'change', _ev: InputEvent): void;
 	(ev: 'keydown', _ev: KeyboardEvent): void;
 	(ev: 'enter', _ev: KeyboardEvent): void;
 	(ev: 'update:modelValue', value: ModelValueType<T>): void;
@@ -111,10 +111,9 @@ const height =
 let autocompleteWorker: Autocomplete | null = null;
 
 const focus = () => inputEl.value?.focus();
-const onInput = (event: Event) => {
-	const ev = event as KeyboardEvent;
+const onInput = (event: InputEvent) => {
 	changed.value = true;
-	emit('change', ev);
+	emit('change', event);
 };
 const onKeydown = (ev: KeyboardEvent) => {
 	if (ev.isComposing || ev.key === 'Process' || ev.keyCode === 229) return;

@@ -5,7 +5,7 @@
 
 import type { DeckProfile } from '@/deck.js';
 import { genId } from '@/utility/id.js';
-import { ColdDeviceStorage, store } from '@/store.js';
+import { store } from '@/store.js';
 import { prefer } from '@/preferences.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
@@ -23,16 +23,6 @@ export function migrateOldSettings() {
 				prefer.commit('themes', themes);
 			}
 		});
-
-		const plugins = ColdDeviceStorage.get('plugins');
-		prefer.commit('plugins', plugins.map(p => {
-			const { id, ...rest } = p;
-			return {
-				...rest,
-				config: rest.config ?? {},
-				installId: id,
-			};
-		}));
 
 		prefer.commit('deck.profile', deckStore.s.profile);
 		misskeyApi('i/registry/keys', {
@@ -54,9 +44,6 @@ export function migrateOldSettings() {
 			prefer.commit('deck.profiles', profiles);
 		});
 
-		prefer.commit('lightTheme', ColdDeviceStorage.get('lightTheme'));
-		prefer.commit('darkTheme', ColdDeviceStorage.get('darkTheme'));
-		prefer.commit('syncDeviceDarkMode', ColdDeviceStorage.get('syncDeviceDarkMode'));
 		prefer.commit('emojiPalettes', [{
 			id: 'reactions',
 			name: '',

@@ -50,7 +50,7 @@ import { emojilist, getEmojiName } from '@@/js/emojilist.js';
 import { char2twemojiFilePath, char2fluentEmojiFilePath } from '@@/js/emoji-base.js';
 import { MFM_TAGS, MFM_PARAMS } from '@@/js/const.js';
 import type { EmojiDef } from '@/utility/search-emoji.js';
-import contains from '@/utility/contains.js';
+import { elementContains } from '@/utility/element-contains.js';
 import { acct } from '@/filters/user.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -310,8 +310,8 @@ function exec() {
 	}
 }
 
-function onMousedown(event: Event) {
-	if (!contains(rootEl.value, event.target) && (rootEl.value !== event.target)) props.close();
+function onMousedown(event: MouseEvent) {
+	if (!elementContains(rootEl.value, event.target as Element) && (rootEl.value !== event.target)) props.close();
 }
 
 function onKeydown(event: KeyboardEvent) {

@@ -23,8 +23,8 @@ const observer = new ResizeObserver((entries) => {
 		transform: string;
 	}[] = [];
 	for (const entry of entries) {
-		const content = (entry.target[contentSymbol] ? entry.target : entry.target.firstElementChild) as HTMLSpanElement;
-		const props: Required<Props> = content[contentSymbol];
+		const content = ((entry.target as any)[contentSymbol] ? entry.target : entry.target.firstElementChild) as HTMLSpanElement;
+		const props: Required<Props> = (content as any)[contentSymbol];
 		const container = content.parentElement as HTMLSpanElement;
 		const contentWidth = content.getBoundingClientRect().width;
 		const containerWidth = container.getBoundingClientRect().width;
@@ -46,15 +46,15 @@ const props = withDefaults(defineProps<Props>(), {
 const content = ref<HTMLSpanElement>();
 
 watch(content, (value, oldValue) => {
-	if (oldValue) {
-		delete oldValue[contentSymbol];
+	if (oldValue != null) {
+		delete (oldValue as any)[contentSymbol];
 		observer.unobserve(oldValue);
 		if (oldValue.parentElement) {
 			observer.unobserve(oldValue.parentElement);
 		}
 	}
-	if (value) {
-		value[contentSymbol] = props;
+	if (value != null) {
+		(value as any)[contentSymbol] = props;
 		observer.observe(value);
 		if (value.parentElement) {
 			observer.observe(value.parentElement);

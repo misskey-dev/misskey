@@ -11,3 +11,11 @@ services:
     environment:
       POSTGRES_DB: "test-misskey"
       POSTGRES_HOST_AUTH_METHOD: trust
+
+  meilisearchtest:
+    image: getmeili/meilisearch:v1.3.4
+    ports:
+      - "127.0.0.1:57712:7700"
+    environment:
+      - MEILI_NO_ANALYTICS=true
+      - MEILI_ENV=development
