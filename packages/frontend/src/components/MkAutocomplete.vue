@@ -45,6 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts">
 import { markRaw, ref, useTemplateRef, computed, onUpdated, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
+import * as Misskey from 'misskey-js';
 import sanitizeHtml from 'sanitize-html';
 import { emojilist, getEmojiName } from '@@/js/emojilist.js';
 import { char2twemojiFilePath, char2fluentEmojiFilePath } from '@@/js/emoji-base.js';
@@ -63,7 +64,7 @@ import { prefer } from '@/preferences.js';
 
 export type CompleteInfo = {
 	user: {
-		payload: any;
+		payload: Misskey.entities.User;
 		query: string | null;
 	},
 	hashtag: {
@@ -185,9 +186,9 @@ const suggests = ref<Element>();
 const rootEl = useTemplateRef('rootEl');
 
 const fetching = ref(true);
-const users = ref<any[]>([]);
-const hashtags = ref<any[]>([]);
-const emojis = ref<(EmojiDef)[]>([]);
+const users = ref<Misskey.entities.User[]>([]);
+const hashtags = ref<string[]>([]);
+const emojis = ref<EmojiDef[]>([]);
 const items = ref<Element[] | HTMLCollection>([]);
 const mfmTags = ref<string[]>([]);
 const mfmParams = ref<string[]>([]);
@@ -204,8 +205,8 @@ function complete<T extends keyof CompleteInfo>(type: T, value: CompleteInfo[T][
 	emit('closed');
 	if (type === 'emoji' || type === 'emojiComplete') {
 		let recents = store.s.recentlyUsedEmojis;
-		recents = recents.filter((emoji: any) => emoji !== value);
-		recents.unshift(value);
+		recents = recents.filter((emoji) => emoji !== value);
+		recents.unshift(value as string);
 		store.set('recentlyUsedEmojis', recents.splice(0, 32));
 	}
 }
@@ -254,7 +255,7 @@ function exec() {
 				limit: 10,
 				detail: false,
 			}).then(searchedUsers => {
-				users.value = searchedUsers as any[];
+				users.value = searchedUsers;
 				fetching.value = false;
 				// キャッシュ
 				sessionStorage.setItem(cacheKey, JSON.stringify(searchedUsers));
@@ -276,7 +277,7 @@ function exec() {
 					query: props.q,
 					limit: 30,
 				}).then(searchedHashtags => {
-					hashtags.value = searchedHashtags as any[];
+					hashtags.value = searchedHashtags;
 					fetching.value = false;
 					// キャッシュ
 					sessionStorage.setItem(cacheKey, JSON.stringify(searchedHashtags));

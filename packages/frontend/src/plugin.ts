@@ -26,7 +26,7 @@ export type Plugin = {
 	version: string;
 	author?: string;
 	description?: string;
-	permissions?: string[];
+	permissions?: (typeof Misskey.permissions)[number][];
 };
 
 export type AiScriptPluginMeta = {
@@ -34,7 +34,7 @@ export type AiScriptPluginMeta = {
 	version: string;
 	author: string;
 	description?: string;
-	permissions?: string[];
+	permissions?: (typeof Misskey.permissions)[number][];
 	config?: Record<string, any>;
 };
 
@@ -97,7 +97,7 @@ export async function parsePluginMeta(code: string): Promise<AiScriptPluginMeta>
 		version: version as string,
 		author: author as string,
 		description: description as string | undefined,
-		permissions: permissions as string[] | undefined,
+		permissions: permissions as (typeof Misskey.permissions)[number][] | undefined,
 		config: config as Record<string, any> | undefined,
 	};
 }

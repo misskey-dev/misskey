@@ -239,7 +239,7 @@ const serverSettings = computed<Misskey.entities.AdminUpdateMetaRequest>(() => {
 		enableReactionsBuffering,
 		clientOptions: {
 			entrancePageStyle: q_use.value === 'open' ? 'classic' : 'simple',
-		} as any,
+		},
 	};
 });
 

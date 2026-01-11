@@ -3,16 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { markRaw, ref } from 'vue';
+import { markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
-import lightTheme from '@@/themes/l-light.json5';
-import darkTheme from '@@/themes/d-green-lime.json5';
 import { prefersReducedMotion } from '@@/js/config.js';
 import { hemisphere } from '@@/js/intl-const.js';
 import type { DeviceKind } from '@/utility/device-kind.js';
-import type { Plugin } from '@/plugin.js';
 import type { TIPS } from '@/tips.js';
-import { miLocalStorage } from '@/local-storage.js';
 import { Pizzax } from '@/lib/pizzax.js';
 import { DEFAULT_DEVICE_KIND } from '@/utility/device-kind.js';
 
