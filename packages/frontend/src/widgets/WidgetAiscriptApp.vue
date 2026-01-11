@@ -36,6 +36,7 @@ const widgetPropsDef = {
 		type: 'string',
 		label: i18n.ts.script,
 		multiline: true,
+		manualSave: true,
 		default: '',
 	},
 	showHeader: {
