@@ -1042,7 +1042,7 @@ function removePinnedList() {
 function enableAllDataSaver() {
 	const g = { ...prefer.s.dataSaver };
 
-	Object.keys(g).forEach((key: keyof typeof g) => { g[key] = true; });
+	(Object.keys(g) as (keyof typeof g)[]).forEach((key) => { g[key] = true; });
 
 	dataSaver.value = g;
 }
@@ -1050,7 +1050,7 @@ function enableAllDataSaver() {
 function disableAllDataSaver() {
 	const g = { ...prefer.s.dataSaver };
 
-	Object.keys(g).forEach((key: keyof typeof g) => { g[key] = false; });
+	(Object.keys(g) as (keyof typeof g)[]).forEach((key) => { g[key] = false; });
 
 	dataSaver.value = g;
 }
