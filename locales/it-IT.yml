@@ -613,7 +613,7 @@ descendingOrder: "Diminuisce"
 scratchpad: "ScratchPad"
 scratchpadDescription: "Lo Scratchpad offre un ambiente per esperimenti di AiScript. È possibile scrivere, eseguire e confermare i risultati dell'interazione del codice con Misskey."
 uiInspector: "UI Inspector"
-uiInspectorDescription: "Puoi visualizzare un elenco di elementi UI presenti in memoria. I componenti dell'interfaccia utente vengono generati dalle funzioni Ui:C:."
+uiInspectorDescription: "Puoi visualizzare un elenco di elementi grafici presenti in memoria. I componenti dell'interfaccia grafica vengono generati dalle funzioni Ui:C:."
 output: "Output"
 script: "Script"
 disablePagesScript: "Disabilitare AiScript nelle pagine"
@@ -1406,6 +1406,7 @@ youAreAdmin: "Sei un amministratore"
 frame: "Cornice"
 presets: "Preimpostato"
 zeroPadding: "Al vivo"
+nothingToConfigure: "Niente da configurare"
 _imageEditing:
   _vars:
     caption: "Didascalia dell'immagine"
@@ -1550,6 +1551,9 @@ _settings:
   showPageTabBarBottom: "Visualizza le schede della pagina nella parte inferiore"
   emojiPaletteBanner: "Puoi salvare i le emoji predefinite da appuntare in alto nel raccoglitore emoji come tavolozza e personalizzare in che modo visualizzare il raccoglitore."
   enableAnimatedImages: "Attivare le immagini animate"
+  settingsPersistence_title: "Configurazione persistente"
+  settingsPersistence_description1: "Attivando le impostazioni persistenti si può evitare di riconfigurare il client successivamente."
+  settingsPersistence_description2: "Potrebbe non essere possibile attivare, dipende dall'ambiente."
   _chat:
     showSenderName: "Mostra il nome del mittente"
     sendOnEnter: "Invio spedisce"
@@ -1737,7 +1741,7 @@ _serverSettings:
   thisSettingWillAutomaticallyOffWhenModeratorsInactive: "Per prevenire SPAM, questa impostazione verrà disattivata automaticamente, se non si rileva alcuna attività di moderazione durante un certo periodo di tempo."
   deliverSuspendedSoftware: "Software fuori produzione"
   deliverSuspendedSoftwareDescription: "A causa di vulnerabilità o altri motivi, puoi interrompere la distribuzione di un software da un server specificandone il nome e la versione. Le informazioni sono fornite dall'altro server e l'autenticità non è garantita. Puoi indicare un intervallo di versione semantica, ma specificando >= 2024.3.1 non verranno incluse le versioni personalizzate come ad esempio 2024.3.1-custom.0, pertanto ti consigliamo di specificare una versione come >= 2024.3.1-0."
-  singleUserMode: "Modalità utente singolo"
+  singleUserMode: "Modalità utenza singola"
   singleUserMode_description: "Se sei l'unica persona a utilizzare questo server, l'abilitazione di questa modalità ottimizzerà le prestazioni."
   signToActivityPubGet: "Firma delle richieste GET"
   signToActivityPubGet_description: "Normalmente questa opzione dovrebbe essere abilitata. Se si verificano problemi con la comunicazione federata, disabilitarla potrebbe migliorare la situazione, ma d'altro canto potrebbe rendere impossibile la comunicazione, a seconda del server."
@@ -2541,6 +2545,44 @@ _widgets:
   clicker: "Cliccheria"
   birthdayFollowings: "Compleanni del giorno"
   chat: "Chatta con questa persona"
+_widgetOptions:
+  showHeader: "Mostra la testata"
+  transparent: "Sfondo trasparente"
+  height: "Altezza"
+  _button:
+    colored: "Colorato"
+  _clock:
+    size: "Dimensioni"
+    thickness: "Spessore lancette"
+    thicknessThin: "Sottili"
+    thicknessMedium: "Medie"
+    thicknessThick: "Larghe"
+    graduations: "Quadrante"
+    graduationDots: "Punti"
+    graduationArabic: "Numeri"
+    fadeGraduations: "Sfumatura"
+    sAnimation: "Animazione dei secondi"
+    sAnimationElastic: "Realistica"
+    sAnimationEaseOut: "Morbida"
+    twentyFour: "Formato 24 ore"
+    labelTime: "Orario"
+    labelTz: "Fuso orario"
+    labelTimeAndTz: "Orario e fuso orario"
+    timezone: "Fuso orario"
+    showMs: "Millisecondi visibili"
+    showLabel: "Etichetta visibile"
+  _jobQueue:
+    sound: "Emetti un suono"
+  _rss:
+    url: "URL del Feed RSS"
+    refreshIntervalSec: "Intervallo di aggiornamento (in secondi)"
+    maxEntries: "Quantità massima visualizzabile"
+  _rssTicker:
+    shuffle: "Ordine casuale"
+    duration: "Velocità di scorrimento del ticker (in secondi)"
+    reverse: "Direzione inversa"
+  _birthdayFollowings:
+    period: "Durata"
 _cw:
   hide: "Nascondere"
   show: "Continua la lettura..."
@@ -2816,6 +2858,14 @@ _deck:
   usedAsMinWidthWhenFlexible: "Se \"larghezza flessibile\" è abilitato, questa diventa la larghezza minima"
   flexible: "Larghezza flessibile"
   enableSyncBetweenDevicesForProfiles: "Abilita la sincronizzazione delle informazioni profilo tra dispositivi"
+  showHowToUse: "Guarda la spiegazione dell'interfaccia grafica"
+  _howToUse:
+    addColumn_title: "Aggiungere colonne"
+    addColumn_description: "Puoi selezionare un tipo di colonna e aggiungerlo."
+    settings_title: "Configurazione interfaccia grafica"
+    settings_description: "Puoi personalizzare i dettagli dell'interfaccia grafica."
+    switchProfile_title: "Selettore profilo"
+    switchProfile_description: "Puoi salvare la disposizione dell'interfaccia grafica nel tuo profilo, affinché cambi con comodità."
   _columns:
     main: "Principale"
     widgets: "Riquadri"
@@ -3067,7 +3117,7 @@ _contextMenu:
   title: "Menu contestuale"
   app: "Applicazione"
   appWithShift: "Applicazione Shift+Tasto"
-  native: "Interfaccia utente del browser"
+  native: "Interfaccia grafica del browser"
 _gridComponent:
   _error:
     requiredValue: "Campo obbligatorio"
@@ -3299,7 +3349,6 @@ _imageEffector:
   title: "Effetto"
   addEffect: "Aggiungi effetto"
   discardChangesConfirm: "Scarta le modifiche ed esci?"
-  nothingToConfigure: "Nessuna impostazione configurabile."
   failedToLoadImage: "Impossibile caricare l'immagine"
   _fxs:
     chromaticAberration: "Aberrazione cromatica"
