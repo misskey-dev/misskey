@@ -2866,7 +2866,7 @@ _deck:
     settings_title: "UI 설정"
     settings_description: "덱 UI의 상세 설정을 할 수 있습니다."
     switchProfile_title: "프로파일 전환"
-    switchProfile_description: "UI의 레이아웃을 프로필로 저장하고, 언제나 전환할 수 있습니다."
+    switchProfile_description: "UI의 레이아웃을 프로파일로 저장하고 언제든지 전환할 수 있습니다."
   _columns:
     main: "메인"
     widgets: "위젯"
