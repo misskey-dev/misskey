@@ -45,9 +45,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				]"
 				vertical
 			>
-				<option value="small"><i class="ti ti-user"></i> {{ i18n.ts._serverSetupWizard._scale.small }}</option>
-				<option value="medium"><i class="ti ti-users"></i> {{ i18n.ts._serverSetupWizard._scale.medium }}</option>
-				<option value="large"><i class="ti ti-users-group"></i> {{ i18n.ts._serverSetupWizard._scale.large }}</option>
 			</MkRadios>
 
 			<MkInfo v-if="q_scale === 'large'"><b>{{ i18n.ts.advice }}:</b> {{ i18n.ts._serverSetupWizard.largeScaleServerAdvice }}</MkInfo>
