@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:disabled="option.disabled"
 			:value="option.value"
 		>
-			<div :class="$style.optionContent">
+			<div :class="[$style.optionContent, { [$style.checked]: model === option.value }]">
 				<i v-if="option.icon" :class="[$style.optionIcon, option.icon]" :style="option.iconStyle"></i>
 				<div>
 					<slot v-if="option.slotId != null" :name="`option-${option.slotId as SlotNames}`"></slot>
@@ -105,14 +105,19 @@ function getKey(value: OptionValue): PropertyKey {
 .optionContent {
 	display: flex;
 	align-items: center;
-	gap: 4px;
-	line-height: 1.1;
+	gap: 6px;
 }
 
 .optionCaption {
 	font-size: 0.85em;
-	padding: 4px 0 0 0;
+	padding: 2px 0 0 0;
 	color: color(from var(--MI_THEME-fg) srgb r g b / 0.75);
+}
+
+.optionContent.checked {
+	.optionCaption {
+		color: color(from var(--MI_THEME-accent) srgb r g b / 0.75);
+	}
 }
 
 .optionIcon {

@@ -25,8 +25,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup generic="T extends OptionValue | null">
-import type { OptionValue } from '@/types/option-value.js';
 import { computed } from 'vue';
+import type { OptionValue } from '@/types/option-value.js';
 
 const props = defineProps<{
 	modelValue: T;
@@ -53,7 +53,7 @@ function toggle(): void {
 	align-items: center;
 	text-align: left;
 	cursor: pointer;
-	padding: 7px 10px;
+	padding: 8px 10px;
 	min-width: 60px;
 	background-color: var(--MI_THEME-panel);
 	background-clip: padding-box !important;
@@ -131,7 +131,6 @@ function toggle(): void {
 .label {
 	margin-left: 8px;
 	display: block;
-	line-height: 20px;
 	cursor: pointer;
 }
 </style>
