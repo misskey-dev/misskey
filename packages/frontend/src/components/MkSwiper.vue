@@ -7,10 +7,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div
 	ref="rootEl"
 	:class="[$style.transitionRoot, { [$style.enableAnimation]: shouldAnimate }]"
-	@touchstart.passive="touchStart"
-	@touchmove.passive="touchMove"
-	@touchend.passive="touchEnd"
-	@touchcancel.passive="touchCancel"
+	@touchstart.passive="moveStartByTouch"
+	@touchmove.passive="moving"
+	@touchend.passive="moveEndByTouch"
+	@touchcancel.passive="moveCancelByTouch"
 >
 	<Transition
 		:class="[$style.transitionChildren, { [$style.swiping]: isSwipingForClass }]"
@@ -83,6 +83,14 @@ const isSwipingForClass = ref(false);
 let swipeAborted = false;
 let swipeDirectionLocked: 'horizontal' | 'vertical' | null = null;
 
+function getScreenX(event: TouchEvent): number {
+	return event.touches[0]?.screenX ?? 0;
+}
+
+function getScreenY(event: TouchEvent): number {
+	return event.touches[0]?.screenY ?? 0;
+}
+
 function clamp(value: number, min: number, max: number): number {
 	return Math.min(Math.max(value, min), max);
 }
@@ -94,7 +102,7 @@ function toEffectiveDistance(rawDistance: number): number {
 	return sign * (abs - MIN_SWIPE_DISTANCE);
 }
 
-function setPullDistanceDirect(nextDistance: number) {
+function setPullDistance(nextDistance: number) {
 	pendingPullDistance = nextDistance;
 	if (rafId != null) return;
 	rafId = window.requestAnimationFrame(() => {
@@ -107,18 +115,18 @@ function setPullDistanceDirect(nextDistance: number) {
 	});
 }
 
-function cancelReleaseAnimation() {
-	if (releaseAnimationCancel) {
+function cancelMoveBySystem() {
+	if (releaseAnimationCancel != null) {
 		releaseAnimationCancel();
 		releaseAnimationCancel = null;
 	}
 }
 
-function animatePullDistanceTo(to: number, duration = RELEASE_TRANSITION_DURATION): Promise<void> {
-	cancelReleaseAnimation();
+function moveBySystem(to: number, duration = RELEASE_TRANSITION_DURATION): Promise<void> {
+	cancelMoveBySystem();
 
 	if (!shouldAnimate.value || duration <= 0) {
-		setPullDistanceDirect(to);
+		setPullDistance(to);
 		return Promise.resolve();
 	}
 
@@ -126,7 +134,7 @@ function animatePullDistanceTo(to: number, duration = RELEASE_TRANSITION_DURATIO
 		const from = pullDistance.value;
 		const delta = to - from;
 		if (Math.abs(delta) < 0.5) {
-			setPullDistanceDirect(to);
+			setPullDistance(to);
 			resolve();
 			return;
 		}
@@ -151,7 +159,7 @@ function animatePullDistanceTo(to: number, duration = RELEASE_TRANSITION_DURATIO
 			const t = Math.min((now - startTime) / duration, 1);
 			// リリース時は軽くイージング（追従中は直接反映）
 			const eased = 1 - Math.pow(1 - t, 3);
-			setPullDistanceDirect(from + delta * eased);
+			setPullDistance(from + delta * eased);
 			if (t >= 1) {
 				releaseAnimationCancel = null;
 				resolve();
@@ -163,7 +171,7 @@ function animatePullDistanceTo(to: number, duration = RELEASE_TRANSITION_DURATIO
 	});
 }
 
-function resetSwipeState() {
+function resetState() {
 	startScreenX = null;
 	startScreenY = null;
 	isTracking = false;
@@ -171,23 +179,27 @@ function resetSwipeState() {
 	isSwiping.value = false;
 }
 
-function touchStart(event: TouchEvent) {
+function closeContent() {
+	return moveBySystem(0);
+}
+
+function moveStartByTouch(event: TouchEvent) {
 	if (!prefer.r.enableHorizontalSwipe.value) return;
 
 	if (event.touches.length !== 1) return;
 
 	if (hasSomethingToDoWithXSwipe(event.target as HTMLElement)) return;
 
-	cancelReleaseAnimation();
+	cancelMoveBySystem();
 
-	startScreenX = event.touches[0].screenX;
-	startScreenY = event.touches[0].screenY;
+	startScreenX = getScreenX(event);
+	startScreenY = getScreenY(event);
 	isTracking = true;
 	swipeDirectionLocked = null; // スワイプ方向をリセット
 	swipeAborted = false;
 }
 
-function touchMove(event: TouchEvent) {
+function moving(event: TouchEvent) {
 	if (!prefer.r.enableHorizontalSwipe.value) return;
 
 	if (event.touches.length !== 1) return;
@@ -199,8 +211,8 @@ function touchMove(event: TouchEvent) {
 
 	if (hasSomethingToDoWithXSwipe(event.target as HTMLElement)) return;
 
-	const rawDistanceX = event.touches[0].screenX - startScreenX;
-	const rawDistanceY = event.touches[0].screenY - startScreenY;
+	const rawDistanceX = getScreenX(event) - startScreenX;
+	const rawDistanceY = getScreenY(event) - startScreenY;
 
 	// スワイプ方向をロック
 	if (!swipeDirectionLocked) {
@@ -218,8 +230,8 @@ function touchMove(event: TouchEvent) {
 	// 縦方向のスワイプの場合は中断
 	if (swipeDirectionLocked === 'vertical') {
 		swipeAborted = true;
-		setPullDistanceDirect(0);
-		resetSwipeState();
+		setPullDistance(0);
+		resetState();
 		// クラスは即座に落とす（縦スクロールを邪魔しない）
 		isSwipingForClass.value = false;
 		return;
@@ -239,28 +251,10 @@ function touchMove(event: TouchEvent) {
 
 	isSwiping.value = true;
 	isSwipingForClass.value = true;
-	setPullDistanceDirect(distanceX);
+	setPullDistance(distanceX);
 }
 
-function touchEnd(event: TouchEvent) {
-	if (swipeAborted) {
-		swipeAborted = false;
-		resetSwipeState();
-		return;
-	}
-
-	if (!prefer.r.enableHorizontalSwipe.value) return;
-
-	if (event.touches.length !== 0) return;
-
-	if (startScreenX == null) return;
-	if (!isTracking) return;
-
-	if (!isSwiping.value) return;
-
-	if (hasSomethingToDoWithXSwipe(event.target as HTMLElement)) return;
-
-	const distance = event.changedTouches[0].screenX - startScreenX;
+function onSwipeRelease(distance: number) {
 	const effectiveDistance = toEffectiveDistance(distance);
 	const effectiveThreshold = Math.max(SWIPE_DISTANCE_THRESHOLD - MIN_SWIPE_DISTANCE, 0);
 
@@ -277,17 +271,39 @@ function touchEnd(event: TouchEvent) {
 			}
 		}
 	}
+}
 
-	resetSwipeState();
-	animatePullDistanceTo(0).finally(() => {
+function moveEndByTouch(event: TouchEvent) {
+	if (swipeAborted) {
+		swipeAborted = false;
+		resetState();
+		return;
+	}
+
+	if (!prefer.r.enableHorizontalSwipe.value) return;
+
+	if (event.touches.length !== 0) return;
+
+	if (startScreenX == null) return;
+	if (!isTracking) return;
+
+	if (!isSwiping.value) return;
+
+	if (hasSomethingToDoWithXSwipe(event.target as HTMLElement)) return;
+
+	const distance = event.changedTouches[0].screenX - startScreenX;
+	onSwipeRelease(distance);
+
+	resetState();
+	closeContent().finally(() => {
 		isSwipingForClass.value = false;
 	});
 }
 
-function touchCancel(_event: TouchEvent) {
+function moveCancelByTouch(_event: TouchEvent) {
 	swipeAborted = false;
-	resetSwipeState();
-	animatePullDistanceTo(0).finally(() => {
+	resetState();
+	closeContent().finally(() => {
 		isSwipingForClass.value = false;
 	});
 }
