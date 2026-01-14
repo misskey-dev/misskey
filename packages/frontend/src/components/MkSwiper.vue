@@ -310,13 +310,14 @@ function moveCancelByTouch(_event: TouchEvent) {
 
 /** 横スワイプに関与する可能性のある要素を調べる */
 function hasSomethingToDoWithXSwipe(el: HTMLElement) {
+	// 入力のじゃまになる
 	if (['INPUT', 'TEXTAREA'].includes(el.tagName)) return true;
 	if (el.isContentEditable) return true;
-	if (el.scrollWidth > el.clientWidth) return true;
 
 	const style = window.getComputedStyle(el);
-	if (['absolute', 'fixed', 'sticky'].includes(style.position)) return true;
-	if (style.overflowX === 'scroll') return true;
+	// 実際に横スクロールできる要素では横スワイプができないほうがよい
+	if (['scroll', 'auto'].includes(style.overflowX) && el.scrollWidth > el.clientWidth + 1) return true;
+	// すでに横スワイプを禁止している要素では横スワイプができないほうがよい
 	if (style.touchAction === 'pan-x') return true;
 
 	if (el.parentElement != null && el.parentElement !== rootEl.value) {
