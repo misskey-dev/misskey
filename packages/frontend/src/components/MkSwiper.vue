@@ -10,6 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@touchstart.passive="touchStart"
 	@touchmove.passive="touchMove"
 	@touchend.passive="touchEnd"
+	@touchcancel.passive="touchCancel"
 >
 	<Transition
 		:class="[$style.transitionChildren, { [$style.swiping]: isSwipingForClass }]"
@@ -26,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 </template>
 <script lang="ts" setup>
-import { ref, useTemplateRef, computed, nextTick, watch } from 'vue';
+import { ref, useTemplateRef, computed, watch } from 'vue';
 import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
 import { isHorizontalSwipeSwiping as isSwiping } from '@/utility/touch.js';
 import { prefer } from '@/preferences.js';
@@ -59,10 +60,21 @@ const MAX_SWIPE_DISTANCE = 120;
 // スワイプ方向を判定する角度の許容範囲（度数）
 const SWIPE_DIRECTION_ANGLE_THRESHOLD = 50;
 
+// 指を離したときに元に戻すアニメーションの時間
+const RELEASE_TRANSITION_DURATION = 200;
+
+// スワイプ方向ロック判定を始める最小移動量（小さすぎると誤判定しやすい）
+const DIRECTION_LOCK_START_DISTANCE = 6;
+
 // ▲ しきい値 ▲ //
 
 let startScreenX: number | null = null;
 let startScreenY: number | null = null;
+
+let isTracking = false;
+let rafId: number | null = null;
+let pendingPullDistance: number | null = null;
+let releaseAnimationCancel: (() => void) | null = null;
 
 const currentTabIndex = computed(() => props.tabs.findIndex(tab => tab.key === tabModel.value));
 
@@ -71,6 +83,88 @@ const isSwipingForClass = ref(false);
 let swipeAborted = false;
 let swipeDirectionLocked: 'horizontal' | 'vertical' | null = null;
 
+function clamp(value: number, min: number, max: number): number {
+	return Math.min(Math.max(value, min), max);
+}
+
+function toEffectiveDistance(rawDistance: number): number {
+	const sign = Math.sign(rawDistance);
+	const abs = Math.abs(rawDistance);
+	if (abs <= MIN_SWIPE_DISTANCE) return 0;
+	return sign * (abs - MIN_SWIPE_DISTANCE);
+}
+
+function setPullDistanceDirect(nextDistance: number) {
+	pendingPullDistance = nextDistance;
+	if (rafId != null) return;
+	rafId = window.requestAnimationFrame(() => {
+		rafId = null;
+		const next = pendingPullDistance ?? 0;
+		pendingPullDistance = null;
+		// グリッチ抑制: 0.5px未満の更新は捨てる
+		if (Math.abs(next - pullDistance.value) < 0.5) return;
+		pullDistance.value = next;
+	});
+}
+
+function cancelReleaseAnimation() {
+	if (releaseAnimationCancel) {
+		releaseAnimationCancel();
+		releaseAnimationCancel = null;
+	}
+}
+
+function animatePullDistanceTo(to: number, duration = RELEASE_TRANSITION_DURATION): Promise<void> {
+	cancelReleaseAnimation();
+
+	if (!shouldAnimate.value || duration <= 0) {
+		setPullDistanceDirect(to);
+		return Promise.resolve();
+	}
+
+	return new Promise(resolve => {
+		const from = pullDistance.value;
+		const delta = to - from;
+		if (Math.abs(delta) < 0.5) {
+			setPullDistanceDirect(to);
+			resolve();
+			return;
+		}
+
+		const startTime = performance.now();
+		let cancelled = false;
+		releaseAnimationCancel = () => {
+			cancelled = true;
+		};
+
+		const tick = (now: number) => {
+			if (cancelled) {
+				resolve();
+				return;
+			}
+			const t = Math.min((now - startTime) / duration, 1);
+			// リリース時は軽くイージング（追従中は直接反映）
+			const eased = 1 - Math.pow(1 - t, 3);
+			setPullDistanceDirect(from + delta * eased);
+			if (t >= 1) {
+				releaseAnimationCancel = null;
+				resolve();
+				return;
+			}
+			window.requestAnimationFrame(tick);
+		};
+		window.requestAnimationFrame(tick);
+	});
+}
+
+function resetSwipeState() {
+	startScreenX = null;
+	startScreenY = null;
+	isTracking = false;
+	swipeDirectionLocked = null;
+	isSwiping.value = false;
+}
+
 function touchStart(event: TouchEvent) {
 	if (!prefer.r.enableHorizontalSwipe.value) return;
 
@@ -78,9 +172,13 @@ function touchStart(event: TouchEvent) {
 
 	if (hasSomethingToDoWithXSwipe(event.target as HTMLElement)) return;
 
+	cancelReleaseAnimation();
+
 	startScreenX = event.touches[0].screenX;
 	startScreenY = event.touches[0].screenY;
+	isTracking = true;
 	swipeDirectionLocked = null; // スワイプ方向をリセット
+	swipeAborted = false;
 }
 
 function touchMove(event: TouchEvent) {
@@ -89,37 +187,41 @@ function touchMove(event: TouchEvent) {
 	if (event.touches.length !== 1) return;
 
 	if (startScreenX == null || startScreenY == null) return;
+	if (!isTracking) return;
 
 	if (swipeAborted) return;
 
 	if (hasSomethingToDoWithXSwipe(event.target as HTMLElement)) return;
 
-	let distanceX = event.touches[0].screenX - startScreenX;
-	let distanceY = event.touches[0].screenY - startScreenY;
+	const rawDistanceX = event.touches[0].screenX - startScreenX;
+	const rawDistanceY = event.touches[0].screenY - startScreenY;
 
 	// スワイプ方向をロック
 	if (!swipeDirectionLocked) {
-		const angle = Math.abs(Math.atan2(distanceY, distanceX) * (180 / Math.PI));
-		if (angle > 90 - SWIPE_DIRECTION_ANGLE_THRESHOLD && angle < 90 + SWIPE_DIRECTION_ANGLE_THRESHOLD) {
-			swipeDirectionLocked = 'vertical';
-		} else {
-			swipeDirectionLocked = 'horizontal';
+		const moveDistance = Math.hypot(rawDistanceX, rawDistanceY);
+		if (moveDistance >= DIRECTION_LOCK_START_DISTANCE) {
+			const angle = Math.abs(Math.atan2(rawDistanceY, rawDistanceX) * (180 / Math.PI));
+			if (angle > 90 - SWIPE_DIRECTION_ANGLE_THRESHOLD && angle < 90 + SWIPE_DIRECTION_ANGLE_THRESHOLD) {
+				swipeDirectionLocked = 'vertical';
+			} else {
+				swipeDirectionLocked = 'horizontal';
+			}
 		}
 	}
 
 	// 縦方向のスワイプの場合は中断
 	if (swipeDirectionLocked === 'vertical') {
 		swipeAborted = true;
-		pullDistance.value = 0;
-		isSwiping.value = false;
-		window.setTimeout(() => {
-			isSwipingForClass.value = false;
-		}, 400);
+		setPullDistanceDirect(0);
+		resetSwipeState();
+		// クラスは即座に落とす（縦スクロールを邪魔しない）
+		isSwipingForClass.value = false;
 		return;
 	}
 
-	if (Math.abs(distanceX) < MIN_SWIPE_DISTANCE) return;
-	if (Math.abs(distanceX) > MAX_SWIPE_DISTANCE) return;
+	if (Math.abs(rawDistanceX) < MIN_SWIPE_DISTANCE) return;
+
+	let distanceX = clamp(toEffectiveDistance(rawDistanceX), -MAX_SWIPE_DISTANCE, MAX_SWIPE_DISTANCE);
 
 	if (currentTabIndex.value === 0 || props.tabs[currentTabIndex.value - 1].onClick) {
 		distanceX = Math.min(distanceX, 0);
@@ -131,16 +233,13 @@ function touchMove(event: TouchEvent) {
 
 	isSwiping.value = true;
 	isSwipingForClass.value = true;
-	nextTick(() => {
-		// グリッチを控えるため、1.5px以上の差がないと更新しない
-		if (Math.abs(distanceX - pullDistance.value) < 1.5) return;
-		pullDistance.value = distanceX;
-	});
+	setPullDistanceDirect(distanceX);
 }
 
 function touchEnd(event: TouchEvent) {
 	if (swipeAborted) {
 		swipeAborted = false;
+		resetSwipeState();
 		return;
 	}
 
@@ -149,14 +248,17 @@ function touchEnd(event: TouchEvent) {
 	if (event.touches.length !== 0) return;
 
 	if (startScreenX == null) return;
+	if (!isTracking) return;
 
 	if (!isSwiping.value) return;
 
 	if (hasSomethingToDoWithXSwipe(event.target as HTMLElement)) return;
 
 	const distance = event.changedTouches[0].screenX - startScreenX;
+	const effectiveDistance = toEffectiveDistance(distance);
+	const effectiveThreshold = Math.max(SWIPE_DISTANCE_THRESHOLD - MIN_SWIPE_DISTANCE, 0);
 
-	if (Math.abs(distance) > SWIPE_DISTANCE_THRESHOLD) {
+	if (Math.abs(effectiveDistance) > effectiveThreshold) {
 		if (distance > 0) {
 			if (props.tabs[currentTabIndex.value - 1] && !props.tabs[currentTabIndex.value - 1].onClick) {
 				tabModel.value = props.tabs[currentTabIndex.value - 1].key;
@@ -170,13 +272,18 @@ function touchEnd(event: TouchEvent) {
 		}
 	}
 
-	pullDistance.value = 0;
-	isSwiping.value = false;
-	window.setTimeout(() => {
+	resetSwipeState();
+	animatePullDistanceTo(0).finally(() => {
 		isSwipingForClass.value = false;
-	}, 400);
+	});
+}
 
-	swipeDirectionLocked = null; // スワイプ方向をリセット
+function touchCancel(_event: TouchEvent) {
+	swipeAborted = false;
+	resetSwipeState();
+	animatePullDistanceTo(0).finally(() => {
+		isSwipingForClass.value = false;
+	});
 }
 
 /** 横スワイプに関与する可能性のある要素を調べる */
@@ -187,7 +294,7 @@ function hasSomethingToDoWithXSwipe(el: HTMLElement) {
 
 	const style = window.getComputedStyle(el);
 	if (['absolute', 'fixed', 'sticky'].includes(style.position)) return true;
-	if (['scroll', 'auto'].includes(style.overflowX)) return true;
+	if (style.overflowX === 'scroll') return true;
 	if (style.touchAction === 'pan-x') return true;
 
 	if (el.parentElement && el.parentElement !== rootEl.value) {
@@ -246,6 +353,6 @@ watch(tabModel, (newTab, oldTab) => {
 }
 
 .swiping {
-	transition: transform .2s ease-out;
+	transition: none;
 }
 </style>
