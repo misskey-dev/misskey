@@ -1406,6 +1406,7 @@ youAreAdmin: "Ets l'administrador "
 frame: "Marc"
 presets: "Predefinit"
 zeroPadding: "Sense omplir"
+nothingToConfigure: "No hi ha res a configurar"
 _imageEditing:
   _vars:
     caption: "Títol de l'arxiu"
@@ -1550,6 +1551,9 @@ _settings:
   showPageTabBarBottom: "Mostrar les pestanyes de les línies de temps a la part inferior"
   emojiPaletteBanner: "Pots registrar ajustos preestablerts com paletes perquè es mostrin permanentment al selector d'emojis, o personalitzar la configuració de visió del selector."
   enableAnimatedImages: "Activar imatges animades"
+  settingsPersistence_title: "Persistència de la configuració "
+  settingsPersistence_description1: "Habilitar la persistència de la configuració permet que no es perdi la informació de la configuració "
+  settingsPersistence_description2: "Depenent de l'entorn pot ser que no puguis habilitar aquesta opció."
   _chat:
     showSenderName: "Mostrar el nom del remitent"
     sendOnEnter: "Introdueix per enviar"
@@ -1609,8 +1613,8 @@ _bubbleGame:
     highScore: "Millor puntuació "
     maxChain: "Nombre màxim de combos"
     yen: "{yen}Ien"
-    estimatedQty: "{qty}peces"
-    scoreSweets: "{onigiriQtyWithUnit}ongiris"
+    estimatedQty: "{qty} Peces"
+    scoreSweets: "{onigiriQtyWithUnit} Boles d'arròs "
   _howToPlay:
     section1: "Ajusta la posició i deixa caure l'objecte dintre la caixa."
     section2: "Quan dos objectes del mateix tipus es toquen, canviaran en un objecte diferent i guanyares punts."
@@ -2541,6 +2545,44 @@ _widgets:
   clicker: "Clicker"
   birthdayFollowings: "Usuaris que fan l'aniversari avui"
   chat: "Xateja amb aquest usuari"
+_widgetOptions:
+  showHeader: "Mostrar la capçalera"
+  transparent: "Fons transparent"
+  height: "Alçada "
+  _button:
+    colored: "Colorit"
+  _clock:
+    size: "Mida"
+    thickness: "Amplada de l'agulla "
+    thicknessThin: "Esvelt "
+    thicknessMedium: "Normal"
+    thicknessThick: "Gruixut "
+    graduations: "Marques de l'esfera "
+    graduationDots: "Punt"
+    graduationArabic: "Nombres àrabs "
+    fadeGraduations: "Efecte gradient "
+    sAnimation: "Animació de la maneta dels segons"
+    sAnimationElastic: "Real"
+    sAnimationEaseOut: "Suau"
+    twentyFour: "Format 24 hores"
+    labelTime: "Temps"
+    labelTz: "Fus horari"
+    labelTimeAndTz: "Hora i fus horari"
+    timezone: "Fus horari"
+    showMs: "Mostrar mil·lisegons"
+    showLabel: "Mostrar etiqueta"
+  _jobQueue:
+    sound: "Reprodueix so"
+  _rss:
+    url: "URL del canal RSS"
+    refreshIntervalSec: "Interval d'actualitzacions (segons)"
+    maxEntries: "Nombre màxim d'entrades a mostrar"
+  _rssTicker:
+    shuffle: "Visualització aleatòria "
+    duration: "Velocitat desplaçament bàner informatiu "
+    reverse: "Desplaçament contrari"
+  _birthdayFollowings:
+    period: "Període"
 _cw:
   hide: "Amagar"
   show: "Carregar més"
@@ -2816,6 +2858,14 @@ _deck:
   usedAsMinWidthWhenFlexible: "L'amplada mínima es farà servir quan \"Ajust automàtic de l'amplada\" estigui activat"
   flexible: "Ajust automàtic de l'amplada"
   enableSyncBetweenDevicesForProfiles: "Activar la sincronització de la informació de perfils de dispositiu a dispositiu"
+  showHowToUse: "Veure la descripció de la interfície d'usuari "
+  _howToUse:
+    addColumn_title: "Afegir columna"
+    addColumn_description: "Pots seleccionar i afegir tipus de columnes."
+    settings_title: "Configuració de la interfície d'usuari "
+    settings_description: "Pots configurar la interfície d'usuari amb detall."
+    switchProfile_title: "Canviar perfil"
+    switchProfile_description: "Pots desar el disseny de la interfície d'usuari com un perfil i anar canviant entre ells quan vulguis."
   _columns:
     main: "Principal"
     widgets: "Ginys"
@@ -3299,7 +3349,6 @@ _imageEffector:
   title: "Efecte"
   addEffect: "Afegeix un efecte"
   discardChangesConfirm: "Vols descartar els canvis i sortir?"
-  nothingToConfigure: "No hi ha opcions de configuració disponibles"
   failedToLoadImage: "Error en carregar la imatge"
   _fxs:
     chromaticAberration: "Aberració cromàtica"

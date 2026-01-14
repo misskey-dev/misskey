@@ -7,15 +7,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div v-if="Object.keys(form).filter(item => !form[item].hidden).length > 0" class="_gaps_m">
 	<template v-for="v, k in form">
 		<template v-if="typeof v.hidden == 'function' ? v.hidden(values) : v.hidden"></template>
-		<MkInput v-else-if="v.type === 'number'" v-model="values[k]" type="number" :step="v.step || 1" :manualSave="v.manualSave">
+		<MkInput v-else-if="v.type === 'number'" v-model="values[k]" type="number" :step="v.step || 1" :manualSave="v.manualSave" @savingStateChange="(changed, invalid) => onSavingStateChange(k, changed, invalid)">
 			<template #label><span v-text="v.label || k"></span><span v-if="v.required === false"> ({{ i18n.ts.optional }})</span></template>
 			<template v-if="v.description" #caption>{{ v.description }}</template>
 		</MkInput>
-		<MkInput v-else-if="v.type === 'string' && !v.multiline" v-model="values[k]" type="text" :mfmAutocomplete="v.treatAsMfm" :manualSave="v.manualSave">
+		<MkInput v-else-if="v.type === 'string' && !v.multiline" v-model="values[k]" type="text" :mfmAutocomplete="v.treatAsMfm" :manualSave="v.manualSave" @savingStateChange="(changed, invalid) => onSavingStateChange(k, changed, invalid)">
 			<template #label><span v-text="v.label || k"></span><span v-if="v.required === false"> ({{ i18n.ts.optional }})</span></template>
 			<template v-if="v.description" #caption>{{ v.description }}</template>
 		</MkInput>
-		<MkTextarea v-else-if="v.type === 'string' && v.multiline" v-model="values[k]" :mfmAutocomplete="v.treatAsMfm" :mfmPreview="v.treatAsMfm" :manualSave="v.manualSave">
+		<MkTextarea v-else-if="v.type === 'string' && v.multiline" v-model="values[k]" :mfmAutocomplete="v.treatAsMfm" :mfmPreview="v.treatAsMfm" :manualSave="v.manualSave" @savingStateChange="(changed, invalid) => onSavingStateChange(k, changed, invalid)">
 			<template #label><span v-text="v.label || k"></span><span v-if="v.required === false"> ({{ i18n.ts.optional }})</span></template>
 			<template v-if="v.description" #caption>{{ v.description }}</template>
 		</MkTextarea>
@@ -49,6 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { computed, ref, watch } from 'vue';
 import XFile from '@/components/MkForm.file.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
@@ -65,8 +66,42 @@ const props = defineProps<{
 	form: Form;
 }>();
 
+const emit = defineEmits<{
+	(ev: 'canSaveStateChange', canSave: boolean): void;
+}>();
+
 // TODO: ジェネリックにしたい
 const values = defineModel<Record<string, any>>({ required: true });
+
+// 保存可能状態の管理
+const inputSavingStates = ref<Record<string, { changed: boolean; invalid: boolean }>>({});
+
+function onSavingStateChange(key: string, changed: boolean, invalid: boolean) {
+	inputSavingStates.value[key] = { changed, invalid };
+}
+
+const canSave = computed(() => {
+	for (const key in inputSavingStates.value) {
+		const state = inputSavingStates.value[key];
+		if (
+			('manualSave' in props.form[key] && props.form[key].manualSave && state.changed) ||
+			state.invalid
+	 	) {
+			return false;
+		}
+		if ('required' in props.form[key] && props.form[key].required) {
+			const val = values.value[key];
+			if (val === null || val === undefined || val === '') {
+				return false;
+			}
+		}
+	}
+	return true;
+});
+
+watch(canSave, (newCanSave) => {
+	emit('canSaveStateChange', newCanSave);
+}, { immediate: true });
 
 function getMkSelectDef(def: EnumFormItem): MkSelectItem[] {
 	return def.enum.map((v) => {

@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 								<div class="_gaps_s">
 									<div v-for="policy in Object.keys($i.policies)" :key="policy">
-										{{ policy }} ... {{ $i.policies[policy] }}
+										{{ policy }} ... {{ $i.policies[policy as keyof typeof $i.policies] }}
 									</div>
 								</div>
 							</MkFolder>

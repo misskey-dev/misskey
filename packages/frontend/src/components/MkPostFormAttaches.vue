@@ -183,8 +183,8 @@ async function describeDriveFile(file: Misskey.entities.DriveFile) {
 	});
 }
 
-function handleClick(attach: Attach, ev: MouseEvent | KeyboardEvent): void {
-	if (ev instanceof MouseEvent && ev.button !== 0) return; // 左クリック以外は無視
+function handleClick(attach: Attach, ev: PointerEvent | KeyboardEvent): void {
+	if (ev instanceof PointerEvent && ev.button !== 0) return; // 左クリック以外は無視
 
 	if (attach.type === 'driveFile' || (attach.type === 'uploaderItem' && !attach.file.uploading)) {
 		showFileMenu(attach, ev);

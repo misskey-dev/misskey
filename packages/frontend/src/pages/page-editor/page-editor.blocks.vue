@@ -47,7 +47,7 @@ const emit = defineEmits<{
 	(ev: 'update:modelValue', value: Misskey.entities.Page['content']): void;
 }>();
 
-function updateItem(v) {
+function updateItem(v: Misskey.entities.PageBlock) {
 	const i = props.modelValue.findIndex(x => x.id === v.id);
 	const newValue = [
 		...props.modelValue.slice(0, i),
@@ -57,8 +57,8 @@ function updateItem(v) {
 	emit('update:modelValue', newValue);
 }
 
-function removeItem(el) {
-	const i = props.modelValue.findIndex(x => x.id === el.id);
+function removeItem(v: Misskey.entities.PageBlock) {
+	const i = props.modelValue.findIndex(x => x.id === v.id);
 	const newValue = [
 		...props.modelValue.slice(0, i),
 		...props.modelValue.slice(i + 1),

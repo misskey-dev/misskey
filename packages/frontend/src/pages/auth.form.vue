@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-if="app.permission.length > 0">
 		<p>{{ i18n.tsx._auth.permission({ name }) }}</p>
 		<ul>
-			<li v-for="p in app.permission" :key="p">{{ i18n.ts._permissions[p] }}</li>
+			<li v-for="p in app.permission" :key="p">{{ (i18n.ts._permissions as any)[p] ?? p }}</li>
 		</ul>
 	</div>
 	<div>{{ i18n.tsx._auth.shareAccess({ name: `${name} (${app.id})` }) }}</div>

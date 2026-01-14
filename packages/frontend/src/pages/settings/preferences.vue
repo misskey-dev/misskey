@@ -269,6 +269,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkPreferenceContainer>
 							</SearchMarker>
 
+							<SearchMarker :keywords="['attachment', 'image', 'photo', 'picture', 'media', 'thumbnail', 'grid', 'wide', 'area']">
+								<MkPreferenceContainer k="showMediaListByGridInWideArea">
+									<MkSwitch v-model="showMediaListByGridInWideArea">
+										<template #label><SearchLabel>{{ i18n.ts.showMediaListByGridInWideArea }}</SearchLabel></template>
+									</MkSwitch>
+								</MkPreferenceContainer>
+							</SearchMarker>
+
 							<SearchMarker :keywords="['ticker', 'information', 'label', 'instance', 'server', 'host', 'federation']">
 								<MkPreferenceContainer k="instanceTicker">
 									<MkSelect
@@ -890,6 +898,7 @@ const notificationStackAxis = prefer.model('notificationStackAxis');
 const instanceTicker = prefer.model('instanceTicker');
 const highlightSensitiveMedia = prefer.model('highlightSensitiveMedia');
 const mediaListWithOneImageAppearance = prefer.model('mediaListWithOneImageAppearance');
+const showMediaListByGridInWideArea = prefer.model('showMediaListByGridInWideArea');
 const reactionsDisplaySize = prefer.model('reactionsDisplaySize');
 const limitWidthOfReaction = prefer.model('limitWidthOfReaction');
 const squareAvatars = prefer.model('squareAvatars');
@@ -1042,7 +1051,7 @@ function removePinnedList() {
 function enableAllDataSaver() {
 	const g = { ...prefer.s.dataSaver };
 
-	Object.keys(g).forEach((key) => { g[key] = true; });
+	Object.keys(g).forEach((key) => { (g as any)[key] = true; });
 
 	dataSaver.value = g;
 }
@@ -1050,7 +1059,7 @@ function enableAllDataSaver() {
 function disableAllDataSaver() {
 	const g = { ...prefer.s.dataSaver };
 
-	Object.keys(g).forEach((key) => { g[key] = false; });
+	Object.keys(g).forEach((key) => { (g as any)[key] = false; });
 
 	dataSaver.value = g;
 }

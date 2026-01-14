@@ -11,7 +11,6 @@
 	},
 	"dependencies": {
 		"@discordapp/twemoji": "16.0.1",
-		"i18n": "workspace:*",
 		"@rollup/plugin-json": "6.1.0",
 		"@rollup/plugin-replace": "6.0.3",
 		"@rollup/pluginutils": "5.3.0",
@@ -20,6 +19,7 @@
 		"buraha": "0.0.1",
 		"estree-walker": "3.0.3",
 		"frontend-shared": "workspace:*",
+		"i18n": "workspace:*",
 		"icons-subsetter": "workspace:*",
 		"json5": "2.2.3",
 		"mfm-js": "0.25.0",
@@ -62,6 +62,6 @@
 		"vite-plugin-turbosnap": "1.0.3",
 		"vue-component-type-helpers": "3.2.1",
 		"vue-eslint-parser": "10.2.0",
-		"vue-tsc": "3.1.8"
+		"vue-tsc": "3.2.1"
 	}
 }

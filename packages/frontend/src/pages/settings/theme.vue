@@ -306,7 +306,7 @@ function changeThemesSyncEnabled(value: boolean) {
 	}
 }
 
-function onThemeContextmenu(theme: Theme, ev: MouseEvent) {
+function onThemeContextmenu(theme: Theme, ev: PointerEvent) {
 	os.contextMenu([{
 		type: 'label',
 		text: theme.name,

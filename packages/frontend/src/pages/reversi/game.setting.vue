@@ -113,6 +113,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, watch, ref, onMounted, shallowRef, onUnmounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as Reversi from 'misskey-reversi';
+import type { MenuItem } from '@/types/menu.js';
 import { i18n } from '@/i18n.js';
 import { ensureSignin } from '@/i.js';
 import { deepClone } from '@/utility/clone.js';
@@ -121,7 +122,6 @@ import MkRadios from '@/components/MkRadios.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os.js';
-import type { MenuItem } from '@/types/menu.js';
 import { useRouter } from '@/router.js';
 
 const $i = ensureSignin();
@@ -165,7 +165,7 @@ watch(() => game.value.timeLimitForEachTurn, () => {
 	updateSettings('timeLimitForEachTurn');
 });
 
-function chooseMap(ev: MouseEvent) {
+function chooseMap(ev: PointerEvent) {
 	const menu: MenuItem[] = [];
 
 	for (const c of mapCategories) {
@@ -212,7 +212,10 @@ function unready() {
 	props.connection.send('ready', false);
 }
 
-function onChangeReadyStates(states) {
+function onChangeReadyStates(states: {
+	user1: boolean;
+	user2: boolean;
+}) {
 	game.value.user1Ready = states.user1;
 	game.value.user2Ready = states.user2;
 }

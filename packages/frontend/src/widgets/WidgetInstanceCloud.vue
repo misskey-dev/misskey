@@ -55,7 +55,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 const cloud = useTemplateRef('cloud');
 const activeInstances = shallowRef<Misskey.entities.FederationInstance[] | null>(null);
 
-function onInstanceClick(i) {
+function onInstanceClick(i: Misskey.entities.FederationInstance) {
 	os.pageWindow(`/instance-info/${i.host}`);
 }
 
@@ -72,7 +72,7 @@ useInterval(() => {
 	afterMounted: true,
 });
 
-function getInstanceIcon(instance): string {
+function getInstanceIcon(instance: Misskey.entities.FederationInstance): string {
 	return getProxiedImageUrlNullable(instance.iconUrl, 'preview') ?? getProxiedImageUrlNullable(instance.faviconUrl, 'preview') ?? '/client-assets/dummy.png';
 }
 

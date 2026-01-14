@@ -515,7 +515,7 @@ export class ApRendererService {
 				const restPart = maybeUrl.slice(match[0].length);
 
 				return `<a href="${urlPartParsed.href}" rel="me nofollow noopener" target="_blank">${urlPart}</a>${restPart}`;
-			} catch (e) {
+			} catch (_) {
 				return maybeUrl;
 			}
 		};
