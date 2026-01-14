@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div :class="$style.optionContent">
 				<i v-if="option.icon" :class="[$style.optionIcon, option.icon]" :style="option.iconStyle"></i>
 				<div>
-					<slot v-if="option.slotId != null" :name="`option-${option.slotId}`"></slot>
+					<slot v-if="option.slotId != null" :name="`option-${option.slotId as SlotNames}`"></slot>
 					<template v-else>
 						<div :style="option.labelStyle">{{ option.label ?? option.value }}</div>
 						<div v-if="option.caption" :class="$style.optionCaption">{{ option.caption }}</div>
@@ -58,11 +58,13 @@ defineProps<{
 	vertical?: boolean;
 }>();
 
+type SlotNames = NonNullable<T extends MkRadiosOption<any, infer U> ? U : never>;
+
 defineSlots<{
 	label?: () => any;
 	caption?: () => any;
 } & {
-	[K in `option-${NonNullable<T['slotId']>}`]: () => any;
+	[K in `option-${SlotNames}`]: () => any;
 }>();
 
 const model = defineModel<T['value']>({ required: true });
