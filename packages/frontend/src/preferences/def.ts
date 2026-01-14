@@ -320,6 +320,9 @@ export const PREF_DEF = definePreferences({
 	mediaListWithOneImageAppearance: {
 		default: 'expand' as 'expand' | '16_9' | '1_1' | '2_3',
 	},
+	showMediaListByGridInWideArea: {
+		default: false,
+	},
 	notificationPosition: {
 		default: 'rightBottom' as 'leftTop' | 'leftBottom' | 'rightTop' | 'rightBottom',
 	},

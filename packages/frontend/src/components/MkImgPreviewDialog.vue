@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 >
 	<template #header>{{ file.name }}</template>
 	<div :class="$style.container">
-		<img :src="file.url" :alt="file.comment ?? file.name" :class="$style.img"/>
+		<img :src="file.url" :alt="file.comment || file.name" :class="$style.img"/>
 	</div>
 </MkModalWindow>
 </template>
