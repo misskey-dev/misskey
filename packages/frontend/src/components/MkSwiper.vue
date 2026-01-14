@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 </template>
 <script lang="ts" setup>
-import { ref, useTemplateRef, computed, watch } from 'vue';
+import { ref, useTemplateRef, computed, watch, onUnmounted } from 'vue';
 import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
 import { isHorizontalSwipeSwiping as isSwiping } from '@/utility/touch.js';
 import { prefer } from '@/preferences.js';
@@ -121,6 +121,16 @@ function cancelMoveBySystem() {
 		releaseAnimationCancel = null;
 	}
 }
+
+onUnmounted(() => {
+	// コンポーネント破棄後にpullDistanceを書き換えないようにする
+	if (rafId != null) {
+		window.cancelAnimationFrame(rafId);
+		rafId = null;
+	}
+	pendingPullDistance = null;
+	cancelMoveBySystem();
+});
 
 function moveBySystem(to: number, duration = RELEASE_TRANSITION_DURATION): Promise<void> {
 	cancelMoveBySystem();

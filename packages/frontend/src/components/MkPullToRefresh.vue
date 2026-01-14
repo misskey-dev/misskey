@@ -44,6 +44,19 @@ const pullDistance = ref(0);
 let startScreenY: number | null = null;
 
 let moveBySystemCancel: (() => void) | null = null;
+let moveBySystemRafId: number | null = null;
+
+const onMouseMove = (event: MouseEvent) => moving(event);
+const onMouseUp = () => {
+	window.removeEventListener('mousemove', onMouseMove);
+	onPullRelease();
+};
+
+const onTouchMove = (event: TouchEvent) => moving(event);
+const onTouchEnd = () => {
+	window.removeEventListener('touchmove', onTouchMove);
+	onPullRelease();
+};
 
 const rootEl = useTemplateRef('rootEl');
 let scrollEl: HTMLElement | null = null;
@@ -99,11 +112,8 @@ function moveStartByMouse(event: MouseEvent) {
 	startScreenY = getScreenY(event);
 	pullDistance.value = 0;
 
-	window.addEventListener('mousemove', moving, { passive: true });
-	window.addEventListener('mouseup', () => {
-		window.removeEventListener('mousemove', moving);
-		onPullRelease();
-	}, { passive: true, once: true });
+	window.addEventListener('mousemove', onMouseMove, { passive: true });
+	window.addEventListener('mouseup', onMouseUp, { passive: true, once: true });
 }
 
 function moveStartByTouch(event: TouchEvent) {
@@ -121,11 +131,8 @@ function moveStartByTouch(event: TouchEvent) {
 	startScreenY = getScreenY(event);
 	pullDistance.value = 0;
 
-	window.addEventListener('touchmove', moving, { passive: true });
-	window.addEventListener('touchend', () => {
-		window.removeEventListener('touchmove', moving);
-		onPullRelease();
-	}, { passive: true, once: true });
+	window.addEventListener('touchmove', onTouchMove, { passive: true });
+	window.addEventListener('touchend', onTouchEnd, { passive: true, once: true });
 }
 
 function moveBySystem(to: number): Promise<void> {
@@ -143,14 +150,18 @@ function moveBySystem(to: number): Promise<void> {
 			return;
 		}
 
-		let startTime: number | null = null;
+		let startTime: DOMHighResTimeStamp | null = null;
 		let cancelled = false;
 		moveBySystemCancel = () => {
 			cancelled = true;
 			startTime = null;
+			if (moveBySystemRafId != null) {
+				window.cancelAnimationFrame(moveBySystemRafId);
+				moveBySystemRafId = null;
+			}
 		};
 
-		const tick = (now: number) => {
+		const tick = (now: DOMHighResTimeStamp) => {
 			if (cancelled) {
 				r();
 				return;
@@ -163,26 +174,27 @@ function moveBySystem(to: number): Promise<void> {
 			if (time >= RELEASE_TRANSITION_DURATION) {
 				pullDistance.value = to;
 				moveBySystemCancel = null;
+				moveBySystemRafId = null;
 				r();
 				return;
 			}
 			const nextHeight = startHeight - (overHeight / RELEASE_TRANSITION_DURATION) * time;
 			if (overHeight > 0) {
 				if (pullDistance.value < nextHeight) {
-					window.requestAnimationFrame(tick);
+					moveBySystemRafId = window.requestAnimationFrame(tick);
 					return;
 				}
 			} else {
 				if (pullDistance.value > nextHeight) {
-					window.requestAnimationFrame(tick);
+					moveBySystemRafId = window.requestAnimationFrame(tick);
 					return;
 				}
 			}
 			pullDistance.value = nextHeight;
-			window.requestAnimationFrame(tick);
+			moveBySystemRafId = window.requestAnimationFrame(tick);
 		};
 
-		window.requestAnimationFrame(tick);
+		moveBySystemRafId = window.requestAnimationFrame(tick);
 	});
 }
 
@@ -266,6 +278,14 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
+	if (moveBySystemCancel != null) {
+		moveBySystemCancel();
+		moveBySystemCancel = null;
+	}
+	moveBySystemRafId = null;
+	// pull中にwindowへ登録したリスナーが残るのを防ぐ
+	window.removeEventListener('mousemove', onMouseMove);
+	window.removeEventListener('touchmove', onTouchMove);
 	unlockDownScroll();
 	if (rootEl.value) rootEl.value.removeEventListener('mousedown', moveStartByMouse);
 	if (rootEl.value) rootEl.value.removeEventListener('touchstart', moveStartByTouch);
