@@ -58,7 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<template #key>{{ i18n.ts.permission }}</template>
 								<template #value>
 									<ul style="margin-top: 0; margin-bottom: 0;">
-										<li v-for="permission in plugin.permissions" :key="permission">{{ (i18n.ts._permissions as any)[permission] ?? permission }}</li>
+										<li v-for="permission in plugin.permissions" :key="permission">{{ i18n.ts._permissions[permission] ?? permission }}</li>
 										<li v-if="!plugin.permissions || plugin.permissions.length === 0">{{ i18n.ts.none }}</li>
 									</ul>
 								</template>
