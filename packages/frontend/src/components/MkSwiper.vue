@@ -131,17 +131,23 @@ function animatePullDistanceTo(to: number, duration = RELEASE_TRANSITION_DURATIO
 			return;
 		}
 
-		const startTime = performance.now();
+		// DOMHighResTimeStampと合わせるためにDate.now()ではなくperformance.now()を使う
+		let startTime: DOMHighResTimeStamp | null = null;
 		let cancelled = false;
 		releaseAnimationCancel = () => {
 			cancelled = true;
+			startTime = null;
 		};
 
-		const tick = (now: number) => {
+		const tick = (now: DOMHighResTimeStamp) => {
 			if (cancelled) {
 				resolve();
 				return;
 			}
+			if (startTime == null) {
+				startTime = now;
+			}
+
 			const t = Math.min((now - startTime) / duration, 1);
 			// リリース時は軽くイージング（追従中は直接反映）
 			const eased = 1 - Math.pow(1 - t, 3);
@@ -297,7 +303,7 @@ function hasSomethingToDoWithXSwipe(el: HTMLElement) {
 	if (style.overflowX === 'scroll') return true;
 	if (style.touchAction === 'pan-x') return true;
 
-	if (el.parentElement && el.parentElement !== rootEl.value) {
+	if (el.parentElement != null && el.parentElement !== rootEl.value) {
 		return hasSomethingToDoWithXSwipe(el.parentElement);
 	} else {
 		return false;

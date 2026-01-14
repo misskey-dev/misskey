@@ -43,6 +43,8 @@ const pullDistance = ref(0);
 
 let startScreenY: number | null = null;
 
+let moveBySystemCancel: (() => void) | null = null;
+
 const rootEl = useTemplateRef('rootEl');
 let scrollEl: HTMLElement | null = null;
 
@@ -127,26 +129,60 @@ function moveStartByTouch(event: TouchEvent) {
 }
 
 function moveBySystem(to: number): Promise<void> {
+	if (moveBySystemCancel != null) {
+		moveBySystemCancel();
+		moveBySystemCancel = null;
+	}
+
 	return new Promise(r => {
 		const startHeight = pullDistance.value;
-		const overHeight = pullDistance.value - to;
-		if (overHeight < 1) {
+		const overHeight = startHeight - to;
+		if (Math.abs(overHeight) < 1) {
+			pullDistance.value = to;
 			r();
 			return;
 		}
-		const startTime = Date.now();
-		let intervalId = window.setInterval(() => {
-			const time = Date.now() - startTime;
-			if (time > RELEASE_TRANSITION_DURATION) {
+
+		let startTime: number | null = null;
+		let cancelled = false;
+		moveBySystemCancel = () => {
+			cancelled = true;
+			startTime = null;
+		};
+
+		const tick = (now: number) => {
+			if (cancelled) {
+				r();
+				return;
+			}
+			if (startTime == null) {
+				startTime = now;
+			}
+
+			const time = now - startTime;
+			if (time >= RELEASE_TRANSITION_DURATION) {
 				pullDistance.value = to;
-				window.clearInterval(intervalId);
+				moveBySystemCancel = null;
 				r();
 				return;
 			}
 			const nextHeight = startHeight - (overHeight / RELEASE_TRANSITION_DURATION) * time;
-			if (pullDistance.value < nextHeight) return;
+			if (overHeight > 0) {
+				if (pullDistance.value < nextHeight) {
+					window.requestAnimationFrame(tick);
+					return;
+				}
+			} else {
+				if (pullDistance.value > nextHeight) {
+					window.requestAnimationFrame(tick);
+					return;
+				}
+			}
 			pullDistance.value = nextHeight;
-		}, 1);
+			window.requestAnimationFrame(tick);
+		};
+
+		window.requestAnimationFrame(tick);
 	});
 }
 
