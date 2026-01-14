@@ -41,13 +41,13 @@ import * as Misskey from 'misskey-js';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
+import type { MenuItem } from '@/types/menu.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
 import { i18n } from '@/i18n.js';
 import { availableBasicTimelines, isAvailableBasicTimeline, isBasicTimeline, basicTimelineIconClass, basicTimelineTypes } from '@/timelines.js';
-import type { MenuItem } from '@/types/menu.js';
 
 const name = 'timeline';
 
@@ -98,7 +98,7 @@ const headerTitle = computed<string>(() => {
 	} else if (widgetProps.src === 'antenna' && widgetProps.antenna != null) {
 		return widgetProps.antenna.name;
 	} else {
-		return i18n.ts._timelines[widgetProps.src];
+		return (i18n.ts._timelines as any)[widgetProps.src] ?? '?';
 	}
 });
 
@@ -107,7 +107,7 @@ const setSrc = (src: TlSrc) => {
 	save();
 };
 
-const choose = async (ev: MouseEvent) => {
+const choose = async (ev: PointerEvent) => {
 	menuOpened.value = true;
 	const [antennas, lists] = await Promise.all([
 		misskeyApi('antennas/list'),

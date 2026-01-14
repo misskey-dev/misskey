@@ -319,7 +319,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 						]);
 					}
 					case 'clickable': {
-						return h('span', { onClick(ev: MouseEvent): void {
+						return h('span', { onClick(ev: PointerEvent): void {
 							ev.stopPropagation();
 							ev.preventDefault();
 							const clickEv = typeof token.props.args.ev === 'string' ? token.props.args.ev : '';

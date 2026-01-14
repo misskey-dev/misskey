@@ -15,12 +15,12 @@ import { SystemWebhookService } from '@/core/SystemWebhookService.js';
 import { UserSearchService } from '@/core/UserSearchService.js';
 import { WebhookTestService } from '@/core/WebhookTestService.js';
 import { FlashService } from '@/core/FlashService.js';
+import { ChannelMutingService } from '@/core/ChannelMutingService.js';
 import { AccountMoveService } from './AccountMoveService.js';
 import { AccountUpdateService } from './AccountUpdateService.js';
 import { AiService } from './AiService.js';
 import { AnnouncementService } from './AnnouncementService.js';
 import { AntennaService } from './AntennaService.js';
-import { AppLockService } from './AppLockService.js';
 import { AchievementService } from './AchievementService.js';
 import { AvatarDecorationService } from './AvatarDecorationService.js';
 import { CaptchaService } from './CaptchaService.js';
@@ -141,7 +141,7 @@ import { ApLoggerService } from './activitypub/ApLoggerService.js';
 import { ApMfmService } from './activitypub/ApMfmService.js';
 import { ApRendererService } from './activitypub/ApRendererService.js';
 import { ApRequestService } from './activitypub/ApRequestService.js';
-import { ApResolverService } from './activitypub/ApResolverService.js';
+import { ApResolverService, Resolver } from './activitypub/ApResolverService.js';
 import { JsonLdService } from './activitypub/JsonLdService.js';
 import { RemoteLoggerService } from './RemoteLoggerService.js';
 import { RemoteUserResolveService } from './RemoteUserResolveService.js';
@@ -165,7 +165,6 @@ const $AccountUpdateService: Provider = { provide: 'AccountUpdateService', useEx
 const $AiService: Provider = { provide: 'AiService', useExisting: AiService };
 const $AnnouncementService: Provider = { provide: 'AnnouncementService', useExisting: AnnouncementService };
 const $AntennaService: Provider = { provide: 'AntennaService', useExisting: AntennaService };
-const $AppLockService: Provider = { provide: 'AppLockService', useExisting: AppLockService };
 const $AchievementService: Provider = { provide: 'AchievementService', useExisting: AchievementService };
 const $AvatarDecorationService: Provider = { provide: 'AvatarDecorationService', useExisting: AvatarDecorationService };
 const $CaptchaService: Provider = { provide: 'CaptchaService', useExisting: CaptchaService };
@@ -225,6 +224,7 @@ const $FeaturedService: Provider = { provide: 'FeaturedService', useExisting: Fe
 const $FanoutTimelineService: Provider = { provide: 'FanoutTimelineService', useExisting: FanoutTimelineService };
 const $FanoutTimelineEndpointService: Provider = { provide: 'FanoutTimelineEndpointService', useExisting: FanoutTimelineEndpointService };
 const $ChannelFollowingService: Provider = { provide: 'ChannelFollowingService', useExisting: ChannelFollowingService };
+const $ChannelMutingService: Provider = { provide: 'ChannelMutingService', useExisting: ChannelMutingService };
 const $ChatService: Provider = { provide: 'ChatService', useExisting: ChatService };
 const $RegistryApiService: Provider = { provide: 'RegistryApiService', useExisting: RegistryApiService };
 const $ReversiService: Provider = { provide: 'ReversiService', useExisting: ReversiService };
@@ -318,7 +318,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		AiService,
 		AnnouncementService,
 		AntennaService,
-		AppLockService,
 		AchievementService,
 		AvatarDecorationService,
 		CaptchaService,
@@ -378,6 +377,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		FanoutTimelineService,
 		FanoutTimelineEndpointService,
 		ChannelFollowingService,
+		ChannelMutingService,
 		ChatService,
 		RegistryApiService,
 		ReversiService,
@@ -447,6 +447,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		ApRendererService,
 		ApRequestService,
 		ApResolverService,
+		Resolver,
 		JsonLdService,
 		RemoteLoggerService,
 		RemoteUserResolveService,
@@ -467,7 +468,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$AiService,
 		$AnnouncementService,
 		$AntennaService,
-		$AppLockService,
 		$AchievementService,
 		$AvatarDecorationService,
 		$CaptchaService,
@@ -527,6 +527,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$FanoutTimelineService,
 		$FanoutTimelineEndpointService,
 		$ChannelFollowingService,
+		$ChannelMutingService,
 		$ChatService,
 		$RegistryApiService,
 		$ReversiService,
@@ -617,7 +618,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		AiService,
 		AnnouncementService,
 		AntennaService,
-		AppLockService,
 		AchievementService,
 		AvatarDecorationService,
 		CaptchaService,
@@ -677,6 +677,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		FanoutTimelineService,
 		FanoutTimelineEndpointService,
 		ChannelFollowingService,
+		ChannelMutingService,
 		ChatService,
 		RegistryApiService,
 		ReversiService,
@@ -745,6 +746,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		ApRendererService,
 		ApRequestService,
 		ApResolverService,
+		Resolver,
 		JsonLdService,
 		RemoteLoggerService,
 		RemoteUserResolveService,
@@ -765,7 +767,6 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$AiService,
 		$AnnouncementService,
 		$AntennaService,
-		$AppLockService,
 		$AchievementService,
 		$AvatarDecorationService,
 		$CaptchaService,
@@ -824,6 +825,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$FanoutTimelineService,
 		$FanoutTimelineEndpointService,
 		$ChannelFollowingService,
+		$ChannelMutingService,
 		$ChatService,
 		$RegistryApiService,
 		$ReversiService,

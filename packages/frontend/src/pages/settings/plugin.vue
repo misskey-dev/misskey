@@ -58,7 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<template #key>{{ i18n.ts.permission }}</template>
 								<template #value>
 									<ul style="margin-top: 0; margin-bottom: 0;">
-										<li v-for="permission in plugin.permissions" :key="permission">{{ i18n.ts._permissions[permission] }}</li>
+										<li v-for="permission in plugin.permissions" :key="permission">{{ (i18n.ts._permissions as any)[permission] ?? permission }}</li>
 										<li v-if="!plugin.permissions || plugin.permissions.length === 0">{{ i18n.ts.none }}</li>
 									</ul>
 								</template>
@@ -96,6 +96,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { nextTick, ref, computed } from 'vue';
+import { isSafeMode } from '@@/js/config.js';
 import type { Plugin } from '@/plugin.js';
 import FormLink from '@/components/form/link.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -110,7 +111,6 @@ import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { changePluginActive, configPlugin, pluginLogs, uninstallPlugin, reloadPlugin } from '@/plugin.js';
 import { prefer } from '@/preferences.js';
-import { isSafeMode } from '@@/js/config.js';
 import * as os from '@/os.js';
 
 const plugins = prefer.r.plugins;

@@ -21,7 +21,7 @@ export class MiMeta {
 	})
 	public rootUserId: MiUser['id'] | null;
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(() => MiUser, {
 		onDelete: 'SET NULL',
 		nullable: true,
 	})
