@@ -21,7 +21,7 @@ export class MiMeta {
 	})
 	public rootUserId: MiUser['id'] | null;
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(() => MiUser, {
 		onDelete: 'SET NULL',
 		nullable: true,
 	})
@@ -716,6 +716,11 @@ export class MiMeta {
 		default: 90, // days
 	})
 	public remoteNotesCleaningExpiryDaysForEachNotes: number;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public showRoleBadgesOfRemoteUsers: boolean;
 
 	@Column('jsonb', {
 		default: { },

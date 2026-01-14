@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<p v-if="widgetProps.folderId == null">
 			{{ i18n.ts.folder }}
 		</p>
-		<p v-if="widgetProps.folderId != null && images.length === 0 && !fetching">{{ i18n.ts['no-image'] }}</p>
+		<p v-if="widgetProps.folderId != null && images.length === 0 && !fetching">{{ i18n.ts.nothing }}</p>
 		<div ref="slideA" class="slide a"></div>
 		<div ref="slideB" class="slide b"></div>
 	</div>
@@ -33,6 +33,7 @@ const name = 'slideshow';
 const widgetPropsDef = {
 	height: {
 		type: 'number',
+		label: i18n.ts._widgetOptions.height,
 		default: 300,
 	},
 	folderId: {
@@ -95,11 +96,11 @@ const fetch = () => {
 };
 
 const choose = () => {
-	selectDriveFolder(null).then(folder => {
-		if (folder[0] == null) {
+	selectDriveFolder(null).then(({ folders, canceled }) => {
+		if (canceled || folders[0] == null) {
 			return;
 		}
-		widgetProps.folderId = folder[0].id;
+		widgetProps.folderId = folders[0].id;
 		save();
 		fetch();
 	});

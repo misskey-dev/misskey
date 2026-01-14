@@ -14,6 +14,7 @@ export default [
 	...pluginVue.configs['flat/recommended'],
 	{
 		files: ['src/**/*.{ts,vue}'],
+		ignores: ['**/*.stories.ts'],
 		languageOptions: {
 			globals: {
 				...Object.fromEntries(Object.entries(globals.node).map(([key]) => [key, 'off'])),
@@ -41,7 +42,6 @@ export default [
 			},
 		},
 		rules: {
-			'@typescript-eslint/no-unused-vars': 'off',
 			'@typescript-eslint/no-empty-interface': ['error', {
 				allowSingleExtends: true,
 			}],

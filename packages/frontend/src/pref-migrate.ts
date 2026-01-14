@@ -5,7 +5,7 @@
 
 import type { DeckProfile } from '@/deck.js';
 import { genId } from '@/utility/id.js';
-import { ColdDeviceStorage, store } from '@/store.js';
+import { store } from '@/store.js';
 import { prefer } from '@/preferences.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { deckStore } from '@/ui/deck/deck-store.js';
@@ -23,13 +23,6 @@ export function migrateOldSettings() {
 				prefer.commit('themes', themes);
 			}
 		});
-
-		const plugins = ColdDeviceStorage.get('plugins');
-		prefer.commit('plugins', plugins.map(p => ({
-			...p,
-			installId: (p as any).id,
-			id: undefined,
-		})));
 
 		prefer.commit('deck.profile', deckStore.s.profile);
 		misskeyApi('i/registry/keys', {
@@ -51,9 +44,6 @@ export function migrateOldSettings() {
 			prefer.commit('deck.profiles', profiles);
 		});
 
-		prefer.commit('lightTheme', ColdDeviceStorage.get('lightTheme'));
-		prefer.commit('darkTheme', ColdDeviceStorage.get('darkTheme'));
-		prefer.commit('syncDeviceDarkMode', ColdDeviceStorage.get('syncDeviceDarkMode'));
 		prefer.commit('emojiPalettes', [{
 			id: 'reactions',
 			name: '',
@@ -115,7 +105,13 @@ export function migrateOldSettings() {
 		prefer.commit('enableCondensedLine', store.s.enableCondensedLine);
 		prefer.commit('keepScreenOn', store.s.keepScreenOn);
 		prefer.commit('useGroupedNotifications', store.s.useGroupedNotifications);
-		prefer.commit('dataSaver', store.s.dataSaver);
+		prefer.commit('dataSaver', {
+			...prefer.s.dataSaver,
+			media: store.s.dataSaver.media,
+			avatar: store.s.dataSaver.avatar,
+			urlPreviewThumbnail: store.s.dataSaver.urlPreview,
+			code: store.s.dataSaver.code,
+		});
 		prefer.commit('enableSeasonalScreenEffect', store.s.enableSeasonalScreenEffect);
 		prefer.commit('enableHorizontalSwipe', store.s.enableHorizontalSwipe);
 		prefer.commit('useNativeUiForVideoAudioPlayer', store.s.useNativeUIForVideoAudioPlayer);

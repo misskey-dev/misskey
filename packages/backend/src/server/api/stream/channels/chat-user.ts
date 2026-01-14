@@ -3,14 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
 import { bindThis } from '@/decorators.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import type { JsonObject } from '@/misc/json-value.js';
 import { ChatService } from '@/core/ChatService.js';
-import Channel, { type MiChannelService } from '../channel.js';
+import Channel, { type ChannelRequest } from '../channel.js';
+import { REQUEST } from '@nestjs/core';
 
-class ChatUserChannel extends Channel {
+@Injectable({ scope: Scope.TRANSIENT })
+export class ChatUserChannel extends Channel {
 	public readonly chName = 'chatUser';
 	public static shouldShare = false;
 	public static requireCredential = true as const;
@@ -18,12 +20,12 @@ class ChatUserChannel extends Channel {
 	private otherId: string;
 
 	constructor(
-		private chatService: ChatService,
+		@Inject(REQUEST)
+		request: ChannelRequest,
 
-		id: string,
-		connection: Channel['connection'],
+		private chatService: ChatService,
 	) {
-		super(id, connection);
+		super(request);
 	}
 
 	@bindThis
@@ -53,26 +55,5 @@ class ChatUserChannel extends Channel {
 	@bindThis
 	public dispose() {
 		this.subscriber.off(`chatUserStream:${this.user!.id}-${this.otherId}`, this.onEvent);
-	}
-}
-
-@Injectable()
-export class ChatUserChannelService implements MiChannelService<true> {
-	public readonly shouldShare = ChatUserChannel.shouldShare;
-	public readonly requireCredential = ChatUserChannel.requireCredential;
-	public readonly kind = ChatUserChannel.kind;
-
-	constructor(
-		private chatService: ChatService,
-	) {
-	}
-
-	@bindThis
-	public create(id: string, connection: Channel['connection']): ChatUserChannel {
-		return new ChatUserChannel(
-			this.chatService,
-			id,
-			connection,
-		);
 	}
 }

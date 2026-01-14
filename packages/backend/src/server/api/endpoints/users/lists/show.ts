@@ -22,7 +22,26 @@ export const meta = {
 	res: {
 		type: 'object',
 		optional: false, nullable: false,
-		ref: 'UserList',
+		allOf: [
+			{
+				type: 'object',
+				ref: 'UserList',
+			},
+			{
+				type: 'object',
+				optional: false, nullable: false,
+				properties: {
+					likedCount: {
+						type: 'number',
+						optional: true, nullable: false,
+					},
+					isLiked: {
+						type: 'boolean',
+						optional: true, nullable: false,
+					},
+				},
+			},
+		],
 	},
 
 	errors: {

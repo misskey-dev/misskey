@@ -8,11 +8,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<XTitlebar v-if="prefer.r.showTitlebar.value" style="flex-shrink: 0;"/>
 
 	<div :class="$style.nonTitlebarArea">
-		<XSidebar v-if="!isMobile" :class="$style.sidebar" :showWidgetButton="!isDesktop" @widgetButtonClick="widgetsShowing = true"/>
+		<XSidebar v-if="!isMobile" :class="$style.sidebar" :showWidgetButton="!showWidgetsSide" @widgetButtonClick="widgetsShowing = true"/>
 
 		<div :class="[$style.contents, !isMobile && prefer.r.showTitlebar.value ? $style.withSidebarAndTitlebar : null]" @contextmenu.stop="onContextmenu">
 			<div>
-				<XReloadSuggest v-if="shouldSuggestReload"/>
+				<XReloadSuggestion v-if="shouldSuggestReload"/>
 				<XPreferenceRestore v-if="shouldSuggestRestoreBackup"/>
 				<XAnnouncements v-if="$i"/>
 				<XStatusBars :class="$style.statusbars"/>
@@ -22,7 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<XMobileFooterMenu v-if="isMobile" ref="navFooter" v-model:drawerMenuShowing="drawerMenuShowing" v-model:widgetsShowing="widgetsShowing"/>
 		</div>
 
-		<div v-if="isDesktop && !pageMetadata?.needWideArea" :class="$style.widgets">
+		<div v-if="showWidgetsSide && !pageMetadata?.needWideArea" :class="$style.widgets">
 			<XWidgets/>
 		</div>
 	</div>
@@ -39,7 +39,7 @@ import XCommon from './_common_/common.vue';
 import type { PageMetadata } from '@/page.js';
 import XMobileFooterMenu from '@/ui/_common_/mobile-footer-menu.vue';
 import XPreferenceRestore from '@/ui/_common_/PreferenceRestore.vue';
-import XReloadSuggest from '@/ui/_common_/ReloadSuggest.vue';
+import XReloadSuggestion from '@/ui/_common_/ReloadSuggestion.vue';
 import XTitlebar from '@/ui/_common_/titlebar.vue';
 import XSidebar from '@/ui/_common_/navbar.vue';
 import * as os from '@/os.js';
@@ -64,7 +64,8 @@ const DESKTOP_THRESHOLD = 1100;
 const MOBILE_THRESHOLD = 500;
 
 // デスクトップでウィンドウを狭くしたときモバイルUIが表示されて欲しいことはあるので deviceKind === 'desktop' の判定は行わない
-const isDesktop = ref(window.innerWidth >= DESKTOP_THRESHOLD);
+const showWidgetsSide = window.innerWidth >= DESKTOP_THRESHOLD;
+
 const isMobile = ref(deviceKind === 'smartphone' || window.innerWidth <= MOBILE_THRESHOLD);
 window.addEventListener('resize', () => {
 	isMobile.value = deviceKind === 'smartphone' || window.innerWidth <= MOBILE_THRESHOLD;
@@ -102,17 +103,9 @@ if (window.innerWidth > 1024) {
 	}
 }
 
-onMounted(() => {
-	if (!isDesktop.value) {
-		window.addEventListener('resize', () => {
-			if (window.innerWidth >= DESKTOP_THRESHOLD) isDesktop.value = true;
-		}, { passive: true });
-	}
-});
-
-const onContextmenu = (ev) => {
-	if (isLink(ev.target)) return;
-	if (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes(ev.target.tagName) || ev.target.attributes['contenteditable']) return;
+function onContextmenu(ev: PointerEvent) {
+	if (isLink(ev.target as HTMLElement)) return;
+	if (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes((ev.target as HTMLElement).tagName) || (ev.target as HTMLElement).attributes.getNamedItem('contenteditable') != null) return;
 	if (window.getSelection()?.toString() !== '') return;
 	const path = mainRouter.getCurrentFullPath();
 	os.contextMenu([{
@@ -125,7 +118,7 @@ const onContextmenu = (ev) => {
 			os.pageWindow(path);
 		},
 	}], ev);
-};
+}
 </script>
 
 <style lang="scss" module>

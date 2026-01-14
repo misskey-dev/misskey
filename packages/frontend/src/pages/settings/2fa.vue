@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 					<div v-if="$i.twoFactorEnabled" class="_gaps_s">
 						<div v-text="i18n.ts._2fa.alreadyRegistered"/>
-						<template v-if="$i.securityKeysList.length > 0">
+						<template v-if="$i.securityKeysList!.length > 0">
 							<MkButton @click="renewTOTP">{{ i18n.ts._2fa.renewTOTP }}</MkButton>
 							<MkInfo>{{ i18n.ts._2fa.whyTOTPOnlyRenew }}</MkInfo>
 						</template>
@@ -58,7 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 						<template v-else>
 							<MkButton primary @click="addSecurityKey">{{ i18n.ts._2fa.registerSecurityKey }}</MkButton>
-							<MkFolder v-for="key in $i.securityKeysList" :key="key.id">
+							<MkFolder v-for="key in $i.securityKeysList!" :key="key.id">
 								<template #label>{{ key.name }}</template>
 								<template #suffix><I18n :src="i18n.ts.lastUsedAt"><template #t><MkTime :time="key.lastUsed"/></template></I18n></template>
 								<div class="_buttons">
@@ -72,7 +72,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</SearchMarker>
 
 			<SearchMarker :keywords="['password', 'less', 'key', 'passkey', 'login', 'signin']">
-				<MkSwitch :disabled="!$i.twoFactorEnabled || $i.securityKeysList.length === 0" :modelValue="usePasswordLessLogin" @update:modelValue="v => updatePasswordLessLogin(v)">
+				<MkSwitch :disabled="!$i.twoFactorEnabled || $i.securityKeysList!.length === 0" :modelValue="usePasswordLessLogin" @update:modelValue="v => updatePasswordLessLogin(v)">
 					<template #label><SearchLabel>{{ i18n.ts.passwordLessLogin }}</SearchLabel></template>
 					<template #caption><SearchText>{{ i18n.ts.passwordLessLoginDescription }}</SearchText></template>
 				</MkSwitch>
@@ -85,6 +85,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { defineAsyncComponent, computed } from 'vue';
 import { supported as webAuthnSupported, create as webAuthnCreate, parseCreationOptionsFromJSON } from '@github/webauthn-json/browser-ponyfill';
+import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -156,7 +157,7 @@ function renewTOTP(): void {
 	});
 }
 
-async function unregisterKey(key) {
+async function unregisterKey(key: NonNullable<Misskey.entities.MeDetailedOnly['securityKeysList']>[number]) {
 	const confirm = await os.confirm({
 		type: 'question',
 		title: i18n.ts._2fa.removeKey,
@@ -175,7 +176,7 @@ async function unregisterKey(key) {
 	os.success();
 }
 
-async function renameKey(key) {
+async function renameKey(key: NonNullable<Misskey.entities.MeDetailedOnly['securityKeysList']>[number]) {
 	const name = await os.inputText({
 		title: i18n.ts.rename,
 		default: key.name,
@@ -196,6 +197,7 @@ async function addSecurityKey() {
 	if (auth.canceled) return;
 
 	const registrationOptions = parseCreationOptionsFromJSON({
+		// @ts-expect-error misskey-js側に型がない
 		publicKey: await os.apiWithDialog('i/2fa/register-key', {
 			password: auth.result.password,
 			token: auth.result.token,
@@ -226,6 +228,7 @@ async function addSecurityKey() {
 		password: auth.result.password,
 		token: auth.result.token,
 		name: name.result,
+		// @ts-expect-error misskey-js側に型がない
 		credential: credential.toJSON(),
 	});
 }

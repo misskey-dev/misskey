@@ -95,7 +95,7 @@ const federationPubActiveDiff = ref<number | null>(null);
 const federationSubActive = ref<number | null>(null);
 const federationSubActiveDiff = ref<number | null>(null);
 const newUsers = ref<Misskey.entities.UserDetailed[] | null>(null);
-const activeInstances = shallowRef<Misskey.entities.FederationInstance | null>(null);
+const activeInstances = shallowRef<Misskey.entities.FederationInstancesResponse | null>(null);
 const queueStatsConnection = markRaw(useStream().useChannel('queueStats'));
 const now = new Date();
 const filesPagination = {
@@ -104,7 +104,7 @@ const filesPagination = {
 	noPaging: true,
 };
 
-function onInstanceClick(i) {
+function onInstanceClick(i: Misskey.entities.FederationInstance) {
 	os.pageWindow(`/instance-info/${i.host}`);
 }
 

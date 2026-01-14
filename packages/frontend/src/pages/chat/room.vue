@@ -390,7 +390,7 @@ async function leaveRoom() {
 	router.push('/chat');
 }
 
-function showMenu(ev: MouseEvent) {
+function showMenu(ev: PointerEvent) {
 	const menuItems: MenuItem[] = [];
 
 	if (room.value) {
@@ -420,7 +420,7 @@ const tab = ref('chat');
 
 const headerTabs = computed(() => room.value ? [{
 	key: 'chat',
-	title: i18n.ts.chat,
+	title: i18n.ts._chat.messages,
 	icon: 'ti ti-messages',
 }, {
 	key: 'members',
@@ -436,7 +436,7 @@ const headerTabs = computed(() => room.value ? [{
 	icon: 'ti ti-info-circle',
 }] : [{
 	key: 'chat',
-	title: i18n.ts.chat,
+	title: i18n.ts._chat.messages,
 	icon: 'ti ti-messages',
 }, {
 	key: 'search',
@@ -446,7 +446,6 @@ const headerTabs = computed(() => room.value ? [{
 
 const headerActions = computed<PageHeaderItem[]>(() => [{
 	icon: 'ti ti-dots',
-	text: '',
 	handler: showMenu,
 }]);
 
@@ -465,12 +464,12 @@ definePage(computed(() => {
 			};
 		} else {
 			return {
-				title: i18n.ts.chat,
+				title: i18n.ts.directMessage,
 			};
 		}
 	} else {
 		return {
-			title: i18n.ts.chat,
+			title: i18n.ts.directMessage,
 		};
 	}
 }));

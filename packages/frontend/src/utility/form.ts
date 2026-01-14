@@ -4,10 +4,11 @@
  */
 
 import * as Misskey from 'misskey-js';
+import type { OptionValue } from '@/components/MkSelect.vue';
 
 export type EnumItem = string | {
 	label: string;
-	value: unknown;
+	value: OptionValue;
 };
 
 type Hidden = boolean | ((v: any) => boolean);
@@ -24,6 +25,7 @@ export interface StringFormItem extends FormItemBase {
 	required?: boolean;
 	multiline?: boolean;
 	treatAsMfm?: boolean;
+	manualSave?: boolean;
 }
 
 export interface NumberFormItem extends FormItemBase {
@@ -32,6 +34,7 @@ export interface NumberFormItem extends FormItemBase {
 	description?: string;
 	required?: boolean;
 	step?: number;
+	manualSave?: boolean;
 }
 
 export interface BooleanFormItem extends FormItemBase {
@@ -81,7 +84,7 @@ export interface ArrayFormItem extends FormItemBase {
 export interface ButtonFormItem extends FormItemBase {
 	type: 'button';
 	content?: string;
-	action: (ev: MouseEvent, v: any) => void;
+	action: (ev: PointerEvent, v: any) => void;
 }
 
 export interface DriveFileFormItem extends FormItemBase {
@@ -123,24 +126,32 @@ type NonNullableIfRequired<T, Item extends FormItem> =
 type GetItemType<Item extends FormItem> =
 	Item extends StringFormItem
 		? NonNullableIfRequired<InferDefault<Item, string>, Item>
-	: Item extends NumberFormItem
-		? NonNullableIfRequired<InferDefault<Item, number>, Item>
-	: Item extends BooleanFormItem
-		? boolean
-	: Item extends RadioFormItem
-		? GetRadioItemType<Item>
-	: Item extends RangeFormItem
-		? NonNullableIfRequired<InferDefault<RangeFormItem, number>, Item>
-	: Item extends EnumFormItem
-		? GetEnumItemType<Item>
-	: Item extends ArrayFormItem
-		? NonNullableIfRequired<InferDefault<ArrayFormItem, unknown[]>, Item>
-	: Item extends ObjectFormItem
-		? NonNullableIfRequired<InferDefault<Item, Record<string, unknown>>, Item>
-	: Item extends DriveFileFormItem
-		? Misskey.entities.DriveFile | undefined
-	: never;
+		: Item extends NumberFormItem
+			? NonNullableIfRequired<InferDefault<Item, number>, Item>
+			: Item extends BooleanFormItem
+				? boolean
+				: Item extends RadioFormItem
+					? GetRadioItemType<Item>
+					: Item extends RangeFormItem
+						? NonNullableIfRequired<InferDefault<Item, number>, Item>
+						: Item extends EnumFormItem
+							? GetEnumItemType<Item>
+							: Item extends ArrayFormItem
+								? NonNullableIfRequired<InferDefault<Item, unknown[]>, Item>
+								: Item extends ObjectFormItem
+									? NonNullableIfRequired<InferDefault<Item, Record<string, unknown>>, Item>
+									: Item extends DriveFileFormItem
+										? Misskey.entities.DriveFile | undefined
+										: never;
 
 export type GetFormResultType<F extends Form> = {
 	[P in keyof F]: GetItemType<F[P]>;
 };
+
+export function getDefaultFormValues<F extends FormWithDefault>(form: F): GetFormResultType<F> {
+	const result = {} as GetFormResultType<F>;
+	for (const key of Object.keys(form) as (keyof F)[]) {
+		result[key] = form[key].default as GetItemType<F[typeof key]>;
+	}
+	return result;
+}
