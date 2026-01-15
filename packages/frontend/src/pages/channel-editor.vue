@@ -191,7 +191,7 @@ async function archive() {
 	});
 }
 
-function setBannerImage(evt) {
+function setBannerImage(evt: PointerEvent) {
 	selectFile({
 		anchorElement: evt.currentTarget ?? evt.target,
 		multiple: false,

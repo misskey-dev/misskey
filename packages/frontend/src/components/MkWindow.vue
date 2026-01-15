@@ -55,7 +55,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, provide, useTemplateRef, ref } from 'vue';
 import type { MenuItem } from '@/types/menu.js';
-import contains from '@/utility/contains.js';
+import { elementContains } from '@/utility/element-contains.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
@@ -78,12 +78,12 @@ function dragListen(fn: (ev: MouseEvent | TouchEvent) => void) {
 	window.addEventListener('touchend', dragClear.bind(null, fn));
 }
 
-function dragClear(fn) {
+function dragClear(fn: (ev: MouseEvent | TouchEvent) => void) {
 	window.removeEventListener('mousemove', fn);
 	window.removeEventListener('touchmove', fn);
-	window.removeEventListener('mouseleave', dragClear);
-	window.removeEventListener('mouseup', dragClear);
-	window.removeEventListener('touchend', dragClear);
+	window.removeEventListener('mouseleave', dragClear as any);
+	window.removeEventListener('mouseup', dragClear as any);
+	window.removeEventListener('touchend', dragClear as any);
 }
 
 const props = withDefaults(defineProps<{
@@ -128,7 +128,7 @@ function close() {
 	showing.value = false;
 }
 
-function onKeydown(evt) {
+function onKeydown(evt: KeyboardEvent) {
 	if (evt.which === 27) { // Esc
 		evt.preventDefault();
 		evt.stopPropagation();
@@ -136,7 +136,7 @@ function onKeydown(evt) {
 	}
 }
 
-function onContextmenu(ev: MouseEvent) {
+function onContextmenu(ev: PointerEvent) {
 	if (props.contextmenu) {
 		os.contextMenu(props.contextmenu, ev);
 	}
@@ -240,7 +240,7 @@ function onHeaderMousedown(evt: MouseEvent | TouchEvent) {
 	const main = rootEl.value;
 	if (main == null) return;
 
-	if (!contains(main, window.document.activeElement)) main.focus();
+	if (!elementContains(main, window.document.activeElement)) main.focus();
 
 	const position = main.getBoundingClientRect();
 
@@ -418,24 +418,24 @@ function onBottomLeftHandleMousedown(evt: MouseEvent | TouchEvent) {
 }
 
 // 高さを適用
-function applyTransformHeight(height) {
+function applyTransformHeight(height: number) {
 	if (height > window.innerHeight) height = window.innerHeight;
 	if (rootEl.value) rootEl.value.style.height = height + 'px';
 }
 
 // 幅を適用
-function applyTransformWidth(width) {
+function applyTransformWidth(width: number) {
 	if (width > window.innerWidth) width = window.innerWidth;
 	if (rootEl.value) rootEl.value.style.width = width + 'px';
 }
 
 // Y座標を適用
-function applyTransformTop(top) {
+function applyTransformTop(top: number) {
 	if (rootEl.value) rootEl.value.style.top = top + 'px';
 }
 
 // X座標を適用
-function applyTransformLeft(left) {
+function applyTransformLeft(left: number) {
 	if (rootEl.value) rootEl.value.style.left = left + 'px';
 }
 

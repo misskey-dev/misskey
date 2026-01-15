@@ -181,7 +181,7 @@ export class ApRequestService {
 						return await this.signedGet(href, user, allowSoftfail, level, false);
 					}
 				}
-			} catch (e) {
+			} catch (_) {
 				// something went wrong parsing the HTML, ignore the whole thing
 			}
 		}

@@ -166,7 +166,7 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		type: 'button',
 		icon: 'ti ti-settings-2',
 		text: i18n.ts.preferencesProfile,
-		action: async (ev: MouseEvent) => {
+		action: async (ev) => {
 			os.popupMenu(getPreferencesProfileMenu(), ev.currentTarget ?? ev.target);
 		},
 	}, {

@@ -36,7 +36,7 @@ import { misskeyApiGet } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 
-const name = 'hashtags';
+const name = 'trends';
 
 const widgetPropsDef = {
 	showHeader: {

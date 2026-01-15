@@ -100,7 +100,7 @@ const url = computed(() => (props.raw || prefer.s.loadRawImages)
 		: props.image.thumbnailUrl!,
 );
 
-async function reveal(ev: MouseEvent) {
+async function reveal(ev: PointerEvent) {
 	if (!props.controls) {
 		return;
 	}
@@ -123,7 +123,7 @@ watch(() => props.image, (newImage) => {
 	immediate: true,
 });
 
-function showMenu(ev: MouseEvent) {
+function showMenu(ev: PointerEvent) {
 	const menuItems: MenuItem[] = [];
 
 	menuItems.push({

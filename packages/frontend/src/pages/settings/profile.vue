@@ -163,6 +163,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, reactive, ref, watch } from 'vue';
+import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -266,8 +267,8 @@ function save() {
 	}
 }
 
-function changeAvatar(ev) {
-	async function done(driveFile) {
+function changeAvatar(ev: PointerEvent) {
+	async function done(driveFile: Misskey.entities.DriveFile) {
 		const i = await os.apiWithDialog('i/update', {
 			avatarId: driveFile.id,
 		});
@@ -315,8 +316,8 @@ function changeAvatar(ev) {
 	}], ev.currentTarget ?? ev.target);
 }
 
-function changeBanner(ev) {
-	async function done(driveFile) {
+function changeBanner(ev: PointerEvent) {
+	async function done(driveFile: Misskey.entities.DriveFile) {
 		const i = await os.apiWithDialog('i/update', {
 			bannerId: driveFile.id,
 		});

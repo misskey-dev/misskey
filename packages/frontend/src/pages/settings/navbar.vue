@@ -32,10 +32,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton primary class="save" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 		</div>
 
-		<MkRadios v-model="menuDisplay">
+		<MkRadios
+			v-model="menuDisplay"
+			:options="[
+				{ value: 'sideFull', label: i18n.ts._menuDisplay.sideFull },
+				{ value: 'sideIcon', label: i18n.ts._menuDisplay.sideIcon },
+			]"
+		>
 			<template #label>{{ i18n.ts.display }}</template>
-			<option value="sideFull">{{ i18n.ts._menuDisplay.sideFull }}</option>
-			<option value="sideIcon">{{ i18n.ts._menuDisplay.sideIcon }}</option>
 		</MkRadios>
 
 		<SearchMarker :keywords="['navbar', 'sidebar', 'toggle', 'button', 'sub']">

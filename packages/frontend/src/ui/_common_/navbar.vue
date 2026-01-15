@@ -26,10 +26,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div v-if="item === '-'" :class="$style.divider"></div>
 				<component
 					:is="navbarItemDef[item].to ? 'MkA' : 'button'"
-					v-else-if="navbarItemDef[item] && (navbarItemDef[item].show !== false)"
+					v-else-if="navbarItemDef[item] && (navbarItemDef[item].show == null || navbarItemDef[item].show.value !== false)"
 					v-tooltip.noDelay.right="navbarItemDef[item].title"
 					class="_button"
-					:class="[$style.item, { [$style.active]: navbarItemDef[item].active }]"
+					:class="[$style.item]"
 					:activeClass="$style.active"
 					:to="navbarItemDef[item].to"
 					v-on="navbarItemDef[item].action ? { click: navbarItemDef[item].action } : {}"
@@ -161,7 +161,7 @@ function toggleIconOnly() {
 	}
 }
 
-function toggleRealtimeMode(ev: MouseEvent) {
+function toggleRealtimeMode(ev: PointerEvent) {
 	os.popupMenu([{
 		type: 'label',
 		text: i18n.ts.realtimeMode,
@@ -175,7 +175,7 @@ function toggleRealtimeMode(ev: MouseEvent) {
 	}], ev.currentTarget ?? ev.target);
 }
 
-async function openAccountMenu(ev: MouseEvent) {
+async function openAccountMenu(ev: PointerEvent) {
 	const menuItems = await getAccountMenu({
 		withExtraOperation: true,
 	});
@@ -183,7 +183,7 @@ async function openAccountMenu(ev: MouseEvent) {
 	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 }
 
-async function more(ev: MouseEvent) {
+async function more(ev: PointerEvent) {
 	const target = getHTMLElementOrNull(ev.currentTarget ?? ev.target);
 	if (!target) return;
 	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkLaunchPad.vue').then(x => x.default), {

@@ -854,7 +854,14 @@ export type Channels = {
                 key: K;
                 value: ReversiGameDetailed[K];
             }) => void;
-            log: (payload: Record<string, unknown>) => void;
+            log: (payload: {
+                time: number;
+                player: boolean;
+                operation: 'put';
+                pos: number;
+            } & {
+                id: string | null;
+            }) => void;
         };
         receives: {
             putStone: {
@@ -2223,6 +2230,7 @@ declare namespace entities {
         MetaLite,
         MetaDetailedOnly,
         MetaDetailed,
+        MetaClientOptions,
         UserWebhook,
         SystemWebhook,
         AbuseReportNotificationRecipient,
@@ -2812,6 +2820,9 @@ type MeDetailed = components['schemas']['MeDetailed'];
 
 // @public (undocumented)
 type MeDetailedOnly = components['schemas']['MeDetailedOnly'];
+
+// @public (undocumented)
+type MetaClientOptions = components['schemas']['MetaClientOptions'];
 
 // @public (undocumented)
 type MetaDetailed = components['schemas']['MetaDetailed'];
@@ -3872,7 +3883,7 @@ type VerifyEmailRequest = operations['verify-email']['requestBody']['content']['
 // src/entities.ts:55:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
 // src/streaming.ts:57:3 - (ae-forgotten-export) The symbol "ReconnectingWebSocket" needs to be exported by the entry point index.d.ts
 // src/streaming.types.ts:226:4 - (ae-forgotten-export) The symbol "ReversiUpdateKey" needs to be exported by the entry point index.d.ts
-// src/streaming.types.ts:236:4 - (ae-forgotten-export) The symbol "ReversiUpdateSettings" needs to be exported by the entry point index.d.ts
+// src/streaming.types.ts:241:4 - (ae-forgotten-export) The symbol "ReversiUpdateSettings" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

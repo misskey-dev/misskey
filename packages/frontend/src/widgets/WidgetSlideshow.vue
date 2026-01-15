@@ -96,11 +96,11 @@ const fetch = () => {
 };
 
 const choose = () => {
-	selectDriveFolder(null).then(folder => {
-		if (folder[0] == null) {
+	selectDriveFolder(null).then(({ folders, canceled }) => {
+		if (canceled || folders[0] == null) {
 			return;
 		}
-		widgetProps.folderId = folder[0].id;
+		widgetProps.folderId = folders[0].id;
 		save();
 		fetch();
 	});

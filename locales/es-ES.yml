@@ -1406,6 +1406,7 @@ youAreAdmin: "Eres administrador."
 frame: "Marco"
 presets: "Predefinido"
 zeroPadding: "Relleno cero"
+nothingToConfigure: "No hay nada que configurar"
 _imageEditing:
   _vars:
     caption: "Título del archivo"
@@ -1550,6 +1551,9 @@ _settings:
   showPageTabBarBottom: "Mostrar la barra de pestañas de la página en la parte inferior."
   emojiPaletteBanner: "Puedes registrar ajustes preestablecidos como paletas para que se muestren permanentemente en el selector de emojis, o personalizar el método de visualización del selector."
   enableAnimatedImages: "Habilitar imágenes animadas"
+  settingsPersistence_title: "Persistencia de la configuración"
+  settingsPersistence_description1: "Habilitar la persistencia de la configuración evita que se pierda la información de configuración."
+  settingsPersistence_description2: "Es posible que no se pueda habilitar esta función dependiendo del entorno."
   _chat:
     showSenderName: "Mostrar el nombre del remitente"
     sendOnEnter: "Intro para enviar"
@@ -1670,9 +1674,9 @@ _initialTutorial:
     title: "El concepto de Línea de tiempo"
     description1: "Misskey proporciona múltiples líneas de tiempo basadas en su uso (algunas pueden no estar disponibles dependiendo de las políticas de la instancia)."
     home: "Puedes ver los posts de las cuentas que sigues."
-    local: "Puedes ver los posts de todos los usuarios de este servidor."
+    local: "Puedes ver los posts de todos los usuarios de este servidor (también llamado instancia)."
     social: "Se ven los posts de la línea de tiempo de inicio junto con los de la línea de tiempo local."
-    global: "Puedes ver notas de todos los servidores conectados."
+    global: "Puedes ver notas de todos los servidores (instancias) conectados."
     description2: "Puedes cambiar la línea de tiempo en la parte superior de la pantalla cuando quieras."
     description3: "Además, hay listas de líneas de tiempo y listas de canales. Para más detalle, por favor visita este enlace: {link}"
   _postNote:
@@ -1682,14 +1686,14 @@ _initialTutorial:
       description: "Puedes limitar quién puede ver tu nota."
       public: "Tu nota será visible para todos los usuarios."
       home: "Publicar solo en la línea de tiempo de Inicio. La nota se verá en tu perfil, la verán tus seguidores y también cuando sea renotada."
-      followers: "Visible solo para seguidores. Sólo tus seguidores podrán ver la nota, y no podrá ser renotada por otras personas."
+      followers: "Visible solo para seguidores. Solo tus seguidores podrán ver la nota, y no podrá ser renotada por otras personas."
       direct: "Visible sólo para usuarios específicos, y el destinatario será notificado. Puede usarse como alternativa a la mensajería directa."
       doNotSendConfidencialOnDirect1: "¡Ten cuidado cuando vayas a enviar información sensible!"
       doNotSendConfidencialOnDirect2: "Los administradores del servidor, también llamado instancia, pueden leer lo que escribes. Ten cuidado cuando envíes información sensible en notas directas en servidores o instancias no confiables."
       localOnly: "Publicando con esta opción seleccionada, la nota no se federará hacia otros servidores. Los usuarios de otros servidores no podrán ver estas notas directamente, sin importar los ajustes seleccionados más arriba."
     _cw:
       title: "Alerta de contenido (CW)"
-      description: "En lugar de mostrarse el contenido de la nota, se mostrará lo que escribas en el campo \"comentarios\". Pulsando en \"leer más\" desplegará el contenido de la nota."
+      description: "En lugar de mostrarse el contenido de la nota, se mostrará lo que escribas en el campo \"comentarios\". Pulsando en \"Ver más\" desplegará el contenido de la nota."
       _exampleNote:
         cw: "¡Esto te hará tener hambre!"
         note: "Acabo de comerme un donut de chocolate glaseado 🍩😋"
@@ -2207,7 +2211,7 @@ _registry:
   key: "Clave"
   keys: "Clave"
   domain: "Dominio"
-  createKey: "Crear una llave"
+  createKey: "Crear una clave"
 _aboutMisskey:
   about: "Misskey es un software de código abierto, desarrollado por syuilo desde el 2014"
   contributors: "Principales colaboradores"
@@ -2541,6 +2545,44 @@ _widgets:
   clicker: "Cliqueador"
   birthdayFollowings: "Hoy cumplen años"
   chat: "Chatear"
+_widgetOptions:
+  showHeader: "Mostrar encabezados"
+  transparent: "Hacer fondo transparente"
+  height: "Altura"
+  _button:
+    colored: "Color"
+  _clock:
+    size: "Tamaño"
+    thickness: "Grosor de la aguja"
+    thicknessThin: "Delgada"
+    thicknessMedium: "Normal"
+    thicknessThick: "Gruesa"
+    graduations: "Marcas del dial"
+    graduationDots: "Puntos"
+    graduationArabic: "Números decimales"
+    fadeGraduations: "Desvanecer la escala"
+    sAnimation: "Animación de la manecilla de los segundos"
+    sAnimationElastic: "Real"
+    sAnimationEaseOut: "Suave"
+    twentyFour: "Formato 24 horas"
+    labelTime: "Hora"
+    labelTz: "Zona horaria"
+    labelTimeAndTz: "Hora y zona horaria"
+    timezone: "Zona horaria"
+    showMs: "Mostrar milisegundos"
+    showLabel: "Mostrar etiqueta"
+  _jobQueue:
+    sound: "Reproducir sonido"
+  _rss:
+    url: "URL del canal RSS"
+    refreshIntervalSec: "Intervalo de actualización (En segundos)"
+    maxEntries: "Número máximo de elementos a mostrar"
+  _rssTicker:
+    shuffle: "Orden de visualización aleatorio"
+    duration: "Velocidad de desplazamiento del baner (En segundos)"
+    reverse: "Desplázate en la dirección opuesta."
+  _birthdayFollowings:
+    period: "Duración"
 _cw:
   hide: "Ocultar"
   show: "Ver más"
@@ -2816,6 +2858,14 @@ _deck:
   usedAsMinWidthWhenFlexible: "Se usará el ancho mínimo cuando la opción \"Autoajustar ancho\" esté habilitada"
   flexible: "Autoajustar ancho"
   enableSyncBetweenDevicesForProfiles: "Activar la sincronización de la información de perfiles entre dispositivos."
+  showHowToUse: "Ver la descripción de la interfaz de usuario"
+  _howToUse:
+    addColumn_title: "Añadir columna"
+    addColumn_description: "Puede seleccionar y añadir tipos de columnas."
+    settings_title: "Configuración de la interfaz de usuario"
+    settings_description: "Puedes configurar la interfaz de usuario en detalle."
+    switchProfile_title: "Cambiar de perfil"
+    switchProfile_description: "Puedes guardar diseños de interfaz de usuario como perfiles y cambiar entre ellos en cualquier momento."
   _columns:
     main: "Principal"
     widgets: "Widgets"
@@ -3145,8 +3195,8 @@ _selfXssPrevention:
   description2: "Si no entiendes que estás pegando exactamente, %cdetente ahora mismo y cierra esta ventana"
   description3: "Para más información visita esto {link}"
 _followRequest:
-  recieved: "Petición de seguimiento recibida"
-  sent: "Petición de seguimiento enviada"
+  recieved: "Solicitud de seguimiento recibida"
+  sent: "Solicitud de seguimiento enviada"
 _remoteLookupErrors:
   _federationNotAllowed:
     title: "Incapaz de comunicarse con este servidor."
@@ -3299,7 +3349,6 @@ _imageEffector:
   title: "Efecto"
   addEffect: "Añadir Efecto"
   discardChangesConfirm: "¿Ignorar cambios y salir?"
-  nothingToConfigure: "No hay opciones configurables disponibles."
   failedToLoadImage: "Error al cargar la imagen"
   _fxs:
     chromaticAberration: "Aberración Cromática"

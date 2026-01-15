@@ -24,12 +24,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="[$style.widget, $style.customizeContainer]" data-cy-customize-container>
 					<button :class="$style.customizeContainerConfig" class="_button" @click.prevent.stop="configWidget(item.id)"><i class="ti ti-settings"></i></button>
 					<button :class="$style.customizeContainerRemove" data-cy-customize-container-remove class="_button" @click.prevent.stop="removeWidget(item)"><i class="ti ti-x"></i></button>
-					<component :is="`widget-${item.name}`" :ref="el => widgetRefs[item.id] = el" :class="$style.customizeContainerHandleWidget" :widget="item" @updateProps="updateWidget(item.id, $event)"/>
+					<component :is="`widget-${item.name}`" :ref="(el: any) => widgetRefs[item.id] = el" :class="$style.customizeContainerHandleWidget" :widget="item" @updateProps="updateWidget(item.id, $event)"/>
 				</div>
 			</template>
 		</MkDraggable>
 	</template>
-	<component :is="`widget-${widget.name}`" v-for="widget in _widgets" v-else :key="widget.id" :ref="el => widgetRefs[widget.id] = el" :class="$style.widget" :widget="widget" @updateProps="updateWidget(widget.id, $event)" @contextmenu.stop="onContextmenu(widget, $event)"/>
+	<component :is="`widget-${widget.name}`" v-for="widget in _widgets" v-else :key="widget.id" :ref="(el: any) => widgetRefs[widget.id] = el" :class="$style.widget" :widget="widget" @updateProps="updateWidget(widget.id, $event)" @contextmenu.stop="onContextmenu(widget, $event)"/>
 </div>
 </template>
 
@@ -47,6 +47,7 @@ export type DefaultStoredWidget = {
 <script lang="ts" setup>
 import { computed } from 'vue';
 import { isLink } from '@@/js/is-link.js';
+import type { Component } from 'vue';
 import { genId } from '@/utility/id.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -64,13 +65,13 @@ const props = defineProps<{
 
 const _widgetDefs = computed(() => {
 	if (instance.federation === 'none') {
-		return widgetDefs.filter(x => !federationWidgets.includes(x));
+		return widgetDefs.filter(x => !federationWidgets.includes(x as any));
 	} else {
 		return widgetDefs;
 	}
 });
 
-const _widgets = computed(() => props.widgets.filter(x => _widgetDefs.value.includes(x.name)));
+const _widgets = computed(() => props.widgets.filter(x => _widgetDefs.value.includes(x.name as any)));
 
 const emit = defineEmits<{
 	(ev: 'updateWidgets', widgets: Widget[]): void;
@@ -80,10 +81,11 @@ const emit = defineEmits<{
 	(ev: 'exit'): void;
 }>();
 
-const widgetRefs = {};
-const configWidget = (id: string) => {
+const widgetRefs = {} as Record<string, Component & { configure: () => void }>;
+
+function configWidget(id: string) {
 	widgetRefs[id].configure();
-};
+}
 
 const {
 	model: widgetAdderSelected,
@@ -93,7 +95,7 @@ const {
 	initialValue: null,
 });
 
-const addWidget = () => {
+function addWidget() {
 	if (widgetAdderSelected.value == null) return;
 
 	emit('addWidget', {
@@ -103,23 +105,25 @@ const addWidget = () => {
 	});
 
 	widgetAdderSelected.value = null;
-};
-const removeWidget = (widget) => {
-	emit('removeWidget', widget);
-};
-const updateWidget = (id: Widget['id'], data: Widget['data']) => {
-	emit('updateWidget', { id, data });
-};
+}
 
-function onContextmenu(widget: Widget, ev: MouseEvent) {
+function removeWidget(widget: Widget) {
+	emit('removeWidget', widget);
+}
+
+function updateWidget(id: Widget['id'], data: Widget['data']) {
+	emit('updateWidget', { id, data });
+}
+
+function onContextmenu(widget: Widget, ev: PointerEvent) {
 	const element = ev.target as HTMLElement | null;
 	if (element && isLink(element)) return;
-	if (element && (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes(element.tagName) || element.attributes['contenteditable'])) return;
+	if (element && (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes(element.tagName) || element.attributes.getNamedItem('contenteditable') != null)) return;
 	if (window.getSelection()?.toString() !== '') return;
 
 	os.contextMenu([{
 		type: 'label',
-		text: i18n.ts._widgets[widget.name],
+		text: i18n.ts._widgets[widget.name as typeof widgetDefs[number]],
 	}, {
 		icon: 'ti ti-settings',
 		text: i18n.ts.settings,
