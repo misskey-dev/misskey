@@ -616,6 +616,8 @@ import type {
 	UsersFollowingResponse,
 	UsersGalleryPostsRequest,
 	UsersGalleryPostsResponse,
+	UsersGetFollowingBirthdayUsersRequest,
+	UsersGetFollowingBirthdayUsersResponse,
 	UsersGetFrequentlyRepliedUsersRequest,
 	UsersGetFrequentlyRepliedUsersResponse,
 	UsersListsCreateRequest,
@@ -1067,6 +1069,7 @@ export type Endpoints = {
 	'users/followers': { req: UsersFollowersRequest; res: UsersFollowersResponse };
 	'users/following': { req: UsersFollowingRequest; res: UsersFollowingResponse };
 	'users/gallery/posts': { req: UsersGalleryPostsRequest; res: UsersGalleryPostsResponse };
+	'users/get-following-birthday-users': { req: UsersGetFollowingBirthdayUsersRequest; res: UsersGetFollowingBirthdayUsersResponse };
 	'users/get-frequently-replied-users': { req: UsersGetFrequentlyRepliedUsersRequest; res: UsersGetFrequentlyRepliedUsersResponse };
 	'users/lists/create': { req: UsersListsCreateRequest; res: UsersListsCreateResponse };
 	'users/lists/create-from-public': { req: UsersListsCreateFromPublicRequest; res: UsersListsCreateFromPublicResponse };

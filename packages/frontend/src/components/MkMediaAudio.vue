@@ -100,6 +100,7 @@ import { hms } from '@/filters/hms.js';
 import MkMediaRange from '@/components/MkMediaRange.vue';
 import { $i, iAmModerator } from '@/i.js';
 import { prefer } from '@/preferences.js';
+import { canRevealFile, shouldHideFileByDefault } from '@/utility/sensitive-file.js';
 
 const props = defineProps<{
 	audio: Misskey.entities.DriveFile;
@@ -154,16 +155,11 @@ function hasFocus() {
 const playerEl = useTemplateRef('playerEl');
 const audioEl = useTemplateRef('audioEl');
 
-// eslint-disable-next-line vue/no-setup-props-reactivity-loss
-const hide = ref((prefer.s.nsfw === 'force' || prefer.s.dataSaver.media) ? true : (props.audio.isSensitive && prefer.s.nsfw !== 'ignore'));
+const hide = ref(shouldHideFileByDefault(props.audio));
 
 async function reveal() {
-	if (props.audio.isSensitive && prefer.s.confirmWhenRevealingSensitiveMedia) {
-		const { canceled } = await os.confirm({
-			type: 'question',
-			text: i18n.ts.sensitiveMediaRevealConfirm,
-		});
-		if (canceled) return;
+	if (!(await canRevealFile(props.audio))) {
+		return;
 	}
 
 	hide.value = false;

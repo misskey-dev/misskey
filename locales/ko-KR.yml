@@ -1406,6 +1406,7 @@ youAreAdmin: "당신은 관리자입니다."
 frame: "프레임"
 presets: "프리셋"
 zeroPadding: "0으로 채우기"
+nothingToConfigure: "설정 항목이 없습니다."
 _imageEditing:
   _vars:
     caption: "파일 설명"
@@ -1550,6 +1551,9 @@ _settings:
   showPageTabBarBottom: "페이지의 탭 바를 아래쪽에 표시"
   emojiPaletteBanner: "이모티콘 선택기에 고정 표시되는 프리셋을 팔레트로 등록하거나 선택기의 표시 방법을 커스터마이징할 수 있습니다."
   enableAnimatedImages: "애니메이션 이미지 활성화"
+  settingsPersistence_title: "설정 영구화"
+  settingsPersistence_description1: "설정 영구화를 활성화하면 설정 정보를 잃어버리는 것을 방지할 수 있습니다."
+  settingsPersistence_description2: "환경에 따라 활성화되지 않을 수 있습니다."
   _chat:
     showSenderName: "발신자 이름 표시"
     sendOnEnter: "엔터로 보내기"
@@ -2541,6 +2545,44 @@ _widgets:
   clicker: "클리커"
   birthdayFollowings: "오늘이 생일인 유저"
   chat: "채팅하기"
+_widgetOptions:
+  showHeader: "해더를 표시"
+  transparent: "배경을 투명하게 설정"
+  height: "높이"
+  _button:
+    colored: "색 입히기"
+  _clock:
+    size: "크기"
+    thickness: "시곗바늘의 두께"
+    thicknessThin: "얇게"
+    thicknessMedium: "보통"
+    thicknessThick: "굵게"
+    graduations: "문자반의 눈금"
+    graduationDots: "도트"
+    graduationArabic: "아라비아 숫자"
+    fadeGraduations: "눈금 페이드"
+    sAnimation: "초침 애니메이션"
+    sAnimationElastic: "사실적으로"
+    sAnimationEaseOut: "매끄럽게"
+    twentyFour: "24시간 표시"
+    labelTime: "시각"
+    labelTz: "시간대"
+    labelTimeAndTz: "시각과 시간대"
+    timezone: "시간대"
+    showMs: "밀리초 표시"
+    showLabel: "레이블 표시"
+  _jobQueue:
+    sound: "소리 재생"
+  _rss:
+    url: "RSS 필드의 URL"
+    refreshIntervalSec: "갱신 간격(초)"
+    maxEntries: "최대 표시 건수"
+  _rssTicker:
+    shuffle: "표시 순서 셔플"
+    duration: "티커 스크롤 속도(초)"
+    reverse: "역방향으로 스크롤"
+  _birthdayFollowings:
+    period: "기간"
 _cw:
   hide: "숨기기"
   show: "더 보기"
@@ -2816,6 +2858,14 @@ _deck:
   usedAsMinWidthWhenFlexible: "'폭 자동 조정'이 활성화된 경우 최소 폭으로 사용됩니다"
   flexible: "폭 자동 조정"
   enableSyncBetweenDevicesForProfiles: "프로파일 정보의 디바이스 간 동기화를 활성화"
+  showHowToUse: "UI 설명 보기"
+  _howToUse:
+    addColumn_title: "칼럼 추가"
+    addColumn_description: "칼럼의 종류를 선택해 추가할 수 있습니다."
+    settings_title: "UI 설정"
+    settings_description: "덱 UI의 상세 설정을 할 수 있습니다."
+    switchProfile_title: "프로필 전환"
+    switchProfile_description: "UI의 레이아웃을 프로필로 저장하고, 언제나 전환할 수 있습니다."
   _columns:
     main: "메인"
     widgets: "위젯"
@@ -3299,7 +3349,6 @@ _imageEffector:
   title: "이펙트"
   addEffect: "이펙트를 추가"
   discardChangesConfirm: "변경을 취소하고 종료하시겠습니까?"
-  nothingToConfigure: "설정 항목이 없습니다."
   failedToLoadImage: "이미지 로딩에 실패했습니다."
   _fxs:
     chromaticAberration: "색수차"

@@ -1,6 +1,6 @@
-# syntax = docker/dockerfile:1.4
+# syntax = docker/dockerfile:1.20
 
-ARG NODE_VERSION=22.15.0-bookworm
+ARG NODE_VERSION=22.21.1-bookworm
 
 # build assets & compile TypeScript
 
@@ -102,6 +102,7 @@ COPY --chown=misskey:misskey --from=native-builder /misskey/packages/misskey-js/
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/misskey-reversi/built ./packages/misskey-reversi/built
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/misskey-bubble-game/built ./packages/misskey-bubble-game/built
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/backend/built ./packages/backend/built
+COPY --chown=misskey:misskey --from=native-builder /misskey/packages/backend/src-js ./packages/backend/src-js
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/i18n/built ./packages/i18n/built
 COPY --chown=misskey:misskey --from=native-builder /misskey/fluent-emojis /misskey/fluent-emojis
 COPY --chown=misskey:misskey . ./

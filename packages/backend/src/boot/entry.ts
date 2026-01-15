@@ -86,6 +86,10 @@ if (!envOption.disableClustering) {
 	ev.mount();
 }
 
+if (envOption.forceGc && global.gc != null) {
+	global.gc();
+}
+
 readyRef.value = true;
 
 // ユニットテスト時にMisskeyが子プロセスで起動された時のため
