@@ -2256,7 +2256,7 @@ _menuDisplay:
   top: "顶部"
   hide: "隐藏"
 _wordMute:
-  muteWords: "要屏蔽的词"
+  muteWords: "要折叠的词"
   muteWordsDescription: "AND 条件用空格分隔，OR 条件用换行符分隔。"
   muteWordsDescription2: "正则表达式用斜线包裹"
 _instanceMute:
