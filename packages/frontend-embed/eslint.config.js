@@ -146,9 +146,9 @@ export default [
 			'vue/max-attributes-per-line': 'off',
 			'vue/html-self-closing': ['error', {
 				html: {
-					void: 'always',
+					void: 'any',
 					normal: 'never',
-					component: 'always',
+					component: 'any',
 				},
 				svg: 'any',
 				math: 'any',
