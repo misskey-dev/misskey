@@ -28,13 +28,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #label>{{ v.label ?? k }}</template>
 			<template v-if="v.caption != null" #caption>{{ v.caption }}</template>
 		</MkRange>
-		<MkRadios v-else-if="v.type === 'number:enum'" v-model="params[k]">
+		<MkRadios v-else-if="v.type === 'number:enum'" v-model="params[k]" :options="v.enum">
 			<template #label>{{ v.label ?? k }}</template>
 			<template v-if="v.caption != null" #caption>{{ v.caption }}</template>
-			<option v-for="item in v.enum" :value="item.value">
-				<i v-if="item.icon" :class="item.icon"></i>
-				<template v-else>{{ item.label }}</template>
-			</option>
 		</MkRadios>
 		<div v-else-if="v.type === 'seed'">
 			<MkRange v-model="params[k]" continuousUpdate type="number" :min="0" :max="10000" :step="1">

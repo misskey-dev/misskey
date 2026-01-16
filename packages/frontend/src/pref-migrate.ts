@@ -12,6 +12,7 @@ import { deckStore } from '@/ui/deck/deck-store.js';
 import { unisonReload } from '@/utility/unison-reload.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
+import type { SoundStore } from '@/preferences/def.js';
 
 // TODO: そのうち消す
 export function migrateOldSettings() {
@@ -126,10 +127,10 @@ export function migrateOldSettings() {
 		prefer.commit('sound.masterVolume', store.s.sound_masterVolume);
 		prefer.commit('sound.notUseSound', store.s.sound_notUseSound);
 		prefer.commit('sound.useSoundOnlyWhenActive', store.s.sound_useSoundOnlyWhenActive);
-		prefer.commit('sound.on.note', store.s.sound_note as any);
-		prefer.commit('sound.on.noteMy', store.s.sound_noteMy as any);
-		prefer.commit('sound.on.notification', store.s.sound_notification as any);
-		prefer.commit('sound.on.reaction', store.s.sound_reaction as any);
+		prefer.commit('sound.on.note', store.s.sound_note as SoundStore);
+		prefer.commit('sound.on.noteMy', store.s.sound_noteMy as SoundStore);
+		prefer.commit('sound.on.notification', store.s.sound_notification as SoundStore);
+		prefer.commit('sound.on.reaction', store.s.sound_reaction as SoundStore);
 		prefer.commit('defaultNoteVisibility', store.s.defaultNoteVisibility);
 		prefer.commit('defaultNoteLocalOnly', store.s.defaultNoteLocalOnly);
 
