@@ -82,7 +82,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</Transition>
 					<template v-if="dropReady && currentPick">
 						<img src="/client-assets/drop-and-fusion/drop-arrow.svg" :class="$style.currentMonoArrow"/>
-						<div :class="$style.dropGuide"/>
+						<div :class="$style.dropGuide"></div>
 					</template>
 				</div>
 				<div v-if="isGameOver && !replaying" :class="$style.gameOverLabel">
