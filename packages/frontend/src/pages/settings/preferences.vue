@@ -34,9 +34,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkRadios v-model="overridedDeviceKind">
 								<template #label><SearchLabel>{{ i18n.ts.overridedDeviceKind }}</SearchLabel></template>
 								<option :value="null">{{ i18n.ts.auto }}</option>
-								<option value="smartphone"><i class="ti ti-device-mobile"/> {{ i18n.ts.smartphone }}</option>
-								<option value="tablet"><i class="ti ti-device-tablet"/> {{ i18n.ts.tablet }}</option>
-								<option value="desktop"><i class="ti ti-device-desktop"/> {{ i18n.ts.desktop }}</option>
+								<option value="smartphone"><i class="ti ti-device-mobile"></i> {{ i18n.ts.smartphone }}</option>
+								<option value="tablet"><i class="ti ti-device-tablet"></i> {{ i18n.ts.tablet }}</option>
+								<option value="desktop"><i class="ti ti-device-desktop"></i> {{ i18n.ts.desktop }}</option>
 							</MkRadios>
 						</SearchMarker>
 

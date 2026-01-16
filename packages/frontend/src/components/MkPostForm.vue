@@ -108,7 +108,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</footer>
 	<datalist id="hashtags">
-		<option v-for="hashtag in recentHashtags" :key="hashtag" :value="hashtag"/>
+		<option v-for="hashtag in recentHashtags" :key="hashtag" :value="hashtag"></option>
 	</datalist>
 </div>
 </template>
