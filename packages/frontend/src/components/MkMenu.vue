@@ -323,9 +323,20 @@ async function showRadioOptions(item: MenuRadio, ev: MouseEvent | PointerEvent |
 			type: 'radioOption',
 			text: key,
 			action: () => {
-				item.ref = value;
+				if ('value' in item.ref) {
+					item.ref.value = value;
+				} else {
+					// @ts-expect-error リアクティビティは保たれる
+					item.ref = value;
+				}
 			},
-			active: computed(() => item.ref === value),
+			active: computed(() => {
+				if ('value' in item.ref) {
+					return item.ref.value === value;
+				} else {
+					return item.ref === value;
+				}
+			}),
 		};
 	});
 
