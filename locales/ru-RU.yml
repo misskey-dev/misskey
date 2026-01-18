@@ -1231,6 +1231,7 @@ showRepliesToOthersInTimelineAll: "Показывать в ленте ответ
 hideRepliesToOthersInTimelineAll: "Скрывать в ленте ответы пользователей, на которых вы подписаны"
 confirmShowRepliesAll: "Это нельзя будет отменить. Показать ответы от всех, на кого вы подписаны?"
 confirmHideRepliesAll: "Это нельзя будет отменить. Скрыть ответы от всех, на кого вы подписаны?"
+externalServices: "Интеграции"
 sourceCode: "Исходный код"
 sourceCodeIsNotYetProvided: "Исходный код пока не доступен. Свяжитесь с администратором, чтобы исправить эту проблему."
 repositoryUrl: "Ссылка на репозиторий"
