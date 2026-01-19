@@ -1406,6 +1406,7 @@ youAreAdmin: "Sie sind ein Administrator"
 frame: "Rahmen"
 presets: "Vorlage"
 zeroPadding: "Nullauffüllung"
+nothingToConfigure: "Es sind keine Einstellungen verfügbar"
 _imageEditing:
   _vars:
     caption: "Dateibeschriftung"
@@ -1421,12 +1422,22 @@ _imageEditing:
     camera_lens_model: "Objektivname"
     camera_mm: "Brennweite"
     camera_mm_35: "Brennweite (35-mm-Äquivalent)"
+    gps_lat: "Breitengrad"
+    gps_long: "Längengrad"
 _imageFrameEditor:
   header: "Kopfzeile"
+  footer: "Fußzeile"
+  centered: "Zentriert"
+  backgroundColor: "Hintergrundfarbe"
+  textColor: "Textfarbe"
   font: "Schriftart"
   fontSerif: "Serif"
   fontSansSerif: "Sans Serif"
   quitWithoutSaveConfirm: "Nicht gespeicherte Änderungen verwerfen?"
+_compression:
+  _quality:
+    medium: "Mittlere Qualität"
+    low: "Niedrige Qualität"
 _order:
   newest: "Neueste zuerst"
   oldest: "Älteste zuerst"
@@ -1519,6 +1530,7 @@ _settings:
   contentsUpdateFrequency_description2: "Wenn der Echtzeitmodus aktiviert ist, werden die Inhalte unabhängig von dieser Einstellung in Echtzeit aktualisiert."
   showUrlPreview: "URL-Vorschau anzeigen"
   showAvailableReactionsFirstInNote: "Zeige die verfügbaren Reaktionen im oberen Bereich an."
+  enableAnimatedImages: "Animierte Bilder aktivieren"
   _chat:
     showSenderName: "Name des Absenders anzeigen"
     sendOnEnter: "Eingabetaste sendet Nachricht"
@@ -1710,6 +1722,7 @@ _serverSettings:
   userGeneratedContentsVisibilityForVisitor: "Sichtbarkeit von nutzergenerierten Inhalten für Gäste"
   userGeneratedContentsVisibilityForVisitor_description: "Dies ist nützlich, um zu verhindern, dass unangemessene Inhalte, die nicht gut moderiert sind, ungewollt über deinen eigenen Server im Internet veröffentlicht werden."
   userGeneratedContentsVisibilityForVisitor_description2: "Die uneingeschränkte Veröffentlichung aller Inhalte des Servers im Internet, einschließlich der vom Server empfangenen Fremdinhalte, birgt Risiken. Dies ist besonders wichtig für Betrachter, die sich des dezentralen Charakters der Inhalte nicht bewusst sind, da sie selbst fremde Inhalte fälschlicherweise als auf dem Server erstellte Inhalte wahrnehmen könnten."
+  restartServerSetupWizardConfirm_text: "Einige aktuelle Einstellungen werden zurückgesetzt."
   _userGeneratedContentsVisibilityForVisitor:
     all: "Alles ist öffentlich"
     localOnly: "Nur lokale Inhalte werden veröffentlicht, fremde Inhalte bleiben privat"
@@ -2318,6 +2331,7 @@ _time:
   minute: "Minute(n)"
   hour: "Stunde(n)"
   day: "Tag(en)"
+  month: "Monat(e)"
 _2fa:
   alreadyRegistered: "Du hast bereits ein Gerät für Zwei-Faktor-Authentifizierung registriert."
   registerTOTP: "Authentifizierungs-App registrieren"
@@ -2447,6 +2461,7 @@ _auth:
   scopeUser: "Als folgender Benutzer agieren"
   pleaseLogin: "Bitte logge dich ein, um Apps zu authorisieren."
   byClickingYouWillBeRedirectedToThisUrl: "Wenn der Zugang gewährt wird, wirst du automatisch zu folgender URL weitergeleitet"
+  alreadyAuthorized: "Dieser Anwendung wurde bereits Zugriff gewährt."
 _antennaSources:
   all: "Alle Notizen"
   homeTimeline: "Notizen von Benutzern, denen gefolgt wird"
@@ -2495,11 +2510,28 @@ _widgets:
   chat: "Mit dem Benutzer chatten"
 _widgetOptions:
   showHeader: "Kopfzeile anzeigen"
+  transparent: "Hintergrund transparent machen"
   height: "Höhe"
   _button:
     colored: "Farbig"
   _clock:
     size: "Größe"
+    thicknessThin: "Dünn"
+    thicknessMedium: "Normal"
+    thicknessThick: "Dick"
+    twentyFour: "24-Stunden-Format"
+    labelTime: "Uhrzeit"
+    labelTz: "Zeitzone"
+    timezone: "Zeitzone"
+    showMs: "Millisekunden anzeigen"
+  _jobQueue:
+    sound: "Ton abspielen"
+  _rss:
+    url: "RSS-Feed-URL"
+    refreshIntervalSec: "Aktualisierungsintervall (Sekunden)"
+    maxEntries: "Maximale Anzahl der angezeigten Einträge"
+  _rssTicker:
+    shuffle: "Zufällige Anzeigereihenfolge"
   _birthdayFollowings:
     period: "Dauer"
 _cw:
@@ -2694,6 +2726,8 @@ _notification:
   youReceivedFollowRequest: "Du hast eine Follow-Anfrage erhalten"
   yourFollowRequestAccepted: "Deine Follow-Anfrage wurde akzeptiert"
   pollEnded: "Umfrageergebnisse sind verfügbar"
+  scheduledNotePosted: "Geplante Notiz wurde veröffentlicht"
+  scheduledNotePostFailed: "Veröffentlichen der geplanten Notiz fehlgeschlagen"
   newNote: "Neue Notiz"
   unreadAntennaNote: "Antenne {name}"
   roleAssigned: "Rolle zugewiesen"
@@ -2762,6 +2796,9 @@ _deck:
   usedAsMinWidthWhenFlexible: "Ist \"Automatische Breitenanpassung\" aktiviert, wird hierfür die minimale Breite verwendet"
   flexible: "Automatische Breitenanpassung"
   enableSyncBetweenDevicesForProfiles: "Aktivieren der Synchronisierung von Profilinformationen zwischen Geräten"
+  _howToUse:
+    addColumn_title: "Spalte hinzufügen"
+    settings_title: "UI-Einstellungen"
   _columns:
     main: "Hauptspalte"
     widgets: "Widgets"
@@ -2822,6 +2859,8 @@ _abuseReport:
     notifiedWebhook: "Zu verwendender Webhook"
     deleteConfirm: "Bist du sicher, dass du den Empfänger der Benachrichtigung entfernen möchtest?"
 _moderationLogTypes:
+  clearQueue: "Warteschlange leeren"
+  promoteQueue: "Warteschlange erneut ausführen"
   createRole: "Rolle erstellt"
   deleteRole: "Rolle gelöscht"
   updateRole: "Rolle aktualisiert"
@@ -3131,6 +3170,7 @@ _bootErrors:
   otherOption1: "Client-Einstellungen und Cache löschen"
   otherOption2: "Einfachen Client starten"
   otherOption3: "Starte das Reparaturwerkzeug"
+  otherOption4: "Misskey im abgesicherten Modus starten"
 _search:
   searchScopeAll: "Alle"
   searchScopeLocal: "Lokal"
@@ -3227,16 +3267,20 @@ _watermarkEditor:
   polkadotSubDotOpacity: "Deckkraft des Unterpunktes"
   polkadotSubDotRadius: "Größe des Unterpunktes"
   polkadotSubDotDivisions: "Anzahl der Unterpunkte"
+  failedToLoadImage: "Bild konnte nicht geladen werden"
 _imageEffector:
   title: "Effekte"
   addEffect: "Effekte hinzufügen"
   discardChangesConfirm: "Änderungen verwerfen und beenden?"
+  failedToLoadImage: "Bild konnte nicht geladen werden"
   _fxs:
     chromaticAberration: "Chromatische Abweichung"
     glitch: "Glitch"
     mirror: "Spiegeln"
     invert: "Farben umkehren"
     grayscale: "Schwarzweiß"
+    blur: "Verwischen"
+    pixelate: "Verpixeln"
     colorAdjust: "Farbkorrektur"
     colorClamp: "Farbkomprimierung"
     colorClampAdvanced: "Farbkomprimierung (erweitert)"
@@ -3251,6 +3295,11 @@ _imageEffector:
     color: "Farbe"
     opacity: "Transparenz"
     lightness: "Erhellen"
+    saturation: "Sättigung"
+    max: "Maximum"
+    min: "Minimum"
+    direction: "Richtung"
+    frequency: "Häufigkeit"
 drafts: "Entwurf"
 _drafts:
   select: "Entwurf auswählen"
