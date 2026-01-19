@@ -121,10 +121,7 @@ export const navbarItemDef = reactive({
 		icon: 'ti ti-messages',
 		to: '/chat',
 		show: computed(() => $i != null && $i.policies.chatAvailability !== 'unavailable'),
-		/*indicated: computed(() => $i != null && $i.hasUnreadChatMessages),
-			TEMPORARY DISABLED UNTIL https://github.com/NeonDystopiaWorld/misskey/issues/8 IS RESOLVED
-		*/
-		indicated: computed(() => false),
+		indicated: computed(() => $i != null && $i.hasUnreadChatMessages),
 	},
 	achievements: {
 		title: i18n.ts.achievements,
