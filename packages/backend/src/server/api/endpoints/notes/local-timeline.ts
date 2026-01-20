@@ -126,6 +126,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				alwaysIncludeMyNotes: true,
 				excludeReplies: !ps.withReplies,
 				excludePureRenotes: !ps.withRenotes,
+				noteFilter: note => {
+					// ボットフィルタリング
+					if (ps.excludeBots && note.user?.isBot) return false;
+
+					return true;
+				},
 				dbFallback: async (untilId, sinceId, limit) => await this.getFromDb({
 					untilId,
 					sinceId,
