@@ -70,15 +70,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<SearchMarker :keywords="['notes', 'visibility']">
 			<MkSelect v-model="notesVisibility" :items="notesVisibilityDef" @update:modelValue="save()">
 				<template #label><SearchLabel>{{ i18n.ts.notesVisibility }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
-				<template #caption><SearchText>{{ i18n.ts.hideOnlineStatusDescription }}</SearchText></template>
 			</MkSelect>
-		</SearchMarker>
-
-		<SearchMarker :keywords="['online', 'status']">
-			<MkSwitch v-model="hideOnlineStatus" @update:modelValue="save()">
-				<template #label><SearchLabel>{{ i18n.ts.hideOnlineStatus }}</SearchLabel></template>
-				<template #caption><SearchText>{{ i18n.ts.hideOnlineStatusDescription }}</SearchText></template>
-			</MkSwitch>
 		</SearchMarker>
 
 		<SearchMarker :keywords="['active', 'status', 'visibility', 'online']">
@@ -111,6 +103,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 			</div>
+		</SearchMarker>
+
+		<SearchMarker :keywords="['online', 'status']">
+			<MkSwitch v-model="hideOnlineStatus" @update:modelValue="save()">
+				<template #label><SearchLabel>{{ i18n.ts.hideOnlineStatus }}</SearchLabel></template>
+				<template #caption><SearchText>{{ i18n.ts.hideOnlineStatusDescription }}</SearchText></template>
+			</MkSwitch>
 		</SearchMarker>
 
 		<MkSwitch v-model="hideNoteSearchResult" @update:modelValue="save()">
