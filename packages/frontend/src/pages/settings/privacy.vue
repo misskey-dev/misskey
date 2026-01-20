@@ -74,7 +74,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</SearchMarker>
 
 		<SearchMarker :keywords="['active', 'status', 'visibility', 'online']">
-			<MkSelect v-model="activeStatusVisibilityType" :items="activeStatusVisibilityTypeDef" @update:modelValue="onActiveStatusVisibilityTypeChange">
+			<MkSelect v-model="activeStatusVisibilityType" :items="activeStatusVisibilityTypeDef">
 				<template #label><SearchLabel>{{ i18n.ts.activeStatusVisibility }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
 			</MkSelect>
 
