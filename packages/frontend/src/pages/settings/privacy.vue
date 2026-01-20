@@ -82,7 +82,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</SearchMarker>
 
 		<SearchMarker :keywords="['active', 'status', 'visibility', 'online']">
-			<MkSelect v-model="activeStatusVisibilityType" :items="activeStatusVisibilityTypeDef" @update:modelValue="save()">
+			<MkSelect v-model="activeStatusVisibilityType" :items="activeStatusVisibilityTypeDef" @update:modelValue="onActiveStatusVisibilityTypeChange">
 				<template #label><SearchLabel>{{ i18n.ts.activeStatusVisibility }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
 			</MkSelect>
 
@@ -96,7 +96,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 
 				<!-- リストが選択されている場合はリスト名と削除ボタンを表示 -->
-				<div v-else-if="selectedList">
+				<div v-else-if="activeStatusVisibility.type === 'list' && selectedList">
 					<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
 						<div style="display: flex; align-items: center; flex-grow: 1; overflow: hidden;">
 							<i class="ti ti-list" style="margin-right: 8px;"></i>
@@ -275,6 +275,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed, watch, onMounted } from 'vue';
+import type { entities } from 'misskey-js';
 import type { MkSelectItem } from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -292,6 +293,10 @@ import MkDisableSection from '@/components/MkDisableSection.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 import * as os from '@/os.js';
+
+// 型定義
+type ActiveStatusVisibility = entities.MeDetailed['activeStatusVisibility'];
+type ActiveStatusVisibilityType = ActiveStatusVisibility['type'];
 
 const $i = ensureSignin();
 
@@ -344,22 +349,25 @@ const {
 	initialValue: $i.followersVisibility,
 });
 const ffVisibility = ref(($i as any).ffVisibility ?? 'public');
-const activeStatusVisibility = ref($i.activeStatusVisibility);
-const {
-	model: activeStatusVisibilityType,
-	def: activeStatusVisibilityTypeDef,
-} = useMkSelect({
-	items: [
-		{ label: i18n.ts.public, value: 'all' },
-		{ label: i18n.ts.following, value: 'following' },
-		{ label: i18n.ts.followers, value: 'followers' },
-		{ label: i18n.ts.mutualFollow, value: 'mutualFollow' },
-		{ label: i18n.ts.followingOrFollower, value: 'followingOrFollower' },
-		{ label: i18n.ts.lists, value: 'list' },
-		{ label: i18n.ts.private, value: 'never' },
-	],
-	initialValue: $i.activeStatusVisibility?.type ?? 'all',
+const activeStatusVisibility = ref<ActiveStatusVisibility>($i.activeStatusVisibility);
+
+// activeStatusVisibilityの選択肢定義
+const activeStatusVisibilityTypeDef: MkSelectItem<ActiveStatusVisibilityType>[] = [
+	{ label: i18n.ts.public, value: 'all' },
+	{ label: i18n.ts.following, value: 'following' },
+	{ label: i18n.ts.followers, value: 'followers' },
+	{ label: i18n.ts.mutualFollow, value: 'mutualFollow' },
+	{ label: i18n.ts.followingOrFollower, value: 'followingOrFollower' },
+	{ label: i18n.ts.lists, value: 'list' },
+	{ label: i18n.ts.private, value: 'never' },
+];
+
+// activeStatusVisibilityのtypeをv-modelでバインドするためのcomputed
+const activeStatusVisibilityType = computed<ActiveStatusVisibilityType>({
+	get: () => activeStatusVisibility.value.type,
+	set: (newType) => onActiveStatusVisibilityTypeChange(newType),
 });
+
 const {
 	model: chatScope,
 	def: chatScopeDef,
@@ -482,29 +490,35 @@ watch([makeNotesFollowersOnlyBefore, makeNotesHiddenBefore], () => {
 	save();
 });
 
-// activeStatusVisibilityType の変更を activeStatusVisibility に反映
-watch(activeStatusVisibilityType, (newType) => {
+// activeStatusVisibilityのtype変更ハンドラー
+function onActiveStatusVisibilityTypeChange(newType: ActiveStatusVisibilityType) {
 	if (newType === 'list') {
-		// リストモードに変更された場合、既存のuserListIdを保持
-		if (activeStatusVisibility.value?.type !== 'list') {
+		// リストモードに変更: 既存のuserListIdを保持するか、空文字列で初期化
+		if (activeStatusVisibility.value.type !== 'list') {
 			activeStatusVisibility.value = {
 				type: 'list',
-				userListId: '' as any,
+				userListId: '', // 空文字列（リスト選択待ち）
 			};
 		}
+		// userListIdが設定されている場合のみ保存
+		if (activeStatusVisibility.value.userListId) {
+			save();
+		}
 	} else {
-		// リスト以外のモードに変更された場合
+		// リスト以外のモードに変更
 		activeStatusVisibility.value = {
 			type: newType,
-		} as any;
+		};
+		save();
 	}
-});
+}
 
 // 選択されているリスト情報を取得する
 const selectedList = computed(() => {
-	const visibility = activeStatusVisibility.value;
-	if (visibility?.type !== 'list' || !visibility.userListId) return null;
-	return userLists.value.find(list => list.id === visibility.userListId) || null;
+	if (activeStatusVisibility.value.type !== 'list') return null;
+	const userListId = activeStatusVisibility.value.userListId;
+	if (!userListId || userListId === '') return null;
+	return userLists.value.find(list => list.id === userListId) ?? null;
 });
 
 // リスト選択ダイアログを表示
@@ -531,11 +545,12 @@ async function selectActiveStatusList() {
 
 // 選択されたリストをクリア
 function removeActiveStatusList() {
+	// リストを削除する場合は、userListIdを空にするが保存はしない
+	// （type='list'でuserListIdが必須のため、空の状態では保存できない）
 	activeStatusVisibility.value = {
 		type: 'list',
-		userListId: '' as any,
+		userListId: '',
 	};
-	save();
 }
 
 async function update_requireSigninToViewContents(value: boolean) {
