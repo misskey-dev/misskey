@@ -111,12 +111,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 			</div>
-		</searchmarker>
+		</SearchMarker>
 
-		<MkSwitch v-model="hideOnlineStatus" @update:modelValue="save()">
-			{{ i18n.ts.hideOnlineStatus }}
-			<template #caption>{{ i18n.ts.hideOnlineStatusDescription }}</template>
-		</MkSwitch>
 		<MkSwitch v-model="hideNoteSearchResult" @update:modelValue="save()">
 			<template #label><SearchLabel>{{ i18n.ts.hideNoteSearchResult }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
 			<template #caption><SearchText>{{ i18n.ts.hideNoteSearchResultDescription }}</SearchText></template>
