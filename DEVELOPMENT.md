@@ -18,8 +18,8 @@ yamisskey は 3ブランチで開発を進めます：
 | ブランチ | 環境 | 用途 |
 |----------|------|------|
 | **develop** | 開発（ローカル）| 新機能開発・実験的機能 |
-| **staging** | テスト（[なやみすきー](https://na.yami.ski/)） | 本番前検証（push時にDockerイメージ自動ビルド） |
-| **master** | 本番（[やみすきー](https://yami.ski/) | 安定運用版（リリース時にDockerイメージ自動ビルド） |
+| **staging** | テスト（[やみすきーβ](https://beta.yami.ski/)） | 本番前検証（push時にDockerイメージ自動ビルド） |
+| **master** | 本番（[やみすきー](https://yami.ski/)） | 安定運用版（リリース時にDockerイメージ自動ビルド） |
 
 **開発の流れ**: develop → staging → master
 
@@ -105,7 +105,7 @@ git merge develop
 git push origin staging  # Dockerイメージが自動ビルドされる
 ```
 
-[なやみすきー](https://na.yami.ski/)で動作確認後、本番への反映を進めます。
+[やみすきーβ](https://beta.yami.ski/)で動作確認後、本番への反映を進めます。
 
 ### 本番環境への反映
 
