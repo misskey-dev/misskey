@@ -617,6 +617,14 @@ function loadConversation() {
 		conversation.value = res.reverse();
 	});
 }
+
+// Load replies when opening a note
+onMounted(async () => {
+	if (!repliesLoaded.value) {
+		loadReplies();
+	}
+});
+
 </script>
 
 <style lang="scss" module>
