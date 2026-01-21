@@ -21,14 +21,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 			v-if="show && lang"
 			class="_selectable"
 			:code="code"
+			:diffBase="diffBase"
 			:lang="lang"
 			:withOuterStyle="withOuterStyle"
+			:maxHeight="props.maxHeight"
 		/>
 		<pre
 			v-else-if="show"
 			class="_selectable"
 			:class="[$style.codeBlockFallbackRoot, {
 				[$style.outerStyle]: withOuterStyle,
+				[$style.withMaxHeight]: maxHeight != null,
 			}]"
 		><code :class="$style.codeBlockFallbackCode">{{ code }}</code></pre>
 		<button v-else :class="$style.codePlaceholderRoot" @click="show = true">
@@ -42,24 +45,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, ref } from 'vue';
+import { defineAsyncComponent, ref, computed } from 'vue';
 import { i18n } from '@/i18n.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { prefer } from '@/preferences.js';
 
 const props = withDefaults(defineProps<{
 	code: string;
+	diffBase?: string;
 	forceShow?: boolean;
 	copyButton?: boolean;
 	withOuterStyle?: boolean;
 	lang?: string;
+	maxHeight?: number | null;
 }>(), {
 	copyButton: true,
 	forceShow: false,
 	withOuterStyle: true,
+	maxHeight: null,
 });
 
 const show = ref(props.forceShow === true ? true : !prefer.s.dataSaver.code);
+const maxHeight = computed(() => props.maxHeight != null ? `${props.maxHeight}px` : null);
 
 const XCode = defineAsyncComponent(() => import('@/components/MkCode.core.vue'));
 
@@ -94,6 +101,12 @@ function copy() {
 	display: block;
 	overflow-wrap: anywhere;
 	overflow: auto;
+
+	&.withMaxHeight {
+		scrollbar-color: var(--MI_THEME-scrollbarHandle) transparent;
+    scrollbar-width: thin;
+		max-height: v-bind(maxHeight);
+	}
 }
 
 .outerStyle.codeBlockFallbackRoot {
