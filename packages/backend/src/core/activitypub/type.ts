@@ -59,7 +59,7 @@ export function getOneApId(value: ApObject): string {
 export function getApId(value: string | IObject): string {
 	if (typeof value === 'string') return value;
 	if (typeof value.id === 'string') return value.id;
-	throw new Error('cannot detemine id');
+	throw new Error('cannot determine id');
 }
 
 /**
@@ -182,10 +182,8 @@ export interface IActor extends IObject {
 	discoverable?: boolean;
 	inbox: string;
 	sharedInbox?: string;	// 後方互換性のため
-	publicKey?: {
-		id: string;
-		publicKeyPem: string;
-	};
+	publicKey?: IKey | IKey[];
+	additionalPublicKeys?: IKey[];
 	followers?: string | ICollection | IOrderedCollection;
 	following?: string | ICollection | IOrderedCollection;
 	featured?: string | IOrderedCollection;
@@ -195,6 +193,7 @@ export interface IActor extends IObject {
 	};
 	'vcard:bday'?: string;
 	'vcard:Address'?: string;
+	suspended?: boolean;
 }
 
 export const isCollection = (object: IObject): object is ICollection =>
@@ -254,8 +253,9 @@ export const isEmoji = (object: IObject): object is IApEmoji =>
 
 export interface IKey extends IObject {
 	type: 'Key';
+	id: string;
 	owner: string;
-	publicKeyPem: string | Buffer;
+	publicKeyPem: string;
 }
 
 export const validDocumentTypes = ['Audio', 'Document', 'Image', 'Page', 'Video'];
