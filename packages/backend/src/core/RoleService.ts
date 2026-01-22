@@ -47,6 +47,7 @@ export type RolePolicies = {
 	canSearchUsers: boolean;
 	canUseTranslator: boolean;
 	canHideAds: boolean;
+	canCreateChannel: boolean;
 	driveCapacityMb: number;
 	maxFileSizeMb: number;
 	alwaysMarkNsfw: boolean;
@@ -88,6 +89,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	canSearchUsers: true,
 	canUseTranslator: true,
 	canHideAds: false,
+	canCreateChannel: true,
 	driveCapacityMb: 100,
 	maxFileSizeMb: 30,
 	alwaysMarkNsfw: false,
