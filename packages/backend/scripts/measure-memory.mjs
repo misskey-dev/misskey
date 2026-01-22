@@ -89,6 +89,40 @@ async function measureMemory() {
 		process.stderr.write(`[server error] ${err}\n`);
 	});
 
+	async function triggerGc() {
+		const ok = new Promise((resolve) => {
+			serverProcess.once('message', (message) => {
+				if (message === 'gc ok') resolve();
+			});
+		});
+
+		serverProcess.send('gc');
+
+		await ok;
+
+		await setTimeout(1000);
+	}
+
+	function createRequest() {
+		return new Promise((resolve, reject) => {
+			const req = http.request({
+				host: 'localhost',
+				port: 61812,
+				path: '/api/meta',
+				method: 'POST',
+			}, (res) => {
+				res.on('data', () => { });
+				res.on('end', () => {
+					resolve();
+				});
+			});
+			req.on('error', (err) => {
+				reject(err);
+			});
+			req.end();
+		});
+	}
+
 	// Wait for server to be ready or timeout
 	const startupStartTime = Date.now();
 	while (!serverReady) {
@@ -109,36 +143,17 @@ async function measureMemory() {
 
 	const beforeGc = await getMemoryUsage(pid);
 
-	serverProcess.send('gc');
-
-	await new Promise((resolve) => {
-		serverProcess.once('message', (message) => {
-			if (message === 'gc ok') resolve();
-		});
-	});
-
-	await setTimeout(1000);
+	await triggerGc();
 
 	const afterGc = await getMemoryUsage(pid);
 
-	// create request
-	await new Promise((resolve, reject) => {
-		const req = http.request({
-			host: 'localhost',
-			port: 61812,
-			path: '/api/ping',
-			method: 'POST',
-		}, (res) => {
-			res.on('data', () => { });
-			res.on('end', () => {
-				resolve();
-			});
-		});
-		req.on('error', (err) => {
-			reject(err);
-		});
-		req.end();
-	});
+	// create some http requests to simulate load
+	const REQUEST_COUNT = 10;
+	await Promise.all(
+		Array.from({ length: REQUEST_COUNT }).map(() => createRequest()),
+	);
+
+	await triggerGc();
 
 	const afterRequest = await getMemoryUsage(pid);
 
