@@ -6,10 +6,15 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable import/no-default-export */
 import type { StoryObj } from '@storybook/vue3';
-import MkCode from './MkCode.vue';
+import MkCodeDiff from './MkCodeDiff.vue';
 const code = `for (let i, 100) {
 	<: if (i % 15 == 0) "FizzBuzz"
 		elif (i % 3 == 0) "Fizz"
+		elif (i % 5 == 0) "Buzz"
+		else i
+}`;
+const diffBase = `for (let i, 100) {
+	<: if (i % 3 == 0) "Fizz"
 		elif (i % 5 == 0) "Buzz"
 		else i
 }`;
@@ -17,7 +22,7 @@ export const Default = {
 	render(args) {
 		return {
 			components: {
-				MkCode,
+				MkCodeDiff,
 			},
 			setup() {
 				return {
@@ -31,11 +36,12 @@ export const Default = {
 					};
 				},
 			},
-			template: '<MkCode v-bind="props" />',
+			template: '<MkCodeDiff v-bind="props" />',
 		};
 	},
 	args: {
 		code,
+		diffBase,
 		lang: 'is',
 	},
 	parameters: {
