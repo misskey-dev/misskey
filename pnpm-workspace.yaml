@@ -29,7 +29,6 @@ onlyBuiltDependencies:
   - re2
   - sharp
   - utf-8-validate
-  - v-code-diff
   - vue-demi
 ignorePatchFailures: false
 minimumReleaseAge: 10080 # delay 7days to mitigate supply-chain attack
