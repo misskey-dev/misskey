@@ -93,7 +93,8 @@ jobs:
           JSON=$(jq -c -n \
             --argjson beforeGc "$(variation beforeGc)" \
             --argjson afterGc "$(variation afterGc)" \
-            '{beforeGc: $beforeGc, afterGc: $afterGc}')
+            --argjson afterRequest "$(variation afterRequest)" \
+            '{beforeGc: $beforeGc, afterGc: $afterGc, afterRequest: $afterRequest}')
 
           echo "res=$JSON" >> "$GITHUB_OUTPUT"
       - id: build-comment
@@ -128,6 +129,10 @@ jobs:
 
           echo "### After GC" >> ./output.md
           table afterGc
+          echo >> ./output.md
+
+          echo "### After Request" >> ./output.md
+          table afterRequest
           echo >> ./output.md
 
           # Determine if this is a significant change (more than 5% increase)

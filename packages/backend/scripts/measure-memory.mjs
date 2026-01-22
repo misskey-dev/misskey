@@ -14,6 +14,7 @@ import { fork } from 'node:child_process';
 import { setTimeout } from 'node:timers/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import * as http from 'node:http';
 import * as fs from 'node:fs/promises';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -120,6 +121,27 @@ async function measureMemory() {
 
 	const afterGc = await getMemoryUsage(pid);
 
+	// create request
+	await new Promise((resolve, reject) => {
+		const req = http.request({
+			host: 'localhost',
+			port: 61812,
+			path: '/api/ping',
+			method: 'POST',
+		}, (res) => {
+			res.on('data', () => { });
+			res.on('end', () => {
+				resolve();
+			});
+		});
+		req.on('error', (err) => {
+			reject(err);
+		});
+		req.end();
+	});
+
+	const afterRequest = await getMemoryUsage(pid);
+
 	// Stop the server
 	serverProcess.kill('SIGTERM');
 
@@ -143,6 +165,7 @@ async function measureMemory() {
 		timestamp: new Date().toISOString(),
 		beforeGc,
 		afterGc,
+		afterRequest,
 	};
 
 	return result;
@@ -159,21 +182,25 @@ async function main() {
 	// Calculate averages
 	const beforeGc = structuredClone(keys);
 	const afterGc = structuredClone(keys);
+	const afterRequest = structuredClone(keys);
 	for (const res of results) {
 		for (const key of Object.keys(keys)) {
 			beforeGc[key] += res.beforeGc[key];
 			afterGc[key] += res.afterGc[key];
+			afterRequest[key] += res.afterRequest[key];
 		}
 	}
 	for (const key of Object.keys(keys)) {
 		beforeGc[key] = Math.round(beforeGc[key] / SAMPLE_COUNT);
 		afterGc[key] = Math.round(afterGc[key] / SAMPLE_COUNT);
+		afterRequest[key] = Math.round(afterRequest[key] / SAMPLE_COUNT);
 	}
 
 	const result = {
 		timestamp: new Date().toISOString(),
 		beforeGc,
 		afterGc,
+		afterRequest,
 	};
 
 	// Output as JSON to stdout
