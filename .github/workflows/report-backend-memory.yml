@@ -71,7 +71,7 @@ jobs:
               HEAD_MB=$(echo "scale=2; $HEAD / 1024" | bc)
               DIFF_MB=$(echo "scale=2; $DIFF / 1024" | bc)
 
-              JSON=$(jq -n \
+              JSON=$(jq -c -n \
                 --arg base "$BASE_MB" \
                 --arg head "$HEAD_MB" \
                 --arg diff "$DIFF_MB" \
@@ -81,7 +81,7 @@ jobs:
               echo "$JSON"
             }
 
-            JSON=$(jq -n \
+            JSON=$(jq -c -n \
               --argjson VmRSS "$(calc $1 VmRSS)" \
               --argjson VmHWM "$(calc $1 VmHWM)" \
               --argjson VmSize "$(calc $1 VmSize)" \
@@ -90,7 +90,7 @@ jobs:
             echo "$JSON"
           }
 
-          JSON=$(jq -n \
+          JSON=$(jq -c -n \
             --argjson beforeGc "$(variation beforeGc)" \
             --argjson afterGc "$(variation afterGc)" \
             '{beforeGc: $beforeGc, afterGc: $afterGc}')
@@ -106,26 +106,20 @@ jobs:
           echo >> ./output.md
 
           table() {
-            RSS_BASE=$(echo "${{ steps.compare.outputs.res }}" | jq -r ".${1}.VmRSS.base")
-            RSS_HEAD=$(echo "${{ steps.compare.outputs.res }}" | jq -r ".${1}.VmRSS.head")
-            RSS_DIFF=$(echo "${{ steps.compare.outputs.res }}" | jq -r ".${1}.VmRSS.diff")
-            RSS_DIFF_PERCENT=$(echo "${{ steps.compare.outputs.res }}" | jq -r ".${1}.VmRSS.diff_percent")
+            line() {
+              BASE=$(echo "${{ steps.compare.outputs.res }}" | jq -r ".${1}.${2}.base")
+              HEAD=$(echo "${{ steps.compare.outputs.res }}" | jq -r ".${1}.${2}.head")
+              DIFF=$(echo "${{ steps.compare.outputs.res }}" | jq -r ".${1}.${2}.diff")
+              DIFF_PERCENT=$(echo "${{ steps.compare.outputs.res }}" | jq -r ".${1}.${2}.diff_percent")
 
-            HWM_BASE=$(echo "${{ steps.compare.outputs.res }}" | jq -r ".${1}.VmHWM.base")
-            HWM_HEAD=$(echo "${{ steps.compare.outputs.res }}" | jq -r ".${1}.VmHWM.head")
-            HWM_DIFF=$(echo "${{ steps.compare.outputs.res }}" | jq -r ".${1}.VmHWM.diff")
-            HWM_DIFF_PERCENT=$(echo "${{ steps.compare.outputs.res }}" | jq -r ".${1}.VmHWM.diff_percent")
-
-            VMS_BASE=$(echo "${{ steps.compare.outputs.res }}" | jq -r ".${1}.VmSize.base")
-            VMS_HEAD=$(echo "${{ steps.compare.outputs.res }}" | jq -r ".${1}.VmSize.head")
-            VMS_DIFF=$(echo "${{ steps.compare.outputs.res }}" | jq -r ".${1}.VmSize.diff")
-            VMS_DIFF_PERCENT=$(echo "${{ steps.compare.outputs.res }}" | jq -r ".${1}.VmSize.diff_percent")
+              echo "| ${2} | ${BASE} MB | ${HEAD} MB | ${DIFF} MB (${DIFF_PERCENT}%) |" >> ./output.md
+            }
 
             echo "| Metric | base | head | Diff |" >> ./output.md
             echo "|--------|------|------|------|" >> ./output.md
-            echo "| RSS | ${RSS_BASE} MB | ${RSS_HEAD} MB | ${RSS_DIFF} MB (${RSS_DIFF_PERCENT}%) |" >> ./output.md
-            echo "| HWM | ${HWM_BASE} MB | ${HWM_HEAD} MB | ${HWM_DIFF} MB (${HWM_DIFF_PERCENT}%) |" >> ./output.md
-            echo "| VMS | ${VMS_BASE} MB | ${VMS_HEAD} MB | ${VMS_DIFF} MB (${VMS_DIFF_PERCENT}%) |" >> ./output.md
+            line $1 VmRSS
+            line $1 VmHWM
+            line $1 VmSize
           }
 
           echo "### Before GC" >> ./output.md
