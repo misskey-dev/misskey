@@ -14,6 +14,7 @@ import { fork } from 'node:child_process';
 import { setTimeout } from 'node:timers/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import * as fs from 'node:fs/promises';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -21,6 +22,35 @@ const __dirname = dirname(__filename);
 const SAMPLE_COUNT = 3; // Number of samples to measure
 const STARTUP_TIMEOUT = 120000; // 120 seconds timeout for server startup
 const MEMORY_SETTLE_TIME = 10000; // Wait 10 seconds after startup for memory to settle
+
+const keys = {
+	VmPeak: 0,
+	VmSize: 0,
+	VmHWM: 0,
+	VmRSS: 0,
+	VmData: 0,
+	VmStk: 0,
+	VmExe: 0,
+	VmLib: 0,
+	VmPTE: 0,
+	VmSwap: 0,
+};
+
+async function getMemoryUsage(pid) {
+	const status = await fs.readFile(`/proc/${pid}/status`, 'utf-8');
+
+	const result = {};
+	for (const key of Object.keys(keys)) {
+		const match = status.match(new RegExp(`${key}:\\s+(\\d+)\\s+kB`));
+		if (match) {
+			result[key] = parseInt(match[1], 10);
+		} else {
+			throw new Error(`Failed to parse ${key} from /proc/${pid}/status`);
+		}
+	}
+
+	return result;
+}
 
 async function measureMemory() {
 	// Start the Misskey backend server using fork to enable IPC
@@ -76,39 +106,7 @@ async function measureMemory() {
 
 	// Get memory usage from the server process via /proc
 	const pid = serverProcess.pid;
-	let memoryInfo;
-
-	try {
-		const fs = await import('node:fs/promises');
-
-		// Read /proc/[pid]/status for detailed memory info
-		const status = await fs.readFile(`/proc/${pid}/status`, 'utf-8');
-		const vmRssMatch = status.match(/VmRSS:\s+(\d+)\s+kB/);
-		const vmDataMatch = status.match(/VmData:\s+(\d+)\s+kB/);
-		const vmSizeMatch = status.match(/VmSize:\s+(\d+)\s+kB/);
-
-		memoryInfo = {
-			rss: vmRssMatch ? parseInt(vmRssMatch[1], 10) * 1024 : null,
-			heapUsed: vmDataMatch ? parseInt(vmDataMatch[1], 10) * 1024 : null,
-			vmSize: vmSizeMatch ? parseInt(vmSizeMatch[1], 10) * 1024 : null,
-		};
-	} catch (err) {
-		// Fallback: use ps command
-		process.stderr.write(`Warning: Could not read /proc/${pid}/status: ${err}\n`);
-
-		const { execSync } = await import('node:child_process');
-		try {
-			const ps = execSync(`ps -o rss= -p ${pid}`, { encoding: 'utf-8' });
-			const rssKb = parseInt(ps.trim(), 10);
-			memoryInfo = {
-				rss: rssKb * 1024,
-				heapUsed: null,
-				vmSize: null,
-			};
-		} catch {
-			throw new Error('Failed to get memory usage via ps command');
-		}
-	}
+	const memoryInfo = await getMemoryUsage(pid);
 
 	// Stop the server
 	serverProcess.kill('SIGTERM');
@@ -146,19 +144,15 @@ async function main() {
 	}
 
 	// Calculate averages
-	const avgMemory = {
-		rss: 0,
-		heapUsed: 0,
-		vmSize: 0,
-	};
+	const avgMemory = structuredClone(keys);
 	for (const res of results) {
-		avgMemory.rss += res.memory.rss ?? 0;
-		avgMemory.heapUsed += res.memory.heapUsed ?? 0;
-		avgMemory.vmSize += res.memory.vmSize ?? 0;
+		for (const key of Object.keys(avgMemory)) {
+			avgMemory[key] += res.memory[key];
+		}
 	}
-	avgMemory.rss = Math.round(avgMemory.rss / SAMPLE_COUNT);
-	avgMemory.heapUsed = Math.round(avgMemory.heapUsed / SAMPLE_COUNT);
-	avgMemory.vmSize = Math.round(avgMemory.vmSize / SAMPLE_COUNT);
+	for (const key of Object.keys(avgMemory)) {
+		avgMemory[key] = Math.round(avgMemory[key] / SAMPLE_COUNT);
+	}
 
 	const result = {
 		timestamp: new Date().toISOString(),

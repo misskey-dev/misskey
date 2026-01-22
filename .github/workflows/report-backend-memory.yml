@@ -54,34 +54,27 @@ jobs:
           BASE_MEMORY=$(cat ./artifacts/memory-base.json)
           HEAD_MEMORY=$(cat ./artifacts/memory-head.json)
 
-          BASE_RSS=$(echo "$BASE_MEMORY" | jq -r '.memory.rss // 0')
-          HEAD_RSS=$(echo "$HEAD_MEMORY" | jq -r '.memory.rss // 0')
+          calc() {
+            BASE=$(echo "$BASE_MEMORY" | jq -r '.memory.'"$1"' // 0')
+            HEAD=$(echo "$HEAD_MEMORY" | jq -r '.memory.'"$1"' // 0')
 
-          # Calculate difference
-          if [ "$BASE_RSS" -gt 0 ] && [ "$HEAD_RSS" -gt 0 ]; then
-            DIFF=$((HEAD_RSS - BASE_RSS))
-            DIFF_PERCENT=$(echo "scale=2; ($DIFF * 100) / $BASE_RSS" | bc)
+            DIFF=$((HEAD - BASE))
+            DIFF_PERCENT=$(echo "scale=2; ($DIFF * 100) / $BASE" | bc)
 
-            # Convert to MB for readability
-            BASE_MB=$(echo "scale=2; $BASE_RSS / 1048576" | bc)
-            HEAD_MB=$(echo "scale=2; $HEAD_RSS / 1048576" | bc)
-            DIFF_MB=$(echo "scale=2; $DIFF / 1048576" | bc)
+            # Convert KB to MB for readability
+            BASE_MB=$(echo "scale=2; $BASE / 1024" | bc)
+            HEAD_MB=$(echo "scale=2; $HEAD / 1024" | bc)
+            DIFF_MB=$(echo "scale=2; $DIFF / 1024" | bc)
 
-            echo "base_mb=$BASE_MB" >> "$GITHUB_OUTPUT"
-            echo "head_mb=$HEAD_MB" >> "$GITHUB_OUTPUT"
-            echo "diff_mb=$DIFF_MB" >> "$GITHUB_OUTPUT"
-            echo "diff_percent=$DIFF_PERCENT" >> "$GITHUB_OUTPUT"
-            echo "has_data=true" >> "$GITHUB_OUTPUT"
+            echo "$1-base_mb=$BASE_MB" >> "$GITHUB_OUTPUT"
+            echo "$1-head_mb=$HEAD_MB" >> "$GITHUB_OUTPUT"
+            echo "$1-diff_mb=$DIFF_MB" >> "$GITHUB_OUTPUT"
+            echo "$1-diff_percent=$DIFF_PERCENT" >> "$GITHUB_OUTPUT"
+          }
 
-            # Determine if this is a significant change (more than 5% increase)
-            if [ "$(echo "$DIFF_PERCENT > 5" | bc)" -eq 1 ]; then
-              echo "significant_increase=true" >> "$GITHUB_OUTPUT"
-            else
-              echo "significant_increase=false" >> "$GITHUB_OUTPUT"
-            fi
-          else
-            echo "has_data=false" >> "$GITHUB_OUTPUT"
-          fi
+          calc VmRSS
+          calc VmHWM
+          calc VmSize
       - id: build-comment
         name: Build memory comment
         run: |
@@ -91,18 +84,16 @@ jobs:
           echo "$HEADER" > ./output.md
           echo >> ./output.md
 
-          if [ "${{ steps.compare.outputs.has_data }}" == "true" ]; then
-            echo "| Metric | base | head | Diff |" >> ./output.md
-            echo "|--------|------|------|------|" >> ./output.md
-            echo "| RSS | ${{ steps.compare.outputs.base_mb }} MB | ${{ steps.compare.outputs.head_mb }} MB | ${{ steps.compare.outputs.diff_mb }} MB (${{ steps.compare.outputs.diff_percent }}%) |" >> ./output.md
-            echo >> ./output.md
+          echo "| Metric | base | head | Diff |" >> ./output.md
+          echo "|--------|------|------|------|" >> ./output.md
+          echo "| RSS | ${{ steps.compare.outputs.VmRSS-base_mb }} MB | ${{ steps.compare.outputs.VmRSS-head_mb }} MB | ${{ steps.compare.outputs.VmRSS-diff_mb }} MB (${{ steps.compare.outputs.VmRSS-diff_percent }}%) |" >> ./output.md
+          echo "| HWM | ${{ steps.compare.outputs.VmHWM-base_mb }} MB | ${{ steps.compare.outputs.VmHWM-head_mb }} MB | ${{ steps.compare.outputs.VmHWM-diff_mb }} MB (${{ steps.compare.outputs.VmHWM-diff_percent }}%) |" >> ./output.md
+          echo "| VMS | ${{ steps.compare.outputs.VmSize-base_mb }} MB | ${{ steps.compare.outputs.VmSize-head_mb }} MB | ${{ steps.compare.outputs.VmSize-diff_mb }} MB (${{ steps.compare.outputs.VmSize-diff_percent }}%) |" >> ./output.md
+          echo >> ./output.md
 
-            if [ "${{ steps.compare.outputs.significant_increase }}" == "true" ]; then
-              echo "⚠️ **Warning**: Memory usage has increased by more than 5%. Please verify this is not an unintended change." >> ./output.md
-              echo >> ./output.md
-            fi
-          else
-            echo "Could not retrieve memory usage data." >> ./output.md
+          # Determine if this is a significant change (more than 5% increase)
+          if [ "$(echo "${{ steps.compare.outputs.VmRSS-diff_percent }} > 5" | bc)" -eq 1 ]; then
+            echo "⚠️ **Warning**: Memory usage has increased by more than 5%. Please verify this is not an unintended change." >> ./output.md
             echo >> ./output.md
           fi
 
