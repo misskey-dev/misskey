@@ -18,12 +18,11 @@ import { dirname, join } from 'node:path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+const SAMPLE_COUNT = 3; // Number of samples to measure
 const STARTUP_TIMEOUT = 120000; // 120 seconds timeout for server startup
 const MEMORY_SETTLE_TIME = 10000; // Wait 10 seconds after startup for memory to settle
 
 async function measureMemory() {
-	const startTime = Date.now();
-
 	// Start the Misskey backend server using fork to enable IPC
 	const serverProcess = fork(join(__dirname, '../built/boot/entry.js'), ['expose-gc'], {
 		cwd: join(__dirname, '..'),
@@ -107,12 +106,7 @@ async function measureMemory() {
 				vmSize: null,
 			};
 		} catch {
-			memoryInfo = {
-				rss: null,
-				heapUsed: null,
-				vmSize: null,
-				error: 'Could not measure memory',
-			};
+			throw new Error('Failed to get memory usage via ps command');
 		}
 	}
 
@@ -137,15 +131,45 @@ async function measureMemory() {
 
 	const result = {
 		timestamp: new Date().toISOString(),
-		startupTimeMs: startupTime,
 		memory: memoryInfo,
+	};
+
+	return result;
+}
+
+async function main() {
+	// 直列の方が時間的に分散されて正確そうだから直列でやる
+	const results = [];
+	for (let i = 0; i < SAMPLE_COUNT; i++) {
+		const res = await measureMemory();
+		results.push(res);
+	}
+
+	// Calculate averages
+	const avgMemory = {
+		rss: 0,
+		heapUsed: 0,
+		vmSize: 0,
+	};
+	for (const res of results) {
+		avgMemory.rss += res.memory.rss ?? 0;
+		avgMemory.heapUsed += res.memory.heapUsed ?? 0;
+		avgMemory.vmSize += res.memory.vmSize ?? 0;
+	}
+	avgMemory.rss = Math.round(avgMemory.rss / SAMPLE_COUNT);
+	avgMemory.heapUsed = Math.round(avgMemory.heapUsed / SAMPLE_COUNT);
+	avgMemory.vmSize = Math.round(avgMemory.vmSize / SAMPLE_COUNT);
+
+	const result = {
+		timestamp: new Date().toISOString(),
+		memory: avgMemory,
 	};
 
 	// Output as JSON to stdout
 	console.log(JSON.stringify(result, null, 2));
 }
 
-measureMemory().catch((err) => {
+main().catch((err) => {
 	console.error(JSON.stringify({
 		error: err.message,
 		timestamp: new Date().toISOString(),
