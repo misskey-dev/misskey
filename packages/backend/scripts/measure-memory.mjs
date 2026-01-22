@@ -60,7 +60,6 @@ async function measureMemory() {
 			...process.env,
 			NODE_ENV: 'production',
 			MK_DISABLE_CLUSTERING: '1',
-			MK_FORCE_GC: '1',
 		},
 		stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
 	});
@@ -104,9 +103,21 @@ async function measureMemory() {
 	// Wait for memory to settle
 	await setTimeout(MEMORY_SETTLE_TIME);
 
-	// Get memory usage from the server process via /proc
 	const pid = serverProcess.pid;
-	const memoryInfo = await getMemoryUsage(pid);
+
+	const beforeGc = await getMemoryUsage(pid);
+
+	serverProcess.send('gc');
+
+	await new Promise((resolve) => {
+		serverProcess.once('message', (message) => {
+			if (message === 'gc ok') resolve();
+		});
+	});
+
+	await setTimeout(1000);
+
+	const afterGc = await getMemoryUsage(pid);
 
 	// Stop the server
 	serverProcess.kill('SIGTERM');
@@ -129,7 +140,8 @@ async function measureMemory() {
 
 	const result = {
 		timestamp: new Date().toISOString(),
-		memory: memoryInfo,
+		beforeGc,
+		afterGc,
 	};
 
 	return result;
@@ -144,19 +156,23 @@ async function main() {
 	}
 
 	// Calculate averages
-	const avgMemory = structuredClone(keys);
+	const beforeGc = structuredClone(keys);
+	const afterGc = structuredClone(keys);
 	for (const res of results) {
-		for (const key of Object.keys(avgMemory)) {
-			avgMemory[key] += res.memory[key];
+		for (const key of Object.keys(keys)) {
+			beforeGc[key] += res.beforeGc[key];
+			afterGc[key] += res.afterGc[key];
 		}
 	}
-	for (const key of Object.keys(avgMemory)) {
-		avgMemory[key] = Math.round(avgMemory[key] / SAMPLE_COUNT);
+	for (const key of Object.keys(keys)) {
+		beforeGc[key] = Math.round(beforeGc[key] / SAMPLE_COUNT);
+		afterGc[key] = Math.round(afterGc[key] / SAMPLE_COUNT);
 	}
 
 	const result = {
 		timestamp: new Date().toISOString(),
-		memory: avgMemory,
+		beforeGc,
+		afterGc,
 	};
 
 	// Output as JSON to stdout

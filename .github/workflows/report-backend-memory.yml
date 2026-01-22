@@ -55,30 +55,47 @@ jobs:
           HEAD_MEMORY=$(cat ./artifacts/memory-head.json)
 
           calc() {
-            BASE=$(echo "$BASE_MEMORY" | jq -r '.memory.'"$1"' // 0')
-            HEAD=$(echo "$HEAD_MEMORY" | jq -r '.memory.'"$1"' // 0')
+            variation() {
+              BASE=$(echo "$BASE_MEMORY" | jq -r ".${1}.${2}" // 0')
+              HEAD=$(echo "$HEAD_MEMORY" | jq -r ".${1}.${2}" // 0')
 
-            DIFF=$((HEAD - BASE))
-            if [ "$BASE" -gt 0 ]; then
-              DIFF_PERCENT=$(echo "scale=2; ($DIFF * 100) / $BASE" | bc)
-            else
-              DIFF_PERCENT=0
-            fi
+              DIFF=$((HEAD - BASE))
+              if [ "$BASE" -gt 0 ]; then
+                DIFF_PERCENT=$(echo "scale=2; ($DIFF * 100) / $BASE" | bc)
+              else
+                DIFF_PERCENT=0
+              fi
 
-            # Convert KB to MB for readability
-            BASE_MB=$(echo "scale=2; $BASE / 1024" | bc)
-            HEAD_MB=$(echo "scale=2; $HEAD / 1024" | bc)
-            DIFF_MB=$(echo "scale=2; $DIFF / 1024" | bc)
+              # Convert KB to MB for readability
+              BASE_MB=$(echo "scale=2; $BASE / 1024" | bc)
+              HEAD_MB=$(echo "scale=2; $HEAD / 1024" | bc)
+              DIFF_MB=$(echo "scale=2; $DIFF / 1024" | bc)
 
-            echo "$1-base=$BASE_MB" >> "$GITHUB_OUTPUT"
-            echo "$1-head=$HEAD_MB" >> "$GITHUB_OUTPUT"
-            echo "$1-diff=$DIFF_MB" >> "$GITHUB_OUTPUT"
-            echo "$1-diff_percent=$DIFF_PERCENT" >> "$GITHUB_OUTPUT"
+              JSON=$(jq -n \
+                --arg base "$BASE_MB" \
+                --arg head "$HEAD_MB" \
+                --arg diff "$DIFF_MB" \
+                --arg diff_percent "$DIFF_PERCENT" \
+                '{base: $base, head: $head, diff: $diff, diff_percent: $diff_percent}')
+
+              echo "$JSON"
+            }
+
+            JSON=$(jq -n \
+              --argjson beforeGc "$(variation $1 beforeGc)" \
+              --argjson afterGc "$(variation $1 afterGc)" \
+              '{beforeGc: $beforeGc, afterGc: $afterGc}')
+
+            echo "$JSON"
           }
 
-          calc VmRSS
-          calc VmHWM
-          calc VmSize
+          JSON=$(jq -n \
+            --argjson VmRSS "$(calc VmRSS)" \
+            --argjson VmHWM "$(calc VmHWM)" \
+            --argjson VmSize "$(calc VmSize)" \
+            '{VmRSS: $VmRSS, VmHWM: $VmHWM, VmSize: $VmSize}')
+
+          echo "res=$JSON" >> "$GITHUB_OUTPUT"
       - id: build-comment
         name: Build memory comment
         run: |
@@ -88,11 +105,32 @@ jobs:
           echo "$HEADER" > ./output.md
           echo >> ./output.md
 
-          echo "| Metric | base | head | Diff |" >> ./output.md
-          echo "|--------|------|------|------|" >> ./output.md
-          echo "| RSS | ${{ steps.compare.outputs.VmRSS-base }} MB | ${{ steps.compare.outputs.VmRSS-head }} MB | ${{ steps.compare.outputs.VmRSS-diff }} MB (${{ steps.compare.outputs.VmRSS-diff_percent }}%) |" >> ./output.md
-          echo "| HWM | ${{ steps.compare.outputs.VmHWM-base }} MB | ${{ steps.compare.outputs.VmHWM-head }} MB | ${{ steps.compare.outputs.VmHWM-diff }} MB (${{ steps.compare.outputs.VmHWM-diff_percent }}%) |" >> ./output.md
-          echo "| VMS | ${{ steps.compare.outputs.VmSize-base }} MB | ${{ steps.compare.outputs.VmSize-head }} MB | ${{ steps.compare.outputs.VmSize-diff }} MB (${{ steps.compare.outputs.VmSize-diff_percent }}%) |" >> ./output.md
+          table() {
+            RSS_BASE=$(echo "${{ steps.compare.outputs.res }}" | jq -r ".${1}.VmRSS.base")
+            RSS_HEAD=$(echo "${{ steps.compare.outputs.res }}" | jq -r ".${1}.VmRSS.head")
+            RSS_DIFF=$(echo "${{ steps.compare.outputs.res }}" | jq -r ".${1}.VmRSS.diff")
+            RSS_DIFF_PERCENT=$(echo "${{ steps.compare.outputs.res }}" | jq -r ".${1}.VmRSS.diff_percent")
+            HWM_BASE=$(echo "${{ steps.compare.outputs.res }}" | jq -r ".${1}.VmHWM.base")
+            HWM_HEAD=$(echo "${{ steps.compare.outputs.res }}" | jq -r ".${1}.VmHWM.head")
+            HWM_DIFF=$(echo "${{ steps.compare.outputs.res }}" | jq -r ".${1}.VmHWM.diff")
+            HWM_DIFF_PERCENT=$(echo "${{ steps.compare.outputs.res }}" | jq -r ".${1}.VmHWM.diff_percent")
+            VMS_BASE=$(echo "${{ steps.compare.outputs.res }}" | jq -r ".${1}.VmSize.base")
+            VMS_HEAD=$(echo "${{ steps.compare.outputs.res }}" | jq -r ".${1}.VmSize.head")
+            VMS_DIFF=$(echo "${{ steps.compare.outputs.res }}" | jq -r ".${1}.VmSize.diff")
+            VMS_DIFF_PERCENT=$(echo "${{ steps.compare.outputs.res }}" | jq -r ".${1}.VmSize.diff_percent")
+            echo "| Metric | base | head | Diff |" >> ./output.md
+            echo "|--------|------|------|------|" >> ./output.md
+            echo "| RSS | ${RSS_BASE} MB | ${RSS_HEAD} MB | ${RSS_DIFF} MB (${RSS_DIFF_PERCENT}%) |" >> ./output.md
+            echo "| HWM | ${HWM_BASE} MB | ${HWM_HEAD} MB | ${HWM_DIFF} MB (${HWM_DIFF_PERCENT}%) |" >> ./output.md
+            echo "| VMS | ${VMS_BASE} MB | ${VMS_HEAD} MB | ${VMS_DIFF} MB (${VMS_DIFF_PERCENT}%) |" >> ./output.md
+          }
+
+          table beforeGc
+
+          echo >> ./output.md
+
+          table afterGc
+
           echo >> ./output.md
 
           # Determine if this is a significant change (more than 5% increase)
