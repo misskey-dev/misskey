@@ -593,7 +593,7 @@ export function getRenoteMenu(props: {
 	renoteButton: ShallowRef<HTMLElement | null | undefined>;
 	mock?: boolean;
 }) {
-	if ($i?.policies.renotePolicy === 'disallow') {
+	if (!$i?.policies.canNote || $i?.policies.renotePolicy === 'disallow') {
 		return {
 			menu: [],
 		};
