@@ -59,16 +59,20 @@ jobs:
             HEAD=$(echo "$HEAD_MEMORY" | jq -r '.memory.'"$1"' // 0')
 
             DIFF=$((HEAD - BASE))
-            DIFF_PERCENT=$(echo "scale=2; ($DIFF * 100) / $BASE" | bc)
+            if [ "$BASE" -gt 0 ]; then
+              DIFF_PERCENT=$(echo "scale=2; ($DIFF * 100) / $BASE" | bc)
+            else
+              DIFF_PERCENT=0
+            fi
 
             # Convert KB to MB for readability
             BASE_MB=$(echo "scale=2; $BASE / 1024" | bc)
             HEAD_MB=$(echo "scale=2; $HEAD / 1024" | bc)
             DIFF_MB=$(echo "scale=2; $DIFF / 1024" | bc)
 
-            echo "$1-base_mb=$BASE_MB" >> "$GITHUB_OUTPUT"
-            echo "$1-head_mb=$HEAD_MB" >> "$GITHUB_OUTPUT"
-            echo "$1-diff_mb=$DIFF_MB" >> "$GITHUB_OUTPUT"
+            echo "$1-base=$BASE_MB" >> "$GITHUB_OUTPUT"
+            echo "$1-head=$HEAD_MB" >> "$GITHUB_OUTPUT"
+            echo "$1-diff=$DIFF_MB" >> "$GITHUB_OUTPUT"
             echo "$1-diff_percent=$DIFF_PERCENT" >> "$GITHUB_OUTPUT"
           }
 
@@ -78,7 +82,7 @@ jobs:
       - id: build-comment
         name: Build memory comment
         run: |
-          HEADER="## Backend Memory Usage Comparison"
+          HEADER="## Backend memory usage comparison"
           FOOTER="[See workflow logs for details](https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})"
 
           echo "$HEADER" > ./output.md
@@ -86,9 +90,9 @@ jobs:
 
           echo "| Metric | base | head | Diff |" >> ./output.md
           echo "|--------|------|------|------|" >> ./output.md
-          echo "| RSS | ${{ steps.compare.outputs.VmRSS-base_mb }} MB | ${{ steps.compare.outputs.VmRSS-head_mb }} MB | ${{ steps.compare.outputs.VmRSS-diff_mb }} MB (${{ steps.compare.outputs.VmRSS-diff_percent }}%) |" >> ./output.md
-          echo "| HWM | ${{ steps.compare.outputs.VmHWM-base_mb }} MB | ${{ steps.compare.outputs.VmHWM-head_mb }} MB | ${{ steps.compare.outputs.VmHWM-diff_mb }} MB (${{ steps.compare.outputs.VmHWM-diff_percent }}%) |" >> ./output.md
-          echo "| VMS | ${{ steps.compare.outputs.VmSize-base_mb }} MB | ${{ steps.compare.outputs.VmSize-head_mb }} MB | ${{ steps.compare.outputs.VmSize-diff_mb }} MB (${{ steps.compare.outputs.VmSize-diff_percent }}%) |" >> ./output.md
+          echo "| RSS | ${{ steps.compare.outputs.VmRSS-base }} MB | ${{ steps.compare.outputs.VmRSS-head }} MB | ${{ steps.compare.outputs.VmRSS-diff }} MB (${{ steps.compare.outputs.VmRSS-diff_percent }}%) |" >> ./output.md
+          echo "| HWM | ${{ steps.compare.outputs.VmHWM-base }} MB | ${{ steps.compare.outputs.VmHWM-head }} MB | ${{ steps.compare.outputs.VmHWM-diff }} MB (${{ steps.compare.outputs.VmHWM-diff_percent }}%) |" >> ./output.md
+          echo "| VMS | ${{ steps.compare.outputs.VmSize-base }} MB | ${{ steps.compare.outputs.VmSize-head }} MB | ${{ steps.compare.outputs.VmSize-diff }} MB (${{ steps.compare.outputs.VmSize-diff_percent }}%) |" >> ./output.md
           echo >> ./output.md
 
           # Determine if this is a significant change (more than 5% increase)
