@@ -131,7 +131,7 @@ jobs:
           echo >> ./output.md
 
           # Determine if this is a significant change (more than 5% increase)
-          if [ $(echo "${{ steps.compare.outputs.res }}" | jq -r ".afterGc.VmRSS.diff_percent > 5") = "true" ]; then
+          if [ "$(echo "${{ steps.compare.outputs.res }}" | jq -r '.afterGc.VmRSS.diff_percent | tonumber > 5')" = "true" ]; then
             echo "⚠️ **Warning**: Memory usage has increased by more than 5%. Please verify this is not an unintended change." >> ./output.md
             echo >> ./output.md
           fi
