@@ -44,13 +44,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </div>
 </template>
 
-<script lang="ts" setup>
-import { defineAsyncComponent, ref, computed } from 'vue';
-import { i18n } from '@/i18n.js';
-import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
-import { prefer } from '@/preferences.js';
-
-const props = withDefaults(defineProps<{
+<script lang="ts">
+export type MkCodeProps = {
 	code: string;
 	diffBase?: string;
 	forceShow?: boolean;
@@ -58,7 +53,16 @@ const props = withDefaults(defineProps<{
 	withOuterStyle?: boolean;
 	lang?: string;
 	maxHeight?: number | null;
-}>(), {
+};
+</script>
+
+<script lang="ts" setup>
+import { defineAsyncComponent, ref, computed } from 'vue';
+import { i18n } from '@/i18n.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { prefer } from '@/preferences.js';
+
+const props = withDefaults(defineProps<MkCodeProps>(), {
 	copyButton: true,
 	forceShow: false,
 	withOuterStyle: true,
