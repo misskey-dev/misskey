@@ -62,6 +62,7 @@ async function measureMemory() {
 			MK_DISABLE_CLUSTERING: '1',
 		},
 		stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
+		execArgv: [...process.execArgv, '--expose-gc'],
 	});
 
 	let serverReady = false;
