@@ -99,6 +99,8 @@ jobs:
           echo "res=$JSON" >> "$GITHUB_OUTPUT"
       - id: build-comment
         name: Build memory comment
+        env:
+          RES: ${{ steps.compare.outputs.res }}
         run: |
           HEADER="## Backend memory usage comparison"
           FOOTER="[See workflow logs for details](https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})"
@@ -108,10 +110,10 @@ jobs:
 
           table() {
             line() {
-              BASE=$(echo "${{ steps.compare.outputs.res }}" | jq -r ".${1}.${2}.base")
-              HEAD=$(echo "${{ steps.compare.outputs.res }}" | jq -r ".${1}.${2}.head")
-              DIFF=$(echo "${{ steps.compare.outputs.res }}" | jq -r ".${1}.${2}.diff")
-              DIFF_PERCENT=$(echo "${{ steps.compare.outputs.res }}" | jq -r ".${1}.${2}.diff_percent")
+              BASE=$(echo "$RES" | jq -r ".${1}.${2}.base")
+              HEAD=$(echo "$RES" | jq -r ".${1}.${2}.head")
+              DIFF=$(echo "$RES" | jq -r ".${1}.${2}.diff")
+              DIFF_PERCENT=$(echo "$RES" | jq -r ".${1}.${2}.diff_percent")
 
               echo "| ${2} | ${BASE} MB | ${HEAD} MB | ${DIFF} MB (${DIFF_PERCENT}%) |" >> ./output.md
             }
@@ -136,7 +138,7 @@ jobs:
           echo >> ./output.md
 
           # Determine if this is a significant change (more than 5% increase)
-          if [ "$(echo "${{ steps.compare.outputs.res }}" | jq -r '.afterGc.VmRSS.diff_percent | tonumber > 5')" = "true" ]; then
+          if [ "$(echo "$RES" | jq -r '.afterGc.VmRSS.diff_percent | tonumber > 5')" = "true" ]; then
             echo "⚠️ **Warning**: Memory usage has increased by more than 5%. Please verify this is not an unintended change." >> ./output.md
             echo >> ./output.md
           fi
