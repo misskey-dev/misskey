@@ -4,6 +4,7 @@
  */
 
 import { Injectable } from '@nestjs/common';
+import { bindThis } from '@/decorators.js';
 import { HybridTimelineChannel } from './channels/hybrid-timeline.js';
 import { LocalTimelineChannel } from './channels/local-timeline.js';
 import { HomeTimelineChannel } from './channels/home-timeline.js';
@@ -22,8 +23,8 @@ import { ChatUserChannel } from './channels/chat-user.js';
 import { ChatRoomChannel } from './channels/chat-room.js';
 import { ReversiChannel } from './channels/reversi.js';
 import { ReversiGameChannel } from './channels/reversi-game.js';
+import { MahjongRoomChannel } from './channels/mahjong-room.js';
 import type { ChannelConstructor } from './channel.js';
-import { bindThis } from '@/decorators.js';
 
 @Injectable()
 export class ChannelsService {
@@ -52,6 +53,7 @@ export class ChannelsService {
 			case 'chatRoom': return ChatRoomChannel;
 			case 'reversi': return ReversiChannel;
 			case 'reversiGame': return ReversiGameChannel;
+			case 'mahjongRoom': return MahjongRoomChannel;
 
 			default:
 				throw new Error(`no such channel: ${name}`);

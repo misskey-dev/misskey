@@ -12,6 +12,7 @@
 		"packages/i18n",
 		"packages/misskey-reversi",
 		"packages/misskey-bubble-game",
+		"packages/misskey-mahjong",
 		"packages/icons-subsetter",
 		"packages/frontend-shared",
 		"packages/frontend-builder",

@@ -134,6 +134,7 @@
 		"mime-types": "3.0.2",
 		"misskey-js": "workspace:*",
 		"misskey-reversi": "workspace:*",
+		"misskey-mahjong": "workspace:*",
 		"ms": "3.0.0-canary.202508261828",
 		"nanoid": "5.1.6",
 		"nested-property": "4.0.0",

@@ -58,6 +58,7 @@
 		"mediabunny": "1.27.2",
 		"mfm-js": "0.25.0",
 		"misskey-bubble-game": "workspace:*",
+		"misskey-mahjong": "workspace:*",
 		"misskey-js": "workspace:*",
 		"misskey-reversi": "workspace:*",
 		"photoswipe": "5.4.4",
