@@ -5,9 +5,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_spacer" style="--MI_SPACER-w: 1200px;">
-	<MkTab v-if="instance.federation !== 'none'" v-model="origin" style="margin-bottom: var(--MI-margin);">
-		<option value="local">{{ i18n.ts.local }}</option>
-		<option value="remote">{{ i18n.ts.remote }}</option>
+	<MkTab
+		v-if="instance.federation !== 'none'"
+		v-model="origin"
+		:tabs="[
+			{ key: 'local', label: i18n.ts.local },
+			{ key: 'remote', label: i18n.ts.remote },
+		]"
+		style="margin-bottom: var(--MI-margin);"
+	>
 	</MkTab>
 	<div v-if="origin === 'local'">
 		<template v-if="tag == null">
@@ -30,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</template>
 	</div>
 	<div v-else>
-		<MkFoldableSection ref="tagsEl" :foldable="true" :expanded="false" class="_margin">
+		<MkFoldableSection :foldable="true" :expanded="false" class="_margin">
 			<template #header><i class="ti ti-hash ti-fw" style="margin-right: 0.5em;"></i>{{ i18n.ts.popularTags }}</template>
 
 			<div>
@@ -39,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</MkFoldableSection>
 
-		<MkFoldableSection v-if="tag != null" :key="`${tag}`" class="_margin">
+		<MkFoldableSection v-if="tagUsersPaginator != null" :key="`${tag}`" class="_margin">
 			<template #header><i class="ti ti-hash ti-fw" style="margin-right: 0.5em;"></i>{{ tag }}</template>
 			<MkUserList :paginator="tagUsersPaginator"/>
 		</MkFoldableSection>
@@ -77,23 +83,18 @@ const props = defineProps<{
 	tag?: string;
 }>();
 
-const origin = ref('local');
-const tagsEl = useTemplateRef('tagsEl');
+const origin = ref<'local' | 'remote'>('local');
 const tagsLocal = ref<Misskey.entities.Hashtag[]>([]);
 const tagsRemote = ref<Misskey.entities.Hashtag[]>([]);
 
-watch(() => props.tag, () => {
-	if (tagsEl.value) tagsEl.value.toggleContent(props.tag == null);
-});
-
-const tagUsersPaginator = markRaw(new Paginator('hashtags/users', {
+const tagUsersPaginator = props.tag != null ? markRaw(new Paginator('hashtags/users', {
 	limit: 30,
 	params: {
 		tag: props.tag,
 		origin: 'combined',
 		sort: '+follower',
 	},
-}));
+})) : null;
 
 const pinnedUsersPaginator = markRaw(new Paginator('pinned-users', {
 	noPaging: true,

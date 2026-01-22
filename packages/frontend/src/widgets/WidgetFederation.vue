@@ -43,6 +43,7 @@ const name = 'federation';
 const widgetPropsDef = {
 	showHeader: {
 		type: 'boolean',
+		label: i18n.ts._widgetOptions.showHeader,
 		default: true,
 	},
 } satisfies FormWithDefault;
@@ -62,7 +63,7 @@ const instances = ref<Misskey.entities.FederationInstance[]>([]);
 const charts = ref<Misskey.entities.ChartsInstanceResponse[]>([]);
 const fetching = ref(true);
 
-const fetch = async () => {
+async function fetchInstances() {
 	const fetchedInstances = await misskeyApi('federation/instances', {
 		sort: '+latestRequestReceivedAt',
 		limit: 5,
@@ -71,14 +72,14 @@ const fetch = async () => {
 	instances.value = fetchedInstances;
 	charts.value = fetchedCharts;
 	fetching.value = false;
-};
+}
 
-useInterval(fetch, 1000 * 60, {
+useInterval(fetchInstances, 1000 * 60, {
 	immediate: true,
 	afterMounted: true,
 });
 
-function getInstanceIcon(instance): string {
+function getInstanceIcon(instance: Misskey.entities.FederationInstance): string {
 	return getProxiedImageUrlNullable(instance.iconUrl, 'preview') ?? getProxiedImageUrlNullable(instance.faviconUrl, 'preview') ?? '/client-assets/dummy.png';
 }
 

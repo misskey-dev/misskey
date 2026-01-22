@@ -4,14 +4,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div ref="rootEl" :class="[$style.root, reversed ? '_pageScrollableReversed' : '_pageScrollable']">
+<div ref="rootEl" :class="reversed ? '_pageScrollableReversed' : '_pageScrollable'">
 	<MkStickyContainer>
 		<template #header>
 			<MkPageHeader v-if="prefer.s.showPageTabBarBottom && (props.tabs?.length ?? 0) > 0" v-bind="pageHeaderPropsWithoutTabs"/>
 			<MkPageHeader v-else v-model:tab="tab" v-bind="pageHeaderProps"/>
 		</template>
 		<div :class="$style.body">
-			<MkSwiper v-if="prefer.s.enableHorizontalSwipe && swipable && (props.tabs?.length ?? 1) > 1" v-model:tab="tab" :class="$style.swiper" :tabs="props.tabs">
+			<MkSwiper v-if="prefer.s.enableHorizontalSwipe && swipable && (props.tabs?.length ?? 1) > 1" v-model:tab="tab" :class="$style.swiper" :tabs="props.tabs ?? []">
 				<slot></slot>
 			</MkSwiper>
 			<slot v-else></slot>
@@ -45,7 +45,7 @@ const props = withDefaults(defineProps<PageHeaderProps & {
 });
 
 const pageHeaderProps = computed(() => {
-	const { reversed, ...rest } = props;
+	const { reversed, tab, ...rest } = props;
 	return rest;
 });
 
@@ -75,10 +75,6 @@ defineExpose({
 </script>
 
 <style lang="scss" module>
-.root {
-
-}
-
 .body, .swiper {
 	min-height: calc(100cqh - (var(--MI-stickyTop, 0px) + var(--MI-stickyBottom, 0px)));
 }

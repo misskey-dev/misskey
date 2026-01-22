@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[hide ? $style.hidden : $style.visible, (image.isSensitive && prefer.s.highlightSensitiveMedia) && $style.sensitive]" @click="reveal">
+<div :class="[hide ? $style.hidden : $style.visible, (image.isSensitive && prefer.s.highlightSensitiveMedia) && $style.sensitive]" @click="reveal" @contextmenu.stop="onContextmenu">
 	<component
 		:is="disableImageLink ? 'div' : 'a'"
 		v-bind="disableImageLink ? {
@@ -77,6 +77,7 @@ import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { $i, iAmModerator } from '@/i.js';
 import { prefer } from '@/preferences.js';
+import { shouldHideFileByDefault, canRevealFile } from '@/utility/sensitive-file.js';
 
 const props = withDefaults(defineProps<{
 	image: Misskey.entities.DriveFile;
@@ -99,19 +100,15 @@ const url = computed(() => (props.raw || prefer.s.loadRawImages)
 		: props.image.thumbnailUrl!,
 );
 
-async function reveal(ev: MouseEvent) {
+async function reveal(ev: PointerEvent) {
 	if (!props.controls) {
 		return;
 	}
 
 	if (hide.value) {
 		ev.stopPropagation();
-		if (props.image.isSensitive && prefer.s.confirmWhenRevealingSensitiveMedia) {
-			const { canceled } = await os.confirm({
-				type: 'question',
-				text: i18n.ts.sensitiveMediaRevealConfirm,
-			});
-			if (canceled) return;
+		if (!(await canRevealFile(props.image))) {
+			return;
 		}
 
 		hide.value = false;
@@ -119,14 +116,14 @@ async function reveal(ev: MouseEvent) {
 }
 
 // Plugin:register_note_view_interruptor を使って書き換えられる可能性があるためwatchする
-watch(() => props.image, () => {
-	hide.value = (prefer.s.nsfw === 'force' || prefer.s.dataSaver.media) ? true : (props.image.isSensitive && prefer.s.nsfw !== 'ignore');
+watch(() => props.image, (newImage) => {
+	hide.value = shouldHideFileByDefault(newImage);
 }, {
 	deep: true,
 	immediate: true,
 });
 
-function showMenu(ev: MouseEvent) {
+function getMenu() {
 	const menuItems: MenuItem[] = [];
 
 	menuItems.push({
@@ -191,9 +188,16 @@ function showMenu(ev: MouseEvent) {
 		});
 	}
 
-	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
+	return menuItems;
 }
 
+function showMenu(ev: PointerEvent) {
+	os.popupMenu(getMenu(), (ev.currentTarget ?? ev.target ?? undefined) as HTMLElement | undefined);
+}
+
+function onContextmenu(ev: PointerEvent) {
+	os.contextMenu(getMenu(), ev);
+}
 </script>
 
 <style lang="scss" module>
@@ -233,16 +237,18 @@ function showMenu(ev: MouseEvent) {
 .hide {
 	display: block;
 	position: absolute;
-	border-radius: 6px;
-	background-color: var(--MI_THEME-fg);
-	color: hsl(from var(--MI_THEME-accent) h s calc(l + 10));
+	background-color: rgba(0, 0, 0, 0.3);
+	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
+	backdrop-filter: var(--MI-blur, blur(15px));
+	border-radius: 0 0 0 9px;
+	color: #fff;
 	font-size: 12px;
 	opacity: .5;
 	padding: 5px 8px;
 	text-align: center;
 	cursor: pointer;
-	top: 12px;
-	right: 12px;
+	top: 0;
+	right: 0;
 }
 
 .hiddenTextWrapper {
@@ -272,17 +278,17 @@ html[data-color-scheme=light] .visible {
 .menu {
 	display: block;
 	position: absolute;
-	border-radius: 999px;
 	background-color: rgba(0, 0, 0, 0.3);
 	-webkit-backdrop-filter: var(--MI-blur, blur(15px));
 	backdrop-filter: var(--MI-blur, blur(15px));
+	border-radius: 9px 0 0 0;
 	color: #fff;
 	font-size: 0.8em;
 	width: 28px;
 	height: 28px;
 	text-align: center;
-	bottom: 10px;
-	right: 10px;
+	bottom: 0;
+	right: 0;
 }
 
 .imageContainer {

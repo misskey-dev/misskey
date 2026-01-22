@@ -8,7 +8,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-for="v, k in paramDefs" :key="k">
 		<MkSwitch
 			v-if="v.type === 'boolean'"
-			v-model="params[k]">
+			v-model="params[k]"
+		>
 			<template #label>{{ v.label ?? k }}</template>
 			<template v-if="v.caption != null" #caption>{{ v.caption }}</template>
 		</MkSwitch>
@@ -27,13 +28,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #label>{{ v.label ?? k }}</template>
 			<template v-if="v.caption != null" #caption>{{ v.caption }}</template>
 		</MkRange>
-		<MkRadios v-else-if="v.type === 'number:enum'" v-model="params[k]">
+		<MkRadios v-else-if="v.type === 'number:enum'" v-model="params[k]" :options="v.enum">
 			<template #label>{{ v.label ?? k }}</template>
 			<template v-if="v.caption != null" #caption>{{ v.caption }}</template>
-			<option v-for="item in v.enum" :value="item.value">
-				<i v-if="item.icon" :class="item.icon"></i>
-				<template v-else>{{ item.label }}</template>
-			</option>
 		</MkRadios>
 		<div v-else-if="v.type === 'seed'">
 			<MkRange v-model="params[k]" continuousUpdate type="number" :min="0" :max="10000" :step="1">
@@ -47,18 +44,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkInput>
 	</div>
 	<div v-if="Object.keys(paramDefs).length === 0" :class="$style.nothingToConfigure">
-		{{ i18n.ts._imageEffector.nothingToConfigure }}
+		{{ i18n.ts.nothingToConfigure }}
 	</div>
 </div>
 </template>
 
 <script setup lang="ts">
+import type { ImageEffectorRGB, ImageEffectorFxParamDefs } from '@/utility/image-effector/ImageEffector.js';
 import MkInput from '@/components/MkInput.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRange from '@/components/MkRange.vue';
 import { i18n } from '@/i18n.js';
-import type { ImageEffectorRGB, ImageEffectorFxParamDefs } from '@/utility/image-effector/ImageEffector.js';
 
 defineProps<{
 	paramDefs: ImageEffectorFxParamDefs;

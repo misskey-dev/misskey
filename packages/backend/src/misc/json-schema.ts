@@ -22,7 +22,7 @@ import { packedFollowingSchema } from '@/models/json-schema/following.js';
 import { packedMutingSchema } from '@/models/json-schema/muting.js';
 import { packedRenoteMutingSchema } from '@/models/json-schema/renote-muting.js';
 import { packedBlockingSchema } from '@/models/json-schema/blocking.js';
-import { packedNoteReactionSchema } from '@/models/json-schema/note-reaction.js';
+import { packedNoteReactionSchema, packedNoteReactionWithNoteSchema } from '@/models/json-schema/note-reaction.js';
 import { packedHashtagSchema } from '@/models/json-schema/hashtag.js';
 import { packedInviteCodeSchema } from '@/models/json-schema/invite-code.js';
 import { packedPageBlockSchema, packedPageSchema } from '@/models/json-schema/page.js';
@@ -64,7 +64,9 @@ import {
 	packedMetaDetailedOnlySchema,
 	packedMetaDetailedSchema,
 	packedMetaLiteSchema,
+	packedMetaClientOptionsSchema,
 } from '@/models/json-schema/meta.js';
+import { packedUserWebhookSchema } from '@/models/json-schema/user-webhook.js';
 import { packedSystemWebhookSchema } from '@/models/json-schema/system-webhook.js';
 import { packedAbuseReportNotificationRecipientSchema } from '@/models/json-schema/abuse-report-notification-recipient.js';
 import { packedChatMessageSchema, packedChatMessageLiteSchema, packedChatMessageLiteForRoomSchema, packedChatMessageLiteFor1on1Schema } from '@/models/json-schema/chat-message.js';
@@ -92,6 +94,7 @@ export const refs = {
 	Note: packedNoteSchema,
 	NoteDraft: packedNoteDraftSchema,
 	NoteReaction: packedNoteReactionSchema,
+	NoteReactionWithNote: packedNoteReactionWithNoteSchema,
 	NoteFavorite: packedNoteFavoriteSchema,
 	Notification: packedNotificationSchema,
 	DriveFile: packedDriveFileSchema,
@@ -133,6 +136,8 @@ export const refs = {
 	MetaLite: packedMetaLiteSchema,
 	MetaDetailedOnly: packedMetaDetailedOnlySchema,
 	MetaDetailed: packedMetaDetailedSchema,
+	MetaClientOptions: packedMetaClientOptionsSchema,
+	UserWebhook: packedUserWebhookSchema,
 	SystemWebhook: packedSystemWebhookSchema,
 	AbuseReportNotificationRecipient: packedAbuseReportNotificationRecipientSchema,
 	ChatMessage: packedChatMessageSchema,
@@ -258,8 +263,6 @@ type ObjectSchemaTypeDef<p extends Schema> =
 					never :
 				never :
 			any;
-
-type ObjectSchemaType<p extends Schema> = NullOrUndefined<p, ObjectSchemaTypeDef<p>>;
 
 export type SchemaTypeDef<p extends Schema> =
 	p['type'] extends 'null' ? null :

@@ -36,6 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { nextTick, onMounted, useTemplateRef } from 'vue';
+import type { MkABehavior } from '@/components/global/MkA.vue';
 
 const props = defineProps<{
 	type?: 'button' | 'submit' | 'reset';
@@ -45,7 +46,7 @@ const props = defineProps<{
 	inline?: boolean;
 	link?: boolean;
 	to?: string;
-	linkBehavior?: null | 'window' | 'browser';
+	linkBehavior?: MkABehavior;
 	autofocus?: boolean;
 	wait?: boolean;
 	danger?: boolean;
@@ -62,7 +63,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'click', payload: MouseEvent): void;
+	(ev: 'click', payload: PointerEvent): void;
 }>();
 
 const el = useTemplateRef('el');
@@ -76,11 +77,11 @@ onMounted(() => {
 	}
 });
 
-function distance(p, q): number {
+function distance(p: { x: number; y: number }, q: { x: number; y: number }): number {
 	return Math.hypot(p.x - q.x, p.y - q.y);
 }
 
-function calcCircleScale(boxW, boxH, circleCenterX, circleCenterY): number {
+function calcCircleScale(boxW: number, boxH: number, circleCenterX: number, circleCenterY: number): number {
 	const origin = { x: circleCenterX, y: circleCenterY };
 	const dist1 = distance({ x: 0, y: 0 }, origin);
 	const dist2 = distance({ x: boxW, y: 0 }, origin);

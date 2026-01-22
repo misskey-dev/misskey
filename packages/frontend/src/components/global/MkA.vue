@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<a ref="el" :href="to" :class="active ? activeClass : null" @click.prevent="nav" @contextmenu.prevent.stop="onContextmenu">
+<a ref="el" :href="to" :class="active ? activeClass : null" @click="nav" @contextmenu.prevent.stop="onContextmenu">
 	<slot></slot>
 </a>
 </template>
@@ -48,7 +48,7 @@ const active = computed(() => {
 	return resolved.route.name === router.currentRoute.value.name;
 });
 
-function onContextmenu(ev) {
+function onContextmenu(ev: PointerEvent) {
 	const selection = window.getSelection();
 	if (selection && selection.toString() !== '') return;
 	os.contextMenu([{
@@ -85,7 +85,12 @@ function openWindow() {
 	os.pageWindow(props.to);
 }
 
-function nav(ev: MouseEvent) {
+function nav(ev: PointerEvent) {
+	// 制御キーとの組み合わせは無視（shiftを除く）
+	if (ev.metaKey || ev.altKey || ev.ctrlKey) return;
+
+	ev.preventDefault();
+
 	if (behavior === 'browser') {
 		window.location.href = props.to;
 		return;

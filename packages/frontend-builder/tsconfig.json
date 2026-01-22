@@ -17,7 +17,6 @@
 		"noImplicitReturns": true,
 		"esModuleInterop": true,
 		"verbatimModuleSyntax": true,
-		"baseUrl": ".",
 		"typeRoots": [
 			"./@types",
 			"./node_modules/@types"
