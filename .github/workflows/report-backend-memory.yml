@@ -109,17 +109,18 @@ jobs:
           echo >> ./output.md
 
           table() {
+            echo "| Metric | base (MB) | head (MB) | Diff (MB) | Diff (%) |" >> ./output.md
+            echo "|--------|------:|------:|------:|------:|" >> ./output.md
+
             line() {
               BASE=$(echo "$RES" | jq -r ".${1}.${2}.base")
               HEAD=$(echo "$RES" | jq -r ".${1}.${2}.head")
               DIFF=$(echo "$RES" | jq -r ".${1}.${2}.diff")
               DIFF_PERCENT=$(echo "$RES" | jq -r ".${1}.${2}.diff_percent")
 
-              echo "| ${2} | ${BASE} MB | ${HEAD} MB | ${DIFF} MB (${DIFF_PERCENT}%) |" >> ./output.md
+              echo "| ${2} | ${BASE} MB | ${HEAD} MB | ${DIFF} MB | ${DIFF_PERCENT}% |" >> ./output.md
             }
 
-            echo "| Metric | base | head | Diff |" >> ./output.md
-            echo "|--------|------|------|------|" >> ./output.md
             line $1 VmRSS
             line $1 VmHWM
             line $1 VmSize
