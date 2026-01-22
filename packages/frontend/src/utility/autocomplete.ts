@@ -12,6 +12,15 @@ import { popup } from '@/os.js';
 
 export type SuggestionType = 'user' | 'hashtag' | 'emoji' | 'mfmTag' | 'mfmParam';
 
+type CompleteProps<T extends keyof CompleteInfo> = {
+	type: T;
+	value: CompleteInfo[T]['payload'];
+};
+
+function isCompleteType<T extends keyof CompleteInfo>(expectedType: T, props: CompleteProps<keyof CompleteInfo>): props is CompleteProps<T> {
+	return props.type === expectedType;
+}
+
 export class Autocomplete {
 	private suggestion: {
 		x: Ref<number>;
@@ -253,19 +262,19 @@ export class Autocomplete {
 	/**
 	 * オートコンプリートする
 	 */
-	private complete<T extends keyof CompleteInfo>({ type, value }: { type: T; value: CompleteInfo[T]['payload'] }) {
+	private complete<T extends keyof CompleteInfo>(props: CompleteProps<T>) {
 		this.close();
 
 		const caret = Number(this.textarea.selectionStart);
 
-		if (type === 'user') {
+		if (isCompleteType('user', props)) {
 			const source = this.text;
 
 			const before = source.substring(0, caret);
 			const trimmedBefore = before.substring(0, before.lastIndexOf('@'));
 			const after = source.substring(caret);
 
-			const acct = value.host === null ? value.username : `${value.username}@${toASCII(value.host)}`;
+			const acct = props.value.host === null ? props.value.username : `${props.value.username}@${toASCII(props.value.host)}`;
 
 			// 挿入
 			this.text = `${trimmedBefore}@${acct} ${after}`;
@@ -276,7 +285,7 @@ export class Autocomplete {
 				const pos = trimmedBefore.length + (acct.length + 2);
 				this.textarea.setSelectionRange(pos, pos);
 			});
-		} else if (type === 'hashtag') {
+		} else if (isCompleteType('hashtag', props)) {
 			const source = this.text;
 
 			const before = source.substring(0, caret);
@@ -284,15 +293,15 @@ export class Autocomplete {
 			const after = source.substring(caret);
 
 			// 挿入
-			this.text = `${trimmedBefore}#${value} ${after}`;
+			this.text = `${trimmedBefore}#${props.value} ${after}`;
 
 			// キャレットを戻す
 			nextTick(() => {
 				this.textarea.focus();
-				const pos = trimmedBefore.length + (value.length + 2);
+				const pos = trimmedBefore.length + (props.value.length + 2);
 				this.textarea.setSelectionRange(pos, pos);
 			});
-		} else if (type === 'emoji') {
+		} else if (isCompleteType('emoji', props)) {
 			const source = this.text;
 
 			const before = source.substring(0, caret);
@@ -300,15 +309,15 @@ export class Autocomplete {
 			const after = source.substring(caret);
 
 			// 挿入
-			this.text = trimmedBefore + value + after;
+			this.text = trimmedBefore + props.value + after;
 
 			// キャレットを戻す
 			nextTick(() => {
 				this.textarea.focus();
-				const pos = trimmedBefore.length + value.length;
+				const pos = trimmedBefore.length + props.value.length;
 				this.textarea.setSelectionRange(pos, pos);
 			});
-		} else if (type === 'emojiComplete') {
+		} else if (isCompleteType('emojiComplete', props)) {
 			const source = this.text;
 
 			const before = source.substring(0, caret);
@@ -316,15 +325,15 @@ export class Autocomplete {
 			const after = source.substring(caret);
 
 			// 挿入
-			this.text = trimmedBefore + value + after;
+			this.text = trimmedBefore + props.value + after;
 
 			// キャレットを戻す
 			nextTick(() => {
 				this.textarea.focus();
-				const pos = trimmedBefore.length + value.length;
+				const pos = trimmedBefore.length + props.value.length;
 				this.textarea.setSelectionRange(pos, pos);
 			});
-		} else if (type === 'mfmTag') {
+		} else if (isCompleteType('mfmTag', props)) {
 			const source = this.text;
 
 			const before = source.substring(0, caret);
@@ -332,15 +341,15 @@ export class Autocomplete {
 			const after = source.substring(caret);
 
 			// 挿入
-			this.text = `${trimmedBefore}$[${value} ]${after}`;
+			this.text = `${trimmedBefore}$[${props.value} ]${after}`;
 
 			// キャレットを戻す
 			nextTick(() => {
 				this.textarea.focus();
-				const pos = trimmedBefore.length + (value.length + 3);
+				const pos = trimmedBefore.length + (props.value.length + 3);
 				this.textarea.setSelectionRange(pos, pos);
 			});
-		} else if (type === 'mfmParam') {
+		} else if (isCompleteType('mfmParam', props)) {
 			const source = this.text;
 
 			const before = source.substring(0, caret);
@@ -348,12 +357,12 @@ export class Autocomplete {
 			const after = source.substring(caret);
 
 			// 挿入
-			this.text = `${trimmedBefore}.${value}${after}`;
+			this.text = `${trimmedBefore}.${props.value}${after}`;
 
 			// キャレットを戻す
 			nextTick(() => {
 				this.textarea.focus();
-				const pos = trimmedBefore.length + (value.length + 1);
+				const pos = trimmedBefore.length + (props.value.length + 1);
 				this.textarea.setSelectionRange(pos, pos);
 			});
 		}

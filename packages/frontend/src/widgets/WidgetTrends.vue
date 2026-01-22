@@ -35,7 +35,7 @@ import MkMiniChart from '@/components/MkMiniChart.vue';
 import { misskeyApiGet } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 
-const name = 'hashtags';
+const name = 'trends';
 
 const widgetPropsDef = {
 	showHeader: {

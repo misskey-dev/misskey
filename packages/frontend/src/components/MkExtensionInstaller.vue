@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #key>{{ i18n.ts.permission }}</template>
 					<template #value>
 						<ul v-if="extension.meta.permissions && extension.meta.permissions.length > 0" :class="$style.extInstallerKVList">
-							<li v-for="permission in extension.meta.permissions" :key="permission">{{ (i18n.ts._permissions as any)[permission] ?? permission }}</li>
+							<li v-for="permission in extension.meta.permissions" :key="permission">{{ i18n.ts._permissions[permission] ?? permission }}</li>
 						</ul>
 						<template v-else>{{ i18n.ts.none }}</template>
 					</template>
@@ -91,7 +91,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkFolder>
 	</div>
 
-	<slot name="additionalInfo"/>
+	<slot name="additionalInfo"></slot>
 
 	<div class="_buttonsCenter">
 		<MkButton danger rounded large @click="emits('cancel')"><i class="ti ti-x"></i> {{ i18n.ts.cancel }}</MkButton>
@@ -101,6 +101,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
+import * as Misskey from 'misskey-js';
+
 export type Extension = {
 	type: 'plugin';
 	raw: string;
@@ -109,7 +111,7 @@ export type Extension = {
 		version: string;
 		author: string;
 		description?: string;
-		permissions?: string[];
+		permissions?: (typeof Misskey.permissions)[number][];
 		config?: Record<string, unknown>;
 	};
 } | {
@@ -125,7 +127,6 @@ export type Extension = {
 <script lang="ts" setup>
 import { computed } from 'vue';
 import MkButton from '@/components/MkButton.vue';
-import FormSection from '@/components/form/section.vue';
 import FormSplit from '@/components/form/split.vue';
 import MkCode from '@/components/MkCode.vue';
 import MkInfo from '@/components/MkInfo.vue';

@@ -63,38 +63,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="_gaps_m">
 					<SearchMarker :keywords="['emoji', 'picker', 'scale', 'size']">
 						<MkPreferenceContainer k="emojiPickerScale">
-							<MkRadios v-model="emojiPickerScale">
+							<MkRadios
+								v-model="emojiPickerScale"
+								:options="emojiPickerScaleDef"
+							>
 								<template #label><SearchLabel>{{ i18n.ts.size }}</SearchLabel></template>
-								<option :value="1">{{ i18n.ts.small }}</option>
-								<option :value="2">{{ i18n.ts.medium }}</option>
-								<option :value="3">{{ i18n.ts.large }}</option>
-								<option :value="4">{{ i18n.ts.large }}+</option>
-								<option :value="5">{{ i18n.ts.large }}++</option>
 							</MkRadios>
 						</MkPreferenceContainer>
 					</SearchMarker>
 
 					<SearchMarker :keywords="['emoji', 'picker', 'width', 'column', 'size']">
 						<MkPreferenceContainer k="emojiPickerWidth">
-							<MkRadios v-model="emojiPickerWidth">
+							<MkRadios
+								v-model="emojiPickerWidth"
+								:options="emojiPickerWidthDef"
+							>
 								<template #label><SearchLabel>{{ i18n.ts.numberOfColumn }}</SearchLabel></template>
-								<option :value="1">5</option>
-								<option :value="2">6</option>
-								<option :value="3">7</option>
-								<option :value="4">8</option>
-								<option :value="5">9</option>
 							</MkRadios>
 						</MkPreferenceContainer>
 					</SearchMarker>
 
 					<SearchMarker :keywords="['emoji', 'picker', 'height', 'size']">
 						<MkPreferenceContainer k="emojiPickerHeight">
-							<MkRadios v-model="emojiPickerHeight">
+							<MkRadios
+								v-model="emojiPickerHeight"
+								:options="emojiPickerHeightDef"
+							>
 								<template #label><SearchLabel>{{ i18n.ts.height }}</SearchLabel></template>
-								<option :value="1">{{ i18n.ts.small }}</option>
-								<option :value="2">{{ i18n.ts.medium }}</option>
-								<option :value="3">{{ i18n.ts.large }}</option>
-								<option :value="4">{{ i18n.ts.large }}+</option>
 							</MkRadios>
 						</MkPreferenceContainer>
 					</SearchMarker>
@@ -126,6 +121,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref, watch } from 'vue';
 import XPalette from './emoji-palette.palette.vue';
 import type { MkSelectItem } from '@/components/MkSelect.vue';
+import type { MkRadiosOption } from '@/components/MkRadios.vue';
 import { genId } from '@/utility/id.js';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 import MkRadios from '@/components/MkRadios.vue';
@@ -158,8 +154,31 @@ const emojiPaletteForMainDef = computed<MkSelectItem[]>(() => [
 	})),
 ]);
 const emojiPickerScale = prefer.model('emojiPickerScale');
+const emojiPickerScaleDef = [
+	{ label: i18n.ts.small, value: 1 },
+	{ label: i18n.ts.medium, value: 2 },
+	{ label: i18n.ts.large, value: 3 },
+	{ label: i18n.ts.large + '+', value: 4 },
+	{ label: i18n.ts.large + '++', value: 5 },
+] as MkRadiosOption<number>[];
+
 const emojiPickerWidth = prefer.model('emojiPickerWidth');
+const emojiPickerWidthDef = [
+	{ label: '5', value: 1 },
+	{ label: '6', value: 2 },
+	{ label: '7', value: 3 },
+	{ label: '8', value: 4 },
+	{ label: '9', value: 5 },
+] as MkRadiosOption<number>[];
+
 const emojiPickerHeight = prefer.model('emojiPickerHeight');
+const emojiPickerHeightDef = [
+	{ label: i18n.ts.small, value: 1 },
+	{ label: i18n.ts.medium, value: 2 },
+	{ label: i18n.ts.large, value: 3 },
+	{ label: i18n.ts.large + '+', value: 4 },
+] as MkRadiosOption<number>[];
+
 const emojiPickerStyle = prefer.model('emojiPickerStyle');
 
 const palettesSyncEnabled = ref(prefer.isSyncEnabled('emojiPalettes'));

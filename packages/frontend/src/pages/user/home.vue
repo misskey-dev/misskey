@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<span v-if="user.isLocked"><i class="ti ti-lock"></i></span>
 									<span v-if="user.isBot"><i class="ti ti-robot"></i></span>
 									<button v-if="$i && !isEditingMemo && !memoDraft" class="_button add-note-button" @click="showMemoTextarea">
-										<i class="ti ti-edit"/> {{ i18n.ts.addMemo }}
+										<i class="ti ti-edit"></i> {{ i18n.ts.addMemo }}
 									</button>
 								</div>
 							</div>
@@ -71,7 +71,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</div>
 						</div>
 						<div v-if="isEditingMemo || memoDraft" class="memo" :class="{'no-memo': !memoDraft}">
-							<div class="heading" v-text="i18n.ts.memo"/>
+							<div class="heading">{{ i18n.ts.memo }}</div>
 							<textarea
 								ref="memoTextareaEl"
 								v-model="memoDraft"
@@ -79,7 +79,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								@focus="isEditingMemo = true"
 								@blur="updateMemo"
 								@input="adjustMemoTextarea"
-							/>
+							></textarea>
 						</div>
 						<div class="description">
 							<MkOmit>

@@ -75,3 +75,5 @@ export const widgets = [
 
 	...federationWidgets,
 ] as const;
+
+export type WidgetName = typeof widgets[number];

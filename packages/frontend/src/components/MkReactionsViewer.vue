@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:myReaction="props.myReaction"
 		@reactionToggled="onMockToggleReaction"
 	/>
-	<slot v-if="hasMoreReactions" :key="'$more'" name="more"/>
+	<slot v-if="hasMoreReactions" :key="'$more'" name="more"></slot>
 </MkTransitionGroup>
 </template>
 

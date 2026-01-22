@@ -64,6 +64,7 @@ import {
 	packedMetaDetailedOnlySchema,
 	packedMetaDetailedSchema,
 	packedMetaLiteSchema,
+	packedMetaClientOptionsSchema,
 } from '@/models/json-schema/meta.js';
 import { packedUserWebhookSchema } from '@/models/json-schema/user-webhook.js';
 import { packedSystemWebhookSchema } from '@/models/json-schema/system-webhook.js';
@@ -135,6 +136,7 @@ export const refs = {
 	MetaLite: packedMetaLiteSchema,
 	MetaDetailedOnly: packedMetaDetailedOnlySchema,
 	MetaDetailed: packedMetaDetailedSchema,
+	MetaClientOptions: packedMetaClientOptionsSchema,
 	UserWebhook: packedUserWebhookSchema,
 	SystemWebhook: packedSystemWebhookSchema,
 	AbuseReportNotificationRecipient: packedAbuseReportNotificationRecipientSchema,

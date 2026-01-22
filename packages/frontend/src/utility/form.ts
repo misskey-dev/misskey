@@ -4,7 +4,7 @@
  */
 
 import * as Misskey from 'misskey-js';
-import type { OptionValue } from '@/components/MkSelect.vue';
+import type { OptionValue } from '@/types/option-value.js';
 
 export type EnumItem = string | {
 	label: string;
@@ -45,18 +45,18 @@ export interface BooleanFormItem extends FormItemBase {
 
 export interface EnumFormItem extends FormItemBase {
 	type: 'enum';
-	default?: string | null;
+	default?: OptionValue | null;
 	required?: boolean;
 	enum: EnumItem[];
 }
 
 export interface RadioFormItem extends FormItemBase {
 	type: 'radio';
-	default?: unknown | null;
+	default?: OptionValue | null;
 	required?: boolean;
 	options: {
 		label: string;
-		value: unknown;
+		value: OptionValue;
 	}[];
 }
 
