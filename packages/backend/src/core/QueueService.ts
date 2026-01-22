@@ -6,7 +6,6 @@
 import { randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import { MetricsTime, type JobType } from 'bullmq';
-import { parse as parseRedisInfo } from 'redis-info';
 import type { IActivity } from '@/core/activitypub/type.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import type { MiWebhook, WebhookEventTypes } from '@/models/Webhook.js';
@@ -85,6 +84,19 @@ const REPEATABLE_SYSTEM_JOB_DEF = [{
 	// 毎日午前4時に起動(最も人の少ない時間帯)
 	pattern: '0 4 * * *',
 }];
+
+function parseRedisInfo(infoText: string): Record<string, string> {
+	const fields = infoText
+		.split('\n')
+		.filter(line => line.length > 0 && !line.startsWith('#'))
+		.map(line => line.trim().split(':'));
+
+	const result: Record<string, string> = {};
+	for (const [key, value] of fields) {
+		result[key] = value;
+	}
+	return result;
+}
 
 @Injectable()
 export class QueueService {
