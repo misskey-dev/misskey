@@ -114,12 +114,27 @@ jobs:
             echo "|--------|------:|------:|------:|------:|" >> ./output.md
 
             line() {
+              METRIC=$2
               BASE=$(echo "$RES" | jq -r ".${1}.${2}.base")
               HEAD=$(echo "$RES" | jq -r ".${1}.${2}.head")
               DIFF=$(echo "$RES" | jq -r ".${1}.${2}.diff")
               DIFF_PERCENT=$(echo "$RES" | jq -r ".${1}.${2}.diff_percent")
 
-              echo "| ${2} | ${BASE} MB | ${HEAD} MB | ${DIFF} MB | ${DIFF_PERCENT}% |" >> ./output.md
+              if (( $(echo "$DIFF_PERCENT > 0" | bc -l) )); then
+                DIFF="+$DIFF"
+                DIFF_PERCENT="+$DIFF_PERCENT"
+              fi
+
+              # highlight VmRSS
+              if [ "$2" = "VmRSS" ]; then
+                METRIC="**${METRIC}**"
+                BASE="**${BASE}**"
+                HEAD="**${HEAD}**"
+                DIFF="**${DIFF}**"
+                DIFF_PERCENT="**${DIFF_PERCENT}**"
+              fi
+
+              echo "| ${METRIC} | ${BASE} MB | ${HEAD} MB | ${DIFF} MB | ${DIFF_PERCENT}% |" >> ./output.md
             }
 
             line $1 VmRSS
