@@ -3,14 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
-import { DI } from '@/di-symbols.js';
+import { Inject, Injectable, Scope } from '@nestjs/common';
+import { REQUEST } from '@nestjs/core';
 import { bindThis } from '@/decorators.js';
 import { MahjongService } from '@/core/MahjongService.js';
 import { GlobalEvents } from '@/core/GlobalEventService.js';
-import Channel, { type MiChannelService } from '../channel.js';
+import Channel, { type ChannelRequest } from '../channel.js';
 
-class MahjongRoomChannel extends Channel {
+@Injectable({ scope: Scope.TRANSIENT })
+export class MahjongRoomChannel extends Channel {
 	public readonly chName = 'mahjongRoom';
 	public static shouldShare = false;
 	public static requireCredential = true as const;
@@ -18,12 +19,12 @@ class MahjongRoomChannel extends Channel {
 	private roomId: string | null = null;
 
 	constructor(
-		private mahjongService: MahjongService,
+		@Inject(REQUEST)
+		request: ChannelRequest,
 
-		id: string,
-		connection: Channel['connection'],
+		private mahjongService: MahjongService,
 	) {
-		super(id, connection);
+		super(request);
 	}
 
 	@bindThis
@@ -141,7 +142,7 @@ class MahjongRoomChannel extends Channel {
 		this.mahjongService.commit_cii(this.roomId!, this.user, pattern);
 	}
 
-@bindThis
+	@bindThis
 	private async kan() {
 		if (this.user == null) return;
 
@@ -149,11 +150,11 @@ class MahjongRoomChannel extends Channel {
 	}
 
 	@bindThis
-private async ankan(tile: number) {
-	if (this.user == null) return;
+	private async ankan(tile: number) {
+		if (this.user == null) return;
 
-	this.mahjongService.commit_ankan(this.roomId!, this.user, tile);
-}
+		this.mahjongService.commit_ankan(this.roomId!, this.user, tile);
+	}
 
 	@bindThis
 	private async kakan(tile: number) {
@@ -180,26 +181,5 @@ private async ankan(tile: number) {
 	public dispose() {
 		// Unsubscribe events
 		this.subscriber.off(`mahjongRoomStream:${this.roomId}`, this.onMahjongRoomStreamMessage);
-	}
-}
-
-@Injectable()
-export class MahjongRoomChannelService implements MiChannelService<true> {
-	public readonly shouldShare = MahjongRoomChannel.shouldShare;
-	public readonly requireCredential = MahjongRoomChannel.requireCredential;
-	public readonly kind = MahjongRoomChannel.kind;
-
-	constructor(
-		private mahjongService: MahjongService,
-	) {
-	}
-
-	@bindThis
-	public create(id: string, connection: Channel['connection']): MahjongRoomChannel {
-		return new MahjongRoomChannel(
-			this.mahjongService,
-			id,
-			connection,
-		);
 	}
 }
