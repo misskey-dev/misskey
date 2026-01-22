@@ -85,7 +85,8 @@ jobs:
               --argjson VmRSS "$(calc $1 VmRSS)" \
               --argjson VmHWM "$(calc $1 VmHWM)" \
               --argjson VmSize "$(calc $1 VmSize)" \
-              '{VmRSS: $VmRSS, VmHWM: $VmHWM, VmSize: $VmSize}')
+              --argjson VmData "$(calc $1 VmData)" \
+              '{VmRSS: $VmRSS, VmHWM: $VmHWM, VmSize: $VmSize, VmData: $VmData}')
 
             echo "$JSON"
           }
@@ -124,6 +125,7 @@ jobs:
             line $1 VmRSS
             line $1 VmHWM
             line $1 VmSize
+            line $1 VmData
           }
 
           echo "### Before GC" >> ./output.md
