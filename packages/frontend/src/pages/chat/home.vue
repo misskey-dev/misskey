@@ -4,16 +4,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
-	<MkPolkadots v-if="tab === 'home'" accented/>
-	<MkSpacer :contentMax="700">
-		<MkSwiper v-model:tab="tab" :tabs="headerTabs">
-			<XHome v-if="tab === 'home'"/>
-			<XInvitations v-else-if="tab === 'invitations'"/>
-			<XJoiningRooms v-else-if="tab === 'joiningRooms'"/>
-			<XOwnedRooms v-else-if="tab === 'ownedRooms'"/>
-		</MkSwiper>
-	</MkSpacer>
+<PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs" :swipable="true">
+	<MkPolkadots v-if="tab === 'home'" accented :height="200" style="margin-bottom: -200px;"/>
+	<div class="_spacer" style="--MI_SPACER-w: 700px;">
+		<XHome v-if="tab === 'home'"/>
+		<XInvitations v-else-if="tab === 'invitations'"/>
+		<XJoiningRooms v-else-if="tab === 'joiningRooms'"/>
+		<XOwnedRooms v-else-if="tab === 'ownedRooms'"/>
+	</div>
 </PageWithHeader>
 </template>
 
@@ -25,7 +23,6 @@ import XJoiningRooms from './home.joiningRooms.vue';
 import XOwnedRooms from './home.ownedRooms.vue';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
-import MkSwiper from '@/components/MkSwiper.vue';
 import MkPolkadots from '@/components/MkPolkadots.vue';
 
 const tab = ref('home');
@@ -51,7 +48,7 @@ const headerTabs = computed(() => [{
 }]);
 
 definePage(() => ({
-	title: i18n.ts.chat + ' (beta)',
+	title: i18n.ts.directMessage,
 	icon: 'ti ti-messages',
 }));
 </script>

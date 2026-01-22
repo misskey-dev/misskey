@@ -10,6 +10,7 @@ import { DI } from '@/di-symbols.js';
 import { ApiError } from '@/server/api/error.js';
 import { ChatService } from '@/core/ChatService.js';
 import { ChatEntityService } from '@/core/entities/ChatEntityService.js';
+import { IdService } from '@/core/IdService.js';
 
 export const meta = {
 	tags: ['chat'],
@@ -44,6 +45,8 @@ export const paramDef = {
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 30 },
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
+		sinceDate: { type: 'integer' },
+		untilDate: { type: 'integer' },
 	},
 	required: ['roomId'],
 } as const;
@@ -53,8 +56,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		private chatService: ChatService,
 		private chatEntityService: ChatEntityService,
+		private idService: IdService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.gen(ps.untilDate!) : null);
+			const sinceId = ps.sinceId ?? (ps.sinceDate ? this.idService.gen(ps.sinceDate!) : null);
+
 			await this.chatService.checkChatAvailability(me.id, 'read');
 
 			const room = await this.chatService.findMyRoomById(me.id, ps.roomId);
@@ -62,7 +69,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchRoom);
 			}
 
-			const invitations = await this.chatService.getSentRoomInvitationsWithPagination(ps.roomId, ps.limit, ps.sinceId, ps.untilId);
+			const invitations = await this.chatService.getSentRoomInvitationsWithPagination(ps.roomId, ps.limit, sinceId, untilId);
 			return this.chatEntityService.packRoomInvitations(invitations, me);
 		});
 	}

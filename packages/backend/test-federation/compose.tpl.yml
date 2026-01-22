@@ -12,7 +12,7 @@ services:
       retries: 20
 
   misskey:
-    image: node:20
+    image: node:${NODE_VERSION}
     env_file:
       - ./.config/docker.env
     environment:
@@ -21,6 +21,10 @@ services:
       - type: bind
         source: ../../../built
         target: /misskey/built
+        read_only: false
+      - type: bind
+        source: ./.config/dummy.yml
+        target: /misskey/.config/default.yml
         read_only: true
       - type: bind
         source: ../assets
@@ -29,6 +33,10 @@ services:
       - type: bind
         source: ../built
         target: /misskey/packages/backend/built
+        read_only: true
+      - type: bind
+        source: ../src-js
+        target: /misskey/packages/backend/src-js
         read_only: true
       - type: bind
         source: ../migration
@@ -43,6 +51,10 @@ services:
         target: /misskey/packages/backend/package.json
         read_only: true
       - type: bind
+        source: ../scripts/compile_config.js
+        target: /misskey/packages/backend/scripts/compile_config.js
+        read_only: true
+      - type: bind
         source: ../../misskey-js/built
         target: /misskey/packages/misskey-js/built
         read_only: true
@@ -51,12 +63,12 @@ services:
         target: /misskey/packages/misskey-js/package.json
         read_only: true
       - type: bind
-        source: ../../misskey-mahjong/built
-        target: /misskey/packages/misskey-mahjong/built
+        source: ../../i18n/built
+        target: /misskey/packages/i18n/built
         read_only: true
       - type: bind
-        source: ../../misskey-mahjong/package.json
-        target: /misskey/packages/misskey-mahjong/package.json
+        source: ../../i18n/package.json
+        target: /misskey/packages/i18n/package.json
         read_only: true
       - type: bind
         source: ../../misskey-reversi/built
@@ -66,6 +78,15 @@ services:
         source: ../../misskey-reversi/package.json
         target: /misskey/packages/misskey-reversi/package.json
         read_only: true
+      - type: bind
+        source: ../../misskey-mahjong/built
+        target: /misskey/packages/misskey-mahjong/built
+        read_only: true
+      - type: bind
+        source: ../../misskey-mahjong/package.json
+        target: /misskey/packages/misskey-mahjong/package.json
+        read_only: true
+
       - type: bind
         source: ../../../healthcheck.sh
         target: /misskey/healthcheck.sh
@@ -83,8 +104,8 @@ services:
         target: /misskey/pnpm-workspace.yaml
         read_only: true
       - type: bind
-        source: ../../../scripts/dependency-patches
-        target: /misskey/scripts/dependency-patches
+        source: ../../../patches
+        target: /misskey/patches
         read_only: true
       - type: bind
         source: ./certificates/rootCA.crt
@@ -103,7 +124,7 @@ services:
       retries: 20
 
   db:
-    image: postgres:15-alpine
+    image: postgres:18-alpine
     env_file:
       - ./.config/docker.env
     volumes:

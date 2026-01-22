@@ -18,7 +18,7 @@ import { Chart } from 'chart.js';
 import gradient from 'chartjs-plugin-gradient';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { store } from '@/store.js';
-import { useChartTooltip } from '@/use/use-chart-tooltip.js';
+import { useChartTooltip } from '@/composables/use-chart-tooltip.js';
 import { chartVLine } from '@/utility/chart-vline.js';
 import { initChart } from '@/utility/init-chart.js';
 
@@ -26,7 +26,7 @@ initChart();
 
 const chartEl = useTemplateRef('chartEl');
 const now = new Date();
-let chartInstance: Chart = null;
+let chartInstance: Chart | null = null;
 const chartLimit = 7;
 const fetching = ref(true);
 
@@ -37,6 +37,8 @@ async function renderChart() {
 		chartInstance.destroy();
 	}
 
+	if (chartEl.value == null) return;
+
 	const getDate = (ago: number) => {
 		const y = now.getFullYear();
 		const m = now.getMonth();
@@ -45,7 +47,7 @@ async function renderChart() {
 		return new Date(y, m, d - ago);
 	};
 
-	const format = (arr) => {
+	const format = (arr: number[]) => {
 		return arr.map((v, i) => ({
 			x: getDate(i).getTime(),
 			y: v,
@@ -105,7 +107,6 @@ async function renderChart() {
 					type: 'time',
 					offset: true,
 					time: {
-						stepSize: 1,
 						unit: 'day',
 						displayFormats: {
 							day: 'M/d',
@@ -149,7 +150,9 @@ async function renderChart() {
 					},
 					external: externalTooltipHandler,
 				},
-				gradient,
+				...({ // TSを黙らすため
+					gradient,
+				}),
 			},
 		},
 		plugins: [chartVLine(vLineColor)],

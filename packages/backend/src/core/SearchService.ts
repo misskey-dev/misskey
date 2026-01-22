@@ -190,8 +190,7 @@ export class SearchService {
 				return this.searchNoteByMeiliSearch(q, me, opts, pagination);
 			}
 			default: {
-				// eslint-disable-next-line @typescript-eslint/no-unused-vars
-				const typeCheck: never = this.provider;
+				const _: never = this.provider;
 				return [];
 			}
 		}
@@ -227,15 +226,14 @@ export class SearchService {
 
 		if (opts.host) {
 			if (opts.host === '.') {
-				query.andWhere('user.host IS NULL');
+				query.andWhere('note.userHost IS NULL');
 			} else {
-				query.andWhere('user.host = :host', { host: opts.host });
+				query.andWhere('note.userHost = :host', { host: opts.host });
 			}
 		}
 
 		this.queryService.generateVisibilityQuery(query, me);
-		if (me) this.queryService.generateMutedUserQueryForNotes(query, me);
-		if (me) this.queryService.generateBlockedUserQueryForNotes(query, me);
+		this.queryService.generateBaseNoteFilteringQuery(query, me);
 
 		return query.limit(pagination.limit).getMany();
 	}
@@ -295,9 +293,20 @@ export class SearchService {
 				this.cacheService.userBlockedCache.fetch(me.id),
 			])
 			: [new Set<string>(), new Set<string>()];
-		const notes = (await this.notesRepository.findBy({
-			id: In(res.hits.map(x => x.id)),
-		})).filter(note => {
+
+		const query = this.notesRepository.createQueryBuilder('note')
+			.innerJoinAndSelect('note.user', 'user')
+			.leftJoinAndSelect('note.reply', 'reply')
+			.leftJoinAndSelect('note.renote', 'renote')
+			.leftJoinAndSelect('reply.user', 'replyUser')
+			.leftJoinAndSelect('renote.user', 'renoteUser');
+
+		query.where('note.id IN (:...noteIds)', { noteIds: res.hits.map(x => x.id) });
+
+		this.queryService.generateBlockedHostQueryForNote(query);
+		this.queryService.generateSuspendedUserQueryForNote(query);
+
+		const notes = (await query.getMany()).filter(note => {
 			if (me && isUserRelated(note, userIdsWhoBlockingMe)) return false;
 			if (me && isUserRelated(note, userIdsWhoMeMuting)) return false;
 			return true;

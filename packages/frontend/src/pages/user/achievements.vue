@@ -4,9 +4,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkSpacer :contentMax="1200">
+<div class="_spacer" style="--MI_SPACER-w: 1200px;">
 	<MkAchievements :user="user" :withLocked="false" :withDescription="$i != null && (props.user.id === $i.id)"/>
-</MkSpacer>
+</div>
 </template>
 
 <script lang="ts" setup>

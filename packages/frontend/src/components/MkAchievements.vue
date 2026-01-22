@@ -16,20 +16,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 						[$style.iconFrame_platinum]: ACHIEVEMENT_BADGES[achievement.name].frame === 'platinum',
 					}]"
 				>
-					<div :class="[$style.iconInner]" :style="{ background: ACHIEVEMENT_BADGES[achievement.name].bg }">
+					<div :class="[$style.iconInner]" :style="{ background: ACHIEVEMENT_BADGES[achievement.name].bg ?? '' }">
 						<img :class="$style.iconImg" :src="ACHIEVEMENT_BADGES[achievement.name].img">
 					</div>
 				</div>
 			</div>
 			<div :class="$style.body">
 				<div :class="$style.header">
-					<span :class="$style.title">{{ i18n.ts._achievements._types['_' + achievement.name].title }}</span>
+					<span :class="$style.title">{{ i18n.ts._achievements._types[`_${achievement.name}`].title }}</span>
 					<span :class="$style.time">
 						<time v-tooltip="new Date(achievement.unlockedAt).toLocaleString()">{{ new Date(achievement.unlockedAt).getFullYear() }}/{{ new Date(achievement.unlockedAt).getMonth() + 1 }}/{{ new Date(achievement.unlockedAt).getDate() }}</time>
 					</span>
 				</div>
-				<div :class="$style.description">{{ withDescription ? i18n.ts._achievements._types['_' + achievement.name].description : '???' }}</div>
-				<div v-if="i18n.ts._achievements._types['_' + achievement.name].flavor && withDescription" :class="$style.flavor">{{ i18n.ts._achievements._types['_' + achievement.name].flavor }}</div>
+				<div :class="$style.description">{{ withDescription ? i18n.ts._achievements._types[`_${achievement.name}`].description : '???' }}</div>
+				<div v-if="'flavor' in i18n.ts._achievements._types[`_${achievement.name}`] && withDescription" :class="$style.flavor">{{ (i18n.ts._achievements._types[`_${achievement.name}`] as { flavor: string; }).flavor }}</div>
 			</div>
 		</div>
 		<template v-if="withLocked">
@@ -54,15 +54,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import * as Misskey from 'misskey-js';
 import { onMounted, ref, computed } from 'vue';
-import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { ACHIEVEMENT_TYPES, ACHIEVEMENT_BADGES, claimAchievement } from '@/utility/achievements.js';
 
 const props = withDefaults(defineProps<{
 	user: Misskey.entities.User;
-	withLocked: boolean;
-	withDescription: boolean;
+	withLocked?: boolean;
+	withDescription?: boolean;
 }>(), {
 	withLocked: true,
 	withDescription: true,
@@ -71,7 +70,7 @@ const props = withDefaults(defineProps<{
 const achievements = ref<Misskey.entities.UsersAchievementsResponse | null>(null);
 const lockedAchievements = computed(() => ACHIEVEMENT_TYPES.filter(x => !(achievements.value ?? []).some(a => a.name === x)));
 
-function fetch() {
+function _fetch_() {
 	misskeyApi('users/achievements', { userId: props.user.id }).then(res => {
 		achievements.value = [];
 		for (const t of ACHIEVEMENT_TYPES) {
@@ -84,11 +83,11 @@ function fetch() {
 
 function clickHere() {
 	claimAchievement('clickedClickHere');
-	fetch();
+	_fetch_();
 }
 
 onMounted(() => {
-	fetch();
+	_fetch_();
 });
 </script>
 

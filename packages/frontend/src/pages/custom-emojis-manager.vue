@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
-	<MkSpacer :contentMax="900">
+	<div class="_spacer" style="--MI_SPACER-w: 900px;">
 		<div class="ogwlenmc">
 			<div v-if="tab === 'local'" class="local">
 				<MkInput v-model="query" :debounce="true" type="search" autocapitalize="off">
@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkButton inline @click="setLicenseBulk">Set License</MkButton>
 					<MkButton inline danger @click="delBulk">Delete</MkButton>
 				</div>
-				<MkPagination ref="emojisPaginationComponent" :pagination="pagination">
+				<MkPagination ref="emojisPaginationComponent" :paginator="paginator">
 					<template #empty><span>{{ i18n.ts.noCustomEmojis }}</span></template>
 					<template #default="{items}">
 						<div class="ldhfsamy">
@@ -50,11 +50,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts.host }}</template>
 					</MkInput>
 				</FormSplit>
-				<MkPagination :pagination="remotePagination">
+				<MkPagination :paginator="remotePaginator">
 					<template #empty><span>{{ i18n.ts.noCustomEmojis }}</span></template>
 					<template #default="{items}">
 						<div class="ldhfsamy">
-							<div v-for="emoji in items" :key="emoji.id" class="emoji _panel _button" @click="remoteMenu(emoji, $event)">
+							<div v-for="emoji in items" :key="emoji.id" class="emoji _panel _button" @click="remoteMenu(emoji as RemoteEmoji, $event)">
 								<img :src="getProxiedImageUrl(emoji.url, 'emoji')" class="img" :alt="emoji.name"/>
 								<div class="body">
 									<div class="name _monospace">{{ emoji.name }}</div>
@@ -66,26 +66,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkPagination>
 			</div>
 		</div>
-	</MkSpacer>
+	</div>
 </PageWithHeader>
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, ref, useTemplateRef } from 'vue';
+import * as Misskey from 'misskey-js';
+import { computed, markRaw, ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import MkRemoteEmojiEditDialog from '@/components/MkRemoteEmojiEditDialog.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import FormSplit from '@/components/form/split.vue';
-import { selectFile } from '@/utility/select-file.js';
+import { selectFile } from '@/utility/drive.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { getProxiedImageUrl } from '@/utility/media-proxy.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
-
-const emojisPaginationComponent = useTemplateRef('emojisPaginationComponent');
+import { Paginator } from '@/utility/paginator.js';
 
 const tab = ref('local');
 const query = ref<string | null>(null);
@@ -94,32 +94,32 @@ const host = ref<string | null>(null);
 const selectMode = ref(false);
 const selectedEmojis = ref<string[]>([]);
 
-const pagination = {
-	endpoint: 'admin/emoji/list' as const,
+type RemoteEmoji = Misskey.entities.AdminEmojiListRemoteResponse[number] & { host: string };
+
+const paginator = markRaw(new Paginator('admin/emoji/list', {
 	limit: 30,
-	params: computed(() => ({
+	computedParams: computed(() => ({
 		query: (query.value && query.value !== '') ? query.value : null,
 	})),
-};
+}));
 
-const remotePagination = {
-	endpoint: 'admin/emoji/list-remote' as const,
+const remotePaginator = markRaw(new Paginator('admin/emoji/list-remote', {
 	limit: 30,
-	params: computed(() => ({
+	computedParams: computed(() => ({
 		query: (queryRemote.value && queryRemote.value !== '') ? queryRemote.value : null,
 		host: (host.value && host.value !== '') ? host.value : null,
 	})),
-};
+}));
 
 const selectAll = () => {
 	if (selectedEmojis.value.length > 0) {
 		selectedEmojis.value = [];
 	} else {
-		selectedEmojis.value = Array.from(emojisPaginationComponent.value?.items.values(), item => item.id);
+		selectedEmojis.value = paginator.items.value.map(item => item.id);
 	}
 };
 
-const toggleSelect = (emoji) => {
+const toggleSelect = (emoji: Misskey.entities.EmojiDetailed) => {
 	if (selectedEmojis.value.includes(emoji.id)) {
 		selectedEmojis.value = selectedEmojis.value.filter(x => x !== emoji.id);
 	} else {
@@ -127,37 +127,47 @@ const toggleSelect = (emoji) => {
 	}
 };
 
-const add = async (ev: MouseEvent) => {
-	const { dispose } = os.popup(defineAsyncComponent(() => import('./emoji-edit-dialog.vue')), {
+const add = async () => {
+	const { dispose } = await os.popupAsyncWithDialog(import('./emoji-edit-dialog.vue').then(x => x.default), {
 	}, {
 		done: result => {
 			if (result.created) {
-				emojisPaginationComponent.value?.prepend(result.created);
+				const nowIso = (new Date()).toISOString();
+				paginator.prepend({
+					...result.created,
+					createdAt: nowIso,
+				});
 			}
 		},
 		closed: () => dispose(),
 	});
 };
 
-const edit = (emoji) => {
-	const { dispose } = os.popup(defineAsyncComponent(() => import('./emoji-edit-dialog.vue')), {
+const edit = async (emoji: Misskey.entities.EmojiDetailed) => {
+	const { dispose } = await os.popupAsyncWithDialog(import('./emoji-edit-dialog.vue').then(x => x.default), {
 		emoji: emoji,
 	}, {
 		done: result => {
 			if (result.updated) {
-				emojisPaginationComponent.value?.updateItem(result.updated.id, (oldEmoji) => ({
+				paginator.updateItem(result.updated.id, (oldEmoji) => ({
 					...oldEmoji,
 					...result.updated,
 				}));
 			} else if (result.deleted) {
-				emojisPaginationComponent.value?.removeItem(emoji.id);
+				paginator.removeItem(emoji.id);
 			}
 		},
 		closed: () => dispose(),
 	});
 };
 
-const detailRemoteEmoji = (emoji) => {
+const detailRemoteEmoji = (emoji: {
+	id: string,
+	name: string,
+	host: string,
+	license: string | null,
+	url: string
+}) => {
 	const { dispose } = os.popup(MkRemoteEmojiEditDialog, {
 		emoji: emoji,
 	}, {
@@ -170,13 +180,19 @@ const detailRemoteEmoji = (emoji) => {
 	});
 };
 
-const importEmoji = (emoji) => {
+const importEmoji = (emojiId: string) => {
 	os.apiWithDialog('admin/emoji/copy', {
-		emojiId: emoji.id,
+		emojiId: emojiId,
 	});
 };
 
-const remoteMenu = (emoji, ev: MouseEvent) => {
+const remoteMenu = (emoji: {
+	id: string,
+	name: string,
+	host: string,
+	license: string | null,
+	url: string
+}, ev: PointerEvent) => {
 	os.popupMenu([{
 		type: 'label',
 		text: ':' + emoji.name + ':',
@@ -187,11 +203,11 @@ const remoteMenu = (emoji, ev: MouseEvent) => {
 	}, {
 		text: i18n.ts.import,
 		icon: 'ti ti-plus',
-		action: () => { importEmoji(emoji); },
+		action: () => { importEmoji(emoji.id); },
 	}], ev.currentTarget ?? ev.target);
 };
 
-const menu = (ev: MouseEvent) => {
+const menu = (ev: PointerEvent) => {
 	os.popupMenu([{
 		icon: 'ti ti-download',
 		text: i18n.ts.export,
@@ -214,7 +230,10 @@ const menu = (ev: MouseEvent) => {
 		icon: 'ti ti-upload',
 		text: i18n.ts.import,
 		action: async () => {
-			const file = await selectFile(ev.currentTarget ?? ev.target);
+			const file = await selectFile({
+				anchorElement: ev.currentTarget ?? ev.target,
+				multiple: false,
+			});
 			misskeyApi('admin/emoji/import-zip', {
 				fileId: file.id,
 			})
@@ -242,7 +261,7 @@ const setCategoryBulk = async () => {
 		ids: selectedEmojis.value,
 		category: result,
 	});
-	emojisPaginationComponent.value?.reload();
+	paginator.reload();
 };
 
 const setLicenseBulk = async () => {
@@ -254,7 +273,7 @@ const setLicenseBulk = async () => {
 		ids: selectedEmojis.value,
 		license: result,
 	});
-	emojisPaginationComponent.value?.reload();
+	paginator.reload();
 };
 
 const addTagBulk = async () => {
@@ -266,7 +285,7 @@ const addTagBulk = async () => {
 		ids: selectedEmojis.value,
 		aliases: result.split(' '),
 	});
-	emojisPaginationComponent.value?.reload();
+	paginator.reload();
 };
 
 const removeTagBulk = async () => {
@@ -278,7 +297,7 @@ const removeTagBulk = async () => {
 		ids: selectedEmojis.value,
 		aliases: result.split(' '),
 	});
-	emojisPaginationComponent.value?.reload();
+	paginator.reload();
 };
 
 const setTagBulk = async () => {
@@ -290,7 +309,7 @@ const setTagBulk = async () => {
 		ids: selectedEmojis.value,
 		aliases: result.split(' '),
 	});
-	emojisPaginationComponent.value?.reload();
+	paginator.reload();
 };
 
 const delBulk = async () => {
@@ -302,7 +321,7 @@ const delBulk = async () => {
 	await os.apiWithDialog('admin/emoji/delete-bulk', {
 		ids: selectedEmojis.value,
 	});
-	emojisPaginationComponent.value?.reload();
+	paginator.reload();
 };
 
 const headerActions = computed(() => [{
@@ -312,6 +331,7 @@ const headerActions = computed(() => [{
 	handler: add,
 }, {
 	icon: 'ti ti-dots',
+	text: i18n.ts.more,
 	handler: menu,
 }]);
 

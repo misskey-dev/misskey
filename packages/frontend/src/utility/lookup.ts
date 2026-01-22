@@ -8,6 +8,7 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { mainRouter } from '@/router.js';
+import { acct } from '@/filters/user';
 
 export async function lookup(router?: Router) {
 	const _router = router ?? mainRouter;
@@ -19,12 +20,16 @@ export async function lookup(router?: Router) {
 	if (canceled || query.length <= 1) return;
 
 	if (query.startsWith('@') && !query.includes(' ')) {
-		_router.push(`/${query}`);
+		_router.pushByPath(`/${query}`);
 		return;
 	}
 
 	if (query.startsWith('#')) {
-		_router.push(`/tags/${encodeURIComponent(query.substring(1))}`);
+		_router.push('/tags/:tag', {
+			params: {
+				tag: query.substring(1),
+			}
+		});
 		return;
 	}
 
@@ -32,9 +37,17 @@ export async function lookup(router?: Router) {
 		const res = await apLookup(query);
 
 		if (res.type === 'User') {
-			_router.push(`/@${res.object.username}@${res.object.host}`);
+			_router.push('/@:acct/:page?', {
+				params: {
+					acct: acct(res.object),
+				},
+			});
 		} else if (res.type === 'Note') {
-			_router.push(`/notes/${res.object.id}`);
+			_router.push('/notes/:noteId/:initialTab?', {
+				params: {
+					noteId: res.object.id,
+				},
+			});
 		}
 
 		return;

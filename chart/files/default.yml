@@ -221,9 +221,6 @@ id: "aidx"
 # Media Proxy
 #mediaProxy: https://example.com/proxy
 
-# Sign to ActivityPub GET request (default: true)
-signToActivityPubGet: true
-
 #allowedPrivateNetworks: [
 #  '127.0.0.1/32'
 #]

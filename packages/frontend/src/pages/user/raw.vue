@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkSpacer :contentMax="600" :marginMin="16" :marginMax="32">
+<div class="_spacer" style="--MI_SPACER-w: 600px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
 	<div class="_gaps_m">
 		<div :class="$style.userMInfoRoot">
 			<MkAvatar :class="$style.userMInfoAvatar" :user="user" indicator link preview/>
@@ -35,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkObjectView tall :value="user"></MkObjectView>
 		</FormSection>
 	</div>
-</MkSpacer>
+</div>
 </template>
 
 <script lang="ts" setup>
@@ -48,7 +48,7 @@ import FormSection from '@/components/form/section.vue';
 import MkObjectView from '@/components/MkObjectView.vue';
 
 const props = defineProps<{
-	user: Misskey.entities.User;
+	user: Misskey.entities.UserDetailed & { isModerator?: boolean; };
 }>();
 
 const moderator = computed(() => props.user.isModerator ?? false);
