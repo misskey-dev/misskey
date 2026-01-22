@@ -72,10 +72,10 @@ jobs:
               DIFF_MB=$(echo "scale=2; $DIFF / 1024" | bc)
 
               JSON=$(jq -c -n \
-                --arg base "$BASE_MB" \
-                --arg head "$HEAD_MB" \
-                --arg diff "$DIFF_MB" \
-                --arg diff_percent "$DIFF_PERCENT" \
+                --argjson base "$BASE_MB" \
+                --argjson head "$HEAD_MB" \
+                --argjson diff "$DIFF_MB" \
+                --argjson diff_percent "$DIFF_PERCENT" \
                 '{base: $base, head: $head, diff: $diff, diff_percent: $diff_percent}')
 
               echo "$JSON"
