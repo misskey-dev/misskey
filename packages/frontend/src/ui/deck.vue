@@ -345,7 +345,7 @@ window.document.documentElement.style.scrollBehavior = 'auto';
 }
 
 .bottomMenuButton {
-	display: block;
+	display: inline-block;
 	height: 100%;
 	aspect-ratio: 1;
 }

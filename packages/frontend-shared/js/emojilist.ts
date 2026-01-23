@@ -41,7 +41,7 @@ export const emojiCharByCategory = _charGroupByCategory;
 
 export function getUnicodeEmojiOrNull(char: string): UnicodeEmojiDef | null {
 	// Colorize it because emojilist.json assumes that
-	return unicodeEmojisMap.get(colorizeEmoji(char))
+	return unicodeEmojisMap.get(forceColorizeEmoji(char))
 		// カラースタイル絵文字がjsonに無い場合はテキストスタイル絵文字にフォールバックする
 		?? unicodeEmojisMap.get(char)
 		// それでも見つからない場合はnullを返す
@@ -54,12 +54,12 @@ export function getUnicodeEmoji(char: string): UnicodeEmojiDef | string {
 }
 
 export function isSupportedEmoji(char: string): boolean {
-	return unicodeEmojisMap.has(colorizeEmoji(char)) || unicodeEmojisMap.has(char);
+	return unicodeEmojisMap.has(forceColorizeEmoji(char)) || unicodeEmojisMap.has(char);
 }
 
 export function getEmojiName(char: string): string {
 	// Colorize it because emojilist.json assumes that
-	const idx = _indexByChar.get(colorizeEmoji(char)) ?? _indexByChar.get(char);
+	const idx = _indexByChar.get(forceColorizeEmoji(char)) ?? _indexByChar.get(char);
 	if (idx === undefined) {
 		// 絵文字情報がjsonに無い場合は名前の取得が出来ないのでそのまま返すしか無い
 		return char;
@@ -72,7 +72,24 @@ export function getEmojiName(char: string): string {
  * テキストスタイル絵文字（U+260Eなどの1文字で表現される絵文字）をカラースタイル絵文字に変換します（VS16:U+FE0Fを付与）。
  */
 export function colorizeEmoji(char: string) {
-	return char.length === 1 ? `${char}\uFE0F` : char;
+	// <文字列>.length はコードポイント数ではなくUTF-16コードユニット数を返すため、サロゲートペアを含む絵文字で誤動作する。
+	// そのため、配列に変換してコードポイント数を数える方法を取る。
+	return Array.from(char).length === 1 ? `${char}\uFE0F` : char;
+}
+
+/**
+ * 文字種にかかわらず、カラースタイル絵文字への変換を試みます（本ファイルにある検索プログラム用・フォールバックが必須）。
+ */
+function forceColorizeEmoji(char: string) {
+	// <文字列>.length はコードポイント数ではなくUTF-16コードユニット数を返すため、サロゲートペアを含む絵文字で誤動作する。
+	// そのため、配列に変換してコードポイント数を数える方法を取る。
+	const chars = Array.from(char);
+	if (chars.includes('\uFE0F')) {
+		return char;
+	} else {
+		chars.splice(1, 0, '\uFE0F');
+		return chars.join('');
+	}
 }
 
 export interface CustomEmojiFolderTree {

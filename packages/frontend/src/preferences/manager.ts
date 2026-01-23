@@ -257,20 +257,23 @@ export class PreferencesManager extends EventEmitter<PreferencesManagerEvents> {
 
 		this.rewriteRawState(key, v);
 
-		this.emit('committed', {
-			key,
-			value: v,
-			oldValue: this.s[key],
-		});
-
 		const record = this.getMatchedRecordOf(key);
+
+		const _save = () => {
+			this.save();
+			this.emit('committed', {
+				key,
+				value: v,
+				oldValue: this.s[key],
+			});
+		};
 
 		if (parseScope(record[0]).account == null && isAccountDependentKey(key) && currentAccount != null) {
 			this.profile.preferences[key].push([makeScope({
 				server: host,
 				account: currentAccount.id,
 			}), v, {}]);
-			this.save();
+			_save();
 			return;
 		}
 
@@ -278,12 +281,12 @@ export class PreferencesManager extends EventEmitter<PreferencesManagerEvents> {
 			this.profile.preferences[key].push([makeScope({
 				server: host,
 			}), v, {}]);
-			this.save();
+			_save();
 			return;
 		}
 
 		record[1] = v;
-		this.save();
+		_save();
 
 		if (record[2].sync) {
 			// awaitの必要なし

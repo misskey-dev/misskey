@@ -90,7 +90,8 @@ const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
 const vote = async (id: number) => {
 	if (props.readOnly || closed.value || isVoted.value) return;
 
-	pleaseLogin({ openOnRemote: pleaseLoginContext.value });
+	const isLoggedIn = await pleaseLogin({ openOnRemote: pleaseLoginContext.value });
+	if (!isLoggedIn) return;
 
 	const { canceled } = await os.confirm({
 		type: 'question',
