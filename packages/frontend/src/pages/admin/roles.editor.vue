@@ -80,11 +80,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkInput>
 
 			<XPolicyEditor
+				v-model:rolePolicies="rolePolicyValues"
+				v-model:policiesMeta="rolePolicyMeta"
 				:isBaseRole="false"
 				:roleQuery="q"
 				:readonly="readonly"
-				v-model:rolePolicies="rolePolicyValues"
-				v-model:policiesMeta="rolePolicyMeta"
 			/>
 		</div>
 	</FormSlot>

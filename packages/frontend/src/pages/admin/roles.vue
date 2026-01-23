@@ -18,9 +18,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkInput>
 
 					<XPolicyEditor
+						v-model:rolePolicies="policies"
 						:isBaseRole="true"
 						:roleQuery="baseRoleQ"
-						v-model:rolePolicies="policies"
 					/>
 				</div>
 			</MkFolder>
