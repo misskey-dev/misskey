@@ -17,13 +17,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 		</template>
 		<div class="_gaps">
-			<MkSwitch v-if="!isBaseRole && rolePolicyMetaModel != null" v-model="rolePolicyMetaModel.useDefault" :disabled="readonly">
+			<MkSwitch v-if="!isBaseRole && rolePolicyMetaModel != null" v-model="useDefaultModel" :disabled="readonly">
 				<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 			</MkSwitch>
 			<div>
 				<slot :disabled="readonly || (!isBaseRole && rolePolicyMetaModel?.useDefault)"></slot>
 			</div>
-			<MkRange v-if="!isBaseRole && rolePolicyMetaModel != null" v-model="rolePolicyMetaModel.priority" :min="0" :max="2" :step="1" easing :textConverter="priroityRangeTextConverter" :disabled="readonly">
+			<MkRange v-if="!isBaseRole && rolePolicyMetaModel != null" v-model="priorityModel" :min="0" :max="2" :step="1" easing :textConverter="priroityRangeTextConverter" :disabled="readonly">
 				<template #label>{{ i18n.ts._role.priority }}</template>
 			</MkRange>
 		</div>
@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { computed } from 'vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRange from '@/components/MkRange.vue';
@@ -48,19 +48,27 @@ const emit = defineEmits<{
 	(ev: 'update:policyMeta', v: PolicyMeta): void;
 }>();
 
-const rolePolicyMetaModel = ref<PolicyMeta | null>(null);
-watch(() => props.policyMeta, (v) => {
-	if (v != null) {
-		rolePolicyMetaModel.value = v;
-	} else {
-		rolePolicyMetaModel.value = null;
-	}
-}, { immediate: true, deep: true });
-watch(rolePolicyMetaModel, (v) => {
-	if (v != null) {
-		emit('update:policyMeta', v);
-	}
-}, { deep: true });
+const rolePolicyMetaModel = computed<PolicyMeta | null>(() => props.policyMeta ?? null);
+
+const useDefaultModel = computed<boolean>({
+	get: () => props.policyMeta?.useDefault ?? false,
+	set: (value) => {
+		const current = props.policyMeta;
+		if (current == null) return;
+		if (current.useDefault === value) return;
+		emit('update:policyMeta', { ...current, useDefault: value });
+	},
+});
+
+const priorityModel = computed<number>({
+	get: () => props.policyMeta?.priority ?? 0,
+	set: (value) => {
+		const current = props.policyMeta;
+		if (current == null) return;
+		if (current.priority === value) return;
+		emit('update:policyMeta', { ...current, priority: value });
+	},
+});
 
 function getPriorityIcon(priority: number): string {
 	if (priority === 2) return 'ti ti-arrows-up';

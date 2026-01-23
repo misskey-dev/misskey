@@ -403,7 +403,7 @@ type PolicyMetaRecord = {
 </script>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed } from 'vue';
 import { i18n } from '@/i18n.js';
 import XFolder from './roles.policy-editor.folder.vue';
 
@@ -426,25 +426,36 @@ const emit = defineEmits<{
 	(event: 'update:policiesMeta', value: PolicyMetaRecord): void;
 }>();
 
-const valuesModel = ref<Misskey.entities.RolePolicies>(props.rolePolicies);
-watch(() => props.rolePolicies, (newVal) => {
-	valuesModel.value = newVal;
-}, { deep: true });
-watch(valuesModel, (newVal) => {
-	emit('update:rolePolicies', newVal);
-}, { deep: true });
+const valuesModel = new Proxy({} as Misskey.entities.RolePolicies, {
+	get(_target, prop) {
+		if (typeof prop !== 'string') return undefined;
+		return props.rolePolicies[prop as keyof Misskey.entities.RolePolicies];
+	},
+	set(_target, prop, value) {
+		if (typeof prop !== 'string') return false;
+		emit('update:rolePolicies', { ...props.rolePolicies, [prop]: value });
+		return true;
+	},
+});
 
 function createDefaultPolicyMeta() {
 	return Object.fromEntries(Object.keys(Misskey.rolePolicies).map(key => [key, { useDefault: true, priority: 0 }])) as PolicyMetaRecord;
 }
-const policyMetaModel = ref<PolicyMetaRecord>(props.policiesMeta ?? createDefaultPolicyMeta());
-watch(() => props.policiesMeta, (newVal) => {
-	policyMetaModel.value = newVal ?? createDefaultPolicyMeta();
-}, { deep: true });
-watch(policyMetaModel, (newVal) => {
-	if (newVal == null) return;
-	emit('update:policiesMeta', newVal);
-}, { deep: true });
+
+const policiesMetaFallback = createDefaultPolicyMeta();
+const policyMetaModel = new Proxy({} as PolicyMetaRecord, {
+	get(_target, prop) {
+		if (typeof prop !== 'string') return undefined;
+		const base = props.policiesMeta ?? policiesMetaFallback;
+		return base[prop as keyof PolicyMetaRecord];
+	},
+	set(_target, prop, value) {
+		if (typeof prop !== 'string') return false;
+		const base = props.policiesMeta ?? policiesMetaFallback;
+		emit('update:policiesMeta', { ...base, [prop]: value });
+		return true;
+	},
+});
 
 function matchQuery(keywords: string[]): boolean {
 	if (props.roleQuery == null || props.roleQuery.trim().length === 0) return true;
@@ -452,9 +463,9 @@ function matchQuery(keywords: string[]): boolean {
 }
 
 const avatarDecorationLimit = computed({
-	get: () => Math.min(16, Math.max(0, valuesModel.value.avatarDecorationLimit)),
+	get: () => Math.min(16, Math.max(0, Number(valuesModel.avatarDecorationLimit ?? 0))),
 	set: (value) => {
-		valuesModel.value.avatarDecorationLimit = Math.min(Number(value), 16);
+		valuesModel.avatarDecorationLimit = Math.min(Number(value), 16);
 	},
 });
 
