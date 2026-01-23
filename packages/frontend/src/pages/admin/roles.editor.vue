@@ -212,13 +212,3 @@ const save = throttle(100, () => {
 
 watch(role, save, { deep: true });
 </script>
-
-<style lang="scss" module>
-.useDefaultLabel {
-	opacity: 0.7;
-}
-
-.priorityIndicator {
-	margin-left: 8px;
-}
-</style>
