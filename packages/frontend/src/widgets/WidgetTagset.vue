@@ -122,6 +122,7 @@ const setPrograms = async () => {
 
 	if (selected === 'episode_browser') {
 		window.open('/mulukhiya/app/episode');
+		programSelected.value = null;
 		return;
 	}
 
@@ -149,7 +150,10 @@ const setPrograms = async () => {
 		title: dic.confirmMessage,
 		text: label,
 	});
-	if (canceled) return;
+	if (canceled) {
+		programSelected.value = null;
+		return;
+	}
 
 	await os.apiWithDialog('notes/create', {
 		localOnly: true, // コマンドトゥートは連合に流す必要なし
@@ -159,6 +163,7 @@ const setPrograms = async () => {
 		visibleUserIds: [],
 	});
 	os.toast(dic.successMessage);
+	programSelected.value = null;
 };
 
 watch(programSelected, () => setPrograms());
