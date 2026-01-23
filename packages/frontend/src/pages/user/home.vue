@@ -94,7 +94,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</dl>
 							<dl v-if="user.birthday" class="field">
 								<dt class="name"><i class="ti ti-cake ti-fw"></i> {{ i18n.ts.birthday }}</dt>
-								<dd class="value">{{ user.birthday.replace('-', '/').replace('-', '/') }} ({{ i18n.tsx.yearsOld({ age }) }})</dd>
+								<dd class="value">{{ birthdateString }} ({{ i18n.tsx.yearsOld({ age }) }})</dd>
 							</dl>
 							<dl class="field">
 								<dt class="name"><i class="ti ti-calendar ti-fw"></i> {{ i18n.ts.registeredDate }}</dt>
@@ -161,6 +161,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { defineAsyncComponent, computed, onMounted, onUnmounted, onActivated, onDeactivated, nextTick, watch, ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
+import { versatileLang } from '@@/js/intl-const.js';
 import { getScrollContainer } from '@@/js/scroll.js';
 import MkNote from '@/components/MkNote.vue';
 import MkFollowButton from '@/components/MkFollowButton.vue';
@@ -187,6 +188,12 @@ import MkSparkle from '@/components/MkSparkle.vue';
 import { prefer } from '@/preferences.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
 import { isBirthday } from '@/utility/is-birthday.js';
+
+const birthdateFormat = new Intl.DateTimeFormat(versatileLang, {
+	year: 'numeric',
+	month: 'numeric',
+	day: 'numeric',
+});
 
 function calcAge(birthdate: string): number {
 	const date = new Date(birthdate);
@@ -248,6 +255,9 @@ const style = computed(() => {
 	};
 });
 
+const birthdateString = computed(() => {
+	return props.user.birthday ? birthdateFormat.format(new Date(props.user.birthday)) : null;
+});
 const age = computed(() => {
 	return props.user.birthday ? calcAge(props.user.birthday) : NaN;
 });

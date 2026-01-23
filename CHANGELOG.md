@@ -23,6 +23,7 @@
 - Fix: ファイルタブのセンシティブメディアを開く際に確認ダイアログを出す設定が適用されない問題を修正
 - Fix: 2月29日を誕生日に設定している場合、閏年以外は3月1日を誕生日として扱うように修正
 - Fix: `Mk:C:container` の `borderWidth` が正しく反映されない問題を修正
+- Fix: 誕生日の日付表記を言語設定に合わせて変化するように修正
 
 ### Server
 - Enhance: OAuthのクライアント情報取得（Client Information Discovery）において、IndieWeb Living Standard 11 July 2024で定義されているJSONドキュメント形式に対応しました
