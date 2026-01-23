@@ -434,6 +434,7 @@ function matchQuery(keywords: string[]): boolean {
 
 async function updateBaseRole() {
 	await os.apiWithDialog('admin/roles/update-default-policies', {
+		//@ts-expect-error misskey-js側の型定義が不十分
 		policies,
 	});
 	fetchInstance(true);
