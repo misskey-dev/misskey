@@ -36,3 +36,5 @@ minimumReleaseAge: 10080 # delay 7days to mitigate supply-chain attack
 minimumReleaseAgeExclude:
   - '@syuilo/aiscript'
   - '@fastify/express' # 脆弱性対応。そのうち消すこと
+  - 'lodash' # 脆弱性対応。そのうち消すこと
+  - 'tar' # 脆弱性対応。そのうち消すこと
