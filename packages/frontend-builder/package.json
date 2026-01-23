@@ -12,8 +12,8 @@
 	"devDependencies": {
 		"@types/estree": "1.0.8",
 		"@types/node": "24.10.4",
-		"@typescript-eslint/eslint-plugin": "8.50.1",
-		"@typescript-eslint/parser": "8.50.1",
+		"@typescript-eslint/eslint-plugin": "8.51.0",
+		"@typescript-eslint/parser": "8.51.0",
 		"rollup": "4.54.0"
 	},
 	"dependencies": {
