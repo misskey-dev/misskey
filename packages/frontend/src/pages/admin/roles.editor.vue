@@ -191,11 +191,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkSwitch v-model="role.policies.renotePolicy.useDefault" :readonly="readonly">
 						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 					</MkSwitch>
-					<MkSelect v-model="role.policies.renotePolicy.value" :disabled="role.policies.renotePolicy.useDefault" :readonly="readonly">
+					<MkSelect
+						v-model="role.policies.renotePolicy.value"
+						:items="[
+							{ label: i18n.ts._role._options.renotePolicy_allow, value: 'allow' },
+							{ label: i18n.ts._role._options.renotePolicy_renoteOnly, value: 'renoteOnly' },
+							{ label: i18n.ts._role._options.renotePolicy_disallow, value: 'disallow' },
+						]"
+						:disabled="role.policies.renotePolicy.useDefault"
+						:readonly="readonly"
+					>
 						<template #label>{{ i18n.ts.enable }}</template>
-						<option value="allow">{{ i18n.ts._role._options.renotePolicy_allow }}</option>
-						<option value="renoteOnly">{{ i18n.ts._role._options.renotePolicy_renoteOnly }}</option>
-						<option value="disallow">{{ i18n.ts._role._options.renotePolicy_disallow }}</option>
 					</MkSelect>
 					<MkRange v-model="role.policies.renotePolicy.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
 						<template #label>{{ i18n.ts._role.priority }}</template>

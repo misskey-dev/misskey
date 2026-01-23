@@ -59,12 +59,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 					<MkFolder v-if="matchQuery([i18n.ts._role._options.renotePolicy, 'renotePolicy'])">
 						<template #label>{{ i18n.ts._role._options.renotePolicy }}</template>
-						<template #suffix>{{ policies.renotePolicy.value === 'allow' ? i18n.ts._role._options.renotePolicy_allow : policies.renotePolicy.value === 'renoteOnly' ? i18n.ts._role._options.renotePolicy_renoteOnly : i18n.ts._role._options.renotePolicy_disallow }}</template>
-						<MkSelect v-model="policies.renotePolicy">
+						<template #suffix>{{ policies.renotePolicy === 'allow' ? i18n.ts._role._options.renotePolicy_allow : policies.renotePolicy === 'renoteOnly' ? i18n.ts._role._options.renotePolicy_renoteOnly : i18n.ts._role._options.renotePolicy_disallow }}</template>
+						<MkSelect
+							v-model="policies.renotePolicy"
+							:items="[
+								{ label: i18n.ts._role._options.renotePolicy_allow, value: 'allow' },
+								{ label: i18n.ts._role._options.renotePolicy_renoteOnly, value: 'renoteOnly' },
+								{ label: i18n.ts._role._options.renotePolicy_disallow, value: 'disallow' },
+							]"
+						>
 							<template #label>{{ i18n.ts.enable }}</template>
-							<option value="allow">{{ i18n.ts._role._options.renotePolicy_allow }}</option>
-							<option value="renoteOnly">{{ i18n.ts._role._options.renotePolicy_renoteOnly }}</option>
-							<option value="disallow">{{ i18n.ts._role._options.renotePolicy_disallow }}</option>
 						</MkSelect>
 					</MkFolder>
 
@@ -87,7 +91,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkFolder v-if="matchQuery([i18n.ts._role._options.noteFilesLimit, 'noteFilesLimit'])">
 						<template #label>{{ i18n.ts._role._options.noteFilesLimit }}</template>
 						<template #suffix>{{ policies.noteFilesLimit }}</template>
-						<MkInput v-model="policies.noteFilesLimit" type="number" max="16" min="0">
+						<MkInput v-model="policies.noteFilesLimit" type="number" :max="16" :min="0">
 						</MkInput>
 					</MkFolder>
 
@@ -430,7 +434,6 @@ function matchQuery(keywords: string[]): boolean {
 
 async function updateBaseRole() {
 	await os.apiWithDialog('admin/roles/update-default-policies', {
-		//@ts-expect-error misskey-js側の型定義が不十分
 		policies,
 	});
 	fetchInstance(true);
