@@ -155,6 +155,8 @@ watch([model, () => props.items], () => {
 	}
 	if (found) {
 		currentValueText.value = found.label;
+	} else {
+		currentValueText.value = null;
 	}
 }, { immediate: true, deep: true });
 
