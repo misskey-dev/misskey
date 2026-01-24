@@ -2661,7 +2661,7 @@ _profile:
   metadataContent: "Contenuto"
   changeAvatar: "Modifica immagine profilo"
   changeBanner: "Cambia intestazione"
-  verifiedLinkDescription: "Puoi verificare il tuo profilo mostrando una icona. Devi inserire la URL alla pagina che contiene un link al tuo profilo.\nPer verificare il profilo tramite la spunta di conferma, devi inserire la url alla pagina che contiene un link al tuo profilo Misskey. Deve avere attributo rel='me'."
+  verifiedLinkDescription: "Come avere i collegamenti verificati: inserisci la URL ad una pagina che contiene un collegamento al tuo profilo.\nVedrai una spunta di conferma se, in quella pagina, il collegamento al tuo profilo Misskey ha attributo rel='me'."
   avatarDecorationMax: "Puoi aggiungere fino a {max} decorazioni."
   followedMessage: "Messaggio, quando qualcuno ti segue"
   followedMessageDescription: "Puoi impostare un breve messaggio da mostrare agli altri profili quando ti seguono."
