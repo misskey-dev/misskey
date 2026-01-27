@@ -44,6 +44,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<LinkButton v-if="item == 'chat'" v-tooltip.noDelay.right="'Neondystopia IRC Chat'" :class="$style.item" :activeClass="$style.active" to="https://irc-chat.neondystopia.world/">
 					<i :class="$style.itemIcon" class="ti ti-message-circle ti-fw" style="viewTransitionName: navbar-settings;"></i><span :class="$style.itemText">IRC</span>
 				</LinkButton>
+				<LinkButton v-if="item == 'chat'" v-tooltip.noDelay.right="'Neondystopia Matrix Server'" :class="$style.item" :activeClass="$style.active" to="https://matrix-chat.neondystopia.world/">
+					<i :class="$style.itemIcon" class="ti ti-brand-matrix ti-fw" style="viewTransitionName: navbar-settings;"></i><span :class="$style.itemText">Matrix</span>
+				</LinkButton>
 			</template>
 			<div :class="$style.divider"></div>
 			<LinkButton v-tooltip.noDelay.right="'Donate to support NeonDystopia'" :class="$style.item" :activeClass="$style.active" to="https://donate.neondystopia.world/">

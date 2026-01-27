@@ -33,9 +33,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #suffix>Donations</template>
 			</FormLink>
 			<FormLink to="https://irc-chat.neondystopia.world/" external>
-				<template #icon><i class="ti ti-message-circle" style="color: #289404;"></i></template>
-				IRC Chat of NeonDystopia
+				<template #icon><i class="ti ti-message-circle"></i></template>
+				NeonDystopia IRC Chat
 				<template #suffix>IRC</template>
+			</FormLink>
+			<FormLink to="https://matrix-chat.neondystopia.world/" external>
+				<template #icon><i class="ti ti-brand-matrix"></i></template>
+				NeonDystopia Matrix Server
+				<template #suffix>Matrix</template>
 			</FormLink>
 			<FormLink to="/about-misskey">
 				<template #icon><i class="ti ti-info-circle"></i></template>
