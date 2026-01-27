@@ -39,7 +39,7 @@
 	},
 	"devDependencies": {
 		"@misskey-dev/summaly": "5.2.5",
-		"@tabler/icons-webfont": "3.36.1",
+		"@tabler/icons-webfont": "3.35.0",
 		"@testing-library/vue": "8.1.0",
 		"@types/estree": "1.0.8",
 		"@types/micromatch": "4.0.10",
