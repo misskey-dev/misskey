@@ -67,6 +67,7 @@ describe('FanoutTimelineEndpointService', () => {
 			.overrideProvider(FanoutTimelineService)
 			.useValue({
 				getMulti: jest.fn(),
+				injectDummy: jest.fn(),
 			})
 			.compile();
 
@@ -119,7 +120,7 @@ describe('FanoutTimelineEndpointService', () => {
 		const dbFallback = jest.fn((_untilId: string | null, _sinceId: string | null, _limit: number) => Promise.resolve([] as MiNote[]));
 
 		const ps = {
-			redisTimelines: ['homeTimeline', 'localTimeline'] as FanoutTimelineName[],
+			redisTimelines: [`homeTimeline:${alice.id}`, 'localTimeline'] as FanoutTimelineName[],
 			useDbFallback: true,
 			limit: 10,
 			allowPartial: false,
@@ -129,9 +130,6 @@ describe('FanoutTimelineEndpointService', () => {
 			untilId: null,
 			sinceId: null,
 		};
-
-		// See comments in original file for logic explanation.
-		// Essentially, we expect the fallback to start from the end of the most recent reliable timeline (HTL).
 
 		await service.getMiNotes(ps);
 
@@ -173,7 +171,7 @@ describe('FanoutTimelineEndpointService', () => {
 		const result = await service.getMiNotes(ps);
 
 		// With the fix, we should get note1 and note2.
-		// Without the fix, we would get only note3 (or empty if limit blocked it).
+
 		expect(result).toHaveLength(2);
 		expect(result[0].id).toBe(note1.id);
 		expect(result[1].id).toBe(note2.id);
@@ -224,7 +222,7 @@ describe('FanoutTimelineEndpointService', () => {
 		const dbFallback = jest.fn((untilId: string | null, sinceId: string | null, limit: number) => Promise.resolve([] as MiNote[]));
 
 		const ps = {
-			redisTimelines: ['homeTimeline', 'localTimeline'] as FanoutTimelineName[],
+			redisTimelines: [`homeTimeline:${alice.id}`, 'localTimeline'] as FanoutTimelineName[],
 			useDbFallback: false,
 			limit: 10,
 			allowPartial: true,
@@ -237,9 +235,72 @@ describe('FanoutTimelineEndpointService', () => {
 
 		const result = await service.getMiNotes(ps);
 
-		// With the previous logic, note3 and note4 would be filtered out because they are older than the "threshold" (end of TL1).
 		// With the fixed logic (skipping filter when !useDbFallback), all notes should be present.
 		expect(result).toHaveLength(4);
 		expect(result.map(n => n.id)).toEqual([note1.id, note2.id, note3.id, note4.id]);
+	});
+
+	// Test for dummy ID optimization
+	test('should inject dummy ID when DB fallback returns empty on initial load', async () => {
+		const redisResult: string[][] = [[], []]; // Empty timelines
+
+		fanoutTimelineService.getMulti.mockResolvedValue(redisResult);
+
+		// Mock dbFallback to return empty array
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const dbFallback = jest.fn((_untilId: string | null, _sinceId: string | null, _limit: number) => Promise.resolve([] as MiNote[]));
+
+		const ps = {
+			redisTimelines: [`homeTimeline:${alice.id}`, 'localTimeline'] as FanoutTimelineName[],
+			useDbFallback: true,
+			limit: 10,
+			allowPartial: true,
+			excludePureRenotes: false,
+			dbFallback,
+			noteFilter: () => true,
+			untilId: null,
+			sinceId: null,
+		};
+
+		const result = await service.getMiNotes(ps);
+
+		expect(result).toEqual([]);
+		// Should have tried to inject dummy ID for both empty timelines
+		expect(fanoutTimelineService.injectDummy).toHaveBeenCalledTimes(2);
+		expect(fanoutTimelineService.injectDummy).toHaveBeenCalledWith(`homeTimeline:${alice.id}`, expect.any(String));
+		expect(fanoutTimelineService.injectDummy).toHaveBeenCalledWith('localTimeline', expect.any(String));
+	});
+
+	// Test for behavior when dummy ID exists
+	test('should return empty result when only dummy ID exists in Redis and DB has no newer data', async () => {
+		const now = Date.now();
+		const dummyId = idService.gen(now);
+		// Redis has only dummy ID
+		const redisResult: string[][] = [[dummyId]];
+
+		fanoutTimelineService.getMulti.mockResolvedValue(redisResult);
+
+		// Mock dbFallback (should be called to check for newer notes than the dummy ID)
+
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		const dbFallback = jest.fn((_untilId: string | null, _sinceId: string | null, _limit: number) => Promise.resolve([] as MiNote[]));
+
+		const ps = {
+			redisTimelines: [`homeTimeline:${alice.id}`] as FanoutTimelineName[],
+			useDbFallback: true,
+			limit: 10,
+			allowPartial: false,
+			excludePureRenotes: false,
+			dbFallback,
+			noteFilter: () => true,
+			untilId: null,
+			sinceId: null,
+		};
+
+		const result = await service.getMiNotes(ps);
+
+		expect(result).toEqual([]);
+		// Fallback should be called to check for newer notes (ascending check from dummy ID)
+		expect(dbFallback).toHaveBeenCalled();
 	});
 });

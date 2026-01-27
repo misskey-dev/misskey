@@ -109,6 +109,11 @@ export class FanoutTimelineService {
 	}
 
 	@bindThis
+	public injectDummy(tl: FanoutTimelineName, id: string) {
+		return this.redisForTimelines.lpush('list:' + tl, id);
+	}
+
+	@bindThis
 	public purge(name: FanoutTimelineName) {
 		return this.redisForTimelines.del('list:' + name);
 	}
