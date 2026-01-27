@@ -732,7 +732,7 @@ export class UserFollowingService implements OnModuleInit {
 	@bindThis
 	public getFollowees(userId: MiUser['id']) {
 		return this.followingsRepository.createQueryBuilder('following')
-			.select('following.followeeId')
+			.select(['following.followeeId', 'following.withReplies'])
 			.where('following.followerId = :followerId', { followerId: userId })
 			.getMany();
 	}
