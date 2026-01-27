@@ -2,6 +2,7 @@
 	"compilerOptions": {
 		"allowJs": true,
 		"noEmitOnError": false,
+		"noImplicitAny": false,
 		"noImplicitReturns": true,
 		"noUnusedParameters": false,
 		"noUnusedLocals": true,
@@ -18,14 +19,15 @@
 		"experimentalDecorators": true,
 		"resolveJsonModule": true,
 		"isolatedModules": true,
-		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./src/*"]
+			"@/*": ["./src/*"],
+			"@@/*": ["../frontend-shared/*"]
 		},
 		"typeRoots": [
 			"./node_modules/@types",
 			"./src/@types"
 		],
+		"libReplacement": true,
 		"lib": [
 			"esnext",
 			"webworker"

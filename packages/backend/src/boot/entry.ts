@@ -68,17 +68,35 @@ process.on('exit', code => {
 
 //#endregion
 
-if (cluster.isPrimary || envOption.disableClustering) {
-	await masterMain();
-
+if (!envOption.disableClustering) {
 	if (cluster.isPrimary) {
+		logger.info(`Start main process... pid: ${process.pid}`);
+		await masterMain();
 		ev.mount();
+	} else if (cluster.isWorker) {
+		logger.info(`Start worker process... pid: ${process.pid}`);
+		await workerMain();
+	} else {
+		throw new Error('Unknown process type');
 	}
+} else {
+	// 非clusterの場合はMasterのみが起動するため、Workerの処理は行わない(cluster.isWorker === trueの状態でこのブロックに来ることはない)
+	logger.info(`Start main process... pid: ${process.pid}`);
+	await masterMain();
+	ev.mount();
 }
 
-if (cluster.isWorker || envOption.disableClustering) {
-	await workerMain();
-}
+process.on('message', msg => {
+	if (msg === 'gc') {
+		if (global.gc != null) {
+			logger.info('Manual GC triggered');
+			global.gc();
+			if (process.send != null) process.send('gc ok');
+		} else {
+			logger.warn('Manual GC requested but gc is not available. Start the process with --expose-gc to enable this feature.');
+		}
+	}
+});
 
 readyRef.value = true;
 

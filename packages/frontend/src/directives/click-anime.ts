@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Directive } from 'vue';
-import { defaultStore } from '@/store.js';
+import type { Directive } from 'vue';
+import { prefer } from '@/preferences.js';
 
-export default {
-	mounted(el: HTMLElement, binding, vn) {
-		if (!defaultStore.state.animation) return;
+export const clickAnimeDirective = {
+	mounted(el) {
+		if (!prefer.s.animation) return;
 
 		const target = el.children[0];
 
@@ -37,4 +37,4 @@ export default {
 			target.classList.add('_anime_bounce_standBy');
 		});
 	},
-} as Directive;
+} as Directive<HTMLElement>;

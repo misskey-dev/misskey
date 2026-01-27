@@ -9,7 +9,6 @@ on:
     paths:
       - packages/backend/**
       - .github/workflows/get-api-diff.yml
-      - .github/workflows/get-api-diff.yml
 jobs:
   get-from-misskey:
     runs-on: ubuntu-latest
@@ -18,7 +17,6 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [20.12.2]
         api-json-name: [api-base.json, api-head.json]
         include:
           - api-json-name: api-base.json
@@ -27,18 +25,17 @@ jobs:
             ref: refs/pull/${{ github.event.number }}/merge
 
     steps:
-    - uses: actions/checkout@v4.1.1
+    - uses: actions/checkout@v6.0.1
       with:
         ref: ${{ matrix.ref }}
         submodules: true
-    - name: Install pnpm
-      uses: pnpm/action-setup@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4.0.3
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4.2.0
+    - name: Use Node.js
+      uses: actions/setup-node@v6.1.0
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version-file: '.node-version'
         cache: 'pnpm'
-    - run: corepack enable
     - run: pnpm i --frozen-lockfile
     - name: Check pnpm-lock.yaml
       run: git diff --exit-code pnpm-lock.yaml
@@ -51,7 +48,7 @@ jobs:
     - name: Copy API.json
       run: cp packages/backend/built/api.json ${{ matrix.api-json-name }}
     - name: Upload Artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: api-artifact-${{ matrix.api-json-name }}
         path: ${{ matrix.api-json-name }}
@@ -64,7 +61,7 @@ jobs:
           PR_NUMBER: ${{ github.event.number }}
         run: |
           echo "$PR_NUMBER" > ./pr_number
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: api-artifact-pr-number
           path: pr_number

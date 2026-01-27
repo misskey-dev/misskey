@@ -7,29 +7,29 @@
 	"exports": {
 		".": {
 			"import": "./built/index.js",
-			"types": "./built/index.d.ts"
+			"types": "./built/index.d.ts",
+			"default": "./built/index.js"
 		},
 		"./*": {
 			"import": "./built/*",
-			"types": "./built/*"
+			"types": "./built/*",
+			"default": "./built/*"
 		}
 	},
 	"scripts": {
 		"build": "node ./build.js",
 		"watch": "nodemon -w package.json -e json --exec \"node ./build.js --watch\"",
 		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
-		"typecheck": "tsc --noEmit",
+		"typecheck": "tsgo --noEmit",
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"devDependencies": {
-		"@types/node": "20.11.5",
-		"@typescript-eslint/eslint-plugin": "7.1.0",
-		"@typescript-eslint/parser": "7.1.0",
-		"execa": "8.0.1",
-		"nodemon": "3.0.2",
-		"typescript": "5.3.3",
-		"esbuild": "0.19.11",
-		"glob": "10.3.10"
+		"@types/node": "24.10.9",
+		"@typescript-eslint/eslint-plugin": "8.53.0",
+		"@typescript-eslint/parser": "8.53.0",
+		"esbuild": "0.27.2",
+		"execa": "9.6.1",
+		"nodemon": "3.1.11"
 	},
 	"files": [
 		"built"

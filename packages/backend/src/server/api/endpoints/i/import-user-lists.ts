@@ -15,6 +15,7 @@ import { ApiError } from '../../error.js';
 export const meta = {
 	secure: true,
 	requireCredential: true,
+	requiredRolePolicy: 'canImportUserLists',
 	prohibitMoved: true,
 	limit: {
 		duration: ms('1hour'),

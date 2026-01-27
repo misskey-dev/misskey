@@ -4,17 +4,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div>
+<div :class="$style.root">
 	<XBanner v-for="media in mediaList.filter(media => !previewable(media))" :key="media.id" :media="media"/>
 	<div v-if="mediaList.filter(media => previewable(media)).length > 0" :class="$style.container">
 		<div
 			ref="gallery"
 			:class="[
 				$style.medias,
+				...(prefer.s.showMediaListByGridInWideArea ? [$style.gridInWideArea] : []),
 				count === 1 ? [$style.n1, {
-					[$style.n116_9]: defaultStore.reactiveState.mediaListWithOneImageAppearance.value === '16_9',
-					[$style.n11_1]: defaultStore.reactiveState.mediaListWithOneImageAppearance.value === '1_1',
-					[$style.n12_3]: defaultStore.reactiveState.mediaListWithOneImageAppearance.value === '2_3',
+					[$style.n116_9]: prefer.s.mediaListWithOneImageAppearance === '16_9',
+					[$style.n11_1]: prefer.s.mediaListWithOneImageAppearance === '1_1',
+					[$style.n12_3]: prefer.s.mediaListWithOneImageAppearance === '2_3',
 				}] : count === 2 ? $style.n2 : count === 3 ? $style.n3 : count === 4 ? $style.n4 : $style.nMany,
 			]"
 		>
@@ -28,27 +29,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, shallowRef } from 'vue';
+import { computed, onMounted, onUnmounted, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from 'photoswipe';
 import 'photoswipe/style.css';
+import { FILE_TYPE_BROWSERSAFE } from '@@/js/const.js';
 import XBanner from '@/components/MkMediaBanner.vue';
 import XImage from '@/components/MkMediaImage.vue';
 import XVideo from '@/components/MkMediaVideo.vue';
 import * as os from '@/os.js';
-import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
-import { defaultStore } from '@/store.js';
-import { focusParent } from '@/scripts/focus.js';
+import { focusParent } from '@/utility/focus.js';
+import { prefer } from '@/preferences.js';
 
 const props = defineProps<{
 	mediaList: Misskey.entities.DriveFile[];
 	raw?: boolean;
 }>();
 
-const gallery = shallowRef<HTMLDivElement>();
+const gallery = useTemplateRef('gallery');
 const pswpZIndex = os.claimZIndex('middle');
-document.documentElement.style.setProperty('--mk-pswp-root-z-index', pswpZIndex.toString());
+window.document.documentElement.style.setProperty('--mk-pswp-root-z-index', pswpZIndex.toString());
 const count = computed(() => props.mediaList.filter(media => previewable(media)).length);
 let lightbox: PhotoSwipeLightbox | null = null;
 
@@ -75,7 +76,7 @@ async function calcAspectRatio() {
 		return `${Math.max(ratio, img.properties.width / img.properties.height).toString()} / 1`;
 	};
 
-	switch (defaultStore.state.mediaListWithOneImageAppearance) {
+	switch (prefer.s.mediaListWithOneImageAppearance) {
 		case '16_9':
 			gallery.value.style.aspectRatio = ratioMax(16 / 9);
 			break;
@@ -94,6 +95,8 @@ async function calcAspectRatio() {
 onMounted(() => {
 	calcAspectRatio();
 
+	if (gallery.value == null) return; // TSを黙らすため
+
 	lightbox = new PhotoSwipeLightbox({
 		dataSource: props.mediaList
 			.filter(media => {
@@ -105,8 +108,10 @@ onMounted(() => {
 					src: media.url,
 					w: media.properties.width,
 					h: media.properties.height,
-					alt: media.comment ?? media.name,
-					comment: media.comment ?? media.name,
+					// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+					alt: media.comment || media.name,
+					// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+					comment: media.comment || media.name,
 				};
 				if (media.properties.orientation != null && media.properties.orientation >= 5) {
 					[item.w, item.h] = [item.h, item.w];
@@ -153,8 +158,10 @@ onMounted(() => {
 			[itemData.w, itemData.h] = [itemData.h, itemData.w];
 		}
 		itemData.msrc = file.thumbnailUrl ?? undefined;
-		itemData.alt = file.comment ?? file.name;
-		itemData.comment = file.comment ?? file.name;
+		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+		itemData.alt = file.comment || file.name;
+		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+		itemData.comment = file.comment || file.name;
 		itemData.thumbCropped = true;
 
 		return itemData;
@@ -166,7 +173,7 @@ onMounted(() => {
 			className: 'pswp__alt-text-container',
 			appendTo: 'wrapper',
 			onInit: (el, pswp) => {
-				const textBox = document.createElement('p');
+				const textBox = window.document.createElement('p');
 				textBox.className = 'pswp__alt-text _acrylic';
 				el.appendChild(textBox);
 
@@ -178,19 +185,19 @@ onMounted(() => {
 	});
 
 	lightbox.on('afterInit', () => {
-		activeEl = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+		activeEl = window.document.activeElement instanceof HTMLElement ? window.document.activeElement : null;
 		focusParent(activeEl, true, true);
 		lightbox?.pswp?.element?.focus({
 			preventScroll: true,
 		});
-		history.pushState(null, '', '#pswp');
+		window.history.pushState(null, '', '#pswp');
 	});
 
 	lightbox.on('destroy', () => {
 		focusParent(activeEl, true, false);
 		activeEl = null;
 		if (window.location.hash === '#pswp') {
-			history.back();
+			window.history.back();
 		}
 	});
 
@@ -224,10 +231,13 @@ defineExpose({
 </script>
 
 <style lang="scss" module>
+.root {
+	container-type: inline-size;
+}
+
 .container {
 	position: relative;
 	width: 100%;
-	margin-top: 4px;
 }
 
 .medias {
@@ -308,16 +318,30 @@ defineExpose({
 	border-radius: 8px;
 }
 
+@container (min-width: 500px) {
+	.medias.gridInWideArea {
+		display: grid;
+		aspect-ratio: auto;
+		grid-template-columns: repeat(4, 1fr);
+		grid-template-rows: auto;
+		grid-gap: 8px;
+
+		> .media {
+			aspect-ratio: 1 / 1;
+		}
+	}
+}
+
 :global(.pswp) {
 	--pswp-root-z-index: var(--mk-pswp-root-z-index, 2000700) !important;
-	--pswp-bg: var(--modalBg) !important;
+	--pswp-bg: var(--MI_THEME-modalBg) !important;
 }
 </style>
 
 <style lang="scss">
 .pswp__bg {
-	background: var(--modalBg);
-	backdrop-filter: var(--modalBgFilter);
+	background: var(--MI_THEME-modalBg);
+	backdrop-filter: var(--MI-modalBgFilter);
 }
 
 .pswp__alt-text-container {
@@ -335,14 +359,14 @@ defineExpose({
 }
 
 .pswp__alt-text {
-	color: var(--fg);
+	color: var(--MI_THEME-fg);
 	margin: 0 auto;
 	text-align: center;
-	padding: var(--margin);
-	border-radius: var(--radius);
+	padding: var(--MI-margin);
+	border-radius: var(--MI-radius);
 	max-height: 8em;
 	overflow-y: auto;
-	text-shadow: var(--bg) 0 0 10px, var(--bg) 0 0 3px, var(--bg) 0 0 3px;
+	text-shadow: var(--MI_THEME-bg) 0 0 10px, var(--MI_THEME-bg) 0 0 3px, var(--MI_THEME-bg) 0 0 3px;
 	white-space: pre-line;
 }
 </style>

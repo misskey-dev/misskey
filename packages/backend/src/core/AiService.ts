@@ -7,20 +7,20 @@ import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import { Injectable } from '@nestjs/common';
-import * as nsfw from 'nsfwjs';
-import si from 'systeminformation';
 import { Mutex } from 'async-mutex';
+import fetch from 'node-fetch';
 import { bindThis } from '@/decorators.js';
+import type { NSFWJS, PredictionType } from 'nsfwjs';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 
-const REQUIRED_CPU_FLAGS = ['avx2', 'fma'];
+const REQUIRED_CPU_FLAGS_X64 = ['avx2', 'fma'];
 let isSupportedCpu: undefined | boolean = undefined;
 
 @Injectable()
 export class AiService {
-	private model: nsfw.NSFWJS;
+	private model: NSFWJS;
 	private modelLoadMutex: Mutex = new Mutex();
 
 	constructor(
@@ -28,11 +28,10 @@ export class AiService {
 	}
 
 	@bindThis
-	public async detectSensitive(path: string): Promise<nsfw.predictionType[] | null> {
+	public async detectSensitive(source: string | Buffer): Promise<PredictionType[] | null> {
 		try {
 			if (isSupportedCpu === undefined) {
-				const cpuFlags = await this.getCpuFlags();
-				isSupportedCpu = REQUIRED_CPU_FLAGS.every(required => cpuFlags.includes(required));
+				isSupportedCpu = await this.computeIsSupportedCpu();
 			}
 
 			if (!isSupportedCpu) {
@@ -41,8 +40,10 @@ export class AiService {
 			}
 
 			const tf = await import('@tensorflow/tfjs-node');
+			tf.env().global.fetch = fetch;
 
 			if (this.model == null) {
+				const nsfw = await import('nsfwjs');
 				await this.modelLoadMutex.runExclusive(async () => {
 					if (this.model == null) {
 						this.model = await nsfw.load(`file://${_dirname}/../../nsfw-model/`, { size: 299 });
@@ -50,7 +51,7 @@ export class AiService {
 				});
 			}
 
-			const buffer = await fs.promises.readFile(path);
+			const buffer = source instanceof Buffer ? source : await fs.promises.readFile(source);
 			const image = await tf.node.decodeImage(buffer, 3) as any;
 			try {
 				const predictions = await this.model.classify(image);
@@ -64,8 +65,25 @@ export class AiService {
 		}
 	}
 
+	private async computeIsSupportedCpu(): Promise<boolean> {
+		switch (process.arch) {
+			case 'x64': {
+				const cpuFlags = await this.getCpuFlags();
+				return REQUIRED_CPU_FLAGS_X64.every(required => cpuFlags.includes(required));
+			}
+			case 'arm64': {
+				// As far as I know, no required CPU flags for ARM64.
+				return true;
+			}
+			default: {
+				return false;
+			}
+		}
+	}
+
 	@bindThis
 	private async getCpuFlags(): Promise<string[]> {
+		const si = await import('systeminformation');
 		const str = await si.cpuFlags();
 		return str.split(/\s+/);
 	}

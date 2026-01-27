@@ -3,29 +3,32 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
 import type { MiReversiGame } from '@/models/_.js';
-import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { ReversiService } from '@/core/ReversiService.js';
 import { ReversiGameEntityService } from '@/core/entities/ReversiGameEntityService.js';
+import { isJsonObject } from '@/misc/json-value.js';
 import type { JsonObject, JsonValue } from '@/misc/json-value.js';
-import Channel, { type MiChannelService } from '../channel.js';
+import Channel, { type ChannelRequest } from '../channel.js';
+import { reversiUpdateKeys } from 'misskey-js';
+import { REQUEST } from '@nestjs/core';
 
-class ReversiGameChannel extends Channel {
+@Injectable({ scope: Scope.TRANSIENT })
+export class ReversiGameChannel extends Channel {
 	public readonly chName = 'reversiGame';
 	public static shouldShare = false;
 	public static requireCredential = false as const;
 	private gameId: MiReversiGame['id'] | null = null;
 
 	constructor(
+		@Inject(REQUEST)
+		request: ChannelRequest,
+
 		private reversiService: ReversiService,
 		private reversiGameEntityService: ReversiGameEntityService,
-
-		id: string,
-		connection: Channel['connection'],
 	) {
-		super(id, connection);
+		super(request);
 	}
 
 	@bindThis
@@ -44,16 +47,17 @@ class ReversiGameChannel extends Channel {
 				this.ready(body);
 				break;
 			case 'updateSettings':
-				if (typeof body !== 'object' || body === null || Array.isArray(body)) return;
-				if (typeof body.key !== 'string') return;
-				if (typeof body.value !== 'object' || body.value === null || Array.isArray(body.value)) return;
+				if (!isJsonObject(body)) return;
+				if (!this.reversiService.isValidReversiUpdateKey(body.key)) return;
+				if (!this.reversiService.isValidReversiUpdateValue(body.key, body.value)) return;
+
 				this.updateSettings(body.key, body.value);
 				break;
 			case 'cancel':
 				this.cancelGame();
 				break;
 			case 'putStone':
-				if (typeof body !== 'object' || body === null || Array.isArray(body)) return;
+				if (!isJsonObject(body)) return;
 				if (typeof body.pos !== 'number') return;
 				if (typeof body.id !== 'string') return;
 				this.putStone(body.pos, body.id);
@@ -63,7 +67,7 @@ class ReversiGameChannel extends Channel {
 	}
 
 	@bindThis
-	private async updateSettings(key: string, value: JsonObject) {
+	private async updateSettings<K extends typeof reversiUpdateKeys[number]>(key: K, value: MiReversiGame[K]) {
 		if (this.user == null) return;
 
 		this.reversiService.updateSettings(this.gameId!, this.user, key, value);
@@ -104,25 +108,3 @@ class ReversiGameChannel extends Channel {
 	}
 }
 
-@Injectable()
-export class ReversiGameChannelService implements MiChannelService<false> {
-	public readonly shouldShare = ReversiGameChannel.shouldShare;
-	public readonly requireCredential = ReversiGameChannel.requireCredential;
-	public readonly kind = ReversiGameChannel.kind;
-
-	constructor(
-		private reversiService: ReversiService,
-		private reversiGameEntityService: ReversiGameEntityService,
-	) {
-	}
-
-	@bindThis
-	public create(id: string, connection: Channel['connection']): ReversiGameChannel {
-		return new ReversiGameChannel(
-			this.reversiService,
-			this.reversiGameEntityService,
-			id,
-			connection,
-		);
-	}
-}

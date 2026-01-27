@@ -3,27 +3,34 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Directive } from 'vue';
-import { makeHotkey } from '@/scripts/hotkey.js';
+import type { Directive } from 'vue';
+import { makeHotkey } from '@/utility/hotkey.js';
+import type { Keymap } from '@/utility/hotkey.js';
 
-export default {
+interface HTMLElementWithHotkey extends HTMLElement {
+	_hotkey_global?: boolean;
+	_keyHandler?: (ev: KeyboardEvent) => void;
+}
+
+export const hotkeyDirective = {
 	mounted(el, binding) {
 		el._hotkey_global = binding.modifiers.global === true;
 
 		el._keyHandler = makeHotkey(binding.value);
 
 		if (el._hotkey_global) {
-			document.addEventListener('keydown', el._keyHandler, { passive: false });
+			window.document.addEventListener('keydown', el._keyHandler, { passive: false });
 		} else {
 			el.addEventListener('keydown', el._keyHandler, { passive: false });
 		}
 	},
 
 	unmounted(el) {
+		if (el._keyHandler == null) return;
 		if (el._hotkey_global) {
-			document.removeEventListener('keydown', el._keyHandler);
+			window.document.removeEventListener('keydown', el._keyHandler);
 		} else {
 			el.removeEventListener('keydown', el._keyHandler);
 		}
 	},
-} as Directive;
+} as Directive<HTMLElementWithHotkey, Keymap>;

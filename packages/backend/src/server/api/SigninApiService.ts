@@ -5,14 +5,17 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
-import * as OTPAuth from 'otpauth';
 import { IsNull } from 'typeorm';
+import * as Misskey from 'misskey-js';
 import { DI } from '@/di-symbols.js';
 import type {
+	MiMeta,
 	SigninsRepository,
 	UserProfilesRepository,
+	UserSecurityKeysRepository,
 	UsersRepository,
 } from '@/models/_.js';
+import type Logger from '@/logger.js';
 import type { Config } from '@/config.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
 import type { MiLocalUser } from '@/models/User.js';
@@ -20,6 +23,9 @@ import { IdService } from '@/core/IdService.js';
 import { bindThis } from '@/decorators.js';
 import { WebAuthnService } from '@/core/WebAuthnService.js';
 import { UserAuthService } from '@/core/UserAuthService.js';
+import { CaptchaService } from '@/core/CaptchaService.js';
+import { LoggerService } from '@/core/LoggerService.js';
+import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
 import { RateLimiterService } from './RateLimiterService.js';
 import { SigninService } from './SigninService.js';
 import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
@@ -27,9 +33,14 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 
 @Injectable()
 export class SigninApiService {
+	private logger: Logger;
+
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
+
+		@Inject(DI.meta)
+		private meta: MiMeta,
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -37,15 +48,21 @@ export class SigninApiService {
 		@Inject(DI.userProfilesRepository)
 		private userProfilesRepository: UserProfilesRepository,
 
+		@Inject(DI.userSecurityKeysRepository)
+		private userSecurityKeysRepository: UserSecurityKeysRepository,
+
 		@Inject(DI.signinsRepository)
 		private signinsRepository: SigninsRepository,
 
+		private loggerService: LoggerService,
 		private idService: IdService,
 		private rateLimiterService: RateLimiterService,
 		private signinService: SigninService,
 		private userAuthService: UserAuthService,
 		private webAuthnService: WebAuthnService,
+		private captchaService: CaptchaService,
 	) {
+		this.logger = this.loggerService.getLogger('Signin');
 	}
 
 	@bindThis
@@ -53,9 +70,14 @@ export class SigninApiService {
 		request: FastifyRequest<{
 			Body: {
 				username: string;
-				password: string;
+				password?: string;
 				token?: string;
 				credential?: AuthenticationResponseJSON;
+				'hcaptcha-response'?: string;
+				'g-recaptcha-response'?: string;
+				'turnstile-response'?: string;
+				'm-captcha-response'?: string;
+				'testcaptcha-response'?: string;
 			};
 		}>,
 		reply: FastifyReply,
@@ -73,26 +95,25 @@ export class SigninApiService {
 			return { error };
 		}
 
-		try {
 		// not more than 1 attempt per second and not more than 10 attempts per hour
-			await this.rateLimiterService.limit({ key: 'signin', duration: 60 * 60 * 1000, max: 10, minInterval: 1000 }, getIpHash(request.ip));
-		} catch (err) {
-			reply.code(429);
-			return {
-				error: {
-					message: 'Too many failed attempts to sign in. Try again later.',
-					code: 'TOO_MANY_AUTHENTICATION_FAILURES',
-					id: '22d05606-fbcf-421a-a2db-b32610dcfd1b',
-				},
-			};
+		if (this.config.enableIpRateLimit) {
+			if (process.env.NODE_ENV === 'production' && (request.ip === '::1' || request.ip === '127.0.0.1')) {
+				this.logger.warn('Recieved signin request from localhost IP address for rate limiting in production environment. This is likely due to an improper trustProxy setting in the config file.');
+			}
+			const rateLimit = await this.rateLimiterService.limit({ key: 'signin', duration: 60 * 60 * 1000, max: 10, minInterval: 1000 }, getIpHash(request.ip));
+			if (rateLimit != null) {
+				reply.code(429);
+				return {
+					error: {
+						message: 'Too many failed attempts to sign in. Try again later.',
+						code: 'TOO_MANY_AUTHENTICATION_FAILURES',
+						id: '22d05606-fbcf-421a-a2db-b32610dcfd1b',
+					},
+				};
+			}
 		}
 
 		if (typeof username !== 'string') {
-			reply.code(400);
-			return;
-		}
-
-		if (typeof password !== 'string') {
 			reply.code(400);
 			return;
 		}
@@ -121,11 +142,32 @@ export class SigninApiService {
 		}
 
 		const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
+		const securityKeysAvailable = await this.userSecurityKeysRepository.countBy({ userId: user.id }).then(result => result >= 1);
+
+		if (password == null) {
+			reply.code(200);
+			if (profile.twoFactorEnabled) {
+				return {
+					finished: false,
+					next: 'password',
+				} satisfies Misskey.entities.SigninFlowResponse;
+			} else {
+				return {
+					finished: false,
+					next: 'captcha',
+				} satisfies Misskey.entities.SigninFlowResponse;
+			}
+		}
+
+		if (typeof password !== 'string') {
+			reply.code(400);
+			return;
+		}
 
 		// Compare password
 		const same = await bcrypt.compare(password, profile.password!);
 
-		const fail = async (status?: number, failure?: { id: string }) => {
+		const fail = async (status?: number, failure?: { id: string; }) => {
 			// Append signin history
 			await this.signinsRepository.insert({
 				id: this.idService.gen(),
@@ -139,6 +181,38 @@ export class SigninApiService {
 		};
 
 		if (!profile.twoFactorEnabled) {
+			if (process.env.NODE_ENV !== 'test') {
+				if (this.meta.enableHcaptcha && this.meta.hcaptchaSecretKey) {
+					await this.captchaService.verifyHcaptcha(this.meta.hcaptchaSecretKey, body['hcaptcha-response']).catch(err => {
+						throw new FastifyReplyError(400, err);
+					});
+				}
+
+				if (this.meta.enableMcaptcha && this.meta.mcaptchaSecretKey && this.meta.mcaptchaSitekey && this.meta.mcaptchaInstanceUrl) {
+					await this.captchaService.verifyMcaptcha(this.meta.mcaptchaSecretKey, this.meta.mcaptchaSitekey, this.meta.mcaptchaInstanceUrl, body['m-captcha-response']).catch(err => {
+						throw new FastifyReplyError(400, err);
+					});
+				}
+
+				if (this.meta.enableRecaptcha && this.meta.recaptchaSecretKey) {
+					await this.captchaService.verifyRecaptcha(this.meta.recaptchaSecretKey, body['g-recaptcha-response']).catch(err => {
+						throw new FastifyReplyError(400, err);
+					});
+				}
+
+				if (this.meta.enableTurnstile && this.meta.turnstileSecretKey) {
+					await this.captchaService.verifyTurnstile(this.meta.turnstileSecretKey, body['turnstile-response']).catch(err => {
+						throw new FastifyReplyError(400, err);
+					});
+				}
+
+				if (this.meta.enableTestcaptcha) {
+					await this.captchaService.verifyTestcaptcha(body['testcaptcha-response']).catch(err => {
+						throw new FastifyReplyError(400, err);
+					});
+				}
+			}
+
 			if (same) {
 				return this.signinService.signin(request, reply, user);
 			} else {
@@ -157,7 +231,7 @@ export class SigninApiService {
 
 			try {
 				await this.userAuthService.twoFactorAuthenticate(profile, token);
-			} catch (e) {
+			} catch (_) {
 				return await fail(403, {
 					id: 'cdf1235b-ac71-46d4-a3a6-84ccce48df6f',
 				});
@@ -180,7 +254,7 @@ export class SigninApiService {
 					id: '93b86c4b-72f9-40eb-9815-798928603d1e',
 				});
 			}
-		} else {
+		} else if (securityKeysAvailable) {
 			if (!same && !profile.usePasswordLessLogin) {
 				return await fail(403, {
 					id: '932c904e-9460-45b7-9ce6-7ed33be7eb2c',
@@ -190,7 +264,23 @@ export class SigninApiService {
 			const authRequest = await this.webAuthnService.initiateAuthentication(user.id);
 
 			reply.code(200);
-			return authRequest;
+			return {
+				finished: false,
+				next: 'passkey',
+				authRequest,
+			} satisfies Misskey.entities.SigninFlowResponse;
+		} else {
+			if (!same || !profile.twoFactorEnabled) {
+				return await fail(403, {
+					id: '932c904e-9460-45b7-9ce6-7ed33be7eb2c',
+				});
+			} else {
+				reply.code(200);
+				return {
+					finished: false,
+					next: 'totp',
+				} satisfies Misskey.entities.SigninFlowResponse;
+			}
 		}
 		// never get here
 	}

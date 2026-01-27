@@ -30,98 +30,127 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed } from 'vue';
-import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import { GetFormResultType } from '@/scripts/form.js';
+import { useWidgetPropsManager } from './widget.js';
+import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import MkAnalogClock from '@/components/MkAnalogClock.vue';
 import MkDigitalClock from '@/components/MkDigitalClock.vue';
-import { timezones } from '@/scripts/timezones.js';
+import { timezones } from '@/utility/timezones.js';
 import { i18n } from '@/i18n.js';
 
 const name = 'clock';
 
 const widgetPropsDef = {
 	transparent: {
-		type: 'boolean' as const,
+		type: 'boolean',
+		label: i18n.ts._widgetOptions.transparent,
 		default: false,
 	},
 	size: {
-		type: 'radio' as const,
+		type: 'radio',
+		label: i18n.ts._widgetOptions._clock.size,
 		default: 'medium',
 		options: [{
-			value: 'small', label: i18n.ts.small,
+			value: 'small' as const,
+			label: i18n.ts.small,
 		}, {
-			value: 'medium', label: i18n.ts.medium,
+			value: 'medium' as const,
+			label: i18n.ts.medium,
 		}, {
-			value: 'large', label: i18n.ts.large,
+			value: 'large' as const,
+			label: i18n.ts.large,
 		}],
 	},
 	thickness: {
-		type: 'radio' as const,
+		type: 'radio',
+		label: i18n.ts._widgetOptions._clock.thickness,
 		default: 0.2,
 		options: [{
-			value: 0.1, label: 'thin',
+			value: 0.1 as const,
+			label: i18n.ts._widgetOptions._clock.thicknessThin,
 		}, {
-			value: 0.2, label: 'medium',
+			value: 0.2 as const,
+			label: i18n.ts._widgetOptions._clock.thicknessMedium,
 		}, {
-			value: 0.3, label: 'thick',
+			value: 0.3 as const,
+			label: i18n.ts._widgetOptions._clock.thicknessThick,
 		}],
 	},
 	graduations: {
-		type: 'radio' as const,
+		type: 'radio',
+		label: i18n.ts._widgetOptions._clock.graduations,
 		default: 'numbers',
 		options: [{
-			value: 'none', label: 'None',
+			value: 'none' as const,
+			label: i18n.ts.none,
 		}, {
-			value: 'dots', label: 'Dots',
+			value: 'dots' as const,
+			label: i18n.ts._widgetOptions._clock.graduationDots,
 		}, {
-			value: 'numbers', label: 'Numbers',
-		}],
+			value: 'numbers' as const,
+			label: i18n.ts._widgetOptions._clock.graduationArabic,
+		}, /*, {
+			value: 'roman' as const,
+			label: i18n.ts._widgetOptions._clock.graduationRoman,
+		}*/],
 	},
 	fadeGraduations: {
-		type: 'boolean' as const,
+		type: 'boolean',
+		label: i18n.ts._widgetOptions._clock.fadeGraduations,
 		default: true,
 	},
 	sAnimation: {
-		type: 'radio' as const,
+		type: 'radio',
+		label: i18n.ts._widgetOptions._clock.sAnimation,
 		default: 'elastic',
 		options: [{
-			value: 'none', label: 'None',
+			value: 'none' as const,
+			label: i18n.ts.none,
 		}, {
-			value: 'elastic', label: 'Elastic',
+			value: 'elastic' as const,
+			label: i18n.ts._widgetOptions._clock.sAnimationElastic,
 		}, {
-			value: 'easeOut', label: 'Ease out',
+			value: 'easeOut' as const,
+			label: i18n.ts._widgetOptions._clock.sAnimationEaseOut,
 		}],
 	},
 	twentyFour: {
-		type: 'boolean' as const,
+		type: 'boolean',
+		label: i18n.ts._widgetOptions._clock.twentyFour,
 		default: false,
 	},
 	label: {
-		type: 'radio' as const,
+		type: 'radio',
+		label: i18n.ts.label,
 		default: 'none',
 		options: [{
-			value: 'none', label: 'None',
+			value: 'none' as const,
+			label: i18n.ts.none,
 		}, {
-			value: 'time', label: 'Time',
+			value: 'time' as const,
+			label: i18n.ts._widgetOptions._clock.labelTime,
 		}, {
-			value: 'tz', label: 'TZ',
+			value: 'tz' as const,
+			label: i18n.ts._widgetOptions._clock.labelTz,
 		}, {
-			value: 'timeAndTz', label: 'Time + TZ',
+			value: 'timeAndTz' as const,
+			label: i18n.ts._widgetOptions._clock.labelTimeAndTz,
 		}],
 	},
 	timezone: {
-		type: 'enum' as const,
+		type: 'enum',
+		label: i18n.ts._widgetOptions._clock.timezone,
 		default: null,
 		enum: [...timezones.map((tz) => ({
 			label: tz.name,
 			value: tz.name.toLowerCase(),
 		})), {
-			label: '(auto)',
+			label: i18n.ts.auto,
 			value: null,
 		}],
 	},
-};
+} satisfies FormWithDefault;
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 

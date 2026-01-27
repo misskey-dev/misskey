@@ -3,14 +3,13 @@ import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
 import * as esbuild from 'esbuild';
 import { build } from 'esbuild';
-import { globSync } from 'glob';
 import { execa } from 'execa';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 const _package = JSON.parse(fs.readFileSync(_dirname + '/package.json', 'utf-8'));
 
-const entryPoints = globSync('./src/**/**.{ts,tsx}');
+const entryPoints = fs.globSync('./src/**/**.{ts,tsx}');
 
 /** @type {import('esbuild').BuildOptions} */
 const options = {
@@ -24,9 +23,14 @@ const options = {
 };
 
 // built配下をすべて削除する
-fs.rmSync('./built', { recursive: true, force: true });
+const args = process.argv.slice(2).map(arg => arg.toLowerCase());
 
-if (process.argv.map(arg => arg.toLowerCase()).includes('--watch')) {
+// built配下をすべて削除する
+if (!args.includes('--no-clean')) {
+	fs.rmSync('./built', { recursive: true, force: true });
+}
+
+if (args.includes('--watch')) {
 	await watchSrc();
 } else {
 	await buildSrc();
@@ -55,7 +59,7 @@ async function buildSrc() {
 
 function buildDts() {
 	return execa(
-		'tsc',
+		'tsgo',
 		[
 			'--project', 'tsconfig.json',
 			'--outDir', 'built',

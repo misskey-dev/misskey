@@ -4,10 +4,14 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import type { PagesRepository } from '@/models/_.js';
+import type { MiDriveFile, PagesRepository, UsersRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { ApiError } from '../../error.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { PageService } from '@/core/PageService.js';
 
 export const meta = {
 	tags: ['pages'],
@@ -42,19 +46,18 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.pagesRepository)
-		private pagesRepository: PagesRepository,
+		private pageService: PageService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const page = await this.pagesRepository.findOneBy({ id: ps.pageId });
-			if (page == null) {
-				throw new ApiError(meta.errors.noSuchPage);
+			try {
+				await this.pageService.delete(me, ps.pageId);
+			} catch (err) {
+				if (err instanceof IdentifiableError) {
+					if (err.id === '66aefd3c-fdb2-4a71-85ae-cc18bea85d3f') throw new ApiError(meta.errors.noSuchPage);
+					if (err.id === 'd0017699-8256-46f1-aed4-bc03bed73616') throw new ApiError(meta.errors.accessDenied);
+				}
+				throw err;
 			}
-			if (page.userId !== me.id) {
-				throw new ApiError(meta.errors.accessDenied);
-			}
-
-			await this.pagesRepository.delete(page.id);
 		});
 	}
 }
