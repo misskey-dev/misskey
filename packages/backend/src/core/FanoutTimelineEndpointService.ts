@@ -14,7 +14,6 @@ import type { NotesRepository } from '@/models/_.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { FanoutTimelineName, FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { UtilityService } from '@/core/UtilityService.js';
-import { IdService } from '@/core/IdService.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { isQuote, isRenote } from '@/misc/is-renote.js';
 import { CacheService } from '@/core/CacheService.js';
@@ -61,7 +60,6 @@ export class FanoutTimelineEndpointService {
 		private fanoutTimelineService: FanoutTimelineService,
 		private utilityService: UtilityService,
 		private channelMutingService: ChannelMutingService,
-		private idService: IdService,
 	) {
 	}
 
@@ -219,25 +217,7 @@ export class FanoutTimelineEndpointService {
 			return [...redisTimeline, ...gotFromDb];
 		}
 
-		// RedisおよびDBが空の場合、次回以降の無駄なDBアクセスを防ぐためダミーIDを保存する
-		const gotFromDb = await ps.dbFallback(ps.untilId, ps.sinceId, ps.limit);
-		if (
-			redisResultIds.length === 0 &&
-			ps.sinceId == null && ps.untilId == null &&
-			gotFromDb.length === 0
-		) {
-			const dummyId = this.idService.gen();
-
-			Promise.all(ps.redisTimelines.map((tl, i) => {
-				// 有効なソースかつ結果が空だった場合のみダミーを入れる
-				if (redisResult[i] && redisResult[i].length === 0) {
-					return this.fanoutTimelineService.injectDummy(tl, dummyId);
-				}
-				return Promise.resolve();
-			}));
-		}
-
-		return gotFromDb;
+		return await ps.dbFallback(ps.untilId, ps.sinceId, ps.limit);
 	}
 
 	private async getAndFilterFromDb(noteIds: string[], noteFilter: NoteFilter, idCompare: (a: string, b: string) => number): Promise<MiNote[]> {
