@@ -117,7 +117,6 @@ describe('FanoutTimelineEndpointService', () => {
 		fanoutTimelineService.getMulti.mockResolvedValue([htlIds, ltlIds]);
 
 		// dbFallback spy
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const dbFallback = jest.fn((_untilId: string | null, _sinceId: string | null, _limit: number) => Promise.resolve([] as MiNote[]));
 
 		const ps = {
@@ -170,8 +169,6 @@ describe('FanoutTimelineEndpointService', () => {
 		};
 
 		const result = await service.getMiNotes(ps);
-
-		// With the fix, we should get note1 and note2.
 
 		expect(result).toHaveLength(2);
 		expect(result[0].id).toBe(note1.id);
@@ -248,7 +245,6 @@ describe('FanoutTimelineEndpointService', () => {
 		fanoutTimelineService.getMulti.mockResolvedValue(redisResult);
 
 		// Mock dbFallback to return empty array
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const dbFallback = jest.fn((_untilId: string | null, _sinceId: string | null, _limit: number) => Promise.resolve([] as MiNote[]));
 
 		const ps = {
@@ -283,7 +279,6 @@ describe('FanoutTimelineEndpointService', () => {
 
 		// Mock dbFallback (should be called to check for newer notes than the dummy ID)
 
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const dbFallback = jest.fn((_untilId: string | null, _sinceId: string | null, _limit: number) => Promise.resolve([] as MiNote[]));
 
 		const ps = {

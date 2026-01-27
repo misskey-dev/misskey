@@ -80,7 +80,19 @@ export class FanoutTimelineEndpointService {
 		const redisResult = await this.fanoutTimelineService.getMulti(ps.redisTimelines, ps.untilId, ps.sinceId);
 
 		// 取得したredisResultのうち、2つ以上ソースがあり、1つでも空であればDBにフォールバックする
-		let shouldFallbackToDb = ps.useDbFallback && (redisResult.length > 1 && redisResult.some(ids => ids.length === 0));
+		const trustedEmptyIndices = new Set<number>();
+		for (let i = 0; i < redisResult.length; i++) {
+			const ids = redisResult[i];
+			const dummyIdIndex = ids.findIndex(id => this.idService.parse(id).date.getTime() === 1);
+			if (dummyIdIndex !== -1) {
+				ids.splice(dummyIdIndex, 1);
+				if (ids.length === 0) {
+					trustedEmptyIndices.add(i);
+				}
+			}
+		}
+
+		let shouldFallbackToDb = ps.useDbFallback && (redisResult.length > 1 && redisResult.some((ids, i) => ids.length === 0 && !trustedEmptyIndices.has(i)));
 
 		// 取得したresultの中で最古のIDのうち、最も新しいものを取得
 		// ids自体が空配列の場合、ids[ids.length - 1]はundefinedになるため、filterでnullを除外する
@@ -97,7 +109,7 @@ export class FanoutTimelineEndpointService {
 		let noteIds = redisResultIds.slice(0, ps.limit);
 
 		const oldestNoteId = ascending ? redisResultIds[0] : redisResultIds[redisResultIds.length - 1];
-		shouldFallbackToDb ||= noteIds.length === 0 || ps.sinceId != null && ps.sinceId < oldestNoteId;
+		shouldFallbackToDb ||= ps.useDbFallback && (noteIds.length === 0 || ps.sinceId != null && ps.sinceId < oldestNoteId);
 
 		if (!shouldFallbackToDb) {
 			let filter = ps.noteFilter ?? (_note => true) as NoteFilter;
@@ -219,17 +231,25 @@ export class FanoutTimelineEndpointService {
 
 		// RedisおよびDBが空の場合、次回以降の無駄なDBアクセスを防ぐためダミーIDを保存する
 		const gotFromDb = await ps.dbFallback(ps.untilId, ps.sinceId, ps.limit);
-		if (
-			redisResultIds.length === 0 &&
-			ps.sinceId == null && ps.untilId == null &&
-			gotFromDb.length === 0
-		) {
-			const dummyId = this.idService.gen();
+		const canInject = (
+			(redisResultIds.length === 0 && ps.sinceId == null && ps.untilId == null) &&
+			(gotFromDb.length < ps.limit)
+		);
+
+		if (canInject) {
+			const dummyId = this.idService.gen(1); // 1 = Detectable Dummy Timestamp
 
 			Promise.all(ps.redisTimelines.map((tl, i) => {
 				// 有効なソースかつ結果が空だった場合のみダミーを入れる
 				if (redisResult[i] && redisResult[i].length === 0) {
-					return this.fanoutTimelineService.injectDummyIfEmpty(tl, dummyId);
+					let isEmpty = true;
+					if (gotFromDb.length > 0) {
+						isEmpty = !gotFromDb.some(n => this.accepts(tl, n));
+					}
+
+					if (isEmpty) {
+						return this.fanoutTimelineService.injectDummyIfEmpty(tl, dummyId);
+					}
 				}
 				return Promise.resolve();
 			}));
@@ -253,5 +273,33 @@ export class FanoutTimelineEndpointService {
 		notes.sort((a, b) => idCompare(a.id, b.id));
 
 		return notes;
+	}
+
+	private accepts(tl: FanoutTimelineName, note: MiNote): boolean {
+		if (tl === 'localTimeline') {
+			return !note.userHost && !note.replyId && note.visibility === 'public';
+		} else if (tl === 'localTimelineWithFiles') {
+			return !note.userHost && !note.replyId && note.visibility === 'public' && note.fileIds.length > 0;
+		} else if (tl === 'localTimelineWithReplies') {
+			return !note.userHost && note.replyId != null && note.visibility === 'public';
+		} else if (tl.startsWith('localTimelineWithReplyTo:')) {
+			const id = tl.split(':')[1];
+			return !note.userHost && note.replyId != null && note.replyUserId === id;
+		} else if (tl.startsWith('userTimeline:')) {
+			const id = tl.split(':')[1];
+			return note.userId === id && !note.replyId;
+		} else if (tl.startsWith('userTimelineWithFiles:')) {
+			const id = tl.split(':')[1];
+			return note.userId === id && !note.replyId && note.fileIds.length > 0;
+		} else if (tl.startsWith('userTimelineWithReplies:')) {
+			const id = tl.split(':')[1];
+			return note.userId === id && note.replyId != null;
+		} else if (tl.startsWith('userTimelineWithChannel:')) {
+			const id = tl.split(':')[1];
+			return note.userId === id && note.channelId != null;
+		} else {
+			// TODO: homeTimeline系
+			return true;
+		}
 	}
 }
