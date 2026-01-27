@@ -151,7 +151,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					withFiles: ps.withFiles,
 					withRenotes: ps.withRenotes,
 				}, me),
-				preventEmptyTimelineDbFallback: true,
 			});
 
 			return timeline;

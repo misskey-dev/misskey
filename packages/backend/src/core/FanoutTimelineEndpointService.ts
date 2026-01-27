@@ -44,7 +44,6 @@ type TimelineOptions = {
 	excludePureRenotes: boolean;
 	ignoreAuthorFromUserSuspension?: boolean;
 	dbFallback: (untilId: string | null, sinceId: string | null, limit: number) => Promise<MiNote[]>,
-	preventEmptyTimelineDbFallback?: boolean;
 };
 
 @Injectable()
@@ -80,9 +79,8 @@ export class FanoutTimelineEndpointService {
 
 		const redisResult = await this.fanoutTimelineService.getMulti(ps.redisTimelines, ps.untilId, ps.sinceId);
 
-		// オプション無効時、取得したredisResultのうち、2つ以上ソースがあり、1つでも空であればDBにフォールバックする
-		let shouldFallbackToDb = ps.useDbFallback &&
-			(ps.preventEmptyTimelineDbFallback !== true && redisResult.length > 1 && redisResult.some(ids => ids.length === 0));
+		// 取得したredisResultのうち、2つ以上ソースがあり、1つでも空であればDBにフォールバックする
+		let shouldFallbackToDb = ps.useDbFallback && (redisResult.length > 1 && redisResult.some(ids => ids.length === 0));
 
 		// 取得したresultの中で最古のIDのうち、最も新しいものを取得
 		// ids自体が空配列の場合、ids[ids.length - 1]はundefinedになるため、filterでnullを除外する
@@ -99,7 +97,7 @@ export class FanoutTimelineEndpointService {
 		let noteIds = redisResultIds.slice(0, ps.limit);
 
 		const oldestNoteId = ascending ? redisResultIds[0] : redisResultIds[redisResultIds.length - 1];
-		shouldFallbackToDb ||= ps.useDbFallback && (noteIds.length === 0 || ps.sinceId != null && ps.sinceId < oldestNoteId);
+		shouldFallbackToDb ||= noteIds.length === 0 || ps.sinceId != null && ps.sinceId < oldestNoteId;
 
 		if (!shouldFallbackToDb) {
 			let filter = ps.noteFilter ?? (_note => true) as NoteFilter;
