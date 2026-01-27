@@ -83,12 +83,18 @@ export class FanoutTimelineEndpointService {
 			(ps.preventEmptyTimelineDbFallback !== true && redisResult.length > 1 && redisResult.some(ids => ids.length === 0));
 
 		// 取得したresultの中で最古のIDのうち、最も新しいものを取得
-		const fttThresholdId = redisResult.map(ids => ids[0]).sort()[0];
+		// ids自体が空配列の場合、ids[ids.length - 1]はundefinedになるため、filterでnullを除外する
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		const fttThresholdId = redisResult.map(ids => ascending ? ids[0] : ids[ids.length - 1]).filter(id => id != null).sort().pop();
 
 		// TODO: いい感じにgetMulti内でソート済だからuniqするときにredisResultが全てソート済なのを利用して再ソートを避けたい
-		const redisResultIds = shouldFallbackToDb ? [] : Array.from(new Set(redisResult.flat(1))).sort(idCompare);
+		let redisResultIds = shouldFallbackToDb ? [] : Array.from(new Set(redisResult.flat(1)));
+		if (ps.useDbFallback && fttThresholdId != null) {
+			redisResultIds = redisResultIds.filter(id => id >= fttThresholdId);
+		}
+		redisResultIds.sort(idCompare);
 
-		let noteIds = redisResultIds.filter(id => id >= fttThresholdId).slice(0, ps.limit);
+		let noteIds = redisResultIds.slice(0, ps.limit);
 
 		const oldestNoteId = ascending ? redisResultIds[0] : redisResultIds[redisResultIds.length - 1];
 		shouldFallbackToDb ||= ps.useDbFallback && (noteIds.length === 0 || ps.sinceId != null && ps.sinceId < oldestNoteId);
