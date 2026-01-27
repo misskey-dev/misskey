@@ -109,8 +109,18 @@ export class FanoutTimelineService {
 	}
 
 	@bindThis
-	public injectDummy(tl: FanoutTimelineName, id: string) {
+	injectDummy(tl: FanoutTimelineName, id: string) {
 		return this.redisForTimelines.lpush('list:' + tl, id);
+	}
+
+	@bindThis
+	public injectDummyIfEmpty(tl: FanoutTimelineName, id: string): Promise<boolean> {
+		return this.redisForTimelines.eval(
+			'if redis.call("LLEN", KEYS[1]) == 0 then redis.call("LPUSH", KEYS[1], ARGV[1]) return 1 else return 0 end',
+			1,
+			'list:' + tl,
+			id,
+		).then(res => res === 1);
 	}
 
 	@bindThis

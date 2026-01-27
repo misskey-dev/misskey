@@ -68,6 +68,7 @@ describe('FanoutTimelineEndpointService', () => {
 			.useValue({
 				getMulti: jest.fn(),
 				injectDummy: jest.fn(),
+				injectDummyIfEmpty: jest.fn(),
 			})
 			.compile();
 
@@ -266,9 +267,9 @@ describe('FanoutTimelineEndpointService', () => {
 
 		expect(result).toEqual([]);
 		// Should have tried to inject dummy ID for both empty timelines
-		expect(fanoutTimelineService.injectDummy).toHaveBeenCalledTimes(2);
-		expect(fanoutTimelineService.injectDummy).toHaveBeenCalledWith(`homeTimeline:${alice.id}`, expect.any(String));
-		expect(fanoutTimelineService.injectDummy).toHaveBeenCalledWith('localTimeline', expect.any(String));
+		expect(fanoutTimelineService.injectDummyIfEmpty).toHaveBeenCalledTimes(2);
+		expect(fanoutTimelineService.injectDummyIfEmpty).toHaveBeenCalledWith(`homeTimeline:${alice.id}`, expect.any(String));
+		expect(fanoutTimelineService.injectDummyIfEmpty).toHaveBeenCalledWith('localTimeline', expect.any(String));
 	});
 
 	// Test for behavior when dummy ID exists

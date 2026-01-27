@@ -231,7 +231,7 @@ export class FanoutTimelineEndpointService {
 			Promise.all(ps.redisTimelines.map((tl, i) => {
 				// 有効なソースかつ結果が空だった場合のみダミーを入れる
 				if (redisResult[i] && redisResult[i].length === 0) {
-					return this.fanoutTimelineService.injectDummy(tl, dummyId);
+					return this.fanoutTimelineService.injectDummyIfEmpty(tl, dummyId);
 				}
 				return Promise.resolve();
 			}));
