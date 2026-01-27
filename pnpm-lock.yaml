@@ -659,6 +659,9 @@ importers:
       '@github/webauthn-json':
         specifier: 2.1.1
         version: 2.1.1
+      '@mcaptcha/core-glue':
+        specifier: 0.1.0-alpha-5
+        version: 0.1.0-alpha-5
       '@mcaptcha/vanilla-glue':
         specifier: 0.1.0-rc2
         version: 0.1.0-rc2(bufferutil@4.1.0)(utf-8-validate@6.0.6)
@@ -2724,6 +2727,9 @@ packages:
   '@mapbox/node-pre-gyp@1.0.9':
     resolution: {integrity: sha512-aDF3S3rK9Q2gey/WAttUlISduDItz5BU3306M9Eyv6/oS40aMprnopshtlKTykxRNIBEZuRMaZAnbrQ4QtKGyw==}
     hasBin: true
+
+  '@mcaptcha/core-glue@0.1.0-alpha-5':
+    resolution: {integrity: sha512-16qWm5O5X0Y9LXULULaAks8Vf9FNlUUBcR5KDt49aWhFhG5++JzxNmCwQM9EJSHNU7y0U+FdyAWcGmjfKlkRLA==}
 
   '@mcaptcha/core-glue@0.1.0-rc1':
     resolution: {integrity: sha512-P4SgUioJDR38QpnP9sPY72NyaYex8MXD6RbzrfKra+ngamT26XjqVZEHBiZU2RT7u0SsWhuko4N1ntNOghsgpg==}
@@ -13198,6 +13204,8 @@ snapshots:
       - encoding
       - supports-color
     optional: true
+
+  '@mcaptcha/core-glue@0.1.0-alpha-5': {}
 
   '@mcaptcha/core-glue@0.1.0-rc1': {}
 
