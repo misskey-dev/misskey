@@ -36,6 +36,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #suffix>sec</template>
 	</MkInput>
 
+	<MkInput v-else-if="type === 'createdBefore'" v-model="v.timestamp" type="number">
+		<template #suffix>ms</template>
+	</MkInput>
+
 	<MkInput v-else-if="['followersLessThanOrEq', 'followersMoreThanOrEq', 'followingLessThanOrEq', 'followingMoreThanOrEq', 'notesLessThanOrEq', 'notesMoreThanOrEq'].includes(type)" v-model="v.value" type="number">
 	</MkInput>
 
@@ -101,6 +105,7 @@ const typeDef = [
 	{ label: i18n.ts._role._condition.and, value: 'and' },
 	{ label: i18n.ts._role._condition.or, value: 'or' },
 	{ label: i18n.ts._role._condition.not, value: 'not' },
+	{ label: i18n.ts._hana._roles.createdBefore, value: 'createdBefore' },
 ] as const satisfies MkSelectItem[];
 
 const type = computed<GetMkSelectValueTypesFromDef<typeof typeDef>>({
@@ -118,6 +123,7 @@ const type = computed<GetMkSelectValueTypesFromDef<typeof typeDef>>({
 		if (t === 'followingMoreThanOrEq') v.value.value = 10;
 		if (t === 'notesLessThanOrEq') v.value.value = 10;
 		if (t === 'notesMoreThanOrEq') v.value.value = 10;
+		if (t === 'createdBefore') v.value.timestamp = Date.now();
 		v.value.type = t;
 	},
 });

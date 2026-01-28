@@ -161,6 +161,14 @@ type CondFormulaValueNotesMoreThanOrEq = {
 	value: number;
 };
 
+/**
+ * 登録日時が指定日時より前の場合のみ成立とする
+ */
+type CondFormulaValueCreatedBefore = {
+	type: 'createdBefore';
+	timestamp: number;
+};
+
 export type RoleCondFormulaValue = { id: string } & (
 	CondFormulaValueAnd |
 	CondFormulaValueOr |
@@ -181,7 +189,8 @@ export type RoleCondFormulaValue = { id: string } & (
 	CondFormulaValueFollowingLessThanOrEq |
 	CondFormulaValueFollowingMoreThanOrEq |
 	CondFormulaValueNotesLessThanOrEq |
-	CondFormulaValueNotesMoreThanOrEq
+	CondFormulaValueNotesMoreThanOrEq |
+	CondFormulaValueCreatedBefore
 );
 
 @Entity('role')

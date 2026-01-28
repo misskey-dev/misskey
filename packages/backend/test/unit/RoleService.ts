@@ -1009,6 +1009,37 @@ describe('RoleService', () => {
 			expect(actual3.some(r => r.id === role.id)).toBe(false);
 		});
 
+		test('登録日時が指定日時より前', async () => {
+			const base = new Date();
+
+			const d1 = new Date(base);
+			const d2 = new Date(base);
+			const d3 = new Date(base);
+			d1.setSeconds(d1.getSeconds() - 1);
+			d3.setSeconds(d3.getSeconds() + 1);
+
+			const [user1, user2, user3] = await Promise.all([
+				// before
+				createUser({ id: genAidx(d1.getTime()) }),
+				// exact
+				createUser({ id: genAidx(d2.getTime()) }),
+				// after
+				createUser({ id: genAidx(d3.getTime()) }),
+			]);
+			const role = await createConditionalRole({
+				id: aidx(),
+				type: 'createdBefore',
+				timestamp: d2.getTime(),
+			});
+
+			const actual1 = await roleService.getUserRoles(user1.id);
+			const actual2 = await roleService.getUserRoles(user2.id);
+			const actual3 = await roleService.getUserRoles(user3.id);
+			expect(actual1.some(r => r.id === role.id)).toBe(true);
+			expect(actual2.some(r => r.id === role.id)).toBe(false);
+			expect(actual3.some(r => r.id === role.id)).toBe(false);
+		});
+
 		test('フォロワー数が指定値以下', async () => {
 			const [user1, user2, user3] = await Promise.all([
 				createUser({ followersCount: 99 }),

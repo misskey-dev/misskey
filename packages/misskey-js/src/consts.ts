@@ -204,6 +204,7 @@ export const rolePolicies = [
 	'canManageCustomEmojis',
 	'canManageAvatarDecorations',
 	'canSearchNotes',
+	'canSearchWithHanamiSearchV1',
 	'canSearchUsers',
 	'canUseTranslator',
 	'canHideAds',
@@ -225,12 +226,14 @@ export const rolePolicies = [
 	'canImportBlocking',
 	'canImportFollowing',
 	'canImportMuting',
+	'canImportNotes',
 	'canImportUserLists',
 	'chatAvailability',
 	'uploadableFileTypes',
 	'noteDraftLimit',
 	'scheduledNoteLimit',
 	'watermarkAvailable',
+	'durationBasedLockdownAvailable',
 ] as const;
 
 export const queueTypes = [

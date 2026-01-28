@@ -103,105 +103,107 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkSwitch>
 					</SearchMarker>
 
-					<SearchMarker :keywords="['follower']">
-						<FormSlot>
-							<template #label><SearchLabel>{{ i18n.ts._accountSettings.makeNotesFollowersOnlyBefore }}</SearchLabel></template>
+					<template v-if="$i.policies.durationBasedLockdownAvailable">
+						<SearchMarker :keywords="['follower']">
+							<FormSlot>
+								<template #label><SearchLabel>{{ i18n.ts._accountSettings.makeNotesFollowersOnlyBefore }}</SearchLabel></template>
 
-							<div class="_gaps_s">
-								<MkSelect
-									v-model="makeNotesFollowersOnlyBefore_type"
-									:items="[
-										{ label: i18n.ts.none, value: null },
-										{ label: i18n.ts._accountSettings.notesHavePassedSpecifiedPeriod, value: 'relative' },
-										{ label: i18n.ts._accountSettings.notesOlderThanSpecifiedDateAndTime, value: 'absolute' },
-									]"
-								>
-								</MkSelect>
+								<div class="_gaps_s">
+									<MkSelect
+										v-model="makeNotesFollowersOnlyBefore_type"
+										:items="[
+											{ label: i18n.ts.none, value: null },
+											{ label: i18n.ts._accountSettings.notesHavePassedSpecifiedPeriod, value: 'relative' },
+											{ label: i18n.ts._accountSettings.notesOlderThanSpecifiedDateAndTime, value: 'absolute' },
+										]"
+									>
+									</MkSelect>
 
-								<MkSelect
-									v-if="makeNotesFollowersOnlyBefore_type === 'relative'"
-									v-model="makeNotesFollowersOnlyBefore_selection"
-									:items="[
-										...makeNotesFollowersOnlyBefore_presets,
-										{ label: i18n.ts.custom, value: 'custom' },
-									]"
-								>
-								</MkSelect>
+									<MkSelect
+										v-if="makeNotesFollowersOnlyBefore_type === 'relative'"
+										v-model="makeNotesFollowersOnlyBefore_selection"
+										:items="[
+											...makeNotesFollowersOnlyBefore_presets,
+											{ label: i18n.ts.custom, value: 'custom' },
+										]"
+									>
+									</MkSelect>
 
-								<MkInput
-									v-if="makeNotesFollowersOnlyBefore_type === 'relative' && makeNotesFollowersOnlyBefore_isCustomMode"
-									v-model="makeNotesFollowersOnlyBefore_customMonths"
-									type="number"
-									:min="1"
-								>
-									<template #suffix>{{ i18n.ts._time.month }}</template>
-								</MkInput>
+									<MkInput
+										v-if="makeNotesFollowersOnlyBefore_type === 'relative' && makeNotesFollowersOnlyBefore_isCustomMode"
+										v-model="makeNotesFollowersOnlyBefore_customMonths"
+										type="number"
+										:min="1"
+									>
+										<template #suffix>{{ i18n.ts._time.month }}</template>
+									</MkInput>
 
-								<MkInput
-									v-if="makeNotesFollowersOnlyBefore_type === 'absolute' && makeNotesFollowersOnlyBefore != null"
-									:modelValue="formatDateTimeString(new Date(makeNotesFollowersOnlyBefore * 1000), 'yyyy-MM-dd')"
-									type="date"
-									:manualSave="true"
-									@update:modelValue="makeNotesFollowersOnlyBefore = Math.floor(new Date($event).getTime() / 1000)"
-								>
-								</MkInput>
-							</div>
+									<MkInput
+										v-if="makeNotesFollowersOnlyBefore_type === 'absolute' && makeNotesFollowersOnlyBefore != null"
+										:modelValue="formatDateTimeString(new Date(makeNotesFollowersOnlyBefore * 1000), 'yyyy-MM-dd')"
+										type="date"
+										:manualSave="true"
+										@update:modelValue="makeNotesFollowersOnlyBefore = Math.floor(new Date($event).getTime() / 1000)"
+									>
+									</MkInput>
+								</div>
 
-							<template #caption>
-								<div><SearchText>{{ i18n.ts._accountSettings.makeNotesFollowersOnlyBeforeDescription }}</SearchText></div>
-							</template>
-						</FormSlot>
-					</SearchMarker>
+								<template #caption>
+									<div><SearchText>{{ i18n.ts._accountSettings.makeNotesFollowersOnlyBeforeDescription }}</SearchText></div>
+								</template>
+							</FormSlot>
+						</SearchMarker>
 
-					<SearchMarker :keywords="['hidden']">
-						<FormSlot>
-							<template #label><SearchLabel>{{ i18n.ts._accountSettings.makeNotesHiddenBefore }}</SearchLabel></template>
+						<SearchMarker :keywords="['hidden']">
+							<FormSlot>
+								<template #label><SearchLabel>{{ i18n.ts._accountSettings.makeNotesHiddenBefore }}</SearchLabel></template>
 
-							<div class="_gaps_s">
-								<MkSelect
-									v-model="makeNotesHiddenBefore_type"
-									:items="[
-										{ label: i18n.ts.none, value: null },
-										{ label: i18n.ts._accountSettings.notesHavePassedSpecifiedPeriod, value: 'relative' },
-										{ label: i18n.ts._accountSettings.notesOlderThanSpecifiedDateAndTime, value: 'absolute' },
-									]"
-								>
-								</MkSelect>
+								<div class="_gaps_s">
+									<MkSelect
+										v-model="makeNotesHiddenBefore_type"
+										:items="[
+											{ label: i18n.ts.none, value: null },
+											{ label: i18n.ts._accountSettings.notesHavePassedSpecifiedPeriod, value: 'relative' },
+											{ label: i18n.ts._accountSettings.notesOlderThanSpecifiedDateAndTime, value: 'absolute' },
+										]"
+									>
+									</MkSelect>
 
-								<MkSelect
-									v-if="makeNotesHiddenBefore_type === 'relative'"
-									v-model="makeNotesHiddenBefore_selection"
-									:items="[
-										...makeNotesHiddenBefore_presets,
-										{ label: i18n.ts.custom, value: 'custom' },
-									]"
-								>
-								</MkSelect>
+									<MkSelect
+										v-if="makeNotesHiddenBefore_type === 'relative'"
+										v-model="makeNotesHiddenBefore_selection"
+										:items="[
+											...makeNotesHiddenBefore_presets,
+											{ label: i18n.ts.custom, value: 'custom' },
+										]"
+									>
+									</MkSelect>
 
-								<MkInput
-									v-if="makeNotesHiddenBefore_type === 'relative' && makeNotesHiddenBefore_isCustomMode"
-									v-model="makeNotesHiddenBefore_customMonths"
-									type="number"
-									:min="1"
-								>
-									<template #suffix>{{ i18n.ts._time.month }}</template>
-								</MkInput>
+									<MkInput
+										v-if="makeNotesHiddenBefore_type === 'relative' && makeNotesHiddenBefore_isCustomMode"
+										v-model="makeNotesHiddenBefore_customMonths"
+										type="number"
+										:min="1"
+									>
+										<template #suffix>{{ i18n.ts._time.month }}</template>
+									</MkInput>
 
-								<MkInput
-									v-if="makeNotesHiddenBefore_type === 'absolute' && makeNotesHiddenBefore != null"
-									:modelValue="formatDateTimeString(new Date(makeNotesHiddenBefore * 1000), 'yyyy-MM-dd')"
-									type="date"
-									:manualSave="true"
-									@update:modelValue="makeNotesHiddenBefore = Math.floor(new Date($event).getTime() / 1000)"
-								>
-								</MkInput>
-							</div>
+									<MkInput
+										v-if="makeNotesHiddenBefore_type === 'absolute' && makeNotesHiddenBefore != null"
+										:modelValue="formatDateTimeString(new Date(makeNotesHiddenBefore * 1000), 'yyyy-MM-dd')"
+										type="date"
+										:manualSave="true"
+										@update:modelValue="makeNotesHiddenBefore = Math.floor(new Date($event).getTime() / 1000)"
+									>
+									</MkInput>
+								</div>
 
-							<template #caption>
-								<div><SearchText>{{ i18n.ts._accountSettings.makeNotesHiddenBeforeDescription }}</SearchText></div>
-							</template>
-						</FormSlot>
-					</SearchMarker>
+								<template #caption>
+									<div><SearchText>{{ i18n.ts._accountSettings.makeNotesHiddenBeforeDescription }}</SearchText></div>
+								</template>
+							</FormSlot>
+						</SearchMarker>
+					</template>
 
 					<MkInfo warn>{{ i18n.ts._accountSettings.mayNotEffectSomeSituations }}</MkInfo>
 				</div>

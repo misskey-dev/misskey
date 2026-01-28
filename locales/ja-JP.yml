@@ -3551,6 +3551,9 @@ _hana:
   searchIsInBeta: "独自検索エンジンは現在開発中です。今ご利用いただけるのは通常のMisskeyと同じ検索エンジン（Meilisearch）です。今後の進化にご期待ください！"
   showOnX: "{x}で見る"
   takingTooLongToLoad: "読み込みに時間がかかっています。"
+  _roles:
+    createdBefore: "作成日時（タイムスタンプ）が～以前"
+    durationBasedLockdownAvailable: "期間ベースのロックダウンの利用を許可"
   _inDevelopment:
     title: "この機能は開発中です"
     description: "はなみすきーは新規機能盛りだくさんで鋭意開発中です！\nどんな機能が実装されるかはお楽しみ。"

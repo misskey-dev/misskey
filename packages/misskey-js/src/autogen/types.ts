@@ -5249,13 +5249,19 @@ export type components = {
             type: 'createdLessThan' | 'createdMoreThan';
             sec: number;
         };
+        RoleCondFormulaValueCreatedBefore: {
+            id: string;
+            /** @enum {string} */
+            type: 'createdBefore';
+            timestamp: number;
+        };
         RoleCondFormulaFollowersOrFollowingOrNotes: {
             id: string;
             /** @enum {string} */
             type: 'followersLessThanOrEq' | 'followersMoreThanOrEq' | 'followingLessThanOrEq' | 'followingMoreThanOrEq' | 'notesLessThanOrEq' | 'notesMoreThanOrEq';
             value: number;
         };
-        RoleCondFormulaValue: components['schemas']['RoleCondFormulaLogics'] | components['schemas']['RoleCondFormulaValueNot'] | components['schemas']['RoleCondFormulaValueIsLocalOrRemote'] | components['schemas']['RoleCondFormulaValueUserSettingBooleanSchema'] | components['schemas']['RoleCondFormulaValueAssignedRole'] | components['schemas']['RoleCondFormulaValueCreated'] | components['schemas']['RoleCondFormulaFollowersOrFollowingOrNotes'];
+        RoleCondFormulaValue: components['schemas']['RoleCondFormulaLogics'] | components['schemas']['RoleCondFormulaValueNot'] | components['schemas']['RoleCondFormulaValueIsLocalOrRemote'] | components['schemas']['RoleCondFormulaValueUserSettingBooleanSchema'] | components['schemas']['RoleCondFormulaValueAssignedRole'] | components['schemas']['RoleCondFormulaValueCreated'] | components['schemas']['RoleCondFormulaValueCreatedBefore'] | components['schemas']['RoleCondFormulaFollowersOrFollowingOrNotes'];
         RoleLite: {
             /**
              * Format: id
@@ -5345,6 +5351,7 @@ export type components = {
             noteDraftLimit: number;
             scheduledNoteLimit: number;
             watermarkAvailable: boolean;
+            durationBasedLockdownAvailable: boolean;
         };
         ReversiGameLite: {
             /** Format: id */

@@ -48,6 +48,7 @@ export type RoleCondFormulaValueIsLocalOrRemote = components['schemas']['RoleCon
 export type RoleCondFormulaValueUserSettingBooleanSchema = components['schemas']['RoleCondFormulaValueUserSettingBooleanSchema'];
 export type RoleCondFormulaValueAssignedRole = components['schemas']['RoleCondFormulaValueAssignedRole'];
 export type RoleCondFormulaValueCreated = components['schemas']['RoleCondFormulaValueCreated'];
+export type RoleCondFormulaValueCreatedBefore = components['schemas']['RoleCondFormulaValueCreatedBefore'];
 export type RoleCondFormulaFollowersOrFollowingOrNotes = components['schemas']['RoleCondFormulaFollowersOrFollowingOrNotes'];
 export type RoleCondFormulaValue = components['schemas']['RoleCondFormulaValue'];
 export type RoleLite = components['schemas']['RoleLite'];

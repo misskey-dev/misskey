@@ -74,6 +74,7 @@ export type RolePolicies = {
 	noteDraftLimit: number;
 	scheduledNoteLimit: number;
 	watermarkAvailable: boolean;
+	durationBasedLockdownAvailable: boolean;
 };
 
 export const DEFAULT_POLICIES: RolePolicies = {
@@ -124,6 +125,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	noteDraftLimit: 10,
 	scheduledNoteLimit: 1,
 	watermarkAvailable: true,
+	durationBasedLockdownAvailable: true,
 };
 
 @Injectable()
@@ -321,6 +323,10 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 				case 'notesMoreThanOrEq': {
 					return user.notesCount >= value.value;
 				}
+				// 登録日時が指定日時より前
+				case 'createdBefore': {
+					return this.idService.parse(user.id).date.getTime() < value.timestamp;
+				}
 				default:
 					return false;
 			}
@@ -456,6 +462,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			noteDraftLimit: calc('noteDraftLimit', vs => Math.max(...vs)),
 			scheduledNoteLimit: calc('scheduledNoteLimit', vs => Math.max(...vs)),
 			watermarkAvailable: calc('watermarkAvailable', vs => vs.some(v => v === true)),
+			durationBasedLockdownAvailable: calc('durationBasedLockdownAvailable', vs => vs.some(v => v === true)),
 		};
 	}
 
