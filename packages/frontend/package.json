@@ -19,7 +19,7 @@
 		"@analytics/google-analytics": "1.1.0",
 		"@discordapp/twemoji": "16.0.1",
 		"@github/webauthn-json": "2.1.1",
-		"@mcaptcha/vanilla-glue": "0.1.0-rc2",
+		"@mcaptcha/core-glue": "0.1.0-alpha-5",
 		"@misskey-dev/browser-image-resizer": "2024.1.0",
 		"@rollup/plugin-json": "6.1.0",
 		"@rollup/plugin-replace": "6.0.3",
