@@ -71,6 +71,7 @@ export type RolePolicies = {
 	noteDraftLimit: number;
 	scheduledNoteLimit: number;
 	watermarkAvailable: boolean;
+	spReactionsMonthlyLimit: number;
 };
 
 export const DEFAULT_POLICIES: RolePolicies = {
@@ -118,6 +119,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	noteDraftLimit: 10,
 	scheduledNoteLimit: 1,
 	watermarkAvailable: true,
+	spReactionsMonthlyLimit: 0,
 };
 
 @Injectable()
