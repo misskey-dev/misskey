@@ -37,3 +37,5 @@ minimumReleaseAgeExclude:
   - '@fastify/express' # 脆弱性対応。そのうち消すこと
   - 'lodash' # 脆弱性対応。そのうち消すこと
   - 'tar' # 脆弱性対応。そのうち消すこと
+  # Renovate security update: pnpm@10.28.2
+  - pnpm@10.28.2
