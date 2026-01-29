@@ -722,6 +722,11 @@ export class MiMeta {
 	})
 	public showRoleBadgesOfRemoteUsers: boolean;
 
+	@Column('boolean', {
+		default: false,
+	})
+	public enableSpReaction: boolean;
+
 	@Column('jsonb', {
 		default: { },
 	})

@@ -218,6 +218,7 @@ export const paramDef = {
 		remoteNotesCleaningExpiryDaysForEachNotes: { type: 'number' },
 		remoteNotesCleaningMaxProcessingDurationInMinutes: { type: 'number' },
 		showRoleBadgesOfRemoteUsers: { type: 'boolean' },
+		enableSpReaction: { type: 'boolean' },
 	},
 	required: [],
 } as const;
@@ -760,6 +761,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.showRoleBadgesOfRemoteUsers !== undefined) {
 				set.showRoleBadgesOfRemoteUsers = ps.showRoleBadgesOfRemoteUsers;
+			}
+
+			if (ps.enableSpReaction !== undefined) {
+				set.enableSpReaction = ps.enableSpReaction;
 			}
 
 			const before = await this.metaService.fetch(true);

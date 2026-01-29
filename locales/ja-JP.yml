@@ -1778,6 +1778,12 @@ _serverSettings:
   entrancePageStyle: "エントランスページのスタイル"
   showTimelineForVisitor: "タイムラインを表示する"
   showActivitiesForVisitor: "アクティビティを表示する"
+  features: "機能"
+
+  _spReactions:
+    enable: "スペシャルリアクションを有効にする"
+    description1: "通常のリアクションより目立つ「スペシャルリアクション」をノートに送れる機能です。"
+    description2: "有効にする場合、ロールポリシーで、毎月送ることのできる最大数を設定してください。"
 
   _userGeneratedContentsVisibilityForVisitor:
     all: "全て公開"
