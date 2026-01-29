@@ -2896,6 +2896,7 @@ _notification:
     renote: "リノート"
     quote: "引用"
     reaction: "リアクション"
+    spReaction: "スペシャルリアクション"
     pollEnded: "アンケートが終了"
     scheduledNotePosted: "予約投稿が成功した"
     scheduledNotePostFailed: "予約投稿が失敗した"

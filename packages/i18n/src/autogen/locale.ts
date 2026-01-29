@@ -10948,6 +10948,10 @@ export interface Locale extends ILocale {
              */
             "reaction": string;
             /**
+             * スペシャルリアクション
+             */
+            "spReaction": string;
+            /**
              * アンケートが終了
              */
             "pollEnded": string;

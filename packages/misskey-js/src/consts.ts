@@ -24,6 +24,7 @@ export const notificationTypes = [
 	'renote',
 	'quote',
 	'reaction',
+	'spReaction',
 	'pollEnded',
 	'scheduledNotePosted',
 	'scheduledNotePostFailed',
