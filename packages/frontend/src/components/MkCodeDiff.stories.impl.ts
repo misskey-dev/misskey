@@ -47,4 +47,4 @@ export const Default = {
 	parameters: {
 		layout: 'centered',
 	},
-} satisfies StoryObj<typeof MkCode>;
+} satisfies StoryObj<typeof MkCodeDiff>;
