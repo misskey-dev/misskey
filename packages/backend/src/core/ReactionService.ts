@@ -4,8 +4,9 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import * as Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
-import type { EmojisRepository, NoteReactionsRepository, UsersRepository, NotesRepository, MiMeta } from '@/models/_.js';
+import type { EmojisRepository, NoteReactionsRepository, UsersRepository, NotesRepository, MiMeta, MiNoteSpReaction, NoteSpReactionsRepository } from '@/models/_.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type { MiRemoteUser, MiUser } from '@/models/User.js';
 import type { MiNote } from '@/models/Note.js';
@@ -73,6 +74,9 @@ export class ReactionService {
 		@Inject(DI.meta)
 		private meta: MiMeta,
 
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -81,6 +85,9 @@ export class ReactionService {
 
 		@Inject(DI.noteReactionsRepository)
 		private noteReactionsRepository: NoteReactionsRepository,
+
+		@Inject(DI.noteSpReactionsRepository)
+		private noteSpReactionsRepository: NoteSpReactionsRepository,
 
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
@@ -335,6 +342,118 @@ export class ReactionService {
 			trackPromise(dm.execute());
 		}
 		//#endregion
+	}
+
+	@bindThis
+	public async createSp(user: { id: MiUser['id']; isBot: MiUser['isBot'] }, note: MiNote, reaction: string) {
+		if (!this.meta.enableSpReaction) {
+			throw new IdentifiableError('52c432ea-b166-491c-a73b-5dd703221b20');
+		}
+
+		if (note.userId === user.id) {
+			throw new IdentifiableError('afa694bf-6661-4d72-b8f7-bfb86a7545a1');
+		}
+
+		if (note.userHost !== null) {
+			throw new IdentifiableError('b59abda2-0d81-49e3-8148-80cf35ac4402');
+		}
+
+		if (note.reactionAcceptance === 'likeOnly') {
+			throw new IdentifiableError('1b168811-a1aa-470a-9b61-7fcf807cf9c1');
+		}
+
+		if (!await this.noteEntityService.isVisibleForMe(note, user.id)) {
+			throw new IdentifiableError('3ce0e3bc-7d48-4e87-a902-578c6ffd369e', 'Note not accessible for you.');
+		}
+
+		// monthly limit
+		const policies = await this.roleService.getUserPolicies(user.id);
+		if (policies.spReactionsMonthlyLimit === 0) {
+			throw new IdentifiableError('e371be02-9478-4133-90ef-8401ee38e474');
+		}
+		const month = new Date().getUTCMonth() + 1;
+		const monthlySpReactionsCountMapKey = `monthlySpReactionsCountMap:${user.id}:${month}`;
+		const count = await this.redisClient.get(monthlySpReactionsCountMapKey);
+		if (count != null && parseInt(count, 10) >= policies.spReactionsMonthlyLimit) {
+			throw new IdentifiableError('82e1a10c-52a8-4ccb-8ff7-3678bff68444');
+		}
+
+		const blocked = await this.userBlockingService.checkBlocked(note.userId, user.id);
+		if (blocked) {
+			throw new IdentifiableError('388ee683-8720-4aea-9ac8-b8c92d260815');
+		}
+
+		const custom = reaction.match(isCustomEmojiRegexp);
+		if (custom) {
+			const name = custom[1];
+			const emoji = (await this.customEmojiService.localEmojisCache.fetch()).get(name);
+
+			if (emoji == null) {
+				throw new IdentifiableError('47c098e2-d0b6-4197-8d00-5a68bbb156be');
+			}
+
+			// センシティブ
+			if ((note.reactionAcceptance === 'nonSensitiveOnly' || note.reactionAcceptance === 'nonSensitiveOnlyForLocalLikeOnlyForRemote') && emoji.isSensitive) {
+				throw new IdentifiableError('7fc2efbd-2652-4a60-975b-6eb65f60c7b3');
+			}
+
+			if (emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.length > 0 && !(await this.roleService.getUserRoles(user.id)).some(r => emoji.roleIdsThatCanBeUsedThisEmojiAsReaction.includes(r.id))) {
+				// リアクションとして使う権限がない
+				throw new IdentifiableError('63288e20-4251-4c62-a9d5-9da4e0bdd41e');
+			}
+
+			reaction = `:${name}:`;
+		} else {
+			reaction = this.normalize(reaction);
+		}
+
+		const record: MiNoteSpReaction = {
+			id: this.idService.gen(),
+			noteId: note.id,
+			userId: user.id,
+			reaction,
+			noteUserId: note.userId,
+		};
+
+		try {
+			await this.noteSpReactionsRepository.insert(record);
+		} catch (e) {
+			if (isDuplicateKeyValueError(e)) {
+				throw new IdentifiableError('c9e8b0d0-d532-4453-8cc1-5cf8e95ba764');
+			} else {
+				throw e;
+			}
+		}
+
+		// increment monthly reactions count
+		const redisPipeline = this.redisClient.pipeline();
+		redisPipeline.incr(monthlySpReactionsCountMapKey);
+		redisPipeline.expireat(monthlySpReactionsCountMapKey,
+			(Date.now() / 1000) + (60 * 60 * 24 * 40), // TTLは最低でも一か月存続しさえすれば厳密でなくていい
+			'NX',
+		);
+		redisPipeline.exec();
+
+		// 3日以内に投稿されたノートの場合ハイライト用ランキング更新
+		if (
+			(Date.now() - this.idService.parse(note.id).date.getTime()) < 1000 * 60 * 60 * 24 * 3
+		) {
+			if (note.channelId != null) {
+				if (note.replyId == null) {
+					this.featuredService.updateInChannelNotesRanking(note.channelId, note.id, 1);
+				}
+			} else {
+				if (note.visibility === 'public' && note.replyId == null) {
+					this.featuredService.updateGlobalNotesRanking(note.id, 1);
+					this.featuredService.updatePerUserNotesRanking(note.userId, note.id, 1);
+				}
+			}
+		}
+
+		this.notificationService.createNotification(note.userId, 'spReaction', {
+			noteId: note.id,
+			reaction: reaction,
+		}, user.id);
 	}
 
 	/**
