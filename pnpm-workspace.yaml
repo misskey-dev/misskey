@@ -42,4 +42,5 @@ minimumReleaseAgeExclude:
   - pnpm@10.28.2
   - rolldown
   - '@rolldown/*'
+  - '@oxc-project/*'
   - '@napi-rs/wasm-runtime'
