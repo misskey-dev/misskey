@@ -9,9 +9,6 @@ import { NestLogger } from '@/NestLogger.js';
 export async function server() {
 	const { MainModule } = await import('../MainModule.js');
 	const { ServerService } = await import('../server/ServerService.js');
-	const { ChartManagementService } = await import('../core/chart/ChartManagementService.js');
-	const { QueueStatsService } = await import('../daemons/QueueStatsService.js');
-	const { ServerStatsService } = await import('../daemons/ServerStatsService.js');
 
 	const app = await NestFactory.createApplicationContext(MainModule, {
 		logger: new NestLogger(),
@@ -21,6 +18,10 @@ export async function server() {
 	await serverService.launch();
 
 	if (process.env.NODE_ENV !== 'test') {
+		const { ChartManagementService } = await import('../core/chart/ChartManagementService.js');
+		const { QueueStatsService } = await import('../daemons/QueueStatsService.js');
+		const { ServerStatsService } = await import('../daemons/ServerStatsService.js');
+
 		app.get(ChartManagementService).start();
 		app.get(QueueStatsService).start();
 		app.get(ServerStatsService).start();
