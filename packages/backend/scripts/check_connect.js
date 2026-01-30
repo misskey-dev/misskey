@@ -16,24 +16,22 @@ async function connectToPostgres() {
 }
 
 async function connectToRedis(redisOptions) {
-	return await new Promise(async (resolve, reject) => {
-		const redis = new Redis({
+	let redis;
+	try {
+		redis = new Redis({
 			...redisOptions,
 			lazyConnect: true,
 			reconnectOnError: false,
 			showFriendlyErrorStack: true,
 		});
-		redis.on('error', e => reject(e));
 
-		try {
-			await redis.connect();
-			resolve();
-		} catch (e) {
-			reject(e);
-		} finally {
-			redis.disconnect(false);
-		}
-	});
+		await Promise.race([
+			new Promise((_, reject) => redis.on('error', e => reject(e))),
+			redis.connect(),
+		]);
+	} finally {
+		redis.disconnect(false);
+	}
 }
 
 // If not all of these are defined, the default one gets reused.

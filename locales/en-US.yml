@@ -1406,6 +1406,7 @@ youAreAdmin: "You are admin"
 frame: "Frame"
 presets: "Preset"
 zeroPadding: "Zero padding"
+nothingToConfigure: "No configurable options available"
 _imageEditing:
   _vars:
     caption: "File caption"
@@ -1550,6 +1551,9 @@ _settings:
   showPageTabBarBottom: "Show page tab bar at the bottom"
   emojiPaletteBanner: "You can register presets as palettes to display prominently in the emoji picker or customize the appearance of the picker."
   enableAnimatedImages: "Enable animated images"
+  settingsPersistence_title: "Persistence of Settings"
+  settingsPersistence_description1: "Enabling setting persistence prevents configuration information from being lost."
+  settingsPersistence_description2: "It may not be possible to enable this depending on the environment."
   _chat:
     showSenderName: "Show sender's name"
     sendOnEnter: "Press Enter to send"
@@ -2541,6 +2545,44 @@ _widgets:
   clicker: "Clicker"
   birthdayFollowings: "Today's Birthdays"
   chat: "Chat with user"
+_widgetOptions:
+  showHeader: "Show header"
+  transparent: "Make background transparent"
+  height: "Height"
+  _button:
+    colored: "Colored"
+  _clock:
+    size: "Size"
+    thickness: "Needle thickness"
+    thicknessThin: "Thin"
+    thicknessMedium: "Normal"
+    thicknessThick: "Thick"
+    graduations: "Dial markings"
+    graduationDots: "Dot"
+    graduationArabic: "Arabic numbers"
+    fadeGraduations: "Fade the scale"
+    sAnimation: "Second hand animation"
+    sAnimationElastic: "Real"
+    sAnimationEaseOut: "Smooth"
+    twentyFour: "24 Hour Format"
+    labelTime: "Time"
+    labelTz: "Timezone"
+    labelTimeAndTz: "Time and time zone"
+    timezone: "Timezone"
+    showMs: "Show Miliseconds"
+    showLabel: "Show Label"
+  _jobQueue:
+    sound: "Play Sounds"
+  _rss:
+    url: "RSS Feed Url"
+    refreshIntervalSec: "Update interval (in seconds)"
+    maxEntries: "Maximum number of items to display"
+  _rssTicker:
+    shuffle: "Random display order"
+    duration: "Banner scroll speed (in seconds)"
+    reverse: "Scroll in the opposite direction"
+  _birthdayFollowings:
+    period: "Duration"
 _cw:
   hide: "Hide"
   show: "Show content"
@@ -2816,6 +2858,14 @@ _deck:
   usedAsMinWidthWhenFlexible: "Minimum width will be used for this when the \"Auto-adjust width\" option is enabled"
   flexible: "Auto-adjust width"
   enableSyncBetweenDevicesForProfiles: "Enable profile information sync between devices"
+  showHowToUse: ""
+  _howToUse:
+    addColumn_title: "Add column"
+    addColumn_description: "You can select and add column types."
+    settings_title: "UI Settings"
+    settings_description: "You can configure detailed settings for the deck UI."
+    switchProfile_title: "Profile Switching"
+    switchProfile_description: "You can save UI layouts as profiles and switch between them at any time."
   _columns:
     main: "Main"
     widgets: "Widgets"
@@ -3299,7 +3349,6 @@ _imageEffector:
   title: "Effects"
   addEffect: "Add Effects"
   discardChangesConfirm: "Are you sure you want to leave? You have unsaved changes."
-  nothingToConfigure: "No configurable options available"
   failedToLoadImage: "Failed to load image"
   _fxs:
     chromaticAberration: "Chromatic Aberration"

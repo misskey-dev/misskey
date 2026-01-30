@@ -2489,6 +2489,15 @@ _widgets:
   clicker: "คลิกเกอร์"
   birthdayFollowings: "วันเกิดผู้ใช้ในวันนี้"
   chat: "แชตเลย"
+_widgetOptions:
+  showHeader: "แสดงส่วนหัว"
+  height: "ความสูง"
+  _button:
+    colored: "สี"
+  _clock:
+    size: "ขนาด"
+  _birthdayFollowings:
+    period: "ระยะเวลา"
 _cw:
   hide: "ซ่อน"
   show: "โหลดเพิ่มเติม"
@@ -3230,7 +3239,6 @@ _imageEffector:
   title: "เอฟเฟกต์"
   addEffect: "เพิ่มเอฟเฟกต์"
   discardChangesConfirm: "ต้องการทิ้งการเปลี่ยนแปลงแล้วออกหรือไม่?"
-  nothingToConfigure: "ไม่มีอะไรให้ตั้งค่า"
   _fxs:
     chromaticAberration: "ความคลาดสี"
     glitch: "กลิตช์"

@@ -10,6 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:height="600"
 	:scroll="false"
 	:withOkButton="true"
+	:okButtonDisabled="!canSave"
 	@close="cancel()"
 	@ok="save()"
 	@closed="emit('closed')"
@@ -38,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<template #controls>
 			<div class="_spacer">
-				<MkForm v-model="settings" :form="form"/>
+				<MkForm v-model="settings" :form="form" @canSaveStateChange="onCanSaveStateChanged"/>
 			</div>
 		</template>
 	</MkPreviewWithControls>
@@ -46,16 +47,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { reactive, useTemplateRef, ref, computed, watch, onBeforeUnmount, onMounted } from 'vue';
+import { useTemplateRef, ref, computed, onBeforeUnmount, onMounted } from 'vue';
 import MkPreviewWithControls from './MkPreviewWithControls.vue';
 import type { Form } from '@/utility/form.js';
+import type { WidgetName } from '@/widgets/index.js';
 import { deepClone } from '@/utility/clone.js';
 import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkForm from '@/components/MkForm.vue';
 
 const props = defineProps<{
-	widgetName: string;
+	widgetName: WidgetName;
 	form: Form;
 	currentSettings: Record<string, any>;
 }>();
@@ -70,7 +72,14 @@ const dialog = useTemplateRef('dialog');
 
 const settings = ref<Record<string, any>>(deepClone(props.currentSettings));
 
+const canSave = ref(true);
+
+function onCanSaveStateChanged(newCanSave: boolean) {
+	canSave.value = newCanSave;
+}
+
 function save() {
+	if (!canSave.value) return;
 	emit('saved', deepClone(settings.value));
 	dialog.value?.close();
 }

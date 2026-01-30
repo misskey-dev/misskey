@@ -412,13 +412,13 @@ function getDef(emoji: string): string | Misskey.entities.EmojiSimple | UnicodeE
 }
 
 /** @see MkEmojiPicker.section.vue */
-function computeButtonTitle(ev: MouseEvent): void {
+function computeButtonTitle(ev: PointerEvent): void {
 	const elm = ev.target as HTMLElement;
 	const emoji = elm.dataset.emoji as string;
 	elm.title = getEmojiName(emoji);
 }
 
-function chosen(emoji: string | Misskey.entities.EmojiSimple | UnicodeEmojiDef, ev?: MouseEvent) {
+function chosen(emoji: string | Misskey.entities.EmojiSimple | UnicodeEmojiDef, ev?: PointerEvent) {
 	const el = ev && (ev.currentTarget ?? ev.target) as HTMLElement | null | undefined;
 	if (el && prefer.s.animation) {
 		const rect = el.getBoundingClientRect();

@@ -16,7 +16,7 @@ import { i18n } from '@/i18n.js';
 import type { WidgetComponentProps, WidgetComponentEmits, WidgetComponentExpose } from './widget.js';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 
-const name = 'ai';
+const name = 'aichan';
 
 const widgetPropsDef = {
 	transparent: {

@@ -95,7 +95,7 @@ watch(layers, async () => {
 	}
 }, { deep: true });
 
-function addEffect(ev: MouseEvent) {
+function addEffect(ev: PointerEvent) {
 	os.popupMenu(Object.entries(FXS).map(([id, fx]) => ({
 		text: fx.uiDefinition.name,
 		action: () => {
@@ -219,7 +219,7 @@ watch(enabled, () => {
 
 const penMode = ref<'fill' | 'blur' | 'pixelate' | null>(null);
 
-function showPenMenu(ev: MouseEvent) {
+function showPenMenu(ev: PointerEvent) {
 	os.popupMenu([{
 		text: i18n.ts._imageEffector._fxs.fill,
 		action: () => {

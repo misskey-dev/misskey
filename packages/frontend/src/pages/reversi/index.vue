@@ -208,7 +208,7 @@ async function matchUser() {
 	matchHeatbeat();
 }
 
-async function matchAny(ev: MouseEvent) {
+async function matchAny(ev: PointerEvent) {
 	const isLoggedIn = await pleaseLogin();
 	if (!isLoggedIn) return;
 
@@ -239,11 +239,11 @@ function cancelMatching() {
 	}
 }
 
-async function accept(user) {
+async function accept(user: Misskey.entities.UserLite) {
 	const game = await misskeyApi('reversi/match', {
 		userId: user.id,
 	});
-	if (game) {
+	if (game != null) {
 		startGame(game);
 	}
 }

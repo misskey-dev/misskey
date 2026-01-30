@@ -144,7 +144,7 @@ async function unsubscribe() {
 }
 
 function encode(buffer: ArrayBuffer | null) {
-	return btoa(String.fromCharCode.apply(null, buffer ? new Uint8Array(buffer) as any : []));
+	return btoa(String.fromCharCode(...(buffer != null ? new Uint8Array(buffer) : [])));
 }
 
 /**
