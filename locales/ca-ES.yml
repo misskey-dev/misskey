@@ -1390,7 +1390,7 @@ defaultCompressionLevel_description: "Si el redueixes augmentaràs la qualitat d
 inMinutes: "Minut(s)"
 inDays: "Di(a)(es)"
 safeModeEnabled: "Mode segur activat"
-pluginsAreDisabledBecauseSafeMode: "Els afegits no estan activats perquè el mode segur està activat."
+pluginsAreDisabledBecauseSafeMode: "Les extensions no estan activades perquè el mode segur està activat."
 customCssIsDisabledBecauseSafeMode: "El CSS personalitzat no s'aplica perquè el mode segur es troba activat."
 themeIsDefaultBecauseSafeMode: "El tema predeterminat es farà servir mentre el mode segur estigui activat. Una vegada es desactivi el mode segur es restablirà el tema escollit."
 thankYouForTestingBeta: "Gràcies per ajudar-nos a provar la versió beta!"
@@ -2185,8 +2185,8 @@ _email:
     title: "Has rebut una sol·licitud  de seguiment"
 _plugin:
   install: "Instal·lar un afegit "
-  installWarn: "Si us plau, no instal·lis afegits que no siguin de confiança."
-  manage: "Gestionar els afegits"
+  installWarn: "Si us plau, no instal·lis extensions que no siguin de confiança."
+  manage: "Gestiona les extensions"
   viewSource: "Veure l'origen "
   viewLog: "Mostra el registre"
 _preferencesBackups:
