@@ -31,6 +31,7 @@
   - JSONによるClient Information Discoveryを行うには、レスポンスの`Content-Type`ヘッダーが`application/json`である必要があります
   - 従来の実装（12 February 2022版・HTML Microformat形式）も引き続きサポートされます
 - Enhance: メモリ使用量を削減
+- Fix: `/admin/get-user-ips` エンドポイントのアクセス権限を管理者のみに修正
 
 ## 2025.12.2
 
