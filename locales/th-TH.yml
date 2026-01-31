@@ -3172,7 +3172,7 @@ _customEmojisManager:
       uploadSettingDescription: "สามารถกำหนดพฤติกรรมขณะอัปโหลดเอโมจิจากหน้าจอนี้ได้"
       directoryToCategoryLabel: "ป้อนชื่อไดเรกทอรีเป็น \"category\""
       directoryToCategoryCaption: "เมื่อทำการลากและวางไดเรกทอรี ชื่อจะถูกป้อนเป็น \"category\""
-      confirmRegisterEmojisDescription: "จะลงทะเบียนเอโมจิที่แสดงในรายการเป็นเอโมจิแบบกำหนดเองใหม่\nดำเนินการต่อหรือไม่? (เพื่อหลีกเลี่ยงภาระโหลดหนัก ระบบจะสามารถลงทะเบียนอีโมจิได้สูงสุด {count} รายการต่อครั้ง)"
+      confirmRegisterEmojisDescription: "จะลงทะเบียนเอโมจิที่แสดงในรายการเป็นเอโมจิแบบกำหนดเองใหม่\nดำเนินการต่อหรือไม่? (เพื่อหลีกเลี่ยงภาระโหลดหนัก ระบบจะสามารถลงทะเบียนเอโมจิได้สูงสุด {count} รายการต่อครั้ง)"
       confirmClearEmojisDescription: "ต้องการยกเลิกการแก้ไขและล้างรายการเอโมจิที่แสดงอยู่หรือไม่?"
       confirmUploadEmojisDescription: "จะอัปโหลดไฟล์ {count} รายการที่ลากและวางไปยังไดรฟ์ ดำเนินการหรือไม่?"
 _embedCodeGen:
