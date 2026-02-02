@@ -533,8 +533,6 @@ function setVisibility() {
 	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkVisibilityPicker.vue')), {
 		currentVisibility: actualVisibility.value,
 		isSilenced: $i.isSilenced,
-		// チャンネル→ダイレクトの選択変更ができなくなるので、チャンネル選択中の場合は意図的にfalseを渡すようにする
-		localOnly: targetChannel.value ? false : actualLocalOnly.value,
 		anchorElement: visibilityButton.value,
 		currentChannel: targetChannel.value,
 		...(replyTargetNote.value ? { isReplyVisibilitySpecified: replyTargetNote.value.visibility === 'specified' } : {}),
