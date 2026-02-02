@@ -40,9 +40,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<i v-else class="_indicatorCircle"></i>
 					</span>
 				</component>
-				<!-- Output IRC after the message link -->
-				<LinkButton v-if="item == 'chat'" v-tooltip.noDelay.right="'Neondystopia IRC Chat'" :class="$style.item" :activeClass="$style.active" to="https://irc-chat.neondystopia.world/">
-					<i :class="$style.itemIcon" class="ti ti-message-circle ti-fw" style="viewTransitionName: navbar-settings;"></i><span :class="$style.itemText">IRC</span>
+				<!-- Output after the message link -->
+				<LinkButton v-if="item == 'chat'" v-tooltip.noDelay.right="'Neondystopia PeerTube instance'" :class="$style.item" :activeClass="$style.active" to="https://video.neondystopia.world/">
+					<i :class="$style.itemIcon" class="ti ti-device-tv ti-fw" style="viewTransitionName: navbar-settings;"></i><span :class="$style.itemText">NeoTube</span>
+				</LinkButton>
+				<LinkButton v-if="item == 'chat'" v-tooltip.noDelay.right="'Neondystopia Lemmy instance'" :class="$style.item" :activeClass="$style.active" to="https://lemmy.neondystopia.world/">
+					<i :class="$style.itemIcon" class="ti ti-news ti-fw" style="viewTransitionName: navbar-settings;"></i><span :class="$style.itemText">Lemmy</span>
 				</LinkButton>
 				<LinkButton v-if="item == 'chat'" v-tooltip.noDelay.right="'Neondystopia Matrix Server'" :class="$style.item" :activeClass="$style.active" to="https://matrix-chat.neondystopia.world/">
 					<i :class="$style.itemIcon" class="ti ti-brand-matrix ti-fw" style="viewTransitionName: navbar-settings;"></i><span :class="$style.itemText">Matrix</span>

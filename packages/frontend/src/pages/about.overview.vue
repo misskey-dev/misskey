@@ -37,6 +37,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 				NeonDystopia IRC Chat
 				<template #suffix>IRC</template>
 			</FormLink>
+			<FormLink to="https://video.neondystopia.world/" external>
+				<template #icon><i class="ti ti-device-tv"></i></template>
+				NeoTube
+				<template #suffix>NeoTube</template>
+			</FormLink>
+			<FormLink to="https://lemmy.neondystopia.world/" external>
+				<template #icon><i class="ti ti-news"></i></template>
+				Lemmy
+				<template #suffix>Lemmy</template>
+			</FormLink>
 			<FormLink to="https://matrix-chat.neondystopia.world/" external>
 				<template #icon><i class="ti ti-brand-matrix"></i></template>
 				NeonDystopia Matrix Server
