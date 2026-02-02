@@ -1,0 +1,51 @@
+name: Request release review
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  reply:
+    if: github.event.comment.body == '/request-release-review'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Reply
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const body = `To dev team (@misskey-dev/dev):
+
+            リリースが提案されています :rocket:
+
+            GOの場合はapprove、NO GOの場合はその旨コメントをお願いいたします。
+
+            判断にあたって考慮すべき観点は、
+
+            - やり残したことはないか？
+            - CHANGELOGは過不足ないか？
+            - バージョンに問題はないか？(月跨いでいるのに更新忘れているなど)
+            - 再考すべき仕様・実装はないか？
+            - ベータ版を検証したサーバーから不具合の報告等は上がってないか？
+            - (セキュリティの修正や重要なバグ修正などのため)リリースを急いだ方が良いか？そうではないか？
+            - Actionsが落ちていないか？
+
+            などが挙げられます。
+
+            ご協力ありがとうございます :sparkles:
+            `
+
+            const issue_number = context.payload.issue ? context.payload.issue.number : (context.payload.pull_request && context.payload.pull_request.number)
+            if (!issue_number) {
+              console.log('No issue or PR number found in payload; skipping')
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number,
+                body,
+              })
+            }

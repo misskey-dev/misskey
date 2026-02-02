@@ -71,7 +71,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private notificationService: NotificationService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const EXTRA_LIMIT = 100;
 			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.gen(ps.untilDate!) : undefined);
 			const sinceId = ps.sinceId ?? (ps.sinceDate ? this.idService.gen(ps.sinceDate!) : undefined);
 

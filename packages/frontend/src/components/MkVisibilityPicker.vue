@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="$style.itemDescription">{{ i18n.ts._visibility.followersDescription }}</div>
 			</div>
 		</button>
-		<button key="specified" :disabled="localOnly" class="_button" :class="[$style.item, { [$style.active]: v === 'specified' && !currentChannel }]" data-index="4" @click="choose('specified')">
+		<button key="specified" class="_button" :class="[$style.item, { [$style.active]: v === 'specified' && !currentChannel }]" data-index="4" @click="choose('specified')">
 			<div :class="$style.icon"><i class="ti ti-mail"></i></div>
 			<div :class="$style.body">
 				<div :class="$style.itemTitle">{{ i18n.ts._visibility.specified }}</div>
@@ -63,6 +63,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { nextTick, useTemplateRef, ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu.js';
+import type { MinimalChannel } from '@/types/post-form.js';
 import MkModal from '@/components/MkModal.vue';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
@@ -74,16 +75,15 @@ const channelsButton = useTemplateRef('channelsButton');
 const props = withDefaults(defineProps<{
 	currentVisibility: typeof Misskey.noteVisibilities[number];
 	isSilenced: boolean;
-	localOnly: boolean;
 	anchorElement?: HTMLElement | null;
 	isReplyVisibilitySpecified?: boolean;
-	currentChannel?: Misskey.entities.Channel;
+	currentChannel?: MinimalChannel | null;
 }>(), {
 });
 
 const emit = defineEmits<{
 	(ev: 'changeVisibility', v: typeof Misskey.noteVisibilities[number]): void;
-	(ev: 'changeChannel', v: Misskey.entities.Channel): void;
+	(ev: 'changeChannel', v: MinimalChannel): void;
 	(ev: 'closed'): void;
 }>();
 
@@ -101,7 +101,7 @@ const v = ref(props.currentVisibility);
 
  */
 const channels = ref<Misskey.entities.Channel[]>([]);
-const currentChannel = ref<Misskey.entities.Channel | undefined>(props.currentChannel);
+const currentChannel = ref<MinimalChannel | undefined>(props.currentChannel ?? undefined);
 const currentChannelName = computed<string | null>(() => currentChannel.value?.name ?? null);
 
 async function fetchChannels() {

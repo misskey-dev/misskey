@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { computed, watch, version as vueVersion } from 'vue';
+import { watch, version as vueVersion } from 'vue';
 import { compareVersions } from 'compare-versions';
 import { version, lang, apiUrl, isSafeMode } from '@@/js/config.js';
 import defaultLightTheme from '@@/themes/l-light.json5';
@@ -15,11 +15,11 @@ import directives from '@/directives/index.js';
 import components from '@/components/index.js';
 import { applyTheme } from '@/theme.js';
 import { isDeviceDarkmode } from '@/utility/is-device-darkmode.js';
-import { updateI18n, i18n } from '@/i18n.js';
+import { i18n } from '@/i18n.js';
 import { refreshCurrentAccount, login } from '@/accounts.js';
 import { store } from '@/store.js';
 import { fetchInstance, instance } from '@/instance.js';
-import { deviceKind, updateDeviceKind } from '@/utility/device-kind.js';
+import { updateDeviceKind } from '@/utility/device-kind.js';
 import { reloadChannel } from '@/utility/unison-reload.js';
 import { getUrlWithoutLoginId } from '@/utility/login-id.js';
 import { getAccountFromId } from '@/utility/get-account-from-id.js';
@@ -69,9 +69,6 @@ export async function common(createVue: () => Promise<App<Element>>) {
 	if (lastVersion !== version) {
 		miLocalStorage.setItem('lastVersion', version);
 
-		// テーマリビルドするため
-		miLocalStorage.removeItem('theme');
-
 		try { // 変なバージョン文字列来るとcompareVersionsでエラーになるため
 			if (lastVersion != null && compareVersions(version, lastVersion) === 1) {
 				isClientUpdated = true;
@@ -111,13 +108,6 @@ export async function common(createVue: () => Promise<App<Element>>) {
 		if (path !== null) window.location.href = path;
 		else window.location.reload();
 	});
-
-	// If mobile, insert the viewport meta tag
-	if (['smartphone', 'tablet'].includes(deviceKind)) {
-		const viewport = window.document.getElementsByName('viewport').item(0);
-		viewport.setAttribute('content',
-			`${viewport.getAttribute('content')}, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover`);
-	}
 
 	//#region Set lang attr
 	const html = window.document.documentElement;
@@ -163,8 +153,15 @@ export async function common(createVue: () => Promise<App<Element>>) {
 	});
 	//#endregion
 
+	if (!isSafeMode) {
+		// TODO: instance.defaultLightTheme/instance.defaultDarkThemeが不正な形式だった場合のケア
+		if (prefer.s.lightTheme == null && instance.defaultLightTheme != null) prefer.commit('lightTheme', JSON.parse(instance.defaultLightTheme));
+		if (prefer.s.darkTheme == null && instance.defaultDarkTheme != null) prefer.commit('darkTheme', JSON.parse(instance.defaultDarkTheme));
+	}
+
 	// NOTE: この処理は必ずクライアント更新チェック処理より後に来ること(テーマ再構築のため)
 	// NOTE: この処理は必ずダークモード判定処理より後に来ること(初回のテーマ適用のため)
+	// NOTE: この処理は必ずサーバーテーマ適用処理より後に来ること(二重applyTheme発火を防ぐため)
 	// see: https://github.com/misskey-dev/misskey/issues/16562
 	watch(store.r.darkMode, (darkMode) => {
 		const theme = (() => {
@@ -176,38 +173,21 @@ export async function common(createVue: () => Promise<App<Element>>) {
 		})();
 
 		applyTheme(theme);
-	}, { immediate: isSafeMode || miLocalStorage.getItem('theme') == null });
+	}, { immediate: true });
 
 	window.document.documentElement.dataset.colorScheme = store.s.darkMode ? 'dark' : 'light';
 
 	if (!isSafeMode) {
-		const darkTheme = prefer.model('darkTheme');
-		const lightTheme = prefer.model('lightTheme');
-
-		watch(darkTheme, (theme) => {
+		watch(prefer.r.darkTheme, (theme) => {
 			if (store.s.darkMode) {
 				applyTheme(theme ?? defaultDarkTheme);
 			}
 		});
 
-		watch(lightTheme, (theme) => {
+		watch(prefer.r.lightTheme, (theme) => {
 			if (!store.s.darkMode) {
 				applyTheme(theme ?? defaultLightTheme);
 			}
-		});
-	}
-
-	if (!isSafeMode) {
-		if (prefer.s.darkTheme && store.s.darkMode) {
-			if (miLocalStorage.getItem('themeId') !== prefer.s.darkTheme.id) applyTheme(prefer.s.darkTheme);
-		} else if (prefer.s.lightTheme && !store.s.darkMode) {
-			if (miLocalStorage.getItem('themeId') !== prefer.s.lightTheme.id) applyTheme(prefer.s.lightTheme);
-		}
-
-		fetchInstanceMetaPromise.then(() => {
-			// TODO: instance.defaultLightTheme/instance.defaultDarkThemeが不正な形式だった場合のケア
-			if (prefer.s.lightTheme == null && instance.defaultLightTheme != null) prefer.commit('lightTheme', JSON.parse(instance.defaultLightTheme));
-			if (prefer.s.darkTheme == null && instance.defaultDarkTheme != null) prefer.commit('darkTheme', JSON.parse(instance.defaultDarkTheme));
 		});
 	}
 

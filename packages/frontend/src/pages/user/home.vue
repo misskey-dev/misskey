@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<span v-if="user.isLocked"><i class="ti ti-lock"></i></span>
 									<span v-if="user.isBot"><i class="ti ti-robot"></i></span>
 									<button v-if="$i && !isEditingMemo && !memoDraft" class="_button add-note-button" @click="showMemoTextarea">
-										<i class="ti ti-edit"/> {{ i18n.ts.addMemo }}
+										<i class="ti ti-edit"></i> {{ i18n.ts.addMemo }}
 									</button>
 								</div>
 							</div>
@@ -71,7 +71,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</div>
 						</div>
 						<div v-if="isEditingMemo || memoDraft" class="memo" :class="{'no-memo': !memoDraft}">
-							<div class="heading" v-text="i18n.ts.memo"/>
+							<div class="heading">{{ i18n.ts.memo }}</div>
 							<textarea
 								ref="memoTextareaEl"
 								v-model="memoDraft"
@@ -79,7 +79,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								@focus="isEditingMemo = true"
 								@blur="updateMemo"
 								@input="adjustMemoTextarea"
-							/>
+							></textarea>
 						</div>
 						<div class="description">
 							<MkOmit>
@@ -113,7 +113,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</dl>
 						</div>
 						<div class="status">
-							<MkA :to="userPage(user)">
+							<MkA :to="userPage(user, 'notes')">
 								<b>{{ number(user.notesCount) }}</b>
 								<span>{{ i18n.ts.notes }}</span>
 							</MkA>
@@ -186,6 +186,7 @@ import { getStaticImageUrl } from '@/utility/media-proxy.js';
 import MkSparkle from '@/components/MkSparkle.vue';
 import { prefer } from '@/preferences.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
+import { isBirthday } from '@/utility/is-birthday.js';
 
 function calcAge(birthdate: string): number {
 	const date = new Date(birthdate);
@@ -251,7 +252,7 @@ const age = computed(() => {
 	return props.user.birthday ? calcAge(props.user.birthday) : NaN;
 });
 
-function menu(ev: MouseEvent) {
+function menu(ev: PointerEvent) {
 	const { menu, cleanup } = getUserMenu(user.value, router);
 	os.popupMenu(menu, ev.currentTarget ?? ev.target).finally(cleanup);
 }
@@ -319,16 +320,10 @@ function disposeBannerParallaxResizeObserver() {
 onMounted(() => {
 	narrow.value = rootEl.value!.clientWidth < 1000;
 
-	if (props.user.birthday) {
-		const m = new Date().getMonth() + 1;
-		const d = new Date().getDate();
-		const bm = parseInt(props.user.birthday.split('-')[1]);
-		const bd = parseInt(props.user.birthday.split('-')[2]);
-		if (m === bm && d === bd) {
-			confetti({
-				duration: 1000 * 4,
-			});
-		}
+	if (isBirthday(user.value)) {
+		confetti({
+			duration: 1000 * 4,
+		});
 	}
 
 	nextTick(() => {
@@ -368,28 +363,19 @@ onDeactivated(disposeBannerParallaxResizeObserver);
 
 				> .banner-container {
 					position: relative;
-					height: 250px;
+					--bannerHeight: 250px;
+					height: var(--bannerHeight);
 					overflow: clip;
-					background-size: cover;
-					background-position: center;
-					view-timeline-name: --bannerParallax;
-					view-timeline-inset: var(--bannerParallaxInset, auto);
-					view-timeline-axis: block;
 
 					> .banner {
-						position: absolute;
-						top: 50%;
-						left: 0;
 						width: 100%;
-						height: 300%;
-						background-size: 100% auto;
+						height: 100%;
+						background-size: cover;
 						background-color: #4c5e6d;
 						background-repeat: repeat-y;
-						background-position: center;
-						will-change: transform;
-						animation: bannerParallaxKeyframes linear both;
-						animation-timeline: --bannerParallax;
-						animation-range: cover;
+						background-position-x: center;
+						background-position-y: 50%;
+						will-change: background-position-y;
 					}
 
 					> .fade {
@@ -682,7 +668,8 @@ onDeactivated(disposeBannerParallaxResizeObserver);
 		> .main {
 			> .profile > .main {
 				> .banner-container {
-					height: 140px;
+					--bannerHeight: 140px;
+					height: var(--bannerHeight);
 
 					> .fade {
 						display: none;
@@ -746,12 +733,32 @@ onDeactivated(disposeBannerParallaxResizeObserver);
 	}
 }
 
+@supports (view-timeline-name: --name) {
+	.ftskorzw {
+		> .main {
+			> .profile > .main {
+				> .banner-container {
+					view-timeline-name: --bannerParallax;
+					view-timeline-inset: var(--bannerParallaxInset, auto);
+					view-timeline-axis: block;
+
+					> .banner {
+						animation: bannerParallaxKeyframes linear both;
+						animation-timeline: --bannerParallax;
+						animation-range: cover;
+					}
+				}
+			}
+		}
+	}
+}
+
 @keyframes bannerParallaxKeyframes {
 	from {
-		transform: translateY(-50%);
+		background-position-y: 50%;
 	}
 	to {
-		transform: translateY(-30%);
+		background-position-y: calc(50% + var(--bannerHeight, 250px) / 3);
 	}
 }
 </style>

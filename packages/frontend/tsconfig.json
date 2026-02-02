@@ -2,7 +2,7 @@
 	"compilerOptions": {
 		"allowJs": true,
 		"noEmitOnError": false,
-		"noImplicitAny": false,
+		"noImplicitAny": true,
 		"noImplicitReturns": true,
 		"noUnusedParameters": false,
 		"noUnusedLocals": false,
@@ -10,7 +10,7 @@
 		"declaration": false,
 		"sourceMap": false,
 		"target": "ES2022",
-		"module": "ES2022",
+		"module": "esnext",
 		"moduleResolution": "Bundler",
 		"removeComments": false,
 		"noLib": false,
@@ -23,7 +23,6 @@
 		"useDefineForClassFields": true,
 		"verbatimModuleSyntax": true,
 		"skipLibCheck": true,
-		"baseUrl": ".",
 		"paths": {
 			"@/*": ["./src/*"],
 			"@@/*": ["../frontend-shared/*"]
@@ -36,6 +35,7 @@
 		],
 		"types": [
 			"vite/client",
+			"vite-plugin-glsl/ext",
 			"vitest/importMeta",
 		],
 		"lib": [
