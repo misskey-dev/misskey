@@ -252,6 +252,7 @@ export async function popupAsyncWithDialog<T extends Component>(
 			popups.value.delete(id);
 		}, 0);
 	};
+
 	const state = {
 		component,
 		props,
