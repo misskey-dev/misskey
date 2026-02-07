@@ -142,13 +142,14 @@ export function promiseDialog<T extends Promise<any>>(
 	return promise;
 }
 
-let popupIdCount = 0;
-export const popups = ref<{
-	id: number;
+type PopupState = {
 	component: Component;
 	props: Record<string, any>;
 	events: Record<string, any>;
-}[]>([]);
+};
+
+let popupIdCount = 0;
+export const popups = ref<Map<number, PopupState>>(new Map<number, PopupState>());
 
 const zIndexes = {
 	veryLow: 500000,
@@ -197,17 +198,17 @@ export function popup<T extends Component>(
 	const dispose = () => {
 		// このsetTimeoutが無いと挙動がおかしくなる(autocompleteが閉じなくなる)。Vueのバグ？
 		window.setTimeout(() => {
-			popups.value = popups.value.filter(p => p.id !== id);
+			popups.value.delete(id);
 		}, 0);
 	};
+
 	const state = {
 		component,
 		props,
 		events,
-		id,
-	};
+	} satisfies PopupState;
 
-	popups.value.push(state);
+	popups.value.set(id, state);
 
 	return {
 		dispose,
@@ -248,17 +249,16 @@ export async function popupAsyncWithDialog<T extends Component>(
 	const dispose = () => {
 		// このsetTimeoutが無いと挙動がおかしくなる(autocompleteが閉じなくなる)。Vueのバグ？
 		window.setTimeout(() => {
-			popups.value = popups.value.filter(p => p.id !== id);
+			popups.value.delete(id);
 		}, 0);
 	};
 	const state = {
 		component,
 		props,
 		events,
-		id,
-	};
+	} satisfies PopupState;
 
-	popups.value.push(state);
+	popups.value.set(id, state);
 
 	return {
 		dispose,

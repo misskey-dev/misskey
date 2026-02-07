@@ -59,8 +59,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <component
 	:is="popup.component"
-	v-for="popup in popups"
-	:key="popup.id"
+	v-for="[id, popup] in popups"
+	:key="id"
 	v-bind="popup.props"
 	v-on="popup.events"
 />
