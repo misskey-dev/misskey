@@ -136,6 +136,7 @@ const isNewlyCreatedAccount = computed(() => {
 	const now = Date.now();
 	return (now - createdAt) < (7 * 24 * 60 * 60 * 1000); // 7日以内
 });
+
 function switchToLocal() {
 	if (!isAvailableBasicTimeline('local')) return;
 	src.value = 'local';
