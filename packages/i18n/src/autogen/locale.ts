@@ -13266,4 +13266,34 @@ export interface Locale extends ILocale {
          */
         "mfm": string;
     };
+    "_tlOnboarding": {
+        /**
+         * {name} へようこそ！
+         */
+        "titleWelcome": ParameterizedString<"name">;
+        /**
+         * ホームタイムラインにノートはありません
+         */
+        "titleNormal": string;
+        /**
+         * ホームタイムラインには、あなたがフォローしているユーザーのノートが表示されます。まずは気になるユーザーをフォローしてみましょう！
+         */
+        "description": string;
+        /**
+         * ホームタイムラインには、あなたがフォローしているユーザーのノートが表示されます。あなたはまだ誰もフォローしていないので、ここには何も表示されません。まずは気になるユーザーをフォローしてみましょう！
+         */
+        "descriptionZeroFollowing": string;
+        /**
+         * ローカルタイムライン
+         */
+        "ltlTitle": string;
+        /**
+         * このサーバーにいるユーザー全員の投稿が見られる公開タイムラインを見てみましょう。
+         */
+        "ltlDescription": string;
+        /**
+         * 人気のノートやユーザーを見つけて交流をはじめましょう。
+         */
+        "exploreDescription": string;
+    };
 }
