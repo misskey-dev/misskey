@@ -196,10 +196,9 @@ export function popup<T extends Component>(
 
 	const id = ++popupIdCount;
 	const dispose = () => {
-		// このsetTimeoutが無いと挙動がおかしくなる(autocompleteが閉じなくなる)。Vueのバグ？
-		window.setTimeout(() => {
+		nextTick(() => {
 			popups.value.delete(id);
-		}, 0);
+		});
 	};
 
 	const state = {
@@ -247,10 +246,9 @@ export async function popupAsyncWithDialog<T extends Component>(
 
 	const id = ++popupIdCount;
 	const dispose = () => {
-		// このsetTimeoutが無いと挙動がおかしくなる(autocompleteが閉じなくなる)。Vueのバグ？
-		window.setTimeout(() => {
+		nextTick(() => {
 			popups.value.delete(id);
-		}, 0);
+		});
 	};
 
 	const state = {
