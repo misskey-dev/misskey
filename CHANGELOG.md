@@ -26,6 +26,7 @@
 - Fix: mCaptchaが正しく動作しない問題を修正
 - Fix: 非ログイン時にリバーシの対局が表示されない問題を修正
 - Fix: ノートの詳細表示でリアクションが全件表示されない問題を修正
+- Fix: 動画埋め込みプレイヤーなどの一部ウィンドウで、ウィンドウのサイズ変更や移動が正常に行えない問題を修正
 
 ### Server
 - Enhance: OAuthのクライアント情報取得（Client Information Discovery）において、IndieWeb Living Standard 11 July 2024で定義されているJSONドキュメント形式に対応しました
