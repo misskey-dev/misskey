@@ -653,6 +653,15 @@ importers:
       '@analytics/google-analytics':
         specifier: 1.1.0
         version: 1.1.0
+      '@babylonjs/core':
+        specifier: 8.49.6
+        version: 8.49.6
+      '@babylonjs/loaders':
+        specifier: 8.49.6
+        version: 8.49.6(@babylonjs/core@8.49.6)(babylonjs-gltf2interface@8.49.6)
+      '@babylonjs/materials':
+        specifier: 8.49.6
+        version: 8.49.6(@babylonjs/core@8.49.6)
       '@discordapp/twemoji':
         specifier: 16.0.1
         version: 16.0.1
@@ -1978,6 +1987,20 @@ packages:
   '@babel/types@7.28.5':
     resolution: {integrity: sha512-qQ5m48eI/MFLQ5PxQj4PFaprjyCTLI37ElWMmNs0K8Lk3dVeOdNpB3ks8jc7yM5CDmVC73eMVk/trk3fgmrUpA==}
     engines: {node: '>=6.9.0'}
+
+  '@babylonjs/core@8.49.6':
+    resolution: {integrity: sha512-Q0wsDfDQhwXhE22ltb89hL+XYaDzBLGDr/sSlKUEsHtALK+u36Ttwa8wVD0XJP30pgFpKIrd1LvdSB9FemNwzg==}
+
+  '@babylonjs/loaders@8.49.6':
+    resolution: {integrity: sha512-KsguPMqonctgvyjCcR8A3izGaoQoQrEdG3n4mZ4scX/WHskAciW5P/zsE3AUYugOAb+TL7iBW5VCb+sz/uEkVw==}
+    peerDependencies:
+      '@babylonjs/core': ^8.0.0
+      babylonjs-gltf2interface: ^8.0.0
+
+  '@babylonjs/materials@8.49.6':
+    resolution: {integrity: sha512-xDfgexV8y5Lp7Ftk8i+DWgERTSmwdLxUIOs5/9yTQTHdecdTZ0gNm5iGTWWdNvGCAX5wqd74Cg4Fwvjok1JeuQ==}
+    peerDependencies:
+      '@babylonjs/core': ^8.6.0
 
   '@bcoe/v8-coverage@0.2.3':
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
@@ -5438,6 +5461,9 @@ packages:
   babel-walk@3.0.0-canary-5:
     resolution: {integrity: sha512-GAwkz0AihzY5bkwIY5QDR+LvsRQgB/B+1foMPvi0FZPMl5fjD7ICiznUiBdLYMH1QYe6vqu4gWYytZOccLouFw==}
     engines: {node: '>= 10.0.0'}
+
+  babylonjs-gltf2interface@8.49.6:
+    resolution: {integrity: sha512-7qxi48GxEgX9SIZf1Eze+25YCUUY9X6ZIuoozg0rHZyY9gQBso7HUIWLznsQHeUXey19QS/zirrP1spm1PW8Vw==}
 
   bail@2.0.2:
     resolution: {integrity: sha512-0xO6mYd7JB2YesxDKplafRpsiOzPt9V02ddPCLbY1xYGPOX24NTyN50qnUxgCPcSoYMhKpAuBTjQoRZCAkUDRw==}
@@ -10831,6 +10857,9 @@ packages:
   vue-component-type-helpers@3.2.2:
     resolution: {integrity: sha512-x8C2nx5XlUNM0WirgfTkHjJGO/ABBxlANZDtHw2HclHtQnn+RFPTnbjMJn8jHZW4TlUam0asHcA14lf1C6Jb+A==}
 
+  vue-component-type-helpers@3.2.4:
+    resolution: {integrity: sha512-05lR16HeZDcDpB23ku5b5f1fBOoHqFnMiKRr2CiEvbG5Ux4Yi0McmQBOET0dR0nxDXosxyVqv67q6CzS3AK8rw==}
+
   vue-demi@0.14.10:
     resolution: {integrity: sha512-nMZBOwuzabUO0nLgIcc6rycZEebF6eeUfaiQx9+WSk8e29IbLvPU9feI6tqW4kTo3hvoYAJkMh8n8D0fuISphg==}
     engines: {node: '>=12'}
@@ -12260,6 +12289,17 @@ snapshots:
     dependencies:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
+
+  '@babylonjs/core@8.49.6': {}
+
+  '@babylonjs/loaders@8.49.6(@babylonjs/core@8.49.6)(babylonjs-gltf2interface@8.49.6)':
+    dependencies:
+      '@babylonjs/core': 8.49.6
+      babylonjs-gltf2interface: 8.49.6
+
+  '@babylonjs/materials@8.49.6(@babylonjs/core@8.49.6)':
+    dependencies:
+      '@babylonjs/core': 8.49.6
 
   '@bcoe/v8-coverage@0.2.3': {}
 
@@ -14807,7 +14847,7 @@ snapshots:
       storybook: 10.1.11(@testing-library/dom@10.4.0)(bufferutil@4.1.0)(prettier@3.8.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(utf-8-validate@6.0.6)
       type-fest: 2.19.0
       vue: 3.5.26(typescript@5.9.3)
-      vue-component-type-helpers: 3.2.2
+      vue-component-type-helpers: 3.2.4
 
   '@stylistic/eslint-plugin@5.5.0(eslint@9.39.2)':
     dependencies:
@@ -16307,6 +16347,8 @@ snapshots:
   babel-walk@3.0.0-canary-5:
     dependencies:
       '@babel/types': 7.28.5
+
+  babylonjs-gltf2interface@8.49.6: {}
 
   bail@2.0.2: {}
 
@@ -22561,6 +22603,8 @@ snapshots:
   vue-component-type-helpers@2.2.12: {}
 
   vue-component-type-helpers@3.2.2: {}
+
+  vue-component-type-helpers@3.2.4: {}
 
   vue-demi@0.14.10(vue@3.5.26(typescript@5.9.3)):
     dependencies:
