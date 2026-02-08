@@ -84,9 +84,9 @@ export const uiDefinition = {
 		radius: {
 			label: i18n.ts._imageEffector._fxProps.strength,
 			type: 'number',
-			default: 3.0,
+			default: 10.0,
 			min: 0.0,
-			max: 10.0,
+			max: 20.0,
 			step: 0.5,
 		},
 	},
