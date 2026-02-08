@@ -264,7 +264,28 @@ export class RoomEngine {
 			//postProcess.colorCurves = curve;
 		}
 
+		let isDragging = false;
+
+		this.canvas.addEventListener('pointerdown', (ev) => {
+			this.canvas.setPointerCapture(ev.pointerId);
+		});
+
+		this.canvas.addEventListener('pointermove', (ev) => {
+			if (this.canvas.hasPointerCapture(ev.pointerId)) {
+				isDragging = true;
+			}
+		});
+
+		this.canvas.addEventListener('pointerup', (ev) => {
+			window.setTimeout(() => {
+				isDragging = false;
+				this.canvas.releasePointerCapture(ev.pointerId);
+			}, 0);
+		});
+
 		this.canvas.addEventListener('click', (ev) => {
+			if (this.grabbing != null) return;
+			if (isDragging) return;
 			const mesh = this.scene.pick(this.scene.pointerX, this.scene.pointerY)?.pickedMesh;
 			if (mesh != null) {
 				const oid = mesh.metadata.objectId;
