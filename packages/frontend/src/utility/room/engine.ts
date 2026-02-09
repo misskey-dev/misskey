@@ -226,6 +226,7 @@ export class RoomEngine {
 	private grabbingGhost: BABYLON.AbstractMesh | null = null;
 	private highlightedObjectId: string | null = null;
 	private time: 0 | 1 | 2 = 2; // 0: 昼, 1: 夕, 2: 夜
+	private roomCollisionMeshes: BABYLON.AbstractMesh[] = [];
 
 	public moveForward = false;
 	public moveBackward = false;
@@ -271,26 +272,6 @@ export class RoomEngine {
 		this.camera2.fov = 0.5;
 
 		this.scene.activeCamera = this.camera;
-
-		const floor = BABYLON.MeshBuilder.CreateGround('floor', { width: this.ROOM_SIZE, height: this.ROOM_SIZE }, this.scene);
-		floor.isVisible = false;
-		floor.checkCollisions = true;
-		const wall1 = BABYLON.MeshBuilder.CreateBox('wall1', { width: this.ROOM_SIZE, height: 200/*cm*/, depth: 2/*cm*/ }, this.scene);
-		wall1.position = new BABYLON.Vector3(0, 100/*cm*/, -this.ROOM_SIZE / 2);
-		wall1.isVisible = false;
-		wall1.checkCollisions = true;
-		const wall2 = BABYLON.MeshBuilder.CreateBox('wall2', { width: this.ROOM_SIZE, height: 200/*cm*/, depth: 2/*cm*/ }, this.scene);
-		wall2.position = new BABYLON.Vector3(0, 100/*cm*/, this.ROOM_SIZE / 2);
-		wall2.isVisible = false;
-		wall2.checkCollisions = true;
-		const wall3 = BABYLON.MeshBuilder.CreateBox('wall3', { width: 2/*cm*/, height: 200/*cm*/, depth: this.ROOM_SIZE }, this.scene);
-		wall3.position = new BABYLON.Vector3(-this.ROOM_SIZE / 2, 100/*cm*/, 0);
-		wall3.isVisible = false;
-		wall3.checkCollisions = true;
-		const wall4 = BABYLON.MeshBuilder.CreateBox('wall4', { width: 2/*cm*/, height: 200/*cm*/, depth: this.ROOM_SIZE }, this.scene);
-		wall4.position = new BABYLON.Vector3(this.ROOM_SIZE / 2, 100/*cm*/, 0);
-		wall4.isVisible = false;
-		wall4.checkCollisions = true;
 
 		const ambientLight = new BABYLON.HemisphericLight('ambientLight', new BABYLON.Vector3(0, 1, -0.5), this.scene);
 		ambientLight.diffuse = new BABYLON.Color3(1.0, 1.0, 1.0);
@@ -353,16 +334,16 @@ export class RoomEngine {
 			ssao.totalStrength = 0.8;
 			this.scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline('ssao', this.camera);
 
-			const lensEffect = new BABYLON.LensRenderingPipeline('lens', {
-				edge_blur: 1.0,
-				distortion: 0.5,
-				dof_focus_distance: 90/*cm*/,
-				dof_aperture: 6.0,
-				dof_pentagon: true,
-				dof_gain: 2.0,
-				dof_threshold: 1.0,
-				dof_darken: 0,
-			}, this.scene, 1, [this.camera]);
+			//const lensEffect = new BABYLON.LensRenderingPipeline('lens', {
+			//	edge_blur: 1.0,
+			//	distortion: 0.5,
+			//	dof_focus_distance: 90/*cm*/,
+			//	dof_aperture: 6.0,
+			//	dof_pentagon: true,
+			//	dof_gain: 2.0,
+			//	dof_threshold: 1.0,
+			//	dof_darken: 0,
+			//}, this.scene, 1, [this.camera]);
 		}
 
 		let isDragging = false;
@@ -424,12 +405,27 @@ export class RoomEngine {
 				a.maximumWorld.z >= b.minimumWorld.z);
 		}
 
+		//const sphere = BABYLON.MeshBuilder.CreateSphere('sphere', { diameter: 1/*cm*/ }, this.scene);
+
 		this.intervalIds.push(window.setInterval(() => {
 			if (this.grabbing != null) {
 				const dir = this.camera.getDirection(BABYLON.Axis.Z);
 				this.grabbingGhost.position = this.camera.position.add(dir.scale(this.grabbingStartDistance));
 
 				let y = 0;
+
+				for (const rcmb of this.roomCollisionMeshes.filter(m => m.name.startsWith('_COLLISION_FLOOR_'))) {
+					const rcb = rcmb.getBoundingInfo().boundingBox;
+					for (const tm of this.grabbing.getChildMeshes()) {
+						const tmb = tm.getBoundingInfo().boundingBox;
+						if (isIntersectXZ(tmb, rcb)) {
+							const topY = rcb.maximumWorld.y;
+							if (y === 0 || topY > y) {
+								y = topY;
+							}
+						}
+					}
+				}
 
 				for (const [id, o] of this.objects.entries().filter(([_id, o]) => o !== this.grabbing)) {
 					for (const om of o.getChildMeshes()) {
@@ -447,9 +443,28 @@ export class RoomEngine {
 				}
 
 				this.grabbing.position = this.grabbingGhost.position.clone();
-				this.grabbing.position.x = Math.min(Math.max(this.grabbing.position.x, -(this.ROOM_SIZE / 2)), (this.ROOM_SIZE / 2));
-				this.grabbing.position.z = Math.min(Math.max(this.grabbing.position.z, -(this.ROOM_SIZE / 2)), (this.ROOM_SIZE / 2));
+				//this.grabbing.position.x = Math.min(Math.max(this.grabbing.position.x, -(this.ROOM_SIZE / 2)), (this.ROOM_SIZE / 2));
+				//this.grabbing.position.z = Math.min(Math.max(this.grabbing.position.z, -(this.ROOM_SIZE / 2)), (this.ROOM_SIZE / 2));
 				this.grabbing.position.y = y;
+
+				const ray = new BABYLON.Ray(this.camera.position, this.camera.getDirection(BABYLON.Axis.Z), 1000/*cm*/);
+				const hit = this.scene.pickWithRay(ray, (m) => m.name.startsWith('_COLLISION_WALL_'))!;
+				if (hit.pickedMesh != null) {
+					const grabbingBox = this.grabbing.getBoundingInfo().boundingBox;
+					const grabDistanceVector = this.grabbing.position.subtract(this.camera.position);
+					if (grabDistanceVector.length() > hit.distance) {
+						this.grabbing.position = this.camera.position.add(dir.scale(hit.distance));
+						this.grabbing.position.y = y;
+					}
+				}
+
+				//const displacementVector = new BABYLON.Vector3(
+				//	this.grabbingGhost.position.x - this.grabbing.position.x,
+				//	0,
+				//	this.grabbingGhost.position.z - this.grabbing.position.z,
+				//);
+				//this.grabbing.moveWithCollisions(displacementVector);
+				//this.grabbing.position.y = y;
 			} else {
 				this.highlightedObjectId = null;
 				const ray = new BABYLON.Ray(this.camera.position, this.camera.getDirection(BABYLON.Axis.Z), 1000/*cm*/);
@@ -519,14 +534,17 @@ export class RoomEngine {
 		roomObj.meshes[0].bakeCurrentTransformIntoVertices();
 		for (const mesh of roomObj.meshes) {
 			console.log(mesh.name);
-			mesh.isPickable = false;
-			mesh.checkCollisions = false;
-
 			//if (mesh.name === '__root__') continue;
-			if (mesh.name.startsWith('Window')) {
+			if (mesh.name.startsWith('_COLLISION_')) {
 				mesh.receiveShadows = false;
+				mesh.isVisible = false;
+				mesh.checkCollisions = true;
+				this.roomCollisionMeshes.push(mesh);
 				continue;
 			}
+
+			mesh.isPickable = false;
+			mesh.checkCollisions = false;
 			mesh.receiveShadows = true;
 			this.shadowGenerator1.addShadowCaster(mesh);
 			this.shadowGenerator2.addShadowCaster(mesh);
