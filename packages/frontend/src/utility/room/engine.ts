@@ -58,6 +58,37 @@ const OBJECTS = {
 	stickyNote: {
 		placement: 'side',
 	},
+	'lava-lamp': {
+		placement: 'top',
+		onInit: (room, obj) => {
+			const light = new BABYLON.PointLight('lavaLampLight', new BABYLON.Vector3(0, 11/*cm*/, 0), room.scene);
+			light.parent = obj.meshes[0];
+			light.diffuse = new BABYLON.Color3(1.0, 0.5, 0.2);
+			light.intensity = 300;
+			light.range = 100/*cm*/;
+
+			const sphere = BABYLON.MeshBuilder.CreateSphere('lavaLampLightSphere', { diameter: 4/*cm*/ }, room.scene);
+			sphere.parent = obj.meshes[0];
+			sphere.position = new BABYLON.Vector3(0, 15/*cm*/, 0);
+			const mat = new BABYLON.StandardMaterial('lavaLampLightMat', room.scene);
+			mat.emissiveColor = new BABYLON.Color3(1.0, 0.5, 0.2);
+
+			mat.alpha = 0.5;
+			//mat.disableLighting = true;
+			sphere.material = mat;
+
+			const anim = new BABYLON.Animation('lavaLampLightAnim', 'position.y', 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+			anim.setKeys([
+				{ frame: 0, value: 11/*cm*/ },
+				{ frame: 500, value: 38/*cm*/ },
+			]);
+			sphere.animations = [anim];
+			room.scene.beginAnimation(sphere, 0, 500, true);
+		},
+	},
+	aircon: {
+		placement: 'side',
+	},
 } as Record<string, ObjectDef>;
 
 function vecToLocal(vector: BABYLON.Vector3, mesh: BABYLON.Mesh): BABYLON.Vector3 {
@@ -194,7 +225,7 @@ export class RoomEngine {
 	private grabbingStartDistance: number | null = null;
 	private grabbingGhost: BABYLON.AbstractMesh | null = null;
 	private highlightedObjectId: string | null = null;
-	private time: 0 | 1 | 2 = 0; // 0: 昼, 1: 夕, 2: 夜
+	private time: 0 | 1 | 2 = 2; // 0: 昼, 1: 夕, 2: 夜
 
 	public moveForward = false;
 	public moveBackward = false;
@@ -265,7 +296,7 @@ export class RoomEngine {
 		ambientLight.diffuse = new BABYLON.Color3(1.0, 1.0, 1.0);
 		ambientLight.intensity = 0.5;
 
-		const roomLight = new BABYLON.SpotLight('roomLight', new BABYLON.Vector3(0, 250/*cm*/, 0), new BABYLON.Vector3(0, -1, 0), 4, 8, this.scene);
+		const roomLight = new BABYLON.SpotLight('roomLight', new BABYLON.Vector3(0, 249/*cm*/, 0), new BABYLON.Vector3(0, -1, 0), 16, 8, this.scene);
 		roomLight.diffuse = new BABYLON.Color3(1.0, 0.9, 0.8);
 		roomLight.intensity = 150000;
 		roomLight.shadowMinZ = 10/*cm*/;
@@ -289,6 +320,12 @@ export class RoomEngine {
 		this.shadowGenerator2.bias = 0.0001;
 		this.shadowGenerator2.usePercentageCloserFiltering = true;
 		this.shadowGenerator2.usePoissonSampling = true;
+
+		const gl = new BABYLON.GlowLayer('glow', this.scene, {
+			//mainTextureFixedSize: 512,
+			blurKernelSize: 64,
+		});
+		gl.intensity = 0.5;
 
 		{
 			const postProcess = new BABYLON.ImageProcessingPostProcess('processing', 1.0, this.camera);
@@ -446,7 +483,7 @@ export class RoomEngine {
 	private async loadEnvModel() {
 		const envObj = await BABYLON.ImportMeshAsync('/client-assets/room/env.glb', this.scene);
 		envObj.meshes[0].scaling = new BABYLON.Vector3(-100, 100, 100);
-		envObj.meshes[0].position = new BABYLON.Vector3(0, -600/*cm*/, 0); // 3階くらいの想定
+		envObj.meshes[0].position = new BABYLON.Vector3(0, -900/*cm*/, 0); // 4階くらいの想定
 		envObj.meshes[0].bakeCurrentTransformIntoVertices();
 		for (const mesh of envObj.meshes) {
 			mesh.isPickable = false;

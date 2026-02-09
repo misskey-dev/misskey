@@ -71,6 +71,16 @@ onMounted(() => {
 			type: 'mug',
 			position: [-45, 90, 160],
 			rotation: [0, Math.PI / 2, 0],
+		}, {
+			id: 'h',
+			type: 'aircon',
+			position: [80, 215, 150],
+			rotation: [0, Math.PI / 2, 0],
+		}, {
+			id: 'i',
+			type: 'lava-lamp',
+			position: [60, 90, 170],
+			rotation: [0, 0, 0],
 		}],
 	});
 
