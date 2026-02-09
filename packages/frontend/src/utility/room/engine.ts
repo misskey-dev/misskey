@@ -157,13 +157,15 @@ export class RoomEngine {
 	private shadowGenerator1: BABYLON.ShadowGenerator;
 	private shadowGenerator2: BABYLON.ShadowGenerator;
 	private camera: BABYLON.UniversalCamera;
+	private camera2: BABYLON.ArcRotateCamera;
 	private ROOM_SIZE = 300/*cm*/;
 	private intervalIds: number[] = [];
 	private objects: Map<string, BABYLON.AbstractMesh> = new Map();
 	private grabbing: BABYLON.AbstractMesh | null = null;
 	private grabbingStartDistance: number | null = null;
 	private grabbingGhost: BABYLON.AbstractMesh | null = null;
-	public highlightedObjectId: string | null = null;
+	private highlightedObjectId: string | null = null;
+	private time: 0 | 1 | 2 = 0; // 0: 昼, 1: 夕, 2: 夜
 
 	public moveForward = false;
 	public moveBackward = false;
@@ -176,31 +178,39 @@ export class RoomEngine {
 		registerBuiltInLoaders();
 
 		this.canvas = options.canvas;
-		this.engine = new BABYLON.Engine(options.canvas, false);
+		this.engine = new BABYLON.Engine(options.canvas, false, { alpha: false });
 		this.scene = new BABYLON.Scene(this.engine);
-		//this.scene.autoClear = false;
-		//this.scene.clearColor = new BABYLON.Color4(0.05, 0.1, 0.2, 0);
+		//this.scene.autoClear = true;
+		if (this.time === 0) {
+			this.scene.clearColor = new BABYLON.Color4(0.4, 0.8, 1.0, 0);
+		} else if (this.time === 1) {
+			this.scene.clearColor = new BABYLON.Color4(1.0, 0.7, 0.5, 0);
+		} else {
+			this.scene.clearColor = new BABYLON.Color4(0.05, 0.05, 0.2, 0);
+		}
 		this.scene.collisionsEnabled = true;
 
 		//new MmdOutlineRenderer(this.scene);
-
-		//this.camera = new BABYLON.ArcRotateCamera('camera', -Math.PI / 2, Math.PI / 2.5, 300/*cm*/, new BABYLON.Vector3(0, 90/*cm*/, 0), this.scene);
-		//this.camera.attachControl(this.canvas, true);
-		//this.camera.minZ = 1/*cm*/;
-		//this.camera.maxZ = 1500/*cm*/;
-		//this.camera.fov = 0.5;
 
 		this.camera = new BABYLON.UniversalCamera('camera', new BABYLON.Vector3(0, 130/*cm*/, 0/*cm*/), this.scene);
 		this.camera.inputs.removeByType('FreeCameraKeyboardMoveInput');
 		this.camera.inputs.add(new HorizontalCameraKeyboardMoveInput(this.camera));
 		this.camera.attachControl(this.canvas);
 		this.camera.minZ = 1/*cm*/;
-		this.camera.maxZ = 1500/*cm*/;
+		this.camera.maxZ = 100000/*cm*/;
 		this.camera.fov = 1;
 		this.camera.ellipsoid = new BABYLON.Vector3(15/*cm*/, 65/*cm*/, 15/*cm*/);
 		this.camera.checkCollisions = true;
 		this.camera.applyGravity = true;
 		this.camera.needMoveForGravity = true;
+
+		this.camera2 = new BABYLON.ArcRotateCamera('camera2', -Math.PI / 2, Math.PI / 2.5, 300/*cm*/, new BABYLON.Vector3(0, 90/*cm*/, 0), this.scene);
+		this.camera2.attachControl(this.canvas);
+		this.camera2.minZ = 1/*cm*/;
+		this.camera2.maxZ = 100000/*cm*/;
+		this.camera2.fov = 0.5;
+
+		this.scene.activeCamera = this.camera;
 
 		const floor = BABYLON.MeshBuilder.CreateGround('floor', { width: this.ROOM_SIZE, height: this.ROOM_SIZE }, this.scene);
 		floor.isVisible = false;
@@ -240,8 +250,10 @@ export class RoomEngine {
 
 		const sunLight = new BABYLON.DirectionalLight('sunLight', new BABYLON.Vector3(0.2, -1, -1), this.scene);
 		sunLight.position = new BABYLON.Vector3(-20, 1000, 1000);
-		sunLight.diffuse = new BABYLON.Color3(1.0, 0.9, 0.8);
-		sunLight.intensity = 2;
+		sunLight.diffuse = this.time === 2 ? new BABYLON.Color3(0.8, 0.9, 1.0) : new BABYLON.Color3(1.0, 0.9, 0.8);
+		sunLight.intensity = this.time === 0 ? 2 : this.time === 2 ? 0.25 : 1;
+		sunLight.shadowMinZ = 1000/*cm*/;
+		sunLight.shadowMaxZ = 2000/*cm*/;
 
 		this.shadowGenerator2 = new BABYLON.ShadowGenerator(4092, sunLight);
 		this.shadowGenerator2.forceBackFacesOnly = true;
@@ -262,6 +274,10 @@ export class RoomEngine {
 			//curve.shadowsSaturation = 40;
 			//postProcess.colorCurvesEnabled = true;
 			//postProcess.colorCurves = curve;
+
+			//const postProcess2 = new BABYLON.ImageProcessingPostProcess('processing2', 1.0, this.camera2);
+			//postProcess2.exposure = 2;
+			//postProcess2.contrast = 0.9;
 		}
 
 		let isDragging = false;
@@ -310,6 +326,7 @@ export class RoomEngine {
 
 	public async init(def: RoomDef) {
 		await this.loadRoomModel(def.roomType);
+		await this.loadEnvModel();
 
 		for (const objDef of def.objects) {
 			this.loadObject(objDef.id, objDef.type, new BABYLON.Vector3(...objDef.position), new BABYLON.Vector3(...objDef.rotation));
@@ -351,9 +368,7 @@ export class RoomEngine {
 				const ray = new BABYLON.Ray(this.camera.position, this.camera.getDirection(BABYLON.Axis.Z), 1000/*cm*/);
 				for (const [id, o] of this.objects.entries()) {
 					for (const om of o.getChildMeshes()) {
-						if (om.outlineColor.equals(new BABYLON.Color3(1, 0, 0))) {
-							om.outlineColor = new BABYLON.Color3(0, 0, 0);
-						}
+						om.renderOutline = false;
 					}
 				}
 				const hit = this.scene.pickWithRay(ray)!;
@@ -363,7 +378,7 @@ export class RoomEngine {
 						this.highlightedObjectId = oid;
 						const o = this.objects.get(oid)!;
 						for (const om of o.getChildMeshes()) {
-							om.outlineColor = new BABYLON.Color3(1, 0, 0);
+							om.renderOutline = true;
 						}
 					}
 				}
@@ -395,6 +410,20 @@ export class RoomEngine {
 
 			this.scene.render();
 		});
+	}
+
+	private async loadEnvModel() {
+		const envObj = await BABYLON.ImportMeshAsync('/client-assets/room/env.glb', this.scene);
+		envObj.meshes[0].scaling = new BABYLON.Vector3(-100, 100, 100);
+		envObj.meshes[0].position = new BABYLON.Vector3(0, -300/*cm*/, 0);
+		envObj.meshes[0].bakeCurrentTransformIntoVertices();
+		for (const mesh of envObj.meshes) {
+			mesh.isPickable = false;
+			mesh.checkCollisions = false;
+
+			//if (mesh.name === '__root__') continue;
+			mesh.receiveShadows = false;
+		}
 	}
 
 	private async loadRoomModel(type: RoomDef['roomType']) {
@@ -443,9 +472,9 @@ export class RoomEngine {
 			//	mesh.material.outlineAlpha = 1.0;
 			//}
 
-			mesh.renderOutline = true;
+			mesh.renderOutline = false;
 			mesh.outlineWidth = 0.003;
-			mesh.outlineColor = new BABYLON.Color3(0.2, 0.2, 0.2);
+			mesh.outlineColor = new BABYLON.Color3(1, 0, 0);
 		}
 
 		this.objects.set(id, obj.meshes[0]);
@@ -488,14 +517,15 @@ export class RoomEngine {
 		this.grabbing = highlightedObject;
 		this.grabbingStartDistance = BABYLON.Vector3.Distance(this.camera.position, highlightedObject.position);
 		this.grabbingGhost = highlightedObject.clone('ghost', null, false);
-		this.grabbingGhost!.getChildMeshes().forEach(m => {
+		for (const m of this.grabbingGhost!.getChildMeshes()) {
 			m.metadata = {};
 			if (m.material) {
-				const mat = m.material.clone();
-				mat.alpha = 0.5;
+				const mat = m.material.clone(`${m.material.name}_ghost`);
+				mat.alpha = 0.3;
+				mat.transparencyMode = BABYLON.Material.MATERIAL_ALPHABLEND;
 				m.material = mat;
 			}
-		});
+		}
 	}
 
 	public destroy() {
