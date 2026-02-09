@@ -23,6 +23,32 @@ type ObjectDef = {
 	onInit?: (room: RoomEngine, obj: BABYLON.ISceneLoaderAsyncResult) => void;
 };
 
+function yuge(room: RoomEngine, obj: BABYLON.ISceneLoaderAsyncResult, offset: BABYLON.Vector3) {
+	const emitter = new BABYLON.TransformNode('emitter', room.scene);
+	emitter.parent = obj.meshes[0];
+	emitter.position = offset;
+	const ps = new BABYLON.ParticleSystem('steamParticleSystem', 8, room.scene);
+	ps.particleTexture = new BABYLON.Texture('/client-assets/room/steam.png');
+	ps.emitter = emitter;
+	ps.minEmitBox = new BABYLON.Vector3(-1/*cm*/, 0, -1/*cm*/);
+	ps.maxEmitBox = new BABYLON.Vector3(1/*cm*/, 0, 1/*cm*/);
+	ps.minEmitPower = 10;
+	ps.maxEmitPower = 12;
+	ps.minLifeTime = 1;
+	ps.maxLifeTime = 3;
+	ps.minSize = 10/*cm*/;
+	ps.maxSize = 15/*cm*/;
+	ps.direction1 = new BABYLON.Vector3(-0.3, 1, 0.3);
+	ps.direction2 = new BABYLON.Vector3(0.3, 1, -0.3);
+	ps.emitRate = 0.5;
+	ps.blendMode = BABYLON.ParticleSystem.BLENDMODE_ADD;
+	ps.color1 = new BABYLON.Color4(1, 1, 1, 0.3);
+	ps.color2 = new BABYLON.Color4(1, 1, 1, 0.2);
+	ps.colorDead = new BABYLON.Color4(1, 1, 1, 0);
+	ps.preWarmCycles = 350;
+	ps.start();
+}
+
 const OBJECTS = {
 	plant: {
 		placement: 'top',
@@ -30,29 +56,13 @@ const OBJECTS = {
 	mug: {
 		placement: 'top',
 		onInit: (room, obj) => {
-			const emitter = new BABYLON.TransformNode('emitter', room.scene);
-			emitter.parent = obj.meshes[0];
-			emitter.position = new BABYLON.Vector3(0, 5/*cm*/, 0);
-			const ps = new BABYLON.ParticleSystem('steamParticleSystem', 8, room.scene);
-			ps.particleTexture = new BABYLON.Texture('/client-assets/room/steam.png');
-			ps.emitter = emitter;
-			ps.minEmitBox = new BABYLON.Vector3(-1/*cm*/, 0, -1/*cm*/);
-			ps.maxEmitBox = new BABYLON.Vector3(1/*cm*/, 0, 1/*cm*/);
-			ps.minEmitPower = 10;
-			ps.maxEmitPower = 12;
-			ps.minLifeTime = 1;
-			ps.maxLifeTime = 3;
-			ps.minSize = 10/*cm*/;
-			ps.maxSize = 15/*cm*/;
-			ps.direction1 = new BABYLON.Vector3(-0.3, 1, 0.3);
-			ps.direction2 = new BABYLON.Vector3(0.3, 1, -0.3);
-			ps.emitRate = 0.5;
-			ps.blendMode = BABYLON.ParticleSystem.BLENDMODE_ADD;
-			ps.color1 = new BABYLON.Color4(1, 1, 1, 0.3);
-			ps.color2 = new BABYLON.Color4(1, 1, 1, 0.2);
-			ps.colorDead = new BABYLON.Color4(1, 1, 1, 0);
-			ps.preWarmCycles = 350;
-			ps.start();
+			yuge(room, obj, new BABYLON.Vector3(0, 5/*cm*/, 0));
+		},
+	},
+	'cup-noodle': {
+		placement: 'top',
+		onInit: (room, obj) => {
+			yuge(room, obj, new BABYLON.Vector3(0, 10/*cm*/, 0));
 		},
 	},
 	stickyNote: {

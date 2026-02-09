@@ -86,6 +86,11 @@ onMounted(() => {
 			type: 'steel-rack',
 			position: [130, 0, 115],
 			rotation: [0, 0, 0],
+		}, {
+			id: 'k',
+			type: 'cup-noodle',
+			position: [-100, 70, 40],
+			rotation: [0, -2, 0],
 		}],
 	});
 
