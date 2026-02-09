@@ -213,7 +213,7 @@ export class RoomEngine {
 		if (this.time === 0) {
 			this.scene.clearColor = new BABYLON.Color4(0.4, 0.8, 1.0, 0);
 		} else if (this.time === 1) {
-			this.scene.clearColor = new BABYLON.Color4(1.0, 0.7, 0.5, 0);
+			this.scene.clearColor = new BABYLON.Color4(0.5, 0.3, 0.3, 0);
 		} else {
 			this.scene.clearColor = new BABYLON.Color4(0.05, 0.05, 0.2, 0);
 		}
@@ -279,8 +279,8 @@ export class RoomEngine {
 
 		const sunLight = new BABYLON.DirectionalLight('sunLight', new BABYLON.Vector3(0.2, -1, -1), this.scene);
 		sunLight.position = new BABYLON.Vector3(-20, 1000, 1000);
-		sunLight.diffuse = this.time === 2 ? new BABYLON.Color3(0.8, 0.9, 1.0) : new BABYLON.Color3(1.0, 0.9, 0.8);
-		sunLight.intensity = this.time === 0 ? 2 : this.time === 2 ? 0.25 : 1;
+		sunLight.diffuse = this.time === 0 ? new BABYLON.Color3(1.0, 0.9, 0.8) : this.time === 1 ? new BABYLON.Color3(1.0, 0.8, 0.6) : new BABYLON.Color3(0.6, 0.8, 1.0);
+		sunLight.intensity = this.time === 0 ? 2 : this.time === 1 ? 1 : 0.25;
 		sunLight.shadowMinZ = 1000/*cm*/;
 		sunLight.shadowMaxZ = 2000/*cm*/;
 
@@ -444,7 +444,7 @@ export class RoomEngine {
 	private async loadEnvModel() {
 		const envObj = await BABYLON.ImportMeshAsync('/client-assets/room/env.glb', this.scene);
 		envObj.meshes[0].scaling = new BABYLON.Vector3(-100, 100, 100);
-		envObj.meshes[0].position = new BABYLON.Vector3(0, -300/*cm*/, 0);
+		envObj.meshes[0].position = new BABYLON.Vector3(0, -600/*cm*/, 0); // 3階くらいの想定
 		envObj.meshes[0].bakeCurrentTransformIntoVertices();
 		for (const mesh of envObj.meshes) {
 			mesh.isPickable = false;
