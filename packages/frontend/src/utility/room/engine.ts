@@ -391,6 +391,8 @@ export class RoomEngine {
 				}
 
 				this.grabbing.position = this.grabbingGhost.position.clone();
+				this.grabbing.position.x = Math.min(Math.max(this.grabbing.position.x, -(this.ROOM_SIZE / 2)), (this.ROOM_SIZE / 2));
+				this.grabbing.position.z = Math.min(Math.max(this.grabbing.position.z, -(this.ROOM_SIZE / 2)), (this.ROOM_SIZE / 2));
 				this.grabbing.position.y = y;
 			} else {
 				this.highlightedObjectId = null;
