@@ -344,6 +344,25 @@ export class RoomEngine {
 			//const postProcess2 = new BABYLON.ImageProcessingPostProcess('processing2', 1.0, this.camera2);
 			//postProcess2.exposure = 2;
 			//postProcess2.contrast = 0.9;
+
+			const ssao = new BABYLON.SSAORenderingPipeline('ssao', this.scene, {
+				ssaoRatio: 4,
+				combineRatio: 1,
+			});
+			ssao.radius = 0.0001;
+			ssao.totalStrength = 0.8;
+			this.scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline('ssao', this.camera);
+
+			const lensEffect = new BABYLON.LensRenderingPipeline('lens', {
+				edge_blur: 1.0,
+				distortion: 0.5,
+				dof_focus_distance: 90/*cm*/,
+				dof_aperture: 6.0,
+				dof_pentagon: true,
+				dof_gain: 2.0,
+				dof_threshold: 1.0,
+				dof_darken: 0,
+			}, this.scene, 1, [this.camera]);
 		}
 
 		let isDragging = false;
