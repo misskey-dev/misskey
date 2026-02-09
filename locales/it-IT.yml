@@ -2807,7 +2807,7 @@ _notification:
   exportOfXCompleted: "Abbiamo completato l'esportazione di {x}"
   login: "Autenticazione avvenuta"
   createToken: "È stato creato un token di accesso"
-  createTokenDescription: "In caso contrario, eliminare il token di accesso tramite ({text})."
+  createTokenDescription: "Se non ne sai nulla, elimina il token di accesso: {text}."
   _types:
     all: "Tutte"
     note: "Nuove Note"
