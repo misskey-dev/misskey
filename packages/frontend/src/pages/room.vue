@@ -34,17 +34,17 @@ onMounted(() => {
 		objects: [{
 			id: 'a',
 			type: 'cardboard-box3',
-			position: [100, 0, 100],
+			position: [120, 0, 50],
 			rotation: [0, 0.2, 0],
 		}, {
 			id: 'b',
 			type: 'cardboard-box2',
-			position: [100, 31, 100],
+			position: [120, 31, 50],
 			rotation: [0, 0.1, 0],
 		}, {
 			id: '1',
 			type: 'cardboard-box',
-			position: [50, 0, 100],
+			position: [80, 0, 110],
 			rotation: [0, 2, 0],
 		}, {
 			id: 'c',
@@ -80,6 +80,11 @@ onMounted(() => {
 			id: 'i',
 			type: 'lava-lamp',
 			position: [60, 90, 170],
+			rotation: [0, 0, 0],
+		}, {
+			id: 'j',
+			type: 'steel-rack',
+			position: [130, 0, 115],
 			rotation: [0, 0, 0],
 		}],
 	});
