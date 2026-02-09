@@ -6,7 +6,6 @@
 import * as BABYLON from '@babylonjs/core';
 import { AxesViewer } from '@babylonjs/core/Debug/axesViewer';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
-import { MmdOutlineRenderer } from './outlineRenderer.ts';
 
 type RoomDef = {
 	roomType: 'default';
@@ -19,17 +18,47 @@ type RoomDef = {
 	}[];
 };
 
+type ObjectDef = {
+	placement: 'top' | 'side';
+	onInit?: (room: RoomEngine, obj: BABYLON.ISceneLoaderAsyncResult) => void;
+};
+
 const OBJECTS = {
 	plant: {
 		placement: 'top',
 	},
 	mug: {
 		placement: 'top',
+		onInit: (room, obj) => {
+			const emitter = new BABYLON.TransformNode('emitter', room.scene);
+			emitter.parent = obj.meshes[0];
+			emitter.position = new BABYLON.Vector3(0, 5/*cm*/, 0);
+			const ps = new BABYLON.ParticleSystem('steamParticleSystem', 8, room.scene);
+			ps.particleTexture = new BABYLON.Texture('/client-assets/room/steam.png');
+			ps.emitter = emitter;
+			ps.minEmitBox = new BABYLON.Vector3(-1/*cm*/, 0, -1/*cm*/);
+			ps.maxEmitBox = new BABYLON.Vector3(1/*cm*/, 0, 1/*cm*/);
+			ps.minEmitPower = 10;
+			ps.maxEmitPower = 12;
+			ps.minLifeTime = 1;
+			ps.maxLifeTime = 3;
+			ps.minSize = 10/*cm*/;
+			ps.maxSize = 15/*cm*/;
+			ps.direction1 = new BABYLON.Vector3(-0.3, 1, 0.3);
+			ps.direction2 = new BABYLON.Vector3(0.3, 1, -0.3);
+			ps.emitRate = 0.5;
+			ps.blendMode = BABYLON.ParticleSystem.BLENDMODE_ADD;
+			ps.color1 = new BABYLON.Color4(1, 1, 1, 0.3);
+			ps.color2 = new BABYLON.Color4(1, 1, 1, 0.2);
+			ps.colorDead = new BABYLON.Color4(1, 1, 1, 0);
+			ps.preWarmCycles = 350;
+			ps.start();
+		},
 	},
 	stickyNote: {
 		placement: 'side',
 	},
-};
+} as Record<string, ObjectDef>;
 
 function vecToLocal(vector: BABYLON.Vector3, mesh: BABYLON.Mesh): BABYLON.Vector3 {
 	const m = mesh.getWorldMatrix();
@@ -153,7 +182,7 @@ class HorizontalCameraKeyboardMoveInput extends BABYLON.BaseCameraPointersInput 
 export class RoomEngine {
 	private canvas: HTMLCanvasElement;
 	private engine: BABYLON.Engine;
-	private scene: BABYLON.Scene;
+	public scene: BABYLON.Scene;
 	private shadowGenerator1: BABYLON.ShadowGenerator;
 	private shadowGenerator2: BABYLON.ShadowGenerator;
 	private camera: BABYLON.UniversalCamera;
@@ -453,10 +482,6 @@ export class RoomEngine {
 		obj.meshes[0].position = position;
 		obj.meshes[0].rotation = rotation;
 
-		if (_DEV_) {
-			obj.meshes[0].showBoundingBox = true;
-		}
-
 		for (const mesh of obj.meshes) {
 			mesh.metadata = { isObject: true, objectId: id, objectType: type };
 			mesh.checkCollisions = true;
@@ -465,13 +490,6 @@ export class RoomEngine {
 			this.shadowGenerator1.addShadowCaster(mesh);
 			this.shadowGenerator2.addShadowCaster(mesh);
 
-			//if (mesh.material != null) {
-			//	mesh.material.renderOutline = true;
-			//	mesh.material.outlineWidth = 1;
-			//	mesh.material.outlineColor = new BABYLON.Color3(0, 0, 0);
-			//	mesh.material.outlineAlpha = 1.0;
-			//}
-
 			mesh.renderOutline = false;
 			mesh.outlineWidth = 0.003;
 			mesh.outlineColor = new BABYLON.Color3(1, 0, 0);
@@ -479,26 +497,9 @@ export class RoomEngine {
 
 		this.objects.set(id, obj.meshes[0]);
 
-		if (type === 'mug') {
-			const steamParticleSystem = new BABYLON.ParticleSystem('steamParticleSystem', 8, this.scene);
-			steamParticleSystem.particleTexture = new BABYLON.Texture('/client-assets/room/steam.png');
-			steamParticleSystem.emitter = position.add(new BABYLON.Vector3(0, 5/*cm*/, 0));
-			steamParticleSystem.minEmitBox = new BABYLON.Vector3(-1/*cm*/, 0, -1/*cm*/);
-			steamParticleSystem.maxEmitBox = new BABYLON.Vector3(1/*cm*/, 0, 1/*cm*/);
-			steamParticleSystem.minEmitPower = 10;
-			steamParticleSystem.maxEmitPower = 12;
-			steamParticleSystem.minLifeTime = 1;
-			steamParticleSystem.maxLifeTime = 3;
-			steamParticleSystem.minSize = 10/*cm*/;
-			steamParticleSystem.maxSize = 15/*cm*/;
-			steamParticleSystem.direction1 = new BABYLON.Vector3(-0.3, 1, 0.3);
-			steamParticleSystem.direction2 = new BABYLON.Vector3(0.3, 1, -0.3);
-			steamParticleSystem.emitRate = 0.5;
-			steamParticleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ADD;
-			steamParticleSystem.color1 = new BABYLON.Color4(1, 1, 1, 0.3);
-			steamParticleSystem.color2 = new BABYLON.Color4(1, 1, 1, 0.2);
-			steamParticleSystem.colorDead = new BABYLON.Color4(1, 1, 1, 0);
-			steamParticleSystem.start();
+		const objDef = OBJECTS[type];
+		if (objDef != null && objDef.onInit != null) {
+			objDef.onInit(this, obj);
 		}
 	}
 
