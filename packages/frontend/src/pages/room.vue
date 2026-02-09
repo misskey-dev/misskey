@@ -57,6 +57,11 @@ onMounted(() => {
 			position: [-130, 70, 85],
 			rotation: [0, 0, 0],
 		}, {
+			id: 'd2',
+			type: 'keyboard',
+			position: [-110, 70, 85],
+			rotation: [0, 0, 0],
+		}, {
 			id: 'e',
 			type: 'chair2',
 			position: [-80, 0, 85],
@@ -91,6 +96,26 @@ onMounted(() => {
 			type: 'cup-noodle',
 			position: [-100, 70, 40],
 			rotation: [0, -2, 0],
+		}, {
+			id: 'l',
+			type: 'banknote',
+			position: [-100, 70, 55],
+			rotation: [0, -2, 0],
+		}, {
+			id: 'm',
+			type: 'energy-drink',
+			position: [-100, 70, 120],
+			rotation: [0, 1, 0],
+		}, {
+			id: 'n',
+			type: 'milk',
+			position: [-120, 70, 130],
+			rotation: [0, 1.5, 0],
+		}, {
+			id: 'o',
+			type: 'facial-tissue',
+			position: [-100, 70, 138],
+			rotation: [0, 1.5, 0],
 		}],
 	});
 
