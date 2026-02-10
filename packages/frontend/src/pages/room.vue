@@ -128,6 +128,11 @@ onMounted(() => {
 			type: 'tv',
 			position: [-115, 0, -85],
 			rotation: [0, 0, 0],
+		}, {
+			id: 'q',
+			type: 'color-box',
+			position: [-135, 0, -5],
+			rotation: [0, 0, 0],
 		}],
 	}, {
 		canvas: canvas.value!,

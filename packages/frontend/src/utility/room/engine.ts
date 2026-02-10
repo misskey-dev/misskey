@@ -8,6 +8,7 @@
  * - 単位はセンチメートルで設計すること。
  * - それを置いたときに底になる縦軸座標(blenderならz)が0になるように設計すること。
  * - メッシュ名を _COLLISION_TOP_ で始めると、その面の上にモノを置けることを示せます。当該メッシュはレンダリングでは表示されません。
+ * - なお、現状 _COLLISION_TOP_ メッシュは単一の面でなければなりません。つまりArray Modifierなどを適用した状態では正しく動作しません。
  */
 
 import * as BABYLON from '@babylonjs/core';
@@ -681,7 +682,6 @@ export class RoomEngine {
 		roomObj.meshes[0].scaling = new BABYLON.Vector3(-100, 100, 100);
 		roomObj.meshes[0].bakeCurrentTransformIntoVertices();
 		for (const mesh of roomObj.meshes) {
-			console.log(mesh.name);
 			//if (mesh.name === '__root__') continue;
 			if (mesh.name.startsWith('_COLLISION_')) {
 				mesh.receiveShadows = false;
