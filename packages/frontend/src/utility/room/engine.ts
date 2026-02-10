@@ -242,6 +242,7 @@ export class RoomEngine {
 	private intervalIds: number[] = [];
 	private objectMeshs: Map<string, BABYLON.AbstractMesh> = new Map();
 	private grabbing: BABYLON.AbstractMesh | null = null;
+	private grabbingStartOffset: BABYLON.Vector3 | null = null;
 	private grabbingStartDistance: number | null = null;
 	private grabbingGhost: BABYLON.AbstractMesh | null = null;
 	private highlightedObjectId: string | null = null;
@@ -459,7 +460,7 @@ export class RoomEngine {
 
 	private handleGrabbing() {
 		const dir = this.camera.getDirection(BABYLON.Axis.Z);
-		this.grabbingGhost.position = this.camera.position.add(dir.scale(this.grabbingStartDistance));
+		this.grabbingGhost.position = this.camera.position.add(dir.scale(this.grabbingStartDistance)).add(this.grabbingStartOffset!);
 
 		const stickyObjectIds = Array.from(this.def.objects.filter(o => o.sticky === this.grabbing!.metadata.objectId)).map(o => o.id);
 
@@ -630,6 +631,7 @@ export class RoomEngine {
 			removeStickyParentRecursively(this.grabbing);
 			this.grabbing = null;
 			this.grabbingStartDistance = null;
+			this.grabbingStartOffset = null;
 			if (this.grabbingGhost != null) {
 				this.grabbingGhost.dispose(false, true);
 				this.grabbingGhost = null;
@@ -638,8 +640,12 @@ export class RoomEngine {
 		}
 		if (this.highlightedObjectId == null) return;
 		const highlightedObject = this.objectMeshs.get(this.highlightedObjectId)!;
+		for (const om of highlightedObject.getChildMeshes()) {
+			om.renderOutline = false;
+		}
 		this.grabbing = highlightedObject;
 		this.grabbingStartDistance = BABYLON.Vector3.Distance(this.camera.position, highlightedObject.position);
+		this.grabbingStartOffset = highlightedObject.position.subtract(this.camera.position.add(this.camera.getDirection(BABYLON.Axis.Z).scale(this.grabbingStartDistance)));
 		this.grabbingGhost = highlightedObject.clone('ghost', null, false);
 		for (const m of this.grabbingGhost!.getChildMeshes()) {
 			m.metadata = {};
