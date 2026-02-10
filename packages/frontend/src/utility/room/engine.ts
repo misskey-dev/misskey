@@ -38,10 +38,10 @@ function yuge(room: RoomEngine, obj: BABYLON.ISceneLoaderAsyncResult, offset: BA
 	ps.maxEmitBox = new BABYLON.Vector3(1/*cm*/, 0, 1/*cm*/);
 	ps.minEmitPower = 10;
 	ps.maxEmitPower = 12;
-	ps.minLifeTime = 1;
+	ps.minLifeTime = 2;
 	ps.maxLifeTime = 3;
-	ps.minSize = 10/*cm*/;
-	ps.maxSize = 15/*cm*/;
+	ps.addSizeGradient(0, 10/*cm*/, 12/*cm*/);
+	ps.addSizeGradient(1, 18/*cm*/, 20/*cm*/);
 	ps.direction1 = new BABYLON.Vector3(-0.3, 1, 0.3);
 	ps.direction2 = new BABYLON.Vector3(0.3, 1, -0.3);
 	ps.emitRate = 0.5;
