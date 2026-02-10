@@ -633,6 +633,7 @@ export class RoomEngine {
 					const soMesh = this.objectMeshs.get(soid)!;
 					soMesh.parent = null;
 					soMesh.position = soMesh.position.add(mesh.position);
+					soMesh.rotation = soMesh.rotation.add(mesh.rotation);
 					removeStickyParentRecursively(soMesh);
 				}
 			};
@@ -666,6 +667,7 @@ export class RoomEngine {
 				setStickyParentRecursively(soMesh);
 				soMesh.parent = mesh;
 				soMesh.position = soMesh.position.subtract(mesh.position);
+				soMesh.rotation = soMesh.rotation.subtract(mesh.rotation);
 			}
 		};
 		setStickyParentRecursively(highlightedObject);
