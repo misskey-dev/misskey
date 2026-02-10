@@ -244,6 +244,7 @@ export class RoomEngine {
 	private grabbing: {
 		mesh: BABYLON.AbstractMesh;
 		startOffset: BABYLON.Vector3;
+		startRotationY: number;
 		startDistance: number;
 		ghost: BABYLON.AbstractMesh;
 	} | null = null;
@@ -465,6 +466,7 @@ export class RoomEngine {
 
 		const dir = this.camera.getDirection(BABYLON.Axis.Z);
 		this.grabbing.ghost.position = this.camera.position.add(dir.scale(this.grabbing.startDistance)).add(this.grabbing.startOffset);
+		this.grabbing.ghost.rotation = new BABYLON.Vector3(0, this.camera.rotation.y + this.grabbing.startRotationY, 0);
 
 		const stickyObjectIds = Array.from(this.def.objects.filter(o => o.sticky === this.grabbing.mesh.metadata.objectId)).map(o => o.id);
 
@@ -528,6 +530,8 @@ export class RoomEngine {
 		//this.grabbing.mesh.position.x = Math.min(Math.max(this.grabbing.position.x, -(this.ROOM_SIZE / 2)), (this.ROOM_SIZE / 2));
 		//this.grabbing.mesh.position.z = Math.min(Math.max(this.grabbing.position.z, -(this.ROOM_SIZE / 2)), (this.ROOM_SIZE / 2));
 		this.grabbing.mesh.position.y = y;
+
+		this.grabbing.mesh.rotation = this.grabbing.ghost.rotation.clone();
 
 		const ray = new BABYLON.Ray(this.camera.position, this.camera.getDirection(BABYLON.Axis.Z), 1000/*cm*/);
 		const hit = this.scene.pickWithRay(ray, (m) => m.name.startsWith('_COLLISION_WALL_'))!;
@@ -669,6 +673,7 @@ export class RoomEngine {
 		this.grabbing = {
 			mesh: highlightedObject,
 			startOffset: highlightedObject.position.subtract(this.camera.position.add(this.camera.getDirection(BABYLON.Axis.Z).scale(startDistance))),
+			startRotationY: highlightedObject.rotation.subtract(this.camera.rotation).y,
 			startDistance: startDistance,
 			ghost: ghost,
 		};
