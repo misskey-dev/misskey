@@ -37,6 +37,7 @@ onMounted(() => {
 			type: 'cardboard-box2',
 			position: [120, 31, 50],
 			rotation: [0, 0.1, 0],
+			sticky: 'a',
 		}, {
 			id: '1',
 			type: 'cardboard-box',

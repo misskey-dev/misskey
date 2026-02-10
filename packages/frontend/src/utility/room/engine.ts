@@ -240,7 +240,7 @@ export class RoomEngine {
 	private camera: BABYLON.UniversalCamera;
 	private camera2: BABYLON.ArcRotateCamera;
 	private intervalIds: number[] = [];
-	private objects: Map<string, BABYLON.AbstractMesh> = new Map();
+	private objectMeshs: Map<string, BABYLON.AbstractMesh> = new Map();
 	private grabbing: BABYLON.AbstractMesh | null = null;
 	private grabbingStartDistance: number | null = null;
 	private grabbingGhost: BABYLON.AbstractMesh | null = null;
@@ -389,17 +389,24 @@ export class RoomEngine {
 			const mesh = this.scene.pick(this.scene.pointerX, this.scene.pointerY)?.pickedMesh;
 			if (mesh != null) {
 				const oid = mesh.metadata.objectId;
-				if (oid != null && this.objects.has(oid)) {
-					const o = this.objects.get(oid)!;
+				if (oid != null && this.objectMeshs.has(oid)) {
+					const o = this.objectMeshs.get(oid)!;
 					// focus camera
 					this.camera.setTarget(o.position);
 				}
 			}
 		});
 
+		this.canvas.addEventListener('keypress', (ev) => {
+			if (ev.code === 'KeyE') {
+				ev.preventDefault();
+				ev.stopPropagation();
+				this.grab();
+			}
+		});
+
 		if (_DEV_) {
-			const axes = new AxesViewer(this.scene, 5);
-			axes.scaleLines = 30;
+			const axes = new AxesViewer(this.scene, 30);
 			axes.xAxis.position = new BABYLON.Vector3(0, 30, 0);
 			axes.yAxis.position = new BABYLON.Vector3(0, 30, 0);
 			axes.zAxis.position = new BABYLON.Vector3(0, 30, 0);
@@ -432,17 +439,17 @@ export class RoomEngine {
 	private handleSeeking() {
 		this.highlightedObjectId = null;
 		const ray = new BABYLON.Ray(this.camera.position, this.camera.getDirection(BABYLON.Axis.Z), 1000/*cm*/);
-		for (const [id, o] of this.objects.entries()) {
+		for (const [id, o] of this.objectMeshs.entries()) {
 			for (const om of o.getChildMeshes()) {
 				om.renderOutline = false;
 			}
 		}
 		const hit = this.scene.pickWithRay(ray)!;
 		if (hit.pickedMesh != null) {
-			const oid = hit.pickedMesh.metadata.objectId;
-			if (oid != null && this.objects.has(oid)) {
+			const oid = hit.pickedMesh.metadata?.objectId;
+			if (oid != null && this.objectMeshs.has(oid)) {
 				this.highlightedObjectId = oid;
-				const o = this.objects.get(oid)!;
+				const o = this.objectMeshs.get(oid)!;
 				for (const om of o.getChildMeshes()) {
 					om.renderOutline = true;
 				}
@@ -454,7 +461,10 @@ export class RoomEngine {
 		const dir = this.camera.getDirection(BABYLON.Axis.Z);
 		this.grabbingGhost.position = this.camera.position.add(dir.scale(this.grabbingStartDistance));
 
+		const stickyObjectIds = Array.from(this.def.objects.filter(o => o.sticky === this.grabbing!.metadata.objectId)).map(o => o.id);
+
 		let y = 0;
+		let sticky = null;
 
 		for (const rcmb of this.roomCollisionMeshes.filter(m => m.name.startsWith('_COLLISION_FLOOR_'))) {
 			const rcb = rcmb.getBoundingInfo().boundingBox;
@@ -469,7 +479,25 @@ export class RoomEngine {
 			}
 		}
 
-		for (const [id, o] of this.objects.entries().filter(([_id, o]) => o !== this.grabbing)) {
+		const isStickyChild = (parent: BABYLON.AbstractMesh, target: BABYLON.AbstractMesh): boolean => {
+			const stickyObjectIds = Array.from(this.def.objects.filter(o => o.sticky === parent.metadata.objectId)).map(o => o.id);
+			for (const soid of stickyObjectIds) {
+				if (soid === target.metadata.objectId) return true;
+				const soMesh = this.objectMeshs.get(soid)!;
+				if (isStickyChild(soMesh, target)) return true;
+			}
+			return false;
+		};
+
+		const checkObjectEntries = this.objectMeshs.entries()
+			.filter(([_id, o]) => {
+				if (o === this.grabbing) return false;
+				if (stickyObjectIds.includes(_id)) return false;
+				if (isStickyChild(this.grabbing!, o)) return false;
+				return true;
+			});
+
+		for (const [id, o] of checkObjectEntries) {
 			for (const om of o.getChildMeshes()) {
 				const omb = om.getBoundingInfo().boundingBox;
 				for (const tm of this.grabbing.getChildMeshes()) {
@@ -478,10 +506,17 @@ export class RoomEngine {
 						const topY = omb.maximumWorld.y;
 						if (y === 0 || topY > y) {
 							y = topY;
+							sticky = id;
 						}
 					}
 				}
 			}
+		}
+
+		if (sticky != null) {
+			this.def.objects.find(o => o.id === this.grabbing!.metadata.objectId)!.sticky = sticky;
+		} else {
+			this.def.objects.find(o => o.id === this.grabbing!.metadata.objectId)!.sticky = null;
 		}
 
 		this.grabbing.position = this.grabbingGhost.position.clone();
@@ -507,6 +542,12 @@ export class RoomEngine {
 		//);
 		//this.grabbing.moveWithCollisions(displacementVector);
 		//this.grabbing.position.y = y;
+
+		for (const soid of stickyObjectIds) {
+			//const soMesh = this.objectMeshs.get(soid)!;
+			//const offset = this.grabbing!.position.subtract(soMeshStartPosition);
+			//soMesh.position = this.grabbing!.position.subtract(offset);
+		}
 	}
 
 	private async loadEnvModel() {
@@ -566,7 +607,7 @@ export class RoomEngine {
 			mesh.outlineColor = new BABYLON.Color3(1, 0, 0);
 		}
 
-		this.objects.set(id, obj.meshes[0]);
+		this.objectMeshs.set(id, obj.meshes[0]);
 
 		const objDef = OBJECTS[type];
 		if (objDef != null && objDef.onInit != null) {
@@ -576,6 +617,17 @@ export class RoomEngine {
 
 	public grab() {
 		if (this.grabbing != null) {
+			// 親から先に外していく
+			const removeStickyParentRecursively = (mesh: BABYLON.AbstractMesh) => {
+				const stickyObjectIds = Array.from(this.def.objects.filter(o => o.sticky === mesh.metadata.objectId)).map(o => o.id);
+				for (const soid of stickyObjectIds) {
+					const soMesh = this.objectMeshs.get(soid)!;
+					soMesh.parent = null;
+					soMesh.position = soMesh.position.add(mesh.position);
+					removeStickyParentRecursively(soMesh);
+				}
+			};
+			removeStickyParentRecursively(this.grabbing);
 			this.grabbing = null;
 			this.grabbingStartDistance = null;
 			if (this.grabbingGhost != null) {
@@ -585,7 +637,7 @@ export class RoomEngine {
 			return;
 		}
 		if (this.highlightedObjectId == null) return;
-		const highlightedObject = this.objects.get(this.highlightedObjectId)!;
+		const highlightedObject = this.objectMeshs.get(this.highlightedObjectId)!;
 		this.grabbing = highlightedObject;
 		this.grabbingStartDistance = BABYLON.Vector3.Distance(this.camera.position, highlightedObject.position);
 		this.grabbingGhost = highlightedObject.clone('ghost', null, false);
@@ -598,6 +650,18 @@ export class RoomEngine {
 				m.material = mat;
 			}
 		}
+
+		// 子から先に適用していく
+		const setStickyParentRecursively = (mesh: BABYLON.AbstractMesh) => {
+			const stickyObjectIds = Array.from(this.def.objects.filter(o => o.sticky === mesh.metadata.objectId)).map(o => o.id);
+			for (const soid of stickyObjectIds) {
+				const soMesh = this.objectMeshs.get(soid)!;
+				setStickyParentRecursively(soMesh);
+				soMesh.parent = mesh;
+				soMesh.position = soMesh.position.subtract(mesh.position);
+			}
+		};
+		setStickyParentRecursively(this.grabbing);
 	}
 
 	public destroy() {
