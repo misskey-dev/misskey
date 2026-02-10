@@ -241,10 +241,12 @@ export class RoomEngine {
 	private camera2: BABYLON.ArcRotateCamera;
 	private intervalIds: number[] = [];
 	private objectMeshs: Map<string, BABYLON.AbstractMesh> = new Map();
-	private grabbing: BABYLON.AbstractMesh | null = null;
-	private grabbingStartOffset: BABYLON.Vector3 | null = null;
-	private grabbingStartDistance: number | null = null;
-	private grabbingGhost: BABYLON.AbstractMesh | null = null;
+	private grabbing: {
+		mesh: BABYLON.AbstractMesh;
+		startOffset: BABYLON.Vector3;
+		startDistance: number;
+		ghost: BABYLON.AbstractMesh;
+	} | null = null;
 	private highlightedObjectId: string | null = null;
 	private time: 0 | 1 | 2 = 2; // 0: 昼, 1: 夕, 2: 夜
 	private roomCollisionMeshes: BABYLON.AbstractMesh[] = [];
@@ -459,17 +461,19 @@ export class RoomEngine {
 	}
 
 	private handleGrabbing() {
-		const dir = this.camera.getDirection(BABYLON.Axis.Z);
-		this.grabbingGhost.position = this.camera.position.add(dir.scale(this.grabbingStartDistance)).add(this.grabbingStartOffset!);
+		if (this.grabbing == null) return;
 
-		const stickyObjectIds = Array.from(this.def.objects.filter(o => o.sticky === this.grabbing!.metadata.objectId)).map(o => o.id);
+		const dir = this.camera.getDirection(BABYLON.Axis.Z);
+		this.grabbing.ghost.position = this.camera.position.add(dir.scale(this.grabbing.startDistance)).add(this.grabbing.startOffset);
+
+		const stickyObjectIds = Array.from(this.def.objects.filter(o => o.sticky === this.grabbing.mesh.metadata.objectId)).map(o => o.id);
 
 		let y = 0;
 		let sticky = null;
 
 		for (const rcmb of this.roomCollisionMeshes.filter(m => m.name.startsWith('_COLLISION_FLOOR_'))) {
 			const rcb = rcmb.getBoundingInfo().boundingBox;
-			for (const tm of this.grabbing.getChildMeshes()) {
+			for (const tm of this.grabbing.mesh.getChildMeshes()) {
 				const tmb = tm.getBoundingInfo().boundingBox;
 				if (isIntersectXZ(tmb, rcb)) {
 					const topY = rcb.maximumWorld.y;
@@ -492,16 +496,16 @@ export class RoomEngine {
 
 		const checkObjectEntries = this.objectMeshs.entries()
 			.filter(([_id, o]) => {
-				if (o === this.grabbing) return false;
+				if (o === this.grabbing.mesh) return false;
 				if (stickyObjectIds.includes(_id)) return false;
-				if (isStickyChild(this.grabbing!, o)) return false;
+				if (isStickyChild(this.grabbing.mesh, o)) return false;
 				return true;
 			});
 
 		for (const [id, o] of checkObjectEntries) {
 			for (const om of o.getChildMeshes()) {
 				const omb = om.getBoundingInfo().boundingBox;
-				for (const tm of this.grabbing.getChildMeshes()) {
+				for (const tm of this.grabbing.mesh.getChildMeshes()) {
 					const tmb = tm.getBoundingInfo().boundingBox;
 					if (isIntersectXZ(tmb, omb)) {
 						const topY = omb.maximumWorld.y;
@@ -515,39 +519,39 @@ export class RoomEngine {
 		}
 
 		if (sticky != null) {
-			this.def.objects.find(o => o.id === this.grabbing!.metadata.objectId)!.sticky = sticky;
+			this.def.objects.find(o => o.id === this.grabbing.mesh.metadata.objectId)!.sticky = sticky;
 		} else {
-			this.def.objects.find(o => o.id === this.grabbing!.metadata.objectId)!.sticky = null;
+			this.def.objects.find(o => o.id === this.grabbing.mesh.metadata.objectId)!.sticky = null;
 		}
 
-		this.grabbing.position = this.grabbingGhost.position.clone();
-		//this.grabbing.position.x = Math.min(Math.max(this.grabbing.position.x, -(this.ROOM_SIZE / 2)), (this.ROOM_SIZE / 2));
-		//this.grabbing.position.z = Math.min(Math.max(this.grabbing.position.z, -(this.ROOM_SIZE / 2)), (this.ROOM_SIZE / 2));
-		this.grabbing.position.y = y;
+		this.grabbing.mesh.position = this.grabbing.ghost.position.clone();
+		//this.grabbing.mesh.position.x = Math.min(Math.max(this.grabbing.position.x, -(this.ROOM_SIZE / 2)), (this.ROOM_SIZE / 2));
+		//this.grabbing.mesh.position.z = Math.min(Math.max(this.grabbing.position.z, -(this.ROOM_SIZE / 2)), (this.ROOM_SIZE / 2));
+		this.grabbing.mesh.position.y = y;
 
 		const ray = new BABYLON.Ray(this.camera.position, this.camera.getDirection(BABYLON.Axis.Z), 1000/*cm*/);
 		const hit = this.scene.pickWithRay(ray, (m) => m.name.startsWith('_COLLISION_WALL_'))!;
 		if (hit.pickedMesh != null) {
-			const grabbingBox = this.grabbing.getBoundingInfo().boundingBox;
-			const grabDistanceVector = this.grabbing.position.subtract(this.camera.position);
+			const grabbingBox = this.grabbing.mesh.getBoundingInfo().boundingBox;
+			const grabDistanceVector = this.grabbing.mesh.position.subtract(this.camera.position);
 			if (grabDistanceVector.length() > hit.distance) {
-				this.grabbing.position = this.camera.position.add(dir.scale(hit.distance));
-				this.grabbing.position.y = y;
+				this.grabbing.mesh.position = this.camera.position.add(dir.scale(hit.distance));
+				this.grabbing.mesh.position.y = y;
 			}
 		}
 
 		//const displacementVector = new BABYLON.Vector3(
-		//	this.grabbingGhost.position.x - this.grabbing.position.x,
+		//	this.grabbing.ghost.position.x - this.grabbing.mesh.position.x,
 		//	0,
-		//	this.grabbingGhost.position.z - this.grabbing.position.z,
+		//	this.grabbing.ghost.position.z - this.grabbing.mesh.position.z,
 		//);
-		//this.grabbing.moveWithCollisions(displacementVector);
-		//this.grabbing.position.y = y;
+		//this.grabbing.mesh.moveWithCollisions(displacementVector);
+		//this.grabbing.mesh.position.y = y;
 
 		for (const soid of stickyObjectIds) {
 			//const soMesh = this.objectMeshs.get(soid)!;
-			//const offset = this.grabbing!.position.subtract(soMeshStartPosition);
-			//soMesh.position = this.grabbing!.position.subtract(offset);
+			//const offset = this.grabbing.mesh!.position.subtract(soMeshStartPosition);
+			//soMesh.position = this.grabbing.mesh!.position.subtract(offset);
 		}
 	}
 
@@ -628,14 +632,9 @@ export class RoomEngine {
 					removeStickyParentRecursively(soMesh);
 				}
 			};
-			removeStickyParentRecursively(this.grabbing);
+			removeStickyParentRecursively(this.grabbing.mesh);
+			this.grabbing.ghost.dispose(false, true);
 			this.grabbing = null;
-			this.grabbingStartDistance = null;
-			this.grabbingStartOffset = null;
-			if (this.grabbingGhost != null) {
-				this.grabbingGhost.dispose(false, true);
-				this.grabbingGhost = null;
-			}
 			return;
 		}
 		if (this.highlightedObjectId == null) return;
@@ -643,11 +642,9 @@ export class RoomEngine {
 		for (const om of highlightedObject.getChildMeshes()) {
 			om.renderOutline = false;
 		}
-		this.grabbing = highlightedObject;
-		this.grabbingStartDistance = BABYLON.Vector3.Distance(this.camera.position, highlightedObject.position);
-		this.grabbingStartOffset = highlightedObject.position.subtract(this.camera.position.add(this.camera.getDirection(BABYLON.Axis.Z).scale(this.grabbingStartDistance)));
-		this.grabbingGhost = highlightedObject.clone('ghost', null, false);
-		for (const m of this.grabbingGhost!.getChildMeshes()) {
+		const startDistance = BABYLON.Vector3.Distance(this.camera.position, highlightedObject.position);
+		const ghost = highlightedObject.clone('ghost', null, false)!;
+		for (const m of ghost.getChildMeshes()) {
 			m.metadata = {};
 			if (m.material) {
 				const mat = m.material.clone(`${m.material.name}_ghost`);
@@ -667,7 +664,14 @@ export class RoomEngine {
 				soMesh.position = soMesh.position.subtract(mesh.position);
 			}
 		};
-		setStickyParentRecursively(this.grabbing);
+		setStickyParentRecursively(highlightedObject);
+
+		this.grabbing = {
+			mesh: highlightedObject,
+			startOffset: highlightedObject.position.subtract(this.camera.position.add(this.camera.getDirection(BABYLON.Axis.Z).scale(startDistance))),
+			startDistance: startDistance,
+			ghost: ghost,
+		};
 	}
 
 	public destroy() {
