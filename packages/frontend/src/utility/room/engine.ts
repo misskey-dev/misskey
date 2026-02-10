@@ -420,10 +420,7 @@ export class RoomEngine {
 	public async init() {
 		await this.loadRoomModel(this.def.roomType);
 		await this.loadEnvModel();
-
-		for (const objDef of this.def.objects) {
-			this.loadObject(objDef.id, objDef.type, new BABYLON.Vector3(...objDef.position), new BABYLON.Vector3(...objDef.rotation));
-		}
+		await Promise.all(this.def.objects.map(o => this.loadObject(o.id, o.type, new BABYLON.Vector3(...o.position), new BABYLON.Vector3(...o.rotation))));
 
 		//const sphere = BABYLON.MeshBuilder.CreateSphere('sphere', { diameter: 1/*cm*/ }, this.scene);
 
@@ -434,6 +431,58 @@ export class RoomEngine {
 				this.handleSeeking();
 			}
 		}, 10));
+
+		// update tv texure
+		const tvProgramId = 'shopping';
+		const tvProgram = TV_PROGRAMS[tvProgramId];
+		const tvScreenMaterial = new BABYLON.StandardMaterial('tvScreenMaterial', this.scene);
+		tvScreenMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
+		tvScreenMaterial.ambientColor = new BABYLON.Color3(0, 0, 0);
+		tvScreenMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+		tvScreenMaterial.emissiveTexture = new BABYLON.Texture(`/client-assets/room/tv/${tvProgramId}/${tvProgramId}.png`, this.scene, false, false);
+		tvScreenMaterial.emissiveTexture.level = 0.5;
+		tvScreenMaterial.emissiveColor = new BABYLON.Color3(0.2, 0.2, 0.2);
+		tvScreenMaterial.freeze();
+
+		const applyTvTexture = (tlIndex: number) => {
+			const [index, duration] = tvProgram.timeline[tlIndex];
+			const tvIds = this.def.objects.entries().filter(([id, o]) => o.type === 'tv').map(([id, o]) => o.id);
+
+			for (const tvId of tvIds) {
+				const tvMesh = this.objectMeshs.get(tvId);
+				const screenMesh = tvMesh?.getChildMeshes().find(m => m.name.startsWith('_TV_SCREEN_'))! as BABYLON.Mesh;
+				screenMesh.material = tvScreenMaterial;
+
+				const aspect = 16 / 9;
+
+				const x = index % tvProgram.textureColumns;
+				const y = Math.floor(index / tvProgram.textureColumns);
+
+				const ax = x / tvProgram.textureColumns;
+				const ay = y / tvProgram.textureRows / aspect;
+				const bx = (x + 1) / tvProgram.textureColumns;
+				const by = ay;
+				const cx = ax;
+				const cy = (y + 1) / tvProgram.textureRows / aspect;
+				const dx = bx;
+				const dy = cy;
+
+				const uvs = screenMesh.getVerticesData(BABYLON.VertexBuffer.UVKind);
+				uvs[0] = dx;
+				uvs[1] = dy;
+				uvs[2] = bx;
+				uvs[3] = by;
+				uvs[4] = cx;
+				uvs[5] = cy;
+				uvs[6] = ax;
+				uvs[7] = ay;
+				screenMesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
+			}
+
+			window.setTimeout(() => applyTvTexture((tlIndex + 1) % tvProgram.timeline.length), duration);
+		};
+
+		applyTvTexture(0);
 
 		this.engine.runRenderLoop(() => {
 			this.scene.render();
@@ -603,7 +652,13 @@ export class RoomEngine {
 		obj.meshes[0].position = position;
 		obj.meshes[0].rotation = rotation;
 
-		for (const mesh of obj.meshes) {
+		for (const m of obj.meshes) {
+			const mesh = m;
+
+			if (mesh.name.startsWith('_TV_SCREEN_')) {
+				mesh.markVerticesDataAsUpdatable(BABYLON.VertexBuffer.UVKind, true);
+			}
+
 			mesh.metadata = { isObject: true, objectId: id, objectType: type };
 			mesh.checkCollisions = true;
 			//if (mesh.name === '__root__') continue;
@@ -689,3 +744,40 @@ export class RoomEngine {
 		this.engine.dispose();
 	}
 }
+
+const TV_PROGRAMS = {
+	shopping: {
+		textureColumns: 8,
+		textureRows: 8,
+		timeline: [
+			[0, 500],
+			[1, 500],
+			[0, 500],
+			[1, 500],
+			[0, 500],
+			[1, 500],
+			[2, 500],
+			[3, 500],
+			[2, 500],
+			[3, 500],
+			[4, 500],
+			[5, 500],
+			[4, 500],
+			[5, 500],
+			[6, 500],
+			[7, 500],
+			[8, 500],
+			[9, 500],
+			[8, 500],
+			[9, 500],
+			[2, 500],
+			[3, 500],
+			[2, 500],
+			[3, 500],
+		],
+	},
+} satisfies Record<string, {
+	textureColumns: number;
+	textureRows: number;
+	timeline: [index: number, duration: number][];
+}>;

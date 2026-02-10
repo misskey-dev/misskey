@@ -120,6 +120,11 @@ onMounted(() => {
 			position: [-100, 70, 138],
 			rotation: [0, 1.5, 0],
 			sticky: 'c',
+		}, {
+			id: 'p',
+			type: 'tv',
+			position: [-115, 0, -85],
+			rotation: [0, 0, 0],
 		}],
 	}, {
 		canvas: canvas.value!,
