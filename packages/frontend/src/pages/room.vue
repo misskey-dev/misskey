@@ -29,20 +29,23 @@ onMounted(() => {
 		roomType: 'default',
 		objects: [{
 			id: 'a',
-			type: 'cardboard-box3',
+			type: 'cardboard-box',
 			position: [120, 0, 50],
 			rotation: [0, 0.2, 0],
+			variation: 'mikan',
 		}, {
 			id: 'b',
-			type: 'cardboard-box2',
+			type: 'cardboard-box',
 			position: [120, 31, 50],
 			rotation: [0, 0.1, 0],
 			sticky: 'a',
+			variation: 'aizon',
 		}, {
 			id: '1',
 			type: 'cardboard-box',
 			position: [80, 0, 110],
 			rotation: [0, 2, 0],
+			variation: null,
 		}, {
 			id: 'c',
 			type: 'desk',

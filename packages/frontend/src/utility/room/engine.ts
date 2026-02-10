@@ -3,6 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+/*
+ * Roomで使われるオブジェクトの仕様
+ * - 単位はセンチメートルで設計すること。
+ * - それを置いたときに底になる縦軸座標(blenderならz)が0になるように設計すること。
+ * - メッシュ名を _COLLISION_TOP_ で始めると、その面の上にモノを置けることを示せます。当該メッシュはレンダリングでは表示されません。
+ */
+
 import * as BABYLON from '@babylonjs/core';
 import { AxesViewer } from '@babylonjs/core/Debug/axesViewer';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
@@ -14,6 +21,7 @@ type RoomDef = {
 		type: string;
 		position: [number, number, number];
 		rotation: [number, number, number];
+		variation?: string | null;
 
 		/**
 		 * 別のオブジェクトのID
@@ -24,7 +32,7 @@ type RoomDef = {
 
 type ObjectDef = {
 	placement: 'top' | 'side';
-	onInit?: (room: RoomEngine, obj: BABYLON.ISceneLoaderAsyncResult) => void;
+	onInit?: (room: RoomEngine, o: RoomDef['objects'][0], obj: BABYLON.ISceneLoaderAsyncResult) => void;
 };
 
 function yuge(room: RoomEngine, obj: BABYLON.ISceneLoaderAsyncResult, offset: BABYLON.Vector3) {
@@ -59,22 +67,37 @@ const OBJECTS = {
 	},
 	mug: {
 		placement: 'top',
-		onInit: (room, obj) => {
+		onInit: (room, o, obj) => {
 			yuge(room, obj, new BABYLON.Vector3(0, 5/*cm*/, 0));
 		},
 	},
 	'cup-noodle': {
 		placement: 'top',
-		onInit: (room, obj) => {
+		onInit: (room, o, obj) => {
 			yuge(room, obj, new BABYLON.Vector3(0, 10/*cm*/, 0));
 		},
 	},
 	stickyNote: {
 		placement: 'side',
 	},
+	'cardboard-box': {
+		placement: 'top',
+		onInit: (room, o, obj) => {
+			const boxMesh = obj.meshes[0].getChildMeshes().find(m => m.name === 'Box') as BABYLON.Mesh;
+			if (o.variation === 'mikan') {
+				const tex = new BABYLON.Texture('/client-assets/room/objects/cardboard-box/mikan.png', room.scene, false, false);
+				(boxMesh.material as BABYLON.PBRMaterial).albedoTexture = tex;
+				(boxMesh.material as BABYLON.PBRMaterial).albedoColor = new BABYLON.Color3(1, 1, 1);
+			} else if (o.variation === 'aizon') {
+				const tex = new BABYLON.Texture('/client-assets/room/objects/cardboard-box/aizon.png', room.scene, false, false);
+				(boxMesh.material as BABYLON.PBRMaterial).albedoTexture = tex;
+				(boxMesh.material as BABYLON.PBRMaterial).albedoColor = new BABYLON.Color3(1, 1, 1);
+			}
+		},
+	},
 	'lava-lamp': {
 		placement: 'top',
-		onInit: (room, obj) => {
+		onInit: (room, o, obj) => {
 			const light = new BABYLON.PointLight('lavaLampLight', new BABYLON.Vector3(0, 11/*cm*/, 0), room.scene);
 			light.parent = obj.meshes[0];
 			light.diffuse = new BABYLON.Color3(1.0, 0.5, 0.2);
@@ -445,7 +468,7 @@ export class RoomEngine {
 	public async init() {
 		await this.loadRoomModel(this.def.roomType);
 		await this.loadEnvModel();
-		await Promise.all(this.def.objects.map(o => this.loadObject(o.id, o.type, new BABYLON.Vector3(...o.position), new BABYLON.Vector3(...o.rotation))));
+		await Promise.all(this.def.objects.map(o => this.loadObject(o)));
 
 		//const sphere = BABYLON.MeshBuilder.CreateSphere('sphere', { diameter: 1/*cm*/ }, this.scene);
 
@@ -676,17 +699,17 @@ export class RoomEngine {
 		}
 	}
 
-	private async loadObject(id: string, type: RoomDef['objects'][number], position: BABYLON.Vector3, rotation: BABYLON.Vector3) {
-		const obj = await BABYLON.ImportMeshAsync(`/client-assets/room/objects/${type}/${type}.glb`, this.scene);
+	private async loadObject(o: RoomDef['objects'][0]) {
+		const obj = await BABYLON.ImportMeshAsync(`/client-assets/room/objects/${o.type}/${o.type}.glb`, this.scene);
 		obj.meshes[0].scaling = new BABYLON.Vector3(-100, 100, 100);
 		obj.meshes[0].bakeCurrentTransformIntoVertices();
-		obj.meshes[0].position = position;
-		obj.meshes[0].rotation = rotation;
+		obj.meshes[0].position = new BABYLON.Vector3(...o.position);
+		obj.meshes[0].rotation = new BABYLON.Vector3(...o.rotation);
 
 		for (const m of obj.meshes) {
 			const mesh = m;
 
-			mesh.metadata = { isObject: true, objectId: id, objectType: type };
+			mesh.metadata = { isObject: true, objectId: o.id, objectType: o.type };
 
 			if (mesh.name.startsWith('_TV_SCREEN_')) {
 				mesh.markVerticesDataAsUpdatable(BABYLON.VertexBuffer.UVKind, true);
@@ -708,11 +731,11 @@ export class RoomEngine {
 			mesh.outlineColor = new BABYLON.Color3(1, 0, 0);
 		}
 
-		this.objectMeshs.set(id, obj.meshes[0]);
+		this.objectMeshs.set(o.id, obj.meshes[0]);
 
-		const objDef = OBJECTS[type];
+		const objDef = OBJECTS[o.type];
 		if (objDef != null && objDef.onInit != null) {
-			objDef.onInit(this, obj);
+			objDef.onInit(this, o, obj);
 		}
 	}
 
