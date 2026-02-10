@@ -584,11 +584,13 @@ export class RoomEngine {
 
 		for (const [id, o] of checkObjectEntries) {
 			for (const om of o.getChildMeshes()) {
+				if (!om.name.startsWith('_COLLISION_TOP_')) continue;
 				const omb = om.getBoundingInfo().boundingBox;
 				for (const tm of this.grabbing.mesh.getChildMeshes()) {
 					const tmb = tm.getBoundingInfo().boundingBox;
 					if (isIntersectXZ(tmb, omb)) {
 						const topY = omb.maximumWorld.y;
+						if (topY > this.grabbing.ghost.position.y) continue;
 						if (y === 0 || topY > y) {
 							y = topY;
 							sticky = id;
@@ -684,11 +686,17 @@ export class RoomEngine {
 		for (const m of obj.meshes) {
 			const mesh = m;
 
+			mesh.metadata = { isObject: true, objectId: id, objectType: type };
+
 			if (mesh.name.startsWith('_TV_SCREEN_')) {
 				mesh.markVerticesDataAsUpdatable(BABYLON.VertexBuffer.UVKind, true);
 			}
 
-			mesh.metadata = { isObject: true, objectId: id, objectType: type };
+			if (mesh.name.startsWith('_COLLISION_TOP_')) {
+				mesh.isVisible = false;
+				continue;
+			}
+
 			mesh.checkCollisions = true;
 			//if (mesh.name === '__root__') continue;
 			mesh.receiveShadows = true;
