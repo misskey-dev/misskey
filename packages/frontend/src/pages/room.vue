@@ -26,10 +26,6 @@ let engine: RoomEngine;
 
 onMounted(() => {
 	engine = new RoomEngine({
-		canvas: canvas.value!,
-	});
-
-	engine.init({
 		roomType: 'default',
 		objects: [{
 			id: 'a',
@@ -56,11 +52,13 @@ onMounted(() => {
 			type: 'monitor',
 			position: [-130, 70, 85],
 			rotation: [0, 0, 0],
+			sticky: 'c',
 		}, {
 			id: 'd2',
 			type: 'keyboard',
 			position: [-110, 70, 85],
 			rotation: [0, 0, 0],
+			sticky: 'c',
 		}, {
 			id: 'e',
 			type: 'chair2',
@@ -96,28 +94,37 @@ onMounted(() => {
 			type: 'cup-noodle',
 			position: [-100, 70, 40],
 			rotation: [0, -2, 0],
+			sticky: 'c',
 		}, {
 			id: 'l',
 			type: 'banknote',
 			position: [-100, 70, 55],
 			rotation: [0, -2, 0],
+			sticky: 'c',
 		}, {
 			id: 'm',
 			type: 'energy-drink',
 			position: [-100, 70, 120],
 			rotation: [0, 1, 0],
+			sticky: 'c',
 		}, {
 			id: 'n',
 			type: 'milk',
 			position: [-120, 70, 130],
 			rotation: [0, 1.5, 0],
+			sticky: 'c',
 		}, {
 			id: 'o',
 			type: 'facial-tissue',
 			position: [-100, 70, 138],
 			rotation: [0, 1.5, 0],
+			sticky: 'c',
 		}],
+	}, {
+		canvas: canvas.value!,
 	});
+
+	engine.init();
 
 	canvas.value!.focus();
 });

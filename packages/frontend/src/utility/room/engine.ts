@@ -14,7 +14,11 @@ type RoomDef = {
 		type: string;
 		position: [number, number, number];
 		rotation: [number, number, number];
-		parent: string | null;
+
+		/**
+		 * 別のオブジェクトのID
+		 */
+		sticky?: string | null;
 	}[];
 };
 
@@ -45,7 +49,7 @@ function yuge(room: RoomEngine, obj: BABYLON.ISceneLoaderAsyncResult, offset: BA
 	ps.color1 = new BABYLON.Color4(1, 1, 1, 0.3);
 	ps.color2 = new BABYLON.Color4(1, 1, 1, 0.2);
 	ps.colorDead = new BABYLON.Color4(1, 1, 1, 0);
-	ps.preWarmCycles = 350;
+	ps.preWarmCycles = Math.random() * 1000;
 	ps.start();
 }
 
@@ -105,6 +109,13 @@ function vecToLocal(vector: BABYLON.Vector3, mesh: BABYLON.Mesh): BABYLON.Vector
 	const m = mesh.getWorldMatrix();
 	const v = BABYLON.Vector3.TransformCoordinates(vector, m);
 	return v;
+}
+
+function isIntersectXZ(a: BABYLON.BoundingBox, b: BABYLON.BoundingBox): boolean {
+	return (a.minimumWorld.x <= b.maximumWorld.x &&
+				a.maximumWorld.x >= b.minimumWorld.x) &&
+			(a.minimumWorld.z <= b.maximumWorld.z &&
+				a.maximumWorld.z >= b.minimumWorld.z);
 }
 
 const _assumedFramesPerSecond = 60;
@@ -228,7 +239,6 @@ export class RoomEngine {
 	private shadowGenerator2: BABYLON.ShadowGenerator;
 	private camera: BABYLON.UniversalCamera;
 	private camera2: BABYLON.ArcRotateCamera;
-	private ROOM_SIZE = 300/*cm*/;
 	private intervalIds: number[] = [];
 	private objects: Map<string, BABYLON.AbstractMesh> = new Map();
 	private grabbing: BABYLON.AbstractMesh | null = null;
@@ -237,18 +247,16 @@ export class RoomEngine {
 	private highlightedObjectId: string | null = null;
 	private time: 0 | 1 | 2 = 2; // 0: 昼, 1: 夕, 2: 夜
 	private roomCollisionMeshes: BABYLON.AbstractMesh[] = [];
+	private def: RoomDef;
 
-	public moveForward = false;
-	public moveBackward = false;
-	public moveLeft = false;
-	public moveRight = false;
-
-	constructor(options: {
+	constructor(def: RoomDef, options: {
 		canvas: HTMLCanvasElement;
 	}) {
+		this.def = def;
+		this.canvas = options.canvas;
+
 		registerBuiltInLoaders();
 
-		this.canvas = options.canvas;
 		this.engine = new BABYLON.Engine(options.canvas, false, { alpha: false });
 		this.scene = new BABYLON.Scene(this.engine);
 		//this.scene.autoClear = true;
@@ -390,138 +398,115 @@ export class RoomEngine {
 		});
 
 		if (_DEV_) {
-			new AxesViewer(this.scene, 5);
-
-			//const sphere = BABYLON.MeshBuilder.CreateSphere('sphere', { diameter: 30 }, this.scene);
-			//sphere.position = new BABYLON.Vector3(0, 30, 0);
-			//sphere.receiveShadows = true;
-			//this.shadowGenerator1.addShadowCaster(sphere);
-			//this.shadowGenerator2.addShadowCaster(sphere);
+			const axes = new AxesViewer(this.scene, 5);
+			axes.scaleLines = 30;
+			axes.xAxis.position = new BABYLON.Vector3(0, 30, 0);
+			axes.yAxis.position = new BABYLON.Vector3(0, 30, 0);
+			axes.zAxis.position = new BABYLON.Vector3(0, 30, 0);
 		}
 	}
 
-	public async init(def: RoomDef) {
-		await this.loadRoomModel(def.roomType);
+	public async init() {
+		await this.loadRoomModel(this.def.roomType);
 		await this.loadEnvModel();
 
-		for (const objDef of def.objects) {
+		for (const objDef of this.def.objects) {
 			this.loadObject(objDef.id, objDef.type, new BABYLON.Vector3(...objDef.position), new BABYLON.Vector3(...objDef.rotation));
-		}
-
-		function isIntersectXZ(a: BABYLON.BoundingBox, b: BABYLON.BoundingBox): boolean {
-			return (a.minimumWorld.x <= b.maximumWorld.x &&
-				a.maximumWorld.x >= b.minimumWorld.x) &&
-			(a.minimumWorld.z <= b.maximumWorld.z &&
-				a.maximumWorld.z >= b.minimumWorld.z);
 		}
 
 		//const sphere = BABYLON.MeshBuilder.CreateSphere('sphere', { diameter: 1/*cm*/ }, this.scene);
 
 		this.intervalIds.push(window.setInterval(() => {
 			if (this.grabbing != null) {
-				const dir = this.camera.getDirection(BABYLON.Axis.Z);
-				this.grabbingGhost.position = this.camera.position.add(dir.scale(this.grabbingStartDistance));
-
-				let y = 0;
-
-				for (const rcmb of this.roomCollisionMeshes.filter(m => m.name.startsWith('_COLLISION_FLOOR_'))) {
-					const rcb = rcmb.getBoundingInfo().boundingBox;
-					for (const tm of this.grabbing.getChildMeshes()) {
-						const tmb = tm.getBoundingInfo().boundingBox;
-						if (isIntersectXZ(tmb, rcb)) {
-							const topY = rcb.maximumWorld.y;
-							if (y === 0 || topY > y) {
-								y = topY;
-							}
-						}
-					}
-				}
-
-				for (const [id, o] of this.objects.entries().filter(([_id, o]) => o !== this.grabbing)) {
-					for (const om of o.getChildMeshes()) {
-						const omb = om.getBoundingInfo().boundingBox;
-						for (const tm of this.grabbing.getChildMeshes()) {
-							const tmb = tm.getBoundingInfo().boundingBox;
-							if (isIntersectXZ(tmb, omb)) {
-								const topY = omb.maximumWorld.y;
-								if (y === 0 || topY > y) {
-									y = topY;
-								}
-							}
-						}
-					}
-				}
-
-				this.grabbing.position = this.grabbingGhost.position.clone();
-				//this.grabbing.position.x = Math.min(Math.max(this.grabbing.position.x, -(this.ROOM_SIZE / 2)), (this.ROOM_SIZE / 2));
-				//this.grabbing.position.z = Math.min(Math.max(this.grabbing.position.z, -(this.ROOM_SIZE / 2)), (this.ROOM_SIZE / 2));
-				this.grabbing.position.y = y;
-
-				const ray = new BABYLON.Ray(this.camera.position, this.camera.getDirection(BABYLON.Axis.Z), 1000/*cm*/);
-				const hit = this.scene.pickWithRay(ray, (m) => m.name.startsWith('_COLLISION_WALL_'))!;
-				if (hit.pickedMesh != null) {
-					const grabbingBox = this.grabbing.getBoundingInfo().boundingBox;
-					const grabDistanceVector = this.grabbing.position.subtract(this.camera.position);
-					if (grabDistanceVector.length() > hit.distance) {
-						this.grabbing.position = this.camera.position.add(dir.scale(hit.distance));
-						this.grabbing.position.y = y;
-					}
-				}
-
-				//const displacementVector = new BABYLON.Vector3(
-				//	this.grabbingGhost.position.x - this.grabbing.position.x,
-				//	0,
-				//	this.grabbingGhost.position.z - this.grabbing.position.z,
-				//);
-				//this.grabbing.moveWithCollisions(displacementVector);
-				//this.grabbing.position.y = y;
+				this.handleGrabbing();
 			} else {
-				this.highlightedObjectId = null;
-				const ray = new BABYLON.Ray(this.camera.position, this.camera.getDirection(BABYLON.Axis.Z), 1000/*cm*/);
-				for (const [id, o] of this.objects.entries()) {
-					for (const om of o.getChildMeshes()) {
-						om.renderOutline = false;
-					}
-				}
-				const hit = this.scene.pickWithRay(ray)!;
-				if (hit.pickedMesh != null) {
-					const oid = hit.pickedMesh.metadata.objectId;
-					if (oid != null && this.objects.has(oid)) {
-						this.highlightedObjectId = oid;
-						const o = this.objects.get(oid)!;
-						for (const om of o.getChildMeshes()) {
-							om.renderOutline = true;
-						}
-					}
-				}
+				this.handleSeeking();
 			}
 		}, 10));
 
 		this.engine.runRenderLoop(() => {
-			//const ray = new BABYLON.Ray(this.camera.position, this.camera.getDirection(BABYLON.Axis.Z), 1000/*cm*/);
-			//for (const mesh of this.scene.meshes) {
-			//	if (mesh.outlineColor.equals(new BABYLON.Color3(1, 0, 0))) {
-			//		mesh.outlineColor = new BABYLON.Color3(0, 0, 0);
-			//	}
-			//}
-			//const hit = this.scene.pickWithRay(ray)!;
-			//if (hit.pickedMesh != null) {
-			//	hit.pickedMesh.outlineColor = new BABYLON.Color3(1, 0, 0);
-			//}
-
-			//if (this.camera.position.x > (this.ROOM_SIZE / 2) - 2/*cm*/) {
-			//	this.camera.position.x = (this.ROOM_SIZE / 2) - 2/*cm*/;
-			//} else if (this.camera.position.x < -(this.ROOM_SIZE / 2) + 2/*cm*/) {
-			//	this.camera.position.x = -(this.ROOM_SIZE / 2) + 2/*cm*/;
-			//}
-			//if (this.camera.position.z > (this.ROOM_SIZE / 2) - 2/*cm*/) {
-			//	this.camera.position.z = (this.ROOM_SIZE / 2) - 2/*cm*/;
-			//} else if (this.camera.position.z < -(this.ROOM_SIZE / 2) + 2/*cm*/) {
-			//	this.camera.position.z = -(this.ROOM_SIZE / 2) + 2/*cm*/;
-			//}
-
 			this.scene.render();
 		});
+	}
+
+	private handleSeeking() {
+		this.highlightedObjectId = null;
+		const ray = new BABYLON.Ray(this.camera.position, this.camera.getDirection(BABYLON.Axis.Z), 1000/*cm*/);
+		for (const [id, o] of this.objects.entries()) {
+			for (const om of o.getChildMeshes()) {
+				om.renderOutline = false;
+			}
+		}
+		const hit = this.scene.pickWithRay(ray)!;
+		if (hit.pickedMesh != null) {
+			const oid = hit.pickedMesh.metadata.objectId;
+			if (oid != null && this.objects.has(oid)) {
+				this.highlightedObjectId = oid;
+				const o = this.objects.get(oid)!;
+				for (const om of o.getChildMeshes()) {
+					om.renderOutline = true;
+				}
+			}
+		}
+	}
+
+	private handleGrabbing() {
+		const dir = this.camera.getDirection(BABYLON.Axis.Z);
+		this.grabbingGhost.position = this.camera.position.add(dir.scale(this.grabbingStartDistance));
+
+		let y = 0;
+
+		for (const rcmb of this.roomCollisionMeshes.filter(m => m.name.startsWith('_COLLISION_FLOOR_'))) {
+			const rcb = rcmb.getBoundingInfo().boundingBox;
+			for (const tm of this.grabbing.getChildMeshes()) {
+				const tmb = tm.getBoundingInfo().boundingBox;
+				if (isIntersectXZ(tmb, rcb)) {
+					const topY = rcb.maximumWorld.y;
+					if (y === 0 || topY > y) {
+						y = topY;
+					}
+				}
+			}
+		}
+
+		for (const [id, o] of this.objects.entries().filter(([_id, o]) => o !== this.grabbing)) {
+			for (const om of o.getChildMeshes()) {
+				const omb = om.getBoundingInfo().boundingBox;
+				for (const tm of this.grabbing.getChildMeshes()) {
+					const tmb = tm.getBoundingInfo().boundingBox;
+					if (isIntersectXZ(tmb, omb)) {
+						const topY = omb.maximumWorld.y;
+						if (y === 0 || topY > y) {
+							y = topY;
+						}
+					}
+				}
+			}
+		}
+
+		this.grabbing.position = this.grabbingGhost.position.clone();
+		//this.grabbing.position.x = Math.min(Math.max(this.grabbing.position.x, -(this.ROOM_SIZE / 2)), (this.ROOM_SIZE / 2));
+		//this.grabbing.position.z = Math.min(Math.max(this.grabbing.position.z, -(this.ROOM_SIZE / 2)), (this.ROOM_SIZE / 2));
+		this.grabbing.position.y = y;
+
+		const ray = new BABYLON.Ray(this.camera.position, this.camera.getDirection(BABYLON.Axis.Z), 1000/*cm*/);
+		const hit = this.scene.pickWithRay(ray, (m) => m.name.startsWith('_COLLISION_WALL_'))!;
+		if (hit.pickedMesh != null) {
+			const grabbingBox = this.grabbing.getBoundingInfo().boundingBox;
+			const grabDistanceVector = this.grabbing.position.subtract(this.camera.position);
+			if (grabDistanceVector.length() > hit.distance) {
+				this.grabbing.position = this.camera.position.add(dir.scale(hit.distance));
+				this.grabbing.position.y = y;
+			}
+		}
+
+		//const displacementVector = new BABYLON.Vector3(
+		//	this.grabbingGhost.position.x - this.grabbing.position.x,
+		//	0,
+		//	this.grabbingGhost.position.z - this.grabbing.position.z,
+		//);
+		//this.grabbing.moveWithCollisions(displacementVector);
+		//this.grabbing.position.y = y;
 	}
 
 	private async loadEnvModel() {
