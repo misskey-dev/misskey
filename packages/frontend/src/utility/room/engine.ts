@@ -98,6 +98,30 @@ const OBJECTS = {
 			]);
 			sphere.animations = [anim];
 			room.scene.beginAnimation(sphere, 0, 500, true);
+
+			const emitter = new BABYLON.TransformNode('emitter', room.scene);
+			emitter.parent = obj.meshes[0];
+			emitter.position = new BABYLON.Vector3(0, 10/*cm*/, 0);
+			const ps = new BABYLON.ParticleSystem('', 32, room.scene);
+			ps.particleTexture = new BABYLON.Texture('/client-assets/room/objects/lava-lamp/bubble.png');
+			ps.emitter = emitter;
+			ps.minEmitBox = new BABYLON.Vector3(-1/*cm*/, 0, -1/*cm*/);
+			ps.maxEmitBox = new BABYLON.Vector3(1/*cm*/, 0, 1/*cm*/);
+			ps.minEmitPower = 2;
+			ps.maxEmitPower = 3;
+			ps.minLifeTime = 9;
+			ps.maxLifeTime = 9;
+			ps.minSize = 0.5/*cm*/;
+			ps.maxSize = 1/*cm*/;
+			ps.direction1 = new BABYLON.Vector3(0, 1, 0);
+			ps.direction2 = new BABYLON.Vector3(0, 1, 0);
+			ps.emitRate = 1;
+			ps.blendMode = BABYLON.ParticleSystem.BLENDMODE_ADD;
+			ps.color1 = new BABYLON.Color4(1, 1, 1, 0.3);
+			ps.color2 = new BABYLON.Color4(1, 1, 1, 0.2);
+			ps.colorDead = new BABYLON.Color4(1, 1, 1, 0);
+			ps.preWarmCycles = Math.random() * 1000;
+			ps.start();
 		},
 	},
 	aircon: {
@@ -240,6 +264,7 @@ export class RoomEngine {
 	private camera: BABYLON.UniversalCamera;
 	private camera2: BABYLON.ArcRotateCamera;
 	private intervalIds: number[] = [];
+	private timeoutIds: number[] = [];
 	private objectMeshs: Map<string, BABYLON.AbstractMesh> = new Map();
 	private grabbing: {
 		mesh: BABYLON.AbstractMesh;
@@ -479,7 +504,11 @@ export class RoomEngine {
 				screenMesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
 			}
 
-			window.setTimeout(() => applyTvTexture((tlIndex + 1) % tvProgram.timeline.length), duration);
+			const timeoutId = window.setTimeout(() => {
+				this.timeoutIds = this.timeoutIds.filter(id => id !== timeoutId);
+				applyTvTexture((tlIndex + 1) % tvProgram.timeline.length);
+			}, duration);
+			this.timeoutIds.push(timeoutId);
 		};
 
 		applyTvTexture(0);
@@ -740,7 +769,11 @@ export class RoomEngine {
 		for (const id of this.intervalIds) {
 			window.clearInterval(id);
 		}
+		for (const id of this.timeoutIds) {
+			window.clearTimeout(id);
+		}
 		this.intervalIds = [];
+		this.timeoutIds = [];
 		this.engine.dispose();
 	}
 }
