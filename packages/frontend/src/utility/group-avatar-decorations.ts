@@ -12,7 +12,7 @@ type AvatarDecoration = Misskey.entities.GetAvatarDecorationsResponse[number];
  * @param decorations アバターデコレーションの配列
  * @returns カテゴリごとにグループ化されたアバターデコレーションオブジェクト
  */
-export const groupAvatarDecorations = (decorations: AvatarDecoration[]) => {
+export function groupAvatarDecorations(decorations: AvatarDecoration[]) {
 	const grouped: Record<string, AvatarDecoration[]> = {};
 
 	for (const decoration of decorations) {
@@ -24,4 +24,4 @@ export const groupAvatarDecorations = (decorations: AvatarDecoration[]) => {
 	}
 
 	return grouped;
-};
+}
