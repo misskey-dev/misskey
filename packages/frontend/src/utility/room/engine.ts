@@ -186,6 +186,9 @@ const OBJECTS = {
 	'tv': {
 		placement: 'top',
 	},
+	'opened-cardboard-box': {
+		placement: 'top',
+	},
 } as Record<string, ObjectDef>;
 
 function vecToLocal(vector: BABYLON.Vector3, mesh: BABYLON.Mesh): BABYLON.Vector3 {

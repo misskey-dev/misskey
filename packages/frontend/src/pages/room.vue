@@ -34,6 +34,11 @@ onMounted(() => {
 			rotation: [0, 0.2, 0],
 			variation: 'mikan',
 		}, {
+			id: 'a2',
+			type: 'opened-cardboard-box',
+			position: [115, 0, -20],
+			rotation: [0, -0.1, 0],
+		}, {
 			id: 'b',
 			type: 'cardboard-box',
 			position: [120, 31, 50],
