@@ -432,13 +432,13 @@ export class RoomEngine {
 			//postProcess2.exposure = 2;
 			//postProcess2.contrast = 0.9;
 
-			const ssao = new BABYLON.SSAORenderingPipeline('ssao', this.scene, {
-				ssaoRatio: 4,
-				combineRatio: 1,
-			});
-			ssao.radius = 0.0001;
-			ssao.totalStrength = 0.8;
-			this.scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline('ssao', this.camera);
+			//const ssao = new BABYLON.SSAORenderingPipeline('ssao', this.scene, {
+			//	ssaoRatio: 4,
+			//	combineRatio: 1,
+			//});
+			//ssao.radius = 0.0001;
+			//ssao.totalStrength = 0.8;
+			//this.scene.postProcessRenderPipelineManager.attachCamerasToRenderPipeline('ssao', this.camera);
 
 			//const lensEffect = new BABYLON.LensRenderingPipeline('lens', {
 			//	edge_blur: 1.0,
