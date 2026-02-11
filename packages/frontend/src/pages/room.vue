@@ -74,6 +74,11 @@ onMounted(() => {
 			position: [-60, 90, 165],
 			rotation: [0, 0, 0],
 		}, {
+			id: 'f2',
+			type: 'monstera',
+			position: [-55, 90, 175],
+			rotation: [0, 0, 0],
+		}, {
 			id: 'g',
 			type: 'mug',
 			position: [-45, 90, 160],

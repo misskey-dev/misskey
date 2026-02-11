@@ -171,6 +171,21 @@ const OBJECTS = {
 	aircon: {
 		placement: 'side',
 	},
+	'monstera': {
+		placement: 'top',
+	},
+	'color-box': {
+		placement: 'top',
+	},
+	'steel-rack': {
+		placement: 'top',
+	},
+	'plant2': {
+		placement: 'top',
+	},
+	'tv': {
+		placement: 'top',
+	},
 } as Record<string, ObjectDef>;
 
 function vecToLocal(vector: BABYLON.Vector3, mesh: BABYLON.Mesh): BABYLON.Vector3 {
@@ -337,6 +352,8 @@ export class RoomEngine {
 		} else {
 			this.scene.clearColor = new BABYLON.Color4(0.05, 0.05, 0.2, 0);
 		}
+		this.scene.ambientColor = new BABYLON.Color3(1.0, 0.9, 0.8);
+
 		this.scene.collisionsEnabled = true;
 
 		//new MmdOutlineRenderer(this.scene);
@@ -364,6 +381,7 @@ export class RoomEngine {
 		const ambientLight = new BABYLON.HemisphericLight('ambientLight', new BABYLON.Vector3(0, 1, -0.5), this.scene);
 		ambientLight.diffuse = new BABYLON.Color3(1.0, 1.0, 1.0);
 		ambientLight.intensity = 0.5;
+		//ambientLight.intensity = 0;
 
 		const roomLight = new BABYLON.SpotLight('roomLight', new BABYLON.Vector3(0, 249/*cm*/, 0), new BABYLON.Vector3(0, -1, 0), 16, 8, this.scene);
 		roomLight.diffuse = new BABYLON.Color3(1.0, 0.9, 0.8);
@@ -718,6 +736,7 @@ export class RoomEngine {
 			mesh.receiveShadows = true;
 			this.shadowGenerator1.addShadowCaster(mesh);
 			this.shadowGenerator2.addShadowCaster(mesh);
+			//if (mesh.material) (mesh.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(1, 1, 1);
 		}
 	}
 
@@ -751,6 +770,7 @@ export class RoomEngine {
 			mesh.renderOutline = false;
 			mesh.outlineWidth = 0.003;
 			mesh.outlineColor = new BABYLON.Color3(1, 0, 0);
+			//if (mesh.material) (mesh.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(0.2, 0.2, 0.2);
 		}
 
 		this.objectMeshs.set(o.id, obj.meshes[0]);
