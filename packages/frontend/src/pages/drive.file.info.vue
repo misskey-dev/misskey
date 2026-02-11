@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i class="ti ti-pencil" :class="$style.fileNameEditIcon"></i>
 			</button>
 			<div :class="$style.fileQuickActionsOthers">
-				<button v-tooltip="i18n.ts.createNoteFromTheFile" class="_button" :class="$style.fileQuickActionsOthersButton" @click="postThis()">
+				<button v-if="$i.policies.noteFilesLimit > 0" v-tooltip="i18n.ts.createNoteFromTheFile" class="_button" :class="$style.fileQuickActionsOthersButton" @click="postThis()">
 					<i class="ti ti-pencil"></i>
 				</button>
 				<button v-if="file.isSensitive" v-tooltip="i18n.ts.unmarkAsSensitive" class="_button" :class="$style.fileQuickActionsOthersButton" @click="toggleSensitive()">
@@ -76,6 +76,7 @@ import MkInfo from '@/components/MkInfo.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkKeyValue from '@/components/MkKeyValue.vue';
 import bytes from '@/filters/bytes.js';
+import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -84,6 +85,8 @@ import { selectDriveFolder } from '@/utility/drive.js';
 import { globalEvents } from '@/events.js';
 
 const router = useRouter();
+
+const $i = ensureSignin();
 
 const props = defineProps<{
 	fileId: string;

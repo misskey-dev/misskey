@@ -1408,6 +1408,7 @@ frame: "フレーム"
 presets: "プリセット"
 zeroPadding: "ゼロ埋め"
 nothingToConfigure: "設定項目はありません"
+youAreNotAllowedToCreateNote: "お使いのアカウントにはノートを投稿する権限がありません。"
 
 _imageEditing:
   _vars:
@@ -2134,6 +2135,14 @@ _role:
     noteDraftLimit: "サーバーサイドのノートの下書きの作成可能数"
     scheduledNoteLimit: "予約投稿の同時作成可能数"
     watermarkAvailable: "ウォーターマーク機能の使用可否"
+    canNote: "ノートの投稿を許可"
+    renotePolicy: "リノート・引用を許可"
+    renotePolicy_allow: "リノート・引用を許可"
+    renotePolicy_renoteOnly: "リノートのみ許可"
+    renotePolicy_disallow: "リノート・引用を禁止"
+    canCreateSpecifiedNote: "指名ノートの投稿を許可"
+    canFederateNote: "連合するノートの投稿を許可"
+    noteFilesLimit: "ノートに添付できるファイルの最大数"
   _condition:
     roleAssignedTo: "マニュアルロールにアサイン済み"
     isLocal: "ローカルユーザー"
