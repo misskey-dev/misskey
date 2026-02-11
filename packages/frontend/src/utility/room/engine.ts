@@ -598,19 +598,38 @@ export class RoomEngine {
 			grabbing.ghost.rotation.y = Math.round(grabbing.ghost.rotation.y / (Math.PI / 4)) * (Math.PI / 4);
 		}
 
-		let y = 0;
+		const newPos = grabbing.ghost.position.clone();
+		const newRotation = grabbing.ghost.rotation.clone();
 		let sticky: string | null = null;
 
-		// 下に向かってレイを飛ばす
-		const ray = new BABYLON.Ray(grabbing.ghost.position, new BABYLON.Vector3(0, -1, 0), 1000/*cm*/);
-		const hit = this.scene.pickWithRay(ray, (m) =>
-			m.metadata?.objectId !== grabbing.objectId &&
-			!m.metadata?.isGhost &&
-			!grabbing.descendantStickyObjectIds.includes(m.metadata?.objectId) &&
-			(m.name.startsWith('_COLLISION_FLOOR_') || m.name.startsWith('_COLLISION_TOP_')));
-		if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
-			y = hit.pickedPoint.y;
-			sticky = hit.pickedMesh.metadata?.objectId ?? null;
+		const isCollisionTarget = (m: BABYLON.AbstractMesh) => {
+			return m.metadata?.objectId !== grabbing.objectId &&
+				!m.metadata?.isGhost &&
+				!grabbing.descendantStickyObjectIds.includes(m.metadata?.objectId);
+		};
+
+		const placement = OBJECTS[this.def.objects.find(o => o.id === grabbing.objectId)!.type].placement;
+		if (placement === 'side') {
+			// 前方に向かってレイを飛ばす
+			const ray = new BABYLON.Ray(this.camera.position, dir, 1000/*cm*/);
+			const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.startsWith('_COLLISION_WALL_') || m.name.startsWith('_COLLISION_SIDE_')));
+			if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
+				newPos.x = hit.pickedPoint.x;
+				newPos.y = hit.pickedPoint.y;
+				newPos.z = hit.pickedPoint.z;
+				const pickedMeshNormal = hit.getNormal(true, true);
+				const normalLocal = vecToLocal(pickedMeshNormal, hit.pickedMesh);
+				newRotation.y = Math.atan2(normalLocal.z, normalLocal.x);
+				sticky = hit.pickedMesh.metadata?.objectId ?? null;
+			}
+		} else {
+			// 下に向かってレイを飛ばす
+			const ray = new BABYLON.Ray(grabbing.ghost.position, new BABYLON.Vector3(0, -1, 0), 1000/*cm*/);
+			const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.startsWith('_COLLISION_FLOOR_') || m.name.startsWith('_COLLISION_TOP_')));
+			if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
+				newPos.y = hit.pickedPoint.y;
+				sticky = hit.pickedMesh.metadata?.objectId ?? null;
+			}
 		}
 
 		if (sticky != null) {
@@ -619,12 +638,8 @@ export class RoomEngine {
 			this.def.objects.find(o => o.id === grabbing.objectId)!.sticky = null;
 		}
 
-		grabbing.mesh.position = grabbing.ghost.position.clone();
-		//grabbing.mesh.position.x = Math.min(Math.max(grabbing.position.x, -(this.ROOM_SIZE / 2)), (this.ROOM_SIZE / 2));
-		//grabbing.mesh.position.z = Math.min(Math.max(grabbing.position.z, -(this.ROOM_SIZE / 2)), (this.ROOM_SIZE / 2));
-		grabbing.mesh.position.y = y;
-
-		grabbing.mesh.rotation = grabbing.ghost.rotation.clone();
+		grabbing.mesh.position = newPos;
+		grabbing.mesh.rotation = newRotation;
 
 		//const ray = new BABYLON.Ray(this.camera.position, this.camera.getDirection(BABYLON.Axis.Z), 1000/*cm*/);
 		//const hit = this.scene.pickWithRay(ray, (m) => m.name.startsWith('_COLLISION_WALL_'))!;
