@@ -61,21 +61,13 @@ import { i18n } from '@/i18n.js';
 import { ensureSignin } from '@/i.js';
 import MkInfo from '@/components/MkInfo.vue';
 import { definePage } from '@/page.js';
-import { groupAvatarDecorations } from '@/utility/group-avatar-decorations';
+import { groupAvatarDecorations } from '@/utility/group-avatar-decorations.js';
 
 const $i = ensureSignin();
 
 const loading = ref(true);
 const avatarDecorations = ref<Misskey.entities.GetAvatarDecorationsResponse>([]);
-const groupedDecorations = computed(() => {
-	const groups: Record<string, Misskey.entities.GetAvatarDecorationsResponse> = {};
-	for (const decoration of avatarDecorations.value) {
-		const category = decoration.category ?? '';
-		groups[category] ??= [];
-		groups[category].push(decoration);
-	}
-	return groups;
-});
+const groupedDecorations = computed(() => groupAvatarDecorations(avatarDecorations.value));
 
 misskeyApi('get-avatar-decorations').then(_avatarDecorations => {
 	avatarDecorations.value = _avatarDecorations;

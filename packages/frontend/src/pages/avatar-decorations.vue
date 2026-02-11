@@ -36,19 +36,12 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
+import { groupAvatarDecorations } from '@/utility/group-avatar-decorations.js';
 
 const $i = ensureSignin();
 
 const avatarDecorations = ref<Misskey.entities.AdminAvatarDecorationsListResponse>([]);
-const groupedDecorations = computed(() => {
-	const groups: Record<string, Misskey.entities.AdminAvatarDecorationsListResponse> = {};
-	for (const decoration of avatarDecorations.value) {
-		const category = decoration.category ?? '';
-		groups[category] ??= [];
-		groups[category].push(decoration);
-	}
-	return groups;
-});
+const groupedDecorations = computed(() => groupAvatarDecorations(avatarDecorations.value));
 
 function load() {
 	misskeyApi('admin/avatar-decorations/list').then(_avatarDecorations => {
