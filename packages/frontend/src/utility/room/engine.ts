@@ -14,6 +14,7 @@
 import * as BABYLON from '@babylonjs/core';
 import { AxesViewer } from '@babylonjs/core/Debug/axesViewer';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
+import * as sound from '@/utility/sound.js';
 
 type RoomDef = {
 	roomType: 'default';
@@ -129,6 +130,7 @@ const OBJECTS = {
 			const ps = new BABYLON.ParticleSystem('', 32, room.scene);
 			ps.particleTexture = new BABYLON.Texture('/client-assets/room/objects/lava-lamp/bubble.png');
 			ps.emitter = emitter;
+			ps.isLocal = true;
 			ps.minEmitBox = new BABYLON.Vector3(-1/*cm*/, 0, -1/*cm*/);
 			ps.maxEmitBox = new BABYLON.Vector3(1/*cm*/, 0, 1/*cm*/);
 			ps.minEmitPower = 2;
@@ -301,6 +303,8 @@ export class RoomEngine {
 	private time: 0 | 1 | 2 = 2; // 0: 昼, 1: 夕, 2: 夜
 	private roomCollisionMeshes: BABYLON.AbstractMesh[] = [];
 	private def: RoomDef;
+	public enableGridSnapping = true;
+	private putParticleSystem: BABYLON.ParticleSystem;
 
 	constructor(def: RoomDef, options: {
 		canvas: HTMLCanvasElement;
@@ -417,6 +421,26 @@ export class RoomEngine {
 			//}, this.scene, 1, [this.camera]);
 		}
 
+		this.putParticleSystem = new BABYLON.ParticleSystem('', 64, this.scene);
+		this.putParticleSystem.particleTexture = new BABYLON.Texture('/client-assets/room/steam.png');
+		this.putParticleSystem.createCylinderEmitter(5/*cm*/, 1/*cm*/, 5/*cm*/);
+		this.putParticleSystem.minEmitBox = new BABYLON.Vector3(-3/*cm*/, 0, -3/*cm*/);
+		this.putParticleSystem.maxEmitBox = new BABYLON.Vector3(3/*cm*/, 0, 3/*cm*/);
+		this.putParticleSystem.minEmitPower = 700;
+		this.putParticleSystem.maxEmitPower = 1000;
+		this.putParticleSystem.addVelocityGradient(0, 1);
+		this.putParticleSystem.addVelocityGradient(1, 0);
+		this.putParticleSystem.minLifeTime = 0.2;
+		this.putParticleSystem.maxLifeTime = 0.2;
+		this.putParticleSystem.minSize = 1/*cm*/;
+		this.putParticleSystem.maxSize = 4/*cm*/;
+		this.putParticleSystem.emitRate = 256;
+		this.putParticleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ADD;
+		this.putParticleSystem.color1 = new BABYLON.Color4(1, 1, 1, 0.3);
+		this.putParticleSystem.color2 = new BABYLON.Color4(1, 1, 1, 0.2);
+		this.putParticleSystem.colorDead = new BABYLON.Color4(1, 1, 1, 0);
+		this.putParticleSystem.targetStopDuration = 0.05;
+
 		let isDragging = false;
 
 		this.canvas.addEventListener('pointerdown', (ev) => {
@@ -454,7 +478,7 @@ export class RoomEngine {
 			if (ev.code === 'KeyE') {
 				ev.preventDefault();
 				ev.stopPropagation();
-				this.grab();
+				this.toggleGrab();
 			}
 		});
 
@@ -569,6 +593,14 @@ export class RoomEngine {
 		const dir = this.camera.getDirection(BABYLON.Axis.Z);
 		this.grabbing.ghost.position = this.camera.position.add(dir.scale(this.grabbing.startDistance)).add(this.grabbing.startOffset);
 		this.grabbing.ghost.rotation = new BABYLON.Vector3(0, this.camera.rotation.y + this.grabbing.startRotationY, 0);
+
+		if (this.enableGridSnapping) {
+			const scale = 10/*cm*/;
+			this.grabbing.ghost.position.x = Math.round(this.grabbing.ghost.position.x / scale) * scale;
+			this.grabbing.ghost.position.y = Math.round(this.grabbing.ghost.position.y / scale) * scale;
+			this.grabbing.ghost.position.z = Math.round(this.grabbing.ghost.position.z / scale) * scale;
+			this.grabbing.ghost.rotation.y = Math.round(this.grabbing.ghost.rotation.y / (Math.PI / 4)) * (Math.PI / 4);
+		}
 
 		const stickyObjectIds = Array.from(this.def.objects.filter(o => o.sticky === this.grabbing.mesh.metadata.objectId)).map(o => o.id);
 
@@ -739,7 +771,7 @@ export class RoomEngine {
 		}
 	}
 
-	public grab() {
+	public toggleGrab() {
 		if (this.grabbing != null) {
 			// 親から先に外していく
 			const removeStickyParentRecursively = (mesh: BABYLON.AbstractMesh) => {
@@ -753,11 +785,22 @@ export class RoomEngine {
 				}
 			};
 			removeStickyParentRecursively(this.grabbing.mesh);
+			const pos = this.grabbing.mesh.position.clone();
 			this.grabbing.ghost.dispose(false, true);
 			this.grabbing = null;
+
+			sound.playUrl('/client-assets/room/sfx/put.mp3', {
+				volume: 1,
+				playbackRate: 1,
+			});
+
+			this.putParticleSystem.emitter = pos;
+			this.putParticleSystem.start();
 			return;
 		}
+
 		if (this.highlightedObjectId == null) return;
+
 		const highlightedObject = this.objectMeshs.get(this.highlightedObjectId)!;
 		for (const om of highlightedObject.getChildMeshes()) {
 			om.renderOutline = false;
@@ -794,6 +837,11 @@ export class RoomEngine {
 			startDistance: startDistance,
 			ghost: ghost,
 		};
+
+		sound.playUrl('/client-assets/room/sfx/grab.mp3', {
+			volume: 1,
+			playbackRate: 1,
+		});
 	}
 
 	public destroy() {

@@ -133,6 +133,11 @@ onMounted(() => {
 			type: 'color-box',
 			position: [-135, 0, -5],
 			rotation: [0, 0, 0],
+		}, {
+			id: 'r',
+			type: 'plant2',
+			position: [135, 0, -135],
+			rotation: [0, 0, 0],
 		}],
 	}, {
 		canvas: canvas.value!,
@@ -172,7 +177,7 @@ function onKeyup(ev: KeyboardEvent) {
 }
 
 function grab() {
-	engine.grab();
+	engine.toggleGrab();
 	canvas.value!.focus();
 }
 
