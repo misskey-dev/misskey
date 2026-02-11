@@ -153,6 +153,12 @@ onMounted(() => {
 			type: 'wall-clock',
 			position: [-150, 200, 100],
 			rotation: [0, 0, 0],
+		}, {
+			id: 't',
+			type: 'book',
+			position: [10, 100, 10],
+			rotation: [0, 0, 0],
+			variation: '1',
 		}],
 	}, {
 		canvas: canvas.value!,

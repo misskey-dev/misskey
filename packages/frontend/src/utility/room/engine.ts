@@ -99,6 +99,29 @@ const OBJECTS = {
 			}
 		},
 	},
+	'book': {
+		placement: 'top',
+		onInit: (room, o, obj) => {
+			const mesh = obj.meshes[2] as BABYLON.Mesh;
+			console.log(obj.meshes);
+			mesh.markVerticesDataAsUpdatable(BABYLON.VertexBuffer.UVKind, true);
+			if (o.variation === '1') {
+				const index = 0;
+				const x = index % 8;
+				const y = Math.floor(index / 8);
+
+				const uvs = mesh.getVerticesData(BABYLON.VertexBuffer.UVKind)!;
+				for (let i = 0; i < uvs.length / 2; i++) {
+					const u = uvs[i * 2];
+					const v = uvs[i * 2 + 1];
+
+					uvs[i * 2] = u / 8;
+					uvs[i * 2 + 1] = v / 8;
+				}
+				mesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
+			}
+		},
+	},
 	'lava-lamp': {
 		placement: 'top',
 		onInit: (room, o, obj) => {
@@ -331,7 +354,7 @@ export class RoomEngine {
 		descendantStickyObjectIds: string[];
 	} | null = null;
 	private highlightedObjectId: string | null = null;
-	private time: 0 | 1 | 2 = 2; // 0: 昼, 1: 夕, 2: 夜
+	private time: 0 | 1 | 2 = 1; // 0: 昼, 1: 夕, 2: 夜
 	private roomCollisionMeshes: BABYLON.AbstractMesh[] = [];
 	private def: RoomDef;
 	public enableGridSnapping = false;
