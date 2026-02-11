@@ -138,6 +138,11 @@ onMounted(() => {
 			type: 'plant2',
 			position: [135, 0, -135],
 			rotation: [0, 0, 0],
+		}, {
+			id: 's',
+			type: 'wall-clock',
+			position: [-150, 200, 100],
+			rotation: [0, 0, 0],
 		}],
 	}, {
 		canvas: canvas.value!,

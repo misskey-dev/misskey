@@ -7,8 +7,10 @@
  * Roomで使われるオブジェクトの仕様
  * - 単位はセンチメートルで設計すること。
  * - それを置いたときに底になる縦軸座標(blenderならz)が0になるように設計すること。
- * - メッシュ名を _COLLISION_TOP_ で始めると、その面の上にモノを置けることを示せます。当該メッシュはレンダリングでは表示されません。
- * - なお、現状 _COLLISION_TOP_ メッシュは単一の面でなければなりません。つまりArray Modifierなどを適用した状態では正しく動作しません。
+ * - 壁面設置の場合は壁面に接する面のX軸座標が0になるように設計すること。
+ * - メッシュ名を _COLLISION_TOP_ で始めると、その面の上にモノを置けることを示す。当該メッシュはレンダリングでは表示されません。
+ * - メッシュ名を _COLLISION_SIDE_ で始めると、その面にモノを貼り付けられることを示す。当該メッシュはレンダリングでは表示されません。
+ * - なお、現状 _COLLISION_TOP_ / _COLLISION_SIDE_ メッシュは単一の面でなければなりません。つまりArray Modifierなどを適用した状態では正しく動作しません。
  */
 
 import * as BABYLON from '@babylonjs/core';
@@ -148,6 +150,22 @@ const OBJECTS = {
 			ps.colorDead = new BABYLON.Color4(1, 1, 1, 0);
 			ps.preWarmCycles = Math.random() * 1000;
 			ps.start();
+		},
+	},
+	'wall-clock': {
+		placement: 'side',
+		onInit: (room, o, obj) => {
+			const hourHand = obj.meshes[0].getChildMeshes().find(m => m.name === 'HandH') as BABYLON.Mesh;
+			const minuteHand = obj.meshes[0].getChildMeshes().find(m => m.name === 'HandM') as BABYLON.Mesh;
+			room.intervalIds.push(window.setInterval(() => {
+				const now = new Date();
+				const hours = now.getHours() % 12;
+				const minutes = now.getMinutes();
+				const hAngle = -(hours / 12) * Math.PI * 2 - (minutes / 60) * (Math.PI * 2 / 12);
+				const mAngle = -(minutes / 60) * Math.PI * 2;
+				hourHand.rotation = new BABYLON.Vector3(hAngle, 0, 0);
+				minuteHand.rotation = new BABYLON.Vector3(mAngle, 0, 0);
+			}, 1000));
 		},
 	},
 	aircon: {
@@ -298,7 +316,7 @@ export class RoomEngine {
 	private time: 0 | 1 | 2 = 2; // 0: 昼, 1: 夕, 2: 夜
 	private roomCollisionMeshes: BABYLON.AbstractMesh[] = [];
 	private def: RoomDef;
-	public enableGridSnapping = true;
+	public enableGridSnapping = false;
 	private putParticleSystem: BABYLON.ParticleSystem;
 
 	constructor(def: RoomDef, options: {
