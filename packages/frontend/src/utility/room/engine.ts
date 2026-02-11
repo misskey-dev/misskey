@@ -336,6 +336,8 @@ export class RoomEngine {
 	private def: RoomDef;
 	public enableGridSnapping = false;
 	private putParticleSystem: BABYLON.ParticleSystem;
+	private envMap: BABYLON.CubeTexture;
+	private reflectionProbe: BABYLON.ReflectionProbe;
 
 	constructor(def: RoomDef, options: {
 		canvas: HTMLCanvasElement;
@@ -356,6 +358,12 @@ export class RoomEngine {
 			this.scene.clearColor = new BABYLON.Color4(0.05, 0.05, 0.2, 0);
 		}
 		this.scene.ambientColor = new BABYLON.Color3(1.0, 0.9, 0.8);
+
+		this.envMap = BABYLON.CubeTexture.CreateFromPrefilteredData('/client-assets/room/env.env', this.scene);
+		this.envMap.boundingBoxSize = new BABYLON.Vector3(300/*cm*/, 300/*cm*/, 300/*cm*/);
+
+		//this.reflectionProbe = new BABYLON.ReflectionProbe('reflectionProbe', 512, this.scene);
+		//this.reflectionProbe.refreshRate = 200;
 
 		this.scene.collisionsEnabled = true;
 
@@ -669,6 +677,7 @@ export class RoomEngine {
 				newPos.y = hit.pickedPoint.y;
 				sticky = hit.pickedMesh.metadata?.objectId ?? null;
 			}
+			if (newPos.y < 0) newPos.y = 0;
 		}
 
 		if (sticky != null) {
@@ -740,6 +749,10 @@ export class RoomEngine {
 			this.shadowGenerator1.addShadowCaster(mesh);
 			this.shadowGenerator2.addShadowCaster(mesh);
 			//if (mesh.material) (mesh.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(1, 1, 1);
+			//if (mesh.material) (mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.envMap;
+			//if (mesh.material) (mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.reflectionProbe.cubeTexture;
+
+			//this.reflectionProbe.renderList!.push(mesh);
 		}
 	}
 
@@ -774,6 +787,10 @@ export class RoomEngine {
 			mesh.outlineWidth = 0.003;
 			mesh.outlineColor = new BABYLON.Color3(1, 0, 0);
 			//if (mesh.material) (mesh.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(0.2, 0.2, 0.2);
+			//if (mesh.material) (mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.envMap;
+			//if (mesh.material) (mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.reflectionProbe.cubeTexture;
+
+			//this.reflectionProbe.renderList!.push(mesh);
 		}
 
 		this.objectMeshs.set(o.id, obj.meshes[0]);
@@ -799,7 +816,8 @@ export class RoomEngine {
 			};
 			removeStickyParentRecursively(this.grabbing.mesh);
 			const pos = this.grabbing.mesh.position.clone();
-			this.grabbing.ghost.dispose(false, true);
+			//this.grabbing.ghost.dispose(false, true);
+			this.grabbing.ghost.dispose(false, false);
 			this.grabbing = null;
 
 			sound.playUrl('/client-assets/room/sfx/put.mp3', {
