@@ -9,29 +9,40 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:class="[$style.codeBlockRoot, {
 		[$style.codeEditor]: codeEditor,
 		[$style.outerStyle]: !codeEditor && withOuterStyle,
+		[$style.withMaxHeight]: maxHeight != null,
 		[$style.dark]: darkMode,
 		[$style.light]: !darkMode,
 	}]" v-html="html"></div>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue';
+import { computed, ref, shallowRef, watch } from 'vue';
 import { bundledLanguagesInfo } from 'shiki/langs';
+import type { transformerNotationDiff as transformerNotationDiff_typeReferenceOnly } from '@shikijs/transformers';
+import type { diffLines as diffLines_typeReferenceOnly } from 'diff';
 import type { BundledLanguage } from 'shiki/langs';
 import { getHighlighter, getTheme } from '@/utility/code-highlighter.js';
 import { store } from '@/store.js';
 
 const props = withDefaults(defineProps<{
 	code: string;
+	diffBase?: string;
 	lang?: string;
 	codeEditor?: boolean;
 	withOuterStyle?: boolean;
+	maxHeight?: number | null;
 }>(), {
 	codeEditor: false,
 	withOuterStyle: true,
+	maxHeight: null,
 });
 
+const maxHeight = computed(() => props.maxHeight != null ? `${props.maxHeight}px` : null);
+
 const highlighter = await getHighlighter();
+const transformerNotationDiff = shallowRef<typeof transformerNotationDiff_typeReferenceOnly | null>(null);
+const diffLines = shallowRef<typeof diffLines_typeReferenceOnly | null>(null);
+
 const darkMode = store.r.darkMode;
 const codeLang = ref<BundledLanguage | 'aiscript'>('js');
 
@@ -40,13 +51,34 @@ const [lightThemeName, darkThemeName] = await Promise.all([
 	getTheme('dark', true),
 ]);
 
-const html = computed(() => highlighter.codeToHtml(props.code, {
+const code = computed(() => {
+	if (props.diffBase != null && diffLines.value != null) {
+		const diffedLines = diffLines.value(props.diffBase, props.code);
+		const diffed = diffedLines.map((part) => {
+			if (part.added) {
+				return part.value.split('\n').map(line => line ? `${line} // [!code ++]` : line).join('\n');
+			} else if (part.removed) {
+				return part.value.split('\n').map(line => line ? `${line} // [!code --]` : line).join('\n');
+			} else {
+				return part.value;
+			}
+		}).join('');
+		return diffed;
+	} else {
+		return props.code;
+	}
+});
+
+const html = computed(() => highlighter.codeToHtml(code.value, {
 	lang: codeLang.value,
 	themes: {
 		fallback: 'dark-plus',
 		light: lightThemeName,
 		dark: darkThemeName,
 	},
+	transformers: props.diffBase != null && transformerNotationDiff.value != null
+		? [transformerNotationDiff.value({})]
+		: [],
 	defaultColor: false,
 	cssVariablePrefix: '--shiki-',
 }));
@@ -73,6 +105,19 @@ async function fetchLanguage(to: string): Promise<void> {
 	}
 }
 
+watch(() => props.diffBase, async (to) => {
+	if (to != null) {
+		if (transformerNotationDiff.value == null) {
+			const { transformerNotationDiff: tf } = await import('@shikijs/transformers');
+			transformerNotationDiff.value = tf;
+		}
+		if (diffLines.value == null) {
+			const { diffLines: dl } = await import('diff');
+			diffLines.value = dl;
+		}
+	}
+}, { immediate: true });
+
 watch(() => props.lang, (to) => {
 	if (codeLang.value === to || !to) return;
 	return new Promise((resolve) => {
@@ -96,6 +141,33 @@ watch(() => props.lang, (to) => {
 	& code {
 		font-family: Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
 	}
+
+	&>code {
+		display: block;
+		min-width: fit-content;
+	}
+
+	& :global(.line) {
+		display: inline-block;
+		width: 100%;
+	}
+}
+
+.codeBlockRoot :global(.shiki.has-diff) {
+	& :global(.line.diff.remove) {
+		background-color: rgba(244, 63, 94, .14);
+		text-decoration: line-through;
+	}
+
+	& :global(.line.diff.add) {
+		background-color: rgba(75, 192, 107, .14);
+	}
+}
+
+.codeBlockRoot.withMaxHeight :global(.shiki) {
+	max-height: v-bind(maxHeight);
+	scrollbar-color: var(--MI_THEME-scrollbarHandle) transparent;
+	scrollbar-width: thin;
 }
 
 .outerStyle.codeBlockRoot :global(.shiki) {
