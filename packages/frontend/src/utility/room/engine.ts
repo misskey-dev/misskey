@@ -400,6 +400,7 @@ export class RoomEngine {
 	private envMapOutdoor: BABYLON.CubeTexture;
 	private reflectionProbe: BABYLON.ReflectionProbe;
 	private roomLight: BABYLON.SpotLight;
+	private enableReflectionProbe = false;
 
 	constructor(def: RoomDef, options: {
 		canvas: HTMLCanvasElement;
@@ -427,12 +428,22 @@ export class RoomEngine {
 		this.envMapOutdoor = BABYLON.CubeTexture.CreateFromPrefilteredData(this.time === 2 ? '/client-assets/room/outdoor-night.env' : '/client-assets/room/outdoor-dayw.env', this.scene);
 		this.envMapOutdoor.level = this.time === 0 ? 0.5 : this.time === 1 ? 0.3 : 0.1;
 
-		//this.reflectionProbe = new BABYLON.ReflectionProbe('reflectionProbe', 512, this.scene);
-		//this.reflectionProbe.refreshRate = 200;
+		if (this.enableReflectionProbe) {
+			this.reflectionProbe = new BABYLON.ReflectionProbe('reflectionProbe', 512, this.scene);
+			this.reflectionProbe.position = new BABYLON.Vector3(0, 100/*cm*/, 0);
+			this.reflectionProbe.refreshRate = 200;
+		}
+
+		//const sphere = BABYLON.MeshBuilder.CreateSphere('', { diameter: 50/*cm*/ }, this.scene);
+		//sphere.position = new BABYLON.Vector3(0, 100/*cm*/, 0);
+		//const mat = new BABYLON.PBRMaterial('', this.scene);
+		//mat.metallic = 1;
+		//mat.roughness = 0;
+		//mat.reflectionTexture = this.envMapIndoor;
+		//mat.reflectionTexture = this.reflectionProbe.cubeTexture;
+		//sphere.material = mat;
 
 		this.scene.collisionsEnabled = true;
-
-		//new MmdOutlineRenderer(this.scene);
 
 		this.camera = new BABYLON.UniversalCamera('camera', new BABYLON.Vector3(0, 130/*cm*/, 0/*cm*/), this.scene);
 		this.camera.inputs.removeByType('FreeCameraKeyboardMoveInput');
@@ -801,6 +812,7 @@ export class RoomEngine {
 		roomObj.meshes[0].scaling = new BABYLON.Vector3(-100, 100, 100);
 		roomObj.meshes[0].bakeCurrentTransformIntoVertices();
 		for (const mesh of roomObj.meshes) {
+			console.log('room mesh:', mesh.name);
 			//if (mesh.name === '__root__') continue;
 			if (mesh.name.startsWith('_COLLISION_')) {
 				mesh.receiveShadows = false;
@@ -816,10 +828,11 @@ export class RoomEngine {
 			this.shadowGenerator1.addShadowCaster(mesh);
 			this.shadowGenerator2.addShadowCaster(mesh);
 			//if (mesh.material) (mesh.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(1, 1, 1);
-			if (mesh.material) (mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
-			//if (mesh.material) (mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.reflectionProbe.cubeTexture;
+			if (mesh.material) {
+				(mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.enableReflectionProbe ? this.reflectionProbe.cubeTexture : this.envMapIndoor;
+			}
 
-			//this.reflectionProbe.renderList!.push(mesh);
+			if (this.enableReflectionProbe) this.reflectionProbe.renderList!.push(mesh);
 		}
 	}
 
@@ -854,10 +867,9 @@ export class RoomEngine {
 			mesh.outlineWidth = 0.003;
 			mesh.outlineColor = new BABYLON.Color3(1, 0, 0);
 			//if (mesh.material) (mesh.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(0.2, 0.2, 0.2);
-			if (mesh.material) (mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
-			//if (mesh.material) (mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.reflectionProbe.cubeTexture;
-
-			//this.reflectionProbe.renderList!.push(mesh);
+			if (mesh.material) {
+				(mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.enableReflectionProbe ? this.reflectionProbe.cubeTexture : this.envMapIndoor;
+			}
 		}
 
 		this.objectMeshs.set(o.id, obj.meshes[0]);
