@@ -249,6 +249,24 @@ const OBJECTS = {
 			ps.start();
 		},
 	},
+	desk: {
+		placement: 'top',
+	},
+	chair: {
+		placement: 'top',
+	},
+	'banknote': {
+		placement: 'top',
+	},
+	'facial-tissue': {
+		placement: 'top',
+	},
+	'milk': {
+		placement: 'top',
+	},
+	'monitor': {
+		placement: 'top',
+	},
 } as Record<string, ObjectDef>;
 
 function vecToLocal(vector: BABYLON.Vector3, mesh: BABYLON.Mesh): BABYLON.Vector3 {
@@ -257,7 +275,6 @@ function vecToLocal(vector: BABYLON.Vector3, mesh: BABYLON.Mesh): BABYLON.Vector
 	return v;
 }
 
-const _assumedFramesPerSecond = 60;
 
 class HorizontalCameraKeyboardMoveInput extends BABYLON.BaseCameraPointersInput {
 	public camera: BABYLON.FreeCamera;
