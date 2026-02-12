@@ -275,6 +275,7 @@ function vecToLocal(vector: BABYLON.Vector3, mesh: BABYLON.Mesh): BABYLON.Vector
 	return v;
 }
 
+const _assumedFramesPerSecond = 60;
 
 class HorizontalCameraKeyboardMoveInput extends BABYLON.BaseCameraPointersInput {
 	public camera: BABYLON.FreeCamera;
