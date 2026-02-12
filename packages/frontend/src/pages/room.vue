@@ -105,6 +105,12 @@ onMounted(() => {
 			position: [130, 0, 115],
 			rotation: [0, 0, 0],
 		}, {
+			id: 'j2',
+			type: 'aquarium',
+			position: [130, 100, 115],
+			rotation: [0, Math.PI, 0],
+			sticky: 'j',
+		}, {
 			id: 'k',
 			type: 'cup-noodle',
 			position: [-100, 70, 40],

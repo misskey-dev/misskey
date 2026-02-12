@@ -212,6 +212,43 @@ const OBJECTS = {
 	'bed': {
 		placement: 'top',
 	},
+	'aquarium': {
+		placement: 'top',
+		onInit: (room, o, obj) => {
+			const noiseTexture = new BABYLON.NoiseProceduralTexture('perlin', 256, room.scene);
+			noiseTexture.animationSpeedFactor = 70;
+			noiseTexture.persistence = 10;
+			noiseTexture.brightness = 0.5;
+			noiseTexture.octaves = 5;
+
+			const emitter = new BABYLON.TransformNode('emitter', room.scene);
+			emitter.parent = obj.meshes[0];
+			emitter.position = new BABYLON.Vector3(-9/*cm*/, 7/*cm*/, -17/*cm*/);
+			const ps = new BABYLON.ParticleSystem('', 128, room.scene);
+			ps.particleTexture = new BABYLON.Texture('/client-assets/room/objects/lava-lamp/bubble.png');
+			ps.emitter = emitter;
+			ps.isLocal = true;
+			ps.minEmitBox = new BABYLON.Vector3(-2/*cm*/, 0, -2/*cm*/);
+			ps.maxEmitBox = new BABYLON.Vector3(2/*cm*/, 0, 2/*cm*/);
+			ps.minEmitPower = 40;
+			ps.maxEmitPower = 60;
+			ps.minLifeTime = 0.5;
+			ps.maxLifeTime = 0.5;
+			ps.minSize = 0.1/*cm*/;
+			ps.maxSize = 1/*cm*/;
+			ps.direction1 = new BABYLON.Vector3(0, 1, 0);
+			ps.direction2 = new BABYLON.Vector3(0, 1, 0);
+			ps.noiseTexture = noiseTexture;
+			ps.noiseStrength = new BABYLON.Vector3(500, 0, 500);
+			ps.emitRate = 32;
+			ps.blendMode = BABYLON.ParticleSystem.BLENDMODE_ADD;
+			//ps.color1 = new BABYLON.Color4(1, 1, 1, 0.3);
+			//ps.color2 = new BABYLON.Color4(1, 1, 1, 0.2);
+			//ps.colorDead = new BABYLON.Color4(1, 1, 1, 0);
+			ps.preWarmCycles = Math.random() * 1000;
+			ps.start();
+		},
+	},
 } as Record<string, ObjectDef>;
 
 function vecToLocal(vector: BABYLON.Vector3, mesh: BABYLON.Mesh): BABYLON.Vector3 {
@@ -354,7 +391,7 @@ export class RoomEngine {
 		descendantStickyObjectIds: string[];
 	} | null = null;
 	private highlightedObjectId: string | null = null;
-	private time: 0 | 1 | 2 = 0; // 0: 昼, 1: 夕, 2: 夜
+	private time: 0 | 1 | 2 = 2; // 0: 昼, 1: 夕, 2: 夜
 	private roomCollisionMeshes: BABYLON.AbstractMesh[] = [];
 	private def: RoomDef;
 	public enableGridSnapping = false;
