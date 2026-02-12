@@ -136,7 +136,7 @@ onMounted(() => {
 		}, {
 			id: 'p',
 			type: 'tv',
-			position: [-115, 0, -85],
+			position: [-135, 88, -5],
 			rotation: [0, 0, 0],
 		}, {
 			id: 'q',
@@ -159,6 +159,11 @@ onMounted(() => {
 			position: [10, 100, 10],
 			rotation: [0, 0, 0],
 			variation: '1',
+		}, {
+			id: 'u',
+			type: 'bed',
+			position: [-30, 0, -100],
+			rotation: [0, 0, 0],
 		}],
 	}, {
 		canvas: canvas.value!,

@@ -212,6 +212,9 @@ const OBJECTS = {
 	'opened-cardboard-box': {
 		placement: 'top',
 	},
+	'bed': {
+		placement: 'top',
+	},
 } as Record<string, ObjectDef>;
 
 function vecToLocal(vector: BABYLON.Vector3, mesh: BABYLON.Mesh): BABYLON.Vector3 {
@@ -354,7 +357,7 @@ export class RoomEngine {
 		descendantStickyObjectIds: string[];
 	} | null = null;
 	private highlightedObjectId: string | null = null;
-	private time: 0 | 1 | 2 = 1; // 0: 昼, 1: 夕, 2: 夜
+	private time: 0 | 1 | 2 = 0; // 0: 昼, 1: 夕, 2: 夜
 	private roomCollisionMeshes: BABYLON.AbstractMesh[] = [];
 	private def: RoomDef;
 	public enableGridSnapping = false;
@@ -665,7 +668,7 @@ export class RoomEngine {
 			grabbing.ghost.position.x = Math.round(grabbing.ghost.position.x / scale) * scale;
 			grabbing.ghost.position.y = Math.round(grabbing.ghost.position.y / scale) * scale;
 			grabbing.ghost.position.z = Math.round(grabbing.ghost.position.z / scale) * scale;
-			grabbing.ghost.rotation.y = Math.round(grabbing.ghost.rotation.y / (Math.PI / 4)) * (Math.PI / 4);
+			grabbing.ghost.rotation.y = Math.round(grabbing.ghost.rotation.y / (Math.PI / 8)) * (Math.PI / 8);
 		}
 
 		const newPos = grabbing.ghost.position.clone();
