@@ -89,11 +89,11 @@ const OBJECTS = {
 		onInit: (room, o, obj) => {
 			const boxMesh = obj.meshes[0].getChildMeshes().find(m => m.name === 'Box') as BABYLON.Mesh;
 			if (o.variation === 'mikan') {
-				const tex = new BABYLON.Texture('/client-assets/room/objects/cardboard-box/mikan.png', room.scene, false, false);
+				const tex = new BABYLON.Texture('/client-assets/room/objects/cardboard-box/textures/mikan.png', room.scene, false, false);
 				(boxMesh.material as BABYLON.PBRMaterial).albedoTexture = tex;
 				(boxMesh.material as BABYLON.PBRMaterial).albedoColor = new BABYLON.Color3(1, 1, 1);
 			} else if (o.variation === 'aizon') {
-				const tex = new BABYLON.Texture('/client-assets/room/objects/cardboard-box/aizon.png', room.scene, false, false);
+				const tex = new BABYLON.Texture('/client-assets/room/objects/cardboard-box/textures/aizon.png', room.scene, false, false);
 				(boxMesh.material as BABYLON.PBRMaterial).albedoTexture = tex;
 				(boxMesh.material as BABYLON.PBRMaterial).albedoColor = new BABYLON.Color3(1, 1, 1);
 			}
