@@ -105,21 +105,18 @@ const OBJECTS = {
 			const mesh = obj.meshes[2] as BABYLON.Mesh;
 			console.log(obj.meshes);
 			mesh.markVerticesDataAsUpdatable(BABYLON.VertexBuffer.UVKind, true);
-			if (o.variation === '1') {
-				const index = 0;
-				const x = index % 8;
-				const y = Math.floor(index / 8);
+			const index = o.variation;
+			const x = index % 8;
+			const y = Math.floor(index / 8);
 
-				const uvs = mesh.getVerticesData(BABYLON.VertexBuffer.UVKind)!;
-				for (let i = 0; i < uvs.length / 2; i++) {
-					const u = uvs[i * 2];
-					const v = uvs[i * 2 + 1];
-
-					uvs[i * 2] = u / 8;
-					uvs[i * 2 + 1] = v / 8;
-				}
-				mesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
+			const uvs = mesh.getVerticesData(BABYLON.VertexBuffer.UVKind)!;
+			for (let i = 0; i < uvs.length / 2; i++) {
+				const u = uvs[i * 2];
+				const v = uvs[i * 2 + 1];
+				uvs[i * 2] = (u / 8) + (x / 8);
+				uvs[i * 2 + 1] = (v / 8) + (y / 8);
 			}
+			mesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
 		},
 	},
 	'lava-lamp': {

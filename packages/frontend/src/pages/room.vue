@@ -158,7 +158,7 @@ onMounted(() => {
 			type: 'book',
 			position: [10, 100, 10],
 			rotation: [0, 0, 0],
-			variation: '1',
+			variation: 1,
 		}, {
 			id: 'u',
 			type: 'bed',
