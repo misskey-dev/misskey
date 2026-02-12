@@ -359,8 +359,10 @@ export class RoomEngine {
 	private def: RoomDef;
 	public enableGridSnapping = false;
 	private putParticleSystem: BABYLON.ParticleSystem;
-	private envMap: BABYLON.CubeTexture;
+	private envMapIndoor: BABYLON.CubeTexture;
+	private envMapOutdoor: BABYLON.CubeTexture;
 	private reflectionProbe: BABYLON.ReflectionProbe;
+	private roomLight: BABYLON.SpotLight;
 
 	constructor(def: RoomDef, options: {
 		canvas: HTMLCanvasElement;
@@ -374,7 +376,7 @@ export class RoomEngine {
 		this.scene = new BABYLON.Scene(this.engine);
 		//this.scene.autoClear = true;
 		if (this.time === 0) {
-			this.scene.clearColor = new BABYLON.Color4(0.4, 0.8, 1.0, 0);
+			this.scene.clearColor = new BABYLON.Color4(0.7, 0.9, 1.0, 0);
 		} else if (this.time === 1) {
 			this.scene.clearColor = new BABYLON.Color4(0.5, 0.3, 0.3, 0);
 		} else {
@@ -382,8 +384,11 @@ export class RoomEngine {
 		}
 		this.scene.ambientColor = new BABYLON.Color3(1.0, 0.9, 0.8);
 
-		this.envMap = BABYLON.CubeTexture.CreateFromPrefilteredData('/client-assets/room/env.env', this.scene);
-		this.envMap.boundingBoxSize = new BABYLON.Vector3(300/*cm*/, 300/*cm*/, 300/*cm*/);
+		this.envMapIndoor = BABYLON.CubeTexture.CreateFromPrefilteredData('/client-assets/room/indoor.env', this.scene);
+		this.envMapIndoor.boundingBoxSize = new BABYLON.Vector3(500/*cm*/, 300/*cm*/, 500/*cm*/);
+
+		this.envMapOutdoor = BABYLON.CubeTexture.CreateFromPrefilteredData(this.time === 2 ? '/client-assets/room/outdoor-night.env' : '/client-assets/room/outdoor-dayw.env', this.scene);
+		this.envMapOutdoor.level = this.time === 0 ? 0.5 : this.time === 1 ? 0.3 : 0.1;
 
 		//this.reflectionProbe = new BABYLON.ReflectionProbe('reflectionProbe', 512, this.scene);
 		//this.reflectionProbe.refreshRate = 200;
@@ -417,13 +422,12 @@ export class RoomEngine {
 		ambientLight.intensity = 0.5;
 		//ambientLight.intensity = 0;
 
-		const roomLight = new BABYLON.SpotLight('roomLight', new BABYLON.Vector3(0, 249/*cm*/, 0), new BABYLON.Vector3(0, -1, 0), 16, 8, this.scene);
-		roomLight.diffuse = new BABYLON.Color3(1.0, 0.9, 0.8);
-		roomLight.intensity = 150000;
-		roomLight.shadowMinZ = 10/*cm*/;
-		roomLight.shadowMaxZ = 300/*cm*/;
+		this.roomLight = new BABYLON.SpotLight('roomLight', new BABYLON.Vector3(0, 249/*cm*/, 0), new BABYLON.Vector3(0, -1, 0), 16, 8, this.scene);
+		this.roomLight.diffuse = new BABYLON.Color3(1.0, 0.9, 0.8);
+		this.roomLight.shadowMinZ = 10/*cm*/;
+		this.roomLight.shadowMaxZ = 300/*cm*/;
 
-		this.shadowGenerator1 = new BABYLON.ShadowGenerator(2048, roomLight);
+		this.shadowGenerator1 = new BABYLON.ShadowGenerator(2048, this.roomLight);
 		this.shadowGenerator1.forceBackFacesOnly = true;
 		this.shadowGenerator1.bias = 0.0001;
 		this.shadowGenerator1.usePercentageCloserFiltering = true;
@@ -442,6 +446,8 @@ export class RoomEngine {
 		this.shadowGenerator2.usePercentageCloserFiltering = true;
 		this.shadowGenerator2.usePoissonSampling = true;
 
+		this.turnOnRoomLight();
+
 		const gl = new BABYLON.GlowLayer('glow', this.scene, {
 			//mainTextureFixedSize: 512,
 			blurKernelSize: 64,
@@ -450,7 +456,7 @@ export class RoomEngine {
 
 		{
 			const postProcess = new BABYLON.ImageProcessingPostProcess('processing', 1.0, this.camera);
-			postProcess.exposure = 2;
+			postProcess.exposure = 1.1;
 			postProcess.contrast = 0.9;
 			//const curve = new BABYLON.ColorCurves();
 			//curve.highlightsHue = 40;
@@ -579,7 +585,7 @@ export class RoomEngine {
 		tvScreenMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
 		tvScreenMaterial.emissiveTexture = new BABYLON.Texture(`/client-assets/room/tv/${tvProgramId}/${tvProgramId}.png`, this.scene, false, false);
 		tvScreenMaterial.emissiveTexture.level = 0.5;
-		tvScreenMaterial.emissiveColor = new BABYLON.Color3(0.2, 0.2, 0.2);
+		tvScreenMaterial.emissiveColor = new BABYLON.Color3(0.4, 0.4, 0.4);
 		tvScreenMaterial.freeze();
 
 		const applyTvTexture = (tlIndex: number) => {
@@ -749,6 +755,7 @@ export class RoomEngine {
 
 			//if (mesh.name === '__root__') continue;
 			mesh.receiveShadows = false;
+			if (mesh.material) (mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.envMapOutdoor;
 		}
 	}
 
@@ -772,7 +779,7 @@ export class RoomEngine {
 			this.shadowGenerator1.addShadowCaster(mesh);
 			this.shadowGenerator2.addShadowCaster(mesh);
 			//if (mesh.material) (mesh.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(1, 1, 1);
-			//if (mesh.material) (mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.envMap;
+			if (mesh.material) (mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
 			//if (mesh.material) (mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.reflectionProbe.cubeTexture;
 
 			//this.reflectionProbe.renderList!.push(mesh);
@@ -810,7 +817,7 @@ export class RoomEngine {
 			mesh.outlineWidth = 0.003;
 			mesh.outlineColor = new BABYLON.Color3(1, 0, 0);
 			//if (mesh.material) (mesh.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(0.2, 0.2, 0.2);
-			//if (mesh.material) (mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.envMap;
+			if (mesh.material) (mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
 			//if (mesh.material) (mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.reflectionProbe.cubeTexture;
 
 			//this.reflectionProbe.renderList!.push(mesh);
@@ -909,6 +916,24 @@ export class RoomEngine {
 			volume: 1,
 			playbackRate: 1,
 		});
+	}
+
+	private turnOnRoomLight() {
+		this.roomLight.intensity = 300000;
+		this.envMapIndoor.level = 0.3;
+	}
+
+	private turnOffRoomLight() {
+		this.roomLight.intensity = 0;
+		this.envMapIndoor.level = 0;
+	}
+
+	public toggleRoomLight() {
+		if (this.roomLight.intensity > 0) {
+			this.turnOffRoomLight();
+		} else {
+			this.turnOnRoomLight();
+		}
 	}
 
 	public destroy() {

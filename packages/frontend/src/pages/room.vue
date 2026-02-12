@@ -8,6 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<canvas ref="canvas" :class="$style.canvas"></canvas>
 	<div class="_buttons" :class="$style.controls">
 		<MkButton @click="grab">Grab</MkButton>
+		<MkButton @click="toggleLight">Toggle Light</MkButton>
 	</div>
 </div>
 </template>
@@ -204,6 +205,11 @@ function onKeyup(ev: KeyboardEvent) {
 
 function grab() {
 	engine.toggleGrab();
+	canvas.value!.focus();
+}
+
+function toggleLight() {
+	engine.toggleRoomLight();
 	canvas.value!.focus();
 }
 
