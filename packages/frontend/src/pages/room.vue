@@ -182,6 +182,11 @@ onMounted(() => {
 			position: [0, 250, 0],
 			rotation: [0, 0, 0],
 			isMainLight: true,
+		}, {
+			id: 'w',
+			type: 'round-rug',
+			position: [0, 0, 0],
+			rotation: [0, 0, 0],
 		}],
 	}, {
 		canvas: canvas.value!,

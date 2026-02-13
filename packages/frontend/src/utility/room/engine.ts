@@ -39,7 +39,7 @@ type RoomDef = {
 };
 
 type ObjectDef = {
-	placement: 'top' | 'side' | 'bottom';
+	placement: 'top' | 'side' | 'bottom' | 'wall' | 'ceiling' | 'floor';
 	receiveShadows?: boolean;
 	castShadows?: boolean;
 	onInit?: (room: RoomEngine, o: RoomDef['objects'][0], obj: BABYLON.ISceneLoaderAsyncResult) => void;
@@ -195,16 +195,16 @@ const OBJECTS = {
 		},
 	},
 	aircon: {
-		placement: 'side',
+		placement: 'wall',
 	},
 	'monstera': {
 		placement: 'top',
 	},
 	'color-box': {
-		placement: 'top',
+		placement: 'floor',
 	},
 	'steel-rack': {
-		placement: 'top',
+		placement: 'floor',
 	},
 	'plant2': {
 		placement: 'top',
@@ -216,7 +216,7 @@ const OBJECTS = {
 		placement: 'top',
 	},
 	'bed': {
-		placement: 'top',
+		placement: 'floor',
 	},
 	'aquarium': {
 		placement: 'top',
@@ -256,13 +256,13 @@ const OBJECTS = {
 		},
 	},
 	'desk': {
-		placement: 'top',
+		placement: 'floor',
 	},
 	'chair': {
-		placement: 'top',
+		placement: 'floor',
 	},
 	'chair2': {
-		placement: 'top',
+		placement: 'floor',
 	},
 	'energy-drink': {
 		placement: 'top',
@@ -283,7 +283,7 @@ const OBJECTS = {
 		placement: 'top',
 	},
 	'ceiling-fan-light': {
-		placement: 'bottom',
+		placement: 'ceiling',
 		receiveShadows: false,
 		castShadows: false,
 		onInit: (room, o, obj) => {
@@ -297,6 +297,9 @@ const OBJECTS = {
 			rotor.animations = [anim];
 			room.scene.beginAnimation(rotor, 0, 100, true);
 		},
+	},
+	'round-rug': {
+		placement: 'floor',
 	},
 } as Record<string, ObjectDef>;
 
@@ -815,7 +818,7 @@ export class RoomEngine {
 		if (placement === 'side') {
 			// 前方に向かってレイを飛ばす
 			const ray = new BABYLON.Ray(this.camera.position, dir, 1000/*cm*/);
-			const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.startsWith('_COLLISION_WALL_') || m.name.startsWith('_SIDE_')));
+			const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.startsWith('_ROOM_WALL_') || m.name.startsWith('_SIDE_')));
 			if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
 				newPos.x = hit.pickedPoint.x;
 				newPos.y = hit.pickedPoint.y;
@@ -825,19 +828,35 @@ export class RoomEngine {
 				newRotation.y = Math.atan2(normalLocal.z, normalLocal.x);
 				sticky = hit.pickedMesh.metadata?.objectId ?? null;
 			}
+		} else if (placement === 'wall') {
+			// 前方に向かってレイを飛ばす
+			const ray = new BABYLON.Ray(this.camera.position, dir, 1000/*cm*/);
+			const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.startsWith('_ROOM_WALL_')));
+			if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
+				newPos.x = hit.pickedPoint.x;
+				newPos.y = hit.pickedPoint.y;
+				newPos.z = hit.pickedPoint.z;
+				const pickedMeshNormal = hit.getNormal(true, true);
+				const normalLocal = vecToLocal(pickedMeshNormal, hit.pickedMesh);
+				newRotation.y = Math.atan2(normalLocal.z, normalLocal.x);
+			}
 		} else if (placement === 'bottom') {
 			// 上に向かってレイを飛ばす
 			const ray = new BABYLON.Ray(grabbing.ghost.position, new BABYLON.Vector3(0, 1, 0), 1000/*cm*/);
-			const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.startsWith('_COLLISION_CEILING_') || m.name.startsWith('_BOTTOM_')));
+			const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.startsWith('_ROOM_CEILING_') || m.name.startsWith('_BOTTOM_')));
 			if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
 				newPos.y = hit.pickedPoint.y;
 				sticky = hit.pickedMesh.metadata?.objectId ?? null;
 			}
 			if (newPos.y > 250/*cm*/) newPos.y = 250/*cm*/;
+		} else if (placement === 'ceiling') {
+			newPos.y = 250/*cm*/;
+		} else if (placement === 'floor') {
+			newPos.y = 0;
 		} else {
 			// 下に向かってレイを飛ばす
 			const ray = new BABYLON.Ray(grabbing.ghost.position, new BABYLON.Vector3(0, -1, 0), 1000/*cm*/);
-			const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.startsWith('_COLLISION_FLOOR_') || m.name.startsWith('_TOP_')));
+			const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.startsWith('_ROOM_FLOOR_') || m.name.startsWith('_ROOM_TOP_') || m.name.startsWith('_TOP_')));
 			if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
 				newPos.y = hit.pickedPoint.y;
 				sticky = hit.pickedMesh.metadata?.objectId ?? null;
@@ -904,9 +923,8 @@ export class RoomEngine {
 		roomObj.meshes[0].scaling = new BABYLON.Vector3(-100, 100, 100);
 		roomObj.meshes[0].bakeCurrentTransformIntoVertices();
 		for (const mesh of roomObj.meshes) {
-			console.log('room mesh:', mesh.name);
-			//if (mesh.name === '__root__') continue;
-			if (mesh.name.startsWith('_COLLISION_')) {
+			if (mesh.name.startsWith('_ROOM_WALL_') || mesh.name.startsWith('_ROOM_FLOOR_') || mesh.name.startsWith('_ROOM_CEILING_') || mesh.name.startsWith('_ROOM_TOP_') || mesh.name.startsWith('_ROOM_BOTTOM_') || mesh.name.startsWith('_ROOM_SIDE_')) {
+				mesh.isPickable = false;
 				mesh.receiveShadows = false;
 				mesh.isVisible = false;
 				mesh.checkCollisions = true;
@@ -1050,6 +1068,7 @@ export class RoomEngine {
 				mat.transparencyMode = BABYLON.Material.MATERIAL_ALPHABLEND;
 				m.material = mat;
 			}
+			m.checkCollisions = false;
 		}
 
 		// 子から先に適用していく
