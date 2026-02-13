@@ -286,8 +286,7 @@ const OBJECTS = {
 		castShadows: false,
 		onInit: (room, o, obj) => {
 			const rotor = obj.meshes[0].getChildMeshes().find(m => m.name === 'Rotor') as BABYLON.Mesh;
-			rotor.rotationQuaternion = null;
-			console.log(obj.meshes, obj.meshes[0].getChildMeshes().map(x => x.name), rotor, rotor.getChildMeshes());
+			rotor.rotation = rotor.rotationQuaternion != null ? rotor.rotationQuaternion.toEulerAngles() : rotor.rotation;
 			const anim = new BABYLON.Animation('', 'rotation.y', 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
 			anim.setKeys([
 				{ frame: 0, value: 0 },
@@ -1047,6 +1046,10 @@ export class RoomEngine {
 		} else {
 			this.turnOnRoomLight();
 		}
+	}
+
+	public resize() {
+		this.engine.resize();
 	}
 
 	public destroy() {

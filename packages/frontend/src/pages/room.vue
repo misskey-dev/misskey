@@ -25,6 +25,10 @@ const canvas = useTemplateRef('canvas');
 
 let engine: RoomEngine;
 
+function resize() {
+	if (engine != null) engine.resize();
+}
+
 onMounted(() => {
 	engine = new RoomEngine({
 		roomType: 'default',
@@ -184,10 +188,14 @@ onMounted(() => {
 	engine.init();
 
 	canvas.value!.focus();
+
+	window.addEventListener('resize', resize);
 });
 
 onUnmounted(() => {
 	engine.destroy();
+
+	window.removeEventListener('resize', resize);
 });
 
 function onKeydown(ev: KeyboardEvent) {
