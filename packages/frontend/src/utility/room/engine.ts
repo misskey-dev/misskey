@@ -435,7 +435,8 @@ export class RoomEngine {
 		mesh: BABYLON.AbstractMesh;
 		startOffset: BABYLON.Vector3;
 		startRotationY: number;
-		startDistance: number;
+		distance: number;
+		rotation: number;
 		ghost: BABYLON.AbstractMesh;
 		descendantStickyObjectIds: string[];
 		isMainLight: boolean;
@@ -662,6 +663,21 @@ export class RoomEngine {
 				ev.preventDefault();
 				ev.stopPropagation();
 				this.toggleGrab();
+			} else if (ev.code === 'KeyR') {
+				ev.preventDefault();
+				ev.stopPropagation();
+				if (this.grabbing != null) {
+					this.grabbing.rotation += Math.PI / 8;
+				}
+			}
+		});
+
+		this.canvas.addEventListener('wheel', (ev) => {
+			if (this.grabbing != null) {
+				ev.preventDefault();
+				ev.stopPropagation();
+				this.grabbing.distance -= ev.deltaY * 0.025;
+				if (this.grabbing.distance < 5/*cm*/) this.grabbing.distance = 5/*cm*/;
 			}
 		});
 
@@ -773,9 +789,11 @@ export class RoomEngine {
 		if (this.grabbing == null) return;
 		const grabbing = this.grabbing;
 
+		const placement = OBJECTS[this.def.objects.find(o => o.id === grabbing.objectId)!.type].placement;
+
 		const dir = this.camera.getDirection(BABYLON.Axis.Z);
-		grabbing.ghost.position = this.camera.position.add(dir.scale(grabbing.startDistance)).add(grabbing.startOffset);
-		grabbing.ghost.rotation = new BABYLON.Vector3(0, this.camera.rotation.y + grabbing.startRotationY, 0);
+		grabbing.ghost.position = this.camera.position.add(dir.scale(grabbing.distance)).add(grabbing.startOffset);
+		grabbing.ghost.rotation = new BABYLON.Vector3(0, this.camera.rotation.y + grabbing.startRotationY + grabbing.rotation, 0);
 
 		if (this.enableGridSnapping) {
 			grabbing.ghost.position.x = Math.round(grabbing.ghost.position.x / this.gridSnappingScale) * this.gridSnappingScale;
@@ -794,7 +812,6 @@ export class RoomEngine {
 				!grabbing.descendantStickyObjectIds.includes(m.metadata?.objectId);
 		};
 
-		const placement = OBJECTS[this.def.objects.find(o => o.id === grabbing.objectId)!.type].placement;
 		if (placement === 'side') {
 			// 前方に向かってレイを飛ばす
 			const ray = new BABYLON.Ray(this.camera.position, dir, 1000/*cm*/);
@@ -1004,6 +1021,7 @@ export class RoomEngine {
 			//this.grabbing.ghost.dispose(false, true);
 			this.grabbing.ghost.dispose(false, false);
 			this.grabbing = null;
+			this.selectObject(null);
 
 			sound.playUrl('/client-assets/room/sfx/put.mp3', {
 				volume: 1,
@@ -1021,7 +1039,7 @@ export class RoomEngine {
 		for (const om of selectedObject.getChildMeshes()) {
 			om.renderOutline = false;
 		}
-		const startDistance = BABYLON.Vector3.Distance(this.camera.position, selectedObject.position);
+		const distance = BABYLON.Vector3.Distance(this.camera.position, selectedObject.position);
 		const ghost = selectedObject.clone('ghost', null, false)!;
 		ghost.metadata = { isGhost: true };
 		for (const m of ghost.getChildMeshes()) {
@@ -1060,9 +1078,10 @@ export class RoomEngine {
 		this.grabbing = {
 			objectId: selectedObject.metadata.objectId,
 			mesh: selectedObject,
-			startOffset: selectedObject.position.subtract(this.camera.position.add(this.camera.getDirection(BABYLON.Axis.Z).scale(startDistance))),
+			startOffset: selectedObject.position.subtract(this.camera.position.add(this.camera.getDirection(BABYLON.Axis.Z).scale(distance))),
 			startRotationY: selectedObject.rotation.subtract(this.camera.rotation).y,
-			startDistance: startDistance,
+			distance: distance,
+			rotation: 0,
 			ghost: ghost,
 			descendantStickyObjectIds,
 			isMainLight: this.def.objects.find(o => o.id === selectedObject.metadata.objectId)?.isMainLight ?? false,
