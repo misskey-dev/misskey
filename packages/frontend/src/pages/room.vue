@@ -76,9 +76,9 @@ onMounted(() => {
 			sticky: 'c',
 		}, {
 			id: 'e',
-			type: 'chair2',
+			type: 'chair',
 			position: [-80, 0, 85],
-			rotation: [0, -Math.PI / 2, 0],
+			rotation: [0, -Math.PI, 0],
 		}, {
 			id: 'f',
 			type: 'plant',

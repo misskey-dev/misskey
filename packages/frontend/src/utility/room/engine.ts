@@ -261,9 +261,6 @@ const OBJECTS = {
 	'chair': {
 		placement: 'floor',
 	},
-	'chair2': {
-		placement: 'floor',
-	},
 	'energy-drink': {
 		placement: 'top',
 	},
