@@ -18,6 +18,7 @@
 import * as BABYLON from '@babylonjs/core';
 import { AxesViewer } from '@babylonjs/core/Debug/axesViewer';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
+import { BoundingBoxRenderer } from '@babylonjs/core/Rendering/boundingBoxRenderer';
 import * as sound from '@/utility/sound.js';
 
 type RoomDef = {
@@ -439,7 +440,7 @@ export class RoomEngine {
 		descendantStickyObjectIds: string[];
 		isMainLight: boolean;
 	} | null = null;
-	private highlightedObjectId: string | null = null;
+	private selectedObjectId: string | null = null;
 	private time: 0 | 1 | 2 = 0; // 0: 昼, 1: 夕, 2: 夜
 	private roomCollisionMeshes: BABYLON.AbstractMesh[] = [];
 	private def: RoomDef;
@@ -462,6 +463,11 @@ export class RoomEngine {
 
 		this.engine = new BABYLON.Engine(options.canvas, false, { alpha: false });
 		this.scene = new BABYLON.Scene(this.engine);
+
+		if (_DEV_) {
+			new BoundingBoxRenderer(this.scene);
+		}
+
 		//this.scene.autoClear = true;
 		if (this.time === 0) {
 			this.scene.clearColor = new BABYLON.Color4(0.7, 0.9, 1.0, 0);
@@ -629,16 +635,24 @@ export class RoomEngine {
 			}, 0);
 		});
 
+		//this.canvas.addEventListener('mousemove', (ev) => {
+		//});
+
 		this.canvas.addEventListener('click', (ev) => {
 			if (this.grabbing != null) return;
 			if (isDragging) return;
-			const mesh = this.scene.pick(this.scene.pointerX, this.scene.pointerY)?.pickedMesh;
-			if (mesh != null) {
-				const oid = mesh.metadata.objectId;
+
+			this.selectObject(null);
+
+			const pickingInfo = this.scene.pick(this.scene.pointerX, this.scene.pointerY,
+				(m) => m.metadata?.isCollision && m.metadata?.objectId != null && this.objectMeshs.has(m.metadata.objectId));
+
+			if (pickingInfo.pickedMesh != null) {
+				const oid = pickingInfo.pickedMesh.metadata.objectId;
 				if (oid != null && this.objectMeshs.has(oid)) {
 					const o = this.objectMeshs.get(oid)!;
-					// focus camera
-					this.camera.setTarget(o.position);
+					this.camera.setTarget(o.getBoundingInfo().boundingBox.centerWorld);
+					this.selectObject(oid);
 				}
 			}
 		});
@@ -669,8 +683,6 @@ export class RoomEngine {
 		this.intervalIds.push(window.setInterval(() => {
 			if (this.grabbing != null) {
 				this.handleGrabbing();
-			} else {
-				this.handleSeeking();
 			}
 		}, 10));
 
@@ -735,21 +747,24 @@ export class RoomEngine {
 		});
 	}
 
-	private handleSeeking() {
-		this.highlightedObjectId = null;
-		const ray = new BABYLON.Ray(this.camera.position, this.camera.getDirection(BABYLON.Axis.Z), 1000/*cm*/);
-		for (const [id, o] of this.objectMeshs.entries()) {
-			for (const om of o.getChildMeshes()) {
-				om.renderOutline = false;
+	public selectObject(objectId: string | null) {
+		if (this.selectedObjectId != null) {
+			const prevMesh = this.objectMeshs.get(this.selectedObjectId);
+			if (prevMesh != null) {
+				for (const om of prevMesh.getChildMeshes()) {
+					om.renderOutline = false;
+				}
 			}
+			this.selectedObjectId = null;
 		}
-		const hit = this.scene.pickWithRay(ray, (m) => m.metadata?.isCollision && m.metadata?.objectId != null && this.objectMeshs.has(m.metadata.objectId));
-		if (hit != null && hit.pickedMesh != null) {
-			const oid = hit.pickedMesh.metadata?.objectId;
-			this.highlightedObjectId = oid;
-			const o = this.objectMeshs.get(oid)!;
-			for (const om of o.getChildMeshes()) {
-				om.renderOutline = true;
+
+		if (objectId != null) {
+			const mesh = this.objectMeshs.get(objectId);
+			if (mesh != null) {
+				for (const om of mesh.getChildMeshes()) {
+					om.renderOutline = true;
+				}
+				this.selectedObjectId = objectId;
 			}
 		}
 	}
@@ -902,8 +917,11 @@ export class RoomEngine {
 		const obj = await BABYLON.ImportMeshAsync(`/client-assets/room/objects/${o.type}/${o.type}.glb`, this.scene);
 		obj.meshes[0].scaling = new BABYLON.Vector3(-100, 100, 100);
 		obj.meshes[0].bakeCurrentTransformIntoVertices();
+		const rootBv = obj.meshes[0].getHierarchyBoundingVectors();
+		obj.meshes[0].setBoundingInfo(new BABYLON.BoundingInfo(rootBv.min, rootBv.max));
 		obj.meshes[0].position = new BABYLON.Vector3(...o.position);
 		obj.meshes[0].rotation = new BABYLON.Vector3(...o.rotation);
+		//obj.meshes[0].showBoundingBox = true;
 
 		let hasCollisionMesh = false;
 		for (const mesh of obj.meshes) {
@@ -915,8 +933,15 @@ export class RoomEngine {
 
 		for (const m of obj.meshes) {
 			const mesh = m;
+			const isRoot = mesh.name === '__root__';
 
-			mesh.metadata = { isObject: true, objectId: o.id, objectType: o.type, isCollision: !hasCollisionMesh };
+			mesh.metadata = {
+				isObject: true,
+				isRoot: isRoot,
+				objectId: o.id,
+				objectType: o.type,
+				isCollision: !hasCollisionMesh,
+			};
 			mesh.checkCollisions = !hasCollisionMesh;
 
 			if (mesh.name.startsWith('_TV_SCREEN_')) {
@@ -932,7 +957,6 @@ export class RoomEngine {
 				mesh.receiveShadows = false;
 				mesh.isVisible = false;
 			} else {
-			//if (mesh.name === '__root__') continue;
 				if (!o.isMainLight && def.receiveShadows !== false) mesh.receiveShadows = true;
 				if (!o.isMainLight && def.castShadows !== false) {
 					this.shadowGenerator1.addShadowCaster(mesh);
@@ -991,14 +1015,14 @@ export class RoomEngine {
 			return;
 		}
 
-		if (this.highlightedObjectId == null) return;
+		if (this.selectedObjectId == null) return;
 
-		const highlightedObject = this.objectMeshs.get(this.highlightedObjectId)!;
-		for (const om of highlightedObject.getChildMeshes()) {
+		const selectedObject = this.objectMeshs.get(this.selectedObjectId)!;
+		for (const om of selectedObject.getChildMeshes()) {
 			om.renderOutline = false;
 		}
-		const startDistance = BABYLON.Vector3.Distance(this.camera.position, highlightedObject.position);
-		const ghost = highlightedObject.clone('ghost', null, false)!;
+		const startDistance = BABYLON.Vector3.Distance(this.camera.position, selectedObject.position);
+		const ghost = selectedObject.clone('ghost', null, false)!;
 		ghost.metadata = { isGhost: true };
 		for (const m of ghost.getChildMeshes()) {
 			m.metadata = { isGhost: true };
@@ -1021,7 +1045,7 @@ export class RoomEngine {
 				soMesh.rotation = soMesh.rotation.subtract(mesh.rotation);
 			}
 		};
-		setStickyParentRecursively(highlightedObject);
+		setStickyParentRecursively(selectedObject);
 
 		const descendantStickyObjectIds: string[] = [];
 		const collectDescendantStickyObjectIds = (parentId: string) => {
@@ -1031,17 +1055,17 @@ export class RoomEngine {
 				collectDescendantStickyObjectIds(cid);
 			}
 		};
-		collectDescendantStickyObjectIds(highlightedObject.metadata.objectId);
+		collectDescendantStickyObjectIds(selectedObject.metadata.objectId);
 
 		this.grabbing = {
-			objectId: highlightedObject.metadata.objectId,
-			mesh: highlightedObject,
-			startOffset: highlightedObject.position.subtract(this.camera.position.add(this.camera.getDirection(BABYLON.Axis.Z).scale(startDistance))),
-			startRotationY: highlightedObject.rotation.subtract(this.camera.rotation).y,
+			objectId: selectedObject.metadata.objectId,
+			mesh: selectedObject,
+			startOffset: selectedObject.position.subtract(this.camera.position.add(this.camera.getDirection(BABYLON.Axis.Z).scale(startDistance))),
+			startRotationY: selectedObject.rotation.subtract(this.camera.rotation).y,
 			startDistance: startDistance,
 			ghost: ghost,
 			descendantStickyObjectIds,
-			isMainLight: this.def.objects.find(o => o.id === highlightedObject.metadata.objectId)?.isMainLight ?? false,
+			isMainLight: this.def.objects.find(o => o.id === selectedObject.metadata.objectId)?.isMainLight ?? false,
 		};
 
 		sound.playUrl('/client-assets/room/sfx/grab.mp3', {
