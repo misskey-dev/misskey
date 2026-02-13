@@ -171,6 +171,11 @@ onMounted(() => {
 			type: 'bed',
 			position: [-30, 0, -100],
 			rotation: [0, 0, 0],
+		}, {
+			id: 'v',
+			type: 'ceiling-fan-light',
+			position: [0, 250, 0],
+			rotation: [0, 0, 0],
 		}],
 	}, {
 		canvas: canvas.value!,

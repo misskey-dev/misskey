@@ -37,7 +37,9 @@ type RoomDef = {
 };
 
 type ObjectDef = {
-	placement: 'top' | 'side';
+	placement: 'top' | 'side' | 'bottom';
+	receiveShadows?: boolean;
+	castShadows?: boolean;
 	onInit?: (room: RoomEngine, o: RoomDef['objects'][0], obj: BABYLON.ISceneLoaderAsyncResult) => void;
 };
 
@@ -251,10 +253,16 @@ const OBJECTS = {
 			ps.start();
 		},
 	},
-	desk: {
+	'desk': {
 		placement: 'top',
 	},
-	chair: {
+	'chair': {
+		placement: 'top',
+	},
+	'chair2': {
+		placement: 'top',
+	},
+	'energy-drink': {
 		placement: 'top',
 	},
 	'banknote': {
@@ -268,6 +276,26 @@ const OBJECTS = {
 	},
 	'monitor': {
 		placement: 'top',
+	},
+	'keyboard': {
+		placement: 'top',
+	},
+	'ceiling-fan-light': {
+		placement: 'bottom',
+		receiveShadows: false,
+		castShadows: false,
+		onInit: (room, o, obj) => {
+			const rotor = obj.meshes[0].getChildMeshes().find(m => m.name === 'Rotor') as BABYLON.Mesh;
+			rotor.rotationQuaternion = null;
+			console.log(obj.meshes, obj.meshes[0].getChildMeshes().map(x => x.name), rotor, rotor.getChildMeshes());
+			const anim = new BABYLON.Animation('', 'rotation.y', 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+			anim.setKeys([
+				{ frame: 0, value: 0 },
+				{ frame: 100, value: Math.PI * 2 },
+			]);
+			rotor.animations = [anim];
+			room.scene.beginAnimation(rotor, 0, 100, true);
+		},
 	},
 } as Record<string, ObjectDef>;
 
@@ -445,7 +473,7 @@ export class RoomEngine {
 		this.envMapIndoor = BABYLON.CubeTexture.CreateFromPrefilteredData('/client-assets/room/indoor.env', this.scene);
 		this.envMapIndoor.boundingBoxSize = new BABYLON.Vector3(500/*cm*/, 300/*cm*/, 500/*cm*/);
 
-		this.envMapOutdoor = BABYLON.CubeTexture.CreateFromPrefilteredData(this.time === 2 ? '/client-assets/room/outdoor-night.env' : '/client-assets/room/outdoor-dayw.env', this.scene);
+		this.envMapOutdoor = BABYLON.CubeTexture.CreateFromPrefilteredData(this.time === 2 ? '/client-assets/room/outdoor-night.env' : '/client-assets/room/outdoor-day.env', this.scene);
 		this.envMapOutdoor.level = this.time === 0 ? 0.5 : this.time === 1 ? 0.3 : 0.1;
 
 		if (this.enableReflectionProbe) {
@@ -855,6 +883,8 @@ export class RoomEngine {
 	}
 
 	private async loadObject(o: RoomDef['objects'][0]) {
+		const def = OBJECTS[o.type];
+
 		const obj = await BABYLON.ImportMeshAsync(`/client-assets/room/objects/${o.type}/${o.type}.glb`, this.scene);
 		obj.meshes[0].scaling = new BABYLON.Vector3(-100, 100, 100);
 		obj.meshes[0].bakeCurrentTransformIntoVertices();
@@ -889,9 +919,11 @@ export class RoomEngine {
 				mesh.isVisible = false;
 			} else {
 			//if (mesh.name === '__root__') continue;
-				mesh.receiveShadows = true;
-				this.shadowGenerator1.addShadowCaster(mesh);
-				this.shadowGenerator2.addShadowCaster(mesh);
+				if (def.receiveShadows !== false) mesh.receiveShadows = true;
+				if (def.castShadows !== false) {
+					this.shadowGenerator1.addShadowCaster(mesh);
+					this.shadowGenerator2.addShadowCaster(mesh);
+				}
 
 				mesh.renderOutline = false;
 				mesh.outlineWidth = 0.003;
