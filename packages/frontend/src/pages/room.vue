@@ -6,10 +6,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.root" class="_pageScrollable">
 	<canvas ref="canvas" :class="$style.canvas"></canvas>
-	<div class="_buttons" :class="$style.controls">
+	<div v-if="engine != null" class="_buttons" :class="$style.controls">
 		<MkButton @click="grab">Grab</MkButton>
 		<MkButton @click="toggleLight">Toggle Light</MkButton>
-		<MkButton @click="toggleGridSnapping">Grid Snap: {{ gridSnapping }}</MkButton>
+		<MkButton :primary="engine.enableGridSnapping.value" @click="toggleGridSnapping">Grid Snap: {{ engine.enableGridSnapping.value ? 'on' : 'off' }}</MkButton>
+		<MkButton v-if="engine.enableGridSnapping.value" :primary="engine.gridSnappingScale.value === 1" @click="engine.gridSnappingScale.value = 1">Snap: 1cm</MkButton>
+		<MkButton v-if="engine.enableGridSnapping.value" :primary="engine.gridSnappingScale.value === 2" @click="engine.gridSnappingScale.value = 2">Snap: 2cm</MkButton>
+		<MkButton v-if="engine.enableGridSnapping.value" :primary="engine.gridSnappingScale.value === 4" @click="engine.gridSnappingScale.value = 4">Snap: 4cm</MkButton>
+		<MkButton v-if="engine.enableGridSnapping.value" :primary="engine.gridSnappingScale.value === 8" @click="engine.gridSnappingScale.value = 8">Snap: 8cm</MkButton>
 	</div>
 </div>
 </template>
@@ -24,14 +28,14 @@ import { RoomEngine } from '@/utility/room/engine.js';
 
 const canvas = useTemplateRef('canvas');
 
-let engine: RoomEngine;
+const engine = shallowRef<RoomEngine | null>(null);
 
 function resize() {
-	if (engine != null) engine.resize();
+	if (engine.value != null) engine.value.resize();
 }
 
 onMounted(() => {
-	engine = new RoomEngine({
+	engine.value = new RoomEngine({
 		roomType: 'default',
 		objects: [{
 			id: 'a',
@@ -192,7 +196,7 @@ onMounted(() => {
 		canvas: canvas.value!,
 	});
 
-	engine.init();
+	engine.value.init();
 
 	canvas.value!.focus();
 
@@ -200,26 +204,23 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-	engine.destroy();
+	engine.value.destroy();
 
 	window.removeEventListener('resize', resize);
 });
 
 function grab() {
-	engine.toggleGrab();
+	engine.value.toggleGrab();
 	canvas.value!.focus();
 }
 
 function toggleLight() {
-	engine.toggleRoomLight();
+	engine.value.toggleRoomLight();
 	canvas.value!.focus();
 }
 
-const gridSnapping = ref(false);
-
 function toggleGridSnapping() {
-	gridSnapping.value = !gridSnapping.value;
-	engine.enableGridSnapping = gridSnapping.value;
+	engine.value.enableGridSnapping.value = !engine.value.enableGridSnapping.value;
 	canvas.value!.focus();
 }
 

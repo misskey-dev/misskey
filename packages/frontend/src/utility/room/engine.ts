@@ -19,6 +19,8 @@ import * as BABYLON from '@babylonjs/core';
 import { AxesViewer } from '@babylonjs/core/Debug/axesViewer';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
 import { BoundingBoxRenderer } from '@babylonjs/core/Rendering/boundingBoxRenderer';
+import { GridMaterial } from '@babylonjs/materials';
+import { ref, watch } from 'vue';
 import * as sound from '@/utility/sound.js';
 
 type RoomDef = {
@@ -442,17 +444,20 @@ export class RoomEngine {
 		isMainLight: boolean;
 	} | null = null;
 	private selectedObjectId: string | null = null;
-	private time: 0 | 1 | 2 = 0; // 0: 昼, 1: 夕, 2: 夜
+	private time: 0 | 1 | 2 = 2; // 0: 昼, 1: 夕, 2: 夜
 	private roomCollisionMeshes: BABYLON.AbstractMesh[] = [];
 	private def: RoomDef;
-	public enableGridSnapping = false;
-	public gridSnappingScale = 10/*cm*/;
+	public enableGridSnapping = ref(true);
+	public gridSnappingScale = ref(8/*cm*/);
 	private putParticleSystem: BABYLON.ParticleSystem;
 	private envMapIndoor: BABYLON.CubeTexture;
 	private envMapOutdoor: BABYLON.CubeTexture;
 	private reflectionProbe: BABYLON.ReflectionProbe;
 	private roomLight: BABYLON.SpotLight;
 	private enableReflectionProbe = false;
+	private xGridPreviewPlane: BABYLON.Mesh;
+	private yGridPreviewPlane: BABYLON.Mesh;
+	private zGridPreviewPlane: BABYLON.Mesh;
 
 	constructor(def: RoomDef, options: {
 		canvas: HTMLCanvasElement;
@@ -616,6 +621,32 @@ export class RoomEngine {
 		this.putParticleSystem.color2 = new BABYLON.Color4(1, 1, 1, 0.2);
 		this.putParticleSystem.colorDead = new BABYLON.Color4(1, 1, 1, 0);
 		this.putParticleSystem.targetStopDuration = 0.05;
+
+		const gridMaterial = new GridMaterial('grid', this.scene);
+		gridMaterial.lineColor = new BABYLON.Color3(0.5, 0.5, 0.5);
+		gridMaterial.mainColor = new BABYLON.Color3(0, 0, 0);
+		gridMaterial.minorUnitVisibility = 1;
+		gridMaterial.opacity = 0.5;
+		watch(this.gridSnappingScale, (v) => {
+			gridMaterial.gridRatio = v;
+		}, { immediate: true });
+
+		this.xGridPreviewPlane = BABYLON.MeshBuilder.CreatePlane('xGridPreviewPlane', { width: 1000/*cm*/, height: 1000/*cm*/ }, this.scene);
+		this.xGridPreviewPlane.rotation = new BABYLON.Vector3(0, 0, Math.PI / 2);
+		this.xGridPreviewPlane.material = gridMaterial;
+		this.xGridPreviewPlane.isPickable = false;
+		this.xGridPreviewPlane.isVisible = false;
+
+		this.yGridPreviewPlane = BABYLON.MeshBuilder.CreatePlane('yGridPreviewPlane', { width: 1000/*cm*/, height: 1000/*cm*/ }, this.scene);
+		this.yGridPreviewPlane.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
+		this.yGridPreviewPlane.material = gridMaterial;
+		this.yGridPreviewPlane.isPickable = false;
+		this.yGridPreviewPlane.isVisible = false;
+
+		this.zGridPreviewPlane = BABYLON.MeshBuilder.CreatePlane('zGridPreviewPlane', { width: 1000/*cm*/, height: 1000/*cm*/ }, this.scene);
+		this.zGridPreviewPlane.material = gridMaterial;
+		this.zGridPreviewPlane.isPickable = false;
+		this.zGridPreviewPlane.isVisible = false;
 
 		let isDragging = false;
 
@@ -795,10 +826,10 @@ export class RoomEngine {
 		grabbing.ghost.position = this.camera.position.add(dir.scale(grabbing.distance)).add(grabbing.startOffset);
 		grabbing.ghost.rotation = new BABYLON.Vector3(0, this.camera.rotation.y + grabbing.startRotationY + grabbing.rotation, 0);
 
-		if (this.enableGridSnapping) {
-			grabbing.ghost.position.x = Math.round(grabbing.ghost.position.x / this.gridSnappingScale) * this.gridSnappingScale;
-			grabbing.ghost.position.y = Math.round(grabbing.ghost.position.y / this.gridSnappingScale) * this.gridSnappingScale;
-			grabbing.ghost.position.z = Math.round(grabbing.ghost.position.z / this.gridSnappingScale) * this.gridSnappingScale;
+		if (this.enableGridSnapping.value) {
+			grabbing.ghost.position.x = Math.round(grabbing.ghost.position.x / this.gridSnappingScale.value) * this.gridSnappingScale.value;
+			grabbing.ghost.position.y = Math.round(grabbing.ghost.position.y / this.gridSnappingScale.value) * this.gridSnappingScale.value;
+			grabbing.ghost.position.z = Math.round(grabbing.ghost.position.z / this.gridSnappingScale.value) * this.gridSnappingScale.value;
 			grabbing.ghost.rotation.y = Math.round(grabbing.ghost.rotation.y / (Math.PI / 8)) * (Math.PI / 8);
 		}
 
@@ -848,8 +879,18 @@ export class RoomEngine {
 			if (newPos.y > 250/*cm*/) newPos.y = 250/*cm*/;
 		} else if (placement === 'ceiling') {
 			newPos.y = 250/*cm*/;
+
+			if (this.enableGridSnapping.value) {
+				this.yGridPreviewPlane.position = new BABYLON.Vector3(grabbing.mesh.position.x, 250/*cm*/ - 0.1/*cm*/, grabbing.mesh.position.z);
+				this.yGridPreviewPlane.isVisible = true;
+			}
 		} else if (placement === 'floor') {
 			newPos.y = 0;
+
+			if (this.enableGridSnapping.value) {
+				this.yGridPreviewPlane.position = new BABYLON.Vector3(grabbing.mesh.position.x, 0.1/*cm*/, grabbing.mesh.position.z);
+				this.yGridPreviewPlane.isVisible = true;
+			}
 		} else {
 			// 下に向かってレイを飛ばす
 			const ray = new BABYLON.Ray(grabbing.ghost.position, new BABYLON.Vector3(0, -1, 0), 1000/*cm*/);
@@ -859,6 +900,11 @@ export class RoomEngine {
 				sticky = hit.pickedMesh.metadata?.objectId ?? null;
 			}
 			if (newPos.y < 0) newPos.y = 0;
+
+			if (this.enableGridSnapping.value) {
+				this.yGridPreviewPlane.position = new BABYLON.Vector3(grabbing.mesh.position.x, grabbing.mesh.position.y + 0.1/*cm*/, grabbing.mesh.position.z);
+				this.yGridPreviewPlane.isVisible = true;
+			}
 		}
 
 		if (sticky != null) {
@@ -1038,13 +1084,18 @@ export class RoomEngine {
 			this.grabbing = null;
 			this.selectObject(null);
 
+			this.xGridPreviewPlane.isVisible = false;
+			this.yGridPreviewPlane.isVisible = false;
+			this.zGridPreviewPlane.isVisible = false;
+
+			this.putParticleSystem.emitter = pos;
+			this.putParticleSystem.start();
+
 			sound.playUrl('/client-assets/room/sfx/put.mp3', {
 				volume: 1,
 				playbackRate: 1,
 			});
 
-			this.putParticleSystem.emitter = pos;
-			this.putParticleSystem.start();
 			return;
 		}
 
