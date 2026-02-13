@@ -9,6 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_buttons" :class="$style.controls">
 		<MkButton @click="grab">Grab</MkButton>
 		<MkButton @click="toggleLight">Toggle Light</MkButton>
+		<MkButton @click="toggleGridSnapping">Grid Snap: {{ gridSnapping }}</MkButton>
 	</div>
 </div>
 </template>
@@ -180,6 +181,7 @@ onMounted(() => {
 			type: 'ceiling-fan-light',
 			position: [0, 250, 0],
 			rotation: [0, 0, 0],
+			isMainLight: true,
 		}],
 	}, {
 		canvas: canvas.value!,
@@ -198,30 +200,6 @@ onUnmounted(() => {
 	window.removeEventListener('resize', resize);
 });
 
-function onKeydown(ev: KeyboardEvent) {
-	if (ev.key === 'w') {
-		engine.moveForward = true;
-	} else if (ev.key === 's') {
-		engine.moveBackward = true;
-	} else if (ev.key === 'a') {
-		engine.moveLeft = true;
-	} else if (ev.key === 'd') {
-		engine.moveRight = true;
-	}
-}
-
-function onKeyup(ev: KeyboardEvent) {
-	if (ev.key === 'w') {
-		engine.moveForward = false;
-	} else if (ev.key === 's') {
-		engine.moveBackward = false;
-	} else if (ev.key === 'a') {
-		engine.moveLeft = false;
-	} else if (ev.key === 'd') {
-		engine.moveRight = false;
-	}
-}
-
 function grab() {
 	engine.toggleGrab();
 	canvas.value!.focus();
@@ -229,6 +207,14 @@ function grab() {
 
 function toggleLight() {
 	engine.toggleRoomLight();
+	canvas.value!.focus();
+}
+
+const gridSnapping = ref(false);
+
+function toggleGridSnapping() {
+	gridSnapping.value = !gridSnapping.value;
+	engine.enableGridSnapping = gridSnapping.value;
 	canvas.value!.focus();
 }
 

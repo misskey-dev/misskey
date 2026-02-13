@@ -28,6 +28,7 @@ type RoomDef = {
 		position: [number, number, number];
 		rotation: [number, number, number];
 		variation?: string | null;
+		isMainLight?: boolean;
 
 		/**
 		 * 別のオブジェクトのID
@@ -436,12 +437,14 @@ export class RoomEngine {
 		startDistance: number;
 		ghost: BABYLON.AbstractMesh;
 		descendantStickyObjectIds: string[];
+		isMainLight: boolean;
 	} | null = null;
 	private highlightedObjectId: string | null = null;
 	private time: 0 | 1 | 2 = 0; // 0: 昼, 1: 夕, 2: 夜
 	private roomCollisionMeshes: BABYLON.AbstractMesh[] = [];
 	private def: RoomDef;
 	public enableGridSnapping = false;
+	public gridSnappingScale = 10/*cm*/;
 	private putParticleSystem: BABYLON.ParticleSystem;
 	private envMapIndoor: BABYLON.CubeTexture;
 	private envMapOutdoor: BABYLON.CubeTexture;
@@ -760,10 +763,9 @@ export class RoomEngine {
 		grabbing.ghost.rotation = new BABYLON.Vector3(0, this.camera.rotation.y + grabbing.startRotationY, 0);
 
 		if (this.enableGridSnapping) {
-			const scale = 10/*cm*/;
-			grabbing.ghost.position.x = Math.round(grabbing.ghost.position.x / scale) * scale;
-			grabbing.ghost.position.y = Math.round(grabbing.ghost.position.y / scale) * scale;
-			grabbing.ghost.position.z = Math.round(grabbing.ghost.position.z / scale) * scale;
+			grabbing.ghost.position.x = Math.round(grabbing.ghost.position.x / this.gridSnappingScale) * this.gridSnappingScale;
+			grabbing.ghost.position.y = Math.round(grabbing.ghost.position.y / this.gridSnappingScale) * this.gridSnappingScale;
+			grabbing.ghost.position.z = Math.round(grabbing.ghost.position.z / this.gridSnappingScale) * this.gridSnappingScale;
 			grabbing.ghost.rotation.y = Math.round(grabbing.ghost.rotation.y / (Math.PI / 8)) * (Math.PI / 8);
 		}
 
@@ -791,6 +793,15 @@ export class RoomEngine {
 				newRotation.y = Math.atan2(normalLocal.z, normalLocal.x);
 				sticky = hit.pickedMesh.metadata?.objectId ?? null;
 			}
+		} else if (placement === 'bottom') {
+			// 上に向かってレイを飛ばす
+			const ray = new BABYLON.Ray(grabbing.ghost.position, new BABYLON.Vector3(0, 1, 0), 1000/*cm*/);
+			const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.startsWith('_COLLISION_CEILING_') || m.name.startsWith('_BOTTOM_')));
+			if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
+				newPos.y = hit.pickedPoint.y;
+				sticky = hit.pickedMesh.metadata?.objectId ?? null;
+			}
+			if (newPos.y > 250/*cm*/) newPos.y = 250/*cm*/;
 		} else {
 			// 下に向かってレイを飛ばす
 			const ray = new BABYLON.Ray(grabbing.ghost.position, new BABYLON.Vector3(0, -1, 0), 1000/*cm*/);
@@ -835,6 +846,10 @@ export class RoomEngine {
 		//	//const offset = this.grabbing.mesh!.position.subtract(soMeshStartPosition);
 		//	//soMesh.position = this.grabbing.mesh!.position.subtract(offset);
 		//}
+
+		if (grabbing.isMainLight) {
+			this.roomLight.position = grabbing.mesh.position.add(new BABYLON.Vector3(0, -1/*cm*/, 0));
+		}
 	}
 
 	private async loadEnvModel() {
@@ -918,8 +933,8 @@ export class RoomEngine {
 				mesh.isVisible = false;
 			} else {
 			//if (mesh.name === '__root__') continue;
-				if (def.receiveShadows !== false) mesh.receiveShadows = true;
-				if (def.castShadows !== false) {
+				if (!o.isMainLight && def.receiveShadows !== false) mesh.receiveShadows = true;
+				if (!o.isMainLight && def.castShadows !== false) {
 					this.shadowGenerator1.addShadowCaster(mesh);
 					this.shadowGenerator2.addShadowCaster(mesh);
 				}
@@ -940,6 +955,10 @@ export class RoomEngine {
 		const objDef = OBJECTS[o.type];
 		if (objDef != null && objDef.onInit != null) {
 			objDef.onInit(this, o, obj);
+		}
+
+		if (o.isMainLight) {
+			this.roomLight.position = obj.meshes[0].position.add(new BABYLON.Vector3(0, -1/*cm*/, 0));
 		}
 	}
 
@@ -1022,6 +1041,7 @@ export class RoomEngine {
 			startDistance: startDistance,
 			ghost: ghost,
 			descendantStickyObjectIds,
+			isMainLight: this.def.objects.find(o => o.id === highlightedObject.metadata.objectId)?.isMainLight ?? false,
 		};
 
 		sound.playUrl('/client-assets/room/sfx/grab.mp3', {
