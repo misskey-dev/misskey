@@ -8,9 +8,11 @@
  * - 単位はセンチメートルで設計すること。
  * - それを置いたときに底になる縦軸座標(blenderならz)が0になるように設計すること。
  * - 壁面設置の場合は壁面に接する面のX軸座標が0になるように設計すること。
- * - メッシュ名を _COLLISION_TOP_ で始めると、その面の上にモノを置けることを示す。当該メッシュはレンダリングでは表示されません。
- * - メッシュ名を _COLLISION_SIDE_ で始めると、その面にモノを貼り付けられることを示す。当該メッシュはレンダリングでは表示されません。
- * - なお、現状 _COLLISION_TOP_ / _COLLISION_SIDE_ メッシュは単一の面でなければなりません。つまりArray Modifierなどを適用した状態では正しく動作しません。
+ * - メッシュ名を _TOP_ で始めると、その面の上にモノを置けることを示す。当該メッシュはレンダリングでは表示されません。
+ * - メッシュ名を _SIDE_ で始めると、その面にモノを貼り付けられることを示す。当該メッシュはレンダリングでは表示されません。
+ * - なお、現状 _TOP_ / _SIDE_ メッシュは単一の面でなければなりません。つまりArray Modifierなどを適用した状態では正しく動作しません。
+ * - メッシュ名を _COLLISION_ で始めると、コリジョン用メッシュとして扱われます。このメッシュはシーク時のレイのヒットチェックにも使われます。当該メッシュはレンダリングでは表示されません。
+ * - コリジョン用メッシュが無い場合、すべてのメッシュがコリジョン用メッシュとして扱われますが、例えば網目のようなメッシュではレイが隙間を通り抜けて後ろにあるオブジェクトにヒットしてしまうなどの問題が発生します。
  */
 
 import * as BABYLON from '@babylonjs/core';
@@ -409,7 +411,7 @@ export class RoomEngine {
 		descendantStickyObjectIds: string[];
 	} | null = null;
 	private highlightedObjectId: string | null = null;
-	private time: 0 | 1 | 2 = 2; // 0: 昼, 1: 夕, 2: 夜
+	private time: 0 | 1 | 2 = 0; // 0: 昼, 1: 夕, 2: 夜
 	private roomCollisionMeshes: BABYLON.AbstractMesh[] = [];
 	private def: RoomDef;
 	public enableGridSnapping = false;
@@ -711,15 +713,13 @@ export class RoomEngine {
 				om.renderOutline = false;
 			}
 		}
-		const hit = this.scene.pickWithRay(ray)!;
-		if (hit.pickedMesh != null) {
+		const hit = this.scene.pickWithRay(ray, (m) => m.metadata?.isCollision && m.metadata?.objectId != null && this.objectMeshs.has(m.metadata.objectId));
+		if (hit != null && hit.pickedMesh != null) {
 			const oid = hit.pickedMesh.metadata?.objectId;
-			if (oid != null && this.objectMeshs.has(oid)) {
-				this.highlightedObjectId = oid;
-				const o = this.objectMeshs.get(oid)!;
-				for (const om of o.getChildMeshes()) {
-					om.renderOutline = true;
-				}
+			this.highlightedObjectId = oid;
+			const o = this.objectMeshs.get(oid)!;
+			for (const om of o.getChildMeshes()) {
+				om.renderOutline = true;
 			}
 		}
 	}
@@ -754,7 +754,7 @@ export class RoomEngine {
 		if (placement === 'side') {
 			// 前方に向かってレイを飛ばす
 			const ray = new BABYLON.Ray(this.camera.position, dir, 1000/*cm*/);
-			const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.startsWith('_COLLISION_WALL_') || m.name.startsWith('_COLLISION_SIDE_')));
+			const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.startsWith('_COLLISION_WALL_') || m.name.startsWith('_SIDE_')));
 			if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
 				newPos.x = hit.pickedPoint.x;
 				newPos.y = hit.pickedPoint.y;
@@ -767,7 +767,7 @@ export class RoomEngine {
 		} else {
 			// 下に向かってレイを飛ばす
 			const ray = new BABYLON.Ray(grabbing.ghost.position, new BABYLON.Vector3(0, -1, 0), 1000/*cm*/);
-			const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.startsWith('_COLLISION_FLOOR_') || m.name.startsWith('_COLLISION_TOP_')));
+			const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.startsWith('_COLLISION_FLOOR_') || m.name.startsWith('_TOP_')));
 			if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
 				newPos.y = hit.pickedPoint.y;
 				sticky = hit.pickedMesh.metadata?.objectId ?? null;
@@ -825,8 +825,8 @@ export class RoomEngine {
 		}
 	}
 
-	private async loadRoomModel(type: RoomDef['roomType']) {
-		const roomObj = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default.glb', this.scene);
+	private async loadRoomModel() {
+		const roomObj = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/default.glb', this.scene);
 		roomObj.meshes[0].scaling = new BABYLON.Vector3(-100, 100, 100);
 		roomObj.meshes[0].bakeCurrentTransformIntoVertices();
 		for (const mesh of roomObj.meshes) {
@@ -861,32 +861,46 @@ export class RoomEngine {
 		obj.meshes[0].position = new BABYLON.Vector3(...o.position);
 		obj.meshes[0].rotation = new BABYLON.Vector3(...o.rotation);
 
+		let hasCollisionMesh = false;
+		for (const mesh of obj.meshes) {
+			if (mesh.name.startsWith('_COLLISION_')) {
+				hasCollisionMesh = true;
+				break;
+			}
+		}
+
 		for (const m of obj.meshes) {
 			const mesh = m;
 
-			mesh.metadata = { isObject: true, objectId: o.id, objectType: o.type };
+			mesh.metadata = { isObject: true, objectId: o.id, objectType: o.type, isCollision: !hasCollisionMesh };
+			mesh.checkCollisions = !hasCollisionMesh;
 
 			if (mesh.name.startsWith('_TV_SCREEN_')) {
 				mesh.markVerticesDataAsUpdatable(BABYLON.VertexBuffer.UVKind, true);
 			}
 
-			if (mesh.name.startsWith('_COLLISION_TOP_')) {
+			if (mesh.name.startsWith('_COLLISION_')) {
+				mesh.receiveShadows = false;
 				mesh.isVisible = false;
-				continue;
-			}
-
-			mesh.checkCollisions = true;
+				mesh.metadata.isCollision = true;
+				mesh.checkCollisions = true;
+			} else if (mesh.name.startsWith('_TOP_') || mesh.name.startsWith('_SIDE_')) {
+				mesh.receiveShadows = false;
+				mesh.isVisible = false;
+			} else {
 			//if (mesh.name === '__root__') continue;
-			mesh.receiveShadows = true;
-			this.shadowGenerator1.addShadowCaster(mesh);
-			this.shadowGenerator2.addShadowCaster(mesh);
+				mesh.receiveShadows = true;
+				this.shadowGenerator1.addShadowCaster(mesh);
+				this.shadowGenerator2.addShadowCaster(mesh);
 
-			mesh.renderOutline = false;
-			mesh.outlineWidth = 0.003;
-			mesh.outlineColor = new BABYLON.Color3(1, 0, 0);
-			//if (mesh.material) (mesh.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(0.2, 0.2, 0.2);
-			if (mesh.material) {
-				(mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.enableReflectionProbe ? this.reflectionProbe.cubeTexture : this.envMapIndoor;
+				mesh.renderOutline = false;
+				mesh.outlineWidth = 0.003;
+				mesh.outlineColor = new BABYLON.Color3(1, 0, 0);
+				//if (mesh.material) (mesh.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(0.2, 0.2, 0.2);
+				if (mesh.material) {
+					(mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.enableReflectionProbe ? this.reflectionProbe.cubeTexture : this.envMapIndoor;
+					console.log((mesh.material as BABYLON.PBRMaterial).indexOfRefraction);
+				}
 			}
 		}
 
