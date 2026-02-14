@@ -1,34 +1,137 @@
-name: Security Review (DISABLED - API Credit Required)
-
-# ワークフロー無効化 - Claude API クレジット不足のため
-# Claude Code Security Review Action も Claude API クレジットが必要
-# 有効化するには以下の'on'セクションのコメントを外してください
-
-permissions:
-  pull-requests: write  # Needed for leaving PR comments
-  contents: read
-
-# on:
-#   pull_request:
+name: Security Review
 
 on:
-  workflow_dispatch:
-    inputs:
-      enable_security_review:
-        description: 'Enable security review (requires API credits)'
-        required: false
-        default: 'false'
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - "packages/backend/**"
+      - "packages/misskey-js/**"
 
 jobs:
-  security:
+  security-review:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+      issues: read
+      id-token: write
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
-          fetch-depth: 2
+          fetch-depth: 1
 
-      - uses: anthropics/claude-code-security-review@main
+      - name: Run Security Review
+        uses: anthropics/claude-code-action@v1
         with:
-          comment-pr: true
-          claude-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          claude_args: "--model claude-opus-4-1-20250805 --max-turns 10"
+          prompt: |
+            You are a senior security engineer conducting a focused security review of this pull request.
+
+            ## OBJECTIVE
+            Perform a security-focused code review to identify HIGH-CONFIDENCE security vulnerabilities
+            that could have real exploitation potential. This is NOT a general code review —
+            focus ONLY on security implications newly introduced by this PR.
+            Do not comment on pre-existing security concerns unrelated to the changes.
+
+            ## ANALYSIS METHODOLOGY
+
+            **Phase 1 — Repository Context Research:**
+            Use file search tools to understand existing security frameworks, authentication patterns,
+            input validation approaches, and the threat model of this Misskey fork.
+
+            **Phase 2 — Comparative Analysis:**
+            Compare new code against existing security patterns. Identify deviations from established
+            security conventions in the codebase.
+
+            **Phase 3 — Vulnerability Assessment:**
+            For each changed file, analyze security implications, trace data flows from untrusted
+            sources to sensitive sinks, and verify permission boundary enforcement.
+
+            ## SECURITY CATEGORIES TO EXAMINE
+
+            **Input Validation & Injection:**
+            - SQL injection, Command injection, XXE injection, Template injection
+            - NoSQL injection, Path traversal, XSS (reflected, stored, DOM-based)
+
+            **Authentication & Authorization:**
+            - Authentication bypass, Privilege escalation, Session management flaws
+            - JWT token vulnerabilities, Authorization logic bypasses
+            - Misskey API endpoint permission checks (role-based access)
+
+            **Crypto & Secrets Management:**
+            - Hardcoded API keys/passwords/tokens, Weak cryptographic algorithms
+            - Improper key storage, Cryptographic randomness issues
+
+            **Injection & Code Execution:**
+            - RCE via deserialization, Eval injection, Prototype pollution with impact
+
+            **Data Exposure:**
+            - Sensitive data logging (passwords, tokens), PII handling violations
+            - API endpoint data leakage, Debug information exposure in production
+
+            **Misskey / ActivityPub Specific:**
+            - Federation trust issues (unsigned or improperly verified activities)
+            - ActivityPub object injection or spoofing
+            - Remote user/instance impersonation
+            - Insufficient validation of federated content
+            - Drive file access control bypass
+            - Streaming API authorization issues
+
+            ## CRITICAL INSTRUCTIONS — MINIMIZE FALSE POSITIVES
+
+            1. Only flag issues where you are >80% confident of actual exploitability
+            2. Skip theoretical issues, style concerns, or low-impact findings
+            3. Prioritize vulnerabilities leading to unauthorized access, data breaches, or RCE
+
+            ## EXCLUSIONS — DO NOT REPORT
+
+            - Denial of Service (DoS) / resource exhaustion / rate limiting
+            - Secrets or sensitive data stored on disk (config files)
+            - Memory/CPU exhaustion concerns
+            - Open redirects, tabnabbing, XS-Leaks (low impact)
+            - Regex injection / ReDoS
+            - Memory safety issues in non-C/C++ code
+            - Input validation issues without a proven exploit path
+            - GitHub Actions workflow input sanitization
+            - Theoretical race conditions without demonstrated impact
+            - Outdated third-party library versions (use Dependabot for this)
+            - Log spoofing or log query injection
+            - Path-only SSRF without demonstrated internal service access
+            - Client-side JS/TS permission check gaps (server must enforce)
+            - Unit test files
+            - Markdown or documentation files
+
+            ## FALSE POSITIVE PRECEDENTS
+
+            - Plaintext logging of high-value secrets (passwords, API keys) IS a vulnerability; URL logging is NOT
+            - UUIDs are assumed unpredictable — do not flag as insecure identifiers
+            - Environment variables and CLI flags are trusted values
+            - React/Vue template rendering is XSS-safe by default (except v-html / dangerouslySetInnerHTML)
+            - MEDIUM findings must be obvious and specific, not speculative
+
+            ## SEVERITY GUIDELINES
+
+            - **HIGH**: Directly leads to RCE, data breach, or authentication bypass
+            - **MEDIUM**: Exploitable under specific but realistic conditions
+            - **LOW**: Defense-in-depth concern with limited direct impact
+
+            ## OUTPUT FORMAT
+
+            For each genuine finding, post a review comment on the specific file and line with:
+
+            **🔒 Security: [brief title]**
+            **Severity:** HIGH / MEDIUM / LOW
+            **Category:** (e.g., sql_injection, auth_bypass, xss)
+
+            **Description:** Clear explanation of the vulnerability.
+
+            **Exploit scenario:** Concrete steps an attacker would take.
+
+            **Recommendation:** Specific fix with code example if applicable.
+
+            ---
+
+            If NO security issues are found, post a single summary comment:
+            "✅ Security review complete — no significant vulnerabilities identified in this changeset."
