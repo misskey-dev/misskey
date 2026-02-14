@@ -46,10 +46,10 @@ type ObjectDef = {
 	receiveShadows?: boolean;
 	castShadows?: boolean;
 	isChair?: boolean;
-	onInit?: (room: RoomEngine, o: RoomDef['objects'][0], rootNode: BABYLON.TransformNode) => void;
+	onInit?: (room: RoomEngine, o: RoomDef['objects'][0], rootNode: BABYLON.Mesh) => void;
 };
 
-function yuge(room: RoomEngine, mesh: BABYLON.TransformNode, offset: BABYLON.Vector3) {
+function yuge(room: RoomEngine, mesh: BABYLON.Mesh, offset: BABYLON.Vector3) {
 	const emitter = new BABYLON.TransformNode('emitter', room.scene);
 	emitter.parent = mesh;
 	emitter.position = offset;
@@ -432,10 +432,10 @@ export class RoomEngine {
 	private birdeyeCamera: BABYLON.ArcRotateCamera;
 	private intervalIds: number[] = [];
 	private timeoutIds: number[] = [];
-	private objectMeshs: Map<string, BABYLON.TransformNode> = new Map();
+	private objectMeshs: Map<string, BABYLON.Mesh> = new Map();
 	private grabbing: {
 		objectId: string;
-		mesh: BABYLON.TransformNode;
+		mesh: BABYLON.Mesh;
 		startOffset: BABYLON.Vector3;
 		startRotationY: number;
 		distance: number;
@@ -1149,7 +1149,7 @@ export class RoomEngine {
 	public toggleGrab() {
 		if (this.grabbing != null) {
 			// 親から先に外していく
-			const removeStickyParentRecursively = (mesh: BABYLON.TransformNode) => {
+			const removeStickyParentRecursively = (mesh: BABYLON.Mesh) => {
 				const stickyObjectIds = Array.from(this.def.objects.filter(o => o.sticky === mesh.metadata.objectId)).map(o => o.id);
 				for (const soid of stickyObjectIds) {
 					const soMesh = this.objectMeshs.get(soid)!;
