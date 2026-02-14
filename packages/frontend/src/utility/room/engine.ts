@@ -8,10 +8,10 @@
  * - 単位はセンチメートルで設計すること。
  * - それを置いたときに底になる縦軸座標(blenderならz)が0になるように設計すること。
  * - 壁面設置の場合は壁面に接する面のX軸座標が0になるように設計すること。
- * - メッシュ名を _TOP_ で始めると、その面の上にモノを置けることを示す。当該メッシュはレンダリングでは表示されません。
- * - メッシュ名を _SIDE_ で始めると、その面にモノを貼り付けられることを示す。当該メッシュはレンダリングでは表示されません。
- * - なお、現状 _TOP_ / _SIDE_ メッシュは単一の面でなければなりません。つまりArray Modifierなどを適用した状態では正しく動作しません。
- * - メッシュ名を _COLLISION_ で始めると、コリジョン用メッシュとして扱われます。このメッシュはシーク時のレイのヒットチェックにも使われます。当該メッシュはレンダリングでは表示されません。
+ * - メッシュ名を __TOP__ で始めると、その面の上にモノを置けることを示す。当該メッシュはレンダリングでは表示されません。
+ * - メッシュ名を __SIDE__ で始めると、その面にモノを貼り付けられることを示す。当該メッシュはレンダリングでは表示されません。
+ * - なお、現状 __TOP__ / __SIDE__ メッシュは単一の面でなければなりません。つまりArray Modifierなどを適用した状態では正しく動作しません。
+ * - メッシュ名を __COLLISION__ で始めると、コリジョン用メッシュとして扱われます。このメッシュはシーク時のレイのヒットチェックにも使われます。当該メッシュはレンダリングでは表示されません。
  * - コリジョン用メッシュが無い場合、すべてのメッシュがコリジョン用メッシュとして扱われますが、例えば網目のようなメッシュではレイが隙間を通り抜けて後ろにあるオブジェクトにヒットしてしまうなどの問題が発生します。
  */
 
@@ -20,6 +20,7 @@ import { AxesViewer } from '@babylonjs/core/Debug/axesViewer';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
 import { BoundingBoxRenderer } from '@babylonjs/core/Rendering/boundingBoxRenderer';
 import { GridMaterial } from '@babylonjs/materials';
+import { ShowInspector } from '@babylonjs/inspector';
 import { ref, watch } from 'vue';
 import * as sound from '@/utility/sound.js';
 
@@ -44,12 +45,12 @@ type ObjectDef = {
 	placement: 'top' | 'side' | 'bottom' | 'wall' | 'ceiling' | 'floor';
 	receiveShadows?: boolean;
 	castShadows?: boolean;
-	onInit?: (room: RoomEngine, o: RoomDef['objects'][0], obj: BABYLON.ISceneLoaderAsyncResult) => void;
+	onInit?: (room: RoomEngine, o: RoomDef['objects'][0], rootNode: BABYLON.TransformNode) => void;
 };
 
-function yuge(room: RoomEngine, obj: BABYLON.ISceneLoaderAsyncResult, offset: BABYLON.Vector3) {
+function yuge(room: RoomEngine, mesh: BABYLON.TransformNode, offset: BABYLON.Vector3) {
 	const emitter = new BABYLON.TransformNode('emitter', room.scene);
-	emitter.parent = obj.meshes[0];
+	emitter.parent = mesh;
 	emitter.position = offset;
 	const ps = new BABYLON.ParticleSystem('steamParticleSystem', 8, room.scene);
 	ps.particleTexture = new BABYLON.Texture('/client-assets/room/steam.png');
@@ -79,14 +80,14 @@ const OBJECTS = {
 	},
 	mug: {
 		placement: 'top',
-		onInit: (room, o, obj) => {
-			yuge(room, obj, new BABYLON.Vector3(0, 5/*cm*/, 0));
+		onInit: (room, o, rootNode) => {
+			yuge(room, rootNode, new BABYLON.Vector3(0, 5/*cm*/, 0));
 		},
 	},
 	'cup-noodle': {
 		placement: 'top',
-		onInit: (room, o, obj) => {
-			yuge(room, obj, new BABYLON.Vector3(0, 10/*cm*/, 0));
+		onInit: (room, o, rootNode) => {
+			yuge(room, rootNode, new BABYLON.Vector3(0, 10/*cm*/, 0));
 		},
 	},
 	stickyNote: {
@@ -94,8 +95,8 @@ const OBJECTS = {
 	},
 	'cardboard-box': {
 		placement: 'top',
-		onInit: (room, o, obj) => {
-			const boxMesh = obj.meshes[0].getChildMeshes().find(m => m.name === 'Box') as BABYLON.Mesh;
+		onInit: (room, o, rootNode) => {
+			const boxMesh = rootNode.getChildMeshes().find(m => m.name === 'Box') as BABYLON.Mesh;
 			if (o.variation === 'mikan') {
 				const tex = new BABYLON.Texture('/client-assets/room/objects/cardboard-box/textures/mikan.png', room.scene, false, false);
 				(boxMesh.material as BABYLON.PBRMaterial).albedoTexture = tex;
@@ -109,9 +110,8 @@ const OBJECTS = {
 	},
 	'book': {
 		placement: 'top',
-		onInit: (room, o, obj) => {
-			const mesh = obj.meshes[2] as BABYLON.Mesh;
-			console.log(obj.meshes);
+		onInit: (room, o, rootNode) => {
+			const mesh = rootNode.getChildMeshes()[1] as BABYLON.Mesh;
 			mesh.markVerticesDataAsUpdatable(BABYLON.VertexBuffer.UVKind, true);
 			const index = o.variation;
 			const x = index % 8;
@@ -129,15 +129,15 @@ const OBJECTS = {
 	},
 	'lava-lamp': {
 		placement: 'top',
-		onInit: (room, o, obj) => {
+		onInit: (room, o, rootNode) => {
 			const light = new BABYLON.PointLight('lavaLampLight', new BABYLON.Vector3(0, 11/*cm*/, 0), room.scene);
-			light.parent = obj.meshes[0];
+			light.parent = rootNode;
 			light.diffuse = new BABYLON.Color3(1.0, 0.5, 0.2);
 			light.intensity = 300;
 			light.range = 100/*cm*/;
 
 			const sphere = BABYLON.MeshBuilder.CreateSphere('lavaLampLightSphere', { diameter: 4/*cm*/ }, room.scene);
-			sphere.parent = obj.meshes[0];
+			sphere.parent = rootNode;
 			sphere.position = new BABYLON.Vector3(0, 15/*cm*/, 0);
 			const mat = new BABYLON.StandardMaterial('lavaLampLightMat', room.scene);
 			mat.emissiveColor = new BABYLON.Color3(1.0, 0.5, 0.2);
@@ -155,7 +155,7 @@ const OBJECTS = {
 			room.scene.beginAnimation(sphere, 0, 500, true);
 
 			const emitter = new BABYLON.TransformNode('emitter', room.scene);
-			emitter.parent = obj.meshes[0];
+			emitter.parent = rootNode;
 			emitter.position = new BABYLON.Vector3(0, 10/*cm*/, 0);
 			const ps = new BABYLON.ParticleSystem('', 32, room.scene);
 			ps.particleTexture = new BABYLON.Texture('/client-assets/room/objects/lava-lamp/bubble.png');
@@ -182,17 +182,17 @@ const OBJECTS = {
 	},
 	'wall-clock': {
 		placement: 'side',
-		onInit: (room, o, obj) => {
-			const hourHand = obj.meshes[0].getChildMeshes().find(m => m.name === 'HandH') as BABYLON.Mesh;
-			const minuteHand = obj.meshes[0].getChildMeshes().find(m => m.name === 'HandM') as BABYLON.Mesh;
+		onInit: (room, o, rootNode) => {
+			const hourHand = rootNode.getChildMeshes().find(m => m.name === 'HandH') as BABYLON.Mesh;
+			const minuteHand = rootNode.getChildMeshes().find(m => m.name === 'HandM') as BABYLON.Mesh;
 			room.intervalIds.push(window.setInterval(() => {
 				const now = new Date();
 				const hours = now.getHours() % 12;
 				const minutes = now.getMinutes();
 				const hAngle = -(hours / 12) * Math.PI * 2 - (minutes / 60) * (Math.PI * 2 / 12);
 				const mAngle = -(minutes / 60) * Math.PI * 2;
-				hourHand.rotation = new BABYLON.Vector3(hAngle, 0, 0);
-				minuteHand.rotation = new BABYLON.Vector3(mAngle, 0, 0);
+				hourHand.rotation = new BABYLON.Vector3(0, 0, hAngle);
+				minuteHand.rotation = new BABYLON.Vector3(0, 0, mAngle);
 			}, 1000));
 		},
 	},
@@ -222,7 +222,7 @@ const OBJECTS = {
 	},
 	'aquarium': {
 		placement: 'top',
-		onInit: (room, o, obj) => {
+		onInit: (room, o, rootNode) => {
 			const noiseTexture = new BABYLON.NoiseProceduralTexture('perlin', 256, room.scene);
 			noiseTexture.animationSpeedFactor = 70;
 			noiseTexture.persistence = 10;
@@ -230,8 +230,8 @@ const OBJECTS = {
 			noiseTexture.octaves = 5;
 
 			const emitter = new BABYLON.TransformNode('emitter', room.scene);
-			emitter.parent = obj.meshes[0];
-			emitter.position = new BABYLON.Vector3(-9/*cm*/, 7/*cm*/, -17/*cm*/);
+			emitter.parent = rootNode;
+			emitter.position = new BABYLON.Vector3(17/*cm*/, 7/*cm*/, -9/*cm*/);
 			const ps = new BABYLON.ParticleSystem('', 128, room.scene);
 			ps.particleTexture = new BABYLON.Texture('/client-assets/room/objects/lava-lamp/bubble.png');
 			ps.emitter = emitter;
@@ -285,8 +285,8 @@ const OBJECTS = {
 		placement: 'ceiling',
 		receiveShadows: false,
 		castShadows: false,
-		onInit: (room, o, obj) => {
-			const rotor = obj.meshes[0].getChildMeshes().find(m => m.name === 'Rotor') as BABYLON.Mesh;
+		onInit: (room, o, rootNode) => {
+			const rotor = rootNode.getChildMeshes().find(m => m.name === 'Rotor') as BABYLON.Mesh;
 			rotor.rotation = rotor.rotationQuaternion != null ? rotor.rotationQuaternion.toEulerAngles() : rotor.rotation;
 			const anim = new BABYLON.Animation('', 'rotation.y', 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
 			anim.setKeys([
@@ -392,11 +392,11 @@ class HorizontalCameraKeyboardMoveInput extends BABYLON.BaseCameraPointersInput 
 			if (this.codesLeft.indexOf(code) >= 0) {
 				local.x += -1;
 			} else if (this.codesUp.indexOf(code) >= 0) {
-				local.z += 1;
+				local.z += this.scene.useRightHandedSystem ? -1 : 1;
 			} else if (this.codesRight.indexOf(code) >= 0) {
 				local.x += 1;
 			} else if (this.codesDown.indexOf(code) >= 0) {
-				local.z += -1;
+				local.z += this.scene.useRightHandedSystem ? 1 : -1;
 			}
 
 			if (local.length() === 0) {
@@ -431,10 +431,10 @@ export class RoomEngine {
 	private camera2: BABYLON.ArcRotateCamera;
 	private intervalIds: number[] = [];
 	private timeoutIds: number[] = [];
-	private objectMeshs: Map<string, BABYLON.AbstractMesh> = new Map();
+	private objectMeshs: Map<string, BABYLON.TransformNode> = new Map();
 	private grabbing: {
 		objectId: string;
-		mesh: BABYLON.AbstractMesh;
+		mesh: BABYLON.TransformNode;
 		startOffset: BABYLON.Vector3;
 		startRotationY: number;
 		distance: number;
@@ -469,6 +469,7 @@ export class RoomEngine {
 
 		this.engine = new BABYLON.Engine(options.canvas, false, { alpha: false });
 		this.scene = new BABYLON.Scene(this.engine);
+		//this.scene.useRightHandedSystem = true;
 
 		if (_DEV_) {
 			new BoundingBoxRenderer(this.scene);
@@ -524,6 +525,10 @@ export class RoomEngine {
 		this.camera2.minZ = 1/*cm*/;
 		this.camera2.maxZ = 100000/*cm*/;
 		this.camera2.fov = 0.5;
+		this.camera2.lowerBetaLimit = 0;
+		this.camera2.upperBetaLimit = (Math.PI / 2) + 0.1;
+		this.camera2.lowerRadiusLimit = 50/*cm*/;
+		this.camera2.upperRadiusLimit = 1000/*cm*/;
 
 		this.scene.activeCamera = this.camera;
 
@@ -683,7 +688,7 @@ export class RoomEngine {
 				const oid = pickingInfo.pickedMesh.metadata.objectId;
 				if (oid != null && this.objectMeshs.has(oid)) {
 					const o = this.objectMeshs.get(oid)!;
-					this.camera.setTarget(o.getBoundingInfo().boundingBox.centerWorld);
+					this.camera.setTarget(o.getChildMeshes()[0].getBoundingInfo().boundingBox.centerWorld);
 					this.selectObject(oid);
 				}
 			}
@@ -717,6 +722,8 @@ export class RoomEngine {
 			axes.xAxis.position = new BABYLON.Vector3(0, 30, 0);
 			axes.yAxis.position = new BABYLON.Vector3(0, 30, 0);
 			axes.zAxis.position = new BABYLON.Vector3(0, 30, 0);
+
+			//ShowInspector(this.scene);
 		}
 	}
 
@@ -751,7 +758,7 @@ export class RoomEngine {
 
 			for (const tvId of tvIds) {
 				const tvMesh = this.objectMeshs.get(tvId);
-				const screenMesh = tvMesh?.getChildMeshes().find(m => m.name.startsWith('_TV_SCREEN_'))! as BABYLON.Mesh;
+				const screenMesh = tvMesh?.getChildMeshes().find(m => m.name.includes('__TV_SCREEN__'))! as BABYLON.Mesh;
 				screenMesh.material = tvScreenMaterial;
 
 				const aspect = 16 / 9;
@@ -822,7 +829,7 @@ export class RoomEngine {
 
 		const placement = OBJECTS[this.def.objects.find(o => o.id === grabbing.objectId)!.type].placement;
 
-		const dir = this.camera.getDirection(BABYLON.Axis.Z);
+		const dir = this.camera.getDirection(BABYLON.Axis.Z).scale(this.scene.useRightHandedSystem ? -1 : 1);
 		grabbing.ghost.position = this.camera.position.add(dir.scale(grabbing.distance)).add(grabbing.startOffset);
 		grabbing.ghost.rotation = new BABYLON.Vector3(0, this.camera.rotation.y + grabbing.startRotationY + grabbing.rotation, 0);
 
@@ -846,32 +853,32 @@ export class RoomEngine {
 		if (placement === 'side') {
 			// 前方に向かってレイを飛ばす
 			const ray = new BABYLON.Ray(this.camera.position, dir, 1000/*cm*/);
-			const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.startsWith('_ROOM_WALL_') || m.name.startsWith('_SIDE_')));
+			const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_WALL__') || m.name.includes('__SIDE__')));
 			if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
 				newPos.x = hit.pickedPoint.x;
 				newPos.y = hit.pickedPoint.y;
 				newPos.z = hit.pickedPoint.z;
 				const pickedMeshNormal = hit.getNormal(true, true);
-				const normalLocal = vecToLocal(pickedMeshNormal, hit.pickedMesh);
-				newRotation.y = Math.atan2(normalLocal.z, normalLocal.x);
+				const targetRotationY = Math.atan2(pickedMeshNormal.x, pickedMeshNormal.z);
+				newRotation.y = targetRotationY;
 				sticky = hit.pickedMesh.metadata?.objectId ?? null;
 			}
 		} else if (placement === 'wall') {
 			// 前方に向かってレイを飛ばす
 			const ray = new BABYLON.Ray(this.camera.position, dir, 1000/*cm*/);
-			const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.startsWith('_ROOM_WALL_')));
+			const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_WALL__')));
 			if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
 				newPos.x = hit.pickedPoint.x;
 				newPos.y = hit.pickedPoint.y;
 				newPos.z = hit.pickedPoint.z;
 				const pickedMeshNormal = hit.getNormal(true, true);
-				const normalLocal = vecToLocal(pickedMeshNormal, hit.pickedMesh);
-				newRotation.y = Math.atan2(normalLocal.z, normalLocal.x);
+				const targetRotationY = Math.atan2(pickedMeshNormal.x, pickedMeshNormal.z);
+				newRotation.y = targetRotationY;
 			}
 		} else if (placement === 'bottom') {
 			// 上に向かってレイを飛ばす
 			const ray = new BABYLON.Ray(grabbing.ghost.position, new BABYLON.Vector3(0, 1, 0), 1000/*cm*/);
-			const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.startsWith('_ROOM_CEILING_') || m.name.startsWith('_BOTTOM_')));
+			const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_CEILING__') || m.name.includes('__BOTTOM__')));
 			if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
 				newPos.y = hit.pickedPoint.y;
 				sticky = hit.pickedMesh.metadata?.objectId ?? null;
@@ -894,7 +901,7 @@ export class RoomEngine {
 		} else {
 			// 下に向かってレイを飛ばす
 			const ray = new BABYLON.Ray(grabbing.ghost.position, new BABYLON.Vector3(0, -1, 0), 1000/*cm*/);
-			const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.startsWith('_ROOM_FLOOR_') || m.name.startsWith('_ROOM_TOP_') || m.name.startsWith('_TOP_')));
+			const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_FLOOR__') || m.name.includes('__ROOM_TOP__') || m.name.includes('__TOP__')));
 			if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
 				newPos.y = hit.pickedPoint.y;
 				sticky = hit.pickedMesh.metadata?.objectId ?? null;
@@ -917,7 +924,7 @@ export class RoomEngine {
 		grabbing.mesh.rotation = newRotation;
 
 		//const ray = new BABYLON.Ray(this.camera.position, this.camera.getDirection(BABYLON.Axis.Z), 1000/*cm*/);
-		//const hit = this.scene.pickWithRay(ray, (m) => m.name.startsWith('_COLLISION_WALL_'))!;
+		//const hit = this.scene.pickWithRay(ray, (m) => m.name.includes('__COLLISION_WALL__'))!;
 		//if (hit.pickedMesh != null) {
 		//	const grabbingBox = this.grabbing.mesh.getBoundingInfo().boundingBox;
 		//	const grabDistanceVector = this.grabbing.mesh.position.subtract(this.camera.position);
@@ -948,9 +955,10 @@ export class RoomEngine {
 
 	private async loadEnvModel() {
 		const envObj = await BABYLON.ImportMeshAsync('/client-assets/room/env.glb', this.scene);
-		envObj.meshes[0].scaling = new BABYLON.Vector3(-100, 100, 100);
-		envObj.meshes[0].position = new BABYLON.Vector3(0, -900/*cm*/, 0); // 4階くらいの想定
+		envObj.meshes[0].scaling = envObj.meshes[0].scaling.scale(100);
 		envObj.meshes[0].bakeCurrentTransformIntoVertices();
+		envObj.meshes[0].position = new BABYLON.Vector3(0, -900/*cm*/, 0); // 4階くらいの想定
+		envObj.meshes[0].rotation = new BABYLON.Vector3(0, -Math.PI, 0);
 		for (const mesh of envObj.meshes) {
 			mesh.isPickable = false;
 			mesh.checkCollisions = false;
@@ -962,76 +970,136 @@ export class RoomEngine {
 	}
 
 	private async loadRoomModel() {
-		const roomObj = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/default.glb', this.scene);
-		roomObj.meshes[0].scaling = new BABYLON.Vector3(-100, 100, 100);
-		roomObj.meshes[0].bakeCurrentTransformIntoVertices();
-		for (const mesh of roomObj.meshes) {
-			if (mesh.name.startsWith('_ROOM_WALL_') || mesh.name.startsWith('_ROOM_FLOOR_') || mesh.name.startsWith('_ROOM_CEILING_') || mesh.name.startsWith('_ROOM_TOP_') || mesh.name.startsWith('_ROOM_BOTTOM_') || mesh.name.startsWith('_ROOM_SIDE_')) {
-				mesh.isPickable = false;
-				mesh.receiveShadows = false;
-				mesh.isVisible = false;
-				mesh.checkCollisions = true;
-				this.roomCollisionMeshes.push(mesh);
-				continue;
-			}
+		//await BABYLON.InitializeCSG2Async();
 
-			mesh.isPickable = false;
-			mesh.checkCollisions = false;
-			mesh.receiveShadows = true;
-			this.shadowGenerator1.addShadowCaster(mesh);
-			this.shadowGenerator2.addShadowCaster(mesh);
-			//if (mesh.material) (mesh.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(1, 1, 1);
-			if (mesh.material) {
-				(mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.enableReflectionProbe ? this.reflectionProbe.cubeTexture : this.envMapIndoor;
-			}
+		//const box = BABYLON.MeshBuilder.CreateBox('box', { size: 50/*cm*/ }, this.scene);
+		//const boxCsg = BABYLON.CSG2.FromMesh(box);
 
-			if (this.enableReflectionProbe) this.reflectionProbe.renderList!.push(mesh);
+		const demado = true;
+
+		const meshes: BABYLON.Mesh[] = [];
+
+		const floorResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-floor.glb', this.scene);
+		floorResult.meshes[0].scaling = floorResult.meshes[0].scaling.scale(100);
+		const floorRoot = new BABYLON.Mesh('floor', this.scene);
+		floorRoot.addChild(floorResult.meshes[0]);
+		meshes.push(floorRoot);
+
+		const ceilingResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-ceiling.glb', this.scene);
+		ceilingResult.meshes[0].scaling = ceilingResult.meshes[0].scaling.scale(100);
+		const ceilingRoot = new BABYLON.Mesh('ceiling', this.scene);
+		ceilingRoot.addChild(ceilingResult.meshes[0]);
+		ceilingRoot.position = new BABYLON.Vector3(0, 250/*cm*/, 0);
+		meshes.push(ceilingRoot);
+
+		const wallAResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-wall.glb', this.scene);
+		wallAResult.meshes[0].scaling = wallAResult.meshes[0].scaling.scale(100);
+		const wallARoot = new BABYLON.Mesh('wallA', this.scene);
+		wallARoot.addChild(wallAResult.meshes[0]);
+		wallARoot.position = new BABYLON.Vector3(-150/*cm*/, 0, 0);
+		wallARoot.rotation = new BABYLON.Vector3(0, Math.PI, 0);
+		meshes.push(wallARoot);
+
+		const wallBResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-wall.glb', this.scene);
+		wallBResult.meshes[0].scaling = wallBResult.meshes[0].scaling.scale(100);
+		const wallBRoot = new BABYLON.Mesh('wallB', this.scene);
+		wallBRoot.addChild(wallBResult.meshes[0]);
+		wallBRoot.position = new BABYLON.Vector3(150/*cm*/, 0, 0);
+		meshes.push(wallBRoot);
+
+		const wallCResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-wall.glb', this.scene);
+		wallCResult.meshes[0].scaling = wallCResult.meshes[0].scaling.scale(100);
+		const wallCRoot = new BABYLON.Mesh('wallC', this.scene);
+		wallCRoot.addChild(wallCResult.meshes[0]);
+		wallCRoot.position = new BABYLON.Vector3(0, 0, -150/*cm*/);
+		wallCRoot.rotation = new BABYLON.Vector3(0, Math.PI / 2, 0);
+		meshes.push(wallCRoot);
+
+		const wallDResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-wall-demado.glb', this.scene);
+		wallDResult.meshes[0].scaling = wallDResult.meshes[0].scaling.scale(100);
+		const wallDRoot = new BABYLON.Mesh('wallD', this.scene);
+		wallDRoot.addChild(wallDResult.meshes[0]);
+		wallDRoot.position = new BABYLON.Vector3(0, 0, 150/*cm*/);
+		wallDRoot.rotation = new BABYLON.Vector3(0, -Math.PI / 2, 0);
+		meshes.push(wallDRoot);
+
+		for (const mesh of meshes) {
+			for (const m of mesh.getChildMeshes()) {
+				if (m.name.includes('__ROOM_WALL__') || m.name.includes('__ROOM_SIDE__') || m.name.includes('__ROOM_FLOOR__') || m.name.includes('__ROOM_CEILING__') || m.name.includes('__ROOM_TOP__')) {
+					m.isPickable = false;
+					m.receiveShadows = false;
+					m.isVisible = false;
+					m.checkCollisions = true;
+					this.roomCollisionMeshes.push(m);
+					continue;
+				}
+
+				m.isPickable = false;
+				m.checkCollisions = false;
+				m.receiveShadows = true;
+				this.shadowGenerator1.addShadowCaster(m);
+				this.shadowGenerator2.addShadowCaster(m);
+				//if (m.material) (m.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(1, 1, 1);
+				if (m.material) {
+					(m.material as BABYLON.PBRMaterial).reflectionTexture = this.enableReflectionProbe ? this.reflectionProbe.cubeTexture : this.envMapIndoor;
+				}
+				if (this.enableReflectionProbe) this.reflectionProbe.renderList!.push(m);
+			}
 		}
 	}
 
 	private async loadObject(o: RoomDef['objects'][0]) {
 		const def = OBJECTS[o.type];
 
+		const root = new BABYLON.Mesh(`object_${o.id}_${o.type}`, this.scene);
+
 		const obj = await BABYLON.ImportMeshAsync(`/client-assets/room/objects/${o.type}/${o.type}.glb`, this.scene);
-		obj.meshes[0].scaling = new BABYLON.Vector3(-100, 100, 100);
-		obj.meshes[0].bakeCurrentTransformIntoVertices();
-		const rootBv = obj.meshes[0].getHierarchyBoundingVectors();
-		obj.meshes[0].setBoundingInfo(new BABYLON.BoundingInfo(rootBv.min, rootBv.max));
-		obj.meshes[0].position = new BABYLON.Vector3(...o.position);
-		obj.meshes[0].rotation = new BABYLON.Vector3(...o.rotation);
-		//obj.meshes[0].showBoundingBox = true;
 
 		let hasCollisionMesh = false;
 		for (const mesh of obj.meshes) {
-			if (mesh.name.startsWith('_COLLISION_')) {
+			if (mesh.name.includes('__COLLISION__')) {
 				hasCollisionMesh = true;
 				break;
 			}
 		}
 
+		const metadata = {
+			isObject: true,
+			objectId: o.id,
+			objectType: o.type,
+			isCollision: !hasCollisionMesh,
+		};
+
+		// babylonによって自動で追加される右手系変換用ノード
+		const subRoot = obj.meshes[0];
+		subRoot.scaling = subRoot.scaling.scale(100);// cmをmに
+
+		root.addChild(subRoot);
+
+		const bv = root.getHierarchyBoundingVectors();
+		root.setBoundingInfo(new BABYLON.BoundingInfo(bv.min, bv.max));
+		//if (_DEV_) root.showBoundingBox = true;
+
+		root.position = new BABYLON.Vector3(...o.position);
+		root.rotation = new BABYLON.Vector3(o.rotation[0], -o.rotation[1], o.rotation[2]);
+		root.metadata = metadata;
+
 		for (const m of obj.meshes) {
 			const mesh = m;
-			const isRoot = mesh.name === '__root__';
 
-			mesh.metadata = {
-				isObject: true,
-				isRoot: isRoot,
-				objectId: o.id,
-				objectType: o.type,
-				isCollision: !hasCollisionMesh,
-			};
+			mesh.metadata = metadata;
 			mesh.checkCollisions = !hasCollisionMesh;
 
-			if (mesh.name.startsWith('_TV_SCREEN_')) {
+			if (mesh.name.includes('__TV_SCREEN__')) {
 				mesh.markVerticesDataAsUpdatable(BABYLON.VertexBuffer.UVKind, true);
 			}
 
-			if (mesh.name.startsWith('_COLLISION_')) {
+			if (mesh.name.includes('__COLLISION__')) {
 				mesh.receiveShadows = false;
 				mesh.isVisible = false;
 				mesh.metadata.isCollision = true;
 				mesh.checkCollisions = true;
-			} else if (mesh.name.startsWith('_TOP_') || mesh.name.startsWith('_SIDE_')) {
+			} else if (mesh.name.includes('__TOP__') || mesh.name.includes('__SIDE__')) {
 				mesh.receiveShadows = false;
 				mesh.isVisible = false;
 			} else {
@@ -1047,27 +1115,26 @@ export class RoomEngine {
 				//if (mesh.material) (mesh.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(0.2, 0.2, 0.2);
 				if (mesh.material) {
 					(mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.enableReflectionProbe ? this.reflectionProbe.cubeTexture : this.envMapIndoor;
-					console.log((mesh.material as BABYLON.PBRMaterial).indexOfRefraction);
 				}
 			}
 		}
 
-		this.objectMeshs.set(o.id, obj.meshes[0]);
+		this.objectMeshs.set(o.id, root);
 
 		const objDef = OBJECTS[o.type];
 		if (objDef != null && objDef.onInit != null) {
-			objDef.onInit(this, o, obj);
+			objDef.onInit(this, o, root);
 		}
 
 		if (o.isMainLight) {
-			this.roomLight.position = obj.meshes[0].position.add(new BABYLON.Vector3(0, -1/*cm*/, 0));
+			this.roomLight.position = root.position.add(new BABYLON.Vector3(0, -1/*cm*/, 0));
 		}
 	}
 
 	public toggleGrab() {
 		if (this.grabbing != null) {
 			// 親から先に外していく
-			const removeStickyParentRecursively = (mesh: BABYLON.AbstractMesh) => {
+			const removeStickyParentRecursively = (mesh: BABYLON.TransformNode) => {
 				const stickyObjectIds = Array.from(this.def.objects.filter(o => o.sticky === mesh.metadata.objectId)).map(o => o.id);
 				for (const soid of stickyObjectIds) {
 					const soMesh = this.objectMeshs.get(soid)!;
@@ -1142,10 +1209,12 @@ export class RoomEngine {
 		};
 		collectDescendantStickyObjectIds(selectedObject.metadata.objectId);
 
+		const dir = this.camera.getDirection(BABYLON.Axis.Z).scale(this.scene.useRightHandedSystem ? -1 : 1);
+
 		this.grabbing = {
 			objectId: selectedObject.metadata.objectId,
 			mesh: selectedObject,
-			startOffset: selectedObject.position.subtract(this.camera.position.add(this.camera.getDirection(BABYLON.Axis.Z).scale(distance))),
+			startOffset: selectedObject.position.subtract(this.camera.position.add(dir.scale(distance))),
 			startRotationY: selectedObject.rotation.subtract(this.camera.rotation).y,
 			distance: distance,
 			rotation: 0,

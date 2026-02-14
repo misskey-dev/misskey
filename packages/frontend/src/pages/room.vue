@@ -70,7 +70,7 @@ onMounted(() => {
 			id: 'd',
 			type: 'monitor',
 			position: [-130, 70, 85],
-			rotation: [0, 0, 0],
+			rotation: [0, -Math.PI / 2, 0],
 			sticky: 'c',
 		}, {
 			id: 'd2',
@@ -82,7 +82,7 @@ onMounted(() => {
 			id: 'e',
 			type: 'chair',
 			position: [-75, 0, 85],
-			rotation: [0, -Math.PI, 0],
+			rotation: [0, Math.PI / 2, 0],
 		}, {
 			id: 'f',
 			type: 'plant',
@@ -102,7 +102,7 @@ onMounted(() => {
 			id: 'h',
 			type: 'aircon',
 			position: [80, 215, 150],
-			rotation: [0, Math.PI / 2, 0],
+			rotation: [0, Math.PI, 0],
 		}, {
 			id: 'i',
 			type: 'lava-lamp',
@@ -112,12 +112,12 @@ onMounted(() => {
 			id: 'j',
 			type: 'steel-rack',
 			position: [130, 0, 115],
-			rotation: [0, 0, 0],
+			rotation: [0, Math.PI / 2, 0],
 		}, {
 			id: 'j2',
 			type: 'aquarium',
 			position: [130, 100, 115],
-			rotation: [0, Math.PI, 0],
+			rotation: [0, Math.PI / 2, 0],
 			sticky: 'j',
 		}, {
 			id: 'k',
@@ -129,36 +129,36 @@ onMounted(() => {
 			id: 'l',
 			type: 'banknote',
 			position: [-100, 70, 55],
-			rotation: [0, -2, 0],
+			rotation: [0, 2, 0],
 			sticky: 'c',
 		}, {
 			id: 'm',
 			type: 'energy-drink',
 			position: [-100, 70, 120],
-			rotation: [0, 1, 0],
+			rotation: [0, -1, 0],
 			sticky: 'c',
 		}, {
 			id: 'n',
 			type: 'milk',
 			position: [-120, 70, 130],
-			rotation: [0, 1.5, 0],
+			rotation: [0, -1.5, 0],
 			sticky: 'c',
 		}, {
 			id: 'o',
 			type: 'facial-tissue',
 			position: [-100, 70, 138],
-			rotation: [0, 1.5, 0],
+			rotation: [0, -1.5, 0],
 			sticky: 'c',
 		}, {
 			id: 'p',
 			type: 'tv',
 			position: [-135, 88, -5],
-			rotation: [0, 0, 0],
+			rotation: [0, -Math.PI / 2, 0],
 		}, {
 			id: 'q',
 			type: 'color-box',
 			position: [-135, 0, -5],
-			rotation: [0, 0, 0],
+			rotation: [0, -Math.PI / 2, 0],
 		}, {
 			id: 'r',
 			type: 'plant2',
@@ -168,7 +168,7 @@ onMounted(() => {
 			id: 's',
 			type: 'wall-clock',
 			position: [-150, 200, 100],
-			rotation: [0, 0, 0],
+			rotation: [0, -Math.PI / 2, 0],
 		}, {
 			id: 't',
 			type: 'book',
@@ -179,7 +179,7 @@ onMounted(() => {
 			id: 'u',
 			type: 'bed',
 			position: [-30, 0, -100],
-			rotation: [0, 0, 0],
+			rotation: [0, Math.PI, 0],
 		}, {
 			id: 'v',
 			type: 'ceiling-fan-light',
