@@ -7,13 +7,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div :class="$style.root" class="_pageScrollable">
 	<canvas ref="canvas" :class="$style.canvas"></canvas>
 	<div v-if="engine != null" class="_buttons" :class="$style.controls">
-		<MkButton @click="grab">Grab</MkButton>
 		<MkButton @click="toggleLight">Toggle Light</MkButton>
-		<MkButton :primary="engine.enableGridSnapping.value" @click="toggleGridSnapping">Grid Snap: {{ engine.enableGridSnapping.value ? 'on' : 'off' }}</MkButton>
-		<MkButton v-if="engine.enableGridSnapping.value" :primary="engine.gridSnappingScale.value === 1" @click="engine.gridSnappingScale.value = 1">Snap: 1cm</MkButton>
-		<MkButton v-if="engine.enableGridSnapping.value" :primary="engine.gridSnappingScale.value === 2" @click="engine.gridSnappingScale.value = 2">Snap: 2cm</MkButton>
-		<MkButton v-if="engine.enableGridSnapping.value" :primary="engine.gridSnappingScale.value === 4" @click="engine.gridSnappingScale.value = 4">Snap: 4cm</MkButton>
-		<MkButton v-if="engine.enableGridSnapping.value" :primary="engine.gridSnappingScale.value === 8" @click="engine.gridSnappingScale.value = 8">Snap: 8cm</MkButton>
+		<MkButton :primary="engine.isEditMode.value" @click="toggleEditMode">Edit mode: {{ engine.isEditMode.value ? 'on' : 'off' }}</MkButton>
+		<template v-if="engine.isEditMode.value">
+			<MkButton @click="grab">Grab</MkButton>
+			<MkButton :primary="engine.enableGridSnapping.value" @click="toggleGridSnapping">Grid Snap: {{ engine.enableGridSnapping.value ? 'on' : 'off' }}</MkButton>
+			<MkButton v-if="engine.enableGridSnapping.value" :primary="engine.gridSnappingScale.value === 1" @click="engine.gridSnappingScale.value = 1">Snap: 1cm</MkButton>
+			<MkButton v-if="engine.enableGridSnapping.value" :primary="engine.gridSnappingScale.value === 2" @click="engine.gridSnappingScale.value = 2">Snap: 2cm</MkButton>
+			<MkButton v-if="engine.enableGridSnapping.value" :primary="engine.gridSnappingScale.value === 4" @click="engine.gridSnappingScale.value = 4">Snap: 4cm</MkButton>
+			<MkButton v-if="engine.enableGridSnapping.value" :primary="engine.gridSnappingScale.value === 8" @click="engine.gridSnappingScale.value = 8">Snap: 8cm</MkButton>
+		</template>
 	</div>
 </div>
 </template>
@@ -221,6 +224,11 @@ function toggleLight() {
 
 function toggleGridSnapping() {
 	engine.value.enableGridSnapping.value = !engine.value.enableGridSnapping.value;
+	canvas.value!.focus();
+}
+
+function toggleEditMode() {
+	engine.value.isEditMode.value = !engine.value.isEditMode.value;
 	canvas.value!.focus();
 }
 

@@ -45,6 +45,7 @@ type ObjectDef = {
 	placement: 'top' | 'side' | 'bottom' | 'wall' | 'ceiling' | 'floor';
 	receiveShadows?: boolean;
 	castShadows?: boolean;
+	isChair?: boolean;
 	onInit?: (room: RoomEngine, o: RoomDef['objects'][0], rootNode: BABYLON.TransformNode) => void;
 };
 
@@ -262,6 +263,7 @@ const OBJECTS = {
 	},
 	'chair': {
 		placement: 'floor',
+		isChair: true,
 	},
 	'energy-drink': {
 		placement: 'top',
@@ -302,12 +304,6 @@ const OBJECTS = {
 	},
 } as Record<string, ObjectDef>;
 
-function vecToLocal(vector: BABYLON.Vector3, mesh: BABYLON.Mesh): BABYLON.Vector3 {
-	const m = mesh.getWorldMatrix();
-	const v = BABYLON.Vector3.TransformCoordinates(vector, m);
-	return v;
-}
-
 const _assumedFramesPerSecond = 60;
 
 class HorizontalCameraKeyboardMoveInput extends BABYLON.BaseCameraPointersInput {
@@ -323,6 +319,7 @@ class HorizontalCameraKeyboardMoveInput extends BABYLON.BaseCameraPointersInput 
 	codesRight = ['KeyD'];
 	onCanvasBlurObserver = null;
 	onKeyboardObserver = null;
+	public canMove = true;
 
 	constructor(camera: BABYLON.UniversalCamera) {
 		super();
@@ -408,7 +405,10 @@ class HorizontalCameraKeyboardMoveInput extends BABYLON.BaseCameraPointersInput 
 			dir.normalize();
 			const rate = this.preShift ? 3 : 1;
 			const move = dir.scale(this.moveSpeed * rate);
-			this.camera.cameraDirection.addInPlace(move);
+
+			if (this.canMove) {
+				this.camera.cameraDirection.addInPlace(move);
+			}
 		}
 	}
 
@@ -428,7 +428,8 @@ export class RoomEngine {
 	private shadowGenerator1: BABYLON.ShadowGenerator;
 	private shadowGenerator2: BABYLON.ShadowGenerator;
 	private camera: BABYLON.UniversalCamera;
-	private camera2: BABYLON.ArcRotateCamera;
+	private fixedCamera: BABYLON.UniversalCamera;
+	private birdeyeCamera: BABYLON.ArcRotateCamera;
 	private intervalIds: number[] = [];
 	private timeoutIds: number[] = [];
 	private objectMeshs: Map<string, BABYLON.TransformNode> = new Map();
@@ -458,6 +459,8 @@ export class RoomEngine {
 	private xGridPreviewPlane: BABYLON.Mesh;
 	private yGridPreviewPlane: BABYLON.Mesh;
 	private zGridPreviewPlane: BABYLON.Mesh;
+	public isEditMode = ref(false);
+	public isSitting = ref(false);
 
 	constructor(def: RoomDef, options: {
 		canvas: HTMLCanvasElement;
@@ -520,15 +523,22 @@ export class RoomEngine {
 		this.camera.applyGravity = true;
 		this.camera.needMoveForGravity = true;
 
-		this.camera2 = new BABYLON.ArcRotateCamera('camera2', -Math.PI / 2, Math.PI / 2.5, 300/*cm*/, new BABYLON.Vector3(0, 90/*cm*/, 0), this.scene);
-		this.camera2.attachControl(this.canvas);
-		this.camera2.minZ = 1/*cm*/;
-		this.camera2.maxZ = 100000/*cm*/;
-		this.camera2.fov = 0.5;
-		this.camera2.lowerBetaLimit = 0;
-		this.camera2.upperBetaLimit = (Math.PI / 2) + 0.1;
-		this.camera2.lowerRadiusLimit = 50/*cm*/;
-		this.camera2.upperRadiusLimit = 1000/*cm*/;
+		this.fixedCamera = new BABYLON.UniversalCamera('fixedCamera', new BABYLON.Vector3(0, 0, 0), this.scene);
+		this.fixedCamera.minZ = 1/*cm*/;
+		this.fixedCamera.maxZ = 100000/*cm*/;
+		this.fixedCamera.fov = 1;
+		this.fixedCamera.inputs.removeByType('FreeCameraKeyboardMoveInput');
+		this.fixedCamera.attachControl(this.canvas);
+
+		this.birdeyeCamera = new BABYLON.ArcRotateCamera('birdeyeCamera', -Math.PI / 2, Math.PI / 2.5, 300/*cm*/, new BABYLON.Vector3(0, 90/*cm*/, 0), this.scene);
+		this.birdeyeCamera.attachControl(this.canvas);
+		this.birdeyeCamera.minZ = 1/*cm*/;
+		this.birdeyeCamera.maxZ = 100000/*cm*/;
+		this.birdeyeCamera.fov = 0.5;
+		this.birdeyeCamera.lowerBetaLimit = 0;
+		this.birdeyeCamera.upperBetaLimit = (Math.PI / 2) + 0.1;
+		this.birdeyeCamera.lowerRadiusLimit = 50/*cm*/;
+		this.birdeyeCamera.upperRadiusLimit = 1000/*cm*/;
 
 		this.scene.activeCamera = this.camera;
 
@@ -570,9 +580,10 @@ export class RoomEngine {
 		gl.intensity = 0.5;
 
 		{
-			const postProcess = new BABYLON.ImageProcessingPostProcess('processing', 1.0, this.camera);
-			postProcess.exposure = 1.1;
-			postProcess.contrast = 0.9;
+			//const postProcess = new BABYLON.ImageProcessingPostProcess('processing', 1.0, this.camera);
+			//postProcess.exposure = 1.1;
+			//postProcess.contrast = 0.9;
+
 			//const curve = new BABYLON.ColorCurves();
 			//curve.highlightsHue = 40;
 			//curve.highlightsDensity = 50;
@@ -583,7 +594,7 @@ export class RoomEngine {
 			//postProcess.colorCurvesEnabled = true;
 			//postProcess.colorCurves = curve;
 
-			//const postProcess2 = new BABYLON.ImageProcessingPostProcess('processing2', 1.0, this.camera2);
+			//const postProcess2 = new BABYLON.ImageProcessingPostProcess('processing2', 1.0, this.birdeyeCamera);
 			//postProcess2.exposure = 2;
 			//postProcess2.contrast = 0.9;
 
@@ -698,7 +709,11 @@ export class RoomEngine {
 			if (ev.code === 'KeyE') {
 				ev.preventDefault();
 				ev.stopPropagation();
-				this.toggleGrab();
+				if (this.isEditMode.value) {
+					this.toggleGrab();
+				} else {
+					this.interact();
+				}
 			} else if (ev.code === 'KeyR') {
 				ev.preventDefault();
 				ev.stopPropagation();
@@ -1227,6 +1242,28 @@ export class RoomEngine {
 			volume: 1,
 			playbackRate: 1,
 		});
+	}
+
+	private interact() {
+		if (this.selectedObjectId == null) return;
+
+		const o = this.def.objects.find(o => o.id === this.selectedObjectId)!;
+		const mesh = this.objectMeshs.get(o.id)!;
+		const objDef = OBJECTS[o.type];
+
+		if (objDef.isChair) {
+			if (this.isSitting.value) {
+				this.isSitting.value = false;
+				this.scene.activeCamera = this.camera;
+				this.fixedCamera.parent = null;
+			} else {
+				this.isSitting.value = true;
+				this.fixedCamera.parent = this.objectMeshs.get(o.id);
+				this.fixedCamera.position = new BABYLON.Vector3(0, 120/*cm*/, 0);
+				this.fixedCamera.rotation = new BABYLON.Vector3(0, 0, 0);
+				this.scene.activeCamera = this.fixedCamera;
+			}
+		}
 	}
 
 	private turnOnRoomLight() {
