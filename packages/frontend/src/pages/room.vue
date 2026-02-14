@@ -81,7 +81,7 @@ onMounted(() => {
 		}, {
 			id: 'e',
 			type: 'chair',
-			position: [-80, 0, 85],
+			position: [-75, 0, 85],
 			rotation: [0, -Math.PI, 0],
 		}, {
 			id: 'f',
