@@ -213,7 +213,7 @@ onMounted(() => {
 			options: {},
 		}, {
 			id: 'r',
-			type: 'plant2',
+			type: 'pachira',
 			position: [135, 0, -135],
 			rotation: [0, 0, 0],
 			options: {},
