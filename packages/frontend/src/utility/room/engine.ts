@@ -302,6 +302,9 @@ const OBJECTS = {
 	'round-rug': {
 		placement: 'floor',
 	},
+	'wood-sound-absorbing-panel': {
+		placement: 'side',
+	},
 } as Record<string, ObjectDef>;
 
 const _assumedFramesPerSecond = 60;
@@ -711,14 +714,20 @@ export class RoomEngine {
 				ev.stopPropagation();
 				if (this.isEditMode.value) {
 					this.toggleGrab();
-				} else {
-					this.interact();
+				} else if (this.selectedObjectId != null) {
+					this.interact(this.selectedObjectId);
 				}
 			} else if (ev.code === 'KeyR') {
 				ev.preventDefault();
 				ev.stopPropagation();
 				if (this.grabbing != null) {
 					this.grabbing.rotation += Math.PI / 8;
+				}
+			} else if (ev.code === 'KeyQ') {
+				ev.preventDefault();
+				ev.stopPropagation();
+				if (this.isSitting.value) {
+					this.standUp();
 				}
 			}
 		});
@@ -1244,26 +1253,29 @@ export class RoomEngine {
 		});
 	}
 
-	private interact() {
-		if (this.selectedObjectId == null) return;
-
-		const o = this.def.objects.find(o => o.id === this.selectedObjectId)!;
+	private interact(oid: string) {
+		const o = this.def.objects.find(o => o.id === oid)!;
 		const mesh = this.objectMeshs.get(o.id)!;
 		const objDef = OBJECTS[o.type];
 
 		if (objDef.isChair) {
-			if (this.isSitting.value) {
-				this.isSitting.value = false;
-				this.scene.activeCamera = this.camera;
-				this.fixedCamera.parent = null;
-			} else {
-				this.isSitting.value = true;
-				this.fixedCamera.parent = this.objectMeshs.get(o.id);
-				this.fixedCamera.position = new BABYLON.Vector3(0, 120/*cm*/, 0);
-				this.fixedCamera.rotation = new BABYLON.Vector3(0, 0, 0);
-				this.scene.activeCamera = this.fixedCamera;
-			}
+			this.sitChair(o.id);
 		}
+	}
+
+	public sitChair(objectId: string) {
+		this.isSitting.value = true;
+		this.fixedCamera.parent = this.objectMeshs.get(objectId);
+		this.fixedCamera.position = new BABYLON.Vector3(0, 120/*cm*/, 0);
+		this.fixedCamera.rotation = new BABYLON.Vector3(0, 0, 0);
+		this.scene.activeCamera = this.fixedCamera;
+		this.selectObject(null);
+	}
+
+	public standUp() {
+		this.isSitting.value = false;
+		this.scene.activeCamera = this.camera;
+		this.fixedCamera.parent = null;
 	}
 
 	private turnOnRoomLight() {

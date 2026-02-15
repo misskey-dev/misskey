@@ -10,13 +10,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkButton @click="toggleLight">Toggle Light</MkButton>
 		<MkButton :primary="engine.isEditMode.value" @click="toggleEditMode">Edit mode: {{ engine.isEditMode.value ? 'on' : 'off' }}</MkButton>
 		<template v-if="engine.isEditMode.value">
-			<MkButton @click="grab">Grab</MkButton>
+			<MkButton @click="grab">Grab (E)</MkButton>
 			<MkButton :primary="engine.enableGridSnapping.value" @click="toggleGridSnapping">Grid Snap: {{ engine.enableGridSnapping.value ? 'on' : 'off' }}</MkButton>
 			<MkButton v-if="engine.enableGridSnapping.value" :primary="engine.gridSnappingScale.value === 1" @click="engine.gridSnappingScale.value = 1">Snap: 1cm</MkButton>
 			<MkButton v-if="engine.enableGridSnapping.value" :primary="engine.gridSnappingScale.value === 2" @click="engine.gridSnappingScale.value = 2">Snap: 2cm</MkButton>
 			<MkButton v-if="engine.enableGridSnapping.value" :primary="engine.gridSnappingScale.value === 4" @click="engine.gridSnappingScale.value = 4">Snap: 4cm</MkButton>
 			<MkButton v-if="engine.enableGridSnapping.value" :primary="engine.gridSnappingScale.value === 8" @click="engine.gridSnappingScale.value = 8">Snap: 8cm</MkButton>
 		</template>
+		<MkButton v-if="engine.isSitting.value" @click="engine.standUp()">降りる (Q)</MkButton>
 	</div>
 </div>
 </template>
@@ -171,6 +172,11 @@ onMounted(() => {
 			id: 's',
 			type: 'wall-clock',
 			position: [-150, 200, 100],
+			rotation: [0, -Math.PI / 2, 0],
+		}, {
+			id: 's2',
+			type: 'wood-sound-absorbing-panel',
+			position: [-150, 140, 80],
 			rotation: [0, -Math.PI / 2, 0],
 		}, {
 			id: 't',
