@@ -216,11 +216,19 @@ onMounted(() => {
 			type: 'blind',
 			position: [-35, 194, 185],
 			rotation: [0, Math.PI, 0],
+			options: {
+				blades: 24,
+				angle: 0.5,
+			},
 		}, {
 			id: 'x2',
 			type: 'blind',
 			position: [35, 194, 185],
 			rotation: [0, Math.PI, 0],
+			options: {
+				blades: 24,
+				angle: -0.4,
+			},
 		}],
 	}, {
 		canvas: canvas.value!,

@@ -32,6 +32,7 @@ type RoomDef = {
 		position: [number, number, number];
 		rotation: [number, number, number];
 		variation?: string | null;
+		options?: any;
 		isMainLight?: boolean;
 
 		/**
@@ -46,7 +47,8 @@ type ObjectDef = {
 	receiveShadows?: boolean;
 	castShadows?: boolean;
 	isChair?: boolean;
-	onInit?: (room: RoomEngine, o: RoomDef['objects'][0], rootNode: BABYLON.Mesh) => void;
+	onBeforeInit?: (room: RoomEngine, o: RoomDef['objects'][0], obj: BABYLON.ISceneLoaderAsyncResult) => void;
+	onInited?: (room: RoomEngine, o: RoomDef['objects'][0], rootNode: BABYLON.Mesh) => void;
 };
 
 function yuge(room: RoomEngine, mesh: BABYLON.Mesh, offset: BABYLON.Vector3) {
@@ -81,13 +83,13 @@ const OBJECTS = {
 	},
 	mug: {
 		placement: 'top',
-		onInit: (room, o, rootNode) => {
+		onInited: (room, o, rootNode) => {
 			yuge(room, rootNode, new BABYLON.Vector3(0, 5/*cm*/, 0));
 		},
 	},
 	'cup-noodle': {
 		placement: 'top',
-		onInit: (room, o, rootNode) => {
+		onInited: (room, o, rootNode) => {
 			yuge(room, rootNode, new BABYLON.Vector3(0, 10/*cm*/, 0));
 		},
 	},
@@ -96,7 +98,7 @@ const OBJECTS = {
 	},
 	'cardboard-box': {
 		placement: 'top',
-		onInit: (room, o, rootNode) => {
+		onInited: (room, o, rootNode) => {
 			const boxMesh = rootNode.getChildMeshes().find(m => m.name === 'Box') as BABYLON.Mesh;
 			if (o.variation === 'mikan') {
 				const tex = new BABYLON.Texture('/client-assets/room/objects/cardboard-box/textures/mikan.png', room.scene, false, false);
@@ -111,7 +113,7 @@ const OBJECTS = {
 	},
 	'book': {
 		placement: 'top',
-		onInit: (room, o, rootNode) => {
+		onInited: (room, o, rootNode) => {
 			const mesh = rootNode.getChildMeshes()[1] as BABYLON.Mesh;
 			mesh.markVerticesDataAsUpdatable(BABYLON.VertexBuffer.UVKind, true);
 			const index = o.variation;
@@ -130,7 +132,7 @@ const OBJECTS = {
 	},
 	'lava-lamp': {
 		placement: 'top',
-		onInit: (room, o, rootNode) => {
+		onInited: (room, o, rootNode) => {
 			const light = new BABYLON.PointLight('lavaLampLight', new BABYLON.Vector3(0, 11/*cm*/, 0), room.scene);
 			light.parent = rootNode;
 			light.diffuse = new BABYLON.Color3(1.0, 0.5, 0.2);
@@ -183,7 +185,7 @@ const OBJECTS = {
 	},
 	'wall-clock': {
 		placement: 'side',
-		onInit: (room, o, rootNode) => {
+		onInited: (room, o, rootNode) => {
 			const hourHand = rootNode.getChildMeshes().find(m => m.name === 'HandH') as BABYLON.Mesh;
 			const minuteHand = rootNode.getChildMeshes().find(m => m.name === 'HandM') as BABYLON.Mesh;
 			room.intervalIds.push(window.setInterval(() => {
@@ -223,7 +225,7 @@ const OBJECTS = {
 	},
 	'aquarium': {
 		placement: 'top',
-		onInit: (room, o, rootNode) => {
+		onInited: (room, o, rootNode) => {
 			const noiseTexture = new BABYLON.NoiseProceduralTexture('perlin', 256, room.scene);
 			noiseTexture.animationSpeedFactor = 70;
 			noiseTexture.persistence = 10;
@@ -287,7 +289,7 @@ const OBJECTS = {
 		placement: 'ceiling',
 		receiveShadows: false,
 		castShadows: false,
-		onInit: (room, o, rootNode) => {
+		onInited: (room, o, rootNode) => {
 			const rotor = rootNode.getChildMeshes().find(m => m.name === 'Rotor') as BABYLON.Mesh;
 			rotor.rotation = rotor.rotationQuaternion != null ? rotor.rotationQuaternion.toEulerAngles() : rotor.rotation;
 			const anim = new BABYLON.Animation('', 'rotation.y', 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
@@ -313,6 +315,15 @@ const OBJECTS = {
 	},
 	'blind': {
 		placement: 'bottom',
+		onBeforeInit: (room, o, result) => {
+			const blade = result.meshes[0].getChildMeshes().find(m => m.name === 'Blade') as BABYLON.Mesh;
+			blade.rotation = new BABYLON.Vector3(o.options.angle, 0, 0);
+
+			for (let i = 0; i < o.options.blades; i++) {
+				const b = blade.clone();
+				b.position.y -= (i * 4/*cm*/) / 100;
+			}
+		},
 	},
 } as Record<string, ObjectDef>;
 
@@ -756,7 +767,9 @@ export class RoomEngine {
 			axes.yAxis.position = new BABYLON.Vector3(0, 30, 0);
 			axes.zAxis.position = new BABYLON.Vector3(0, 30, 0);
 
-			//ShowInspector(this.scene);
+			(window as any).showBabylonInspector = () => {
+				ShowInspector(this.scene);
+			};
 		}
 	}
 
@@ -1088,6 +1101,10 @@ export class RoomEngine {
 
 		const obj = await BABYLON.ImportMeshAsync(`/client-assets/room/objects/${o.type}/${o.type}.glb`, this.scene);
 
+		if (def.onBeforeInit != null) {
+			def.onBeforeInit(this, o, obj);
+		}
+
 		let hasCollisionMesh = false;
 		for (const mesh of obj.meshes) {
 			if (mesh.name.includes('__COLLISION__')) {
@@ -1154,9 +1171,8 @@ export class RoomEngine {
 
 		this.objectMeshs.set(o.id, root);
 
-		const objDef = OBJECTS[o.type];
-		if (objDef != null && objDef.onInit != null) {
-			objDef.onInit(this, o, root);
+		if (def.onInited != null) {
+			def.onInited(this, o, root);
 		}
 
 		if (o.isMainLight) {
