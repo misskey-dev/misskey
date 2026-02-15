@@ -691,7 +691,7 @@ importers:
         version: 6.0.4(vite@7.3.1(@types/node@24.10.12)(sass@1.97.3)(terser@5.46.0)(tsx@4.21.0))(vue@3.5.27(typescript@5.9.3))
       aiscript-vscode:
         specifier: github:aiscript-dev/aiscript-vscode#v0.1.16
-        version: git+https://git@github.com:aiscript-dev/aiscript-vscode.git#1dc7f60cda78d030dadfc518a33c472202b2ef67
+        version: https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/1dc7f60cda78d030dadfc518a33c472202b2ef67
       analytics:
         specifier: 0.8.19
         version: 0.8.19(@types/dlv@1.1.5)
@@ -5041,8 +5041,8 @@ packages:
     resolution: {integrity: sha512-4I7Td01quW/RpocfNayFdFVk1qSuoh0E7JrbRJ16nH01HhKFQ88INq9Sd+nd72zqRySlr9BmDA8xlEJ6vJMrYA==}
     engines: {node: '>=8'}
 
-  aiscript-vscode@git+https://git@github.com:aiscript-dev/aiscript-vscode.git#1dc7f60cda78d030dadfc518a33c472202b2ef67:
-    resolution: {commit: 1dc7f60cda78d030dadfc518a33c472202b2ef67, repo: git@github.com:aiscript-dev/aiscript-vscode.git, type: git}
+  aiscript-vscode@https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/1dc7f60cda78d030dadfc518a33c472202b2ef67:
+    resolution: {tarball: https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/1dc7f60cda78d030dadfc518a33c472202b2ef67}
     version: 0.1.16
     engines: {vscode: ^1.83.0}
 
@@ -15482,7 +15482,7 @@ snapshots:
       clean-stack: 2.2.0
       indent-string: 4.0.0
 
-  aiscript-vscode@git+https://git@github.com:aiscript-dev/aiscript-vscode.git#1dc7f60cda78d030dadfc518a33c472202b2ef67:
+  aiscript-vscode@https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/1dc7f60cda78d030dadfc518a33c472202b2ef67:
     dependencies:
       vscode-languageclient: 9.0.1
 
