@@ -40,6 +40,7 @@ export const blind = defineObject({
 		const applyAngle = () => {
 			for (const b of [blade, ...blades]) {
 				b.rotation.x = o.options.angle;
+				b.rotation.x += Math.random() * 0.3 - 0.15;
 			}
 		};
 

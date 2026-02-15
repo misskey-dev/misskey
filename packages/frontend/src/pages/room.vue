@@ -51,9 +51,9 @@ function resize() {
 onMounted(() => {
 	engine.value = new RoomEngine({
 		roomType: 'default',
-		objects: [/*{
+		objects: [{
 			id: 'a',
-			type: 'cardboard-box',
+			type: 'cardboardBox',
 			position: [120, 0, 50],
 			rotation: [0, 0.2, 0],
 			options: {
@@ -61,13 +61,13 @@ onMounted(() => {
 			},
 		}, {
 			id: 'a2',
-			type: 'opened-cardboard-box',
+			type: 'openedCardboardBox',
 			position: [115, 0, -20],
 			rotation: [0, -0.1, 0],
 			options: {},
 		}, {
 			id: 'b',
-			type: 'cardboard-box',
+			type: 'cardboardBox',
 			position: [120, 31, 50],
 			rotation: [0, 0.1, 0],
 			sticky: 'a',
@@ -76,7 +76,7 @@ onMounted(() => {
 			},
 		}, {
 			id: '1',
-			type: 'cardboard-box',
+			type: 'cardboardBox',
 			position: [80, 0, 110],
 			rotation: [0, 2, 0],
 			options: {
@@ -140,13 +140,13 @@ onMounted(() => {
 			options: {},
 		}, {
 			id: 'i',
-			type: 'lava-lamp',
+			type: 'lavaLamp',
 			position: [60, 90, 170],
 			rotation: [0, 0, 0],
 			options: {},
 		}, {
 			id: 'j',
-			type: 'steel-rack',
+			type: 'steelRack',
 			position: [130, 0, 115],
 			rotation: [0, Math.PI / 2, 0],
 			options: {},
@@ -159,14 +159,14 @@ onMounted(() => {
 			options: {},
 		}, {
 			id: 'j3',
-			type: 'power-strip',
+			type: 'powerStrip',
 			position: [130, 13, 115],
 			rotation: [0, Math.PI / 2, 0],
 			sticky: 'j',
 			options: {},
 		}, {
 			id: 'k',
-			type: 'cup-noodle',
+			type: 'cupNoodle',
 			position: [-100, 70, 40],
 			rotation: [0, -2, 0],
 			sticky: 'c',
@@ -180,7 +180,7 @@ onMounted(() => {
 			options: {},
 		}, {
 			id: 'm',
-			type: 'energy-drink',
+			type: 'energyDrink',
 			position: [-100, 70, 120],
 			rotation: [0, -1, 0],
 			sticky: 'c',
@@ -194,7 +194,7 @@ onMounted(() => {
 			options: {},
 		}, {
 			id: 'o',
-			type: 'facial-tissue',
+			type: 'facialTissue',
 			position: [-100, 70, 138],
 			rotation: [0, -1.5, 0],
 			sticky: 'c',
@@ -207,7 +207,7 @@ onMounted(() => {
 			options: {},
 		}, {
 			id: 'q',
-			type: 'color-box',
+			type: 'colorBox',
 			position: [-135, 0, -5],
 			rotation: [0, -Math.PI / 2, 0],
 			options: {},
@@ -219,13 +219,13 @@ onMounted(() => {
 			options: {},
 		}, {
 			id: 's',
-			type: 'wall-clock',
+			type: 'wallClock',
 			position: [-150, 200, 100],
 			rotation: [0, -Math.PI / 2, 0],
 			options: {},
 		}, {
 			id: 's2',
-			type: 'wood-sound-absorbing-panel',
+			type: 'woodSoundAbsorbingPanel',
 			position: [-150, 140, 80],
 			rotation: [0, -Math.PI / 2, 0],
 			options: {},
@@ -245,38 +245,38 @@ onMounted(() => {
 			options: {},
 		}, {
 			id: 'v',
-			type: 'ceiling-fan-light',
+			type: 'ceilingFanLight',
 			position: [0, 250, 0],
 			rotation: [0, 0, 0],
 			isMainLight: true,
 			options: {},
 		}, {
 			id: 'w',
-			type: 'round-rug',
+			type: 'roundRug',
 			position: [0, 0, 0],
 			rotation: [0, 0, 0],
 			options: {},
-		}, */{
-				id: 'x',
-				type: 'blind',
-				position: [-35, 194, 185],
-				rotation: [0, Math.PI, 0],
-				options: {
-					blades: 24,
-					angle: 0.5,
-					open: 0.8,
-				},
-			}, {
-				id: 'x2',
-				type: 'blind',
-				position: [35, 194, 185],
-				rotation: [0, Math.PI, 0],
-				options: {
-					blades: 24,
-					angle: -0.4,
-					open: 0.5,
-				},
-			}],
+		}, {
+			id: 'x',
+			type: 'blind',
+			position: [-35, 194, 185],
+			rotation: [0, Math.PI, 0],
+			options: {
+				blades: 24,
+				angle: 0.5,
+				open: 0.8,
+			},
+		}, {
+			id: 'x2',
+			type: 'blind',
+			position: [35, 194, 185],
+			rotation: [0, Math.PI, 0],
+			options: {
+				blades: 24,
+				angle: -0.4,
+				open: 0.5,
+			},
+		}],
 	}, {
 		canvas: canvas.value!,
 	});

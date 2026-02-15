@@ -44,32 +44,6 @@ type RoomSetting = {
 	objects: RoomSettingObject<any>[];
 };
 
-function yuge(room: RoomEngine, mesh: BABYLON.Mesh, offset: BABYLON.Vector3) {
-	const emitter = new BABYLON.TransformNode('emitter', room.scene);
-	emitter.parent = mesh;
-	emitter.position = offset;
-	const ps = new BABYLON.ParticleSystem('steamParticleSystem', 8, room.scene);
-	ps.particleTexture = new BABYLON.Texture('/client-assets/room/steam.png');
-	ps.emitter = emitter;
-	ps.minEmitBox = new BABYLON.Vector3(-1/*cm*/, 0, -1/*cm*/);
-	ps.maxEmitBox = new BABYLON.Vector3(1/*cm*/, 0, 1/*cm*/);
-	ps.minEmitPower = 10;
-	ps.maxEmitPower = 12;
-	ps.minLifeTime = 2;
-	ps.maxLifeTime = 3;
-	ps.addSizeGradient(0, 10/*cm*/, 12/*cm*/);
-	ps.addSizeGradient(1, 18/*cm*/, 20/*cm*/);
-	ps.direction1 = new BABYLON.Vector3(-0.3, 1, 0.3);
-	ps.direction2 = new BABYLON.Vector3(0.3, 1, -0.3);
-	ps.emitRate = 0.5;
-	ps.blendMode = BABYLON.ParticleSystem.BLENDMODE_ADD;
-	ps.color1 = new BABYLON.Color4(1, 1, 1, 0.3);
-	ps.color2 = new BABYLON.Color4(1, 1, 1, 0.2);
-	ps.colorDead = new BABYLON.Color4(1, 1, 1, 0);
-	ps.preWarmCycles = Math.random() * 1000;
-	ps.start();
-}
-
 type RoomObjectInstance<Options> = {
 	onInited?: (room: RoomEngine, o: RoomSettingObject<Options>, rootNode: BABYLON.Mesh) => void;
 	interactions: Record<string, {
@@ -77,6 +51,7 @@ type RoomObjectInstance<Options> = {
 		fn: () => void;
 	}>;
 	primaryInteraction?: string | null;
+	dispose?: () => void;
 };
 
 export const WORLD_SCALE = 100;
@@ -88,6 +63,7 @@ type ObjectDef<Options extends Record<string, any>> = {
 	isChair?: boolean;
 	createInstance: (args: {
 		room: RoomEngine;
+		root: BABYLON.Mesh;
 		o: RoomSettingObject<Options>;
 		loaderResult: BABYLON.ISceneLoaderAsyncResult;
 		meshUpdated: () => void;
@@ -97,247 +73,6 @@ type ObjectDef<Options extends Record<string, any>> = {
 export function defineObject<Options extends Record<string, any>>(def: ObjectDef<Options>): ObjectDef<Options> {
 	return def;
 }
-
-const OBJECTS = {
-	plant: {
-		placement: 'top',
-	},
-	mug: {
-		placement: 'top',
-		onInited: (room, o, rootNode) => {
-			yuge(room, rootNode, new BABYLON.Vector3(0, 5/*cm*/, 0));
-		},
-	},
-	'cup-noodle': {
-		placement: 'top',
-		onInited: (room, o, rootNode) => {
-			yuge(room, rootNode, new BABYLON.Vector3(0, 10/*cm*/, 0));
-		},
-	},
-	stickyNote: {
-		placement: 'side',
-	},
-	'cardboard-box': {
-		placement: 'top',
-		onInited: (room, o, rootNode) => {
-			const boxMesh = rootNode.getChildMeshes().find(m => m.name === 'Box') as BABYLON.Mesh;
-			if (o.variation === 'mikan') {
-				const tex = new BABYLON.Texture('/client-assets/room/objects/cardboard-box/textures/mikan.png', room.scene, false, false);
-				(boxMesh.material as BABYLON.PBRMaterial).albedoTexture = tex;
-				(boxMesh.material as BABYLON.PBRMaterial).albedoColor = new BABYLON.Color3(1, 1, 1);
-			} else if (o.variation === 'aizon') {
-				const tex = new BABYLON.Texture('/client-assets/room/objects/cardboard-box/textures/aizon.png', room.scene, false, false);
-				(boxMesh.material as BABYLON.PBRMaterial).albedoTexture = tex;
-				(boxMesh.material as BABYLON.PBRMaterial).albedoColor = new BABYLON.Color3(1, 1, 1);
-			}
-		},
-	},
-	'book': {
-		placement: 'top',
-		onInited: (room, o, rootNode) => {
-			const mesh = rootNode.getChildMeshes()[1] as BABYLON.Mesh;
-			mesh.markVerticesDataAsUpdatable(BABYLON.VertexBuffer.UVKind, true);
-			const index = o.variation;
-			const x = index % 8;
-			const y = Math.floor(index / 8);
-
-			const uvs = mesh.getVerticesData(BABYLON.VertexBuffer.UVKind)!;
-			for (let i = 0; i < uvs.length / 2; i++) {
-				const u = uvs[i * 2];
-				const v = uvs[i * 2 + 1];
-				uvs[i * 2] = (u / 8) + (x / 8);
-				uvs[i * 2 + 1] = (v / 8) + (y / 8);
-			}
-			mesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
-		},
-	},
-	'lava-lamp': {
-		placement: 'top',
-		onInited: (room, o, rootNode) => {
-			const light = new BABYLON.PointLight('lavaLampLight', new BABYLON.Vector3(0, 11/*cm*/, 0), room.scene);
-			light.parent = rootNode;
-			light.diffuse = new BABYLON.Color3(1.0, 0.5, 0.2);
-			light.intensity = 300;
-			light.range = 100/*cm*/;
-
-			const sphere = BABYLON.MeshBuilder.CreateSphere('lavaLampLightSphere', { diameter: 4/*cm*/ }, room.scene);
-			sphere.parent = rootNode;
-			sphere.position = new BABYLON.Vector3(0, 15/*cm*/, 0);
-			const mat = new BABYLON.StandardMaterial('lavaLampLightMat', room.scene);
-			mat.emissiveColor = new BABYLON.Color3(1.0, 0.5, 0.2);
-
-			mat.alpha = 0.5;
-			//mat.disableLighting = true;
-			sphere.material = mat;
-
-			const anim = new BABYLON.Animation('lavaLampLightAnim', 'position.y', 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
-			anim.setKeys([
-				{ frame: 0, value: 11/*cm*/ },
-				{ frame: 500, value: 38/*cm*/ },
-			]);
-			sphere.animations = [anim];
-			room.scene.beginAnimation(sphere, 0, 500, true);
-
-			const emitter = new BABYLON.TransformNode('emitter', room.scene);
-			emitter.parent = rootNode;
-			emitter.position = new BABYLON.Vector3(0, 10/*cm*/, 0);
-			const ps = new BABYLON.ParticleSystem('', 32, room.scene);
-			ps.particleTexture = new BABYLON.Texture('/client-assets/room/objects/lava-lamp/bubble.png');
-			ps.emitter = emitter;
-			ps.isLocal = true;
-			ps.minEmitBox = new BABYLON.Vector3(-1/*cm*/, 0, -1/*cm*/);
-			ps.maxEmitBox = new BABYLON.Vector3(1/*cm*/, 0, 1/*cm*/);
-			ps.minEmitPower = 2;
-			ps.maxEmitPower = 3;
-			ps.minLifeTime = 9;
-			ps.maxLifeTime = 9;
-			ps.minSize = 0.5/*cm*/;
-			ps.maxSize = 1/*cm*/;
-			ps.direction1 = new BABYLON.Vector3(0, 1, 0);
-			ps.direction2 = new BABYLON.Vector3(0, 1, 0);
-			ps.emitRate = 1;
-			ps.blendMode = BABYLON.ParticleSystem.BLENDMODE_ADD;
-			ps.color1 = new BABYLON.Color4(1, 1, 1, 0.3);
-			ps.color2 = new BABYLON.Color4(1, 1, 1, 0.2);
-			ps.colorDead = new BABYLON.Color4(1, 1, 1, 0);
-			ps.preWarmCycles = Math.random() * 1000;
-			ps.start();
-		},
-	},
-	'wall-clock': {
-		placement: 'side',
-		onInited: (room, o, rootNode) => {
-			const hourHand = rootNode.getChildMeshes().find(m => m.name === 'HandH') as BABYLON.Mesh;
-			const minuteHand = rootNode.getChildMeshes().find(m => m.name === 'HandM') as BABYLON.Mesh;
-			room.intervalIds.push(window.setInterval(() => {
-				const now = new Date();
-				const hours = now.getHours() % 12;
-				const minutes = now.getMinutes();
-				const hAngle = -(hours / 12) * Math.PI * 2 - (minutes / 60) * (Math.PI * 2 / 12);
-				const mAngle = -(minutes / 60) * Math.PI * 2;
-				hourHand.rotation = new BABYLON.Vector3(0, 0, hAngle);
-				minuteHand.rotation = new BABYLON.Vector3(0, 0, mAngle);
-			}, 1000));
-		},
-	},
-	aircon: {
-		placement: 'wall',
-	},
-	'monstera': {
-		placement: 'top',
-	},
-	'color-box': {
-		placement: 'floor',
-	},
-	'steel-rack': {
-		placement: 'floor',
-	},
-	'plant2': {
-		placement: 'top',
-	},
-	'tv': {
-		placement: 'top',
-	},
-	'opened-cardboard-box': {
-		placement: 'top',
-	},
-	'bed': {
-		placement: 'floor',
-	},
-	'aquarium': {
-		placement: 'top',
-		onInited: (room, o, rootNode) => {
-			const noiseTexture = new BABYLON.NoiseProceduralTexture('perlin', 256, room.scene);
-			noiseTexture.animationSpeedFactor = 70;
-			noiseTexture.persistence = 10;
-			noiseTexture.brightness = 0.5;
-			noiseTexture.octaves = 5;
-
-			const emitter = new BABYLON.TransformNode('emitter', room.scene);
-			emitter.parent = rootNode;
-			emitter.position = new BABYLON.Vector3(17/*cm*/, 7/*cm*/, -9/*cm*/);
-			const ps = new BABYLON.ParticleSystem('', 128, room.scene);
-			ps.particleTexture = new BABYLON.Texture('/client-assets/room/objects/lava-lamp/bubble.png');
-			ps.emitter = emitter;
-			ps.isLocal = true;
-			ps.minEmitBox = new BABYLON.Vector3(-2/*cm*/, 0, -2/*cm*/);
-			ps.maxEmitBox = new BABYLON.Vector3(2/*cm*/, 0, 2/*cm*/);
-			ps.minEmitPower = 40;
-			ps.maxEmitPower = 60;
-			ps.minLifeTime = 0.5;
-			ps.maxLifeTime = 0.5;
-			ps.minSize = 0.1/*cm*/;
-			ps.maxSize = 1/*cm*/;
-			ps.direction1 = new BABYLON.Vector3(0, 1, 0);
-			ps.direction2 = new BABYLON.Vector3(0, 1, 0);
-			ps.noiseTexture = noiseTexture;
-			ps.noiseStrength = new BABYLON.Vector3(500, 0, 500);
-			ps.emitRate = 32;
-			ps.blendMode = BABYLON.ParticleSystem.BLENDMODE_ADD;
-			//ps.color1 = new BABYLON.Color4(1, 1, 1, 0.3);
-			//ps.color2 = new BABYLON.Color4(1, 1, 1, 0.2);
-			//ps.colorDead = new BABYLON.Color4(1, 1, 1, 0);
-			ps.preWarmCycles = Math.random() * 1000;
-			ps.start();
-		},
-	},
-	'desk': {
-		placement: 'floor',
-	},
-	'chair': {
-		placement: 'floor',
-		isChair: true,
-	},
-	'energy-drink': {
-		placement: 'top',
-	},
-	'banknote': {
-		placement: 'top',
-	},
-	'facial-tissue': {
-		placement: 'top',
-	},
-	'milk': {
-		placement: 'top',
-	},
-	'monitor': {
-		placement: 'top',
-	},
-	'keyboard': {
-		placement: 'top',
-	},
-	'ceiling-fan-light': {
-		placement: 'ceiling',
-		receiveShadows: false,
-		castShadows: false,
-		onInited: (room, o, rootNode) => {
-			const rotor = rootNode.getChildMeshes().find(m => m.name === 'Rotor') as BABYLON.Mesh;
-			rotor.rotation = rotor.rotationQuaternion != null ? rotor.rotationQuaternion.toEulerAngles() : rotor.rotation;
-			const anim = new BABYLON.Animation('', 'rotation.y', 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
-			anim.setKeys([
-				{ frame: 0, value: 0 },
-				{ frame: 100, value: Math.PI * 2 },
-			]);
-			rotor.animations = [anim];
-			room.scene.beginAnimation(rotor, 0, 100, true);
-		},
-	},
-	'round-rug': {
-		placement: 'floor',
-	},
-	'wood-sound-absorbing-panel': {
-		placement: 'side',
-	},
-	'power-strip': {
-		placement: 'top',
-	},
-	'snakeplant': {
-		placement: 'top',
-	},
-	'blind': {
-		placement: 'bottom',
-	},
-};
 
 const _assumedFramesPerSecond = 60;
 
@@ -465,8 +200,8 @@ export class RoomEngine {
 	private camera: BABYLON.UniversalCamera;
 	private fixedCamera: BABYLON.UniversalCamera;
 	private birdeyeCamera: BABYLON.ArcRotateCamera;
-	private intervalIds: number[] = [];
-	private timeoutIds: number[] = [];
+	public intervalIds: number[] = [];
+	public timeoutIds: number[] = [];
 	private objectMeshs: Map<string, BABYLON.Mesh> = new Map();
 	public objectInstances: Map<string, RoomObjectInstance<any>> = new Map();
 	private grabbing: {
@@ -1110,9 +845,11 @@ export class RoomEngine {
 	private async loadObject(o: RoomSetting['objects'][0]) {
 		const def = getObjectDef(o.type);
 
+		const camelToKebab = (str: string) => str.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+
 		const root = new BABYLON.Mesh(`object_${o.id}_${o.type}`, this.scene);
 
-		const loaderResult = await BABYLON.ImportMeshAsync(`/client-assets/room/objects/${o.type}/${o.type}.glb`, this.scene);
+		const loaderResult = await BABYLON.ImportMeshAsync(`/client-assets/room/objects/${camelToKebab(o.type)}/${camelToKebab(o.type)}.glb`, this.scene);
 
 		let hasCollisionMesh = false;
 		for (const mesh of loaderResult.meshes) {
@@ -1135,7 +872,7 @@ export class RoomEngine {
 
 		root.addChild(subRoot);
 
-		if (_DEV_) root.showBoundingBox = true;
+		//if (_DEV_) root.showBoundingBox = true;
 
 		root.position = new BABYLON.Vector3(...o.position);
 		root.rotation = new BABYLON.Vector3(o.rotation[0], -o.rotation[1], o.rotation[2]);
@@ -1172,7 +909,7 @@ export class RoomEngine {
 						this.shadowGenerator2.addShadowCaster(mesh);
 					}
 
-					mesh.renderOutline = false;
+					mesh.renderOutline = this.selectedObjectId.value === o.id;
 					mesh.outlineWidth = 0.003;
 					mesh.outlineColor = new BABYLON.Color3(1, 0, 0);
 					//if (mesh.material) (mesh.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(0.2, 0.2, 0.2);
@@ -1189,6 +926,7 @@ export class RoomEngine {
 
 		const objectInstance = def.createInstance({
 			room: this,
+			root,
 			o: o,
 			loaderResult: loaderResult,
 			meshUpdated: () => {
@@ -1199,7 +937,7 @@ export class RoomEngine {
 		this.objectInstances.set(o.id, objectInstance);
 
 		if (objectInstance.onInited != null) {
-			objectInstance.onInited(this, o, root);
+			objectInstance.onInited();
 		}
 
 		if (o.isMainLight) {
