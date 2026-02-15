@@ -22,33 +22,26 @@ import { BoundingBoxRenderer } from '@babylonjs/core/Rendering/boundingBoxRender
 import { GridMaterial } from '@babylonjs/materials';
 import { ShowInspector } from '@babylonjs/inspector';
 import { ref, watch } from 'vue';
+import { OBJECT_DEFS } from './object-defs.js';
 import * as sound from '@/utility/sound.js';
 
-type RoomDef = {
-	roomType: 'default';
-	objects: {
-		id: string;
-		type: string;
-		position: [number, number, number];
-		rotation: [number, number, number];
-		variation?: string | null;
-		options?: any;
-		isMainLight?: boolean;
+type RoomSettingObject<Options = any> = {
+	id: string;
+	type: string;
+	position: [number, number, number];
+	rotation: [number, number, number];
+	options: Options;
+	isMainLight?: boolean;
 
-		/**
-		 * 別のオブジェクトのID
-		 */
-		sticky?: string | null;
-	}[];
+	/**
+	 * 別のオブジェクトのID
+	 */
+	sticky?: string | null;
 };
 
-type ObjectDef = {
-	placement: 'top' | 'side' | 'bottom' | 'wall' | 'ceiling' | 'floor';
-	receiveShadows?: boolean;
-	castShadows?: boolean;
-	isChair?: boolean;
-	onBeforeInit?: (room: RoomEngine, o: RoomDef['objects'][0], obj: BABYLON.ISceneLoaderAsyncResult) => void;
-	onInited?: (room: RoomEngine, o: RoomDef['objects'][0], rootNode: BABYLON.Mesh) => void;
+type RoomSetting = {
+	roomType: 'default';
+	objects: RoomSettingObject<any>[];
 };
 
 function yuge(room: RoomEngine, mesh: BABYLON.Mesh, offset: BABYLON.Vector3) {
@@ -75,6 +68,34 @@ function yuge(room: RoomEngine, mesh: BABYLON.Mesh, offset: BABYLON.Vector3) {
 	ps.colorDead = new BABYLON.Color4(1, 1, 1, 0);
 	ps.preWarmCycles = Math.random() * 1000;
 	ps.start();
+}
+
+type RoomObjectInstance<Options> = {
+	onInited?: (room: RoomEngine, o: RoomSettingObject<Options>, rootNode: BABYLON.Mesh) => void;
+	interactions: Record<string, {
+		label: string;
+		fn: () => void;
+	}>;
+	primaryInteraction?: string | null;
+};
+
+export const WORLD_SCALE = 100;
+
+type ObjectDef<Options extends Record<string, any>> = {
+	id: string;
+	defaultOptions: Options;
+	placement: 'top' | 'side' | 'bottom' | 'wall' | 'ceiling' | 'floor';
+	isChair?: boolean;
+	createInstance: (args: {
+		room: RoomEngine;
+		o: RoomSettingObject<Options>;
+		loaderResult: BABYLON.ISceneLoaderAsyncResult;
+		meshUpdated: () => void;
+	}) => RoomObjectInstance<Options>;
+};
+
+export function defineObject<Options extends Record<string, any>>(def: ObjectDef<Options>): ObjectDef<Options> {
+	return def;
 }
 
 const OBJECTS = {
@@ -315,17 +336,16 @@ const OBJECTS = {
 	},
 	'blind': {
 		placement: 'bottom',
-		onBeforeInit: (room, o, result) => {
-			const blade = result.meshes[0].getChildMeshes().find(m => m.name === 'Blade') as BABYLON.Mesh;
-			blade.rotation = new BABYLON.Vector3(o.options.angle, 0, 0);
-
-			for (let i = 0; i < o.options.blades; i++) {
-				const b = blade.clone();
-				b.position.y -= (i * 4/*cm*/) / 100;
-			}
-		},
 	},
-} as Record<string, ObjectDef>;
+};
+
+function getObjectDef(type: string): typeof OBJECT_DEFS[number] {
+	const def = OBJECT_DEFS.find(x => x.id === type);
+	if (def == null) {
+		throw new Error(`Unrecognized object type: ${type}`);
+	}
+	return def;
+}
 
 const _assumedFramesPerSecond = 60;
 
@@ -456,6 +476,7 @@ export class RoomEngine {
 	private intervalIds: number[] = [];
 	private timeoutIds: number[] = [];
 	private objectMeshs: Map<string, BABYLON.Mesh> = new Map();
+	private objectInstances: Map<string, RoomObjectInstance<any>> = new Map();
 	private grabbing: {
 		objectId: string;
 		mesh: BABYLON.Mesh;
@@ -470,7 +491,7 @@ export class RoomEngine {
 	private selectedObjectId: string | null = null;
 	private time: 0 | 1 | 2 = 2; // 0: 昼, 1: 夕, 2: 夜
 	private roomCollisionMeshes: BABYLON.AbstractMesh[] = [];
-	private def: RoomDef;
+	private def: RoomSetting;
 	public enableGridSnapping = ref(true);
 	public gridSnappingScale = ref(8/*cm*/);
 	private putParticleSystem: BABYLON.ParticleSystem;
@@ -485,7 +506,7 @@ export class RoomEngine {
 	public isEditMode = ref(false);
 	public isSitting = ref(false);
 
-	constructor(def: RoomDef, options: {
+	constructor(def: RoomSetting, options: {
 		canvas: HTMLCanvasElement;
 	}) {
 		this.def = def;
@@ -873,7 +894,7 @@ export class RoomEngine {
 		if (this.grabbing == null) return;
 		const grabbing = this.grabbing;
 
-		const placement = OBJECTS[this.def.objects.find(o => o.id === grabbing.objectId)!.type].placement;
+		const placement = getObjectDef(this.def.objects.find(o => o.id === grabbing.objectId)!.type).placement;
 
 		const dir = this.camera.getDirection(BABYLON.Axis.Z).scale(this.scene.useRightHandedSystem ? -1 : 1);
 		grabbing.ghost.position = this.camera.position.add(dir.scale(grabbing.distance)).add(grabbing.startOffset);
@@ -1001,7 +1022,7 @@ export class RoomEngine {
 
 	private async loadEnvModel() {
 		const envObj = await BABYLON.ImportMeshAsync('/client-assets/room/env.glb', this.scene);
-		envObj.meshes[0].scaling = envObj.meshes[0].scaling.scale(100);
+		envObj.meshes[0].scaling = envObj.meshes[0].scaling.scale(WORLD_SCALE);
 		envObj.meshes[0].bakeCurrentTransformIntoVertices();
 		envObj.meshes[0].position = new BABYLON.Vector3(0, -900/*cm*/, 0); // 4階くらいの想定
 		envObj.meshes[0].rotation = new BABYLON.Vector3(0, -Math.PI, 0);
@@ -1026,20 +1047,20 @@ export class RoomEngine {
 		const meshes: BABYLON.Mesh[] = [];
 
 		const floorResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-floor.glb', this.scene);
-		floorResult.meshes[0].scaling = floorResult.meshes[0].scaling.scale(100);
+		floorResult.meshes[0].scaling = floorResult.meshes[0].scaling.scale(WORLD_SCALE);
 		const floorRoot = new BABYLON.Mesh('floor', this.scene);
 		floorRoot.addChild(floorResult.meshes[0]);
 		meshes.push(floorRoot);
 
 		const ceilingResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-ceiling.glb', this.scene);
-		ceilingResult.meshes[0].scaling = ceilingResult.meshes[0].scaling.scale(100);
+		ceilingResult.meshes[0].scaling = ceilingResult.meshes[0].scaling.scale(WORLD_SCALE);
 		const ceilingRoot = new BABYLON.Mesh('ceiling', this.scene);
 		ceilingRoot.addChild(ceilingResult.meshes[0]);
 		ceilingRoot.position = new BABYLON.Vector3(0, 250/*cm*/, 0);
 		meshes.push(ceilingRoot);
 
 		const wallAResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-wall.glb', this.scene);
-		wallAResult.meshes[0].scaling = wallAResult.meshes[0].scaling.scale(100);
+		wallAResult.meshes[0].scaling = wallAResult.meshes[0].scaling.scale(WORLD_SCALE);
 		const wallARoot = new BABYLON.Mesh('wallA', this.scene);
 		wallARoot.addChild(wallAResult.meshes[0]);
 		wallARoot.position = new BABYLON.Vector3(-150/*cm*/, 0, 0);
@@ -1047,14 +1068,14 @@ export class RoomEngine {
 		meshes.push(wallARoot);
 
 		const wallBResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-wall.glb', this.scene);
-		wallBResult.meshes[0].scaling = wallBResult.meshes[0].scaling.scale(100);
+		wallBResult.meshes[0].scaling = wallBResult.meshes[0].scaling.scale(WORLD_SCALE);
 		const wallBRoot = new BABYLON.Mesh('wallB', this.scene);
 		wallBRoot.addChild(wallBResult.meshes[0]);
 		wallBRoot.position = new BABYLON.Vector3(150/*cm*/, 0, 0);
 		meshes.push(wallBRoot);
 
 		const wallCResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-wall.glb', this.scene);
-		wallCResult.meshes[0].scaling = wallCResult.meshes[0].scaling.scale(100);
+		wallCResult.meshes[0].scaling = wallCResult.meshes[0].scaling.scale(WORLD_SCALE);
 		const wallCRoot = new BABYLON.Mesh('wallC', this.scene);
 		wallCRoot.addChild(wallCResult.meshes[0]);
 		wallCRoot.position = new BABYLON.Vector3(0, 0, -150/*cm*/);
@@ -1062,7 +1083,7 @@ export class RoomEngine {
 		meshes.push(wallCRoot);
 
 		const wallDResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-wall-demado.glb', this.scene);
-		wallDResult.meshes[0].scaling = wallDResult.meshes[0].scaling.scale(100);
+		wallDResult.meshes[0].scaling = wallDResult.meshes[0].scaling.scale(WORLD_SCALE);
 		const wallDRoot = new BABYLON.Mesh('wallD', this.scene);
 		wallDRoot.addChild(wallDResult.meshes[0]);
 		wallDRoot.position = new BABYLON.Vector3(0, 0, 150/*cm*/);
@@ -1094,19 +1115,15 @@ export class RoomEngine {
 		}
 	}
 
-	private async loadObject(o: RoomDef['objects'][0]) {
-		const def = OBJECTS[o.type];
+	private async loadObject(o: RoomSetting['objects'][0]) {
+		const def = getObjectDef(o.type);
 
 		const root = new BABYLON.Mesh(`object_${o.id}_${o.type}`, this.scene);
 
-		const obj = await BABYLON.ImportMeshAsync(`/client-assets/room/objects/${o.type}/${o.type}.glb`, this.scene);
-
-		if (def.onBeforeInit != null) {
-			def.onBeforeInit(this, o, obj);
-		}
+		const loaderResult = await BABYLON.ImportMeshAsync(`/client-assets/room/objects/${o.type}/${o.type}.glb`, this.scene);
 
 		let hasCollisionMesh = false;
-		for (const mesh of obj.meshes) {
+		for (const mesh of loaderResult.meshes) {
 			if (mesh.name.includes('__COLLISION__')) {
 				hasCollisionMesh = true;
 				break;
@@ -1121,58 +1138,76 @@ export class RoomEngine {
 		};
 
 		// babylonによって自動で追加される右手系変換用ノード
-		const subRoot = obj.meshes[0];
-		subRoot.scaling = subRoot.scaling.scale(100);// cmをmに
+		const subRoot = loaderResult.meshes[0];
+		subRoot.scaling = subRoot.scaling.scale(WORLD_SCALE);// cmをmに
 
 		root.addChild(subRoot);
 
-		const bv = root.getHierarchyBoundingVectors();
-		root.setBoundingInfo(new BABYLON.BoundingInfo(bv.min, bv.max));
-		//if (_DEV_) root.showBoundingBox = true;
+		if (_DEV_) root.showBoundingBox = true;
 
 		root.position = new BABYLON.Vector3(...o.position);
 		root.rotation = new BABYLON.Vector3(o.rotation[0], -o.rotation[1], o.rotation[2]);
 		root.metadata = metadata;
 
-		for (const m of obj.meshes) {
-			const mesh = m;
+		const meshUpdated = (meshes: BABYLON.Mesh[]) => {
+			// バウンディングボックスを計算
+			// (バウンディングボックスはそのオブジェクトの中心に視点を向ける際などに使用される)
+			const bv = root.getHierarchyBoundingVectors();
+			root.setBoundingInfo(new BABYLON.BoundingInfo(bv.min, bv.max));
 
-			mesh.metadata = metadata;
-			mesh.checkCollisions = !hasCollisionMesh;
+			for (const m of meshes) {
+				const mesh = m;
 
-			if (mesh.name.includes('__TV_SCREEN__')) {
-				mesh.markVerticesDataAsUpdatable(BABYLON.VertexBuffer.UVKind, true);
-			}
+				mesh.metadata = metadata;
+				mesh.checkCollisions = !hasCollisionMesh;
 
-			if (mesh.name.includes('__COLLISION__')) {
-				mesh.receiveShadows = false;
-				mesh.isVisible = false;
-				mesh.metadata.isCollision = true;
-				mesh.checkCollisions = true;
-			} else if (mesh.name.includes('__TOP__') || mesh.name.includes('__SIDE__')) {
-				mesh.receiveShadows = false;
-				mesh.isVisible = false;
-			} else {
-				if (!o.isMainLight && def.receiveShadows !== false) mesh.receiveShadows = true;
-				if (!o.isMainLight && def.castShadows !== false) {
-					this.shadowGenerator1.addShadowCaster(mesh);
-					this.shadowGenerator2.addShadowCaster(mesh);
+				if (mesh.name.includes('__TV_SCREEN__')) {
+					mesh.markVerticesDataAsUpdatable(BABYLON.VertexBuffer.UVKind, true);
 				}
 
-				mesh.renderOutline = false;
-				mesh.outlineWidth = 0.003;
-				mesh.outlineColor = new BABYLON.Color3(1, 0, 0);
-				//if (mesh.material) (mesh.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(0.2, 0.2, 0.2);
-				if (mesh.material) {
-					(mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.enableReflectionProbe ? this.reflectionProbe.cubeTexture : this.envMapIndoor;
+				if (mesh.name.includes('__COLLISION__')) {
+					mesh.receiveShadows = false;
+					mesh.isVisible = false;
+					mesh.metadata.isCollision = true;
+					mesh.checkCollisions = true;
+				} else if (mesh.name.includes('__TOP__') || mesh.name.includes('__SIDE__')) {
+					mesh.receiveShadows = false;
+					mesh.isVisible = false;
+				} else {
+					if (!o.isMainLight && def.receiveShadows !== false) mesh.receiveShadows = true;
+					if (!o.isMainLight && def.castShadows !== false) {
+						this.shadowGenerator1.addShadowCaster(mesh);
+						this.shadowGenerator2.addShadowCaster(mesh);
+					}
+
+					mesh.renderOutline = false;
+					mesh.outlineWidth = 0.003;
+					mesh.outlineColor = new BABYLON.Color3(1, 0, 0);
+					//if (mesh.material) (mesh.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(0.2, 0.2, 0.2);
+					if (mesh.material) {
+						(mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.enableReflectionProbe ? this.reflectionProbe.cubeTexture : this.envMapIndoor;
+					}
 				}
 			}
-		}
+		};
+
+		meshUpdated(loaderResult.meshes);
 
 		this.objectMeshs.set(o.id, root);
 
-		if (def.onInited != null) {
-			def.onInited(this, o, root);
+		const objectInstance = def.createInstance({
+			room: this,
+			o: o,
+			loaderResult: loaderResult,
+			meshUpdated: () => {
+				meshUpdated(this.objectMeshs.get(o.id)!.getChildMeshes() as BABYLON.Mesh[]);
+			},
+		});
+
+		this.objectInstances.set(o.id, objectInstance);
+
+		if (objectInstance.onInited != null) {
+			objectInstance.onInited(this, o, root);
 		}
 
 		if (o.isMainLight) {
@@ -1281,10 +1316,15 @@ export class RoomEngine {
 	private interact(oid: string) {
 		const o = this.def.objects.find(o => o.id === oid)!;
 		const mesh = this.objectMeshs.get(o.id)!;
-		const objDef = OBJECTS[o.type];
+		const objDef = getObjectDef(o.type);
+		const obji = this.objectInstances.get(o.id)!;
 
 		if (objDef.isChair) {
 			this.sitChair(o.id);
+		} else {
+			if (obji.primaryInteraction != null) {
+				obji.interactions[obji.primaryInteraction].fn();
+			}
 		}
 	}
 
