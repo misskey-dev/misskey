@@ -311,6 +311,9 @@ const OBJECTS = {
 	'snakeplant': {
 		placement: 'top',
 	},
+	'blind': {
+		placement: 'bottom',
+	},
 } as Record<string, ObjectDef>;
 
 const _assumedFramesPerSecond = 60;

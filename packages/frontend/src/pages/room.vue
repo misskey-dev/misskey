@@ -100,7 +100,7 @@ onMounted(() => {
 		}, {
 			id: 'f3',
 			type: 'snakeplant',
-			position: [-25, 90, 170],
+			position: [40, 90, 170],
 			rotation: [0, 0, 0],
 		}, {
 			id: 'g',
@@ -211,6 +211,16 @@ onMounted(() => {
 			type: 'round-rug',
 			position: [0, 0, 0],
 			rotation: [0, 0, 0],
+		}, {
+			id: 'x',
+			type: 'blind',
+			position: [-35, 194, 185],
+			rotation: [0, Math.PI, 0],
+		}, {
+			id: 'x2',
+			type: 'blind',
+			position: [35, 194, 185],
+			rotation: [0, Math.PI, 0],
 		}],
 	}, {
 		canvas: canvas.value!,
