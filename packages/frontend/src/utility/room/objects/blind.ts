@@ -27,10 +27,12 @@ export const blind = defineObject({
 			blades = [];
 
 			for (let i = 0; i < o.options.blades; i++) {
-				if (i / o.options.blades > o.options.open) continue;
-
 				const b = blade.clone();
-				b.position.y -= (i * 4/*cm*/) / WORLD_SCALE;
+				if (i / o.options.blades < o.options.open) {
+					b.position.y -= (i * 4/*cm*/) / WORLD_SCALE;
+				} else {
+					b.position.y -= (((o.options.blades - 1) * o.options.open * 4/*cm*/) + (i * 0.3/*cm*/)) / WORLD_SCALE;
+				}
 				blades.push(b);
 			}
 
