@@ -54,8 +54,8 @@ export const blind = defineObject({
 				adjustBladeRotation: {
 					label: 'Adjust blade rotation',
 					fn: () => {
-						o.options.angle += Math.PI / 24;
-						if (o.options.angle > Math.PI / 2) o.options.angle = 0;
+						o.options.angle += Math.PI / 8;
+						if (o.options.angle >= Math.PI / 2) o.options.angle = -Math.PI / 2;
 						applyAngle();
 					},
 				},

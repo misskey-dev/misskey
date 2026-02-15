@@ -18,21 +18,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton v-if="engine.enableGridSnapping.value" :primary="engine.gridSnappingScale.value === 8" @click="engine.gridSnappingScale.value = 8">Snap: 8cm</MkButton>
 		</template>
 		<MkButton v-if="engine.isSitting.value" @click="engine.standUp()">降りる (Q)</MkButton>
+		<template v-for="interaction in interacions" :key="interaction.id">
+			<MkButton @click="interaction.fn()">{{ interaction.label }}</MkButton>
+		</template>
 	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, onMounted, onUnmounted, ref, shallowRef, useTemplateRef } from 'vue';
+import { defineAsyncComponent, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import { ensureSignin } from '@/i';
 import MkButton from '@/components/MkButton.vue';
 import { RoomEngine } from '@/utility/room/engine.js';
+import { getObjectDef } from '@/utility/room/object-defs.js';
 
 const canvas = useTemplateRef('canvas');
 
 const engine = shallowRef<RoomEngine | null>(null);
+
+const interacions = shallowRef<{
+	id: string;
+	label: string;
+	fn: () => void;
+}[]>([]);
 
 function resize() {
 	if (engine.value != null) engine.value.resize();
@@ -276,6 +286,20 @@ onMounted(() => {
 	canvas.value!.focus();
 
 	window.addEventListener('resize', resize);
+
+	watch(engine.value.selectedObjectId, (v) => {
+		if (v == null) {
+			interacions.value = [];
+		} else {
+			const o = engine.value.def.objects.find(o => o.id === v)!;
+			const obji = engine.value.objectInstances.get(o.id)!;
+			interacions.value = Object.entries(obji.interactions).map(([interactionId, interactionInfo]) => ({
+				id: interactionId,
+				label: interactionInfo.label,
+				fn: interactionInfo.fn,
+			}));
+		}
+	});
 });
 
 onUnmounted(() => {

@@ -22,7 +22,7 @@ import { BoundingBoxRenderer } from '@babylonjs/core/Rendering/boundingBoxRender
 import { GridMaterial } from '@babylonjs/materials';
 import { ShowInspector } from '@babylonjs/inspector';
 import { ref, watch } from 'vue';
-import { OBJECT_DEFS } from './object-defs.js';
+import { getObjectDef, OBJECT_DEFS } from './object-defs.js';
 import * as sound from '@/utility/sound.js';
 
 type RoomSettingObject<Options = any> = {
@@ -339,14 +339,6 @@ const OBJECTS = {
 	},
 };
 
-function getObjectDef(type: string): typeof OBJECT_DEFS[number] {
-	const def = OBJECT_DEFS.find(x => x.id === type);
-	if (def == null) {
-		throw new Error(`Unrecognized object type: ${type}`);
-	}
-	return def;
-}
-
 const _assumedFramesPerSecond = 60;
 
 class HorizontalCameraKeyboardMoveInput extends BABYLON.BaseCameraPointersInput {
@@ -476,7 +468,7 @@ export class RoomEngine {
 	private intervalIds: number[] = [];
 	private timeoutIds: number[] = [];
 	private objectMeshs: Map<string, BABYLON.Mesh> = new Map();
-	private objectInstances: Map<string, RoomObjectInstance<any>> = new Map();
+	public objectInstances: Map<string, RoomObjectInstance<any>> = new Map();
 	private grabbing: {
 		objectId: string;
 		mesh: BABYLON.Mesh;
@@ -488,10 +480,10 @@ export class RoomEngine {
 		descendantStickyObjectIds: string[];
 		isMainLight: boolean;
 	} | null = null;
-	private selectedObjectId: string | null = null;
+	public selectedObjectId = ref<string | null>(null);
 	private time: 0 | 1 | 2 = 2; // 0: 昼, 1: 夕, 2: 夜
 	private roomCollisionMeshes: BABYLON.AbstractMesh[] = [];
-	private def: RoomSetting;
+	public def: RoomSetting;
 	public enableGridSnapping = ref(true);
 	public gridSnappingScale = ref(8/*cm*/);
 	private putParticleSystem: BABYLON.ParticleSystem;
@@ -755,8 +747,8 @@ export class RoomEngine {
 				ev.stopPropagation();
 				if (this.isEditMode.value) {
 					this.toggleGrab();
-				} else if (this.selectedObjectId != null) {
-					this.interact(this.selectedObjectId);
+				} else if (this.selectedObjectId.value != null) {
+					this.interact(this.selectedObjectId.value);
 				}
 			} else if (ev.code === 'KeyR') {
 				ev.preventDefault();
@@ -869,14 +861,14 @@ export class RoomEngine {
 	}
 
 	public selectObject(objectId: string | null) {
-		if (this.selectedObjectId != null) {
-			const prevMesh = this.objectMeshs.get(this.selectedObjectId);
+		if (this.selectedObjectId.value != null) {
+			const prevMesh = this.objectMeshs.get(this.selectedObjectId.value);
 			if (prevMesh != null) {
 				for (const om of prevMesh.getChildMeshes()) {
 					om.renderOutline = false;
 				}
 			}
-			this.selectedObjectId = null;
+			this.selectedObjectId.value = null;
 		}
 
 		if (objectId != null) {
@@ -885,7 +877,7 @@ export class RoomEngine {
 				for (const om of mesh.getChildMeshes()) {
 					om.renderOutline = true;
 				}
-				this.selectedObjectId = objectId;
+				this.selectedObjectId.value = objectId;
 			}
 		}
 	}
@@ -1250,9 +1242,9 @@ export class RoomEngine {
 			return;
 		}
 
-		if (this.selectedObjectId == null) return;
+		if (this.selectedObjectId.value == null) return;
 
-		const selectedObject = this.objectMeshs.get(this.selectedObjectId)!;
+		const selectedObject = this.objectMeshs.get(this.selectedObjectId.value)!;
 		for (const om of selectedObject.getChildMeshes()) {
 			om.renderOutline = false;
 		}
