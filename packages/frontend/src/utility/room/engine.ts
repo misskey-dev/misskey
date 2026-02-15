@@ -305,6 +305,12 @@ const OBJECTS = {
 	'wood-sound-absorbing-panel': {
 		placement: 'side',
 	},
+	'power-strip': {
+		placement: 'top',
+	},
+	'snakeplant': {
+		placement: 'top',
+	},
 } as Record<string, ObjectDef>;
 
 const _assumedFramesPerSecond = 60;

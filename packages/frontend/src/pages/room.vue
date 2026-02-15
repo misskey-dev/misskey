@@ -69,7 +69,7 @@ onMounted(() => {
 			id: 'c',
 			type: 'desk',
 			position: [-115, 0, 85],
-			rotation: [0, 0, 0],
+			rotation: [0, Math.PI, 0],
 		}, {
 			id: 'd',
 			type: 'monitor',
@@ -80,7 +80,7 @@ onMounted(() => {
 			id: 'd2',
 			type: 'keyboard',
 			position: [-110, 70, 85],
-			rotation: [0, 0, 0],
+			rotation: [0, Math.PI, 0],
 			sticky: 'c',
 		}, {
 			id: 'e',
@@ -96,6 +96,11 @@ onMounted(() => {
 			id: 'f2',
 			type: 'monstera',
 			position: [-55, 90, 175],
+			rotation: [0, 0, 0],
+		}, {
+			id: 'f3',
+			type: 'snakeplant',
+			position: [-25, 90, 170],
 			rotation: [0, 0, 0],
 		}, {
 			id: 'g',
@@ -124,6 +129,12 @@ onMounted(() => {
 			rotation: [0, Math.PI / 2, 0],
 			sticky: 'j',
 		}, {
+			id: 'j3',
+			type: 'power-strip',
+			position: [130, 13, 115],
+			rotation: [0, Math.PI / 2, 0],
+			sticky: 'j',
+		}, {
 			id: 'k',
 			type: 'cup-noodle',
 			position: [-100, 70, 40],
@@ -145,7 +156,7 @@ onMounted(() => {
 			id: 'n',
 			type: 'milk',
 			position: [-120, 70, 130],
-			rotation: [0, -1.5, 0],
+			rotation: [0, 1.5, 0],
 			sticky: 'c',
 		}, {
 			id: 'o',
