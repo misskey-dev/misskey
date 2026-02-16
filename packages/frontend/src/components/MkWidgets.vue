@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@update:modelValue="v => emit('updateWidgets', v)"
 		>
 			<template #default="{ item }">
-				<div :class="[$style.widget, $style.customizeContainer]" data-cy-customize-container>
+				<div :key="item.id" :class="[$style.widget, $style.customizeContainer]" data-cy-customize-container>
 					<button :class="$style.customizeContainerConfig" class="_button" @click.prevent.stop="configWidget(item.id)"><i class="ti ti-settings"></i></button>
 					<button :class="$style.customizeContainerRemove" data-cy-customize-container-remove class="_button" @click.prevent.stop="removeWidget(item)"><i class="ti ti-x"></i></button>
 					<component :is="`widget-${item.name}`" :ref="(el: any) => widgetRefs[item.id] = el" :class="$style.customizeContainerHandleWidget" :widget="item" @updateProps="updateWidget(item.id, $event)"/>
@@ -112,6 +112,7 @@ function removeWidget(widget: Widget) {
 }
 
 function updateWidget(id: Widget['id'], data: Widget['data']) {
+	console.log('updateWidget', id, data);
 	emit('updateWidget', { id, data });
 }
 
