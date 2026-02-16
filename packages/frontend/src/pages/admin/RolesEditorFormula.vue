@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			group="roleFormula"
 		>
 			<template #default="{ item, dragStart }">
-				<div :class="$style.item">
+				<div :key="item.id" :class="$style.item">
 					<!-- divが無いとエラーになる https://github.com/SortableJS/vue.draggable.next/issues/189 -->
 					<RolesEditorFormula
 						:modelValue="item"

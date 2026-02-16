@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				manualDragStart
 			>
 				<template #default="{ item, index, dragStart }">
-					<div :class="$style.item">
+					<div :key="item.id" :class="$style.item">
 						<div :class="$style.itemHeader">
 							<div :class="$style.itemNumber">{{ index + 1 }}</div>
 							<span :class="$style.itemHandle" :draggable="true" @dragstart.stop="dragStart"><i class="ti ti-menu"></i></span>

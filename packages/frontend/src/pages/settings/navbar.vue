@@ -16,6 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #default="{ item }">
 						<div
 							v-if="item.type === '-' || navbarItemDef[item.type]"
+							:key="item.id"
 							:class="$style.item"
 						>
 							<button class="_button" :class="$style.itemHandle"><i class="ti ti-menu"></i></button>

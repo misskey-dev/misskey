@@ -82,7 +82,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							manualDragStart
 						>
 							<template #default="{ item, dragStart }">
-								<div v-panel :class="$style.fieldDragItem">
+								<div :key="item.id" v-panel :class="$style.fieldDragItem">
 									<button v-if="!fieldEditMode" class="_button" :class="$style.dragItemHandle" tabindex="-1" :draggable="true" @dragstart.stop="dragStart"><i class="ti ti-menu"></i></button>
 									<button v-if="fieldEditMode" :disabled="fields.length <= 1" class="_button" :class="$style.dragItemRemove" @click="deleteField(item.id)"><i class="ti ti-x"></i></button>
 									<div :class="$style.dragItemForm">
