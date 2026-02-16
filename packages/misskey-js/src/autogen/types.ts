@@ -24025,6 +24025,8 @@ export interface operations {
                     tag: string;
                     /** @default 10 */
                     limit?: number;
+                    /** @default 0 */
+                    offset?: number;
                     /** @enum {string} */
                     sort: '+follower' | '-follower' | '+createdAt' | '-createdAt' | '+updatedAt' | '-updatedAt';
                     /**
