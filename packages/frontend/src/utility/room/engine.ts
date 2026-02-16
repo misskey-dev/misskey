@@ -613,8 +613,25 @@ export class RoomEngine {
 			this.def.objects.find(o => o.id === grabbing.objectId)!.sticky = null;
 		}
 
-		grabbing.mesh.position = newPos;
 		grabbing.mesh.rotation = newRotation;
+		grabbing.mesh.position = newPos;
+
+		//const pos = new BABYLON.Vector3(this.camera.position.x, this.camera.position.y, this.camera.position.z);
+		//const _dir = newPos.subtract(pos).normalize();
+		//for (let i = 0; i < grabbing.distance; i++) {
+		//	// posを1cmずつnewPosの方向に動かす
+		//	pos.addInPlace(_dir.scale(1/*cm*/));
+		//	// 前方に向かってレイを飛ばして衝突チェック
+		//	const ray = new BABYLON.Ray(this.camera.position, dir, i);
+		//	const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m));
+		//	if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
+		//		//const isCollided = grabbing.mesh.intersectsMesh(hit.pickedMesh, false);
+		//		//if (isCollided) {
+		//		break;
+		//		//}
+		//	}
+		//	grabbing.mesh.position = pos.clone();
+		//}
 
 		//const ray = new BABYLON.Ray(this.camera.position, this.camera.getDirection(BABYLON.Axis.Z), 1000/*cm*/);
 		//const hit = this.scene.pickWithRay(ray, (m) => m.name.includes('__COLLISION_WALL__'))!;
