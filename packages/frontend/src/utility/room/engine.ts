@@ -25,7 +25,7 @@ import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
 import { BoundingBoxRenderer } from '@babylonjs/core/Rendering/boundingBoxRenderer';
 import { GridMaterial } from '@babylonjs/materials';
 import { ShowInspector } from '@babylonjs/inspector';
-import { ref, watch } from 'vue';
+import { reactive, ref, watch } from 'vue';
 import { genId } from '../id.js';
 import { getObjectDef } from './object-defs.js';
 import { HorizontalCameraKeyboardMoveInput } from './utility.js';
@@ -167,6 +167,10 @@ export class RoomEngine {
 	private zGridPreviewPlane: BABYLON.Mesh;
 	public isEditMode = ref(false);
 	public isSitting = ref(false);
+	public ui = reactive({
+		isGrabbing: false,
+		isGrabbingForInstall: false,
+	});
 
 	constructor(roomState: RoomState, options: {
 		canvas: HTMLCanvasElement;
@@ -411,43 +415,6 @@ export class RoomEngine {
 					this.camera.setTarget(boundingInfo.center);
 					this.selectObject(oid);
 				}
-			}
-		});
-
-		this.canvas.addEventListener('keypress', (ev) => {
-			if (ev.code === 'KeyE') {
-				ev.preventDefault();
-				ev.stopPropagation();
-				if (this.isEditMode.value) {
-					if (this.grabbingCtx != null) {
-						this.endGrabbing();
-					} else {
-						this.beginSelectedInstalledObjectGrabbing();
-					}
-				} else if (this.selectedObjectId.value != null) {
-					this.interact(this.selectedObjectId.value);
-				}
-			} else if (ev.code === 'KeyR') {
-				ev.preventDefault();
-				ev.stopPropagation();
-				if (this.grabbingCtx != null) {
-					this.grabbingCtx.rotation += Math.PI / 8;
-				}
-			} else if (ev.code === 'KeyQ') {
-				ev.preventDefault();
-				ev.stopPropagation();
-				if (this.isSitting.value) {
-					this.standUp();
-				}
-			}
-		});
-
-		this.canvas.addEventListener('wheel', (ev) => {
-			if (this.grabbingCtx != null) {
-				ev.preventDefault();
-				ev.stopPropagation();
-				this.grabbingCtx.distance -= ev.deltaY * 0.025;
-				if (this.grabbingCtx.distance < 5/*cm*/) this.grabbingCtx.distance = 5/*cm*/;
 			}
 		});
 
@@ -953,6 +920,8 @@ export class RoomEngine {
 
 		let sticky: string | null;
 
+		this.ui.isGrabbing = true;
+
 		this.grabbingCtx = {
 			objectId: selectedObject.metadata.objectId,
 			objectType: selectedObject.metadata.objectType,
@@ -968,9 +937,13 @@ export class RoomEngine {
 				sticky = info.sticky;
 			},
 			onCancel: () => {
+				this.ui.isGrabbing = false;
+
 				// todo: initialPositionなどを復元
 			},
 			onDone: () => { // todo: sticky状態などを引数でもらうようにしたい
+				this.ui.isGrabbing = false;
+
 				// 親から先に外していく
 				const removeStickyParentRecursively = (mesh: BABYLON.Mesh) => {
 					const stickyObjectIds = Array.from(this.roomState.installedObjects.filter(o => o.sticky === mesh.metadata.objectId)).map(o => o.id);
@@ -1011,7 +984,7 @@ export class RoomEngine {
 		});
 	}
 
-	private endGrabbing() {
+	public endGrabbing() {
 		if (this.grabbingCtx == null) return;
 
 		//this.grabbing.ghost.dispose(false, true);
@@ -1113,6 +1086,8 @@ export class RoomEngine {
 
 		let sticky: string | null;
 
+		this.ui.isGrabbingForInstall = true;
+
 		this.grabbingCtx = {
 			objectId: id,
 			objectType: type,
@@ -1128,9 +1103,13 @@ export class RoomEngine {
 				sticky = info.sticky;
 			},
 			onCancel: () => {
+				this.ui.isGrabbingForInstall = false;
+
 				// todo
 			},
 			onDone: () => { // todo: sticky状態などを引数でもらうようにしたい
+				this.ui.isGrabbingForInstall = false;
+
 				const pos = this.grabbingCtx.mesh.position.clone();
 				const rotation = this.grabbingCtx.mesh.rotation.clone();
 
@@ -1163,6 +1142,12 @@ export class RoomEngine {
 			volume: 1,
 			playbackRate: 1,
 		});
+	}
+
+	public changeGrabbingDistance(delta: number) {
+		if (this.grabbingCtx == null) return;
+		this.grabbingCtx.distance -= delta;
+		if (this.grabbingCtx.distance < 5/*cm*/) this.grabbingCtx.distance = 5/*cm*/;
 	}
 
 	public resize() {

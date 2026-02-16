@@ -5,12 +5,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.root" class="_pageScrollable">
-	<canvas ref="canvas" :class="$style.canvas"></canvas>
+	<canvas ref="canvas" :class="$style.canvas" @keypress="onKeypress" @wheel="onWheel"></canvas>
 	<div v-if="engine != null" class="_buttons" :class="$style.controls">
-		<MkButton @click="toggleLight">Toggle Light</MkButton>
+		<!--<MkButton v-for="action in actions" :key="action.key" @click="action.fn">{{ action.label }}{{ hotkeyToLabel(action.hotkey) }}</MkButton>-->
 		<MkButton :primary="engine.isEditMode.value" @click="toggleEditMode">Edit mode: {{ engine.isEditMode.value ? 'on' : 'off' }}</MkButton>
 		<template v-if="engine.isEditMode.value">
-			<MkButton @click="grab">Grab (E)</MkButton>
+			<MkButton v-if="engine.ui.isGrabbing" @click="endGrabbing">Put (E)</MkButton>
+			<MkButton v-else-if="engine.ui.isGrabbingForInstall" @click="endGrabbing">Install (E)</MkButton>
+			<MkButton v-else @click="beginSelectedInstalledObjectGrabbing">Grab (E)</MkButton>
+
 			<MkButton :primary="engine.enableGridSnapping.value" @click="toggleGridSnapping">Grid Snap: {{ engine.enableGridSnapping.value ? 'on' : 'off' }}</MkButton>
 			<MkButton v-if="engine.enableGridSnapping.value" :primary="engine.gridSnappingScale.value === 1" @click="engine.gridSnappingScale.value = 1">Snap: 1cm</MkButton>
 			<MkButton v-if="engine.enableGridSnapping.value" :primary="engine.gridSnappingScale.value === 2" @click="engine.gridSnappingScale.value = 2">Snap: 2cm</MkButton>
@@ -27,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
+import { computed, defineAsyncComponent, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import { ensureSignin } from '@/i';
@@ -48,6 +51,95 @@ const interacions = shallowRef<{
 
 function resize() {
 	if (engine.value != null) engine.value.resize();
+}
+
+type Action = {
+	key: string;
+	label: string;
+	fn: () => void;
+	hotkey?: string;
+};
+
+function hotkeyToLabel(hotkey: string) {
+	if (hotkey.startsWith('Key')) {
+		return hotkey.slice(3);
+	} else if (hotkey.startsWith('Digit')) {
+		return hotkey.slice(5);
+	} else {
+		return hotkey;
+	}
+}
+
+const actions = computed<Action[]>(() => {
+	if (engine.value == null) return [];
+
+	const actions: Action[] = [];
+
+	if (engine.value.isEditMode.value) {
+		actions.push({
+			key: 'grab',
+			label: 'Grab',
+			fn: () => {
+				engine.value!.beginSelectedInstalledObjectGrabbing();
+				canvas.value!.focus();
+			},
+			hotkey: 'KeyE',
+		});
+	}
+
+	if (engine.value.isSitting.value) {
+		actions.push({
+			key: 'standUp',
+			label: 'Stand Up',
+			fn: () => engine.value!.standUp(),
+			hotkey: 'KeyQ',
+		});
+	}
+
+	return actions;
+});
+
+function onKeypress(ev: KeyboardEvent) {
+	if (engine.value == null) return;
+
+	/* todo
+	if (ev.code === 'KeyE') {
+		ev.preventDefault();
+		ev.stopPropagation();
+		if (engine.value.isEditMode.value) {
+			if (engine.value.ui.isGrabbing || engine.value.ui.isGrabbingForInstall) {
+				this.endGrabbing();
+			} else {
+				this.beginSelectedInstalledObjectGrabbing();
+			}
+		} else if (this.selectedObjectId.value != null) {
+			this.interact(this.selectedObjectId.value);
+		}
+	} else if (ev.code === 'KeyR') {
+		ev.preventDefault();
+		ev.stopPropagation();
+		if (this.grabbingCtx != null) {
+			this.grabbingCtx.rotation += Math.PI / 8;
+		}
+	} else if (ev.code === 'KeyQ') {
+		ev.preventDefault();
+		ev.stopPropagation();
+		if (this.isSitting.value) {
+			this.standUp();
+		}
+	}
+		*/
+}
+
+function onWheel(ev: WheelEvent) {
+	if (engine.value == null) return;
+
+	if (engine.value.ui.isGrabbing || engine.value.ui.isGrabbingForInstall) {
+		ev.preventDefault();
+		ev.stopPropagation();
+
+		engine.value.changeGrabbingDistance(ev.deltaY * 0.025);
+	}
 }
 
 onMounted(() => {
@@ -316,11 +408,13 @@ onUnmounted(() => {
 	window.removeEventListener('resize', resize);
 });
 
-// todo: 掴む/離す(or 設置)のボタン出し分け
-// grabbing中かどうか、家具設置中かどうかをengineからリアクティブにもらう必要あり？
-
-function grab() {
+function beginSelectedInstalledObjectGrabbing() {
 	engine.value.beginSelectedInstalledObjectGrabbing();
+	canvas.value!.focus();
+}
+
+function endGrabbing() {
+	engine.value.endGrabbing();
 	canvas.value!.focus();
 }
 
