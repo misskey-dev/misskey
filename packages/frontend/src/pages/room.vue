@@ -21,6 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template v-for="interaction in interacions" :key="interaction.id">
 			<MkButton @click="interaction.fn()">{{ interaction.label }}</MkButton>
 		</template>
+		<MkButton @click="addObject">addObject</MkButton>
 	</div>
 </div>
 </template>
@@ -33,6 +34,7 @@ import { ensureSignin } from '@/i';
 import MkButton from '@/components/MkButton.vue';
 import { RoomEngine } from '@/utility/room/engine.js';
 import { getObjectDef } from '@/utility/room/object-defs.js';
+import MkSelect from '@/components/MkSelect.vue';
 
 const canvas = useTemplateRef('canvas');
 
@@ -291,8 +293,7 @@ onMounted(() => {
 		if (v == null) {
 			interacions.value = [];
 		} else {
-			const o = engine.value.roomSetting.objects.find(o => o.id === v)!;
-			const obji = engine.value.objectInstances.get(o.id)!;
+			const obji = engine.value.objectInstances.get(v)!;
 			interacions.value = Object.entries(obji.interactions).map(([interactionId, interactionInfo]) => ({
 				id: interactionId,
 				label: interactionInfo.label,
@@ -325,6 +326,11 @@ function toggleGridSnapping() {
 
 function toggleEditMode() {
 	engine.value.isEditMode.value = !engine.value.isEditMode.value;
+	canvas.value!.focus();
+}
+
+function addObject() {
+	engine.value?.addObject('mug');
 	canvas.value!.focus();
 }
 

@@ -27,6 +27,7 @@ import { getObjectDef, OBJECT_DEFS } from './object-defs.js';
 import { HorizontalCameraKeyboardMoveInput } from './utility.js';
 import * as sound from '@/utility/sound.js';
 
+// babylonのドメイン知識は持たない
 type RoomSettingObject<Options = any> = {
 	id: string;
 	type: string;
@@ -105,9 +106,11 @@ export class RoomEngine {
 	public objectInstances: Map<string, RoomObjectInstance<any>> = new Map();
 	private grabbingCtx: {
 		objectId: string;
+		objectType: string;
 		mesh: BABYLON.Mesh;
 		initialPosition: BABYLON.Vector3;
 		initialRotation: BABYLON.Vector3;
+		initialSticky: string | null;
 		originalDiffOfPosition: BABYLON.Vector3;
 		originalDiffOfRotationY: number;
 		distance: number;
@@ -122,6 +125,7 @@ export class RoomEngine {
 	private time: 0 | 1 | 2 = 2; // 0: 昼, 1: 夕, 2: 夜
 	private roomCollisionMeshes: BABYLON.AbstractMesh[] = [];
 	public roomSetting: RoomSetting;
+	private stickyMap: Map<string, string | null> = new Map(); // 何が何に吸着しているか
 	public enableGridSnapping = ref(true);
 	public gridSnappingScale = ref(8/*cm*/);
 	private putParticleSystem: BABYLON.ParticleSystem;
@@ -437,6 +441,10 @@ export class RoomEngine {
 			isMainLight: o.isMainLight,
 		})));
 
+		for (const o of this.roomSetting.objects) {
+			this.stickyMap.set(o.id, o.sticky ?? null);
+		}
+
 		//const sphere = BABYLON.MeshBuilder.CreateSphere('sphere', { diameter: 1/*cm*/ }, this.scene);
 
 		// update tv texure
@@ -526,7 +534,7 @@ export class RoomEngine {
 		if (this.grabbingCtx == null) return;
 		const grabbing = this.grabbingCtx;
 
-		const placement = getObjectDef(this.roomSetting.objects.find(o => o.id === grabbing.objectId)!.type).placement;
+		const placement = getObjectDef(grabbing.objectType).placement;
 
 		const dir = this.camera.getDirection(BABYLON.Axis.Z).scale(this.scene.useRightHandedSystem ? -1 : 1);
 		const newPos = this.camera.position.add(dir.scale(grabbing.distance)).add(grabbing.originalDiffOfPosition);
@@ -613,11 +621,7 @@ export class RoomEngine {
 			}
 		}
 
-		if (sticky != null) {
-			this.roomSetting.objects.find(o => o.id === grabbing.objectId)!.sticky = sticky;
-		} else {
-			this.roomSetting.objects.find(o => o.id === grabbing.objectId)!.sticky = null;
-		}
+		this.stickyMap.set(grabbing.objectId, sticky);
 
 		grabbing.mesh.rotation = newRotation;
 		grabbing.mesh.position = newPos;
@@ -871,7 +875,7 @@ export class RoomEngine {
 		if (this.grabbingCtx != null) {
 			// 親から先に外していく
 			const removeStickyParentRecursively = (mesh: BABYLON.Mesh) => {
-				const stickyObjectIds = Array.from(this.roomSetting.objects.filter(o => o.sticky === mesh.metadata.objectId)).map(o => o.id);
+				const stickyObjectIds = this.stickyMap.entries().filter(([k, v]) => v === mesh.metadata.objectId).map(([k, v]) => k);
 				for (const soid of stickyObjectIds) {
 					const soMesh = this.objectMeshs.get(soid)!;
 					soMesh.setParent(null);
@@ -923,7 +927,7 @@ export class RoomEngine {
 
 		// 子から先に適用していく
 		const setStickyParentRecursively = (mesh: BABYLON.AbstractMesh) => {
-			const stickyObjectIds = Array.from(this.roomSetting.objects.filter(o => o.sticky === mesh.metadata.objectId)).map(o => o.id);
+			const stickyObjectIds = this.stickyMap.entries().filter(([k, v]) => v === mesh.metadata.objectId).map(([k, v]) => k);
 			for (const soid of stickyObjectIds) {
 				const soMesh = this.objectMeshs.get(soid)!;
 				setStickyParentRecursively(soMesh);
@@ -934,7 +938,7 @@ export class RoomEngine {
 
 		const descendantStickyObjectIds: string[] = [];
 		const collectDescendantStickyObjectIds = (parentId: string) => {
-			const childIds = Array.from(this.roomSetting.objects.filter(o => o.sticky === parentId)).map(o => o.id);
+			const childIds = this.stickyMap.entries().filter(([k, v]) => v === parentId).map(([k, v]) => k);
 			for (const cid of childIds) {
 				descendantStickyObjectIds.push(cid);
 				collectDescendantStickyObjectIds(cid);
@@ -946,9 +950,11 @@ export class RoomEngine {
 
 		this.grabbingCtx = {
 			objectId: selectedObject.metadata.objectId,
+			objectType: selectedObject.metadata.objectType,
 			mesh: selectedObject,
 			initialPosition: selectedObject.position.clone(),
 			initialRotation: selectedObject.rotation.clone(),
+			initialSticky: this.stickyMap.get(selectedObject.metadata.objectId) ?? null,
 			originalDiffOfPosition: selectedObject.position.subtract(this.camera.position.add(dir.scale(distance))),
 			originalDiffOfRotationY: selectedObject.rotation.subtract(this.camera.rotation).y,
 			distance: distance,
@@ -1018,15 +1024,34 @@ export class RoomEngine {
 		}
 	}
 
-	public addObject() {
+	public async addObject(type: string) {
+		this.isEditMode.value = true;
 		const dir = this.camera.getDirection(BABYLON.Axis.Z).scale(this.scene.useRightHandedSystem ? -1 : 1);
 
 		const id = genId();
 
-		this.loadObject({
-			id: id,
+		const def = getObjectDef(type);
 
+		await this.loadObject({
+			id: id,
+			type,
+			position: new BABYLON.Vector3(0, 0, 0),
+			rotation: new BABYLON.Vector3(0, 0, 0),
+			options: def.defaultOptions,
 		});
+
+		this.selectedObjectId.value = id;
+
+		this.toggleGrab();
+
+		// todo: grab確定したら
+		//this.roomSetting.objects.push({
+		//	id,
+		//	type,
+		//	position: [0, 0, 0],
+		//	rotation: [0, 0, 0],
+		//	options: def.defaultOptions,
+		//});
 
 		sound.playUrl('/client-assets/room/sfx/grab.mp3', {
 			volume: 1,
