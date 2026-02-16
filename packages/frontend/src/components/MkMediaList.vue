@@ -99,7 +99,7 @@ onMounted(() => {
 	lightbox = new PhotoSwipeLightbox({
 		dataSource: props.mediaList
 			.filter(media => {
-				if (media.type === 'image/svg+xml') return true; // svgのwebpublicはpngなのでtrue
+				if (media.type === 'image/svg+xml') return true; // svgのwebpublicはjxlなのでtrue
 				return media.type.startsWith('image') && FILE_TYPE_BROWSERSAFE.includes(media.type);
 			})
 			.map(media => {
@@ -209,7 +209,7 @@ onUnmounted(() => {
 });
 
 const previewable = (file: Misskey.entities.DriveFile): boolean => {
-	if (file.type === 'image/svg+xml') return true; // svgのwebpublic/thumbnailはpngなのでtrue
+	if (file.type === 'image/svg+xml') return true; // svgのwebpublic/thumbnailはjxlなのでtrue
 	// FILE_TYPE_BROWSERSAFEに適合しないものはブラウザで表示するのに不適切
 	return (file.type.startsWith('video') || file.type.startsWith('image')) && FILE_TYPE_BROWSERSAFE.includes(file.type);
 };
