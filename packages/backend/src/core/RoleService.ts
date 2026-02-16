@@ -69,6 +69,7 @@ export type RolePolicies = {
 	chatAvailability: 'available' | 'readonly' | 'unavailable';
 	uploadableFileTypes: string[];
 	noteDraftLimit: number;
+	scheduledNoteLimit: number;
 	watermarkAvailable: boolean;
 };
 
@@ -101,20 +102,21 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	userEachUserListsLimit: 50,
 	rateLimitFactor: 1,
 	avatarDecorationLimit: 1,
-	canImportAntennas: true,
-	canImportBlocking: true,
-	canImportFollowing: true,
-	canImportMuting: true,
-	canImportUserLists: true,
+	canImportAntennas: false,
+	canImportBlocking: false,
+	canImportFollowing: false,
+	canImportMuting: false,
+	canImportUserLists: false,
 	chatAvailability: 'available',
 	uploadableFileTypes: [
-		'text/plain',
+		'text/*',
 		'application/json',
 		'image/*',
 		'video/*',
 		'audio/*',
 	],
 	noteDraftLimit: 10,
+	scheduledNoteLimit: 1,
 	watermarkAvailable: true,
 };
 
@@ -439,6 +441,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 				return [...set];
 			}),
 			noteDraftLimit: calc('noteDraftLimit', vs => Math.max(...vs)),
+			scheduledNoteLimit: calc('scheduledNoteLimit', vs => Math.max(...vs)),
 			watermarkAvailable: calc('watermarkAvailable', vs => vs.some(v => v === true)),
 		};
 	}

@@ -18,10 +18,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div :class="$style.root">
 		<div :class="$style.container">
-			<div :class="$style.preview">
-				<canvas ref="canvasEl" :class="$style.previewCanvas"></canvas>
+			<div :class="[$style.preview, prefer.s.animation ? $style.animatedBg : null]">
+				<canvas ref="canvasEl" :class="$style.previewCanvas" @pointerdown.prevent.stop="onImagePointerdown"></canvas>
 				<div :class="$style.previewContainer">
 					<div class="_acrylic" :class="$style.previewTitle">{{ i18n.ts.preview }}</div>
+					<div class="_acrylic" :class="$style.editControls">
+						<button class="_button" :class="[$style.previewControlsButton, penMode != null ? $style.active : null]" @click="showPenMenu"><i class="ti ti-pencil"></i></button>
+					</div>
 					<div class="_acrylic" :class="$style.previewControls">
 						<button class="_button" :class="[$style.previewControlsButton, !enabled ? $style.active : null]" @click="enabled = false">Before</button>
 						<button class="_button" :class="[$style.previewControlsButton, enabled ? $style.active : null]" @click="enabled = true">After</button>
@@ -61,6 +64,7 @@ import * as os from '@/os.js';
 import { deepClone } from '@/utility/clone.js';
 import { FXS } from '@/utility/image-effector/fxs.js';
 import { genId } from '@/utility/id.js';
+import { prefer } from '@/preferences.js';
 
 const props = defineProps<{
 	image: File;
@@ -91,19 +95,19 @@ const layers = reactive<ImageEffectorLayer[]>([]);
 
 watch(layers, async () => {
 	if (renderer != null) {
-		renderer.setLayers(layers);
+		renderer.render(layers);
 	}
 }, { deep: true });
 
 function addEffect(ev: MouseEvent) {
-	os.popupMenu(FXS.map((fx) => ({
-		text: fx.name,
+	os.popupMenu(Object.entries(FXS).map(([id, fx]) => ({
+		text: fx.uiDefinition.name,
 		action: () => {
 			layers.push({
 				id: genId(),
-				fxId: fx.id,
-				params: Object.fromEntries(Object.entries(fx.params).map(([k, v]) => [k, v.default])),
-			});
+				fxId: id as keyof typeof FXS,
+				params: Object.fromEntries(Object.entries(fx.uiDefinition.params).map(([k, v]) => [k, v.default])),
+			} as ImageEffectorLayer);
 		},
 	})), ev.currentTarget ?? ev.target);
 }
@@ -133,7 +137,7 @@ function onLayerDelete(layer: ImageEffectorLayer) {
 
 const canvasEl = useTemplateRef('canvasEl');
 
-let renderer: ImageEffector<typeof FXS> | null = null;
+let renderer: ImageEffector | null = null;
 let imageBitmap: ImageBitmap | null = null;
 
 onMounted(async () => {
@@ -143,30 +147,35 @@ onMounted(async () => {
 
 	await nextTick(); // waitingがレンダリングされるまで待つ
 
-	imageBitmap = await window.createImageBitmap(props.image);
+	try {
+		imageBitmap = await window.createImageBitmap(props.image);
 
-	const MAX_W = 1000;
-	const MAX_H = 1000;
-	let w = imageBitmap.width;
-	let h = imageBitmap.height;
+		const MAX_W = 1000;
+		const MAX_H = 1000;
+		let w = imageBitmap.width;
+		let h = imageBitmap.height;
 
-	if (w > MAX_W || h > MAX_H) {
-		const scale = Math.min(MAX_W / w, MAX_H / h);
-		w *= scale;
-		h *= scale;
+		if (w > MAX_W || h > MAX_H) {
+			const scale = Math.min(MAX_W / w, MAX_H / h);
+			w = Math.floor(w * scale);
+			h = Math.floor(h * scale);
+		}
+
+		renderer = new ImageEffector({
+			canvas: canvasEl.value,
+			renderWidth: w,
+			renderHeight: h,
+			image: imageBitmap,
+		});
+
+		await renderer.render(layers);
+	} catch (err) {
+		console.error(err);
+		os.alert({
+			type: 'error',
+			text: i18n.ts._imageEffector.failedToLoadImage,
+		});
 	}
-
-	renderer = new ImageEffector({
-		canvas: canvasEl.value,
-		renderWidth: w,
-		renderHeight: h,
-		image: imageBitmap,
-		fxs: FXS,
-	});
-
-	await renderer.setLayers(layers);
-
-	renderer.render();
 
 	closeWaiting();
 });
@@ -193,7 +202,7 @@ async function save() {
 	await nextTick(); // waitingがレンダリングされるまで待つ
 
 	renderer.changeResolution(imageBitmap.width, imageBitmap.height); // 本番レンダリングのためオリジナル画質に戻す
-	renderer.render(); // toBlobの直前にレンダリングしないと何故か壊れる
+	await renderer.render(layers); // toBlobの直前にレンダリングしないと何故か壊れる
 	canvasEl.value.toBlob((blob) => {
 		emit('ok', new File([blob!], `image-${Date.now()}.png`, { type: 'image/png' }));
 		dialog.value?.close();
@@ -205,13 +214,156 @@ const enabled = ref(true);
 watch(enabled, () => {
 	if (renderer != null) {
 		if (enabled.value) {
-			renderer.setLayers(layers);
+			renderer.render(layers);
 		} else {
-			renderer.setLayers([]);
+			renderer.render([]);
 		}
-		renderer.render();
 	}
 });
+
+const penMode = ref<'fill' | 'blur' | 'pixelate' | null>(null);
+
+function showPenMenu(ev: MouseEvent) {
+	os.popupMenu([{
+		text: i18n.ts._imageEffector._fxs.fill,
+		action: () => {
+			penMode.value = 'fill';
+		},
+	}, {
+		text: i18n.ts._imageEffector._fxs.blur,
+		action: () => {
+			penMode.value = 'blur';
+		},
+	}, {
+		text: i18n.ts._imageEffector._fxs.pixelate,
+		action: () => {
+			penMode.value = 'pixelate';
+		},
+	}], ev.currentTarget ?? ev.target);
+}
+
+function onImagePointerdown(ev: PointerEvent) {
+	if (canvasEl.value == null || imageBitmap == null || penMode.value == null) return;
+
+	const AW = canvasEl.value.clientWidth;
+	const AH = canvasEl.value.clientHeight;
+	const BW = imageBitmap.width;
+	const BH = imageBitmap.height;
+
+	let xOffset = 0;
+	let yOffset = 0;
+
+	if (AW / AH < BW / BH) { // 横長
+		yOffset = AH - BH * (AW / BW);
+	} else { // 縦長
+		xOffset = AW - BW * (AH / BH);
+	}
+
+	xOffset /= 2;
+	yOffset /= 2;
+
+	let startX = ev.offsetX - xOffset;
+	let startY = ev.offsetY - yOffset;
+
+	if (AW / AH < BW / BH) { // 横長
+		startX = startX / (Math.max(AW, AH) / Math.max(BH / BW, 1));
+		startY = startY / (Math.max(AW, AH) / Math.max(BW / BH, 1));
+	} else { // 縦長
+		startX = startX / (Math.min(AW, AH) / Math.max(BH / BW, 1));
+		startY = startY / (Math.min(AW, AH) / Math.max(BW / BH, 1));
+	}
+
+	const id = genId();
+	if (penMode.value === 'fill') {
+		layers.push({
+			id,
+			fxId: 'fill',
+			params: {
+				offsetX: 0,
+				offsetY: 0,
+				scaleX: 0.1,
+				scaleY: 0.1,
+				angle: 0,
+				opacity: 1,
+				color: [1, 1, 1],
+				ellipse: false,
+			},
+		});
+	} else if (penMode.value === 'blur') {
+		layers.push({
+			id,
+			fxId: 'blur',
+			params: {
+				offsetX: 0,
+				offsetY: 0,
+				scaleX: 0.1,
+				scaleY: 0.1,
+				angle: 0,
+				radius: 3,
+				ellipse: false,
+			},
+		});
+	} else if (penMode.value === 'pixelate') {
+		layers.push({
+			id,
+			fxId: 'pixelate',
+			params: {
+				offsetX: 0,
+				offsetY: 0,
+				scaleX: 0.1,
+				scaleY: 0.1,
+				angle: 0,
+				strength: 0.2,
+				ellipse: false,
+			},
+		});
+	}
+
+	_move(ev.offsetX, ev.offsetY);
+
+	function _move(pointerX: number, pointerY: number) {
+		let x = pointerX - xOffset;
+		let y = pointerY - yOffset;
+
+		if (AW / AH < BW / BH) { // 横長
+			x = x / (Math.max(AW, AH) / Math.max(BH / BW, 1));
+			y = y / (Math.max(AW, AH) / Math.max(BW / BH, 1));
+		} else { // 縦長
+			x = x / (Math.min(AW, AH) / Math.max(BH / BW, 1));
+			y = y / (Math.min(AW, AH) / Math.max(BW / BH, 1));
+		}
+
+		const scaleX = Math.abs(x - startX);
+		const scaleY = Math.abs(y - startY);
+
+		const layerIndex = layers.findIndex((l) => l.id === id);
+		const layer = layerIndex !== -1 ? (layers[layerIndex] as Extract<ImageEffectorLayer, { fxId: 'fill' } | { fxId: 'blur' } | { fxId: 'pixelate' }>) : null;
+		if (layer != null) {
+			layer.params.offsetX = (x + startX) - 1;
+			layer.params.offsetY = (y + startY) - 1;
+			layer.params.scaleX = scaleX;
+			layer.params.scaleY = scaleY;
+			layers[layerIndex] = layer;
+		}
+	}
+
+	function move(ev: PointerEvent) {
+		_move(ev.offsetX, ev.offsetY);
+	}
+
+	function up() {
+		canvasEl.value?.removeEventListener('pointermove', move);
+		canvasEl.value?.removeEventListener('pointerup', up);
+		canvasEl.value?.removeEventListener('pointercancel', up);
+		canvasEl.value?.releasePointerCapture(ev.pointerId);
+
+		penMode.value = null;
+	}
+
+	canvasEl.value.addEventListener('pointermove', move);
+	canvasEl.value.addEventListener('pointerup', up);
+	canvasEl.value.setPointerCapture(ev.pointerId);
+}
 </script>
 
 <style module>
@@ -229,8 +381,17 @@ watch(enabled, () => {
 .preview {
 	position: relative;
 	background-color: var(--MI_THEME-bg);
-	background-size: auto auto;
-	background-image: repeating-linear-gradient(135deg, transparent, transparent 6px, var(--MI_THEME-panel) 6px, var(--MI_THEME-panel) 12px);
+	background-image: linear-gradient(135deg, transparent 30%, var(--MI_THEME-panel) 30%, var(--MI_THEME-panel) 50%, transparent 50%, transparent 80%, var(--MI_THEME-panel) 80%, var(--MI_THEME-panel) 100%);
+	background-size: 20px 20px;
+}
+
+.animatedBg {
+	animation: bg 1.2s linear infinite;
+}
+
+@keyframes bg {
+	0% { background-position: 0 0; }
+	100% { background-position: -20px -20px; }
 }
 
 .previewContainer {
@@ -249,6 +410,18 @@ watch(enabled, () => {
 	padding: 6px 10px;
 	border-radius: 6px;
 	font-size: 85%;
+}
+
+.editControls {
+	position: absolute;
+	z-index: 100;
+	bottom: 8px;
+	left: 8px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 6px 10px;
+	border-radius: 6px;
 }
 
 .previewControls {
@@ -283,11 +456,16 @@ watch(enabled, () => {
 	position: absolute;
 	top: 0;
 	left: 0;
-	width: 100%;
-	height: 100%;
-	padding: 20px;
+	/* なんかiOSでレンダリングがおかしい
+	width: stretch;
+	height: stretch;
+	*/
+	width: calc(100% - 40px);
+	height: calc(100% - 40px);
+	margin: 20px;
 	box-sizing: border-box;
 	object-fit: contain;
+	touch-action: none;
 }
 
 .controls {
