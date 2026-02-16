@@ -28,6 +28,7 @@ const THUMBNAIL_SUPPORTED_TYPES = [
 	'image/jpeg',
 	'image/png',
 	'image/webp',
+	'image/jxl',
 	'image/svg+xml',
 	'image/gif',
 ];
