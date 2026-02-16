@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<div
 		v-for="(item, i) in modelValue"
-		:key="item.id"
+		:key="`MkDraggableRoot:${item.id}`"
 		:class="$style.item"
 		:draggable="!manualDragStart"
 		@dragstart.stop="onDragstart($event, item)"
@@ -35,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@dragleave="onDragleave($event, item)"
 			@drop.prevent.stop="onDrop($event, item, false)"
 		></div>
-		<div style="position: relative; z-index: 0;">
+		<div :key="`MkDraggableItem:${item.id}`" style="position: relative; z-index: 0;">
 			<slot :item="item" :index="i" :dragStart="(ev) => onDragstart(ev, item)"></slot>
 		</div>
 		<div
