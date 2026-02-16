@@ -3554,3 +3554,7 @@ _qr:
   scanFile: "端末の画像をスキャン"
   raw: "テキスト"
   mfm: "MFM"
+
+_room:
+  snapToGrid: "グリッドにスナップ"
+  gridScale: "グリッドサイズ"

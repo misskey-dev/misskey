@@ -14,11 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton v-else-if="engine.ui.isGrabbingForInstall" @click="endGrabbing">Install (E)</MkButton>
 			<MkButton v-else @click="beginSelectedInstalledObjectGrabbing">Grab (E)</MkButton>
 
-			<MkButton :primary="engine.enableGridSnapping.value" @click="toggleGridSnapping">Grid Snap: {{ engine.enableGridSnapping.value ? 'on' : 'off' }}</MkButton>
-			<MkButton v-if="engine.enableGridSnapping.value" :primary="engine.gridSnappingScale.value === 1" @click="engine.gridSnappingScale.value = 1">Snap: 1cm</MkButton>
-			<MkButton v-if="engine.enableGridSnapping.value" :primary="engine.gridSnappingScale.value === 2" @click="engine.gridSnappingScale.value = 2">Snap: 2cm</MkButton>
-			<MkButton v-if="engine.enableGridSnapping.value" :primary="engine.gridSnappingScale.value === 4" @click="engine.gridSnappingScale.value = 4">Snap: 4cm</MkButton>
-			<MkButton v-if="engine.enableGridSnapping.value" :primary="engine.gridSnappingScale.value === 8" @click="engine.gridSnappingScale.value = 8">Snap: 8cm</MkButton>
+			<MkButton :primary="engine.enableGridSnapping.value" @click="showSnappingMenu">Grid Snap: {{ engine.enableGridSnapping.value ? 'on' : 'off' }}</MkButton>
 		</template>
 		<MkButton v-if="engine.isSitting.value" @click="engine.standUp()">降りる (Q)</MkButton>
 		<template v-for="interaction in interacions" :key="interaction.id">
@@ -38,6 +34,7 @@ import MkButton from '@/components/MkButton.vue';
 import { RoomEngine } from '@/utility/room/engine.js';
 import { getObjectDef } from '@/utility/room/object-defs.js';
 import MkSelect from '@/components/MkSelect.vue';
+import * as os from '@/os.js';
 
 const canvas = useTemplateRef('canvas');
 
@@ -421,6 +418,35 @@ function endGrabbing() {
 function toggleLight() {
 	engine.value.toggleRoomLight();
 	canvas.value!.focus();
+}
+
+function showSnappingMenu(ev: PointerEvent) {
+	if (engine.value == null) return;
+	os.popupMenu([{
+		type: 'switch',
+		text: i18n.ts._room.snapToGrid,
+		ref: engine.value.enableGridSnapping,
+	}, {
+		type: 'radioOption',
+		text: '1cm',
+		active: computed(() => engine.value!.gridSnappingScale.value === 1),
+		action: () => engine.value!.gridSnappingScale.value = 1,
+	}, {
+		type: 'radioOption',
+		text: '2cm',
+		active: computed(() => engine.value!.gridSnappingScale.value === 2),
+		action: () => engine.value!.gridSnappingScale.value = 2,
+	}, {
+		type: 'radioOption',
+		text: '4cm',
+		active: computed(() => engine.value!.gridSnappingScale.value === 4),
+		action: () => engine.value!.gridSnappingScale.value = 4,
+	}, {
+		type: 'radioOption',
+		text: '8cm',
+		active: computed(() => engine.value!.gridSnappingScale.value === 8),
+		action: () => engine.value!.gridSnappingScale.value = 8,
+	}], ev.currentTarget ?? ev.target);
 }
 
 function toggleGridSnapping() {

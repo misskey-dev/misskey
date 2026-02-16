@@ -13266,4 +13266,14 @@ export interface Locale extends ILocale {
          */
         "mfm": string;
     };
+    "_room": {
+        /**
+         * グリッドにスナップ
+         */
+        "snapToGrid": string;
+        /**
+         * グリッドサイズ
+         */
+        "gridScale": string;
+    };
 }
