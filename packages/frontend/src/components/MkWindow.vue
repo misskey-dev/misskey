@@ -595,6 +595,7 @@ defineExpose({
 	overflow: hidden;
 	text-overflow: ellipsis;
 	cursor: move;
+	touch-action: none;
 }
 
 .content {
@@ -608,6 +609,7 @@ $handleSize: 8px;
 
 .handle {
 	position: absolute;
+	touch-action: none;
 }
 
 .handleTop {
