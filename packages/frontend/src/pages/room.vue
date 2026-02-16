@@ -129,6 +129,12 @@ onMounted(() => {
 			rotation: [0, 0, 0],
 			options: {},
 		}, {
+			id: 'f4',
+			type: 'cactusS',
+			position: [50, 90, 155],
+			rotation: [0, 0, 0],
+			options: {},
+		}, {
 			id: 'g',
 			type: 'mug',
 			position: [-45, 90, 160],
