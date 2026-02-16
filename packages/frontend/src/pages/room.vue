@@ -53,7 +53,7 @@ function resize() {
 onMounted(() => {
 	engine.value = new RoomEngine({
 		roomType: 'default',
-		objects: [{
+		installedObjects: [{
 			id: 'a',
 			type: 'cardboardBox',
 			position: [120, 0, 50],
@@ -310,7 +310,7 @@ onUnmounted(() => {
 });
 
 function grab() {
-	engine.value.toggleGrab();
+	engine.value.beginSelectedInstalledObjectGrabbing();
 	canvas.value!.focus();
 }
 
