@@ -26,17 +26,6 @@ export type IImageSharp = {
 
 export type IImageStreamable = IImage | IImageStream | IImageSharp;
 
-export const webpDefault: sharp.WebpOptions = {
-	quality: 77,
-	alphaQuality: 95,
-	lossless: false,
-	nearLossless: false,
-	smartSubsample: true,
-	mixed: true,
-	effort: 2,
-	loop: 0,
-};
-
 export const avifDefault: sharp.AvifOptions = {
 	quality: 60,
 	lossless: false,
@@ -57,48 +46,6 @@ import { Readable } from 'node:stream';
 export class ImageProcessingService {
 	constructor(
 	) {
-	}
-
-	/**
-	 * Convert to WebP
-	 *   with resize, remove metadata, resolve orientation, stop animation
-	 */
-	@bindThis
-	public async convertToWebp(path: string, width: number, height: number, options: sharp.WebpOptions = webpDefault): Promise<IImage> {
-		return this.convertSharpToWebp(sharp(path), width, height, options);
-	}
-
-	@bindThis
-	public async convertSharpToWebp(sharp: sharp.Sharp, width: number, height: number, options: sharp.WebpOptions = webpDefault): Promise<IImage> {
-		const result = this.convertSharpToWebpStream(sharp, width, height, options);
-
-		return {
-			data: await result.data.toBuffer(),
-			ext: result.ext,
-			type: result.type,
-		};
-	}
-
-	@bindThis
-	public convertToWebpStream(path: string, width: number, height: number, options: sharp.WebpOptions = webpDefault): IImageSharp {
-		return this.convertSharpToWebpStream(sharp(path), width, height, options);
-	}
-
-	@bindThis
-	public convertSharpToWebpStream(sharp: sharp.Sharp, width: number, height: number, options: sharp.WebpOptions = webpDefault): IImageSharp {
-		const data = sharp
-			.resize(width, height, {
-				fit: 'inside',
-				withoutEnlargement: true,
-			})
-			.rotate()
-			.webp(options);
-
-		return {
-			data,
-			ext: 'webp',
-			type: 'image/webp',
-		};
 	}
 
 	/**
