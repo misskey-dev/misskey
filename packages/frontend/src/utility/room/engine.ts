@@ -15,6 +15,8 @@
  * - コリジョン用メッシュが無い場合、すべてのメッシュがコリジョン用メッシュとして扱われますが、例えば網目のようなメッシュではレイが隙間を通り抜けて後ろにあるオブジェクトにヒットしてしまうなどの問題が発生します。
  */
 
+// TODO: 家具設置時のコリジョン判定(めりこんで設置されないようにする)
+
 import * as BABYLON from '@babylonjs/core';
 import { AxesViewer } from '@babylonjs/core/Debug/axesViewer';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
