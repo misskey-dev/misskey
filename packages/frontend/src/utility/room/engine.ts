@@ -914,6 +914,14 @@ export class RoomEngine {
 		for (const om of selectedObject.getChildMeshes()) {
 			om.renderOutline = false;
 		}
+
+		const placement = getObjectDef(selectedObject.metadata.objectType).placement;
+
+		if (placement === 'top') {
+			// stickyな場合にsticky先とのレイの距離が0になりstickyされていない初期状態でgrabbingが始まってしまうのでちょっと浮かす
+			selectedObject.position.y += 1/*cm*/;
+		}
+
 		const distance = BABYLON.Vector3.Distance(this.camera.position, selectedObject.position);
 		const ghost = this.createGhost(selectedObject);
 
