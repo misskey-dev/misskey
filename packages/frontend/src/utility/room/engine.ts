@@ -75,6 +75,20 @@ export function defineObject<Options extends Record<string, any>>(def: ObjectDef
 	return def;
 }
 
+// この実装方法だとマイナスの座標をうまく処理できず結果がおかしくなるので応急処置で全体を+10000cmオフセットしてから計算している
+function getMeshesBoundingBox(meshes: BABYLON.Mesh[]): BABYLON.BoundingBox {
+	let min = new BABYLON.Vector3(Number.MAX_VALUE, Number.MAX_VALUE, Number.MAX_VALUE);
+	let max = new BABYLON.Vector3(Number.MIN_VALUE, Number.MIN_VALUE, Number.MIN_VALUE);
+
+	for (const mesh of meshes) {
+		const boundingInfo = mesh.getBoundingInfo();
+		min = BABYLON.Vector3.Minimize(min, boundingInfo.boundingBox.minimumWorld.add(new BABYLON.Vector3(10000, 10000, 10000)));
+		max = BABYLON.Vector3.Maximize(max, boundingInfo.boundingBox.maximumWorld.add(new BABYLON.Vector3(10000, 10000, 10000)));
+	}
+
+	return new BABYLON.BoundingBox(min.subtract(new BABYLON.Vector3(10000, 10000, 10000)), max.subtract(new BABYLON.Vector3(10000, 10000, 10000)));
+}
+
 export class RoomEngine {
 	private canvas: HTMLCanvasElement;
 	private engine: BABYLON.Engine;
@@ -354,7 +368,8 @@ export class RoomEngine {
 				const oid = pickingInfo.pickedMesh.metadata.objectId;
 				if (oid != null && this.objectMeshs.has(oid)) {
 					const o = this.objectMeshs.get(oid)!;
-					this.camera.setTarget(o.getChildMeshes()[0].getBoundingInfo().boundingBox.centerWorld);
+					const boundingInfo = getMeshesBoundingBox(o.getChildMeshes());
+					this.camera.setTarget(boundingInfo.center);
 					this.selectObject(oid);
 				}
 			}
@@ -756,18 +771,11 @@ export class RoomEngine {
 
 		root.addChild(subRoot);
 
-		//if (_DEV_) root.showBoundingBox = true;
-
 		root.position = new BABYLON.Vector3(...o.position);
 		root.rotation = new BABYLON.Vector3(o.rotation[0], -o.rotation[1], o.rotation[2]);
 		root.metadata = metadata;
 
 		const meshUpdated = (meshes: BABYLON.Mesh[]) => {
-			// バウンディングボックスを計算
-			// (バウンディングボックスはそのオブジェクトの中心に視点を向ける際などに使用される)
-			const bv = root.getHierarchyBoundingVectors();
-			root.setBoundingInfo(new BABYLON.BoundingInfo(bv.min, bv.max));
-
 			for (const m of meshes) {
 				const mesh = m;
 
