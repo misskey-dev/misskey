@@ -66,7 +66,7 @@ type ObjectDef<Options extends Record<string, any>> = {
 	createInstance: (args: {
 		room: RoomEngine;
 		root: BABYLON.Mesh;
-		o: RoomSettingObject<Options>;
+		options: Options;
 		loaderResult: BABYLON.ISceneLoaderAsyncResult;
 		meshUpdated: () => void;
 	}) => RoomObjectInstance<Options>;
@@ -121,7 +121,7 @@ export class RoomEngine {
 	public selectedObjectId = ref<string | null>(null);
 	private time: 0 | 1 | 2 = 2; // 0: 昼, 1: 夕, 2: 夜
 	private roomCollisionMeshes: BABYLON.AbstractMesh[] = [];
-	public def: RoomSetting;
+	public roomSetting: RoomSetting;
 	public enableGridSnapping = ref(true);
 	public gridSnappingScale = ref(8/*cm*/);
 	private putParticleSystem: BABYLON.ParticleSystem;
@@ -136,10 +136,10 @@ export class RoomEngine {
 	public isEditMode = ref(false);
 	public isSitting = ref(false);
 
-	constructor(def: RoomSetting, options: {
+	constructor(roomSetting: RoomSetting, options: {
 		canvas: HTMLCanvasElement;
 	}) {
-		this.def = def;
+		this.roomSetting = roomSetting;
 		this.canvas = options.canvas;
 
 		registerBuiltInLoaders();
@@ -426,9 +426,16 @@ export class RoomEngine {
 	}
 
 	public async init() {
-		await this.loadRoomModel(this.def.roomType);
+		await this.loadRoomModel(this.roomSetting.roomType);
 		await this.loadEnvModel();
-		await Promise.all(this.def.objects.map(o => this.loadObject(o)));
+		await Promise.all(this.roomSetting.objects.map(o => this.loadObject({
+			id: o.id,
+			type: o.type,
+			position: new BABYLON.Vector3(...o.position),
+			rotation: new BABYLON.Vector3(o.rotation[0], -o.rotation[1], o.rotation[2]),
+			options: o.options,
+			isMainLight: o.isMainLight,
+		})));
 
 		//const sphere = BABYLON.MeshBuilder.CreateSphere('sphere', { diameter: 1/*cm*/ }, this.scene);
 
@@ -446,7 +453,7 @@ export class RoomEngine {
 
 		const applyTvTexture = (tlIndex: number) => {
 			const [index, duration] = tvProgram.timeline[tlIndex];
-			const tvIds = this.def.objects.entries().filter(([id, o]) => o.type === 'tv').map(([id, o]) => o.id);
+			const tvIds = this.roomSetting.objects.entries().filter(([id, o]) => o.type === 'tv').map(([id, o]) => o.id);
 
 			for (const tvId of tvIds) {
 				const tvMesh = this.objectMeshs.get(tvId);
@@ -519,7 +526,7 @@ export class RoomEngine {
 		if (this.grabbingCtx == null) return;
 		const grabbing = this.grabbingCtx;
 
-		const placement = getObjectDef(this.def.objects.find(o => o.id === grabbing.objectId)!.type).placement;
+		const placement = getObjectDef(this.roomSetting.objects.find(o => o.id === grabbing.objectId)!.type).placement;
 
 		const dir = this.camera.getDirection(BABYLON.Axis.Z).scale(this.scene.useRightHandedSystem ? -1 : 1);
 		const newPos = this.camera.position.add(dir.scale(grabbing.distance)).add(grabbing.originalDiffOfPosition);
@@ -607,9 +614,9 @@ export class RoomEngine {
 		}
 
 		if (sticky != null) {
-			this.def.objects.find(o => o.id === grabbing.objectId)!.sticky = sticky;
+			this.roomSetting.objects.find(o => o.id === grabbing.objectId)!.sticky = sticky;
 		} else {
-			this.def.objects.find(o => o.id === grabbing.objectId)!.sticky = null;
+			this.roomSetting.objects.find(o => o.id === grabbing.objectId)!.sticky = null;
 		}
 
 		grabbing.mesh.rotation = newRotation;
@@ -757,14 +764,21 @@ export class RoomEngine {
 		}
 	}
 
-	private async loadObject(o: RoomSetting['objects'][0]) {
-		const def = getObjectDef(o.type);
+	private async loadObject(args: {
+		type: string;
+		id: string;
+		position: BABYLON.Vector3;
+		rotation: BABYLON.Vector3;
+		options: any;
+		isMainLight?: boolean;
+	}) {
+		const def = getObjectDef(args.type);
 
 		const camelToKebab = (str: string) => str.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
 
-		const root = new BABYLON.Mesh(`object_${o.id}_${o.type}`, this.scene);
+		const root = new BABYLON.Mesh(`object_${args.id}_${args.type}`, this.scene);
 
-		const loaderResult = await BABYLON.ImportMeshAsync(`/client-assets/room/objects/${camelToKebab(o.type)}/${camelToKebab(o.type)}.glb`, this.scene);
+		const loaderResult = await BABYLON.ImportMeshAsync(`/client-assets/room/objects/${camelToKebab(args.type)}/${camelToKebab(args.type)}.glb`, this.scene);
 
 		let hasCollisionMesh = false;
 		for (const mesh of loaderResult.meshes) {
@@ -776,8 +790,8 @@ export class RoomEngine {
 
 		const metadata = {
 			isObject: true,
-			objectId: o.id,
-			objectType: o.type,
+			objectId: args.id,
+			objectType: args.type,
 			isCollision: !hasCollisionMesh,
 		};
 
@@ -787,8 +801,8 @@ export class RoomEngine {
 
 		root.addChild(subRoot);
 
-		root.position = new BABYLON.Vector3(...o.position);
-		root.rotation = new BABYLON.Vector3(o.rotation[0], -o.rotation[1], o.rotation[2]);
+		root.position = args.position.clone();
+		root.rotation = args.rotation.clone();
 		root.metadata = metadata;
 
 		const meshUpdated = (meshes: BABYLON.Mesh[]) => {
@@ -811,13 +825,13 @@ export class RoomEngine {
 					mesh.receiveShadows = false;
 					mesh.isVisible = false;
 				} else {
-					if (!o.isMainLight && def.receiveShadows !== false) mesh.receiveShadows = true;
-					if (!o.isMainLight && def.castShadows !== false) {
+					if (!args.isMainLight && def.receiveShadows !== false) mesh.receiveShadows = true;
+					if (!args.isMainLight && def.castShadows !== false) {
 						this.shadowGenerator1.addShadowCaster(mesh);
 						this.shadowGenerator2.addShadowCaster(mesh);
 					}
 
-					mesh.renderOutline = this.selectedObjectId.value === o.id;
+					mesh.renderOutline = this.selectedObjectId.value === args.id;
 					mesh.outlineWidth = 0.003;
 					mesh.outlineColor = new BABYLON.Color3(1, 0, 0);
 					//if (mesh.material) (mesh.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(0.2, 0.2, 0.2);
@@ -830,25 +844,25 @@ export class RoomEngine {
 
 		meshUpdated(loaderResult.meshes);
 
-		this.objectMeshs.set(o.id, root);
+		this.objectMeshs.set(args.id, root);
 
 		const objectInstance = def.createInstance({
 			room: this,
 			root,
-			o: o,
+			options: args.options,
 			loaderResult: loaderResult,
 			meshUpdated: () => {
-				meshUpdated(this.objectMeshs.get(o.id)!.getChildMeshes() as BABYLON.Mesh[]);
+				meshUpdated(this.objectMeshs.get(args.id)!.getChildMeshes() as BABYLON.Mesh[]);
 			},
 		});
 
-		this.objectInstances.set(o.id, objectInstance);
+		this.objectInstances.set(args.id, objectInstance);
 
 		if (objectInstance.onInited != null) {
 			objectInstance.onInited();
 		}
 
-		if (o.isMainLight) {
+		if (args.isMainLight) {
 			this.roomLight.position = root.position.add(new BABYLON.Vector3(0, -1/*cm*/, 0));
 		}
 	}
@@ -857,7 +871,7 @@ export class RoomEngine {
 		if (this.grabbingCtx != null) {
 			// 親から先に外していく
 			const removeStickyParentRecursively = (mesh: BABYLON.Mesh) => {
-				const stickyObjectIds = Array.from(this.def.objects.filter(o => o.sticky === mesh.metadata.objectId)).map(o => o.id);
+				const stickyObjectIds = Array.from(this.roomSetting.objects.filter(o => o.sticky === mesh.metadata.objectId)).map(o => o.id);
 				for (const soid of stickyObjectIds) {
 					const soMesh = this.objectMeshs.get(soid)!;
 					soMesh.setParent(null);
@@ -868,6 +882,7 @@ export class RoomEngine {
 			const pos = this.grabbingCtx.mesh.position.clone();
 			//this.grabbing.ghost.dispose(false, true);
 			this.grabbingCtx.ghost.dispose(false, false);
+			this.grabbingCtx.onDone?.();
 			this.grabbingCtx = null;
 			this.selectObject(null);
 
@@ -908,7 +923,7 @@ export class RoomEngine {
 
 		// 子から先に適用していく
 		const setStickyParentRecursively = (mesh: BABYLON.AbstractMesh) => {
-			const stickyObjectIds = Array.from(this.def.objects.filter(o => o.sticky === mesh.metadata.objectId)).map(o => o.id);
+			const stickyObjectIds = Array.from(this.roomSetting.objects.filter(o => o.sticky === mesh.metadata.objectId)).map(o => o.id);
 			for (const soid of stickyObjectIds) {
 				const soMesh = this.objectMeshs.get(soid)!;
 				setStickyParentRecursively(soMesh);
@@ -919,7 +934,7 @@ export class RoomEngine {
 
 		const descendantStickyObjectIds: string[] = [];
 		const collectDescendantStickyObjectIds = (parentId: string) => {
-			const childIds = Array.from(this.def.objects.filter(o => o.sticky === parentId)).map(o => o.id);
+			const childIds = Array.from(this.roomSetting.objects.filter(o => o.sticky === parentId)).map(o => o.id);
 			for (const cid of childIds) {
 				descendantStickyObjectIds.push(cid);
 				collectDescendantStickyObjectIds(cid);
@@ -940,7 +955,7 @@ export class RoomEngine {
 			rotation: 0,
 			ghost: ghost,
 			descendantStickyObjectIds,
-			isMainLight: this.def.objects.find(o => o.id === selectedObject.metadata.objectId)?.isMainLight ?? false,
+			isMainLight: this.roomSetting.objects.find(o => o.id === selectedObject.metadata.objectId)?.isMainLight ?? false,
 		};
 
 		const intervalId = window.setInterval(() => {
@@ -956,7 +971,7 @@ export class RoomEngine {
 	}
 
 	private interact(oid: string) {
-		const o = this.def.objects.find(o => o.id === oid)!;
+		const o = this.roomSetting.objects.find(o => o.id === oid)!;
 		const mesh = this.objectMeshs.get(o.id)!;
 		const objDef = getObjectDef(o.type);
 		const obji = this.objectInstances.get(o.id)!;
@@ -1007,6 +1022,11 @@ export class RoomEngine {
 		const dir = this.camera.getDirection(BABYLON.Axis.Z).scale(this.scene.useRightHandedSystem ? -1 : 1);
 
 		const id = genId();
+
+		this.loadObject({
+			id: id,
+
+		});
 
 		sound.playUrl('/client-assets/room/sfx/grab.mp3', {
 			volume: 1,

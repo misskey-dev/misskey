@@ -14,9 +14,9 @@ export const blind = defineObject({
 		open: 1,
 	},
 	placement: 'bottom',
-	createInstance: ({ room, o, loaderResult, meshUpdated }) => {
+	createInstance: ({ options, loaderResult, meshUpdated }) => {
 		const blade = loaderResult.meshes[0].getChildMeshes().find(m => m.name === 'Blade') as BABYLON.Mesh;
-		blade.rotation = new BABYLON.Vector3(o.options.angle, 0, 0);
+		blade.rotation = new BABYLON.Vector3(options.angle, 0, 0);
 
 		let blades = [] as BABYLON.Mesh[];
 
@@ -26,12 +26,12 @@ export const blind = defineObject({
 			}
 			blades = [];
 
-			for (let i = 0; i < o.options.blades; i++) {
+			for (let i = 0; i < options.blades; i++) {
 				const b = blade.clone();
-				if (i / o.options.blades < o.options.open) {
+				if (i / options.blades < options.open) {
 					b.position.y -= (i * 4/*cm*/) / WORLD_SCALE;
 				} else {
-					b.position.y -= (((o.options.blades - 1) * o.options.open * 4/*cm*/) + (i * 0.3/*cm*/)) / WORLD_SCALE;
+					b.position.y -= (((options.blades - 1) * options.open * 4/*cm*/) + (i * 0.3/*cm*/)) / WORLD_SCALE;
 				}
 				blades.push(b);
 			}
@@ -41,7 +41,7 @@ export const blind = defineObject({
 
 		const applyAngle = () => {
 			for (const b of [blade, ...blades]) {
-				b.rotation.x = o.options.angle;
+				b.rotation.x = options.angle;
 				b.rotation.x += Math.random() * 0.3 - 0.15;
 			}
 		};
@@ -57,16 +57,16 @@ export const blind = defineObject({
 				adjustBladeRotation: {
 					label: 'Adjust blade rotation',
 					fn: () => {
-						o.options.angle += Math.PI / 8;
-						if (o.options.angle >= Math.PI / 2) o.options.angle = -Math.PI / 2;
+						options.angle += Math.PI / 8;
+						if (options.angle >= Math.PI / 2) options.angle = -Math.PI / 2;
 						applyAngle();
 					},
 				},
 				openClose: {
 					label: 'Open/close',
 					fn: () => {
-						o.options.open -= 0.25;
-						if (o.options.open < 0) o.options.open = 1;
+						options.open -= 0.25;
+						if (options.open < 0) options.open = 1;
 						applyOpeningState();
 					},
 				},

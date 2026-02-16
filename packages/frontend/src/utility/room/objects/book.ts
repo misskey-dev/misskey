@@ -11,12 +11,12 @@ export const book = defineObject({
 		variation: null as number | null,
 	},
 	placement: 'top',
-	createInstance: ({ room, o, root }) => {
+	createInstance: ({ options, root }) => {
 		return {
 			onInited: () => {
 				const mesh = root.getChildMeshes()[1] as BABYLON.Mesh;
 				mesh.markVerticesDataAsUpdatable(BABYLON.VertexBuffer.UVKind, true);
-				const index = o.options.variation ?? 0;
+				const index = options.variation ?? 0;
 				const x = index % 8;
 				const y = Math.floor(index / 8);
 

@@ -10,7 +10,7 @@ export const ceilingFanLight = defineObject({
 	id: 'ceilingFanLight',
 	defaultOptions: {},
 	placement: 'ceiling',
-	createInstance: ({ room, o, root }) => {
+	createInstance: ({ room, root }) => {
 		return {
 			onInited: () => {
 				const rotor = root.getChildMeshes().find(m => m.name === 'Rotor') as BABYLON.Mesh;

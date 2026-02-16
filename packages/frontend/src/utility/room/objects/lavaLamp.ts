@@ -9,7 +9,7 @@ export const lavaLamp = defineObject({
 	id: 'lavaLamp',
 	defaultOptions: {},
 	placement: 'top',
-	createInstance: ({ room, o, root }) => {
+	createInstance: ({ room, root }) => {
 		return {
 			onInited: () => {
 				const light = new BABYLON.PointLight('lavaLampLight', new BABYLON.Vector3(0, 11/*cm*/, 0), room.scene);

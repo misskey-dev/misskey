@@ -10,7 +10,7 @@ export const aquarium = defineObject({
 	id: 'aquarium',
 	defaultOptions: {},
 	placement: 'top',
-	createInstance: ({ room, o, root }) => {
+	createInstance: ({ room, root }) => {
 		return {
 			onInited: () => {
 				const noiseTexture = new BABYLON.NoiseProceduralTexture('perlin', 256, room.scene);

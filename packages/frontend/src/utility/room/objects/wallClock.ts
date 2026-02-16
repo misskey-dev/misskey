@@ -10,7 +10,7 @@ export const wallClock = defineObject({
 	id: 'wallClock',
 	defaultOptions: {},
 	placement: 'side',
-	createInstance: ({ room, o, root }) => {
+	createInstance: ({ room, root }) => {
 		return {
 			onInited: () => {
 				const hourHand = root.getChildMeshes().find(m => m.name === 'HandH') as BABYLON.Mesh;

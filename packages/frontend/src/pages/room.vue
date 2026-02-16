@@ -291,7 +291,7 @@ onMounted(() => {
 		if (v == null) {
 			interacions.value = [];
 		} else {
-			const o = engine.value.def.objects.find(o => o.id === v)!;
+			const o = engine.value.roomSetting.objects.find(o => o.id === v)!;
 			const obji = engine.value.objectInstances.get(o.id)!;
 			interacions.value = Object.entries(obji.interactions).map(([interactionId, interactionInfo]) => ({
 				id: interactionId,
