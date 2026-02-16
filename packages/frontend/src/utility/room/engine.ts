@@ -523,18 +523,18 @@ export class RoomEngine {
 		const placement = getObjectDef(this.def.objects.find(o => o.id === grabbing.objectId)!.type).placement;
 
 		const dir = this.camera.getDirection(BABYLON.Axis.Z).scale(this.scene.useRightHandedSystem ? -1 : 1);
-		grabbing.ghost.position = this.camera.position.add(dir.scale(grabbing.distance)).add(grabbing.startOffset);
-		grabbing.ghost.rotation = new BABYLON.Vector3(0, this.camera.rotation.y + grabbing.startRotationY + grabbing.rotation, 0);
+		const newPos = this.camera.position.add(dir.scale(grabbing.distance)).add(grabbing.startOffset);
+		const newRotation = new BABYLON.Vector3(0, this.camera.rotation.y + grabbing.startRotationY + grabbing.rotation, 0);
+		grabbing.ghost.position = newPos.clone();
+		grabbing.ghost.rotation = newRotation.clone();
 
 		if (this.enableGridSnapping.value) {
-			grabbing.ghost.position.x = Math.round(grabbing.ghost.position.x / this.gridSnappingScale.value) * this.gridSnappingScale.value;
-			grabbing.ghost.position.y = Math.round(grabbing.ghost.position.y / this.gridSnappingScale.value) * this.gridSnappingScale.value;
-			grabbing.ghost.position.z = Math.round(grabbing.ghost.position.z / this.gridSnappingScale.value) * this.gridSnappingScale.value;
-			grabbing.ghost.rotation.y = Math.round(grabbing.ghost.rotation.y / (Math.PI / 8)) * (Math.PI / 8);
+			newPos.x = Math.round(newPos.x / this.gridSnappingScale.value) * this.gridSnappingScale.value;
+			newPos.y = Math.round(newPos.y / this.gridSnappingScale.value) * this.gridSnappingScale.value;
+			newPos.z = Math.round(newPos.z / this.gridSnappingScale.value) * this.gridSnappingScale.value;
+			newRotation.y = Math.round(newRotation.y / (Math.PI / 8)) * (Math.PI / 8);
 		}
 
-		const newPos = grabbing.ghost.position.clone();
-		const newRotation = grabbing.ghost.rotation.clone();
 		let sticky: string | null = null;
 
 		const isCollisionTarget = (m: BABYLON.AbstractMesh) => {
@@ -570,7 +570,7 @@ export class RoomEngine {
 			}
 		} else if (placement === 'bottom') {
 			// 上に向かってレイを飛ばす
-			const ray = new BABYLON.Ray(grabbing.ghost.position, new BABYLON.Vector3(0, 1, 0), 1000/*cm*/);
+			const ray = new BABYLON.Ray(newPos, new BABYLON.Vector3(0, 1, 0), 1000/*cm*/);
 			const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_CEILING__') || m.name.includes('__BOTTOM__')));
 			if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
 				newPos.y = hit.pickedPoint.y;
@@ -593,7 +593,7 @@ export class RoomEngine {
 			}
 		} else {
 			// 下に向かってレイを飛ばす
-			const ray = new BABYLON.Ray(grabbing.ghost.position, new BABYLON.Vector3(0, -1, 0), 1000/*cm*/);
+			const ray = new BABYLON.Ray(newPos, new BABYLON.Vector3(0, -1, 0), 1000/*cm*/);
 			const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_FLOOR__') || m.name.includes('__ROOM_TOP__') || m.name.includes('__TOP__')));
 			if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
 				newPos.y = hit.pickedPoint.y;
