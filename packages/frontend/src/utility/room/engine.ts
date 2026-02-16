@@ -95,6 +95,33 @@ function getMeshesBoundingBox(meshes: BABYLON.Mesh[]): BABYLON.BoundingBox {
 	return new BABYLON.BoundingBox(min.subtract(new BABYLON.Vector3(10000, 10000, 10000)), max.subtract(new BABYLON.Vector3(10000, 10000, 10000)));
 }
 
+const TIME_MAP = {
+	0: 2,
+	1: 2,
+	2: 2,
+	3: 2,
+	4: 2,
+	5: 1,
+	6: 1,
+	7: 0,
+	8: 0,
+	9: 0,
+	10: 0,
+	11: 0,
+	12: 0,
+	13: 0,
+	14: 0,
+	15: 0,
+	16: 1,
+	17: 1,
+	18: 2,
+	19: 2,
+	20: 2,
+	21: 2,
+	22: 2,
+	23: 2,
+} as const;
+
 export class RoomEngine {
 	private canvas: HTMLCanvasElement;
 	private engine: BABYLON.Engine;
@@ -124,7 +151,7 @@ export class RoomEngine {
 		onDone?: () => void;
 	} | null = null;
 	public selectedObjectId = ref<string | null>(null);
-	private time: 0 | 1 | 2 = 2; // 0: 昼, 1: 夕, 2: 夜
+	private time: 0 | 1 | 2 = 0; // 0: 昼, 1: 夕, 2: 夜
 	private roomCollisionMeshes: BABYLON.AbstractMesh[] = [];
 	public roomState: RoomState;
 	public enableGridSnapping = ref(true);
@@ -157,11 +184,13 @@ export class RoomEngine {
 			new BoundingBoxRenderer(this.scene);
 		}
 
+		this.time = TIME_MAP[new Date().getHours() as keyof typeof TIME_MAP];
+
 		//this.scene.autoClear = true;
 		if (this.time === 0) {
 			this.scene.clearColor = new BABYLON.Color4(0.7, 0.9, 1.0, 0);
 		} else if (this.time === 1) {
-			this.scene.clearColor = new BABYLON.Color4(0.5, 0.3, 0.3, 0);
+			this.scene.clearColor = new BABYLON.Color4(0.8, 0.5, 0.3, 0);
 		} else {
 			this.scene.clearColor = new BABYLON.Color4(0.05, 0.05, 0.2, 0);
 		}
