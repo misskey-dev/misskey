@@ -47,7 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						@update:modelValue="v => pinnedNoteIds = v.map(x => x.id)"
 					>
 						<template #default="{ item }">
-							<div :key="item.id" :class="$style.pinnedNote">
+							<div :class="$style.pinnedNote">
 								<button class="_button" :class="$style.pinnedNoteHandle"><i class="ti ti-menu"></i></button>
 								{{ item.id }}
 								<button class="_button" :class="$style.pinnedNoteRemove" @click="removePinnedNote(item.id)"><i class="ti ti-x"></i></button>

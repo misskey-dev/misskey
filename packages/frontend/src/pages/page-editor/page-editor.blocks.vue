@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@update:modelValue="v => emit('update:modelValue', v)"
 >
 	<template #default="{ item }">
-		<div :key="item.id">
+		<div>
 			<!-- divが無いとエラーになる https://github.com/SortableJS/vue.draggable.next/issues/189 -->
 			<component :is="getComponent(item.type) as any" :modelValue="item" @update:modelValue="updateItem" @remove="() => removeItem(item)"/>
 		</div>

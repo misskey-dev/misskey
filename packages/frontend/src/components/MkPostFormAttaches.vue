@@ -14,7 +14,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 	>
 		<template #default="{ item }">
 			<div
-				:key="item.id"
 				:class="$style.file"
 				role="button"
 				tabindex="0"
