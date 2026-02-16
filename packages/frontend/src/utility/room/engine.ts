@@ -23,6 +23,7 @@ import { GridMaterial } from '@babylonjs/materials';
 import { ShowInspector } from '@babylonjs/inspector';
 import { ref, watch } from 'vue';
 import { getObjectDef, OBJECT_DEFS } from './object-defs.js';
+import { HorizontalCameraKeyboardMoveInput } from './utility.js';
 import * as sound from '@/utility/sound.js';
 
 type RoomSettingObject<Options = any> = {
@@ -72,123 +73,6 @@ type ObjectDef<Options extends Record<string, any>> = {
 
 export function defineObject<Options extends Record<string, any>>(def: ObjectDef<Options>): ObjectDef<Options> {
 	return def;
-}
-
-const _assumedFramesPerSecond = 60;
-
-class HorizontalCameraKeyboardMoveInput extends BABYLON.BaseCameraPointersInput {
-	public camera: BABYLON.FreeCamera;
-	private engine: BABYLON.AbstractEngine;
-	private scene: BABYLON.Scene;
-	moveSpeed = 6 / _assumedFramesPerSecond;
-	preShift = false;
-	codes = [];
-	codesUp = ['KeyW'];
-	codesDown = ['KeyS'];
-	codesLeft = ['KeyA'];
-	codesRight = ['KeyD'];
-	onCanvasBlurObserver = null;
-	onKeyboardObserver = null;
-	public canMove = true;
-
-	constructor(camera: BABYLON.UniversalCamera) {
-		super();
-		this.camera = camera;
-		this.scene = this.camera.getScene();
-		this.engine = this.scene.getEngine();
-	}
-
-	attachControl() {
-		if (this.onCanvasBlurObserver) {
-			return;
-		}
-
-		this.onCanvasBlurObserver = this.engine.onCanvasBlurObservable.add(() => {
-			this.codes = [];
-		});
-
-		this.onKeyboardObserver = this.scene.onKeyboardObservable.add(({ event, type }) => {
-			const { code, shiftKey } = event;
-			this.preShift = shiftKey;
-
-			if (type === BABYLON.KeyboardEventTypes.KEYDOWN) {
-				if (this.codesUp.indexOf(code) >= 0 ||
-          this.codesDown.indexOf(code) >= 0 ||
-          this.codesLeft.indexOf(code) >= 0 ||
-          this.codesRight.indexOf(code) >= 0) {
-					const index = this.codes.findIndex(v => v.code === code);
-					if (index < 0) { // 存在しなかったら追加する
-						this.codes.push({ code });
-					}
-					event.preventDefault();
-					(event as KeyboardEvent).stopPropagation();
-				}
-			} else {
-				if (this.codesUp.indexOf(code) >= 0 ||
-          this.codesDown.indexOf(code) >= 0 ||
-          this.codesLeft.indexOf(code) >= 0 ||
-          this.codesRight.indexOf(code) >= 0) {
-					const index = this.codes.findIndex(v => v.code === code);
-					if (index >= 0) { // 存在したら削除する
-						this.codes.splice(index, 1);
-					}
-					event.preventDefault();
-					(event as KeyboardEvent).stopPropagation();
-				}
-			}
-		});
-	}
-
-	detachControl() {
-		this.codes = [];
-
-		if (this.onKeyboardObserver) this.scene.onKeyboardObservable.remove(this.onKeyboardObserver);
-		if (this.onCanvasBlurObserver) this.engine.onCanvasBlurObservable.remove(this.onCanvasBlurObserver);
-		this.onKeyboardObserver = null;
-		this.onCanvasBlurObserver = null;
-	}
-
-	checkInputs() {
-		if (!this.onKeyboardObserver) {
-			return;
-		}
-		for (let index = 0; index < this.codes.length; index++) {
-			const { code } = this.codes[index];
-
-			const local = new BABYLON.Vector3();
-			if (this.codesLeft.indexOf(code) >= 0) {
-				local.x += -1;
-			} else if (this.codesUp.indexOf(code) >= 0) {
-				local.z += this.scene.useRightHandedSystem ? -1 : 1;
-			} else if (this.codesRight.indexOf(code) >= 0) {
-				local.x += 1;
-			} else if (this.codesDown.indexOf(code) >= 0) {
-				local.z += this.scene.useRightHandedSystem ? 1 : -1;
-			}
-
-			if (local.length() === 0) {
-				continue;
-			}
-
-			const dir = this.camera.getDirection(local.normalize());
-			dir.y = 0;
-			dir.normalize();
-			const rate = this.preShift ? 3 : 1;
-			const move = dir.scale(this.moveSpeed * rate);
-
-			if (this.canMove) {
-				this.camera.cameraDirection.addInPlace(move);
-			}
-		}
-	}
-
-	getClassName() {
-		return 'HorizontalCameraKeyboardMoveInput';
-	}
-
-	getSimpleName() {
-		return 'horizontalkeyboard';
-	}
 }
 
 export class RoomEngine {
@@ -952,9 +836,7 @@ export class RoomEngine {
 				const stickyObjectIds = Array.from(this.def.objects.filter(o => o.sticky === mesh.metadata.objectId)).map(o => o.id);
 				for (const soid of stickyObjectIds) {
 					const soMesh = this.objectMeshs.get(soid)!;
-					soMesh.parent = null;
-					soMesh.position = soMesh.position.add(mesh.position);
-					soMesh.rotation = soMesh.rotation.add(mesh.rotation);
+					soMesh.setParent(null);
 					removeStickyParentRecursively(soMesh);
 				}
 			};
@@ -1006,9 +888,7 @@ export class RoomEngine {
 			for (const soid of stickyObjectIds) {
 				const soMesh = this.objectMeshs.get(soid)!;
 				setStickyParentRecursively(soMesh);
-				soMesh.parent = mesh;
-				soMesh.position = soMesh.position.subtract(mesh.position);
-				soMesh.rotation = soMesh.rotation.subtract(mesh.rotation);
+				soMesh.setParent(mesh);
 			}
 		};
 		setStickyParentRecursively(selectedObject);
