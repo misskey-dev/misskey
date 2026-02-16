@@ -22,6 +22,7 @@ import { BoundingBoxRenderer } from '@babylonjs/core/Rendering/boundingBoxRender
 import { GridMaterial } from '@babylonjs/materials';
 import { ShowInspector } from '@babylonjs/inspector';
 import { ref, watch } from 'vue';
+import { genId } from '../id.js';
 import { getObjectDef, OBJECT_DEFS } from './object-defs.js';
 import { HorizontalCameraKeyboardMoveInput } from './utility.js';
 import * as sound from '@/utility/sound.js';
@@ -102,16 +103,20 @@ export class RoomEngine {
 	public timeoutIds: number[] = [];
 	private objectMeshs: Map<string, BABYLON.Mesh> = new Map();
 	public objectInstances: Map<string, RoomObjectInstance<any>> = new Map();
-	private grabbing: {
+	private grabbingCtx: {
 		objectId: string;
 		mesh: BABYLON.Mesh;
-		startOffset: BABYLON.Vector3;
-		startRotationY: number;
+		initialPosition: BABYLON.Vector3;
+		initialRotation: BABYLON.Vector3;
+		originalDiffOfPosition: BABYLON.Vector3;
+		originalDiffOfRotationY: number;
 		distance: number;
 		rotation: number;
 		ghost: BABYLON.AbstractMesh;
 		descendantStickyObjectIds: string[];
 		isMainLight: boolean;
+		onCancel?: () => void;
+		onDone?: () => void;
 	} | null = null;
 	public selectedObjectId = ref<string | null>(null);
 	private time: 0 | 1 | 2 = 2; // 0: 昼, 1: 夕, 2: 夜
@@ -356,7 +361,7 @@ export class RoomEngine {
 		//});
 
 		this.canvas.addEventListener('click', (ev) => {
-			if (this.grabbing != null) return;
+			if (this.grabbingCtx != null) return;
 			if (isDragging) return;
 
 			this.selectObject(null);
@@ -387,8 +392,8 @@ export class RoomEngine {
 			} else if (ev.code === 'KeyR') {
 				ev.preventDefault();
 				ev.stopPropagation();
-				if (this.grabbing != null) {
-					this.grabbing.rotation += Math.PI / 8;
+				if (this.grabbingCtx != null) {
+					this.grabbingCtx.rotation += Math.PI / 8;
 				}
 			} else if (ev.code === 'KeyQ') {
 				ev.preventDefault();
@@ -400,11 +405,11 @@ export class RoomEngine {
 		});
 
 		this.canvas.addEventListener('wheel', (ev) => {
-			if (this.grabbing != null) {
+			if (this.grabbingCtx != null) {
 				ev.preventDefault();
 				ev.stopPropagation();
-				this.grabbing.distance -= ev.deltaY * 0.025;
-				if (this.grabbing.distance < 5/*cm*/) this.grabbing.distance = 5/*cm*/;
+				this.grabbingCtx.distance -= ev.deltaY * 0.025;
+				if (this.grabbingCtx.distance < 5/*cm*/) this.grabbingCtx.distance = 5/*cm*/;
 			}
 		});
 
@@ -426,12 +431,6 @@ export class RoomEngine {
 		await Promise.all(this.def.objects.map(o => this.loadObject(o)));
 
 		//const sphere = BABYLON.MeshBuilder.CreateSphere('sphere', { diameter: 1/*cm*/ }, this.scene);
-
-		this.intervalIds.push(window.setInterval(() => {
-			if (this.grabbing != null) {
-				this.handleGrabbing();
-			}
-		}, 10));
 
 		// update tv texure
 		const tvProgramId = 'shopping';
@@ -517,14 +516,14 @@ export class RoomEngine {
 	}
 
 	private handleGrabbing() {
-		if (this.grabbing == null) return;
-		const grabbing = this.grabbing;
+		if (this.grabbingCtx == null) return;
+		const grabbing = this.grabbingCtx;
 
 		const placement = getObjectDef(this.def.objects.find(o => o.id === grabbing.objectId)!.type).placement;
 
 		const dir = this.camera.getDirection(BABYLON.Axis.Z).scale(this.scene.useRightHandedSystem ? -1 : 1);
-		const newPos = this.camera.position.add(dir.scale(grabbing.distance)).add(grabbing.startOffset);
-		const newRotation = new BABYLON.Vector3(0, this.camera.rotation.y + grabbing.startRotationY + grabbing.rotation, 0);
+		const newPos = this.camera.position.add(dir.scale(grabbing.distance)).add(grabbing.originalDiffOfPosition);
+		const newRotation = new BABYLON.Vector3(0, this.camera.rotation.y + grabbing.originalDiffOfRotationY + grabbing.rotation, 0);
 		grabbing.ghost.position = newPos.clone();
 		grabbing.ghost.rotation = newRotation.clone();
 
@@ -855,7 +854,7 @@ export class RoomEngine {
 	}
 
 	public toggleGrab() {
-		if (this.grabbing != null) {
+		if (this.grabbingCtx != null) {
 			// 親から先に外していく
 			const removeStickyParentRecursively = (mesh: BABYLON.Mesh) => {
 				const stickyObjectIds = Array.from(this.def.objects.filter(o => o.sticky === mesh.metadata.objectId)).map(o => o.id);
@@ -865,11 +864,11 @@ export class RoomEngine {
 					removeStickyParentRecursively(soMesh);
 				}
 			};
-			removeStickyParentRecursively(this.grabbing.mesh);
-			const pos = this.grabbing.mesh.position.clone();
+			removeStickyParentRecursively(this.grabbingCtx.mesh);
+			const pos = this.grabbingCtx.mesh.position.clone();
 			//this.grabbing.ghost.dispose(false, true);
-			this.grabbing.ghost.dispose(false, false);
-			this.grabbing = null;
+			this.grabbingCtx.ghost.dispose(false, false);
+			this.grabbingCtx = null;
 			this.selectObject(null);
 
 			this.xGridPreviewPlane.isVisible = false;
@@ -930,17 +929,25 @@ export class RoomEngine {
 
 		const dir = this.camera.getDirection(BABYLON.Axis.Z).scale(this.scene.useRightHandedSystem ? -1 : 1);
 
-		this.grabbing = {
+		this.grabbingCtx = {
 			objectId: selectedObject.metadata.objectId,
 			mesh: selectedObject,
-			startOffset: selectedObject.position.subtract(this.camera.position.add(dir.scale(distance))),
-			startRotationY: selectedObject.rotation.subtract(this.camera.rotation).y,
+			initialPosition: selectedObject.position.clone(),
+			initialRotation: selectedObject.rotation.clone(),
+			originalDiffOfPosition: selectedObject.position.subtract(this.camera.position.add(dir.scale(distance))),
+			originalDiffOfRotationY: selectedObject.rotation.subtract(this.camera.rotation).y,
 			distance: distance,
 			rotation: 0,
 			ghost: ghost,
 			descendantStickyObjectIds,
 			isMainLight: this.def.objects.find(o => o.id === selectedObject.metadata.objectId)?.isMainLight ?? false,
 		};
+
+		const intervalId = window.setInterval(() => {
+			this.handleGrabbing();
+		}, 10);
+
+		this.intervalIds.push(intervalId);
 
 		sound.playUrl('/client-assets/room/sfx/grab.mp3', {
 			volume: 1,
@@ -994,6 +1001,17 @@ export class RoomEngine {
 		} else {
 			this.turnOnRoomLight();
 		}
+	}
+
+	public addObject() {
+		const dir = this.camera.getDirection(BABYLON.Axis.Z).scale(this.scene.useRightHandedSystem ? -1 : 1);
+
+		const id = genId();
+
+		sound.playUrl('/client-assets/room/sfx/grab.mp3', {
+			volume: 1,
+			playbackRate: 1,
+		});
 	}
 
 	public resize() {
