@@ -206,6 +206,7 @@ onMounted(() => {
 			type: 'tv',
 			position: [-135, 88, -5],
 			rotation: [0, -Math.PI / 2, 0],
+			sticky: 'q',
 			options: {},
 		}, {
 			id: 'q',

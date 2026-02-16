@@ -108,9 +108,6 @@ export class RoomEngine {
 		objectId: string;
 		objectType: string;
 		mesh: BABYLON.Mesh;
-		//initialPosition: BABYLON.Vector3;
-		//initialRotation: BABYLON.Vector3;
-		//initialSticky: string | null;
 		originalDiffOfPosition: BABYLON.Vector3;
 		originalDiffOfRotationY: number;
 		distance: number;
@@ -118,6 +115,7 @@ export class RoomEngine {
 		ghost: BABYLON.AbstractMesh;
 		descendantStickyObjectIds: string[];
 		isMainLight: boolean;
+		onMove?: (info: { position: BABYLON.Vector3; rotation: BABYLON.Vector3; sticky: string | null; }) => void;
 		onCancel?: () => void;
 		onDone?: () => void;
 	} | null = null;
@@ -125,7 +123,6 @@ export class RoomEngine {
 	private time: 0 | 1 | 2 = 2; // 0: 昼, 1: 夕, 2: 夜
 	private roomCollisionMeshes: BABYLON.AbstractMesh[] = [];
 	public roomState: RoomState;
-	private stickyMap: Map<string, string | null> = new Map(); // 何が何に吸着しているか
 	public enableGridSnapping = ref(true);
 	public gridSnappingScale = ref(8/*cm*/);
 	private putParticleSystem: BABYLON.ParticleSystem;
@@ -445,10 +442,6 @@ export class RoomEngine {
 			isMainLight: o.isMainLight,
 		})));
 
-		for (const o of this.roomState.installedObjects) {
-			this.stickyMap.set(o.id, o.sticky ?? null);
-		}
-
 		//const sphere = BABYLON.MeshBuilder.CreateSphere('sphere', { diameter: 1/*cm*/ }, this.scene);
 
 		// update tv texure
@@ -625,8 +618,6 @@ export class RoomEngine {
 			}
 		}
 
-		this.stickyMap.set(grabbing.objectId, sticky);
-
 		grabbing.mesh.rotation = newRotation;
 		grabbing.mesh.position = newPos;
 
@@ -675,6 +666,12 @@ export class RoomEngine {
 		if (grabbing.isMainLight) {
 			this.roomLight.position = grabbing.mesh.position.add(new BABYLON.Vector3(0, -1/*cm*/, 0));
 		}
+
+		grabbing.onMove?.({
+			position: newPos,
+			rotation: newRotation,
+			sticky,
+		});
 	}
 
 	private async loadEnvModel() {
@@ -889,7 +886,7 @@ export class RoomEngine {
 
 		// 子から先に適用していく
 		const setStickyParentRecursively = (mesh: BABYLON.AbstractMesh) => {
-			const stickyObjectIds = this.stickyMap.entries().filter(([k, v]) => v === mesh.metadata.objectId).map(([k, v]) => k);
+			const stickyObjectIds = Array.from(this.roomState.installedObjects.filter(o => o.sticky === mesh.metadata.objectId)).map(o => o.id);
 			for (const soid of stickyObjectIds) {
 				const soMesh = this.objectMeshs.get(soid)!;
 				setStickyParentRecursively(soMesh);
@@ -900,7 +897,7 @@ export class RoomEngine {
 
 		const descendantStickyObjectIds: string[] = [];
 		const collectDescendantStickyObjectIds = (parentId: string) => {
-			const childIds = this.stickyMap.entries().filter(([k, v]) => v === parentId).map(([k, v]) => k);
+			const childIds = Array.from(this.roomState.installedObjects.filter(o => o.sticky === parentId)).map(o => o.id);
 			for (const cid of childIds) {
 				descendantStickyObjectIds.push(cid);
 				collectDescendantStickyObjectIds(cid);
@@ -912,7 +909,8 @@ export class RoomEngine {
 
 		const initialPosition = selectedObject.position.clone();
 		const initialRotation = selectedObject.rotation.clone();
-		const initialSticky = this.stickyMap.get(selectedObject.metadata.objectId) ?? null;
+
+		let sticky: string | null;
 
 		this.grabbingCtx = {
 			objectId: selectedObject.metadata.objectId,
@@ -925,13 +923,16 @@ export class RoomEngine {
 			ghost: ghost,
 			descendantStickyObjectIds,
 			isMainLight: this.roomState.installedObjects.find(o => o.id === selectedObject.metadata.objectId)?.isMainLight ?? false,
+			onMove: (info) => {
+				sticky = info.sticky;
+			},
 			onCancel: () => {
 				// todo: initialPositionなどを復元
 			},
-			onDone: () => {
+			onDone: () => { // todo: sticky状態などを引数でもらうようにしたい
 				// 親から先に外していく
 				const removeStickyParentRecursively = (mesh: BABYLON.Mesh) => {
-					const stickyObjectIds = this.stickyMap.entries().filter(([k, v]) => v === mesh.metadata.objectId).map(([k, v]) => k);
+					const stickyObjectIds = Array.from(this.roomState.installedObjects.filter(o => o.sticky === mesh.metadata.objectId)).map(o => o.id);
 					for (const soid of stickyObjectIds) {
 						const soMesh = this.objectMeshs.get(soid)!;
 						soMesh.setParent(null);
@@ -940,9 +941,12 @@ export class RoomEngine {
 				};
 				removeStickyParentRecursively(this.grabbingCtx.mesh);
 				const pos = this.grabbingCtx.mesh.position.clone();
+				const rotation = this.grabbingCtx.mesh.rotation.clone();
 				this.selectObject(null);
 
-				// todo: roomState更新
+				this.roomState.installedObjects.find(o => o.id === selectedObject.metadata.objectId)!.sticky = sticky;
+				this.roomState.installedObjects.find(o => o.id === selectedObject.metadata.objectId)!.position = [pos.x, pos.y, pos.z];
+				this.roomState.installedObjects.find(o => o.id === selectedObject.metadata.objectId)!.rotation = [rotation.x, rotation.y, rotation.z];
 
 				this.putParticleSystem.emitter = pos;
 				this.putParticleSystem.start();
@@ -1066,6 +1070,8 @@ export class RoomEngine {
 
 		const ghost = this.createGhost(root);
 
+		let sticky: string | null;
+
 		this.grabbingCtx = {
 			objectId: id,
 			objectType: type,
@@ -1077,10 +1083,13 @@ export class RoomEngine {
 			ghost: ghost,
 			descendantStickyObjectIds: [],
 			isMainLight: false,
+			onMove: (info) => {
+				sticky = info.sticky;
+			},
 			onCancel: () => {
 				// todo
 			},
-			onDone: () => {
+			onDone: () => { // todo: sticky状態などを引数でもらうようにしたい
 				const pos = this.grabbingCtx.mesh.position.clone();
 				const rotation = this.grabbingCtx.mesh.rotation.clone();
 
@@ -1097,6 +1106,7 @@ export class RoomEngine {
 					type,
 					position: [pos.x, pos.y, pos.z],
 					rotation: [rotation.x, rotation.y, rotation.z],
+					sticky,
 					options: def.defaultOptions,
 				});
 			},
