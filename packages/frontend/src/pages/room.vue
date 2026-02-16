@@ -310,6 +310,9 @@ onUnmounted(() => {
 	window.removeEventListener('resize', resize);
 });
 
+// todo: 掴む/離す(or 設置)のボタン出し分け
+// grabbing中かどうか、家具設置中かどうかをengineからリアクティブにもらう必要あり？
+
 function grab() {
 	engine.value.beginSelectedInstalledObjectGrabbing();
 	canvas.value!.focus();

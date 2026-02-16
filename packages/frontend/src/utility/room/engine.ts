@@ -23,7 +23,7 @@ import { GridMaterial } from '@babylonjs/materials';
 import { ShowInspector } from '@babylonjs/inspector';
 import { ref, watch } from 'vue';
 import { genId } from '../id.js';
-import { getObjectDef, OBJECT_DEFS } from './object-defs.js';
+import { getObjectDef } from './object-defs.js';
 import { HorizontalCameraKeyboardMoveInput } from './utility.js';
 import * as sound from '@/utility/sound.js';
 
