@@ -212,6 +212,12 @@ onMounted(() => {
 			rotation: [0, 0, 0],
 			options: {},
 		}, {
+			id: 'f22',
+			type: 'tabletopDigitalClock',
+			position: [-35, 90, 175],
+			rotation: [0, Math.PI, 0],
+			options: {},
+		}, {
 			id: 'f3',
 			type: 'snakeplant',
 			position: [40, 90, 170],

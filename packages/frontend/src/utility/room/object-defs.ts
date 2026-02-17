@@ -33,6 +33,7 @@ import { powerStrip } from './objects/powerStrip.js';
 import { roundRug } from './objects/roundRug.js';
 import { snakeplant } from './objects/snakeplant.js';
 import { steelRack } from './objects/steelRack.js';
+import { tabletopDigitalClock } from './objects/tabletopDigitalClock.js';
 import { tv } from './objects/tv.js';
 import { wallClock } from './objects/wallClock.js';
 import { woodSoundAbsorbingPanel } from './objects/woodSoundAbsorbingPanel.js';
@@ -68,6 +69,7 @@ export const OBJECT_DEFS = [
 	roundRug,
 	snakeplant,
 	steelRack,
+	tabletopDigitalClock,
 	tv,
 	wallClock,
 	woodSoundAbsorbingPanel,

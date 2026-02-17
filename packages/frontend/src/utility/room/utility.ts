@@ -148,3 +148,68 @@ export class HorizontalCameraKeyboardMoveInput extends BABYLON.BaseCameraPointer
 		return 'horizontalkeyboard';
 	}
 }
+
+const nanasegNumberMap = [
+	['a', 'b', 'c', 'd', 'e', 'f'], // 0
+	['b', 'c'], // 1
+	['a', 'b', 'd', 'e', 'g'], // 2
+	['a', 'b', 'c', 'd', 'g'], // 3
+	['b', 'c', 'f', 'g'], // 4
+	['a', 'c', 'd', 'f', 'g'], // 5
+	['a', 'c', 'd', 'e', 'f', 'g'], // 6
+	['a', 'b', 'c'], // 7
+	['a', 'b', 'c', 'd', 'e', 'f', 'g'], // 8
+	['a', 'b', 'c', 'd', 'f', 'g'], // 9
+];
+
+export function get7segMeshesOfCurrentTime(meshes: {
+	'1a'?: BABYLON.AbstractMesh;
+	'1b'?: BABYLON.AbstractMesh;
+	'1c'?: BABYLON.AbstractMesh;
+	'1d'?: BABYLON.AbstractMesh;
+	'1e'?: BABYLON.AbstractMesh;
+	'1f'?: BABYLON.AbstractMesh;
+	'1g'?: BABYLON.AbstractMesh;
+	'2a'?: BABYLON.AbstractMesh;
+	'2b'?: BABYLON.AbstractMesh;
+	'2c'?: BABYLON.AbstractMesh;
+	'2d'?: BABYLON.AbstractMesh;
+	'2e'?: BABYLON.AbstractMesh;
+	'2f'?: BABYLON.AbstractMesh;
+	'2g'?: BABYLON.AbstractMesh;
+	'3a'?: BABYLON.AbstractMesh;
+	'3b'?: BABYLON.AbstractMesh;
+	'3c'?: BABYLON.AbstractMesh;
+	'3d'?: BABYLON.AbstractMesh;
+	'3e'?: BABYLON.AbstractMesh;
+	'3f'?: BABYLON.AbstractMesh;
+	'3g'?: BABYLON.AbstractMesh;
+	'4a'?: BABYLON.AbstractMesh;
+	'4b'?: BABYLON.AbstractMesh;
+	'4c'?: BABYLON.AbstractMesh;
+	'4d'?: BABYLON.AbstractMesh;
+	'4e'?: BABYLON.AbstractMesh;
+	'4f'?: BABYLON.AbstractMesh;
+	'4g'?: BABYLON.AbstractMesh;
+}) {
+	const now = new Date();
+	const h = now.getHours();
+	const m = now.getMinutes();
+
+	const chars = [Math.floor(h / 10), h % 10, Math.floor(m / 10), m % 10];
+
+	const result: BABYLON.AbstractMesh[] = [];
+
+	for (let i = 0; i < chars.length; i++) {
+		const char = chars[i];
+		const segs = nanasegNumberMap[char];
+		for (const seg of segs) {
+			const mesh = meshes[`${i + 1}${seg}`];
+			if (mesh) {
+				result.push(mesh);
+			}
+		}
+	}
+
+	return result;
+}
