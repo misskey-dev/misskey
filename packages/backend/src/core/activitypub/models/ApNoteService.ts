@@ -6,6 +6,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
 import * as Redis from 'ioredis';
+import * as mfm from 'mfm-js';
 import { DI } from '@/di-symbols.js';
 import type { PollsRepository, EmojisRepository, MiMeta } from '@/models/_.js';
 import type { Config } from '@/config.js';
@@ -24,6 +25,8 @@ import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { checkHttps } from '@/misc/check-https.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { extractHashtags } from '@/misc/extract-hashtags.js';
+import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { getOneApId, getApId, getOneApHrefNullable, validPost, isEmoji, getApType } from '../type.js';
 import { ApLoggerService } from '../ApLoggerService.js';
 import { ApMfmService } from '../ApMfmService.js';
@@ -196,7 +199,9 @@ export class ApNoteService {
 		// PieFed等、contentにハッシュタグを含めずtag配列にのみ格納するサーバーへの対応
 		if (apHashtags.length > 0) {
 			const currentText = text ?? '';
-			const missingTags = apHashtags.filter(tag => !currentText.includes(`#${tag}`));
+			const tokens = currentText ? mfm.parse(currentText) : [];
+			const existingTags = new Set(extractHashtags(tokens).map(t => normalizeForSearch(t)));
+			const missingTags = apHashtags.filter(tag => !existingTags.has(normalizeForSearch(tag)));
 			if (missingTags.length > 0) {
 				const hashtagText = missingTags.map(tag => `#${tag}`).join(' ');
 				text = currentText ? `${currentText}\n\n${hashtagText}` : hashtagText;
