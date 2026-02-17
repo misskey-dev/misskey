@@ -282,6 +282,13 @@ onMounted(() => {
 			sticky: 'c',
 			options: {},
 		}, {
+			id: 'k2',
+			type: 'tabletopCalendar',
+			position: [-130, 70, 40],
+			rotation: [0, -Math.PI / 2, 0],
+			sticky: 'c',
+			options: {},
+		}, {
 			id: 'l',
 			type: 'banknote',
 			position: [-100, 70, 55],
