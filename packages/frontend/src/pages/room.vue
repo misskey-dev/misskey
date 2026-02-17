@@ -271,7 +271,7 @@ onMounted(() => {
 		}, {
 			id: 'a37cb419-d028-47a7-b317-7553bc2553e0',
 			type: 'ductTape',
-			position: [131, 85, 126],
+			position: [133, 85, 130],
 			rotation: [0, 0, 0],
 			sticky: 'j4',
 			options: {},
