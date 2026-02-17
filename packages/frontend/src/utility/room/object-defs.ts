@@ -31,6 +31,7 @@ import { pachira } from './objects/pachira.js';
 import { plant } from './objects/plant.js';
 import { plant2 } from './objects/plant2.js';
 import { powerStrip } from './objects/powerStrip.js';
+import { rolledUpPoster } from './objects/rolledUpPoster.js';
 import { roundRug } from './objects/roundRug.js';
 import { snakeplant } from './objects/snakeplant.js';
 import { steelRack } from './objects/steelRack.js';
@@ -69,6 +70,7 @@ export const OBJECT_DEFS = [
 	plant,
 	plant2,
 	powerStrip,
+	rolledUpPoster,
 	roundRug,
 	snakeplant,
 	steelRack,
