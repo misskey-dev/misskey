@@ -313,7 +313,7 @@ export class ApNoteService {
 
 		// block spam
 		if ((actor.host != null) && (actor.followersCount == 0) && (1 < noteAudience.mentionedUsers.length)) {
-			throw new Error(`Spam blocked: followersCount:${actor.followersCount} mentionedUsers:${noteAudience.mentionedUsers.length}`);
+			throw new IdentifiableError('d3e2e185-4469-4e4a-985c-943640de7d72', `Spam blocked: remote user with no followers mentioned ${noteAudience.mentionedUsers.length} users`);
 		}
 
 		try {
