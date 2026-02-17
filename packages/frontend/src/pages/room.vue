@@ -255,7 +255,7 @@ onMounted(() => {
 			sticky: 'j',
 			options: {},
 		}, {
-			id: 'j3',
+			id: 'j4',
 			type: 'letterCase',
 			position: [130, 59, 125],
 			rotation: [0, Math.PI / 2, 0],
