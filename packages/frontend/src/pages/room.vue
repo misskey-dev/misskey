@@ -473,7 +473,7 @@ function toggleEditMode() {
 }
 
 function addObject() {
-	engine.value?.addObject('mug');
+	engine.value?.addObject('tabletopDigitalClock');
 	canvas.value!.focus();
 }
 

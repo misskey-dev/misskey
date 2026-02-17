@@ -1078,7 +1078,7 @@ export class RoomEngine {
 			id: id,
 			type,
 			position: new BABYLON.Vector3(0, 0, 0),
-			rotation: new BABYLON.Vector3(0, 0, 0),
+			rotation: new BABYLON.Vector3(0, Math.PI, 0),
 			options: def.defaultOptions,
 		});
 
@@ -1093,7 +1093,7 @@ export class RoomEngine {
 			objectType: type,
 			mesh: root,
 			originalDiffOfPosition: new BABYLON.Vector3(0, 0, 0),
-			originalDiffOfRotationY: 0,
+			originalDiffOfRotationY: Math.PI,
 			distance: distance,
 			rotation: 0,
 			ghost: ghost,

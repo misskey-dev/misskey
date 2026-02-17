@@ -46,10 +46,16 @@ export const tabletopDigitalClock = defineObject({
 						'4g': root.getChildMeshes().find(m => m.name.includes('__TIME_7SEG_4G__')),
 					};
 
+					const colonMeshes = root.getChildMeshes().filter(m => m.name.includes('__TIME_7SEG_COLON__'));
+
 					const onMeshes = get7segMeshesOfCurrentTime(meshes);
 
 					for (const mesh of Object.values(meshes)) {
 						mesh.isVisible = onMeshes.includes(mesh);
+					}
+
+					for (const mesh of colonMeshes) {
+						mesh.isVisible = Date.now() % 2000 < 1000;
 					}
 				}, 1000));
 			},
