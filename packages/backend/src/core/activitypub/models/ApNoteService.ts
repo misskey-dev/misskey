@@ -192,6 +192,17 @@ export class ApNoteService {
 			text = this.apMfmService.htmlToMfm(note.content, note.tag);
 		}
 
+		// tag配列にあるがテキストに含まれないハッシュタグを補完
+		// PieFed等、contentにハッシュタグを含めずtag配列にのみ格納するサーバーへの対応
+		if (apHashtags.length > 0) {
+			const currentText = text ?? '';
+			const missingTags = apHashtags.filter(tag => !currentText.includes(`#${tag}`));
+			if (missingTags.length > 0) {
+				const hashtagText = missingTags.map(tag => `#${tag}`).join(' ');
+				text = currentText ? `${currentText}\n\n${hashtagText}` : hashtagText;
+			}
+		}
+
 		const poll = await this.apQuestionService.extractPollFromQuestion(note, resolver).catch(() => undefined);
 
 		//#region Contents Check
