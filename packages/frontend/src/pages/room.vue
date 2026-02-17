@@ -256,6 +256,13 @@ onMounted(() => {
 			options: {},
 		}, {
 			id: 'j3',
+			type: 'letterCase',
+			position: [130, 59, 125],
+			rotation: [0, Math.PI / 2, 0],
+			sticky: 'j',
+			options: {},
+		}, {
+			id: 'j3',
 			type: 'powerStrip',
 			position: [130, 13, 115],
 			rotation: [0, Math.PI / 2, 0],

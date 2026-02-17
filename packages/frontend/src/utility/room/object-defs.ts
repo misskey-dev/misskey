@@ -20,6 +20,7 @@ import { energyDrink } from './objects/energyDrink.js';
 import { facialTissue } from './objects/facialTissue.js';
 import { keyboard } from './objects/keyboard.js';
 import { lavaLamp } from './objects/lavaLamp.js';
+import { letterCase } from './objects/letterCase.js';
 import { milk } from './objects/milk.js';
 import { monitor } from './objects/monitor.js';
 import { monstera } from './objects/monstera.js';
@@ -54,6 +55,7 @@ export const OBJECT_DEFS = [
 	facialTissue,
 	keyboard,
 	lavaLamp,
+	letterCase,
 	milk,
 	monitor,
 	monstera,
