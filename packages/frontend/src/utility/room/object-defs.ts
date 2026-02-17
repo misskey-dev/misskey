@@ -16,6 +16,7 @@ import { chair } from './objects/chair.js';
 import { colorBox } from './objects/colorBox.js';
 import { cupNoodle } from './objects/cupNoodle.js';
 import { desk } from './objects/desk.js';
+import { ductTape } from './objects/ductTape.js';
 import { energyDrink } from './objects/energyDrink.js';
 import { facialTissue } from './objects/facialTissue.js';
 import { keyboard } from './objects/keyboard.js';
@@ -53,6 +54,7 @@ export const OBJECT_DEFS = [
 	colorBox,
 	cupNoodle,
 	desk,
+	ductTape,
 	energyDrink,
 	facialTissue,
 	keyboard,

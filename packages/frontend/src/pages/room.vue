@@ -8,6 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<canvas ref="canvas" :class="$style.canvas" @keypress="onKeypress" @wheel="onWheel"></canvas>
 	<div v-if="engine != null" class="_buttons" :class="$style.controls">
 		<!--<MkButton v-for="action in actions" :key="action.key" @click="action.fn">{{ action.label }}{{ hotkeyToLabel(action.hotkey) }}</MkButton>-->
+		<MkButton @click="toggleLight">Toggle Light</MkButton>
 		<MkButton :primary="engine.isEditMode.value" @click="toggleEditMode">Edit mode: {{ engine.isEditMode.value ? 'on' : 'off' }}</MkButton>
 		<template v-if="engine.isEditMode.value">
 			<MkButton v-if="engine.ui.isGrabbing" @click="endGrabbing">Put (E)</MkButton>
@@ -266,6 +267,13 @@ onMounted(() => {
 			position: [130, 59, 125],
 			rotation: [0, Math.PI / 2, 0],
 			sticky: 'j',
+			options: {},
+		}, {
+			id: 'a37cb419-d028-47a7-b317-7553bc2553e0',
+			type: 'ductTape',
+			position: [131, 85, 126],
+			rotation: [0, 0, 0],
+			sticky: 'j4',
 			options: {},
 		}, {
 			id: 'j3',
