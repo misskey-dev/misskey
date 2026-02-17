@@ -32,7 +32,7 @@ import { i18n } from '@/i18n.js';
 import { ensureSignin } from '@/i';
 import MkButton from '@/components/MkButton.vue';
 import { RoomEngine } from '@/utility/room/engine.js';
-import { getObjectDef } from '@/utility/room/object-defs.js';
+import { getObjectDef, OBJECT_DEFS } from '@/utility/room/object-defs.js';
 import MkSelect from '@/components/MkSelect.vue';
 import * as os from '@/os.js';
 
@@ -472,9 +472,15 @@ function toggleEditMode() {
 	canvas.value!.focus();
 }
 
-function addObject() {
-	engine.value?.addObject('tabletopDigitalClock');
-	canvas.value!.focus();
+function addObject(ev: PointerEvent) {
+	if (engine.value == null) return;
+	os.popupMenu(OBJECT_DEFS.map(def => ({
+		text: def.id,
+		action: () => {
+			engine.value?.addObject(def.id);
+			canvas.value!.focus();
+		},
+	})), ev.currentTarget ?? ev.target);
 }
 
 definePage(() => ({
