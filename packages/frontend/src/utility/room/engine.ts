@@ -854,7 +854,7 @@ export class RoomEngine {
 		const objectInstance = def.createInstance({
 			room: this,
 			root,
-			options: args.options,
+			options: args.options, // todo: merge with default options
 			loaderResult: loaderResult,
 			meshUpdated: () => {
 				meshUpdated(this.objectMeshs.get(args.id)!.getChildMeshes() as BABYLON.Mesh[]);
@@ -998,7 +998,7 @@ export class RoomEngine {
 		this.zGridPreviewPlane.isVisible = false;
 	}
 
-	private interact(oid: string) {
+	public interact(oid: string) {
 		const o = this.roomState.installedObjects.find(o => o.id === oid)!;
 		const mesh = this.objectMeshs.get(o.id)!;
 		const objDef = getObjectDef(o.type);
@@ -1148,6 +1148,11 @@ export class RoomEngine {
 		if (this.grabbingCtx == null) return;
 		this.grabbingCtx.distance -= delta;
 		if (this.grabbingCtx.distance < 5/*cm*/) this.grabbingCtx.distance = 5/*cm*/;
+	}
+
+	public changeGrabbingRotationY(delta: number) {
+		if (this.grabbingCtx == null) return;
+		this.grabbingCtx.rotation += delta;
 	}
 
 	public resize() {

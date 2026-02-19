@@ -5,16 +5,30 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../engine.js';
-import { get7segMeshesOfCurrentTime, yuge } from '../utility.js';
+import { get7segMeshesOfCurrentTime } from '../utility.js';
 
 export const tabletopDigitalClock = defineObject({
 	id: 'tabletopDigitalClock',
-	defaultOptions: {},
+	defaultOptions: {
+		bodyStyle: {
+			type: 'color',
+			value: [0.45, 0.8, 0],
+		} as { type: 'color'; value: [number, number, number] } | { type: 'wood'; } | null,
+	},
 	placement: 'top',
-	createInstance: ({ room, root }) => {
+	createInstance: ({ room, options, root }) => {
 		return {
 			onInited: () => {
-				const meshes = {
+				const bodyMesh = root.getChildMeshes().find(m => m.name.includes('__X_BODY__')) as BABYLON.Mesh;
+
+				const bodyMaterial = bodyMesh.material as BABYLON.PBRMaterial;
+
+				if (options.bodyStyle?.type === 'color') {
+					const [r, g, b] = options.bodyStyle.value;
+					bodyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+				}
+
+				const segmentMeshes = {
 					'1a': root.getChildMeshes().find(m => m.name.includes('__TIME_7SEG_1A__')),
 					'1b': root.getChildMeshes().find(m => m.name.includes('__TIME_7SEG_1B__')),
 					'1c': root.getChildMeshes().find(m => m.name.includes('__TIME_7SEG_1C__')),
@@ -48,9 +62,9 @@ export const tabletopDigitalClock = defineObject({
 				const colonMeshes = root.getChildMeshes().filter(m => m.name.includes('__TIME_7SEG_COLON__'));
 
 				room.intervalIds.push(window.setInterval(() => {
-					const onMeshes = get7segMeshesOfCurrentTime(meshes);
+					const onMeshes = get7segMeshesOfCurrentTime(segmentMeshes);
 
-					for (const mesh of Object.values(meshes)) {
+					for (const mesh of Object.values(segmentMeshes)) {
 						mesh.isVisible = onMeshes.includes(mesh);
 					}
 

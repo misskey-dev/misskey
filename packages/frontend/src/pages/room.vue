@@ -5,22 +5,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.root" class="_pageScrollable">
-	<canvas ref="canvas" :class="$style.canvas" @keypress="onKeypress" @wheel="onWheel"></canvas>
+	<div :class="$style.screen">
+		<canvas ref="canvas" :class="$style.canvas" @keydown="onKeydown" @wheel="onWheel"></canvas>
+		<div v-if="engine != null" class="_buttonsCenter" :class="$style.overlayControls">
+			<template v-if="engine.isEditMode.value">
+				<MkButton v-if="engine.ui.isGrabbing" @click="endGrabbing">Put (E)</MkButton>
+				<MkButton v-else-if="engine.ui.isGrabbingForInstall" @click="endGrabbing">Install (E)</MkButton>
+				<MkButton v-else @click="beginSelectedInstalledObjectGrabbing">Grab (E)</MkButton>
+
+				<MkButton v-if="engine.ui.isGrabbing || engine.ui.isGrabbingForInstall" @click="rotate">Rotate (R)</MkButton>
+
+				<MkButton :primary="engine.enableGridSnapping.value" @click="showSnappingMenu">Grid Snap: {{ engine.enableGridSnapping.value ? 'on' : 'off' }}</MkButton>
+			</template>
+			<MkButton v-if="engine.isSitting.value" @click="engine.standUp()">降りる (Q)</MkButton>
+			<template v-for="interaction in interacions" :key="interaction.id">
+				<MkButton inline @click="interaction.fn()">{{ interaction.label }}{{ interaction.isPrimary ? ' (E)' : '' }}</MkButton>
+			</template>
+		</div>
+	</div>
 	<div v-if="engine != null" class="_buttons" :class="$style.controls">
 		<!--<MkButton v-for="action in actions" :key="action.key" @click="action.fn">{{ action.label }}{{ hotkeyToLabel(action.hotkey) }}</MkButton>-->
 		<MkButton @click="toggleLight">Toggle Light</MkButton>
 		<MkButton :primary="engine.isEditMode.value" @click="toggleEditMode">Edit mode: {{ engine.isEditMode.value ? 'on' : 'off' }}</MkButton>
-		<template v-if="engine.isEditMode.value">
-			<MkButton v-if="engine.ui.isGrabbing" @click="endGrabbing">Put (E)</MkButton>
-			<MkButton v-else-if="engine.ui.isGrabbingForInstall" @click="endGrabbing">Install (E)</MkButton>
-			<MkButton v-else @click="beginSelectedInstalledObjectGrabbing">Grab (E)</MkButton>
-
-			<MkButton :primary="engine.enableGridSnapping.value" @click="showSnappingMenu">Grid Snap: {{ engine.enableGridSnapping.value ? 'on' : 'off' }}</MkButton>
-		</template>
-		<MkButton v-if="engine.isSitting.value" @click="engine.standUp()">降りる (Q)</MkButton>
-		<template v-for="interaction in interacions" :key="interaction.id">
-			<MkButton @click="interaction.fn()">{{ interaction.label }}</MkButton>
-		</template>
 		<MkButton @click="addObject">addObject</MkButton>
 	</div>
 </div>
@@ -44,6 +50,7 @@ const engine = shallowRef<RoomEngine | null>(null);
 const interacions = shallowRef<{
 	id: string;
 	label: string;
+	isPrimary: boolean;
 	fn: () => void;
 }[]>([]);
 
@@ -97,36 +104,38 @@ const actions = computed<Action[]>(() => {
 	return actions;
 });
 
-function onKeypress(ev: KeyboardEvent) {
+function onKeydown(ev: KeyboardEvent) {
 	if (engine.value == null) return;
 
-	/* todo
 	if (ev.code === 'KeyE') {
 		ev.preventDefault();
 		ev.stopPropagation();
 		if (engine.value.isEditMode.value) {
 			if (engine.value.ui.isGrabbing || engine.value.ui.isGrabbingForInstall) {
-				this.endGrabbing();
+				endGrabbing();
 			} else {
-				this.beginSelectedInstalledObjectGrabbing();
+				beginSelectedInstalledObjectGrabbing();
 			}
-		} else if (this.selectedObjectId.value != null) {
-			this.interact(this.selectedObjectId.value);
+		} else if (engine.value.selectedObjectId.value != null) {
+			engine.value.interact(engine.value.selectedObjectId.value);
 		}
 	} else if (ev.code === 'KeyR') {
 		ev.preventDefault();
 		ev.stopPropagation();
-		if (this.grabbingCtx != null) {
-			this.grabbingCtx.rotation += Math.PI / 8;
+		if (engine.value.ui.isGrabbing || engine.value.ui.isGrabbingForInstall) {
+			rotate();
 		}
 	} else if (ev.code === 'KeyQ') {
 		ev.preventDefault();
 		ev.stopPropagation();
-		if (this.isSitting.value) {
-			this.standUp();
+		if (engine.value.isSitting.value) {
+			engine.value.standUp();
 		}
+	} else if (ev.code === 'Tab') {
+		ev.preventDefault();
+		ev.stopPropagation();
+		toggleEditMode();
 	}
-		*/
 }
 
 function onWheel(ev: WheelEvent) {
@@ -217,7 +226,12 @@ onMounted(() => {
 			type: 'tabletopDigitalClock',
 			position: [-35, 90, 175],
 			rotation: [0, Math.PI, 0],
-			options: {},
+			options: {
+				bodyStyle: {
+					type: 'color',
+					value: [0.45, 0.8, 1],
+				},
+			},
 		}, {
 			id: 'f3',
 			type: 'snakeplant',
@@ -421,6 +435,7 @@ onMounted(() => {
 			interacions.value = Object.entries(obji.interactions).map(([interactionId, interactionInfo]) => ({
 				id: interactionId,
 				label: interactionInfo.label,
+				isPrimary: obji.primaryInteraction === interactionId,
 				fn: interactionInfo.fn,
 			}));
 		}
@@ -477,8 +492,8 @@ function showSnappingMenu(ev: PointerEvent) {
 	}], ev.currentTarget ?? ev.target);
 }
 
-function toggleGridSnapping() {
-	engine.value.enableGridSnapping.value = !engine.value.enableGridSnapping.value;
+function rotate() {
+	engine.value.changeGrabbingRotationY(Math.PI / 8);
 	canvas.value!.focus();
 }
 
@@ -510,6 +525,12 @@ definePage(() => ({
 	height: 100%;
 }
 
+.screen {
+	position: relative;
+	width: 100%;
+	height: 90cqh;
+}
+
 .canvas {
 	width: 100%;
 	height: 100%;
@@ -518,9 +539,13 @@ definePage(() => ({
 }
 
 .controls {
+}
+
+.overlayControls {
 	position: absolute;
-	bottom: 16px;
+	bottom: 0;
 	left: 0;
+	z-index: 1;
 	width: 100%;
 }
 </style>
