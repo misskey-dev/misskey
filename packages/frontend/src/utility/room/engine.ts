@@ -82,8 +82,10 @@ type GetOptionsSchemaValues<T extends OptionsSchema> = {
 
 type ObjectDef<OpSc extends OptionsSchema> = {
 	id: string;
-	optionsSchema: OpSc;
-	defaultOptions: GetOptionsSchemaValues<OpSc>;
+	options: {
+		schema: OpSc;
+		default: GetOptionsSchemaValues<OpSc>;
+	};
 	placement: 'top' | 'side' | 'bottom' | 'wall' | 'ceiling' | 'floor';
 	isChair?: boolean;
 	createInstance: (args: {
@@ -1097,7 +1099,7 @@ export class RoomEngine {
 			type,
 			position: new BABYLON.Vector3(0, 0, 0),
 			rotation: new BABYLON.Vector3(0, Math.PI, 0),
-			options: def.defaultOptions,
+			options: def.options.default,
 		});
 
 		const ghost = this.createGhost(root);
@@ -1145,7 +1147,7 @@ export class RoomEngine {
 					position: [pos.x, pos.y, pos.z],
 					rotation: [rotation.x, rotation.y, rotation.z],
 					sticky,
-					options: def.defaultOptions,
+					options: def.options.default,
 				});
 			},
 		};

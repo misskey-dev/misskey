@@ -9,20 +9,22 @@ import { get7segMeshesOfCurrentTime } from '../utility.js';
 
 export const tabletopDigitalClock = defineObject({
 	id: 'tabletopDigitalClock',
-	optionsSchema: {
-		bodyStyle: {
-			type: 'select',
-			label: 'Body Style',
-			enum: ['color', 'wood'],
+	options: {
+		schema: {
+			bodyStyle: {
+				type: 'select',
+				label: 'Body Style',
+				enum: ['color', 'wood'],
+			},
+			bodyColor: {
+				type: 'color',
+				label: 'Body Color',
+			},
 		},
-		bodyColor: {
-			type: 'color',
-			label: 'Body Color',
+		default: {
+			bodyStyle: 'color',
+			bodyColor: [0.45, 0.8, 0],
 		},
-	},
-	defaultOptions: {
-		bodyStyle: 'color',
-		bodyColor: [0.45, 0.8, 0],
 	},
 	placement: 'top',
 	createInstance: ({ room, options, root }) => {
