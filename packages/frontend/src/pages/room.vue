@@ -7,6 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div :class="$style.root" class="_pageScrollable">
 	<div :class="$style.screen">
 		<canvas ref="canvas" :class="$style.canvas" @keydown="onKeydown" @wheel="onWheel"></canvas>
+
 		<div v-if="engine != null" class="_buttonsCenter" :class="$style.overlayControls">
 			<template v-if="engine.isEditMode.value">
 				<MkButton v-if="engine.ui.isGrabbing" @click="endGrabbing">Put (E)</MkButton>
@@ -22,7 +23,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton inline @click="interaction.fn()">{{ interaction.label }}{{ interaction.isPrimary ? ' (E)' : '' }}</MkButton>
 			</template>
 		</div>
+
+		<div v-if="engine != null && engine.isEditMode.value && engine.selected.value != null" class="_panel" :class="$style.overlayObjectInfoPanel">
+			{{ engine.selected.value.objectId }}
+		</div>
 	</div>
+
 	<div v-if="engine != null" class="_buttons" :class="$style.controls">
 		<!--<MkButton v-for="action in actions" :key="action.key" @click="action.fn">{{ action.label }}{{ hotkeyToLabel(action.hotkey) }}</MkButton>-->
 		<MkButton @click="toggleLight">Toggle Light</MkButton>
@@ -116,8 +122,8 @@ function onKeydown(ev: KeyboardEvent) {
 			} else {
 				beginSelectedInstalledObjectGrabbing();
 			}
-		} else if (engine.value.selectedObjectId.value != null) {
-			engine.value.interact(engine.value.selectedObjectId.value);
+		} else if (engine.value.selected.value != null) {
+			engine.value.interact(engine.value.selected.value.objectId);
 		}
 	} else if (ev.code === 'KeyR') {
 		ev.preventDefault();
@@ -425,15 +431,14 @@ onMounted(() => {
 
 	window.addEventListener('resize', resize);
 
-	watch(engine.value.selectedObjectId, (v) => {
+	watch(engine.value.selected, (v) => {
 		if (v == null) {
 			interacions.value = [];
 		} else {
-			const obji = engine.value.objectInstances.get(v)!;
-			interacions.value = Object.entries(obji.interactions).map(([interactionId, interactionInfo]) => ({
+			interacions.value = Object.entries(v.objectInstance.interactions).map(([interactionId, interactionInfo]) => ({
 				id: interactionId,
 				label: interactionInfo.label,
-				isPrimary: obji.primaryInteraction === interactionId,
+				isPrimary: v.objectInstance.primaryInteraction === interactionId,
 				fn: interactionInfo.fn,
 			}));
 		}
@@ -545,5 +550,13 @@ definePage(() => ({
 	left: 0;
 	z-index: 1;
 	width: 100%;
+}
+
+.overlayObjectInfoPanel {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	z-index: 1;
+	padding: 16px;
 }
 </style>

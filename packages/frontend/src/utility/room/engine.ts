@@ -25,7 +25,7 @@ import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
 import { BoundingBoxRenderer } from '@babylonjs/core/Rendering/boundingBoxRenderer';
 import { GridMaterial } from '@babylonjs/materials';
 import { ShowInspector } from '@babylonjs/inspector';
-import { reactive, ref, watch } from 'vue';
+import { reactive, ref, shallowRef, watch } from 'vue';
 import { genId } from '../id.js';
 import { getObjectDef } from './object-defs.js';
 import { HorizontalCameraKeyboardMoveInput } from './utility.js';
@@ -170,7 +170,11 @@ export class RoomEngine {
 		onCancel?: () => void;
 		onDone?: () => void;
 	} | null = null;
-	public selectedObjectId = ref<string | null>(null);
+	public selected = shallowRef<{
+		objectId: string;
+		objectMesh: BABYLON.Mesh;
+		objectInstance: RoomObjectInstance<any>;
+	} | null>(null);
 	private time: 0 | 1 | 2 = 0; // 0: 昼, 1: 夕, 2: 夜
 	private roomCollisionMeshes: BABYLON.AbstractMesh[] = [];
 	public roomState: RoomState;
@@ -526,14 +530,12 @@ export class RoomEngine {
 	}
 
 	public selectObject(objectId: string | null) {
-		if (this.selectedObjectId.value != null) {
-			const prevMesh = this.objectMeshs.get(this.selectedObjectId.value);
-			if (prevMesh != null) {
-				for (const om of prevMesh.getChildMeshes()) {
-					om.renderOutline = false;
-				}
+		if (this.selected.value != null) {
+			const prevMesh = this.selected.value.objectMesh;
+			for (const om of prevMesh.getChildMeshes()) {
+				om.renderOutline = false;
 			}
-			this.selectedObjectId.value = null;
+			this.selected.value = null;
 		}
 
 		if (objectId != null) {
@@ -542,7 +544,11 @@ export class RoomEngine {
 				for (const om of mesh.getChildMeshes()) {
 					om.renderOutline = true;
 				}
-				this.selectedObjectId.value = objectId;
+				this.selected.value = {
+					objectId,
+					objectMesh: mesh,
+					objectInstance: this.objectInstances.get(objectId)!,
+				};
 			}
 		}
 	}
@@ -856,7 +862,7 @@ export class RoomEngine {
 						this.shadowGenerator2.addShadowCaster(mesh);
 					}
 
-					mesh.renderOutline = this.selectedObjectId.value === args.id;
+					mesh.renderOutline = this.selected.value?.objectId === args.id;
 					mesh.outlineWidth = 0.003;
 					mesh.outlineColor = new BABYLON.Color3(1, 0, 0);
 					//if (mesh.material) (mesh.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(0.2, 0.2, 0.2);
@@ -895,9 +901,9 @@ export class RoomEngine {
 	}
 
 	public beginSelectedInstalledObjectGrabbing() {
-		if (this.selectedObjectId.value == null) return;
+		if (this.selected.value == null) return;
 
-		const selectedObject = this.objectMeshs.get(this.selectedObjectId.value)!;
+		const selectedObject = this.selected.value.objectMesh;
 		for (const om of selectedObject.getChildMeshes()) {
 			om.renderOutline = false;
 		}
