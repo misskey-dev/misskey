@@ -227,10 +227,8 @@ onMounted(() => {
 			position: [-35, 90, 175],
 			rotation: [0, Math.PI, 0],
 			options: {
-				bodyStyle: {
-					type: 'color',
-					value: [0.45, 0.8, 1],
-				},
+				bodyStyle: 'color',
+				bodyColor: [0.45, 0.8, 1],
 			},
 		}, {
 			id: 'f3',

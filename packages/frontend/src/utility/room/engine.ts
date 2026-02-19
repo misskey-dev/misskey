@@ -63,21 +63,39 @@ type RoomObjectInstance<Options> = {
 
 export const WORLD_SCALE = 100;
 
-type ObjectDef<Options extends Record<string, any>> = {
+type ColorOptionSchema = {
+	type: 'color';
+	label: string;
+};
+
+type SelectOptionSchema = {
+	type: 'select';
+	label: string;
+	enum: string[];
+};
+
+type OptionsSchema = Record<string, ColorOptionSchema | SelectOptionSchema>;
+
+type GetOptionsSchemaValues<T extends OptionsSchema> = {
+	[K in keyof T]: T[K] extends ColorOptionSchema ? [number, number, number] : T[K] extends SelectOptionSchema ? T[K]['enum'][number] : never;
+};
+
+type ObjectDef<OpSc extends OptionsSchema> = {
 	id: string;
-	defaultOptions: Options;
+	optionsSchema: OpSc;
+	defaultOptions: GetOptionsSchemaValues<OpSc>;
 	placement: 'top' | 'side' | 'bottom' | 'wall' | 'ceiling' | 'floor';
 	isChair?: boolean;
 	createInstance: (args: {
 		room: RoomEngine;
 		root: BABYLON.Mesh;
-		options: Options;
+		options: GetOptionsSchemaValues<OpSc>;
 		loaderResult: BABYLON.ISceneLoaderAsyncResult;
 		meshUpdated: () => void;
-	}) => RoomObjectInstance<Options>;
+	}) => RoomObjectInstance<GetOptionsSchemaValues<OpSc>>;
 };
 
-export function defineObject<Options extends Record<string, any>>(def: ObjectDef<Options>): ObjectDef<Options> {
+export function defineObject<const OpSc extends OptionsSchema>(def: ObjectDef<OpSc>): ObjectDef<OpSc> {
 	return def;
 }
 

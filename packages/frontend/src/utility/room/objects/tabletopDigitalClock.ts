@@ -9,11 +9,20 @@ import { get7segMeshesOfCurrentTime } from '../utility.js';
 
 export const tabletopDigitalClock = defineObject({
 	id: 'tabletopDigitalClock',
-	defaultOptions: {
+	optionsSchema: {
 		bodyStyle: {
+			type: 'select',
+			label: 'Body Style',
+			enum: ['color', 'wood'],
+		},
+		bodyColor: {
 			type: 'color',
-			value: [0.45, 0.8, 0],
-		} as { type: 'color'; value: [number, number, number] } | { type: 'wood'; } | null,
+			label: 'Body Color',
+		},
+	},
+	defaultOptions: {
+		bodyStyle: 'color',
+		bodyColor: [0.45, 0.8, 0],
 	},
 	placement: 'top',
 	createInstance: ({ room, options, root }) => {
@@ -23,8 +32,8 @@ export const tabletopDigitalClock = defineObject({
 
 				const bodyMaterial = bodyMesh.material as BABYLON.PBRMaterial;
 
-				if (options.bodyStyle?.type === 'color') {
-					const [r, g, b] = options.bodyStyle.value;
+				if (options.bodyStyle === 'color') {
+					const [r, g, b] = options.bodyColor;
 					bodyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
 				}
 
