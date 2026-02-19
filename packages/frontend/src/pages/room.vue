@@ -26,14 +26,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<div v-if="engine != null && engine.isEditMode.value && engine.selected.value != null" class="_panel" :class="$style.overlayObjectInfoPanel">
 			{{ engine.selected.value.objectDef.name }}
-		</div>
-	</div>
 
-	<div v-if="engine != null" class="_buttons" :class="$style.controls">
-		<!--<MkButton v-for="action in actions" :key="action.key" @click="action.fn">{{ action.label }}{{ hotkeyToLabel(action.hotkey) }}</MkButton>-->
-		<MkButton @click="toggleLight">Toggle Light</MkButton>
-		<MkButton :primary="engine.isEditMode.value" @click="toggleEditMode">Edit mode: {{ engine.isEditMode.value ? 'on' : 'off' }}</MkButton>
-		<MkButton @click="addObject">addObject</MkButton>
+			<div v-for="[k, s] in Object.entries(engine.selected.value.objectDef.options.schema)" :key="k">
+				<div>{{ s.label }}</div>
+				<div v-if="s.type === 'color'">
+					<MkInput :modelValue="getHex(engine.selected.value.objectState.options[k])" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) engine.updateObjectOption(engine.selected.value.objectId, k, c); }"></MkInput>
+				</div>
+			</div>
+		</div>
+
+		<div v-if="engine != null" class="_buttons" :class="$style.controls">
+			<!--<MkButton v-for="action in actions" :key="action.key" @click="action.fn">{{ action.label }}{{ hotkeyToLabel(action.hotkey) }}</MkButton>-->
+			<MkButton @click="toggleLight">Toggle Light</MkButton>
+			<MkButton :primary="engine.isEditMode.value" @click="toggleEditMode">Edit mode: {{ engine.isEditMode.value ? 'on' : 'off' }}</MkButton>
+			<MkButton @click="addObject">addObject</MkButton>
+		</div>
 	</div>
 </div>
 </template>
@@ -48,6 +55,7 @@ import { RoomEngine } from '@/utility/room/engine.js';
 import { getObjectDef, OBJECT_DEFS } from '@/utility/room/object-defs.js';
 import MkSelect from '@/components/MkSelect.vue';
 import * as os from '@/os.js';
+import MkInput from '@/components/MkInput.vue';
 
 const canvas = useTemplateRef('canvas');
 
@@ -516,6 +524,24 @@ function addObject(ev: PointerEvent) {
 	})), ev.currentTarget ?? ev.target);
 }
 
+function getHex(c: [number, number, number]) {
+	return `#${c.map(x => (x * 255).toString(16).padStart(2, '0')).join('')}`;
+}
+
+function getRgb(hex: string | number): [number, number, number] | null {
+	if (
+		typeof hex === 'number' ||
+		typeof hex !== 'string' ||
+		!/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(hex)
+	) {
+		return null;
+	}
+
+	const m = hex.slice(1).match(/[0-9a-fA-F]{2}/g);
+	if (m == null) return [0, 0, 0];
+	return m.map(x => parseInt(x, 16) / 255) as [number, number, number];
+}
+
 definePage(() => ({
 	title: 'Room',
 	icon: 'ti ti-door',
@@ -554,8 +580,8 @@ definePage(() => ({
 
 .overlayObjectInfoPanel {
 	position: absolute;
-	top: 8px;
-	right: 8px;
+	top: 16px;
+	right: 16px;
 	z-index: 1;
 	padding: 16px;
 }

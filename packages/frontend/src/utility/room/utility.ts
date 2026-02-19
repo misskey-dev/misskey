@@ -213,3 +213,28 @@ export function get7segMeshesOfCurrentTime(meshes: {
 
 	return result;
 }
+
+export function createOverridedStates<T extends Record<string, (() => any)>>(stateDefs: T): { [K in keyof T]: ReturnType<T[K]>; } & { $reset: () => void } {
+	const overridedStates = {} as { [K in keyof T]: ReturnType<T[K]>; };
+	const result = {} as { [K in keyof T]: ReturnType<T[K]>; } & { $reset: () => void };
+
+	for (const k in stateDefs) {
+		Object.defineProperty(result, k, {
+			get() {
+				return overridedStates[k] ?? stateDefs[k]();
+			},
+			set(value) {
+				overridedStates[k] = value;
+			},
+			enumerable: true,
+		});
+	}
+
+	result.$reset = () => {
+		for (const k in stateDefs) {
+			overridedStates[k] = stateDefs[k]();
+		}
+	};
+
+	return result;
+}

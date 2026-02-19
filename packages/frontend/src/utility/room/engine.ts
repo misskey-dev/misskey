@@ -52,16 +52,26 @@ type RoomState = {
 };
 
 type RoomObjectInstance<Options> = {
-	onInited?: (room: RoomEngine, o: RoomStateObject<Options>, rootNode: BABYLON.Mesh) => void;
+	onInited?: () => void;
+	onOptionsUpdated?: <K extends keyof Options, V extends Options[K]>(kv: [K, V]) => void;
 	interactions: Record<string, {
 		label: string;
 		fn: () => void;
 	}>;
 	primaryInteraction?: string | null;
+	resetTemporaryState?: () => void;
 	dispose?: () => void;
 };
 
 export const WORLD_SCALE = 100;
+
+type NumberOptionSchema = {
+	type: 'number';
+	label: string;
+	min?: number;
+	max?: number;
+	step?: number;
+};
 
 type ColorOptionSchema = {
 	type: 'color';
@@ -74,13 +84,13 @@ type SelectOptionSchema = {
 	enum: string[];
 };
 
-type OptionsSchema = Record<string, ColorOptionSchema | SelectOptionSchema>;
+type OptionsSchema = Record<string, NumberOptionSchema | ColorOptionSchema | SelectOptionSchema>;
 
 type GetOptionsSchemaValues<T extends OptionsSchema> = {
-	[K in keyof T]: T[K] extends ColorOptionSchema ? [number, number, number] : T[K] extends SelectOptionSchema ? T[K]['enum'][number] : never;
+	[K in keyof T]: T[K] extends NumberOptionSchema ? number : T[K] extends ColorOptionSchema ? [number, number, number] : T[K] extends SelectOptionSchema ? T[K]['enum'][number] : never;
 };
 
-type ObjectDef<OpSc extends OptionsSchema> = {
+type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 	id: string;
 	name: string;
 	options: {
@@ -92,7 +102,7 @@ type ObjectDef<OpSc extends OptionsSchema> = {
 	createInstance: (args: {
 		room: RoomEngine;
 		root: BABYLON.Mesh;
-		options: GetOptionsSchemaValues<OpSc>;
+		options: Readonly<GetOptionsSchemaValues<OpSc>>;
 		loaderResult: BABYLON.ISceneLoaderAsyncResult;
 		meshUpdated: () => void;
 	}) => RoomObjectInstance<GetOptionsSchemaValues<OpSc>>;
@@ -176,7 +186,7 @@ export class RoomEngine {
 		objectMesh: BABYLON.Mesh;
 		objectInstance: RoomObjectInstance<any>;
 		objectState: RoomStateObject<any>;
-		objectDef: ObjectDef<any>;
+		objectDef: ObjectDef;
 	} | null>(null);
 	private time: 0 | 1 | 2 = 0; // 0: 昼, 1: 夕, 2: 夜
 	private roomCollisionMeshes: BABYLON.AbstractMesh[] = [];
@@ -207,7 +217,7 @@ export class RoomEngine {
 
 		registerBuiltInLoaders();
 
-		this.engine = new BABYLON.Engine(options.canvas, false, { alpha: false });
+		this.engine = new BABYLON.Engine(options.canvas, false, { alpha: false, antialias: false });
 		this.scene = new BABYLON.Scene(this.engine);
 		//this.scene.useRightHandedSystem = true;
 
@@ -402,6 +412,14 @@ export class RoomEngine {
 		this.zGridPreviewPlane.material = gridMaterial;
 		this.zGridPreviewPlane.isPickable = false;
 		this.zGridPreviewPlane.isVisible = false;
+
+		watch(this.isEditMode, (v) => {
+			if (v) {
+				for (const obji of this.objectInstances.values()) {
+					obji.resetTemporaryState?.();
+				}
+			}
+		});
 
 		let isDragging = false;
 
@@ -1185,6 +1203,16 @@ export class RoomEngine {
 	public changeGrabbingRotationY(delta: number) {
 		if (this.grabbingCtx == null) return;
 		this.grabbingCtx.rotation += delta;
+	}
+
+	public updateObjectOption(objectId: string, key: string, value: any) {
+		const options = this.roomState.installedObjects.find(o => o.id === objectId)?.options;
+		if (options == null) return;
+		options[key] = value;
+
+		const obji = this.objectInstances.get(objectId);
+		if (obji == null) return;
+		obji.onOptionsUpdated?.([key, value]);
 	}
 
 	public resize() {

@@ -29,16 +29,21 @@ export const tabletopDigitalClock = defineObject({
 	},
 	placement: 'top',
 	createInstance: ({ room, options, root }) => {
+		const applyBodyColor = () => {
+			const bodyMesh = root.getChildMeshes().find(m => m.name.includes('__X_BODY__')) as BABYLON.Mesh;
+			const bodyMaterial = bodyMesh.material as BABYLON.PBRMaterial;
+
+			if (options.bodyStyle === 'color') {
+				const [r, g, b] = options.bodyColor;
+				bodyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+			} else {
+				bodyMaterial.albedoTexture = room.scene.getTextureByName('tabletop_digital_clock_wood');
+			}
+		};
+
 		return {
 			onInited: () => {
-				const bodyMesh = root.getChildMeshes().find(m => m.name.includes('__X_BODY__')) as BABYLON.Mesh;
-
-				const bodyMaterial = bodyMesh.material as BABYLON.PBRMaterial;
-
-				if (options.bodyStyle === 'color') {
-					const [r, g, b] = options.bodyColor;
-					bodyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
-				}
+				applyBodyColor();
 
 				const segmentMeshes = {
 					'1a': root.getChildMeshes().find(m => m.name.includes('__TIME_7SEG_1A__')),
@@ -84,6 +89,11 @@ export const tabletopDigitalClock = defineObject({
 						mesh.isVisible = Date.now() % 2000 < 1000;
 					}
 				}, 1000));
+			},
+			onOptionsUpdated: ([k, v]) => {
+				if (k === 'bodyColor') {
+					applyBodyColor();
+				}
 			},
 			interactions: {},
 		};
