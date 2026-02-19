@@ -82,6 +82,7 @@ type GetOptionsSchemaValues<T extends OptionsSchema> = {
 
 type ObjectDef<OpSc extends OptionsSchema> = {
 	id: string;
+	name: string;
 	options: {
 		schema: OpSc;
 		default: GetOptionsSchemaValues<OpSc>;
@@ -174,6 +175,8 @@ export class RoomEngine {
 		objectId: string;
 		objectMesh: BABYLON.Mesh;
 		objectInstance: RoomObjectInstance<any>;
+		objectState: RoomStateObject<any>;
+		objectDef: ObjectDef<any>;
 	} | null>(null);
 	private time: 0 | 1 | 2 = 0; // 0: 昼, 1: 夕, 2: 夜
 	private roomCollisionMeshes: BABYLON.AbstractMesh[] = [];
@@ -544,10 +547,13 @@ export class RoomEngine {
 				for (const om of mesh.getChildMeshes()) {
 					om.renderOutline = true;
 				}
+				const state = this.roomState.installedObjects.find(o => o.id === objectId)!;
 				this.selected.value = {
 					objectId,
 					objectMesh: mesh,
 					objectInstance: this.objectInstances.get(objectId)!,
+					objectState: state,
+					objectDef: getObjectDef(state.type),
 				};
 			}
 		}

@@ -9,6 +9,7 @@ import { get7segMeshesOfCurrentTime } from '../utility.js';
 
 export const tabletopDigitalClock = defineObject({
 	id: 'tabletopDigitalClock',
+	name: 'Tabletop Digital Clock',
 	options: {
 		schema: {
 			bodyStyle: {

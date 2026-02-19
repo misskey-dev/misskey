@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 
 		<div v-if="engine != null && engine.isEditMode.value && engine.selected.value != null" class="_panel" :class="$style.overlayObjectInfoPanel">
-			{{ engine.selected.value.objectId }}
+			{{ engine.selected.value.objectDef.name }}
 		</div>
 	</div>
 
