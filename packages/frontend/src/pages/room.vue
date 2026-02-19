@@ -5,48 +5,52 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.root" class="_pageScrollable">
-	<div :class="$style.screen">
+	<div :class="[$style.screen, { [$style.zen]: isZenMode }]">
 		<canvas ref="canvas" :class="$style.canvas" @keydown="onKeydown" @wheel="onWheel"></canvas>
 
-		<div v-if="engine != null" class="_buttonsCenter" :class="$style.overlayControls">
-			<template v-if="engine.isEditMode.value">
-				<MkButton v-if="engine.ui.isGrabbing" @click="endGrabbing"><i class="ti ti-check"></i> (E)</MkButton>
-				<MkButton v-else-if="engine.ui.isGrabbingForInstall" @click="endGrabbing"><i class="ti ti-check"></i> (E)</MkButton>
-				<MkButton v-else-if="engine.selected.value != null" @click="beginSelectedInstalledObjectGrabbing"><i class="ti ti-hand-grab"></i> (E)</MkButton>
+		<template v-if="!isZenMode">
+			<div v-if="engine != null" class="_buttonsCenter" :class="$style.overlayControls">
+				<template v-if="engine.isEditMode.value">
+					<MkButton v-if="engine.ui.isGrabbing" @click="endGrabbing"><i class="ti ti-check"></i> (E)</MkButton>
+					<MkButton v-else-if="engine.ui.isGrabbingForInstall" @click="endGrabbing"><i class="ti ti-check"></i> (E)</MkButton>
+					<MkButton v-else-if="engine.selected.value != null" @click="beginSelectedInstalledObjectGrabbing"><i class="ti ti-hand-grab"></i> (E)</MkButton>
 
-				<MkButton v-if="engine.ui.isGrabbing || engine.ui.isGrabbingForInstall" @click="rotate"><i class="ti ti-view-360-arrow"></i> (R)</MkButton>
+					<MkButton v-if="engine.ui.isGrabbing || engine.ui.isGrabbingForInstall" @click="rotate"><i class="ti ti-view-360-arrow"></i> (R)</MkButton>
 
-				<MkButton :primary="engine.enableGridSnapping.value" @click="showSnappingMenu">Grid Snap: {{ engine.enableGridSnapping.value ? 'on' : 'off' }}</MkButton>
-			</template>
-			<MkButton v-if="engine.isSitting.value" @click="engine.standUp()">降りる (Q)</MkButton>
-			<template v-for="interaction in interacions" :key="interaction.id">
-				<MkButton inline @click="interaction.fn()">{{ interaction.label }}{{ interaction.isPrimary ? ' (E)' : '' }}</MkButton>
-			</template>
-		</div>
+					<MkButton :primary="engine.enableGridSnapping.value" @click="showSnappingMenu">Grid Snap: {{ engine.enableGridSnapping.value ? 'on' : 'off' }}</MkButton>
+				</template>
+				<MkButton v-if="engine.isSitting.value" @click="engine.standUp()">降りる (Q)</MkButton>
+				<template v-for="interaction in interacions" :key="interaction.id">
+					<MkButton inline @click="interaction.fn()">{{ interaction.label }}{{ interaction.isPrimary ? ' (E)' : '' }}</MkButton>
+				</template>
+			</div>
 
-		<div v-if="engine != null && engine.isEditMode.value && engine.selected.value != null" class="_panel" :class="$style.overlayObjectInfoPanel">
-			{{ engine.selected.value.objectDef.name }}
+			<div v-if="engine != null && engine.isEditMode.value && engine.selected.value != null" class="_panel" :class="$style.overlayObjectInfoPanel">
+				{{ engine.selected.value.objectDef.name }}
 
-			<div v-for="[k, s] in Object.entries(engine.selected.value.objectDef.options.schema)" :key="k">
-				<div>{{ s.label }}</div>
-				<div v-if="s.type === 'color'">
-					<MkInput :modelValue="getHex(engine.selected.value.objectState.options[k])" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) engine.updateObjectOption(engine.selected.value.objectId, k, c); }"></MkInput>
+				<div v-for="[k, s] in Object.entries(engine.selected.value.objectDef.options.schema)" :key="k">
+					<div>{{ s.label }}</div>
+					<div v-if="s.type === 'color'">
+						<MkInput :modelValue="getHex(engine.selected.value.objectState.options[k])" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) engine.updateObjectOption(engine.selected.value.objectId, k, c); }"></MkInput>
+					</div>
 				</div>
 			</div>
-		</div>
+		</template>
+	</div>
 
+	<template v-if="!isZenMode">
 		<div v-if="engine != null" class="_buttons" :class="$style.controls">
 			<!--<MkButton v-for="action in actions" :key="action.key" @click="action.fn">{{ action.label }}{{ hotkeyToLabel(action.hotkey) }}</MkButton>-->
 			<MkButton @click="toggleLight">Toggle Light</MkButton>
 			<MkButton :primary="engine.isEditMode.value" @click="toggleEditMode">Edit mode: {{ engine.isEditMode.value ? 'on' : 'off' }}</MkButton>
 			<MkButton @click="addObject">addObject</MkButton>
 		</div>
-	</div>
+	</template>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
+import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import { ensureSignin } from '@/i';
@@ -118,8 +122,12 @@ const actions = computed<Action[]>(() => {
 	return actions;
 });
 
+const isZenMode = ref(false);
+
 function onKeydown(ev: KeyboardEvent) {
 	if (engine.value == null) return;
+
+	console.log(ev.code);
 
 	if (ev.code === 'KeyE') {
 		ev.preventDefault();
@@ -149,6 +157,13 @@ function onKeydown(ev: KeyboardEvent) {
 		ev.preventDefault();
 		ev.stopPropagation();
 		toggleEditMode();
+	} else if (ev.code === 'KeyZ') {
+		ev.preventDefault();
+		ev.stopPropagation();
+		isZenMode.value = !isZenMode.value;
+		nextTick(() => {
+			resize();
+		});
 	}
 }
 
@@ -558,6 +573,9 @@ definePage(() => ({
 	position: relative;
 	width: 100%;
 	height: 90cqh;
+}
+.screen.zen {
+	height: 100%;
 }
 
 .canvas {
