@@ -10,11 +10,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<div v-if="engine != null" class="_buttonsCenter" :class="$style.overlayControls">
 			<template v-if="engine.isEditMode.value">
-				<MkButton v-if="engine.ui.isGrabbing" @click="endGrabbing">Put (E)</MkButton>
-				<MkButton v-else-if="engine.ui.isGrabbingForInstall" @click="endGrabbing">Install (E)</MkButton>
-				<MkButton v-else @click="beginSelectedInstalledObjectGrabbing">Grab (E)</MkButton>
+				<MkButton v-if="engine.ui.isGrabbing" @click="endGrabbing"><i class="ti ti-check"></i> (E)</MkButton>
+				<MkButton v-else-if="engine.ui.isGrabbingForInstall" @click="endGrabbing"><i class="ti ti-check"></i> (E)</MkButton>
+				<MkButton v-else-if="engine.selected.value != null" @click="beginSelectedInstalledObjectGrabbing"><i class="ti ti-hand-grab"></i> (E)</MkButton>
 
-				<MkButton v-if="engine.ui.isGrabbing || engine.ui.isGrabbingForInstall" @click="rotate">Rotate (R)</MkButton>
+				<MkButton v-if="engine.ui.isGrabbing || engine.ui.isGrabbingForInstall" @click="rotate"><i class="ti ti-view-360-arrow"></i> (R)</MkButton>
 
 				<MkButton :primary="engine.enableGridSnapping.value" @click="showSnappingMenu">Grid Snap: {{ engine.enableGridSnapping.value ? 'on' : 'off' }}</MkButton>
 			</template>
