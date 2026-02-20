@@ -2634,7 +2634,7 @@ _postForm:
     content_description: "Bitte geben Sie den Inhalt ein, den Sie veröffentlichen möchten."
     toolbar_title: "Symbolleiste"
     toolbar_description: "Sie können Dateien oder Umfragen anhängen, Anmerkungen und Hashtags festlegen sowie Emojis und Erwähnungen einfügen."
-    account_title: "Kontomenü"
+    account_title: "Profilmenü"
     account_description: "Du kannst das Konto wechseln, von dem du postest, und dir eine Liste der im Konto gespeicherten Entwürfe und geplanten Beiträge anzeigen lassen."
     visibility_title: "Sichtbarkeit"
     visibility_description: "Sie können den Umfang festlegen, in dem die Notizen veröffentlicht werden."
