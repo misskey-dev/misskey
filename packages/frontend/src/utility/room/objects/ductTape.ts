@@ -7,7 +7,11 @@ import { defineObject } from '../engine.js';
 
 export const ductTape = defineObject({
 	id: 'ductTape',
-	defaultOptions: {},
+	name: 'Duct Tape',
+	options: {
+		schema: {},
+		default: {},
+	},
 	placement: 'top',
 	createInstance: () => {
 		return {

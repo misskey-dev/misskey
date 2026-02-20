@@ -7,7 +7,11 @@ import { defineObject } from '../engine.js';
 
 export const keyboard = defineObject({
 	id: 'keyboard',
-	defaultOptions: {},
+	name: 'Keyboard',
+	options: {
+		schema: {},
+		default: {},
+	},
 	placement: 'top',
 	createInstance: () => {
 		return {

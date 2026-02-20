@@ -7,7 +7,11 @@ import { defineObject } from '../engine.js';
 
 export const bed = defineObject({
 	id: 'bed',
-	defaultOptions: {},
+	name: 'Bed',
+	options: {
+		schema: {},
+		default: {},
+	},
 	placement: 'floor',
 	createInstance: () => {
 		return {

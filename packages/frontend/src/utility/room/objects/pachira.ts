@@ -7,7 +7,11 @@ import { defineObject } from '../engine.js';
 
 export const pachira = defineObject({
 	id: 'pachira',
-	defaultOptions: {},
+	name: 'Pachira',
+	options: {
+		schema: {},
+		default: {},
+	},
 	placement: 'top',
 	createInstance: () => {
 		return {

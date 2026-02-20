@@ -7,7 +7,11 @@ import { defineObject } from '../engine.js';
 
 export const banknote = defineObject({
 	id: 'banknote',
-	defaultOptions: {},
+	name: 'Banknote',
+	options: {
+		schema: {},
+		default: {},
+	},
 	placement: 'top',
 	createInstance: () => {
 		return {

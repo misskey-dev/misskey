@@ -7,7 +7,11 @@ import { defineObject } from '../engine.js';
 
 export const woodSoundAbsorbingPanel = defineObject({
 	id: 'woodSoundAbsorbingPanel',
-	defaultOptions: {},
+	name: 'Wood Sound Absorbing Panel',
+	options: {
+		schema: {},
+		default: {},
+	},
 	placement: 'side',
 	createInstance: () => {
 		return {

@@ -7,7 +7,11 @@ import { defineObject } from '../engine.js';
 
 export const rolledUpPoster = defineObject({
 	id: 'rolledUpPoster',
-	defaultOptions: {},
+	name: 'Rolled-up Poster',
+	options: {
+		schema: {},
+		default: {},
+	},
 	placement: 'top',
 	createInstance: () => {
 		return {

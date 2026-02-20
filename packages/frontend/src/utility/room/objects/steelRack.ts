@@ -7,7 +7,11 @@ import { defineObject } from '../engine.js';
 
 export const steelRack = defineObject({
 	id: 'steelRack',
-	defaultOptions: {},
+	name: 'Steel Rack',
+	options: {
+		schema: {},
+		default: {},
+	},
 	placement: 'floor',
 	createInstance: () => {
 		return {

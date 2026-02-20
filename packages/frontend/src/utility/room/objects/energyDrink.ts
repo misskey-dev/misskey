@@ -7,7 +7,11 @@ import { defineObject } from '../engine.js';
 
 export const energyDrink = defineObject({
 	id: 'energyDrink',
-	defaultOptions: {},
+	name: 'Energy Drink',
+	options: {
+		schema: {},
+		default: {},
+	},
 	placement: 'top',
 	createInstance: () => {
 		return {

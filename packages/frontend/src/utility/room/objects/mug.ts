@@ -9,7 +9,11 @@ import { yuge } from '../utility.js';
 
 export const mug = defineObject({
 	id: 'mug',
-	defaultOptions: {},
+	name: 'Mug',
+	options: {
+		schema: {},
+		default: {},
+	},
 	placement: 'top',
 	createInstance: ({ room, root }) => {
 		return {

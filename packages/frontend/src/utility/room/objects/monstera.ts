@@ -7,7 +7,11 @@ import { defineObject } from '../engine.js';
 
 export const monstera = defineObject({
 	id: 'monstera',
-	defaultOptions: {},
+	name: 'Monstera',
+	options: {
+		schema: {},
+		default: {},
+	},
 	placement: 'top',
 	createInstance: () => {
 		return {

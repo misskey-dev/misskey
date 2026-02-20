@@ -7,7 +7,11 @@ import { defineObject } from '../engine.js';
 
 export const lavaLamp = defineObject({
 	id: 'lavaLamp',
-	defaultOptions: {},
+	name: 'Lava Lamp',
+	options: {
+		schema: {},
+		default: {},
+	},
 	placement: 'top',
 	createInstance: ({ room, root }) => {
 		return {

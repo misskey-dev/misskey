@@ -8,7 +8,11 @@ import { defineObject } from '../engine.js';
 
 export const ceilingFanLight = defineObject({
 	id: 'ceilingFanLight',
-	defaultOptions: {},
+	name: 'Ceiling Fan Light',
+	options: {
+		schema: {},
+		default: {},
+	},
 	placement: 'ceiling',
 	createInstance: ({ room, root }) => {
 		return {

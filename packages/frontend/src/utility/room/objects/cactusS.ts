@@ -7,7 +7,11 @@ import { defineObject } from '../engine.js';
 
 export const cactusS = defineObject({
 	id: 'cactusS',
-	defaultOptions: {},
+	name: 'Cactus S',
+	options: {
+		schema: {},
+		default: {},
+	},
 	placement: 'top',
 	createInstance: () => {
 		return {

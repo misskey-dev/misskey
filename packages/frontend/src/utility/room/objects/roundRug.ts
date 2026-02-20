@@ -7,7 +7,11 @@ import { defineObject } from '../engine.js';
 
 export const roundRug = defineObject({
 	id: 'roundRug',
-	defaultOptions: {},
+	name: 'Round Rug',
+	options: {
+		schema: {},
+		default: {},
+	},
 	placement: 'floor',
 	createInstance: () => {
 		return {

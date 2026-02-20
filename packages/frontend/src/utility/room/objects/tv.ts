@@ -7,7 +7,11 @@ import { defineObject } from '../engine.js';
 
 export const tv = defineObject({
 	id: 'tv',
-	defaultOptions: {},
+	name: 'TV',
+	options: {
+		schema: {},
+		default: {},
+	},
 	placement: 'top',
 	createInstance: () => {
 		return {

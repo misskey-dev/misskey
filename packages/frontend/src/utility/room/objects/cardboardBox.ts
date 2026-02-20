@@ -8,8 +8,18 @@ import { defineObject } from '../engine.js';
 
 export const cardboardBox = defineObject({
 	id: 'cardboardBox',
-	defaultOptions: {
-		variation: null as string | null,
+	name: 'Cardboard Box',
+	options: {
+		schema: {
+			variation: {
+				type: 'enum',
+				label: 'Variation',
+				enum: ['default', 'mikan', 'aizon'],
+			},
+		},
+		default: {
+			variation: 'default',
+		},
 	},
 	placement: 'top',
 	createInstance: ({ room, options, root }) => {

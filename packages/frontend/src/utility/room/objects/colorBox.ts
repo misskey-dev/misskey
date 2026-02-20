@@ -7,7 +7,11 @@ import { defineObject } from '../engine.js';
 
 export const colorBox = defineObject({
 	id: 'colorBox',
-	defaultOptions: {},
+	name: 'Color Box',
+	options: {
+		schema: {},
+		default: {},
+	},
 	placement: 'floor',
 	createInstance: () => {
 		return {

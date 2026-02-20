@@ -7,7 +7,11 @@ import { defineObject } from '../engine.js';
 
 export const chair = defineObject({
 	id: 'chair',
-	defaultOptions: {},
+	name: 'Chair',
+	options: {
+		schema: {},
+		default: {},
+	},
 	placement: 'floor',
 	isChair: true,
 	createInstance: () => {

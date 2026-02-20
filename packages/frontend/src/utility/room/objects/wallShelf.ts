@@ -14,7 +14,7 @@ export const wallShelf = defineObject({
 			style: {
 				type: 'enum',
 				label: 'Style',
-				enum: ['A', 'B'],
+				enum: ['A', 'B', 'C', 'D'],
 			},
 			boardStyle: {
 				type: 'enum',
@@ -37,6 +37,8 @@ export const wallShelf = defineObject({
 		const applyStyle = () => {
 			const aMeshes = root.getChildMeshes().filter(m => m.name.includes('__X_VARIATION_A__'));
 			const bMeshes = root.getChildMeshes().filter(m => m.name.includes('__X_VARIATION_B__'));
+			const cMeshes = root.getChildMeshes().filter(m => m.name.includes('__X_VARIATION_C__'));
+			const dMeshes = root.getChildMeshes().filter(m => m.name.includes('__X_VARIATION_D__'));
 
 			for (const m of aMeshes) {
 				(m as BABYLON.Mesh).setEnabled(options.style === 'A');
@@ -44,11 +46,17 @@ export const wallShelf = defineObject({
 			for (const m of bMeshes) {
 				(m as BABYLON.Mesh).setEnabled(options.style === 'B');
 			}
+			for (const m of cMeshes) {
+				(m as BABYLON.Mesh).setEnabled(options.style === 'C');
+			}
+			for (const m of dMeshes) {
+				(m as BABYLON.Mesh).setEnabled(options.style === 'D');
+			}
 		};
 
 		applyStyle();
 
-		const bodyMesh = root.getChildMeshes().find(m => m.name.includes('__X_BOARD__')) as BABYLON.Mesh;
+		const bodyMesh = root.getChildMeshes().find(m => m.name.includes('__X_BODY__')) as BABYLON.Mesh;
 		const bodyMaterial = bodyMesh.material as BABYLON.PBRMaterial;
 		const bodyTexture = bodyMaterial.albedoTexture as BABYLON.Texture;
 

@@ -7,7 +7,11 @@ import { defineObject } from '../engine.js';
 
 export const snakeplant = defineObject({
 	id: 'snakeplant',
-	defaultOptions: {},
+	name: 'Snake Plant',
+	options: {
+		schema: {},
+		default: {},
+	},
 	placement: 'top',
 	createInstance: () => {
 		return {

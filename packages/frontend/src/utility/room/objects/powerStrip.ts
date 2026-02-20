@@ -7,7 +7,11 @@ import { defineObject } from '../engine.js';
 
 export const powerStrip = defineObject({
 	id: 'powerStrip',
-	defaultOptions: {},
+	name: 'Power Strip',
+	options: {
+		schema: {},
+		default: {},
+	},
 	placement: 'top',
 	createInstance: () => {
 		return {

@@ -7,7 +7,11 @@ import { defineObject } from '../engine.js';
 
 export const openedCardboardBox = defineObject({
 	id: 'openedCardboardBox',
-	defaultOptions: {},
+	name: 'Opened Cardboard Box',
+	options: {
+		schema: {},
+		default: {},
+	},
 	placement: 'top',
 	createInstance: () => {
 		return {

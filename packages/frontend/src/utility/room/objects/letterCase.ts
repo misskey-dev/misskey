@@ -7,7 +7,11 @@ import { defineObject } from '../engine.js';
 
 export const letterCase = defineObject({
 	id: 'letterCase',
-	defaultOptions: {},
+	name: 'Letter Case',
+	options: {
+		schema: {},
+		default: {},
+	},
 	placement: 'top',
 	createInstance: () => {
 		return {

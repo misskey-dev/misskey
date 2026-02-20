@@ -7,7 +7,11 @@ import { defineObject } from '../engine.js';
 
 export const aircon = defineObject({
 	id: 'aircon',
-	defaultOptions: {},
+	name: 'Air Conditioner',
+	options: {
+		schema: {},
+		default: {},
+	},
 	placement: 'wall',
 	createInstance: () => {
 		return {

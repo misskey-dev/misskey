@@ -7,7 +7,11 @@ import { defineObject } from '../engine.js';
 
 export const facialTissue = defineObject({
 	id: 'facialTissue',
-	defaultOptions: {},
+	name: 'Facial Tissue',
+	options: {
+		schema: {},
+		default: {},
+	},
 	placement: 'top',
 	createInstance: () => {
 		return {

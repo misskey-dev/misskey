@@ -7,7 +7,11 @@ import { defineObject } from '../engine.js';
 
 export const monitor = defineObject({
 	id: 'monitor',
-	defaultOptions: {},
+	name: 'Monitor',
+	options: {
+		schema: {},
+		default: {},
+	},
 	placement: 'top',
 	createInstance: () => {
 		return {

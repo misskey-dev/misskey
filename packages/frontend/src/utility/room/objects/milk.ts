@@ -7,7 +7,11 @@ import { defineObject } from '../engine.js';
 
 export const milk = defineObject({
 	id: 'milk',
-	defaultOptions: {},
+	name: 'Milk',
+	options: {
+		schema: {},
+		default: {},
+	},
 	placement: 'top',
 	createInstance: () => {
 		return {

@@ -8,7 +8,11 @@ import { defineObject } from '../engine.js';
 
 export const wallClock = defineObject({
 	id: 'wallClock',
-	defaultOptions: {},
+	name: 'Wall Clock',
+	options: {
+		schema: {},
+		default: {},
+	},
 	placement: 'side',
 	createInstance: ({ room, root }) => {
 		return {

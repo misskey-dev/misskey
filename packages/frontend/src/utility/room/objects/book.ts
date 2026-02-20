@@ -7,8 +7,18 @@ import { defineObject } from '../engine.js';
 
 export const book = defineObject({
 	id: 'book',
-	defaultOptions: {
-		variation: null as number | null,
+	name: 'Book',
+	options: {
+		schema: {
+			variation: {
+				type: 'enum',
+				label: 'Variation',
+				enum: [0, 1],
+			},
+		},
+		default: {
+			variation: 0,
+		},
 	},
 	placement: 'top',
 	createInstance: ({ options, root }) => {

@@ -8,7 +8,11 @@ import { defineObject } from '../engine.js';
 
 export const aquarium = defineObject({
 	id: 'aquarium',
-	defaultOptions: {},
+	name: 'Aquarium',
+	options: {
+		schema: {},
+		default: {},
+	},
 	placement: 'top',
 	createInstance: ({ room, root }) => {
 		return {

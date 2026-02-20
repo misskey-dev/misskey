@@ -7,7 +7,11 @@ import { defineObject } from '../engine.js';
 
 export const tabletopCalendar = defineObject({
 	id: 'tabletopCalendar',
-	defaultOptions: {},
+	name: 'Tabletop Calendar',
+	options: {
+		schema: {},
+		default: {},
+	},
 	placement: 'top',
 	createInstance: () => {
 		return {

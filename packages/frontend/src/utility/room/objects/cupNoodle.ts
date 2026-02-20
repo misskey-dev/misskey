@@ -9,7 +9,11 @@ import { yuge } from '../utility.js';
 
 export const cupNoodle = defineObject({
 	id: 'cupNoodle',
-	defaultOptions: {},
+	name: 'Cup Noodle',
+	options: {
+		schema: {},
+		default: {},
+	},
 	placement: 'top',
 	createInstance: ({ room, root }) => {
 		return {
