@@ -34,6 +34,7 @@ import { powerStrip } from './objects/powerStrip.js';
 import { rolledUpPoster } from './objects/rolledUpPoster.js';
 import { roundRug } from './objects/roundRug.js';
 import { snakeplant } from './objects/snakeplant.js';
+import { speaker } from './objects/speaker.js';
 import { steelRack } from './objects/steelRack.js';
 import { tabletopCalendar } from './objects/tabletopCalendar.js';
 import { tabletopDigitalClock } from './objects/tabletopDigitalClock.js';
@@ -74,6 +75,7 @@ export const OBJECT_DEFS = [
 	rolledUpPoster,
 	roundRug,
 	snakeplant,
+	speaker,
 	steelRack,
 	tabletopCalendar,
 	tabletopDigitalClock,
