@@ -212,7 +212,13 @@ export class RoomEngine {
 	constructor(roomState: RoomState, options: {
 		canvas: HTMLCanvasElement;
 	}) {
-		this.roomState = roomState;
+		this.roomState = {
+			...roomState,
+			installedObjects: roomState.installedObjects.map(o => ({
+				...o,
+				options: { ...getObjectDef(o.type).options.default, ...o.options },
+			})),
+		};
 		this.canvas = options.canvas;
 
 		registerBuiltInLoaders();
@@ -904,7 +910,7 @@ export class RoomEngine {
 		const objectInstance = def.createInstance({
 			room: this,
 			root,
-			options: args.options, // todo: merge with default options
+			options: args.options,
 			loaderResult: loaderResult,
 			meshUpdated: () => {
 				meshUpdated(this.objectMeshs.get(args.id)!.getChildMeshes() as BABYLON.Mesh[]);
