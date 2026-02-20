@@ -159,7 +159,7 @@ export class RoomEngine {
 	public scene: BABYLON.Scene;
 	private shadowGenerator1: BABYLON.ShadowGenerator;
 	private shadowGenerator2: BABYLON.ShadowGenerator;
-	private camera: BABYLON.UniversalCamera;
+	public camera: BABYLON.UniversalCamera;
 	private fixedCamera: BABYLON.UniversalCamera;
 	private birdeyeCamera: BABYLON.ArcRotateCamera;
 	public intervalIds: number[] = [];

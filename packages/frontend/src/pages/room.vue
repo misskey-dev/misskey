@@ -178,6 +178,12 @@ function onWheel(ev: WheelEvent) {
 		ev.stopPropagation();
 
 		engine.value.changeGrabbingDistance(ev.deltaY * 0.025);
+	} else {
+		ev.preventDefault();
+		ev.stopPropagation();
+
+		engine.value.camera.fov += ev.deltaY * 0.001;
+		engine.value.camera.fov = Math.max(0.25, Math.min(1, engine.value.camera.fov));
 	}
 }
 
