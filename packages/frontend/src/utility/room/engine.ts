@@ -307,11 +307,11 @@ export class RoomEngine {
 		this.roomLight.shadowMinZ = 10/*cm*/;
 		this.roomLight.shadowMaxZ = 300/*cm*/;
 
-		this.shadowGenerator1 = new BABYLON.ShadowGenerator(2048, this.roomLight);
+		this.shadowGenerator1 = new BABYLON.ShadowGenerator(4096, this.roomLight);
 		this.shadowGenerator1.forceBackFacesOnly = true;
 		this.shadowGenerator1.bias = 0.0001;
 		this.shadowGenerator1.usePercentageCloserFiltering = true;
-		this.shadowGenerator1.useContactHardeningShadow = true;
+		//this.shadowGenerator1.useContactHardeningShadow = true;
 
 		const sunLight = new BABYLON.DirectionalLight('sunLight', new BABYLON.Vector3(0.2, -1, -1), this.scene);
 		sunLight.position = new BABYLON.Vector3(-20, 1000, 1000);
@@ -320,7 +320,7 @@ export class RoomEngine {
 		sunLight.shadowMinZ = 1000/*cm*/;
 		sunLight.shadowMaxZ = 2000/*cm*/;
 
-		this.shadowGenerator2 = new BABYLON.ShadowGenerator(4092, sunLight);
+		this.shadowGenerator2 = new BABYLON.ShadowGenerator(4096, sunLight);
 		this.shadowGenerator2.forceBackFacesOnly = true;
 		this.shadowGenerator2.bias = 0.0001;
 		this.shadowGenerator2.usePercentageCloserFiltering = true;

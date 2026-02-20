@@ -17,7 +17,7 @@ export const colorBox = defineObject({
 			},
 		},
 		default: {
-			color: [1, 1, 1],
+			color: [0.75, 0.75, 0.75],
 		},
 	},
 	placement: 'floor',
