@@ -13,7 +13,7 @@ export const tabletopDigitalClock = defineObject({
 	options: {
 		schema: {
 			bodyStyle: {
-				type: 'select',
+				type: 'enum',
 				label: 'Body Style',
 				enum: ['color', 'wood'],
 			},
@@ -37,7 +37,7 @@ export const tabletopDigitalClock = defineObject({
 				const [r, g, b] = options.bodyColor;
 				bodyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
 			} else {
-				bodyMaterial.albedoTexture = room.scene.getTextureByName('tabletop_digital_clock_wood');
+
 			}
 		};
 

@@ -39,6 +39,7 @@ import { tabletopCalendar } from './objects/tabletopCalendar.js';
 import { tabletopDigitalClock } from './objects/tabletopDigitalClock.js';
 import { tv } from './objects/tv.js';
 import { wallClock } from './objects/wallClock.js';
+import { wallShelf } from './objects/wallShelf.js';
 import { woodSoundAbsorbingPanel } from './objects/woodSoundAbsorbingPanel.js';
 
 export const OBJECT_DEFS = [
@@ -78,6 +79,7 @@ export const OBJECT_DEFS = [
 	tabletopDigitalClock,
 	tv,
 	wallClock,
+	wallShelf,
 	woodSoundAbsorbingPanel,
 ];
 

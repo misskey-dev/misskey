@@ -25,7 +25,7 @@ import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
 import { BoundingBoxRenderer } from '@babylonjs/core/Rendering/boundingBoxRenderer';
 import { GridMaterial } from '@babylonjs/materials';
 import { ShowInspector } from '@babylonjs/inspector';
-import { reactive, ref, shallowRef, watch } from 'vue';
+import { reactive, ref, shallowRef, triggerRef, watch } from 'vue';
 import { genId } from '../id.js';
 import { getObjectDef } from './object-defs.js';
 import { HorizontalCameraKeyboardMoveInput } from './utility.js';
@@ -78,16 +78,16 @@ type ColorOptionSchema = {
 	label: string;
 };
 
-type SelectOptionSchema = {
-	type: 'select';
+type EnumOptionSchema = {
+	type: 'enum';
 	label: string;
 	enum: string[];
 };
 
-type OptionsSchema = Record<string, NumberOptionSchema | ColorOptionSchema | SelectOptionSchema>;
+type OptionsSchema = Record<string, NumberOptionSchema | ColorOptionSchema | EnumOptionSchema>;
 
 type GetOptionsSchemaValues<T extends OptionsSchema> = {
-	[K in keyof T]: T[K] extends NumberOptionSchema ? number : T[K] extends ColorOptionSchema ? [number, number, number] : T[K] extends SelectOptionSchema ? T[K]['enum'][number] : never;
+	[K in keyof T]: T[K] extends NumberOptionSchema ? number : T[K] extends ColorOptionSchema ? [number, number, number] : T[K] extends EnumOptionSchema ? T[K]['enum'][number] : never;
 };
 
 type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
@@ -1213,6 +1213,10 @@ export class RoomEngine {
 		const obji = this.objectInstances.get(objectId);
 		if (obji == null) return;
 		obji.onOptionsUpdated?.([key, value]);
+
+		if (this.selected.value?.objectId === objectId) {
+			triggerRef(this.selected);
+		}
 	}
 
 	public resize() {
