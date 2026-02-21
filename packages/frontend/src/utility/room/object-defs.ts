@@ -30,6 +30,7 @@ import { monstera } from './objects/monstera.js';
 import { mug } from './objects/mug.js';
 import { openedCardboardBox } from './objects/openedCardboardBox.js';
 import { pachira } from './objects/pachira.js';
+import { petBottle } from './objects/petBottle.js';
 import { plant } from './objects/plant.js';
 import { plant2 } from './objects/plant2.js';
 import { powerStrip } from './objects/powerStrip.js';
@@ -74,6 +75,7 @@ export const OBJECT_DEFS = [
 	mug,
 	openedCardboardBox,
 	pachira,
+	petBottle,
 	plant,
 	plant2,
 	powerStrip,
