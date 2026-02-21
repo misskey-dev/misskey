@@ -939,16 +939,6 @@ export class RoomEngine {
 			om.renderOutline = false;
 		}
 
-		const placement = getObjectDef(selectedObject.metadata.objectType).placement;
-
-		if (placement === 'top') {
-			// stickyな場合にsticky先とのレイの距離が0になりstickyされていない初期状態でgrabbingが始まってしまうのでちょっと浮かす
-			selectedObject.position.y += 1/*cm*/;
-		}
-
-		const distance = BABYLON.Vector3.Distance(this.camera.position, selectedObject.position);
-		const ghost = this.createGhost(selectedObject);
-
 		// 子から先に適用していく
 		const setStickyParentRecursively = (mesh: BABYLON.AbstractMesh) => {
 			const stickyObjectIds = Array.from(this.roomState.installedObjects.filter(o => o.sticky === mesh.metadata.objectId)).map(o => o.id);
@@ -969,6 +959,16 @@ export class RoomEngine {
 			}
 		};
 		collectDescendantStickyObjectIds(selectedObject.metadata.objectId);
+
+		const placement = getObjectDef(selectedObject.metadata.objectType).placement;
+
+		if (placement === 'top') {
+			// stickyな場合にsticky先とのレイの距離が0になりstickyされていない初期状態でgrabbingが始まってしまうのでちょっと浮かす
+			selectedObject.position.y += 1/*cm*/;
+		}
+
+		const distance = BABYLON.Vector3.Distance(this.camera.position, selectedObject.position);
+		const ghost = this.createGhost(selectedObject);
 
 		const dir = this.camera.getDirection(BABYLON.Axis.Z).scale(this.scene.useRightHandedSystem ? -1 : 1);
 
