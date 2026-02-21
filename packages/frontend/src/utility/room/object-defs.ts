@@ -23,6 +23,7 @@ import { keyboard } from './objects/keyboard.js';
 import { lavaLamp } from './objects/lavaLamp.js';
 import { letterCase } from './objects/letterCase.js';
 import { milk } from './objects/milk.js';
+import { mixer } from './objects/mixer.js';
 import { monitor } from './objects/monitor.js';
 import { monstera } from './objects/monstera.js';
 import { mug } from './objects/mug.js';
@@ -64,6 +65,7 @@ export const OBJECT_DEFS = [
 	lavaLamp,
 	letterCase,
 	milk,
+	mixer,
 	monitor,
 	monstera,
 	mug,

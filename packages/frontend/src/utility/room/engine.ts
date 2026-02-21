@@ -1102,19 +1102,29 @@ export class RoomEngine {
 		}
 	}
 
-	private createGhost(mesh: BABYLON.Mesh) {
+	private createGhost(mesh: BABYLON.Mesh): BABYLON.Mesh {
 		const ghost = mesh.clone('ghost', null, false)!;
 		ghost.metadata = { isGhost: true };
+
+		const materials = new WeakMap<BABYLON.Material, BABYLON.Material>();
+
 		for (const m of ghost.getChildMeshes()) {
 			m.metadata = { isGhost: true };
-			if (m.material) {
-				const mat = m.material.clone(`${m.material.name}_ghost`);
-				mat.alpha = 0.3;
-				mat.transparencyMode = BABYLON.Material.MATERIAL_ALPHABLEND;
-				m.material = mat;
-			}
 			m.checkCollisions = false;
+
+			if (m.material) {
+				if (materials.has(m.material)) {
+					m.material = materials.get(m.material)!;
+				} else {
+					const mat = m.material.clone(`${m.material.name}_ghost`);
+					mat.alpha = 0.3;
+					mat.transparencyMode = BABYLON.Material.MATERIAL_ALPHABLEND;
+					materials.set(m.material, mat);
+					m.material = mat;
+				}
+			}
 		}
+
 		return ghost;
 	}
 
