@@ -311,6 +311,7 @@ export class RoomEngine {
 		this.shadowGenerator1.forceBackFacesOnly = true;
 		this.shadowGenerator1.bias = 0.0001;
 		this.shadowGenerator1.usePercentageCloserFiltering = true;
+		this.shadowGenerator1.filteringQuality = BABYLON.ShadowGenerator.QUALITY_HIGH;
 		//this.shadowGenerator1.useContactHardeningShadow = true;
 
 		const sunLight = new BABYLON.DirectionalLight('sunLight', new BABYLON.Vector3(0.2, -1, -1), this.scene);

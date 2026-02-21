@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { a4Case } from './objects/a4Case.js';
 import { aircon } from './objects/aircon.js';
 import { aquarium } from './objects/aquarium.js';
 import { banknote } from './objects/banknote.js';
@@ -45,6 +46,7 @@ import { wallShelf } from './objects/wallShelf.js';
 import { woodSoundAbsorbingPanel } from './objects/woodSoundAbsorbingPanel.js';
 
 export const OBJECT_DEFS = [
+	a4Case,
 	aircon,
 	aquarium,
 	banknote,
