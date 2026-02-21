@@ -35,6 +35,7 @@ import { plant2 } from './objects/plant2.js';
 import { powerStrip } from './objects/powerStrip.js';
 import { rolledUpPoster } from './objects/rolledUpPoster.js';
 import { roundRug } from './objects/roundRug.js';
+import { router } from './objects/router.js';
 import { snakeplant } from './objects/snakeplant.js';
 import { speaker } from './objects/speaker.js';
 import { steelRack } from './objects/steelRack.js';
@@ -78,6 +79,7 @@ export const OBJECT_DEFS = [
 	powerStrip,
 	rolledUpPoster,
 	roundRug,
+	router,
 	snakeplant,
 	speaker,
 	steelRack,

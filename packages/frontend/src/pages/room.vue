@@ -312,6 +312,13 @@ onMounted(() => {
 			sticky: 'j',
 			options: {},
 		}, {
+			id: '8ce7a065-120d-479f-9153-aa3b6a1fd4a7',
+			type: 'router',
+			position: [130, 142, 135],
+			rotation: [0, Math.PI / 2, 0],
+			sticky: 'j',
+			options: {},
+		}, {
 			id: 'j4',
 			type: 'letterCase',
 			position: [130, 59, 125],
