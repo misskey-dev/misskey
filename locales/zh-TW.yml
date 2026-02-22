@@ -2361,7 +2361,7 @@ _timeIn:
   minutes: "{n}分鐘後"
   hours: "{n}小時後"
   days: "{n}天後"
-  weeks: "{n}周後"
+  weeks: "{n}週後"
   months: "{n}個月後"
   years: "{n}年後"
 _time:
