@@ -560,7 +560,7 @@ function addObject(ev: PointerEvent) {
 }
 
 function getHex(c: [number, number, number]) {
-	return `#${c.map(x => (x * 255).toString(16).padStart(2, '0')).join('')}`;
+	return `#${c.map(x => Math.round(x * 255).toString(16).padStart(2, '0')).join('')}`;
 }
 
 function getRgb(hex: string | number): [number, number, number] | null {
