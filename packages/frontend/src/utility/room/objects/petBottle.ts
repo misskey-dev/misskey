@@ -15,24 +15,36 @@ export const petBottle = defineObject({
 				type: 'boolean',
 				label: 'With Cap',
 			},
+			empty: {
+				type: 'boolean',
+				label: 'Empty',
+			},
 		},
 		default: {
 			withCap: true,
+			empty: false,
 		},
 	},
 	placement: 'top',
 	createInstance: ({ root, options }) => {
 		const capMesh = root.getChildMeshes().find(m => m.name.includes('__X_CAP__')) as BABYLON.Mesh;
+		const liquidMesh = root.getChildMeshes().find(m => m.name.includes('__X_LIQUID__')) as BABYLON.Mesh;
 
 		const applyWithCap = () => {
 			capMesh.setEnabled(options.withCap);
 		};
 
+		const applyEmpty = () => {
+			liquidMesh.setEnabled(!options.empty);
+		};
+
 		applyWithCap();
+		applyEmpty();
 
 		return {
 			onOptionsUpdated: ([k, v]) => {
 				applyWithCap();
+				applyEmpty();
 			},
 			interactions: {},
 		};

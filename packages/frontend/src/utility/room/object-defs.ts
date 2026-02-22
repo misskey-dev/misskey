@@ -6,6 +6,7 @@
 import { a4Case } from './objects/a4Case.js';
 import { aircon } from './objects/aircon.js';
 import { aquarium } from './objects/aquarium.js';
+import { aromaReadDiffuser } from './objects/aromaReadDiffuser.js';
 import { banknote } from './objects/banknote.js';
 import { bed } from './objects/bed.js';
 import { blind } from './objects/blind.js';
@@ -30,6 +31,7 @@ import { monstera } from './objects/monstera.js';
 import { mug } from './objects/mug.js';
 import { openedCardboardBox } from './objects/openedCardboardBox.js';
 import { pachira } from './objects/pachira.js';
+import { pc } from './objects/pc.js';
 import { petBottle } from './objects/petBottle.js';
 import { plant } from './objects/plant.js';
 import { plant2 } from './objects/plant2.js';
@@ -51,6 +53,7 @@ export const OBJECT_DEFS = [
 	a4Case,
 	aircon,
 	aquarium,
+	aromaReadDiffuser,
 	banknote,
 	bed,
 	blind,
@@ -75,6 +78,7 @@ export const OBJECT_DEFS = [
 	mug,
 	openedCardboardBox,
 	pachira,
+	pc,
 	petBottle,
 	plant,
 	plant2,
