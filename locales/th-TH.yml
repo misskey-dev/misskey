@@ -2987,7 +2987,7 @@ _fileViewer:
   uploadedAt: "วันที่เข้าร่วม"
   attachedNotes: "โน้ตที่แนบมาด้วย"
   usage: "ใช้แล้ว"
-  thisPageCanBeSeenFromTheAuthor: "หน้าเพจนี้จะสามารถปรากฏได้โดยผู้ใช้ที่อัปโหลดไฟล์นี้เท่านั้น"
+  thisPageCanBeSeenFromTheAuthor: "เฉพาะผู้ใช้ที่อัปโหลดไฟล์นี้เท่านั้นที่สามารถดูหน้าเพจนี้ได้"
 _externalResourceInstaller:
   title: "ติดตั้งจากไซต์ภายนอก"
   checkVendorBeforeInstall: "โปรดตรวจสอบให้แน่ใจว่าแหล่งแจกหน่ายมีความน่าเชื่อถือก่อนทำการติดตั้ง"
