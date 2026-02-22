@@ -38,9 +38,9 @@
 	},
 	"devDependencies": {
 		"@microsoft/api-extractor": "7.56.3",
-		"@types/node": "24.10.12",
-		"@typescript-eslint/eslint-plugin": "8.54.0",
-		"@typescript-eslint/parser": "8.54.0",
+		"@types/node": "24.10.13",
+		"@typescript-eslint/eslint-plugin": "8.55.0",
+		"@typescript-eslint/parser": "8.55.0",
 		"@vitest/coverage-v8": "4.0.18",
 		"esbuild": "0.27.3",
 		"execa": "9.6.1",
