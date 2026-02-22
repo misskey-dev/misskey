@@ -73,6 +73,11 @@ type NumberOptionSchema = {
 	step?: number;
 };
 
+type BooleanOptionSchema = {
+	type: 'boolean';
+	label: string;
+};
+
 type ColorOptionSchema = {
 	type: 'color';
 	label: string;
@@ -84,10 +89,10 @@ type EnumOptionSchema = {
 	enum: string[];
 };
 
-type OptionsSchema = Record<string, NumberOptionSchema | ColorOptionSchema | EnumOptionSchema>;
+type OptionsSchema = Record<string, NumberOptionSchema | BooleanOptionSchema | ColorOptionSchema | EnumOptionSchema>;
 
 type GetOptionsSchemaValues<T extends OptionsSchema> = {
-	[K in keyof T]: T[K] extends NumberOptionSchema ? number : T[K] extends ColorOptionSchema ? [number, number, number] : T[K] extends EnumOptionSchema ? T[K]['enum'][number] : never;
+	[K in keyof T]: T[K] extends NumberOptionSchema ? number : T[K] extends BooleanOptionSchema ? boolean : T[K] extends ColorOptionSchema ? [number, number, number] : T[K] extends EnumOptionSchema ? T[K]['enum'][number] : never;
 };
 
 type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
@@ -496,62 +501,6 @@ export class RoomEngine {
 
 		//const sphere = BABYLON.MeshBuilder.CreateSphere('sphere', { diameter: 1/*cm*/ }, this.scene);
 
-		// update tv texure
-		const tvProgramId = 'shopping';
-		const tvProgram = TV_PROGRAMS[tvProgramId];
-		const tvScreenMaterial = new BABYLON.StandardMaterial('tvScreenMaterial', this.scene);
-		tvScreenMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
-		tvScreenMaterial.ambientColor = new BABYLON.Color3(0, 0, 0);
-		tvScreenMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-		tvScreenMaterial.emissiveTexture = new BABYLON.Texture(`/client-assets/room/tv/${tvProgramId}/${tvProgramId}.png`, this.scene, false, false);
-		tvScreenMaterial.emissiveTexture.level = 0.5;
-		tvScreenMaterial.emissiveColor = new BABYLON.Color3(0.4, 0.4, 0.4);
-		tvScreenMaterial.freeze();
-
-		const applyTvTexture = (tlIndex: number) => {
-			const [index, duration] = tvProgram.timeline[tlIndex];
-			const tvIds = this.roomState.installedObjects.entries().filter(([id, o]) => o.type === 'tv').map(([id, o]) => o.id);
-
-			for (const tvId of tvIds) {
-				const tvMesh = this.objectMeshs.get(tvId);
-				const screenMesh = tvMesh?.getChildMeshes().find(m => m.name.includes('__TV_SCREEN__'))! as BABYLON.Mesh;
-				screenMesh.material = tvScreenMaterial;
-
-				const aspect = 16 / 9;
-
-				const x = index % tvProgram.textureColumns;
-				const y = Math.floor(index / tvProgram.textureColumns);
-
-				const ax = x / tvProgram.textureColumns;
-				const ay = y / tvProgram.textureRows / aspect;
-				const bx = (x + 1) / tvProgram.textureColumns;
-				const by = ay;
-				const cx = ax;
-				const cy = (y + 1) / tvProgram.textureRows / aspect;
-				const dx = bx;
-				const dy = cy;
-
-				const uvs = screenMesh.getVerticesData(BABYLON.VertexBuffer.UVKind);
-				uvs[0] = dx;
-				uvs[1] = dy;
-				uvs[2] = bx;
-				uvs[3] = by;
-				uvs[4] = cx;
-				uvs[5] = cy;
-				uvs[6] = ax;
-				uvs[7] = ay;
-				screenMesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
-			}
-
-			const timeoutId = window.setTimeout(() => {
-				this.timeoutIds = this.timeoutIds.filter(id => id !== timeoutId);
-				applyTvTexture((tlIndex + 1) % tvProgram.timeline.length);
-			}, duration);
-			this.timeoutIds.push(timeoutId);
-		};
-
-		applyTvTexture(0);
-
 		this.engine.runRenderLoop(() => {
 			this.scene.render();
 		});
@@ -873,10 +822,6 @@ export class RoomEngine {
 
 				mesh.metadata = metadata;
 				mesh.checkCollisions = !hasCollisionMesh;
-
-				if (mesh.name.includes('__TV_SCREEN__')) {
-					mesh.markVerticesDataAsUpdatable(BABYLON.VertexBuffer.UVKind, true);
-				}
 
 				if (mesh.name.includes('__COLLISION__')) {
 					mesh.receiveShadows = false;
@@ -1252,40 +1197,3 @@ export class RoomEngine {
 		this.engine.dispose();
 	}
 }
-
-const TV_PROGRAMS = {
-	shopping: {
-		textureColumns: 8,
-		textureRows: 8,
-		timeline: [
-			[0, 500],
-			[1, 500],
-			[0, 500],
-			[1, 500],
-			[0, 500],
-			[1, 500],
-			[2, 500],
-			[3, 500],
-			[2, 500],
-			[3, 500],
-			[4, 500],
-			[5, 500],
-			[4, 500],
-			[5, 500],
-			[6, 500],
-			[7, 500],
-			[8, 500],
-			[9, 500],
-			[8, 500],
-			[9, 500],
-			[2, 500],
-			[3, 500],
-			[2, 500],
-			[3, 500],
-		],
-	},
-} satisfies Record<string, {
-	textureColumns: number;
-	textureRows: number;
-	timeline: [index: number, duration: number][];
-}>;

@@ -33,6 +33,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div v-if="s.type === 'color'">
 						<MkInput :modelValue="getHex(engine.selected.value.objectState.options[k])" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) engine.updateObjectOption(engine.selected.value.objectId, k, c); }"></MkInput>
 					</div>
+					<div v-else-if="s.type === 'boolean'">
+						<MkSwitch :modelValue="engine.selected.value.objectState.options[k]" @update:modelValue="v => engine.updateObjectOption(engine.selected.value.objectId, k, v)"></MkSwitch>
+					</div>
 					<div v-else-if="s.type === 'enum'">
 						<MkSelect :items="s.enum.map(e => ({ label: e, value: e }))" :modelValue="engine.selected.value.objectState.options[k]" @update:modelValue="v => engine.updateObjectOption(engine.selected.value.objectId, k, v)"></MkSelect>
 					</div>
@@ -63,6 +66,7 @@ import { getObjectDef, OBJECT_DEFS } from '@/utility/room/object-defs.js';
 import MkSelect from '@/components/MkSelect.vue';
 import * as os from '@/os.js';
 import MkInput from '@/components/MkInput.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 
 const canvas = useTemplateRef('canvas');
 

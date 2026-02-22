@@ -3,7 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../engine.js';
+import { initTv } from '../utility.js';
 
 export const tv = defineObject({
 	id: 'tv',
@@ -13,7 +15,12 @@ export const tv = defineObject({
 		default: {},
 	},
 	placement: 'top',
-	createInstance: () => {
+	createInstance: ({ room, root }) => {
+		const screenMesh = root.getChildMeshes().find(m => m.name.includes('__TV_SCREEN__')) as BABYLON.Mesh;
+		screenMesh.markVerticesDataAsUpdatable(BABYLON.VertexBuffer.UVKind, true);
+
+		initTv(room, screenMesh);
+
 		return {
 			interactions: {},
 		};

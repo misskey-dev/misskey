@@ -238,3 +238,96 @@ export function createOverridedStates<T extends Record<string, (() => any)>>(sta
 
 	return result;
 }
+
+const TV_PROGRAMS = {
+	shopping: {
+		textureColumns: 8,
+		textureRows: 8,
+		timeline: [
+			[0, 500],
+			[1, 500],
+			[0, 500],
+			[1, 500],
+			[0, 500],
+			[1, 500],
+			[2, 500],
+			[3, 500],
+			[2, 500],
+			[3, 500],
+			[4, 500],
+			[5, 500],
+			[4, 500],
+			[5, 500],
+			[6, 500],
+			[7, 500],
+			[8, 500],
+			[9, 500],
+			[8, 500],
+			[9, 500],
+			[2, 500],
+			[3, 500],
+			[2, 500],
+			[3, 500],
+		],
+	},
+} satisfies Record<string, {
+	textureColumns: number;
+	textureRows: number;
+	timeline: [index: number, duration: number][];
+}>;
+
+let tvScreenMaterial: BABYLON.StandardMaterial | null = null;
+
+export function initTv(room: RoomEngine, screenMesh: BABYLON.Mesh) {
+	const tvProgramId = 'shopping';
+	const tvProgram = TV_PROGRAMS[tvProgramId];
+	if (tvScreenMaterial == null) {
+		tvScreenMaterial = new BABYLON.StandardMaterial('tvScreenMaterial', room.scene);
+		tvScreenMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
+		tvScreenMaterial.ambientColor = new BABYLON.Color3(0, 0, 0);
+		tvScreenMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+		tvScreenMaterial.emissiveTexture = new BABYLON.Texture(`/client-assets/room/tv/${tvProgramId}/${tvProgramId}.png`, room.scene, false, false);
+		tvScreenMaterial.emissiveTexture.level = 0.5;
+		tvScreenMaterial.emissiveColor = new BABYLON.Color3(0.4, 0.4, 0.4);
+		tvScreenMaterial.freeze();
+	}
+
+	const applyTvTexture = (tlIndex: number) => {
+		const [index, duration] = tvProgram.timeline[tlIndex];
+
+		screenMesh.material = tvScreenMaterial;
+
+		const aspect = 16 / 9;
+
+		const x = index % tvProgram.textureColumns;
+		const y = Math.floor(index / tvProgram.textureColumns);
+
+		const ax = x / tvProgram.textureColumns;
+		const ay = y / tvProgram.textureRows / aspect;
+		const bx = (x + 1) / tvProgram.textureColumns;
+		const by = ay;
+		const cx = ax;
+		const cy = (y + 1) / tvProgram.textureRows / aspect;
+		const dx = bx;
+		const dy = cy;
+
+		const uvs = screenMesh.getVerticesData(BABYLON.VertexBuffer.UVKind);
+		uvs[0] = dx;
+		uvs[1] = dy;
+		uvs[2] = bx;
+		uvs[3] = by;
+		uvs[4] = cx;
+		uvs[5] = cy;
+		uvs[6] = ax;
+		uvs[7] = ay;
+		screenMesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
+
+		const timeoutId = window.setTimeout(() => {
+			room.timeoutIds = room.timeoutIds.filter(id => id !== timeoutId);
+			applyTvTexture((tlIndex + 1) % tvProgram.timeline.length);
+		}, duration);
+		room.timeoutIds.push(timeoutId);
+	};
+
+	applyTvTexture(0);
+}
