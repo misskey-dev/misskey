@@ -67,10 +67,10 @@ export const tabletopDigitalClock = defineObject({
 
 		const colonMeshes = root.getChildMeshes().filter(m => m.name.includes('__TIME_7SEG_COLON__'));
 
-		const applyBodyColor = () => {
-			const bodyMesh = root.getChildMeshes().find(m => m.name.includes('__X_BODY__')) as BABYLON.Mesh;
-			const bodyMaterial = bodyMesh.material as BABYLON.PBRMaterial;
+		const bodyMesh = root.getChildMeshes().find(m => m.name.includes('__X_BODY__')) as BABYLON.Mesh;
+		const bodyMaterial = bodyMesh.material as BABYLON.PBRMaterial;
 
+		const applyBodyColor = () => {
 			if (options.bodyStyle === 'color') {
 				const [r, g, b] = options.bodyColor;
 				bodyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
