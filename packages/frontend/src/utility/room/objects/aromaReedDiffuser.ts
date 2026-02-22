@@ -6,9 +6,9 @@
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../engine.js';
 
-export const aromaReadDiffuser = defineObject({
-	id: 'aromaReadDiffuser',
-	name: 'Aroma Read Diffuser',
+export const aromaReedDiffuser = defineObject({
+	id: 'aromaReedDiffuser',
+	name: 'Aroma Reed Diffuser',
 	options: {
 		schema: {
 			bottleColor: {

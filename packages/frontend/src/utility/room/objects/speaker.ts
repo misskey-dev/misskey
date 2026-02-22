@@ -11,30 +11,45 @@ export const speaker = defineObject({
 	name: 'Speaker',
 	options: {
 		schema: {
-			color: {
+			outerColor: {
 				type: 'color',
-				label: 'Color',
+				label: 'Outer Color',
+			},
+			innerColor: {
+				type: 'color',
+				label: 'Inner Color',
 			},
 		},
 		default: {
-			color: [0, 0, 0],
+			outerColor: [0.45, 0.8, 0],
+			innerColor: [0, 0, 0],
 		},
 	},
 	placement: 'top',
 	createInstance: ({ options, root }) => {
-		const bodyMesh = root.getChildMeshes().find(m => m.name.includes('__X_BODY__')) as BABYLON.Mesh;
-		const bodyMaterial = bodyMesh.material as BABYLON.PBRMaterial;
+		const outerMesh = root.getChildMeshes().find(m => m.name.includes('__X_COVER__')) as BABYLON.Mesh;
+		const outerMaterial = outerMesh.material as BABYLON.PBRMaterial;
 
-		const applyColor = () => {
-			const [r, g, b] = options.color;
-			bodyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const innerMesh = root.getChildMeshes().find(m => m.name.includes('__X_BODY__')) as BABYLON.Mesh;
+		const innerMaterial = innerMesh.material as BABYLON.PBRMaterial;
+
+		const applyOuterColor = () => {
+			const [r, g, b] = options.outerColor;
+			outerMaterial.albedoColor = new BABYLON.Color3(r, g, b);
 		};
 
-		applyColor();
+		const applyInnerColor = () => {
+			const [r, g, b] = options.innerColor;
+			innerMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		};
+
+		applyOuterColor();
+		applyInnerColor();
 
 		return {
 			onOptionsUpdated: ([k, v]) => {
-				applyColor();
+				applyOuterColor();
+				applyInnerColor();
 			},
 			interactions: {},
 		};
