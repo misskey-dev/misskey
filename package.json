@@ -69,7 +69,7 @@
 		"@types/node": "24.10.13",
 		"@typescript-eslint/eslint-plugin": "8.55.0",
 		"@typescript-eslint/parser": "8.55.0",
-		"@typescript/native-preview": "7.0.0-dev.20260215.1",
+		"@typescript/native-preview": "7.0.0-dev.20260116.1",
 		"cross-env": "10.1.0",
 		"cypress": "15.10.0",
 		"eslint": "9.39.2",
