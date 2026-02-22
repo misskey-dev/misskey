@@ -31,6 +31,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton @click="os.alert({ type: 'success', title: 'Success', text: 'success' })">Success</MkButton>
 				<MkButton @click="os.alert({ type: 'question', title: 'Question', text: 'question' })">Question</MkButton>
 			</div>
+
+			<MkButton @click="select">select</MkButton>
 		</div>
 	</div>
 </PageWithHeader>
@@ -73,6 +75,28 @@ const {
 	],
 	initialValue: 'info',
 });
+
+function select(ev: PointerEvent) {
+	os.popupMenu([
+		{ type: 'parent', text: 'Option 1', children: [
+			{ text: 'Option 1-1', action: () => {} },
+			{ text: 'Option 1-2', action: () => {} },
+			{ text: 'Option 1-3', action: () => {} },
+		] },
+		{ type: 'parent', text: 'Option 2', children: [
+			{ text: 'Option 1-1', action: () => {} },
+			{ text: 'Option 1-2', action: () => {} },
+			{ text: 'Option 1-3', action: () => {} },
+		] },
+		{ type: 'parent', text: 'Option 3', children: [
+			{ text: 'Option 1-1', action: () => {} },
+			{ text: 'Option 1-2', action: () => {} },
+			{ text: 'Option 1-3', action: () => {} },
+		] },
+	], ev.target).then((value) => {
+		console.log('Selected:', value);
+	});
+}
 
 definePage(() => ({
 	title: 'DEBUG ROOM',

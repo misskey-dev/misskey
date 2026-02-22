@@ -169,6 +169,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				tabindex="0"
 				:class="['_button', $style.item, $style.parent, { [$style.active]: childShowingItem === item }]"
 				@mouseenter.prevent="preferClick ? null : showChildren(item, $event)"
+				@mousemove="parentMouseMove(item, $event)"
 				@keydown.enter.prevent="preferClick ? null : showChildren(item, $event)"
 				@click.prevent="!preferClick ? null : showChildren(item, $event)"
 			>
@@ -207,14 +208,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span>{{ i18n.ts.none }}</span>
 		</span>
 	</div>
+
 	<div v-if="childMenu">
 		<XChild ref="child" :items="childMenu" :anchorElement="childTarget!" :rootElement="itemsEl!" @actioned="childActioned" @closed="closeChild"/>
 	</div>
+
+	<div :class="$style.guard" :style="{ clipPath: `polygon(${guardX * 100}% ${guardY * 100}%, 100% ${guardEndY1 * 100}%, 100% ${guardEndY2 * 100}%)` }"></div>
 </div>
 </template>
 
 <script lang="ts">
 import { computed, defineAsyncComponent, inject, nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, unref, watch, shallowRef } from 'vue';
+import { parent } from 'happy-dom/lib/PropertySymbol.js';
 import type { MenuItem, InnerMenuItem, MenuPending, MenuAction, MenuSwitch, MenuRadio, MenuRadioOption, MenuParent } from '@/types/menu.js';
 import type { Keymap } from '@/utility/hotkey.js';
 import MkSwitchButton from '@/components/MkSwitch.button.vue';
@@ -472,6 +477,26 @@ onMounted(() => {
 onBeforeUnmount(() => {
 	disposeHandlers();
 });
+
+const guardX = ref(0);
+const guardY = ref(0);
+const guardEndY1 = ref(0);
+const guardEndY2 = ref(0);
+
+function parentMouseMove(item: MenuParent, ev: MouseEvent) {
+	if (child.value == null) return;
+
+	const itemBounding = (ev.currentTarget as HTMLElement).getBoundingClientRect();
+	const rootBounding = itemsEl.value!.getBoundingClientRect();
+	const childBounding = child.value.rootElement.getBoundingClientRect();
+
+	const relativeMouseX = ev.clientX - itemBounding.left;
+	const relativeMouseY = ev.clientY - rootBounding.top;
+	guardX.value = (relativeMouseX - 5) / itemBounding.width;
+	guardY.value = (relativeMouseY) / rootBounding.height;
+	guardEndY1.value = (childBounding.top - rootBounding.top) / rootBounding.height;
+	guardEndY2.value = (childBounding.bottom - rootBounding.top) / rootBounding.height;
+}
 </script>
 
 <style lang="scss" module>
@@ -743,5 +768,15 @@ onBeforeUnmount(() => {
 			background-color: var(--MI_THEME-accent);
 		}
 	}
+}
+
+.guard {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	cursor: pointer;
+	//background: #f004;
 }
 </style>

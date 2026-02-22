@@ -80,6 +80,7 @@ onUnmounted(() => {
 });
 
 defineExpose({
+	rootElement: el,
 	checkHit: (ev: MouseEvent) => {
 		return (ev.target === el.value || el.value?.contains(ev.target as Node));
 	},
