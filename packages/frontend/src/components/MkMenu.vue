@@ -209,7 +209,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span>{{ i18n.ts.none }}</span>
 		</span>
 
-		<div :class="$style.guard" :style="{ clipPath: `polygon(${guardStartX * 100}% ${guardStartY * 100}%, 100% ${guardEndY1 * 100}%, 100% ${guardEndY2 * 100}%)` }"></div>
+		<div :class="[$style.guard, { [$style.showGuard]: debugShowPredictionCone }]" :style="{ clipPath: `polygon(${guardStartX * 100}% ${guardStartY * 100}%, 100% ${guardEndY1 * 100}%, 100% ${guardEndY2 * 100}%)` }"></div>
 	</div>
 
 	<div v-if="childMenu">
@@ -242,6 +242,8 @@ const props = defineProps<{
 	align?: 'center' | string;
 	width?: number;
 	maxHeight?: number;
+	debugDisablePredictionCone?: boolean;
+	debugShowPredictionCone?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -485,6 +487,7 @@ const guardEndY1 = ref(0);
 const guardEndY2 = ref(0);
 
 function parentMouseMove(item: MenuParent, ev: MouseEvent) {
+	if (props.debugDisablePredictionCone) return;
 	if (child.value == null || child.value.rootElement == null) return;
 
 	const itemBounding = (ev.currentTarget as HTMLElement).getBoundingClientRect();
@@ -794,6 +797,9 @@ function onMouseLeave() {
 	width: 100%;
 	height: 100%;
 	cursor: pointer;
-	//background: #f004;
+
+	&.showGuard {
+		background: #f004;
+	}
 }
 </style>

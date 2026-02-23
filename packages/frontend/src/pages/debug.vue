@@ -32,7 +32,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton @click="os.alert({ type: 'question', title: 'Question', text: 'question' })">Question</MkButton>
 			</div>
 
-			<MkButton @click="select">select</MkButton>
+			<div class="_buttons">
+				<MkButton @click="select($event, false, false)">select without guard</MkButton>
+				<MkButton @click="select($event, true, false)">select with guard</MkButton>
+				<MkButton @click="select($event, true, true)">select with guard (visualize)</MkButton>
+			</div>
 		</div>
 	</div>
 </PageWithHeader>
@@ -76,7 +80,7 @@ const {
 	initialValue: 'info',
 });
 
-function select(ev: PointerEvent) {
+function select(ev: PointerEvent, enablePredictionCone: boolean, showPredictionCone: boolean) {
 	os.popupMenu([
 		{ type: 'parent', text: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX', children: [
 			{ text: 'Option', action: () => {} },
@@ -109,7 +113,10 @@ function select(ev: PointerEvent) {
 			{ text: 'Option', action: () => {} },
 			{ text: 'Option', action: () => {} },
 		] },
-	], ev.target).then((value) => {
+	], ev.currentTarget ?? ev.target, {
+		debugDisablePredictionCone: !enablePredictionCone,
+		debugShowPredictionCone: showPredictionCone,
+	}).then((value) => {
 		console.log('Selected:', value);
 	});
 }
