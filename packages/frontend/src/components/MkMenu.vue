@@ -212,7 +212,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<div
 			:class="[$style.guard, { [$style.showGuard]: debugShowPredictionCone }]"
-			:style="{ clipPath: `polygon(${guardStartX * 100}% ${guardStartY * 100}%, 100% ${guardEndY1 * 100}%, 100% ${guardEndY2 * 100}%)` }"
+			:style="{ clipPath: guardPolygon }"
 			@mousemove="guardMouseMove"
 		></div>
 	</div>
@@ -233,7 +233,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
-import { computed, defineAsyncComponent, inject, nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, unref, watch, shallowRef } from 'vue';
+import { computed, defineAsyncComponent, inject, nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, unref, watch, shallowRef, reactive } from 'vue';
 import { parent } from 'happy-dom/lib/PropertySymbol.js';
 import type { MenuItem, InnerMenuItem, MenuPending, MenuAction, MenuSwitch, MenuRadio, MenuRadioOption, MenuParent } from '@/types/menu.js';
 import type { Keymap } from '@/utility/hotkey.js';
@@ -495,10 +495,22 @@ onBeforeUnmount(() => {
 	disposeHandlers();
 });
 
-const guardStartX = ref(0);
-const guardStartY = ref(0);
-const guardEndY1 = ref(0);
-const guardEndY2 = ref(0);
+const guard = reactive({
+	enabled: false,
+	cursorSideX: 0,
+	cursorSideY: 0,
+	childSideTopY: 0,
+	childSideBottomY: 0,
+	direction: 'toRight',
+});
+
+const guardPolygon = computed(() =>
+	guard.enabled
+		? guard.direction === 'toRight'
+			? `polygon(${guard.cursorSideX * 100}% ${guard.cursorSideY * 100}%, 100% ${guard.childSideTopY * 100}%, 100% ${guard.childSideBottomY * 100}%)`
+			: `polygon(0% ${guard.childSideTopY * 100}%, 0% ${guard.childSideBottomY * 100}%, ${guard.cursorSideX * 100}% ${guard.cursorSideY * 100}%)`
+		: 'polygon(0 0, 0 0, 0 0)',
+);
 
 function parentMouseMove(item: MenuParent, ev: MouseEvent) {
 	if (props.debugDisablePredictionCone) return;
@@ -510,34 +522,32 @@ function parentMouseMove(item: MenuParent, ev: MouseEvent) {
 	const itemBounding = (ev.currentTarget as HTMLElement).getBoundingClientRect();
 	const rootBounding = itemsEl.value!.getBoundingClientRect();
 	const childBounding = child.value.rootElement.getBoundingClientRect();
+	const isChildRight = childBounding.left > rootBounding.left;
 
-	const START_X_PADDING = 3;
-	const END_Y_PADDING_BASE = 15;
-	const END_Y_PADDING_EXTEND = 30;
+	const CUSOR_SIDE_X_PADDING = 3;
+	const CHILD_SIDE_Y_PADDING_BASE = 15;
+	const CHILD_SIDE_Y_PADDING_EXTEND = 30;
+	const SCALE_FACTOR_COMPUTE_DISTANCE = 300; // コーンの広さが最大になる距離
 	const relativeMouseX = ev.clientX - itemBounding.left;
 	const relativeMouseY = ev.clientY - rootBounding.top;
-	const scaleFactor = Math.min((itemBounding.width - relativeMouseX), 300) / 300;
-	const startXPadding = START_X_PADDING;
-	const endYPadding = END_Y_PADDING_BASE + (END_Y_PADDING_EXTEND * scaleFactor);
+	const scaleFactor = isChildRight ? Math.min((itemBounding.width - relativeMouseX), SCALE_FACTOR_COMPUTE_DISTANCE) / SCALE_FACTOR_COMPUTE_DISTANCE : Math.min(relativeMouseX, SCALE_FACTOR_COMPUTE_DISTANCE) / SCALE_FACTOR_COMPUTE_DISTANCE;
+	const cursorSideXPadding = isChildRight ? CUSOR_SIDE_X_PADDING : -CUSOR_SIDE_X_PADDING;
+	const childSideYPadding = CHILD_SIDE_Y_PADDING_BASE + (CHILD_SIDE_Y_PADDING_EXTEND * scaleFactor);
 
-	guardStartX.value = (relativeMouseX - startXPadding) / itemBounding.width;
-	guardStartY.value = (relativeMouseY) / rootBounding.height;
-	guardEndY1.value = (childBounding.top - endYPadding - rootBounding.top) / rootBounding.height;
-	guardEndY2.value = (childBounding.bottom + endYPadding - rootBounding.top) / rootBounding.height;
+	guard.enabled = true;
+	guard.cursorSideX = (relativeMouseX - cursorSideXPadding) / itemBounding.width;
+	guard.cursorSideY = (relativeMouseY) / rootBounding.height;
+	guard.childSideTopY = (childBounding.top - childSideYPadding - rootBounding.top) / rootBounding.height;
+	guard.childSideBottomY = (childBounding.bottom + childSideYPadding - rootBounding.top) / rootBounding.height;
+	guard.direction = isChildRight ? 'toRight' : 'toLeft';
 }
 
 function onMouseLeave() {
-	guardStartX.value = 0;
-	guardStartY.value = 0;
-	guardEndY1.value = 0;
-	guardEndY2.value = 0;
+	guard.enabled = false;
 }
 
 function onMouseMove() {
-	guardStartX.value = 0;
-	guardStartY.value = 0;
-	guardEndY1.value = 0;
-	guardEndY2.value = 0;
+	guard.enabled = false;
 }
 
 function guardMouseMove(ev: MouseEvent) {
