@@ -169,7 +169,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				tabindex="0"
 				:class="['_button', $style.item, $style.parent, { [$style.active]: childShowingItem === item }]"
 				@mouseenter.prevent="preferClick ? null : showChildren(item, $event)"
-				@mousemove="parentMouseMove(item, $event)"
+				@mousemove.passive="parentMouseMove(item, $event)"
 				@keydown.enter.prevent="preferClick ? null : showChildren(item, $event)"
 				@click.prevent="!preferClick ? null : showChildren(item, $event)"
 			>
@@ -207,13 +207,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<span v-if="items2 == null || items2.length === 0" tabindex="-1" :class="[$style.none, $style.item]">
 			<span>{{ i18n.ts.none }}</span>
 		</span>
+
+		<div :class="$style.guard" :style="{ clipPath: `polygon(${guardX * 100}% ${guardY * 100}%, 100% ${guardEndY1 * 100}%, 100% ${guardEndY2 * 100}%)` }"></div>
 	</div>
 
 	<div v-if="childMenu">
 		<XChild ref="child" :items="childMenu" :anchorElement="childTarget!" :rootElement="itemsEl!" @actioned="childActioned" @closed="closeChild"/>
 	</div>
-
-	<div :class="$style.guard" :style="{ clipPath: `polygon(${guardX * 100}% ${guardY * 100}%, 100% ${guardEndY1 * 100}%, 100% ${guardEndY2 * 100}%)` }"></div>
 </div>
 </template>
 
@@ -617,6 +617,8 @@ function parentMouseMove(item: MenuParent, ev: MouseEvent) {
 		&:focus-visible:active,
 		&:focus-visible.active {
 			color: var(--menuHoverFg, var(--MI_THEME-accent));
+			position: relative;
+			z-index: 10; // guardより上にする
 
 			&::before {
 				background-color: var(--menuHoverBg, var(--MI_THEME-accentedBg));
