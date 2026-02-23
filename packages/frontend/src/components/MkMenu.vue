@@ -27,6 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		}"
 		@keydown.stop="() => {}"
 		@contextmenu.self.prevent="() => {}"
+		@mousemove.passive="onMouseMove"
 		@mouseleave.passive="onMouseLeave"
 	>
 		<template v-for="item in (items2 ?? [])">
@@ -170,7 +171,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				tabindex="0"
 				:class="['_button', $style.item, $style.parent, { [$style.active]: childShowingItem === item }]"
 				@mouseenter.prevent="preferClick ? null : showChildren(item, $event)"
-				@mousemove.passive="parentMouseMove(item, $event)"
+				@mousemove="parentMouseMove(item, $event)"
 				@keydown.enter.prevent="preferClick ? null : showChildren(item, $event)"
 				@click.prevent="!preferClick ? null : showChildren(item, $event)"
 			>
@@ -209,11 +210,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span>{{ i18n.ts.none }}</span>
 		</span>
 
-		<div :class="[$style.guard, { [$style.showGuard]: debugShowPredictionCone }]" :style="{ clipPath: `polygon(${guardStartX * 100}% ${guardStartY * 100}%, 100% ${guardEndY1 * 100}%, 100% ${guardEndY2 * 100}%)` }"></div>
+		<div
+			:class="[$style.guard, { [$style.showGuard]: debugShowPredictionCone }]"
+			:style="{ clipPath: `polygon(${guardStartX * 100}% ${guardStartY * 100}%, 100% ${guardEndY1 * 100}%, 100% ${guardEndY2 * 100}%)` }"
+			@mousemove="guardMouseMove"
+		></div>
 	</div>
 
 	<div v-if="childMenu">
-		<XChild ref="child" :items="childMenu" :anchorElement="childTarget!" :rootElement="itemsEl!" @actioned="childActioned" @closed="closeChild"/>
+		<XChild
+			ref="child"
+			:items="childMenu"
+			:anchorElement="childTarget!"
+			:rootElement="itemsEl!"
+			:debugDisablePredictionCone="props.debugDisablePredictionCone"
+			:debugShowPredictionCone="props.debugShowPredictionCone"
+			@actioned="childActioned"
+			@closed="closeChild"
+		/>
 	</div>
 </div>
 </template>
@@ -491,6 +505,8 @@ function parentMouseMove(item: MenuParent, ev: MouseEvent) {
 	if (isTouchUsing) return;
 	if (child.value == null || child.value.rootElement == null) return;
 
+	ev.stopPropagation();
+
 	const itemBounding = (ev.currentTarget as HTMLElement).getBoundingClientRect();
 	const rootBounding = itemsEl.value!.getBoundingClientRect();
 	const childBounding = child.value.rootElement.getBoundingClientRect();
@@ -515,6 +531,17 @@ function onMouseLeave() {
 	guardStartY.value = 0;
 	guardEndY1.value = 0;
 	guardEndY2.value = 0;
+}
+
+function onMouseMove() {
+	guardStartX.value = 0;
+	guardStartY.value = 0;
+	guardEndY1.value = 0;
+	guardEndY2.value = 0;
+}
+
+function guardMouseMove(ev: MouseEvent) {
+	ev.stopPropagation();
 }
 </script>
 
