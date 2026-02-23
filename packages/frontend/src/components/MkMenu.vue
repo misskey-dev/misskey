@@ -527,18 +527,32 @@ function parentMouseMove(ev: MouseEvent) {
 	const CUSOR_SIDE_X_PADDING = 3;
 	const CHILD_SIDE_Y_PADDING_BASE = 15;
 	const CHILD_SIDE_Y_PADDING_EXTEND = 30;
-	const SCALE_FACTOR_COMPUTE_DISTANCE = 300; // コーンの広さが最大になる距離
+	const SCALE_FACTOR_COMPUTE_DISTANCE = 300; // コーンの広さが最大になる距離(px)
+	const CHILD_SIDE_MIN_HEIGHT = 150; // (px)
 	const relativeMouseX = ev.clientX - itemBounding.left;
 	const relativeMouseY = ev.clientY - rootBounding.top;
 	const scaleFactor = isChildRight ? Math.min((itemBounding.width - relativeMouseX), SCALE_FACTOR_COMPUTE_DISTANCE) / SCALE_FACTOR_COMPUTE_DISTANCE : Math.min(relativeMouseX, SCALE_FACTOR_COMPUTE_DISTANCE) / SCALE_FACTOR_COMPUTE_DISTANCE;
 	const cursorSideXPadding = isChildRight ? CUSOR_SIDE_X_PADDING : -CUSOR_SIDE_X_PADDING;
 	const childSideYPadding = CHILD_SIDE_Y_PADDING_BASE + (CHILD_SIDE_Y_PADDING_EXTEND * scaleFactor);
 
+	let childSideTopY = (childBounding.top - rootBounding.top) / rootBounding.height;
+	let childSideBottomY = (childBounding.bottom - rootBounding.top) / rootBounding.height;
+
+	const childSideHeight = childSideBottomY - childSideTopY;
+	if (childSideHeight < CHILD_SIDE_MIN_HEIGHT / rootBounding.height) {
+		const expandY = (CHILD_SIDE_MIN_HEIGHT / rootBounding.height - childSideHeight) / 2;
+		childSideTopY -= expandY;
+		childSideBottomY += expandY;
+	}
+
+	childSideTopY -= childSideYPadding / rootBounding.height;
+	childSideBottomY += childSideYPadding / rootBounding.height;
+
 	guard.enabled = true;
 	guard.cursorSideX = (relativeMouseX - cursorSideXPadding) / itemBounding.width;
 	guard.cursorSideY = (relativeMouseY) / rootBounding.height;
-	guard.childSideTopY = (childBounding.top - childSideYPadding - rootBounding.top) / rootBounding.height;
-	guard.childSideBottomY = (childBounding.bottom + childSideYPadding - rootBounding.top) / rootBounding.height;
+	guard.childSideTopY = childSideTopY;
+	guard.childSideBottomY = childSideBottomY;
 	guard.direction = isChildRight ? 'toRight' : 'toLeft';
 }
 
