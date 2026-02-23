@@ -488,6 +488,7 @@ const guardEndY2 = ref(0);
 
 function parentMouseMove(item: MenuParent, ev: MouseEvent) {
 	if (props.debugDisablePredictionCone) return;
+	if (isTouchUsing) return;
 	if (child.value == null || child.value.rootElement == null) return;
 
 	const itemBounding = (ev.currentTarget as HTMLElement).getBoundingClientRect();
