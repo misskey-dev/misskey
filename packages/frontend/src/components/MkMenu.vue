@@ -539,11 +539,9 @@ function parentMouseMove(ev: MouseEvent) {
 	let childSideBottomY = childBounding.bottom - rootBounding.top;
 
 	const childSideHeight = childSideBottomY - childSideTopY;
-	if (childSideHeight < CHILD_SIDE_MIN_HEIGHT) {
-		const expandY = (CHILD_SIDE_MIN_HEIGHT - childSideHeight) / 2;
-		childSideTopY -= expandY;
-		childSideBottomY += expandY;
-	}
+	const expandY = Math.max(0, (CHILD_SIDE_MIN_HEIGHT - childSideHeight)) / 2;
+	childSideTopY -= expandY;
+	childSideBottomY += expandY;
 
 	childSideTopY -= childSideYPadding;
 	childSideBottomY += childSideYPadding;
