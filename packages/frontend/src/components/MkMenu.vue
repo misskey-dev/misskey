@@ -212,7 +212,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<div
 			:class="[$style.guard, { [$style.showGuard]: debugShowPredictionCone }]"
-			:style="{ clipPath: guardPolygon }"
+			:style="{ clipPath: guardPolygon, top: guard.top + 'px' }"
 			@mousemove="guardMouseMove"
 		></div>
 	</div>
@@ -496,6 +496,7 @@ onBeforeUnmount(() => {
 
 const guard = reactive({
 	enabled: false,
+	top: 0,
 	cursorSideX: 0,
 	cursorSideY: 0,
 	childSideTopY: 0,
@@ -534,6 +535,7 @@ function parentMouseMove(ev: MouseEvent) {
 	const childSideYPadding = CHILD_SIDE_Y_PADDING_BASE + (CHILD_SIDE_Y_PADDING_EXTEND * scaleFactor);
 
 	guard.enabled = true;
+	guard.top = itemsEl.value!.scrollTop;
 	guard.cursorSideX = relativeMouseX - cursorSideXPadding;
 	guard.cursorSideY = relativeMouseY;
 	guard.childSideTopY = (childBounding.top - rootBounding.top) - childSideYPadding;
@@ -829,7 +831,6 @@ function guardMouseMove(ev: MouseEvent) {
 
 .guard {
 	position: absolute;
-	top: 0;
 	left: 0;
 	width: 100%;
 	height: 100%;
