@@ -827,7 +827,11 @@ function guardMouseMove(ev: MouseEvent) {
 	cursor: pointer;
 
 	&.showGuard {
-		background: #f004;
+		background: #0f04;
+
+		&:hover {
+			background: #f004;
+		}
 	}
 }
 </style>
