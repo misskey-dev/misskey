@@ -27,6 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		}"
 		@keydown.stop="() => {}"
 		@contextmenu.self.prevent="() => {}"
+		@mouseleave.passive="onMouseLeave"
 	>
 		<template v-for="item in (items2 ?? [])">
 			<div v-if="item.type === 'divider'" role="separator" tabindex="-1" :class="$style.divider"></div>
@@ -208,7 +209,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<span>{{ i18n.ts.none }}</span>
 		</span>
 
-		<div :class="$style.guard" :style="{ clipPath: `polygon(${guardX * 100}% ${guardY * 100}%, 100% ${guardEndY1 * 100}%, 100% ${guardEndY2 * 100}%)` }"></div>
+		<div :class="$style.guard" :style="{ clipPath: `polygon(${guardStartX * 100}% ${guardStartY * 100}%, 100% ${guardEndY1 * 100}%, 100% ${guardEndY2 * 100}%)` }"></div>
 	</div>
 
 	<div v-if="childMenu">
@@ -478,24 +479,38 @@ onBeforeUnmount(() => {
 	disposeHandlers();
 });
 
-const guardX = ref(0);
-const guardY = ref(0);
+const guardStartX = ref(0);
+const guardStartY = ref(0);
 const guardEndY1 = ref(0);
 const guardEndY2 = ref(0);
 
 function parentMouseMove(item: MenuParent, ev: MouseEvent) {
-	if (child.value == null) return;
+	if (child.value == null || child.value.rootElement == null) return;
 
 	const itemBounding = (ev.currentTarget as HTMLElement).getBoundingClientRect();
 	const rootBounding = itemsEl.value!.getBoundingClientRect();
 	const childBounding = child.value.rootElement.getBoundingClientRect();
 
+	const START_X_PADDING = 3;
+	const END_Y_PADDING_BASE = 15;
+	const END_Y_PADDING_EXTEND = 30;
 	const relativeMouseX = ev.clientX - itemBounding.left;
 	const relativeMouseY = ev.clientY - rootBounding.top;
-	guardX.value = (relativeMouseX - 5) / itemBounding.width;
-	guardY.value = (relativeMouseY) / rootBounding.height;
-	guardEndY1.value = (childBounding.top - rootBounding.top) / rootBounding.height;
-	guardEndY2.value = (childBounding.bottom - rootBounding.top) / rootBounding.height;
+	const scaleFactor = Math.min((itemBounding.width - relativeMouseX), 300) / 300;
+	const startXPadding = START_X_PADDING;
+	const endYPadding = END_Y_PADDING_BASE + (END_Y_PADDING_EXTEND * scaleFactor);
+
+	guardStartX.value = (relativeMouseX - startXPadding) / itemBounding.width;
+	guardStartY.value = (relativeMouseY) / rootBounding.height;
+	guardEndY1.value = (childBounding.top - endYPadding - rootBounding.top) / rootBounding.height;
+	guardEndY2.value = (childBounding.bottom + endYPadding - rootBounding.top) / rootBounding.height;
+}
+
+function onMouseLeave() {
+	guardStartX.value = 0;
+	guardStartY.value = 0;
+	guardEndY1.value = 0;
+	guardEndY2.value = 0;
 }
 </script>
 
