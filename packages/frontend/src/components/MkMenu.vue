@@ -171,7 +171,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				tabindex="0"
 				:class="['_button', $style.item, $style.parent, { [$style.active]: childShowingItem === item }]"
 				@mouseenter.prevent="preferClick ? null : showChildren(item, $event)"
-				@mousemove="parentMouseMove(item, $event)"
+				@mousemove="parentMouseMove"
 				@keydown.enter.prevent="preferClick ? null : showChildren(item, $event)"
 				@click.prevent="!preferClick ? null : showChildren(item, $event)"
 			>
@@ -512,7 +512,7 @@ const guardPolygon = computed(() =>
 		: 'polygon(0 0, 0 0, 0 0)',
 );
 
-function parentMouseMove(item: MenuParent, ev: MouseEvent) {
+function parentMouseMove(ev: MouseEvent) {
 	if (props.debugDisablePredictionCone) return;
 	if (isTouchUsing) return;
 	if (child.value == null || child.value.rootElement == null) return;
