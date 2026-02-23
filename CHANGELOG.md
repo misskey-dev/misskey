@@ -34,6 +34,7 @@
   - モザイクの色味がより自然になるように修正
   - ぼかしに不自然な縦線が入る問題を修正
 - Fix: フォロー承認通知でフォローされた際のメッセージの絵文字が表示されない問題を修正
+- Fix: HTTP環境など（Secure Contextのない環境）で、設定画面が閲覧できない問題を修正
 
 ### Server
 - Enhance: OAuthのクライアント情報取得（Client Information Discovery）において、IndieWeb Living Standard 11 July 2024で定義されているJSONドキュメント形式に対応しました
