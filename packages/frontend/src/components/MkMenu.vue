@@ -507,7 +507,7 @@ const guard = reactive({
 const guardPolygon = computed(() =>
 	guard.enabled
 		? guard.direction === 'toRight'
-			? `polygon(${guard.cursorSideX}px ${guard.cursorSideY}px, 100% ${guard.childSideTopY}px, 100% ${guard.childSideBottomY}px)`
+			? `polygon(${guard.cursorSideX}px ${guard.cursorSideY}px, 101% ${guard.childSideTopY}px, 101% ${guard.childSideBottomY}px)` // ぴったり端に100%で覆ってもなぜか端でカーソルのイベントが後ろに貫通するので1%だけ伸ばす
 			: `polygon(0% ${guard.childSideTopY}px, 0% ${guard.childSideBottomY}px, ${guard.cursorSideX}px ${guard.cursorSideY}px)`
 		: 'polygon(0 0, 0 0, 0 0)',
 );
