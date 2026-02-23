@@ -3,14 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { computed, ref, shallowRef, watch, defineAsyncComponent } from 'vue';
+import { ref } from 'vue';
 import * as os from '@/os.js';
 import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
 
-export const storagePersisted = ref(await navigator.storage.persisted());
+export const storagePersistenceSupported = window.isSecureContext && 'storage' in navigator;
+export const storagePersisted = ref(storagePersistenceSupported ? await navigator.storage.persisted() : false);
 
 export async function enableStoragePersistence() {
+	if (!storagePersistenceSupported) return;
 	try {
 		const persisted = await navigator.storage.persist();
 		if (persisted) {
