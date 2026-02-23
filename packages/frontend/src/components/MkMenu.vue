@@ -507,8 +507,8 @@ const guard = reactive({
 const guardPolygon = computed(() =>
 	guard.enabled
 		? guard.direction === 'toRight'
-			? `polygon(${guard.cursorSideX * 100}% ${guard.cursorSideY * 100}%, 100% ${guard.childSideTopY * 100}%, 100% ${guard.childSideBottomY * 100}%)`
-			: `polygon(0% ${guard.childSideTopY * 100}%, 0% ${guard.childSideBottomY * 100}%, ${guard.cursorSideX * 100}% ${guard.cursorSideY * 100}%)`
+			? `polygon(${guard.cursorSideX}px ${guard.cursorSideY}px, 100% ${guard.childSideTopY}px, 100% ${guard.childSideBottomY}px)`
+			: `polygon(0% ${guard.childSideTopY}px, 0% ${guard.childSideBottomY}px, ${guard.cursorSideX}px ${guard.cursorSideY}px)`
 		: 'polygon(0 0, 0 0, 0 0)',
 );
 
@@ -524,9 +524,9 @@ function parentMouseMove(ev: MouseEvent) {
 	const childBounding = child.value.rootElement.getBoundingClientRect();
 	const isChildRight = childBounding.left > rootBounding.left;
 
-	const CUSOR_SIDE_X_PADDING = 3;
-	const CHILD_SIDE_Y_PADDING_BASE = 15;
-	const CHILD_SIDE_Y_PADDING_EXTEND = 30;
+	const CUSOR_SIDE_X_PADDING = 3; // (px)
+	const CHILD_SIDE_Y_PADDING_BASE = 15; // (px)
+	const CHILD_SIDE_Y_PADDING_EXTEND = 30; // (px)
 	const SCALE_FACTOR_COMPUTE_DISTANCE = 300; // コーンの広さが最大になる距離(px)
 	const CHILD_SIDE_MIN_HEIGHT = 150; // (px)
 	const relativeMouseX = ev.clientX - itemBounding.left;
@@ -535,22 +535,22 @@ function parentMouseMove(ev: MouseEvent) {
 	const cursorSideXPadding = isChildRight ? CUSOR_SIDE_X_PADDING : -CUSOR_SIDE_X_PADDING;
 	const childSideYPadding = CHILD_SIDE_Y_PADDING_BASE + (CHILD_SIDE_Y_PADDING_EXTEND * scaleFactor);
 
-	let childSideTopY = (childBounding.top - rootBounding.top) / rootBounding.height;
-	let childSideBottomY = (childBounding.bottom - rootBounding.top) / rootBounding.height;
+	let childSideTopY = childBounding.top - rootBounding.top;
+	let childSideBottomY = childBounding.bottom - rootBounding.top;
 
 	const childSideHeight = childSideBottomY - childSideTopY;
-	if (childSideHeight < CHILD_SIDE_MIN_HEIGHT / rootBounding.height) {
-		const expandY = (CHILD_SIDE_MIN_HEIGHT / rootBounding.height - childSideHeight) / 2;
+	if (childSideHeight < CHILD_SIDE_MIN_HEIGHT) {
+		const expandY = (CHILD_SIDE_MIN_HEIGHT - childSideHeight) / 2;
 		childSideTopY -= expandY;
 		childSideBottomY += expandY;
 	}
 
-	childSideTopY -= childSideYPadding / rootBounding.height;
-	childSideBottomY += childSideYPadding / rootBounding.height;
+	childSideTopY -= childSideYPadding;
+	childSideBottomY += childSideYPadding;
 
 	guard.enabled = true;
-	guard.cursorSideX = (relativeMouseX - cursorSideXPadding) / itemBounding.width;
-	guard.cursorSideY = (relativeMouseY) / rootBounding.height;
+	guard.cursorSideX = relativeMouseX - cursorSideXPadding;
+	guard.cursorSideY = relativeMouseY;
 	guard.childSideTopY = childSideTopY;
 	guard.childSideBottomY = childSideBottomY;
 	guard.direction = isChildRight ? 'toRight' : 'toLeft';
