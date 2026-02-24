@@ -217,18 +217,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 		></div>
 	</div>
 
-	<div v-if="childMenu">
-		<XChild
-			ref="child"
-			:items="childMenu"
-			:anchorElement="childTarget!"
-			:rootElement="itemsEl!"
-			:debugDisablePredictionCone="props.debugDisablePredictionCone"
-			:debugShowPredictionCone="props.debugShowPredictionCone"
-			@actioned="childActioned"
-			@closed="closeChild"
-		/>
-	</div>
+	<XChild
+		v-if="childMenu" :key="childMenuKey"
+		ref="child"
+		:items="childMenu"
+		:anchorElement="childTarget!"
+		:rootElement="itemsEl!"
+		:debugDisablePredictionCone="props.debugDisablePredictionCone"
+		:debugShowPredictionCone="props.debugShowPredictionCone"
+		@actioned="childActioned"
+		@closed="closeChild"
+	/>
 </div>
 </template>
 
@@ -313,6 +312,7 @@ watch(() => props.items, () => {
 });
 
 const childMenu = ref<MenuItem[] | null>();
+const childMenuKey = ref(0);
 const childTarget = shallowRef<HTMLElement>();
 
 function closeChild() {
@@ -369,6 +369,7 @@ async function showRadioOptions(item: MenuRadio, ev: MouseEvent | PointerEvent |
 	} else {
 		childTarget.value = (ev.currentTarget ?? ev.target) as HTMLElement;
 		childMenu.value = children;
+		childMenuKey.value++;
 		childShowingItem.value = item;
 	}
 }
@@ -399,6 +400,7 @@ async function showChildren(item: MenuParent, ev: MouseEvent | PointerEvent | Ke
 		childTarget.value = (ev.currentTarget ?? ev.target) as HTMLElement;
 		// これでもリアクティビティは保たれる
 		childMenu.value = children;
+		childMenuKey.value++;
 		childShowingItem.value = item;
 	}
 }
