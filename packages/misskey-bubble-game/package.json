@@ -25,11 +25,11 @@
 	},
 	"devDependencies": {
 		"@types/matter-js": "0.20.2",
-		"@types/node": "24.10.9",
+		"@types/node": "24.10.13",
 		"@types/seedrandom": "3.0.8",
-		"@typescript-eslint/eslint-plugin": "8.53.0",
-		"@typescript-eslint/parser": "8.53.0",
-		"esbuild": "0.27.2",
+		"@typescript-eslint/eslint-plugin": "8.55.0",
+		"@typescript-eslint/parser": "8.55.0",
+		"esbuild": "0.27.3",
 		"execa": "9.6.1",
 		"nodemon": "3.1.11"
 	},
@@ -37,7 +37,7 @@
 		"built"
 	],
 	"dependencies": {
-		"eventemitter3": "5.0.1",
+		"eventemitter3": "5.0.4",
 		"matter-js": "0.20.0",
 		"seedrandom": "3.0.5"
 	}
