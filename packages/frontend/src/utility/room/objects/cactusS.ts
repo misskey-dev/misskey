@@ -3,18 +3,39 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../engine.js';
 
 export const cactusS = defineObject({
 	id: 'cactusS',
 	name: 'Cactus S',
 	options: {
-		schema: {},
-		default: {},
+		schema: {
+			potColor: {
+				type: 'color',
+				label: 'Pot color',
+			},
+		},
+		default: {
+			potColor: [0.45, 0.45, 0.45],
+		},
 	},
 	placement: 'top',
-	createInstance: () => {
+	createInstance: ({ options, root }) => {
+		const potMesh = root.getChildMeshes().find(m => m.name.includes('__X_POT__')) as BABYLON.Mesh;
+		const potMaterial = potMesh.material as BABYLON.PBRMaterial;
+
+		const applyPotColor = () => {
+			const [r, g, b] = options.potColor;
+			potMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		};
+
+		applyPotColor();
+
 		return {
+			onOptionsUpdated: ([k, v]) => {
+				applyPotColor();
+			},
 			interactions: {},
 		};
 	},
