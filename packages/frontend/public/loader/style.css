@@ -14,8 +14,8 @@ html {
 	z-index: 10000;
 	top: 0;
 	left: 0;
-	width: 100vw;
-	height: 100vh;
+	width: var(--MI-100vw, 100vw);
+	height: var(--MI-100vh, 100vh);
 	cursor: wait;
 	background-color: var(--MI_THEME-bg);
 	opacity: 1;

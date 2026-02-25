@@ -71,7 +71,7 @@ function close() {
 <style lang="scss" scoped>
 .szkkfdyq {
 	max-height: 100%;
-	width: min(460px, 100vw);
+	width: min(460px, var(--MI-100vw));
 	margin: auto;
 	padding: 24px;
 	box-sizing: border-box;

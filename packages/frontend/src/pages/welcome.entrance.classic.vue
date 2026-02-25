@@ -71,7 +71,7 @@ misskeyApiGet('federation/instances', {
 	top: 0;
 	right: 0;
 	width: 80vw; // 100%からshapeの幅を引いている
-	height: 100vh;
+	height: var(--MI-100vh);
 }
 
 .tl {
@@ -96,8 +96,8 @@ misskeyApiGet('federation/instances', {
 	position: fixed;
 	top: 0;
 	left: 0;
-	width: 100vw;
-	height: 100vh;
+	width: var(--MI-100vw);
+	height: var(--MI-100vh);
 	background: var(--MI_THEME-accent);
 	clip-path: polygon(0% 0%, 45% 0%, 20% 100%, 0% 100%);
 }
@@ -105,8 +105,8 @@ misskeyApiGet('federation/instances', {
 	position: fixed;
 	top: 0;
 	left: 0;
-	width: 100vw;
-	height: 100vh;
+	width: var(--MI-100vw);
+	height: var(--MI-100vh);
 	background: var(--MI_THEME-accent);
 	clip-path: polygon(0% 0%, 25% 0%, 35% 100%, 0% 100%);
 	opacity: 0.5;

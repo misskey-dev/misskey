@@ -43,7 +43,7 @@ definePage(computed(() => ({
 
 <style lang="css" module>
 .local {
-	height: calc(100dvh - var(--MI-stickyTop) - var(--MI-stickyBottom));
+	height: calc(var(--MI-100dvh) - var(--MI-stickyTop) - var(--MI-stickyBottom));
 	overflow: clip;
 }
 </style>

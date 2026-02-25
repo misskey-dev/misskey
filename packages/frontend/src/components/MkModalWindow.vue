@@ -88,7 +88,7 @@ defineExpose({
 	}
 
 	&.asDrawer {
-		height: calc(100dvh - 30px);
+		height: calc(var(--MI-100dvh) - 30px);
 		border-radius: 0;
 
 		.body {

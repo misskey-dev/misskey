@@ -602,17 +602,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</SearchMarker>
 
 						<SearchMarker :keywords="['font', 'size']">
-							<MkRadios
-								v-model="fontSize"
-								:options="[
-									{ value: null, label: 'Aa', labelStyle: 'font-size: 14px;' },
-									{ value: '1', label: 'Aa', labelStyle: 'font-size: 15px;' },
-									{ value: '2', label: 'Aa', labelStyle: 'font-size: 16px;' },
-									{ value: '3', label: 'Aa', labelStyle: 'font-size: 17px;' },
-								]"
-							>
+							<FormSlot>
 								<template #label><SearchLabel>{{ i18n.ts.fontSize }}</SearchLabel></template>
-							</MkRadios>
+								<div class="_gaps_s">
+									<div v-panel :class="$style.fontSizePreview" :data-size="fontSize ?? 0">
+										<div>Aa</div>
+									</div>
+									<MkRange
+										v-model="fontSize"
+										:min="-3"
+										:max="3"
+										:step="1"
+									>
+							</MkRange>
+								</div>
+							</FormSlot>
 						</SearchMarker>
 
 						<SearchMarker :keywords="['font', 'system', 'native']">
@@ -873,6 +877,7 @@ import MkFolder from '@/components/MkFolder.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkDisableSection from '@/components/MkDisableSection.vue';
 import FormLink from '@/components/form/link.vue';
+import FormSlot from '@/components/form/slot.vue';
 import MkLink from '@/components/MkLink.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import { store } from '@/store.js';
@@ -957,7 +962,13 @@ const contextMenu = prefer.model('contextMenu');
 const menuStyle = prefer.model('menuStyle');
 const makeEveryTextElementsSelectable = prefer.model('makeEveryTextElementsSelectable');
 
-const fontSize = ref(miLocalStorage.getItem('fontSize') as '1' | '2' | '3' | null);
+const fontSize = ref((() => {
+	const v = miLocalStorage.getItem('fontSize');
+	if (v === null) return 0;
+	const n = Number(v);
+	if (isNaN(n)) return 0;
+	return n;
+})());
 const useSystemFont = ref(miLocalStorage.getItem('useSystemFont') != null);
 
 watch(lang, () => {
@@ -965,10 +976,10 @@ watch(lang, () => {
 });
 
 watch(fontSize, () => {
-	if (fontSize.value == null) {
+	if (fontSize.value == null || fontSize.value === 0) {
 		miLocalStorage.removeItem('fontSize');
 	} else {
-		miLocalStorage.setItem('fontSize', fontSize.value);
+		miLocalStorage.setItem('fontSize', fontSize.value.toString());
 	}
 });
 
@@ -1137,3 +1148,43 @@ definePage(() => ({
 	icon: 'ti ti-adjustments',
 }));
 </script>
+
+<style module>
+.fontSizePreview {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: var(--MI-margin);
+	border-radius: var(--MI-radius);
+	min-height: 40px;
+	--scale: 1;
+}
+
+.fontSizePreview > div {
+	zoom: calc(var(--scale) / var(--MI-scale));
+}
+
+.fontSizePreview[data-size="-3"] {
+	--scale: 0.8;
+}
+
+.fontSizePreview[data-size="-2"] {
+	--scale: 0.85;
+}
+
+.fontSizePreview[data-size="-1"] {
+	--scale: 0.9;
+}
+
+.fontSizePreview[data-size="1"] {
+	--scale: 1.1;
+}
+
+.fontSizePreview[data-size="2"] {
+	--scale: 1.15;
+}
+
+.fontSizePreview[data-size="3"] {
+	--scale: 1.2;
+}
+</style>

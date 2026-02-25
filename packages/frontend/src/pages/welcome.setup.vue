@@ -197,7 +197,7 @@ function finish() {
 
 <style lang="scss" module>
 .formContainer {
-	min-height: 100svh;
+	min-height: var(--MI-100svh);
 	padding: 32px 32px 64px 32px;
 	box-sizing: border-box;
 	align-content: center;

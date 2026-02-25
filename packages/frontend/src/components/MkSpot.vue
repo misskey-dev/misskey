@@ -126,10 +126,10 @@ onUnmounted(() => {
 }
 
 .spot {
-	--x: v-bind("spotX + 'px'");
-	--y: v-bind("spotY + 'px'");
-	--width: v-bind("spotWidth + 'px'");
-	--height: v-bind("spotHeight + 'px'");
+	--x: calc(v-bind("spotX + 'px'") / var(--MI-scale));
+	--y: calc(v-bind("spotY + 'px'") / var(--MI-scale));
+	--width: calc(v-bind("spotWidth + 'px'") / var(--MI-scale));
+	--height: calc(v-bind("spotHeight + 'px'") / var(--MI-scale));
 	--padding: 8px;
 	position: absolute;
 	left: calc(var(--x) - var(--padding));
@@ -149,7 +149,7 @@ onUnmounted(() => {
 	padding: 16px 20px;
 	box-sizing: border-box;
 	width: max-content;
-	max-width: min(500px, 100vw);
+	max-width: min(500px, var(--MI-100vw));
 }
 
 @keyframes blink {
