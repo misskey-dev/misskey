@@ -63,7 +63,7 @@ function getFixedContainer(el: Element | null): Element | null {
 }
 
 function getRootScale(): number {
-	const rootStyle = getComputedStyle(document.documentElement);
+	const rootStyle = getComputedStyle(window.document.documentElement);
 	const scaleValue = rootStyle.getPropertyValue('--MI-scale').trim();
 	const scale = Number.parseFloat(scaleValue);
 	return Number.isFinite(scale) && scale > 0 ? scale : 1;
