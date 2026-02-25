@@ -526,20 +526,20 @@ function parentMouseMove(ev: MouseEvent) {
 	const childBounding = child.value.rootElement.getBoundingClientRect();
 	const isChildRight = childBounding.left > rootBounding.left;
 
-	const CUSOR_SIDE_X_PADDING = 3; // (px)
+	const CURSOR_SIDE_X_PADDING = 3; // (px)
 	const CHILD_SIDE_Y_PADDING_BASE = 70; // (px)
 	const CHILD_SIDE_Y_PADDING_EXTEND = 30; // (px)
 	const SCALE_FACTOR_COMPUTE_DISTANCE = 300; // コーンの広さが最大になる距離(px)
-	const relativeMouseX = ev.clientX - itemBounding.left;
-	const relativeMouseY = ev.clientY - rootBounding.top;
-	const scaleFactor = isChildRight ? Math.min((itemBounding.width - relativeMouseX), SCALE_FACTOR_COMPUTE_DISTANCE) / SCALE_FACTOR_COMPUTE_DISTANCE : Math.min(relativeMouseX, SCALE_FACTOR_COMPUTE_DISTANCE) / SCALE_FACTOR_COMPUTE_DISTANCE;
-	const cursorSideXPadding = isChildRight ? CUSOR_SIDE_X_PADDING : -CUSOR_SIDE_X_PADDING;
+	const localMouseX = ev.clientX - itemBounding.left;
+	const localMouseY = ev.clientY - rootBounding.top;
+	const scaleFactor = isChildRight ? Math.min((itemBounding.width - localMouseX), SCALE_FACTOR_COMPUTE_DISTANCE) / SCALE_FACTOR_COMPUTE_DISTANCE : Math.min(localMouseX, SCALE_FACTOR_COMPUTE_DISTANCE) / SCALE_FACTOR_COMPUTE_DISTANCE;
+	const cursorSideXPadding = isChildRight ? CURSOR_SIDE_X_PADDING : -CURSOR_SIDE_X_PADDING;
 	const childSideYPadding = CHILD_SIDE_Y_PADDING_BASE + (CHILD_SIDE_Y_PADDING_EXTEND * scaleFactor);
 
 	guard.enabled = true;
 	guard.top = itemsEl.value!.scrollTop;
-	guard.cursorSideX = relativeMouseX - cursorSideXPadding;
-	guard.cursorSideY = relativeMouseY;
+	guard.cursorSideX = localMouseX - cursorSideXPadding;
+	guard.cursorSideY = localMouseY;
 	guard.childSideTopY = (childBounding.top - rootBounding.top) - childSideYPadding;
 	guard.childSideBottomY = (childBounding.bottom - rootBounding.top) + childSideYPadding;
 	guard.direction = isChildRight ? 'toRight' : 'toLeft';
