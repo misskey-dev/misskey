@@ -249,7 +249,7 @@ export class RoomEngine {
 		this.scene.ambientColor = new BABYLON.Color3(1.0, 0.9, 0.8);
 
 		this.envMapIndoor = BABYLON.CubeTexture.CreateFromPrefilteredData('/client-assets/room/indoor.env', this.scene);
-		this.envMapIndoor.boundingBoxSize = new BABYLON.Vector3(500/*cm*/, 300/*cm*/, 500/*cm*/);
+		this.envMapIndoor.boundingBoxSize = new BABYLON.Vector3(500/*cm*/, 500/*cm*/, 500/*cm*/);
 
 		this.envMapOutdoor = BABYLON.CubeTexture.CreateFromPrefilteredData(this.time === 2 ? '/client-assets/room/outdoor-night.env' : '/client-assets/room/outdoor-day.env', this.scene);
 		this.envMapOutdoor.level = this.time === 0 ? 0.5 : this.time === 1 ? 0.3 : 0.1;
