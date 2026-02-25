@@ -21,8 +21,8 @@ export const a4Case = defineObject({
 		},
 	},
 	placement: 'top',
-	createInstance: ({ options, root }) => {
-		const bodyMesh = root.getChildMeshes().find(m => m.name.includes('__X_BODY__')) as BABYLON.Mesh;
+	createInstance: ({ options, findMesh }) => {
+		const bodyMesh = findMesh('__X_BODY__');
 		const bodyMaterial = bodyMesh.material as BABYLON.PBRMaterial;
 
 		const applyColor = () => {

@@ -26,11 +26,11 @@ export const speaker = defineObject({
 		},
 	},
 	placement: 'top',
-	createInstance: ({ options, root }) => {
-		const outerMesh = root.getChildMeshes().find(m => m.name.includes('__X_COVER__')) as BABYLON.Mesh;
+	createInstance: ({ options, findMesh }) => {
+		const outerMesh = findMesh('__X_COVER__');
 		const outerMaterial = outerMesh.material as BABYLON.PBRMaterial;
 
-		const innerMesh = root.getChildMeshes().find(m => m.name.includes('__X_BODY__')) as BABYLON.Mesh;
+		const innerMesh = findMesh('__X_BODY__');
 		const innerMaterial = innerMesh.material as BABYLON.PBRMaterial;
 
 		const applyOuterColor = () => {

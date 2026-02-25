@@ -26,9 +26,9 @@ export const petBottle = defineObject({
 		},
 	},
 	placement: 'top',
-	createInstance: ({ root, options }) => {
-		const capMesh = root.getChildMeshes().find(m => m.name.includes('__X_CAP__')) as BABYLON.Mesh;
-		const liquidMesh = root.getChildMeshes().find(m => m.name.includes('__X_LIQUID__')) as BABYLON.Mesh;
+	createInstance: ({ findMesh, options }) => {
+		const capMesh = findMesh('__X_CAP__');
+		const liquidMesh = findMesh('__X_LIQUID__');
 
 		const applyWithCap = () => {
 			capMesh.setEnabled(options.withCap);

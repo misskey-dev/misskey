@@ -27,11 +27,11 @@ export const chair = defineObject({
 	},
 	placement: 'floor',
 	isChair: true,
-	createInstance: ({ root, options }) => {
-		const primaryMesh = root.getChildMeshes().find(m => m.name.includes('__X_PRIMARY__')) as BABYLON.Mesh;
+	createInstance: ({ findMesh, options }) => {
+		const primaryMesh = findMesh('__X_PRIMARY__');
 		const primaryMaterial = primaryMesh.material as BABYLON.PBRMaterial;
 
-		const secondaryMesh = root.getChildMeshes().find(m => m.name.includes('__X_SECONDARY__')) as BABYLON.Mesh;
+		const secondaryMesh = findMesh('__X_SECONDARY__');
 		const secondaryMaterial = secondaryMesh.material as BABYLON.PBRMaterial;
 
 		const applyPrimaryColor = () => {
