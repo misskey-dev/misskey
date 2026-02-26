@@ -229,7 +229,7 @@ onMounted(() => {
 			id: 'c',
 			type: 'desk',
 			position: [-115, 0, 85],
-			rotation: [0, Math.PI, 0],
+			rotation: [0, -Math.PI / 2, 0],
 			options: {},
 		}, {
 			id: 'd',
