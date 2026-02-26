@@ -64,7 +64,7 @@
 		"punycode.js": "2.3.1",
 		"qr-code-styling": "1.9.2",
 		"qr-scanner": "1.4.2",
-		"rollup": "4.57.1",
+		"rollup": "4.59.0",
 		"sanitize-html": "2.17.0",
 		"sass": "1.97.3",
 		"shiki": "3.22.0",

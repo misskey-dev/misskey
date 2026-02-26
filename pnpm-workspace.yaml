@@ -37,3 +37,5 @@ minimumReleaseAgeExclude:
   - '@syuilo/aiscript'
   - minimatch # ← 脆弱性対応。そのうち消す
   - tar # ← 脆弱性対応。そのうち消す
+  # Renovate security update: rollup@4.59.0
+  - rollup@4.59.0
