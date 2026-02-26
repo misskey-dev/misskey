@@ -12,6 +12,7 @@ import { banknote } from './objects/banknote.js';
 import { bed } from './objects/bed.js';
 import { blind } from './objects/blind.js';
 import { book } from './objects/book.js';
+import { books } from './objects/books.js';
 import { cactusS } from './objects/cactusS.js';
 import { cardboardBox } from './objects/cardboardBox.js';
 import { ceilingFanLight } from './objects/ceilingFanLight.js';
@@ -61,6 +62,7 @@ export const OBJECT_DEFS = [
 	bed,
 	blind,
 	book,
+	books,
 	cactusS,
 	cardboardBox,
 	ceilingFanLight,
