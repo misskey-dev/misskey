@@ -10,11 +10,27 @@ export const wallClock = defineObject({
 	id: 'wallClock',
 	name: 'Wall Clock',
 	options: {
-		schema: {},
-		default: {},
+		schema: {
+			frameColor: {
+				type: 'color',
+				label: 'Frame color',
+			},
+		},
+		default: {
+			frameColor: [0.71, 0.58, 0.39],
+		},
 	},
 	placement: 'side',
-	createInstance: ({ room, root }) => {
+	createInstance: ({ room, root, options, findMaterial }) => {
+		const frameMaterial = findMaterial('__X_FRAME__');
+
+		const applyFrameColor = () => {
+			const [r, g, b] = options.frameColor;
+			frameMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		};
+
+		applyFrameColor();
+
 		return {
 			onInited: () => {
 				const hourHand = root.getChildMeshes().find(m => m.name === 'HandH') as BABYLON.Mesh;
@@ -28,6 +44,9 @@ export const wallClock = defineObject({
 					hourHand.rotation = new BABYLON.Vector3(0, 0, hAngle);
 					minuteHand.rotation = new BABYLON.Vector3(0, 0, mAngle);
 				}, 1000));
+			},
+			onOptionsUpdated: ([k, v]) => {
+				applyFrameColor();
 			},
 			interactions: {},
 		};
