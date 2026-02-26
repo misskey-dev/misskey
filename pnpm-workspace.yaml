@@ -37,3 +37,5 @@ minimumReleaseAgeExclude:
   - '@syuilo/aiscript'
   - minimatch # ← 脆弱性対応。そのうち消す
   - tar # ← 脆弱性対応。そのうち消す
+  # Renovate security update: storybook@10.2.10
+  - storybook@10.2.10
