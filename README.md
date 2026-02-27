@@ -36,3 +36,5 @@
   - https://github.com/misskey-dev/misskey/pull/13098
 - 2024/2に大量発生したスパムへの対策
 - [プロキシアカウント無効化](https://github.com/pooza/misskey/pull/346)
+- [MFM→HTML変換で段落を`<p>`タグで囲む](https://github.com/pooza/misskey/issues/403)
+  - Mastodon 4.2+のフッタータグ判定との互換性を確保

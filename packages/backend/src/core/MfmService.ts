@@ -433,6 +433,14 @@ export class MfmService {
 			},
 		} satisfies { [K in mfm.MfmNode['type']]: (node: mfm.NodeType<K>) => string } as { [K in mfm.MfmNode['type']]: (node: mfm.MfmNode) => string };
 
-		return `${toHtml(nodes)}${extraHtml ?? ''}`;
+		let html = `<p>${toHtml(nodes)}${extraHtml ?? ''}</p>`;
+
+		// Convert paragraph breaks (<br /> sequences of 2+) to </p><p> for Mastodon compatibility.
+		// Mastodon 4.2+ hashtag_bar.tsx uses lastChild to detect footer hashtags,
+		// which requires <p> structure instead of flat <br /> structure.
+		html = html.replace(/(<br\s*\/?>){2,}/g, '</p><p>');
+		html = html.replace(/<p><\/p>/g, '');
+
+		return html;
 	}
 }
