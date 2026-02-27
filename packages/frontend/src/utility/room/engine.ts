@@ -884,8 +884,16 @@ export class RoomEngine {
 			},
 			findMaterial: (keyword) => {
 				for (const m of root.getChildMeshes()) {
-					if (m.material != null && m.material.name.includes(keyword)) {
+					if (m.material == null) continue;
+					if (m.material.name.includes(keyword)) {
 						return m.material as BABYLON.PBRMaterial;
+					} else if ((m.material as BABYLON.MultiMaterial).subMaterials != null) {
+						for (const sm of (m.material as BABYLON.MultiMaterial).subMaterials) {
+							if (sm == null) continue;
+							if (sm.name.includes(keyword)) {
+								return sm as BABYLON.PBRMaterial;
+							}
+						}
 					}
 				}
 				throw new Error(`Material with keyword "${keyword}" not found for object ${args.type} (${args.id})`);
