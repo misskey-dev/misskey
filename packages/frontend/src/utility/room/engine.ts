@@ -103,6 +103,8 @@ type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 		default: GetOptionsSchemaValues<OpSc>;
 	};
 	placement: 'top' | 'side' | 'bottom' | 'wall' | 'ceiling' | 'floor';
+	//groupingMeshes: string[]; // multi-materialなメッシュは複数のメッシュに分割されるが、それだと不便な場合に追加の親メッシュでグルーピングするための指定
+	mergeMeshes?: string[] | null; // multi-materialなメッシュは複数のメッシュに分割されるが、それだと不便な場合にメッシュをマージするための指定
 	isChair?: boolean;
 	createInstance: (args: {
 		room: RoomEngine;
@@ -793,6 +795,20 @@ export class RoomEngine {
 
 		const loaderResult = await BABYLON.ImportMeshAsync(`/client-assets/room/objects/${camelToKebab(args.type)}/${camelToKebab(args.type)}.glb`, this.scene);
 
+		// babylonによって自動で追加される右手系変換用ノード
+		const subRoot = loaderResult.meshes[0];
+		subRoot.scaling = subRoot.scaling.scale(WORLD_SCALE);// cmをmに
+
+		if (def.mergeMeshes != null) {
+			for (const groupingMeshKeyword of def.mergeMeshes) {
+				const meshes = loaderResult.meshes.filter(m => m.name.includes(groupingMeshKeyword));
+				const merged = BABYLON.Mesh.MergeMeshes(meshes as BABYLON.Mesh[], true, true, undefined, false, true);
+				merged.name = `${groupingMeshKeyword}.grouped`;
+				merged.setParent(subRoot);
+				loaderResult.meshes.push(merged);
+			}
+		}
+
 		let hasCollisionMesh = false;
 		for (const mesh of loaderResult.meshes) {
 			if (mesh.name.includes('__COLLISION__')) {
@@ -807,10 +823,6 @@ export class RoomEngine {
 			objectType: args.type,
 			isCollision: !hasCollisionMesh,
 		};
-
-		// babylonによって自動で追加される右手系変換用ノード
-		const subRoot = loaderResult.meshes[0];
-		subRoot.scaling = subRoot.scaling.scale(WORLD_SCALE);// cmをmに
 
 		root.addChild(subRoot);
 
@@ -1071,20 +1083,35 @@ export class RoomEngine {
 
 		const materials = new WeakMap<BABYLON.Material, BABYLON.Material>();
 
-		for (const m of ghost.getChildMeshes()) {
+		for (const m of ghost.getChildMeshes() as BABYLON.Mesh[]) {
 			m.metadata = { isGhost: true };
 			m.checkCollisions = false;
 
-			if (m.material) {
-				if (materials.has(m.material)) {
-					m.material = materials.get(m.material)!;
-				} else {
-					const mat = m.material.clone(`${m.material.name}_ghost`);
-					mat.alpha = 0.3;
-					mat.transparencyMode = BABYLON.Material.MATERIAL_ALPHABLEND;
-					materials.set(m.material, mat);
-					m.material = mat;
+			if (m.material == null) continue;
+
+			if (materials.has(m.material)) {
+				m.material = materials.get(m.material)!;
+				continue;
+			}
+
+			if (m.subMeshes != null && m.subMeshes.length > 0 && m.material.subMaterials != null) {
+				const multiGhostMaterial = m.material.clone(`${m.material.name}_ghost`) as BABYLON.MultiMaterial;
+
+				for (let i = 0; i < multiGhostMaterial.subMaterials.length; i++) {
+					const subMaterial = multiGhostMaterial.subMaterials[i];
+					const ghostMaterial = subMaterial.clone(`${subMaterial.name}_ghost`);
+					ghostMaterial.alpha = 0.3;
+					ghostMaterial.transparencyMode = BABYLON.Material.MATERIAL_ALPHABLEND;
+					multiGhostMaterial.subMaterials[i] = ghostMaterial;
+					materials.set(m.material, multiGhostMaterial);
+					m.material = multiGhostMaterial;
 				}
+			} else {
+				const ghostMaterial = m.material.clone(`${m.material.name}_ghost`);
+				ghostMaterial.alpha = 0.3;
+				ghostMaterial.transparencyMode = BABYLON.Material.MATERIAL_ALPHABLEND;
+				materials.set(m.material, ghostMaterial);
+				m.material = ghostMaterial;
 			}
 		}
 
