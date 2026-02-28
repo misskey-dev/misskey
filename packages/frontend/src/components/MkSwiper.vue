@@ -121,6 +121,14 @@ function setPullDistance(nextDistance: number) {
 	});
 }
 
+function cancelSetPullDistance() {
+	if (rafId != null) {
+		window.cancelAnimationFrame(rafId);
+		rafId = null;
+	}
+	pendingPullDistance = null;
+}
+
 function cancelMoveBySystem() {
 	if (releaseAnimationCancel != null) {
 		releaseAnimationCancel();
@@ -134,19 +142,17 @@ function cancelMoveBySystem() {
 
 onUnmounted(() => {
 	// コンポーネント破棄後にpullDistanceを書き換えないようにする
-	if (rafId != null) {
-		window.cancelAnimationFrame(rafId);
-		rafId = null;
-	}
-	pendingPullDistance = null;
+	cancelSetPullDistance();
 	cancelMoveBySystem();
 });
 
 function moveBySystem(to: number, duration = RELEASE_TRANSITION_DURATION): Promise<void> {
 	cancelMoveBySystem();
+	// moveBySystemのtickはRAF内で実行されるため、二重RAFを避ける
+	cancelSetPullDistance();
 
 	if (!shouldAnimate.value || duration <= 0) {
-		setPullDistance(to);
+		pullDistance.value = to;
 		return Promise.resolve();
 	}
 
@@ -191,10 +197,15 @@ function moveBySystem(to: number, duration = RELEASE_TRANSITION_DURATION): Promi
 			const t = Math.min((now - startTime) / duration, 1);
 			// リリース時は軽くイージング（追従中は直接反映）
 			const eased = 1 - Math.pow(1 - t, 3);
-			setPullDistance(from + delta * eased);
 			if (t >= 1) {
+				pullDistance.value = to;
 				finish();
 				return;
+			}
+			const next = from + delta * eased;
+			// グリッチ抑制: 0.5px未満の更新は捨てる
+			if (Math.abs(next - pullDistance.value) >= 0.5) {
+				pullDistance.value = next;
 			}
 			moveBySystemRafId = window.requestAnimationFrame(tick);
 		};
@@ -226,7 +237,7 @@ function moveStartByPointer(event: PointerEvent) {
 	// すでに追跡中なら今回のは無視
 	if (activePointerId != null && activePointerId !== event.pointerId) return;
 
-	if (hasSomethingToDoWithXSwipe(event.target as HTMLElement)) return;
+	if (event.target == null || !(event.target instanceof HTMLElement) || hasSomethingToDoWithXSwipe(event.target)) return;
 
 	cancelMoveBySystem();
 
@@ -239,7 +250,11 @@ function moveStartByPointer(event: PointerEvent) {
 
 	// 要素外に出てもmove/upを受け取れるようにする
 	if (event.currentTarget != null && event.currentTarget instanceof HTMLElement) {
-		event.currentTarget.setPointerCapture(event.pointerId);
+		try {
+			event.currentTarget.setPointerCapture(event.pointerId);
+		} catch {
+			// ignore
+		}
 	}
 }
 
