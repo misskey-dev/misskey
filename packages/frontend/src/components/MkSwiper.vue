@@ -219,6 +219,15 @@ function closeContent() {
 	return moveBySystem(0);
 }
 
+function safeReleasePointerCapture(event: PointerEvent, pointerId: number) {
+	if (event.currentTarget == null || !(event.currentTarget instanceof HTMLElement)) return;
+	try {
+		event.currentTarget.releasePointerCapture(pointerId);
+	} catch {
+		// ignore
+	}
+}
+
 function moveStartByPointer(event: PointerEvent) {
 	if (!prefer.r.enableHorizontalSwipe.value) return;
 
@@ -326,6 +335,9 @@ function onSwipeRelease(distance: number) {
 
 function moveEndByPointer(event: PointerEvent) {
 	if (swipeAborted) {
+		if (activePointerId != null && event.pointerId === activePointerId) {
+			safeReleasePointerCapture(event, activePointerId);
+		}
 		resetState();
 		return;
 	}
@@ -337,14 +349,23 @@ function moveEndByPointer(event: PointerEvent) {
 	if (startScreenX == null) return;
 	if (!isTracking) return;
 
-	if (!isSwiping.value) return;
-
-	if (hasSomethingToDoWithXSwipe(event.target as HTMLElement)) return;
+	if (!isSwiping.value) {
+		const pointerId = activePointerId;
+		resetState();
+		if (pointerId != null) {
+			safeReleasePointerCapture(event, pointerId);
+		}
+		return;
+	}
 
 	const distance = event.screenX - startScreenX;
 	onSwipeRelease(distance);
 
+	const pointerId = activePointerId;
 	resetState();
+	if (pointerId != null) {
+		safeReleasePointerCapture(event, pointerId);
+	}
 	closeContent().finally(() => {
 		isSwipingForClass.value = false;
 	});
@@ -352,8 +373,10 @@ function moveEndByPointer(event: PointerEvent) {
 
 function moveCancelByPointer(event: PointerEvent) {
 	if (event.pointerType === 'mouse') return;
-	if (activePointerId != null && event.pointerId !== activePointerId) return;
+	if (!isTracking) return;
+	if (activePointerId == null || event.pointerId !== activePointerId) return;
 	resetState();
+	safeReleasePointerCapture(event, activePointerId);
 	closeContent().finally(() => {
 		isSwipingForClass.value = false;
 	});
