@@ -7,10 +7,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div
 	ref="rootEl"
 	:class="[$style.transitionRoot, { [$style.enableAnimation]: shouldAnimate }]"
-	@touchstart.passive="moveStartByTouch"
-	@touchmove.passive="moving"
-	@touchend.passive="moveEndByTouch"
-	@touchcancel.passive="moveCancelByTouch"
+	@pointerdown.passive="moveStartByPointer"
+	@pointermove.passive="movingByPointer"
+	@pointerup.passive="moveEndByPointer"
+	@pointercancel.passive="moveCancelByPointer"
+	@lostpointercapture.passive="moveCancelByPointer"
 >
 	<Transition
 		:class="[$style.transitionChildren, { [$style.swiping]: isSwipingForClass }]"
@@ -73,6 +74,7 @@ const SCROLL_WIDTH_TOLERANCE_PX = 1;
 
 let startScreenX: number | null = null;
 let startScreenY: number | null = null;
+let activePointerId: number | null = null;
 
 let isTracking = false;
 let rafId: number | null = null;
@@ -87,12 +89,12 @@ const isSwipingForClass = ref(false);
 let swipeAborted = false;
 let swipeDirectionLocked: 'horizontal' | 'vertical' | null = null;
 
-function getScreenX(event: TouchEvent): number {
-	return event.touches[0]?.screenX ?? 0;
+function getScreenX(event: PointerEvent): number {
+	return event.screenX;
 }
 
-function getScreenY(event: TouchEvent): number {
-	return event.touches[0]?.screenY ?? 0;
+function getScreenY(event: PointerEvent): number {
+	return event.screenY;
 }
 
 function clamp(value: number, min: number, max: number): number {
@@ -203,6 +205,7 @@ function moveBySystem(to: number, duration = RELEASE_TRANSITION_DURATION): Promi
 function resetState() {
 	startScreenX = null;
 	startScreenY = null;
+	activePointerId = null;
 	isTracking = false;
 	swipeDirectionLocked = null;
 	swipeAborted = false;
@@ -213,26 +216,37 @@ function closeContent() {
 	return moveBySystem(0);
 }
 
-function moveStartByTouch(event: TouchEvent) {
+function moveStartByPointer(event: PointerEvent) {
 	if (!prefer.r.enableHorizontalSwipe.value) return;
 
-	if (event.touches.length !== 1) return;
+	// マウス操作は無視
+	if (event.pointerType === 'mouse') return;
+	// 複数指/非プライマリを弾く
+	if (!event.isPrimary) return;
+	// すでに追跡中なら今回のは無視
+	if (activePointerId != null && activePointerId !== event.pointerId) return;
 
 	if (hasSomethingToDoWithXSwipe(event.target as HTMLElement)) return;
 
 	cancelMoveBySystem();
 
+	activePointerId = event.pointerId;
 	startScreenX = getScreenX(event);
 	startScreenY = getScreenY(event);
 	isTracking = true;
 	swipeDirectionLocked = null; // スワイプ方向をリセット
 	swipeAborted = false;
+
+	// 要素外に出てもmove/upを受け取れるようにする
+	if (event.currentTarget != null && event.currentTarget instanceof HTMLElement) {
+		event.currentTarget.setPointerCapture(event.pointerId);
+	}
 }
 
-function moving(event: TouchEvent) {
+function movingByPointer(event: PointerEvent) {
 	if (!prefer.r.enableHorizontalSwipe.value) return;
-
-	if (event.touches.length !== 1) return;
+	if (event.pointerType === 'mouse') return;
+	if (activePointerId == null || event.pointerId !== activePointerId) return;
 
 	if (startScreenX == null || startScreenY == null) return;
 	if (!isTracking) return;
@@ -303,16 +317,15 @@ function onSwipeRelease(distance: number) {
 	}
 }
 
-function moveEndByTouch(event: TouchEvent) {
+function moveEndByPointer(event: PointerEvent) {
 	if (swipeAborted) {
-		swipeAborted = false;
 		resetState();
 		return;
 	}
 
 	if (!prefer.r.enableHorizontalSwipe.value) return;
-
-	if (event.touches.length !== 0) return;
+	if (event.pointerType === 'mouse') return;
+	if (activePointerId == null || event.pointerId !== activePointerId) return;
 
 	if (startScreenX == null) return;
 	if (!isTracking) return;
@@ -321,7 +334,7 @@ function moveEndByTouch(event: TouchEvent) {
 
 	if (hasSomethingToDoWithXSwipe(event.target as HTMLElement)) return;
 
-	const distance = event.changedTouches[0].screenX - startScreenX;
+	const distance = event.screenX - startScreenX;
 	onSwipeRelease(distance);
 
 	resetState();
@@ -330,8 +343,9 @@ function moveEndByTouch(event: TouchEvent) {
 	});
 }
 
-function moveCancelByTouch(_event: TouchEvent) {
-	swipeAborted = false;
+function moveCancelByPointer(event: PointerEvent) {
+	if (event.pointerType === 'mouse') return;
+	if (activePointerId != null && event.pointerId !== activePointerId) return;
 	resetState();
 	closeContent().finally(() => {
 		isSwipingForClass.value = false;
