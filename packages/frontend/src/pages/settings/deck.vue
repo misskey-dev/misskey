@@ -40,31 +40,43 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<SearchMarker :keywords="['column', 'align']">
 			<MkPreferenceContainer k="deck.columnAlign">
-				<MkRadios v-model="columnAlign">
+				<MkRadios
+					v-model="columnAlign"
+					:options="[
+						{ value: 'left', label: i18n.ts.left },
+						{ value: 'center', label: i18n.ts.center },
+					]"
+				>
 					<template #label><SearchLabel>{{ i18n.ts._deck.columnAlign }}</SearchLabel></template>
-					<option value="left">{{ i18n.ts.left }}</option>
-					<option value="center">{{ i18n.ts.center }}</option>
 				</MkRadios>
 			</MkPreferenceContainer>
 		</SearchMarker>
 
 		<SearchMarker :keywords="['menu', 'position']">
 			<MkPreferenceContainer k="deck.menuPosition">
-				<MkRadios v-model="menuPosition">
+				<MkRadios
+					v-model="menuPosition"
+					:options="[
+						{ value: 'right', label: i18n.ts.right },
+						{ value: 'bottom', label: i18n.ts.bottom },
+					]"
+				>
 					<template #label><SearchLabel>{{ i18n.ts._deck.deckMenuPosition }}</SearchLabel></template>
-					<option value="right">{{ i18n.ts.right }}</option>
-					<option value="bottom">{{ i18n.ts.bottom }}</option>
 				</MkRadios>
 			</MkPreferenceContainer>
 		</SearchMarker>
 
 		<SearchMarker :keywords="['navbar', 'position']">
 			<MkPreferenceContainer k="deck.navbarPosition">
-				<MkRadios v-model="navbarPosition">
+				<MkRadios
+					v-model="navbarPosition"
+					:options="[
+						{ value: 'left', label: i18n.ts.left },
+						{ value: 'top', label: i18n.ts.top },
+						{ value: 'bottom', label: i18n.ts.bottom },
+					]"
+				>
 					<template #label><SearchLabel>{{ i18n.ts._deck.navbarPosition }}</SearchLabel></template>
-					<option value="left">{{ i18n.ts.left }}</option>
-					<option value="top">{{ i18n.ts.top }}</option>
-					<option value="bottom">{{ i18n.ts.bottom }}</option>
 				</MkRadios>
 			</MkPreferenceContainer>
 		</SearchMarker>

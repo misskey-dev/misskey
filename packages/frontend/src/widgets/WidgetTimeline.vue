@@ -93,12 +93,12 @@ const { widgetProps, configure, save } = useWidgetPropsManager(name,
 const menuOpened = ref(false);
 
 const headerTitle = computed<string>(() => {
-	if (widgetProps.src === 'list' && widgetProps.list != null) {
-		return widgetProps.list.name;
-	} else if (widgetProps.src === 'antenna' && widgetProps.antenna != null) {
-		return widgetProps.antenna.name;
+	if (widgetProps.src === 'list') {
+		return widgetProps.list != null ? widgetProps.list.name : '?';
+	} else if (widgetProps.src === 'antenna') {
+		return widgetProps.antenna != null ? widgetProps.antenna.name : '?';
 	} else {
-		return (i18n.ts._timelines as any)[widgetProps.src] ?? '?';
+		return i18n.ts._timelines[widgetProps.src] ?? '?';
 	}
 });
 

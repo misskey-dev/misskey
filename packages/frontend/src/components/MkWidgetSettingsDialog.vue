@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@ok="save()"
 	@closed="emit('closed')"
 >
-	<template #header><i class="ti ti-icons"></i> {{ (i18n.ts._widgets as any)[widgetName] ?? widgetName }}</template>
+	<template #header><i class="ti ti-icons"></i> {{ i18n.ts._widgets[widgetName] ?? widgetName }}</template>
 
 	<MkPreviewWithControls>
 		<template #preview>
@@ -50,13 +50,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { useTemplateRef, ref, computed, onBeforeUnmount, onMounted } from 'vue';
 import MkPreviewWithControls from './MkPreviewWithControls.vue';
 import type { Form } from '@/utility/form.js';
+import type { WidgetName } from '@/widgets/index.js';
 import { deepClone } from '@/utility/clone.js';
 import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkForm from '@/components/MkForm.vue';
 
 const props = defineProps<{
-	widgetName: string;
+	widgetName: WidgetName;
 	form: Form;
 	currentSettings: Record<string, any>;
 }>();

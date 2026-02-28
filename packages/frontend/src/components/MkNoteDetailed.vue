@@ -143,7 +143,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:reactionEmojis="$appearNote.reactionEmojis"
 					:myReaction="$appearNote.myReaction"
 					:noteId="appearNote.id"
-					:maxNumber="16"
 				/>
 				<button class="_button" :class="$style.noteFooterButton" @click="reply()">
 					<i class="ti ti-arrow-back-up"></i>

@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 
-	<slot/>
+	<slot></slot>
 </div>
 </template>
 

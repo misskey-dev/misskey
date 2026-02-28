@@ -10,6 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, useTemplateRef } from 'vue';
 import { Chart } from 'chart.js';
+import type { ScatterDataPoint } from 'chart.js';
 import tinycolor from 'tinycolor2';
 import { store } from '@/store.js';
 import { useChartTooltip } from '@/composables/use-chart-tooltip.js';
@@ -17,6 +18,12 @@ import { chartVLine } from '@/utility/chart-vline.js';
 import { alpha } from '@/utility/color.js';
 import { initChart } from '@/utility/init-chart.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
+
+interface RetentionPoint extends ScatterDataPoint {
+	x: number;
+	y: number;
+	d: string;
+}
 
 initChart();
 
@@ -62,14 +69,14 @@ onMounted(async () => {
 				fill: false,
 				tension: 0.4,
 				data: [{
-					x: '0',
+					x: 0,
 					y: 100,
 					d: getYYYYMMDD(new Date(record.createdAt)),
 				}, ...Object.entries(record.data).sort((a, b) => getDate(a[0]) > getDate(b[0]) ? 1 : -1).map(([k, v], i) => ({
-					x: (i + 1).toString(),
+					x: i + 1,
 					y: (v / record.users) * 100,
 					d: getYYYYMMDD(new Date(record.createdAt)),
-				}))] as any,
+				}))],
 			})),
 		},
 		options: {
@@ -111,11 +118,11 @@ onMounted(async () => {
 					enabled: false,
 					callbacks: {
 						title(context) {
-							const v = context[0].dataset.data[context[0].dataIndex] as unknown as { x: string, y: number, d: string };
+							const v = context[0].dataset.data[context[0].dataIndex] as RetentionPoint;
 							return `${v.x} days later`;
 						},
 						label(context) {
-							const v = context.dataset.data[context.dataIndex] as unknown as { x: string, y: number, d: string };
+							const v = context.dataset.data[context.dataIndex] as RetentionPoint;
 							const p = Math.round(v.y) + '%';
 							return `${v.d} ${p}`;
 						},

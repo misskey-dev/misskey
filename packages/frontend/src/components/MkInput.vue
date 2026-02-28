@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@input="onInput"
 		>
 		<datalist v-if="datalist" :id="id">
-			<option v-for="data in datalist" :key="data" :value="data"/>
+			<option v-for="data in datalist" :key="data" :value="data"></option>
 		</datalist>
 		<div ref="suffixEl" :class="$style.suffix"><slot name="suffix"></slot></div>
 	</div>
