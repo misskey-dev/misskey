@@ -2,6 +2,7 @@
 
 ### Note
 - `users/following` の `birthday` プロパティは非推奨になりました。代わりに `users/get-following-birthday-users` をご利用ください。
+- Node.jsのセキュリティアップデートに伴い、Node.jsの最小バージョンを22.22.0に引き上げました。
 
 ### General
 - Enhance: 「もうすぐ誕生日のユーザー」ウィジェットで、誕生日が至近のユーザーも表示できるように  
