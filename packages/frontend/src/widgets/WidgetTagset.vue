@@ -141,6 +141,7 @@ const setPrograms = async () => {
 		if (v.livecure) commandToot.tagging['user_tags'].push(dic.livecure);
 		(v.extra_tags ?? []).forEach(tag => commandToot.tagging['user_tags'].push(tag));
 		if (v.minutes) commandToot.tagging['minutes'] = v.minutes;
+		if (v.minutes) commandToot.decoration = { minutes: v.minutes };
 	}
 
 	const label = itemMap.value[selected].label || '';
