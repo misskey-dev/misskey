@@ -125,7 +125,7 @@
 		"intersection-observer": "0.12.2",
 		"magic-string": "0.30.21",
 		"micromatch": "4.0.8",
-		"minimatch": "10.2.2",
+		"minimatch": "10.2.3",
 		"msw": "2.12.10",
 		"msw-storybook-addon": "2.0.6",
 		"nodemon": "3.1.11",
