@@ -14,7 +14,7 @@
 		"@types/node": "24.10.13",
 		"@typescript-eslint/eslint-plugin": "8.56.0",
 		"@typescript-eslint/parser": "8.56.0",
-		"rollup": "4.58.0"
+		"rollup": "4.59.0"
 	},
 	"dependencies": {
 		"i18n": "workspace:*",
