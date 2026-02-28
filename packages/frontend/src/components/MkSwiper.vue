@@ -66,6 +66,9 @@ const RELEASE_TRANSITION_DURATION = 200;
 // スワイプ方向ロック判定を始める最小移動量（小さすぎると誤判定しやすい）
 const DIRECTION_LOCK_START_DISTANCE = 6;
 
+// 横スクロール可否判定の誤差許容（px）
+const SCROLL_WIDTH_TOLERANCE_PX = 1;
+
 // ▲ しきい値 ▲ //
 
 let startScreenX: number | null = null;
@@ -73,6 +76,7 @@ let startScreenY: number | null = null;
 
 let isTracking = false;
 let rafId: number | null = null;
+let moveBySystemRafId: number | null = null;
 let pendingPullDistance: number | null = null;
 let releaseAnimationCancel: (() => void) | null = null;
 
@@ -120,6 +124,10 @@ function cancelMoveBySystem() {
 		releaseAnimationCancel();
 		releaseAnimationCancel = null;
 	}
+	if (moveBySystemRafId != null) {
+		window.cancelAnimationFrame(moveBySystemRafId);
+		moveBySystemRafId = null;
+	}
 }
 
 onUnmounted(() => {
@@ -152,14 +160,26 @@ function moveBySystem(to: number, duration = RELEASE_TRANSITION_DURATION): Promi
 		// DOMHighResTimeStampと合わせるためにDate.now()ではなくperformance.now()を使う
 		let startTime: DOMHighResTimeStamp | null = null;
 		let cancelled = false;
+		let finished = false;
+		const finish = () => {
+			if (finished) return;
+			finished = true;
+			if (moveBySystemRafId != null) {
+				window.cancelAnimationFrame(moveBySystemRafId);
+				moveBySystemRafId = null;
+			}
+			releaseAnimationCancel = null;
+			resolve();
+		};
 		releaseAnimationCancel = () => {
 			cancelled = true;
 			startTime = null;
+			finish();
 		};
 
 		const tick = (now: DOMHighResTimeStamp) => {
 			if (cancelled) {
-				resolve();
+				finish();
 				return;
 			}
 			if (startTime == null) {
@@ -171,13 +191,12 @@ function moveBySystem(to: number, duration = RELEASE_TRANSITION_DURATION): Promi
 			const eased = 1 - Math.pow(1 - t, 3);
 			setPullDistance(from + delta * eased);
 			if (t >= 1) {
-				releaseAnimationCancel = null;
-				resolve();
+				finish();
 				return;
 			}
-			window.requestAnimationFrame(tick);
+			moveBySystemRafId = window.requestAnimationFrame(tick);
 		};
-		window.requestAnimationFrame(tick);
+		moveBySystemRafId = window.requestAnimationFrame(tick);
 	});
 }
 
@@ -186,6 +205,7 @@ function resetState() {
 	startScreenY = null;
 	isTracking = false;
 	swipeDirectionLocked = null;
+	swipeAborted = false;
 	isSwiping.value = false;
 }
 
@@ -326,7 +346,7 @@ function hasSomethingToDoWithXSwipe(el: HTMLElement) {
 
 	const style = window.getComputedStyle(el);
 	// 実際に横スクロールできる要素では横スワイプができないほうがよい
-	if (['scroll', 'auto'].includes(style.overflowX) && el.scrollWidth > el.clientWidth + 1) return true;
+	if (['scroll', 'auto'].includes(style.overflowX) && el.scrollWidth > el.clientWidth + SCROLL_WIDTH_TOLERANCE_PX) return true;
 	// すでに横スワイプを禁止している要素では横スワイプができないほうがよい
 	if (style.touchAction === 'pan-x') return true;
 
