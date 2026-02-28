@@ -89,14 +89,6 @@ const isSwipingForClass = ref(false);
 let swipeAborted = false;
 let swipeDirectionLocked: 'horizontal' | 'vertical' | null = null;
 
-function getScreenX(event: PointerEvent): number {
-	return event.screenX;
-}
-
-function getScreenY(event: PointerEvent): number {
-	return event.screenY;
-}
-
 function clamp(value: number, min: number, max: number): number {
 	return Math.min(Math.max(value, min), max);
 }
@@ -242,8 +234,8 @@ function moveStartByPointer(event: PointerEvent) {
 	cancelMoveBySystem();
 
 	activePointerId = event.pointerId;
-	startScreenX = getScreenX(event);
-	startScreenY = getScreenY(event);
+	startScreenX = event.screenX;
+	startScreenY = event.screenY;
 	isTracking = true;
 	swipeDirectionLocked = null; // スワイプ方向をリセット
 	swipeAborted = false;
@@ -270,8 +262,8 @@ function movingByPointer(event: PointerEvent) {
 
 	if (hasSomethingToDoWithXSwipe(event.target as HTMLElement)) return;
 
-	const rawDistanceX = getScreenX(event) - startScreenX;
-	const rawDistanceY = getScreenY(event) - startScreenY;
+	const rawDistanceX = event.screenX - startScreenX;
+	const rawDistanceY = event.screenY - startScreenY;
 
 	// スワイプ方向をロック
 	if (!swipeDirectionLocked) {
