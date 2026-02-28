@@ -46,15 +46,22 @@ let startScreenY: number | null = null;
 let moveBySystemCancel: (() => void) | null = null;
 let moveBySystemRafId: number | null = null;
 
+function stopWindowPullListeners() {
+	window.removeEventListener('mousemove', onMouseMove);
+	window.removeEventListener('mouseup', onMouseUp);
+	window.removeEventListener('touchmove', onTouchMove);
+	window.removeEventListener('touchend', onTouchEnd);
+}
+
 const onMouseMove = (event: MouseEvent) => moving(event);
 const onMouseUp = () => {
-	window.removeEventListener('mousemove', onMouseMove);
+	stopWindowPullListeners();
 	onPullRelease();
 };
 
 const onTouchMove = (event: TouchEvent) => moving(event);
 const onTouchEnd = () => {
-	window.removeEventListener('touchmove', onTouchMove);
+	stopWindowPullListeners();
 	onPullRelease();
 };
 
@@ -138,7 +145,6 @@ function moveStartByTouch(event: TouchEvent) {
 function moveBySystem(to: number): Promise<void> {
 	if (moveBySystemCancel != null) {
 		moveBySystemCancel();
-		moveBySystemCancel = null;
 	}
 
 	return new Promise(r => {
@@ -150,22 +156,26 @@ function moveBySystem(to: number): Promise<void> {
 			return;
 		}
 
-		let startTime: DOMHighResTimeStamp | null = null;
-		let cancelled = false;
-		moveBySystemCancel = () => {
-			cancelled = true;
-			startTime = null;
+		let finished = false;
+		const finish = () => {
+			if (finished) return;
+			finished = true;
 			if (moveBySystemRafId != null) {
 				window.cancelAnimationFrame(moveBySystemRafId);
 				moveBySystemRafId = null;
 			}
+			moveBySystemCancel = null;
+			r();
+		};
+
+		let startTime: DOMHighResTimeStamp | null = null;
+		moveBySystemCancel = () => {
+			startTime = null;
+			finish();
 		};
 
 		const tick = (now: DOMHighResTimeStamp) => {
-			if (cancelled) {
-				r();
-				return;
-			}
+			if (finished) return;
 			if (startTime == null) {
 				startTime = now;
 			}
@@ -173,9 +183,7 @@ function moveBySystem(to: number): Promise<void> {
 			const time = now - startTime;
 			if (time >= RELEASE_TRANSITION_DURATION) {
 				pullDistance.value = to;
-				moveBySystemCancel = null;
-				moveBySystemRafId = null;
-				r();
+				finish();
 				return;
 			}
 			const nextHeight = startHeight - (overHeight / RELEASE_TRANSITION_DURATION) * time;
@@ -211,6 +219,7 @@ async function closeContent() {
 }
 
 function onPullRelease() {
+	stopWindowPullListeners();
 	startScreenY = null;
 	if (isPulledEnough.value) {
 		isPulledEnough.value = false;
@@ -280,12 +289,10 @@ onMounted(() => {
 onUnmounted(() => {
 	if (moveBySystemCancel != null) {
 		moveBySystemCancel();
-		moveBySystemCancel = null;
 	}
 	moveBySystemRafId = null;
 	// pull中にwindowへ登録したリスナーが残るのを防ぐ
-	window.removeEventListener('mousemove', onMouseMove);
-	window.removeEventListener('touchmove', onTouchMove);
+	stopWindowPullListeners();
 	unlockDownScroll();
 	if (rootEl.value) rootEl.value.removeEventListener('mousedown', moveStartByMouse);
 	if (rootEl.value) rootEl.value.removeEventListener('touchstart', moveStartByTouch);
