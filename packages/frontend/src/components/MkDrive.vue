@@ -27,7 +27,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<span v-if="folder != null" :class="[$style.navPathItem, $style.navSeparator]"><i class="ti ti-chevron-right"></i></span>
 				<span v-if="folder != null" :class="[$style.navPathItem, $style.navCurrent]">{{ folder.name }}</span>
 			</div>
-			<button class="_button" :class="$style.navMenu" @click="showMenu"><i class="ti ti-dots"></i></button>
+			<div :class="$style.navMenu" style="display: flex; gap: 8px;">
+				<button class="_button" style="align-items: center; display: flex;" @click="openPCUploader"><i class="ti ti-upload"></i></button>
+				<button class="_button" style="align-items: center; display: flex;" @click="urlUpload"><i class="ti ti-link"></i></button>
+				<button class="_button" style="align-items: center; display: flex;" @click="showMenu"><i class="ti ti-dots"></i></button>
+			</div>
 		</nav>
 	</template>
 
@@ -552,6 +556,13 @@ function cd(target?: Misskey.entities.DriveFolder | Misskey.entities.DriveFolder
 		if (folderToMove.parent) dive(folderToMove.parent);
 
 		initialize();
+	});
+}
+
+function openPCUploader() {
+	chooseFileFromPcAndUpload({
+		multiple: true,
+		folderId: folder.value?.id,
 	});
 }
 
