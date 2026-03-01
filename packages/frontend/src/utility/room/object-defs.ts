@@ -24,6 +24,7 @@ import { ductTape } from './objects/ductTape.js';
 import { emptyBento } from './objects/emptyBento.js';
 import { energyDrink } from './objects/energyDrink.js';
 import { facialTissue } from './objects/facialTissue.js';
+import { hangingTShirt } from './objects/hangingTShirt.js';
 import { keyboard } from './objects/keyboard.js';
 import { lavaLamp } from './objects/lavaLamp.js';
 import { letterCase } from './objects/letterCase.js';
@@ -75,6 +76,7 @@ export const OBJECT_DEFS = [
 	emptyBento,
 	energyDrink,
 	facialTissue,
+	hangingTShirt,
 	keyboard,
 	lavaLamp,
 	letterCase,
