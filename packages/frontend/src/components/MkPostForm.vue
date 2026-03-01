@@ -96,6 +96,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.footerLeft">
 			<button v-tooltip="i18n.ts.attachFile + ' (' + i18n.ts.upload + ')'" class="_button" :class="$style.footerButton" @click="chooseFileFromPc"><i class="ti ti-photo-plus"></i></button>
 			<button v-tooltip="i18n.ts.attachFile + ' (' + i18n.ts.fromDrive + ')'" class="_button" :class="$style.footerButton" @click="chooseFileFromDrive"><i class="ti ti-cloud-download"></i></button>
+			<button v-tooltip="i18n.ts.attachFile + ' (' + i18n.ts.fromUrl + ')'" class="_button" :class="$style.footerButton" @click="attachFileFromUrl"><i class="ti ti-link"></i></button>
 			<button v-tooltip="i18n.ts.poll" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: poll }]" @click="togglePoll"><i class="ti ti-chart-arrows"></i></button>
 			<button v-tooltip="i18n.ts.useCw" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: useCw }]" @click="useCw = !useCw"><i class="ti ti-eye-off"></i></button>
 			<button v-tooltip="i18n.ts.hashtags" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: withHashtags }]" @click="withHashtags = !withHashtags"><i class="ti ti-hash"></i></button>
@@ -501,6 +502,23 @@ function chooseFileFromDrive(ev: MouseEvent) {
 	chooseDriveFile({ multiple: true }).then(driveFiles => {
 		files.value.push(...driveFiles);
 	});
+}
+
+async function attachFileFromUrl() {
+	if (props.mock) return;
+
+	const { canceled, result: fileUrl } = await os.inputText({
+		title: i18n.ts.uploadFromUrl,
+		type: 'url',
+		placeholder: i18n.ts.uploadFromUrlDescription,
+	});
+	if (canceled || !fileUrl) return;
+
+	let uploadedFile = await os.apiWithDialog('drive/files/upload-from-url', {
+		url: fileUrl,
+		folderId: undefined,
+	});
+	files.value.push(uploadedFile);
 }
 
 function detachFile(id) {
