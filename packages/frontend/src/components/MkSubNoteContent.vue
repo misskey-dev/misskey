@@ -12,11 +12,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<Mfm v-if="note.text" :text="note.text" :author="note.user" :nyaize="'respect'" :emojiUrls="note.emojis"/>
 		<MkA v-if="note.renoteId" :class="$style.rp" :to="`/notes/${note.renoteId}`">RN: ...</MkA>
 	</div>
-	<details v-if="note.files && note.files.length > 0">
+	<details v-if="note.files && note.files.length > 0" :open="!isLong">
 		<summary>({{ i18n.tsx.withNFiles({ n: note.files.length }) }})</summary>
 		<MkMediaList :mediaList="note.files"/>
 	</details>
-	<details v-if="note.poll">
+	<details v-if="note.poll" :open="!isLong">
 		<summary>{{ i18n.ts.poll }}</summary>
 		<MkPoll
 			:noteId="note.id"
