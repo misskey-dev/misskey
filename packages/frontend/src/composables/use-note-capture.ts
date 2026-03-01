@@ -227,6 +227,16 @@ export function useNoteCapture(props: {
 	function onReacted(ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; } | null; }): void {
 		let normalizedName = ctx.reaction.replace(/^:(\w+):$/, ':$1@.:');
 		normalizedName = normalizedName.match('\u200d') ? normalizedName : normalizedName.replace(/\ufe0f/g, '');
+		const blockedIds: Set<string> = ($i as any)?.blockedIds ?? new Set();
+		const mutedIds: Set<string> = ($i as any)?.mutedIds ?? new Set();
+		const isBlocked = blockedIds.has(ctx.userId);
+		const isMuted = mutedIds.has(ctx.userId);
+
+		if (isBlocked || isMuted) {
+			// ブロック/ミュートユーザーからのリアクションは集計に含めず、処理を終了
+			return;
+		}
+
 		if (reactionUserMap.has(ctx.userId) && reactionUserMap.get(ctx.userId) === normalizedName) return;
 		reactionUserMap.set(ctx.userId, normalizedName);
 
@@ -247,6 +257,15 @@ export function useNoteCapture(props: {
 	function onUnreacted(ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; } | null; }): void {
 		let normalizedName = ctx.reaction.replace(/^:(\w+):$/, ':$1@.:');
 		normalizedName = normalizedName.match('\u200d') ? normalizedName : normalizedName.replace(/\ufe0f/g, '');
+		const blockedIds: Set<string> = ($i as any)?.blockedIds ?? new Set();
+		const mutedIds: Set<string> = ($i as any)?.mutedIds ?? new Set();
+		const isBlocked = blockedIds.has(ctx.userId);
+		const isMuted = mutedIds.has(ctx.userId);
+
+		if (isBlocked || isMuted) {
+			// ブロック/ミュートユーザーによるリアクション削除は無視する
+			return;
+		}
 
 		// 確実に一度リアクションされて取り消されている場合のみ処理をとめる（APIで初回読み込み→Streamでアップデート等の場合、reactionUserMapに情報がないため）
 		if (reactionUserMap.has(ctx.userId) && reactionUserMap.get(ctx.userId) === noReaction) return;
