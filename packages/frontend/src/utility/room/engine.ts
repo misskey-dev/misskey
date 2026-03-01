@@ -789,7 +789,13 @@ export class RoomEngine {
 	}) {
 		const def = getObjectDef(args.type);
 
-		const camelToKebab = (str: string) => str.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+		// ex) hangingTShirt -> hanging-t-shirt
+		const camelToKebab = (s: string) => {
+			return s
+				.replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+				.replace(/([A-Z])([A-Z][a-z])/g, '$1-$2')
+				.toLowerCase();
+		};
 
 		const root = new BABYLON.Mesh(`object_${args.id}_${args.type}`, this.scene);
 
@@ -1203,6 +1209,23 @@ export class RoomEngine {
 		this.intervalIds.push(intervalId);
 
 		sound.playUrl('/client-assets/room/sfx/grab.mp3', {
+			volume: 1,
+			playbackRate: 1,
+		});
+	}
+
+	public removeSelectedObject() {
+		if (this.selected.value == null) return;
+
+		const objectId = this.selected.value.objectId;
+
+		this.objectMeshs.get(objectId)?.dispose();
+		this.objectMeshs.delete(objectId);
+		this.objectInstances.delete(objectId);
+		this.roomState.installedObjects = this.roomState.installedObjects.filter(o => o.id !== objectId);
+		this.selected.value = null;
+
+		sound.playUrl('/client-assets/room/sfx/remove.mp3', {
 			volume: 1,
 			playbackRate: 1,
 		});

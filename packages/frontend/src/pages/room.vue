@@ -18,6 +18,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkButton v-if="engine.ui.isGrabbing || engine.ui.isGrabbingForInstall" @click="rotate"><i class="ti ti-view-360-arrow"></i> (R)</MkButton>
 
 					<MkButton :primary="engine.enableGridSnapping.value" @click="showSnappingMenu">Grid Snap: {{ engine.enableGridSnapping.value ? 'on' : 'off' }}</MkButton>
+
+					<MkButton v-if="!engine.ui.isGrabbing && engine.selected.value != null" @click="removeSelectedObject"><i class="ti ti-trash"></i> (X)</MkButton>
 				</template>
 				<MkButton v-if="engine.isSitting.value" @click="engine.standUp()">降りる (Q)</MkButton>
 				<template v-for="interaction in interacions" :key="interaction.id">
@@ -557,6 +559,11 @@ function addObject(ev: PointerEvent) {
 			canvas.value!.focus();
 		},
 	})), ev.currentTarget ?? ev.target);
+}
+
+function removeSelectedObject() {
+	engine.value?.removeSelectedObject();
+	canvas.value!.focus();
 }
 
 function getHex(c: [number, number, number]) {

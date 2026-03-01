@@ -21,6 +21,7 @@ import { colorBox } from './objects/colorBox.js';
 import { cupNoodle } from './objects/cupNoodle.js';
 import { desk } from './objects/desk.js';
 import { ductTape } from './objects/ductTape.js';
+import { emptyBento } from './objects/emptyBento.js';
 import { energyDrink } from './objects/energyDrink.js';
 import { facialTissue } from './objects/facialTissue.js';
 import { keyboard } from './objects/keyboard.js';
@@ -71,6 +72,7 @@ export const OBJECT_DEFS = [
 	cupNoodle,
 	desk,
 	ductTape,
+	emptyBento,
 	energyDrink,
 	facialTissue,
 	keyboard,
