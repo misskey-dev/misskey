@@ -27,19 +27,27 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 			</div>
 
-			<div v-if="engine != null && engine.isEditMode.value && engine.selected.value != null" class="_panel" :class="$style.overlayObjectInfoPanel">
+			<div v-if="engine != null && engine.isEditMode.value && engine.selected.value != null" :key="engine.selected.value.objectId" class="_panel" :class="$style.overlayObjectInfoPanel">
 				{{ engine.selected.value.objectDef.name }}
 
-				<div v-for="[k, s] in Object.entries(engine.selected.value.objectDef.options.schema)" :key="k">
-					<div>{{ s.label }}</div>
-					<div v-if="s.type === 'color'">
-						<MkInput :modelValue="getHex(engine.selected.value.objectState.options[k])" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) engine.updateObjectOption(engine.selected.value.objectId, k, c); }"></MkInput>
-					</div>
-					<div v-else-if="s.type === 'boolean'">
-						<MkSwitch :modelValue="engine.selected.value.objectState.options[k]" @update:modelValue="v => engine.updateObjectOption(engine.selected.value.objectId, k, v)"></MkSwitch>
-					</div>
-					<div v-else-if="s.type === 'enum'">
-						<MkSelect :items="s.enum.map(e => ({ label: e, value: e }))" :modelValue="engine.selected.value.objectState.options[k]" @update:modelValue="v => engine.updateObjectOption(engine.selected.value.objectId, k, v)"></MkSelect>
+				<div class="_gaps">
+					<div v-for="[k, s] in Object.entries(engine.selected.value.objectDef.options.schema)" :key="k">
+						<div>{{ s.label }}</div>
+						<div v-if="s.type === 'color'">
+							<MkInput :modelValue="getHex(engine.selected.value.objectState.options[k])" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) engine.updateObjectOption(engine.selected.value.objectId, k, c); }"></MkInput>
+						</div>
+						<div v-else-if="s.type === 'boolean'">
+							<MkSwitch :modelValue="engine.selected.value.objectState.options[k]" @update:modelValue="v => engine.updateObjectOption(engine.selected.value.objectId, k, v)"></MkSwitch>
+						</div>
+						<div v-else-if="s.type === 'enum'">
+							<MkSelect :items="s.enum.map(e => ({ label: e, value: e }))" :modelValue="engine.selected.value.objectState.options[k]" @update:modelValue="v => engine.updateObjectOption(engine.selected.value.objectId, k, v)"></MkSelect>
+						</div>
+						<div v-else-if="s.type === 'range'">
+							<MkRange :continuousUpdate="true" :min="s.min" :max="s.max" :step="s.step" :modelValue="engine.selected.value.objectState.options[k]" @update:modelValue="v => engine.updateObjectOption(engine.selected.value.objectId, k, v)"></MkRange>
+						</div>
+						<div v-else-if="s.type === 'image'">
+							<MkInput type="text" :modelValue="engine.selected.value.objectState.options[k]" @update:modelValue="v => engine.updateObjectOption(engine.selected.value.objectId, k, v)"></MkInput>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -69,6 +77,7 @@ import MkSelect from '@/components/MkSelect.vue';
 import * as os from '@/os.js';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
+import MkRange from '@/components/MkRange.vue';
 
 const canvas = useTemplateRef('canvas');
 

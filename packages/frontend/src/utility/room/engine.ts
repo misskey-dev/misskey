@@ -27,6 +27,7 @@ import { GridMaterial } from '@babylonjs/materials';
 import { ShowInspector } from '@babylonjs/inspector';
 import { reactive, ref, shallowRef, triggerRef, watch } from 'vue';
 import { genId } from '../id.js';
+import { deepClone } from '../clone.js';
 import { getObjectDef } from './object-defs.js';
 import { HorizontalCameraKeyboardMoveInput } from './utility.js';
 import * as sound from '@/utility/sound.js';
@@ -89,10 +90,30 @@ type EnumOptionSchema = {
 	enum: string[];
 };
 
-type OptionsSchema = Record<string, NumberOptionSchema | BooleanOptionSchema | ColorOptionSchema | EnumOptionSchema>;
+type RangeOptionSchema = {
+	type: 'range';
+	label: string;
+	min: number;
+	max: number;
+	step?: number;
+};
+
+type ImageOptionSchema = {
+	type: 'image';
+	label: string;
+};
+
+type OptionsSchema = Record<string, NumberOptionSchema | BooleanOptionSchema | ColorOptionSchema | EnumOptionSchema | RangeOptionSchema | ImageOptionSchema>;
 
 type GetOptionsSchemaValues<T extends OptionsSchema> = {
-	[K in keyof T]: T[K] extends NumberOptionSchema ? number : T[K] extends BooleanOptionSchema ? boolean : T[K] extends ColorOptionSchema ? [number, number, number] : T[K] extends EnumOptionSchema ? T[K]['enum'][number] : never;
+	[K in keyof T]:
+	T[K] extends NumberOptionSchema ? number :
+	T[K] extends BooleanOptionSchema ? boolean :
+	T[K] extends ColorOptionSchema ? [number, number, number] :
+	T[K] extends EnumOptionSchema ? T[K]['enum'][number] :
+	T[K] extends RangeOptionSchema ? number :
+	T[K] extends ImageOptionSchema ? string | null :
+	never;
 };
 
 type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
@@ -1144,12 +1165,14 @@ export class RoomEngine {
 
 		const def = getObjectDef(type);
 
+		const options = deepClone(def.options.default);
+
 		const { root } = await this.loadObject({
 			id: id,
 			type,
 			position: new BABYLON.Vector3(0, 0, 0),
 			rotation: new BABYLON.Vector3(0, Math.PI, 0),
-			options: def.options.default,
+			options,
 		});
 
 		const ghost = this.createGhost(root);
@@ -1197,7 +1220,7 @@ export class RoomEngine {
 					position: [pos.x, pos.y, pos.z],
 					rotation: [rotation.x, rotation.y, rotation.z],
 					sticky,
-					options: def.options.default,
+					options,
 				});
 			},
 		};

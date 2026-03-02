@@ -20,10 +20,31 @@ export const pictureFrame = defineObject({
 				label: 'Direction',
 				enum: ['vertical', 'horizontal'],
 			},
+			matHThickness: {
+				type: 'range',
+				label: 'Mat horizontal thickness',
+				min: 0,
+				max: 1,
+				step: 0.01,
+			},
+			matVThickness: {
+				type: 'range',
+				label: 'Mat vertical thickness',
+				min: 0,
+				max: 1,
+				step: 0.01,
+			},
+			customPicture: {
+				type: 'image',
+				label: 'Custom picture',
+			},
 		},
 		default: {
 			frameColor: [0.71, 0.58, 0.39],
 			direction: 'vertical',
+			matHThickness: 0.125,
+			matVThickness: 0.15,
+			customPicture: null,
 		},
 	},
 	placement: 'side',
@@ -84,16 +105,30 @@ export const pictureFrame = defineObject({
 
 		applyDirection();
 
-		//matMesh.morphTargetManager!.getTargetByName('MatH')!.influence = 0.6;
-		//matMesh.morphTargetManager!.getTargetByName('MatV')!.influence = 0.6;
-		//pictureMesh.morphTargetManager!.getTargetByName('PictureH')!.influence = 0.6;
-		//pictureMesh.morphTargetManager!.getTargetByName('PictureV')!.influence = 0.6;
+		const applyMatThickness = () => {
+			matMesh.morphTargetManager!.getTargetByName('MatH')!.influence = options.matHThickness;
+			matMesh.morphTargetManager!.getTargetByName('MatV')!.influence = options.matVThickness;
+			pictureMesh.morphTargetManager!.getTargetByName('PictureH')!.influence = options.matHThickness;
+			pictureMesh.morphTargetManager!.getTargetByName('PictureV')!.influence = options.matVThickness;
+		};
 
-		const tex = new BABYLON.Texture('http://syu-win.local:3000/files/b6cefaba-3093-4c57-a7f8-993dee62c6f7', room.scene, false, false);
+		applyMatThickness();
 
 		const pictureMaterial = findMaterial('__X_PICTURE__');
-		pictureMaterial.albedoColor = new BABYLON.Color3(1, 1, 1);
-		pictureMaterial.albedoTexture = tex;
+
+		const applyCustomPicture = () => {
+			if (options.customPicture != null) {
+				const tex = new BABYLON.Texture(options.customPicture, room.scene, false, false);
+
+				pictureMaterial.albedoColor = new BABYLON.Color3(1, 1, 1);
+				pictureMaterial.albedoTexture = tex;
+			} else {
+				pictureMaterial.albedoColor = new BABYLON.Color3(0.5, 0.5, 0.5);
+				pictureMaterial.albedoTexture = null;
+			}
+		};
+
+		applyCustomPicture();
 
 		const frameMaterial = findMaterial('__X_FRAME__');
 
@@ -114,6 +149,12 @@ export const pictureFrame = defineObject({
 				}
 				if (k === 'direction') {
 					applyDirection();
+				}
+				if (k === 'matHThickness' || k === 'matVThickness') {
+					applyMatThickness();
+				}
+				if (k === 'customPicture') {
+					applyCustomPicture();
 				}
 			},
 			interactions: {},
