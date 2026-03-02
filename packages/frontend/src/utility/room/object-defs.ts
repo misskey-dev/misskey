@@ -9,6 +9,7 @@ import { allInOnePc } from './objects/allInOnePc.js';
 import { aquarium } from './objects/aquarium.js';
 import { aromaReedDiffuser } from './objects/aromaReedDiffuser.js';
 import { banknote } from './objects/banknote.js';
+import { beamLamp } from './objects/beamLamp.js';
 import { bed } from './objects/bed.js';
 import { blind } from './objects/blind.js';
 import { book } from './objects/book.js';
@@ -62,6 +63,7 @@ export const OBJECT_DEFS = [
 	aquarium,
 	aromaReedDiffuser,
 	banknote,
+	beamLamp,
 	bed,
 	blind,
 	book,
