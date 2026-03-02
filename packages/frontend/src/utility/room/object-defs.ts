@@ -40,6 +40,7 @@ import { openedCardboardBox } from './objects/openedCardboardBox.js';
 import { pachira } from './objects/pachira.js';
 import { pc } from './objects/pc.js';
 import { petBottle } from './objects/petBottle.js';
+import { pictureFrame } from './objects/pictureFrame.js';
 import { plant } from './objects/plant.js';
 import { plant2 } from './objects/plant2.js';
 import { powerStrip } from './objects/powerStrip.js';
@@ -94,6 +95,7 @@ export const OBJECT_DEFS = [
 	pachira,
 	pc,
 	petBottle,
+	pictureFrame,
 	plant,
 	plant2,
 	powerStrip,
