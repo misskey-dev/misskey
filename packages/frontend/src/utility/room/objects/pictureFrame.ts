@@ -27,10 +27,11 @@ export const pictureFrame = defineObject({
 		},
 	},
 	placement: 'side',
-	mergeMeshes: ['__X_FRAME__'],
 	createInstance: ({ room, root, options, findMaterial, findMesh }) => {
 		const frameMesh = findMesh('__X_FRAME__');
 		frameMesh.rotationQuaternion = null;
+		const matMesh = findMesh('__X_MAT__');
+		matMesh.rotationQuaternion = null;
 		const coverMesh = findMesh('__X_COVER__');
 		coverMesh.rotationQuaternion = null;
 		const pictureMesh = findMesh('__X_PICTURE__');
@@ -50,6 +51,7 @@ export const pictureFrame = defineObject({
 		const applyDirection = () => {
 			if (options.direction === 'vertical') {
 				frameMesh.rotation.z = 0;
+				matMesh.rotation.z = 0;
 				coverMesh.rotation.z = 0;
 				pictureMesh.rotation.z = 0;
 
@@ -63,6 +65,7 @@ export const pictureFrame = defineObject({
 				uvs[1] = dy;
 			} else if (options.direction === 'horizontal') {
 				frameMesh.rotation.z = -Math.PI / 2;
+				matMesh.rotation.z = -Math.PI / 2;
 				coverMesh.rotation.z = -Math.PI / 2;
 				pictureMesh.rotation.z = -Math.PI / 2;
 
@@ -80,6 +83,11 @@ export const pictureFrame = defineObject({
 		};
 
 		applyDirection();
+
+		console.log(matMesh.morphTargetManager!.getTargetByName('MatH')!, matMesh.morphTargetManager!.getTargetByName('MatV')!);
+
+		//matMesh.morphTargetManager!.getTargetByName('MatH')!.influence = 0.5;
+		//matMesh.morphTargetManager!.getTargetByName('MatV')!.influence = 0.5;
 
 		const tex = new BABYLON.Texture('http://syu-win.local:3000/files/b6cefaba-3093-4c57-a7f8-993dee62c6f7', room.scene, false, false);
 
