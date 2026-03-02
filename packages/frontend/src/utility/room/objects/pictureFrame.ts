@@ -84,10 +84,10 @@ export const pictureFrame = defineObject({
 
 		applyDirection();
 
-		console.log(matMesh.morphTargetManager!.getTargetByName('MatH')!, matMesh.morphTargetManager!.getTargetByName('MatV')!);
-
-		//matMesh.morphTargetManager!.getTargetByName('MatH')!.influence = 0.5;
-		//matMesh.morphTargetManager!.getTargetByName('MatV')!.influence = 0.5;
+		//matMesh.morphTargetManager!.getTargetByName('MatH')!.influence = 0.6;
+		//matMesh.morphTargetManager!.getTargetByName('MatV')!.influence = 0.6;
+		//pictureMesh.morphTargetManager!.getTargetByName('PictureH')!.influence = 0.6;
+		//pictureMesh.morphTargetManager!.getTargetByName('PictureV')!.influence = 0.6;
 
 		const tex = new BABYLON.Texture('http://syu-win.local:3000/files/b6cefaba-3093-4c57-a7f8-993dee62c6f7', room.scene, false, false);
 
