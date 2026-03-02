@@ -8,14 +8,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #label>{{ entity.name || entity.url }}</template>
 	<template v-if="entity.name != null && entity.name != ''" #caption>{{ entity.url }}</template>
 	<template #icon>
-		<i v-if="!entity.isActive" class="ti ti-player-pause"/>
-		<i v-else-if="entity.latestStatus === null" class="ti ti-circle"/>
+		<i v-if="!entity.isActive" class="ti ti-player-pause"></i>
+		<i v-else-if="entity.latestStatus === null" class="ti ti-circle"></i>
 		<i
 			v-else-if="[200, 201, 204].includes(entity.latestStatus)"
 			class="ti ti-check"
 			:style="{ color: 'var(--MI_THEME-success)' }"
-		/>
-		<i v-else class="ti ti-alert-triangle" :style="{ color: 'var(--MI_THEME-error)' }"/>
+		></i>
+		<i v-else class="ti ti-alert-triangle" :style="{ color: 'var(--MI_THEME-error)' }"></i>
 	</template>
 	<template #suffix>
 		<MkTime v-if="entity.latestSentAt" :time="entity.latestSentAt" style="margin-right: 8px"/>

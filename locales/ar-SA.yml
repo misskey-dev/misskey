@@ -1365,6 +1365,14 @@ _widgets:
   userList: "قائمة المستخدمين"
   _userList:
     chooseList: "اختر قائمة"
+_widgetOptions:
+  height: "الإرتفاع"
+  _button:
+    colored: "ملوّن"
+  _clock:
+    size: "الحجم"
+  _birthdayFollowings:
+    period: "المدة"
 _cw:
   hide: "إخفاء"
   show: "عرض المزيد"
