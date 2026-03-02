@@ -7,7 +7,7 @@
 
 // TODO: Misskeyのドメイン知識があるのでutilityなどに移動する
 
-import { onUnmounted, ref, watch } from 'vue';
+import { customRef, ref, watch, onScopeDispose } from 'vue';
 import { BroadcastChannel } from 'broadcast-channel';
 import type { Ref } from 'vue';
 import { $i } from '@/i.js';
@@ -223,44 +223,43 @@ export class Pizzax<T extends StateDef> {
 	}
 
 	/**
-	 * 特定のキーの、簡易的なgetter/setterを作ります
+	 * 特定のキーの、簡易的なcomputed refを作ります
 	 * 主にvue上で設定コントロールのmodelとして使う用
 	 */
-	// TODO: 廃止
-	public makeGetterSetter<K extends keyof T, R = T[K]['default']>(
+	public model<K extends keyof T, R = T[K]['default']>(
+		key: K,
+	): Ref<R>;
+	public model<K extends keyof T, R extends Exclude<any, T[K]['default']>>(
+		key: K,
+		getter: (v: T[K]['default']) => R,
+		setter: (v: R) => T[K]['default'],
+	): Ref<R>;
+
+	public model<K extends keyof T, R>(
 		key: K,
 		getter?: (v: T[K]['default']) => R,
 		setter?: (v: R) => T[K]['default'],
-	): {
-			get: () => R;
-			set: (value: R) => void;
-		} {
-		const valueRef = ref(this.s[key]);
+	): Ref<R> {
+		return customRef<R>((track, trigger) => {
+			const watchStop = watch(this.r[key], () => {
+				trigger();
+			});
 
-		const stop = watch(this.r[key], val => {
-			valueRef.value = val;
+			onScopeDispose(() => {
+				watchStop();
+			}, true);
+
+			return {
+				get: () => {
+					track();
+					return (getter != null ? getter(this.s[key]) : this.s[key]) as R;
+				},
+				set: (value) => {
+					const val = setter != null ? setter(value) : value;
+					this.set(key, val as T[K]['default']);
+				},
+			};
 		});
-
-		// NOTE: vueコンポーネント内で呼ばれない限りは、onUnmounted は無意味なのでメモリリークする
-		onUnmounted(() => {
-			stop();
-		});
-
-		// TODO: VueのcustomRef使うと良い感じになるかも
-		return {
-			get: () => {
-				if (getter) {
-					return getter(valueRef.value);
-				} else {
-					return valueRef.value;
-				}
-			},
-			set: (value) => {
-				const val = setter ? setter(value) : value;
-				this.set(key, val);
-				valueRef.value = val;
-			},
-		};
 	}
 
 	// localStorage => indexedDBのマイグレーション

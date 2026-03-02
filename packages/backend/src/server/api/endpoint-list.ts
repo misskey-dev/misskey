@@ -391,6 +391,7 @@ export * as 'users/featured-notes' from './endpoints/users/featured-notes.js';
 export * as 'users/flashs' from './endpoints/users/flashs.js';
 export * as 'users/followers' from './endpoints/users/followers.js';
 export * as 'users/following' from './endpoints/users/following.js';
+export * as 'users/get-following-birthday-users' from './endpoints/users/get-following-birthday-users.js';
 export * as 'users/gallery/posts' from './endpoints/users/gallery/posts.js';
 export * as 'users/get-frequently-replied-users' from './endpoints/users/get-frequently-replied-users.js';
 export * as 'users/lists/create' from './endpoints/users/lists/create.js';

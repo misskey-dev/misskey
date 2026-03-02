@@ -95,7 +95,7 @@ export class ApInboxService {
 		if (isCollectionOrOrderedCollection(activity)) {
 			const results = [] as [string, string | void][];
 			// eslint-disable-next-line no-param-reassign
-			resolver ??= this.apResolverService.createResolver();
+			resolver ??= await this.apResolverService.createResolver();
 
 			const items = toArray(isCollection(activity) ? activity.items : activity.orderedItems);
 			if (items.length >= resolver.getRecursionLimit()) {
@@ -221,7 +221,7 @@ export class ApInboxService {
 		this.logger.info(`Accept: ${uri}`);
 
 		// eslint-disable-next-line no-param-reassign
-		resolver ??= this.apResolverService.createResolver();
+		resolver ??= await this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(activity.object).catch(err => {
 			this.logger.error(`Resolution failed: ${err}`);
@@ -284,7 +284,7 @@ export class ApInboxService {
 		this.logger.info(`Announce: ${uri}`);
 
 		// eslint-disable-next-line no-param-reassign
-		resolver ??= this.apResolverService.createResolver();
+		resolver ??= await this.apResolverService.createResolver();
 
 		if (!activity.object) return 'skip: activity has no object property';
 		const targetUri = getApId(activity.object);
@@ -406,7 +406,7 @@ export class ApInboxService {
 		}
 
 		// eslint-disable-next-line no-param-reassign
-		resolver ??= this.apResolverService.createResolver();
+		resolver ??= await this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(activity.object).catch(e => {
 			this.logger.error(`Resolution failed: ${e}`);
@@ -575,7 +575,7 @@ export class ApInboxService {
 		this.logger.info(`Reject: ${uri}`);
 
 		// eslint-disable-next-line no-param-reassign
-		resolver ??= this.apResolverService.createResolver();
+		resolver ??= await this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(activity.object).catch(e => {
 			this.logger.error(`Resolution failed: ${e}`);
@@ -642,7 +642,7 @@ export class ApInboxService {
 		this.logger.info(`Undo: ${uri}`);
 
 		// eslint-disable-next-line no-param-reassign
-		resolver ??= this.apResolverService.createResolver();
+		resolver ??= await this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(activity.object).catch(e => {
 			this.logger.error(`Resolution failed: ${e}`);
@@ -774,7 +774,7 @@ export class ApInboxService {
 		this.logger.debug('Update');
 
 		// eslint-disable-next-line no-param-reassign
-		resolver ??= this.apResolverService.createResolver();
+		resolver ??= await this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(activity.object).catch(e => {
 			this.logger.error(`Resolution failed: ${e}`);

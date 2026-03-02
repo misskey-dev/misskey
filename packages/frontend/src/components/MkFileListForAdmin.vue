@@ -6,7 +6,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div>
 	<MkPagination v-slot="{ items }" :paginator="paginator">
-		<div :class="[$style.fileList, { [$style.grid]: viewMode === 'grid', [$style.list]: viewMode === 'list', '_gaps_s': viewMode === 'list' }]">
+		<div
+			:class="{
+				[$style.grid]: viewMode === 'grid',
+				[$style.list]: viewMode === 'list',
+				'_gaps_s': viewMode === 'list',
+			}"
+		>
 			<MkA
 				v-for="file in items"
 				:key="file.id"

@@ -30,6 +30,7 @@ type Source = {
 	socket?: string;
 	trustProxy?: FastifyServerOptions['trustProxy'];
 	chmodSocket?: string;
+	enableIpRateLimit?: boolean;
 	disableHsts?: boolean;
 	db: {
 		host: string;
@@ -120,8 +121,9 @@ export type Config = {
 	url: string;
 	port: number;
 	socket: string | undefined;
-	trustProxy: FastifyServerOptions['trustProxy'];
+	trustProxy: NonNullable<FastifyServerOptions['trustProxy']>;
 	chmodSocket: string | undefined;
+	enableIpRateLimit: boolean;
 	disableHsts: boolean | undefined;
 	db: {
 		host: string;
@@ -217,24 +219,42 @@ export type FulltextSearchProvider = 'sqlLike' | 'sqlPgroonga' | 'meilisearch';
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 
-const compiledConfigFilePathForTest = resolve(_dirname, '../../../built/._config_.json');
+/** Path of repository root directory */
+let rootDir = _dirname;
+// 見つかるまで上に遡る
+while (!fs.existsSync(resolve(rootDir, 'packages'))) {
+	const parentDir = dirname(rootDir);
+	if (parentDir === rootDir) {
+		throw new Error('Cannot find root directory');
+	}
+	rootDir = parentDir;
+}
 
-export const compiledConfigFilePath = fs.existsSync(compiledConfigFilePathForTest) ? compiledConfigFilePathForTest : resolve(_dirname, '../../../built/.config.json');
+/** Path of configuration directory */
+const configDir = resolve(rootDir, '.config');
+/** Path of built directory */
+const projectBuiltDir = resolve(rootDir, 'built');
+
+const compiledConfigFilePathForTest = resolve(projectBuiltDir, '._config_.json');
+
+export const compiledConfigFilePath = fs.existsSync(compiledConfigFilePathForTest)
+	? compiledConfigFilePathForTest
+	: resolve(projectBuiltDir, '.config.json');
 
 export function loadConfig(): Config {
 	if (!fs.existsSync(compiledConfigFilePath)) {
 		throw new Error('Compiled configuration file not found. Try running \'pnpm compile-config\'.');
 	}
 
-	const meta = JSON.parse(fs.readFileSync(`${_dirname}/../../../built/meta.json`, 'utf-8'));
+	const meta = JSON.parse(fs.readFileSync(resolve(projectBuiltDir, 'meta.json'), 'utf-8'));
 
-	const frontendManifestExists = fs.existsSync(_dirname + '/../../../built/_frontend_vite_/manifest.json');
-	const frontendEmbedManifestExists = fs.existsSync(_dirname + '/../../../built/_frontend_embed_vite_/manifest.json');
+	const frontendManifestExists = fs.existsSync(resolve(projectBuiltDir, '_frontend_vite_/manifest.json'));
+	const frontendEmbedManifestExists = fs.existsSync(resolve(projectBuiltDir, '_frontend_embed_vite_/manifest.json'));
 	const frontendManifest = frontendManifestExists ?
-		JSON.parse(fs.readFileSync(`${_dirname}/../../../built/_frontend_vite_/manifest.json`, 'utf-8'))
+		JSON.parse(fs.readFileSync(resolve(projectBuiltDir, '_frontend_vite_/manifest.json'), 'utf-8'))
 		: { 'src/_boot_.ts': { file: null } };
 	const frontendEmbedManifest = frontendEmbedManifestExists ?
-		JSON.parse(fs.readFileSync(`${_dirname}/../../../built/_frontend_embed_vite_/manifest.json`, 'utf-8'))
+		JSON.parse(fs.readFileSync(resolve(projectBuiltDir, '_frontend_embed_vite_/manifest.json'), 'utf-8'))
 		: { 'src/boot.ts': { file: null } };
 
 	const config = JSON.parse(fs.readFileSync(compiledConfigFilePath, 'utf-8')) as Source;
@@ -263,9 +283,17 @@ export function loadConfig(): Config {
 		url: url.origin,
 		port: config.port ?? parseInt(process.env.PORT ?? '', 10),
 		socket: config.socket,
-		trustProxy: config.trustProxy,
+		trustProxy: config.trustProxy ?? [
+			'10.0.0.0/8',
+			'172.16.0.0/12',
+			'192.168.0.0/16',
+			'127.0.0.1/32',
+			'::1/128',
+			'fc00::/7',
+		],
 		chmodSocket: config.chmodSocket,
 		disableHsts: config.disableHsts,
+		enableIpRateLimit: config.enableIpRateLimit ?? true,
 		host,
 		hostname,
 		scheme,
@@ -324,7 +352,7 @@ export function loadConfig(): Config {
 function tryCreateUrl(url: string) {
 	try {
 		return new URL(url);
-	} catch (e) {
+	} catch (_) {
 		throw new Error(`url="${url}" is not a valid URL.`);
 	}
 }
