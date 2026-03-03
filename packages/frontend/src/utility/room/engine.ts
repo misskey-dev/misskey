@@ -860,6 +860,8 @@ export class RoomEngine {
 		const meshUpdated = (meshes: BABYLON.Mesh[]) => {
 			for (const m of meshes) {
 				const mesh = m;
+				mesh.refreshBoundingInfo({ applyMorph: true });
+				//mesh.showBoundingBox = _DEV_;
 
 				mesh.metadata = metadata;
 				mesh.checkCollisions = !hasCollisionMesh;
