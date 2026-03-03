@@ -55,18 +55,19 @@ export const poster = defineObject({
 		const uvs = pictureMesh.getVerticesData(BABYLON.VertexBuffer.UVKind);
 
 		/**
-		 * a(x,y)---b(x,y)
-		 *   |        |
-		 * c(x,y)---d(x,y)
+		 *    0        1
+		 * 0 c(x,y)---a(x,y)
+		 *    |        |
+		 * 1 d(x,y)---b(x,y)
 		 */
-		const ax = uvs[6];
-		const ay = uvs[7];
-		const bx = uvs[2];
-		const by = uvs[3];
-		const cx = uvs[4];
-		const cy = uvs[5];
-		const dx = uvs[0];
-		const dy = uvs[1];
+		const ax = uvs[4];
+		const ay = uvs[5];
+		const bx = uvs[6];
+		const by = uvs[7];
+		const cx = uvs[0];
+		const cy = uvs[1];
+		const dx = uvs[2];
+		const dy = uvs[3];
 
 		const applyFit = () => {
 			const tex = pictureMaterial.albedoTexture;
@@ -79,29 +80,57 @@ export const poster = defineObject({
 			const targetHeight = options.height;
 			const targetAspect = targetWidth / targetHeight;
 
-			const newAx = ax;
-			const newAy = ay;
-			const newBx = bx;
-			const newBy = by;
-			const newCx = cx;
-			const newCy = cy;
-			const newDx = dx;
-			const newDy = dy;
+			let newAx = ax;
+			let newAy = ay;
+			let newBx = bx;
+			let newBy = by;
+			let newCx = cx;
+			let newCy = cy;
+			let newDx = dx;
+			let newDy = dy;
 
 			if (options.fit === 'cover') {
-				// TODO
+				if (targetAspect > srcAspect) {
+					const fitHeight = targetWidth / srcAspect;
+					const crop = (fitHeight - targetHeight) / fitHeight / 2;
+					newAy = ay + crop * (by - ay);
+					newBy = by - crop * (by - ay);
+					newCy = cy + crop * (dy - cy);
+					newDy = dy - crop * (dy - cy);
+				} else {
+					const fitWidth = targetHeight * srcAspect;
+					const crop = (fitWidth - targetWidth) / fitWidth / 2;
+					newAx = ax + crop * (bx - ax);
+					newBx = bx - crop * (bx - ax);
+					newCx = cx + crop * (dx - cx);
+					newDx = dx - crop * (dx - cx);
+				}
 			} else if (options.fit === 'contain') {
-				// TODO
+				if (targetAspect > srcAspect) {
+					const fitWidth = targetHeight * srcAspect;
+					const crop = (fitWidth - targetWidth) / fitWidth / 2;
+					newAx = ax + crop * (bx - ax);
+					newBx = bx - crop * (bx - ax);
+					newCx = cx + crop * (dx - cx);
+					newDx = dx - crop * (dx - cx);
+				} else {
+					const fitHeight = targetWidth / srcAspect;
+					const crop = (fitHeight - targetHeight) / fitHeight / 2;
+					newAy = ay + crop * (by - ay);
+					newBy = by - crop * (by - ay);
+					newCy = cy + crop * (dy - cy);
+					newDy = dy - crop * (dy - cy);
+				}
 			}
 
-			uvs[6] = newAx;
-			uvs[7] = newAy;
-			uvs[2] = newBx;
-			uvs[3] = newBy;
-			uvs[4] = newCx;
-			uvs[5] = newCy;
-			uvs[0] = newDx;
-			uvs[1] = newDy;
+			uvs[4] = newAx;
+			uvs[5] = newAy;
+			uvs[6] = newBx;
+			uvs[7] = newBy;
+			uvs[0] = newCx;
+			uvs[1] = newCy;
+			uvs[2] = newDx;
+			uvs[3] = newDy;
 
 			pictureMesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
 		};
