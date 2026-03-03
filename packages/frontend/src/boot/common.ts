@@ -30,6 +30,7 @@ import { fetchCustomEmojis } from '@/custom-emojis.js';
 import { prefer } from '@/preferences.js';
 import { $i } from '@/i.js';
 import { launchPlugins } from '@/plugin.js';
+import { initializeStoragePersistence } from '@/utility/storage.js';
 
 export async function common(createVue: () => Promise<App<Element>>) {
 	console.info(`Misskey v${version}`);
@@ -326,6 +327,10 @@ export async function common(createVue: () => Promise<App<Element>>) {
 	} catch (error) {
 		console.error('Failed to launch plugins:', error);
 	}
+
+	// ブラウザストレージ永続化の状態を初期化
+	// （top-level awaitを防ぐために明示的に起動時に確認する）
+	initializeStoragePersistence();
 
 	app.mount(rootEl);
 
