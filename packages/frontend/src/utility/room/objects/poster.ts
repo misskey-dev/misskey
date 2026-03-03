@@ -6,15 +6,11 @@
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../engine.js';
 
-export const pictureFrame = defineObject({
-	id: 'pictureFrame',
-	name: 'Simple picture frame',
+export const poster = defineObject({
+	id: 'poster',
+	name: 'Poster',
 	options: {
 		schema: {
-			frameColor: {
-				type: 'color',
-				label: 'Frame color',
-			},
 			width: {
 				type: 'range',
 				label: 'Width',
@@ -25,27 +21,6 @@ export const pictureFrame = defineObject({
 			height: {
 				type: 'range',
 				label: 'Height',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-			frameThickness: {
-				type: 'range',
-				label: 'Frame thickness',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-			matHThickness: {
-				type: 'range',
-				label: 'Mat horizontal thickness',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-			matVThickness: {
-				type: 'range',
-				label: 'Mat vertical thickness',
 				min: 0,
 				max: 1,
 				step: 0.01,
@@ -61,31 +36,21 @@ export const pictureFrame = defineObject({
 			},
 		},
 		default: {
-			frameColor: [0.71, 0.58, 0.39],
 			width: 0.15,
 			height: 0.15,
-			frameThickness: 0.3,
-			matHThickness: 0.5,
-			matVThickness: 0.5,
 			customPicture: null,
 			fit: 'cover',
 		},
 	},
 	placement: 'side',
-	createInstance: ({ room, root, options, findMaterial, findMesh, meshUpdated }) => {
-		const MAT_THICKNESS_FACTOR = 0.49; // 0.5を超えるとなんかメッシュのレンダリングがグリッチするため
-
-		const frameMesh = findMesh('__X_FRAME__');
-		frameMesh.rotationQuaternion = null;
-		const matMesh = findMesh('__X_MAT__');
-		matMesh.rotationQuaternion = null;
-		const coverMesh = findMesh('__X_COVER__');
-		coverMesh.rotationQuaternion = null;
+	createInstance: ({ room, root, options, findMaterial, findMesh, findMeshes, meshUpdated }) => {
 		const pictureMesh = findMesh('__X_PICTURE__');
 		pictureMesh.rotationQuaternion = null;
 		pictureMesh.markVerticesDataAsUpdatable(BABYLON.VertexBuffer.UVKind, true);
 
 		const pictureMaterial = findMaterial('__X_PICTURE__');
+
+		const pinMeshes = findMeshes('__X_PIN__');
 
 		const uvs = pictureMesh.getVerticesData(BABYLON.VertexBuffer.UVKind);
 		const ax = uvs[6];
@@ -104,8 +69,8 @@ export const pictureFrame = defineObject({
 			const srcWidth = tex.getSize().width;
 			const srcHeight = tex.getSize().height;
 			const srcAspect = srcWidth / srcHeight;
-			const targetWidth = options.width * (1 - (options.matHThickness * MAT_THICKNESS_FACTOR));
-			const targetHeight = options.height * (1 - (options.matVThickness * MAT_THICKNESS_FACTOR));
+			const targetWidth = options.width;
+			const targetHeight = options.height;
 			const targetAspect = targetWidth / targetHeight;
 
 			let newAx = ax;
@@ -167,35 +132,16 @@ export const pictureFrame = defineObject({
 
 		applyFit();
 
-		const applyFrameThickness = () => {
-			frameMesh.morphTargetManager!.getTargetByName('FrameThickness')!.influence = options.frameThickness;
-			meshUpdated();
-		};
-
-		applyFrameThickness();
-
-		const applyMatThickness = () => {
-			matMesh.morphTargetManager!.getTargetByName('MatH')!.influence = options.matHThickness * MAT_THICKNESS_FACTOR * options.width;
-			matMesh.morphTargetManager!.getTargetByName('MatV')!.influence = options.matVThickness * MAT_THICKNESS_FACTOR * options.height;
-			pictureMesh.morphTargetManager!.getTargetByName('PictureWidth')!.influence = options.width * (1 - (options.matHThickness * MAT_THICKNESS_FACTOR));
-			pictureMesh.morphTargetManager!.getTargetByName('PictureHeight')!.influence = options.height * (1 - (options.matVThickness * MAT_THICKNESS_FACTOR));
+		const applySize = () => {
+			pictureMesh.morphTargetManager!.getTargetByName('Width')!.influence = options.width;
+			pictureMesh.morphTargetManager!.getTargetByName('Height')!.influence = options.height;
+			for (const pinMesh of pinMeshes) {
+				pinMesh.morphTargetManager!.getTargetByName('Width')!.influence = options.width;
+				pinMesh.morphTargetManager!.getTargetByName('Height')!.influence = options.height;
+			}
 			meshUpdated();
 
 			applyFit();
-		};
-
-		applyMatThickness();
-
-		const applySize = () => {
-			frameMesh.morphTargetManager!.getTargetByName('FrameWidth')!.influence = options.width;
-			frameMesh.morphTargetManager!.getTargetByName('FrameHeight')!.influence = options.height;
-			matMesh.morphTargetManager!.getTargetByName('MatWidth')!.influence = options.width;
-			matMesh.morphTargetManager!.getTargetByName('MatHeight')!.influence = options.height;
-			coverMesh.morphTargetManager!.getTargetByName('CoverWidth')!.influence = options.width;
-			coverMesh.morphTargetManager!.getTargetByName('CoverHeight')!.influence = options.height;
-			meshUpdated();
-
-			applyMatThickness();
 		};
 
 		applySize();
@@ -222,34 +168,13 @@ export const pictureFrame = defineObject({
 
 		applyCustomPicture();
 
-		const frameMaterial = findMaterial('__X_FRAME__');
-
-		const applyFrameColor = () => {
-			const [r, g, b] = options.frameColor;
-			frameMaterial.albedoColor = new BABYLON.Color3(r, g, b);
-		};
-
-		applyFrameColor();
-
 		return {
 			onInited: () => {
 
 			},
 			onOptionsUpdated: ([k, v]) => {
-				if (k === 'frameColor') {
-					applyFrameColor();
-				}
-				if (k === 'direction') {
-					applyDirection();
-				}
 				if (k === 'width' || k === 'height') {
 					applySize();
-				}
-				if (k === 'frameThickness') {
-					applyFrameThickness();
-				}
-				if (k === 'matHThickness' || k === 'matVThickness') {
-					applyMatThickness();
 				}
 				if (k === 'customPicture') {
 					applyCustomPicture();
@@ -262,41 +187,3 @@ export const pictureFrame = defineObject({
 		};
 	},
 });
-
-/*
-
-const applyDirection = () => {
-	if (options.direction === 'vertical') {
-		frameMesh.rotation.z = 0;
-		matMesh.rotation.z = 0;
-		coverMesh.rotation.z = 0;
-		pictureMesh.rotation.z = 0;
-
-		uvs[6] = ax;
-		uvs[7] = ay;
-		uvs[2] = bx;
-		uvs[3] = by;
-		uvs[4] = cx;
-		uvs[5] = cy;
-		uvs[0] = dx;
-		uvs[1] = dy;
-	} else if (options.direction === 'horizontal') {
-		frameMesh.rotation.z = -Math.PI / 2;
-		matMesh.rotation.z = -Math.PI / 2;
-		coverMesh.rotation.z = -Math.PI / 2;
-		pictureMesh.rotation.z = -Math.PI / 2;
-
-		uvs[6] = cy;
-		uvs[7] = cx;
-		uvs[2] = dy;
-		uvs[3] = dx;
-		uvs[4] = ay;
-		uvs[5] = ax;
-		uvs[0] = by;
-		uvs[1] = bx;
-	}
-
-	pictureMesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
-};
-
-*/

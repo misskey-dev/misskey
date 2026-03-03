@@ -43,6 +43,7 @@ import { petBottle } from './objects/petBottle.js';
 import { pictureFrame } from './objects/pictureFrame.js';
 import { plant } from './objects/plant.js';
 import { plant2 } from './objects/plant2.js';
+import { poster } from './objects/poster.js';
 import { powerStrip } from './objects/powerStrip.js';
 import { rolledUpPoster } from './objects/rolledUpPoster.js';
 import { roundRug } from './objects/roundRug.js';
@@ -98,6 +99,7 @@ export const OBJECT_DEFS = [
 	pictureFrame,
 	plant,
 	plant2,
+	poster,
 	powerStrip,
 	rolledUpPoster,
 	roundRug,

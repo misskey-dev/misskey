@@ -134,6 +134,7 @@ type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 		loaderResult: BABYLON.ISceneLoaderAsyncResult;
 		meshUpdated: () => void;
 		findMesh: (keyword: string) => BABYLON.Mesh;
+		findMeshes: (keyword: string) => BABYLON.Mesh[];
 		findMaterial: (keyword: string) => BABYLON.PBRMaterial;
 	}) => RoomObjectInstance<GetOptionsSchemaValues<OpSc>>;
 };
@@ -910,6 +911,10 @@ export class RoomEngine {
 					throw new Error(`Mesh with keyword "${keyword}" not found for object ${args.type} (${args.id})`);
 				}
 				return mesh as BABYLON.Mesh;
+			},
+			findMeshes: (keyword) => {
+				const meshes = root.getChildMeshes().filter(m => m.name.includes(keyword));
+				return meshes as BABYLON.Mesh[];
 			},
 			findMaterial: (keyword) => {
 				for (const m of root.getChildMeshes()) {
