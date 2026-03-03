@@ -150,6 +150,8 @@ export const pictureFrame = defineObject({
 			frameMesh.morphTargetManager!.getTargetByName('FrameHeight')!.influence = options.height;
 			matMesh.morphTargetManager!.getTargetByName('MatWidth')!.influence = options.width;
 			matMesh.morphTargetManager!.getTargetByName('MatHeight')!.influence = options.height;
+			coverMesh.morphTargetManager!.getTargetByName('CoverWidth')!.influence = options.width;
+			coverMesh.morphTargetManager!.getTargetByName('CoverHeight')!.influence = options.height;
 
 			applyMatThickness();
 		};
