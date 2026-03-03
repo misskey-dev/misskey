@@ -59,6 +59,11 @@ export const pictureFrame = defineObject({
 				type: 'image',
 				label: 'Custom picture',
 			},
+			fit: {
+				type: 'enum',
+				label: 'Custom picture fit',
+				enum: ['cover', 'contain', 'stretch'],
+			},
 		},
 		default: {
 			frameColor: [0.71, 0.58, 0.39],
@@ -69,10 +74,13 @@ export const pictureFrame = defineObject({
 			matHThickness: 0.125,
 			matVThickness: 0.15,
 			customPicture: 'http://syu-win.local:3000/files/b6cefaba-3093-4c57-a7f8-993dee62c6f7',
+			fit: 'cover',
 		},
 	},
 	placement: 'side',
 	createInstance: ({ room, root, options, findMaterial, findMesh, meshUpdated }) => {
+		const MAT_THICKNESS_FACTOR = 0.49; // 0.5を超えるとなんかメッシュのレンダリングがグリッチするため
+
 		const frameMesh = findMesh('__X_FRAME__');
 		frameMesh.rotationQuaternion = null;
 		const matMesh = findMesh('__X_MAT__');
@@ -129,6 +137,74 @@ export const pictureFrame = defineObject({
 
 		//applyDirection();
 
+		const applyFit = () => {
+			const srcWidth = 1920;
+			const srcHeight = 1200;
+			const targetWidth = options.width * (1 - (options.matHThickness * MAT_THICKNESS_FACTOR));
+			const targetHeight = options.height * (1 - (options.matVThickness * MAT_THICKNESS_FACTOR));
+
+			const targetAspect = targetWidth / targetHeight;
+			const srcAspect = srcWidth / srcHeight;
+
+			let newAx = ax;
+			let newAy = ay;
+			let newBx = bx;
+			let newBy = by;
+			let newCx = cx;
+			let newCy = cy;
+			let newDx = dx;
+			let newDy = dy;
+
+			if (options.fit === 'cover') {
+				if (targetAspect > srcAspect) {
+					const fitHeight = targetWidth / srcAspect;
+					const crop = (fitHeight - targetHeight) / fitHeight / 2;
+					newAy = ay + crop * (by - ay);
+					newBy = by - crop * (by - ay);
+					newCy = cy + crop * (dy - cy);
+					newDy = dy - crop * (dy - cy);
+				} else {
+					const fitWidth = targetHeight * srcAspect;
+					const crop = (fitWidth - targetWidth) / fitWidth / 2;
+					newAx = ax + crop * (bx - ax);
+					newBx = bx - crop * (bx - ax);
+					newCx = cx + crop * (dx - cx);
+					newDx = dx - crop * (dx - cx);
+				}
+			} else if (options.fit === 'contain') {
+				if (targetAspect > srcAspect) {
+					const fitWidth = targetHeight * srcAspect;
+					const crop = (fitWidth - targetWidth) / fitWidth / 2;
+					newAx = ax + crop * (bx - ax);
+					newBx = bx - crop * (bx - ax);
+					newCx = cx + crop * (dx - cx);
+					newDx = dx - crop * (dx - cx);
+				} else {
+					const fitHeight = targetWidth / srcAspect;
+					const crop = (fitHeight - targetHeight) / fitHeight / 2;
+					newAy = ay + crop * (by - ay);
+					newBy = by - crop * (by - ay);
+					newCy = cy + crop * (dy - cy);
+					newDy = dy - crop * (dy - cy);
+				}
+			} else if (options.fit === 'stretch') {
+				// do nothing
+			}
+
+			uvs[6] = newAx;
+			uvs[7] = newAy;
+			uvs[2] = newBx;
+			uvs[3] = newBy;
+			uvs[4] = newCx;
+			uvs[5] = newCy;
+			uvs[0] = newDx;
+			uvs[1] = newDy;
+
+			pictureMesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
+		};
+
+		applyFit();
+
 		const applyFrameThickness = () => {
 			frameMesh.morphTargetManager!.getTargetByName('FrameThickness')!.influence = options.frameThickness;
 			meshUpdated();
@@ -137,12 +213,13 @@ export const pictureFrame = defineObject({
 		applyFrameThickness();
 
 		const applyMatThickness = () => {
-			const factor = 0.49; // 0.5を超えるとなんかメッシュのレンダリングがグリッチするため
-			matMesh.morphTargetManager!.getTargetByName('MatH')!.influence = options.matHThickness * factor * options.width;
-			matMesh.morphTargetManager!.getTargetByName('MatV')!.influence = options.matVThickness * factor * options.height;
-			pictureMesh.morphTargetManager!.getTargetByName('PictureWidth')!.influence = options.width * (1 - (options.matHThickness * factor));
-			pictureMesh.morphTargetManager!.getTargetByName('PictureHeight')!.influence = options.height * (1 - (options.matVThickness * factor));
+			matMesh.morphTargetManager!.getTargetByName('MatH')!.influence = options.matHThickness * MAT_THICKNESS_FACTOR * options.width;
+			matMesh.morphTargetManager!.getTargetByName('MatV')!.influence = options.matVThickness * MAT_THICKNESS_FACTOR * options.height;
+			pictureMesh.morphTargetManager!.getTargetByName('PictureWidth')!.influence = options.width * (1 - (options.matHThickness * MAT_THICKNESS_FACTOR));
+			pictureMesh.morphTargetManager!.getTargetByName('PictureHeight')!.influence = options.height * (1 - (options.matVThickness * MAT_THICKNESS_FACTOR));
 			meshUpdated();
+
+			applyFit();
 		};
 
 		applyMatThickness();
@@ -166,6 +243,8 @@ export const pictureFrame = defineObject({
 		const applyCustomPicture = () => {
 			if (options.customPicture != null) {
 				const tex = new BABYLON.Texture(options.customPicture, room.scene, false, false);
+				tex.wrapU = BABYLON.Texture.MIRROR_ADDRESSMODE;
+				tex.wrapV = BABYLON.Texture.MIRROR_ADDRESSMODE;
 
 				pictureMaterial.albedoColor = new BABYLON.Color3(1, 1, 1);
 				pictureMaterial.albedoTexture = tex;
@@ -208,6 +287,9 @@ export const pictureFrame = defineObject({
 				}
 				if (k === 'customPicture') {
 					applyCustomPicture();
+				}
+				if (k === 'fit') {
+					applyFit();
 				}
 			},
 			interactions: {},
