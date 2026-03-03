@@ -90,37 +90,61 @@ export const poster = defineObject({
 			let newDy = dy;
 
 			if (options.fit === 'cover') {
-				if (targetAspect > srcAspect) {
-					const fitHeight = targetWidth / srcAspect;
-					const crop = (fitHeight - targetHeight) / fitHeight / 2;
-					newAy = ay + crop * (by - ay);
-					newBy = by - crop * (by - ay);
-					newCy = cy + crop * (dy - cy);
-					newDy = dy - crop * (dy - cy);
+				const ratio = targetAspect / srcAspect;
+
+				let uRange: number;
+				let vRange: number;
+
+				if (ratio < 1) {
+					uRange = ratio; // < 1
+					vRange = 1;
 				} else {
-					const fitWidth = targetHeight * srcAspect;
-					const crop = (fitWidth - targetWidth) / fitWidth / 2;
-					newAx = ax + crop * (bx - ax);
-					newBx = bx - crop * (bx - ax);
-					newCx = cx + crop * (dx - cx);
-					newDx = dx - crop * (dx - cx);
+					uRange = 1;
+					vRange = 1 / ratio; // < 1
 				}
+
+				const uMin = (1 - uRange) / 2;
+				const uMax = uMin + uRange;
+				const vMin = (1 - vRange) / 2;
+				const vMax = vMin + vRange;
+
+				newAx = uMin;
+				newBx = uMax;
+				newCx = uMin;
+				newDx = uMax;
+
+				newAy = 1 - vMax;
+				newBy = 1 - vMax;
+				newCy = 1 - vMin;
+				newDy = 1 - vMin;
 			} else if (options.fit === 'contain') {
-				if (targetAspect > srcAspect) {
-					const fitWidth = targetHeight * srcAspect;
-					const crop = (fitWidth - targetWidth) / fitWidth / 2;
-					newAx = ax + crop * (bx - ax);
-					newBx = bx - crop * (bx - ax);
-					newCx = cx + crop * (dx - cx);
-					newDx = dx - crop * (dx - cx);
+				const ratio = targetAspect / srcAspect;
+
+				let uRange: number;
+				let vRange: number;
+
+				if (ratio > 1) {
+					uRange = ratio; // > 1
+					vRange = 1;
 				} else {
-					const fitHeight = targetWidth / srcAspect;
-					const crop = (fitHeight - targetHeight) / fitHeight / 2;
-					newAy = ay + crop * (by - ay);
-					newBy = by - crop * (by - ay);
-					newCy = cy + crop * (dy - cy);
-					newDy = dy - crop * (dy - cy);
+					uRange = 1;
+					vRange = 1 / ratio; // > 1
 				}
+
+				const uMin = (1 - uRange) / 2;
+				const uMax = uMin + uRange;
+				const vMin = (1 - vRange) / 2;
+				const vMax = vMin + vRange;
+
+				newAx = uMin;
+				newBx = uMax;
+				newCx = uMin;
+				newDx = uMax;
+
+				newAy = 1 - vMax;
+				newBy = 1 - vMax;
+				newCy = 1 - vMin;
+				newDy = 1 - vMin;
 			}
 
 			uvs[4] = newAx;
