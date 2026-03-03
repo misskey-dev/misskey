@@ -55,10 +55,10 @@ export const poster = defineObject({
 		const uvs = pictureMesh.getVerticesData(BABYLON.VertexBuffer.UVKind);
 
 		/**
-		 *    0        1
-		 * 0 c(x,y)---a(x,y)
-		 *    |        |
-		 * 1 d(x,y)---b(x,y)
+		 *     0         1
+		 * 0 a(x,y) --- b(x,y)
+		 *     |         |
+		 * 1 c(x,y) --- d(x,y)
 		 */
 		const ax = uvs[4];
 		const ay = uvs[5];
