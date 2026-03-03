@@ -72,7 +72,7 @@ export const pictureFrame = defineObject({
 		},
 	},
 	placement: 'side',
-	createInstance: ({ room, root, options, findMaterial, findMesh }) => {
+	createInstance: ({ room, root, options, findMaterial, findMesh, meshUpdated }) => {
 		const frameMesh = findMesh('__X_FRAME__');
 		frameMesh.rotationQuaternion = null;
 		const matMesh = findMesh('__X_MAT__');
@@ -131,6 +131,7 @@ export const pictureFrame = defineObject({
 
 		const applyFrameThickness = () => {
 			frameMesh.morphTargetManager!.getTargetByName('FrameThickness')!.influence = options.frameThickness;
+			meshUpdated();
 		};
 
 		applyFrameThickness();
@@ -141,6 +142,7 @@ export const pictureFrame = defineObject({
 			matMesh.morphTargetManager!.getTargetByName('MatV')!.influence = options.matVThickness * factor * options.height;
 			pictureMesh.morphTargetManager!.getTargetByName('PictureWidth')!.influence = options.width * (1 - (options.matHThickness * factor));
 			pictureMesh.morphTargetManager!.getTargetByName('PictureHeight')!.influence = options.height * (1 - (options.matVThickness * factor));
+			meshUpdated();
 		};
 
 		applyMatThickness();
@@ -152,6 +154,7 @@ export const pictureFrame = defineObject({
 			matMesh.morphTargetManager!.getTargetByName('MatHeight')!.influence = options.height;
 			coverMesh.morphTargetManager!.getTargetByName('CoverWidth')!.influence = options.width;
 			coverMesh.morphTargetManager!.getTargetByName('CoverHeight')!.influence = options.height;
+			meshUpdated();
 
 			applyMatThickness();
 		};
