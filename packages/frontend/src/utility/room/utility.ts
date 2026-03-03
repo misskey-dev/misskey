@@ -369,3 +369,101 @@ export function getPlaneUvIndexes(mesh: BABYLON.Mesh) {
 
 	return [aIndex, bIndex, cIndex, dIndex];
 }
+
+export function createPlaneUvMapper(mesh: BABYLON.Mesh) {
+	mesh.markVerticesDataAsUpdatable(BABYLON.VertexBuffer.UVKind, true);
+
+	const uvs = mesh.getVerticesData(BABYLON.VertexBuffer.UVKind)!;
+	const uvIndexes = getPlaneUvIndexes(mesh);
+
+	const ax = uvs[uvIndexes[0]];
+	const ay = uvs[uvIndexes[0] + 1];
+	const bx = uvs[uvIndexes[1]];
+	const by = uvs[uvIndexes[1] + 1];
+	const cx = uvs[uvIndexes[2]];
+	const cy = uvs[uvIndexes[2] + 1];
+	const dx = uvs[uvIndexes[3]];
+	const dy = uvs[uvIndexes[3] + 1];
+
+	return (srcAspect: number, targetAspect: number, method: 'cover' | 'contain' | 'stretch') => {
+		let newAx = ax;
+		let newAy = ay;
+		let newBx = bx;
+		let newBy = by;
+		let newCx = cx;
+		let newCy = cy;
+		let newDx = dx;
+		let newDy = dy;
+
+		if (method === 'cover') {
+			const ratio = targetAspect / srcAspect;
+
+			let uRange: number;
+			let vRange: number;
+
+			if (ratio < 1) {
+				uRange = ratio; // < 1
+				vRange = 1;
+			} else {
+				uRange = 1;
+				vRange = 1 / ratio; // < 1
+			}
+
+			const uMin = (1 - uRange) / 2;
+			const uMax = uMin + uRange;
+			const vMin = (1 - vRange) / 2;
+			const vMax = vMin + vRange;
+
+			newAx = uMin;
+			newBx = uMax;
+			newCx = uMin;
+			newDx = uMax;
+
+			newAy = 1 - vMax;
+			newBy = 1 - vMax;
+			newCy = 1 - vMin;
+			newDy = 1 - vMin;
+		} else if (method === 'contain') {
+			const ratio = targetAspect / srcAspect;
+
+			let uRange: number;
+			let vRange: number;
+
+			if (ratio > 1) {
+				uRange = ratio; // > 1
+				vRange = 1;
+			} else {
+				uRange = 1;
+				vRange = 1 / ratio; // > 1
+			}
+
+			const uMin = (1 - uRange) / 2;
+			const uMax = uMin + uRange;
+			const vMin = (1 - vRange) / 2;
+			const vMax = vMin + vRange;
+
+			newAx = uMin;
+			newBx = uMax;
+			newCx = uMin;
+			newDx = uMax;
+
+			newAy = 1 - vMax;
+			newBy = 1 - vMax;
+			newCy = 1 - vMin;
+			newDy = 1 - vMin;
+		} else if (method === 'stretch') {
+			// nop
+		}
+
+		uvs[uvIndexes[0]] = newAx;
+		uvs[uvIndexes[0] + 1] = newAy;
+		uvs[uvIndexes[1]] = newBx;
+		uvs[uvIndexes[1] + 1] = newBy;
+		uvs[uvIndexes[2]] = newCx;
+		uvs[uvIndexes[2] + 1] = newCy;
+		uvs[uvIndexes[3]] = newDx;
+		uvs[uvIndexes[3] + 1] = newDy;
+
+		mesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
+	};
+}
