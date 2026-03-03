@@ -20,6 +20,20 @@ export const pictureFrame = defineObject({
 				label: 'Direction',
 				enum: ['vertical', 'horizontal'],
 			},
+			width: {
+				type: 'range',
+				label: 'Width',
+				min: 0,
+				max: 1,
+				step: 0.01,
+			},
+			height: {
+				type: 'range',
+				label: 'Height',
+				min: 0,
+				max: 1,
+				step: 0.01,
+			},
 			frameThickness: {
 				type: 'range',
 				label: 'Frame thickness',
@@ -49,10 +63,12 @@ export const pictureFrame = defineObject({
 		default: {
 			frameColor: [0.71, 0.58, 0.39],
 			direction: 'vertical',
+			width: 0.5,
+			height: 0.5,
 			frameThickness: 0.5,
 			matHThickness: 0.125,
 			matVThickness: 0.15,
-			customPicture: null,
+			customPicture: 'http://syu-win.local:3000/files/b6cefaba-3093-4c57-a7f8-993dee62c6f7',
 		},
 	},
 	placement: 'side',
@@ -111,7 +127,7 @@ export const pictureFrame = defineObject({
 			pictureMesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
 		};
 
-		applyDirection();
+		//applyDirection();
 
 		const applyFrameThickness = () => {
 			frameMesh.morphTargetManager!.getTargetByName('FrameThickness')!.influence = options.frameThickness;
@@ -120,13 +136,25 @@ export const pictureFrame = defineObject({
 		applyFrameThickness();
 
 		const applyMatThickness = () => {
-			matMesh.morphTargetManager!.getTargetByName('MatH')!.influence = options.matHThickness;
-			matMesh.morphTargetManager!.getTargetByName('MatV')!.influence = options.matVThickness;
-			pictureMesh.morphTargetManager!.getTargetByName('PictureH')!.influence = options.matHThickness;
-			pictureMesh.morphTargetManager!.getTargetByName('PictureV')!.influence = options.matVThickness;
+			const factor = 0.49; // 0.5を超えるとなんかメッシュのレンダリングがグリッチするため
+			matMesh.morphTargetManager!.getTargetByName('MatH')!.influence = options.matHThickness * factor * options.width;
+			matMesh.morphTargetManager!.getTargetByName('MatV')!.influence = options.matVThickness * factor * options.height;
+			pictureMesh.morphTargetManager!.getTargetByName('PictureWidth')!.influence = options.width * (1 - (options.matHThickness * factor));
+			pictureMesh.morphTargetManager!.getTargetByName('PictureHeight')!.influence = options.height * (1 - (options.matVThickness * factor));
 		};
 
 		applyMatThickness();
+
+		const applySize = () => {
+			frameMesh.morphTargetManager!.getTargetByName('FrameWidth')!.influence = options.width;
+			frameMesh.morphTargetManager!.getTargetByName('FrameHeight')!.influence = options.height;
+			matMesh.morphTargetManager!.getTargetByName('MatWidth')!.influence = options.width;
+			matMesh.morphTargetManager!.getTargetByName('MatHeight')!.influence = options.height;
+
+			applyMatThickness();
+		};
+
+		applySize();
 
 		const pictureMaterial = findMaterial('__X_PICTURE__');
 
@@ -163,6 +191,9 @@ export const pictureFrame = defineObject({
 				}
 				if (k === 'direction') {
 					applyDirection();
+				}
+				if (k === 'width' || k === 'height') {
+					applySize();
 				}
 				if (k === 'frameThickness') {
 					applyFrameThickness();
