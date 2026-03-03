@@ -20,6 +20,13 @@ export const pictureFrame = defineObject({
 				label: 'Direction',
 				enum: ['vertical', 'horizontal'],
 			},
+			frameThickness: {
+				type: 'range',
+				label: 'Frame thickness',
+				min: 0,
+				max: 1,
+				step: 0.01,
+			},
 			matHThickness: {
 				type: 'range',
 				label: 'Mat horizontal thickness',
@@ -42,6 +49,7 @@ export const pictureFrame = defineObject({
 		default: {
 			frameColor: [0.71, 0.58, 0.39],
 			direction: 'vertical',
+			frameThickness: 0.5,
 			matHThickness: 0.125,
 			matVThickness: 0.15,
 			customPicture: null,
@@ -105,6 +113,12 @@ export const pictureFrame = defineObject({
 
 		applyDirection();
 
+		const applyFrameThickness = () => {
+			frameMesh.morphTargetManager!.getTargetByName('FrameThickness')!.influence = options.frameThickness;
+		};
+
+		applyFrameThickness();
+
 		const applyMatThickness = () => {
 			matMesh.morphTargetManager!.getTargetByName('MatH')!.influence = options.matHThickness;
 			matMesh.morphTargetManager!.getTargetByName('MatV')!.influence = options.matVThickness;
@@ -149,6 +163,9 @@ export const pictureFrame = defineObject({
 				}
 				if (k === 'direction') {
 					applyDirection();
+				}
+				if (k === 'frameThickness') {
+					applyFrameThickness();
 				}
 				if (k === 'matHThickness' || k === 'matVThickness') {
 					applyMatThickness();
