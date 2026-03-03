@@ -861,6 +861,8 @@ export class RoomEngine {
 		const meshUpdated = (meshes: BABYLON.Mesh[]) => {
 			for (const m of meshes) {
 				const mesh = m;
+
+				// シェイプキー(morph)を考慮してbounding boxを更新するために必要
 				mesh.refreshBoundingInfo({ applyMorph: true });
 				//mesh.showBoundingBox = _DEV_;
 
