@@ -49,6 +49,10 @@ export const tapestry = defineObject({
 		pictureMesh.rotationQuaternion = null;
 		pictureMesh.markVerticesDataAsUpdatable(BABYLON.VertexBuffer.UVKind, true);
 
+		const pipeTopMesh = findMesh('__X_PIPE_TOP__');
+		const pipeBottomMesh = findMesh('__X_PIPE_BOTTOM__');
+		const ropeMesh = findMesh('__X_ROPE__');
+
 		const pictureMaterial = findMaterial('__X_PICTURE__');
 
 		const uvs = pictureMesh.getVerticesData(BABYLON.VertexBuffer.UVKind)!;
@@ -155,6 +159,22 @@ export const tapestry = defineObject({
 
 		applyFit();
 
+		const applySize = () => {
+			pictureMesh.morphTargetManager!.getTargetByName('Width')!.influence = options.width;
+			pictureMesh.morphTargetManager!.getTargetByName('Height')!.influence = options.height;
+			pipeTopMesh.morphTargetManager!.getTargetByName('Width')!.influence = options.width;
+			pipeTopMesh.morphTargetManager!.getTargetByName('Height')!.influence = options.height;
+			pipeBottomMesh.morphTargetManager!.getTargetByName('Width')!.influence = options.width;
+			pipeBottomMesh.morphTargetManager!.getTargetByName('Height')!.influence = options.height;
+			ropeMesh.morphTargetManager!.getTargetByName('Width')!.influence = options.width;
+			ropeMesh.morphTargetManager!.getTargetByName('Height')!.influence = options.height;
+			meshUpdated();
+
+			applyFit();
+		};
+
+		applySize();
+
 		const applyCustomPicture = () => {
 			if (options.customPicture != null) {
 				const tex = new BABYLON.Texture(options.customPicture, room.scene, false, false);
@@ -182,6 +202,9 @@ export const tapestry = defineObject({
 
 			},
 			onOptionsUpdated: ([k, v]) => {
+				if (k === 'width' || k === 'height') {
+					applySize();
+				}
 				if (k === 'customPicture') {
 					applyCustomPicture();
 				}
