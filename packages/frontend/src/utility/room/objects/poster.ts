@@ -53,6 +53,12 @@ export const poster = defineObject({
 		const pinMeshes = findMeshes('__X_PIN__');
 
 		const uvs = pictureMesh.getVerticesData(BABYLON.VertexBuffer.UVKind);
+
+		/**
+		 * a(x,y)---b(x,y)
+		 *   |        |
+		 * c(x,y)---d(x,y)
+		 */
 		const ax = uvs[6];
 		const ay = uvs[7];
 		const bx = uvs[2];
@@ -73,49 +79,19 @@ export const poster = defineObject({
 			const targetHeight = options.height;
 			const targetAspect = targetWidth / targetHeight;
 
-			let newAx = ax;
-			let newAy = ay;
-			let newBx = bx;
-			let newBy = by;
-			let newCx = cx;
-			let newCy = cy;
-			let newDx = dx;
-			let newDy = dy;
+			const newAx = ax;
+			const newAy = ay;
+			const newBx = bx;
+			const newBy = by;
+			const newCx = cx;
+			const newCy = cy;
+			const newDx = dx;
+			const newDy = dy;
 
 			if (options.fit === 'cover') {
-				if (targetAspect > srcAspect) {
-					const fitHeight = targetWidth / srcAspect;
-					const crop = (fitHeight - targetHeight) / fitHeight / 2;
-					newAy = ay + crop * (by - ay);
-					newBy = by - crop * (by - ay);
-					newCy = cy + crop * (dy - cy);
-					newDy = dy - crop * (dy - cy);
-				} else {
-					const fitWidth = targetHeight * srcAspect;
-					const crop = (fitWidth - targetWidth) / fitWidth / 2;
-					newAx = ax + crop * (bx - ax);
-					newBx = bx - crop * (bx - ax);
-					newCx = cx + crop * (dx - cx);
-					newDx = dx - crop * (dx - cx);
-				}
+				// TODO
 			} else if (options.fit === 'contain') {
-				if (targetAspect > srcAspect) {
-					const fitWidth = targetHeight * srcAspect;
-					const crop = (fitWidth - targetWidth) / fitWidth / 2;
-					newAx = ax + crop * (bx - ax);
-					newBx = bx - crop * (bx - ax);
-					newCx = cx + crop * (dx - cx);
-					newDx = dx - crop * (dx - cx);
-				} else {
-					const fitHeight = targetWidth / srcAspect;
-					const crop = (fitHeight - targetHeight) / fitHeight / 2;
-					newAy = ay + crop * (by - ay);
-					newBy = by - crop * (by - ay);
-					newCy = cy + crop * (dy - cy);
-					newDy = dy - crop * (dy - cy);
-				}
-			} else if (options.fit === 'stretch') {
-				// do nothing
+				// TODO
 			}
 
 			uvs[6] = newAx;

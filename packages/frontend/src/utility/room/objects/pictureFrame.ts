@@ -88,6 +88,12 @@ export const pictureFrame = defineObject({
 		const pictureMaterial = findMaterial('__X_PICTURE__');
 
 		const uvs = pictureMesh.getVerticesData(BABYLON.VertexBuffer.UVKind);
+
+		/**
+		 * a(x,y)---b(x,y)
+		 *   |        |
+		 * c(x,y)---d(x,y)
+		 */
 		const ax = uvs[6];
 		const ay = uvs[7];
 		const bx = uvs[2];
