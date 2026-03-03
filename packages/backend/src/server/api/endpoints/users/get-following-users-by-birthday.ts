@@ -20,7 +20,7 @@ export const meta = {
 	requireCredential: true,
 	kind: 'read:account',
 
-	description: 'Find users who have a birthday on the specified range.',
+	description: 'Retrieve users who have a birthday on the specified range.',
 
 	res: {
 		type: 'array',
