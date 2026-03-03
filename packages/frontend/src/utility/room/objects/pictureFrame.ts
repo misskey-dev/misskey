@@ -5,6 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../engine.js';
+import { getPlaneUvIndexes } from '../utility.js';
 
 export const pictureFrame = defineObject({
 	id: 'pictureFrame',
@@ -87,21 +88,17 @@ export const pictureFrame = defineObject({
 
 		const pictureMaterial = findMaterial('__X_PICTURE__');
 
-		const uvs = pictureMesh.getVerticesData(BABYLON.VertexBuffer.UVKind);
+		const uvs = pictureMesh.getVerticesData(BABYLON.VertexBuffer.UVKind)!;
+		const uvIndexes = getPlaneUvIndexes(pictureMesh);
 
-		/**
-		 * a(x,y)---b(x,y)
-		 *   |        |
-		 * c(x,y)---d(x,y)
-		 */
-		const ax = uvs[6];
-		const ay = uvs[7];
-		const bx = uvs[2];
-		const by = uvs[3];
-		const cx = uvs[4];
-		const cy = uvs[5];
-		const dx = uvs[0];
-		const dy = uvs[1];
+		const ax = uvs[uvIndexes[0]];
+		const ay = uvs[uvIndexes[0] + 1];
+		const bx = uvs[uvIndexes[1]];
+		const by = uvs[uvIndexes[1] + 1];
+		const cx = uvs[uvIndexes[2]];
+		const cy = uvs[uvIndexes[2] + 1];
+		const dx = uvs[uvIndexes[3]];
+		const dy = uvs[uvIndexes[3] + 1];
 
 		const applyFit = () => {
 			const tex = pictureMaterial.albedoTexture;
@@ -124,49 +121,71 @@ export const pictureFrame = defineObject({
 			let newDy = dy;
 
 			if (options.fit === 'cover') {
-				if (targetAspect > srcAspect) {
-					const fitHeight = targetWidth / srcAspect;
-					const crop = (fitHeight - targetHeight) / fitHeight / 2;
-					newAy = ay + crop * (by - ay);
-					newBy = by - crop * (by - ay);
-					newCy = cy + crop * (dy - cy);
-					newDy = dy - crop * (dy - cy);
+				const ratio = targetAspect / srcAspect;
+
+				let uRange: number;
+				let vRange: number;
+
+				if (ratio < 1) {
+					uRange = ratio; // < 1
+					vRange = 1;
 				} else {
-					const fitWidth = targetHeight * srcAspect;
-					const crop = (fitWidth - targetWidth) / fitWidth / 2;
-					newAx = ax + crop * (bx - ax);
-					newBx = bx - crop * (bx - ax);
-					newCx = cx + crop * (dx - cx);
-					newDx = dx - crop * (dx - cx);
+					uRange = 1;
+					vRange = 1 / ratio; // < 1
 				}
+
+				const uMin = (1 - uRange) / 2;
+				const uMax = uMin + uRange;
+				const vMin = (1 - vRange) / 2;
+				const vMax = vMin + vRange;
+
+				newAx = uMin;
+				newBx = uMax;
+				newCx = uMin;
+				newDx = uMax;
+
+				newAy = 1 - vMax;
+				newBy = 1 - vMax;
+				newCy = 1 - vMin;
+				newDy = 1 - vMin;
 			} else if (options.fit === 'contain') {
-				if (targetAspect > srcAspect) {
-					const fitWidth = targetHeight * srcAspect;
-					const crop = (fitWidth - targetWidth) / fitWidth / 2;
-					newAx = ax + crop * (bx - ax);
-					newBx = bx - crop * (bx - ax);
-					newCx = cx + crop * (dx - cx);
-					newDx = dx - crop * (dx - cx);
+				const ratio = targetAspect / srcAspect;
+
+				let uRange: number;
+				let vRange: number;
+
+				if (ratio > 1) {
+					uRange = ratio; // > 1
+					vRange = 1;
 				} else {
-					const fitHeight = targetWidth / srcAspect;
-					const crop = (fitHeight - targetHeight) / fitHeight / 2;
-					newAy = ay + crop * (by - ay);
-					newBy = by - crop * (by - ay);
-					newCy = cy + crop * (dy - cy);
-					newDy = dy - crop * (dy - cy);
+					uRange = 1;
+					vRange = 1 / ratio; // > 1
 				}
-			} else if (options.fit === 'stretch') {
-				// do nothing
+
+				const uMin = (1 - uRange) / 2;
+				const uMax = uMin + uRange;
+				const vMin = (1 - vRange) / 2;
+				const vMax = vMin + vRange;
+
+				newAx = uMin;
+				newBx = uMax;
+				newCx = uMin;
+				newDx = uMax;
+
+				newAy = 1 - vMax;
+				newBy = 1 - vMax;
+				newCy = 1 - vMin;
+				newDy = 1 - vMin;
 			}
 
-			uvs[6] = newAx;
-			uvs[7] = newAy;
-			uvs[2] = newBx;
-			uvs[3] = newBy;
-			uvs[4] = newCx;
-			uvs[5] = newCy;
-			uvs[0] = newDx;
-			uvs[1] = newDy;
+			uvs[uvIndexes[0]] = newAx;
+			uvs[uvIndexes[0] + 1] = newAy;
+			uvs[uvIndexes[1]] = newBx;
+			uvs[uvIndexes[1] + 1] = newBy;
+			uvs[uvIndexes[2]] = newCx;
+			uvs[uvIndexes[2] + 1] = newCy;
+			uvs[uvIndexes[3]] = newDx;
+			uvs[uvIndexes[3] + 1] = newDy;
 
 			pictureMesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
 		};

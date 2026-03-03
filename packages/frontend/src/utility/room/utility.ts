@@ -292,6 +292,9 @@ export function initTv(room: RoomEngine, screenMesh: BABYLON.Mesh) {
 		tvScreenMaterial.freeze();
 	}
 
+	const uvs = screenMesh.getVerticesData(BABYLON.VertexBuffer.UVKind)!;
+	const uvIndexes = getPlaneUvIndexes(screenMesh);
+
 	const applyTvTexture = (tlIndex: number) => {
 		const [index, duration] = tvProgram.timeline[tlIndex];
 
@@ -311,15 +314,14 @@ export function initTv(room: RoomEngine, screenMesh: BABYLON.Mesh) {
 		const dx = bx;
 		const dy = cy;
 
-		const uvs = screenMesh.getVerticesData(BABYLON.VertexBuffer.UVKind);
-		uvs[0] = dx;
-		uvs[1] = dy;
-		uvs[2] = bx;
-		uvs[3] = by;
-		uvs[4] = cx;
-		uvs[5] = cy;
-		uvs[6] = ax;
-		uvs[7] = ay;
+		uvs[uvIndexes[0]] = ax;
+		uvs[uvIndexes[0] + 1] = ay;
+		uvs[uvIndexes[1]] = bx;
+		uvs[uvIndexes[1] + 1] = by;
+		uvs[uvIndexes[2]] = cx;
+		uvs[uvIndexes[2] + 1] = cy;
+		uvs[uvIndexes[3]] = dx;
+		uvs[uvIndexes[3] + 1] = dy;
 		screenMesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
 
 		const timeoutId = window.setTimeout(() => {
@@ -330,4 +332,40 @@ export function initTv(room: RoomEngine, screenMesh: BABYLON.Mesh) {
 	};
 
 	applyTvTexture(0);
+}
+
+/**
+ *     0         1
+ * 0 a(x,y) --- b(x,y)
+ *     |         |
+ * 1 c(x,y) --- d(x,y)
+ */
+export function getPlaneUvIndexes(mesh: BABYLON.Mesh) {
+	const uvs = mesh.getVerticesData(BABYLON.VertexBuffer.UVKind);
+	if (uvs == null) {
+		throw new Error('Mesh does not have UV data');
+	}
+
+	let aIndex = 0;
+	let bIndex = 0;
+	let cIndex = 0;
+	let dIndex = 0;
+
+	for (let i = 0; i < 8; i += 2) {
+		const x = uvs[i];
+		const y = uvs[i + 1];
+
+		// 多少ずれがあってもいいように(例えばblenderではUV展開時にデフォルトでわずかなマージンを追加する)、中心より大きいか/小さいかで判定する
+		if (x < 0.5 && y < 0.5) {
+			aIndex = i;
+		} else if (x > 0.5 && y < 0.5) {
+			bIndex = i;
+		} else if (x < 0.5 && y > 0.5) {
+			cIndex = i;
+		} else if (x > 0.5 && y > 0.5) {
+			dIndex = i;
+		}
+	}
+
+	return [aIndex, bIndex, cIndex, dIndex];
 }

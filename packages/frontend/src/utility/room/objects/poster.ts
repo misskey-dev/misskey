@@ -5,6 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../engine.js';
+import { getPlaneUvIndexes } from '../utility.js';
 
 export const poster = defineObject({
 	id: 'poster',
@@ -52,22 +53,17 @@ export const poster = defineObject({
 
 		const pinMeshes = findMeshes('__X_PIN__');
 
-		const uvs = pictureMesh.getVerticesData(BABYLON.VertexBuffer.UVKind);
+		const uvs = pictureMesh.getVerticesData(BABYLON.VertexBuffer.UVKind)!;
+		const uvIndexes = getPlaneUvIndexes(pictureMesh);
 
-		/**
-		 *     0         1
-		 * 0 a(x,y) --- b(x,y)
-		 *     |         |
-		 * 1 c(x,y) --- d(x,y)
-		 */
-		const ax = uvs[4];
-		const ay = uvs[5];
-		const bx = uvs[6];
-		const by = uvs[7];
-		const cx = uvs[0];
-		const cy = uvs[1];
-		const dx = uvs[2];
-		const dy = uvs[3];
+		const ax = uvs[uvIndexes[0]];
+		const ay = uvs[uvIndexes[0] + 1];
+		const bx = uvs[uvIndexes[1]];
+		const by = uvs[uvIndexes[1] + 1];
+		const cx = uvs[uvIndexes[2]];
+		const cy = uvs[uvIndexes[2] + 1];
+		const dx = uvs[uvIndexes[3]];
+		const dy = uvs[uvIndexes[3] + 1];
 
 		const applyFit = () => {
 			const tex = pictureMaterial.albedoTexture;
@@ -147,14 +143,14 @@ export const poster = defineObject({
 				newDy = 1 - vMin;
 			}
 
-			uvs[4] = newAx;
-			uvs[5] = newAy;
-			uvs[6] = newBx;
-			uvs[7] = newBy;
-			uvs[0] = newCx;
-			uvs[1] = newCy;
-			uvs[2] = newDx;
-			uvs[3] = newDy;
+			uvs[uvIndexes[0]] = newAx;
+			uvs[uvIndexes[0] + 1] = newAy;
+			uvs[uvIndexes[1]] = newBx;
+			uvs[uvIndexes[1] + 1] = newBy;
+			uvs[uvIndexes[2]] = newCx;
+			uvs[uvIndexes[2] + 1] = newCy;
+			uvs[uvIndexes[3]] = newDx;
+			uvs[uvIndexes[3] + 1] = newDy;
 
 			pictureMesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
 		};
