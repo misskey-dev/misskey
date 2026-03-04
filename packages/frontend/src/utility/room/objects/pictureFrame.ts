@@ -148,6 +148,7 @@ export const pictureFrame = defineObject({
 
 		const applyDepth = () => {
 			frameMesh.morphTargetManager!.getTargetByName('Depth')!.influence = options.depth;
+			//coverMesh.morphTargetManager!.getTargetByName('Depth')!.influence = options.depth;
 			meshUpdated();
 		};
 
