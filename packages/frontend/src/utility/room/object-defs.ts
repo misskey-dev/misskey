@@ -53,6 +53,7 @@ import { speaker } from './objects/speaker.js';
 import { steelRack } from './objects/steelRack.js';
 import { tabletopCalendar } from './objects/tabletopCalendar.js';
 import { tabletopDigitalClock } from './objects/tabletopDigitalClock.js';
+import { tabletopPictureFrame } from './objects/tabletopPictureFrame.js';
 import { tapestry } from './objects/tapestry.js';
 import { tv } from './objects/tv.js';
 import { wallClock } from './objects/wallClock.js';
@@ -110,6 +111,7 @@ export const OBJECT_DEFS = [
 	steelRack,
 	tabletopCalendar,
 	tabletopDigitalClock,
+	tabletopPictureFrame,
 	tapestry,
 	tv,
 	wallClock,
