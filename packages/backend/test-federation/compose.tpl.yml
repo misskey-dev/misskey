@@ -1,6 +1,6 @@
 services:
   nginx:
-    image: nginx:1.27
+    image: nginx:1.29
     volumes:
       - type: bind
         source: ./certificates/rootCA.crt
