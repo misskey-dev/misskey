@@ -76,8 +76,6 @@ export const pictureFrame = defineObject({
 	},
 	placement: 'side',
 	createInstance: ({ room, root, options, findMaterial, findMesh, meshUpdated }) => {
-		const MAT_THICKNESS_FACTOR = 0.9;
-
 		const frameMesh = findMesh('__X_FRAME__');
 		frameMesh.rotationQuaternion = null;
 		const matMesh = findMesh('__X_MAT__');
@@ -98,8 +96,8 @@ export const pictureFrame = defineObject({
 			const srcWidth = tex.getSize().width;
 			const srcHeight = tex.getSize().height;
 			const srcAspect = srcWidth / srcHeight;
-			const targetWidth = options.width * (1 - (options.matHThickness * MAT_THICKNESS_FACTOR));
-			const targetHeight = options.height * (1 - (options.matVThickness * MAT_THICKNESS_FACTOR));
+			const targetWidth = options.width * (1 - options.matHThickness);
+			const targetHeight = options.height * (1 - options.matVThickness);
 			const targetAspect = targetWidth / targetHeight;
 
 			updateUv(srcAspect, targetAspect, options.fit);
@@ -115,10 +113,10 @@ export const pictureFrame = defineObject({
 		applyFrameThickness();
 
 		const applyMatThickness = () => {
-			matMesh.morphTargetManager!.getTargetByName('MatH')!.influence = options.matHThickness * MAT_THICKNESS_FACTOR * options.width;
-			matMesh.morphTargetManager!.getTargetByName('MatV')!.influence = options.matVThickness * MAT_THICKNESS_FACTOR * options.height;
-			pictureMesh.morphTargetManager!.getTargetByName('PictureWidth')!.influence = options.width * (1 - (options.matHThickness * MAT_THICKNESS_FACTOR));
-			pictureMesh.morphTargetManager!.getTargetByName('PictureHeight')!.influence = options.height * (1 - (options.matVThickness * MAT_THICKNESS_FACTOR));
+			matMesh.morphTargetManager!.getTargetByName('MatH')!.influence = options.matHThickness * options.width;
+			matMesh.morphTargetManager!.getTargetByName('MatV')!.influence = options.matVThickness * options.height;
+			pictureMesh.morphTargetManager!.getTargetByName('PictureWidth')!.influence = options.width * (1 - options.matHThickness);
+			pictureMesh.morphTargetManager!.getTargetByName('PictureHeight')!.influence = options.height * (1 - options.matVThickness);
 			meshUpdated();
 
 			applyFit();
