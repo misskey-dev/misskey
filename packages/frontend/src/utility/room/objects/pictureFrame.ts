@@ -5,7 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../engine.js';
-import { createPlaneUvMapper, getPlaneUvIndexes } from '../utility.js';
+import { createPlaneUvMapper } from '../utility.js';
+
+// NOTE: シェイプキーのnormalのエクスポートは無効にしないとmatを大きくしたときに面のレンダリングがグリッチする
 
 export const pictureFrame = defineObject({
 	id: 'pictureFrame',
@@ -66,15 +68,15 @@ export const pictureFrame = defineObject({
 			width: 0.15,
 			height: 0.15,
 			frameThickness: 0.3,
-			matHThickness: 0.5,
-			matVThickness: 0.5,
+			matHThickness: 0.35,
+			matVThickness: 0.35,
 			customPicture: null,
 			fit: 'cover',
 		},
 	},
 	placement: 'side',
 	createInstance: ({ room, root, options, findMaterial, findMesh, meshUpdated }) => {
-		const MAT_THICKNESS_FACTOR = 0.49; // 0.5を超えるとなんかメッシュのレンダリングがグリッチするため
+		const MAT_THICKNESS_FACTOR = 0.9;
 
 		const frameMesh = findMesh('__X_FRAME__');
 		frameMesh.rotationQuaternion = null;
