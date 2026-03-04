@@ -5,6 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../engine.js';
+import { createPlaneUvMapper } from '../utility.js';
 
 export const allInOnePc = defineObject({
 	id: 'allInOnePc',
@@ -19,27 +20,83 @@ export const allInOnePc = defineObject({
 				type: 'color',
 				label: 'Bezel color',
 			},
+			screenBrightness: {
+				type: 'range',
+				label: 'Screen brightness',
+				min: 0,
+				max: 1,
+				step: 0.01,
+			},
+			customPicture: {
+				type: 'image',
+				label: 'Custom picture',
+			},
+			fit: {
+				type: 'enum',
+				label: 'Custom picture fit',
+				enum: ['cover', 'contain', 'stretch'],
+			},
 		},
 		default: {
 			bodyColor: [1, 1, 1],
 			bezelColor: [0, 0, 0],
+			screenBrightness: 0.35,
+			customPicture: null,
+			fit: 'cover',
 		},
 	},
 	placement: 'top',
-	createInstance: ({ room, options, findMaterial }) => {
+	createInstance: ({ room, options, findMesh, findMaterial }) => {
+		const screenMesh = findMesh('__X_SCREEN__');
+
 		const bodyMaterial = findMaterial('__X_BODY__');
 		const bezelMaterial = findMaterial('__X_BEZEL__');
 		const screenMaterial = findMaterial('__X_SCREEN__');
 
-		const tex = new BABYLON.Texture('http://syu-win.local:3000/files/b6cefaba-3093-4c57-a7f8-993dee62c6f7', room.scene, false, false);
-
-		screenMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
 		screenMaterial.ambientColor = new BABYLON.Color3(0, 0, 0);
-		screenMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
 		screenMaterial.albedoColor = new BABYLON.Color3(0, 0, 0);
-		screenMaterial.emissiveTexture = tex;
-		screenMaterial.emissiveColor = new BABYLON.Color3(0.4, 0.4, 0.4);
-		screenMaterial.emissiveTexture.level = 0.5;
+
+		const updateUv = createPlaneUvMapper(screenMesh);
+
+		const applyFit = () => {
+			const tex = screenMaterial.emissiveTexture;
+			if (tex == null) return;
+
+			const srcAspect = tex.getSize().width / tex.getSize().height;
+			const targetAspect = 50 / 27.5;
+
+			updateUv(srcAspect, targetAspect, options.fit);
+		};
+
+		applyFit();
+
+		const applyCustomPicture = () => {
+			if (options.customPicture != null) {
+				const tex = new BABYLON.Texture(options.customPicture, room.scene, false, false);
+				tex.wrapU = BABYLON.Texture.MIRROR_ADDRESSMODE;
+				tex.wrapV = BABYLON.Texture.MIRROR_ADDRESSMODE;
+				tex.level = 0.5;
+
+				screenMaterial.emissiveTexture = tex;
+
+				applyFit();
+
+				tex.onLoadObservable.addOnce(() => {
+					applyFit();
+				});
+			} else {
+				screenMaterial.emissiveTexture = null;
+			}
+		};
+
+		applyCustomPicture();
+
+		const applyScreenBrightness = () => {
+			const b = options.screenBrightness;
+			screenMaterial.emissiveColor = new BABYLON.Color3(b, b, b);
+		};
+
+		applyScreenBrightness();
 
 		const applyBodyColor = () => {
 			const [r, g, b] = options.bodyColor;
@@ -56,8 +113,13 @@ export const allInOnePc = defineObject({
 
 		return {
 			onOptionsUpdated: ([k, v]) => {
-				applyBodyColor();
-				applyBezelColor();
+				switch (k) {
+					case 'bodyColor': applyBodyColor(); break;
+					case 'bezelColor': applyBezelColor(); break;
+					case 'screenBrightness': applyScreenBrightness(); break;
+					case 'customPicture': applyCustomPicture(); break;
+					case 'fit': applyFit(); break;
+				}
 			},
 			interactions: {},
 		};
