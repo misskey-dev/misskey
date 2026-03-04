@@ -521,7 +521,7 @@ export class RoomEngine {
 			id: o.id,
 			type: o.type,
 			position: new BABYLON.Vector3(...o.position),
-			rotation: new BABYLON.Vector3(o.rotation[0], -o.rotation[1], o.rotation[2]),
+			rotation: new BABYLON.Vector3(o.rotation[0], o.rotation[1], o.rotation[2]),
 			options: o.options,
 			isMainLight: o.isMainLight,
 		})));
