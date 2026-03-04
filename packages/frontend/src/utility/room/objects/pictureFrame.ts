@@ -39,6 +39,13 @@ export const pictureFrame = defineObject({
 				max: 1,
 				step: 0.01,
 			},
+			depth: {
+				type: 'range',
+				label: 'Depth',
+				min: 0,
+				max: 1,
+				step: 0.01,
+			},
 			matHThickness: {
 				type: 'range',
 				label: 'Mat horizontal thickness',
@@ -68,6 +75,7 @@ export const pictureFrame = defineObject({
 			width: 0.15,
 			height: 0.15,
 			frameThickness: 0.3,
+			depth: 0,
 			matHThickness: 0.35,
 			matVThickness: 0.35,
 			customPicture: null,
@@ -106,7 +114,7 @@ export const pictureFrame = defineObject({
 		applyFit();
 
 		const applyFrameThickness = () => {
-			frameMesh.morphTargetManager!.getTargetByName('FrameThickness')!.influence = options.frameThickness;
+			frameMesh.morphTargetManager!.getTargetByName('Thickness')!.influence = options.frameThickness;
 			meshUpdated();
 		};
 
@@ -115,8 +123,8 @@ export const pictureFrame = defineObject({
 		const applyMatThickness = () => {
 			matMesh.morphTargetManager!.getTargetByName('MatH')!.influence = options.matHThickness * options.width;
 			matMesh.morphTargetManager!.getTargetByName('MatV')!.influence = options.matVThickness * options.height;
-			pictureMesh.morphTargetManager!.getTargetByName('PictureWidth')!.influence = options.width * (1 - options.matHThickness);
-			pictureMesh.morphTargetManager!.getTargetByName('PictureHeight')!.influence = options.height * (1 - options.matVThickness);
+			pictureMesh.morphTargetManager!.getTargetByName('Width')!.influence = options.width * (1 - options.matHThickness);
+			pictureMesh.morphTargetManager!.getTargetByName('Height')!.influence = options.height * (1 - options.matVThickness);
 			meshUpdated();
 
 			applyFit();
@@ -125,18 +133,25 @@ export const pictureFrame = defineObject({
 		applyMatThickness();
 
 		const applySize = () => {
-			frameMesh.morphTargetManager!.getTargetByName('FrameWidth')!.influence = options.width;
-			frameMesh.morphTargetManager!.getTargetByName('FrameHeight')!.influence = options.height;
-			matMesh.morphTargetManager!.getTargetByName('MatWidth')!.influence = options.width;
-			matMesh.morphTargetManager!.getTargetByName('MatHeight')!.influence = options.height;
-			coverMesh.morphTargetManager!.getTargetByName('CoverWidth')!.influence = options.width;
-			coverMesh.morphTargetManager!.getTargetByName('CoverHeight')!.influence = options.height;
+			frameMesh.morphTargetManager!.getTargetByName('Width')!.influence = options.width;
+			frameMesh.morphTargetManager!.getTargetByName('Height')!.influence = options.height;
+			matMesh.morphTargetManager!.getTargetByName('Width')!.influence = options.width;
+			matMesh.morphTargetManager!.getTargetByName('Height')!.influence = options.height;
+			coverMesh.morphTargetManager!.getTargetByName('Width')!.influence = options.width;
+			coverMesh.morphTargetManager!.getTargetByName('Height')!.influence = options.height;
 			meshUpdated();
 
 			applyMatThickness();
 		};
 
 		applySize();
+
+		const applyDepth = () => {
+			frameMesh.morphTargetManager!.getTargetByName('Depth')!.influence = options.depth;
+			meshUpdated();
+		};
+
+		applyDepth();
 
 		const applyCustomPicture = () => {
 			if (options.customPicture != null) {
@@ -177,14 +192,14 @@ export const pictureFrame = defineObject({
 				if (k === 'frameColor') {
 					applyFrameColor();
 				}
-				if (k === 'direction') {
-					applyDirection();
-				}
 				if (k === 'width' || k === 'height') {
 					applySize();
 				}
 				if (k === 'frameThickness') {
 					applyFrameThickness();
+				}
+				if (k === 'depth') {
+					applyDepth();
 				}
 				if (k === 'matHThickness' || k === 'matVThickness') {
 					applyMatThickness();
