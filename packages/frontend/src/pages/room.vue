@@ -204,8 +204,70 @@ function onWheel(ev: WheelEvent) {
 	}
 }
 
-const data = localStorage.getItem('roomData') != null ? JSON.parse(localStorage.getItem('roomData')!) : {
-	roomType: 'default',
+const data = localStorage.getItem('roomData') != null ? { ...JSON.parse(localStorage.getItem('roomData')!), ...{
+	heya: {
+		type: 'simple',
+		options: {
+			dimension: [300, 300],
+			window: 'demado',
+			wallN: {
+				material: null,
+				color: [0.9, 0.9, 0.9],
+			},
+			wallE: {
+				material: null,
+				color: [0.9, 0.9, 0.9],
+			},
+			wallS: {
+				material: null,
+				color: [0.9, 0.9, 0.9],
+			},
+			wallW: {
+				material: null,
+				color: [0.9, 0.9, 0.9],
+			},
+			flooring: {
+				material: 'wood',
+				color: [0.9, 0.9, 0.9],
+			},
+			ceiling: {
+				material: null,
+				color: [0.9, 0.9, 0.9],
+			},
+		},
+	},
+} } : {
+	heya: {
+		type: 'simple',
+		options: {
+			dimension: [300, 300],
+			window: 'demado',
+			wallN: {
+				material: null,
+				color: [0.9, 0.9, 0.9],
+			},
+			wallE: {
+				material: null,
+				color: [0.9, 0.9, 0.9],
+			},
+			wallS: {
+				material: null,
+				color: [0.9, 0.9, 0.9],
+			},
+			wallW: {
+				material: null,
+				color: [0.9, 0.9, 0.9],
+			},
+			flooring: {
+				material: 'wood',
+				color: [0.9, 0.9, 0.9],
+			},
+			ceiling: {
+				material: null,
+				color: [0.9, 0.9, 0.9],
+			},
+		},
+	},
 	installedObjects: [{
 		id: 'a',
 		type: 'cardboardBox',

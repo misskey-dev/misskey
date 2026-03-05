@@ -56,7 +56,7 @@ type SimpleHeyaWallBase = {
 type Heya = {
 	type: 'simple';
 	options: {
-		size: [number, number];
+		dimension: [number, number];
 		window: 'none' | 'kosidakamado' | 'demado' | 'hakidasimado';
 		wallN: SimpleHeyaWallBase;
 		wallE: SimpleHeyaWallBase;
@@ -542,7 +542,7 @@ export class RoomEngine {
 	}
 
 	public async init() {
-		await this.loadRoomModel(this.roomState.roomType);
+		await this.loadRoomModel(this.roomState.heya.type);
 		await this.loadEnvModel();
 		await Promise.all(this.roomState.installedObjects.map(o => this.loadObject({
 			id: o.id,
