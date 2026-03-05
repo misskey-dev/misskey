@@ -4,6 +4,7 @@
  */
 
 import * as assert from 'assert';
+import * as crypto from 'node:crypto';
 import httpSignature from '@peertube/http-signature';
 
 import { genRsaKeyPair } from '@/misc/gen-key-pair.js';
@@ -30,10 +31,23 @@ function cartesianProduct<T, U>(a: T[], b: U[]): [T, U][] {
 	return a.flatMap(a => b.map(b => [a, b] as [T, U]));
 }
 
+// PEM文字列からCryptoKeyを生成するヘルパー関数
+async function pemToCryptoKey(pem: string): Promise<crypto.webcrypto.CryptoKey> {
+	const der = crypto.createPrivateKey(pem).export({ type: 'pkcs8', format: 'der' }) as Buffer;
+	return crypto.subtle.importKey(
+		'pkcs8',
+		der,
+		{ name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' },
+		false,
+		['sign'],
+	);
+}
+
 describe('ap-request', () => {
 	test('createSignedPost with verify', async () => {
 		const keypair = await genRsaKeyPair();
-		const key = { keyId: 'x', 'privateKeyPem': keypair.privateKey };
+		const privateKey = await pemToCryptoKey(keypair.privateKey);
+		const key = { keyId: 'x', privateKey };
 		const url = 'https://example.com/inbox';
 		const activity = { a: 1 };
 		const body = JSON.stringify(activity);
@@ -41,7 +55,7 @@ describe('ap-request', () => {
 			'User-Agent': 'UA',
 		};
 
-		const req = ApRequestCreator.createSignedPost({ key, url, body, additionalHeaders: headers });
+		const req = await ApRequestCreator.createSignedPost({ key, url, body, additionalHeaders: headers });
 
 		const parsed = buildParsedSignature(req.signingString, req.signature, 'rsa-sha256');
 
@@ -51,13 +65,14 @@ describe('ap-request', () => {
 
 	test('createSignedGet with verify', async () => {
 		const keypair = await genRsaKeyPair();
-		const key = { keyId: 'x', 'privateKeyPem': keypair.privateKey };
+		const privateKey = await pemToCryptoKey(keypair.privateKey);
+		const key = { keyId: 'x', privateKey };
 		const url = 'https://example.com/outbox';
 		const headers = {
 			'User-Agent': 'UA',
 		};
 
-		const req = ApRequestCreator.createSignedGet({ key, url, additionalHeaders: headers });
+		const req = await ApRequestCreator.createSignedGet({ key, url, additionalHeaders: headers });
 
 		const parsed = buildParsedSignature(req.signingString, req.signature, 'rsa-sha256');
 
