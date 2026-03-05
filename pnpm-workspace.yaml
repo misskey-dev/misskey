@@ -38,3 +38,5 @@ minimumReleaseAgeExclude:
   - 'minimatch' # 脆弱性対応 そのうち消す
   - 'rollup' # 脆弱性対応 そのうち消す
   - '@rollup/rollup-*' # 脆弱性対応 そのうち消す
+  # Renovate security update: fastify@5.8.1
+  - fastify@5.8.1
