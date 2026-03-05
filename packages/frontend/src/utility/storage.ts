@@ -9,13 +9,14 @@ import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
 
 export const storagePersistenceSupported = window.isSecureContext && 'storage' in navigator;
-const _storagePersisted = ref(false);
-export const storagePersisted = readonly(_storagePersisted);
+const storagePersisted = ref(false);
 
-export async function initializeStoragePersistence() {
+export async function getStoragePersistenceStatusRef() {
 	if (storagePersistenceSupported) {
-		_storagePersisted.value = await navigator.storage.persisted().catch(() => false);
+		storagePersisted.value = await navigator.storage.persisted().catch(() => false);
 	}
+
+	return readonly(storagePersisted);
 }
 
 export async function enableStoragePersistence() {
@@ -23,7 +24,7 @@ export async function enableStoragePersistence() {
 	try {
 		const persisted = await navigator.storage.persist();
 		if (persisted) {
-			_storagePersisted.value = true;
+			storagePersisted.value = true;
 		} else {
 			os.alert({
 				type: 'error',
