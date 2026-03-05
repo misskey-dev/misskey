@@ -36,6 +36,7 @@ export type PartialMinote = {
 		thumbnailUrl: string | null;
 	}[];
 	renote?: PartialMinote | null;
+	reply?: PartialMinote | null;
 };
 
 // If the domain is not /, rewrite to /
@@ -57,6 +58,7 @@ export async function rewriteMiNote(
 		}
 	}
 	if (note.renote) note.renote = await rewriteMiNote(note.renote);
+	if (note.reply) note.reply = await rewriteMiNote(note.reply);
 
 	return note as unknown as PartialMinote;
 }
@@ -108,6 +110,7 @@ async function processMainStreamMessage(message: any): Promise<any> {
 	if (message.body) {
 		if (message.body.note) message.body.note = await rewriteMiNote(message.body.note);
 		if (message.body.renote) message.body.renote = await rewriteMiNote(message.body.renote);
+		if (message.body.reply) message.body.reply = await rewriteMiNote(message.body.reply);
 		if (message.body.user) message.body.user = await rewriteUser(message.body.user);
 	}
 
