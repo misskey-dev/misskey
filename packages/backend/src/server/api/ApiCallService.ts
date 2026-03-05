@@ -426,7 +426,7 @@ export class ApiCallService implements OnApplicationShutdown {
 				if (['boolean', 'number', 'integer'].includes(param.type ?? '') && typeof data[k] === 'string') {
 					try {
 						data[k] = JSON.parse(data[k]);
-					} catch (e) {
+					} catch (_) {
 						throw new ApiError({
 							message: 'Invalid param.',
 							code: 'INVALID_PARAM',

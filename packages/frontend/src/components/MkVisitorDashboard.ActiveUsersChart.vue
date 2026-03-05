@@ -46,7 +46,7 @@ async function renderChart() {
 		return new Date(y, m, d - ago);
 	};
 
-	const format = (arr) => {
+	const format = (arr: number[]) => {
 		return arr.map((v, i) => ({
 			x: getDate(i).getTime(),
 			y: v,

@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<button v-for="button in buttonsLeft" v-tooltip="button.title" class="_button" :class="[$style.headerButton, { [$style.highlighted]: button.highlighted }]" @click="button.onClick"><i :class="button.icon"></i></button>
 					</template>
 				</span>
-				<span :class="$style.headerTitle" @mousedown.prevent="onHeaderMousedown" @touchstart.prevent="onHeaderMousedown">
+				<span :class="$style.headerTitle" @pointerdown.prevent="onHeaderPointerdown">
 					<slot name="header"></slot>
 				</span>
 				<span :class="$style.headerRight">
@@ -39,14 +39,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 		<template v-if="canResize && !minimized">
-			<div :class="$style.handleTop" @mousedown.prevent="onTopHandleMousedown"></div>
-			<div :class="$style.handleRight" @mousedown.prevent="onRightHandleMousedown"></div>
-			<div :class="$style.handleBottom" @mousedown.prevent="onBottomHandleMousedown"></div>
-			<div :class="$style.handleLeft" @mousedown.prevent="onLeftHandleMousedown"></div>
-			<div :class="$style.handleTopLeft" @mousedown.prevent="onTopLeftHandleMousedown"></div>
-			<div :class="$style.handleTopRight" @mousedown.prevent="onTopRightHandleMousedown"></div>
-			<div :class="$style.handleBottomRight" @mousedown.prevent="onBottomRightHandleMousedown"></div>
-			<div :class="$style.handleBottomLeft" @mousedown.prevent="onBottomLeftHandleMousedown"></div>
+			<div :class="$style.handleTop" @pointerdown.prevent="onTopHandlePointerdown"></div>
+			<div :class="$style.handleRight" @pointerdown.prevent="onRightHandlePointerdown"></div>
+			<div :class="$style.handleBottom" @pointerdown.prevent="onBottomHandlePointerdown"></div>
+			<div :class="$style.handleLeft" @pointerdown.prevent="onLeftHandlePointerdown"></div>
+			<div :class="$style.handleTopLeft" @pointerdown.prevent="onTopLeftHandlePointerdown"></div>
+			<div :class="$style.handleTopRight" @pointerdown.prevent="onTopRightHandlePointerdown"></div>
+			<div :class="$style.handleBottomRight" @pointerdown.prevent="onBottomRightHandlePointerdown"></div>
+			<div :class="$style.handleBottomLeft" @pointerdown.prevent="onBottomLeftHandlePointerdown"></div>
 		</template>
 	</div>
 </Transition>
@@ -55,7 +55,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, provide, useTemplateRef, ref } from 'vue';
 import type { MenuItem } from '@/types/menu.js';
-import contains from '@/utility/contains.js';
+import { elementContains } from '@/utility/element-contains.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
@@ -70,20 +70,39 @@ type WindowButton = {
 const minHeight = 50;
 const minWidth = 250;
 
-function dragListen(fn: (ev: MouseEvent | TouchEvent) => void) {
-	window.addEventListener('mousemove', fn);
-	window.addEventListener('touchmove', fn);
-	window.addEventListener('mouseleave', dragClear.bind(null, fn));
-	window.addEventListener('mouseup', dragClear.bind(null, fn));
-	window.addEventListener('touchend', dragClear.bind(null, fn));
+function dragListen(fn: (ev: PointerEvent) => void) {
+	window.addEventListener('pointermove', fn);
+	const clear = () => {
+		dragClear(fn);
+	};
+	window.addEventListener('pointerup', clear, { once: true });
+	window.addEventListener('pointercancel', clear, { once: true });
+	window.addEventListener('blur', clear, { once: true });
 }
 
-function dragClear(fn) {
-	window.removeEventListener('mousemove', fn);
-	window.removeEventListener('touchmove', fn);
-	window.removeEventListener('mouseleave', dragClear);
-	window.removeEventListener('mouseup', dragClear);
-	window.removeEventListener('touchend', dragClear);
+function dragClear(fn: (ev: PointerEvent) => void) {
+	window.removeEventListener('pointermove', fn);
+}
+
+function capturePointer(evt: PointerEvent) {
+	const target = evt.currentTarget;
+	if (!(target instanceof HTMLElement)) return;
+	if (!target.setPointerCapture) return;
+
+	try {
+		target.setPointerCapture(evt.pointerId);
+	} catch {
+		return;
+	}
+
+	const release = () => {
+		if (target.hasPointerCapture(evt.pointerId)) {
+			target.releasePointerCapture(evt.pointerId);
+		}
+	};
+
+	window.addEventListener('pointerup', release, { once: true });
+	window.addEventListener('pointercancel', release, { once: true });
 }
 
 const props = withDefaults(defineProps<{
@@ -128,7 +147,7 @@ function close() {
 	showing.value = false;
 }
 
-function onKeydown(evt) {
+function onKeydown(evt: KeyboardEvent) {
 	if (evt.which === 27) { // Esc
 		evt.preventDefault();
 		evt.stopPropagation();
@@ -136,7 +155,7 @@ function onKeydown(evt) {
 	}
 }
 
-function onContextmenu(ev: MouseEvent) {
+function onContextmenu(ev: PointerEvent) {
 	if (props.contextmenu) {
 		os.contextMenu(props.contextmenu, ev);
 	}
@@ -209,15 +228,17 @@ function onDblClick() {
 	}
 }
 
-function getPositionX(event: MouseEvent | TouchEvent) {
-	return 'touches' in event && event.touches.length > 0 ? event.touches[0].clientX : 'clientX' in event ? event.clientX : 0;
+function getPositionX(event: PointerEvent) {
+	return event.clientX;
 }
 
-function getPositionY(event: MouseEvent | TouchEvent) {
-	return 'touches' in event && event.touches.length > 0 ? event.touches[0].clientY : 'clientY' in event ? event.clientY : 0;
+function getPositionY(event: PointerEvent) {
+	return event.clientY;
 }
 
-function onHeaderMousedown(evt: MouseEvent | TouchEvent) {
+function onHeaderPointerdown(evt: PointerEvent) {
+	capturePointer(evt);
+
 	// 右クリックはコンテキストメニューを開こうとした可能性が高いため無視
 	if ('button' in evt && evt.button === 2) return;
 
@@ -240,7 +261,7 @@ function onHeaderMousedown(evt: MouseEvent | TouchEvent) {
 	const main = rootEl.value;
 	if (main == null) return;
 
-	if (!contains(main, window.document.activeElement)) main.focus();
+	if (!elementContains(main, window.document.activeElement)) main.focus();
 
 	const position = main.getBoundingClientRect();
 
@@ -289,7 +310,9 @@ function onHeaderMousedown(evt: MouseEvent | TouchEvent) {
 }
 
 // 上ハンドル掴み時
-function onTopHandleMousedown(evt: MouseEvent | TouchEvent) {
+function onTopHandlePointerdown(evt: PointerEvent) {
+	capturePointer(evt);
+
 	const main = rootEl.value;
 	// どういうわけかnullになることがある
 	if (main == null) return;
@@ -317,7 +340,9 @@ function onTopHandleMousedown(evt: MouseEvent | TouchEvent) {
 }
 
 // 右ハンドル掴み時
-function onRightHandleMousedown(evt: MouseEvent | TouchEvent) {
+function onRightHandlePointerdown(evt: PointerEvent) {
+	capturePointer(evt);
+
 	const main = rootEl.value;
 	if (main == null) return;
 
@@ -342,7 +367,9 @@ function onRightHandleMousedown(evt: MouseEvent | TouchEvent) {
 }
 
 // 下ハンドル掴み時
-function onBottomHandleMousedown(evt: MouseEvent | TouchEvent) {
+function onBottomHandlePointerdown(evt: PointerEvent) {
+	capturePointer(evt);
+
 	const main = rootEl.value;
 	if (main == null) return;
 
@@ -367,7 +394,9 @@ function onBottomHandleMousedown(evt: MouseEvent | TouchEvent) {
 }
 
 // 左ハンドル掴み時
-function onLeftHandleMousedown(evt: MouseEvent | TouchEvent) {
+function onLeftHandlePointerdown(evt: PointerEvent) {
+	capturePointer(evt);
+
 	const main = rootEl.value;
 	if (main == null) return;
 
@@ -394,48 +423,48 @@ function onLeftHandleMousedown(evt: MouseEvent | TouchEvent) {
 }
 
 // 左上ハンドル掴み時
-function onTopLeftHandleMousedown(evt: MouseEvent | TouchEvent) {
-	onTopHandleMousedown(evt);
-	onLeftHandleMousedown(evt);
+function onTopLeftHandlePointerdown(evt: PointerEvent) {
+	onTopHandlePointerdown(evt);
+	onLeftHandlePointerdown(evt);
 }
 
 // 右上ハンドル掴み時
-function onTopRightHandleMousedown(evt: MouseEvent | TouchEvent) {
-	onTopHandleMousedown(evt);
-	onRightHandleMousedown(evt);
+function onTopRightHandlePointerdown(evt: PointerEvent) {
+	onTopHandlePointerdown(evt);
+	onRightHandlePointerdown(evt);
 }
 
 // 右下ハンドル掴み時
-function onBottomRightHandleMousedown(evt: MouseEvent | TouchEvent) {
-	onBottomHandleMousedown(evt);
-	onRightHandleMousedown(evt);
+function onBottomRightHandlePointerdown(evt: PointerEvent) {
+	onBottomHandlePointerdown(evt);
+	onRightHandlePointerdown(evt);
 }
 
 // 左下ハンドル掴み時
-function onBottomLeftHandleMousedown(evt: MouseEvent | TouchEvent) {
-	onBottomHandleMousedown(evt);
-	onLeftHandleMousedown(evt);
+function onBottomLeftHandlePointerdown(evt: PointerEvent) {
+	onBottomHandlePointerdown(evt);
+	onLeftHandlePointerdown(evt);
 }
 
 // 高さを適用
-function applyTransformHeight(height) {
+function applyTransformHeight(height: number) {
 	if (height > window.innerHeight) height = window.innerHeight;
 	if (rootEl.value) rootEl.value.style.height = height + 'px';
 }
 
 // 幅を適用
-function applyTransformWidth(width) {
+function applyTransformWidth(width: number) {
 	if (width > window.innerWidth) width = window.innerWidth;
 	if (rootEl.value) rootEl.value.style.width = width + 'px';
 }
 
 // Y座標を適用
-function applyTransformTop(top) {
+function applyTransformTop(top: number) {
 	if (rootEl.value) rootEl.value.style.top = top + 'px';
 }
 
 // X座標を適用
-function applyTransformLeft(left) {
+function applyTransformLeft(left: number) {
 	if (rootEl.value) rootEl.value.style.left = left + 'px';
 }
 
@@ -566,6 +595,7 @@ defineExpose({
 	overflow: hidden;
 	text-overflow: ellipsis;
 	cursor: move;
+	touch-action: none;
 }
 
 .content {
@@ -579,6 +609,7 @@ $handleSize: 8px;
 
 .handle {
 	position: absolute;
+	touch-action: none;
 }
 
 .handleTop {

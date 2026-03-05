@@ -105,7 +105,7 @@ const paginator = markRaw(new Paginator('admin/abuse-user-reports', {
 	})),
 }));
 
-function resolved(reportId) {
+function resolved(reportId: string) {
 	paginator.removeItem(reportId);
 }
 
