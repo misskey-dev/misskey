@@ -1,4 +1,4 @@
-## 2026.2.0
+## 2026.3.0
 
 ### Note
 - `users/following` の `birthday` プロパティは非推奨になりました。代わりに `users/get-following-users-by-birthday` をご利用ください。
