@@ -30,7 +30,7 @@ import { reactive, ref, shallowRef, triggerRef, watch } from 'vue';
 import { genId } from '../id.js';
 import { deepClone } from '../clone.js';
 import { getObjectDef } from './object-defs.js';
-import { HorizontalCameraKeyboardMoveInput } from './utility.js';
+import { HorizontalCameraKeyboardMoveInput, findMaterial } from './utility.js';
 import * as sound from '@/utility/sound.js';
 
 // babylonのドメイン知識は持たない
@@ -758,49 +758,59 @@ export class RoomEngine {
 
 		const meshes: BABYLON.Mesh[] = [];
 
-		const floorResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-floor.glb', this.scene);
-		floorResult.meshes[0].scaling = floorResult.meshes[0].scaling.scale(WORLD_SCALE);
-		const floorRoot = new BABYLON.Mesh('floor', this.scene);
-		floorRoot.addChild(floorResult.meshes[0]);
-		meshes.push(floorRoot);
+		if (this.roomState.heya.type === 'simple') {
+			const floorResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-floor.glb', this.scene);
+			floorResult.meshes[0].scaling = floorResult.meshes[0].scaling.scale(WORLD_SCALE);
+			const floorRoot = new BABYLON.Mesh('floor', this.scene);
+			floorRoot.addChild(floorResult.meshes[0]);
+			meshes.push(floorRoot);
 
-		const ceilingResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-ceiling.glb', this.scene);
-		ceilingResult.meshes[0].scaling = ceilingResult.meshes[0].scaling.scale(WORLD_SCALE);
-		const ceilingRoot = new BABYLON.Mesh('ceiling', this.scene);
-		ceilingRoot.addChild(ceilingResult.meshes[0]);
-		ceilingRoot.position = new BABYLON.Vector3(0, 250/*cm*/, 0);
-		meshes.push(ceilingRoot);
+			const ceilingResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-ceiling.glb', this.scene);
+			ceilingResult.meshes[0].scaling = ceilingResult.meshes[0].scaling.scale(WORLD_SCALE);
+			const ceilingRoot = new BABYLON.Mesh('ceiling', this.scene);
+			ceilingRoot.addChild(ceilingResult.meshes[0]);
+			ceilingRoot.position = new BABYLON.Vector3(0, 250/*cm*/, 0);
+			meshes.push(ceilingRoot);
 
-		const wallEResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-wall.glb', this.scene);
-		wallEResult.meshes[0].scaling = wallEResult.meshes[0].scaling.scale(WORLD_SCALE);
-		const wallERoot = new BABYLON.Mesh('wallE', this.scene);
-		wallERoot.addChild(wallEResult.meshes[0]);
-		wallERoot.position = new BABYLON.Vector3(-150/*cm*/, 0, 0);
-		wallERoot.rotation = new BABYLON.Vector3(0, Math.PI, 0);
-		meshes.push(wallERoot);
+			const wallEResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-wall.glb', this.scene);
+			wallEResult.meshes[0].scaling = wallEResult.meshes[0].scaling.scale(WORLD_SCALE);
+			const wallERoot = new BABYLON.Mesh('wallE', this.scene);
+			wallERoot.addChild(wallEResult.meshes[0]);
+			wallERoot.position = new BABYLON.Vector3(-150/*cm*/, 0, 0);
+			wallERoot.rotation = new BABYLON.Vector3(0, Math.PI, 0);
+			meshes.push(wallERoot);
+			const wallEMaterial = findMaterial(wallEResult.meshes[0], '__X_WALL__');
+			wallEMaterial.albedoColor = new BABYLON.Color3(...this.roomState.heya.options.wallE.color);
 
-		const wallWResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-wall.glb', this.scene);
-		wallWResult.meshes[0].scaling = wallWResult.meshes[0].scaling.scale(WORLD_SCALE);
-		const wallWRoot = new BABYLON.Mesh('wallW', this.scene);
-		wallWRoot.addChild(wallWResult.meshes[0]);
-		wallWRoot.position = new BABYLON.Vector3(150/*cm*/, 0, 0);
-		meshes.push(wallWRoot);
+			const wallWResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-wall.glb', this.scene);
+			wallWResult.meshes[0].scaling = wallWResult.meshes[0].scaling.scale(WORLD_SCALE);
+			const wallWRoot = new BABYLON.Mesh('wallW', this.scene);
+			wallWRoot.addChild(wallWResult.meshes[0]);
+			wallWRoot.position = new BABYLON.Vector3(150/*cm*/, 0, 0);
+			meshes.push(wallWRoot);
+			const wallWMaterial = findMaterial(wallWResult.meshes[0], '__X_WALL__');
+			wallWMaterial.albedoColor = new BABYLON.Color3(...this.roomState.heya.options.wallW.color);
 
-		const wallNResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-wall.glb', this.scene);
-		wallNResult.meshes[0].scaling = wallNResult.meshes[0].scaling.scale(WORLD_SCALE);
-		const wallNRoot = new BABYLON.Mesh('wallN', this.scene);
-		wallNRoot.addChild(wallNResult.meshes[0]);
-		wallNRoot.position = new BABYLON.Vector3(0, 0, -150/*cm*/);
-		wallNRoot.rotation = new BABYLON.Vector3(0, Math.PI / 2, 0);
-		meshes.push(wallNRoot);
+			const wallNResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-wall.glb', this.scene);
+			wallNResult.meshes[0].scaling = wallNResult.meshes[0].scaling.scale(WORLD_SCALE);
+			const wallNRoot = new BABYLON.Mesh('wallN', this.scene);
+			wallNRoot.addChild(wallNResult.meshes[0]);
+			wallNRoot.position = new BABYLON.Vector3(0, 0, -150/*cm*/);
+			wallNRoot.rotation = new BABYLON.Vector3(0, Math.PI / 2, 0);
+			meshes.push(wallNRoot);
+			const wallNMaterial = findMaterial(wallNResult.meshes[0], '__X_WALL__');
+			wallNMaterial.albedoColor = new BABYLON.Color3(...this.roomState.heya.options.wallN.color);
 
-		const wallSResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-wall-demado.glb', this.scene);
-		wallSResult.meshes[0].scaling = wallSResult.meshes[0].scaling.scale(WORLD_SCALE);
-		const wallSRoot = new BABYLON.Mesh('wallS', this.scene);
-		wallSRoot.addChild(wallSResult.meshes[0]);
-		wallSRoot.position = new BABYLON.Vector3(0, 0, 150/*cm*/);
-		wallSRoot.rotation = new BABYLON.Vector3(0, -Math.PI / 2, 0);
-		meshes.push(wallSRoot);
+			const wallSResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-wall-demado.glb', this.scene);
+			wallSResult.meshes[0].scaling = wallSResult.meshes[0].scaling.scale(WORLD_SCALE);
+			const wallSRoot = new BABYLON.Mesh('wallS', this.scene);
+			wallSRoot.addChild(wallSResult.meshes[0]);
+			wallSRoot.position = new BABYLON.Vector3(0, 0, 150/*cm*/);
+			wallSRoot.rotation = new BABYLON.Vector3(0, -Math.PI / 2, 0);
+			meshes.push(wallSRoot);
+			const wallSMaterial = findMaterial(wallSResult.meshes[0], '__X_WALL__');
+			wallSMaterial.albedoColor = new BABYLON.Color3(...this.roomState.heya.options.wallS.color);
+		}
 
 		for (const mesh of meshes) {
 			for (const m of mesh.getChildMeshes()) {
@@ -944,20 +954,7 @@ export class RoomEngine {
 				return meshes as BABYLON.Mesh[];
 			},
 			findMaterial: (keyword) => {
-				for (const m of root.getChildMeshes()) {
-					if (m.material == null) continue;
-					if (m.material.name.includes(keyword)) {
-						return m.material as BABYLON.PBRMaterial;
-					} else if ((m.material as BABYLON.MultiMaterial).subMaterials != null) {
-						for (const sm of (m.material as BABYLON.MultiMaterial).subMaterials) {
-							if (sm == null) continue;
-							if (sm.name.includes(keyword)) {
-								return sm as BABYLON.PBRMaterial;
-							}
-						}
-					}
-				}
-				throw new Error(`Material with keyword "${keyword}" not found for object ${args.type} (${args.id})`);
+				return findMaterial(root, keyword);
 			},
 		});
 

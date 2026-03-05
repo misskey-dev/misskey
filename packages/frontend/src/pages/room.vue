@@ -216,7 +216,7 @@ const data = localStorage.getItem('roomData') != null ? { ...JSON.parse(localSto
 			},
 			wallE: {
 				material: null,
-				color: [0.9, 0.9, 0.9],
+				color: [0.33, 0.34, 0.35],
 			},
 			wallS: {
 				material: null,

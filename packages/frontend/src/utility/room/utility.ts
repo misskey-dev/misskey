@@ -467,3 +467,20 @@ export function createPlaneUvMapper(mesh: BABYLON.Mesh) {
 		mesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
 	};
 }
+
+export function findMaterial(rootMesh: BABYLON.AbstractMesh, keyword: string): BABYLON.PBRMaterial {
+	for (const m of rootMesh.getChildMeshes()) {
+		if (m.material == null) continue;
+		if (m.material.name.includes(keyword)) {
+			return m.material as BABYLON.PBRMaterial;
+		} else if ((m.material as BABYLON.MultiMaterial).subMaterials != null) {
+			for (const sm of (m.material as BABYLON.MultiMaterial).subMaterials) {
+				if (sm == null) continue;
+				if (sm.name.includes(keyword)) {
+					return sm as BABYLON.PBRMaterial;
+				}
+			}
+		}
+	}
+	throw new Error(`Material with keyword "${keyword}" not found`);
+}
