@@ -176,11 +176,6 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		text: i18n.ts.moderationLogs,
 		to: '/admin/modlog',
 		active: currentPage.value?.route.name === 'modlog',
-	}, {
-		icon: 'ti ti-settings', 
-		text: 'Custom Actions',
-		to: '/admin/custom-actions',
-		active: currentPage.value?.route.name === 'custom-actions',
 	}],
 }, {
 	title: i18n.ts.settings,

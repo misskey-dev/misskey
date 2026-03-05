@@ -602,15 +602,6 @@ export type paths = {
          */
         post: operations['admin___queue___stats'];
     };
-    '/admin/recreate-url-cache': {
-        /**
-         * admin/recreate-url-cache
-         * @description No description provided.
-         *
-         *     **Credential required**: *Yes* / **Permission**: *write:admin:meta*
-         */
-        post: operations['admin___recreate-url-cache'];
-    };
     '/admin/relays/add': {
         /**
          * admin/relays/add
@@ -10404,61 +10395,6 @@ export interface operations {
                         db: components['schemas']['QueueCount'];
                         objectStorage: components['schemas']['QueueCount'];
                     };
-                };
-            };
-            /** @description Client error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    'application/json': components['schemas']['Error'];
-                };
-            };
-            /** @description Authentication error */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    'application/json': components['schemas']['Error'];
-                };
-            };
-            /** @description Forbidden error */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    'application/json': components['schemas']['Error'];
-                };
-            };
-            /** @description I'm Ai */
-            418: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    'application/json': components['schemas']['Error'];
-                };
-            };
-            /** @description Internal server error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    'application/json': components['schemas']['Error'];
-                };
-            };
-        };
-    };
-    'admin___recreate-url-cache': {
-        responses: {
-            /** @description OK (without any results) */
-            204: {
-                headers: {
-                    [name: string]: unknown;
                 };
             };
             /** @description Client error */
