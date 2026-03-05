@@ -154,6 +154,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<button v-if="prefer.s.showClipButtonInNoteFooter" ref="clipButton" :class="$style.footerButton" class="_button" @mousedown.prevent="clip()">
 					<i class="ti ti-paperclip"></i>
 				</button>
+				<button v-if="translationsPossible" ref="translateButton" :class="$style.footerButton" class="_button" @mousedown.prevent="translateNoteClick()">
+					<i class="ti ti-language-hiragana"></i>
+				</button>
 				<button ref="menuButton" :class="$style.footerButton" class="_button" @mousedown.prevent="showMenu()">
 					<i class="ti ti-dots"></i>
 				</button>
@@ -244,6 +247,7 @@ import { prefer } from '@/preferences.js';
 import { getPluginHandlers } from '@/plugin.js';
 import { DI } from '@/di.js';
 import { globalEvents } from '@/events.js';
+import { instance } from '@/instance.js';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
@@ -704,6 +708,19 @@ function emitUpdReaction(emoji: string, delta: number) {
 		emit('reaction', emoji);
 	}
 }
+
+const isInBrowserTranslationAvailable = (
+	'LanguageDetector' in window &&
+	'Translator' in window
+);
+
+let translationsPossible = (prefer.s['experimental.enableWebTranslatorApi'] && isInBrowserTranslationAvailable) || ($i.policies.canUseTranslator && instance.translatorAvailable);
+
+function translateNoteClick() {
+	const { translate } = getNoteMenu({ note: note, translating, translation, currentClip: currentClip?.value });
+	translate();
+}
+
 </script>
 
 <style lang="scss" module>

@@ -575,6 +575,7 @@ export function getNoteMenu(props: {
 	return {
 		menu: menuItems,
 		cleanup,
+		translate,
 	};
 }
 
