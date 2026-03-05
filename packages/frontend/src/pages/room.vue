@@ -61,6 +61,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton :primary="engine.isEditMode.value" @click="toggleEditMode">Edit mode: {{ engine.isEditMode.value ? 'on' : 'off' }}</MkButton>
 			<MkButton @click="addObject">addObject</MkButton>
 			<MkButton primary @click="save">save</MkButton>
+			<MkButton @click="showBoundingBox">showBoundingBox</MkButton>
 		</div>
 	</template>
 </div>
@@ -575,6 +576,11 @@ function addObject(ev: PointerEvent) {
 
 function removeSelectedObject() {
 	engine.value?.removeSelectedObject();
+	canvas.value!.focus();
+}
+
+function showBoundingBox() {
+	engine.value?.showBoundingBox();
 	canvas.value!.focus();
 }
 

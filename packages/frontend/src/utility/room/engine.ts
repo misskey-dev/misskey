@@ -48,8 +48,35 @@ type RoomStateObject<Options = any> = {
 	sticky?: string | null;
 };
 
+type SimpleHeyaWallBase = {
+	material: null | 'wood' | 'concrete';
+	color: [number, number, number];
+};
+
+type Heya = {
+	type: 'simple';
+	options: {
+		size: [number, number];
+		window: 'none' | 'kosidakamado' | 'demado' | 'hakidasimado';
+		wallN: SimpleHeyaWallBase;
+		wallE: SimpleHeyaWallBase;
+		wallS: SimpleHeyaWallBase;
+		wallW: SimpleHeyaWallBase;
+		flooring: {
+			material: null | 'wood' | 'concrete';
+			color: [number, number, number];
+		};
+		ceiling: {
+			material: null | 'wood' | 'concrete';
+			color: [number, number, number];
+		};
+	};
+} | {
+	type: 'japanese';
+};
+
 type RoomState = {
-	roomType: 'default';
+	heya: Heya;
 	installedObjects: RoomStateObject<any>[];
 };
 
@@ -865,7 +892,6 @@ export class RoomEngine {
 
 				// シェイプキー(morph)を考慮してbounding boxを更新するために必要
 				mesh.refreshBoundingInfo({ applyMorph: true });
-				//mesh.showBoundingBox = _DEV_;
 
 				mesh.metadata = metadata;
 				mesh.checkCollisions = !hasCollisionMesh;
@@ -1286,6 +1312,14 @@ export class RoomEngine {
 
 		if (this.selected.value?.objectId === objectId) {
 			triggerRef(this.selected);
+		}
+	}
+
+	public showBoundingBox() {
+		for (const mesh of this.objectMeshs.values()) {
+			for (const m of mesh.getChildMeshes()) {
+				m.showBoundingBox = true;
+			}
 		}
 	}
 

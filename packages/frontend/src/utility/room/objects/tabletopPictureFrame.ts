@@ -130,6 +130,7 @@ export const tabletopPictureFrame = defineObject({
 			pictureMesh.morphTargetManager!.getTargetByName('Height')!.influence = options.height * (1 - options.matVThickness);
 			pictureMesh.morphTargetManager!.getTargetByName('MatH')!.influence = options.matHThickness * options.width;
 			pictureMesh.morphTargetManager!.getTargetByName('MatV')!.influence = options.matVThickness * options.height;
+			matMesh.isVisible = options.matHThickness > 0 || options.matVThickness > 0;
 			meshUpdated();
 
 			applyFit();

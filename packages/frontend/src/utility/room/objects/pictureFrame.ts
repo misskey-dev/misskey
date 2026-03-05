@@ -125,6 +125,7 @@ export const pictureFrame = defineObject({
 			matMesh.morphTargetManager!.getTargetByName('MatV')!.influence = options.matVThickness * options.height;
 			pictureMesh.morphTargetManager!.getTargetByName('Width')!.influence = options.width * (1 - options.matHThickness);
 			pictureMesh.morphTargetManager!.getTargetByName('Height')!.influence = options.height * (1 - options.matVThickness);
+			matMesh.isVisible = options.matHThickness > 0 || options.matVThickness > 0;
 			meshUpdated();
 
 			applyFit();
