@@ -61,7 +61,6 @@ import { i18n } from '@/i18n.js';
 import type { MkSelectItem } from '@/components/MkSelect.vue';
 import type { MkRadiosOption } from '@/components/MkRadios.vue';
 import type { Form, EnumFormItem, RadioFormItem } from '@/utility/form.js';
-import { items } from 'happy-dom/lib/PropertySymbol';
 
 const props = defineProps<{
 	form: Form;
