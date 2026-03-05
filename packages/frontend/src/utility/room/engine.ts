@@ -542,7 +542,7 @@ export class RoomEngine {
 	}
 
 	public async init() {
-		await this.loadRoomModel(this.roomState.heya.type);
+		await this.loadRoomModel();
 		await this.loadEnvModel();
 		await Promise.all(this.roomState.installedObjects.map(o => this.loadObject({
 			id: o.id,
@@ -756,8 +756,6 @@ export class RoomEngine {
 		//const box = BABYLON.MeshBuilder.CreateBox('box', { size: 50/*cm*/ }, this.scene);
 		//const boxCsg = BABYLON.CSG2.FromMesh(box);
 
-		const demado = true;
-
 		const meshes: BABYLON.Mesh[] = [];
 
 		const floorResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-floor.glb', this.scene);
@@ -773,36 +771,36 @@ export class RoomEngine {
 		ceilingRoot.position = new BABYLON.Vector3(0, 250/*cm*/, 0);
 		meshes.push(ceilingRoot);
 
-		const wallAResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-wall.glb', this.scene);
-		wallAResult.meshes[0].scaling = wallAResult.meshes[0].scaling.scale(WORLD_SCALE);
-		const wallARoot = new BABYLON.Mesh('wallA', this.scene);
-		wallARoot.addChild(wallAResult.meshes[0]);
-		wallARoot.position = new BABYLON.Vector3(-150/*cm*/, 0, 0);
-		wallARoot.rotation = new BABYLON.Vector3(0, Math.PI, 0);
-		meshes.push(wallARoot);
+		const wallEResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-wall.glb', this.scene);
+		wallEResult.meshes[0].scaling = wallEResult.meshes[0].scaling.scale(WORLD_SCALE);
+		const wallERoot = new BABYLON.Mesh('wallE', this.scene);
+		wallERoot.addChild(wallEResult.meshes[0]);
+		wallERoot.position = new BABYLON.Vector3(-150/*cm*/, 0, 0);
+		wallERoot.rotation = new BABYLON.Vector3(0, Math.PI, 0);
+		meshes.push(wallERoot);
 
-		const wallBResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-wall.glb', this.scene);
-		wallBResult.meshes[0].scaling = wallBResult.meshes[0].scaling.scale(WORLD_SCALE);
-		const wallBRoot = new BABYLON.Mesh('wallB', this.scene);
-		wallBRoot.addChild(wallBResult.meshes[0]);
-		wallBRoot.position = new BABYLON.Vector3(150/*cm*/, 0, 0);
-		meshes.push(wallBRoot);
+		const wallWResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-wall.glb', this.scene);
+		wallWResult.meshes[0].scaling = wallWResult.meshes[0].scaling.scale(WORLD_SCALE);
+		const wallWRoot = new BABYLON.Mesh('wallW', this.scene);
+		wallWRoot.addChild(wallWResult.meshes[0]);
+		wallWRoot.position = new BABYLON.Vector3(150/*cm*/, 0, 0);
+		meshes.push(wallWRoot);
 
-		const wallCResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-wall.glb', this.scene);
-		wallCResult.meshes[0].scaling = wallCResult.meshes[0].scaling.scale(WORLD_SCALE);
-		const wallCRoot = new BABYLON.Mesh('wallC', this.scene);
-		wallCRoot.addChild(wallCResult.meshes[0]);
-		wallCRoot.position = new BABYLON.Vector3(0, 0, -150/*cm*/);
-		wallCRoot.rotation = new BABYLON.Vector3(0, Math.PI / 2, 0);
-		meshes.push(wallCRoot);
+		const wallNResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-wall.glb', this.scene);
+		wallNResult.meshes[0].scaling = wallNResult.meshes[0].scaling.scale(WORLD_SCALE);
+		const wallNRoot = new BABYLON.Mesh('wallN', this.scene);
+		wallNRoot.addChild(wallNResult.meshes[0]);
+		wallNRoot.position = new BABYLON.Vector3(0, 0, -150/*cm*/);
+		wallNRoot.rotation = new BABYLON.Vector3(0, Math.PI / 2, 0);
+		meshes.push(wallNRoot);
 
-		const wallDResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-wall-demado.glb', this.scene);
-		wallDResult.meshes[0].scaling = wallDResult.meshes[0].scaling.scale(WORLD_SCALE);
-		const wallDRoot = new BABYLON.Mesh('wallD', this.scene);
-		wallDRoot.addChild(wallDResult.meshes[0]);
-		wallDRoot.position = new BABYLON.Vector3(0, 0, 150/*cm*/);
-		wallDRoot.rotation = new BABYLON.Vector3(0, -Math.PI / 2, 0);
-		meshes.push(wallDRoot);
+		const wallSResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-wall-demado.glb', this.scene);
+		wallSResult.meshes[0].scaling = wallSResult.meshes[0].scaling.scale(WORLD_SCALE);
+		const wallSRoot = new BABYLON.Mesh('wallS', this.scene);
+		wallSRoot.addChild(wallSResult.meshes[0]);
+		wallSRoot.position = new BABYLON.Vector3(0, 0, 150/*cm*/);
+		wallSRoot.rotation = new BABYLON.Vector3(0, -Math.PI / 2, 0);
+		meshes.push(wallSRoot);
 
 		for (const mesh of meshes) {
 			for (const m of mesh.getChildMeshes()) {
