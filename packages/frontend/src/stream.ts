@@ -18,7 +18,6 @@ let lastHeartbeatCall = 0;
 export function useStream(): Misskey.IStream {
 	if (stream) return stream;
 
-	// TODO: No Websocketモードもここで判定
 	stream = markRaw(new Misskey.Stream(wsOrigin, $i ? {
 		token: $i.token,
 	} : null));

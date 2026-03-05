@@ -57,18 +57,18 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'showMenu', item: UploaderItem, event: MouseEvent): void;
-	(ev: 'showMenuViaContextmenu', item: UploaderItem, event: MouseEvent): void;
+	(ev: 'showMenu', item: UploaderItem, event: PointerEvent): void;
+	(ev: 'showMenuViaContextmenu', item: UploaderItem, event: PointerEvent): void;
 }>();
 
-function onContextmenu(item: UploaderItem, ev: MouseEvent) {
+function onContextmenu(item: UploaderItem, ev: PointerEvent) {
 	if (ev.target && isLink(ev.target as HTMLElement)) return;
 	if (window.getSelection()?.toString() !== '') return;
 
 	emit('showMenuViaContextmenu', item, ev);
 }
 
-function onThumbnailClick(item: UploaderItem, ev: MouseEvent) {
+function onThumbnailClick(item: UploaderItem, ev: PointerEvent) {
 	// TODO: preview when item is image
 }
 </script>

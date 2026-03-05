@@ -543,6 +543,7 @@ regenerate: "再生成"
 fontSize: "フォントサイズ"
 mediaListWithOneImageAppearance: "画像が1枚のみのメディアリストの高さ"
 limitTo: "{x}を上限に"
+showMediaListByGridInWideArea: "画面幅が広いときはメディアリストを横並びで表示する"
 noFollowRequests: "フォロー申請はありません"
 openImageInNewTab: "画像を新しいタブで開く"
 dashboard: "ダッシュボード"
@@ -1406,6 +1407,7 @@ youAreAdmin: "あなたは管理者です"
 frame: "フレーム"
 presets: "プリセット"
 zeroPadding: "ゼロ埋め"
+nothingToConfigure: "設定項目はありません"
 
 _imageEditing:
   _vars:
@@ -2599,8 +2601,47 @@ _widgets:
   _userList:
     chooseList: "リストを選択"
   clicker: "クリッカー"
-  birthdayFollowings: "今日誕生日のユーザー"
+  birthdayFollowings: "もうすぐ誕生日のユーザー"
   chat: "ダイレクトメッセージ"
+
+_widgetOptions:
+  showHeader: "ヘッダーを表示"
+  transparent: "背景を透明にする"
+  height: "高さ"
+  _button:
+    colored: "色付き"
+  _clock:
+    size: "サイズ"
+    thickness: "針の太さ"
+    thicknessThin: "細い"
+    thicknessMedium: "普通"
+    thicknessThick: "太い"
+    graduations: "文字盤の目盛り"
+    graduationDots: "ドット"
+    graduationArabic: "アラビア数字"
+    fadeGraduations: "目盛りをフェード"
+    sAnimation: "秒針のアニメーション"
+    sAnimationElastic: "リアル"
+    sAnimationEaseOut: "滑らか"
+    twentyFour: "24時間表示"
+    labelTime: "時刻"
+    labelTz: "タイムゾーン"
+    labelTimeAndTz: "時刻とタイムゾーン"
+    timezone: "タイムゾーン"
+    showMs: "ミリ秒を表示"
+    showLabel: "ラベルを表示"
+  _jobQueue:
+    sound: "音を鳴らす"
+  _rss:
+    url: "RSSフィードのURL"
+    refreshIntervalSec: "更新間隔(秒)"
+    maxEntries: "最大表示件数"
+  _rssTicker:
+    shuffle: "表示順をシャッフル"
+    duration: "ティッカーのスクロール速度(秒)"
+    reverse: "逆方向にスクロール"
+  _birthdayFollowings:
+    period: "期間"
 
 _cw:
   hide: "隠す"
@@ -3418,7 +3459,6 @@ _imageEffector:
   title: "エフェクト"
   addEffect: "エフェクトを追加"
   discardChangesConfirm: "変更を破棄して終了しますか？"
-  nothingToConfigure: "設定項目はありません"
   failedToLoadImage: "画像の読み込みに失敗しました"
 
   _fxs:

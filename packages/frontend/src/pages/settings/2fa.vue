@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #suffix><i v-if="$i.twoFactorEnabled" class="ti ti-check" style="color: var(--MI_THEME-success)"></i></template>
 
 					<div v-if="$i.twoFactorEnabled" class="_gaps_s">
-						<div v-text="i18n.ts._2fa.alreadyRegistered"/>
+						<div>{{ i18n.ts._2fa.alreadyRegistered }}</div>
 						<template v-if="$i.securityKeysList!.length > 0">
 							<MkButton @click="renewTOTP">{{ i18n.ts._2fa.renewTOTP }}</MkButton>
 							<MkInfo>{{ i18n.ts._2fa.whyTOTPOnlyRenew }}</MkInfo>
@@ -85,6 +85,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { defineAsyncComponent, computed } from 'vue';
 import { supported as webAuthnSupported, create as webAuthnCreate, parseCreationOptionsFromJSON } from '@github/webauthn-json/browser-ponyfill';
+import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -156,7 +157,7 @@ function renewTOTP(): void {
 	});
 }
 
-async function unregisterKey(key) {
+async function unregisterKey(key: NonNullable<Misskey.entities.MeDetailedOnly['securityKeysList']>[number]) {
 	const confirm = await os.confirm({
 		type: 'question',
 		title: i18n.ts._2fa.removeKey,
@@ -175,7 +176,7 @@ async function unregisterKey(key) {
 	os.success();
 }
 
-async function renameKey(key) {
+async function renameKey(key: NonNullable<Misskey.entities.MeDetailedOnly['securityKeysList']>[number]) {
 	const name = await os.inputText({
 		title: i18n.ts.rename,
 		default: key.name,

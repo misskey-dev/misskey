@@ -116,7 +116,7 @@ export class ActivityPubServerService {
 
 		try {
 			signature = httpSignature.parseRequest(request.raw, { 'headers': ['(request-target)', 'host', 'date'], authorizationHeaderName: 'signature' });
-		} catch (e) {
+		} catch (_) {
 			reply.code(401);
 			return;
 		}

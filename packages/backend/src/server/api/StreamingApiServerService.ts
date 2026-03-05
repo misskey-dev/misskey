@@ -7,19 +7,15 @@ import { EventEmitter } from 'events';
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import * as WebSocket from 'ws';
+import { ContextIdFactory, ModuleRef } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
-import type { UsersRepository, MiAccessToken } from '@/models/_.js';
-import { NotificationService } from '@/core/NotificationService.js';
+import type { MiAccessToken } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
-import { CacheService } from '@/core/CacheService.js';
 import { MiLocalUser } from '@/models/User.js';
 import { UserService } from '@/core/UserService.js';
-import { ChannelFollowingService } from '@/core/ChannelFollowingService.js';
-import { ChannelMutingService } from '@/core/ChannelMutingService.js';
 import { PreprocessWebsocketMessage } from '@/util.js';
 import { AuthenticateService, AuthenticationError } from './AuthenticateService.js';
-import MainStreamConnection from './stream/Connection.js';
-import { ChannelsService } from './stream/ChannelsService.js';
+import MainStreamConnection, { ConnectionRequest } from './stream/Connection.js';
 import type * as http from 'node:http';
 
 @Injectable()
@@ -32,16 +28,9 @@ export class StreamingApiServerService {
 		@Inject(DI.redisForSub)
 		private redisForSub: Redis.Redis,
 
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
-		private cacheService: CacheService,
+		private moduleRef: ModuleRef,
 		private authenticateService: AuthenticateService,
-		private channelsService: ChannelsService,
-		private notificationService: NotificationService,
 		private usersService: UserService,
-		private channelFollowingService: ChannelFollowingService,
-		private channelMutingService: ChannelMutingService,
 	) {
 	}
 
@@ -95,14 +84,12 @@ export class StreamingApiServerService {
 				return;
 			}
 
-			const stream = new MainStreamConnection(
-				this.channelsService,
-				this.notificationService,
-				this.cacheService,
-				this.channelFollowingService,
-				this.channelMutingService,
-				user, app,
-			);
+			const contextId = ContextIdFactory.create();
+			this.moduleRef.registerRequestByContextId<ConnectionRequest>({
+				user,
+				token: app,
+			}, contextId);
+			const stream = await this.moduleRef.create(MainStreamConnection, contextId);
 
 			await stream.init();
 
@@ -126,7 +113,7 @@ export class StreamingApiServerService {
 			user: MiLocalUser | null;
 			app: MiAccessToken | null
 		}) => {
-			const { stream, user, app } = ctx;
+			const { stream, user } = ctx;
 
 			const ev = new EventEmitter();
 
