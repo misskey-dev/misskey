@@ -165,7 +165,7 @@ import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSlot from '@/components/form/slot.vue';
 import * as os from '@/os.js';
-import { enableStoragePersistence, storagePersisted, storagePersistenceSupported } from '@/utility/storage.js';
+import { enableStoragePersistence, getStoragePersistenceStatusRef, storagePersistenceSupported } from '@/utility/storage.js';
 import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
@@ -179,6 +179,8 @@ import { suggestReload } from '@/utility/reload-suggest.js';
 import { cloudBackup } from '@/preferences/utility.js';
 
 const $i = ensureSignin();
+
+const storagePersisted = await getStoragePersistenceStatusRef();
 
 const reportError = prefer.model('reportError');
 const enableCondensedLine = prefer.model('enableCondensedLine');
