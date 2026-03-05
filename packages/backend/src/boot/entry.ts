@@ -86,6 +86,18 @@ if (!envOption.disableClustering) {
 	ev.mount();
 }
 
+process.on('message', msg => {
+	if (msg === 'gc') {
+		if (global.gc != null) {
+			logger.info('Manual GC triggered');
+			global.gc();
+			if (process.send != null) process.send('gc ok');
+		} else {
+			logger.warn('Manual GC requested but gc is not available. Start the process with --expose-gc to enable this feature.');
+		}
+	}
+});
+
 readyRef.value = true;
 
 // ユニットテスト時にMisskeyが子プロセスで起動された時のため

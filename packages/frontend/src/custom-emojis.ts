@@ -60,11 +60,11 @@ export async function fetchCustomEmojis(force = false) {
 	set('lastEmojisFetchedAt', now);
 }
 
-let cachedTags;
+let cachedTags: string[] | null = null;
 export function getCustomEmojiTags() {
 	if (cachedTags) return cachedTags;
 
-	const tags = new Set();
+	const tags = new Set<string>();
 	for (const emoji of customEmojis.value) {
 		for (const tag of emoji.aliases) {
 			tags.add(tag);

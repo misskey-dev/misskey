@@ -10,15 +10,15 @@
 	},
 	"dependencies": {
 		"i18n": "workspace:*",
-		"esbuild": "0.27.2",
+		"esbuild": "0.27.3",
 		"idb-keyval": "6.2.2",
 		"misskey-js": "workspace:*"
 	},
 	"devDependencies": {
-		"@typescript-eslint/parser": "8.50.1",
+		"@typescript-eslint/parser": "8.56.0",
 		"@typescript/lib-webworker": "npm:@types/serviceworker@0.0.74",
 		"eslint-plugin-import": "2.32.0",
-		"nodemon": "3.1.11"
+		"nodemon": "3.1.14"
 	},
 	"type": "module"
 }

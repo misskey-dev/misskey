@@ -58,7 +58,7 @@ export async function masterMain() {
 		//await connectDb();
 		if (config.pidFile) fs.writeFileSync(config.pidFile, process.pid.toString());
 	} catch (e) {
-		bootLogger.error('Fatal error occurred during initialization', null, true);
+		bootLogger.error('Fatal error occurred during initialization: ' + e, null, true);
 		process.exit(1);
 	}
 

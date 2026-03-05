@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<MkNoteSub v-for="note in conversation" :key="note.id" :class="$style.replyToMore" :note="note"/>
 	</div>
-	<MkNoteSub v-if="appearNote.replyId" :note="appearNote.reply" :class="$style.replyTo"/>
+	<MkNoteSub v-if="appearNote.replyId" :note="appearNote?.reply ?? null" :class="$style.replyTo"/>
 	<div v-if="isRenote" :class="$style.renote">
 		<MkAvatar :class="$style.renoteAvatar" :user="note.user" link preview/>
 		<i class="ti ti-repeat" style="margin-right: 4px;"></i>
@@ -148,8 +148,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:reactionEmojis="$appearNote.reactionEmojis"
 				:myReaction="$appearNote.myReaction"
 				:noteId="appearNote.id"
-				:maxNumber="16"
-				@mockUpdateMyReaction="emitUpdReaction"
 			/>
 			<button v-if="!appearNote.deletedAt" class="_button" :class="$style.noteFooterButton" @click="reply()">
 				<i class="ti ti-arrow-back-up"></i>
@@ -250,7 +248,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, markRaw, onMounted, provide, ref, useTemplateRef } from 'vue';
+import { computed, inject, markRaw, provide, ref, useTemplateRef } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { isLink } from '@@/js/is-link.js';
@@ -375,7 +373,9 @@ const keymap = {
 		if (!prefer.s.showClipButtonInNoteFooter) return;
 		clip();
 	},
-	'o': () => galleryEl.value?.openGallery(),
+	'o': () => {
+		galleryEl.value?.openGallery();
+	},
 	'v|enter': () => {
 		if (appearNote.cw != null) {
 			showContent.value = !showContent.value;
@@ -570,7 +570,7 @@ function toggleReact() {
 	}
 }
 
-function onContextmenu(ev: MouseEvent): void {
+function onContextmenu(ev: PointerEvent): void {
 	if (ev.target && isLink(ev.target as HTMLElement)) return;
 	if (window.getSelection()?.toString() !== '') return;
 
