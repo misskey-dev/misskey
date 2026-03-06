@@ -28,7 +28,7 @@ const { handler: externalTooltipHandler } = useChartTooltip();
 
 let chartInstance: Chart | null = null;
 
-function setData(values) {
+function setData(values: number[]) {
 	if (chartInstance == null || chartInstance.data.labels == null) return;
 	for (const value of values) {
 		chartInstance.data.labels.push('');
@@ -41,7 +41,7 @@ function setData(values) {
 	chartInstance.update();
 }
 
-function pushData(value) {
+function pushData(value: number) {
 	if (chartInstance == null || chartInstance.data.labels == null) return;
 	chartInstance.data.labels.push('');
 	chartInstance.data.datasets[0].data.push(value);

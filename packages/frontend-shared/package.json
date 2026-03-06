@@ -17,18 +17,17 @@
 		"build": "node ./build.js",
 		"watch": "nodemon -w package.json -e json --exec \"node ./build.js --watch\"",
 		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
-		"typecheck": "tsc --noEmit",
+		"typecheck": "tsgo --noEmit",
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"devDependencies": {
-		"@types/node": "24.10.2",
-		"@typescript-eslint/eslint-plugin": "8.49.0",
-		"@typescript-eslint/parser": "8.49.0",
-		"esbuild": "0.27.1",
-		"eslint-plugin-vue": "10.6.2",
-		"nodemon": "3.1.11",
-		"typescript": "5.9.3",
-		"vue-eslint-parser": "10.2.0"
+		"@types/node": "24.10.13",
+		"@typescript-eslint/eslint-plugin": "8.56.0",
+		"@typescript-eslint/parser": "8.56.0",
+		"esbuild": "0.27.3",
+		"eslint-plugin-vue": "10.8.0",
+		"nodemon": "3.1.14",
+		"vue-eslint-parser": "10.4.0"
 	},
 	"files": [
 		"js-built"
@@ -36,6 +35,6 @@
 	"dependencies": {
 		"i18n": "workspace:*",
 		"misskey-js": "workspace:*",
-		"vue": "3.5.25"
+		"vue": "3.5.28"
 	}
 }
