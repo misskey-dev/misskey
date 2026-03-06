@@ -717,7 +717,7 @@ const isInBrowserTranslationAvailable = (
 let translationsPossible = (prefer.s['experimental.enableWebTranslatorApi'] && isInBrowserTranslationAvailable) || ($i && $i.policies.canUseTranslator && instance.translatorAvailable);
 
 function translateNoteClick() {
-	const { translate } = getNoteMenu({ note: note, translating, translation, currentClip: currentClip?.value });
+	const { translate } = getNoteMenu({ note: note, translating, translation });
 	translate();
 }
 

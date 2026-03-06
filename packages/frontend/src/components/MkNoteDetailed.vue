@@ -171,6 +171,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<button v-if="prefer.s.showClipButtonInNoteFooter" ref="clipButton" class="_button" :class="$style.noteFooterButton" @mousedown.prevent="clip()">
 					<i class="ti ti-paperclip"></i>
 				</button>
+				<button v-if="translationsPossible" ref="translateButton" :class="$style.noteFooterButton" class="_button" @mousedown.prevent="translateNoteClick()">
+					<i class="ti ti-language-hiragana"></i>
+				</button>
 				<button ref="menuButton" class="_button" :class="$style.noteFooterButton" @mousedown.prevent="showMenu()">
 					<i class="ti ti-dots"></i>
 				</button>
@@ -278,6 +281,7 @@ import { getPluginHandlers } from '@/plugin.js';
 import { DI } from '@/di.js';
 import { globalEvents, useGlobalEvent } from '@/events.js';
 import { Paginator } from '@/utility/paginator.js';
+import { instance } from '@/instance.js';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
@@ -633,6 +637,18 @@ onMounted(async () => {
 		loadReplies();
 	}
 });
+
+const isInBrowserTranslationAvailable = (
+	'LanguageDetector' in window &&
+	'Translator' in window
+);
+
+let translationsPossible = (prefer.s['experimental.enableWebTranslatorApi'] && isInBrowserTranslationAvailable) || ($i && $i.policies.canUseTranslator && instance.translatorAvailable);
+
+function translateNoteClick() {
+	const { translate } = getNoteMenu({ note: note, translating, translation });
+	translate();
+}
 
 </script>
 
