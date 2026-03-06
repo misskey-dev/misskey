@@ -55,6 +55,7 @@ import { tabletopCalendar } from './objects/tabletopCalendar.js';
 import { tabletopDigitalClock } from './objects/tabletopDigitalClock.js';
 import { tabletopPictureFrame } from './objects/tabletopPictureFrame.js';
 import { tapestry } from './objects/tapestry.js';
+import { tetrapod } from './objects/tetrapod.js';
 import { tv } from './objects/tv.js';
 import { wallClock } from './objects/wallClock.js';
 import { wallShelf } from './objects/wallShelf.js';
@@ -113,6 +114,7 @@ export const OBJECT_DEFS = [
 	tabletopDigitalClock,
 	tabletopPictureFrame,
 	tapestry,
+	tetrapod,
 	tv,
 	wallClock,
 	wallShelf,
