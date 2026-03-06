@@ -165,6 +165,7 @@ export class HtmlTemplateService {
 			infoImageUrl: this.meta.infoImageUrl ?? 'https://xn--931a.moe/assets/info.jpg',
 			notFoundImageUrl: this.meta.notFoundImageUrl ?? 'https://xn--931a.moe/assets/not-found.jpg',
 			instanceUrl: this.config.url,
+			localHost: this.config.localHost,
 			metaJson: htmlSafeJsonStringify(await this.metaEntityService.packDetailed(this.meta)),
 			now: Date.now(),
 			federationEnabled: this.meta.federation !== 'none',

@@ -305,7 +305,8 @@ export class ApPersonService implements OnModuleInit {
 		if (typeof uri !== 'string') throw new Error('uri is not string');
 
 		const host = this.utilityService.punyHost(uri);
-		if (host === this.utilityService.toPuny(this.config.host)) {
+		if ((host === this.utilityService.toPuny(this.config.localHost)) ||
+				(host === this.utilityService.toPuny(this.config.host))) {
 			throw new StatusError('cannot resolve local user', 400, 'cannot resolve local user');
 		}
 

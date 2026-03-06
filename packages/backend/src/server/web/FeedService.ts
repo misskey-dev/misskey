@@ -60,7 +60,7 @@ export class FeedService {
 
 		const feed = new Feed({
 			id: author.link,
-			title: `${author.name} (@${user.username}@${this.config.host})`,
+			title: `${author.name} (@${user.username}@${this.config.localHost})`,
 			updated: notes.length !== 0 ? this.idService.parse(notes[0].id).date : undefined,
 			generator: 'Misskey',
 			description: `${user.notesCount} Notes, ${profile.followingVisibility === 'public' ? user.followingCount : '?'} Following, ${profile.followersVisibility === 'public' ? user.followersCount : '?'} Followers${profile.description ? ` · ${profile.description}` : ''}`,
