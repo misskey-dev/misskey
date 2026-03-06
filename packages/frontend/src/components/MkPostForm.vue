@@ -119,7 +119,7 @@ import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import insertTextAtCursor from 'insert-text-at-cursor';
 import { toASCII } from 'punycode.js';
-import { host, url } from '@@/js/config.js';
+import { localHost, url } from '@@/js/config.js';
 import MkUploaderItems from './MkUploaderItems.vue';
 import type { ShallowRef } from 'vue';
 import type { PostFormProps } from '@/types/post-form.js';
@@ -355,7 +355,7 @@ if (props.mention) {
 	text.value += ' ';
 }
 
-if (replyTargetNote.value && (replyTargetNote.value.user.username !== $i.username || (replyTargetNote.value.user.host != null && replyTargetNote.value.user.host !== host))) {
+if (replyTargetNote.value && (replyTargetNote.value.user.username !== $i.username || (replyTargetNote.value.user.host != null && replyTargetNote.value.user.host !== localHost))) {
 	text.value = `@${replyTargetNote.value.user.username}${replyTargetNote.value.user.host != null ? '@' + toASCII(replyTargetNote.value.user.host) : ''} `;
 }
 
@@ -366,12 +366,12 @@ if (replyTargetNote.value && replyTargetNote.value.text != null) {
 	for (const x of extractMentions(ast)) {
 		const mention = x.host ?
 			`@${x.username}@${toASCII(x.host)}` :
-			(otherHost == null || otherHost === host) ?
+			(otherHost == null || otherHost === localHost) ?
 				`@${x.username}` :
 				`@${x.username}@${toASCII(otherHost)}`;
 
 		// 自分は除外
-		if ($i.username === x.username && (x.host == null || x.host === host)) continue;
+		if ($i.username === x.username && (x.host == null || x.host === localHost)) continue;
 
 		// 重複は除外
 		if (text.value.includes(`${mention} `)) continue;

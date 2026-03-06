@@ -34,6 +34,7 @@ export type CommonData = MinimumCommonData & {
 	infoImageUrl: string;
 	notFoundImageUrl: string;
 	instanceUrl: string;
+	localHost: string;
 	now: number;
 	federationEnabled: boolean;
 	frontendBootloaderJs: string | null;

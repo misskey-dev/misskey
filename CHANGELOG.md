@@ -2,6 +2,7 @@
 
 ### General
 - 依存関係の更新
+- Added `localHost` option to allow misskey instances to federate their users on a different host than the one from the accessable web url.
 
 ### Client
 -
