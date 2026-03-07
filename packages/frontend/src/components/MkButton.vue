@@ -63,7 +63,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'click', payload: MouseEvent): void;
+	(ev: 'click', payload: PointerEvent): void;
 }>();
 
 const el = useTemplateRef('el');
@@ -77,11 +77,11 @@ onMounted(() => {
 	}
 });
 
-function distance(p, q): number {
+function distance(p: { x: number; y: number }, q: { x: number; y: number }): number {
 	return Math.hypot(p.x - q.x, p.y - q.y);
 }
 
-function calcCircleScale(boxW, boxH, circleCenterX, circleCenterY): number {
+function calcCircleScale(boxW: number, boxH: number, circleCenterX: number, circleCenterY: number): number {
 	const origin = { x: circleCenterX, y: circleCenterY };
 	const dist1 = distance({ x: 0, y: 0 }, origin);
 	const dist2 = distance({ x: boxW, y: 0 }, origin);

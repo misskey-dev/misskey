@@ -100,7 +100,7 @@ async function buildSrc(): Promise<void> {
 
 function buildDts(): Promise<unknown> {
 	return execa(
-		'tsc',
+		'tsgo',
 		[
 			'--project', 'tsconfig.json',
 			'--rootDir', 'src',

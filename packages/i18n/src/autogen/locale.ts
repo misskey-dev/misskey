@@ -2193,6 +2193,10 @@ export interface Locale extends ILocale {
      */
     "limitTo": ParameterizedString<"x">;
     /**
+     * 画面幅が広いときはメディアリストを横並びで表示する
+     */
+    "showMediaListByGridInWideArea": string;
+    /**
      * フォロー申請はありません
      */
     "noFollowRequests": string;
@@ -5651,6 +5655,10 @@ export interface Locale extends ILocale {
      * ゼロ埋め
      */
     "zeroPadding": string;
+    /**
+     * 設定項目はありません
+     */
+    "nothingToConfigure": string;
     "_imageEditing": {
         "_vars": {
             /**
@@ -9897,7 +9905,7 @@ export interface Locale extends ILocale {
          */
         "clicker": string;
         /**
-         * 今日誕生日のユーザー
+         * もうすぐ誕生日のユーザー
          */
         "birthdayFollowings": string;
         /**
@@ -9908,6 +9916,144 @@ export interface Locale extends ILocale {
          * 実況用タグセット
          */
         "tagset": string;
+    };
+    "_widgetOptions": {
+        /**
+         * ヘッダーを表示
+         */
+        "showHeader": string;
+        /**
+         * 背景を透明にする
+         */
+        "transparent": string;
+        /**
+         * 高さ
+         */
+        "height": string;
+        "_button": {
+            /**
+             * 色付き
+             */
+            "colored": string;
+        };
+        "_clock": {
+            /**
+             * サイズ
+             */
+            "size": string;
+            /**
+             * 針の太さ
+             */
+            "thickness": string;
+            /**
+             * 細い
+             */
+            "thicknessThin": string;
+            /**
+             * 普通
+             */
+            "thicknessMedium": string;
+            /**
+             * 太い
+             */
+            "thicknessThick": string;
+            /**
+             * 文字盤の目盛り
+             */
+            "graduations": string;
+            /**
+             * ドット
+             */
+            "graduationDots": string;
+            /**
+             * アラビア数字
+             */
+            "graduationArabic": string;
+            /**
+             * 目盛りをフェード
+             */
+            "fadeGraduations": string;
+            /**
+             * 秒針のアニメーション
+             */
+            "sAnimation": string;
+            /**
+             * リアル
+             */
+            "sAnimationElastic": string;
+            /**
+             * 滑らか
+             */
+            "sAnimationEaseOut": string;
+            /**
+             * 24時間表示
+             */
+            "twentyFour": string;
+            /**
+             * 時刻
+             */
+            "labelTime": string;
+            /**
+             * タイムゾーン
+             */
+            "labelTz": string;
+            /**
+             * 時刻とタイムゾーン
+             */
+            "labelTimeAndTz": string;
+            /**
+             * タイムゾーン
+             */
+            "timezone": string;
+            /**
+             * ミリ秒を表示
+             */
+            "showMs": string;
+            /**
+             * ラベルを表示
+             */
+            "showLabel": string;
+        };
+        "_jobQueue": {
+            /**
+             * 音を鳴らす
+             */
+            "sound": string;
+        };
+        "_rss": {
+            /**
+             * RSSフィードのURL
+             */
+            "url": string;
+            /**
+             * 更新間隔(秒)
+             */
+            "refreshIntervalSec": string;
+            /**
+             * 最大表示件数
+             */
+            "maxEntries": string;
+        };
+        "_rssTicker": {
+            /**
+             * 表示順をシャッフル
+             */
+            "shuffle": string;
+            /**
+             * ティッカーのスクロール速度(秒)
+             */
+            "duration": string;
+            /**
+             * 逆方向にスクロール
+             */
+            "reverse": string;
+        };
+        "_birthdayFollowings": {
+            /**
+             * 期間
+             */
+            "period": string;
+        };
     };
     "_cw": {
         /**
@@ -12821,10 +12967,6 @@ export interface Locale extends ILocale {
          * 変更を破棄して終了しますか？
          */
         "discardChangesConfirm": string;
-        /**
-         * 設定項目はありません
-         */
-        "nothingToConfigure": string;
         /**
          * 画像の読み込みに失敗しました
          */

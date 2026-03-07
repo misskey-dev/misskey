@@ -20,7 +20,7 @@
 		"build": "tsx ./build.ts",
 		"watch": "nodemon -w package.json -e json --exec \"tsx ./build.ts --watch\"",
 		"tsd": "tsd",
-		"typecheck": "tsc --noEmit",
+		"typecheck": "tsgo --noEmit",
 		"lint": "pnpm typecheck && pnpm eslint",
 		"lint:fix": "pnpm eslint --fix"
 	},
@@ -29,15 +29,14 @@
 	],
 	"devDependencies": {
 		"@types/js-yaml": "4.0.9",
-		"@types/node": "24.10.2",
-		"@typescript-eslint/eslint-plugin": "8.49.0",
-		"@typescript-eslint/parser": "8.49.0",
+		"@types/node": "24.10.13",
+		"@typescript-eslint/eslint-plugin": "8.56.0",
+		"@typescript-eslint/parser": "8.56.0",
 		"chokidar": "5.0.0",
-		"esbuild": "0.27.1",
+		"esbuild": "0.27.3",
 		"execa": "9.6.1",
-		"nodemon": "3.1.11",
-		"tsx": "4.21.0",
-		"typescript": "5.9.3"
+		"nodemon": "3.1.14",
+		"tsx": "4.21.0"
 	},
 	"dependencies": {
 		"js-yaml": "4.1.1"
