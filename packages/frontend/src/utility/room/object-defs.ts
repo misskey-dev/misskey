@@ -20,6 +20,7 @@ import { ceilingFanLight } from './objects/ceilingFanLight.js';
 import { chair } from './objects/chair.js';
 import { colorBox } from './objects/colorBox.js';
 import { cupNoodle } from './objects/cupNoodle.js';
+import { debugHipoly } from './objects/debugHipoly.js';
 import { desk } from './objects/desk.js';
 import { ductTape } from './objects/ductTape.js';
 import { emptyBento } from './objects/emptyBento.js';
@@ -28,6 +29,7 @@ import { envelope } from './objects/envelope.js';
 import { facialTissue } from './objects/facialTissue.js';
 import { hangingTShirt } from './objects/hangingTShirt.js';
 import { keyboard } from './objects/keyboard.js';
+import { laptopPc } from './objects/laptopPc.js';
 import { lavaLamp } from './objects/lavaLamp.js';
 import { letterCase } from './objects/letterCase.js';
 import { milk } from './objects/milk.js';
@@ -87,6 +89,7 @@ export const OBJECT_DEFS = [
 	facialTissue,
 	hangingTShirt,
 	keyboard,
+	laptopPc,
 	lavaLamp,
 	letterCase,
 	milk,
@@ -119,6 +122,7 @@ export const OBJECT_DEFS = [
 	wallClock,
 	wallShelf,
 	woodSoundAbsorbingPanel,
+	debugHipoly,
 ];
 
 export function getObjectDef(type: string): typeof OBJECT_DEFS[number] {
