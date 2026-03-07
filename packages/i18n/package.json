@@ -29,9 +29,9 @@
 	],
 	"devDependencies": {
 		"@types/js-yaml": "4.0.9",
-		"@types/node": "24.10.13",
-		"@typescript-eslint/eslint-plugin": "8.56.0",
-		"@typescript-eslint/parser": "8.56.0",
+		"@types/node": "24.11.0",
+		"@typescript-eslint/eslint-plugin": "8.56.1",
+		"@typescript-eslint/parser": "8.56.1",
 		"chokidar": "5.0.0",
 		"esbuild": "0.27.3",
 		"execa": "9.6.1",
