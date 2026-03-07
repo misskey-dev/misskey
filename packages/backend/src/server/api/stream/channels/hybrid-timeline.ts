@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
 import type { Packed } from '@/misc/json-schema.js';
 import { MetaService } from '@/core/MetaService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
@@ -14,8 +14,10 @@ import type { JsonObject } from '@/misc/json-value.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { loadConfig } from '@/config.js';
 import Channel, { type MiChannelService } from '../channel.js';
+import { REQUEST } from '@nestjs/core';
 
-class HybridTimelineChannel extends Channel {
+@Injectable({ scope: Scope.TRANSIENT })
+export class HybridTimelineChannel extends Channel {
 	public readonly chName = 'hybridTimeline';
 	public static shouldShare = false;
 	public static requireCredential = true as const;
@@ -26,14 +28,14 @@ class HybridTimelineChannel extends Channel {
 	private defaultTag: string | null;
 
 	constructor(
+		@Inject(REQUEST)
+		request: ChannelRequest,
+
 		private metaService: MetaService,
 		private roleService: RoleService,
 		private noteEntityService: NoteEntityService,
-
-		id: string,
-		connection: Channel['connection'],
 	) {
-		super(id, connection);
+		super(request);
 		//this.onNote = this.onNote.bind(this);
 	}
 
@@ -127,30 +129,5 @@ class HybridTimelineChannel extends Channel {
 	public dispose(): void {
 		// Unsubscribe events
 		this.subscriber.off('notesStream', this.onNote);
-	}
-}
-
-@Injectable()
-export class HybridTimelineChannelService implements MiChannelService<true> {
-	public readonly shouldShare = HybridTimelineChannel.shouldShare;
-	public readonly requireCredential = HybridTimelineChannel.requireCredential;
-	public readonly kind = HybridTimelineChannel.kind;
-
-	constructor(
-		private metaService: MetaService,
-		private roleService: RoleService,
-		private noteEntityService: NoteEntityService,
-	) {
-	}
-
-	@bindThis
-	public create(id: string, connection: Channel['connection']): HybridTimelineChannel {
-		return new HybridTimelineChannel(
-			this.metaService,
-			this.roleService,
-			this.noteEntityService,
-			id,
-			connection,
-		);
 	}
 }

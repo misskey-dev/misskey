@@ -39,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<span><MkEllipsis/></span>
 			</span>
 
-			<div v-else-if="item.type === 'component'" role="menuitem" tabindex="-1" :class="[$style.componentItem]">
+			<div v-else-if="item.type === 'component'" role="menuitem" tabindex="-1">
 				<component :is="item.component" v-bind="item.props"/>
 			</div>
 
@@ -316,16 +316,27 @@ function onItemMouseLeave() {
 	if (childCloseTimer) window.clearTimeout(childCloseTimer);
 }
 
-async function showRadioOptions(item: MenuRadio, ev: Event) {
+async function showRadioOptions(item: MenuRadio, ev: MouseEvent | PointerEvent | KeyboardEvent) {
 	const children: MenuItem[] = Object.keys(item.options).map<MenuRadioOption>(key => {
 		const value = item.options[key];
 		return {
 			type: 'radioOption',
 			text: key,
 			action: () => {
-				item.ref = value;
+				if ('value' in item.ref) {
+					item.ref.value = value;
+				} else {
+					// @ts-expect-error リアクティビティは保たれる
+					item.ref = value;
+				}
 			},
-			active: computed(() => item.ref === value),
+			active: computed(() => {
+				if ('value' in item.ref) {
+					return item.ref.value === value;
+				} else {
+					return item.ref === value;
+				}
+			}),
 		};
 	});
 
@@ -341,7 +352,7 @@ async function showRadioOptions(item: MenuRadio, ev: Event) {
 	}
 }
 
-async function showChildren(item: MenuParent, ev: Event) {
+async function showChildren(item: MenuParent, ev: MouseEvent | PointerEvent | KeyboardEvent) {
 	ev.stopPropagation();
 
 	const children: MenuItem[] = await (async () => {
@@ -371,7 +382,7 @@ async function showChildren(item: MenuParent, ev: Event) {
 	}
 }
 
-function clicked(fn: MenuAction, ev: MouseEvent, doClose = true) {
+function clicked(fn: MenuAction, ev: PointerEvent, doClose = true) {
 	fn(ev);
 
 	if (!doClose) return;

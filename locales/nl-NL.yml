@@ -1017,6 +1017,8 @@ _widgets:
   jobQueue: "Job Queue"
   _userList:
     chooseList: "Kies een lijst."
+_widgetOptions:
+  height: "Hoogte"
 _cw:
   show: "Laad meer"
 _visibility:

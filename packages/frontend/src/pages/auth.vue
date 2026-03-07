@@ -70,7 +70,7 @@ function accepted() {
 	}
 }
 
-function onLogin(res) {
+function onLogin(res: Misskey.entities.SigninFlowResponse & { finished: true }) {
 	login(res.i);
 }
 

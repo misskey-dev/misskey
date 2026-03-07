@@ -3,15 +3,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
 import type { Packed } from '@/misc/json-schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
 import type { JsonObject } from '@/misc/json-value.js';
-import Channel, { type MiChannelService } from '../channel.js';
+import Channel, { type ChannelRequest } from '../channel.js';
+import { REQUEST } from '@nestjs/core';
 
-class HomeTimelineChannel extends Channel {
+@Injectable({ scope: Scope.TRANSIENT })
+export class HomeTimelineChannel extends Channel {
 	public readonly chName = 'homeTimeline';
 	public static shouldShare = false;
 	public static requireCredential = true as const;
@@ -20,12 +22,12 @@ class HomeTimelineChannel extends Channel {
 	private withFiles: boolean;
 
 	constructor(
-		private noteEntityService: NoteEntityService,
+		@Inject(REQUEST)
+		request: ChannelRequest,
 
-		id: string,
-		connection: Channel['connection'],
+		private noteEntityService: NoteEntityService,
 	) {
-		super(id, connection);
+		super(request);
 		//this.onNote = this.onNote.bind(this);
 	}
 
@@ -96,26 +98,5 @@ class HomeTimelineChannel extends Channel {
 	public dispose() {
 		// Unsubscribe events
 		this.subscriber.off('notesStream', this.onNote);
-	}
-}
-
-@Injectable()
-export class HomeTimelineChannelService implements MiChannelService<true> {
-	public readonly shouldShare = HomeTimelineChannel.shouldShare;
-	public readonly requireCredential = HomeTimelineChannel.requireCredential;
-	public readonly kind = HomeTimelineChannel.kind;
-
-	constructor(
-		private noteEntityService: NoteEntityService,
-	) {
-	}
-
-	@bindThis
-	public create(id: string, connection: Channel['connection']): HomeTimelineChannel {
-		return new HomeTimelineChannel(
-			this.noteEntityService,
-			id,
-			connection,
-		);
 	}
 }
