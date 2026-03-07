@@ -35,6 +35,5 @@ ignorePatchFailures: false
 minimumReleaseAge: 10080 # delay 7days to mitigate supply-chain attack
 minimumReleaseAgeExclude:
   - '@syuilo/aiscript'
-  - 'minimatch' # 脆弱性対応 そのうち消す
-  - 'rollup' # 脆弱性対応 そのうち消す
-  - '@rollup/rollup-*' # 脆弱性対応 そのうち消す
+  - 'tar' # 脆弱性対応 そのうち消す
+  - 'fastify' # 脆弱性対応 そのうち消す
