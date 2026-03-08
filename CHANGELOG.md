@@ -1,13 +1,13 @@
 ## Unreleased
 
 ### General
--
+- 依存関係の更新
 
 ### Client
 -
 
 ### Server
--
+- Fix: セキュリティに関する修正
 
 
 ## 2026.3.0
