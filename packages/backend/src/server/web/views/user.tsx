@@ -13,7 +13,8 @@ export function UserPage(props: CommonProps<{
 	profile: MiUserProfile;
 	sub?: string;
 }>) {
-	const title = props.user.name ? `${props.user.name} (@${props.user.username}${props.user.host ? `@${props.user.host}` : ''})` : `@${props.user.username}${props.user.host ? `@${props.user.host}` : ''}`;
+	const acct = props.user.acct ?? `@${props.user.username}${props.user.host ? `@${props.user.host}` : ''}`;
+	const title = props.user.name ? `${props.user.name} (${acct})` : acct;
 	const me = props.profile.fields
 		? props.profile.fields
 			.filter(field => field.value != null && field.value.match(/^https?:/))

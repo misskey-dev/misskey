@@ -565,9 +565,11 @@ export class ClientServerService {
 				return;
 			}
 
+			const acct = user.acct ?? `@${user.username}${ user.host == null ? '' : '@' + user.host}`;
+
 			vary(reply.raw, 'Accept');
 
-			reply.redirect(`/@${user.username}${ user.host == null ? '' : '@' + user.host}`);
+			reply.redirect(`/${acct}`);
 		});
 
 		// Note
