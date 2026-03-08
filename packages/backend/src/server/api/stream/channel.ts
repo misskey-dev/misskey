@@ -8,6 +8,7 @@ import { isInstanceMuted } from '@/misc/is-instance-muted.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { isQuotePacked, isRenotePacked } from '@/misc/is-renote.js';
 import { isChannelRelated } from '@/misc/is-channel-related.js';
+import type { Awaitable } from '@/types.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { JsonObject, JsonValue } from '@/misc/json-value.js';
 import type Connection from './Connection.js';
@@ -141,7 +142,14 @@ export default abstract class Channel {
 		});
 	}
 
-	public abstract init(params: JsonObject): void;
+	/**
+	 * チャンネルの初期化処理（接続時点での接続可否チェックを兼ねる）
+	 *
+	 * - `void / Promise<void>` を返す場合は、チェックなし
+	 * - `true / Promise<true>` を返す場合は、接続可能
+	 * - `false / Promise<false>` を返す場合は、接続不可（接続を切断）
+	 */
+	public abstract init(params: JsonObject): Awaitable<void | boolean>;
 
 	public dispose?(): void;
 
