@@ -4020,6 +4020,7 @@ export type components = {
                 iconUrl: string | null;
                 displayOrder: number;
             }[];
+            acct: string | null;
         };
         UserDetailedNotMeOnly: {
             /** Format: url */

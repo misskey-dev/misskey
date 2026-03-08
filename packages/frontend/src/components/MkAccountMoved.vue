@@ -4,15 +4,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div v-if="user" :class="$style.root">
+<div v-if="acct" :class="$style.root">
 	<i class="ti ti-plane-departure" style="margin-right: 8px;"></i>
 	{{ i18n.ts.accountMoved }}
-	<MkMention :class="$style.link" :username="user.username" :host="user.host ?? localHost"/>
+	<MkMention :class="$style.link" :username="acct.username" :host="acct.host ?? localHost"/>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkMention from './MkMention.vue';
 import { i18n } from '@/i18n.js';
@@ -20,6 +20,14 @@ import { host as localHost } from '@@/js/config.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 
 const user = ref<Misskey.entities.UserLite>();
+
+const acct = computed(() => {
+	if (!user.value) {
+		return null;
+	}
+
+	return Misskey.acct.fromUser(user.value);
+});
 
 const props = defineProps<{
 	movedTo: string; // user id

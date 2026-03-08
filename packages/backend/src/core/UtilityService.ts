@@ -12,6 +12,7 @@ import type { Config } from '@/config.js';
 import { bindThis } from '@/decorators.js';
 import { MiMeta, SoftwareSuspension } from '@/models/Meta.js';
 import { MiInstance } from '@/models/Instance.js';
+import { MiUser } from '@/models/User.js';
 
 @Injectable()
 export class UtilityService {
@@ -25,8 +26,12 @@ export class UtilityService {
 	}
 
 	@bindThis
-	public getFullApAccount(username: string, host: string | null): string {
-		return host ? `${username}@${this.toPuny(host)}` : `${username}@${this.toPuny(this.config.host)}`;
+	public getFullApAccount(user: { username: string, host: string | null, acct?: string | null }): string {
+		if (user.acct) {
+			return user.acct;
+		}
+
+		return user.host ? `${user.username}@${this.toPuny(user.host)}` : `${user.username}@${this.toPuny(this.config.host)}`;
 	}
 
 	@bindThis

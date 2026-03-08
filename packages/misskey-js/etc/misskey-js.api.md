@@ -25,6 +25,8 @@ declare namespace acct {
     export {
         parse,
         toString_2 as toString,
+        fromUser,
+        validate,
         Acct
     }
 }
@@ -2428,6 +2430,9 @@ type FollowingUpdateResponse = operations['following___update']['responses']['20
 export const followingVisibilities: readonly ["public", "followers", "private"];
 
 // @public (undocumented)
+function fromUser(u: UserLite): Acct;
+
+// @public (undocumented)
 type GalleryFeaturedRequest = operations['gallery___featured']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -3874,6 +3879,9 @@ type V2AdminEmojiListRequest = operations['v2___admin___emoji___list']['requestB
 
 // @public (undocumented)
 type V2AdminEmojiListResponse = operations['v2___admin___emoji___list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+function validate(acct: string): boolean;
 
 // @public (undocumented)
 type VerifyEmailRequest = operations['verify-email']['requestBody']['content']['application/json'];

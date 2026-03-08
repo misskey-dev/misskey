@@ -9,6 +9,7 @@ export type Acct = {
 };
 
 export function parse(acct: string): Acct {
+	if (acct.startsWith('acct:')) acct = acct.substring(5);
 	if (acct.startsWith('@')) acct = acct.substring(1);
 	const split = acct.split('@', 2);
 	return { username: split[0], host: split[1] ?? null };
@@ -16,4 +17,8 @@ export function parse(acct: string): Acct {
 
 export function toString(acct: Acct): string {
 	return acct.host == null ? acct.username : `${acct.username}@${acct.host}`;
+}
+
+export function validate(acct: string): boolean {
+	return acct.match(/^(acct:)?[@]?[^@]+@[^@]+\.[^@]+$/) !== null;
 }

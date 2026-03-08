@@ -52,6 +52,7 @@ const exampleCWNote = reactive<Misskey.entities.Note>({
 		name: '藍',
 		username: 'ai',
 		host: null,
+		acct: null,
 		avatarDecorations: [],
 		avatarUrl: '/client-assets/tutorial/ai.webp',
 		avatarBlurhash: 'eiKmhHIByXxZ~qWXs:-pR*NbR*s:xuRjoL-oR*WCt6WWf6WVf6oeWB',

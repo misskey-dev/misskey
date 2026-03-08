@@ -355,28 +355,32 @@ if (props.mention) {
 	text.value += ' ';
 }
 
-if (replyTargetNote.value && (replyTargetNote.value.user.username !== $i.username || (replyTargetNote.value.user.host != null && replyTargetNote.value.user.host !== host))) {
-	text.value = `@${replyTargetNote.value.user.username}${replyTargetNote.value.user.host != null ? '@' + toASCII(replyTargetNote.value.user.host) : ''} `;
-}
+if (replyTargetNote.value) {
+	const replyUserAcct = Misskey.acct.fromUser(replyTargetNote.value.user);
 
-if (replyTargetNote.value && replyTargetNote.value.text != null) {
-	const ast = mfm.parse(replyTargetNote.value.text);
-	const otherHost = replyTargetNote.value.user.host;
+	if (replyTargetNote.value.user.username !== $i.username || (replyUserAcct.host != null && replyUserAcct.host !== host)) {
+		text.value = `@${replyUserAcct.username}${replyUserAcct.host != null ? '@' + toASCII(replyUserAcct.host) : ''} `;
+	}
 
-	for (const x of extractMentions(ast)) {
-		const mention = x.host ?
-			`@${x.username}@${toASCII(x.host)}` :
-			(otherHost == null || otherHost === host) ?
-				`@${x.username}` :
-				`@${x.username}@${toASCII(otherHost)}`;
+	if (replyTargetNote.value.text != null) {
+		const ast = mfm.parse(replyTargetNote.value.text);
+		const otherHost = replyUserAcct.host;
 
-		// 自分は除外
-		if ($i.username === x.username && (x.host == null || x.host === host)) continue;
+		for (const x of extractMentions(ast)) {
+			const mention = x.host ?
+				`@${x.username}@${toASCII(x.host)}` :
+				(otherHost == null || otherHost === host) ?
+					`@${x.username}` :
+					`@${x.username}@${toASCII(otherHost)}`;
 
-		// 重複は除外
-		if (text.value.includes(`${mention} `)) continue;
+			// 自分は除外
+			if ($i.username === x.username && (x.host == null || x.host === host)) continue;
 
-		text.value += `${mention} `;
+			// 重複は除外
+			if (text.value.includes(`${mention} `)) continue;
+
+			text.value += `${mention} `;
+		}
 	}
 }
 

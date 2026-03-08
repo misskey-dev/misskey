@@ -127,8 +127,8 @@ describe('ChannelFollowingService', () => {
 	});
 
 	beforeEach(async () => {
-		alice = { ...await createUser({ username: 'alice' }), host: null, uri: null };
-		bob = { ...await createUser({ username: 'bob' }), host: null, uri: null };
+		alice = { ...await createUser({ username: 'alice' }), host: null, uri: null, acct: null };
+		bob = { ...await createUser({ username: 'bob' }), host: null, uri: null, acct: null };
 		driveFile1 = await createDriveFile();
 		driveFile2 = await createDriveFile();
 		channel1 = await createChannel({ name: 'channel1', userId: alice.id, bannerId: driveFile1.id });

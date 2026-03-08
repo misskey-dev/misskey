@@ -35,11 +35,13 @@ const logger = new Logger('following/create');
 type Local = MiLocalUser | {
 	id: MiLocalUser['id'];
 	host: MiLocalUser['host'];
+	acct: MiLocalUser['acct'];
 	uri: MiLocalUser['uri']
 };
 type Remote = MiRemoteUser | {
 	id: MiRemoteUser['id'];
 	host: MiRemoteUser['host'];
+	acct: MiRemoteUser['acct'];
 	uri: MiRemoteUser['uri'];
 	inbox: MiRemoteUser['inbox'];
 };
