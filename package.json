@@ -73,7 +73,7 @@
 		"cross-env": "10.1.0",
 		"cypress": "15.11.0",
 		"eslint": "9.39.3",
-		"globals": "17.3.0",
+		"globals": "17.4.0",
 		"ncp": "2.0.0",
 		"pnpm": "10.30.3",
 		"start-server-and-test": "2.1.5",
