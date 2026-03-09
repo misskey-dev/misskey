@@ -207,9 +207,9 @@ export default class Connection {
 	@bindThis
 	private async onNoteStreamMessage(data: GlobalEvents['note']['payload']) {
 		// 自分自身ではないかつ
-		if (data.body.userId !== this.user!.id) {
+		if (data.body.userId !== this.user?.id) {
 			// 公開範囲が指名で自分が含まれてない
-			if (data.body.visibility === 'specified' && !data.body.visibleUserIds.includes(this.user!.id)) {
+			if (data.body.visibility === 'specified' && !data.body.visibleUserIds.includes(this.user?.id ?? '')) {
 				return;
 			}
 
