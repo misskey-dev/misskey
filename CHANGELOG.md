@@ -1,4 +1,4 @@
-## Unreleased
+## 2026.3.2
 
 ### General
 - 依存関係の更新
