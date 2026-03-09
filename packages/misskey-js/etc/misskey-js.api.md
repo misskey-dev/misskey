@@ -2128,8 +2128,8 @@ declare namespace entities {
         UsersFollowingResponse,
         UsersGalleryPostsRequest,
         UsersGalleryPostsResponse,
-        UsersGetFollowingBirthdayUsersRequest,
-        UsersGetFollowingBirthdayUsersResponse,
+        UsersGetFollowingUsersByBirthdayRequest,
+        UsersGetFollowingUsersByBirthdayResponse,
         UsersGetFrequentlyRepliedUsersRequest,
         UsersGetFrequentlyRepliedUsersResponse,
         UsersListsCreateRequest,
@@ -2230,6 +2230,7 @@ declare namespace entities {
         MetaLite,
         MetaDetailedOnly,
         MetaDetailed,
+        MetaClientOptions,
         UserWebhook,
         SystemWebhook,
         AbuseReportNotificationRecipient,
@@ -2819,6 +2820,9 @@ type MeDetailed = components['schemas']['MeDetailed'];
 
 // @public (undocumented)
 type MeDetailedOnly = components['schemas']['MeDetailedOnly'];
+
+// @public (undocumented)
+type MetaClientOptions = components['schemas']['MetaClientOptions'];
 
 // @public (undocumented)
 type MetaDetailed = components['schemas']['MetaDetailed'];
@@ -3737,10 +3741,10 @@ type UsersGalleryPostsRequest = operations['users___gallery___posts']['requestBo
 type UsersGalleryPostsResponse = operations['users___gallery___posts']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
-type UsersGetFollowingBirthdayUsersRequest = operations['users___get-following-birthday-users']['requestBody']['content']['application/json'];
+type UsersGetFollowingUsersByBirthdayRequest = operations['users___get-following-users-by-birthday']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type UsersGetFollowingBirthdayUsersResponse = operations['users___get-following-birthday-users']['responses']['200']['content']['application/json'];
+type UsersGetFollowingUsersByBirthdayResponse = operations['users___get-following-users-by-birthday']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type UsersGetFrequentlyRepliedUsersRequest = operations['users___get-frequently-replied-users']['requestBody']['content']['application/json'];

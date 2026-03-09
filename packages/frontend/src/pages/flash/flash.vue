@@ -212,7 +212,7 @@ async function run() {
 	const version = utils.getLangVersion(flash.value.script);
 	const isLegacy = getIsLegacy(version);
 
-	const { Interpreter, Parser, values } = isLegacy ? (await import('@syuilo/aiscript-0-19-0') as any) : await import('@syuilo/aiscript');
+	const { Interpreter, Parser, values } = (isLegacy ? (await import('@syuilo/aiscript-0-19-0')) : await import('@syuilo/aiscript')) as typeof import('@syuilo/aiscript');
 
 	const parser = new Parser();
 

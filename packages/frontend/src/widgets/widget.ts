@@ -10,6 +10,7 @@ import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import { getDefaultFormValues } from '@/utility/form.js';
 import * as os from '@/os.js';
 import { deepClone } from '@/utility/clone.js';
+import type { WidgetName } from './index.js';
 
 export type Widget<P extends Record<string, unknown>> = {
 	id: string;
@@ -31,7 +32,7 @@ export type WidgetComponentExpose = {
 };
 
 export const useWidgetPropsManager = <F extends FormWithDefault>(
-	name: string,
+	name: WidgetName,
 	propsDef: F,
 	props: Readonly<WidgetComponentProps<GetFormResultType<F>>>,
 	emit: WidgetComponentEmits<GetFormResultType<F>>,

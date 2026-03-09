@@ -29,13 +29,13 @@
 	],
 	"devDependencies": {
 		"@types/js-yaml": "4.0.9",
-		"@types/node": "24.10.4",
-		"@typescript-eslint/eslint-plugin": "8.50.1",
-		"@typescript-eslint/parser": "8.50.1",
+		"@types/node": "24.11.0",
+		"@typescript-eslint/eslint-plugin": "8.56.1",
+		"@typescript-eslint/parser": "8.56.1",
 		"chokidar": "5.0.0",
-		"esbuild": "0.27.2",
+		"esbuild": "0.27.3",
 		"execa": "9.6.1",
-		"nodemon": "3.1.11",
+		"nodemon": "3.1.14",
 		"tsx": "4.21.0"
 	},
 	"dependencies": {
