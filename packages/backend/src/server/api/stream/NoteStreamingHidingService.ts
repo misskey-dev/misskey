@@ -16,22 +16,22 @@ type LockdownCheckResult =
 	| { shouldSkip: true }
 	| { shouldSkip: false; hiddenLayers: Set<HiddenLayer> };
 
+/** Streamにおいて、ノートを隠す（hideNote）を適用するためのService */
 @Injectable()
-export class NoteStreamingLockdownService {
+export class NoteStreamingHidingService {
 	constructor(
 		private noteEntityService: NoteEntityService,
 	) {}
 
 	/**
-	 * ロックダウン設定に基づいてノートの可視性を判定する（純粋関数）
-	 * 副作用なしで判定のみを行う
+	 * ノートの可視性を判定する
 	 *
 	 * @param note - 判定対象のノート
 	 * @param meId - 閲覧者のユーザーID（未ログインの場合はnull）
 	 * @returns shouldSkip: true の場合はノートを流さない、false の場合は hiddenLayers に基づいて隠す
 	 */
 	@bindThis
-	public async checkLockdown(
+	public async shouldHide(
 		note: Packed<'Note'>,
 		meId: MiUser['id'] | null,
 	): Promise<LockdownCheckResult> {
@@ -85,7 +85,9 @@ export class NoteStreamingLockdownService {
 	}
 
 	/**
-	 * hiddenLayersに基づいてノートの内容を隠す（副作用あり）
+	 * hiddenLayersに基づいてノートの内容を隠す。
+	 *
+	 * この処理は渡された `note` を直接変更します。
 	 *
 	 * @param note - 処理対象のノート
 	 * @param hiddenLayers - 隠す階層のセット
@@ -107,19 +109,20 @@ export class NoteStreamingLockdownService {
 	}
 
 	/**
-	 * ストリーミング配信用にノートのロックダウン処理を適用する（便利メソッド）
-	 * checkLockdown + applyHiding を一括で行う
+	 * ストリーミング配信用にノートを隠す（あるいはそもそも送信しない）の判定及び処理を行う。
+	 *
+	 * この処理は渡された `note` を直接変更します。
 	 *
 	 * @param note - 処理対象のノート（必要に応じて内容が隠される）
 	 * @param meId - 閲覧者のユーザーID（未ログインの場合はnull）
 	 * @returns shouldSkip: true の場合はノートを流さない
 	 */
 	@bindThis
-	public async processLockdown(
+	public async processHiding(
 		note: Packed<'Note'>,
 		meId: MiUser['id'] | null,
 	): Promise<{ shouldSkip: boolean }> {
-		const result = await this.checkLockdown(note, meId);
+		const result = await this.shouldHide(note, meId);
 		if (result.shouldSkip) {
 			return { shouldSkip: true };
 		}

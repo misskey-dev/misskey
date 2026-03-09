@@ -67,6 +67,7 @@ export class NoteEntityService implements OnModuleInit {
 	private reactionService: ReactionService;
 	private reactionsBufferingService: ReactionsBufferingService;
 	private idService: IdService;
+	private cacheService: CacheService;
 	private noteLoader = new DebounceLoader(this.findNoteOrFail);
 
 	constructor(
@@ -102,7 +103,7 @@ export class NoteEntityService implements OnModuleInit {
 		//private reactionService: ReactionService,
 		//private reactionsBufferingService: ReactionsBufferingService,
 		//private idService: IdService,
-		private cacheService: CacheService,
+		//private cacheService: CacheService,
 	) {
 	}
 
@@ -113,6 +114,7 @@ export class NoteEntityService implements OnModuleInit {
 		this.reactionService = this.moduleRef.get('ReactionService');
 		this.reactionsBufferingService = this.moduleRef.get('ReactionsBufferingService');
 		this.idService = this.moduleRef.get('IdService');
+		this.cacheService = this.moduleRef.get('CacheService');
 	}
 
 	@bindThis
@@ -270,7 +272,7 @@ export class NoteEntityService implements OnModuleInit {
 
 	@bindThis
 	public async isVisibleForMe(note: MiNote, meId: MiUser['id'] | null): Promise<boolean> {
-		// This code must always be synchronized with the checks in generateVisibilityQuery.
+		// This code must always be synchronized with the checks in QueryService.generateVisibilityQuery.
 		// visibility が specified かつ自分が指定されていなかったら非表示
 		if (note.visibility === 'specified') {
 			if (meId == null) {

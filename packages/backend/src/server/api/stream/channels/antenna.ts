@@ -3,14 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { DI } from '@/di-symbols.js';
+import type { AntennasRepository } from '@/models/_.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { NoteStreamingHidingService } from '../NoteStreamingHidingService.js';
 import { bindThis } from '@/decorators.js';
 import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import type { JsonObject } from '@/misc/json-value.js';
 import Channel, { type MiChannelService } from '../channel.js';
-import { NoteStreamingLockdownService } from '../NoteStreamingLockdownService.js';
 
 class AntennaChannel extends Channel {
 	public readonly chName = 'antenna';
@@ -20,8 +22,9 @@ class AntennaChannel extends Channel {
 	private antennaId: string;
 
 	constructor(
+		private antennasReposiotry: AntennasRepository,
 		private noteEntityService: NoteEntityService,
-		private noteStreamingFilterService: NoteStreamingLockdownService,
+		private noteStreamingHidingService: NoteStreamingHidingService,
 
 		id: string,
 		connection: Channel['connection'],
@@ -31,12 +34,25 @@ class AntennaChannel extends Channel {
 	}
 
 	@bindThis
-	public async init(params: JsonObject) {
-		if (typeof params.antennaId !== 'string') return;
+	public async init(params: JsonObject): Promise<boolean> {
+		if (typeof params.antennaId !== 'string') return false;
+		if (!this.user) return false;
+
 		this.antennaId = params.antennaId;
+
+		const antennaExists = await this.antennasReposiotry.exists({
+			where: {
+				id: this.antennaId,
+				userId: this.user.id,
+			},
+		});
+
+		if (!antennaExists) return false;
 
 		// Subscribe stream
 		this.subscriber.on(`antennaStream:${this.antennaId}`, this.onEvent);
+
+		return true;
 	}
 
 	@bindThis
@@ -48,8 +64,8 @@ class AntennaChannel extends Channel {
 
 			if (this.isNoteMutedOrBlocked(note)) return;
 
-			const { shouldSkip: shouldSkipByLockdown } = await this.noteStreamingFilterService.processLockdown(note, this.user?.id ?? null);
-			if (shouldSkipByLockdown) return;
+			const { shouldSkip } = await this.noteStreamingHidingService.processHiding(note, this.user?.id ?? null);
+			if (shouldSkip) return;
 
 			if (this.user) {
 				if (isRenotePacked(note) && !isQuotePacked(note)) {
@@ -80,16 +96,20 @@ export class AntennaChannelService implements MiChannelService<true> {
 	public readonly kind = AntennaChannel.kind;
 
 	constructor(
+		@Inject(DI.antennasRepository)
+		private antennasReposiotry: AntennasRepository,
+
 		private noteEntityService: NoteEntityService,
-		private noteStreamingFilterService: NoteStreamingLockdownService,
+		private noteStreamingHidingService: NoteStreamingHidingService,
 	) {
 	}
 
 	@bindThis
 	public create(id: string, connection: Channel['connection']): AntennaChannel {
 		return new AntennaChannel(
+			this.antennasReposiotry,
 			this.noteEntityService,
-			this.noteStreamingFilterService,
+			this.noteStreamingHidingService,
 			id,
 			connection,
 		);

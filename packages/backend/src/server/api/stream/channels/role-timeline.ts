@@ -7,11 +7,11 @@ import { Injectable } from '@nestjs/common';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
+import { NoteStreamingHidingService } from '../NoteStreamingHidingService.js';
 import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import type { JsonObject } from '@/misc/json-value.js';
 import Channel, { type MiChannelService } from '../channel.js';
-import { NoteStreamingLockdownService } from '../NoteStreamingLockdownService.js';
 
 class RoleTimelineChannel extends Channel {
 	public readonly chName = 'roleTimeline';
@@ -22,7 +22,7 @@ class RoleTimelineChannel extends Channel {
 	constructor(
 		private noteEntityService: NoteEntityService,
 		private roleservice: RoleService,
-		private noteStreamingFilterService: NoteStreamingLockdownService,
+		private noteStreamingHidingService: NoteStreamingHidingService,
 
 		id: string,
 		connection: Channel['connection'],
@@ -48,11 +48,14 @@ class RoleTimelineChannel extends Channel {
 				return;
 			}
 			if (note.visibility !== 'public') return;
+			if (note.user.requireSigninToViewContents && this.user == null) return;
+			if (note.renote && note.renote.user.requireSigninToViewContents && this.user == null) return;
+			if (note.reply && note.reply.user.requireSigninToViewContents && this.user == null) return;
 
 			if (this.isNoteMutedOrBlocked(note)) return;
 
-			const { shouldSkip: shouldSkipByLockdown } = await this.noteStreamingFilterService.processLockdown(note, this.user?.id ?? null);
-			if (shouldSkipByLockdown) return;
+			const { shouldSkip } = await this.noteStreamingHidingService.processHiding(note, this.user?.id ?? null);
+			if (shouldSkip) return;
 
 			if (this.user) {
 				if (isRenotePacked(note) && !isQuotePacked(note)) {
@@ -85,7 +88,7 @@ export class RoleTimelineChannelService implements MiChannelService<false> {
 	constructor(
 		private noteEntityService: NoteEntityService,
 		private roleservice: RoleService,
-		private noteStreamingFilterService: NoteStreamingLockdownService,
+		private noteStreamingHidingService: NoteStreamingHidingService,
 	) {
 	}
 
@@ -94,7 +97,7 @@ export class RoleTimelineChannelService implements MiChannelService<false> {
 		return new RoleTimelineChannel(
 			this.noteEntityService,
 			this.roleservice,
-			this.noteStreamingFilterService,
+			this.noteStreamingHidingService,
 			id,
 			connection,
 		);
