@@ -3401,11 +3401,7 @@ _imageEffector:
     threshold: "한계 값"
     centerX: "X축 중심"
     centerY: "Y축 중심"
-    zoomLinesSmoothing: "다듬기"
-    zoomLinesSmoothingDescription: "다듬기와 집중선 폭 설정은 같이 쓸 수 없습니다."
-    zoomLinesThreshold: "집중선 폭"
     zoomLinesMaskSize: "중앙 값"
-    zoomLinesBlack: "검은색으로 하기"
     circle: "원형"
 drafts: "초안"
 _drafts:
