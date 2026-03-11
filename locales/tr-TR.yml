@@ -3256,11 +3256,7 @@ _imageEffector:
     threshold: "Eşik"
     centerX: "Merkez X"
     centerY: "Merkez Y"
-    zoomLinesSmoothing: "Düzeltme"
-    zoomLinesSmoothingDescription: "Düzeltme ve yakınlaştırma çizgi genişliği birlikte kullanılamaz."
-    zoomLinesThreshold: "Zoom çizgi genişliği"
     zoomLinesMaskSize: "Merkez çapı"
-    zoomLinesBlack: "Siyah yap"
 drafts: "Taslaklar"
 _drafts:
   select: "Taslak Seç"
