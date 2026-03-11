@@ -3401,11 +3401,7 @@ _imageEffector:
     threshold: "Umbral"
     centerX: "Centrar X"
     centerY: "Centrar Y"
-    zoomLinesSmoothing: "Suavizado"
-    zoomLinesSmoothingDescription: "El suavizado y el ancho de línea de zoom no se pueden utilizar juntos."
-    zoomLinesThreshold: "Ancho de línea del zoom"
     zoomLinesMaskSize: "Diámetro del centro"
-    zoomLinesBlack: "Cambiar color de las líneas de impacto a negro."
     circle: "Círculo"
 drafts: "Borrador"
 _drafts:
