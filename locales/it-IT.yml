@@ -3401,6 +3401,8 @@ _imageEffector:
     threshold: "Soglia"
     centerX: "Centro orizzontale"
     centerY: "Centro verticale"
+    density: "Densità"
+    zoomLinesOutlineThickness: "Spessore del bordo"
     zoomLinesMaskSize: "Ampiezza del diametro"
     circle: "Circolare"
 drafts: "Bozze"
