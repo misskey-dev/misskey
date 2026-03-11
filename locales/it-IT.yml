@@ -3401,11 +3401,7 @@ _imageEffector:
     threshold: "Soglia"
     centerX: "Centro orizzontale"
     centerY: "Centro verticale"
-    zoomLinesSmoothing: "Levigatura"
-    zoomLinesSmoothingDescription: "Non si possono usare insieme la levigatura e la larghezza della linea centrale."
-    zoomLinesThreshold: "Limite delle linee zoom"
     zoomLinesMaskSize: "Ampiezza del diametro"
-    zoomLinesBlack: "Bande nere"
     circle: "Circolare"
 drafts: "Bozze"
 _drafts:
