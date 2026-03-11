@@ -32,10 +32,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				Donate to support NeonDystopia
 				<template #suffix>Donations</template>
 			</FormLink>
-			<FormLink to="https://irc-chat.neondystopia.world/" external>
-				<template #icon><i class="ti ti-message-circle"></i></template>
-				NeonDystopia IRC Chat
-				<template #suffix>IRC</template>
+			<FormLink to="https://policy.neondystopia.world/" external>
+				<template #icon><i class="ti ti-license"></i></template>
+				NeonDystopia Official Policy
+				<template #suffix>Policy</template>
 			</FormLink>
 			<FormLink to="https://video.neondystopia.world/" external>
 				<template #icon><i class="ti ti-device-tv"></i></template>
