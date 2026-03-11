@@ -3401,6 +3401,8 @@ _imageEffector:
     threshold: "Llindar"
     centerX: "Centre de X"
     centerY: "Centre de Y"
+    density: "Densitat"
+    zoomLinesOutlineThickness: "Amplada de les vores exteriors"
     zoomLinesMaskSize: "Diàmetre del centre"
     circle: "Cercle"
 drafts: "Esborrany "
