@@ -3401,11 +3401,7 @@ _imageEffector:
     threshold: "Llindar"
     centerX: "Centre de X"
     centerY: "Centre de Y"
-    zoomLinesSmoothing: "Suavitzat"
-    zoomLinesSmoothingDescription: "Els paràmetres de suavitzat i amplada de línia en augmentar no es poden fer servir junts."
-    zoomLinesThreshold: "Amplada de línia a l'augmentar "
     zoomLinesMaskSize: "Diàmetre del centre"
-    zoomLinesBlack: "Obscurir"
     circle: "Cercle"
 drafts: "Esborrany "
 _drafts:
