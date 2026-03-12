@@ -3401,6 +3401,8 @@ _imageEffector:
     threshold: "Umbral"
     centerX: "Centrar X"
     centerY: "Centrar Y"
+    density: "Densidad"
+    zoomLinesOutlineThickness: "Grosor del borde"
     zoomLinesMaskSize: "Diámetro del centro"
     circle: "Círculo"
 drafts: "Borrador"
