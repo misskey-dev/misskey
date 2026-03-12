@@ -154,11 +154,6 @@ export function getConfig(): UserConfig {
 					}
 				},
 			},
-			preprocessorOptions: {
-				scss: {
-					api: 'modern-compiler',
-				},
-			},
 		},
 
 		define: {
@@ -178,7 +173,7 @@ export function getConfig(): UserConfig {
 				'safari16',
 			],
 			manifest: 'manifest.json',
-			rollupOptions: {
+			rolldownOptions: {
 				input: {
 					i18n: './src/i18n.ts',
 					entry: './src/_boot_.ts',
@@ -186,11 +181,18 @@ export function getConfig(): UserConfig {
 				external: externalPackages.map(p => p.match),
 				preserveEntrySignatures: 'allow-extension',
 				output: {
-					manualChunks: {
-						vue: ['vue'],
-						photoswipe: ['photoswipe', 'photoswipe/lightbox', 'photoswipe/style.css'],
-						// dependencies of i18n.ts
-						'config': ['@@/js/config.js'],
+					codeSplitting: {
+						groups: [{
+							name: 'vue',
+							test: /node_modules[\\/]vue/,
+						}, {
+							name: 'photoswipe',
+							test: /node_modules[\\/]photoswipe/,
+						}, {
+							// dependencies of i18n.ts
+							name: 'config',
+							test: /@@[\\/]js[\\/]config\.js/,
+						}],
 					},
 					entryFileNames: `scripts/${localesHash}-[hash:8].js`,
 					chunkFileNames: `scripts/${localesHash}-[hash:8].js`,
