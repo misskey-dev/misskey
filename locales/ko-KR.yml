@@ -2544,7 +2544,7 @@ _widgets:
   _userList:
     chooseList: "리스트 선택"
   clicker: "클리커"
-  birthdayFollowings: "오늘이 생일인 유저"
+  birthdayFollowings: "곧 생일인 사용자"
   chat: "채팅하기"
 _widgetOptions:
   showHeader: "해더를 표시"
@@ -3401,6 +3401,8 @@ _imageEffector:
     threshold: "한계 값"
     centerX: "X축 중심"
     centerY: "Y축 중심"
+    density: "밀도"
+    zoomLinesOutlineThickness: "선 그림자의 굵기"
     zoomLinesMaskSize: "중앙 값"
     circle: "원형"
 drafts: "초안"
