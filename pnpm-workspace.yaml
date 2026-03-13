@@ -39,5 +39,7 @@ minimumReleaseAgeExclude:
   - '@rolldown/*'
   - '@oxc-project/*'
   - '@napi-rs/wasm-runtime'
+  - 'lightningcss'
+  - 'lightningcss-*'
   - 'tar' # 脆弱性対応 そのうち消す
   - 'fastify' # 脆弱性対応 そのうち消す
