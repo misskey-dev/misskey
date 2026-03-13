@@ -18,7 +18,7 @@ jobs:
     if: ${{ github.event.pull_request.mergeable == null || github.event.pull_request.mergeable == true }}
     steps:
       - name: checkout
-        uses: actions/checkout@v6.0.1
+        uses: actions/checkout@v6.0.2
         with:
           submodules: true
           persist-credentials: false
@@ -29,7 +29,7 @@ jobs:
 
       - name: setup node
         id: setup-node
-        uses: actions/setup-node@v6.1.0
+        uses: actions/setup-node@v6.2.0
         with:
           node-version-file: '.node-version'
           cache: pnpm
@@ -66,7 +66,7 @@ jobs:
     if: ${{ github.event.pull_request.mergeable == null || github.event.pull_request.mergeable == true }}
     steps:
       - name: checkout
-        uses: actions/checkout@v6.0.1
+        uses: actions/checkout@v6.0.2
         with:
           submodules: true
           persist-credentials: false

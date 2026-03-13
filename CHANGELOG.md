@@ -1,12 +1,34 @@
-## 2026.1.0
+## 2026.3.2
+
+### General
+- 依存関係の更新
+
+### Client
+-
+
+### Server
+- Fix: 自分の行ったフォロワー限定投稿または指名投稿に自分自身でリアクションなどを行った場合のイベントが流れない問題を修正
+
+
+## 2026.3.1
+
+### General
+- 依存関係の更新
+
+### Server
+- Fix: セキュリティに関する修正
+
+
+## 2026.3.0
 
 ### Note
-- `users/following` の `birthday` プロパティは非推奨になりました。代わりに `users/get-following-birthday-users` をご利用ください。
+- `users/following` の `birthday` プロパティは非推奨になりました。代わりに `users/get-following-users-by-birthday` をご利用ください。
 
 ### General
 - Enhance: 「もうすぐ誕生日のユーザー」ウィジェットで、誕生日が至近のユーザーも表示できるように  
   (Cherry-picked from https://github.com/MisskeyIO/misskey)
 	- 「今日誕生日のユーザー」は「もうすぐ誕生日のユーザー」に名称変更されました
+- Fix: ユーザーハッシュタグページでユーザーの読み込みが重複する問題を修正
 - 依存関係の更新
 
 ### Client
@@ -25,12 +47,22 @@
 - Fix: `Mk:C:container` の `borderWidth` が正しく反映されない問題を修正
 - Fix: mCaptchaが正しく動作しない問題を修正
 - Fix: 非ログイン時にリバーシの対局が表示されない問題を修正
+- Fix: ノートの詳細表示でリアクションが全件表示されない問題を修正
+- Fix: 動画埋め込みプレイヤーなどの一部ウィンドウで、ウィンドウのサイズ変更や移動が正常に行えない問題を修正
+- Fix: 画像エフェクトの修正
+  - 塗りつぶし・モザイク・ぼかしエフェクトを回転させると歪む問題を修正
+  - モザイクの格子のサイズが画像の縦横比によって長方形となる問題を修正
+  - モザイクの色味がより自然になるように修正
+  - ぼかしに不自然な縦線が入る問題を修正
+- Fix: フォロー承認通知でフォローされた際のメッセージの絵文字が表示されない問題を修正
+- Fix: HTTP環境など（Secure Contextのない環境）で、設定画面が閲覧できない問題を修正
 
 ### Server
 - Enhance: OAuthのクライアント情報取得（Client Information Discovery）において、IndieWeb Living Standard 11 July 2024で定義されているJSONドキュメント形式に対応しました
   - JSONによるClient Information Discoveryを行うには、レスポンスの`Content-Type`ヘッダーが`application/json`である必要があります
   - 従来の実装（12 February 2022版・HTML Microformat形式）も引き続きサポートされます
 - Enhance: メモリ使用量を削減
+- Fix: `/admin/get-user-ips` エンドポイントのアクセス権限を管理者のみに修正
 
 ## 2025.12.2
 

@@ -35,12 +35,9 @@ ignorePatchFailures: false
 minimumReleaseAge: 10080 # delay 7days to mitigate supply-chain attack
 minimumReleaseAgeExclude:
   - '@syuilo/aiscript'
-  - '@fastify/express' # 脆弱性対応。そのうち消すこと
-  - 'lodash' # 脆弱性対応。そのうち消すこと
-  - 'tar' # 脆弱性対応。そのうち消すこと
-  # Renovate security update: pnpm@10.28.2
-  - pnpm@10.28.2
   - rolldown
   - '@rolldown/*'
   - '@oxc-project/*'
   - '@napi-rs/wasm-runtime'
+  - 'tar' # 脆弱性対応 そのうち消す
+  - 'fastify' # 脆弱性対応 そのうち消す
