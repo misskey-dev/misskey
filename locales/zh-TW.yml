@@ -3401,6 +3401,8 @@ _imageEffector:
     threshold: "閾值"
     centerX: "X中心座標"
     centerY: "Y中心座標"
+    density: "密度"
+    zoomLinesOutlineThickness: "線條陰影的粗細"
     zoomLinesMaskSize: "中心直徑"
     circle: "圓形"
 drafts: "草稿\n"
