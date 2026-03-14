@@ -150,10 +150,10 @@ export class NoteEntityService implements OnModuleInit {
 		}
 
 		// やみノート以外の自分のノートは常に表示
-		if (!hide && meId === packedNote.userId) return false;
+		if (meId === packedNote.userId) return false;
 
 		// 既存の表示条件チェック
-		if (!hide && packedNote.user.requireSigninToViewContents && meId == null) {
+		if (packedNote.user.requireSigninToViewContents && meId == null) {
 			return true;
 		}
 
@@ -206,27 +206,21 @@ export class NoteEntityService implements OnModuleInit {
 	}
 
 	@bindThis
-	public hideNote(packedNote: Packed<'Note'>): void {
-			// DMの場合は自分に関する宛先情報のみを保持
-			if (packedNote.visibility === 'specified' && meId && packedNote.visibleUserIds?.includes(meId)) {
-				// 自分のIDと送信者のIDを含む配列に置き換え
-				packedNote.visibleUserIds = [meId, packedNote.userId];
+	public hideNote(packedNote: Packed<'Note'>, meId?: MiUser['id'] | null): void {
+		// DMの場合は自分に関する宛先情報のみを保持
+		if (packedNote.visibility === 'specified' && meId && packedNote.visibleUserIds?.includes(meId)) {
+			// 自分と送信者のみに絞る
+			packedNote.visibleUserIds = packedNote.visibleUserIds.filter(
+				id => id === meId || id === packedNote.userId,
+			);
 
-				// mentionsも適切に保持
-				if (packedNote.mentions) {
-					const relevantMentions = [meId];
-					// 送信者へのメンションも維持
-					if (packedNote.mentions.includes(packedNote.userId)) {
-						relevantMentions.push(packedNote.userId);
-					}
-					packedNote.mentions = relevantMentions;
-				} else {
-					packedNote.mentions = undefined;
-				}
-			} else {
-			packedNote.visibleUserIds = undefined;
-				packedNote.mentions = undefined;
+			// mentions も同様に絞る
+			if (packedNote.mentions) {
+				packedNote.mentions = packedNote.mentions.filter(
+					id => id === meId || id === packedNote.userId,
+				);
 			}
+		}
 
 		packedNote.fileIds = [];
 		packedNote.files = [];

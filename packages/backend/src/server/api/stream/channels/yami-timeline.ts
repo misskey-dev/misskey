@@ -12,7 +12,7 @@ import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
 import type { JsonObject } from '@/misc/json-value.js';
 import type { UsersRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
-import Channel, { type MiChannelService } from '../channel.js';
+import Channel, { type ChannelRequest } from '../channel.js';
 
 class YamiTimelineChannel extends Channel {
 	public readonly chName = 'yamiTimeline';
@@ -29,10 +29,9 @@ class YamiTimelineChannel extends Channel {
 		private noteEntityService: NoteEntityService,
 		private roleService: RoleService,
 		private usersRepository: UsersRepository,
-		id: string,
-		connection: Channel['connection'],
+		request: ChannelRequest,
 	) {
-		super(id, connection);
+		super(request);
 	}
 
 	@bindThis
@@ -155,7 +154,7 @@ class YamiTimelineChannel extends Channel {
 }
 
 @Injectable()
-export class YamiTimelineChannelService implements MiChannelService<true> {
+export class YamiTimelineChannelService {
 	public readonly shouldShare = YamiTimelineChannel.shouldShare;
 	public readonly requireCredential = YamiTimelineChannel.requireCredential;
 	public readonly kind = YamiTimelineChannel.kind;
@@ -174,8 +173,7 @@ export class YamiTimelineChannelService implements MiChannelService<true> {
 			this.noteEntityService,
 			this.roleService,
 			this.usersRepository,
-			id,
-			connection,
+			{ id, connection },
 		);
 	}
 }

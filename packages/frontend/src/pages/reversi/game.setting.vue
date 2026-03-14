@@ -36,12 +36,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts._reversi.blackOrWhite }}</template>
 
 						<MkRadios
-							v-model="game.bw" @click="updateSettings('bw')"
-							:options="[
+							v-model="game.bw" :options="[
 								{ value: 'random', label: i18n.ts.random },
 								{ value: '1', slotId: 'user1' },
 								{ value: '2', slotId: 'user2' },
 							]"
+							@click="updateSettings('bw')"
 						>
 							<template #option-user1>
 								<I18n :src="i18n.ts._reversi.blackIs" tag="span">
@@ -65,8 +65,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #suffix>{{ game.timeLimitForEachTurn }}{{ i18n.ts._time.second }}</template>
 
 						<MkRadios
-							v-model="game.timeLimitForEachTurn" @click="updateSettings('timeLimitForEachTurn')"
-							:options="gameTurnOptionsDef"
+							v-model="game.timeLimitForEachTurn" :options="gameTurnOptionsDef"
+							@click="updateSettings('timeLimitForEachTurn')"
 						>
 						</MkRadios>
 					</MkFolder>
@@ -115,6 +115,7 @@ import { computed, watch, ref, onUnmounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import * as Reversi from 'misskey-reversi';
 import type { MenuItem } from '@/types/menu.js';
+import type { MkRadiosOption } from '@/components/MkRadios.vue';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/i.js';
 import { deepClone } from '@/utility/clone.js';
@@ -123,7 +124,6 @@ import MkRadios from '@/components/MkRadios.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os.js';
-import type { MkRadiosOption } from '@/components/MkRadios.vue';
 import { useRouter } from '@/router.js';
 
 const router = useRouter();

@@ -670,8 +670,8 @@ export class ApInboxService {
 
 	@bindThis
 	private async undoInvite(actor: MiRemoteUser, activity: IInvite): Promise<string> {
-		const resolver = this.apResolverService.createResolver();
-		const object = await resolver.resolve(activity.object).catch(e => {
+		const resolver = await this.apResolverService.createResolver();
+		const object = await resolver.resolve(activity.object).catch((e: Error) => {
 			this.logger.error(`Resolution failed: ${e}`);
 			throw e;
 		});
@@ -851,8 +851,8 @@ export class ApInboxService {
 	}
 	@bindThis
 	private async invite(actor: MiRemoteUser, activity: IInvite): Promise<string> {
-		const resolver = this.apResolverService.createResolver();
-		const object = await resolver.resolve(activity.object).catch(e => {
+		const resolver = await this.apResolverService.createResolver();
+		const object = await resolver.resolve(activity.object).catch((e: Error) => {
 			this.logger.error(`Resolution failed: ${e}`);
 			throw e;
 		});
@@ -878,8 +878,8 @@ export class ApInboxService {
 	}
 	@bindThis
 	private async join(actor: MiRemoteUser, activity: IJoin): Promise<string> {
-		const resolver = this.apResolverService.createResolver();
-		const object = await resolver.resolve(activity.object).catch(e => {
+		const resolver = await this.apResolverService.createResolver();
+		const object = await resolver.resolve(activity.object).catch((e: Error) => {
 			this.logger.error(`Resolution failed: ${e}`);
 			throw e;
 		});
@@ -905,8 +905,8 @@ export class ApInboxService {
 	}
 	@bindThis
 	private async leave(actor: MiRemoteUser, activity: ILeave): Promise<string> {
-		const resolver = this.apResolverService.createResolver();
-		const object = await resolver.resolve(activity.object).catch(e => {
+		const resolver = await this.apResolverService.createResolver();
+		const object = await resolver.resolve(activity.object).catch((e: Error) => {
 			this.logger.error(`Resolution failed: ${e}`);
 			throw e;
 		});

@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<div class="name">
 									<MkUserName :user="user" :nowrap="true"/>
 									<button v-if="nicknameState.enabled.value" class="_button nickname-button" @click="editNickname(user)">
-										<i class="ti ti-edit"/> {{ i18n.ts.editNickname }}
+										<i class="ti ti-edit"></i> {{ i18n.ts.editNickname }}
 									</button>
 								</div>
 								<div class="bottom">
@@ -47,14 +47,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div class="title">
 							<MkUserName :user="user" :nowrap="false" class="name"/>
 							<button v-if="nicknameState.enabled.value" class="_button nickname-button" @click="editNickname(user)">
-								<i class="ti ti-edit"/> {{ i18n.ts.editNickname }}
+								<i class="ti ti-edit"></i> {{ i18n.ts.editNickname }}
 							</button>
 							<div class="bottom">
 								<span class="username"><MkAcct :user="user" :detail="true"/></span>
 								<span v-if="user.isLocked"><i class="ti ti-lock"></i></span>
 								<span v-if="user.isBot"><i class="ti ti-robot"></i></span>
 								<button v-if="$i && $i.id != user.id && !isEditingMemo && !memoDraft" class="_button add-note-button" @click="showMemoTextarea">
-									<i class="ti ti-edit"/> {{ i18n.ts.addMemo }}
+									<i class="ti ti-edit"></i> {{ i18n.ts.addMemo }}
 								</button>
 							</div>
 						</div>
