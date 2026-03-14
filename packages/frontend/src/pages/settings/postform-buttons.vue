@@ -9,25 +9,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<FormSlot>
 			<template #label>{{ i18n.ts.postFormButtons }}</template>
 			<MkContainer :showHeader="false">
-				<Sortable
+				<MkDraggable
 					v-model="items"
-					itemKey="id"
-					:animation="150"
-					:handle="'.' + $style.itemHandle"
-					@start="e => e.item.classList.add('active')"
-					@end="e => e.item.classList.remove('active')"
+					direction="vertical"
 				>
-					<template #item="{element,index}">
+					<template #default="{item,index,dragStart}">
 						<div
-							v-if="bottomItemDef[element.type]"
+							v-if="bottomItemDef[item.type]"
 							:class="$style.item"
 						>
-							<button class="_button" :class="$style.itemHandle"><i class="ti ti-menu"></i></button>
-							<i class="ti ti-fw" :class="[$style.itemIcon, bottomItemDef[element.type]?.icon]"></i><span :class="$style.itemText">{{ bottomItemDef[element.type]?.title }}</span>
+							<button class="_button" :class="$style.itemHandle" @mousedown="dragStart" @touchstart="dragStart"><i class="ti ti-menu"></i></button>
+							<i class="ti ti-fw" :class="[$style.itemIcon, bottomItemDef[item.type]?.icon]"></i><span :class="$style.itemText">{{ bottomItemDef[item.type]?.title }}</span>
 							<button class="_button" :class="$style.itemRemove" @click="removeItem(index)"><i class="ti ti-x"></i></button>
 						</div>
 					</template>
-				</Sortable>
+				</MkDraggable>
 			</MkContainer>
 		</FormSlot>
 		<div class="_buttons">
@@ -49,20 +45,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, ref } from 'vue';
+import { computed, ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 import FormSlot from '@/components/form/slot.vue';
 import MkContainer from '@/components/MkContainer.vue';
+import MkDraggable from '@/components/MkDraggable.vue';
 import * as os from '@/os.js';
 import { bottomItemDef } from '@/utility/post-form.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { prefer } from '@/preferences.js';
 import { genId } from '@/utility/id.js';
-
-const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
 // デフォルト値
 const defaultActions = [

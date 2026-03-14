@@ -1125,7 +1125,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref, watch, onMounted } from 'vue';
 import { langs } from '@@/js/config.js';
 import * as Misskey from 'misskey-js';
-import Sortable from 'vuedraggable';
+import MkDraggable from '@/components/MkDraggable.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkRadios from '@/components/MkRadios.vue';

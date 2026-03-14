@@ -1092,7 +1092,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { watch, ref, computed } from 'vue';
 import { throttle } from 'throttle-debounce';
 import * as Misskey from 'misskey-js';
-import RolesEditorFormula from './RolesEditorFormula.vue';
 import type { MkSelectItem, GetMkSelectValueTypesFromDef } from '@/components/MkSelect.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
