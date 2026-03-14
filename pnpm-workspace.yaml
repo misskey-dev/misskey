@@ -37,3 +37,5 @@ minimumReleaseAgeExclude:
   - '@syuilo/aiscript'
   - 'tar' # 脆弱性対応 そのうち消す
   - 'fastify' # 脆弱性対応 そのうち消す
+  # Renovate security update: file-type@21.3.2
+  - file-type@21.3.2
