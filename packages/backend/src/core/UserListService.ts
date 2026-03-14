@@ -21,9 +21,11 @@ import { RedisKVCache } from '@/misc/cache.js';
 import { RoleService } from '@/core/RoleService.js';
 import { SystemAccountService } from '@/core/SystemAccountService.js';
 
+export class UserListServiceTooManyUsersError extends Error {}
+
 @Injectable()
 export class UserListService implements OnApplicationShutdown, OnModuleInit {
-	public static TooManyUsersError = class extends Error {};
+	public static TooManyUsersError = UserListServiceTooManyUsersError;
 
 	public membersCache: RedisKVCache<Set<string>>;
 	private roleService: RoleService;
@@ -96,7 +98,7 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 			userListId: list.id,
 		});
 		if (currentCount >= (await this.roleService.getUserPolicies(me.id)).userEachUserListsLimit) {
-			throw new UserListService.TooManyUsersError();
+			throw new UserListServiceTooManyUsersError();
 		}
 
 		await this.userListMembershipsRepository.insert({

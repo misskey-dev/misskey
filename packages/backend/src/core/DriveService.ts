@@ -85,11 +85,15 @@ type UploadFromUrlArgs = {
 	requestHeaders?: Record<string, string> | null;
 };
 
+export class DriveServiceNoSuchFolderError extends Error {}
+export class DriveServiceInvalidFileNameError extends Error {}
+export class DriveServiceCannotUnmarkSensitiveError extends Error {}
+
 @Injectable()
 export class DriveService {
-	public static NoSuchFolderError = class extends Error {};
-	public static InvalidFileNameError = class extends Error {};
-	public static CannotUnmarkSensitiveError = class extends Error {};
+	public static NoSuchFolderError = DriveServiceNoSuchFolderError;
+	public static InvalidFileNameError = DriveServiceInvalidFileNameError;
+	public static CannotUnmarkSensitiveError = DriveServiceCannotUnmarkSensitiveError;
 	private registerLogger: Logger;
 	private downloaderLogger: Logger;
 	private deleteLogger: Logger;
@@ -685,11 +689,11 @@ export class DriveService {
 		const alwaysMarkNsfw = (await this.roleService.getUserPolicies(file.userId)).alwaysMarkNsfw;
 
 		if (values.name != null && !this.driveFileEntityService.validateFileName(values.name)) {
-			throw new DriveService.InvalidFileNameError();
+			throw new DriveServiceInvalidFileNameError();
 		}
 
 		if (values.isSensitive !== undefined && values.isSensitive !== file.isSensitive && alwaysMarkNsfw && !values.isSensitive) {
-			throw new DriveService.CannotUnmarkSensitiveError();
+			throw new DriveServiceCannotUnmarkSensitiveError();
 		}
 
 		if (values.folderId != null) {
@@ -699,7 +703,7 @@ export class DriveService {
 			});
 
 			if (folder == null) {
-				throw new DriveService.NoSuchFolderError();
+				throw new DriveServiceNoSuchFolderError();
 			}
 		}
 

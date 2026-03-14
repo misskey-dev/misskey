@@ -120,14 +120,17 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	watermarkAvailable: true,
 };
 
+export class RoleServiceAlreadyAssignedError extends Error {}
+export class RoleServiceNotAssignedError extends Error {}
+
 @Injectable()
 export class RoleService implements OnApplicationShutdown, OnModuleInit {
 	private rolesCache: MemorySingleCache<MiRole[]>;
 	private roleAssignmentByUserIdCache: MemoryKVCache<MiRoleAssignment[]>;
 	private notificationService: NotificationService;
 
-	public static AlreadyAssignedError = class extends Error {};
-	public static NotAssignedError = class extends Error {};
+	public static AlreadyAssignedError = RoleServiceAlreadyAssignedError;
+	public static NotAssignedError = RoleServiceNotAssignedError;
 
 	constructor(
 		private moduleRef: ModuleRef,
@@ -563,7 +566,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 					userId: userId,
 				});
 			} else {
-				throw new RoleService.AlreadyAssignedError();
+				throw new RoleServiceAlreadyAssignedError();
 			}
 		}
 
@@ -606,13 +609,13 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 
 		const existing = await this.roleAssignmentsRepository.findOneBy({ roleId, userId });
 		if (existing == null) {
-			throw new RoleService.NotAssignedError();
+			throw new RoleServiceNotAssignedError();
 		} else if (existing.expiresAt && (existing.expiresAt.getTime() < now.getTime())) {
 			await this.roleAssignmentsRepository.delete({
 				roleId: roleId,
 				userId: userId,
 			});
-			throw new RoleService.NotAssignedError();
+			throw new RoleServiceNotAssignedError();
 		}
 
 		await this.roleAssignmentsRepository.delete(existing.id);
