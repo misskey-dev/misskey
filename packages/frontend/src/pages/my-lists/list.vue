@@ -110,7 +110,7 @@ function addUser() {
 	});
 }
 
-async function removeUser(item, ev) {
+async function removeUser(item: Misskey.entities.UsersListsGetMembershipsResponse[number], ev: PointerEvent) {
 	os.popupMenu([{
 		text: i18n.ts.remove,
 		icon: 'ti ti-x',
@@ -127,7 +127,7 @@ async function removeUser(item, ev) {
 	}], ev.currentTarget ?? ev.target);
 }
 
-async function showMembershipMenu(item, ev) {
+async function showMembershipMenu(item: Misskey.entities.UsersListsGetMembershipsResponse[number], ev: PointerEvent) {
 	const withRepliesRef = ref(item.withReplies);
 
 	os.popupMenu([{

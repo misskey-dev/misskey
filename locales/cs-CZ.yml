@@ -1789,6 +1789,14 @@ _widgets:
   _userList:
     chooseList: "Vybrat seznam"
   clicker: "Clicker"
+_widgetOptions:
+  height: "Výška"
+  _button:
+    colored: "Barevné"
+  _clock:
+    size: "Velikost"
+  _birthdayFollowings:
+    period: "Trvání"
 _cw:
   hide: "Skrýt"
   show: "Zobrazit více"

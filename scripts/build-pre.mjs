@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-const fs = require('fs');
+import * as fs from 'node:fs';
+
+const __dirname = import.meta.dirname;
+
 const packageJsonPath = __dirname + '/../package.json'
 
 function build() {

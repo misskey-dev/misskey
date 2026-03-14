@@ -65,7 +65,7 @@ export class PostScheduledNoteProcessorService {
 			this.notificationService.createNotification(draft.userId, 'scheduledNotePosted', {
 				noteId: note.id,
 			});
-		} catch (err) {
+		} catch (_) {
 			this.notificationService.createNotification(draft.userId, 'scheduledNotePostFailed', {
 				noteDraftId: draft.id,
 			});

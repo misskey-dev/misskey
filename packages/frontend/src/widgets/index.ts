@@ -45,7 +45,7 @@ export const federationWidgets = [
 	'federation',
 	'instanceCloud',
 	// Add other federation-related widgets here
-];
+] as const;
 
 export const widgets = [
 	'profile',
@@ -80,4 +80,6 @@ export const widgets = [
 	'chat',
 	'activeUsers',
 	'jitsiMeet',
-];
+] as const;
+
+export type WidgetName = typeof widgets[number];

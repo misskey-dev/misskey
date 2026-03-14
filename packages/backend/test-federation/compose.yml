@@ -143,7 +143,7 @@ services:
       bash -c "
         npm install -g pnpm
         pnpm -F backend i --frozen-lockfile
-        pnpm exec tsc -p ./packages/backend/test-federation
+        pnpm exec tsgo -p ./packages/backend/test-federation
         node ./packages/backend/test-federation/built/daemon.js
       "
 
