@@ -7,58 +7,83 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div class="_gaps">
 	<MkButton v-if="$i && ($i.isModerator || $i.policies.canManageCustomEmojis)" primary link to="/custom-emojis-manager">{{ i18n.ts.manageCustomEmojis }}</MkButton>
 
-	<div class="query">
-		<MkInput v-model="q" class="" :placeholder="i18n.ts.search" autocapitalize="off">
-			<template #prefix><i class="ti ti-search"></i></template>
-		</MkInput>
+	<div v-if="emojisByCategory != null" class="_gaps">
+		<div class="query">
+			<MkInput v-model="q" class="" :placeholder="i18n.ts.search" autocapitalize="off">
+				<template #prefix><i class="ti ti-search"></i></template>
+			</MkInput>
+		</div>
+
+		<MkFoldableSection v-if="searchResult != null && searchResult.length > 0">
+			<template #header>{{ i18n.ts.searchResult }}</template>
+			<div :class="$style.emojis">
+				<XEmoji v-for="emoji in searchResult" :key="emoji.name" :emoji="emoji"/>
+			</div>
+		</MkFoldableSection>
+
+		<MkFoldableSection v-for="emojis, categoryName in emojisByCategory" :key="categoryName" :expanded="false" @headerClick="(opened) => onCategoryHeaderClick(categoryName, opened)">
+			<template #header>{{ categoryName === CATEGORY_NONE ? i18n.ts.other : categoryName }}</template>
+			<div v-if="emojis != null" :class="$style.emojis">
+				<XEmoji v-for="emoji in emojis" :key="emoji.name" :emoji="emoji"/>
+			</div>
+			<div v-else>
+				<MkLoading/>
+			</div>
+		</MkFoldableSection>
 	</div>
-
-	<MkFoldableSection v-if="searchEmojis">
-		<template #header>{{ i18n.ts.searchResult }}</template>
-		<div :class="$style.emojis">
-			<XEmoji v-for="emoji in searchEmojis" :key="emoji.name" :emoji="emoji"/>
-		</div>
-	</MkFoldableSection>
-
-	<MkFoldableSection v-for="category in customEmojiCategories" v-once :key="category ?? '___root___'" :expanded="false">
-		<template #header>{{ category || i18n.ts.other }}</template>
-		<div :class="$style.emojis">
-			<XEmoji v-for="emoji in customEmojis.filter(e => e.category === category)" :key="emoji.name" :emoji="emoji"/>
-		</div>
-	</MkFoldableSection>
+	<div v-else>
+		<MkLoading/>
+	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { watch, ref } from 'vue';
-import * as Misskey from 'misskey-js';
+import { watch, ref, onMounted } from 'vue';
 import XEmoji from './emojis.emoji.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import { customEmojis, customEmojiCategories } from '@/custom-emojis.js';
+import { getEmojiCategories, getEmojisByCategory, searchEmojis, CATEGORY_NONE } from '@/utility/idb-emoji-store.js';
+import type { V1Emoji } from '@/utility/idb-emoji-store.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/i.js';
 
 const q = ref('');
-const searchEmojis = ref<Misskey.entities.EmojiSimple[] | null>(null);
+const emojisByCategory = ref<Record<string, V1Emoji[] | null> | null>(null);
+const searching = ref(false);
+const searchResult = ref<V1Emoji[] | null>(null);
 
-function search() {
-	if (q.value === '' || q.value == null) {
-		searchEmojis.value = null;
+async function search() {
+	if (q.value.trim() === '') {
+		searchResult.value = null;
 		return;
 	}
 
-	const queryarry = q.value.match(/\:([a-z0-9_]*)\:/g);
-
-	if (queryarry) {
-		searchEmojis.value = customEmojis.value.filter(emoji =>
-			queryarry.includes(`:${emoji.name}:`),
-		);
-	} else {
-		searchEmojis.value = customEmojis.value.filter(emoji => emoji.name.includes(q.value) || emoji.aliases.includes(q.value));
-	}
+	searching.value = true;
+	const results = await searchEmojis(q.value.trim(), Infinity);
+	searchResult.value = results;
+	searching.value = false;
 }
+
+async function fetchCategories() {
+	const categories = await getEmojiCategories();
+	emojisByCategory.value = Object.fromEntries(categories.map(category => [category, null]));
+}
+
+async function onCategoryHeaderClick(categoryName: string, opened: boolean) {
+	if (!opened) return;
+
+	if (emojisByCategory.value == null) return;
+
+	if (emojisByCategory.value[categoryName] != null) return;
+
+	const emojis = await getEmojisByCategory(categoryName);
+	emojisByCategory.value[categoryName] = emojis;
+}
+
+onMounted(() => {
+	fetchCategories();
+});
 
 watch(q, () => {
 	search();

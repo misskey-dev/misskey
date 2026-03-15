@@ -41,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="icon"><i class="ti ti-icons"></i></div>
 				<div class="body">
 					<div class="value">
-						<MkNumber :value="customEmojis.length" style="margin-right: 0.5em;"/>
+						<MkNumber :value="customEmojisCount" style="margin-right: 0.5em;"/>
 					</div>
 					<div class="label">Custom emojis</div>
 				</div>
@@ -68,22 +68,25 @@ import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
 import MkNumberDiff from '@/components/MkNumberDiff.vue';
 import MkNumber from '@/components/MkNumber.vue';
 import { i18n } from '@/i18n.js';
-import { customEmojis } from '@/custom-emojis.js';
+import { getEmojisCount } from '@/utility/idb-emoji-store.js';
 import { prefer } from '@/preferences.js';
 
 const stats = ref<Misskey.entities.StatsResponse | null>(null);
 const usersComparedToThePrevDay = ref<number | null>(null);
 const notesComparedToThePrevDay = ref<number | null>(null);
 const onlineUsersCount = ref(0);
+const customEmojisCount = ref(0);
 const fetching = ref(true);
 
 onMounted(async () => {
-	const [_stats, _onlineUsersCount] = await Promise.all([
+	const [_stats, _onlineUsersCount, _customEmojisCount] = await Promise.all([
 		misskeyApi('stats', {}),
 		misskeyApiGet('get-online-users-count').then(res => res.count),
+		getEmojisCount(),
 	]);
 	stats.value = _stats;
 	onlineUsersCount.value = _onlineUsersCount;
+	customEmojisCount.value = _customEmojisCount;
 
 	misskeyApiGet('charts/users', { limit: 2, span: 'day' }).then(chart => {
 		usersComparedToThePrevDay.value = _stats.originalUsersCount - chart.local.total[1];

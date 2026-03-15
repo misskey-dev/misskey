@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div ref="rootEl" :class="$style.root">
-	<header :class="$style.header" class="_button" @click="showBody = !showBody">
+	<header :class="$style.header" class="_button" @click="onHeaderClick">
 		<div :class="$style.title"><div><slot name="header"></slot></div></div>
 		<div :class="$style.divider"></div>
 		<button class="_button" :class="$style.button">
@@ -47,6 +47,10 @@ const props = withDefaults(defineProps<{
 	persistKey: null,
 });
 
+const emit = defineEmits<{
+	(ev: 'headerClick', opened: boolean): void;
+}>();
+
 const rootEl = useTemplateRef('rootEl');
 const parentBg = ref<string | null>(null);
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
@@ -57,6 +61,11 @@ watch(showBody, () => {
 		miLocalStorage.setItem(`${miLocalStoragePrefix}${props.persistKey}`, showBody.value ? 't' : 'f');
 	}
 });
+
+function onHeaderClick() {
+	emit('headerClick', !showBody.value);
+	showBody.value = !showBody.value;
+}
 
 function enter(el: Element) {
 	if (!(el instanceof HTMLElement)) return;

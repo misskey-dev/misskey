@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:key="emoji"
 			:data-emoji="emoji"
 			class="_button item"
-			:disabled="disabledEmojis?.value.includes(emoji)"
+			:disabled="disabledEmojis != null ? toValue(disabledEmojis).includes(emoji) : false"
 			@pointerenter="computeButtonTitle"
 			@click="emit('chosen', emoji, $event)"
 		>
@@ -35,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			v-for="child in customEmojiTree"
 			:key="`custom:${child.value}`"
 			:initialShown="initialShown"
-			:emojis="computed(() => customEmojis.filter(e => e.category === child.category).map(e => `:${e.name}:`))"
+			:categoryName="child.category"
 			:hasChildSection="child.children.length !== 0"
 			:customEmojiTree="child.children"
 			@chosen="nestedChosen"
@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:key="emoji"
 			:data-emoji="emoji"
 			class="_button item"
-			:disabled="disabledEmojis?.value.includes(emoji)"
+			:disabled="disabledEmojis != null ? toValue(disabledEmojis).includes(emoji) : false"
 			@pointerenter="computeButtonTitle"
 			@click="emit('chosen', emoji, $event)"
 		>
@@ -61,17 +61,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, watch, toValue } from 'vue';
 import { getEmojiName } from '@@/js/emojilist.js';
-import type { Ref } from 'vue';
+import type { MaybeRef } from 'vue';
 import type { CustomEmojiFolderTree } from '@@/js/emojilist.js';
 import { i18n } from '@/i18n.js';
-import { customEmojis } from '@/custom-emojis.js';
+import { getEmojisByCategory } from '@/utility/idb-emoji-store.js';
 import MkEmojiPickerSection from '@/components/MkEmojiPicker.section.vue';
 
 const props = defineProps<{
-	emojis: string[] | Ref<string[]>;
-	disabledEmojis?: Ref<string[]>;
+	categoryName: string;
+	disabledEmojis?: MaybeRef<string[]>;
 	initialShown?: boolean;
 	hasChildSection?: boolean;
 	customEmojiTree?: CustomEmojiFolderTree[];
@@ -81,7 +81,15 @@ const emit = defineEmits<{
 	(ev: 'chosen', v: string, event: PointerEvent): void;
 }>();
 
-const emojis = computed(() => Array.isArray(props.emojis) ? props.emojis : props.emojis.value);
+const emojis = ref<string[]>([]);
+
+watch(() => props.categoryName, async (newCategory) => {
+	if (props.hasChildSection) {
+		emojis.value = [];
+	} else {
+		emojis.value = (await getEmojisByCategory(newCategory)).map(e => e.name);
+	}
+}, { immediate: true });
 
 const shown = ref(!!props.initialShown);
 

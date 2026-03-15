@@ -11,7 +11,8 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { $i } from '@/i.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { customEmojis } from '@/custom-emojis.js';
+import { convertToMisskeyEntityEmoji, filterEmojisByFn, getEmojiByName, getEmojisCount, searchEmojis } from '@/utility/idb-emoji-store.js';
+import type { V1Emoji } from '@/utility/idb-emoji-store.js';
 
 const DIALOG_TYPES = [
 	'error',
@@ -37,7 +38,6 @@ export function createAiScriptEnv(opts: { storageKey: string, token?: string }) 
 		USER_ID: $i ? values.STR($i.id) : values.NULL,
 		USER_NAME: $i?.name ? values.STR($i.name) : values.NULL,
 		USER_USERNAME: $i ? values.STR($i.username) : values.NULL,
-		CUSTOM_EMOJIS: utils.jsToVal(customEmojis.value),
 		LOCALE: values.STR(lang),
 		SERVER_URL: values.STR(url),
 		'Mk:dialog': values.FN_NATIVE(async ([_title, _text, _type]) => {
@@ -181,6 +181,50 @@ export function createAiScriptEnv(opts: { storageKey: string, token?: string }) 
 		'Mk:nyaize': values.FN_NATIVE(([text]) => {
 			utils.assertString(text);
 			return values.STR(Misskey.nyaize(text.value));
+		}),
+		'MkCustomEmoji:get': values.FN_NATIVE(async ([name]) => {
+			utils.assertString(name);
+			const emoji = await getEmojiByName(name.value);
+			if (!emoji) {
+				return values.NULL;
+			}
+			return utils.jsToVal(convertToMisskeyEntityEmoji(emoji));
+		}),
+		'MkCustomEmoji:getCount': values.FN_NATIVE(async () => {
+			return values.NUM(await getEmojisCount());
+		}),
+		'MkCustomEmoji:search': values.FN_NATIVE(async ([query, limit, exact]) => {
+			utils.assertString(query);
+
+			let max = 30;
+			if (limit != null && limit.type !== 'null') {
+				utils.assertNumber(limit);
+				max = Math.min(Math.max(1, limit.value), 100);
+			}
+
+			let isExactMatch = false;
+			if (exact != null && exact.type !== 'null') {
+				utils.assertBoolean(exact);
+				isExactMatch = exact.value;
+			}
+
+			const result = await searchEmojis(query.value, max, isExactMatch);
+			if (result.length > 0) {
+				return utils.jsToVal(result.map(convertToMisskeyEntityEmoji));
+			} else {
+				return utils.jsToVal([]);
+			}
+		}),
+		'MkCustomEmoji:searchByFn': values.FN_NATIVE(async ([fn], opts) => {
+			utils.assertFunction(fn);
+
+			const result = (await filterEmojisByFn(async (emoji: V1Emoji, index: number, resultCount: number) => {
+				const res = await opts.topCall(fn, [utils.jsToVal(convertToMisskeyEntityEmoji(emoji)), values.NUM(index), values.NUM(resultCount)]);
+				utils.assertBoolean(res);
+				return res.value === true;
+			})).map(convertToMisskeyEntityEmoji);
+
+			return utils.jsToVal(result);
 		}),
 	};
 }
