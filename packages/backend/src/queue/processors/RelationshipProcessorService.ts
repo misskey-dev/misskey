@@ -38,6 +38,7 @@ export class RelationshipProcessorService {
 		await this.userFollowingService.follow(job.data.from, job.data.to, {
 			requestId: job.data.requestId,
 			silent: job.data.silent,
+			recreateFollowingRequest: job.data.recreateFollowingRequest,
 			withReplies: job.data.withReplies,
 		});
 		return 'ok';
