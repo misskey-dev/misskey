@@ -6,7 +6,7 @@
 		"type": "git",
 		"url": "https://github.com/misskey-dev/misskey.git"
 	},
-	"packageManager": "pnpm@10.30.3",
+	"packageManager": "pnpm@10.32.1",
 	"workspaces": [
 		"packages/misskey-js",
 		"packages/i18n",
