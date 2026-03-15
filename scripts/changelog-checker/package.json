@@ -10,7 +10,7 @@
   },
   "devDependencies": {
     "@types/mdast": "4.0.4",
-    "@types/node": "24.10.13",
+    "@types/node": "24.11.0",
     "@vitest/coverage-v8": "4.0.18",
     "mdast-util-to-string": "4.0.0",
     "remark": "15.0.1",

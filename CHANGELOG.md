@@ -1,7 +1,28 @@
-## 2026.2.0
+## 2026.3.2
+
+### General
+- 依存関係の更新
+
+### Client
+-
+
+### Server
+- Fix: 自分の行ったフォロワー限定投稿または指名投稿に自分自身でリアクションなどを行った場合のイベントが流れない問題を修正
+
+
+## 2026.3.1
+
+### General
+- 依存関係の更新
+
+### Server
+- Fix: セキュリティに関する修正
+
+
+## 2026.3.0
 
 ### Note
-- `users/following` の `birthday` プロパティは非推奨になりました。代わりに `users/get-following-birthday-users` をご利用ください。
+- `users/following` の `birthday` プロパティは非推奨になりました。代わりに `users/get-following-users-by-birthday` をご利用ください。
 
 ### General
 - Enhance: 「もうすぐ誕生日のユーザー」ウィジェットで、誕生日が至近のユーザーも表示できるように  
