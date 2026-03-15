@@ -12,6 +12,8 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { $i } from '@/i.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { customEmojis } from '@/custom-emojis.js';
+import { searchEmoji, searchEmojiExact } from '@/utility/search-emoji.js';
+import type { EmojiDef } from '@/utility/search-emoji.js';
 
 const DIALOG_TYPES = [
 	'error',
@@ -37,6 +39,7 @@ export function createAiScriptEnv(opts: { storageKey: string, token?: string }) 
 		USER_ID: $i ? values.STR($i.id) : values.NULL,
 		USER_NAME: $i?.name ? values.STR($i.name) : values.NULL,
 		USER_USERNAME: $i ? values.STR($i.username) : values.NULL,
+		/** @deprecated 絵文字の保管がNative IndexedDBに切り替わったら廃止予定. https://github.com/misskey-dev/misskey/issues/14457 */
 		CUSTOM_EMOJIS: utils.jsToVal(customEmojis.value),
 		LOCALE: values.STR(lang),
 		SERVER_URL: values.STR(url),
@@ -181,6 +184,89 @@ export function createAiScriptEnv(opts: { storageKey: string, token?: string }) 
 		'Mk:nyaize': values.FN_NATIVE(([text]) => {
 			utils.assertString(text);
 			return values.STR(Misskey.nyaize(text.value));
+		}),
+		'MkCustomEmoji:get': values.FN_NATIVE(async ([name]) => {
+			// TODO: カスタム絵文字がNative IndexedDBに移行したら、そこから取得するように変更する
+			utils.assertString(name);
+			const emoji = customEmojis.value.find(e => e.name === name.value);
+			if (!emoji) {
+				return values.NULL;
+			}
+			return utils.jsToVal(emoji);
+		}),
+		'MkCustomEmoji:getCount': values.FN_NATIVE(async () => {
+			// TODO: カスタム絵文字がNative IndexedDBに移行したら、そこから数えるように変更する
+			return values.NUM(customEmojis.value.length);
+		}),
+		'MkCustomEmoji:search': values.FN_NATIVE(async ([query, limit, exact]) => {
+			// TODO: カスタム絵文字がNative IndexedDBに移行したら、そこから検索するように変更する
+			utils.assertString(query);
+
+			let max = 30;
+			if (limit != null && limit.type !== 'null') {
+				utils.assertNumber(limit);
+				max = Math.min(Math.max(1, limit.value), 100);
+			}
+
+			let isExactMatch = false;
+			if (exact != null && exact.type !== 'null') {
+				utils.assertBoolean(exact);
+				isExactMatch = exact.value;
+			}
+
+			const customEmojiDB: EmojiDef[] = [];
+
+			for (const x of customEmojis.value) {
+				customEmojiDB.push({
+					name: x.name,
+					emoji: `:${x.name}:`,
+					isCustomEmoji: true,
+				});
+
+				if (x.aliases) {
+					for (const alias of x.aliases) {
+						customEmojiDB.push({
+							name: alias,
+							aliasOf: x.name,
+							emoji: `:${x.name}:`,
+							isCustomEmoji: true,
+						});
+					}
+				}
+			}
+			customEmojiDB.sort((a, b) => a.name.length - b.name.length);
+
+			let foundEmojis: EmojiDef[] = [];
+
+			if (isExactMatch) {
+				foundEmojis = searchEmojiExact(query.value, customEmojiDB, max);
+			} else {
+				foundEmojis = searchEmoji(query.value, customEmojiDB, max);
+			}
+
+			const result = foundEmojis
+				.map(e => customEmojis.value.find(ce => ce.name === (e.aliasOf ?? e.name)))
+				.filter((e): e is NonNullable<typeof e> => e != null);
+
+			return utils.jsToVal(result);
+		}),
+		'MkCustomEmoji:searchByFn': values.FN_NATIVE(async ([fn], opts) => {
+			// TODO: カスタム絵文字がNative IndexedDBに移行したら、IndexedDBのカーソルを使うように変更する
+			utils.assertFunction(fn);
+
+			const result: Misskey.entities.EmojiSimple[] = [];
+
+			let i = 0;
+			for (const emoji of customEmojis.value) {
+				const res = await opts.topCall(fn, [utils.jsToVal(emoji), values.NUM(i), values.NUM(result.length)]);
+				utils.assertBoolean(res);
+				if (res.value === true) {
+					result.push(emoji);
+				}
+				i++;
+			}
+
+			return utils.jsToVal(result);
 		}),
 	};
 }
