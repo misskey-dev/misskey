@@ -64,7 +64,8 @@ const DESKTOP_THRESHOLD = 1100;
 const MOBILE_THRESHOLD = 500;
 
 // デスクトップでウィンドウを狭くしたときモバイルUIが表示されて欲しいことはあるので deviceKind === 'desktop' の判定は行わない
-const showWidgetsSide = window.innerWidth >= DESKTOP_THRESHOLD;
+const showWidgetsSide = ref(window.innerWidth >= DESKTOP_THRESHOLD);
+let windowWidthPersistTimer: number | null = null;
 
 const isMobile = ref(deviceKind === 'smartphone' || window.innerWidth <= MOBILE_THRESHOLD);
 window.addEventListener('resize', () => {
@@ -102,6 +103,26 @@ if (window.innerWidth > 1024) {
 		window.location.reload();
 	}
 }
+
+onMounted(() => {
+	if (!showWidgetsSide.value) {
+		window.addEventListener('resize', () => {
+			if (window.innerWidth >= DESKTOP_THRESHOLD) {
+				if (windowWidthPersistTimer != null) {
+					window.clearTimeout(windowWidthPersistTimer);
+				}
+
+				// iPadなどで、画面の切替時に瞬間的に幅が広くなる判定が入ることがあるため、
+				// 画面サイズが広い状態が200ms維持されたら状態を切り替える
+				windowWidthPersistTimer = window.setTimeout(() => {
+					showWidgetsSide.value = true;
+				}, 200);
+			} else if (windowWidthPersistTimer != null) {
+				window.clearTimeout(windowWidthPersistTimer);
+			}
+		}, { passive: true });
+	}
+});
 
 function onContextmenu(ev: PointerEvent) {
 	if (isLink(ev.target as HTMLElement)) return;
