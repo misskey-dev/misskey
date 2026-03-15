@@ -79,3 +79,5 @@ export const MFM_PARAMS: Record<typeof MFM_TAGS[number], string[]> = {
 	ruby: [],
 	unixtime: [],
 };
+
+export const DEFAULT_EMOJIS = ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'];
