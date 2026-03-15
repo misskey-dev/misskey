@@ -23,113 +23,82 @@ jobs:
 
       - name: Run Security Review
         uses: anthropics/claude-code-action@v1
+        env:
+          ANTHROPIC_MODEL: claude-opus-4-6
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          claude_args: "--model claude-opus-4-6 --max-turns 20"
+          claude_args: "--max-turns 30"
+          settings: |
+            {
+              "permissions": {
+                "deny": ["Bash"]
+              }
+            }
           prompt: |
-            You are a senior security engineer conducting a focused security review of this pull request.
+            You are a senior security engineer. Review the security implications of this PR's changed files.
 
             ## OBJECTIVE
-            Perform a security-focused code review to identify HIGH-CONFIDENCE security vulnerabilities
-            that could have real exploitation potential. This is NOT a general code review —
-            focus ONLY on security implications newly introduced by this PR.
-            Do not comment on pre-existing security concerns unrelated to the changes.
+            Identify HIGH-CONFIDENCE security vulnerabilities introduced by this PR.
+            Focus ONLY on the changed files. Do NOT perform broad codebase research — read only the files that are directly relevant to the changes.
 
-            ## ANALYSIS METHODOLOGY
-
-            **Phase 1 — Repository Context Research:**
-            Use file search tools to understand existing security frameworks, authentication patterns,
-            input validation approaches, and the threat model of this Misskey fork.
-
-            **Phase 2 — Comparative Analysis:**
-            Compare new code against existing security patterns. Identify deviations from established
-            security conventions in the codebase.
-
-            **Phase 3 — Vulnerability Assessment:**
-            For each changed file, analyze security implications, trace data flows from untrusted
-            sources to sensitive sinks, and verify permission boundary enforcement.
+            ## HOW TO WORK EFFICIENTLY
+            1. Read the changed files listed in the PR context
+            2. For each changed file, analyze security implications directly
+            3. Post review comments for any findings, then conclude
 
             ## SECURITY CATEGORIES TO EXAMINE
 
-            **Input Validation & Injection:**
-            - SQL injection, Command injection, XXE injection, Template injection
-            - NoSQL injection, Path traversal, XSS (reflected, stored, DOM-based)
-
-            **Authentication & Authorization:**
-            - Authentication bypass, Privilege escalation, Session management flaws
-            - JWT token vulnerabilities, Authorization logic bypasses
-            - Misskey API endpoint permission checks (role-based access)
-
-            **Crypto & Secrets Management:**
-            - Hardcoded API keys/passwords/tokens, Weak cryptographic algorithms
-            - Improper key storage, Cryptographic randomness issues
-
-            **Injection & Code Execution:**
-            - RCE via deserialization, Eval injection, Prototype pollution with impact
-
-            **Data Exposure:**
-            - Sensitive data logging (passwords, tokens), PII handling violations
-            - API endpoint data leakage, Debug information exposure in production
-
-            **Misskey / ActivityPub Specific:**
-            - Federation trust issues (unsigned or improperly verified activities)
-            - ActivityPub object injection or spoofing
-            - Remote user/instance impersonation
-            - Insufficient validation of federated content
-            - Drive file access control bypass
-            - Streaming API authorization issues
-
-            ## CRITICAL INSTRUCTIONS — MINIMIZE FALSE POSITIVES
-
-            1. Only flag issues where you are >80% confident of actual exploitability
-            2. Skip theoretical issues, style concerns, or low-impact findings
-            3. Prioritize vulnerabilities leading to unauthorized access, data breaches, or RCE
+            - SQL/NoSQL injection, Command injection, Path traversal, XSS (stored, reflected, DOM)
+            - Authentication bypass, Privilege escalation, Authorization logic bypasses
+            - Misskey API permission checks (role-based access)
+            - Hardcoded secrets, Weak cryptography
+            - RCE via deserialization, Eval injection, Prototype pollution
+            - Sensitive data logging (passwords, tokens), API data leakage
+            - ActivityPub: unsigned activities, object injection, remote user impersonation
+            - Drive file access control bypass, Streaming API authorization issues
 
             ## EXCLUSIONS — DO NOT REPORT
 
-            - Denial of Service (DoS) / resource exhaustion / rate limiting
-            - Secrets or sensitive data stored on disk (config files)
-            - Memory/CPU exhaustion concerns
-            - Open redirects, tabnabbing, XS-Leaks (low impact)
+            - DoS / resource exhaustion / rate limiting
+            - Open redirects, tabnabbing, XS-Leaks
             - Regex injection / ReDoS
             - Memory safety issues in non-C/C++ code
-            - Input validation issues without a proven exploit path
+            - Input validation without proven exploit path
             - GitHub Actions workflow input sanitization
-            - Theoretical race conditions without demonstrated impact
-            - Outdated third-party library versions (use Dependabot for this)
-            - Log spoofing or log query injection
-            - Path-only SSRF without demonstrated internal service access
-            - Client-side JS/TS permission check gaps (server must enforce)
-            - Unit test files
-            - Markdown or documentation files
+            - Theoretical race conditions
+            - Outdated library versions
+            - Log spoofing / log query injection
+            - Path-only SSRF without internal service access
+            - Client-side permission check gaps (server must enforce)
+            - Unit test files, Markdown/documentation files
 
-            ## FALSE POSITIVE PRECEDENTS
+            ## FALSE POSITIVE NOTES
 
-            - Plaintext logging of high-value secrets (passwords, API keys) IS a vulnerability; URL logging is NOT
-            - UUIDs are assumed unpredictable — do not flag as insecure identifiers
-            - Environment variables and CLI flags are trusted values
-            - React/Vue template rendering is XSS-safe by default (except v-html / dangerouslySetInnerHTML)
-            - MEDIUM findings must be obvious and specific, not speculative
+            - URL logging is NOT a vulnerability; plaintext password/token logging IS
+            - UUIDs are unpredictable — do not flag as insecure identifiers
+            - Environment variables and CLI flags are trusted
+            - Vue template rendering is XSS-safe by default (except v-html)
+            - MEDIUM findings must be specific, not speculative
 
-            ## SEVERITY GUIDELINES
+            ## SEVERITY
 
-            - **HIGH**: Directly leads to RCE, data breach, or authentication bypass
-            - **MEDIUM**: Exploitable under specific but realistic conditions
-            - **LOW**: Defense-in-depth concern with limited direct impact
+            - **HIGH**: RCE, data breach, or authentication bypass
+            - **MEDIUM**: Exploitable under specific realistic conditions
+            - **LOW**: Defense-in-depth concern
 
             ## OUTPUT FORMAT
 
-            For each genuine finding, post a review comment on the specific file and line with:
+            For each finding, post a review comment on the specific file and line:
 
-            **🔒 Security: [brief title]**
+            **🔒 Security: [title]**
             **Severity:** HIGH / MEDIUM / LOW
             **Category:** (e.g., sql_injection, auth_bypass, xss)
 
-            **Description:** Clear explanation of the vulnerability.
+            **Description:** Clear explanation.
 
-            **Exploit scenario:** Concrete steps an attacker would take.
+            **Exploit scenario:** Concrete attack steps.
 
-            **Recommendation:** Specific fix with code example if applicable.
+            **Recommendation:** Specific fix with code example.
 
             ---
 
