@@ -73,26 +73,53 @@ vi.mock('@/utility/misskey-api.js', () => {
 	return { misskeyApi: misskeyApiMock };
 });
 
-vi.mock('@/custom-emojis.js', () => {
+const emojisForMock = [
+	{
+		name: 'smile',
+		url: 'https://example.com/emoji/smile.png',
+		aliases: ['happy', 'joy'],
+	},
+	{
+		name: 'sad',
+		url: 'https://example.com/emoji/sad.png',
+		aliases: ['unhappy', 'sorrow'],
+	},
+	{
+		name: 'wink',
+		url: 'https://example.com/emoji/wink.png',
+		aliases: ['flirt', 'playful'],
+	},
+];
+
+vi.mock('@/utility/idb-emoji-store.js', () => {
 	return {
-		customEmojis: {
-			value: [
-				{
-					name: 'smile',
-					url: 'https://example.com/emoji/smile.png',
-					aliases: ['happy', 'joy'],
-				},
-				{
-					name: 'sad',
-					url: 'https://example.com/emoji/sad.png',
-					aliases: ['unhappy', 'sorrow'],
-				},
-				{
-					name: 'wink',
-					url: 'https://example.com/emoji/wink.png',
-					aliases: ['flirt', 'playful'],
-				},
-			],
+		filterEmojisByFn: async (fn: (emoji: any, index: number, currentLength: number) => boolean | Promise<boolean>) => {
+			const results = [];
+			for (let i = 0; i < emojisForMock.length; i++) {
+				if (await fn(emojisForMock[i], i, results.length)) {
+					results.push(emojisForMock[i]);
+				}
+			}
+			return results;
+		},
+		getEmojiByName: async (name: string) => {
+			return emojisForMock.find(e => e.name === name) || null;
+		},
+		getEmojisCount: async () => {
+			return emojisForMock.length;
+		},
+		searchEmojis: async (query: string, limit?: number | null, exactMatch?: boolean) => {
+			const filtered = emojisForMock.filter(e => {
+				if (exactMatch) {
+					return e.name === query || e.aliases.includes(query);
+				} else {
+					return e.name.includes(query) || e.aliases.some(alias => alias.includes(query));
+				}
+			});
+			if (limit != null) {
+				return filtered.slice(0, limit);
+			}
+			return filtered;
 		},
 	};
 });

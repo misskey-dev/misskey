@@ -92,8 +92,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				v-for="child in customEmojiFolderRoot.children"
 				:key="`custom:${child.value}`"
 				:initialShown="false"
-				:emojis="computed(() => customEmojis.filter(e => filterCategory(e, child.value)).map(e => `:${e.name}:`))"
-				:disabledEmojis="computed(() => customEmojis.filter(e => filterCategory(e, child.value)).filter(e => !canReact(e)).map(e => `:${e.name}:`))"
+				:categoryName="child.category"
+				:disabledEmojis="disabledEmojis"
 				:hasChildSection="child.children.length !== 0"
 				:customEmojiTree="child.children"
 				@chosen="chosen"
@@ -103,7 +103,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div v-once class="group">
 			<header class="_acrylic">{{ i18n.ts.emoji }}</header>
-			<XSection v-for="category in categories" :key="category" :emojis="emojiCharByCategory.get(category) ?? []" :hasChildSection="false" @chosen="chosen">{{ category }}</XSection>
+			<XSection v-for="category in categories" :key="category" :categoryName="category" :hasChildSection="false" @chosen="chosen">{{ category }}</XSection>
 		</div>
 	</div>
 	<div class="tabs">
@@ -136,8 +136,8 @@ import { isTouchUsing } from '@/utility/touch.js';
 import { deviceKind } from '@/utility/device-kind.js';
 import { i18n } from '@/i18n.js';
 import { store } from '@/store.js';
-import { customEmojiCategories, customEmojis, customEmojisMap } from '@/custom-emojis.js';
-import { getEmojiCategories, searchEmojis } from '@/utility/idb-emoji-store.js';
+import { getCustomEmojiCategories } from '@/custom-emojis.js';
+import { convertToMisskeyEntityEmoji, filterEmojisByFn, getEmojiByName, getEmojiCategories, searchEmojis } from '@/utility/idb-emoji-store.js';
 import { $i } from '@/i.js';
 import { checkReactionPermissions } from '@/utility/check-reaction-permissions.js';
 import { prefer } from '@/preferences.js';
@@ -174,12 +174,20 @@ const {
 
 const recentlyUsedEmojis = store.r.recentlyUsedEmojis;
 
-const recentlyUsedEmojisDef = computed(() => {
-	return recentlyUsedEmojis.value.map(getDef);
-});
-const pinnedEmojisDef = computed(() => {
-	return pinned.value?.map(getDef);
-});
+const recentlyUsedEmojisDef = ref<(string | Misskey.entities.EmojiSimple | UnicodeEmojiDef)[]>([]);
+const pinnedEmojisDef = ref<(string | Misskey.entities.EmojiSimple | UnicodeEmojiDef)[]>([]);
+const disabledEmojis = ref<string[]>([]);
+
+watch(recentlyUsedEmojis, async () => {
+	recentlyUsedEmojisDef.value = await Promise.all(recentlyUsedEmojis.value.map(getDef));
+}, { immediate: true });
+watch(() => props.pinnedEmojis, async () => {
+	pinnedEmojisDef.value = await Promise.all(props.pinnedEmojis?.map(getDef) ?? []);
+}, { immediate: true });
+
+(async () => {
+	disabledEmojis.value = (await filterEmojisByFn((emoji) => !canReact(emoji))).map(emoji => `:${emoji.name}:`);
+})();
 
 const pinned = computed(() => props.pinnedEmojis);
 const size = computed(() => emojiPickerScale.value);
@@ -211,11 +219,14 @@ function parseAndMergeCategories(input: string, root: CustomEmojiFolderTree): Cu
 	return currentNode;
 }
 
-customEmojiCategories.value.forEach(ec => {
-	if (ec !== null) {
-		parseAndMergeCategories(ec, customEmojiFolderRoot);
-	}
-});
+(async () => {
+	const categories = await getCustomEmojiCategories();
+	categories.value.forEach(category => {
+		if (category !== null) {
+			parseAndMergeCategories(category, customEmojiFolderRoot);
+		}
+	});
+})();
 
 parseAndMergeCategories('', customEmojiFolderRoot);
 
@@ -325,12 +336,13 @@ function getKey(emoji: string | Misskey.entities.EmojiSimple | UnicodeEmojiDef):
 	return typeof emoji === 'string' ? emoji : 'char' in emoji ? emoji.char : `:${emoji.name}:`;
 }
 
-function getDef(emoji: string): string | Misskey.entities.EmojiSimple | UnicodeEmojiDef {
+async function getDef(emoji: string): Promise<string | Misskey.entities.EmojiSimple | UnicodeEmojiDef> {
 	if (emoji.includes(':')) {
 		// カスタム絵文字が存在する場合はその情報を持つオブジェクトを返し、
 		// サーバの管理画面から削除された等で情報が見つからない場合は名前の文字列をそのまま返しておく（undefinedを返すとエラーになるため）
 		const name = emoji.replaceAll(':', '');
-		return customEmojisMap.get(name) ?? emoji;
+		const res = await getEmojiByName(name);
+		return res != null ? convertToMisskeyEntityEmoji(res) : emoji;
 	} else {
 		return getUnicodeEmoji(emoji);
 	}
@@ -375,9 +387,9 @@ function input(): void {
 	q.value = searchEl.value?.value.trim() ?? '';
 }
 
-function paste(event: ClipboardEvent): void {
+async function paste(event: ClipboardEvent): Promise<void> {
 	const pasted = event.clipboardData?.getData('text') ?? '';
-	if (done(pasted)) {
+	if (await done(pasted)) {
 		event.preventDefault();
 	}
 }
@@ -396,12 +408,12 @@ function onKeydown(ev: KeyboardEvent) {
 	}
 }
 
-function done(query?: string): boolean | void {
+async function done(query?: string): Promise<boolean | void> {
 	if (query == null) query = q.value;
 	if (query == null || typeof query !== 'string') return;
 
 	const q2 = query.replace(/:/g, '');
-	const exactMatchCustom = customEmojisMap.get(q2);
+	const exactMatchCustom = await getEmojiByName(q2);
 	if (exactMatchCustom) {
 		chosen(exactMatchCustom);
 		return true;

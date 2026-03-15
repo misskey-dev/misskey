@@ -11,9 +11,8 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { $i } from '@/i.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { customEmojis } from '@/custom-emojis.js';
-import { searchEmoji, searchEmojiExact } from '@/utility/search-emoji.js';
-import type { EmojiDef } from '@/utility/search-emoji.js';
+import { convertToMisskeyEntityEmoji, filterEmojisByFn, getEmojiByName, getEmojisCount, searchEmojis } from '@/utility/idb-emoji-store.js';
+import type { V1Emoji } from '@/utility/idb-emoji-store.js';
 
 const DIALOG_TYPES = [
 	'error',
@@ -39,8 +38,6 @@ export function createAiScriptEnv(opts: { storageKey: string, token?: string }) 
 		USER_ID: $i ? values.STR($i.id) : values.NULL,
 		USER_NAME: $i?.name ? values.STR($i.name) : values.NULL,
 		USER_USERNAME: $i ? values.STR($i.username) : values.NULL,
-		/** @deprecated 絵文字の保管がNative IndexedDBに切り替わったら廃止予定. https://github.com/misskey-dev/misskey/issues/14457 */
-		CUSTOM_EMOJIS: utils.jsToVal(customEmojis.value),
 		LOCALE: values.STR(lang),
 		SERVER_URL: values.STR(url),
 		'Mk:dialog': values.FN_NATIVE(async ([_title, _text, _type]) => {
@@ -186,20 +183,17 @@ export function createAiScriptEnv(opts: { storageKey: string, token?: string }) 
 			return values.STR(Misskey.nyaize(text.value));
 		}),
 		'MkCustomEmoji:get': values.FN_NATIVE(async ([name]) => {
-			// TODO: カスタム絵文字がNative IndexedDBに移行したら、そこから取得するように変更する
 			utils.assertString(name);
-			const emoji = customEmojis.value.find(e => e.name === name.value);
+			const emoji = await getEmojiByName(name.value);
 			if (!emoji) {
 				return values.NULL;
 			}
-			return utils.jsToVal(emoji);
+			return utils.jsToVal(convertToMisskeyEntityEmoji(emoji));
 		}),
 		'MkCustomEmoji:getCount': values.FN_NATIVE(async () => {
-			// TODO: カスタム絵文字がNative IndexedDBに移行したら、そこから数えるように変更する
-			return values.NUM(customEmojis.value.length);
+			return values.NUM(await getEmojisCount());
 		}),
 		'MkCustomEmoji:search': values.FN_NATIVE(async ([query, limit, exact]) => {
-			// TODO: カスタム絵文字がNative IndexedDBに移行したら、そこから検索するように変更する
 			utils.assertString(query);
 
 			let max = 30;
@@ -214,57 +208,21 @@ export function createAiScriptEnv(opts: { storageKey: string, token?: string }) 
 				isExactMatch = exact.value;
 			}
 
-			const customEmojiDB: EmojiDef[] = [];
-
-			for (const x of customEmojis.value) {
-				customEmojiDB.push({
-					name: x.name,
-					emoji: `:${x.name}:`,
-					isCustomEmoji: true,
-				});
-
-				if (x.aliases) {
-					for (const alias of x.aliases) {
-						customEmojiDB.push({
-							name: alias,
-							aliasOf: x.name,
-							emoji: `:${x.name}:`,
-							isCustomEmoji: true,
-						});
-					}
-				}
-			}
-			customEmojiDB.sort((a, b) => a.name.length - b.name.length);
-
-			let foundEmojis: EmojiDef[] = [];
-
-			if (isExactMatch) {
-				foundEmojis = searchEmojiExact(query.value, customEmojiDB, max);
+			const result = await searchEmojis(query.value, max, isExactMatch);
+			if (result.length > 0) {
+				return utils.jsToVal(result.map(convertToMisskeyEntityEmoji));
 			} else {
-				foundEmojis = searchEmoji(query.value, customEmojiDB, max);
+				return utils.jsToVal([]);
 			}
-
-			const result = foundEmojis
-				.map(e => customEmojis.value.find(ce => ce.name === (e.aliasOf ?? e.name)))
-				.filter((e): e is NonNullable<typeof e> => e != null);
-
-			return utils.jsToVal(result);
 		}),
 		'MkCustomEmoji:searchByFn': values.FN_NATIVE(async ([fn], opts) => {
-			// TODO: カスタム絵文字がNative IndexedDBに移行したら、IndexedDBのカーソルを使うように変更する
 			utils.assertFunction(fn);
 
-			const result: Misskey.entities.EmojiSimple[] = [];
-
-			let i = 0;
-			for (const emoji of customEmojis.value) {
-				const res = await opts.topCall(fn, [utils.jsToVal(emoji), values.NUM(i), values.NUM(result.length)]);
+			const result = (await filterEmojisByFn(async (emoji: V1Emoji, index: number, resultCount: number) => {
+				const res = await opts.topCall(fn, [utils.jsToVal(convertToMisskeyEntityEmoji(emoji)), values.NUM(index), values.NUM(resultCount)]);
 				utils.assertBoolean(res);
-				if (res.value === true) {
-					result.push(emoji);
-				}
-				i++;
-			}
+				return res.value === true;
+			})).map(convertToMisskeyEntityEmoji);
 
 			return utils.jsToVal(result);
 		}),

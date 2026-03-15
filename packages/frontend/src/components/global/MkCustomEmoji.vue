@@ -37,10 +37,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, inject, ref } from 'vue';
+import { computed, watch, inject, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import type { MenuItem } from '@/types/menu.js';
 import { getProxiedImageUrl, getStaticImageUrl } from '@/utility/media-proxy.js';
-import { customEmojisMap } from '@/custom-emojis.js';
+import { getEmojiByName } from '@/utility/idb-emoji-store.js';
 import * as os from '@/os.js';
 import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
@@ -71,13 +72,17 @@ const isLocal = computed(() => !props.host && (customEmojiName.value.endsWith('@
 const emojiCodeToMute = makeEmojiMuteKey(props);
 const isMuted = checkEmojiMuted(emojiCodeToMute);
 const shouldMute = computed(() => !props.ignoreMuted && isMuted.value);
+const emojiDef = ref<Misskey.entities.EmojiSimple | null>(null);
+watch(customEmojiName, async (newName) => {
+	emojiDef.value = await getEmojiByName(newName);
+}, { immediate: true });
 
 const rawUrl = computed(() => {
 	if (props.url) {
 		return props.url;
 	}
 	if (isLocal.value) {
-		return customEmojisMap.get(customEmojiName.value)?.url ?? null;
+		return emojiDef.value?.url ?? null;
 	}
 	return props.host ? `/emoji/${customEmojiName.value}@${props.host}.webp` : `/emoji/${customEmojiName.value}.webp`;
 });

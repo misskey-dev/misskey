@@ -36,7 +36,7 @@ import { isSupportedEmoji } from '@@/js/emojilist.js';
 import XReaction from '@/components/MkReactionsViewer.reaction.vue';
 import { $i } from '@/i.js';
 import { prefer } from '@/preferences.js';
-import { customEmojisMap } from '@/custom-emojis.js';
+import { getEmojiByName, getEmojisByNames } from '@/utility/idb-emoji-store.js';
 import { DI } from '@/di.js';
 
 const props = withDefaults(defineProps<{
@@ -73,13 +73,13 @@ function onMockToggleReaction(emoji: string, count: number) {
 	emit('mockUpdateMyReaction', emoji, (count - _reactions.value[i][1]));
 }
 
-function canReact(reaction: string) {
+function canReact(reaction: string, emojiDef?: Misskey.entities.EmojiSimple | null) {
 	if (!$i) return false;
 	// TODO: CheckPermissions
-	return !reaction.match(/@\w/) && (customEmojisMap.has(reaction) || isSupportedEmoji(reaction));
+	return !reaction.match(/@\w/) && (emojiDef != null || isSupportedEmoji(reaction));
 }
 
-watch([() => props.reactions, () => props.maxNumber], ([newSource, maxNumber]) => {
+watch([() => props.reactions, () => props.maxNumber], async ([newSource, maxNumber]) => {
 	let newReactions: [string, number][] = [];
 	hasMoreReactions.value = Object.keys(newSource).length > maxNumber;
 
@@ -91,14 +91,16 @@ watch([() => props.reactions, () => props.maxNumber], ([newSource, maxNumber]) =
 		}
 	}
 
+	const emojiDefs = await getEmojisByNames(Object.keys(newSource));
+
 	const newReactionsNames = newReactions.map(([x]) => x);
 	newReactions = [
 		...newReactions,
 		...Object.entries(newSource)
 			.sort(([emojiA, countA], [emojiB, countB]) => {
 				if (prefer.s.showAvailableReactionsFirstInNote) {
-					if (!canReact(emojiA) && canReact(emojiB)) return 1;
-					if (canReact(emojiA) && !canReact(emojiB)) return -1;
+					if (!canReact(emojiA, emojiDefs[emojiA]) && canReact(emojiB, emojiDefs[emojiB])) return 1;
+					if (canReact(emojiA, emojiDefs[emojiA]) && !canReact(emojiB, emojiDefs[emojiB])) return -1;
 					return countB - countA;
 				} else {
 					return countB - countA;

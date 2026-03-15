@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, useTemplateRef, watch } from 'vue';
+import { computed, ref, inject, onMounted, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { getUnicodeEmojiOrNull } from '@@/js/emojilist.js';
 import MkCustomEmojiDetailedDialog from './MkCustomEmojiDetailedDialog.vue';
@@ -33,7 +33,7 @@ import MkReactionEffect from '@/components/MkReactionEffect.vue';
 import { i18n } from '@/i18n.js';
 import * as sound from '@/utility/sound.js';
 import { checkReactionPermissions } from '@/utility/check-reaction-permissions.js';
-import { customEmojisMap } from '@/custom-emojis.js';
+import { getEmojiByName } from '@/utility/idb-emoji-store.js';
 import { prefer } from '@/preferences.js';
 import { DI } from '@/di.js';
 import { noteEvents } from '@/composables/use-note-capture.js';
@@ -58,9 +58,13 @@ const emit = defineEmits<{
 const buttonEl = useTemplateRef('buttonEl');
 
 const emojiName = computed(() => props.reaction.replace(/:/g, '').replace(/@\./, ''));
+const customEmojiDef = ref<Misskey.entities.EmojiSimple | null>(null);
+watch(emojiName, async (newName) => {
+	customEmojiDef.value = await getEmojiByName(newName);
+}, { immediate: true });
 
 const canToggle = computed(() => {
-	const emoji = customEmojisMap.get(emojiName.value) ?? getUnicodeEmojiOrNull(props.reaction);
+	const emoji = customEmojiDef.value ?? getUnicodeEmojiOrNull(props.reaction);
 
 	// TODO
 	//return !props.reaction.match(/@\w/) && $i && emoji && checkReactionPermissions($i, props.note, emoji);
@@ -105,7 +109,7 @@ async function toggleReaction() {
 					noteId: props.noteId,
 					reaction: props.reaction,
 				}).then(() => {
-					const emoji = customEmojisMap.get(emojiName.value);
+					const emoji = customEmojiDef.value;
 					if (emoji == null) return;
 					noteEvents.emit(`reacted:${props.noteId}`, {
 						userId: me.id,
@@ -137,7 +141,7 @@ async function toggleReaction() {
 			noteId: props.noteId,
 			reaction: props.reaction,
 		}).then(() => {
-			const emoji = customEmojisMap.get(emojiName.value);
+			const emoji = customEmojiDef.value;
 			if (emoji == null) return;
 
 			noteEvents.emit(`reacted:${props.noteId}`, {

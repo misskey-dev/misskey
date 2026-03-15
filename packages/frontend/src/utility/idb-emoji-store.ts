@@ -127,6 +127,44 @@ export async function getEmojiByName(name: string): Promise<V1Emoji | null> {
 	}
 }
 
+export async function getEmojisByNames<T extends string>(names: T[]): Promise<{ [K in T]: V1Emoji | null }> {
+	try {
+		const database = await getDB();
+		const tx = database.transaction(STORE_NAME, 'readonly');
+		const store = tx.objectStore(STORE_NAME);
+
+		const result: { [K in T]?: V1Emoji | null } = {};
+		for (const name of names) {
+			const emoji = await store.get(name);
+			if (emoji && isV1Emoji(emoji)) {
+				result[name] = emoji;
+			} else {
+				result[name] = null;
+			}
+		}
+
+		await tx.done;
+		return result as { [K in T]: V1Emoji | null };
+	} catch (err) {
+		console.error('Failed to get emojis by names from IndexedDB', err);
+		return names.reduce((acc, name) => ({ ...acc, [name]: null }), {} as { [K in T]: V1Emoji | null });
+	}
+}
+
+export async function getEmojisCount(): Promise<number> {
+	try {
+		const database = await getDB();
+		const tx = database.transaction(STORE_NAME, 'readonly');
+		const store = tx.objectStore(STORE_NAME);
+		const count = await store.count();
+		await tx.done;
+		return count;
+	} catch (err) {
+		console.error('Failed to count emojis in IndexedDB', err);
+		return 0;
+	}
+}
+
 export async function getEmojisByCategory(category: string | typeof CATEGORY_NONE): Promise<V1Emoji[]> {
 	try {
 		const database = await getDB();
@@ -209,6 +247,35 @@ export async function searchEmojis(query: string, max = 12, exact = false): Prom
 		return Array.from(matches.values());
 	} catch (err) {
 		console.error('Failed to search custom emojis in IndexedDB', err);
+		return [];
+	}
+}
+
+export async function filterEmojisByFn(fn: (emoji: V1Emoji, index: number, resultCount: number) => boolean | Promise<boolean>): Promise<V1Emoji[]> {
+	try {
+		const database = await getDB();
+		const tx = database.transaction(STORE_NAME, 'readonly');
+		const store = tx.objectStore(STORE_NAME);
+
+		const result: V1Emoji[] = [];
+		let index = 0;
+
+		const cursor = await store.openCursor();
+		while (cursor) {
+			const emoji = cursor.value;
+			if (isV1Emoji(emoji)) {
+				if (await fn(emoji, index, result.length)) {
+					result.push(emoji);
+				}
+				index++;
+			}
+			await cursor.continue();
+		}
+
+		await tx.done;
+		return result;
+	} catch (err) {
+		console.error('Failed to filter emojis by function in IndexedDB', err);
 		return [];
 	}
 }
