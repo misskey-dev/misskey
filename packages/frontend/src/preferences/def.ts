@@ -12,7 +12,8 @@ import type { SoundType } from '@/utility/sound.js';
 import type { Plugin } from '@/plugin.js';
 import type { DeviceKind } from '@/utility/device-kind.js';
 import type { DeckProfile } from '@/deck.js';
-import type { WatermarkPreset } from '@/utility/watermark.js';
+import type { WatermarkPreset } from '@/utility/watermark/WatermarkRenderer.js';
+import type { ImageFramePreset } from '@/utility/image-frame-renderer/ImageFrameRenderer.js';
 import { genId } from '@/utility/id.js';
 import { DEFAULT_DEVICE_KIND } from '@/utility/device-kind.js';
 import { deepEqual } from '@/utility/deep-equal.js';
@@ -233,10 +234,10 @@ export const PREF_DEF = definePreferences({
 		default: false,
 	},
 	disableShowingAnimatedImages: {
-		default: prefersReducedMotion,
+		default: false,
 	},
 	emojiStyle: {
-		default: 'twemoji', // twemoji / fluentEmoji / native
+		default: 'twemoji' as 'native' | 'fluentEmoji' | 'twemoji',
 	},
 	menuStyle: {
 		default: 'auto' as 'auto' | 'popup' | 'drawer',
@@ -318,6 +319,9 @@ export const PREF_DEF = definePreferences({
 	},
 	mediaListWithOneImageAppearance: {
 		default: 'expand' as 'expand' | '16_9' | '1_1' | '2_3',
+	},
+	showMediaListByGridInWideArea: {
+		default: false,
 	},
 	notificationPosition: {
 		default: 'rightBottom' as 'leftTop' | 'leftBottom' | 'rightTop' | 'rightBottom',
@@ -437,6 +441,26 @@ export const PREF_DEF = definePreferences({
 		accountDependent: true,
 		default: null as WatermarkPreset['id'] | null,
 	},
+	imageFramePresets: {
+		accountDependent: true,
+		default: [] as ImageFramePreset[],
+		mergeStrategy: (a, b) => {
+			const mergedItems = [] as typeof a;
+			for (const x of a.concat(b)) {
+				const sameIdItem = mergedItems.find(y => y.id === x.id);
+				if (sameIdItem != null) {
+					if (deepEqual(x, sameIdItem)) { // 完全な重複は無視
+						continue;
+					} else { // IDは同じなのに内容が違う場合はマージ不可とする
+						throw new Error();
+					}
+				} else {
+					mergedItems.push(x);
+				}
+			}
+			return mergedItems;
+		},
+	},
 	defaultImageCompressionLevel: {
 		default: 2 as 0 | 1 | 2 | 3,
 	},
@@ -479,7 +503,7 @@ export const PREF_DEF = definePreferences({
 		default: true,
 	},
 	'deck.columnAlign': {
-		default: 'center' as 'left' | 'right' | 'center',
+		default: 'center' as 'left' | 'center',
 	},
 	'deck.columnGap': {
 		default: 6,

@@ -70,7 +70,7 @@ async function setList() {
 				})),
 			} : undefined),
 		],
-		default: props.column.listId,
+		default: lists.find(x => x.id === props.column.listId)?.id,
 	});
 	if (canceled || listIdOrOperation == null) return;
 

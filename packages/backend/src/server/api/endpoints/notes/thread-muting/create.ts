@@ -59,7 +59,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw err;
 			});
 
-			const mutedNotes = await this.notesRepository.find({
+			const _mutedNotes = await this.notesRepository.find({
 				where: [{
 					id: note.threadId ?? note.id,
 				}, {

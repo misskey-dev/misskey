@@ -103,3 +103,18 @@ export async function fetchCustomEmojis(force = false) {
 	await setAllEmojis(res.emojis.map(convertToV1Emoji));
 	await setLastFetchedAtToStore(now);
 }
+
+let cachedTags: string[] | null = null;
+export function getCustomEmojiTags() {
+	if (cachedTags) return cachedTags;
+
+	const tags = new Set<string>();
+	for (const emoji of customEmojis.value) {
+		for (const tag of emoji.aliases) {
+			tags.add(tag);
+		}
+	}
+	const res = Array.from(tags);
+	cachedTags = res;
+	return res;
+}

@@ -3,32 +3,35 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
 import { isInstanceMuted, isUserFromMutedInstance } from '@/misc/is-instance-muted.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
 import type { JsonObject } from '@/misc/json-value.js';
-import Channel, { type MiChannelService } from '../channel.js';
+import Channel, { type ChannelRequest } from '../channel.js';
+import { REQUEST } from '@nestjs/core';
 
-class MainChannel extends Channel {
+@Injectable({ scope: Scope.TRANSIENT })
+export class MainChannel extends Channel {
 	public readonly chName = 'main';
 	public static shouldShare = true;
 	public static requireCredential = true as const;
 	public static kind = 'read:account';
 
 	constructor(
-		private noteEntityService: NoteEntityService,
+		@Inject(REQUEST)
+		request: ChannelRequest,
 
-		id: string,
-		connection: Channel['connection'],
+		private noteEntityService: NoteEntityService,
 	) {
-		super(id, connection);
+		super(request);
 	}
 
 	@bindThis
-	public async init(params: JsonObject) {
-		// Subscribe main stream channel
-		this.subscriber.on(`mainStream:${this.user!.id}`, async data => {
+	public async init(params: JsonObject): Promise<boolean> {
+		if (!this.user) return false;
+
+		this.subscriber.on(`mainStream:${this.user.id}`, async data => {
 			switch (data.type) {
 				case 'notification': {
 					// Ignore notifications from instances the user has muted
@@ -45,8 +48,8 @@ class MainChannel extends Channel {
 				}
 				case 'mention': {
 					if (isInstanceMuted(data.body, new Set<string>(this.userProfile?.mutedInstances ?? []))) return;
-
-					if (this.userIdsWhoMeMuting.has(data.body.userId)) return;
+					if (!this.isNoteVisibleForMe(data.body)) return;
+					if (this.isNoteMutedOrBlocked(data.body)) return;
 					if (data.body.isHidden) {
 						const note = await this.noteEntityService.pack(data.body.id, this.user, {
 							detail: true,
@@ -59,26 +62,7 @@ class MainChannel extends Channel {
 
 			this.send(data.type, data.body);
 		});
-	}
-}
 
-@Injectable()
-export class MainChannelService implements MiChannelService<true> {
-	public readonly shouldShare = MainChannel.shouldShare;
-	public readonly requireCredential = MainChannel.requireCredential;
-	public readonly kind = MainChannel.kind;
-
-	constructor(
-		private noteEntityService: NoteEntityService,
-	) {
-	}
-
-	@bindThis
-	public create(id: string, connection: Channel['connection']): MainChannel {
-		return new MainChannel(
-			this.noteEntityService,
-			id,
-			connection,
-		);
+		return true;
 	}
 }
