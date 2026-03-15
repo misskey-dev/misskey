@@ -125,7 +125,7 @@ type GetSinglePathQuery<Def extends RouteDef, Path extends FlattenAllPaths<Route
 					? ChildPath extends FlattenAllPaths<Children>
 						? GetPathQuery<Children, ChildPath>
 						: Record<string, never>
-				: never
+					: never
 				: never
 			: never
 		: Def['path'] extends Path
@@ -133,9 +133,9 @@ type GetSinglePathQuery<Def extends RouteDef, Path extends FlattenAllPaths<Route
 				? Query extends Record<string, string>
 					? UnwrapReadOnly<{ [Key in keyof Query]?: string; }>
 					: Record<string, never>
+				: Record<string, never>
 			: Record<string, never>
-		: Record<string, never>
-	>;
+>;
 
 type GetPathQuery<Defs extends RouteDef[], Path extends FlattenAllPaths<Defs>> = GetSinglePathQuery<Defs[number], Path>;
 
@@ -320,11 +320,11 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 
 					if (route.query != null && queryString != null) {
 						const queryObject = [...new URLSearchParams(queryString).entries()]
-							.reduce((obj, entry) => ({ ...obj, [entry[0]]: entry[1] }), {});
+							.reduce((obj, entry) => ({ ...obj, [entry[0]]: entry[1] }), {}) as Record<string, string>;
 
 						for (const q in route.query) {
 							const as = route.query[q];
-							if (queryObject[q]) {
+							if (queryObject[q] != null) {
 								props.set(as, safeURIDecode(queryObject[q]));
 							}
 						}

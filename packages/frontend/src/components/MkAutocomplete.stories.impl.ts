@@ -3,15 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { action } from 'storybook/actions';
 import { expect, userEvent, waitFor, within } from '@storybook/test';
-import type { StoryObj } from '@storybook/vue3';
 import { HttpResponse, http } from 'msw';
 import { userDetailed } from '../../.storybook/fakes.js';
 import { commonHandlers } from '../../.storybook/mocks.js';
 import MkAutocomplete from './MkAutocomplete.vue';
 import MkInput from './MkInput.vue';
+import type { StoryObj } from '@storybook/vue3';
 import { tick } from '@/utility/test-utils.js';
 const common = {
 	render(args) {
@@ -81,7 +80,7 @@ export const User = {
 		...common.args,
 		type: 'user',
 	},
-	async play({ canvasElement }) {
+	async play({ canvasElement }: { canvasElement: HTMLElement }) {
 		const canvas = within(canvasElement);
 		const input = canvas.getByRole('combobox');
 		await waitFor(() => userEvent.hover(input));
@@ -114,7 +113,7 @@ export const Hashtag = {
 		...common.args,
 		type: 'hashtag',
 	},
-	async play({ canvasElement }) {
+	async play({ canvasElement }: { canvasElement: HTMLElement }) {
 		const canvas = within(canvasElement);
 		const input = canvas.getByRole('combobox');
 		await waitFor(() => userEvent.hover(input));
