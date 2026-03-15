@@ -150,7 +150,7 @@ import { definePage } from '@/page.js';
 import { claimAchievement, claimedAchievements } from '@/utility/achievements.js';
 import { $i } from '@/i.js';
 import { prefer } from '@/preferences.js';
-import { DEFAULT_EMOJIS } from '@@/js/const';
+import { DEFAULT_EMOJIS } from '@@/js/const.js';
 
 const patronsWithIcon = [{
 	name: 'カイヤン',
