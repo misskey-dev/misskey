@@ -481,8 +481,12 @@ if (!props.mock) {
 	}
 }
 
-function renote() {
-	pleaseLogin({ openOnRemote: pleaseLoginContext.value });
+async function renote() {
+	if (props.mock) return;
+
+	const isLoggedIn = await pleaseLogin({ openOnRemote: pleaseLoginContext.value });
+	if (!isLoggedIn) return;
+
 	showMovedDialog();
 
 	const { menu } = getRenoteMenu({ note: note, renoteButton, mock: props.mock });
@@ -491,11 +495,12 @@ function renote() {
 	subscribeManuallyToNoteCapture();
 }
 
-function reply(): void {
-	pleaseLogin({ openOnRemote: pleaseLoginContext.value });
-	if (props.mock) {
-		return;
-	}
+async function reply() {
+	if (props.mock) return;
+
+	const isLoggedIn = await pleaseLogin({ openOnRemote: pleaseLoginContext.value });
+	if (!isLoggedIn) return;
+
 	os.post({
 		reply: appearNote,
 		channel: appearNote.channel,
@@ -504,8 +509,10 @@ function reply(): void {
 	});
 }
 
-function react(): void {
-	pleaseLogin({ openOnRemote: pleaseLoginContext.value });
+async function react() {
+	const isLoggedIn = await pleaseLogin({ openOnRemote: pleaseLoginContext.value });
+	if (!isLoggedIn) return;
+
 	showMovedDialog();
 	if (appearNote.reactionAcceptance === 'likeOnly') {
 		sound.playMisskeySfx('reaction');
@@ -600,7 +607,7 @@ function toggleReact() {
 	}
 }
 
-function onContextmenu(ev: MouseEvent): void {
+function onContextmenu(ev: PointerEvent): void {
 	if (props.mock) {
 		return;
 	}
@@ -634,10 +641,12 @@ async function clip(): Promise<void> {
 	os.popupMenu(await getNoteClipMenu({ note: note, currentClip: currentClip?.value }), clipButton.value).then(focus);
 }
 
-function showRenoteMenu(): void {
+async function showRenoteMenu() {
 	if (props.mock) {
 		return;
 	}
+	const isLoggedIn = await pleaseLogin({ openOnRemote: pleaseLoginContext.value });
+	if (!isLoggedIn) return;
 
 	function getUnrenote(): MenuItem {
 		return {
@@ -662,7 +671,6 @@ function showRenoteMenu(): void {
 	};
 
 	if (isMyRenote) {
-		pleaseLogin({ openOnRemote: pleaseLoginContext.value });
 		os.popupMenu([
 			renoteDetailsMenu,
 			getCopyNoteLinkMenu(note, i18n.ts.copyLinkRenote),

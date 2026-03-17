@@ -56,13 +56,13 @@ export class MetaEntityService {
 		if (instance.defaultLightTheme) {
 			try {
 				defaultLightTheme = JSON.stringify(JSON5.parse(instance.defaultLightTheme));
-			} catch (e) {
+			} catch (_) {
 			}
 		}
 		if (instance.defaultDarkTheme) {
 			try {
 				defaultDarkTheme = JSON.stringify(JSON5.parse(instance.defaultDarkTheme));
-			} catch (e) {
+			} catch (_) {
 			}
 		}
 

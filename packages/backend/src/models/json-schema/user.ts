@@ -739,6 +739,9 @@ export const packedMeDetailedOnlySchema = {
 				test: { optional: true, ...notificationRecieveConfig },
 				blocked: { optional: true, ...notificationRecieveConfig },
 				unblocked: { optional: true, ...notificationRecieveConfig },
+				login: { optional: true, ...notificationRecieveConfig },
+				createToken: { optional: true, ...notificationRecieveConfig },
+				exportCompleted: { optional: true, ...notificationRecieveConfig },
 			},
 		},
 		emailNotificationTypes: {

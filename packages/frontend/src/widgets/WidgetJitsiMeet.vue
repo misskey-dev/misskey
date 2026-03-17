@@ -111,7 +111,7 @@ const _ADVERB_ = [
 	'Perfectly', 'Quickly', 'Remarkably', 'Seldom', 'Truly',
 ];
 
-const name = i18n.ts._widgets.jitsiMeet;
+const name = 'jitsiMeet';
 
 const widgetPropsDef = {
 	// 基本設定
@@ -198,7 +198,7 @@ const containerId = ref(`jitsi-container-${Math.random().toString(36).substr(2, 
 // ランダムルーム名を生成する関数
 const generateRandomRoomName = () => {
 	// ランダム要素を選択するヘルパー関数
-	const getRandomElement = (arr) => {
+	const getRandomElement = (arr: string[]) => {
 		const randomIndex = Math.floor(Math.random() * arr.length);
 		return arr[randomIndex];
 	};
@@ -230,7 +230,7 @@ const roomUrl = computed(() => {
 // Optimized URL with parameters (for actual linking)
 const optimizedUrl = computed(() => {
 	// Basic parameters
-	const params = {};
+	const params: Record<string, string | number | boolean | unknown[]> = {};
 
 	// 基本設定
 	params['config.prejoinConfig.enabled'] = !widgetProps.skipPrejoinPage;

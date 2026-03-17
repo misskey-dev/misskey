@@ -17,12 +17,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label>{{ i18n.ts._notification._types[type] }}</template>
 					<template #suffix>
 						{{
-							getNotificationConfigValue(type).type === 'never' ? i18n.ts.none :
-							getNotificationConfigValue(type).type === 'following' ? i18n.ts.following :
-							getNotificationConfigValue(type).type === 'follower' ? i18n.ts.followers :
-							getNotificationConfigValue(type).type === 'mutualFollow' ? i18n.ts.mutualFollow :
-							getNotificationConfigValue(type).type === 'followingOrFollower' ? i18n.ts.followingOrFollower :
-							getNotificationConfigValue(type).type === 'list' ? i18n.ts.userList :
+							getNotificationConfigValue(type as (typeof configurableNotificationTypes)[number]).type === 'never' ? i18n.ts.none :
+							getNotificationConfigValue(type as (typeof configurableNotificationTypes)[number]).type === 'following' ? i18n.ts.following :
+							getNotificationConfigValue(type as (typeof configurableNotificationTypes)[number]).type === 'follower' ? i18n.ts.followers :
+							getNotificationConfigValue(type as (typeof configurableNotificationTypes)[number]).type === 'mutualFollow' ? i18n.ts.mutualFollow :
+							getNotificationConfigValue(type as (typeof configurableNotificationTypes)[number]).type === 'followingOrFollower' ? i18n.ts.followingOrFollower :
+							getNotificationConfigValue(type as (typeof configurableNotificationTypes)[number]).type === 'list' ? i18n.ts.userList :
 							i18n.ts.all
 						}}
 					</template>
@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<XNotificationConfig
 						:userLists="userLists"
 						:value="getNotificationConfigValue(type)"
-						:configurableTypes="onlyOnOrOffNotificationTypes.includes(type) ? ['all', 'never'] : undefined"
+						:configurableTypes="(onlyOnOrOffNotificationTypes as string[]).includes(type) ? ['all', 'never'] : undefined"
 						@update="(res) => updateReceiveConfig(type, res)"
 					/>
 				</MkFolder>
@@ -83,9 +83,11 @@ import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 
 const $i = ensureSignin();
 
-const nonConfigurableNotificationTypes = ['note', 'roleAssigned', 'followRequestAccepted', 'groupInvited', 'test', 'exportCompleted'] satisfies (typeof notificationTypes[number])[] as string[];
+const nonConfigurableNotificationTypes = ['note', 'roleAssigned', 'followRequestAccepted', 'groupInvited', 'test', 'exportCompleted'] as const satisfies (typeof notificationTypes[number])[];
 
-const onlyOnOrOffNotificationTypes = ['app', 'achievementEarned', 'login', 'createToken', 'scheduledNotePosted', 'scheduledNotePostFailed'] satisfies (typeof notificationTypes[number])[] as string[];
+const configurableNotificationTypes = notificationTypes.filter(type => !nonConfigurableNotificationTypes.includes(type as any)) as Exclude<typeof notificationTypes[number], typeof nonConfigurableNotificationTypes[number]>[];
+
+const onlyOnOrOffNotificationTypes = ['app', 'achievementEarned', 'login', 'createToken', 'scheduledNotePosted', 'scheduledNotePostFailed'] as const satisfies (typeof notificationTypes[number])[];
 
 const allowButton = useTemplateRef('allowButton');
 const pushRegistrationInServer = computed(() => allowButton.value?.pushRegistrationInServer);
@@ -95,7 +97,7 @@ const userLists = await misskeyApi('users/lists/list');
 const filteredNotificationTypes = computed(() => {
 	return notificationTypes.filter(type => {
 		// 設定不可能な通知タイプを除外
-		if (nonConfigurableNotificationTypes.includes(type)) {
+		if (nonConfigurableNotificationTypes.includes(type as any)) {
 			return false;
 		}
 
@@ -121,13 +123,13 @@ const filteredNotificationTypes = computed(() => {
 });
 
 // 通知設定の値を取得するヘルパー関数
-function getNotificationConfigValue(type) {
+function getNotificationConfigValue(type: typeof notificationTypes[number]): NotificationConfig {
 	// unfollow, blocked, unblocked で設定がない場合は never をデフォルトにする
-	if ((type === 'unfollow' || type === 'blocked' || type === 'unblocked') && !$i.notificationRecieveConfig[type]) {
-		return { type: 'never' };
+	if ((type === 'unfollow' || type === 'blocked' || type === 'unblocked') && !($i.notificationRecieveConfig as Record<string, NotificationConfig>)[type]) {
+		return { type: 'never' } as NotificationConfig;
 	}
 	// その他はデフォルトで all
-	return $i.notificationRecieveConfig[type] ?? { type: 'all' };
+	return ($i.notificationRecieveConfig as Record<string, NotificationConfig>)[type] ?? { type: 'all' } as NotificationConfig;
 }
 
 async function readAllNotifications() {

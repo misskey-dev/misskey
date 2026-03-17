@@ -6,8 +6,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <PageWithHeader v-model:tab="headerTab" :tabs="headerTabs">
 	<XGridLocalComponent v-if="headerTab === 'local'" :class="$style.local"/>
-	<XGridRemoteComponent v-else-if="headerTab === 'remote'" :class="$style.remote"/>
-	<XRegisterComponent v-else-if="headerTab === 'register'" :class="$style.register"/>
+	<XGridRemoteComponent v-else-if="headerTab === 'remote'"/>
+	<XRegisterComponent v-else-if="headerTab === 'register'"/>
 </PageWithHeader>
 </template>
 

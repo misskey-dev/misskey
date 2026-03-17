@@ -5,7 +5,7 @@
 
 import { i18n } from '@/i18n.js';
 
-export const bottomItemDef = {
+export const bottomItemDef: Record<string, { title: string; icon: string }> = {
 	attachFile: {
 		title: i18n.ts.attachFile,
 		icon: 'ti-photo-plus',

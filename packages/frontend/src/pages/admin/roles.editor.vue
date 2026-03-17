@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps">
-	<MkInput v-if="readonly" :modelValue="role.id" :readonly="true">
+	<MkInput v-if="readonly && role.id != null" :modelValue="role.id" :readonly="true">
 		<template #label>ID</template>
 	</MkInput>
 
@@ -1092,7 +1092,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { watch, ref, computed } from 'vue';
 import { throttle } from 'throttle-debounce';
 import * as Misskey from 'misskey-js';
-import RolesEditorFormula from './RolesEditorFormula.vue';
 import type { MkSelectItem, GetMkSelectValueTypesFromDef } from '@/components/MkSelect.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
@@ -1105,13 +1104,20 @@ import FormSlot from '@/components/form/slot.vue';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { deepClone } from '@/utility/clone.js';
+import RolesEditorFormula from './RolesEditorFormula.vue';
+
+type RoleLike = Pick<Misskey.entities.Role, 'name' | 'description' | 'isAdministrator' | 'isModerator' | 'color' | 'iconUrl' | 'target' | 'isPublic' | 'isExplorable' | 'asBadge' | 'canEditMembersByModerator' | 'displayOrder' | 'preserveAssignmentOnMoveAccount'> & {
+	id?: Misskey.entities.Role['id'] | null;
+	condFormula: any;
+	policies: any;
+};
 
 const emit = defineEmits<{
-	(ev: 'update:modelValue', v: any): void;
+	(ev: 'update:modelValue', v: RoleLike): void;
 }>();
 
 const props = defineProps<{
-	modelValue: any;
+	modelValue: RoleLike;
 	readonly?: boolean;
 }>();
 
@@ -1143,13 +1149,13 @@ const rolePermissionDef = [
 
 const rolePermission = computed<GetMkSelectValueTypesFromDef<typeof rolePermissionDef>>({
 	get: () => {
-		if (role.value.isCommunity) return 'community';
+		if ((role.value as any).isCommunity) return 'community';
 		if (role.value.isAdministrator) return 'administrator';
 		if (role.value.isModerator) return 'moderator';
 		return 'normal';
 	},
 	set: (val) => {
-		role.value.isCommunity = val === 'community';
+		(role.value as any).isCommunity = val === 'community';
 		role.value.isAdministrator = (val === 'administrator');
 		role.value.isModerator = (val === 'moderator');
 	},
@@ -1157,7 +1163,7 @@ const rolePermission = computed<GetMkSelectValueTypesFromDef<typeof rolePermissi
 
 const q = ref('');
 
-function getPriorityIcon(option) {
+function getPriorityIcon(option: { priority: number }): string {
 	if (option.priority === 2) return 'ti ti-arrows-up';
 	if (option.priority === 1) return 'ti ti-arrow-narrow-up';
 	return 'ti ti-point';
@@ -1179,11 +1185,12 @@ const save = throttle(100, () => {
 		condFormula: role.value.condFormula,
 		isModerator: role.value.isModerator,
 		isAdministrator: role.value.isAdministrator,
-		isCommunity: role.value.isCommunity,
+		isCommunity: (role.value as any).isCommunity,
 		isPublic: role.value.isPublic,
 		isExplorable: role.value.isExplorable,
 		asBadge: role.value.asBadge,
 		canEditMembersByModerator: role.value.canEditMembersByModerator,
+		preserveAssignmentOnMoveAccount: role.value.preserveAssignmentOnMoveAccount,
 		policies: role.value.policies,
 	};
 

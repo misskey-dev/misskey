@@ -138,7 +138,7 @@ export const fontList = {
 	},
 };
 
-export function applyFont(fontname: null | string) {
+export function applyFont(fontname: null | keyof typeof fontList) {
 	let style = window.document.getElementById('custom-font');
 
 	if (!fontname) {
@@ -187,5 +187,5 @@ export function applyFont(fontname: null | string) {
 
 // Self-initialization code - this runs when the module is imported
 if (prefer.s.customFont) {
-	applyFont(prefer.s.customFont);
+	applyFont(prefer.s.customFont as keyof typeof fontList);
 }

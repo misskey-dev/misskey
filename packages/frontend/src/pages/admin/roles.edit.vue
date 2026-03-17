@@ -21,8 +21,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { genId } from '@/utility/id.js';
 import XEditor from './roles.editor.vue';
+import { genId } from '@/utility/id.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
@@ -37,20 +37,33 @@ const props = defineProps<{
 	id?: string;
 }>();
 
+type RoleLike = Pick<Misskey.entities.Role, 'name' | 'description' | 'isAdministrator' | 'isModerator' | 'color' | 'iconUrl' | 'target' | 'isPublic' | 'isExplorable' | 'asBadge' | 'canEditMembersByModerator' | 'displayOrder' | 'preserveAssignmentOnMoveAccount'> & {
+	isCommunity: boolean;
+	condFormula: any;
+	policies: any;
+};
+
 const role = ref<Misskey.entities.Role | null>(null);
-const data = ref<any>(null);
+const data = ref<RoleLike | null>(null);
 
 if (props.id) {
 	role.value = await misskeyApi('admin/roles/show', {
 		roleId: props.id,
 	});
 
-	data.value = role.value;
+	if (role.value) {
+		data.value = {
+			...role.value,
+			isCommunity: false as any,
+			condFormula: role.value.condFormula ?? { id: genId(), type: 'isRemote' },
+			policies: role.value.policies ?? {},
+		} as RoleLike;
+	}
 } else {
 	data.value = {
 		name: 'New Role',
 		description: '',
-		isCommunity: false,
+		isCommunity: false as any,
 		isAdministrator: false,
 		isModerator: false,
 		color: null,
@@ -62,11 +75,13 @@ if (props.id) {
 		asBadge: false,
 		canEditMembersByModerator: false,
 		displayOrder: 0,
+		preserveAssignmentOnMoveAccount: false,
 		policies: {},
 	};
 }
 
 async function save() {
+	if (data.value === null) return;
 	rolesCache.delete();
 	if (role.value) {
 		os.apiWithDialog('admin/roles/update', {
@@ -76,7 +91,7 @@ async function save() {
 		router.push('/admin/roles/:id', {
 			params: {
 				id: role.value.id,
-			}
+			},
 		});
 	} else {
 		const created = await os.apiWithDialog('admin/roles/create', {
@@ -85,7 +100,7 @@ async function save() {
 		router.push('/admin/roles/:id', {
 			params: {
 				id: created.id,
-			}
+			},
 		});
 	}
 }

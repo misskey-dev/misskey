@@ -384,7 +384,7 @@ function getUniqueItems(items: any[]): FloaterItem[] {
 
 	// 型ガードを使用して安全に型変換
 	const floaterItems = items.filter(isValidFloaterItem);
-	const userMap = new Map();
+	const userMap = new Map<string, FloaterItem>();
 
 	// まず重複するユーザーの投稿をマージ
 	floaterItems.forEach(item => {
@@ -401,6 +401,7 @@ function getUniqueItems(items: any[]): FloaterItem[] {
 			} else {
 				// 既存のアイテムと新しいアイテムのノートをマージ
 				const existingItem = userMap.get(userId);
+				if (!existingItem) return;
 
 				// 重複を避けるためのノートIDセット
 				const existingNoteIds = new Set(existingItem.notes.map(note => note.id));

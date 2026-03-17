@@ -50,7 +50,7 @@ function toolsMenuItems(): MenuItem[] {
 	return items;
 }
 
-export function openInstanceMenu(ev: MouseEvent) {
+export function openInstanceMenu(ev: PointerEvent) {
 	const menuItems: MenuItem[] = [];
 
 	menuItems.push({
@@ -174,7 +174,7 @@ export function openInstanceMenu(ev: MouseEvent) {
 	});
 }
 
-export function openToolsMenu(ev: MouseEvent) {
+export function openToolsMenu(ev: PointerEvent) {
 	os.popupMenu(toolsMenuItems(), ev.currentTarget ?? ev.target, {
 		align: 'left',
 	});

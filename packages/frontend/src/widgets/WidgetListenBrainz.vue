@@ -37,7 +37,7 @@ import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import MkMfm from '@/components/global/MkMfm.js';
 
-const name = i18n.ts._widgets.listenBrainz;
+const name = 'listenBrainz';
 
 const widgetPropsDef = {
 	showHeader: {
@@ -163,12 +163,6 @@ watch(
 	},
 	{ immediate: true },
 );
-
-onMounted(() => {
-	if (widgetProps.refreshIntervalSec > 0) {
-		intervalId = window.setInterval(fetchPlayingNow, widgetProps.refreshIntervalSec * 1000);
-	}
-});
 
 onUnmounted(() => {
 	if (intervalId) window.clearInterval(intervalId);

@@ -48,7 +48,7 @@ export async function fetchInstance(force = false): Promise<Misskey.entities.Met
 
 	// 既存のコード: メタデータをインスタンスオブジェクトに適用
 	for (const [k, v] of Object.entries(meta)) {
-		instance[k] = v;
+		(instance[k as keyof typeof meta] as any) = v;
 	}
 
 	// 明示的に yamiNoteFederationEnabled をセット
@@ -66,9 +66,3 @@ export async function fetchInstance(force = false): Promise<Misskey.entities.Met
 
 	return instance;
 }
-
-export type ClientOptions = {
-	entrancePageStyle: 'classic' | 'simple';
-	showTimelineForVisitor: boolean;
-	showActivitiesForVisitor: boolean;
-};

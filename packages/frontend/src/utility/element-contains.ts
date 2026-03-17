@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export default (parent, child, checkSame = true) => {
+export function elementContains(parent: Element | null, child: Element | null, checkSame = true) {
+	if (parent === null || child === null) return false;
 	if (checkSame && parent === child) return true;
 	let node = child.parentNode;
 	while (node) {
@@ -11,4 +12,4 @@ export default (parent, child, checkSame = true) => {
 		node = node.parentNode;
 	}
 	return false;
-};
+}

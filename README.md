@@ -4,9 +4,8 @@
 **✝ Yet another Misskey fork that protects the privacy of mentally vulnerable users 🛡️**
 
 ---
-
-<a href="https://flatt.tech/oss/gmo/trampoline" target="_blank"><img src="https://flatt.tech/assets/images/badges/gmo-oss.svg" height="24px"/></a>
 <a href="https://deepwiki.com/yamisskey-dev/yamisskey" target="_blank"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki" height="24px"/></a>
+
 
 </div>
 
@@ -29,3 +28,13 @@ Yamisskey は [Misskey](https://github.com/misskey-dev/misskey) と同様に [AG
 ## 💝 謝意
 
 [Misskey](https://github.com/misskey-dev/misskey) プロジェクトへ敬意を表します。Yamisskey はオルタナティブな選択肢として開発されています。
+
+---
+
+<div align="center">
+	
+Support us with a ⭐ !
+
+[![Star History Chart](https://api.star-history.com/svg?repos=yamisskey-dev/yamisskey&type=Date)](https://star-history.com/#yamisskey-dev/yamisskey&Date)
+
+</div>
