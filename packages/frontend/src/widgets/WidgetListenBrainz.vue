@@ -164,12 +164,6 @@ watch(
 	{ immediate: true },
 );
 
-onMounted(() => {
-	if (widgetProps.refreshIntervalSec > 0) {
-		intervalId = window.setInterval(fetchPlayingNow, widgetProps.refreshIntervalSec * 1000);
-	}
-});
-
 onUnmounted(() => {
 	if (intervalId) window.clearInterval(intervalId);
 });
