@@ -80,7 +80,7 @@ type OnlineUserDetail = {
 	onlineStatus: 'online' | 'active' | 'offline' | 'unknown';
 };
 
-const name = i18n.ts._widgets.activeUsers;
+const name = 'activeUsers';
 
 const widgetPropsDef = {
 	showHeader: {

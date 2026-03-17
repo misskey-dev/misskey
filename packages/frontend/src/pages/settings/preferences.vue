@@ -1166,8 +1166,8 @@ const scheduledNoteDelete = ref({
 });
 
 // 自動削除時間が変更されたときの処理
-function onScheduledNoteDeleteUpdate(value) {
-	if (!value.isValid) return;
+function onScheduledNoteDeleteUpdate(value: { isValid: boolean; deleteAfter: number | null }) {
+	if (!value.isValid || value.deleteAfter === null) return;
 	prefer.commit('defaultScheduledNoteDeleteTime', value.deleteAfter);
 }
 
@@ -1305,10 +1305,10 @@ function onSystemFontChange() {
 }
 
 // customFontの変更を監視して直接スタイルに適用
-watch(customFont, (newValue) => {
-	// font.tsのapplyFontを直接呼び出す
-	import('@/utility/font').then(({ applyFont }) => {
-		applyFont(newValue);
+watch(customFont, (newValue: string | null) => {
+	// font.tsのapplyFontを直接呼び出し
+	import('@/utility/font').then(({ applyFont, fontList }) => {
+		applyFont(newValue as keyof typeof fontList | null);
 	});
 }, { immediate: true });
 

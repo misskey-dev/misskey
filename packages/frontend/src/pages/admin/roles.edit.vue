@@ -51,7 +51,14 @@ if (props.id) {
 		roleId: props.id,
 	});
 
-	data.value = role.value;
+	if (role.value) {
+		data.value = {
+			...role.value,
+			isCommunity: false as any,
+			condFormula: role.value.condFormula ?? { id: genId(), type: 'isRemote' },
+			policies: role.value.policies ?? {},
+		} as RoleLike;
+	}
 } else {
 	data.value = {
 		name: 'New Role',

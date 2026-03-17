@@ -834,7 +834,7 @@ function setVisibility() {
 			}
 		},
 		changeVisibleUsers: users => {
-			visibleUsers.value = users;
+			visibleUsers.value = users as Misskey.entities.UserDetailed[];
 		},
 		changeDmIntent: intent => {
 			isDmIntent.value = intent;

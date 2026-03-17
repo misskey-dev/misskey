@@ -97,7 +97,7 @@ const userLists = await misskeyApi('users/lists/list');
 const filteredNotificationTypes = computed(() => {
 	return notificationTypes.filter(type => {
 		// 設定不可能な通知タイプを除外
-		if (nonConfigurableNotificationTypes.includes(type)) {
+		if (nonConfigurableNotificationTypes.includes(type as any)) {
 			return false;
 		}
 
@@ -123,13 +123,13 @@ const filteredNotificationTypes = computed(() => {
 });
 
 // 通知設定の値を取得するヘルパー関数
-function getNotificationConfigValue(type) {
+function getNotificationConfigValue(type: typeof notificationTypes[number]): NotificationConfig {
 	// unfollow, blocked, unblocked で設定がない場合は never をデフォルトにする
-	if ((type === 'unfollow' || type === 'blocked' || type === 'unblocked') && !$i.notificationRecieveConfig[type]) {
-		return { type: 'never' };
+	if ((type === 'unfollow' || type === 'blocked' || type === 'unblocked') && !($i.notificationRecieveConfig as Record<string, NotificationConfig>)[type]) {
+		return { type: 'never' } as NotificationConfig;
 	}
 	// その他はデフォルトで all
-	return $i.notificationRecieveConfig[type] ?? { type: 'all' };
+	return ($i.notificationRecieveConfig as Record<string, NotificationConfig>)[type] ?? { type: 'all' } as NotificationConfig;
 }
 
 async function readAllNotifications() {

@@ -18,7 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							v-if="bottomItemDef[item.type]"
 							:class="$style.item"
 						>
-							<button class="_button" :class="$style.itemHandle" @mousedown="dragStart" @touchstart="dragStart"><i class="ti ti-menu"></i></button>
+							<button class="_button" :class="$style.itemHandle" @mousedown="dragStart($event as unknown as DragEvent)" @touchstart="dragStart($event as unknown as DragEvent)"><i class="ti ti-menu"></i></button>
 							<i class="ti ti-fw" :class="[$style.itemIcon, bottomItemDef[item.type]?.icon]"></i><span :class="$style.itemText">{{ bottomItemDef[item.type]?.title }}</span>
 							<button class="_button" :class="$style.itemRemove" @click="removeItem(index)"><i class="ti ti-x"></i></button>
 						</div>
