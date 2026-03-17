@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Injectable, Inject } from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
 import type { Packed } from '@/misc/json-schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { bindThis } from '@/decorators.js';
@@ -13,8 +13,10 @@ import type { JsonObject } from '@/misc/json-value.js';
 import type { UsersRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import Channel, { type ChannelRequest } from '../channel.js';
+import { REQUEST } from '@nestjs/core';
 
-class YamiTimelineChannel extends Channel {
+@Injectable({ scope: Scope.TRANSIENT })
+export class YamiTimelineChannel extends Channel {
 	public readonly chName = 'yamiTimeline';
 	public static shouldShare = false;
 	public static requireCredential = true as const;
@@ -26,10 +28,13 @@ class YamiTimelineChannel extends Channel {
 	private excludeBots: boolean;
 
 	constructor(
+		@Inject(REQUEST)
+		request: ChannelRequest,
+
 		private noteEntityService: NoteEntityService,
 		private roleService: RoleService,
+		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
-		request: ChannelRequest,
 	) {
 		super(request);
 	}
@@ -150,30 +155,5 @@ class YamiTimelineChannel extends Channel {
 	public dispose() {
 		// Unsubscribe events
 		this.subscriber.off('notesStream', this.onNote);
-	}
-}
-
-@Injectable()
-export class YamiTimelineChannelService {
-	public readonly shouldShare = YamiTimelineChannel.shouldShare;
-	public readonly requireCredential = YamiTimelineChannel.requireCredential;
-	public readonly kind = YamiTimelineChannel.kind;
-
-	constructor(
-		private noteEntityService: NoteEntityService,
-		private roleService: RoleService,
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-	) {
-	}
-
-	@bindThis
-	public create(id: string, connection: Channel['connection']): YamiTimelineChannel {
-		return new YamiTimelineChannel(
-			this.noteEntityService,
-			this.roleService,
-			this.usersRepository,
-			{ id, connection },
-		);
 	}
 }
