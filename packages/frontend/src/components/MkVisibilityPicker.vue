@@ -69,11 +69,13 @@ const props = withDefaults(defineProps<{
 	isNoteInYamiMode: boolean;
 	reply?: Misskey.entities.Note;
 	isDmIntent?: boolean;
+	localOnly?: boolean;
 }>(), {
 	currentVisibleUsers: () => [],
 	isNoteInYamiMode: false,
 	reply: undefined,
 	isDmIntent: false,
+	localOnly: false,
 });
 
 const emit = defineEmits<{

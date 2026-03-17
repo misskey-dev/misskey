@@ -2978,6 +2978,7 @@ _notification:
     receiveFollowRequest: "Received follow requests"
     followRequestAccepted: "Accepted follow requests"
     roleAssigned: "Role given"
+    groupInvited: "Invited to group"
     chatRoomInvitationReceived: "Invited to chat room"
     achievementEarned: "Achievement unlocked"
     exportCompleted: "The export has been completed"

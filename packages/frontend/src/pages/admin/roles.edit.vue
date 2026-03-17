@@ -38,6 +38,7 @@ const props = defineProps<{
 }>();
 
 type RoleLike = Pick<Misskey.entities.Role, 'name' | 'description' | 'isAdministrator' | 'isModerator' | 'color' | 'iconUrl' | 'target' | 'isPublic' | 'isExplorable' | 'asBadge' | 'canEditMembersByModerator' | 'displayOrder' | 'preserveAssignmentOnMoveAccount'> & {
+	isCommunity: boolean;
 	condFormula: any;
 	policies: any;
 };
@@ -55,7 +56,7 @@ if (props.id) {
 	data.value = {
 		name: 'New Role',
 		description: '',
-		isCommunity: false,
+		isCommunity: false as any,
 		isAdministrator: false,
 		isModerator: false,
 		color: null,

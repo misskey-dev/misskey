@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: hitalin and yamisskey-project  
+SPDX-FileCopyrightText: hitalin and yamisskey-project
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 
@@ -17,10 +17,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search" @enter="search">
 				<template #prefix><i class="ti ti-search"></i></template>
 			</MkInput>
-			<MkRadios v-model="searchType" @update:modelValue="search()">
-				<option value="nameAndDescription">{{ i18n.ts._channel.nameAndDescription }}</option>
-				<option value="nameOnly">{{ i18n.ts._channel.nameOnly }}</option>
-			</MkRadios>
+			<MkRadios
+				v-model="searchType" :options="[
+					{ value: 'nameAndDescription', label: i18n.ts._channel.nameAndDescription },
+					{ value: 'nameOnly', label: i18n.ts._channel.nameOnly },
+				]" @update:modelValue="search()"
+			/>
 			<MkButton large primary gradate rounded @click="search">{{ i18n.ts.search }}</MkButton>
 		</div>
 
@@ -34,12 +36,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 					@click.stop="selectChannel(channel)"
 				>
 					<div :class="$style.channelPreviewOverlay">
-						<MkChannelPreview :channel="channel" />
+						<MkChannelPreview :channel="channel"/>
 					</div>
 				</div>
 			</div>
 		</MkFoldableSection>
-
 	</div>
 </MkModalWindow>
 </template>
@@ -69,7 +70,7 @@ const emit = defineEmits<{
 
 const dialog = ref<InstanceType<typeof MkModalWindow>>();
 const searchQuery = ref('');
-const searchType = ref('nameAndDescription');
+const searchType = ref<'nameAndDescription' | 'nameOnly'>('nameAndDescription');
 const searchResults = ref<Misskey.entities.Channel[]>([]);
 const searchCompleted = ref(false);
 

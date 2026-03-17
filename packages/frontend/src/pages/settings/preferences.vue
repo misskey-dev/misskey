@@ -46,10 +46,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 						<SearchMarker :keywords="['yami', 'mode', 'button', 'behavior']">
 							<MkPreferenceContainer k="yamiModeClickBehavior">
-								<MkRadios v-model="yamiModeClickBehavior">
+								<MkRadios
+									v-model="yamiModeClickBehavior" :options="[
+										{ value: 'menu', label: i18n.ts._yami.switchModeButtonMenu },
+										{ value: 'direct', label: i18n.ts._yami.switchModeButtonDirect },
+									]"
+								>
 									<template #label><i class="ti ti-moon"></i> <SearchLabel>{{ i18n.ts._yami.switchModeButtonBehavior }}</SearchLabel><span class="_beta">{{ i18n.ts.originalFeature }}</span></template>
-									<option value="menu">{{ i18n.ts._yami.switchModeButtonMenu }}</option>
-									<option value="direct">{{ i18n.ts._yami.switchModeButtonDirect }}</option>
 								</MkRadios>
 							</MkPreferenceContainer>
 						</SearchMarker>

@@ -482,7 +482,7 @@ const canSaveAsServerDraft = computed((): boolean => {
 const withHashtags = store.model('postFormWithHashtags');
 const hashtags = store.model('postFormHashtags');
 
-const bottomItemActionDef: Record<keyof typeof bottomItemDef, {
+const bottomItemActionDef: Record<string, {
 	hide?: boolean;
 	active?: any;
 	action?: any;
@@ -526,7 +526,7 @@ const bottomItemActionDef: Record<keyof typeof bottomItemDef, {
 });
 
 // 新しい状態変数を追加
-const isDmIntent = ref(props.initialDmIntent ??
+const isDmIntent = ref<boolean>(props.initialDmIntent ??
   (visibility.value === 'specified' ? prefer.s.defaultIsDmIntent : false));
 
 // 自分のみ投稿の判定を改善
@@ -761,7 +761,7 @@ function focus() {
 	}
 }
 
-function chooseFileFrom(ev: MouseEvent) {
+function chooseFileFrom(ev: PointerEvent) {
 	const items = [{
 		text: i18n.ts.upload,
 		icon: 'ti ti-upload',
@@ -841,6 +841,15 @@ function setVisibility() {
 		},
 		closed: () => dispose(),
 	});
+}
+
+// やみノートモード切り替え関数
+function toggleYamiMode() {
+	if (parentIsYamiNote.value) return;
+	isNoteInYamiMode.value = !isNoteInYamiMode.value;
+	if (prefer.s.rememberNoteVisibility) {
+		prefer.commit('isNoteInYamiMode', isNoteInYamiMode.value);
+	}
 }
 
 // ローカルオンリー切り替え関数を修正
@@ -1213,6 +1222,9 @@ type StoredDrafts = {
 			quoteId: string | null;
 			reactionAcceptance: 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote' | null;
 			scheduledAt: number | null;
+			scheduledNoteDelete?: DeleteScheduleEditorModelValue | null;
+			scheduleNote?: { scheduledAt: number | null; isValid?: boolean } | null;
+			isNoteInYamiMode?: boolean;
 		};
 	};
 };

@@ -11664,6 +11664,10 @@ export interface Locale extends ILocale {
              */
             "roleAssigned": string;
             /**
+             * グループに招待された
+             */
+            "groupInvited": string;
+            /**
              * ダイレクトメッセージのグループへ招待された
              */
             "chatRoomInvitationReceived": string;

@@ -84,3 +84,4 @@ vite.config.local-dev.ts.timestamp-*
 
 # Claude
 .claude/
+AGENTS.md

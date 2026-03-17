@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<RolesEditorFormula v-model="v.value"/>
 	</div>
 
-	<MkInput v-else-if="v.type === 'createdLessThan' || v.type === 'createdMoreThan' || type === 'activedMoreThan' || type === 'activedLessThan'" v-model="v.sec" type="number">
+	<MkInput v-else-if="v.type === 'createdLessThan' || v.type === 'createdMoreThan' || (v as any).type === 'activedMoreThan' || (v as any).type === 'activedLessThan'" v-model="(v as any).sec" type="number">
 		<template #suffix>sec</template>
 	</MkInput>
 
@@ -142,7 +142,7 @@ const typeModelForMkSelect = computed<GetMkSelectValueTypesFromDef<typeof typeDe
 			case 'followingMoreThanOrEq': newValue = { type: 'followingMoreThanOrEq', value: 10 }; break;
 			case 'notesLessThanOrEq': newValue = { type: 'notesLessThanOrEq', value: 10 }; break;
 			case 'notesMoreThanOrEq': newValue = { type: 'notesMoreThanOrEq', value: 10 }; break;
-			default: newValue = { type: t }; break;
+			default: newValue = { type: t as any }; break;
 		}
 		v.value = { id: v.value.id, ...newValue };
 	},

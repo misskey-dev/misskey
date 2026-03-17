@@ -3080,6 +3080,7 @@ _notification:
     receiveFollowRequest: "フォロー申請を受け取った"
     followRequestAccepted: "フォローが受理された"
     roleAssigned: "ロールが付与された"
+    groupInvited: "グループに招待された"
     chatRoomInvitationReceived: "ダイレクトメッセージのグループへ招待された"
     achievementEarned: "実績の獲得"
     exportCompleted: "エクスポートが完了した"

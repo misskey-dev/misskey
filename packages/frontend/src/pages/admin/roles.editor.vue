@@ -1148,13 +1148,13 @@ const rolePermissionDef = [
 
 const rolePermission = computed<GetMkSelectValueTypesFromDef<typeof rolePermissionDef>>({
 	get: () => {
-		if (role.value.isCommunity) return 'community';
+		if ((role.value as any).isCommunity) return 'community';
 		if (role.value.isAdministrator) return 'administrator';
 		if (role.value.isModerator) return 'moderator';
 		return 'normal';
 	},
 	set: (val) => {
-		role.value.isCommunity = val === 'community';
+		(role.value as any).isCommunity = val === 'community';
 		role.value.isAdministrator = (val === 'administrator');
 		role.value.isModerator = (val === 'moderator');
 	},
@@ -1184,7 +1184,7 @@ const save = throttle(100, () => {
 		condFormula: role.value.condFormula,
 		isModerator: role.value.isModerator,
 		isAdministrator: role.value.isAdministrator,
-		isCommunity: role.value.isCommunity,
+		isCommunity: (role.value as any).isCommunity,
 		isPublic: role.value.isPublic,
 		isExplorable: role.value.isExplorable,
 		asBadge: role.value.asBadge,

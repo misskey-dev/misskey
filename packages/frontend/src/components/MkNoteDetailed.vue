@@ -356,12 +356,12 @@ const canRenote = computed(() => {
 	return ['public', 'home'].includes(appearNote.visibility) ||
     (appearNote.visibility === 'followers' && appearNote.userId === $i?.id);
 });
-const hideReactionCount = computed(() => {
+const hideReactionCount = computed<boolean>(() => {
 	switch (prefer.s.hideReactionCount) {
 		case 'none': return false;
 		case 'all': return true;
-		case 'self': return $i && appearNote.userId === $i.id;
-		case 'others': return $i && appearNote.userId !== $i.id;
+		case 'self': return $i ? appearNote.userId === $i.id : false;
+		case 'others': return $i ? appearNote.userId !== $i.id : false;
 		default: return false;
 	}
 });
