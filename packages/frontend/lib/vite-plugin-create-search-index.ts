@@ -13,11 +13,12 @@ import {
 	type LogOptions,
 	normalizePath,
 	type Plugin,
-	type PluginOption
+	type PluginOption,
 } from 'vite';
 import fs from 'node:fs';
 import JSON5 from 'json5';
-import MagicString, { SourceMap } from 'magic-string';
+import { RolldownMagicString } from 'rolldown';
+import type { TransformResult } from 'rolldown';
 import path from 'node:path'
 import { hash, toBase62 } from '../vite.config';
 import { minimatch } from 'minimatch';
@@ -460,9 +461,18 @@ function propertyAccessProxy(path: string[]): AccessProxy {
 
 const i18nProxy = propertyAccessProxy(['i18n']);
 
-export function collectFileMarkers(id: string, code: string): SearchIndexItem[] {
+export function collectFileMarkers(id: string, code: string | RolldownMagicString | undefined): SearchIndexItem[] {
 	try {
-		const { descriptor, errors } = vueSfcParse(code, {
+		let codeStr: string;
+		if (typeof code === 'string') {
+			codeStr = code;
+		} else if (code != null) {
+			codeStr = code.toString();
+		} else {
+			throw new Error(`Code is undefined for file ${id}`);
+		}
+
+		const { descriptor, errors } = vueSfcParse(codeStr, {
 			filename: id,
 		});
 
@@ -482,10 +492,7 @@ export function collectFileMarkers(id: string, code: string): SearchIndexItem[] 
 
 // endregion
 
-type TransformedCode = {
-	code: string,
-	map: SourceMap,
-};
+type TransformedCode = Exclude<TransformResult, string>;
 
 export class MarkerIdAssigner {
 	// key: file id
@@ -510,13 +517,12 @@ export class MarkerIdAssigner {
 	}
 
 	#processImpl(id: string, code: string): TransformedCode {
-		const s = new MagicString(code); // magic-string のインスタンスを作成
+		const s = new RolldownMagicString(code); // magic-string のインスタンスを作成
 
 		const parsed = vueSfcParse(code, { filename: id });
 		if (!parsed.descriptor.template) {
 			return {
-				code,
-				map: s.generateMap({ source: id, includeContent: true }),
+				code, // テンプレートがない場合は元のコードを返す
 			};
 		}
 		const ast = parsed.descriptor.template.ast; // テンプレート AST を取得
@@ -524,8 +530,7 @@ export class MarkerIdAssigner {
 
 		if (!ast) {
 			return {
-				code: s.toString(), // 変更後のコードを返す
-				map: s.generateMap({ source: id, includeContent: true }), // ソースマップも生成 (sourceMap: true が必要)
+				code,
 			};
 		}
 
@@ -612,7 +617,6 @@ export class MarkerIdAssigner {
 
 		return {
 			code: s.toString(), // 変更後のコードを返す
-			map: s.generateMap({ source: id, includeContent: true }), // ソースマップも生成 (sourceMap: true が必要)
 		};
 	}
 
@@ -643,7 +647,7 @@ export class MarkerIdAssigner {
 	}
 }
 
-// Rollup プラグインとして export
+// Vite プラグインとして export
 export default function pluginCreateSearchIndex(options: Options): PluginOption {
 	const assigner = new MarkerIdAssigner();
 	return [
