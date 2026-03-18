@@ -48,14 +48,17 @@ const timeline = useTemplateRef('timeline');
 const channel = shallowRef<Misskey.entities.Channel>();
 const soundSetting = ref<SoundStore>(props.column.soundSetting ?? { type: null, volume: 1 });
 
-onMounted(() => {
-	if (props.column.channelId == null) {
+watch(() => props.column.channelId, (newChannelId) => {
+	if (newChannelId == null) {
 		setChannel();
-	} else if (!props.column.name && props.column.channelId) {
-		misskeyApi('channels/show', { channelId: props.column.channelId })
-			.then(value => updateColumn(props.column.id, { timelineNameCache: value.name }));
+	} else if (channel.value == null || channel.value.id !== newChannelId) {
+		misskeyApi('channels/show', { channelId: newChannelId })
+			.then(value => {
+				updateColumn(props.column.id, { timelineNameCache: value.name });
+				channel.value = value;
+			});
 	}
-});
+}, { immediate: true });
 
 watch(soundSetting, v => {
 	updateColumn(props.column.id, { soundSetting: v });
@@ -90,14 +93,6 @@ async function post() {
 		channel: channel.value,
 	});
 }
-
-watch(prefer.r.showFixedPostFormInChannel, async (newValue) => {
-	if (newValue && channel.value == null && props.column.channelId) {
-		channel.value = await misskeyApi('channels/show', {
-			channelId: props.column.channelId,
-		});
-	}
-}, { immediate: true });
 
 const menu: MenuItem[] = [{
 	icon: 'ti ti-pencil',
