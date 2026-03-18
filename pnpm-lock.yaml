@@ -665,15 +665,6 @@ importers:
       '@misskey-dev/browser-image-resizer':
         specifier: 2024.1.0
         version: 2024.1.0
-      '@rollup/plugin-json':
-        specifier: 6.1.0
-        version: 6.1.0(rollup@4.59.0)
-      '@rollup/plugin-replace':
-        specifier: 6.0.3
-        version: 6.0.3(rollup@4.59.0)
-      '@rollup/pluginutils':
-        specifier: 5.3.0
-        version: 5.3.0(rollup@4.59.0)
       '@sentry/vue':
         specifier: 10.40.0
         version: 10.40.0(vue@3.5.29(typescript@5.9.3))
@@ -834,6 +825,15 @@ importers:
       '@misskey-dev/summaly':
         specifier: 5.2.5
         version: 5.2.5
+      '@rollup/plugin-json':
+        specifier: 6.1.0
+        version: 6.1.0(rollup@4.59.0)
+      '@rollup/plugin-replace':
+        specifier: 6.0.3
+        version: 6.0.3(rollup@4.59.0)
+      '@rollup/pluginutils':
+        specifier: 5.3.0
+        version: 5.3.0(rollup@4.59.0)
       '@storybook/addon-essentials':
         specifier: 8.6.17
         version: 8.6.17(@types/react@19.2.2)(storybook@10.2.13(@testing-library/dom@10.4.0)(bufferutil@4.1.0)(prettier@3.8.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(utf-8-validate@6.0.6))
@@ -993,6 +993,9 @@ importers:
       react-dom:
         specifier: 19.2.4
         version: 19.2.4(react@19.2.4)
+      rolldown:
+        specifier: 1.0.0-rc.9
+        version: 1.0.0-rc.9
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
@@ -1041,6 +1044,9 @@ importers:
       magic-string:
         specifier: 0.30.21
         version: 0.30.21
+      rolldown:
+        specifier: 1.0.0-rc.9
+        version: 1.0.0-rc.9
       vite:
         specifier: 8.0.0
         version: 8.0.0(@types/node@24.11.0)(esbuild@0.27.3)(sass@1.97.3)(terser@5.46.0)(tsx@4.21.0)
