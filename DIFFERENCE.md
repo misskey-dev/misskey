@@ -2,11 +2,41 @@
 
 ## Unreleased
 
+## 2026.3.1-yami-1.9.33
+
+### Security (Critical)
+Misskey本家 v2026.3.0〜v2026.3.1 の緊急セキュリティ修正を取り込み。
+
+- WebSocketチャンネル認可バイパス
+- WebSocketノート可視性リーク（フォロワー限定・指名投稿がストリーミング経由で漏洩）
+- ノートストリームイベント可視性リーク（指名投稿のリアクション等が漏洩）
+- ActivityPub HTTP署名検証バイパス（CVE-2026-28432）
+- インポートファイルIDのIDOR（他ユーザーのドライブファイル読み取り可能）
+
+### Upstream
+Misskey本家 v2026.3.0〜v2026.3.1 のマージ（PR #254 by @lqvp）。
+
+主な変更:
+- ストリーミングチャンネルアーキテクチャの変更（ChannelsService廃止 → TRANSIENT scope + ModuleRef）
+- NoteStreamingHidingServiceによる3階層ノート可視性チェック
+- ビルドシステム変更（swc → esbuild）
+- vuedraggable廃止 → MkDraggableコンポーネントに移行
+- MkRadio → MkRadiosに統合
+- Node.js 22.21.1、fastify 5.8.1 等のアップデート
+- nodemailer v7 → v8
+
 ### Fix
+- **YamiTimelineChannelを新アーキテクチャに移行** (#254)
+  - TRANSIENT scope対応、Connection.tsへのチャンネル登録
+- **RolesEditorFormulaのimport復元** (#254)
+  - 本家のvuedraggable削除時に誤って消えたimportを復元
+- **WidgetListenBrainzの重複onMounted削除** (#254)
 - **LTLで「Botアカウントを除外」オプションが機能しない問題を修正** (#229)
   - Fanoutタイムライン使用時に`noteFilter`が実装されていなかったため、`excludeBots`パラメータが適用されていなかった
-  - 他のタイムラインエンドポイント（timeline.ts, hybrid-timeline.ts, yami-timeline.ts）と同様の実装パターンを追加
-  - DBフォールバック使用時は正常に動作していた
+
+### Known Issues
+- 投稿フォームのプライベートノート選択が正しく動作しない (#258)
+- NoteEntityServiceの構造を本家v2026.3.1に合わせる必要がある (#259)
 
 ## 2025.12.2-yami-1.9.32
 
