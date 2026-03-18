@@ -63,7 +63,7 @@ interface MarkerRelation {
 let logger = {
 	info: (msg: string, options?: LogOptions) => { },
 	warn: (msg: string, options?: LogOptions) => { },
-	error: (msg: string, options?: LogErrorOptions | unknown) => { },
+	error: (msg: string, options?: LogErrorOptions) => { },
 };
 let loggerInitialized = false;
 
@@ -473,7 +473,8 @@ export function collectFileMarkers(id: string, code: string): SearchIndexItem[] 
 
 		return extractUsageInfoFromTemplateAst(descriptor.template?.ast, id);
 	} catch (error) {
-		logger.error(`Error analyzing file ${id}:`, error);
+		let _error = error instanceof Error ? error : new Error(String(error));
+		logger.error(`Error analyzing file ${id}:`, { error: _error });
 	}
 
 	return [];
