@@ -103,9 +103,10 @@ export class UserFollowingService implements OnModuleInit {
 	public async follow(
 		_follower: ThinUser,
 		_followee: ThinUser,
-		{ requestId, silent = false, withReplies }: {
+		{ requestId, silent = false, recreateFollowingRequest = true, withReplies }: {
 			requestId?: string,
 			silent?: boolean,
+			recreateFollowingRequest?: boolean,
 			withReplies?: boolean,
 		} = {},
 	): Promise<void> {
@@ -212,7 +213,7 @@ export class UserFollowingService implements OnModuleInit {
 			}
 
 			if (!autoAccept) {
-				await this.createFollowRequest(follower, followee, requestId, withReplies);
+				await this.createFollowRequest(follower, followee, requestId, { withReplies, recreateFollowingRequest });
 				return;
 			}
 		}
@@ -487,7 +488,7 @@ export class UserFollowingService implements OnModuleInit {
 			id: MiUser['id']; host: MiUser['host']; uri: MiUser['host']; inbox: MiUser['inbox']; sharedInbox: MiUser['sharedInbox'];
 		},
 		requestId?: string,
-		withReplies?: boolean,
+		{ withReplies, recreateFollowingRequest = true }: { withReplies?: boolean; recreateFollowingRequest?: boolean; } = {},
 	): Promise<void> {
 		if (follower.id === followee.id) return;
 
@@ -499,6 +500,17 @@ export class UserFollowingService implements OnModuleInit {
 
 		if (blocking) throw new Error('blocking');
 		if (blocked) throw new Error('blocked');
+
+		if (!recreateFollowingRequest) {
+			// フォローリクエストを再発行しない設定の場合は、すでにフォローリクエストが存在しているかどうかを確認して、存在していれば何もしない
+			const requestExist = await this.followRequestsRepository.exists({
+				where: {
+					followeeId: followee.id,
+					followerId: follower.id,
+				},
+			});
+			if (requestExist) return;
+		}
 
 		// Remove old follow requests before creating a new one.
 		await this.followRequestsRepository.delete({

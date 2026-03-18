@@ -36,6 +36,7 @@ export type RelationshipJobData = {
 	from: ThinUser;
 	to: ThinUser;
 	silent?: boolean;
+	recreateFollowingRequest?: boolean;
 	requestId?: string;
 	withReplies?: boolean;
 };
