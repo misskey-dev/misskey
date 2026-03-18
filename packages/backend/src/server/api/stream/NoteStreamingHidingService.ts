@@ -18,10 +18,14 @@ export class NoteStreamingHidingService {
 		private noteEntityService: NoteEntityService,
 	) {}
 
-	private *iterateRenoteChain(note: Packed<'Note'>): IterableIterator<Packed<'Note'>> {
+	private collectRenoteChain(note: Packed<'Note'>): Packed<'Note'>[] {
+		const renoteChain: Packed<'Note'>[] = [];
+
 		for (let current: Packed<'Note'> | null | undefined = note; current != null; current = current.renote) {
-			yield current;
+			renoteChain.push(current);
 		}
+
+		return renoteChain;
 	}
 
 	/**
@@ -37,7 +41,7 @@ export class NoteStreamingHidingService {
 	 */
 	@bindThis
 	public async filter(note: Packed<'Note'>, meId: MiUser['id'] | null): Promise<Packed<'Note'> | null> {
-		const renoteChain = Array.from(this.iterateRenoteChain(note));
+		const renoteChain = this.collectRenoteChain(note);
 		const shouldHide = await Promise.all(renoteChain.map(n => this.noteEntityService.shouldHideNote(n, meId)));
 
 		if (!shouldHide.some(h => h)) {
