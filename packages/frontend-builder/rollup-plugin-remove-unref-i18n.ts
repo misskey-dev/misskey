@@ -45,9 +45,7 @@ export function pluginRemoveUnrefI18n(
 				},
 			});
 
-			return {
-				code: magicString,
-			};
+			return magicString;
 		},
 	};
 }
