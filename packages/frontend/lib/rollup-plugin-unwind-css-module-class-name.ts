@@ -3,17 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { generate } from 'astring';
-import { walk } from '../node_modules/estree-walker/src/index.js';
-import type * as estree from 'estree';
-import type * as estreeWalker from 'estree-walker';
+import * as estreeWalker from 'estree-walker';
 import type { Plugin } from 'vite';
+import type { ESTree } from 'rolldown/utils';
+import { RolldownMagicString } from 'rolldown';
 
-function isFalsyIdentifier(identifier: estree.Identifier): boolean {
+function isFalsyIdentifier(identifier: Extract<ESTree.Node, { type: 'Identifier' }>): boolean {
 	return identifier.name === 'undefined' || identifier.name === 'NaN';
 }
 
-function normalizeClassWalker(tree: estree.Node, stack: string | undefined): string | null {
+function normalizeClassWalker(tree: ESTree.Node, stack: string | undefined): string | null {
 	if (tree.type === 'Identifier') return isFalsyIdentifier(tree) ? '' : null;
 	if (tree.type === 'Literal') return typeof tree.value === 'string' ? tree.value : '';
 	if (tree.type === 'BinaryExpression') {
@@ -26,7 +25,7 @@ function normalizeClassWalker(tree: estree.Node, stack: string | undefined): str
 	if (tree.type === 'TemplateLiteral') {
 		if (tree.expressions.some((x) => x.type !== 'Literal' && (x.type !== 'Identifier' || !isFalsyIdentifier(x)))) return null;
 		return tree.quasis.reduce((a, c, i) => {
-			const v = i === tree.quasis.length - 1 ? '' : (tree.expressions[i] as Partial<estree.Literal>).value;
+			const v = i === tree.quasis.length - 1 ? '' : (tree.expressions[i] as Partial<Extract<ESTree.Node, { type: 'Literal' }>>).value;
 			return a + c.value.raw + (typeof v === 'string' ? v : '');
 		}, '');
 	}
@@ -41,7 +40,7 @@ function normalizeClassWalker(tree: estree.Node, stack: string | undefined): str
 	}
 	if (tree.type === 'ObjectExpression') {
 		const values = tree.properties.map((treeNode) => {
-			if (treeNode.type === 'SpreadElement') return normalizeClassWalker(treeNode.argument, stack);
+			if (treeNode.type === 'SpreadElement')  return normalizeClassWalker(treeNode.argument, stack);
 			let x = treeNode.value;
 			let inveted = false;
 			while (x.type === 'UnaryExpression' && x.operator === '!') {
@@ -72,20 +71,21 @@ function normalizeClassWalker(tree: estree.Node, stack: string | undefined): str
 		tree.type !== 'ChainExpression' &&
 		tree.type !== 'ConditionalExpression' &&
 		tree.type !== 'LogicalExpression' &&
-		tree.type !== 'MemberExpression') {
+		tree.type !== 'MemberExpression'
+	) {
 		console.error(stack ? `Unexpected node type: ${tree.type} (in ${stack})` : `Unexpected node type: ${tree.type}`);
 	}
 	return null;
 }
 
-export function normalizeClass(tree: estree.Node, stack?: string): string | null {
+export function normalizeClass(tree: ESTree.Node, stack?: string): string | null {
 	const walked = normalizeClassWalker(tree, stack);
 	return walked && walked.replace(/^\s+|\s+(?=\s)|\s+$/g, '');
 }
 
-export function unwindCssModuleClassName(ast: estree.Node): void {
-	(walk as typeof estreeWalker.walk)(ast, {
-		enter(node, parent): void {
+export function unwindCssModuleClassName(ast: ESTree.Node, magicString: RolldownMagicString): void {
+	(estreeWalker.walk as any)(ast, {
+		enter(node: ESTree.Node, parent: ESTree.Node | null): void {
 			//#region
 			if (parent?.type !== 'Program') return;
 			if (node.type !== 'VariableDeclaration') return;
@@ -118,7 +118,7 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 			 */
 			//#endregion
 			//#region
-			const cssModuleForestName = ((node.declarations[0].init.arguments[1].elements[__cssModulesIndex] as estree.ArrayExpression).elements[1] as estree.Identifier).name;
+			const cssModuleForestName = ((node.declarations[0].init.arguments[1].elements[__cssModulesIndex] as ESTree.ArrayExpression).elements[1] as Extract<ESTree.Node, { type: 'Identifier' }>).name;
 			const cssModuleForestNode = parent.body.find((x) => {
 				if (x.type !== 'VariableDeclaration') return false;
 				if (x.declarations.length !== 1) return false;
@@ -126,8 +126,8 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 				if (x.declarations[0].id.name !== cssModuleForestName) return false;
 				if (x.declarations[0].init?.type !== 'ObjectExpression') return false;
 				return true;
-			}) as unknown as estree.VariableDeclaration;
-			const moduleForest = new Map((cssModuleForestNode.declarations[0].init as estree.ObjectExpression).properties.flatMap((property) => {
+			}) as unknown as ESTree.VariableDeclaration;
+			const moduleForest = new Map((cssModuleForestNode.declarations[0].init as ESTree.ObjectExpression).properties.flatMap((property) => {
 				if (property.type !== 'Property') return [];
 				if (property.key.type !== 'Literal') return [];
 				if (property.value.type !== 'Identifier') return [];
@@ -149,7 +149,7 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 				if (x.declarations[0].id.type !== 'Identifier') return false;
 				if (x.declarations[0].id.name !== ident) return false;
 				return true;
-			}) as unknown as estree.VariableDeclaration;
+			}) as unknown as ESTree.VariableDeclaration;
 			if (sfcMain.declarations[0].init?.type !== 'CallExpression') return;
 			if (sfcMain.declarations[0].init.callee.type !== 'Identifier') return;
 			if (sfcMain.declarations[0].init.callee.name !== 'defineComponent') return;
@@ -160,12 +160,9 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 				if (x.key.type !== 'Identifier') return false;
 				if (x.key.name !== 'setup') return false;
 				return true;
-			}) as unknown as estree.Property;
+			}) as Extract<ESTree.Node, { type: 'Property' }>;
 			if (setup.value.type !== 'FunctionExpression') return;
-			const render = setup.value.body.body.find((x) => {
-				if (x.type !== 'ReturnStatement') return false;
-				return true;
-			}) as unknown as estree.ReturnStatement;
+			const render = setup.value.body!.body.find((x) => x.type === 'ReturnStatement')!;
 			if (render.argument?.type !== 'ArrowFunctionExpression') return;
 			if (render.argument.params.length !== 2) return;
 			const ctx = render.argument.params[0];
@@ -194,7 +191,7 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 					if (x.declarations[0].id.type !== 'Identifier') return false;
 					if (x.declarations[0].id.name !== value) return false;
 					return true;
-				}) as unknown as estree.VariableDeclaration;
+				}) as unknown as ESTree.VariableDeclaration;
 				if (cssModuleTreeNode.declarations[0].init?.type !== 'ObjectExpression') return;
 				const moduleTree = new Map(cssModuleTreeNode.declarations[0].init.properties.flatMap((property) => {
 					if (property.type !== 'Property') return [];
@@ -209,7 +206,7 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 						if (x.declarations[0].id.type !== 'Identifier') return false;
 						if (x.declarations[0].id.name !== labelledValue) return false;
 						return true;
-					}) as unknown as estree.VariableDeclaration;
+					}) as unknown as ESTree.VariableDeclaration;
 					if (actualValue.declarations[0].init?.type !== 'Literal') return [];
 					return [[actualKey, actualValue.declarations[0].init.value as string]];
 				}));
@@ -226,8 +223,8 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 				 */
 				//#endregion
 				//#region
-				(walk as typeof estreeWalker.walk)(render.argument.body, {
-					enter(childNode) {
+				(estreeWalker.walk as any)(render.argument.body, {
+					enter(childNode: ESTree.Node) {
 						if (childNode.type !== 'MemberExpression') return;
 						if (childNode.object.type !== 'MemberExpression') return;
 						if (childNode.object.object.type !== 'Identifier') return;
@@ -276,8 +273,8 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 				 */
 				//#endregion
 				//#region
-				(walk as typeof estreeWalker.walk)(render.argument.body, {
-					enter(childNode) {
+				(estreeWalker.walk as any)(render.argument.body, {
+					enter(childNode: ESTree.Node) {
 						if (childNode.type !== 'MemberExpression') return;
 						if (childNode.object.type !== 'MemberExpression') return;
 						if (childNode.object.object.type !== 'Identifier') return;
@@ -286,10 +283,7 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 						if (childNode.object.property.name !== key) return;
 						if (childNode.property.type !== 'Identifier') return;
 						console.error(`Undefined style detected: ${key}.${childNode.property.name} (in ${name})`);
-						this.replace({
-							type: 'Identifier',
-							name: 'undefined',
-						});
+						magicString.overwrite(childNode.start, childNode.end, 'undefined');
 					},
 				});
 				/* This region replaced the reference identifier of missing class names in the render function with `undefined`, as in the following code.
@@ -300,7 +294,7 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 				 *     ...
 				 *     return (_ctx, _cache) => {
 				 *       ...
-				 *       return openBlock(), createElementBlock("div", {
+				 *       return openBlock(), createElementBlock('div', {
 				 *         class: normalizeClass(_ctx.$style.hoge),
 				 *       }, null);
 				 *     };
@@ -316,7 +310,7 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 				 *     ...
 				 *     return (_ctx, _cache) => {
 				 *       ...
-				 *       return openBlock(), createElementBlock("div", {
+				 *       return openBlock(), createElementBlock('div', {
 				 *         class: normalizeClass(undefined),
 				 *       }, null);
 				 *     };
@@ -326,18 +320,15 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 				 */
 				//#endregion
 				//#region
-				(walk as typeof estreeWalker.walk)(render.argument.body, {
-					enter(childNode) {
+				(estreeWalker.walk as any)(render.argument.body, {
+					enter(childNode: ESTree.Node) {
 						if (childNode.type !== 'CallExpression') return;
 						if (childNode.callee.type !== 'Identifier') return;
 						if (childNode.callee.name !== 'normalizeClass') return;
 						if (childNode.arguments.length !== 1) return;
 						const normalized = normalizeClass(childNode.arguments[0], name);
 						if (normalized === null) return;
-						this.replace({
-							type: 'Literal',
-							value: normalized,
-						});
+						magicString.overwrite(childNode.start, childNode.end, JSON.stringify(normalized));
 					},
 				});
 				/* This region compiled the `normalizeClass` call into a pseudo-AOT compilation, as in the following code.
@@ -376,17 +367,14 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 			}
 			//#region
 			if (node.declarations[0].init.arguments[1].elements.length === 1) {
-				(walk as typeof estreeWalker.walk)(ast, {
-					enter(childNode) {
+				(estreeWalker.walk as any)(ast, {
+					enter(childNode: ESTree.Node) {
 						if (childNode.type !== 'Identifier') return;
 						if (childNode.name !== ident) return;
-						this.replace({
-							type: 'Identifier',
-							name: node.declarations[0].id.name,
-						});
+						magicString.overwrite(childNode.start, childNode.end, name);
 					},
 				});
-				this.remove();
+				magicString.remove(node.start, node.end);
 				/* NOTE: The above logic is valid as long as the following two conditions are met.
 				 *
 				 * - the uniqueness of `ident` is kept throughout the module
@@ -411,31 +399,10 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 				});
 				 */
 			} else {
-				this.replace({
-					type: 'VariableDeclaration',
-					declarations: [{
-						type: 'VariableDeclarator',
-						id: {
-							type: 'Identifier',
-							name: node.declarations[0].id.name,
-						},
-						init: {
-							type: 'CallExpression',
-							callee: {
-								type: 'Identifier',
-								name: '_export_sfc',
-							},
-							arguments: [{
-								type: 'Identifier',
-								name: ident,
-							}, {
-								type: 'ArrayExpression',
-								elements: node.declarations[0].init.arguments[1].elements.slice(0, __cssModulesIndex).concat(node.declarations[0].init.arguments[1].elements.slice(__cssModulesIndex + 1)),
-							}],
-						},
-					}],
-					kind: 'const',
-				});
+				const nextElement = node.declarations[0].init.arguments[1].elements[__cssModulesIndex + 1];
+				const removeStart = node.declarations[0].init.arguments[1].elements[__cssModulesIndex]!.start;
+				const removeEnd = nextElement ? nextElement.start : node.declarations[0].init.arguments[1].end - 1;
+				magicString.remove(removeStart, removeEnd);
 			}
 			/* This region removed the `__cssModules` reference from the second argument of `_export_sfc`, as in the following code.
 			 *
@@ -474,10 +441,11 @@ export function unwindCssModuleClassName(ast: estree.Node): void {
 export default function pluginUnwindCssModuleClassName(): Plugin {
 	return {
 		name: 'UnwindCssModuleClassName',
-		renderChunk(code): { code: string } {
-			const ast = this.parse(code) as unknown as estree.Node;
-			unwindCssModuleClassName(ast);
-			return { code: generate(ast) };
+		renderChunk(code, _chunk, _options, meta) {
+			const ast = this.parse(code);
+			const magicString = meta.magicString ?? new RolldownMagicString(code);
+			unwindCssModuleClassName(ast, magicString);
+			return magicString;
 		},
 	};
 }
