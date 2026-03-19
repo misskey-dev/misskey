@@ -53,11 +53,14 @@ export function Layout(props: PropsWithChildren<CommonProps<{
 					{props.infoImageUrl != null ? <link rel="prefetch" as="image" href={props.infoImageUrl} /> : null}
 					{props.notFoundImageUrl != null ? <link rel="prefetch" as="image" href={props.notFoundImageUrl} /> : null}
 
-					{!props.config.frontendManifestExists ? <script type="module" src="/vite/@vite/client"></script> : null}
+					{props.frontendViteFiles == null ? <script type="module" src="/vite/@vite/client"></script> : <link rel="preload" as="script" href={`/vite/${props.frontendViteFiles.entryJs}`} />}
 
-					{props.config.frontendEntry.css != null ? props.config.frontendEntry.css.map((href) => (
+					{(props.frontendViteFiles?.css ?? []).map((href) => (
 						<link rel="stylesheet" href={`/vite/${href}`} />
-					)) : null}
+					))}
+					{(props.frontendViteFiles?.modulePreloads ?? []).map((href) => (
+						<link rel="modulepreload" href={`/vite/${href}`} />
+					))}
 
 					{props.titleSlot ?? <title safe>{props.title || 'Misskey'}</title>}
 
@@ -80,7 +83,7 @@ export function Layout(props: PropsWithChildren<CommonProps<{
 
 					<script>
 						const VERSION = '{props.version}';
-						const CLIENT_ENTRY = {JSON.stringify(props.config.frontendEntry.file)};
+						const CLIENT_ENTRY = {JSON.stringify(props.frontendViteFiles?.entryJs ?? null)};
 						const LANGS = {JSON.stringify(props.langs)};
 					</script>
 
