@@ -228,6 +228,6 @@
 		"pid-port": "2.0.1",
 		"simple-oauth2": "5.1.0",
 		"supertest": "7.2.2",
-		"vite": "8.0.0"
+		"vite": "8.0.1"
 	}
 }

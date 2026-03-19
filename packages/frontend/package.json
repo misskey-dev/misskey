@@ -69,7 +69,6 @@
 		"throttle-debounce": "5.0.2",
 		"tinycolor2": "1.6.0",
 		"v-code-diff": "1.13.1",
-		"vite": "8.0.0",
 		"vue": "3.5.29",
 		"wanakana": "5.3.1"
 	},
@@ -136,6 +135,7 @@
 		"storybook": "10.2.13",
 		"storybook-addon-misskey-theme": "github:misskey-dev/storybook-addon-misskey-theme",
 		"tsx": "4.21.0",
+		"vite": "8.0.1",
 		"vite-plugin-glsl": "1.5.5",
 		"vite-plugin-turbosnap": "1.0.3",
 		"vitest": "4.1.0",
