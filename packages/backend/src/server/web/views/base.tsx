@@ -53,13 +53,10 @@ export function Layout(props: PropsWithChildren<CommonProps<{
 					{props.infoImageUrl != null ? <link rel="prefetch" as="image" href={props.infoImageUrl} /> : null}
 					{props.notFoundImageUrl != null ? <link rel="prefetch" as="image" href={props.notFoundImageUrl} /> : null}
 
-					{props.frontendViteFiles == null ? <script type="module" src="/vite/@vite/client"></script> : <link rel="preload" as="script" href={`/vite/${props.frontendViteFiles.entryJs}`} />}
+					{props.frontendViteFiles == null ? <script type="module" src="/vite/@vite/client"></script> : null}
 
 					{(props.frontendViteFiles?.css ?? []).map((href) => (
 						<link rel="stylesheet" href={`/vite/${href}`} />
-					))}
-					{(props.frontendViteFiles?.modulePreloads ?? []).map((href) => (
-						<link rel="modulepreload" href={`/vite/${href}`} />
 					))}
 
 					{props.titleSlot ?? <title safe>{props.title || 'Misskey'}</title>}
