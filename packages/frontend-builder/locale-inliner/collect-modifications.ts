@@ -36,6 +36,7 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 	// 1) replace all `scripts/` path literals with locale code
 	// 2) replace all `localStorage.getItem("lang")` with `localeName` variable
 	// 3) replace all `await window.fetch(`/assets/locales/${d}.${x}.json`).then(u=>u.json())` with `localeJson` variable
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	(estreeWalker.walk as any)(programNode, {
 		enter(this: WalkerContext, node: Node) {
 			assertType<AstNode>(node);
@@ -119,6 +120,7 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 	// Check if the identifier is already declared in the file.
 	// If it is, we may overwrite it and cause issues so we skip inlining
 	let isSupported = true;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	(estreeWalker.walk as any)(programNode, {
 		enter(node: Node) {
 			if (node.type === 'VariableDeclaration') {
@@ -146,6 +148,7 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 
 	const toSkip = new Set();
 	toSkip.add(i18nImport);
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	(estreeWalker.walk as any)(programNode, {
 		enter(this: WalkerContext, node: Node, parent: Node | null, property: string | number | symbol | null | undefined) {
 			assertType<AstNode>(node);
