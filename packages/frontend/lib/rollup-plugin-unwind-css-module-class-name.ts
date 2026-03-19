@@ -89,6 +89,12 @@ function getPropertyName(node: ESTree.Node, computed: boolean): string | null {
 	return null;
 }
 
+function getMemberPropertyName(node: ESTree.MemberExpression['property'], computed: boolean): string | null {
+	if (node.type === 'Identifier') return computed ? null : node.name;
+	if (node.type === 'Literal' && typeof node.value === 'string') return node.value;
+	return null;
+}
+
 function findVariableDeclaration(program: ESTree.Program, name: string): ESTree.VariableDeclaration | null {
 	return program.body.find((x) => {
 		if (x.type !== 'VariableDeclaration') return false;
@@ -161,14 +167,17 @@ function findRenderArrow(options: ESTree.ObjectExpression): Extract<ESTree.Node,
 	return render.argument?.type === 'ArrowFunctionExpression' ? render.argument : null;
 }
 
-function isCssModuleReference(node: ESTree.Node, ctxName: string, key: string): node is Extract<ESTree.Node, { type: 'MemberExpression' }> {
+function isCssModuleAccess(node: ESTree.Node, ctxName: string, key: string): node is Extract<ESTree.Node, { type: 'MemberExpression' }> {
 	if (node.type !== 'MemberExpression') return false;
 	if (node.object.type !== 'MemberExpression') return false;
 	if (node.object.object.type !== 'Identifier') return false;
 	if (node.object.object.name !== ctxName) return false;
-	if (node.object.property.type !== 'Identifier') return false;
-	if (node.object.property.name !== key) return false;
-	return node.property.type === 'Identifier';
+	return getMemberPropertyName(node.object.property, node.object.computed) === key;
+	}
+
+function isCssModuleReference(node: ESTree.Node, ctxName: string, key: string): node is Extract<ESTree.Node, { type: 'MemberExpression' }> {
+	if (!isCssModuleAccess(node, ctxName, key)) return false;
+	return getMemberPropertyName(node.property, node.computed) !== null;
 }
 
 function isClassProperty(node: ESTree.Node | null): node is Extract<ESTree.Node, { type: 'Property' }> {
@@ -261,10 +270,11 @@ export function unwindCssModuleClassName(ast: ESTree.Node, magicString: Rolldown
 				(estreeWalker.walk as any)(render.body, {
 					enter(childNode: ESTree.Node) {
 						if (!isCssModuleReference(childNode, ctx.name, key)) return;
-						const actualKey = childNode.property.type === 'Identifier' ? childNode.property.name : null;
+						const actualKey = getMemberPropertyName(childNode.property, childNode.computed);
 						if (actualKey === null) return;
 						const actualValue = moduleTree.get(actualKey);
 						if (actualValue === undefined) return;
+						magicString.overwrite(childNode.start, childNode.end, JSON.stringify(actualValue));
 						this.replace({
 							type: 'Literal',
 							value: actualValue,
@@ -307,7 +317,7 @@ export function unwindCssModuleClassName(ast: ESTree.Node, magicString: Rolldown
 				(estreeWalker.walk as any)(render.body, {
 					enter(childNode: ESTree.Node) {
 						if (!isCssModuleReference(childNode, ctx.name, key)) return;
-						const actualKey = childNode.property.type === 'Identifier' ? childNode.property.name : null;
+						const actualKey = getMemberPropertyName(childNode.property, childNode.computed);
 						if (actualKey === null) return;
 						console.error(`Undefined style detected: ${key}.${actualKey} (in ${name})`);
 						magicString.overwrite(childNode.start, childNode.end, 'undefined');
@@ -392,6 +402,18 @@ export function unwindCssModuleClassName(ast: ESTree.Node, magicString: Rolldown
 				 */
 				//#endregion
 			}
+			const hasRemainingCssModuleReference = Array.from(moduleForest.keys()).some((key) => {
+				let found = false;
+				(estreeWalker.walk as any)(render.body, {
+					enter(childNode: ESTree.Node) {
+						if (!isCssModuleAccess(childNode, ctx.name, key)) return;
+						found = true;
+						this.skip();
+					},
+				});
+				return found;
+			});
+			if (hasRemainingCssModuleReference) return;
 			//#region
 			if (node.declarations[0].init.arguments[1].elements.length === 1) {
 				if (componentNode.type === 'Identifier') {
