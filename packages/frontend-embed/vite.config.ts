@@ -133,6 +133,9 @@ export function getConfig(): UserConfig {
 			],
 			manifest: 'manifest.json',
 			rolldownOptions: {
+				experimental: {
+					nativeMagicString: true,
+				},
 				input: {
 					i18n: './src/i18n.ts',
 					entry: './src/boot.ts',
