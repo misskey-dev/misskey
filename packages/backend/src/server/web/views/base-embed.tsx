@@ -46,11 +46,14 @@ export function BaseEmbed(props: PropsWithChildren<CommonProps<{
 					<link rel="icon" href={props.icon ?? '/favicon.ico'} />
 					<link rel="apple-touch-icon" href={props.appleTouchIcon ?? '/apple-touch-icon.png'} />
 
-					{!props.config.frontendEmbedManifestExists ? <script type="module" src="/embed_vite/@vite/client"></script> : null}
+					{props.frontendEmbedViteFiles == null ? <script type="module" src="/embed_vite/@vite/client"></script> : <link rel="preload" as="script" href={`/embed_vite/${props.frontendEmbedViteFiles.entryJs}`} />}
 
-					{props.config.frontendEmbedEntry.css != null ? props.config.frontendEmbedEntry.css.map((href) => (
+					{(props.frontendEmbedViteFiles?.css ?? []).map((href) => (
 						<link rel="stylesheet" href={`/embed_vite/${href}`} />
-					)) : null}
+					))}
+					{(props.frontendEmbedViteFiles?.modulePreloads ?? []).map((href) => (
+						<link rel="modulepreload" href={`/embed_vite/${href}`} />
+					))}
 
 					{props.titleSlot ?? <title safe>{props.title || 'Misskey'}</title>}
 
@@ -62,7 +65,7 @@ export function BaseEmbed(props: PropsWithChildren<CommonProps<{
 
 					<script>
 						const VERSION = '{props.version}';
-						const CLIENT_ENTRY = {JSON.stringify(props.config.frontendEmbedEntry.file)};
+						const CLIENT_ENTRY = {JSON.stringify(props.frontendEmbedViteFiles?.entryJs ?? null)};
 						const LANGS = {JSON.stringify(props.langs)};
 					</script>
 
