@@ -4,8 +4,8 @@
  */
 
 import { parseAst } from 'rolldown/parseAst';
-import type { ESTree as RolldownESTree } from 'rolldown/utils';
 import * as estreeWalker from 'estree-walker';
+import type { ESTree as RolldownESTree } from 'rolldown/utils';
 import { assertNever, assertType } from '../utils.js';
 import type { AstNode } from 'rollup';
 import type * as estree from 'estree';
