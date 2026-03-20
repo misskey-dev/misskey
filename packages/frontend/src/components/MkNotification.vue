@@ -136,7 +136,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="$style.text" style="opacity: 0.6;">{{ i18n.ts.followRequestAccepted }}</div>
 				<div v-if="notification.message" :class="$style.text" style="opacity: 0.6; font-style: oblique;">
 					<i class="ti ti-quote" :class="$style.quote"></i>
-					<span>{{ notification.message }}</span>
+					<Mfm :text="notification.message" :author="notification.user" :plain="true" :nowrap="true"/>
 					<i class="ti ti-quote" :class="$style.quote"></i>
 				</div>
 			</template>
