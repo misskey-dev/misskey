@@ -10,6 +10,10 @@ const float PI = 3.141592653589793;
 const float TWO_PI = 6.283185307179586;
 const float HALF_PI = 1.5707963267948966;
 
+const float goldenAngle = 2.39996323;
+const int sampleCount = 256;
+const float sampleCountF = float(sampleCount);
+
 in vec2 in_uv;
 uniform sampler2D in_texture;
 uniform vec2 in_resolution;
@@ -18,7 +22,6 @@ uniform vec2 u_scale;
 uniform bool u_ellipse;
 uniform float u_angle;
 uniform float u_radius;
-uniform int u_samples;
 out vec4 out_color;
 
 float rand(vec2 value) {
@@ -51,17 +54,7 @@ void main() {
 
 	vec4 result = vec4(0.0);
 	float totalSamples = 0.0;
-
-	// Make blur radius resolution-independent by using a percentage of image size
-	float referenceSize = min(in_resolution.x, in_resolution.y);
-	float normalizedRadius = u_radius / 100.0;
-	float radiusPx = normalizedRadius * referenceSize;
-	vec2 texelSize = 1.0 / in_resolution;
-
-	int sampleCount = max(u_samples, 1);
-	float sampleCountF = float(sampleCount);
-	float jitter = rand(in_uv * in_resolution);
-	float goldenAngle = 2.39996323;
+	float jitter = rand(in_uv);
 
 	// Sample in a circular pattern to avoid axis-aligned artifacts
 	for (int i = 0; i < sampleCount; i++) {
@@ -69,15 +62,11 @@ void main() {
 		float radius = sqrt((fi + 0.5) / sampleCountF);
 		float theta = (fi + jitter) * goldenAngle;
 		vec2 direction = vec2(cos(theta), sin(theta));
-		vec2 offset = direction * (radiusPx * radius) * texelSize;
-		vec2 sampleUV = in_uv + offset;
-
-		if (sampleUV.x >= 0.0 && sampleUV.x <= 1.0 && sampleUV.y >= 0.0 && sampleUV.y <= 1.0) {
-			float weight = exp(-radius * radius * 4.0);
-			result += texture(in_texture, sampleUV) * weight;
-			totalSamples += weight;
-		}
+		vec2 offset = direction * (u_radius * radius);
+		float weight = exp(-radius * radius * 4.0);
+		result += texture(in_texture, in_uv + offset) * weight;
+		totalSamples += weight;
 	}
 
-	out_color = totalSamples > 0.0 ? result / totalSamples : texture(in_texture, in_uv);
+	out_color = result / totalSamples;
 }
