@@ -35,13 +35,11 @@ ignorePatchFailures: false
 minimumReleaseAge: 10080 # delay 7days to mitigate supply-chain attack
 minimumReleaseAgeExclude:
   - '@syuilo/aiscript'
-  - 'vite'
-  - 'lightningcss'
-  - 'lightningcss-*'
-  - 'rolldown'
-  - '@rolldown/*'
-  - '@oxc-project/*'
-  - 'vitest'
-  - '@vitest/*'
-  - 'tar' # 脆弱性対応 そのうち消す
-  - 'fastify' # 脆弱性対応 そのうち消す
+  - 'vite' # Vite v8アップデート関連 そのうち消す
+  - 'lightningcss' # Vite v8アップデート関連 そのうち消す
+  - 'lightningcss-*' # Vite v8アップデート関連 そのうち消す
+  - 'rolldown' # Vite v8アップデート関連 そのうち消す
+  - '@rolldown/*' # Vite v8アップデート関連 そのうち消す
+  - '@oxc-project/*' # Vite v8アップデート関連 そのうち消す
+  - 'vitest' # Vite v8アップデート関連 そのうち消す
+  - '@vitest/*' # Vite v8アップデート関連 そのうち消す
