@@ -40,7 +40,7 @@ function normalizeClassWalker(tree: ESTree.Node, stack: string | undefined): str
 	}
 	if (tree.type === 'ObjectExpression') {
 		const values = tree.properties.map((treeNode) => {
-			if (treeNode.type === 'SpreadElement')  return normalizeClassWalker(treeNode.argument, stack);
+			if (treeNode.type === 'SpreadElement') return normalizeClassWalker(treeNode.argument, stack);
 			let x = treeNode.value;
 			let inveted = false;
 			while (x.type === 'UnaryExpression' && x.operator === '!') {
