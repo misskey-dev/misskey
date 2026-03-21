@@ -771,6 +771,43 @@ export class UserEntityService implements OnModuleInit {
 		return Math.min(Math.floor((daysSinceCreation / 365) * 100), 100);
 	}
 
+	// アクティビティ減衰係数を計算（lastActiveDateに基づく0.1〜1.0の減衰）
+	// 3日以内: 1.0、3日境界で即座に0.5、3-7日: 0.5→0.3、7-14日: 0.3→0.15、14-30日: 0.15→0.1、30日超: 0.1
+	// 赤ランプ（3日以上非アクティブ）表示と同時にスコアが即座に半減するようにする
+	@bindThis
+	private async calculateActivityDecay(userId: MiUser['id']): Promise<number> {
+		const user = await this.usersRepository.findOneBy({ id: userId });
+
+		if (!user || !user.lastActiveDate) {
+			return 0.1;
+		}
+
+		const elapsed = Date.now() - user.lastActiveDate.getTime();
+
+		const ONE_DAY = 1000 * 60 * 60 * 24;
+		const THREE_DAYS = ONE_DAY * 3;
+		const SEVEN_DAYS = ONE_DAY * 7;
+		const FOURTEEN_DAYS = ONE_DAY * 14;
+		const THIRTY_DAYS = ONE_DAY * 30;
+
+		if (elapsed < THREE_DAYS) {
+			return 1.0;
+		} else if (elapsed < SEVEN_DAYS) {
+			// 3日で即座に0.5、7日で0.3に到達
+			const ratio = (elapsed - THREE_DAYS) / (SEVEN_DAYS - THREE_DAYS);
+			return 0.5 - (ratio * 0.2);
+		} else if (elapsed < FOURTEEN_DAYS) {
+			const ratio = (elapsed - SEVEN_DAYS) / (FOURTEEN_DAYS - SEVEN_DAYS);
+			return 0.3 - (ratio * 0.15);
+		} else if (elapsed < THIRTY_DAYS) {
+			const ratio = (elapsed - FOURTEEN_DAYS) / (THIRTY_DAYS - FOURTEEN_DAYS);
+			return 0.15 - (ratio * 0.05);
+		} else {
+			return 0.1;
+		}
+	}
+
+	// 人気スコア計算: エンゲージメント比率(重み0.2〜0.7) + フォロワー数(重み0.3〜0.8) にアクティビティ減衰を乗算
 	@bindThis
 	public async calculatePopularityScore(userId: MiUser['id'], followerCount: number, _notesCount: number): Promise<number> {
 		// 30日間のエンゲージメント比率とノート数を取得
@@ -782,16 +819,19 @@ export class UserEntityService implements OnModuleInit {
 		// フォロワー数を正規化（0-100範囲、対数スケール）
 		const normalizedFollowers = Math.min(Math.log10(followerCount + 1) * 20, 100);
 
-		// ノート数に応じてエンゲージメント重みを0.05〜0.5の範囲で動的調整
-		// 100ノートで最大値(0.5)に到達
-		// これにより、ノート数が少ない新規ユーザーはフォロワー数重視になる
-		const engagementWeight = Math.min(0.05 + (recentNotes / 100) * 0.45, 0.5);
+		// ノート数に応じてエンゲージメント重みを0.2〜0.7の範囲で動的調整
+		// 100ノートで最大値(0.7)に到達
+		const engagementWeight = Math.min(0.2 + (recentNotes / 100) * 0.5, 0.7);
 		const followerWeight = 1 - engagementWeight;
 
-		// 動的重み付けでスコア計算
-		const popularityScore =
+		// 動的重み付けでベーススコア計算
+		const baseScore =
 			(normalizedEngagement * engagementWeight) +
 			(normalizedFollowers * followerWeight);
+
+		// アクティビティ減衰係数を適用（非アクティブユーザーのスコアを低下）
+		const activityDecay = await this.calculateActivityDecay(userId);
+		const popularityScore = baseScore * activityDecay;
 
 		// 小数点第2位まで保持
 		return Math.round(popularityScore * 100) / 100;
