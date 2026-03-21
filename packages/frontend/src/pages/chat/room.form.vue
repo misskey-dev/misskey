@@ -13,13 +13,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		ref="textareaEl"
 		v-model="text"
 		:class="[$style.textarea, { [$style.secretMode]: props.isSecretMessageMode }]"
-		class="_acrylic"
 		:placeholder="props.isSecretMessageMode ? (i18n.ts._chat as any).secretMessage : i18n.ts.inputMessageHere"
 		:readonly="textareaReadOnly"
 		@keydown="onKeydown"
 		@paste="onPaste"
-		@focus="onTextareaFocus"
-		@blur="onTextareaBlur"
 	></textarea>
 	<footer :class="$style.footer">
 		<div v-if="file" :class="$style.file" @click="file = null">{{ file.name }}</div>
@@ -61,13 +58,12 @@ const props = defineProps<{
 
 const textareaEl = shallowRef<HTMLTextAreaElement>();
 const fileEl = shallowRef<HTMLInputElement>();
+let cleanupKeyboardDetection: (() => void) | null = null;
 
 const text = ref<string>('');
 const file = ref<Misskey.entities.DriveFile | null>(null);
 const sending = ref(false);
 const textareaReadOnly = ref(false);
-const isImeOpen = ref(false);
-const keyboardHeight = ref(0);
 let autocompleteInstance: Autocomplete | null = null;
 // connection は props から受け取る
 let typingStopTimer: ReturnType<typeof setTimeout> | null = null;
@@ -77,9 +73,7 @@ const canSend = computed(() => (text.value != null && text.value !== '') || file
 
 // typing停止状態を送信する関数
 function notifyTypingStop() {
-	console.log('🔍 [DEBUG] notifyTypingStop called');
 	if (props.onTypingStop && isTyping.value) {
-		console.log('🔍 [DEBUG] Calling parent onTypingStop function');
 		props.onTypingStop();
 		isTyping.value = false;
 	}
@@ -87,9 +81,7 @@ function notifyTypingStop() {
 
 // 強制的にtyping停止を送信する関数（送信時などに使用）
 function forceNotifyTypingStop() {
-	console.log('🔍 [DEBUG] forceNotifyTypingStop called');
 	if (props.onTypingStop) {
-		console.log('🔍 [DEBUG] Force calling parent onTypingStop function');
 		props.onTypingStop();
 		isTyping.value = false;
 
@@ -103,16 +95,12 @@ function forceNotifyTypingStop() {
 
 // typing状態を送信する関数（3秒間隔でthrottle）
 const notifyTyping = throttle(3000, () => {
-	console.log('🔍 [DEBUG] notifyTyping called');
-
 	// 送信直前に再度textareaが空でないかチェック
 	if (!text.value || text.value.trim() === '') {
-		console.log('🔍 [DEBUG] Text is empty at typing event time, skipping typing event');
 		return;
 	}
 
 	if (props.onTyping) {
-		console.log('🔍 [DEBUG] Calling parent onTyping function');
 		props.onTyping();
 		isTyping.value = true;
 
@@ -125,8 +113,6 @@ const notifyTyping = throttle(3000, () => {
 		typingStopTimer = setTimeout(() => {
 			notifyTypingStop();
 		}, 5000);
-	} else {
-		console.warn('🔍 [DEBUG] No onTyping function provided');
 	}
 });
 
@@ -137,12 +123,9 @@ function getDraftKey() {
 watch([text, file], saveDraft);
 
 // テキストが空になった時のtyping停止処理
-watch(text, (newText, oldText) => {
-	console.log('🔍 [DEBUG] Text changed:', { newText: newText?.length || 0, oldText: oldText?.length || 0, isTyping: isTyping.value });
-
+watch(text, (newText) => {
 	// テキストが空になり、かつtyping中の場合
 	if (isTyping.value && (!newText || newText.trim() === '')) {
-		console.log('🔍 [DEBUG] Text became empty, stopping typing');
 		notifyTypingStop();
 	}
 });
@@ -272,8 +255,6 @@ function onChangeFile() {
 function send() {
 	if (!canSend.value) return;
 
-	// 送信開始前に入力中状態を強制的にクリア
-	console.log('🔍 [DEBUG] Sending message, force clearing typing state');
 	forceNotifyTypingStop();
 
 	sending.value = true;
@@ -310,92 +291,7 @@ function clear() {
 	file.value = null;
 	deleteDraft();
 
-	// typing状態を強制的にクリア
 	forceNotifyTypingStop();
-}
-
-// 要素の高さをリセットする共通関数
-function resetElementHeights(parentParent: HTMLElement | null, gaps: HTMLElement | null) {
-	if (parentParent) {
-		parentParent.style.setProperty('height', 'initial');
-	}
-	if (gaps) {
-		gaps.style.setProperty('height', 'initial');
-	}
-}
-
-// テキストエリアを再レンダリング
-function refreshTextarea() {
-	if (textareaEl.value == null) return;
-
-	const parent = textareaEl.value.parentElement as HTMLElement | null;
-	if (!parent) return;
-
-	const parentParent = parent.parentElement;
-	const gaps = parent.closest('._gaps') as HTMLElement | null;
-
-	// 統一されたランダムzIndex値を使用
-	const randomZIndex = Math.floor(Math.random() * 1000) + 1000;
-	console.debug('[KEYBOARD DEBUG] zIndexを変更:', randomZIndex);
-
-	// 統一されたスタイル設定方法
-	parent.style.setProperty('z-index', randomZIndex.toString());
-
-	if (parentParent) {
-		const currentHeight = getComputedStyle(parentParent).height;
-		parentParent.style.setProperty('z-index', randomZIndex.toString());
-		parentParent.style.setProperty('height', `calc(${currentHeight} - 1px)`);
-	}
-
-	if (gaps) {
-		const currentHeight = getComputedStyle(gaps).height;
-		gaps.style.setProperty('z-index', randomZIndex.toString());
-		gaps.style.setProperty('height', `calc(${currentHeight} - 1px)`);
-	}
-
-	setTimeout(() => {
-		// 共通関数を使用して高さをリセット
-		resetElementHeights(parentParent, gaps);
-	}, 100);
-
-	setTimeout(() => {
-		// 共通関数を使用して高さをリセット
-		resetElementHeights(parentParent, gaps);
-	}, 300);
-
-	setTimeout(() => {
-		// 共通関数を使用して高さをリセット
-		resetElementHeights(parentParent, gaps);
-	}, 500);
-}
-
-// iOS keyboard handling
-function onTextareaFocus() {
-	console.log('[KEYBOARD DEBUG] onTextareaFocus called');
-	// iOS環境でキーボード表示時のビューポート調整
-	if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
-		console.log('[KEYBOARD DEBUG] iOS環境でのキーボード表示処理');
-		setTimeout(() => {
-			if (textareaEl.value) {
-				console.log('[KEYBOARD DEBUG] テキストエリアをスクロール中央に配置');
-				textareaEl.value.scrollIntoView({ behavior: 'smooth', block: 'center' });
-				refreshTextarea();
-			}
-		}, 300);
-	}
-}
-
-function onTextareaBlur() {
-	console.log('[KEYBOARD DEBUG] onTextareaBlur called');
-	// iOS環境でキーボード非表示時のビューポート調整
-	if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
-		console.log('[KEYBOARD DEBUG] iOS環境でのキーボード非表示処理');
-		setTimeout(() => {
-			console.log('[KEYBOARD DEBUG] ウィンドウを上部にスクロール');
-			window.scrollTo(0, 0);
-			refreshTextarea();
-		}, 100);
-	}
 }
 
 function saveDraft() {
@@ -455,183 +351,10 @@ async function insertEmoji(ev: MouseEvent) {
 	);
 }
 
-function setupKeyboardHandling() {
-	// モバイル環境の検出
-	function isMobileDevice() {
-		return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
-			   ('ontouchstart' in window) ||
-			   (navigator.maxTouchPoints > 0);
-	}
-
-	// PCの場合は何もしない
-	if (!isMobileDevice()) {
-		return () => {}; // 空のクリーンアップ関数
-	}
-
-	let isKeyboardOpen = false;
-	let footerElement: HTMLElement | null = null;
-
-	function getFooterElement() {
-		if (!footerElement && textareaEl.value) {
-			// 同じコンポーネント内のfooterを取得
-			const parent = textareaEl.value.closest('[class*="root"]');
-			if (parent) {
-				footerElement = parent.querySelector('[class*="footer"]') as HTMLElement;
-			}
-		}
-		return footerElement;
-	}
-
-	function handleKeyboardOpen() {
-		if (isKeyboardOpen) return;
-		isKeyboardOpen = true;
-		isImeOpen.value = true;
-
-		console.log('[KEYBOARD DEBUG] キーボードが開かれました');
-		console.log('[KEYBOARD DEBUG] Visual Viewport Height:', window.visualViewport?.height);
-		console.log('[KEYBOARD DEBUG] Window Inner Height:', window.innerHeight);
-		refreshTextarea();
-
-		const footer = getFooterElement();
-		if (footer) {
-			console.log('[KEYBOARD DEBUG] フッター要素を調整開始');
-			// 一度staticにしてレンダリングをリセット
-			footer.style.position = 'static';
-
-			// ブラウザに強制的にレンダリングさせる
-			footer.offsetHeight;
-
-			// 次のフレームでstickyに戻す
-			requestAnimationFrame(() => {
-				setTimeout(() => {
-					footer.style.position = 'sticky';
-					footer.style.bottom = '0';
-					console.log('[KEYBOARD DEBUG] フッターをstickyに設定完了');
-				}, 100);
-			});
-		}
-
-		document.documentElement.classList.add('ime-open');
-		console.log('[KEYBOARD DEBUG] ime-openクラス追加完了');
-	}
-
-	function handleKeyboardClose() {
-		if (!isKeyboardOpen) return;
-		isKeyboardOpen = false;
-		isImeOpen.value = false;
-
-		console.log('[KEYBOARD DEBUG] キーボードが閉じられました');
-		console.log('[KEYBOARD DEBUG] Visual Viewport Height:', window.visualViewport?.height);
-		console.log('[KEYBOARD DEBUG] Window Inner Height:', window.innerHeight);
-		refreshTextarea();
-
-		const footer = getFooterElement();
-		if (footer) {
-			console.log('[KEYBOARD DEBUG] フッターを通常状態に戻す');
-			// 通常のstickyに戻す
-			footer.style.position = 'sticky';
-			footer.style.bottom = '0';
-		}
-
-		document.documentElement.classList.remove('ime-open');
-		console.log('[KEYBOARD DEBUG] ime-openクラス削除完了');
-	}
-
-	function detectKeyboardChange() {
-		const vv = window.visualViewport;
-		if (!vv) return;
-
-		const keyboardHeight = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
-
-		console.log('[KEYBOARD DEBUG] キーボード高さ検出:', {
-			windowInnerHeight: window.innerHeight,
-			visualViewportHeight: vv.height,
-			visualViewportOffsetTop: vv.offsetTop,
-			calculatedKeyboardHeight: keyboardHeight,
-			currentlyOpen: isKeyboardOpen
-		});
-
-		refreshTextarea();
-
-		// キーボードが開いているかどうかを判定（100px以上の高さ変化）
-		if (keyboardHeight > 100 && !isKeyboardOpen) {
-			console.log('[KEYBOARD DEBUG] キーボード開く判定 - 高さ:', keyboardHeight);
-			handleKeyboardOpen();
-		} else if (keyboardHeight <= 100 && isKeyboardOpen) {
-			console.log('[KEYBOARD DEBUG] キーボード閉じる判定 - 高さ:', keyboardHeight);
-			handleKeyboardClose();
-		}
-	}
-
-	// iOS/Android キーボードイベント検知
-	const handleVisualViewportChange = () => {
-		console.log('[KEYBOARD DEBUG] Visual Viewport変更イベント発生');
-		detectKeyboardChange();
-	};
-
-	// フォーカスイベントでのキーボード検知
-	const handleTextareaFocus = () => {
-		console.log('[KEYBOARD DEBUG] テキストエリアにフォーカス');
-		// モバイルでフォーカス時はキーボードが表示される可能性が高い
-		setTimeout(() => {
-			console.log('[KEYBOARD DEBUG] フォーカス後の遅延チェック実行');
-			detectKeyboardChange();
-		}, 300);
-	};
-
-	const handleTextareaBlur = () => {
-		console.log('[KEYBOARD DEBUG] テキストエリアからフォーカス外れ');
-		// フォーカスが外れたら少し待ってからキーボード状態をチェック
-		setTimeout(() => {
-			console.log('[KEYBOARD DEBUG] フォーカス外れ後の遅延チェック実行');
-			detectKeyboardChange();
-		}, 300);
-	};
-
-	// イベントリスナー設定
-	if (window.visualViewport) {
-		window.visualViewport.addEventListener('resize', handleVisualViewportChange);
-		window.visualViewport.addEventListener('scroll', handleVisualViewportChange);
-	}
-
-	if (textareaEl.value) {
-		textareaEl.value.addEventListener('focus', handleTextareaFocus);
-		textareaEl.value.addEventListener('blur', handleTextareaBlur);
-	}
-
-	// 初期状態をチェック
-	detectKeyboardChange();
-
-	return () => {
-		if (window.visualViewport) {
-			window.visualViewport.removeEventListener('resize', handleVisualViewportChange);
-			window.visualViewport.removeEventListener('scroll', handleVisualViewportChange);
-		}
-		if (textareaEl.value) {
-			textareaEl.value.removeEventListener('focus', handleTextareaFocus);
-			textareaEl.value.removeEventListener('blur', handleTextareaBlur);
-		}
-		document.documentElement.classList.remove('ime-open');
-
-		// フッターをリセット
-		const footer = getFooterElement();
-		if (footer) {
-			footer.style.position = '';
-			footer.style.bottom = '';
-			footer.style.display = '';
-		}
-	};
-}
-
 onMounted(() => {
 	if (textareaEl.value != null) {
 		autocompleteInstance = new Autocomplete(textareaEl.value, text);
 	}
-
-	console.log('🔍 [DEBUG] Using parent typing functions:', !!(props.onTyping && props.onTypingStop));
-
-	// キーボード処理の設定
-	const cleanupKeyboard = setupKeyboardHandling();
 
 	// 書きかけの投稿を復元
 	const draft = JSON.parse(miLocalStorage.getItem('chatMessageDrafts') || '{}')[getDraftKey()];
@@ -640,16 +363,29 @@ onMounted(() => {
 		file.value = draft.data.file;
 	}
 
-	// アンマウント時にクリーンアップ
-	onBeforeUnmount(() => {
-		cleanupKeyboard();
-		// typing状態をクリア
-		notifyTypingStop();
-		if (typingStopTimer) {
-			clearTimeout(typingStopTimer);
-			typingStopTimer = null;
-		}
-	});
+	// キーボード表示検出: iOS Safariではキーボード表示時も100dvhが変わらないため
+	// visualViewportでキーボード高さを検出し、CSS変数とクラスでレイアウトを調整する
+	const vv = window.visualViewport;
+	if (vv) {
+		const onVvResize = () => {
+			// iOS: innerHeightはlayout viewport(キーボードで変わらない)
+			// vv.heightはvisual viewport(キーボードで縮む)
+			const kbHeight = window.innerHeight - vv.height - vv.offsetTop;
+			if (kbHeight > 100) {
+				document.documentElement.classList.add('keyboard-open');
+				document.documentElement.style.setProperty('--keyboard-height', `${kbHeight}px`);
+			} else {
+				document.documentElement.classList.remove('keyboard-open');
+				document.documentElement.style.removeProperty('--keyboard-height');
+			}
+		};
+		vv.addEventListener('resize', onVvResize);
+		cleanupKeyboardDetection = () => {
+			vv.removeEventListener('resize', onVvResize);
+			document.documentElement.classList.remove('keyboard-open');
+			document.documentElement.style.removeProperty('--keyboard-height');
+		};
+	}
 });
 
 onBeforeUnmount(() => {
@@ -657,24 +393,22 @@ onBeforeUnmount(() => {
 		autocompleteInstance.detach();
 		autocompleteInstance = null;
 	}
-	// typing状態をクリア
 	notifyTypingStop();
 	if (typingStopTimer) {
 		clearTimeout(typingStopTimer);
 		typingStopTimer = null;
 	}
-	// typing functions are managed by parent component
+	cleanupKeyboardDetection?.();
 });
 </script>
 
 <style lang="scss" module>
+// スクロールコンテナ外に配置されるため、sticky不要
+// モバイルナビバーと同じnavBgで確実に不透明背景を表示する
 .root {
 	position: relative;
-	border-bottom: none;
-	border-radius: 14px 14px 0 0;
-	overflow: clip;
+	background: var(--MI_THEME-navBg);
 }
-
 
 .textarea {
 	cursor: auto;
@@ -693,33 +427,21 @@ onBeforeUnmount(() => {
 	border-radius: 0;
 	box-shadow: none;
 	box-sizing: border-box;
-
-	// iOS Safari キーボード対応
-	-webkit-appearance: none;
-	-webkit-user-select: auto;
-	user-select: auto;
-	-webkit-overflow-scrolling: touch;
-	color: var(--MI_THEME-fg);
+	// backdrop-filterを使わない不透明背景（iOS Safari対応）
+	background: var(--MI_THEME-navBg);
+	color: var(--MI_THEME-navFg);
 	field-sizing: content;
 
 	&.secretMode {
-		border-radius: 14px 14px 0 0;
-		border: 2px solid rgba(255, 165, 0, 0.3);
+		// borderはサブピクセルで左辺が1px欠けることがあるため、box-shadowで代替
+		box-shadow: inset 0 0 0 2px rgba(255, 165, 0, 0.3);
 		background: linear-gradient(135deg, rgba(255, 165, 0, 0.05) 0%, rgba(255, 200, 50, 0.05) 100%);
 	}
 }
 
+// スクロールコンテナ外配置のためsticky不要
 .footer {
-	position: sticky;
-	bottom: 0;
-	background: var(--MI_THEME-panel);
-	z-index: 1000;
-}
-
-/* iOSキーボード表示時もstickyを維持（レンダリング調整により解決） */
-:global(.ime-open) .footer {
-	/* JavaScriptで動的にposition: stickyを再設定するためCSS側は最小限 */
-	transform: translateZ(0); /* GPU加速を有効にして描画を安定化 */
+	background: var(--MI_THEME-navBg);
 }
 
 .file {
