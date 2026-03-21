@@ -94,9 +94,10 @@ export class MiPage {
 	 * public ... 公開
 	 * followers ... フォロワーのみ
 	 * specified ... visibleUserIds で指定したユーザーのみ
+	 * url-only ... URLを知っている人のみ（プロフィール非表示、slugにUUID付与）
 	 */
-	@Column('enum', { enum: ['public', 'followers', 'specified'] })
-	public visibility: 'public' | 'followers' | 'specified';
+	@Column('enum', { enum: ['public', 'followers', 'specified', 'url-only'] })
+	public visibility: 'public' | 'followers' | 'specified' | 'url-only';
 
 	@Index()
 	@Column({

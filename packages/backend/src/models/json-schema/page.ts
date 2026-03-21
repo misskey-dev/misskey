@@ -205,5 +205,19 @@ export const packedPageSchema = {
 			type: 'boolean',
 			optional: true, nullable: false,
 		},
+		visibility: {
+			type: 'string',
+			optional: false, nullable: false,
+			enum: ['public', 'followers', 'specified', 'url-only'],
+		},
+		visibleUserIds: {
+			type: 'array',
+			optional: false, nullable: false,
+			items: {
+				type: 'string',
+				optional: false, nullable: false,
+				format: 'id',
+			},
+		},
 	},
 } as const;
