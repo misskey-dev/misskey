@@ -177,7 +177,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					.andWhere('note.channelId IS NULL')
 					.andWhere('note.userId IN (:...meOrFolloweeIds)', { meOrFolloweeIds: meOrFolloweeIds });
 				if (mutingChannelIds.length > 0) {
-					qb.andWhere('note.renoteChannelId NOT IN (:...mutingChannelIds)', { mutingChannelIds });
+					qb.andWhere(new Brackets(qb2 => {
+						qb2.orWhere('note.renoteChannelId IS NULL');
+						qb2.orWhere('note.renoteChannelId NOT IN (:...mutingChannelIds)', { mutingChannelIds });
+					}));
 				}
 			}));
 		} else if (followingChannelIds.length > 0) {
