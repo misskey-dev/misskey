@@ -5,10 +5,11 @@
 
 import { IsNull } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsersRepository, PagesRepository } from '@/models/_.js';
+import type { UsersRepository, PagesRepository, FollowingsRepository } from '@/models/_.js';
 import type { MiPage } from '@/models/Page.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { PageEntityService } from '@/core/entities/PageEntityService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 
@@ -28,6 +29,11 @@ export const meta = {
 			message: 'No such page.',
 			code: 'NO_SUCH_PAGE',
 			id: '222120c0-3ead-4528-811b-b96f233388d7',
+		},
+		accessDenied: {
+			message: 'You do not have permission to view this page.',
+			code: 'ACCESS_DENIED',
+			id: 'c5a3a9e2-4b7d-4f1e-8a9c-2d6e3f7b8c1a',
 		},
 	},
 } as const;
@@ -61,7 +67,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.pagesRepository)
 		private pagesRepository: PagesRepository,
 
+		@Inject(DI.followingsRepository)
+		private followingsRepository: FollowingsRepository,
+
 		private pageEntityService: PageEntityService,
+		private roleService: RoleService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			let page: MiPage | null = null;
@@ -83,6 +93,33 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (page == null) {
 				throw new ApiError(meta.errors.noSuchPage);
+			}
+
+			// 権限チェック: public / url-only は誰でも閲覧可能
+			if (page.visibility === 'specified') {
+				if (me == null) {
+					throw new ApiError(meta.errors.accessDenied);
+				}
+				if (me.id !== page.userId && !await this.roleService.isModerator(me)) {
+					if (!page.visibleUserIds.includes(me.id)) {
+						throw new ApiError(meta.errors.accessDenied);
+					}
+				}
+			} else if (page.visibility === 'followers') {
+				if (me == null) {
+					throw new ApiError(meta.errors.accessDenied);
+				}
+				if (me.id !== page.userId && !await this.roleService.isModerator(me)) {
+					const isFollowing = await this.followingsRepository.exists({
+						where: {
+							followerId: me.id,
+							followeeId: page.userId,
+						},
+					});
+					if (!isFollowing) {
+						throw new ApiError(meta.errors.accessDenied);
+					}
+				}
 			}
 
 			return await this.pageEntityService.pack(page, me);

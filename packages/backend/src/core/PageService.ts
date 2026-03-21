@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { randomUUID } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import { DataSource, In, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
@@ -32,7 +33,12 @@ export interface PageBody {
 	font: string;
 	alignCenter: boolean;
 	hideTitleWhenPinned: boolean;
+	visibility?: MiPage['visibility'];
+	visibleUserIds?: MiUser['id'][];
 }
+
+// slug末尾の _UUID パターン（url-only用）
+const UUID_SUFFIX_REGEX = /_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
 @Injectable()
 export class PageService {
@@ -60,9 +66,16 @@ export class PageService {
 		me: MiUser,
 		body: PageBody,
 	): Promise<MiPage> {
+		const visibility = body.visibility ?? 'public';
+
+		// url-only の場合、slugに _UUID を付与してURL推測を困難にする
+		const pageName = visibility === 'url-only'
+			? `${body.name}_${randomUUID()}`
+			: body.name;
+
 		await this.pagesRepository.findBy({
 			userId: me.id,
-			name: body.name,
+			name: pageName,
 		}).then(result => {
 			if (result.length > 0) {
 				throw new IdentifiableError('1a79e38e-3d83-4423-845b-a9d83ff93b61');
@@ -73,14 +86,15 @@ export class PageService {
 			id: this.idService.gen(),
 			updatedAt: new Date(),
 			title: body.title,
-			name: body.name,
+			name: pageName,
 			summary: body.summary,
 			content: body.content,
 			variables: body.variables,
 			script: body.script,
 			eyeCatchingImageId: body.eyeCatchingImage ? body.eyeCatchingImage.id : null,
 			userId: me.id,
-			visibility: 'public',
+			visibility: visibility,
+			visibleUserIds: body.visibleUserIds ?? [],
 			alignCenter: body.alignCenter,
 			hideTitleWhenPinned: body.hideTitleWhenPinned,
 			font: body.font,
@@ -115,11 +129,26 @@ export class PageService {
 				throw new IdentifiableError('d0017699-8256-46f1-aed4-bc03bed73616');
 			}
 
-			if (body.name != null) {
+			// visibility変更時のslug自動変換
+			let resolvedName = body.name;
+			const newVisibility = body.visibility;
+			if (newVisibility != null && newVisibility !== page.visibility) {
+				if (newVisibility === 'url-only') {
+					// → url-only: 現在のslug（UUID除去済み）に _UUID を付与
+					const baseName = resolvedName ?? page.name.replace(UUID_SUFFIX_REGEX, '');
+					resolvedName = `${baseName}_${randomUUID()}`;
+				} else if (page.visibility === 'url-only') {
+					// url-only → other: slug末尾の _UUID を除去して元に戻す
+					const currentName = resolvedName ?? page.name;
+					resolvedName = currentName.replace(UUID_SUFFIX_REGEX, '');
+				}
+			}
+
+			if (resolvedName != null) {
 				await transaction.findBy(MiPage, {
 					id: Not(pageId),
 					userId: me.id,
-					name: body.name,
+					name: resolvedName,
 				}).then(result => {
 					if (result.length > 0) {
 						throw new IdentifiableError('d05bfe24-24b6-4ea2-a3ec-87cc9bf4daa4');
@@ -130,7 +159,7 @@ export class PageService {
 			await transaction.update(MiPage, page.id, {
 				updatedAt: new Date(),
 				title: body.title,
-				name: body.name,
+				name: resolvedName,
 				summary: body.summary === undefined ? page.summary : body.summary,
 				content: body.content,
 				variables: body.variables,
@@ -139,9 +168,9 @@ export class PageService {
 				hideTitleWhenPinned: body.hideTitleWhenPinned,
 				font: body.font,
 				eyeCatchingImageId: body.eyeCatchingImage === undefined ? undefined : (body.eyeCatchingImage?.id ?? null),
+				visibility: newVisibility,
+				visibleUserIds: body.visibleUserIds,
 			});
-
-			console.log("page.content", page.content);
 
 			if (body.content != null) {
 				const beforeReferencedNotes = this.collectReferencedNotes(page.content);

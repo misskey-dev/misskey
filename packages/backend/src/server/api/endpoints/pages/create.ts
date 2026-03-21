@@ -4,8 +4,9 @@
  */
 
 import ms from 'ms';
+import { In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { DriveFilesRepository, MiDriveFile, PagesRepository } from '@/models/_.js';
+import type { DriveFilesRepository, MiDriveFile, PagesRepository, UsersRepository } from '@/models/_.js';
 import { pageNameSchema } from '@/models/Page.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { PageEntityService } from '@/core/entities/PageEntityService.js';
@@ -45,6 +46,11 @@ export const meta = {
 			code: 'NAME_ALREADY_EXISTS',
 			id: '4650348e-301c-499a-83c9-6aa988c66bc1',
 		},
+		invalidVisibleUser: {
+			message: 'Visible user must be a local user.',
+			code: 'INVALID_VISIBLE_USER',
+			id: 'a1c7f3b4-8e2d-4f1a-9b6c-3d5e7f8a9b0c',
+		},
 	},
 } as const;
 
@@ -65,6 +71,8 @@ export const paramDef = {
 		font: { type: 'string', enum: ['serif', 'sans-serif'], default: 'sans-serif' },
 		alignCenter: { type: 'boolean', default: false },
 		hideTitleWhenPinned: { type: 'boolean', default: false },
+		visibility: { type: 'string', enum: ['public', 'followers', 'specified', 'url-only'], default: 'public' },
+		visibleUserIds: { type: 'array', items: { type: 'string', format: 'misskey:id' }, default: [] },
 	},
 	required: ['title', 'name', 'content', 'variables', 'script'],
 } as const;
@@ -77,6 +85,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
+
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
 
 		private pageService: PageService,
 		private pageEntityService: PageEntityService,
@@ -94,14 +105,25 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 			}
 
-			await this.pagesRepository.findBy({
-				userId: me.id,
-				name: ps.name,
-			}).then(result => {
-				if (result.length > 0) {
-					throw new ApiError(meta.errors.nameAlreadyExists);
+			// visibleUserIdsのローカルユーザーバリデーション
+			if (ps.visibility === 'specified' && ps.visibleUserIds != null && ps.visibleUserIds.length > 0) {
+				const users = await this.usersRepository.findBy({ id: In(ps.visibleUserIds!) });
+				if (users.some(u => u.host != null)) {
+					throw new ApiError(meta.errors.invalidVisibleUser);
 				}
-			});
+			}
+
+			// url-only時はPageServiceがslugにUUIDを付与するため、ここでの重複チェックは元のnameで行う
+			if (ps.visibility !== 'url-only') {
+				await this.pagesRepository.findBy({
+					userId: me.id,
+					name: ps.name,
+				}).then(result => {
+					if (result.length > 0) {
+						throw new ApiError(meta.errors.nameAlreadyExists);
+					}
+				});
+			}
 
 			try {
 				const page = await this.pageService.create(me, {

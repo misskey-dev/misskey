@@ -108,6 +108,8 @@ export class PageEntityService {
 			attachedFiles: this.driveFileEntityService.packMany((await Promise.all(attachedFiles)).filter(x => x != null)),
 			likedCount: page.likedCount,
 			isLiked: meId ? await this.pageLikesRepository.exists({ where: { pageId: page.id, userId: meId } }) : undefined,
+			visibility: page.visibility,
+			visibleUserIds: page.visibleUserIds,
 		});
 	}
 
