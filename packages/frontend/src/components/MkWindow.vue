@@ -106,8 +106,8 @@ function capturePointer(evt: PointerEvent) {
 }
 
 const props = withDefaults(defineProps<{
-	initialWidth: number;
-	initialHeight: number | null;
+	initialWidth?: number | null;
+	initialHeight?: number | null;
 	canResize?: boolean;
 	closeButton?: boolean;
 	mini?: boolean;
@@ -116,7 +116,7 @@ const props = withDefaults(defineProps<{
 	buttonsLeft?: WindowButton[];
 	buttonsRight?: WindowButton[];
 }>(), {
-	initialWidth: 400,
+	initialWidth: null,
 	initialHeight: null,
 	canResize: false,
 	closeButton: true,
@@ -130,6 +130,12 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
+
+const INITIAL_WINDOW_WIDTH_RATIO = 0.5;
+const INITIAL_WINDOW_HEIGHT_RATIO = 0.75;
+const INITIAL_WINDOW_WIDTH_MIN = 400; // スクリーンの最小幅に合わせるのはapplyTransormWidthの担当
+const INITIAL_WINDOW_WIDTH_MAX = 1000; // 画面幅いっぱいに広がるのを防止するための最大幅
+const INITIAL_WINDOW_HEIGHT_MIN = 500; // スクリーンの最小幅に合わせるのはapplyTransormHeightの担当
 
 provide('inWindow', true);
 
@@ -484,8 +490,14 @@ function onBrowserResize() {
 }
 
 onMounted(() => {
-	applyTransformWidth(props.initialWidth);
-	if (props.initialHeight) applyTransformHeight(props.initialHeight);
+	let initialWidth = props.initialWidth;
+	let initialHeight = props.initialHeight;
+
+	if (initialWidth == null) initialWidth = Math.min(Math.max(Math.round(window.innerWidth * INITIAL_WINDOW_WIDTH_RATIO), INITIAL_WINDOW_WIDTH_MIN), INITIAL_WINDOW_WIDTH_MAX);
+	if (initialHeight == null) initialHeight = Math.max(Math.round(window.innerHeight * INITIAL_WINDOW_HEIGHT_RATIO), INITIAL_WINDOW_HEIGHT_MIN);
+
+	applyTransformWidth(initialWidth);
+	applyTransformHeight(initialHeight);
 
 	if (rootEl.value) {
 		applyTransformTop((window.innerHeight / 2) - (rootEl.value.offsetHeight / 2));
