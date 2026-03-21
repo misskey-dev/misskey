@@ -365,7 +365,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (typeof ps.requireSigninToViewContents === 'boolean') updates.requireSigninToViewContents = ps.requireSigninToViewContents;
 			if ((typeof ps.makeNotesFollowersOnlyBefore === 'number') || (ps.makeNotesFollowersOnlyBefore === null)) {
 				policies ??= await this.roleService.getUserPolicies(user.id);
-				if (policies.durationBasedLockdownAvailable === false) {
+				if (user.makeNotesFollowersOnlyBefore !== ps.makeNotesFollowersOnlyBefore && policies.durationBasedLockdownAvailable === false) {
 					throw new ApiError(meta.errors.restrictedByRole);
 				}
 				if (typeof ps.makeNotesFollowersOnlyBefore === 'number' && ps.makeNotesFollowersOnlyBefore * 1000 > Date.now()) {
@@ -375,7 +375,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 			if ((typeof ps.makeNotesHiddenBefore === 'number') || (ps.makeNotesHiddenBefore === null)) {
 				policies ??= await this.roleService.getUserPolicies(user.id);
-				if (policies.durationBasedLockdownAvailable === false) {
+				if (user.makeNotesHiddenBefore !== ps.makeNotesHiddenBefore && policies.durationBasedLockdownAvailable === false) {
 					throw new ApiError(meta.errors.restrictedByRole);
 				}
 				if (typeof ps.makeNotesHiddenBefore === 'number' && ps.makeNotesHiddenBefore * 1000 > Date.now()) {
