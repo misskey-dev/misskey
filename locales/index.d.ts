@@ -10251,6 +10251,34 @@ export interface Locale extends ILocale {
          */
         "eyeCatchingImageRemove": string;
         /**
+         * 表示権限
+         */
+        "visibility": string;
+        /**
+         * パブリック
+         */
+        "visibilityPublic": string;
+        /**
+         * フォロワーのみ
+         */
+        "visibilityFollowers": string;
+        /**
+         * 特定ユーザー限定
+         */
+        "visibilitySpecified": string;
+        /**
+         * URL限定
+         */
+        "visibilityUrlOnly": string;
+        /**
+         * 閲覧許可ユーザーを追加
+         */
+        "addVisibleUser": string;
+        /**
+         * このページを閲覧する権限がありません
+         */
+        "noPermission": string;
+        /**
          * ブロックを追加
          */
         "chooseBlock": string;
