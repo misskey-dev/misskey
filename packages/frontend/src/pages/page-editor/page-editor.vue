@@ -36,6 +36,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<MkSwitch v-model="hideTitleWhenPinned">{{ i18n.ts._pages.hideTitleWhenPinned }}</MkSwitch>
 
+				<MkSelect v-model="visibility" :items="visibilityDef">
+					<template #label>{{ i18n.ts._pages.visibility }}</template>
+				</MkSelect>
+
+				<div v-if="visibility === 'specified'" class="_gaps_s">
+					<div v-for="user in visibleUsers" :key="user.id" style="display: flex; align-items: center; gap: 8px;">
+						<span>@{{ user.username }}</span>
+						<MkButton inline danger @click="removeVisibleUser(user)"><i class="ti ti-x"></i></MkButton>
+					</div>
+					<MkButton @click="addVisibleUser"><i class="ti ti-plus"></i> {{ i18n.ts._pages.addVisibleUser }}</MkButton>
+				</div>
+
 				<div class="eyeCatch">
 					<MkButton v-if="eyeCatchingImageId == null && !readonly" @click="setEyeCatchingImage"><i class="ti ti-plus"></i> {{ i18n.ts._pages.eyeCatchingImageSet }}</MkButton>
 					<div v-else-if="eyeCatchingImage">
@@ -107,6 +119,20 @@ const {
 const content = ref<Misskey.entities.Page['content']>([]);
 const alignCenter = ref(false);
 const hideTitleWhenPinned = ref(false);
+const {
+	model: visibility,
+	def: visibilityDef,
+} = useMkSelect({
+	items: [
+		{ label: i18n.ts._pages.visibilityPublic, value: 'public' },
+		{ label: i18n.ts._pages.visibilityFollowers, value: 'followers' },
+		{ label: i18n.ts._pages.visibilitySpecified, value: 'specified' },
+		{ label: i18n.ts._pages.visibilityUrlOnly, value: 'url-only' },
+	],
+	initialValue: 'public',
+});
+const visibleUsers = ref<Misskey.entities.UserLite[]>([]);
+const visibleUserIds = ref<string[]>([]);
 
 provide('readonly', readonly.value);
 
@@ -120,7 +146,7 @@ watch(eyeCatchingImageId, async () => {
 	}
 });
 
-function getSaveOptions(): Misskey.entities.PagesCreateRequest {
+function getSaveOptions() {
 	return {
 		title: title.value.trim(),
 		name: name.value.trim(),
@@ -132,6 +158,8 @@ function getSaveOptions(): Misskey.entities.PagesCreateRequest {
 		content: content.value,
 		variables: [],
 		eyeCatchingImageId: eyeCatchingImageId.value,
+		visibility: visibility.value as 'public' | 'followers' | 'specified' | 'url-only',
+		visibleUserIds: visibleUserIds.value,
 	};
 }
 
@@ -232,6 +260,19 @@ function removeEyeCatchingImage() {
 	eyeCatchingImageId.value = null;
 }
 
+async function addVisibleUser() {
+	const user = await os.selectUser({ localOnly: true });
+	if (user == null) return;
+	if (visibleUserIds.value.includes(user.id)) return;
+	visibleUsers.value.push(user);
+	visibleUserIds.value.push(user.id);
+}
+
+function removeVisibleUser(user: Misskey.entities.UserLite) {
+	visibleUsers.value = visibleUsers.value.filter(u => u.id !== user.id);
+	visibleUserIds.value = visibleUserIds.value.filter(id => id !== user.id);
+}
+
 async function init() {
 	if (props.initPageId) {
 		page.value = await misskeyApi('pages/show', {
@@ -257,6 +298,15 @@ async function init() {
 		alignCenter.value = page.value.alignCenter;
 		content.value = page.value.content;
 		eyeCatchingImageId.value = page.value.eyeCatchingImageId;
+		visibility.value = (page.value as any).visibility ?? 'public';
+		visibleUserIds.value = (page.value as any).visibleUserIds ?? [];
+		// visibleUserIdsからユーザー情報を取得
+		if (visibleUserIds.value.length > 0) {
+			const users = await Promise.all(
+				visibleUserIds.value.map(id => misskeyApi('users/show', { userId: id }).catch(() => null)),
+			);
+			visibleUsers.value = users.filter(u => u != null) as Misskey.entities.UserLite[];
+		}
 	} else {
 		const id = genId();
 		content.value = [{
