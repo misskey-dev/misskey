@@ -35,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					{{ tradePanelDebug }}
 				</div>
 
-				<!-- FR-016: Top-right button group (inventory + chat history + reload + settings) -->
+				<!-- FR-016: Top-right button group (inventory + chat window.history + reload + settings) -->
 				<div v-if="!isLoading && !error" :class="$style.topRightButtonGroup">
 					<button
 						:class="$style.groupButton"
@@ -170,14 +170,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 						:targetPlayer="tradeTargetPlayer"
 						:initialTradeId="activeTradeId"
 						@close="handleCloseTradePanel"
-						@trade-sent="handleTradeSent"
-						@trade-completed="handleTradeCompleted"
+						@tradeSent="handleTradeSent"
+						@tradeCompleted="handleTradeCompleted"
 						@showHistory="handleShowTradeHistory"
-						@debug-update="tradePanelDebug = $event"
+						@debugUpdate="tradePanelDebug = $event"
 					/>
 				</div>
 
-				<!-- T040: Trade history overlay -->
+				<!-- T040: Trade window.history overlay -->
 				<div v-if="showTradeHistory" :class="$style.tradePanelOverlay" @click.self="showTradeHistory = false">
 					<TradeHistory @close="showTradeHistory = false"/>
 				</div>
@@ -273,7 +273,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 									ジョイスティックと絵文字ボタンの左右位置を入れ替えます
 								</div>
 								<label :class="$style.toggle">
-									<input type="checkbox" v-model="layoutSwapped" @change="saveLayoutSetting" />
+									<input v-model="layoutSwapped" type="checkbox" @change="saveLayoutSetting" />
 									<span :class="$style.toggleSlider"></span>
 								</label>
 							</div>
@@ -352,10 +352,10 @@ const noctownI18n = {
 
 // T005: EmotionEmoji type interface for favorite emoji support
 interface EmotionEmoji {
-	emoji: string;      // Original emoji string (Unicode or :custom_name:)
-	isCustom: boolean;  // Whether this is a custom emoji
-	url?: string;       // URL for custom emoji image
-	display: string;    // Display text (Unicode emoji or empty for custom)
+	emoji: string; // Original emoji string (Unicode or :custom_name:)
+	isCustom: boolean; // Whether this is a custom emoji
+	url?: string; // URL for custom emoji image
+	display: string; // Display text (Unicode emoji or empty for custom)
 }
 
 // T006: Get favorite emojis from Misskey emoji picker settings
@@ -458,14 +458,14 @@ let engine: import('@/scripts/noctown/engine.js').NoctownEngine | null = null;
 let stream: ReturnType<typeof useStream> | null = null;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const connection = ref<any>(null); // Use ref like drawing chat for better reactivity
-let moveInterval: ReturnType<typeof setInterval> | null = null;
-let heartbeatInterval: ReturnType<typeof setInterval> | null = null;
+let moveInterval: ReturnType<typeof window.setInterval> | null = null;
+let heartbeatInterval: ReturnType<typeof window.setInterval> | null = null;
 
 // FR-017: Ping/pong for player status mark color
-let pingInterval: ReturnType<typeof setInterval> | null = null;
-let warningCheckInterval: ReturnType<typeof setInterval> | null = null;
+let pingInterval: ReturnType<typeof window.setInterval> | null = null;
+let warningCheckInterval: ReturnType<typeof window.setInterval> | null = null;
 // Track pending pings: pingId -> { playerId, timeoutId }
-const pendingPings = new Map<string, { playerId: string; timeoutId: ReturnType<typeof setTimeout> }>();
+const pendingPings = new Map<string, { playerId: string; timeoutId: ReturnType<typeof window.setTimeout> }>();
 const PING_TIMEOUT_MS = 5000; // 5秒タイムアウト
 
 // FR-018: Player info floating window
@@ -479,7 +479,7 @@ const selectedPlayerInfo = ref<{
 const selectedPlayerPingTime = ref<number | null>(null);
 const isPlayerInfoPinging = ref(false);
 // Track pending pings for player info window (separate from status mark pings)
-const pendingPlayerInfoPings = new Map<string, { playerId: string; sentTime: number; timeoutId: ReturnType<typeof setTimeout> }>();
+const pendingPlayerInfoPings = new Map<string, { playerId: string; sentTime: number; timeoutId: ReturnType<typeof window.setTimeout> }>();
 
 // FR-022, FR-023: Pet info floating window
 const showPetInfoWindow = ref(false);
@@ -535,8 +535,8 @@ const incomingTradeToast = ref<{
 
 // FR-019: Typing indicator state
 let isTyping = false;
-let typingDebounceTimeout: ReturnType<typeof setTimeout> | null = null;
-let typingAutoHideTimeout: ReturnType<typeof setTimeout> | null = null;
+let typingDebounceTimeout: ReturnType<typeof window.setTimeout> | null = null;
+let typingAutoHideTimeout: ReturnType<typeof window.setTimeout> | null = null;
 
 // Movement state
 // T045: Make coordinates reactive for UI display
@@ -676,7 +676,7 @@ function setupTouchEventFallback(): void {
 
 	// Use { once: true } to automatically remove listener after first touch
 	// This prevents repeated calls and optimizes performance
-	document.addEventListener('touchstart', handleTouchStart, { once: true });
+	window.document.addEventListener('touchstart', handleTouchStart, { once: true });
 }
 
 async function initialize(): Promise<void> {
@@ -1308,11 +1308,11 @@ function handleChatSend(message: string): void {
 		engine.showLocalPlayerTyping(false);
 	}
 	if (typingDebounceTimeout) {
-		clearTimeout(typingDebounceTimeout);
+		window.clearTimeout(typingDebounceTimeout);
 		typingDebounceTimeout = null;
 	}
 	if (typingAutoHideTimeout) {
-		clearTimeout(typingAutoHideTimeout);
+		window.clearTimeout(typingAutoHideTimeout);
 		typingAutoHideTimeout = null;
 	}
 
@@ -1334,7 +1334,7 @@ function handleChatInput(hasText: boolean): void {
 
 	// Clear existing timeouts
 	if (typingDebounceTimeout) {
-		clearTimeout(typingDebounceTimeout);
+		window.clearTimeout(typingDebounceTimeout);
 		typingDebounceTimeout = null;
 	}
 
@@ -1348,9 +1348,9 @@ function handleChatInput(hasText: boolean): void {
 
 		// Reset auto-hide timeout (3 seconds after last input)
 		if (typingAutoHideTimeout) {
-			clearTimeout(typingAutoHideTimeout);
+			window.clearTimeout(typingAutoHideTimeout);
 		}
-		typingAutoHideTimeout = setTimeout(() => {
+		typingAutoHideTimeout = window.setTimeout(() => {
 			if (isTyping) {
 				isTyping = false;
 				connection.value?.send('typingEnd', {});
@@ -1360,14 +1360,14 @@ function handleChatInput(hasText: boolean): void {
 		}, 3000);
 	} else {
 		// User cleared input - debounce typingEnd by 500ms
-		typingDebounceTimeout = setTimeout(() => {
+		typingDebounceTimeout = window.setTimeout(() => {
 			if (isTyping) {
 				isTyping = false;
 				connection.value?.send('typingEnd', {});
 				engine?.showLocalPlayerTyping(false);
 			}
 			if (typingAutoHideTimeout) {
-				clearTimeout(typingAutoHideTimeout);
+				window.clearTimeout(typingAutoHideTimeout);
 				typingAutoHideTimeout = null;
 			}
 			typingDebounceTimeout = null;
@@ -1389,7 +1389,7 @@ async function fetchNearbyPlayers(): Promise<void> {
 			engine.addRemotePlayer(player);
 		}
 	} catch (e) {
-		console.error('Failed to fetch nearby players:', e);
+		console.error('Failed to window.fetch nearby players:', e);
 	}
 }
 
@@ -1507,7 +1507,7 @@ function startMovementLoop(): void {
 	 * 修正日: 2025-12-14
 	 * 修正内容: プレイヤーが移動していない場合は位置送信をスキップ
 	 */
-	moveInterval = setInterval(() => {
+	moveInterval = window.setInterval(() => {
 		if (!engine || !isConnected.value) return;
 
 		// T030: Combine keyboard and joystick input
@@ -1596,7 +1596,6 @@ function startMovementLoop(): void {
 				lastItemLoadZ = currentZ.value;
 			}
 		}
-
 	}, 16); // ~60fps
 }
 
@@ -1616,7 +1615,7 @@ function sendPosition(): void {
 }
 
 function startHeartbeat(): void {
-	heartbeatInterval = setInterval(() => {
+	heartbeatInterval = window.setInterval(() => {
 		if (!connection.value || !isConnected.value) return;
 		connection.value.send('heartbeat', {});
 	}, 30000); // Every 30 seconds
@@ -1624,7 +1623,7 @@ function startHeartbeat(): void {
 
 // FR-017: Start ping/pong interval for player status mark color
 function startPingPong(): void {
-	pingInterval = setInterval(() => {
+	pingInterval = window.setInterval(() => {
 		if (!connection.value || !isConnected.value || !engine) return;
 
 		// Get all remote player IDs from engine
@@ -1635,7 +1634,7 @@ function startPingPong(): void {
 			const pingId = `${Date.now()}-${playerId}-${Math.random().toString(36).substr(2, 9)}`;
 
 			// タイムアウト設定
-			const timeoutId = setTimeout(() => {
+			const timeoutId = window.setTimeout(() => {
 				// 5秒以内にpongが返ってこなかった場合、画面から削除
 				if (engine) {
 					engine.removeRemotePlayer(playerId);
@@ -1662,7 +1661,7 @@ function handlePongReceived(data: { responderPlayerId: string; pingId: string })
 	const pendingPing = pendingPings.get(data.pingId);
 	if (pendingPing) {
 		// タイムアウトをクリア
-		clearTimeout(pendingPing.timeoutId);
+		window.clearTimeout(pendingPing.timeoutId);
 		pendingPings.delete(data.pingId);
 
 		// Update player mark color (pongが返ってきたので正常)
@@ -1672,7 +1671,7 @@ function handlePongReceived(data: { responderPlayerId: string; pingId: string })
 	// FR-018: Check if this pong is for player info window
 	for (const [pingId, pending] of pendingPlayerInfoPings) {
 		if (pending.playerId === data.responderPlayerId) {
-			clearTimeout(pending.timeoutId);
+			window.clearTimeout(pending.timeoutId);
 			const responseTime = Date.now() - pending.sentTime;
 			selectedPlayerPingTime.value = responseTime;
 			isPlayerInfoPinging.value = false;
@@ -1787,7 +1786,7 @@ function sendPlayerInfoPing(playerId: string): void {
 	const pingId = `info-${Date.now()}-${playerId}`;
 	const sentTime = Date.now();
 
-	const timeoutId = setTimeout(() => {
+	const timeoutId = window.setTimeout(() => {
 		// 3 second timeout - mark as offline and close window
 		isPlayerInfoPinging.value = false;
 		if (engine) {
@@ -1977,7 +1976,7 @@ function handleCloseTradePanel(): void {
 	activeTradeId.value = null;
 }
 
-// T040: Show trade history panel
+// T040: Show trade window.history panel
 function handleShowTradeHistory(): void {
 	showTradePanel.value = false;
 	activeTradeId.value = null;
@@ -2285,7 +2284,7 @@ function handleTradeCompletedEvent(data: {
 
 // FR-017: Start warning check interval for 3+ seconds since last ping
 function startWarningCheck(): void {
-	warningCheckInterval = setInterval(() => {
+	warningCheckInterval = window.setInterval(() => {
 		if (!engine) return;
 
 		// Check all remote players for warning status
@@ -2702,7 +2701,7 @@ function toggleFarmPanel(): void {
 	showChatHistoryPanel.value = false;
 }
 
-// FR-029: Toggle chat history panel
+// FR-029: Toggle chat window.history panel
 function toggleChatHistoryPanel(): void {
 	showChatHistoryPanel.value = !showChatHistoryPanel.value;
 	showInventory.value = false;
@@ -2750,29 +2749,29 @@ async function handleReload(): Promise<void> {
 	try {
 		// 1. Clear all intervals and timeouts FIRST
 		if (moveInterval) {
-			clearInterval(moveInterval);
+			window.clearInterval(moveInterval);
 			moveInterval = null;
 		}
 		if (heartbeatInterval) {
-			clearInterval(heartbeatInterval);
+			window.clearInterval(heartbeatInterval);
 			heartbeatInterval = null;
 		}
 		if (pingInterval) {
-			clearInterval(pingInterval);
+			window.clearInterval(pingInterval);
 			pingInterval = null;
 		}
 		if (warningCheckInterval) {
-			clearInterval(warningCheckInterval);
+			window.clearInterval(warningCheckInterval);
 			warningCheckInterval = null;
 		}
 		// Clear all pending ping timeouts
 		for (const pending of pendingPings.values()) {
-			clearTimeout(pending.timeoutId);
+			window.clearTimeout(pending.timeoutId);
 		}
 		pendingPings.clear();
 		// Clear pending player info pings
 		for (const pending of pendingPlayerInfoPings.values()) {
-			clearTimeout(pending.timeoutId);
+			window.clearTimeout(pending.timeoutId);
 		}
 		pendingPlayerInfoPings.clear();
 
@@ -2796,7 +2795,7 @@ async function handleReload(): Promise<void> {
 		}
 		isConnected.value = false;
 
-		// 6. Re-fetch player position from server
+		// 6. Re-window.fetch player position from server
 		const data = await noctownApi<NoctownPlayerResponse>('noctown/player');
 		currentX.value = data.positionX;
 		currentY.value = data.positionY;
@@ -2827,7 +2826,7 @@ async function handleReload(): Promise<void> {
 
 		// 2-second cooldown
 		reloadCooldown.value = true;
-		setTimeout(() => {
+		window.setTimeout(() => {
 			reloadCooldown.value = false;
 		}, 2000);
 	}
@@ -3106,27 +3105,27 @@ function handleJoystickEnd(): void {
 
 function cleanup(): void {
 	if (moveInterval) {
-		clearInterval(moveInterval);
+		window.clearInterval(moveInterval);
 		moveInterval = null;
 	}
 
 	if (heartbeatInterval) {
-		clearInterval(heartbeatInterval);
+		window.clearInterval(heartbeatInterval);
 		heartbeatInterval = null;
 	}
 
 	// FR-017: Clear ping/pong intervals
 	if (pingInterval) {
-		clearInterval(pingInterval);
+		window.clearInterval(pingInterval);
 		pingInterval = null;
 	}
 	if (warningCheckInterval) {
-		clearInterval(warningCheckInterval);
+		window.clearInterval(warningCheckInterval);
 		warningCheckInterval = null;
 	}
 	// Clear all pending ping timeouts
 	for (const pending of pendingPings.values()) {
-		clearTimeout(pending.timeoutId);
+		window.clearTimeout(pending.timeoutId);
 	}
 	pendingPings.clear();
 
@@ -3145,7 +3144,7 @@ function cleanup(): void {
 
 	// FR-018: Clear pending player info pings
 	for (const [pingId, pending] of pendingPlayerInfoPings) {
-		clearTimeout(pending.timeoutId);
+		window.clearTimeout(pending.timeoutId);
 	}
 	pendingPlayerInfoPings.clear();
 
@@ -3168,20 +3167,20 @@ function retry(): void {
 // FR-175: Mobile scrollbar prevention
 function setupMobileScrollPrevention(): void {
 	if (window.innerWidth <= 768) {
-		document.body.style.overflow = 'hidden';
-		document.body.style.position = 'fixed';
-		document.body.style.width = '100%';
-		document.body.style.height = '100%';
-		document.documentElement.style.overflow = 'hidden';
+		window.document.body.style.overflow = 'hidden';
+		window.document.body.style.position = 'fixed';
+		window.document.body.style.width = '100%';
+		window.document.body.style.height = '100%';
+		window.document.documentElement.style.overflow = 'hidden';
 	}
 }
 
 function cleanupMobileScrollPrevention(): void {
-	document.body.style.overflow = '';
-	document.body.style.position = '';
-	document.body.style.width = '';
-	document.body.style.height = '';
-	document.documentElement.style.overflow = '';
+	window.document.body.style.overflow = '';
+	window.document.body.style.position = '';
+	window.document.body.style.width = '';
+	window.document.body.style.height = '';
+	window.document.documentElement.style.overflow = '';
 }
 
 onMounted(() => {

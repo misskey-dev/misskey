@@ -72,11 +72,11 @@ export class WebSocketSyncManager {
 	private pendingPosition: { x: number; y: number; z: number; rotation: number } | null = null;
 
 	// Heartbeat
-	private heartbeatInterval: ReturnType<typeof setInterval> | null = null;
+	private heartbeatInterval: ReturnType<typeof window.setInterval> | null = null;
 	private heartbeatIntervalMs = 30000;
 
 	// Chunk generation (T040: concurrent request limit)
-	private pendingChunkRequests: Map<string, { retryCount: number; timeoutId: ReturnType<typeof setTimeout> | null }> = new Map();
+	private pendingChunkRequests: Map<string, { retryCount: number; timeoutId: ReturnType<typeof window.setTimeout> | null }> = new Map();
 	private static readonly MAX_CONCURRENT_CHUNK_REQUESTS = 5;
 	private static readonly MAX_CHUNK_REQUEST_RETRIES = 10;
 	private static readonly CHUNK_REQUEST_RETRY_INTERVAL_MS = 2000; // 2秒ごとにリトライ
@@ -209,7 +209,7 @@ export class WebSocketSyncManager {
 			const key = `${data.chunkX},${data.chunkZ}`;
 			const pending = this.pendingChunkRequests.get(key);
 			if (pending?.timeoutId) {
-				clearTimeout(pending.timeoutId);
+				window.clearTimeout(pending.timeoutId);
 			}
 			this.pendingChunkRequests.delete(key);
 
@@ -368,7 +368,7 @@ export class WebSocketSyncManager {
 	private scheduleChunkRequestRetry(chunkX: number, chunkZ: number, worldId: string, retryCount: number): void {
 		const key = `${chunkX},${chunkZ}`;
 
-		const timeoutId = setTimeout(() => {
+		const timeoutId = window.setTimeout(() => {
 			// Check if chunk was already received
 			if (!this.pendingChunkRequests.has(key)) {
 				return;
@@ -407,10 +407,10 @@ export class WebSocketSyncManager {
 
 	private startHeartbeat(): void {
 		if (this.heartbeatInterval) {
-			clearInterval(this.heartbeatInterval);
+			window.clearInterval(this.heartbeatInterval);
 		}
 
-		this.heartbeatInterval = setInterval(() => {
+		this.heartbeatInterval = window.setInterval(() => {
 			if (!this.connection || !this.state.isConnected) return;
 
 			try {
@@ -431,14 +431,14 @@ export class WebSocketSyncManager {
 
 	public disconnect(): void {
 		if (this.heartbeatInterval) {
-			clearInterval(this.heartbeatInterval);
+			window.clearInterval(this.heartbeatInterval);
 			this.heartbeatInterval = null;
 		}
 
 		// Clear all pending chunk request timeouts
 		for (const [key, pending] of this.pendingChunkRequests.entries()) {
 			if (pending.timeoutId) {
-				clearTimeout(pending.timeoutId);
+				window.clearTimeout(pending.timeoutId);
 			}
 		}
 		this.pendingChunkRequests.clear();

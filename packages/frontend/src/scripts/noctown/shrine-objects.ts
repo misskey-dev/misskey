@@ -429,9 +429,9 @@ export function buildShrineWorld(): {
 	scene.add(ground);
 
 	// 鳥居（参道に3つ配置）- 間隔を詰めてコンパクトに
-	scene.add(createTorii(0, 50, 1));      // 入口側（最大）
-	scene.add(createTorii(0, 35, 0.9));    // 中間
-	scene.add(createTorii(0, 20, 0.85));   // 拝殿側（最小）
+	scene.add(createTorii(0, 50, 1)); // 入口側（最大）
+	scene.add(createTorii(0, 35, 0.9)); // 中間
+	scene.add(createTorii(0, 20, 0.85)); // 拝殿側（最小）
 
 	// 拝殿（神社本殿）- コンパクトに配置
 	const haiden = createHaiden(0, -20);

@@ -61,7 +61,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 
 			<div v-if="hasMore" :class="$style.loadMore">
-				<button :class="$style.loadMoreBtn" @click="loadMore" :disabled="isLoadingMore">
+				<button :class="$style.loadMoreBtn" :disabled="isLoadingMore" @click="loadMore">
 					<template v-if="isLoadingMore">
 						<MkLoading :em="true"/>
 					</template>

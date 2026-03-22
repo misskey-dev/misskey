@@ -12,7 +12,7 @@ FR-032: 設置アイテム情報フローティングウィンドウ
 -->
 
 <template>
-<div :class="$style.overlay" @click.self="handleClose" @keydown.escape="handleClose" tabindex="-1" ref="overlayRef">
+<div ref="overlayRef" :class="$style.overlay" tabindex="-1" @click.self="handleClose" @keydown.escape="handleClose">
 	<div :class="$style.window">
 		<button :class="$style.closeButton" @click="handleClose">
 			<i class="ti ti-x"></i>
@@ -41,12 +41,12 @@ FR-032: 設置アイテム情報フローティングウィンドウ
 			<!-- Actions -->
 			<div :class="$style.actions">
 				<!-- 仕様: コンテナタイプ（宝箱）の場合は「開ける」ボタンを表示（誰でも開封可能） -->
-				<MkButton v-if="itemType === 'container'" :class="$style.actionButton" @click="handleOpen" :disabled="isOpening" primary>
+				<MkButton v-if="itemType === 'container'" :class="$style.actionButton" :disabled="isOpening" primary @click="handleOpen">
 					<i class="ti ti-gift"></i>
 					{{ isOpening ? '開封中...' : '開ける' }}
 				</MkButton>
 				<!-- Pickup Button (only for own items) -->
-				<MkButton v-if="isOwner" :class="$style.actionButton" @click="handlePickup" :disabled="isPickingUp">
+				<MkButton v-if="isOwner" :class="$style.actionButton" :disabled="isPickingUp" @click="handlePickup">
 					<i class="ti ti-package-import"></i>
 					{{ isPickingUp ? '回収中...' : '回収する' }}
 				</MkButton>

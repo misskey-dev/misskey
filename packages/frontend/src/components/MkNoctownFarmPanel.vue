@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 
 			<div class="fishing-content">
-				<div class="location-info">
+				<div class="window.location-info">
 					<span v-if="nearWater" class="near-water">
 						<i class="ti ti-droplet-filled"></i>
 						{{ nearWater === 'pond' ? i18n.ts._noctown.nearPond : i18n.ts._noctown.nearLake }}
@@ -291,7 +291,7 @@ const fishingProgress = ref(0);
 const statusMessage = ref<string | null>(null);
 const isStatusError = ref(false);
 const statusIcon = ref('ti ti-info-circle');
-let fishingTimer: ReturnType<typeof setInterval> | null = null;
+let fishingTimer: ReturnType<typeof window.setInterval> | null = null;
 
 // 釣り竿を所持しているかチェック
 // 釣りアクションは釣り竿アイテムを所持している場合のみ実行可能
@@ -405,7 +405,7 @@ async function startFishing() {
 		showStatus(i18n.ts._noctown.waitingForFish, false);
 
 		// サーバー指定の待機時間でプログレスバーを更新
-		fishingTimer = setInterval(() => {
+		fishingTimer = window.setInterval(() => {
 			const elapsed = Date.now() - fishingStartTime;
 			fishingProgress.value = Math.min(100, (elapsed / fishingWaitTime) * 100);
 
@@ -437,7 +437,7 @@ async function startFishing() {
 // タイミングが早すぎる(TOO_EARLY)か遅すぎる(TOO_LATE)場合はエラーになる
 async function completeFishing() {
 	if (fishingTimer) {
-		clearInterval(fishingTimer);
+		window.clearInterval(fishingTimer);
 		fishingTimer = null;
 	}
 
@@ -479,7 +479,7 @@ async function completeFishing() {
 // 釣りをキャンセル
 function cancelFishing() {
 	if (fishingTimer) {
-		clearInterval(fishingTimer);
+		window.clearInterval(fishingTimer);
 		fishingTimer = null;
 	}
 	isFishing.value = false;
@@ -494,7 +494,7 @@ function showStatus(message: string, isError: boolean) {
 	statusIcon.value = isError ? 'ti ti-alert-circle' : 'ti ti-info-circle';
 
 	// 3秒後にメッセージをクリア
-	setTimeout(() => {
+	window.setTimeout(() => {
 		if (statusMessage.value === message) {
 			statusMessage.value = null;
 		}
@@ -716,7 +716,7 @@ onMounted(() => {
 }
 
 // 水辺の近接情報
-.location-info {
+.window.location-info {
 	display: flex;
 	align-items: center;
 	padding: 8px 12px;

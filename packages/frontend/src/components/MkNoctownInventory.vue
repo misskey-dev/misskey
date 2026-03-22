@@ -28,9 +28,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.currencyDropHeader">ノクタを捨てる</div>
 		<div :class="$style.quantitySelector">
 			<span :class="$style.quantityLabel">数量:</span>
-			<button :class="$style.quantityBtn" @click.stop="decrementCurrencyAmount" :disabled="currencyDropAmount <= 1">-</button>
+			<button :class="$style.quantityBtn" :disabled="currencyDropAmount <= 1" @click.stop="decrementCurrencyAmount">-</button>
 			<span :class="$style.quantityValue">{{ currencyDropAmount }}</span>
-			<button :class="$style.quantityBtn" @click.stop="incrementCurrencyAmount" :disabled="currencyDropAmount >= balance">+</button>
+			<button :class="$style.quantityBtn" :disabled="currencyDropAmount >= balance" @click.stop="incrementCurrencyAmount">+</button>
 		</div>
 		<div :class="$style.currencyDropActions">
 			<MkButton :class="$style.actionBtn" @click.stop="showCurrencyDrop = false">キャンセル</MkButton>
@@ -79,9 +79,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<!-- 仕様: 数量選択（2個以上所持している場合のみ表示） -->
 		<div v-if="(selectedItem.quantity ?? 1) > 1" :class="$style.quantitySelector">
 			<span :class="$style.quantityLabel">数量:</span>
-			<button :class="$style.quantityBtn" @click.stop="decrementDropQuantity" :disabled="dropQuantity <= 1">-</button>
+			<button :class="$style.quantityBtn" :disabled="dropQuantity <= 1" @click.stop="decrementDropQuantity">-</button>
 			<span :class="$style.quantityValue">{{ dropQuantity }}</span>
-			<button :class="$style.quantityBtn" @click.stop="incrementDropQuantity" :disabled="dropQuantity >= (selectedItem.quantity ?? 1)">+</button>
+			<button :class="$style.quantityBtn" :disabled="dropQuantity >= (selectedItem.quantity ?? 1)" @click.stop="incrementDropQuantity">+</button>
 		</div>
 	</div>
 	<div v-if="selectedItem" :class="$style.actions">

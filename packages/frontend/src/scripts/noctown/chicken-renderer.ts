@@ -308,7 +308,7 @@ export class ChickenRenderer {
 					}
 					break;
 
-				case 'walking':
+				case 'walking': {
 					// Walking animation
 					const walkCycle = elapsed * 8;
 					chicken.leftLeg.rotation.x = Math.sin(walkCycle) * 0.3;
@@ -337,6 +337,7 @@ export class ChickenRenderer {
 						chicken.rightLeg.rotation.x = 0;
 					}
 					break;
+				}
 
 				case 'pecking':
 					// Pecking animation

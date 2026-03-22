@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ref, type Ref } from 'vue';
+import { ref } from 'vue';
+import type { Ref } from 'vue';
 import type { ToolType, Point, PressurePoint, StrokeData, CommunicationLog } from './room.drawing.types.js';
 
 /**

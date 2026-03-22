@@ -86,7 +86,7 @@ export class NoteBubbleManager {
 	 * Create a sprite for the speech bubble.
 	 */
 	private createBubbleSprite(text: string, displayName: string): THREE.Sprite {
-		const canvas = document.createElement('canvas');
+		const canvas = window.document.createElement('canvas');
 		const ctx = canvas.getContext('2d')!;
 
 		// Truncate text if needed

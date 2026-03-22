@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 /**
  * このファイルはgirl1アバターデザインのバックアップです
  * 現在は使用されていません（girl2に移行済み）
@@ -258,7 +263,7 @@ export class Character {
 	 */
 	private createEmoteSprite(): void {
 		// Create 128x128 canvas for emotion bubble
-		this.emoteCanvas = document.createElement('canvas');
+		this.emoteCanvas = window.document.createElement('canvas');
 		this.emoteCanvas.width = 128;
 		this.emoteCanvas.height = 128;
 		this.emoteContext = this.emoteCanvas.getContext('2d')!;
@@ -334,7 +339,7 @@ export class Character {
 	 */
 	private createChatSprite(): void {
 		// T136: Create 512x256 canvas for chat bubble
-		this.chatCanvas = document.createElement('canvas');
+		this.chatCanvas = window.document.createElement('canvas');
 		this.chatCanvas.width = 512;
 		this.chatCanvas.height = 256;
 		this.chatContext = this.chatCanvas.getContext('2d')!;
@@ -365,7 +370,7 @@ export class Character {
 	 */
 	private createTypingSprite(): void {
 		// Create 128x128 canvas for typing indicator
-		this.typingCanvas = document.createElement('canvas');
+		this.typingCanvas = window.document.createElement('canvas');
 		this.typingCanvas.width = 128;
 		this.typingCanvas.height = 128;
 		this.typingContext = this.typingCanvas.getContext('2d')!;
@@ -462,7 +467,7 @@ export class Character {
 	 */
 	private createNameSprite(): void {
 		// Create 512x128 canvas for name display
-		this.nameCanvas = document.createElement('canvas');
+		this.nameCanvas = window.document.createElement('canvas');
 		this.nameCanvas.width = 512;
 		this.nameCanvas.height = 128;
 		this.nameContext = this.nameCanvas.getContext('2d')!;
@@ -793,7 +798,7 @@ export class Character {
 		const displayName = username.substring(0, 12);
 
 		// Create canvas for name
-		this.nameCanvas = document.createElement('canvas');
+		this.nameCanvas = window.document.createElement('canvas');
 		this.nameCanvas.width = 256;
 		this.nameCanvas.height = 64;
 		this.nameContext = this.nameCanvas.getContext('2d')!;
@@ -975,7 +980,6 @@ export class Character {
 		}
 
 		if (this.isMoving) {
-
 			// Walk animation with smooth cycle
 			const walkSpeed = 12;
 			this.walkCycle += deltaTime * walkSpeed;

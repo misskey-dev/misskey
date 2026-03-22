@@ -169,15 +169,15 @@ const showMenu = async (ev: MouseEvent | TouchEvent, item: GalleryItem) => {
 		action: async () => {
 			try {
 				// 画像をダウンロード
-				const response = await fetch(imageUrl);
+				const response = await window.fetch(imageUrl);
 				const blob = await response.blob();
 				const url = window.URL.createObjectURL(blob);
-				const a = document.createElement('a');
+				const a = window.document.createElement('a');
 				a.href = url;
 				a.download = item.file.name || 'illustration.jpg';
-				document.body.appendChild(a);
+				window.document.body.appendChild(a);
 				a.click();
-				document.body.removeChild(a);
+				window.document.body.removeChild(a);
 				window.URL.revokeObjectURL(url);
 				os.success();
 			} catch (error) {
@@ -251,7 +251,7 @@ const onTouchStart = (ev: TouchEvent, item: GalleryItem) => {
 const onTouchEnd = () => {
 	// タイマーをクリア
 	if (longPressTimer.value !== null) {
-		clearTimeout(longPressTimer.value);
+		window.clearTimeout(longPressTimer.value);
 		longPressTimer.value = null;
 	}
 };
@@ -261,7 +261,7 @@ const onTouchMove = () => {
 	// スクロールなどで移動した場合は長押しキャンセル
 	touchMoved = true;
 	if (longPressTimer.value !== null) {
-		clearTimeout(longPressTimer.value);
+		window.clearTimeout(longPressTimer.value);
 		longPressTimer.value = null;
 	}
 };

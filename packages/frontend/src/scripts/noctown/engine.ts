@@ -10,12 +10,17 @@ import { addRandomEnvironmentEntities } from './environment.js';
 import { createPondMesh } from './pond.js';
 import { createLakeMesh } from './lake.js';
 import { createFarmPlotMesh } from './farm-plot.js';
-import { ChunkEnvironmentRenderer, type EnvironmentObjectData } from './environment-objects.js';
-import { PetManager, type PetInfo } from './pet.js';
-import { WarpGate, WARP_GATE_COLLISION_RADIUS, type WarpGateConfig } from './warp-gate-object.js';
+import { ChunkEnvironmentRenderer } from './environment-objects.js';
+import type { EnvironmentObjectData } from './environment-objects.js';
+import { PetManager } from './pet.js';
+import type { PetInfo } from './pet.js';
+import { WarpGate, WARP_GATE_COLLISION_RADIUS } from './warp-gate-object.js';
+import type { WarpGateConfig } from './warp-gate-object.js';
 import { buildShrineWorld, animateSuzu } from './shrine-objects.js';
-import { ChickenRenderer, type ChickenColor } from './chicken-renderer.js';
-import { CowRenderer, type CowColor } from './cow-renderer.js';
+import { ChickenRenderer } from './chicken-renderer.js';
+import type { ChickenColor } from './chicken-renderer.js';
+import { CowRenderer } from './cow-renderer.js';
+import type { CowColor } from './cow-renderer.js';
 import { createKagamiMochi } from './mochi-object.js';
 
 // FR-022: PetInfo型をre-export
@@ -1091,7 +1096,6 @@ export class NoctownEngine {
 	}
 
 	public removeRemotePlayer(playerId: string): void {
-
 		// デバッグログ: removeRemotePlayer呼び出し内容を確認
 		console.log('[removeRemotePlayer] Called with:', {
 			playerId,
@@ -1338,7 +1342,7 @@ export class NoctownEngine {
 
 		// 仕様: FR-030 絵文字ラベル（CSS2DObject）
 		// ノクタコインは3Dモデルなので絵文字は表示しない
-		const labelDiv = document.createElement('div');
+		const labelDiv = window.document.createElement('div');
 		labelDiv.className = 'noctown-dropped-item-label';
 
 		if (isCurrency) {
@@ -1361,7 +1365,7 @@ export class NoctownEngine {
 
 		// 仕様: 数量が2以上の場合は数量バッジを表示
 		if (data.quantity > 1) {
-			const quantityBadge = document.createElement('span');
+			const quantityBadge = window.document.createElement('span');
 			quantityBadge.style.cssText = `
 				position: absolute;
 				bottom: ${isCurrency ? '0px' : '-4px'};
@@ -1581,7 +1585,7 @@ export class NoctownEngine {
 
 	// 仕様: 木目テクスチャをプロシージャル生成
 	private createWoodTexture(width = 256, height = 256, seed = 12345): THREE.CanvasTexture {
-		const canvas = document.createElement('canvas');
+		const canvas = window.document.createElement('canvas');
 		canvas.width = width;
 		canvas.height = height;
 		const ctx = canvas.getContext('2d')!;
@@ -1646,7 +1650,7 @@ export class NoctownEngine {
 
 	// 仕様: 端面用テクスチャ（年輪）
 	private createEndGrainTexture(size = 128, seed = 54321): THREE.CanvasTexture {
-		const canvas = document.createElement('canvas');
+		const canvas = window.document.createElement('canvas');
 		canvas.width = size;
 		canvas.height = size;
 		const ctx = canvas.getContext('2d')!;
@@ -2162,10 +2166,10 @@ export class NoctownEngine {
 		const scale = 0.25;
 
 		// 寸法
-		const W = 2.2 * scale;    // 幅
-		const H = 1.1 * scale;    // 高さ（本体）
-		const D = 1.5 * scale;    // 奥行き
-		const T = 0.1 * scale;    // 壁の厚さ
+		const W = 2.2 * scale; // 幅
+		const H = 1.1 * scale; // 高さ（本体）
+		const D = 1.5 * scale; // 奥行き
+		const T = 0.1 * scale; // 壁の厚さ
 
 		// マテリアル定義
 		const woodMaterial = new THREE.MeshStandardMaterial({
@@ -2829,7 +2833,7 @@ export class NoctownEngine {
 	}
 
 	private createNpcLabel(npcId: string, username: string, position: THREE.Vector3): void {
-		const canvas = document.createElement('canvas');
+		const canvas = window.document.createElement('canvas');
 		const context = canvas.getContext('2d');
 		if (!context) return;
 
@@ -3219,7 +3223,7 @@ export class NoctownEngine {
 					requestAnimationFrame(animate);
 				} else {
 					// アニメーション完了後、少し待ってから消滅
-					setTimeout(() => {
+					window.setTimeout(() => {
 						// パーティクルを削除
 						for (const particle of particles) {
 							this.scene.remove(particle);

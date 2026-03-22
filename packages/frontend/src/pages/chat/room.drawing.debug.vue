@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-if="showDebugPanel" :class="$style.debugPanel">
 		<div :class="$style.debugHeader">
 			<h4>デバッグ情報</h4>
-			<button @click="$emit('close')" :class="$style.debugCloseButton">×</button>
+			<button :class="$style.debugCloseButton" @click="$emit('close')">×</button>
 		</div>
 		<div :class="$style.debugContent">
 			<div :class="$style.debugSection">
@@ -63,8 +63,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.commLogHeader">
 			<h4>通信ログ</h4>
 			<div :class="$style.commLogActions">
-				<button @click="$emit('clearLog')" :class="$style.commLogClearButton">クリア</button>
-				<button @click="$emit('closeLog')" :class="$style.commLogCloseButton">×</button>
+				<button :class="$style.commLogClearButton" @click="$emit('clearLog')">クリア</button>
+				<button :class="$style.commLogCloseButton" @click="$emit('closeLog')">×</button>
 			</div>
 		</div>
 		<div :class="$style.commLogContent">

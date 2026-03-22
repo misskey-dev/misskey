@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 	<!-- T011: キャンセルボタン -->
-	<button :class="$style.cancelBtn" @click="handleCancel" :disabled="isCancelling">
+	<button :class="$style.cancelBtn" :disabled="isCancelling" @click="handleCancel">
 		<template v-if="isCancelling">
 			<MkLoading :em="true"/>
 		</template>
@@ -49,7 +49,7 @@ const emit = defineEmits<{
 
 const isCancelling = ref(false);
 const now = ref(Date.now());
-let timerInterval: ReturnType<typeof setInterval> | null = null;
+let timerInterval: ReturnType<typeof window.setInterval> | null = null;
 
 const remainingTime = computed(() => {
 	const expiresAtMs = new Date(props.expiresAt).getTime();
@@ -70,7 +70,7 @@ function handleCancel(): void {
 }
 
 onMounted(() => {
-	timerInterval = setInterval(() => {
+	timerInterval = window.setInterval(() => {
 		now.value = Date.now();
 		if (isExpired.value) {
 			emit('expired');
@@ -80,7 +80,7 @@ onMounted(() => {
 
 onUnmounted(() => {
 	if (timerInterval) {
-		clearInterval(timerInterval);
+		window.clearInterval(timerInterval);
 	}
 });
 </script>

@@ -3,10 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ref, onMounted, onUnmounted, type Ref } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
+import type { Ref } from 'vue';
 import { useStream } from '@/stream.js';
 import * as os from '@/os.js';
-import { NoctownEngine, type PlayerData, type ChunkData } from './engine.js';
+import { NoctownEngine } from './engine.js';
+import type { PlayerData, ChunkData } from './engine.js';
 
 // 仕様: T008 WebSocket新規イベント用の型定義
 
@@ -291,7 +293,7 @@ export function isDesktopDevice(): boolean {
 	const isChromeOs = chromeOsRegex.test(userAgent);
 
 	// 仕様: iPadOS 13+はUserAgentが「Macintosh」と報告されるため、ontouchendとmaxTouchPointsで判定
-	const isMacWithTouch = isMac && ('ontouchend' in document || navigator.maxTouchPoints > 1);
+	const isMacWithTouch = isMac && ('ontouchend' in window.document || navigator.maxTouchPoints > 1);
 
 	// Return true for desktop OS, but exclude Mac with touch (iPad)
 	return (isWindows || (isMac && !isMacWithTouch) || isLinuxDesktop || isChromeOs);
@@ -312,7 +314,7 @@ export function isMobileDevice(): boolean {
 	const mobileRegex = /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i;
 
 	// 仕様: iPadOS 13+はUserAgentが「Macintosh」と報告されるため、ontouchendとmaxTouchPointsで判定
-	const isMacWithTouch = /Macintosh/i.test(userAgent) && ('ontouchend' in document || navigator.maxTouchPoints > 1);
+	const isMacWithTouch = /Macintosh/i.test(userAgent) && ('ontouchend' in window.document || navigator.maxTouchPoints > 1);
 
 	// Return true for tablets, mobile phones, or iPadOS devices
 	// Note: Screen width condition removed to support tablets with larger screens (768px+)
@@ -346,7 +348,7 @@ export async function hasPhysicalKeyboard(): Promise<boolean> {
 	const tabletRegex = /iPad|Android.*Tablet|Kindle|Silk|PlayBook|BB10.*Touch/i;
 
 	// 仕様: iPadOS 13+はUserAgentが「Macintosh」と報告されるため、ontouchendとmaxTouchPointsで判定
-	const isMacWithTouch = /Macintosh/i.test(userAgent) && ('ontouchend' in document || navigator.maxTouchPoints > 1);
+	const isMacWithTouch = /Macintosh/i.test(userAgent) && ('ontouchend' in window.document || navigator.maxTouchPoints > 1);
 
 	// If it's a tablet or iPadOS device, assume no physical keyboard (conservative default)
 	const isTablet = tabletRegex.test(userAgent) || isMacWithTouch;
@@ -373,10 +375,10 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 	let stream: ReturnType<typeof useStream> | null = null;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	let channel: any = null;
-	let moveInterval: ReturnType<typeof setInterval> | null = null;
-	let heartbeatInterval: ReturnType<typeof setInterval> | null = null;
-	let playerSyncInterval: ReturnType<typeof setInterval> | null = null;
-	let reconnectTimeout: ReturnType<typeof setTimeout> | null = null;
+	let moveInterval: ReturnType<typeof window.setInterval> | null = null;
+	let heartbeatInterval: ReturnType<typeof window.setInterval> | null = null;
+	let playerSyncInterval: ReturnType<typeof window.setInterval> | null = null;
+	let reconnectTimeout: ReturnType<typeof window.setTimeout> | null = null;
 	let reconnectAttempts = 0;
 	const MAX_RECONNECT_ATTEMPTS = 10;
 	const RECONNECT_DELAY_MS = 3000;
@@ -384,7 +386,7 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 	// FR-014: Ping/Pongオフライン検出
 	const PING_TIMEOUT_MS = 5000; // 5秒タイムアウト（ネットワーク遅延を考慮）
 	// pingId -> { playerId, timeoutId } のマッピング（各プレイヤーごとに個別のpingIdを使用）
-	const pendingPings = new Map<string, { playerId: string; timeoutId: ReturnType<typeof setTimeout> }>();
+	const pendingPings = new Map<string, { playerId: string; timeoutId: ReturnType<typeof window.setTimeout> }>();
 
 	// 仕様: トレードリクエスト受信時のコールバック
 	let onTradeRequestCallback: (() => void) | null = null;
@@ -422,7 +424,7 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 			});
 
 			if (!res.ok) {
-				throw new Error('Failed to fetch player data');
+				throw new Error('Failed to window.fetch player data');
 			}
 
 			const data: NoctownPlayerResponse = await res.json();
@@ -547,7 +549,7 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 			// Start heartbeat
 			startHeartbeat();
 
-			// Start periodic player sync (includes initial fetch)
+			// Start periodic player sync (includes initial window.fetch)
 			startPlayerSync();
 		} catch (e) {
 			console.error('Failed to connect to stream:', e);
@@ -571,7 +573,7 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 		reconnectAttempts++;
 		console.log(`Reconnect attempt ${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS} in ${RECONNECT_DELAY_MS}ms`);
 
-		reconnectTimeout = setTimeout(async () => {
+		reconnectTimeout = window.setTimeout(async () => {
 			try {
 				// Cleanup old connection
 				if (channel) {
@@ -693,7 +695,7 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 					engine.addRemotePlayer(playerInfo);
 				}
 			} catch (e) {
-				console.error('Failed to fetch sender player data:', e);
+				console.error('Failed to window.fetch sender player data:', e);
 			}
 		}
 
@@ -713,7 +715,7 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 		const pendingPing = pendingPings.get(data.pingId);
 		if (pendingPing) {
 			// タイムアウトをクリア
-			clearTimeout(pendingPing.timeoutId);
+			window.clearTimeout(pendingPing.timeoutId);
 			pendingPings.delete(data.pingId);
 		}
 	}
@@ -855,7 +857,7 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 			// 各プレイヤーごとに一意のpingIdを生成
 			const pingId = `${Date.now()}-${targetPlayerId}-${Math.random().toString(36).substr(2, 9)}`;
 
-			const timeoutId = setTimeout(() => {
+			const timeoutId = window.setTimeout(() => {
 				// SC-012: 5秒以内にpongが返ってこなかった場合、画面から削除
 				console.log(`Player ${targetPlayerId} did not respond to ping, removing from view`);
 				if (engine) {
@@ -880,7 +882,7 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 				// エラー時はタイムアウトをクリア
 				const pendingPing = pendingPings.get(pingId);
 				if (pendingPing) {
-					clearTimeout(pendingPing.timeoutId);
+					window.clearTimeout(pendingPing.timeoutId);
 					pendingPings.delete(pingId);
 				}
 			}
@@ -906,7 +908,7 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 				engine.addRemotePlayer(player);
 			}
 		} catch (e) {
-			console.error('Failed to fetch nearby players:', e);
+			console.error('Failed to window.fetch nearby players:', e);
 		}
 	}
 
@@ -926,7 +928,7 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 			});
 
 			if (!res.ok) {
-				console.error('Failed to fetch online players:', res.status, res.statusText);
+				console.error('Failed to window.fetch online players:', res.status, res.statusText);
 				return;
 			}
 
@@ -940,7 +942,7 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 				engine.addRemotePlayer(player);
 			}
 		} catch (e) {
-			console.error('Failed to fetch all online players:', e);
+			console.error('Failed to window.fetch all online players:', e);
 		}
 	}
 
@@ -949,11 +951,11 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 	 * Runs every 30 seconds to catch players that joined while WebSocket was disconnected
 	 */
 	function startPlayerSync(): void {
-		// Initial fetch
+		// Initial window.fetch
 		fetchAllOnlinePlayers();
 
 		// Periodic sync every 30 seconds
-		playerSyncInterval = setInterval(() => {
+		playerSyncInterval = window.setInterval(() => {
 			fetchAllOnlinePlayers();
 		}, 30000); // 30 seconds
 	}
@@ -972,7 +974,7 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 				inventory.value = await res.json();
 			}
 		} catch (e) {
-			console.error('Failed to fetch inventory:', e);
+			console.error('Failed to window.fetch inventory:', e);
 		}
 	}
 
@@ -1084,7 +1086,7 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 		let lastChunkCheckTime = 0;
 		const chunkCheckInterval = 1000; // Check for new chunks every 1 second
 
-		moveInterval = setInterval(() => {
+		moveInterval = window.setInterval(() => {
 			if (!engine || !isConnected.value) return;
 
 			const input = engine.getMovementInput();
@@ -1135,7 +1137,7 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 	}
 
 	function startHeartbeat(): void {
-		heartbeatInterval = setInterval(() => {
+		heartbeatInterval = window.setInterval(() => {
 			if (!channel || !isConnected.value) return;
 			channel.send('heartbeat', {});
 		}, 30000); // Every 30 seconds
@@ -1143,22 +1145,22 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 
 	function cleanup(): void {
 		if (moveInterval) {
-			clearInterval(moveInterval);
+			window.clearInterval(moveInterval);
 			moveInterval = null;
 		}
 
 		if (heartbeatInterval) {
-			clearInterval(heartbeatInterval);
+			window.clearInterval(heartbeatInterval);
 			heartbeatInterval = null;
 		}
 
 		if (playerSyncInterval) {
-			clearInterval(playerSyncInterval);
+			window.clearInterval(playerSyncInterval);
 			playerSyncInterval = null;
 		}
 
 		if (reconnectTimeout) {
-			clearTimeout(reconnectTimeout);
+			window.clearTimeout(reconnectTimeout);
 			reconnectTimeout = null;
 		}
 

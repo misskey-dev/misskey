@@ -1,3 +1,8 @@
+<!--
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <script setup lang="ts">
 /**
  * user/noq.vue
@@ -95,7 +100,7 @@ async function loadNoqSettings() {
 
 function onQuestionSent() {
 	questionSent.value = true;
-	setTimeout(() => questionSent.value = false, 5000);
+	window.setTimeout(() => questionSent.value = false, 5000);
 }
 
 async function handleAnswer(question: NoqQuestion) {
@@ -211,10 +216,10 @@ onMounted(() => {
 
 			<NoqQuestionForm
 				:user="user"
-				:require-username-disclosure="noqSettings?.requireUsernameDisclosure ?? false"
+				:requireUsernameDisclosure="noqSettings?.requireUsernameDisclosure ?? false"
 				:notice="noqSettings?.notice ?? null"
-				:recipient-e2-e-public-key="noqSettings?.e2ePublicKey ?? null"
-				:my-e2-e-public-key="myNoqSettings?.e2ePublicKey ?? null"
+				:recipientE2EPublicKey="noqSettings?.e2ePublicKey ?? null"
+				:myE2EPublicKey="myNoqSettings?.e2ePublicKey ?? null"
 				@sent="onQuestionSent"
 			/>
 		</MkContainer>
@@ -230,7 +235,7 @@ onMounted(() => {
 
 			<NoqQuestionList
 				ref="questionListRef"
-				:show-actions="true"
+				:showActions="true"
 				@answer="handleAnswer"
 				@delete="handleDelete"
 				@report="handleReport"
@@ -255,7 +260,7 @@ onMounted(() => {
 							v-for="question in items"
 							:key="question.id"
 							:question="question as NoqQuestion"
-							:show-actions="false"
+							:showActions="false"
 						/>
 					</div>
 				</template>

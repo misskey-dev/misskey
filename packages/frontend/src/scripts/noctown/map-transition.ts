@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ref, computed, type Ref } from 'vue';
+import { ref, computed } from 'vue';
+import type { Ref } from 'vue';
 
 export type MapLocation = 'overworld' | 'interior';
 
@@ -326,7 +327,7 @@ export class MapTransitionManager {
 	}
 
 	private sleep(ms: number): Promise<void> {
-		return new Promise(resolve => setTimeout(resolve, ms));
+		return new Promise(resolve => window.setTimeout(resolve, ms));
 	}
 
 	/**

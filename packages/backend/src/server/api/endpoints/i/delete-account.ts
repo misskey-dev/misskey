@@ -131,7 +131,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			});
 
 			if (followee == null) {
-				throw `Cant find followee ${following.followeeId}`;
+				throw new Error(`Cant find followee ${following.followeeId}`);
 			}
 
 			await this.userFollowingService.unfollow(follower, followee, true);

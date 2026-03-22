@@ -79,7 +79,7 @@ export class Noqestion1767000000000 {
 		await queryRunner.query(`COMMENT ON COLUMN "noq_question"."isUsernameDisclosed" IS 'username開示フラグ'`);
 		await queryRunner.query(`COMMENT ON COLUMN "noq_question"."isNoReplyRequested" IS '回答不要フラグ'`);
 		await queryRunner.query(`COMMENT ON COLUMN "noq_question"."cardDesign" IS 'メッセージカードデザイン'`);
-		await queryRunner.query(`COMMENT ON COLUMN "noq_question"."status" IS '回答ステータス'`);
+		await queryRunner.query(`COMMENT ON COLUMN "noq_question"."status" IS '回答ステータス (pending/answered/deleted)'`);
 		await queryRunner.query(`COMMENT ON COLUMN "noq_question"."isReported" IS '通報済みフラグ'`);
 		await queryRunner.query(`COMMENT ON COLUMN "noq_question"."isDisclosedByMod" IS 'モデレーターによる開示済みフラグ'`);
 		await queryRunner.query(`COMMENT ON COLUMN "noq_question"."isE2EEncrypted" IS 'E2E暗号化フラグ'`);

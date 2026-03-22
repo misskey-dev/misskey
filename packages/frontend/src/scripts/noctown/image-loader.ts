@@ -20,7 +20,7 @@ function createFallbackTexture(): THREE.Texture {
 		return fallbackTexture;
 	}
 
-	const canvas = document.createElement('canvas');
+	const canvas = window.document.createElement('canvas');
 	canvas.width = 64;
 	canvas.height = 64;
 	const ctx = canvas.getContext('2d');
@@ -150,7 +150,7 @@ export function loadImage(url: string): Promise<HTMLImageElement> {
 			failedUrls.add(url);
 
 			// Create fallback image
-			const fallbackCanvas = document.createElement('canvas');
+			const fallbackCanvas = window.document.createElement('canvas');
 			fallbackCanvas.width = 64;
 			fallbackCanvas.height = 64;
 			const ctx = fallbackCanvas.getContext('2d');
@@ -188,7 +188,7 @@ export function createPlaceholderTexture(
 	bgColor = '#3a3a5c',
 	textColor = '#ffffff',
 ): THREE.Texture {
-	const canvas = document.createElement('canvas');
+	const canvas = window.document.createElement('canvas');
 	canvas.width = 64;
 	canvas.height = 64;
 	const ctx = canvas.getContext('2d');

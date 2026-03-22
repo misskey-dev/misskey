@@ -9,22 +9,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.toolGroup">
 		<button
 			:class="[$style.toolButton, { [$style.active]: currentTool === 'pen' }]"
-			@click="$emit('setTool', 'pen')"
 			title="鉛筆 (P)"
+			@click="$emit('setTool', 'pen')"
 		>
 			<i class="ti ti-pencil"></i>
 		</button>
 		<button
 			:class="[$style.toolButton, { [$style.active]: currentTool === 'eraser' }]"
-			@click="$emit('setTool', 'eraser')"
 			title="消しゴム (E)"
+			@click="$emit('setTool', 'eraser')"
 		>
 			<i class="ti ti-eraser"></i>
 		</button>
 		<button
 			:class="[$style.toolButton, { [$style.active]: currentTool === 'eyedropper' }]"
-			@click="$emit('setTool', 'eyedropper')"
 			title="スポイト (I)"
+			@click="$emit('setTool', 'eyedropper')"
 		>
 			<span style="font-size: 16px;">🎨</span>
 		</button>
@@ -41,8 +41,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		></button>
 		<button
 			:class="$style.colorPickerButton"
-			@click="$emit('openColorPicker')"
 			title="カラーピッカーを開く"
+			@click="$emit('openColorPicker')"
 		>
 			<i class="ti ti-palette"></i>
 		</button>
@@ -55,8 +55,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			v-for="width in strokeWidthLevels"
 			:key="width"
 			:class="[$style.strokeWidthButton, { [$style.active]: strokeWidth === width }]"
-			@click="$emit('setStrokeWidth', width)"
 			:title="`線の太さ: ${width}px`"
+			@click="$emit('setStrokeWidth', width)"
 		>
 			<div :class="$style.strokePreview" :style="{ width: `${Math.min(width * 2, 12)}px`, height: `${Math.min(width * 2, 12)}px` }"></div>
 		</button>
@@ -76,44 +76,44 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 
 	<!-- 拡大縮小グループ -->
-	<div :class="$style.zoomGroup" v-if="isTouchDevice">
+	<div v-if="isTouchDevice" :class="$style.zoomGroup">
 		<span :class="$style.label">倍率:</span>
 		<span :class="$style.zoomDisplay">{{ Math.round(zoomLevel * 100) }}% ({{ Math.round(displayWidth * zoomLevel) }}×{{ Math.round(displayHeight * zoomLevel) }})</span>
-		<button :class="$style.zoomButton" @click="$emit('zoomOut')" title="縮小 (-)">
+		<button :class="$style.zoomButton" title="縮小 (-)" @click="$emit('zoomOut')">
 			<i class="ti ti-zoom-out"></i>
 		</button>
-		<button :class="$style.zoomResetButton" @click="$emit('resetZoom')" title="倍率をリセット">
+		<button :class="$style.zoomResetButton" title="倍率をリセット" @click="$emit('resetZoom')">
 			<i class="ti ti-zoom-reset"></i>
 		</button>
-		<button :class="$style.zoomButton" @click="$emit('zoomIn')" title="拡大 (+)">
+		<button :class="$style.zoomButton" title="拡大 (+)" @click="$emit('zoomIn')">
 			<i class="ti ti-zoom-in"></i>
 		</button>
-		<button :class="$style.debugButton" @click="$emit('toggleDebug')" title="デバッグ情報">
+		<button :class="$style.debugButton" title="デバッグ情報" @click="$emit('toggleDebug')">
 			<i class="ti ti-bug"></i>
 		</button>
-		<button :class="$style.commLogButton" @click="$emit('exportCommLog')" title="通信ログ出力">
+		<button :class="$style.commLogButton" title="通信ログ出力" @click="$emit('exportCommLog')">
 			<i class="ti ti-antenna-bars"></i>
 		</button>
 	</div>
 
 	<!-- 手ブレ補正設定（モバイル版） -->
-	<div :class="$style.touchCorrectionGroup" v-if="isTouchDevice">
+	<div v-if="isTouchDevice" :class="$style.touchCorrectionGroup">
 		<span :class="$style.label">手ブレ補正:</span>
 		<button
 			:class="[$style.correctionButton, { [$style.active]: correctionEnabled }]"
-			@click="$emit('toggleCorrection')"
 			title="手ブレスムージング"
+			@click="$emit('toggleCorrection')"
 		>
 			<i class="ti ti-wand"></i>
 		</button>
-		<div :class="$style.correctionLevelGroup" v-if="correctionEnabled">
+		<div v-if="correctionEnabled" :class="$style.correctionLevelGroup">
 			<span :class="$style.levelLabel">Lv:</span>
 			<button
 				v-for="level in correctionLevels"
 				:key="level.level"
 				:class="[$style.levelButton, { [$style.active]: correctionLevel === level.level }]"
-				@click="$emit('setCorrectionLevel', level.level)"
 				:title="`補正レベル ${level.level} (${level.name})`"
+				@click="$emit('setCorrectionLevel', level.level)"
 			>
 				{{ level.level }}
 			</button>
@@ -131,17 +131,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 		>
 			{{ layer }}
 		</button>
-		<button :class="$style.layerMenuButton" @click="$emit('showLayerMenu')" title="レイヤーメニュー">
+		<button :class="$style.layerMenuButton" title="レイヤーメニュー" @click="$emit('showLayerMenu')">
 			<i class="ti ti-dots-vertical"></i>
 		</button>
 	</div>
 
 	<!-- ウォーターマークボタン（モバイル版） -->
-	<div :class="$style.watermarkGroup" v-if="isTouchDevice">
+	<div v-if="isTouchDevice" :class="$style.watermarkGroup">
 		<button
 			:class="[$style.actionButton, { [$style.active]: showWatermark }]"
-			@click="$emit('toggleWatermark')"
 			title="ウォーターマーク"
+			@click="$emit('toggleWatermark')"
 		>
 			<i class="ti ti-photo-shield"></i>
 			<span>WM</span>
@@ -152,18 +152,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.undoRedoGroup">
 		<button
 			:class="[$style.undoButton, { [$style.disabled]: !canUndo }]"
-			@click="$emit('undo')"
 			:disabled="!canUndo"
 			title="戻す (Ctrl+Z)"
+			@click="$emit('undo')"
 		>
 			<i class="ti ti-arrow-back-up"></i>
 			<span v-if="!isTouchDevice">戻す</span>
 		</button>
 		<button
 			:class="[$style.redoButton, { [$style.disabled]: !canRedo }]"
-			@click="$emit('redo')"
 			:disabled="!canRedo"
 			title="やり直す (Ctrl+Y)"
+			@click="$emit('redo')"
 		>
 			<i class="ti ti-arrow-forward-up"></i>
 			<span v-if="!isTouchDevice">やり直す</span>
@@ -171,35 +171,35 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 
 	<!-- ズームグループ（PC版） -->
-	<div :class="$style.zoomGroup" v-if="!isTouchDevice">
+	<div v-if="!isTouchDevice" :class="$style.zoomGroup">
 		<span :class="$style.label">倍率:</span>
 		<span :class="$style.zoomDisplay">{{ Math.round(zoomLevel * 100) }}%</span>
-		<button :class="$style.zoomButton" @click="$emit('zoomOut')" title="縮小 (-)">
+		<button :class="$style.zoomButton" title="縮小 (-)" @click="$emit('zoomOut')">
 			<i class="ti ti-zoom-out"></i>
 		</button>
-		<button :class="$style.zoomResetButton" @click="$emit('resetZoom')" title="倍率をリセット (Ctrl+0)">
+		<button :class="$style.zoomResetButton" title="倍率をリセット (Ctrl+0)" @click="$emit('resetZoom')">
 			<i class="ti ti-zoom-reset"></i>
 		</button>
-		<button :class="$style.zoomButton" @click="$emit('zoomIn')" title="拡大 (+)">
+		<button :class="$style.zoomButton" title="拡大 (+)" @click="$emit('zoomIn')">
 			<i class="ti ti-zoom-in"></i>
 		</button>
 	</div>
 
 	<!-- キャンバスサイズとアクションボタン -->
 	<div :class="$style.actionGroup">
-		<button :class="$style.sizeButton" @click="$emit('changeCanvasSize')" title="キャンバスサイズ変更">
+		<button :class="$style.sizeButton" title="キャンバスサイズ変更" @click="$emit('changeCanvasSize')">
 			<i class="ti ti-dimensions"></i>
 			<span v-if="!isTouchDevice">{{ canvasWidth }}×{{ canvasHeight }}</span>
 		</button>
-		<button :class="$style.clearButton" @click="$emit('clearCanvas')" title="キャンバスをクリア">
+		<button :class="$style.clearButton" title="キャンバスをクリア" @click="$emit('clearCanvas')">
 			<i class="ti ti-trash"></i>
 			<span v-if="!isTouchDevice">クリア</span>
 		</button>
-		<button :class="$style.saveButton" @click="$emit('saveCanvas')" title="画像として保存">
+		<button :class="$style.saveButton" title="画像として保存" @click="$emit('saveCanvas')">
 			<i class="ti ti-download"></i>
 			<span v-if="!isTouchDevice">保存</span>
 		</button>
-		<button :class="$style.fullscreenButton" @click="$emit('toggleFullscreen')" :title="isFullscreen ? '全画面を解除' : '全画面表示'">
+		<button :class="$style.fullscreenButton" :title="isFullscreen ? '全画面を解除' : '全画面表示'" @click="$emit('toggleFullscreen')">
 			<i :class="isFullscreen ? 'ti ti-arrows-minimize' : 'ti ti-arrows-maximize'"></i>
 			<span v-if="!isTouchDevice">{{ isFullscreen ? '解除' : '全画面' }}</span>
 		</button>

@@ -58,8 +58,8 @@ const props = withDefaults(defineProps<{
 });
 
 // Hold detection
-const primaryHoldTimer = ref<ReturnType<typeof setTimeout> | null>(null);
-const secondaryHoldTimer = ref<ReturnType<typeof setTimeout> | null>(null);
+const primaryHoldTimer = ref<ReturnType<typeof window.setTimeout> | null>(null);
+const secondaryHoldTimer = ref<ReturnType<typeof window.setTimeout> | null>(null);
 const primaryWasHeld = ref(false);
 const secondaryWasHeld = ref(false);
 
@@ -67,7 +67,7 @@ function onPrimaryPress(): void {
 	if (props.disabled) return;
 
 	primaryWasHeld.value = false;
-	primaryHoldTimer.value = setTimeout(() => {
+	primaryHoldTimer.value = window.setTimeout(() => {
 		primaryWasHeld.value = true;
 		emit('primary-hold');
 	}, props.holdDelay);
@@ -75,7 +75,7 @@ function onPrimaryPress(): void {
 
 function onPrimaryRelease(): void {
 	if (primaryHoldTimer.value) {
-		clearTimeout(primaryHoldTimer.value);
+		window.clearTimeout(primaryHoldTimer.value);
 		primaryHoldTimer.value = null;
 	}
 }
@@ -92,7 +92,7 @@ function onSecondaryPress(): void {
 	if (props.secondaryDisabled) return;
 
 	secondaryWasHeld.value = false;
-	secondaryHoldTimer.value = setTimeout(() => {
+	secondaryHoldTimer.value = window.setTimeout(() => {
 		secondaryWasHeld.value = true;
 		emit('secondary-hold');
 	}, props.holdDelay);
@@ -100,7 +100,7 @@ function onSecondaryPress(): void {
 
 function onSecondaryRelease(): void {
 	if (secondaryHoldTimer.value) {
-		clearTimeout(secondaryHoldTimer.value);
+		window.clearTimeout(secondaryHoldTimer.value);
 		secondaryHoldTimer.value = null;
 	}
 }

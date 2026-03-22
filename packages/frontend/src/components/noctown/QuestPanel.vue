@@ -224,7 +224,7 @@ async function completeQuest() {
 
 				await Promise.all([loadQuests(), loadInventory()]);
 
-				setTimeout(() => {
+				window.setTimeout(() => {
 					successMessage.value = null;
 				}, 3000);
 			}
@@ -375,7 +375,7 @@ function close() {
 						<div v-if="selectedQuest?.id === quest.id" class="quest-details">
 							<div class="details-divider"></div>
 
-							<!-- Deliver quest location hint -->
+							<!-- Deliver quest window.location hint -->
 							<div v-if="quest.questType === 'deliver'" class="deliver-hint">
 								<span v-if="props.currentNpcId === quest.destinationNpcId" class="at-destination">
 									You are at the destination!

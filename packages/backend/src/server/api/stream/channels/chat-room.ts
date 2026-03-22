@@ -54,7 +54,6 @@ export class ChatRoomChannel extends Channel {
 		if (room == null) return false;
 		if (!(await this.chatService.hasPermissionToViewRoomTimeline(this.user.id, room))) return false;
 
-
 		this.subscriber.on(`chatRoomStream:${this.roomId}`, this.onEvent);
 
 		return true;
@@ -133,7 +132,7 @@ export class ChatRoomChannel extends Channel {
 					this.chatService.notifyRoomTypingStop(this.user.id, this.roomId);
 				}
 				break;
-			case 'drawingStroke':
+			case 'drawingStroke': {
 				console.log(`🔍 [DEBUG] Processing drawing stroke for room ${this.roomId} from user ${this.user.id}`);
 
 				// drawingStrokeは完了したストロークなので、レート制限を設けずすべて保存する
@@ -147,7 +146,8 @@ export class ChatRoomChannel extends Channel {
 
 				await this.chatService.broadcastDrawingStroke(this.roomId, this.user.id, strokeData);
 				break;
-			case 'drawingProgress':
+			}
+			case 'drawingProgress': {
 				console.log(`🔍 [DEBUG] Processing drawing progress for room ${this.roomId} from user ${this.user.id}`);
 
 				// セキュリティ: 描画データの詳細検証
@@ -159,28 +159,29 @@ export class ChatRoomChannel extends Channel {
 				if (typeof body.opacity !== 'number' || body.opacity < 0.1 || body.opacity > 1) return;
 
 				// 進行状況データ作成
-			const maxLayer = this.drawingCanvasService.getMaxLayerIndex();
-			const layerIndex = Math.min(Math.max(Math.floor(typeof body.layer === 'number' ? body.layer : 0), 0), maxLayer);
-			const progressData = {
+				const maxLayer = this.drawingCanvasService.getMaxLayerIndex();
+				const layerIndex = Math.min(Math.max(Math.floor(typeof body.layer === 'number' ? body.layer : 0), 0), maxLayer);
+				const progressData = {
 					userId: this.user.id,
 					userName: this.user.name || this.user.username,
 					points: body.points.map((p: any) => ({
-					x: Math.min(Math.max(Math.round(p.x), 0), 4000),
-					y: Math.min(Math.max(Math.round(p.y), 0), 4000),
+						x: Math.min(Math.max(Math.round(p.x), 0), 4000),
+						y: Math.min(Math.max(Math.round(p.y), 0), 4000),
 						pressure: p.pressure !== undefined ? p.pressure : 1.0,
 					})),
 					tool: body.tool,
 					color: body.color,
 					strokeWidth: body.strokeWidth,
 					opacity: body.opacity,
-				layer: layerIndex,
+					layer: layerIndex,
 					timestamp: Date.now(),
 				};
 
 				// 描画進行状況をルーム内の他のユーザーに配信
-			await this.chatService.broadcastDrawingProgress(this.roomId, this.user.id, progressData);
+				await this.chatService.broadcastDrawingProgress(this.roomId, this.user.id, progressData);
 				break;
-			case 'cursorMove':
+			}
+			case 'cursorMove': {
 				// レート制限: 50ms間隔制限（カーソルは高頻度）
 				const cursorNow = Date.now();
 				if (cursorNow - this.lastCursorMove < 50) return; // 無言で制限（ログなし）
@@ -191,13 +192,14 @@ export class ChatRoomChannel extends Channel {
 				if (body.x < -100 || body.x > 4100 || body.y < -100 || body.y > 4100) return; // 最大4000x4000 + マージン
 
 				// カーソル位置をルーム内の他のユーザーに配信
-			await this.chatService.broadcastCursorMove(this.roomId, this.user.id, {
-				userName: this.user.name || this.user.username,
-				x: Math.round(body.x * 10) / 10,
-				y: Math.round(body.y * 10) / 10,
-				timestamp: cursorNow,
-			});
-			break;
+				await this.chatService.broadcastCursorMove(this.roomId, this.user.id, {
+					userName: this.user.name || this.user.username,
+					x: Math.round(body.x * 10) / 10,
+					y: Math.round(body.y * 10) / 10,
+					timestamp: cursorNow,
+				});
+				break;
+			}
 			case 'clearCanvas':
 				console.log(`🔍 [DEBUG] Processing canvas clear for room ${this.roomId} from user ${this.user.id}`);
 

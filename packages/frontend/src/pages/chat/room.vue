@@ -84,7 +84,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-if="tab === 'chat'" :class="$style.bottomArea">
 		<div v-if="typingUsers.length > 0" :class="$style.typing">
 			<template v-if="typingUsers.length <= 2">
-				<I18n :src="i18n.ts.typingUsers" text-tag="span">
+				<I18n :src="i18n.ts.typingUsers" textTag="span">
 					<template #users>
 						<b v-for="typer in typingUsers" :key="typer.id" :class="$style.user">
 							<MkUserName class="name" :user="typer" />
@@ -172,7 +172,7 @@ const connection = ref<Misskey.IChannelConnection<ChatChannel> | null>(null);
 const streamInstance = ref<any>(null); // ストリームインスタンスを保持
 const showIndicator = ref(false);
 const typingUsers = ref<Misskey.entities.UserLite[]>([]);
-const typingTimers = new Map<string, ReturnType<typeof setTimeout>>();
+const typingTimers = new Map<string, ReturnType<typeof window.setTimeout>>();
 // 重複イベント防止用のSets
 const processedMessageIds = new Set<string>();
 const processedReactionIds = new Set<string>();
@@ -264,7 +264,7 @@ async function toggleSecretMode() {
 // 表示されている全てのメッセージを既読にする関数
 function markAllVisibleMessagesAsRead() {
 	if (window.document.hidden) {
-		console.log('🔍 [DEBUG] Skipping read mark on initialization: document hidden');
+		console.log('🔍 [DEBUG] Skipping read mark on initialization: window.document hidden');
 		return;
 	}
 
@@ -299,7 +299,7 @@ function markAllVisibleMessagesAsRead() {
 // 未読メッセージのみを既読にする関数（ページアクティベート時用）
 function markUnreadMessagesAsRead() {
 	if (window.document.hidden) {
-		console.log('🔍 [DEBUG] Skipping read mark: document hidden');
+		console.log('🔍 [DEBUG] Skipping read mark: window.document hidden');
 		return;
 	}
 
@@ -368,7 +368,7 @@ function cleanup() {
 
 	// タイマーをすべてクリア
 	for (const timer of typingTimers.values()) {
-		clearTimeout(timer);
+		window.clearTimeout(timer);
 	}
 	typingTimers.clear();
 	console.log('🔍 [DEBUG] Cleared all typing timers');
@@ -492,7 +492,7 @@ async function initialize() {
 				await os.apiWithDialog('chat/rooms/join', { roomId: r.id });
 				initializing.value = false;
 				// 再帰ではなく、フラグをリセットしてからinitializeを呼ぶ
-				setTimeout(() => initialize(), 100);
+				window.setTimeout(() => initialize(), 100);
 				return;
 			}
 		}
@@ -584,7 +584,6 @@ async function fetchMore() {
 	canFetchMore.value = newMessages.length === LIMIT;
 	moreFetching.value = false;
 }
-
 
 function onMessage(message: Misskey.entities.ChatMessageLite) {
 	console.debug('🔍 [DEBUG] onMessage called with message:', message.id);
@@ -801,7 +800,7 @@ function addTypingUser(typingUser: Misskey.entities.UserLite) {
 	// 既存のタイマーをクリア
 	const existingTimer = typingTimers.get(typingUser.id);
 	if (existingTimer) {
-		clearTimeout(existingTimer);
+		window.clearTimeout(existingTimer);
 	}
 
 	// 既に存在する場合は追加しない
@@ -812,7 +811,7 @@ function addTypingUser(typingUser: Misskey.entities.UserLite) {
 	}
 
 	// 5秒後に自動的に削除するタイマーを設定
-	const timer = setTimeout(() => {
+	const timer = window.setTimeout(() => {
 		console.log('🔍 [DEBUG] Auto-removing typing user after timeout:', typingUser.username);
 		removeTypingUser(typingUser.id);
 		typingTimers.delete(typingUser.id);
@@ -827,7 +826,7 @@ function removeTypingUser(userId: string) {
 	// タイマーをクリア
 	const timer = typingTimers.get(userId);
 	if (timer) {
-		clearTimeout(timer);
+		window.clearTimeout(timer);
 		typingTimers.delete(userId);
 	}
 
@@ -971,7 +970,7 @@ watch([() => props.userId, () => props.roomId], ([newUserId, newRoomId], [oldUse
 	if ((newUserId !== oldUserId) || (newRoomId !== oldRoomId)) {
 		console.log('🔍 [DEBUG] Reinitializing due to props change');
 		// 短時間での重複初期化を防ぐため、少し遅延させる
-		setTimeout(() => {
+		window.setTimeout(() => {
 			initialize();
 		}, 50);
 	}
@@ -1078,7 +1077,7 @@ watch(tab, (newTab) => {
 		window.location.hash = newTab;
 	} else {
 		// chatタブの場合はハッシュをクリア
-		history.pushState('', document.title, window.location.pathname + window.location.search);
+		window.history.pushState('', window.document.title, window.location.pathname + window.location.search);
 	}
 });
 

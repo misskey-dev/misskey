@@ -22,7 +22,7 @@ export function useDrawingNetwork(deps: {
 	progressSendInterval: number;
 }) {
 	// カーソルタイマー管理
-	const cursorTimers = new Map<string, ReturnType<typeof setTimeout>>();
+	const cursorTimers = new Map<string, ReturnType<typeof window.setTimeout>>();
 
 	// ユーザーごとの色管理
 	const userCursorColors = new Map<string, string>();
@@ -131,11 +131,11 @@ export function useDrawingNetwork(deps: {
 
 		// 既存のタイマーをクリア
 		if (cursorTimers.has(data.userId)) {
-			clearTimeout(cursorTimers.get(data.userId));
+			window.clearTimeout(cursorTimers.get(data.userId));
 		}
 
 		// 3秒後にカーソルを削除
-		const timer = setTimeout(() => {
+		const timer = window.setTimeout(() => {
 			const idx = deps.otherCursors.value.findIndex(c => c.userId === data.userId);
 			if (idx >= 0) {
 				deps.otherCursors.value.splice(idx, 1);

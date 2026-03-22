@@ -8,16 +8,16 @@ import { RoleService } from '@/core/RoleService.js';
 import type { MiUser } from '@/models/_.js';
 
 export type NoctownPermission =
-	| 'noctown:admin:items'      // Create/edit/delete items
+	| 'noctown:admin:items' // Create/edit/delete items
 	| 'noctown:admin:distribute' // Distribute items to players
-	| 'noctown:admin:world'      // Edit world settings
-	| 'noctown:admin:recipes'    // Manage recipes
-	| 'noctown:mod:ban'          // Ban players from Noctown
-	| 'noctown:mod:warn'         // Warn players
-	| 'noctown:mod:logs'         // View moderation logs
-	| 'noctown:player:trade'     // Trade with other players
-	| 'noctown:player:chat'      // Send chat messages
-	| 'noctown:player:place'     // Place items in world
+	| 'noctown:admin:world' // Edit world settings
+	| 'noctown:admin:recipes' // Manage recipes
+	| 'noctown:mod:ban' // Ban players from Noctown
+	| 'noctown:mod:warn' // Warn players
+	| 'noctown:mod:logs' // View moderation logs
+	| 'noctown:player:trade' // Trade with other players
+	| 'noctown:player:chat' // Send chat messages
+	| 'noctown:player:place'; // Place items in world
 
 @Injectable()
 export class NoctownPermissionService {

@@ -95,7 +95,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<!-- Not participating -->
 			<div v-if="!participation" :class="$style.joinSection">
-				<MkButton primary @click="joinEvent" :disabled="joining || selectedEvent.status !== 'active'">
+				<MkButton primary :disabled="joining || selectedEvent.status !== 'active'" @click="joinEvent">
 					<i class="ti ti-player-play"></i> イベントに参加
 				</MkButton>
 			</div>
@@ -132,8 +132,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<button
 									v-if="reward.canClaim"
 									:class="$style.claimBtn"
-									@click="claimReward(reward.id)"
 									:disabled="claiming"
+									@click="claimReward(reward.id)"
 								>
 									受取
 								</button>

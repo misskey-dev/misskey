@@ -1107,7 +1107,7 @@ onMounted(async () => {
 	await loadUserSettings();
 
 	// 全画面モード用のイベントリスナー
-	document.addEventListener('fullscreenchange', handleFullscreenChange);
+	window.document.addEventListener('fullscreenchange', handleFullscreenChange);
 
 	// キャンバスサイズ変更監視でより正確な座標計算
 	if (canvasEl.value && 'ResizeObserver' in window) {
@@ -1246,8 +1246,8 @@ onMounted(async () => {
 		}
 	};
 
-	document.addEventListener('keydown', handleKeyDown);
-	document.addEventListener('keyup', handleKeyUp);
+	window.document.addEventListener('keydown', handleKeyDown);
+	window.document.addEventListener('keyup', handleKeyUp);
 	if (canvasEl.value) {
 		canvasEl.value.addEventListener('wheel', handleWheel, { passive: false });
 	}
@@ -1256,15 +1256,15 @@ onMounted(async () => {
 	window.addEventListener('resize', updateDisplaySize);
 
 	// 定期的なパフォーマンス監視（30秒間隔）
-	const performanceMonitor = setInterval(() => {
+	const performanceMonitor = window.setInterval(() => {
 		monitorPerformance();
 	}, 30000);
 
 	// コンポーネント終了時にクリア
 	onBeforeUnmount(() => {
-		clearInterval(performanceMonitor);
-		document.removeEventListener('keydown', handleKeyDown);
-		document.removeEventListener('keyup', handleKeyUp);
+		window.clearInterval(performanceMonitor);
+		window.document.removeEventListener('keydown', handleKeyDown);
+		window.document.removeEventListener('keyup', handleKeyUp);
 		window.removeEventListener('resize', updateDisplaySize);
 		if (canvasEl.value) {
 			canvasEl.value.removeEventListener('wheel', handleWheel);
@@ -1279,12 +1279,12 @@ onBeforeUnmount(() => {
 
 	// カーソルタイマーをクリア
 	cursorTimers.forEach((timer) => {
-		clearTimeout(timer);
+		window.clearTimeout(timer);
 	});
 	cursorTimers.clear();
 
 	// 全画面モード用のイベントリスナーを削除
-	document.removeEventListener('fullscreenchange', handleFullscreenChange);
+	window.document.removeEventListener('fullscreenchange', handleFullscreenChange);
 
 	// ResizeObserver のクリーンアップ
 	if (resizeObserver) {
@@ -2197,7 +2197,7 @@ function sendCursorPosition(point: { x: number; y: number }) {
 }
 
 // カーソルタイマー管理
-const cursorTimers = new Map<string, ReturnType<typeof setTimeout>>();
+const cursorTimers = new Map<string, ReturnType<typeof window.setTimeout>>();
 
 // ユーザーごとの色管理
 const userCursorColors = new Map<string, string>();
@@ -2257,11 +2257,11 @@ function updateOtherCursor(data: any) {
 	// 既存のタイマーをクリア
 	const existingTimer = cursorTimers.get(data.userId);
 	if (existingTimer) {
-		clearTimeout(existingTimer);
+		window.clearTimeout(existingTimer);
 	}
 
 	// 新しいタイマーを設定
-	const timer = setTimeout(() => {
+	const timer = window.setTimeout(() => {
 		const idx = otherCursors.value.findIndex(c => c.userId === data.userId);
 		if (idx >= 0) {
 			otherCursors.value.splice(idx, 1);
@@ -2301,7 +2301,7 @@ function eyedropColor(point: { x: number; y: number }) {
 function downloadCanvas() {
 	try {
 		// 合成用の一時キャンバスを作成
-		const compositeCanvas = document.createElement('canvas');
+		const compositeCanvas = window.document.createElement('canvas');
 		compositeCanvas.width = physicalCanvasWidth.value;
 		compositeCanvas.height = physicalCanvasHeight.value;
 		const compositeCtx = compositeCanvas.getContext('2d');
@@ -2335,12 +2335,12 @@ function downloadCanvas() {
 			}
 
 			const url = URL.createObjectURL(blob);
-			const a = document.createElement('a');
+			const a = window.document.createElement('a');
 			a.href = url;
 			a.download = filename;
-			document.body.appendChild(a);
+			window.document.body.appendChild(a);
 			a.click();
-			document.body.removeChild(a);
+			window.document.body.removeChild(a);
 			URL.revokeObjectURL(url);
 
 			os.success();
@@ -2400,7 +2400,6 @@ function downloadCanvas() {
  */
 async function clearCanvas() {
 	try {
-
 		// 部屋名またはユーザー名を取得
 		let targetName = '';
 		if (props.roomId) {
@@ -2418,7 +2417,6 @@ async function clearCanvas() {
 			placeholder: 'クリア',
 		});
 
-
 		// キャンセルされた場合
 		if (canceled) {
 			return;
@@ -2433,7 +2431,6 @@ async function clearCanvas() {
 			});
 			return;
 		}
-
 
 		// 確認が取れた場合のみクリア実行
 		clearCanvasLocal();
@@ -2472,7 +2469,6 @@ async function clearCanvas() {
  *    - 現在のレイヤーのコンテキストを再設定
  */
 function clearCanvasLocal() {
-
 	// 全レイヤーのキャンバスをクリア
 	for (let i = 0; i < MAX_LAYERS; i++) {
 		const layerCtx = layerContexts.value[i];
@@ -2597,7 +2593,6 @@ function updateDisplaySize() {
 		displayWidth.value = containerWidth;
 		displayHeight.value = containerWidth / canvasAspect;
 	}
-
 }
 
 // キャンバスサイズを変更
@@ -2619,7 +2614,6 @@ async function changeCanvasSize(newWidth: number, newHeight: number, isRemote = 
 
 	// コンテナサイズに合わせてdisplayサイズを更新
 	updateDisplaySize();
-
 
 	// DPRを考慮して全レイヤーのキャンバスを再初期化
 	const dpr = window.devicePixelRatio || 1;
@@ -2783,7 +2777,6 @@ function undo() {
 	// 自分の最後のストロークを削除
 	const [lastStroke] = layerStrokeHistory.value[targetLayer].splice(myStrokeIndex.index, 1);
 
-
 	// redoスタックに保存
 	redoStack.value.push({
 		layer: targetLayer,
@@ -2850,7 +2843,6 @@ function redo() {
 
 	const { layer: targetLayer, stroke, originalIndex } = redoItem;
 
-
 	// 元の位置にストロークを挿入
 	if (originalIndex !== undefined && originalIndex >= 0) {
 		layerStrokeHistory.value[targetLayer].splice(originalIndex, 0, stroke);
@@ -2905,7 +2897,6 @@ function redo() {
 function handleRemoteUndo(data: any) {
 	if (data.userId === $i.id) return; // 自分のイベントは無視
 
-
 	const targetLayer = data.layer;
 	const strokeId = data.strokeId;
 
@@ -2955,7 +2946,6 @@ function handleRemoteUndo(data: any) {
  */
 function handleRemoteRedo(data: any) {
 	if (data.userId === $i.id) return; // 自分のイベントは無視
-
 
 	const targetLayer = data.layer;
 	const stroke = data.stroke;
@@ -3229,7 +3219,7 @@ async function exportDebugLog() {
 	const json = JSON.stringify(debugData, null, 2);
 	const blob = new Blob([json], { type: 'application/json' });
 	const url = URL.createObjectURL(blob);
-	const a = document.createElement('a');
+	const a = window.document.createElement('a');
 	a.href = url;
 	a.download = `drawing-debug-${Date.now()}.json`;
 	a.click();
@@ -3276,7 +3266,7 @@ async function exportCommLog() {
 	const json = JSON.stringify(commLogData, null, 2);
 	const blob = new Blob([json], { type: 'application/json' });
 	const url = URL.createObjectURL(blob);
-	const a = document.createElement('a');
+	const a = window.document.createElement('a');
 	a.href = url;
 	a.download = `comm-log-${Date.now()}.json`;
 	a.click();
@@ -3701,7 +3691,7 @@ function handleUndoStroke(data: any) {
 // キャンバスデータ読み込み
 async function loadCanvasData() {
 	try {
-		const response = await fetch('/api/drawing/canvas', {
+		const response = await window.fetch('/api/drawing/canvas', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -3744,7 +3734,7 @@ function addStrokeToHistory(strokeData: any) {
 	// 新しいストロークを追加する前に、現在の状態をundoスタックに保存
 	if (ctx) {
 		const currentState = {
-			history: [...strokeHistory.value],
+			window.history: [...strokeHistory.value],
 			imageData: ctx.getImageData(0, 0, canvasWidth.value, canvasHeight.value),
 		};
 		undoStack.value.push(currentState);
@@ -3885,7 +3875,7 @@ function showChatOverlay(message: any) {
 	};
 
 	// 3秒後に非表示
-	setTimeout(() => {
+	window.setTimeout(() => {
 		chatOverlay.value = null;
 	}, 3000);
 }
@@ -3893,13 +3883,13 @@ function showChatOverlay(message: any) {
 // 全画面モード制御
 async function toggleFullscreen() {
 	try {
-		if (!document.fullscreenElement) {
-			const rootElement = document.querySelector('.drawing-root') as HTMLElement;
+		if (!window.document.fullscreenElement) {
+			const rootElement = window.document.querySelector('.drawing-root') as HTMLElement;
 			if (rootElement) {
 				await rootElement.requestFullscreen();
 			}
 		} else {
-			await document.exitFullscreen();
+			await window.document.exitFullscreen();
 		}
 	} catch (error) {
 		console.warn('🎨 [WARN] Fullscreen toggle failed:', error);
@@ -3908,7 +3898,7 @@ async function toggleFullscreen() {
 
 // 全画面状態変更ハンドラー
 function handleFullscreenChange() {
-	isFullscreen.value = !!document.fullscreenElement;
+	isFullscreen.value = !!window.document.fullscreenElement;
 
 	// 全画面モード時にタッチデバイス向けのスタイル調整
 	if (isFullscreen.value && isTouchDevice.value) {

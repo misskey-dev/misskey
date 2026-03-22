@@ -1,3 +1,8 @@
+<!--
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <script setup lang="ts">
 /**
  * NoqQuestionForm.vue
@@ -129,7 +134,7 @@ async function send() {
 		v-model="text"
 		:placeholder="i18n.ts._noq.questionTextPlaceholder"
 		:max="MAX_TEXT_LENGTH"
-		:mfm-autocomplete="true"
+		:mfmAutocomplete="true"
 		class="textarea"
 	/>
 

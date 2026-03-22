@@ -362,7 +362,7 @@ export class WarpGate {
 	 */
 	private createFloatingIcon(emoji: string): void {
 		// Canvasで絵文字をテクスチャ化
-		const canvas = document.createElement('canvas');
+		const canvas = window.document.createElement('canvas');
 		const size = 128;
 		canvas.width = size;
 		canvas.height = size;

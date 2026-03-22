@@ -358,8 +358,8 @@ export function loadConfig(): Config {
 		pidFile: config.pidFile,
 		logging: {
 			sql: {
-				disableQueryTruncation: false,  // 開発環境ではクエリーを表示
-				enableQueryParamLogging: true,  // エラーログをコンソール出力に
+				disableQueryTruncation: false, // 開発環境ではクエリーを表示
+				enableQueryParamLogging: true, // エラーログをコンソール出力に
 			},
 		},
 		slack: config.slack,

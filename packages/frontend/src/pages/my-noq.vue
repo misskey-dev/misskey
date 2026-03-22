@@ -191,7 +191,7 @@ definePage(() => ({
 
 				<NoqQuestionList
 					ref="questionListRef"
-					:show-actions="true"
+					:showActions="true"
 					@answer="handleAnswer"
 					@delete="handleDelete"
 					@report="handleReport"

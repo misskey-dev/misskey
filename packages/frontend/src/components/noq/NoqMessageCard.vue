@@ -1,3 +1,8 @@
+<!--
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <script setup lang="ts">
 /**
  * NoqMessageCard.vue
@@ -374,7 +379,7 @@ async function generateCard(): Promise<string> {
 async function downloadCard() {
 	try {
 		const dataUrl = await generateCard();
-		const link = document.createElement('a');
+		const link = window.document.createElement('a');
 		link.download = `noq-card-${props.question.id}.png`;
 		link.href = dataUrl;
 		link.click();
@@ -398,7 +403,6 @@ onMounted(() => {
 	generateCard();
 });
 
-
 // 外部から呼び出せるメソッドを公開
 defineExpose({
 	generateCard,
@@ -414,7 +418,7 @@ defineExpose({
 		:width="CARD_WIDTH"
 		:height="CARD_HEIGHT"
 		class="card-canvas"
-	/>
+	></canvas>
 	<div class="card-actions">
 		<button class="download-btn" @click="downloadCard">
 			<i class="ti ti-download"></i>

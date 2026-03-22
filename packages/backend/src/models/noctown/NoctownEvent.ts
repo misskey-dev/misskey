@@ -7,12 +7,12 @@ import { Entity, Column, PrimaryColumn, Index } from 'typeorm';
 import { id } from '../util/id.js';
 
 export const noctownEventTypes = [
-	'seasonal',      // 季節イベント（春夏秋冬）
-	'holiday',       // 祝日イベント
-	'limited',       // 期間限定イベント
-	'ranking',       // ランキングイベント
-	'collection',    // 収集イベント
-	'community',     // コミュニティイベント
+	'seasonal', // 季節イベント（春夏秋冬）
+	'holiday', // 祝日イベント
+	'limited', // 期間限定イベント
+	'ranking', // ランキングイベント
+	'collection', // 収集イベント
+	'community', // コミュニティイベント
 ] as const;
 
 export type NoctownEventType = typeof noctownEventTypes[number];

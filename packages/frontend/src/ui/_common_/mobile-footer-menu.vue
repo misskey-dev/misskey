@@ -65,7 +65,7 @@ const shouldShowChatIcon = computed(() => {
 
 function openChatCompose() {
 	// より具体的なセレクターでMisskeyの送信ボタンを探す
-	const sendButton = document.querySelector(
+	const sendButton = window.document.querySelector(
 		'button[data-cy-send], ' +
 		'button.send-button, ' +
 		'button[type="submit"], ' +
@@ -80,7 +80,7 @@ function openChatCompose() {
 	}
 
 	// フォールバック: メッセージ入力欄にEnterを送信
-	const messageInput = document.querySelector(
+	const messageInput = window.document.querySelector(
 		'textarea[data-cy-message-input], ' +
 		'textarea[placeholder*="メッセージ"], ' +
 		'textarea[placeholder*="message"], ' +
@@ -102,7 +102,7 @@ function openChatCompose() {
 		messageInput.dispatchEvent(ctrlEnterEvent);
 
 		// 通常のEnterも試行
-		setTimeout(() => {
+		window.setTimeout(() => {
 			const enterEvent = new KeyboardEvent('keydown', {
 				key: 'Enter',
 				code: 'Enter',

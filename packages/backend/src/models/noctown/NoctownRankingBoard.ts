@@ -7,15 +7,15 @@ import { Entity, Column, PrimaryColumn, Index } from 'typeorm';
 import { id } from '../util/id.js';
 
 export const rankingCategories = [
-	'total',      // Total combined score
-	'balance',    // Wallet balance
-	'item',       // Item collection score
-	'quest',      // Quest completion score
-	'speed',      // Speed/efficiency score
-	'farming',    // Farming score
-	'livestock',  // Livestock score
-	'crafting',   // Crafting score
-	'trading',    // Trading score
+	'total', // Total combined score
+	'balance', // Wallet balance
+	'item', // Item collection score
+	'quest', // Quest completion score
+	'speed', // Speed/efficiency score
+	'farming', // Farming score
+	'livestock', // Livestock score
+	'crafting', // Crafting score
+	'trading', // Trading score
 ] as const;
 
 export type RankingCategory = typeof rankingCategories[number];

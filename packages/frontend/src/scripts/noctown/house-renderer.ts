@@ -201,7 +201,7 @@ export class HouseRenderer {
 	 * Create a text label sprite
 	 */
 	private createNameLabel(text: string): THREE.Sprite {
-		const canvas = document.createElement('canvas');
+		const canvas = window.document.createElement('canvas');
 		const context = canvas.getContext('2d')!;
 		canvas.width = 256;
 		canvas.height = 64;

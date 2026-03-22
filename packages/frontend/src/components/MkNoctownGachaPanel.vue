@@ -48,18 +48,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<div v-if="selectedGacha && selectedGacha.isAvailable" :class="$style.actions">
 		<div :class="$style.pullCount">
-			<button :class="$style.countBtn" @click="decrementCount" :disabled="pullCount <= 1">
+			<button :class="$style.countBtn" :disabled="pullCount <= 1" @click="decrementCount">
 				<i class="ti ti-minus"></i>
 			</button>
 			<span :class="$style.countValue">{{ pullCount }}</span>
-			<button :class="$style.countBtn" @click="incrementCount" :disabled="pullCount >= 10">
+			<button :class="$style.countBtn" :disabled="pullCount >= 10" @click="incrementCount">
 				<i class="ti ti-plus"></i>
 			</button>
 		</div>
 		<div :class="$style.totalCost">
 			合計: <i class="ti ti-coin"></i> {{ selectedGacha.costPerPull * pullCount }}
 		</div>
-		<MkButton :class="$style.pullBtn" primary @click="pullGacha" :disabled="pulling">
+		<MkButton :class="$style.pullBtn" primary :disabled="pulling" @click="pullGacha">
 			<i class="ti ti-gift"></i> ガチャを回す
 		</MkButton>
 	</div>
