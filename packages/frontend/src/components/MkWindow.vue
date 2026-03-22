@@ -13,7 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@afterLeave="emit('closed')"
 >
 	<div v-if="showing" ref="rootEl" :class="[$style.root, { [$style.maximized]: maximized }]">
-		<div :class="$style.body" class="_shadow" @mousedown="onBodyMousedown" @keydown="onKeydown">
+		<div :class="$style.body" class="_shadow" @pointerdown="onBodyPointerDown" @keydown="onKeydown">
 			<div :class="[$style.header, { [$style.mini]: mini }]" @contextmenu.prevent.stop="onContextmenu">
 				<span :class="$style.headerLeft">
 					<template v-if="!minimized">
@@ -222,7 +222,7 @@ function unMinimize() {
 	if (position.left + windowWidth > browserWidth) main.style.left = browserWidth - windowWidth + 'px';
 }
 
-function onBodyMousedown() {
+function onBodyPointerDown() {
 	top();
 }
 
