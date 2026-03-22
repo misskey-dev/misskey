@@ -236,7 +236,7 @@ export class MiUser {
 	// mutual: 相互フォローのみ
 	// none: 誰からも受け付けない
 	@Column('varchar', {
-		length: 128, default: 'mutual',
+		length: 128, default: 'everyone',
 	})
 	public chatScope: 'everyone' | 'followers' | 'following' | 'mutual' | 'none';
 
