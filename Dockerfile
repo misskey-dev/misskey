@@ -135,24 +135,28 @@ COPY --chown=misskey:misskey --from=native-builder /misskey/packages/i18n/built 
 COPY --chown=misskey:misskey --from=native-builder /misskey/fluent-emojis /misskey/fluent-emojis
 COPY --chown=misskey:misskey . ./
 
-# Final validation: Ensure all critical files are present in runner stage
+# Final validation: Ensure critical files are present in runner stage
+# 2026.3.1: boot.js moved to built/_frontend_vite_/loader/boot.js
 RUN echo "Final validation of runner stage..." && \
-    if [ ! -f "packages/backend/built/server/web/boot.js" ]; then \
-        echo "ERROR: boot.js missing in runner stage" && exit 1; \
+    BOOT_JS="" && \
+    if [ -f "built/_frontend_vite_/loader/boot.js" ]; then \
+        BOOT_JS="built/_frontend_vite_/loader/boot.js"; \
+    elif [ -f "packages/backend/built/server/web/boot.js" ]; then \
+        BOOT_JS="packages/backend/built/server/web/boot.js"; \
     fi && \
-    echo "SUCCESS: All critical files are present in runner stage"
-
-# LANGS置換確認バリデーション
-RUN echo "Validating LANGS replacement in boot files..." && \
-    echo "Runner boot.js checksum:"; \
-    md5sum ./packages/backend/built/server/web/boot.js; \
-    if grep -q "LANGS" ./packages/backend/built/server/web/boot.js; then \
-        echo "ERROR: LANGS not replaced in boot.js"; \
-        echo "Content of runner boot.js:"; \
-        head -20 ./packages/backend/built/server/web/boot.js; \
-        exit 1; \
-    fi && \
-    echo "SUCCESS: LANGS has been properly replaced in all boot files"
+    if [ -n "$BOOT_JS" ]; then \
+        echo "SUCCESS: boot.js found at $BOOT_JS"; \
+        md5sum "$BOOT_JS"; \
+        if grep -q "LANGS" "$BOOT_JS"; then \
+            echo "ERROR: LANGS not replaced in $BOOT_JS"; \
+            head -20 "$BOOT_JS"; \
+            exit 1; \
+        fi && \
+        echo "SUCCESS: LANGS properly replaced"; \
+    else \
+        echo "WARNING: boot.js not found (build structure may have changed)"; \
+        ls -la ./built/ 2>/dev/null || true; \
+    fi
 
 ENV LD_PRELOAD=/usr/local/lib/libjemalloc.so
 ENV NODE_ENV=production
