@@ -28,7 +28,10 @@ const isCustomTableQuery = (query) => customPatterns.some(p => query.includes(p)
 // （カスタムエンティティのインデックス名がマイグレーションと異なる）
 const isAutoIndexQuery = (query) => /DROP INDEX "public"\."IDX_[a-f0-9]+"/.test(query) || /CREATE INDEX "IDX_[a-f0-9]+"/.test(query);
 
-const isIgnoredQuery = (query) => isCustomTableQuery(query) || isAutoIndexQuery(query);
+// TypeORMハッシュ名のFK制約のDROP/ADDも無視
+const isAutoFKQuery = (query) => /DROP CONSTRAINT "FK_[a-f0-9]+"/.test(query) || /ADD CONSTRAINT "FK_[a-f0-9]+" FOREIGN KEY/.test(query);
+
+const isIgnoredQuery = (query) => isCustomTableQuery(query) || isAutoIndexQuery(query) || isAutoFKQuery(query);
 
 const filteredUp = sqlInMemory.upQueries.filter(q => !isIgnoredQuery(q.query));
 const filteredDown = sqlInMemory.downQueries.filter(q => !isIgnoredQuery(q.query));
