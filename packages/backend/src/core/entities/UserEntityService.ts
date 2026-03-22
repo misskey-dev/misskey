@@ -618,6 +618,8 @@ export class UserEntityService implements OnModuleInit {
 				achievements: profile!.achievements,
 				loggedInDays: profile!.loggedInDates.length,
 				policies: this.roleService.getUserPolicies(user.id),
+				// 受け取ったリアクション数を非同期で取得
+				receivedReactionsCount: isDetailed ? this.calculateReceivedReactionsCount(user.id).catch(() => 0) : undefined,
 			} : {}),
 
 			...(opts.includeSecrets ? {
@@ -727,5 +729,172 @@ export class UserEntityService implements OnModuleInit {
 				},
 			)),
 		);
+	}
+
+	@bindThis
+	private calculateNormalizedReactionScore(reactionsCount: number): number {
+		// リアクション数を対数スケールで正規化（0-100範囲）
+		// log10(リアクション数 + 1) × 20、最大値100に制限
+		const score = Math.log10(reactionsCount + 1) * 20;
+		return Math.min(Math.floor(score), 100);
+	}
+
+	@bindThis
+	public async calculateRecentActivityScore(userId: MiUser['id']): Promise<number> {
+		// 最近30日間の投稿数を取得し、0-100範囲に正規化
+		const thirtyDaysAgo = new Date();
+		thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+		const thirtyDaysAgoSnowflake = this.idService.gen(thirtyDaysAgo.getTime());
+		
+		// Misskeyではidにタイムスタンプが含まれているため、idで比較
+		const sql = `
+			SELECT COUNT(*) as count 
+			FROM note 
+			WHERE "userId" = $1 AND id >= $2
+		`;
+		
+		const result = await this.usersRepository.query(sql, [userId, thirtyDaysAgoSnowflake]);
+		const recentNotes = parseInt(result[0]?.count || '0', 10);
+		
+		// 30日間の投稿数を0-100範囲に正規化（30投稿で満点）
+		return Math.min(Math.floor((recentNotes / 30) * 100), 100);
+	}
+
+	@bindThis
+	private calculateAccountAgeScore(userId: string): number {
+		// アカウント運営期間を0-100範囲に正規化
+		const now = new Date();
+		const createdDate = this.idService.parse(userId).date;
+		const daysSinceCreation = Math.floor((now.getTime() - createdDate.getTime()) / (1000 * 60 * 60 * 24));
+		
+		// 365日（1年）で満点、最大100に制限
+		return Math.min(Math.floor((daysSinceCreation / 365) * 100), 100);
+	}
+
+	// アクティビティ減衰係数を計算（lastActiveDateに基づく0.1〜1.0の減衰）
+	// 3日以内: 1.0、3日境界で即座に0.5、3-7日: 0.5→0.3、7-14日: 0.3→0.15、14-30日: 0.15→0.1、30日超: 0.1
+	// 赤ランプ（3日以上非アクティブ）表示と同時にスコアが即座に半減するようにする
+	@bindThis
+	private async calculateActivityDecay(userId: MiUser['id']): Promise<number> {
+		const user = await this.usersRepository.findOneBy({ id: userId });
+
+		if (!user || !user.lastActiveDate) {
+			return 0.1;
+		}
+
+		const elapsed = Date.now() - user.lastActiveDate.getTime();
+
+		const ONE_DAY = 1000 * 60 * 60 * 24;
+		const THREE_DAYS = ONE_DAY * 3;
+		const SEVEN_DAYS = ONE_DAY * 7;
+		const FOURTEEN_DAYS = ONE_DAY * 14;
+		const THIRTY_DAYS = ONE_DAY * 30;
+
+		if (elapsed < THREE_DAYS) {
+			return 1.0;
+		} else if (elapsed < SEVEN_DAYS) {
+			// 3日で即座に0.5、7日で0.3に到達
+			const ratio = (elapsed - THREE_DAYS) / (SEVEN_DAYS - THREE_DAYS);
+			return 0.5 - (ratio * 0.2);
+		} else if (elapsed < FOURTEEN_DAYS) {
+			const ratio = (elapsed - SEVEN_DAYS) / (FOURTEEN_DAYS - SEVEN_DAYS);
+			return 0.3 - (ratio * 0.15);
+		} else if (elapsed < THIRTY_DAYS) {
+			const ratio = (elapsed - FOURTEEN_DAYS) / (THIRTY_DAYS - FOURTEEN_DAYS);
+			return 0.15 - (ratio * 0.05);
+		} else {
+			return 0.1;
+		}
+	}
+
+	// 人気スコア計算: エンゲージメント比率(重み0.2〜0.7) + フォロワー数(重み0.3〜0.8) にアクティビティ減衰を乗算
+	@bindThis
+	public async calculatePopularityScore(userId: MiUser['id'], followerCount: number, _notesCount: number): Promise<number> {
+		// 30日間のエンゲージメント比率とノート数を取得
+		const { ratio: engagementRatio, notesCount: recentNotes } = await this.calculateRecentEngagementRatio(userId);
+
+		// エンゲージメント比率を正規化（0-100範囲、比率10で満点）
+		const normalizedEngagement = Math.min(engagementRatio * 10, 100);
+
+		// フォロワー数を正規化（0-100範囲、対数スケール）
+		const normalizedFollowers = Math.min(Math.log10(followerCount + 1) * 20, 100);
+
+		// ノート数に応じてエンゲージメント重みを0.2〜0.7の範囲で動的調整
+		// 100ノートで最大値(0.7)に到達
+		const engagementWeight = Math.min(0.2 + (recentNotes / 100) * 0.5, 0.7);
+		const followerWeight = 1 - engagementWeight;
+
+		// 動的重み付けでベーススコア計算
+		const baseScore =
+			(normalizedEngagement * engagementWeight) +
+			(normalizedFollowers * followerWeight);
+
+		// アクティビティ減衰係数を適用（非アクティブユーザーのスコアを低下）
+		const activityDecay = await this.calculateActivityDecay(userId);
+		const popularityScore = baseScore * activityDecay;
+
+		// 小数点第2位まで保持
+		return Math.round(popularityScore * 100) / 100;
+	}
+
+	@bindThis
+	public async calculateReceivedReactionsCount(userId: MiUser['id']): Promise<number> {
+		// ユーザーから受け取ったリアクションの合計数を計算
+		const result = await this.usersRepository.query(`
+			SELECT SUM(CAST(value AS integer)) as total
+			FROM (
+				SELECT (jsonb_each_text(reactions)).value
+				FROM note
+				WHERE "userId" = $1 AND reactions IS NOT NULL
+			) subquery
+		`, [userId]);
+
+		return parseInt(result[0]?.total || '0', 10);
+	}
+
+	@bindThis
+	public async calculateRecentReactionsCount(userId: MiUser['id']): Promise<number> {
+		// 直近30日間に受け取ったリアクションの合計数を計算
+		const thirtyDaysAgo = new Date();
+		thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+		const thirtyDaysAgoSnowflake = this.idService.gen(thirtyDaysAgo.getTime());
+
+		const result = await this.usersRepository.query(`
+			SELECT SUM(CAST(value AS integer)) as total
+			FROM (
+				SELECT (jsonb_each_text(reactions)).value
+				FROM note
+				WHERE "userId" = $1
+					AND id >= $2
+					AND reactions IS NOT NULL
+			) subquery
+		`, [userId, thirtyDaysAgoSnowflake]);
+
+		return parseInt(result[0]?.total || '0', 10);
+	}
+
+	@bindThis
+	public async calculateRecentEngagementRatio(userId: MiUser['id']): Promise<{ ratio: number; notesCount: number }> {
+		// 直近30日間のエンゲージメント比率（リアクション数/ノート数）を計算
+		const thirtyDaysAgo = new Date();
+		thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+		const thirtyDaysAgoSnowflake = this.idService.gen(thirtyDaysAgo.getTime());
+
+		// 30日間のノート数
+		const notesResult = await this.usersRepository.query(`
+			SELECT COUNT(*) as count
+			FROM note
+			WHERE "userId" = $1 AND id >= $2
+		`, [userId, thirtyDaysAgoSnowflake]);
+		const recentNotes = parseInt(notesResult[0]?.count || '0', 10);
+
+		// ノート数が0の場合は比率0
+		if (recentNotes === 0) return { ratio: 0, notesCount: 0 };
+
+		// 30日間のリアクション数
+		const reactionsCount = await this.calculateRecentReactionsCount(userId);
+
+		// リアクション/ノート比率
+		return { ratio: reactionsCount / recentNotes, notesCount: recentNotes };
 	}
 }

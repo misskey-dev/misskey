@@ -20,17 +20,19 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 60s
-      start_interval: 5s
+      start_period: 30s
+      start_interval: 3s
     deploy:
       resources:
         limits:
-          memory: 6G
+          # 実使用量~1GB/コンテナに対して上限3GBで十分。メモリリーク時の暴走防止
+          memory: 3G
         reservations:
-          memory: 4G
+          memory: 1536M
     environment:
       - NODE_ENV=production
-      - NODE_OPTIONS=--max-old-space-size=5120
+      # ヒープ上限: 実使用量~1GBに対して2GBで十分な余裕
+      - NODE_OPTIONS=--max-old-space-size=2048
 
   redis:
     restart: unless-stopped
@@ -44,7 +46,7 @@ services:
     command: >
       sh -c 'redis-server
       --requirepass "$$REDIS_PASSWORD"
-      --maxmemory 1gb
+      --maxmemory 512mb
       --maxmemory-policy allkeys-lru
       --save 900 1
       --save 300 10
@@ -58,9 +60,10 @@ services:
     deploy:
       resources:
         limits:
-          memory: 1G
+          # Redis実使用量183MBに対して640MBで十分。allkeys-lruで自動削除
+          memory: 640M
         reservations:
-          memory: 512M
+          memory: 256M
 
 
 #  mcaptcha:

@@ -4,7 +4,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<PageWithHeader v-model:tab="tab" :reversed="tab === 'chat'" :tabs="headerTabs" :actions="headerActions">
+<div :class="$style.chatContainer">
+<PageWithHeader v-model:tab="tab" :reversed="tab === 'chat'" :tabs="headerTabs" :actions="headerActions" :class="$style.scrollArea">
 	<div v-if="tab === 'chat'" class="_spacer" style="--MI_SPACER-w: 700px;">
 		<div class="_gaps">
 			<div v-if="initializing">
@@ -75,36 +76,37 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<XInfo v-if="room != null" :room="room"/>
 	</div>
 
-	<template #footer>
-		<div v-if="tab === 'chat'" :class="$style.footer">
-			<div class="_gaps">
-				<div v-if="typingUsers.length > 0" :class="$style.typing">
-					<template v-if="typingUsers.length <= 2">
-						<I18n :src="i18n.ts.typingUsers" text-tag="span">
-							<template #users>
-								<b v-for="typer in typingUsers" :key="typer.id" :class="$style.user">
-									<MkUserName class="name" :user="typer" />
-								</b>
-							</template>
-						</I18n>
-					</template>
-					<template v-else>
-						<span>{{ i18n.ts.multipleUsersTyping }}</span>
-					</template>
-					<MkEllipsis />
-				</div>
-				<Transition name="fade">
-					<div v-show="showIndicator" :class="$style.new">
-						<button class="_buttonPrimary" :class="$style.newButton" @click="onIndicatorClick">
-							<i class="fas ti-fw fa-arrow-circle-down" :class="$style.newIcon"></i>{{ i18n.ts._chat.newMessage }}
-						</button>
-					</div>
-				</Transition>
-				<XForm v-if="initialized" :user="user" :room="room" :isSecretMessageMode="isSecretMessageMode" :onTyping="handleTyping" :onTypingStop="handleTypingStop" :class="$style.form"/>
-			</div>
-		</div>
-	</template>
 </PageWithHeader>
+
+	<!-- iOS Safari対応: フォームをMkStickyContainerのsticky footerの外に配置 -->
+	<!-- _pageScrollableReversed (column-reverse + overflow: clip) 内の -->
+	<!-- sticky要素はiOS Safariで背景が描画されないため、スクロールコンテナの外に出す -->
+	<div v-if="tab === 'chat'" :class="$style.bottomArea">
+		<div v-if="typingUsers.length > 0" :class="$style.typing">
+			<template v-if="typingUsers.length <= 2">
+				<I18n :src="i18n.ts.typingUsers" text-tag="span">
+					<template #users>
+						<b v-for="typer in typingUsers" :key="typer.id" :class="$style.user">
+							<MkUserName class="name" :user="typer" />
+						</b>
+					</template>
+				</I18n>
+			</template>
+			<template v-else>
+				<span>{{ i18n.ts.multipleUsersTyping }}</span>
+			</template>
+			<MkEllipsis />
+		</div>
+		<Transition name="fade">
+			<div v-show="showIndicator" :class="$style.new">
+				<button class="_buttonPrimary" :class="$style.newButton" @click="onIndicatorClick">
+					<i class="fas ti-fw fa-arrow-circle-down" :class="$style.newIcon"></i>{{ i18n.ts._chat.newMessage }}
+				</button>
+			</div>
+		</Transition>
+		<XForm v-if="initialized" :user="user" :room="room" :isSecretMessageMode="isSecretMessageMode" :onTyping="handleTyping" :onTypingStop="handleTypingStop" :class="$style.form"/>
+	</div>
+</div>
 </template>
 
 <script lang="ts" setup>
@@ -1196,19 +1198,37 @@ definePage(computed(() => {
 	position: absolute;
 }
 
-.root {
+// iOS Safari対応: PageWithHeaderをflex childにし、
+// フォームをスクロールコンテナの外に配置するためのラッパー
+.chatContainer {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+// PageWithHeaderの_pageScrollableReversed (height: 100%)を
+// flex childとして動作させるためのオーバーライド
+.scrollArea {
+	flex: 1 1 0;
+	min-height: 0;
+	height: 0;
+}
+
+// iOS Safari対応: スクロールコンテナの外に配置するフォーム領域
+// MkStickyContainerのsticky footer内ではiOS Safariで背景描画されないため
+// universal.vueのXMobileFooterMenuと同じ方式で外側に配置する
+.bottomArea {
+	flex-shrink: 0;
+	position: relative;
+	background: var(--MI_THEME-navBg);
+	border-top: solid 0.5px var(--MI_THEME-divider);
 }
 
 .more {
 	margin: 0 auto;
 }
 
-.footer {
-	width: 100%;
-	padding-top: 8px;
-	position: relative;
-}
-
+// typing表示: bottomAreaの上に浮かせる
 .typing {
 	position: absolute;
 	bottom: 100%;
@@ -1250,10 +1270,6 @@ definePage(computed(() => {
 .newIcon {
 	display: inline-block;
 	margin-right: 8px;
-}
-
-.footer {
-
 }
 
 .form {

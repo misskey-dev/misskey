@@ -14,8 +14,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			ref="tlComponent"
 			:key="src + withRenotes + withReplies + onlyFiles + withSensitive"
 			:class="$style.tl"
-			:src="(src.split(':')[0] as (BasicTimelineType | 'list'))"
+			:src="(src.split(':')[0] as (BasicTimelineType | 'list' | 'role' | 'antenna'))"
 			:list="src.split(':')[1]"
+			:role="src.split(':')[0] === 'role' ? src.split(':')[1] : undefined"
 			:withRenotes="withRenotes"
 			:withReplies="withReplies"
 			:withSensitive="withSensitive"
@@ -28,6 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, watch, provide, useTemplateRef, ref, onMounted, onActivated } from 'vue';
+import { useRouter } from '@/router.js';
 import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
 import type { MenuItem } from '@/types/menu.js';
 import type { BasicTimelineType } from '@/timelines.js';
@@ -44,15 +46,31 @@ import { deepMerge } from '@/utility/merge.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { availableBasicTimelines, hasWithReplies, isAvailableBasicTimeline, isBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
 import { prefer } from '@/preferences.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
 
 const tlComponent = useTemplateRef('tlComponent');
+const router = useRouter();
 
-type TimelinePageSrc = BasicTimelineType | `list:${string}`;
+const props = defineProps<{
+	roleId?: string;
+	listId?: string;
+	antennaId?: string;
+}>();
+
+type TimelinePageSrc = BasicTimelineType | `list:${string}` | `role:${string}` | `antenna:${string}`;
 
 const srcWhenNotSignin = ref<'local' | 'global'>(isAvailableBasicTimeline('local') ? 'local' : 'global');
 const src = computed<TimelinePageSrc>({
-	get: () => ($i ? store.r.tl.value.src : srcWhenNotSignin.value),
-	set: (x) => saveSrc(x),
+	get: (): TimelinePageSrc => {
+		// URLパラメータから優先的に取得
+		if (props.roleId) return `role:${props.roleId}` as TimelinePageSrc;
+		if (props.listId) return `list:${props.listId}` as TimelinePageSrc;
+		if (props.antennaId) return `antenna:${props.antennaId}` as TimelinePageSrc;
+
+		// ストアから取得
+		return $i ? (store.r.tl.value.src as TimelinePageSrc) : srcWhenNotSignin.value;
+	},
+	set: (x: TimelinePageSrc) => saveSrc(x),
 });
 const withRenotes = computed<boolean>({
 	get: () => store.r.tl.value.filter.withRenotes,
@@ -169,17 +187,54 @@ async function chooseChannel(ev: MouseEvent): Promise<void> {
 	os.popupMenu(items.filter(i => i != null), ev.currentTarget ?? ev.target);
 }
 
+async function chooseRole(ev: MouseEvent): Promise<void> {
+	const roles = await misskeyApi('roles/list', { canPublicNote: true });
+	const items: (MenuItem | undefined)[] = [
+		...roles
+			.filter(x => x.isExplorable)
+			.sort((a, b) => b.usersCount - a.usersCount)
+			.map(role => ({
+				type: 'link' as const,
+				text: role.name,
+				to: `/timeline/role/${role.id}`,
+			})),
+		(roles.filter(x => x.isExplorable).length === 0 ? undefined : { type: 'divider' }),
+		{
+			type: 'link' as const,
+			icon: 'ti ti-badges',
+			text: i18n.ts.roles,
+			to: '/roles',
+		},
+	];
+	os.popupMenu(items.filter(i => i != null), ev.currentTarget ?? ev.target);
+}
+
 function saveSrc(newSrc: TimelinePageSrc): void {
-	const out = deepMerge({ src: newSrc }, store.s.tl);
+	// URLパラメータ経由でも、ロールから別のタイムラインへ切り替える場合は許可
+	if (props.roleId && newSrc === `role:${props.roleId}`) return;
+	if (props.listId && newSrc === `list:${props.listId}`) return;
+	if (props.antennaId && newSrc === `antenna:${props.antennaId}`) return;
+	
+	// ナビゲーションでURLを更新
+	if (newSrc.startsWith('role:')) {
+		// ロールタイムラインへ遷移
+		router.push(`/timeline/role/${newSrc.split(':')[1]}` as '/timeline');
+	} else {
+		// 基本タイムラインへ遷移
+		router.push('/timeline');
 
-	if (newSrc.startsWith('userList:')) {
-		const id = newSrc.substring('userList:'.length);
-		out.userList = prefer.r.pinnedUserLists.value.find(l => l.id === id) ?? null;
-	}
+		// ストアに状態を保存
+		const out = deepMerge({ src: newSrc as typeof store.s.tl.src }, store.s.tl);
 
-	store.set('tl', out);
-	if (['local', 'global'].includes(newSrc)) {
-		srcWhenNotSignin.value = newSrc as 'local' | 'global';
+		if (newSrc.startsWith('userList:')) {
+			const id = newSrc.substring('userList:'.length);
+			out.userList = prefer.r.pinnedUserLists.value.find(l => l.id === id) ?? null;
+		}
+
+		store.set('tl', out);
+		if (['local', 'global'].includes(newSrc)) {
+			srcWhenNotSignin.value = newSrc as 'local' | 'global';
+		}
 	}
 }
 
@@ -192,7 +247,7 @@ function saveTlFilter(key: keyof typeof store.s.tl.filter, newValue: boolean) {
 
 function switchTlIfNeeded() {
 	if (isBasicTimeline(src.value) && !isAvailableBasicTimeline(src.value)) {
-		src.value = availableBasicTimelines()[0];
+		src.value = availableBasicTimelines()[0] as TimelinePageSrc;
 	}
 }
 
@@ -288,6 +343,11 @@ const headerTabs = computed(() => [...(prefer.r.pinnedUserLists.value.map(l => (
 	title: i18n.ts.channel,
 	iconOnly: true,
 	onClick: chooseChannel,
+}, {
+	icon: 'ti ti-badges',
+	title: i18n.ts.role,
+	iconOnly: true,
+	onClick: chooseRole,
 }] as Tab[]);
 
 const headerTabsWhenNotLogin = computed(() => [...availableBasicTimelines().map(tl => ({

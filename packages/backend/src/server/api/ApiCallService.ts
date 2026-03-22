@@ -351,12 +351,17 @@ export class ApiCallService implements OnApplicationShutdown {
 					httpStatusCode: 401,
 				});
 			} else if (user!.isSuspended) {
-				throw new ApiError({
+				const profile = await this.userProfilesRepository.findOneBy({ userId: user!.id });
+				const errorInfo: any = {
 					message: 'Your account has been suspended.',
 					code: 'YOUR_ACCOUNT_SUSPENDED',
 					kind: 'permission',
 					id: 'a8c724b3-6e9c-4b46-b1a8-bc3ed6258370',
-				});
+				};
+				if (profile?.suspendedReason) {
+					errorInfo.reason = profile.suspendedReason;
+				}
+				throw new ApiError(errorInfo);
 			}
 		}
 

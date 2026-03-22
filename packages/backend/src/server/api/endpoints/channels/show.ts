@@ -13,7 +13,8 @@ import { ApiError } from '../../error.js';
 export const meta = {
 	tags: ['channels'],
 
-	requireCredential: false,
+	requireCredential: true,
+	kind: 'read:account',
 
 	res: {
 		type: 'object',

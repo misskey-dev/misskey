@@ -103,3 +103,11 @@ assets/roles/role_shimoneta.png
 assets/roles/role_suisougakubu.png
 assets/roles/role_utamita_haisinsya.png
 assets/roles/role_yakousei.png
+
+# factory
+.factory
+/specs
+
+# openspec
+/openspec
+/.specify

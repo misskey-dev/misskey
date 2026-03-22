@@ -8,6 +8,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_spacer" style="--MI_SPACER-w: 800px;">
 		<div class="_gaps">
 			<div class="_panel" :class="$style.link">
+				<MkA to="/noctown">
+					<img src="https://noc.ski/files/cbb6135b-31f5-4367-8702-8910c72c8d62" style="display: block; max-width: 100%; max-height: 200px; margin: auto;"/>
+				</MkA>
+			</div>
+			<div class="_panel" :class="$style.link">
 				<MkA to="/bubble-game">
 					<img src="/client-assets/drop-and-fusion/logo.png" style="display: block; max-width: 100%; max-height: 200px; margin: auto;"/>
 				</MkA>

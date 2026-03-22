@@ -140,6 +140,12 @@ $widgets-hide-threshold: 1090px;
 	background: var(--MI_THEME-navBg);
 }
 
+// iOS Safari: キーボード表示中は100dvhがキーボード裏まで含むため
+// キーボード高さ分を差し引いてレイアウトをvisual viewport内に収める
+:global(html.keyboard-open) .root {
+	height: calc(100dvh - var(--keyboard-height, 0px));
+}
+
 .nonTitlebarArea {
 	display: flex;
 	flex: 1;

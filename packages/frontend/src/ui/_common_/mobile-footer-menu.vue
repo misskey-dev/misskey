@@ -158,6 +158,12 @@ watch(rootEl, () => {
 	border-top: solid 0.5px var(--MI_THEME-divider);
 }
 
+// キーボード表示中はsafe-area余白を削除
+// ホームインジケーター領域はキーボードの裏に隠れるため不要
+:global(html.keyboard-open) .root {
+	padding-bottom: 0;
+}
+
 .item {
 	padding: 12px 0;
 

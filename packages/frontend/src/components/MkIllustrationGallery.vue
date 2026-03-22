@@ -61,6 +61,10 @@ const props = defineProps<{
 	paginator: any; // IPaginatorインターフェース
 }>();
 
+const emit = defineEmits<{
+	(e: 'beforeNavigate'): void;
+}>();
+
 // ギャラリーアイテムの型定義
 type GalleryItem = {
 	note: Misskey.entities.Note;
@@ -74,13 +78,33 @@ const fetching = computed(() => props.paginator.fetching.value);
 const moreFetching = computed(() => props.paginator.fetchingOlder.value);
 const more = computed(() => props.paginator.canFetchOlder.value);
 
+// ハイライトから除外されたファイルIDを保持
+const excludedFileIds = ref<Set<string>>(new Set());
+
 // ノートの複数ファイルを個別のアイテムに展開
 const expandedItems = computed<GalleryItem[]>(() => {
 	const expanded: GalleryItem[] = [];
+	const seenFileIds = new Set<string>(); // 現在の計算で既に見たファイルID
+
 	for (const note of items.value) {
 		if (note.files && note.files.length > 0) {
 			// 各ファイルを個別のギャラリーアイテムとして追加
 			for (let i = 0; i < note.files.length; i++) {
+				const fileId = note.files[i].id;
+
+				// 除外されたファイルはスキップ
+				if (excludedFileIds.value.has(fileId)) {
+					continue;
+				}
+
+				// 既に表示済みのファイルはスキップ（重複防止）
+				if (seenFileIds.has(fileId)) {
+					continue;
+				}
+
+				// このファイルを見たことを記録
+				seenFileIds.add(fileId);
+
 				expanded.push({
 					note: note,
 					file: note.files[i],
@@ -106,7 +130,9 @@ const init = async () => {
 };
 
 const openNote = (noteId: string) => {
-	router.push(`/notes/${noteId}`);
+	// 親コンポーネントにナビゲーション前イベントを通知
+	emit('beforeNavigate');
+	router.push(`/notes/${noteId}` as any);
 };
 
 const isSensitiveNote = (note: Misskey.entities.Note): boolean => {
@@ -119,6 +145,8 @@ const isSensitiveNote = (note: Misskey.entities.Note): boolean => {
 
 const shouldBlur = (note: Misskey.entities.Note): boolean => {
 	if (!isSensitiveNote(note)) return false;
+	// 管理人またはモデレーターの場合はぼかしをなくす
+	if ($i && ($i.isAdmin || $i.isModerator)) return false;
 	// NSFW設定に基づいてぼかしを適用
 	// force: 常にぼかし, ignore: 常に表示, それ以外: sensitiveならぼかし
 	return prefer.s.nsfw === 'force' || (isSensitiveNote(note) && prefer.s.nsfw !== 'ignore');
@@ -128,7 +156,11 @@ const showMenu = async (ev: MouseEvent | TouchEvent, item: GalleryItem) => {
 	const fileId = item.file.id;
 	const imageUrl = item.file.url;
 
-	const menu = [];
+	const menu: {
+		text: string;
+		icon: string;
+		action: () => Promise<void>;
+	}[] = [];
 
 	// すべてのユーザーに「画像を保存」を表示
 	menu.push({
@@ -172,15 +204,15 @@ const showMenu = async (ev: MouseEvent | TouchEvent, item: GalleryItem) => {
 				if (canceled) return;
 
 				try {
-					await misskeyApi('drive/files/toggle-illustration-highlight-exclusion', {
+					await misskeyApi('drive/files/toggle-illustration-highlight-exclusion' as any, {
 						fileId: fileId,
 						excluded: true,
 					});
 
 					os.success();
 
-					// リストを再読み込み
-					props.paginator.reload();
+					// 除外されたファイルIDを追加（リロードせずにフロントエンドでフィルタリング）
+					excludedFileIds.value.add(fileId);
 				} catch (error) {
 					console.error('Failed to exclude illustration:', error);
 					os.alert({

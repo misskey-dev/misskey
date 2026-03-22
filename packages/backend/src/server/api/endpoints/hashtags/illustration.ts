@@ -7,6 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { NotesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
+import { MetaService } from '@/core/MetaService.js';
 
 export const meta = {
 	tags: ['hashtags'],
@@ -48,8 +49,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
+
+		private metaService: MetaService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			// 管理画面の非表示ハッシュタグを取得
+			const instance = await this.metaService.fetch();
+			const hiddenTags = instance.hiddenTags.map(tag => tag.toLowerCase());
+
 			// note.tagsフィールドから画像付き投稿が多いハッシュタグを集計
 			const query = this.notesRepository.createQueryBuilder('note')
 				.select('UNNEST(note.tags)', 'tag')
@@ -64,7 +71,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.andWhere('(file."excludedFromIllustrationHighlight" IS NULL OR file."excludedFromIllustrationHighlight" = false)')
 				.groupBy('tag')
 				.orderBy('count', 'DESC')
-				.limit(ps.limit);
+				.limit(ps.limit * 2); // 非表示タグでフィルタリングするため、多めに取得
 
 			const result = await query.getRawMany();
 
@@ -74,6 +81,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				const tag = row.tag as string;
 				const count = parseInt(row.count as string, 10);
 				const lowerTag = tag.toLowerCase();
+
+				// 非表示タグに含まれている場合はスキップ
+				if (hiddenTags.includes(lowerTag)) {
+					continue;
+				}
 
 				tagMap.set(lowerTag, (tagMap.get(lowerTag) || 0) + count);
 			}

@@ -163,6 +163,14 @@ export interface Locale extends ILocale {
      */
     "uploading": string;
     /**
+     * 送信中
+     */
+    "sending": string;
+    /**
+     * 通報しました
+     */
+    "reported": string;
+    /**
      * 保存
      */
     "save": string;
@@ -2562,6 +2570,10 @@ export interface Locale extends ILocale {
      * このアカウントは、サーバーの利用規約に違反したなどの理由により、凍結されています。詳細については管理者までお問い合わせください。新しいアカウントを作らないでください。
      */
     "yourAccountSuspendedDescription": string;
+    /**
+     * このユーザーが凍结された理由
+     */
+    "suspendedReasonDescription": string;
     /**
      * トークンが無効です
      */
@@ -10239,6 +10251,34 @@ export interface Locale extends ILocale {
          */
         "eyeCatchingImageRemove": string;
         /**
+         * 表示権限
+         */
+        "visibility": string;
+        /**
+         * パブリック
+         */
+        "visibilityPublic": string;
+        /**
+         * フォロワーのみ
+         */
+        "visibilityFollowers": string;
+        /**
+         * 特定ユーザー限定
+         */
+        "visibilitySpecified": string;
+        /**
+         * URL限定
+         */
+        "visibilityUrlOnly": string;
+        /**
+         * 閲覧許可ユーザーを追加
+         */
+        "addVisibleUser": string;
+        /**
+         * このページを閲覧する権限がありません
+         */
+        "noPermission": string;
+        /**
          * ブロックを追加
          */
         "chooseBlock": string;
@@ -11447,6 +11487,344 @@ export interface Locale extends ILocale {
          */
         "useAvatarAsStone": string;
     };
+    "_noctown": {
+        /**
+         * 接続中
+         */
+        "connected": string;
+        /**
+         * ゲームを読み込み中...
+         */
+        "loading": string;
+        /**
+         * で移動
+         */
+        "moveHint": string;
+        /**
+         * オンライン
+         */
+        "online": string;
+        /**
+         * オフライン
+         */
+        "offline": string;
+        /**
+         * 農場
+         */
+        "farm": string;
+        /**
+         * 畑
+         */
+        "farmPlots": string;
+        /**
+         * 畑がありません
+         */
+        "noFarmPlots": string;
+        /**
+         * 空の畑
+         */
+        "emptyPlot": string;
+        /**
+         * 畑を作成しました
+         */
+        "farmPlotCreated": string;
+        /**
+         * 畑の上限に達しました
+         */
+        "maxPlotsReached": string;
+        /**
+         * この場所は既に使用されています
+         */
+        "locationOccupied": string;
+        /**
+         * 種を選択
+         */
+        "selectSeed": string;
+        /**
+         * 種がありません
+         */
+        "noSeeds": string;
+        /**
+         * 種を植えました
+         */
+        "seedPlanted": string;
+        /**
+         * 水をやりました
+         */
+        "cropWatered": string;
+        /**
+         * 収穫しました
+         */
+        "cropHarvested": string;
+        /**
+         * 種
+         */
+        "cropStageSeed": string;
+        /**
+         * 芽
+         */
+        "cropStageSprout": string;
+        /**
+         * 成長中
+         */
+        "cropStageGrowing": string;
+        /**
+         * 成熟
+         */
+        "cropStageMature": string;
+        /**
+         * 収穫可能
+         */
+        "cropStageHarvestable": string;
+        /**
+         * 枯れ
+         */
+        "cropStageWithered": string;
+        /**
+         * ニワトリ
+         */
+        "chickens": string;
+        /**
+         * ニワトリがいません
+         */
+        "noChickens": string;
+        /**
+         * ニワトリの名前
+         */
+        "nameChicken": string;
+        /**
+         * ニワトリを配置しました
+         */
+        "chickenPlaced": string;
+        /**
+         * ニワトリの上限に達しました
+         */
+        "maxChickensReached": string;
+        /**
+         * エサをあげました
+         */
+        "chickenFed": string;
+        /**
+         * 卵を回収しました
+         */
+        "eggsCollected": string;
+        /**
+         * ウシ
+         */
+        "cows": string;
+        /**
+         * ウシがいません
+         */
+        "noCows": string;
+        /**
+         * ウシの名前
+         */
+        "nameCow": string;
+        /**
+         * ウシを配置しました
+         */
+        "cowPlaced": string;
+        /**
+         * ウシの上限に達しました
+         */
+        "maxCowsReached": string;
+        /**
+         * エサをあげました
+         */
+        "cowFed": string;
+        /**
+         * ミルクを回収しました
+         */
+        "milkCollected": string;
+        /**
+         * 名前なし
+         */
+        "unnamed": string;
+        /**
+         * 任意
+         */
+        "optional": string;
+        /**
+         * エサがありません
+         */
+        "noFeedItems": string;
+        /**
+         * 釣り
+         */
+        "fishing": string;
+        /**
+         * 釣りをする
+         */
+        "goFishing": string;
+        /**
+         * 釣り中...
+         */
+        "fishingInProgress": string;
+        /**
+         * を釣り上げた！
+         */
+        "fishCaught": string;
+        /**
+         * 釣りに失敗しました
+         */
+        "fishingFailed": string;
+        /**
+         * 水辺に近づいてください
+         */
+        "goNearWater": string;
+        /**
+         * 水辺の近くではありません
+         */
+        "notNearWater": string;
+        /**
+         * 魚を待っています...
+         */
+        "waitingForFish": string;
+        /**
+         * 釣りをキャンセルしました
+         */
+        "fishingCancelled": string;
+        /**
+         * ステータス
+         */
+        "farmStatus": string;
+        /**
+         * 種まき
+         */
+        "actionPlant": string;
+        /**
+         * 水やり
+         */
+        "actionWater": string;
+        /**
+         * 収穫
+         */
+        "actionHarvest": string;
+        /**
+         * 釣り
+         */
+        "actionFish": string;
+        /**
+         * アクションを選択
+         */
+        "selectAction": string;
+        /**
+         * 池の近く
+         */
+        "nearPond": string;
+        /**
+         * 湖の近く
+         */
+        "nearLake": string;
+        /**
+         * 畑の近く
+         */
+        "nearFarmPlot": string;
+        /**
+         * 釣り竿が必要です
+         */
+        "needFishingRod": string;
+        /**
+         * すでに釣りをしています
+         */
+        "alreadyFishing": string;
+        /**
+         * 早すぎた！魚がまだ食いついていない...
+         */
+        "tooEarly": string;
+        /**
+         * 遅すぎた！魚に逃げられた...
+         */
+        "tooLate": string;
+        /**
+         * 釣りセッションが見つかりません
+         */
+        "fishingSessionNotFound": string;
+        /**
+         * 作物が見つかりません
+         */
+        "cropNotFound": string;
+        /**
+         * まだ収穫できません
+         */
+        "cropNotReady": string;
+        /**
+         * 畑が見つかりません
+         */
+        "plotNotFound": string;
+        /**
+         * この畑には既に作物があります
+         */
+        "plotHasCrop": string;
+        /**
+         * 種が見つかりません
+         */
+        "seedNotFound": string;
+        /**
+         * 作物が枯れてしまいました
+         */
+        "cropWithered": string;
+        /**
+         * 神社ワールド
+         */
+        "shrineWorld": string;
+        /**
+         * お賽銭
+         */
+        "saisen": string;
+        /**
+         * 奉納する
+         */
+        "saisenOffer": string;
+        /**
+         * お賽銭を奉納しました！
+         */
+        "saisenOffered": string;
+        /**
+         * 鏡餅を{count}個手に入れた！
+         */
+        "saisenMochiReward": ParameterizedString<"count">;
+        /**
+         * 現在の残高
+         */
+        "saisenBalance": string;
+        /**
+         * 累計奉納額
+         */
+        "saisenTotalAmount": string;
+        /**
+         * 次のマイルストーンまで
+         */
+        "saisenNextMilestone": string;
+        /**
+         * カスタム金額
+         */
+        "saisenCustomAmount": string;
+        /**
+         * 残高が不足しています
+         */
+        "saisenInsufficientBalance": string;
+        /**
+         * 金額が正しくありません
+         */
+        "saisenInvalidAmount": string;
+        /**
+         * お賽銭は神社ワールドでのみ行えます
+         */
+        "saisenNotInShrineWorld": string;
+        /**
+         * 神社へ行く
+         */
+        "warpToShrine": string;
+        /**
+         * 元の場所に戻る
+         */
+        "warpToDefault": string;
+        /**
+         * 転移中...
+         */
+        "warping": string;
+    };
     "_offlineScreen": {
         /**
          * オフライン - サーバーに接続できません
@@ -12647,6 +13025,432 @@ export interface Locale extends ILocale {
          * 下書き一覧
          */
         "listDrafts": string;
+    };
+    "_noq": {
+        /**
+         * 質問箱
+         */
+        "questionBox": string;
+        /**
+         * 質問する
+         */
+        "askQuestion": string;
+        /**
+         * 質問を送信
+         */
+        "sendQuestion": string;
+        /**
+         * 質問を送信しました
+         */
+        "questionSent": string;
+        /**
+         * 質問内容
+         */
+        "questionText": string;
+        /**
+         * 質問を入力...
+         */
+        "questionTextPlaceholder": string;
+        /**
+         * ユーザー名を開示する
+         */
+        "discloseUsername": string;
+        /**
+         * 回答不要
+         */
+        "noReplyRequested": string;
+        /**
+         * この質問は回答不要としてマークされています。
+         */
+        "noReplyRequestedMessage": string;
+        /**
+         * メッセージカードデザイン
+         */
+        "cardDesign": string;
+        /**
+         * 受信した質問
+         */
+        "receivedQuestions": string;
+        /**
+         * 送信した質問
+         */
+        "sentQuestions": string;
+        /**
+         * 未回答の質問
+         */
+        "pendingQuestions": string;
+        /**
+         * 回答済みの質問
+         */
+        "answeredQuestions": string;
+        /**
+         * まだ回答済みの質問はありません
+         */
+        "noAnsweredQuestions": string;
+        /**
+         * 質問はありません
+         */
+        "noQuestions": string;
+        /**
+         * 未回答
+         */
+        "statusPending": string;
+        /**
+         * 回答済み
+         */
+        "statusAnswered": string;
+        /**
+         * すべて
+         */
+        "statusAll": string;
+        /**
+         * 回答する
+         */
+        "answer": string;
+        /**
+         * 回答を見る
+         */
+        "viewAnswer": string;
+        /**
+         * A:
+         */
+        "answerLabel": string;
+        /**
+         * 回答ノートを見る
+         */
+        "viewAnswerNote": string;
+        /**
+         * 回答を入力...
+         */
+        "answerPlaceholder": string;
+        /**
+         * 質問
+         */
+        "questionDate": string;
+        /**
+         * 回答
+         */
+        "answerDate": string;
+        /**
+         * メッセージカードを含む
+         */
+        "includeMessageCard": string;
+        /**
+         * 質問文が長いため、CWでは省略されます。メッセージカードの添付がおすすめです。
+         */
+        "longQuestionHint": string;
+        /**
+         * 質問を削除
+         */
+        "deleteQuestion": string;
+        /**
+         * この質問を削除しますか？
+         */
+        "deleteQuestionConfirm": string;
+        /**
+         * 質問を削除しました
+         */
+        "questionDeleted": string;
+        /**
+         * 質問箱設定
+         */
+        "settings": string;
+        /**
+         * 質問箱を有効にする
+         */
+        "enableQuestionBox": string;
+        /**
+         * ユーザー名開示を必須にする
+         */
+        "requireUsernameDisclosure": string;
+        /**
+         * センシティブな質問を非表示
+         */
+        "hideSensitiveQuestions": string;
+        /**
+         * 質問者への注意書き
+         */
+        "notice": string;
+        /**
+         * 質問前にユーザーに表示されるメッセージ...
+         */
+        "noticePlaceholder": string;
+        /**
+         * NGワードリスト
+         */
+        "ngWordList": string;
+        /**
+         * これらの単語を含む質問は自動的にブロックされます
+         */
+        "ngWordListDescription": string;
+        /**
+         * このユーザーをミュート
+         */
+        "muteUser": string;
+        /**
+         * ミュートを解除
+         */
+        "unmuteUser": string;
+        /**
+         * ミュートしたユーザー
+         */
+        "mutedUsers": string;
+        /**
+         * ミュートしているユーザーはいません
+         */
+        "noMutedUsers": string;
+        /**
+         * この質問箱は無効です
+         */
+        "questionBoxDisabled": string;
+        /**
+         * 質問箱が有効になっていません
+         */
+        "questionBoxNotEnabled": string;
+        /**
+         * 設定の読み込みに失敗しました
+         */
+        "loadError": string;
+        /**
+         * この質問箱ではユーザー名の開示が必須です
+         */
+        "usernameDisclosureRequired": string;
+        /**
+         * ブロックされているため質問できません
+         */
+        "blocked": string;
+        /**
+         * ミュートされているため質問できません
+         */
+        "muted": string;
+        /**
+         * 質問にNGワードが含まれています
+         */
+        "containsNgWord": string;
+        /**
+         * 匿名
+         */
+        "anonymous": string;
+        /**
+         * 回答の送信に失敗しました
+         */
+        "answerFailed": string;
+        /**
+         * {user}からの質問
+         */
+        "from": ParameterizedString<"user">;
+        /**
+         * 質問を送信するにはログインが必要です
+         */
+        "loginRequired": string;
+        /**
+         * この質問を通報
+         */
+        "reportQuestion": string;
+        /**
+         * この質問を通報します。通報理由を入力してください。
+         */
+        "reportQuestionDescription": string;
+        /**
+         * 通報理由を詳しく入力...
+         */
+        "reportReasonPlaceholder": string;
+        /**
+         * 通報する
+         */
+        "submitReport": string;
+        /**
+         * 送信者
+         */
+        "disclosedSender": string;
+        /**
+         * この質問の送信者をミュートしますか？今後この送信者からの質問は受け取れなくなります。
+         */
+        "muteUserConfirm": string;
+        /**
+         * ユーザーをミュートしました
+         */
+        "userMuted": string;
+        "cardDesigns": {
+            /**
+             * デフォルト
+             */
+            "default": string;
+            /**
+             * 青空
+             */
+            "blueSky": string;
+            /**
+             * ラブ
+             */
+            "love": string;
+            /**
+             * ノクターン
+             */
+            "nocturne": string;
+            /**
+             * ロマンチック
+             */
+            "romantic": string;
+            /**
+             * 桜
+             */
+            "sakura": string;
+            /**
+             * 夜空
+             */
+            "nightSky": string;
+            /**
+             * パステル
+             */
+            "pastel": string;
+        };
+        /**
+         * 質問箱用ボットアカウント
+         */
+        "botAccountUsername": string;
+        /**
+         * DM通知を送信するアカウントのユーザー名を設定してください。設定しない場合、DM通知は送信されません。
+         */
+        "botAccountUsernameDescription": string;
+        /**
+         * 質問箱機能の管理者設定を行います。質問箱用ボットアカウントを設定すると、質問があった際にDM通知が送信されます。
+         */
+        "adminSettingsDescription": string;
+        /**
+         * 質問募集中を投稿
+         */
+        "announce": string;
+        /**
+         * フォロワーに質問箱の存在を知らせるノートを投稿します。
+         */
+        "announceDescription": string;
+        /**
+         * 質問募集中を投稿する
+         */
+        "postAnnounce": string;
+        /**
+         * 質問募集中を投稿しました
+         */
+        "announceSent": string;
+        /**
+         * E2E暗号化
+         */
+        "e2eEncryption": string;
+        /**
+         * 暗号化された質問は復号ツールでのみ読むことができます。画像添付・カードデザインは使用できません。
+         */
+        "e2eEncryptionNote": string;
+        /**
+         * 暗号化された質問
+         */
+        "encryptedQuestion": string;
+        /**
+         * これは暗号化された質問です。回答は質問者にのみDMで送信されます。
+         */
+        "e2eAnswerNote": string;
+        "e2e": {
+            /**
+             * E2E暗号化
+             */
+            "title": string;
+            /**
+             * E2E暗号化を使用すると、質問と回答をパスワードで保護できます。両者が公開鍵を持っている場合のみ暗号化された質問を送信できます。
+             */
+            "description": string;
+            /**
+             * この暗号化は遊び用途向けです。タイムラインを眺めている人からメッセージを隠すには十分ですが、本格的な暗号解析には耐えられません。
+             */
+            "securityWarning": string;
+            /**
+             * あなたの公開鍵
+             */
+            "yourPublicKey": string;
+            /**
+             * 公開鍵を生成
+             */
+            "generateKey": string;
+            /**
+             * 公開鍵を再生成
+             */
+            "regenerateKey": string;
+            /**
+             * 生成
+             */
+            "generate": string;
+            /**
+             * 再生成
+             */
+            "regenerate": string;
+            /**
+             * 暗号化用パスワード（4文字以上）
+             */
+            "passwordPlaceholder": string;
+            /**
+             * 暗号化用のパスワードを設定してください。このパスワードは保存されず、公開鍵の生成にのみ使用されます。復号時に同じパスワードが必要です。
+             */
+            "passwordNote": string;
+            /**
+             * パスワードが短すぎます
+             */
+            "passwordTooShort": string;
+            /**
+             * パスワードは4文字以上で入力してください
+             */
+            "passwordMinLength": string;
+            /**
+             * 公開鍵を生成しました
+             */
+            "keyGenerated": string;
+            /**
+             * 公開鍵を再生成しますか？
+             */
+            "regenerateWarningTitle": string;
+            /**
+             * 公開鍵を再生成すると、以前の公開鍵で暗号化されたメッセージは復号できなくなります。本当に再生成しますか？
+             */
+            "regenerateWarningText": string;
+            /**
+             * 暗号化して送信
+             */
+            "encryptQuestion": string;
+            /**
+             * 暗号化
+             */
+            "encryptionEnabled": string;
+            /**
+             * 復号ツール
+             */
+            "decryptionPage": string;
+            /**
+             * 暗号化された質問や回答を復号するには、ここにパスワードを入力してください。
+             */
+            "decryptionPageDescription": string;
+            /**
+             * パスワードを入力
+             */
+            "enterPassword": string;
+            /**
+             * 復号
+             */
+            "decrypt": string;
+            /**
+             * 復号されたテキスト
+             */
+            "decryptedText": string;
+            /**
+             * 復号に失敗しました。パスワードが正しいか確認してください。
+             */
+            "decryptionFailed": string;
+            /**
+             * 相手がE2E公開鍵を設定していません
+             */
+            "recipientHasNoKey": string;
+            /**
+             * あなたがE2E公開鍵を設定していません
+             */
+            "senderHasNoKey": string;
+        };
     };
 }
 declare const locales: {

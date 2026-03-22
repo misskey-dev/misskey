@@ -29,6 +29,9 @@ export const meta = {
 export const paramDef = {
 	type: 'object',
 	properties: {
+		canPublicNote: { 
+			type: 'boolean'
+		},
 	},
 	required: [
 	],
@@ -47,7 +50,18 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				isPublic: true,
 				isExplorable: true,
 			});
-			return await this.roleEntityService.packMany(roles, me);
+			
+			const packedRoles = await this.roleEntityService.packMany(roles, me);
+			
+			// canPublicNoteフィルタリング
+			let result = packedRoles;
+			if (typeof ps.canPublicNote === 'boolean') {
+				result = result.filter(role => 
+					role.policies.canPublicNote?.value === ps.canPublicNote
+				);
+			}
+			
+			return result;
 		});
 	}
 }

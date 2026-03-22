@@ -721,6 +721,22 @@ export class MiMeta {
 		default: { },
 	})
 	public clientOptions: Record<string, any>;
+
+	/**
+	 * Noqestion（匿名質問箱）用のボットアカウントID
+	 * DM通知を送信するアカウント
+	 */
+	@Column({
+		...id(),
+		nullable: true,
+	})
+	public noqBotAccountId: MiUser['id'] | null;
+
+	@ManyToOne(type => MiUser, {
+		onDelete: 'SET NULL',
+		nullable: true,
+	})
+	public noqBotAccount: MiUser | null;
 }
 
 export type SoftwareSuspension = {

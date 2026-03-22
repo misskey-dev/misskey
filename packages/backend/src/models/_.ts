@@ -95,6 +95,51 @@ import { MiUserProfile } from '@/models/UserProfile.js';
 import { MiUserPublickey } from '@/models/UserPublickey.js';
 import { MiUserSecurityKey } from '@/models/UserSecurityKey.js';
 import { MiWebhook } from '@/models/Webhook.js';
+import { NoctownPlayer } from '@/models/noctown/NoctownPlayer.js';
+import { NoctownItem } from '@/models/noctown/NoctownItem.js';
+import { NoctownPlayerItem } from '@/models/noctown/NoctownPlayerItem.js';
+import { NoctownWallet } from '@/models/noctown/NoctownWallet.js';
+import { NoctownQuest } from '@/models/noctown/NoctownQuest.js';
+import { NoctownNpc } from '@/models/noctown/NoctownNpc.js';
+import { NoctownPlacedItem } from '@/models/noctown/NoctownPlacedItem.js';
+import { NoctownDroppedItem } from '@/models/noctown/NoctownDroppedItem.js';
+import { NoctownWorld } from '@/models/noctown/NoctownWorld.js';
+import { NoctownWorldChunk } from '@/models/noctown/NoctownWorldChunk.js';
+import { NoctownPlayerScore } from '@/models/noctown/NoctownPlayerScore.js';
+import { NoctownPlayerStatistics } from '@/models/noctown/NoctownPlayerStatistics.js';
+import { NoctownFarmPlot } from '@/models/noctown/NoctownFarmPlot.js';
+import { NoctownCrop } from '@/models/noctown/NoctownCrop.js';
+import { NoctownChicken } from '@/models/noctown/NoctownChicken.js';
+import { NoctownCow } from '@/models/noctown/NoctownCow.js';
+import { NoctownRecipe } from '@/models/noctown/NoctownRecipe.js';
+import { NoctownRecipeIngredient } from '@/models/noctown/NoctownRecipeIngredient.js';
+import { NoctownTrade } from '@/models/noctown/NoctownTrade.js';
+import { NoctownTradeItem } from '@/models/noctown/NoctownTradeItem.js';
+import { NoctownInteriorMap } from '@/models/noctown/NoctownInteriorMap.js';
+import { NoctownShopInventory } from '@/models/noctown/NoctownShopInventory.js';
+import { NoctownTreasureChest } from '@/models/noctown/NoctownTreasureChest.js';
+import { NoctownHouse } from '@/models/noctown/NoctownHouse.js';
+import { NoctownHouseWallItem } from '@/models/noctown/NoctownHouseWallItem.js';
+import { NoctownHouseFurniture } from '@/models/noctown/NoctownHouseFurniture.js';
+import { NoctownBulletinBoard } from '@/models/noctown/NoctownBulletinBoard.js';
+import { NoctownBulletinPost } from '@/models/noctown/NoctownBulletinPost.js';
+import { NoctownBulletinLike } from '@/models/noctown/NoctownBulletinLike.js';
+import { NoctownAgent } from '@/models/noctown/NoctownAgent.js';
+import { NoctownGacha } from '@/models/noctown/NoctownGacha.js';
+import { NoctownGachaItem } from '@/models/noctown/NoctownGachaItem.js';
+import { NoctownGachaPull } from '@/models/noctown/NoctownGachaPull.js';
+import { NoctownEvent } from '@/models/noctown/NoctownEvent.js';
+import { NoctownEventReward } from '@/models/noctown/NoctownEventReward.js';
+import { NoctownEventParticipation } from '@/models/noctown/NoctownEventParticipation.js';
+import { NoctownUniqueItem } from '@/models/noctown/NoctownUniqueItem.js';
+import { NoctownRankingBoard } from '@/models/noctown/NoctownRankingBoard.js';
+import { NoctownChatLog } from '@/models/noctown/NoctownChatLog.js';
+import { NoctownChatLogRecipient } from '@/models/noctown/NoctownChatLogRecipient.js';
+import { NoctownTransactionLog } from '@/models/noctown/NoctownTransactionLog.js';
+import { NoqUserSetting } from '@/models/NoqUserSetting.js';
+import { NoqQuestion } from '@/models/NoqQuestion.js';
+import { NoqMutedUser } from '@/models/NoqMutedUser.js';
+import { NoqReportedQuestion } from '@/models/NoqReportedQuestion.js';
 import type { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity.js';
 
 export interface MiRepository<T extends ObjectLiteral> {
@@ -240,6 +285,51 @@ export {
 	MiChatSecretSettings,
 	MiBubbleGameRecord,
 	MiReversiGame,
+	NoctownPlayer,
+	NoctownItem,
+	NoctownPlayerItem,
+	NoctownWallet,
+	NoctownQuest,
+	NoctownNpc,
+	NoctownPlacedItem,
+	NoctownDroppedItem,
+	NoctownWorld,
+	NoctownWorldChunk,
+	NoctownPlayerScore,
+	NoctownPlayerStatistics,
+	NoctownFarmPlot,
+	NoctownCrop,
+	NoctownChicken,
+	NoctownCow,
+	NoctownRecipe,
+	NoctownRecipeIngredient,
+	NoctownTrade,
+	NoctownTradeItem,
+	NoctownInteriorMap,
+	NoctownShopInventory,
+	NoctownTreasureChest,
+	NoctownHouse,
+	NoctownHouseWallItem,
+	NoctownHouseFurniture,
+	NoctownBulletinBoard,
+	NoctownBulletinPost,
+	NoctownBulletinLike,
+	NoctownAgent,
+	NoctownGacha,
+	NoctownGachaItem,
+	NoctownGachaPull,
+	NoctownEvent,
+	NoctownEventReward,
+	NoctownEventParticipation,
+	NoctownUniqueItem,
+	NoctownRankingBoard,
+	NoctownChatLog,
+	NoctownChatLogRecipient,
+	NoctownTransactionLog,
+	NoqUserSetting,
+	NoqQuestion,
+	NoqMutedUser,
+	NoqReportedQuestion,
 };
 
 export type AbuseUserReportsRepository = Repository<MiAbuseUserReport> & MiRepository<MiAbuseUserReport>;
@@ -322,3 +412,48 @@ export type ChatApprovalsRepository = Repository<MiChatApproval> & MiRepository<
 export type ChatSecretSettingsRepository = Repository<MiChatSecretSettings> & MiRepository<MiChatSecretSettings>;
 export type BubbleGameRecordsRepository = Repository<MiBubbleGameRecord> & MiRepository<MiBubbleGameRecord>;
 export type ReversiGamesRepository = Repository<MiReversiGame> & MiRepository<MiReversiGame>;
+export type NoctownPlayersRepository = Repository<NoctownPlayer> & MiRepository<NoctownPlayer>;
+export type NoctownItemsRepository = Repository<NoctownItem> & MiRepository<NoctownItem>;
+export type NoctownPlayerItemsRepository = Repository<NoctownPlayerItem> & MiRepository<NoctownPlayerItem>;
+export type NoctownWalletsRepository = Repository<NoctownWallet> & MiRepository<NoctownWallet>;
+export type NoctownQuestsRepository = Repository<NoctownQuest> & MiRepository<NoctownQuest>;
+export type NoctownNpcsRepository = Repository<NoctownNpc> & MiRepository<NoctownNpc>;
+export type NoctownPlacedItemsRepository = Repository<NoctownPlacedItem> & MiRepository<NoctownPlacedItem>;
+export type NoctownDroppedItemsRepository = Repository<NoctownDroppedItem> & MiRepository<NoctownDroppedItem>;
+export type NoctownWorldsRepository = Repository<NoctownWorld> & MiRepository<NoctownWorld>;
+export type NoctownWorldChunksRepository = Repository<NoctownWorldChunk> & MiRepository<NoctownWorldChunk>;
+export type NoctownPlayerScoresRepository = Repository<NoctownPlayerScore> & MiRepository<NoctownPlayerScore>;
+export type NoctownPlayerStatisticsRepository = Repository<NoctownPlayerStatistics> & MiRepository<NoctownPlayerStatistics>;
+export type NoctownFarmPlotsRepository = Repository<NoctownFarmPlot> & MiRepository<NoctownFarmPlot>;
+export type NoctownCropsRepository = Repository<NoctownCrop> & MiRepository<NoctownCrop>;
+export type NoctownChickensRepository = Repository<NoctownChicken> & MiRepository<NoctownChicken>;
+export type NoctownCowsRepository = Repository<NoctownCow> & MiRepository<NoctownCow>;
+export type NoctownRecipesRepository = Repository<NoctownRecipe> & MiRepository<NoctownRecipe>;
+export type NoctownRecipeIngredientsRepository = Repository<NoctownRecipeIngredient> & MiRepository<NoctownRecipeIngredient>;
+export type NoctownTradesRepository = Repository<NoctownTrade> & MiRepository<NoctownTrade>;
+export type NoctownTradeItemsRepository = Repository<NoctownTradeItem> & MiRepository<NoctownTradeItem>;
+export type NoctownInteriorMapsRepository = Repository<NoctownInteriorMap> & MiRepository<NoctownInteriorMap>;
+export type NoctownShopInventoriesRepository = Repository<NoctownShopInventory> & MiRepository<NoctownShopInventory>;
+export type NoctownTreasureChestsRepository = Repository<NoctownTreasureChest> & MiRepository<NoctownTreasureChest>;
+export type NoctownHousesRepository = Repository<NoctownHouse> & MiRepository<NoctownHouse>;
+export type NoctownHouseWallItemsRepository = Repository<NoctownHouseWallItem> & MiRepository<NoctownHouseWallItem>;
+export type NoctownHouseFurnituresRepository = Repository<NoctownHouseFurniture> & MiRepository<NoctownHouseFurniture>;
+export type NoctownBulletinBoardsRepository = Repository<NoctownBulletinBoard> & MiRepository<NoctownBulletinBoard>;
+export type NoctownBulletinPostsRepository = Repository<NoctownBulletinPost> & MiRepository<NoctownBulletinPost>;
+export type NoctownBulletinLikesRepository = Repository<NoctownBulletinLike> & MiRepository<NoctownBulletinLike>;
+export type NoctownAgentsRepository = Repository<NoctownAgent> & MiRepository<NoctownAgent>;
+export type NoctownGachasRepository = Repository<NoctownGacha> & MiRepository<NoctownGacha>;
+export type NoctownGachaItemsRepository = Repository<NoctownGachaItem> & MiRepository<NoctownGachaItem>;
+export type NoctownGachaPullsRepository = Repository<NoctownGachaPull> & MiRepository<NoctownGachaPull>;
+export type NoctownEventsRepository = Repository<NoctownEvent> & MiRepository<NoctownEvent>;
+export type NoctownEventRewardsRepository = Repository<NoctownEventReward> & MiRepository<NoctownEventReward>;
+export type NoctownEventParticipationsRepository = Repository<NoctownEventParticipation> & MiRepository<NoctownEventParticipation>;
+export type NoctownUniqueItemsRepository = Repository<NoctownUniqueItem> & MiRepository<NoctownUniqueItem>;
+export type NoctownRankingBoardsRepository = Repository<NoctownRankingBoard> & MiRepository<NoctownRankingBoard>;
+export type NoctownChatLogsRepository = Repository<NoctownChatLog> & MiRepository<NoctownChatLog>;
+export type NoctownChatLogRecipientsRepository = Repository<NoctownChatLogRecipient> & MiRepository<NoctownChatLogRecipient>;
+export type NoctownTransactionLogsRepository = Repository<NoctownTransactionLog> & MiRepository<NoctownTransactionLog>;
+export type NoqUserSettingsRepository = Repository<NoqUserSetting> & MiRepository<NoqUserSetting>;
+export type NoqQuestionsRepository = Repository<NoqQuestion> & MiRepository<NoqQuestion>;
+export type NoqMutedUsersRepository = Repository<NoqMutedUser> & MiRepository<NoqMutedUser>;
+export type NoqReportedQuestionsRepository = Repository<NoqReportedQuestion> & MiRepository<NoqReportedQuestion>;

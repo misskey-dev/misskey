@@ -229,6 +229,11 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		text: i18n.ts.performance,
 		to: '/admin/performance',
 		active: currentPage.value?.route.name === 'performance',
+	}, {
+		icon: 'ti ti-message-question',
+		text: i18n.ts._noq.settings,
+		to: '/admin/noq',
+		active: currentPage.value?.route.name === 'noq',
 	}],
 }, {
 	title: i18n.ts.info,

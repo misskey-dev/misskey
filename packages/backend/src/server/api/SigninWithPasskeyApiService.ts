@@ -151,9 +151,14 @@ export class SigninWithPasskeyApiService {
 		}
 
 		if (user.isSuspended) {
-			return error(403, {
+			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
+			const errorResponse: any = {
 				id: 'e03a5f46-d309-4865-9b69-56282d94e1eb',
-			});
+			};
+			if (profile.suspendedReason) {
+				errorResponse.reason = profile.suspendedReason;
+			}
+			return error(403, errorResponse);
 		}
 
 		const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });

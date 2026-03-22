@@ -17,6 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<XPages v-else-if="tab === 'pages'" :user="user"/>
 		<XFlashs v-else-if="tab === 'flashs'" :user="user"/>
 		<XGallery v-else-if="tab === 'gallery'" :user="user"/>
+		<XNoq v-else-if="tab === 'noq'" :user="user"/>
 		<XRaw v-else-if="tab === 'raw'" :user="user"/>
 	</div>
 	<MkError v-else-if="error" @retry="fetchUser()"/>
@@ -46,6 +47,7 @@ const XPages = defineAsyncComponent(() => import('./pages.vue'));
 const XFlashs = defineAsyncComponent(() => import('./flashs.vue'));
 const XGallery = defineAsyncComponent(() => import('./gallery.vue'));
 const XRaw = defineAsyncComponent(() => import('./raw.vue'));
+const XNoq = defineAsyncComponent(() => import('./noq.vue'));
 
 // contextは非ログイン状態の情報しかないためログイン時は利用できない
 const CTX_USER = !$i && assertServerContext(serverContext, 'user') ? serverContext.user : null;
@@ -133,7 +135,11 @@ const headerTabs = computed(() => user.value ? [{
 	key: 'gallery',
 	title: i18n.ts.gallery,
 	icon: 'ti ti-icons',
-}, {
+}, ...(user.value.host == null ? [{
+	key: 'noq',
+	title: i18n.ts._noq.questionBox,
+	icon: 'ti ti-message-question',
+}] : []), {
 	key: 'raw',
 	title: 'Raw',
 	icon: 'ti ti-code',

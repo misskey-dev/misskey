@@ -195,7 +195,9 @@ export class Paginator<
 			...(this.searchQuery.value != null && this.searchQuery.value.trim() !== '' ? { [this.searchParamName]: this.searchQuery.value } : {}),
 			limit: this.limit ?? FIRST_FETCH_LIMIT,
 			allowPartial: true,
-			...((this.initialId == null && this.initialDate == null) && this.initialDirection === 'newer' ? {
+			...(this.offsetMode ? {
+				offset: 0,
+			} : (this.initialId == null && this.initialDate == null) && this.initialDirection === 'newer' ? {
 				sinceId: '0',
 			} : this.initialDirection === 'newer' ? {
 				sinceId: this.initialId ?? undefined,
@@ -266,7 +268,7 @@ export class Paginator<
 			}),
 		};
 
-		const apiRes = (await misskeyApi<T[]>(this.endpoint, data).catch(err => {
+		const apiRes = (await misskeyApi<T[]>(this.endpoint, data as E['req'] & { i?: string | null }).catch(err => {
 			return null;
 		})) as T[] | null;
 
@@ -319,7 +321,7 @@ export class Paginator<
 			}),
 		};
 
-		const apiRes = (await misskeyApi<T[]>(this.endpoint, data).catch(err => {
+		const apiRes = (await misskeyApi<T[]>(this.endpoint, data as E['req'] & { i?: string | null }).catch(err => {
 			return null;
 		})) as T[] | null;
 

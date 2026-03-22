@@ -5,12 +5,11 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Brackets } from 'typeorm';
-import type { RoleAssignmentsRepository, RolesRepository } from '@/models/_.js';
-import { Endpoint } from '@/server/api/endpoint-base.js';
-import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApiError } from '../../error.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import type { RolesRepository, RoleAssignmentsRepository, UsersRepository, NoctownPlayerScoresRepository, NoctownPlayersRepository } from '@/models/_.js';
 
 export const meta = {
 	tags: ['role', 'users'],
@@ -39,6 +38,9 @@ export const meta = {
 					type: 'object',
 					ref: 'UserDetailed',
 				},
+				popularityScore: {
+					type: 'number',
+				},
 			},
 			required: ['id', 'user'],
 		},
@@ -49,11 +51,8 @@ export const paramDef = {
 	type: 'object',
 	properties: {
 		roleId: { type: 'string', format: 'misskey:id' },
-		sinceId: { type: 'string', format: 'misskey:id' },
-		untilId: { type: 'string', format: 'misskey:id' },
-		sinceDate: { type: 'integer' },
-		untilDate: { type: 'integer' },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		offset: { type: 'integer', minimum: 0, default: 0 },
 	},
 	required: ['roleId'],
 } as const;
@@ -67,7 +66,15 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.roleAssignmentsRepository)
 		private roleAssignmentsRepository: RoleAssignmentsRepository,
 
-		private queryService: QueryService,
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
+
+		@Inject(DI.noctownPlayerScoresRepository)
+		private noctownPlayerScoresRepository: NoctownPlayerScoresRepository,
+
+		@Inject(DI.noctownPlayersRepository)
+		private noctownPlayersRepository: NoctownPlayersRepository,
+
 		private userEntityService: UserEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -81,26 +88,61 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchRole);
 			}
 
-			const query = this.queryService.makePaginationQuery(this.roleAssignmentsRepository.createQueryBuilder('assign'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
-				.andWhere('assign.roleId = :roleId', { roleId: role.id })
+			const query = this.roleAssignmentsRepository.createQueryBuilder('assign')
+				.where('assign.roleId = :roleId', { roleId: role.id })
 				.andWhere(new Brackets(qb => {
 					qb
 						.where('assign.expiresAt IS NULL')
 						.orWhere('assign.expiresAt > :now', { now: new Date() });
 				}))
-				.innerJoinAndSelect('assign.user', 'user');
+				.innerJoin('assign.user', 'user');
 
-			const assigns = await query
-				.limit(ps.limit)
-				.getMany();
+			// 全メンバーを取得（スコア計算後にソートするため）
+			const assigns = await query.getMany();
 
-			const _users = assigns.map(({ user, userId }) => user ?? userId);
-			const _userMap = await this.userEntityService.packMany(_users, me, { schema: 'UserDetailed' })
-				.then(users => new Map(users.map(u => [u.id, u])));
-			return await Promise.all(assigns.map(async assign => ({
-				id: assign.id,
-				user: _userMap.get(assign.userId) ?? await this.userEntityService.pack(assign.user!, me, { schema: 'UserDetailed' }),
-			})));
+			// ロール名が「ノクタウン」の場合は専用スコアを使用
+			const isNoctownRole = role.name === 'ノクタウン' || role.name === 'Noctown';
+
+			// 新アルゴリズムで人気スコアを計算してソート
+			const scoredAssigns = await Promise.all(assigns.map(async assign => {
+				// ユーザー情報を取得（プライバシー設定に従った表示用）
+				const user = await this.userEntityService.pack(assign.userId, me, { schema: 'UserDetailed' });
+
+				let popularityScore: number;
+
+				if (isNoctownRole) {
+					// ノクタウンロールの場合、ノクタウンスコアを使用
+					const noctownPlayer = await this.noctownPlayersRepository.findOneBy({ userId: assign.userId });
+					if (noctownPlayer) {
+						const noctownScore = await this.noctownPlayerScoresRepository.findOneBy({ playerId: noctownPlayer.id });
+						popularityScore = noctownScore?.totalScore ?? 0;
+					} else {
+						popularityScore = 0;
+					}
+				} else {
+					// 通常のロールの場合、従来のスコア計算を使用
+					const userEntity = await this.usersRepository.findOneBy({ id: assign.userId });
+					const actualFollowersCount = userEntity?.followersCount ?? 0;
+					const actualNotesCount = userEntity?.notesCount ?? 0;
+
+					popularityScore = await this.userEntityService.calculatePopularityScore(
+						assign.userId,
+						actualFollowersCount,
+						actualNotesCount,
+					);
+				}
+
+				return {
+					id: assign.id,
+					user,
+					popularityScore,
+				};
+			}));
+			
+			// 人気スコアの降順にソートしてoffset/limitでスライス
+			return scoredAssigns
+				.sort((a, b) => b.popularityScore - a.popularityScore)
+				.slice(ps.offset, ps.offset + ps.limit);
 		});
 	}
 }

@@ -37,6 +37,7 @@ export const notificationTypes = [
 	'test',
 	'login',
 	'createToken',
+	'noqQuestion',
 ] as const;
 
 export const noteVisibilities = ['public', 'home', 'followers', 'specified'] as const;
@@ -125,6 +126,8 @@ export const permissions = [
 	'read:admin:drive',
 	'write:admin:ad',
 	'read:admin:ad',
+	'write:admin:noctown',
+	'read:admin:noctown',
 	'write:invite-codes',
 	'read:invite-codes',
 	'write:clip-favorite',
@@ -133,6 +136,8 @@ export const permissions = [
 	'write:report-abuse',
 	'write:chat',
 	'read:chat',
+	'write:noq',
+	'read:noq',
 ] as const;
 
 export const moderationLogTypes = [

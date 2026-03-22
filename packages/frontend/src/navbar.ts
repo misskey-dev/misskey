@@ -123,6 +123,12 @@ export const navbarItemDef = reactive({
 		show: computed(() => $i != null),
 		to: '/my/achievements',
 	},
+	noq: {
+		title: i18n.ts._noq?.questionBox ?? '質問箱',
+		icon: 'ti ti-message-question',
+		show: computed(() => $i != null),
+		to: '/my/noq',
+	},
 	games: {
 		title: 'Misskey Games',
 		icon: 'ti ti-device-gamepad',

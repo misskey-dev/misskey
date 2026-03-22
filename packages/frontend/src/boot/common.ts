@@ -117,6 +117,27 @@ export async function common(createVue: () => Promise<App<Element>>) {
 		const viewport = window.document.getElementsByName('viewport').item(0);
 		viewport.setAttribute('content',
 			`${viewport.getAttribute('content')}, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover`);
+
+		// iOS Safari: ダブルタップによる自動スクロール（下に空間が生まれる問題）を防止
+		// touch-action: manipulation だけでは防げないiOS特有の挙動を無効化
+		let lastTouchEnd = 0;
+		document.addEventListener('touchend', (event) => {
+			const now = Date.now();
+			// 300ms以内の連続タップをダブルタップと判定
+			if (now - lastTouchEnd <= 300) {
+				// 仕様: インタラクティブ要素（input/textarea/button/a）は連打を許可
+				// これらの要素は連続タップが必要な操作（絵文字エモーション連打など）で使用される
+				const target = event.target as HTMLElement;
+				const interactiveTags = ['INPUT', 'TEXTAREA', 'BUTTON', 'A'];
+				const isInteractive = interactiveTags.includes(target.tagName) ||
+					target.closest('button') !== null ||
+					target.closest('a') !== null;
+				if (!isInteractive) {
+					event.preventDefault();
+				}
+			}
+			lastTouchEnd = now;
+		}, { passive: false });
 	}
 
 	//#region Set lang attr

@@ -4,8 +4,9 @@
  */
 
 import ms from 'ms';
+import { In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { DriveFilesRepository, MiDriveFile } from '@/models/_.js';
+import type { DriveFilesRepository, MiDriveFile, UsersRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
@@ -48,6 +49,11 @@ export const meta = {
 			code: 'NAME_ALREADY_EXISTS',
 			id: '2298a392-d4a1-44c5-9ebb-ac1aeaa5a9ab',
 		},
+		invalidVisibleUser: {
+			message: 'Visible user must be a local user.',
+			code: 'INVALID_VISIBLE_USER',
+			id: 'b2c8f4d5-9e3a-4f2b-8c7d-4e6f8a9b1c2d',
+		},
 	},
 } as const;
 
@@ -69,6 +75,8 @@ export const paramDef = {
 		font: { type: 'string', enum: ['serif', 'sans-serif'] },
 		alignCenter: { type: 'boolean' },
 		hideTitleWhenPinned: { type: 'boolean' },
+		visibility: { type: 'string', enum: ['public', 'followers', 'specified', 'url-only'] },
+		visibleUserIds: { type: 'array', items: { type: 'string', format: 'misskey:id' } },
 	},
 	required: ['pageId'],
 } as const;
@@ -78,6 +86,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		@Inject(DI.driveFilesRepository)
 		private driveFilesRepository: DriveFilesRepository,
+
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
 
 		private pageService: PageService,
 	) {
@@ -92,6 +103,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 					if (eyeCatchingImage == null) {
 						throw new ApiError(meta.errors.noSuchFile);
+					}
+				}
+
+				// visibleUserIdsのローカルユーザーバリデーション
+				if (ps.visibleUserIds != null && ps.visibleUserIds.length > 0) {
+					const users = await this.usersRepository.findBy({ id: In(ps.visibleUserIds) });
+					if (users.some(u => u.host != null)) {
+						throw new ApiError(meta.errors.invalidVisibleUser);
 					}
 				}
 

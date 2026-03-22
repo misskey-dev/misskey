@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i class="ti ti-trophy ti-fw" style="margin-right: 0.5em;"></i>
 				人気のイラスト
 			</template>
-			<MkIllustrationGallery :paginator="tagIllustrationsRankingPaginator"/>
+			<MkIllustrationGallery :paginator="tagIllustrationsRankingPaginator" @beforeNavigate="saveScrollPosition"/>
 		</MkFoldableSection>
 
 		<!-- 新着のイラストセクション -->
@@ -39,7 +39,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<i class="ti ti-clock ti-fw" style="margin-right: 0.5em;"></i>
 				新着のイラスト
 			</template>
-			<MkIllustrationGallery :paginator="tagIllustrationsPaginator"/>
+			<MkIllustrationGallery :paginator="tagIllustrationsPaginator" @beforeNavigate="saveScrollPosition"/>
 		</MkFoldableSection>
 
 		<!-- 他の人気タグ -->
@@ -57,7 +57,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						class="hashtag-item"
 					>
 						#{{ tag.tag }}
-						<span class="count">({{ tag.count }})</span>
+						<span v-if="(tag as any).count" class="count">({{ (tag as any).count }})</span>
 					</MkA>
 				</div>
 			</div>
@@ -75,7 +75,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { markRaw, ref, computed, onMounted } from 'vue';
+import { markRaw, ref, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
 import MkIllustrationGallery from '@/components/MkIllustrationGallery.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { i18n } from '@/i18n.js';
@@ -87,11 +87,17 @@ const props = defineProps<{
 	tag: string;
 }>();
 
+// スクロール位置記憶用のキー（タグごとに異なる）
+const getScrollPositionKey = () => `illustration-tag-${props.tag}-scroll-position`;
+
+// スクロール位置復元済みフラグ
+const scrollRestored = ref(false);
+
 // 人気イラストハッシュタグ
 const popularHashtags = ref<Misskey.entities.Hashtag[]>([]);
 
 // タグ固有のイラスト用Paginator（人気順）
-const tagIllustrationsRankingPaginator = markRaw(new Paginator('notes/illustrations-by-tag-ranking', {
+const tagIllustrationsRankingPaginator = markRaw(new Paginator('notes/illustrations-by-tag-ranking' as any, {
 	limit: 18,
 	offsetMode: true,
 	params: {
@@ -100,15 +106,76 @@ const tagIllustrationsRankingPaginator = markRaw(new Paginator('notes/illustrati
 }));
 
 // タグ固有のイラスト用Paginator（新着順）
-const tagIllustrationsPaginator = markRaw(new Paginator('notes/illustrations-by-tag', {
+const tagIllustrationsPaginator = markRaw(new Paginator('notes/illustrations-by-tag' as any, {
 	limit: 18,
 	params: {
 		tag: props.tag, // 指定されたタグ
 	},
 }));
 
+// スクロール位置を保存
+const saveScrollPosition = () => {
+	const scrollY = window.scrollY || window.pageYOffset;
+	sessionStorage.setItem(getScrollPositionKey(), String(scrollY));
+	console.log('[Scroll Save] Saved position:', scrollY, 'for tag:', props.tag);
+};
+
+// スクロール位置を復元
+const restoreScrollPosition = () => {
+	if (scrollRestored.value) return; // 既に復元済みなら何もしない
+
+	const savedPosition = sessionStorage.getItem(getScrollPositionKey());
+	console.log('[Scroll Restore] Attempting restore for tag:', props.tag, 'saved position:', savedPosition);
+
+	if (savedPosition) {
+		const targetPosition = parseInt(savedPosition, 10);
+
+		// requestAnimationFrameで次のフレームで実行
+		requestAnimationFrame(() => {
+			// さらにもう一度nextTickとrequestAnimationFrameで確実に
+			nextTick(() => {
+				requestAnimationFrame(() => {
+					window.scrollTo({
+						top: targetPosition,
+						behavior: 'instant' as ScrollBehavior,
+					});
+					scrollRestored.value = true;
+					console.log('[Scroll Restore] Restored to position:', targetPosition, 'for tag:', props.tag, 'Current position:', window.scrollY);
+				});
+			});
+		});
+	}
+};
+
+// Paginatorの読み込み完了を監視してスクロール位置を復元
+watch(
+	() => [
+		tagIllustrationsRankingPaginator.fetching.value,
+		tagIllustrationsPaginator.fetching.value,
+	],
+	([ranking, recent]) => {
+		// すべてのPaginatorの初回読み込みが完了したら復元
+		if (!ranking && !recent && !scrollRestored.value) {
+			restoreScrollPosition();
+		}
+	},
+	{ immediate: true },
+);
+
+// pageshow イベントハンドラ（bfcache対応）
+const handlePageShow = (event: PageTransitionEvent) => {
+	console.log('[PageShow] Event fired for tag:', props.tag, 'persisted:', event.persisted);
+	// bfcacheから復元された場合
+	if (event.persisted) {
+		scrollRestored.value = false; // フラグをリセット
+		restoreScrollPosition();
+	}
+};
+
 // 初期データ読み込み
 onMounted(async () => {
+	console.log('[Mounted] Component mounted for tag:', props.tag);
+
 	try {
 		// 画像付き投稿が多いハッシュタグAPIを使用
 		const tags = await misskeyApi('hashtags/illustration' as any, {
@@ -121,6 +188,54 @@ onMounted(async () => {
 	} catch (error) {
 		console.error('Failed to load hashtags:', error);
 	}
+
+	// pageshow イベント（bfcache対応）
+	window.addEventListener('pageshow', handlePageShow);
+	// pagehideイベントでも保存（ブラウザの戻る操作に対応）
+	window.addEventListener('pagehide', saveScrollPosition);
+	// visibilitychangeイベントでも保存（タブ切り替えやバックグラウンドに移行時）
+	document.addEventListener('visibilitychange', () => {
+		if (document.visibilityState === 'hidden') {
+			saveScrollPosition();
+		}
+	});
+
+	// ブラウザバック（popstate）で戻ってきた場合にスクロール位置を復元
+	const isPopstate = sessionStorage.getItem('__misskey_router_popstate') === 'true';
+	console.log('[Debug] Tag page - isPopstate:', isPopstate);
+	console.log('[Debug] Tag page - sessionStorage __misskey_router_popstate:', sessionStorage.getItem('__misskey_router_popstate'));
+
+	if (isPopstate) {
+		// フラグを消費（次回のマウント時に影響しないように）
+		sessionStorage.removeItem('__misskey_router_popstate');
+
+		// 複数のタイミングで復元を試みる
+		nextTick(() => {
+			restoreScrollPosition();
+			// 念のため、少し遅延させても試みる
+			setTimeout(() => {
+				if (!scrollRestored.value) {
+					restoreScrollPosition();
+				}
+			}, 100);
+			setTimeout(() => {
+				if (!scrollRestored.value) {
+					restoreScrollPosition();
+				}
+			}, 300);
+		});
+	} else {
+		// 通常のページ遷移の場合は、スクロール位置をクリア
+		sessionStorage.removeItem(getScrollPositionKey());
+	}
+});
+
+// ページから離れる前にスクロール位置を保存
+onBeforeUnmount(() => {
+	saveScrollPosition();
+	// イベントリスナーをクリーンアップ
+	window.removeEventListener('pageshow', handlePageShow);
+	window.removeEventListener('pagehide', saveScrollPosition);
 });
 </script>
 

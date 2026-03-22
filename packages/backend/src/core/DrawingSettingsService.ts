@@ -106,7 +106,7 @@ export class DrawingSettingsService {
 				zoomLevel: settings.zoomLevel,
 				panOffsetX: settings.panOffsetX,
 				panOffsetY: settings.panOffsetY,
-				colors: settings.colors,
+				colors: settings.colors ?? undefined,
 			};
 		}
 

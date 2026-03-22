@@ -157,6 +157,10 @@ export const ROUTE_DEF = [{
 		name: 'mute-block',
 		component: page(() => import('@/pages/settings/mute-block.vue')),
 	}, {
+		path: '/noq',
+		name: 'noq',
+		component: page(() => import('@/pages/settings/noq.vue')),
+	}, {
 		path: '/connect',
 		name: 'connect',
 		component: page(() => import('@/pages/settings/connect.vue')),
@@ -279,6 +283,10 @@ export const ROUTE_DEF = [{
 }, {
 	path: '/scratchpad',
 	component: page(() => import('@/pages/scratchpad.vue')),
+}, {
+	path: '/noq/decryption',
+	component: page(() => import('@/pages/noq-decryption.vue')),
+	loginRequired: true,
 }, {
 	path: '/preview',
 	component: page(() => import('@/pages/preview.vue')),
@@ -507,9 +515,17 @@ export const ROUTE_DEF = [{
 		name: 'system-webhook',
 		component: page(() => import('@/pages/admin/system-webhook.vue')),
 	}, {
+		path: '/noq',
+		name: 'noq',
+		component: page(() => import('@/pages/admin/noq.vue')),
+	}, {
 		path: '/',
 		component: page(() => import('@/pages/_empty_.vue')),
 	}],
+}, {
+	path: '/my/noq',
+	component: page(() => import('@/pages/my-noq.vue')),
+	loginRequired: true,
 }, {
 	path: '/my/notifications',
 	component: page(() => import('@/pages/notifications.vue')),
@@ -571,6 +587,10 @@ export const ROUTE_DEF = [{
 	component: page(() => import('@/pages/antenna-timeline.vue')),
 	loginRequired: true,
 }, {
+	path: '/timeline/role/:roleId',
+	component: page(() => import('@/pages/timeline.vue')),
+	loginRequired: true,
+}, {
 	path: '/clicker',
 	component: page(() => import('@/pages/clicker.vue')),
 	loginRequired: true,
@@ -590,6 +610,10 @@ export const ROUTE_DEF = [{
 	path: '/reversi/g/:gameId',
 	component: page(() => import('@/pages/reversi/game.vue')),
 	loginRequired: false,
+}, {
+	path: '/noctown',
+	component: page(() => import('@/pages/noctown/index.vue')),
+	loginRequired: true,
 }, {
 	path: '/debug',
 	component: page(() => import('@/pages/debug.vue')),

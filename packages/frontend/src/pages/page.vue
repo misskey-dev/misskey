@@ -313,7 +313,61 @@ function showMenu(ev: MouseEvent) {
 		}
 	}
 
+	// すべてのユーザーに「すべてコピー」メニューを追加
+	menuItems.push(
+		{ type: 'divider' },
+		{
+			icon: 'ti ti-copy',
+			text: 'すべてコピー',
+			action: () => copyPageContent(),
+		}
+	);
+
 	os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
+}
+
+function copyPageContent() {
+	if (!page.value) return;
+
+	// ページのコンテンツをテキストとして抽出
+	let result = '';
+	
+	// タイトル
+	if (page.value.title || page.value.name) {
+		result += `${page.value.title || page.value.name}\n\n`;
+	}
+	
+	// ページコンテンツのテキストを抽出
+	if (page.value.content) {
+		result += extractTextFromBlocks(page.value.content);
+	}
+	
+	const pageUrl = `${url}/@${page.value.user.username}/pages/${page.value.name}`;
+	const fullContent = `${result}\n\n${pageUrl}`;
+	
+	copyToClipboard(fullContent);
+	os.success();
+}
+
+function extractTextFromBlocks(blocks: any[]): string {
+	let text = '';
+	
+	for (const block of blocks) {
+		if (block.type === 'text' && block.text) {
+			text += block.text + '\n\n';
+		} else if (block.type === 'section') {
+			if (block.title) {
+				text += `## ${block.title}\n\n`;
+			}
+			if (block.children && block.children.length > 0) {
+				text += extractTextFromBlocks(block.children);
+			}
+		} else if (block.type === 'section' && block.children) {
+			text += extractTextFromBlocks(block.children);
+		}
+	}
+	
+	return text.trim();
 }
 
 watch(() => path.value, fetchPage, { immediate: true });

@@ -6,7 +6,6 @@
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { GetterService } from '@/server/api/GetterService.js';
-import { RoleService } from '@/core/RoleService.js';
 import { AbuseReportService } from '@/core/AbuseReportService.js';
 import { ApiError } from '../../error.js';
 
@@ -31,11 +30,6 @@ export const meta = {
 			id: '1e13149e-b1e8-43cf-902e-c01dbfcb202f',
 		},
 
-		cannotReportAdmin: {
-			message: 'Cannot report the admin.',
-			code: 'CANNOT_REPORT_THE_ADMIN',
-			id: '35e166f5-05fb-4f87-a2d5-adb42676d48f',
-		},
 	},
 } as const;
 
@@ -52,7 +46,6 @@ export const paramDef = {
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
 		private getterService: GetterService,
-		private roleService: RoleService,
 		private abuseReportService: AbuseReportService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -64,10 +57,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (targetUser.id === me.id) {
 				throw new ApiError(meta.errors.cannotReportYourself);
-			}
-
-			if (await this.roleService.isAdministrator(targetUser)) {
-				throw new ApiError(meta.errors.cannotReportAdmin);
 			}
 
 			await this.abuseReportService.report([{

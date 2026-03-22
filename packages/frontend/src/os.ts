@@ -42,7 +42,7 @@ export const apiWithDialog = (<E extends keyof Misskey.Endpoints>(
 	token?: string | null | undefined,
 	customErrors?: ApiWithDialogCustomErrors,
 ) => {
-	const promise = misskeyApi(endpoint, data, token);
+	const promise = misskeyApi(endpoint, data as Misskey.Endpoints[E]['req'] & { i?: string | null }, token);
 	promiseDialog(promise, null, async (err) => {
 		let title: string | undefined;
 		let text = err.message + '\n' + err.id;

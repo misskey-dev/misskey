@@ -449,8 +449,10 @@ export class DrawingCanvasService {
 				await this.saveCanvasToImage(roomId, strokes, room.ownerId);
 			}
 
-			// Redisからキャンバスデータを削除（保存後クリーンアップ）
-			await this.cleanupCanvasData(roomId);
+			// Redisからキャンバスデータを削除しない（キャンバスを維持するため）
+			// 自動保存後もRedisにデータを残しておくことで、ユーザーがキャンバスを継続して使用できる
+			// Redisには7日間のEXPIREが設定されているため、長期間使用されないキャンバスは自動的に削除される
+			// await this.cleanupCanvasData(roomId);
 
 			console.log(`🎨 [DEBUG] Successfully auto-saved canvas ${roomId}`);
 		} catch (error) {

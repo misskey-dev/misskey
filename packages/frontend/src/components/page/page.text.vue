@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps" :class="$style.textRoot">
-	<Mfm :text="block.text ?? ''" :isNote="false"/>
+	<Mfm :text="block.text ?? ''" :isNote="false" class="_selectable"/>
 	<div v-if="isEnabledUrlPreview" class="_gaps_s">
 		<MkUrlPreview v-for="url in urls" :key="url" :url="url"/>
 	</div>
