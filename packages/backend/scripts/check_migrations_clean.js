@@ -11,9 +11,14 @@ await dataSource.initialize();
 
 const sqlInMemory = await dataSource.driver.createSchemaBuilder().log();
 
-// カスタムテーブルのFK制約名変更は無視（手動命名とTypeORM自動命名の差分）
-const customTablePrefixes = ['noctown_', 'noq_', 'drawing_', 'chat_secret_'];
-const isCustomTableQuery = (query) => customTablePrefixes.some(prefix => query.includes(`"${prefix}`) || query.includes(`"FK_${prefix}`) || query.includes(`FK_meta_noqBot`));
+// カスタムテーブル/カラムの差分は無視（手動命名とTypeORM自動命名の差分）
+const customPatterns = [
+	'noctown_', 'noq_', 'drawing_', 'chat_secret_',
+	'IDX_noctown', 'IDX_noq', 'IDX_drawing', 'IDX_chat_secret',
+	'FK_noctown', 'FK_noq', 'FK_drawing', 'FK_chat_secret', 'FK_meta_noqBot',
+	'excludedFromIllustrationHighlight', 'IDX_drive_file_excluded',
+];
+const isCustomTableQuery = (query) => customPatterns.some(p => query.includes(p));
 
 const filteredUp = sqlInMemory.upQueries.filter(q => !isCustomTableQuery(q.query));
 const filteredDown = sqlInMemory.downQueries.filter(q => !isCustomTableQuery(q.query));
