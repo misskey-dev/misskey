@@ -196,9 +196,11 @@ export class Paginator<
 		this.queuedAheadItemsCount.value = 0;
 		this.fetching.value = true;
 
-		const data: E['req'] = {
-			...(typeof this.params === 'function' ? this.params() : this.params),
-			...(this.computedParams ? this.computedParams.value : {}),
+		// NOTE: E['req']はmisskey-jsのビルド状態によってunknownになりうるためas Record<string, unknown>でスプレッドエラーを回避
+		const params = typeof this.params === 'function' ? (this.params as () => E['req'])() : this.params;
+		const data = {
+			...(params as Record<string, unknown>),
+			...((this.computedParams ? this.computedParams.value : {}) as Record<string, unknown>),
 			...(this.searchQuery.value != null && this.searchQuery.value.trim() !== '' ? { [this.searchParamName]: this.searchQuery.value } : {}),
 			limit: this.limit ?? FIRST_FETCH_LIMIT,
 			allowPartial: true,
@@ -213,9 +215,9 @@ export class Paginator<
 				untilId: this.initialId ?? undefined,
 				untilDate: this.initialDate ?? undefined,
 			} : {}),
-		};
+		} as E['req'];
 
-		const apiRes = (await misskeyApi(this.endpoint, data).catch(_ => {
+		const apiRes = (await misskeyApi(this.endpoint, data as any).catch(_ => {
 			this.error.value = true;
 			this.fetching.value = false;
 			return null;
@@ -263,9 +265,10 @@ export class Paginator<
 		if (!this.canFetchOlder.value || this.fetching.value || this.fetchingOlder.value || this.items.value.length === 0) return;
 		this.fetchingOlder.value = true;
 
-		const data: E['req'] = {
-			...(typeof this.params === 'function' ? this.params() : this.params),
-			...(this.computedParams ? this.computedParams.value : {}),
+		const olderParams = typeof this.params === 'function' ? (this.params as () => E['req'])() : this.params;
+		const data = {
+			...(olderParams as Record<string, unknown>),
+			...((this.computedParams ? this.computedParams.value : {}) as Record<string, unknown>),
 			...(this.searchQuery.value != null && this.searchQuery.value.trim() !== '' ? { [this.searchParamName]: this.searchQuery.value } : {}),
 			limit: SECOND_FETCH_LIMIT,
 			...(this.offsetMode ? {
@@ -273,9 +276,9 @@ export class Paginator<
 			} : {
 				untilId: this.getOldestId(),
 			}),
-		};
+		} as E['req'];
 
-		const apiRes = (await misskeyApi<T[]>(this.endpoint, data).catch(_ => {
+		const apiRes = (await misskeyApi<T[]>(this.endpoint, data as any).catch(_ => {
 			return null;
 		})) as T[] | null;
 
@@ -316,9 +319,10 @@ export class Paginator<
 	} = {}): Promise<void> {
 		this.fetchingNewer.value = true;
 
-		const data: E['req'] = {
-			...(typeof this.params === 'function' ? this.params() : this.params),
-			...(this.computedParams ? this.computedParams.value : {}),
+		const newerParams = typeof this.params === 'function' ? (this.params as () => E['req'])() : this.params;
+		const data = {
+			...(newerParams as Record<string, unknown>),
+			...((this.computedParams ? this.computedParams.value : {}) as Record<string, unknown>),
 			...(this.searchQuery.value != null && this.searchQuery.value.trim() !== '' ? { [this.searchParamName]: this.searchQuery.value } : {}),
 			limit: SECOND_FETCH_LIMIT,
 			...(this.offsetMode ? {
@@ -326,9 +330,9 @@ export class Paginator<
 			} : {
 				sinceId: this.getNewestId(),
 			}),
-		};
+		} as E['req'];
 
-		const apiRes = (await misskeyApi<T[]>(this.endpoint, data).catch(_ => {
+		const apiRes = (await misskeyApi<T[]>(this.endpoint, data as any).catch(_ => {
 			return null;
 		})) as T[] | null;
 

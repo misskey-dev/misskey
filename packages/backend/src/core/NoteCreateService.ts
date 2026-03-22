@@ -574,7 +574,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private async insertNote(user: MiUser, data: Option, tags: string[], emojis: string[], mentionedUsers: MinimumUser[]) {
+	private async insertNote(user: { id: MiUser['id']; host: MiUser['host']; }, data: Option, tags: string[], emojis: string[], mentionedUsers: MinimumUser[]) {
 		const insert = new MiNote({
 			id: this.idService.gen(data.createdAt?.getTime()),
 			fileIds: data.files ? data.files.map(file => file.id) : [],
@@ -677,7 +677,12 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private async postNoteCreated(note: MiNote, user: MiUser, data: Option, silent: boolean, tags: string[], mentionedUsers: MinimumUser[]) {
+	private async postNoteCreated(note: MiNote, user: {
+		id: MiUser['id'];
+		username: MiUser['username'];
+		host: MiUser['host'];
+		isBot: MiUser['isBot'];
+	}, data: Option, silent: boolean, tags: string[], mentionedUsers: MinimumUser[]) {
 		this.notesChart.update(note, true);
 		if (note.visibility !== 'specified' && (this.meta.enableChartsForRemoteUser || (user.host == null))) {
 			this.perUserNotesChart.update(user, note, true);
@@ -891,7 +896,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private incRenoteCount(renote: MiNote, user: MiUser) {
+	private incRenoteCount(renote: MiNote, user: { id: MiUser['id']; }) {
 		this.notesRepository.createQueryBuilder().update()
 			.set({
 				renoteCount: () => '"renoteCount" + 1',
@@ -969,7 +974,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private incNotesCountOfUser(user: MiUser) {
+	private incNotesCountOfUser(user: { id: MiUser['id']; }) {
 		this.usersRepository.createQueryBuilder().update()
 			.set({
 				updatedAt: new Date(),
@@ -997,7 +1002,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private async pushToTl(note: MiNote, user: MiUser) {
+	private async pushToTl(note: MiNote, user: { id: MiUser['id']; host: MiUser['host']; }) {
 		if (!this.meta.enableFanoutTimeline) return;
 
 		const r = this.redisForTimelines.pipeline();

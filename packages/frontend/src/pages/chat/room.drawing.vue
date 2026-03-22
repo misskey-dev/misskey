@@ -839,8 +839,8 @@ function normalizeStrokeForHistory(stroke: any) {
 	const layer = clampLayerIndex(stroke?.layer);
 	const rawPoints = Array.isArray(stroke?.points) ? stroke.points : [];
 	const points = rawPoints
-		.filter(point => point && typeof point.x === 'number' && typeof point.y === 'number')
-		.map(point => ({
+		.filter((point: any) => point && typeof point.x === 'number' && typeof point.y === 'number')
+		.map((point: any) => ({
 			x: point.x,
 			y: point.y,
 			pressure: typeof point.pressure === 'number' ? point.pressure : undefined,
@@ -2078,7 +2078,7 @@ function redrawWithActiveStrokes() {
 				// 筆圧対応のスムーズパス描画
 				// 注: drawSmoothPathLocalは現在のレイヤー(ctx)を使用するため、
 				// 一時的にctxを切り替える必要がある
-				const previousCtx = ctx;
+				const previousCtx: CanvasRenderingContext2D | null = ctx;
 				ctx = targetCtx;
 				drawSmoothPathLocal(
 					strokeData.points,

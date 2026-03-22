@@ -159,9 +159,10 @@ function onPasskeyDone(credential: AuthenticationPublicKeyCredential): void {
 
 	if (doingPasskeyFromInputPage.value) {
 		misskeyApi<Misskey.entities.SigninWithPasskeyResponse>('signin-with-passkey', {
-			credential: credential.toJSON(),
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any -- misskey-js由来の型とフロントエンド由来の型が合わない
+			credential: credential.toJSON() as any,
 			context: passkeyContext.value,
-		}).then((res) => {
+		} as any).then((res: any) => {
 			if ('signinResponse' in res && res.signinResponse != null) {
 				emit('login', res.signinResponse);
 				onLoginSucceeded(res.signinResponse);

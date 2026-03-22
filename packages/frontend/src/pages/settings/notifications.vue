@@ -14,22 +14,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #label>{{ i18n.ts.notificationRecieveConfig }}</template>
 			<div class="_gaps_s">
 				<MkFolder v-for="type in configurableNotificationTypes" :key="type">
-					<template #label>{{ i18n.ts._notification._types[type] }}</template>
+					<template #label>{{ (i18n.ts._notification._types as Record<string, string>)[type] }}</template>
 					<template #suffix>
 						{{
-							$i.notificationRecieveConfig[type as (typeof configurableNotificationTypes)[number]]?.type === 'never' ? i18n.ts.none :
-							$i.notificationRecieveConfig[type as (typeof configurableNotificationTypes)[number]]?.type === 'following' ? i18n.ts.following :
-							$i.notificationRecieveConfig[type as (typeof configurableNotificationTypes)[number]]?.type === 'follower' ? i18n.ts.followers :
-							$i.notificationRecieveConfig[type as (typeof configurableNotificationTypes)[number]]?.type === 'mutualFollow' ? i18n.ts.mutualFollow :
-							$i.notificationRecieveConfig[type as (typeof configurableNotificationTypes)[number]]?.type === 'followingOrFollower' ? i18n.ts.followingOrFollower :
-							$i.notificationRecieveConfig[type as (typeof configurableNotificationTypes)[number]]?.type === 'list' ? i18n.ts.userList :
+							($i.notificationRecieveConfig as Record<string, any>)[type]?.type === 'never' ? i18n.ts.none :
+							($i.notificationRecieveConfig as Record<string, any>)[type]?.type === 'following' ? i18n.ts.following :
+							($i.notificationRecieveConfig as Record<string, any>)[type]?.type === 'follower' ? i18n.ts.followers :
+							($i.notificationRecieveConfig as Record<string, any>)[type]?.type === 'mutualFollow' ? i18n.ts.mutualFollow :
+							($i.notificationRecieveConfig as Record<string, any>)[type]?.type === 'followingOrFollower' ? i18n.ts.followingOrFollower :
+							($i.notificationRecieveConfig as Record<string, any>)[type]?.type === 'list' ? i18n.ts.userList :
 							i18n.ts.all
 						}}
 					</template>
 
 					<XNotificationConfig
 						:userLists="userLists"
-						:value="$i.notificationRecieveConfig[type] ?? { type: 'all' }"
+						:value="($i.notificationRecieveConfig as Record<string, any>)[type] ?? { type: 'all' }"
 						:configurableTypes="(onlyOnOrOffNotificationTypes as string[]).includes(type) ? ['all', 'never'] : undefined"
 						@update="(res) => updateReceiveConfig(type, res)"
 					/>

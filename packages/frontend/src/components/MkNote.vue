@@ -652,12 +652,12 @@ async function showRenoteMenu() {
 
 	function getChangeVisibilityToHome(): MenuItem {
 		return {
-			text: i18n.ts.changeNoteVisibilityToHome,
+			text: i18n.ts.changeNoteVisibilityToHome as string,
 			icon: 'ti ti-home',
 			action: async () => {
 				const confirm = await os.confirm({
 					type: 'question',
-					text: i18n.ts.changeNoteVisibilityToHomeConfirm,
+					text: i18n.ts.changeNoteVisibilityToHomeConfirm as string,
 				});
 				if (confirm.canceled) return;
 

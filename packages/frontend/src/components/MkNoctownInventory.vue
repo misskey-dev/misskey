@@ -168,7 +168,7 @@ async function fetchInventory(): Promise<void> {
 				balance.value = typeof data.balance === 'number' ? data.balance : 0;
 				// 各アイテムのデータを正規化（undefinedやnullを防止）
 				const itemsData = Array.isArray(data.items) ? data.items : [];
-				items.value = itemsData.map(item => ({
+				items.value = itemsData.map((item: any) => ({
 					id: item.id ?? '',
 					itemId: item.itemId ?? '',
 					itemName: item.itemName ?? 'Unknown Item',

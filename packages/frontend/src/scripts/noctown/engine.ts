@@ -585,7 +585,7 @@ export class NoctownEngine {
 					const key = `${x},${z}`;
 					if (processedTiles.has(key)) continue;
 					if (x < 0 || x >= CHUNK_SIZE || z < 0 || z >= CHUNK_SIZE) continue;
-					if (chunkData.terrainData[x * CHUNK_SIZE + z] !== targetType) continue;
+					if ((chunkData.terrainData as number[])[x * CHUNK_SIZE + z] !== targetType) continue;
 
 					processedTiles.add(key);
 					tiles.push({ x, z });
@@ -611,7 +611,7 @@ export class NoctownEngine {
 			// terrainDataを走査して地形タイプに応じたメッシュを追加
 			for (let x = 0; x < CHUNK_SIZE; x++) {
 				for (let z = 0; z < CHUNK_SIZE; z++) {
-					const terrainType = chunkData.terrainData[x * CHUNK_SIZE + z];
+					const terrainType = (chunkData.terrainData as number[])[x * CHUNK_SIZE + z];
 					const tileKey = `${x},${z}`;
 
 					if (terrainType === 1 && !processedTiles.has(tileKey)) {

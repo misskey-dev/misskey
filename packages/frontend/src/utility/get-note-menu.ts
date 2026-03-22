@@ -507,11 +507,11 @@ export function getNoteMenu(props: {
 			if (($i.isModerator || $i.isAdmin) && appearNote.visibility === 'public') {
 				menuItems.push({
 					icon: 'ti ti-home',
-					text: i18n.ts.changeNoteVisibilityToHome,
+					text: i18n.ts.changeNoteVisibilityToHome as string,
 					action: async () => {
 						const confirm = await os.confirm({
 							type: 'question',
-							text: i18n.ts.changeNoteVisibilityToHomeConfirm,
+							text: i18n.ts.changeNoteVisibilityToHomeConfirm as string,
 						});
 						if (confirm.canceled) return;
 

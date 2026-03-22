@@ -47,7 +47,7 @@ const directNotesPaginator = markRaw(new Paginator('notes/mentions', {
 
 function setFilter(ev: PointerEvent) {
 	const typeItems = notificationTypes.map(t => ({
-		text: i18n.ts._notification._types[t],
+		text: (i18n.ts._notification._types as Record<string, string>)[t],
 		active: (includeTypes.value && includeTypes.value.includes(t)) ?? false,
 		action: () => {
 			includeTypes.value = [t];

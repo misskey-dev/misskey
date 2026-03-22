@@ -45,7 +45,7 @@ export class ChatUserChannel extends Channel {
 
 		// IDをソートして統一的なチャンネル名を作成
 		const sortedIds = [this.user!.id, this.otherId].sort();
-		const channelName = `chatUserStream:${sortedIds[0]}-${sortedIds[1]}`;
+		const channelName = `chatUserStream:${sortedIds[0]}-${sortedIds[1]}` as `chatUserStream:${string}-${string}`;
 		this.subscriber.on(channelName, this.onEvent);
 
 		return true;
