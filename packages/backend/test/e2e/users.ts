@@ -149,6 +149,7 @@ describe('ユーザー', () => {
 			achievements: user.achievements,
 			loggedInDays: user.loggedInDays,
 			policies: user.policies,
+			receivedReactionsCount: (user as any).receivedReactionsCount ?? 0,
 			twoFactorEnabled: user.twoFactorEnabled,
 			usePasswordLessLogin: user.usePasswordLessLogin,
 			securityKeys: user.securityKeys,
