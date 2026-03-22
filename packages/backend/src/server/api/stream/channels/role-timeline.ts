@@ -44,7 +44,7 @@ export class RoleTimelineChannel extends Channel {
 	@bindThis
 	private async onEvent(data: GlobalEvents['roleTimeline']['payload']) {
 		if (data.type === 'note') {
-			const note = data.body;
+			let note = data.body;
 
 			if (!(await this.roleservice.isExplorable({ id: this.roleId }))) {
 				return;
@@ -56,8 +56,9 @@ export class RoleTimelineChannel extends Channel {
 
 			if (this.isNoteMutedOrBlocked(note)) return;
 
-			const { shouldSkip } = await this.noteStreamingHidingService.processHiding(note, this.user?.id ?? null);
-			if (shouldSkip) return;
+			const filtered = await this.noteStreamingHidingService.filter(note, this.user?.id ?? null);
+			if (!filtered) return;
+			note = filtered;
 
 			if (this.user) {
 				if (isRenotePacked(note) && !isQuotePacked(note)) {
