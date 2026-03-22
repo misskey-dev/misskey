@@ -59,7 +59,7 @@ export class PetManager {
 	private chickenRenderer: ChickenRenderer;
 	private cowRenderer: CowRenderer;
 	private petData: Map<string, PetInfo> = new Map();
-	private moveTimers: Map<string, ReturnType<typeof window.setTimeout>> = new Map();
+	private moveTimers: Map<string, number> = new Map();
 	private clock: THREE.Clock;
 
 	constructor(scene: THREE.Scene) {

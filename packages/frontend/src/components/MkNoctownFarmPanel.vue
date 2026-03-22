@@ -291,7 +291,7 @@ const fishingProgress = ref(0);
 const statusMessage = ref<string | null>(null);
 const isStatusError = ref(false);
 const statusIcon = ref('ti ti-info-circle');
-let fishingTimer: ReturnType<typeof window.setInterval> | null = null;
+let fishingTimer: number | null = null;
 
 // 釣り竿を所持しているかチェック
 // 釣りアクションは釣り竿アイテムを所持している場合のみ実行可能

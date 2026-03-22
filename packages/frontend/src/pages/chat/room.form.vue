@@ -66,7 +66,7 @@ const sending = ref(false);
 const textareaReadOnly = ref(false);
 let autocompleteInstance: Autocomplete | null = null;
 // connection は props から受け取る
-let typingStopTimer: ReturnType<typeof window.setTimeout> | null = null;
+let typingStopTimer: number | null = null;
 let isTyping = ref(false);
 
 const canSend = computed(() => (text.value != null && text.value !== '') || file.value != null);

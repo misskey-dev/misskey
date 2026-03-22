@@ -76,7 +76,7 @@ const emit = defineEmits<{
 const isResponding = ref(false);
 const respondType = ref<'accept' | 'decline' | null>(null);
 const now = ref(Date.now());
-let timerInterval: ReturnType<typeof window.setInterval> | null = null;
+let timerInterval: number | null = null;
 
 const remainingTime = computed(() => {
 	const expiresAtMs = new Date(props.expiresAt).getTime();

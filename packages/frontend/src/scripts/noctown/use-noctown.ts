@@ -375,10 +375,10 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 	let stream: ReturnType<typeof useStream> | null = null;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	let channel: any = null;
-	let moveInterval: ReturnType<typeof window.setInterval> | null = null;
-	let heartbeatInterval: ReturnType<typeof window.setInterval> | null = null;
-	let playerSyncInterval: ReturnType<typeof window.setInterval> | null = null;
-	let reconnectTimeout: ReturnType<typeof window.setTimeout> | null = null;
+	let moveInterval: number | null = null;
+	let heartbeatInterval: number | null = null;
+	let playerSyncInterval: number | null = null;
+	let reconnectTimeout: number | null = null;
 	let reconnectAttempts = 0;
 	const MAX_RECONNECT_ATTEMPTS = 10;
 	const RECONNECT_DELAY_MS = 3000;
@@ -386,7 +386,7 @@ export function useNoctown(containerRef: Ref<HTMLElement | null>): NoctownState 
 	// FR-014: Ping/Pongオフライン検出
 	const PING_TIMEOUT_MS = 5000; // 5秒タイムアウト（ネットワーク遅延を考慮）
 	// pingId -> { playerId, timeoutId } のマッピング（各プレイヤーごとに個別のpingIdを使用）
-	const pendingPings = new Map<string, { playerId: string; timeoutId: ReturnType<typeof window.setTimeout> }>();
+	const pendingPings = new Map<string, { playerId: string; timeoutId: number }>();
 
 	// 仕様: トレードリクエスト受信時のコールバック
 	let onTradeRequestCallback: (() => void) | null = null;

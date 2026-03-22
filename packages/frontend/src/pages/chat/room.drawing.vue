@@ -2185,7 +2185,7 @@ function sendCursorPosition(point: { x: number; y: number }) {
 }
 
 // カーソルタイマー管理
-const cursorTimers = new Map<string, ReturnType<typeof window.setTimeout>>();
+const cursorTimers = new Map<string, number>();
 
 // ユーザーごとの色管理
 const userCursorColors = new Map<string, string>();

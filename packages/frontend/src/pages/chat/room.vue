@@ -172,7 +172,7 @@ const connection = ref<Misskey.IChannelConnection<ChatChannel> | null>(null);
 const streamInstance = ref<any>(null); // ストリームインスタンスを保持
 const showIndicator = ref(false);
 const typingUsers = ref<Misskey.entities.UserLite[]>([]);
-const typingTimers = new Map<string, ReturnType<typeof window.setTimeout>>();
+const typingTimers = new Map<string, number>();
 // 重複イベント防止用のSets
 const processedMessageIds = new Set<string>();
 const processedReactionIds = new Set<string>();

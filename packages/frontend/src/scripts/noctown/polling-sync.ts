@@ -41,10 +41,10 @@ export class PollingSync {
 	private currentZ = 0;
 
 	// Polling intervals
-	private playersInterval: ReturnType<typeof window.setInterval> | null = null;
-	private droppedItemsInterval: ReturnType<typeof window.setInterval> | null = null;
-	private placedItemsInterval: ReturnType<typeof window.setInterval> | null = null;
-	private npcsInterval: ReturnType<typeof window.setInterval> | null = null;
+	private playersInterval: number | null = null;
+	private droppedItemsInterval: number | null = null;
+	private placedItemsInterval: number | null = null;
+	private npcsInterval: number | null = null;
 
 	// Callbacks
 	private onPlayersUpdate: DataCallback<PlayerData> | null = null;

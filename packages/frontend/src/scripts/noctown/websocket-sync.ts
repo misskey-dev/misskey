@@ -72,11 +72,11 @@ export class WebSocketSyncManager {
 	private pendingPosition: { x: number; y: number; z: number; rotation: number } | null = null;
 
 	// Heartbeat
-	private heartbeatInterval: ReturnType<typeof window.setInterval> | null = null;
+	private heartbeatInterval: number | null = null;
 	private heartbeatIntervalMs = 30000;
 
 	// Chunk generation (T040: concurrent request limit)
-	private pendingChunkRequests: Map<string, { retryCount: number; timeoutId: ReturnType<typeof window.setTimeout> | null }> = new Map();
+	private pendingChunkRequests: Map<string, { retryCount: number; timeoutId: number | null }> = new Map();
 	private static readonly MAX_CONCURRENT_CHUNK_REQUESTS = 5;
 	private static readonly MAX_CHUNK_REQUEST_RETRIES = 10;
 	private static readonly CHUNK_REQUEST_RETRY_INTERVAL_MS = 2000; // 2秒ごとにリトライ

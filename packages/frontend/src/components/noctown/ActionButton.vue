@@ -58,8 +58,8 @@ const props = withDefaults(defineProps<{
 });
 
 // Hold detection
-const primaryHoldTimer = ref<ReturnType<typeof window.setTimeout> | null>(null);
-const secondaryHoldTimer = ref<ReturnType<typeof window.setTimeout> | null>(null);
+const primaryHoldTimer = ref<number | null>(null);
+const secondaryHoldTimer = ref<number | null>(null);
 const primaryWasHeld = ref(false);
 const secondaryWasHeld = ref(false);
 

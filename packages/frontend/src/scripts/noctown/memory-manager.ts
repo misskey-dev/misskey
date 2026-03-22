@@ -41,7 +41,7 @@ export class MemoryManager {
 	private geometryCache: Map<string, CacheEntry<THREE.BufferGeometry>> = new Map();
 	private materialCache: Map<string, CacheEntry<THREE.Material>> = new Map();
 
-	private checkInterval: ReturnType<typeof window.setInterval> | null = null;
+	private checkInterval: number | null = null;
 	private scene: THREE.Scene | null = null;
 	private playerPosition: THREE.Vector3 = new THREE.Vector3();
 

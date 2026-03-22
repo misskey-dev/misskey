@@ -130,9 +130,9 @@ const timerProgress = ref(100);
 const bobberSpeed = ref(2);
 
 // Timers
-let hookTimer: ReturnType<typeof window.setTimeout> | null = null;
-let catchWindowTimer: ReturnType<typeof window.setTimeout> | null = null;
-let timerInterval: ReturnType<typeof window.setInterval> | null = null;
+let hookTimer: number | null = null;
+let catchWindowTimer: number | null = null;
+let timerInterval: number | null = null;
 
 // Catch window duration (must match backend)
 const CATCH_WINDOW_MS = 2000;

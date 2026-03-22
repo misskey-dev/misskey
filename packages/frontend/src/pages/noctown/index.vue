@@ -458,14 +458,14 @@ let engine: import('@/scripts/noctown/engine.js').NoctownEngine | null = null;
 let stream: ReturnType<typeof useStream> | null = null;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const connection = ref<any>(null); // Use ref like drawing chat for better reactivity
-let moveInterval: ReturnType<typeof window.setInterval> | null = null;
-let heartbeatInterval: ReturnType<typeof window.setInterval> | null = null;
+let moveInterval: number | null = null;
+let heartbeatInterval: number | null = null;
 
 // FR-017: Ping/pong for player status mark color
-let pingInterval: ReturnType<typeof window.setInterval> | null = null;
-let warningCheckInterval: ReturnType<typeof window.setInterval> | null = null;
+let pingInterval: number | null = null;
+let warningCheckInterval: number | null = null;
 // Track pending pings: pingId -> { playerId, timeoutId }
-const pendingPings = new Map<string, { playerId: string; timeoutId: ReturnType<typeof window.setTimeout> }>();
+const pendingPings = new Map<string, { playerId: string; timeoutId: number }>();
 const PING_TIMEOUT_MS = 5000; // 5秒タイムアウト
 
 // FR-018: Player info floating window
@@ -479,7 +479,7 @@ const selectedPlayerInfo = ref<{
 const selectedPlayerPingTime = ref<number | null>(null);
 const isPlayerInfoPinging = ref(false);
 // Track pending pings for player info window (separate from status mark pings)
-const pendingPlayerInfoPings = new Map<string, { playerId: string; sentTime: number; timeoutId: ReturnType<typeof window.setTimeout> }>();
+const pendingPlayerInfoPings = new Map<string, { playerId: string; sentTime: number; timeoutId: number }>();
 
 // FR-022, FR-023: Pet info floating window
 const showPetInfoWindow = ref(false);
@@ -535,8 +535,8 @@ const incomingTradeToast = ref<{
 
 // FR-019: Typing indicator state
 let isTyping = false;
-let typingDebounceTimeout: ReturnType<typeof window.setTimeout> | null = null;
-let typingAutoHideTimeout: ReturnType<typeof window.setTimeout> | null = null;
+let typingDebounceTimeout: number | null = null;
+let typingAutoHideTimeout: number | null = null;
 
 // Movement state
 // T045: Make coordinates reactive for UI display
