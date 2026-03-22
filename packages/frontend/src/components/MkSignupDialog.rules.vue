@@ -132,18 +132,8 @@ async function updateAgreeTosAndPrivacyPolicy(v: boolean) {
 	}
 }
 
-async function updateAgreeNote(v: boolean) {
-	if (v) {
-		const confirm = await os.confirm({
-			type: 'question',
-			title: i18n.ts.doYouAgree,
-			text: i18n.tsx.iHaveReadXCarefullyAndAgree({ x: i18n.ts.basicNotesBeforeCreateAccount }),
-		});
-		if (confirm.canceled) return;
-		agreeNote.value = true;
-	} else {
-		agreeNote.value = false;
-	}
+function updateAgreeNote(v: boolean) {
+	agreeNote.value = v;
 }
 </script>
 
