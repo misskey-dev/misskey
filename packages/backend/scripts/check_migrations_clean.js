@@ -11,17 +11,27 @@ await dataSource.initialize();
 
 const sqlInMemory = await dataSource.driver.createSchemaBuilder().log();
 
-// カスタムテーブル/カラムの差分は無視（手動命名とTypeORM自動命名の差分）
+// カスタムテーブル/カラム/インデックスの差分は無視
+// （手動命名マイグレーションとTypeORM自動スキーマ同期の差分）
 const customPatterns = [
+	// カスタムテーブル名
 	'noctown_', 'noq_', 'drawing_', 'chat_secret_',
-	'IDX_noctown', 'IDX_noq', 'IDX_drawing', 'IDX_chat_secret',
-	'FK_noctown', 'FK_noq', 'FK_drawing', 'FK_chat_secret', 'FK_meta_noqBot',
-	'excludedFromIllustrationHighlight', 'IDX_drive_file_excluded',
+	// カスタムカラム名
+	'noqBotAccountId', 'excludedFromIllustrationHighlight',
+	'chatScope', 'suspendedReason',
+	// カスタムpage visibility
+	'url-only',
 ];
-const isCustomTableQuery = (query) => customPatterns.some(p => query.includes(p));
+const isCustomTableQuery = (query) => customPatterns.some(p => query.includes(p))
 
-const filteredUp = sqlInMemory.upQueries.filter(q => !isCustomTableQuery(q.query));
-const filteredDown = sqlInMemory.downQueries.filter(q => !isCustomTableQuery(q.query));
+// TypeORMハッシュインデックスのDROP/CREATEも無視
+// （カスタムエンティティのインデックス名がマイグレーションと異なる）
+const isAutoIndexQuery = (query) => /DROP INDEX "public"\."IDX_[a-f0-9]+"/.test(query) || /CREATE INDEX "IDX_[a-f0-9]+"/.test(query);
+
+const isIgnoredQuery = (query) => isCustomTableQuery(query) || isAutoIndexQuery(query);
+
+const filteredUp = sqlInMemory.upQueries.filter(q => !isIgnoredQuery(q.query));
+const filteredDown = sqlInMemory.downQueries.filter(q => !isIgnoredQuery(q.query));
 
 if (filteredUp.length > 0 || filteredDown.length > 0) {
 	console.error('There are several pending migrations. Please make sure you have generated the migrations correctly, or configured entities class correctly.');
