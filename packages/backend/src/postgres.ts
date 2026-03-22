@@ -6,7 +6,6 @@
 // https://github.com/typeorm/typeorm/issues/2400
 import pg from 'pg';
 import { DataSource, Logger, type QueryRunner } from 'typeorm';
-import * as highlight from 'cli-highlight';
 import { entities as charts } from '@/core/chart/entities.js';
 import { Config } from '@/config.js';
 import MisskeyLogger from '@/logger.js';
@@ -25,6 +24,7 @@ import { MiAuthSession } from '@/models/AuthSession.js';
 import { MiBlocking } from '@/models/Blocking.js';
 import { MiChannelFollowing } from '@/models/ChannelFollowing.js';
 import { MiChannelFavorite } from '@/models/ChannelFavorite.js';
+import { MiChannelMuting } from '@/models/ChannelMuting.js';
 import { MiClip } from '@/models/Clip.js';
 import { MiClipNote } from '@/models/ClipNote.js';
 import { MiClipFavorite } from '@/models/ClipFavorite.js';
@@ -152,12 +152,6 @@ export type LoggerProps = {
 	printReplicationMode?: boolean,
 };
 
-function highlightSql(sql: string) {
-	return highlight.highlight(sql, {
-		language: 'sql', ignoreIllegals: true,
-	});
-}
-
 function truncateSql(sql: string) {
 	return sql.length > 100 ? `${sql.substring(0, 100)}...` : sql;
 }
@@ -183,7 +177,7 @@ class MyCustomLogger implements Logger {
 			modded = truncateSql(modded);
 		}
 
-		return highlightSql(modded);
+		return modded;
 	}
 
 	@bindThis
@@ -291,6 +285,7 @@ export const entities = [
 	MiChannel,
 	MiChannelFollowing,
 	MiChannelFavorite,
+	MiChannelMuting,
 	MiRegistryItem,
 	MiAd,
 	MiPasswordResetRequest,

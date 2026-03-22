@@ -611,6 +611,10 @@ export const ROUTE_DEF = [{
 	component: page(() => import('@/pages/reversi/game.vue')),
 	loginRequired: false,
 }, {
+	path: '/qr',
+	component: page(() => import('@/pages/qr.vue')),
+	loginRequired: true,
+}, {
 	path: '/noctown',
 	component: page(() => import('@/pages/noctown/index.vue')),
 	loginRequired: true,

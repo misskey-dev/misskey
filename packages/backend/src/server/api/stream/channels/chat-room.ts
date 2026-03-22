@@ -3,17 +3,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
+import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import type { JsonObject } from '@/misc/json-value.js';
 import { ChatService } from '@/core/ChatService.js';
 import { DrawingCanvasService } from '@/core/DrawingCanvasService.js';
-import { DI } from '@/di-symbols.js';
+import Channel, { type ChannelRequest } from '../channel.js';
+import { REQUEST } from '@nestjs/core';
 import type { ChatRoomsRepository } from '@/models/_.js';
-import Channel, { type MiChannelService } from '../channel.js';
 
-class ChatRoomChannel extends Channel {
+@Injectable({ scope: Scope.TRANSIENT })
+export class ChatRoomChannel extends Channel {
 	public readonly chName = 'chatRoom';
 	public static shouldShare = false;
 	public static requireCredential = true as const;
@@ -26,50 +28,36 @@ class ChatRoomChannel extends Channel {
 	private lastCursorMove: number = 0;
 
 	constructor(
-		private chatService: ChatService,
-		private drawingCanvasService: DrawingCanvasService,
+		@Inject(REQUEST)
+		request: ChannelRequest,
+
+		@Inject(DI.chatRoomsRepository)
 		private chatRoomsRepository: ChatRoomsRepository,
 
-		id: string,
-		connection: Channel['connection'],
+		private chatService: ChatService,
+		private drawingCanvasService: DrawingCanvasService,
 	) {
-		super(id, connection);
+		super(request);
 	}
 
 	@bindThis
-	public async init(params: JsonObject) {
-		if (typeof params.roomId !== 'string') return;
+	public async init(params: JsonObject): Promise<boolean> {
+		if (typeof params.roomId !== 'string') return false;
+		if (!this.user) return false;
+
 		this.roomId = params.roomId;
 
-		// セキュリティ: ルーム参加権限の確認
-		if (!this.user) {
-			console.warn(`🔍 [SECURITY] Unauthenticated user attempting to access room ${this.roomId}`);
-			return;
-		}
+		const room = await this.chatRoomsRepository.findOneBy({
+			id: this.roomId,
+		});
 
-		try {
-			// メンバーシップ確認（ルーム存在確認も含む）
-			const room = await this.chatRoomsRepository.findOneBy({ id: this.roomId });
-			if (!room) {
-				console.warn(`🔍 [SECURITY] User ${this.user.id} attempting to access non-existent room ${this.roomId}`);
-				return;
-			}
+		if (room == null) return false;
+		if (!(await this.chatService.hasPermissionToViewRoomTimeline(this.user.id, room))) return false;
 
-			const isMember = await this.chatService.isRoomMember(room, this.user.id);
-			if (!isMember) {
-				console.warn(`🔍 [SECURITY] User ${this.user.id} denied access to room ${this.roomId} - not a member`);
-				return;
-			}
 
-			console.log(`🔍 [DEBUG] User ${this.user.id} granted access to room ${this.roomId}`);
-		} catch (error) {
-			console.error(`🔍 [ERROR] Failed to verify room access for user ${this.user.id} to room ${this.roomId}:`, error);
-			return;
-		}
-
-		// oranski方式の定期的なemitTypersは無効化
-		// this.emitTypersIntervalId = setInterval(this.emitTypers, 5000);
 		this.subscriber.on(`chatRoomStream:${this.roomId}`, this.onEvent);
+
+		return true;
 	}
 
 	@bindThis
@@ -320,28 +308,3 @@ class ChatRoomChannel extends Channel {
 	}
 }
 
-@Injectable()
-export class ChatRoomChannelService implements MiChannelService<true> {
-	public readonly shouldShare = ChatRoomChannel.shouldShare;
-	public readonly requireCredential = ChatRoomChannel.requireCredential;
-	public readonly kind = ChatRoomChannel.kind;
-
-	constructor(
-		private chatService: ChatService,
-		private drawingCanvasService: DrawingCanvasService,
-		@Inject(DI.chatRoomsRepository)
-		private chatRoomsRepository: ChatRoomsRepository,
-	) {
-	}
-
-	@bindThis
-	public create(id: string, connection: Channel['connection']): ChatRoomChannel {
-		return new ChatRoomChannel(
-			this.chatService,
-			this.drawingCanvasService,
-			this.chatRoomsRepository,
-			id,
-			connection,
-		);
-	}
-}

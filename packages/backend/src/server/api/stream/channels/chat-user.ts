@@ -3,15 +3,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
 import { bindThis } from '@/decorators.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import type { JsonObject } from '@/misc/json-value.js';
 import { ChatService } from '@/core/ChatService.js';
 import { DrawingCanvasService } from '@/core/DrawingCanvasService.js';
-import Channel, { type MiChannelService } from '../channel.js';
+import Channel, { type ChannelRequest } from '../channel.js';
+import { REQUEST } from '@nestjs/core';
 
-class ChatUserChannel extends Channel {
+@Injectable({ scope: Scope.TRANSIENT })
+export class ChatUserChannel extends Channel {
 	public readonly chName = 'chatUser';
 	public static shouldShare = false;
 	public static requireCredential = true as const;
@@ -24,26 +26,29 @@ class ChatUserChannel extends Channel {
 	private lastCursorMove: number = 0;
 
 	constructor(
+		@Inject(REQUEST)
+		request: ChannelRequest,
+
 		private chatService: ChatService,
 		private drawingCanvasService: DrawingCanvasService,
-
-		id: string,
-		connection: Channel['connection'],
 	) {
-		super(id, connection);
+		super(request);
 	}
 
 	@bindThis
-	public async init(params: JsonObject) {
-		if (typeof params.otherId !== 'string') return;
+	public async init(params: JsonObject): Promise<boolean> {
+		if (typeof params.otherId !== 'string') return false;
+		if (!this.user) return false;
+		if (params.otherId === this.user.id) return false;
+
 		this.otherId = params.otherId;
 
-		// oranski方式の定期的なemitTypersは無効化
-		// this.emitTypersIntervalId = setInterval(this.emitTypers, 5000);
 		// IDをソートして統一的なチャンネル名を作成
 		const sortedIds = [this.user!.id, this.otherId].sort();
 		const channelName = `chatUserStream:${sortedIds[0]}-${sortedIds[1]}`;
-		(this.subscriber as any).on(channelName, this.onEvent);
+		this.subscriber.on(channelName, this.onEvent);
+
+		return true;
 	}
 
 	@bindThis
@@ -371,25 +376,3 @@ class ChatUserChannel extends Channel {
 	}
 }
 
-@Injectable()
-export class ChatUserChannelService implements MiChannelService<true> {
-	public readonly shouldShare = ChatUserChannel.shouldShare;
-	public readonly requireCredential = ChatUserChannel.requireCredential;
-	public readonly kind = ChatUserChannel.kind;
-
-	constructor(
-		private chatService: ChatService,
-		private drawingCanvasService: DrawingCanvasService,
-	) {
-	}
-
-	@bindThis
-	public create(id: string, connection: Channel['connection']): ChatUserChannel {
-		return new ChatUserChannel(
-			this.chatService,
-			this.drawingCanvasService,
-			id,
-			connection,
-		);
-	}
-}

@@ -81,6 +81,7 @@ export const packedReversiGameLiteSchema = {
 		bw: {
 			type: 'string',
 			optional: false, nullable: false,
+			enum: ['random', '1', '2'],
 		},
 		noIrregularRules: {
 			type: 'boolean',
@@ -199,6 +200,7 @@ export const packedReversiGameDetailedSchema = {
 		bw: {
 			type: 'string',
 			optional: false, nullable: false,
+			enum: ['random', '1', '2'],
 		},
 		noIrregularRules: {
 			type: 'boolean',

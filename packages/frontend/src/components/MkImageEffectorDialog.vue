@@ -16,37 +16,36 @@ SPDX-License-Identifier: AGPL-3.0-only
 >
 	<template #header><i class="ti ti-sparkles"></i> {{ i18n.ts._imageEffector.title }}</template>
 
-	<div :class="$style.root">
-		<div :class="$style.container">
-			<div :class="$style.preview">
-				<canvas ref="canvasEl" :class="$style.previewCanvas" @pointerdown="onImagePointerdown"></canvas>
-				<div :class="$style.previewContainer">
-					<div class="_acrylic" :class="$style.previewTitle">{{ i18n.ts.preview }}</div>
-					<div class="_acrylic" :class="$style.editControls">
-						<button class="_button" :class="[$style.previewControlsButton, fillSquare ? $style.active : null]" @click="fillSquare = true"><i class="ti ti-pencil"></i></button>
-					</div>
-					<div class="_acrylic" :class="$style.previewControls">
-						<button class="_button" :class="[$style.previewControlsButton, !enabled ? $style.active : null]" @click="enabled = false">Before</button>
-						<button class="_button" :class="[$style.previewControlsButton, enabled ? $style.active : null]" @click="enabled = true">After</button>
-					</div>
+	<MkPreviewWithControls>
+		<template #preview>
+			<canvas ref="canvasEl" :class="$style.previewCanvas" @pointerdown.prevent.stop="onImagePointerdown"></canvas>
+			<div :class="$style.previewContainer">
+				<div class="_acrylic" :class="$style.previewTitle">{{ i18n.ts.preview }}</div>
+				<div class="_acrylic" :class="$style.editControls">
+					<button class="_button" :class="[$style.previewControlsButton, penMode != null ? $style.active : null]" @click="showPenMenu"><i class="ti ti-pencil"></i></button>
+				</div>
+				<div class="_acrylic" :class="$style.previewControls">
+					<button class="_button" :class="[$style.previewControlsButton, !enabled ? $style.active : null]" @click="enabled = false">Before</button>
+					<button class="_button" :class="[$style.previewControlsButton, enabled ? $style.active : null]" @click="enabled = true">After</button>
 				</div>
 			</div>
-			<div :class="$style.controls">
-				<div class="_spacer _gaps">
-					<XLayer
-						v-for="(layer, i) in layers"
-						:key="layer.id"
-						v-model:layer="layers[i]"
-						@del="onLayerDelete(layer)"
-						@swapUp="onLayerSwapUp(layer)"
-						@swapDown="onLayerSwapDown(layer)"
-					></XLayer>
+		</template>
 
-					<MkButton rounded primary style="margin: 0 auto;" @click="addEffect"><i class="ti ti-plus"></i> {{ i18n.ts._imageEffector.addEffect }}</MkButton>
-				</div>
+		<template #controls>
+			<div class="_spacer _gaps">
+				<XLayer
+					v-for="(layer, i) in layers"
+					:key="layer.id"
+					v-model:layer="layers[i]"
+					@del="onLayerDelete(layer)"
+					@swapUp="onLayerSwapUp(layer)"
+					@swapDown="onLayerSwapDown(layer)"
+				></XLayer>
+
+				<MkButton rounded primary style="margin: 0 auto;" @click="addEffect"><i class="ti ti-plus"></i> {{ i18n.ts._imageEffector.addEffect }}</MkButton>
 			</div>
-		</div>
-	</div>
+		</template>
+	</MkPreviewWithControls>
 </MkModalWindow>
 </template>
 
@@ -56,12 +55,10 @@ import type { ImageEffectorLayer } from '@/utility/image-effector/ImageEffector.
 import { i18n } from '@/i18n.js';
 import { ImageEffector } from '@/utility/image-effector/ImageEffector.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import MkSelect from '@/components/MkSelect.vue';
+import MkPreviewWithControls from '@/components/MkPreviewWithControls.vue';
 import MkButton from '@/components/MkButton.vue';
-import MkInput from '@/components/MkInput.vue';
 import XLayer from '@/components/MkImageEffectorDialog.Layer.vue';
 import * as os from '@/os.js';
-import { deepClone } from '@/utility/clone.js';
 import { FXS } from '@/utility/image-effector/fxs.js';
 import { genId } from '@/utility/id.js';
 
@@ -94,19 +91,19 @@ const layers = reactive<ImageEffectorLayer[]>([]);
 
 watch(layers, async () => {
 	if (renderer != null) {
-		renderer.setLayers(layers);
+		renderer.render(layers);
 	}
 }, { deep: true });
 
-function addEffect(ev: MouseEvent) {
-	os.popupMenu(FXS.map((fx) => ({
-		text: fx.name,
+function addEffect(ev: PointerEvent) {
+	os.popupMenu(Object.entries(FXS).map(([id, fx]) => ({
+		text: fx.uiDefinition.name,
 		action: () => {
 			layers.push({
 				id: genId(),
-				fxId: fx.id,
-				params: Object.fromEntries(Object.entries(fx.params).map(([k, v]) => [k, v.default])),
-			});
+				fxId: id as keyof typeof FXS,
+				params: Object.fromEntries(Object.entries(fx.uiDefinition.params).map(([k, v]) => [k, v.default])),
+			} as ImageEffectorLayer);
 		},
 	})), ev.currentTarget ?? ev.target);
 }
@@ -136,7 +133,7 @@ function onLayerDelete(layer: ImageEffectorLayer) {
 
 const canvasEl = useTemplateRef('canvasEl');
 
-let renderer: ImageEffector<typeof FXS> | null = null;
+let renderer: ImageEffector | null = null;
 let imageBitmap: ImageBitmap | null = null;
 
 onMounted(async () => {
@@ -146,30 +143,35 @@ onMounted(async () => {
 
 	await nextTick(); // waitingがレンダリングされるまで待つ
 
-	imageBitmap = await window.createImageBitmap(props.image);
+	try {
+		imageBitmap = await window.createImageBitmap(props.image);
 
-	const MAX_W = 1000;
-	const MAX_H = 1000;
-	let w = imageBitmap.width;
-	let h = imageBitmap.height;
+		const MAX_W = 1000;
+		const MAX_H = 1000;
+		let w = imageBitmap.width;
+		let h = imageBitmap.height;
 
-	if (w > MAX_W || h > MAX_H) {
-		const scale = Math.min(MAX_W / w, MAX_H / h);
-		w *= scale;
-		h *= scale;
+		if (w > MAX_W || h > MAX_H) {
+			const scale = Math.min(MAX_W / w, MAX_H / h);
+			w = Math.floor(w * scale);
+			h = Math.floor(h * scale);
+		}
+
+		renderer = new ImageEffector({
+			canvas: canvasEl.value,
+			renderWidth: w,
+			renderHeight: h,
+			image: imageBitmap,
+		});
+
+		await renderer.render(layers);
+	} catch (err) {
+		console.error(err);
+		os.alert({
+			type: 'error',
+			text: i18n.ts._imageEffector.failedToLoadImage,
+		});
 	}
-
-	renderer = new ImageEffector({
-		canvas: canvasEl.value,
-		renderWidth: w,
-		renderHeight: h,
-		image: imageBitmap,
-		fxs: FXS,
-	});
-
-	await renderer.setLayers(layers);
-
-	renderer.render();
 
 	closeWaiting();
 });
@@ -196,7 +198,7 @@ async function save() {
 	await nextTick(); // waitingがレンダリングされるまで待つ
 
 	renderer.changeResolution(imageBitmap.width, imageBitmap.height); // 本番レンダリングのためオリジナル画質に戻す
-	renderer.render(); // toBlobの直前にレンダリングしないと何故か壊れる
+	await renderer.render(layers); // toBlobの直前にレンダリングしないと何故か壊れる
 	canvasEl.value.toBlob((blob) => {
 		emit('ok', new File([blob!], `image-${Date.now()}.png`, { type: 'image/png' }));
 		dialog.value?.close();
@@ -208,18 +210,36 @@ const enabled = ref(true);
 watch(enabled, () => {
 	if (renderer != null) {
 		if (enabled.value) {
-			renderer.setLayers(layers);
+			renderer.render(layers);
 		} else {
-			renderer.setLayers([]);
+			renderer.render([]);
 		}
-		renderer.render();
 	}
 });
 
-const fillSquare = ref(false);
+const penMode = ref<'fill' | 'blur' | 'pixelate' | null>(null);
+
+function showPenMenu(ev: PointerEvent) {
+	os.popupMenu([{
+		text: i18n.ts._imageEffector._fxs.fill,
+		action: () => {
+			penMode.value = 'fill';
+		},
+	}, {
+		text: i18n.ts._imageEffector._fxs.blur,
+		action: () => {
+			penMode.value = 'blur';
+		},
+	}, {
+		text: i18n.ts._imageEffector._fxs.pixelate,
+		action: () => {
+			penMode.value = 'pixelate';
+		},
+	}], ev.currentTarget ?? ev.target);
+}
 
 function onImagePointerdown(ev: PointerEvent) {
-	if (canvasEl.value == null || imageBitmap == null || !fillSquare.value) return;
+	if (canvasEl.value == null || imageBitmap == null || penMode.value == null) return;
 
 	const AW = canvasEl.value.clientWidth;
 	const AH = canvasEl.value.clientHeight;
@@ -250,19 +270,50 @@ function onImagePointerdown(ev: PointerEvent) {
 	}
 
 	const id = genId();
-	layers.push({
-		id,
-		fxId: 'fillSquare',
-		params: {
-			offsetX: 0,
-			offsetY: 0,
-			scaleX: 0.1,
-			scaleY: 0.1,
-			angle: 0,
-			opacity: 1,
-			color: [1, 1, 1],
-		},
-	});
+	if (penMode.value === 'fill') {
+		layers.push({
+			id,
+			fxId: 'fill',
+			params: {
+				offsetX: 0,
+				offsetY: 0,
+				scaleX: 0.1,
+				scaleY: 0.1,
+				angle: 0,
+				opacity: 1,
+				color: [1, 1, 1],
+				ellipse: false,
+			},
+		});
+	} else if (penMode.value === 'blur') {
+		layers.push({
+			id,
+			fxId: 'blur',
+			params: {
+				offsetX: 0,
+				offsetY: 0,
+				scaleX: 0.1,
+				scaleY: 0.1,
+				angle: 0,
+				radius: 10,
+				ellipse: false,
+			},
+		});
+	} else if (penMode.value === 'pixelate') {
+		layers.push({
+			id,
+			fxId: 'pixelate',
+			params: {
+				offsetX: 0,
+				offsetY: 0,
+				scaleX: 0.1,
+				scaleY: 0.1,
+				angle: 0,
+				strength: 0.2,
+				ellipse: false,
+			},
+		});
+	}
 
 	_move(ev.offsetX, ev.offsetY);
 
@@ -282,7 +333,7 @@ function onImagePointerdown(ev: PointerEvent) {
 		const scaleY = Math.abs(y - startY);
 
 		const layerIndex = layers.findIndex((l) => l.id === id);
-		const layer = layerIndex !== -1 ? layers[layerIndex] : null;
+		const layer = layerIndex !== -1 ? (layers[layerIndex] as Extract<ImageEffectorLayer, { fxId: 'fill' } | { fxId: 'blur' } | { fxId: 'pixelate' }>) : null;
 		if (layer != null) {
 			layer.params.offsetX = (x + startX) - 1;
 			layer.params.offsetY = (y + startY) - 1;
@@ -302,7 +353,7 @@ function onImagePointerdown(ev: PointerEvent) {
 		canvasEl.value?.removeEventListener('pointercancel', up);
 		canvasEl.value?.releasePointerCapture(ev.pointerId);
 
-		fillSquare.value = false;
+		penMode.value = null;
 	}
 
 	canvasEl.value.addEventListener('pointermove', move);
@@ -312,24 +363,6 @@ function onImagePointerdown(ev: PointerEvent) {
 </script>
 
 <style module>
-.root {
-	container-type: inline-size;
-	height: 100%;
-}
-
-.container {
-	height: 100%;
-	display: grid;
-	grid-template-columns: 1fr 400px;
-}
-
-.preview {
-	position: relative;
-	background-color: var(--MI_THEME-bg);
-	background-size: auto auto;
-	background-image: repeating-linear-gradient(135deg, transparent, transparent 6px, var(--MI_THEME-panel) 6px, var(--MI_THEME-panel) 12px);
-}
-
 .previewContainer {
 	display: flex;
 	flex-direction: column;
@@ -378,37 +411,19 @@ function onImagePointerdown(ev: PointerEvent) {
 	}
 }
 
-.previewSpinner {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	pointer-events: none;
-	user-select: none;
-	-webkit-user-drag: none;
-}
-
 .previewCanvas {
 	position: absolute;
 	top: 0;
 	left: 0;
-	width: -webkit-fill-available;
+	/* なんかiOSでレンダリングがおかしい
 	width: stretch;
-	height: -webkit-fill-available;
 	height: stretch;
+	*/
+	width: calc(100% - 40px);
+	height: calc(100% - 40px);
 	margin: 20px;
 	box-sizing: border-box;
 	object-fit: contain;
-}
-
-.controls {
-	overflow-y: scroll;
-}
-
-@container (max-width: 800px) {
-	.container {
-		grid-template-columns: 1fr;
-		grid-template-rows: 1fr 1fr;
-	}
+	touch-action: none;
 }
 </style>

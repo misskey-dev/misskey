@@ -1021,7 +1021,7 @@ async function leaveRoom() {
 	router.push('/chat');
 }
 
-function showMenu(ev: MouseEvent) {
+function showMenu(ev: PointerEvent) {
 	const menuItems: MenuItem[] = [];
 
 	// 内緒の会話トグル
@@ -1150,7 +1150,6 @@ const headerActions = computed<PageHeaderItem[]>(() => {
 	// 通常のメニュー
 	actions.push({
 		icon: 'ti ti-dots',
-		text: '',
 		handler: showMenu,
 	});
 

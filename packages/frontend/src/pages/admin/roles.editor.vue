@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps">
-	<MkInput v-if="readonly" :modelValue="role.id" :readonly="true">
+	<MkInput v-if="readonly && role.id != null" :modelValue="role.id" :readonly="true">
 		<template #label>ID</template>
 	</MkInput>
 
@@ -420,6 +420,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkSwitch>
 					<MkInput v-model="role.policies.maxFileSizeMb.value" :disabled="role.policies.maxFileSizeMb.useDefault" type="number" :readonly="readonly">
 						<template #suffix>MB</template>
+						<template #caption>
+							<div><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i> {{ i18n.ts._role._options.maxFileSize_caption }}</div>
+						</template>
 					</MkInput>
 					<MkRange v-model="role.policies.maxFileSizeMb.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
 						<template #label>{{ i18n.ts._role.priority }}</template>
@@ -802,6 +805,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</MkFolder>
 
+			<MkFolder v-if="matchQuery([i18n.ts._role._options.scheduledNoteLimit, 'scheduledNoteLimit'])">
+				<template #label>{{ i18n.ts._role._options.scheduledNoteLimit }}</template>
+				<template #suffix>
+					<span v-if="role.policies.scheduledNoteLimit.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+					<span v-else>{{ role.policies.scheduledNoteLimit.value }}</span>
+					<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(role.policies.scheduledNoteLimit)"></i></span>
+				</template>
+				<div class="_gaps">
+					<MkSwitch v-model="role.policies.scheduledNoteLimit.useDefault" :readonly="readonly">
+						<template #label>{{ i18n.ts._role.useBaseValue }}</template>
+					</MkSwitch>
+					<MkInput v-model="role.policies.scheduledNoteLimit.value" :disabled="role.policies.scheduledNoteLimit.useDefault" type="number" :readonly="readonly">
+					</MkInput>
+					<MkRange v-model="role.policies.scheduledNoteLimit.priority" :min="0" :max="2" :step="1" easing :textConverter="(v) => v === 0 ? i18n.ts._role._priority.low : v === 1 ? i18n.ts._role._priority.middle : v === 2 ? i18n.ts._role._priority.high : ''">
+						<template #label>{{ i18n.ts._role.priority }}</template>
+					</MkRange>
+				</div>
+			</MkFolder>
+
 			<MkFolder v-if="matchQuery([i18n.ts._role._options.watermarkAvailable, 'watermarkAvailable'])">
 				<template #label>{{ i18n.ts._role._options.watermarkAvailable }}</template>
 				<template #suffix>
@@ -831,6 +853,7 @@ import { watch, ref, computed } from 'vue';
 import { throttle } from 'throttle-debounce';
 import * as Misskey from 'misskey-js';
 import RolesEditorFormula from './RolesEditorFormula.vue';
+import type { MkSelectItem, GetMkSelectValueTypesFromDef } from '@/components/MkSelect.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -842,14 +865,19 @@ import FormSlot from '@/components/form/slot.vue';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { deepClone } from '@/utility/clone.js';
-import type { MkSelectItem, GetMkSelectValueTypesFromDef } from '@/components/MkSelect.vue';
+
+type RoleLike = Pick<Misskey.entities.Role, 'name' | 'description' | 'isAdministrator' | 'isModerator' | 'color' | 'iconUrl' | 'target' | 'isPublic' | 'isExplorable' | 'asBadge' | 'canEditMembersByModerator' | 'displayOrder' | 'preserveAssignmentOnMoveAccount'> & {
+	id?: Misskey.entities.Role['id'] | null;
+	condFormula: any;
+	policies: any;
+};
 
 const emit = defineEmits<{
-	(ev: 'update:modelValue', v: any): void;
+	(ev: 'update:modelValue', v: RoleLike): void;
 }>();
 
 const props = defineProps<{
-	modelValue: any;
+	modelValue: RoleLike;
 	readonly?: boolean;
 }>();
 
@@ -888,7 +916,7 @@ const rolePermission = computed<GetMkSelectValueTypesFromDef<typeof rolePermissi
 
 const q = ref('');
 
-function getPriorityIcon(option) {
+function getPriorityIcon(option: { priority: number }): string {
 	if (option.priority === 2) return 'ti ti-arrows-up';
 	if (option.priority === 1) return 'ti ti-arrow-narrow-up';
 	return 'ti ti-point';
@@ -914,6 +942,7 @@ const save = throttle(100, () => {
 		isExplorable: role.value.isExplorable,
 		asBadge: role.value.asBadge,
 		canEditMembersByModerator: role.value.canEditMembersByModerator,
+		preserveAssignmentOnMoveAccount: role.value.preserveAssignmentOnMoveAccount,
 		policies: role.value.policies,
 	};
 

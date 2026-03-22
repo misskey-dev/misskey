@@ -74,7 +74,7 @@ const exampleNote = reactive<Misskey.entities.Note>({
 });
 const onceReacted = ref<boolean>(false);
 
-function addReaction(emoji) {
+function addReaction(emoji: string) {
 	onceReacted.value = true;
 	emit('reacted');
 	doNotification(emoji);
@@ -96,7 +96,7 @@ function doNotification(emoji: string): void {
 	globalEvents.emit('clientNotification', notification);
 }
 
-function removeReaction(emoji) {
+function removeReaction(emoji: string) {
 	delete exampleNote.reactions[emoji];
 	exampleNote.myReaction = undefined;
 }

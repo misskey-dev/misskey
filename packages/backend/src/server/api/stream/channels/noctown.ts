@@ -3,16 +3,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
+import { REQUEST } from '@nestjs/core';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { isJsonObject } from '@/misc/json-value.js';
 import type { JsonObject, JsonValue } from '@/misc/json-value.js';
 import type { NoctownPlayersRepository } from '@/models/_.js';
 import { NoctownService } from '@/core/NoctownService.js';
-import Channel, { type MiChannelService } from '../channel.js';
+import Channel, { type ChannelRequest } from '../channel.js';
 
-class NoctownChannel extends Channel {
+@Injectable({ scope: Scope.TRANSIENT })
+export class NoctownChannel extends Channel {
 	public readonly chName = 'noctown';
 	public static shouldShare = false;
 	public static requireCredential = true as const;
@@ -20,12 +22,15 @@ class NoctownChannel extends Channel {
 	private playerId: string | null = null;
 
 	constructor(
-		private noctownService: NoctownService,
+		@Inject(REQUEST)
+		request: ChannelRequest,
+
+		@Inject(DI.noctownPlayersRepository)
 		private noctownPlayersRepository: NoctownPlayersRepository,
-		id: string,
-		connection: Channel['connection'],
+
+		private noctownService: NoctownService,
 	) {
-		super(id, connection);
+		super(request);
 	}
 
 	@bindThis
@@ -417,26 +422,3 @@ class NoctownChannel extends Channel {
 	}
 }
 
-@Injectable()
-export class NoctownChannelService implements MiChannelService<true> {
-	public readonly shouldShare = NoctownChannel.shouldShare;
-	public readonly requireCredential = NoctownChannel.requireCredential;
-	public readonly kind = NoctownChannel.kind;
-
-	constructor(
-		private noctownService: NoctownService,
-		@Inject(DI.noctownPlayersRepository)
-		private noctownPlayersRepository: NoctownPlayersRepository,
-	) {
-	}
-
-	@bindThis
-	public create(id: string, connection: Channel['connection']): NoctownChannel {
-		return new NoctownChannel(
-			this.noctownService,
-			this.noctownPlayersRepository,
-			id,
-			connection,
-		);
-	}
-}

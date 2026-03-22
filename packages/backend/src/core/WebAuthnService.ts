@@ -66,7 +66,6 @@ export class WebAuthnService {
 			userID: isoUint8Array.fromUTF8String(userId),
 			userName: userName,
 			userDisplayName: userDisplayName,
-			attestationType: 'indirect',
 			excludeCredentials: keys.map(key => (<{ id: string; transports?: AuthenticatorTransportFuture[]; }>{
 				id: key.id,
 				transports: key.transports ?? undefined,

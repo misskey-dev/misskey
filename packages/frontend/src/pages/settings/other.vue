@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 								<div class="_gaps_s">
 									<div v-for="policy in Object.keys($i.policies)" :key="policy">
-										{{ policy }} ... {{ $i.policies[policy] }}
+										{{ policy }} ... {{ $i.policies[policy as keyof typeof $i.policies] }}
 									</div>
 								</div>
 							</MkFolder>
@@ -54,7 +54,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #icon><SearchIcon><i class="ti ti-badges"></i></SearchIcon></template>
 					<template #label><SearchLabel>{{ i18n.ts.rolesAssignedToMe }}</SearchLabel></template>
 
-					<MkRolePreview v-for="role in $i.roles" :key="role.id" :role="role" :forModeration="false"/>
+					<div class="_gaps_s">
+						<MkRolePreview v-for="role in $i.roles" :key="role.id" :role="role" :forModeration="false"/>
+					</div>
 				</MkFolder>
 			</SearchMarker>
 
@@ -102,6 +104,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkSwitch v-model="enableHapticFeedback">
 							<template #label>Enable haptic feedback</template>
 						</MkSwitch>
+						<MkSwitch v-model="enableWebTranslatorApi">
+							<template #label>Enable in-browser translator API</template>
+						</MkSwitch>
 					</div>
 				</MkFolder>
 			</SearchMarker>
@@ -131,15 +136,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<hr>
 
-		<MkButton @click="forceCloudBackup">Force cloud backup</MkButton>
-
-		<hr>
-
 		<template v-if="$i.policies.chatAvailability !== 'unavailable'">
-			<MkButton @click="readAllChatMessages">Read all chat messages</MkButton>
+			<MkButton @click="readAllChatMessages">{{ i18n.ts.readAllChatMessages }}</MkButton>
 
 			<hr>
 		</template>
+
+		<MkButton v-if="storagePersistenceSupported && !storagePersisted" @click="enableStoragePersistence">{{ i18n.ts._settings.settingsPersistence_title }}</MkButton>
+
+		<MkButton @click="forceCloudBackup">{{ i18n.ts._preferencesBackup.forceBackup }}</MkButton>
 
 		<FormSlot>
 			<MkButton danger @click="migrate"><i class="ti ti-refresh"></i> {{ i18n.ts.migrateOldSettings }}</MkButton>
@@ -160,7 +165,7 @@ import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSlot from '@/components/form/slot.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
+import { enableStoragePersistence, getStoragePersistenceStatusRef, storagePersistenceSupported } from '@/utility/storage.js';
 import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
@@ -175,6 +180,8 @@ import { cloudBackup } from '@/preferences/utility.js';
 
 const $i = ensureSignin();
 
+const storagePersisted = await getStoragePersistenceStatusRef();
+
 const reportError = prefer.model('reportError');
 const enableCondensedLine = prefer.model('enableCondensedLine');
 const skipNoteRender = prefer.model('skipNoteRender');
@@ -182,6 +189,7 @@ const devMode = prefer.model('devMode');
 const stackingRouterView = prefer.model('experimental.stackingRouterView');
 const enableFolderPageView = prefer.model('experimental.enableFolderPageView');
 const enableHapticFeedback = prefer.model('experimental.enableHapticFeedback');
+const enableWebTranslatorApi = prefer.model('experimental.enableWebTranslatorApi');
 
 watch(skipNoteRender, () => {
 	suggestReload();
