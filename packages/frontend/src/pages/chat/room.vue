@@ -866,14 +866,10 @@ function onTyping(ctx: { userId: string; user?: Misskey.entities.UserLite }) {
 		}
 		typingUser = ctx.user;
 		console.log('🔍 [DEBUG] Using provided user object:', typingUser.username);
-	}
-	// 1on1チャットの場合は相手ユーザー
-	else if (user.value && ctx.userId === user.value.id) {
+	} else if (user.value && ctx.userId === user.value.id) { // 1on1チャットの場合は相手ユーザー
 		typingUser = user.value;
 		console.log('🔍 [DEBUG] Found 1on1 chat partner:', typingUser.username);
-	}
-	// ルームチャットの場合は過去のメッセージから検索
-	else {
+	} else { // ルームチャットの場合は過去のメッセージから検索
 		const foundMessage = messages.value.find(m => m.fromUserId === ctx.userId);
 		if (foundMessage) {
 			typingUser = foundMessage.fromUser;

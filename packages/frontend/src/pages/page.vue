@@ -362,8 +362,6 @@ function extractTextFromBlocks(blocks: any[]): string {
 			if (block.children && block.children.length > 0) {
 				text += extractTextFromBlocks(block.children);
 			}
-		} else if (block.type === 'section' && block.children) {
-			text += extractTextFromBlocks(block.children);
 		}
 	}
 	

@@ -1140,34 +1140,22 @@ onMounted(async () => {
 			if (canvasEl.value) {
 				canvasEl.value.style.cursor = 'grab';
 			}
-		}
-		// P: ペンツール
-		else if (e.key === 'p' || e.key === 'P') {
+		} else if (e.key === 'p' || e.key === 'P') { // P: ペンツール
 			e.preventDefault();
 			setTool('pen');
-		}
-		// E: 消しゴムツール
-		else if (e.key === 'e' || e.key === 'E') {
+		} else if (e.key === 'e' || e.key === 'E') { // E: 消しゴムツール
 			e.preventDefault();
 			setTool('eraser');
-		}
-		// I: スポイトツール
-		else if (e.key === 'i' || e.key === 'I') {
+		} else if (e.key === 'i' || e.key === 'I') { // I: スポイトツール
 			e.preventDefault();
 			setTool('eyedropper');
-		}
-		// Ctrl+Z / Cmd+Z: Undo
-		else if (ctrlKey && e.key === 'z' && !e.shiftKey) {
+		} else if (ctrlKey && e.key === 'z' && !e.shiftKey) { // Ctrl+Z / Cmd+Z: Undo
 			e.preventDefault();
 			undo();
-		}
-		// Ctrl+Y / Cmd+Y または Ctrl+Shift+Z / Cmd+Shift+Z: Redo
-		else if (ctrlKey && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) {
+		} else if (ctrlKey && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) { // Ctrl+Y / Cmd+Y: Redo
 			e.preventDefault();
 			redo();
-		}
-		// Ctrl+0 / Cmd+0: ズームをリセット
-		else if (ctrlKey && e.key === '0') {
+		} else if (ctrlKey && e.key === '0') { // Ctrl+0 / Cmd+0: ズームをリセット
 			e.preventDefault();
 			resetZoom();
 		}
@@ -3734,7 +3722,7 @@ function addStrokeToHistory(strokeData: any) {
 	// 新しいストロークを追加する前に、現在の状態をundoスタックに保存
 	if (ctx) {
 		const currentState = {
-			window.history: [...strokeHistory.value],
+			history: [...strokeHistory.value],
 			imageData: ctx.getImageData(0, 0, canvasWidth.value, canvasHeight.value),
 		};
 		undoStack.value.push(currentState);
