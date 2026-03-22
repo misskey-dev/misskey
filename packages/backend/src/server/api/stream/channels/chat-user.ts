@@ -369,10 +369,8 @@ export class ChatUserChannel extends Channel {
 
 		// IDをソートして統一的なチャンネル名を作成
 		const sortedIds = [actor.id, this.otherId].sort();
-		(this.subscriber as any).off(`chatUserStream:${sortedIds[0]}-${sortedIds[1]}`, this.onEvent);
-
-		// oranski方式のclearIntervalは無効化
-		// clearInterval(this.emitTypersIntervalId);
+		const channelName = `chatUserStream:${sortedIds[0]}-${sortedIds[1]}` as `chatUserStream:${string}-${string}`;
+		this.subscriber.off(channelName, this.onEvent);
 	}
 }
 
