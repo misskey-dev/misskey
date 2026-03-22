@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export class NoctownTables1734012000000 {
     name = 'NoctownTables1734012000000'
 

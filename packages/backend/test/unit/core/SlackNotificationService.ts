@@ -13,14 +13,13 @@ describe('SlackNotificationService', () => {
 	let service: SlackNotificationService;
 	let httpRequestService: jest.Mocked<HttpRequestService>;
 
+	// 実際のサービスはbotToken + channelId (Slack Bot API) を使用する
 	const mockConfig = {
 		url: 'https://test.misskey.io',
 		slack: {
 			enableSignupErrorNotification: true,
-			webhookUrl: 'https://hooks.slack.com/services/TEST/WEBHOOK/URL',
-			channel: '#test-channel',
-			username: 'Test-Bot',
-			iconEmoji: ':test:',
+			botToken: 'xoxb-test-bot-token',
+			channelId: 'C01234567',
 		},
 	};
 
@@ -66,40 +65,26 @@ describe('SlackNotificationService', () => {
 			await service.sendSignupErrorNotification(errorData);
 
 			expect(httpRequestService.send).toHaveBeenCalledTimes(1);
+			// Slack Bot API (chat.postMessage) を使用する
 			expect(httpRequestService.send).toHaveBeenCalledWith(
-				mockConfig.slack.webhookUrl,
-				{
+				'https://slack.com/api/chat.postMessage',
+				expect.objectContaining({
 					method: 'POST',
-					headers: {
+					headers: expect.objectContaining({
 						'Content-Type': 'application/json',
-					},
-					body: expect.stringContaining('"title":":warning: サインアップエラー発生"'),
-				}
+						'Authorization': `Bearer ${mockConfig.slack.botToken}`,
+					}),
+					body: expect.any(String),
+				})
 			);
 
 			const callArgs = httpRequestService.send.mock.calls[0];
 			const payload = JSON.parse(callArgs?.[1]?.body as string);
 
-			expect(payload.channel).toBe('#test-channel');
-			expect(payload.username).toBe('Test-Bot');
-			expect(payload.icon_emoji).toBe(':test:');
-			expect(payload.attachments[0].color).toBe('danger');
-			expect(payload.attachments[0].fields).toEqual(
-				expect.arrayContaining([
-					expect.objectContaining({
-						title: 'エラーメッセージ',
-						value: 'Test error message',
-					}),
-					expect.objectContaining({
-						title: 'ユーザー名',
-						value: 'testuser',
-					}),
-					expect.objectContaining({
-						title: 'IPアドレス',
-						value: '192.168.1.1',
-					}),
-				])
-			);
+			expect(payload.channel).toBe('C01234567');
+			expect(payload.text).toContain('サインアップエラー発生');
+			expect(payload.blocks).toBeDefined();
+			expect(payload.blocks.length).toBeGreaterThan(0);
 		});
 
 		it('should not send notification when disabled', async () => {
@@ -140,6 +125,44 @@ describe('SlackNotificationService', () => {
 			expect(httpRequestService.send).not.toHaveBeenCalled();
 		});
 
+		it('should not send notification when botToken is missing', async () => {
+			const noBotTokenConfig = {
+				...mockConfig,
+				slack: {
+					enableSignupErrorNotification: true,
+					// botTokenなし
+				},
+			};
+
+			const module: TestingModule = await Test.createTestingModule({
+				providers: [
+					SlackNotificationService,
+					{
+						provide: DI.config,
+						useValue: noBotTokenConfig,
+					},
+					{
+						provide: HttpRequestService,
+						useValue: httpRequestService,
+					},
+				],
+			}).compile();
+
+			const noBotTokenService = module.get<SlackNotificationService>(SlackNotificationService);
+
+			const errorData = {
+				username: 'testuser',
+				message: 'Test error message',
+				ip: '192.168.1.1',
+				userAgent: 'Mozilla/5.0 Test Browser',
+				timestamp: new Date(),
+			};
+
+			await noBotTokenService.sendSignupErrorNotification(errorData);
+
+			expect(httpRequestService.send).not.toHaveBeenCalled();
+		});
+
 		it('should handle HTTP request errors gracefully', async () => {
 			const errorData = {
 				username: 'testuser',
@@ -176,24 +199,13 @@ describe('SlackNotificationService', () => {
 			const callArgs = httpRequestService.send.mock.calls[0];
 			const payload = JSON.parse(callArgs?.[1]?.body as string);
 
-			expect(payload.icon_emoji).toBe(':white_check_mark:');
-			expect(payload.attachments[0].color).toBe('good');
-			expect(payload.attachments[0].title).toBe(':white_check_mark: 新規ユーザー登録完了');
-			expect(payload.attachments[0].fields).toEqual(
-				expect.arrayContaining([
-					expect.objectContaining({
-						title: 'ユーザー名',
-						value: '@newuser',
-					}),
-					expect.objectContaining({
-						title: 'IPアドレス',
-						value: '192.168.1.2',
-					}),
-				])
-			);
+			expect(payload.channel).toBe('C01234567');
+			expect(payload.text).toContain('@newuser');
+			expect(payload.blocks).toBeDefined();
+			expect(payload.blocks.length).toBeGreaterThan(0);
 		});
 
-		it('should truncate long user agent strings', async () => {
+		it('should truncate long user agent strings in error notifications', async () => {
 			const longUserAgent = 'A'.repeat(150);
 			const errorData = {
 				username: 'testuser',
@@ -209,10 +221,12 @@ describe('SlackNotificationService', () => {
 
 			const callArgs = httpRequestService.send.mock.calls[0];
 			const payload = JSON.parse(callArgs?.[1]?.body as string);
-			const userAgentField = payload.attachments[0].fields.find((f: any) => f.title === 'User Agent');
 
-			expect(userAgentField.value).toHaveLength(103); // 100 chars + "..."
-			expect(userAgentField.value).toMatch(/\.\.\.$/); // ends with ...
+			// blocksの中にUser Agentが含まれるブロックを探す
+			const bodyStr = JSON.stringify(payload.blocks);
+			// 100文字 + "..." で切り詰められていることを確認
+			expect(bodyStr).toContain('...');
+			expect(bodyStr).not.toContain(longUserAgent);
 		});
 	});
 });

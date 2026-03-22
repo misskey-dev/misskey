@@ -14,14 +14,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header>{{ i18n.ts.signup }}</template>
 
 	<div style="overflow-x: clip;">
-		<XSignup :autoSet="autoSet" @signup="onSignup" @signupEmailPending="onSignupEmailPending"/>
+		<!-- ルール同意画面 -> フォーム画面の2ステップフロー -->
+		<Transition
+			:name="'MkSignupDialog_' + transitionName"
+			mode="out-in"
+			@enter="transitionName = 'default'"
+		>
+			<XRules v-if="phase === 'rules'" key="rules" @done="phase = 'form'" @cancel="onClose"/>
+			<XSignup v-else-if="phase === 'form'" key="form" :autoSet="autoSet" @signup="onSignup" @signupEmailPending="onSignupEmailPending"/>
+		</Transition>
 	</div>
 </MkModalWindow>
 </template>
 
 <script lang="ts" setup>
-import { useTemplateRef } from 'vue';
+import { ref, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
+import XRules from '@/components/MkSignupDialog.rules.vue';
 import XSignup from '@/components/MkSignupDialog.form.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
@@ -39,6 +48,9 @@ const emit = defineEmits<{
 }>();
 
 const dialog = useTemplateRef('dialog');
+// ルール画面から開始する2ステップフロー
+const phase = ref<'rules' | 'form'>('rules');
+const transitionName = ref<'default' | 'rightToLeft'>('default');
 
 function onClose() {
 	emit('cancelled');
