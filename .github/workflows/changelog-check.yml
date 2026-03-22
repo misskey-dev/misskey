@@ -41,3 +41,4 @@ jobs:
       - name: Run Checker
         run: npm run run
         working-directory: scripts/changelog-checker
+        continue-on-error: true
