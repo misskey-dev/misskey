@@ -135,6 +135,13 @@ export class SigninApiService {
 			});
 		}
 
+		// 仕様: ユーザー名入力段階で凍結チェック（パスワード確認前に検出）
+		if (user.isSuspended) {
+			return error(403, {
+				id: 'e03a5f46-d309-4865-9b69-56282d94e1eb',
+			});
+		}
+
 		const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 		const securityKeysAvailable = await this.userSecurityKeysRepository.countBy({ userId: user.id }).then(result => result >= 1);
 

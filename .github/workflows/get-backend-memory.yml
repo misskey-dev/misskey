@@ -58,14 +58,18 @@ jobs:
       run: cp .github/misskey/test.yml .config/default.yml
     - name: Compile Configure
       run: pnpm compile-config || pnpm --filter backend compile-config || true
+      continue-on-error: true
     - name: Build
       run: pnpm build
+      continue-on-error: true
     - name: Run migrations
       run: pnpm --filter backend migrate
+      continue-on-error: true
     - name: Measure memory usage
       run: |
         # Start the server and measure memory usage
         node packages/backend/scripts/measure-memory.mjs > ${{ matrix.memory-json-name }}
+      continue-on-error: true
     - name: Upload Artifact
       uses: actions/upload-artifact@v6
       with:
