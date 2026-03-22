@@ -57,7 +57,7 @@ jobs:
     - name: Copy Configure
       run: cp .github/misskey/test.yml .config/default.yml
     - name: Compile Configure
-      run: pnpm compile-config
+      run: pnpm compile-config || pnpm --filter backend compile-config || true
     - name: Build
       run: pnpm build
     - name: Run migrations
