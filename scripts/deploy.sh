@@ -354,16 +354,14 @@ fi
 
 log "✅ サービス稼働中 - ゼロダウンタイムデプロイを実行"
 
-# ロケールチェックを行う
+# ロケールチェックを行う（2026.3.1: packages/i18nに移行）
 log "🌐 ロケール型定義チェック中..."
-cd locales
-if node generateDTS.js; then
+if pnpm --filter i18n generate; then
     log "✅ ロケール型定義生成成功"
 else
     log "❌ ロケール型定義生成失敗"
     exit 1
 fi
-cd ..
 
 
 # ビルド実行（既存コンテナ稼働中に並行実行）
