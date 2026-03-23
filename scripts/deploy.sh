@@ -11,6 +11,8 @@ DEPLOY_START_TIME=$(date +%s)
 IMAGE_NAME="oranski-nocturne-web"
 REMOTE_BUILD=true
 BUILDER_NAME="remote-builder"
+REGISTRY="100.104.5.42:5000"
+REGISTRY_IMAGE="${REGISTRY}/${IMAGE_NAME}"
 
 # ロックファイル処理
 exec 200>"$LOCK_FILE"
@@ -244,6 +246,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 # ビルド関数（リモート/ローカル自動切替）
+# リモートビルド時はレジストリ経由で差分転送（--load のtarball転送を回避）
 do_build() {
     local build_args="$1"
     local log_file="$2"
@@ -251,13 +254,34 @@ do_build() {
     if [ "$REMOTE_BUILD" = true ]; then
         # リモートビルダーの稼働確認
         if docker buildx inspect "$BUILDER_NAME" >/dev/null 2>&1; then
-            log "🌐 リモートビルダー ($BUILDER_NAME) を使用"
-            if ! docker buildx build --builder "$BUILDER_NAME" \
-                -t ${IMAGE_NAME}:latest \
-                --load \
-                $build_args . 2>&1 | tee "$log_file"; then
-                log "❌ リモートビルドが失敗しました"
-                return 1
+            # レジストリが利用可能か確認
+            if curl -s --connect-timeout 3 "http://${REGISTRY}/v2/" >/dev/null 2>&1; then
+                log "🌐 リモートビルダー ($BUILDER_NAME) + レジストリ経由差分転送"
+                if ! docker buildx build --builder "$BUILDER_NAME" \
+                    -t ${REGISTRY_IMAGE}:latest \
+                    --push \
+                    $build_args . 2>&1 | tee "$log_file"; then
+                    log "❌ リモートビルドが失敗しました"
+                    return 1
+                fi
+                # レジストリからpull（レイヤー差分のみ転送）
+                log "📥 レジストリからイメージをpull中..."
+                if ! docker pull ${REGISTRY_IMAGE}:latest 2>&1 | tee -a "$log_file"; then
+                    log "❌ イメージのpullが失敗しました"
+                    return 1
+                fi
+                # ローカルのイメージ名にタグ付け
+                docker tag ${REGISTRY_IMAGE}:latest ${IMAGE_NAME}:latest
+                log "✅ レジストリ経由でイメージ取得完了"
+            else
+                log "⚠️  レジストリが利用不可 - --load方式にフォールバック"
+                if ! docker buildx build --builder "$BUILDER_NAME" \
+                    -t ${IMAGE_NAME}:latest \
+                    --load \
+                    $build_args . 2>&1 | tee "$log_file"; then
+                    log "❌ リモートビルドが失敗しました"
+                    return 1
+                fi
             fi
         else
             log "⚠️  リモートビルダーが利用不可 - ローカルビルドにフォールバック"
