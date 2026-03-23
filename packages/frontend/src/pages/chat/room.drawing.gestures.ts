@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ref, type Ref } from 'vue';
+import { ref } from 'vue';
+import type { Ref } from 'vue';
 import type { Point, GestureState } from './room.drawing.types.js';
 
 /**
@@ -145,58 +146,42 @@ export function useKeyboard() {
 			if (callbacks.startSpacePan) {
 				callbacks.startSpacePan();
 			}
-		}
-		// Ctrl/Cmd + Z: アンドゥ
-		else if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+		} else if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) { // Ctrl/Cmd + Z: アンドゥ
 			e.preventDefault();
 			if (callbacks.undo) {
 				callbacks.undo();
 			}
-		}
-		// Ctrl/Cmd + Y または Ctrl/Cmd + Shift + Z: リドゥ
-		else if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) {
+		} else if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) { // Ctrl/Cmd + Y / Shift+Z: リドゥ
 			e.preventDefault();
 			if (callbacks.redo) {
 				callbacks.redo();
 			}
-		}
-		// +: ズームイン
-		else if ((e.key === '+' || e.key === '=') && (e.ctrlKey || e.metaKey)) {
+		} else if ((e.key === '+' || e.key === '=') && (e.ctrlKey || e.metaKey)) { // +: ズームイン
 			e.preventDefault();
 			if (callbacks.zoomIn) {
 				callbacks.zoomIn();
 			}
-		}
-		// -: ズームアウト
-		else if (e.key === '-' && (e.ctrlKey || e.metaKey)) {
+		} else if (e.key === '-' && (e.ctrlKey || e.metaKey)) { // -: ズームアウト
 			e.preventDefault();
 			if (callbacks.zoomOut) {
 				callbacks.zoomOut();
 			}
-		}
-		// 0: ズームリセット
-		else if (e.key === '0' && (e.ctrlKey || e.metaKey)) {
+		} else if (e.key === '0' && (e.ctrlKey || e.metaKey)) { // 0: ズームリセット
 			e.preventDefault();
 			if (callbacks.resetZoom) {
 				callbacks.resetZoom();
 			}
-		}
-		// P: ペンツール
-		else if (e.key === 'p' || e.key === 'P') {
+		} else if (e.key === 'p' || e.key === 'P') { // P: ペンツール
 			e.preventDefault();
 			if (callbacks.setPen) {
 				callbacks.setPen();
 			}
-		}
-		// E: 消しゴムツール
-		else if (e.key === 'e' || e.key === 'E') {
+		} else if (e.key === 'e' || e.key === 'E') { // E: 消しゴムツール
 			e.preventDefault();
 			if (callbacks.setEraser) {
 				callbacks.setEraser();
 			}
-		}
-		// I: スポイトツール
-		else if (e.key === 'i' || e.key === 'I') {
+		} else if (e.key === 'i' || e.key === 'I') { // I: スポイトツール
 			e.preventDefault();
 			if (callbacks.setEyedropper) {
 				callbacks.setEyedropper();

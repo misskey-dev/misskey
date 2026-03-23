@@ -316,14 +316,14 @@ export function updateColumn(id: Column['id'], column: Partial<Column>) {
 	const currentColumn = deepClone(columns.value[columnIndex]);
 	if (currentColumn == null) return;
 	for (const [k, v] of Object.entries(column)) {
-		currentColumn[k] = v;
+		(currentColumn[k as keyof typeof column] as any) = v;
 	}
 	newColumns[columnIndex] = currentColumn;
 	columns.value = newColumns;
 	saveCurrentDeckProfile();
 }
 
-export function switchProfileMenu(ev: MouseEvent) {
+export function switchProfileMenu(ev: PointerEvent) {
 	const items: MenuItem[] = prefer.s['deck.profile'] ? [{
 		text: prefer.s['deck.profile'],
 		active: true,

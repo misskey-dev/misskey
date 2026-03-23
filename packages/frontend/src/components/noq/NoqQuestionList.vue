@@ -1,3 +1,8 @@
+<!--
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <script setup lang="ts">
 /**
  * NoqQuestionList.vue
@@ -10,7 +15,8 @@
 import { ref, computed, watch, markRaw } from 'vue';
 import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import MkSelect, { type MkSelectItem } from '@/components/MkSelect.vue';
+import MkSelect from '@/components/MkSelect.vue';
+import type { MkSelectItem } from '@/components/MkSelect.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { Paginator } from '@/utility/paginator.js';
 import NoqQuestionCard from './NoqQuestionCard.vue';
@@ -108,8 +114,8 @@ defineExpose({
 					v-for="question in items"
 					:key="question.id"
 					:question="question as NoqQuestion"
-					:show-actions="showActions"
-					:is-moderator="isModerator"
+					:showActions="showActions"
+					:isModerator="isModerator"
 					@answer="handleAnswer"
 					@delete="handleDelete"
 					@report="handleReport"

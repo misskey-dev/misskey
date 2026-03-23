@@ -278,11 +278,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		// Higher rarity chests have chance for rarer items
 		// rarity is number: 0=N, 1=R, 2=SR, 3=SSR, 4=UR, 5=LR
 		const rarityValues: Record<string, number[]> = {
-			common: [0],           // N only
-			uncommon: [0, 1],       // N, R
-			rare: [0, 1, 2],        // N, R, SR
-			epic: [1, 2, 3],        // R, SR, SSR
-			legendary: [2, 3, 4],   // SR, SSR, UR
+			common: [0], // N only
+			uncommon: [0, 1], // N, R
+			rare: [0, 1, 2], // N, R, SR
+			epic: [1, 2, 3], // R, SR, SSR
+			legendary: [2, 3, 4], // SR, SSR, UR
 		};
 
 		const possibleRarities = rarityValues[rarity] || [0];

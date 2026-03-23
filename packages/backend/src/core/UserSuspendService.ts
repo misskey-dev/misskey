@@ -49,8 +49,8 @@ export class UserSuspendService {
 		});
 
 		(async () => {
-			await this.postSuspend(user).catch(e => {});
-			// await this.unFollowAll(user).catch(e => {});
+			await this.postSuspend(user).catch(_ => {});
+			await this.unFollowAll(user).catch(_ => {});
 		})();
 	}
 
@@ -67,7 +67,7 @@ export class UserSuspendService {
 		});
 
 		(async () => {
-			await this.postUnsuspend(user).catch(e => {});
+			await this.postUnsuspend(user).catch(_ => {});
 		})();
 	}
 
@@ -82,60 +82,60 @@ export class UserSuspendService {
 			followerId: user.id,
 		});
 
-		// if (this.userEntityService.isLocalUser(user)) {
-		// 	// 知り得る全SharedInboxにDelete配信
-		// 	const content = this.apRendererService.addContext(this.apRendererService.renderDelete(this.userEntityService.genLocalUserUri(user.id), user));
-		//
-		// 	const queue: string[] = [];
-		//
-		// 	const followings = await this.followingsRepository.find({
-		// 		where: [
-		// 			{ followerSharedInbox: Not(IsNull()) },
-		// 			{ followeeSharedInbox: Not(IsNull()) },
-		// 		],
-		// 		select: ['followerSharedInbox', 'followeeSharedInbox'],
-		// 	});
-		//
-		// 	const inboxes = followings.map(x => x.followerSharedInbox ?? x.followeeSharedInbox);
-		//
-		// 	for (const inbox of inboxes) {
-		// 		if (inbox != null && !queue.includes(inbox)) queue.push(inbox);
-		// 	}
-		//
-		// 	for (const inbox of queue) {
-		// 		this.queueService.deliver(user, content, inbox, true);
-		// 	}
-		// }
+		if (this.userEntityService.isLocalUser(user)) {
+			// 知り得る全SharedInboxにDelete配信
+			const content = this.apRendererService.addContext(this.apRendererService.renderDelete(this.userEntityService.genLocalUserUri(user.id), user));
+
+			const queue: string[] = [];
+
+			const followings = await this.followingsRepository.find({
+				where: [
+					{ followerSharedInbox: Not(IsNull()) },
+					{ followeeSharedInbox: Not(IsNull()) },
+				],
+				select: ['followerSharedInbox', 'followeeSharedInbox'],
+			});
+
+			const inboxes = followings.map(x => x.followerSharedInbox ?? x.followeeSharedInbox);
+
+			for (const inbox of inboxes) {
+				if (inbox != null && !queue.includes(inbox)) queue.push(inbox);
+			}
+
+			for (const inbox of queue) {
+				this.queueService.deliver(user, content, inbox, true);
+			}
+		}
 	}
 
 	@bindThis
 	private async postUnsuspend(user: MiUser): Promise<void> {
 		this.globalEventService.publishInternalEvent('userChangeSuspendedState', { id: user.id, isSuspended: false });
 
-		// if (this.userEntityService.isLocalUser(user)) {
-		// 	// 知り得る全SharedInboxにUndo Delete配信
-		// 	const content = this.apRendererService.addContext(this.apRendererService.renderUndo(this.apRendererService.renderDelete(this.userEntityService.genLocalUserUri(user.id), user), user));
-		//
-		// 	const queue: string[] = [];
-		//
-		// 	const followings = await this.followingsRepository.find({
-		// 		where: [
-		// 			{ followerSharedInbox: Not(IsNull()) },
-		// 			{ followeeSharedInbox: Not(IsNull()) },
-		// 		],
-		// 		select: ['followerSharedInbox', 'followeeSharedInbox'],
-		// 	});
-		//
-		// 	const inboxes = followings.map(x => x.followerSharedInbox ?? x.followeeSharedInbox);
-		//
-		// 	for (const inbox of inboxes) {
-		// 		if (inbox != null && !queue.includes(inbox)) queue.push(inbox);
-		// 	}
-		//
-		// 	for (const inbox of queue) {
-		// 		this.queueService.deliver(user as any, content, inbox, true);
-		// 	}
-		// }
+		if (this.userEntityService.isLocalUser(user)) {
+			// 知り得る全SharedInboxにUndo Delete配信
+			const content = this.apRendererService.addContext(this.apRendererService.renderUndo(this.apRendererService.renderDelete(this.userEntityService.genLocalUserUri(user.id), user), user));
+
+			const queue: string[] = [];
+
+			const followings = await this.followingsRepository.find({
+				where: [
+					{ followerSharedInbox: Not(IsNull()) },
+					{ followeeSharedInbox: Not(IsNull()) },
+				],
+				select: ['followerSharedInbox', 'followeeSharedInbox'],
+			});
+
+			const inboxes = followings.map(x => x.followerSharedInbox ?? x.followeeSharedInbox);
+
+			for (const inbox of inboxes) {
+				if (inbox != null && !queue.includes(inbox)) queue.push(inbox);
+			}
+
+			for (const inbox of queue) {
+				this.queueService.deliver(user as any, content, inbox, true);
+			}
+		}
 	}
 
 	@bindThis

@@ -102,48 +102,18 @@ const tosPrivacyPolicyLabel = computed(() => {
 	}
 });
 
-async function updateAgreeServerRules(v: boolean) {
-	if (v) {
-		const confirm = await os.confirm({
-			type: 'question',
-			title: i18n.ts.doYouAgree,
-			text: i18n.tsx.iHaveReadXCarefullyAndAgree({ x: i18n.ts.serverRules }),
-		});
-		if (confirm.canceled) return;
-		agreeServerRules.value = true;
-	} else {
-		agreeServerRules.value = false;
-	}
+// 仕様: MkSignupDialogモーダル内でos.confirmダイアログが表示されない問題があるため
+// 確認ダイアログなしで直接同意する方式に変更
+function updateAgreeServerRules(v: boolean) {
+	agreeServerRules.value = v;
 }
 
-async function updateAgreeTosAndPrivacyPolicy(v: boolean) {
-	if (v) {
-		const confirm = await os.confirm({
-			type: 'question',
-			title: i18n.ts.doYouAgree,
-			text: i18n.tsx.iHaveReadXCarefullyAndAgree({
-				x: tosPrivacyPolicyLabel.value,
-			}),
-		});
-		if (confirm.canceled) return;
-		agreeTosAndPrivacyPolicy.value = true;
-	} else {
-		agreeTosAndPrivacyPolicy.value = false;
-	}
+function updateAgreeTosAndPrivacyPolicy(v: boolean) {
+	agreeTosAndPrivacyPolicy.value = v;
 }
 
-async function updateAgreeNote(v: boolean) {
-	if (v) {
-		const confirm = await os.confirm({
-			type: 'question',
-			title: i18n.ts.doYouAgree,
-			text: i18n.tsx.iHaveReadXCarefullyAndAgree({ x: i18n.ts.basicNotesBeforeCreateAccount }),
-		});
-		if (confirm.canceled) return;
-		agreeNote.value = true;
-	} else {
-		agreeNote.value = false;
-	}
+function updateAgreeNote(v: boolean) {
+	agreeNote.value = v;
 }
 </script>
 

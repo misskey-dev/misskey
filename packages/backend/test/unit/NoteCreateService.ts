@@ -36,6 +36,7 @@ describe('NoteCreateService', () => {
 			userId: 'some-user-id',
 			user: null,
 			localOnly: false,
+			isScheduledPost: false,
 			reactionAcceptance: null,
 			renoteCount: 0,
 			repliesCount: 0,
@@ -61,6 +62,7 @@ describe('NoteCreateService', () => {
 			replyUserHost: null,
 			renoteUserId: null,
 			renoteUserHost: null,
+			renoteChannelId: null,
 		};
 
 		const poll: IPoll = {

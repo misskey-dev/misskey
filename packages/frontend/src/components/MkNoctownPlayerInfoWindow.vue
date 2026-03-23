@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.overlay" @click.self="handleClose" @keydown.escape="handleClose" tabindex="-1" ref="overlayRef">
+<div ref="overlayRef" :class="$style.overlay" tabindex="-1" @click.self="handleClose" @keydown.escape="handleClose">
 	<div :class="$style.window">
 		<button :class="$style.closeButton" @click="handleClose">
 			<i class="ti ti-x"></i>
@@ -49,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 
 			<!-- Manual ping button -->
-			<button :class="$style.pingButton" @click="handlePing" :disabled="isPinging">
+			<button :class="$style.pingButton" :disabled="isPinging" @click="handlePing">
 				<i v-if="isPinging" class="ti ti-loader-2" :class="$style.spinner"></i>
 				<i v-else class="ti ti-radar-2"></i>
 				<span>Ping</span>
@@ -101,7 +101,7 @@ const isFollowLoading = ref(false);
 const userInfo = ref<{ id: string; isLocked: boolean } | null>(null);
 
 const defaultAvatar = computed(() => {
-	const host = location.host;
+	const host = window.location.host;
 	return `https://${host}/identicon/${props.username}@${host}`;
 });
 
@@ -214,7 +214,7 @@ async function fetchUserInfo() {
 		isFollowing.value = user.isFollowing ?? false;
 		hasPendingFollowRequest.value = user.hasPendingFollowRequestFromYou ?? false;
 	} catch (err) {
-		console.error('Failed to fetch user info:', err);
+		console.error('Failed to window.fetch user info:', err);
 		// エラー時はフォローボタンを表示しない
 		isFollowing.value = null;
 	}

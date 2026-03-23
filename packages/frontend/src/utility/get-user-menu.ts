@@ -216,16 +216,31 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 		});
 	}
 
+	if ($i && meId === user.id) {
+		menuItems.push({
+			icon: 'ti ti-qrcode',
+			text: i18n.ts.qr,
+			action: () => {
+				router.push('/qr');
+			},
+		});
+	}
+
 	if (notesSearchAvailable && (user.host == null || canSearchNonLocalNotes)) {
 		menuItems.push({
 			icon: 'ti ti-search',
 			text: toText(i18n.ts.searchThisUsersNotes),
 			action: () => {
-				router.push('/search', {
-					query: {
+				const query = {
 						username: user.username,
-						host: user.host ?? undefined,
-					},
+					} as { username: string, host?: string };
+
+				if (user.host !== null) {
+					query.host = user.host;
+				}
+
+				router.push('/search', {
+					query
 				});
 			},
 		});

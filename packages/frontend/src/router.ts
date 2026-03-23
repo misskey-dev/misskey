@@ -20,8 +20,8 @@ export function createRouter(fullPath: string): Router {
 export const mainRouter = createRouter(window.location.pathname + window.location.search + window.location.hash);
 
 // ブラウザのデフォルトのスクロール復元を無効化（SPAで手動管理するため）
-if (history.scrollRestoration) {
-	history.scrollRestoration = 'manual';
+if (window.history.scrollRestoration) {
+	window.history.scrollRestoration = 'manual';
 }
 
 // 履歴エントリごとにユニークなIDを生成

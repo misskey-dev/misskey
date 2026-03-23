@@ -21,8 +21,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	/>
 	<button
 		:class="$style.sendBtn"
-		@click="sendMessage"
 		:disabled="!canSend"
+		@click="sendMessage"
 	>
 		送信
 	</button>

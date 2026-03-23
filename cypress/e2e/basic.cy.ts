@@ -68,7 +68,6 @@ describe('After setup instance', () => {
 		cy.get('[data-cy-signup]').click();
 		cy.get('[data-cy-signup-rules-continue]').should('be.disabled');
 		cy.get('[data-cy-signup-rules-notes-agree] [data-cy-switch-toggle]').click();
-		cy.get('[data-cy-modal-dialog-ok]').click();
 		cy.get('[data-cy-signup-rules-continue]').should('not.be.disabled');
 		cy.get('[data-cy-signup-rules-continue]').click();
 
@@ -95,7 +94,6 @@ describe('After setup instance', () => {
 		cy.get('[data-cy-signup]').click();
 		cy.get('[data-cy-signup-rules-continue]').should('be.disabled');
 		cy.get('[data-cy-signup-rules-notes-agree] [data-cy-switch-toggle]').click();
-		cy.get('[data-cy-modal-dialog-ok]').click();
 		cy.get('[data-cy-signup-rules-continue]').should('not.be.disabled');
 		cy.get('[data-cy-signup-rules-continue]').click();
 
@@ -157,6 +155,10 @@ describe('After user signup', () => {
 
 		cy.get('[data-cy-signin-page-input]').should('be.visible', { timeout: 1000 });
 		cy.get('[data-cy-signin-username] input').type('alice{enter}');
+
+		// パスワード入力後に凍結チェックが行われる（ユーザー名段階では凍結状態を漏らさない）
+		cy.get('[data-cy-signin-page-password]').should('be.visible');
+		cy.get('[data-cy-signin-password] input').type('alice1234{enter}');
 
 		// TODO: cypressにブラウザの言語指定できる機能が実装され次第英語のみテストするようにする
 		cy.contains(/アカウントが凍結されています|This account has been suspended due to/gi);

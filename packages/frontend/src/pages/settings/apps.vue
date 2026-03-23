@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkFolder v-for="token in items" :key="token.id" :defaultOpen="true">
 					<template #icon>
 						<img v-if="token.iconUrl" :class="$style.appIcon" :src="token.iconUrl" alt=""/>
-						<i v-else class="ti ti-plug"/>
+						<i v-else class="ti ti-plug"></i>
 					</template>
 					<template #label>{{ token.name }}</template>
 					<template #caption>{{ token.description }}</template>
@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<template #label>{{ i18n.ts.permission }}</template>
 							<template #suffix>{{ Object.keys(token.permission).length === 0 ? i18n.ts.none : Object.keys(token.permission).length }}</template>
 							<ul>
-								<li v-for="p in token.permission" :key="p">{{ i18n.ts._permissions[p] }}</li>
+								<li v-for="p in token.permission" :key="p">{{ (i18n.ts._permissions as any)[p] ?? p }}</li>
 							</ul>
 						</MkFolder>
 					</div>
@@ -68,7 +68,7 @@ const paginator = markRaw(new Paginator('i/apps', {
 	},
 }));
 
-function revoke(token) {
+function revoke(token: Misskey.entities.IAppsResponse[number]) {
 	misskeyApi('i/revoke-token', { tokenId: token.id }).then(() => {
 		paginator.reload();
 	});
@@ -86,6 +86,7 @@ definePage(() => ({
 
 <style lang="scss" module>
 .appIcon {
+	display: block;
 	width: 20px;
 	height: 20px;
 	border-radius: 4px;

@@ -38,7 +38,7 @@ export const Default = {
 		};
 	},
 	args: {
-		imageFile: file() as unknown as File,
+		imageFile: new File([], 'image.webp', { type: 'image/webp' }),
 		aspectRatio: NaN,
 	},
 	parameters: {

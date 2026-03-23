@@ -243,20 +243,14 @@ export class GachaRenderer {
 				if (machine.animationTime < 1) {
 					const progress = machine.animationTime;
 					machine.handleGroup.rotation.x = Math.sin(progress * Math.PI * 4) * 0.5;
-				}
-				// Shake animation (1-1.5s)
-				else if (machine.animationTime < 1.5) {
+				} else if (machine.animationTime < 1.5) { // Shake animation (1-1.5s)
 					const progress = (machine.animationTime - 1) * 2;
 					machine.group.position.x += Math.sin(progress * Math.PI * 20) * 0.01;
 					machine.group.rotation.y = Math.sin(progress * Math.PI * 10) * 0.02;
-				}
-				// Capsule drop animation (1.5-2s)
-				else if (machine.animationTime < 2) {
+				} else if (machine.animationTime < 2) { // Capsule drop animation (1.5-2s)
 					machine.group.position.x = 0;
 					machine.group.rotation.y = 0;
-				}
-				// Animation complete
-				else {
+				} else { // Animation complete
 					machine.isAnimating = false;
 					machine.animationTime = 0;
 					machine.handleGroup.rotation.x = 0;

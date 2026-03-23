@@ -62,9 +62,9 @@ export class Noqestion1767000000000 {
 		`);
 
 		// noq_question インデックス
-		await queryRunner.query(`CREATE INDEX "IDX_noq_question_senderId" ON "noq_question" ("senderId")`);
-		await queryRunner.query(`CREATE INDEX "IDX_noq_question_recipientId_status" ON "noq_question" ("recipientId", "status")`);
-		await queryRunner.query(`CREATE INDEX "IDX_noq_question_createdAt" ON "noq_question" ("createdAt")`);
+		await queryRunner.query(`CREATE INDEX IF NOT EXISTS "IDX_noq_question_senderId" ON "noq_question" ("senderId")`);
+		await queryRunner.query(`CREATE INDEX IF NOT EXISTS "IDX_noq_question_recipientId_status" ON "noq_question" ("recipientId", "status")`);
+		await queryRunner.query(`CREATE INDEX IF NOT EXISTS "IDX_noq_question_createdAt" ON "noq_question" ("createdAt")`);
 
 		// noq_question 外部キー
 		await queryRunner.query(`ALTER TABLE "noq_question" ADD CONSTRAINT "FK_noq_question_senderId" FOREIGN KEY ("senderId") REFERENCES "user"("id") ON DELETE SET NULL ON UPDATE NO ACTION`);
@@ -79,7 +79,7 @@ export class Noqestion1767000000000 {
 		await queryRunner.query(`COMMENT ON COLUMN "noq_question"."isUsernameDisclosed" IS 'username開示フラグ'`);
 		await queryRunner.query(`COMMENT ON COLUMN "noq_question"."isNoReplyRequested" IS '回答不要フラグ'`);
 		await queryRunner.query(`COMMENT ON COLUMN "noq_question"."cardDesign" IS 'メッセージカードデザイン'`);
-		await queryRunner.query(`COMMENT ON COLUMN "noq_question"."status" IS '回答ステータス'`);
+		await queryRunner.query(`COMMENT ON COLUMN "noq_question"."status" IS '回答ステータス (pending/answered/deleted)'`);
 		await queryRunner.query(`COMMENT ON COLUMN "noq_question"."isReported" IS '通報済みフラグ'`);
 		await queryRunner.query(`COMMENT ON COLUMN "noq_question"."isDisclosedByMod" IS 'モデレーターによる開示済みフラグ'`);
 		await queryRunner.query(`COMMENT ON COLUMN "noq_question"."isE2EEncrypted" IS 'E2E暗号化フラグ'`);
@@ -98,9 +98,9 @@ export class Noqestion1767000000000 {
 		`);
 
 		// noq_muted_user インデックス
-		await queryRunner.query(`CREATE UNIQUE INDEX "IDX_noq_muted_user_userId_mutedUserId" ON "noq_muted_user" ("userId", "mutedUserId")`);
-		await queryRunner.query(`CREATE INDEX "IDX_noq_muted_user_userId" ON "noq_muted_user" ("userId")`);
-		await queryRunner.query(`CREATE INDEX "IDX_noq_muted_user_mutedUserId" ON "noq_muted_user" ("mutedUserId")`);
+		await queryRunner.query(`CREATE UNIQUE INDEX IF NOT EXISTS "IDX_noq_muted_user_userId_mutedUserId" ON "noq_muted_user" ("userId", "mutedUserId")`);
+		await queryRunner.query(`CREATE INDEX IF NOT EXISTS "IDX_noq_muted_user_userId" ON "noq_muted_user" ("userId")`);
+		await queryRunner.query(`CREATE INDEX IF NOT EXISTS "IDX_noq_muted_user_mutedUserId" ON "noq_muted_user" ("mutedUserId")`);
 
 		// noq_muted_user 外部キー
 		await queryRunner.query(`ALTER TABLE "noq_muted_user" ADD CONSTRAINT "FK_noq_muted_user_userId" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
@@ -122,9 +122,9 @@ export class Noqestion1767000000000 {
 		`);
 
 		// noq_reported_question インデックス
-		await queryRunner.query(`CREATE UNIQUE INDEX "IDX_noq_reported_question_questionId_reportId" ON "noq_reported_question" ("questionId", "reportId")`);
-		await queryRunner.query(`CREATE INDEX "IDX_noq_reported_question_questionId" ON "noq_reported_question" ("questionId")`);
-		await queryRunner.query(`CREATE INDEX "IDX_noq_reported_question_reportId" ON "noq_reported_question" ("reportId")`);
+		await queryRunner.query(`CREATE UNIQUE INDEX IF NOT EXISTS "IDX_noq_reported_question_questionId_reportId" ON "noq_reported_question" ("questionId", "reportId")`);
+		await queryRunner.query(`CREATE INDEX IF NOT EXISTS "IDX_noq_reported_question_questionId" ON "noq_reported_question" ("questionId")`);
+		await queryRunner.query(`CREATE INDEX IF NOT EXISTS "IDX_noq_reported_question_reportId" ON "noq_reported_question" ("reportId")`);
 
 		// noq_reported_question 外部キー
 		await queryRunner.query(`ALTER TABLE "noq_reported_question" ADD CONSTRAINT "FK_noq_reported_question_questionId" FOREIGN KEY ("questionId") REFERENCES "noq_question"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);

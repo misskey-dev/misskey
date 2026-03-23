@@ -49,6 +49,7 @@ docker-compose.yml
 built
 built-test
 js-built
+src-js
 /data
 /.cache-loader
 /db
@@ -110,4 +111,4 @@ assets/roles/role_yakousei.png
 
 # openspec
 /openspec
-/.specify
+/.specifyscripts/deploy.sh

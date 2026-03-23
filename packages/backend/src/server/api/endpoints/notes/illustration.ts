@@ -108,7 +108,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const excludedFileIds = new Set<string>();
 			const allFileIds = notes.flatMap(note => note.fileIds);
 
-
 			if (allFileIds.length > 0) {
 				const excludedFiles = await this.driveFilesRepository.find({
 					where: {
@@ -118,12 +117,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					select: ['id'],
 				});
 
-
 				for (const file of excludedFiles) {
 					excludedFileIds.add(file.id);
 					}
 			}
-
 
 			return await this.noteEntityService.packManyWithFilteredFiles(notes, excludedFileIds, me);
 		});

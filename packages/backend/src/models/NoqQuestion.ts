@@ -55,7 +55,6 @@ export class NoqQuestion {
 	 * - nullable: ユーザー削除時にSET NULLで対応
 	 * - 匿名質問のため、削除されてもデータは保持
 	 */
-	@Index()
 	@Column({
 		...id(),
 		nullable: true,
@@ -69,7 +68,6 @@ export class NoqQuestion {
 	@JoinColumn()
 	public sender: MiUser | null;
 
-	@Index()
 	@Column({
 		...id(),
 		comment: '回答者ID',

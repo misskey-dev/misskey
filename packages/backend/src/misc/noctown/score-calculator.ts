@@ -20,16 +20,16 @@ const SCORE_WINDOW_MS = 30 * 24 * 60 * 60 * 1000;
 
 // Score weights for different activities
 const SCORE_WEIGHTS = {
-	balanceBase: 1,           // Base wallet balance score
-	itemValue: 10,            // Per unique item owned
+	balanceBase: 1, // Base wallet balance score
+	itemValue: 10, // Per unique item owned
 	itemRarityMultiplier: [1, 2, 5, 15, 50, 150], // Rarity 0-5
-	questComplete: 100,       // Per quest completed
+	questComplete: 100, // Per quest completed
 	questDifficultyBonus: 50, // Per difficulty level
-	farmHarvest: 20,          // Per crop harvested
-	livestockProduct: 30,     // Per livestock product collected
-	craftItem: 25,            // Per item crafted
-	tradeComplete: 50,        // Per successful trade
-	tradeProfitRate: 0.1,     // Percentage of profit as score
+	farmHarvest: 20, // Per crop harvested
+	livestockProduct: 30, // Per livestock product collected
+	craftItem: 25, // Per item crafted
+	tradeComplete: 50, // Per successful trade
+	tradeProfitRate: 0.1, // Percentage of profit as score
 };
 
 export interface PlayerScoreBreakdown {

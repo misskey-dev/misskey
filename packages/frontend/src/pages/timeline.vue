@@ -33,6 +33,7 @@ import { useRouter } from '@/router.js';
 import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
 import type { MenuItem } from '@/types/menu.js';
 import type { BasicTimelineType } from '@/timelines.js';
+import type { PageHeaderItem } from '@/types/page-header.js';
 import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
 import * as os from '@/os.js';
@@ -123,7 +124,7 @@ const withSensitive = computed<boolean>({
 
 const showFixedPostForm = prefer.model('showFixedPostForm');
 
-async function chooseList(ev: MouseEvent): Promise<void> {
+async function chooseList(ev: PointerEvent): Promise<void> {
 	const lists = await userListsCache.fetch();
 	const items: (MenuItem | undefined)[] = [
 		...lists.map(list => ({
@@ -142,7 +143,7 @@ async function chooseList(ev: MouseEvent): Promise<void> {
 	os.popupMenu(items.filter(i => i != null), ev.currentTarget ?? ev.target);
 }
 
-async function chooseAntenna(ev: MouseEvent): Promise<void> {
+async function chooseAntenna(ev: PointerEvent): Promise<void> {
 	const antennas = await antennasCache.fetch();
 	const items: (MenuItem | undefined)[] = [
 		...antennas.map(antenna => ({
@@ -162,7 +163,7 @@ async function chooseAntenna(ev: MouseEvent): Promise<void> {
 	os.popupMenu(items.filter(i => i != null), ev.currentTarget ?? ev.target);
 }
 
-async function chooseChannel(ev: MouseEvent): Promise<void> {
+async function chooseChannel(ev: PointerEvent): Promise<void> {
 	const channels = await favoritedChannelsCache.fetch();
 	const items: (MenuItem | undefined)[] = [
 		...channels.map(channel => {
@@ -181,7 +182,7 @@ async function chooseChannel(ev: MouseEvent): Promise<void> {
 			type: 'link',
 			icon: 'ti ti-plus',
 			text: i18n.ts.createNew,
-			to: '/channels',
+			to: '/channels/new',
 		},
 	];
 	os.popupMenu(items.filter(i => i != null), ev.currentTarget ?? ev.target);
@@ -258,8 +259,8 @@ onActivated(() => {
 	switchTlIfNeeded();
 });
 
-const headerActions = computed(() => {
-	const items = [{
+const headerActions = computed<PageHeaderItem[]>(() => {
+	const items: PageHeaderItem[] = [{
 		icon: 'ti ti-dots',
 		text: i18n.ts.options,
 		handler: (ev) => {
@@ -309,7 +310,7 @@ const headerActions = computed(() => {
 		items.unshift({
 			icon: 'ti ti-refresh',
 			text: i18n.ts.reload,
-			handler: (ev: Event) => {
+			handler: () => {
 				tlComponent.value?.reloadTimeline();
 			},
 		});

@@ -67,10 +67,12 @@ export class DrawingCanvasService {
 		private chatService: ChatService,
 	) {
 		// 定期的な自動保存チェック（5分間隔）
-		setInterval(() => {
+		this.autoSaveInterval = setInterval(() => {
 			this.checkAutoSave();
 		}, 5 * 60 * 1000);
 	}
+
+	private autoSaveInterval: NodeJS.Timeout | null = null;
 
 	@bindThis
 	private getCanvasKey(roomId: string): string {
@@ -623,9 +625,13 @@ export class DrawingCanvasService {
 	// アプリケーション終了時のクリーンアップ
 	@bindThis
 	public async onApplicationShutdown(): Promise<void> {
-		console.log('🎨 [DEBUG] DrawingCanvasService shutting down, clearing timers...');
+		// 自動保存インターバルをクリア
+		if (this.autoSaveInterval) {
+			clearInterval(this.autoSaveInterval);
+			this.autoSaveInterval = null;
+		}
 
-		// すべてのタイマーをクリア
+		// すべての個別保存タイマーをクリア
 		for (const timer of this.saveTimers.values()) {
 			clearTimeout(timer);
 		}

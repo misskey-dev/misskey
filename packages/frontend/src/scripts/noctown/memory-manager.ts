@@ -41,7 +41,7 @@ export class MemoryManager {
 	private geometryCache: Map<string, CacheEntry<THREE.BufferGeometry>> = new Map();
 	private materialCache: Map<string, CacheEntry<THREE.Material>> = new Map();
 
-	private checkInterval: ReturnType<typeof setInterval> | null = null;
+	private checkInterval: number | null = null;
 	private scene: THREE.Scene | null = null;
 	private playerPosition: THREE.Vector3 = new THREE.Vector3();
 
@@ -73,7 +73,7 @@ export class MemoryManager {
 	public startMemoryMonitoring(): void {
 		if (this.checkInterval) return;
 
-		this.checkInterval = setInterval(() => {
+		this.checkInterval = window.setInterval(() => {
 			this.performMemoryCheck();
 		}, this.config.memoryCheckInterval);
 	}
@@ -83,7 +83,7 @@ export class MemoryManager {
 	 */
 	public stopMemoryMonitoring(): void {
 		if (this.checkInterval) {
-			clearInterval(this.checkInterval);
+			window.clearInterval(this.checkInterval);
 			this.checkInterval = null;
 		}
 	}

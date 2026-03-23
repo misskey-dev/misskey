@@ -128,7 +128,7 @@ async function feedAgent(agent: Agent, feedItem: InventoryItem) {
 		// Refresh feed items
 		await loadFeedItems();
 
-		setTimeout(() => {
+		window.setTimeout(() => {
 			feedMessage.value = null;
 		}, 2000);
 	} catch (err: any) {
@@ -220,10 +220,10 @@ function close() {
 						<span class="agent-level">Lv.{{ equippedAgent.level }}</span>
 					</div>
 					<div class="agent-actions">
-						<MkButton small @click="requestHint" :disabled="isRequestingHint">
+						<MkButton small :disabled="isRequestingHint" @click="requestHint">
 							{{ isRequestingHint ? '...' : 'Ask Hint' }}
 						</MkButton>
-						<MkButton small danger @click="equipAgent(null)" :disabled="isEquipping">
+						<MkButton small danger :disabled="isEquipping" @click="equipAgent(null)">
 							Unequip
 						</MkButton>
 					</div>

@@ -33,10 +33,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		/>
 		<ActionButton
 			v-if="showActionButton"
-			:primary-icon="actionIcon"
-			:primary-label="actionLabel"
-			:show-secondary="showSecondaryAction"
-			:secondary-icon="secondaryIcon"
+			:primaryIcon="actionIcon"
+			:primaryLabel="actionLabel"
+			:showSecondary="showSecondaryAction"
+			:secondaryIcon="secondaryIcon"
 			@primary="$emit('action')"
 			@secondary="$emit('secondary-action')"
 		/>

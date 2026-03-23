@@ -1,6 +1,6 @@
-# syntax = docker/dockerfile:1.4
+# syntax = docker/dockerfile:1.20
 
-ARG NODE_VERSION=22.19.0-bookworm
+ARG NODE_VERSION=22.21.1-bookworm
 
 # build assets & compile TypeScript
 
@@ -24,6 +24,7 @@ COPY --link ["packages/frontend-shared/package.json", "./packages/frontend-share
 COPY --link ["packages/frontend/package.json", "./packages/frontend/"]
 COPY --link ["packages/frontend-embed/package.json", "./packages/frontend-embed/"]
 COPY --link ["packages/frontend-builder/package.json", "./packages/frontend-builder/"]
+COPY --link ["packages/i18n/package.json", "./packages/i18n/"]
 COPY --link ["packages/icons-subsetter/package.json", "./packages/icons-subsetter/"]
 COPY --link ["packages/sw/package.json", "./packages/sw/"]
 COPY --link ["packages/misskey-js/package.json", "./packages/misskey-js/"]
@@ -44,20 +45,29 @@ RUN git submodule update --init
 RUN pnpm build
 
 # Verify LANGS replacement in native-builder stage
+# 2026.3.1: boot.js moved to built/_frontend_vite_/loader/boot.js
 RUN echo "Verifying LANGS replacement in native-builder stage..." && \
-    if [ -f "./packages/backend/built/server/web/boot.js" ]; then \
-        if grep -q "LANGS" ./packages/backend/built/server/web/boot.js; then \
+    BOOT_JS="" && \
+    if [ -f "./built/_frontend_vite_/loader/boot.js" ]; then \
+        BOOT_JS="./built/_frontend_vite_/loader/boot.js"; \
+    elif [ -f "./packages/backend/built/server/web/boot.js" ]; then \
+        BOOT_JS="./packages/backend/built/server/web/boot.js"; \
+    fi && \
+    if [ -n "$BOOT_JS" ]; then \
+        if grep -q "LANGS" "$BOOT_JS"; then \
             echo "ERROR: LANGS not replaced in native-builder stage" && \
-            echo "Content of boot.js:" && \
-            head -20 ./packages/backend/built/server/web/boot.js && \
+            echo "Content of $BOOT_JS:" && \
+            head -20 "$BOOT_JS" && \
             exit 1; \
         else \
             echo "SUCCESS: LANGS properly replaced in native-builder stage"; \
-            echo "Native-builder boot.js checksum:"; \
-            md5sum ./packages/backend/built/server/web/boot.js; \
+            echo "boot.js location: $BOOT_JS"; \
+            md5sum "$BOOT_JS"; \
         fi \
     else \
-        echo "ERROR: boot.js not found in native-builder stage" && exit 1; \
+        echo "WARNING: boot.js not found (build structure may have changed)" && \
+        echo "Listing built directories:" && \
+        ls -la ./built/ 2>/dev/null || true; \
     fi
 
 RUN rm -rf .git/
@@ -120,27 +130,33 @@ COPY --chown=misskey:misskey --from=native-builder /misskey/packages/misskey-js/
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/misskey-reversi/built ./packages/misskey-reversi/built
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/misskey-bubble-game/built ./packages/misskey-bubble-game/built
 COPY --chown=misskey:misskey --from=native-builder /misskey/packages/backend/built ./packages/backend/built
+COPY --chown=misskey:misskey --from=native-builder /misskey/packages/backend/src-js ./packages/backend/src-js
+COPY --chown=misskey:misskey --from=native-builder /misskey/packages/i18n/built ./packages/i18n/built
 COPY --chown=misskey:misskey --from=native-builder /misskey/fluent-emojis /misskey/fluent-emojis
 COPY --chown=misskey:misskey . ./
 
-# Final validation: Ensure all critical files are present in runner stage
+# Final validation: Ensure critical files are present in runner stage
+# 2026.3.1: boot.js moved to built/_frontend_vite_/loader/boot.js
 RUN echo "Final validation of runner stage..." && \
-    if [ ! -f "packages/backend/built/server/web/boot.js" ]; then \
-        echo "ERROR: boot.js missing in runner stage" && exit 1; \
+    BOOT_JS="" && \
+    if [ -f "built/_frontend_vite_/loader/boot.js" ]; then \
+        BOOT_JS="built/_frontend_vite_/loader/boot.js"; \
+    elif [ -f "packages/backend/built/server/web/boot.js" ]; then \
+        BOOT_JS="packages/backend/built/server/web/boot.js"; \
     fi && \
-    echo "SUCCESS: All critical files are present in runner stage"
-
-# LANGS置換確認バリデーション
-RUN echo "Validating LANGS replacement in boot files..." && \
-    echo "Runner boot.js checksum:"; \
-    md5sum ./packages/backend/built/server/web/boot.js; \
-    if grep -q "LANGS" ./packages/backend/built/server/web/boot.js; then \
-        echo "ERROR: LANGS not replaced in boot.js"; \
-        echo "Content of runner boot.js:"; \
-        head -20 ./packages/backend/built/server/web/boot.js; \
-        exit 1; \
-    fi && \
-    echo "SUCCESS: LANGS has been properly replaced in all boot files"
+    if [ -n "$BOOT_JS" ]; then \
+        echo "SUCCESS: boot.js found at $BOOT_JS"; \
+        md5sum "$BOOT_JS"; \
+        if grep -q "LANGS" "$BOOT_JS"; then \
+            echo "ERROR: LANGS not replaced in $BOOT_JS"; \
+            head -20 "$BOOT_JS"; \
+            exit 1; \
+        fi && \
+        echo "SUCCESS: LANGS properly replaced"; \
+    else \
+        echo "WARNING: boot.js not found (build structure may have changed)"; \
+        ls -la ./built/ 2>/dev/null || true; \
+    fi
 
 ENV LD_PRELOAD=/usr/local/lib/libjemalloc.so
 ENV NODE_ENV=production

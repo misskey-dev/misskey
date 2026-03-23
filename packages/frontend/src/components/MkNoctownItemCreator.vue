@@ -70,7 +70,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<span>作成コスト: 500 コイン</span>
 			</div>
 
-			<MkButton :class="$style.submitBtn" primary @click="createItem" :disabled="!canCreate || creating">
+			<MkButton :class="$style.submitBtn" primary :disabled="!canCreate || creating" @click="createItem">
 				<i class="ti ti-plus"></i> アイテムを作成
 			</MkButton>
 		</div>
@@ -155,7 +155,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 
-			<MkButton :class="$style.submitBtn" primary @click="updateItem" :disabled="updating">
+			<MkButton :class="$style.submitBtn" primary :disabled="updating" @click="updateItem">
 				<i class="ti ti-check"></i> 変更を保存
 			</MkButton>
 		</div>

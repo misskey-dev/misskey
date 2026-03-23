@@ -19,6 +19,7 @@ const base: MiNote = {
 	userId: 'some-user-id',
 	user: null,
 	localOnly: false,
+	isScheduledPost: false,
 	reactionAcceptance: null,
 	renoteCount: 0,
 	repliesCount: 0,
@@ -44,6 +45,7 @@ const base: MiNote = {
 	replyUserHost: null,
 	renoteUserId: null,
 	renoteUserHost: null,
+	renoteChannelId: null,
 };
 
 describe('misc:is-renote', () => {

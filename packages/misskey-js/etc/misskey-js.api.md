@@ -297,6 +297,21 @@ type AdminNoctownGachaRemoveItemRequest = operations['admin___noctown___gacha___
 type AdminNoctownGachaUpdateRequest = operations['admin___noctown___gacha___update']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminNoqDiscloseRequest = operations['admin___noq___disclose']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminNoqDiscloseResponse = operations['admin___noq___disclose']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminNoqSettingsResponse = operations['admin___noq___settings']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminNoqSettingsUpdateRequest = operations['admin___noq___settings___update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminNoqSettingsUpdateResponse = operations['admin___noq___settings___update']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type AdminPromoCreateRequest = operations['admin___promo___create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -893,7 +908,14 @@ export type Channels = {
                 key: K;
                 value: ReversiGameDetailed[K];
             }) => void;
-            log: (payload: Record<string, unknown>) => void;
+            log: (payload: {
+                time: number;
+                player: boolean;
+                operation: 'put';
+                pos: number;
+            } & {
+                id: string | null;
+            }) => void;
         };
         receives: {
             putStone: {
@@ -1284,6 +1306,15 @@ type ChannelsFollowedResponse = operations['channels___followed']['responses']['
 
 // @public (undocumented)
 type ChannelsFollowRequest = operations['channels___follow']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChannelsMuteCreateRequest = operations['channels___mute___create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChannelsMuteDeleteRequest = operations['channels___mute___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChannelsMuteListResponse = operations['channels___mute___list']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type ChannelsMyFavoritesResponse = operations['channels___my-favorites']['responses']['200']['content']['application/json'];
@@ -1983,6 +2014,11 @@ declare namespace entities {
         AdminNoctownGachaListResponse,
         AdminNoctownGachaRemoveItemRequest,
         AdminNoctownGachaUpdateRequest,
+        AdminNoqDiscloseRequest,
+        AdminNoqDiscloseResponse,
+        AdminNoqSettingsResponse,
+        AdminNoqSettingsUpdateRequest,
+        AdminNoqSettingsUpdateResponse,
         AdminPromoCreateRequest,
         AdminQueueClearRequest,
         AdminQueueDeliverDelayedResponse,
@@ -2092,6 +2128,9 @@ declare namespace entities {
         ChannelsFollowRequest,
         ChannelsFollowedRequest,
         ChannelsFollowedResponse,
+        ChannelsMuteCreateRequest,
+        ChannelsMuteDeleteRequest,
+        ChannelsMuteListResponse,
         ChannelsMyFavoritesResponse,
         ChannelsOwnedRequest,
         ChannelsOwnedResponse,
@@ -2451,6 +2490,12 @@ declare namespace entities {
         NoctownChickenListResponse,
         NoctownChickenPlaceRequest,
         NoctownChickenPlaceResponse,
+        NoctownContainerOpenRequest,
+        NoctownContainerOpenResponse,
+        NoctownContainerOpenPlacedRequest,
+        NoctownContainerOpenPlacedResponse,
+        NoctownContainerSetItemsRequest,
+        NoctownContainerSetItemsResponse,
         NoctownCowCollectMilkRequest,
         NoctownCowCollectMilkResponse,
         NoctownCowFeedRequest,
@@ -2573,6 +2618,10 @@ declare namespace entities {
         NoctownRankingCategoryResponse,
         NoctownRankingTotalRequest,
         NoctownRankingTotalResponse,
+        NoctownSaisenHistoryRequest,
+        NoctownSaisenHistoryResponse,
+        NoctownSaisenOfferRequest,
+        NoctownSaisenOfferResponse,
         NoctownShopBuyRequest,
         NoctownShopBuyResponse,
         NoctownShopSellRequest,
@@ -2587,11 +2636,40 @@ declare namespace entities {
         NoctownTradeConfirmResponse,
         NoctownTradeDetailRequest,
         NoctownTradeDetailResponse,
+        NoctownTradeExecuteRequest,
+        NoctownTradeExecuteResponse,
         NoctownTradeListResponse,
         NoctownTradeRequestRequest,
         NoctownTradeRequestResponse,
         NoctownTradeRespondRequest,
         NoctownTradeRespondResponse,
+        NoctownTradeUnconfirmRequest,
+        NoctownTradeUnconfirmResponse,
+        NoqAnnounceRequest,
+        NoqAnnounceResponse,
+        NoqMuteCreateRequest,
+        NoqMuteDeleteRequest,
+        NoqMuteListResponse,
+        NoqQuestionsAnswerRequest,
+        NoqQuestionsAnswerResponse,
+        NoqQuestionsAnsweredRequest,
+        NoqQuestionsAnsweredResponse,
+        NoqQuestionsDeleteRequest,
+        NoqQuestionsReceivedRequest,
+        NoqQuestionsReceivedResponse,
+        NoqQuestionsReportRequest,
+        NoqQuestionsReportResponse,
+        NoqQuestionsSendRequest,
+        NoqQuestionsSendResponse,
+        NoqQuestionsSentRequest,
+        NoqQuestionsSentResponse,
+        NoqSettingsGenerateKeyRequest,
+        NoqSettingsGenerateKeyResponse,
+        NoqSettingsGetResponse,
+        NoqSettingsShowRequest,
+        NoqSettingsShowResponse,
+        NoqSettingsUpdateRequest,
+        NoqSettingsUpdateResponse,
         NotesRequest,
         NotesResponse,
         NotesChildrenRequest,
@@ -2733,6 +2811,8 @@ declare namespace entities {
         UsersFollowingResponse,
         UsersGalleryPostsRequest,
         UsersGalleryPostsResponse,
+        UsersGetFollowingUsersByBirthdayRequest,
+        UsersGetFollowingUsersByBirthdayResponse,
         UsersGetFrequentlyRepliedUsersRequest,
         UsersGetFrequentlyRepliedUsersResponse,
         UsersListsCreateRequest,
@@ -2833,6 +2913,7 @@ declare namespace entities {
         MetaLite,
         MetaDetailedOnly,
         MetaDetailed,
+        MetaClientOptions,
         UserWebhook,
         SystemWebhook,
         AbuseReportNotificationRecipient,
@@ -3430,6 +3511,9 @@ type MeDetailed = components['schemas']['MeDetailed'];
 type MeDetailedOnly = components['schemas']['MeDetailedOnly'];
 
 // @public (undocumented)
+type MetaClientOptions = components['schemas']['MetaClientOptions'];
+
+// @public (undocumented)
 type MetaDetailed = components['schemas']['MetaDetailed'];
 
 // @public (undocumented)
@@ -3751,6 +3835,24 @@ type NoctownChickenPlaceRequest = operations['noctown___chicken___place']['reque
 
 // @public (undocumented)
 type NoctownChickenPlaceResponse = operations['noctown___chicken___place']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NoctownContainerOpenPlacedRequest = operations['noctown___container___open-placed']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NoctownContainerOpenPlacedResponse = operations['noctown___container___open-placed']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NoctownContainerOpenRequest = operations['noctown___container___open']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NoctownContainerOpenResponse = operations['noctown___container___open']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NoctownContainerSetItemsRequest = operations['noctown___container___set-items']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NoctownContainerSetItemsResponse = operations['noctown___container___set-items']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type NoctownCowCollectMilkRequest = operations['noctown___cow___collect-milk']['requestBody']['content']['application/json'];
@@ -4119,6 +4221,18 @@ type NoctownRankingTotalRequest = operations['noctown___ranking___total']['reque
 type NoctownRankingTotalResponse = operations['noctown___ranking___total']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type NoctownSaisenHistoryRequest = operations['noctown___saisen___history']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NoctownSaisenHistoryResponse = operations['noctown___saisen___history']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NoctownSaisenOfferRequest = operations['noctown___saisen___offer']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NoctownSaisenOfferResponse = operations['noctown___saisen___offer']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type NoctownShopBuyRequest = operations['noctown___shop___buy']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -4161,6 +4275,12 @@ type NoctownTradeDetailRequest = operations['noctown___trade___detail']['request
 type NoctownTradeDetailResponse = operations['noctown___trade___detail']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type NoctownTradeExecuteRequest = operations['noctown___trade___execute']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NoctownTradeExecuteResponse = operations['noctown___trade___execute']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type NoctownTradeListResponse = operations['noctown___trade___list']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
@@ -4174,6 +4294,87 @@ type NoctownTradeRespondRequest = operations['noctown___trade___respond']['reque
 
 // @public (undocumented)
 type NoctownTradeRespondResponse = operations['noctown___trade___respond']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NoctownTradeUnconfirmRequest = operations['noctown___trade___unconfirm']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NoctownTradeUnconfirmResponse = operations['noctown___trade___unconfirm']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NoqAnnounceRequest = operations['noq___announce']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NoqAnnounceResponse = operations['noq___announce']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NoqMuteCreateRequest = operations['noq___mute___create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NoqMuteDeleteRequest = operations['noq___mute___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NoqMuteListResponse = operations['noq___mute___list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NoqQuestionsAnsweredRequest = operations['noq___questions___answered']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NoqQuestionsAnsweredResponse = operations['noq___questions___answered']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NoqQuestionsAnswerRequest = operations['noq___questions___answer']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NoqQuestionsAnswerResponse = operations['noq___questions___answer']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NoqQuestionsDeleteRequest = operations['noq___questions___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NoqQuestionsReceivedRequest = operations['noq___questions___received']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NoqQuestionsReceivedResponse = operations['noq___questions___received']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NoqQuestionsReportRequest = operations['noq___questions___report']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NoqQuestionsReportResponse = operations['noq___questions___report']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NoqQuestionsSendRequest = operations['noq___questions___send']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NoqQuestionsSendResponse = operations['noq___questions___send']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NoqQuestionsSentRequest = operations['noq___questions___sent']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NoqQuestionsSentResponse = operations['noq___questions___sent']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NoqSettingsGenerateKeyRequest = operations['noq___settings___generate-key']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NoqSettingsGenerateKeyResponse = operations['noq___settings___generate-key']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NoqSettingsGetResponse = operations['noq___settings___get']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NoqSettingsShowRequest = operations['noq___settings___show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NoqSettingsShowResponse = operations['noq___settings___show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type NoqSettingsUpdateRequest = operations['noq___settings___update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type NoqSettingsUpdateResponse = operations['noq___settings___update']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type Note = components['schemas']['Note'];
@@ -4423,7 +4624,7 @@ type Notification_2 = components['schemas']['Notification'];
 type NotificationsCreateRequest = operations['notifications___create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-export const notificationTypes: readonly ["note", "follow", "mention", "reply", "renote", "quote", "reaction", "pollEnded", "receiveFollowRequest", "followRequestAccepted", "groupInvited", "app", "roleAssigned", "chatRoomInvitationReceived", "achievementEarned", "exportCompleted", "test", "login", "createToken"];
+export const notificationTypes: readonly ["note", "follow", "mention", "reply", "renote", "quote", "reaction", "pollEnded", "scheduledNotePosted", "scheduledNotePostFailed", "receiveFollowRequest", "followRequestAccepted", "app", "roleAssigned", "chatRoomInvitationReceived", "achievementEarned", "exportCompleted", "test", "login", "createToken", "noqQuestion"];
 
 // @public (undocumented)
 export function nyaize(text: string): string;
@@ -4486,7 +4687,7 @@ type PartialRolePolicyOverride = Partial<{
 }>;
 
 // @public (undocumented)
-export const permissions: readonly ["read:account", "write:account", "read:blocks", "write:blocks", "read:drive", "write:drive", "read:favorites", "write:favorites", "read:following", "write:following", "read:messaging", "write:messaging", "read:mutes", "write:mutes", "write:notes", "read:notifications", "write:notifications", "read:reactions", "write:reactions", "write:votes", "read:pages", "write:pages", "write:page-likes", "read:page-likes", "read:user-groups", "write:user-groups", "read:channels", "write:channels", "read:gallery", "write:gallery", "read:gallery-likes", "write:gallery-likes", "read:flash", "write:flash", "read:flash-likes", "write:flash-likes", "read:admin:abuse-user-reports", "write:admin:delete-account", "write:admin:delete-all-files-of-a-user", "read:admin:index-stats", "read:admin:table-stats", "read:admin:user-ips", "read:admin:meta", "write:admin:reset-password", "write:admin:resolve-abuse-user-report", "write:admin:send-email", "read:admin:server-info", "read:admin:show-moderation-log", "read:admin:show-user", "write:admin:suspend-user", "write:admin:unset-user-avatar", "write:admin:unset-user-banner", "write:admin:unsuspend-user", "write:admin:meta", "write:admin:user-note", "write:admin:roles", "read:admin:roles", "write:admin:relays", "read:admin:relays", "write:admin:invite-codes", "read:admin:invite-codes", "write:admin:announcements", "read:admin:announcements", "write:admin:avatar-decorations", "read:admin:avatar-decorations", "write:admin:federation", "write:admin:account", "read:admin:account", "write:admin:emoji", "read:admin:emoji", "write:admin:queue", "read:admin:queue", "write:admin:promo", "write:admin:drive", "read:admin:drive", "write:admin:ad", "read:admin:ad", "write:admin:noctown", "read:admin:noctown", "write:invite-codes", "read:invite-codes", "write:clip-favorite", "read:clip-favorite", "read:federation", "write:report-abuse", "write:chat", "read:chat"];
+export const permissions: readonly ["read:account", "write:account", "read:blocks", "write:blocks", "read:drive", "write:drive", "read:favorites", "write:favorites", "read:following", "write:following", "read:messaging", "write:messaging", "read:mutes", "write:mutes", "write:notes", "read:notifications", "write:notifications", "read:reactions", "write:reactions", "write:votes", "read:pages", "write:pages", "write:page-likes", "read:page-likes", "read:user-groups", "write:user-groups", "read:channels", "write:channels", "read:gallery", "write:gallery", "read:gallery-likes", "write:gallery-likes", "read:flash", "write:flash", "read:flash-likes", "write:flash-likes", "read:admin:abuse-user-reports", "write:admin:delete-account", "write:admin:delete-all-files-of-a-user", "read:admin:index-stats", "read:admin:table-stats", "read:admin:user-ips", "read:admin:meta", "write:admin:reset-password", "write:admin:resolve-abuse-user-report", "write:admin:send-email", "read:admin:server-info", "read:admin:show-moderation-log", "read:admin:show-user", "write:admin:suspend-user", "write:admin:unset-user-avatar", "write:admin:unset-user-banner", "write:admin:unsuspend-user", "write:admin:meta", "write:admin:user-note", "write:admin:roles", "read:admin:roles", "write:admin:relays", "read:admin:relays", "write:admin:invite-codes", "read:admin:invite-codes", "write:admin:announcements", "read:admin:announcements", "write:admin:avatar-decorations", "read:admin:avatar-decorations", "write:admin:federation", "write:admin:account", "read:admin:account", "write:admin:emoji", "read:admin:emoji", "write:admin:queue", "read:admin:queue", "write:admin:promo", "write:admin:drive", "read:admin:drive", "write:admin:ad", "read:admin:ad", "write:admin:noctown", "read:admin:noctown", "write:invite-codes", "read:invite-codes", "write:clip-favorite", "read:clip-favorite", "read:federation", "write:report-abuse", "write:chat", "read:chat", "write:noq", "read:noq"];
 
 // @public (undocumented)
 type PingResponse = operations['ping']['responses']['200']['content']['application/json'];
@@ -4536,7 +4737,7 @@ type QueueStats = {
 type QueueStatsLog = QueueStats[];
 
 // @public (undocumented)
-export const queueTypes: readonly ["system", "endedPollNotification", "deliver", "inbox", "db", "relationship", "objectStorage", "userWebhookDeliver", "systemWebhookDeliver"];
+export const queueTypes: readonly ["system", "endedPollNotification", "postScheduledNote", "deliver", "inbox", "db", "relationship", "objectStorage", "userWebhookDeliver", "systemWebhookDeliver"];
 
 // @public (undocumented)
 type RenoteMuteCreateRequest = operations['renote-mute___create']['requestBody']['content']['application/json'];
@@ -4638,7 +4839,7 @@ type RoleLite = components['schemas']['RoleLite'];
 type RolePolicies = components['schemas']['RolePolicies'];
 
 // @public (undocumented)
-export const rolePolicies: readonly ["gtlAvailable", "ltlAvailable", "canPublicNote", "mentionLimit", "canInvite", "inviteLimit", "inviteLimitCycle", "inviteExpirationTime", "canManageCustomEmojis", "canManageAvatarDecorations", "canSearchNotes", "canSearchUsers", "canUseTranslator", "canHideAds", "driveCapacityMb", "maxFileSizeMb", "alwaysMarkNsfw", "canUpdateBioMedia", "pinLimit", "antennaLimit", "wordMuteLimit", "webhookLimit", "clipLimit", "noteEachClipsLimit", "userListLimit", "userEachUserListsLimit", "rateLimitFactor", "avatarDecorationLimit", "canImportAntennas", "canImportBlocking", "canImportFollowing", "canImportMuting", "canImportUserLists", "chatAvailability", "uploadableFileTypes", "noteDraftLimit", "watermarkAvailable"];
+export const rolePolicies: readonly ["gtlAvailable", "ltlAvailable", "canPublicNote", "mentionLimit", "canInvite", "inviteLimit", "inviteLimitCycle", "inviteExpirationTime", "canManageCustomEmojis", "canManageAvatarDecorations", "canSearchNotes", "canSearchUsers", "canUseTranslator", "canHideAds", "driveCapacityMb", "maxFileSizeMb", "alwaysMarkNsfw", "canUpdateBioMedia", "pinLimit", "antennaLimit", "wordMuteLimit", "webhookLimit", "clipLimit", "noteEachClipsLimit", "userListLimit", "userEachUserListsLimit", "rateLimitFactor", "avatarDecorationLimit", "canImportAntennas", "canImportBlocking", "canImportFollowing", "canImportMuting", "canImportUserLists", "chatAvailability", "uploadableFileTypes", "noteDraftLimit", "scheduledNoteLimit", "watermarkAvailable"];
 
 // @public (undocumented)
 type RolesListRequest = operations['roles___list']['requestBody']['content']['application/json'];
@@ -4700,6 +4901,7 @@ type SigninFlowRequest = {
     'g-recaptcha-response'?: string | null;
     'turnstile-response'?: string | null;
     'm-captcha-response'?: string | null;
+    'testcaptcha-response'?: string | null;
 };
 
 // @public (undocumented)
@@ -4915,6 +5117,12 @@ type UsersGalleryPostsRequest = operations['users___gallery___posts']['requestBo
 type UsersGalleryPostsResponse = operations['users___gallery___posts']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type UsersGetFollowingUsersByBirthdayRequest = operations['users___get-following-users-by-birthday']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersGetFollowingUsersByBirthdayResponse = operations['users___get-following-users-by-birthday']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type UsersGetFrequentlyRepliedUsersRequest = operations['users___get-frequently-replied-users']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -5051,7 +5259,7 @@ type VerifyEmailRequest = operations['verify-email']['requestBody']['content']['
 // src/entities.ts:55:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
 // src/streaming.ts:57:3 - (ae-forgotten-export) The symbol "ReconnectingWebSocketInstance" needs to be exported by the entry point index.d.ts
 // src/streaming.types.ts:226:4 - (ae-forgotten-export) The symbol "ReversiUpdateKey" needs to be exported by the entry point index.d.ts
-// src/streaming.types.ts:236:4 - (ae-forgotten-export) The symbol "ReversiUpdateSettings" needs to be exported by the entry point index.d.ts
+// src/streaming.types.ts:241:4 - (ae-forgotten-export) The symbol "ReversiUpdateSettings" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

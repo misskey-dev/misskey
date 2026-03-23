@@ -358,7 +358,7 @@ export class CowRenderer {
 					}
 					break;
 
-				case 'walking':
+				case 'walking': {
 					// Walking animation
 					const walkCycle = elapsed * 4;
 
@@ -392,6 +392,7 @@ export class CowRenderer {
 						cow.legs.forEach(leg => { leg.rotation.x = 0; });
 					}
 					break;
+				}
 
 				case 'grazing':
 					// Head down, eating grass

@@ -194,8 +194,8 @@ onMounted(async () => {
 	// pagehideイベントでも保存（ブラウザの戻る操作に対応）
 	window.addEventListener('pagehide', saveScrollPosition);
 	// visibilitychangeイベントでも保存（タブ切り替えやバックグラウンドに移行時）
-	document.addEventListener('visibilitychange', () => {
-		if (document.visibilityState === 'hidden') {
+	window.document.addEventListener('visibilitychange', () => {
+		if (window.document.visibilityState === 'hidden') {
 			saveScrollPosition();
 		}
 	});
@@ -213,12 +213,12 @@ onMounted(async () => {
 		nextTick(() => {
 			restoreScrollPosition();
 			// 念のため、少し遅延させても試みる
-			setTimeout(() => {
+			window.setTimeout(() => {
 				if (!scrollRestored.value) {
 					restoreScrollPosition();
 				}
 			}, 100);
-			setTimeout(() => {
+			window.setTimeout(() => {
 				if (!scrollRestored.value) {
 					restoreScrollPosition();
 				}

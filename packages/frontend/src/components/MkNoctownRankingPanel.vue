@@ -73,7 +73,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<!-- Load more -->
 			<div v-if="hasMore" :class="$style.loadMore">
-				<button :class="$style.loadMoreBtn" @click="loadMore" :disabled="loadingMore">
+				<button :class="$style.loadMoreBtn" :disabled="loadingMore" @click="loadMore">
 					{{ loadingMore ? '読み込み中...' : 'もっと見る' }}
 				</button>
 			</div>

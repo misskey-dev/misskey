@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 /**
  * Character class - 3D character model with animations
  * Based on character-demo.html implementation
@@ -122,9 +127,9 @@ export class Character {
 
 	private createBody(): void {
 		// Girl2 color scheme (character-cute-v4.html)
-		const bodyColor = 0xff91a4;    // Pink dress
+		const bodyColor = 0xff91a4; // Pink dress
 		const skinColor = 0xffdbac;
-		const hairColor = 0x5c3317;    // Brown hair
+		const hairColor = 0x5c3317; // Brown hair
 		const pantsColor = 0x4a5568;
 		const shoeColor = 0x2a2a2a;
 
@@ -537,7 +542,7 @@ export class Character {
 	// - depthTest: false（他のオブジェクトに隠れないように）
 	private createEmoteSprite(): void {
 		// Create 128x128 canvas for emotion bubble
-		this.emoteCanvas = document.createElement('canvas');
+		this.emoteCanvas = window.document.createElement('canvas');
 		this.emoteCanvas.width = 128;
 		this.emoteCanvas.height = 128;
 		this.emoteContext = this.emoteCanvas.getContext('2d')!;
@@ -613,7 +618,7 @@ export class Character {
 				// iOSの場合はオフセット0、それ以外は4
 				// iPadOS 13+はUserAgentが「Macintosh」と報告されるため、ontouchendで判定
 				const ua = navigator.userAgent.toLowerCase();
-				const isIOS = /ipad|iphone|ipod/.test(ua) || (ua.indexOf('macintosh') > -1 && 'ontouchend' in document);
+				const isIOS = /ipad|iphone|ipod/.test(ua) || (ua.indexOf('macintosh') > -1 && 'ontouchend' in window.document);
 				const offset = isIOS ? 0 : 4;
 				const drawX = 64 - 24;
 				const drawY = 54 - 24 + offset;
@@ -660,9 +665,9 @@ export class Character {
 		// 三角形は円の底から下に向かって伸びる（頂点が下）
 		this.emoteContext.fillStyle = '#ffffff';
 		this.emoteContext.beginPath();
-		this.emoteContext.moveTo(64, 104);  // 頂点（下向き）
-		this.emoteContext.lineTo(54, 94);   // 左上（円の底に接続）
-		this.emoteContext.lineTo(74, 94);   // 右上（円の底に接続）
+		this.emoteContext.moveTo(64, 104); // 頂点（下向き）
+		this.emoteContext.lineTo(54, 94); // 左上（円の底に接続）
+		this.emoteContext.lineTo(74, 94); // 右上（円の底に接続）
 		this.emoteContext.closePath();
 		this.emoteContext.fill();
 		this.emoteContext.stroke();
@@ -681,7 +686,7 @@ export class Character {
 		// iOSの場合は0、それ以外は4
 		// iPadOS 13+はUserAgentが「Macintosh」と報告されるため、ontouchendで判定
 		const ua = navigator.userAgent.toLowerCase();
-		const isIOS = /ipad|iphone|ipod/.test(ua) || (ua.indexOf('macintosh') > -1 && 'ontouchend' in document);
+		const isIOS = /ipad|iphone|ipod/.test(ua) || (ua.indexOf('macintosh') > -1 && 'ontouchend' in window.document);
 		const offset = isIOS ? 0 : 4;
 		this.emoteContext.fillText(emoji, 64, 54 + offset);
 		this.emoteTexture.needsUpdate = true;
@@ -693,7 +698,7 @@ export class Character {
 	 */
 	private createChatSprite(): void {
 		// T136: Create 512x256 canvas for chat bubble
-		this.chatCanvas = document.createElement('canvas');
+		this.chatCanvas = window.document.createElement('canvas');
 		this.chatCanvas.width = 512;
 		this.chatCanvas.height = 256;
 		this.chatContext = this.chatCanvas.getContext('2d')!;
@@ -724,7 +729,7 @@ export class Character {
 	 */
 	private createTypingSprite(): void {
 		// Create 128x128 canvas for typing indicator
-		this.typingCanvas = document.createElement('canvas');
+		this.typingCanvas = window.document.createElement('canvas');
 		this.typingCanvas.width = 128;
 		this.typingCanvas.height = 128;
 		this.typingContext = this.typingCanvas.getContext('2d')!;
@@ -775,9 +780,9 @@ export class Character {
 		// 三角形は円の底から下に向かって伸びる（頂点が下）
 		ctx.fillStyle = '#ffffff';
 		ctx.beginPath();
-		ctx.moveTo(64, 104);  // 頂点（下向き）
-		ctx.lineTo(54, 94);   // 左上（円の底に接続）
-		ctx.lineTo(74, 94);   // 右上（円の底に接続）
+		ctx.moveTo(64, 104); // 頂点（下向き）
+		ctx.lineTo(54, 94); // 左上（円の底に接続）
+		ctx.lineTo(74, 94); // 右上（円の底に接続）
 		ctx.closePath();
 		ctx.fill();
 		ctx.stroke();
@@ -823,7 +828,7 @@ export class Character {
 	 */
 	private createNameSprite(): void {
 		// Create 512x128 canvas for name display
-		this.nameCanvas = document.createElement('canvas');
+		this.nameCanvas = window.document.createElement('canvas');
 		this.nameCanvas.width = 512;
 		this.nameCanvas.height = 128;
 		this.nameContext = this.nameCanvas.getContext('2d')!;
@@ -1183,7 +1188,7 @@ export class Character {
 		const displayName = username.substring(0, 12);
 
 		// Create canvas for name
-		this.nameCanvas = document.createElement('canvas');
+		this.nameCanvas = window.document.createElement('canvas');
 		this.nameCanvas.width = 256;
 		this.nameCanvas.height = 64;
 		this.nameContext = this.nameCanvas.getContext('2d')!;
@@ -1219,7 +1224,7 @@ export class Character {
 	 * @param username ユーザー名（デフォルトアイコン生成用）
 	 */
 	public setIcon(url: string | null, username: string): void {
-		const host = location.host;
+		const host = window.location.host;
 		const iconUrl = url || `https://${host}/identicon/${username}@${host}`;
 
 		// 画像をImageとして読み込み、Canvasでアルファ値を処理
@@ -1227,7 +1232,7 @@ export class Character {
 		img.crossOrigin = 'anonymous';
 		img.onload = () => {
 			// Canvasを作成（アイコンサイズに合わせる）
-			const canvas = document.createElement('canvas');
+			const canvas = window.document.createElement('canvas');
 			const size = Math.max(img.width, img.height) || 128;
 			canvas.width = size;
 			canvas.height = size;
@@ -1403,7 +1408,6 @@ export class Character {
 		}
 
 		if (this.isMoving) {
-
 			// Walk animation with smooth cycle
 			const walkSpeed = 12;
 			this.walkCycle += deltaTime * walkSpeed;

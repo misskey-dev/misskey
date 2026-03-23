@@ -175,7 +175,7 @@ export class RankingBoardRenderer {
 		color?: string;
 		backgroundColor?: string;
 	} = {}): THREE.Sprite {
-		const canvas = document.createElement('canvas');
+		const canvas = window.document.createElement('canvas');
 		const context = canvas.getContext('2d')!;
 
 		canvas.width = 512;

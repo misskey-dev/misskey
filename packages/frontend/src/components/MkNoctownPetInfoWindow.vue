@@ -10,7 +10,7 @@ FR-023: ペット情報フローティングウィンドウ
 -->
 
 <template>
-<div :class="$style.overlay" @click.self="handleClose" @keydown.escape="handleClose" tabindex="-1" ref="overlayRef">
+<div ref="overlayRef" :class="$style.overlay" tabindex="-1" @click.self="handleClose" @keydown.escape="handleClose">
 	<div :class="$style.window">
 		<button :class="$style.closeButton" @click="handleClose">
 			<i class="ti ti-x"></i>

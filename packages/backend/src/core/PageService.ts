@@ -30,7 +30,7 @@ export interface PageBody {
 	variables: Array<Record<string, any>>;
 	script: string;
 	eyeCatchingImage?: MiDriveFile | null;
-	font: string;
+	font: 'serif' | 'sans-serif';
 	alignCenter: boolean;
 	hideTitleWhenPinned: boolean;
 	visibility?: MiPage['visibility'];

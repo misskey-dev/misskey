@@ -156,7 +156,7 @@ export class SpeechBubbleRenderer {
 	 * Create texture from Unicode emoji
 	 */
 	private createEmojiTexture(emoji: string): THREE.Texture {
-		const canvas = document.createElement('canvas');
+		const canvas = window.document.createElement('canvas');
 		const size = 128;
 		canvas.width = size;
 		canvas.height = size;
@@ -191,7 +191,7 @@ export class SpeechBubbleRenderer {
 	 * Create placeholder texture while loading custom emoji
 	 */
 	private createPlaceholderTexture(): THREE.Texture {
-		const canvas = document.createElement('canvas');
+		const canvas = window.document.createElement('canvas');
 		const size = 128;
 		canvas.width = size;
 		canvas.height = size;
@@ -258,7 +258,7 @@ export class SpeechBubbleRenderer {
 	 * Create texture from custom emoji image
 	 */
 	private createCustomEmojiTexture(img: HTMLImageElement): THREE.Texture {
-		const canvas = document.createElement('canvas');
+		const canvas = window.document.createElement('canvas');
 		const size = 128;
 		canvas.width = size;
 		canvas.height = size;

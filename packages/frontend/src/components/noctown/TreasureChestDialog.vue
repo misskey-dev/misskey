@@ -62,7 +62,7 @@ async function openChest() {
 			isOpened.value = true;
 
 			// Trigger reward animation
-			setTimeout(() => {
+			window.setTimeout(() => {
 				showRewardAnimation.value = true;
 			}, 300);
 

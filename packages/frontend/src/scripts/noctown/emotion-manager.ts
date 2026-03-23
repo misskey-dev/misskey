@@ -4,7 +4,8 @@
  */
 
 import * as THREE from 'three';
-import { SpeechBubbleRenderer, type SpeechBubbleConfig } from './speech-bubble.js';
+import { SpeechBubbleRenderer } from './speech-bubble.js';
+import type { SpeechBubbleConfig } from './speech-bubble.js';
 
 export interface EmotionEvent {
 	playerId: string;

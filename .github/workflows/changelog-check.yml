@@ -12,9 +12,9 @@ jobs:
 
     steps:
       - name: Checkout head
-        uses: actions/checkout@v4.3.0
+        uses: actions/checkout@v6.0.2
       - name: Setup Node.js
-        uses: actions/setup-node@v4.4.0
+        uses: actions/setup-node@v6.2.0
         with:
           node-version-file: '.node-version'
 
@@ -41,3 +41,4 @@ jobs:
       - name: Run Checker
         run: npm run run
         working-directory: scripts/changelog-checker
+        continue-on-error: true

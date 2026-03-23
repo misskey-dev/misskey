@@ -1,3 +1,8 @@
+<!--
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <script setup lang="ts">
 /**
  * NoqAnswerDialog.vue
@@ -17,7 +22,8 @@ import { encrypt as encryptE2E, isValidPublicKey } from '@/utility/noq-crypto.js
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkButton from '@/components/MkButton.vue';
-import MkSelect, { type MkSelectItem } from '@/components/MkSelect.vue';
+import MkSelect from '@/components/MkSelect.vue';
+import type { MkSelectItem } from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import Mfm from '@/components/global/MkMfm.js';
@@ -237,7 +243,7 @@ async function postAnswer() {
 <MkModalWindow
 	ref="modalRef"
 	:width="600"
-	:with-close-button="false"
+	:withCloseButton="false"
 	@closed="emit('close')"
 >
 	<template #header>
@@ -266,7 +272,7 @@ async function postAnswer() {
 		<MkTextarea
 			v-model="answerText"
 			:placeholder="i18n.ts._noq.answerPlaceholder ?? '回答を入力...'"
-			:mfm-autocomplete="true"
+			:mfmAutocomplete="true"
 			class="answer-textarea"
 		/>
 

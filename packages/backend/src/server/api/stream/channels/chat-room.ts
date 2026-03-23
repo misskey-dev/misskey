@@ -3,17 +3,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
+import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import type { GlobalEvents } from '@/core/GlobalEventService.js';
 import type { JsonObject } from '@/misc/json-value.js';
 import { ChatService } from '@/core/ChatService.js';
 import { DrawingCanvasService } from '@/core/DrawingCanvasService.js';
-import { DI } from '@/di-symbols.js';
+import Channel, { type ChannelRequest } from '../channel.js';
+import { REQUEST } from '@nestjs/core';
 import type { ChatRoomsRepository } from '@/models/_.js';
-import Channel, { type MiChannelService } from '../channel.js';
 
-class ChatRoomChannel extends Channel {
+@Injectable({ scope: Scope.TRANSIENT })
+export class ChatRoomChannel extends Channel {
 	public readonly chName = 'chatRoom';
 	public static shouldShare = false;
 	public static requireCredential = true as const;
@@ -26,50 +28,35 @@ class ChatRoomChannel extends Channel {
 	private lastCursorMove: number = 0;
 
 	constructor(
-		private chatService: ChatService,
-		private drawingCanvasService: DrawingCanvasService,
+		@Inject(REQUEST)
+		request: ChannelRequest,
+
+		@Inject(DI.chatRoomsRepository)
 		private chatRoomsRepository: ChatRoomsRepository,
 
-		id: string,
-		connection: Channel['connection'],
+		private chatService: ChatService,
+		private drawingCanvasService: DrawingCanvasService,
 	) {
-		super(id, connection);
+		super(request);
 	}
 
 	@bindThis
-	public async init(params: JsonObject) {
-		if (typeof params.roomId !== 'string') return;
+	public async init(params: JsonObject): Promise<boolean> {
+		if (typeof params.roomId !== 'string') return false;
+		if (!this.user) return false;
+
 		this.roomId = params.roomId;
 
-		// セキュリティ: ルーム参加権限の確認
-		if (!this.user) {
-			console.warn(`🔍 [SECURITY] Unauthenticated user attempting to access room ${this.roomId}`);
-			return;
-		}
+		const room = await this.chatRoomsRepository.findOneBy({
+			id: this.roomId,
+		});
 
-		try {
-			// メンバーシップ確認（ルーム存在確認も含む）
-			const room = await this.chatRoomsRepository.findOneBy({ id: this.roomId });
-			if (!room) {
-				console.warn(`🔍 [SECURITY] User ${this.user.id} attempting to access non-existent room ${this.roomId}`);
-				return;
-			}
+		if (room == null) return false;
+		if (!(await this.chatService.hasPermissionToViewRoomTimeline(this.user.id, room))) return false;
 
-			const isMember = await this.chatService.isRoomMember(room, this.user.id);
-			if (!isMember) {
-				console.warn(`🔍 [SECURITY] User ${this.user.id} denied access to room ${this.roomId} - not a member`);
-				return;
-			}
-
-			console.log(`🔍 [DEBUG] User ${this.user.id} granted access to room ${this.roomId}`);
-		} catch (error) {
-			console.error(`🔍 [ERROR] Failed to verify room access for user ${this.user.id} to room ${this.roomId}:`, error);
-			return;
-		}
-
-		// oranski方式の定期的なemitTypersは無効化
-		// this.emitTypersIntervalId = setInterval(this.emitTypers, 5000);
 		this.subscriber.on(`chatRoomStream:${this.roomId}`, this.onEvent);
+
+		return true;
 	}
 
 	@bindThis
@@ -145,7 +132,7 @@ class ChatRoomChannel extends Channel {
 					this.chatService.notifyRoomTypingStop(this.user.id, this.roomId);
 				}
 				break;
-			case 'drawingStroke':
+			case 'drawingStroke': {
 				console.log(`🔍 [DEBUG] Processing drawing stroke for room ${this.roomId} from user ${this.user.id}`);
 
 				// drawingStrokeは完了したストロークなので、レート制限を設けずすべて保存する
@@ -159,7 +146,8 @@ class ChatRoomChannel extends Channel {
 
 				await this.chatService.broadcastDrawingStroke(this.roomId, this.user.id, strokeData);
 				break;
-			case 'drawingProgress':
+			}
+			case 'drawingProgress': {
 				console.log(`🔍 [DEBUG] Processing drawing progress for room ${this.roomId} from user ${this.user.id}`);
 
 				// セキュリティ: 描画データの詳細検証
@@ -171,28 +159,29 @@ class ChatRoomChannel extends Channel {
 				if (typeof body.opacity !== 'number' || body.opacity < 0.1 || body.opacity > 1) return;
 
 				// 進行状況データ作成
-			const maxLayer = this.drawingCanvasService.getMaxLayerIndex();
-			const layerIndex = Math.min(Math.max(Math.floor(typeof body.layer === 'number' ? body.layer : 0), 0), maxLayer);
-			const progressData = {
+				const maxLayer = this.drawingCanvasService.getMaxLayerIndex();
+				const layerIndex = Math.min(Math.max(Math.floor(typeof body.layer === 'number' ? body.layer : 0), 0), maxLayer);
+				const progressData = {
 					userId: this.user.id,
 					userName: this.user.name || this.user.username,
 					points: body.points.map((p: any) => ({
-					x: Math.min(Math.max(Math.round(p.x), 0), 4000),
-					y: Math.min(Math.max(Math.round(p.y), 0), 4000),
+						x: Math.min(Math.max(Math.round(p.x), 0), 4000),
+						y: Math.min(Math.max(Math.round(p.y), 0), 4000),
 						pressure: p.pressure !== undefined ? p.pressure : 1.0,
 					})),
 					tool: body.tool,
 					color: body.color,
 					strokeWidth: body.strokeWidth,
 					opacity: body.opacity,
-				layer: layerIndex,
+					layer: layerIndex,
 					timestamp: Date.now(),
 				};
 
 				// 描画進行状況をルーム内の他のユーザーに配信
-			await this.chatService.broadcastDrawingProgress(this.roomId, this.user.id, progressData);
+				await this.chatService.broadcastDrawingProgress(this.roomId, this.user.id, progressData);
 				break;
-			case 'cursorMove':
+			}
+			case 'cursorMove': {
 				// レート制限: 50ms間隔制限（カーソルは高頻度）
 				const cursorNow = Date.now();
 				if (cursorNow - this.lastCursorMove < 50) return; // 無言で制限（ログなし）
@@ -203,13 +192,14 @@ class ChatRoomChannel extends Channel {
 				if (body.x < -100 || body.x > 4100 || body.y < -100 || body.y > 4100) return; // 最大4000x4000 + マージン
 
 				// カーソル位置をルーム内の他のユーザーに配信
-			await this.chatService.broadcastCursorMove(this.roomId, this.user.id, {
-				userName: this.user.name || this.user.username,
-				x: Math.round(body.x * 10) / 10,
-				y: Math.round(body.y * 10) / 10,
-				timestamp: cursorNow,
-			});
-			break;
+				await this.chatService.broadcastCursorMove(this.roomId, this.user.id, {
+					userName: this.user.name || this.user.username,
+					x: Math.round(body.x * 10) / 10,
+					y: Math.round(body.y * 10) / 10,
+					timestamp: cursorNow,
+				});
+				break;
+			}
 			case 'clearCanvas':
 				console.log(`🔍 [DEBUG] Processing canvas clear for room ${this.roomId} from user ${this.user.id}`);
 
@@ -320,28 +310,3 @@ class ChatRoomChannel extends Channel {
 	}
 }
 
-@Injectable()
-export class ChatRoomChannelService implements MiChannelService<true> {
-	public readonly shouldShare = ChatRoomChannel.shouldShare;
-	public readonly requireCredential = ChatRoomChannel.requireCredential;
-	public readonly kind = ChatRoomChannel.kind;
-
-	constructor(
-		private chatService: ChatService,
-		private drawingCanvasService: DrawingCanvasService,
-		@Inject(DI.chatRoomsRepository)
-		private chatRoomsRepository: ChatRoomsRepository,
-	) {
-	}
-
-	@bindThis
-	public create(id: string, connection: Channel['connection']): ChatRoomChannel {
-		return new ChatRoomChannel(
-			this.chatService,
-			this.drawingCanvasService,
-			this.chatRoomsRepository,
-			id,
-			connection,
-		);
-	}
-}

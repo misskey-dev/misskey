@@ -60,19 +60,19 @@ const headerActions = computed(() => []);
 const headerTabs = computed(() => [{
 	key: 'featured',
 	icon: 'ti ti-bolt',
-	title: i18n.ts.featured,
+	title: i18n.ts.featured as string,
 }, {
 	key: 'users',
 	icon: 'ti ti-users',
-	title: i18n.ts.users,
+	title: i18n.ts.users as string,
 }, {
 	key: 'illustration',
 	icon: 'ti ti-paint',
-	title: i18n.ts.illustrations,
+	title: i18n.ts.illustrations as string,
 }, {
 	key: 'roles',
 	icon: 'ti ti-badges',
-	title: i18n.ts.roles,
+	title: i18n.ts.roles as string,
 }]);
 
 definePage(() => ({

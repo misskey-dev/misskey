@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton inline @click="disableAll">{{ i18n.ts.disableAll }}</MkButton>
 				<MkButton inline @click="enableAll">{{ i18n.ts.enableAll }}</MkButton>
 			</div>
-			<MkSwitch v-for="ntype in notificationTypes" :key="ntype" v-model="typesMap[ntype].value">{{ i18n.ts._notification._types[ntype] }}</MkSwitch>
+			<MkSwitch v-for="ntype in notificationTypes" :key="ntype" v-model="typesMap[ntype].value">{{ (i18n.ts._notification._types as Record<string, string>)[ntype] }}</MkSwitch>
 		</div>
 	</div>
 </MkModalWindow>
@@ -42,7 +42,7 @@ import { i18n } from '@/i18n.js';
 type TypesMap = Record<typeof notificationTypes[number], Ref<boolean>>;
 
 const emit = defineEmits<{
-	(ev: 'done', v: { excludeTypes: string[] }): void,
+	(ev: 'done', v: { excludeTypes: typeof notificationTypes[number][] }): void,
 	(ev: 'closed'): void,
 }>();
 

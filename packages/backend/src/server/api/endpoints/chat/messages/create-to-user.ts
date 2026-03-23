@@ -143,7 +143,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				console.log('✅ [DEBUG] Chat message created successfully:', { messageId: result.id });
 				return result;
-
 			} catch (error) {
 				console.log('💥 [DEBUG] Chat API error:', {
 					error: error instanceof Error ? error.message : String(error),

@@ -1,3 +1,8 @@
+<!--
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <script setup lang="ts">
 /**
  * NoqAnswerForm.vue
@@ -18,7 +23,8 @@ import { emojiPicker } from '@/utility/emoji-picker.js';
 import { encrypt as encryptE2E, isValidPublicKey, generatePublicKey } from '@/utility/noq-crypto.js';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkButton from '@/components/MkButton.vue';
-import MkSelect, { type MkSelectItem } from '@/components/MkSelect.vue';
+import MkSelect from '@/components/MkSelect.vue';
+import type { MkSelectItem } from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import NoqMessageCard from './NoqMessageCard.vue';
@@ -241,7 +247,7 @@ function cancel() {
 			<NoqMessageCard
 				ref="messageCardRef"
 				:question="question"
-				:answer-text="pureAnswerText"
+				:answerText="pureAnswerText"
 			/>
 		</div>
 	</div>

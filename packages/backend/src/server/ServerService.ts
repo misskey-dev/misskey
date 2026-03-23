@@ -77,7 +77,7 @@ export class ServerService implements OnApplicationShutdown {
 	@bindThis
 	public async launch(): Promise<void> {
 		const fastify = Fastify({
-			trustProxy: true,
+			trustProxy: this.config.trustProxy,
 			logger: false,
 		});
 		this.#fastify = fastify;
@@ -151,7 +151,6 @@ export class ServerService implements OnApplicationShutdown {
 		fastify.register(this.oauth2ProviderService.createServer, { prefix: '/oauth' });
 		fastify.register(this.oauth2ProviderService.createTokenServer, { prefix: '/oauth/token' });
 		fastify.register(this.healthServerService.createServer, { prefix: '/healthz' });
-
 
 		fastify.get<{ Params: { path: string }; Querystring: { static?: any; badge?: any; }; }>('/emoji/:path(.*)', async (request, reply) => {
 			const path = request.params.path;

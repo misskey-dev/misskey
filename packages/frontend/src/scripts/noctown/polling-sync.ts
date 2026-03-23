@@ -41,10 +41,10 @@ export class PollingSync {
 	private currentZ = 0;
 
 	// Polling intervals
-	private playersInterval: ReturnType<typeof setInterval> | null = null;
-	private droppedItemsInterval: ReturnType<typeof setInterval> | null = null;
-	private placedItemsInterval: ReturnType<typeof setInterval> | null = null;
-	private npcsInterval: ReturnType<typeof setInterval> | null = null;
+	private playersInterval: number | null = null;
+	private droppedItemsInterval: number | null = null;
+	private placedItemsInterval: number | null = null;
+	private npcsInterval: number | null = null;
 
 	// Callbacks
 	private onPlayersUpdate: DataCallback<PlayerData> | null = null;
@@ -86,23 +86,23 @@ export class PollingSync {
 		this.isRunning = true;
 
 		// Start polling intervals
-		this.playersInterval = setInterval(() => {
+		this.playersInterval = window.setInterval(() => {
 			this.fetchNearbyPlayers();
 		}, this.config.nearbyPlayersInterval);
 
-		this.droppedItemsInterval = setInterval(() => {
+		this.droppedItemsInterval = window.setInterval(() => {
 			this.fetchDroppedItems();
 		}, this.config.droppedItemsInterval);
 
-		this.placedItemsInterval = setInterval(() => {
+		this.placedItemsInterval = window.setInterval(() => {
 			this.fetchPlacedItems();
 		}, this.config.placedItemsInterval);
 
-		this.npcsInterval = setInterval(() => {
+		this.npcsInterval = window.setInterval(() => {
 			this.fetchNpcs();
 		}, this.config.npcsInterval);
 
-		// Initial fetch
+		// Initial window.fetch
 		this.fetchAll();
 	}
 
@@ -110,19 +110,19 @@ export class PollingSync {
 		this.isRunning = false;
 
 		if (this.playersInterval) {
-			clearInterval(this.playersInterval);
+			window.clearInterval(this.playersInterval);
 			this.playersInterval = null;
 		}
 		if (this.droppedItemsInterval) {
-			clearInterval(this.droppedItemsInterval);
+			window.clearInterval(this.droppedItemsInterval);
 			this.droppedItemsInterval = null;
 		}
 		if (this.placedItemsInterval) {
-			clearInterval(this.placedItemsInterval);
+			window.clearInterval(this.placedItemsInterval);
 			this.placedItemsInterval = null;
 		}
 		if (this.npcsInterval) {
-			clearInterval(this.npcsInterval);
+			window.clearInterval(this.npcsInterval);
 			this.npcsInterval = null;
 		}
 	}
@@ -166,7 +166,7 @@ export class PollingSync {
 
 			return players;
 		} catch (e) {
-			console.error('Failed to fetch nearby players:', e);
+			console.error('Failed to window.fetch nearby players:', e);
 			return [];
 		}
 	}
@@ -201,7 +201,7 @@ export class PollingSync {
 
 			return items;
 		} catch (e) {
-			console.error('Failed to fetch dropped items:', e);
+			console.error('Failed to window.fetch dropped items:', e);
 			return [];
 		}
 	}
@@ -236,7 +236,7 @@ export class PollingSync {
 
 			return items;
 		} catch (e) {
-			console.error('Failed to fetch placed items:', e);
+			console.error('Failed to window.fetch placed items:', e);
 			return [];
 		}
 	}
@@ -271,7 +271,7 @@ export class PollingSync {
 
 			return npcs;
 		} catch (e) {
-			console.error('Failed to fetch NPCs:', e);
+			console.error('Failed to window.fetch NPCs:', e);
 			return [];
 		}
 	}

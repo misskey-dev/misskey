@@ -130,9 +130,9 @@ const timerProgress = ref(100);
 const bobberSpeed = ref(2);
 
 // Timers
-let hookTimer: ReturnType<typeof setTimeout> | null = null;
-let catchWindowTimer: ReturnType<typeof setTimeout> | null = null;
-let timerInterval: ReturnType<typeof setInterval> | null = null;
+let hookTimer: number | null = null;
+let catchWindowTimer: number | null = null;
+let timerInterval: number | null = null;
 
 // Catch window duration (must match backend)
 const CATCH_WINDOW_MS = 2000;
@@ -156,7 +156,7 @@ async function startFishing() {
 	bobberSpeed.value = 2;
 
 	// Wait for fish to bite
-	hookTimer = setTimeout(() => {
+	hookTimer = window.setTimeout(() => {
 		onFishHooked();
 	}, props.waitTime);
 }
@@ -168,13 +168,13 @@ function onFishHooked() {
 
 	// Start countdown for catch window
 	const startTime = Date.now();
-	timerInterval = setInterval(() => {
+	timerInterval = window.setInterval(() => {
 		const elapsed = Date.now() - startTime;
 		timerProgress.value = Math.max(0, 100 - (elapsed / CATCH_WINDOW_MS) * 100);
 	}, 50);
 
 	// Auto-fail if player doesn't click in time
-	catchWindowTimer = setTimeout(() => {
+	catchWindowTimer = window.setTimeout(() => {
 		if (state.value === 'hooked') {
 			onCatchFailed('too_late');
 		}
@@ -227,15 +227,15 @@ function onCatchFailed(reason: 'too_early' | 'too_late') {
 
 function clearTimers() {
 	if (hookTimer) {
-		clearTimeout(hookTimer);
+		window.clearTimeout(hookTimer);
 		hookTimer = null;
 	}
 	if (catchWindowTimer) {
-		clearTimeout(catchWindowTimer);
+		window.clearTimeout(catchWindowTimer);
 		catchWindowTimer = null;
 	}
 	if (timerInterval) {
-		clearInterval(timerInterval);
+		window.clearInterval(timerInterval);
 		timerInterval = null;
 	}
 }

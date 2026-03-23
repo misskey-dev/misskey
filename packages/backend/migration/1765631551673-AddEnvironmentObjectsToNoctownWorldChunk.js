@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export class AddEnvironmentObjectsToNoctownWorldChunk1765631551673 {
 	name = 'AddEnvironmentObjectsToNoctownWorldChunk1765631551673'
 

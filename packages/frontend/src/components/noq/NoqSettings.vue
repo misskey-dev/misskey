@@ -1,3 +1,8 @@
+<!--
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+-->
+
 <script setup lang="ts">
 /**
  * NoqSettings.vue
@@ -66,7 +71,7 @@ async function save() {
 			ngWordList: ngWordList.value,
 		});
 		saved.value = true;
-		setTimeout(() => saved.value = false, 3000);
+		window.setTimeout(() => saved.value = false, 3000);
 	} catch (err) {
 		console.error(err);
 	} finally {
@@ -157,7 +162,7 @@ async function generateE2eKey() {
 		e2ePublicKey.value = result.publicKey;
 		e2ePassword.value = '';
 		keyGenerated.value = true;
-		setTimeout(() => keyGenerated.value = false, 3000);
+		window.setTimeout(() => keyGenerated.value = false, 3000);
 		os.toast(String(i18n.ts._noq.e2e.keyGenerated));
 	} catch (err) {
 		console.error(err);

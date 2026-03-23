@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<!-- T013: 承認/拒否ボタン -->
 	<div :class="$style.actions">
-		<button :class="$style.acceptBtn" @click="handleAccept" :disabled="isResponding">
+		<button :class="$style.acceptBtn" :disabled="isResponding" @click="handleAccept">
 			<template v-if="isResponding && respondType === 'accept'">
 				<MkLoading :em="true"/>
 			</template>
@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				承認
 			</template>
 		</button>
-		<button :class="$style.declineBtn" @click="handleDecline" :disabled="isResponding">
+		<button :class="$style.declineBtn" :disabled="isResponding" @click="handleDecline">
 			<template v-if="isResponding && respondType === 'decline'">
 				<MkLoading :em="true"/>
 			</template>
@@ -76,7 +76,7 @@ const emit = defineEmits<{
 const isResponding = ref(false);
 const respondType = ref<'accept' | 'decline' | null>(null);
 const now = ref(Date.now());
-let timerInterval: ReturnType<typeof setInterval> | null = null;
+let timerInterval: number | null = null;
 
 const remainingTime = computed(() => {
 	const expiresAtMs = new Date(props.expiresAt).getTime();
@@ -105,7 +105,7 @@ function handleDecline(): void {
 }
 
 onMounted(() => {
-	timerInterval = setInterval(() => {
+	timerInterval = window.setInterval(() => {
 		now.value = Date.now();
 		if (isExpired.value) {
 			emit('expired');
@@ -115,7 +115,7 @@ onMounted(() => {
 
 onUnmounted(() => {
 	if (timerInterval) {
-		clearInterval(timerInterval);
+		window.clearInterval(timerInterval);
 	}
 });
 </script>

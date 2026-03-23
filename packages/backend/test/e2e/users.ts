@@ -149,6 +149,7 @@ describe('ユーザー', () => {
 			achievements: user.achievements,
 			loggedInDays: user.loggedInDays,
 			policies: user.policies,
+			receivedReactionsCount: (user as any).receivedReactionsCount ?? 0,
 			twoFactorEnabled: user.twoFactorEnabled,
 			usePasswordLessLogin: user.usePasswordLessLogin,
 			securityKeys: user.securityKeys,
@@ -346,7 +347,7 @@ describe('ユーザー', () => {
 		assert.strictEqual(response.publicReactions, true);
 		assert.strictEqual(response.followingVisibility, 'public');
 		assert.strictEqual(response.followersVisibility, 'public');
-		assert.strictEqual(response.chatScope, 'mutual');
+		assert.strictEqual(response.chatScope, 'everyone');
 		assert.strictEqual(response.canChat, true);
 		assert.deepStrictEqual(response.roles, []);
 		assert.strictEqual(response.memo, null);

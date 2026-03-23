@@ -59,7 +59,7 @@ export class PetManager {
 	private chickenRenderer: ChickenRenderer;
 	private cowRenderer: CowRenderer;
 	private petData: Map<string, PetInfo> = new Map();
-	private moveTimers: Map<string, ReturnType<typeof setTimeout>> = new Map();
+	private moveTimers: Map<string, number> = new Map();
 	private clock: THREE.Clock;
 
 	constructor(scene: THREE.Scene) {
@@ -127,7 +127,7 @@ export class PetManager {
 		// 移動タイマーを停止
 		const timer = this.moveTimers.get(petId);
 		if (timer) {
-			clearTimeout(timer);
+			window.clearTimeout(timer);
 			this.moveTimers.delete(petId);
 		}
 
@@ -150,7 +150,7 @@ export class PetManager {
 			const interval = NPC_MOVE_INTERVAL_MIN +
 				Math.random() * (NPC_MOVE_INTERVAL_MAX - NPC_MOVE_INTERVAL_MIN);
 
-			const timer = setTimeout(() => {
+			const timer = window.setTimeout(() => {
 				this.movePet(petId);
 				scheduleNextMove();
 			}, interval);
@@ -292,7 +292,7 @@ export class PetManager {
 	public dispose(): void {
 		// 全タイマーを停止
 		for (const timer of this.moveTimers.values()) {
-			clearTimeout(timer);
+			window.clearTimeout(timer);
 		}
 		this.moveTimers.clear();
 

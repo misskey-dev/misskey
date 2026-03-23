@@ -58,7 +58,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div>{{ name ? i18n.tsx._auth.permission({ name }) : i18n.ts._auth.permissionAsk }}</div>
 				<div :class="$style.permissionListWrapper">
 					<ul :class="$style.permissionList">
-						<li v-for="p in permissions" :key="p">{{ i18n.ts._permissions[p] }}</li>
+						<li v-for="p in permissions" :key="p">{{ (i18n.ts._permissions as Record<string, string>)[p] }}</li>
 					</ul>
 				</div>
 			</div>
@@ -183,7 +183,7 @@ async function init() {
 
 init();
 
-function clickAddAccount(ev: MouseEvent) {
+function clickAddAccount(ev: PointerEvent) {
 	selectedUser.value = null;
 
 	os.popupMenu([{

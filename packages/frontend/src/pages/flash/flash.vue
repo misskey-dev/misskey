@@ -63,6 +63,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, onDeactivated, onUnmounted, ref, watch, shallowRef, defineAsyncComponent } from 'vue';
 import * as Misskey from 'misskey-js';
+import { utils } from '@syuilo/aiscript';
+import { compareVersions } from 'compare-versions';
 import { url } from '@@/js/config.js';
 import type { Ref } from 'vue';
 import type { AsUiComponent, AsUiRoot } from '@/aiscript/ui.js';
@@ -102,7 +104,7 @@ function fetchFlash() {
 	});
 }
 
-function share(ev: MouseEvent) {
+function share(ev: PointerEvent) {
 	if (!flash.value) return;
 
 	const menuItems: MenuItem[] = [];
@@ -149,9 +151,11 @@ function shareWithNote() {
 	});
 }
 
-function like() {
+async function like() {
 	if (!flash.value) return;
-	pleaseLogin();
+
+	const isLoggedIn = await pleaseLogin();
+	if (!isLoggedIn) return;
 
 	os.apiWithDialog('flash/like', {
 		flashId: flash.value.id,
@@ -163,7 +167,9 @@ function like() {
 
 async function unlike() {
 	if (!flash.value) return;
-	pleaseLogin();
+
+	const isLoggedIn = await pleaseLogin();
+	if (!isLoggedIn) return;
 
 	const confirm = await os.confirm({
 		type: 'warning',
@@ -190,13 +196,23 @@ function start() {
 	run();
 }
 
+function getIsLegacy(version: string | null): boolean {
+	if (version == null) return true;
+	try {
+		return compareVersions(version, '1.0.0') < 0;
+	} catch {
+		return false;
+	}
+}
+
 async function run() {
 	if (aiscript.value) aiscript.value.abort();
 	if (!flash.value) return;
 
-	const isLegacy = !flash.value.script.replaceAll(' ', '').startsWith('///@1.0.0');
+	const version = utils.getLangVersion(flash.value.script);
+	const isLegacy = getIsLegacy(version);
 
-	const { Interpreter, Parser, values } = isLegacy ? (await import('@syuilo/aiscript-0-19-0') as any) : await import('@syuilo/aiscript');
+	const { Interpreter, Parser, values } = (isLegacy ? (await import('@syuilo/aiscript-0-19-0')) : await import('@syuilo/aiscript')) as typeof import('@syuilo/aiscript');
 
 	const parser = new Parser();
 
@@ -213,10 +229,10 @@ async function run() {
 		THIS_URL: values.STR(`${url}/play/${flash.value.id}`),
 	}, {
 		in: aiScriptReadline,
-		out: (value) => {
+		out: () => {
 			// nop
 		},
-		log: (type, params) => {
+		log: () => {
 			// nop
 		},
 	});
@@ -257,7 +273,7 @@ async function reportAbuse() {
 	});
 }
 
-function showMenu(ev: MouseEvent) {
+function showMenu(ev: PointerEvent) {
 	if (!flash.value) return;
 
 	const menu: MenuItem[] = [

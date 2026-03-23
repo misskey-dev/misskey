@@ -10,7 +10,7 @@
  -->
 
 <template>
-<Transition name="warp-flash" @after-leave="onAnimationComplete">
+<Transition name="warp-flash" @afterLeave="onAnimationComplete">
 	<div v-if="active" class="warp-effect-overlay">
 		<div class="warp-vortex"></div>
 		<div class="warp-flash"></div>

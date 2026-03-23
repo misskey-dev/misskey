@@ -66,7 +66,7 @@ const sending = ref(false);
 const textareaReadOnly = ref(false);
 let autocompleteInstance: Autocomplete | null = null;
 // connection は props から受け取る
-let typingStopTimer: ReturnType<typeof setTimeout> | null = null;
+let typingStopTimer: number | null = null;
 let isTyping = ref(false);
 
 const canSend = computed(() => (text.value != null && text.value !== '') || file.value != null);
@@ -87,7 +87,7 @@ function forceNotifyTypingStop() {
 
 		// タイマーもクリア
 		if (typingStopTimer) {
-			clearTimeout(typingStopTimer);
+			window.clearTimeout(typingStopTimer);
 			typingStopTimer = null;
 		}
 	}
@@ -106,11 +106,11 @@ const notifyTyping = throttle(3000, () => {
 
 		// 既存のタイマーをクリア
 		if (typingStopTimer) {
-			clearTimeout(typingStopTimer);
+			window.clearTimeout(typingStopTimer);
 		}
 
 		// 5秒後にtyping停止を送信
-		typingStopTimer = setTimeout(() => {
+		typingStopTimer = window.setTimeout(() => {
 			notifyTypingStop();
 		}, 5000);
 	}
@@ -232,7 +232,7 @@ function onKeydown(ev: KeyboardEvent) {
 	}
 }
 
-function chooseFile(ev: MouseEvent) {
+function chooseFile(ev: PointerEvent) {
 	selectFile({
 		anchorElement: ev.currentTarget ?? ev.target,
 		multiple: false,
@@ -372,18 +372,18 @@ onMounted(() => {
 			// vv.heightはvisual viewport(キーボードで縮む)
 			const kbHeight = window.innerHeight - vv.height - vv.offsetTop;
 			if (kbHeight > 100) {
-				document.documentElement.classList.add('keyboard-open');
-				document.documentElement.style.setProperty('--keyboard-height', `${kbHeight}px`);
+				window.document.documentElement.classList.add('keyboard-open');
+				window.document.documentElement.style.setProperty('--keyboard-height', `${kbHeight}px`);
 			} else {
-				document.documentElement.classList.remove('keyboard-open');
-				document.documentElement.style.removeProperty('--keyboard-height');
+				window.document.documentElement.classList.remove('keyboard-open');
+				window.document.documentElement.style.removeProperty('--keyboard-height');
 			}
 		};
 		vv.addEventListener('resize', onVvResize);
 		cleanupKeyboardDetection = () => {
 			vv.removeEventListener('resize', onVvResize);
-			document.documentElement.classList.remove('keyboard-open');
-			document.documentElement.style.removeProperty('--keyboard-height');
+			window.document.documentElement.classList.remove('keyboard-open');
+			window.document.documentElement.style.removeProperty('--keyboard-height');
 		};
 	}
 });
@@ -395,7 +395,7 @@ onBeforeUnmount(() => {
 	}
 	notifyTypingStop();
 	if (typingStopTimer) {
-		clearTimeout(typingStopTimer);
+		window.clearTimeout(typingStopTimer);
 		typingStopTimer = null;
 	}
 	cleanupKeyboardDetection?.();

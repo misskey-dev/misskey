@@ -11,7 +11,7 @@ export const chartVLine = (vLineColor: string) => ({
 		const tooltip = chart.tooltip as any;
 		if (tooltip?._active?.length) {
 			const ctx = chart.ctx;
-			const xs = tooltip._active.map(a => a.element.x);
+			const xs = tooltip._active.map((a: any) => a.element.x) as number[];
 			const x = xs.reduce((a, b) => a + b, 0) / xs.length;
 			const topY = chart.scales.y.top;
 			const bottomY = chart.scales.y.bottom;

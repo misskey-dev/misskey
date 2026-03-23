@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ref, reactive, computed, type Ref, type ComputedRef } from 'vue';
+import { ref, reactive, computed } from 'vue';
+import type { Ref, ComputedRef } from 'vue';
 import type { PlayerData, DroppedItemData, PlacedItemData, NpcData, ChunkData } from './engine.js';
 
 export interface InventoryItem {

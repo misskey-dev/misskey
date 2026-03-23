@@ -148,7 +148,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			}
 
 			// Check if custom interior exists for this house
-			let interior = await this.noctownInteriorMapsRepository.findOneBy({
+			const interior = await this.noctownInteriorMapsRepository.findOneBy({
 				interiorId: `house_${house.id}`,
 			});
 

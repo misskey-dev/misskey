@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 /**
  * Environment Entity helpers - trees, rocks, etc.
  * Based on character-demo.html implementation
