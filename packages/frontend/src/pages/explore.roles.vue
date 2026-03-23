@@ -25,15 +25,16 @@ const loading = ref(true);
 
 misskeyApi('roles/list').then(res => {
 	roles.value = res.filter(x => x.target === 'manual').sort((a, b) => {
-		// displayOrderを第一優先でソート
+		// 仕様: displayOrderを第一優先、canPublicNote(非違反)を第二優先、ユーザー数を第三優先
 		if (a.displayOrder !== b.displayOrder) {
 			return b.displayOrder - a.displayOrder;
 		}
-		// policies.canPublicNote: true (非違反ロール) を優先的に上に表示
-		if (a.policies.canPublicNote.value !== b.policies.canPublicNote.value) {
-			return a.policies.canPublicNote.value ? -1 : 1;
+		// policies.canPublicNote: boolean直接 or {value: boolean} の両方に対応
+		const aCanPublic = typeof a.policies.canPublicNote === 'boolean' ? a.policies.canPublicNote : (a.policies.canPublicNote as any)?.value ?? true;
+		const bCanPublic = typeof b.policies.canPublicNote === 'boolean' ? b.policies.canPublicNote : (b.policies.canPublicNote as any)?.value ?? true;
+		if (aCanPublic !== bCanPublic) {
+			return aCanPublic ? -1 : 1;
 		}
-		// 同じステータス内ではユーザー数順にソート
 		return b.usersCount - a.usersCount;
 	});
 }).finally(() => {
