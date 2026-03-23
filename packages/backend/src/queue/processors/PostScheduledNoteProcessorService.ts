@@ -39,6 +39,7 @@ export class PostScheduledNoteProcessorService {
 		try {
 			const note = await this.noteCreateService.fetchAndCreate(draft.user, {
 				createdAt: new Date(),
+				isScheduledPost: true,
 				fileIds: draft.fileIds,
 				poll: draft.hasPoll ? {
 					choices: draft.pollChoices,

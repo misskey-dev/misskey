@@ -201,6 +201,10 @@ export const packedNoteSchema = {
 			type: 'boolean',
 			optional: true, nullable: false,
 		},
+		isScheduledPost: {
+			type: 'boolean',
+			optional: true, nullable: false,
+		},
 		reactionAcceptance: {
 			type: 'string',
 			optional: false, nullable: true,

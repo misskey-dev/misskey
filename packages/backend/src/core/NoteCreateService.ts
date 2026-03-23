@@ -145,6 +145,7 @@ type Option = {
 	uri?: string | null;
 	url?: string | null;
 	app?: MiApp | null;
+	isScheduledPost?: boolean;
 };
 
 @Injectable()
@@ -254,6 +255,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		apMentions?: MinimumUser[] | null;
 		apHashtags?: string[] | null;
 		apEmojis?: string[] | null;
+		isScheduledPost?: boolean;
 	}): Promise<MiNote> {
 		const visibleUsers = data.visibleUserIds.length > 0 ? await this.usersRepository.findBy({
 			id: In(data.visibleUserIds),
@@ -389,6 +391,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			apMentions: data.apMentions,
 			apHashtags: data.apHashtags,
 			apEmojis: data.apEmojis,
+			isScheduledPost: data.isScheduledPost,
 		});
 	}
 
@@ -594,6 +597,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			emojis,
 			userId: user.id,
 			localOnly: data.localOnly!,
+			isScheduledPost: data.isScheduledPost ?? false,
 			reactionAcceptance: data.reactionAcceptance ?? null,
 			visibility: data.visibility as any,
 			visibleUserIds: data.visibility === 'specified'

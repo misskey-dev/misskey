@@ -94,6 +94,12 @@ export class MiNote {
 	})
 	public localOnly: boolean;
 
+	// 仕様: 予約投稿から作成されたノートかどうかを示すフラグ
+	@Column('boolean', {
+		default: false,
+	})
+	public isScheduledPost: boolean;
+
 	@Column('varchar', {
 		length: 64, nullable: true,
 	})

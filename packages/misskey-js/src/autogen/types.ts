@@ -5824,6 +5824,7 @@ export type components = {
                 userId: string | null;
             } | null;
             localOnly?: boolean;
+            isScheduledPost?: boolean;
             /** @enum {string|null} */
             reactionAcceptance: 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote' | null;
             reactionEmojis: {
