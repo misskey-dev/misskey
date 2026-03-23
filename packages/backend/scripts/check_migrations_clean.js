@@ -18,7 +18,7 @@ const customPatterns = [
 	'noctown_', 'noq_', 'drawing_', 'chat_secret_',
 	// カスタムカラム名
 	'noqBotAccountId', 'excludedFromIllustrationHighlight',
-	'chatScope', 'suspendedReason',
+	'chatScope', 'suspendedReason', 'isScheduledPost',
 	// カスタムpage visibility
 	'url-only',
 ];
