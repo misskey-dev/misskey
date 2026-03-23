@@ -771,18 +771,35 @@ export class UserEntityService implements OnModuleInit {
 		return Math.min(Math.floor((daysSinceCreation / 365) * 100), 100);
 	}
 
-	// アクティビティ減衰係数を計算（lastActiveDateに基づく0.1〜1.0の減衰）
-	// 3日以内: 1.0、3日境界で即座に0.5、3-7日: 0.5→0.3、7-14日: 0.3→0.15、14-30日: 0.15→0.1、30日超: 0.1
-	// 赤ランプ（3日以上非アクティブ）表示と同時にスコアが即座に半減するようにする
+	// アクティビティ減衰係数を計算（最終ローカルパブリック投稿日に基づく0.01〜1.0の減衰）
+	// 3日以内: 1.0、3日境界で即座に0.2、3-7日: 0.2→0.1、7-14日: 0.1→0.05、14日超: 0.01
+	// ログインだけではスコア維持できず、実際にパブリック投稿しないとスコアが大幅に減衰する
 	@bindThis
 	private async calculateActivityDecay(userId: MiUser['id']): Promise<number> {
-		const user = await this.usersRepository.findOneBy({ id: userId });
+		// 最終ローカルパブリック投稿日を取得（リノート・リプライ除外、純粋な投稿のみ）
+		// noteテーブルにcreatedAtカラムはなく、snowflake IDにタイムスタンプが埋め込まれている
+		// (userId, id DESC)インデックスを活用するためORDER BY id DESCを使用
+		const result = await this.usersRepository.query(`
+			SELECT id
+			FROM note
+			WHERE "userId" = $1
+				AND "visibility" = 'public'
+				AND "renoteId" IS NULL
+				AND "replyId" IS NULL
+				AND "userHost" IS NULL
+			ORDER BY id DESC
+			LIMIT 1
+		`, [userId]);
 
-		if (!user || !user.lastActiveDate) {
+		// snowflake IDからタイムスタンプを復元
+		const lastPostId = result[0]?.id as string | undefined;
+		const lastPublicPostDate = lastPostId ? this.idService.parse(lastPostId).date : null;
+
+		if (!lastPublicPostDate) {
 			return 0.1;
 		}
 
-		const elapsed = Date.now() - user.lastActiveDate.getTime();
+		const elapsed = Date.now() - lastPublicPostDate.getTime();
 
 		const ONE_DAY = 1000 * 60 * 60 * 24;
 		const THREE_DAYS = ONE_DAY * 3;
@@ -793,23 +810,35 @@ export class UserEntityService implements OnModuleInit {
 		if (elapsed < THREE_DAYS) {
 			return 1.0;
 		} else if (elapsed < SEVEN_DAYS) {
-			// 3日で即座に0.5、7日で0.3に到達
+			// 3日（赤ランプ）で即座に0.2、7日で0.1に到達
 			const ratio = (elapsed - THREE_DAYS) / (SEVEN_DAYS - THREE_DAYS);
-			return 0.5 - (ratio * 0.2);
+			return 0.2 - (ratio * 0.1);
 		} else if (elapsed < FOURTEEN_DAYS) {
+			// 7日で0.1、14日で0.05に到達
 			const ratio = (elapsed - SEVEN_DAYS) / (FOURTEEN_DAYS - SEVEN_DAYS);
-			return 0.3 - (ratio * 0.15);
-		} else if (elapsed < THIRTY_DAYS) {
-			const ratio = (elapsed - FOURTEEN_DAYS) / (THIRTY_DAYS - FOURTEEN_DAYS);
-			return 0.15 - (ratio * 0.05);
+			return 0.1 - (ratio * 0.05);
 		} else {
-			return 0.1;
+			// 14日以上未投稿はほぼゼロ
+			return 0.01;
 		}
 	}
 
-	// 人気スコア計算: エンゲージメント比率(重み0.2〜0.7) + フォロワー数(重み0.3〜0.8) にアクティビティ減衰を乗算
+	// 人気スコア計算: アクティビティ減衰をベーススコアに対して強制的に適用
+	// 赤ランプ（3日以上未投稿）のユーザーはフォロワー数に関係なく低スコアにする
 	@bindThis
 	public async calculatePopularityScore(userId: MiUser['id'], followerCount: number, _notesCount: number): Promise<number> {
+		// アクティビティ減衰係数を先に取得（最終パブリック投稿日基準）
+		const activityDecay = await this.calculateActivityDecay(userId);
+
+		// 赤ランプ（decay < 1.0）のユーザーはベーススコアに関係なく低スコアを返す
+		// これにより、フォロワー数が多い非アクティブユーザーがアクティブユーザーを上回ることを防ぐ
+		if (activityDecay < 1.0) {
+			// 非アクティブ: 減衰係数そのものをスコアとして使用（最大0.2、3日経過時点）
+			// アクティブユーザーのベーススコアは通常10以上あるため、確実に下回る
+			return Math.round(activityDecay * 100) / 100;
+		}
+
+		// 以下はアクティブユーザー（3日以内に投稿）のみ到達
 		// 30日間のエンゲージメント比率とノート数を取得
 		const { ratio: engagementRatio, notesCount: recentNotes } = await this.calculateRecentEngagementRatio(userId);
 
@@ -829,9 +858,7 @@ export class UserEntityService implements OnModuleInit {
 			(normalizedEngagement * engagementWeight) +
 			(normalizedFollowers * followerWeight);
 
-		// アクティビティ減衰係数を適用（非アクティブユーザーのスコアを低下）
-		const activityDecay = await this.calculateActivityDecay(userId);
-		const popularityScore = baseScore * activityDecay;
+		const popularityScore = baseScore;
 
 		// 小数点第2位まで保持
 		return Math.round(popularityScore * 100) / 100;
