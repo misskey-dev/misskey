@@ -129,6 +129,7 @@
 		"json5": "2.2.3",
 		"jsonld": "9.0.0",
 		"juice": "11.1.1",
+		"lru-cache": "11.2.5",
 		"meilisearch": "0.55.0",
 		"mfm-js": "0.25.0",
 		"mime-types": "3.0.2",
