@@ -43,8 +43,8 @@
 		"@types/punycode.js": "npm:@types/punycode@2.1.4",
 		"@types/tinycolor2": "1.4.6",
 		"@types/ws": "8.18.1",
-		"@typescript-eslint/eslint-plugin": "8.57.0",
-		"@typescript-eslint/parser": "8.57.0",
+		"@typescript-eslint/eslint-plugin": "8.57.1",
+		"@typescript-eslint/parser": "8.57.1",
 		"@vitest/coverage-v8": "4.1.0",
 		"@vue/runtime-core": "3.5.30",
 		"acorn": "8.16.0",
@@ -54,14 +54,14 @@
 		"happy-dom": "20.8.4",
 		"intersection-observer": "0.12.2",
 		"micromatch": "4.0.8",
-		"msw": "2.12.10",
+		"msw": "2.12.13",
 		"nodemon": "3.1.14",
 		"prettier": "3.8.1",
 		"start-server-and-test": "2.1.5",
 		"tsx": "4.21.0",
 		"vite-plugin-turbosnap": "1.0.3",
-		"vue-component-type-helpers": "3.2.5",
+		"vue-component-type-helpers": "3.2.6",
 		"vue-eslint-parser": "10.4.0",
-		"vue-tsc": "3.2.5"
+		"vue-tsc": "3.2.6"
 	}
 }

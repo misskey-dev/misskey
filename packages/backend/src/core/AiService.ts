@@ -43,7 +43,7 @@ export class AiService {
 			tf.env().global.fetch = fetch;
 
 			if (this.model == null) {
-				const nsfw = await import('nsfwjs');
+				const nsfw = await import('nsfwjs/core');
 				await this.modelLoadMutex.runExclusive(async () => {
 					if (this.model == null) {
 						this.model = await nsfw.load(`file://${_dirname}/../../nsfw-model/`, { size: 299 });
