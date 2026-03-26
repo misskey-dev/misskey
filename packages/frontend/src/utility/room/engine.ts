@@ -1374,7 +1374,8 @@ export class RoomObjectPreviewEngine {
 		this.camera.lowerRadiusLimit = 50/*cm*/;
 		this.camera.upperRadiusLimit = 1000/*cm*/;
 		this.camera.useAutoRotationBehavior = true;
-		this.camera.autoRotationBehavior!.idleRotationSpeed = 0.2;
+		this.camera.autoRotationBehavior!.idleRotationSpeed = 0.3;
+		//this.camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
 		this.scene.activeCamera = this.camera;
 
 		const ambientLight = new BABYLON.HemisphericLight('ambientLight', new BABYLON.Vector3(0, 1, -0.5), this.scene);
@@ -1419,6 +1420,9 @@ export class RoomObjectPreviewEngine {
 			this.objectMesh!.dispose();
 		}
 
+		// reset camera rotation
+		this.camera.setPosition(new BABYLON.Vector3(0, 90/*cm*/, 300/*cm*/));
+
 		const def = getObjectDef(type);
 
 		const options = deepClone(def.options.default);
@@ -1432,6 +1436,15 @@ export class RoomObjectPreviewEngine {
 		window.setTimeout(() => {
 			const boundingInfo = getMeshesBoundingBox(this.objectMesh!.getChildMeshes());
 			this.camera.setTarget(new BABYLON.Vector3(0, boundingInfo.center.y, 0));
+
+			// zoom to fit
+			const size = boundingInfo.extendSize;
+			const distance = Math.max(size.x, size.y, size.z) * 2;
+			this.camera.radius = distance * 3;
+			//this.camera.orthoLeft = -distance;
+			//this.camera.orthoRight = distance;
+			//this.camera.orthoTop = distance;
+			//this.camera.orthoBottom = -distance;
 		}, 10);
 	}
 
