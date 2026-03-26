@@ -13,20 +13,20 @@ export const blind = defineObject({
 	options: {
 		schema: {
 			blades: {
-				type: 'number',
+				type: 'range',
 				label: 'Number of blades',
 				min: 1,
 				max: 100,
 			},
 			angle: {
-				type: 'number',
+				type: 'range',
 				label: 'Blade rotation angle (radian)',
 				min: -Math.PI / 2,
 				max: Math.PI / 2,
 				step: 0.01,
 			},
 			open: {
-				type: 'number',
+				type: 'range',
 				label: 'Opening state',
 				min: 0,
 				max: 1,

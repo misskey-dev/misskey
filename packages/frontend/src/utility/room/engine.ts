@@ -164,6 +164,7 @@ type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 		findMesh: (keyword: string) => BABYLON.Mesh;
 		findMeshes: (keyword: string) => BABYLON.Mesh[];
 		findMaterial: (keyword: string) => BABYLON.PBRMaterial;
+		findTransformNode: (keyword: string) => BABYLON.TransformNode;
 	}) => RoomObjectInstance<GetOptionsSchemaValues<OpSc>>;
 };
 
@@ -955,6 +956,13 @@ export class RoomEngine {
 			},
 			findMaterial: (keyword) => {
 				return findMaterial(root, keyword);
+			},
+			findTransformNode: (keyword) => {
+				const node = root.getChildTransformNodes().find(n => n.name.includes(keyword));
+				if (node == null) {
+					throw new Error(`TransformNode with keyword "${keyword}" not found for object ${args.type} (${args.id})`);
+				}
+				return node;
 			},
 		});
 

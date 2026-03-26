@@ -36,6 +36,13 @@ export const laptopPc = defineObject({
 				label: 'Custom picture fit',
 				enum: ['cover', 'contain', 'stretch'],
 			},
+			openAngle: {
+				type: 'range',
+				label: 'Open',
+				min: -Math.PI / 2,
+				max: Math.PI / 2,
+				step: 0.01,
+			},
 		},
 		default: {
 			bodyColor: [1, 1, 1],
@@ -43,11 +50,13 @@ export const laptopPc = defineObject({
 			screenBrightness: 0.35,
 			customPicture: null,
 			fit: 'cover',
+			openAngle: 0,
 		},
 	},
 	placement: 'top',
-	createInstance: ({ room, options, findMesh, findMaterial }) => {
+	createInstance: ({ room, options, findMesh, findMaterial, findTransformNode }) => {
 		const screenMesh = findMesh('__X_SCREEN__');
+		const hutaNode = findTransformNode('__X_HUTA__');
 
 		const bodyMaterial = findMaterial('__X_BODY__');
 		const bezelMaterial = findMaterial('__X_BEZEL__');
@@ -111,6 +120,14 @@ export const laptopPc = defineObject({
 		applyBodyColor();
 		applyBezelColor();
 
+		const applyOpenAngle = () => {
+			const angle = options.openAngle;
+			hutaNode.rotationQuaternion = null;
+			hutaNode.rotation.x = -angle;
+		};
+
+		applyOpenAngle();
+
 		return {
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
@@ -119,6 +136,7 @@ export const laptopPc = defineObject({
 					case 'screenBrightness': applyScreenBrightness(); break;
 					case 'customPicture': applyCustomPicture(); break;
 					case 'fit': applyFit(); break;
+					case 'openAngle': applyOpenAngle(); break;
 				}
 			},
 			interactions: {},
