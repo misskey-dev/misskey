@@ -16,28 +16,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 >
 	<template #header><i class="ti ti-box"></i> カタログ</template>
 
-	<div :class="$style.container">
-		<div>
-			<div
-				v-for="def in OBJECT_DEFS"
-				:key="def.id"
-				:class="[$style.catalogItem, { [$style.selected]: selectedId === def.id }]"
-				@click="selectedId = def.id"
-			>
-				<div>{{ def.name }}</div>
+	<div :class="$style.root">
+		<div :class="$style.container">
+			<div :class="$style.menu">
+				<div
+					v-for="def in OBJECT_DEFS"
+					:key="def.id"
+					:class="[$style.catalogItem, { [$style.selected]: selectedId === def.id }]"
+					@click="selectedId = def.id"
+				>
+					<div>{{ def.name }}</div>
+				</div>
 			</div>
+			<canvas ref="canvas" :class="$style.canvas"></canvas>
 		</div>
-		<canvas ref="canvas" :class="$style.canvas"></canvas>
 	</div>
 </MkModalWindow>
 </template>
 
 <script setup lang="ts">
-import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick } from 'vue';
+import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick, shallowRef } from 'vue';
 import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import * as os from '@/os.js';
 import { OBJECT_DEFS } from '@/utility/room/object-defs.js';
+import { RoomObjectPreviewEngine } from '@/utility/room/engine.js';
 
 const emit = defineEmits<{
 	(ev: 'ok', id: string): void;
@@ -48,6 +51,26 @@ const emit = defineEmits<{
 const dialog = useTemplateRef('dialog');
 const canvas = useTemplateRef('canvas');
 const selectedId = ref<string | null>(null);
+const engine = shallowRef<RoomObjectPreviewEngine | null>(null);
+
+onMounted(() => {
+	engine.value = new RoomObjectPreviewEngine({
+		canvas: canvas.value!,
+	});
+
+	engine.value.init();
+
+	canvas.value!.focus();
+});
+
+onUnmounted(() => {
+	engine.value.destroy();
+});
+
+watch(selectedId, (newId) => {
+	if (newId == null) return;
+	engine.value!.load(newId);
+});
 
 function ok() {
 	if (selectedId.value == null) return;
@@ -62,10 +85,19 @@ async function cancel() {
 </script>
 
 <style module>
+.root {
+	container-type: inline-size;
+	height: 100%;
+}
+
 .container {
 	height: 100%;
 	display: grid;
-	grid-template-columns: 1fr 400px;
+	grid-template-columns: 400px 1fr;
+}
+
+.menu {
+	overflow-y: scroll;
 }
 
 .catalogItem {
@@ -75,8 +107,8 @@ async function cancel() {
 	cursor: pointer;
 }
 .selected {
-	background-color: var(--accent-color);
-	color: var(--accent-text-color);
+	color: var(--MI_THEME-accent);
+	background-color: var(--MI_THEME-accentedBg);
 }
 
 .canvas {

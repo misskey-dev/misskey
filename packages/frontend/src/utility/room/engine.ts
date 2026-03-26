@@ -945,7 +945,7 @@ export class RoomEngine {
 			findMesh: (keyword) => {
 				const mesh = root.getChildMeshes().find(m => m.name.includes(keyword));
 				if (mesh == null) {
-					throw new Error(`Mesh with keyword "${keyword}" not found for object ${args.type} (${args.id})`);
+					throw new Error(`Mesh with keyword "${keyword}" not found for object ${args.type}`);
 				}
 				return mesh as BABYLON.Mesh;
 			},
@@ -959,7 +959,7 @@ export class RoomEngine {
 			findTransformNode: (keyword) => {
 				const node = root.getChildTransformNodes().find(n => n.name.includes(keyword));
 				if (node == null) {
-					throw new Error(`TransformNode with keyword "${keyword}" not found for object ${args.type} (${args.id})`);
+					throw new Error(`TransformNode with keyword "${keyword}" not found for object ${args.type}`);
 				}
 				return node;
 			},
@@ -1340,16 +1340,16 @@ export class RoomEngine {
 export class RoomObjectPreviewEngine {
 	private canvas: HTMLCanvasElement;
 	private engine: BABYLON.Engine;
-	public scene: BABYLON.Scene;
+	private scene: BABYLON.Scene;
 	private shadowGenerator1: BABYLON.ShadowGenerator;
 	private camera: BABYLON.ArcRotateCamera;
-	private objectMeshs: Map<string, BABYLON.Mesh> = new Map();
-	public objectInstance: RoomObjectInstance<any> | null = null;
+	private objectMesh: BABYLON.Mesh | null = null;
+	private objectInstance: RoomObjectInstance<any> | null = null;
 	private envMapIndoor: BABYLON.CubeTexture;
 	private roomLight: BABYLON.SpotLight;
 	private zGridPreviewPlane: BABYLON.Mesh;
 
-	constructor(roomState: RoomState, options: {
+	constructor(options: {
 		canvas: HTMLCanvasElement;
 	}) {
 		this.canvas = options.canvas;
@@ -1373,6 +1373,8 @@ export class RoomObjectPreviewEngine {
 		this.camera.upperBetaLimit = (Math.PI / 2) + 0.1;
 		this.camera.lowerRadiusLimit = 50/*cm*/;
 		this.camera.upperRadiusLimit = 1000/*cm*/;
+		this.camera.useAutoRotationBehavior = true;
+		this.camera.autoRotationBehavior!.idleRotationSpeed = 0.2;
 		this.scene.activeCamera = this.camera;
 
 		const ambientLight = new BABYLON.HemisphericLight('ambientLight', new BABYLON.Vector3(0, 1, -0.5), this.scene);
@@ -1401,15 +1403,7 @@ export class RoomObjectPreviewEngine {
 
 		this.zGridPreviewPlane = BABYLON.MeshBuilder.CreatePlane('zGridPreviewPlane', { width: 1000/*cm*/, height: 1000/*cm*/ }, this.scene);
 		this.zGridPreviewPlane.material = gridMaterial;
-		this.zGridPreviewPlane.isPickable = false;
-		this.zGridPreviewPlane.isVisible = false;
-
-		if (_DEV_) {
-			const axes = new AxesViewer(this.scene, 30);
-			axes.xAxis.position = new BABYLON.Vector3(0, 30, 0);
-			axes.yAxis.position = new BABYLON.Vector3(0, 30, 0);
-			axes.zAxis.position = new BABYLON.Vector3(0, 30, 0);
-		}
+		this.zGridPreviewPlane.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
 	}
 
 	public async init() {
@@ -1418,12 +1412,32 @@ export class RoomObjectPreviewEngine {
 		});
 	}
 
+	public async load(type: string) {
+		if (this.objectInstance != null) {
+			this.objectInstance.dispose?.();
+			this.objectInstance = null;
+			this.objectMesh!.dispose();
+		}
+
+		const def = getObjectDef(type);
+
+		const options = deepClone(def.options.default);
+
+		await this.loadObject({
+			type,
+			options,
+		});
+
+		// なぜかちょっと待たないとbounding boxのサイズが正しくない
+		window.setTimeout(() => {
+			const boundingInfo = getMeshesBoundingBox(this.objectMesh!.getChildMeshes());
+			this.camera.setTarget(new BABYLON.Vector3(0, boundingInfo.center.y, 0));
+		}, 10);
+	}
+
 	// TODO: RoomEngineのものとほぼ同じだからいい感じに共通化
 	private async loadObject(args: {
 		type: string;
-		id: string;
-		position: BABYLON.Vector3;
-		rotation: BABYLON.Vector3;
 		options: any;
 	}) {
 		const def = getObjectDef(args.type);
@@ -1436,7 +1450,7 @@ export class RoomObjectPreviewEngine {
 				.toLowerCase();
 		};
 
-		const root = new BABYLON.Mesh(`object_${args.id}_${args.type}`, this.scene);
+		const root = new BABYLON.Mesh(`object_${args.type}`, this.scene);
 
 		const loaderResult = await BABYLON.ImportMeshAsync(`/client-assets/room/objects/${camelToKebab(args.type)}/${camelToKebab(args.type)}.glb`, this.scene);
 
@@ -1462,18 +1476,7 @@ export class RoomObjectPreviewEngine {
 			}
 		}
 
-		const metadata = {
-			isObject: true,
-			objectId: args.id,
-			objectType: args.type,
-			isCollision: !hasCollisionMesh,
-		};
-
 		root.addChild(subRoot);
-
-		root.position = args.position.clone();
-		root.rotation = args.rotation.clone();
-		root.metadata = metadata;
 
 		const meshUpdated = (meshes: BABYLON.Mesh[]) => {
 			for (const m of meshes) {
@@ -1482,13 +1485,11 @@ export class RoomObjectPreviewEngine {
 				// シェイプキー(morph)を考慮してbounding boxを更新するために必要
 				mesh.refreshBoundingInfo({ applyMorph: true });
 
-				mesh.metadata = metadata;
 				mesh.checkCollisions = !hasCollisionMesh;
 
 				if (mesh.name.includes('__COLLISION__')) {
 					mesh.receiveShadows = false;
 					mesh.isVisible = false;
-					mesh.metadata.isCollision = true;
 					mesh.checkCollisions = true;
 				} else if (mesh.name.includes('__TOP__') || mesh.name.includes('__SIDE__')) {
 					mesh.receiveShadows = false;
@@ -1497,7 +1498,6 @@ export class RoomObjectPreviewEngine {
 					if (def.receiveShadows !== false) mesh.receiveShadows = true;
 					if (def.castShadows !== false) {
 						this.shadowGenerator1.addShadowCaster(mesh);
-						this.shadowGenerator2.addShadowCaster(mesh);
 					}
 
 					if (mesh.material) {
@@ -1521,7 +1521,7 @@ export class RoomObjectPreviewEngine {
 			findMesh: (keyword) => {
 				const mesh = root.getChildMeshes().find(m => m.name.includes(keyword));
 				if (mesh == null) {
-					throw new Error(`Mesh with keyword "${keyword}" not found for object ${args.type} (${args.id})`);
+					throw new Error(`Mesh with keyword "${keyword}" not found for object ${args.type}`);
 				}
 				return mesh as BABYLON.Mesh;
 			},
@@ -1535,7 +1535,7 @@ export class RoomObjectPreviewEngine {
 			findTransformNode: (keyword) => {
 				const node = root.getChildTransformNodes().find(n => n.name.includes(keyword));
 				if (node == null) {
-					throw new Error(`TransformNode with keyword "${keyword}" not found for object ${args.type} (${args.id})`);
+					throw new Error(`TransformNode with keyword "${keyword}" not found for object ${args.type}`);
 				}
 				return node;
 			},
@@ -1544,6 +1544,7 @@ export class RoomObjectPreviewEngine {
 		objectInstance.onInited?.();
 
 		this.objectInstance = objectInstance;
+		this.objectMesh = root;
 	}
 
 	public updateObjectOption(key: string, value: any) {
