@@ -44,7 +44,7 @@ export const poster = defineObject({
 		},
 	},
 	placement: 'side',
-	createInstance: ({ room, root, options, findMaterial, findMesh, findMeshes, meshUpdated }) => {
+	createInstance: ({ scene, options, findMaterial, findMesh, findMeshes, meshUpdated }) => {
 		const pictureMesh = findMesh('__X_PICTURE__');
 		pictureMesh.rotationQuaternion = null;
 
@@ -86,7 +86,7 @@ export const poster = defineObject({
 
 		const applyCustomPicture = () => {
 			if (options.customPicture != null) {
-				const tex = new BABYLON.Texture(options.customPicture, room.scene, false, false);
+				const tex = new BABYLON.Texture(options.customPicture, scene, false, false);
 				tex.wrapU = BABYLON.Texture.MIRROR_ADDRESSMODE;
 				tex.wrapV = BABYLON.Texture.MIRROR_ADDRESSMODE;
 

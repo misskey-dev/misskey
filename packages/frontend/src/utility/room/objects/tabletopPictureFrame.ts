@@ -83,7 +83,7 @@ export const tabletopPictureFrame = defineObject({
 		},
 	},
 	placement: 'top',
-	createInstance: ({ room, root, options, findMaterial, findMesh, meshUpdated }) => {
+	createInstance: ({ scene, options, findMaterial, findMesh, meshUpdated }) => {
 		const frameMesh = findMesh('__X_FRAME__');
 		frameMesh.rotationQuaternion = null;
 		const matMesh = findMesh('__X_MAT__');
@@ -163,7 +163,7 @@ export const tabletopPictureFrame = defineObject({
 
 		const applyCustomPicture = () => {
 			if (options.customPicture != null) {
-				const tex = new BABYLON.Texture(options.customPicture, room.scene, false, false);
+				const tex = new BABYLON.Texture(options.customPicture, scene, false, false);
 				tex.wrapU = BABYLON.Texture.MIRROR_ADDRESSMODE;
 				tex.wrapV = BABYLON.Texture.MIRROR_ADDRESSMODE;
 

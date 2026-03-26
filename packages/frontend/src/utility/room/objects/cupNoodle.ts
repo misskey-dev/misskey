@@ -15,10 +15,10 @@ export const cupNoodle = defineObject({
 		default: {},
 	},
 	placement: 'top',
-	createInstance: ({ room, root }) => {
+	createInstance: ({ scene, root }) => {
 		return {
 			onInited: () => {
-				yuge(room, root, new BABYLON.Vector3(0, 10/*cm*/, 0));
+				yuge(scene, root, new BABYLON.Vector3(0, 10/*cm*/, 0));
 			},
 			interactions: {},
 		};

@@ -102,6 +102,14 @@ export const blind = defineObject({
 					},
 				},
 			},
+			onOptionsUpdated: ([k, v]) => {
+				temp.$reset();
+				switch (k) {
+					case 'angle': applyAngle(); break;
+					case 'open': applyOpeningState(); break;
+					case 'blades': applyOpeningState(); break;
+				}
+			},
 			resetTemporaryState: () => {
 				temp.$reset();
 				applyAngle();

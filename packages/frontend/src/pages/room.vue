@@ -625,15 +625,16 @@ function toggleEditMode() {
 	canvas.value!.focus();
 }
 
-function addObject(ev: PointerEvent) {
+async function addObject(ev: PointerEvent) {
 	if (engine.value == null) return;
-	os.popupMenu(OBJECT_DEFS.map(def => ({
-		text: def.id,
-		action: () => {
-			engine.value?.addObject(def.id);
+	const { dispose } = await os.popupAsyncWithDialog(import('./room.add-object-dialog.vue').then(x => x.default), {
+	}, {
+		ok: async (res) => {
+			engine.value?.addObject(res);
 			canvas.value!.focus();
 		},
-	})), ev.currentTarget ?? ev.target);
+		closed: () => dispose(),
+	});
 }
 
 function removeSelectedObject() {

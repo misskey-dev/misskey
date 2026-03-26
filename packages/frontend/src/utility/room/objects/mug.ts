@@ -15,10 +15,10 @@ export const mug = defineObject({
 		default: {},
 	},
 	placement: 'top',
-	createInstance: ({ room, root }) => {
+	createInstance: ({ scene, root }) => {
 		return {
 			onInited: () => {
-				yuge(room, root, new BABYLON.Vector3(0, 5/*cm*/, 0));
+				yuge(scene, root, new BABYLON.Vector3(0, 5/*cm*/, 0));
 			},
 			interactions: {},
 		};

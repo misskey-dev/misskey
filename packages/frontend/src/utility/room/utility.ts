@@ -6,11 +6,11 @@
 import * as BABYLON from '@babylonjs/core';
 import type { RoomEngine } from './engine.js';
 
-export function yuge(room: RoomEngine, mesh: BABYLON.Mesh, offset: BABYLON.Vector3) {
-	const emitter = new BABYLON.TransformNode('emitter', room.scene);
+export function yuge(scene: BABYLON.Scene, mesh: BABYLON.Mesh, offset: BABYLON.Vector3) {
+	const emitter = new BABYLON.TransformNode('emitter', scene);
 	emitter.parent = mesh;
 	emitter.position = offset;
-	const ps = new BABYLON.ParticleSystem('steamParticleSystem', 8, room.scene);
+	const ps = new BABYLON.ParticleSystem('steamParticleSystem', 8, scene);
 	ps.particleTexture = new BABYLON.Texture('/client-assets/room/steam.png');
 	ps.emitter = emitter;
 	ps.minEmitBox = new BABYLON.Vector3(-1/*cm*/, 0, -1/*cm*/);
@@ -278,15 +278,15 @@ const TV_PROGRAMS = {
 
 let tvScreenMaterial: BABYLON.StandardMaterial | null = null;
 
-export function initTv(room: RoomEngine, screenMesh: BABYLON.Mesh) {
+export function initTv(scene: BABYLON.Scene, screenMesh: BABYLON.Mesh) {
 	const tvProgramId = 'shopping';
 	const tvProgram = TV_PROGRAMS[tvProgramId];
 	if (tvScreenMaterial == null) {
-		tvScreenMaterial = new BABYLON.StandardMaterial('tvScreenMaterial', room.scene);
+		tvScreenMaterial = new BABYLON.StandardMaterial('tvScreenMaterial', scene);
 		tvScreenMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
 		tvScreenMaterial.ambientColor = new BABYLON.Color3(0, 0, 0);
 		tvScreenMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-		tvScreenMaterial.emissiveTexture = new BABYLON.Texture(`/client-assets/room/tv/${tvProgramId}/${tvProgramId}.png`, room.scene, false, false);
+		tvScreenMaterial.emissiveTexture = new BABYLON.Texture(`/client-assets/room/tv/${tvProgramId}/${tvProgramId}.png`, scene, false, false);
 		tvScreenMaterial.emissiveTexture.level = 0.5;
 		tvScreenMaterial.emissiveColor = new BABYLON.Color3(0.4, 0.4, 0.4);
 		tvScreenMaterial.freeze();

@@ -157,6 +157,7 @@ type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 	isChair?: boolean;
 	createInstance: (args: {
 		room: RoomEngine;
+		scene: BABYLON.Scene;
 		root: BABYLON.Mesh;
 		options: Readonly<GetOptionsSchemaValues<OpSc>>;
 		loaderResult: BABYLON.ISceneLoaderAsyncResult;
@@ -937,6 +938,7 @@ export class RoomEngine {
 
 		const objectInstance = def.createInstance({
 			room: this,
+			scene: this.scene,
 			root,
 			options: args.options,
 			loaderResult: loaderResult,

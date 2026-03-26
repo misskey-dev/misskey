@@ -13,19 +13,19 @@ export const lavaLamp = defineObject({
 		default: {},
 	},
 	placement: 'top',
-	createInstance: ({ room, root }) => {
+	createInstance: ({ scene, root }) => {
 		return {
 			onInited: () => {
-				const light = new BABYLON.PointLight('lavaLampLight', new BABYLON.Vector3(0, 11/*cm*/, 0), room.scene);
+				const light = new BABYLON.PointLight('lavaLampLight', new BABYLON.Vector3(0, 11/*cm*/, 0), scene);
 				light.parent = root;
 				light.diffuse = new BABYLON.Color3(1.0, 0.5, 0.2);
 				light.intensity = 300;
 				light.range = 100/*cm*/;
 
-				const sphere = BABYLON.MeshBuilder.CreateSphere('lavaLampLightSphere', { diameter: 4/*cm*/ }, room.scene);
+				const sphere = BABYLON.MeshBuilder.CreateSphere('lavaLampLightSphere', { diameter: 4/*cm*/ }, scene);
 				sphere.parent = root;
 				sphere.position = new BABYLON.Vector3(0, 15/*cm*/, 0);
-				const mat = new BABYLON.StandardMaterial('lavaLampLightMat', room.scene);
+				const mat = new BABYLON.StandardMaterial('lavaLampLightMat', scene);
 				mat.emissiveColor = new BABYLON.Color3(1.0, 0.5, 0.2);
 
 				mat.alpha = 0.5;
@@ -38,12 +38,12 @@ export const lavaLamp = defineObject({
 					{ frame: 500, value: 38/*cm*/ },
 				]);
 				sphere.animations = [anim];
-				room.scene.beginAnimation(sphere, 0, 500, true);
+				scene.beginAnimation(sphere, 0, 500, true);
 
-				const emitter = new BABYLON.TransformNode('emitter', room.scene);
+				const emitter = new BABYLON.TransformNode('emitter', scene);
 				emitter.parent = root;
 				emitter.position = new BABYLON.Vector3(0, 10/*cm*/, 0);
-				const ps = new BABYLON.ParticleSystem('', 32, room.scene);
+				const ps = new BABYLON.ParticleSystem('', 32, scene);
 				ps.particleTexture = new BABYLON.Texture('/client-assets/room/objects/lava-lamp/bubble.png');
 				ps.emitter = emitter;
 				ps.isLocal = true;

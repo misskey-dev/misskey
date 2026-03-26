@@ -54,7 +54,7 @@ export const laptopPc = defineObject({
 		},
 	},
 	placement: 'top',
-	createInstance: ({ room, options, findMesh, findMaterial, findTransformNode }) => {
+	createInstance: ({ scene, options, findMesh, findMaterial, findTransformNode }) => {
 		const screenMesh = findMesh('__X_SCREEN__');
 		const hutaNode = findTransformNode('__X_HUTA__');
 
@@ -81,7 +81,7 @@ export const laptopPc = defineObject({
 
 		const applyCustomPicture = () => {
 			if (options.customPicture != null) {
-				const tex = new BABYLON.Texture(options.customPicture, room.scene, false, false);
+				const tex = new BABYLON.Texture(options.customPicture, scene, false, false);
 				tex.wrapU = BABYLON.Texture.MIRROR_ADDRESSMODE;
 				tex.wrapV = BABYLON.Texture.MIRROR_ADDRESSMODE;
 				tex.level = 0.5;

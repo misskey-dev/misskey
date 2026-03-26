@@ -14,7 +14,7 @@ export const ceilingFanLight = defineObject({
 		default: {},
 	},
 	placement: 'ceiling',
-	createInstance: ({ room, root }) => {
+	createInstance: ({ scene, root }) => {
 		return {
 			onInited: () => {
 				const rotor = root.getChildMeshes().find(m => m.name === 'Rotor') as BABYLON.Mesh;
@@ -25,7 +25,7 @@ export const ceilingFanLight = defineObject({
 					{ frame: 100, value: Math.PI * 2 },
 				]);
 				rotor.animations = [anim];
-				room.scene.beginAnimation(rotor, 0, 100, true);
+				scene.beginAnimation(rotor, 0, 100, true);
 			},
 			interactions: {},
 		};

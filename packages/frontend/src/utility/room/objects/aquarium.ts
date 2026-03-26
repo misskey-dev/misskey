@@ -14,19 +14,19 @@ export const aquarium = defineObject({
 		default: {},
 	},
 	placement: 'top',
-	createInstance: ({ room, root }) => {
+	createInstance: ({ scene, root }) => {
 		return {
 			onInited: () => {
-				const noiseTexture = new BABYLON.NoiseProceduralTexture('perlin', 256, room.scene);
+				const noiseTexture = new BABYLON.NoiseProceduralTexture('perlin', 256, scene);
 				noiseTexture.animationSpeedFactor = 70;
 				noiseTexture.persistence = 10;
 				noiseTexture.brightness = 0.5;
 				noiseTexture.octaves = 5;
 
-				const emitter = new BABYLON.TransformNode('emitter', room.scene);
+				const emitter = new BABYLON.TransformNode('emitter', scene);
 				emitter.parent = root;
 				emitter.position = new BABYLON.Vector3(17/*cm*/, 7/*cm*/, -9/*cm*/);
-				const ps = new BABYLON.ParticleSystem('', 128, room.scene);
+				const ps = new BABYLON.ParticleSystem('', 128, scene);
 				ps.particleTexture = new BABYLON.Texture('/client-assets/room/objects/lava-lamp/bubble.png');
 				ps.emitter = emitter;
 				ps.isLocal = true;

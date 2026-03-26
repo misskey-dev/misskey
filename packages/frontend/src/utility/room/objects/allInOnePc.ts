@@ -46,7 +46,7 @@ export const allInOnePc = defineObject({
 		},
 	},
 	placement: 'top',
-	createInstance: ({ room, options, findMesh, findMaterial }) => {
+	createInstance: ({ scene, options, findMesh, findMaterial }) => {
 		const screenMesh = findMesh('__X_SCREEN__');
 
 		const bodyMaterial = findMaterial('__X_BODY__');
@@ -72,7 +72,7 @@ export const allInOnePc = defineObject({
 
 		const applyCustomPicture = () => {
 			if (options.customPicture != null) {
-				const tex = new BABYLON.Texture(options.customPicture, room.scene, false, false);
+				const tex = new BABYLON.Texture(options.customPicture, scene, false, false);
 				tex.wrapU = BABYLON.Texture.MIRROR_ADDRESSMODE;
 				tex.wrapV = BABYLON.Texture.MIRROR_ADDRESSMODE;
 				tex.level = 0.5;
