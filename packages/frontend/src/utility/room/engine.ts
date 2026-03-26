@@ -1425,7 +1425,6 @@ export class RoomObjectPreviewEngine {
 		position: BABYLON.Vector3;
 		rotation: BABYLON.Vector3;
 		options: any;
-		isMainLight?: boolean;
 	}) {
 		const def = getObjectDef(args.type);
 
