@@ -14,6 +14,8 @@ export const ceilingFanLight = defineObject({
 		default: {},
 	},
 	placement: 'ceiling',
+	receiveShadows: false,
+	castShadows: false,
 	createInstance: ({ scene, root }) => {
 		return {
 			onInited: () => {

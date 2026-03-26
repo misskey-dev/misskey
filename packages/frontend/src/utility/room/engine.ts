@@ -156,7 +156,7 @@ type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 	mergeMeshes?: string[] | null; // multi-materialなメッシュは複数のメッシュに分割されるが、それだと不便な場合にメッシュをマージするための指定
 	isChair?: boolean;
 	createInstance: (args: {
-		room: RoomEngine;
+		room?: RoomEngine | null;
 		scene: BABYLON.Scene;
 		root: BABYLON.Mesh;
 		options: Readonly<GetOptionsSchemaValues<OpSc>>;
@@ -845,7 +845,6 @@ export class RoomEngine {
 		position: BABYLON.Vector3;
 		rotation: BABYLON.Vector3;
 		options: any;
-		isMainLight?: boolean;
 	}) {
 		const def = getObjectDef(args.type);
 
@@ -915,8 +914,8 @@ export class RoomEngine {
 					mesh.receiveShadows = false;
 					mesh.isVisible = false;
 				} else {
-					if (!args.isMainLight && def.receiveShadows !== false) mesh.receiveShadows = true;
-					if (!args.isMainLight && def.castShadows !== false) {
+					if (def.receiveShadows !== false) mesh.receiveShadows = true;
+					if (def.castShadows !== false) {
 						this.shadowGenerator1.addShadowCaster(mesh);
 						this.shadowGenerator2.addShadowCaster(mesh);
 					}
@@ -934,8 +933,6 @@ export class RoomEngine {
 
 		meshUpdated(loaderResult.meshes);
 
-		this.objectMeshs.set(args.id, root);
-
 		const objectInstance = def.createInstance({
 			room: this,
 			scene: this.scene,
@@ -943,7 +940,7 @@ export class RoomEngine {
 			options: args.options,
 			loaderResult: loaderResult,
 			meshUpdated: () => {
-				meshUpdated(this.objectMeshs.get(args.id)!.getChildMeshes() as BABYLON.Mesh[]);
+				meshUpdated(root.getChildMeshes());
 			},
 			findMesh: (keyword) => {
 				const mesh = root.getChildMeshes().find(m => m.name.includes(keyword));
@@ -968,15 +965,10 @@ export class RoomEngine {
 			},
 		});
 
+		objectInstance.onInited?.();
+
 		this.objectInstances.set(args.id, objectInstance);
-
-		if (objectInstance.onInited != null) {
-			objectInstance.onInited();
-		}
-
-		if (args.isMainLight) {
-			this.roomLight.position = root.position.add(new BABYLON.Vector3(0, -1/*cm*/, 0));
-		}
+		this.objectMeshs.set(args.id, root);
 
 		return { root, objectInstance };
 	}
@@ -1341,6 +1333,229 @@ export class RoomEngine {
 		}
 		this.intervalIds = [];
 		this.timeoutIds = [];
+		this.engine.dispose();
+	}
+}
+
+export class RoomObjectPreviewEngine {
+	private canvas: HTMLCanvasElement;
+	private engine: BABYLON.Engine;
+	public scene: BABYLON.Scene;
+	private shadowGenerator1: BABYLON.ShadowGenerator;
+	private camera: BABYLON.ArcRotateCamera;
+	private objectMeshs: Map<string, BABYLON.Mesh> = new Map();
+	public objectInstance: RoomObjectInstance<any> | null = null;
+	private envMapIndoor: BABYLON.CubeTexture;
+	private roomLight: BABYLON.SpotLight;
+	private zGridPreviewPlane: BABYLON.Mesh;
+
+	constructor(roomState: RoomState, options: {
+		canvas: HTMLCanvasElement;
+	}) {
+		this.canvas = options.canvas;
+
+		registerBuiltInLoaders();
+
+		this.engine = new BABYLON.Engine(options.canvas, false, { alpha: false, antialias: false });
+		this.scene = new BABYLON.Scene(this.engine);
+
+		this.scene.ambientColor = new BABYLON.Color3(1.0, 0.9, 0.8);
+
+		this.envMapIndoor = BABYLON.CubeTexture.CreateFromPrefilteredData('/client-assets/room/indoor.env', this.scene);
+		this.envMapIndoor.boundingBoxSize = new BABYLON.Vector3(500/*cm*/, 500/*cm*/, 500/*cm*/);
+
+		this.camera = new BABYLON.ArcRotateCamera('camera', -Math.PI / 2, Math.PI / 2.5, 300/*cm*/, new BABYLON.Vector3(0, 90/*cm*/, 0), this.scene);
+		this.camera.attachControl(this.canvas);
+		this.camera.minZ = 1/*cm*/;
+		this.camera.maxZ = 100000/*cm*/;
+		this.camera.fov = 0.5;
+		this.camera.lowerBetaLimit = 0;
+		this.camera.upperBetaLimit = (Math.PI / 2) + 0.1;
+		this.camera.lowerRadiusLimit = 50/*cm*/;
+		this.camera.upperRadiusLimit = 1000/*cm*/;
+		this.scene.activeCamera = this.camera;
+
+		const ambientLight = new BABYLON.HemisphericLight('ambientLight', new BABYLON.Vector3(0, 1, -0.5), this.scene);
+		ambientLight.diffuse = new BABYLON.Color3(1.0, 1.0, 1.0);
+		ambientLight.intensity = 0.5;
+		//ambientLight.intensity = 0;
+
+		this.roomLight = new BABYLON.SpotLight('roomLight', new BABYLON.Vector3(0, 249/*cm*/, 0), new BABYLON.Vector3(0, -1, 0), 16, 8, this.scene);
+		this.roomLight.diffuse = new BABYLON.Color3(1.0, 0.9, 0.8);
+		this.roomLight.shadowMinZ = 10/*cm*/;
+		this.roomLight.shadowMaxZ = 300/*cm*/;
+
+		this.shadowGenerator1 = new BABYLON.ShadowGenerator(4096, this.roomLight);
+		this.shadowGenerator1.forceBackFacesOnly = true;
+		this.shadowGenerator1.bias = 0.0001;
+		this.shadowGenerator1.usePercentageCloserFiltering = true;
+		this.shadowGenerator1.filteringQuality = BABYLON.ShadowGenerator.QUALITY_HIGH;
+		//this.shadowGenerator1.useContactHardeningShadow = true;
+
+		const gridMaterial = new GridMaterial('grid', this.scene);
+		gridMaterial.lineColor = new BABYLON.Color3(0.5, 0.5, 0.5);
+		gridMaterial.mainColor = new BABYLON.Color3(0, 0, 0);
+		gridMaterial.minorUnitVisibility = 1;
+		gridMaterial.opacity = 0.5;
+		gridMaterial.gridRatio = 10/*cm*/;
+
+		this.zGridPreviewPlane = BABYLON.MeshBuilder.CreatePlane('zGridPreviewPlane', { width: 1000/*cm*/, height: 1000/*cm*/ }, this.scene);
+		this.zGridPreviewPlane.material = gridMaterial;
+		this.zGridPreviewPlane.isPickable = false;
+		this.zGridPreviewPlane.isVisible = false;
+
+		if (_DEV_) {
+			const axes = new AxesViewer(this.scene, 30);
+			axes.xAxis.position = new BABYLON.Vector3(0, 30, 0);
+			axes.yAxis.position = new BABYLON.Vector3(0, 30, 0);
+			axes.zAxis.position = new BABYLON.Vector3(0, 30, 0);
+		}
+	}
+
+	public async init() {
+		this.engine.runRenderLoop(() => {
+			this.scene.render();
+		});
+	}
+
+	// TODO: RoomEngineのものとほぼ同じだからいい感じに共通化
+	private async loadObject(args: {
+		type: string;
+		id: string;
+		position: BABYLON.Vector3;
+		rotation: BABYLON.Vector3;
+		options: any;
+		isMainLight?: boolean;
+	}) {
+		const def = getObjectDef(args.type);
+
+		// ex) hangingTShirt -> hanging-t-shirt
+		const camelToKebab = (s: string) => {
+			return s
+				.replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+				.replace(/([A-Z])([A-Z][a-z])/g, '$1-$2')
+				.toLowerCase();
+		};
+
+		const root = new BABYLON.Mesh(`object_${args.id}_${args.type}`, this.scene);
+
+		const loaderResult = await BABYLON.ImportMeshAsync(`/client-assets/room/objects/${camelToKebab(args.type)}/${camelToKebab(args.type)}.glb`, this.scene);
+
+		// babylonによって自動で追加される右手系変換用ノード
+		const subRoot = loaderResult.meshes[0];
+		subRoot.scaling = subRoot.scaling.scale(WORLD_SCALE);// cmをmに
+
+		if (def.mergeMeshes != null) {
+			for (const groupingMeshKeyword of def.mergeMeshes) {
+				const meshes = loaderResult.meshes.filter(m => m.name.includes(groupingMeshKeyword));
+				const merged = BABYLON.Mesh.MergeMeshes(meshes as BABYLON.Mesh[], true, true, undefined, false, true);
+				merged.name = `${groupingMeshKeyword}.grouped`;
+				merged.setParent(subRoot);
+				loaderResult.meshes.push(merged);
+			}
+		}
+
+		let hasCollisionMesh = false;
+		for (const mesh of loaderResult.meshes) {
+			if (mesh.name.includes('__COLLISION__')) {
+				hasCollisionMesh = true;
+				break;
+			}
+		}
+
+		const metadata = {
+			isObject: true,
+			objectId: args.id,
+			objectType: args.type,
+			isCollision: !hasCollisionMesh,
+		};
+
+		root.addChild(subRoot);
+
+		root.position = args.position.clone();
+		root.rotation = args.rotation.clone();
+		root.metadata = metadata;
+
+		const meshUpdated = (meshes: BABYLON.Mesh[]) => {
+			for (const m of meshes) {
+				const mesh = m;
+
+				// シェイプキー(morph)を考慮してbounding boxを更新するために必要
+				mesh.refreshBoundingInfo({ applyMorph: true });
+
+				mesh.metadata = metadata;
+				mesh.checkCollisions = !hasCollisionMesh;
+
+				if (mesh.name.includes('__COLLISION__')) {
+					mesh.receiveShadows = false;
+					mesh.isVisible = false;
+					mesh.metadata.isCollision = true;
+					mesh.checkCollisions = true;
+				} else if (mesh.name.includes('__TOP__') || mesh.name.includes('__SIDE__')) {
+					mesh.receiveShadows = false;
+					mesh.isVisible = false;
+				} else {
+					if (def.receiveShadows !== false) mesh.receiveShadows = true;
+					if (def.castShadows !== false) {
+						this.shadowGenerator1.addShadowCaster(mesh);
+						this.shadowGenerator2.addShadowCaster(mesh);
+					}
+
+					if (mesh.material) {
+						(mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
+					}
+				}
+			}
+		};
+
+		meshUpdated(loaderResult.meshes);
+
+		const objectInstance = def.createInstance({
+			room: null,
+			scene: this.scene,
+			root,
+			options: args.options,
+			loaderResult: loaderResult,
+			meshUpdated: () => {
+				meshUpdated(root.getChildMeshes());
+			},
+			findMesh: (keyword) => {
+				const mesh = root.getChildMeshes().find(m => m.name.includes(keyword));
+				if (mesh == null) {
+					throw new Error(`Mesh with keyword "${keyword}" not found for object ${args.type} (${args.id})`);
+				}
+				return mesh as BABYLON.Mesh;
+			},
+			findMeshes: (keyword) => {
+				const meshes = root.getChildMeshes().filter(m => m.name.includes(keyword));
+				return meshes as BABYLON.Mesh[];
+			},
+			findMaterial: (keyword) => {
+				return findMaterial(root, keyword);
+			},
+			findTransformNode: (keyword) => {
+				const node = root.getChildTransformNodes().find(n => n.name.includes(keyword));
+				if (node == null) {
+					throw new Error(`TransformNode with keyword "${keyword}" not found for object ${args.type} (${args.id})`);
+				}
+				return node;
+			},
+		});
+
+		objectInstance.onInited?.();
+
+		this.objectInstance = objectInstance;
+	}
+
+	public updateObjectOption(key: string, value: any) {
+		this.objectInstance?.onOptionsUpdated?.([key, value]);
+	}
+
+	public resize() {
+		this.engine.resize();
+	}
+
+	public destroy() {
 		this.engine.dispose();
 	}
 }
