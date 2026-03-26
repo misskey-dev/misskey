@@ -45,7 +45,8 @@ export class AiService {
 			if (this.model == null) {
 				await this.modelLoadMutex.runExclusive(async () => {
 					if (this.model == null) {
-						this.model = await loadModel(`file://${_dirname}/../../nsfw-model/`, { size: 299 });
+						const nsfw = await import('nsfwjs');
+						this.model = await nsfw.load(`file://${_dirname}/../../nsfw-model/`, { size: 299 });
 					}
 				});
 			}
