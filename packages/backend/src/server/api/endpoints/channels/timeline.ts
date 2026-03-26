@@ -15,6 +15,7 @@ import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointServ
 import { MiLocalUser } from '@/models/User.js';
 import { ChannelMutingService } from '@/core/ChannelMutingService.js';
 import { ApiError } from '../../error.js';
+import { Brackets } from 'typeorm';
 
 export const meta = {
 	tags: ['notes', 'channels'],
@@ -132,7 +133,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.then(x => x.map(x => x.id).filter(x => x !== ps.channelId));
 			if (mutingChannelIds.length > 0) {
 				query.andWhere('note.channelId NOT IN (:...mutingChannelIds)', { mutingChannelIds });
-				query.andWhere('note.renoteChannelId NOT IN (:...mutingChannelIds)', { mutingChannelIds });
+				query.andWhere(new Brackets(qb => {
+					qb.orWhere('note.renoteChannelId IS NULL');
+					qb.orWhere('note.renoteChannelId NOT IN (:...mutingChannelIds)', { mutingChannelIds });
+				}));
 			}
 		}
 		//#endregion
