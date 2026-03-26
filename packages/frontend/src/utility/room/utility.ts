@@ -278,15 +278,15 @@ const TV_PROGRAMS = {
 
 let tvScreenMaterial: BABYLON.StandardMaterial | null = null;
 
-export function initTv(scene: BABYLON.Scene, screenMesh: BABYLON.Mesh) {
+export function initTv(room: RoomEngine, screenMesh: BABYLON.Mesh) {
 	const tvProgramId = 'shopping';
 	const tvProgram = TV_PROGRAMS[tvProgramId];
 	if (tvScreenMaterial == null) {
-		tvScreenMaterial = new BABYLON.StandardMaterial('tvScreenMaterial', scene);
+		tvScreenMaterial = new BABYLON.StandardMaterial('tvScreenMaterial', room.scene);
 		tvScreenMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
 		tvScreenMaterial.ambientColor = new BABYLON.Color3(0, 0, 0);
 		tvScreenMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
-		tvScreenMaterial.emissiveTexture = new BABYLON.Texture(`/client-assets/room/tv/${tvProgramId}/${tvProgramId}.png`, scene, false, false);
+		tvScreenMaterial.emissiveTexture = new BABYLON.Texture(`/client-assets/room/tv/${tvProgramId}/${tvProgramId}.png`, room.scene, false, false);
 		tvScreenMaterial.emissiveTexture.level = 0.5;
 		tvScreenMaterial.emissiveColor = new BABYLON.Color3(0.4, 0.4, 0.4);
 		tvScreenMaterial.freeze();

@@ -15,11 +15,11 @@ export const tv = defineObject({
 		default: {},
 	},
 	placement: 'top',
-	createInstance: ({ scene, root }) => {
+	createInstance: ({ room, root }) => {
 		const screenMesh = root.getChildMeshes().find(m => m.name.includes('__TV_SCREEN__')) as BABYLON.Mesh;
 		screenMesh.markVerticesDataAsUpdatable(BABYLON.VertexBuffer.UVKind, true);
 
-		initTv(scene, screenMesh);
+		initTv(room, screenMesh);
 
 		return {
 			interactions: {},
