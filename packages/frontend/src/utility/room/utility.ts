@@ -30,6 +30,12 @@ export function yuge(scene: BABYLON.Scene, mesh: BABYLON.Mesh, offset: BABYLON.V
 	ps.colorDead = new BABYLON.Color4(1, 1, 1, 0);
 	ps.preWarmCycles = Math.random() * 1000;
 	ps.start();
+
+	// dispose
+	return () => {
+		ps.stop();
+		emitter.dispose();
+	};
 }
 
 const _assumedFramesPerSecond = 60;

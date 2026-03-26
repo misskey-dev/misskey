@@ -1402,9 +1402,14 @@ export class RoomObjectPreviewEngine {
 		gridMaterial.opacity = 0.5;
 		gridMaterial.gridRatio = 10/*cm*/;
 
-		this.zGridPreviewPlane = BABYLON.MeshBuilder.CreatePlane('zGridPreviewPlane', { width: 1000/*cm*/, height: 1000/*cm*/ }, this.scene);
-		this.zGridPreviewPlane.material = gridMaterial;
-		this.zGridPreviewPlane.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
+		//this.zGridPreviewPlane = BABYLON.MeshBuilder.CreatePlane('zGridPreviewPlane', { width: 1000/*cm*/, height: 1000/*cm*/ }, this.scene);
+		//this.zGridPreviewPlane.material = gridMaterial;
+		//this.zGridPreviewPlane.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
+
+		//this.scene.fogMode = BABYLON.Scene.FOGMODE_LINEAR;
+		//this.scene.fogStart = 100/*cm*/;
+		//this.scene.fogEnd = 110/*cm*/;
+		//this.scene.fogColor = new BABYLON.Color3(0.0, 0.0, 0.0);
 	}
 
 	public async init() {

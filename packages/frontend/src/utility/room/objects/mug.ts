@@ -16,11 +16,16 @@ export const mug = defineObject({
 	},
 	placement: 'top',
 	createInstance: ({ scene, root }) => {
+		let yugeDispose: (() => void) | null = null;
+
 		return {
 			onInited: () => {
-				yuge(scene, root, new BABYLON.Vector3(0, 5/*cm*/, 0));
+				yugeDispose = yuge(scene, root, new BABYLON.Vector3(0, 5/*cm*/, 0));
 			},
 			interactions: {},
+			dispose: () => {
+				yugeDispose?.();
+			},
 		};
 	},
 });
