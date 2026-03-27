@@ -61,6 +61,7 @@ import { tetrapod } from './objects/tetrapod.js';
 import { tv } from './objects/tv.js';
 import { wallClock } from './objects/wallClock.js';
 import { wallShelf } from './objects/wallShelf.js';
+import { woodRingFloorLamp } from './objects/woodRingFloorLamp.js';
 import { woodSoundAbsorbingPanel } from './objects/woodSoundAbsorbingPanel.js';
 
 export const OBJECT_DEFS = [
@@ -121,6 +122,7 @@ export const OBJECT_DEFS = [
 	tv,
 	wallClock,
 	wallShelf,
+	woodRingFloorLamp,
 	woodSoundAbsorbingPanel,
 	debugHipoly,
 ];
