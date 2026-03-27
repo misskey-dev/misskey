@@ -265,6 +265,7 @@ export class RoomEngine {
 	private xGridPreviewPlane: BABYLON.Mesh;
 	private yGridPreviewPlane: BABYLON.Mesh;
 	private zGridPreviewPlane: BABYLON.Mesh;
+	private selectionOutlineLayer: BABYLON.SelectionOutlineLayer;
 	public isEditMode = ref(false);
 	public isSitting = ref(false);
 	public ui = reactive({
@@ -483,6 +484,8 @@ export class RoomEngine {
 		this.zGridPreviewPlane.isPickable = false;
 		this.zGridPreviewPlane.isVisible = false;
 
+		this.selectionOutlineLayer = new BABYLON.SelectionOutlineLayer('outliner', this.scene);
+
 		watch(this.isEditMode, (v) => {
 			if (v) {
 				for (const obji of this.objectInstances.values()) {
@@ -566,19 +569,14 @@ export class RoomEngine {
 
 	public selectObject(objectId: string | null) {
 		if (this.selected.value != null) {
-			const prevMesh = this.selected.value.objectMesh;
-			for (const om of prevMesh.getChildMeshes()) {
-				om.renderOutline = false;
-			}
+			this.selectionOutlineLayer.clearSelection();
 			this.selected.value = null;
 		}
 
 		if (objectId != null) {
 			const mesh = this.objectMeshs.get(objectId);
 			if (mesh != null) {
-				for (const om of mesh.getChildMeshes()) {
-					om.renderOutline = true;
-				}
+				this.selectionOutlineLayer.addSelection(mesh.getChildMeshes());
 				const state = this.roomState.installedObjects.find(o => o.id === objectId)!;
 				this.selected.value = {
 					objectId,
@@ -898,6 +896,11 @@ export class RoomEngine {
 		root.metadata = metadata;
 
 		const meshUpdated = (meshes: BABYLON.Mesh[]) => {
+			if (this.selected.value?.objectId === args.id) {
+				this.selectionOutlineLayer.clearSelection();
+				this.selectionOutlineLayer.addSelection(meshes);
+			}
+
 			for (const m of meshes) {
 				const mesh = m;
 
@@ -922,9 +925,6 @@ export class RoomEngine {
 						this.shadowGenerator2.addShadowCaster(mesh);
 					}
 
-					mesh.renderOutline = this.selected.value?.objectId === args.id;
-					mesh.outlineWidth = 0.003;
-					mesh.outlineColor = new BABYLON.Color3(1, 0, 0);
 					//if (mesh.material) (mesh.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(0.2, 0.2, 0.2);
 					if (mesh.material) {
 						(mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.enableReflectionProbe ? this.reflectionProbe.cubeTexture : this.envMapIndoor;
@@ -979,9 +979,7 @@ export class RoomEngine {
 		if (this.selected.value == null) return;
 
 		const selectedObject = this.selected.value.objectMesh;
-		for (const om of selectedObject.getChildMeshes()) {
-			om.renderOutline = false;
-		}
+		this.selectionOutlineLayer.clearSelection();
 
 		// 子から先に適用していく
 		const setStickyParentRecursively = (mesh: BABYLON.AbstractMesh) => {
