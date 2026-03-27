@@ -217,8 +217,8 @@ const TIME_MAP = {
 } as const;
 
 export async function createRoomEngine(roomState: RoomState, canvas: HTMLCanvasElement) {
-	// なぜか逆に重くなる
 	//const babylonEngine = new BABYLON.WebGPUEngine(canvas);
+	//babylonEngine.compatibilityMode = false;
 	//await babylonEngine.initAsync();
 	const babylonEngine = new BABYLON.Engine(canvas, false, { alpha: false, antialias: false });
 	return new RoomEngine(roomState, { canvas, engine: babylonEngine });
@@ -1347,8 +1347,8 @@ export class RoomEngine {
 }
 
 export async function createRoomObjectPreviewEngine(canvas: HTMLCanvasElement) {
-	// なぜか逆に重くなる
 	//const babylonEngine = new BABYLON.WebGPUEngine(canvas);
+	//babylonEngine.compatibilityMode = false;
 	//await babylonEngine.initAsync();
 	const babylonEngine = new BABYLON.Engine(canvas, false, { alpha: false, antialias: false });
 	return new RoomObjectPreviewEngine({ canvas, engine: babylonEngine });
