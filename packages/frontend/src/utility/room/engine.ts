@@ -216,6 +216,8 @@ const TIME_MAP = {
 	23: 2,
 } as const;
 
+const USE_GLOW = false; // ドローコールが増えて重い
+
 export async function createRoomEngine(roomState: RoomState, canvas: HTMLCanvasElement) {
 	//const babylonEngine = new BABYLON.WebGPUEngine(canvas);
 	//babylonEngine.compatibilityMode = false;
@@ -298,7 +300,8 @@ export class RoomEngine {
 
 		this.engine = options.engine;
 		this.scene = new BABYLON.Scene(this.engine);
-		//this.scene.useRightHandedSystem = true;
+		//this.scene.autoClear = false;
+		//this.scene.autoClearDepthAndStencil = false;
 
 		if (_DEV_) {
 			new BoundingBoxRenderer(this.scene);
@@ -306,7 +309,6 @@ export class RoomEngine {
 
 		this.time = TIME_MAP[new Date().getHours() as keyof typeof TIME_MAP];
 
-		//this.scene.autoClear = true;
 		if (this.time === 0) {
 			this.scene.clearColor = new BABYLON.Color4(0.7, 0.9, 1.0, 0);
 		} else if (this.time === 1) {
@@ -402,11 +404,13 @@ export class RoomEngine {
 
 		this.turnOnRoomLight();
 
-		const gl = new BABYLON.GlowLayer('glow', this.scene, {
-			//mainTextureFixedSize: 512,
-			blurKernelSize: 64,
-		});
-		gl.intensity = 0.5;
+		if (USE_GLOW) {
+			const gl = new BABYLON.GlowLayer('glow', this.scene, {
+				//mainTextureFixedSize: 512,
+				blurKernelSize: 64,
+			});
+			gl.intensity = 0.5;
+		}
 
 		{
 			//const postProcess = new BABYLON.ImageProcessingPostProcess('processing', 1.0, this.camera);
@@ -865,7 +869,7 @@ export class RoomEngine {
 				.toLowerCase();
 		};
 
-		const root = new BABYLON.Mesh(`object_${args.id}_${args.type}`, this.scene);
+		const root = new BABYLON.TransformNode(`object_${args.id}_${args.type}`, this.scene);
 
 		const loaderResult = await BABYLON.ImportMeshAsync(`/client-assets/room/objects/${camelToKebab(args.type)}/${camelToKebab(args.type)}.glb`, this.scene);
 
