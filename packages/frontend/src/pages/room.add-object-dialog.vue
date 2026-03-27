@@ -40,7 +40,7 @@ import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import * as os from '@/os.js';
 import { OBJECT_DEFS } from '@/utility/room/object-defs.js';
-import { RoomObjectPreviewEngine } from '@/utility/room/engine.js';
+import { createRoomObjectPreviewEngine, RoomObjectPreviewEngine } from '@/utility/room/engine.js';
 
 const emit = defineEmits<{
 	(ev: 'ok', id: string): void;
@@ -53,10 +53,8 @@ const canvas = useTemplateRef('canvas');
 const selectedId = ref<string | null>(null);
 const engine = shallowRef<RoomObjectPreviewEngine | null>(null);
 
-onMounted(() => {
-	engine.value = new RoomObjectPreviewEngine({
-		canvas: canvas.value!,
-	});
+onMounted(async () => {
+	engine.value = await createRoomObjectPreviewEngine(canvas.value!);
 
 	engine.value.init();
 

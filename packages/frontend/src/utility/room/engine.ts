@@ -216,9 +216,17 @@ const TIME_MAP = {
 	23: 2,
 } as const;
 
+export async function createRoomEngine(roomState: RoomState, canvas: HTMLCanvasElement) {
+	// なぜか逆に重くなる
+	//const babylonEngine = new BABYLON.WebGPUEngine(canvas);
+	//await babylonEngine.initAsync();
+	const babylonEngine = new BABYLON.Engine(canvas, false, { alpha: false, antialias: false });
+	return new RoomEngine(roomState, { canvas, engine: babylonEngine });
+}
+
 export class RoomEngine {
 	private canvas: HTMLCanvasElement;
-	private engine: BABYLON.Engine;
+	private engine: BABYLON.WebGPUEngine;
 	public scene: BABYLON.Scene;
 	private shadowGenerator1: BABYLON.ShadowGenerator;
 	private shadowGenerator2: BABYLON.ShadowGenerator;
@@ -275,6 +283,7 @@ export class RoomEngine {
 
 	constructor(roomState: RoomState, options: {
 		canvas: HTMLCanvasElement;
+		engine: BABYLON.WebGPUEngine;
 	}) {
 		this.roomState = {
 			...roomState,
@@ -287,7 +296,7 @@ export class RoomEngine {
 
 		registerBuiltInLoaders();
 
-		this.engine = new BABYLON.Engine(options.canvas, false, { alpha: false, antialias: false });
+		this.engine = options.engine;
 		this.scene = new BABYLON.Scene(this.engine);
 		//this.scene.useRightHandedSystem = true;
 
@@ -1337,9 +1346,17 @@ export class RoomEngine {
 	}
 }
 
+export async function createRoomObjectPreviewEngine(canvas: HTMLCanvasElement) {
+	// なぜか逆に重くなる
+	//const babylonEngine = new BABYLON.WebGPUEngine(canvas);
+	//await babylonEngine.initAsync();
+	const babylonEngine = new BABYLON.Engine(canvas, false, { alpha: false, antialias: false });
+	return new RoomObjectPreviewEngine({ canvas, engine: babylonEngine });
+}
+
 export class RoomObjectPreviewEngine {
 	private canvas: HTMLCanvasElement;
-	private engine: BABYLON.Engine;
+	private engine: BABYLON.WebGPUEngine;
 	private scene: BABYLON.Scene;
 	private shadowGenerator1: BABYLON.ShadowGenerator;
 	private camera: BABYLON.ArcRotateCamera;
@@ -1351,12 +1368,13 @@ export class RoomObjectPreviewEngine {
 
 	constructor(options: {
 		canvas: HTMLCanvasElement;
+		engine: BABYLON.WebGPUEngine;
 	}) {
 		this.canvas = options.canvas;
 
 		registerBuiltInLoaders();
 
-		this.engine = new BABYLON.Engine(options.canvas, false, { alpha: false, antialias: false });
+		this.engine = options.engine;
 		this.scene = new BABYLON.Scene(this.engine);
 
 		this.scene.ambientColor = new BABYLON.Color3(1.0, 0.9, 0.8);
