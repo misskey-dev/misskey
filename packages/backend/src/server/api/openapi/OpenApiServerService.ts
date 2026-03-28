@@ -3,7 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
@@ -11,7 +13,20 @@ import { bindThis } from '@/decorators.js';
 import { genOpenapiSpec } from './gen-spec.js';
 import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
 
-const staticAssets = fileURLToPath(new URL('../../../../assets/', import.meta.url));
+const _filename = fileURLToPath(import.meta.url);
+const _dirname = dirname(_filename);
+
+let rootDir = _dirname;
+// 見つかるまで上に遡る
+while (!fs.existsSync(resolve(rootDir, 'packages'))) {
+	const parentDir = dirname(rootDir);
+	if (parentDir === rootDir) {
+		throw new Error('Cannot find root directory');
+	}
+	rootDir = parentDir;
+}
+
+const staticAssets = resolve(rootDir, 'packages/backend/assets');
 
 @Injectable()
 export class OpenApiServerService {
