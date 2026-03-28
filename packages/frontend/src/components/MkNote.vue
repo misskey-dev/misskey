@@ -169,6 +169,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkA>
 		</template>
 	</I18n>
+	<I18n v-else-if="muted === 'sensitiveChannel'" :src="i18n.ts.userSaysSomethingInSensitiveChannel" tag="small">
+		<template #name>
+			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
+				<MkUserName :user="appearNote.user"/>
+			</MkA>
+		</template>
+	</I18n>
 	<I18n v-else-if="showSoftWordMutedWord !== true" :src="i18n.ts.userSaysSomething" tag="small">
 		<template #name>
 			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
@@ -261,6 +268,9 @@ const emit = defineEmits<{
 	(ev: 'removeReaction', emoji: string): void;
 }>();
 
+// for some timelines, like home timeline which only shows the following channels,
+// we never collapse sensitive channel notes so we allow inject to override the preference
+const collapseSensitiveChannelContext = inject(DI.collapseSensitiveChannel, true);
 const inTimeline = inject<boolean>('inTimeline', false);
 const tl_withSensitive = inject<Ref<boolean>>('tl_withSensitive', ref(true));
 const inChannel = inject('inChannel', null);
@@ -330,9 +340,9 @@ const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
 /* eslint-disable no-redeclare */
 /** checkOnlyでは純粋なワードミュート結果をbooleanで返却する */
 function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly: true): boolean;
-function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly?: false): Array<string | string[]> | false | 'sensitiveMute';
+function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly?: false): Array<string | string[]> | false | 'sensitiveMute' | 'sensitiveChannel';
 
-function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly = false): Array<string | string[]> | boolean | 'sensitiveMute' {
+function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly = false): Array<string | string[]> | boolean | 'sensitiveMute' | 'sensitiveChannel' {
 	if (mutedWords != null) {
 		const result = checkWordMute(noteToCheck, $i, mutedWords);
 		if (Array.isArray(result)) {
@@ -352,6 +362,20 @@ function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string 
 
 	if (checkOnly) return false;
 
+	if (noteToCheck.channel?.isSensitive) {
+		if (prefer.s.collapseSensitiveChannel) {
+			switch (collapseSensitiveChannelContext) {
+				case true: return 'sensitiveChannel';
+				case 'renote-only':
+					if (note.channel?.id !== appearNote.channel?.id) {
+						return 'sensitiveChannel';
+					}
+					break;
+				case false:
+					break;
+			}
+		}
+	}
 	if (inTimeline && tl_withSensitive.value === false && noteToCheck.files?.some((v) => v.isSensitive)) {
 		return 'sensitiveMute';
 	}
