@@ -3401,11 +3401,7 @@ _imageEffector:
     threshold: "เทรชโฮลด์"
     centerX: "กลาง X"
     centerY: "กลาง Y"
-    zoomLinesSmoothing: "ทำให้สมูธ"
-    zoomLinesSmoothingDescription: "ตั้งให้สมูธไม่สามารถใช้ร่วมกับตั้งความกว้างเส้นรวมศูนย์ได้"
-    zoomLinesThreshold: "ความกว้างเส้นรวมศูนย์"
     zoomLinesMaskSize: "ขนาดพื้นที่ตรงกลาง"
-    zoomLinesBlack: "ทำให้ดำ"
     circle: "ทรงกลม"
 drafts: "ร่าง"
 _drafts:
