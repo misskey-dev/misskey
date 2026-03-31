@@ -5053,6 +5053,14 @@ export interface Locale extends ILocale {
      */
     "doReaction": string;
     /**
+     * 外部サイトへのリンク警告 除外リスト
+     */
+    "trustedLinkUrlPatterns": string;
+    /**
+     * スペースで区切るとAND指定になり、改行で区切るとOR指定になります。スラッシュで囲むと正規表現になります。ドメイン名だけ書くと後方一致になります。
+     */
+    "trustedLinkUrlPatternsDescription": string;
+    /**
      * コード
      */
     "code": string;
@@ -5647,6 +5655,10 @@ export interface Locale extends ILocale {
      * 設定項目はありません
      */
     "nothingToConfigure": string;
+    /**
+     * 開く
+     */
+    "open": string;
     "_imageEditing": {
         "_vars": {
             /**
@@ -12022,6 +12034,20 @@ export interface Locale extends ILocale {
          * プロキシには下記パラメータがクエリ文字列として連携されます。プロキシ側がこれらをサポートしない場合、設定値は無視されます。
          */
         "summaryProxyDescription2": string;
+    };
+    "_externalNavigationWarning": {
+        /**
+         * 外部サイトに移動します
+         */
+        "title": string;
+        /**
+         * {host}を離れて外部サイトに移動します
+         */
+        "description": ParameterizedString<"host">;
+        /**
+         * このデバイスで今後このドメインを信頼する
+         */
+        "trustThisDomain": string;
     };
     "_mediaControls": {
         /**

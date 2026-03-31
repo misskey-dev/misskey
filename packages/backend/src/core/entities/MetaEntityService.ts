@@ -119,6 +119,7 @@ export class MetaEntityService {
 				dayOfWeek: ad.dayOfWeek,
 				isSensitive: ad.isSensitive ? true : undefined,
 			})),
+			trustedLinkUrlPatterns: instance.trustedLinkUrlPatterns,
 			notesPerOneAd: instance.notesPerOneAd,
 			enableEmail: instance.enableEmail,
 			enableServiceWorker: instance.enableServiceWorker,

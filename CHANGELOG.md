@@ -54,6 +54,8 @@
 - Enhance: ウィジェットの表示設定をプレビューを見ながら行えるように
 - Enhance: ウィジェットの設定項目のラベルの多言語対応
 - Enhance: 画面幅が広いときにメディアを横並びで表示できるようにするオプションを追加
+- Enhance: 外部サイトへのリンクは移動の前に警告を表示するように  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/558 and https://github.com/MisskeyIO/misskey/commit/f7ec503b9ceb34d61a0dbd658858915eb7399c5d)
 - Enhance: パフォーマンスの向上
 - Fix: ドライブクリーナーでファイルを削除しても画面に反映されない問題を修正 #16061
 - Fix: 非ログイン時にログインを求めるダイアログが表示された後にダイアログのぼかしが解除されず操作不能になることがある問題を修正

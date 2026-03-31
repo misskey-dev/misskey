@@ -8,6 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:is="self ? 'MkA' : 'a'" ref="el" :class="$style.root" class="_link" :[attr]="maybeRelativeUrl" :rel="rel ?? 'nofollow noopener'" :target="target"
 	:behavior="props.navigationBehavior"
 	@contextmenu.stop="() => {}"
+	@click="(ev: MouseEvent) => warningExternalWebsite(ev, props.url)"
 >
 	<template v-if="!self">
 		<span :class="$style.schema">{{ schema }}//</span>
@@ -33,6 +34,7 @@ import type { MkABehavior } from '@/components/global/MkA.vue';
 import * as os from '@/os.js';
 import { useTooltip } from '@/composables/use-tooltip.js';
 import { isEnabledUrlPreview } from '@/utility/url-preview.js';
+import { warningExternalWebsite } from '@/utility/warning-external-website.js';
 
 function safeURIDecode(str: string): string {
 	try {
@@ -48,6 +50,7 @@ const props = withDefaults(defineProps<{
 	showUrlPreview?: boolean;
 	navigationBehavior?: MkABehavior;
 }>(), {
+	rel: 'nofollow noopener',
 	showUrlPreview: true,
 });
 
@@ -76,7 +79,7 @@ const pathname = safeURIDecode(url.pathname);
 const query = safeURIDecode(url.search);
 const hash = safeURIDecode(url.hash);
 const attr = self ? 'to' : 'href';
-const target = self ? null : '_blank';
+const target = self ? undefined : '_blank';
 </script>
 
 <style lang="scss" module>

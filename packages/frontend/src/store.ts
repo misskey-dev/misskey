@@ -119,6 +119,11 @@ export const store = markRaw(new Pizzax('base', {
 		default: true,
 	},
 
+	trustedDomains: {
+		where: 'device',
+		default: [] as string[],
+	},
+
 	//#region TODO: そのうち消す (preferに移行済み)
 	defaultWithReplies: {
 		where: 'account',
