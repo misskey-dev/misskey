@@ -490,3 +490,40 @@ export function findMaterial(rootMesh: BABYLON.AbstractMesh, keyword: string): B
 	}
 	throw new Error(`Material with keyword "${keyword}" not found`);
 }
+
+// merge all child meshes into the root mesh
+export function bakeMesh(rootMesh: BABYLON.Mesh) {
+	const childMeshes = rootMesh.getChildMeshes();
+
+	const toMerge = [] as BABYLON.Mesh[];
+	for (const mesh of childMeshes) {
+		let fixedMesh = mesh;
+
+		if (mesh instanceof BABYLON.InstancedMesh) {
+			const sourceMesh = mesh.sourceMesh;
+			const newMesh = sourceMesh.clone(mesh.name + '_baked');
+
+			newMesh.position = mesh.position.clone();
+			if (mesh.rotationQuaternion) {
+				newMesh.rotationQuaternion = mesh.rotationQuaternion.clone();
+			} else {
+				newMesh.rotation = mesh.rotation.clone();
+			}
+			newMesh.scaling = mesh.scaling.clone();
+
+			newMesh.parent = mesh.parent;
+
+			mesh.dispose();
+
+			fixedMesh = newMesh;
+		}
+
+		toMerge.push(fixedMesh);
+	}
+
+	const merged = BABYLON.Mesh.MergeMeshes(toMerge, true, true, undefined, false, true);
+
+	merged.setParent(rootMesh);
+
+	return merged;
+}
