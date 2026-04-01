@@ -248,6 +248,16 @@ describe('UserEntityService', () => {
 			expect(actual.achievements).toEqual(achievements);
 		});
 
+		test('alsoKnownAs as string does not throw', async () => {
+			const me = await createUser();
+			const who = await createUser();
+
+			const whoWithStringAlsoKnownAs: MiUser = { ...who, alsoKnownAs: 'https://remote.example.com/users/alice' as any };
+
+			const actual = await service.pack(whoWithStringAlsoKnownAs, me, { schema: 'UserDetailedNotMe' }) as any;
+			expect(Array.isArray(actual.alsoKnownAs)).toBe(true);
+		});
+
 		describe('packManyによるpreloadがある時、preloadが無い時とpackの結果が同じになるか見たい', () => {
 			test('no-preload', async() => {
 				const me = await createUser();

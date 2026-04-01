@@ -481,6 +481,10 @@ export class UserEntityService implements OnModuleInit {
 
 		const notificationsInfo = isMe && isDetailed ? await this.getNotificationsInfo(user.id) : null;
 
+		const resolveAlsoKnownAs = (uris: string[]) =>
+			Promise.all(uris.map(uri => this.apPersonService.fetchPerson(uri).then(user => user?.id).catch(() => null)))
+				.then(xs => xs.length === 0 ? null : xs.filter(x => x != null));
+
 		// TODO: 例えば avatarUrl: true など間違った型を設定しても型エラーにならないのをどうにかする(ジェネリクス使わない方法で実装するしかなさそう？)
 		const packed = {
 			id: user.id,
@@ -527,10 +531,11 @@ export class UserEntityService implements OnModuleInit {
 				url: profile!.url,
 				uri: user.uri,
 				movedTo: user.movedToUri ? this.apPersonService.resolvePerson(user.movedToUri).then(user => user.id).catch(() => null) : null,
-				alsoKnownAs: user.alsoKnownAs
-					? Promise.all(user.alsoKnownAs.map(uri => this.apPersonService.fetchPerson(uri).then(user => user?.id).catch(() => null)))
-						.then(xs => xs.length === 0 ? null : xs.filter(x => x != null))
-					: null,
+				alsoKnownAs: Array.isArray(user.alsoKnownAs)
+					? resolveAlsoKnownAs(user.alsoKnownAs)
+					: typeof user.alsoKnownAs === 'string'
+						? resolveAlsoKnownAs([user.alsoKnownAs])
+						: null,
 				createdAt: this.idService.parse(user.id).date.toISOString(),
 				updatedAt: user.updatedAt ? user.updatedAt.toISOString() : null,
 				lastFetchedAt: user.lastFetchedAt ? user.lastFetchedAt.toISOString() : null,
