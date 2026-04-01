@@ -11,22 +11,8 @@ import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { genOpenapiSpec } from './gen-spec.js';
+import { ApiDocPage } from './api-doc.js';
 import type { FastifyInstance, FastifyPluginOptions } from 'fastify';
-
-const _filename = fileURLToPath(import.meta.url);
-const _dirname = dirname(_filename);
-
-let rootDir = _dirname;
-// 見つかるまで上に遡る
-while (!fs.existsSync(resolve(rootDir, 'packages'))) {
-	const parentDir = dirname(rootDir);
-	if (parentDir === rootDir) {
-		throw new Error('Cannot find root directory');
-	}
-	rootDir = parentDir;
-}
-
-const staticAssets = resolve(rootDir, 'packages/backend/assets');
 
 @Injectable()
 export class OpenApiServerService {
@@ -40,7 +26,8 @@ export class OpenApiServerService {
 	public createServer(fastify: FastifyInstance, _options: FastifyPluginOptions, done: (err?: Error) => void) {
 		fastify.get('/api-doc', async (_request, reply) => {
 			reply.header('Cache-Control', 'public, max-age=86400');
-			return await reply.sendFile('/api-doc.html', staticAssets);
+			reply.type('text/html; charset=utf-8');
+			reply.send(await ApiDocPage());
 		});
 		fastify.get('/api.json', (_request, reply) => {
 			reply.header('Cache-Control', 'public, max-age=600');
