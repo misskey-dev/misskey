@@ -3401,11 +3401,9 @@ _imageEffector:
     threshold: "阈值"
     centerX: "中心 X "
     centerY: "中心 Y"
-    zoomLinesSmoothing: "平滑"
-    zoomLinesSmoothingDescription: "平滑和集中线宽度设置不能同时使用。"
-    zoomLinesThreshold: "集中线宽度"
+    density: "密度"
+    zoomLinesOutlineThickness: "线条阴影粗细"
     zoomLinesMaskSize: "中心直径"
-    zoomLinesBlack: "变成黑色"
     circle: "圆形"
 drafts: "草稿"
 _drafts:

@@ -3401,11 +3401,7 @@ _imageEffector:
     threshold: "Threshold"
     centerX: "Center X"
     centerY: "Center Y"
-    zoomLinesSmoothing: "Smoothing"
-    zoomLinesSmoothingDescription: "Smoothing and zoom line width cannot be used together."
-    zoomLinesThreshold: "Zoom line width"
     zoomLinesMaskSize: "Center diameter"
-    zoomLinesBlack: "Make black"
     circle: "Circular"
 drafts: "Drafts"
 _drafts:
