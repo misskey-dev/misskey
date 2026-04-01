@@ -3,9 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import * as fs from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
 import type { Config } from '@/config.js';
 import { DI } from '@/di-symbols.js';
