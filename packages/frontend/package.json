@@ -119,7 +119,6 @@
 		"estree-walker": "3.0.3",
 		"happy-dom": "20.8.8",
 		"intersection-observer": "0.12.2",
-		"magic-string": "0.30.21",
 		"micromatch": "4.0.8",
 		"minimatch": "10.2.4",
 		"msw": "2.12.14",
