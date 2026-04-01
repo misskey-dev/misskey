@@ -81,7 +81,7 @@ export class ApRequestCreator {
 			}, args.additionalHeaders),
 		};
 
-		const result = this.#signToRequest(request, args.key, ['(request-target)', 'date', 'host', 'accept']);
+		const result = this.#signToRequest(request, args.key, ['(request-target)', 'date', 'host']);
 
 		return {
 			request,
