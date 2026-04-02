@@ -1,3 +1,15 @@
+## Unreleased
+
+### General
+-
+
+### Client
+-
+
+### Server
+- Fix: `/api-doc` にアクセスできない問題を修正
+
+
 ## 2026.3.2
 
 ### General
