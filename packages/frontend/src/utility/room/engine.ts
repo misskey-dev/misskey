@@ -234,7 +234,7 @@ class ModelManager {
 				toMerge.push(newMesh);
 			}
 
-			const merged = BABYLON.Mesh.MergeMeshes(toMerge, false, true, undefined, false, true);
+			const merged = BABYLON.Mesh.MergeMeshes(toMerge, true, true, undefined, false, true);
 
 			merged.setParent(this.root);
 
