@@ -5,6 +5,7 @@
 
 import * as Misskey from 'misskey-js';
 import { hemisphere } from '@@/js/intl-const.js';
+import { DEFAULT_EMOJIS } from '@@/js/const.js';
 import { prefersReducedMotion } from '@@/js/config.js';
 import { definePreferences } from './manager.js';
 import type { Theme } from '@/theme.js';
@@ -103,7 +104,7 @@ export const PREF_DEF = definePreferences({
 		default: () => [{
 			id: genId(),
 			name: '',
-			emojis: ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'],
+			emojis: DEFAULT_EMOJIS,
 		}] as {
 			id: string;
 			name: string;
@@ -237,7 +238,7 @@ export const PREF_DEF = definePreferences({
 		default: false,
 	},
 	emojiStyle: {
-		default: 'twemoji', // twemoji / fluentEmoji / native
+		default: 'twemoji' as 'native' | 'fluentEmoji' | 'twemoji',
 	},
 	menuStyle: {
 		default: 'auto' as 'auto' | 'popup' | 'drawer',
@@ -319,6 +320,9 @@ export const PREF_DEF = definePreferences({
 	},
 	mediaListWithOneImageAppearance: {
 		default: 'expand' as 'expand' | '16_9' | '1_1' | '2_3',
+	},
+	showMediaListByGridInWideArea: {
+		default: false,
 	},
 	notificationPosition: {
 		default: 'rightBottom' as 'leftTop' | 'leftBottom' | 'rightTop' | 'rightBottom',
@@ -500,7 +504,7 @@ export const PREF_DEF = definePreferences({
 		default: true,
 	},
 	'deck.columnAlign': {
-		default: 'center' as 'left' | 'right' | 'center',
+		default: 'center' as 'left' | 'center',
 	},
 	'deck.columnGap': {
 		default: 6,

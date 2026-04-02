@@ -123,8 +123,8 @@ export class ExportCustomEmojisProcessorService {
 		metaStream.end();
 
 		// Create archive
-		await new Promise<void>(async (resolve) => {
-			const [archivePath, archiveCleanup] = await createTemp();
+		const [archivePath, archiveCleanup] = await createTemp();
+		await new Promise<void>((resolve) => {
 			const archiveStream = fs.createWriteStream(archivePath);
 			const archive = archiver('zip', {
 				zlib: { level: 0 },

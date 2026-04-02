@@ -188,7 +188,7 @@ function onCellKeyDown(ev: KeyboardEvent) {
 	}
 }
 
-function onInputText(ev: Event) {
+function onInputText(ev: InputEvent) {
 	editingValue.value = (ev.target as HTMLInputElement).value;
 }
 

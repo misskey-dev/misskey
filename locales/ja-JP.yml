@@ -546,6 +546,7 @@ regenerate: "再生成"
 fontSize: "フォントサイズ"
 mediaListWithOneImageAppearance: "画像が1枚のみのメディアリストの高さ"
 limitTo: "{x}を上限に"
+showMediaListByGridInWideArea: "画面幅が広いときはメディアリストを横並びで表示する"
 noFollowRequests: "フォロー申請はありません"
 openImageInNewTab: "画像を新しいタブで開く"
 dashboard: "ダッシュボード"
@@ -1411,6 +1412,7 @@ frame: "フレーム"
 presets: "プリセット"
 zeroPadding: "ゼロ埋め"
 muteConfirm: "ミュートしますか？"
+nothingToConfigure: "設定項目はありません"
 
 _imageEditing:
   _vars:
@@ -1562,6 +1564,9 @@ _settings:
   showPageTabBarBottom: "ページのタブバーを下部に表示"
   emojiPaletteBanner: "絵文字ピッカーに固定表示するプリセットをパレットとして登録したり、ピッカーの表示方法をカスタマイズしたりできます。"
   enableAnimatedImages: "アニメーション画像を有効にする"
+  settingsPersistence_title: "設定の永続化"
+  settingsPersistence_description1: "設定の永続化を有効にすると、設定情報が失われるのを防止できます。"
+  settingsPersistence_description2: "環境によっては有効化できない場合があります。"
 
   _chat:
     showSenderName: "送信者の名前を表示"
@@ -2601,8 +2606,47 @@ _widgets:
   _userList:
     chooseList: "リストを選択"
   clicker: "クリッカー"
-  birthdayFollowings: "今日誕生日のユーザー"
+  birthdayFollowings: "もうすぐ誕生日のユーザー"
   chat: "ダイレクトメッセージ"
+
+_widgetOptions:
+  showHeader: "ヘッダーを表示"
+  transparent: "背景を透明にする"
+  height: "高さ"
+  _button:
+    colored: "色付き"
+  _clock:
+    size: "サイズ"
+    thickness: "針の太さ"
+    thicknessThin: "細い"
+    thicknessMedium: "普通"
+    thicknessThick: "太い"
+    graduations: "文字盤の目盛り"
+    graduationDots: "ドット"
+    graduationArabic: "アラビア数字"
+    fadeGraduations: "目盛りをフェード"
+    sAnimation: "秒針のアニメーション"
+    sAnimationElastic: "リアル"
+    sAnimationEaseOut: "滑らか"
+    twentyFour: "24時間表示"
+    labelTime: "時刻"
+    labelTz: "タイムゾーン"
+    labelTimeAndTz: "時刻とタイムゾーン"
+    timezone: "タイムゾーン"
+    showMs: "ミリ秒を表示"
+    showLabel: "ラベルを表示"
+  _jobQueue:
+    sound: "音を鳴らす"
+  _rss:
+    url: "RSSフィードのURL"
+    refreshIntervalSec: "更新間隔(秒)"
+    maxEntries: "最大表示件数"
+  _rssTicker:
+    shuffle: "表示順をシャッフル"
+    duration: "ティッカーのスクロール速度(秒)"
+    reverse: "逆方向にスクロール"
+  _birthdayFollowings:
+    period: "期間"
 
 _cw:
   hide: "隠す"
@@ -2895,6 +2939,15 @@ _deck:
   usedAsMinWidthWhenFlexible: "「幅を自動調整」が有効の場合、これが幅の最小値となります"
   flexible: "幅を自動調整"
   enableSyncBetweenDevicesForProfiles: "プロファイル情報のデバイス間同期を有効にする"
+  showHowToUse: "UIの説明を見る"
+
+  _howToUse:
+    addColumn_title: "カラム追加"
+    addColumn_description: "カラムの種類を選んで追加できます。"
+    settings_title: "UI設定"
+    settings_description: "デッキUIの詳細設定を行えます。"
+    switchProfile_title: "プロファイル切り替え"
+    switchProfile_description: "UIのレイアウトをプロファイルとして保存し、いつでも切り替えられるようにできます。"
 
   _columns:
     main: "メイン"
@@ -3411,7 +3464,6 @@ _imageEffector:
   title: "エフェクト"
   addEffect: "エフェクトを追加"
   discardChangesConfirm: "変更を破棄して終了しますか？"
-  nothingToConfigure: "設定項目はありません"
   failedToLoadImage: "画像の読み込みに失敗しました"
 
   _fxs:
@@ -3465,11 +3517,9 @@ _imageEffector:
     threshold: "しきい値"
     centerX: "中心X"
     centerY: "中心Y"
-    zoomLinesSmoothing: "スムージング"
-    zoomLinesSmoothingDescription: "スムージングと集中線の幅の設定は併用できません。"
-    zoomLinesThreshold: "集中線の幅"
+    density: "密度"
+    zoomLinesOutlineThickness: "線の影の太さ"
     zoomLinesMaskSize: "中心径"
-    zoomLinesBlack: "黒色にする"
     circle: "円形"
 
 drafts: "下書き"

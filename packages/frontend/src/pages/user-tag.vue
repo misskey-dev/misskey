@@ -25,6 +25,7 @@ const props = defineProps<{
 
 const paginator = markRaw(new Paginator('hashtags/users', {
 	limit: 30,
+	offsetMode: true,
 	computedParams: computed(() => ({
 		tag: props.tag,
 		origin: 'combined',

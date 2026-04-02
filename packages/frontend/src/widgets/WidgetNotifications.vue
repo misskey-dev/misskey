@@ -31,10 +31,12 @@ const name = 'notifications';
 const widgetPropsDef = {
 	showHeader: {
 		type: 'boolean',
+		label: i18n.ts._widgetOptions.showHeader,
 		default: true,
 	},
 	height: {
 		type: 'number',
+		label: i18n.ts.height,
 		default: 300,
 	},
 	excludeTypes: {

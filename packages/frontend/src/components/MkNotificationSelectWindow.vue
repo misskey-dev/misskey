@@ -42,7 +42,7 @@ import { i18n } from '@/i18n.js';
 type TypesMap = Record<typeof notificationTypes[number], Ref<boolean>>;
 
 const emit = defineEmits<{
-	(ev: 'done', v: { excludeTypes: string[] }): void,
+	(ev: 'done', v: { excludeTypes: typeof notificationTypes[number][] }): void,
 	(ev: 'closed'): void,
 }>();
 
