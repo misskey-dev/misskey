@@ -26,8 +26,8 @@ export const woodRingFloorLamp = defineObject({
 		},
 	},
 	placement: 'floor',
-	createInstance: ({ options, findMaterial }) => {
-		const shadeMaterial = findMaterial('__X_SHADE__');
+	createInstance: ({ options, model }) => {
+		const shadeMaterial = model.findMaterial('__X_SHADE__');
 
 		const applyShadeColor = () => {
 			const [r, g, b] = options.shadeColor;
@@ -36,7 +36,7 @@ export const woodRingFloorLamp = defineObject({
 
 		applyShadeColor();
 
-		const bodyMaterial = findMaterial('__X_BODY__');
+		const bodyMaterial = model.findMaterial('__X_BODY__');
 
 		const applyBodyColor = () => {
 			const [r, g, b] = options.bodyColor;

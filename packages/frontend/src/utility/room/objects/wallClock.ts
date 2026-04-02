@@ -21,8 +21,8 @@ export const wallClock = defineObject({
 		},
 	},
 	placement: 'side',
-	createInstance: ({ room, root, options, findMaterial }) => {
-		const frameMaterial = findMaterial('__X_FRAME__');
+	createInstance: ({ room, root, options, model }) => {
+		const frameMaterial = model.findMaterial('__X_FRAME__');
 
 		const applyFrameColor = () => {
 			const [r, g, b] = options.frameColor;

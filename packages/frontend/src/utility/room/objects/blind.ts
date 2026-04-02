@@ -40,13 +40,13 @@ export const blind = defineObject({
 		},
 	},
 	placement: 'bottom',
-	createInstance: ({ options, loaderResult, meshUpdated }) => {
+	createInstance: ({ options, model }) => {
 		const temp = createOverridedStates({
 			angle: () => options.angle,
 			open: () => options.open,
 		});
 
-		const blade = loaderResult.meshes[0].getChildMeshes().find(m => m.name === 'Blade') as BABYLON.Mesh;
+		const blade = model.root.getChildMeshes().find(m => m.name === 'Blade') as BABYLON.Mesh;
 		blade.rotation = new BABYLON.Vector3(options.angle, 0, 0);
 
 		let blades = [] as BABYLON.Mesh[];
@@ -67,7 +67,7 @@ export const blind = defineObject({
 				blades.push(b);
 			}
 
-			meshUpdated();
+			model.updated();
 		};
 
 		const applyAngle = () => {

@@ -26,11 +26,11 @@ export const aromaReedDiffuser = defineObject({
 		},
 	},
 	placement: 'top',
-	createInstance: ({ options, findMesh }) => {
-		const bottleMesh = findMesh('__X_BOTTLE__');
+	createInstance: ({ options, model }) => {
+		const bottleMesh = model.findMesh('__X_BOTTLE__');
 		const bottleMaterial = bottleMesh.material as BABYLON.PBRMaterial;
 
-		const oilMesh = findMesh('__X_OIL__');
+		const oilMesh = model.findMesh('__X_OIL__');
 		const oilMaterial = oilMesh.material as BABYLON.PBRMaterial;
 
 		const applyBottleColor = () => {

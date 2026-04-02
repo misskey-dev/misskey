@@ -33,7 +33,7 @@ export const wallShelf = defineObject({
 		},
 	},
 	placement: 'side',
-	createInstance: ({ findMesh, options, root }) => {
+	createInstance: ({ model, options, root }) => {
 		const applyStyle = () => {
 			const aMeshes = root.getChildMeshes().filter(m => m.name.includes('__X_VARIATION_A__'));
 			const bMeshes = root.getChildMeshes().filter(m => m.name.includes('__X_VARIATION_B__'));
@@ -56,7 +56,7 @@ export const wallShelf = defineObject({
 
 		applyStyle();
 
-		const bodyMesh = findMesh('__X_BODY__');
+		const bodyMesh = model.findMesh('__X_BODY__');
 		const bodyMaterial = bodyMesh.material as BABYLON.PBRMaterial;
 		const bodyTexture = bodyMaterial.albedoTexture as BABYLON.Texture;
 

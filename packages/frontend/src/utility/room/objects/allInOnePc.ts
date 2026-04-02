@@ -46,12 +46,12 @@ export const allInOnePc = defineObject({
 		},
 	},
 	placement: 'top',
-	createInstance: ({ scene, options, findMesh, findMaterial }) => {
-		const screenMesh = findMesh('__X_SCREEN__');
+	createInstance: ({ scene, options, model }) => {
+		const screenMesh = model.findMesh('__X_SCREEN__');
 
-		const bodyMaterial = findMaterial('__X_BODY__');
-		const bezelMaterial = findMaterial('__X_BEZEL__');
-		const screenMaterial = findMaterial('__X_SCREEN__');
+		const bodyMaterial = model.findMaterial('__X_BODY__');
+		const bezelMaterial = model.findMaterial('__X_BEZEL__');
+		const screenMaterial = model.findMaterial('__X_SCREEN__');
 
 		screenMaterial.ambientColor = new BABYLON.Color3(0, 0, 0);
 		screenMaterial.albedoColor = new BABYLON.Color3(0, 0, 0);

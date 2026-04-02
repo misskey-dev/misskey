@@ -26,9 +26,9 @@ export const petBottle = defineObject({
 		},
 	},
 	placement: 'top',
-	createInstance: ({ findMesh, options }) => {
-		const capMesh = findMesh('__X_CAP__');
-		const liquidMesh = findMesh('__X_LIQUID__');
+	createInstance: ({ model, options }) => {
+		const capMesh = model.findMesh('__X_CAP__');
+		const liquidMesh = model.findMesh('__X_LIQUID__');
 
 		const applyWithCap = () => {
 			capMesh.setEnabled(options.withCap);

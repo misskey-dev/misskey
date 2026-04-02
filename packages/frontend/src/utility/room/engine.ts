@@ -146,6 +146,97 @@ type GetOptionsSchemaValues<T extends OptionsSchema> = {
 	never;
 };
 
+class ModelManager {
+	public root: BABYLON.Mesh;
+	public updatedCallback: (() => void) | null = null;
+	private bakedMeshes: BABYLON.Mesh[] = [];
+
+	constructor(root: BABYLON.Mesh, updatedCallback: (() => void) | null = null) {
+		this.root = root;
+		this.updatedCallback = updatedCallback;
+	}
+
+	public findMesh(keyword: string) {
+		const mesh = this.root.getChildMeshes().find(m => m.name.includes(keyword));
+		if (mesh == null) {
+			throw new Error(`Mesh with keyword "${keyword}" not found for object ${this.root.metadata?.objectType}`);
+		}
+		return mesh as BABYLON.Mesh;
+	}
+
+	public findMeshes(keyword: string) {
+		const meshes = this.root.getChildMeshes().filter(m => m.name.includes(keyword));
+		return meshes as BABYLON.Mesh[];
+	}
+
+	public findMaterial(keyword: string) {
+		return findMaterial(this.root, keyword);
+	}
+
+	public findTransformNode(keyword: string) {
+		const node = this.root.getChildTransformNodes().find(n => n.name.includes(keyword));
+		if (node == null) {
+			throw new Error(`TransformNode with keyword "${keyword}" not found for object ${this.root.metadata?.objectType}`);
+		}
+		return node;
+	}
+
+	public updated() {
+		this.bakeMesh();
+		this.updatedCallback?.(this.bakedMeshes.length > 0 ? this.bakedMeshes : this.root.getChildMeshes());
+	}
+
+	public bakeMesh() {
+		try {
+			for (const m of this.bakedMeshes) {
+				m.dispose();
+			}
+			this.bakedMeshes = [];
+
+			const childMeshes = this.root.getChildMeshes().filter(m => !m.name.includes('__TOP__') && !m.name.includes('__SIDE__') && !m.name.includes('__COLLISION__'));
+
+			if (childMeshes.length <= 1) {
+				return;
+			}
+
+			const toMerge = [] as BABYLON.Mesh[];
+			for (const mesh of childMeshes) {
+				let fixedMesh = mesh;
+
+				if (mesh instanceof BABYLON.InstancedMesh) {
+					const sourceMesh = mesh.sourceMesh;
+					const newMesh = sourceMesh.clone(mesh.name + '_baked');
+
+					newMesh.position = mesh.position.clone();
+					if (mesh.rotationQuaternion) {
+						newMesh.rotationQuaternion = mesh.rotationQuaternion.clone();
+					} else {
+						newMesh.rotation = mesh.rotation.clone();
+					}
+					newMesh.scaling = mesh.scaling.clone();
+
+					newMesh.parent = mesh.parent;
+
+					mesh.dispose();
+
+					fixedMesh = newMesh;
+				}
+
+				fixedMesh.isVisible = false;
+				toMerge.push(fixedMesh);
+			}
+
+			const merged = BABYLON.Mesh.MergeMeshes(toMerge, false, true, undefined, false, true);
+
+			merged.setParent(this.root);
+
+			this.bakedMeshes = [merged];
+		} catch (err) {
+			console.error('Failed to bake mesh for object', this.root.metadata?.objectType, err);
+		}
+	}
+}
+
 type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 	id: string;
 	name: string;
@@ -162,12 +253,7 @@ type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 		scene: BABYLON.Scene;
 		root: BABYLON.Mesh;
 		options: Readonly<GetOptionsSchemaValues<OpSc>>;
-		loaderResult: BABYLON.ISceneLoaderAsyncResult;
-		meshUpdated: () => void;
-		findMesh: (keyword: string) => BABYLON.Mesh;
-		findMeshes: (keyword: string) => BABYLON.Mesh[];
-		findMaterial: (keyword: string) => BABYLON.PBRMaterial;
-		findTransformNode: (keyword: string) => BABYLON.TransformNode;
+		model: ModelManager;
 	}) => RoomObjectInstance<GetOptionsSchemaValues<OpSc>>;
 };
 
@@ -952,39 +1038,21 @@ export class RoomEngine {
 
 		meshUpdated(loaderResult.meshes);
 
+		const model = new ModelManager(subRoot, (meshes) => {
+			meshUpdated(meshes);
+		});
+
 		const objectInstance = def.createInstance({
 			room: this,
 			scene: this.scene,
 			root,
 			options: args.options,
-			loaderResult: loaderResult,
-			meshUpdated: () => {
-				meshUpdated(root.getChildMeshes());
-			},
-			findMesh: (keyword) => {
-				const mesh = root.getChildMeshes().find(m => m.name.includes(keyword));
-				if (mesh == null) {
-					throw new Error(`Mesh with keyword "${keyword}" not found for object ${args.type}`);
-				}
-				return mesh as BABYLON.Mesh;
-			},
-			findMeshes: (keyword) => {
-				const meshes = root.getChildMeshes().filter(m => m.name.includes(keyword));
-				return meshes as BABYLON.Mesh[];
-			},
-			findMaterial: (keyword) => {
-				return findMaterial(root, keyword);
-			},
-			findTransformNode: (keyword) => {
-				const node = root.getChildTransformNodes().find(n => n.name.includes(keyword));
-				if (node == null) {
-					throw new Error(`TransformNode with keyword "${keyword}" not found for object ${args.type}`);
-				}
-				return node;
-			},
+			model,
 		});
 
 		objectInstance.onInited?.();
+
+		model.updated();
 
 		this.objectInstances.set(args.id, objectInstance);
 		this.objectMeshs.set(args.id, root);
@@ -1558,31 +1626,9 @@ export class RoomObjectPreviewEngine {
 			scene: this.scene,
 			root,
 			options: args.options,
-			loaderResult: loaderResult,
-			meshUpdated: () => {
-				meshUpdated(root.getChildMeshes());
-			},
-			findMesh: (keyword) => {
-				const mesh = root.getChildMeshes().find(m => m.name.includes(keyword));
-				if (mesh == null) {
-					throw new Error(`Mesh with keyword "${keyword}" not found for object ${args.type}`);
-				}
-				return mesh as BABYLON.Mesh;
-			},
-			findMeshes: (keyword) => {
-				const meshes = root.getChildMeshes().filter(m => m.name.includes(keyword));
-				return meshes as BABYLON.Mesh[];
-			},
-			findMaterial: (keyword) => {
-				return findMaterial(root, keyword);
-			},
-			findTransformNode: (keyword) => {
-				const node = root.getChildTransformNodes().find(n => n.name.includes(keyword));
-				if (node == null) {
-					throw new Error(`TransformNode with keyword "${keyword}" not found for object ${args.type}`);
-				}
-				return node;
-			},
+			model: new ModelManager(subRoot, (meshes) => {
+				meshUpdated(meshes);
+			}),
 		});
 
 		objectInstance.onInited?.();

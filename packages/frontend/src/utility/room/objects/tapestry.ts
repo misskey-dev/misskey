@@ -44,15 +44,15 @@ export const tapestry = defineObject({
 		},
 	},
 	placement: 'side',
-	createInstance: ({ scene, options, findMaterial, findMesh, findMeshes, meshUpdated }) => {
-		const pictureMesh = findMesh('__X_PICTURE__');
+	createInstance: ({ scene, options, model }) => {
+		const pictureMesh = model.findMesh('__X_PICTURE__');
 		pictureMesh.rotationQuaternion = null;
 
-		const pipeTopMesh = findMesh('__X_PIPE_TOP__');
-		const pipeBottomMesh = findMesh('__X_PIPE_BOTTOM__');
-		const ropeMesh = findMesh('__X_ROPE__');
+		const pipeTopMesh = model.findMesh('__X_PIPE_TOP__');
+		const pipeBottomMesh = model.findMesh('__X_PIPE_BOTTOM__');
+		const ropeMesh = model.findMesh('__X_ROPE__');
 
-		const pictureMaterial = findMaterial('__X_PICTURE__');
+		const pictureMaterial = model.findMaterial('__X_PICTURE__');
 
 		const updateUv = createPlaneUvMapper(pictureMesh);
 
@@ -81,7 +81,7 @@ export const tapestry = defineObject({
 			pipeBottomMesh.morphTargetManager!.getTargetByName('Height')!.influence = options.height;
 			ropeMesh.morphTargetManager!.getTargetByName('Width')!.influence = options.width;
 			ropeMesh.morphTargetManager!.getTargetByName('Height')!.influence = options.height;
-			meshUpdated();
+			model.updated();
 
 			applyFit();
 		};

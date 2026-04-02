@@ -21,8 +21,8 @@ export const colorBox = defineObject({
 		},
 	},
 	placement: 'floor',
-	createInstance: ({ options, findMesh }) => {
-		const bodyMesh = findMesh('__X_BODY__');
+	createInstance: ({ options, model }) => {
+		const bodyMesh = model.findMesh('__X_BODY__');
 		const bodyMaterial = bodyMesh.material as BABYLON.PBRMaterial;
 
 		const applyColor = () => {

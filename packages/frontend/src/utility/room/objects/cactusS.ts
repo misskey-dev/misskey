@@ -21,8 +21,8 @@ export const cactusS = defineObject({
 		},
 	},
 	placement: 'top',
-	createInstance: ({ options, findMesh }) => {
-		const potMesh = findMesh('__X_POT__');
+	createInstance: ({ options, model }) => {
+		const potMesh = model.findMesh('__X_POT__');
 		const potMaterial = potMesh.material as BABYLON.PBRMaterial;
 
 		const applyPotColor = () => {

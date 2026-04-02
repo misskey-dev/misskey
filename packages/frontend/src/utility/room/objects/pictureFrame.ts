@@ -83,17 +83,17 @@ export const pictureFrame = defineObject({
 		},
 	},
 	placement: 'side',
-	createInstance: ({ scene, options, findMaterial, findMesh, meshUpdated }) => {
-		const frameMesh = findMesh('__X_FRAME__');
+	createInstance: ({ scene, options, model }) => {
+		const frameMesh = model.findMesh('__X_FRAME__');
 		frameMesh.rotationQuaternion = null;
-		const matMesh = findMesh('__X_MAT__');
+		const matMesh = model.findMesh('__X_MAT__');
 		matMesh.rotationQuaternion = null;
-		const coverMesh = findMesh('__X_COVER__');
+		const coverMesh = model.findMesh('__X_COVER__');
 		coverMesh.rotationQuaternion = null;
-		const pictureMesh = findMesh('__X_PICTURE__');
+		const pictureMesh = model.findMesh('__X_PICTURE__');
 		pictureMesh.rotationQuaternion = null;
 
-		const pictureMaterial = findMaterial('__X_PICTURE__');
+		const pictureMaterial = model.findMaterial('__X_PICTURE__');
 
 		const updateUv = createPlaneUvMapper(pictureMesh);
 
@@ -115,7 +115,7 @@ export const pictureFrame = defineObject({
 
 		const applyFrameThickness = () => {
 			frameMesh.morphTargetManager!.getTargetByName('Thickness')!.influence = options.frameThickness;
-			meshUpdated();
+			model.updated();
 		};
 
 		applyFrameThickness();
@@ -126,7 +126,7 @@ export const pictureFrame = defineObject({
 			pictureMesh.morphTargetManager!.getTargetByName('Width')!.influence = options.width * (1 - options.matHThickness);
 			pictureMesh.morphTargetManager!.getTargetByName('Height')!.influence = options.height * (1 - options.matVThickness);
 			matMesh.isVisible = options.matHThickness > 0 || options.matVThickness > 0;
-			meshUpdated();
+			model.updated();
 
 			applyFit();
 		};
@@ -140,7 +140,7 @@ export const pictureFrame = defineObject({
 			matMesh.morphTargetManager!.getTargetByName('Height')!.influence = options.height;
 			coverMesh.morphTargetManager!.getTargetByName('Width')!.influence = options.width;
 			coverMesh.morphTargetManager!.getTargetByName('Height')!.influence = options.height;
-			meshUpdated();
+			model.updated();
 
 			applyMatThickness();
 		};
@@ -151,7 +151,7 @@ export const pictureFrame = defineObject({
 			frameMesh.morphTargetManager!.getTargetByName('Depth')!.influence = options.depth;
 			//coverMesh.morphTargetManager!.getTargetByName('Depth')!.influence = options.depth;
 			coverMesh.morphTargetManager!.getTargetByName('Depth')!.influence = 0;
-			meshUpdated();
+			model.updated();
 		};
 
 		applyDepth();
@@ -178,7 +178,7 @@ export const pictureFrame = defineObject({
 
 		applyCustomPicture();
 
-		const frameMaterial = findMaterial('__X_FRAME__');
+		const frameMaterial = model.findMaterial('__X_FRAME__');
 
 		const applyFrameColor = () => {
 			const [r, g, b] = options.frameColor;

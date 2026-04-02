@@ -23,8 +23,8 @@ export const books = defineObject({
 	},
 	placement: 'top',
 	mergeMeshes: ['__X_BOOK_1__', '__X_BOOK_2__', '__X_BOOK_3__', '__X_BOOK_4__', '__X_BOOK_5__', '__X_BOOK_6__', '__X_BOOK_7__', '__X_BOOK_8__', '__X_BOOK_9__', '__X_BOOK_10__'],
-	createInstance: ({ scene, options, findMesh, findMaterial }) => {
-		const coverMaterial = findMaterial('__X_COVER__');
+	createInstance: ({ scene, options, model }) => {
+		const coverMaterial = model.findMaterial('__X_COVER__');
 
 		const applyVariation = () => {
 			const coverTexture =
@@ -39,16 +39,16 @@ export const books = defineObject({
 		applyVariation();
 
 		const bookMeshes = [
-			findMesh('__X_BOOK_1__'),
-			findMesh('__X_BOOK_2__'),
-			findMesh('__X_BOOK_3__'),
-			findMesh('__X_BOOK_4__'),
-			findMesh('__X_BOOK_5__'),
-			findMesh('__X_BOOK_6__'),
-			findMesh('__X_BOOK_7__'),
-			findMesh('__X_BOOK_8__'),
-			findMesh('__X_BOOK_9__'),
-			findMesh('__X_BOOK_10__'),
+			model.findMesh('__X_BOOK_1__'),
+			model.findMesh('__X_BOOK_2__'),
+			model.findMesh('__X_BOOK_3__'),
+			model.findMesh('__X_BOOK_4__'),
+			model.findMesh('__X_BOOK_5__'),
+			model.findMesh('__X_BOOK_6__'),
+			model.findMesh('__X_BOOK_7__'),
+			model.findMesh('__X_BOOK_8__'),
+			model.findMesh('__X_BOOK_9__'),
+			model.findMesh('__X_BOOK_10__'),
 		];
 
 		for (const mesh of bookMeshes) {

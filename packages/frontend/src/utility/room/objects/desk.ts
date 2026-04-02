@@ -21,8 +21,8 @@ export const desk = defineObject({
 		},
 	},
 	placement: 'floor',
-	createInstance: ({ options, findMaterial }) => {
-		const topMaterial = findMaterial('__X_BODY__');
+	createInstance: ({ options, model }) => {
+		const topMaterial = model.findMaterial('__X_BODY__');
 
 		const applyTopColor = () => {
 			const [r, g, b] = options.topColor;

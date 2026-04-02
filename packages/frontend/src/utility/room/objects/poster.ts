@@ -44,13 +44,13 @@ export const poster = defineObject({
 		},
 	},
 	placement: 'side',
-	createInstance: ({ scene, options, findMaterial, findMesh, findMeshes, meshUpdated }) => {
-		const pictureMesh = findMesh('__X_PICTURE__');
+	createInstance: ({ scene, options, model }) => {
+		const pictureMesh = model.findMesh('__X_PICTURE__');
 		pictureMesh.rotationQuaternion = null;
 
-		const pictureMaterial = findMaterial('__X_PICTURE__');
+		const pictureMaterial = model.findMaterial('__X_PICTURE__');
 
-		const pinMeshes = findMeshes('__X_PIN__');
+		const pinMeshes = model.findMeshes('__X_PIN__');
 
 		const updateUv = createPlaneUvMapper(pictureMesh);
 
@@ -77,7 +77,7 @@ export const poster = defineObject({
 				pinMesh.morphTargetManager!.getTargetByName('Width')!.influence = options.width;
 				pinMesh.morphTargetManager!.getTargetByName('Height')!.influence = options.height;
 			}
-			meshUpdated();
+			model.updated();
 
 			applyFit();
 		};
