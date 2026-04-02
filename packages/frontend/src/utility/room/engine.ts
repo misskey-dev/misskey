@@ -32,7 +32,7 @@ import { reactive, ref, shallowRef, triggerRef, watch } from 'vue';
 import { genId } from '../id.js';
 import { deepClone } from '../clone.js';
 import { getObjectDef } from './object-defs.js';
-import { HorizontalCameraKeyboardMoveInput, findMaterial } from './utility.js';
+import { HorizontalCameraKeyboardMoveInput, applyMorphTargetsToMesh, findMaterial } from './utility.js';
 import * as sound from '@/utility/sound.js';
 
 // babylonのドメイン知識は持たない
@@ -199,7 +199,7 @@ class ModelManager {
 				return;
 			}
 
-			const toMerge = [] as BABYLON.Mesh[];
+			const _toMerge = [] as BABYLON.Mesh[];
 			for (const mesh of childMeshes) {
 				let fixedMesh = mesh;
 
@@ -223,7 +223,15 @@ class ModelManager {
 				}
 
 				fixedMesh.isVisible = false;
-				toMerge.push(fixedMesh);
+				_toMerge.push(fixedMesh);
+			}
+
+			const toMerge = [] as BABYLON.Mesh[];
+			for (const mesh of _toMerge) {
+				const newMesh = mesh.clone(mesh.name + '_bakeMerged');
+				applyMorphTargetsToMesh(newMesh);
+				//newMesh.bakeCurrentTransformIntoVertices();
+				toMerge.push(newMesh);
 			}
 
 			const merged = BABYLON.Mesh.MergeMeshes(toMerge, false, true, undefined, false, true);

@@ -491,39 +491,55 @@ export function findMaterial(rootMesh: BABYLON.AbstractMesh, keyword: string): B
 	throw new Error(`Material with keyword "${keyword}" not found`);
 }
 
-// merge all child meshes into the root mesh
-export function bakeMesh(rootMesh: BABYLON.Mesh) {
-	const childMeshes = rootMesh.getChildMeshes();
-
-	const toMerge = [] as BABYLON.Mesh[];
-	for (const mesh of childMeshes) {
-		let fixedMesh = mesh;
-
-		if (mesh instanceof BABYLON.InstancedMesh) {
-			const sourceMesh = mesh.sourceMesh;
-			const newMesh = sourceMesh.clone(mesh.name + '_baked');
-
-			newMesh.position = mesh.position.clone();
-			if (mesh.rotationQuaternion) {
-				newMesh.rotationQuaternion = mesh.rotationQuaternion.clone();
-			} else {
-				newMesh.rotation = mesh.rotation.clone();
-			}
-			newMesh.scaling = mesh.scaling.clone();
-
-			newMesh.parent = mesh.parent;
-
-			mesh.dispose();
-
-			fixedMesh = newMesh;
-		}
-
-		toMerge.push(fixedMesh);
+export function applyMorphTargetsToMesh(mesh: BABYLON.Mesh) {
+	if (!mesh.morphTargetManager) {
+		return;
 	}
 
-	const merged = BABYLON.Mesh.MergeMeshes(toMerge, true, true, undefined, false, true);
+	const morphTargetManager = mesh.morphTargetManager;
+	const positions = mesh.getVerticesData(BABYLON.VertexBuffer.PositionKind);
 
-	merged.setParent(rootMesh);
+	if (!positions) {
+		return;
+	}
 
-	return merged;
+	// Create a copy of the original positions to work with
+	const finalPositions = positions.slice();
+
+	// Apply each morph target
+	for (let targetIndex = 0; targetIndex < morphTargetManager.numTargets; targetIndex++) {
+		const target = morphTargetManager.getTarget(targetIndex);
+		const influence = target.influence;
+
+		if (influence === 0) {
+			continue;
+		}
+
+		// Get the morph target positions
+		const targetPositions = target.getPositions();
+
+		if (!targetPositions || targetPositions.length !== positions.length) {
+			console.warn(`Morph target ${targetIndex} has invalid position data`);
+			continue;
+		}
+
+		// Apply the morph target influence to each vertex
+		for (let i = 0; i < positions.length; i++) {
+			finalPositions[i] += (targetPositions[i] - positions[i]) * influence;
+		}
+	}
+
+	// Update the mesh with the morphed positions
+	mesh.setVerticesData(BABYLON.VertexBuffer.PositionKind, finalPositions);
+
+	// Update normals if available
+	const normals = mesh.getVerticesData(BABYLON.VertexBuffer.NormalKind);
+	if (normals) {
+		// For simplicity, we'll just recompute the normals
+		mesh.createNormals(true);
+	}
+
+	// Refresh the mesh
+	mesh.refreshBoundingInfo();
+	mesh.computeWorldMatrix(true);
 }
