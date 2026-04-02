@@ -532,12 +532,12 @@ export function applyMorphTargetsToMesh(mesh: BABYLON.Mesh) {
 	// Update the mesh with the morphed positions
 	mesh.setVerticesData(BABYLON.VertexBuffer.PositionKind, finalPositions);
 
-	// Update normals if available
-	const normals = mesh.getVerticesData(BABYLON.VertexBuffer.NormalKind);
-	if (normals) {
-		// For simplicity, we'll just recompute the normals
-		mesh.createNormals(true);
-	}
+	//// Update normals if available
+	//const normals = mesh.getVerticesData(BABYLON.VertexBuffer.NormalKind);
+	//if (normals) {
+	//	// For simplicity, we'll just recompute the normals
+	//	mesh.createNormals(true);
+	//}
 
 	// Refresh the mesh
 	mesh.refreshBoundingInfo();

@@ -228,15 +228,24 @@ class ModelManager {
 			const toMerge = [] as BABYLON.Mesh[];
 			for (const mesh of _toMerge) {
 				const newMesh = mesh.clone(mesh.name + '_bakeMerged');
-				mesh.makeGeometryUnique();
+				newMesh.makeGeometryUnique();
 				applyMorphTargetsToMesh(newMesh);
+				if (newMesh.parent === this.root) {
+					newMesh.parent = null;
+				} else {
+					newMesh.setParent(this.root);
+					//newMesh.bakeCurrentTransformIntoVertices();
+					newMesh.parent = null;
+				}
 				//newMesh.bakeCurrentTransformIntoVertices();
 				toMerge.push(newMesh);
 			}
 
 			const merged = BABYLON.Mesh.MergeMeshes(toMerge, true, true, undefined, false, true);
 
-			merged.setParent(this.root);
+			//merged.bakeCurrentTransformIntoVertices();
+
+			merged.parent = this.root;
 
 			this.bakedMeshes = [merged];
 		} catch (err) {
