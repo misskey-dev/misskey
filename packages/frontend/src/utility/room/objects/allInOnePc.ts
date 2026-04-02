@@ -46,7 +46,7 @@ export const allInOnePc = defineObject({
 		},
 	},
 	placement: 'top',
-	createInstance: ({ scene, options, model }) => {
+	createInstance: async ({ scene, options, model }) => {
 		const screenMesh = model.findMesh('__X_SCREEN__');
 
 		const bodyMaterial = model.findMaterial('__X_BODY__');
@@ -70,7 +70,7 @@ export const allInOnePc = defineObject({
 
 		applyFit();
 
-		const applyCustomPicture = () => {
+		const applyCustomPicture = () => new Promise<void>((resolve) => {
 			if (options.customPicture != null) {
 				const tex = new BABYLON.Texture(options.customPicture, scene, false, false);
 				tex.wrapU = BABYLON.Texture.MIRROR_ADDRESSMODE;
@@ -79,17 +79,17 @@ export const allInOnePc = defineObject({
 
 				screenMaterial.emissiveTexture = tex;
 
-				applyFit();
-
 				tex.onLoadObservable.addOnce(() => {
 					applyFit();
+					resolve();
 				});
 			} else {
 				screenMaterial.emissiveTexture = null;
+				resolve();
 			}
-		};
+		});
 
-		applyCustomPicture();
+		await applyCustomPicture();
 
 		const applyScreenBrightness = () => {
 			const b = options.screenBrightness;

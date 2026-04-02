@@ -44,7 +44,7 @@ export const tapestry = defineObject({
 		},
 	},
 	placement: 'side',
-	createInstance: ({ scene, options, model }) => {
+	createInstance: async ({ scene, options, model }) => {
 		const pictureMesh = model.findMesh('__X_PICTURE__');
 		pictureMesh.rotationQuaternion = null;
 
@@ -88,7 +88,7 @@ export const tapestry = defineObject({
 
 		applySize();
 
-		const applyCustomPicture = () => {
+		const applyCustomPicture = () => new Promise<void>((resolve) => {
 			if (options.customPicture != null) {
 				const tex = new BABYLON.Texture(options.customPicture, scene, false, false);
 				tex.wrapU = BABYLON.Texture.MIRROR_ADDRESSMODE;
@@ -97,18 +97,18 @@ export const tapestry = defineObject({
 				pictureMaterial.albedoColor = new BABYLON.Color3(1, 1, 1);
 				pictureMaterial.albedoTexture = tex;
 
-				applyFit();
-
 				tex.onLoadObservable.addOnce(() => {
 					applyFit();
+					resolve();
 				});
 			} else {
 				pictureMaterial.albedoColor = new BABYLON.Color3(0.5, 0.5, 0.5);
 				pictureMaterial.albedoTexture = null;
+				resolve();
 			}
-		};
+		});
 
-		applyCustomPicture();
+		await applyCustomPicture();
 
 		return {
 			onInited: () => {

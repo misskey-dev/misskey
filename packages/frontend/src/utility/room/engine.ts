@@ -271,7 +271,7 @@ type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 		root: BABYLON.Mesh;
 		options: Readonly<GetOptionsSchemaValues<OpSc>>;
 		model: ModelManager;
-	}) => RoomObjectInstance<GetOptionsSchemaValues<OpSc>>;
+	}) => RoomObjectInstance<GetOptionsSchemaValues<OpSc>> | Promise<RoomObjectInstance<GetOptionsSchemaValues<OpSc>>>; // TODO: createInstanceをasyncにするのではなく、別にreadyみたいなものを返させる
 };
 
 export function defineObject<const OpSc extends OptionsSchema>(def: ObjectDef<OpSc>): ObjectDef<OpSc> {
@@ -1061,7 +1061,7 @@ export class RoomEngine {
 			meshUpdated(meshes);
 		});
 
-		const objectInstance = def.createInstance({
+		const objectInstance = await def.createInstance({
 			room: this,
 			scene: this.scene,
 			root,
@@ -1640,7 +1640,7 @@ export class RoomObjectPreviewEngine {
 
 		meshUpdated(loaderResult.meshes);
 
-		const objectInstance = def.createInstance({
+		const objectInstance = await def.createInstance({
 			room: null,
 			scene: this.scene,
 			root,

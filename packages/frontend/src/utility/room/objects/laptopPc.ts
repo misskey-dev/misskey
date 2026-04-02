@@ -54,7 +54,7 @@ export const laptopPc = defineObject({
 		},
 	},
 	placement: 'top',
-	createInstance: ({ scene, options, model }) => {
+	createInstance: async ({ scene, options, model }) => {
 		const screenMesh = model.findMesh('__X_SCREEN__');
 		const hutaNode = model.findTransformNode('__X_HUTA__');
 
@@ -79,7 +79,7 @@ export const laptopPc = defineObject({
 
 		applyFit();
 
-		const applyCustomPicture = () => {
+		const applyCustomPicture = () => new Promise<void>((resolve) => {
 			if (options.customPicture != null) {
 				const tex = new BABYLON.Texture(options.customPicture, scene, false, false);
 				tex.wrapU = BABYLON.Texture.MIRROR_ADDRESSMODE;
@@ -88,17 +88,17 @@ export const laptopPc = defineObject({
 
 				screenMaterial.emissiveTexture = tex;
 
-				applyFit();
-
 				tex.onLoadObservable.addOnce(() => {
 					applyFit();
+					resolve();
 				});
 			} else {
 				screenMaterial.emissiveTexture = null;
+				resolve();
 			}
-		};
+		});
 
-		applyCustomPicture();
+		await applyCustomPicture();
 
 		const applyScreenBrightness = () => {
 			const b = options.screenBrightness;

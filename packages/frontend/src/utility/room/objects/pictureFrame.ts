@@ -83,7 +83,7 @@ export const pictureFrame = defineObject({
 		},
 	},
 	placement: 'side',
-	createInstance: ({ scene, options, model }) => {
+	createInstance: async ({ scene, options, model }) => {
 		const frameMesh = model.findMesh('__X_FRAME__');
 		frameMesh.rotationQuaternion = null;
 		const matMesh = model.findMesh('__X_MAT__');
@@ -156,7 +156,7 @@ export const pictureFrame = defineObject({
 
 		applyDepth();
 
-		const applyCustomPicture = () => {
+		const applyCustomPicture = () => new Promise<void>((resolve) => {
 			if (options.customPicture != null) {
 				const tex = new BABYLON.Texture(options.customPicture, scene, false, false);
 				tex.wrapU = BABYLON.Texture.MIRROR_ADDRESSMODE;
@@ -165,18 +165,18 @@ export const pictureFrame = defineObject({
 				pictureMaterial.albedoColor = new BABYLON.Color3(1, 1, 1);
 				pictureMaterial.albedoTexture = tex;
 
-				applyFit();
-
 				tex.onLoadObservable.addOnce(() => {
 					applyFit();
+					resolve();
 				});
 			} else {
 				pictureMaterial.albedoColor = new BABYLON.Color3(0.5, 0.5, 0.5);
 				pictureMaterial.albedoTexture = null;
+				resolve();
 			}
-		};
+		});
 
-		applyCustomPicture();
+		await applyCustomPicture();
 
 		const frameMaterial = model.findMaterial('__X_FRAME__');
 
