@@ -202,10 +202,12 @@ class ModelManager {
 			const _toMerge = [] as BABYLON.Mesh[];
 			for (const mesh of childMeshes) {
 				let fixedMesh = mesh;
+				fixedMesh.isVisible = false;
 
 				if (mesh instanceof BABYLON.InstancedMesh) {
 					const sourceMesh = mesh.sourceMesh;
 					const newMesh = sourceMesh.clone(mesh.name + '_baked');
+					sourceMesh.getScene().removeMesh(newMesh);
 
 					newMesh.position = mesh.position.clone();
 					if (mesh.rotationQuaternion) {
@@ -214,21 +216,19 @@ class ModelManager {
 						newMesh.rotation = mesh.rotation.clone();
 					}
 					newMesh.scaling = mesh.scaling.clone();
-
 					newMesh.parent = mesh.parent;
-
-					mesh.dispose();
+					newMesh.isVisible = false;
 
 					fixedMesh = newMesh;
 				}
 
-				fixedMesh.isVisible = false;
 				_toMerge.push(fixedMesh);
 			}
 
 			const toMerge = [] as BABYLON.Mesh[];
 			for (const mesh of _toMerge) {
 				const newMesh = mesh.clone(mesh.name + '_bakeMerged');
+				mesh.makeGeometryUnique();
 				applyMorphTargetsToMesh(newMesh);
 				//newMesh.bakeCurrentTransformIntoVertices();
 				toMerge.push(newMesh);
