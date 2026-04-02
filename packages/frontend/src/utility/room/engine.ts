@@ -320,7 +320,7 @@ const TIME_MAP = {
 } as const;
 
 const USE_GLOW = false; // ドローコールが増えて重い
-const ENABLE_SUN_LIGHT = false; // ドローコールが増えて重い
+const ENABLE_SUN_LIGHT = true; // ドローコールが増えて重い
 
 export async function createRoomEngine(roomState: RoomState, canvas: HTMLCanvasElement) {
 	//const babylonEngine = new BABYLON.WebGPUEngine(canvas);
@@ -491,6 +491,7 @@ export class RoomEngine {
 		this.shadowGeneratorForRoomLight.bias = 0.0001;
 		this.shadowGeneratorForRoomLight.usePercentageCloserFiltering = true;
 		this.shadowGeneratorForRoomLight.filteringQuality = BABYLON.ShadowGenerator.QUALITY_HIGH;
+		this.shadowGeneratorForRoomLight.getShadowMap().refreshRate = 60;
 		//this.shadowGenerator1.useContactHardeningShadow = true;
 
 		if (ENABLE_SUN_LIGHT) {
@@ -506,6 +507,7 @@ export class RoomEngine {
 			this.shadowGeneratorForSunLight.bias = 0.0001;
 			this.shadowGeneratorForSunLight.usePercentageCloserFiltering = true;
 			this.shadowGeneratorForSunLight.usePoissonSampling = true;
+			this.shadowGeneratorForSunLight.getShadowMap().refreshRate = 60;
 		}
 
 		this.turnOnRoomLight();
