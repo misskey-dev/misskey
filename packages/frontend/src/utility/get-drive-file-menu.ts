@@ -5,12 +5,14 @@
 
 import * as Misskey from 'misskey-js';
 import { defineAsyncComponent } from 'vue';
+import { selectDriveFolder } from './drive.js';
 import type { MenuItem } from '@/types/menu.js';
 import { i18n } from '@/i18n.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { prefer } from '@/preferences.js';
+import { globalEvents } from '@/events.js';
 
 function rename(file: Misskey.entities.DriveFile) {
 	os.inputText({
@@ -26,8 +28,8 @@ function rename(file: Misskey.entities.DriveFile) {
 	});
 }
 
-function describe(file: Misskey.entities.DriveFile) {
-	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkFileCaptionEditWindow.vue')), {
+async function describe(file: Misskey.entities.DriveFile) {
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkFileCaptionEditWindow.vue').then(x => x.default), {
 		default: file.comment ?? '',
 		file: file,
 	}, {
@@ -42,10 +44,11 @@ function describe(file: Misskey.entities.DriveFile) {
 }
 
 function move(file: Misskey.entities.DriveFile) {
-	os.selectDriveFolder(false).then(folder => {
+	selectDriveFolder(null).then(({ canceled, folders }) => {
+		if (canceled) return;
 		misskeyApi('drive/files/update', {
 			fileId: file.id,
-			folderId: folder[0] ? folder[0].id : null,
+			folderId: folders[0] ? folders[0].id : null,
 		});
 	});
 }
@@ -77,15 +80,17 @@ async function deleteFile(file: Misskey.entities.DriveFile) {
 		type: 'warning',
 		text: i18n.tsx.driveFileDeleteConfirm({ name: file.name }),
 	});
-
 	if (canceled) return;
-	misskeyApi('drive/files/delete', {
+
+	await os.apiWithDialog('drive/files/delete', {
 		fileId: file.id,
 	});
+
+	globalEvents.emit('driveFilesDeleted', [file]);
 }
 
 export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Misskey.entities.DriveFolder | null): MenuItem[] {
-	const isImage = file.type.startsWith('image/');
+	const _isImage = file.type.startsWith('image/');
 
 	const menuItems: MenuItem[] = [];
 
@@ -111,17 +116,6 @@ export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Miss
 		icon: 'ti ti-text-caption',
 		action: () => describe(file),
 	});
-
-	if (isImage) {
-		menuItems.push({
-			text: i18n.ts.cropImage,
-			icon: 'ti ti-crop',
-			action: () => os.cropImage(file, {
-				aspectRatio: NaN,
-				uploadFolder: folder ? folder.id : folder,
-			}),
-		});
-	}
 
 	menuItems.push({ type: 'divider' }, {
 		text: i18n.ts.createNoteFromTheFile,

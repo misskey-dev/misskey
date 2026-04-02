@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkWindow :initialWidth="640" :initialHeight="402" :canResize="true" :closeButton="true">
+<MkWindow :initialWidth="640" :initialHeight="402" :canResize="true" :closeButton="true" @closed="emit('closed')">
 	<template #header>
 		<i class="icon ti ti-brand-youtube" style="margin-right: 0.5em;"></i>
 		<span>{{ title ?? 'YouTube' }}</span>
@@ -27,11 +27,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref } from 'vue';
 import { versatileLang } from '@@/js/intl-const.js';
 import MkWindow from '@/components/MkWindow.vue';
-import { transformPlayerUrl } from '@/utility/player-url-transform.js';
+import { transformPlayerUrl } from '@/utility/url-preview.js';
 import { prefer } from '@/preferences.js';
 
 const props = defineProps<{
 	url: string;
+}>();
+
+const emit = defineEmits<{
+	(ev: 'closed'): void;
 }>();
 
 const requestUrl = new URL(props.url);

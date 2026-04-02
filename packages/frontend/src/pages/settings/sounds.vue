@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <SearchMarker path="/settings/sounds" :label="i18n.ts.sounds" :keywords="['sounds']" icon="ti ti-music">
 	<div class="_gaps_m">
 		<MkFeatureBanner icon="/client-assets/speaker_high_volume_3d.png" color="#ff006f">
-			<SearchKeyword>{{ i18n.ts._settings.soundsBanner }}</SearchKeyword>
+			<SearchText>{{ i18n.ts._settings.soundsBanner }}</SearchText>
 		</MkFeatureBanner>
 
 		<SearchMarker :keywords="['mute']">
@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #suffix>{{ getSoundTypeName(sounds[type].type) }}</template>
 					<Suspense>
 						<template #default>
-							<XSound :type="sounds[type].type" :volume="sounds[type].volume" :fileId="sounds[type].fileId" :fileUrl="sounds[type].fileUrl" @update="(res) => updated(type, res)"/>
+							<XSound :def="sounds[type]" @update="(res) => updated(type, res)"/>
 						</template>
 						<template #fallback>
 							<MkLoading/>
@@ -75,6 +75,7 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkPreferenceContainer from '@/components/MkPreferenceContainer.vue';
 import { PREF_DEF } from '@/preferences/def.js';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
+import { getInitialPrefValue } from '@/preferences/manager.js';
 
 const notUseSound = prefer.model('sound.notUseSound');
 const useSoundOnlyWhenActive = prefer.model('sound.useSoundOnlyWhenActive');
@@ -99,11 +100,14 @@ function getSoundTypeName(f: SoundType): string {
 	}
 }
 
-async function updated(type: keyof typeof sounds.value, sound) {
-	const v: SoundStore = {
+async function updated(type: keyof typeof sounds.value, sound: { type: SoundType; fileId?: string; fileUrl?: string; volume: number; }) {
+	const v: SoundStore = sound.type === '_driveFile_' ? {
 		type: sound.type,
-		fileId: sound.fileId,
-		fileUrl: sound.fileUrl,
+		fileId: sound.fileId!,
+		fileUrl: sound.fileUrl!,
+		volume: sound.volume,
+	} : {
+		type: sound.type,
 		volume: sound.volume,
 	};
 
@@ -113,7 +117,7 @@ async function updated(type: keyof typeof sounds.value, sound) {
 
 function reset() {
 	for (const sound of Object.keys(sounds.value) as Array<keyof typeof sounds.value>) {
-		const v = PREF_DEF[`sound.on.${sound}`].default;
+		const v = getInitialPrefValue(`sound.on.${sound}`);
 		prefer.commit(`sound.on.${sound}`, v);
 		sounds.value[sound] = v;
 	}

@@ -1,0 +1,177 @@
+name: Report backend memory
+
+on:
+  workflow_run:
+    types: [completed]
+    workflows:
+      - Get backend memory usage # get-backend-memory.yml
+
+jobs:
+  compare-memory:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Download artifact
+        uses: actions/github-script@v8.0.0
+        with:
+          script: |
+            const fs = require('fs');
+            let allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: context.payload.workflow_run.id,
+            });
+            let matchArtifacts = allArtifacts.data.artifacts.filter((artifact) => {
+              return artifact.name.startsWith("memory-artifact-") || artifact.name == "memory-artifact"
+            });
+            await Promise.all(matchArtifacts.map(async (artifact) => {
+              let download = await github.rest.actions.downloadArtifact({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                artifact_id: artifact.id,
+                archive_format: 'zip',
+              });
+              await fs.promises.writeFile(`${process.env.GITHUB_WORKSPACE}/${artifact.name}.zip`, Buffer.from(download.data));
+            }));
+      - name: Extract all artifacts
+        run: |
+          find . -mindepth 1 -maxdepth 1 -type f -name '*.zip' -exec unzip {} -d artifacts ';'
+          ls -la artifacts/
+      - name: Load PR Number
+        id: load-pr-num
+        run: echo "pr-number=$(cat artifacts/pr_number)" >> "$GITHUB_OUTPUT"
+
+      - name: Output base
+        run: cat ./artifacts/memory-base.json
+      - name: Output head
+        run: cat ./artifacts/memory-head.json
+      - name: Compare memory usage
+        id: compare
+        run: |
+          BASE_MEMORY=$(cat ./artifacts/memory-base.json)
+          HEAD_MEMORY=$(cat ./artifacts/memory-head.json)
+
+          variation() {
+            calc() {
+              BASE=$(echo "$BASE_MEMORY" | jq -r ".${1}.${2} // 0")
+              HEAD=$(echo "$HEAD_MEMORY" | jq -r ".${1}.${2} // 0")
+
+              DIFF=$((HEAD - BASE))
+              if [ "$BASE" -gt 0 ]; then
+                DIFF_PERCENT=$(echo "scale=2; ($DIFF * 100) / $BASE" | bc)
+              else
+                DIFF_PERCENT=0
+              fi
+
+              # Convert KB to MB for readability
+              BASE_MB=$(echo "scale=2; $BASE / 1024" | bc)
+              HEAD_MB=$(echo "scale=2; $HEAD / 1024" | bc)
+              DIFF_MB=$(echo "scale=2; $DIFF / 1024" | bc)
+
+              JSON=$(jq -c -n \
+                --argjson base "$BASE_MB" \
+                --argjson head "$HEAD_MB" \
+                --argjson diff "$DIFF_MB" \
+                --argjson diff_percent "$DIFF_PERCENT" \
+                '{base: $base, head: $head, diff: $diff, diff_percent: $diff_percent}')
+
+              echo "$JSON"
+            }
+
+            JSON=$(jq -c -n \
+              --argjson VmRSS "$(calc $1 VmRSS)" \
+              --argjson VmHWM "$(calc $1 VmHWM)" \
+              --argjson VmSize "$(calc $1 VmSize)" \
+              --argjson VmData "$(calc $1 VmData)" \
+              '{VmRSS: $VmRSS, VmHWM: $VmHWM, VmSize: $VmSize, VmData: $VmData}')
+
+            echo "$JSON"
+          }
+
+          JSON=$(jq -c -n \
+            --argjson beforeGc "$(variation beforeGc)" \
+            --argjson afterGc "$(variation afterGc)" \
+            --argjson afterRequest "$(variation afterRequest)" \
+            '{beforeGc: $beforeGc, afterGc: $afterGc, afterRequest: $afterRequest}')
+
+          echo "res=$JSON" >> "$GITHUB_OUTPUT"
+      - id: build-comment
+        name: Build memory comment
+        env:
+          RES: ${{ steps.compare.outputs.res }}
+        run: |
+          HEADER="## Backend memory usage comparison"
+          FOOTER="[See workflow logs for details](https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})"
+
+          echo "$HEADER" > ./output.md
+          echo >> ./output.md
+
+          table() {
+            echo "| Metric | base (MB) | head (MB) | Diff (MB) | Diff (%) |" >> ./output.md
+            echo "|--------|------:|------:|------:|------:|" >> ./output.md
+
+            line() {
+              METRIC=$2
+              BASE=$(echo "$RES" | jq -r ".${1}.${2}.base")
+              HEAD=$(echo "$RES" | jq -r ".${1}.${2}.head")
+              DIFF=$(echo "$RES" | jq -r ".${1}.${2}.diff")
+              DIFF_PERCENT=$(echo "$RES" | jq -r ".${1}.${2}.diff_percent")
+
+              if (( $(echo "$DIFF_PERCENT > 0" | bc -l) )); then
+                DIFF="+$DIFF"
+                DIFF_PERCENT="+$DIFF_PERCENT"
+              fi
+
+              # highlight VmRSS
+              if [ "$2" = "VmRSS" ]; then
+                METRIC="**${METRIC}**"
+                BASE="**${BASE}**"
+                HEAD="**${HEAD}**"
+                DIFF="**${DIFF}**"
+                DIFF_PERCENT="**${DIFF_PERCENT}**"
+              fi
+
+              echo "| ${METRIC} | ${BASE} MB | ${HEAD} MB | ${DIFF} MB | ${DIFF_PERCENT}% |" >> ./output.md
+            }
+
+            line $1 VmRSS
+            line $1 VmHWM
+            line $1 VmSize
+            line $1 VmData
+          }
+
+          echo "### Before GC" >> ./output.md
+          table beforeGc
+          echo >> ./output.md
+
+          echo "### After GC" >> ./output.md
+          table afterGc
+          echo >> ./output.md
+
+          echo "### After Request" >> ./output.md
+          table afterRequest
+          echo >> ./output.md
+
+          # Determine if this is a significant change (more than 5% increase)
+          if [ "$(echo "$RES" | jq -r '.afterGc.VmRSS.diff_percent | tonumber > 5')" = "true" ]; then
+            echo "⚠️ **Warning**: Memory usage has increased by more than 5%. Please verify this is not an unintended change." >> ./output.md
+            echo >> ./output.md
+          fi
+
+          echo "$FOOTER" >> ./output.md
+      - uses: thollander/actions-comment-pull-request@v3
+        with:
+          pr-number: ${{ steps.load-pr-num.outputs.pr-number }}
+          comment-tag: show_memory_diff
+          file-path: ./output.md
+      - name: Tell error to PR
+        uses: thollander/actions-comment-pull-request@v3
+        if: failure() && steps.load-pr-num.outputs.pr-number
+        with:
+          pr-number: ${{ steps.load-pr-num.outputs.pr-number }}
+          comment-tag: show_memory_diff_error
+          message: |
+            An error occurred while comparing backend memory usage. See [workflow logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.

@@ -30,9 +30,9 @@ import { bindThis } from '@/decorators.js';
 import { IActivity } from '@/core/activitypub/type.js';
 import { isQuote, isRenote } from '@/misc/is-renote.js';
 import * as Acct from '@/misc/acct.js';
+import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
 import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions, FastifyBodyParser } from 'fastify';
 import type { FindOptionsWhere } from 'typeorm';
-import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
 
 const ACTIVITY_JSON = 'application/activity+json; charset=utf-8';
 const LD_JSON = 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8';
@@ -116,7 +116,7 @@ export class ActivityPubServerService {
 
 		try {
 			signature = httpSignature.parseRequest(request.raw, { 'headers': ['(request-target)', 'host', 'date'], authorizationHeaderName: 'signature' });
-		} catch (e) {
+		} catch (_) {
 			reply.code(401);
 			return;
 		}
@@ -131,6 +131,7 @@ export class ActivityPubServerService {
 		if (signature.params.headers.indexOf('digest') === -1) {
 			// Digest not found.
 			reply.code(401);
+			return;
 		} else {
 			const digest = request.headers.digest;
 
@@ -482,9 +483,19 @@ export class ActivityPubServerService {
 					return true;
 				},
 				dbFallback: async (untilId, sinceId, limit) => {
-					return await this.getUserNotesFromDb(sinceId, untilId, limit, user.id);
+					return await this.getUserNotesFromDb({
+						untilId,
+						sinceId,
+						limit,
+						userId: user.id,
+					});
 				},
-			}) : await this.getUserNotesFromDb(sinceId ?? null, untilId ?? null, limit, user.id);
+			}) : await this.getUserNotesFromDb({
+				untilId: untilId ?? null,
+				sinceId: sinceId ?? null,
+				limit,
+				userId: user.id,
+			});
 
 			if (sinceId) notes.reverse();
 
@@ -523,16 +534,21 @@ export class ActivityPubServerService {
 	}
 
 	@bindThis
-	private async getUserNotesFromDb(untilId: string | null, sinceId: string | null, limit: number, userId: MiUser['id']) {
-		return await this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), sinceId, untilId)
-			.andWhere('note.userId = :userId', { userId })
+	private async getUserNotesFromDb(ps: {
+		untilId: string | null,
+		sinceId: string | null,
+		limit: number,
+		userId: MiUser['id'],
+	}) {
+		return await this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
+			.andWhere('note.userId = :userId', { userId: ps.userId })
 			.andWhere(new Brackets(qb => {
 				qb
 					.where('note.visibility = \'public\'')
 					.orWhere('note.visibility = \'home\'');
 			}))
 			.andWhere('note.localOnly = FALSE')
-			.limit(limit)
+			.limit(ps.limit)
 			.getMany();
 	}
 

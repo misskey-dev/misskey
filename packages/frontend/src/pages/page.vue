@@ -64,7 +64,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkA v-if="page.userId === $i?.id" v-tooltip="i18n.ts._pages.editThisPage" :to="`/pages/edit/${page.id}`" class="_button" :class="$style.generalActionButton"><i class="ti ti-pencil ti-fw"></i></MkA>
 							<button v-tooltip="i18n.ts.copyLink" class="_button" :class="$style.generalActionButton" @click="copyLink"><i class="ti ti-link ti-fw"></i></button>
 							<button v-tooltip="i18n.ts.share" class="_button" :class="$style.generalActionButton" @click="share"><i class="ti ti-share ti-fw"></i></button>
-							<button v-if="$i" v-click-anime class="_button" :class="$style.generalActionButton" @mousedown="showMenu"><i class="ti ti-dots ti-fw"></i></button>
+							<button v-if="$i" v-click-anime class="_button" :class="$style.generalActionButton" @click="showMenu"><i class="ti ti-dots ti-fw"></i></button>
 						</div>
 					</div>
 					<div :class="$style.pageUser">
@@ -73,7 +73,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkUserName :user="page.user" :class="$style.name"/>
 							<MkAcct :user="page.user" :class="$style.acct"/>
 						</MkA>
-						<MkFollowButton v-if="!$i || $i.id != page.user.id" :user="page.user!" :inline="true" :transparent="false" :full="true" :class="$style.follow"/>
+						<!--<MkFollowButton v-if="!$i || $i.id != page.user.id" :user="page.user!" :inline="true" :transparent="false" :full="true" :class="$style.follow"/>-->
 					</div>
 					<div :class="$style.pageDate">
 						<div><i class="ti ti-clock"></i> {{ i18n.ts.createdAt }}: <MkTime :time="page.createdAt" mode="detail"/></div>
@@ -84,7 +84,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkContainer :max-height="300" :foldable="true" class="other">
 					<template #icon><i class="ti ti-clock"></i></template>
 					<template #header>{{ i18n.ts.recentPosts }}</template>
-					<MkPagination v-slot="{items}" :pagination="otherPostsPagination" :class="$style.relatedPagesRoot" class="_gaps">
+					<MkPagination v-slot="{items}" :paginator="otherPostsPaginator" :class="$style.relatedPagesRoot" class="_gaps">
 						<MkPagePreview v-for="page in items" :key="page.id" :page="page" :class="$style.relatedPagesItem"/>
 					</MkPagination>
 				</MkContainer>
@@ -97,7 +97,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, ref, defineAsyncComponent } from 'vue';
+import { computed, watch, ref, defineAsyncComponent, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
 import type { MenuItem } from '@/types/menu.js';
@@ -122,6 +122,7 @@ import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { useRouter } from '@/router.js';
 import { prefer } from '@/preferences.js';
 import { getPluginHandlers } from '@/plugin.js';
+import { Paginator } from '@/utility/paginator.js';
 
 const router = useRouter();
 
@@ -132,13 +133,12 @@ const props = defineProps<{
 
 const page = ref<Misskey.entities.Page | null>(null);
 const error = ref<any>(null);
-const otherPostsPagination = {
-	endpoint: 'users/pages' as const,
+const otherPostsPaginator = markRaw(new Paginator('users/pages', {
 	limit: 6,
-	params: computed(() => ({
+	computedParams: computed(() => page.value ? ({
 		userId: page.value.user.id,
-	})),
-};
+	}) : undefined),
+}));
 const path = computed(() => props.username + '/' + props.pageName);
 
 function fetchPage() {
@@ -163,7 +163,7 @@ function fetchPage() {
 	});
 }
 
-function share(ev: MouseEvent) {
+function share(ev: PointerEvent) {
 	if (!page.value) return;
 
 	const menuItems: MenuItem[] = [];
@@ -237,7 +237,7 @@ async function unlike() {
 	});
 }
 
-function pin(pin) {
+function pin(pin: boolean) {
 	if (!page.value) return;
 
 	os.apiWithDialog('i/update', {
@@ -245,12 +245,12 @@ function pin(pin) {
 	});
 }
 
-function reportAbuse() {
+async function reportAbuse() {
 	if (!page.value) return;
 
 	const pageUrl = `${url}/@${props.username}/pages/${props.pageName}`;
 
-	const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkAbuseReportWindow.vue')), {
+	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkAbuseReportWindow.vue').then(x => x.default), {
 		user: page.value.user,
 		initialComment: `Page: ${pageUrl}\n-----\n`,
 	}, {
@@ -258,7 +258,7 @@ function reportAbuse() {
 	});
 }
 
-function showMenu(ev: MouseEvent) {
+function showMenu(ev: PointerEvent) {
 	if (!page.value) return;
 
 	const menuItems: MenuItem[] = [];
@@ -267,7 +267,11 @@ function showMenu(ev: MouseEvent) {
 		menuItems.push({
 			icon: 'ti ti-pencil',
 			text: i18n.ts.edit,
-			action: () => router.push(`/pages/edit/${page.value.id}`),
+			action: () => router.push('/pages/edit/:initPageId', {
+				params: {
+					initPageId: page.value!.id,
+				},
+			}),
 		});
 
 		if ($i.pinnedPageId === page.value.id) {
@@ -461,6 +465,7 @@ definePage(() => ({
 }
 
 .pageContent {
+	contain: content;
 	margin-bottom: 1.5rem;
 }
 

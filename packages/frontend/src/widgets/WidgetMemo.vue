@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header>{{ i18n.ts._widgets.memo }}</template>
 
 	<div :class="$style.root">
-		<textarea v-model="text" :style="`height: ${widgetProps.height}px;`" :class="$style.textarea" :placeholder="i18n.ts.placeholder" @input="onChange"></textarea>
+		<textarea v-model="text" :style="`height: ${widgetProps.height}px;`" :class="$style.textarea" :placeholder="i18n.ts.memo" @input="onChange"></textarea>
 		<button :class="$style.save" :disabled="!changed" class="_buttonPrimary" @click="saveMemo">{{ i18n.ts.save }}</button>
 	</div>
 </MkContainer>
@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, watch } from 'vue';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import type { GetFormResultType } from '@/utility/form.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
 import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
@@ -28,14 +28,16 @@ const name = 'memo';
 
 const widgetPropsDef = {
 	showHeader: {
-		type: 'boolean' as const,
+		type: 'boolean',
+		label: i18n.ts._widgetOptions.showHeader,
 		default: true,
 	},
 	height: {
-		type: 'number' as const,
+		type: 'number',
+		label: i18n.ts.height,
 		default: 100,
 	},
-};
+} satisfies FormWithDefault;
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
@@ -50,7 +52,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 
 const text = ref<string | null>(store.s.memo);
 const changed = ref(false);
-let timeoutId;
+let timeoutId: number | null = null;
 
 const saveMemo = () => {
 	store.set('memo', text.value);
@@ -59,7 +61,7 @@ const saveMemo = () => {
 
 const onChange = () => {
 	changed.value = true;
-	window.clearTimeout(timeoutId);
+	if (timeoutId != null) window.clearTimeout(timeoutId);
 	timeoutId = window.setTimeout(saveMemo, 1000);
 };
 

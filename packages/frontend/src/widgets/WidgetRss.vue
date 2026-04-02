@@ -25,31 +25,36 @@ import * as Misskey from 'misskey-js';
 import { url as base } from '@@/js/config.js';
 import { useInterval } from '@@/js/use-interval.js';
 import { useWidgetPropsManager } from './widget.js';
-import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import type { GetFormResultType } from '@/utility/form.js';
-import MkContainer from '@/components/MkContainer.vue';
 import { i18n } from '@/i18n.js';
+import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
+import MkContainer from '@/components/MkContainer.vue';
 
 const name = 'rss';
 
 const widgetPropsDef = {
 	url: {
-		type: 'string' as const,
+		type: 'string',
+		label: i18n.ts._widgetOptions._rss.url,
 		default: 'http://feeds.afpbb.com/rss/afpbb/afpbbnews',
+		manualSave: true,
 	},
 	refreshIntervalSec: {
-		type: 'number' as const,
+		type: 'number',
+		label: i18n.ts._widgetOptions._rss.refreshIntervalSec,
 		default: 60,
 	},
 	maxEntries: {
-		type: 'number' as const,
+		type: 'number',
+		label: i18n.ts._widgetOptions._rss.maxEntries,
 		default: 15,
 	},
 	showHeader: {
-		type: 'boolean' as const,
+		type: 'boolean',
+		label: i18n.ts._widgetOptions.showHeader,
 		default: true,
 	},
-};
+} satisfies FormWithDefault;
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
@@ -68,7 +73,7 @@ const fetching = ref(true);
 const fetchEndpoint = computed(() => {
 	const url = new URL('/api/fetch-rss', base);
 	url.searchParams.set('url', widgetProps.url);
-	return url;
+	return url.toString();
 });
 const intervalClear = ref<(() => void) | undefined>();
 
@@ -83,7 +88,7 @@ const tick = () => {
 		});
 };
 
-watch(() => fetchEndpoint, tick);
+watch(fetchEndpoint, tick);
 watch(() => widgetProps.refreshIntervalSec, () => {
 	if (intervalClear.value) {
 		intervalClear.value();

@@ -6,7 +6,7 @@
 import { HttpResponse, http } from 'msw';
 import type { DefaultBodyType, HttpResponseResolver, JsonBodyType, PathParams } from 'msw';
 import seedrandom from 'seedrandom';
-import { action } from '@storybook/addon-actions';
+import { action } from 'storybook/actions';
 
 function getChartArray(seed: string, limit: number, option?: { accumulate?: boolean, mul?: number }): number[] {
 	const rng = seedrandom(seed);
@@ -33,7 +33,7 @@ export function getChartResolver(fields: string[], option?: { accumulate?: boole
 		const res = {};
 		for (const field of fields) {
 			const layers = field.split('.');
-			let current = res;
+			let current = res as any;
 			while (layers.length > 1) {
 				const currentKey = layers.shift()!;
 				if (current[currentKey] == null) current[currentKey] = {};

@@ -13,13 +13,18 @@ type Events = {
 	clientNotification: (notification: Misskey.entities.Notification) => void;
 	notePosted: (note: Misskey.entities.Note) => void;
 	noteDeleted: (noteId: Misskey.entities.Note['id']) => void;
+	driveFileCreated: (file: Misskey.entities.DriveFile) => void;
+	driveFilesUpdated: (files: Misskey.entities.DriveFile[]) => void;
+	driveFilesDeleted: (files: Misskey.entities.DriveFile[]) => void;
+	driveFoldersUpdated: (folders: Misskey.entities.DriveFolder[]) => void;
+	driveFoldersDeleted: (folders: Misskey.entities.DriveFolder[]) => void;
 };
 
 export const globalEvents = new EventEmitter<Events>();
 
 export function useGlobalEvent<T extends keyof Events>(
 	event: T,
-	callback: Events[T],
+	callback: EventEmitter.EventListener<Events, T>,
 ): void {
 	globalEvents.on(event, callback);
 	onBeforeUnmount(() => {

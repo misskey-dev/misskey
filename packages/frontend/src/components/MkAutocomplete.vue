@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkCustomEmoji v-if="'isCustomEmoji' in emoji && emoji.isCustomEmoji" :name="emoji.emoji" :class="$style.emoji" :fallbackToImage="true"/>
 			<MkEmoji v-else :emoji="emoji.emoji" :class="$style.emoji"/>
 			<!-- eslint-disable-next-line vue/no-v-html -->
-			<span v-if="q" :class="$style.emojiName" v-html="sanitizeHtml(emoji.name.replace(q, `<b>${q}</b>`))"></span>
+			<span v-if="q != null && typeof q === 'string'" :class="$style.emojiName" v-html="sanitizeHtml(emoji.name.replace(q, `<b>${q}</b>`))"></span>
 			<span v-else v-text="emoji.name"></span>
 			<span v-if="emoji.aliasOf" :class="$style.emojiAlias">({{ emoji.aliasOf }})</span>
 		</li>
@@ -36,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</li>
 	</ol>
 	<ol v-else-if="type === 'mfmParam' && mfmParams.length > 0" ref="suggests" :class="$style.list">
-		<li v-for="param in mfmParams" tabindex="-1" :class="$style.item" @click="complete(type, q.params.toSpliced(-1, 1, param).join(','))" @keydown="onKeydown">
+		<li v-for="param in mfmParams" tabindex="-1" :class="$style.item" @click="completeMfmParam(param)" @keydown="onKeydown">
 			<span>{{ param }}</span>
 		</li>
 	</ol>
@@ -45,12 +45,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts">
 import { markRaw, ref, useTemplateRef, computed, onUpdated, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
+import * as Misskey from 'misskey-js';
 import sanitizeHtml from 'sanitize-html';
 import { emojilist, getEmojiName } from '@@/js/emojilist.js';
 import { char2twemojiFilePath, char2fluentEmojiFilePath } from '@@/js/emoji-base.js';
 import { MFM_TAGS, MFM_PARAMS } from '@@/js/const.js';
 import type { EmojiDef } from '@/utility/search-emoji.js';
-import contains from '@/utility/contains.js';
+import { elementContains } from '@/utility/element-contains.js';
 import { acct } from '@/filters/user.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -63,7 +64,7 @@ import { prefer } from '@/preferences.js';
 
 export type CompleteInfo = {
 	user: {
-		payload: any;
+		payload: Misskey.entities.User;
 		query: string | null;
 	},
 	hashtag: {
@@ -185,22 +186,27 @@ const suggests = ref<Element>();
 const rootEl = useTemplateRef('rootEl');
 
 const fetching = ref(true);
-const users = ref<any[]>([]);
-const hashtags = ref<any[]>([]);
-const emojis = ref<(EmojiDef)[]>([]);
+const users = ref<Misskey.entities.User[]>([]);
+const hashtags = ref<string[]>([]);
+const emojis = ref<EmojiDef[]>([]);
 const items = ref<Element[] | HTMLCollection>([]);
 const mfmTags = ref<string[]>([]);
 const mfmParams = ref<string[]>([]);
 const select = ref(-1);
 const zIndex = os.claimZIndex('high');
 
+function completeMfmParam(param: string) {
+	if (props.type !== 'mfmParam') throw new Error('Invalid type');
+	complete('mfmParam', props.q.params.toSpliced(-1, 1, param).join(','));
+}
+
 function complete<T extends keyof CompleteInfo>(type: T, value: CompleteInfo[T]['payload']) {
 	emit('done', { type, value });
 	emit('closed');
 	if (type === 'emoji' || type === 'emojiComplete') {
 		let recents = store.s.recentlyUsedEmojis;
-		recents = recents.filter((emoji: any) => emoji !== value);
-		recents.unshift(value);
+		recents = recents.filter((emoji) => emoji !== value);
+		recents.unshift(value as string);
 		store.set('recentlyUsedEmojis', recents.splice(0, 32));
 	}
 }
@@ -249,7 +255,7 @@ function exec() {
 				limit: 10,
 				detail: false,
 			}).then(searchedUsers => {
-				users.value = searchedUsers as any[];
+				users.value = searchedUsers;
 				fetching.value = false;
 				// キャッシュ
 				sessionStorage.setItem(cacheKey, JSON.stringify(searchedUsers));
@@ -271,7 +277,7 @@ function exec() {
 					query: props.q,
 					limit: 30,
 				}).then(searchedHashtags => {
-					hashtags.value = searchedHashtags as any[];
+					hashtags.value = searchedHashtags;
 					fetching.value = false;
 					// キャッシュ
 					sessionStorage.setItem(cacheKey, JSON.stringify(searchedHashtags));
@@ -305,8 +311,8 @@ function exec() {
 	}
 }
 
-function onMousedown(event: Event) {
-	if (!contains(rootEl.value, event.target) && (rootEl.value !== event.target)) props.close();
+function onMousedown(event: MouseEvent) {
+	if (!elementContains(rootEl.value, event.target as Element) && (rootEl.value !== event.target)) props.close();
 }
 
 function onKeydown(event: KeyboardEvent) {

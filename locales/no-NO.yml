@@ -461,6 +461,14 @@ replies: "Svar"
 renotes: "Renote"
 surrender: "Avbryt"
 information: "Informasjon"
+inMinutes: "Minutter"
+inDays: "Dager"
+_imageEditing:
+  _vars:
+    filename: "Filnavn"
+_imageFrameEditor:
+  fontSerif: "Serif"
+  fontSansSerif: "Sans Serif"
 _chat:
   invitations: "Inviter"
   members: "Medlemmer"
@@ -631,6 +639,10 @@ _widgets:
   userList: "Brukerliste"
   _userList:
     chooseList: "Velg liste"
+_widgetOptions:
+  height: "Høyde"
+  _clock:
+    size: "Størrelse"
 _cw:
   hide: "Skjul"
   show: "Vis mer"
@@ -648,6 +660,8 @@ _visibility:
   home: "Hjem"
   followers: "Følgere"
 _postForm:
+  _howToUse:
+    menu_title: "Meny"
   _placeholders:
     a: "Hva skjer?"
 _profile:
@@ -735,3 +749,15 @@ _remoteLookupErrors:
     title: "Ikke funnet"
 _search:
   searchScopeAll: "Alle"
+_watermarkEditor:
+  scale: "Størrelse"
+  text: "Tekst"
+  type: "Type"
+  image: "Bilder"
+_imageEffector:
+  _fxProps:
+    scale: "Størrelse"
+    size: "Størrelse"
+    color: "Farge"
+_qr:
+  raw: "Tekst"

@@ -848,6 +848,17 @@ sourceCode: "সোর্স কোড"
 flip: "উল্টান"
 postForm: "নোট লিখুন"
 information: "আপনার সম্পর্কে"
+inMinutes: "মিনিট"
+inDays: "দিন"
+widgets: "উইজেটগুলি"
+_imageEditing:
+  _vars:
+    filename: "ফাইলের নাম"
+_imageFrameEditor:
+  header: "হেডার"
+  font: "ফন্ট"
+  fontSerif: "সেরিফ"
+  fontSansSerif: "স্যান্স সেরিফ"
 _chat:
   invitations: "আমন্ত্রণ"
   noHistory: "কোনো ইতিহাস নেই"
@@ -1017,7 +1028,6 @@ _theme:
     buttonBg: "বাটনের পটভূমি"
     buttonHoverBg: "বাটনের পটভূমি (হভার)"
     inputBorder: "ইনপুট ফিল্ডের বর্ডার"
-    driveFolderBg: "ড্রাইভ ফোল্ডারের পটভূমি"
     badge: "ব্যাজ"
     messageBg: "চ্যাটের পটভূমি"
     fgHighlighted: "হাইলাইট করা পাঠ্য"
@@ -1127,6 +1137,14 @@ _widgets:
   aichan: "আই চান"
   _userList:
     chooseList: "লিস্ট নির্বাচন করুন"
+_widgetOptions:
+  height: "উচ্চতা"
+  _button:
+    colored: "রঙ্গিন"
+  _clock:
+    size: "আকার"
+  _birthdayFollowings:
+    period: "ব্যাপ্তিকাল"
 _cw:
   hide: "লুকান"
   show: "আরও দেখুন"
@@ -1167,6 +1185,9 @@ _postForm:
   replyPlaceholder: "নোটটির জবাব দিন..."
   quotePlaceholder: "নোটটিকে উদ্ধৃত করুন..."
   channelPlaceholder: "চ্যানেলে পোস্ট করুন..."
+  _howToUse:
+    visibility_title: "দৃশ্যমানতা"
+    menu_title: "মেনু"
   _placeholders:
     a: "আপনি এখন কি করছেন?"
     b: "আপনার আশে পাশে কি হচ্ছে?"
@@ -1350,3 +1371,19 @@ _remoteLookupErrors:
 _search:
   searchScopeAll: "সবগুলো"
   searchScopeLocal: "স্থানীয়"
+_watermarkEditor:
+  opacity: "অস্বচ্ছতা"
+  scale: "আকার"
+  text: "লেখা"
+  image: "ছবি"
+  advanced: "উন্নত"
+_imageEffector:
+  _fxProps:
+    scale: "আকার"
+    size: "আকার"
+    color: "রং"
+    opacity: "অস্বচ্ছতা"
+    lightness: "উজ্জ্বল করুন"
+_qr:
+  showTabTitle: "প্রদর্শন"
+  raw: "লেখা"

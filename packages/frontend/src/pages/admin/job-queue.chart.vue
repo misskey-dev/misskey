@@ -48,6 +48,8 @@ watch(() => props.dataSet, () => {
 });
 
 onMounted(() => {
+	if (chartEl.value == null) return;
+
 	const vLineColor = store.s.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
 
 	chartInstance = new Chart(chartEl.value, {

@@ -19,7 +19,26 @@ export const meta = {
 		optional: false, nullable: false,
 		items: {
 			type: 'object',
-			optional: false, nullable: false,
+			properties: {
+				id: {
+					type: 'string',
+					optional: false, nullable: false,
+				},
+				reactions: {
+					type: 'object',
+					optional: false, nullable: false,
+					additionalProperties: {
+						type: 'number',
+					},
+				},
+				reactionEmojis: {
+					type: 'object',
+					optional: false, nullable: false,
+					additionalProperties: {
+						type: 'string',
+					},
+				},
+			},
 		},
 	},
 

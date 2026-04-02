@@ -26,7 +26,7 @@ import { onUnmounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import type { GetFormResultType } from '@/utility/form.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import { useStream } from '@/stream.js';
 import { getStaticImageUrl } from '@/utility/media-proxy.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -38,14 +38,16 @@ const name = 'photos';
 
 const widgetPropsDef = {
 	showHeader: {
-		type: 'boolean' as const,
+		type: 'boolean',
+		label: i18n.ts._widgetOptions.showHeader,
 		default: true,
 	},
 	transparent: {
-		type: 'boolean' as const,
+		type: 'boolean',
+		label: i18n.ts._widgetOptions.transparent,
 		default: false,
 	},
-};
+} satisfies FormWithDefault;
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
@@ -62,12 +64,12 @@ const connection = useStream().useChannel('main');
 const images = ref<Misskey.entities.DriveFile[]>([]);
 const fetching = ref(true);
 
-const onDriveFileCreated = (file) => {
+function onDriveFileCreated(file: Misskey.entities.DriveFile) {
 	if (/^image\/.+$/.test(file.type)) {
 		images.value.unshift(file);
 		if (images.value.length > 9) images.value.pop();
 	}
-};
+}
 
 const thumbnail = (image: Misskey.entities.DriveFile): string => {
 	return prefer.s.disableShowingAnimatedImages

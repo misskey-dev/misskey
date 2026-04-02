@@ -22,11 +22,6 @@
 	}
 }
 
-::selection {
-	color: var(--MI_THEME-fgOnAccent);
-	background-color: var(--MI_THEME-accent);
-}
-
 html {
 	overflow: auto;
 	overflow-wrap: break-word;
@@ -41,32 +36,6 @@ html {
 	background-color: var(--MI_THEME-bg);
 	color: var(--MI_THEME-fg);
 	accent-color: var(--MI_THEME-accent);
-
-	&, * {
-		scrollbar-color: var(--MI_THEME-scrollbarHandle) transparent;
-		scrollbar-width: thin;
-
-		&::-webkit-scrollbar {
-			width: 6px;
-			height: 6px;
-		}
-
-		&::-webkit-scrollbar-track {
-			background: inherit;
-		}
-
-		&::-webkit-scrollbar-thumb {
-			background: var(--MI_THEME-scrollbarHandle);
-
-			&:hover {
-				background: var(--MI_THEME-scrollbarHandleHover);
-			}
-
-			&:active {
-				background: var(--MI_THEME-accent);
-			}
-		}
-	}
 
 	&.f-1 {
 		font-size: 15px;
@@ -91,9 +60,37 @@ html {
 }
 
 html._themeChanging_ {
-	&, * {
-		transition: background 1s ease, border 1s ease !important;
+	view-transition-name: theme-changing;
+}
+
+html::view-transition-new(theme-changing) {
+	z-index: 4000000;
+}
+
+html::view-transition-old(theme-changing) {
+	z-index: 4000001;
+	animation: themeChangingOld 0.5s ease;
+	animation-fill-mode: forwards;
+}
+
+html::selection {
+	color: var(--MI_THEME-fgOnAccent);
+	background-color: var(--MI_THEME-accent);
+}
+
+@keyframes themeChangingOld {
+	0% {
+		opacity: 1;
 	}
+
+	100% {
+		opacity: 0;
+	}
+}
+
+html, body, main, div {
+	scrollbar-color: var(--MI_THEME-scrollbarHandle) transparent;
+	scrollbar-width: thin;
 }
 
 html,

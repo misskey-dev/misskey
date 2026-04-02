@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.root" @click="(ev) => emit('click', ev)">
 	<span v-if="iconClass" :class="[$style.icon, iconClass]"></span>
-	<span :class="$style.content">{{ content }}</span>
+	<span>{{ content }}</span>
 	<MkButton v-if="exButtonIconClass" :class="$style.exButton" @click="(ev) => emit('exButtonClick', ev)">
 		<span :class="[$style.exButtonIcon, exButtonIconClass]"></span>
 	</MkButton>
@@ -17,8 +17,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import MkButton from '@/components/MkButton.vue';
 
 const emit = defineEmits<{
-	(ev: 'click', payload: MouseEvent): void;
-	(ev: 'exButtonClick', payload: MouseEvent): void;
+	(ev: 'click', payload: PointerEvent): void;
+	(ev: 'exButtonClick', payload: PointerEvent): void;
 }>();
 
 defineProps<{

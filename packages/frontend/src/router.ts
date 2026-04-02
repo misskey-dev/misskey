@@ -20,7 +20,7 @@ export function createRouter(fullPath: string): Router {
 export const mainRouter = createRouter(window.location.pathname + window.location.search + window.location.hash);
 
 window.addEventListener('popstate', (event) => {
-	mainRouter.replace(window.location.pathname + window.location.search + window.location.hash);
+	mainRouter.replaceByPath(window.location.pathname + window.location.search + window.location.hash);
 });
 
 mainRouter.addListener('push', ctx => {

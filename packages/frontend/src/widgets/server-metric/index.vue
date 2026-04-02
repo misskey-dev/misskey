@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<XNet v-else-if="widgetProps.view === 1" :connection="connection" :meta="meta"/>
 		<XCpu v-else-if="widgetProps.view === 2" :connection="connection" :meta="meta"/>
 		<XMemory v-else-if="widgetProps.view === 3" :connection="connection" :meta="meta"/>
-		<XDisk v-else-if="widgetProps.view === 4" :connection="connection" :meta="meta"/>
+		<XDisk v-else-if="widgetProps.view === 4" :meta="meta"/>
 	</div>
 </MkContainer>
 </template>
@@ -30,7 +30,7 @@ import XCpu from './cpu.vue';
 import XMemory from './mem.vue';
 import XDisk from './disk.vue';
 import MkContainer from '@/components/MkContainer.vue';
-import type { GetFormResultType } from '@/utility/form.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import { misskeyApiGet } from '@/utility/misskey-api.js';
 import { useStream } from '@/stream.js';
 import { i18n } from '@/i18n.js';
@@ -39,19 +39,21 @@ const name = 'serverMetric';
 
 const widgetPropsDef = {
 	showHeader: {
-		type: 'boolean' as const,
+		type: 'boolean',
+		label: i18n.ts._widgetOptions.showHeader,
 		default: true,
 	},
 	transparent: {
-		type: 'boolean' as const,
+		type: 'boolean',
+		label: i18n.ts._widgetOptions.transparent,
 		default: false,
 	},
 	view: {
-		type: 'number' as const,
+		type: 'number',
 		default: 0,
 		hidden: true,
 	},
-};
+} satisfies FormWithDefault;
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 

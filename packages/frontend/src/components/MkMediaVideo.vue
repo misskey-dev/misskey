@@ -13,12 +13,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		controlsShowing && $style.active,
 		(video.isSensitive && prefer.s.highlightSensitiveMedia) && $style.sensitive,
 	]"
-	@mouseover="onMouseOver"
-	@mouseleave="onMouseLeave"
+	@mouseover.passive="onMouseOver"
+	@mousemove.passive="onMouseMove"
+	@mouseleave.passive="onMouseLeave"
 	@contextmenu.stop
 	@keydown.stop
 >
-	<button v-if="hide" :class="$style.hidden" @click="show">
+	<button v-if="hide" :class="$style.hidden" @click="reveal">
 		<div :class="$style.hiddenTextWrapper">
 			<b v-if="video.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}{{ prefer.s.dataSaver.media ? ` (${i18n.ts.video}${video.size ? ' ' + bytes(video.size) : ''})` : '' }}</b>
 			<b v-else style="display: block;"><i class="ti ti-movie"></i> {{ prefer.s.dataSaver.media && video.size ? bytes(video.size) : i18n.ts.video }}</b>
@@ -123,6 +124,7 @@ import hasAudio from '@/utility/media-has-audio.js';
 import MkMediaRange from '@/components/MkMediaRange.vue';
 import { $i, iAmModerator } from '@/i.js';
 import { prefer } from '@/preferences.js';
+import { shouldHideFileByDefault, canRevealFile } from '@/utility/sensitive-file.js';
 
 const props = defineProps<{
 	video: Misskey.entities.DriveFile;
@@ -175,15 +177,11 @@ function hasFocus() {
 }
 
 // eslint-disable-next-line vue/no-setup-props-reactivity-loss
-const hide = ref((prefer.s.nsfw === 'force' || prefer.s.dataSaver.media) ? true : (props.video.isSensitive && prefer.s.nsfw !== 'ignore'));
+const hide = ref(shouldHideFileByDefault(props.video));
 
-async function show() {
-	if (props.video.isSensitive && prefer.s.confirmWhenRevealingSensitiveMedia) {
-		const { canceled } = await os.confirm({
-			type: 'question',
-			text: i18n.ts.sensitiveMediaRevealConfirm,
-		});
-		if (canceled) return;
+async function reveal() {
+	if (!(await canRevealFile(props.video))) {
+		return;
 	}
 
 	hide.value = false;
@@ -192,7 +190,7 @@ async function show() {
 // Menu
 const menuShowing = ref(false);
 
-function showMenu(ev: MouseEvent) {
+function showMenu(ev: PointerEvent) {
 	const menu: MenuItem[] = [
 		// TODO: 再生キューに追加
 		{
@@ -309,7 +307,7 @@ const controlsShowing = computed(() => {
 	return false;
 });
 const isFullscreen = ref(false);
-let controlStateTimer: string | number;
+let controlStateTimer: number | null = null;
 
 // MediaControl: Common State
 const oncePlayed = ref(false);
@@ -342,9 +340,26 @@ function onMouseOver() {
 		window.clearTimeout(controlStateTimer);
 	}
 	isHoverring.value = true;
+
+	controlStateTimer = window.setTimeout(() => {
+		isHoverring.value = false;
+	}, 3000);
+}
+
+function onMouseMove() {
+	if (controlStateTimer) {
+		window.clearTimeout(controlStateTimer);
+	}
+	isHoverring.value = true;
+	controlStateTimer = window.setTimeout(() => {
+		isHoverring.value = false;
+	}, 3000);
 }
 
 function onMouseLeave() {
+	if (controlStateTimer) {
+		window.clearTimeout(controlStateTimer);
+	}
 	controlStateTimer = window.setTimeout(() => {
 		isHoverring.value = false;
 	}, 100);
@@ -508,6 +523,10 @@ onDeactivated(() => {
 	if (mediaTickFrameId) {
 		window.cancelAnimationFrame(mediaTickFrameId);
 		mediaTickFrameId = null;
+	}
+	if (controlStateTimer) {
+		window.clearTimeout(controlStateTimer);
+		controlStateTimer = null;
 	}
 });
 </script>
@@ -686,7 +705,7 @@ onDeactivated(() => {
 	.controlButton {
 		padding: 6px;
 		border-radius: calc(var(--MI-radius) / 2);
-		transition: background-color .2s ease-in-out;
+		transition: background-color .15s ease;
 		font-size: 1.05rem;
 
 		&:hover {
@@ -739,6 +758,23 @@ onDeactivated(() => {
 			display: block;
 			flex-grow: 1;
 		}
+	}
+}
+
+@container (max-width: 300px) {
+	.videoControls {
+		grid-template-areas:
+			"left . right"
+			"seekbar seekbar seekbar";
+		grid-template-columns: auto 1fr auto;
+	}
+
+	.controlsTime {
+		display: none;
+	}
+
+	.controlsVolume {
+		display: none;
 	}
 }
 </style>

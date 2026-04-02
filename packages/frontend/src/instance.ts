@@ -29,8 +29,6 @@ if (providedAt > cachedAt) {
 
 export const instance: Misskey.entities.MetaDetailed = reactive(cachedMeta ?? {});
 
-export const isEnabledUrlPreview = computed(() => instance.enableUrlPreview ?? true);
-
 export async function fetchInstance(force = false): Promise<Misskey.entities.MetaDetailed> {
 	if (!force) {
 		const cachedAt = miLocalStorage.getItem('instanceCachedAt') ? parseInt(miLocalStorage.getItem('instanceCachedAt')!) : 0;
@@ -45,7 +43,7 @@ export async function fetchInstance(force = false): Promise<Misskey.entities.Met
 	});
 
 	for (const [k, v] of Object.entries(meta)) {
-		instance[k] = v;
+		(instance[k as keyof typeof meta] as any) = v;
 	}
 
 	miLocalStorage.setItem('instance', JSON.stringify(instance));

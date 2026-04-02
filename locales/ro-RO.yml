@@ -1215,6 +1215,10 @@ lastNDays: "Ultimele {n} zile"
 surrender: "Anulează"
 copyPreferenceId: "Copiază ID-ul preferințelor"
 information: "Despre"
+presets: "Presetate"
+_imageEditing:
+  _vars:
+    filename: "Nume fișier"
 _chat:
   invitations: "Invită"
   noHistory: "Nu există istoric"
@@ -1297,15 +1301,25 @@ _widgets:
   jobQueue: "coada de job-uri"
   _userList:
     chooseList: "Selectează o listă"
+_widgetOptions:
+  height: "Înălţime"
+  _button:
+    colored: "Colorat"
+  _clock:
+    size: "Dimensiune"
 _cw:
   show: "Incarcă mai mult"
 _visibility:
   home: "Acasă"
   followers: "Urmăritori"
+  specified: "Note directe"
 _postForm:
   replyPlaceholder: "Răspunde la această notă..."
   quotePlaceholder: "Citează aceasta nota..."
   channelPlaceholder: "Postează pe un canal..."
+  _howToUse:
+    visibility_title: "Vizibilitate"
+    menu_title: "Meniu"
   _placeholders:
     a: "Ce mai faci?"
     b: "Ce se mai petrece in jurul tău?"
@@ -1356,6 +1370,7 @@ _deck:
     list: "Liste"
     channel: "Canale"
     mentions: "Mențiuni"
+    direct: "Note directe"
     roleTimeline: "Cronologia rolului"
 _webhookSettings:
   name: "Nume"
@@ -1391,3 +1406,18 @@ _search:
   searchScopeLocal: "Local"
   searchScopeUser: "Utilizator specific"
   serverHostPlaceholder: "Exemplu: misskey.example.com"
+_watermarkEditor:
+  scale: "Dimensiune"
+  text: "Text"
+  position: "Poziție"
+  type: "Tip"
+  image: "Imagini"
+  advanced: "Avansat"
+_imageEffector:
+  _fxProps:
+    scale: "Dimensiune"
+    size: "Dimensiune"
+    offset: "Poziție"
+_qr:
+  showTabTitle: "Arată"
+  raw: "Text"

@@ -3,17 +3,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
 import type { MiUserListMembership, UserListMembershipsRepository, UserListsRepository } from '@/models/_.js';
 import type { Packed } from '@/misc/json-schema.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { NoteStreamingHidingService } from '../NoteStreamingHidingService.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
 import type { JsonObject } from '@/misc/json-value.js';
-import Channel, { type MiChannelService } from '../channel.js';
+import Channel, { type ChannelRequest } from '../channel.js';
+import { REQUEST } from '@nestjs/core';
 
-class UserListChannel extends Channel {
+@Injectable({ scope: Scope.TRANSIENT })
+export class UserListChannel extends Channel {
 	public readonly chName = 'userList';
 	public static shouldShare = false;
 	public static requireCredential = false as const;
@@ -24,21 +27,26 @@ class UserListChannel extends Channel {
 	private withRenotes: boolean;
 
 	constructor(
+		@Inject(DI.userListsRepository)
 		private userListsRepository: UserListsRepository,
-		private userListMembershipsRepository: UserListMembershipsRepository,
-		private noteEntityService: NoteEntityService,
 
-		id: string,
-		connection: Channel['connection'],
+		@Inject(DI.userListMembershipsRepository)
+		private userListMembershipsRepository: UserListMembershipsRepository,
+
+		@Inject(REQUEST)
+		request: ChannelRequest,
+
+		private noteEntityService: NoteEntityService,
+		private noteStreamingHidingService: NoteStreamingHidingService,
 	) {
-		super(id, connection);
+		super(request);
 		//this.updateListUsers = this.updateListUsers.bind(this);
 		//this.onNote = this.onNote.bind(this);
 	}
 
 	@bindThis
-	public async init(params: JsonObject) {
-		if (typeof params.listId !== 'string') return;
+	public async init(params: JsonObject): Promise<boolean> {
+		if (typeof params.listId !== 'string') return false;
 		this.listId = params.listId;
 		this.withFiles = !!(params.withFiles ?? false);
 		this.withRenotes = !!(params.withRenotes ?? true);
@@ -50,7 +58,7 @@ class UserListChannel extends Channel {
 				userId: this.user!.id,
 			},
 		});
-		if (!listExist) return;
+		if (!listExist) return false;
 
 		// Subscribe stream
 		this.subscriber.on(`userListStream:${this.listId}`, this.send);
@@ -59,6 +67,8 @@ class UserListChannel extends Channel {
 
 		this.updateListUsers();
 		this.listUsersClock = setInterval(this.updateListUsers, 5000);
+
+		return true;
 	}
 
 	@bindThis
@@ -90,11 +100,7 @@ class UserListChannel extends Channel {
 
 		if (!Object.hasOwn(this.membershipsMap, note.userId)) return;
 
-		if (note.visibility === 'followers') {
-			if (!isMe && !Object.hasOwn(this.following, note.userId)) return;
-		} else if (note.visibility === 'specified') {
-			if (!note.visibleUserIds!.includes(this.user!.id)) return;
-		}
+		if (!this.isNoteVisibleForMe(note)) return;
 
 		if (note.reply) {
 			const reply = note.reply;
@@ -111,14 +117,19 @@ class UserListChannel extends Channel {
 
 		if (this.isNoteMutedOrBlocked(note)) return;
 
-		if (this.user && isRenotePacked(note) && !isQuotePacked(note)) {
-			if (note.renote && Object.keys(note.renote.reactions).length > 0) {
-				const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renote, this.user.id);
-				note.renote.myReaction = myRenoteReaction;
+		const filtered = await this.noteStreamingHidingService.filter(note, this.user?.id ?? null);
+		if (!filtered) return;
+		// eslint-disable-next-line no-param-reassign -- これ以降元の Note オブジェクトは見てはいけないので、いっそ再代入した方が安全
+		note = filtered;
+
+		if (this.user) {
+			if (isRenotePacked(note) && !isQuotePacked(note)) {
+				if (note.renote && Object.keys(note.renote.reactions).length > 0) {
+					const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renote, this.user.id);
+					note.renote.myReaction = myRenoteReaction;
+				}
 			}
 		}
-
-		this.connection.cacheNote(note);
 
 		this.send('note', note);
 	}
@@ -130,34 +141,5 @@ class UserListChannel extends Channel {
 		this.subscriber.off('notesStream', this.onNote);
 
 		clearInterval(this.listUsersClock);
-	}
-}
-
-@Injectable()
-export class UserListChannelService implements MiChannelService<false> {
-	public readonly shouldShare = UserListChannel.shouldShare;
-	public readonly requireCredential = UserListChannel.requireCredential;
-	public readonly kind = UserListChannel.kind;
-
-	constructor(
-		@Inject(DI.userListsRepository)
-		private userListsRepository: UserListsRepository,
-
-		@Inject(DI.userListMembershipsRepository)
-		private userListMembershipsRepository: UserListMembershipsRepository,
-
-		private noteEntityService: NoteEntityService,
-	) {
-	}
-
-	@bindThis
-	public create(id: string, connection: Channel['connection']): UserListChannel {
-		return new UserListChannel(
-			this.userListsRepository,
-			this.userListMembershipsRepository,
-			this.noteEntityService,
-			id,
-			connection,
-		);
 	}
 }

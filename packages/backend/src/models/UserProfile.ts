@@ -17,7 +17,7 @@ export class MiUserProfile {
 	@PrimaryColumn(id())
 	public userId: MiUser['id'];
 
-	@OneToOne(type => MiUser, {
+	@OneToOne(() => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
@@ -29,7 +29,7 @@ export class MiUserProfile {
 	})
 	public location: string | null;
 
-	@Index()
+	// Note: There's index named IDX_de22cd2b445eee31ae51cdbe99 for SUBSTR("birthday", 6, 5)
 	@Column('char', {
 		length: 10, nullable: true,
 		comment: 'The birthday (YYYY-MM-DD) of the User.',
@@ -215,7 +215,7 @@ export class MiUserProfile {
 	})
 	public pinnedPageId: MiPage['id'] | null;
 
-	@OneToOne(type => MiPage, {
+	@OneToOne(() => MiPage, {
 		onDelete: 'SET NULL',
 	})
 	@JoinColumn()
