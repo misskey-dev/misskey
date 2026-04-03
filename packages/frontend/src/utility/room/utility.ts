@@ -543,3 +543,11 @@ export function applyMorphTargetsToMesh(mesh: BABYLON.Mesh) {
 	mesh.refreshBoundingInfo();
 	mesh.computeWorldMatrix(true);
 }
+
+// ex) hangingTShirt -> hanging-t-shirt
+export const camelToKebab = (s: string) => {
+	return s
+		.replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+		.replace(/([A-Z])([A-Z][a-z])/g, '$1-$2')
+		.toLowerCase();
+};

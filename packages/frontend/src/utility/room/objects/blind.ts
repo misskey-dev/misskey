@@ -49,7 +49,7 @@ export const blind = defineObject({
 		const blade = model.findMesh('Blade');
 		blade.rotation = new BABYLON.Vector3(options.angle, 0, 0);
 
-		let blades = [] as BABYLON.Mesh[];
+		let blades = [] as BABYLON.InstancedMesh[];
 
 		const applyOpeningState = () => {
 			for (const b of blades) {
@@ -58,7 +58,7 @@ export const blind = defineObject({
 			blades = [];
 
 			for (let i = 0; i < options.blades; i++) {
-				const b = blade.clone();
+				const b = blade.createInstance('blade_' + i);
 				if (i / options.blades < temp.open) {
 					b.position.y -= (i * 4/*cm*/) / WORLD_SCALE;
 				} else {

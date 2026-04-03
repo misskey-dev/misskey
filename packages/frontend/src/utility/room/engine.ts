@@ -32,7 +32,7 @@ import { reactive, ref, shallowRef, triggerRef, watch } from 'vue';
 import { genId } from '../id.js';
 import { deepClone } from '../clone.js';
 import { getObjectDef } from './object-defs.js';
-import { HorizontalCameraKeyboardMoveInput, applyMorphTargetsToMesh, findMaterial } from './utility.js';
+import { HorizontalCameraKeyboardMoveInput, applyMorphTargetsToMesh, camelToKebab, findMaterial } from './utility.js';
 import * as sound from '@/utility/sound.js';
 
 // babylonのドメイン知識は持たない
@@ -185,7 +185,6 @@ class ModelManager {
 	}
 
 	public updated() {
-		this.bakeMesh();
 	}
 
 	public bakeMesh() {
@@ -251,6 +250,21 @@ class ModelManager {
 		} catch (err) {
 			console.error('Failed to bake mesh for object', this.root.metadata?.objectType, err);
 		}
+	}
+
+	public unbakeMesh() {
+		for (const m of this.bakedMeshes) {
+			m.dispose();
+		}
+		this.bakedMeshes = [];
+
+		const childMeshes = this.root.getChildMeshes();
+
+		for (const mesh of childMeshes) {
+			mesh.setEnabled(true);
+		}
+
+		this.bakedCallback?.(this.root.getChildMeshes());
 	}
 }
 
@@ -610,10 +624,17 @@ export class RoomEngine {
 
 				for (const entity of this.objectEntities.values()) {
 					entity.instance.resetTemporaryState?.();
+					entity.model.unbakeMesh();
 				}
 			} else {
-				this.selectionOutlineLayer.dispose();
-				this.selectionOutlineLayer = null;
+				if (this.selectionOutlineLayer != null) {
+					this.selectionOutlineLayer.dispose();
+					this.selectionOutlineLayer = null;
+				}
+
+				for (const entity of this.objectEntities.values()) {
+					entity.model.bakeMesh();
+				}
 			}
 		});
 
@@ -970,14 +991,6 @@ export class RoomEngine {
 	}) {
 		const def = getObjectDef(args.type);
 
-		// ex) hangingTShirt -> hanging-t-shirt
-		const camelToKebab = (s: string) => {
-			return s
-				.replace(/([a-z0-9])([A-Z])/g, '$1-$2')
-				.replace(/([A-Z])([A-Z][a-z])/g, '$1-$2')
-				.toLowerCase();
-		};
-
 		const root = new BABYLON.TransformNode(`object_${args.id}_${args.type}`, this.scene);
 
 		const loaderResult = await BABYLON.LoadAssetContainerAsync(`/client-assets/room/objects/${camelToKebab(args.type)}/${camelToKebab(args.type)}.glb`, this.scene);
@@ -1053,7 +1066,7 @@ export class RoomEngine {
 					}
 				}
 
-				this.scene.addMesh(mesh);
+				if (!this.scene.meshes.includes(mesh)) this.scene.addMesh(mesh);
 			}
 		});
 
@@ -1566,14 +1579,6 @@ export class RoomObjectPreviewEngine {
 	}) {
 		const def = getObjectDef(args.type);
 
-		// ex) hangingTShirt -> hanging-t-shirt
-		const camelToKebab = (s: string) => {
-			return s
-				.replace(/([a-z0-9])([A-Z])/g, '$1-$2')
-				.replace(/([A-Z])([A-Z][a-z])/g, '$1-$2')
-				.toLowerCase();
-		};
-
 		const root = new BABYLON.Mesh(`object_${args.type}`, this.scene);
 
 		const loaderResult = await BABYLON.LoadAssetContainerAsync(`/client-assets/room/objects/${camelToKebab(args.type)}/${camelToKebab(args.type)}.glb`, this.scene);
@@ -1632,7 +1637,7 @@ export class RoomObjectPreviewEngine {
 						}
 					}
 
-					this.scene.addMesh(mesh);
+					if (!this.scene.meshes.includes(mesh)) this.scene.addMesh(mesh);
 				}
 			}),
 		});
