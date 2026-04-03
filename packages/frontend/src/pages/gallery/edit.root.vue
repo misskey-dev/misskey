@@ -4,7 +4,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<div class="_spacer" style="--MI_SPACER-w: 800px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
 		<MkInput v-model="title">
 			<template #label>{{ i18n.ts.title }}</template>
@@ -31,11 +30,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton v-if="props.post != null" danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
 		</div>
 	</div>
-</PageWithHeader>
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, ref } from 'vue';
+import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -113,9 +111,6 @@ async function del() {
 	router.push('/gallery');
 }
 
-const headerActions = computed(() => []);
-
-const headerTabs = computed(() => []);
 </script>
 
 <style lang="scss" scoped>
