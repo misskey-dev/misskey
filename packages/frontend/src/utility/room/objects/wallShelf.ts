@@ -33,25 +33,27 @@ export const wallShelf = defineObject({
 		},
 	},
 	placement: 'side',
-	createInstance: ({ model, options, root }) => {
+	createInstance: ({ model, options }) => {
 		const applyStyle = () => {
-			const aMeshes = root.getChildMeshes().filter(m => m.name.includes('__X_VARIATION_A__'));
-			const bMeshes = root.getChildMeshes().filter(m => m.name.includes('__X_VARIATION_B__'));
-			const cMeshes = root.getChildMeshes().filter(m => m.name.includes('__X_VARIATION_C__'));
-			const dMeshes = root.getChildMeshes().filter(m => m.name.includes('__X_VARIATION_D__'));
+			const aMeshes = model.findMeshes('__X_VARIATION_A__');
+			const bMeshes = model.findMeshes('__X_VARIATION_B__');
+			const cMeshes = model.findMeshes('__X_VARIATION_C__');
+			const dMeshes = model.findMeshes('__X_VARIATION_D__');
 
 			for (const m of aMeshes) {
-				(m as BABYLON.Mesh).setEnabled(options.style === 'A');
+				m.isVisible = options.style === 'A';
 			}
 			for (const m of bMeshes) {
-				(m as BABYLON.Mesh).setEnabled(options.style === 'B');
+				m.isVisible = options.style === 'B';
 			}
 			for (const m of cMeshes) {
-				(m as BABYLON.Mesh).setEnabled(options.style === 'C');
+				m.isVisible = options.style === 'C';
 			}
 			for (const m of dMeshes) {
-				(m as BABYLON.Mesh).setEnabled(options.style === 'D');
+				m.isVisible = options.style === 'D';
 			}
+
+			model.updated();
 		};
 
 		applyStyle();

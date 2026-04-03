@@ -194,12 +194,12 @@ class ModelManager {
 			}
 			this.bakedMeshes = [];
 
-			const childMeshes = this.root.getChildMeshes().filter(m => !m.name.includes('__TOP__') && !m.name.includes('__SIDE__') && !m.name.includes('__COLLISION__'));
+			const childMeshes = this.root.getChildMeshes().filter(m => m.isVisible && !m.name.includes('__TOP__') && !m.name.includes('__SIDE__') && !m.name.includes('__COLLISION__'));
 
 			const _toMerge = [] as BABYLON.Mesh[];
 			for (const mesh of childMeshes) {
 				let fixedMesh = mesh;
-				fixedMesh.isVisible = false;
+				fixedMesh.setEnabled(false);
 
 				if (mesh instanceof BABYLON.InstancedMesh) {
 					const sourceMesh = mesh.sourceMesh;
@@ -214,7 +214,7 @@ class ModelManager {
 					}
 					newMesh.scaling = mesh.scaling.clone();
 					newMesh.parent = mesh.parent;
-					newMesh.isVisible = false;
+					newMesh.setEnabled(false);
 
 					fixedMesh = newMesh;
 				}
