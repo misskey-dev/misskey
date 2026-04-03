@@ -323,10 +323,10 @@ const USE_GLOW = false; // ドローコールが増えて重い
 const ENABLE_SUN_LIGHT = true; // ドローコールが増えて重い
 
 export async function createRoomEngine(roomState: RoomState, canvas: HTMLCanvasElement) {
-	//const babylonEngine = new BABYLON.WebGPUEngine(canvas);
-	//babylonEngine.compatibilityMode = false;
-	//await babylonEngine.initAsync();
-	const babylonEngine = new BABYLON.Engine(canvas, false, { alpha: false, antialias: false });
+	const babylonEngine = new BABYLON.WebGPUEngine(canvas);
+	babylonEngine.compatibilityMode = false;
+	await babylonEngine.initAsync();
+	//const babylonEngine = new BABYLON.Engine(canvas, false, { alpha: false, antialias: false });
 	return new RoomEngine(roomState, { canvas, engine: babylonEngine });
 }
 
