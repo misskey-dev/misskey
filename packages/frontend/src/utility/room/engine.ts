@@ -149,6 +149,7 @@ type GetOptionsSchemaValues<T extends OptionsSchema> = {
 class ModelManager {
 	public root: BABYLON.Mesh;
 	public bakedCallback: (() => void) | null = null;
+	public bakeExcludeMeshes: BABYLON.Mesh[] = [];
 	private originalMeshes: BABYLON.Mesh[] = [];
 	private bakedMeshes: BABYLON.Mesh[] = [];
 
@@ -194,7 +195,7 @@ class ModelManager {
 			}
 			this.bakedMeshes = [];
 
-			const childMeshes = this.root.getChildMeshes().filter(m => m.isVisible && !m.name.includes('__TOP__') && !m.name.includes('__SIDE__') && !m.name.includes('__COLLISION__'));
+			const childMeshes = this.root.getChildMeshes().filter(m => !this.bakeExcludeMeshes.some(x => x === m) && m.isVisible && !m.name.includes('__TOP__') && !m.name.includes('__SIDE__') && !m.name.includes('__COLLISION__'));
 
 			const _toMerge = [] as BABYLON.Mesh[];
 			for (const mesh of childMeshes) {
@@ -246,7 +247,7 @@ class ModelManager {
 
 			this.bakedMeshes = [merged];
 
-			this.bakedCallback?.(this.bakedMeshes);
+			this.bakedCallback?.([...this.bakedMeshes, ...this.bakeExcludeMeshes]);
 		} catch (err) {
 			console.error('Failed to bake mesh for object', this.root.metadata?.objectType, err);
 		}
@@ -1051,6 +1052,8 @@ export class RoomEngine {
 						}
 					}
 				}
+
+				this.scene.addMesh(mesh);
 			}
 		});
 
@@ -1573,7 +1576,7 @@ export class RoomObjectPreviewEngine {
 
 		const root = new BABYLON.Mesh(`object_${args.type}`, this.scene);
 
-		const loaderResult = await BABYLON.ImportMeshAsync(`/client-assets/room/objects/${camelToKebab(args.type)}/${camelToKebab(args.type)}.glb`, this.scene);
+		const loaderResult = await BABYLON.LoadAssetContainerAsync(`/client-assets/room/objects/${camelToKebab(args.type)}/${camelToKebab(args.type)}.glb`, this.scene);
 
 		// babylonによって自動で追加される右手系変換用ノード
 		const subRoot = loaderResult.meshes[0];
@@ -1628,6 +1631,8 @@ export class RoomObjectPreviewEngine {
 							}
 						}
 					}
+
+					this.scene.addMesh(mesh);
 				}
 			}),
 		});
