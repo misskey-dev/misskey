@@ -341,8 +341,11 @@ export class RoomEngine {
 	private birdeyeCamera: BABYLON.ArcRotateCamera;
 	public intervalIds: number[] = [];
 	public timeoutIds: number[] = [];
-	private objectMeshs: Map<string, BABYLON.Mesh> = new Map();
-	public objectInstances: Map<string, RoomObjectInstance<any>> = new Map();
+	public objectEntities: Map<string, {
+		rootMesh: BABYLON.Mesh;
+		instance: RoomObjectInstance<any>;
+		model: ModelManager;
+	}> = new Map();
 	private grabbingCtx: {
 		objectId: string;
 		objectType: string;
@@ -361,7 +364,7 @@ export class RoomEngine {
 	public selected = shallowRef<{
 		objectId: string;
 		objectMesh: BABYLON.Mesh;
-		objectInstance: RoomObjectInstance<any>;
+		objectEntity: RoomEngine['objectEntities'] extends Map<string, infer V> ? V : never;
 		objectState: RoomStateObject<any>;
 		objectDef: ObjectDef;
 	} | null>(null);
@@ -610,8 +613,8 @@ export class RoomEngine {
 
 		watch(this.isEditMode, (v) => {
 			if (v) {
-				for (const obji of this.objectInstances.values()) {
-					obji.resetTemporaryState?.();
+				for (const entity of this.objectEntities.values()) {
+					entity.instance.resetTemporaryState?.();
 				}
 			}
 		});
@@ -703,7 +706,7 @@ export class RoomEngine {
 				this.selected.value = {
 					objectId,
 					objectMesh: mesh,
-					objectInstance: this.objectInstances.get(objectId)!,
+					objectEntity: this.objectEntities.get(objectId)!,
 					objectState: state,
 					objectDef: getObjectDef(state.type),
 				};
@@ -1073,8 +1076,7 @@ export class RoomEngine {
 
 		model.updated();
 
-		this.objectInstances.set(args.id, objectInstance);
-		this.objectMeshs.set(args.id, root);
+		this.objectEntities.set(args.id, { instance: objectInstance, rootMesh: root, model });
 
 		return { root, objectInstance };
 	}
@@ -1203,15 +1205,14 @@ export class RoomEngine {
 
 	public interact(oid: string) {
 		const o = this.roomState.installedObjects.find(o => o.id === oid)!;
-		const mesh = this.objectMeshs.get(o.id)!;
 		const objDef = getObjectDef(o.type);
-		const obji = this.objectInstances.get(o.id)!;
+		const entity = this.objectEntities.get(o.id)!;
 
 		if (objDef.isChair) {
 			this.sitChair(o.id);
 		} else {
-			if (obji.primaryInteraction != null) {
-				obji.interactions[obji.primaryInteraction].fn();
+			if (entity.instance.primaryInteraction != null) {
+				entity.instance.interactions[entity.instance.primaryInteraction].fn();
 			}
 		}
 	}
@@ -1379,9 +1380,8 @@ export class RoomEngine {
 
 		const objectId = this.selected.value.objectId;
 
-		this.objectMeshs.get(objectId)?.dispose();
-		this.objectMeshs.delete(objectId);
-		this.objectInstances.delete(objectId);
+		this.objectEntities.get(objectId)?.rootMesh.dispose();
+		this.objectEntities.delete(objectId);
 		this.roomState.installedObjects = this.roomState.installedObjects.filter(o => o.id !== objectId);
 		this.selected.value = null;
 
@@ -1407,9 +1407,9 @@ export class RoomEngine {
 		if (options == null) return;
 		options[key] = value;
 
-		const obji = this.objectInstances.get(objectId);
-		if (obji == null) return;
-		obji.onOptionsUpdated?.([key, value]);
+		const entity = this.objectEntities.get(objectId);
+		if (entity == null) return;
+		entity.instance.onOptionsUpdated?.([key, value]);
 
 		if (this.selected.value?.objectId === objectId) {
 			triggerRef(this.selected);

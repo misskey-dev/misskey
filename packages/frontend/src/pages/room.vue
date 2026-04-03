@@ -284,10 +284,10 @@ onMounted(async () => {
 		if (v == null) {
 			interacions.value = [];
 		} else {
-			interacions.value = Object.entries(v.objectInstance.interactions).map(([interactionId, interactionInfo]) => ({
+			interacions.value = Object.entries(v.objectEntity.interactions).map(([interactionId, interactionInfo]) => ({
 				id: interactionId,
 				label: interactionInfo.label,
-				isPrimary: v.objectInstance.primaryInteraction === interactionId,
+				isPrimary: v.objectEntity.primaryInteraction === interactionId,
 				fn: interactionInfo.fn,
 			}));
 		}
