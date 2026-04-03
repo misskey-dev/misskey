@@ -148,12 +148,14 @@ type GetOptionsSchemaValues<T extends OptionsSchema> = {
 
 class ModelManager {
 	public root: BABYLON.Mesh;
-	public updatedCallback: (() => void) | null = null;
+	public bakedCallback: (() => void) | null = null;
+	private originalMeshes: BABYLON.Mesh[] = [];
 	private bakedMeshes: BABYLON.Mesh[] = [];
 
-	constructor(root: BABYLON.Mesh, updatedCallback: (() => void) | null = null) {
+	constructor(root: BABYLON.Mesh, originalMeshes: BABYLON.Mesh[], bakedCallback: (() => void) | null = null) {
 		this.root = root;
-		this.updatedCallback = updatedCallback;
+		this.originalMeshes = originalMeshes;
+		this.bakedCallback = bakedCallback;
 	}
 
 	public findMesh(keyword: string) {
@@ -183,7 +185,6 @@ class ModelManager {
 
 	public updated() {
 		this.bakeMesh();
-		this.updatedCallback?.(this.bakedMeshes.length > 0 ? this.bakedMeshes : this.root.getChildMeshes());
 	}
 
 	public bakeMesh() {
@@ -194,10 +195,6 @@ class ModelManager {
 			this.bakedMeshes = [];
 
 			const childMeshes = this.root.getChildMeshes().filter(m => !m.name.includes('__TOP__') && !m.name.includes('__SIDE__') && !m.name.includes('__COLLISION__'));
-
-			if (childMeshes.length <= 1) {
-				return;
-			}
 
 			const _toMerge = [] as BABYLON.Mesh[];
 			for (const mesh of childMeshes) {
@@ -248,6 +245,8 @@ class ModelManager {
 			merged.parent = this.root;
 
 			this.bakedMeshes = [merged];
+
+			this.bakedCallback?.(this.bakedMeshes);
 		} catch (err) {
 			console.error('Failed to bake mesh for object', this.root.metadata?.objectType, err);
 		}
@@ -263,8 +262,8 @@ type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 	};
 	placement: 'top' | 'side' | 'bottom' | 'wall' | 'ceiling' | 'floor';
 	//groupingMeshes: string[]; // multi-materialなメッシュは複数のメッシュに分割されるが、それだと不便な場合に追加の親メッシュでグルーピングするための指定
-	mergeMeshes?: string[] | null; // multi-materialなメッシュは複数のメッシュに分割されるが、それだと不便な場合にメッシュをマージするための指定
 	isChair?: boolean;
+	treatLoaderResult?: (loaderResult: BABYLON.AssetContainer) => void;
 	createInstance: (args: {
 		room?: RoomEngine | null;
 		scene: BABYLON.Scene;
@@ -320,7 +319,6 @@ const TIME_MAP = {
 } as const;
 
 const USE_GLOW = false; // ドローコールが増えて重い
-const ENABLE_SUN_LIGHT = true; // ドローコールが増えて重い
 
 export async function createRoomEngine(roomState: RoomState, canvas: HTMLCanvasElement) {
 	const babylonEngine = new BABYLON.WebGPUEngine(canvas);
@@ -335,7 +333,7 @@ export class RoomEngine {
 	private engine: BABYLON.WebGPUEngine;
 	public scene: BABYLON.Scene;
 	private shadowGeneratorForRoomLight: BABYLON.ShadowGenerator;
-	private shadowGeneratorForSunLight: BABYLON.ShadowGenerator | null = null;
+	private shadowGeneratorForSunLight: BABYLON.ShadowGenerator;
 	public camera: BABYLON.UniversalCamera;
 	private fixedCamera: BABYLON.UniversalCamera;
 	private birdeyeCamera: BABYLON.ArcRotateCamera;
@@ -496,21 +494,19 @@ export class RoomEngine {
 		this.shadowGeneratorForRoomLight.getShadowMap().refreshRate = 60;
 		//this.shadowGenerator1.useContactHardeningShadow = true;
 
-		if (ENABLE_SUN_LIGHT) {
-			const sunLight = new BABYLON.DirectionalLight('sunLight', new BABYLON.Vector3(0.2, -1, -1), this.scene);
-			sunLight.position = new BABYLON.Vector3(-20, 1000, 1000);
-			sunLight.diffuse = this.time === 0 ? new BABYLON.Color3(1.0, 0.9, 0.8) : this.time === 1 ? new BABYLON.Color3(1.0, 0.8, 0.6) : new BABYLON.Color3(0.6, 0.8, 1.0);
-			sunLight.intensity = this.time === 0 ? 2 : this.time === 1 ? 1 : 0.25;
-			sunLight.shadowMinZ = 1000/*cm*/;
-			sunLight.shadowMaxZ = 2000/*cm*/;
+		const sunLight = new BABYLON.DirectionalLight('sunLight', new BABYLON.Vector3(0.2, -1, -1), this.scene);
+		sunLight.position = new BABYLON.Vector3(-20, 1000, 1000);
+		sunLight.diffuse = this.time === 0 ? new BABYLON.Color3(1.0, 0.9, 0.8) : this.time === 1 ? new BABYLON.Color3(1.0, 0.8, 0.6) : new BABYLON.Color3(0.6, 0.8, 1.0);
+		sunLight.intensity = this.time === 0 ? 2 : this.time === 1 ? 1 : 0.25;
+		sunLight.shadowMinZ = 1000/*cm*/;
+		sunLight.shadowMaxZ = 2000/*cm*/;
 
-			this.shadowGeneratorForSunLight = new BABYLON.ShadowGenerator(4096, sunLight);
-			this.shadowGeneratorForSunLight.forceBackFacesOnly = true;
-			this.shadowGeneratorForSunLight.bias = 0.0001;
-			this.shadowGeneratorForSunLight.usePercentageCloserFiltering = true;
-			this.shadowGeneratorForSunLight.usePoissonSampling = true;
-			this.shadowGeneratorForSunLight.getShadowMap().refreshRate = 60;
-		}
+		this.shadowGeneratorForSunLight = new BABYLON.ShadowGenerator(4096, sunLight);
+		this.shadowGeneratorForSunLight.forceBackFacesOnly = true;
+		this.shadowGeneratorForSunLight.bias = 0.0001;
+		this.shadowGeneratorForSunLight.usePercentageCloserFiltering = true;
+		this.shadowGeneratorForSunLight.usePoissonSampling = true;
+		this.shadowGeneratorForSunLight.getShadowMap().refreshRate = 60;
 
 		this.turnOnRoomLight();
 
@@ -954,7 +950,7 @@ export class RoomEngine {
 				m.checkCollisions = false;
 				m.receiveShadows = true;
 				this.shadowGeneratorForRoomLight.addShadowCaster(m);
-				if (this.shadowGeneratorForSunLight != null) this.shadowGeneratorForSunLight.addShadowCaster(m);
+				this.shadowGeneratorForSunLight.addShadowCaster(m);
 				//if (m.material) (m.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(1, 1, 1);
 				if (m.material) {
 					(m.material as BABYLON.PBRMaterial).reflectionTexture = this.enableReflectionProbe ? this.reflectionProbe.cubeTexture : this.envMapIndoor;
@@ -983,21 +979,13 @@ export class RoomEngine {
 
 		const root = new BABYLON.TransformNode(`object_${args.id}_${args.type}`, this.scene);
 
-		const loaderResult = await BABYLON.ImportMeshAsync(`/client-assets/room/objects/${camelToKebab(args.type)}/${camelToKebab(args.type)}.glb`, this.scene);
+		const loaderResult = await BABYLON.LoadAssetContainerAsync(`/client-assets/room/objects/${camelToKebab(args.type)}/${camelToKebab(args.type)}.glb`, this.scene);
 
 		// babylonによって自動で追加される右手系変換用ノード
 		const subRoot = loaderResult.meshes[0];
 		subRoot.scaling = subRoot.scaling.scale(WORLD_SCALE);// cmをmに
 
-		if (def.mergeMeshes != null) {
-			for (const groupingMeshKeyword of def.mergeMeshes) {
-				const meshes = loaderResult.meshes.filter(m => m.name.includes(groupingMeshKeyword));
-				const merged = BABYLON.Mesh.MergeMeshes(meshes as BABYLON.Mesh[], true, true, undefined, false, true);
-				merged.name = `${groupingMeshKeyword}.grouped`;
-				merged.setParent(subRoot);
-				loaderResult.meshes.push(merged);
-			}
-		}
+		def.treatLoaderResult?.(loaderResult);
 
 		let hasCollisionMesh = false;
 		for (const mesh of loaderResult.meshes) {
@@ -1020,10 +1008,12 @@ export class RoomEngine {
 		root.rotation = args.rotation.clone();
 		root.metadata = metadata;
 
-		const meshUpdated = (meshes: BABYLON.Mesh[]) => {
+		const model = new ModelManager(subRoot, loaderResult.meshes.filter(m => m !== subRoot), (meshes) => {
 			if (this.selected.value?.objectId === args.id) {
-				this.selectionOutlineLayer.clearSelection();
-				this.selectionOutlineLayer.addSelection(meshes);
+				if (this.selectionOutlineLayer != null) {
+					this.selectionOutlineLayer.clearSelection();
+					this.selectionOutlineLayer.addSelection(meshes);
+				}
 			}
 
 			for (const m of meshes) {
@@ -1047,21 +1037,21 @@ export class RoomEngine {
 					if (def.receiveShadows !== false) mesh.receiveShadows = true;
 					if (def.castShadows !== false) {
 						this.shadowGeneratorForRoomLight.addShadowCaster(mesh);
-						if (this.shadowGeneratorForSunLight != null) this.shadowGeneratorForSunLight.addShadowCaster(mesh);
+						this.shadowGeneratorForSunLight.addShadowCaster(mesh);
 					}
 
 					//if (mesh.material) (mesh.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(0.2, 0.2, 0.2);
 					if (mesh.material) {
-						(mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.enableReflectionProbe ? this.reflectionProbe.cubeTexture : this.envMapIndoor;
+						if (mesh.material instanceof BABYLON.MultiMaterial) {
+							for (const subMat of mesh.material.subMaterials) {
+								(subMat as BABYLON.PBRMaterial).reflectionTexture = this.enableReflectionProbe ? this.reflectionProbe.cubeTexture : this.envMapIndoor;
+							}
+						} else {
+							(mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.enableReflectionProbe ? this.reflectionProbe.cubeTexture : this.envMapIndoor;
+						}
 					}
 				}
 			}
-		};
-
-		meshUpdated(loaderResult.meshes);
-
-		const model = new ModelManager(subRoot, (meshes) => {
-			meshUpdated(meshes);
 		});
 
 		const objectInstance = await def.createInstance({
@@ -1074,7 +1064,7 @@ export class RoomEngine {
 
 		objectInstance.onInited?.();
 
-		model.updated();
+		model.bakeMesh();
 
 		this.objectEntities.set(args.id, { instance: objectInstance, rootMesh: root, model });
 
@@ -1589,15 +1579,7 @@ export class RoomObjectPreviewEngine {
 		const subRoot = loaderResult.meshes[0];
 		subRoot.scaling = subRoot.scaling.scale(WORLD_SCALE);// cmをmに
 
-		if (def.mergeMeshes != null) {
-			for (const groupingMeshKeyword of def.mergeMeshes) {
-				const meshes = loaderResult.meshes.filter(m => m.name.includes(groupingMeshKeyword));
-				const merged = BABYLON.Mesh.MergeMeshes(meshes as BABYLON.Mesh[], true, true, undefined, false, true);
-				merged.name = `${groupingMeshKeyword}.grouped`;
-				merged.setParent(subRoot);
-				loaderResult.meshes.push(merged);
-			}
-		}
+		def.treatLoaderResult?.(loaderResult);
 
 		let hasCollisionMesh = false;
 		for (const mesh of loaderResult.meshes) {
@@ -1609,44 +1591,44 @@ export class RoomObjectPreviewEngine {
 
 		root.addChild(subRoot);
 
-		const meshUpdated = (meshes: BABYLON.Mesh[]) => {
-			for (const m of meshes) {
-				const mesh = m;
-
-				// シェイプキー(morph)を考慮してbounding boxを更新するために必要
-				mesh.refreshBoundingInfo({ applyMorph: true });
-
-				mesh.checkCollisions = !hasCollisionMesh;
-
-				if (mesh.name.includes('__COLLISION__')) {
-					mesh.receiveShadows = false;
-					mesh.isVisible = false;
-					mesh.checkCollisions = true;
-				} else if (mesh.name.includes('__TOP__') || mesh.name.includes('__SIDE__')) {
-					mesh.receiveShadows = false;
-					mesh.isVisible = false;
-				} else {
-					if (def.receiveShadows !== false) mesh.receiveShadows = true;
-					if (def.castShadows !== false) {
-						this.shadowGenerator1.addShadowCaster(mesh);
-					}
-
-					if (mesh.material) {
-						(mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
-					}
-				}
-			}
-		};
-
-		meshUpdated(loaderResult.meshes);
-
 		const objectInstance = await def.createInstance({
 			room: null,
 			scene: this.scene,
 			root,
 			options: args.options,
-			model: new ModelManager(subRoot, (meshes) => {
-				meshUpdated(meshes);
+			model: new ModelManager(subRoot, loaderResult.meshes.filter(m => m !== subRoot), (meshes) => {
+				for (const m of meshes) {
+					const mesh = m;
+
+					// シェイプキー(morph)を考慮してbounding boxを更新するために必要
+					mesh.refreshBoundingInfo({ applyMorph: true });
+
+					mesh.checkCollisions = !hasCollisionMesh;
+
+					if (mesh.name.includes('__COLLISION__')) {
+						mesh.receiveShadows = false;
+						mesh.isVisible = false;
+						mesh.checkCollisions = true;
+					} else if (mesh.name.includes('__TOP__') || mesh.name.includes('__SIDE__')) {
+						mesh.receiveShadows = false;
+						mesh.isVisible = false;
+					} else {
+						if (def.receiveShadows !== false) mesh.receiveShadows = true;
+						if (def.castShadows !== false) {
+							this.shadowGenerator1.addShadowCaster(mesh);
+						}
+
+						if (mesh.material) {
+							if (mesh.material instanceof BABYLON.MultiMaterial) {
+								for (const subMat of mesh.material.subMaterials) {
+									(subMat as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
+								}
+							} else {
+								(mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
+							}
+						}
+					}
+				}
 			}),
 		});
 

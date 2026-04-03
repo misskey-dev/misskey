@@ -6,6 +6,8 @@
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../engine.js';
 
+const mergeMeshes = ['__X_BOOK_1__', '__X_BOOK_2__', '__X_BOOK_3__', '__X_BOOK_4__', '__X_BOOK_5__', '__X_BOOK_6__', '__X_BOOK_7__', '__X_BOOK_8__', '__X_BOOK_9__', '__X_BOOK_10__'];
+
 export const books = defineObject({
 	id: 'books',
 	name: 'Books',
@@ -22,7 +24,16 @@ export const books = defineObject({
 		},
 	},
 	placement: 'top',
-	mergeMeshes: ['__X_BOOK_1__', '__X_BOOK_2__', '__X_BOOK_3__', '__X_BOOK_4__', '__X_BOOK_5__', '__X_BOOK_6__', '__X_BOOK_7__', '__X_BOOK_8__', '__X_BOOK_9__', '__X_BOOK_10__'],
+	treatLoaderResult: (loaderResult) => {
+		const subRoot = loaderResult.meshes[0];
+		for (const groupingMeshKeyword of mergeMeshes) {
+			const meshes = loaderResult.meshes.filter(m => m.name.includes(groupingMeshKeyword));
+			const merged = BABYLON.Mesh.MergeMeshes(meshes as BABYLON.Mesh[], true, true, undefined, false, true);
+			merged.name = `${groupingMeshKeyword}.grouped`;
+			merged.setParent(subRoot);
+			loaderResult.meshes.push(merged);
+		}
+	},
 	createInstance: ({ scene, options, model }) => {
 		const coverMaterial = model.findMaterial('__X_COVER__');
 
