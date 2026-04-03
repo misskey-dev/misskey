@@ -46,7 +46,7 @@ export const blind = defineObject({
 			open: () => options.open,
 		});
 
-		const blade = model.root.getChildMeshes().find(m => m.name === 'Blade') as BABYLON.Mesh;
+		const blade = model.findMesh('Blade');
 		blade.rotation = new BABYLON.Vector3(options.angle, 0, 0);
 
 		let blades = [] as BABYLON.Mesh[];
