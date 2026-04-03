@@ -363,7 +363,6 @@ export class RoomEngine {
 	} | null = null;
 	public selected = shallowRef<{
 		objectId: string;
-		objectMesh: BABYLON.Mesh;
 		objectEntity: RoomEngine['objectEntities'] extends Map<string, infer V> ? V : never;
 		objectState: RoomStateObject<any>;
 		objectDef: ObjectDef;
@@ -382,7 +381,7 @@ export class RoomEngine {
 	private xGridPreviewPlane: BABYLON.Mesh;
 	private yGridPreviewPlane: BABYLON.Mesh;
 	private zGridPreviewPlane: BABYLON.Mesh;
-	private selectionOutlineLayer: BABYLON.SelectionOutlineLayer;
+	private selectionOutlineLayer: BABYLON.SelectionOutlineLayer | null = null;
 	public isEditMode = ref(false);
 	public isSitting = ref(false);
 	public ui = reactive({
@@ -608,14 +607,16 @@ export class RoomEngine {
 		this.zGridPreviewPlane.isPickable = false;
 		this.zGridPreviewPlane.isVisible = false;
 
-		// 重い。edit modeのときだけ有効にするようにしたい
-		//this.selectionOutlineLayer = new BABYLON.SelectionOutlineLayer('outliner', this.scene);
-
 		watch(this.isEditMode, (v) => {
 			if (v) {
+				this.selectionOutlineLayer = new BABYLON.SelectionOutlineLayer('outliner', this.scene);
+
 				for (const entity of this.objectEntities.values()) {
 					entity.instance.resetTemporaryState?.();
 				}
+			} else {
+				this.selectionOutlineLayer.dispose();
+				this.selectionOutlineLayer = null;
 			}
 		});
 
@@ -648,13 +649,13 @@ export class RoomEngine {
 			this.selectObject(null);
 
 			const pickingInfo = this.scene.pick(this.scene.pointerX, this.scene.pointerY,
-				(m) => m.metadata?.isCollision && m.metadata?.objectId != null && this.objectMeshs.has(m.metadata.objectId));
+				(m) => m.metadata?.isCollision && m.metadata?.objectId != null && this.objectEntities.has(m.metadata.objectId));
 
 			if (pickingInfo.pickedMesh != null) {
 				const oid = pickingInfo.pickedMesh.metadata.objectId;
-				if (oid != null && this.objectMeshs.has(oid)) {
-					const o = this.objectMeshs.get(oid)!;
-					const boundingInfo = getMeshesBoundingBox(o.getChildMeshes());
+				if (oid != null && this.objectEntities.has(oid)) {
+					const o = this.objectEntities.get(oid)!;
+					const boundingInfo = getMeshesBoundingBox(o.rootMesh.getChildMeshes());
 					this.camera.setTarget(boundingInfo.center);
 					this.selectObject(oid);
 				}
@@ -694,19 +695,18 @@ export class RoomEngine {
 
 	public selectObject(objectId: string | null) {
 		if (this.selected.value != null) {
-			this.selectionOutlineLayer.clearSelection();
+			if (this.selectionOutlineLayer != null) this.selectionOutlineLayer.clearSelection();
 			this.selected.value = null;
 		}
 
 		if (objectId != null) {
-			const mesh = this.objectMeshs.get(objectId);
-			if (mesh != null) {
-				this.selectionOutlineLayer.addSelection(mesh.getChildMeshes());
+			const entity = this.objectEntities.get(objectId);
+			if (entity != null) {
+				if (this.selectionOutlineLayer != null) this.selectionOutlineLayer.addSelection(entity.rootMesh.getChildMeshes());
 				const state = this.roomState.installedObjects.find(o => o.id === objectId)!;
 				this.selected.value = {
 					objectId,
-					objectMesh: mesh,
-					objectEntity: this.objectEntities.get(objectId)!,
+					objectEntity: entity,
 					objectState: state,
 					objectDef: getObjectDef(state.type),
 				};
@@ -1084,14 +1084,14 @@ export class RoomEngine {
 	public beginSelectedInstalledObjectGrabbing() {
 		if (this.selected.value == null) return;
 
-		const selectedObject = this.selected.value.objectMesh;
-		this.selectionOutlineLayer.clearSelection();
+		const selectedObject = this.selected.value.objectEntity.rootMesh;
+		if (this.selectionOutlineLayer != null) this.selectionOutlineLayer.clearSelection();
 
 		// 子から先に適用していく
 		const setStickyParentRecursively = (mesh: BABYLON.AbstractMesh) => {
 			const stickyObjectIds = Array.from(this.roomState.installedObjects.filter(o => o.sticky === mesh.metadata.objectId)).map(o => o.id);
 			for (const soid of stickyObjectIds) {
-				const soMesh = this.objectMeshs.get(soid)!;
+				const soMesh = this.objectEntities.get(soid)!.rootMesh;
 				setStickyParentRecursively(soMesh);
 				soMesh.setParent(mesh);
 			}
@@ -1153,7 +1153,7 @@ export class RoomEngine {
 				const removeStickyParentRecursively = (mesh: BABYLON.Mesh) => {
 					const stickyObjectIds = Array.from(this.roomState.installedObjects.filter(o => o.sticky === mesh.metadata.objectId)).map(o => o.id);
 					for (const soid of stickyObjectIds) {
-						const soMesh = this.objectMeshs.get(soid)!;
+						const soMesh = this.objectEntities.get(soid)!.rootMesh;
 						soMesh.setParent(null);
 						removeStickyParentRecursively(soMesh);
 					}
