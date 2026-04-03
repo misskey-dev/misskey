@@ -224,7 +224,7 @@ class ModelManager {
 
 			const toMerge = [] as BABYLON.Mesh[];
 			for (const mesh of _toMerge) {
-				const newMesh = mesh.clone(mesh.name + '_bakeMerged', null, true);
+				const newMesh = mesh.name.endsWith('_realized') ? mesh : mesh.clone(mesh.name + '_bakeMerged', null, true);
 				newMesh.makeGeometryUnique();
 				applyMorphTargetsToMesh(newMesh);
 				if (newMesh.parent === this.root) {
