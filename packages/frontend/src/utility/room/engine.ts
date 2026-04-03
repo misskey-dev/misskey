@@ -188,75 +188,73 @@ class ModelManager {
 	}
 
 	public bakeMesh() {
-		try {
-			for (const m of this.bakedMeshes) {
-				m.dispose();
-			}
-			this.bakedMeshes = [];
-
-			const childMeshes = this.root.getChildMeshes().filter(m => !this.bakeExcludeMeshes.some(x => x === m) && m.isVisible && !m.name.includes('__TOP__') && !m.name.includes('__SIDE__') && !m.name.includes('__COLLISION__'));
-
-			const _toMerge = [] as BABYLON.Mesh[];
-			for (const mesh of childMeshes) {
-				let fixedMesh = mesh;
-				fixedMesh.setEnabled(false);
-
-				if (mesh instanceof BABYLON.InstancedMesh) {
-					const sourceMesh = mesh.sourceMesh;
-					const realizedMesh = sourceMesh.clone(mesh.name + '_realized', null, true);
-					realizedMesh.getScene().removeMesh(realizedMesh);
-
-					realizedMesh.position = mesh.position.clone();
-					if (mesh.rotationQuaternion) {
-						realizedMesh.rotationQuaternion = mesh.rotationQuaternion.clone();
-					} else {
-						realizedMesh.rotation = mesh.rotation.clone();
-					}
-					realizedMesh.scaling = mesh.scaling.clone();
-					realizedMesh.parent = mesh.parent;
-					realizedMesh.setEnabled(false);
-
-					fixedMesh = realizedMesh;
-				}
-
-				_toMerge.push(fixedMesh);
-			}
-
-			const toMerge = [] as BABYLON.Mesh[];
-			for (const mesh of _toMerge) {
-				const newMesh = mesh.name.endsWith('_realized') ? mesh : mesh.clone(mesh.name + '_bakeMerged', null, true);
-				newMesh.makeGeometryUnique();
-				applyMorphTargetsToMesh(newMesh);
-				if (newMesh.parent === this.root) {
-					newMesh.parent = null;
-				} else {
-					newMesh.setParent(this.root);
-					//newMesh.bakeCurrentTransformIntoVertices();
-					newMesh.parent = null;
-				}
-				//newMesh.bakeCurrentTransformIntoVertices();
-
-				if (newMesh.getVerticesData(BABYLON.VertexBuffer.UVKind) == null) {
-					const vertexCount = newMesh.getTotalVertices();
-					const uvs = new Array(vertexCount * 2).fill(0);
-					newMesh.setVerticesData(BABYLON.VertexBuffer.UVKind, uvs, false, 2);
-				}
-
-				toMerge.push(newMesh);
-			}
-
-			const merged = BABYLON.Mesh.MergeMeshes(toMerge, true, true, undefined, false, true);
-
-			//merged.bakeCurrentTransformIntoVertices();
-
-			merged.parent = this.root;
-
-			this.bakedMeshes = [merged];
-
-			this.bakedCallback?.([...this.bakedMeshes, ...this.bakeExcludeMeshes]);
-		} catch (err) {
-			console.error('Failed to bake mesh for object', this.root.metadata?.objectType, err);
+		for (const m of this.bakedMeshes) {
+			m.dispose();
 		}
+		this.bakedMeshes = [];
+
+		const excludeMeshes = [...this.bakeExcludeMeshes, ...this.root.getChildMeshes().filter(m => m.name.includes('__TOP__') || m.name.includes('__SIDE__') || m.name.includes('__COLLISION__'))];
+
+		const childMeshes = this.root.getChildMeshes().filter(m => !excludeMeshes.some(x => x === m) && m.isVisible);
+
+		const _toMerge = [] as BABYLON.Mesh[];
+		for (const mesh of childMeshes) {
+			let fixedMesh = mesh;
+			fixedMesh.setEnabled(false);
+
+			if (mesh instanceof BABYLON.InstancedMesh) {
+				const sourceMesh = mesh.sourceMesh;
+				const realizedMesh = sourceMesh.clone(mesh.name + '_realized', null, true);
+				realizedMesh.getScene().removeMesh(realizedMesh);
+
+				realizedMesh.position = mesh.position.clone();
+				if (mesh.rotationQuaternion) {
+					realizedMesh.rotationQuaternion = mesh.rotationQuaternion.clone();
+				} else {
+					realizedMesh.rotation = mesh.rotation.clone();
+				}
+				realizedMesh.scaling = mesh.scaling.clone();
+				realizedMesh.parent = mesh.parent;
+				realizedMesh.setEnabled(false);
+
+				fixedMesh = realizedMesh;
+			}
+
+			_toMerge.push(fixedMesh);
+		}
+
+		const toMerge = [] as BABYLON.Mesh[];
+		for (const mesh of _toMerge) {
+			const newMesh = mesh.name.endsWith('_realized') ? mesh : mesh.clone(mesh.name + '_bakeMerged', null, true);
+			newMesh.makeGeometryUnique();
+			applyMorphTargetsToMesh(newMesh);
+			if (newMesh.parent === this.root) {
+				newMesh.parent = null;
+			} else {
+				newMesh.setParent(this.root);
+				//newMesh.bakeCurrentTransformIntoVertices();
+				newMesh.parent = null;
+			}
+			//newMesh.bakeCurrentTransformIntoVertices();
+
+			if (newMesh.getVerticesData(BABYLON.VertexBuffer.UVKind) == null) {
+				const vertexCount = newMesh.getTotalVertices();
+				const uvs = new Array(vertexCount * 2).fill(0);
+				newMesh.setVerticesData(BABYLON.VertexBuffer.UVKind, uvs, false, 2);
+			}
+
+			toMerge.push(newMesh);
+		}
+
+		const merged = BABYLON.Mesh.MergeMeshes(toMerge, true, true, undefined, false, true);
+
+		//merged.bakeCurrentTransformIntoVertices();
+
+		merged.parent = this.root;
+
+		this.bakedMeshes = [merged];
+
+		this.bakedCallback?.([...this.bakedMeshes, ...excludeMeshes]);
 	}
 
 	public unbakeMesh() {
@@ -631,16 +629,11 @@ export class RoomEngine {
 
 				for (const entity of this.objectEntities.values()) {
 					entity.instance.resetTemporaryState?.();
-					entity.model.unbakeMesh();
 				}
 			} else {
 				if (this.selectionOutlineLayer != null) {
 					this.selectionOutlineLayer.dispose();
 					this.selectionOutlineLayer = null;
-				}
-
-				for (const entity of this.objectEntities.values()) {
-					entity.model.bakeMesh();
 				}
 			}
 		});
@@ -720,6 +713,7 @@ export class RoomEngine {
 
 	public selectObject(objectId: string | null) {
 		if (this.selected.value != null) {
+			this.selected.value.objectEntity.model.bakeMesh();
 			if (this.selectionOutlineLayer != null) this.selectionOutlineLayer.clearSelection();
 			this.selected.value = null;
 		}
@@ -727,6 +721,7 @@ export class RoomEngine {
 		if (objectId != null) {
 			const entity = this.objectEntities.get(objectId);
 			if (entity != null) {
+				if (this.isEditMode.value) entity.model.unbakeMesh();
 				if (this.selectionOutlineLayer != null) this.selectionOutlineLayer.addSelection(entity.rootMesh.getChildMeshes());
 				const state = this.roomState.installedObjects.find(o => o.id === objectId)!;
 				this.selected.value = {
