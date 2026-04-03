@@ -1260,6 +1260,7 @@ export class RoomEngine {
 		const ghost = mesh.clone('ghost', null, false)!;
 		ghost.metadata = { isGhost: true };
 
+		/* なんかエラーになる
 		const materials = new WeakMap<BABYLON.Material, BABYLON.Material>();
 
 		for (const m of ghost.getChildMeshes() as BABYLON.Mesh[]) {
@@ -1293,6 +1294,7 @@ export class RoomEngine {
 				m.material = ghostMaterial;
 			}
 		}
+			*/
 
 		return ghost;
 	}
