@@ -66,6 +66,8 @@ export const poster = defineObject({
 			const targetAspect = targetWidth / targetHeight;
 
 			updateUv(srcAspect, targetAspect, options.fit);
+
+			model.updated();
 		};
 
 		applyFit();

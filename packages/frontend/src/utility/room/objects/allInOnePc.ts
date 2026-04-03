@@ -66,6 +66,8 @@ export const allInOnePc = defineObject({
 			const targetAspect = 50 / 27.5;
 
 			updateUv(srcAspect, targetAspect, options.fit);
+
+			model.updated();
 		};
 
 		applyFit();

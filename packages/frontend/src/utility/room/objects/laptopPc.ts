@@ -75,6 +75,8 @@ export const laptopPc = defineObject({
 			const targetAspect = 31 / 19;
 
 			updateUv(srcAspect, targetAspect, options.fit);
+
+			model.updated();
 		};
 
 		applyFit();
