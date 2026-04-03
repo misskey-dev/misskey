@@ -203,20 +203,20 @@ class ModelManager {
 
 				if (mesh instanceof BABYLON.InstancedMesh) {
 					const sourceMesh = mesh.sourceMesh;
-					const newMesh = sourceMesh.clone(mesh.name + '_baked');
-					sourceMesh.getScene().removeMesh(newMesh);
+					const realizedMesh = sourceMesh.clone(mesh.name + '_realized', null, true);
+					realizedMesh.getScene().removeMesh(realizedMesh);
 
-					newMesh.position = mesh.position.clone();
+					realizedMesh.position = mesh.position.clone();
 					if (mesh.rotationQuaternion) {
-						newMesh.rotationQuaternion = mesh.rotationQuaternion.clone();
+						realizedMesh.rotationQuaternion = mesh.rotationQuaternion.clone();
 					} else {
-						newMesh.rotation = mesh.rotation.clone();
+						realizedMesh.rotation = mesh.rotation.clone();
 					}
-					newMesh.scaling = mesh.scaling.clone();
-					newMesh.parent = mesh.parent;
-					newMesh.setEnabled(false);
+					realizedMesh.scaling = mesh.scaling.clone();
+					realizedMesh.parent = mesh.parent;
+					realizedMesh.setEnabled(false);
 
-					fixedMesh = newMesh;
+					fixedMesh = realizedMesh;
 				}
 
 				_toMerge.push(fixedMesh);
