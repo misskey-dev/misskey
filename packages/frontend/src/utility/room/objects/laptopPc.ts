@@ -126,6 +126,7 @@ export const laptopPc = defineObject({
 			const angle = options.openAngle;
 			hutaNode.rotationQuaternion = null;
 			hutaNode.rotation.x = -angle;
+			model.updated();
 		};
 
 		applyOpenAngle();
