@@ -25,16 +25,16 @@ export const cardboardBox = defineObject({
 	createInstance: ({ scene, options, root }) => {
 		return {
 			onInited: () => {
-				const boxMesh = root.getChildMeshes().find(m => m.name === 'Box') as BABYLON.Mesh;
-				if (options.variation === 'mikan') {
-					const tex = new BABYLON.Texture('/client-assets/room/objects/cardboard-box/textures/mikan.png', scene, false, false);
-					(boxMesh.material as BABYLON.PBRMaterial).albedoTexture = tex;
-					(boxMesh.material as BABYLON.PBRMaterial).albedoColor = new BABYLON.Color3(1, 1, 1);
-				} else if (options.variation === 'aizon') {
-					const tex = new BABYLON.Texture('/client-assets/room/objects/cardboard-box/textures/aizon.png', scene, false, false);
-					(boxMesh.material as BABYLON.PBRMaterial).albedoTexture = tex;
-					(boxMesh.material as BABYLON.PBRMaterial).albedoColor = new BABYLON.Color3(1, 1, 1);
-				}
+				//const boxMesh = root.getChildMeshes().find(m => m.name === 'Box') as BABYLON.Mesh;
+				//if (options.variation === 'mikan') {
+				//	const tex = new BABYLON.Texture('/client-assets/room/objects/cardboard-box/textures/mikan.png', scene, false, false);
+				//	(boxMesh.material as BABYLON.PBRMaterial).albedoTexture = tex;
+				//	(boxMesh.material as BABYLON.PBRMaterial).albedoColor = new BABYLON.Color3(1, 1, 1);
+				//} else if (options.variation === 'aizon') {
+				//	const tex = new BABYLON.Texture('/client-assets/room/objects/cardboard-box/textures/aizon.png', scene, false, false);
+				//	(boxMesh.material as BABYLON.PBRMaterial).albedoTexture = tex;
+				//	(boxMesh.material as BABYLON.PBRMaterial).albedoColor = new BABYLON.Color3(1, 1, 1);
+				//}
 			},
 			interactions: {},
 		};

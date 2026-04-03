@@ -33,41 +33,41 @@ export const tabletopDigitalClock = defineObject({
 		},
 	},
 	placement: 'top',
-	createInstance: ({ room, options, root }) => {
+	createInstance: ({ room, options, model }) => {
 		const segmentMeshes = {
-			'1a': root.getChildMeshes().find(m => m.name.includes('__TIME_7SEG_1A__')),
-			'1b': root.getChildMeshes().find(m => m.name.includes('__TIME_7SEG_1B__')),
-			'1c': root.getChildMeshes().find(m => m.name.includes('__TIME_7SEG_1C__')),
-			'1d': root.getChildMeshes().find(m => m.name.includes('__TIME_7SEG_1D__')),
-			'1e': root.getChildMeshes().find(m => m.name.includes('__TIME_7SEG_1E__')),
-			'1f': root.getChildMeshes().find(m => m.name.includes('__TIME_7SEG_1F__')),
-			'1g': root.getChildMeshes().find(m => m.name.includes('__TIME_7SEG_1G__')),
-			'2a': root.getChildMeshes().find(m => m.name.includes('__TIME_7SEG_2A__')),
-			'2b': root.getChildMeshes().find(m => m.name.includes('__TIME_7SEG_2B__')),
-			'2c': root.getChildMeshes().find(m => m.name.includes('__TIME_7SEG_2C__')),
-			'2d': root.getChildMeshes().find(m => m.name.includes('__TIME_7SEG_2D__')),
-			'2e': root.getChildMeshes().find(m => m.name.includes('__TIME_7SEG_2E__')),
-			'2f': root.getChildMeshes().find(m => m.name.includes('__TIME_7SEG_2F__')),
-			'2g': root.getChildMeshes().find(m => m.name.includes('__TIME_7SEG_2G__')),
-			'3a': root.getChildMeshes().find(m => m.name.includes('__TIME_7SEG_3A__')),
-			'3b': root.getChildMeshes().find(m => m.name.includes('__TIME_7SEG_3B__')),
-			'3c': root.getChildMeshes().find(m => m.name.includes('__TIME_7SEG_3C__')),
-			'3d': root.getChildMeshes().find(m => m.name.includes('__TIME_7SEG_3D__')),
-			'3e': root.getChildMeshes().find(m => m.name.includes('__TIME_7SEG_3E__')),
-			'3f': root.getChildMeshes().find(m => m.name.includes('__TIME_7SEG_3F__')),
-			'3g': root.getChildMeshes().find(m => m.name.includes('__TIME_7SEG_3G__')),
-			'4a': root.getChildMeshes().find(m => m.name.includes('__TIME_7SEG_4A__')),
-			'4b': root.getChildMeshes().find(m => m.name.includes('__TIME_7SEG_4B__')),
-			'4c': root.getChildMeshes().find(m => m.name.includes('__TIME_7SEG_4C__')),
-			'4d': root.getChildMeshes().find(m => m.name.includes('__TIME_7SEG_4D__')),
-			'4e': root.getChildMeshes().find(m => m.name.includes('__TIME_7SEG_4E__')),
-			'4f': root.getChildMeshes().find(m => m.name.includes('__TIME_7SEG_4F__')),
-			'4g': root.getChildMeshes().find(m => m.name.includes('__TIME_7SEG_4G__')),
+			'1a': model.findMesh('__TIME_7SEG_1A__'),
+			'1b': model.findMesh('__TIME_7SEG_1B__'),
+			'1c': model.findMesh('__TIME_7SEG_1C__'),
+			'1d': model.findMesh('__TIME_7SEG_1D__'),
+			'1e': model.findMesh('__TIME_7SEG_1E__'),
+			'1f': model.findMesh('__TIME_7SEG_1F__'),
+			'1g': model.findMesh('__TIME_7SEG_1G__'),
+			'2a': model.findMesh('__TIME_7SEG_2A__'),
+			'2b': model.findMesh('__TIME_7SEG_2B__'),
+			'2c': model.findMesh('__TIME_7SEG_2C__'),
+			'2d': model.findMesh('__TIME_7SEG_2D__'),
+			'2e': model.findMesh('__TIME_7SEG_2E__'),
+			'2f': model.findMesh('__TIME_7SEG_2F__'),
+			'2g': model.findMesh('__TIME_7SEG_2G__'),
+			'3a': model.findMesh('__TIME_7SEG_3A__'),
+			'3b': model.findMesh('__TIME_7SEG_3B__'),
+			'3c': model.findMesh('__TIME_7SEG_3C__'),
+			'3d': model.findMesh('__TIME_7SEG_3D__'),
+			'3e': model.findMesh('__TIME_7SEG_3E__'),
+			'3f': model.findMesh('__TIME_7SEG_3F__'),
+			'3g': model.findMesh('__TIME_7SEG_3G__'),
+			'4a': model.findMesh('__TIME_7SEG_4A__'),
+			'4b': model.findMesh('__TIME_7SEG_4B__'),
+			'4c': model.findMesh('__TIME_7SEG_4C__'),
+			'4d': model.findMesh('__TIME_7SEG_4D__'),
+			'4e': model.findMesh('__TIME_7SEG_4E__'),
+			'4f': model.findMesh('__TIME_7SEG_4F__'),
+			'4g': model.findMesh('__TIME_7SEG_4G__'),
 		};
 
-		const colonMeshes = root.getChildMeshes().filter(m => m.name.includes('__TIME_7SEG_COLON__'));
+		const colonMeshes = model.findMeshes('__TIME_7SEG_COLON__');
 
-		const bodyMesh = root.getChildMeshes().find(m => m.name.includes('__X_BODY__')) as BABYLON.Mesh;
+		const bodyMesh = model.findMesh('__X_BODY__');
 		const bodyMaterial = bodyMesh.material as BABYLON.PBRMaterial;
 
 		const applyBodyColor = () => {

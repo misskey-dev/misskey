@@ -16,10 +16,10 @@ export const ceilingFanLight = defineObject({
 	placement: 'ceiling',
 	receiveShadows: false,
 	castShadows: false,
-	createInstance: ({ scene, root }) => {
+	createInstance: ({ scene, model }) => {
 		return {
 			onInited: () => {
-				const rotor = root.getChildMeshes().find(m => m.name === 'Rotor') as BABYLON.Mesh;
+				const rotor = model.findMesh('Rotor');
 				rotor.rotation = rotor.rotationQuaternion != null ? rotor.rotationQuaternion.toEulerAngles() : rotor.rotation;
 				const anim = new BABYLON.Animation('', 'rotation.y', 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
 				anim.setKeys([

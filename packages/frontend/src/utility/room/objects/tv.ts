@@ -15,8 +15,8 @@ export const tv = defineObject({
 		default: {},
 	},
 	placement: 'top',
-	createInstance: ({ room, root }) => {
-		const screenMesh = root.getChildMeshes().find(m => m.name.includes('__TV_SCREEN__')) as BABYLON.Mesh;
+	createInstance: ({ room, model }) => {
+		const screenMesh = model.findMesh('__TV_SCREEN__');
 		screenMesh.markVerticesDataAsUpdatable(BABYLON.VertexBuffer.UVKind, true);
 
 		initTv(room, screenMesh);
