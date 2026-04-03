@@ -67,6 +67,8 @@ export const tabletopDigitalClock = defineObject({
 
 		const colonMeshes = model.findMeshes('__TIME_7SEG_COLON__');
 
+		model.bakeExcludeMeshes = Object.values(segmentMeshes).concat(colonMeshes);
+
 		const bodyMesh = model.findMesh('__X_BODY__');
 		const bodyMaterial = bodyMesh.material as BABYLON.PBRMaterial;
 

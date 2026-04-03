@@ -22,6 +22,9 @@ export const wallClock = defineObject({
 	},
 	placement: 'side',
 	createInstance: ({ room, root, options, model }) => {
+		const hourHand = model.findMesh('HandH');
+		const minuteHand = model.findMesh('HandM');
+
 		const frameMaterial = model.findMaterial('__X_FRAME__');
 
 		const applyFrameColor = () => {
@@ -31,10 +34,10 @@ export const wallClock = defineObject({
 
 		applyFrameColor();
 
+		model.bakeExcludeMeshes = [hourHand, minuteHand];
+
 		return {
 			onInited: () => {
-				const hourHand = root.getChildMeshes().find(m => m.name === 'HandH') as BABYLON.Mesh;
-				const minuteHand = root.getChildMeshes().find(m => m.name === 'HandM') as BABYLON.Mesh;
 				room.intervalIds.push(window.setInterval(() => {
 					const now = new Date();
 					const hours = now.getHours() % 12;
