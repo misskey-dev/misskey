@@ -58,7 +58,7 @@ export const blind = defineObject({
 			blades = [];
 
 			for (let i = 0; i < options.blades; i++) {
-				const b = blade.createInstance('blade_' + i);
+				const b = blade.clone('blade_' + i); // createInstanceを使いたいが、削除するときになぜかエラーになる
 				if (i / options.blades < temp.open) {
 					b.position.y -= (i * 4/*cm*/) / WORLD_SCALE;
 				} else {

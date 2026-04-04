@@ -717,10 +717,11 @@ export class RoomEngine {
 	}
 
 	public selectObject(objectId: string | null) {
-		if (this.selected.value != null) {
-			this.clearHighlight();
-			this.selected.value.objectEntity.model.bakeMesh();
+		const currentSelected = this.selected.value;
+		if (currentSelected != null) {
 			this.selected.value = null;
+			this.clearHighlight();
+			currentSelected.objectEntity.model.bakeMesh();
 		}
 
 		if (objectId != null) {
