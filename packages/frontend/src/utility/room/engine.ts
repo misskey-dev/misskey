@@ -246,12 +246,16 @@ class ModelManager {
 			toMerge.push(newMesh);
 		}
 
-		const merged = BABYLON.Mesh.MergeMeshes(toMerge, true, true, undefined, false, true);
+		const groupedByMaterial = Object.groupBy(toMerge, m => m.material?.uniqueId ?? -1);
 
-		//merged.bakeCurrentTransformIntoVertices();
-
+		// 一度に(multiMultiMaterials: trueで)マージするよりも、いったん同じマテリアルを持つもの同士で(multiMultiMaterials: falseで)マージしてから、改めてそれらを(multiMultiMaterials: trueで)マージした方が(なぜか)ドローコールが減ってお得
+		const pre = [];
+		for (const group of Object.values(groupedByMaterial)) {
+			const merged = BABYLON.Mesh.MergeMeshes(group, true, true, undefined, false, false);
+			pre.push(merged);
+		}
+		const merged = BABYLON.Mesh.MergeMeshes(pre, true, true, undefined, false, true);
 		merged.parent = this.root;
-
 		this.bakedMeshes = [merged];
 
 		this.bakedCallback?.([...this.bakedMeshes, ...excludeMeshes]);
