@@ -6,8 +6,6 @@
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../engine.js';
 
-const mergeMeshes = ['__X_BOOK_1__', '__X_BOOK_2__', '__X_BOOK_3__', '__X_BOOK_4__', '__X_BOOK_5__', '__X_BOOK_6__', '__X_BOOK_7__', '__X_BOOK_8__', '__X_BOOK_9__', '__X_BOOK_10__'];
-
 export const books = defineObject({
 	id: 'books',
 	name: 'Books',
@@ -24,16 +22,6 @@ export const books = defineObject({
 		},
 	},
 	placement: 'top',
-	treatLoaderResult: (loaderResult) => {
-		const subRoot = loaderResult.meshes[0];
-		for (const groupingMeshKeyword of mergeMeshes) {
-			const meshes = loaderResult.meshes.filter(m => m.name.includes(groupingMeshKeyword));
-			const merged = BABYLON.Mesh.MergeMeshes(meshes as BABYLON.Mesh[], true, true, undefined, false, true);
-			merged.name = `${groupingMeshKeyword}.grouped`;
-			merged.setParent(subRoot);
-			loaderResult.meshes.push(merged);
-		}
-	},
 	createInstance: ({ scene, options, model }) => {
 		const coverMaterial = model.findMaterial('__X_COVER__');
 
@@ -50,21 +38,25 @@ export const books = defineObject({
 		applyVariation();
 
 		const bookMeshes = [
-			model.findMesh('__X_BOOK_1__'),
-			model.findMesh('__X_BOOK_2__'),
-			model.findMesh('__X_BOOK_3__'),
-			model.findMesh('__X_BOOK_4__'),
-			model.findMesh('__X_BOOK_5__'),
-			model.findMesh('__X_BOOK_6__'),
-			model.findMesh('__X_BOOK_7__'),
-			model.findMesh('__X_BOOK_8__'),
-			model.findMesh('__X_BOOK_9__'),
-			model.findMesh('__X_BOOK_10__'),
+			model.findMeshes('__X_BOOK_1__'),
+			model.findMeshes('__X_BOOK_2__'),
+			model.findMeshes('__X_BOOK_3__'),
+			model.findMeshes('__X_BOOK_4__'),
+			model.findMeshes('__X_BOOK_5__'),
+			model.findMeshes('__X_BOOK_6__'),
+			model.findMeshes('__X_BOOK_7__'),
+			model.findMeshes('__X_BOOK_8__'),
+			model.findMeshes('__X_BOOK_9__'),
+			model.findMeshes('__X_BOOK_10__'),
 		];
 
-		for (const mesh of bookMeshes) {
-			mesh.position.z -= Math.random() * 0.005/*cm*/;
-			mesh.position.y += Math.random() * 0.0025/*cm*/;
+		for (const meshes of bookMeshes) {
+			const z = Math.random() * 0.005/*cm*/;
+			const y = Math.random() * 0.0025/*cm*/;
+			for (const mesh of meshes) {
+				mesh.position.z -= z;
+				mesh.position.y += y;
+			}
 		}
 
 		return {
