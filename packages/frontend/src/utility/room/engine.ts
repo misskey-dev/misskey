@@ -726,8 +726,8 @@ export class RoomEngine {
 
 	public selectObject(objectId: string | null) {
 		if (this.selected.value != null) {
-			this.selected.value.objectEntity.model.bakeMesh();
 			if (this.selectionOutlineLayer != null) this.selectionOutlineLayer.clearSelection();
+			this.selected.value.objectEntity.model.bakeMesh();
 			this.selected.value = null;
 		}
 
