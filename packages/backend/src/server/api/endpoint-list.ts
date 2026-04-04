@@ -327,6 +327,7 @@ export * as 'notes/local-timeline' from './endpoints/notes/local-timeline.js';
 export * as 'notes/mentions' from './endpoints/notes/mentions.js';
 export * as 'notes/polls/recommendation' from './endpoints/notes/polls/recommendation.js';
 export * as 'notes/polls/vote' from './endpoints/notes/polls/vote.js';
+export * as 'notes/quotes' from './endpoints/notes/quotes.js';
 export * as 'notes/reactions' from './endpoints/notes/reactions.js';
 export * as 'notes/reactions/create' from './endpoints/notes/reactions/create.js';
 export * as 'notes/reactions/delete' from './endpoints/notes/reactions/delete.js';
