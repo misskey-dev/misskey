@@ -14,14 +14,15 @@ export const beamLamp = defineObject({
 		default: {},
 	},
 	placement: 'top',
-	createInstance: ({ root, scene }) => {
+	createInstance: ({ room, root, scene }) => {
 		return {
 			onInited: () => {
-				const light = new BABYLON.PointLight('beamLampLight', new BABYLON.Vector3(0, 10/*cm*/, 0), scene);
+				const light = new BABYLON.PointLight('beamLampLight', new BABYLON.Vector3(0, 10/*cm*/, 0), scene, true);
 				light.parent = root;
 				light.diffuse = new BABYLON.Color3(1.0, 0.5, 0.2);
 				light.intensity = 300;
 				light.range = 100/*cm*/;
+				room.lightContainer.addLight(light);
 			},
 			interactions: {},
 		};

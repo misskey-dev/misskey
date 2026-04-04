@@ -406,6 +406,7 @@ export class RoomEngine {
 	private envMapOutdoor: BABYLON.CubeTexture;
 	private reflectionProbe: BABYLON.ReflectionProbe;
 	private roomLight: BABYLON.SpotLight;
+	public lightContainer: BABYLON.ClusteredLightContainer;
 	private enableReflectionProbe = false;
 	private xGridPreviewPlane: BABYLON.Mesh;
 	private yGridPreviewPlane: BABYLON.Mesh;
@@ -438,10 +439,6 @@ export class RoomEngine {
 		this.scene.autoClear = false;
 		//this.scene.autoClearDepthAndStencil = false;
 		this.scene.skipPointerMovePicking = true;
-
-		if (_DEV_) {
-			new BoundingBoxRenderer(this.scene);
-		}
 
 		const skybox = BABYLON.MeshBuilder.CreateBox('skybox', { size: 100000/*cm*/ }, this.scene);
 		const skyboxMat = new BABYLON.StandardMaterial('skyboxMat', this.scene);
@@ -546,6 +543,8 @@ export class RoomEngine {
 		this.shadowGeneratorForSunLight.usePercentageCloserFiltering = true;
 		this.shadowGeneratorForSunLight.usePoissonSampling = true;
 		this.shadowGeneratorForSunLight.getShadowMap().refreshRate = 60;
+
+		this.lightContainer = new BABYLON.ClusteredLightContainer('clustered', [], this.scene);
 
 		this.turnOnRoomLight();
 
@@ -707,7 +706,8 @@ export class RoomEngine {
 	public async init() {
 		await this.loadRoomModel();
 		await this.loadEnvModel();
-		await Promise.all(this.roomState.installedObjects.map(o => this.loadObject({
+		// beamLampがあるとなぜかclustered lightがエラーになる
+		await Promise.all(this.roomState.installedObjects.filter(o => o.type !== 'beamLamp').map(o => this.loadObject({
 			id: o.id,
 			type: o.type,
 			position: new BABYLON.Vector3(...o.position),

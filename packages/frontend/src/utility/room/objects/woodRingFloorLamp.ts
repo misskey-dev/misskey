@@ -26,7 +26,7 @@ export const woodRingFloorLamp = defineObject({
 		},
 	},
 	placement: 'floor',
-	createInstance: ({ options, model }) => {
+	createInstance: ({ room, scene, options, model }) => {
 		const shadeMaterial = model.findMaterial('__X_SHADE__');
 
 		const applyShadeColor = () => {
@@ -44,6 +44,16 @@ export const woodRingFloorLamp = defineObject({
 		};
 
 		applyBodyColor();
+
+		const lamps = model.findMeshes('__X_LAMP__');
+		for (const lamp of lamps) {
+			const light = new BABYLON.SpotLight('', new BABYLON.Vector3(0/*cm*/, 0/*cm*/, 0), new BABYLON.Vector3(0, -1, 0), Math.PI / 1, 2, scene, true);
+			light.parent = lamp;
+			light.diffuse = new BABYLON.Color3(1.0, 0.5, 0.2);
+			light.intensity = 5000;
+			light.range = 150/*cm*/;
+			room.lightContainer.addLight(light);
+		}
 
 		return {
 			onOptionsUpdated: ([k, v]) => {
