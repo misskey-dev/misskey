@@ -678,7 +678,7 @@ export class RoomEngine {
 				const oid = pickingInfo.pickedMesh.metadata.objectId;
 				if (oid != null && this.objectEntities.has(oid)) {
 					const o = this.objectEntities.get(oid)!;
-					const boundingInfo = getMeshesBoundingBox(o.rootMesh.getChildMeshes());
+					const boundingInfo = getMeshesBoundingBox(o.rootMesh.getChildMeshes().filter(m => m.isEnabled() && m.isVisible));
 					this.camera.setTarget(boundingInfo.center);
 					this.selectObject(oid);
 				}
@@ -1578,7 +1578,7 @@ export class RoomObjectPreviewEngine {
 
 		// なぜかちょっと待たないとbounding boxのサイズが正しくない
 		window.setTimeout(() => {
-			const boundingInfo = getMeshesBoundingBox(this.objectMesh!.getChildMeshes());
+			const boundingInfo = getMeshesBoundingBox(this.objectMesh!.getChildMeshes().filter(m => m.isEnabled() && m.isVisible));
 			this.camera.setTarget(new BABYLON.Vector3(0, boundingInfo.center.y, 0));
 
 			// zoom to fit
