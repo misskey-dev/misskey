@@ -443,14 +443,21 @@ export class RoomEngine {
 			new BoundingBoxRenderer(this.scene);
 		}
 
+		const skybox = BABYLON.MeshBuilder.CreateBox('skybox', { size: 100000/*cm*/ }, this.scene);
+		const skyboxMat = new BABYLON.StandardMaterial('skyboxMat', this.scene);
+		skyboxMat.backFaceCulling = false;
+		skyboxMat.disableLighting = true;
+		skybox.material = skyboxMat;
+		skybox.infiniteDistance = true;
+
 		this.time = TIME_MAP[new Date().getHours() as keyof typeof TIME_MAP];
 
 		if (this.time === 0) {
-			this.scene.clearColor = new BABYLON.Color4(0.7, 0.9, 1.0, 0);
+			skyboxMat.emissiveColor = new BABYLON.Color3(0.7, 0.9, 1.0);
 		} else if (this.time === 1) {
-			this.scene.clearColor = new BABYLON.Color4(0.8, 0.5, 0.3, 0);
+			skyboxMat.emissiveColor = new BABYLON.Color3(0.8, 0.5, 0.3);
 		} else {
-			this.scene.clearColor = new BABYLON.Color4(0.05, 0.05, 0.2, 0);
+			skyboxMat.emissiveColor = new BABYLON.Color3(0.05, 0.05, 0.2);
 		}
 		this.scene.ambientColor = new BABYLON.Color3(1.0, 0.9, 0.8);
 
@@ -699,7 +706,7 @@ export class RoomEngine {
 
 	public async init() {
 		await this.loadRoomModel();
-		//await this.loadEnvModel();
+		await this.loadEnvModel();
 		await Promise.all(this.roomState.installedObjects.map(o => this.loadObject({
 			id: o.id,
 			type: o.type,
