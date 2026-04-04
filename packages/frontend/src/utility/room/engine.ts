@@ -378,7 +378,7 @@ export class RoomEngine {
 	private grabbingCtx: {
 		objectId: string;
 		objectType: string;
-		mesh: BABYLON.Mesh;
+		mesh: BABYLON.TransformNode;
 		originalDiffOfPosition: BABYLON.Vector3;
 		originalDiffOfRotationY: number;
 		distance: number;
@@ -1285,14 +1285,16 @@ export class RoomEngine {
 	private createGhost(mesh: BABYLON.Mesh): BABYLON.Mesh {
 		const ghost = mesh.clone('ghost', null, false)!;
 		ghost.metadata = { isGhost: true };
+		ghost.checkCollisions = false;
+		for (const m of ghost.getChildMeshes()) {
+			m.metadata = { isGhost: true };
+			m.checkCollisions = false;
+		}
 
 		/* なんかエラーになる
 		const materials = new WeakMap<BABYLON.Material, BABYLON.Material>();
 
 		for (const m of ghost.getChildMeshes() as BABYLON.Mesh[]) {
-			m.metadata = { isGhost: true };
-			m.checkCollisions = false;
-
 			if (m.material == null) continue;
 
 			if (materials.has(m.material)) {
@@ -1346,6 +1348,11 @@ export class RoomEngine {
 			rotation: new BABYLON.Vector3(0, Math.PI, 0),
 			options,
 		});
+
+		root.unfreezeWorldMatrix();
+		for (const m of root.getChildMeshes()) {
+			m.unfreezeWorldMatrix();
+		}
 
 		const ghost = this.createGhost(root);
 
