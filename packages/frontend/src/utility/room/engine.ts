@@ -342,7 +342,7 @@ const TIME_MAP = {
 	23: 2,
 } as const;
 
-const USE_GLOW = false; // ドローコールが増えて重い
+const USE_GLOW = true; // ドローコールが増えて重い
 
 export async function createRoomEngine(roomState: RoomState, canvas: HTMLCanvasElement) {
 	const babylonEngine = new BABYLON.WebGPUEngine(canvas);
