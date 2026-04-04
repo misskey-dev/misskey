@@ -637,16 +637,8 @@ export class RoomEngine {
 
 		watch(this.isEditMode, (v) => {
 			if (v) {
-				// 選択した後選択解除して再度選択しようとするとエラーになる
-				//this.selectionOutlineLayer = new BABYLON.SelectionOutlineLayer('outliner', this.scene);
-
 				for (const entity of this.objectEntities.values()) {
 					entity.instance.resetTemporaryState?.();
-				}
-			} else {
-				if (this.selectionOutlineLayer != null) {
-					this.selectionOutlineLayer.dispose();
-					this.selectionOutlineLayer = null;
 				}
 			}
 		});
@@ -726,7 +718,7 @@ export class RoomEngine {
 
 	public selectObject(objectId: string | null) {
 		if (this.selected.value != null) {
-			if (this.selectionOutlineLayer != null) this.selectionOutlineLayer.clearSelection();
+			this.clearHighlight();
 			this.selected.value.objectEntity.model.bakeMesh();
 			this.selected.value = null;
 		}
@@ -735,7 +727,7 @@ export class RoomEngine {
 			const entity = this.objectEntities.get(objectId);
 			if (entity != null) {
 				if (this.isEditMode.value) entity.model.unbakeMesh();
-				if (this.selectionOutlineLayer != null) this.selectionOutlineLayer.addSelection(entity.rootMesh.getChildMeshes());
+				this.highlightMeshes(entity.rootMesh.getChildMeshes());
 				const state = this.roomState.installedObjects.find(o => o.id === objectId)!;
 				this.selected.value = {
 					objectId,
@@ -1039,10 +1031,7 @@ export class RoomEngine {
 
 		const model = new ModelManager(subRoot, loaderResult.meshes.filter(m => m !== subRoot), (meshes) => {
 			if (this.selected.value?.objectId === args.id) {
-				if (this.selectionOutlineLayer != null) {
-					this.selectionOutlineLayer.clearSelection();
-					this.selectionOutlineLayer.addSelection(meshes);
-				}
+				this.highlightMeshes(meshes);
 			}
 
 			for (const m of meshes) {
@@ -1102,11 +1091,24 @@ export class RoomEngine {
 		return { root, objectInstance };
 	}
 
+	private highlightMeshes(meshes: BABYLON.AbstractMesh[]) {
+		this.clearHighlight();
+		this.selectionOutlineLayer = new BABYLON.SelectionOutlineLayer('outliner', this.scene);
+		this.selectionOutlineLayer.addSelection(meshes);
+	}
+
+	private clearHighlight() {
+		if (this.selectionOutlineLayer != null) {
+			this.selectionOutlineLayer.dispose();
+			this.selectionOutlineLayer = null;
+		}
+	}
+
 	public beginSelectedInstalledObjectGrabbing() {
 		if (this.selected.value == null) return;
 
 		const selectedObject = this.selected.value.objectEntity.rootMesh;
-		if (this.selectionOutlineLayer != null) this.selectionOutlineLayer.clearSelection();
+		this.clearHighlight();
 
 		// 子から先に適用していく
 		const setStickyParentRecursively = (mesh: BABYLON.AbstractMesh) => {
