@@ -1616,60 +1616,54 @@ export class RoomObjectPreviewEngine {
 
 		def.treatLoaderResult?.(loaderResult);
 
-		let hasCollisionMesh = false;
-		for (const mesh of loaderResult.meshes) {
-			if (mesh.name.includes('__COLLISION__')) {
-				hasCollisionMesh = true;
-				break;
-			}
-		}
-
 		root.addChild(subRoot);
+
+		const model = new ModelManager(subRoot, loaderResult.meshes.filter(m => m !== subRoot), (meshes) => {
+			for (const m of meshes) {
+				const mesh = m;
+
+				// シェイプキー(morph)を考慮してbounding boxを更新するために必要
+				mesh.refreshBoundingInfo({ applyMorph: true });
+
+				if (mesh.name.includes('__COLLISION__')) {
+					mesh.receiveShadows = false;
+					mesh.isVisible = false;
+					mesh.checkCollisions = true;
+				} else if (mesh.name.includes('__TOP__') || mesh.name.includes('__SIDE__')) {
+					mesh.receiveShadows = false;
+					mesh.isVisible = false;
+				} else {
+					if (def.receiveShadows !== false) mesh.receiveShadows = true;
+					if (def.castShadows !== false) {
+						this.shadowGenerator1.addShadowCaster(mesh);
+					}
+
+					if (mesh.material) {
+						if (mesh.material instanceof BABYLON.MultiMaterial) {
+							for (const subMat of mesh.material.subMaterials) {
+								(subMat as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
+							}
+						} else {
+							(mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
+						}
+					}
+				}
+
+				if (!this.scene.meshes.includes(mesh)) this.scene.addMesh(mesh);
+			}
+		});
 
 		const objectInstance = await def.createInstance({
 			room: null,
 			scene: this.scene,
 			root,
 			options: args.options,
-			model: new ModelManager(subRoot, loaderResult.meshes.filter(m => m !== subRoot), (meshes) => {
-				for (const m of meshes) {
-					const mesh = m;
-
-					// シェイプキー(morph)を考慮してbounding boxを更新するために必要
-					mesh.refreshBoundingInfo({ applyMorph: true });
-
-					mesh.checkCollisions = !hasCollisionMesh;
-
-					if (mesh.name.includes('__COLLISION__')) {
-						mesh.receiveShadows = false;
-						mesh.isVisible = false;
-						mesh.checkCollisions = true;
-					} else if (mesh.name.includes('__TOP__') || mesh.name.includes('__SIDE__')) {
-						mesh.receiveShadows = false;
-						mesh.isVisible = false;
-					} else {
-						if (def.receiveShadows !== false) mesh.receiveShadows = true;
-						if (def.castShadows !== false) {
-							this.shadowGenerator1.addShadowCaster(mesh);
-						}
-
-						if (mesh.material) {
-							if (mesh.material instanceof BABYLON.MultiMaterial) {
-								for (const subMat of mesh.material.subMaterials) {
-									(subMat as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
-								}
-							} else {
-								(mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
-							}
-						}
-					}
-
-					if (!this.scene.meshes.includes(mesh)) this.scene.addMesh(mesh);
-				}
-			}),
+			model,
 		});
 
 		objectInstance.onInited?.();
+
+		model.bakeMesh();
 
 		this.objectInstance = objectInstance;
 		this.objectMesh = root;

@@ -16,12 +16,12 @@ export const lavaLamp = defineObject({
 	createInstance: ({ room, scene, root }) => {
 		return {
 			onInited: () => {
-				const light = new BABYLON.PointLight('lavaLampLight', new BABYLON.Vector3(0, 11/*cm*/, 0), scene, true);
+				const light = new BABYLON.PointLight('lavaLampLight', new BABYLON.Vector3(0, 11/*cm*/, 0), scene, room?.lightContainer != null);
 				light.parent = root;
 				light.diffuse = new BABYLON.Color3(1.0, 0.5, 0.2);
 				light.intensity = 300;
 				light.range = 100/*cm*/;
-				room.lightContainer.addLight(light);
+				if (room?.lightContainer != null) room.lightContainer.addLight(light);
 
 				const sphere = BABYLON.MeshBuilder.CreateSphere('lavaLampLightSphere', { diameter: 4/*cm*/ }, scene);
 				sphere.parent = root;

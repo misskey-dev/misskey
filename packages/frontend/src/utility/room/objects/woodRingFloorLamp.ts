@@ -47,12 +47,12 @@ export const woodRingFloorLamp = defineObject({
 
 		const lamps = model.findMeshes('__X_LAMP__');
 		for (const lamp of lamps) {
-			const light = new BABYLON.SpotLight('', new BABYLON.Vector3(0/*cm*/, 0/*cm*/, 0), new BABYLON.Vector3(0, -1, 0), Math.PI / 1, 2, scene, true);
+			const light = new BABYLON.SpotLight('', new BABYLON.Vector3(0/*cm*/, 0/*cm*/, 0), new BABYLON.Vector3(0, -1, 0), Math.PI / 1, 2, scene, room?.lightContainer != null);
 			light.parent = lamp;
 			light.diffuse = new BABYLON.Color3(1.0, 0.5, 0.2);
 			light.intensity = 5000;
 			light.range = 150/*cm*/;
-			room.lightContainer.addLight(light);
+			if (room?.lightContainer != null) room.lightContainer.addLight(light);
 		}
 
 		return {
