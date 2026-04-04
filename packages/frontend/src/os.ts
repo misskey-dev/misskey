@@ -14,6 +14,7 @@ import type { Form, GetFormResultType } from '@/utility/form.js';
 import type { MenuItem } from '@/types/menu.js';
 import type { PostFormProps } from '@/types/post-form.js';
 import type { UploaderFeatures } from '@/composables/use-uploader.js';
+import type { MkPeriodDialogDoneEvent } from '@/components/MkPeriodDialog.vue';
 import type { MkSelectItem } from '@/components/MkSelect.vue';
 import type { OptionValue } from '@/types/option-value.js';
 import type { MkDialogReturnType } from '@/components/MkDialog.vue';
@@ -509,6 +510,19 @@ export function select<C extends OptionValue, D extends C | null = null>(props: 
 		}, {
 			done: result => {
 				resolve(result as MkDialogReturnType<Exclude<D, undefined> extends null ? C | null : C>);
+			},
+			closed: () => dispose(),
+		});
+	});
+}
+
+export function selectPeriod(options: { title?: string } = {}): Promise<MkPeriodDialogDoneEvent> {
+	return new Promise(async (resolve) => {
+		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkPeriodDialog.vue')), {
+			title: options.title,
+		}, {
+			done: result => {
+				resolve(result ? result : { canceled: true });
 			},
 			closed: () => dispose(),
 		});

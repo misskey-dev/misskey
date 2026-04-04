@@ -19,6 +19,12 @@ export class MiMuting {
 	})
 	public expiresAt: Date | null;
 
+	@Column('varchar', {
+		length: 128,
+		default: 'all',
+	})
+	public mutingType: 'all' | 'timelineOnly';
+
 	@Index()
 	@Column({
 		...id(),

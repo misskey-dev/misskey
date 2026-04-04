@@ -4860,6 +4860,8 @@ export type components = {
             createdAt: string;
             /** Format: date-time */
             expiresAt: string | null;
+            /** @enum {string} */
+            mutingType: 'all' | 'timelineOnly';
             /** Format: id */
             muteeId: string;
             mutee: components['schemas']['UserDetailedNotMe'];
@@ -28654,6 +28656,12 @@ export interface operations {
                     userId: string;
                     /** @description A Unix Epoch timestamp that must lie in the future. `null` means an indefinite mute. */
                     expiresAt?: number | null;
+                    /**
+                     * @description Type of muting. `all` mutes everything including notifications. `timelineOnly` mutes only timeline and search, but allows notifications.
+                     * @default all
+                     * @enum {string}
+                     */
+                    mutingType?: 'all' | 'timelineOnly';
                 };
             };
         };

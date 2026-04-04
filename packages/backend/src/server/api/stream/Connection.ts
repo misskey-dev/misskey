@@ -59,6 +59,7 @@ export default class Connection {
 	public followingChannels: Set<string> = new Set();
 	public mutingChannels: Set<string> = new Set();
 	public userIdsWhoMeMuting: Set<string> = new Set();
+	public userIdsWhoMeMutingMap: Map<string, { mutingType: 'all' | 'timelineOnly' }> = new Map();
 	public userIdsWhoBlockingMe: Set<string> = new Set();
 	public userIdsWhoMeMutingRenotes: Set<string> = new Set();
 	public userMutedInstances: Set<string> = new Set();
@@ -85,7 +86,7 @@ export default class Connection {
 			following,
 			followingChannels,
 			mutingChannels,
-			userIdsWhoMeMuting,
+			userIdsWhoMeMutingMap,
 			userIdsWhoBlockingMe,
 			userIdsWhoMeMutingRenotes,
 		] = await Promise.all([
@@ -101,7 +102,8 @@ export default class Connection {
 		this.following = following;
 		this.followingChannels = followingChannels;
 		this.mutingChannels = mutingChannels;
-		this.userIdsWhoMeMuting = userIdsWhoMeMuting;
+		this.userIdsWhoMeMutingMap = userIdsWhoMeMutingMap;
+		this.userIdsWhoMeMuting = new Set(userIdsWhoMeMutingMap.keys());
 		this.userIdsWhoBlockingMe = userIdsWhoBlockingMe;
 		this.userIdsWhoMeMutingRenotes = userIdsWhoMeMutingRenotes;
 		this.userMutedInstances = new Set(userProfile.mutedInstances);
