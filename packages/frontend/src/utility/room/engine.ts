@@ -246,16 +246,22 @@ class ModelManager {
 			toMerge.push(newMesh);
 		}
 
-		const groupedByMaterial = Object.groupBy(toMerge, m => m.material?.uniqueId ?? -1);
-
 		// 一度に(multiMultiMaterials: trueで)マージするよりも、いったん同じマテリアルを持つもの同士で(multiMultiMaterials: falseで)マージしてから、改めてそれらを(multiMultiMaterials: trueで)マージした方が(なぜか)ドローコールが減ってお得
 		const pre = [];
+		const groupedByMaterial = Object.groupBy(toMerge, m => m.material?.uniqueId ?? -1);
 		for (const group of Object.values(groupedByMaterial)) {
 			const merged = BABYLON.Mesh.MergeMeshes(group, true, true, undefined, false, false);
 			pre.push(merged);
 		}
 		const merged = BABYLON.Mesh.MergeMeshes(pre, true, true, undefined, false, true);
 		merged.parent = this.root;
+		merged.material.freeze();
+		if (merged.material instanceof BABYLON.MultiMaterial) {
+			for (const subMat of merged.material.subMaterials) {
+				(subMat as BABYLON.PBRMaterial).freeze();
+			}
+		}
+		merged.freezeWorldMatrix();
 		this.bakedMeshes = [merged];
 
 		this.bakedCallback?.([...this.bakedMeshes, ...excludeMeshes]);
@@ -428,8 +434,9 @@ export class RoomEngine {
 
 		this.engine = options.engine;
 		this.scene = new BABYLON.Scene(this.engine);
-		//this.scene.autoClear = false;
+		this.scene.autoClear = false;
 		//this.scene.autoClearDepthAndStencil = false;
+		this.scene.skipPointerMovePicking = true;
 
 		if (_DEV_) {
 			new BoundingBoxRenderer(this.scene);
@@ -629,7 +636,8 @@ export class RoomEngine {
 
 		watch(this.isEditMode, (v) => {
 			if (v) {
-				this.selectionOutlineLayer = new BABYLON.SelectionOutlineLayer('outliner', this.scene);
+				// 選択した後選択解除して再度選択しようとするとエラーになる
+				//this.selectionOutlineLayer = new BABYLON.SelectionOutlineLayer('outliner', this.scene);
 
 				for (const entity of this.objectEntities.values()) {
 					entity.instance.resetTemporaryState?.();
