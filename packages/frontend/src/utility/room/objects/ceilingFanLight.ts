@@ -18,7 +18,7 @@ export const ceilingFanLight = defineObject({
 	castShadows: false,
 	createInstance: ({ scene, model }) => {
 		const rotor = model.findMesh('Rotor');
-		model.bakeExcludeMeshes = [rotor, rotor.parent, ...rotor.getChildMeshes()];
+		model.bakeExcludeMeshes = [rotor, ...rotor.getChildMeshes()];
 
 		return {
 			onInited: () => {
