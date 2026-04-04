@@ -707,6 +707,7 @@ export class RoomEngine {
 		await this.loadRoomModel();
 		await this.loadEnvModel();
 		// beamLampがあるとなぜかclustered lightがエラーになる
+		// https://forum.babylonjs.com/t/anisotropy-with-clusteredlightcontainer-bug/63040
 		await Promise.all(this.roomState.installedObjects.filter(o => o.type !== 'beamLamp').map(o => this.loadObject({
 			id: o.id,
 			type: o.type,
