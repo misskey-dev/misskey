@@ -1408,6 +1408,7 @@ frame: "邊框"
 presets: "預設值"
 zeroPadding: "補零"
 nothingToConfigure: "無可設定的項目"
+viewRenotedChannel: "顯示轉發貼文者的頻道"
 _imageEditing:
   _vars:
     caption: "檔案標題"
