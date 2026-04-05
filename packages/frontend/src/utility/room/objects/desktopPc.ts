@@ -19,9 +19,17 @@ export const desktopPc = defineObject({
 				type: 'color',
 				label: 'Cover color',
 			},
-			innerColor: {
+			inner1Color: {
 				type: 'color',
-				label: 'Inner color',
+				label: 'Inner color 1',
+			},
+			inner2Color: {
+				type: 'color',
+				label: 'Inner color 2',
+			},
+			inner3Color: {
+				type: 'color',
+				label: 'Inner color 3',
 			},
 			ledColor: {
 				type: 'color',
@@ -31,7 +39,9 @@ export const desktopPc = defineObject({
 		default: {
 			bodyColor: [0.05, 0.05, 0.05],
 			coverColor: [0.3, 0.7, 0],
-			innerColor: [1, 1, 1],
+			inner1Color: [1, 1, 1],
+			inner2Color: [1, 1, 1],
+			inner3Color: [0.1, 0.1, 0.1],
 			ledColor: [0.5, 0.9, 0],
 		},
 	},
@@ -39,7 +49,9 @@ export const desktopPc = defineObject({
 	createInstance: ({ options, model }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 		const coverMaterial = model.findMaterial('__X_COVER__');
-		const innerMaterial = model.findMaterial('__X_INNER__');
+		const inner1Material = model.findMaterial('__X_INNER__');
+		const inner2Material = model.findMaterial('__X_INNER2__');
+		const inner3Material = model.findMaterial('__X_TUBE__');
 		const ledMaterial = model.findMaterial('__X_LED__');
 
 		ledMaterial.emissiveIntensity = 1;
@@ -58,12 +70,26 @@ export const desktopPc = defineObject({
 
 		applyCoverColor();
 
-		const applyInnerColor = () => {
-			const [r, g, b] = options.innerColor;
-			innerMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyInner1Color = () => {
+			const [r, g, b] = options.inner1Color;
+			inner1Material.albedoColor = new BABYLON.Color3(r, g, b);
 		};
 
-		applyInnerColor();
+		applyInner1Color();
+
+		const applyInner2Color = () => {
+			const [r, g, b] = options.inner2Color;
+			inner2Material.albedoColor = new BABYLON.Color3(r, g, b);
+		};
+
+		applyInner2Color();
+
+		const applyInner3Color = () => {
+			const [r, g, b] = options.inner3Color;
+			inner3Material.albedoColor = new BABYLON.Color3(r, g, b);
+		};
+
+		applyInner3Color();
 
 		const applyLedColor = () => {
 			const [r, g, b] = options.ledColor;
@@ -76,7 +102,9 @@ export const desktopPc = defineObject({
 			onOptionsUpdated: ([k, v]) => {
 				applyBodyColor();
 				applyCoverColor();
-				applyInnerColor();
+				applyInner1Color();
+				applyInner2Color();
+				applyInner3Color();
 				applyLedColor();
 			},
 			interactions: {},
