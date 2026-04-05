@@ -4,7 +4,7 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../engine.js';
+import { defineObject, WORLD_SCALE } from '../engine.js';
 import { createPlaneUvMapper } from '../utility.js';
 
 export const laptopPc = defineObject({
@@ -54,9 +54,15 @@ export const laptopPc = defineObject({
 		},
 	},
 	placement: 'top',
-	createInstance: async ({ scene, options, model }) => {
+	createInstance: async ({ room, scene, options, model }) => {
 		const screenMesh = model.findMesh('__X_SCREEN__');
 		const hutaNode = model.findTransformNode('__X_HUTA__');
+
+		const light = new BABYLON.SpotLight('', new BABYLON.Vector3(0/*cm*/, 10/*cm*/ / WORLD_SCALE, 0), new BABYLON.Vector3(0, 0, 1), Math.PI / 1, 2, scene, room?.lightContainer != null);
+		light.parent = hutaNode;
+		light.diffuse = new BABYLON.Color3(1.0, 1.0, 1.0);
+		light.range = 999/*cm*/;
+		if (room?.lightContainer != null) room.lightContainer.addLight(light);
 
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 		const bezelMaterial = model.findMaterial('__X_BEZEL__');
@@ -105,6 +111,7 @@ export const laptopPc = defineObject({
 		const applyScreenBrightness = () => {
 			const b = options.screenBrightness;
 			screenMaterial.emissiveColor = new BABYLON.Color3(b, b, b);
+			light.intensity = 20000 * b;
 		};
 
 		applyScreenBrightness();

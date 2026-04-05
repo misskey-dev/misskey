@@ -51,7 +51,7 @@ export const woodRingFloorLamp = defineObject({
 			light.parent = lamp;
 			light.diffuse = new BABYLON.Color3(1.0, 0.5, 0.2);
 			light.intensity = 5000;
-			light.range = 150/*cm*/;
+			light.range = 999/*cm*/;
 			if (room?.lightContainer != null) room.lightContainer.addLight(light);
 		}
 
