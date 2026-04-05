@@ -263,6 +263,7 @@ class ModelManager {
 			}
 		}
 		merged.freezeWorldMatrix();
+		merged.metadata = { ...this.root.metadata };
 		this.bakedMeshes = [merged];
 
 		this.bakedCallback?.([...this.bakedMeshes, ...excludeMeshes]);
@@ -1126,6 +1127,10 @@ export class RoomEngine {
 				const soMesh = this.objectEntities.get(soid)!.rootMesh;
 				setStickyParentRecursively(soMesh);
 				soMesh.setParent(mesh);
+				soMesh.unfreezeWorldMatrix();
+				for (const m of soMesh.getChildMeshes()) {
+					m.unfreezeWorldMatrix();
+				}
 			}
 		};
 		setStickyParentRecursively(selectedObject);
