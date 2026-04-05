@@ -352,6 +352,36 @@ const TIME_MAP = {
 
 const USE_GLOW = true; // ドローコールが増えて重い
 
+function enableObjectCollision(meshes: BABYLON.Mesh[]) {
+	let hasCollisionMesh = false;
+	for (const mesh of meshes) {
+		if (mesh.name.includes('__COLLISION__')) {
+			hasCollisionMesh = true;
+			break;
+		}
+	}
+
+	if (!hasCollisionMesh) {
+		for (const mesh of meshes) {
+			mesh.checkCollisions = true;
+			mesh.metadata ??= {};
+			mesh.metadata.isCollision = true;
+		}
+	} else {
+		for (const mesh of meshes) {
+			if (mesh.name.includes('__COLLISION__')) {
+				mesh.checkCollisions = true;
+				mesh.metadata ??= {};
+				mesh.metadata.isCollision = true;
+			} else {
+				mesh.checkCollisions = false;
+				mesh.metadata ??= {};
+				mesh.metadata.isCollision = false;
+			}
+		}
+	}
+}
+
 export async function createRoomEngine(roomState: RoomState, canvas: HTMLCanvasElement) {
 	const babylonEngine = new BABYLON.WebGPUEngine(canvas);
 	babylonEngine.compatibilityMode = false;
@@ -1018,19 +1048,10 @@ export class RoomEngine {
 
 		def.treatLoaderResult?.(loaderResult);
 
-		let hasCollisionMesh = false;
-		for (const mesh of loaderResult.meshes) {
-			if (mesh.name.includes('__COLLISION__')) {
-				hasCollisionMesh = true;
-				break;
-			}
-		}
-
 		const metadata = {
 			isObject: true,
 			objectId: args.id,
 			objectType: args.type,
-			isCollision: !hasCollisionMesh,
 		};
 
 		root.addChild(subRoot);
@@ -1051,14 +1072,8 @@ export class RoomEngine {
 				mesh.refreshBoundingInfo({ applyMorph: true });
 
 				mesh.metadata = metadata;
-				mesh.checkCollisions = !hasCollisionMesh;
 
-				if (mesh.name.includes('__COLLISION__')) {
-					mesh.receiveShadows = false;
-					mesh.isVisible = false;
-					mesh.metadata.isCollision = true;
-					mesh.checkCollisions = true;
-				} else if (mesh.name.includes('__TOP__') || mesh.name.includes('__SIDE__')) {
+				if (mesh.name.includes('__COLLISION__') || mesh.name.includes('__TOP__') || mesh.name.includes('__SIDE__')) {
 					mesh.receiveShadows = false;
 					mesh.isVisible = false;
 				} else {
@@ -1082,6 +1097,8 @@ export class RoomEngine {
 
 				if (!this.scene.meshes.includes(mesh)) this.scene.addMesh(mesh);
 			}
+
+			enableObjectCollision(meshes);
 		});
 
 		const objectInstance = await def.createInstance({
@@ -1095,6 +1112,8 @@ export class RoomEngine {
 		objectInstance.onInited?.();
 
 		model.bakeMesh();
+
+		enableObjectCollision(root.getChildMeshes());
 
 		this.objectEntities.set(args.id, { instance: objectInstance, rootMesh: root, model });
 
@@ -1357,6 +1376,7 @@ export class RoomEngine {
 		root.unfreezeWorldMatrix();
 		for (const m of root.getChildMeshes()) {
 			m.unfreezeWorldMatrix();
+			m.checkCollisions = false;
 		}
 
 		const ghost = this.createGhost(root);
@@ -1385,6 +1405,8 @@ export class RoomEngine {
 				// todo
 			},
 			onDone: () => { // todo: sticky状態などを引数でもらうようにしたい
+				enableObjectCollision(root.getChildMeshes());
+
 				this.ui.isGrabbingForInstall = false;
 
 				const pos = this.grabbingCtx.mesh.position.clone();
@@ -1638,11 +1660,7 @@ export class RoomObjectPreviewEngine {
 				// シェイプキー(morph)を考慮してbounding boxを更新するために必要
 				mesh.refreshBoundingInfo({ applyMorph: true });
 
-				if (mesh.name.includes('__COLLISION__')) {
-					mesh.receiveShadows = false;
-					mesh.isVisible = false;
-					mesh.checkCollisions = true;
-				} else if (mesh.name.includes('__TOP__') || mesh.name.includes('__SIDE__')) {
+				if (mesh.name.includes('__COLLISION__') || mesh.name.includes('__TOP__') || mesh.name.includes('__SIDE__')) {
 					mesh.receiveShadows = false;
 					mesh.isVisible = false;
 				} else {
