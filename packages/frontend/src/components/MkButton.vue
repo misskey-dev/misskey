@@ -85,7 +85,7 @@ const cProps = computed(() => {
 	if (props.type === 'a') return { href: props.href ?? '#', target: props.target, rel: props.rel };
 	if (props.type === 'routerLink') return { to: props.to!, behavior: props.linkBehavior };
 	return {
-		type: ['reset', 'submit'].includes(props.type) ? props.type : 'button',
+		type: props.type ?? 'button',
 		name: props.name,
 		value: props.value,
 		disabled: props.disabled || props.wait,
