@@ -249,7 +249,6 @@ import MkPoll from '@/components/MkPoll.vue';
 import MkUsersTooltip from '@/components/MkUsersTooltip.vue';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
 import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
-import { useRouter } from '@/router.js';
 import { pleaseLogin } from '@/utility/please-login.js';
 import { checkWordMute } from '@/utility/check-word-mute.js';
 import { userPage } from '@/filters/user.js';
@@ -288,8 +287,7 @@ const props = withDefaults(defineProps<{
 	initialTab: 'replies',
 });
 
-const inChannel = inject('inChannel', null);
-const router = useRouter();
+const inChannel = inject(DI.inChannel, null);
 
 let note = deepClone(props.note);
 
@@ -602,10 +600,8 @@ async function showRenoteMenu() {
 	}
 
 	if (
-		props.note.channelId != null && (
-			!router.current.route.path.startsWith('/channels') ||
-			router.current.props.get('channelId') !== props.note.channelId
-		)
+		props.note.channelId != null &&
+		(inChannel == null || props.note.channelId !== inChannel.value)
 	) {
 		menu.push({
 			type: 'link',
