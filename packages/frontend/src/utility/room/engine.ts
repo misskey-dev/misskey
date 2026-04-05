@@ -766,7 +766,7 @@ export class RoomEngine {
 		if (objectId != null) {
 			const entity = this.objectEntities.get(objectId);
 			if (entity != null) {
-				if (this.isEditMode.value) entity.model.unbakeMesh();
+				entity.model.unbakeMesh();
 				this.highlightMeshes(entity.rootMesh.getChildMeshes());
 				const state = this.roomState.installedObjects.find(o => o.id === objectId)!;
 				this.selected.value = {
