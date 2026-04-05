@@ -30,7 +30,7 @@ export const desktopPc = defineObject({
 		},
 		default: {
 			bodyColor: [0.05, 0.05, 0.05],
-			coverColor: [0.5, 0.9, 0],
+			coverColor: [0.3, 0.7, 0],
 			innerColor: [1, 1, 1],
 			ledColor: [0.5, 0.9, 0],
 		},
@@ -42,7 +42,7 @@ export const desktopPc = defineObject({
 		const innerMaterial = model.findMaterial('__X_INNER__');
 		const ledMaterial = model.findMaterial('__X_LED__');
 
-		ledMaterial.emissiveIntensity = 10;
+		ledMaterial.emissiveIntensity = 1;
 
 		const applyBodyColor = () => {
 			const [r, g, b] = options.bodyColor;
