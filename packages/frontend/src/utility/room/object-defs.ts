@@ -22,6 +22,7 @@ import { colorBox } from './objects/colorBox.js';
 import { cupNoodle } from './objects/cupNoodle.js';
 import { debugHipoly } from './objects/debugHipoly.js';
 import { desk } from './objects/desk.js';
+import { desktopPc } from './objects/desktopPc.js';
 import { ductTape } from './objects/ductTape.js';
 import { emptyBento } from './objects/emptyBento.js';
 import { energyDrink } from './objects/energyDrink.js';
@@ -83,6 +84,7 @@ export const OBJECT_DEFS = [
 	colorBox,
 	cupNoodle,
 	desk,
+	desktopPc,
 	ductTape,
 	emptyBento,
 	energyDrink,
