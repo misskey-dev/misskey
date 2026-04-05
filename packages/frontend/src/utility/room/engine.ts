@@ -1121,13 +1121,14 @@ export class RoomEngine {
 	}
 
 	private highlightMeshes(meshes: BABYLON.AbstractMesh[]) {
-		this.clearHighlight();
+		this.clearHighlight(); // SelectionOutlineLayerは存在するだけでドローコールが増えるので都度dispose
 		this.selectionOutlineLayer = new BABYLON.SelectionOutlineLayer('outliner', this.scene);
 		this.selectionOutlineLayer.addSelection(meshes);
 	}
 
 	private clearHighlight() {
 		if (this.selectionOutlineLayer != null) {
+			// SelectionOutlineLayerは存在するだけでドローコールが増えるのでclearじゃなく都度dispose
 			this.selectionOutlineLayer.dispose();
 			this.selectionOutlineLayer = null;
 		}
