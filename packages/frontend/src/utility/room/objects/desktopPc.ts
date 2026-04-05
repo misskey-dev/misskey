@@ -38,7 +38,7 @@ export const desktopPc = defineObject({
 		},
 		default: {
 			bodyColor: [0.05, 0.05, 0.05],
-			coverColor: [0.3, 0.7, 0],
+			coverColor: [0.9, 0.9, 0.9],
 			inner1Color: [1, 1, 1],
 			inner2Color: [1, 1, 1],
 			inner3Color: [0.1, 0.1, 0.1],
