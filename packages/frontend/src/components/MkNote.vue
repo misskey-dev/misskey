@@ -660,8 +660,7 @@ async function showRenoteMenu() {
 	}];
 
 	if (
-		props.note.channelId != null &&
-		appearNote.channelId !== props.note.channelId && (
+		props.note.channelId != null && (
 			!router.current.route.path.startsWith('/channels') ||
 			router.current.props.get('channelId') !== props.note.channelId
 		)
