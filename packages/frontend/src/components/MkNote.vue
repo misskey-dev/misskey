@@ -217,6 +217,7 @@ import MkPoll from '@/components/MkPoll.vue';
 import MkUsersTooltip from '@/components/MkUsersTooltip.vue';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
 import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
+import { useRouter } from '@/router.js';
 import { pleaseLogin } from '@/utility/please-login.js';
 import { checkWordMute } from '@/utility/check-word-mute.js';
 import { notePage } from '@/filters/note.js';
@@ -265,6 +266,7 @@ const inTimeline = inject<boolean>('inTimeline', false);
 const tl_withSensitive = inject<Ref<boolean>>('tl_withSensitive', ref(true));
 const inChannel = inject('inChannel', null);
 const currentClip = inject<Ref<Misskey.entities.Clip> | null>('currentClip', null);
+const router = useRouter();
 
 let note = deepClone(props.note);
 
@@ -650,23 +652,38 @@ async function showRenoteMenu() {
 		};
 	}
 
-	const renoteDetailsMenu: MenuItem = {
+	const renoteDetailsMenu: MenuItem[] = [{
 		type: 'link',
 		text: i18n.ts.renoteDetails,
 		icon: 'ti ti-info-circle',
 		to: notePage(note),
-	};
+	}];
+
+	if (
+		props.note.channelId != null &&
+		appearNote.channelId !== props.note.channelId && (
+			!router.current.route.path.startsWith('/channels') ||
+			router.current.props.get('channelId') !== props.note.channelId
+		)
+	) {
+		renoteDetailsMenu.push({
+			type: 'link',
+			text: i18n.ts.viewRenotedChannel,
+			icon: 'ti ti-device-tv',
+			to: `/channels/${props.note.channelId}`,
+		});
+	}
 
 	if (isMyRenote) {
 		os.popupMenu([
-			renoteDetailsMenu,
+			...renoteDetailsMenu,
 			getCopyNoteLinkMenu(note, i18n.ts.copyLinkRenote),
 			{ type: 'divider' },
 			getUnrenote(),
 		], renoteTime.value);
 	} else {
 		os.popupMenu([
-			renoteDetailsMenu,
+			...renoteDetailsMenu,
 			getCopyNoteLinkMenu(note, i18n.ts.copyLinkRenote),
 			{ type: 'divider' },
 			getAbuseNoteMenu(note, i18n.ts.reportAbuseRenote),
