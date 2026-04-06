@@ -1329,14 +1329,14 @@ export class RoomEngine {
 			if (m.subMeshes != null && m.subMeshes.length > 0 && m.material.subMaterials != null) {
 				const irradianceTexture = m.material.reflectionTexture?.irradianceTexture;
 				const multiGhostMaterial = m.material.clone(`${m.material.name}_ghost`) as BABYLON.MultiMaterial;
-				if (multiGhostMaterial.reflectionTexture) multiGhostMaterial.reflectionTexture.irradianceTexture = irradianceTexture; // babylonのバグか知らんが、マテリアルをcloneすると元のマテリアルのreflectionTextureのirradianceTextureがなぜかnullになってしまいエラーとなるので救済
+				if (multiGhostMaterial.reflectionTexture) multiGhostMaterial.reflectionTexture.irradianceTexture = irradianceTexture; // babylonのバグか知らんが、特定の環境テクスチャを使用しているマテリアルをcloneすると元のマテリアルのreflectionTextureのirradianceTextureがなぜかnullになってしまいエラーとなるので救済
 
 				for (let i = 0; i < multiGhostMaterial.subMaterials.length; i++) {
 					const subMaterial = multiGhostMaterial.subMaterials[i];
 					const irradianceTexture = subMaterial.reflectionTexture?.irradianceTexture;
 
 					const ghostMaterial = subMaterial.clone(`${subMaterial.name}_ghost`);
-					if (ghostMaterial.reflectionTexture) ghostMaterial.reflectionTexture.irradianceTexture = irradianceTexture; // babylonのバグか知らんが、マテリアルをcloneすると元のマテリアルのreflectionTextureのirradianceTextureがなぜかnullになってしまいエラーとなるので救済
+					if (ghostMaterial.reflectionTexture) ghostMaterial.reflectionTexture.irradianceTexture = irradianceTexture; // babylonのバグか知らんが、特定の環境テクスチャを使用しているマテリアルをcloneすると元のマテリアルのreflectionTextureのirradianceTextureがなぜかnullになってしまいエラーとなるので救済
 					ghostMaterial.alpha = 0.3;
 					ghostMaterial.transparencyMode = BABYLON.Material.MATERIAL_ALPHABLEND;
 					multiGhostMaterial.subMaterials[i] = ghostMaterial;
@@ -1346,7 +1346,7 @@ export class RoomEngine {
 			} else {
 				const irradianceTexture = m.material.reflectionTexture?.irradianceTexture;
 				const ghostMaterial = m.material.clone(`${m.material.name}_ghost`);
-				if (ghostMaterial.reflectionTexture) ghostMaterial.reflectionTexture.irradianceTexture = irradianceTexture; // babylonのバグか知らんが、マテリアルをcloneすると元のマテリアルのreflectionTextureのirradianceTextureがなぜかnullになってしまいエラーとなるので救済
+				if (ghostMaterial.reflectionTexture) ghostMaterial.reflectionTexture.irradianceTexture = irradianceTexture; // babylonのバグか知らんが、特定の環境テクスチャを使用しているマテリアルをcloneすると元のマテリアルのreflectionTextureのirradianceTextureがなぜかnullになってしまいエラーとなるので救済
 				ghostMaterial.alpha = 0.3;
 				ghostMaterial.transparencyMode = BABYLON.Material.MATERIAL_ALPHABLEND;
 				materials.set(m.material, ghostMaterial);
