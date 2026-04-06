@@ -13,12 +13,11 @@ import {
 	type LogOptions,
 	normalizePath,
 	type Plugin,
-	type PluginOption,
+	type PluginOption
 } from 'vite';
 import fs from 'node:fs';
 import JSON5 from 'json5';
-import { RolldownMagicString } from 'rolldown';
-import type { TransformResult } from 'rolldown';
+import MagicString, { SourceMap } from 'magic-string';
 import path from 'node:path'
 import { hash, toBase62 } from '../vite.config';
 import { minimatch } from 'minimatch';
@@ -64,7 +63,7 @@ interface MarkerRelation {
 let logger = {
 	info: (msg: string, options?: LogOptions) => { },
 	warn: (msg: string, options?: LogOptions) => { },
-	error: (msg: string, options?: LogErrorOptions) => { },
+	error: (msg: string, options?: LogErrorOptions | unknown) => { },
 };
 let loggerInitialized = false;
 
@@ -461,18 +460,9 @@ function propertyAccessProxy(path: string[]): AccessProxy {
 
 const i18nProxy = propertyAccessProxy(['i18n']);
 
-export function collectFileMarkers(id: string, code: string | RolldownMagicString | undefined): SearchIndexItem[] {
+export function collectFileMarkers(id: string, code: string): SearchIndexItem[] {
 	try {
-		let codeStr: string;
-		if (typeof code === 'string') {
-			codeStr = code;
-		} else if (code != null) {
-			codeStr = code.toString();
-		} else {
-			throw new Error(`Code is undefined for file ${id}`);
-		}
-
-		const { descriptor, errors } = vueSfcParse(codeStr, {
+		const { descriptor, errors } = vueSfcParse(code, {
 			filename: id,
 		});
 
@@ -483,8 +473,7 @@ export function collectFileMarkers(id: string, code: string | RolldownMagicStrin
 
 		return extractUsageInfoFromTemplateAst(descriptor.template?.ast, id);
 	} catch (error) {
-		let _error = error instanceof Error ? error : new Error(String(error));
-		logger.error(`Error analyzing file ${id}:`, { error: _error });
+		logger.error(`Error analyzing file ${id}:`, error);
 	}
 
 	return [];
@@ -492,7 +481,10 @@ export function collectFileMarkers(id: string, code: string | RolldownMagicStrin
 
 // endregion
 
-type TransformedCode = Exclude<TransformResult, string>;
+type TransformedCode = {
+	code: string,
+	map: SourceMap,
+};
 
 export class MarkerIdAssigner {
 	// key: file id
@@ -517,12 +509,13 @@ export class MarkerIdAssigner {
 	}
 
 	#processImpl(id: string, code: string): TransformedCode {
-		const s = new RolldownMagicString(code); // magic-string のインスタンスを作成
+		const s = new MagicString(code); // magic-string のインスタンスを作成
 
 		const parsed = vueSfcParse(code, { filename: id });
 		if (!parsed.descriptor.template) {
 			return {
-				code, // テンプレートがない場合は元のコードを返す
+				code,
+				map: s.generateMap({ source: id, includeContent: true }),
 			};
 		}
 		const ast = parsed.descriptor.template.ast; // テンプレート AST を取得
@@ -530,7 +523,8 @@ export class MarkerIdAssigner {
 
 		if (!ast) {
 			return {
-				code,
+				code: s.toString(), // 変更後のコードを返す
+				map: s.generateMap({ source: id, includeContent: true }), // ソースマップも生成 (sourceMap: true が必要)
 			};
 		}
 
@@ -617,6 +611,7 @@ export class MarkerIdAssigner {
 
 		return {
 			code: s.toString(), // 変更後のコードを返す
+			map: s.generateMap({ source: id, includeContent: true }), // ソースマップも生成 (sourceMap: true が必要)
 		};
 	}
 
@@ -647,7 +642,7 @@ export class MarkerIdAssigner {
 	}
 }
 
-// Vite プラグインとして export
+// Rollup プラグインとして export
 export default function pluginCreateSearchIndex(options: Options): PluginOption {
 	const assigner = new MarkerIdAssigner();
 	return [
