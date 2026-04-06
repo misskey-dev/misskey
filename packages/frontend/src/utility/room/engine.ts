@@ -1316,7 +1316,6 @@ export class RoomEngine {
 			m.checkCollisions = false;
 		}
 
-		/* なんかエラーになる
 		const materials = new WeakMap<BABYLON.Material, BABYLON.Material>();
 
 		for (const m of ghost.getChildMeshes() as BABYLON.Mesh[]) {
@@ -1328,11 +1327,16 @@ export class RoomEngine {
 			}
 
 			if (m.subMeshes != null && m.subMeshes.length > 0 && m.material.subMaterials != null) {
+				const irradianceTexture = m.material.reflectionTexture?.irradianceTexture;
 				const multiGhostMaterial = m.material.clone(`${m.material.name}_ghost`) as BABYLON.MultiMaterial;
+				if (multiGhostMaterial.reflectionTexture) multiGhostMaterial.reflectionTexture.irradianceTexture = irradianceTexture; // babylonのバグか知らんが、マテリアルをcloneすると元のマテリアルのreflectionTextureのirradianceTextureがなぜかnullになってしまいエラーとなるので救済
 
 				for (let i = 0; i < multiGhostMaterial.subMaterials.length; i++) {
 					const subMaterial = multiGhostMaterial.subMaterials[i];
+					const irradianceTexture = subMaterial.reflectionTexture?.irradianceTexture;
+
 					const ghostMaterial = subMaterial.clone(`${subMaterial.name}_ghost`);
+					if (ghostMaterial.reflectionTexture) ghostMaterial.reflectionTexture.irradianceTexture = irradianceTexture; // babylonのバグか知らんが、マテリアルをcloneすると元のマテリアルのreflectionTextureのirradianceTextureがなぜかnullになってしまいエラーとなるので救済
 					ghostMaterial.alpha = 0.3;
 					ghostMaterial.transparencyMode = BABYLON.Material.MATERIAL_ALPHABLEND;
 					multiGhostMaterial.subMaterials[i] = ghostMaterial;
@@ -1340,14 +1344,15 @@ export class RoomEngine {
 					m.material = multiGhostMaterial;
 				}
 			} else {
+				const irradianceTexture = m.material.reflectionTexture?.irradianceTexture;
 				const ghostMaterial = m.material.clone(`${m.material.name}_ghost`);
+				if (ghostMaterial.reflectionTexture) ghostMaterial.reflectionTexture.irradianceTexture = irradianceTexture; // babylonのバグか知らんが、マテリアルをcloneすると元のマテリアルのreflectionTextureのirradianceTextureがなぜかnullになってしまいエラーとなるので救済
 				ghostMaterial.alpha = 0.3;
 				ghostMaterial.transparencyMode = BABYLON.Material.MATERIAL_ALPHABLEND;
 				materials.set(m.material, ghostMaterial);
 				m.material = ghostMaterial;
 			}
 		}
-			*/
 
 		return ghost;
 	}
