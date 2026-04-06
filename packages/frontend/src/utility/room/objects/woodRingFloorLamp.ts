@@ -73,6 +73,10 @@ export const woodRingFloorLamp = defineObject({
 			for (const light of lights) {
 				light.diffuse = new BABYLON.Color3(r, g, b);
 			}
+			for (const lamp of lamps) {
+				const emissive = lamp.material as BABYLON.PBRMaterial;
+				emissive.emissiveColor = new BABYLON.Color3(r, g, b);
+			}
 		};
 
 		applyLightColor();
@@ -83,7 +87,7 @@ export const woodRingFloorLamp = defineObject({
 			}
 			for (const lamp of lamps) {
 				const emissive = lamp.material as BABYLON.PBRMaterial;
-				emissive.emissiveIntensity = options.lightBrightness * 5;
+				emissive.emissiveIntensity = options.lightBrightness * 10;
 			}
 		};
 
