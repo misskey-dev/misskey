@@ -1023,6 +1023,7 @@ export class RoomEngine {
 				//if (m.material) (m.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(1, 1, 1);
 				if (m.material) {
 					(m.material as BABYLON.PBRMaterial).reflectionTexture = this.enableReflectionProbe ? this.reflectionProbe.cubeTexture : this.envMapIndoor;
+					(m.material as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
 				}
 				if (this.enableReflectionProbe) this.reflectionProbe.renderList!.push(m);
 			}
@@ -1088,9 +1089,11 @@ export class RoomEngine {
 						if (mesh.material instanceof BABYLON.MultiMaterial) {
 							for (const subMat of mesh.material.subMaterials) {
 								(subMat as BABYLON.PBRMaterial).reflectionTexture = this.enableReflectionProbe ? this.reflectionProbe.cubeTexture : this.envMapIndoor;
+								(subMat as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
 							}
 						} else {
 							(mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.enableReflectionProbe ? this.reflectionProbe.cubeTexture : this.envMapIndoor;
+							(mesh.material as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
 						}
 					}
 				}
@@ -1291,7 +1294,7 @@ export class RoomEngine {
 	}
 
 	private turnOnRoomLight() {
-		this.roomLight.intensity = 300000;
+		this.roomLight.intensity = 150000;
 		this.envMapIndoor.level = 0.3;
 	}
 
@@ -1680,9 +1683,11 @@ export class RoomObjectPreviewEngine {
 						if (mesh.material instanceof BABYLON.MultiMaterial) {
 							for (const subMat of mesh.material.subMaterials) {
 								(subMat as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
+								(subMat as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
 							}
 						} else {
 							(mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
+							(mesh.material as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
 						}
 					}
 				}

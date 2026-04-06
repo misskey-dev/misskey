@@ -21,7 +21,7 @@ export const beamLamp = defineObject({
 				light.parent = root;
 				light.diffuse = new BABYLON.Color3(1.0, 0.5, 0.2);
 				light.intensity = 300;
-				light.range = 999/*cm*/;
+				light.range = 100/*cm*/;
 				if (room?.lightContainer != null) room.lightContainer.addLight(light);
 			},
 			interactions: {},
