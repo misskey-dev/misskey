@@ -1129,6 +1129,7 @@ export class RoomEngine {
 	private clearHighlight() {
 		if (this.selectionOutlineLayer != null) {
 			// SelectionOutlineLayerは存在するだけでドローコールが増えるのでclearじゃなく都度dispose
+			// あとこれ https://forum.babylonjs.com/t/selectionoutlinelayer-error-when-webgpus-compatibilitymode-is-false/63067
 			this.selectionOutlineLayer.dispose();
 			this.selectionOutlineLayer = null;
 		}
