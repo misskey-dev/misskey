@@ -438,7 +438,7 @@ export class RoomEngine {
 	private reflectionProbe: BABYLON.ReflectionProbe;
 	private roomLight: BABYLON.SpotLight;
 	public lightContainer: BABYLON.ClusteredLightContainer;
-	private enableReflectionProbe = false;
+	private enableReflectionProbe = false; // NOTE: babylonのバグが仕様かは不明だが、WebGPUモードでは自分自身をrenderListに含むReflectionProbeを自分自身のreflectionTextureに設定するとエラーになる(WebGLモードでは問題なく動く)
 	private xGridPreviewPlane: BABYLON.Mesh;
 	private yGridPreviewPlane: BABYLON.Mesh;
 	private zGridPreviewPlane: BABYLON.Mesh;
