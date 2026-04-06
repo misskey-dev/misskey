@@ -133,6 +133,11 @@ export const laptopPc = defineObject({
 			const angle = options.openAngle;
 			hutaNode.rotationQuaternion = null;
 			hutaNode.rotation.x = -angle;
+			if (angle <= -Math.PI / 2) {
+				light.intensity = 0;
+			} else {
+				light.intensity = 20000 * options.screenBrightness;
+			}
 			model.updated();
 		};
 
