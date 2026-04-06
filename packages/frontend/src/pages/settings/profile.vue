@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<SearchMarker :keywords="['avatar', 'icon', 'change']">
 						<MkButton primary rounded @click="changeAvatar"><SearchLabel>{{ i18n.ts._profile.changeAvatar }}</SearchLabel></MkButton>
 					</SearchMarker>
-					<MkButton primary rounded link to="/settings/avatar-decoration">{{ i18n.ts.decorate }} <i class="ti ti-sparkles"></i></MkButton>
+					<MkButton primary rounded type="routerLink" to="/settings/avatar-decoration">{{ i18n.ts.decorate }} <i class="ti ti-sparkles"></i></MkButton>
 				</div>
 			</div>
 		</div>
