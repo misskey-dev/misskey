@@ -1250,7 +1250,7 @@ export class RoomEngine {
 	}
 
 	private highlightMeshes(meshes: BABYLON.AbstractMesh[]) {
-		this.clearHighlight(); // SelectionOutlineLayerは存在するだけでドローコールが増えるので都度dispose
+		this.clearHighlight(); // SelectionOutlineLayerは存在するだけでドローコールが増えるので都度dispose https://forum.babylonjs.com/t/selectionoutlinelayer-doubles-the-number-of-draw-calls-despite-having-no-selection/63084
 		this.selectionOutlineLayer = new BABYLON.SelectionOutlineLayer('outliner', this.scene);
 		this.selectionOutlineLayer.addSelection(meshes);
 	}
