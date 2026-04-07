@@ -4,7 +4,7 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject, WORLD_SCALE } from '../engine.js';
+import { defineObject } from '../engine.js';
 import { createOverridedStates } from '../utility.js';
 
 export const blind = defineObject({
@@ -57,12 +57,16 @@ export const blind = defineObject({
 			}
 			blades = [];
 
+			const matrix = blade.parent.getWorldMatrix(true);
+			const scale = new BABYLON.Vector3();
+			matrix.decompose(scale);
+
 			for (let i = 0; i < options.blades; i++) {
 				const b = blade.clone('blade_' + i); // createInstanceを使いたいが、削除するときになぜかエラーになる
 				if (i / options.blades < temp.open) {
-					b.position.y -= (i * 4/*cm*/) / WORLD_SCALE;
+					b.position.y -= (i * 4/*cm*/) / Math.abs(scale.y);
 				} else {
-					b.position.y -= (((options.blades - 1) * temp.open * 4/*cm*/) + (i * 0.3/*cm*/)) / WORLD_SCALE;
+					b.position.y -= (((options.blades - 1) * temp.open * 4/*cm*/) + (i * 0.3/*cm*/)) / Math.abs(scale.y);
 				}
 				blades.push(b);
 			}

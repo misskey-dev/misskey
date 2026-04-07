@@ -491,6 +491,30 @@ export function findMaterial(rootMesh: BABYLON.AbstractMesh, keyword: string): B
 	throw new Error(`Material with keyword "${keyword}" not found`);
 }
 
+export function scaleMorph(mesh: BABYLON.Mesh, scale: [number, number, number], offset: [number, number, number] = [0, 0, 0]) {
+	if (!mesh.morphTargetManager) {
+		return;
+	}
+
+	const morphTargetManager = mesh.morphTargetManager;
+
+	for (let targetIndex = 0; targetIndex < morphTargetManager.numTargets; targetIndex++) {
+		const target = morphTargetManager.getTarget(targetIndex);
+		const newPos = target.getPositions();
+		for (let i = 0; i < newPos.length; i += 3) {
+			newPos[i] = (newPos[i] + offset[0]) * scale[0];
+			newPos[i + 1] = (newPos[i + 1] + offset[1]) * scale[1];
+			newPos[i + 2] = (newPos[i + 2] + offset[2]) * scale[2];
+		}
+		target.setPositions(newPos);
+	}
+
+	morphTargetManager.synchronize();
+
+	mesh.refreshBoundingInfo();
+	mesh.computeWorldMatrix(true);
+}
+
 export function applyMorphTargetsToMesh(mesh: BABYLON.Mesh) {
 	if (!mesh.morphTargetManager) {
 		return;

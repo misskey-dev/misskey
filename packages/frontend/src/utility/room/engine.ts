@@ -17,11 +17,14 @@
  * - 後からモデルを調整したくなった時に備え、モディファイアを駆使するなどして、なるべく非破壊的なモデリングを心がけることを推奨します。
  * - モディファイアをapplyしないとならないシチュエーションでは、apply前の状態を複製して(非表示にした上で)残すことを推奨します。
  * - 上記の非破壊的なモデリングの原則に反しない限り、なるべくscaleはapplyした状態で(=scaleが1, 1, 1の状態で)エクスポートすること。そうしないとbake前後で法線が変わるのかレンダリング結果が異なる現象が発生することがあります。
+ * - 現在のMisskey RoomのGLB root除去システムの実装上、スケールに1以外の値を持つメッシュにシェイプキーを設定することはサポートされていません。
  */
 
 // TODO: 家具設置時のコリジョン判定(めりこんで設置されないようにする)
 // TODO: 近くのオブジェクトの端にスナップオプション
 // TODO: 近くのオブジェクトの原点に軸を揃えるオプション
+
+const BAKE_TRANSFORM = false; // 実験的
 
 import * as BABYLON from '@babylonjs/core';
 import { AxesViewer } from '@babylonjs/core/Debug/axesViewer';
@@ -33,7 +36,7 @@ import { reactive, ref, shallowRef, triggerRef, watch } from 'vue';
 import { genId } from '../id.js';
 import { deepClone } from '../clone.js';
 import { getObjectDef } from './object-defs.js';
-import { HorizontalCameraKeyboardMoveInput, applyMorphTargetsToMesh, camelToKebab, findMaterial } from './utility.js';
+import { HorizontalCameraKeyboardMoveInput, applyMorphTargetsToMesh, camelToKebab, findMaterial, scaleMorph } from './utility.js';
 import * as sound from '@/utility/sound.js';
 
 // babylonのドメイン知識は持たない
@@ -1044,8 +1047,136 @@ export class RoomEngine {
 		const loaderResult = await BABYLON.LoadAssetContainerAsync(`/client-assets/room/objects/${camelToKebab(args.type)}/${camelToKebab(args.type)}.glb`, this.scene);
 
 		// babylonによって自動で追加される右手系変換用ノード
-		const subRoot = loaderResult.meshes[0];
-		subRoot.scaling = subRoot.scaling.scale(WORLD_SCALE);// cmをmに
+		const subRoot = loaderResult.meshes[0] as BABYLON.Mesh;
+
+		if (BAKE_TRANSFORM) {
+			subRoot.scaling = new BABYLON.Vector3(1, 1, 1);
+			subRoot.rotationQuaternion = null;
+			subRoot.rotation = new BABYLON.Vector3(0, 0, 0);
+			//subRoot.scaling = subRoot.scaling.scale(WORLD_SCALE);// cmをmに
+			//subRoot.bakeCurrentTransformIntoVertices();
+			//subRoot.bakeTransformIntoVertices(BABYLON.Matrix.Scaling(WORLD_SCALE, WORLD_SCALE, WORLD_SCALE));
+
+			for (const m of loaderResult.transformNodes) {
+				if (m.name === '__root__') continue;
+				if (m.parent === subRoot) {
+					m.setParent(root);
+				//m.parent = root;
+				}
+			}
+			for (const m of loaderResult.meshes) {
+				if (m.name === '__root__') continue;
+				if (m.parent === subRoot) {
+					m.setParent(root);
+				//m.parent = root;
+				}
+			}
+
+			const bakeTransformNode = (m: BABYLON.TransformNode) => {
+				m.position.x *= -WORLD_SCALE;
+				m.position.y *= WORLD_SCALE;
+				m.position.z *= WORLD_SCALE;
+				m.rotation = m.rotationQuaternion.toEulerAngles();
+				m.rotationQuaternion = null;
+				//m.rotation.x = -m.rotation.x;
+				m.rotation.y = -m.rotation.y;
+				m.rotation.z = -m.rotation.z;
+				for (const child of m.getChildren()) {
+					if (child instanceof BABYLON.Mesh) {
+					//child.scaling = child.scaling.scale(WORLD_SCALE);// cmをmに
+					//child.position = child.position.scale(WORLD_SCALE);
+
+						const pos = child.position.clone();
+						const scaling = child.scaling.clone();
+						child.scaling.x = -WORLD_SCALE;
+						child.scaling.y = WORLD_SCALE;
+						child.scaling.z = WORLD_SCALE;
+
+						const rotation = child.rotationQuaternion ? child.rotationQuaternion.toEulerAngles() : child.rotation.clone();
+						child.rotationQuaternion = null;
+						child.position = new BABYLON.Vector3(0, 0, 0);
+
+						child.parent = root;
+						child.bakeCurrentTransformIntoVertices();
+						child.parent = m;
+						child.scaling = scaling;
+						child.position.x = pos.x * -WORLD_SCALE;
+						child.position.y = pos.y * WORLD_SCALE;
+						child.position.z = pos.z * WORLD_SCALE;
+
+						child.rotation = rotation;
+
+						scaleMorph(child, [-WORLD_SCALE, WORLD_SCALE, WORLD_SCALE]);
+
+					//const indices = child.getIndices();
+					//const positions = child.getVerticesData(BABYLON.VertexBuffer.PositionKind);
+					//const normals = child.getVerticesData(BABYLON.VertexBuffer.NormalKind);
+					//BABYLON.VertexData.ComputeNormals(positions, indices, normals);
+					//child.updateVerticesData(BABYLON.VertexBuffer.NormalKind, normals, false, false);
+					} else if (child instanceof BABYLON.InstancedMesh) {
+						const pos = child.position.clone();
+						child.position.x = pos.x * -WORLD_SCALE;
+						child.position.y = pos.y * WORLD_SCALE;
+						child.position.z = pos.z * WORLD_SCALE;
+					} else if (child instanceof BABYLON.TransformNode) {
+						bakeTransformNode(child);
+					}
+				}
+			};
+
+			const bakeChildren = (node: BABYLON.Node) => {
+				for (const m of node.getChildren(undefined, true)) {
+					if (m instanceof BABYLON.Mesh) {
+						const scaling = m.scaling.clone();
+						m.scaling.x = -WORLD_SCALE;
+						m.scaling.y = WORLD_SCALE;
+						m.scaling.z = WORLD_SCALE;
+						//m.position.x *= -WORLD_SCALE;
+						//m.position.y *= WORLD_SCALE;
+						//m.position.z *= WORLD_SCALE;
+						const pos = m.position.clone();
+						const rotation = m.rotationQuaternion.toEulerAngles();
+						m.rotationQuaternion = null;
+						m.rotation = new BABYLON.Vector3(0, 0, 0);
+						m.position = new BABYLON.Vector3(0, 0, 0);
+						m.bakeCurrentTransformIntoVertices();
+						m.scaling.x = scaling.x;
+						m.scaling.y = scaling.y;
+						m.scaling.z = scaling.z;
+						m.position.x = pos.x * -WORLD_SCALE;
+						m.position.y = pos.y * WORLD_SCALE;
+						m.position.z = pos.z * WORLD_SCALE;
+						m.rotation = rotation;
+						//m.rotation.x = -m.rotation.x;
+						m.rotation.y = -m.rotation.y;
+						m.rotation.z = -m.rotation.z;
+
+						scaleMorph(m, [-WORLD_SCALE, WORLD_SCALE, WORLD_SCALE]);
+					} else if (m instanceof BABYLON.InstancedMesh) {
+					//const pos = m.position.clone();
+					//m.position.x = pos.x * -WORLD_SCALE;
+					//m.position.y = pos.y * WORLD_SCALE;
+					//m.position.z = pos.z * WORLD_SCALE;
+						m.position.x *= -WORLD_SCALE;
+						m.position.y *= WORLD_SCALE;
+						m.position.z *= WORLD_SCALE;
+						m.rotation = m.rotationQuaternion.toEulerAngles();
+						m.rotationQuaternion = null;
+						m.rotation.x = -m.rotation.x;
+						m.rotation.y = -m.rotation.y;
+						m.rotation.z = -m.rotation.z;
+					} else if (m instanceof BABYLON.TransformNode) {
+						bakeTransformNode(m);
+					}
+				}
+			};
+
+			bakeChildren(root);
+
+			subRoot.dispose();
+		} else {
+			subRoot.scaling = subRoot.scaling.scale(WORLD_SCALE);// cmをmに
+		}
 
 		def.treatLoaderResult?.(loaderResult);
 
@@ -1055,13 +1186,15 @@ export class RoomEngine {
 			objectType: args.type,
 		};
 
-		root.addChild(subRoot);
+		if (!BAKE_TRANSFORM) {
+			root.addChild(subRoot);
+		}
 
 		root.position = args.position.clone();
 		root.rotation = args.rotation.clone();
 		root.metadata = metadata;
 
-		const model = new ModelManager(subRoot, loaderResult.meshes.filter(m => m !== subRoot), (meshes) => {
+		const model = new ModelManager(BAKE_TRANSFORM ? root : subRoot, loaderResult.meshes.filter(m => m.name !== subRoot), (meshes) => {
 			if (this.selected.value?.objectId === args.id) {
 				this.highlightMeshes(meshes);
 			}
