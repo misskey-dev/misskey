@@ -112,6 +112,14 @@ export class FileServerFileResolver {
 			};
 		}
 
+		// Verify the file actually exists on disk before returning.
+		// Unlike the thumbnail/webpublic cases above where detectType() implicitly
+		// checks this, the original file path is returned without an existence check.
+		// Without this check, the handler would set immutable cache headers before
+		// discovering the file is missing, causing CDN caches to cache the error
+		// response for 1 year (max-age=31536000, immutable) instead of max-age=300.
+		await fs.promises.access(path);
+
 		return {
 			kind: 'stored',
 			fileRole: 'original',
