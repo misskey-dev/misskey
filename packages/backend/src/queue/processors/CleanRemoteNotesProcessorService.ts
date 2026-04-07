@@ -11,6 +11,7 @@ import type { MiMeta, MiNote, NotesRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
+import { loadConfig } from '@/config.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type * as Bull from 'bullmq';
 
@@ -86,7 +87,10 @@ export class CleanRemoteNotesProcessorService {
 		// - not have clipped
 		// - not have pinned on the user profile
 		// - not has been favorite by any user
-		const removalCriteria = [
+		// - not tagged with the default hashtag (treated as local content)
+		const config = loadConfig();
+		const defaultTag: string | null = config.defaultTag?.tag ?? null;
+		const removalCriteriaList = [
 			'note."id" < :newestLimit',
 			'note."clippedCount" = 0',
 			'note."pageCount" = 0',
@@ -94,7 +98,11 @@ export class CleanRemoteNotesProcessorService {
 			'NOT EXISTS (SELECT 1 FROM user_note_pining WHERE "noteId" = note."id")',
 			'NOT EXISTS (SELECT 1 FROM note_favorite WHERE "noteId" = note."id")',
 			'NOT EXISTS (SELECT 1 FROM note_reaction INNER JOIN "user" ON note_reaction."userId" = "user".id WHERE note_reaction."noteId" = note."id" AND "user"."host" IS NULL)',
-		].join(' AND ');
+		];
+		if (defaultTag != null) {
+			removalCriteriaList.push('NOT (note."tags" @> ARRAY[:defaultTag]::varchar[])');
+		}
+		const removalCriteria = removalCriteriaList.join(' AND ');
 
 		const minId = (await this.notesRepository.createQueryBuilder('note')
 			.select('MIN(note.id)', 'minId')
@@ -218,7 +226,7 @@ export class CleanRemoteNotesProcessorService {
 
 			try {
 				noteIds = await candidateNotesQuery({ limit: currentLimit }).setParameters(
-					{ newestLimit, cursorLeft },
+					{ newestLimit, cursorLeft, ...(defaultTag != null ? { defaultTag } : {}) },
 				).getRawMany<{ id: MiNote['id'], isRemovable: boolean, isBase: boolean }>();
 			} catch (e) {
 				if (e instanceof QueryFailedError && e.driverError?.code === '57014') {
@@ -234,7 +242,7 @@ export class CleanRemoteNotesProcessorService {
 							.andWhere({ replyId: IsNull(), renoteId: IsNull() })
 							.orderBy('note.id', 'ASC')
 							.limit(minimumLimit + 1)
-							.setParameters({ cursorLeft, newestLimit })
+							.setParameters({ cursorLeft, newestLimit, ...(defaultTag != null ? { defaultTag } : {}) })
 							.getRawMany<{ id?: MiNote['id'] }>();
 
 						job.log(`Skipped note IDs: ${idWindow.slice(0, minimumLimit).map(id => id.id).join(', ')}`);
