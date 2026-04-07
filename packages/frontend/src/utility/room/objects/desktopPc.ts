@@ -46,7 +46,19 @@ export const desktopPc = defineObject({
 		},
 	},
 	placement: 'top',
-	createInstance: ({ options, model }) => {
+	createInstance: ({ options, model, root, scene, room }) => {
+		const light1 = new BABYLON.SpotLight('', new BABYLON.Vector3(0, 10/*cm*/, 22/*cm*/), new BABYLON.Vector3(0, 0, 1), Math.PI / 1, 2, scene, room?.lightContainer != null);
+		light1.parent = root;
+		light1.intensity = 500;
+		light1.range = 30/*cm*/;
+		if (room?.lightContainer != null) room.lightContainer.addLight(light1);
+
+		const light2 = new BABYLON.SpotLight('', new BABYLON.Vector3(-5/*cm*/, 33/*cm*/, -9/*cm*/), new BABYLON.Vector3(1, 0, 0), Math.PI / 1, 2, scene, room?.lightContainer != null);
+		light2.parent = root;
+		light2.intensity = 500;
+		light2.range = 30/*cm*/;
+		if (room?.lightContainer != null) room.lightContainer.addLight(light2);
+
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 		const coverMaterial = model.findMaterial('__X_COVER__');
 		const inner1Material = model.findMaterial('__X_INNER__');
@@ -94,6 +106,8 @@ export const desktopPc = defineObject({
 		const applyLedColor = () => {
 			const [r, g, b] = options.ledColor;
 			ledMaterial.emissiveColor = new BABYLON.Color3(r, g, b);
+			light1.diffuse = new BABYLON.Color3(r, g, b);
+			light2.diffuse = new BABYLON.Color3(r, g, b);
 		};
 
 		applyLedColor();
