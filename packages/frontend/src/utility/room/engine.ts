@@ -46,7 +46,6 @@ type RoomStateObject<Options = any> = {
 	position: [number, number, number];
 	rotation: [number, number, number];
 	options: Options;
-	isMainLight?: boolean;
 
 	/**
 	 * 別のオブジェクトのID
@@ -419,7 +418,6 @@ export class RoomEngine {
 		rotation: number;
 		ghost: BABYLON.AbstractMesh;
 		descendantStickyObjectIds: string[];
-		isMainLight: boolean;
 		onMove?: (info: { position: BABYLON.Vector3; rotation: BABYLON.Vector3; sticky: string | null; }) => void;
 		onCancel?: () => void;
 		onDone?: () => void;
@@ -748,7 +746,6 @@ export class RoomEngine {
 			position: new BABYLON.Vector3(...o.position),
 			rotation: new BABYLON.Vector3(o.rotation[0], o.rotation[1], o.rotation[2]),
 			options: o.options,
-			isMainLight: o.isMainLight,
 		})));
 
 		//const sphere = BABYLON.MeshBuilder.CreateSphere('sphere', { diameter: 1/*cm*/ }, this.scene);
@@ -917,10 +914,6 @@ export class RoomEngine {
 		//	//const offset = this.grabbing.mesh!.position.subtract(soMeshStartPosition);
 		//	//soMesh.position = this.grabbing.mesh!.position.subtract(offset);
 		//}
-
-		if (grabbing.isMainLight) {
-			this.roomLight.position = grabbing.mesh.position.add(new BABYLON.Vector3(0, -1/*cm*/, 0));
-		}
 
 		grabbing.onMove?.({
 			position: newPos,
@@ -1331,7 +1324,6 @@ export class RoomEngine {
 			rotation: 0,
 			ghost: ghost,
 			descendantStickyObjectIds,
-			isMainLight: this.roomState.installedObjects.find(o => o.id === selectedObject.metadata.objectId)?.isMainLight ?? false,
 			onMove: (info) => {
 				sticky = info.sticky;
 			},
@@ -1538,7 +1530,6 @@ export class RoomEngine {
 			rotation: 0,
 			ghost: ghost,
 			descendantStickyObjectIds: [],
-			isMainLight: false,
 			onMove: (info) => {
 				sticky = info.sticky;
 			},
