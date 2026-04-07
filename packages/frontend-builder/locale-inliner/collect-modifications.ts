@@ -3,11 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { parseAst } from 'rolldown/parseAst';
+import { parseAst } from 'vite';
 import * as estreeWalker from 'estree-walker';
 import { assertNever, assertType } from '../utils.js';
-import type { ESTree as RolldownESTree } from 'rolldown/utils';
-import type { AstNode } from 'rollup';
+import type { AstNode, ProgramNode } from 'rollup';
 import type * as estree from 'estree';
 import type { LocaleInliner, TextModification } from '../locale-inliner.js';
 import type { Logger } from '../logger.js';
@@ -18,7 +17,7 @@ interface WalkerContext {
 }
 
 export function collectModifications(sourceCode: string, fileName: string, fileLogger: Logger, inliner: LocaleInliner): TextModification[] {
-	let programNode: RolldownESTree.Program;
+	let programNode: ProgramNode;
 	try {
 		programNode = parseAst(sourceCode);
 	} catch (err) {
@@ -36,8 +35,7 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 	// 1) replace all `scripts/` path literals with locale code
 	// 2) replace all `localStorage.getItem("lang")` with `localeName` variable
 	// 3) replace all `await window.fetch(`/assets/locales/${d}.${x}.json`).then(u=>u.json())` with `localeJson` variable
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	(estreeWalker.walk as any)(programNode, {
+	estreeWalker.walk(programNode, {
 		enter(this: WalkerContext, node: Node) {
 			assertType<AstNode>(node);
 
@@ -120,9 +118,8 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 	// Check if the identifier is already declared in the file.
 	// If it is, we may overwrite it and cause issues so we skip inlining
 	let isSupported = true;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	(estreeWalker.walk as any)(programNode, {
-		enter(node: Node) {
+	estreeWalker.walk(programNode, {
+		enter(node) {
 			if (node.type === 'VariableDeclaration') {
 				assertType<estree.VariableDeclaration>(node);
 				for (const id of node.declarations.flatMap(x => declsOfPattern(x.id))) {
@@ -148,9 +145,8 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 
 	const toSkip = new Set();
 	toSkip.add(i18nImport);
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	(estreeWalker.walk as any)(programNode, {
-		enter(this: WalkerContext, node: Node, parent: Node | null, property: string | number | symbol | null | undefined) {
+	estreeWalker.walk(programNode, {
+		enter(this: WalkerContext, node, parent, property) {
 			assertType<AstNode>(node);
 			assertType<AstNode>(parent);
 			if (toSkip.has(node)) {
@@ -383,7 +379,7 @@ type SpecifierResult =
 	| { type: 'specifier', localI18nIdentifier: string, importNode: estree.ImportDeclaration & AstNode }
 	;
 
-function findImportSpecifier(programNode: RolldownESTree.Program, i18nFileName: string, i18nSymbol: string): SpecifierResult {
+function findImportSpecifier(programNode: ProgramNode, i18nFileName: string, i18nSymbol: string): SpecifierResult {
 	const imports = programNode.body.filter(x => x.type === 'ImportDeclaration');
 	const importNode = imports.find(x => x.source.value === `./${i18nFileName}`) as estree.ImportDeclaration | undefined;
 	if (!importNode) return { type: 'no-import' };

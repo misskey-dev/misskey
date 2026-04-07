@@ -1,10 +1,10 @@
-## Unreleased
+## 2026.4.0
 
 ### General
 -
 
 ### Client
--
+- Enhance: チャンネル指定リノートでリノート先のチャンネルに移動できるように
 
 ### Server
 - Fix: `/api-doc` にアクセスできない問題を修正
