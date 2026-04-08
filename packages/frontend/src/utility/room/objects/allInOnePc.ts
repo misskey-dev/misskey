@@ -89,6 +89,7 @@ export const allInOnePc = defineObject({
 				tex.wrapV = BABYLON.Texture.MIRROR_ADDRESSMODE;
 				tex.level = 0.5;
 
+				screenMaterial.unfreeze();
 				screenMaterial.emissiveTexture = tex;
 
 				tex.onLoadObservable.addOnce(() => {

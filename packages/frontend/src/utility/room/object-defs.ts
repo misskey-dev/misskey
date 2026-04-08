@@ -35,6 +35,8 @@ import { laptopPc } from './objects/laptopPc.js';
 import { lavaLamp } from './objects/lavaLamp.js';
 import { letterCase } from './objects/letterCase.js';
 import { milk } from './objects/milk.js';
+import { miPlate } from './objects/miPlate.js';
+import { miPlateDisplayed } from './objects/miPlateDisplayed.js';
 import { mixer } from './objects/mixer.js';
 import { monitor } from './objects/monitor.js';
 import { monitorSpeaker } from './objects/monitorSpeaker.js';
@@ -58,6 +60,7 @@ import { speaker } from './objects/speaker.js';
 import { steelRack } from './objects/steelRack.js';
 import { tabletopCalendar } from './objects/tabletopCalendar.js';
 import { tabletopDigitalClock } from './objects/tabletopDigitalClock.js';
+import { tabletopFlag } from './objects/tabletopFlag.js';
 import { tabletopPictureFrame } from './objects/tabletopPictureFrame.js';
 import { tapestry } from './objects/tapestry.js';
 import { tetrapod } from './objects/tetrapod.js';
@@ -99,6 +102,8 @@ export const OBJECT_DEFS = [
 	lavaLamp,
 	letterCase,
 	milk,
+	miPlate,
+	miPlateDisplayed,
 	mixer,
 	monitor,
 	monitorSpeaker,
@@ -122,6 +127,7 @@ export const OBJECT_DEFS = [
 	steelRack,
 	tabletopCalendar,
 	tabletopDigitalClock,
+	tabletopFlag,
 	tabletopPictureFrame,
 	tapestry,
 	tetrapod,

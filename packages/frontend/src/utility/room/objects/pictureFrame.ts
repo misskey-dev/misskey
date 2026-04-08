@@ -164,6 +164,7 @@ export const pictureFrame = defineObject({
 				tex.wrapU = BABYLON.Texture.MIRROR_ADDRESSMODE;
 				tex.wrapV = BABYLON.Texture.MIRROR_ADDRESSMODE;
 
+				pictureMaterial.unfreeze();
 				pictureMaterial.albedoColor = new BABYLON.Color3(1, 1, 1);
 				pictureMaterial.albedoTexture = tex;
 
