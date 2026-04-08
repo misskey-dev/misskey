@@ -18,6 +18,7 @@ import { cactusS } from './objects/cactusS.js';
 import { cardboardBox } from './objects/cardboardBox.js';
 import { ceilingFanLight } from './objects/ceilingFanLight.js';
 import { chair } from './objects/chair.js';
+import { coffeeCup } from './objects/coffeeCup.js';
 import { colorBox } from './objects/colorBox.js';
 import { cupNoodle } from './objects/cupNoodle.js';
 import { debugHipoly } from './objects/debugHipoly.js';
@@ -51,6 +52,7 @@ import { powerStrip } from './objects/powerStrip.js';
 import { rolledUpPoster } from './objects/rolledUpPoster.js';
 import { roundRug } from './objects/roundRug.js';
 import { router } from './objects/router.js';
+import { siphon } from './objects/siphon.js';
 import { snakeplant } from './objects/snakeplant.js';
 import { speaker } from './objects/speaker.js';
 import { steelRack } from './objects/steelRack.js';
@@ -81,6 +83,7 @@ export const OBJECT_DEFS = [
 	cardboardBox,
 	ceilingFanLight,
 	chair,
+	coffeeCup,
 	colorBox,
 	cupNoodle,
 	desk,
@@ -113,6 +116,7 @@ export const OBJECT_DEFS = [
 	rolledUpPoster,
 	roundRug,
 	router,
+	siphon,
 	snakeplant,
 	speaker,
 	steelRack,

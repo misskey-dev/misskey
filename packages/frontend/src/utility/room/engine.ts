@@ -10,6 +10,7 @@
  * - BlenderならYがマイナスになる方向が手前。(=スザンヌを設置してデフォルトで顔が向いている方向が手前)
  * - 壁面設置の場合は壁面に接する面のY軸座標が0になるように設計すること。
  * - ポリゴン数は、極端にハイポリでない限りはパフォーマンスに影響を及ぼすことは少ないです(必要ドローコール数の多寡の方が重要)。とはいえ、モデリングのし易さを考えると低〜中ポリゴン程度を推奨します。
+ *   目安として、例えば円柱を考えると、直径20cm程度以下なら頂点数16、直径2cm程度以下なら頂点数8、0.5cm程度以下なら頂点数4程度を推奨します。(2の乗数を推奨)
  * - メッシュ名を __TOP__ で始めると、その面の上にモノを置けることを示す。当該メッシュはレンダリングでは表示されません。
  * - メッシュ名を __SIDE__ で始めると、その面にモノを貼り付けられることを示す。当該メッシュはレンダリングでは表示されません。
  * - なお、現状 __TOP__ / __SIDE__ メッシュは単一の面でなければなりません。つまりArray Modifierなどを適用した状態では正しく動作しません。
@@ -250,6 +251,11 @@ class ModelManager {
 				const vertexCount = newMesh.getTotalVertices();
 				const uvs = new Array(vertexCount * 2).fill(0);
 				newMesh.setVerticesData(BABYLON.VertexBuffer.UVKind, uvs, false, 2);
+			}
+			if (newMesh.getVerticesData(BABYLON.VertexBuffer.UV2Kind) == null) {
+				const vertexCount = newMesh.getTotalVertices();
+				const uvs = new Array(vertexCount * 2).fill(0);
+				newMesh.setVerticesData(BABYLON.VertexBuffer.UV2Kind, uvs, false, 2);
 			}
 
 			toMerge.push(newMesh);
