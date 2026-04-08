@@ -380,16 +380,7 @@ export function createPlaneUvMapper(mesh: BABYLON.Mesh) {
 	mesh.markVerticesDataAsUpdatable(BABYLON.VertexBuffer.UVKind, true);
 
 	const uvs = mesh.getVerticesData(BABYLON.VertexBuffer.UVKind)!;
-	const uvIndexes = getPlaneUvIndexes(mesh);
-
-	const ax = uvs[uvIndexes[0]];
-	const ay = uvs[uvIndexes[0] + 1];
-	const bx = uvs[uvIndexes[1]];
-	const by = uvs[uvIndexes[1] + 1];
-	const cx = uvs[uvIndexes[2]];
-	const cy = uvs[uvIndexes[2] + 1];
-	const dx = uvs[uvIndexes[3]];
-	const dy = uvs[uvIndexes[3] + 1];
+	const originalUvs = uvs.slice();
 
 	return (srcAspect: number, targetAspect: number, method: 'cover' | 'contain' | 'stretch') => {
 		let uScale = 1;
@@ -405,16 +396,11 @@ export function createPlaneUvMapper(mesh: BABYLON.Mesh) {
 			// nop
 		}
 
-		/* eslint-disable @stylistic/no-multi-spaces */
 		// (0,0)を隅ではなく中心として扱いたいので0.5引いて計算してから最後に0.5足す
-		uvs[uvIndexes[0]]     = ((ax - 0.5) * uScale) + 0.5;
-		uvs[uvIndexes[0] + 1] = ((ay - 0.5) * vScale) + 0.5;
-		uvs[uvIndexes[1]]     = ((bx - 0.5) * uScale) + 0.5;
-		uvs[uvIndexes[1] + 1] = ((by - 0.5) * vScale) + 0.5;
-		uvs[uvIndexes[2]]     = ((cx - 0.5) * uScale) + 0.5;
-		uvs[uvIndexes[2] + 1] = ((cy - 0.5) * vScale) + 0.5;
-		uvs[uvIndexes[3]]     = ((dx - 0.5) * uScale) + 0.5;
-		uvs[uvIndexes[3] + 1] = ((dy - 0.5) * vScale) + 0.5;
+		for (let i = 0; i < uvs.length; i += 2) {
+			uvs[i] = ((originalUvs[i] - 0.5) * uScale) + 0.5;
+			uvs[i + 1] = ((originalUvs[i + 1] - 0.5) * vScale) + 0.5;
+		}
 
 		mesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
 	};
