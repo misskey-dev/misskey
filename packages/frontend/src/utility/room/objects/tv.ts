@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../engine.js';
-import { initTv } from '../utility.js';
+import { createPlaneUvMapper, initTv } from '../utility.js';
 
 export const tv = defineObject({
 	id: 'tv',
@@ -46,7 +46,15 @@ export const tv = defineObject({
 
 		model.bakeExcludeMeshes = [screenMesh];
 
-		const { material: screenMaterial } = initTv(room, screenMesh);
+		const screenMaterial = model.findMaterial('__X_SCREEN__');
+
+		const { dispose: disposeTv } = initTv(room, screenMesh);
+
+		//const videoTexture = new BABYLON.VideoTexture('', 'http://syu-win.local:3000/files/97986924-b99e-4fe1-993d-9caf010cca59', room.scene, false, true); ;
+		//screenMaterial.emissiveTexture = videoTexture;
+		//videoTexture.video.muted = true;
+		//videoTexture.video.volume = 0;
+		//videoTexture.video.loop = true;
 
 		const applyScreenBrightness = () => {
 			const b = options.screenBrightness;
@@ -55,6 +63,17 @@ export const tv = defineObject({
 		};
 
 		applyScreenBrightness();
+
+		//const updateUv = createPlaneUvMapper(screenMesh);
+		//const applyFit = () => {
+		//	const tex = screenMaterial.emissiveTexture;
+		//	if (tex == null) return;
+		//	const srcAspect = 16 / 9;
+		//	const targetAspect = 16 / 9;
+		//	updateUv(srcAspect, targetAspect, 'cover');
+		//	model.updated();
+		//};
+		//applyFit();
 
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 
