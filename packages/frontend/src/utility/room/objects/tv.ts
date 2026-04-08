@@ -19,6 +19,8 @@ export const tv = defineObject({
 		const screenMesh = model.findMesh('__TV_SCREEN__');
 		screenMesh.markVerticesDataAsUpdatable(BABYLON.VertexBuffer.UVKind, true);
 
+		model.bakeExcludeMeshes = [screenMesh];
+
 		initTv(room, screenMesh);
 
 		return {

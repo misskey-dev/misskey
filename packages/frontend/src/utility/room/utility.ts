@@ -282,19 +282,19 @@ const TV_PROGRAMS = {
 	timeline: [index: number, duration: number][];
 }>;
 
-let tvScreenMaterial: BABYLON.StandardMaterial | null = null;
+let tvScreenMaterial: BABYLON.PBRMaterial | null = null;
 
 export function initTv(room: RoomEngine, screenMesh: BABYLON.Mesh) {
 	const tvProgramId = 'shopping';
 	const tvProgram = TV_PROGRAMS[tvProgramId];
 	if (tvScreenMaterial == null) {
-		tvScreenMaterial = new BABYLON.StandardMaterial('tvScreenMaterial', room.scene);
-		tvScreenMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
+		tvScreenMaterial = new BABYLON.PBRMaterial('tvScreenMaterial', room.scene);
+		tvScreenMaterial.albedoColor = new BABYLON.Color3(0, 0, 0);
 		tvScreenMaterial.ambientColor = new BABYLON.Color3(0, 0, 0);
-		tvScreenMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+		tvScreenMaterial.roughness = 1;
 		tvScreenMaterial.emissiveTexture = new BABYLON.Texture(`/client-assets/room/tv/${tvProgramId}/${tvProgramId}.png`, room.scene, false, false);
-		tvScreenMaterial.emissiveTexture.level = 0.5;
-		tvScreenMaterial.emissiveColor = new BABYLON.Color3(0.4, 0.4, 0.4);
+		tvScreenMaterial.emissiveTexture.level = 1.0;
+		tvScreenMaterial.emissiveColor = new BABYLON.Color3(0.5, 0.5, 0.5);
 		tvScreenMaterial.freeze();
 	}
 
