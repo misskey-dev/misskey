@@ -513,8 +513,8 @@ export class RoomEngine {
 		this.envMapOutdoor.level = this.time === 0 ? 0.5 : this.time === 1 ? 0.3 : 0.1;
 
 		if (this.enableReflectionProbe) {
-			this.reflectionProbe = new BABYLON.ReflectionProbe('reflectionProbe', 512, this.scene);
-			this.reflectionProbe.position = new BABYLON.Vector3(0, 100/*cm*/, 0);
+			this.reflectionProbe = new BABYLON.ReflectionProbe('reflectionProbe', 128, this.scene, true, true, true);
+			this.reflectionProbe.position = new BABYLON.Vector3(0, 150/*cm*/, 0);
 			this.reflectionProbe.refreshRate = 200;
 		}
 
@@ -1436,7 +1436,7 @@ export class RoomEngine {
 
 	private turnOnRoomLight() {
 		this.roomLight.intensity = 150000;
-		this.envMapIndoor.level = 0.3;
+		this.envMapIndoor.level = 0.5;
 	}
 
 	private turnOffRoomLight() {
