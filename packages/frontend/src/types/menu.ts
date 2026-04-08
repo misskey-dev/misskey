@@ -8,7 +8,7 @@ import type { Component, ComputedRef, Ref, MaybeRef } from 'vue';
 import type { ComponentProps as CP } from 'vue-component-type-helpers';
 import type { OptionValue } from '@/types/option-value.js';
 
-type ComponentProps<T extends Component> = { [K in keyof CP<T>]: MaybeRef<CP<T>[K]> };
+type ComponentProps<T extends Component> = { [K in keyof CP<T>]: MaybeRef<CP<T>[K]> | ComputedRef<CP<T>[K]> };
 
 type MenuRadioOptionsDef = Record<string, OptionValue>;
 
