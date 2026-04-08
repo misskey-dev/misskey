@@ -392,65 +392,29 @@ export function createPlaneUvMapper(mesh: BABYLON.Mesh) {
 	const dy = uvs[uvIndexes[3] + 1];
 
 	return (srcAspect: number, targetAspect: number, method: 'cover' | 'contain' | 'stretch') => {
-		let newAx = ax;
-		let newAy = ay;
-		let newBx = bx;
-		let newBy = by;
-		let newCx = cx;
-		let newCy = cy;
-		let newDx = dx;
-		let newDy = dy;
-
+		let uScale = 1;
+		let vScale = 1;
+		const ratio = targetAspect / srcAspect;
 		if (method === 'cover') {
-			const ratio = targetAspect / srcAspect;
-
-			const uRange = ratio < 1 ? ratio : 1;
-			const vRange = ratio < 1 ? 1 : 1 / ratio;
-
-			const uMin = (1 - uRange) / 2;
-			const uMax = uMin + uRange;
-			const vMin = (1 - vRange) / 2;
-			const vMax = vMin + vRange;
-
-			newAx = uMin;
-			newAy = 1 - vMax;
-			newBx = uMax;
-			newBy = 1 - vMax;
-			newCx = uMin;
-			newCy = 1 - vMin;
-			newDx = uMax;
-			newDy = 1 - vMin;
+			uScale = ratio < 1 ? ratio : 1;
+			vScale = ratio < 1 ? 1 : 1 / ratio;
 		} else if (method === 'contain') {
-			const ratio = targetAspect / srcAspect;
-
-			const uRange = ratio > 1 ? ratio : 1;
-			const vRange = ratio > 1 ? 1 : 1 / ratio;
-
-			const uMin = (1 - uRange) / 2;
-			const uMax = uMin + uRange;
-			const vMin = (1 - vRange) / 2;
-			const vMax = vMin + vRange;
-
-			newAx = uMin;
-			newAy = 1 - vMax;
-			newBx = uMax;
-			newBy = 1 - vMax;
-			newCx = uMin;
-			newCy = 1 - vMin;
-			newDx = uMax;
-			newDy = 1 - vMin;
+			uScale = ratio > 1 ? ratio : 1;
+			vScale = ratio > 1 ? 1 : 1 / ratio;
 		} else if (method === 'stretch') {
 			// nop
 		}
 
-		uvs[uvIndexes[0]] = newAx;
-		uvs[uvIndexes[0] + 1] = newAy;
-		uvs[uvIndexes[1]] = newBx;
-		uvs[uvIndexes[1] + 1] = newBy;
-		uvs[uvIndexes[2]] = newCx;
-		uvs[uvIndexes[2] + 1] = newCy;
-		uvs[uvIndexes[3]] = newDx;
-		uvs[uvIndexes[3] + 1] = newDy;
+		/* eslint-disable @stylistic/no-multi-spaces */
+		// (0,0)を隅ではなく中心として扱いたいので0.5引いて計算してから最後に0.5足す
+		uvs[uvIndexes[0]]     = ((ax - 0.5) * uScale) + 0.5;
+		uvs[uvIndexes[0] + 1] = ((ay - 0.5) * vScale) + 0.5;
+		uvs[uvIndexes[1]]     = ((bx - 0.5) * uScale) + 0.5;
+		uvs[uvIndexes[1] + 1] = ((by - 0.5) * vScale) + 0.5;
+		uvs[uvIndexes[2]]     = ((cx - 0.5) * uScale) + 0.5;
+		uvs[uvIndexes[2] + 1] = ((cy - 0.5) * vScale) + 0.5;
+		uvs[uvIndexes[3]]     = ((dx - 0.5) * uScale) + 0.5;
+		uvs[uvIndexes[3] + 1] = ((dy - 0.5) * vScale) + 0.5;
 
 		mesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
 	};
