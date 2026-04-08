@@ -452,15 +452,13 @@ export class RoomEngine {
 	private putParticleSystem: BABYLON.ParticleSystem;
 	private envMapIndoor: BABYLON.CubeTexture;
 	private envMapOutdoor: BABYLON.CubeTexture;
-	private reflectionProbe: BABYLON.ReflectionProbe;
 	private roomLight: BABYLON.SpotLight;
 	public lightContainer: BABYLON.ClusteredLightContainer;
-	private enableReflectionProbe = false; // NOTE: babylonのバグが仕様かは不明だが、WebGPUモードでは自分自身をrenderListに含むReflectionProbeを自分自身のreflectionTextureに設定するとエラーになる(WebGLモードでは問題なく動く) https://forum.babylonjs.com/t/in-webgpu-cannot-use-a-reflectionprobe-that-includes-itself-in-the-renderlist-as-a-reflectiontexture/63065
 	private xGridPreviewPlane: BABYLON.Mesh;
 	private yGridPreviewPlane: BABYLON.Mesh;
 	private zGridPreviewPlane: BABYLON.Mesh;
 	private selectionOutlineLayer: BABYLON.SelectionOutlineLayer | null = null;
-	public isEditMode = ref(false);
+	public isEditMode = false;
 	public isSitting = ref(false);
 	public ui = reactive({
 		isGrabbing: false,
@@ -511,21 +509,6 @@ export class RoomEngine {
 
 		this.envMapOutdoor = BABYLON.CubeTexture.CreateFromPrefilteredData(this.time === 2 ? '/client-assets/room/outdoor-night.env' : '/client-assets/room/outdoor-day.env', this.scene);
 		this.envMapOutdoor.level = this.time === 0 ? 0.5 : this.time === 1 ? 0.3 : 0.1;
-
-		if (this.enableReflectionProbe) {
-			this.reflectionProbe = new BABYLON.ReflectionProbe('reflectionProbe', 128, this.scene, true, true, true);
-			this.reflectionProbe.position = new BABYLON.Vector3(0, 150/*cm*/, 0);
-			this.reflectionProbe.refreshRate = 200;
-		}
-
-		//const sphere = BABYLON.MeshBuilder.CreateSphere('', { diameter: 50/*cm*/ }, this.scene);
-		//sphere.position = new BABYLON.Vector3(0, 100/*cm*/, 0);
-		//const mat = new BABYLON.PBRMaterial('', this.scene);
-		//mat.metallic = 1;
-		//mat.roughness = 0;
-		//mat.reflectionTexture = this.envMapIndoor;
-		//mat.reflectionTexture = this.reflectionProbe.cubeTexture;
-		//sphere.material = mat;
 
 		this.scene.collisionsEnabled = true;
 
@@ -688,14 +671,6 @@ export class RoomEngine {
 		this.zGridPreviewPlane.material = gridMaterial;
 		this.zGridPreviewPlane.isPickable = false;
 		this.zGridPreviewPlane.isVisible = false;
-
-		watch(this.isEditMode, (v) => {
-			if (v) {
-				for (const entity of this.objectEntities.values()) {
-					entity.instance.resetTemporaryState?.();
-				}
-			}
-		});
 
 		let isDragging = false;
 
@@ -1034,10 +1009,9 @@ export class RoomEngine {
 				this.shadowGeneratorForSunLight.addShadowCaster(m);
 				//if (m.material) (m.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(1, 1, 1);
 				if (m.material) {
-					(m.material as BABYLON.PBRMaterial).reflectionTexture = this.enableReflectionProbe ? this.reflectionProbe.cubeTexture : this.envMapIndoor;
+					(m.material as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
 					(m.material as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
 				}
-				if (this.enableReflectionProbe) this.reflectionProbe.renderList!.push(m);
 			}
 		}
 	}
@@ -1230,11 +1204,11 @@ export class RoomEngine {
 					if (mesh.material) {
 						if (mesh.material instanceof BABYLON.MultiMaterial) {
 							for (const subMat of mesh.material.subMaterials) {
-								(subMat as BABYLON.PBRMaterial).reflectionTexture = this.enableReflectionProbe ? this.reflectionProbe.cubeTexture : this.envMapIndoor;
+								(subMat as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
 								(subMat as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
 							}
 						} else {
-							(mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.enableReflectionProbe ? this.reflectionProbe.cubeTexture : this.envMapIndoor;
+							(mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
 							(mesh.material as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
 						}
 					}
@@ -1503,9 +1477,8 @@ export class RoomEngine {
 	}
 
 	public async addObject(type: string) {
+		if (!this.isEditMode) return;
 		if (this.grabbingCtx != null) return;
-
-		this.isEditMode.value = true;
 
 		const dir = this.camera.getDirection(BABYLON.Axis.Z).scale(this.scene.useRightHandedSystem ? -1 : 1);
 		const distance = 30/*cm*/;
@@ -1591,6 +1564,61 @@ export class RoomEngine {
 			volume: 1,
 			playbackRate: 1,
 		});
+	}
+
+	public enterEditMode() {
+		this.isEditMode = true;
+
+		for (const entity of this.objectEntities.values()) {
+			entity.instance.resetTemporaryState?.();
+		}
+	}
+
+	public async exitEditMode() {
+		this.isEditMode = false;
+
+		await this.bake();
+	}
+
+	public async bake() {
+		/*
+		const reflectionProbe = new BABYLON.ReflectionProbe('', 256, this.scene, true, true, true);
+		reflectionProbe.position = new BABYLON.Vector3(0, 150, 0);
+		reflectionProbe.refreshRate = BABYLON.RenderTargetTexture.REFRESHRATE_RENDER_ONCE;
+		reflectionProbe.renderList = this.scene.meshes.filter(m => (m instanceof BABYLON.Mesh || m instanceof BABYLON.InstancedMesh) && m.isEnabled() && m.isVisible && m.material);
+
+		await new Promise(res => window.setTimeout(res, 1000));
+
+		const tex = reflectionProbe.cubeTexture;
+
+		const sphere = BABYLON.MeshBuilder.CreateSphere('', { diameter: 50 }, this.scene);
+		sphere.position = new BABYLON.Vector3(0, 100, 0);
+		const mat = new BABYLON.PBRMaterial('', this.scene);
+		mat.metallic = 1;
+		mat.roughness = 0;
+		mat.reflectionTexture = tex;
+		sphere.material = mat;
+
+		await new Promise(res => window.setTimeout(res, 3000));
+
+		reflectionProbe.renderList = [];
+
+		for (const mesh of this.scene.meshes.filter(m => (m instanceof BABYLON.Mesh || m instanceof BABYLON.InstancedMesh) && m.isEnabled() && m.isVisible && m.material && m.metadata?.isObject)) {
+			if (mesh.material) {
+				mesh.material.unfreeze();
+				if (mesh.material instanceof BABYLON.MultiMaterial) {
+					for (const subMat of mesh.material.subMaterials) {
+						subMat.unfreeze();
+						(subMat as BABYLON.PBRMaterial).reflectionTexture = tex;
+						(subMat as BABYLON.PBRMaterial).realTimeFiltering = true;
+					}
+				} else {
+					(mesh.material as BABYLON.PBRMaterial).reflectionTexture = tex;
+					(mesh.material as BABYLON.PBRMaterial).realTimeFiltering = true;
+				}
+			}
+		}
+		*/
 	}
 
 	public removeSelectedObject() {

@@ -10,7 +10,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<template v-if="!isZenMode">
 			<div v-if="engine != null" class="_buttonsCenter" :class="$style.overlayControls">
-				<template v-if="engine.isEditMode.value">
+				<template v-if="isEditMode">
 					<MkButton v-if="engine.ui.isGrabbing" @click="endGrabbing"><i class="ti ti-check"></i> (E)</MkButton>
 					<MkButton v-else-if="engine.ui.isGrabbingForInstall" @click="endGrabbing"><i class="ti ti-check"></i> (E)</MkButton>
 					<MkButton v-else-if="engine.selected.value != null" @click="beginSelectedInstalledObjectGrabbing"><i class="ti ti-hand-grab"></i> (E)</MkButton>
@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 			</div>
 
-			<div v-if="engine != null && engine.isEditMode.value && engine.selected.value != null" :key="engine.selected.value.objectId" class="_panel" :class="$style.overlayObjectInfoPanel">
+			<div v-if="engine != null && isEditMode && engine.selected.value != null" :key="engine.selected.value.objectId" class="_panel" :class="$style.overlayObjectInfoPanel">
 				{{ engine.selected.value.objectDef.name }}
 
 				<div class="_gaps">
@@ -58,10 +58,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="engine != null" class="_buttons" :class="$style.controls">
 			<!--<MkButton v-for="action in actions" :key="action.key" @click="action.fn">{{ action.label }}{{ hotkeyToLabel(action.hotkey) }}</MkButton>-->
 			<MkButton @click="toggleLight">Toggle Light</MkButton>
-			<MkButton :primary="engine.isEditMode.value" @click="toggleEditMode">Edit mode: {{ engine.isEditMode.value ? 'on' : 'off' }}</MkButton>
-			<MkButton @click="addObject">addObject</MkButton>
-			<MkButton primary @click="save">save</MkButton>
-			<MkButton @click="showBoundingBox">showBoundingBox</MkButton>
+			<MkButton v-if="isEditMode" primary @click="save">Save</MkButton>
+			<MkButton v-if="isEditMode" @click="exitEditMode">Exit edit mode</MkButton>
+			<MkButton v-if="!isEditMode" @click="enterEditMode">Edit mode</MkButton>
+			<MkButton v-if="isEditMode" @click="addObject">addObject</MkButton>
 		</div>
 	</template>
 </div>
@@ -84,6 +84,8 @@ import MkRange from '@/components/MkRange.vue';
 const canvas = useTemplateRef('canvas');
 
 const engine = shallowRef<RoomEngine | null>(null);
+
+const isEditMode = ref(false);
 
 const interacions = shallowRef<{
 	id: string;
@@ -118,7 +120,7 @@ const actions = computed<Action[]>(() => {
 
 	const actions: Action[] = [];
 
-	if (engine.value.isEditMode.value) {
+	if (isEditMode.value) {
 		actions.push({
 			key: 'grab',
 			label: 'Grab',
@@ -152,7 +154,7 @@ function onKeydown(ev: KeyboardEvent) {
 	if (ev.code === 'KeyE') {
 		ev.preventDefault();
 		ev.stopPropagation();
-		if (engine.value.isEditMode.value) {
+		if (isEditMode.value) {
 			if (engine.value.ui.isGrabbing || engine.value.ui.isGrabbingForInstall) {
 				endGrabbing();
 			} else {
@@ -349,11 +351,6 @@ function rotate() {
 	canvas.value!.focus();
 }
 
-function toggleEditMode() {
-	engine.value.isEditMode.value = !engine.value.isEditMode.value;
-	canvas.value!.focus();
-}
-
 async function addObject(ev: PointerEvent) {
 	if (engine.value == null) return;
 	const { dispose } = await os.popupAsyncWithDialog(import('./room.add-object-dialog.vue').then(x => x.default), {
@@ -374,6 +371,16 @@ function removeSelectedObject() {
 function showBoundingBox() {
 	engine.value?.showBoundingBox();
 	canvas.value!.focus();
+}
+
+function enterEditMode() {
+	engine.value?.enterEditMode();
+	isEditMode.value = true;
+}
+
+function exitEditMode() {
+	engine.value?.exitEditMode();
+	isEditMode.value = false;
 }
 
 function getHex(c: [number, number, number]) {
