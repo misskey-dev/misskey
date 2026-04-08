@@ -12,6 +12,10 @@ export const tv = defineObject({
 	name: 'TV',
 	options: {
 		schema: {
+			bodyColor: {
+				type: 'color',
+				label: 'Body color',
+			},
 			screenBrightness: {
 				type: 'range',
 				label: 'Screen brightness',
@@ -21,6 +25,7 @@ export const tv = defineObject({
 			},
 		},
 		default: {
+			bodyColor: [0, 0, 0],
 			screenBrightness: 0.5,
 		},
 	},
@@ -51,9 +56,19 @@ export const tv = defineObject({
 
 		applyScreenBrightness();
 
+		const bodyMaterial = model.findMaterial('__X_BODY__');
+
+		const applyBodyColor = () => {
+			const [r, g, b] = options.bodyColor;
+			bodyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		};
+
+		applyBodyColor();
+
 		return {
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
+					case 'bodyColor': applyBodyColor(); break;
 					case 'screenBrightness': applyScreenBrightness(); break;
 				}
 			},
