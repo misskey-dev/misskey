@@ -51,6 +51,7 @@ import { plant } from './objects/plant.js';
 import { plant2 } from './objects/plant2.js';
 import { poster } from './objects/poster.js';
 import { powerStrip } from './objects/powerStrip.js';
+import { radiometer } from './objects/radiometer.js';
 import { rolledUpPoster } from './objects/rolledUpPoster.js';
 import { roundRug } from './objects/roundRug.js';
 import { router } from './objects/router.js';
@@ -118,6 +119,7 @@ export const OBJECT_DEFS = [
 	plant2,
 	poster,
 	powerStrip,
+	radiometer,
 	rolledUpPoster,
 	roundRug,
 	router,
