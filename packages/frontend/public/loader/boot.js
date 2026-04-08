@@ -79,12 +79,13 @@
 	//#region Theme
 	if (!isSafeMode) {
 		const theme = localStorage.getItem('theme');
+		const isWindowControlsOverlayVisible = navigator.windowControlsOverlay?.visible ?? false;
 		if (theme) {
 			for (const [k, v] of Object.entries(JSON.parse(theme))) {
 				document.documentElement.style.setProperty(`--MI_THEME-${k}`, v.toString());
 
 				// HTMLの theme-color 適用
-				if (k === 'htmlThemeColor') {
+				if ((k === 'htmlThemeColor' && !isWindowControlsOverlayVisible) || (k === 'navBg' && isWindowControlsOverlayVisible)) {
 					for (const tag of document.head.children) {
 						if (tag.tagName === 'META' && tag.getAttribute('name') === 'theme-color') {
 							tag.setAttribute('content', v);

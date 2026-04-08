@@ -5,12 +5,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="[$style.root]">
-	<XTitlebar v-if="prefer.r.showTitlebar.value" style="flex-shrink: 0;"/>
+	<XTitlebar v-if="shouldShowTitlebar" style="flex-shrink: 0;"/>
 
 	<div :class="$style.nonTitlebarArea">
 		<XSidebar v-if="!isMobile && prefer.r['deck.navbarPosition'].value === 'left'"/>
 
-		<div :class="[$style.main, { [$style.withWallpaper]: withWallpaper, [$style.withSidebarAndTitlebar]: !isMobile && prefer.r['deck.navbarPosition'].value === 'left' && prefer.r.showTitlebar.value }]" :style="{ backgroundImage: prefer.s['deck.wallpaper'] != null ? `url(${ prefer.s['deck.wallpaper'] })` : '' }">
+		<div :class="[$style.main, { [$style.withWallpaper]: withWallpaper, [$style.withSidebarAndTitlebar]: !isMobile && prefer.r['deck.navbarPosition'].value === 'left' && shouldShowTitlebar }]" :style="{ backgroundImage: prefer.s['deck.wallpaper'] != null ? `url(${ prefer.s['deck.wallpaper'] })` : '' }">
 			<XNavbarH v-if="!isMobile && prefer.r['deck.navbarPosition'].value === 'top'" :acrylic="withWallpaper"/>
 
 			<XReloadSuggestion v-if="shouldSuggestReload"/>
@@ -85,7 +85,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, ref, useTemplateRef } from 'vue';
+import { computed, defineAsyncComponent, ref, useTemplateRef } from 'vue';
 import XCommon from './_common_/common.vue';
 import { genId } from '@/utility/id.js';
 import XSidebar from '@/ui/_common_/navbar.vue';
@@ -118,6 +118,7 @@ import { shouldSuggestRestoreBackup } from '@/preferences/utility.js';
 import { shouldSuggestReload } from '@/utility/reload-suggest.js';
 import { startTour } from '@/utility/tour.js';
 import { closeTip } from '@/tips.js';
+import { getWindowControlsOverlayVisible } from '@/utility/pwa.js';
 
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
 const XAnnouncements = defineAsyncComponent(() => import('@/ui/_common_/announcements.vue'));
@@ -150,6 +151,9 @@ const isMobile = ref(window.innerWidth <= 500);
 window.addEventListener('resize', () => {
 	isMobile.value = window.innerWidth <= 500;
 });
+
+const windowControlsVisible = getWindowControlsOverlayVisible();
+const shouldShowTitlebar = computed(() => prefer.r.showTitlebar.value || windowControlsVisible.value);
 
 // ポインターイベント非対応用に初期値はUAから出す
 const snapScroll = ref(deviceKind === 'smartphone' || deviceKind === 'tablet');
