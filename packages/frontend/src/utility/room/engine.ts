@@ -1694,6 +1694,7 @@ export class RoomObjectPreviewEngine {
 
 		this.envMapIndoor = BABYLON.CubeTexture.CreateFromPrefilteredData('/client-assets/room/indoor.env', this.scene);
 		this.envMapIndoor.boundingBoxSize = new BABYLON.Vector3(500/*cm*/, 500/*cm*/, 500/*cm*/);
+		this.envMapIndoor.level = 0.25;
 
 		this.camera = new BABYLON.ArcRotateCamera('camera', -Math.PI / 2, Math.PI / 2.5, 300/*cm*/, new BABYLON.Vector3(0, 90/*cm*/, 0), this.scene);
 		this.camera.attachControl(this.canvas);
