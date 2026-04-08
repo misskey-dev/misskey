@@ -104,15 +104,30 @@ export class CleanRemoteNotesProcessorService {
 		}
 		const removalCriteria = removalCriteriaList.join(' AND ');
 
-		const minId = (await this.notesRepository.createQueryBuilder('note')
-			.select('MIN(note.id)', 'minId')
-			.where({
-				id: LessThan(initialConfig.newestLimit),
-				userHost: Not(IsNull()),
-				replyId: IsNull(),
-				renoteId: IsNull(),
-			})
-			.getRawOne<{ minId?: MiNote['id'] }>())?.minId;
+		let minId: MiNote['id'] | undefined;
+		try {
+			minId = (await this.notesRepository.createQueryBuilder('note')
+				.select('MIN(note.id)', 'minId')
+				.where({
+					id: LessThan(initialConfig.newestLimit),
+					userHost: Not(IsNull()),
+					replyId: IsNull(),
+					renoteId: IsNull(),
+				})
+				.getRawOne<{ minId?: MiNote['id'] }>())?.minId;
+		} catch (e) {
+			if (e instanceof QueryFailedError && e.driverError?.code === '57014') {
+				this.logger.warn('minId query timed out, skipping this run...');
+				return {
+					deletedCount: 0,
+					oldest: null,
+					newest: null,
+					skipped: false,
+					transientErrors: 0,
+				};
+			}
+			throw e;
+		}
 
 		if (!minId) {
 			this.logger.info('No notes can possibly be deleted, skipping...');
