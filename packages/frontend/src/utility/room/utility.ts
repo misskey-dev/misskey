@@ -404,16 +404,8 @@ export function createPlaneUvMapper(mesh: BABYLON.Mesh) {
 		if (method === 'cover') {
 			const ratio = targetAspect / srcAspect;
 
-			let uRange: number;
-			let vRange: number;
-
-			if (ratio < 1) {
-				uRange = ratio; // < 1
-				vRange = 1;
-			} else {
-				uRange = 1;
-				vRange = 1 / ratio; // < 1
-			}
+			const uRange = ratio < 1 ? ratio : 1;
+			const vRange = ratio < 1 ? 1 : 1 / ratio;
 
 			const uMin = (1 - uRange) / 2;
 			const uMax = uMin + uRange;
@@ -421,27 +413,18 @@ export function createPlaneUvMapper(mesh: BABYLON.Mesh) {
 			const vMax = vMin + vRange;
 
 			newAx = uMin;
-			newBx = uMax;
-			newCx = uMin;
-			newDx = uMax;
-
 			newAy = 1 - vMax;
+			newBx = uMax;
 			newBy = 1 - vMax;
+			newCx = uMin;
 			newCy = 1 - vMin;
+			newDx = uMax;
 			newDy = 1 - vMin;
 		} else if (method === 'contain') {
 			const ratio = targetAspect / srcAspect;
 
-			let uRange: number;
-			let vRange: number;
-
-			if (ratio > 1) {
-				uRange = ratio; // > 1
-				vRange = 1;
-			} else {
-				uRange = 1;
-				vRange = 1 / ratio; // > 1
-			}
+			const uRange = ratio > 1 ? ratio : 1;
+			const vRange = ratio > 1 ? 1 : 1 / ratio;
 
 			const uMin = (1 - uRange) / 2;
 			const uMax = uMin + uRange;
@@ -449,13 +432,12 @@ export function createPlaneUvMapper(mesh: BABYLON.Mesh) {
 			const vMax = vMin + vRange;
 
 			newAx = uMin;
-			newBx = uMax;
-			newCx = uMin;
-			newDx = uMax;
-
 			newAy = 1 - vMax;
+			newBx = uMax;
 			newBy = 1 - vMax;
+			newCx = uMin;
 			newCy = 1 - vMin;
+			newDx = uMax;
 			newDy = 1 - vMin;
 		} else if (method === 'stretch') {
 			// nop
