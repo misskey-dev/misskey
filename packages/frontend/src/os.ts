@@ -6,7 +6,6 @@
 // TODO: なんでもかんでもos.tsに突っ込むのやめたいのでよしなに分割する
 
 import { markRaw, ref, defineAsyncComponent, nextTick } from 'vue';
-import { EventEmitter } from 'eventemitter3';
 import * as Misskey from 'misskey-js';
 import type { Component, MaybeRef } from 'vue';
 import type { ComponentEmit, ComponentProps as CP } from 'vue-component-type-helpers';
@@ -728,8 +727,6 @@ export async function post(props: PostFormProps = {}): Promise<void> {
 		});
 	});
 }
-
-export const deckGlobalEvents = new EventEmitter();
 
 /*
 export function checkExistence(fileData: ArrayBuffer): Promise<any> {
