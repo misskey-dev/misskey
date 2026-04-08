@@ -247,6 +247,7 @@ class ModelManager {
 			}
 			//newMesh.bakeCurrentTransformIntoVertices();
 
+			// TODO: 必要な時だけやる
 			if (newMesh.getVerticesData(BABYLON.VertexBuffer.UVKind) == null) {
 				const vertexCount = newMesh.getTotalVertices();
 				const uvs = new Array(vertexCount * 2).fill(0);
