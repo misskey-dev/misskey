@@ -98,7 +98,8 @@ export async function masterMain() {
 			// そのため、メインプロセスでも直接listenするとポートの競合が発生して起動に失敗してしまう。
 			// see: https://nodejs.org/api/cluster.html#cluster
 		} else if (envOption.onlyQueue) {
-			await jobQueue();
+			// onlyQueue かつ enableCluster な場合も、メインプロセスはforkのみに制限する。
+			// ワーカープロセス側でjobQueueを起動するため、ここで起動すると親子でキュー処理が二重起動する。
 		} else {
 			await server();
 		}
