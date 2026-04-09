@@ -21,6 +21,7 @@ import { chair } from './objects/chair.js';
 import { coffeeCup } from './objects/coffeeCup.js';
 import { colorBox } from './objects/colorBox.js';
 import { cupNoodle } from './objects/cupNoodle.js';
+import { custardPudding } from './objects/custardPudding.js';
 import { debugHipoly } from './objects/debugHipoly.js';
 import { desk } from './objects/desk.js';
 import { desktopPc } from './objects/desktopPc.js';
@@ -91,6 +92,7 @@ export const OBJECT_DEFS = [
 	coffeeCup,
 	colorBox,
 	cupNoodle,
+	custardPudding,
 	desk,
 	desktopPc,
 	ductTape,
