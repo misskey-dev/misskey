@@ -17,9 +17,10 @@
 		"rollup": "4.60.0"
 	},
 	"dependencies": {
-		"i18n": "workspace:*",
 		"estree-walker": "3.0.3",
+		"i18n": "workspace:*",
 		"magic-string": "0.30.21",
-		"vite": "7.3.1"
+		"rolldown": "1.0.0-rc.13",
+		"vite": "8.0.7"
 	}
 }
