@@ -1500,7 +1500,7 @@ export class RoomEngine {
 		if (this.grabbingCtx != null) return;
 
 		const dir = this.camera.getDirection(BABYLON.Axis.Z).scale(this.scene.useRightHandedSystem ? -1 : 1);
-		const distance = 30/*cm*/;
+		const distance = 50/*cm*/;
 
 		const id = genId();
 
