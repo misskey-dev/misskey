@@ -38,3 +38,5 @@ minimumReleaseAgeExclude:
   - rolldown # 脆弱性対応。そのうち消す
   - '@rolldown/*' # 脆弱性対応。そのうち消す
   - vite # 脆弱性対応。そのうち消す
+  # Renovate security update: @nestjs/core@11.1.18
+  - "@nestjs/core@11.1.18"
