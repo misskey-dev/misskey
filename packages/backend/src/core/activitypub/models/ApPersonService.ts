@@ -673,11 +673,7 @@ export class ApPersonService implements OnModuleInit {
 	public async resolvePerson(uri: string, resolver?: Resolver): Promise<MiLocalUser | MiRemoteUser> {
 		//#region このサーバーに既に登録されていたらそれを返す
 		const exist = await this.fetchPerson(uri);
-		if (exist && !exist.isDeleted) return exist;
-		if (exist?.isDeleted && exist.host != null) {
-			this.cacheService.uriPersonCache.delete(uri);
-			await this.usersRepository.delete({ id: exist.id, isDeleted: true });
-		}
+		if (exist) return exist;
 		//#endregion
 
 		// リモートサーバーからフェッチしてきて登録
