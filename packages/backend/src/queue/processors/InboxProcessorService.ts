@@ -86,7 +86,7 @@ export class InboxProcessorService implements OnApplicationShutdown {
 
 		// 存在しないActorに対するDeleteアクティビティは無視
 		if (isDelete(activity)) {
-			const existingActor = await this.apDbResolverService.getUserFromApId(activity.actor);
+			const existingActor = await this.apPersonService.fetchPerson(getApId(activity.actor));
 			if (existingActor == null) {
 				return `skip: Delete activity for unknown actor ${getApId(activity.actor)}`;
 			}
