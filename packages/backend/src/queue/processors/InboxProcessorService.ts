@@ -13,7 +13,7 @@ import { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataServic
 import InstanceChart from '@/core/chart/charts/instance.js';
 import ApRequestChart from '@/core/chart/charts/ap-request.js';
 import FederationChart from '@/core/chart/charts/federation.js';
-import { getApId } from '@/core/activitypub/type.js';
+import { getApId, isDelete } from '@/core/activitypub/type.js';
 import type { IActivity } from '@/core/activitypub/type.js';
 import type { MiRemoteUser } from '@/models/User.js';
 import type { MiUserPublickey } from '@/models/UserPublickey.js';
@@ -82,6 +82,14 @@ export class InboxProcessorService implements OnApplicationShutdown {
 		const keyIdLower = signature.keyId.toLowerCase();
 		if (keyIdLower.startsWith('acct:')) {
 			return `Old keyId is no longer supported. ${keyIdLower}`;
+		}
+
+		// 存在しないActorに対するDeleteアクティビティは無視
+		if (isDelete(activity)) {
+			const existingActor = await this.apDbResolverService.getUserFromApId(activity.actor);
+			if (existingActor == null) {
+				return `skip: Delete activity for unknown actor ${getApId(activity.actor)}`;
+			}
 		}
 
 		// HTTP-Signature keyIdを元にDBから取得
