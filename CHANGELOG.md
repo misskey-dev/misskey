@@ -10,6 +10,7 @@
 ### Server
 - Fix: `/api-doc` にアクセスできない問題を修正
 - Fix: support `alsoKnownAs` from remote actors as either array or unwrapped singleton
+- Fix: クラスタ有効時に onlyQueue モードでジョブキューが二重起動する問題を修正
 
 ## 2026.3.2
 
