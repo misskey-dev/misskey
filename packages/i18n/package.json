@@ -28,7 +28,6 @@
 		"built"
 	],
 	"devDependencies": {
-		"@types/js-yaml": "4.0.9",
 		"@types/node": "24.12.0",
 		"@typescript-eslint/eslint-plugin": "8.57.2",
 		"@typescript-eslint/parser": "8.57.2",
@@ -39,6 +38,6 @@
 		"tsx": "4.21.0"
 	},
 	"dependencies": {
-		"js-yaml": "4.1.1"
+		"yaml": "2.8.3"
 	}
 }

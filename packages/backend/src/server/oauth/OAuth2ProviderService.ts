@@ -12,7 +12,7 @@ import ipaddr from 'ipaddr.js';
 import oauth2orize, { type OAuth2, AuthorizationError, ValidateFunctionArity2, OAuth2Req, MiddlewareRequest } from 'oauth2orize';
 import oauth2Pkce from 'oauth2orize-pkce';
 import fastifyCors from '@fastify/cors';
-import bodyParser from 'body-parser';
+import { json as parseBodyJson, urlencoded as parseBodyUrlEncoded } from 'milliparsec';
 import fastifyExpress from '@fastify/express';
 import { verifyChallenge } from 'pkce-challenge';
 import { permissions as kinds } from 'misskey-js';
@@ -525,7 +525,7 @@ export class OAuth2ProviderService {
 		}));
 		fastify.use('/authorize', this.#server.errorHandler());
 
-		fastify.use('/decision', bodyParser.urlencoded({ extended: false }));
+		fastify.use('/decision', parseBodyUrlEncoded());
 		fastify.use('/decision', this.#server.decision((req, done) => {
 			const { body } = req as OAuth2DecisionRequest;
 			this.#logger.info(`Received the decision. Cancel: ${!!body.cancel}`);
@@ -556,8 +556,8 @@ export class OAuth2ProviderService {
 
 		await fastify.register(fastifyExpress);
 		// Clients may use JSON or urlencoded
-		fastify.use('', bodyParser.urlencoded({ extended: false }));
-		fastify.use('', bodyParser.json({ strict: true }));
+		fastify.use('', parseBodyUrlEncoded());
+		fastify.use('', parseBodyJson());
 		fastify.use('', this.#server.token());
 		fastify.use('', this.#server.errorHandler());
 	}

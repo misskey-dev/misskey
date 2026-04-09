@@ -57,15 +57,14 @@
 		"esbuild": "0.27.4",
 		"execa": "9.6.1",
 		"ignore-walk": "8.0.0",
-		"js-yaml": "4.1.1",
 		"postcss": "8.5.8",
 		"tar": "7.5.13",
-		"terser": "5.46.1"
+		"terser": "5.46.1",
+		"yaml": "2.8.3"
 	},
 	"devDependencies": {
 		"@eslint/js": "9.39.4",
 		"@misskey-dev/eslint-plugin": "2.1.0",
-		"@types/js-yaml": "4.0.9",
 		"@types/node": "24.12.0",
 		"@typescript-eslint/eslint-plugin": "8.57.2",
 		"@typescript-eslint/parser": "8.57.2",
