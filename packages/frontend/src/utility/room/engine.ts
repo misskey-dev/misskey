@@ -448,7 +448,7 @@ export class RoomEngine {
 	private roomCollisionMeshes: BABYLON.AbstractMesh[] = [];
 	public roomState: RoomState;
 	public enableGridSnapping = ref(true);
-	public gridSnappingScale = ref(8/*cm*/);
+	public gridSnappingScale = ref(4/*cm*/);
 	private putParticleSystem: BABYLON.ParticleSystem;
 	private envMapIndoor: BABYLON.CubeTexture;
 	private envMapOutdoor: BABYLON.CubeTexture;
