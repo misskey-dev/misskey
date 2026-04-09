@@ -708,8 +708,27 @@ export class RoomEngine {
 				if (oid != null && this.objectEntities.has(oid)) {
 					const o = this.objectEntities.get(oid)!;
 					const boundingInfo = getMeshesBoundingBox(o.rootMesh.getChildMeshes().filter(m => m.isEnabled() && m.isVisible));
-					this.camera.setTarget(boundingInfo.center);
 					this.selectObject(oid);
+
+					{ // camera animation
+						const animTarget = new BABYLON.Animation(
+							'',
+							'target',
+							60,
+							BABYLON.Animation.ANIMATIONTYPE_VECTOR3,
+							BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT,
+						);
+						const keys = [
+							{ frame: 0, value: this.camera.target.clone() },
+							{ frame: 30, value: boundingInfo.center.clone() },
+						];
+						animTarget.setKeys(keys);
+						const easing = new BABYLON.CubicEase();
+						easing.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
+						animTarget.setEasingFunction(easing);
+						this.camera.animations.push(animTarget);
+						this.scene.beginAnimation(this.camera, 0, 30, false);
+					}
 				}
 			}
 		});
