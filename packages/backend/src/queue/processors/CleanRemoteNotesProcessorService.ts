@@ -250,15 +250,24 @@ export class CleanRemoteNotesProcessorService {
 					if (currentLimit <= minimumLimit) {
 						job.log('Local note tree complexity is too high, finding next root note...');
 
-						const idWindow = await this.notesRepository.createQueryBuilder('note')
-							.select('id')
-							.where('note.id > :cursorLeft')
-							.andWhere(removalCriteria)
-							.andWhere({ replyId: IsNull(), renoteId: IsNull() })
-							.orderBy('note.id', 'ASC')
-							.limit(minimumLimit + 1)
-							.setParameters({ cursorLeft, newestLimit, ...(defaultTag != null ? { defaultTag } : {}) })
-							.getRawMany<{ id?: MiNote['id'] }>();
+						let idWindow;
+						try {
+							idWindow = await this.notesRepository.createQueryBuilder('note')
+								.select('id')
+								.where('note.id > :cursorLeft')
+								.andWhere(removalCriteria)
+								.andWhere({ replyId: IsNull(), renoteId: IsNull() })
+								.orderBy('note.id', 'ASC')
+								.limit(minimumLimit + 1)
+								.setParameters({ cursorLeft, newestLimit, ...(defaultTag != null ? { defaultTag } : {}) })
+								.getRawMany<{ id?: MiNote['id'] }>();
+						} catch (e2) {
+							if (e2 instanceof QueryFailedError && e2.driverError?.code === '57014') {
+								job.log('idWindow query timed out, skipping this run...');
+								break;
+							}
+							throw e2;
+						}
 
 						job.log(`Skipped note IDs: ${idWindow.slice(0, minimumLimit).map(id => id.id).join(', ')}`);
 
