@@ -1571,8 +1571,8 @@ export class RoomEngine {
 
 				this.ui.isGrabbingForInstall = false;
 
-				const pos = this.grabbingCtx.mesh.position.clone();
-				const rotation = this.grabbingCtx.mesh.rotation.clone();
+				const pos = root.position.clone();
+				const rotation = root.rotation.clone();
 
 				this.putParticleSystem.emitter = pos;
 				this.putParticleSystem.start();
@@ -1581,6 +1581,25 @@ export class RoomEngine {
 					volume: 1,
 					playbackRate: 1,
 				});
+
+				// put animation
+				const animTarget = new BABYLON.Animation(
+					'',
+					'scaling',
+					60,
+					BABYLON.Animation.ANIMATIONTYPE_VECTOR3,
+					BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT,
+				);
+				const keys = [
+					{ frame: 0, value: new BABYLON.Vector3(1, 1.2, 1) },
+					{ frame: 60, value: new BABYLON.Vector3(1, 1, 1) },
+				];
+				animTarget.setKeys(keys);
+				const easing = new BABYLON.ElasticEase(2);
+				easing.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
+				animTarget.setEasingFunction(easing);
+				root.animations.push(animTarget);
+				this.scene.beginAnimation(root, 0, 60, false, 3);
 
 				this.roomState.installedObjects.push({
 					id,
