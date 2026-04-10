@@ -1518,6 +1518,7 @@ export class RoomEngine {
 	public async addObject(type: string) {
 		if (!this.isEditMode) return;
 		if (this.grabbingCtx != null) return;
+		this.selectObject(null);
 
 		const dir = this.camera.getDirection(BABYLON.Axis.Z).scale(this.scene.useRightHandedSystem ? -1 : 1);
 		const distance = 50/*cm*/;
