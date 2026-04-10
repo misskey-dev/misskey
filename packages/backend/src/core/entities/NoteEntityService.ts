@@ -11,7 +11,7 @@ import type { Packed } from '@/misc/json-schema.js';
 import { awaitAll } from '@/misc/prelude/await-all.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiNote } from '@/models/Note.js';
-import type { UsersRepository, NotesRepository, FollowingsRepository, PollsRepository, PollVotesRepository, NoteReactionsRepository, ChannelsRepository, MiMeta } from '@/models/_.js';
+import type { UsersRepository, NotesRepository, FollowingsRepository, PollsRepository, PollVotesRepository, NoteReactionsRepository, ChannelsRepository, MiMeta, DeletedNotesRepository, MiDeletedNote } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { DebounceLoader } from '@/misc/loader.js';
 import { IdService } from '@/core/IdService.js';
@@ -23,6 +23,7 @@ import type { CustomEmojiService } from '../CustomEmojiService.js';
 import type { ReactionService } from '../ReactionService.js';
 import type { UserEntityService } from './UserEntityService.js';
 import type { DriveFileEntityService } from './DriveFileEntityService.js';
+import { SystemAccountService } from '@/core/SystemAccountService.js';
 
 // is-renote.tsとよしなにリンク
 function isPureRenote(note: MiNote): note is MiNote & { renoteId: MiNote['id']; renote: MiNote } {
@@ -59,6 +60,18 @@ async function nullIfEntityNotFound<T>(promise: Promise<T>): Promise<T | null> {
 	}
 }
 
+type PackSingleOptions = {
+	detail?: boolean;
+	skipHide?: boolean;
+	withReactionAndUserPairCache?: boolean;
+	_hint_?: {
+		bufferedReactions: Map<MiNote['id'], { deltas: Record<string, number>; pairs: ([MiUser['id'], string])[] }> | null;
+		myReactions: Map<MiNote['id'], string | null>;
+		packedFiles: Map<MiNote['fileIds'][number], Packed<'DriveFile'> | null>;
+		packedUsers: Map<MiUser['id'], Packed<'UserLite'>>
+	};
+};
+
 @Injectable()
 export class NoteEntityService implements OnModuleInit {
 	private userEntityService: UserEntityService;
@@ -82,6 +95,9 @@ export class NoteEntityService implements OnModuleInit {
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
+		@Inject(DI.deletedNotesRepository)
+		private deletedNotesRepository: DeletedNotesRepository,
+
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
 
@@ -97,6 +113,7 @@ export class NoteEntityService implements OnModuleInit {
 		@Inject(DI.channelsRepository)
 		private channelsRepository: ChannelsRepository,
 
+		private systemAccountService: SystemAccountService,
 		//private userEntityService: UserEntityService,
 		//private driveFileEntityService: DriveFileEntityService,
 		//private customEmojiService: CustomEmojiService,
@@ -340,20 +357,23 @@ export class NoteEntityService implements OnModuleInit {
 	}
 
 	@bindThis
+	public async packMayDeleted(
+		src: MiNote | MiDeletedNote,
+		me?: { id: MiUser['id'] } | null | undefined,
+		options?: PackSingleOptions,
+	): Promise<Packed<'Note'>> {
+		if ('deletedAt' in src) {
+			return this.packDeletedNote(src, me, options);
+		} else {
+			return this.pack(src, me, options);
+		}
+	}
+
+	@bindThis
 	public async pack(
 		src: MiNote['id'] | MiNote,
 		me?: { id: MiUser['id'] } | null | undefined,
-		options?: {
-			detail?: boolean;
-			skipHide?: boolean;
-			withReactionAndUserPairCache?: boolean;
-			_hint_?: {
-				bufferedReactions: Map<MiNote['id'], { deltas: Record<string, number>; pairs: ([MiUser['id'], string])[] }> | null;
-				myReactions: Map<MiNote['id'], string | null>;
-				packedFiles: Map<MiNote['fileIds'][number], Packed<'DriveFile'> | null>;
-				packedUsers: Map<MiUser['id'], Packed<'UserLite'>>
-			};
-		},
+		options?: PackSingleOptions,
 	): Promise<Packed<'Note'>> {
 		const opts = Object.assign({
 			detail: true,
@@ -362,7 +382,19 @@ export class NoteEntityService implements OnModuleInit {
 		}, options);
 
 		const meId = me ? me.id : null;
-		const note = typeof src === 'object' ? src : await this.noteLoader.load(src);
+		let note: MiNote;
+		if (typeof src === 'object') {
+			note = src;
+		} else {
+			try {
+				note = await this.noteLoader.load(src);
+			} catch (err) {
+				if (err instanceof EntityNotFoundError) {
+					return this.packDeletedNote(src);
+				}
+				throw err;
+			}
+		}
 		const host = note.userHost;
 
 		const bufferedReactions = opts._hint_?.bufferedReactions != null
@@ -432,16 +464,14 @@ export class NoteEntityService implements OnModuleInit {
 			...(opts.detail ? {
 				clippedCount: note.clippedCount,
 
-				// そもそもJOINしていない場合はundefined、JOINしたけど存在していなかった場合はnullで区別される
-				reply: (note.replyId && note.reply === null) ? null : note.replyId ? nullIfEntityNotFound(this.pack(note.reply ?? note.replyId, me, {
+				reply: note.replyId ? nullIfEntityNotFound(this.pack(note.reply ?? note.replyId, me, {
 					detail: false,
 					skipHide: opts.skipHide,
 					withReactionAndUserPairCache: opts.withReactionAndUserPairCache,
 					_hint_: options?._hint_,
 				})) : undefined,
 
-				// そもそもJOINしていない場合はundefined、JOINしたけど存在していなかった場合はnullで区別される
-				renote: (note.renoteId && note.renote === null) ? null : note.renoteId ? nullIfEntityNotFound(this.pack(note.renote ?? note.renoteId, me, {
+				renote: note.renoteId ? nullIfEntityNotFound(this.pack(note.renote ?? note.renoteId, me, {
 					detail: true,
 					skipHide: opts.skipHide,
 					withReactionAndUserPairCache: opts.withReactionAndUserPairCache,
@@ -469,9 +499,93 @@ export class NoteEntityService implements OnModuleInit {
 		return packed;
 	}
 
+	public async packDeletedNote(
+		srcId: MiNote['id'] | MiDeletedNote,
+		me?: { id: MiUser['id'] } | null | undefined,
+		options?: PackSingleOptions,
+	): Promise<Packed<'Note'>> {
+		const opts = Object.assign({
+			detail: true,
+			skipHide: false,
+			withReactionAndUserPairCache: false,
+		}, options);
+
+		const deletedNote = typeof srcId === 'object' ? srcId : await this.deletedNotesRepository.findOneOrFail({
+			where: {
+				id: srcId,
+			},
+			relations: ['renote', 'reply', 'channel'],
+		});
+
+		const channel = deletedNote.channelId
+			? deletedNote.channel ?? await this.channelsRepository.findOneBy({ id: deletedNote.channelId })
+			: null;
+
+		const ghostUser = await this.systemAccountService.fetch('ghost');
+
+		return await awaitAll({
+			id: deletedNote.id,
+			createdAt: this.idService.parse(deletedNote.id).date.toISOString(),
+			deletedAt: deletedNote.deletedAt?.toISOString() ?? undefined,
+			userId: ghostUser.id,
+			user: this.userEntityService.pack(ghostUser, me),
+			text: deletedNote.deletedAt ? "<small>Deleted note</small>" : "<small>Forgotten remote note. View on remote instance to see contents.</small>",
+			cw: null,
+			visibility: 'public',
+			localOnly: deletedNote.localOnly,
+			reactionAcceptance: 'likeOnly',
+			visibleUserIds: undefined,
+			renoteCount: 0,
+			repliesCount: 0,
+			reactionCount: 0,
+			reactions: {},
+			reactionEmojis: {},
+			reactionAndUserPairCache: [],
+			emojis: {},
+			tags: undefined,
+			fileIds: [],
+			files: [],
+			replyId: deletedNote.replyId,
+			renoteId: deletedNote.renoteId,
+			channelId: deletedNote.channelId ?? undefined,
+			channel: channel ? {
+				id: channel.id,
+				name: channel.name,
+				color: channel.color,
+				isSensitive: channel.isSensitive,
+				allowRenoteToExternal: channel.allowRenoteToExternal,
+				userId: channel.userId,
+			} : undefined,
+			mentions: undefined,
+			hasPoll: undefined,
+			uri: deletedNote.uri ?? undefined,
+			url: deletedNote.url ?? undefined,
+
+			...(opts.detail ? {
+				clippedCount: 0,
+
+				reply: deletedNote.replyId ? this.pack(deletedNote.reply ?? deletedNote.replyId, me, {
+					detail: false,
+					skipHide: opts.skipHide,
+					withReactionAndUserPairCache: opts.withReactionAndUserPairCache,
+					_hint_: options?._hint_,
+				}) : undefined,
+
+				renote: deletedNote.renoteId ? this.pack(deletedNote.renote ?? deletedNote.renoteId, me, {
+					detail: true,
+					skipHide: opts.skipHide,
+					withReactionAndUserPairCache: opts.withReactionAndUserPairCache,
+					_hint_: options?._hint_,
+				}) : undefined,
+
+				poll: undefined,
+			} : {}),
+		});
+	}
+
 	@bindThis
 	public async packMany(
-		notes: MiNote[],
+		notes: (MiNote | MiDeletedNote)[],
 		me?: { id: MiUser['id'] } | null | undefined,
 		options?: {
 			detail?: boolean;
@@ -480,7 +594,9 @@ export class NoteEntityService implements OnModuleInit {
 	) {
 		if (notes.length === 0) return [];
 
-		const bufferedReactions = this.meta.enableReactionsBuffering ? await this.reactionsBufferingService.getMany([...getAppearNoteIds(notes)]) : null;
+		const liveNotes = notes.filter((n): n is MiNote => !('deletedAt' in n));
+
+		const bufferedReactions = this.meta.enableReactionsBuffering ? await this.reactionsBufferingService.getMany([...getAppearNoteIds(liveNotes)]) : null;
 
 		const meId = me ? me.id : null;
 		const myReactionsMap = new Map<MiNote['id'], string | null>();
@@ -490,7 +606,7 @@ export class NoteEntityService implements OnModuleInit {
 			// パフォーマンスのためノートが作成されてから2秒以上経っていない場合はリアクションを取得しない
 			const oldId = this.idService.gen(Date.now() - 2000);
 
-			for (const note of notes) {
+			for (const note of liveNotes) {
 				if (isPureRenote(note)) {
 					const reactionsCount = Object.values(this.reactionsBufferingService.mergeReactions(note.renote.reactions, bufferedReactions?.get(note.renote.id)?.deltas ?? {})).reduce((a, b) => a + b, 0);
 					if (reactionsCount === 0) {
@@ -538,19 +654,19 @@ export class NoteEntityService implements OnModuleInit {
 			}
 		}
 
-		await this.customEmojiService.prefetchEmojis(this.aggregateNoteEmojis(notes));
+		await this.customEmojiService.prefetchEmojis(this.aggregateNoteEmojis(liveNotes));
 		// TODO: 本当は renote とか reply がないのに renoteId とか replyId があったらここで解決しておく
-		const fileIds = notes.map(n => [n.fileIds, n.renote?.fileIds, n.reply?.fileIds]).flat(2).filter(x => x != null);
+		const fileIds = liveNotes.map(n => [n.fileIds, n.renote?.fileIds, n.reply?.fileIds]).flat(2).filter(x => x != null);
 		const packedFiles = fileIds.length > 0 ? await this.driveFileEntityService.packManyByIdsMap(fileIds) : new Map();
 		const users = [
-			...notes.map(({ user, userId }) => user ?? userId),
+			...liveNotes.map(({ user, userId }) => user ?? userId),
 			...notes.map(({ replyUserId }) => replyUserId).filter(x => x != null),
 			...notes.map(({ renoteUserId }) => renoteUserId).filter(x => x != null),
 		];
 		const packedUsers = await this.userEntityService.packMany(users, me)
 			.then(users => new Map(users.map(u => [u.id, u])));
 
-		return await Promise.all(notes.map(n => this.pack(n, me, {
+		return await Promise.all(notes.map(n => this.packMayDeleted(n, me, {
 			...options,
 			_hint_: {
 				bufferedReactions,

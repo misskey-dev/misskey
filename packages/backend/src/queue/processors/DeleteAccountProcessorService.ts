@@ -4,17 +4,19 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { MoreThan } from 'typeorm';
+import { DataSource, MoreThan } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { DriveFilesRepository, NotesRepository, PagesRepository, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import type Logger from '@/logger.js';
 import { DriveService } from '@/core/DriveService.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
-import type { MiNote } from '@/models/Note.js';
+import { MiNote } from '@/models/Note.js';
+import { MiDeletedNote } from '@/models/DeletedNote.js';
 import { EmailService } from '@/core/EmailService.js';
 import { bindThis } from '@/decorators.js';
 import { SearchService } from '@/core/SearchService.js';
 import { PageService } from '@/core/PageService.js';
+import { isQuote, isRenote } from '@/misc/is-renote.js';
 import { QueueLoggerService } from '../QueueLoggerService.js';
 import type * as Bull from 'bullmq';
 import type { DbUserDeleteJobData } from '../types.js';
@@ -24,6 +26,9 @@ export class DeleteAccountProcessorService {
 	private logger: Logger;
 
 	constructor(
+		@Inject(DI.db)
+		private db: DataSource,
+
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
@@ -78,7 +83,24 @@ export class DeleteAccountProcessorService {
 
 				cursor = notes.at(-1)?.id ?? null;
 
-				await this.notesRepository.delete(notes.map(note => note.id));
+				await this.db.transaction(async transaction => {
+					await transaction.delete(MiNote, notes.map(note => note.id));
+					// We keep some limited information about deleted renotes to preserve reply/renote chains
+					// We do not keep for pure renotes because it will not have any replies/renotes.
+					// (Historically we can renote pure renotes and can reply to pure renotes with API, but it was just a bug and fixed.)
+					await transaction.save(MiDeletedNote, notes.filter(note => !(isRenote(note) && !isQuote(note))).map(note => ({
+						id: note.id,
+						deletedAt: new Date(),
+						replyId: note.replyId,
+						renoteId: note.renoteId,
+						localOnly: note.localOnly,
+						uri: note.uri,
+						url: note.url,
+						channelId: note.channelId,
+						replyUserId: note.replyUserId,
+						renoteUserId: note.renoteUserId,
+					})));
+				});
 
 				for (const note of notes) {
 					await this.searchService.unindexNote(note);

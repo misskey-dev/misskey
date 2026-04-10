@@ -5,18 +5,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <header :class="$style.root">
-	<div v-if="mock" :class="$style.name">
-		<MkUserName :user="note.user"/>
-	</div>
-	<MkA v-else v-user-preview="note.user.id" :class="$style.name" :to="userPage(note.user)">
-		<MkUserName :user="note.user"/>
-	</MkA>
-	<div v-if="note.user.isBot" :class="$style.isBot">bot</div>
-	<div :class="$style.username"><MkAcct :user="note.user"/></div>
-	<div v-if="note.user.badgeRoles" :class="$style.badgeRoles">
-		<img v-for="(role, i) in note.user.badgeRoles" :key="i" v-tooltip="role.name" :class="$style.badgeRole" :src="role.iconUrl!"/>
-	</div>
-	<div :class="$style.info">
+	<template v-if="note && !note.deletedAt">
+		<div v-if="mock" :class="$style.name">
+			<MkUserName :user="note.user"/>
+		</div>
+		<MkA v-else v-user-preview="note.user.id" :class="$style.name" :to="userPage(note.user)">
+			<MkUserName :user="note.user"/>
+		</MkA>
+		<div v-if="note.user.isBot" :class="$style.isBot">bot</div>
+		<div :class="$style.username"><MkAcct :user="note.user"/></div>
+		<div v-if="note.user.badgeRoles" :class="$style.badgeRoles">
+			<img v-for="(role, i) in note.user.badgeRoles" :key="i" v-tooltip="role.name" :class="$style.badgeRole" :src="role.iconUrl!"/>
+		</div>
+	</template>
+	<template v-else>
+		<div :class="$style.name" style="opacity: 0.5;">
+			Unknown User
+		</div>
+	</template>
+	<div v-if="note" :class="$style.info">
 		<div v-if="mock">
 			<MkTime :time="note.createdAt" colored/>
 		</div>
@@ -43,7 +50,7 @@ import { userPage } from '@/filters/user.js';
 import { DI } from '@/di.js';
 
 defineProps<{
-	note: Misskey.entities.Note;
+	note: Misskey.entities.Note | null;
 }>();
 
 const mock = inject(DI.mock, false);
