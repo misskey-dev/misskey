@@ -1343,8 +1343,6 @@ export class RoomEngine {
 			},
 			onDone: () => { // todo: sticky状態などを引数でもらうようにしたい
 				this.ui.isGrabbing = false;
-
-				// 親から先に外していく
 				const pos = selectedObject.position.clone();
 				const rotation = selectedObject.rotation.clone();
 				this.putParticleSystem.emitter = pos;
