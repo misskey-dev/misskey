@@ -16,13 +16,20 @@ export const randomBooks = defineObject({
 	name: 'randomBooks',
 	options: {
 		schema: {
+			plainCover: {
+				type: 'boolean',
+				label: 'Plain cover',
+			},
 		},
 		default: {
+			plainCover: false,
 		},
 	},
 	placement: 'top',
-	createInstance: ({ options, model }) => {
+	createInstance: ({ options, model, scene }) => {
 		const bodyMesh = model.findMesh('__X_BODY__');
+		const tex = new BABYLON.Texture('/client-assets/room/objects/random-books/texture.png', scene, false, false);
+		bodyMesh.material.albedoTexture = tex;
 
 		const count = 10;
 
@@ -34,7 +41,7 @@ export const randomBooks = defineObject({
 			mesh.morphTargetManager = bodyMesh.morphTargetManager.clone();
 			mesh.markVerticesDataAsUpdatable(BABYLON.VertexBuffer.UVKind, true);
 
-			const index = Math.floor(Math.random() * 8);
+			const index = Math.floor(Math.random() * 15);
 			const x = index % 8;
 			const y = Math.floor(index / 8);
 

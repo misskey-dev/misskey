@@ -15,29 +15,59 @@ export const book = defineObject({
 				label: 'Variation',
 				enum: [0, 1],
 			},
+			width: {
+				type: 'range',
+				label: 'Width',
+				min: 0,
+				max: 1,
+				step: 0.01,
+			},
+			height: {
+				type: 'range',
+				label: 'Height',
+				min: 0,
+				max: 1,
+				step: 0.01,
+			},
+			thickness: {
+				type: 'range',
+				label: 'thickness',
+				min: 0,
+				max: 1,
+				step: 0.01,
+			},
 		},
 		default: {
 			variation: 0,
+			width: 0.07,
+			height: 0.07,
+			thickness: 0.1,
 		},
 	},
 	placement: 'top',
-	createInstance: ({ options, root }) => {
+	createInstance: ({ options, model }) => {
+		const bodyMesh = model.findMesh('__X_BODY__');
+
+		const applySize = () => {
+			bodyMesh.morphTargetManager!.getTargetByName('Width')!.influence = options.width;
+			bodyMesh.morphTargetManager!.getTargetByName('Height')!.influence = options.height;
+			bodyMesh.morphTargetManager!.getTargetByName('Thickness')!.influence = options.thickness;
+			model.updated();
+		};
+
+		applySize();
+
 		return {
 			onInited: () => {
-				const mesh = root.getChildMeshes()[1] as BABYLON.Mesh;
-				mesh.markVerticesDataAsUpdatable(BABYLON.VertexBuffer.UVKind, true);
-				const index = options.variation ?? 0;
-				const x = index % 8;
-				const y = Math.floor(index / 8);
-
-				const uvs = mesh.getVerticesData(BABYLON.VertexBuffer.UVKind)!;
-				for (let i = 0; i < uvs.length / 2; i++) {
-					const u = uvs[i * 2];
-					const v = uvs[i * 2 + 1];
-					uvs[i * 2] = (u / 8) + (x / 8);
-					uvs[i * 2 + 1] = (v / 8) + (y / 8);
+			},
+			onOptionsUpdated: ([k, v]) => {
+				switch (k) {
+					case 'width':
+					case 'height':
+					case 'thickness':
+						applySize();
+						break;
 				}
-				mesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
 			},
 			interactions: {},
 		};
