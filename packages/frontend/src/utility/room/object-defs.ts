@@ -31,6 +31,7 @@ import { energyDrink } from './objects/energyDrink.js';
 import { envelope } from './objects/envelope.js';
 import { facialTissue } from './objects/facialTissue.js';
 import { hangingTShirt } from './objects/hangingTShirt.js';
+import { icosahedron } from './objects/icosahedron.js';
 import { keyboard } from './objects/keyboard.js';
 import { laptopPc } from './objects/laptopPc.js';
 import { lavaLamp } from './objects/lavaLamp.js';
@@ -104,6 +105,7 @@ export const OBJECT_DEFS = [
 	envelope,
 	facialTissue,
 	hangingTShirt,
+	icosahedron,
 	keyboard,
 	laptopPc,
 	lavaLamp,
