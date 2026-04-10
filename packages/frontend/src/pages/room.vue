@@ -178,7 +178,13 @@ function onKeydown(ev: KeyboardEvent) {
 	} else if (ev.code === 'Tab') {
 		ev.preventDefault();
 		ev.stopPropagation();
-		toggleEditMode();
+		if (isEditMode.value) {
+			engine.value.exitEditMode();
+			isEditMode.value = false;
+		} else {
+			engine.value.enterEditMode();
+			isEditMode.value = true;
+		}
 	} else if (ev.code === 'KeyZ') {
 		ev.preventDefault();
 		ev.stopPropagation();
