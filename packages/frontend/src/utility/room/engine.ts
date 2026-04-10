@@ -1225,10 +1225,12 @@ export class RoomEngine {
 							for (const subMat of mesh.material.subMaterials) {
 								(subMat as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
 								(subMat as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
+								(subMat as BABYLON.PBRMaterial).anisotropy.isEnabled = false; // なんかきれいにレンダリングされないため
 							}
 						} else {
 							(mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
 							(mesh.material as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
+							(mesh.material as BABYLON.PBRMaterial).anisotropy.isEnabled = false; // なんかきれいにレンダリングされないため
 						}
 					}
 				}
