@@ -70,6 +70,7 @@ import { tabletopPictureFrame } from './objects/tabletopPictureFrame.js';
 import { tapestry } from './objects/tapestry.js';
 import { tetrapod } from './objects/tetrapod.js';
 import { tv } from './objects/tv.js';
+import { usedTissue } from './objects/usedTissue.js';
 import { wallCanvas } from './objects/wallCanvas.js';
 import { wallClock } from './objects/wallClock.js';
 import { wallMirror } from './objects/wallMirror.js';
@@ -144,6 +145,7 @@ export const OBJECT_DEFS = [
 	tapestry,
 	tetrapod,
 	tv,
+	usedTissue,
 	wallCanvas,
 	wallClock,
 	wallMirror,
