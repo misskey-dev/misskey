@@ -61,7 +61,7 @@ const mimeTypeMap = {
 export type UploaderItem = {
 	id: string;
 	name: string;
-	uploadName?: string;
+	suffix?: string;
 	progress: { max: number; value: number } | null;
 	thumbnail: string | null;
 	preprocessing: boolean;
@@ -503,7 +503,7 @@ export function useUploader(options: {
 		item.uploading = true;
 
 		const { filePromise, abort } = uploadFile(item.preprocessedFile ?? item.file, {
-			name: item.uploadName ?? item.name,
+			name: item.name + (item.suffix ?? ''),
 			folderId: options.folderId === undefined ? prefer.s.uploadFolder : options.folderId,
 			isSensitive: item.isSensitive ?? false,
 			caption: item.caption ?? null,
@@ -677,14 +677,14 @@ export function useUploader(options: {
 					// (and WebP is not browser safe yet)
 					preprocessedFile = result;
 					item.compressedSize = result.size;
-					item.uploadName = preprocessedFile.type !== config.mimeType ? `${item.name}.${mimeTypeMap[config.mimeType]}` : item.name;
+					item.suffix = preprocessedFile.type !== config.mimeType ? `.${mimeTypeMap[config.mimeType]}` : '';
 				}
 			} catch (err) {
 				console.error('Failed to resize image', err);
 			}
 		} else {
 			item.compressedSize = null;
-			item.uploadName = item.name;
+			item.suffix = '';
 		}
 
 		imageBitmap.close();
@@ -743,10 +743,10 @@ export function useUploader(options: {
 
 			preprocessedFile = new Blob([output.target.buffer!], { type: output.format.mimeType });
 			item.compressedSize = output.target.buffer!.byteLength;
-			item.uploadName = `${item.name}.mp4`;
+			item.suffix = `.mp4`;
 		} else {
 			item.compressedSize = null;
-			item.uploadName = item.name;
+			item.suffix = '';
 		}
 
 		if (item.thumbnail != null) URL.revokeObjectURL(item.thumbnail);
