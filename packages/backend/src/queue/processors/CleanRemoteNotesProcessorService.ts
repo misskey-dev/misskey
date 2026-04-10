@@ -325,6 +325,10 @@ export class CleanRemoteNotesProcessorService {
 					if (e instanceof QueryFailedError && e.driverError?.code?.startsWith('23')) {
 						transientErrors++;
 						job.log(`Error deleting notes: ${e} (transient race condition?)`);
+					} else if (e instanceof QueryFailedError && e.driverError?.code === '57014') {
+						// Statement timeout on DELETE. End this run gracefully; the next run will retry.
+						job.log(`DELETE query timed out (${deletableNoteIds.length} notes), ending this run...`);
+						break;
 					} else {
 						throw e;
 					}
