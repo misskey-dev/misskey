@@ -24,7 +24,7 @@ export const randomBooks = defineObject({
 	createInstance: ({ options, model }) => {
 		const bodyMesh = model.findMesh('__X_BODY__');
 
-		const count = 4;
+		const count = 10;
 
 		let accumulatedPos = 0;
 
@@ -34,7 +34,7 @@ export const randomBooks = defineObject({
 			mesh.morphTargetManager = bodyMesh.morphTargetManager.clone();
 			mesh.markVerticesDataAsUpdatable(BABYLON.VertexBuffer.UVKind, true);
 
-			const index = Math.floor(Math.random() * 4);
+			const index = Math.floor(Math.random() * 8);
 			const x = index % 8;
 			const y = Math.floor(index / 8);
 
@@ -47,15 +47,15 @@ export const randomBooks = defineObject({
 			}
 			mesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
 
-			const width = randomRange(0.15, 0.25);
-			const height = randomRange(0.2, 0.3);
-			const thickness = randomRange(0, 0.1);
+			const width = randomRange(0.1, 0.2);
+			const height = randomRange(0.2, 0.4);
+			const thickness = randomRange(0, 0.03);
 			mesh.morphTargetManager!.getTargetByName('Width')!.influence = width;
 			mesh.morphTargetManager!.getTargetByName('Height')!.influence = height;
 			mesh.morphTargetManager!.getTargetByName('Thickness')!.influence = thickness;
-			const thicknessCm = 1 + remap(thickness, 0, 1, 0, 100);
-			mesh.position.x = (accumulatedPos) / WORLD_SCALE;
-			accumulatedPos += thicknessCm + 1;
+			const thicknessCm = 2 + remap(thickness, 0, 1, 0, 100);
+			mesh.position.x = (accumulatedPos + 0.25) / WORLD_SCALE;
+			accumulatedPos += thicknessCm + 0.25;
 		}
 
 		bodyMesh.isVisible = false;
