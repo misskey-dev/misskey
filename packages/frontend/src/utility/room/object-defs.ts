@@ -25,6 +25,8 @@ import { custardPudding } from './objects/custardPudding.js';
 import { debugHipoly } from './objects/debugHipoly.js';
 import { desk } from './objects/desk.js';
 import { desktopPc } from './objects/desktopPc.js';
+import { djMixer } from './objects/djMixer.js';
+import { djPlayer } from './objects/djPlayer.js';
 import { ductTape } from './objects/ductTape.js';
 import { emptyBento } from './objects/emptyBento.js';
 import { energyDrink } from './objects/energyDrink.js';
@@ -100,6 +102,8 @@ export const OBJECT_DEFS = [
 	custardPudding,
 	desk,
 	desktopPc,
+	djMixer,
+	djPlayer,
 	ductTape,
 	emptyBento,
 	energyDrink,
