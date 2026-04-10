@@ -69,6 +69,7 @@ import { tabletopPictureFrame } from './objects/tabletopPictureFrame.js';
 import { tapestry } from './objects/tapestry.js';
 import { tetrapod } from './objects/tetrapod.js';
 import { tv } from './objects/tv.js';
+import { wallCanvas } from './objects/wallCanvas.js';
 import { wallClock } from './objects/wallClock.js';
 import { wallShelf } from './objects/wallShelf.js';
 import { woodRingFloorLamp } from './objects/woodRingFloorLamp.js';
@@ -140,6 +141,7 @@ export const OBJECT_DEFS = [
 	tapestry,
 	tetrapod,
 	tv,
+	wallCanvas,
 	wallClock,
 	wallShelf,
 	woodRingFloorLamp,
