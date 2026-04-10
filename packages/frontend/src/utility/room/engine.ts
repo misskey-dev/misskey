@@ -1605,10 +1605,13 @@ export class RoomEngine {
 		reflectionProbe.position = new BABYLON.Vector3(0, 150, 0);
 		reflectionProbe.refreshRate = BABYLON.RenderTargetTexture.REFRESHRATE_RENDER_ONCE;
 		reflectionProbe.renderList = this.scene.meshes.filter(m => (m instanceof BABYLON.Mesh || m instanceof BABYLON.InstancedMesh) && m.isEnabled() && m.isVisible && m.material);
+		this.scene.customRenderTargets.push(reflectionProbe.cubeTexture);
+		reflectionProbe.cubeTexture.render();
 
-		await new Promise(res => window.setTimeout(res, 1000));
+		await new Promise(res => window.setTimeout(res, 2000));
 
 		const tex = reflectionProbe.cubeTexture;
+		reflectionProbe.renderList = [];
 
 		const sphere = BABYLON.MeshBuilder.CreateSphere('', { diameter: 50 }, this.scene);
 		sphere.position = new BABYLON.Vector3(0, 100, 0);
@@ -1618,9 +1621,8 @@ export class RoomEngine {
 		mat.reflectionTexture = tex;
 		sphere.material = mat;
 
-		await new Promise(res => window.setTimeout(res, 3000));
-
 		reflectionProbe.renderList = [];
+		//reflectionProbe.dispose();
 
 		for (const mesh of this.scene.meshes.filter(m => (m instanceof BABYLON.Mesh || m instanceof BABYLON.InstancedMesh) && m.isEnabled() && m.isVisible && m.material && m.metadata?.isObject)) {
 			if (mesh.material) {
@@ -1637,7 +1639,7 @@ export class RoomEngine {
 				}
 			}
 		}
-		*/
+			*/
 	}
 
 	public removeSelectedObject() {
