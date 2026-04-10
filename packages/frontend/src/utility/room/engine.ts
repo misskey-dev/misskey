@@ -1345,23 +1345,8 @@ export class RoomEngine {
 				this.ui.isGrabbing = false;
 
 				// 親から先に外していく
-				const removeStickyParentRecursively = (mesh: BABYLON.Mesh) => {
-					const stickyObjectIds = Array.from(this.roomState.installedObjects.filter(o => o.sticky === mesh.metadata.objectId)).map(o => o.id);
-					for (const soid of stickyObjectIds) {
-						const soMesh = this.objectEntities.get(soid)!.rootMesh;
-						soMesh.setParent(null);
-						removeStickyParentRecursively(soMesh);
-					}
-				};
-				removeStickyParentRecursively(this.grabbingCtx.mesh);
-				const pos = this.grabbingCtx.mesh.position.clone();
-				const rotation = this.grabbingCtx.mesh.rotation.clone();
-				this.selectObject(null);
-
-				this.roomState.installedObjects.find(o => o.id === selectedObject.metadata.objectId)!.sticky = sticky;
-				this.roomState.installedObjects.find(o => o.id === selectedObject.metadata.objectId)!.position = [pos.x, pos.y, pos.z];
-				this.roomState.installedObjects.find(o => o.id === selectedObject.metadata.objectId)!.rotation = [rotation.x, rotation.y, rotation.z];
-
+				const pos = selectedObject.position.clone();
+				const rotation = selectedObject.rotation.clone();
 				this.putParticleSystem.emitter = pos;
 				this.putParticleSystem.start();
 
@@ -1369,6 +1354,44 @@ export class RoomEngine {
 					volume: 1,
 					playbackRate: 1,
 				});
+
+				// put animation
+				const animTarget = new BABYLON.Animation(
+					'',
+					'scaling',
+					60,
+					BABYLON.Animation.ANIMATIONTYPE_VECTOR3,
+					BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT,
+				);
+				const keys = [
+					{ frame: 0, value: new BABYLON.Vector3(1, 1.2, 1) },
+					{ frame: 60, value: new BABYLON.Vector3(1, 1, 1) },
+				];
+				animTarget.setKeys(keys);
+				const easing = new BABYLON.ElasticEase(2);
+				easing.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
+				animTarget.setEasingFunction(easing);
+				selectedObject.animations.push(animTarget);
+				const animating = Promise.withResolvers<void>();
+				this.scene.beginAnimation(selectedObject, 0, 60, false, 3, () => { animating.resolve(); });
+
+				// TODO: アニメーションの完了まで親子関係の解除を遅延するため、一瞬「grabbingが終わっているのに親子関係が解除されていない」状態が発生する。その間に新たにgrabbingを開始するなどの別の操作が発生すると不具合のもとになるのでそれを防止する仕組みを作る
+				animating.promise.then(() => {
+					// 親から先に外していく
+					const removeStickyParentRecursively = (mesh: BABYLON.Mesh) => {
+						const stickyObjectIds = Array.from(this.roomState.installedObjects.filter(o => o.sticky === mesh.metadata.objectId)).map(o => o.id);
+						for (const soid of stickyObjectIds) {
+							const soMesh = this.objectEntities.get(soid)!.rootMesh;
+							soMesh.setParent(null);
+							removeStickyParentRecursively(soMesh);
+						}
+					};
+					removeStickyParentRecursively(selectedObject);
+				});
+
+				this.roomState.installedObjects.find(o => o.id === selectedObject.metadata.objectId)!.sticky = sticky;
+				this.roomState.installedObjects.find(o => o.id === selectedObject.metadata.objectId)!.position = [pos.x, pos.y, pos.z];
+				this.roomState.installedObjects.find(o => o.id === selectedObject.metadata.objectId)!.rotation = [rotation.x, rotation.y, rotation.z];
 			},
 		};
 
@@ -1391,7 +1414,6 @@ export class RoomEngine {
 		this.grabbingCtx.ghost.dispose(false, false);
 		this.grabbingCtx.onDone?.();
 		this.grabbingCtx = null;
-		this.selectObject(null);
 
 		this.xGridPreviewPlane.isVisible = false;
 		this.yGridPreviewPlane.isVisible = false;
