@@ -320,6 +320,7 @@ type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 		root: BABYLON.Mesh;
 		options: Readonly<GetOptionsSchemaValues<OpSc>>;
 		model: ModelManager;
+		id: string;
 	}) => RoomObjectInstance<GetOptionsSchemaValues<OpSc>> | Promise<RoomObjectInstance<GetOptionsSchemaValues<OpSc>>>; // TODO: createInstanceをasyncにするのではなく、別にreadyみたいなものを返させる
 };
 
@@ -1245,6 +1246,7 @@ export class RoomEngine {
 			root,
 			options: args.options,
 			model,
+			id: args.id,
 		});
 
 		objectInstance.onInited?.();
@@ -1852,9 +1854,12 @@ export class RoomObjectPreviewEngine {
 
 		const options = deepClone(def.options.default);
 
+		const id = genId();
+
 		await this.loadObject({
 			type,
 			options,
+			id,
 		});
 
 		// なぜかちょっと待たないとbounding boxのサイズが正しくない
@@ -1877,6 +1882,7 @@ export class RoomObjectPreviewEngine {
 	private async loadObject(args: {
 		type: string;
 		options: any;
+		id: string;
 	}) {
 		const def = getObjectDef(args.type);
 
@@ -1931,6 +1937,7 @@ export class RoomObjectPreviewEngine {
 			root,
 			options: args.options,
 			model,
+			id: args.id,
 		});
 
 		objectInstance.onInited?.();
