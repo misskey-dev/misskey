@@ -7,6 +7,10 @@ import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../engine.js';
 import { createPlaneUvMapper, getPlaneUvIndexes } from '../utility.js';
 
+const remap = (value: number, fromMin: number, fromMax: number, toMin: number, toMax: number) => {
+	return toMin + ((value - fromMin) / (fromMax - fromMin)) * (toMax - toMin);
+};
+
 export const poster = defineObject({
 	id: 'poster',
 	name: 'Poster',
@@ -61,8 +65,8 @@ export const poster = defineObject({
 			const srcWidth = tex.getSize().width;
 			const srcHeight = tex.getSize().height;
 			const srcAspect = srcWidth / srcHeight;
-			const targetWidth = options.width;
-			const targetHeight = options.height;
+			const targetWidth = remap(options.width, 0, 1, 2, 100); // 最小値(値を0にした場合)でのサイズは2cmで、最大値(値を1にした場合)でのサイズは100cmなので。比率の計算だから単位はなんでもいいけど、とにかく0が0にならない点を考慮させる必要がある
+			const targetHeight = remap(options.height, 0, 1, 2, 100); // 最小値(値を0にした場合)でのサイズは2cmで、最大値(値を1にした場合)でのサイズは100cmなので。比率の計算だから単位はなんでもいいけど、とにかく0が0にならない点を考慮させる必要がある
 			const targetAspect = targetWidth / targetHeight;
 
 			updateUv(srcAspect, targetAspect, options.fit);
