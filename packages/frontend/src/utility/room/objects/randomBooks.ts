@@ -7,8 +7,6 @@ import * as BABYLON from '@babylonjs/core';
 import seedrandom from 'seedrandom';
 import { defineObject, WORLD_SCALE } from '../engine.js';
 
-const randomRange = (min: number, max: number) => Math.random() * (max - min) + min;
-
 const remap = (value: number, fromMin: number, fromMax: number, toMin: number, toMax: number) => {
 	return toMin + ((value - fromMin) / (fromMax - fromMin)) * (toMax - toMin);
 };
@@ -22,6 +20,13 @@ export const randomBooks = defineObject({
 				type: 'boolean',
 				label: 'Plain cover',
 			},
+			count: {
+				type: 'range',
+				label: 'Count',
+				min: 1,
+				max: 30,
+				step: 1,
+			},
 			seed: {
 				type: 'range',
 				label: 'Seed',
@@ -32,6 +37,7 @@ export const randomBooks = defineObject({
 		},
 		default: {
 			plainCover: false,
+			count: 10,
 			seed: 0,
 		},
 	},
@@ -45,7 +51,6 @@ export const randomBooks = defineObject({
 		bodyMesh.material.albedoTexture = tex;
 
 		const TEXTURE_DIVISION = 8;
-		const count = 10;
 		let bookMeshes: BABYLON.Mesh[] = [];
 
 		const gen = () => {
@@ -55,10 +60,11 @@ export const randomBooks = defineObject({
 			bookMeshes = [];
 
 			const rng = seedrandom(options.seed === 0 ? id : options.seed.toString());
+			const randomRange = (min: number, max: number) => rng() * (max - min) + min;
 
 			let accumulatedPos = 0;
 
-			for (let i = 0; i < count; i++) {
+			for (let i = 0; i < options.count; i++) {
 				const mesh = bodyMesh.clone();
 				mesh.isVisible = true;
 				mesh.setEnabled(true);
@@ -90,12 +96,14 @@ export const randomBooks = defineObject({
 				const gap = 0.25;
 				mesh.position.x = (accumulatedPos + (thicknessCm / 2)) / WORLD_SCALE;
 				mesh.position.z = widthCm / 2 / WORLD_SCALE;
+				mesh.refreshBoundingInfo();
+				mesh.computeWorldMatrix(true);
 				accumulatedPos += thicknessCm + gap;
 				bookMeshes.push(mesh);
 			}
 
 			// centering
-			for (let i = 0; i < count; i++) {
+			for (let i = 0; i < options.count; i++) {
 				bookMeshes[i].position.x -= accumulatedPos / 2 / WORLD_SCALE;
 			}
 
@@ -113,6 +121,7 @@ export const randomBooks = defineObject({
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
 					case 'seed': gen(); break;
+					case 'count': gen(); break;
 				}
 			},
 			interactions: {},
