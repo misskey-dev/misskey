@@ -4,11 +4,11 @@
  */
 
 import * as estreeWalker from 'estree-walker';
-import MagicString from 'magic-string';
+import { RolldownMagicString } from 'rolldown';
 import { assertType } from './utils.js';
+import type { ESTree } from 'rolldown/utils';
 import type { Plugin } from 'vite';
-import type { CallExpression, Expression, Program } from 'estree';
-import type { AstNode } from 'rollup';
+import type { CallExpression, Expression } from 'estree';
 
 // This plugin transforms `unref(i18n)` to `i18n` in the code, which is useful for removing unnecessary unref calls
 // and helps locale inliner runs after vite build to inline the locale data into the final build.
@@ -23,12 +23,13 @@ export function pluginRemoveUnrefI18n(
 	} = {}): Plugin {
 	return {
 		name: 'UnwindCssModuleClassName',
-		renderChunk(code) {
+		renderChunk(code, _chunk, _options, meta) {
 			if (!code.includes('unref(i18n)')) return null;
-			const ast = this.parse(code) as Program;
-			const magicString = new MagicString(code);
-			estreeWalker.walk(ast, {
-				enter(node) {
+			const ast = this.parse(code);
+			const magicString = meta.magicString ?? new RolldownMagicString(code);
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			(estreeWalker.walk as any)(ast, {
+				enter(node: ESTree.Node) {
 					if (node.type === 'CallExpression' && node.callee.type === 'Identifier' && node.callee.name === 'unref'
 						&& node.arguments.length === 1) {
 						// calls to unref with single argument
@@ -36,18 +37,16 @@ export function pluginRemoveUnrefI18n(
 						if (arg.type === 'Identifier' && arg.name === i18nSymbolName) {
 							// this is unref(i18n) so replace it with i18n
 							// to replace, remove the 'unref(' and the trailing ')'
-							assertType<CallExpression & AstNode>(node);
-							assertType<Expression & AstNode>(arg);
+							assertType<CallExpression>(node);
+							assertType<Expression>(arg);
 							magicString.remove(node.start, arg.start);
 							magicString.remove(arg.end, node.end);
 						}
 					}
 				},
 			});
-			return {
-				code: magicString.toString(),
-				map: magicString.generateMap({ hires: true }),
-			};
+
+			return magicString;
 		},
 	};
 }
