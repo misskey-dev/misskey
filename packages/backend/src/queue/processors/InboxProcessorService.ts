@@ -13,8 +13,8 @@ import { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataServic
 import InstanceChart from '@/core/chart/charts/instance.js';
 import ApRequestChart from '@/core/chart/charts/ap-request.js';
 import FederationChart from '@/core/chart/charts/federation.js';
-import { getApId, isDelete, isUndo } from '@/core/activitypub/type.js';
-import type { IActivity } from '@/core/activitypub/type.js';
+import { getApId, isActor, isDelete, isUndo } from '@/core/activitypub/type.js';
+import type { IActivity, IObject } from '@/core/activitypub/type.js';
 import type { MiRemoteUser } from '@/models/User.js';
 import type { MiUserPublickey } from '@/models/UserPublickey.js';
 import { ApDbResolverService } from '@/core/activitypub/ApDbResolverService.js';
@@ -84,11 +84,26 @@ export class InboxProcessorService implements OnApplicationShutdown {
 			return `Old keyId is no longer supported. ${keyIdLower}`;
 		}
 
-		// 存在しないActorに対するDeleteアクティビティは無視（Undoの場合は、isDeletedなActorでも存在してれば処理を続行）
-		if (isDelete(activity)) {
-			const existingActor = await this.apDbResolverService.getUserFromApId(activity.actor, isUndo(activity));
-			if (existingActor == null) {
-				throw new Bull.UnrecoverableError(`skip: delete activity for non-existing actor ${getApId(activity.actor)}`);
+		{
+			let userExistenceCheckApId: string | null = null;
+			let isUndoDeleteActivity = false;
+
+			// 存在しないActorに対するActorのDeleteアクティビティは無視する。
+			if (isDelete(activity) && typeof activity.object === 'object' && isActor(activity.object)) {
+				userExistenceCheckApId = getApId(activity.object);
+			}
+
+			// 存在しないActorに対するActorのUndo Deleteアクティビティは無視する。ユーザーの存在確認対象には削除扱いにしたユーザーも含める。
+			if (isUndo(activity) && typeof activity.object === 'object' && isDelete(activity.object) && typeof activity.object.object === 'object' && isActor(activity.object.object)) {
+				userExistenceCheckApId = getApId(activity.object.object);
+				isUndoDeleteActivity = true;
+			}
+
+			if (userExistenceCheckApId != null) {
+				const user = await this.apDbResolverService.getUserFromApId(userExistenceCheckApId, isUndoDeleteActivity);
+				if (user == null) {
+					throw new Bull.UnrecoverableError(`skip: user not found for delete/undo activity. ${getApId(userExistenceCheckApId)}`);
+				}
 			}
 		}
 
