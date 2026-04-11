@@ -96,7 +96,7 @@ export class InboxProcessorService implements OnApplicationShutdown {
 			if (userExistenceCheckApId != null) {
 				const user = await this.apDbResolverService.getUserFromApId(userExistenceCheckApId);
 				if (user == null) {
-					throw new Bull.UnrecoverableError(`skip: user not found for delete/undo activity. ${getApId(userExistenceCheckApId)}`);
+					throw new Bull.UnrecoverableError(`skip: user not found for delete activity. ${getApId(userExistenceCheckApId)}`);
 				}
 			}
 		}
