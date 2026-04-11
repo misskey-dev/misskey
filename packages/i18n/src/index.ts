@@ -8,7 +8,7 @@
  */
 
 import * as fs from 'node:fs';
-import * as yaml from 'js-yaml';
+import * as yaml from 'yaml';
 import { languages, primaries } from './const.js';
 import type { Locale } from './autogen/locale.js';
 import type { ILocale, ParameterizedString } from './types.js';
@@ -62,7 +62,7 @@ function build(): Record<Language, Locale> {
 	// https://github.com/misskey-dev/misskey/pull/14057#issuecomment-2192833785
 	const metaUrl = import.meta.url;
 	const locales = languages.reduce<Locales>((a, lang) => {
-		a[lang] = (yaml.load(clean(fs.readFileSync(new URL(`./locales/${lang}.yml`, metaUrl), 'utf-8'))) ?? {}) as ILocale;
+		a[lang] = (yaml.parse(clean(fs.readFileSync(new URL(`./locales/${lang}.yml`, metaUrl), 'utf-8'))) ?? {}) as ILocale;
 		return a;
 	}, {} as Locales);
 
