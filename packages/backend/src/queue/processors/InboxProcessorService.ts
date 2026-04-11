@@ -88,7 +88,7 @@ export class InboxProcessorService implements OnApplicationShutdown {
 		if (isDelete(activity)) {
 			const existingActor = await this.apDbResolverService.getUserFromApId(activity.actor);
 			if (existingActor == null) {
-				return `skip: Delete activity for unknown actor ${getApId(activity.actor)}`;
+				throw new Bull.UnrecoverableError(`skip: delete activity for non-existing actor ${activity.actor}`);
 			}
 		}
 
