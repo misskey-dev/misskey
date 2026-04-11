@@ -72,7 +72,7 @@ export const randomBooks = defineObject({
 				mesh.morphTargetManager = bodyMesh.morphTargetManager.clone();
 				mesh.markVerticesDataAsUpdatable(BABYLON.VertexBuffer.UVKind, true);
 
-				const index = Math.floor(rng() * 44);
+				const index = Math.floor(rng() * (TEXTURE_DIVISION * TEXTURE_DIVISION));
 				const x = index % TEXTURE_DIVISION;
 				const y = Math.floor(index / TEXTURE_DIVISION);
 
