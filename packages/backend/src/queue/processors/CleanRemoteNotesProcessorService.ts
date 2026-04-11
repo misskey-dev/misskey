@@ -326,9 +326,14 @@ export class CleanRemoteNotesProcessorService {
 						transientErrors++;
 						job.log(`Error deleting notes: ${e} (transient race condition?)`);
 					} else if (e instanceof QueryFailedError && e.driverError?.code === '57014') {
-						// Statement timeout on DELETE. End this run gracefully; the next run will retry.
-						job.log(`DELETE query timed out (${deletableNoteIds.length} notes), ending this run...`);
-						break;
+						// Statement timeout on DELETE. Reduce batch size and retry (without advancing cursorLeft).
+						if (currentLimit <= minimumLimit) {
+							job.log(`DELETE query timed out at minimum limit (${deletableNoteIds.length} notes), ending this run...`);
+							break;
+						}
+						currentLimit = Math.max(minimumLimit, Math.floor(currentLimit * 0.25));
+						job.log(`DELETE query timed out (${deletableNoteIds.length} notes), reducing limit to ${currentLimit} and retrying...`);
+						continue;
 					} else {
 						throw e;
 					}
