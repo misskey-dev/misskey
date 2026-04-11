@@ -376,6 +376,20 @@ export function getPlaneUvIndexes(mesh: BABYLON.Mesh) {
 	return [aIndex, bIndex, cIndex, dIndex];
 }
 
+export function normalizeUvToSquare(mesh: BABYLON.Mesh) {
+	const uvs = mesh.getVerticesData(BABYLON.VertexBuffer.UVKind)!;
+	const uvIndexes = getPlaneUvIndexes(mesh);
+	uvs[uvIndexes[0]] = 0;
+	uvs[uvIndexes[0] + 1] = 0;
+	uvs[uvIndexes[1]] = 1;
+	uvs[uvIndexes[1] + 1] = 0;
+	uvs[uvIndexes[2]] = 0;
+	uvs[uvIndexes[2] + 1] = 1;
+	uvs[uvIndexes[3]] = 1;
+	uvs[uvIndexes[3] + 1] = 1;
+	mesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
+}
+
 export function createPlaneUvMapper(mesh: BABYLON.Mesh) {
 	mesh.markVerticesDataAsUpdatable(BABYLON.VertexBuffer.UVKind, true);
 
