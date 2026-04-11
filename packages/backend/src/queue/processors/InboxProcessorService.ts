@@ -86,21 +86,15 @@ export class InboxProcessorService implements OnApplicationShutdown {
 
 		{
 			let userExistenceCheckApId: string | null = null;
-			let isUndoDeleteActivity = false;
 
 			// 存在しないActorに対するActorのDeleteアクティビティは無視する。
-			if (isDelete(activity) && typeof activity.object === 'object' && isActor(activity.object)) {
+			// actorとobjectが同じならばそれはActorに違いない
+			if (isDelete(activity) && typeof activity.object === 'object' && (isActor(activity.object) || getApId(activity.actor) === getApId(activity.object))) {
 				userExistenceCheckApId = getApId(activity.object);
 			}
 
-			// 存在しないActorに対するActorのUndo Deleteアクティビティは無視する。ユーザーの存在確認対象には削除扱いにしたユーザーも含める。
-			if (isUndo(activity) && typeof activity.object === 'object' && isDelete(activity.object) && typeof activity.object.object === 'object' && isActor(activity.object.object)) {
-				userExistenceCheckApId = getApId(activity.object.object);
-				isUndoDeleteActivity = true;
-			}
-
 			if (userExistenceCheckApId != null) {
-				const user = await this.apDbResolverService.getUserFromApId(userExistenceCheckApId, isUndoDeleteActivity);
+				const user = await this.apDbResolverService.getUserFromApId(userExistenceCheckApId);
 				if (user == null) {
 					throw new Bull.UnrecoverableError(`skip: user not found for delete/undo activity. ${getApId(userExistenceCheckApId)}`);
 				}
