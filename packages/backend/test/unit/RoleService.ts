@@ -44,7 +44,7 @@ describe('RoleService', () => {
 	let roleAssignmentsRepository: RoleAssignmentsRepository;
 	let meta: jest.Mocked<MiMeta>;
 	let notificationService: jest.Mocked<NotificationService>;
-	let clock: lolex.InstalledClock;
+	let clock: lolex.Clock;
 
 	async function createUser(data: Partial<MiUser> = {}) {
 		const un = secureRndstr(16);
@@ -163,7 +163,7 @@ describe('RoleService', () => {
 		/**
 		 * Delete meta and roleAssignment first to avoid deadlock due to schema dependencies
 		 * https://github.com/misskey-dev/misskey/issues/16783
-		 */ 
+		 */
 		await app.get(DI.metasRepository).createQueryBuilder().delete().execute();
 		await roleAssignmentsRepository.createQueryBuilder().delete().execute();
 		await Promise.all([
