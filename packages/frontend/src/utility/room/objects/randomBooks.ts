@@ -13,7 +13,7 @@ const remap = (value: number, fromMin: number, fromMax: number, toMin: number, t
 
 export const randomBooks = defineObject({
 	id: 'randomBooks',
-	name: 'randomBooks',
+	name: '雑多な本',
 	options: {
 		schema: {
 			plainCover: {
@@ -31,6 +31,7 @@ export const randomBooks = defineObject({
 		const tex = new BABYLON.Texture('/client-assets/room/objects/random-books/texture.png', scene, false, false);
 		bodyMesh.material.albedoTexture = tex;
 
+		const TEXTURE_DIVISION = 8;
 		const count = 10;
 
 		let accumulatedPos = 0;
@@ -41,16 +42,16 @@ export const randomBooks = defineObject({
 			mesh.morphTargetManager = bodyMesh.morphTargetManager.clone();
 			mesh.markVerticesDataAsUpdatable(BABYLON.VertexBuffer.UVKind, true);
 
-			const index = Math.floor(Math.random() * 15);
-			const x = index % 8;
-			const y = Math.floor(index / 8);
+			const index = Math.floor(Math.random() * 27);
+			const x = index % TEXTURE_DIVISION;
+			const y = Math.floor(index / TEXTURE_DIVISION);
 
 			const uvs = mesh.getVerticesData(BABYLON.VertexBuffer.UVKind)!;
 			for (let uvi = 0; uvi < uvs.length; uvi += 2) {
 				const u = uvs[uvi];
 				const v = uvs[uvi + 1];
-				uvs[uvi] = (u / 8) + (x / 8);
-				uvs[uvi + 1] = (v / 8) + (y / 8);
+				uvs[uvi] = (u / TEXTURE_DIVISION) + (x / TEXTURE_DIVISION);
+				uvs[uvi + 1] = (v / TEXTURE_DIVISION) + (y / TEXTURE_DIVISION);
 			}
 			mesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
 
