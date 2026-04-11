@@ -28,13 +28,17 @@ export const randomBooks = defineObject({
 	placement: 'top',
 	createInstance: ({ options, model, scene }) => {
 		const bodyMesh = model.findMesh('__X_BODY__');
-		const tex = new BABYLON.Texture('/client-assets/room/objects/random-books/texture.png', scene, false, false);
+		const tex = new BABYLON.Texture('/client-assets/room/objects/random-books/texture.png', scene, {
+			invertY: false,
+			samplingMode: BABYLON.Texture.NEAREST_SAMPLINGMODE,
+		});
 		bodyMesh.material.albedoTexture = tex;
 
 		const TEXTURE_DIVISION = 8;
 		const count = 10;
 
 		let accumulatedPos = 0;
+		const meshes: BABYLON.Mesh[] = [];
 
 		for (let i = 0; i < count; i++) {
 			const mesh = bodyMesh.clone();
@@ -56,14 +60,21 @@ export const randomBooks = defineObject({
 			mesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
 
 			const width = randomRange(0.1, 0.2);
-			const height = randomRange(0.2, 0.4);
+			const height = randomRange(0.3, 0.4);
 			const thickness = randomRange(0, 0.03);
 			mesh.morphTargetManager!.getTargetByName('Width')!.influence = width;
 			mesh.morphTargetManager!.getTargetByName('Height')!.influence = height;
 			mesh.morphTargetManager!.getTargetByName('Thickness')!.influence = thickness;
 			const thicknessCm = 2 + remap(thickness, 0, 1, 0, 100);
-			mesh.position.x = (accumulatedPos + 0.25) / WORLD_SCALE;
-			accumulatedPos += thicknessCm + 0.25;
+			const gap = 0.25;
+			mesh.position.x = (accumulatedPos + (thicknessCm / 2)) / WORLD_SCALE;
+			accumulatedPos += thicknessCm + gap;
+			meshes.push(mesh);
+		}
+
+		// centering
+		for (let i = 0; i < count; i++) {
+			meshes[i].position.x -= accumulatedPos / 2 / WORLD_SCALE;
 		}
 
 		bodyMesh.isVisible = false;
