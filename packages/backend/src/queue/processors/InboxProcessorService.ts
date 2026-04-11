@@ -13,7 +13,7 @@ import { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataServic
 import InstanceChart from '@/core/chart/charts/instance.js';
 import ApRequestChart from '@/core/chart/charts/ap-request.js';
 import FederationChart from '@/core/chart/charts/federation.js';
-import { getApId } from '@/core/activitypub/type.js';
+import { getApId, isActor, isDelete } from '@/core/activitypub/type.js';
 import type { IActivity } from '@/core/activitypub/type.js';
 import type { MiRemoteUser } from '@/models/User.js';
 import type { MiUserPublickey } from '@/models/UserPublickey.js';
@@ -82,6 +82,23 @@ export class InboxProcessorService implements OnApplicationShutdown {
 		const keyIdLower = signature.keyId.toLowerCase();
 		if (keyIdLower.startsWith('acct:')) {
 			return `Old keyId is no longer supported. ${keyIdLower}`;
+		}
+
+		{
+			let userExistenceCheckApId: string | null = null;
+
+			// 存在しないActorに対するActorのDeleteアクティビティは無視する。
+			// actorとobjectが同じならばそれはActorに違いない
+			if (isDelete(activity) && typeof activity.object === 'object' && (isActor(activity.object) || getApId(activity.actor) === getApId(activity.object))) {
+				userExistenceCheckApId = getApId(activity.object);
+			}
+
+			if (userExistenceCheckApId != null) {
+				const user = await this.apDbResolverService.getUserFromApId(userExistenceCheckApId);
+				if (user == null) {
+					throw new Bull.UnrecoverableError(`skip: user not found for delete activity. ${getApId(userExistenceCheckApId)}`);
+				}
+			}
 		}
 
 		// HTTP-Signature keyIdを元にDBから取得

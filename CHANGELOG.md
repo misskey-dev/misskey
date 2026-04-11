@@ -12,6 +12,7 @@
 ### Server
 - Fix: `/api-doc` にアクセスできない問題を修正
 - Fix: support `alsoKnownAs` from remote actors as either array or unwrapped singleton
+- Fix: ローカルに存在しないリモートアカウントに対するアカウント削除リクエストを受信した際に、そのユーザーを新規作成して削除する挙動を修正
 
 ## 2026.3.2
 
