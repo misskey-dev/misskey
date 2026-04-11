@@ -77,7 +77,7 @@
 		"ncp": "2.0.0",
 		"pnpm": "10.33.0",
 		"start-server-and-test": "2.1.5",
-		"typescript": "5.9.3"
+		"typescript": "6.0.2"
 	},
 	"optionalDependencies": {
 		"@tensorflow/tfjs-core": "4.22.0"

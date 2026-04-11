@@ -25,7 +25,7 @@
 		"misskey-js": "workspace:*",
 		"punycode.js": "2.3.1",
 		"rollup": "4.60.1",
-		"shiki": "3.23.0",
+		"shiki": "4.0.2",
 		"tinycolor2": "1.6.0",
 		"uuid": "13.0.0",
 		"vue": "3.5.32"
