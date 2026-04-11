@@ -102,7 +102,7 @@ export class ApDbResolverService implements OnApplicationShutdown {
 	 * AP Person => Misskey User in DB
 	 */
 	@bindThis
-	public async getUserFromApId(value: string | IObject): Promise<MiLocalUser | MiRemoteUser | null> {
+	public async getUserFromApId(value: string | IObject, includeDeleted = false): Promise<MiLocalUser | MiRemoteUser | null> {
 		const parsed = this.parseUri(value);
 
 		if (parsed.local) {
@@ -110,12 +110,18 @@ export class ApDbResolverService implements OnApplicationShutdown {
 
 			return await this.cacheService.userByIdCache.fetchMaybe(
 				parsed.id,
-				() => this.usersRepository.findOneBy({ id: parsed.id, isDeleted: false }).then(x => x ?? undefined),
+				() => this.usersRepository.findOneBy({
+					id: parsed.id,
+					...(includeDeleted ? {} : { isDeleted: false }),
+				}).then(x => x ?? undefined),
 			) as MiLocalUser | undefined ?? null;
 		} else {
 			return await this.cacheService.uriPersonCache.fetch(
 				parsed.uri,
-				() => this.usersRepository.findOneBy({ uri: parsed.uri, isDeleted: false }),
+				() => this.usersRepository.findOneBy({
+					uri: parsed.uri,
+					...(includeDeleted ? {} : { isDeleted: false }),
+				}),
 			) as MiRemoteUser | null;
 		}
 	}

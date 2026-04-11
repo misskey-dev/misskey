@@ -84,9 +84,9 @@ export class InboxProcessorService implements OnApplicationShutdown {
 			return `Old keyId is no longer supported. ${keyIdLower}`;
 		}
 
-		// 存在しないActorに対するDeleteアクティビティは無視（取り消しは無視しない）
-		if (isDelete(activity) && !isUndo(activity)) {
-			const existingActor = await this.apDbResolverService.getUserFromApId(activity.actor);
+		// 存在しないActorに対するDeleteアクティビティは無視（Undoの場合は、isDeletedなActorでも存在してれば処理を続行）
+		if (isDelete(activity)) {
+			const existingActor = await this.apDbResolverService.getUserFromApId(activity.actor, isUndo(activity));
 			if (existingActor == null) {
 				throw new Bull.UnrecoverableError(`skip: delete activity for non-existing actor ${getApId(activity.actor)}`);
 			}
