@@ -748,7 +748,7 @@ export function useUploader(options: {
 
 			preprocessedFile = new Blob([output.target.buffer!], { type: output.format.mimeType });
 			item.compressedSize = output.target.buffer!.byteLength;
-			item.suffix = `.mp4`;
+			item.suffix = '.mp4';
 		} else {
 			item.compressedSize = null;
 			item.suffix = '';
