@@ -13,8 +13,8 @@ import { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataServic
 import InstanceChart from '@/core/chart/charts/instance.js';
 import ApRequestChart from '@/core/chart/charts/ap-request.js';
 import FederationChart from '@/core/chart/charts/federation.js';
-import { getApId, isActor, isDelete, isUndo } from '@/core/activitypub/type.js';
-import type { IActivity, IObject } from '@/core/activitypub/type.js';
+import { getApId, isActor, isDelete } from '@/core/activitypub/type.js';
+import type { IActivity } from '@/core/activitypub/type.js';
 import type { MiRemoteUser } from '@/models/User.js';
 import type { MiUserPublickey } from '@/models/UserPublickey.js';
 import { ApDbResolverService } from '@/core/activitypub/ApDbResolverService.js';
