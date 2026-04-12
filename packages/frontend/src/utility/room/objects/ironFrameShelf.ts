@@ -6,10 +6,10 @@
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../engine.js';
 
-export const ironWoodShelfH = defineObject({
-	id: 'ironWoodShelfH',
-	name: 'ironWoodShelf H',
-	path: 'iron-wood-shelf/iron-wood-shelf-h',
+export const ironFrameShelfH = defineObject({
+	id: 'ironFrameShelfH',
+	name: 'ironFrameShelf H',
+	path: 'iron-frame-shelf/iron-frame-shelf-h',
 	options: {
 		schema: {
 			frameColor: {
@@ -55,10 +55,10 @@ export const ironWoodShelfH = defineObject({
 	},
 });
 
-export const ironWoodShelfV = defineObject({
-	id: 'ironWoodShelfV',
-	name: 'ironWoodShelf V',
-	path: 'iron-wood-shelf/iron-wood-shelf-v',
+export const ironFrameShelfV = defineObject({
+	id: 'ironFrameShelfV',
+	name: 'ironFrameShelf V',
+	path: 'iron-frame-shelf/iron-frame-shelf-v',
 	options: {
 		schema: {
 			frameColor: {
