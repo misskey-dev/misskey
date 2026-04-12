@@ -306,7 +306,18 @@ export class CleanRemoteNotesProcessorService {
 			const deletableNoteIds = noteIds.filter(result => result.isRemovable).map(result => result.id);
 			if (deletableNoteIds.length > 0) {
 				try {
-					await this.notesRepository.delete(deletableNoteIds);
+					// Run DELETE under a relaxed statement_timeout. The global 10s timeout
+					// protects interactive API queries but is not viable for deleting large
+					// remote note trees; 5 minutes is enough for minimum-limit batches even
+					// on servers with millions of candidate rows.
+					await this.db.transaction(async (manager) => {
+						await manager.query("SET LOCAL statement_timeout = '300s'");
+						await manager.createQueryBuilder()
+							.delete()
+							.from(this.notesRepository.metadata.target)
+							.whereInIds(deletableNoteIds)
+							.execute();
+					});
 
 					for (const id of deletableNoteIds) {
 						const t = this.idService.parse(id).date.getTime();
