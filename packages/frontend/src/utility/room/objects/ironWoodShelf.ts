@@ -16,14 +16,20 @@ export const ironWoodShelfH = defineObject({
 				type: 'color',
 				label: 'Frame color',
 			},
+			boardColor: {
+				type: 'color',
+				label: 'Board color',
+			},
 		},
 		default: {
 			frameColor: [0.2, 0.2, 0.2],
+			boardColor: [0.8, 0.4, 0.1],
 		},
 	},
 	placement: 'floor',
 	createInstance: ({ options, model }) => {
 		const frameMaterial = model.findMaterial('__X_FRAME__');
+		const boardMaterial = model.findMaterial('__X_BOARD__');
 
 		const applyFrameColor = () => {
 			const [r, g, b] = options.frameColor;
@@ -32,9 +38,17 @@ export const ironWoodShelfH = defineObject({
 
 		applyFrameColor();
 
+		const applyBoardColor = () => {
+			const [r, g, b] = options.boardColor;
+			boardMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		};
+
+		applyBoardColor();
+
 		return {
 			onOptionsUpdated: ([k, v]) => {
 				applyFrameColor();
+				applyBoardColor();
 			},
 			interactions: {},
 		};
@@ -51,14 +65,20 @@ export const ironWoodShelfV = defineObject({
 				type: 'color',
 				label: 'Frame color',
 			},
+			boardColor: {
+				type: 'color',
+				label: 'Board color',
+			},
 		},
 		default: {
 			frameColor: [0.2, 0.2, 0.2],
+			boardColor: [0.8, 0.4, 0.1],
 		},
 	},
 	placement: 'floor',
 	createInstance: ({ options, model }) => {
 		const frameMaterial = model.findMaterial('__X_FRAME__');
+		const boardMaterial = model.findMaterial('__X_BOARD__');
 
 		const applyFrameColor = () => {
 			const [r, g, b] = options.frameColor;
@@ -67,9 +87,17 @@ export const ironWoodShelfV = defineObject({
 
 		applyFrameColor();
 
+		const applyBoardColor = () => {
+			const [r, g, b] = options.boardColor;
+			boardMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		};
+
+		applyBoardColor();
+
 		return {
 			onOptionsUpdated: ([k, v]) => {
 				applyFrameColor();
+				applyBoardColor();
 			},
 			interactions: {},
 		};
