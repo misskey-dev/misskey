@@ -308,6 +308,7 @@ class ModelManager {
 type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 	id: string;
 	name: string;
+	path?: string;
 	options: {
 		schema: OpSc;
 		default: GetOptionsSchemaValues<OpSc>;
@@ -1056,7 +1057,8 @@ export class RoomEngine {
 
 		const root = new BABYLON.TransformNode(`object_${args.id}_${args.type}`, this.scene);
 
-		const loaderResult = await BABYLON.LoadAssetContainerAsync(`/client-assets/room/objects/${camelToKebab(args.type)}/${camelToKebab(args.type)}.glb`, this.scene);
+		const filePath = def.path != null ? `/client-assets/room/objects/${def.path}.glb` : `/client-assets/room/objects/${camelToKebab(args.type)}/${camelToKebab(args.type)}.glb`;
+		const loaderResult = await BABYLON.LoadAssetContainerAsync(filePath, this.scene);
 
 		// babylonによって自動で追加される右手系変換用ノード
 		const subRoot = loaderResult.meshes[0] as BABYLON.Mesh;
@@ -1903,7 +1905,8 @@ export class RoomObjectPreviewEngine {
 
 		const root = new BABYLON.Mesh(`object_${args.type}`, this.scene);
 
-		const loaderResult = await BABYLON.LoadAssetContainerAsync(`/client-assets/room/objects/${camelToKebab(args.type)}/${camelToKebab(args.type)}.glb`, this.scene);
+		const filePath = def.path != null ? `/client-assets/room/objects/${def.path}.glb` : `/client-assets/room/objects/${camelToKebab(args.type)}/${camelToKebab(args.type)}.glb`;
+		const loaderResult = await BABYLON.LoadAssetContainerAsync(filePath, this.scene);
 
 		// babylonによって自動で追加される右手系変換用ノード
 		const subRoot = loaderResult.meshes[0];
