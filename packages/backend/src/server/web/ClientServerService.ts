@@ -406,6 +406,8 @@ export class ClientServerService {
 				'/api',
 				'/inbox',
 				'/oauth',
+				'/proxy',
+				'/url',
 			];
 
 			if (this.meta.ugcVisibilityForVisitor === 'none') {
