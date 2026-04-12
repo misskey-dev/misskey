@@ -64,6 +64,7 @@ import { router } from './objects/router.js';
 import { siphon } from './objects/siphon.js';
 import { snakeplant } from './objects/snakeplant.js';
 import { speaker } from './objects/speaker.js';
+import { sprayer } from './objects/sprayer.js';
 import { steelRack } from './objects/steelRack.js';
 import { tabletopCalendar } from './objects/tabletopCalendar.js';
 import { tabletopDigitalClock } from './objects/tabletopDigitalClock.js';
@@ -141,6 +142,7 @@ export const OBJECT_DEFS = [
 	siphon,
 	snakeplant,
 	speaker,
+	sprayer,
 	steelRack,
 	tabletopCalendar,
 	tabletopDigitalClock,
