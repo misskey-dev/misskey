@@ -35,6 +35,8 @@
 // TODO: 近くのオブジェクトの原点に軸を揃えるオプション
 
 const BAKE_TRANSFORM = false; // 実験的
+const SNAPSHOT_RENDERING = false; // 実験的
+const SNAPSHOT_RENDERING_NON_SUPPORTED_OBJECTS = ['aromaReedDiffuser', 'tv', 'petBottle', 'aquarium', 'lavaLamp', 'beamLamp'];
 
 import * as BABYLON from '@babylonjs/core';
 import { AxesViewer } from '@babylonjs/core/Debug/axesViewer';
@@ -576,11 +578,13 @@ export class RoomEngine {
 		this.shadowGeneratorForSunLight.usePoissonSampling = true;
 		this.shadowGeneratorForSunLight.getShadowMap().refreshRate = 60;
 
-		this.lightContainer = new BABYLON.ClusteredLightContainer('clustered', [], this.scene);
+		if (!SNAPSHOT_RENDERING) { // Snapshot renderingでClustered Lightingが有効だとなんかエラーが出る
+			this.lightContainer = new BABYLON.ClusteredLightContainer('clustered', [], this.scene);
+		}
 
 		this.turnOnRoomLight();
 
-		if (USE_GLOW) {
+		if (USE_GLOW && !SNAPSHOT_RENDERING) {
 			const gl = new BABYLON.GlowLayer('glow', this.scene, {
 				//mainTextureFixedSize: 512,
 				blurKernelSize: 64,
@@ -749,7 +753,7 @@ export class RoomEngine {
 	public async init() {
 		await this.loadRoomModel();
 		await this.loadEnvModel();
-		await Promise.all(this.roomState.installedObjects.map(o => this.loadObject({
+		await Promise.all(this.roomState.installedObjects.filter(o => !SNAPSHOT_RENDERING || !SNAPSHOT_RENDERING_NON_SUPPORTED_OBJECTS.includes(o.type)).map(o => this.loadObject({
 			id: o.id,
 			type: o.type,
 			position: new BABYLON.Vector3(...o.position),
@@ -762,6 +766,13 @@ export class RoomEngine {
 		this.engine.runRenderLoop(() => {
 			this.scene.render();
 		});
+
+		if (SNAPSHOT_RENDERING) {
+			window.setTimeout(() => {
+				this.engine.snapshotRendering = true;
+				this.engine.snapshotRenderingMode = BABYLON.Constants.SNAPSHOTRENDERING_FAST;
+			}, 3000);
+		}
 	}
 
 	public selectObject(objectId: string | null) {
@@ -1216,6 +1227,10 @@ export class RoomEngine {
 					if (def.castShadows !== false) {
 						this.shadowGeneratorForRoomLight.addShadowCaster(mesh);
 						this.shadowGeneratorForSunLight.addShadowCaster(mesh);
+					}
+
+					if (SNAPSHOT_RENDERING) {
+						mesh.alwaysSelectAsActiveMesh = true;
 					}
 
 					//if (mesh.material) (mesh.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(0.2, 0.2, 0.2);
