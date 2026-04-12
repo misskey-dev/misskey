@@ -46,7 +46,7 @@ export const randomBooks = defineObject({
 		const bodyMesh = model.findMesh('__X_BODY__');
 		const tex = new BABYLON.Texture('/client-assets/room/objects/random-books/texture.png', scene, {
 			invertY: false,
-			//samplingMode: BABYLON.Texture.NEAREST_SAMPLINGMODE,
+			samplingMode: BABYLON.Texture.NEAREST_SAMPLINGMODE,
 		});
 		bodyMesh.material.albedoTexture = tex;
 
