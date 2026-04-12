@@ -41,8 +41,8 @@ export const tabletopGlassPictureFrame = defineObject({
 			},
 		},
 		default: {
-			width: 0.15,
-			height: 0.15,
+			width: 0.1,
+			height: 0.1,
 			customPicture: null,
 			fit: 'cover',
 		},
