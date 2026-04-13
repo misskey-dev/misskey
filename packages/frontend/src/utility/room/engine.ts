@@ -331,6 +331,14 @@ export function defineObject<const OpSc extends OptionsSchema>(def: ObjectDef<Op
 	return def;
 }
 
+export function defineObjectClass<const OpSc extends OptionsSchema>(baseDef: Partial<ObjectDef<OpSc>>): {
+	extend: (childDef: Partial<ObjectDef<OpSc>>) => ObjectDef<OpSc>;
+} {
+	return {
+		extend: (childDef) => ({ ...baseDef, ...childDef }) as ObjectDef<OpSc>,
+	};
+}
+
 // この実装方法だとマイナスの座標をうまく処理できず結果がおかしくなるので応急処置で全体を+10000cmオフセットしてから計算している
 function getMeshesBoundingBox(meshes: BABYLON.Mesh[]): BABYLON.BoundingBox {
 	let min = new BABYLON.Vector3(Number.MAX_VALUE, Number.MAX_VALUE, Number.MAX_VALUE);
