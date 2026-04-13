@@ -73,6 +73,7 @@ import { tabletopCalendar } from './objects/tabletopCalendar.js';
 import { tabletopDigitalClock } from './objects/tabletopDigitalClock.js';
 import { tabletopFlag } from './objects/tabletopFlag.js';
 import { tabletopGlassPictureFrame } from './objects/tabletopGlassPictureFrame.js';
+import { tabletopIronFrameStand } from './objects/tabletopIronFrameStand.js';
 import { tabletopPictureFrame } from './objects/tabletopPictureFrame.js';
 import { tapestry } from './objects/tapestry.js';
 import { tetrapod } from './objects/tetrapod.js';
@@ -160,6 +161,7 @@ export const OBJECT_DEFS = [
 	tabletopDigitalClock,
 	tabletopFlag,
 	tabletopGlassPictureFrame,
+	tabletopIronFrameStand,
 	tabletopPictureFrame,
 	tapestry,
 	tetrapod,

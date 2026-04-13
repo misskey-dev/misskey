@@ -6,9 +6,9 @@
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../engine.js';
 
-export const desk = defineObject({
-	id: 'desk',
-	name: 'Desk',
+export const tabletopIronFrameStand = defineObject({
+	id: 'tabletopIronFrameStand',
+	name: 'tabletopIronFrameStand',
 	options: {
 		schema: {
 			frameColor: {
@@ -33,15 +33,23 @@ export const desk = defineObject({
 				max: 1,
 				step: 0.01,
 			},
+			height: {
+				type: 'range',
+				label: 'Height',
+				min: 0,
+				max: 1,
+				step: 0.01,
+			},
 		},
 		default: {
 			frameColor: [0.8, 0.8, 0.8],
 			boardColor: [0.8, 0.4, 0.1],
-			width: 0.28,
-			depth: 0.26,
+			width: 0.2,
+			depth: 0.1,
+			height: 0.1,
 		},
 	},
-	placement: 'floor',
+	placement: 'top',
 	createInstance: ({ options, model }) => {
 		const frameMaterial = model.findMaterial('__X_FRAME__');
 		const boardMaterial = model.findMaterial('__X_BOARD__');
@@ -68,6 +76,9 @@ export const desk = defineObject({
 				if (mesh.morphTargetManager != null && mesh.morphTargetManager.getTargetByName('D') != null) {
 					mesh.morphTargetManager.getTargetByName('D').influence = options.depth;
 				}
+				if (mesh.morphTargetManager != null && mesh.morphTargetManager.getTargetByName('H') != null) {
+					mesh.morphTargetManager.getTargetByName('H').influence = options.height;
+				}
 			}
 			model.updated();
 		};
@@ -81,6 +92,7 @@ export const desk = defineObject({
 					case 'boardColor': applyBoardColor(); break;
 					case 'width': applySize(); break;
 					case 'depth': applySize(); break;
+					case 'height': applySize(); break;
 				}
 			},
 			interactions: {},
