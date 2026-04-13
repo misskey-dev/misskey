@@ -81,6 +81,7 @@ import { twistedCubeObjet } from './objects/twistedCubeObjet.js';
 import { usedTissue } from './objects/usedTissue.js';
 import { wallCanvas } from './objects/wallCanvas.js';
 import { wallClock } from './objects/wallClock.js';
+import { wallGlassPictureFrame } from './objects/wallGlassPictureFrame.js';
 import { wallMirror } from './objects/wallMirror.js';
 import { wallShelf } from './objects/wallShelf.js';
 import { woodRingFloorLamp } from './objects/woodRingFloorLamp.js';
@@ -166,6 +167,7 @@ export const OBJECT_DEFS = [
 	usedTissue,
 	wallCanvas,
 	wallClock,
+	wallGlassPictureFrame,
 	wallMirror,
 	wallShelf,
 	woodRingFloorLamp,
