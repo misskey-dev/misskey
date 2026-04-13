@@ -37,6 +37,7 @@
 const BAKE_TRANSFORM = false; // 実験的
 const SNAPSHOT_RENDERING = false; // 実験的
 const SNAPSHOT_RENDERING_NON_SUPPORTED_OBJECTS = ['aromaReedDiffuser', 'tv', 'petBottle', 'aquarium', 'lavaLamp', 'beamLamp'];
+const IGNORE_OBJECTS: string[] = []; // for debug
 
 import * as BABYLON from '@babylonjs/core';
 import { AxesViewer } from '@babylonjs/core/Debug/axesViewer';
@@ -267,14 +268,7 @@ class ModelManager {
 			toMerge.push(newMesh);
 		}
 
-		// 一度に(multiMultiMaterials: trueで)マージするよりも、いったん同じマテリアルを持つもの同士で(multiMultiMaterials: falseで)マージしてから、改めてそれらを(multiMultiMaterials: trueで)マージした方が(なぜか)ドローコールが減ってお得
-		const pre = [];
-		const groupedByMaterial = Object.groupBy(toMerge, m => m.material?.uniqueId ?? -1);
-		for (const group of Object.values(groupedByMaterial)) {
-			const merged = BABYLON.Mesh.MergeMeshes(group, true, true, undefined, false, false);
-			pre.push(merged);
-		}
-		const merged = BABYLON.Mesh.MergeMeshes(pre, true, true, undefined, false, true);
+		const merged = BABYLON.Mesh.MergeMeshes(toMerge, true, true, undefined, false, true);
 		merged.parent = this.root;
 		merged.material.freeze();
 		if (merged.material instanceof BABYLON.MultiMaterial) {
@@ -470,7 +464,7 @@ export class RoomEngine {
 	private xGridPreviewPlane: BABYLON.Mesh;
 	private yGridPreviewPlane: BABYLON.Mesh;
 	private zGridPreviewPlane: BABYLON.Mesh;
-	private selectionOutlineLayer: BABYLON.SelectionOutlineLayer | null = null;
+	private selectionOutlineLayer: BABYLON.SelectionOutlineLayer;
 	public isEditMode = false;
 	public isSitting = ref(false);
 	public ui = reactive({
@@ -588,9 +582,7 @@ export class RoomEngine {
 		this.shadowGeneratorForSunLight.usePoissonSampling = true;
 		if (!SNAPSHOT_RENDERING) this.shadowGeneratorForSunLight.getShadowMap().refreshRate = 60; // snapshot renderingではrefreshRateが設定されているとなぜかクラッシュする
 
-		if (!SNAPSHOT_RENDERING) { // Snapshot renderingでClustered Lightingが有効だとなんかエラーが出る
-			this.lightContainer = new BABYLON.ClusteredLightContainer('clustered', [], this.scene);
-		}
+		this.lightContainer = new BABYLON.ClusteredLightContainer('clustered', [], this.scene);
 
 		this.turnOnRoomLight();
 
@@ -687,6 +679,8 @@ export class RoomEngine {
 		this.zGridPreviewPlane.isPickable = false;
 		this.zGridPreviewPlane.isVisible = false;
 
+		this.selectionOutlineLayer = new BABYLON.SelectionOutlineLayer('outliner', this.scene);
+
 		let isDragging = false;
 
 		this.canvas.addEventListener('pointerdown', (ev) => {
@@ -763,7 +757,7 @@ export class RoomEngine {
 	public async init() {
 		await this.loadRoomModel();
 		//await this.loadEnvModel();
-		await Promise.all(this.roomState.installedObjects.filter(o => !SNAPSHOT_RENDERING || !SNAPSHOT_RENDERING_NON_SUPPORTED_OBJECTS.includes(o.type)).map(o => this.loadObject({
+		await Promise.all(this.roomState.installedObjects.filter(o => !IGNORE_OBJECTS.includes(o.type) && (!SNAPSHOT_RENDERING || !SNAPSHOT_RENDERING_NON_SUPPORTED_OBJECTS.includes(o.type))).map(o => this.loadObject({
 			id: o.id,
 			type: o.type,
 			position: new BABYLON.Vector3(...o.position),
@@ -1252,11 +1246,19 @@ export class RoomEngine {
 					if (mesh.material) {
 						if (mesh.material instanceof BABYLON.MultiMaterial) {
 							for (const subMat of mesh.material.subMaterials) {
+								if ((subMat as BABYLON.PBRMaterial).subSurface.isRefractionEnabled) {
+									(subMat as BABYLON.PBRMaterial).subSurface.isRefractionEnabled = false; // 有効にするとドローコールが激増する(babylonのバグか仕様かは不明)
+									(subMat as BABYLON.PBRMaterial).transparencyMode = BABYLON.PBRMaterial.PBRMATERIAL_ALPHABLEND;
+								}
 								(subMat as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
 								(subMat as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
 								(subMat as BABYLON.PBRMaterial).anisotropy.isEnabled = false; // なんかきれいにレンダリングされないため
 							}
 						} else {
+							if ((mesh.material as BABYLON.PBRMaterial).subSurface.isRefractionEnabled) {
+								(mesh.material as BABYLON.PBRMaterial).subSurface.isRefractionEnabled = false; // 有効にするとドローコールが激増する(babylonのバグか仕様かは不明)
+								(mesh.material as BABYLON.PBRMaterial).transparencyMode = BABYLON.PBRMaterial.PBRMATERIAL_ALPHABLEND;
+							}
 							(mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
 							(mesh.material as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
 							(mesh.material as BABYLON.PBRMaterial).anisotropy.isEnabled = false; // なんかきれいにレンダリングされないため
@@ -1277,7 +1279,7 @@ export class RoomEngine {
 			options: args.options,
 			model,
 			id: args.id,
-			stickyMarkerMeshUpdated: (mesh: BABYLON.Mesh) => {
+			stickyMarkerMeshUpdated: (mesh) => {
 				// TODO
 				//// stickyな子の位置を更新
 				//if (mesh.name.includes('__TOP__')) {
@@ -1313,18 +1315,12 @@ export class RoomEngine {
 	}
 
 	private highlightMeshes(meshes: BABYLON.AbstractMesh[]) {
-		this.clearHighlight(); // SelectionOutlineLayerは存在するだけでドローコールが増えるので都度dispose https://forum.babylonjs.com/t/selectionoutlinelayer-doubles-the-number-of-draw-calls-despite-having-no-selection/63084
-		this.selectionOutlineLayer = new BABYLON.SelectionOutlineLayer('outliner', this.scene);
+		this.clearHighlight();
 		this.selectionOutlineLayer.addSelection(meshes);
 	}
 
 	private clearHighlight() {
-		if (this.selectionOutlineLayer != null) {
-			// SelectionOutlineLayerは存在するだけでドローコールが増えるのでclearじゃなく都度dispose
-			// あとこれ https://forum.babylonjs.com/t/selectionoutlinelayer-error-when-webgpus-compatibilitymode-is-false/63067
-			this.selectionOutlineLayer.dispose();
-			this.selectionOutlineLayer = null;
-		}
+		this.selectionOutlineLayer.clearSelection();
 	}
 
 	public beginSelectedInstalledObjectGrabbing() {
@@ -1545,16 +1541,11 @@ export class RoomEngine {
 			}
 
 			if (m.subMeshes != null && m.subMeshes.length > 0 && m.material.subMaterials != null) {
-				const irradianceTexture = m.material.reflectionTexture?.irradianceTexture;
 				const multiGhostMaterial = m.material.clone(`${m.material.name}_ghost`) as BABYLON.MultiMaterial;
-				if (multiGhostMaterial.reflectionTexture) multiGhostMaterial.reflectionTexture.irradianceTexture = irradianceTexture; // babylonのバグか知らんが、特定の環境テクスチャを使用しているマテリアルをcloneすると元のマテリアルのreflectionTextureのirradianceTextureがなぜかnullになってしまいエラーとなるので救済 https://forum.babylonjs.com/t/cloning-a-material-that-uses-a-cubetexture-with-an-irradiancetexture-causes-the-irradiancetexture-to-be-lost-from-both-the-original-and-the-cloned-material/63066
 
 				for (let i = 0; i < multiGhostMaterial.subMaterials.length; i++) {
 					const subMaterial = multiGhostMaterial.subMaterials[i];
-					const irradianceTexture = subMaterial.reflectionTexture?.irradianceTexture;
-
 					const ghostMaterial = subMaterial.clone(`${subMaterial.name}_ghost`);
-					if (ghostMaterial.reflectionTexture) ghostMaterial.reflectionTexture.irradianceTexture = irradianceTexture; // babylonのバグか知らんが、特定の環境テクスチャを使用しているマテリアルをcloneすると元のマテリアルのreflectionTextureのirradianceTextureがなぜかnullになってしまいエラーとなるので救済 https://forum.babylonjs.com/t/cloning-a-material-that-uses-a-cubetexture-with-an-irradiancetexture-causes-the-irradiancetexture-to-be-lost-from-both-the-original-and-the-cloned-material/63066
 					ghostMaterial.alpha = 0.3;
 					ghostMaterial.transparencyMode = BABYLON.Material.MATERIAL_ALPHABLEND;
 					multiGhostMaterial.subMaterials[i] = ghostMaterial;
@@ -1562,9 +1553,7 @@ export class RoomEngine {
 					m.material = multiGhostMaterial;
 				}
 			} else {
-				const irradianceTexture = m.material.reflectionTexture?.irradianceTexture;
 				const ghostMaterial = m.material.clone(`${m.material.name}_ghost`);
-				if (ghostMaterial.reflectionTexture) ghostMaterial.reflectionTexture.irradianceTexture = irradianceTexture; // babylonのバグか知らんが、特定の環境テクスチャを使用しているマテリアルをcloneすると元のマテリアルのreflectionTextureのirradianceTextureがなぜかnullになってしまいエラーとなるので救済 https://forum.babylonjs.com/t/cloning-a-material-that-uses-a-cubetexture-with-an-irradiancetexture-causes-the-irradiancetexture-to-be-lost-from-both-the-original-and-the-cloned-material/63066
 				ghostMaterial.alpha = 0.3;
 				ghostMaterial.transparencyMode = BABYLON.Material.MATERIAL_ALPHABLEND;
 				materials.set(m.material, ghostMaterial);
