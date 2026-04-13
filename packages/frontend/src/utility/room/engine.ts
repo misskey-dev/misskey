@@ -324,6 +324,7 @@ type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 		options: Readonly<GetOptionsSchemaValues<OpSc>>;
 		model: ModelManager;
 		id: string;
+		stickyMarkerMeshUpdated?: (mesh: BABYLON.Mesh) => void;
 	}) => RoomObjectInstance<GetOptionsSchemaValues<OpSc>> | Promise<RoomObjectInstance<GetOptionsSchemaValues<OpSc>>>; // TODO: createInstanceをasyncにするのではなく、別にreadyみたいなものを返させる
 };
 
@@ -1227,9 +1228,7 @@ export class RoomEngine {
 				this.highlightMeshes(meshes);
 			}
 
-			for (const m of meshes) {
-				const mesh = m;
-
+			for (const mesh of meshes) {
 				// シェイプキー(morph)を考慮してbounding boxを更新するために必要
 				mesh.refreshBoundingInfo({ applyMorph: true });
 
@@ -1278,6 +1277,28 @@ export class RoomEngine {
 			options: args.options,
 			model,
 			id: args.id,
+			stickyMarkerMeshUpdated: (mesh: BABYLON.Mesh) => {
+				// TODO
+				//// stickyな子の位置を更新
+				//if (mesh.name.includes('__TOP__')) {
+				//	mesh.unfreezeWorldMatrix();
+				//	mesh.computeWorldMatrix(true);
+				//	const updateChildStickyObjectPosition = (objectId: string) => {
+				//		const stickyObjectIds = Array.from(this.roomState.installedObjects.filter(o => o.sticky === objectId)).map(o => o.id);
+				//		for (const soid of stickyObjectIds) {
+				//			const soMesh = this.objectEntities.get(soid)!.rootMesh;
+				//			soMesh.unfreezeWorldMatrix();
+				//			for (const m of soMesh.getChildMeshes()) {
+				//				m.unfreezeWorldMatrix();
+				//			}
+				//			console.log(mesh.getAbsolutePosition().y);
+				//			soMesh.position.y = mesh.getAbsolutePosition().y;
+				//			updateChildStickyObjectPosition(soid);
+				//		}
+				//	};
+				//	updateChildStickyObjectPosition(args.id);
+				//}
+			},
 		});
 
 		objectInstance.onInited?.();

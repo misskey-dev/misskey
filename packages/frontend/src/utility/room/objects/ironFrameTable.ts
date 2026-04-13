@@ -50,7 +50,7 @@ export const ironFrameTable = defineObject({
 		},
 	},
 	placement: 'top',
-	createInstance: ({ options, model }) => {
+	createInstance: ({ options, model, stickyMarkerMeshUpdated }) => {
 		const frameMaterial = model.findMaterial('__X_FRAME__');
 		const boardMaterial = model.findMaterial('__X_BOARD__');
 
@@ -67,6 +67,8 @@ export const ironFrameTable = defineObject({
 		};
 
 		applyBoardColor();
+
+		const topMesh = model.findMesh('__TOP__');
 
 		const applySize = () => {
 			for (const mesh of model.root.getChildMeshes()) {
@@ -90,9 +92,9 @@ export const ironFrameTable = defineObject({
 				switch (k) {
 					case 'frameColor': applyFrameColor(); break;
 					case 'boardColor': applyBoardColor(); break;
-					case 'width': applySize(); break;
-					case 'depth': applySize(); break;
-					case 'height': applySize(); break;
+					case 'width': applySize(); stickyMarkerMeshUpdated?.(topMesh); break;
+					case 'depth': applySize(); stickyMarkerMeshUpdated?.(topMesh); break;
+					case 'height': applySize(); stickyMarkerMeshUpdated?.(topMesh); break;
 				}
 			},
 			interactions: {},
