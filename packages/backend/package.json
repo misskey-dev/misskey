@@ -139,7 +139,7 @@
 		"nested-property": "4.0.0",
 		"node-fetch": "3.3.2",
 		"node-html-parser": "7.1.0",
-		"nodemailer": "8.0.4",
+		"nodemailer": "8.0.5",
 		"nsfwjs": "4.3.0",
 		"oauth2orize": "1.12.0",
 		"oauth2orize-pkce": "0.1.2",
