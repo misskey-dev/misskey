@@ -762,7 +762,7 @@ export class RoomEngine {
 
 	public async init() {
 		await this.loadRoomModel();
-		await this.loadEnvModel();
+		//await this.loadEnvModel();
 		await Promise.all(this.roomState.installedObjects.filter(o => !SNAPSHOT_RENDERING || !SNAPSHOT_RENDERING_NON_SUPPORTED_OBJECTS.includes(o.type)).map(o => this.loadObject({
 			id: o.id,
 			type: o.type,
