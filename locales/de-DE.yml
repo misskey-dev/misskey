@@ -3401,11 +3401,7 @@ _imageEffector:
     threshold: "Schwellenwert"
     centerX: "Zentrum X"
     centerY: "Zentrum Y"
-    zoomLinesSmoothing: "Glättung"
-    zoomLinesSmoothingDescription: "Die Einstellungen für die Glättung und für die Breite der Konzentrationslinien können nicht gleichzeitig verwendet werden."
-    zoomLinesThreshold: "Breite der Konzentrationslinien"
     zoomLinesMaskSize: "Mitteldurchmesser"
-    zoomLinesBlack: "Schwarz machen"
     circle: "Kreisförmig"
 drafts: "Entwurf"
 _drafts:

@@ -32,9 +32,9 @@ jobs:
       with:
         submodules: true
     - name: Setup pnpm
-      uses: pnpm/action-setup@v4.2.0
+      uses: pnpm/action-setup@v4.4.0
     - name: Use Node.js
-      uses: actions/setup-node@v6.2.0
+      uses: actions/setup-node@v6.3.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
@@ -86,9 +86,9 @@ jobs:
     #- uses: browser-actions/setup-firefox@latest
     #  if: ${{ matrix.browser == 'firefox' }}
     - name: Setup pnpm
-      uses: pnpm/action-setup@v4.2.0
+      uses: pnpm/action-setup@v4.4.0
     - name: Use Node.js
-      uses: actions/setup-node@v6.2.0
+      uses: actions/setup-node@v6.3.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
