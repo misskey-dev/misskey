@@ -1376,9 +1376,7 @@ export class RoomEngine {
 			},
 			onDone: () => { // todo: sticky状態などを引数でもらうようにしたい
 				this.ui.isGrabbing = false;
-				const pos = selectedObject.position.clone();
-				const rotation = selectedObject.rotation.clone();
-				this.putParticleSystem.emitter = pos;
+				this.putParticleSystem.emitter = selectedObject.position.clone();
 				this.putParticleSystem.start();
 
 				sound.playUrl('/client-assets/room/sfx/put.mp3', {
@@ -1414,15 +1412,23 @@ export class RoomEngine {
 						for (const soid of stickyObjectIds) {
 							const soMesh = this.objectEntities.get(soid)!.rootMesh;
 							soMesh.setParent(null);
+
+							const pos = soMesh.position.clone();
+							const rotation = soMesh.rotation.clone();
+							this.roomState.installedObjects.find(o => o.id === soid)!.position = [pos.x, pos.y, pos.z];
+							this.roomState.installedObjects.find(o => o.id === soid)!.rotation = [rotation.x, rotation.y, rotation.z];
+
 							removeStickyParentRecursively(soMesh);
 						}
 					};
 					removeStickyParentRecursively(selectedObject);
-				});
 
-				this.roomState.installedObjects.find(o => o.id === selectedObject.metadata.objectId)!.sticky = sticky;
-				this.roomState.installedObjects.find(o => o.id === selectedObject.metadata.objectId)!.position = [pos.x, pos.y, pos.z];
-				this.roomState.installedObjects.find(o => o.id === selectedObject.metadata.objectId)!.rotation = [rotation.x, rotation.y, rotation.z];
+					const pos = selectedObject.position.clone();
+					const rotation = selectedObject.rotation.clone();
+					this.roomState.installedObjects.find(o => o.id === selectedObject.metadata.objectId)!.sticky = sticky;
+					this.roomState.installedObjects.find(o => o.id === selectedObject.metadata.objectId)!.position = [pos.x, pos.y, pos.z];
+					this.roomState.installedObjects.find(o => o.id === selectedObject.metadata.objectId)!.rotation = [rotation.x, rotation.y, rotation.z];
+				});
 			},
 		};
 
