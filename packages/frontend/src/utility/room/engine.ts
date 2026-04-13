@@ -1729,6 +1729,9 @@ export class RoomEngine {
 		this.objectEntities.get(objectId)?.rootMesh.dispose();
 		this.objectEntities.delete(objectId);
 		this.roomState.installedObjects = this.roomState.installedObjects.filter(o => o.id !== objectId);
+		for (const o of this.roomState.installedObjects.filter(o => o.sticky === objectId)) {
+			o.sticky = null;
+		}
 		this.selected.value = null;
 
 		sound.playUrl('/client-assets/room/sfx/remove.mp3', {
