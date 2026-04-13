@@ -44,8 +44,8 @@ export const ironFrameTable = defineObject({
 		default: {
 			frameColor: [0.8, 0.8, 0.8],
 			boardColor: [0.8, 0.4, 0.1],
-			width: 0.25,
-			depth: 0.2,
+			width: 0.28,
+			depth: 0.25,
 			height: 0.35,
 		},
 	},
