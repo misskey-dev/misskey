@@ -36,7 +36,7 @@
 
 const BAKE_TRANSFORM = false; // 実験的
 const SNAPSHOT_RENDERING = false; // 実験的
-const SNAPSHOT_RENDERING_NON_SUPPORTED_OBJECTS = ['aromaReedDiffuser', 'tv', 'petBottle', 'aquarium', 'lavaLamp', 'beamLamp'];
+const SNAPSHOT_RENDERING_NON_SUPPORTED_OBJECTS = ['tv', 'aquarium', 'lavaLamp'];
 const IGNORE_OBJECTS: string[] = []; // for debug
 
 import * as BABYLON from '@babylonjs/core';
