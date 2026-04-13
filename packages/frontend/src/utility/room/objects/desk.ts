@@ -11,29 +11,76 @@ export const desk = defineObject({
 	name: 'Desk',
 	options: {
 		schema: {
-			topColor: {
+			frameColor: {
 				type: 'color',
-				label: 'Top color',
+				label: 'Frame color',
+			},
+			boardColor: {
+				type: 'color',
+				label: 'Board color',
+			},
+			width: {
+				type: 'range',
+				label: 'Width',
+				min: 0,
+				max: 1,
+				step: 0.01,
+			},
+			depth: {
+				type: 'range',
+				label: 'Depth',
+				min: 0,
+				max: 1,
+				step: 0.01,
 			},
 		},
 		default: {
-			topColor: [0, 0, 0],
+			frameColor: [0.8, 0.8, 0.8],
+			boardColor: [0.8, 0.4, 0.1],
+			width: 0.28,
+			depth: 0.26,
 		},
 	},
 	placement: 'floor',
 	createInstance: ({ options, model }) => {
-		const topMaterial = model.findMaterial('__X_BODY__');
+		const frameMaterial = model.findMaterial('__X_FRAME__');
+		const boardMaterial = model.findMaterial('__X_BOARD__');
 
-		const applyTopColor = () => {
-			const [r, g, b] = options.topColor;
-			topMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyFrameColor = () => {
+			const [r, g, b] = options.frameColor;
+			frameMaterial.albedoColor = new BABYLON.Color3(r, g, b);
 		};
 
-		applyTopColor();
+		applyFrameColor();
+
+		const applyBoardColor = () => {
+			const [r, g, b] = options.boardColor;
+			boardMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		};
+
+		applyBoardColor();
+
+		const applySize = () => {
+			for (const mesh of model.root.getChildMeshes()) {
+				if (mesh.morphTargetManager != null && mesh.morphTargetManager.getTargetByName('W') != null) {
+					mesh.morphTargetManager.getTargetByName('W').influence = options.width;
+				}
+				if (mesh.morphTargetManager != null && mesh.morphTargetManager.getTargetByName('D') != null) {
+					mesh.morphTargetManager.getTargetByName('D').influence = options.depth;
+				}
+			}
+			model.updated();
+		};
+
+		applySize();
 
 		return {
 			onOptionsUpdated: ([k, v]) => {
-				applyTopColor();
+				switch (k) {
+					case 'frameColor': applyFrameColor(); break;
+					case 'boardColor': applyBoardColor(); break;
+					case 'width': applySize(); break;
+				}
 			},
 			interactions: {},
 		};
