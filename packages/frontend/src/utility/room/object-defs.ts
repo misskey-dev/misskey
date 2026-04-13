@@ -85,6 +85,7 @@ import { wallGlassPictureFrame } from './objects/wallGlassPictureFrame.js';
 import { wallMirror } from './objects/wallMirror.js';
 import { wallShelf } from './objects/wallShelf.js';
 import { woodRingFloorLamp } from './objects/woodRingFloorLamp.js';
+import { woodRingsPendantLight } from './objects/woodRingsPendantLight.js';
 import { woodSoundAbsorbingPanel } from './objects/woodSoundAbsorbingPanel.js';
 
 export const OBJECT_DEFS = [
@@ -171,6 +172,7 @@ export const OBJECT_DEFS = [
 	wallMirror,
 	wallShelf,
 	woodRingFloorLamp,
+	woodRingsPendantLight,
 	woodSoundAbsorbingPanel,
 	debugHipoly,
 ];
