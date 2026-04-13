@@ -49,6 +49,7 @@ import { monitor } from './objects/monitor.js';
 import { monitorSpeaker } from './objects/monitorSpeaker.js';
 import { monstera } from './objects/monstera.js';
 import { mug } from './objects/mug.js';
+import { newtonsCradle } from './objects/newtonsCradle.js';
 import { openedCardboardBox } from './objects/openedCardboardBox.js';
 import { pachira } from './objects/pachira.js';
 import { pc } from './objects/pc.js';
@@ -138,6 +139,7 @@ export const OBJECT_DEFS = [
 	monitorSpeaker,
 	monstera,
 	mug,
+	newtonsCradle,
 	openedCardboardBox,
 	pachira,
 	pc,
