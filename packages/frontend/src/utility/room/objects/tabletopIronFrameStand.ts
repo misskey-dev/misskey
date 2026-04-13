@@ -46,7 +46,7 @@ export const tabletopIronFrameStand = defineObject({
 			boardColor: [0.8, 0.4, 0.1],
 			width: 0.2,
 			depth: 0.1,
-			height: 0.1,
+			height: 0.05,
 		},
 	},
 	placement: 'top',
