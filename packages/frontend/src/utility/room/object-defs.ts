@@ -20,6 +20,7 @@ import { ceilingFanLight } from './objects/ceilingFanLight.js';
 import { chair } from './objects/chair.js';
 import { coffeeCup } from './objects/coffeeCup.js';
 import { colorBox } from './objects/colorBox.js';
+import { cuboid } from './objects/cuboid.js';
 import { cupNoodle } from './objects/cupNoodle.js';
 import { custardPudding } from './objects/custardPudding.js';
 import { debugHipoly } from './objects/debugHipoly.js';
@@ -102,6 +103,7 @@ export const OBJECT_DEFS = [
 	chair,
 	coffeeCup,
 	colorBox,
+	cuboid,
 	cupNoodle,
 	custardPudding,
 	desk,
