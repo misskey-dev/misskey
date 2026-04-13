@@ -570,7 +570,7 @@ export class RoomEngine {
 		this.shadowGeneratorForRoomLight.bias = 0.0001;
 		this.shadowGeneratorForRoomLight.usePercentageCloserFiltering = true;
 		this.shadowGeneratorForRoomLight.filteringQuality = BABYLON.ShadowGenerator.QUALITY_HIGH;
-		this.shadowGeneratorForRoomLight.getShadowMap().refreshRate = 60;
+		if (!SNAPSHOT_RENDERING) this.shadowGeneratorForRoomLight.getShadowMap().refreshRate = 60; // snapshot renderingではrefreshRateが設定されているとなぜかクラッシュする
 		//this.shadowGenerator1.useContactHardeningShadow = true;
 
 		const sunLight = new BABYLON.DirectionalLight('sunLight', new BABYLON.Vector3(0.2, -1, -1), this.scene);
@@ -585,7 +585,7 @@ export class RoomEngine {
 		this.shadowGeneratorForSunLight.bias = 0.0001;
 		this.shadowGeneratorForSunLight.usePercentageCloserFiltering = true;
 		this.shadowGeneratorForSunLight.usePoissonSampling = true;
-		this.shadowGeneratorForSunLight.getShadowMap().refreshRate = 60;
+		if (!SNAPSHOT_RENDERING) this.shadowGeneratorForSunLight.getShadowMap().refreshRate = 60; // snapshot renderingではrefreshRateが設定されているとなぜかクラッシュする
 
 		if (!SNAPSHOT_RENDERING) { // Snapshot renderingでClustered Lightingが有効だとなんかエラーが出る
 			this.lightContainer = new BABYLON.ClusteredLightContainer('clustered', [], this.scene);
@@ -781,6 +781,10 @@ export class RoomEngine {
 				this.engine.snapshotRendering = true;
 				this.engine.snapshotRenderingMode = BABYLON.Constants.SNAPSHOTRENDERING_FAST;
 			}, 3000);
+
+			window.setInterval(() => {
+				this.engine.snapshotRenderingReset();
+			}, 10000);
 		}
 	}
 
@@ -1039,6 +1043,8 @@ export class RoomEngine {
 					this.roomCollisionMeshes.push(m);
 					continue;
 				}
+
+				if (SNAPSHOT_RENDERING) m.alwaysSelectAsActiveMesh = true;
 
 				m.isPickable = false;
 				m.checkCollisions = false;
