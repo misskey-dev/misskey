@@ -62,6 +62,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton v-if="isEditMode" @click="exitEditMode">Exit edit mode</MkButton>
 			<MkButton v-if="!isEditMode" @click="enterEditMode">Edit mode</MkButton>
 			<MkButton v-if="isEditMode" @click="addObject">addObject</MkButton>
+			<MkButton @click="expor">Export</MkButton>
+			<MkButton @click="impor">Import</MkButton>
 		</div>
 	</template>
 </div>
@@ -410,6 +412,37 @@ function getRgb(hex: string | number): [number, number, number] | null {
 function save() {
 	if (engine.value == null) return;
 	localStorage.setItem('roomData', JSON.stringify(engine.value.roomState));
+}
+
+function expor() {
+	if (engine.value == null) return;
+	const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(engine.value.roomState));
+	const dlAnchorElem = window.document.createElement('a');
+	dlAnchorElem.setAttribute('href', dataStr);
+	dlAnchorElem.setAttribute('download', 'room.json');
+	dlAnchorElem.click();
+}
+
+function impor() {
+	if (engine.value == null) return;
+	const inputElem = window.document.createElement('input');
+	inputElem.setAttribute('type', 'file');
+	inputElem.setAttribute('accept', 'application/json');
+	inputElem.addEventListener('change', () => {
+		const file = inputElem.files?.[0];
+		if (file == null) return;
+		const reader = new FileReader();
+		reader.onload = () => {
+			try {
+				localStorage.setItem('roomData', reader.result as string);
+				window.location.reload();
+			} catch (e) {
+				alert('Failed to load room data: ' + e);
+			}
+		};
+		reader.readAsText(file);
+	});
+	inputElem.click();
 }
 
 definePage(() => ({
