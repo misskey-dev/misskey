@@ -54,6 +54,7 @@ import { pc } from './objects/pc.js';
 import { petBottle } from './objects/petBottle.js';
 import { piano } from './objects/piano.js';
 import { pictureFrame } from './objects/pictureFrame.js';
+import { pizza } from './objects/pizza.js';
 import { plant } from './objects/plant.js';
 import { plant2 } from './objects/plant2.js';
 import { poster } from './objects/poster.js';
@@ -138,6 +139,7 @@ export const OBJECT_DEFS = [
 	petBottle,
 	piano,
 	pictureFrame,
+	pizza,
 	plant,
 	plant2,
 	poster,
