@@ -36,6 +36,7 @@ import { facialTissue } from './objects/facialTissue.js';
 import { hangingTShirt } from './objects/hangingTShirt.js';
 import { icosahedron } from './objects/icosahedron.js';
 import { ironFrameShelf5, ironFrameShelf4, ironFrameShelf3 } from './objects/ironFrameShelf.js';
+import { ironFrameTable } from './objects/ironFrameTable.js';
 import { keyboard } from './objects/keyboard.js';
 import { laptopPc } from './objects/laptopPc.js';
 import { lavaLamp } from './objects/lavaLamp.js';
@@ -124,6 +125,7 @@ export const OBJECT_DEFS = [
 	ironFrameShelf5,
 	ironFrameShelf4,
 	ironFrameShelf3,
+	ironFrameTable,
 	keyboard,
 	laptopPc,
 	lavaLamp,
