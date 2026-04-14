@@ -36,7 +36,7 @@
 // TODO: 近くのオブジェクトの原点に軸を揃えるオプション
 
 const BAKE_TRANSFORM = false; // 実験的
-const SNAPSHOT_RENDERING = false; // 実験的
+const SNAPSHOT_RENDERING = true; // 実験的
 const SNAPSHOT_RENDERING_NON_SUPPORTED_OBJECTS = ['tv', 'aquarium', 'lavaLamp'];
 const IGNORE_OBJECTS: string[] = []; // for debug
 
@@ -786,14 +786,21 @@ export class RoomEngine {
 		});
 
 		if (SNAPSHOT_RENDERING) {
-			window.setTimeout(() => {
-				this.engine.snapshotRendering = true;
-				this.engine.snapshotRenderingMode = BABYLON.Constants.SNAPSHOTRENDERING_FAST;
-			}, 3000);
+			const sr = new BABYLON.SnapshotRenderingHelper(this.scene);
 
-			window.setInterval(() => {
-				this.engine.snapshotRenderingReset();
-			}, 10000);
+			window.setTimeout(() => {
+				sr.enableSnapshotRendering();
+
+				if (USE_GLOW) {
+					const gl = new BABYLON.GlowLayer('glow', this.scene, {
+					//mainTextureFixedSize: 512,
+						blurKernelSize: 64,
+					});
+					gl.intensity = 0.5;
+
+					sr.updateMeshesForEffectLayer(gl);
+				}
+			}, 3000);
 		}
 	}
 
