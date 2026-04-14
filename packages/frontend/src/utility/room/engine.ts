@@ -35,28 +35,54 @@
 // TODO: 近くのオブジェクトの端にスナップオプション
 // TODO: 近くのオブジェクトの原点に軸を揃えるオプション
 
-const BAKE_TRANSFORM = false; // 実験的
-const SNAPSHOT_RENDERING = false; // 実験的
-const SNAPSHOT_RENDERING_NON_SUPPORTED_OBJECTS = ['tv', 'aquarium', 'lavaLamp'];
-const IGNORE_OBJECTS: string[] = []; // for debug
-
-const SYSTEM_MESH_NAMES = ['__TOP__', '__SIDE__', '__PICK__', '__COLLISION__', '__COLLISION_AUTO_GENERATED_INTERNALY__'];
-
 import * as BABYLON from '@babylonjs/core';
 import { AxesViewer } from '@babylonjs/core/Debug/axesViewer';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
 import { BoundingBoxRenderer } from '@babylonjs/core/Rendering/boundingBoxRenderer';
 import { GridMaterial } from '@babylonjs/materials';
-import { ShowInspector } from '@babylonjs/inspector';
-import { reactive, ref, shallowRef, triggerRef, watch } from 'vue';
+import { EventEmitter } from 'eventemitter3';
 import { genId } from '../id.js';
 import { deepClone } from '../clone.js';
 import { getObjectDef } from './object-defs.js';
 import { HorizontalCameraKeyboardMoveInput, applyMorphTargetsToMesh, camelToKebab, findMaterial, scaleMorph } from './utility.js';
-import * as sound from '@/utility/sound.js';
+
+const BAKE_TRANSFORM = false; // 実験的
+const SNAPSHOT_RENDERING = false; // 実験的
+const SNAPSHOT_RENDERING_NON_SUPPORTED_OBJECTS = ['tv', 'aquarium', 'lavaLamp'];
+const IGNORE_OBJECTS: string[] = []; // for debug
+const SYSTEM_MESH_NAMES = ['__TOP__', '__SIDE__', '__PICK__', '__COLLISION__', '__COLLISION_AUTO_GENERATED_INTERNALY__'];
+const USE_GLOW = true; // ドローコールが増えて重い
+const IN_WEB_WORKER = typeof window === 'undefined';
+
+const TIME_MAP = {
+	0: 2,
+	1: 2,
+	2: 2,
+	3: 2,
+	4: 2,
+	5: 1,
+	6: 1,
+	7: 0,
+	8: 0,
+	9: 0,
+	10: 0,
+	11: 0,
+	12: 0,
+	13: 0,
+	14: 0,
+	15: 0,
+	16: 1,
+	17: 1,
+	18: 2,
+	19: 2,
+	20: 2,
+	21: 2,
+	22: 2,
+	23: 2,
+} as const;
 
 // babylonのドメイン知識は持たない
-type RoomStateObject<Options = any> = {
+export type RoomStateObject<Options = any> = {
 	id: string;
 	type: string;
 	position: [number, number, number];
@@ -96,7 +122,7 @@ type Heya = {
 	type: 'japanese';
 };
 
-type RoomState = {
+export type RoomState = {
 	heya: Heya;
 	installedObjects: RoomStateObject<any>[];
 };
@@ -302,7 +328,7 @@ class ModelManager {
 	}
 }
 
-type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
+export type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 	id: string;
 	name: string;
 	path?: string;
@@ -352,35 +378,6 @@ function getMeshesBoundingBox(meshes: BABYLON.Mesh[]): BABYLON.BoundingBox {
 	return new BABYLON.BoundingBox(min.subtract(new BABYLON.Vector3(10000, 10000, 10000)), max.subtract(new BABYLON.Vector3(10000, 10000, 10000)));
 }
 
-const TIME_MAP = {
-	0: 2,
-	1: 2,
-	2: 2,
-	3: 2,
-	4: 2,
-	5: 1,
-	6: 1,
-	7: 0,
-	8: 0,
-	9: 0,
-	10: 0,
-	11: 0,
-	12: 0,
-	13: 0,
-	14: 0,
-	15: 0,
-	16: 1,
-	17: 1,
-	18: 2,
-	19: 2,
-	20: 2,
-	21: 2,
-	22: 2,
-	23: 2,
-} as const;
-
-const USE_GLOW = true; // ドローコールが増えて重い
-
 function enableObjectCollision(meshes: BABYLON.Mesh[]) {
 	let hasCollisionMesh = false;
 	for (const mesh of meshes) {
@@ -420,15 +417,28 @@ function enableObjectCollision(meshes: BABYLON.Mesh[]) {
 	}
 }
 
-export async function createRoomEngine(roomState: RoomState, canvas: HTMLCanvasElement) {
-	const babylonEngine = new BABYLON.WebGPUEngine(canvas);
-	babylonEngine.compatibilityMode = false;
-	await babylonEngine.initAsync();
-	//const babylonEngine = new BABYLON.Engine(canvas, false, { alpha: false, antialias: false });
-	return new RoomEngine(roomState, { canvas, engine: babylonEngine });
-}
+export type RoomEngineEvents = {
+	'changeSelectedState': (ctx: {
+		selected: {
+			objectId: string;
+			objectState: RoomStateObject<any>;
+			objectDef: ObjectDef<any>;
+		} | null;
+	}) => void;
+	'changeGrabbingState': (ctx: { grabbing: { forInstall: boolean } | null }) => void;
+	'changeEditMode': (ctx: { isEditMode: boolean }) => void;
+	'changeGridSnapping': (ctx: { gridSnapping: { enabled: boolean; scale: number } }) => void;
+	'changeRoomState': (ctx: { roomState: RoomState }) => void;
+	'playSfxUrl': (ctx: {
+		url: string;
+		options: {
+			volume: number;
+			playbackRate: number;
+		};
+	}) => void;
+};
 
-export class RoomEngine {
+export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	private canvas: HTMLCanvasElement;
 	private engine: BABYLON.WebGPUEngine;
 	public scene: BABYLON.Scene;
@@ -444,9 +454,12 @@ export class RoomEngine {
 		instance: RoomObjectInstance<any>;
 		model: ModelManager;
 	}> = new Map();
-	private grabbingCtx: {
+
+	// TODO: たぶんオブジェクト内の値のmutateはsetで検知できないので、そのような操作を実際に行うようになった & それを検知する必要性が出てきたら専用の設定関数などを新設してそれを使わせる
+	private _grabbingCtx: {
 		objectId: string;
 		objectType: string;
+		forInstall: boolean;
 		mesh: BABYLON.TransformNode;
 		originalDiffOfPosition: BABYLON.Vector3;
 		originalDiffOfRotationY: number;
@@ -458,17 +471,42 @@ export class RoomEngine {
 		onCancel?: () => void;
 		onDone?: () => void;
 	} | null = null;
-	public selected = shallowRef<{
+	get grabbingCtx() {
+		return this._grabbingCtx;
+	}
+	set grabbingCtx(v) {
+		this._grabbingCtx = v;
+		this.emit('changeGrabbingState', { grabbing: v == null ? null : { forInstall: v.forInstall } });
+	}
+
+	// TODO: たぶんオブジェクト内の値のmutateはsetで検知できないので、そのような操作を実際に行うようになった & それを検知する必要性が出てきたら専用の設定関数などを新設してそれを使わせる
+	private _selected: {
 		objectId: string;
 		objectEntity: RoomEngine['objectEntities'] extends Map<string, infer V> ? V : never;
 		objectState: RoomStateObject<any>;
 		objectDef: ObjectDef;
-	} | null>(null);
+	} | null = null;
+	get selected() {
+		return this._selected;
+	}
+	set selected(v) {
+		this._selected = v;
+		this.emit('changeSelectedState', { selected: v == null ? null : { objectId: v.objectId, objectState: v.objectState, objectDef: v.objectDef } });
+	}
+
 	private time: 0 | 1 | 2 = 0; // 0: 昼, 1: 夕, 2: 夜
 	private roomCollisionMeshes: BABYLON.AbstractMesh[] = [];
 	public roomState: RoomState;
-	public enableGridSnapping = ref(true);
-	public gridSnappingScale = ref(4/*cm*/);
+
+	private _gridSnapping = { enabled: true, scale: 4/*cm*/ };
+	get gridSnapping() {
+		return this._gridSnapping;
+	}
+	set gridSnapping(v) {
+		this._gridSnapping = v;
+		this.emit('changeGridSnapping', { gridSnapping: v });
+	}
+
 	private putParticleSystem: BABYLON.ParticleSystem;
 	private envMapIndoor: BABYLON.CubeTexture;
 	private envMapOutdoor: BABYLON.CubeTexture;
@@ -478,20 +516,27 @@ export class RoomEngine {
 	private yGridPreviewPlane: BABYLON.Mesh;
 	private zGridPreviewPlane: BABYLON.Mesh;
 	private selectionOutlineLayer: BABYLON.SelectionOutlineLayer;
-	public isEditMode = false;
-	public isSitting = ref(false);
-	public ui = reactive({
-		isGrabbing: false,
-		isGrabbingForInstall: false,
-	});
-	private fps = 30;
+
+	private _isEditMode = false;
+	get isEditMode() {
+		return this._isEditMode;
+	}
+	set isEditMode(v) {
+		this._isEditMode = v;
+		this.emit('changeEditMode', { isEditMode: v });
+	}
+
+	public isSitting = false;
+	private fps = 60;
 
 	constructor(roomState: RoomState, options: {
 		canvas: HTMLCanvasElement;
 		engine: BABYLON.WebGPUEngine;
 	}) {
+		super();
+
 		this.roomState = {
-			...roomState,
+			...JSON.parse(JSON.stringify(roomState)),
 			installedObjects: roomState.installedObjects.map(o => ({
 				...o,
 				options: { ...getObjectDef(o.type).options.default, ...o.options },
@@ -672,9 +717,10 @@ export class RoomEngine {
 		gridMaterial.mainColor = new BABYLON.Color3(0, 0, 0);
 		gridMaterial.minorUnitVisibility = 1;
 		gridMaterial.opacity = 0.5;
-		watch(this.gridSnappingScale, (v) => {
-			gridMaterial.gridRatio = v;
-		}, { immediate: true });
+		// todo
+		//watch(this.gridSnappingScale, (v) => {
+		//	gridMaterial.gridRatio = v;
+		//}, { immediate: true });
 
 		this.xGridPreviewPlane = BABYLON.MeshBuilder.CreatePlane('xGridPreviewPlane', { width: 1000/*cm*/, height: 1000/*cm*/ }, this.scene);
 		this.xGridPreviewPlane.rotation = new BABYLON.Vector3(0, 0, Math.PI / 2);
@@ -766,9 +812,13 @@ export class RoomEngine {
 				axes.zAxis.position = new BABYLON.Vector3(0, 30, 0);
 			}
 
-			(window as any).showBabylonInspector = () => {
-				ShowInspector(this.scene);
-			};
+			if (!IN_WEB_WORKER) {
+				(window as any).showBabylonInspector = () => {
+					import('@babylonjs/inspector').then(({ ShowInspector }) => {
+						ShowInspector(this.scene);
+					});
+				};
+			}
 		}
 	}
 
@@ -818,9 +868,9 @@ export class RoomEngine {
 	}
 
 	public selectObject(objectId: string | null) {
-		const currentSelected = this.selected.value;
+		const currentSelected = this.selected;
 		if (currentSelected != null) {
-			this.selected.value = null;
+			this.selected = null;
 			this.clearHighlight();
 			currentSelected.objectEntity.model.bakeMesh();
 		}
@@ -831,7 +881,7 @@ export class RoomEngine {
 				entity.model.unbakeMesh();
 				this.highlightMeshes(entity.rootMesh.getChildMeshes());
 				const state = this.roomState.installedObjects.find(o => o.id === objectId)!;
-				this.selected.value = {
+				this.selected = {
 					objectId,
 					objectEntity: entity,
 					objectState: state,
@@ -853,10 +903,10 @@ export class RoomEngine {
 		grabbing.ghost.position = newPos.clone();
 		grabbing.ghost.rotation = newRotation.clone();
 
-		if (this.enableGridSnapping.value) {
-			newPos.x = Math.round(newPos.x / this.gridSnappingScale.value) * this.gridSnappingScale.value;
-			newPos.y = Math.round(newPos.y / this.gridSnappingScale.value) * this.gridSnappingScale.value;
-			newPos.z = Math.round(newPos.z / this.gridSnappingScale.value) * this.gridSnappingScale.value;
+		if (this.gridSnapping.enabled) {
+			newPos.x = Math.round(newPos.x / this.gridSnapping.scale) * this.gridSnapping.scale;
+			newPos.y = Math.round(newPos.y / this.gridSnapping.scale) * this.gridSnapping.scale;
+			newPos.z = Math.round(newPos.z / this.gridSnapping.scale) * this.gridSnapping.scale;
 			newRotation.y = Math.round(newRotation.y / (Math.PI / 8)) * (Math.PI / 8);
 		}
 
@@ -905,14 +955,14 @@ export class RoomEngine {
 		} else if (placement === 'ceiling') {
 			newPos.y = 250/*cm*/;
 
-			if (this.enableGridSnapping.value) {
+			if (this.gridSnapping.enabled) {
 				this.yGridPreviewPlane.position = new BABYLON.Vector3(grabbing.mesh.position.x, 250/*cm*/ - 0.1/*cm*/, grabbing.mesh.position.z);
 				this.yGridPreviewPlane.isVisible = true;
 			}
 		} else if (placement === 'floor') {
 			newPos.y = 0;
 
-			if (this.enableGridSnapping.value) {
+			if (this.gridSnapping.enabled) {
 				this.yGridPreviewPlane.position = new BABYLON.Vector3(grabbing.mesh.position.x, 0.1/*cm*/, grabbing.mesh.position.z);
 				this.yGridPreviewPlane.isVisible = true;
 			}
@@ -926,7 +976,7 @@ export class RoomEngine {
 			}
 			if (newPos.y < 0) newPos.y = 0;
 
-			if (this.enableGridSnapping.value) {
+			if (this.gridSnapping.enabled) {
 				this.yGridPreviewPlane.position = new BABYLON.Vector3(grabbing.mesh.position.x, grabbing.mesh.position.y + 0.1/*cm*/, grabbing.mesh.position.z);
 				this.yGridPreviewPlane.isVisible = true;
 			}
@@ -1257,7 +1307,7 @@ export class RoomEngine {
 		root.metadata = metadata;
 
 		const model = new ModelManager(BAKE_TRANSFORM ? root : subRoot, loaderResult.meshes.filter(m => m.name !== subRoot), (meshes) => {
-			if (this.selected.value?.objectId === args.id) {
+			if (this.selected?.objectId === args.id) {
 				this.highlightMeshes(meshes);
 			}
 
@@ -1367,9 +1417,9 @@ export class RoomEngine {
 	}
 
 	public beginSelectedInstalledObjectGrabbing() {
-		if (this.selected.value == null) return;
+		if (this.selected == null) return;
 
-		const selectedObject = this.selected.value.objectEntity.rootMesh;
+		const selectedObject = this.selected.objectEntity.rootMesh;
 		this.clearHighlight();
 
 		// 子から先に適用していく
@@ -1414,11 +1464,10 @@ export class RoomEngine {
 
 		let sticky: string | null;
 
-		this.ui.isGrabbing = true;
-
 		this.grabbingCtx = {
 			objectId: selectedObject.metadata.objectId,
 			objectType: selectedObject.metadata.objectType,
+			forInstall: false,
 			mesh: selectedObject,
 			originalDiffOfPosition: selectedObject.position.subtract(this.camera.position.add(dir.scale(distance))),
 			originalDiffOfRotationY: selectedObject.rotation.subtract(this.camera.rotation).y,
@@ -1430,16 +1479,13 @@ export class RoomEngine {
 				sticky = info.sticky;
 			},
 			onCancel: () => {
-				this.ui.isGrabbing = false;
-
 				// todo: initialPositionなどを復元
 			},
 			onDone: () => { // todo: sticky状態などを引数でもらうようにしたい
-				this.ui.isGrabbing = false;
 				this.putParticleSystem.emitter = selectedObject.position.clone();
 				this.putParticleSystem.start();
 
-				sound.playUrl('/client-assets/room/sfx/put.mp3', {
+				this.playSfxUrl('/client-assets/room/sfx/put.mp3', {
 					volume: 1,
 					playbackRate: 1,
 				});
@@ -1488,17 +1534,19 @@ export class RoomEngine {
 					this.roomState.installedObjects.find(o => o.id === selectedObject.metadata.objectId)!.sticky = sticky;
 					this.roomState.installedObjects.find(o => o.id === selectedObject.metadata.objectId)!.position = [pos.x, pos.y, pos.z];
 					this.roomState.installedObjects.find(o => o.id === selectedObject.metadata.objectId)!.rotation = [rotation.x, rotation.y, rotation.z];
+
+					this.emit('changeRoomState', { roomState: this.roomState });
 				});
 			},
 		};
 
-		const intervalId = window.setInterval(() => {
+		const intervalId = setInterval(() => {
 			this.handleGrabbing();
 		}, 10);
 
 		this.intervalIds.push(intervalId);
 
-		sound.playUrl('/client-assets/room/sfx/grab.mp3', {
+		this.playSfxUrl('/client-assets/room/sfx/grab.mp3', {
 			volume: 1,
 			playbackRate: 1,
 		});
@@ -1532,7 +1580,7 @@ export class RoomEngine {
 	}
 
 	public sitChair(objectId: string) {
-		this.isSitting.value = true;
+		this.isSitting = true;
 		this.fixedCamera.parent = this.objectMeshs.get(objectId);
 		this.fixedCamera.position = new BABYLON.Vector3(0, 120/*cm*/, 0);
 		this.fixedCamera.rotation = new BABYLON.Vector3(0, 0, 0);
@@ -1541,7 +1589,7 @@ export class RoomEngine {
 	}
 
 	public standUp() {
-		this.isSitting.value = false;
+		this.isSitting = false;
 		this.scene.activeCamera = this.camera;
 		this.fixedCamera.parent = null;
 	}
@@ -1640,11 +1688,10 @@ export class RoomEngine {
 
 		let sticky: string | null;
 
-		this.ui.isGrabbingForInstall = true;
-
 		this.grabbingCtx = {
 			objectId: id,
 			objectType: type,
+			forInstall: true,
 			mesh: root,
 			originalDiffOfPosition: new BABYLON.Vector3(0, 0, 0),
 			originalDiffOfRotationY: Math.PI,
@@ -1656,8 +1703,6 @@ export class RoomEngine {
 				sticky = info.sticky;
 			},
 			onCancel: () => {
-				this.ui.isGrabbingForInstall = false;
-
 				// todo
 			},
 			onDone: () => { // todo: sticky状態などを引数でもらうようにしたい
@@ -1665,15 +1710,13 @@ export class RoomEngine {
 					enableObjectCollision(root.getChildMeshes());
 				}
 
-				this.ui.isGrabbingForInstall = false;
-
 				const pos = root.position.clone();
 				const rotation = root.rotation.clone();
 
 				this.putParticleSystem.emitter = pos;
 				this.putParticleSystem.start();
 
-				sound.playUrl('/client-assets/room/sfx/put.mp3', {
+				this.playSfxUrl('/client-assets/room/sfx/put.mp3', {
 					volume: 1,
 					playbackRate: 1,
 				});
@@ -1705,16 +1748,18 @@ export class RoomEngine {
 					sticky,
 					options,
 				});
+
+				this.emit('changeRoomState', { roomState: this.roomState });
 			},
 		};
 
-		const intervalId = window.setInterval(() => {
+		const intervalId = setInterval(() => {
 			this.handleGrabbing();
 		}, 10);
 
 		this.intervalIds.push(intervalId);
 
-		sound.playUrl('/client-assets/room/sfx/grab.mp3', {
+		this.playSfxUrl('/client-assets/room/sfx/grab.mp3', {
 			volume: 1,
 			playbackRate: 1,
 		});
@@ -1778,9 +1823,9 @@ export class RoomEngine {
 	}
 
 	public removeSelectedObject() {
-		if (this.selected.value == null) return;
+		if (this.selected == null) return;
 
-		const objectId = this.selected.value.objectId;
+		const objectId = this.selected.objectId;
 
 		this.objectEntities.get(objectId)?.rootMesh.dispose();
 		this.objectEntities.delete(objectId);
@@ -1788,9 +1833,10 @@ export class RoomEngine {
 		for (const o of this.roomState.installedObjects.filter(o => o.sticky === objectId)) {
 			o.sticky = null;
 		}
-		this.selected.value = null;
+		this.emit('changeRoomState', { roomState: this.roomState });
+		this.selected = null;
 
-		sound.playUrl('/client-assets/room/sfx/remove.mp3', {
+		this.playSfxUrl('/client-assets/room/sfx/remove.mp3', {
 			volume: 1,
 			playbackRate: 1,
 		});
@@ -1812,12 +1858,15 @@ export class RoomEngine {
 		if (options == null) return;
 		options[key] = value;
 
+		this.emit('changeRoomState', { roomState: this.roomState });
+
 		const entity = this.objectEntities.get(objectId);
 		if (entity == null) return;
 		entity.instance.onOptionsUpdated?.([key, value]);
 
-		if (this.selected.value?.objectId === objectId) {
-			triggerRef(this.selected);
+		if (this.selected?.objectId === objectId) {
+			// TODO
+			//triggerRef(this.selected);
 		}
 	}
 
@@ -1827,6 +1876,10 @@ export class RoomEngine {
 				m.showBoundingBox = true;
 			}
 		}
+	}
+
+	private playSfxUrl(url: string, options: { volume: number; playbackRate: number }) {
+		this.emit('playSfxUrl', { url, options });
 	}
 
 	public resize() {

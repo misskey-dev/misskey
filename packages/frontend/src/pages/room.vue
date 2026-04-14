@@ -6,47 +6,47 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.root" class="_pageScrollable">
 	<div :class="[$style.screen, { [$style.zen]: isZenMode }]">
-		<canvas ref="canvas" :class="$style.canvas" @keydown="onKeydown" @wheel="onWheel"></canvas>
+		<canvas ref="canvas" :class="$style.canvas" tabindex="-1"></canvas>
 
 		<template v-if="!isZenMode">
-			<div v-if="engine != null" class="_buttonsCenter" :class="$style.overlayControls">
-				<template v-if="isEditMode">
-					<MkButton v-if="engine.ui.isGrabbing" @click="endGrabbing"><i class="ti ti-check"></i> (E)</MkButton>
-					<MkButton v-else-if="engine.ui.isGrabbingForInstall" @click="endGrabbing"><i class="ti ti-check"></i> (E)</MkButton>
-					<MkButton v-else-if="engine.selected.value != null" @click="beginSelectedInstalledObjectGrabbing"><i class="ti ti-hand-grab"></i> (E)</MkButton>
+			<div v-if="controller.isReady.value" class="_buttonsCenter" :class="$style.overlayControls">
+				<template v-if="controller.isEditMode.value">
+					<MkButton v-if="controller.grabbing.value && !controller.grabbing.value.forInstall" @click="endGrabbing"><i class="ti ti-check"></i> (E)</MkButton>
+					<MkButton v-else-if="controller.grabbing.value && controller.grabbing.value.forInstall" @click="endGrabbing"><i class="ti ti-check"></i> (E)</MkButton>
+					<MkButton v-else-if="controller.selected.value != null" @click="beginSelectedInstalledObjectGrabbing"><i class="ti ti-hand-grab"></i> (E)</MkButton>
 
-					<MkButton v-if="engine.ui.isGrabbing || engine.ui.isGrabbingForInstall" @click="rotate"><i class="ti ti-view-360-arrow"></i> (R)</MkButton>
+					<MkButton v-if="controller.grabbing.value" @click="rotate"><i class="ti ti-view-360-arrow"></i> (R)</MkButton>
 
-					<MkButton :primary="engine.enableGridSnapping.value" @click="showSnappingMenu">Grid Snap: {{ engine.enableGridSnapping.value ? 'on' : 'off' }}</MkButton>
+					<MkButton :primary="controller.gridSnapping.value.enabled" @click="showSnappingMenu">Grid Snap: {{ controller.gridSnapping.value.enabled ? 'on' : 'off' }}</MkButton>
 
-					<MkButton v-if="!engine.ui.isGrabbing && engine.selected.value != null" @click="removeSelectedObject"><i class="ti ti-trash"></i> (X)</MkButton>
+					<MkButton v-if="!controller.grabbing.value && controller.selected.value != null" @click="removeSelectedObject"><i class="ti ti-trash"></i> (X)</MkButton>
 				</template>
-				<MkButton v-if="engine.isSitting.value" @click="engine.standUp()">降りる (Q)</MkButton>
+				<MkButton v-if="controller.isSitting.value" @click="controller.standUp()">降りる (Q)</MkButton>
 				<template v-for="interaction in interacions" :key="interaction.id">
 					<MkButton inline @click="interaction.fn()">{{ interaction.label }}{{ interaction.isPrimary ? ' (E)' : '' }}</MkButton>
 				</template>
 			</div>
 
-			<div v-if="engine != null && isEditMode && engine.selected.value != null" :key="engine.selected.value.objectId" class="_panel" :class="$style.overlayObjectInfoPanel">
-				{{ engine.selected.value.objectDef.name }}
+			<div v-if="controller.isReady.value && controller.isEditMode.value && controller.selected.value != null" :key="controller.selected.value.objectId" class="_panel" :class="$style.overlayObjectInfoPanel">
+				{{ controller.selected.value.objectDef.name }}
 
 				<div class="_gaps">
-					<div v-for="[k, s] in Object.entries(engine.selected.value.objectDef.options.schema)" :key="k">
+					<div v-for="[k, s] in Object.entries(controller.selected.value.objectDef.options.schema)" :key="k">
 						<div>{{ s.label }}</div>
 						<div v-if="s.type === 'color'">
-							<MkInput :modelValue="getHex(engine.selected.value.objectState.options[k])" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) engine.updateObjectOption(engine.selected.value.objectId, k, c); }"></MkInput>
+							<MkInput :modelValue="getHex(controller.selected.value.objectState.options[k])" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) controller.updateObjectOption(controller.selected.value.objectId, k, c); }"></MkInput>
 						</div>
 						<div v-else-if="s.type === 'boolean'">
-							<MkSwitch :modelValue="engine.selected.value.objectState.options[k]" @update:modelValue="v => engine.updateObjectOption(engine.selected.value.objectId, k, v)"></MkSwitch>
+							<MkSwitch :modelValue="controller.selected.value.objectState.options[k]" @update:modelValue="v => controller.updateObjectOption(controller.selected.value.objectId, k, v)"></MkSwitch>
 						</div>
 						<div v-else-if="s.type === 'enum'">
-							<MkSelect :items="s.enum.map(e => ({ label: e, value: e }))" :modelValue="engine.selected.value.objectState.options[k]" @update:modelValue="v => engine.updateObjectOption(engine.selected.value.objectId, k, v)"></MkSelect>
+							<MkSelect :items="s.enum.map(e => ({ label: e, value: e }))" :modelValue="controller.selected.value.objectState.options[k]" @update:modelValue="v => controller.updateObjectOption(controller.selected.value.objectId, k, v)"></MkSelect>
 						</div>
 						<div v-else-if="s.type === 'range'">
-							<MkRange :continuousUpdate="true" :min="s.min" :max="s.max" :step="s.step" :modelValue="engine.selected.value.objectState.options[k]" @update:modelValue="v => engine.updateObjectOption(engine.selected.value.objectId, k, v)"></MkRange>
+							<MkRange :continuousUpdate="true" :min="s.min" :max="s.max" :step="s.step" :modelValue="controller.selected.value.objectState.options[k]" @update:modelValue="v => controller.updateObjectOption(controller.selected.value.objectId, k, v)"></MkRange>
 						</div>
 						<div v-else-if="s.type === 'image'">
-							<MkInput type="text" :modelValue="engine.selected.value.objectState.options[k]" @update:modelValue="v => engine.updateObjectOption(engine.selected.value.objectId, k, v)"></MkInput>
+							<MkInput type="text" :modelValue="controller.selected.value.objectState.options[k]" @update:modelValue="v => controller.updateObjectOption(controller.selected.value.objectId, k, v)"></MkInput>
 						</div>
 					</div>
 				</div>
@@ -55,13 +55,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 
 	<template v-if="!isZenMode">
-		<div v-if="engine != null" class="_buttons" :class="$style.controls">
+		<div v-if="controller.isReady.value" class="_buttons" :class="$style.controls">
 			<!--<MkButton v-for="action in actions" :key="action.key" @click="action.fn">{{ action.label }}{{ hotkeyToLabel(action.hotkey) }}</MkButton>-->
 			<MkButton @click="toggleLight">Toggle Light</MkButton>
-			<MkButton v-if="isEditMode" primary @click="save">Save</MkButton>
-			<MkButton v-if="isEditMode" @click="exitEditMode">Exit edit mode</MkButton>
-			<MkButton v-if="!isEditMode" @click="enterEditMode">Edit mode</MkButton>
-			<MkButton v-if="isEditMode" @click="addObject">addObject</MkButton>
+			<MkButton v-if="controller.isEditMode.value" primary @click="save">Save</MkButton>
+			<MkButton v-if="controller.isEditMode.value" @click="exitEditMode">Exit edit mode</MkButton>
+			<MkButton v-if="!controller.isEditMode.value" @click="enterEditMode">Edit mode</MkButton>
+			<MkButton v-if="controller.isEditMode.value" @click="addObject">addObject</MkButton>
 			<MkButton @click="expor">Export</MkButton>
 			<MkButton @click="impor">Import</MkButton>
 		</div>
@@ -75,19 +75,14 @@ import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import { ensureSignin } from '@/i';
 import MkButton from '@/components/MkButton.vue';
-import { createRoomEngine, RoomEngine } from '@/utility/room/engine.js';
-import { getObjectDef, OBJECT_DEFS } from '@/utility/room/object-defs.js';
 import MkSelect from '@/components/MkSelect.vue';
 import * as os from '@/os.js';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRange from '@/components/MkRange.vue';
+import { RoomController } from '@/utility/room/controller.js';
 
 const canvas = useTemplateRef('canvas');
-
-const engine = shallowRef<RoomEngine | null>(null);
-
-const isEditMode = ref(false);
 
 const interacions = shallowRef<{
 	id: string;
@@ -97,122 +92,10 @@ const interacions = shallowRef<{
 }[]>([]);
 
 function resize() {
-	if (engine.value != null) engine.value.resize();
+	controller.resize();
 }
-
-type Action = {
-	key: string;
-	label: string;
-	fn: () => void;
-	hotkey?: string;
-};
-
-function hotkeyToLabel(hotkey: string) {
-	if (hotkey.startsWith('Key')) {
-		return hotkey.slice(3);
-	} else if (hotkey.startsWith('Digit')) {
-		return hotkey.slice(5);
-	} else {
-		return hotkey;
-	}
-}
-
-const actions = computed<Action[]>(() => {
-	if (engine.value == null) return [];
-
-	const actions: Action[] = [];
-
-	if (isEditMode.value) {
-		actions.push({
-			key: 'grab',
-			label: 'Grab',
-			fn: () => {
-				engine.value!.beginSelectedInstalledObjectGrabbing();
-				canvas.value!.focus();
-			},
-			hotkey: 'KeyE',
-		});
-	}
-
-	if (engine.value.isSitting.value) {
-		actions.push({
-			key: 'standUp',
-			label: 'Stand Up',
-			fn: () => engine.value!.standUp(),
-			hotkey: 'KeyQ',
-		});
-	}
-
-	return actions;
-});
 
 const isZenMode = ref(false);
-
-function onKeydown(ev: KeyboardEvent) {
-	if (engine.value == null) return;
-
-	console.log(ev.code);
-
-	if (ev.code === 'KeyE') {
-		ev.preventDefault();
-		ev.stopPropagation();
-		if (isEditMode.value) {
-			if (engine.value.ui.isGrabbing || engine.value.ui.isGrabbingForInstall) {
-				endGrabbing();
-			} else {
-				beginSelectedInstalledObjectGrabbing();
-			}
-		} else if (engine.value.selected.value != null) {
-			engine.value.interact(engine.value.selected.value.objectId);
-		}
-	} else if (ev.code === 'KeyR') {
-		ev.preventDefault();
-		ev.stopPropagation();
-		if (engine.value.ui.isGrabbing || engine.value.ui.isGrabbingForInstall) {
-			rotate();
-		}
-	} else if (ev.code === 'KeyQ') {
-		ev.preventDefault();
-		ev.stopPropagation();
-		if (engine.value.isSitting.value) {
-			engine.value.standUp();
-		}
-	} else if (ev.code === 'Tab') {
-		ev.preventDefault();
-		ev.stopPropagation();
-		if (isEditMode.value) {
-			engine.value.exitEditMode();
-			isEditMode.value = false;
-		} else {
-			engine.value.enterEditMode();
-			isEditMode.value = true;
-		}
-	} else if (ev.code === 'KeyZ') {
-		ev.preventDefault();
-		ev.stopPropagation();
-		isZenMode.value = !isZenMode.value;
-		nextTick(() => {
-			resize();
-		});
-	}
-}
-
-function onWheel(ev: WheelEvent) {
-	if (engine.value == null) return;
-
-	if (engine.value.ui.isGrabbing || engine.value.ui.isGrabbingForInstall) {
-		ev.preventDefault();
-		ev.stopPropagation();
-
-		engine.value.changeGrabbingDistance(ev.deltaY * 0.025);
-	} else {
-		ev.preventDefault();
-		ev.stopPropagation();
-
-		engine.value.camera.fov += ev.deltaY * 0.001;
-		engine.value.camera.fov = Math.max(0.25, Math.min(1, engine.value.camera.fov));
-	}
-}
 
 const data = localStorage.getItem('roomData') != null ? { ...JSON.parse(localStorage.getItem('roomData')!), ...{
 	heya: {
@@ -281,90 +164,151 @@ const data = localStorage.getItem('roomData') != null ? { ...JSON.parse(localSto
 	installedObjects: [],
 };
 
-onMounted(async () => {
-	engine.value = await createRoomEngine(data, canvas.value!);
+const controller = new RoomController(data);
 
-	engine.value.init();
+function onKeydown(ev: KeyboardEvent) {
+	if (ev.code === 'KeyE') {
+		ev.preventDefault();
+		ev.stopPropagation();
+		if (controller.isEditMode.value) {
+			if (controller.grabbing.value) {
+				endGrabbing();
+			} else {
+				beginSelectedInstalledObjectGrabbing();
+			}
+		} else if (controller.selected.value != null) {
+			controller.interact(controller.selected.value.objectId);
+		}
+	} else if (ev.code === 'KeyR') {
+		ev.preventDefault();
+		ev.stopPropagation();
+		if (controller.grabbing.value) {
+			rotate();
+		}
+	} else if (ev.code === 'KeyQ') {
+		ev.preventDefault();
+		ev.stopPropagation();
+		if (controller.isSitting.value) {
+			controller.standUp();
+		}
+	} else if (ev.code === 'Tab') {
+		ev.preventDefault();
+		ev.stopPropagation();
+		if (controller.isEditMode.value) {
+			controller.exitEditMode();
+			controller.isEditMode.value = false;
+		} else {
+			controller.enterEditMode();
+			controller.isEditMode.value = true;
+		}
+	} else if (ev.code === 'KeyZ') {
+		ev.preventDefault();
+		ev.stopPropagation();
+		isZenMode.value = !isZenMode.value;
+		nextTick(() => {
+			resize();
+		});
+	}
+}
+
+function onWheel(ev: WheelEvent) {
+	if (controller.grabbing.value) {
+		ev.preventDefault();
+		ev.stopPropagation();
+
+		controller.changeGrabbingDistance(ev.deltaY * 0.025);
+	} else {
+		ev.preventDefault();
+		ev.stopPropagation();
+
+		controller.camera.fov += ev.deltaY * 0.001;
+		controller.camera.fov = Math.max(0.25, Math.min(1, controller.camera.fov));
+	}
+}
+
+onMounted(async () => {
+	controller.init(canvas.value!);
 
 	canvas.value!.focus();
 
 	window.addEventListener('resize', resize);
 
-	watch(engine.value.selected, (v) => {
-		if (v == null) {
-			interacions.value = [];
-		} else {
-			interacions.value = Object.entries(v.objectEntity.instance.interactions).map(([interactionId, interactionInfo]) => ({
-				id: interactionId,
-				label: interactionInfo.label,
-				isPrimary: v.objectEntity.instance.primaryInteraction === interactionId,
-				fn: interactionInfo.fn,
-			}));
-		}
-	});
+	//watch(controller.selected, (v) => {
+	//	if (v == null) {
+	//		interacions.value = [];
+	//	} else {
+	//		interacions.value = Object.entries(v.objectEntity.instance.interactions).map(([interactionId, interactionInfo]) => ({
+	//			id: interactionId,
+	//			label: interactionInfo.label,
+	//			isPrimary: v.objectEntity.instance.primaryInteraction === interactionId,
+	//			fn: interactionInfo.fn,
+	//		}));
+	//	}
+	//});
 });
 
 onUnmounted(() => {
-	engine.value.destroy();
+	controller.destroy();
 
 	window.removeEventListener('resize', resize);
 });
 
 function beginSelectedInstalledObjectGrabbing() {
-	engine.value.beginSelectedInstalledObjectGrabbing();
+	controller.beginSelectedInstalledObjectGrabbing();
 	canvas.value!.focus();
 }
 
 function endGrabbing() {
-	engine.value.endGrabbing();
+	controller.endGrabbing();
 	canvas.value!.focus();
 }
 
 function toggleLight() {
-	engine.value.toggleRoomLight();
+	controller.toggleRoomLight();
 	canvas.value!.focus();
 }
 
 function showSnappingMenu(ev: PointerEvent) {
-	if (engine.value == null) return;
 	os.popupMenu([{
 		type: 'switch',
 		text: i18n.ts._room.snapToGrid,
-		ref: engine.value.enableGridSnapping,
+		ref: computed({
+			get: () => controller.gridSnapping.value.enabled,
+			set: v => controller.setGridSnapping({ ...controller.gridSnapping.value, enabled: v }),
+		}),
 	}, {
 		type: 'radioOption',
 		text: '1cm',
-		active: computed(() => engine.value!.gridSnappingScale.value === 1),
-		action: () => engine.value!.gridSnappingScale.value = 1,
+		active: computed(() => controller.gridSnapping.value.scale === 1),
+		action: () => controller.setGridSnapping({ ...controller.gridSnapping.value, scale: 1 }),
 	}, {
 		type: 'radioOption',
 		text: '2cm',
-		active: computed(() => engine.value!.gridSnappingScale.value === 2),
-		action: () => engine.value!.gridSnappingScale.value = 2,
+		active: computed(() => controller.gridSnapping.value.scale === 2),
+		action: () => controller.setGridSnapping({ ...controller.gridSnapping.value, scale: 2 }),
 	}, {
 		type: 'radioOption',
 		text: '4cm',
-		active: computed(() => engine.value!.gridSnappingScale.value === 4),
-		action: () => engine.value!.gridSnappingScale.value = 4,
+		active: computed(() => controller.gridSnapping.value.scale === 4),
+		action: () => controller.setGridSnapping({ ...controller.gridSnapping.value, scale: 4 }),
 	}, {
 		type: 'radioOption',
 		text: '8cm',
-		active: computed(() => engine.value!.gridSnappingScale.value === 8),
-		action: () => engine.value!.gridSnappingScale.value = 8,
+		active: computed(() => controller.gridSnapping.value.scale === 8),
+		action: () => controller.setGridSnapping({ ...controller.gridSnapping.value, scale: 8 }),
 	}], ev.currentTarget ?? ev.target);
 }
 
 function rotate() {
-	engine.value.changeGrabbingRotationY(Math.PI / 8);
+	controller.changeGrabbingRotationY(Math.PI / 8);
 	canvas.value!.focus();
 }
 
 async function addObject(ev: PointerEvent) {
-	if (engine.value == null) return;
 	const { dispose } = await os.popupAsyncWithDialog(import('./room.add-object-dialog.vue').then(x => x.default), {
 	}, {
 		ok: async (res) => {
-			engine.value?.addObject(res);
+			controller.addObject(res);
 			canvas.value!.focus();
 		},
 		closed: () => dispose(),
@@ -372,23 +316,16 @@ async function addObject(ev: PointerEvent) {
 }
 
 function removeSelectedObject() {
-	engine.value?.removeSelectedObject();
-	canvas.value!.focus();
-}
-
-function showBoundingBox() {
-	engine.value?.showBoundingBox();
+	controller.removeSelectedObject();
 	canvas.value!.focus();
 }
 
 function enterEditMode() {
-	engine.value?.enterEditMode();
-	isEditMode.value = true;
+	controller.enterEditMode();
 }
 
 function exitEditMode() {
-	engine.value?.exitEditMode();
-	isEditMode.value = false;
+	controller.exitEditMode();
 }
 
 function getHex(c: [number, number, number]) {
@@ -410,13 +347,11 @@ function getRgb(hex: string | number): [number, number, number] | null {
 }
 
 function save() {
-	if (engine.value == null) return;
-	localStorage.setItem('roomData', JSON.stringify(engine.value.roomState));
+	localStorage.setItem('roomData', JSON.stringify(controller.roomState));
 }
 
 function expor() {
-	if (engine.value == null) return;
-	const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(engine.value.roomState));
+	const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(controller.roomState));
 	const dlAnchorElem = window.document.createElement('a');
 	dlAnchorElem.setAttribute('href', dataStr);
 	dlAnchorElem.setAttribute('download', 'room.json');
@@ -424,7 +359,6 @@ function expor() {
 }
 
 function impor() {
-	if (engine.value == null) return;
 	const inputElem = window.document.createElement('input');
 	inputElem.setAttribute('type', 'file');
 	inputElem.setAttribute('accept', 'application/json');

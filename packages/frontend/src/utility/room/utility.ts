@@ -83,8 +83,6 @@ export class HorizontalCameraKeyboardMoveInput extends BABYLON.BaseCameraPointer
 					if (index < 0) { // 存在しなかったら追加する
 						this.codes.push({ code });
 					}
-					event.preventDefault();
-					(event as KeyboardEvent).stopPropagation();
 				}
 			} else {
 				if (this.codesUp.indexOf(code) >= 0 ||
@@ -95,8 +93,6 @@ export class HorizontalCameraKeyboardMoveInput extends BABYLON.BaseCameraPointer
 					if (index >= 0) { // 存在したら削除する
 						this.codes.splice(index, 1);
 					}
-					event.preventDefault();
-					(event as KeyboardEvent).stopPropagation();
 				}
 			}
 		});

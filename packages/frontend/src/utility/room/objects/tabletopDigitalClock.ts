@@ -100,7 +100,7 @@ export const tabletopDigitalClock = defineObject({
 				applyBodyColor();
 				applyLcdColor();
 
-				room.intervalIds.push(window.setInterval(() => {
+				room.intervalIds.push(setInterval(() => {
 					const onMeshes = get7segMeshesOfCurrentTime(segmentMeshes);
 
 					for (const mesh of Object.values(segmentMeshes)) {

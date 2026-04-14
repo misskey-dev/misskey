@@ -39,7 +39,7 @@ export const wallClock = defineObject({
 
 		return {
 			onInited: () => {
-				room.intervalIds.push(window.setInterval(() => {
+				room.intervalIds.push(setInterval(() => {
 					const now = new Date();
 					const hours = now.getHours() % 12;
 					const minutes = now.getMinutes();
