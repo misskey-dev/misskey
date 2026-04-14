@@ -26,6 +26,7 @@ export const speaker = defineObject({
 		},
 	},
 	placement: 'top',
+	noCollisions: true,
 	createInstance: ({ options, model }) => {
 		const outerMesh = model.findMesh('__X_COVER__');
 		const outerMaterial = outerMesh.material as BABYLON.PBRMaterial;

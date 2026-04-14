@@ -36,6 +36,7 @@ export const djPlayer = defineObject({
 		},
 	},
 	placement: 'top',
+	noCollisions: true,
 	createInstance: async ({ model, options, scene }) => {
 		const screenMesh = model.findMesh('__X_SCREEN__');
 		const screenMaterial = model.findMaterial('__X_SCREEN__');

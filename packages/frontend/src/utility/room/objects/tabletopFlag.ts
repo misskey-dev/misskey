@@ -28,6 +28,7 @@ export const tabletopFlag = defineObject({
 		},
 	},
 	placement: 'top',
+	noCollisions: true,
 	createInstance: async ({ model, options, scene }) => {
 		const flagMesh = model.findMesh('__X_FLAG__');
 		const flagMaterial = model.findMaterial('__X_FLAG__');

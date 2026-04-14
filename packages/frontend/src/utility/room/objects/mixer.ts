@@ -13,6 +13,7 @@ export const mixer = defineObject({
 		default: {},
 	},
 	placement: 'top',
+	noCollisions: true,
 	createInstance: () => {
 		return {
 			interactions: {},

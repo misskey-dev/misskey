@@ -48,6 +48,7 @@ export const tabletopGlassPictureFrame = defineObject({
 		},
 	},
 	placement: 'top',
+	noCollisions: true,
 	createInstance: async ({ scene, options, model }) => {
 		const pictureMesh = model.findMesh('__X_PICTURE__');
 		const frameMesh = model.findMesh('__X_FRAME__');

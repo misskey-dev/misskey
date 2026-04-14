@@ -21,6 +21,7 @@ export const monitorSpeaker = defineObject({
 		},
 	},
 	placement: 'top',
+	noCollisions: true,
 	createInstance: ({ options, model }) => {
 		const bodyMesh = model.findMesh('__X_BODY__');
 		const bodyMaterial = bodyMesh.material as BABYLON.PBRMaterial;

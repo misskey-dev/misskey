@@ -50,6 +50,7 @@ export const tabletopIronFrameStand = defineObject({
 		},
 	},
 	placement: 'top',
+	noCollisions: true,
 	createInstance: ({ options, model }) => {
 		const frameMaterial = model.findMaterial('__X_FRAME__');
 		const boardMaterial = model.findMaterial('__X_BOARD__');

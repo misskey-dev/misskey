@@ -22,6 +22,7 @@ export const books = defineObject({
 		},
 	},
 	placement: 'top',
+	noCollisions: true,
 	createInstance: ({ scene, options, model }) => {
 		const coverMaterial = model.findMaterial('__X_COVER__');
 

@@ -13,6 +13,7 @@ export const router = defineObject({
 		default: {},
 	},
 	placement: 'top',
+	noCollisions: true,
 	createInstance: () => {
 		return {
 			interactions: {},

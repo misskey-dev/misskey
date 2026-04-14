@@ -40,6 +40,7 @@ export const blind = defineObject({
 		},
 	},
 	placement: 'bottom',
+	noCollisions: true,
 	createInstance: ({ options, model }) => {
 		const temp = createOverridedStates({
 			angle: () => options.angle,

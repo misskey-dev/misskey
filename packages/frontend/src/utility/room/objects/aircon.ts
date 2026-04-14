@@ -13,6 +13,7 @@ export const aircon = defineObject({
 		default: {},
 	},
 	placement: 'wall',
+	noCollisions: true,
 	createInstance: () => {
 		return {
 			interactions: {},

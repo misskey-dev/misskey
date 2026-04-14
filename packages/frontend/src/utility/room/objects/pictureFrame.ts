@@ -83,6 +83,7 @@ export const pictureFrame = defineObject({
 		},
 	},
 	placement: 'side',
+	noCollisions: true,
 	createInstance: async ({ scene, options, model }) => {
 		const frameMesh = model.findMesh('__X_FRAME__');
 		frameMesh.rotationQuaternion = null;

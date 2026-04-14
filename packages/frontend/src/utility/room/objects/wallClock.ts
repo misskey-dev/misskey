@@ -21,6 +21,7 @@ export const wallClock = defineObject({
 		},
 	},
 	placement: 'side',
+	noCollisions: true,
 	createInstance: ({ room, root, options, model }) => {
 		const hourHand = model.findMesh('HandH');
 		const minuteHand = model.findMesh('HandM');

@@ -45,6 +45,7 @@ export const wallMirror = defineObject({
 		},
 	},
 	placement: 'side',
+	noCollisions: true,
 	createInstance: async ({ options, model }) => {
 		const frameMaterial = model.findMaterial('__X_FRAME__');
 		const frameMesh = model.findMesh('__X_FRAME__');

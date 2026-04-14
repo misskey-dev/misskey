@@ -13,6 +13,7 @@ export const lavaLamp = defineObject({
 		default: {},
 	},
 	placement: 'top',
+	noCollisions: true,
 	createInstance: ({ room, scene, root }) => {
 		return {
 			onInited: () => {

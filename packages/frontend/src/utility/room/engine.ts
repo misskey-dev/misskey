@@ -17,8 +17,9 @@
  * - メッシュ名を __TOP__ で始めると、その面の上にモノを置けることを示す。当該メッシュはレンダリングでは表示されません。
  * - メッシュ名を __SIDE__ で始めると、その面にモノを貼り付けられることを示す。当該メッシュはレンダリングでは表示されません。
  * - なお、現状 __TOP__ / __SIDE__ メッシュは単一の面でなければなりません。つまりArray Modifierなどを適用した状態では正しく動作しません。
- * - メッシュ名を __COLLISION__ で始めると、コリジョン用メッシュとして扱われます。このメッシュはシーク時のレイのヒットチェックにも使われます。当該メッシュはレンダリングでは表示されません。
- * - コリジョン用メッシュが無い場合、すべてのメッシュがコリジョン用メッシュとして扱われますが、例えば網目のようなメッシュではレイが隙間を通り抜けて後ろにあるオブジェクトにヒットしてしまうなどの問題が発生します。
+ * - メッシュ名を __COLLISION__ で始めると、コリジョン用メッシュとして扱われます。当該メッシュはレンダリングでは表示されません。
+ * - メッシュ名を __PICK__ で始めると、レイのヒットチェック用メッシュとして扱われます。当該メッシュはレンダリングでは表示されません。
+ * - __PICK__が無い場合、すべてのメッシュをヒットチェックメッシュとして扱いますが、例えば網目のようなメッシュではレイが隙間を通り抜けて後ろにあるオブジェクトにヒットしてしまうなどの問題が発生します。
  * - シェイプキーを使用する場合、normalのエクスポートが有効だと面のレンダリングがおかしくなる場合があります。その場合は無効化してください。
  * - 後からモデルを調整したくなった時に備え、モディファイアを駆使するなどして、なるべく非破壊的なモデリングを心がけることを推奨します。
  * - パーツ的に分かれていることが自然なメッシュについても、できるだけマージせす、別々のメッシュのままにしてください。
@@ -38,6 +39,8 @@ const BAKE_TRANSFORM = false; // 実験的
 const SNAPSHOT_RENDERING = false; // 実験的
 const SNAPSHOT_RENDERING_NON_SUPPORTED_OBJECTS = ['tv', 'aquarium', 'lavaLamp'];
 const IGNORE_OBJECTS: string[] = []; // for debug
+
+const SYSTEM_MESH_NAMES = ['__TOP__', '__SIDE__', '__PICK__', '__COLLISION__', '__COLLISION_AUTO_GENERATED_INTERNALY__'];
 
 import * as BABYLON from '@babylonjs/core';
 import { AxesViewer } from '@babylonjs/core/Debug/axesViewer';
@@ -209,7 +212,7 @@ class ModelManager {
 		}
 		this.bakedMeshes = [];
 
-		const excludeMeshes = [...this.bakeExcludeMeshes, ...this.root.getChildMeshes().filter(m => m.name.includes('__TOP__') || m.name.includes('__SIDE__') || m.name.includes('__COLLISION__'))];
+		const excludeMeshes = [...this.bakeExcludeMeshes, ...this.root.getChildMeshes().filter(m => SYSTEM_MESH_NAMES.some(s => m.name.includes(s)))];
 
 		const childMeshes = this.root.getChildMeshes().filter(m => !excludeMeshes.some(x => x === m) && m.isVisible);
 
@@ -308,6 +311,7 @@ type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 		default: GetOptionsSchemaValues<OpSc>;
 	};
 	placement: 'top' | 'side' | 'bottom' | 'wall' | 'ceiling' | 'floor';
+	noCollisions?: boolean;
 	//groupingMeshes: string[]; // multi-materialなメッシュは複数のメッシュに分割されるが、それだと不便な場合に追加の親メッシュでグルーピングするための指定
 	isChair?: boolean;
 	treatLoaderResult?: (loaderResult: BABYLON.AssetContainer) => void;
@@ -386,24 +390,33 @@ function enableObjectCollision(meshes: BABYLON.Mesh[]) {
 		}
 	}
 
-	if (!hasCollisionMesh) {
-		for (const mesh of meshes) {
-			mesh.checkCollisions = true;
-			mesh.metadata ??= {};
-			mesh.metadata.isCollision = true;
-		}
-	} else {
+	if (hasCollisionMesh) {
 		for (const mesh of meshes) {
 			if (mesh.name.includes('__COLLISION__')) {
 				mesh.checkCollisions = true;
-				mesh.metadata ??= {};
-				mesh.metadata.isCollision = true;
 			} else {
 				mesh.checkCollisions = false;
-				mesh.metadata ??= {};
-				mesh.metadata.isCollision = false;
 			}
 		}
+
+		return;
+	}
+
+	// なんかうまくいかない
+	//const boundingInfo = getMeshesBoundingBox(meshes.filter(m => m.isEnabled() && m.isVisible));
+	//const collider = meshes.find(m => m.name.includes('__COLLISION_AUTO_GENERATED_INTERNALY__'))!;
+	//if (collider == null) return;
+	////collider.position.y = ((boundingInfo.maximum.y + boundingInfo.minimum.y) / 2) / WORLD_SCALE;
+	//collider.scaling = new BABYLON.Vector3(
+	//	(boundingInfo.maximum.x - boundingInfo.minimum.x) || 1,
+	//	(boundingInfo.maximum.y - boundingInfo.minimum.y) || 1,
+	//	(boundingInfo.maximum.z - boundingInfo.minimum.z) || 1,
+	//);
+	//collider.checkCollisions = true;
+	//collider.isVisible = true;
+
+	for (const mesh of meshes) {
+		mesh.checkCollisions = true;
 	}
 }
 
@@ -709,8 +722,9 @@ export class RoomEngine {
 
 			this.selectObject(null);
 
+			// TODO: __PICK__考慮
 			const pickingInfo = this.scene.pick(this.scene.pointerX, this.scene.pointerY,
-				(m) => m.metadata?.isCollision && m.metadata?.objectId != null && this.objectEntities.has(m.metadata.objectId));
+				(m) => m.metadata?.objectId != null && this.objectEntities.has(m.metadata.objectId));
 
 			if (pickingInfo.pickedMesh != null) {
 				const oid = pickingInfo.pickedMesh.metadata.objectId;
@@ -1063,6 +1077,7 @@ export class RoomEngine {
 		options: any;
 	}) {
 		const def = getObjectDef(args.type);
+		const collisionsDisabled = def.placement === 'ceiling' || def.noCollisions;
 
 		const root = new BABYLON.TransformNode(`object_${args.id}_${args.type}`, this.scene);
 
@@ -1213,6 +1228,10 @@ export class RoomEngine {
 			root.addChild(subRoot);
 		}
 
+		//const internalCollider = BABYLON.MeshBuilder.CreateBox(`__COLLISION_AUTO_GENERATED_INTERNALY__${root.name}`, { width: 0, height: 0, depth: 0 }, this.scene);
+		//internalCollider.isVisible = false;
+		//internalCollider.parent = root;
+
 		root.position = args.position.clone();
 		root.rotation = args.rotation.clone();
 		root.metadata = metadata;
@@ -1228,7 +1247,7 @@ export class RoomEngine {
 
 				mesh.metadata = metadata;
 
-				if (mesh.name.includes('__COLLISION__') || mesh.name.includes('__TOP__') || mesh.name.includes('__SIDE__')) {
+				if (SYSTEM_MESH_NAMES.some(n => mesh.name.includes(n))) {
 					mesh.receiveShadows = false;
 					mesh.isVisible = false;
 				} else {
@@ -1269,7 +1288,9 @@ export class RoomEngine {
 				if (!this.scene.meshes.includes(mesh)) this.scene.addMesh(mesh);
 			}
 
-			enableObjectCollision(meshes);
+			if (!collisionsDisabled) {
+				enableObjectCollision(meshes);
+			}
 		});
 
 		const objectInstance = await def.createInstance({
@@ -1307,7 +1328,9 @@ export class RoomEngine {
 
 		model.bakeMesh();
 
-		enableObjectCollision(root.getChildMeshes());
+		if (!collisionsDisabled) {
+			enableObjectCollision(root.getChildMeshes());
+		}
 
 		this.objectEntities.set(args.id, { instance: objectInstance, rootMesh: root, model });
 
@@ -1575,6 +1598,7 @@ export class RoomEngine {
 		const id = genId();
 
 		const def = getObjectDef(type);
+		const collisionsDisabled = def.placement === 'ceiling' || def.noCollisions;
 
 		const options = deepClone(def.options.default);
 
@@ -1617,7 +1641,9 @@ export class RoomEngine {
 				// todo
 			},
 			onDone: () => { // todo: sticky状態などを引数でもらうようにしたい
-				enableObjectCollision(root.getChildMeshes());
+				if (!collisionsDisabled) {
+					enableObjectCollision(root.getChildMeshes());
+				}
 
 				this.ui.isGrabbingForInstall = false;
 
@@ -1956,7 +1982,7 @@ export class RoomObjectPreviewEngine {
 				// シェイプキー(morph)を考慮してbounding boxを更新するために必要
 				mesh.refreshBoundingInfo({ applyMorph: true });
 
-				if (mesh.name.includes('__COLLISION__') || mesh.name.includes('__TOP__') || mesh.name.includes('__SIDE__')) {
+				if (SYSTEM_MESH_NAMES.some(n => mesh.name.includes(n))) {
 					mesh.receiveShadows = false;
 					mesh.isVisible = false;
 				} else {
