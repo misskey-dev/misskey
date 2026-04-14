@@ -5,6 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../engine.js';
+import { cm } from '../utility.js';
 
 export const books = defineObject({
 	id: 'books',
@@ -52,8 +53,8 @@ export const books = defineObject({
 		];
 
 		for (const meshes of bookMeshes) {
-			const z = Math.random() * 0.005/*cm*/;
-			const y = Math.random() * 0.0025/*cm*/;
+			const z = Math.random() * cm(0.005);
+			const y = Math.random() * cm(0.0025);
 			for (const mesh of meshes) {
 				mesh.position.z -= z;
 				mesh.position.y += y;

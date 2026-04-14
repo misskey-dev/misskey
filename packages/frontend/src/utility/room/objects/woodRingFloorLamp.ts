@@ -5,6 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../engine.js';
+import { cm } from '../utility.js';
 
 export const woodRingFloorLamp = defineObject({
 	id: 'woodRingFloorLamp',
@@ -61,7 +62,7 @@ export const woodRingFloorLamp = defineObject({
 		const lamps = model.findMeshes('__X_LAMP__');
 		const lights: BABYLON.SpotLight[] = [];
 		for (const lamp of lamps) {
-			const light = new BABYLON.SpotLight('', new BABYLON.Vector3(0/*cm*/, 0/*cm*/, 0), new BABYLON.Vector3(0, -1, 0), Math.PI / 1, 2, scene, room?.lightContainer != null);
+			const light = new BABYLON.SpotLight('', new BABYLON.Vector3(cm(0), cm(0), 0), new BABYLON.Vector3(0, -1, 0), Math.PI / 1, 2, scene, room?.lightContainer != null);
 			light.parent = lamp;
 			if (room?.lightContainer != null) room.lightContainer.addLight(light);
 			lights.push(light);
@@ -83,7 +84,7 @@ export const woodRingFloorLamp = defineObject({
 		const applyLightBrightness = () => {
 			for (const light of lights) {
 				light.intensity = 10000 * options.lightBrightness;
-				light.range = 200/*cm*/ * options.lightBrightness;
+				light.range = cm(200) * options.lightBrightness;
 			}
 			for (const lamp of lamps) {
 				const emissive = lamp.material as BABYLON.PBRMaterial;

@@ -6,6 +6,9 @@
 import * as BABYLON from '@babylonjs/core';
 import type { RoomEngine } from './engine.js';
 
+//export const cm = (value: number) => value / 100;
+export const cm = (value: number) => value;
+
 export function yuge(scene: BABYLON.Scene, mesh: BABYLON.Mesh, offset: BABYLON.Vector3) {
 	const emitter = new BABYLON.TransformNode('emitter', scene);
 	emitter.parent = mesh;
@@ -13,14 +16,14 @@ export function yuge(scene: BABYLON.Scene, mesh: BABYLON.Mesh, offset: BABYLON.V
 	const ps = new BABYLON.ParticleSystem('steamParticleSystem', 8, scene);
 	ps.particleTexture = new BABYLON.Texture('/client-assets/room/steam.png');
 	ps.emitter = emitter;
-	ps.minEmitBox = new BABYLON.Vector3(-1/*cm*/, 0, -1/*cm*/);
-	ps.maxEmitBox = new BABYLON.Vector3(1/*cm*/, 0, 1/*cm*/);
+	ps.minEmitBox = new BABYLON.Vector3(cm(-1), 0, cm(-1));
+	ps.maxEmitBox = new BABYLON.Vector3(cm(1), 0, cm(1));
 	ps.minEmitPower = 10;
 	ps.maxEmitPower = 12;
 	ps.minLifeTime = 2;
 	ps.maxLifeTime = 3;
-	ps.addSizeGradient(0, 10/*cm*/, 12/*cm*/);
-	ps.addSizeGradient(1, 18/*cm*/, 20/*cm*/);
+	ps.addSizeGradient(0, cm(10), cm(12));
+	ps.addSizeGradient(1, cm(18), cm(20));
 	ps.direction1 = new BABYLON.Vector3(-0.3, 1, 0.3);
 	ps.direction2 = new BABYLON.Vector3(0.3, 1, -0.3);
 	ps.emitRate = 0.5;

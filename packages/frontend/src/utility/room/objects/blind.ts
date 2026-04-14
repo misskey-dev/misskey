@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../engine.js';
-import { createOverridedStates } from '../utility.js';
+import { cm, createOverridedStates } from '../utility.js';
 
 export const blind = defineObject({
 	id: 'blind',
@@ -65,9 +65,9 @@ export const blind = defineObject({
 			for (let i = 0; i < options.blades; i++) {
 				const b = blade.clone('blade_' + i); // createInstanceを使いたいが、削除するときになぜかエラーになる
 				if (i / options.blades < temp.open) {
-					b.position.y -= (i * 4/*cm*/) / Math.abs(scale.y);
+					b.position.y -= (i * cm(4)) / Math.abs(scale.y);
 				} else {
-					b.position.y -= (((options.blades - 1) * temp.open * 4/*cm*/) + (i * 0.3/*cm*/)) / Math.abs(scale.y);
+					b.position.y -= (((options.blades - 1) * temp.open * cm(4)) + (i * cm(0.3))) / Math.abs(scale.y);
 				}
 				blades.push(b);
 			}

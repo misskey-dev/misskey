@@ -44,7 +44,7 @@ import { EventEmitter } from 'eventemitter3';
 import { genId } from '../id.js';
 import { deepClone } from '../clone.js';
 import { getObjectDef } from './object-defs.js';
-import { HorizontalCameraKeyboardMoveInput, applyMorphTargetsToMesh, camelToKebab, findMaterial, scaleMorph } from './utility.js';
+import { HorizontalCameraKeyboardMoveInput, applyMorphTargetsToMesh, camelToKebab, cm, findMaterial, scaleMorph } from './utility.js';
 
 const BAKE_TRANSFORM = false; // 実験的
 const SNAPSHOT_RENDERING = false; // 実験的
@@ -498,7 +498,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	private roomCollisionMeshes: BABYLON.AbstractMesh[] = [];
 	public roomState: RoomState;
 
-	private _gridSnapping = { enabled: true, scale: 4/*cm*/ };
+	private _gridSnapping = { enabled: true, scale: cm(4) };
 	get gridSnapping() {
 		return this._gridSnapping;
 	}
@@ -552,7 +552,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		//this.scene.autoClearDepthAndStencil = false;
 		this.scene.skipPointerMovePicking = true;
 
-		const skybox = BABYLON.MeshBuilder.CreateBox('skybox', { size: 100000/*cm*/ }, this.scene);
+		const skybox = BABYLON.MeshBuilder.CreateBox('skybox', { size: cm(100000) }, this.scene);
 		const skyboxMat = new BABYLON.StandardMaterial('skyboxMat', this.scene);
 		skyboxMat.backFaceCulling = false;
 		skyboxMat.disableLighting = true;
@@ -571,41 +571,41 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.scene.ambientColor = new BABYLON.Color3(1.0, 0.9, 0.8);
 
 		this.envMapIndoor = BABYLON.CubeTexture.CreateFromPrefilteredData('/client-assets/room/indoor.env', this.scene);
-		this.envMapIndoor.boundingBoxSize = new BABYLON.Vector3(500/*cm*/, 500/*cm*/, 500/*cm*/);
+		this.envMapIndoor.boundingBoxSize = new BABYLON.Vector3(cm(500), cm(500), cm(500));
 
 		this.envMapOutdoor = BABYLON.CubeTexture.CreateFromPrefilteredData(this.time === 2 ? '/client-assets/room/outdoor-night.env' : '/client-assets/room/outdoor-day.env', this.scene);
 		this.envMapOutdoor.level = this.time === 0 ? 0.5 : this.time === 1 ? 0.3 : 0.1;
 
 		this.scene.collisionsEnabled = true;
 
-		this.camera = new BABYLON.UniversalCamera('camera', new BABYLON.Vector3(0, 130/*cm*/, 0/*cm*/), this.scene);
+		this.camera = new BABYLON.UniversalCamera('camera', new BABYLON.Vector3(0, cm(130), cm(0)), this.scene);
 		this.camera.inputs.removeByType('FreeCameraKeyboardMoveInput');
 		this.camera.inputs.add(new HorizontalCameraKeyboardMoveInput(this.camera, this.fps));
 		this.camera.attachControl(this.canvas);
-		this.camera.minZ = 1/*cm*/;
-		this.camera.maxZ = 100000/*cm*/;
+		this.camera.minZ = cm(1);
+		this.camera.maxZ = cm(100000);
 		this.camera.fov = 1;
-		this.camera.ellipsoid = new BABYLON.Vector3(15/*cm*/, 65/*cm*/, 15/*cm*/);
+		this.camera.ellipsoid = new BABYLON.Vector3(cm(15), cm(65), cm(15));
 		this.camera.checkCollisions = true;
 		this.camera.applyGravity = true;
 		this.camera.needMoveForGravity = true;
 
 		this.fixedCamera = new BABYLON.UniversalCamera('fixedCamera', new BABYLON.Vector3(0, 0, 0), this.scene);
-		this.fixedCamera.minZ = 1/*cm*/;
-		this.fixedCamera.maxZ = 100000/*cm*/;
+		this.fixedCamera.minZ = cm(1);
+		this.fixedCamera.maxZ = cm(100000);
 		this.fixedCamera.fov = 1;
 		this.fixedCamera.inputs.removeByType('FreeCameraKeyboardMoveInput');
 		this.fixedCamera.attachControl(this.canvas);
 
-		this.birdeyeCamera = new BABYLON.ArcRotateCamera('birdeyeCamera', -Math.PI / 2, Math.PI / 2.5, 300/*cm*/, new BABYLON.Vector3(0, 90/*cm*/, 0), this.scene);
+		this.birdeyeCamera = new BABYLON.ArcRotateCamera('birdeyeCamera', -Math.PI / 2, Math.PI / 2.5, cm(300), new BABYLON.Vector3(0, cm(90), 0), this.scene);
 		this.birdeyeCamera.attachControl(this.canvas);
-		this.birdeyeCamera.minZ = 1/*cm*/;
-		this.birdeyeCamera.maxZ = 100000/*cm*/;
+		this.birdeyeCamera.minZ = cm(1);
+		this.birdeyeCamera.maxZ = cm(100000);
 		this.birdeyeCamera.fov = 0.5;
 		this.birdeyeCamera.lowerBetaLimit = 0;
 		this.birdeyeCamera.upperBetaLimit = (Math.PI / 2) + 0.1;
-		this.birdeyeCamera.lowerRadiusLimit = 50/*cm*/;
-		this.birdeyeCamera.upperRadiusLimit = 1000/*cm*/;
+		this.birdeyeCamera.lowerRadiusLimit = cm(50);
+		this.birdeyeCamera.upperRadiusLimit = cm(1000);
 
 		this.scene.activeCamera = this.camera;
 
@@ -614,10 +614,10 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		ambientLight.intensity = 0.5;
 		//ambientLight.intensity = 0;
 
-		this.roomLight = new BABYLON.SpotLight('roomLight', new BABYLON.Vector3(0, 249/*cm*/, 0), new BABYLON.Vector3(0, -1, 0), 16, 8, this.scene);
+		this.roomLight = new BABYLON.SpotLight('roomLight', new BABYLON.Vector3(0, cm(249), 0), new BABYLON.Vector3(0, -1, 0), 16, 8, this.scene);
 		this.roomLight.diffuse = new BABYLON.Color3(1.0, 0.9, 0.8);
-		this.roomLight.shadowMinZ = 10/*cm*/;
-		this.roomLight.shadowMaxZ = 300/*cm*/;
+		this.roomLight.shadowMinZ = cm(10);
+		this.roomLight.shadowMaxZ = cm(300);
 
 		this.shadowGeneratorForRoomLight = new BABYLON.ShadowGenerator(4096, this.roomLight);
 		this.shadowGeneratorForRoomLight.forceBackFacesOnly = true;
@@ -631,8 +631,8 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		sunLight.position = new BABYLON.Vector3(-20, 1000, 1000);
 		sunLight.diffuse = this.time === 0 ? new BABYLON.Color3(1.0, 0.9, 0.8) : this.time === 1 ? new BABYLON.Color3(1.0, 0.8, 0.6) : new BABYLON.Color3(0.6, 0.8, 1.0);
 		sunLight.intensity = this.time === 0 ? 3 : this.time === 1 ? 1 : 0.25;
-		sunLight.shadowMinZ = 1000/*cm*/;
-		sunLight.shadowMaxZ = 2000/*cm*/;
+		sunLight.shadowMinZ = cm(1000);
+		sunLight.shadowMaxZ = cm(2000);
 
 		this.shadowGeneratorForSunLight = new BABYLON.ShadowGenerator(4096, sunLight);
 		this.shadowGeneratorForSunLight.forceBackFacesOnly = true;
@@ -683,7 +683,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			//const lensEffect = new BABYLON.LensRenderingPipeline('lens', {
 			//	edge_blur: 1.0,
 			//	distortion: 0.5,
-			//	dof_focus_distance: 90/*cm*/,
+			//	dof_focus_distance: cm(90),
 			//	dof_aperture: 6.0,
 			//	dof_pentagon: true,
 			//	dof_gain: 2.0,
@@ -694,17 +694,17 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 		this.putParticleSystem = new BABYLON.ParticleSystem('', 64, this.scene);
 		this.putParticleSystem.particleTexture = new BABYLON.Texture('/client-assets/room/steam.png');
-		this.putParticleSystem.createCylinderEmitter(5/*cm*/, 1/*cm*/, 5/*cm*/);
-		this.putParticleSystem.minEmitBox = new BABYLON.Vector3(-3/*cm*/, 0, -3/*cm*/);
-		this.putParticleSystem.maxEmitBox = new BABYLON.Vector3(3/*cm*/, 0, 3/*cm*/);
+		this.putParticleSystem.createCylinderEmitter(cm(5), cm(1), cm(5));
+		this.putParticleSystem.minEmitBox = new BABYLON.Vector3(cm(-3), 0, cm(-3));
+		this.putParticleSystem.maxEmitBox = new BABYLON.Vector3(cm(3), 0, cm(3));
 		this.putParticleSystem.minEmitPower = 700;
 		this.putParticleSystem.maxEmitPower = 1000;
 		this.putParticleSystem.addVelocityGradient(0, 1);
 		this.putParticleSystem.addVelocityGradient(1, 0);
 		this.putParticleSystem.minLifeTime = 0.2;
 		this.putParticleSystem.maxLifeTime = 0.2;
-		this.putParticleSystem.minSize = 1/*cm*/;
-		this.putParticleSystem.maxSize = 4/*cm*/;
+		this.putParticleSystem.minSize = cm(1);
+		this.putParticleSystem.maxSize = cm(4);
 		this.putParticleSystem.emitRate = 256;
 		this.putParticleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ADD;
 		this.putParticleSystem.color1 = new BABYLON.Color4(1, 1, 1, 0.3);
@@ -722,19 +722,19 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		//	gridMaterial.gridRatio = v;
 		//}, { immediate: true });
 
-		this.xGridPreviewPlane = BABYLON.MeshBuilder.CreatePlane('xGridPreviewPlane', { width: 1000/*cm*/, height: 1000/*cm*/ }, this.scene);
+		this.xGridPreviewPlane = BABYLON.MeshBuilder.CreatePlane('xGridPreviewPlane', { width: cm(1000), height: cm(1000) }, this.scene);
 		this.xGridPreviewPlane.rotation = new BABYLON.Vector3(0, 0, Math.PI / 2);
 		this.xGridPreviewPlane.material = gridMaterial;
 		this.xGridPreviewPlane.isPickable = false;
 		this.xGridPreviewPlane.isVisible = false;
 
-		this.yGridPreviewPlane = BABYLON.MeshBuilder.CreatePlane('yGridPreviewPlane', { width: 1000/*cm*/, height: 1000/*cm*/ }, this.scene);
+		this.yGridPreviewPlane = BABYLON.MeshBuilder.CreatePlane('yGridPreviewPlane', { width: cm(1000), height: cm(1000) }, this.scene);
 		this.yGridPreviewPlane.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
 		this.yGridPreviewPlane.material = gridMaterial;
 		this.yGridPreviewPlane.isPickable = false;
 		this.yGridPreviewPlane.isVisible = false;
 
-		this.zGridPreviewPlane = BABYLON.MeshBuilder.CreatePlane('zGridPreviewPlane', { width: 1000/*cm*/, height: 1000/*cm*/ }, this.scene);
+		this.zGridPreviewPlane = BABYLON.MeshBuilder.CreatePlane('zGridPreviewPlane', { width: cm(1000), height: cm(1000) }, this.scene);
 		this.zGridPreviewPlane.material = gridMaterial;
 		this.zGridPreviewPlane.isPickable = false;
 		this.zGridPreviewPlane.isVisible = false;
@@ -833,7 +833,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			options: o.options,
 		})));
 
-		//const sphere = BABYLON.MeshBuilder.CreateSphere('sphere', { diameter: 1/*cm*/ }, this.scene);
+		//const sphere = BABYLON.MeshBuilder.CreateSphere('sphere', { diameter: cm(1) }, this.scene);
 
 		const frameInterval = 1000 / this.fps;
 		let lastTime = performance.now();
@@ -920,7 +920,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 		if (placement === 'side') {
 			// 前方に向かってレイを飛ばす
-			const ray = new BABYLON.Ray(this.camera.position, dir, 1000/*cm*/);
+			const ray = new BABYLON.Ray(this.camera.position, dir, cm(1000));
 			const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_WALL__') || m.name.includes('__SIDE__')));
 			if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
 				newPos.x = hit.pickedPoint.x;
@@ -933,7 +933,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			}
 		} else if (placement === 'wall') {
 			// 前方に向かってレイを飛ばす
-			const ray = new BABYLON.Ray(this.camera.position, dir, 1000/*cm*/);
+			const ray = new BABYLON.Ray(this.camera.position, dir, cm(1000));
 			const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_WALL__')));
 			if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
 				newPos.x = hit.pickedPoint.x;
@@ -945,30 +945,30 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			}
 		} else if (placement === 'bottom') {
 			// 上に向かってレイを飛ばす
-			const ray = new BABYLON.Ray(newPos, new BABYLON.Vector3(0, 1, 0), 1000/*cm*/);
+			const ray = new BABYLON.Ray(newPos, new BABYLON.Vector3(0, 1, 0), cm(1000));
 			const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_CEILING__') || m.name.includes('__BOTTOM__')));
 			if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
 				newPos.y = hit.pickedPoint.y;
 				sticky = hit.pickedMesh.metadata?.objectId ?? null;
 			}
-			if (newPos.y > 250/*cm*/) newPos.y = 250/*cm*/;
+			if (newPos.y > cm(250)) newPos.y = cm(250);
 		} else if (placement === 'ceiling') {
-			newPos.y = 250/*cm*/;
+			newPos.y = cm(250);
 
 			if (this.gridSnapping.enabled) {
-				this.yGridPreviewPlane.position = new BABYLON.Vector3(grabbing.mesh.position.x, 250/*cm*/ - 0.1/*cm*/, grabbing.mesh.position.z);
+				this.yGridPreviewPlane.position = new BABYLON.Vector3(grabbing.mesh.position.x, cm(250) - cm(0.1), grabbing.mesh.position.z);
 				this.yGridPreviewPlane.isVisible = true;
 			}
 		} else if (placement === 'floor') {
 			newPos.y = 0;
 
 			if (this.gridSnapping.enabled) {
-				this.yGridPreviewPlane.position = new BABYLON.Vector3(grabbing.mesh.position.x, 0.1/*cm*/, grabbing.mesh.position.z);
+				this.yGridPreviewPlane.position = new BABYLON.Vector3(grabbing.mesh.position.x, cm(0.1), grabbing.mesh.position.z);
 				this.yGridPreviewPlane.isVisible = true;
 			}
 		} else {
 			// 下に向かってレイを飛ばす
-			const ray = new BABYLON.Ray(newPos, new BABYLON.Vector3(0, -1, 0), 1000/*cm*/);
+			const ray = new BABYLON.Ray(newPos, new BABYLON.Vector3(0, -1, 0), cm(1000));
 			const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_FLOOR__') || m.name.includes('__ROOM_TOP__') || m.name.includes('__TOP__')));
 			if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
 				newPos.y = hit.pickedPoint.y;
@@ -977,7 +977,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			if (newPos.y < 0) newPos.y = 0;
 
 			if (this.gridSnapping.enabled) {
-				this.yGridPreviewPlane.position = new BABYLON.Vector3(grabbing.mesh.position.x, grabbing.mesh.position.y + 0.1/*cm*/, grabbing.mesh.position.z);
+				this.yGridPreviewPlane.position = new BABYLON.Vector3(grabbing.mesh.position.x, grabbing.mesh.position.y + cm(0.1), grabbing.mesh.position.z);
 				this.yGridPreviewPlane.isVisible = true;
 			}
 		}
@@ -989,7 +989,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		//const _dir = newPos.subtract(pos).normalize();
 		//for (let i = 0; i < grabbing.distance; i++) {
 		//	// posを1cmずつnewPosの方向に動かす
-		//	pos.addInPlace(_dir.scale(1/*cm*/));
+		//	pos.addInPlace(_dir.scale(cm(1)));
 		//	// 前方に向かってレイを飛ばして衝突チェック
 		//	const ray = new BABYLON.Ray(this.camera.position, dir, i);
 		//	const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m));
@@ -1002,7 +1002,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		//	grabbing.mesh.position = pos.clone();
 		//}
 
-		//const ray = new BABYLON.Ray(this.camera.position, this.camera.getDirection(BABYLON.Axis.Z), 1000/*cm*/);
+		//const ray = new BABYLON.Ray(this.camera.position, this.camera.getDirection(BABYLON.Axis.Z), cm(1000));
 		//const hit = this.scene.pickWithRay(ray, (m) => m.name.includes('__COLLISION_WALL__'))!;
 		//if (hit.pickedMesh != null) {
 		//	const grabbingBox = this.grabbing.mesh.getBoundingInfo().boundingBox;
@@ -1038,7 +1038,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		const envObj = await BABYLON.ImportMeshAsync('/client-assets/room/env.glb', this.scene);
 		envObj.meshes[0].scaling = envObj.meshes[0].scaling.scale(WORLD_SCALE);
 		envObj.meshes[0].bakeCurrentTransformIntoVertices();
-		envObj.meshes[0].position = new BABYLON.Vector3(0, -900/*cm*/, 0); // 4階くらいの想定
+		envObj.meshes[0].position = new BABYLON.Vector3(0, cm(-900), 0); // 4階くらいの想定
 		envObj.meshes[0].rotation = new BABYLON.Vector3(0, -Math.PI, 0);
 		for (const mesh of envObj.meshes) {
 			mesh.isPickable = false;
@@ -1053,7 +1053,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	private async loadRoomModel() {
 		//await BABYLON.InitializeCSG2Async();
 
-		//const box = BABYLON.MeshBuilder.CreateBox('box', { size: 50/*cm*/ }, this.scene);
+		//const box = BABYLON.MeshBuilder.CreateBox('box', { size: cm(50) }, this.scene);
 		//const boxCsg = BABYLON.CSG2.FromMesh(box);
 
 		const meshes: BABYLON.Mesh[] = [];
@@ -1069,14 +1069,14 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			ceilingResult.meshes[0].scaling = ceilingResult.meshes[0].scaling.scale(WORLD_SCALE);
 			const ceilingRoot = new BABYLON.Mesh('ceiling', this.scene);
 			ceilingRoot.addChild(ceilingResult.meshes[0]);
-			ceilingRoot.position = new BABYLON.Vector3(0, 250/*cm*/, 0);
+			ceilingRoot.position = new BABYLON.Vector3(0, cm(250), 0);
 			meshes.push(ceilingRoot);
 
 			const wallEResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-wall.glb', this.scene);
 			wallEResult.meshes[0].scaling = wallEResult.meshes[0].scaling.scale(WORLD_SCALE);
 			const wallERoot = new BABYLON.Mesh('wallE', this.scene);
 			wallERoot.addChild(wallEResult.meshes[0]);
-			wallERoot.position = new BABYLON.Vector3(-150/*cm*/, 0, 0);
+			wallERoot.position = new BABYLON.Vector3(cm(-150), 0, 0);
 			wallERoot.rotation = new BABYLON.Vector3(0, Math.PI, 0);
 			meshes.push(wallERoot);
 			const wallEMaterial = findMaterial(wallEResult.meshes[0], '__X_WALL__');
@@ -1086,7 +1086,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			wallWResult.meshes[0].scaling = wallWResult.meshes[0].scaling.scale(WORLD_SCALE);
 			const wallWRoot = new BABYLON.Mesh('wallW', this.scene);
 			wallWRoot.addChild(wallWResult.meshes[0]);
-			wallWRoot.position = new BABYLON.Vector3(150/*cm*/, 0, 0);
+			wallWRoot.position = new BABYLON.Vector3(cm(150), 0, 0);
 			meshes.push(wallWRoot);
 			const wallWMaterial = findMaterial(wallWResult.meshes[0], '__X_WALL__');
 			wallWMaterial.albedoColor = new BABYLON.Color3(...this.roomState.heya.options.wallW.color);
@@ -1095,7 +1095,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			wallNResult.meshes[0].scaling = wallNResult.meshes[0].scaling.scale(WORLD_SCALE);
 			const wallNRoot = new BABYLON.Mesh('wallN', this.scene);
 			wallNRoot.addChild(wallNResult.meshes[0]);
-			wallNRoot.position = new BABYLON.Vector3(0, 0, -150/*cm*/);
+			wallNRoot.position = new BABYLON.Vector3(0, 0, cm(-150));
 			wallNRoot.rotation = new BABYLON.Vector3(0, Math.PI / 2, 0);
 			meshes.push(wallNRoot);
 			const wallNMaterial = findMaterial(wallNResult.meshes[0], '__X_WALL__');
@@ -1105,7 +1105,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			wallSResult.meshes[0].scaling = wallSResult.meshes[0].scaling.scale(WORLD_SCALE);
 			const wallSRoot = new BABYLON.Mesh('wallS', this.scene);
 			wallSRoot.addChild(wallSResult.meshes[0]);
-			wallSRoot.position = new BABYLON.Vector3(0, 0, 150/*cm*/);
+			wallSRoot.position = new BABYLON.Vector3(0, 0, cm(150));
 			wallSRoot.rotation = new BABYLON.Vector3(0, -Math.PI / 2, 0);
 			meshes.push(wallSRoot);
 			const wallSMaterial = findMaterial(wallSResult.meshes[0], '__X_WALL__');
@@ -1451,7 +1451,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 		if (placement === 'top') {
 			// stickyな場合にsticky先とのレイの距離が0になりstickyされていない初期状態でgrabbingが始まってしまうのでちょっと浮かす
-			selectedObject.position.y += 1/*cm*/;
+			selectedObject.position.y += cm(1);
 		}
 
 		const distance = BABYLON.Vector3.Distance(this.camera.position, selectedObject.position);
@@ -1582,7 +1582,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	public sitChair(objectId: string) {
 		this.isSitting = true;
 		this.fixedCamera.parent = this.objectMeshs.get(objectId);
-		this.fixedCamera.position = new BABYLON.Vector3(0, 120/*cm*/, 0);
+		this.fixedCamera.position = new BABYLON.Vector3(0, cm(120), 0);
 		this.fixedCamera.rotation = new BABYLON.Vector3(0, 0, 0);
 		this.scene.activeCamera = this.fixedCamera;
 		this.selectObject(null);
@@ -1661,7 +1661,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.selectObject(null);
 
 		const dir = this.camera.getDirection(BABYLON.Axis.Z).scale(this.scene.useRightHandedSystem ? -1 : 1);
-		const distance = 50/*cm*/;
+		const distance = cm(50);
 
 		const id = genId();
 
@@ -1845,7 +1845,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	public changeGrabbingDistance(delta: number) {
 		if (this.grabbingCtx == null) return;
 		this.grabbingCtx.distance -= delta;
-		if (this.grabbingCtx.distance < 5/*cm*/) this.grabbingCtx.distance = 5/*cm*/;
+		if (this.grabbingCtx.distance < cm(5)) this.grabbingCtx.distance = cm(5);
 	}
 
 	public changeGrabbingRotationY(delta: number) {
@@ -1934,17 +1934,17 @@ export class RoomObjectPreviewEngine {
 		this.scene.ambientColor = new BABYLON.Color3(1.0, 0.9, 0.8);
 
 		this.envMapIndoor = BABYLON.CubeTexture.CreateFromPrefilteredData('/client-assets/room/indoor.env', this.scene);
-		this.envMapIndoor.boundingBoxSize = new BABYLON.Vector3(500/*cm*/, 500/*cm*/, 500/*cm*/);
+		this.envMapIndoor.boundingBoxSize = new BABYLON.Vector3(cm(500), cm(500), cm(500));
 
-		this.camera = new BABYLON.ArcRotateCamera('camera', -Math.PI / 2, Math.PI / 2.5, 300/*cm*/, new BABYLON.Vector3(0, 90/*cm*/, 0), this.scene);
+		this.camera = new BABYLON.ArcRotateCamera('camera', -Math.PI / 2, Math.PI / 2.5, cm(300), new BABYLON.Vector3(0, cm(90), 0), this.scene);
 		this.camera.attachControl(this.canvas);
-		this.camera.minZ = 1/*cm*/;
-		this.camera.maxZ = 100000/*cm*/;
+		this.camera.minZ = cm(1);
+		this.camera.maxZ = cm(100000);
 		this.camera.fov = 0.5;
 		this.camera.lowerBetaLimit = 0;
 		this.camera.upperBetaLimit = (Math.PI / 2) + 0.1;
-		this.camera.lowerRadiusLimit = 50/*cm*/;
-		this.camera.upperRadiusLimit = 1000/*cm*/;
+		this.camera.lowerRadiusLimit = cm(50);
+		this.camera.upperRadiusLimit = cm(1000);
 		this.camera.useAutoRotationBehavior = true;
 		this.camera.autoRotationBehavior!.idleRotationSpeed = 0.3;
 		//this.camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
@@ -1955,10 +1955,10 @@ export class RoomObjectPreviewEngine {
 		ambientLight.intensity = 0.5;
 		//ambientLight.intensity = 0;
 
-		this.roomLight = new BABYLON.SpotLight('roomLight', new BABYLON.Vector3(0, 249/*cm*/, 0), new BABYLON.Vector3(0, -1, 0), 16, 8, this.scene);
+		this.roomLight = new BABYLON.SpotLight('roomLight', new BABYLON.Vector3(0, cm(249), 0), new BABYLON.Vector3(0, -1, 0), 16, 8, this.scene);
 		this.roomLight.diffuse = new BABYLON.Color3(1.0, 0.9, 0.8);
-		this.roomLight.shadowMinZ = 10/*cm*/;
-		this.roomLight.shadowMaxZ = 300/*cm*/;
+		this.roomLight.shadowMinZ = cm(10);
+		this.roomLight.shadowMaxZ = cm(300);
 
 		this.shadowGenerator1 = new BABYLON.ShadowGenerator(4096, this.roomLight);
 		this.shadowGenerator1.forceBackFacesOnly = true;
@@ -1972,15 +1972,15 @@ export class RoomObjectPreviewEngine {
 		gridMaterial.mainColor = new BABYLON.Color3(0, 0, 0);
 		gridMaterial.minorUnitVisibility = 1;
 		gridMaterial.opacity = 0.5;
-		gridMaterial.gridRatio = 10/*cm*/;
+		gridMaterial.gridRatio = cm(10);
 
-		//this.zGridPreviewPlane = BABYLON.MeshBuilder.CreatePlane('zGridPreviewPlane', { width: 1000/*cm*/, height: 1000/*cm*/ }, this.scene);
+		//this.zGridPreviewPlane = BABYLON.MeshBuilder.CreatePlane('zGridPreviewPlane', { width: cm(1000), height: cm(1000) }, this.scene);
 		//this.zGridPreviewPlane.material = gridMaterial;
 		//this.zGridPreviewPlane.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
 
 		//this.scene.fogMode = BABYLON.Scene.FOGMODE_LINEAR;
-		//this.scene.fogStart = 100/*cm*/;
-		//this.scene.fogEnd = 110/*cm*/;
+		//this.scene.fogStart = cm(100);
+		//this.scene.fogEnd = cm(110);
 		//this.scene.fogColor = new BABYLON.Color3(0.0, 0.0, 0.0);
 	}
 
@@ -2007,7 +2007,7 @@ export class RoomObjectPreviewEngine {
 		}
 
 		// reset camera rotation
-		this.camera.setPosition(new BABYLON.Vector3(0, 90/*cm*/, 300/*cm*/));
+		this.camera.setPosition(new BABYLON.Vector3(0, cm(90), cm(300)));
 
 		const def = getObjectDef(type);
 

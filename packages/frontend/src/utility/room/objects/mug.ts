@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../engine.js';
-import { yuge } from '../utility.js';
+import { cm, yuge } from '../utility.js';
 
 export const mug = defineObject({
 	id: 'mug',
@@ -21,7 +21,7 @@ export const mug = defineObject({
 
 		return {
 			onInited: () => {
-				yugeDispose = yuge(scene, root, new BABYLON.Vector3(0, 5/*cm*/, 0));
+				yugeDispose = yuge(scene, root, new BABYLON.Vector3(0, cm(5), 0));
 			},
 			interactions: {},
 			dispose: () => {

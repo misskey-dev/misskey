@@ -5,6 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../engine.js';
+import { cm } from '../utility.js';
 
 export const desktopPc = defineObject({
 	id: 'desktopPc',
@@ -47,16 +48,16 @@ export const desktopPc = defineObject({
 	},
 	placement: 'top',
 	createInstance: ({ options, model, root, scene, room }) => {
-		const light1 = new BABYLON.SpotLight('', new BABYLON.Vector3(0, 10/*cm*/, 22/*cm*/), new BABYLON.Vector3(0, 0, 1), Math.PI / 1, 2, scene, room?.lightContainer != null);
+		const light1 = new BABYLON.SpotLight('', new BABYLON.Vector3(0, cm(10), cm(22)), new BABYLON.Vector3(0, 0, 1), Math.PI / 1, 2, scene, room?.lightContainer != null);
 		light1.parent = root;
 		light1.intensity = 500;
-		light1.range = 30/*cm*/;
+		light1.range = cm(30);
 		if (room?.lightContainer != null) room.lightContainer.addLight(light1);
 
-		const light2 = new BABYLON.SpotLight('', new BABYLON.Vector3(-5/*cm*/, 33/*cm*/, -9/*cm*/), new BABYLON.Vector3(1, 0, 0), Math.PI / 1, 2, scene, room?.lightContainer != null);
+		const light2 = new BABYLON.SpotLight('', new BABYLON.Vector3(cm(-5), cm(33), cm(-9)), new BABYLON.Vector3(1, 0, 0), Math.PI / 1, 2, scene, room?.lightContainer != null);
 		light2.parent = root;
 		light2.intensity = 500;
-		light2.range = 30/*cm*/;
+		light2.range = cm(30);
 		if (room?.lightContainer != null) room.lightContainer.addLight(light2);
 
 		const bodyMaterial = model.findMaterial('__X_BODY__');

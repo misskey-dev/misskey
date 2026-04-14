@@ -5,6 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../engine.js';
+import { cm } from '../utility.js';
 
 export const beamLamp = defineObject({
 	id: 'beamLamp',
@@ -18,11 +19,11 @@ export const beamLamp = defineObject({
 	createInstance: ({ room, root, scene }) => {
 		return {
 			onInited: () => {
-				const light = new BABYLON.PointLight('beamLampLight', new BABYLON.Vector3(0, 10/*cm*/, 0), scene, room?.lightContainer != null);
+				const light = new BABYLON.PointLight('beamLampLight', new BABYLON.Vector3(0, cm(10), 0), scene, room?.lightContainer != null);
 				light.parent = root;
 				light.diffuse = new BABYLON.Color3(1.0, 0.5, 0.2);
 				light.intensity = 300;
-				light.range = 100/*cm*/;
+				light.range = cm(100);
 				if (room?.lightContainer != null) room.lightContainer.addLight(light);
 			},
 			interactions: {},

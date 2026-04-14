@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../engine.js';
-import { get7segMeshesOfCurrentTime } from '../utility.js';
+import { cm, get7segMeshesOfCurrentTime } from '../utility.js';
 
 export const tabletopDigitalClock = defineObject({
 	id: 'tabletopDigitalClock',
@@ -35,10 +35,10 @@ export const tabletopDigitalClock = defineObject({
 	placement: 'top',
 	noCollisions: true,
 	createInstance: ({ root, room, options, model, scene }) => {
-		const light = new BABYLON.SpotLight('', new BABYLON.Vector3(0, 3/*cm*/, 1/*cm*/), new BABYLON.Vector3(0, 0, 1), Math.PI / 1, 2, scene, room?.lightContainer != null);
+		const light = new BABYLON.SpotLight('', new BABYLON.Vector3(0, cm(3), cm(1)), new BABYLON.Vector3(0, 0, 1), Math.PI / 1, 2, scene, room?.lightContainer != null);
 		light.parent = root;
 		light.intensity = 100;
-		light.range = 30/*cm*/;
+		light.range = cm(30);
 		if (room?.lightContainer != null) room.lightContainer.addLight(light);
 
 		const segmentMeshes = {

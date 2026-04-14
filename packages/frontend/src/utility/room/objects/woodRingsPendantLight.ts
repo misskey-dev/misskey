@@ -5,6 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject, WORLD_SCALE } from '../engine.js';
+import { cm } from '../utility.js';
 
 const remap = (value: number, fromMin: number, fromMax: number, toMin: number, toMax: number) => {
 	return toMin + ((value - fromMin) / (fromMax - fromMin)) * (toMax - toMin);
@@ -87,7 +88,7 @@ export const woodRingsPendantLight = defineObject({
 
 		const applyLightBrightness = () => {
 			light.intensity = 10000 * options.lightBrightness;
-			light.range = 200/*cm*/ * options.lightBrightness;
+			light.range = cm(200) * options.lightBrightness;
 			const emissive = lamp.material as BABYLON.PBRMaterial;
 			emissive.emissiveIntensity = options.lightBrightness * 10;
 		};

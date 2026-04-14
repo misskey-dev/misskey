@@ -5,6 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../engine.js';
+import { cm } from '../utility.js';
 
 export const aquarium = defineObject({
 	id: 'aquarium',
@@ -26,19 +27,19 @@ export const aquarium = defineObject({
 
 				const emitter = new BABYLON.TransformNode('emitter', scene);
 				emitter.parent = root;
-				emitter.position = new BABYLON.Vector3(17/*cm*/, 7/*cm*/, -9/*cm*/);
+				emitter.position = new BABYLON.Vector3(cm(17), cm(7), cm(-9));
 				const ps = new BABYLON.ParticleSystem('', 128, scene);
 				ps.particleTexture = new BABYLON.Texture('/client-assets/room/objects/lava-lamp/bubble.png');
 				ps.emitter = emitter;
 				ps.isLocal = true;
-				ps.minEmitBox = new BABYLON.Vector3(-2/*cm*/, 0, -2/*cm*/);
-				ps.maxEmitBox = new BABYLON.Vector3(2/*cm*/, 0, 2/*cm*/);
+				ps.minEmitBox = new BABYLON.Vector3(cm(-2), 0, cm(-2));
+				ps.maxEmitBox = new BABYLON.Vector3(cm(2), 0, cm(2));
 				ps.minEmitPower = 40;
 				ps.maxEmitPower = 60;
 				ps.minLifeTime = 0.5;
 				ps.maxLifeTime = 0.5;
-				ps.minSize = 0.1/*cm*/;
-				ps.maxSize = 1/*cm*/;
+				ps.minSize = cm(0.1);
+				ps.maxSize = cm(1);
 				ps.direction1 = new BABYLON.Vector3(0, 1, 0);
 				ps.direction2 = new BABYLON.Vector3(0, 1, 0);
 				ps.noiseTexture = noiseTexture;
