@@ -757,10 +757,13 @@ export class RoomEngine {
 		});
 
 		if (_DEV_) {
-			const axes = new AxesViewer(this.scene, 30);
-			axes.xAxis.position = new BABYLON.Vector3(0, 30, 0);
-			axes.yAxis.position = new BABYLON.Vector3(0, 30, 0);
-			axes.zAxis.position = new BABYLON.Vector3(0, 30, 0);
+			// snapshot renderingかつglow layerが有効だとなんかクラッシュする
+			if (!(SNAPSHOT_RENDERING && USE_GLOW)) {
+				const axes = new AxesViewer(this.scene, 30);
+				axes.xAxis.position = new BABYLON.Vector3(0, 30, 0);
+				axes.yAxis.position = new BABYLON.Vector3(0, 30, 0);
+				axes.zAxis.position = new BABYLON.Vector3(0, 30, 0);
+			}
 
 			(window as any).showBabylonInspector = () => {
 				ShowInspector(this.scene);
