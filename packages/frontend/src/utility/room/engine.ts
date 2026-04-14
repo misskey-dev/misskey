@@ -36,7 +36,7 @@
 // TODO: 近くのオブジェクトの原点に軸を揃えるオプション
 
 const BAKE_TRANSFORM = false; // 実験的
-const SNAPSHOT_RENDERING = true; // 実験的
+const SNAPSHOT_RENDERING = false; // 実験的
 const SNAPSHOT_RENDERING_NON_SUPPORTED_OBJECTS = ['tv', 'aquarium', 'lavaLamp'];
 const IGNORE_OBJECTS: string[] = []; // for debug
 
@@ -484,6 +484,7 @@ export class RoomEngine {
 		isGrabbing: false,
 		isGrabbingForInstall: false,
 	});
+	private fps = 30;
 
 	constructor(roomState: RoomState, options: {
 		canvas: HTMLCanvasElement;
@@ -534,7 +535,7 @@ export class RoomEngine {
 
 		this.camera = new BABYLON.UniversalCamera('camera', new BABYLON.Vector3(0, 130/*cm*/, 0/*cm*/), this.scene);
 		this.camera.inputs.removeByType('FreeCameraKeyboardMoveInput');
-		this.camera.inputs.add(new HorizontalCameraKeyboardMoveInput(this.camera));
+		this.camera.inputs.add(new HorizontalCameraKeyboardMoveInput(this.camera, this.fps));
 		this.camera.attachControl(this.canvas);
 		this.camera.minZ = 1/*cm*/;
 		this.camera.maxZ = 100000/*cm*/;
@@ -784,8 +785,17 @@ export class RoomEngine {
 
 		//const sphere = BABYLON.MeshBuilder.CreateSphere('sphere', { diameter: 1/*cm*/ }, this.scene);
 
+		const frameInterval = 1000 / this.fps;
+		let lastTime = performance.now();
+
 		this.engine.runRenderLoop(() => {
-			this.scene.render();
+			const currentTime = performance.now();
+			const delta = currentTime - lastTime;
+
+			if (delta >= frameInterval) {
+				this.scene.render();
+				lastTime = currentTime - (delta % frameInterval);
+			}
 		});
 
 		if (SNAPSHOT_RENDERING) {
@@ -1855,6 +1865,7 @@ export class RoomObjectPreviewEngine {
 	private envMapIndoor: BABYLON.CubeTexture;
 	private roomLight: BABYLON.SpotLight;
 	private zGridPreviewPlane: BABYLON.Mesh;
+	private fps = 60;
 
 	constructor(options: {
 		canvas: HTMLCanvasElement;
@@ -1921,8 +1932,17 @@ export class RoomObjectPreviewEngine {
 	}
 
 	public async init() {
+		const frameInterval = 1000 / this.fps;
+		let lastTime = performance.now();
+
 		this.engine.runRenderLoop(() => {
-			this.scene.render();
+			const currentTime = performance.now();
+			const delta = currentTime - lastTime;
+
+			if (delta >= frameInterval) {
+				this.scene.render();
+				lastTime = currentTime - (delta % frameInterval);
+			}
 		});
 	}
 

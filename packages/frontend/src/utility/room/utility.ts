@@ -38,13 +38,10 @@ export function yuge(scene: BABYLON.Scene, mesh: BABYLON.Mesh, offset: BABYLON.V
 	};
 }
 
-const _assumedFramesPerSecond = 60;
-
 export class HorizontalCameraKeyboardMoveInput extends BABYLON.BaseCameraPointersInput {
 	public camera: BABYLON.FreeCamera;
 	private engine: BABYLON.AbstractEngine;
 	private scene: BABYLON.Scene;
-	moveSpeed = 6 / _assumedFramesPerSecond;
 	preShift = false;
 	codes = [];
 	codesUp = ['KeyW'];
@@ -54,12 +51,14 @@ export class HorizontalCameraKeyboardMoveInput extends BABYLON.BaseCameraPointer
 	onCanvasBlurObserver = null;
 	onKeyboardObserver = null;
 	public canMove = true;
+	private fps: number;
 
-	constructor(camera: BABYLON.UniversalCamera) {
+	constructor(camera: BABYLON.UniversalCamera, fps = 60) {
 		super();
 		this.camera = camera;
 		this.scene = this.camera.getScene();
 		this.engine = this.scene.getEngine();
+		this.fps = fps;
 	}
 
 	attachControl() {
@@ -138,7 +137,8 @@ export class HorizontalCameraKeyboardMoveInput extends BABYLON.BaseCameraPointer
 			dir.y = 0;
 			dir.normalize();
 			const rate = this.preShift ? 3 : 1;
-			const move = dir.scale(this.moveSpeed * rate);
+			const moveSpeed = 6 / this.fps;
+			const move = dir.scale(moveSpeed * rate);
 
 			if (this.canMove) {
 				this.camera.cameraDirection.addInPlace(move);
