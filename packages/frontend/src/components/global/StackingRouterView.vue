@@ -4,12 +4,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<TransitionGroup
-	:enterActiveClass="prefer.s.animation ? $style.transition_x_enterActive : ''"
-	:leaveActiveClass="prefer.s.animation ? $style.transition_x_leaveActive : ''"
-	:enterFromClass="prefer.s.animation ? $style.transition_x_enterFrom : ''"
-	:leaveToClass="prefer.s.animation ? $style.transition_x_leaveTo : ''"
-	:moveClass="prefer.s.animation ? $style.transition_x_move : ''"
+<MkTransitionGroup
+	:enterActiveClass="$style.transition_x_enterActive"
+	:leaveActiveClass="$style.transition_x_leaveActive"
+	:enterFromClass="$style.transition_x_enterFrom"
+	:leaveToClass="$style.transition_x_leaveTo"
+	:moveClass="$style.transition_x_move"
 	:duration="200"
 	tag="div" :class="$style.tabs"
 >
@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</div>
-</TransitionGroup>
+</MkTransitionGroup>
 </template>
 
 <script lang="ts" setup>
