@@ -68,6 +68,7 @@ export class RoomController {
 
 				this.engine.on('changeRoomState', ({ roomState }) => {
 					this.roomState.value = roomState;
+					triggerRef(this.selected);
 				});
 
 				this.engine.on('playSfxUrl', ({ url, options }) => {

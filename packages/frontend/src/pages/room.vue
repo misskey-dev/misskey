@@ -287,11 +287,11 @@ function getRgb(hex: string | number): [number, number, number] | null {
 }
 
 function save() {
-	localStorage.setItem('roomData', JSON.stringify(controller.roomState));
+	localStorage.setItem('roomData', JSON.stringify(controller.roomState.value));
 }
 
 function expor() {
-	const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(controller.roomState));
+	const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(controller.roomState.value));
 	const dlAnchorElem = window.document.createElement('a');
 	dlAnchorElem.setAttribute('href', dataStr);
 	dlAnchorElem.setAttribute('download', 'room.json');
