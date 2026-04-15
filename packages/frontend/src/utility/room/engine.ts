@@ -1168,10 +1168,8 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		const filePath = def.path != null ? `/client-assets/room/objects/${def.path}.glb` : `/client-assets/room/objects/${camelToKebab(args.type)}/${camelToKebab(args.type)}.glb`;
 		const loaderResult = await BABYLON.LoadAssetContainerAsync(filePath, this.scene);
 
-		const allMeshes = loaderResult.meshes;
-
 		// babylonによって自動で追加される右手系変換用ノード
-		let subRoot = allMeshes[0] as BABYLON.TransformNode;
+		let subRoot = loaderResult.meshes[0] as BABYLON.TransformNode;
 
 		if (BAKE_TRANSFORM) {
 			subRoot.scaling = new BABYLON.Vector3(1, 1, 1);
@@ -1188,7 +1186,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 				//m.parent = root;
 				}
 			}
-			for (const m of allMeshes) {
+			for (const m of loaderResult.meshes) {
 				if (m.name === '__root__') continue;
 				if (m.parent === subRoot) {
 					m.setParent(root);
@@ -1334,7 +1332,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		root.rotation = args.rotation.clone();
 		root.metadata = metadata;
 
-		const model = new ModelManager(BAKE_TRANSFORM ? root : subRoot, allMeshes.filter(m => m.name !== '__root__'), (meshes) => {
+		const model = new ModelManager(BAKE_TRANSFORM ? root : subRoot, loaderResult.meshes.filter(m => m.name !== '__root__'), (meshes) => {
 			if (this.selected?.objectId === args.id) {
 				this.highlightMeshes(meshes);
 			}
