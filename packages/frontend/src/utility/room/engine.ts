@@ -619,6 +619,9 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			});
 			gl.intensity = 0.5;
 
+			// for improving performance
+			this.scene.setRenderingAutoClearDepthStencil(gl.renderingGroupId, false);
+
 			if (SNAPSHOT_RENDERING) {
 				this.sr.updateMeshesForEffectLayer(gl);
 			}
