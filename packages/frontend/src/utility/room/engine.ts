@@ -1595,7 +1595,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	}
 
 	private turnOnRoomLight() {
-		this.roomLight.intensity = 100000;
+		this.roomLight.intensity = 10 * WORLD_SCALE * WORLD_SCALE;
 		this.envMapIndoor.level = 0.6;
 	}
 
