@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</button>
 
-	<button :class="[$style.item, $style.post]" class="_button" @click="os.post()">
+	<button :class="[$style.item, $style.post]" class="_button" @click="post">
 		<div :class="$style.itemInner">
 			<i :class="$style.itemIcon" class="ti ti-pencil"></i>
 		</div>
@@ -44,6 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref, useTemplateRef, watch } from 'vue';
 import { $i } from '@/i.js';
 import * as os from '@/os.js';
+import { postButtonHandler } from '@/utility/post-button-handler.js';
 import { mainRouter } from '@/router.js';
 import { navbarItemDef } from '@/navbar.js';
 
@@ -61,6 +62,10 @@ const menuIndicated = computed(() => {
 });
 
 const rootElHeight = ref(0);
+
+function post() {
+	postButtonHandler(mainRouter.currentRef.value);
+}
 
 watch(rootEl, () => {
 	if (rootEl.value) {
