@@ -311,6 +311,7 @@ class ModelManager {
 		}
 		merged.freezeWorldMatrix();
 		merged.metadata = { ...this.root.metadata };
+		if (!this.hasTexture) merged.convertToUnIndexedMesh();
 		this.bakedMeshes = [merged];
 
 		this.bakedCallback?.([...this.bakedMeshes, ...excludeMeshes]);
@@ -756,6 +757,8 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			loadedCount++;
 			this.emit('loadingProgress', { progress: loadedCount / objects.length });
 		})));
+
+		this.scene.blockMaterialDirtyMechanism = true;
 
 		if (SNAPSHOT_RENDERING) {
 			this.sr.enableSnapshotRendering();

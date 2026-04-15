@@ -44,7 +44,7 @@ export class RoomController {
 			this.worker.postMessage({ type: 'init', canvas: offscreen, roomState: this.roomState.value }, [offscreen]);
 			this.isReady.value = true;
 		} else {
-			const babylonEngine = new BABYLON.WebGPUEngine(canvas);
+			const babylonEngine = new BABYLON.WebGPUEngine(canvas, { doNotHandleContextLost: true });
 			babylonEngine.compatibilityMode = false;
 			await babylonEngine.initAsync();
 			this.engine = new RoomEngine(this.roomState.value, { canvas, engine: babylonEngine });
