@@ -405,6 +405,10 @@ definePage(() => ({
 	height: 100%;
 	display: block;
 	background: #000;
+
+	&:focus {
+		outline: none;
+	}
 }
 
 .controls {
