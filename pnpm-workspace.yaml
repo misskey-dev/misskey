@@ -35,4 +35,8 @@ ignorePatchFailures: false
 minimumReleaseAge: 10080 # delay 7days to mitigate supply-chain attack
 minimumReleaseAgeExclude:
   - '@syuilo/aiscript'
-  - systeminformation # 脆弱性対応。そのうち消すこと
+  - rolldown # 脆弱性対応。そのうち消す
+  - '@rolldown/*' # 脆弱性対応。そのうち消す
+  - vite # 脆弱性対応。そのうち消す
+  # Renovate security update: lodash@4.18.1
+  - lodash@4.18.1

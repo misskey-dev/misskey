@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { dirname } from 'node:path';
+import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { promises as fsp } from 'node:fs';
+import { promises as fsp, existsSync } from 'node:fs';
 import { languages } from 'i18n/const';
 import { Injectable, Inject } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
@@ -13,21 +13,34 @@ import { bindThis } from '@/decorators.js';
 import { htmlSafeJsonStringify } from '@/misc/json-stringify-html-safe.js';
 import { MetaEntityService } from '@/core/entities/MetaEntityService.js';
 import type { FastifyReply } from 'fastify';
+import type { Manifest } from 'vite';
 import type { Config } from '@/config.js';
 import type { MiMeta } from '@/models/Meta.js';
-import type { CommonData } from './views/_.js';
+import type { CommonData, ViteFiles } from './views/_.js';
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
 
-const frontendVitePublic = `${_dirname}/../../../../frontend/public/`;
-const frontendEmbedVitePublic = `${_dirname}/../../../../frontend-embed/public/`;
+let rootDir = _dirname;
+// 見つかるまで上に遡る
+while (!existsSync(resolve(rootDir, 'packages'))) {
+	const parentDir = dirname(rootDir);
+	if (parentDir === rootDir) {
+		throw new Error('Cannot find root directory');
+	}
+	rootDir = parentDir;
+}
+
+const frontendViteBuilt = resolve(rootDir, 'built/_frontend_vite_');
+const frontendEmbedViteBuilt = resolve(rootDir, 'built/_frontend_embed_vite_');
 
 @Injectable()
 export class HtmlTemplateService {
-	private frontendBootloadersFetched = false;
+	private frontendAssetsFetched = false;
+	public frontendViteFiles: ViteFiles | null = null;
 	public frontendBootloaderJs: string | null = null;
 	public frontendBootloaderCss: string | null = null;
+	public frontendEmbedViteFiles: ViteFiles | null = null;
 	public frontendEmbedBootloaderJs: string | null = null;
 	public frontendEmbedBootloaderCss: string | null = null;
 
@@ -42,17 +55,91 @@ export class HtmlTemplateService {
 	) {
 	}
 
+	// 初期ロードで読み込むべきファイルのパスを収集する。
+	// See https://ja.vite.dev/guide/backend-integration
 	@bindThis
-	private async prepareFrontendBootloaders() {
-		if (this.frontendBootloadersFetched) return;
-		this.frontendBootloadersFetched = true;
+	private collectViteAssetFiles(manifest: Manifest): ViteFiles {
+		const entryFile = Object.values(manifest).find((chunk) => chunk.isEntry);
+		if (!entryFile) return {
+			entryJs: null,
+			css: [],
+			modulePreloads: [],
+		};
 
-		const [bootJs, bootCss, embedBootJs, embedBootCss] = await Promise.all([
-			fsp.readFile(`${frontendVitePublic}loader/boot.js`, 'utf-8').catch(() => null),
-			fsp.readFile(`${frontendVitePublic}loader/style.css`, 'utf-8').catch(() => null),
-			fsp.readFile(`${frontendEmbedVitePublic}loader/boot.js`, 'utf-8').catch(() => null),
-			fsp.readFile(`${frontendEmbedVitePublic}loader/style.css`, 'utf-8').catch(() => null),
+		const seenChunkIds = new Set<string>();
+		const cssFiles = new Set<string>();
+		const modulePreloads = new Set<string>();
+
+		if (entryFile.css) {
+			entryFile.css.forEach((css) => cssFiles.add(css));
+		}
+
+		if (entryFile.imports != null && Array.isArray(entryFile.imports)) {
+			function collectImports(imports: string[], recursive = false) {
+				for (const importId of imports) {
+					if (seenChunkIds.has(importId)) continue;
+					seenChunkIds.add(importId);
+
+					const importedChunk = manifest[importId];
+					if (!importedChunk) return;
+
+					if (importedChunk.css) {
+						importedChunk.css.forEach((css) => cssFiles.add(css));
+					}
+
+					if (importedChunk.imports != null && Array.isArray(importedChunk.imports)) {
+						collectImports(importedChunk.imports, true);
+					}
+
+					if (!recursive) {
+						modulePreloads.add(importedChunk.file);
+					}
+				}
+			}
+
+			collectImports(entryFile.imports);
+		}
+
+		return {
+			entryJs: entryFile.file,
+			css: Array.from(cssFiles),
+			modulePreloads: Array.from(modulePreloads),
+		};
+	}
+
+	@bindThis
+	private async prepareFrontendAssets() {
+		if (this.frontendAssetsFetched) return;
+		this.frontendAssetsFetched = true;
+
+		const [
+			bootJs,
+			bootCss,
+			embedBootJs,
+			embedBootCss,
+		] = await Promise.all([
+			fsp.readFile(resolve(frontendViteBuilt, 'loader/boot.js'), 'utf-8').catch(() => null),
+			fsp.readFile(resolve(frontendViteBuilt, 'loader/style.css'), 'utf-8').catch(() => null),
+			fsp.readFile(resolve(frontendEmbedViteBuilt, 'loader/boot.js'), 'utf-8').catch(() => null),
+			fsp.readFile(resolve(frontendEmbedViteBuilt, 'loader/style.css'), 'utf-8').catch(() => null),
 		]);
+
+		let feViteManifest: Manifest | null = null;
+		let embedFeViteManifest: Manifest | null = null;
+
+		if (this.config.frontendManifestExists) {
+			const manifestContent = await fsp.readFile(resolve(frontendViteBuilt, 'manifest.json'), 'utf-8').catch(() => null);
+			feViteManifest = manifestContent ? JSON.parse(manifestContent) : null;
+		}
+
+		if (this.config.frontendEmbedManifestExists) {
+			const manifestContent = await fsp.readFile(resolve(frontendEmbedViteBuilt, 'manifest.json'), 'utf-8').catch(() => null);
+			embedFeViteManifest = manifestContent ? JSON.parse(manifestContent) : null;
+		}
+
+		if (feViteManifest != null) {
+			this.frontendViteFiles = this.collectViteAssetFiles(feViteManifest);
+		}
 
 		if (bootJs != null) {
 			this.frontendBootloaderJs = bootJs;
@@ -60,6 +147,10 @@ export class HtmlTemplateService {
 
 		if (bootCss != null) {
 			this.frontendBootloaderCss = bootCss;
+		}
+
+		if (embedFeViteManifest != null) {
+			this.frontendEmbedViteFiles = this.collectViteAssetFiles(embedFeViteManifest);
 		}
 
 		if (embedBootJs != null) {
@@ -73,7 +164,7 @@ export class HtmlTemplateService {
 
 	@bindThis
 	public async getCommonData(): Promise<CommonData> {
-		await this.prepareFrontendBootloaders();
+		await this.prepareFrontendAssets();
 
 		return {
 			version: this.config.version,
@@ -90,8 +181,10 @@ export class HtmlTemplateService {
 			metaJson: htmlSafeJsonStringify(await this.metaEntityService.packDetailed(this.meta)),
 			now: Date.now(),
 			federationEnabled: this.meta.federation !== 'none',
+			frontendViteFiles: this.frontendViteFiles,
 			frontendBootloaderJs: this.frontendBootloaderJs,
 			frontendBootloaderCss: this.frontendBootloaderCss,
+			frontendEmbedViteFiles: this.frontendEmbedViteFiles,
 			frontendEmbedBootloaderJs: this.frontendEmbedBootloaderJs,
 			frontendEmbedBootloaderCss: this.frontendEmbedBootloaderCss,
 		};

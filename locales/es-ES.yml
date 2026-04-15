@@ -543,6 +543,7 @@ regenerate: "Regenerar"
 fontSize: "Tamaño de la letra"
 mediaListWithOneImageAppearance: "Altura de la lista de medios con una sola imagen."
 limitTo: "{x} hasta un máximo de"
+showMediaListByGridInWideArea: "Cuando el ancho de la pantalla sea grande, muestra la lista de multimedia uno al lado del otro."
 noFollowRequests: "No hay solicitudes de seguimiento"
 openImageInNewTab: "Abrir imagen en nueva pestaña"
 dashboard: "Panel de control"
@@ -3311,7 +3312,7 @@ _clientPerformanceIssueTip:
 _clip:
   tip: "Clip es una función que permite organizar varias notas."
 _userLists:
-  tip: "Las listas pueden contener cualquier usuario que especifiques al crearlas, la lista creada puede mostrarse entonces como una línea de tiempo mostrando solo los usuarios especificados."
+  tip: "Puedes crear listas que incluyan a cualquier usuario. Las listas creadas se pueden visualizar en forma de cronología."
 watermark: "Marca de Agua"
 defaultPreset: "Por defecto"
 _watermarkEditor:
@@ -3400,11 +3401,9 @@ _imageEffector:
     threshold: "Umbral"
     centerX: "Centrar X"
     centerY: "Centrar Y"
-    zoomLinesSmoothing: "Suavizado"
-    zoomLinesSmoothingDescription: "El suavizado y el ancho de línea de zoom no se pueden utilizar juntos."
-    zoomLinesThreshold: "Ancho de línea del zoom"
+    density: "Densidad"
+    zoomLinesOutlineThickness: "Grosor del borde"
     zoomLinesMaskSize: "Diámetro del centro"
-    zoomLinesBlack: "Cambiar color de las líneas de impacto a negro."
     circle: "Círculo"
 drafts: "Borrador"
 _drafts:

@@ -5647,6 +5647,10 @@ export interface Locale extends ILocale {
      * 設定項目はありません
      */
     "nothingToConfigure": string;
+    /**
+     * リノート先のチャンネルを見る
+     */
+    "viewRenotedChannel": string;
     "_imageEditing": {
         "_vars": {
             /**
@@ -13113,25 +13117,17 @@ export interface Locale extends ILocale {
              */
             "centerY": string;
             /**
-             * スムージング
+             * 密度
              */
-            "zoomLinesSmoothing": string;
+            "density": string;
             /**
-             * スムージングと集中線の幅の設定は併用できません。
+             * 線の影の太さ
              */
-            "zoomLinesSmoothingDescription": string;
-            /**
-             * 集中線の幅
-             */
-            "zoomLinesThreshold": string;
+            "zoomLinesOutlineThickness": string;
             /**
              * 中心径
              */
             "zoomLinesMaskSize": string;
-            /**
-             * 黒色にする
-             */
-            "zoomLinesBlack": string;
             /**
              * 円形
              */
