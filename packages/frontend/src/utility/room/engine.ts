@@ -628,7 +628,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		//this.shadowGenerator1.useContactHardeningShadow = true;
 
 		const sunLight = new BABYLON.DirectionalLight('sunLight', new BABYLON.Vector3(0.2, -1, -1), this.scene);
-		sunLight.position = new BABYLON.Vector3(-20, 1000, 1000);
+		sunLight.position = new BABYLON.Vector3(cm(-20), cm(1000), cm(1000));
 		sunLight.diffuse = this.time === 0 ? new BABYLON.Color3(1.0, 0.9, 0.8) : this.time === 1 ? new BABYLON.Color3(1.0, 0.8, 0.6) : new BABYLON.Color3(0.6, 0.8, 1.0);
 		sunLight.intensity = this.time === 0 ? 3 : this.time === 1 ? 1 : 0.25;
 		sunLight.shadowMinZ = cm(1000);
