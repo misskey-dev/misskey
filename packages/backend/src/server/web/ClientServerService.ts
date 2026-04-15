@@ -396,7 +396,34 @@ export class ClientServerService {
 		});
 
 		fastify.get('/robots.txt', async (request, reply) => {
-			return await reply.sendFile('/robots.txt', staticAssets);
+			const disallowedPaths = [
+				'/settings',
+				'/admin',
+				'/custom-emojis-manager',
+				'/avatar-decorations',
+				'/share',
+				'/my',
+				'/api',
+				'/inbox',
+				'/oauth',
+				'/proxy',
+				'/url',
+			];
+
+			if (this.meta.ugcVisibilityForVisitor === 'none') {
+				disallowedPaths.push(
+					'/@',
+					'/notes',
+				);
+			}
+
+			let content = `User-agent: *\n`;
+			content += disallowedPaths.map((path) => `Disallow: ${path}`).join('\n') + '\n';
+			content += 'Allow: /\n';
+			content += '\n# todo: sitemap\n';
+
+			reply.header('Content-Type', 'text/plain; charset=utf-8');
+			return await reply.send(content);
 		});
 
 		// OpenSearch XML
