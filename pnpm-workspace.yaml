@@ -40,3 +40,5 @@ minimumReleaseAgeExclude:
   - '@oxc-project/*' # Bundle Backend そのうち消す
   - '@napi-rs/*' # Bundle Backend そのうち消す
   - vite # 脆弱性対応。そのうち消す
+  # Renovate security update: lodash@4.18.1
+  - lodash@4.18.1
