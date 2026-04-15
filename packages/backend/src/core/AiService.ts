@@ -5,26 +5,29 @@
 
 import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { dirname } from 'node:path';
-import { Injectable } from '@nestjs/common';
+import { resolve } from 'node:path';
+import { Injectable, Inject } from '@nestjs/common';
 import { Mutex } from 'async-mutex';
 import fetch from 'node-fetch';
+import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
+import type { Config } from '@/config.js';
 import type { NSFWJS, PredictionType } from 'nsfwjs/core';
-
-const _filename = fileURLToPath(import.meta.url);
-const _dirname = dirname(_filename);
 
 const REQUIRED_CPU_FLAGS_X64 = ['avx2', 'fma'];
 let isSupportedCpu: undefined | boolean = undefined;
 
 @Injectable()
 export class AiService {
+	private readonly modelDir: string;
 	private model: NSFWJS;
 	private modelLoadMutex: Mutex = new Mutex();
 
 	constructor(
+		@Inject(DI.config)
+		private config: Config,
 	) {
+		this.modelDir = resolve(this.config.rootDir, 'nsfw-model');
 	}
 
 	@bindThis
@@ -46,7 +49,7 @@ export class AiService {
 				const nsfw = await import('nsfwjs/core');
 				await this.modelLoadMutex.runExclusive(async () => {
 					if (this.model == null) {
-						this.model = await nsfw.load(`file://${_dirname}/../../nsfw-model/`, { size: 299 });
+						this.model = await nsfw.load(this.modelDir, { size: 299 });
 					}
 				});
 			}
