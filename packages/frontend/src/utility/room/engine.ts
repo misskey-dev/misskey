@@ -499,7 +499,8 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	}
 
 	public isSitting = false;
-	private fps = 60;
+	private fps: number | null = 30;
+	private disposed = false;
 
 	public domEvents: EventEmitter<{
 		'click': (event: { offsetX: number; offsetY: number; }) => void;
@@ -735,18 +736,30 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 		//const sphere = BABYLON.MeshBuilder.CreateSphere('sphere', { diameter: cm(1) }, this.scene);
 
-		const frameInterval = 1000 / this.fps;
-		let lastTime = performance.now();
-
-		this.engine.runRenderLoop(() => {
-			const currentTime = performance.now();
-			const delta = currentTime - lastTime;
-
-			if (delta >= frameInterval) {
+		if (this.fps == null) {
+			this.engine.runRenderLoop(() => {
 				this.scene.render();
-				lastTime = currentTime - (delta % frameInterval);
-			}
-		});
+			});
+		} else {
+			let then = 0;
+			const interval = 1000 / this.fps;
+
+			const renderLoop = (timeStamp: number) => {
+				if (this.disposed) return;
+
+				window.requestAnimationFrame(renderLoop);
+
+				const delta = timeStamp - then;
+				if (delta <= interval) return;
+				then = timeStamp - (delta % interval);
+
+				this.engine.beginFrame();
+				this.scene.render();
+				this.engine.endFrame();
+			};
+
+			window.requestAnimationFrame(renderLoop);
+		}
 
 		if (SNAPSHOT_RENDERING) {
 			const sr = new BABYLON.SnapshotRenderingHelper(this.scene);
@@ -1882,6 +1895,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.intervalIds = [];
 		this.timeoutIds = [];
 		this.engine.dispose();
+		this.disposed = true;
 	}
 }
 
