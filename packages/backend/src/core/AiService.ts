@@ -4,7 +4,7 @@
  */
 
 import * as fs from 'node:fs';
-import { fileURLToPath } from 'node:url';
+import { pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';
 import { Injectable, Inject } from '@nestjs/common';
 import { Mutex } from 'async-mutex';
@@ -49,7 +49,7 @@ export class AiService {
 				const nsfw = await import('nsfwjs/core');
 				await this.modelLoadMutex.runExclusive(async () => {
 					if (this.model == null) {
-						this.model = await nsfw.load(this.modelDir, { size: 299 });
+						this.model = await nsfw.load(pathToFileURL(this.modelDir).toString(), { size: 299 });
 					}
 				});
 			}
