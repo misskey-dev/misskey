@@ -488,6 +488,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	private yGridPreviewPlane: BABYLON.Mesh;
 	private zGridPreviewPlane: BABYLON.Mesh;
 	private selectionOutlineLayer: BABYLON.SelectionOutlineLayer;
+	public sr: BABYLON.SnapshotRenderingHelper;
 
 	private _isEditMode = false;
 	get isEditMode() {
@@ -531,6 +532,8 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.scene.autoClear = false;
 		//this.scene.autoClearDepthAndStencil = false;
 		this.scene.skipPointerMovePicking = true;
+
+		this.sr = new BABYLON.SnapshotRenderingHelper(this.scene);
 
 		const skybox = BABYLON.MeshBuilder.CreateBox('skybox', { size: cm(100000) }, this.scene);
 		const skyboxMat = new BABYLON.StandardMaterial('skyboxMat', this.scene);
@@ -582,7 +585,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.roomLight.shadowMinZ = cm(10);
 		this.roomLight.shadowMaxZ = cm(300);
 
-		this.shadowGeneratorForRoomLight = new BABYLON.ShadowGenerator(4096, this.roomLight);
+		this.shadowGeneratorForRoomLight = new BABYLON.ShadowGenerator(2048, this.roomLight);
 		this.shadowGeneratorForRoomLight.forceBackFacesOnly = true;
 		this.shadowGeneratorForRoomLight.bias = 0.0001;
 		this.shadowGeneratorForRoomLight.usePercentageCloserFiltering = true;
@@ -597,7 +600,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		sunLight.shadowMinZ = cm(1000);
 		sunLight.shadowMaxZ = cm(2000);
 
-		this.shadowGeneratorForSunLight = new BABYLON.ShadowGenerator(4096, sunLight);
+		this.shadowGeneratorForSunLight = new BABYLON.ShadowGenerator(2048, sunLight);
 		this.shadowGeneratorForSunLight.forceBackFacesOnly = true;
 		this.shadowGeneratorForSunLight.bias = 0.0001;
 		this.shadowGeneratorForSunLight.usePercentageCloserFiltering = true;
@@ -608,12 +611,16 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 		this.turnOnRoomLight();
 
-		if (USE_GLOW && !SNAPSHOT_RENDERING) {
+		if (USE_GLOW) {
 			const gl = new BABYLON.GlowLayer('glow', this.scene, {
 				//mainTextureFixedSize: 512,
 				blurKernelSize: 64,
 			});
 			gl.intensity = 0.5;
+
+			if (SNAPSHOT_RENDERING) {
+				this.sr.updateMeshesForEffectLayer(gl);
+			}
 		}
 
 		{
@@ -762,20 +769,8 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		}
 
 		if (SNAPSHOT_RENDERING) {
-			const sr = new BABYLON.SnapshotRenderingHelper(this.scene);
-
 			window.setTimeout(() => {
-				sr.enableSnapshotRendering();
-
-				if (USE_GLOW) {
-					const gl = new BABYLON.GlowLayer('glow', this.scene, {
-					//mainTextureFixedSize: 512,
-						blurKernelSize: 64,
-					});
-					gl.intensity = 0.5;
-
-					sr.updateMeshesForEffectLayer(gl);
-				}
+				this.sr.enableSnapshotRendering();
 			}, 3000);
 		}
 
