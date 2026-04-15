@@ -92,7 +92,7 @@ export class RelayService {
 	}
 
 	@bindThis
-	private async getAcceptedRelays(): Promise<MiRelay[]> {
+	private getAcceptedRelays(): Promise<MiRelay[]> {
 		return this.relaysCache.fetch(() => this.relaysRepository.findBy({
 			status: 'accepted',
 		}));
