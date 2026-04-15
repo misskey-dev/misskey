@@ -27,7 +27,8 @@ export class AiService {
 		@Inject(DI.config)
 		private config: Config,
 	) {
-		this.modelDir = resolve(this.config.rootDir, 'nsfw-model');
+		let modelDir = resolve(this.config.rootDir, 'nsfw-model');
+		this.modelDir = modelDir.endsWith('/') ? modelDir : modelDir + '/';
 	}
 
 	@bindThis
