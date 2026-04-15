@@ -4,7 +4,7 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../engine.js';
+import { defineObject, WORLD_SCALE } from '../engine.js';
 import { cm } from '../utility.js';
 
 export const desktopPc = defineObject({
@@ -50,13 +50,13 @@ export const desktopPc = defineObject({
 	createInstance: ({ options, model, root, scene, room }) => {
 		const light1 = new BABYLON.SpotLight('', new BABYLON.Vector3(0, cm(10), cm(22)), new BABYLON.Vector3(0, 0, 1), Math.PI / 1, 2, scene, room?.lightContainer != null);
 		light1.parent = root;
-		light1.intensity = 500;
+		light1.intensity = 0.05 * WORLD_SCALE * WORLD_SCALE;
 		light1.range = cm(30);
 		if (room?.lightContainer != null) room.lightContainer.addLight(light1);
 
 		const light2 = new BABYLON.SpotLight('', new BABYLON.Vector3(cm(-5), cm(33), cm(-9)), new BABYLON.Vector3(1, 0, 0), Math.PI / 1, 2, scene, room?.lightContainer != null);
 		light2.parent = root;
-		light2.intensity = 500;
+		light2.intensity = 0.05 * WORLD_SCALE * WORLD_SCALE;
 		light2.range = cm(30);
 		if (room?.lightContainer != null) room.lightContainer.addLight(light2);
 

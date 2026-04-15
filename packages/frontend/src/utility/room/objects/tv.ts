@@ -4,7 +4,7 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../engine.js';
+import { defineObject, WORLD_SCALE } from '../engine.js';
 import { cm, createPlaneUvMapper, initTv } from '../utility.js';
 
 export const tv = defineObject({
@@ -59,7 +59,7 @@ export const tv = defineObject({
 		const applyScreenBrightness = () => {
 			const b = options.screenBrightness;
 			screenMaterial.emissiveColor = new BABYLON.Color3(b, b, b);
-			light.intensity = 70000 * b;
+			light.intensity = (7 * b) * WORLD_SCALE * WORLD_SCALE;
 		};
 
 		applyScreenBrightness();

@@ -4,7 +4,7 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../engine.js';
+import { defineObject, WORLD_SCALE } from '../engine.js';
 import { cm } from '../utility.js';
 
 export const woodRingFloorLamp = defineObject({
@@ -83,7 +83,7 @@ export const woodRingFloorLamp = defineObject({
 
 		const applyLightBrightness = () => {
 			for (const light of lights) {
-				light.intensity = 10000 * options.lightBrightness;
+				light.intensity = 1 * options.lightBrightness * WORLD_SCALE * WORLD_SCALE;
 				light.range = cm(200) * options.lightBrightness;
 			}
 			for (const lamp of lamps) {

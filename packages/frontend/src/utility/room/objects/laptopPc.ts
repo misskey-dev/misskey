@@ -4,7 +4,7 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../engine.js';
+import { defineObject, WORLD_SCALE } from '../engine.js';
 import { cm, createPlaneUvMapper } from '../utility.js';
 
 export const laptopPc = defineObject({
@@ -117,7 +117,7 @@ export const laptopPc = defineObject({
 		const applyScreenBrightness = () => {
 			const b = options.screenBrightness;
 			screenMaterial.emissiveColor = new BABYLON.Color3(b, b, b);
-			light.intensity = 20000 * b;
+			light.intensity = (2 * b) * WORLD_SCALE * WORLD_SCALE;
 		};
 
 		applyScreenBrightness();
@@ -142,7 +142,7 @@ export const laptopPc = defineObject({
 			if (angle <= -Math.PI / 2) {
 				light.intensity = 0;
 			} else {
-				light.intensity = 20000 * options.screenBrightness;
+				light.intensity = (2 * options.screenBrightness) * WORLD_SCALE * WORLD_SCALE;
 			}
 			model.updated();
 		};

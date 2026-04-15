@@ -4,7 +4,7 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../engine.js';
+import { defineObject, WORLD_SCALE } from '../engine.js';
 import { cm, get7segMeshesOfCurrentTime } from '../utility.js';
 
 export const tabletopDigitalClock = defineObject({
@@ -37,7 +37,7 @@ export const tabletopDigitalClock = defineObject({
 	createInstance: ({ root, room, options, model, scene }) => {
 		const light = new BABYLON.SpotLight('', new BABYLON.Vector3(0, cm(3), cm(1)), new BABYLON.Vector3(0, 0, 1), Math.PI / 1, 2, scene, room?.lightContainer != null);
 		light.parent = root;
-		light.intensity = 100;
+		light.intensity = 0.01 * WORLD_SCALE * WORLD_SCALE;
 		light.range = cm(30);
 		if (room?.lightContainer != null) room.lightContainer.addLight(light);
 
