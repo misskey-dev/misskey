@@ -166,66 +166,6 @@ const data = localStorage.getItem('roomData') != null ? { ...JSON.parse(localSto
 
 const controller = new RoomController(data);
 
-function onKeydown(ev: KeyboardEvent) {
-	if (ev.code === 'KeyE') {
-		ev.preventDefault();
-		ev.stopPropagation();
-		if (controller.isEditMode.value) {
-			if (controller.grabbing.value) {
-				endGrabbing();
-			} else {
-				beginSelectedInstalledObjectGrabbing();
-			}
-		} else if (controller.selected.value != null) {
-			controller.interact(controller.selected.value.objectId);
-		}
-	} else if (ev.code === 'KeyR') {
-		ev.preventDefault();
-		ev.stopPropagation();
-		if (controller.grabbing.value) {
-			rotate();
-		}
-	} else if (ev.code === 'KeyQ') {
-		ev.preventDefault();
-		ev.stopPropagation();
-		if (controller.isSitting.value) {
-			controller.standUp();
-		}
-	} else if (ev.code === 'Tab') {
-		ev.preventDefault();
-		ev.stopPropagation();
-		if (controller.isEditMode.value) {
-			controller.exitEditMode();
-			controller.isEditMode.value = false;
-		} else {
-			controller.enterEditMode();
-			controller.isEditMode.value = true;
-		}
-	} else if (ev.code === 'KeyZ') {
-		ev.preventDefault();
-		ev.stopPropagation();
-		isZenMode.value = !isZenMode.value;
-		nextTick(() => {
-			resize();
-		});
-	}
-}
-
-function onWheel(ev: WheelEvent) {
-	if (controller.grabbing.value) {
-		ev.preventDefault();
-		ev.stopPropagation();
-
-		controller.changeGrabbingDistance(ev.deltaY * 0.025);
-	} else {
-		ev.preventDefault();
-		ev.stopPropagation();
-
-		controller.camera.fov += ev.deltaY * 0.001;
-		controller.camera.fov = Math.max(0.25, Math.min(1, controller.camera.fov));
-	}
-}
-
 onMounted(async () => {
 	controller.init(canvas.value!);
 

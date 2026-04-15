@@ -77,21 +77,37 @@ export class RoomController {
 		}
 
 		this.canvas.addEventListener('keydown', (ev) => {
-			if (this.worker != null) this.worker.postMessage({ type: 'dom:keydown', ev: { code: ev.code, shiftKey: ev.shiftKey } });
+			if (this.worker != null) {
+				this.worker.postMessage({ type: 'dom:keydown', ev: { code: ev.code, shiftKey: ev.shiftKey } });
+			} else if (this.engine != null) {
+				this.engine.domEvents.emit('keydown', { code: ev.code, shiftKey: ev.shiftKey });
+			}
 			ev.preventDefault();
 			ev.stopPropagation();
 			return false;
 		});
 
 		this.canvas.addEventListener('keyup', (ev) => {
-			if (this.worker != null) this.worker.postMessage({ type: 'dom:keyup', ev: { code: ev.code, shiftKey: ev.shiftKey } });
+			if (this.worker != null) {
+				this.worker.postMessage({ type: 'dom:keyup', ev: { code: ev.code, shiftKey: ev.shiftKey } });
+			} else if (this.engine != null) {
+				this.engine.domEvents.emit('keyup', { code: ev.code, shiftKey: ev.shiftKey });
+			}
 			ev.preventDefault();
 			ev.stopPropagation();
 			return false;
 		});
 
 		this.canvas.addEventListener('pointerdown', (ev) => {
-			if (this.worker != null) this.worker.postMessage({ type: 'dom:pointerdown', ev: { button: ev.button, shiftKey: ev.shiftKey } });
+			// todo
+		});
+
+		this.canvas.addEventListener('wheel', (ev) => {
+			if (this.worker != null) {
+				this.worker.postMessage({ type: 'dom:wheel', ev: { deltaY: ev.deltaY } });
+			} else if (this.engine != null) {
+				this.engine.domEvents.emit('wheel', { deltaY: ev.deltaY });
+			}
 			ev.preventDefault();
 			ev.stopPropagation();
 			return false;

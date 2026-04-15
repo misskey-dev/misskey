@@ -530,6 +530,12 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	public isSitting = false;
 	private fps = 60;
 
+	public domEvents: EventEmitter<{
+		'keydown': (event: { code: string; shiftKey: boolean; }) => void;
+		'keyup': (event: { code: string; shiftKey: boolean; }) => void;
+		'wheel': (event: { deltaY: number; }) => void;
+	}> = new EventEmitter();
+
 	constructor(roomState: RoomState, options: {
 		canvas: HTMLCanvasElement;
 		engine: BABYLON.WebGPUEngine;
@@ -866,6 +872,43 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 				}
 			}, 3000);
 		}
+
+		this.domEvents.on('keydown', (ev) => {
+			if (ev.code === 'KeyE') {
+				if (this.isEditMode) {
+					if (this.grabbingCtx != null) {
+						this.endGrabbing();
+					} else {
+						this.beginSelectedInstalledObjectGrabbing();
+					}
+				} else if (this.selected != null) {
+					this.interact(this.selected.objectId);
+				}
+			} else if (ev.code === 'KeyR') {
+				if (this.grabbingCtx != null) {
+					this.changeGrabbingRotationY(Math.PI / 8);
+				}
+			} else if (ev.code === 'KeyQ') {
+				if (this.isSitting) {
+					this.standUp();
+				}
+			} else if (ev.code === 'Tab') {
+				if (this.isEditMode) {
+					this.exitEditMode();
+				} else {
+					this.enterEditMode();
+				}
+			}
+		});
+
+		this.domEvents.on('wheel', (ev) => {
+			if (this.grabbingCtx != null) {
+				this.changeGrabbingDistance(ev.deltaY * 0.025);
+			} else {
+				this.camera.fov += ev.deltaY * 0.001;
+				this.camera.fov = Math.max(0.25, Math.min(1, this.camera.fov));
+			}
+		});
 	}
 
 	public selectObject(objectId: string | null) {
