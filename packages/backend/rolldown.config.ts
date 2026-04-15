@@ -17,7 +17,7 @@ export default defineConfig([{
 	output: {
 		keepNames: true,
 		minify: true,
-		sourcemap: true,
+		sourcemap: false,
 		dir: './built',
 		cleanDir: true,
 		format: 'esm',
