@@ -13,7 +13,7 @@ export const roundRug = defineObject({
 		default: {},
 	},
 	placement: 'floor',
-	noCollisions: true,
+	hasCollisions: false,
 	createInstance: () => {
 		return {
 			interactions: {},

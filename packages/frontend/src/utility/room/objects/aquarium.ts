@@ -15,7 +15,7 @@ export const aquarium = defineObject({
 		default: {},
 	},
 	placement: 'top',
-	noCollisions: true,
+	hasCollisions: false,
 	createInstance: ({ scene, root }) => {
 		return {
 			onInited: () => {

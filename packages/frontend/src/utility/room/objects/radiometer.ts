@@ -14,7 +14,7 @@ export const radiometer = defineObject({
 		default: {},
 	},
 	placement: 'top',
-	noCollisions: true,
+	hasCollisions: false,
 	createInstance: ({ scene, model }) => {
 		const vanes = model.findTransformNode('__X_VANES__');
 		model.bakeExcludeMeshes = [...vanes.getChildMeshes()];

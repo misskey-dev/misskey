@@ -33,7 +33,7 @@ export const tabletopDigitalClock = defineObject({
 		},
 	},
 	placement: 'top',
-	noCollisions: true,
+	hasCollisions: false,
 	createInstance: ({ root, room, options, model, scene }) => {
 		const light = new BABYLON.SpotLight('', new BABYLON.Vector3(0, cm(3), cm(1)), new BABYLON.Vector3(0, 0, 1), Math.PI / 1, 2, scene, room?.lightContainer != null);
 		light.parent = root;

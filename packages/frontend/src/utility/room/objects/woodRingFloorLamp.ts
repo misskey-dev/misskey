@@ -40,6 +40,7 @@ export const woodRingFloorLamp = defineObject({
 		},
 	},
 	placement: 'floor',
+	hasCollisions: true,
 	createInstance: ({ room, scene, options, model }) => {
 		const shadeMaterial = model.findMaterial('__X_SHADE__');
 

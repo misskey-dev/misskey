@@ -44,7 +44,7 @@ export const wallCanvas = defineObject({
 		},
 	},
 	placement: 'side',
-	noCollisions: true,
+	hasCollisions: false,
 	createInstance: async ({ scene, options, model }) => {
 		const canvasMesh = model.findMesh('__X_CANVAS__');
 		canvasMesh.rotationQuaternion = null;

@@ -54,7 +54,7 @@ export const laptopPc = defineObject({
 		},
 	},
 	placement: 'top',
-	noCollisions: true,
+	hasCollisions: false,
 	createInstance: async ({ room, scene, options, model }) => {
 		const matrix = model.root.getWorldMatrix(true);
 		const scale = new BABYLON.Vector3();

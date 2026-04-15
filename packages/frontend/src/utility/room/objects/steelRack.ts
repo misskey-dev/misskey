@@ -13,6 +13,7 @@ export const steelRack = defineObject({
 		default: {},
 	},
 	placement: 'floor',
+	hasCollisions: true,
 	createInstance: () => {
 		return {
 			interactions: {},

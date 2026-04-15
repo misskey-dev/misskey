@@ -30,6 +30,7 @@ export const tv = defineObject({
 		},
 	},
 	placement: 'top',
+	hasCollisions: true,
 	createInstance: ({ options, room, model, scene }) => {
 		const matrix = model.root.getWorldMatrix(true);
 		const scale = new BABYLON.Vector3();

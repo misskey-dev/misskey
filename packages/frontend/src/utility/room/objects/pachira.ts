@@ -13,6 +13,7 @@ export const pachira = defineObject({
 		default: {},
 	},
 	placement: 'top',
+	hasCollisions: true,
 	createInstance: () => {
 		return {
 			interactions: {},

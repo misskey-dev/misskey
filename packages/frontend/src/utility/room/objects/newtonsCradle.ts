@@ -21,7 +21,7 @@ export const newtonsCradle = defineObject({
 		},
 	},
 	placement: 'top',
-	noCollisions: true,
+	hasCollisions: false,
 	createInstance: ({ options, model }) => {
 		const frameMaterial = model.findMaterial('__X_FRAME__');
 

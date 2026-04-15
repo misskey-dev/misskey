@@ -42,6 +42,7 @@ export const desk = defineObject({
 		},
 	},
 	placement: 'floor',
+	hasCollisions: true,
 	createInstance: ({ options, model }) => {
 		const frameMaterial = model.findMaterial('__X_FRAME__');
 		const boardMaterial = model.findMaterial('__X_BOARD__');

@@ -15,7 +15,7 @@ export const beamLamp = defineObject({
 		default: {},
 	},
 	placement: 'top',
-	noCollisions: true,
+	hasCollisions: false,
 	createInstance: ({ room, root, scene }) => {
 		return {
 			onInited: () => {

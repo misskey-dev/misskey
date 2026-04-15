@@ -13,7 +13,7 @@ export const woodSoundAbsorbingPanel = defineObject({
 		default: {},
 	},
 	placement: 'side',
-	noCollisions: true,
+	hasCollisions: false,
 	createInstance: () => {
 		return {
 			interactions: {},

@@ -337,7 +337,7 @@ export type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 		default: GetOptionsSchemaValues<OpSc>;
 	};
 	placement: 'top' | 'side' | 'bottom' | 'wall' | 'ceiling' | 'floor';
-	noCollisions?: boolean;
+	hasCollisions?: boolean;
 	//groupingMeshes: string[]; // multi-materialなメッシュは複数のメッシュに分割されるが、それだと不便な場合に追加の親メッシュでグルーピングするための指定
 	isChair?: boolean;
 	treatLoaderResult?: (loaderResult: BABYLON.AssetContainer) => void;
@@ -379,42 +379,13 @@ function getMeshesBoundingBox(meshes: BABYLON.Mesh[]): BABYLON.BoundingBox {
 }
 
 function enableObjectCollision(meshes: BABYLON.Mesh[]) {
-	let hasCollisionMesh = false;
 	for (const mesh of meshes) {
 		if (mesh.name.includes('__COLLISION__')) {
-			hasCollisionMesh = true;
-			break;
+			mesh.checkCollisions = true;
+			//mesh.isVisible = true; // debug
+		} else {
+			mesh.checkCollisions = false;
 		}
-	}
-
-	if (hasCollisionMesh) {
-		for (const mesh of meshes) {
-			if (mesh.name.includes('__COLLISION__')) {
-				mesh.checkCollisions = true;
-				//mesh.isVisible = true; // debug
-			} else {
-				mesh.checkCollisions = false;
-			}
-		}
-
-		return;
-	}
-
-	// なんかうまくいかない
-	//const boundingInfo = getMeshesBoundingBox(meshes.filter(m => m.isEnabled() && m.isVisible));
-	//const collider = meshes.find(m => m.name.includes('__COLLISION_AUTO_GENERATED_INTERNALY__'))!;
-	//if (collider == null) return;
-	////collider.position.y = ((boundingInfo.maximum.y + boundingInfo.minimum.y) / 2) / WORLD_SCALE;
-	//collider.scaling = new BABYLON.Vector3(
-	//	(boundingInfo.maximum.x - boundingInfo.minimum.x) || 1,
-	//	(boundingInfo.maximum.y - boundingInfo.minimum.y) || 1,
-	//	(boundingInfo.maximum.z - boundingInfo.minimum.z) || 1,
-	//);
-	//collider.checkCollisions = true;
-	//collider.isVisible = true;
-
-	for (const mesh of meshes) {
-		mesh.checkCollisions = true;
 	}
 }
 
@@ -1191,7 +1162,6 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		options: any;
 	}) {
 		const def = getObjectDef(args.type);
-		const collisionsDisabled = def.placement === 'ceiling' || def.noCollisions;
 
 		const root = new BABYLON.TransformNode(`object_${args.id}_${args.type}`, this.scene);
 
@@ -1402,7 +1372,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 				if (!this.scene.meshes.includes(mesh)) this.scene.addMesh(mesh);
 			}
 
-			if (!collisionsDisabled) {
+			if (def.hasCollisions) {
 				enableObjectCollision(meshes);
 			}
 		});
@@ -1442,7 +1412,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 		model.bakeMesh();
 
-		if (!collisionsDisabled) {
+		if (def.hasCollisions) {
 			enableObjectCollision(root.getChildMeshes());
 		}
 
@@ -1710,7 +1680,6 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		const id = genId();
 
 		const def = getObjectDef(type);
-		const collisionsDisabled = def.placement === 'ceiling' || def.noCollisions;
 
 		const options = deepClone(def.options.default);
 
@@ -1750,7 +1719,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 				// todo
 			},
 			onDone: () => { // todo: sticky状態などを引数でもらうようにしたい
-				if (!collisionsDisabled) {
+				if (def.hasCollisions) {
 					enableObjectCollision(root.getChildMeshes());
 				}
 

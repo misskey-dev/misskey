@@ -48,7 +48,7 @@ export const poster = defineObject({
 		},
 	},
 	placement: 'side',
-	noCollisions: true,
+	hasCollisions: false,
 	createInstance: async ({ scene, options, model }) => {
 		const pictureMesh = model.findMesh('__X_PICTURE__');
 		pictureMesh.rotationQuaternion = null;

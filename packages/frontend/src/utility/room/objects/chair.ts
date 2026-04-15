@@ -26,6 +26,7 @@ export const chair = defineObject({
 		},
 	},
 	placement: 'floor',
+	hasCollisions: true,
 	isChair: true,
 	createInstance: ({ model, options }) => {
 		const primaryMesh = model.findMesh('__X_PRIMARY__');

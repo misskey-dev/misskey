@@ -21,6 +21,7 @@ export const piano = defineObject({
 		},
 	},
 	placement: 'floor',
+	hasCollisions: true,
 	createInstance: ({ options, model }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 

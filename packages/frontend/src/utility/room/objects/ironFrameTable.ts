@@ -50,6 +50,7 @@ export const ironFrameTable = defineObject({
 		},
 	},
 	placement: 'top',
+	hasCollisions: true,
 	createInstance: ({ options, model, stickyMarkerMeshUpdated }) => {
 		const frameMaterial = model.findMaterial('__X_FRAME__');
 		const boardMaterial = model.findMaterial('__X_BOARD__');

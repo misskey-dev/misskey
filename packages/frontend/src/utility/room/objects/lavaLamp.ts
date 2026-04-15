@@ -14,7 +14,7 @@ export const lavaLamp = defineObject({
 		default: {},
 	},
 	placement: 'top',
-	noCollisions: true,
+	hasCollisions: false,
 	createInstance: ({ room, scene, root }) => {
 		return {
 			onInited: () => {

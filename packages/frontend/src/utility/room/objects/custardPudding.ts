@@ -13,7 +13,7 @@ export const custardPudding = defineObject({
 		default: {},
 	},
 	placement: 'top',
-	noCollisions: true,
+	hasCollisions: false,
 	createInstance: () => {
 		return {
 			interactions: {},

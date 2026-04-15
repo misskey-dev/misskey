@@ -21,7 +21,7 @@ export const a4Case = defineObject({
 		},
 	},
 	placement: 'top',
-	noCollisions: true,
+	hasCollisions: false,
 	createInstance: ({ options, model }) => {
 		const bodyMesh = model.findMesh('__X_BODY__');
 		const bodyMaterial = bodyMesh.material as BABYLON.PBRMaterial;

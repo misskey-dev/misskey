@@ -13,7 +13,7 @@ export const rolledUpPoster = defineObject({
 		default: {},
 	},
 	placement: 'top',
-	noCollisions: true,
+	hasCollisions: false,
 	createInstance: () => {
 		return {
 			interactions: {},

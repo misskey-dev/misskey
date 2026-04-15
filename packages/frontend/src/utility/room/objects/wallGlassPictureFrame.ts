@@ -48,7 +48,7 @@ export const wallGlassPictureFrame = defineObject({
 		},
 	},
 	placement: 'wall',
-	noCollisions: true,
+	hasCollisions: false,
 	createInstance: async ({ scene, options, model }) => {
 		const pictureMesh = model.findMesh('__X_PICTURE__');
 		const frameMesh = model.findMesh('__X_FRAME__');

@@ -14,7 +14,7 @@ export const ceilingFanLight = defineObject({
 		default: {},
 	},
 	placement: 'ceiling',
-	noCollisions: true,
+	hasCollisions: false,
 	receiveShadows: false,
 	castShadows: false,
 	createInstance: ({ scene, model }) => {

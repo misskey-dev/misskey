@@ -52,7 +52,7 @@ export const woodRingsPendantLight = defineObject({
 		},
 	},
 	placement: 'ceiling',
-	noCollisions: true,
+	hasCollisions: false,
 	createInstance: ({ room, scene, options, model }) => {
 		const shadeMaterial = model.findMaterial('__X_SHADE__');
 

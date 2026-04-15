@@ -42,7 +42,7 @@ export const randomBooks = defineObject({
 		},
 	},
 	placement: 'top',
-	noCollisions: true,
+	hasCollisions: false,
 	createInstance: ({ options, model, scene, id }) => {
 		const bodyMesh = model.findMesh('__X_BODY__');
 		const tex = new BABYLON.Texture('/client-assets/room/objects/random-books/texture.png', scene, {
