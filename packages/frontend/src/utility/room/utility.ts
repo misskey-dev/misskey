@@ -54,14 +54,12 @@ export class HorizontalCameraKeyboardMoveInput extends BABYLON.BaseCameraPointer
 	onCanvasBlurObserver = null;
 	onKeyboardObserver = null;
 	public canMove = true;
-	private fps: number;
 
-	constructor(camera: BABYLON.UniversalCamera, fps = 60) {
+	constructor(camera: BABYLON.UniversalCamera) {
 		super();
 		this.camera = camera;
 		this.scene = this.camera.getScene();
 		this.engine = this.scene.getEngine();
-		this.fps = fps;
 	}
 
 	attachControl() {
@@ -136,7 +134,7 @@ export class HorizontalCameraKeyboardMoveInput extends BABYLON.BaseCameraPointer
 			dir.y = 0;
 			dir.normalize();
 			const rate = this.preShift ? 3 : 1;
-			const moveSpeed = 6 / this.fps;
+			const moveSpeed = 0.1 * this.scene.getAnimationRatio();
 			const move = dir.scale(moveSpeed * rate);
 
 			if (this.canMove) {

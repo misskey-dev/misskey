@@ -501,7 +501,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	}
 
 	public isSitting = false;
-	private fps: number | null = 30;
+	private fps: number | null = null;
 	private disposed = false;
 
 	public domEvents: EventEmitter<{
@@ -564,7 +564,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 		this.camera = new BABYLON.UniversalCamera('camera', new BABYLON.Vector3(0, cm(130), cm(0)), this.scene);
 		this.camera.inputs.removeByType('FreeCameraKeyboardMoveInput');
-		this.camera.inputs.add(new HorizontalCameraKeyboardMoveInput(this.camera, this.fps));
+		this.camera.inputs.add(new HorizontalCameraKeyboardMoveInput(this.camera));
 		this.camera.attachControl(this.canvas);
 		this.camera.minZ = cm(1);
 		this.camera.maxZ = cm(2000);
