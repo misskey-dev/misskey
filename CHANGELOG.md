@@ -14,6 +14,7 @@
 - Fix: support `alsoKnownAs` from remote actors as either array or unwrapped singleton
 - Fix: ローカルに存在しないリモートアカウントに対するアカウント削除リクエストを受信した際に、そのユーザーを新規作成して削除する挙動を修正
 - Fix: ID生成アルゴリズムにULIDを使用している場合にMisskeyが正しく動作しない問題を修正
+- Fix: robots.txtの内容を調整
 
 ## 2026.3.2
 
@@ -86,7 +87,6 @@
   - 従来の実装（12 February 2022版・HTML Microformat形式）も引き続きサポートされます
 - Enhance: メモリ使用量を削減
 - Fix: `/admin/get-user-ips` エンドポイントのアクセス権限を管理者のみに修正
-- Fix: robots.txtの内容を調整
 
 ## 2025.12.2
 
