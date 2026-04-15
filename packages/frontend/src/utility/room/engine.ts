@@ -535,7 +535,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 		this.sr = new BABYLON.SnapshotRenderingHelper(this.scene);
 
-		const skybox = BABYLON.MeshBuilder.CreateBox('skybox', { size: cm(100000) }, this.scene);
+		const skybox = BABYLON.MeshBuilder.CreateBox('skybox', { size: cm(1000) }, this.scene);
 		const skyboxMat = new BABYLON.StandardMaterial('skyboxMat', this.scene);
 		skyboxMat.backFaceCulling = false;
 		skyboxMat.disableLighting = true;
@@ -566,7 +566,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.camera.inputs.add(new HorizontalCameraKeyboardMoveInput(this.camera, this.fps));
 		this.camera.attachControl(this.canvas);
 		this.camera.minZ = cm(1);
-		this.camera.maxZ = cm(100000);
+		this.camera.maxZ = cm(2000);
 		this.camera.fov = 1;
 		this.camera.ellipsoid = new BABYLON.Vector3(cm(15), cm(65), cm(15));
 		this.camera.checkCollisions = true;
