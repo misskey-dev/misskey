@@ -389,8 +389,11 @@ definePage(() => ({
 }
 
 .progressBar {
-	width: 100%;
+	width: 75%;
 	height: 4px;
+	border-radius: 999px;
+	overflow: clip;
+	background-color: var(--MI_THEME-accentedBg);
 }
 
 .progressBarValue {
