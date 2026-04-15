@@ -391,6 +391,7 @@ function enableObjectCollision(meshes: BABYLON.Mesh[]) {
 		for (const mesh of meshes) {
 			if (mesh.name.includes('__COLLISION__')) {
 				mesh.checkCollisions = true;
+				//mesh.isVisible = true; // debug
 			} else {
 				mesh.checkCollisions = false;
 			}
