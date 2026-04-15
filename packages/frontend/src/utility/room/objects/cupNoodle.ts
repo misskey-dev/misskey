@@ -17,6 +17,7 @@ export const cupNoodle = defineObject({
 	placement: 'top',
 	hasCollisions: false,
 	hasTexture: true,
+	canPreMeshesMerging: true,
 	createInstance: ({ scene, root }) => {
 		let yugeDispose: (() => void) | null = null;
 

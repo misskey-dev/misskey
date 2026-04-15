@@ -15,6 +15,7 @@ export const djMixer = defineObject({
 	placement: 'top',
 	hasCollisions: false,
 	hasTexture: true,
+	canPreMeshesMerging: true,
 	createInstance: () => {
 		return {
 			interactions: {},

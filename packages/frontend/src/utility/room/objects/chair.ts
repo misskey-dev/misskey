@@ -28,12 +28,10 @@ export const chair = defineObject({
 	placement: 'floor',
 	hasCollisions: true,
 	isChair: true,
+	canPreMeshesMerging: true,
 	createInstance: ({ model, options }) => {
-		const primaryMesh = model.findMesh('__X_PRIMARY__');
-		const primaryMaterial = primaryMesh.material as BABYLON.PBRMaterial;
-
-		const secondaryMesh = model.findMesh('__X_SECONDARY__');
-		const secondaryMaterial = secondaryMesh.material as BABYLON.PBRMaterial;
+		const primaryMaterial = model.findMaterial('__X_PRIMARY__');
+		const secondaryMaterial = model.findMaterial('__X_SECONDARY__');
 
 		const applyPrimaryColor = () => {
 			const [r, g, b] = options.primaryColor;

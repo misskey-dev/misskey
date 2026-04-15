@@ -48,6 +48,7 @@ export const desktopPc = defineObject({
 	},
 	placement: 'top',
 	hasCollisions: true,
+	canPreMeshesMerging: true,
 	createInstance: ({ options, model, root, scene, room }) => {
 		const light1 = new BABYLON.SpotLight('', new BABYLON.Vector3(0, cm(10), cm(22)), new BABYLON.Vector3(0, 0, 1), Math.PI / 1, 2, scene, room?.lightContainer != null);
 		light1.parent = root;

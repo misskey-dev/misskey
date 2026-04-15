@@ -14,6 +14,7 @@ export const aircon = defineObject({
 	},
 	placement: 'wall',
 	hasCollisions: false,
+	canPreMeshesMerging: true,
 	createInstance: () => {
 		return {
 			interactions: {},

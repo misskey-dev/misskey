@@ -23,9 +23,9 @@ export const cactusS = defineObject({
 	placement: 'top',
 	hasCollisions: false,
 	hasTexture: true,
+	canPreMeshesMerging: true,
 	createInstance: ({ options, model }) => {
-		const potMesh = model.findMesh('__X_POT__');
-		const potMaterial = potMesh.material as BABYLON.PBRMaterial;
+		const potMaterial = model.findMaterial('__X_POT__');
 
 		const applyPotColor = () => {
 			const [r, g, b] = options.potColor;

@@ -14,6 +14,7 @@ export const miPlate = defineObject({
 	},
 	placement: 'top',
 	hasCollisions: false,
+	canPreMeshesMerging: true,
 	createInstance: () => {
 		return {
 			interactions: {},

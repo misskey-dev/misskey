@@ -243,7 +243,12 @@ class ModelManager {
 
 		const excludeMeshes = [...this.bakeExcludeMeshes, ...this.root.getChildMeshes().filter(m => SYSTEM_MESH_NAMES.some(s => m.name.includes(s)))];
 
-		const childMeshes = this.root.getChildMeshes().filter(m => !excludeMeshes.some(x => x === m) && m.isVisible);
+		const childMeshes = this.root.getChildMeshes().filter(m => !excludeMeshes.some(x => x === m) && m.isVisible && !m.isDisposed());
+
+		if (childMeshes.length <= 1) {
+			this.bakedCallback?.([...childMeshes, ...excludeMeshes]);
+			return;
+		}
 
 		const _toMerge = [] as BABYLON.Mesh[];
 		for (const mesh of childMeshes) {
@@ -301,7 +306,12 @@ class ModelManager {
 			toMerge.push(newMesh);
 		}
 
-		const merged = BABYLON.Mesh.MergeMeshes(toMerge, true, true, undefined, false, true);
+		if (toMerge.length === 0) {
+			this.bakedCallback?.([...childMeshes, ...excludeMeshes]);
+			return;
+		}
+
+		const merged = BABYLON.Mesh.MergeMeshes(toMerge, true, false, undefined, false, true);
 		merged.parent = this.root;
 		merged.material.freeze();
 		if (merged.material instanceof BABYLON.MultiMaterial) {
@@ -333,6 +343,44 @@ class ModelManager {
 	}
 }
 
+function mergeMeshes(meshes: BABYLON.Mesh[], root: BABYLON.Mesh, hasTexture: boolean) {
+	const excludeMeshes = root.getChildMeshes().filter(m => SYSTEM_MESH_NAMES.some(s => m.name.includes(s)));
+
+	const childMeshes = root.getChildMeshes().filter(m => !excludeMeshes.some(x => x === m) && m.isVisible && !m.isDisposed());
+
+	const toMerge = [] as BABYLON.Mesh[];
+	for (const mesh of childMeshes) {
+		if (mesh instanceof BABYLON.InstancedMesh) {
+			continue;
+		}
+
+		if (mesh.hasInstances) continue;
+
+		if (mesh instanceof BABYLON.Mesh) {
+			toMerge.push(mesh);
+		}
+	}
+
+	for (const mesh of toMerge) {
+		if (hasTexture) {
+			if (mesh.getVerticesData(BABYLON.VertexBuffer.UVKind) == null) {
+				const vertexCount = mesh.getTotalVertices();
+				const uvs = new Array(vertexCount * 2).fill(0);
+				mesh.setVerticesData(BABYLON.VertexBuffer.UVKind, uvs, false, 2);
+			}
+			if (mesh.getVerticesData(BABYLON.VertexBuffer.UV2Kind) == null) {
+				const vertexCount = mesh.getTotalVertices();
+				const uvs = new Array(vertexCount * 2).fill(0);
+				mesh.setVerticesData(BABYLON.VertexBuffer.UV2Kind, uvs, false, 2);
+			}
+		}
+	}
+
+	const merged = BABYLON.Mesh.MergeMeshes(toMerge, true, false, undefined, false, true);
+
+	return merged;
+}
+
 export type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 	id: string;
 	name: string;
@@ -344,6 +392,7 @@ export type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 	placement: 'top' | 'side' | 'bottom' | 'wall' | 'ceiling' | 'floor';
 	hasCollisions?: boolean;
 	hasTexture?: boolean;
+	canPreMeshesMerging?: boolean;
 	//groupingMeshes: string[]; // multi-materialなメッシュは複数のメッシュに分割されるが、それだと不便な場合に追加の親メッシュでグルーピングするための指定
 	isChair?: boolean;
 	treatLoaderResult?: (loaderResult: BABYLON.AssetContainer) => void;
@@ -833,13 +882,13 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 			// TODO: __PICK__考慮
 			const pickingInfo = this.scene.pick(this.scene.pointerX, this.scene.pointerY,
-				(m) => m.metadata?.objectId != null && this.objectEntities.has(m.metadata.objectId));
+				(m) => m.name.includes('__PICK__') || (m.isVisible && m.isEnabled() && m.metadata?.objectId != null && this.objectEntities.has(m.metadata.objectId)));
 
 			if (pickingInfo.pickedMesh != null) {
 				const oid = pickingInfo.pickedMesh.metadata.objectId;
 				if (oid != null && this.objectEntities.has(oid)) {
 					const o = this.objectEntities.get(oid)!;
-					const boundingInfo = getMeshesBoundingBox(o.rootMesh.getChildMeshes().filter(m => m.isEnabled() && m.isVisible));
+					const boundingInfo = getMeshesBoundingBox(o.rootMesh.getChildMeshes().filter(m => m.isEnabled() && m.isVisible && !m.isDisposed()));
 					this.selectObject(oid);
 
 					{ // camera animation
@@ -1169,6 +1218,19 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			}
 		}
 
+		if (def.canPreMeshesMerging) {
+			const merged = mergeMeshes(loaderResult.meshes, subRoot, def.hasTexture);
+			merged.setParent(subRoot);
+			merged.name = 'preMerged';
+
+			// TODO: 再帰的にする
+			for (const m of loaderResult.transformNodes) {
+				if (m.getChildren().length === 0) {
+					m.dispose();
+				}
+			}
+		}
+
 		if (BAKE_TRANSFORM) {
 			subRoot.scaling = new BABYLON.Vector3(1, 1, 1);
 			subRoot.rotationQuaternion = null;
@@ -1330,7 +1392,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		root.rotation = args.rotation.clone();
 		root.metadata = metadata;
 
-		const model = new ModelManager(BAKE_TRANSFORM ? root : subRoot, loaderResult.meshes.filter(m => m.name !== '__root__'), def.hasTexture, (meshes) => {
+		const model = new ModelManager(BAKE_TRANSFORM ? root : subRoot, loaderResult.meshes.filter(m => !m.isDisposed() && m.name !== '__root__'), def.hasTexture, (meshes) => {
 			if (this.selected?.objectId === args.id) {
 				this.highlightMeshes(meshes);
 			}
@@ -2082,6 +2144,20 @@ export class RoomObjectPreviewEngine {
 		const filePath = def.path != null ? `/client-assets/room/objects/${def.path}.glb` : `/client-assets/room/objects/${camelToKebab(args.type)}/${camelToKebab(args.type)}.glb`;
 		const loaderResult = await BABYLON.LoadAssetContainerAsync(filePath, this.scene);
 
+		// 不要なUVを掃除
+		if (!def.hasTexture) {
+			for (const m of loaderResult.meshes) {
+				if (m.geometry != null) {
+					m.geometry.removeVerticesData(BABYLON.VertexBuffer.UVKind);
+					m.geometry.removeVerticesData(BABYLON.VertexBuffer.UV2Kind);
+					m.geometry.removeVerticesData(BABYLON.VertexBuffer.UV3Kind);
+					m.geometry.removeVerticesData(BABYLON.VertexBuffer.UV4Kind);
+					m.geometry.removeVerticesData(BABYLON.VertexBuffer.UV5Kind);
+					m.geometry.removeVerticesData(BABYLON.VertexBuffer.UV6Kind);
+				}
+			}
+		}
+
 		// babylonによって自動で追加される右手系変換用ノード
 		const subRoot = loaderResult.meshes[0];
 		subRoot.scaling = subRoot.scaling.scale(WORLD_SCALE);// cmをmに
@@ -2090,7 +2166,7 @@ export class RoomObjectPreviewEngine {
 
 		root.addChild(subRoot);
 
-		const model = new ModelManager(subRoot, loaderResult.meshes.filter(m => m !== subRoot), def.hasTexture, (meshes) => {
+		const model = new ModelManager(subRoot, loaderResult.meshes.filter(m => !m.isDisposed() && m !== subRoot), def.hasTexture, (meshes) => {
 			for (const m of meshes) {
 				const mesh = m;
 

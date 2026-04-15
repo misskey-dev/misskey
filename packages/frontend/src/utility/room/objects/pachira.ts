@@ -15,6 +15,7 @@ export const pachira = defineObject({
 	placement: 'top',
 	hasCollisions: true,
 	hasTexture: true,
+	canPreMeshesMerging: true,
 	createInstance: () => {
 		return {
 			interactions: {},

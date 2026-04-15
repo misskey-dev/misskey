@@ -16,6 +16,7 @@ export const beamLamp = defineObject({
 	},
 	placement: 'top',
 	hasCollisions: false,
+	canPreMeshesMerging: true,
 	createInstance: ({ room, root, scene }) => {
 		return {
 			onInited: () => {

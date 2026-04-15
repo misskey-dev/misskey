@@ -417,17 +417,25 @@ export function createPlaneUvMapper(mesh: BABYLON.Mesh) {
 	};
 }
 
-export function findMaterial(rootMesh: BABYLON.AbstractMesh, keyword: string): BABYLON.PBRMaterial {
+export function findMaterial(rootMesh: BABYLON.AbstractMesh, keyword: string, allowMultiMaterial = false): BABYLON.PBRMaterial {
 	for (const m of rootMesh.getChildMeshes()) {
 		if (m.material == null) continue;
-		if (m.material.name.includes(keyword)) {
-			return m.material as BABYLON.PBRMaterial;
-		} else if ((m.material as BABYLON.MultiMaterial).subMaterials != null) {
+		if (m.material instanceof BABYLON.MultiMaterial) {
+			if (allowMultiMaterial && m.material.name.includes(keyword)) {
+				return m.material as BABYLON.MultiMaterial;
+			}
+
+			if ((m.material as BABYLON.MultiMaterial).subMaterials == null) continue;
+
 			for (const sm of (m.material as BABYLON.MultiMaterial).subMaterials) {
 				if (sm == null) continue;
 				if (sm.name.includes(keyword)) {
 					return sm as BABYLON.PBRMaterial;
 				}
+			}
+		} else {
+			if (m.material.name.includes(keyword)) {
+				return m.material as BABYLON.PBRMaterial;
 			}
 		}
 	}
