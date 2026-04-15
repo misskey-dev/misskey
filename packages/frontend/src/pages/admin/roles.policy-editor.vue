@@ -444,6 +444,7 @@ function setPolicyMeta(incoming: Partial<PolicyMetaRecord> | undefined): PolicyM
 	}
 	return meta;
 }
+
 const policyMetaModel = ref(setPolicyMeta(props.policiesMeta));
 watch(policyMetaModel, (newVal) => {
 	emit('update:policiesMeta', newVal);
