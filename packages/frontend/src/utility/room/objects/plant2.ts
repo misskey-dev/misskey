@@ -13,6 +13,7 @@ export const plant2 = defineObject({
 		default: {},
 	},
 	placement: 'top',
+	hasTexture: true,
 	createInstance: () => {
 		return {
 			interactions: {},

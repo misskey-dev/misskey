@@ -14,6 +14,7 @@ export const router = defineObject({
 	},
 	placement: 'top',
 	hasCollisions: false,
+	hasTexture: true,
 	createInstance: () => {
 		return {
 			interactions: {},

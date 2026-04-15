@@ -22,6 +22,7 @@ export const cactusS = defineObject({
 	},
 	placement: 'top',
 	hasCollisions: false,
+	hasTexture: true,
 	createInstance: ({ options, model }) => {
 		const potMesh = model.findMesh('__X_POT__');
 		const potMaterial = potMesh.material as BABYLON.PBRMaterial;

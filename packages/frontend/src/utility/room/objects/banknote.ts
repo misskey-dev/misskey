@@ -14,6 +14,7 @@ export const banknote = defineObject({
 	},
 	placement: 'top',
 	hasCollisions: false,
+	hasTexture: true,
 	createInstance: () => {
 		return {
 			interactions: {},

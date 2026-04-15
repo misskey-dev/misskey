@@ -84,6 +84,7 @@ export const tabletopPictureFrame = defineObject({
 	},
 	placement: 'top',
 	hasCollisions: false,
+	hasTexture: true,
 	createInstance: async ({ scene, options, model }) => {
 		const frameMesh = model.findMesh('__X_FRAME__');
 		frameMesh.rotationQuaternion = null;

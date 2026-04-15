@@ -27,6 +27,7 @@ export const aromaReedDiffuser = defineObject({
 	},
 	placement: 'top',
 	hasCollisions: false,
+	hasTexture: true,
 	createInstance: ({ options, model }) => {
 		const bottleMesh = model.findMesh('__X_BOTTLE__');
 		const bottleMaterial = bottleMesh.material as BABYLON.PBRMaterial;

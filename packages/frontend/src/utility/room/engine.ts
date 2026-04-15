@@ -198,10 +198,12 @@ class ModelManager {
 	public bakeExcludeMeshes: BABYLON.Mesh[] = [];
 	private originalMeshes: BABYLON.Mesh[] = [];
 	private bakedMeshes: BABYLON.Mesh[] = [];
+	private hasTexture: boolean;
 
-	constructor(root: BABYLON.Mesh, originalMeshes: BABYLON.Mesh[], bakedCallback: (() => void) | null = null) {
+	constructor(root: BABYLON.Mesh, originalMeshes: BABYLON.Mesh[], hasTexture: boolean, bakedCallback: (() => void) | null = null) {
 		this.root = root;
 		this.originalMeshes = originalMeshes;
+		this.hasTexture = hasTexture;
 		this.bakedCallback = bakedCallback;
 	}
 
@@ -283,16 +285,17 @@ class ModelManager {
 			}
 			//newMesh.bakeCurrentTransformIntoVertices();
 
-			// TODO: 必要な時だけやる
-			if (newMesh.getVerticesData(BABYLON.VertexBuffer.UVKind) == null) {
-				const vertexCount = newMesh.getTotalVertices();
-				const uvs = new Array(vertexCount * 2).fill(0);
-				newMesh.setVerticesData(BABYLON.VertexBuffer.UVKind, uvs, false, 2);
-			}
-			if (newMesh.getVerticesData(BABYLON.VertexBuffer.UV2Kind) == null) {
-				const vertexCount = newMesh.getTotalVertices();
-				const uvs = new Array(vertexCount * 2).fill(0);
-				newMesh.setVerticesData(BABYLON.VertexBuffer.UV2Kind, uvs, false, 2);
+			if (this.hasTexture) {
+				if (newMesh.getVerticesData(BABYLON.VertexBuffer.UVKind) == null) {
+					const vertexCount = newMesh.getTotalVertices();
+					const uvs = new Array(vertexCount * 2).fill(0);
+					newMesh.setVerticesData(BABYLON.VertexBuffer.UVKind, uvs, false, 2);
+				}
+				if (newMesh.getVerticesData(BABYLON.VertexBuffer.UV2Kind) == null) {
+					const vertexCount = newMesh.getTotalVertices();
+					const uvs = new Array(vertexCount * 2).fill(0);
+					newMesh.setVerticesData(BABYLON.VertexBuffer.UV2Kind, uvs, false, 2);
+				}
 			}
 
 			toMerge.push(newMesh);
@@ -339,6 +342,7 @@ export type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 	};
 	placement: 'top' | 'side' | 'bottom' | 'wall' | 'ceiling' | 'floor';
 	hasCollisions?: boolean;
+	hasTexture?: boolean;
 	//groupingMeshes: string[]; // multi-materialなメッシュは複数のメッシュに分割されるが、それだと不便な場合に追加の親メッシュでグルーピングするための指定
 	isChair?: boolean;
 	treatLoaderResult?: (loaderResult: BABYLON.AssetContainer) => void;
@@ -1148,6 +1152,20 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		// babylonによって自動で追加される右手系変換用ノード
 		let subRoot = loaderResult.meshes[0] as BABYLON.TransformNode;
 
+		// 不要なUVを掃除
+		if (!def.hasTexture) {
+			for (const m of loaderResult.meshes) {
+				if (m.geometry != null) {
+					m.geometry.removeVerticesData(BABYLON.VertexBuffer.UVKind);
+					m.geometry.removeVerticesData(BABYLON.VertexBuffer.UV2Kind);
+					m.geometry.removeVerticesData(BABYLON.VertexBuffer.UV3Kind);
+					m.geometry.removeVerticesData(BABYLON.VertexBuffer.UV4Kind);
+					m.geometry.removeVerticesData(BABYLON.VertexBuffer.UV5Kind);
+					m.geometry.removeVerticesData(BABYLON.VertexBuffer.UV6Kind);
+				}
+			}
+		}
+
 		if (BAKE_TRANSFORM) {
 			subRoot.scaling = new BABYLON.Vector3(1, 1, 1);
 			subRoot.rotationQuaternion = null;
@@ -1309,7 +1327,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		root.rotation = args.rotation.clone();
 		root.metadata = metadata;
 
-		const model = new ModelManager(BAKE_TRANSFORM ? root : subRoot, loaderResult.meshes.filter(m => m.name !== '__root__'), (meshes) => {
+		const model = new ModelManager(BAKE_TRANSFORM ? root : subRoot, loaderResult.meshes.filter(m => m.name !== '__root__'), def.hasTexture, (meshes) => {
 			if (this.selected?.objectId === args.id) {
 				this.highlightMeshes(meshes);
 			}
@@ -2069,7 +2087,7 @@ export class RoomObjectPreviewEngine {
 
 		root.addChild(subRoot);
 
-		const model = new ModelManager(subRoot, loaderResult.meshes.filter(m => m !== subRoot), (meshes) => {
+		const model = new ModelManager(subRoot, loaderResult.meshes.filter(m => m !== subRoot), def.hasTexture, (meshes) => {
 			for (const m of meshes) {
 				const mesh = m;
 

@@ -14,6 +14,7 @@ export const milk = defineObject({
 	},
 	placement: 'top',
 	hasCollisions: false,
+	hasTexture: true,
 	createInstance: () => {
 		return {
 			interactions: {},

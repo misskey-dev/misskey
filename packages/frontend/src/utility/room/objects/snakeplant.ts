@@ -14,6 +14,7 @@ export const snakeplant = defineObject({
 	},
 	placement: 'top',
 	hasCollisions: false,
+	hasTexture: true,
 	createInstance: () => {
 		return {
 			interactions: {},

@@ -46,6 +46,7 @@ export const allInOnePc = defineObject({
 		},
 	},
 	placement: 'top',
+	hasTexture: true,
 	createInstance: async ({ room, scene, options, model }) => {
 		const matrix = model.root.getWorldMatrix(true);
 		const scale = new BABYLON.Vector3();

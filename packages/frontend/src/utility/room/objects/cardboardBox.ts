@@ -23,6 +23,7 @@ export const cardboardBox = defineObject({
 	},
 	placement: 'top',
 	hasCollisions: true,
+	hasTexture: true,
 	createInstance: ({ scene, options, model }) => {
 		return {
 			onInited: () => {

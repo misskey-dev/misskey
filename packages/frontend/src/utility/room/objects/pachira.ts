@@ -14,6 +14,7 @@ export const pachira = defineObject({
 	},
 	placement: 'top',
 	hasCollisions: true,
+	hasTexture: true,
 	createInstance: () => {
 		return {
 			interactions: {},

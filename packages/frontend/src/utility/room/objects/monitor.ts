@@ -13,6 +13,7 @@ export const monitor = defineObject({
 		default: {},
 	},
 	placement: 'top',
+	hasTexture: true,
 	createInstance: () => {
 		return {
 			interactions: {},

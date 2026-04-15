@@ -14,6 +14,7 @@ export const roundRug = defineObject({
 	},
 	placement: 'floor',
 	hasCollisions: false,
+	hasTexture: true,
 	createInstance: () => {
 		return {
 			interactions: {},

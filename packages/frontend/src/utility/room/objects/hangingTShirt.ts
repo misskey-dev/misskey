@@ -14,6 +14,7 @@ export const hangingTShirt = defineObject({
 	},
 	placement: 'side',
 	hasCollisions: false,
+	hasTexture: true,
 	createInstance: () => {
 		return {
 			interactions: {},
