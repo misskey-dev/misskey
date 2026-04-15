@@ -6,6 +6,7 @@
 // TODO: 家具設置時のコリジョン判定(めりこんで設置されないようにする)
 // TODO: 近くのオブジェクトの端にスナップオプション
 // TODO: 近くのオブジェクトの原点に軸を揃えるオプション
+// TODO: glbを事前に最適化(なるべくメッシュをマージするなど)するツールもしくはMisskeyビルド時処理
 
 import * as BABYLON from '@babylonjs/core';
 import { AxesViewer } from '@babylonjs/core/Debug/axesViewer';
