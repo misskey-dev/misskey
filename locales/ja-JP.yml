@@ -1408,6 +1408,7 @@ frame: "フレーム"
 presets: "プリセット"
 zeroPadding: "ゼロ埋め"
 nothingToConfigure: "設定項目はありません"
+viewRenotedChannel: "リノート先のチャンネルを見る"
 
 _imageEditing:
   _vars:
@@ -3512,11 +3513,9 @@ _imageEffector:
     threshold: "しきい値"
     centerX: "中心X"
     centerY: "中心Y"
-    zoomLinesSmoothing: "スムージング"
-    zoomLinesSmoothingDescription: "スムージングと集中線の幅の設定は併用できません。"
-    zoomLinesThreshold: "集中線の幅"
+    density: "密度"
+    zoomLinesOutlineThickness: "線の影の太さ"
     zoomLinesMaskSize: "中心径"
-    zoomLinesBlack: "黒色にする"
     circle: "円形"
 
 drafts: "下書き"
