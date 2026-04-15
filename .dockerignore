@@ -6,7 +6,6 @@
 Dockerfile
 build/
 built/
-src-js/
 db/
 .devcontainer/compose.yml
 node_modules/
