@@ -8,11 +8,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="[$style.screen, { [$style.zen]: isZenMode }]">
 		<canvas ref="canvas" :class="$style.canvas" tabindex="-1" :style="{ visibility: controller.isReady.value ? 'visible' : 'hidden' }"></canvas>
 
-		<div v-if="!controller.isReady.value" :class="$style.loading">
-			<div :class="$style.progressBar">
-				<div :class="$style.progressBarValue" :style="{ width: `${controller.initializeProgress.value * 100}%` }"></div>
+		<Transition
+			:enterActiveClass="$style.transition_fade_enterActive"
+			:leaveActiveClass="$style.transition_fade_leaveActive"
+			:enterFromClass="$style.transition_fade_enterFrom"
+			:leaveToClass="$style.transition_fade_leaveTo"
+		>
+			<div v-if="!controller.isReady.value" :class="$style.loading">
+				<div :class="$style.progressBar">
+					<div :class="$style.progressBarValue" :style="{ width: `${controller.initializeProgress.value * 100}%` }"></div>
+				</div>
 			</div>
-		</div>
+		</Transition>
 
 		<template v-if="!isZenMode">
 			<div v-if="controller.isReady.value" class="_buttonsCenter" :class="$style.overlayControls">
@@ -386,6 +393,7 @@ definePage(() => ({
 	height: 100%;
 	display: grid;
 	place-items: center;
+	background: var(--MI_THEME-bg);
 }
 
 .progressBar {
@@ -400,5 +408,14 @@ definePage(() => ({
 	height: 100%;
 	background: linear-gradient(90deg, var(--MI_THEME-buttonGradateA), var(--MI_THEME-buttonGradateB));
 	transition: all 0.5s cubic-bezier(0,.5,.5,1);
+}
+
+.transition_fade_enterActive,
+.transition_fade_leaveActive {
+	transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.transition_fade_enterFrom,
+.transition_fade_leaveTo {
+	opacity: 0;
 }
 </style>
