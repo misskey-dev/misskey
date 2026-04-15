@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #label>{{ i18n.ts._role._options.rateLimitFactor }}</template>
 			<template #valueText>{{ Math.floor(valuesModel.rateLimitFactor * 100) }}%</template>
 			<template #default="{ disabled }">
-				<MkRange :modelValue="valuesModel.rateLimitFactor * 100" :disabled="disabled" :min="30" :max="300" :step="10" :textConverter="(v) => `${v}%`" @update:modelValue="v => valuesModel.rateLimitFactor = (v / 100)">
+				<MkRange v-model="valuesModel.rateLimitFactor" :disabled="disabled" :min="0.3" :max="3" :step="0.1" :textConverter="(v) => `${Math.round(v * 100)}%`">
 					<template #caption>{{ i18n.ts._role._options.descriptionOfRateLimitFactor }}</template>
 				</MkRange>
 			</template>
@@ -403,7 +403,7 @@ type PolicyMetaRecord = {
 </script>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { i18n } from '@/i18n.js';
 import XFolder from './roles.policy-editor.folder.vue';
 
@@ -426,36 +426,31 @@ const emit = defineEmits<{
 	(event: 'update:policiesMeta', value: PolicyMetaRecord): void;
 }>();
 
-const valuesModel = new Proxy({} as Misskey.entities.RolePolicies, {
-	get(_target, prop) {
-		if (typeof prop !== 'string') return undefined;
-		return props.rolePolicies[prop as keyof Misskey.entities.RolePolicies];
-	},
-	set(_target, prop, value) {
-		if (typeof prop !== 'string') return false;
-		emit('update:rolePolicies', { ...props.rolePolicies, [prop]: value });
-		return true;
-	},
-});
+const valuesModel = ref(props.rolePolicies);
+watch(valuesModel, (newVal) => {
+	emit('update:rolePolicies', newVal);
+}, { deep: true });
+watch(() => props.rolePolicies, () => {
+	valuesModel.value = props.rolePolicies;
+}, { deep: true });
 
-function createDefaultPolicyMeta() {
-	return Object.fromEntries(Object.keys(Misskey.rolePolicies).map(key => [key, { useDefault: true, priority: 0 }])) as PolicyMetaRecord;
+function setPolicyMeta(incoming: Partial<PolicyMetaRecord> | undefined): PolicyMetaRecord {
+	const meta: PolicyMetaRecord = {} as PolicyMetaRecord;
+	for (const ROLE_POLICY of Misskey.rolePolicies) {
+		meta[ROLE_POLICY] = incoming?.[ROLE_POLICY] ?? {
+			useDefault: true,
+			priority: 0,
+		};
+	}
+	return meta;
 }
-
-const policiesMetaFallback = createDefaultPolicyMeta();
-const policyMetaModel = new Proxy({} as PolicyMetaRecord, {
-	get(_target, prop) {
-		if (typeof prop !== 'string') return undefined;
-		const base = props.policiesMeta ?? policiesMetaFallback;
-		return base[prop as keyof PolicyMetaRecord];
-	},
-	set(_target, prop, value) {
-		if (typeof prop !== 'string') return false;
-		const base = props.policiesMeta ?? policiesMetaFallback;
-		emit('update:policiesMeta', { ...base, [prop]: value });
-		return true;
-	},
-});
+const policyMetaModel = ref(setPolicyMeta(props.policiesMeta));
+watch(policyMetaModel, (newVal) => {
+	emit('update:policiesMeta', newVal);
+}, { deep: true });
+watch(() => props.policiesMeta, () => {
+	policyMetaModel.value = setPolicyMeta(props.policiesMeta);
+}, { deep: true });
 
 function matchQuery(keywords: string[]): boolean {
 	if (props.roleQuery == null || props.roleQuery.trim().length === 0) return true;
@@ -463,9 +458,9 @@ function matchQuery(keywords: string[]): boolean {
 }
 
 const avatarDecorationLimit = computed({
-	get: () => Math.min(16, Math.max(0, Number(valuesModel.avatarDecorationLimit ?? 0))),
+	get: () => Math.min(16, Math.max(0, Number(valuesModel.value.avatarDecorationLimit ?? 0))),
 	set: (value) => {
-		valuesModel.avatarDecorationLimit = Math.min(Number(value), 16);
+		valuesModel.value.avatarDecorationLimit = Math.min(Number(value), 16);
 	},
 });
 

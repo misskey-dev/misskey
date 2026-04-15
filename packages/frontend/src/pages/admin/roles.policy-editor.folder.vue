@@ -10,20 +10,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template v-if="isBaseRole">
 				<span><slot name="valueText"></slot></span>
 			</template>
-			<template v-else-if="rolePolicyMetaModel != null">
-				<span v-if="rolePolicyMetaModel.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
+			<template v-else-if="policyMeta != null">
+				<span v-if="policyMeta.useDefault" :class="$style.useDefaultLabel">{{ i18n.ts._role.useBaseValue }}</span>
 				<span v-else><slot name="valueText"></slot></span>
-				<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(rolePolicyMetaModel.priority)"></i></span>
+				<span :class="$style.priorityIndicator"><i :class="getPriorityIcon(policyMeta.priority)"></i></span>
 			</template>
 		</template>
 		<div class="_gaps">
-			<MkSwitch v-if="!isBaseRole && rolePolicyMetaModel != null" v-model="useDefaultModel" :disabled="readonly">
+			<MkSwitch v-if="!isBaseRole && policyMeta != null" v-model="useDefaultModel" :disabled="readonly">
 				<template #label>{{ i18n.ts._role.useBaseValue }}</template>
 			</MkSwitch>
 			<div>
-				<slot :disabled="readonly || (!isBaseRole && rolePolicyMetaModel?.useDefault)"></slot>
+				<slot :disabled="readonly || (!isBaseRole && policyMeta?.useDefault)"></slot>
 			</div>
-			<MkRange v-if="!isBaseRole && rolePolicyMetaModel != null" v-model="priorityModel" :min="0" :max="2" :step="1" easing :textConverter="priroityRangeTextConverter" :disabled="readonly">
+			<MkRange v-if="!isBaseRole && policyMeta != null" v-model="priorityModel" :min="0" :max="2" :step="1" easing :textConverter="priroityRangeTextConverter" :disabled="readonly">
 				<template #label>{{ i18n.ts._role.priority }}</template>
 			</MkRange>
 		</div>
@@ -47,8 +47,6 @@ const props = defineProps<{
 const emit = defineEmits<{
 	(ev: 'update:policyMeta', v: PolicyMeta): void;
 }>();
-
-const rolePolicyMetaModel = computed<PolicyMeta | null>(() => props.policyMeta ?? null);
 
 const useDefaultModel = computed<boolean>({
 	get: () => props.policyMeta?.useDefault ?? false,
