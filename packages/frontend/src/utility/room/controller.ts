@@ -113,6 +113,37 @@ export class RoomController {
 			ev.stopPropagation();
 			return false;
 		});
+
+		let isDragging = false;
+
+		this.canvas.addEventListener('pointerdown', (ev) => {
+			this.canvas.setPointerCapture(ev.pointerId);
+		});
+
+		this.canvas.addEventListener('pointermove', (ev) => {
+			if (this.canvas.hasPointerCapture(ev.pointerId)) {
+				isDragging = true;
+			}
+		});
+
+		this.canvas.addEventListener('pointerup', (ev) => {
+			window.setTimeout(() => {
+				isDragging = false;
+				this.canvas.releasePointerCapture(ev.pointerId);
+			}, 0);
+		});
+
+		this.canvas.addEventListener('click', (ev) => {
+			if (isDragging) return;
+			if (this.worker != null) {
+				this.worker.postMessage({ type: 'dom:click', ev: { offsetX: ev.offsetX, offsetY: ev.offsetY } });
+			} else if (this.engine != null) {
+				this.engine.domEvents.emit('click', { offsetX: ev.offsetX, offsetY: ev.offsetY });
+			}
+			ev.preventDefault();
+			ev.stopPropagation();
+			return false;
+		});
 	}
 
 	public enterEditMode() {

@@ -502,6 +502,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	private fps = 60;
 
 	public domEvents: EventEmitter<{
+		'click': (event: { offsetX: number; offsetY: number; }) => void;
 		'keydown': (event: { code: string; shiftKey: boolean; }) => void;
 		'keyup': (event: { code: string; shiftKey: boolean; }) => void;
 		'wheel': (event: { deltaY: number; }) => void;
@@ -568,24 +569,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.camera.applyGravity = true;
 		this.camera.needMoveForGravity = true;
 
-		this.fixedCamera = new BABYLON.UniversalCamera('fixedCamera', new BABYLON.Vector3(0, 0, 0), this.scene);
-		this.fixedCamera.minZ = cm(1);
-		this.fixedCamera.maxZ = cm(100000);
-		this.fixedCamera.fov = 1;
-		this.fixedCamera.inputs.removeByType('FreeCameraKeyboardMoveInput');
-		this.fixedCamera.attachControl(this.canvas);
-
-		this.birdeyeCamera = new BABYLON.ArcRotateCamera('birdeyeCamera', -Math.PI / 2, Math.PI / 2.5, cm(300), new BABYLON.Vector3(0, cm(90), 0), this.scene);
-		this.birdeyeCamera.attachControl(this.canvas);
-		this.birdeyeCamera.minZ = cm(1);
-		this.birdeyeCamera.maxZ = cm(100000);
-		this.birdeyeCamera.fov = 0.5;
-		this.birdeyeCamera.lowerBetaLimit = 0;
-		this.birdeyeCamera.upperBetaLimit = (Math.PI / 2) + 0.1;
-		this.birdeyeCamera.lowerRadiusLimit = cm(50);
-		this.birdeyeCamera.upperRadiusLimit = cm(1000);
-
-		this.scene.activeCamera = this.camera;
+		//this.scene.activeCamera = this.camera;
 
 		const ambientLight = new BABYLON.HemisphericLight('ambientLight', new BABYLON.Vector3(0, 1, -0.5), this.scene);
 		ambientLight.diffuse = new BABYLON.Color3(1.0, 1.0, 1.0);
@@ -719,68 +703,6 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 		this.selectionOutlineLayer = new BABYLON.SelectionOutlineLayer('outliner', this.scene);
 
-		let isDragging = false;
-
-		this.canvas.addEventListener('pointerdown', (ev) => {
-			this.canvas.setPointerCapture(ev.pointerId);
-		});
-
-		this.canvas.addEventListener('pointermove', (ev) => {
-			if (this.canvas.hasPointerCapture(ev.pointerId)) {
-				isDragging = true;
-			}
-		});
-
-		this.canvas.addEventListener('pointerup', (ev) => {
-			window.setTimeout(() => {
-				isDragging = false;
-				this.canvas.releasePointerCapture(ev.pointerId);
-			}, 0);
-		});
-
-		//this.canvas.addEventListener('mousemove', (ev) => {
-		//});
-
-		this.canvas.addEventListener('click', (ev) => {
-			if (this.grabbingCtx != null) return;
-			if (isDragging) return;
-
-			this.selectObject(null);
-
-			// TODO: __PICK__考慮
-			const pickingInfo = this.scene.pick(this.scene.pointerX, this.scene.pointerY,
-				(m) => m.metadata?.objectId != null && this.objectEntities.has(m.metadata.objectId));
-
-			if (pickingInfo.pickedMesh != null) {
-				const oid = pickingInfo.pickedMesh.metadata.objectId;
-				if (oid != null && this.objectEntities.has(oid)) {
-					const o = this.objectEntities.get(oid)!;
-					const boundingInfo = getMeshesBoundingBox(o.rootMesh.getChildMeshes().filter(m => m.isEnabled() && m.isVisible));
-					this.selectObject(oid);
-
-					{ // camera animation
-						const animTarget = new BABYLON.Animation(
-							'',
-							'target',
-							60,
-							BABYLON.Animation.ANIMATIONTYPE_VECTOR3,
-							BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT,
-						);
-						const keys = [
-							{ frame: 0, value: this.camera.target.clone() },
-							{ frame: 30, value: boundingInfo.center.clone() },
-						];
-						animTarget.setKeys(keys);
-						const easing = new BABYLON.CubicEase();
-						easing.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
-						animTarget.setEasingFunction(easing);
-						this.camera.animations.push(animTarget);
-						this.scene.beginAnimation(this.camera, 0, 30, false);
-					}
-				}
-			}
-		});
-
 		if (_DEV_) {
 			// snapshot renderingかつglow layerが有効だとなんかクラッシュする
 			if (!(SNAPSHOT_RENDERING && USE_GLOW)) {
@@ -878,6 +800,45 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			} else {
 				this.camera.fov += ev.deltaY * 0.001;
 				this.camera.fov = Math.max(0.25, Math.min(1, this.camera.fov));
+			}
+		});
+
+		this.domEvents.on('click', (ev) => {
+			if (this.grabbingCtx != null) return;
+
+			this.selectObject(null);
+
+			// TODO: __PICK__考慮
+			const pickingInfo = this.scene.pick(this.scene.pointerX, this.scene.pointerY,
+				(m) => m.metadata?.objectId != null && this.objectEntities.has(m.metadata.objectId));
+
+			if (pickingInfo.pickedMesh != null) {
+				const oid = pickingInfo.pickedMesh.metadata.objectId;
+				if (oid != null && this.objectEntities.has(oid)) {
+					const o = this.objectEntities.get(oid)!;
+					const boundingInfo = getMeshesBoundingBox(o.rootMesh.getChildMeshes().filter(m => m.isEnabled() && m.isVisible));
+					this.selectObject(oid);
+
+					{ // camera animation
+						const animTarget = new BABYLON.Animation(
+							'',
+							'target',
+							60,
+							BABYLON.Animation.ANIMATIONTYPE_VECTOR3,
+							BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT,
+						);
+						const keys = [
+							{ frame: 0, value: this.camera.target.clone() },
+							{ frame: 30, value: boundingInfo.center.clone() },
+						];
+						animTarget.setKeys(keys);
+						const easing = new BABYLON.CubicEase();
+						easing.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
+						animTarget.setEasingFunction(easing);
+						this.camera.animations.push(animTarget);
+						this.scene.beginAnimation(this.camera, 0, 30, false);
+					}
+				}
 			}
 		});
 	}
