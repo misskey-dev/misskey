@@ -6,7 +6,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.root" class="_pageScrollable">
 	<div :class="[$style.screen, { [$style.zen]: isZenMode }]">
-		<canvas ref="canvas" :class="$style.canvas" tabindex="-1"></canvas>
+		<canvas ref="canvas" :class="$style.canvas" tabindex="-1" :style="{ visibility: controller.isReady.value ? 'visible' : 'hidden' }"></canvas>
+
+		<div v-if="!controller.isReady.value" :class="$style.loading">
+			<div :class="$style.progressBar">
+				<div :class="$style.progressBarValue" :style="{ width: `${controller.initializeProgress.value * 100}%` }"></div>
+			</div>
+		</div>
 
 		<template v-if="!isZenMode">
 			<div v-if="controller.isReady.value" class="_buttonsCenter" :class="$style.overlayControls">
@@ -370,5 +376,26 @@ definePage(() => ({
 	padding: 16px;
 	box-sizing: border-box;
 	width: 300px;
+}
+
+.loading {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	display: grid;
+	place-items: center;
+}
+
+.progressBar {
+	width: 100%;
+	height: 4px;
+}
+
+.progressBarValue {
+	height: 100%;
+	background: linear-gradient(90deg, var(--MI_THEME-buttonGradateA), var(--MI_THEME-buttonGradateB));
+	transition: all 0.5s cubic-bezier(0,.5,.5,1);
 }
 </style>

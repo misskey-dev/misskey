@@ -408,6 +408,7 @@ export type RoomEngineEvents = {
 			playbackRate: number;
 		};
 	}) => void;
+	'loadingProgress': (ctx: { progress: number }) => void;
 };
 
 export class RoomEngine extends EventEmitter<RoomEngineEvents> {
@@ -733,15 +734,24 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	public async init() {
 		await this.loadRoomModel();
 		//await this.loadEnvModel();
-		await Promise.all(this.roomState.installedObjects.filter(o => !IGNORE_OBJECTS.includes(o.type) && (!SNAPSHOT_RENDERING || !SNAPSHOT_RENDERING_NON_SUPPORTED_OBJECTS.includes(o.type))).map(o => this.loadObject({
+
+		const objects = this.roomState.installedObjects.filter(o => !IGNORE_OBJECTS.includes(o.type) && (!SNAPSHOT_RENDERING || !SNAPSHOT_RENDERING_NON_SUPPORTED_OBJECTS.includes(o.type)));
+		let loadedCount = 0;
+
+		await Promise.all(objects.map(o => this.loadObject({
 			id: o.id,
 			type: o.type,
 			position: new BABYLON.Vector3(...o.position),
 			rotation: new BABYLON.Vector3(o.rotation[0], o.rotation[1], o.rotation[2]),
 			options: o.options,
+		}).then(() => {
+			loadedCount++;
+			this.emit('loadingProgress', { progress: loadedCount / objects.length });
 		})));
 
-		//const sphere = BABYLON.MeshBuilder.CreateSphere('sphere', { diameter: cm(1) }, this.scene);
+		if (SNAPSHOT_RENDERING) {
+			this.sr.enableSnapshotRendering();
+		}
 
 		if (this.fps == null) {
 			this.engine.runRenderLoop(() => {
@@ -766,12 +776,6 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			};
 
 			window.requestAnimationFrame(renderLoop);
-		}
-
-		if (SNAPSHOT_RENDERING) {
-			window.setTimeout(() => {
-				this.sr.enableSnapshotRendering();
-			}, 3000);
 		}
 
 		this.domEvents.on('keydown', (ev) => {
@@ -1765,12 +1769,20 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		for (const entity of this.objectEntities.values()) {
 			entity.instance.resetTemporaryState?.();
 		}
+
+		if (SNAPSHOT_RENDERING) {
+			this.sr.disableSnapshotRendering();
+		}
 	}
 
 	public async exitEditMode() {
 		this.isEditMode = false;
 
 		await this.bake();
+
+		if (SNAPSHOT_RENDERING) {
+			this.sr.enableSnapshotRendering();
+		}
 	}
 
 	public async bake() {

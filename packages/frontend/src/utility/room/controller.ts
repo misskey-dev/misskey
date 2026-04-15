@@ -27,6 +27,7 @@ export class RoomController {
 		objectDef: ObjectDef;
 	} | null>(null);
 	public roomState: ShallowRef<RoomState>;
+	public initializeProgress = ref(0);
 
 	constructor(roomState: RoomState) {
 		this.roomState = shallowRef(roomState);
@@ -45,35 +46,38 @@ export class RoomController {
 		} else {
 			const babylonEngine = new BABYLON.WebGPUEngine(canvas);
 			babylonEngine.compatibilityMode = false;
-			babylonEngine.initAsync().then(() => {
-				this.engine = new RoomEngine(this.roomState.value, { canvas, engine: babylonEngine });
-				this.engine.init();
-				this.isReady.value = true;
+			await babylonEngine.initAsync();
+			this.engine = new RoomEngine(this.roomState.value, { canvas, engine: babylonEngine });
+			this.engine.on('loadingProgress', ({ progress }) => {
+				this.initializeProgress.value = progress;
+			});
+			await this.engine.init();
+			this.initializeProgress.value = 1;
+			this.isReady.value = true;
 
-				this.engine.on('changeGrabbingState', ({ grabbing }) => {
-					this.grabbing.value = grabbing;
-				});
+			this.engine.on('changeGrabbingState', ({ grabbing }) => {
+				this.grabbing.value = grabbing;
+			});
 
-				this.engine.on('changeEditMode', ({ isEditMode }) => {
-					this.isEditMode.value = isEditMode;
-				});
+			this.engine.on('changeEditMode', ({ isEditMode }) => {
+				this.isEditMode.value = isEditMode;
+			});
 
-				this.engine.on('changeGridSnapping', ({ gridSnapping }) => {
-					this.gridSnapping.value = gridSnapping;
-				});
+			this.engine.on('changeGridSnapping', ({ gridSnapping }) => {
+				this.gridSnapping.value = gridSnapping;
+			});
 
-				this.engine.on('changeSelectedState', ({ selected }) => {
-					this.selected.value = selected;
-				});
+			this.engine.on('changeSelectedState', ({ selected }) => {
+				this.selected.value = selected;
+			});
 
-				this.engine.on('changeRoomState', ({ roomState }) => {
-					this.roomState.value = roomState;
-					triggerRef(this.selected);
-				});
+			this.engine.on('changeRoomState', ({ roomState }) => {
+				this.roomState.value = roomState;
+				triggerRef(this.selected);
+			});
 
-				this.engine.on('playSfxUrl', ({ url, options }) => {
-					sound.playUrl(url, options);
-				});
+			this.engine.on('playSfxUrl', ({ url, options }) => {
+				sound.playUrl(url, options);
 			});
 		}
 
