@@ -34,7 +34,7 @@
 		"jest-clear": "cross-env NODE_ENV=test pnpm compile-config && cross-env NODE_ENV=test node ./jest.js --clearCache",
 		"test": "pnpm build:unit && pnpm jest",
 		"test:e2e": "pnpm build:e2e && pnpm jest:e2e",
-		"test:fed": "pnpm build:unit && pnpm jest:fed",
+		"test:fed": "pnpm jest:fed",
 		"test-and-coverage": "pnpm jest-and-coverage",
 		"test-and-coverage:e2e": "pnpm build:e2e && pnpm jest-and-coverage:e2e",
 		"check-migrations": "node scripts/check_migrations_clean.js",
