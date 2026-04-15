@@ -18,11 +18,13 @@
 		"experimental": {
 			"keepImportAssertions": true
 		},
-		"baseUrl": "../src",
+		"baseUrl": "src",
 		"paths": {
 			"@/*": ["*"]
 		},
 		"target": "es2022"
 	},
-	"minify": false
+	"minify": false,
+	"sourceMaps": "inline"
 }
+
