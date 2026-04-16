@@ -3,9 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { promises as fsp, existsSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { promises as fsp } from 'node:fs';
 import { languages } from 'i18n/const';
 import { Injectable, Inject } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
@@ -18,25 +17,11 @@ import type { Config } from '@/config.js';
 import type { MiMeta } from '@/models/Meta.js';
 import type { CommonData, ViteFiles } from './views/_.js';
 
-const _filename = fileURLToPath(import.meta.url);
-const _dirname = dirname(_filename);
-
-let rootDir = _dirname;
-// 見つかるまで上に遡る
-while (!existsSync(resolve(rootDir, 'packages'))) {
-	const parentDir = dirname(rootDir);
-	if (parentDir === rootDir) {
-		throw new Error('Cannot find root directory');
-	}
-	rootDir = parentDir;
-}
-
-const frontendViteBuilt = resolve(rootDir, 'built/_frontend_vite_');
-const frontendEmbedViteBuilt = resolve(rootDir, 'built/_frontend_embed_vite_');
-
 @Injectable()
 export class HtmlTemplateService {
 	private frontendAssetsFetched = false;
+	private readonly frontendViteBuilt: string;
+	private readonly frontendEmbedViteBuilt: string;
 	public frontendViteFiles: ViteFiles | null = null;
 	public frontendBootloaderJs: string | null = null;
 	public frontendBootloaderCss: string | null = null;
@@ -53,6 +38,8 @@ export class HtmlTemplateService {
 
 		private metaEntityService: MetaEntityService,
 	) {
+		this.frontendViteBuilt = resolve(this.config.rootDir, 'built/_frontend_vite_');
+		this.frontendEmbedViteBuilt = resolve(this.config.rootDir, 'built/_frontend_embed_vite_');
 	}
 
 	// 初期ロードで読み込むべきファイルのパスを収集する。
@@ -118,22 +105,22 @@ export class HtmlTemplateService {
 			embedBootJs,
 			embedBootCss,
 		] = await Promise.all([
-			fsp.readFile(resolve(frontendViteBuilt, 'loader/boot.js'), 'utf-8').catch(() => null),
-			fsp.readFile(resolve(frontendViteBuilt, 'loader/style.css'), 'utf-8').catch(() => null),
-			fsp.readFile(resolve(frontendEmbedViteBuilt, 'loader/boot.js'), 'utf-8').catch(() => null),
-			fsp.readFile(resolve(frontendEmbedViteBuilt, 'loader/style.css'), 'utf-8').catch(() => null),
+			fsp.readFile(resolve(this.frontendViteBuilt, 'loader/boot.js'), 'utf-8').catch(() => null),
+			fsp.readFile(resolve(this.frontendViteBuilt, 'loader/style.css'), 'utf-8').catch(() => null),
+			fsp.readFile(resolve(this.frontendEmbedViteBuilt, 'loader/boot.js'), 'utf-8').catch(() => null),
+			fsp.readFile(resolve(this.frontendEmbedViteBuilt, 'loader/style.css'), 'utf-8').catch(() => null),
 		]);
 
 		let feViteManifest: Manifest | null = null;
 		let embedFeViteManifest: Manifest | null = null;
 
 		if (this.config.frontendManifestExists) {
-			const manifestContent = await fsp.readFile(resolve(frontendViteBuilt, 'manifest.json'), 'utf-8').catch(() => null);
+			const manifestContent = await fsp.readFile(resolve(this.frontendViteBuilt, 'manifest.json'), 'utf-8').catch(() => null);
 			feViteManifest = manifestContent ? JSON.parse(manifestContent) : null;
 		}
 
 		if (this.config.frontendEmbedManifestExists) {
-			const manifestContent = await fsp.readFile(resolve(frontendEmbedViteBuilt, 'manifest.json'), 'utf-8').catch(() => null);
+			const manifestContent = await fsp.readFile(resolve(this.frontendEmbedViteBuilt, 'manifest.json'), 'utf-8').catch(() => null);
 			embedFeViteManifest = manifestContent ? JSON.parse(manifestContent) : null;
 		}
 

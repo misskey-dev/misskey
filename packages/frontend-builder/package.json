@@ -20,7 +20,7 @@
 		"estree-walker": "3.0.3",
 		"i18n": "workspace:*",
 		"magic-string": "0.30.21",
-		"rolldown": "1.0.0-rc.13",
+		"rolldown": "1.0.0-rc.15",
 		"vite": "8.0.7"
 	}
 }
