@@ -35,7 +35,7 @@
 		"test": "pnpm build:unit && pnpm jest",
 		"test:e2e": "pnpm build:e2e && pnpm jest:e2e",
 		"test:fed": "pnpm jest:fed",
-		"test-and-coverage": "pnpm jest-and-coverage",
+		"test-and-coverage": "pnpm build:unit && pnpm jest-and-coverage",
 		"test-and-coverage:e2e": "pnpm build:e2e && pnpm jest-and-coverage:e2e",
 		"check-migrations": "node scripts/check_migrations_clean.js",
 		"generate-api-json": "pnpm compile-config && node ./scripts/generate_api_json.js"
