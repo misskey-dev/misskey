@@ -556,6 +556,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 		this.engine = options.engine;
 		this.scene = new BABYLON.Scene(this.engine);
+		this.scene.performancePriority = BABYLON.ScenePerformancePriority.Intermediate;
 		this.scene.autoClear = false;
 		//this.scene.autoClearDepthAndStencil = false;
 		this.scene.skipPointerMovePicking = true;
@@ -1201,6 +1202,12 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			const merged = mergeMeshes(loaderResult.meshes, subRoot, def.hasTexture);
 			merged.setParent(subRoot);
 			merged.name = 'preMerged';
+			merged.material.freeze();
+			if (merged.material instanceof BABYLON.MultiMaterial) {
+				for (const subMat of merged.material.subMaterials) {
+					subMat.freeze();
+				}
+			}
 
 			// TODO: 再帰的にする
 			for (const m of loaderResult.transformNodes) {
