@@ -88,6 +88,7 @@
 		"@nestjs/common": "11.1.18",
 		"@nestjs/core": "11.1.18",
 		"@nestjs/testing": "11.1.18",
+		"@oxc-project/runtime": "0.126.0",
 		"@peertube/http-signature": "1.7.0",
 		"@sentry/node": "10.47.0",
 		"@sentry/profiling-node": "10.47.0",
