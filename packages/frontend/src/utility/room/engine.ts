@@ -559,6 +559,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.scene.autoClear = false;
 		//this.scene.autoClearDepthAndStencil = false;
 		this.scene.skipPointerMovePicking = true;
+		this.scene.skipFrustumClipping = true; // snapshot renderingでは全てのメッシュがアクティブになっている必要があるため
 
 		this.sr = new BABYLON.SnapshotRenderingHelper(this.scene);
 
@@ -1142,8 +1143,6 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 					continue;
 				}
 
-				if (SNAPSHOT_RENDERING) m.alwaysSelectAsActiveMesh = true;
-
 				m.isPickable = false;
 				m.checkCollisions = false;
 				m.receiveShadows = true;
@@ -1378,10 +1377,6 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 					if (def.castShadows !== false) {
 						this.shadowGeneratorForRoomLight.addShadowCaster(mesh);
 						this.shadowGeneratorForSunLight.addShadowCaster(mesh);
-					}
-
-					if (SNAPSHOT_RENDERING) {
-						mesh.alwaysSelectAsActiveMesh = true;
 					}
 
 					//if (mesh.material) (mesh.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(0.2, 0.2, 0.2);
