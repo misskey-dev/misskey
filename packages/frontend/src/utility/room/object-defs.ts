@@ -41,6 +41,7 @@ import { keyboard } from './objects/keyboard.js';
 import { laptopPc } from './objects/laptopPc.js';
 import { lavaLamp } from './objects/lavaLamp.js';
 import { letterCase } from './objects/letterCase.js';
+import { miObjet } from './objects/mi-objet.js';
 import { milk } from './objects/milk.js';
 import { miPlate } from './objects/miPlate.js';
 import { miPlateDisplayed } from './objects/miPlateDisplayed.js';
@@ -131,6 +132,7 @@ export const OBJECT_DEFS = [
 	laptopPc,
 	lavaLamp,
 	letterCase,
+	miObjet,
 	milk,
 	miPlate,
 	miPlateDisplayed,
