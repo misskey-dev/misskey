@@ -645,9 +645,6 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			});
 			gl.intensity = 0.5;
 
-			// for improving performance
-			this.scene.setRenderingAutoClearDepthStencil(gl.renderingGroupId, false);
-
 			if (SNAPSHOT_RENDERING) {
 				this.sr.updateMeshesForEffectLayer(gl);
 			}
@@ -740,6 +737,9 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.zGridPreviewPlane.isVisible = false;
 
 		this.selectionOutlineLayer = new BABYLON.SelectionOutlineLayer('outliner', this.scene);
+		if (SNAPSHOT_RENDERING) {
+			this.sr.updateMeshesForEffectLayer(this.selectionOutlineLayer);
+		}
 
 		if (_DEV_) {
 			// snapshot renderingかつglow layerが有効だとなんかクラッシュする
