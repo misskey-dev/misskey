@@ -99,7 +99,6 @@ export default defineConfig((args) => {
 		},
 		watch: {
 			include: ['src/**/*.{ts,js,mjs,cjs,tsx,json}'],
-			exclude: ['node_modules/**', 'built/**'],
 			clearScreen: false,
 		},
 		// ビルドの高速化のために、watchモードのときは外部モジュールは全てバンドルしないようにする
