@@ -78,7 +78,7 @@
 		"@fastify/accepts": "5.0.4",
 		"@fastify/cors": "11.2.0",
 		"@fastify/express": "4.0.4",
-		"@fastify/http-proxy": "11.4.3",
+		"@fastify/http-proxy": "11.4.4",
 		"@fastify/multipart": "9.4.0",
 		"@fastify/static": "9.0.0",
 		"@kitajs/html": "4.2.13",

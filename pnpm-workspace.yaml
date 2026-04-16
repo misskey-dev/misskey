@@ -42,3 +42,5 @@ minimumReleaseAgeExclude:
   - vite # 脆弱性対応。そのうち消す
   # Renovate security update: lodash@4.18.1
   - lodash@4.18.1
+  # Renovate security update: @fastify/http-proxy@11.4.4
+  - "@fastify/http-proxy@11.4.4"
