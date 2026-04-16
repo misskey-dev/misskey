@@ -21,9 +21,8 @@ import { HorizontalCameraKeyboardMoveInput, applyMorphTargetsToMesh, camelToKeba
 
 const BAKE_TRANSFORM = false; // 実験的
 const SNAPSHOT_RENDERING = true; // 実験的
-const SNAPSHOT_RENDERING_NON_SUPPORTED_OBJECTS = ['tv', 'aquarium', 'lavaLamp'];
 const IGNORE_OBJECTS: string[] = []; // for debug
-const SYSTEM_MESH_NAMES = ['__TOP__', '__SIDE__', '__PICK__', '__COLLISION__', '__COLLISION_AUTO_GENERATED_INTERNALY__'];
+const SYSTEM_MESH_NAMES = ['__TOP__', '__SIDE__', '__PICK__', '__COLLISION__'];
 const USE_GLOW = true; // ドローコールが増えて重い
 const IN_WEB_WORKER = typeof window === 'undefined';
 
@@ -765,7 +764,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		await this.loadRoomModel();
 		//await this.loadEnvModel();
 
-		const objects = this.roomState.installedObjects.filter(o => !IGNORE_OBJECTS.includes(o.type) && (!SNAPSHOT_RENDERING || !SNAPSHOT_RENDERING_NON_SUPPORTED_OBJECTS.includes(o.type)));
+		const objects = this.roomState.installedObjects.filter(o => !IGNORE_OBJECTS.includes(o.type));
 		let loadedCount = 0;
 
 		await Promise.all(objects.map(o => this.loadObject({
@@ -1355,10 +1354,6 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		if (!BAKE_TRANSFORM) {
 			root.addChild(subRoot);
 		}
-
-		//const internalCollider = BABYLON.MeshBuilder.CreateBox(`__COLLISION_AUTO_GENERATED_INTERNALY__${root.name}`, { width: 0, height: 0, depth: 0 }, this.scene);
-		//internalCollider.isVisible = false;
-		//internalCollider.parent = root;
 
 		root.position = args.position.clone();
 		root.rotation = args.rotation.clone();
