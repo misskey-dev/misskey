@@ -556,7 +556,9 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 		this.engine = options.engine;
 		this.scene = new BABYLON.Scene(this.engine);
-		this.scene.performancePriority = BABYLON.ScenePerformancePriority.Intermediate;
+		// なんかレンダリングがおかしくなるときがあるのでコメントアウト
+		// オブジェクトを選択し、後ろを向いて別のオブジェクトを選択した後、最初のオブジェクトに振り返ると消えているなど
+		//this.scene.performancePriority = BABYLON.ScenePerformancePriority.Intermediate;
 		this.scene.autoClear = false;
 		//this.scene.autoClearDepthAndStencil = false;
 		this.scene.skipPointerMovePicking = true;
@@ -646,6 +648,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 				blurKernelSize: 64,
 			});
 			gl.intensity = 0.5;
+			this.scene.setRenderingAutoClearDepthStencil(gl.renderingGroupId, false);
 
 			if (SNAPSHOT_RENDERING) {
 				this.sr.updateMeshesForEffectLayer(gl);
@@ -739,6 +742,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.zGridPreviewPlane.isVisible = false;
 
 		this.selectionOutlineLayer = new BABYLON.SelectionOutlineLayer('outliner', this.scene);
+		this.scene.setRenderingAutoClearDepthStencil(this.selectionOutlineLayer.renderingGroupId, false);
 		if (SNAPSHOT_RENDERING) {
 			this.sr.updateMeshesForEffectLayer(this.selectionOutlineLayer);
 		}
