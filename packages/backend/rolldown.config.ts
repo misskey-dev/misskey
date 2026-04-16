@@ -91,10 +91,10 @@ export default defineConfig((args) => {
 		],
 		output: {
 			keepNames: true,
-			minify: true,
+			minify: !isWatchMode,
 			sourcemap: false,
 			dir: './built',
-			cleanDir: true,
+			cleanDir: !isWatchMode,
 			format: 'esm',
 		},
 		watch: {
