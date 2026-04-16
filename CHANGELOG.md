@@ -5,11 +5,24 @@
 
 ### Client
 - Enhance: チャンネル指定リノートでリノート先のチャンネルに移動できるように
+- Enhance: アバターデコレーションにカテゴリを設定できるように
 - Fix: 一部のページ内リンクが正しく動作しない問題を修正
+- Fix: ドライブへの画像アップロード時にファイル名の変更が無視される不具合を修正
+- Fix: 連合が無効化されたサーバーで一部の設定項目が空欄で表示される問題を修正
 
 ### Server
+- Enhance: メモリ使用量を削減
+- Enhance: 起動の高速化  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/1410)
+- Enhance: バックエンドの開発モード時の安定性向上
+- Fix: ファイルシステムを用いる処理におけるパスの取り扱いを改善
 - Fix: `/api-doc` にアクセスできない問題を修正
 - Fix: support `alsoKnownAs` from remote actors as either array or unwrapped singleton
+- Fix: ローカルに存在しないリモートアカウントに対するアカウント削除リクエストを受信した際に、そのユーザーを新規作成して削除する挙動を修正
+- Fix: Inboxでの特定のエラーによる失敗はDelayedにしない
+- Fix: ID生成アルゴリズムにULIDを使用している場合にMisskeyが正しく動作しない問題を修正
+- Fix: リレー経由で届いたノートがリノートとして表示される問題を修正
+- Fix: robots.txtの内容を調整
 
 ## 2026.3.2
 
