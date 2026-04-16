@@ -738,9 +738,6 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.zGridPreviewPlane.isVisible = false;
 
 		this.selectionOutlineLayer = new BABYLON.SelectionOutlineLayer('outliner', this.scene);
-		if (SNAPSHOT_RENDERING) {
-			this.sr.updateMeshesForEffectLayer(this.selectionOutlineLayer);
-		}
 
 		if (_DEV_) {
 			// snapshot renderingかつglow layerが有効だとなんかクラッシュする
@@ -1456,11 +1453,13 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	}
 
 	private highlightMeshes(meshes: BABYLON.AbstractMesh[]) {
+		if (this.engine.snapshotRendering) return; // snapshot rendering内でそのままやろうとするとエラーになる 回避実装もめんどいので単に無視
 		this.clearHighlight();
 		this.selectionOutlineLayer.addSelection(meshes);
 	}
 
 	private clearHighlight() {
+		if (this.engine.snapshotRendering) return; // snapshot rendering内でそのままやろうとするとエラーになる 回避実装もめんどいので単に無視
 		this.selectionOutlineLayer.clearSelection();
 	}
 
@@ -1826,6 +1825,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 	public async exitEditMode() {
 		this.isEditMode = false;
+		this.selectObject(null);
 
 		await this.bake();
 
