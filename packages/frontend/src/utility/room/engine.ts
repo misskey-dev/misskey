@@ -738,6 +738,9 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.zGridPreviewPlane.isVisible = false;
 
 		this.selectionOutlineLayer = new BABYLON.SelectionOutlineLayer('outliner', this.scene);
+		if (SNAPSHOT_RENDERING) {
+			this.sr.updateMeshesForEffectLayer(this.selectionOutlineLayer);
+		}
 
 		if (_DEV_) {
 			// snapshot renderingかつglow layerが有効だとなんかクラッシュする
@@ -877,7 +880,12 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 						easing.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
 						animTarget.setEasingFunction(easing);
 						this.camera.animations.push(animTarget);
-						this.scene.beginAnimation(this.camera, 0, 30, false);
+						this.scene.beginAnimation(this.camera, 0, 30, false, undefined, () => {
+							if (SNAPSHOT_RENDERING) { // 視点が動くとアウトラインが薄くなるのでリセット
+								this.sr.disableSnapshotRendering();
+								this.sr.enableSnapshotRendering();
+							}
+						});
 					}
 				}
 			}
@@ -885,6 +893,8 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	}
 
 	public selectObject(objectId: string | null) {
+		if (SNAPSHOT_RENDERING) this.sr.disableSnapshotRendering(); // snapshot rendering中にbake/unbakeするとエラーになる。なおこのメソッドは参照カウント方式な点に留意
+
 		const currentSelected = this.selected;
 		if (currentSelected != null) {
 			this.selected = null;
@@ -906,6 +916,8 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 				};
 			}
 		}
+
+		if (SNAPSHOT_RENDERING) this.sr.enableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 	}
 
 	private handleGrabbing() {
@@ -1453,14 +1465,18 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	}
 
 	private highlightMeshes(meshes: BABYLON.AbstractMesh[]) {
-		if (this.engine.snapshotRendering) return; // snapshot rendering内でそのままやろうとするとエラーになる 回避実装もめんどいので単に無視
+		//if (this.engine.snapshotRendering) return; // snapshot rendering内でそのままやろうとするとエラーになる 回避実装もめんどいので単に無視
+		if (SNAPSHOT_RENDERING) this.sr.disableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 		this.clearHighlight();
 		this.selectionOutlineLayer.addSelection(meshes);
+		if (SNAPSHOT_RENDERING) this.sr.enableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 	}
 
 	private clearHighlight() {
-		if (this.engine.snapshotRendering) return; // snapshot rendering内でそのままやろうとするとエラーになる 回避実装もめんどいので単に無視
+		//if (this.engine.snapshotRendering) return; // snapshot rendering内でそのままやろうとするとエラーになる 回避実装もめんどいので単に無視
+		if (SNAPSHOT_RENDERING) this.sr.disableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 		this.selectionOutlineLayer.clearSelection();
+		if (SNAPSHOT_RENDERING) this.sr.enableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 	}
 
 	public beginSelectedInstalledObjectGrabbing() {
@@ -1824,8 +1840,8 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	}
 
 	public async exitEditMode() {
-		this.isEditMode = false;
 		this.selectObject(null);
+		this.isEditMode = false;
 
 		await this.bake();
 
