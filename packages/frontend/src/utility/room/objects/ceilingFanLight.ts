@@ -17,7 +17,7 @@ export const ceilingFanLight = defineObject({
 	hasCollisions: false,
 	receiveShadows: false,
 	castShadows: false,
-	createInstance: ({ scene, model }) => {
+	createInstance: ({ room, scene, model }) => {
 		const rotor = model.findMesh('Rotor');
 		model.bakeExcludeMeshes = [rotor, ...rotor.getChildMeshes()];
 
@@ -30,6 +30,9 @@ export const ceilingFanLight = defineObject({
 					{ frame: 100, value: Math.PI * 2 },
 				]);
 				rotor.animations = [anim];
+				scene.onAfterAnimationsObservable.add(() => {
+					room?.sr.updateMesh([rotor, ...rotor.getChildMeshes()]);
+				});
 				scene.beginAnimation(rotor, 0, 100, true);
 			},
 			interactions: {},
