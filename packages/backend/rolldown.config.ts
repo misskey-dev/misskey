@@ -34,7 +34,7 @@ function backendDevServerPlugin(): Plugin {
 			if (backendProcess) {
 				await killBackendProcess();
 			}
-			backendProcess = execaNode('./built/entry.js', {
+			backendProcess = execaNode('./built/entry.js', [], {
 				stdout: process.stdout,
 				stderr: process.stderr,
 				env: {
@@ -102,6 +102,6 @@ export default defineConfig((args) => {
 			clearScreen: false,
 		},
 		// ビルドの高速化のために、watchモードのときは外部モジュールは全てバンドルしないようにする
-		external: isWatchMode ? [/node_modules/] : externalModules,
+		external: isWatchMode ? /^(?!@\/)[^.\/](?!:[\/\\])/ : externalModules,
 	};
 });
