@@ -12,8 +12,8 @@
 	"devDependencies": {
 		"@types/estree": "1.0.8",
 		"@types/node": "24.12.2",
-		"@typescript-eslint/eslint-plugin": "8.58.0",
-		"@typescript-eslint/parser": "8.58.0",
+		"@typescript-eslint/eslint-plugin": "8.58.1",
+		"@typescript-eslint/parser": "8.58.1",
 		"rollup": "4.60.1"
 	},
 	"dependencies": {
@@ -21,6 +21,6 @@
 		"i18n": "workspace:*",
 		"magic-string": "0.30.21",
 		"rolldown": "1.0.0-rc.15",
-		"vite": "8.0.7"
+		"vite": "8.0.8"
 	}
 }
