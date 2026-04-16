@@ -302,11 +302,13 @@ export class ApInboxService {
 
 	@bindThis
 	private async announceNote(actor: MiRemoteUser, activity: IAnnounce, target: IPost, resolver?: Resolver): Promise<string | void> {
-		const uri = getApId(activity);
-
 		if (actor.isSuspended) {
 			return;
 		}
+
+		// リレーからのAnnounceかチェック
+		const fromRelay = await this.relayService.isRelayActor(actor);
+		const uri = getApId(fromRelay ? target : activity);
 
 		// アナウンス先が許可されているかチェック
 		if (!this.utilityService.isFederationAllowedUri(uri)) return;
@@ -334,6 +336,14 @@ export class ApInboxService {
 					return `Error in announce target ${target.id} - ${err.statusCode}`;
 				}
 				throw err;
+			}
+
+			// リレーからのAnnounceはリノートを作成せず、ノートを直接公開する
+			if (fromRelay) {
+				this.logger.info(`Publishing relay-delivered note: ${uri}`);
+				const noteObj = await this.noteEntityService.pack(renote, null, { skipHide: true, withReactionAndUserPairCache: true });
+				this.globalEventService.publishNotesStream(noteObj);
+				return;
 			}
 
 			if (!await this.noteEntityService.isVisibleForMe(renote, actor.id)) {
