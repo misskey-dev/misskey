@@ -41,7 +41,7 @@ describe('ap-request', () => {
 			'User-Agent': 'UA',
 		};
 
-		const req = ApRequestCreator.createSignedPost({ key, url, body, additionalHeaders: headers });
+		const req = await ApRequestCreator.createSignedPost({ key, url, body, additionalHeaders: headers });
 
 		const parsed = buildParsedSignature(req.signingString, req.signature, 'rsa-sha256');
 
@@ -57,7 +57,7 @@ describe('ap-request', () => {
 			'User-Agent': 'UA',
 		};
 
-		const req = ApRequestCreator.createSignedGet({ key, url, additionalHeaders: headers });
+		const req = await ApRequestCreator.createSignedGet({ key, url, additionalHeaders: headers });
 
 		const parsed = buildParsedSignature(req.signingString, req.signature, 'rsa-sha256');
 
@@ -78,7 +78,7 @@ describe('ap-request', () => {
 			'https://alice.example.com/abc',
 			FetchAllowSoftFailMask.Any,
 		), 'validation should fail no matter what if the response URL is inconsistent with the object ID');
-		
+
 		assert.doesNotThrow(() => assertActivityMatchesUrl(
 			'https://alice.example.com/abc#test',
 			{ id: 'https://alice.example.com/abc' } as IObject,
