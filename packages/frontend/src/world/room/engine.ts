@@ -14,10 +14,10 @@ import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
 import { BoundingBoxRenderer } from '@babylonjs/core/Rendering/boundingBoxRenderer';
 import { GridMaterial } from '@babylonjs/materials';
 import { EventEmitter } from 'eventemitter3';
-import { genId } from '../id.js';
-import { deepClone } from '../clone.js';
 import { getObjectDef } from './object-defs.js';
 import { HorizontalCameraKeyboardMoveInput, applyMorphTargetsToMesh, camelToKebab, cm, findMaterial, scaleMorph } from './utility.js';
+import { genId } from '@/utility/id.js';
+import { deepClone } from '@/utility/clone.js';
 
 const BAKE_TRANSFORM = false; // 実験的
 const SNAPSHOT_RENDERING = true; // 実験的

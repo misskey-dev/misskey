@@ -93,7 +93,7 @@ import * as os from '@/os.js';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRange from '@/components/MkRange.vue';
-import { RoomController } from '@/utility/room/controller.js';
+import { RoomController } from '@/world/room/controller.js';
 
 const canvas = useTemplateRef('canvas');
 

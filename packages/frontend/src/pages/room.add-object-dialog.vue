@@ -39,8 +39,8 @@ import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick,
 import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import * as os from '@/os.js';
-import { OBJECT_DEFS } from '@/utility/room/object-defs.js';
-import { createRoomObjectPreviewEngine, RoomObjectPreviewEngine } from '@/utility/room/engine.js';
+import { OBJECT_DEFS } from '@/world/room/object-defs.js';
+import { createRoomObjectPreviewEngine, RoomObjectPreviewEngine } from '@/world/room/engine.js';
 
 const emit = defineEmits<{
 	(ev: 'ok', id: string): void;
