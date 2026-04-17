@@ -5,8 +5,10 @@
 
 import * as crypto from 'node:crypto';
 import { URL } from 'node:url';
+import { promisify } from 'node:util';
 import { Inject, Injectable } from '@nestjs/common';
 import * as htmlParser from 'node-html-parser';
+import { RsaKeyPair } from 'slacc';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import type { MiUser } from '@/models/User.js';
@@ -91,9 +93,10 @@ export class ApRequestCreator {
 		};
 	}
 
-	static #signToRequest(request: Request, key: PrivateKey, includeHeaders: string[]): Signed {
+	static async #signToRequest(request: Request, key: PrivateKey, includeHeaders: string[]): Promise<Signed> {
 		const signingString = this.#genSigningString(request, includeHeaders);
-		const signature = crypto.sign('sha256', Buffer.from(signingString), key.privateKeyPem).toString('base64');
+		const sign = promisify(RsaKeyPair.prototype.sign).bind(RsaKeyPair.fromPem(key.privateKeyPem));
+		const signature = (await sign(Buffer.from(signingString))).toString('base64');
 		const signatureHeader = `keyId="${key.keyId}",algorithm="rsa-sha256",headers="${includeHeaders.join(' ')}",signature="${signature}"`;
 
 		request.headers = this.#objectAssignWithLcKey(request.headers, {

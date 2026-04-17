@@ -4,7 +4,9 @@
  */
 
 import * as crypto from 'node:crypto';
+import { promisify } from 'node:util';
 import { Injectable } from '@nestjs/common';
+import { RsaKeyPair } from 'slacc';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
 import { CONTEXT, PRELOADED_CONTEXTS } from './misc/contexts.js';
@@ -45,11 +47,9 @@ class JsonLd {
 
 		const toBeSigned = await this.createVerifyData(data, options);
 
-		const signer = crypto.createSign('sha256');
-		signer.update(toBeSigned);
-		signer.end();
+		const sign = promisify(RsaKeyPair.prototype.sign).bind(RsaKeyPair.fromPem(privateKey));
 
-		const signature = signer.sign(privateKey);
+		const signature = await sign(Buffer.from(toBeSigned));
 
 		return {
 			...data,
