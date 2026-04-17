@@ -15,9 +15,11 @@ export const radiometer = defineObject({
 	},
 	placement: 'top',
 	hasCollisions: false,
-	createInstance: ({ scene, model }) => {
+	createInstance: ({ room, scene, model }) => {
 		const vanes = model.findTransformNode('__X_VANES__');
 		model.bakeExcludeMeshes = [...vanes.getChildMeshes()];
+
+		let animationObserver: BABYLON.Observer<BABYLON.Scene>;
 
 		return {
 			onInited: () => {
@@ -28,9 +30,17 @@ export const radiometer = defineObject({
 					{ frame: 240, value: Math.PI * 2 },
 				]);
 				vanes.animations = [anim];
+				animationObserver = scene.onAfterAnimationsObservable.add(() => {
+					room?.sr.updateMesh([...vanes.getChildMeshes()]);
+				});
 				scene.beginAnimation(vanes, 0, 240, true);
 			},
 			interactions: {},
+			dispose: () => {
+				if (animationObserver != null) {
+					scene.onAfterAnimationsObservable.remove(animationObserver);
+				}
+			},
 		};
 	},
 });
