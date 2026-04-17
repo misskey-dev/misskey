@@ -8,7 +8,7 @@ import { AxesViewer } from '@babylonjs/core/Debug/axesViewer';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
 import { EventEmitter } from 'eventemitter3';
 import tinycolor from 'tinycolor2';
-import { HorizontalCameraKeyboardMoveInput, WORLD_SCALE, camelToKebab, cm, createPlaneUvMapper, normalizeUvToSquare } from './utility.js';
+import { HorizontalCameraKeyboardMoveInput, WORLD_SCALE, camelToKebab, cm, createPlaneUvMapper, normalizeUvToSquare, randomRange } from './utility.js';
 import { TIME_MAP } from './utility.js';
 import { genId } from '@/utility/id.js';
 import { deepClone } from '@/utility/clone.js';
@@ -83,16 +83,17 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 		this.time = TIME_MAP[12 as keyof typeof TIME_MAP];
 
 		if (this.time === 0) {
-			skyboxMat.emissiveColor = new BABYLON.Color3(0.87, 0.89, 0.9);
+			skyboxMat.emissiveColor = new BABYLON.Color3(1, 1, 1);
 		} else if (this.time === 1) {
 			skyboxMat.emissiveColor = new BABYLON.Color3(0.7, 0.68, 0.66);
 		} else {
-			skyboxMat.emissiveColor = new BABYLON.Color3(0.48, 0.48, 0.5);
+			skyboxMat.emissiveColor = new BABYLON.Color3(0.48, 0.5, 0.6);
 		}
 		this.scene.ambientColor = new BABYLON.Color3(0.9, 0.9, 0.9);
 
 		this.envMap = BABYLON.CubeTexture.CreateFromPrefilteredData(this.time === 2 ? '/client-assets/room/outdoor-night.env' : '/client-assets/room/outdoor-day.env', this.scene);
-		this.envMap.level = 0.3;
+		//this.envMap.level = 0.3;
+		this.envMap.level = 0;
 
 		this.scene.collisionsEnabled = true;
 
@@ -117,7 +118,7 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 
 		const sunLight = new BABYLON.DirectionalLight('sunLight', new BABYLON.Vector3(0.2, -1, -1), this.scene);
 		sunLight.position = new BABYLON.Vector3(cm(-20), cm(1000), cm(1000));
-		sunLight.diffuse = this.time === 0 ? new BABYLON.Color3(1.0, 0.9, 0.8) : this.time === 1 ? new BABYLON.Color3(1.0, 0.8, 0.6) : new BABYLON.Color3(0.6, 0.8, 1.0);
+		sunLight.diffuse = this.time === 0 ? new BABYLON.Color3(1.0, 1.0, 1.0) : this.time === 1 ? new BABYLON.Color3(1.0, 0.8, 0.6) : new BABYLON.Color3(0.6, 0.8, 1.0);
 		sunLight.intensity = this.time === 0 ? 3 : this.time === 1 ? 1 : 0.25;
 		sunLight.shadowMinZ = cm(1000);
 		sunLight.shadowMaxZ = cm(2000);
@@ -221,11 +222,11 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 
 		for (let i = 0; i < 16; i++) {
 			const sphereRoot = new BABYLON.TransformNode('', this.scene);
-			sphereRoot.position = new BABYLON.Vector3(cm(0), cm(500 + (100 * i)), cm(0));
+			sphereRoot.position = new BABYLON.Vector3(cm(0), cm(1000 + (100 * i)), cm(0));
 			const rotation = Math.random() * Math.PI * 2;
-			const sphere = BABYLON.MeshBuilder.CreateSphere('', { diameter: cm(50 + (Math.random() * 250)) }, this.scene);
+			const sphere = BABYLON.MeshBuilder.CreateSphere('', { diameter: cm(randomRange(50, 300)), segments: 16 }, this.scene);
 			sphere.parent = sphereRoot;
-			sphere.position = new BABYLON.Vector3(cm(0), cm(0), cm(4000 + (Math.random() * 500)));
+			sphere.position = new BABYLON.Vector3(cm(0), cm(0), cm(randomRange(2000, 7000)));
 
 			const mat = new BABYLON.PBRMaterial('', this.scene);
 			const color = tinycolor({ h: Math.random() * 360, s: 1, l: 0.5 }).toRgb();
@@ -234,7 +235,32 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 			this.gl?.addExcludedMesh(sphere);
 			sphere.material = mat;
 
-			const speed = 10000 + (Math.random() * 10000);
+			const speed = randomRange(5000, 30000);
+			const anim = new BABYLON.Animation('', 'rotation.y', 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+			anim.setKeys([
+				{ frame: 0, value: rotation },
+				{ frame: speed, value: Math.random() < 0.5 ? rotation + (Math.PI * 2) : rotation - (Math.PI * 2) },
+			]);
+			sphereRoot.animations = [anim];
+			this.scene.beginAnimation(sphereRoot, 0, speed, true);
+		}
+
+		for (let i = 0; i < 64; i++) {
+			const sphereRoot = new BABYLON.TransformNode('', this.scene);
+			sphereRoot.position = new BABYLON.Vector3(cm(0), cm(randomRange(-5000, 5000)), cm(0));
+			const rotation = Math.random() * Math.PI * 2;
+			const sphere = BABYLON.MeshBuilder.CreateSphere('', { diameter: cm(randomRange(500, 3000)), segments: 16 }, this.scene);
+			sphere.parent = sphereRoot;
+			sphere.position = new BABYLON.Vector3(cm(0), cm(0), cm(randomRange(10000, 15000)));
+
+			const mat = new BABYLON.PBRMaterial('', this.scene);
+			const color = tinycolor({ h: Math.random() * 360, s: randomRange(0, 1), l: randomRange(0.75, 1) }).toRgb();
+			mat.emissiveColor = new BABYLON.Color3(color.r / 255, color.g / 255, color.b / 255);
+			mat.disableLighting = true;
+			this.gl?.addExcludedMesh(sphere);
+			sphere.material = mat;
+
+			const speed = randomRange(10000, 100000);
 			const anim = new BABYLON.Animation('', 'rotation.y', 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
 			anim.setKeys([
 				{ frame: 0, value: rotation },
@@ -297,11 +323,11 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 		const screenMaterial = screenMeshes[0].material as BABYLON.PBRMaterial;
 
 		setTimeout(() => {
-			const tex = new BABYLON.VideoTexture('', 'http://syu-win.local:3000/files/cbf69c5f-ea63-4b14-a4c7-9148557d87d4', this.scene, true, true);
+			const tex = new BABYLON.VideoTexture('', 'http://syu-win.local:3000/files/902a2d52-9d4a-41a7-8e0d-e206c99c2299', this.scene, true, true);
 			tex.level = 0.5;
 			tex.video.loop = true;
 			tex.video.volume = 0.25;
-			//tex.video.muted = true;
+			tex.video.muted = true;
 
 			screenMaterial.emissiveTexture = tex;
 			screenMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
@@ -309,7 +335,8 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 			tex.onLoadObservable.addOnce(() => {
 				tex.video.play();
 				for (const mesh of screenMeshes) {
-					normalizeUvToSquare(mesh);
+					if (mesh instanceof BABYLON.InstancedMesh) continue;
+					//normalizeUvToSquare(mesh);
 					const updateUv = createPlaneUvMapper(mesh);
 					if (tex == null) return;
 					const srcAspect = tex.getSize().width / tex.getSize().height;

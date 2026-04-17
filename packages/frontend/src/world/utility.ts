@@ -393,3 +393,7 @@ export function getMeshesBoundingBox(meshes: BABYLON.Mesh[]): BABYLON.BoundingBo
 
 	return new BABYLON.BoundingBox(min.subtract(new BABYLON.Vector3(10000, 10000, 10000)), max.subtract(new BABYLON.Vector3(10000, 10000, 10000)));
 }
+
+export function randomRange(min: number, max: number) {
+	return Math.random() * (max - min) + min;
+}
