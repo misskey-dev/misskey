@@ -4,8 +4,9 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject, WORLD_SCALE } from '../engine.js';
-import { cm, createPlaneUvMapper, initTv } from '../utility.js';
+import { defineObject } from '../object.js';
+import { initTv } from '../utility.js';
+import { cm, WORLD_SCALE } from '@/world/utility.js';
 
 export const tv = defineObject({
 	id: 'tv',

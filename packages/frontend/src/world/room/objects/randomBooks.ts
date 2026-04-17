@@ -5,7 +5,8 @@
 
 import * as BABYLON from '@babylonjs/core';
 import seedrandom from 'seedrandom';
-import { defineObject, WORLD_SCALE } from '../engine.js';
+import { defineObject } from '../object.js';
+import { WORLD_SCALE } from '@/world/utility.js';
 
 const remap = (value: number, fromMin: number, fromMax: number, toMin: number, toMax: number) => {
 	return toMin + ((value - fromMin) / (fromMax - fromMin)) * (toMax - toMin);

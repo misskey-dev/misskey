@@ -4,8 +4,8 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject, WORLD_SCALE } from '../engine.js';
-import { cm } from '../utility.js';
+import { defineObject } from '../object.js';
+import { cm, WORLD_SCALE } from '@/world/utility.js';
 
 export const woodRingFloorLamp = defineObject({
 	id: 'woodRingFloorLamp',

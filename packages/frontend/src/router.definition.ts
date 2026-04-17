@@ -595,6 +595,9 @@ export const ROUTE_DEF = [{
 	component: page(() => import('@/pages/qr.vue')),
 	loginRequired: true,
 }, {
+	path: '/world',
+	component: page(() => import('@/pages/world.vue')),
+}, {
 	path: '/room',
 	component: page(() => import('@/pages/room.vue')),
 }, {

@@ -4,7 +4,7 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../engine.js';
+import { defineObject } from '../object.js';
 
 export const petBottle = defineObject({
 	id: 'petBottle',

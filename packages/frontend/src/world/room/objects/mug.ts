@@ -4,8 +4,9 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../engine.js';
-import { cm, yuge } from '../utility.js';
+import { defineObject } from '../object.js';
+import { cm } from '../../utility.js';
+import { yuge } from '../utility.js';
 
 export const mug = defineObject({
 	id: 'mug',

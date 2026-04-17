@@ -4,10 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
+import { applyMorphTargetsToMesh, cm, getPlaneUvIndexes } from '../utility.js';
 import type { RoomEngine } from './engine.js';
 
-//export const cm = (value: number) => value / 100;
-export const cm = (value: number) => value;
+export const SYSTEM_MESH_NAMES = ['__TOP__', '__SIDE__', '__PICK__', '__COLLISION__'];
 
 export function yuge(scene: BABYLON.Scene, mesh: BABYLON.Mesh, offset: BABYLON.Vector3) {
 	const emitter = new BABYLON.TransformNode('emitter', scene);
@@ -39,182 +39,6 @@ export function yuge(scene: BABYLON.Scene, mesh: BABYLON.Mesh, offset: BABYLON.V
 		ps.stop();
 		emitter.dispose();
 	};
-}
-
-export class HorizontalCameraKeyboardMoveInput extends BABYLON.BaseCameraPointersInput {
-	public camera: BABYLON.FreeCamera;
-	private engine: BABYLON.AbstractEngine;
-	private scene: BABYLON.Scene;
-	preShift = false;
-	codes = [];
-	codesUp = ['KeyW'];
-	codesDown = ['KeyS'];
-	codesLeft = ['KeyA'];
-	codesRight = ['KeyD'];
-	onCanvasBlurObserver = null;
-	onKeyboardObserver = null;
-	public canMove = true;
-
-	constructor(camera: BABYLON.UniversalCamera) {
-		super();
-		this.camera = camera;
-		this.scene = this.camera.getScene();
-		this.engine = this.scene.getEngine();
-	}
-
-	attachControl() {
-		if (this.onCanvasBlurObserver) {
-			return;
-		}
-
-		this.onCanvasBlurObserver = this.engine.onCanvasBlurObservable.add(() => {
-			this.codes = [];
-		});
-
-		this.onKeyboardObserver = this.scene.onKeyboardObservable.add(({ event, type }) => {
-			const { code, shiftKey } = event;
-			this.preShift = shiftKey;
-
-			if (type === BABYLON.KeyboardEventTypes.KEYDOWN) {
-				if (this.codesUp.indexOf(code) >= 0 ||
-					this.codesDown.indexOf(code) >= 0 ||
-					this.codesLeft.indexOf(code) >= 0 ||
-					this.codesRight.indexOf(code) >= 0) {
-					const index = this.codes.findIndex(v => v.code === code);
-					if (index < 0) { // 存在しなかったら追加する
-						this.codes.push({ code });
-					}
-				}
-			} else {
-				if (this.codesUp.indexOf(code) >= 0 ||
-					this.codesDown.indexOf(code) >= 0 ||
-					this.codesLeft.indexOf(code) >= 0 ||
-					this.codesRight.indexOf(code) >= 0) {
-					const index = this.codes.findIndex(v => v.code === code);
-					if (index >= 0) { // 存在したら削除する
-						this.codes.splice(index, 1);
-					}
-				}
-			}
-		});
-	}
-
-	detachControl() {
-		this.codes = [];
-
-		if (this.onKeyboardObserver) this.scene.onKeyboardObservable.remove(this.onKeyboardObserver);
-		if (this.onCanvasBlurObserver) this.engine.onCanvasBlurObservable.remove(this.onCanvasBlurObserver);
-		this.onKeyboardObserver = null;
-		this.onCanvasBlurObserver = null;
-	}
-
-	checkInputs() {
-		if (!this.onKeyboardObserver) {
-			return;
-		}
-		for (let index = 0; index < this.codes.length; index++) {
-			const { code } = this.codes[index];
-
-			const local = new BABYLON.Vector3();
-			if (this.codesLeft.indexOf(code) >= 0) {
-				local.x += -1;
-			} else if (this.codesUp.indexOf(code) >= 0) {
-				local.z += this.scene.useRightHandedSystem ? -1 : 1;
-			} else if (this.codesRight.indexOf(code) >= 0) {
-				local.x += 1;
-			} else if (this.codesDown.indexOf(code) >= 0) {
-				local.z += this.scene.useRightHandedSystem ? 1 : -1;
-			}
-
-			if (local.length() === 0) {
-				continue;
-			}
-
-			const dir = this.camera.getDirection(local.normalize());
-			dir.y = 0;
-			dir.normalize();
-			const rate = this.preShift ? 3 : 1;
-			const moveSpeed = 0.1 * this.scene.getAnimationRatio();
-			const move = dir.scale(moveSpeed * rate);
-
-			if (this.canMove) {
-				this.camera.cameraDirection.addInPlace(move);
-			}
-		}
-	}
-
-	getClassName() {
-		return 'HorizontalCameraKeyboardMoveInput';
-	}
-
-	getSimpleName() {
-		return 'horizontalkeyboard';
-	}
-}
-
-const nanasegNumberMap = [
-	['a', 'b', 'c', 'd', 'e', 'f'], // 0
-	['b', 'c'], // 1
-	['a', 'b', 'd', 'e', 'g'], // 2
-	['a', 'b', 'c', 'd', 'g'], // 3
-	['b', 'c', 'f', 'g'], // 4
-	['a', 'c', 'd', 'f', 'g'], // 5
-	['a', 'c', 'd', 'e', 'f', 'g'], // 6
-	['a', 'b', 'c'], // 7
-	['a', 'b', 'c', 'd', 'e', 'f', 'g'], // 8
-	['a', 'b', 'c', 'd', 'f', 'g'], // 9
-];
-
-export function get7segMeshesOfCurrentTime(meshes: {
-	'1a'?: BABYLON.AbstractMesh;
-	'1b'?: BABYLON.AbstractMesh;
-	'1c'?: BABYLON.AbstractMesh;
-	'1d'?: BABYLON.AbstractMesh;
-	'1e'?: BABYLON.AbstractMesh;
-	'1f'?: BABYLON.AbstractMesh;
-	'1g'?: BABYLON.AbstractMesh;
-	'2a'?: BABYLON.AbstractMesh;
-	'2b'?: BABYLON.AbstractMesh;
-	'2c'?: BABYLON.AbstractMesh;
-	'2d'?: BABYLON.AbstractMesh;
-	'2e'?: BABYLON.AbstractMesh;
-	'2f'?: BABYLON.AbstractMesh;
-	'2g'?: BABYLON.AbstractMesh;
-	'3a'?: BABYLON.AbstractMesh;
-	'3b'?: BABYLON.AbstractMesh;
-	'3c'?: BABYLON.AbstractMesh;
-	'3d'?: BABYLON.AbstractMesh;
-	'3e'?: BABYLON.AbstractMesh;
-	'3f'?: BABYLON.AbstractMesh;
-	'3g'?: BABYLON.AbstractMesh;
-	'4a'?: BABYLON.AbstractMesh;
-	'4b'?: BABYLON.AbstractMesh;
-	'4c'?: BABYLON.AbstractMesh;
-	'4d'?: BABYLON.AbstractMesh;
-	'4e'?: BABYLON.AbstractMesh;
-	'4f'?: BABYLON.AbstractMesh;
-	'4g'?: BABYLON.AbstractMesh;
-}) {
-	const now = new Date();
-	const h = now.getHours();
-	const m = now.getMinutes();
-
-	const chars = [Math.floor(h / 10), h % 10, Math.floor(m / 10), m % 10];
-
-	const result: BABYLON.AbstractMesh[] = [];
-
-	for (let i = 0; i < chars.length; i++) {
-		const char = chars[i];
-		const segs = nanasegNumberMap[char];
-		for (const seg of segs) {
-			const mesh = meshes[`${i + 1}${seg}`];
-			if (mesh) {
-				result.push(mesh);
-			}
-		}
-	}
-
-	return result;
 }
 
 export function createOverridedStates<T extends Record<string, (() => any)>>(stateDefs: T): { [K in keyof T]: ReturnType<T[K]>; } & { $reset: () => void } {
@@ -337,86 +161,6 @@ export function initTv(room: RoomEngine, screenMesh: BABYLON.Mesh) {
 	};
 }
 
-/**
- *     0         1
- * 0 a(x,y) --- b(x,y)
- *     |         |
- * 1 c(x,y) --- d(x,y)
- */
-export function getPlaneUvIndexes(mesh: BABYLON.Mesh) {
-	const uvs = mesh.getVerticesData(BABYLON.VertexBuffer.UVKind);
-	if (uvs == null) {
-		throw new Error('Mesh does not have UV data');
-	}
-
-	let aIndex = 0;
-	let bIndex = 0;
-	let cIndex = 0;
-	let dIndex = 0;
-
-	for (let i = 0; i < 8; i += 2) {
-		const x = uvs[i];
-		const y = uvs[i + 1];
-
-		// 多少ずれがあってもいいように(例えばblenderではUV展開時にデフォルトでわずかなマージンを追加する)、中心より大きいか/小さいかで判定する
-		if (x < 0.5 && y < 0.5) {
-			aIndex = i;
-		} else if (x > 0.5 && y < 0.5) {
-			bIndex = i;
-		} else if (x < 0.5 && y > 0.5) {
-			cIndex = i;
-		} else if (x > 0.5 && y > 0.5) {
-			dIndex = i;
-		}
-	}
-
-	return [aIndex, bIndex, cIndex, dIndex];
-}
-
-export function normalizeUvToSquare(mesh: BABYLON.Mesh) {
-	const uvs = mesh.getVerticesData(BABYLON.VertexBuffer.UVKind)!;
-	const uvIndexes = getPlaneUvIndexes(mesh);
-	uvs[uvIndexes[0]] = 0;
-	uvs[uvIndexes[0] + 1] = 0;
-	uvs[uvIndexes[1]] = 1;
-	uvs[uvIndexes[1] + 1] = 0;
-	uvs[uvIndexes[2]] = 0;
-	uvs[uvIndexes[2] + 1] = 1;
-	uvs[uvIndexes[3]] = 1;
-	uvs[uvIndexes[3] + 1] = 1;
-	mesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
-}
-
-export function createPlaneUvMapper(mesh: BABYLON.Mesh) {
-	mesh.markVerticesDataAsUpdatable(BABYLON.VertexBuffer.UVKind, true);
-
-	const uvs = mesh.getVerticesData(BABYLON.VertexBuffer.UVKind)!;
-	const originalUvs = uvs.slice();
-
-	return (srcAspect: number, targetAspect: number, method: 'cover' | 'contain' | 'stretch') => {
-		let uScale = 1;
-		let vScale = 1;
-		const ratio = targetAspect / srcAspect;
-		if (method === 'cover') {
-			uScale = ratio < 1 ? ratio : 1;
-			vScale = ratio < 1 ? 1 : 1 / ratio;
-		} else if (method === 'contain') {
-			uScale = ratio > 1 ? ratio : 1;
-			vScale = ratio > 1 ? 1 : 1 / ratio;
-		} else if (method === 'stretch') {
-			// nop
-		}
-
-		// (0,0)を隅ではなく中心として扱いたいので0.5引いて計算してから最後に0.5足す
-		for (let i = 0; i < uvs.length; i += 2) {
-			uvs[i] = ((originalUvs[i] - 0.5) * uScale) + 0.5;
-			uvs[i + 1] = ((originalUvs[i + 1] - 0.5) * vScale) + 0.5;
-		}
-
-		mesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
-	};
-}
-
 export function findMaterial(rootMesh: BABYLON.AbstractMesh, keyword: string, allowMultiMaterial = false): BABYLON.PBRMaterial {
 	for (const m of rootMesh.getChildMeshes()) {
 		if (m.material == null) continue;
@@ -442,87 +186,153 @@ export function findMaterial(rootMesh: BABYLON.AbstractMesh, keyword: string, al
 	throw new Error(`Material with keyword "${keyword}" not found`);
 }
 
-export function scaleMorph(mesh: BABYLON.Mesh, scale: [number, number, number], offset: [number, number, number] = [0, 0, 0]) {
-	if (!mesh.morphTargetManager) {
-		return;
+export class ModelManager {
+	public root: BABYLON.Mesh;
+	public bakedCallback: (() => void) | null = null;
+	public bakeExcludeMeshes: BABYLON.Mesh[] = [];
+	private originalMeshes: BABYLON.Mesh[] = [];
+	private bakedMeshes: BABYLON.Mesh[] = [];
+	private hasTexture: boolean;
+
+	constructor(root: BABYLON.Mesh, originalMeshes: BABYLON.Mesh[], hasTexture: boolean, bakedCallback: (() => void) | null = null) {
+		this.root = root;
+		this.originalMeshes = originalMeshes;
+		this.hasTexture = hasTexture;
+		this.bakedCallback = bakedCallback;
 	}
 
-	const morphTargetManager = mesh.morphTargetManager;
-
-	for (let targetIndex = 0; targetIndex < morphTargetManager.numTargets; targetIndex++) {
-		const target = morphTargetManager.getTarget(targetIndex);
-		const newPos = target.getPositions();
-		for (let i = 0; i < newPos.length; i += 3) {
-			newPos[i] = (newPos[i] + offset[0]) * scale[0];
-			newPos[i + 1] = (newPos[i + 1] + offset[1]) * scale[1];
-			newPos[i + 2] = (newPos[i + 2] + offset[2]) * scale[2];
+	public findMesh(keyword: string) {
+		const mesh = this.root.getChildMeshes().find(m => m.name.includes(keyword));
+		if (mesh == null) {
+			throw new Error(`Mesh with keyword "${keyword}" not found for object ${this.root.metadata?.objectType}`);
 		}
-		target.setPositions(newPos);
+		return mesh as BABYLON.Mesh;
 	}
 
-	morphTargetManager.synchronize();
+	public findMeshes(keyword: string) {
+		const meshes = this.root.getChildMeshes().filter(m => m.name.includes(keyword));
+		return meshes as BABYLON.Mesh[];
+	}
 
-	mesh.refreshBoundingInfo();
-	mesh.computeWorldMatrix(true);
+	public findMaterial(keyword: string) {
+		return findMaterial(this.root, keyword);
+	}
+
+	public findTransformNode(keyword: string) {
+		const node = this.root.getChildTransformNodes().find(n => n.name.includes(keyword));
+		if (node == null) {
+			throw new Error(`TransformNode with keyword "${keyword}" not found for object ${this.root.metadata?.objectType}`);
+		}
+		return node;
+	}
+
+	public updated() {
+	}
+
+	public bakeMesh() {
+		for (const m of this.bakedMeshes) {
+			m.dispose();
+		}
+		this.bakedMeshes = [];
+
+		const excludeMeshes = [...this.bakeExcludeMeshes, ...this.root.getChildMeshes().filter(m => SYSTEM_MESH_NAMES.some(s => m.name.includes(s)))];
+
+		const childMeshes = this.root.getChildMeshes().filter(m => !excludeMeshes.some(x => x === m) && m.isVisible && !m.isDisposed());
+
+		if (childMeshes.length <= 1) {
+			this.bakedCallback?.([...childMeshes, ...excludeMeshes]);
+			return;
+		}
+
+		const _toMerge = [] as BABYLON.Mesh[];
+		for (const mesh of childMeshes) {
+			let fixedMesh = mesh;
+			fixedMesh.setEnabled(false);
+
+			if (mesh instanceof BABYLON.InstancedMesh) {
+				const sourceMesh = mesh.sourceMesh;
+				const realizedMesh = sourceMesh.clone(mesh.name + '_realized', null, true);
+				realizedMesh.getScene().removeMesh(realizedMesh);
+
+				realizedMesh.position = mesh.position.clone();
+				if (mesh.rotationQuaternion) {
+					realizedMesh.rotationQuaternion = mesh.rotationQuaternion.clone();
+				} else {
+					realizedMesh.rotation = mesh.rotation.clone();
+				}
+				realizedMesh.scaling = mesh.scaling.clone();
+				realizedMesh.parent = mesh.parent;
+				realizedMesh.setEnabled(false);
+
+				fixedMesh = realizedMesh;
+			}
+
+			_toMerge.push(fixedMesh);
+		}
+
+		const toMerge = [] as BABYLON.Mesh[];
+		for (const mesh of _toMerge) {
+			const newMesh = mesh.name.endsWith('_realized') ? mesh : mesh.clone(mesh.name + '_bakeMerged', null, true);
+			newMesh.makeGeometryUnique();
+			applyMorphTargetsToMesh(newMesh);
+			if (newMesh.parent === this.root) {
+				newMesh.parent = null;
+			} else {
+				newMesh.setParent(this.root);
+				//newMesh.bakeCurrentTransformIntoVertices();
+				newMesh.parent = null;
+			}
+			//newMesh.bakeCurrentTransformIntoVertices();
+
+			if (this.hasTexture) {
+				if (newMesh.getVerticesData(BABYLON.VertexBuffer.UVKind) == null) {
+					const vertexCount = newMesh.getTotalVertices();
+					const uvs = new Array(vertexCount * 2).fill(0);
+					newMesh.setVerticesData(BABYLON.VertexBuffer.UVKind, uvs, false, 2);
+				}
+				if (newMesh.getVerticesData(BABYLON.VertexBuffer.UV2Kind) == null) {
+					const vertexCount = newMesh.getTotalVertices();
+					const uvs = new Array(vertexCount * 2).fill(0);
+					newMesh.setVerticesData(BABYLON.VertexBuffer.UV2Kind, uvs, false, 2);
+				}
+			}
+
+			toMerge.push(newMesh);
+		}
+
+		if (toMerge.length === 0) {
+			this.bakedCallback?.([...childMeshes, ...excludeMeshes]);
+			return;
+		}
+
+		const merged = BABYLON.Mesh.MergeMeshes(toMerge, true, false, undefined, false, true);
+		merged.parent = this.root;
+		merged.material.freeze();
+		if (merged.material instanceof BABYLON.MultiMaterial) {
+			for (const subMat of merged.material.subMaterials) {
+				(subMat as BABYLON.PBRMaterial).freeze();
+			}
+		}
+		merged.freezeWorldMatrix();
+		merged.metadata = { ...this.root.metadata };
+		if (!this.hasTexture) merged.convertToUnIndexedMesh();
+		this.bakedMeshes = [merged];
+
+		this.bakedCallback?.([...this.bakedMeshes, ...excludeMeshes]);
+	}
+
+	public unbakeMesh() {
+		for (const m of this.bakedMeshes) {
+			m.dispose();
+		}
+		this.bakedMeshes = [];
+
+		const childMeshes = this.root.getChildMeshes();
+
+		for (const mesh of childMeshes) {
+			mesh.setEnabled(true);
+		}
+
+		this.bakedCallback?.(this.root.getChildMeshes());
+	}
 }
-
-export function applyMorphTargetsToMesh(mesh: BABYLON.Mesh) {
-	if (!mesh.morphTargetManager) {
-		return;
-	}
-
-	const morphTargetManager = mesh.morphTargetManager;
-	const positions = mesh.getVerticesData(BABYLON.VertexBuffer.PositionKind);
-
-	if (!positions) {
-		return;
-	}
-
-	// Create a copy of the original positions to work with
-	const finalPositions = positions.slice();
-
-	// Apply each morph target
-	for (let targetIndex = 0; targetIndex < morphTargetManager.numTargets; targetIndex++) {
-		const target = morphTargetManager.getTarget(targetIndex);
-		const influence = target.influence;
-
-		if (influence === 0) {
-			continue;
-		}
-
-		// Get the morph target positions
-		const targetPositions = target.getPositions();
-
-		if (!targetPositions || targetPositions.length !== positions.length) {
-			console.warn(`Morph target ${targetIndex} has invalid position data`);
-			continue;
-		}
-
-		// Apply the morph target influence to each vertex
-		for (let i = 0; i < positions.length; i++) {
-			finalPositions[i] += (targetPositions[i] - positions[i]) * influence;
-		}
-	}
-
-	// Update the mesh with the morphed positions
-	mesh.setVerticesData(BABYLON.VertexBuffer.PositionKind, finalPositions);
-
-	//// Update normals if available
-	//const normals = mesh.getVerticesData(BABYLON.VertexBuffer.NormalKind);
-	//if (normals) {
-	//	// For simplicity, we'll just recompute the normals
-	//	mesh.createNormals(true);
-	//}
-
-	// Refresh the mesh
-	mesh.refreshBoundingInfo();
-	mesh.computeWorldMatrix(true);
-}
-
-// ex) hangingTShirt -> hanging-t-shirt
-export const camelToKebab = (s: string) => {
-	return s
-		.replace(/([a-z0-9])([A-Z])/g, '$1-$2')
-		.replace(/([A-Z])([A-Z][a-z])/g, '$1-$2')
-		.toLowerCase();
-};

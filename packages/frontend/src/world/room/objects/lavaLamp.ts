@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import * as BABYLON from '@babylonjs/core';
-import { defineObject, WORLD_SCALE } from '../engine.js';
-import { cm } from '../utility.js';
+import { defineObject } from '../object.js';
+import { cm, WORLD_SCALE } from '../../utility.js';
 
 export const lavaLamp = defineObject({
 	id: 'lavaLamp',

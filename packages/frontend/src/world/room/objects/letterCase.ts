@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineObject } from '../engine.js';
+import { defineObject } from '../object.js';
 
 export const letterCase = defineObject({
 	id: 'letterCase',

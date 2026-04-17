@@ -199,6 +199,7 @@ export class RoomController {
 	}
 
 	public addObject(type: string) {
+		console.log(type);
 		if (this.worker != null) {
 			this.worker.postMessage({ type: 'addObject', objectType: type });
 		} else if (this.engine != null) {

@@ -4,8 +4,8 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../engine.js';
-import { createPlaneUvMapper } from '../utility.js';
+import { defineObject } from '../object.js';
+import { createPlaneUvMapper } from '../../utility.js';
 
 // NOTE: シェイプキーのnormalのエクスポートは無効にしないとmatを大きくしたときに面のレンダリングがグリッチする
 

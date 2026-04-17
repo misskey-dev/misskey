@@ -4,8 +4,8 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../engine.js';
-import { createPlaneUvMapper, normalizeUvToSquare } from '../utility.js';
+import { defineObject } from '../object.js';
+import { createPlaneUvMapper, normalizeUvToSquare } from '../../utility.js';
 
 export const djPlayer = defineObject({
 	id: 'djPlayer',

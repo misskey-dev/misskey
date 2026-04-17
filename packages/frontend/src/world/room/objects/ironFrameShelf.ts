@@ -4,7 +4,7 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject, defineObjectClass } from '../engine.js';
+import { defineObject, defineObjectClass } from '../object.js';
 
 const base = defineObjectClass({
 	options: {

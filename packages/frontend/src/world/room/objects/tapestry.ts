@@ -4,8 +4,8 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../engine.js';
-import { createPlaneUvMapper, getPlaneUvIndexes } from '../utility.js';
+import { defineObject } from '../object.js';
+import { createPlaneUvMapper, getPlaneUvIndexes } from '../../utility.js';
 
 const remap = (value: number, fromMin: number, fromMax: number, toMin: number, toMax: number) => {
 	return toMin + ((value - fromMin) / (fromMax - fromMin)) * (toMax - toMin);

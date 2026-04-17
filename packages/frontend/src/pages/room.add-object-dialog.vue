@@ -40,7 +40,7 @@ import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import * as os from '@/os.js';
 import { OBJECT_DEFS } from '@/world/room/object-defs.js';
-import { createRoomObjectPreviewEngine, RoomObjectPreviewEngine } from '@/world/room/engine.js';
+import { createRoomObjectPreviewEngine, RoomObjectPreviewEngine } from '@/world/room/previewEngine.js';
 
 const emit = defineEmits<{
 	(ev: 'ok', id: string): void;

@@ -4,8 +4,9 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../engine.js';
-import { cm, createOverridedStates } from '../utility.js';
+import { defineObject } from '../object.js';
+import { cm } from '../../utility.js';
+import { createOverridedStates } from '../utility.js';
 
 export const blind = defineObject({
 	id: 'blind',

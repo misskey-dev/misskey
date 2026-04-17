@@ -4,8 +4,8 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject, WORLD_SCALE } from '../engine.js';
-import { cm, createPlaneUvMapper } from '../utility.js';
+import { defineObject } from '../object.js';
+import { cm, WORLD_SCALE, createPlaneUvMapper } from '../../utility.js';
 
 export const allInOnePc = defineObject({
 	id: 'allInOnePc',
