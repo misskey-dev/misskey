@@ -1,6 +1,6 @@
 {
 	"name": "misskey",
-	"version": "2026.4.0-alpha.5",
+	"version": "2026.4.0-alpha.6",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
@@ -58,7 +58,7 @@
 		"execa": "9.6.1",
 		"ignore-walk": "8.0.0",
 		"js-yaml": "4.1.1",
-		"postcss": "8.5.8",
+		"postcss": "8.5.9",
 		"tar": "7.5.13",
 		"terser": "5.46.1"
 	},
@@ -67,11 +67,11 @@
 		"@misskey-dev/eslint-plugin": "2.1.0",
 		"@types/js-yaml": "4.0.9",
 		"@types/node": "24.12.2",
-		"@typescript-eslint/eslint-plugin": "8.58.0",
-		"@typescript-eslint/parser": "8.58.0",
+		"@typescript-eslint/eslint-plugin": "8.58.1",
+		"@typescript-eslint/parser": "8.58.1",
 		"@typescript/native-preview": "7.0.0-dev.20260116.1",
 		"cross-env": "10.1.0",
-		"cypress": "15.13.0",
+		"cypress": "15.13.1",
 		"eslint": "9.39.4",
 		"globals": "17.4.0",
 		"ncp": "2.0.0",

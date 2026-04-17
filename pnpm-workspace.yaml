@@ -36,10 +36,8 @@ minimumReleaseAge: 10080 # delay 7days to mitigate supply-chain attack
 minimumReleaseAgeExclude:
   - '@syuilo/aiscript'
   - '@babylonjs/*'
-  - rolldown # Bundle Backend そのうち消す
-  - '@rolldown/*' # Bundle Backend そのうち消す
-  - '@oxc-project/*' # Bundle Backend そのうち消す
-  - '@napi-rs/*' # Bundle Backend そのうち消す
-  - vite # 脆弱性対応。そのうち消す
-  # Renovate security update: lodash@4.18.1
-  - lodash@4.18.1
+  - '@napi-rs/wasm-runtime' # そのうち消す
+  - fastify # 脆弱性対応。そのうち消す
+  - '@fastify/express' # 脆弱性対応。そのうち消す
+  - '@fastify/http-proxy' # 脆弱性対応。そのうち消す
+  - '@fastify/reply-from' # 脆弱性対応。そのうち消す
