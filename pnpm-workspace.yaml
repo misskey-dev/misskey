@@ -39,3 +39,5 @@ minimumReleaseAgeExclude:
   - '@fastify/express' # 脆弱性対応。そのうち消す
   - '@fastify/http-proxy' # 脆弱性対応。そのうち消す
   - '@fastify/reply-from' # 脆弱性対応。そのうち消す
+  # Renovate security update: @fastify/static@9.1.1
+  - "@fastify/static@9.1.1"
