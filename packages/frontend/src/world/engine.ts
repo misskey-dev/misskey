@@ -3,21 +3,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-// TODO: 家具設置時のコリジョン判定(めりこんで設置されないようにする)
-// TODO: 近くのオブジェクトの端にスナップオプション
-// TODO: 近くのオブジェクトの原点に軸を揃えるオプション
-// TODO: glbを事前に最適化(なるべくメッシュをマージするなど)するツールもしくはMisskeyビルド時処理。ついでにカタログ用スクショも自動生成したい
-
 import * as BABYLON from '@babylonjs/core';
 import { AxesViewer } from '@babylonjs/core/Debug/axesViewer';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
 import { EventEmitter } from 'eventemitter3';
-import { HorizontalCameraKeyboardMoveInput, camelToKebab, cm } from './utility.js';
+import tinycolor from 'tinycolor2';
+import { HorizontalCameraKeyboardMoveInput, WORLD_SCALE, camelToKebab, cm, createPlaneUvMapper, normalizeUvToSquare } from './utility.js';
 import { TIME_MAP } from './utility.js';
 import { genId } from '@/utility/id.js';
 import { deepClone } from '@/utility/clone.js';
 
-const SNAPSHOT_RENDERING = true; // 実験的
+const SNAPSHOT_RENDERING = false; // 実験的
 const USE_GLOW = true; // ドローコールが増えて重い
 const IN_WEB_WORKER = typeof window === 'undefined';
 
@@ -41,9 +37,10 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 	public intervalIds: number[] = [];
 	public timeoutIds: number[] = [];
 	private time: 0 | 1 | 2 = 0; // 0: 昼, 1: 夕, 2: 夜
-	private envMapOutdoor: BABYLON.CubeTexture;
+	private envMap: BABYLON.CubeTexture;
 	public lightContainer: BABYLON.ClusteredLightContainer;
 	public sr: BABYLON.SnapshotRenderingHelper;
+	private gl: BABYLON.GlowLayer | null = null;
 
 	public isSitting = false;
 	private fps: number | null = null;
@@ -68,9 +65,6 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 
 		this.engine = options.engine;
 		this.scene = new BABYLON.Scene(this.engine);
-		// なんかレンダリングがおかしくなるときがあるのでコメントアウト
-		// オブジェクトを選択し、後ろを向いて別のオブジェクトを選択した後、最初のオブジェクトに振り返ると消えているなど
-		//this.scene.performancePriority = BABYLON.ScenePerformancePriority.Intermediate;
 		this.scene.autoClear = false;
 		//this.scene.autoClearDepthAndStencil = false;
 		this.scene.skipPointerMovePicking = true;
@@ -78,35 +72,36 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 
 		this.sr = new BABYLON.SnapshotRenderingHelper(this.scene);
 
-		const skybox = BABYLON.MeshBuilder.CreateBox('skybox', { size: cm(1000) }, this.scene);
+		const skybox = BABYLON.MeshBuilder.CreateBox('skybox', { size: cm(50000) }, this.scene);
 		const skyboxMat = new BABYLON.StandardMaterial('skyboxMat', this.scene);
 		skyboxMat.backFaceCulling = false;
 		skyboxMat.disableLighting = true;
 		skybox.material = skyboxMat;
 		skybox.infiniteDistance = true;
 
-		this.time = TIME_MAP[new Date().getHours() as keyof typeof TIME_MAP];
+		//this.time = TIME_MAP[new Date().getHours() as keyof typeof TIME_MAP];
+		this.time = TIME_MAP[12 as keyof typeof TIME_MAP];
 
 		if (this.time === 0) {
-			skyboxMat.emissiveColor = new BABYLON.Color3(0.7, 0.9, 1.0);
+			skyboxMat.emissiveColor = new BABYLON.Color3(0.87, 0.89, 0.9);
 		} else if (this.time === 1) {
-			skyboxMat.emissiveColor = new BABYLON.Color3(0.8, 0.5, 0.3);
+			skyboxMat.emissiveColor = new BABYLON.Color3(0.7, 0.68, 0.66);
 		} else {
-			skyboxMat.emissiveColor = new BABYLON.Color3(0.05, 0.05, 0.2);
+			skyboxMat.emissiveColor = new BABYLON.Color3(0.48, 0.48, 0.5);
 		}
-		this.scene.ambientColor = new BABYLON.Color3(1.0, 0.9, 0.8);
+		this.scene.ambientColor = new BABYLON.Color3(0.9, 0.9, 0.9);
 
-		this.envMapOutdoor = BABYLON.CubeTexture.CreateFromPrefilteredData(this.time === 2 ? '/client-assets/room/outdoor-night.env' : '/client-assets/room/outdoor-day.env', this.scene);
-		this.envMapOutdoor.level = this.time === 0 ? 0.5 : this.time === 1 ? 0.3 : 0.1;
+		this.envMap = BABYLON.CubeTexture.CreateFromPrefilteredData(this.time === 2 ? '/client-assets/room/outdoor-night.env' : '/client-assets/room/outdoor-day.env', this.scene);
+		this.envMap.level = 0.3;
 
 		this.scene.collisionsEnabled = true;
 
-		this.camera = new BABYLON.UniversalCamera('camera', new BABYLON.Vector3(0, cm(130), cm(0)), this.scene);
+		this.camera = new BABYLON.UniversalCamera('camera', new BABYLON.Vector3(cm(0), cm(200), cm(3000)), this.scene);
 		this.camera.inputs.removeByType('FreeCameraKeyboardMoveInput');
-		this.camera.inputs.add(new HorizontalCameraKeyboardMoveInput(this.camera));
+		this.camera.inputs.add(new HorizontalCameraKeyboardMoveInput(this.camera, 0.3));
 		this.camera.attachControl(this.canvas);
 		this.camera.minZ = cm(1);
-		this.camera.maxZ = cm(2000);
+		this.camera.maxZ = cm(100000);
 		this.camera.fov = 1;
 		this.camera.ellipsoid = new BABYLON.Vector3(cm(15), cm(65), cm(15));
 		this.camera.checkCollisions = true;
@@ -127,25 +122,26 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 		sunLight.shadowMinZ = cm(1000);
 		sunLight.shadowMaxZ = cm(2000);
 
-		this.shadowGeneratorForSunLight = new BABYLON.ShadowGenerator(2048, sunLight);
+		this.shadowGeneratorForSunLight = new BABYLON.ShadowGenerator(4096, sunLight);
 		this.shadowGeneratorForSunLight.forceBackFacesOnly = true;
 		this.shadowGeneratorForSunLight.bias = 0.0001;
 		this.shadowGeneratorForSunLight.usePercentageCloserFiltering = true;
 		this.shadowGeneratorForSunLight.usePoissonSampling = true;
-		if (!SNAPSHOT_RENDERING) this.shadowGeneratorForSunLight.getShadowMap().refreshRate = 60; // snapshot renderingではrefreshRateが設定されているとなぜかクラッシュする
+		//this.shadowGeneratorForSunLight.getShadowMap().refreshRate = 60;
 
 		this.lightContainer = new BABYLON.ClusteredLightContainer('clustered', [], this.scene);
 
 		if (USE_GLOW) {
-			const gl = new BABYLON.GlowLayer('glow', this.scene, {
+			this.gl = new BABYLON.GlowLayer('glow', this.scene, {
 				//mainTextureFixedSize: 512,
 				blurKernelSize: 64,
 			});
-			gl.intensity = 0.5;
-			this.scene.setRenderingAutoClearDepthStencil(gl.renderingGroupId, false);
+			this.gl.intensity = 0.5;
+			this.gl.addExcludedMesh(skybox);
+			this.scene.setRenderingAutoClearDepthStencil(this.gl.renderingGroupId, false);
 
 			if (SNAPSHOT_RENDERING) {
-				this.sr.updateMeshesForEffectLayer(gl);
+				this.sr.updateMeshesForEffectLayer(this.gl);
 			}
 		}
 
@@ -169,7 +165,7 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 	}
 
 	public async init() {
-		this.scene.blockMaterialDirtyMechanism = true;
+		await this.loadEnvModel();
 
 		if (SNAPSHOT_RENDERING) {
 			this.sr.enableSnapshotRendering();
@@ -214,19 +210,138 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 	}
 
 	private async loadEnvModel() {
-		const envObj = await BABYLON.ImportMeshAsync('/client-assets/room/env.glb', this.scene);
+		const envObj = await BABYLON.ImportMeshAsync('/client-assets/world/lobby/default.glb', this.scene);
 		envObj.meshes[0].scaling = envObj.meshes[0].scaling.scale(WORLD_SCALE);
 		envObj.meshes[0].bakeCurrentTransformIntoVertices();
-		envObj.meshes[0].position = new BABYLON.Vector3(0, cm(-900), 0); // 4階くらいの想定
-		envObj.meshes[0].rotation = new BABYLON.Vector3(0, -Math.PI, 0);
 		for (const mesh of envObj.meshes) {
-			mesh.isPickable = false;
-			mesh.checkCollisions = false;
-
-			//if (mesh.name === '__root__') continue;
-			mesh.receiveShadows = false;
-			if (mesh.material) (mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.envMapOutdoor;
+			if (mesh.name === '__root__') continue;
+			mesh.checkCollisions = true;
+			if (mesh.material) (mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.envMap;
 		}
+
+		for (let i = 0; i < 16; i++) {
+			const sphereRoot = new BABYLON.TransformNode('', this.scene);
+			sphereRoot.position = new BABYLON.Vector3(cm(0), cm(500 + (100 * i)), cm(0));
+			const rotation = Math.random() * Math.PI * 2;
+			const sphere = BABYLON.MeshBuilder.CreateSphere('', { diameter: cm(50 + (Math.random() * 250)) }, this.scene);
+			sphere.parent = sphereRoot;
+			sphere.position = new BABYLON.Vector3(cm(0), cm(0), cm(4000 + (Math.random() * 500)));
+
+			const mat = new BABYLON.PBRMaterial('', this.scene);
+			const color = tinycolor({ h: Math.random() * 360, s: 1, l: 0.5 }).toRgb();
+			mat.emissiveColor = new BABYLON.Color3(color.r / 255, color.g / 255, color.b / 255);
+			mat.disableLighting = true;
+			this.gl?.addExcludedMesh(sphere);
+			sphere.material = mat;
+
+			const speed = 10000 + (Math.random() * 10000);
+			const anim = new BABYLON.Animation('', 'rotation.y', 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+			anim.setKeys([
+				{ frame: 0, value: rotation },
+				{ frame: speed, value: Math.random() < 0.5 ? rotation + (Math.PI * 2) : rotation - (Math.PI * 2) },
+			]);
+			sphereRoot.animations = [anim];
+			this.scene.beginAnimation(sphereRoot, 0, speed, true);
+		}
+
+		//const sphere = BABYLON.MeshBuilder.CreateSphere('', { diameter: cm(10) }, this.scene);
+
+		const adsCountCol = 4;
+		const adsCountRow = 2;
+		for (let j = 0; j < adsCountRow; j++) {
+			for (let i = 0; i < adsCountCol; i++) {
+				const adRoot = new BABYLON.TransformNode(`ad_${j}_${i}_root`, this.scene);
+				adRoot.position = new BABYLON.Vector3(cm(0), cm(500 + (1000 * j)), cm(0));
+				const rotation = (i / adsCountCol) * Math.PI * 2;
+				const adMesh = BABYLON.MeshBuilder.CreatePlane(`ad_${j}_${i}`, { width: cm(1000), height: cm(700) }, this.scene);
+				adMesh.parent = adRoot;
+				adMesh.position = new BABYLON.Vector3(cm(0), cm(0), cm(7500));
+
+				const tex = new BABYLON.Texture(`/client-assets/world/lobby/dummy-ads/${1 + Math.floor(Math.random() * 4)}.png`, this.scene);
+				const adMat = new BABYLON.StandardMaterial(`ad_${j}_${i}_mat`, this.scene);
+				adMat.emissiveTexture = tex;
+				adMat.disableLighting = true;
+				adMesh.material = adMat;
+
+				const anim = new BABYLON.Animation('', 'rotation.y', 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+				anim.setKeys([
+					{ frame: 0, value: rotation },
+					{ frame: 15000, value: j % 2 === 0 ? rotation + (Math.PI * 2) : rotation - (Math.PI * 2) },
+				]);
+				adRoot.animations = [anim];
+				this.scene.beginAnimation(adRoot, 0, 15000, true);
+			}
+		}
+
+		const worldRingH = envObj.meshes.find(m => m.name.includes('__WORLD_RING_H__'));
+		const worldRingM = envObj.meshes.find(m => m.name.includes('__WORLD_RING_M__'));
+
+		worldRingH.rotationQuaternion = null;
+		worldRingM.rotationQuaternion = null;
+
+		const _1h = 1000 * 60 * 60;
+		const _12h = _1h * 12;
+		const _7days = _1h * 24 * 7;
+		const _30days = _1h * 24 * 30;
+
+		setInterval(() => {
+			const time = Date.now();
+			worldRingH.rotation.x = ((time % _30days) / _30days) * Math.PI * 2;
+			worldRingH.rotation.z = ((time % _12h) / _12h) * Math.PI * 2;
+
+			worldRingM.rotation.x = ((time % _7days) / _7days) * Math.PI * 2;
+			worldRingM.rotation.z = ((time % _1h) / _1h) * Math.PI * 2;
+		}, 100);
+
+		const screenMeshes = envObj.meshes.filter(m => m.name.includes('__SCREEN__'));
+		const screenMaterial = screenMeshes[0].material as BABYLON.PBRMaterial;
+
+		setTimeout(() => {
+			const tex = new BABYLON.VideoTexture('', 'http://syu-win.local:3000/files/cbf69c5f-ea63-4b14-a4c7-9148557d87d4', this.scene, true, true);
+			tex.level = 0.5;
+			tex.video.loop = true;
+			tex.video.volume = 0.25;
+			//tex.video.muted = true;
+
+			screenMaterial.emissiveTexture = tex;
+			screenMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
+
+			tex.onLoadObservable.addOnce(() => {
+				tex.video.play();
+				for (const mesh of screenMeshes) {
+					normalizeUvToSquare(mesh);
+					const updateUv = createPlaneUvMapper(mesh);
+					if (tex == null) return;
+					const srcAspect = tex.getSize().width / tex.getSize().height;
+					const targetAspect = 16 / 9;
+					updateUv(srcAspect, targetAspect, 'cover');
+				}
+			});
+		}, 3000);
+
+		const emitter = new BABYLON.TransformNode('emitter', this.scene);
+		emitter.position = new BABYLON.Vector3(0, cm(-1000), 0);
+		const ps = new BABYLON.ParticleSystem('', 128, this.scene);
+		ps.particleTexture = new BABYLON.Texture('/client-assets/room/objects/lava-lamp/bubble.png');
+		ps.emitter = emitter;
+		ps.isLocal = true;
+		ps.minEmitBox = new BABYLON.Vector3(cm(-1000), 0, cm(-1000));
+		ps.maxEmitBox = new BABYLON.Vector3(cm(1000), 0, cm(1000));
+		ps.minEmitPower = 100;
+		ps.maxEmitPower = 500;
+		ps.minLifeTime = 30;
+		ps.maxLifeTime = 30;
+		ps.minSize = cm(30);
+		ps.maxSize = cm(300);
+		ps.direction1 = new BABYLON.Vector3(0, 1, 0);
+		ps.direction2 = new BABYLON.Vector3(0, 1, 0);
+		ps.emitRate = 1.5;
+		ps.blendMode = BABYLON.ParticleSystem.BLENDMODE_ADD;
+		ps.color1 = new BABYLON.Color4(1, 1, 1, 0.3);
+		ps.color2 = new BABYLON.Color4(1, 1, 1, 0.2);
+		ps.colorDead = new BABYLON.Color4(1, 1, 1, 0);
+		ps.preWarmCycles = Math.random() * 1000;
+		ps.start();
 	}
 
 	public sitChair(objectId: string) {
