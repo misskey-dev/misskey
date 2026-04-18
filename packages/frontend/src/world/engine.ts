@@ -233,6 +233,20 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 		this.textMaterial.freeze();
 
 		{
+			const messageRing = envObj.meshes.find(m => m.name.includes('__LED_RING__'));
+			messageRing.rotation = messageRing.rotationQuaternion.toEulerAngles();
+			messageRing.rotationQuaternion = null;
+
+			const anim = new BABYLON.Animation('', 'rotation.y', 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+			anim.setKeys([
+				{ frame: 0, value: 0 },
+				{ frame: 5000, value: -(Math.PI * 2) },
+			]);
+			messageRing.animations = [anim];
+			this.scene.beginAnimation(messageRing, 0, 5000, true);
+		}
+
+		{
 			const messageRingRoot = new BABYLON.TransformNode('', this.scene);
 			const messageRing = envObj.meshes.find(m => m.name.includes('__MESSAGE_RING_OUTER_1__'));
 			messageRing.parent = messageRingRoot;
@@ -298,7 +312,7 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 
 			setInterval(() => {
 				text.write(Date.now().toString());
-			}, 100);
+			}, 10);
 		}
 
 		{
@@ -463,7 +477,7 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 		const screenMaterial = screenMeshes[0].material as BABYLON.PBRMaterial;
 
 		setTimeout(() => {
-			const tex = new BABYLON.VideoTexture('', 'http://syu-win.local:3000/files/902a2d52-9d4a-41a7-8e0d-e206c99c2299', this.scene, true, true);
+			const tex = new BABYLON.VideoTexture('', 'http://syu-win.local:3000/files/931c02c3-6238-4c29-9371-06bab78950bb', this.scene, true, true);
 			tex.level = 0.5;
 			tex.video.loop = true;
 			tex.video.volume = 0.25;
