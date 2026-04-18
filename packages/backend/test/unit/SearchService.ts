@@ -116,6 +116,10 @@ describe('SearchService', () => {
 				id,
 				username,
 				usernameLower,
+				// yamisskey: privacy-first default で hideNoteSearchResult=true のため、
+				// そのままだと upstream 由来の searchNote テストが全件ゼロになる。
+				// テスト helper は本家互換の false を既定にし、意図的なケースは data で上書き可能。
+				hideNoteSearchResult: false,
 				...data,
 			})
 			.then(x => ctx.usersRepository.findOneByOrFail(x.identifiers[0]));
