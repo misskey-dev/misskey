@@ -108,7 +108,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				untilId: ps.untilId ?? (ps.untilDate ? this.idService.gen(ps.untilDate!) : null),
 				sinceId: ps.sinceId ?? (ps.sinceDate ? this.idService.gen(ps.sinceDate!) : null),
 				limit: ps.limit,
-				allowPartial: false, // 必ず完全な結果を使用
+				allowPartial: ps.allowPartial,
 				me,
 				useDbFallback: true, // DBフォールバックを常に有効化
 				redisTimelines: redisTimelines,
