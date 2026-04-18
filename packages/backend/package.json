@@ -209,7 +209,7 @@
 		"@types/ws": "8.18.1",
 		"@typescript-eslint/eslint-plugin": "8.58.1",
 		"@typescript-eslint/parser": "8.58.1",
-		"@vitest/coverage-v8": "4.0.16",
+		"@vitest/coverage-v8": "4.1.4",
 		"aws-sdk-client-mock": "4.1.0",
 		"cbor": "10.0.12",
 		"cross-env": "10.1.0",
@@ -223,7 +223,7 @@
 		"supertest": "7.2.2",
 		"unplugin-swc": "1.5.9",
 		"vite": "8.0.8",
-		"vitest": "4.0.16",
-		"vitest-mock-extended": "3.1.0"
+		"vitest": "4.1.4",
+		"vitest-mock-extended": "3.1.1"
 	}
 }
