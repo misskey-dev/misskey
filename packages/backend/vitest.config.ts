@@ -1,11 +1,7 @@
 import { resolve } from 'node:path';
-import swc from 'unplugin-swc';
 import { defineConfig } from 'vitest/config';
 
 export const baseConfig = defineConfig({
-	plugins: [
-		swc.vite(),
-	],
 	test: {
 		exclude: ['node_modules', 'dist'],
 		coverage: {
