@@ -223,6 +223,7 @@ function terminateChild(child: ResultPromise, signal: NodeJS.Signals = 'SIGTERM'
 }
 
 export default async function globalSetup() {
+	console.log('Called globalSetup. Spawning test server process...');
 	await killTestServers();
 
 	const child = execaNode(entryFilePath, [], {
@@ -234,6 +235,7 @@ export default async function globalSetup() {
 		},
 	});
 
+	console.log('Waiting for test server to be ready...');
 	try {
 		await waitForControllerReady();
 	} catch (error) {
@@ -242,6 +244,7 @@ export default async function globalSetup() {
 	}
 
 	return async () => {
+		console.log('Called globalTeardown. Shutting down test server process...');
 		try {
 			await requestChildShutdown();
 		} catch {
