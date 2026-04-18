@@ -380,7 +380,7 @@ describe('ユーザー', () => {
 		assert.strictEqual(response.isDeleted, false);
 		assert.strictEqual(response.twoFactorBackupCodesStock, 'none');
 		assert.strictEqual(response.hideOnlineStatus, false);
-		assert.deepStrictEqual(response.activeStatusVisibility, { type: 'mutualFollow' });
+		assert.deepStrictEqual(response.activeStatusVisibility, { type: 'never' });
 		assert.strictEqual(response.hasUnreadSpecifiedNotes, false);
 		assert.strictEqual(response.hasUnreadMentions, false);
 		assert.strictEqual(response.hasUnreadAnnouncement, false);
