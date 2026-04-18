@@ -22,9 +22,16 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' || (github.event.pull_request.merged == true && contains(github.event.pull_request.title, 'Release:'))
     steps:
+      # tag-protection ruleset の bypass list に登録された App のトークンを使う
+      - uses: actions/create-github-app-token@v1
+        id: release-app-token
+        with:
+          app-id: ${{ secrets.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ steps.release-app-token.outputs.token }}
 
       - name: Get current version
         id: version
@@ -155,7 +162,7 @@ jobs:
             --target master \
             --latest
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.release-app-token.outputs.token }}
 
       - name: Summary
         if: steps.version.outputs.should_create_release == 'true' && steps.tag_check.outputs.tag_exists == 'false'
