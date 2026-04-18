@@ -84,6 +84,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			// メンタルヘルス保護: やみモード OFF の場合は fanout/dbFallback を経由せず即空返し
 			if (!me.isInYamiMode) return [];
 
+			// フォロー情報は noteFilter / dbFallback 双方で使うのでここで一度だけ取得
+			const followings = await this.cacheService.userFollowingsCache.fetch(me.id);
+
 			const redisTimelines: FanoutTimelineName[] = [];
 
 			// フォローしているユーザーのやみノート
@@ -123,11 +126,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					// ダイレクト投稿で自分が宛先なら表示
 					if (note.visibility === 'specified' && note.visibleUserIds.includes(me.id)) return true;
 
-					// パブリック投稿 → showYamiNonFollowingPublicNotes で制御
+					// フォロー中ユーザーの投稿は visibility 問わず showYamiFollowingNotes で制御
+					if (Object.hasOwn(followings, note.userId)) return ps.showYamiFollowingNotes;
+
+					// 非フォローユーザーは public のみ showYamiNonFollowingPublicNotes で制御
 					if (note.visibility === 'public') return ps.showYamiNonFollowingPublicNotes;
 
-					// その他(home/followers) → showYamiFollowingNotes で制御
-					return ps.showYamiFollowingNotes;
+					return false;
 				},
 				excludePureRenotes: !ps.withRenotes,
 				localOnly: ps.localOnly,
@@ -141,8 +146,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						.leftJoinAndSelect('renote.user', 'renoteUser')
 						.andWhere('note.isNoteInYamiMode = TRUE');
 
-					// フォロー情報をキャッシュ経由で取得 (follow/unfollow 時に invalidate 済み)
-					const followings = await this.cacheService.userFollowingsCache.fetch(me.id);
 					const followingIds = Object.keys(followings);
 
 					// Yami TL 固有の「どのノートを候補にするか」選択
