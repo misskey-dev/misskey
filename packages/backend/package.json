@@ -17,7 +17,7 @@
 		"compile-config": "node ./scripts/compile_config.js",
 		"build": "rolldown -c",
 		"build:unit": "rolldown -c --sourcemap",
-		"build:e2e": "swc src -d src-js -D --strip-leading-paths && swc test-server -d built-test -D --config-file test-server/.swcrc --strip-leading-paths",
+		"build:e2e": "rolldown -c --e2e",
 		"watch:swc": "swc src -d built -D -w --strip-leading-paths",
 		"build:tsc": "tsgo -p tsconfig.json && tsc-alias -p tsconfig.json",
 		"watch": "pnpm compile-config && node ./scripts/watch.mjs",
