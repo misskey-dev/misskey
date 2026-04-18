@@ -397,3 +397,209 @@ export function getMeshesBoundingBox(meshes: BABYLON.Mesh[]): BABYLON.BoundingBo
 export function randomRange(min: number, max: number) {
 	return Math.random() * (max - min) + min;
 }
+
+export function remap(value: number, inMin: number, inMax: number, outMin: number, outMax: number) {
+	return outMin + (outMax - outMin) * ((value - inMin) / (inMax - inMin));
+}
+
+const TEXT_TEXTURE_CHAR_COLS = 16;
+const TEXT_TEXTURE_CHAR_ROWS = 16;
+
+const TEXT_TEXTURE_CHAR_MAP = {
+	'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I': 8, 'J': 9, 'K': 10, 'L': 11, 'M': 12, 'N': 13, 'O': 14, 'P': 15, 'Q': 16, 'R': 17, 'S': 18, 'T': 19, 'U': 20, 'V': 21, 'W': 22, 'X': 23, 'Y': 24, 'Z': 25, ' ': 26,
+	'a': 32, 'b': 33, 'c': 34, 'd': 35, 'e': 36, 'f': 37, 'g': 38, 'h': 39, 'i': 40, 'j': 41, 'k': 42, 'l': 43, 'm': 44, 'n': 45, 'o': 46, 'p': 47, 'q': 48, 'r': 49, 's': 50, 't': 51, 'u': 52, 'v': 53, 'w': 54, 'x': 55, 'y': 56, 'z': 57,
+	'0': 64, '1': 65, '2': 66, '3': 67, '4': 68, '5': 69, '6': 70, '7': 71, '8': 72, '9': 73,
+	'!': 78, '?': 79, '+': 80,
+	'■': 255,
+};
+
+const TEXT_TEXTURE_CHAR_WIDTH_MAP = {
+	'A': 0.7, 'B': 0.7, 'C': 0.7, 'D': 0.7, 'E': 0.7, 'F': 0.7, 'G': 0.7, 'H': 0.7, 'I': 0.4, 'J': 0.6, 'K': 0.7, 'L': 0.6, 'M': 0.8, 'N': 0.7, 'O': 0.7, 'P': 0.7, 'Q': 0.7, 'R': 0.7, 'S': 0.7, 'T': 0.7, 'U': 0.7, 'V': 0.7, 'W': 0.9, 'X': 0.7, 'Y': 0.7, 'Z': 0.7, ' ': 0.4,
+	'a': 0.6, 'b': 0.6, 'c': 0.6, 'd': 0.6, 'e': 0.6, 'f': 0.4, 'g': 0.6, 'h': 0.6, 'i': 0.3, 'j': 0.3, 'k': 0.6, 'l': 0.3, 'm': 0.9, 'n': 0.6, 'o': 0.6, 'p': 0.6, 'q': 0.6, 'r': 0.4, 's': 0.6, 't': 0.4, 'u': 0.6, 'v': 0.6, 'w': 0.8, 'x': 0.6, 'y': 0.6, 'z': 0.6,
+	'0': 0.6, '1': 0.6, '2': 0.6, '3': 0.6, '4': 0.6, '5': 0.6, '6': 0.6, '7': 0.6, '8': 0.6, '9': 0.6,
+	'+': 0.6,
+};
+
+export class RecyvlingText {
+	public maxChars: number;
+	public size: number;
+	public dir: 'left' | 'right';
+	public root: BABYLON.TransformNode;
+	public meshs: BABYLON.Mesh[] = [];
+
+	constructor(maxChars: number, scene: BABYLON.Scene, options: {
+		size: number;
+		dir: 'left' | 'right';
+		material: BABYLON.StandardMaterial;
+	}) {
+		this.maxChars = maxChars;
+		this.size = options.size;
+		this.dir = options.dir;
+
+		this.root = new BABYLON.TransformNode('textMeshsGroup', scene);
+
+		for (let i = 0; i < maxChars; i++) {
+			const plane = BABYLON.MeshBuilder.CreatePlane('plane', {
+				size: options.size,
+				sideOrientation: BABYLON.Mesh.DOUBLESIDE,
+				updatable: true,
+			}, scene);
+			plane.material = options.material;
+			plane.parent = this.root;
+			this.meshs.push(plane);
+		}
+
+		this.write('');
+	}
+
+	public write(text: string) {
+		// padding text
+		if (text.length < this.maxChars) {
+			const padding = ' '.repeat(this.maxChars - text.length);
+			text = this.dir === 'left' ? text + padding : padding + text;
+		}
+
+		let totalWidth = 0;
+		for (let i = 0; i < text.length; i++) {
+			const char = text[i];
+			const charWidth = TEXT_TEXTURE_CHAR_WIDTH_MAP[char] ?? 1;
+			totalWidth += this.size * charWidth;
+		}
+
+		let xPos = 0;
+
+		for (let i = 0; i < text.length; i++) {
+			const char = this.dir === 'left' ? text[i] : text[text.length - i - 1];
+			const index = TEXT_TEXTURE_CHAR_MAP[char];
+			const charWidth = TEXT_TEXTURE_CHAR_WIDTH_MAP[char] ?? 1;
+			const x = index % TEXT_TEXTURE_CHAR_COLS;
+			const y = Math.floor(index / TEXT_TEXTURE_CHAR_COLS);
+
+			if (this.dir === 'left') {
+				xPos += (this.size * charWidth);
+			} else if (this.dir === 'right') {
+				xPos -= (this.size * charWidth);
+			}
+
+			const plane = this.meshs[i];
+			const uvs = plane.getVerticesData(BABYLON.VertexBuffer.UVKind);
+			uvs[0] = uvs[6] = x / TEXT_TEXTURE_CHAR_COLS;
+			uvs[1] = uvs[3] = (y + 1) / TEXT_TEXTURE_CHAR_ROWS;
+			uvs[2] = uvs[4] = (x + 1) / TEXT_TEXTURE_CHAR_COLS;
+			uvs[5] = uvs[7] = y / TEXT_TEXTURE_CHAR_ROWS;
+			plane.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
+			plane.position = new BABYLON.Vector3(xPos, 0, 0);
+		}
+	}
+
+	public getMeshAt(index: number) {
+		return this.meshs[index];
+	}
+}
+
+export class RecyvlingTextGrid {
+	public facesCount: number;
+	public mesh: BABYLON.Mesh;
+	private uvs: BABYLON.FloatArray;
+
+	constructor(mesh: BABYLON.Mesh, facesCount: number, options: {
+		material: BABYLON.StandardMaterial;
+	}) {
+		this.mesh = mesh;
+		this.mesh.material = options.material;
+		this.mesh.convertToUnIndexedMesh();
+		this.mesh.markVerticesDataAsUpdatable(BABYLON.VertexBuffer.UVKind, true);
+
+		this.facesCount = facesCount;
+		this.uvs = mesh.getVerticesData(BABYLON.VertexBuffer.UVKind)!;
+
+		//this.write('');
+	}
+
+	public write(text: string) {
+		const charIndexes: number[] = [];
+
+		const repeatSeparator = ' ■ ';
+		let maxRepeat = Math.ceil(this.facesCount / text.length);
+		if (maxRepeat > 1) {
+			text += repeatSeparator;
+			maxRepeat = Math.ceil(this.facesCount / text.length);
+		}
+
+		for (let i = 0; i < this.facesCount; i++) {
+			if (i + text.length >= (maxRepeat * text.length)) {
+				if (i >= this.facesCount - repeatSeparator.length) {
+					charIndexes.push(TEXT_TEXTURE_CHAR_MAP[repeatSeparator[(i - (this.facesCount - repeatSeparator.length)) % repeatSeparator.length]]);
+				} else {
+					charIndexes.push(TEXT_TEXTURE_CHAR_MAP[' ']);
+				}
+				continue;
+			} else if (i >= text.length) {
+				const char = text[i % text.length];
+				const index = TEXT_TEXTURE_CHAR_MAP[char] ?? TEXT_TEXTURE_CHAR_MAP['■'];
+				charIndexes.push(index);
+				continue;
+			}
+
+			const char = text[i];
+			const index = TEXT_TEXTURE_CHAR_MAP[char] ?? TEXT_TEXTURE_CHAR_MAP['■'];
+			charIndexes.push(index);
+		}
+
+		const uvs = this.uvs;
+
+		const verticesCountPerFace = 6; // ひとつの四角はふたつの三角に分割されるので 3*2=6
+
+		for (let i = 0; i < this.facesCount; i++) {
+			const charIndex = charIndexes[i];
+			const charX = charIndex % TEXT_TEXTURE_CHAR_COLS;
+			const charY = Math.floor(charIndex / TEXT_TEXTURE_CHAR_COLS);
+
+			const uvIndex = i * (verticesCountPerFace * 2); // uvは(x,y)の2要素なので*2
+
+			/*
+			a--b  d
+			| /  / |
+			c   e--f
+			*/
+			let aIndex = 0;
+			let bIndex = 0;
+			let cIndex = 0;
+			let dIndex = 0;
+			let eIndex = 0;
+			let fIndex = 0;
+
+			for (let j = 0; j < (verticesCountPerFace * 2); j += 2) {
+				const x = uvs[uvIndex + j];
+				const y = uvs[uvIndex + j + 1];
+
+				// 多少ずれがあってもいいように(例えばblenderではUV展開時にデフォルトでわずかなマージンを追加する)、中心より大きいか/小さいかで判定する
+				// ひとつの四角はふたつの三角に分割される。右下に来る三角(d-e-f)の方が先にくるっぽい
+				if (j >= 6) {
+					if (x < 0.5 && y < 0.5) {
+						aIndex = j;
+					} else if (x > 0.5 && y < 0.5) {
+						bIndex = j;
+					} else if (x < 0.5 && y > 0.5) {
+						cIndex = j;
+					}
+				} else {
+					if (x > 0.5 && y < 0.5) {
+						dIndex = j;
+					} else if (x < 0.5 && y > 0.5) {
+						eIndex = j;
+					} else if (x > 0.5 && y > 0.5) {
+						fIndex = j;
+					}
+				}
+			}
+
+			uvs[uvIndex + aIndex + 0] = uvs[uvIndex + cIndex + 0] = uvs[uvIndex + eIndex + 0] = charX / TEXT_TEXTURE_CHAR_COLS;
+			uvs[uvIndex + aIndex + 1] = uvs[uvIndex + bIndex + 1] = uvs[uvIndex + dIndex + 1] = charY / TEXT_TEXTURE_CHAR_ROWS;
+			uvs[uvIndex + bIndex + 0] = uvs[uvIndex + dIndex + 0] = uvs[uvIndex + fIndex + 0] = (charX + 1) / TEXT_TEXTURE_CHAR_COLS;
+			uvs[uvIndex + cIndex + 1] = uvs[uvIndex + eIndex + 1] = uvs[uvIndex + fIndex + 1] = (charY + 1) / TEXT_TEXTURE_CHAR_ROWS;
+		}
+
+		this.mesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
+	}
+}

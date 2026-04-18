@@ -8,7 +8,7 @@ import { AxesViewer } from '@babylonjs/core/Debug/axesViewer';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
 import { EventEmitter } from 'eventemitter3';
 import tinycolor from 'tinycolor2';
-import { HorizontalCameraKeyboardMoveInput, WORLD_SCALE, camelToKebab, cm, createPlaneUvMapper, normalizeUvToSquare, randomRange } from './utility.js';
+import { HorizontalCameraKeyboardMoveInput, RecyvlingTextGrid, WORLD_SCALE, camelToKebab, cm, createPlaneUvMapper, normalizeUvToSquare, randomRange } from './utility.js';
 import { TIME_MAP } from './utility.js';
 import { genId } from '@/utility/id.js';
 import { deepClone } from '@/utility/clone.js';
@@ -41,6 +41,7 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 	public lightContainer: BABYLON.ClusteredLightContainer;
 	public sr: BABYLON.SnapshotRenderingHelper;
 	private gl: BABYLON.GlowLayer | null = null;
+	public textMaterial: BABYLON.StandardMaterial;
 
 	public isSitting = false;
 	private fps: number | null = null;
@@ -220,6 +221,38 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 			if (mesh.material) (mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.envMap;
 		}
 
+		this.textMaterial = new BABYLON.StandardMaterial('textMaterial', this.scene);
+		this.textMaterial.diffuseTexture = new BABYLON.Texture('/client-assets/world/chars.png', this.scene, false, false);
+		this.textMaterial.diffuseTexture.hasAlpha = true;
+		this.textMaterial.disableLighting = true;
+		this.textMaterial.transparencyMode = BABYLON.Material.MATERIAL_ALPHABLEND;
+		this.textMaterial.useAlphaFromDiffuseTexture = true;
+		this.textMaterial.freeze();
+
+		{
+			const messageRingRoot = new BABYLON.TransformNode('', this.scene);
+			const messageRing = envObj.meshes.find(m => m.name.includes('__MESSAGE_RING__'));
+			messageRing.parent = messageRingRoot;
+			messageRing.rotation = messageRing.rotationQuaternion.toEulerAngles();
+			messageRing.rotationQuaternion = null;
+			const text = new RecyvlingTextGrid(messageRing, 256, {
+				dir: 'left',
+				material: this.textMaterial,
+			});
+
+			text.write('Wellcome to Misskey World!');
+
+			//messageRingRoot.rotation.x = Math.PI / 4;
+
+			const anim = new BABYLON.Animation('', 'rotation.y', 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+			anim.setKeys([
+				{ frame: 0, value: 0 },
+				{ frame: 10000, value: Math.PI * 2 },
+			]);
+			messageRing.animations = [anim];
+			this.scene.beginAnimation(messageRing, 0, 10000, true);
+		}
+
 		for (let i = 0; i < 16; i++) {
 			const sphereRoot = new BABYLON.TransformNode('', this.scene);
 			sphereRoot.position = new BABYLON.Vector3(cm(0), cm(1000 + (100 * i)), cm(0));
@@ -302,6 +335,8 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 		const worldRingH = envObj.meshes.find(m => m.name.includes('__WORLD_RING_H__'));
 		const worldRingM = envObj.meshes.find(m => m.name.includes('__WORLD_RING_M__'));
 
+		worldRingH.rotation = worldRingH.rotationQuaternion.toEulerAngles();
+		worldRingM.rotation = worldRingM.rotationQuaternion.toEulerAngles();
 		worldRingH.rotationQuaternion = null;
 		worldRingM.rotationQuaternion = null;
 
@@ -312,11 +347,8 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 
 		setInterval(() => {
 			const time = Date.now();
-			worldRingH.rotation.x = ((time % _30days) / _30days) * Math.PI * 2;
-			worldRingH.rotation.z = ((time % _12h) / _12h) * Math.PI * 2;
-
-			worldRingM.rotation.x = ((time % _7days) / _7days) * Math.PI * 2;
-			worldRingM.rotation.z = ((time % _1h) / _1h) * Math.PI * 2;
+			worldRingH.rotation.x = ((time % _12h) / _12h) * Math.PI * 2;
+			worldRingM.rotation.y = -(((time % _1h) / _1h) * Math.PI * 2);
 		}, 100);
 
 		const screenMeshes = envObj.meshes.filter(m => m.name.includes('__SCREEN__'));
