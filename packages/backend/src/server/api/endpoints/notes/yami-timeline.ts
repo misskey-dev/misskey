@@ -230,6 +230,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						}
 					}));
 
+					this.queryService.generateBaseNoteFilteringQuery(query, me);
+					this.queryService.generateMutedUserRenotesQueryForNotes(query, me);
+
 					// 他のフィルター条件を追加
 					if (ps.withFiles) {
 						query.andWhere('note.fileIds != \'{}\'');
