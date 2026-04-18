@@ -80,8 +80,8 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 		skybox.material = skyboxMat;
 		skybox.infiniteDistance = true;
 
-		//this.time = TIME_MAP[new Date().getHours() as keyof typeof TIME_MAP];
-		this.time = TIME_MAP[12 as keyof typeof TIME_MAP];
+		this.time = TIME_MAP[new Date().getHours() as keyof typeof TIME_MAP];
+		//this.time = TIME_MAP[12 as keyof typeof TIME_MAP];
 
 		if (this.time === 0) {
 			skyboxMat.emissiveColor = new BABYLON.Color3(1, 1, 1);
@@ -233,17 +233,31 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 		this.textMaterial.freeze();
 
 		{
-			const messageRing = envObj.meshes.find(m => m.name.includes('__LED_RING__'));
-			messageRing.rotation = messageRing.rotationQuaternion.toEulerAngles();
-			messageRing.rotationQuaternion = null;
+			const objet = envObj.meshes.find(m => m.name.includes('__OBJET__'));
+			objet.rotation = objet.rotationQuaternion.toEulerAngles();
+			objet.rotationQuaternion = null;
 
 			const anim = new BABYLON.Animation('', 'rotation.y', 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
 			anim.setKeys([
 				{ frame: 0, value: 0 },
 				{ frame: 5000, value: -(Math.PI * 2) },
 			]);
-			messageRing.animations = [anim];
-			this.scene.beginAnimation(messageRing, 0, 5000, true);
+			objet.animations = [anim];
+			this.scene.beginAnimation(objet, 0, 5000, true);
+		}
+
+		{
+			const ring = envObj.meshes.find(m => m.name.includes('__LED_RING__'));
+			ring.rotation = ring.rotationQuaternion.toEulerAngles();
+			ring.rotationQuaternion = null;
+
+			const anim = new BABYLON.Animation('', 'rotation.y', 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+			anim.setKeys([
+				{ frame: 0, value: 0 },
+				{ frame: 5000, value: -(Math.PI * 2) },
+			]);
+			ring.animations = [anim];
+			this.scene.beginAnimation(ring, 0, 5000, true);
 		}
 
 		{
