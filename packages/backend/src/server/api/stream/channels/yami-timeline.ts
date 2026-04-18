@@ -12,6 +12,7 @@ import { isRenotePacked, isQuotePacked } from '@/misc/is-renote.js';
 import type { JsonObject } from '@/misc/json-value.js';
 import type { UsersRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
+import { NoteStreamingHidingService } from '../NoteStreamingHidingService.js';
 import Channel, { type ChannelRequest } from '../channel.js';
 import { REQUEST } from '@nestjs/core';
 
@@ -32,6 +33,7 @@ export class YamiTimelineChannel extends Channel {
 		request: ChannelRequest,
 
 		private noteEntityService: NoteEntityService,
+		private noteStreamingHidingService: NoteStreamingHidingService,
 		private roleService: RoleService,
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -136,6 +138,9 @@ export class YamiTimelineChannel extends Channel {
 
 			// ミュート・ブロックのチェック
 			if (this.isNoteMutedOrBlocked(note)) return;
+
+			const { shouldSkip } = await this.noteStreamingHidingService.processHiding(note, this.user?.id ?? null);
+			if (shouldSkip) return;
 
 			// リアクション情報の設定
 			if (this.user && isRenotePacked(note) && !isQuotePacked(note)) {
