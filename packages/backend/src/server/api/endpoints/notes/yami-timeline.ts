@@ -4,12 +4,13 @@
  */
 import { Brackets } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { NotesRepository, FollowingsRepository } from '@/models/_.js';
+import type { NotesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { QueryService } from '@/core/QueryService.js';
 import { DI } from '@/di-symbols.js';
 import { RoleService } from '@/core/RoleService.js';
 import { IdService } from '@/core/IdService.js';
+import { CacheService } from '@/core/CacheService.js';
 import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
 import { FanoutTimelineName } from '@/core/FanoutTimelineService.js';
 import { ApiError } from '../../error.js';
@@ -67,9 +68,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
-		@Inject(DI.followingsRepository)
-		private followingsRepository: FollowingsRepository,
-
+		private cacheService: CacheService,
 		private roleService: RoleService,
 		private idService: IdService,
 		private fanoutTimelineEndpointService: FanoutTimelineEndpointService,
@@ -151,13 +150,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						.leftJoinAndSelect('renote.user', 'renoteUser')
 						.andWhere('note.isNoteInYamiMode = TRUE');
 
-					// フォロー情報を取得
-					const followings = await this.followingsRepository.find({
-						where: { followerId: me.id },
-						select: ['followeeId'],
-					});
-
-					const followingIds = followings.map(x => x.followeeId);
+					// フォロー情報をキャッシュ経由で取得 (follow/unfollow 時に invalidate 済み)
+					const followings = await this.cacheService.userFollowingsCache.fetch(me.id);
+					const followingIds = Object.keys(followings);
 
 					// Yami TL 固有の「どのノートを候補にするか」選択
 					// (可視性 = specified/followers の厳密判定は generateVisibilityQuery に委譲)
