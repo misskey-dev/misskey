@@ -13,8 +13,6 @@ export const baseConfig = defineConfig({
 		},
 		restoreMocks: true,
 		testTimeout: 60000,
-		hookTimeout: 60000,
-		teardownTimeout: 60000,
 		maxWorkers: 1,
 		logHeapUsage: true,
 		vmMemoryLimit: 1024,
