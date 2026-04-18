@@ -1,5 +1,6 @@
 import { defineConfig } from 'rolldown';
 import type { Plugin, ExternalOption } from 'rolldown';
+import { writeFileSync } from 'fs';
 import { execa, execaNode } from 'execa';
 import type { ResultPromise } from 'execa';
 import esmShim from '@rollup/plugin-esm-shim';
@@ -51,6 +52,30 @@ function backendDevServerPlugin(): Plugin {
 	};
 }
 
+// TODO: あまりにもゴリ押しすぎるのでどうにかする
+function replaceE2EInternalModuleImportsPlugin(): Plugin {
+	return {
+		name: 'replace-e2e-internal-module-imports',
+		writeBundle(options, bundle) {
+			if (typeof options.dir === 'string') {
+				for (const fileName in bundle) {
+					if (fileName.endsWith('.js')) {
+						const chunk = bundle[fileName];
+						if (chunk.type === 'chunk') {
+							console.log(`Replacing internal module imports in ${fileName}...`);
+							const code = chunk.code
+								.replace(/(?<=from\s+['"])@\/(server\/[^'"]+)(?=['"])/g, './$1') // @/foo.js → ./server/foo.js
+								.replace(/(?<=from\s+['"])@\/(?!server\/)([^'"]+)(?=['"])/g, './server/$1'); // @/server/foo.js → ./server/foo.js
+							chunk.code = code;
+							writeFileSync(`${options.dir}/${fileName}`, code);
+						}
+					}
+				}
+			}
+		},
+	};
+}
+
 export default defineConfig((args) => {
 	const isWatchMode = args.watch != null && args.watch !== 'false';
 	const isE2E = args.e2e != null && args.e2e !== 'false';
@@ -77,22 +102,40 @@ export default defineConfig((args) => {
 	];
 
 	if (isE2E) {
-		return {
+		return [{
 			input: './test-server/entry.ts',
 			platform: 'node',
 			tsconfig: './test-server/tsconfig.json',
-			plugins: [
-				esmShim(),
-			],
+			plugins: [esmShim(), replaceE2EInternalModuleImportsPlugin()],
 			output: {
 				keepNames: true,
+				minify: false,
 				sourcemap: true,
 				dir: './built-test',
 				cleanDir: true,
 				format: 'esm',
 			},
+			external: /^[^.\/](?!:[\/\\])/,
+		}, {
+			input: [
+				'./src/MainModule.ts',
+				'./src/config.ts',
+				'./src/NestLogger.ts',
+				'./src/server/ServerService.ts',
+			],
+			platform: 'node',
+			tsconfig: true,
+			plugins: [esmShim()],
+			output: {
+				keepNames: true,
+				minify: false,
+				sourcemap: true,
+				dir: './built-test/server',
+				cleanDir: true,
+				format: 'esm',
+			},
 			external: externalModules,
-		};
+		}];
 	} else {
 		return {
 			input: [
