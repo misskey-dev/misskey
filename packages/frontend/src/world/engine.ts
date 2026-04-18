@@ -483,6 +483,7 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 			tex.video.volume = 0.25;
 			tex.video.muted = true;
 
+			screenMaterial.albedoColor = new BABYLON.Color3(0, 0, 0);
 			screenMaterial.emissiveTexture = tex;
 			screenMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
 
