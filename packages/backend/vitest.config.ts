@@ -4,6 +4,7 @@ import { defineConfig } from 'vitest/config';
 export const baseConfig = defineConfig({
 	test: {
 		exclude: ['node_modules', 'dist'],
+		hookTimeout: 60000,
 		coverage: {
 			provider: 'v8',
 			reportsDirectory: 'coverage',

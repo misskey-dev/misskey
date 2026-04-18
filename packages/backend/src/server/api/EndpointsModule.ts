@@ -6,13 +6,12 @@
 import { Module } from '@nestjs/common';
 
 import { CoreModule } from '@/core/CoreModule.js';
-import * as endpointsObject from './endpoint-list.js';
+import { endpointEntries } from './endpoint-entries.js';
 import { GetterService } from './GetterService.js';
 import { ApiLoggerService } from './ApiLoggerService.js';
 import type { Provider } from '@nestjs/common';
 
-const endpoints = Object.entries(endpointsObject);
-const endpointProviders = endpoints.map(([path, endpoint]): Provider => ({ provide: `ep:${path}`, useClass: endpoint.default }));
+const endpointProviders = endpointEntries.map(([path, endpoint]): Provider => ({ provide: `ep:${path}`, useClass: endpoint.default }));
 
 @Module({
 	imports: [
