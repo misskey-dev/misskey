@@ -236,7 +236,7 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 			messageRing.rotation = messageRing.rotationQuaternion.toEulerAngles();
 			messageRing.rotationQuaternion = null;
 			const text = new RecyvlingTextGrid(messageRing, 256, {
-				dir: 'left',
+				meshFlipped: true,
 				material: this.textMaterial,
 			});
 
@@ -247,7 +247,7 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 			const anim = new BABYLON.Animation('', 'rotation.y', 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
 			anim.setKeys([
 				{ frame: 0, value: 0 },
-				{ frame: 10000, value: Math.PI * 2 },
+				{ frame: 10000, value: -(Math.PI * 2) },
 			]);
 			messageRing.animations = [anim];
 			this.scene.beginAnimation(messageRing, 0, 10000, true);
@@ -269,6 +269,66 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 				currentTextIndex = (currentTextIndex + 1) % texts.length;
 				text.writeWithAnimation(textToShow);
 			}, 10000);
+		}
+
+		{
+			const messageRingRoot = new BABYLON.TransformNode('', this.scene);
+			const messageRing = envObj.meshes.find(m => m.name.includes('__MESSAGE_RING_INNER_1__'));
+			messageRing.parent = messageRingRoot;
+			messageRing.rotation = messageRing.rotationQuaternion.toEulerAngles();
+			messageRing.rotationQuaternion = null;
+			const text = new RecyvlingTextGrid(messageRing, 64, {
+				material: this.textMaterial,
+				repeatSeparator: '  ',
+			});
+
+			//messageRingRoot.rotation.x = Math.PI / 4;
+
+			const anim = new BABYLON.Animation('', 'rotation.y', 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+			anim.setKeys([
+				{ frame: 0, value: 0 },
+				{ frame: 10000, value: (Math.PI * 2) },
+			]);
+			messageRing.animations = [anim];
+			this.scene.beginAnimation(messageRing, 0, 10000, true);
+
+			setInterval(() => {
+				const now = new Date();
+				const hours = now.getHours().toString().padStart(2, '0');
+				const minutes = now.getMinutes().toString().padStart(2, '0');
+				const seconds = now.getSeconds().toString().padStart(2, '0');
+				text.write(`${hours}:${minutes}:${seconds}`);
+			}, 1000);
+		}
+
+		{
+			const messageRingRoot = new BABYLON.TransformNode('', this.scene);
+			const messageRing = envObj.meshes.find(m => m.name.includes('__MESSAGE_RING_INNER_2__'));
+			messageRing.parent = messageRingRoot;
+			messageRing.rotation = messageRing.rotationQuaternion.toEulerAngles();
+			messageRing.rotationQuaternion = null;
+			const text = new RecyvlingTextGrid(messageRing, 64, {
+				material: this.textMaterial,
+				repeatSeparator: '  ',
+			});
+
+			//messageRingRoot.rotation.x = Math.PI / 4;
+
+			const anim = new BABYLON.Animation('', 'rotation.y', 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+			anim.setKeys([
+				{ frame: 0, value: 0 },
+				{ frame: 10000, value: -(Math.PI * 2) },
+			]);
+			messageRing.animations = [anim];
+			this.scene.beginAnimation(messageRing, 0, 10000, true);
+
+			setInterval(() => {
+				const now = new Date();
+				const years = now.getFullYear().toString();
+				const months = (now.getMonth() + 1).toString().padStart(2, '0');
+				const days = now.getDate().toString().padStart(2, '0');
+				text.write(`${years}/${months}/${days}`);
+			}, 1000);
 		}
 
 		for (let i = 0; i < 16; i++) {

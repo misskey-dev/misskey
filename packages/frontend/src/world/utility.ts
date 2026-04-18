@@ -502,9 +502,13 @@ export class RecyvlingTextGrid {
 	public mesh: BABYLON.Mesh;
 	private originalUvs: BABYLON.FloatArray;
 	private currentText = '';
+	private meshFlipped: boolean;
+	private repeatSeparator: string;
 
 	constructor(mesh: BABYLON.Mesh, facesCount: number, options: {
+		meshFlipped: boolean;
 		material: BABYLON.StandardMaterial;
+		repeatSeparator?: string;
 	}) {
 		this.mesh = mesh;
 		this.mesh.material = options.material;
@@ -513,6 +517,8 @@ export class RecyvlingTextGrid {
 
 		this.facesCount = facesCount;
 		this.originalUvs = mesh.getVerticesData(BABYLON.VertexBuffer.UVKind)!.slice();
+		this.meshFlipped = options.meshFlipped;
+		this.repeatSeparator = options.repeatSeparator ?? ' ■ ';
 
 		//this.write('');
 	}
@@ -522,17 +528,16 @@ export class RecyvlingTextGrid {
 
 		const charIndexes: number[] = [];
 
-		const repeatSeparator = ' ■ ';
 		let maxRepeat = Math.ceil(this.facesCount / text.length);
 		if (maxRepeat > 1) {
-			text += repeatSeparator;
+			text += this.repeatSeparator;
 			maxRepeat = Math.ceil(this.facesCount / text.length);
 		}
 
 		for (let i = 0; i < this.facesCount; i++) {
 			if (i + text.length >= (maxRepeat * text.length)) {
-				if (i >= this.facesCount - repeatSeparator.length) {
-					charIndexes.push(TEXT_TEXTURE_CHAR_MAP[repeatSeparator[(i - (this.facesCount - repeatSeparator.length)) % repeatSeparator.length]]);
+				if (i >= this.facesCount - this.repeatSeparator.length) {
+					charIndexes.push(TEXT_TEXTURE_CHAR_MAP[this.repeatSeparator[(i - (this.facesCount - this.repeatSeparator.length)) % this.repeatSeparator.length]]);
 				} else {
 					charIndexes.push(TEXT_TEXTURE_CHAR_MAP[' ']);
 				}
@@ -554,13 +559,18 @@ export class RecyvlingTextGrid {
 		const verticesCountPerFace = 6; // ひとつの四角はふたつの三角に分割されるので 3*2=6
 
 		for (let i = 0; i < this.facesCount; i++) {
-			const charIndex = charIndexes[i];
+			const charIndex = charIndexes[this.meshFlipped ? i : (this.facesCount - i - 1)];
 			const charX = charIndex % TEXT_TEXTURE_CHAR_COLS;
 			const charY = Math.floor(charIndex / TEXT_TEXTURE_CHAR_COLS);
 
 			const uvIndex = i * (verticesCountPerFace * 2); // uvは(x,y)の2要素なので*2
 
-			/*
+			/* (non-flipped)
+			a   d--e
+			| \  \ |
+			b--c   f
+			*/
+			/* (flipped)
 			a--b  d
 			| /  / |
 			c   e--f
@@ -577,30 +587,57 @@ export class RecyvlingTextGrid {
 				const y = uvs[uvIndex + j + 1];
 
 				// 多少ずれがあってもいいように(例えばblenderではUV展開時にデフォルトでわずかなマージンを追加する)、中心より大きいか/小さいかで判定する
+				if (this.meshFlipped) {
 				// ひとつの四角はふたつの三角に分割される。右下に来る三角(d-e-f)の方が先にくるっぽい
-				if (j >= 6) {
-					if (x < 0.5 && y < 0.5) {
-						aIndex = j;
-					} else if (x > 0.5 && y < 0.5) {
-						bIndex = j;
-					} else if (x < 0.5 && y > 0.5) {
-						cIndex = j;
+					if (j >= 6) {
+						if (x < 0.5 && y < 0.5) {
+							aIndex = j;
+						} else if (x > 0.5 && y < 0.5) {
+							bIndex = j;
+						} else if (x < 0.5 && y > 0.5) {
+							cIndex = j;
+						}
+					} else {
+						if (x > 0.5 && y < 0.5) {
+							dIndex = j;
+						} else if (x < 0.5 && y > 0.5) {
+							eIndex = j;
+						} else if (x > 0.5 && y > 0.5) {
+							fIndex = j;
+						}
 					}
 				} else {
-					if (x > 0.5 && y < 0.5) {
-						dIndex = j;
-					} else if (x < 0.5 && y > 0.5) {
-						eIndex = j;
-					} else if (x > 0.5 && y > 0.5) {
-						fIndex = j;
+					if (j >= 6) {
+						if (x < 0.5 && y < 0.5) {
+							aIndex = j;
+						} else if (x < 0.5 && y > 0.5) {
+							bIndex = j;
+						} else if (x > 0.5 && y > 0.5) {
+							cIndex = j;
+						}
+					} else {
+						if (x < 0.5 && y < 0.5) {
+							dIndex = j;
+						} else if (x > 0.5 && y < 0.5) {
+							eIndex = j;
+						} else if (x > 0.5 && y > 0.5) {
+							fIndex = j;
+						}
 					}
 				}
 			}
 
-			uvs[uvIndex + aIndex + 0] = uvs[uvIndex + cIndex + 0] = uvs[uvIndex + eIndex + 0] = charX / TEXT_TEXTURE_CHAR_COLS;
-			uvs[uvIndex + aIndex + 1] = uvs[uvIndex + bIndex + 1] = uvs[uvIndex + dIndex + 1] = charY / TEXT_TEXTURE_CHAR_ROWS;
-			uvs[uvIndex + bIndex + 0] = uvs[uvIndex + dIndex + 0] = uvs[uvIndex + fIndex + 0] = (charX + 1) / TEXT_TEXTURE_CHAR_COLS;
-			uvs[uvIndex + cIndex + 1] = uvs[uvIndex + eIndex + 1] = uvs[uvIndex + fIndex + 1] = (charY + 1) / TEXT_TEXTURE_CHAR_ROWS;
+			if (this.meshFlipped) {
+				uvs[uvIndex + aIndex + 0] = uvs[uvIndex + cIndex + 0] = uvs[uvIndex + eIndex + 0] = charX / TEXT_TEXTURE_CHAR_COLS;
+				uvs[uvIndex + aIndex + 1] = uvs[uvIndex + bIndex + 1] = uvs[uvIndex + dIndex + 1] = charY / TEXT_TEXTURE_CHAR_ROWS;
+				uvs[uvIndex + bIndex + 0] = uvs[uvIndex + dIndex + 0] = uvs[uvIndex + fIndex + 0] = (charX + 1) / TEXT_TEXTURE_CHAR_COLS;
+				uvs[uvIndex + cIndex + 1] = uvs[uvIndex + eIndex + 1] = uvs[uvIndex + fIndex + 1] = (charY + 1) / TEXT_TEXTURE_CHAR_ROWS;
+			} else {
+				uvs[uvIndex + aIndex + 0] = uvs[uvIndex + dIndex + 0] = uvs[uvIndex + bIndex + 0] = charX / TEXT_TEXTURE_CHAR_COLS;
+				uvs[uvIndex + aIndex + 1] = uvs[uvIndex + dIndex + 1] = uvs[uvIndex + eIndex + 1] = charY / TEXT_TEXTURE_CHAR_ROWS;
+				uvs[uvIndex + eIndex + 0] = uvs[uvIndex + fIndex + 0] = uvs[uvIndex + cIndex + 0] = (charX + 1) / TEXT_TEXTURE_CHAR_COLS;
+				uvs[uvIndex + bIndex + 1] = uvs[uvIndex + cIndex + 1] = uvs[uvIndex + fIndex + 1] = (charY + 1) / TEXT_TEXTURE_CHAR_ROWS;
+			}
 		}
 
 		this.mesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
