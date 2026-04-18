@@ -67,8 +67,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
 
-		@Inject(DI.channelFollowingsRepository)
-
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
 
