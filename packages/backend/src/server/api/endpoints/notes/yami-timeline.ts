@@ -81,25 +81,24 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.YamiTlDisabled);
 			}
 
-			// Redis Timelinesを使用した実装
+			// メンタルヘルス保護: やみモード OFF の場合は fanout/dbFallback を経由せず即空返し
+			if (!me.isInYamiMode) return [];
+
 			const redisTimelines: FanoutTimelineName[] = [];
 
-			// やみモードONの場合のみRedisタイムラインを設定
-			if (me.isInYamiMode) {
-				// フォローしているユーザーのやみノート
-				if (ps.showYamiFollowingNotes) {
-					redisTimelines.push(`yamiTimeline:${me.id}`);
-					if (ps.withFiles) {
-						redisTimelines.push(`yamiTimelineWithFiles:${me.id}`);
-					}
+			// フォローしているユーザーのやみノート
+			if (ps.showYamiFollowingNotes) {
+				redisTimelines.push(`yamiTimeline:${me.id}`);
+				if (ps.withFiles) {
+					redisTimelines.push(`yamiTimelineWithFiles:${me.id}`);
 				}
+			}
 
-				// 非フォローユーザーのパブリックノート
-				if (ps.showYamiNonFollowingPublicNotes) {
-					redisTimelines.push('yamiPublicNotes');
-					if (ps.withFiles) {
-						redisTimelines.push('yamiPublicNotesWithFiles');
-					}
+			// 非フォローユーザーのパブリックノート
+			if (ps.showYamiNonFollowingPublicNotes) {
+				redisTimelines.push('yamiPublicNotes');
+				if (ps.withFiles) {
+					redisTimelines.push('yamiPublicNotesWithFiles');
 				}
 			}
 
@@ -114,9 +113,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				noteFilter: (note) => {
 					// やみノート以外は除外
 					if (!note.isNoteInYamiMode) return false;
-
-					// メンタルヘルス保護: やみモードOFFの場合はすべて非表示
-					if (!me.isInYamiMode) return false;
 
 					// ボットフィルタリング
 					if (ps.excludeBots && note.user?.isBot) return false;
@@ -136,11 +132,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				excludePureRenotes: !ps.withRenotes,
 				localOnly: ps.localOnly,
 				dbFallback: async (untilId, sinceId, limit) => {
-					// メンタルヘルス保護: やみモードOFFの場合は空の結果を返す
-					if (!me.isInYamiMode) {
-						return [];
-					}
-
 					const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'),
 						sinceId, untilId)
 						.innerJoinAndSelect('note.user', 'user')
