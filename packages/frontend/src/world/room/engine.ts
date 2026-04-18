@@ -312,7 +312,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.shadowGeneratorForRoomLight.bias = 0.0001;
 		this.shadowGeneratorForRoomLight.usePercentageCloserFiltering = true;
 		this.shadowGeneratorForRoomLight.filteringQuality = BABYLON.ShadowGenerator.QUALITY_HIGH;
-		if (!SNAPSHOT_RENDERING) this.shadowGeneratorForRoomLight.getShadowMap().refreshRate = 60; // snapshot renderingではrefreshRateが設定されているとなぜかクラッシュする
+		this.shadowGeneratorForRoomLight.getShadowMap().refreshRate = 60;
 		//this.shadowGenerator1.useContactHardeningShadow = true;
 
 		const sunLight = new BABYLON.DirectionalLight('sunLight', new BABYLON.Vector3(0.2, -1, -1), this.scene);
@@ -327,7 +327,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.shadowGeneratorForSunLight.bias = 0.0001;
 		this.shadowGeneratorForSunLight.usePercentageCloserFiltering = true;
 		this.shadowGeneratorForSunLight.usePoissonSampling = true;
-		if (!SNAPSHOT_RENDERING) this.shadowGeneratorForSunLight.getShadowMap().refreshRate = 60; // snapshot renderingではrefreshRateが設定されているとなぜかクラッシュする
+		this.shadowGeneratorForSunLight.getShadowMap().refreshRate = 60;
 
 		this.lightContainer = new BABYLON.ClusteredLightContainer('clustered', [], this.scene);
 
