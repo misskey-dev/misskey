@@ -21,10 +21,8 @@ import { IdService } from '@/core/IdService.js';
 // TODO: uploadableFileTypes で許可されていないファイルが弾かれるかのテスト
 
 describe('/drive/files/create', () => {
-	const HOOK_TIMEOUT = 60000;
-
-	let module: TestingModule | undefined;
-	let server: FastifyInstance | undefined;
+	let module: TestingModule;
+	let server: FastifyInstance;
 	let roleService: RoleService;
 	let idService: IdService;
 
@@ -108,7 +106,7 @@ describe('/drive/files/create', () => {
 				},
 			},
 		});
-		}, HOOK_TIMEOUT);
+	});
 
 	beforeEach(async () => {
 		await roleService.unassign(root.id, role_tinyAttachment.id).catch(() => {
@@ -120,14 +118,9 @@ describe('/drive/files/create', () => {
 	});
 
 	afterAll(async () => {
-		if (server != null) {
-			await server.close();
-		}
-
-		if (module != null) {
-			await module.close();
-		}
-	}, HOOK_TIMEOUT);
+		await server.close();
+		await module.close();
+	});
 
 	async function postFile(props: {
 		name: string,
@@ -137,10 +130,6 @@ describe('/drive/files/create', () => {
 		fileContent: Buffer | string,
 	}) {
 		const { name, comment, isSensitive, force, fileContent } = props;
-
-		if (server == null) {
-			throw new Error('Server is not initialized');
-		}
 
 		return await request(server.server)
 			.post('/api/drive/files/create')

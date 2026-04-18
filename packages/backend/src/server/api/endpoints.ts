@@ -6,7 +6,7 @@
 import { permissions } from 'misskey-js';
 import type { KeyOf, Schema } from '@/misc/json-schema.js';
 
-import { endpointEntries } from './endpoint-entries.js';
+import * as endpointsObject from './endpoint-list.js';
 
 interface IEndpointMetaBase {
 	readonly stability?: 'deprecated' | 'experimental' | 'stable';
@@ -130,7 +130,7 @@ export interface IEndpoint {
 	params: Schema;
 }
 
-const endpoints: IEndpoint[] = endpointEntries.map(([name, ep]) => {
+const endpoints: IEndpoint[] = Object.entries(endpointsObject).map(([name, ep]) => {
 	return {
 		name: name,
 		get meta() {
