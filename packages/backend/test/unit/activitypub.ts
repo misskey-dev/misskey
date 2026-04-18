@@ -224,6 +224,51 @@ describe('ActivityPub', () => {
 		});
 	});
 
+	describe('alsoKnownAs field', () => {
+		test('Handle alsoKnownAs as an array', async () => {
+			const actor = {
+				...createRandomActor(),
+				alsoKnownAs: ['https://example.com/users/alice', 'https://example.com/users/alice2'],
+			};
+
+			resolver.register(actor.id, actor);
+
+			const user = await personService.createPerson(actor.id, resolver);
+
+			assert.deepStrictEqual(user.alsoKnownAs, actor.alsoKnownAs);
+		});
+
+		test('Handle alsoKnownAs as a string', async () => {
+			const actor = {
+				...createRandomActor(),
+				alsoKnownAs: 'https://example.com/users/alice',
+			};
+
+			resolver.register(actor.id, actor);
+
+			const user = await personService.createPerson(actor.id, resolver);
+
+			assert.deepStrictEqual(user.alsoKnownAs, [actor.alsoKnownAs]);
+		});
+
+		test('Update person with alsoKnownAs as a string', async () => {
+			const actor = createRandomActor();
+			resolver.register(actor.id, actor);
+			const user = await personService.createPerson(actor.id, resolver);
+
+			const updatedActor = {
+				...actor,
+				alsoKnownAs: 'https://example.com/users/alice',
+			};
+			resolver.register(actor.id, updatedActor);
+
+			await personService.updatePerson(actor.id, resolver, updatedActor);
+
+			const updatedUser = await personService.fetchPerson(actor.id);
+			assert.deepStrictEqual(updatedUser?.alsoKnownAs, [updatedActor.alsoKnownAs]);
+		});
+	});
+
 	describe('Collection visibility', () => {
 		test('Public following/followers', async () => {
 			const actor = createRandomActor();

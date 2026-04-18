@@ -131,10 +131,11 @@ function move() {
 
 	const f = file.value;
 
-	selectDriveFolder(null).then(folder => {
+	selectDriveFolder(null).then(({ canceled, folders }) => {
+		if (canceled) return;
 		misskeyApi('drive/files/update', {
 			fileId: f.id,
-			folderId: folder[0] ? folder[0].id : null,
+			folderId: folders[0] ? folders[0].id : null,
 		}).then(async () => {
 			await _fetch_();
 		});
@@ -214,7 +215,7 @@ async function deleteFile() {
 
 	globalEvents.emit('driveFilesDeleted', [file.value]);
 
-	router.push('/my/drive');
+	router.replace('/my/drive');
 }
 
 onMounted(async () => {

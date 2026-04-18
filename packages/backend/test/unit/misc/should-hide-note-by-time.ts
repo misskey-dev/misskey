@@ -8,7 +8,7 @@ import * as lolex from '@sinonjs/fake-timers';
 import { shouldHideNoteByTime } from '@/misc/should-hide-note-by-time.js';
 
 describe('misc:should-hide-note-by-time', () => {
-	let clock: lolex.InstalledClock;
+	let clock: lolex.Clock;
 	const epoch = Date.UTC(2000, 0, 1, 0, 0, 0);
 
 	beforeEach(() => {

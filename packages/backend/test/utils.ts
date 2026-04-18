@@ -404,37 +404,28 @@ export function connectStream<C extends keyof misskey.Channels>(user: UserToken,
 }
 
 export const waitFire = async <C extends keyof misskey.Channels>(user: UserToken, channel: C, trgr: () => any, cond: (msg: Record<string, any>) => boolean, params?: misskey.Channels[C]['params']) => {
-	return new Promise<boolean>(async (res, rej) => {
-		let timer: NodeJS.Timeout | null = null;
+	let ws: WebSocket | undefined;
 
-		let ws: WebSocket;
-		try {
-			ws = await connectStream(user, channel, msg => {
+	try {
+		let callback: (msg: Record<string, unknown>) => void;
+		const receivedPromise = new Promise<boolean>((resolve) => {
+			callback = (msg: Record<string, unknown>) => {
 				if (cond(msg)) {
-					ws.close();
-					if (timer) clearTimeout(timer);
-					res(true);
+					resolve(true);
 				}
-			}, params);
-		} catch (e) {
-			rej(e);
-		}
+			};
+		});
 
-		if (!ws!) return;
+		ws = await connectStream(user, channel, callback!, params);
+		await trgr();
 
-		timer = setTimeout(() => {
-			ws.close();
-			res(false);
-		}, 3000);
-
-		try {
-			await trgr();
-		} catch (e) {
-			ws.close();
-			if (timer) clearTimeout(timer);
-			rej(e);
-		}
-	});
+		return await Promise.race([
+			receivedPromise,
+			new Promise<void>((r) => setTimeout(() => r(), 3000)).then(() => false),
+		]);
+	} finally {
+		if (ws) ws.close();
+	}
 };
 
 /**

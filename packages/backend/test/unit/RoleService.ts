@@ -42,7 +42,7 @@ describe('RoleService', () => {
 	let roleAssignmentsRepository: RoleAssignmentsRepository;
 	let meta: Mocked<MiMeta>;
 	let notificationService: Mocked<NotificationService>;
-	let clock: lolex.InstalledClock;
+	let clock: lolex.Clock;
 
 	async function createUser(data: Partial<MiUser> = {}) {
 		const un = secureRndstr(16);

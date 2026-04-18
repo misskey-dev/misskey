@@ -31,7 +31,7 @@ export function useForm<T extends Record<string, any>>(initialState: T, save: (n
 
 	watch([currentState, previousState], () => {
 		for (const key in modifiedStates) {
-			modifiedStates[key] = !deepEqual(currentState[key], previousState[key]);
+			(modifiedStates as any)[key] = !deepEqual(currentState[key], previousState[key]);
 		}
 	}, { deep: true });
 

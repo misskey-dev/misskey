@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:width="450"
 	:canClose="false"
 	:withOkButton="true"
-	:okButtonDisabled="false"
+	:okButtonDisabled="!canSave"
 	@click="cancel()"
 	@ok="ok()"
 	@close="cancel()"
@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</template>
 
 	<div class="_spacer" style="--MI_SPACER-min: 20px; --MI_SPACER-max: 32px;">
-		<MkForm v-model="values" :form="form"/>
+		<MkForm v-model="values" :form="form" @canSaveStateChange="onCanSaveStateChanged"/>
 	</div>
 </MkModalWindow>
 </template>
@@ -59,7 +59,15 @@ const values = ref((() => {
 	return obj;
 })());
 
+const canSave = ref(true);
+
+function onCanSaveStateChanged(newCanSave: boolean) {
+	canSave.value = newCanSave;
+}
+
 function ok() {
+	if (!canSave.value) return;
+
 	emit('done', {
 		result: values.value,
 	});

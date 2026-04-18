@@ -6,8 +6,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkWindow
 	ref="windowEl"
-	:initialWidth="500"
-	:initialHeight="500"
 	:canResize="true"
 	:closeButton="true"
 	:buttonsLeft="buttonsLeft"
@@ -30,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, provide, ref, useTemplateRef } from 'vue';
+import { computed, onMounted, onUnmounted, provide, ref, useTemplateRef, nextTick } from 'vue';
 import { url } from '@@/js/config.js';
 import type { PageMetadata } from '@/page.js';
 import RouterView from '@/components/global/RouterView.vue';
@@ -100,6 +98,24 @@ windowRouter.addListener('replace', ctx => {
 	_history_.value.push({ path: ctx.fullPath });
 });
 
+windowRouter.addListener('forcePush', ctx => {
+	window.open(url + ctx.fullPath, '_blank', 'noopener');
+	if (ctx.onInit) {
+		nextTick(() => {
+			windowEl.value?.close();
+		});
+	}
+});
+
+windowRouter.addListener('forceReplace', ctx => {
+	window.open(url + ctx.fullPath, '_blank', 'noopener');
+	if (ctx.onInit) {
+		nextTick(() => {
+			windowEl.value?.close();
+		});
+	}
+});
+
 windowRouter.addListener('change', ctx => {
 	if (_DEV_) console.log('windowRouter: change', ctx.fullPath);
 	searchMarkerId.value = getSearchMarker(ctx.fullPath);
@@ -109,7 +125,7 @@ windowRouter.addListener('change', ctx => {
 	});
 });
 
-windowRouter.init();
+windowRouter.init(true);
 
 provide(DI.router, windowRouter);
 provide(DI.inAppSearchMarkerId, searchMarkerId);

@@ -25,7 +25,7 @@ const baseDate = new Date(Date.UTC(2000, 11, 15, 12, 0, 0));
 
 describe('CheckModeratorsActivityProcessorService', () => {
 	let app: TestingModule;
-	let clock: lolex.InstalledClock;
+	let clock: lolex.Clock;
 	let service: CheckModeratorsActivityProcessorService;
 
 	// --------------------------------------------------------------------------------------

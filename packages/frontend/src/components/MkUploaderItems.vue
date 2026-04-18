@@ -24,7 +24,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div :class="$style.itemBody">
 				<div>
 					<i v-if="item.isSensitive" style="color: var(--MI_THEME-warn); margin-right: 0.5em;" class="ti ti-eye-exclamation"></i>
-					<MkCondensedLine :minScale="2 / 3">{{ item.name }}</MkCondensedLine>
+					<MkCondensedLine :minScale="2 / 3">
+						<span>{{ getUploadName(item).lastIndexOf('.') != -1 ? getUploadName(item).substring(0, getUploadName(item).lastIndexOf('.')) : getUploadName(item) }}</span>
+						<span v-if="getUploadName(item).lastIndexOf('.') != -1" style="opacity: 0.5;">{{ getUploadName(item).substring(getUploadName(item).lastIndexOf('.')) }}</span>
+					</MkCondensedLine>
 				</div>
 				<div :class="$style.itemInfo">
 					<span>{{ item.file.type }}</span>
@@ -47,6 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { isLink } from '@@/js/is-link.js';
+import { getUploadName } from '@/composables/use-uploader.js';
 import type { UploaderItem } from '@/composables/use-uploader.js';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
@@ -57,18 +61,18 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'showMenu', item: UploaderItem, event: MouseEvent): void;
-	(ev: 'showMenuViaContextmenu', item: UploaderItem, event: MouseEvent): void;
+	(ev: 'showMenu', item: UploaderItem, event: PointerEvent): void;
+	(ev: 'showMenuViaContextmenu', item: UploaderItem, event: PointerEvent): void;
 }>();
 
-function onContextmenu(item: UploaderItem, ev: MouseEvent) {
+function onContextmenu(item: UploaderItem, ev: PointerEvent) {
 	if (ev.target && isLink(ev.target as HTMLElement)) return;
 	if (window.getSelection()?.toString() !== '') return;
 
 	emit('showMenuViaContextmenu', item, ev);
 }
 
-function onThumbnailClick(item: UploaderItem, ev: MouseEvent) {
+function onThumbnailClick(item: UploaderItem, ev: PointerEvent) {
 	// TODO: preview when item is image
 }
 </script>

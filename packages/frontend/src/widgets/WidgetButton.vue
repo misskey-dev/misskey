@@ -39,7 +39,7 @@ const widgetPropsDef = {
 		type: 'string',
 		label: i18n.ts.script,
 		multiline: true,
-		default: 'Mk:dialog("hello" "world")',
+		default: 'Mk:dialog("hello", "world")',
 	},
 } satisfies FormWithDefault;
 

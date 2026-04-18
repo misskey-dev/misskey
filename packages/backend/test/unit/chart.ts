@@ -35,7 +35,7 @@ describe('Chart', () => {
 	let testGroupedChart: TestGroupedChart;
 	let testUniqueChart: TestUniqueChart;
 	let testIntersectionChart: TestIntersectionChart;
-	let clock: lolex.InstalledClock;
+	let clock: lolex.Clock;
 
 	beforeEach(async () => {
 		if (db) db.destroy();

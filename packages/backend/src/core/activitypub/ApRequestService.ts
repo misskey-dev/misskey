@@ -81,7 +81,7 @@ export class ApRequestCreator {
 			}, args.additionalHeaders),
 		};
 
-		const result = this.#signToRequest(request, args.key, ['(request-target)', 'date', 'host', 'accept']);
+		const result = this.#signToRequest(request, args.key, ['(request-target)', 'date', 'host']);
 
 		return {
 			request,
@@ -226,7 +226,7 @@ export class ApRequestService {
 						return await this.signedGet(href, user, allowSoftfail, false);
 					}
 				}
-			} catch (e) {
+			} catch (_) {
 				// something went wrong parsing the HTML, ignore the whole thing
 			}
 		}

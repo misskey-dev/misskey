@@ -11,9 +11,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search" @enter="search">
 					<template #prefix><i class="ti ti-search"></i></template>
 				</MkInput>
-				<MkRadios v-model="searchType" @update:modelValue="search()">
-					<option value="nameAndDescription">{{ i18n.ts._channel.nameAndDescription }}</option>
-					<option value="nameOnly">{{ i18n.ts._channel.nameOnly }}</option>
+				<MkRadios
+					v-model="searchType"
+					:options="[
+						{ value: 'nameAndDescription', label: i18n.ts._channel.nameAndDescription },
+						{ value: 'nameOnly', label: i18n.ts._channel.nameOnly },
+					]"
+					@update:modelValue="search()"
+				>
 				</MkRadios>
 				<MkButton large primary gradate rounded @click="search">{{ i18n.ts.search }}</MkButton>
 			</div>
@@ -45,7 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkPagination>
 		</div>
 		<div v-else-if="tab === 'owned'" class="_gaps">
-			<MkButton link primary rounded to="/channels/new"><i class="ti ti-plus"></i> {{ i18n.ts.createNew }}</MkButton>
+			<MkButton type="routerLink" primary rounded to="/channels/new"><i class="ti ti-plus"></i> {{ i18n.ts.createNew }}</MkButton>
 			<MkPagination v-slot="{items}" :paginator="ownedPaginator">
 				<div :class="$style.root">
 					<MkChannelPreview v-for="channel in items" :key="channel.id" :channel="channel"/>
@@ -72,15 +77,17 @@ import { Paginator } from '@/utility/paginator.js';
 
 const router = useRouter();
 
+type SearchType = 'nameAndDescription' | 'nameOnly';
+
 const props = defineProps<{
 	query: string;
-	type?: string;
+	type?: SearchType;
 }>();
 
 const key = ref('');
 const tab = ref('featured');
 const searchQuery = ref('');
-const searchType = ref('nameAndDescription');
+const searchType = ref<SearchType>('nameAndDescription');
 const channelPaginator = shallowRef();
 
 onMounted(() => {

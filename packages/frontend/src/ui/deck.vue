@@ -174,7 +174,7 @@ const addColumnButtonEl = useTemplateRef('addColumnButtonEl');
 const settingsButtonEl = useTemplateRef('settingsButtonEl');
 const swicthProfileButtonEl = useTemplateRef('swicthProfileButtonEl');
 
-const addColumn = async (ev) => {
+async function addColumn(ev: PointerEvent) {
 	const { canceled, result: column } = await os.select({
 		title: i18n.ts._deck.addColumn,
 		items: columnTypes.filter(column => column !== 'chat' || $i == null || $i.policies.chatAvailability !== 'unavailable').map(column => ({
@@ -190,14 +190,14 @@ const addColumn = async (ev) => {
 		width: 330,
 		soundSetting: { type: null, volume: 1 },
 	});
-};
+}
 
-const onContextmenu = (ev) => {
+function onContextmenu(ev: PointerEvent) {
 	os.contextMenu([{
 		text: i18n.ts._deck.addColumn,
 		action: addColumn,
 	}], ev);
-};
+}
 
 // タッチでスクロールしてるときはスナップスクロールを有効にする
 function pointerEvent(ev: PointerEvent) {

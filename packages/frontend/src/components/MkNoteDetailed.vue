@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<MkNoteSub v-for="note in conversation" :key="note.id" :class="$style.replyToMore" :note="note"/>
 	</div>
-	<MkNoteSub v-if="appearNote.replyId" :note="appearNote.reply" :class="$style.replyTo"/>
+	<MkNoteSub v-if="appearNote.replyId" :note="appearNote?.reply ?? null" :class="$style.replyTo"/>
 	<div v-if="isRenote" :class="$style.renote">
 		<MkAvatar :class="$style.renoteAvatar" :user="note.user" link preview/>
 		<i class="ti ti-repeat" style="margin-right: 4px;"></i>
@@ -143,8 +143,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:reactionEmojis="$appearNote.reactionEmojis"
 					:myReaction="$appearNote.myReaction"
 					:noteId="appearNote.id"
-					:maxNumber="16"
-					@mockUpdateMyReaction="emitUpdReaction"
 				/>
 				<button class="_button" :class="$style.noteFooterButton" @click="reply()">
 					<i class="ti ti-arrow-back-up"></i>
@@ -233,13 +231,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, markRaw, onMounted, provide, ref, useTemplateRef } from 'vue';
+import { computed, inject, markRaw, provide, ref, useTemplateRef } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { isLink } from '@@/js/is-link.js';
 import { host } from '@@/js/config.js';
 import type { OpenOnRemoteOptions } from '@/utility/please-login.js';
 import type { Keymap } from '@/utility/hotkey.js';
+import type { MenuItem } from '@/types/menu.js';
 import MkNoteSub from '@/components/MkNoteSub.vue';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
@@ -288,7 +287,7 @@ const props = withDefaults(defineProps<{
 	initialTab: 'replies',
 });
 
-const inChannel = inject('inChannel', null);
+const inChannel = inject(DI.inChannel, null);
 
 let note = deepClone(props.note);
 
@@ -358,7 +357,9 @@ const keymap = {
 		if (!prefer.s.showClipButtonInNoteFooter) return;
 		clip();
 	},
-	'o': () => galleryEl.value?.openGallery(),
+	'o': () => {
+		galleryEl.value?.openGallery();
+	},
 	'v|enter': () => {
 		if (appearNote.cw != null) {
 			showContent.value = !showContent.value;
@@ -553,7 +554,7 @@ function toggleReact() {
 	}
 }
 
-function onContextmenu(ev: MouseEvent): void {
+function onContextmenu(ev: PointerEvent): void {
 	if (ev.target && isLink(ev.target as HTMLElement)) return;
 	if (window.getSelection()?.toString() !== '') return;
 
@@ -581,18 +582,36 @@ async function showRenoteMenu() {
 	const isLoggedIn = await pleaseLogin({ openOnRemote: pleaseLoginContext.value });
 	if (!isLoggedIn) return;
 
-	os.popupMenu([{
-		text: i18n.ts.unrenote,
-		icon: 'ti ti-trash',
-		danger: true,
-		action: () => {
-			misskeyApi('notes/delete', {
-				noteId: note.id,
-			}).then(() => {
-				globalEvents.emit('noteDeleted', note.id);
-			});
-		},
-	}], renoteTime.value);
+	const menu: MenuItem[] = [];
+
+	if (isMyRenote) {
+		menu.push({
+			text: i18n.ts.unrenote,
+			icon: 'ti ti-trash',
+			danger: true,
+			action: () => {
+				misskeyApi('notes/delete', {
+					noteId: note.id,
+				}).then(() => {
+					globalEvents.emit('noteDeleted', note.id);
+				});
+			},
+		});
+	}
+
+	if (
+		props.note.channelId != null &&
+		(inChannel == null || props.note.channelId !== inChannel.value)
+	) {
+		menu.push({
+			type: 'link',
+			text: i18n.ts.viewRenotedChannel,
+			icon: 'ti ti-device-tv',
+			to: `/channels/${props.note.channelId}`,
+		});
+	}
+
+	os.popupMenu(menu, renoteTime.value);
 }
 
 function focus() {

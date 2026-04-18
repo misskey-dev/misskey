@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.root">
+<div :class="$style.root" class="_gaps_s">
 	<template v-if="edit">
 		<header :class="$style.editHeader">
 			<MkSelect v-model="widgetAdderSelected" :items="widgetAdderSelectedDef" style="margin-bottom: var(--MI-margin)" data-cy-widget-select>
@@ -13,27 +13,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton inline primary data-cy-widget-add @click="addWidget"><i class="ti ti-plus"></i> {{ i18n.ts.add }}</MkButton>
 			<MkButton inline @click="emit('exit')">{{ i18n.ts.close }}</MkButton>
 		</header>
-		<Sortable
+		<MkDraggable
 			:modelValue="props.widgets"
-			itemKey="id"
-			handle=".handle"
-			:animation="150"
-			:group="{ name: 'SortableMkWidgets' }"
-			:class="$style.editEditing"
+			direction="vertical"
+			withGaps
+			group="MkWidgets"
 			@update:modelValue="v => emit('updateWidgets', v)"
 		>
-			<template #item="{element}">
+			<template #default="{ item }">
 				<div :class="[$style.widget, $style.customizeContainer]" data-cy-customize-container>
-					<button :class="$style.customizeContainerConfig" class="_button" @click.prevent.stop="configWidget(element.id)"><i class="ti ti-settings"></i></button>
-					<button :class="$style.customizeContainerRemove" data-cy-customize-container-remove class="_button" @click.prevent.stop="removeWidget(element)"><i class="ti ti-x"></i></button>
-					<div class="handle">
-						<component :is="`widget-${element.name}`" :ref="el => widgetRefs[element.id] = el" class="widget" :class="$style.customizeContainerHandleWidget" :widget="element" @updateProps="updateWidget(element.id, $event)"/>
-					</div>
+					<button :class="$style.customizeContainerConfig" class="_button" @click.prevent.stop="configWidget(item.id)"><i class="ti ti-settings"></i></button>
+					<button :class="$style.customizeContainerRemove" data-cy-customize-container-remove class="_button" @click.prevent.stop="removeWidget(item)"><i class="ti ti-x"></i></button>
+					<component :is="`widget-${item.name}`" :ref="(el: any) => widgetRefs[item.id] = el" :class="$style.customizeContainerHandleWidget" :widget="item" @updateProps="updateWidget(item.id, $event)"/>
 				</div>
 			</template>
-		</Sortable>
+		</MkDraggable>
 	</template>
-	<component :is="`widget-${widget.name}`" v-for="widget in _widgets" v-else :key="widget.id" :ref="el => widgetRefs[widget.id] = el" :class="$style.widget" :widget="widget" @updateProps="updateWidget(widget.id, $event)" @contextmenu.stop="onContextmenu(widget, $event)"/>
+	<component :is="`widget-${widget.name}`" v-for="widget in _widgets" v-else :key="widget.id" :ref="(el: any) => widgetRefs[widget.id] = el" :class="$style.widget" :widget="widget" @updateProps="updateWidget(widget.id, $event)" @contextmenu.stop="onContextmenu(widget, $event)"/>
 </div>
 </template>
 
@@ -49,18 +45,18 @@ export type DefaultStoredWidget = {
 </script>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, ref, computed } from 'vue';
+import { computed } from 'vue';
 import { isLink } from '@@/js/is-link.js';
+import type { Component } from 'vue';
 import { genId } from '@/utility/id.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
+import MkDraggable from '@/components/MkDraggable.vue';
 import { widgets as widgetDefs, federationWidgets } from '@/widgets/index.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { instance } from '@/instance.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
-
-const Sortable = defineAsyncComponent(() => import('vuedraggable').then(x => x.default));
 
 const props = defineProps<{
 	widgets: Widget[];
@@ -69,13 +65,13 @@ const props = defineProps<{
 
 const _widgetDefs = computed(() => {
 	if (instance.federation === 'none') {
-		return widgetDefs.filter(x => !federationWidgets.includes(x));
+		return widgetDefs.filter(x => !federationWidgets.includes(x as any));
 	} else {
 		return widgetDefs;
 	}
 });
 
-const _widgets = computed(() => props.widgets.filter(x => _widgetDefs.value.includes(x.name)));
+const _widgets = computed(() => props.widgets.filter(x => _widgetDefs.value.includes(x.name as any)));
 
 const emit = defineEmits<{
 	(ev: 'updateWidgets', widgets: Widget[]): void;
@@ -85,10 +81,11 @@ const emit = defineEmits<{
 	(ev: 'exit'): void;
 }>();
 
-const widgetRefs = {};
-const configWidget = (id: string) => {
+const widgetRefs = {} as Record<string, Component & { configure: () => void }>;
+
+function configWidget(id: string) {
 	widgetRefs[id].configure();
-};
+}
 
 const {
 	model: widgetAdderSelected,
@@ -98,7 +95,7 @@ const {
 	initialValue: null,
 });
 
-const addWidget = () => {
+function addWidget() {
 	if (widgetAdderSelected.value == null) return;
 
 	emit('addWidget', {
@@ -108,23 +105,25 @@ const addWidget = () => {
 	});
 
 	widgetAdderSelected.value = null;
-};
-const removeWidget = (widget) => {
-	emit('removeWidget', widget);
-};
-const updateWidget = (id: Widget['id'], data: Widget['data']) => {
-	emit('updateWidget', { id, data });
-};
+}
 
-function onContextmenu(widget: Widget, ev: MouseEvent) {
+function removeWidget(widget: Widget) {
+	emit('removeWidget', widget);
+}
+
+function updateWidget(id: Widget['id'], data: Widget['data']) {
+	emit('updateWidget', { id, data });
+}
+
+function onContextmenu(widget: Widget, ev: PointerEvent) {
 	const element = ev.target as HTMLElement | null;
 	if (element && isLink(element)) return;
-	if (element && (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes(element.tagName) || element.attributes['contenteditable'])) return;
+	if (element && (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes(element.tagName) || element.attributes.getNamedItem('contenteditable') != null)) return;
 	if (window.getSelection()?.toString() !== '') return;
 
 	os.contextMenu([{
 		type: 'label',
-		text: i18n.ts._widgets[widget.name],
+		text: i18n.ts._widgets[widget.name as typeof widgetDefs[number]],
 	}, {
 		icon: 'ti ti-settings',
 		text: i18n.ts.settings,
@@ -142,11 +141,6 @@ function onContextmenu(widget: Widget, ev: MouseEvent) {
 
 .widget {
 	contain: content;
-	margin: var(--MI-margin) 0;
-
-	&:first-of-type {
-		margin-top: 0;
-	}
 }
 
 .edit {
@@ -157,10 +151,6 @@ function onContextmenu(widget: Widget, ev: MouseEvent) {
 			width: 100%;
 			padding: 4px;
 		}
-	}
-
-	&Editing {
-		min-height: 100px;
 	}
 }
 
