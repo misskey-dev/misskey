@@ -16,6 +16,10 @@
   - ハードコード `false` でクライアント指定が無視されていた
 - **`User.activeStatusVisibility` の entity/migration drift を修正**
   - 1.9.32 でデフォルトを `mutualFollow` → `never` に変更した際、entity 側の更新が抜けていた。CI の migration check が検出したため entity を `never` に揃える
+- **投稿フォームのプライベートノート / DM ボタンが `localOnly` と連動しない問題を修正 (#258)**
+  - `MkPostForm` が `MkVisibilityPicker` に `localOnly` を渡しておらず、picker 側のデフォルト `false` で固定されていた
+  - 結果、プライベートノートボタンが常に disabled、DM ボタンは `localOnly=true` でも選択可能になっていた
+  - `localOnly` を picker に伝搬し、DM ボタンに `:disabled="localOnly"` を追加して連動させる
 
 ### Refactor
 - **やみタイムライン Streaming を本家 home-timeline 構造に整列**
@@ -60,9 +64,6 @@ Misskey本家 v2026.3.0〜v2026.3.1 のマージ（PR #254 by @lqvp）。
 - **WidgetListenBrainzの重複onMounted削除** (#254)
 - **LTLで「Botアカウントを除外」オプションが機能しない問題を修正** (#229)
   - Fanoutタイムライン使用時に`noteFilter`が実装されていなかったため、`excludeBots`パラメータが適用されていなかった
-
-### Known Issues
-- 投稿フォームのプライベートノート選択が正しく動作しない (#258)
 
 ## 2025.12.2-yami-1.9.32
 
