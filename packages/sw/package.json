@@ -15,8 +15,7 @@
 		"eslint-plugin-import": "2.32.0",
 		"i18n": "workspace:*",
 		"idb-keyval": "6.2.2",
-		"misskey-js": "workspace:*",
-		"tsdown": "0.21.7"
+		"misskey-js": "workspace:*"
 	},
 	"type": "module"
 }

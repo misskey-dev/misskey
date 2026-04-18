@@ -80,6 +80,9 @@ importers:
       start-server-and-test:
         specifier: 2.1.5
         version: 2.1.5
+      tsdown:
+        specifier: 0.21.7
+        version: 0.21.7(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@typescript/native-preview@7.0.0-dev.20260116.1)(typescript@5.9.3)(vue-tsc@3.2.6(typescript@5.9.3))
       typescript:
         specifier: 5.9.3
         version: 5.9.3
@@ -1450,10 +1453,6 @@ importers:
         version: 3.1.14
 
   packages/sw:
-    dependencies:
-      esbuild:
-        specifier: 0.28.0
-        version: 0.28.0
     devDependencies:
       '@types/node':
         specifier: 24.12.2
@@ -1476,12 +1475,6 @@ importers:
       misskey-js:
         specifier: workspace:*
         version: link:../misskey-js
-      nodemon:
-        specifier: 3.1.14
-        version: 3.1.14
-      tsdown:
-        specifier: 0.21.7
-        version: 0.21.7(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@typescript/native-preview@7.0.0-dev.20260116.1)(typescript@5.9.3)(vue-tsc@3.2.6(typescript@5.9.3))
 
 packages:
 
