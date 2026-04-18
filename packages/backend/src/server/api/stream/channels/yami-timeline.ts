@@ -66,94 +66,76 @@ export class YamiTimelineChannel extends Channel {
 
 	@bindThis
 	private async onNote(note: Packed<'Note'>) {
-		try {
-			// やみモードの投稿のみ表示する
-			if (!note.isNoteInYamiMode) return;
+		// やみモードの投稿のみ表示する
+		if (!note.isNoteInYamiMode) return;
 
-			// 投稿が自分のものかどうか判定
-			const isMyNote = this.user!.id === note.userId;
+		const isMyNote = this.user!.id === note.userId;
 
-			// Bot filtering
-			if (this.excludeBots && note.user.isBot) return;
+		// Bot filtering
+		if (this.excludeBots && note.user.isBot) return;
 
-			// 【基本フィルタリング】
-			// 1. 自分がやみモードでない場合は自分の投稿だけ表示
-			if (!isMyNote && !this.user!.isInYamiMode) return;
+		// 自分がやみモードでない場合は自分の投稿だけ表示
+		if (!isMyNote && !this.user!.isInYamiMode) return;
 
-			// 2. 添付ファイル条件
-			if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
+		if (this.withFiles && (note.fileIds == null || note.fileIds.length === 0)) return;
 
-			// 3. リノート条件 (純粋なリノート)
-			if (!this.withRenotes && isRenotePacked(note) && !isQuotePacked(note) && !note.text && !note.fileIds?.length) return;
-
-			// 【表示条件判定】- 明確に分離
-			let shouldDisplay = false;
-
-			// 自分の投稿は常に表示
-			if (isMyNote) {
-				shouldDisplay = true;
-			} else if (note.visibility === 'specified' && note.visibleUserIds?.includes(this.user!.id)) {
-				// 自分宛てのダイレクト投稿は常に表示
-				shouldDisplay = true;
-			} else if (Object.hasOwn(this.following, note.userId)) {
-				// フォロー中のユーザーの投稿 - showYamiFollowingNotesで制御
-				shouldDisplay = this.showYamiFollowingNotes;
-			} else if (note.visibility === 'public') {
-				// フォロー外ユーザーのパブリック投稿 - showYamiNonFollowingPublicNotesで制御
-				// リモートインスタンスからのやみノートも含める
-				shouldDisplay = this.showYamiNonFollowingPublicNotes;
-			}
-
-			// どの条件にも当てはまらなければ表示しない
-			if (!shouldDisplay) return;
-
-			// 【チャンネル投稿の追加チェック】
-			if (note.channelId) {
-				// チャンネルをフォローしていなければ表示しない
-				if (!this.followingChannels.has(note.channelId)) return;
-			}
-
-			// 【リプライの特別処理】
-			if (note.reply) {
-				const reply = note.reply;
-				// フォロー中ユーザーの返信で、withRepliesがtrueの場合
-				if (Object.hasOwn(this.following, note.userId) && this.following[note.userId]?.withReplies) {
-					// フォローしていないユーザーのフォロワー限定投稿への返信は表示しない
-					if (reply.visibility === 'followers' && !Object.hasOwn(this.following, reply.userId) && reply.userId !== this.user!.id) return;
-				} else {
-					// それ以外のユーザーからの返信は、以下の場合のみ表示:
-					// 1. 自分への返信、2. 自分の返信、3. 投稿者自身への返信
-					if (reply.userId !== this.user!.id && !isMyNote && reply.userId !== note.userId) return;
-				}
-			}
-
-			// 【リノート先の確認】
-			if (isRenotePacked(note) && !isQuotePacked(note) && note.renote) {
-				if (note.renote.reply) {
-					const reply = note.renote.reply;
-					// フォローしていないユーザーのフォロワー限定投稿への返信のリノートは表示しない
-					if (reply.visibility === 'followers' && !Object.hasOwn(this.following, reply.userId) && reply.userId !== this.user!.id) return;
-				}
-			}
-
-			// ミュート・ブロックのチェック
-			if (this.isNoteMutedOrBlocked(note)) return;
-
-			const { shouldSkip } = await this.noteStreamingHidingService.processHiding(note, this.user?.id ?? null);
-			if (shouldSkip) return;
-
-			// リアクション情報の設定
-			if (this.user && isRenotePacked(note) && !isQuotePacked(note)) {
-				if (note.renote && Object.keys(note.renote.reactions).length > 0) {
-					const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renote, this.user.id);
-					note.renote.myReaction = myRenoteReaction;
-				}
-			}
-
-			this.send('note', note);
-		} catch (err) {
-			console.error('YamiTL onNote error:', err);
+		// Yami TL 固有の表示制御 (showYami* プリファレンス)
+		let shouldDisplay = false;
+		if (isMyNote) {
+			shouldDisplay = true;
+		} else if (note.visibility === 'specified' && note.visibleUserIds?.includes(this.user!.id)) {
+			// 自分宛てのダイレクト投稿は常に表示
+			shouldDisplay = true;
+		} else if (Object.hasOwn(this.following, note.userId)) {
+			// フォロー中ユーザーの投稿 - showYamiFollowingNotes で制御
+			shouldDisplay = this.showYamiFollowingNotes;
+		} else if (note.visibility === 'public') {
+			// フォロー外ユーザーのパブリック投稿 - showYamiNonFollowingPublicNotes で制御
+			shouldDisplay = this.showYamiNonFollowingPublicNotes;
 		}
+		if (!shouldDisplay) return;
+
+		// 本家共通の specified/followers 厳密判定
+		if (!this.isNoteVisibleForMe(note)) return;
+
+		if (note.channelId) {
+			if (!this.followingChannels.has(note.channelId)) return;
+		}
+
+		if (note.reply) {
+			const reply = note.reply;
+			if (this.following[note.userId]?.withReplies) {
+				// 自分のフォローしていないユーザーの visibility: followers な投稿への返信は弾く
+				if (reply.visibility === 'followers' && !Object.hasOwn(this.following, reply.userId) && reply.userId !== this.user!.id) return;
+			} else {
+				// 「自分への返信」「自分の返信」「投稿者自身への返信」以外は弾く
+				if (reply.userId !== this.user!.id && !isMyNote && reply.userId !== note.userId) return;
+			}
+		}
+
+		// 純粋リノート (引用リノートでないリノート)
+		if (isRenotePacked(note) && !isQuotePacked(note) && note.renote) {
+			if (!this.withRenotes) return;
+			if (note.renote.reply) {
+				const reply = note.renote.reply;
+				// 自分のフォローしていないユーザーの visibility: followers な投稿への返信のリノートは弾く
+				if (reply.visibility === 'followers' && !Object.hasOwn(this.following, reply.userId) && reply.userId !== this.user!.id) return;
+			}
+		}
+
+		if (this.isNoteMutedOrBlocked(note)) return;
+
+		const { shouldSkip } = await this.noteStreamingHidingService.processHiding(note, this.user?.id ?? null);
+		if (shouldSkip) return;
+
+		if (this.user && isRenotePacked(note) && !isQuotePacked(note)) {
+			if (note.renote && Object.keys(note.renote.reactions).length > 0) {
+				const myRenoteReaction = await this.noteEntityService.populateMyReaction(note.renote, this.user.id);
+				note.renote.myReaction = myRenoteReaction;
+			}
+		}
+
+		this.send('note', note);
 	}
 
 	@bindThis
