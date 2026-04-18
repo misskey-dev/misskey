@@ -825,6 +825,7 @@ function setVisibility() {
 		anchorElement: visibilityButton.value,
 		isNoteInYamiMode: isNoteInYamiMode.value,
 		isDmIntent: isDmIntent.value,
+		localOnly: localOnly.value,
 		...(replyTargetNote.value ? { isReplyVisibilitySpecified: replyTargetNote.value.visibility === 'specified' } : {}),
 	}, {
 		changeVisibility: v => {
