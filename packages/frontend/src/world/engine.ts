@@ -112,15 +112,18 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 
 		//this.scene.activeCamera = this.camera;
 
-		const ambientLight = new BABYLON.HemisphericLight('ambientLight', new BABYLON.Vector3(0, 1, -0.5), this.scene);
-		ambientLight.diffuse = new BABYLON.Color3(1.0, 1.0, 1.0);
-		ambientLight.intensity = 0.5;
+		const ambientLight1 = new BABYLON.HemisphericLight('ambientLight1', new BABYLON.Vector3(0, 1, 0), this.scene);
+		ambientLight1.diffuse = new BABYLON.Color3(1.0, 0.9, 0.8);
+		ambientLight1.intensity = 1;
+		const ambientLight2 = new BABYLON.HemisphericLight('ambientLight2', new BABYLON.Vector3(0, -1, 0), this.scene);
+		ambientLight2.diffuse = new BABYLON.Color3(0.8, 0.9, 1.0);
+		ambientLight2.intensity = 1;
 		//ambientLight.intensity = 0;
 
-		const sunLight = new BABYLON.DirectionalLight('sunLight', new BABYLON.Vector3(0.2, -1, -1), this.scene);
-		sunLight.position = new BABYLON.Vector3(cm(-20), cm(1000), cm(1000));
+		const sunLight = new BABYLON.DirectionalLight('sunLight', new BABYLON.Vector3(0, -1, 0), this.scene);
+		sunLight.position = new BABYLON.Vector3(cm(0), cm(10000), cm(0));
 		sunLight.diffuse = this.time === 0 ? new BABYLON.Color3(1.0, 1.0, 1.0) : this.time === 1 ? new BABYLON.Color3(1.0, 0.8, 0.6) : new BABYLON.Color3(0.6, 0.8, 1.0);
-		sunLight.intensity = this.time === 0 ? 3 : this.time === 1 ? 1 : 0.25;
+		sunLight.intensity = this.time === 0 ? 2 : this.time === 1 ? 0.5 : 0.25;
 		sunLight.shadowMinZ = cm(1000);
 		sunLight.shadowMaxZ = cm(2000);
 
@@ -231,7 +234,7 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 
 		{
 			const messageRingRoot = new BABYLON.TransformNode('', this.scene);
-			const messageRing = envObj.meshes.find(m => m.name.includes('__MESSAGE_RING__'));
+			const messageRing = envObj.meshes.find(m => m.name.includes('__MESSAGE_RING_OUTER_1__'));
 			messageRing.parent = messageRingRoot;
 			messageRing.rotation = messageRing.rotationQuaternion.toEulerAngles();
 			messageRing.rotationQuaternion = null;
@@ -269,6 +272,33 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 				currentTextIndex = (currentTextIndex + 1) % texts.length;
 				text.writeWithAnimation(textToShow);
 			}, 10000);
+		}
+
+		{
+			const messageRingRoot = new BABYLON.TransformNode('', this.scene);
+			const messageRing = envObj.meshes.find(m => m.name.includes('__MESSAGE_RING_OUTER_2__'));
+			messageRing.parent = messageRingRoot;
+			messageRing.rotation = messageRing.rotationQuaternion.toEulerAngles();
+			messageRing.rotationQuaternion = null;
+			const text = new RecyvlingTextGrid(messageRing, 256, {
+				meshFlipped: true,
+				material: this.textMaterial,
+				repeatSeparator: '   ',
+			});
+
+			messageRingRoot.rotation.x = Math.PI / 2;
+
+			const anim = new BABYLON.Animation('', 'rotation.y', 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+			anim.setKeys([
+				{ frame: 0, value: 0 },
+				{ frame: 10000, value: -(Math.PI * 2) },
+			]);
+			messageRing.animations = [anim];
+			this.scene.beginAnimation(messageRing, 0, 10000, true);
+
+			setInterval(() => {
+				text.write(Date.now().toString());
+			}, 100);
 		}
 
 		{
@@ -515,5 +545,37 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 		this.timeoutIds = [];
 		this.engine.dispose();
 		this.disposed = true;
+	}
+}
+
+class MessageRing {
+	constructor(mesh: BABYLON.Mesh, scene: BABYLON.Scene, options: { material: BABYLON.StandardMaterial; repeatSeparator: string; }) {
+		const messageRingRoot = new BABYLON.TransformNode('', this.scene);
+		const messageRing = envObj.meshes.find(m => m.name.includes('__MESSAGE_RING_INNER_1__'));
+		messageRing.parent = messageRingRoot;
+		messageRing.rotation = messageRing.rotationQuaternion.toEulerAngles();
+		messageRing.rotationQuaternion = null;
+		const text = new RecyvlingTextGrid(messageRing, 64, {
+			material: this.textMaterial,
+			repeatSeparator: '  ',
+		});
+
+		//messageRingRoot.rotation.x = Math.PI / 4;
+
+		const anim = new BABYLON.Animation('', 'rotation.y', 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+		anim.setKeys([
+			{ frame: 0, value: 0 },
+			{ frame: 10000, value: (Math.PI * 2) },
+		]);
+		messageRing.animations = [anim];
+		this.scene.beginAnimation(messageRing, 0, 10000, true);
+
+		setInterval(() => {
+			const now = new Date();
+			const hours = now.getHours().toString().padStart(2, '0');
+			const minutes = now.getMinutes().toString().padStart(2, '0');
+			const seconds = now.getSeconds().toString().padStart(2, '0');
+			text.write(`${hours}:${minutes}:${seconds}`);
+		}, 1000);
 	}
 }

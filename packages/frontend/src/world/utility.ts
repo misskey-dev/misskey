@@ -500,10 +500,29 @@ export class RecyvlingText {
 export class RecyvlingTextGrid {
 	public facesCount: number;
 	public mesh: BABYLON.Mesh;
-	private originalUvs: BABYLON.FloatArray;
+	private uvs: BABYLON.FloatArray;
 	private currentText = '';
 	private meshFlipped: boolean;
 	private repeatSeparator: string;
+
+	/* (non-flipped)
+		a   d--e
+		| \  \ |
+		b--c   f
+	*/
+	/* (flipped)
+		a--b  d
+		| /  / |
+		c   e--f
+	*/
+	private aIndex = 0;
+	private bIndex = 0;
+	private cIndex = 0;
+	private dIndex = 0;
+	private eIndex = 0;
+	private fIndex = 0;
+
+	private verticesCountPerFace = 6; // ひとつの四角はふたつの三角に分割されるので 3*2=6
 
 	constructor(mesh: BABYLON.Mesh, facesCount: number, options: {
 		meshFlipped: boolean;
@@ -516,9 +535,55 @@ export class RecyvlingTextGrid {
 		this.mesh.markVerticesDataAsUpdatable(BABYLON.VertexBuffer.UVKind, true);
 
 		this.facesCount = facesCount;
-		this.originalUvs = mesh.getVerticesData(BABYLON.VertexBuffer.UVKind)!.slice();
+		this.uvs = mesh.getVerticesData(BABYLON.VertexBuffer.UVKind)!;
 		this.meshFlipped = options.meshFlipped;
 		this.repeatSeparator = options.repeatSeparator ?? ' ■ ';
+
+		for (let j = 0; j < (this.verticesCountPerFace * 2); j += 2) {
+			const x = this.uvs[j];
+			const y = this.uvs[j + 1];
+
+			// 多少ずれがあってもいいように(例えばblenderではUV展開時にデフォルトでわずかなマージンを追加する)、中心より大きいか/小さいかで判定する
+			// また、すべての面が同じ頂点構造である前提としている
+			if (this.meshFlipped) {
+				// ひとつの四角はふたつの三角に分割される。右下に来る三角(d-e-f)の方が先にくるっぽい
+				if (j >= 6) {
+					if (x < 0.5 && y < 0.5) {
+						this.aIndex = j;
+					} else if (x > 0.5 && y < 0.5) {
+						this.bIndex = j;
+					} else if (x < 0.5 && y > 0.5) {
+						this.cIndex = j;
+					}
+				} else {
+					if (x > 0.5 && y < 0.5) {
+						this.dIndex = j;
+					} else if (x < 0.5 && y > 0.5) {
+						this.eIndex = j;
+					} else if (x > 0.5 && y > 0.5) {
+						this.fIndex = j;
+					}
+				}
+			} else {
+				if (j >= 6) {
+					if (x < 0.5 && y < 0.5) {
+						this.aIndex = j;
+					} else if (x < 0.5 && y > 0.5) {
+						this.bIndex = j;
+					} else if (x > 0.5 && y > 0.5) {
+						this.cIndex = j;
+					}
+				} else {
+					if (x < 0.5 && y < 0.5) {
+						this.dIndex = j;
+					} else if (x > 0.5 && y < 0.5) {
+						this.eIndex = j;
+					} else if (x > 0.5 && y > 0.5) {
+						this.fIndex = j;
+					}
+				}
+			}
+		}
 
 		//this.write('');
 	}
@@ -554,93 +619,27 @@ export class RecyvlingTextGrid {
 			charIndexes.push(index);
 		}
 
-		const uvs = this.originalUvs.slice();
-
-		const verticesCountPerFace = 6; // ひとつの四角はふたつの三角に分割されるので 3*2=6
-
 		for (let i = 0; i < this.facesCount; i++) {
 			const charIndex = charIndexes[this.meshFlipped ? i : (this.facesCount - i - 1)];
 			const charX = charIndex % TEXT_TEXTURE_CHAR_COLS;
 			const charY = Math.floor(charIndex / TEXT_TEXTURE_CHAR_COLS);
 
-			const uvIndex = i * (verticesCountPerFace * 2); // uvは(x,y)の2要素なので*2
-
-			/* (non-flipped)
-			a   d--e
-			| \  \ |
-			b--c   f
-			*/
-			/* (flipped)
-			a--b  d
-			| /  / |
-			c   e--f
-			*/
-			let aIndex = 0;
-			let bIndex = 0;
-			let cIndex = 0;
-			let dIndex = 0;
-			let eIndex = 0;
-			let fIndex = 0;
-
-			for (let j = 0; j < (verticesCountPerFace * 2); j += 2) {
-				const x = uvs[uvIndex + j];
-				const y = uvs[uvIndex + j + 1];
-
-				// 多少ずれがあってもいいように(例えばblenderではUV展開時にデフォルトでわずかなマージンを追加する)、中心より大きいか/小さいかで判定する
-				if (this.meshFlipped) {
-				// ひとつの四角はふたつの三角に分割される。右下に来る三角(d-e-f)の方が先にくるっぽい
-					if (j >= 6) {
-						if (x < 0.5 && y < 0.5) {
-							aIndex = j;
-						} else if (x > 0.5 && y < 0.5) {
-							bIndex = j;
-						} else if (x < 0.5 && y > 0.5) {
-							cIndex = j;
-						}
-					} else {
-						if (x > 0.5 && y < 0.5) {
-							dIndex = j;
-						} else if (x < 0.5 && y > 0.5) {
-							eIndex = j;
-						} else if (x > 0.5 && y > 0.5) {
-							fIndex = j;
-						}
-					}
-				} else {
-					if (j >= 6) {
-						if (x < 0.5 && y < 0.5) {
-							aIndex = j;
-						} else if (x < 0.5 && y > 0.5) {
-							bIndex = j;
-						} else if (x > 0.5 && y > 0.5) {
-							cIndex = j;
-						}
-					} else {
-						if (x < 0.5 && y < 0.5) {
-							dIndex = j;
-						} else if (x > 0.5 && y < 0.5) {
-							eIndex = j;
-						} else if (x > 0.5 && y > 0.5) {
-							fIndex = j;
-						}
-					}
-				}
-			}
+			const uvIndex = i * (this.verticesCountPerFace * 2); // uvは(x,y)の2要素なので*2
 
 			if (this.meshFlipped) {
-				uvs[uvIndex + aIndex + 0] = uvs[uvIndex + cIndex + 0] = uvs[uvIndex + eIndex + 0] = charX / TEXT_TEXTURE_CHAR_COLS;
-				uvs[uvIndex + aIndex + 1] = uvs[uvIndex + bIndex + 1] = uvs[uvIndex + dIndex + 1] = charY / TEXT_TEXTURE_CHAR_ROWS;
-				uvs[uvIndex + bIndex + 0] = uvs[uvIndex + dIndex + 0] = uvs[uvIndex + fIndex + 0] = (charX + 1) / TEXT_TEXTURE_CHAR_COLS;
-				uvs[uvIndex + cIndex + 1] = uvs[uvIndex + eIndex + 1] = uvs[uvIndex + fIndex + 1] = (charY + 1) / TEXT_TEXTURE_CHAR_ROWS;
+				this.uvs[uvIndex + this.aIndex + 0] = this.uvs[uvIndex + this.cIndex + 0] = this.uvs[uvIndex + this.eIndex + 0] = (charX + 0) / TEXT_TEXTURE_CHAR_COLS;
+				this.uvs[uvIndex + this.aIndex + 1] = this.uvs[uvIndex + this.bIndex + 1] = this.uvs[uvIndex + this.dIndex + 1] = (charY + 0) / TEXT_TEXTURE_CHAR_ROWS;
+				this.uvs[uvIndex + this.bIndex + 0] = this.uvs[uvIndex + this.dIndex + 0] = this.uvs[uvIndex + this.fIndex + 0] = (charX + 1) / TEXT_TEXTURE_CHAR_COLS;
+				this.uvs[uvIndex + this.cIndex + 1] = this.uvs[uvIndex + this.eIndex + 1] = this.uvs[uvIndex + this.fIndex + 1] = (charY + 1) / TEXT_TEXTURE_CHAR_ROWS;
 			} else {
-				uvs[uvIndex + aIndex + 0] = uvs[uvIndex + dIndex + 0] = uvs[uvIndex + bIndex + 0] = charX / TEXT_TEXTURE_CHAR_COLS;
-				uvs[uvIndex + aIndex + 1] = uvs[uvIndex + dIndex + 1] = uvs[uvIndex + eIndex + 1] = charY / TEXT_TEXTURE_CHAR_ROWS;
-				uvs[uvIndex + eIndex + 0] = uvs[uvIndex + fIndex + 0] = uvs[uvIndex + cIndex + 0] = (charX + 1) / TEXT_TEXTURE_CHAR_COLS;
-				uvs[uvIndex + bIndex + 1] = uvs[uvIndex + cIndex + 1] = uvs[uvIndex + fIndex + 1] = (charY + 1) / TEXT_TEXTURE_CHAR_ROWS;
+				this.uvs[uvIndex + this.aIndex + 0] = this.uvs[uvIndex + this.dIndex + 0] = this.uvs[uvIndex + this.bIndex + 0] = (charX + 0) / TEXT_TEXTURE_CHAR_COLS;
+				this.uvs[uvIndex + this.aIndex + 1] = this.uvs[uvIndex + this.dIndex + 1] = this.uvs[uvIndex + this.eIndex + 1] = (charY + 0) / TEXT_TEXTURE_CHAR_ROWS;
+				this.uvs[uvIndex + this.eIndex + 0] = this.uvs[uvIndex + this.fIndex + 0] = this.uvs[uvIndex + this.cIndex + 0] = (charX + 1) / TEXT_TEXTURE_CHAR_COLS;
+				this.uvs[uvIndex + this.bIndex + 1] = this.uvs[uvIndex + this.cIndex + 1] = this.uvs[uvIndex + this.fIndex + 1] = (charY + 1) / TEXT_TEXTURE_CHAR_ROWS;
 			}
 		}
 
-		this.mesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
+		this.mesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, this.uvs);
 	}
 
 	public async writeWithAnimation(text: string) {
