@@ -251,6 +251,24 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 			]);
 			messageRing.animations = [anim];
 			this.scene.beginAnimation(messageRing, 0, 10000, true);
+
+			const texts = [
+				'Wellcome to Misskey World!',
+				'Enjoy your stay!',
+				'Feel free to look around!',
+				'This is a virtual space for Misskey users!',
+				//'You can chat, play games, and more!',
+				//'Check out the bulletin board for announcements',
+				'MAINTENANCE will begin at 9:00 A.M.',
+			];
+
+			let currentTextIndex = 1;
+
+			setInterval(() => {
+				const textToShow = texts[currentTextIndex];
+				currentTextIndex = (currentTextIndex + 1) % texts.length;
+				text.writeWithAnimation(textToShow);
+			}, 10000);
 		}
 
 		for (let i = 0; i < 16; i++) {
@@ -348,7 +366,7 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 		setInterval(() => {
 			const time = Date.now();
 			worldRingH.rotation.x = ((time % _12h) / _12h) * Math.PI * 2;
-			worldRingM.rotation.y = -(((time % _1h) / _1h) * Math.PI * 2);
+			worldRingM.rotation.y = -(((time % _1h) / _1h) * Math.PI);
 		}, 100);
 
 		const screenMeshes = envObj.meshes.filter(m => m.name.includes('__SCREEN__'));

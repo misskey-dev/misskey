@@ -408,8 +408,8 @@ const TEXT_TEXTURE_CHAR_ROWS = 16;
 const TEXT_TEXTURE_CHAR_MAP = {
 	'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I': 8, 'J': 9, 'K': 10, 'L': 11, 'M': 12, 'N': 13, 'O': 14, 'P': 15, 'Q': 16, 'R': 17, 'S': 18, 'T': 19, 'U': 20, 'V': 21, 'W': 22, 'X': 23, 'Y': 24, 'Z': 25, ' ': 26,
 	'a': 32, 'b': 33, 'c': 34, 'd': 35, 'e': 36, 'f': 37, 'g': 38, 'h': 39, 'i': 40, 'j': 41, 'k': 42, 'l': 43, 'm': 44, 'n': 45, 'o': 46, 'p': 47, 'q': 48, 'r': 49, 's': 50, 't': 51, 'u': 52, 'v': 53, 'w': 54, 'x': 55, 'y': 56, 'z': 57,
-	'0': 64, '1': 65, '2': 66, '3': 67, '4': 68, '5': 69, '6': 70, '7': 71, '8': 72, '9': 73,
-	'!': 78, '?': 79, '+': 80,
+	'0': 64, '1': 65, '2': 66, '3': 67, '4': 68, '5': 69, '6': 70, '7': 71, '8': 72, '9': 73, '.': 74, ',': 75, ':': 76, ';': 77, '!': 78, '?': 79,
+	'+': 80, '-': 81, '=': 82, '_': 83, '*': 84, '(': 85, ')': 86, '/': 87, '#': 88, '@': 89,
 	'■': 255,
 };
 
@@ -500,7 +500,8 @@ export class RecyvlingText {
 export class RecyvlingTextGrid {
 	public facesCount: number;
 	public mesh: BABYLON.Mesh;
-	private uvs: BABYLON.FloatArray;
+	private originalUvs: BABYLON.FloatArray;
+	private currentText = '';
 
 	constructor(mesh: BABYLON.Mesh, facesCount: number, options: {
 		material: BABYLON.StandardMaterial;
@@ -511,12 +512,14 @@ export class RecyvlingTextGrid {
 		this.mesh.markVerticesDataAsUpdatable(BABYLON.VertexBuffer.UVKind, true);
 
 		this.facesCount = facesCount;
-		this.uvs = mesh.getVerticesData(BABYLON.VertexBuffer.UVKind)!;
+		this.originalUvs = mesh.getVerticesData(BABYLON.VertexBuffer.UVKind)!.slice();
 
 		//this.write('');
 	}
 
 	public write(text: string) {
+		this.currentText = text;
+
 		const charIndexes: number[] = [];
 
 		const repeatSeparator = ' ■ ';
@@ -546,7 +549,7 @@ export class RecyvlingTextGrid {
 			charIndexes.push(index);
 		}
 
-		const uvs = this.uvs;
+		const uvs = this.originalUvs.slice();
 
 		const verticesCountPerFace = 6; // ひとつの四角はふたつの三角に分割されるので 3*2=6
 
@@ -602,4 +605,21 @@ export class RecyvlingTextGrid {
 
 		this.mesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
 	}
+
+	public async writeWithAnimation(text: string) {
+		const prev = this.currentText;
+		for (let i = 0; i <= prev.length; i++) {
+			this.write(prev.substring(0, prev.length - (i + 1)).padEnd(prev.length, ' '));
+			await sleep(30);
+		}
+
+		for (let i = 0; i <= text.length; i++) {
+			this.write(text.substring(0, i + 1).padEnd(text.length, ' '));
+			await sleep(30);
+		}
+	}
+}
+
+export function sleep(ms: number) {
+	return new Promise(resolve => setTimeout(resolve, ms));
 }
