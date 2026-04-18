@@ -38,7 +38,7 @@ export class MiUser {
 
 	@Column('jsonb', {
 		default: {
-			type: 'mutualFollow',
+			type: 'never',
 		},
 	})
 	public activeStatusVisibility: {

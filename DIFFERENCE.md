@@ -14,6 +14,8 @@
   - visibility のみで `showYami*` を分岐しており、`showYamiFollowingNotes=true` + `showYamiNonFollowingPublicNotes=false` でフォロー中ユーザーの public やみノートが消える挙動を解消
 - **やみタイムライン REST の `allowPartial` パラメータを尊重**
   - ハードコード `false` でクライアント指定が無視されていた
+- **`User.activeStatusVisibility` の entity/migration drift を修正**
+  - 1.9.32 でデフォルトを `mutualFollow` → `never` に変更した際、entity 側の更新が抜けていた。CI の migration check が検出したため entity を `never` に揃える
 
 ### Refactor
 - **やみタイムライン Streaming を本家 home-timeline 構造に整列**
