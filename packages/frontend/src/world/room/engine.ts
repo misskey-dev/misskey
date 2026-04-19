@@ -14,7 +14,7 @@ import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
 import { BoundingBoxRenderer } from '@babylonjs/core/Rendering/boundingBoxRenderer';
 import { GridMaterial } from '@babylonjs/materials';
 import { EventEmitter } from 'eventemitter3';
-import { TIME_MAP, scaleMorph, HorizontalCameraKeyboardMoveInput, camelToKebab, cm, WORLD_SCALE, getMeshesBoundingBox } from '../utility.js';
+import { TIME_MAP, scaleMorph, HorizontalCameraKeyboardMoveInput, camelToKebab, cm, WORLD_SCALE, getMeshesBoundingBox, Timer } from '../utility.js';
 import { getObjectDef } from './object-defs.js';
 import { findMaterial, ModelManager, SYSTEM_MESH_NAMES } from './utility.js';
 import type { ObjectDef, RoomObjectInstance, RoomStateObject } from './object.js';
@@ -137,8 +137,6 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	private shadowGeneratorForRoomLight: BABYLON.ShadowGenerator;
 	private shadowGeneratorForSunLight: BABYLON.ShadowGenerator;
 	public camera: BABYLON.UniversalCamera;
-	public intervalIds: number[] = [];
-	public timeoutIds: number[] = [];
 	public objectEntities: Map<string, {
 		rootMesh: BABYLON.Mesh;
 		instance: RoomObjectInstance<any>;
@@ -207,6 +205,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	private zGridPreviewPlane: BABYLON.Mesh;
 	private selectionOutlineLayer: BABYLON.SelectionOutlineLayer;
 	public sr: BABYLON.SnapshotRenderingHelper;
+	public timer: Timer = new Timer();
 
 	private _isEditMode = false;
 	get isEditMode() {
@@ -1267,11 +1266,9 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			},
 		};
 
-		const intervalId = setInterval(() => {
+		this.timer.setInterval(() => {
 			this.handleGrabbing();
 		}, 10);
-
-		this.intervalIds.push(intervalId);
 
 		this.playSfxUrl('/client-assets/room/sfx/grab.mp3', {
 			volume: 1,
@@ -1479,11 +1476,9 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			},
 		};
 
-		const intervalId = setInterval(() => {
+		this.timer.setInterval(() => {
 			this.handleGrabbing();
 		}, 10);
-
-		this.intervalIds.push(intervalId);
 
 		this.playSfxUrl('/client-assets/room/sfx/grab.mp3', {
 			volume: 1,
@@ -1614,14 +1609,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	}
 
 	public destroy() {
-		for (const id of this.intervalIds) {
-			window.clearInterval(id);
-		}
-		for (const id of this.timeoutIds) {
-			window.clearTimeout(id);
-		}
-		this.intervalIds = [];
-		this.timeoutIds = [];
+		this.timer.dispose();
 		this.engine.dispose();
 		this.disposed = true;
 	}

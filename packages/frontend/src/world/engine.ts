@@ -8,7 +8,7 @@ import { AxesViewer } from '@babylonjs/core/Debug/axesViewer';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
 import { EventEmitter } from 'eventemitter3';
 import tinycolor from 'tinycolor2';
-import { HorizontalCameraKeyboardMoveInput, RecyvlingTextGrid, WORLD_SCALE, camelToKebab, cm, createPlaneUvMapper, normalizeUvToSquare, randomRange } from './utility.js';
+import { HorizontalCameraKeyboardMoveInput, RecyvlingTextGrid, Timer, WORLD_SCALE, camelToKebab, cm, createPlaneUvMapper, normalizeUvToSquare, randomRange } from './utility.js';
 import { TIME_MAP } from './utility.js';
 import { genId } from '@/utility/id.js';
 import { deepClone } from '@/utility/clone.js';
@@ -34,8 +34,6 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 	public scene: BABYLON.Scene;
 	private shadowGeneratorForSunLight: BABYLON.ShadowGenerator;
 	public camera: BABYLON.UniversalCamera;
-	public intervalIds: number[] = [];
-	public timeoutIds: number[] = [];
 	private time: 0 | 1 | 2 = 0; // 0: 昼, 1: 夕, 2: 夜
 	private envMap: BABYLON.CubeTexture;
 	public lightContainer: BABYLON.ClusteredLightContainer;
@@ -44,6 +42,7 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 	private textMaterial: BABYLON.StandardMaterial;
 	private translucentTextMaterial: BABYLON.StandardMaterial;
 	private reflectionProbe: BABYLON.ReflectionProbe;
+	public timer: Timer = new Timer();
 
 	public isSitting = false;
 	private fps: number | null = null;
@@ -314,7 +313,7 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 
 			let currentTextIndex = 1;
 
-			setInterval(() => {
+			this.timer.setInterval(() => {
 				const textToShow = texts[currentTextIndex];
 				currentTextIndex = (currentTextIndex + 1) % texts.length;
 				text.writeWithAnimation(textToShow);
@@ -343,7 +342,7 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 			messageRing.animations = [anim];
 			this.scene.beginAnimation(messageRing, 0, 10000, true);
 
-			setInterval(() => {
+			this.timer.setInterval(() => {
 				text.write(Date.now().toString());
 			}, 10);
 		}
@@ -369,7 +368,7 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 			messageRing.animations = [anim];
 			this.scene.beginAnimation(messageRing, 0, 10000, true);
 
-			setInterval(() => {
+			this.timer.setInterval(() => {
 				const now = new Date();
 				const hours = now.getHours().toString().padStart(2, '0');
 				const minutes = now.getMinutes().toString().padStart(2, '0');
@@ -399,7 +398,7 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 			messageRing.animations = [anim];
 			this.scene.beginAnimation(messageRing, 0, 10000, true);
 
-			setInterval(() => {
+			this.timer.setInterval(() => {
 				const now = new Date();
 				const years = now.getFullYear().toString();
 				const months = (now.getMonth() + 1).toString().padStart(2, '0');
@@ -510,7 +509,7 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 		const _7days = _1h * 24 * 7;
 		const _30days = _1h * 24 * 30;
 
-		setInterval(() => {
+		this.timer.setInterval(() => {
 			const time = Date.now();
 			worldRingH.rotation.x = ((time % _12h) / _12h) * Math.PI * 2;
 			worldRingM.rotation.y = -(((time % _1h) / _1h) * Math.PI);
@@ -519,7 +518,7 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 		const screenMeshes = envObj.meshes.filter(m => m.name.includes('__SCREEN__'));
 		const screenMaterial = screenMeshes[0].material as BABYLON.PBRMaterial;
 
-		setTimeout(() => {
+		this.timer.setTimeout(() => {
 			const tex = new BABYLON.VideoTexture('', 'http://syu-win.local:3000/files/931c02c3-6238-4c29-9371-06bab78950bb', this.scene, true, true);
 			tex.level = 0.5;
 			tex.video.loop = true;
@@ -593,14 +592,7 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 	}
 
 	public destroy() {
-		for (const id of this.intervalIds) {
-			window.clearInterval(id);
-		}
-		for (const id of this.timeoutIds) {
-			window.clearTimeout(id);
-		}
-		this.intervalIds = [];
-		this.timeoutIds = [];
+		this.timer.dispose();
 		this.engine.dispose();
 		this.disposed = true;
 	}
@@ -628,7 +620,7 @@ class MessageRing {
 		messageRing.animations = [anim];
 		this.scene.beginAnimation(messageRing, 0, 10000, true);
 
-		setInterval(() => {
+		this.timer.setInterval(() => {
 			const now = new Date();
 			const hours = now.getHours().toString().padStart(2, '0');
 			const minutes = now.getMinutes().toString().padStart(2, '0');

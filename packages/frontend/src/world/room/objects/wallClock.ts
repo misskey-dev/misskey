@@ -39,7 +39,7 @@ export const wallClock = defineObject({
 
 		return {
 			onInited: () => {
-				room.intervalIds.push(setInterval(() => {
+				room.timer.setInterval(() => {
 					const now = new Date();
 					const hours = now.getHours() % 12;
 					const minutes = now.getMinutes();
@@ -48,7 +48,7 @@ export const wallClock = defineObject({
 					hourHand.rotation = new BABYLON.Vector3(0, 0, hAngle);
 					minuteHand.rotation = new BABYLON.Vector3(0, 0, mAngle);
 					room?.sr.updateMesh([hourHand, minuteHand]);
-				}, 1000));
+				}, 1000);
 			},
 			onOptionsUpdated: ([k, v]) => {
 				applyFrameColor();

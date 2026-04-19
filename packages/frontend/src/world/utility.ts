@@ -660,3 +660,33 @@ export class RecyvlingTextGrid {
 export function sleep(ms: number) {
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+export class Timer {
+	private timeoutIds: number[] = [];
+	private intervalIds: number[] = [];
+
+	public setTimeout(callback: () => void, ms: number) {
+		const id = window.setTimeout(() => {
+			this.timeoutIds = this.timeoutIds.filter(i => i !== id);
+			callback();
+		}, ms);
+		this.timeoutIds.push(id);
+	}
+
+	public setInterval(callback: () => void, ms: number) {
+		const id = window.setInterval(callback, ms);
+		this.intervalIds.push(id);
+	}
+
+	public dispose() {
+		for (const id of this.timeoutIds) {
+			window.clearTimeout(id);
+		}
+		this.timeoutIds = [];
+
+		for (const id of this.intervalIds) {
+			window.clearInterval(id);
+		}
+		this.intervalIds = [];
+	}
+}

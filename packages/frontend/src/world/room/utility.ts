@@ -146,11 +146,9 @@ export function initTv(room: RoomEngine, screenMesh: BABYLON.Mesh) {
 		uvs[uvIndexes[3] + 1] = dy;
 		screenMesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
 
-		const timeoutId = window.setTimeout(() => {
-			room.timeoutIds = room.timeoutIds.filter(id => id !== timeoutId);
+		room.timer.setTimeout(() => {
 			applyTvTexture((tlIndex + 1) % tvProgram.timeline.length);
 		}, duration);
-		room.timeoutIds.push(timeoutId);
 	};
 
 	applyTvTexture(0);
