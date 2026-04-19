@@ -42,13 +42,14 @@ export const blind = defineObject({
 	},
 	placement: 'bottom',
 	hasCollisions: false,
+	hasTexture: false,
 	createInstance: ({ options, model }) => {
 		const temp = createOverridedStates({
 			angle: () => options.angle,
 			open: () => options.open,
 		});
 
-		const blade = model.findMesh('Blade');
+		const blade = model.findMesh('__X_BLADE__');
 		blade.rotation = new BABYLON.Vector3(options.angle, 0, 0);
 
 		let blades = [] as BABYLON.InstancedMesh[];
