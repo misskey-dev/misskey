@@ -100,7 +100,7 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 
 		this.scene.collisionsEnabled = true;
 
-		this.camera = new BABYLON.UniversalCamera('camera', new BABYLON.Vector3(cm(0), cm(200), cm(3000)), this.scene);
+		this.camera = new BABYLON.UniversalCamera('camera', new BABYLON.Vector3(cm(0), cm(250), cm(3000)), this.scene);
 		this.camera.inputs.removeByType('FreeCameraKeyboardMoveInput');
 		this.camera.inputs.add(new HorizontalCameraKeyboardMoveInput(this.camera, 0.3));
 		this.camera.attachControl(this.canvas);
@@ -230,7 +230,10 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 		envObj.meshes[0].bakeCurrentTransformIntoVertices();
 		for (const mesh of envObj.meshes) {
 			if (mesh.name === '__root__') continue;
-			mesh.checkCollisions = true;
+			if (mesh.name.includes('__COLLISION__')) {
+				mesh.checkCollisions = true;
+				mesh.isVisible = false;
+			}
 			if (this.reflectionProbe != null) {
 				if (mesh.material) (mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.reflectionProbe.cubeTexture;
 				if (mesh.material) (mesh.material as BABYLON.PBRMaterial).realTimeFiltering = true;

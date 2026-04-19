@@ -65,6 +65,7 @@ export const woodRingFloorLamp = defineObject({
 		for (const lamp of lamps) {
 			const light = new BABYLON.SpotLight('', new BABYLON.Vector3(cm(0), cm(0), 0), new BABYLON.Vector3(0, -1, 0), Math.PI / 1, 2, scene, room?.lightContainer != null);
 			light.parent = lamp;
+			light.radius = cm(5);
 			if (room?.lightContainer != null) room.lightContainer.addLight(light);
 			lights.push(light);
 		}

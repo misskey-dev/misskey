@@ -75,6 +75,7 @@ export const woodRingsPendantLight = defineObject({
 		const lamp = model.findMesh('__X_LAMP__');
 		const light = new BABYLON.PointLight('', new BABYLON.Vector3(0, 0, 0), scene, room?.lightContainer != null);
 		light.parent = lamp;
+		light.radius = cm(5);
 		if (room?.lightContainer != null) room.lightContainer.addLight(light);
 
 		const applyLightColor = () => {

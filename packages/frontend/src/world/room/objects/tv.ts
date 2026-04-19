@@ -42,6 +42,7 @@ export const tv = defineObject({
 		light.parent = model.root;
 		light.diffuse = new BABYLON.Color3(1.0, 1.0, 1.0);
 		light.range = cm(150);
+		light.radius = cm(40);
 		if (room?.lightContainer != null) room.lightContainer.addLight(light);
 
 		const screenMesh = model.findMesh('__TV_SCREEN__');

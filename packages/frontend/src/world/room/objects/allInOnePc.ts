@@ -56,6 +56,7 @@ export const allInOnePc = defineObject({
 		light.parent = model.root;
 		light.diffuse = new BABYLON.Color3(1.0, 1.0, 1.0);
 		light.range = cm(100);
+		light.radius = cm(20);
 		if (room?.lightContainer != null) room.lightContainer.addLight(light);
 
 		const screenMesh = model.findMesh('__X_SCREEN__');

@@ -299,13 +299,14 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 		const ambientLight = new BABYLON.HemisphericLight('ambientLight', new BABYLON.Vector3(0, 1, -0.5), this.scene);
 		ambientLight.diffuse = new BABYLON.Color3(1.0, 1.0, 1.0);
-		ambientLight.intensity = 0.5;
+		ambientLight.intensity = 0.3;
 		//ambientLight.intensity = 0;
 
 		this.roomLight = new BABYLON.SpotLight('roomLight', new BABYLON.Vector3(0, cm(249), 0), new BABYLON.Vector3(0, -1, 0), 16, 8, this.scene);
 		this.roomLight.diffuse = new BABYLON.Color3(1.0, 0.9, 0.8);
 		this.roomLight.shadowMinZ = cm(10);
 		this.roomLight.shadowMaxZ = cm(300);
+		this.roomLight.radius = cm(30);
 
 		this.shadowGeneratorForRoomLight = new BABYLON.ShadowGenerator(2048, this.roomLight);
 		this.shadowGeneratorForRoomLight.forceBackFacesOnly = true;

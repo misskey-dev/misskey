@@ -68,6 +68,7 @@ export const laptopPc = defineObject({
 		light.parent = hutaNode;
 		light.diffuse = new BABYLON.Color3(1.0, 1.0, 1.0);
 		light.range = cm(100);
+		light.radius = cm(15);
 		if (room?.lightContainer != null) room.lightContainer.addLight(light);
 
 		const bodyMaterial = model.findMaterial('__X_BODY__');
