@@ -6,7 +6,7 @@
 import * as BABYLON from '@babylonjs/core';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic.js';
 import { GridMaterial } from '@babylonjs/materials';
-import { camelToKebab, WORLD_SCALE, cm, getMeshesBoundingBox } from '../utility.js';
+import { camelToKebab, WORLD_SCALE, cm, getMeshesBoundingBox, Timer } from '../utility.js';
 import { getObjectDef } from './object-defs.js';
 import { SYSTEM_MESH_NAMES, ModelManager } from './utility.js';
 import type { RoomObjectInstance } from './object.js';
@@ -32,6 +32,7 @@ export class RoomObjectPreviewEngine {
 	private envMapIndoor: BABYLON.CubeTexture;
 	private roomLight: BABYLON.SpotLight;
 	private zGridPreviewPlane: BABYLON.Mesh;
+	private timerForEachObject: Timer | null = null;
 	private fps = 60;
 
 	constructor(options: {
@@ -219,6 +220,11 @@ export class RoomObjectPreviewEngine {
 			}
 		});
 
+		if (this.timerForEachObject != null) {
+			this.timerForEachObject.dispose();
+		}
+		this.timerForEachObject = new Timer();
+
 		const objectInstance = await def.createInstance({
 			room: null,
 			scene: this.scene,
@@ -226,6 +232,7 @@ export class RoomObjectPreviewEngine {
 			options: args.options,
 			model,
 			id: args.id,
+			timer: this.timerForEachObject,
 		});
 
 		objectInstance.onInited?.();
@@ -245,6 +252,9 @@ export class RoomObjectPreviewEngine {
 	}
 
 	public destroy() {
+		if (this.timerForEachObject != null) {
+			this.timerForEachObject.dispose();
+		}
 		this.engine.dispose();
 	}
 }

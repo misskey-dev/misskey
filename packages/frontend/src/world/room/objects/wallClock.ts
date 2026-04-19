@@ -22,7 +22,7 @@ export const wallClock = defineObject({
 	},
 	placement: 'side',
 	hasCollisions: false,
-	createInstance: ({ room, root, options, model }) => {
+	createInstance: ({ room, timer, options, model }) => {
 		const hourHand = model.findMesh('HandH');
 		const minuteHand = model.findMesh('HandM');
 
@@ -39,7 +39,8 @@ export const wallClock = defineObject({
 
 		return {
 			onInited: () => {
-				room.timer.setInterval(() => {
+				// TODO: 家具が撤去された後も呼ばれ続けるのをどうにかする
+				timer.setInterval(() => {
 					const now = new Date();
 					const hours = now.getHours() % 12;
 					const minutes = now.getMinutes();

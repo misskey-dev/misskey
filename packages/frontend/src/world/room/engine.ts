@@ -1090,6 +1090,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			options: args.options,
 			model,
 			id: args.id,
+			timer: this.timer, // TODO: 家具が撤去された後も動作し続けるのをどうにかする
 			stickyMarkerMeshUpdated: (mesh) => {
 				// TODO
 				//// stickyな子の位置を更新

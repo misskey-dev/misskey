@@ -6,6 +6,7 @@
 import * as BABYLON from '@babylonjs/core';
 import type { RoomEngine } from './engine.js';
 import type { ModelManager } from './utility.js';
+import type { Timer } from '../utility.js';
 
 // babylonのドメイン知識は持たない
 export type RoomStateObject<Options = any> = {
@@ -105,6 +106,7 @@ export type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 		options: Readonly<GetOptionsSchemaValues<OpSc>>;
 		model: ModelManager;
 		id: string;
+		timer: Timer;
 		stickyMarkerMeshUpdated?: (mesh: BABYLON.Mesh) => void;
 	}) => RoomObjectInstance<GetOptionsSchemaValues<OpSc>> | Promise<RoomObjectInstance<GetOptionsSchemaValues<OpSc>>>; // TODO: createInstanceをasyncにするのではなく、別にreadyみたいなものを返させる
 };

@@ -34,7 +34,7 @@ export const tabletopDigitalClock = defineObject({
 	},
 	placement: 'top',
 	hasCollisions: false,
-	createInstance: ({ root, room, options, model, scene }) => {
+	createInstance: ({ root, room, options, model, scene, timer }) => {
 		const light = new BABYLON.SpotLight('', new BABYLON.Vector3(0, cm(3), cm(1)), new BABYLON.Vector3(0, 0, 1), Math.PI / 1, 2, scene, room?.lightContainer != null);
 		light.parent = root;
 		light.intensity = 0.01 * WORLD_SCALE * WORLD_SCALE;
@@ -100,7 +100,8 @@ export const tabletopDigitalClock = defineObject({
 				applyBodyColor();
 				applyLcdColor();
 
-				room.timer.setInterval(() => {
+				// TODO: 家具が撤去された後も呼ばれ続けるのをどうにかする
+				timer.setInterval(() => {
 					const onMeshes = get7segMeshesOfCurrentTime(segmentMeshes);
 
 					for (const mesh of Object.values(segmentMeshes)) {
