@@ -41,7 +41,9 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 	public lightContainer: BABYLON.ClusteredLightContainer;
 	public sr: BABYLON.SnapshotRenderingHelper;
 	private gl: BABYLON.GlowLayer | null = null;
-	public textMaterial: BABYLON.StandardMaterial;
+	private textMaterial: BABYLON.StandardMaterial;
+	private translucentTextMaterial: BABYLON.StandardMaterial;
+	private reflectionProbe: BABYLON.ReflectionProbe;
 
 	public isSitting = false;
 	private fps: number | null = null;
@@ -93,7 +95,7 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 		this.scene.ambientColor = new BABYLON.Color3(0.9, 0.9, 0.9);
 
 		this.envMap = BABYLON.CubeTexture.CreateFromPrefilteredData(this.time === 2 ? '/client-assets/room/outdoor-night.env' : '/client-assets/room/outdoor-day.env', this.scene);
-		//this.envMap.level = 0.3;
+		//this.envMap.level = 1;
 		this.envMap.level = 0;
 
 		this.scene.collisionsEnabled = true;
@@ -111,6 +113,14 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 		this.camera.needMoveForGravity = true;
 
 		//this.scene.activeCamera = this.camera;
+
+		//this.reflectionProbe = new BABYLON.ReflectionProbe('rp', 512, this.scene, true, true, false);
+		//this.reflectionProbe.refreshRate = 60;
+
+		//const mainLight = new BABYLON.PointLight('mainLight', new BABYLON.Vector3(0, cm(300), 0), this.scene);
+		//mainLight.intensity = 10000000;
+		//mainLight.radius = cm(1000);
+		//mainLight.diffuse = new BABYLON.Color3(1, 1, 1);
 
 		const ambientLight1 = new BABYLON.HemisphericLight('ambientLight1', new BABYLON.Vector3(0, 1, 0), this.scene);
 		ambientLight1.diffuse = new BABYLON.Color3(1.0, 0.9, 0.8);
@@ -221,7 +231,10 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 		for (const mesh of envObj.meshes) {
 			if (mesh.name === '__root__') continue;
 			mesh.checkCollisions = true;
-			if (mesh.material) (mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.envMap;
+			if (this.reflectionProbe != null) {
+				if (mesh.material) (mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.reflectionProbe.cubeTexture;
+				if (mesh.material) (mesh.material as BABYLON.PBRMaterial).realTimeFiltering = true;
+			}
 		}
 
 		this.textMaterial = new BABYLON.StandardMaterial('textMaterial', this.scene);
@@ -231,6 +244,9 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 		this.textMaterial.transparencyMode = BABYLON.Material.MATERIAL_ALPHABLEND;
 		this.textMaterial.useAlphaFromDiffuseTexture = true;
 		this.textMaterial.freeze();
+
+		this.translucentTextMaterial = this.textMaterial.clone('translucentTextMaterial');
+		this.translucentTextMaterial.alpha = 0.25;
 
 		{
 			const objet = envObj.meshes.find(m => m.name.includes('__OBJET__'));
@@ -310,7 +326,7 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 			messageRing.rotationQuaternion = null;
 			const text = new RecyvlingTextGrid(messageRing, 256, {
 				meshFlipped: true,
-				material: this.textMaterial,
+				material: this.translucentTextMaterial,
 				repeatSeparator: '   ',
 			});
 
@@ -412,6 +428,8 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 			]);
 			sphereRoot.animations = [anim];
 			this.scene.beginAnimation(sphereRoot, 0, speed, true);
+
+			if (this.reflectionProbe != null) this.reflectionProbe.renderList.push(sphere);
 		}
 
 		for (let i = 0; i < 64; i++) {
@@ -437,6 +455,8 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 			]);
 			sphereRoot.animations = [anim];
 			this.scene.beginAnimation(sphereRoot, 0, speed, true);
+
+			if (this.reflectionProbe != null) this.reflectionProbe.renderList.push(sphere);
 		}
 
 		//const sphere = BABYLON.MeshBuilder.CreateSphere('', { diameter: cm(10) }, this.scene);
@@ -470,6 +490,12 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 
 		const worldRingH = envObj.meshes.find(m => m.name.includes('__WORLD_RING_H__'));
 		const worldRingM = envObj.meshes.find(m => m.name.includes('__WORLD_RING_M__'));
+
+		worldRingH.material.reflectionTexture = null;
+		worldRingM.material.reflectionTexture = null;
+
+		if (this.reflectionProbe != null) this.reflectionProbe.renderList.push(worldRingH);
+		if (this.reflectionProbe != null) this.reflectionProbe.renderList.push(worldRingM);
 
 		worldRingH.rotation = worldRingH.rotationQuaternion.toEulerAngles();
 		worldRingM.rotation = worldRingM.rotationQuaternion.toEulerAngles();

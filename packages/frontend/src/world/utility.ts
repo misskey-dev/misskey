@@ -646,12 +646,12 @@ export class RecyvlingTextGrid {
 		const prev = this.currentText;
 		for (let i = 0; i <= prev.length; i++) {
 			this.write(prev.substring(0, prev.length - (i + 1)).padEnd(prev.length, ' '));
-			await sleep(30);
+			await sleep(20);
 		}
 
 		for (let i = 0; i <= text.length; i++) {
 			this.write(text.substring(0, i + 1).padEnd(text.length, ' '));
-			await sleep(30);
+			await sleep(20);
 		}
 	}
 }
