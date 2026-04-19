@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <SearchMarker path="/settings/mute-block" :label="i18n.ts.muteAndBlock" icon="ti ti-ban" :keywords="['mute', 'block']">
 	<div class="_gaps_m">
 		<MkFeatureBanner icon="/client-assets/prohibited_3d.png" color="#ff2600">
-			<SearchKeyword>{{ i18n.ts._settings.muteAndBlockBanner }}</SearchKeyword>
+			<SearchText>{{ i18n.ts._settings.muteAndBlockBanner }}</SearchText>
 		</MkFeatureBanner>
 
 		<div class="_gaps_s">
@@ -159,8 +159,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 									</div>
 									<div v-if="expandedBlockItems.includes(item.id)" :class="$style.userItemSub">
 										<div>Blocked at: <MkTime :time="item.createdAt" mode="detail"/></div>
-										<div v-if="item.expiresAt">Period: {{ new Date(item.expiresAt).toLocaleString() }}</div>
-										<div v-else>Period: {{ i18n.ts.indefinitely }}</div>
 									</div>
 								</div>
 							</div>
@@ -175,6 +173,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed, watch, markRaw } from 'vue';
+import * as Misskey from 'misskey-js';
 import XEmojiMute from './mute-block.emoji-mute.vue';
 import XInstanceMute from './mute-block.instance-mute.vue';
 import XWordMute from './mute-block.word-mute.vue';
@@ -189,10 +188,10 @@ import { ensureSignin } from '@/i.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
-import { reloadAsk } from '@/utility/reload-ask.js';
 import { prefer } from '@/preferences.js';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 import { Paginator } from '@/utility/paginator.js';
+import { suggestReload } from '@/utility/reload-suggest.js';
 
 const $i = ensureSignin();
 
@@ -216,11 +215,11 @@ const showSoftWordMutedWord = prefer.model('showSoftWordMutedWord');
 
 watch([
 	showSoftWordMutedWord,
-], async () => {
-	await reloadAsk({ reason: i18n.ts.reloadToApplySetting, unison: true });
+], () => {
+	suggestReload();
 });
 
-async function unrenoteMute(user, ev) {
+async function unrenoteMute(user: Misskey.entities.UserDetailed, ev: PointerEvent) {
 	os.popupMenu([{
 		text: i18n.ts.renoteUnmute,
 		icon: 'ti ti-x',
@@ -231,7 +230,7 @@ async function unrenoteMute(user, ev) {
 	}], ev.currentTarget ?? ev.target);
 }
 
-async function unmute(user, ev) {
+async function unmute(user: Misskey.entities.UserDetailed, ev: PointerEvent) {
 	os.popupMenu([{
 		text: i18n.ts.unmute,
 		icon: 'ti ti-x',
@@ -242,7 +241,7 @@ async function unmute(user, ev) {
 	}], ev.currentTarget ?? ev.target);
 }
 
-async function unblock(user, ev) {
+async function unblock(user: Misskey.entities.UserDetailed, ev: PointerEvent) {
 	os.popupMenu([{
 		text: i18n.ts.unblock,
 		icon: 'ti ti-x',

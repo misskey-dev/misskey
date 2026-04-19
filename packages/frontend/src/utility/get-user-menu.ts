@@ -37,15 +37,15 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 			const { canceled, result: period } = await os.select({
 				title: i18n.ts.mutePeriod,
 				items: [{
-					value: 'indefinitely', text: i18n.ts.indefinitely,
+					value: 'indefinitely', label: i18n.ts.indefinitely,
 				}, {
-					value: 'tenMinutes', text: i18n.ts.tenMinutes,
+					value: 'tenMinutes', label: i18n.ts.tenMinutes,
 				}, {
-					value: 'oneHour', text: i18n.ts.oneHour,
+					value: 'oneHour', label: i18n.ts.oneHour,
 				}, {
-					value: 'oneDay', text: i18n.ts.oneDay,
+					value: 'oneDay', label: i18n.ts.oneDay,
 				}, {
-					value: 'oneWeek', text: i18n.ts.oneWeek,
+					value: 'oneWeek', label: i18n.ts.oneWeek,
 				}],
 				default: 'indefinitely',
 			});
@@ -158,7 +158,11 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 			icon: 'ti ti-user-exclamation',
 			text: i18n.ts.moderation,
 			action: () => {
-				router.push(`/admin/user/${user.id}`);
+				router.push('/admin/user/:userId', {
+					params: {
+						userId: user.id,
+					},
+				});
 			},
 		}, { type: 'divider' });
 	}
@@ -211,12 +215,32 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 		});
 	}
 
+	if ($i && meId === user.id) {
+		menuItems.push({
+			icon: 'ti ti-qrcode',
+			text: i18n.ts.qr,
+			action: () => {
+				router.push('/qr');
+			},
+		});
+	}
+
 	if (notesSearchAvailable && (user.host == null || canSearchNonLocalNotes)) {
 		menuItems.push({
 			icon: 'ti ti-search',
 			text: i18n.ts.searchThisUsersNotes,
 			action: () => {
-				router.push(`/search?username=${encodeURIComponent(user.username)}${user.host != null ? '&host=' + encodeURIComponent(user.host) : ''}`);
+				const query = {
+						username: user.username,
+					} as { username: string, host?: string };
+
+				if (user.host !== null) {
+					query.host = user.host;
+				}
+
+				router.push('/search', {
+					query
+				});
 			},
 		});
 	}
@@ -280,7 +304,6 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 							caseSensitive: antenna.caseSensitive,
 							withReplies: antenna.withReplies,
 							withFile: antenna.withFile,
-							notify: antenna.notify,
 						});
 						antennasCache.delete();
 					},
@@ -304,15 +327,15 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 							const { canceled, result: period } = await os.select({
 								title: i18n.ts.period + ': ' + r.name,
 								items: [{
-									value: 'indefinitely', text: i18n.ts.indefinitely,
+									value: 'indefinitely', label: i18n.ts.indefinitely,
 								}, {
-									value: 'oneHour', text: i18n.ts.oneHour,
+									value: 'oneHour', label: i18n.ts.oneHour,
 								}, {
-									value: 'oneDay', text: i18n.ts.oneDay,
+									value: 'oneDay', label: i18n.ts.oneDay,
 								}, {
-									value: 'oneWeek', text: i18n.ts.oneWeek,
+									value: 'oneWeek', label: i18n.ts.oneWeek,
 								}, {
-									value: 'oneMonth', text: i18n.ts.oneMonth,
+									value: 'oneMonth', label: i18n.ts.oneMonth,
 								}],
 								default: 'indefinitely',
 							});
@@ -358,8 +381,8 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 		//}
 
 		menuItems.push({ type: 'divider' }, {
-			icon: 'ti ti-mail',
-			text: i18n.ts.sendMessage,
+			icon: 'ti ti-pencil-heart',
+			text: i18n.ts.createUserSpecifiedNote,
 			action: () => {
 				const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${user.host}`;
 				os.post({ specified: user, initialText: `${canonical} ` });

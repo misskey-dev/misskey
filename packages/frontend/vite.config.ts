@@ -1,21 +1,23 @@
 import path from 'path';
-import pluginReplace from '@rollup/plugin-replace';
 import pluginVue from '@vitejs/plugin-vue';
-import { defineConfig } from 'vite';
+import pluginGlsl from 'vite-plugin-glsl';
+import { replacePlugin } from 'rolldown/plugins';
 import type { UserConfig } from 'vite';
+import { defineConfig } from 'vite';
 import * as yaml from 'js-yaml';
 import { promises as fsp } from 'fs';
 
-import locales from '../../locales/index.js';
+import locales from 'i18n';
 import meta from '../../package.json';
 import packageInfo from './package.json' with { type: 'json' };
 import pluginUnwindCssModuleClassName from './lib/rollup-plugin-unwind-css-module-class-name.js';
-import pluginJson5 from './vite.json5.js';
-import pluginCreateSearchIndex from './lib/vite-plugin-create-search-index.js';
+import pluginJson5 from './lib/vite-plugin-json5.js';
 import type { Options as SearchIndexOptions } from './lib/vite-plugin-create-search-index.js';
+import pluginCreateSearchIndex from './lib/vite-plugin-create-search-index.js';
 import pluginWatchLocales from './lib/vite-plugin-watch-locales.js';
+import { pluginRemoveUnrefI18n } from '../frontend-builder/rollup-plugin-remove-unref-i18n.js';
 
-const url = process.env.NODE_ENV === 'development' ? yaml.load(await fsp.readFile('../../.config/default.yml', 'utf-8')).url : null;
+const url = process.env.NODE_ENV === 'development' ? (yaml.load(await fsp.readFile('../../.config/default.yml', 'utf-8')) as any).url : null;
 const host = url ? (new URL(url)).hostname : undefined;
 
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
@@ -27,6 +29,11 @@ export const searchIndexes = [{
 	targetFilePaths: ['src/pages/settings/*.vue'],
 	mainVirtualModule: 'search-index:settings',
 	modulesToHmrOnUpdate: ['src/pages/settings/index.vue'],
+	verbose: process.env.FRONTEND_SEARCH_INDEX_VERBOSE === 'true',
+}, {
+	targetFilePaths: ['src/pages/admin/*.vue'],
+	mainVirtualModule: 'search-index:admin',
+	modulesToHmrOnUpdate: ['src/pages/admin/index.vue'],
 	verbose: process.env.FRONTEND_SEARCH_INDEX_VERBOSE === 'true',
 }] satisfies SearchIndexOptions[];
 
@@ -79,6 +86,8 @@ export function toBase62(n: number): string {
 }
 
 export function getConfig(): UserConfig {
+	const localesHash = toBase62(hash(JSON.stringify(locales)));
+
 	return {
 		base: '/vite/',
 
@@ -106,15 +115,16 @@ export function getConfig(): UserConfig {
 			pluginWatchLocales(),
 			...searchIndexes.map(options => pluginCreateSearchIndex(options)),
 			pluginVue(),
+			pluginRemoveUnrefI18n(),
 			pluginUnwindCssModuleClassName(),
 			pluginJson5(),
+			pluginGlsl({ minify: true }),
 			...process.env.NODE_ENV === 'production'
 				? [
-					pluginReplace({
+					replacePlugin({
+						'isChromatic()': JSON.stringify(false),
+					}, {
 						preventAssignment: true,
-						values: {
-							'isChromatic()': JSON.stringify(false),
-						},
 					}),
 				]
 				: [],
@@ -143,11 +153,6 @@ export function getConfig(): UserConfig {
 					}
 				},
 			},
-			preprocessorOptions: {
-				scss: {
-					api: 'modern-compiler',
-				},
-			},
 		},
 
 		define: {
@@ -156,7 +161,7 @@ export function getConfig(): UserConfig {
 			_ENV_: JSON.stringify(process.env.NODE_ENV),
 			_DEV_: process.env.NODE_ENV !== 'production',
 			_PERF_PREFIX_: JSON.stringify('Misskey:'),
-			__VUE_OPTIONS_API__: true,
+			__VUE_OPTIONS_API__: false,
 			__VUE_PROD_DEVTOOLS__: false,
 		},
 
@@ -167,18 +172,33 @@ export function getConfig(): UserConfig {
 				'safari16',
 			],
 			manifest: 'manifest.json',
-			rollupOptions: {
+			rolldownOptions: {
+				experimental: {
+					nativeMagicString: true,
+				},
 				input: {
-					app: './src/_boot_.ts',
+					i18n: './src/i18n.ts',
+					entry: './src/_boot_.ts',
 				},
 				external: externalPackages.map(p => p.match),
+				preserveEntrySignatures: 'allow-extension',
 				output: {
-					manualChunks: {
-						vue: ['vue'],
-						photoswipe: ['photoswipe', 'photoswipe/lightbox', 'photoswipe/style.css'],
+					codeSplitting: {
+						groups: [{
+							name: 'vue',
+							test: /node_modules[\\/]vue/,
+						}, {
+							name: 'photoswipe',
+							test: /node_modules[\\/]photoswipe/,
+						}, {
+							// dependencies of i18n.ts
+							name: 'config',
+							test: /@@[\\/]js[\\/]config\.js/,
+						}],
 					},
-					chunkFileNames: process.env.NODE_ENV === 'production' ? '[hash:8].js' : '[name]-[hash:8].js',
-					assetFileNames: process.env.NODE_ENV === 'production' ? '[hash:8][extname]' : '[name]-[hash:8][extname]',
+					entryFileNames: `scripts/${localesHash}-[hash:8].js`,
+					chunkFileNames: `scripts/${localesHash}-[hash:8].js`,
+					assetFileNames: `assets/${localesHash}-[hash:8][extname]`,
 					paths(id) {
 						for (const p of externalPackages) {
 							if (p.match.test(id)) {

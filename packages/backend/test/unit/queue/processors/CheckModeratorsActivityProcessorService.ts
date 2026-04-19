@@ -24,7 +24,7 @@ const baseDate = new Date(Date.UTC(2000, 11, 15, 12, 0, 0));
 
 describe('CheckModeratorsActivityProcessorService', () => {
 	let app: TestingModule;
-	let clock: lolex.InstalledClock;
+	let clock: lolex.Clock;
 	let service: CheckModeratorsActivityProcessorService;
 
 	// --------------------------------------------------------------------------------------
@@ -141,6 +141,8 @@ describe('CheckModeratorsActivityProcessorService', () => {
 
 	beforeEach(async () => {
 		clock = lolex.install({
+			// https://github.com/sinonjs/sinon/issues/2620
+			toFake: Object.keys(lolex.timers).filter((key) => !['nextTick', 'queueMicrotask'].includes(key)) as lolex.FakeMethod[],
 			now: new Date(baseDate),
 			shouldClearNativeTimers: true,
 		});

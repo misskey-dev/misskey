@@ -55,13 +55,13 @@ export class MetaEntityService {
 		if (instance.defaultLightTheme) {
 			try {
 				defaultLightTheme = JSON.stringify(JSON5.parse(instance.defaultLightTheme));
-			} catch (e) {
+			} catch (_) {
 			}
 		}
 		if (instance.defaultDarkTheme) {
 			try {
 				defaultDarkTheme = JSON.stringify(JSON5.parse(instance.defaultDarkTheme));
-			} catch (e) {
+			} catch (_) {
 			}
 		}
 
@@ -109,6 +109,7 @@ export class MetaEntityService {
 			maxNoteTextLength: MAX_NOTE_TEXT_LENGTH,
 			defaultLightTheme,
 			defaultDarkTheme,
+			clientOptions: instance.clientOptions,
 			ads: ads.map(ad => ({
 				id: ad.id,
 				url: ad.url,
@@ -116,6 +117,7 @@ export class MetaEntityService {
 				ratio: ad.ratio,
 				imageUrl: ad.imageUrl,
 				dayOfWeek: ad.dayOfWeek,
+				isSensitive: ad.isSensitive ? true : undefined,
 			})),
 			notesPerOneAd: instance.notesPerOneAd,
 			enableEmail: instance.enableEmail,

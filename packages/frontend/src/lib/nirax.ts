@@ -46,20 +46,34 @@ type ParsedPath = (string | {
 })[];
 
 export type RouterEvents = {
+	/** ページ内遷移を検知した場合（analytics用） */
 	change: (ctx: {
 		beforeFullPath: string;
 		fullPath: string;
 		resolved: PathResolvedResult;
 	}) => void;
+	/** history stateのreplaceを行う場合 */
 	replace: (ctx: {
 		fullPath: string;
 	}) => void;
+	/** location.replace相当の処理が必要な場合 */
+	forceReplace: (ctx: {
+		onInit: boolean;
+		fullPath: string;
+	}) => void;
+	/** history stateのpushを行う場合 */
 	push: (ctx: {
 		beforeFullPath: string;
 		fullPath: string;
 		route: RouteDef | null;
-		props: Map<string, string> | null;
+		props: Map<string, string | boolean> | null;
 	}) => void;
+	/** location.hrefへの代入相当の処理が必要な場合 */
+	forcePush: (ctx: {
+		onInit: boolean;
+		fullPath: string;
+	}) => void;
+	/** 遷移先が現在のページと同じだった場合 */
 	same: () => void;
 };
 
@@ -76,6 +90,112 @@ export type PathResolvedResult = {
 		hash: string | null;
 	};
 };
+
+//#region Path Types
+type Prettify<T> = {
+	[K in keyof T]: T[K]
+} & {};
+
+type RemoveNever<T> = {
+	[K in keyof T as T[K] extends never ? never : K]: T[K];
+} & {};
+
+type IsPathParameter<Part extends string> = Part extends `${string}:${infer Parameter}` ? Parameter : never;
+
+type GetPathParamKeys<Path extends string> =
+	Path extends `${infer A}/${infer B}`
+		? IsPathParameter<A> | GetPathParamKeys<B>
+		: IsPathParameter<Path>;
+
+type GetPathParams<Path extends string> = Prettify<{
+	[Param in GetPathParamKeys<Path> as Param extends `${string}?` ? never : Param]: string;
+} & {
+	[Param in GetPathParamKeys<Path> as Param extends `${infer OptionalParam}?` ? OptionalParam : never]?: string;
+}>;
+
+type UnwrapReadOnly<T> = T extends ReadonlyArray<infer U>
+	? U
+	: T extends Readonly<infer U>
+		? U
+		: T;
+
+type GetPaths<Def extends RouteDef> = Def extends { path: infer Path }
+	? Path extends string
+		? Def extends { children: infer Children }
+			? Children extends RouteDef[]
+				? Path | `${Path}${FlattenAllPaths<Children>}`
+				: Path
+			: Path
+		: never
+	: never;
+
+type FlattenAllPaths<Defs extends RouteDef[]> = GetPaths<Defs[number]>;
+
+type GetSinglePathQuery<Def extends RouteDef, Path extends FlattenAllPaths<RouteDef[]>> = RemoveNever<
+	Def extends { path: infer BasePath, children: infer Children }
+		? BasePath extends string
+			? Path extends `${BasePath}${infer ChildPath}`
+				? Children extends RouteDef[]
+					? ChildPath extends FlattenAllPaths<Children>
+						? GetPathQuery<Children, ChildPath>
+						: Record<string, never>
+					: never
+				: never
+			: never
+		: Def['path'] extends Path
+			? Def extends { query: infer Query }
+				? Query extends Record<string, string>
+					? UnwrapReadOnly<{ [Key in keyof Query]?: string; }>
+					: Record<string, never>
+				: Record<string, never>
+			: Record<string, never>
+>;
+
+type GetPathQuery<Defs extends RouteDef[], Path extends FlattenAllPaths<Defs>> = GetSinglePathQuery<Defs[number], Path>;
+
+type RequiredIfNotEmpty<K extends string, T extends Record<string, unknown>> = T extends Record<string, never>
+	? { [Key in K]?: T }
+	: { [Key in K]: T };
+
+type NotRequiredIfEmpty<T extends Record<string, unknown>> = T extends Record<string, never> ? T | undefined : T;
+
+type GetRouterOperationProps<Defs extends RouteDef[], Path extends FlattenAllPaths<Defs>> = NotRequiredIfEmpty<RequiredIfNotEmpty<'params', GetPathParams<Path>> & {
+	query?: GetPathQuery<Defs, Path>;
+	hash?: string;
+}>;
+//#endregion
+
+function buildFullPath(args: {
+	path: string;
+	params?: Record<string, string>;
+	query?: Record<string, string>;
+	hash?: string;
+}) {
+	let fullPath = args.path;
+
+	if (args.params) {
+		for (const key in args.params) {
+			const value = args.params[key];
+			const replaceRegex = new RegExp(`:${key}(\\?)?`, 'g');
+			fullPath = fullPath.replace(replaceRegex, value ? encodeURIComponent(value) : '');
+		}
+		// remove any optional parameters that are not provided
+		fullPath = fullPath.replace(/\/:\w+\?(?=\/|$)/g, '');
+	}
+
+	if (args.query) {
+		const queryString = new URLSearchParams(args.query).toString();
+		if (queryString) {
+			fullPath += '?' + queryString;
+		}
+	}
+
+	if (args.hash) {
+		fullPath += '#' + encodeURIComponent(args.hash);
+	}
+
+	return fullPath;
+}
 
 function parsePath(path: string): ParsedPath {
 	const res = [] as ParsedPath;
@@ -110,7 +230,6 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 	private currentFullPath: string; // /foo/bar?baz=qux#hash
 	private isLoggedIn: boolean;
 	private notFoundPageComponent: Component;
-	private redirectCount = 0;
 
 	public navHook: ((fullPath: string, flag?: RouterFlag) => boolean) | null = null;
 
@@ -126,8 +245,17 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 		this.notFoundPageComponent = notFoundPageComponent;
 	}
 
-	public init() {
-		const res = this.navigate(this.currentFullPath, false);
+	public init(triggerForceReplace = false) {
+		const res = this.resolveForNavigation(this.currentFullPath);
+
+		if (triggerForceReplace && res.route.path === '/:(*)') {
+			this.emit('forceReplace', {
+				onInit: true,
+				fullPath: res._parsedRoute.fullPath,
+			});
+		}
+
+		this.navigate(res, false);
 		this.emit('replace', {
 			fullPath: res._parsedRoute.fullPath,
 		});
@@ -214,11 +342,11 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 
 					if (route.query != null && queryString != null) {
 						const queryObject = [...new URLSearchParams(queryString).entries()]
-							.reduce((obj, entry) => ({ ...obj, [entry[0]]: entry[1] }), {});
+							.reduce((obj, entry) => ({ ...obj, [entry[0]]: entry[1] }), {}) as Record<string, string>;
 
 						for (const q in route.query) {
 							const as = route.query[q];
-							if (queryObject[q]) {
+							if (queryObject[q] != null) {
 								props.set(as, safeURIDecode(queryObject[q]));
 							}
 						}
@@ -256,17 +384,15 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 		return check(this.routes, _parts);
 	}
 
-	private navigate(fullPath: string, emitChange = true, _redirected = false): PathResolvedResult {
-		const beforeFullPath = this.currentFullPath;
-		this.currentFullPath = fullPath;
-
-		const res = this.resolve(this.currentFullPath);
+	/** 通常のresolve + リダイレクト解決 */
+	private resolveForNavigation(fullPath: string, _redirectCount = 0): PathResolvedResult {
+		const res = this.resolve(fullPath);
 
 		if (res == null) {
 			throw new Error('no route found for: ' + fullPath);
 		}
 
-		for (let current: PathResolvedResult | undefined = res; current; current = current.child) {
+		for (let current: PathResolvedResult | undefined = res; current != null; current = current.child) {
 			if ('redirect' in current.route) {
 				let redirectPath: string;
 				if (typeof current.route.redirect === 'function') {
@@ -274,15 +400,26 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 				} else {
 					redirectPath = current.route.redirect + (current._parsedRoute.queryString ? '?' + current._parsedRoute.queryString : '') + (current._parsedRoute.hash ? '#' + current._parsedRoute.hash : '');
 				}
-				if (_DEV_) console.log('Redirecting to: ', redirectPath);
-				if (_redirected && this.redirectCount++ > 10) {
+				if (_DEV_) console.log('Redirecting from', current._parsedRoute.fullPath, 'to', redirectPath);
+				if (_redirectCount > 10) {
 					throw new Error('redirect loop detected');
 				}
-				return this.navigate(redirectPath, emitChange, true);
+				return this.resolveForNavigation(redirectPath, _redirectCount + 1);
 			}
 		}
 
-		if (res.route.loginRequired && !this.isLoggedIn) {
+		return {
+			...res,
+			redirected: _redirectCount > 0,
+		};
+	}
+
+	/** 解決された`res`に応じてrouterの状態を更新する。 */
+	private navigate(res: PathResolvedResult, emitChange = true) {
+		const beforeFullPath = this.currentFullPath;
+		this.currentFullPath = res._parsedRoute.fullPath;
+
+		if (res.route.loginRequired && !this.isLoggedIn && 'component' in res.route) {
 			res.route.component = this.notFoundPageComponent;
 			res.props.set('showLoginPopup', true);
 		}
@@ -294,36 +431,57 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 		if (emitChange && res.route.path !== '/:(*)') {
 			this.emit('change', {
 				beforeFullPath,
-				fullPath,
+				fullPath: res._parsedRoute.fullPath,
 				resolved: res,
 			});
 		}
 
-		this.redirectCount = 0;
-		return {
-			...res,
-			redirected: _redirected,
-		};
+		return res;
 	}
 
 	public getCurrentFullPath() {
 		return this.currentFullPath;
 	}
 
-	public push(fullPath: string, flag?: RouterFlag) {
+	public push<P extends FlattenAllPaths<DEF>>(path: P, props?: GetRouterOperationProps<DEF, P>, flag?: RouterFlag | null) {
+		const fullPath = buildFullPath({
+			path,
+			params: props?.params,
+			query: props?.query,
+			hash: props?.hash,
+		});
+		this.pushByPath(fullPath, flag);
+	}
+
+	public replace<P extends FlattenAllPaths<DEF>>(path: P, props?: GetRouterOperationProps<DEF, P>) {
+		const fullPath = buildFullPath({
+			path,
+			params: props?.params,
+			query: props?.query,
+			hash: props?.hash,
+		});
+		this.replaceByPath(fullPath);
+	}
+
+	/** どうしても必要な場合に使用（パスが確定している場合は `Nirax.push` を使用すること） */
+	public pushByPath(fullPath: string, flag?: RouterFlag | null) {
 		const beforeFullPath = this.currentFullPath;
 		if (fullPath === beforeFullPath) {
 			this.emit('same');
 			return;
 		}
 		if (this.navHook) {
-			const cancel = this.navHook(fullPath, flag);
+			const cancel = this.navHook(fullPath, flag ?? undefined);
 			if (cancel) return;
 		}
-		const res = this.navigate(fullPath);
+		const res = this.resolveForNavigation(fullPath);
 		if (res.route.path === '/:(*)') {
-			window.location.href = fullPath;
+			this.emit('forcePush', {
+				fullPath: res._parsedRoute.fullPath,
+				onInit: false,
+			});
 		} else {
+			this.navigate(res);
 			this.emit('push', {
 				beforeFullPath,
 				fullPath: res._parsedRoute.fullPath,
@@ -333,14 +491,23 @@ export class Nirax<DEF extends RouteDef[]> extends EventEmitter<RouterEvents> {
 		}
 	}
 
-	public replace(fullPath: string) {
-		const res = this.navigate(fullPath);
-		this.emit('replace', {
-			fullPath: res._parsedRoute.fullPath,
-		});
+	/** どうしても必要な場合に使用（パスが確定している場合は `Nirax.replace` を使用すること） */
+	public replaceByPath(fullPath: string) {
+		const res = this.resolveForNavigation(fullPath);
+		if (res.route.path === '/:(*)') {
+			this.emit('forceReplace', {
+				fullPath: res._parsedRoute.fullPath,
+				onInit: false,
+			});
+		} else {
+			this.navigate(res);
+			this.emit('replace', {
+				fullPath: res._parsedRoute.fullPath,
+			});
+		}
 	}
 
-	public useListener<E extends keyof RouterEvents, L = RouterEvents[E]>(event: E, listener: L) {
+	public useListener<E extends keyof RouterEvents>(event: E, listener: EventEmitter.EventListener<RouterEvents, E>) {
 		this.addListener(event, listener);
 
 		onBeforeUnmount(() => {

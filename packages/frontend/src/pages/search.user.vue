@@ -9,10 +9,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search" @enter.prevent="search">
 			<template #prefix><i class="ti ti-search"></i></template>
 		</MkInput>
-		<MkRadios v-if="instance.federation !== 'none'" v-model="searchOrigin" @update:modelValue="search()">
-			<option value="combined">{{ i18n.ts.all }}</option>
-			<option value="local">{{ i18n.ts.local }}</option>
-			<option value="remote">{{ i18n.ts.remote }}</option>
+		<MkRadios
+			v-if="instance.federation !== 'none'"
+			v-model="searchOrigin"
+			:options="[
+				{ value: 'combined', label: i18n.ts.all },
+				{ value: 'local', label: i18n.ts.local },
+				{ value: 'remote', label: i18n.ts.remote },
+			]"
+			@update:modelValue="search()"
+		>
 		</MkRadios>
 		<MkButton large primary gradate rounded @click="search">{{ i18n.ts.search }}</MkButton>
 	</div>
@@ -77,10 +83,18 @@ async function search() {
 			const res = await promise;
 
 			if (res.type === 'User') {
-				router.push(`/@${res.object.username}@${res.object.host}`);
+				router.push('/@:acct/:page?', {
+					params: {
+						acct: `${res.object.username}@${res.object.host}`,
+					},
+				});
 			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 			} else if (res.type === 'Note') {
-				router.push(`/notes/${res.object.id}`);
+				router.push('/notes/:noteId/:initialTab?', {
+					params: {
+						noteId: res.object.id,
+					},
+				});
 			}
 
 			return;
@@ -95,7 +109,7 @@ async function search() {
 				text: i18n.ts.lookupConfirm,
 			});
 			if (!confirm.canceled) {
-				router.push(`/${query}`);
+				router.pushByPath(`/${query}`);
 				return;
 			}
 		}
@@ -106,7 +120,11 @@ async function search() {
 				text: i18n.ts.openTagPageConfirm,
 			});
 			if (!confirm.canceled) {
-				router.push(`/user-tags/${encodeURIComponent(query.substring(1))}`);
+				router.push('/user-tags/:tag', {
+					params: {
+						tag: query.substring(1),
+					},
+				});
 				return;
 			}
 		}

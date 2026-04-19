@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@contextmenu.stop
 	@keydown.stop
 >
-	<button v-if="hide" :class="$style.hidden" @click="show">
+	<button v-if="hide" :class="$style.hidden" @click="reveal">
 		<div :class="$style.hiddenTextWrapper">
 			<b v-if="audio.isSensitive" style="display: block;"><i class="ti ti-eye-exclamation"></i> {{ i18n.ts.sensitive }}{{ prefer.s.dataSaver.media ? ` (${i18n.ts.audio}${audio.size ? ' ' + bytes(audio.size) : ''})` : '' }}</b>
 			<b v-else style="display: block;"><i class="ti ti-music"></i> {{ prefer.s.dataSaver.media && audio.size ? bytes(audio.size) : i18n.ts.audio }}</b>
@@ -100,6 +100,7 @@ import { hms } from '@/filters/hms.js';
 import MkMediaRange from '@/components/MkMediaRange.vue';
 import { $i, iAmModerator } from '@/i.js';
 import { prefer } from '@/preferences.js';
+import { canRevealFile, shouldHideFileByDefault } from '@/utility/sensitive-file.js';
 
 const props = defineProps<{
 	audio: Misskey.entities.DriveFile;
@@ -154,16 +155,11 @@ function hasFocus() {
 const playerEl = useTemplateRef('playerEl');
 const audioEl = useTemplateRef('audioEl');
 
-// eslint-disable-next-line vue/no-setup-props-reactivity-loss
-const hide = ref((prefer.s.nsfw === 'force' || prefer.s.dataSaver.media) ? true : (props.audio.isSensitive && prefer.s.nsfw !== 'ignore'));
+const hide = ref(shouldHideFileByDefault(props.audio));
 
-async function show() {
-	if (props.audio.isSensitive && prefer.s.confirmWhenRevealingSensitiveMedia) {
-		const { canceled } = await os.confirm({
-			type: 'question',
-			text: i18n.ts.sensitiveMediaRevealConfirm,
-		});
-		if (canceled) return;
+async function reveal() {
+	if (!(await canRevealFile(props.audio))) {
+		return;
 	}
 
 	hide.value = false;

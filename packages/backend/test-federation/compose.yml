@@ -55,12 +55,24 @@ services:
         target: /misskey/packages/backend/jest.js
         read_only: true
       - type: bind
+        source: ../scripts/compile_config.js
+        target: /misskey/packages/backend/scripts/compile_config.js
+        read_only: true
+      - type: bind
         source: ../../misskey-js/built
         target: /misskey/packages/misskey-js/built
         read_only: true
       - type: bind
         source: ../../misskey-js/package.json
         target: /misskey/packages/misskey-js/package.json
+        read_only: true
+      - type: bind
+        source: ../../i18n/built
+        target: /misskey/packages/i18n/built
+        read_only: true
+      - type: bind
+        source: ../../i18n/package.json
+        target: /misskey/packages/i18n/package.json
         read_only: true
       - type: bind
         source: ../../../package.json
@@ -73,6 +85,10 @@ services:
       - type: bind
         source: ../../../pnpm-workspace.yaml
         target: /misskey/pnpm-workspace.yaml
+        read_only: true
+      - type: bind
+        source: ../../../patches
+        target: /misskey/patches
         read_only: true
       - type: bind
         source: ./certificates/rootCA.crt
@@ -118,12 +134,16 @@ services:
         source: ../../../pnpm-workspace.yaml
         target: /misskey/pnpm-workspace.yaml
         read_only: true
+      - type: bind
+        source: ../../../patches
+        target: /misskey/patches
+        read_only: true
     working_dir: /misskey
     command: >
       bash -c "
         npm install -g pnpm
         pnpm -F backend i --frozen-lockfile
-        pnpm exec tsc -p ./packages/backend/test-federation
+        pnpm exec tsgo -p ./packages/backend/test-federation
         node ./packages/backend/test-federation/built/daemon.js
       "
 

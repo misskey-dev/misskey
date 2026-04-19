@@ -38,7 +38,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:15
+        image: postgres:18
         ports:
           - 54312:5432
         env:
@@ -48,13 +48,20 @@ jobs:
         image: redis:7
         ports:
           - 56312:6379
+      meilisearch:
+        image: getmeili/meilisearch:v1.38.2
+        ports:
+          - 57712:7700
+        env:
+          MEILI_NO_ANALYTICS: true
+          MEILI_ENV: development
 
     steps:
-    - uses: actions/checkout@v4.2.2
+    - uses: actions/checkout@v6.0.2
       with:
         submodules: true
     - name: Setup pnpm
-      uses: pnpm/action-setup@v4.1.0
+      uses: pnpm/action-setup@v4.4.0
     - name: Get current date
       id: current-date
       run: echo "today=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
@@ -86,7 +93,7 @@ jobs:
           fi
         done
     - name: Use Node.js
-      uses: actions/setup-node@v4.4.0
+      uses: actions/setup-node@v6.3.0
       with:
         node-version-file: ${{ matrix.node-version-file }}
         cache: 'pnpm'
@@ -109,6 +116,7 @@ jobs:
     name: E2E tests (backend)
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         node-version-file:
           - .node-version
@@ -116,7 +124,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:15
+        image: postgres:18
         ports:
           - 54312:5432
         env:
@@ -128,13 +136,13 @@ jobs:
           - 56312:6379
 
     steps:
-      - uses: actions/checkout@v4.2.2
+      - uses: actions/checkout@v6.0.2
         with:
           submodules: true
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4.1.0
+        uses: pnpm/action-setup@v4.4.0
       - name: Use Node.js
-        uses: actions/setup-node@v4.4.0
+        uses: actions/setup-node@v6.3.0
         with:
           node-version-file: ${{ matrix.node-version-file }}
           cache: 'pnpm'
@@ -152,3 +160,47 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./packages/backend/coverage/coverage-final.json
+
+  migration:
+    name: Migration tests (backend)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version-file:
+          - .node-version
+          #- .github/min.node-version
+
+    services:
+      postgres:
+        image: postgres:18
+        ports:
+          - 54312:5432
+        env:
+          POSTGRES_DB: test-misskey
+          POSTGRES_HOST_AUTH_METHOD: trust
+
+    steps:
+      - uses: actions/checkout@v6.0.2
+        with:
+          submodules: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4.4.0
+      - name: Get current date
+        id: current-date
+        run: echo "today=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+      - name: Use Node.js
+        uses: actions/setup-node@v6.3.0
+        with:
+          node-version-file: ${{ matrix.node-version-file }}
+          cache: 'pnpm'
+      - run: pnpm i --frozen-lockfile
+      - name: Check pnpm-lock.yaml
+        run: git diff --exit-code pnpm-lock.yaml
+      - name: Copy Configure
+        run: cp .github/misskey/test.yml .config
+      - name: Build
+        run: pnpm build
+      - name: Run migrations
+        run: MISSKEY_CONFIG_YML=test.yml pnpm --filter backend migrate
+      - name: Check no migrations are remaining
+        run: MISSKEY_CONFIG_YML=test.yml pnpm --filter backend check-migrations

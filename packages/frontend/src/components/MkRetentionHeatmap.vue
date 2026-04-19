@@ -98,7 +98,7 @@ async function renderChart() {
 				data: data as any,
 				borderWidth: 0,
 				borderRadius: 3,
-				backgroundColor(c) {
+				backgroundColor(c: any) {
 					const v = c.dataset.data[c.dataIndex] as unknown as typeof data[0];
 					const value = v.v;
 					const m = max(v.y);
@@ -179,7 +179,7 @@ async function renderChart() {
 					enabled: false,
 					callbacks: {
 						title(context) {
-							const v = context[0].dataset.data[context[0].dataIndex];
+							const v = context[0].dataset.data[context[0].dataIndex] as unknown as typeof data[0];
 							return getYYYYMMDD(new Date(new Date(v.y).getTime() + (v.x * 86400000)));
 						},
 						label(context) {

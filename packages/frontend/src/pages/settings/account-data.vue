@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <SearchMarker path="/settings/account-data" :label="i18n.ts._settings.accountData" :keywords="['import', 'export', 'data', 'archive']" icon="ti ti-package">
 	<div class="_gaps_m">
 		<MkFeatureBanner icon="/client-assets/package_3d.png" color="#ff9100">
-			<SearchKeyword>{{ i18n.ts._settings.accountDataBanner }}</SearchKeyword>
+			<SearchText>{{ i18n.ts._settings.accountDataBanner }}</SearchText>
 		</MkFeatureBanner>
 
 		<div class="_gaps_s">
@@ -189,7 +189,7 @@ const onImportSuccess = () => {
 	});
 };
 
-const onError = (ev) => {
+const onError = (ev: Error) => {
 	os.alert({
 		type: 'error',
 		text: ev.message,
@@ -232,7 +232,7 @@ const exportAntennas = () => {
 	misskeyApi('i/export-antennas', {}).then(onExportSuccess).catch(onError);
 };
 
-const importFollowing = async (ev) => {
+const importFollowing = async (ev: PointerEvent) => {
 	const file = await selectFile({
 		anchorElement: ev.currentTarget ?? ev.target,
 		multiple: false,
@@ -243,7 +243,7 @@ const importFollowing = async (ev) => {
 	}).then(onImportSuccess).catch(onError);
 };
 
-const importUserLists = async (ev) => {
+const importUserLists = async (ev: PointerEvent) => {
 	const file = await selectFile({
 		anchorElement: ev.currentTarget ?? ev.target,
 		multiple: false,
@@ -251,7 +251,7 @@ const importUserLists = async (ev) => {
 	misskeyApi('i/import-user-lists', { fileId: file.id }).then(onImportSuccess).catch(onError);
 };
 
-const importMuting = async (ev) => {
+const importMuting = async (ev: PointerEvent) => {
 	const file = await selectFile({
 		anchorElement: ev.currentTarget ?? ev.target,
 		multiple: false,
@@ -259,7 +259,7 @@ const importMuting = async (ev) => {
 	misskeyApi('i/import-muting', { fileId: file.id }).then(onImportSuccess).catch(onError);
 };
 
-const importBlocking = async (ev) => {
+const importBlocking = async (ev: PointerEvent) => {
 	const file = await selectFile({
 		anchorElement: ev.currentTarget ?? ev.target,
 		multiple: false,
@@ -267,7 +267,7 @@ const importBlocking = async (ev) => {
 	misskeyApi('i/import-blocking', { fileId: file.id }).then(onImportSuccess).catch(onError);
 };
 
-const importAntennas = async (ev) => {
+const importAntennas = async (ev: PointerEvent) => {
 	const file = await selectFile({
 		anchorElement: ev.currentTarget ?? ev.target,
 		multiple: false,

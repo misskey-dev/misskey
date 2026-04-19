@@ -111,6 +111,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div>
 							<a style="display: inline-block;" class="purpledotdigital" title="Purple Dot Digital" href="https://purpledotdigital.com/" target="_blank"><img style="width: 100%;" src="https://assets.misskey-hub.net/sponsors/purple-dot-digital.jpg" alt="Purple Dot Digital"></a>
 						</div>
+						<div>
+							<a style="display: inline-block;" class="sads-llc" title="合同会社サッズ" href="https://sads-llc.co.jp/" target="_blank"><img style="width: 100%;" src="https://assets.misskey-hub.net/sponsors/sads-llc.png" alt="合同会社サッズ"></a>
+						</div>
 					</div>
 				</FormSection>
 				<FormSection>
@@ -147,6 +150,7 @@ import { definePage } from '@/page.js';
 import { claimAchievement, claimedAchievements } from '@/utility/achievements.js';
 import { $i } from '@/i.js';
 import { prefer } from '@/preferences.js';
+import { DEFAULT_EMOJIS } from '@@/js/const.js';
 
 const patronsWithIcon = [{
 	name: 'カイヤン',
@@ -286,6 +290,15 @@ const patronsWithIcon = [{
 }, {
 	name: '井上千二十四',
 	icon: 'https://assets.misskey-hub.net/patrons/193afa1f039b4c339866039c3dcd74bf.jpg',
+}, {
+	name: 'NigN',
+	icon: 'https://assets.misskey-hub.net/patrons/1ccaef8e73ec4a50b59ff7cd688ceb84.jpg',
+}, {
+	name: 'しゃどかの',
+	icon: 'https://assets.misskey-hub.net/patrons/5bec3c6b402942619e03f7a2ae76d69e.jpg',
+}, {
+	name: '大賀愛一郎',
+	icon: 'https://assets.misskey-hub.net/patrons/c701a797d1df4125970f25d3052250ac.jpg',
 }];
 
 const patrons = [
@@ -399,6 +412,8 @@ const patrons = [
 	'みりめい',
 	'東雲 琥珀',
 	'ほとラズ',
+	'スズカケン',
+	'蒼井よみこ',
 ];
 
 const thereIsTreasure = ref($i && !claimedAchievements.includes('foundTreasure'));
@@ -415,7 +430,12 @@ const containerEl = useTemplateRef('containerEl');
 
 function iconLoaded() {
 	if (containerEl.value == null) return;
-	const emojis = prefer.s.emojiPalettes[0].emojis;
+	const emojis = prefer.s.emojiPalettes[0]?.emojis ?? [];
+
+	if (emojis.length < DEFAULT_EMOJIS.length) {
+		emojis.push(...DEFAULT_EMOJIS.slice(0, DEFAULT_EMOJIS.length - emojis.length));
+	}
+
 	const containerWidth = containerEl.value.offsetWidth;
 	for (let i = 0; i < 32; i++) {
 		easterEggEmojis.value.push({

@@ -7,22 +7,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 <SearchMarker path="/settings/notifications" :label="i18n.ts.notifications" :keywords="['notifications']" icon="ti ti-bell">
 	<div class="_gaps_m">
 		<MkFeatureBanner icon="/client-assets/bell_3d.png" color="#ffff00">
-			<SearchKeyword>{{ i18n.ts._settings.notificationsBanner }}</SearchKeyword>
+			<SearchText>{{ i18n.ts._settings.notificationsBanner }}</SearchText>
 		</MkFeatureBanner>
 
 		<FormSection first>
 			<template #label>{{ i18n.ts.notificationRecieveConfig }}</template>
 			<div class="_gaps_s">
-				<MkFolder v-for="type in notificationTypes.filter(x => !nonConfigurableNotificationTypes.includes(x))" :key="type">
+				<MkFolder v-for="type in configurableNotificationTypes" :key="type">
 					<template #label>{{ i18n.ts._notification._types[type] }}</template>
 					<template #suffix>
 						{{
-							$i.notificationRecieveConfig[type]?.type === 'never' ? i18n.ts.none :
-							$i.notificationRecieveConfig[type]?.type === 'following' ? i18n.ts.following :
-							$i.notificationRecieveConfig[type]?.type === 'follower' ? i18n.ts.followers :
-							$i.notificationRecieveConfig[type]?.type === 'mutualFollow' ? i18n.ts.mutualFollow :
-							$i.notificationRecieveConfig[type]?.type === 'followingOrFollower' ? i18n.ts.followingOrFollower :
-							$i.notificationRecieveConfig[type]?.type === 'list' ? i18n.ts.userList :
+							$i.notificationRecieveConfig[type as (typeof configurableNotificationTypes)[number]]?.type === 'never' ? i18n.ts.none :
+							$i.notificationRecieveConfig[type as (typeof configurableNotificationTypes)[number]]?.type === 'following' ? i18n.ts.following :
+							$i.notificationRecieveConfig[type as (typeof configurableNotificationTypes)[number]]?.type === 'follower' ? i18n.ts.followers :
+							$i.notificationRecieveConfig[type as (typeof configurableNotificationTypes)[number]]?.type === 'mutualFollow' ? i18n.ts.mutualFollow :
+							$i.notificationRecieveConfig[type as (typeof configurableNotificationTypes)[number]]?.type === 'followingOrFollower' ? i18n.ts.followingOrFollower :
+							$i.notificationRecieveConfig[type as (typeof configurableNotificationTypes)[number]]?.type === 'list' ? i18n.ts.userList :
 							i18n.ts.all
 						}}
 					</template>
@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<XNotificationConfig
 						:userLists="userLists"
 						:value="$i.notificationRecieveConfig[type] ?? { type: 'all' }"
-						:configurableTypes="onlyOnOrOffNotificationTypes.includes(type) ? ['all', 'never'] : undefined"
+						:configurableTypes="(onlyOnOrOffNotificationTypes as string[]).includes(type) ? ['all', 'never'] : undefined"
 						@update="(res) => updateReceiveConfig(type, res)"
 					/>
 				</MkFolder>
@@ -43,9 +43,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</FormSection>
 		<FormSection>
 			<div class="_gaps_s">
-				<FormLink @click="readAllNotifications">{{ i18n.ts.markAsReadAllNotifications }}</FormLink>
-				<FormLink @click="testNotification">{{ i18n.ts._notification.sendTestNotification }}</FormLink>
-				<FormLink @click="flushNotification">{{ i18n.ts._notification.flushNotification }}</FormLink>
+				<MkButton @click="readAllNotifications">{{ i18n.ts.markAsReadAllNotifications }}</MkButton>
+				<MkButton @click="testNotification">{{ i18n.ts._notification.sendTestNotification }}</MkButton>
+				<MkButton @click="flushNotification">{{ i18n.ts._notification.flushNotification }}</MkButton>
 			</div>
 		</FormSection>
 		<FormSection>
@@ -55,11 +55,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkPushNotificationAllowButton ref="allowButton"/>
 				<MkSwitch :disabled="!pushRegistrationInServer" :modelValue="sendReadMessage" @update:modelValue="onChangeSendReadMessage">
 					<template #label>{{ i18n.ts.sendPushNotificationReadMessage }}</template>
-					<template #caption>
-						<I18n :src="i18n.ts.sendPushNotificationReadMessageCaption">
-							<template #emptyPushNotificationMessage>{{ i18n.ts._notification.emptyPushNotificationMessage }}</template>
-						</I18n>
-					</template>
+					<template #caption>{{ i18n.ts.sendPushNotificationReadMessageCaption }}</template>
 				</MkSwitch>
 			</div>
 		</FormSection>
@@ -69,13 +65,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { useTemplateRef, computed } from 'vue';
-import { notificationTypes } from '@@/js/const.js';
+import { notificationTypes } from 'misskey-js';
 import XNotificationConfig from './notifications.notification-config.vue';
 import type { NotificationConfig } from './notifications.notification-config.vue';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
+import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { ensureSignin } from '@/i.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -86,9 +83,11 @@ import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 
 const $i = ensureSignin();
 
-const nonConfigurableNotificationTypes = ['note', 'roleAssigned', 'followRequestAccepted', 'test', 'exportCompleted'] satisfies (typeof notificationTypes[number])[] as string[];
+const nonConfigurableNotificationTypes = ['note', 'roleAssigned', 'followRequestAccepted', 'test', 'exportCompleted'] as const satisfies (typeof notificationTypes[number])[];
 
-const onlyOnOrOffNotificationTypes = ['app', 'achievementEarned', 'login', 'createToken'] satisfies (typeof notificationTypes[number])[] as string[];
+const configurableNotificationTypes = notificationTypes.filter(type => !nonConfigurableNotificationTypes.includes(type as any)) as Exclude<typeof notificationTypes[number], typeof nonConfigurableNotificationTypes[number]>[];
+
+const onlyOnOrOffNotificationTypes = ['app', 'achievementEarned', 'login', 'createToken', 'scheduledNotePosted', 'scheduledNotePostFailed'] as const satisfies (typeof notificationTypes[number])[];
 
 const allowButton = useTemplateRef('allowButton');
 const pushRegistrationInServer = computed(() => allowButton.value?.pushRegistrationInServer);
@@ -96,7 +95,7 @@ const sendReadMessage = computed(() => pushRegistrationInServer.value?.sendReadM
 const userLists = await misskeyApi('users/lists/list');
 
 async function readAllNotifications() {
-	await os.apiWithDialog('notifications/mark-all-as-read');
+	await os.apiWithDialog('notifications/mark-all-as-read', {});
 }
 
 async function updateReceiveConfig(type: typeof notificationTypes[number], value: NotificationConfig) {
@@ -134,7 +133,7 @@ async function flushNotification() {
 
 	if (canceled) return;
 
-	os.apiWithDialog('notifications/flush');
+	os.apiWithDialog('notifications/flush', {});
 }
 
 const headerActions = computed(() => []);

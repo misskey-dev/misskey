@@ -28,8 +28,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </MkModalWindow>
 </template>
 
-<script lang="ts" setup>
-import { onMounted, useTemplateRef, ref } from 'vue';
+<script lang="ts" setup generic="F extends File | Blob">
+import { onMounted, useTemplateRef, ref, onUnmounted } from 'vue';
 import * as Misskey from 'misskey-js';
 import Cropper from 'cropperjs';
 import tinycolor from 'tinycolor2';
@@ -38,13 +38,13 @@ import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
-	imageFile: File | Blob;
+	imageFile: F;
 	aspectRatio: number | null;
 	uploadFolder?: string | null;
 }>();
 
 const emit = defineEmits<{
-	(ev: 'ok', cropped: File | Blob): void;
+	(ev: 'ok', cropped: F): void;
 	(ev: 'cancel'): void;
 	(ev: 'closed'): void;
 }>();
@@ -55,44 +55,54 @@ const imgEl = useTemplateRef('imgEl');
 let cropper: Cropper | null = null;
 const loading = ref(true);
 
-const ok = async () => {
-	const promise = new Promise<Misskey.entities.DriveFile>(async (res) => {
-		const croppedImage = await cropper?.getCropperImage();
-		const croppedSection = await cropper?.getCropperSelection();
+async function ok() {
+	const promise = new Promise<Blob>(async (res) => {
+		if (cropper == null) throw new Error('Cropper is not initialized');
+
+		const croppedImage = await cropper.getCropperImage()!;
+		const croppedSection = await cropper.getCropperSelection()!;
 
 		// 拡大率を計算し、(ほぼ)元の大きさに戻す
 		const zoomedRate = croppedImage.getBoundingClientRect().width / croppedImage.clientWidth;
 		const widthToRender = croppedSection.getBoundingClientRect().width / zoomedRate;
 
-		const croppedCanvas = await croppedSection?.$toCanvas({ width: widthToRender });
-		croppedCanvas?.toBlob(blob => {
+		const croppedCanvas = await croppedSection.$toCanvas({ width: widthToRender });
+		croppedCanvas.toBlob(blob => {
 			if (!blob) return;
 			res(blob);
 		});
 	});
 
 	const f = await promise;
+	let finalFile: F;
+	if (props.imageFile instanceof File) {
+		finalFile = new File([f], props.imageFile.name, { type: f.type }) as F;
+	} else {
+		finalFile = f as F;
+	}
 
-	emit('ok', f);
-	dialogEl.value!.close();
-};
+	emit('ok', finalFile);
+	if (dialogEl.value != null) dialogEl.value.close();
+}
 
-const cancel = () => {
+function cancel() {
 	emit('cancel');
-	dialogEl.value!.close();
-};
+	if (dialogEl.value != null) dialogEl.value.close();
+}
 
-const onImageLoad = () => {
+function onImageLoad() {
 	loading.value = false;
 
 	if (cropper) {
 		cropper.getCropperImage()!.$center('contain');
 		cropper.getCropperSelection()!.$center();
 	}
-};
+}
 
 onMounted(() => {
-	cropper = new Cropper(imgEl.value!, {
+	if (imgEl.value == null) return; // TSを黙らすため
+
+	cropper = new Cropper(imgEl.value, {
 	});
 
 	const computedStyle = getComputedStyle(window.document.documentElement);
@@ -104,15 +114,21 @@ onMounted(() => {
 	selection.outlined = true;
 
 	window.setTimeout(() => {
-		cropper!.getCropperImage()!.$center('contain');
+		if (cropper == null) return;
+		cropper.getCropperImage()!.$center('contain');
 		selection.$center();
 	}, 100);
 
 	// モーダルオープンアニメーションが終わったあとで再度調整
 	window.setTimeout(() => {
-		cropper!.getCropperImage()!.$center('contain');
+		if (cropper == null) return;
+		cropper.getCropperImage()!.$center('contain');
 		selection.$center();
 	}, 500);
+});
+
+onUnmounted(() => {
+	URL.revokeObjectURL(imgUrl);
 });
 </script>
 

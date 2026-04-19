@@ -3,11 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+// TODO: (可能な部分を)sharedに抽出して frontend-embed と共通化
+
 import { ref, nextTick } from 'vue';
 import tinycolor from 'tinycolor2';
 import lightTheme from '@@/themes/_light.json5';
 import darkTheme from '@@/themes/_dark.json5';
 import JSON5 from 'json5';
+import { version } from '@@/js/config.js';
 import type { Ref } from 'vue';
 import type { BundledTheme } from 'shiki/themes';
 import { deepClone } from '@/utility/clone.js';
@@ -23,6 +26,7 @@ export type Theme = {
 	author: string;
 	desc?: string;
 	base?: 'dark' | 'light';
+	kind?: 'dark' | 'light'; // legacy
 	props: Record<string, string>;
 	codeHighlighter?: {
 		base: BundledTheme;
@@ -120,6 +124,7 @@ function applyThemeInternal(theme: Theme, persist: boolean) {
 	if (persist) {
 		miLocalStorage.setItem('theme', JSON.stringify(props));
 		miLocalStorage.setItem('themeId', theme.id);
+		miLocalStorage.setItem('themeCachedVersion', version);
 		miLocalStorage.setItem('colorScheme', colorScheme);
 	}
 
@@ -128,7 +133,7 @@ function applyThemeInternal(theme: Theme, persist: boolean) {
 }
 
 let timeout: number | null = null;
-let currentTheme: Theme | null = null;
+let currentThemeId = miLocalStorage.getItem('themeId');
 
 export function applyTheme(theme: Theme, persist = true) {
 	if (timeout) {
@@ -136,29 +141,36 @@ export function applyTheme(theme: Theme, persist = true) {
 		timeout = null;
 	}
 
-	if (deepEqual(currentTheme, theme)) return;
-	currentTheme = theme;
+	if (theme.id === currentThemeId && miLocalStorage.getItem('themeCachedVersion') === version) return;
+	currentThemeId = theme.id;
 
-	if (window.document.startViewTransition != null && prefer.s.animation) {
+	// visibilityStateがhiddenな状態でstartViewTransitionするとブラウザによってはエラーになる
+	// 通常hiddenな時に呼ばれることはないが、iOSのPWAだとアプリ切り替え時に(何故か)hiddenな状態で(何故か)一瞬デバイスのダークモード判定が変わりapplyThemeが呼ばれる場合がある
+	if (window.document.startViewTransition != null && window.document.visibilityState === 'visible') {
 		window.document.documentElement.classList.add('_themeChanging_');
-		window.document.startViewTransition(async () => {
-			applyThemeInternal(theme, persist);
-			await nextTick();
-		}).finished.then(() => {
-			window.document.documentElement.classList.remove('_themeChanging_');
-			// 色計算など再度行えるようにクライアント全体に通知
-			globalEvents.emit('themeChanged');
-		});
-	} else {
-		// TODO: ViewTransition API が主要ブラウザで対応したら消す
-		window.document.documentElement.classList.add('_themeChangingFallback_');
-		timeout = window.setTimeout(() => {
-			window.document.documentElement.classList.remove('_themeChangingFallback_');
-			// 色計算など再度行えるようにクライアント全体に通知
-			globalEvents.emit('themeChanged');
-		}, 500);
+		try {
+			window.document.startViewTransition(async () => {
+				applyThemeInternal(theme, persist);
+				await nextTick();
+			}).finished.then(() => {
+				window.document.documentElement.classList.remove('_themeChanging_');
+				globalEvents.emit('themeChanged');
+			});
+		} catch (err) {
+			// 様々な理由により startViewTransition は失敗することがある
+			// ref. https://github.com/misskey-dev/misskey/issues/16562
 
+			// FIXME: viewTransitonエラーはtry~catch貫通してそうな気配がする
+
+			console.error(err);
+
+			window.document.documentElement.classList.remove('_themeChanging_');
+			applyThemeInternal(theme, persist);
+			globalEvents.emit('themeChanged');
+		}
+	} else {
 		applyThemeInternal(theme, persist);
+		globalEvents.emit('themeChanged');
 	}
 }
 
@@ -170,16 +182,21 @@ export function compile(theme: Theme): Record<string, string> {
 			return getColor(theme.props[val]);
 		} else if (val[0] === ':') { // func
 			const parts = val.split('<');
-			const func = parts.shift().substring(1);
-			const arg = parseFloat(parts.shift());
-			const color = getColor(parts.join('<'));
+			const funcTxt = parts.shift();
+			const argTxt = parts.shift();
 
-			switch (func) {
-				case 'darken': return color.darken(arg);
-				case 'lighten': return color.lighten(arg);
-				case 'alpha': return color.setAlpha(arg);
-				case 'hue': return color.spin(arg);
-				case 'saturate': return color.saturate(arg);
+			if (funcTxt && argTxt) {
+				const func = funcTxt.substring(1);
+				const arg = parseFloat(argTxt);
+				const color = getColor(parts.join('<'));
+
+				switch (func) {
+					case 'darken': return color.darken(arg);
+					case 'lighten': return color.lighten(arg);
+					case 'alpha': return color.setAlpha(arg);
+					case 'hue': return color.spin(arg);
+					case 'saturate': return color.saturate(arg);
+				}
 			}
 		}
 
@@ -187,7 +204,7 @@ export function compile(theme: Theme): Record<string, string> {
 		return tinycolor(val);
 	}
 
-	const props = {};
+	const props = {} as Record<string, string>;
 
 	for (const [k, v] of Object.entries(theme.props)) {
 		if (k.startsWith('$')) continue; // ignore const
@@ -215,7 +232,7 @@ export function parseThemeCode(code: string): Theme {
 
 	try {
 		theme = JSON5.parse(code);
-	} catch (err) {
+	} catch (_) {
 		throw new Error('Failed to parse theme json');
 	}
 	if (!validateTheme(theme)) {
@@ -230,11 +247,17 @@ export function parseThemeCode(code: string): Theme {
 
 export function previewTheme(code: string): void {
 	const theme = parseThemeCode(code);
-	if (theme) applyTheme(theme, false);
+	if (theme != null) applyTheme(theme, false);
 }
 
 export async function installTheme(code: string): Promise<void> {
 	const theme = parseThemeCode(code);
-	if (!theme) return;
+	if (theme == null) return;
 	await addTheme(theme);
+}
+
+export function clearAppliedThemeCache() {
+	miLocalStorage.removeItem('theme');
+	miLocalStorage.removeItem('themeId');
+	miLocalStorage.removeItem('themeCachedVersion');
 }

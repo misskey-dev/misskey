@@ -168,7 +168,11 @@ function startGame(game: Misskey.entities.ReversiGameDetailed) {
 		playbackRate: 1,
 	});
 
-	router.push(`/reversi/g/${game.id}`);
+	router.push('/reversi/g/:gameId', {
+		params: {
+			gameId: game.id,
+		},
+	});
 }
 
 async function matchHeatbeat() {
@@ -193,7 +197,8 @@ async function matchHeatbeat() {
 }
 
 async function matchUser() {
-	pleaseLogin();
+	const isLoggedIn = await pleaseLogin();
+	if (!isLoggedIn) return;
 
 	const user = await os.selectUser({ includeSelf: false, localOnly: true });
 	if (user == null) return;
@@ -203,8 +208,9 @@ async function matchUser() {
 	matchHeatbeat();
 }
 
-function matchAny(ev: MouseEvent) {
-	pleaseLogin();
+async function matchAny(ev: PointerEvent) {
+	const isLoggedIn = await pleaseLogin();
+	if (!isLoggedIn) return;
 
 	os.popupMenu([{
 		text: i18n.ts._reversi.allowIrregularRules,
@@ -233,11 +239,11 @@ function cancelMatching() {
 	}
 }
 
-async function accept(user) {
+async function accept(user: Misskey.entities.UserLite) {
 	const game = await misskeyApi('reversi/match', {
 		userId: user.id,
 	});
-	if (game) {
+	if (game != null) {
 		startGame(game);
 	}
 }

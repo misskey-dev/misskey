@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="[$style.root, { [$style.isMe]: isMe }]">
-	<MkAvatar :class="$style.avatar" :user="message.fromUser!" :link="!isMe" :preview="false"/>
+	<MkAvatar :class="[$style.avatar, prefer.s.useStickyIcons ? $style.useSticky : null]" :user="message.fromUser!" :link="!isMe" :preview="false"/>
 	<div :class="[$style.body, message.file != null ? $style.fullWidth : null]" @contextmenu.stop="onContextmenu">
 		<div :class="$style.header"><MkUserName v-if="!isMe && prefer.s['chat.showSenderName'] && message.fromUser != null" :user="message.fromUser"/></div>
 		<MkFukidashi :class="$style.fukidashi" :tail="isMe ? 'right' : 'left'" :fullWidth="message.file != null" :accented="isMe">
@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:enableEmojiMenu="true"
 				:enableEmojiMenuReaction="true"
 			/>
-			<MkMediaList v-if="message.file" :mediaList="[message.file]" :class="$style.file"/>
+			<MkMediaList v-if="message.file" :mediaList="[message.file]"/>
 		</MkFukidashi>
 		<MkUrlPreview v-for="url in urls" :key="url" :url="url" style="margin: 8px 0;"/>
 		<div :class="$style.footer">
@@ -94,7 +94,7 @@ provide(DI.mfmEmojiReactCallback, (reaction) => {
 	});
 });
 
-function react(ev: MouseEvent) {
+function react(ev: PointerEvent) {
 	if ($i.policies.chatAvailability !== 'available') return;
 
 	const targetEl = getHTMLElementOrNull(ev.currentTarget ?? ev.target);
@@ -128,14 +128,14 @@ function onReactionClick(record: Misskey.entities.ChatMessage['reactions'][0]) {
 	}
 }
 
-function onContextmenu(ev: MouseEvent) {
+function onContextmenu(ev: PointerEvent) {
 	if (ev.target && isLink(ev.target as HTMLElement)) return;
 	if (window.getSelection()?.toString() !== '') return;
 
 	showMenu(ev, true);
 }
 
-function showMenu(ev: MouseEvent, contextmenu = false) {
+function showMenu(ev: PointerEvent, contextmenu = false) {
 	const menu: MenuItem[] = [];
 
 	if (!isMe.value && $i.policies.chatAvailability === 'available') {
@@ -231,11 +231,14 @@ function showMenu(ev: MouseEvent, contextmenu = false) {
 }
 
 .avatar {
-	position: sticky;
-	top: calc(16px + var(--MI-stickyTop, 0px));
 	display: block;
 	width: 50px;
 	height: 50px;
+
+	&.useSticky {
+		position: sticky;
+		top: calc(16px + var(--MI-stickyTop, 0px));
+	}
 }
 
 @container (max-width: 450px) {

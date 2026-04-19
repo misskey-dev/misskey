@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.root" class="_gaps_m">
+<div class="_gaps_m">
 	<MkInput v-model="q_name" data-cy-server-name>
 		<template #label>{{ i18n.ts.instanceName }}</template>
 	</MkInput>
@@ -14,19 +14,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #icon><i class="ti ti-settings-question"></i></template>
 
 		<div class="_gaps_s">
-			<MkRadios v-model="q_use" :vertical="true">
-				<option value="single">
-					<div><i class="ti ti-user"></i> <b>{{ i18n.ts._serverSetupWizard._use.single }}</b></div>
-					<div>{{ i18n.ts._serverSetupWizard._use.single_description }}</div>
-				</option>
-				<option value="group">
-					<div><i class="ti ti-lock"></i> <b>{{ i18n.ts._serverSetupWizard._use.group }}</b></div>
-					<div>{{ i18n.ts._serverSetupWizard._use.group_description }}</div>
-				</option>
-				<option value="open">
-					<div><i class="ti ti-world"></i> <b>{{ i18n.ts._serverSetupWizard._use.open }}</b></div>
-					<div>{{ i18n.ts._serverSetupWizard._use.open_description }}</div>
-				</option>
+			<MkRadios
+				v-model="q_use"
+				:options="[
+					{ value: 'single', label: i18n.ts._serverSetupWizard._use.single, icon: 'ti ti-user', caption: i18n.ts._serverSetupWizard._use.single_description },
+					{ value: 'group', label: i18n.ts._serverSetupWizard._use.group, icon: 'ti ti-lock', caption: i18n.ts._serverSetupWizard._use.group_description },
+					{ value: 'open', label: i18n.ts._serverSetupWizard._use.open, icon: 'ti ti-world', caption: i18n.ts._serverSetupWizard._use.open_description },
+				]"
+				vertical
+			>
 			</MkRadios>
 
 			<MkInfo v-if="q_use === 'single'">{{ i18n.ts._serverSetupWizard._use.single_youCanCreateMultipleAccounts }}</MkInfo>
@@ -40,10 +36,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #icon><i class="ti ti-users"></i></template>
 
 		<div class="_gaps_s">
-			<MkRadios v-model="q_scale" :vertical="true">
-				<option value="small"><i class="ti ti-user"></i> {{ i18n.ts._serverSetupWizard._scale.small }}</option>
-				<option value="medium"><i class="ti ti-users"></i> {{ i18n.ts._serverSetupWizard._scale.medium }}</option>
-				<option value="large"><i class="ti ti-users-group"></i> {{ i18n.ts._serverSetupWizard._scale.large }}</option>
+			<MkRadios
+				v-model="q_scale"
+				:options="[
+					{ value: 'small', label: i18n.ts._serverSetupWizard._scale.small, icon: 'ti ti-user' },
+					{ value: 'medium', label: i18n.ts._serverSetupWizard._scale.medium, icon: 'ti ti-users' },
+					{ value: 'large', label: i18n.ts._serverSetupWizard._scale.large, icon: 'ti ti-users-group' },
+				]"
+				vertical
+			>
 			</MkRadios>
 
 			<MkInfo v-if="q_scale === 'large'"><b>{{ i18n.ts.advice }}:</b> {{ i18n.ts._serverSetupWizard.largeScaleServerAdvice }}</MkInfo>
@@ -55,14 +56,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #icon><i class="ti ti-planet"></i></template>
 
 		<div class="_gaps_s">
-			<div>{{ i18n.ts._serverSetupWizard.doYouConnectToFediverse_description1 }}<br>{{ i18n.ts._serverSetupWizard.doYouConnectToFediverse_description2 }}</div>
+			<div>{{ i18n.ts._serverSetupWizard.doYouConnectToFediverse_description1 }}<br>{{ i18n.ts._serverSetupWizard.doYouConnectToFediverse_description2 }}<br><MkLink target="_blank" url="https://wikipedia.org/wiki/Fediverse">{{ i18n.ts.learnMore }}</MkLink></div>
 
-			<MkRadios v-model="q_federation" :vertical="true">
-				<option value="yes">{{ i18n.ts.yes }}</option>
-				<option value="no">{{ i18n.ts.no }}</option>
+			<MkRadios
+				v-model="q_federation"
+				:options="[
+					{ value: 'yes', label: i18n.ts.yes },
+					{ value: 'no', label: i18n.ts.no },
+				]"
+				vertical
+			>
 			</MkRadios>
 
 			<MkInfo v-if="q_federation === 'yes'">{{ i18n.ts._serverSetupWizard.youCanConfigureMoreFederationSettingsLater }}</MkInfo>
+
+			<MkSwitch v-if="q_federation === 'yes'" v-model="q_remoteContentsCleaning">
+				<template #label>{{ i18n.ts._serverSetupWizard.remoteContentsCleaning }}</template>
+				<template #caption>{{ i18n.ts._serverSetupWizard.remoteContentsCleaning_description }}</template>
+			</MkSwitch>
 		</div>
 	</MkFolder>
 
@@ -111,6 +122,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div>{{ serverSettings.federation === 'none' ? i18n.ts.no : i18n.ts.all }}</div>
 			</div>
 			<div>
+				<div><b>{{ i18n.ts._serverSettings.remoteNotesCleaning }}:</b></div>
+				<div>{{ serverSettings.enableRemoteNotesCleaning ? i18n.ts.yes : i18n.ts.no }}</div>
+			</div>
+			<div>
 				<div><b>FTT:</b></div>
 				<div>{{ serverSettings.enableFanoutTimeline ? i18n.ts.yes : i18n.ts.no }}</div>
 			</div>
@@ -121,6 +136,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div>
 				<div><b>RBT:</b></div>
 				<div>{{ serverSettings.enableReactionsBuffering ? i18n.ts.yes : i18n.ts.no }}</div>
+			</div>
+
+			<div>
+				<div><b>{{ i18n.ts._serverSettings.entrancePageStyle }}:</b></div>
+				<div>{{ serverSettings.clientOptions?.entrancePageStyle }}</div>
 			</div>
 
 			<div>
@@ -177,7 +197,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { ROLE_POLICIES } from '@@/js/const.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import * as os from '@/os.js';
@@ -185,7 +204,9 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkRadios from '@/components/MkRadios.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import MkInfo from '@/components/MkInfo.vue';
+import MkLink from '@/components/MkLink.vue';
 
 const emit = defineEmits<{
 	(ev: 'finished'): void;
@@ -197,9 +218,10 @@ const props = withDefaults(defineProps<{
 });
 
 const q_name = ref('');
-const q_use = ref('single');
-const q_scale = ref('small');
-const q_federation = ref('yes');
+const q_use = ref<'single' | 'group' | 'open'>('single');
+const q_scale = ref<'small' | 'medium' | 'large'>('small');
+const q_federation = ref<'yes' | 'no'>('no');
+const q_remoteContentsCleaning = ref(true);
 const q_adminName = ref('');
 const q_adminEmail = ref('');
 
@@ -217,14 +239,18 @@ const serverSettings = computed<Misskey.entities.AdminUpdateMetaRequest>(() => {
 		emailRequiredForSignup: q_use.value === 'open',
 		enableIpLogging: q_use.value === 'open',
 		federation: q_federation.value === 'yes' ? 'all' : 'none',
+		enableRemoteNotesCleaning: q_remoteContentsCleaning.value,
 		enableFanoutTimeline: true,
 		enableFanoutTimelineDbFallback: q_use.value === 'single',
 		enableReactionsBuffering,
+		clientOptions: {
+			entrancePageStyle: q_use.value === 'open' ? 'classic' : 'simple',
+		},
 	};
 });
 
-const defaultPolicies = computed<Partial<Record<typeof ROLE_POLICIES[number], any>>>(() => {
-	let driveCapacityMb;
+const defaultPolicies = computed<Partial<Misskey.entities.RolePolicies>>(() => {
+	let driveCapacityMb: Misskey.entities.RolePolicies['driveCapacityMb'] | undefined;
 	if (q_use.value === 'single') {
 		driveCapacityMb = 8192;
 	} else if (q_use.value === 'group') {
@@ -233,7 +259,7 @@ const defaultPolicies = computed<Partial<Record<typeof ROLE_POLICIES[number], an
 		driveCapacityMb = 100;
 	}
 
-	let rateLimitFactor;
+	let rateLimitFactor: Misskey.entities.RolePolicies['rateLimitFactor'] | undefined;
 	if (q_use.value === 'single') {
 		rateLimitFactor = 0.3;
 	} else if (q_use.value === 'group') {
@@ -248,7 +274,7 @@ const defaultPolicies = computed<Partial<Record<typeof ROLE_POLICIES[number], an
 		}
 	}
 
-	let userListLimit;
+	let userListLimit: Misskey.entities.RolePolicies['userListLimit'] | undefined;
 	if (q_use.value === 'single') {
 		userListLimit = 100;
 	} else if (q_use.value === 'group') {
@@ -257,7 +283,7 @@ const defaultPolicies = computed<Partial<Record<typeof ROLE_POLICIES[number], an
 		userListLimit = 3;
 	}
 
-	let antennaLimit;
+	let antennaLimit: Misskey.entities.RolePolicies['antennaLimit'] | undefined;
 	if (q_use.value === 'single') {
 		antennaLimit = 100;
 	} else if (q_use.value === 'group') {
@@ -266,7 +292,7 @@ const defaultPolicies = computed<Partial<Record<typeof ROLE_POLICIES[number], an
 		antennaLimit = 0;
 	}
 
-	let webhookLimit;
+	let webhookLimit: Misskey.entities.RolePolicies['webhookLimit'] | undefined;
 	if (q_use.value === 'single') {
 		webhookLimit = 100;
 	} else if (q_use.value === 'group') {
@@ -275,35 +301,35 @@ const defaultPolicies = computed<Partial<Record<typeof ROLE_POLICIES[number], an
 		webhookLimit = 0;
 	}
 
-	let canImportFollowing;
+	let canImportFollowing: Misskey.entities.RolePolicies['canImportFollowing'];
 	if (q_use.value === 'single') {
 		canImportFollowing = true;
 	} else {
 		canImportFollowing = false;
 	}
 
-	let canImportMuting;
+	let canImportMuting: Misskey.entities.RolePolicies['canImportMuting'];
 	if (q_use.value === 'single') {
 		canImportMuting = true;
 	} else {
 		canImportMuting = false;
 	}
 
-	let canImportBlocking;
+	let canImportBlocking: Misskey.entities.RolePolicies['canImportBlocking'];
 	if (q_use.value === 'single') {
 		canImportBlocking = true;
 	} else {
 		canImportBlocking = false;
 	}
 
-	let canImportUserLists;
+	let canImportUserLists: Misskey.entities.RolePolicies['canImportUserLists'];
 	if (q_use.value === 'single') {
 		canImportUserLists = true;
 	} else {
 		canImportUserLists = false;
 	}
 
-	let canImportAntennas;
+	let canImportAntennas: Misskey.entities.RolePolicies['canImportAntennas'];
 	if (q_use.value === 'single') {
 		canImportAntennas = true;
 	} else {
@@ -334,6 +360,7 @@ function applySettings() {
 			maintainerEmail: q_adminEmail.value === '' ? undefined : q_adminEmail.value,
 		}, props.token),
 		misskeyApi('admin/roles/update-default-policies', {
+			// @ts-expect-error バックエンド側の型
 			policies: defaultPolicies.value,
 		}, props.token),
 	]).then(() => {
@@ -349,8 +376,3 @@ function applySettings() {
 	});
 }
 </script>
-
-<style lang="scss" module>
-.root {
-}
-</style>
