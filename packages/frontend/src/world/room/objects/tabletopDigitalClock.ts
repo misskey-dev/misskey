@@ -104,12 +104,20 @@ export const tabletopDigitalClock = defineObject({
 					const onMeshes = get7segMeshesOfCurrentTime(segmentMeshes);
 
 					for (const mesh of Object.values(segmentMeshes)) {
-						mesh.isVisible = onMeshes.includes(mesh);
+						const isVisible = onMeshes.includes(mesh);
+						// 本当ならisVisibleで制御したいが、snapshot renderingではvisibilityはupdateMeshを呼んだとしても反映されないので、メッシュをめっちゃ縮めることで非表示を実現する(メッシュをめっちゃ遠くに飛ばすことも試みたけど、シーン全体の影のレンダリングがおかしくなるため断念。あとバウンディングボックスが大きくなるから不都合が出そう)
+						//mesh.isVisible = isVisible;
+						mesh.scaling.y = isVisible ? 1 : 0;
 					}
 
 					for (const mesh of colonMeshes) {
-						mesh.isVisible = Date.now() % 2000 < 1000;
+						const isVisible = Date.now() % 2000 < 1000;
+						// 本当ならisVisibleで制御したいが、snapshot renderingではvisibilityはupdateMeshを呼んだとしても反映されないので、メッシュをめっちゃ縮めることで非表示を実現する(メッシュをめっちゃ遠くに飛ばすことも試みたけど、シーン全体の影のレンダリングがおかしくなるため断念。あとバウンディングボックスが大きくなるから不都合が出そう)
+						//mesh.isVisible = isVisible;
+						mesh.scaling.y = isVisible ? 1 : 0;
 					}
+
+					room?.sr.updateMesh([...Object.values(segmentMeshes), ...colonMeshes]);
 				}, 1000));
 			},
 			onOptionsUpdated: ([k, v]) => {
