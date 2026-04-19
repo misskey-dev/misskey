@@ -17,15 +17,15 @@ export const colorBox = defineObject({
 			},
 		},
 		default: {
-			color: [0.75, 0.75, 0.75],
+			color: [0.6, 0.35, 0.15],
 		},
 	},
 	placement: 'floor',
 	hasCollisions: true,
-	hasTexture: true,
+	hasTexture: false,
+	canPreMeshesMerging: true,
 	createInstance: ({ options, model }) => {
-		const bodyMesh = model.findMesh('__X_BODY__');
-		const bodyMaterial = bodyMesh.material as BABYLON.PBRMaterial;
+		const bodyMaterial = model.findMaterial('__X_BODY__');
 
 		const applyColor = () => {
 			const [r, g, b] = options.color;
