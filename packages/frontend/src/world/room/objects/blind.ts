@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { cm } from '../../utility.js';
+import { cm, remap } from '../../utility.js';
 import { createOverridedStates } from '../utility.js';
 
 export const blind = defineObject({
@@ -73,6 +73,15 @@ export const blind = defineObject({
 				}
 				blades.push(b);
 			}
+
+			const length = Math.abs(blades.at(-1).position.y * Math.abs(scale.y));
+
+			for (const mesh of model.root.getChildMeshes()) {
+				if (mesh.morphTargetManager != null && mesh.morphTargetManager.getTargetByName('Length') != null) {
+					mesh.morphTargetManager.getTargetByName('Length').influence = remap(length, cm(10), cm(200), 0, 1);
+				}
+			}
+			model.updated();
 
 			model.updated();
 		};
