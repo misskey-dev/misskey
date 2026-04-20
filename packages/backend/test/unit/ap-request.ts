@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { describe, test } from 'vitest';
 import * as assert from 'assert';
 import httpSignature from '@peertube/http-signature';
 

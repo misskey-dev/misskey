@@ -214,7 +214,7 @@ export class ClientServerService {
 
 		//#region vite assets
 		if (this.config.frontendEmbedManifestExists) {
-			console.log(`[ClientServerService] Using built frontend vite assets. ${this.frontendViteOut}`);
+			this.clientLoggerService.logger.info(`[ClientServerService] Using built frontend vite assets. ${this.frontendViteOut}`);
 			fastify.register((fastify, options, done) => {
 				fastify.register(fastifyStatic, {
 					root: this.frontendViteOut,
