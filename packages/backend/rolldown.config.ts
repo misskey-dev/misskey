@@ -53,6 +53,7 @@ function backendDevServerPlugin(): Plugin {
 
 export default defineConfig((args) => {
 	const isWatchMode = args.watch != null && args.watch !== 'false';
+	const isE2E = args.e2e != null && args.e2e !== 'false';
 
 	// 通常のビルド時にexternalとするモジュール
 	const externalModules: ExternalOption = [
@@ -75,33 +76,52 @@ export default defineConfig((args) => {
 		'oauth2orize',
 	];
 
-	return {
-		input: [
-			'./src/boot/entry.ts',
-			'./src/boot/cli.ts',
-			'./src/config.ts',
-			'./src/postgres.ts',
-			'./src/server/api/openapi/gen-spec.ts',
-		],
-		platform: 'node',
-		tsconfig: true,
-		plugins: [
-			esmShim(),
-			(isWatchMode ? backendDevServerPlugin() : undefined),
-		],
-		output: {
-			keepNames: true,
-			minify: !isWatchMode,
-			sourcemap: isWatchMode,
-			dir: './built',
-			cleanDir: !isWatchMode,
-			format: 'esm',
-		},
-		watch: {
-			include: ['src/**/*.{ts,js,mjs,cjs,tsx,json}'],
-			clearScreen: false,
-		},
-		// ビルドの高速化のために、watchモードのときは外部モジュールは全てバンドルしないようにする
-		external: isWatchMode ? /^(?!@\/)[^.\/](?!:[\/\\])/ : externalModules,
-	};
+	if (isE2E) {
+		return {
+			input: './test-server/entry.ts',
+			platform: 'node',
+			tsconfig: './test-server/tsconfig.json',
+			plugins: [
+				esmShim(),
+			],
+			output: {
+				keepNames: true,
+				sourcemap: true,
+				dir: './built-test',
+				cleanDir: true,
+				format: 'esm',
+			},
+			external: externalModules,
+		};
+	} else {
+		return {
+			input: [
+				'./src/boot/entry.ts',
+				'./src/boot/cli.ts',
+				'./src/config.ts',
+				'./src/postgres.ts',
+				'./src/server/api/openapi/gen-spec.ts',
+			],
+			platform: 'node',
+			tsconfig: true,
+			plugins: [
+				esmShim(),
+				(isWatchMode ? backendDevServerPlugin() : undefined),
+			],
+			output: {
+				keepNames: true,
+				minify: !isWatchMode,
+				sourcemap: isWatchMode,
+				dir: './built',
+				cleanDir: !isWatchMode,
+				format: 'esm',
+			},
+			watch: {
+				include: ['src/**/*.{ts,js,mjs,cjs,tsx,json}'],
+				clearScreen: false,
+			},
+			// ビルドの高速化のために、watchモードのときは外部モジュールは全てバンドルしないようにする
+			external: isWatchMode ? /^(?!@\/)[^.\/](?!:[\/\\])/ : externalModules,
+		};
+	}
 });

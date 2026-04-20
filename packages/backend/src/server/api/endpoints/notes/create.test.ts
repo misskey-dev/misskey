@@ -8,7 +8,7 @@ process.env.NODE_ENV = 'test';
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
-import { describe, test, expect } from '@jest/globals';
+import { describe, test, expect } from 'vitest';
 import { getValidator } from '../../../../../test/prelude/get-api-validator.js';
 import { paramDef } from './create.js';
 

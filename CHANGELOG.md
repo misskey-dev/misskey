@@ -14,6 +14,7 @@
 - Enhance: 起動の高速化  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/1410)
 - Enhance: バックエンドの開発モード時の安定性向上
+- Enhance: バックエンドビルド・テスト時に使用する依存関係の整理（swc/esbuild→Rolldown, Jest→Vitest）
 - Fix: ファイルシステムを用いる処理におけるパスの取り扱いを改善
 - Fix: `/api-doc` にアクセスできない問題を修正
 - Fix: support `alsoKnownAs` from remote actors as either array or unwrapped singleton

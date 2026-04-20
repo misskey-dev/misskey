@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { jest } from '@jest/globals';
+import { describe, expect, test, beforeAll, afterAll, beforeEach, afterEach, vi } from 'vitest';
 import { Test, TestingModule } from '@nestjs/testing';
 import ms from 'ms';
 import {
@@ -44,8 +44,8 @@ describe('CleanRemoteNotesProcessorService', () => {
 
 	// Mock job object
 	const createMockJob = () => ({
-		log: jest.fn(),
-		updateProgress: jest.fn(),
+		log: vi.fn(),
+		updateProgress: vi.fn(),
 	});
 
 	async function createUser(data: Partial<MiUser> = {}) {
@@ -96,9 +96,9 @@ describe('CleanRemoteNotesProcessorService', () => {
 						useFactory: () => ({
 							logger: {
 								createSubLogger: () => ({
-									info: jest.fn(),
-									warn: jest.fn(),
-									succ: jest.fn(),
+									info: vi.fn(),
+									warn: vi.fn(),
+									succ: vi.fn(),
 								}),
 							},
 						}),
@@ -125,7 +125,7 @@ describe('CleanRemoteNotesProcessorService', () => {
 
 	beforeEach(() => {
 		// Reset mocks
-		jest.clearAllMocks();
+		vi.clearAllMocks();
 
 		// Set default meta values
 		meta.enableRemoteNotesCleaning = true;
