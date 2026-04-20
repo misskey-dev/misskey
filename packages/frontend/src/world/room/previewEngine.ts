@@ -12,6 +12,7 @@ import { SYSTEM_MESH_NAMES, ModelManager } from './utility.js';
 import type { RoomObjectInstance } from './object.js';
 import { genId } from '@/utility/id.js';
 import { deepClone } from '@/utility/clone.js';
+import { store } from '@/store.js';
 
 export async function createRoomObjectPreviewEngine(canvas: HTMLCanvasElement) {
 	//const babylonEngine = new BABYLON.WebGPUEngine(canvas);
@@ -76,10 +77,10 @@ export class RoomObjectPreviewEngine {
 		this.shadowGenerator.getShadowMap().refreshRate = 60;
 
 		const gridMaterial = new GridMaterial('grid', this.scene);
-		gridMaterial.lineColor = new BABYLON.Color3(0.5, 0.5, 0.5);
+		gridMaterial.lineColor = store.s.darkMode ? new BABYLON.Color3(1, 1, 1) : new BABYLON.Color3(0, 0, 0);
 		gridMaterial.mainColor = new BABYLON.Color3(0, 0, 0);
 		gridMaterial.minorUnitVisibility = 1;
-		gridMaterial.opacity = 0.25;
+		gridMaterial.opacity = 0.05;
 		gridMaterial.gridRatio = cm(10);
 
 		this.zGridPreviewPlane = BABYLON.MeshBuilder.CreatePlane('zGridPreviewPlane', { width: cm(1000), height: cm(1000) }, this.scene);
