@@ -56,12 +56,11 @@ export class RoomObjectPreviewEngine {
 		this.camera.minZ = cm(1);
 		this.camera.maxZ = cm(100000);
 		this.camera.fov = 0.5;
-		this.camera.lowerBetaLimit = 0;
-		this.camera.upperBetaLimit = (Math.PI / 2) + 0.1;
 		this.camera.lowerRadiusLimit = cm(50);
 		this.camera.upperRadiusLimit = cm(1000);
 		this.camera.useAutoRotationBehavior = true;
 		this.camera.autoRotationBehavior!.idleRotationSpeed = 0.3;
+		this.camera.panningSensibility = 0;
 		//this.camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
 		this.scene.activeCamera = this.camera;
 
@@ -140,6 +139,17 @@ export class RoomObjectPreviewEngine {
 		window.setTimeout(() => {
 			const boundingInfo = getMeshesBoundingBox(this.objectMesh!.getChildMeshes().filter(m => m.isEnabled() && m.isVisible));
 			this.camera.setTarget(new BABYLON.Vector3(0, boundingInfo.center.y, 0));
+
+			if (def.placement === 'wall' || def.placement === 'side') {
+				this.camera.lowerBetaLimit = 0;
+				this.camera.upperBetaLimit = (Math.PI / 2) + 0.1;
+			} else if (def.placement === 'ceiling' || def.placement === 'bottom') {
+				this.camera.lowerBetaLimit = (Math.PI / 2) - 0.1;
+				this.camera.upperBetaLimit = Math.PI;
+			} else {
+				this.camera.lowerBetaLimit = 0;
+				this.camera.upperBetaLimit = (Math.PI / 2) + 0.1;
+			}
 
 			// zoom to fit
 			const size = boundingInfo.extendSize;
