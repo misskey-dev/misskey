@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { describe, test } from 'vitest';
 import * as assert from 'assert';
 import httpSignature from '@peertube/http-signature';
 
@@ -78,7 +79,7 @@ describe('ap-request', () => {
 			'https://alice.example.com/abc',
 			FetchAllowSoftFailMask.Any,
 		), 'validation should fail no matter what if the response URL is inconsistent with the object ID');
-		
+
 		assert.doesNotThrow(() => assertActivityMatchesUrl(
 			'https://alice.example.com/abc#test',
 			{ id: 'https://alice.example.com/abc' } as IObject,

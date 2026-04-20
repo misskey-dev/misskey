@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { describe, expect, test, beforeEach, afterEach } from '@jest/globals';
+import { describe, expect, test, beforeEach, afterEach } from 'vitest';
 import * as lolex from '@sinonjs/fake-timers';
 import { shouldHideNoteByTime } from '@/misc/should-hide-note-by-time.js';
 
