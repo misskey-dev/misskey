@@ -71,7 +71,11 @@ onUnmounted(() => {
 
 watch(selectedId, (newId) => {
 	if (newId == null) return;
-	engine.value!.load(newId);
+
+	nextTick(() => {
+		engine.value!.load(newId);
+		engine.value!.resize();
+	});
 });
 
 function ok() {
@@ -137,11 +141,13 @@ async function cancel() {
 	height: 100%;
 	display: block;
 }
+.canvas:focus {
+	outline: none;
+}
 
 .unselectButton {
 	position: absolute;
 	top: 8px;
 	right: 8px;
-
 }
 </style>

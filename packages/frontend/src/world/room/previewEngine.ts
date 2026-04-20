@@ -84,7 +84,7 @@ export class RoomObjectPreviewEngine {
 		gridMaterial.opacity = 0.05;
 		gridMaterial.gridRatio = cm(10);
 
-		this.zGridPreviewPlane = BABYLON.MeshBuilder.CreatePlane('zGridPreviewPlane', { width: cm(1000), height: cm(1000) }, this.scene);
+		this.zGridPreviewPlane = BABYLON.MeshBuilder.CreatePlane('zGridPreviewPlane', { width: cm(300), height: cm(300) }, this.scene);
 		this.zGridPreviewPlane.material = gridMaterial;
 		this.zGridPreviewPlane.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
 
