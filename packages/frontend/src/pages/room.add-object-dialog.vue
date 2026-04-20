@@ -21,11 +21,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div
 				v-for="def in OBJECT_DEFS"
 				:key="def.id"
+				class="_panel"
 				:class="[$style.catalogItem, { [$style.selected]: selectedId === def.id }]"
 				@click="selectedId = def.id"
 			>
 				<img :class="$style.catalogItemThumbnail" :src="`/client-assets/room/object-thumbs/${camelToKebab(def.id)}.png`"/>
-				<div :class="$style.catalogItemName">{{ def.name }}</div>
+				<div :class="$style.catalogItemName"><MkCondensedLine :minScale="0.5">{{ def.name }}</MkCondensedLine></div>
 			</div>
 		</div>
 		<div v-show="selectedId != null" :class="$style.preview" class="_panel">
@@ -96,12 +97,15 @@ async function cancel() {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
 	grid-gap: 12px;
+	padding: 12px;
 	height: 100%;
+	box-sizing: border-box;
 	overflow-y: scroll;
+	background: var(--MI_THEME-bg);
 }
 
 .catalogItem {
-	padding: 8px;
+	padding: 12px;
 	border: 1px solid var(--border-color);
 	border-radius: 4px;
 	cursor: pointer;
