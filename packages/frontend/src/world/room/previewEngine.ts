@@ -79,12 +79,12 @@ export class RoomObjectPreviewEngine {
 		gridMaterial.lineColor = new BABYLON.Color3(0.5, 0.5, 0.5);
 		gridMaterial.mainColor = new BABYLON.Color3(0, 0, 0);
 		gridMaterial.minorUnitVisibility = 1;
-		gridMaterial.opacity = 0.5;
+		gridMaterial.opacity = 0.25;
 		gridMaterial.gridRatio = cm(10);
 
-		//this.zGridPreviewPlane = BABYLON.MeshBuilder.CreatePlane('zGridPreviewPlane', { width: cm(1000), height: cm(1000) }, this.scene);
-		//this.zGridPreviewPlane.material = gridMaterial;
-		//this.zGridPreviewPlane.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
+		this.zGridPreviewPlane = BABYLON.MeshBuilder.CreatePlane('zGridPreviewPlane', { width: cm(1000), height: cm(1000) }, this.scene);
+		this.zGridPreviewPlane.material = gridMaterial;
+		this.zGridPreviewPlane.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
 	}
 
 	public async init() {
@@ -154,13 +154,17 @@ export class RoomObjectPreviewEngine {
 
 			if (def.placement === 'wall' || def.placement === 'side') {
 				this.camera.lowerBetaLimit = 0;
-				this.camera.upperBetaLimit = (Math.PI / 2) + 0.1;
+				this.camera.upperBetaLimit = Math.PI;
+				this.zGridPreviewPlane.rotation = new BABYLON.Vector3(0, Math.PI, 0);
 			} else if (def.placement === 'ceiling' || def.placement === 'bottom') {
 				this.camera.lowerBetaLimit = (Math.PI / 2) - 0.1;
 				this.camera.upperBetaLimit = Math.PI;
+				this.camera.beta = Math.PI / 1.75;
+				this.zGridPreviewPlane.rotation = new BABYLON.Vector3(-Math.PI / 2, 0, 0);
 			} else {
 				this.camera.lowerBetaLimit = 0;
 				this.camera.upperBetaLimit = (Math.PI / 2) + 0.1;
+				this.zGridPreviewPlane.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
 			}
 
 			// zoom to fit
