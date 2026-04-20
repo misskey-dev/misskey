@@ -30,6 +30,7 @@ export class RoomObjectPreviewEngine {
 	private camera: BABYLON.ArcRotateCamera;
 	private objectMesh: BABYLON.Mesh | null = null;
 	private objectInstance: RoomObjectInstance<any> | null = null;
+	private objectType: string | null = null;
 	private envMapIndoor: BABYLON.CubeTexture;
 	private roomLight: BABYLON.SpotLight;
 	private zGridPreviewPlane: BABYLON.Mesh;
@@ -86,6 +87,42 @@ export class RoomObjectPreviewEngine {
 		this.zGridPreviewPlane = BABYLON.MeshBuilder.CreatePlane('zGridPreviewPlane', { width: cm(1000), height: cm(1000) }, this.scene);
 		this.zGridPreviewPlane.material = gridMaterial;
 		this.zGridPreviewPlane.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
+
+		if (_DEV_) {
+			window.takeScreenshot = () => {
+				const def = getObjectDef(this.objectType);
+
+				const boundingInfo = getMeshesBoundingBox(this.objectMesh!.getChildMeshes().filter(m => m.isEnabled() && m.isVisible));
+
+				const camera = new BABYLON.ArcRotateCamera('camera', Math.PI / 4, Math.PI / 2.5, cm(300), new BABYLON.Vector3(0, cm(90), 0), this.scene);
+				camera.inputs.clear();
+				camera.minZ = cm(1);
+				camera.maxZ = cm(100000);
+				camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
+				camera.setTarget(boundingInfo.center);
+				if (def.placement === 'wall' || def.placement === 'side') {
+				} else if (def.placement === 'ceiling' || def.placement === 'bottom') {
+					camera.beta = Math.PI / 1.75;
+				} else {
+				}
+
+				// zoom to fit
+				const size = boundingInfo.extendSize;
+				const distance = Math.max(size.x, size.y, size.z) * 3;
+				camera.orthoTop = (distance / 2);
+				camera.orthoBottom = -(distance / 2);
+				camera.orthoLeft = -(distance / 2);
+				camera.orthoRight = (distance / 2);
+
+				this.scene.activeCamera = camera;
+
+				this.zGridPreviewPlane.isVisible = false;
+
+				window.setTimeout(() => {
+					BABYLON.Tools.CreateScreenshotUsingRenderTarget(this.engine, camera, { width: 256, height: 256 }, undefined, undefined, undefined, true, `${camelToKebab(this.objectType!)}.png`);
+				}, 100);
+			};
+		}
 	}
 
 	public async init() {
@@ -276,6 +313,7 @@ export class RoomObjectPreviewEngine {
 
 		model.bakeMesh();
 
+		this.objectType = args.type;
 		this.objectInstance = objectInstance;
 		this.objectMesh = root;
 	}

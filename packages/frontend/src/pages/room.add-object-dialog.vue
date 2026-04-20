@@ -17,18 +17,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><i class="ti ti-box"></i> カタログ</template>
 
 	<div :class="$style.root">
-		<div :class="$style.container">
-			<div :class="$style.menu">
-				<div
-					v-for="def in OBJECT_DEFS"
-					:key="def.id"
-					:class="[$style.catalogItem, { [$style.selected]: selectedId === def.id }]"
-					@click="selectedId = def.id"
-				>
-					<div>{{ def.name }}</div>
-				</div>
+		<div :class="$style.catalogItems">
+			<div
+				v-for="def in OBJECT_DEFS"
+				:key="def.id"
+				:class="[$style.catalogItem, { [$style.selected]: selectedId === def.id }]"
+				@click="selectedId = def.id"
+			>
+				<img :class="$style.catalogItemThumbnail" :src="`/client-assets/room/object-thumbs/${camelToKebab(def.id)}.png`"/>
+				<div :class="$style.catalogItemName">{{ def.name }}</div>
 			</div>
+		</div>
+		<div v-show="selectedId != null" :class="$style.preview" class="_panel">
 			<canvas ref="canvas" :class="$style.canvas"></canvas>
+			<button :class="$style.unselectButton" @click="selectedId = null">x</button>
 		</div>
 	</div>
 </MkModalWindow>
@@ -41,6 +43,7 @@ import MkModalWindow from '@/components/MkModalWindow.vue';
 import * as os from '@/os.js';
 import { OBJECT_DEFS } from '@/world/room/object-defs.js';
 import { createRoomObjectPreviewEngine, RoomObjectPreviewEngine } from '@/world/room/previewEngine.js';
+import { camelToKebab } from '@/world/utility.js';
 
 const emit = defineEmits<{
 	(ev: 'ok', id: string): void;
@@ -86,15 +89,14 @@ async function cancel() {
 .root {
 	container-type: inline-size;
 	height: 100%;
+	position: relative;
 }
 
-.container {
-	height: 100%;
+.catalogItems {
 	display: grid;
-	grid-template-columns: 400px 1fr;
-}
-
-.menu {
+	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+	grid-gap: 12px;
+	height: 100%;
 	overflow-y: scroll;
 }
 
@@ -109,9 +111,33 @@ async function cancel() {
 	background-color: var(--MI_THEME-accentedBg);
 }
 
+.catalogItemThumbnail {
+	width: 100%;
+	height: auto;
+}
+
+.catalogItemName {
+	text-align: center;
+}
+
+.preview {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
 .canvas {
 	width: 100%;
 	height: 100%;
 	display: block;
+}
+
+.unselectButton {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+
 }
 </style>
