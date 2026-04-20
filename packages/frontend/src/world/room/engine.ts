@@ -58,6 +58,10 @@ function mergeMeshes(meshes: BABYLON.Mesh[], root: BABYLON.Mesh, hasTexture: boo
 		}
 	}
 
+	if (toMerge.length <= 1) {
+		return null;
+	}
+
 	for (const mesh of toMerge) {
 		if (hasTexture) {
 			if (mesh.getVerticesData(BABYLON.VertexBuffer.UVKind) == null) {
@@ -802,19 +806,21 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 		if (def.canPreMeshesMerging) {
 			const merged = mergeMeshes(loaderResult.meshes, subRoot, def.hasTexture);
-			merged.setParent(subRoot);
-			merged.name = 'preMerged';
-			merged.material.freeze();
-			if (merged.material instanceof BABYLON.MultiMaterial) {
-				for (const subMat of merged.material.subMaterials) {
-					subMat.freeze();
+			if (merged != null) {
+				merged.setParent(subRoot);
+				merged.name = 'preMerged';
+				merged.material.freeze();
+				if (merged.material instanceof BABYLON.MultiMaterial) {
+					for (const subMat of merged.material.subMaterials) {
+						subMat.freeze();
+					}
 				}
-			}
 
-			// TODO: 再帰的にする
-			for (const m of loaderResult.transformNodes) {
-				if (m.getChildren().length === 0) {
-					m.dispose();
+				// TODO: 再帰的にする
+				for (const m of loaderResult.transformNodes) {
+					if (m.getChildren().length === 0) {
+						m.dispose();
+					}
 				}
 			}
 		}
