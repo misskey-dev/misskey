@@ -1191,15 +1191,9 @@ importers:
       '@typescript-eslint/parser':
         specifier: 8.58.1
         version: 8.58.1(eslint@9.39.4)(typescript@5.9.3)
-      esbuild:
-        specifier: 0.28.0
-        version: 0.28.0
       eslint-plugin-vue:
         specifier: 10.8.0
         version: 10.8.0(@stylistic/eslint-plugin@5.5.0(eslint@9.39.4))(@typescript-eslint/parser@8.58.1(eslint@9.39.4)(typescript@5.9.3))(eslint@9.39.4)(vue-eslint-parser@10.4.0(eslint@9.39.4))
-      nodemon:
-        specifier: 3.1.14
-        version: 3.1.14
       vue-eslint-parser:
         specifier: 10.4.0
         version: 10.4.0(eslint@9.39.4)
