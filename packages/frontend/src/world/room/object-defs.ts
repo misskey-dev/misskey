@@ -69,6 +69,7 @@ import { roundRug } from './objects/roundRug.js';
 import { router } from './objects/router.js';
 import { siphon } from './objects/siphon.js';
 import { snakeplant } from './objects/snakeplant.js';
+import { sofa } from './objects/sofa.js';
 import { speaker } from './objects/speaker.js';
 import { speakerStand } from './objects/speakerStand.js';
 import { sprayer } from './objects/sprayer.js';
@@ -160,6 +161,7 @@ export const OBJECT_DEFS = [
 	router,
 	siphon,
 	snakeplant,
+	sofa,
 	speaker,
 	speakerStand,
 	sprayer,
