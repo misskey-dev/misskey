@@ -149,6 +149,10 @@ export interface Locale extends ILocale {
      */
     "logout": string;
     /**
+     * このアカウントからログアウト
+     */
+    "logoutFromThisAccount": string;
+    /**
      * すべてのアカウントからログアウト
      */
     "logoutFromAll": string;

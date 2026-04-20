@@ -184,7 +184,8 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		text: i18n.ts.logout,
 		action: async (ev) => {
 			os.popupMenu([{
-				text: i18n.ts.logout,
+				text: i18n.ts.logoutFromThisAccount,
+				icon: 'ti ti-power',
 				action: async () => {
 					const { canceled } = await os.confirm({
 						type: 'warning',
@@ -196,6 +197,7 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 				},
 			}, {
 				text: i18n.ts.logoutFromAll,
+				icon: 'ti ti-copy-x',
 				danger: true,
 				action: async () => {
 					const { canceled } = await os.confirm({
