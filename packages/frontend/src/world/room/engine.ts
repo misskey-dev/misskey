@@ -204,6 +204,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	private zGridPreviewPlane: BABYLON.Mesh;
 	private selectionOutlineLayer: BABYLON.SelectionOutlineLayer;
 	public sr: BABYLON.SnapshotRenderingHelper;
+	private gl: BABYLON.GlowLayer | null = null;
 	public timer: Timer = new Timer();
 
 	private _isEditMode = false;
@@ -339,15 +340,15 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.turnOnRoomLight();
 
 		if (USE_GLOW) {
-			const gl = new BABYLON.GlowLayer('glow', this.scene, {
+			this.gl = new BABYLON.GlowLayer('glow', this.scene, {
 				//mainTextureFixedSize: 512,
 				blurKernelSize: 64,
 			});
-			gl.intensity = 0.5;
-			this.scene.setRenderingAutoClearDepthStencil(gl.renderingGroupId, false);
+			this.gl.intensity = 0.5;
+			this.scene.setRenderingAutoClearDepthStencil(this.gl.renderingGroupId, false);
 
 			if (SNAPSHOT_RENDERING) {
-				this.sr.updateMeshesForEffectLayer(gl);
+				this.sr.updateMeshesForEffectLayer(this.gl);
 			}
 		}
 
@@ -1488,6 +1489,9 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		if (SNAPSHOT_RENDERING) {
 			this.sr.disableSnapshotRendering();
 		}
+		if (this.gl != null) {
+			this.gl.isEnabled = false; // 重いので切る
+		}
 	}
 
 	public async exitEditMode() {
@@ -1498,6 +1502,9 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 		if (SNAPSHOT_RENDERING) {
 			this.sr.enableSnapshotRendering();
+		}
+		if (this.gl != null) {
+			this.gl.isEnabled = true;
 		}
 	}
 
