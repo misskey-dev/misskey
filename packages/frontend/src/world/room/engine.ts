@@ -58,7 +58,7 @@ function mergeMeshes(meshes: BABYLON.Mesh[], root: BABYLON.Mesh, hasTexture: boo
 		}
 	}
 
-	if (toMerge.length <= 1) {
+	if (toMerge.length <= 1) { // マージ対象が一つしかない状態でマージするのは単純に無駄なのと、babylonのバグが知らないけどなぜか法線が反転する
 		return null;
 	}
 
