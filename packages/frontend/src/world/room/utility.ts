@@ -306,12 +306,13 @@ export class ModelManager {
 
 		const merged = BABYLON.Mesh.MergeMeshes(toMerge, true, false, undefined, false, true);
 		merged.parent = this.root;
-		merged.material.freeze();
-		if (merged.material instanceof BABYLON.MultiMaterial) {
-			for (const subMat of merged.material.subMaterials) {
-				(subMat as BABYLON.PBRMaterial).freeze();
-			}
-		}
+		// freezeするとbabylon 9.3.2以降、snapshot rendering + clustered lighting + selection outlineの組み合わせでなんかレンダリングがグリッチする
+		//merged.material.freeze();
+		//if (merged.material instanceof BABYLON.MultiMaterial) {
+		//	for (const subMat of merged.material.subMaterials) {
+		//		(subMat as BABYLON.PBRMaterial).freeze();
+		//	}
+		//}
 		merged.freezeWorldMatrix();
 		merged.metadata = { ...this.root.metadata };
 		if (!this.hasTexture) merged.convertToUnIndexedMesh();
