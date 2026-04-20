@@ -474,7 +474,7 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 				adMesh.parent = adRoot;
 				adMesh.position = new BABYLON.Vector3(cm(0), cm(0), cm(7500));
 
-				const tex = new BABYLON.Texture(`/client-assets/world/lobby/dummy-ads/${1 + Math.floor(Math.random() * 4)}.png`, this.scene);
+				const tex = new BABYLON.Texture('/client-assets/world/lobby/dummy-ads/angry_ai.png', this.scene);
 				const adMat = new BABYLON.StandardMaterial(`ad_${j}_${i}_mat`, this.scene);
 				adMat.emissiveTexture = tex;
 				adMat.disableLighting = true;

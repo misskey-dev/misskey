@@ -183,7 +183,6 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	}
 
 	private time: 0 | 1 | 2 = 0; // 0: 昼, 1: 夕, 2: 夜
-	private roomCollisionMeshes: BABYLON.AbstractMesh[] = [];
 	public roomState: RoomState;
 
 	private _gridSnapping = { enabled: true, scale: cm(4) };
@@ -279,6 +278,12 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 		this.envMapOutdoor = BABYLON.CubeTexture.CreateFromPrefilteredData(this.time === 2 ? '/client-assets/room/outdoor-night.env' : '/client-assets/room/outdoor-day.env', this.scene);
 		this.envMapOutdoor.level = this.time === 0 ? 0.5 : this.time === 1 ? 0.3 : 0.1;
+
+		const roomCollisionCube = BABYLON.MeshBuilder.CreateBox('roomCollisionCube', { size: cm(300) }, this.scene);
+		roomCollisionCube.position.y = cm(150);
+		roomCollisionCube.scaling.x = -1; // flip normals
+		roomCollisionCube.isVisible = false;
+		roomCollisionCube.checkCollisions = true;
 
 		this.scene.collisionsEnabled = true;
 
@@ -800,12 +805,11 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 		for (const mesh of meshes) {
 			for (const m of mesh.getChildMeshes()) {
-				if (m.name.includes('__ROOM_WALL__') || m.name.includes('__ROOM_SIDE__') || m.name.includes('__ROOM_FLOOR__') || m.name.includes('__ROOM_CEILING__') || m.name.includes('__ROOM_TOP__')) {
+				if (m.name.includes('__ROOM_WALL__') || m.name.includes('__ROOM_SIDE__') || m.name.includes('__ROOM_FLOOR__') || m.name.includes('__ROOM_CEILING__') || m.name.includes('__ROOM_TOP__') || m.name.includes('__ROOM_BOTTOM__')) {
 					m.isPickable = false;
 					m.receiveShadows = false;
 					m.isVisible = false;
-					m.checkCollisions = true;
-					this.roomCollisionMeshes.push(m);
+					m.checkCollisions = false;
 					continue;
 				}
 
