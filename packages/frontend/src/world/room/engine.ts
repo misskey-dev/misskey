@@ -16,7 +16,9 @@ import { GridMaterial } from '@babylonjs/materials';
 import { EventEmitter } from 'eventemitter3';
 import { TIME_MAP, scaleMorph, HorizontalCameraKeyboardMoveInput, camelToKebab, cm, WORLD_SCALE, getMeshesBoundingBox, Timer } from '../utility.js';
 import { getObjectDef } from './object-defs.js';
-import { findMaterial, ModelManager, SYSTEM_MESH_NAMES } from './utility.js';
+import { findMaterial, ModelManager, SYSTEM_HEYA_MESH_NAMES, SYSTEM_MESH_NAMES } from './utility.js';
+import { SimpleHeyaManager } from './heya.js';
+import type { HeyaManager, JapaneseHeyaOptions, SimpleHeyaOptions } from './heya.js';
 import type { ObjectDef, RoomObjectInstance, RoomStateObject } from './object.js';
 import { genId } from '@/utility/id.js';
 import { deepClone } from '@/utility/clone.js';
@@ -27,35 +29,14 @@ const IGNORE_OBJECTS: string[] = []; // for debug
 const USE_GLOW = true; // ドローコールが増えて重い
 const IN_WEB_WORKER = typeof window === 'undefined';
 
-type SimpleHeyaWallBase = {
-	material: null | 'wood' | 'concrete';
-	color: [number, number, number];
-};
-
-type Heya = {
-	type: 'simple';
-	options: {
-		dimension: [number, number];
-		window: 'none' | 'kosidakamado' | 'demado' | 'hakidasimado';
-		wallN: SimpleHeyaWallBase;
-		wallE: SimpleHeyaWallBase;
-		wallS: SimpleHeyaWallBase;
-		wallW: SimpleHeyaWallBase;
-		flooring: {
-			material: null | 'wood' | 'concrete';
-			color: [number, number, number];
-		};
-		ceiling: {
-			material: null | 'wood' | 'concrete';
-			color: [number, number, number];
-		};
-	};
-} | {
-	type: 'japanese';
-};
-
 export type RoomState = {
-	heya: Heya;
+	heya: {
+		type: 'simple';
+		options: SimpleHeyaOptions;
+	} | {
+		type: 'japanese';
+		options: JapaneseHeyaOptions;
+	};
 	installedObjects: RoomStateObject<any>[];
 };
 
@@ -142,6 +123,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		instance: RoomObjectInstance<any>;
 		model: ModelManager;
 	}> = new Map();
+	private heyaManager: HeyaManager | null = null;
 
 	// TODO: たぶんオブジェクト内の値のmutateはsetで検知できないので、そのような操作を実際に行うようになった & それを検知する必要性が出てきたら専用の設定関数などを新設してそれを使わせる
 	private _grabbingCtx: {
@@ -425,7 +407,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	}
 
 	public async init() {
-		await this.loadRoomModel();
+		await this.loadHeya();
 		//await this.loadEnvModel();
 
 		const objects = this.roomState.installedObjects.filter(o => !IGNORE_OBJECTS.includes(o.type));
@@ -742,77 +724,49 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		}
 	}
 
-	private async loadRoomModel() {
-		//await BABYLON.InitializeCSG2Async();
+	public async changeHeyaType(type: RoomState['heya']['type']) {
+		this.roomState.heya.type = type;
 
-		//const box = BABYLON.MeshBuilder.CreateBox('box', { size: cm(50) }, this.scene);
-		//const boxCsg = BABYLON.CSG2.FromMesh(box);
+		if (this.heyaManager != null) {
+			this.heyaManager.dispose();
+		}
 
-		const meshes: BABYLON.Mesh[] = [];
+		const onMeshUpdatedCallback = (meshes: BABYLON.AbstractMesh[]) => {
+			for (const m of meshes) {
+				if (SYSTEM_HEYA_MESH_NAMES.some(name => m.name.includes(name))) {
+					m.isPickable = false;
+					m.receiveShadows = false;
+					m.isVisible = false;
+					m.checkCollisions = false;
+					continue;
+				}
+
+				m.isPickable = false;
+				m.checkCollisions = false;
+				m.receiveShadows = true;
+				this.shadowGeneratorForRoomLight.addShadowCaster(m);
+				this.shadowGeneratorForSunLight.addShadowCaster(m);
+				//if (m.material) (m.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(1, 1, 1);
+				if (m.material) {
+					(m.material as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
+					(m.material as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
+				}
+			}
+		};
 
 		if (this.roomState.heya.type === 'simple') {
-			const loaderResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300.glb', this.scene);
-			loaderResult.meshes[0].scaling = loaderResult.meshes[0].scaling.scale(WORLD_SCALE);
-			loaderResult.meshes[0].rotationQuaternion = null;
-			loaderResult.meshes[0].rotation = new BABYLON.Vector3(0, 0, 0);
-
-			const wallNRoot = loaderResult.transformNodes.find(t => t.name.includes('__WALL_N__'));
-			const wallSRoot = loaderResult.transformNodes.find(t => t.name.includes('__WALL_S__'));
-			const wallWRoot = loaderResult.transformNodes.find(t => t.name.includes('__WALL_W__'));
-			const wallERoot = loaderResult.transformNodes.find(t => t.name.includes('__WALL_E__'));
-
-			const wallMaterial = findMaterial(loaderResult.meshes[0], '__X_WALL__');
-
-			const wallNMaterial = wallMaterial.clone('wallNMaterial');
-			wallNMaterial.albedoColor = new BABYLON.Color3(...this.roomState.heya.options.wallN.color);
-
-			const wallSMaterial = wallMaterial.clone('wallSMaterial');
-			wallSMaterial.albedoColor = new BABYLON.Color3(...this.roomState.heya.options.wallS.color);
-
-			const wallWMaterial = wallMaterial.clone('wallWMaterial');
-			wallWMaterial.albedoColor = new BABYLON.Color3(...this.roomState.heya.options.wallW.color);
-
-			const wallEMaterial = wallMaterial.clone('wallEMaterial');
-			wallEMaterial.albedoColor = new BABYLON.Color3(...this.roomState.heya.options.wallE.color);
-
-			// TODO: wall meshが一部instanced meshになっているせいでマテリアルが共有されるのを直す
-
-			for (const m of wallNRoot.getChildMeshes().filter(m => m.material === wallMaterial)) {
-				m.material = wallNMaterial;
-			}
-			for (const m of wallSRoot.getChildMeshes().filter(m => m.material === wallMaterial)) {
-				m.material = wallSMaterial;
-			}
-			for (const m of wallWRoot.getChildMeshes().filter(m => m.material === wallMaterial)) {
-				m.material = wallWMaterial;
-			}
-			for (const m of wallERoot.getChildMeshes().filter(m => m.material === wallMaterial)) {
-				m.material = wallEMaterial;
-			}
-
-			meshes.push(...loaderResult.meshes);
+			const heyaManager = new SimpleHeyaManager(onMeshUpdatedCallback);
+			await heyaManager.load(this.roomState.heya.options, this.scene);
+			this.heyaManager = heyaManager;
+		} else if (this.roomState.heya.type === 'japanese') {
+			// TODO
 		}
 
-		for (const m of meshes) {
-			if (m.name.includes('__ROOM_WALL__') || m.name.includes('__ROOM_SIDE__') || m.name.includes('__ROOM_FLOOR__') || m.name.includes('__ROOM_CEILING__') || m.name.includes('__ROOM_TOP__') || m.name.includes('__ROOM_BOTTOM__')) {
-				m.isPickable = false;
-				m.receiveShadows = false;
-				m.isVisible = false;
-				m.checkCollisions = false;
-				continue;
-			}
+		this.emit('changeRoomState', { roomState: this.roomState });
+	}
 
-			m.isPickable = false;
-			m.checkCollisions = false;
-			m.receiveShadows = true;
-			this.shadowGeneratorForRoomLight.addShadowCaster(m);
-			this.shadowGeneratorForSunLight.addShadowCaster(m);
-			//if (m.material) (m.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(1, 1, 1);
-			if (m.material) {
-				(m.material as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
-				(m.material as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
-			}
-		}
+	private async loadHeya() {
+		await this.changeHeyaType(this.roomState.heya.type);
 	}
 
 	private async loadObject(args: {
@@ -1592,11 +1546,11 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		const entity = this.objectEntities.get(objectId);
 		if (entity == null) return;
 		entity.instance.onOptionsUpdated?.([key, value]);
+	}
 
-		if (this.selected?.objectId === objectId) {
-			// TODO
-			//triggerRef(this.selected);
-		}
+	public updateHeyaOptions(options: RoomState['heya']['options']) {
+		this.heyaManager.applyOptions(options);
+		this.emit('changeRoomState', { roomState: this.roomState });
 	}
 
 	private playSfxUrl(url: string, options: { volume: number; playbackRate: number }) {

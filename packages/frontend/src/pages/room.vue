@@ -64,6 +64,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 			</div>
+
+			<div v-if="isRoomSettingsOpen" class="_panel" :class="$style.overlayObjectInfoPanel">
+				<div class="_gaps">
+					Room options
+
+					<MkSelect
+						:items="[
+							{ label: 'Simple', value: 'simple' },
+						]" :modelValue="controller.roomState.value.heya.type" @update:modelValue="v => controller.changeHeyaType(v)"
+					>
+						<template #label>Heya type</template>
+					</MkSelect>
+
+					<template v-if="controller.roomState.value.heya.type === 'simple'">
+					</template>
+				</div>
+			</div>
 		</template>
 	</div>
 
@@ -75,6 +92,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton v-if="controller.isEditMode.value" @click="exitEditMode">Exit edit mode</MkButton>
 			<MkButton v-if="!controller.isEditMode.value" @click="enterEditMode">Edit mode</MkButton>
 			<MkButton v-if="controller.isEditMode.value" @click="addObject">addObject</MkButton>
+			<MkButton v-if="controller.isEditMode.value" @click="() => isRoomSettingsOpen = !isRoomSettingsOpen">roomSettings</MkButton>
 			<MkButton @click="expor">Export</MkButton>
 			<MkButton @click="impor">Import</MkButton>
 		</div>
@@ -109,6 +127,7 @@ function resize() {
 }
 
 const isZenMode = ref(false);
+const isRoomSettingsOpen = ref(false);
 
 const data = localStorage.getItem('roomData') != null ? { ...JSON.parse(localStorage.getItem('roomData')!), ...{
 	heya: {
@@ -176,6 +195,8 @@ const data = localStorage.getItem('roomData') != null ? { ...JSON.parse(localSto
 	},
 	installedObjects: [],
 };
+
+console.log(data);
 
 const controller = new RoomController(data);
 

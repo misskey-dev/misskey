@@ -182,6 +182,22 @@ export class RoomController {
 		}
 	}
 
+	public changeHeyaType(type: RoomState['heya']['type']) {
+		if (this.worker != null) {
+			this.worker.postMessage({ type: 'changeHeyaType', heyaType: type });
+		} else if (this.engine != null) {
+			this.engine.changeHeyaType(type);
+		}
+	}
+
+	public updateHeyaOptions(options: RoomState['heya']['options']) {
+		if (this.worker != null) {
+			this.worker.postMessage({ type: 'updateHeyaOptions', heyaOptions: options });
+		} else if (this.engine != null) {
+			this.engine.updateHeyaOptions(options);
+		}
+	}
+
 	public beginSelectedInstalledObjectGrabbing() {
 		if (this.worker != null) {
 			this.worker.postMessage({ type: 'beginSelectedInstalledObjectGrabbing' });
