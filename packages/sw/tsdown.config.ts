@@ -1,4 +1,4 @@
-import { defineConfig } from 'tsdown';
+import { defineConfig, globalLogger } from 'tsdown';
 import locales from 'i18n';
 import meta from '../../package.json' with { type: 'json' };
 
@@ -21,4 +21,8 @@ export default defineConfig({
 		onlyBundle: false,
 	},
 	tsconfig: true,
+	customLogger: {
+		...globalLogger,
+		clearScreen: () => {}, // スクリーンのclearを無効化
+	},
 });

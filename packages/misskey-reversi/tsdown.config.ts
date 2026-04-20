@@ -1,4 +1,4 @@
-import { defineConfig } from 'tsdown';
+import { defineConfig, globalLogger } from 'tsdown';
 
 const isProduction = process.env.NODE_ENV === 'production';
 const args = process.argv.slice(2).map(arg => arg.toLowerCase());
@@ -16,4 +16,8 @@ export default defineConfig({
 	platform: 'neutral',
 	format: 'esm',
 	unbundle: true,
+	customLogger: {
+		...globalLogger,
+		clearScreen: () => {}, // スクリーンのclearを無効化
+	},
 });
