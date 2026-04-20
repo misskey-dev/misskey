@@ -1,5 +1,9 @@
+import { EventEmitter } from 'node:events';
 import { resolve } from 'node:path';
 import { defineConfig } from 'vitest/config';
+
+// Raise the global EventEmitter listener limit before Vitest wires CLI listeners.
+EventEmitter.defaultMaxListeners = 20;
 
 export const baseConfig = defineConfig({
 	test: {
