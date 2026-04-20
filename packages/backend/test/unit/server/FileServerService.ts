@@ -7,7 +7,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import fastifyStatic from '@fastify/static';
 import Fastify, { type FastifyInstance } from 'fastify';
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, test, beforeAll, afterAll, afterEach } from 'vitest';
 import sharp from 'sharp';
 import { DataSource, type Repository } from 'typeorm';
 import { initTestDb, randomString } from '../../utils.js';
@@ -296,7 +296,7 @@ describe('FileServerService', () => {
 			});
 
 			expect(res.statusCode).toBe(404);
-			expect(res.headers['cache-control']).toBe('max-age=86400');
+			expect(res.headers['cache-control']).toBe('public, max-age=0');
 		});
 
 		test('GET /files/:key 画像配信ヘッダを検証する', async () => {

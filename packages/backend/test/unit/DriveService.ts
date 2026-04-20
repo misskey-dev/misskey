@@ -5,6 +5,7 @@
 
 process.env.NODE_ENV = 'test';
 
+import { afterAll, beforeAll, beforeEach, describe, test, expect } from 'vitest';
 import { Test } from '@nestjs/testing';
 import {
 	DeleteObjectCommand,
