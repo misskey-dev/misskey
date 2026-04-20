@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, test } from 'vitest';
 import { parseUlidFull } from '@/misc/id/ulid.js';
 
 // Timestamp part "01KPS7S300" encodes 1776816000000ms (2026-04-22T00:00:00.000Z)
