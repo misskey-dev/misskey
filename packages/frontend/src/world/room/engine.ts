@@ -530,7 +530,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 						animTarget.setEasingFunction(easing);
 						this.camera.animations.push(animTarget);
 						this.scene.beginAnimation(this.camera, 0, 30, false, undefined, () => {
-							if (SNAPSHOT_RENDERING) { // 視点が動くとアウトラインが薄くなるのでリセット
+							if (SNAPSHOT_RENDERING) { // 視点が動くとアウトラインが薄くなるのでリセット (babylonのバグ？)
 								this.sr.disableSnapshotRendering();
 								this.sr.enableSnapshotRendering();
 							}
