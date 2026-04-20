@@ -33,11 +33,11 @@ export const petBottle = defineObject({
 		const liquidMesh = model.findMesh('__X_LIQUID__');
 
 		const applyWithCap = () => {
-			capMesh.setEnabled(options.withCap);
+			capMesh.isVisible = options.withCap;
 		};
 
 		const applyEmpty = () => {
-			liquidMesh.setEnabled(!options.empty);
+			liquidMesh.isVisible = !options.empty;
 		};
 
 		applyWithCap();
