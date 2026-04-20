@@ -33,7 +33,7 @@ export const tv = defineObject({
 	placement: 'top',
 	hasCollisions: true,
 	hasTexture: true,
-	createInstance: ({ options, room, model, scene }) => {
+	createInstance: ({ options, room, model, scene, timer }) => {
 		const matrix = model.root.getWorldMatrix(true);
 		const scale = new BABYLON.Vector3();
 		matrix.decompose(scale);
@@ -52,7 +52,7 @@ export const tv = defineObject({
 
 		const screenMaterial = model.findMaterial('__X_SCREEN__');
 
-		const { dispose: disposeTv } = initTv(room, screenMesh);
+		const { dispose: disposeTv } = initTv(scene, screenMesh, timer);
 
 		//const videoTexture = new BABYLON.VideoTexture('', 'http://syu-win.local:3000/files/97986924-b99e-4fe1-993d-9caf010cca59', room.scene, false, true); ;
 		//screenMaterial.emissiveTexture = videoTexture;

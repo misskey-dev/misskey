@@ -4,7 +4,7 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { applyMorphTargetsToMesh, cm, getPlaneUvIndexes } from '../utility.js';
+import { applyMorphTargetsToMesh, cm, getPlaneUvIndexes, Timer } from '../utility.js';
 import type { RoomEngine } from './engine.js';
 
 export const SYSTEM_MESH_NAMES = ['__TOP__', '__SIDE__', '__PICK__', '__COLLISION__'];
@@ -104,14 +104,14 @@ const TV_PROGRAMS = {
 	timeline: [index: number, duration: number][];
 }>;
 
-export function initTv(room: RoomEngine, screenMesh: BABYLON.Mesh) {
+export function initTv(scene: BABYLON.Scene, screenMesh: BABYLON.Mesh, timer: Timer) {
 	const tvProgramId = 'shopping';
 	const tvProgram = TV_PROGRAMS[tvProgramId];
 	const tvScreenMaterial = screenMesh.material as BABYLON.PBRMaterial;
 	tvScreenMaterial.albedoColor = new BABYLON.Color3(0, 0, 0);
 	tvScreenMaterial.ambientColor = new BABYLON.Color3(0, 0, 0);
 	tvScreenMaterial.roughness = 1;
-	tvScreenMaterial.emissiveTexture = new BABYLON.Texture(`/client-assets/room/tv/${tvProgramId}/${tvProgramId}.png`, room.scene, false, false);
+	tvScreenMaterial.emissiveTexture = new BABYLON.Texture(`/client-assets/room/tv/${tvProgramId}/${tvProgramId}.png`, scene, false, false);
 	tvScreenMaterial.emissiveTexture.level = 1.0;
 	tvScreenMaterial.emissiveColor = new BABYLON.Color3(0.5, 0.5, 0.5);
 
@@ -147,7 +147,7 @@ export function initTv(room: RoomEngine, screenMesh: BABYLON.Mesh) {
 		uvs[uvIndexes[3] + 1] = dy;
 		screenMesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
 
-		room.timer.setTimeout(() => {
+		timer.setTimeout(() => {
 			applyTvTexture((tlIndex + 1) % tvProgram.timeline.length);
 		}, duration);
 	};

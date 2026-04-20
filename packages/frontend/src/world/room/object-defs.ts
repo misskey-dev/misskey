@@ -103,7 +103,6 @@ export const OBJECT_DEFS = [
 	beamLamp,
 	bed,
 	blind,
-	book,
 	books,
 	boxWallShelf,
 	cactusS,
@@ -184,7 +183,6 @@ export const OBJECT_DEFS = [
 	woodRingFloorLamp,
 	woodRingsPendantLight,
 	woodSoundAbsorbingPanel,
-	debugHipoly,
 ];
 
 export function getObjectDef(type: string): typeof OBJECT_DEFS[number] {
