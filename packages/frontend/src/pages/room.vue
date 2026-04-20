@@ -78,6 +78,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</MkSelect>
 
 					<template v-if="controller.roomState.value.heya.type === 'simple'">
+						<div>
+							<div>Wall N color</div>
+							<MkInput :modelValue="getHex(controller.roomState.value.heya.options.wallN.color)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallN: { ...controller.roomState.value.heya.options.wallN, color: c } }); }"></MkInput>
+						</div>
 					</template>
 				</div>
 			</div>
