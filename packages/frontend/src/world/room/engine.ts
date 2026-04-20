@@ -1566,7 +1566,10 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	}
 
 	public resize() {
+		// 一旦snapshot renderingを無効にしておかないとエラーが出る(babylonのバグ？)
+		if (SNAPSHOT_RENDERING) this.sr.disableSnapshotRendering();
 		this.engine.resize();
+		if (SNAPSHOT_RENDERING) this.sr.enableSnapshotRendering();
 	}
 
 	public destroy() {
