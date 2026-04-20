@@ -78,6 +78,13 @@ export const woodRingsPendantLight = defineObject({
 		light.radius = cm(5);
 		if (room?.lightContainer != null) room.lightContainer.addLight(light);
 
+		//const lensFlareSystem = new BABYLON.LensFlareSystem('lensFlareSystem', light, scene);
+		//const flare00 = new BABYLON.LensFlare(0.1, 1.7, new BABYLON.Color3(...options.lightColor), '/client-assets/world/lensflare.png', lensFlareSystem);
+		//const flare01 = new BABYLON.LensFlare(0.075, 0.5, new BABYLON.Color3(...options.lightColor), '/client-assets/world/lensflare.png', lensFlareSystem);
+		//const flare02 = new BABYLON.LensFlare(0.05, -0.5, new BABYLON.Color3(...options.lightColor), '/client-assets/world/lensflare.png', lensFlareSystem);
+		//const flare03 = new BABYLON.LensFlare(0.15, -1.5, new BABYLON.Color3(...options.lightColor), '/client-assets/world/lensflare.png', lensFlareSystem);
+		//const flare04 = new BABYLON.LensFlare(0.3, -2, new BABYLON.Color3(...options.lightColor), '/client-assets/world/lensflare.png', lensFlareSystem);
+
 		const applyLightColor = () => {
 			const [r, g, b] = options.lightColor;
 			light.diffuse = new BABYLON.Color3(r, g, b);
