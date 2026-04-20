@@ -10,6 +10,7 @@ export default [
 			'built',
 			'coverage',
 			'vitest.config.ts',
+			'tsdown.config.ts',
 			'test',
 			'test-d',
 			'generator',
