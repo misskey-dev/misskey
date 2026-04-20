@@ -113,6 +113,5 @@ async function cancel() {
 	width: 100%;
 	height: 100%;
 	display: block;
-	background: #000;
 }
 </style>

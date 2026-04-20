@@ -17,7 +17,7 @@ export async function createRoomObjectPreviewEngine(canvas: HTMLCanvasElement) {
 	//const babylonEngine = new BABYLON.WebGPUEngine(canvas);
 	//babylonEngine.compatibilityMode = false;
 	//await babylonEngine.initAsync();
-	const babylonEngine = new BABYLON.Engine(canvas, false, { alpha: false, antialias: false });
+	const babylonEngine = new BABYLON.Engine(canvas, false, { alpha: true, antialias: false });
 	return new RoomObjectPreviewEngine({ canvas, engine: babylonEngine });
 }
 
@@ -25,7 +25,7 @@ export class RoomObjectPreviewEngine {
 	private canvas: HTMLCanvasElement;
 	private engine: BABYLON.WebGPUEngine;
 	private scene: BABYLON.Scene;
-	private shadowGenerator1: BABYLON.ShadowGenerator;
+	private shadowGenerator: BABYLON.ShadowGenerator;
 	private camera: BABYLON.ArcRotateCamera;
 	private objectMesh: BABYLON.Mesh | null = null;
 	private objectInstance: RoomObjectInstance<any> | null = null;
@@ -33,7 +33,8 @@ export class RoomObjectPreviewEngine {
 	private roomLight: BABYLON.SpotLight;
 	private zGridPreviewPlane: BABYLON.Mesh;
 	private timerForEachObject: Timer | null = null;
-	private fps = 60;
+	private fps: number | null = null;
+	private disposed = false;
 
 	constructor(options: {
 		canvas: HTMLCanvasElement;
@@ -45,41 +46,34 @@ export class RoomObjectPreviewEngine {
 
 		this.engine = options.engine;
 		this.scene = new BABYLON.Scene(this.engine);
+		this.scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
+		this.scene.autoClear = true;
+		this.scene.skipPointerMovePicking = true;
 
-		this.scene.ambientColor = new BABYLON.Color3(1.0, 0.9, 0.8);
+		this.camera = new BABYLON.ArcRotateCamera('camera', -Math.PI / 2, Math.PI / 2.5, cm(300), new BABYLON.Vector3(0, cm(90), 0), this.scene);
 
 		this.envMapIndoor = BABYLON.CubeTexture.CreateFromPrefilteredData('/client-assets/room/indoor.env', this.scene);
 		this.envMapIndoor.boundingBoxSize = new BABYLON.Vector3(cm(500), cm(500), cm(500));
-
-		this.camera = new BABYLON.ArcRotateCamera('camera', -Math.PI / 2, Math.PI / 2.5, cm(300), new BABYLON.Vector3(0, cm(90), 0), this.scene);
-		this.camera.attachControl(this.canvas);
-		this.camera.minZ = cm(1);
-		this.camera.maxZ = cm(100000);
-		this.camera.fov = 0.5;
-		this.camera.lowerRadiusLimit = cm(50);
-		this.camera.upperRadiusLimit = cm(1000);
-		this.camera.useAutoRotationBehavior = true;
-		this.camera.autoRotationBehavior!.idleRotationSpeed = 0.3;
-		this.camera.panningSensibility = 0;
-		//this.camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
-		this.scene.activeCamera = this.camera;
+		this.envMapIndoor.level = 0.6;
 
 		const ambientLight = new BABYLON.HemisphericLight('ambientLight', new BABYLON.Vector3(0, 1, -0.5), this.scene);
 		ambientLight.diffuse = new BABYLON.Color3(1.0, 1.0, 1.0);
-		ambientLight.intensity = 0.5;
+		ambientLight.intensity = 0.3;
 		//ambientLight.intensity = 0;
 
-		this.roomLight = new BABYLON.SpotLight('roomLight', new BABYLON.Vector3(0, cm(249), 0), new BABYLON.Vector3(0, -1, 0), 16, 8, this.scene);
+		this.roomLight = new BABYLON.SpotLight('roomLight', new BABYLON.Vector3(cm(50), cm(249), cm(50)), new BABYLON.Vector3(0, -1, 0), 16, 8, this.scene);
 		this.roomLight.diffuse = new BABYLON.Color3(1.0, 0.9, 0.8);
 		this.roomLight.shadowMinZ = cm(10);
-		this.roomLight.shadowMaxZ = cm(300);
+		this.roomLight.shadowMaxZ = cm(500);
+		this.roomLight.radius = cm(30);
+		this.roomLight.intensity = 10 * WORLD_SCALE * WORLD_SCALE;
 
-		this.shadowGenerator1 = new BABYLON.ShadowGenerator(4096, this.roomLight);
-		this.shadowGenerator1.forceBackFacesOnly = true;
-		this.shadowGenerator1.bias = 0.0001;
-		this.shadowGenerator1.usePercentageCloserFiltering = true;
-		this.shadowGenerator1.filteringQuality = BABYLON.ShadowGenerator.QUALITY_HIGH;
-		//this.shadowGenerator1.useContactHardeningShadow = true;
+		this.shadowGenerator = new BABYLON.ShadowGenerator(1024, this.roomLight);
+		this.shadowGenerator.forceBackFacesOnly = true;
+		this.shadowGenerator.bias = 0.0001;
+		this.shadowGenerator.usePercentageCloserFiltering = true;
+		this.shadowGenerator.filteringQuality = BABYLON.ShadowGenerator.QUALITY_HIGH;
+		this.shadowGenerator.getShadowMap().refreshRate = 60;
 
 		const gridMaterial = new GridMaterial('grid', this.scene);
 		gridMaterial.lineColor = new BABYLON.Color3(0.5, 0.5, 0.5);
@@ -91,26 +85,33 @@ export class RoomObjectPreviewEngine {
 		//this.zGridPreviewPlane = BABYLON.MeshBuilder.CreatePlane('zGridPreviewPlane', { width: cm(1000), height: cm(1000) }, this.scene);
 		//this.zGridPreviewPlane.material = gridMaterial;
 		//this.zGridPreviewPlane.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
-
-		//this.scene.fogMode = BABYLON.Scene.FOGMODE_LINEAR;
-		//this.scene.fogStart = cm(100);
-		//this.scene.fogEnd = cm(110);
-		//this.scene.fogColor = new BABYLON.Color3(0.0, 0.0, 0.0);
 	}
 
 	public async init() {
-		const frameInterval = 1000 / this.fps;
-		let lastTime = performance.now();
-
-		this.engine.runRenderLoop(() => {
-			const currentTime = performance.now();
-			const delta = currentTime - lastTime;
-
-			if (delta >= frameInterval) {
+		if (this.fps == null) {
+			this.engine.runRenderLoop(() => {
 				this.scene.render();
-				lastTime = currentTime - (delta % frameInterval);
-			}
-		});
+			});
+		} else {
+			let then = 0;
+			const interval = 1000 / this.fps;
+
+			const renderLoop = (timeStamp: number) => {
+				if (this.disposed) return;
+
+				window.requestAnimationFrame(renderLoop);
+
+				const delta = timeStamp - then;
+				if (delta <= interval) return;
+				then = timeStamp - (delta % interval);
+
+				this.engine.beginFrame();
+				this.scene.render();
+				this.engine.endFrame();
+			};
+
+			window.requestAnimationFrame(renderLoop);
+		}
 	}
 
 	public async load(type: string) {
@@ -119,9 +120,6 @@ export class RoomObjectPreviewEngine {
 			this.objectInstance = null;
 			this.objectMesh!.dispose();
 		}
-
-		// reset camera rotation
-		this.camera.setPosition(new BABYLON.Vector3(0, cm(90), cm(300)));
 
 		const def = getObjectDef(type);
 
@@ -138,6 +136,20 @@ export class RoomObjectPreviewEngine {
 		// なぜかちょっと待たないとbounding boxのサイズが正しくない
 		window.setTimeout(() => {
 			const boundingInfo = getMeshesBoundingBox(this.objectMesh!.getChildMeshes().filter(m => m.isEnabled() && m.isVisible));
+
+			this.camera.dispose();
+
+			this.camera = new BABYLON.ArcRotateCamera('camera', Math.PI / 2, Math.PI / 2.5, cm(300), new BABYLON.Vector3(0, cm(90), 0), this.scene);
+			this.camera.attachControl(this.canvas);
+			this.camera.minZ = cm(1);
+			this.camera.maxZ = cm(100000);
+			this.camera.fov = 0.5;
+			this.camera.lowerRadiusLimit = cm(50);
+			this.camera.upperRadiusLimit = cm(1000);
+			this.camera.useAutoRotationBehavior = true;
+			this.camera.autoRotationBehavior!.idleRotationSpeed = 0.3;
+			this.camera.panningSensibility = 0;
+			//this.camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
 			this.camera.setTarget(new BABYLON.Vector3(0, boundingInfo.center.y, 0));
 
 			if (def.placement === 'wall' || def.placement === 'side') {
@@ -210,7 +222,7 @@ export class RoomObjectPreviewEngine {
 				} else {
 					if (def.receiveShadows !== false) mesh.receiveShadows = true;
 					if (def.castShadows !== false) {
-						this.shadowGenerator1.addShadowCaster(mesh);
+						this.shadowGenerator.addShadowCaster(mesh);
 					}
 
 					if (mesh.material) {
@@ -266,5 +278,6 @@ export class RoomObjectPreviewEngine {
 			this.timerForEachObject.dispose();
 		}
 		this.engine.dispose();
+		this.disposed = true;
 	}
 }
