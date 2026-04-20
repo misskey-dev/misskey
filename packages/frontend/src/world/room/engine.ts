@@ -750,79 +750,66 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		const meshes: BABYLON.Mesh[] = [];
 
 		if (this.roomState.heya.type === 'simple') {
-			const floorResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-floor.glb', this.scene);
-			floorResult.meshes[0].scaling = floorResult.meshes[0].scaling.scale(WORLD_SCALE);
-			const floorRoot = new BABYLON.Mesh('floor', this.scene);
-			floorRoot.addChild(floorResult.meshes[0]);
-			meshes.push(floorRoot);
+			const loaderResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300.glb', this.scene);
+			loaderResult.meshes[0].scaling = loaderResult.meshes[0].scaling.scale(WORLD_SCALE);
+			loaderResult.meshes[0].rotationQuaternion = null;
+			loaderResult.meshes[0].rotation = new BABYLON.Vector3(0, 0, 0);
 
-			const ceilingResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-ceiling.glb', this.scene);
-			ceilingResult.meshes[0].scaling = ceilingResult.meshes[0].scaling.scale(WORLD_SCALE);
-			const ceilingRoot = new BABYLON.Mesh('ceiling', this.scene);
-			ceilingRoot.addChild(ceilingResult.meshes[0]);
-			ceilingRoot.position = new BABYLON.Vector3(0, cm(250), 0);
-			meshes.push(ceilingRoot);
+			const wallNRoot = loaderResult.transformNodes.find(t => t.name.includes('__WALL_N__'));
+			const wallSRoot = loaderResult.transformNodes.find(t => t.name.includes('__WALL_S__'));
+			const wallWRoot = loaderResult.transformNodes.find(t => t.name.includes('__WALL_W__'));
+			const wallERoot = loaderResult.transformNodes.find(t => t.name.includes('__WALL_E__'));
 
-			const wallEResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-wall.glb', this.scene);
-			wallEResult.meshes[0].scaling = wallEResult.meshes[0].scaling.scale(WORLD_SCALE);
-			const wallERoot = new BABYLON.Mesh('wallE', this.scene);
-			wallERoot.addChild(wallEResult.meshes[0]);
-			wallERoot.position = new BABYLON.Vector3(cm(-150), 0, 0);
-			wallERoot.rotation = new BABYLON.Vector3(0, Math.PI, 0);
-			meshes.push(wallERoot);
-			const wallEMaterial = findMaterial(wallEResult.meshes[0], '__X_WALL__');
-			wallEMaterial.albedoColor = new BABYLON.Color3(...this.roomState.heya.options.wallE.color);
+			const wallMaterial = findMaterial(loaderResult.meshes[0], '__X_WALL__');
 
-			const wallWResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-wall.glb', this.scene);
-			wallWResult.meshes[0].scaling = wallWResult.meshes[0].scaling.scale(WORLD_SCALE);
-			const wallWRoot = new BABYLON.Mesh('wallW', this.scene);
-			wallWRoot.addChild(wallWResult.meshes[0]);
-			wallWRoot.position = new BABYLON.Vector3(cm(150), 0, 0);
-			meshes.push(wallWRoot);
-			const wallWMaterial = findMaterial(wallWResult.meshes[0], '__X_WALL__');
-			wallWMaterial.albedoColor = new BABYLON.Color3(...this.roomState.heya.options.wallW.color);
-
-			const wallNResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-wall.glb', this.scene);
-			wallNResult.meshes[0].scaling = wallNResult.meshes[0].scaling.scale(WORLD_SCALE);
-			const wallNRoot = new BABYLON.Mesh('wallN', this.scene);
-			wallNRoot.addChild(wallNResult.meshes[0]);
-			wallNRoot.position = new BABYLON.Vector3(0, 0, cm(-150));
-			wallNRoot.rotation = new BABYLON.Vector3(0, Math.PI / 2, 0);
-			meshes.push(wallNRoot);
-			const wallNMaterial = findMaterial(wallNResult.meshes[0], '__X_WALL__');
+			const wallNMaterial = wallMaterial.clone('wallNMaterial');
 			wallNMaterial.albedoColor = new BABYLON.Color3(...this.roomState.heya.options.wallN.color);
 
-			const wallSResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300-wall-demado.glb', this.scene);
-			wallSResult.meshes[0].scaling = wallSResult.meshes[0].scaling.scale(WORLD_SCALE);
-			const wallSRoot = new BABYLON.Mesh('wallS', this.scene);
-			wallSRoot.addChild(wallSResult.meshes[0]);
-			wallSRoot.position = new BABYLON.Vector3(0, 0, cm(150));
-			wallSRoot.rotation = new BABYLON.Vector3(0, -Math.PI / 2, 0);
-			meshes.push(wallSRoot);
-			const wallSMaterial = findMaterial(wallSResult.meshes[0], '__X_WALL__');
+			const wallSMaterial = wallMaterial.clone('wallSMaterial');
 			wallSMaterial.albedoColor = new BABYLON.Color3(...this.roomState.heya.options.wallS.color);
+
+			const wallWMaterial = wallMaterial.clone('wallWMaterial');
+			wallWMaterial.albedoColor = new BABYLON.Color3(...this.roomState.heya.options.wallW.color);
+
+			const wallEMaterial = wallMaterial.clone('wallEMaterial');
+			wallEMaterial.albedoColor = new BABYLON.Color3(...this.roomState.heya.options.wallE.color);
+
+			// TODO: wall meshが一部instanced meshになっているせいでマテリアルが共有されるのを直す
+
+			for (const m of wallNRoot.getChildMeshes().filter(m => m.material === wallMaterial)) {
+				m.material = wallNMaterial;
+			}
+			for (const m of wallSRoot.getChildMeshes().filter(m => m.material === wallMaterial)) {
+				m.material = wallSMaterial;
+			}
+			for (const m of wallWRoot.getChildMeshes().filter(m => m.material === wallMaterial)) {
+				m.material = wallWMaterial;
+			}
+			for (const m of wallERoot.getChildMeshes().filter(m => m.material === wallMaterial)) {
+				m.material = wallEMaterial;
+			}
+
+			meshes.push(...loaderResult.meshes);
 		}
 
-		for (const mesh of meshes) {
-			for (const m of mesh.getChildMeshes()) {
-				if (m.name.includes('__ROOM_WALL__') || m.name.includes('__ROOM_SIDE__') || m.name.includes('__ROOM_FLOOR__') || m.name.includes('__ROOM_CEILING__') || m.name.includes('__ROOM_TOP__') || m.name.includes('__ROOM_BOTTOM__')) {
-					m.isPickable = false;
-					m.receiveShadows = false;
-					m.isVisible = false;
-					m.checkCollisions = false;
-					continue;
-				}
-
+		for (const m of meshes) {
+			if (m.name.includes('__ROOM_WALL__') || m.name.includes('__ROOM_SIDE__') || m.name.includes('__ROOM_FLOOR__') || m.name.includes('__ROOM_CEILING__') || m.name.includes('__ROOM_TOP__') || m.name.includes('__ROOM_BOTTOM__')) {
 				m.isPickable = false;
+				m.receiveShadows = false;
+				m.isVisible = false;
 				m.checkCollisions = false;
-				m.receiveShadows = true;
-				this.shadowGeneratorForRoomLight.addShadowCaster(m);
-				this.shadowGeneratorForSunLight.addShadowCaster(m);
-				//if (m.material) (m.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(1, 1, 1);
-				if (m.material) {
-					(m.material as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
-					(m.material as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
-				}
+				continue;
+			}
+
+			m.isPickable = false;
+			m.checkCollisions = false;
+			m.receiveShadows = true;
+			this.shadowGeneratorForRoomLight.addShadowCaster(m);
+			this.shadowGeneratorForSunLight.addShadowCaster(m);
+			//if (m.material) (m.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(1, 1, 1);
+			if (m.material) {
+				(m.material as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
+				(m.material as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
 			}
 		}
 	}
