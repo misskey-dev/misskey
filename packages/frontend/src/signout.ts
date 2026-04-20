@@ -83,6 +83,10 @@ async function removeCurrentAccountData() {
 	await store.clearAccountDataFromDevice();
 }
 
+/**
+ * アカウントからログアウトし、そのアカウントに関するデータを削除します。
+ * @param all すべてのアカウントからログアウトするか？
+ */
 export async function signout(all = false) {
 	if (!$i) return;
 

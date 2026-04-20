@@ -182,14 +182,31 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		type: 'button',
 		icon: 'ti ti-power',
 		text: i18n.ts.logout,
-		action: async () => {
-			const { canceled } = await os.confirm({
-				type: 'warning',
-				title: i18n.ts.logoutConfirm,
-				text: i18n.ts.logoutWillClearClientData,
-			});
-			if (canceled) return;
-			signout();
+		action: async (ev) => {
+			os.popupMenu([{
+				text: i18n.ts.logout,
+				action: async () => {
+					const { canceled } = await os.confirm({
+						type: 'warning',
+						title: i18n.ts.logoutConfirm,
+						text: i18n.ts.logoutWillClearClientData,
+					});
+					if (canceled) return;
+					signout();
+				},
+			}, {
+				text: i18n.ts.logoutFromAll,
+				danger: true,
+				action: async () => {
+					const { canceled } = await os.confirm({
+						type: 'warning',
+						title: i18n.ts.logoutConfirm,
+						text: i18n.ts.logoutWillClearClientData,
+					});
+					if (canceled) return;
+					signout(true);
+				},
+			}], ev.currentTarget ?? ev.target);
 		},
 		danger: true,
 	}],
