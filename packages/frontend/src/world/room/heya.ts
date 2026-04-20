@@ -54,6 +54,7 @@ export type JapaneseHeyaOptions = {
 
 export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 	private loaderResult: BABYLON.ISceneLoaderAsyncResult | null = null;
+	private meshes: BABYLON.Mesh[] = [];
 	private wallNRoot: BABYLON.TransformNode | null = null;
 	private wallSRoot: BABYLON.TransformNode | null = null;
 	private wallWRoot: BABYLON.TransformNode | null = null;
@@ -69,22 +70,42 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 
 	public async load(options: SimpleHeyaOptions, scene: BABYLON.Scene) {
 		this.loaderResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300.glb', scene);
-		this.loaderResult.meshes[0].scaling = this.loaderResult.meshes[0].scaling.scale(WORLD_SCALE);
-		this.loaderResult.meshes[0].rotationQuaternion = null;
-		this.loaderResult.meshes[0].rotation = new BABYLON.Vector3(0, 0, 0);
+
+		this.meshes = this.loaderResult.meshes.filter(m => m instanceof BABYLON.Mesh);
+		this.meshes[0].scaling = this.meshes[0].scaling.scale(WORLD_SCALE);
+		this.meshes[0].rotationQuaternion = null;
+		this.meshes[0].rotation = new BABYLON.Vector3(0, 0, 0);
+
+		// instanced mesh を通常の mesh に変換 (そうしないとマテリアルが共有される)
+		for (const mesh of this.loaderResult.meshes) {
+			if (mesh instanceof BABYLON.InstancedMesh) {
+				const realizedMesh = mesh.sourceMesh.clone(mesh.name, null, true);
+
+				realizedMesh.position = mesh.position.clone();
+				if (mesh.rotationQuaternion) {
+					realizedMesh.rotationQuaternion = mesh.rotationQuaternion.clone();
+				} else {
+					realizedMesh.rotation = mesh.rotation.clone();
+				}
+				realizedMesh.scaling = mesh.scaling.clone();
+				realizedMesh.parent = mesh.parent;
+
+				mesh.dispose();
+				scene.removeMesh(mesh);
+				this.meshes.push(realizedMesh);
+			}
+		}
 
 		this.wallNRoot = this.loaderResult.transformNodes.find(t => t.name.includes('__WALL_N__'))!;
 		this.wallSRoot = this.loaderResult.transformNodes.find(t => t.name.includes('__WALL_S__'))!;
 		this.wallWRoot = this.loaderResult.transformNodes.find(t => t.name.includes('__WALL_W__'))!;
 		this.wallERoot = this.loaderResult.transformNodes.find(t => t.name.includes('__WALL_E__'))!;
 
-		const wallMaterial = findMaterial(this.loaderResult.meshes[0], '__X_WALL__');
+		const wallMaterial = findMaterial(this.meshes[0], '__X_WALL__');
 		this.wallNMaterial = wallMaterial.clone('wallNMaterial');
 		this.wallSMaterial = wallMaterial.clone('wallSMaterial');
 		this.wallWMaterial = wallMaterial.clone('wallWMaterial');
 		this.wallEMaterial = wallMaterial.clone('wallEMaterial');
-
-		// TODO: wall meshが一部instanced meshになっているせいでマテリアルが共有されるのを直す
 
 		for (const m of this.wallNRoot.getChildMeshes().filter(m => m.material === wallMaterial)) {
 			m.material = this.wallNMaterial;
@@ -108,7 +129,7 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 		this.wallWMaterial.albedoColor = new BABYLON.Color3(...options.wallW.color);
 		this.wallEMaterial.albedoColor = new BABYLON.Color3(...options.wallE.color);
 
-		this.onMeshUpdatedCallback?.(this.loaderResult.meshes);
+		this.onMeshUpdatedCallback?.(this.meshes);
 	}
 
 	public dispose() {
@@ -119,6 +140,9 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 			for (const t of this.loaderResult.transformNodes) {
 				t.dispose();
 			}
+		}
+		for (const m of this.meshes) {
+			m.dispose();
 		}
 		this.wallNMaterial?.dispose();
 		this.wallSMaterial?.dispose();
