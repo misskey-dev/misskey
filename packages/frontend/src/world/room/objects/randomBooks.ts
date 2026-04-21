@@ -6,7 +6,7 @@
 import * as BABYLON from '@babylonjs/core';
 import seedrandom from 'seedrandom';
 import { defineObject } from '../object.js';
-import { WORLD_SCALE } from '@/world/utility.js';
+import { cm, WORLD_SCALE } from '@/world/utility.js';
 
 const remap = (value: number, fromMin: number, fromMax: number, toMin: number, toMax: number) => {
 	return toMin + ((value - fromMin) / (fromMax - fromMin)) * (toMax - toMin);
@@ -94,9 +94,9 @@ export const randomBooks = defineObject({
 				mesh.morphTargetManager!.getTargetByName('Width')!.influence = width;
 				mesh.morphTargetManager!.getTargetByName('Height')!.influence = height;
 				mesh.morphTargetManager!.getTargetByName('Thickness')!.influence = thickness;
-				const thicknessCm = 2 + remap(thickness, 0, 1, 0, 100);
-				const widthCm = 2 + remap(width, 0, 1, 0, 100);
-				const gap = 0.25;
+				const thicknessCm = cm(2) + remap(thickness, 0, 1, 0, cm(100));
+				const widthCm = cm(2) + remap(width, 0, 1, 0, cm(100));
+				const gap = cm(0.25);
 				mesh.position.x = (accumulatedPos + (thicknessCm / 2)) / WORLD_SCALE;
 				mesh.position.z = widthCm / 2 / WORLD_SCALE;
 				mesh.refreshBoundingInfo();
