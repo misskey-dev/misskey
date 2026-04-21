@@ -606,7 +606,6 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_WALL__') || m.name.includes('__SIDE__')));
 			if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
 				newPos.x = hit.pickedPoint.x;
-				newPos.y = hit.pickedPoint.y;
 				newPos.z = hit.pickedPoint.z;
 				const pickedMeshNormal = hit.getNormal(true, true);
 				const targetRotationY = Math.atan2(pickedMeshNormal.x, pickedMeshNormal.z);
@@ -627,7 +626,6 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_WALL__')));
 			if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
 				newPos.x = hit.pickedPoint.x;
-				newPos.y = hit.pickedPoint.y;
 				newPos.z = hit.pickedPoint.z;
 				const pickedMeshNormal = hit.getNormal(true, true);
 				const targetRotationY = Math.atan2(pickedMeshNormal.x, pickedMeshNormal.z);
