@@ -275,8 +275,6 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.scene.collisionsEnabled = true;
 
 		this.camera = new BABYLON.UniversalCamera('camera', new BABYLON.Vector3(0, cm(130), cm(0)), this.scene);
-		this.camera.inputs.removeByType('FreeCameraKeyboardMoveInput');
-		this.camera.inputs.add(new HorizontalCameraKeyboardMoveInput(this.camera));
 		this.camera.attachControl(this.canvas);
 		this.camera.minZ = cm(1);
 		this.camera.maxZ = cm(2000);
@@ -285,6 +283,26 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.camera.checkCollisions = true;
 		this.camera.applyGravity = true;
 		this.camera.needMoveForGravity = true;
+		this.camera.keysUp.push(87); // W
+		this.camera.keysDown.push(83); // S
+		this.camera.keysLeft.push(65); // A
+		this.camera.keysRight.push(68); // D
+		const normalSpeed = 2;
+		this.camera.speed = normalSpeed;
+		this.scene.onKeyboardObservable.add((kbInfo) => {
+			switch (kbInfo.type) {
+				case BABYLON.KeyboardEventTypes.KEYDOWN:
+					if (kbInfo.event.key === 'Shift') {
+						this.camera.speed = normalSpeed * 3;
+					}
+					break;
+				case BABYLON.KeyboardEventTypes.KEYUP:
+					if (kbInfo.event.key === 'Shift') {
+						this.camera.speed = normalSpeed;
+					}
+					break;
+			}
+		});
 
 		//this.scene.activeCamera = this.camera;
 
