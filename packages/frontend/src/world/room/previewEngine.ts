@@ -271,7 +271,6 @@ export class RoomObjectPreviewEngine {
 						if (mesh.material instanceof BABYLON.MultiMaterial) {
 							for (const subMat of mesh.material.subMaterials) {
 								if ((subMat as BABYLON.PBRMaterial).subSurface.isRefractionEnabled) {
-									(subMat as BABYLON.PBRMaterial).subSurface.isRefractionEnabled = false; // 有効にするとドローコールが激増する(babylonのバグか仕様かは不明)
 									(subMat as BABYLON.PBRMaterial).transparencyMode = BABYLON.PBRMaterial.PBRMATERIAL_ALPHABLEND;
 								}
 								(subMat as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
@@ -280,7 +279,6 @@ export class RoomObjectPreviewEngine {
 							}
 						} else {
 							if ((mesh.material as BABYLON.PBRMaterial).subSurface.isRefractionEnabled) {
-								(mesh.material as BABYLON.PBRMaterial).subSurface.isRefractionEnabled = false; // 有効にするとドローコールが激増する(babylonのバグか仕様かは不明)
 								(mesh.material as BABYLON.PBRMaterial).transparencyMode = BABYLON.PBRMaterial.PBRMATERIAL_ALPHABLEND;
 							}
 							(mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
