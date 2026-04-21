@@ -576,3 +576,16 @@ export class Timer {
 		this.intervalIds = [];
 	}
 }
+
+export function getYRotationDirection(rotationY: number): '+x' | '+z' | '-x' | '-z' {
+	const angle = rotationY % (2 * Math.PI);
+	if ((angle >= 0 && angle < Math.PI / 4) || (angle >= 7 * Math.PI / 4 && angle < 2 * Math.PI)) {
+		return '-z';
+	} else if (angle >= Math.PI / 4 && angle < 3 * Math.PI / 4) {
+		return '-x';
+	} else if (angle >= 3 * Math.PI / 4 && angle < 5 * Math.PI / 4) {
+		return '+z';
+	} else {
+		return '+x';
+	}
+}

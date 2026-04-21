@@ -14,7 +14,7 @@ import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
 import { BoundingBoxRenderer } from '@babylonjs/core/Rendering/boundingBoxRenderer';
 import { GridMaterial } from '@babylonjs/materials';
 import { EventEmitter } from 'eventemitter3';
-import { TIME_MAP, scaleMorph, camelToKebab, cm, WORLD_SCALE, getMeshesBoundingBox, Timer } from '../utility.js';
+import { TIME_MAP, scaleMorph, camelToKebab, cm, WORLD_SCALE, getMeshesBoundingBox, Timer, getYRotationDirection } from '../utility.js';
 import { getObjectDef } from './object-defs.js';
 import { findMaterial, ModelManager, SYSTEM_HEYA_MESH_NAMES, SYSTEM_MESH_NAMES } from './utility.js';
 import { SimpleHeyaManager } from './heya.js';
@@ -605,18 +605,21 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			const ray = new BABYLON.Ray(this.camera.position, dir, cm(1000));
 			const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_WALL__') || m.name.includes('__SIDE__')));
 			if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
-				newPos.x = hit.pickedPoint.x;
-				newPos.z = hit.pickedPoint.z;
 				const pickedMeshNormal = hit.getNormal(true, true);
 				const targetRotationY = Math.atan2(pickedMeshNormal.x, pickedMeshNormal.z);
 				newRotation.y = targetRotationY;
+				if (getYRotationDirection(targetRotationY) === '+x' || getYRotationDirection(targetRotationY) === '-x') {
+					newPos.x = hit.pickedPoint.x;
+				} else {
+					newPos.z = hit.pickedPoint.z;
+				}
 				sticky = hit.pickedMesh.metadata?.objectId ?? null;
 
 				if (this.gridSnapping.enabled) {
 					this.gridPlane.rotationQuaternion = null;
 					this.gridPlane.rotation.x = Math.PI;
 					this.gridPlane.rotation.y = targetRotationY;
-					this.gridPlane.position = new BABYLON.Vector3(hit.pickedPoint.x, 0, hit.pickedPoint.z).addInPlace(pickedMeshNormal.scale(cm(0.1)));
+					this.gridPlane.position = new BABYLON.Vector3(newPos.x, newPos.y, newPos.z).addInPlace(pickedMeshNormal.scale(cm(0.1)));
 					this.gridPlane.isVisible = true;
 				}
 			}
@@ -625,17 +628,20 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			const ray = new BABYLON.Ray(this.camera.position, dir, cm(1000));
 			const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_WALL__')));
 			if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
-				newPos.x = hit.pickedPoint.x;
-				newPos.z = hit.pickedPoint.z;
 				const pickedMeshNormal = hit.getNormal(true, true);
 				const targetRotationY = Math.atan2(pickedMeshNormal.x, pickedMeshNormal.z);
 				newRotation.y = targetRotationY;
+				if (getYRotationDirection(targetRotationY) === '+x' || getYRotationDirection(targetRotationY) === '-x') {
+					newPos.x = hit.pickedPoint.x;
+				} else {
+					newPos.z = hit.pickedPoint.z;
+				}
 
 				if (this.gridSnapping.enabled) {
 					this.gridPlane.rotationQuaternion = null;
 					this.gridPlane.rotation.x = Math.PI;
 					this.gridPlane.rotation.y = targetRotationY;
-					this.gridPlane.position = new BABYLON.Vector3(hit.pickedPoint.x, 0, hit.pickedPoint.z).addInPlace(pickedMeshNormal.scale(cm(0.1)));
+					this.gridPlane.position = new BABYLON.Vector3(newPos.x, newPos.y, newPos.z).addInPlace(pickedMeshNormal.scale(cm(0.1)));
 					this.gridPlane.isVisible = true;
 				}
 			}
