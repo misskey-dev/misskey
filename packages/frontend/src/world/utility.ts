@@ -5,11 +5,8 @@
 
 import * as BABYLON from '@babylonjs/core';
 
-// 1にしてcmを/100したいけど、なぜか(速度調整後の)カメラが前進しなくなる問題がある
-export const WORLD_SCALE = 100;
-
-//export const cm = (value: number) => value / 100;
-export const cm = (value: number) => value;
+export const WORLD_SCALE = 1;
+export const cm = (value: number) => value / 100;
 
 export const TIME_MAP = {
 	0: 2,
