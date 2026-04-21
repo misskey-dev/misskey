@@ -239,6 +239,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		//this.scene.autoClearDepthAndStencil = false;
 		this.scene.skipPointerMovePicking = true;
 		this.scene.skipFrustumClipping = true; // snapshot renderingでは全てのメッシュがアクティブになっている必要があるため
+		this.scene.gravity = new BABYLON.Vector3(0, -0.1, 0).scale(WORLD_SCALE);
 
 		this.sr = new BABYLON.SnapshotRenderingHelper(this.scene);
 
@@ -293,7 +294,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			switch (kbInfo.type) {
 				case BABYLON.KeyboardEventTypes.KEYDOWN:
 					if (kbInfo.event.key === 'Shift') {
-						this.camera.speed = normalSpeed * 3;
+						this.camera.speed = normalSpeed * 4;
 					}
 					break;
 				case BABYLON.KeyboardEventTypes.KEYUP:

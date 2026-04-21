@@ -71,6 +71,7 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 		//this.scene.autoClearDepthAndStencil = false;
 		this.scene.skipPointerMovePicking = true;
 		this.scene.skipFrustumClipping = true; // snapshot renderingでは全てのメッシュがアクティブになっている必要があるため
+		this.scene.gravity = new BABYLON.Vector3(0, -0.1, 0).scale(WORLD_SCALE);
 
 		this.sr = new BABYLON.SnapshotRenderingHelper(this.scene);
 
@@ -100,8 +101,6 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 		this.scene.collisionsEnabled = true;
 
 		this.camera = new BABYLON.UniversalCamera('camera', new BABYLON.Vector3(cm(0), cm(250), cm(3000)), this.scene);
-		this.camera.inputs.removeByType('FreeCameraKeyboardMoveInput');
-		this.camera.inputs.add(new HorizontalCameraKeyboardMoveInput(this.camera, 0.3));
 		this.camera.attachControl(this.canvas);
 		this.camera.minZ = cm(1);
 		this.camera.maxZ = cm(100000);
@@ -110,6 +109,26 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 		this.camera.checkCollisions = true;
 		this.camera.applyGravity = true;
 		this.camera.needMoveForGravity = true;
+		this.camera.keysUp.push(87); // W
+		this.camera.keysDown.push(83); // S
+		this.camera.keysLeft.push(65); // A
+		this.camera.keysRight.push(68); // D
+		const normalSpeed = 0.03 * WORLD_SCALE;
+		this.camera.speed = normalSpeed;
+		this.scene.onKeyboardObservable.add((kbInfo) => {
+			switch (kbInfo.type) {
+				case BABYLON.KeyboardEventTypes.KEYDOWN:
+					if (kbInfo.event.key === 'Shift') {
+						this.camera.speed = normalSpeed * 4;
+					}
+					break;
+				case BABYLON.KeyboardEventTypes.KEYUP:
+					if (kbInfo.event.key === 'Shift') {
+						this.camera.speed = normalSpeed;
+					}
+					break;
+			}
+		});
 
 		//this.scene.activeCamera = this.camera;
 
