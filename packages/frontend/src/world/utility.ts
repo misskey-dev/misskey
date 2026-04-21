@@ -6,6 +6,8 @@
 import * as BABYLON from '@babylonjs/core';
 
 export const WORLD_SCALE = 1;
+
+// cm to meter. 二重に適用しないように注意すること。
 export const cm = (value: number) => value / 100;
 
 export const TIME_MAP = {
