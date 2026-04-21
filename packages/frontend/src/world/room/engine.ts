@@ -342,7 +342,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 		this.lightContainer = new BABYLON.ClusteredLightContainer('clustered', [], this.scene);
 
-		this.turnOnRoomLight();
+		this.turnOnRoomLight(true);
 
 		if (USE_GLOW) {
 			this.gl = new BABYLON.GlowLayer('glow', this.scene, {
@@ -1300,14 +1300,24 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.fixedCamera.parent = null;
 	}
 
-	private turnOnRoomLight() {
+	private turnOnRoomLight(forInit = false) {
+		if (!forInit && SNAPSHOT_RENDERING) this.sr.disableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 		this.roomLight.intensity = 10 * WORLD_SCALE * WORLD_SCALE;
 		this.envMapIndoor.level = 0.6;
+		if (!forInit && SNAPSHOT_RENDERING) {
+			setTimeout(() => {
+				this.sr.enableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
+			}, 10);
+		}
 	}
 
 	private turnOffRoomLight() {
+		if (SNAPSHOT_RENDERING) this.sr.disableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 		this.roomLight.intensity = 0;
 		this.envMapIndoor.level = 0;
+		setTimeout(() => {
+			if (SNAPSHOT_RENDERING) this.sr.enableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
+		}, 10);
 	}
 
 	public toggleRoomLight() {
