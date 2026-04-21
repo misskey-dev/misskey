@@ -478,7 +478,7 @@ export const reversiUpdateKeys: ["map", "bw", "isLlotheo", "canPutEverywhere", "
 // @public (undocumented)
 export const rolePolicies: readonly ["gtlAvailable", "ltlAvailable", "canPublicNote", "mentionLimit", "canInvite", "inviteLimit", "inviteLimitCycle", "inviteExpirationTime", "canManageCustomEmojis", "canManageAvatarDecorations", "canSearchNotes", "canSearchUsers", "canUseTranslator", "canHideAds", "driveCapacityMb", "maxFileSizeMb", "alwaysMarkNsfw", "canUpdateBioMedia", "pinLimit", "antennaLimit", "wordMuteLimit", "webhookLimit", "clipLimit", "noteEachClipsLimit", "userListLimit", "userEachUserListsLimit", "rateLimitFactor", "avatarDecorationLimit", "canImportAntennas", "canImportBlocking", "canImportFollowing", "canImportMuting", "canImportUserLists", "chatAvailability", "uploadableFileTypes", "noteDraftLimit", "scheduledNoteLimit", "watermarkAvailable"];
 
-// @public (undocumented)
+// @public
 export class Stream extends EventEmitter<StreamEvents> implements IStream {
     constructor(origin: string, user: {
         token: string;
@@ -486,7 +486,6 @@ export class Stream extends EventEmitter<StreamEvents> implements IStream {
         WebSocket?: Options['WebSocket'];
         binaryType?: ReconnectingWebSocket['binaryType'];
     });
-    // (undocumented)
     close(): void;
     // (undocumented)
     disconnectToChannel(connection: NonSharedConnection): void;
@@ -498,7 +497,6 @@ export class Stream extends EventEmitter<StreamEvents> implements IStream {
     removeSharedConnection(connection: SharedConnection): void;
     // (undocumented)
     removeSharedConnectionPool(pool: Pool): void;
-    // (undocumented)
     send(typeOrPayload: string): void;
     // (undocumented)
     send(typeOrPayload: string, payload: unknown): void;
