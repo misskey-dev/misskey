@@ -188,6 +188,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	public lightContainer: BABYLON.ClusteredLightContainer;
 	private gridMaterial: GridMaterial;
 	private gridPlane: BABYLON.Mesh;
+	private gizmoManager: BABYLON.GizmoManager;
 	private selectionOutlineLayer: BABYLON.SelectionOutlineLayer;
 	public sr: BABYLON.SnapshotRenderingHelper;
 	private gl: BABYLON.GlowLayer | null = null;
@@ -377,6 +378,9 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.putParticleSystem.colorDead = new BABYLON.Color4(1, 1, 1, 0);
 		this.putParticleSystem.targetStopDuration = 0.05;
 
+		this.gizmoManager = new BABYLON.GizmoManager(this.scene);
+		this.gizmoManager.positionGizmoEnabled = false;
+
 		this.gridMaterial = new GridMaterial('grid', this.scene);
 		this.gridMaterial.lineColor = new BABYLON.Color3(0.5, 0.5, 0.5);
 		this.gridMaterial.mainColor = new BABYLON.Color3(0, 0, 0);
@@ -559,6 +563,9 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			const entity = this.objectEntities.get(objectId);
 			if (entity != null) {
 				entity.model.unbakeMesh();
+				//this.gizmoManager.positionGizmoEnabled = true;
+				//this.gizmoManager.gizmos.positionGizmo.updateGizmoRotationToMatchAttachedMesh = false;
+				//this.gizmoManager.attachToMesh(entity.rootMesh);
 				this.highlightMeshes(entity.rootMesh.getChildMeshes());
 				const state = this.roomState.installedObjects.find(o => o.id === objectId)!;
 				this.selected = {
