@@ -187,9 +187,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	private roomLight: BABYLON.SpotLight;
 	public lightContainer: BABYLON.ClusteredLightContainer;
 	private gridMaterial: GridMaterial;
-	private xGridPreviewPlane: BABYLON.Mesh;
-	private yGridPreviewPlane: BABYLON.Mesh;
-	private zGridPreviewPlane: BABYLON.Mesh;
+	private gridPlane: BABYLON.Mesh;
 	private selectionOutlineLayer: BABYLON.SelectionOutlineLayer;
 	public sr: BABYLON.SnapshotRenderingHelper;
 	private gl: BABYLON.GlowLayer | null = null;
@@ -386,22 +384,10 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.gridMaterial.opacity = 0.5;
 		this.gridMaterial.gridRatio = this.gridSnapping.scale;
 
-		this.xGridPreviewPlane = BABYLON.MeshBuilder.CreatePlane('xGridPreviewPlane', { width: cm(1000), height: cm(1000) }, this.scene);
-		this.xGridPreviewPlane.rotation = new BABYLON.Vector3(0, 0, Math.PI / 2);
-		this.xGridPreviewPlane.material = this.gridMaterial;
-		this.xGridPreviewPlane.isPickable = false;
-		this.xGridPreviewPlane.isVisible = false;
-
-		this.yGridPreviewPlane = BABYLON.MeshBuilder.CreatePlane('yGridPreviewPlane', { width: cm(1000), height: cm(1000) }, this.scene);
-		this.yGridPreviewPlane.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
-		this.yGridPreviewPlane.material = this.gridMaterial;
-		this.yGridPreviewPlane.isPickable = false;
-		this.yGridPreviewPlane.isVisible = false;
-
-		this.zGridPreviewPlane = BABYLON.MeshBuilder.CreatePlane('zGridPreviewPlane', { width: cm(1000), height: cm(1000) }, this.scene);
-		this.zGridPreviewPlane.material = this.gridMaterial;
-		this.zGridPreviewPlane.isPickable = false;
-		this.zGridPreviewPlane.isVisible = false;
+		this.gridPlane = BABYLON.MeshBuilder.CreatePlane('gridPlane', { width: cm(1000), height: cm(1000) }, this.scene);
+		this.gridPlane.material = this.gridMaterial;
+		this.gridPlane.isPickable = false;
+		this.gridPlane.isVisible = false;
 
 		this.selectionOutlineLayer = new BABYLON.SelectionOutlineLayer('outliner', this.scene);
 		this.scene.setRenderingAutoClearDepthStencil(this.selectionOutlineLayer.renderingGroupId, false);
@@ -626,6 +612,14 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 				const targetRotationY = Math.atan2(pickedMeshNormal.x, pickedMeshNormal.z);
 				newRotation.y = targetRotationY;
 				sticky = hit.pickedMesh.metadata?.objectId ?? null;
+
+				if (this.gridSnapping.enabled) {
+					this.gridPlane.rotationQuaternion = null;
+					this.gridPlane.rotation.x = Math.PI;
+					this.gridPlane.rotation.y = targetRotationY;
+					this.gridPlane.position = new BABYLON.Vector3(hit.pickedPoint.x, 0, hit.pickedPoint.z).addInPlace(pickedMeshNormal.scale(cm(0.1)));
+					this.gridPlane.isVisible = true;
+				}
 			}
 		} else if (placement === 'wall') {
 			// 前方に向かってレイを飛ばす
@@ -638,6 +632,14 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 				const pickedMeshNormal = hit.getNormal(true, true);
 				const targetRotationY = Math.atan2(pickedMeshNormal.x, pickedMeshNormal.z);
 				newRotation.y = targetRotationY;
+
+				if (this.gridSnapping.enabled) {
+					this.gridPlane.rotationQuaternion = null;
+					this.gridPlane.rotation.x = Math.PI;
+					this.gridPlane.rotation.y = targetRotationY;
+					this.gridPlane.position = new BABYLON.Vector3(hit.pickedPoint.x, 0, hit.pickedPoint.z).addInPlace(pickedMeshNormal.scale(cm(0.1)));
+					this.gridPlane.isVisible = true;
+				}
 			}
 		} else if (placement === 'bottom') {
 			// 上に向かってレイを飛ばす
@@ -652,15 +654,21 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			newPos.y = cm(250);
 
 			if (this.gridSnapping.enabled) {
-				this.yGridPreviewPlane.position = new BABYLON.Vector3(grabbing.mesh.position.x, cm(250) - cm(0.1), grabbing.mesh.position.z);
-				this.yGridPreviewPlane.isVisible = true;
+				this.gridPlane.rotationQuaternion = null;
+				this.gridPlane.rotation.x = Math.PI * 1.5;
+				this.gridPlane.rotation.y = 0;
+				this.gridPlane.position = new BABYLON.Vector3(grabbing.mesh.position.x, cm(250) - cm(0.1), grabbing.mesh.position.z);
+				this.gridPlane.isVisible = true;
 			}
 		} else if (placement === 'floor') {
 			newPos.y = 0;
 
 			if (this.gridSnapping.enabled) {
-				this.yGridPreviewPlane.position = new BABYLON.Vector3(grabbing.mesh.position.x, cm(0.1), grabbing.mesh.position.z);
-				this.yGridPreviewPlane.isVisible = true;
+				this.gridPlane.rotationQuaternion = null;
+				this.gridPlane.rotation.x = 0;
+				this.gridPlane.rotation.y = 0;
+				this.gridPlane.position = new BABYLON.Vector3(grabbing.mesh.position.x, cm(0.1), grabbing.mesh.position.z);
+				this.gridPlane.isVisible = true;
 			}
 		} else {
 			// 下に向かってレイを飛ばす
@@ -673,8 +681,11 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			if (newPos.y < 0) newPos.y = 0;
 
 			if (this.gridSnapping.enabled) {
-				this.yGridPreviewPlane.position = new BABYLON.Vector3(grabbing.mesh.position.x, grabbing.mesh.position.y + cm(0.1), grabbing.mesh.position.z);
-				this.yGridPreviewPlane.isVisible = true;
+				this.gridPlane.rotationQuaternion = null;
+				this.gridPlane.rotation.x = Math.PI / 2;
+				this.gridPlane.rotation.y = 0;
+				this.gridPlane.position = new BABYLON.Vector3(grabbing.mesh.position.x, grabbing.mesh.position.y + cm(0.1), grabbing.mesh.position.z);
+				this.gridPlane.isVisible = true;
 			}
 		}
 
@@ -1257,9 +1268,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.grabbingCtx.onDone?.();
 		this.grabbingCtx = null;
 
-		this.xGridPreviewPlane.isVisible = false;
-		this.yGridPreviewPlane.isVisible = false;
-		this.zGridPreviewPlane.isVisible = false;
+		this.gridPlane.isVisible = false;
 	}
 
 	public interact(oid: string) {
