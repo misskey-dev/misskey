@@ -33,7 +33,23 @@ onlyBuiltDependencies:
 ignorePatchFailures: false
 minimumReleaseAge: 10080 # delay 7days to mitigate supply-chain attack
 minimumReleaseAgeExclude:
+  - '@misskey-dev/*'
   - '@syuilo/aiscript'
+  - buraha
+  - slacc
+  - slacc-android-arm-eabi
+  - slacc-android-arm64
+  - slacc-darwin-arm64
+  - slacc-darwin-universal
+  - slacc-darwin-x64
+  - slacc-freebsd-x64
+  - slacc-linux-arm-gnueabihf
+  - slacc-linux-arm64-gnu
+  - slacc-linux-arm64-musl
+  - slacc-linux-x64-gnu
+  - slacc-linux-x64-musl
+  - slacc-win32-arm64-msvc
+  - slacc-win32-x64-msvc
   - fastify # 脆弱性対応。そのうち消す
   - '@fastify/express' # 脆弱性対応。そのうち消す
   - '@fastify/http-proxy' # 脆弱性対応。そのうち消す

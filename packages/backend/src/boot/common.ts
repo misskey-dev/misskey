@@ -4,7 +4,21 @@
  */
 
 import { NestFactory } from '@nestjs/core';
+import { init } from 'slacc';
 import { NestLogger } from '@/NestLogger.js';
+import type { Config } from '@/config.js';
+
+let slaccInitialized = false;
+
+export function initExtraThreadPool(config: Config) {
+	if (slaccInitialized) return;
+
+	const threadPoolSize = Math.max(config.threadPoolSize ?? 1, 1);
+
+	init(threadPoolSize);
+
+	slaccInitialized = true;
+}
 
 export async function server() {
 	const { MainModule } = await import('../MainModule.js');
