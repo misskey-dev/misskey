@@ -116,6 +116,7 @@ import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRange from '@/components/MkRange.vue';
 import { RoomController } from '@/world/room/controller.js';
+import { cm } from '@/world/utility.js';
 
 const canvas = useTemplateRef('canvas');
 
@@ -257,23 +258,23 @@ function showSnappingMenu(ev: PointerEvent) {
 	}, {
 		type: 'radioOption',
 		text: '1cm',
-		active: computed(() => controller.gridSnapping.value.scale === 1),
-		action: () => controller.setGridSnapping({ ...controller.gridSnapping.value, scale: 1 }),
+		active: computed(() => controller.gridSnapping.value.scale === cm(1)),
+		action: () => controller.setGridSnapping({ ...controller.gridSnapping.value, scale: cm(1) }),
 	}, {
 		type: 'radioOption',
 		text: '2cm',
-		active: computed(() => controller.gridSnapping.value.scale === 2),
-		action: () => controller.setGridSnapping({ ...controller.gridSnapping.value, scale: 2 }),
+		active: computed(() => controller.gridSnapping.value.scale === cm(2)),
+		action: () => controller.setGridSnapping({ ...controller.gridSnapping.value, scale: cm(2) }),
 	}, {
 		type: 'radioOption',
 		text: '4cm',
-		active: computed(() => controller.gridSnapping.value.scale === 4),
-		action: () => controller.setGridSnapping({ ...controller.gridSnapping.value, scale: 4 }),
+		active: computed(() => controller.gridSnapping.value.scale === cm(4)),
+		action: () => controller.setGridSnapping({ ...controller.gridSnapping.value, scale: cm(4) }),
 	}, {
 		type: 'radioOption',
 		text: '8cm',
-		active: computed(() => controller.gridSnapping.value.scale === 8),
-		action: () => controller.setGridSnapping({ ...controller.gridSnapping.value, scale: 8 }),
+		active: computed(() => controller.gridSnapping.value.scale === cm(8)),
+		action: () => controller.setGridSnapping({ ...controller.gridSnapping.value, scale: cm(8) }),
 	}], ev.currentTarget ?? ev.target);
 }
 

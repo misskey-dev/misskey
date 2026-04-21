@@ -177,6 +177,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	}
 	set gridSnapping(v) {
 		this._gridSnapping = v;
+		this.gridMaterial.gridRatio = v.scale; // setter内でconstructor内設定の値に依存するのはタイミングによってはundefinedになりそうなので、実際に当該マテリアルを表示する必要が生じる直前に利用側で設定させた方がいいかもしれない
 		this.emit('changeGridSnapping', { gridSnapping: v });
 	}
 
@@ -185,6 +186,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	private envMapOutdoor: BABYLON.CubeTexture;
 	private roomLight: BABYLON.SpotLight;
 	public lightContainer: BABYLON.ClusteredLightContainer;
+	private gridMaterial: GridMaterial;
 	private xGridPreviewPlane: BABYLON.Mesh;
 	private yGridPreviewPlane: BABYLON.Mesh;
 	private zGridPreviewPlane: BABYLON.Mesh;
@@ -377,30 +379,27 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.putParticleSystem.colorDead = new BABYLON.Color4(1, 1, 1, 0);
 		this.putParticleSystem.targetStopDuration = 0.05;
 
-		const gridMaterial = new GridMaterial('grid', this.scene);
-		gridMaterial.lineColor = new BABYLON.Color3(0.5, 0.5, 0.5);
-		gridMaterial.mainColor = new BABYLON.Color3(0, 0, 0);
-		gridMaterial.minorUnitVisibility = 1;
-		gridMaterial.opacity = 0.5;
-		// todo
-		//watch(this.gridSnappingScale, (v) => {
-		//	gridMaterial.gridRatio = v;
-		//}, { immediate: true });
+		this.gridMaterial = new GridMaterial('grid', this.scene);
+		this.gridMaterial.lineColor = new BABYLON.Color3(0.5, 0.5, 0.5);
+		this.gridMaterial.mainColor = new BABYLON.Color3(0, 0, 0);
+		this.gridMaterial.minorUnitVisibility = 1;
+		this.gridMaterial.opacity = 0.5;
+		this.gridMaterial.gridRatio = this.gridSnapping.scale;
 
 		this.xGridPreviewPlane = BABYLON.MeshBuilder.CreatePlane('xGridPreviewPlane', { width: cm(1000), height: cm(1000) }, this.scene);
 		this.xGridPreviewPlane.rotation = new BABYLON.Vector3(0, 0, Math.PI / 2);
-		this.xGridPreviewPlane.material = gridMaterial;
+		this.xGridPreviewPlane.material = this.gridMaterial;
 		this.xGridPreviewPlane.isPickable = false;
 		this.xGridPreviewPlane.isVisible = false;
 
 		this.yGridPreviewPlane = BABYLON.MeshBuilder.CreatePlane('yGridPreviewPlane', { width: cm(1000), height: cm(1000) }, this.scene);
 		this.yGridPreviewPlane.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
-		this.yGridPreviewPlane.material = gridMaterial;
+		this.yGridPreviewPlane.material = this.gridMaterial;
 		this.yGridPreviewPlane.isPickable = false;
 		this.yGridPreviewPlane.isVisible = false;
 
 		this.zGridPreviewPlane = BABYLON.MeshBuilder.CreatePlane('zGridPreviewPlane', { width: cm(1000), height: cm(1000) }, this.scene);
-		this.zGridPreviewPlane.material = gridMaterial;
+		this.zGridPreviewPlane.material = this.gridMaterial;
 		this.zGridPreviewPlane.isPickable = false;
 		this.zGridPreviewPlane.isVisible = false;
 
