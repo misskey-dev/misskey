@@ -1554,7 +1554,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 	public changeGrabbingDistance(delta: number) {
 		if (this.grabbingCtx == null) return;
-		this.grabbingCtx.distance -= delta;
+		this.grabbingCtx.distance -= cm(delta);
 		if (this.grabbingCtx.distance < cm(5)) this.grabbingCtx.distance = cm(5);
 	}
 
