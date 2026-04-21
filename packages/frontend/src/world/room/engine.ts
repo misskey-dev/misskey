@@ -1567,9 +1567,10 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 	public resize() {
 		// 一旦snapshot renderingを無効にしておかないとエラーが出る(babylonのバグ？)
-		if (SNAPSHOT_RENDERING) this.sr.disableSnapshotRendering();
+		// ...が、一旦無効にしたらしたで複数のマテリアルがそれぞれ入れ替わる(?)という謎の現象が発生するためコメントアウトしとく(エラー出てもレンダリングが止まったりするわけでもないし)
+		//if (SNAPSHOT_RENDERING) this.sr.disableSnapshotRendering();
 		this.engine.resize();
-		if (SNAPSHOT_RENDERING) this.sr.enableSnapshotRendering();
+		//if (SNAPSHOT_RENDERING) this.sr.enableSnapshotRendering();
 	}
 
 	public destroy() {
