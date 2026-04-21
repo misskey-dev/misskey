@@ -362,8 +362,8 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.putParticleSystem.createCylinderEmitter(cm(5), cm(1), cm(5));
 		this.putParticleSystem.minEmitBox = new BABYLON.Vector3(cm(-3), 0, cm(-3));
 		this.putParticleSystem.maxEmitBox = new BABYLON.Vector3(cm(3), 0, cm(3));
-		this.putParticleSystem.minEmitPower = 700;
-		this.putParticleSystem.maxEmitPower = 1000;
+		this.putParticleSystem.minEmitPower = cm(700);
+		this.putParticleSystem.maxEmitPower = cm(1000);
 		this.putParticleSystem.addVelocityGradient(0, 1);
 		this.putParticleSystem.addVelocityGradient(1, 0);
 		this.putParticleSystem.minLifeTime = 0.2;

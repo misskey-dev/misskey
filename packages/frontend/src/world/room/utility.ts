@@ -19,8 +19,8 @@ export function yuge(scene: BABYLON.Scene, mesh: BABYLON.Mesh, offset: BABYLON.V
 	ps.emitter = emitter;
 	ps.minEmitBox = new BABYLON.Vector3(cm(-1), 0, cm(-1));
 	ps.maxEmitBox = new BABYLON.Vector3(cm(1), 0, cm(1));
-	ps.minEmitPower = 10;
-	ps.maxEmitPower = 12;
+	ps.minEmitPower = cm(10);
+	ps.maxEmitPower = cm(12);
 	ps.minLifeTime = 2;
 	ps.maxLifeTime = 3;
 	ps.addSizeGradient(0, cm(10), cm(12));

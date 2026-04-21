@@ -570,8 +570,8 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 		ps.isLocal = true;
 		ps.minEmitBox = new BABYLON.Vector3(cm(-1000), 0, cm(-1000));
 		ps.maxEmitBox = new BABYLON.Vector3(cm(1000), 0, cm(1000));
-		ps.minEmitPower = 100;
-		ps.maxEmitPower = 500;
+		ps.minEmitPower = cm(100);
+		ps.maxEmitPower = cm(500);
 		ps.minLifeTime = 30;
 		ps.maxLifeTime = 30;
 		ps.minSize = cm(30);
