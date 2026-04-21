@@ -107,7 +107,7 @@ export const woodRingsPendantLight = defineObject({
 		const codeMesh = model.findMesh('__X_CODE__');
 
 		const applyLength = () => {
-			mainNode.position.y = -remap(options.length, 0, 1, 0, 200) / WORLD_SCALE;
+			mainNode.position.y = -remap(options.length, 0, 1, 0, cm(200)) / WORLD_SCALE;
 			codeMesh.morphTargetManager!.getTargetByName('Length')!.influence = options.length;
 			model.updated();
 		};
