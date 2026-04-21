@@ -308,7 +308,7 @@ export class ModelManager {
 		merged.parent = this.root;
 
 		merged.material.freeze();
-		// subMaterialまでfreezeするとbabylon 9.3.2以降、snapshot rendering + clustered lighting + selection outlineの組み合わせでなんかレンダリングがグリッチする
+		// subMaterialまでfreezeするとbabylon 9.3.2以降、snapshot rendering + selection outlineの組み合わせでなんかレンダリングがグリッチする
 		//if (merged.material instanceof BABYLON.MultiMaterial) {
 		//	for (const subMat of merged.material.subMaterials) {
 		//		(subMat as BABYLON.PBRMaterial).freeze();
