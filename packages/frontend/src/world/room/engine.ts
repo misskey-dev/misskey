@@ -287,7 +287,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.camera.keysDown.push(83); // S
 		this.camera.keysLeft.push(65); // A
 		this.camera.keysRight.push(68); // D
-		const normalSpeed = 2;
+		const normalSpeed = 0.02 * WORLD_SCALE;
 		this.camera.speed = normalSpeed;
 		this.scene.onKeyboardObservable.add((kbInfo) => {
 			switch (kbInfo.type) {
