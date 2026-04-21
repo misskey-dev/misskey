@@ -34,6 +34,7 @@ import { emptyBento } from './objects/emptyBento.js';
 import { energyDrink } from './objects/energyDrink.js';
 import { envelope } from './objects/envelope.js';
 import { facialTissue } from './objects/facialTissue.js';
+import { glassCylinderPotPlant } from './objects/glassCylinderPotPlant.js';
 import { hangingTShirt } from './objects/hangingTShirt.js';
 import { icosahedron } from './objects/icosahedron.js';
 import { ironFrameShelf5, ironFrameShelf4, ironFrameShelf3 } from './objects/ironFrameShelf.js';
@@ -124,6 +125,7 @@ export const OBJECT_DEFS = [
 	energyDrink,
 	envelope,
 	facialTissue,
+	glassCylinderPotPlant,
 	hangingTShirt,
 	icosahedron,
 	ironFrameShelf5,
