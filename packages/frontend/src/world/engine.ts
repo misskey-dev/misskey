@@ -8,7 +8,7 @@ import { AxesViewer } from '@babylonjs/core/Debug/axesViewer';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
 import { EventEmitter } from 'eventemitter3';
 import tinycolor from 'tinycolor2';
-import { HorizontalCameraKeyboardMoveInput, RecyvlingTextGrid, Timer, WORLD_SCALE, camelToKebab, cm, createPlaneUvMapper, normalizeUvToSquare, randomRange } from './utility.js';
+import { RecyvlingTextGrid, Timer, WORLD_SCALE, camelToKebab, cm, createPlaneUvMapper, normalizeUvToSquare, randomRange } from './utility.js';
 import { TIME_MAP } from './utility.js';
 import { genId } from '@/utility/id.js';
 import { deepClone } from '@/utility/clone.js';

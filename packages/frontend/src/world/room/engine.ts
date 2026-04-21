@@ -14,7 +14,7 @@ import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
 import { BoundingBoxRenderer } from '@babylonjs/core/Rendering/boundingBoxRenderer';
 import { GridMaterial } from '@babylonjs/materials';
 import { EventEmitter } from 'eventemitter3';
-import { TIME_MAP, scaleMorph, HorizontalCameraKeyboardMoveInput, camelToKebab, cm, WORLD_SCALE, getMeshesBoundingBox, Timer } from '../utility.js';
+import { TIME_MAP, scaleMorph, camelToKebab, cm, WORLD_SCALE, getMeshesBoundingBox, Timer } from '../utility.js';
 import { getObjectDef } from './object-defs.js';
 import { findMaterial, ModelManager, SYSTEM_HEYA_MESH_NAMES, SYSTEM_MESH_NAMES } from './utility.js';
 import { SimpleHeyaManager } from './heya.js';
