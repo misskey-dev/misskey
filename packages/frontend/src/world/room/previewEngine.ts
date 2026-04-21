@@ -187,6 +187,7 @@ export class RoomObjectPreviewEngine {
 			this.camera.useAutoRotationBehavior = true;
 			this.camera.autoRotationBehavior!.idleRotationSpeed = 0.3;
 			this.camera.panningSensibility = 0;
+			this.camera.wheelDeltaPercentage = 0.01;
 			//this.camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
 			this.camera.setTarget(new BABYLON.Vector3(0, boundingInfo.center.y, 0));
 
