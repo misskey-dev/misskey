@@ -20,9 +20,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 </component>
 </template>
 
-<script lang="ts">
-interface MkButtonBase {
-	type?: string;
+<script lang="ts" setup>
+import { nextTick, computed, onMounted, useTemplateRef } from 'vue';
+import MkA from '@/components/global/MkA.vue';
+import type { MkABehavior } from '@/components/global/MkA.vue';
+
+const props = defineProps<{
+	type?: 'button' | 'submit' | 'reset' | 'a' | 'routerLink';
 	primary?: boolean;
 	gradate?: boolean;
 	rounded?: boolean;
@@ -37,37 +41,21 @@ interface MkButtonBase {
 	asLike?: boolean;
 	iconOnly?: boolean;
 	active?: boolean;
-}
 
-interface MkButtonAsButton extends MkButtonBase {
-	type?: 'button' | 'submit' | 'reset';
+	// for type=button
 	name?: string;
 	value?: string;
 	disabled?: boolean;
-}
 
-interface MkButtonAsLink extends MkButtonBase {
-	type: 'a';
-	href: string;
+	// for type=a
+	href?: string;
 	target?: string;
 	rel?: string;
-}
 
-interface MkButtonAsRouterLink extends MkButtonBase {
-	type: 'routerLink';
-	to: string;
+	// for type=routerLink
+	to?: string;
 	linkBehavior?: MkABehavior;
-}
-
-export type MkButtonProps = MkButtonAsButton | MkButtonAsLink | MkButtonAsRouterLink;
-</script>
-
-<script lang="ts" setup>
-import { nextTick, computed, onMounted, useTemplateRef } from 'vue';
-import MkA from '@/components/global/MkA.vue';
-import type { MkABehavior } from '@/components/global/MkA.vue';
-
-const props = defineProps<MkButtonProps>();
+}>();
 
 const emit = defineEmits<{
 	(ev: 'click', payload: PointerEvent): void;
