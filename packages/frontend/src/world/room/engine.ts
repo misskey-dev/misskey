@@ -387,6 +387,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.gridMaterial.minorUnitVisibility = 1;
 		this.gridMaterial.opacity = 0.5;
 		this.gridMaterial.gridRatio = this.gridSnapping.scale;
+		this.gridMaterial.backFaceCulling = false;
 
 		this.gridPlane = BABYLON.MeshBuilder.CreatePlane('gridPlane', { width: cm(1000), height: cm(1000) }, this.scene);
 		this.gridPlane.material = this.gridMaterial;
