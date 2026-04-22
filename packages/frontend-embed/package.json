@@ -54,7 +54,7 @@
 		"msw": "2.13.3",
 		"prettier": "3.8.3",
 		"sass-embedded": "1.99.0",
-		"start-server-and-test": "2.1.5",
+		"start-server-and-test": "3.0.2",
 		"tsx": "4.21.0",
 		"vite": "8.0.8",
 		"vite-plugin-turbosnap": "1.0.3",

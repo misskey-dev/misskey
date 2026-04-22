@@ -76,7 +76,7 @@
 		"globals": "17.5.0",
 		"ncp": "2.0.0",
 		"pnpm": "10.33.0",
-		"start-server-and-test": "2.1.5",
+		"start-server-and-test": "3.0.2",
 		"typescript": "5.9.3"
 	},
 	"optionalDependencies": {

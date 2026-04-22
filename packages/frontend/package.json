@@ -130,7 +130,7 @@
 		"rolldown": "1.0.0-rc.15",
 		"sass-embedded": "1.99.0",
 		"seedrandom": "3.0.5",
-		"start-server-and-test": "2.1.5",
+		"start-server-and-test": "3.0.2",
 		"storybook": "10.3.5",
 		"storybook-addon-misskey-theme": "github:misskey-dev/storybook-addon-misskey-theme",
 		"tsx": "4.21.0",
