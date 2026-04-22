@@ -35,6 +35,7 @@ minimumReleaseAge: 10080 # delay 7days to mitigate supply-chain attack
 minimumReleaseAgeExclude:
   - '@syuilo/aiscript'
   - '@typescript/native-preview*'
+  - '@hono/node-server'
   - fastify # 脆弱性対応。そのうち消す
   - '@fastify/express' # 脆弱性対応。そのうち消す
   - '@fastify/http-proxy' # 脆弱性対応。そのうち消す
