@@ -851,12 +851,11 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 				merged.name = 'preMerged';
 
 				merged.material.freeze();
-				// subMaterialまでfreezeするとbabylon 9.3.2以降、snapshot rendering + selection outlineの組み合わせでなんかレンダリングがグリッチする
-				//if (merged.material instanceof BABYLON.MultiMaterial) {
-				//	for (const subMat of merged.material.subMaterials) {
-				//		subMat.freeze();
-				//	}
-				//}
+				if (merged.material instanceof BABYLON.MultiMaterial) {
+					for (const subMat of merged.material.subMaterials) {
+						subMat.freeze();
+					}
+				}
 
 				// TODO: 再帰的にする
 				for (const m of loaderResult.transformNodes) {
