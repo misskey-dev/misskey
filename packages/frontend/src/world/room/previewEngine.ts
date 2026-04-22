@@ -217,7 +217,6 @@ export class RoomObjectPreviewEngine {
 		}, 10);
 	}
 
-	// TODO: RoomEngineのものとほぼ同じだからいい感じに共通化
 	private async loadObject(args: {
 		type: string;
 		options: any;
@@ -229,20 +228,6 @@ export class RoomObjectPreviewEngine {
 
 		const filePath = def.path != null ? `/client-assets/room/objects/${def.path}.glb` : `/client-assets/room/objects/${camelToKebab(args.type)}/${camelToKebab(args.type)}.glb`;
 		const loaderResult = await BABYLON.LoadAssetContainerAsync(filePath, this.scene);
-
-		// 不要なUVを掃除
-		if (!def.hasTexture) {
-			for (const m of loaderResult.meshes) {
-				if (m.geometry != null) {
-					m.geometry.removeVerticesData(BABYLON.VertexBuffer.UVKind);
-					m.geometry.removeVerticesData(BABYLON.VertexBuffer.UV2Kind);
-					m.geometry.removeVerticesData(BABYLON.VertexBuffer.UV3Kind);
-					m.geometry.removeVerticesData(BABYLON.VertexBuffer.UV4Kind);
-					m.geometry.removeVerticesData(BABYLON.VertexBuffer.UV5Kind);
-					m.geometry.removeVerticesData(BABYLON.VertexBuffer.UV6Kind);
-				}
-			}
-		}
 
 		// babylonによって自動で追加される右手系変換用ノード
 		const subRoot = loaderResult.meshes[0];
