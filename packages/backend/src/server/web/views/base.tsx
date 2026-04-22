@@ -87,7 +87,7 @@ export function Layout(props: PropsWithChildren<CommonProps<{
 					}}></script>
 
 					{metaJson != null ? <script type="application/json" id="misskey_meta" data-generated-at={now} dangerouslySetInnerHTML={{ __html: metaJson }}></script> : null}
-					{clientCtxJson != null ? <script type="application/json" id="misskey_embedCtx" data-generated-at={now} dangerouslySetInnerHTML={{ __html: clientCtxJson }}></script> : null}
+					{clientCtxJson != null ? <script type="application/json" id="misskey_clientCtx" data-generated-at={now} dangerouslySetInnerHTML={{ __html: clientCtxJson }}></script> : null}
 
 					{props.frontendBootloaderJs != null ? <script>{props.frontendBootloaderJs}</script> : <script src="/vite/loader/boot.js"></script>}
 				</head>
