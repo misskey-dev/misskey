@@ -32,14 +32,14 @@ export const wallMountSpotLight = defineObject({
 				label: 'Vertical angle',
 				min: 0,
 				max: 1,
-				step: 0.1,
+				step: 0.01,
 			},
 			angleH: {
 				type: 'range',
 				label: 'Horizontal angle',
 				min: 0,
 				max: 1,
-				step: 0.1,
+				step: 0.01,
 			},
 		},
 		default: {

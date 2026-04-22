@@ -1633,6 +1633,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	}
 
 	public updateHeyaOptions(options: RoomState['heya']['options']) {
+		this.roomState.heya.options = options;
 		this.heyaManager.applyOptions(options);
 		this.emit('changeRoomState', { roomState: this.roomState });
 	}

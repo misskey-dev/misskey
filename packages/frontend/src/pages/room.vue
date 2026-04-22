@@ -149,39 +149,7 @@ const isZenMode = ref(false);
 const isRoomSettingsOpen = ref(false);
 const isChanged = ref(false);
 
-const data = localStorage.getItem('roomData') != null ? { ...JSON.parse(localStorage.getItem('roomData')!), ...{
-	heya: {
-		type: 'simple',
-		options: {
-			dimension: [300, 300],
-			window: 'demado',
-			wallN: {
-				material: null,
-				color: [0.9, 0.9, 0.9],
-			},
-			wallE: {
-				material: null,
-				color: [0.33, 0.34, 0.35],
-			},
-			wallS: {
-				material: null,
-				color: [0.9, 0.9, 0.9],
-			},
-			wallW: {
-				material: null,
-				color: [0.9, 0.9, 0.9],
-			},
-			flooring: {
-				material: 'wood',
-				color: [0.9, 0.9, 0.9],
-			},
-			ceiling: {
-				material: null,
-				color: [0.9, 0.9, 0.9],
-			},
-		},
-	},
-} } : {
+const data = localStorage.getItem('roomData') != null ? JSON.parse(localStorage.getItem('roomData')!) : {
 	heya: {
 		type: 'simple',
 		options: {
