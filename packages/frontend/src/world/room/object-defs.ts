@@ -92,6 +92,7 @@ import { wallCanvas } from './objects/wallCanvas.js';
 import { wallClock } from './objects/wallClock.js';
 import { wallGlassPictureFrame } from './objects/wallGlassPictureFrame.js';
 import { wallMirror } from './objects/wallMirror.js';
+import { wallMountSpotLight } from './objects/wallMountSpotLight.js';
 import { wallShelf } from './objects/wallShelf.js';
 import { woodRingFloorLamp } from './objects/woodRingFloorLamp.js';
 import { woodRingsPendantLight } from './objects/woodRingsPendantLight.js';
@@ -187,6 +188,7 @@ export const OBJECT_DEFS = [
 	wallClock,
 	wallGlassPictureFrame,
 	wallMirror,
+	wallMountSpotLight,
 	wallShelf,
 	woodRingFloorLamp,
 	woodRingsPendantLight,
