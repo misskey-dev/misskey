@@ -7,7 +7,7 @@
 		"declaration": true,
 		"declarationMap": true,
 		"sourceMap": false,
-		"outDir": "./built/",
+		"outDir": "./built",
 		"removeComments": true,
 		"strict": true,
 		"strictFunctionTypes": true,
@@ -16,6 +16,7 @@
 		"noImplicitReturns": true,
 		"esModuleInterop": true,
 		"exactOptionalPropertyTypes": true,
+		"rootDir": "./src",
 		"typeRoots": [
 			"./node_modules/@types"
 		],

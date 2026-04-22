@@ -7,7 +7,7 @@
 		"declaration": true,
 		"declarationMap": true,
 		"sourceMap": false,
-		"outDir": "./js-built/",
+		"outDir": "./js-built",
 		"removeComments": true,
 		"resolveJsonModule": true,
 		"strict": true,
@@ -17,6 +17,7 @@
 		"noImplicitReturns": true,
 		"esModuleInterop": true,
 		"verbatimModuleSyntax": true,
+		"rootDir": "./js",
 		"paths": {
 			"@/*": ["./*"],
 			"@@/*": ["./*"]
