@@ -76,6 +76,7 @@ import { speakerStand } from './objects/speakerStand.js';
 import { sprayer } from './objects/sprayer.js';
 import { steelRack } from './objects/steelRack.js';
 import { stormGlass } from './objects/stormGlass.js';
+import { tableSalt } from './objects/tableSalt.js';
 import { tabletopCalendar } from './objects/tabletopCalendar.js';
 import { tabletopDigitalClock } from './objects/tabletopDigitalClock.js';
 import { tabletopFlag } from './objects/tabletopFlag.js';
@@ -172,6 +173,7 @@ export const OBJECT_DEFS = [
 	sprayer,
 	steelRack,
 	stormGlass,
+	tableSalt,
 	tabletopCalendar,
 	tabletopDigitalClock,
 	tabletopFlag,
