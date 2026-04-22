@@ -593,13 +593,6 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		grabbing.ghost.position = newPos.clone();
 		grabbing.ghost.rotation = newRotation.clone();
 
-		if (this.gridSnapping.enabled) {
-			newPos.x = Math.round(newPos.x / this.gridSnapping.scale) * this.gridSnapping.scale;
-			newPos.y = Math.round(newPos.y / this.gridSnapping.scale) * this.gridSnapping.scale;
-			newPos.z = Math.round(newPos.z / this.gridSnapping.scale) * this.gridSnapping.scale;
-			newRotation.y = Math.round(newRotation.y / (Math.PI / 8)) * (Math.PI / 8);
-		}
-
 		let stickyOtherObject: string | null = null;
 		let sticky = false;
 
@@ -609,67 +602,100 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 				!grabbing.descendantStickyObjectIds.includes(m.metadata?.objectId);
 		};
 
-		if (placement === 'side' || placement === 'wall') {
-			// 前方に向かってレイを飛ばす
-			const ray = new BABYLON.Ray(this.camera.position, dir, cm(1000));
-			const hit = placement === 'side' ? this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_WALL__') || m.name.includes('__SIDE__'))) : this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_WALL__')));
-			if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
-				sticky = true;
-				const pickedMeshNormal = hit.getNormal(true, true);
-				const targetRotationY = Math.atan2(pickedMeshNormal.x, pickedMeshNormal.z);
-				newRotation.y = targetRotationY;
-				if (getYRotationDirection(targetRotationY) === '+x' || getYRotationDirection(targetRotationY) === '-x') {
+		const pos = new BABYLON.Vector3(this.camera.position.x, this.camera.position.y, this.camera.position.z);
+		const _dir = newPos.subtract(pos).normalize();
+		for (let i = 0; i < 1000; i++) {
+			if (cm(i) > grabbing.distance) break;
+			const prevSticky = sticky;
+			// posを1cmずつnewPosの方向に動かす
+			pos.addInPlace(_dir.scale(cm(1)));
+
+			if (placement === 'side' || placement === 'wall') {
+				// 前方に向かってレイを飛ばす
+				const ray = new BABYLON.Ray(pos, dir, cm(1000));
+				const hit = placement === 'side' ? this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_WALL__') || m.name.includes('__SIDE__'))) : this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_WALL__')));
+				if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
+					sticky = true;
+					const pickedMeshNormal = hit.getNormal(true, true);
+					const targetRotationY = Math.atan2(pickedMeshNormal.x, pickedMeshNormal.z);
+					newRotation.y = targetRotationY;
 					newPos.x = hit.pickedPoint.x;
-				} else {
+					newPos.y = hit.pickedPoint.y;
 					newPos.z = hit.pickedPoint.z;
-				}
-				stickyOtherObject = hit.pickedMesh.metadata?.objectId ?? null;
+					stickyOtherObject = hit.pickedMesh.metadata?.objectId ?? null;
 
-				if (this.gridSnapping.enabled) {
-					this.gridPlane.rotationQuaternion = null;
-					this.gridPlane.rotation.x = Math.PI;
-					this.gridPlane.rotation.y = targetRotationY;
-					this.gridPlane.position = new BABYLON.Vector3(newPos.x, newPos.y, newPos.z).addInPlace(pickedMeshNormal.scale(cm(0.1)));
-					this.gridPlane.isVisible = true;
+					if (this.gridSnapping.enabled) {
+						newPos.y = Math.round(newPos.y / this.gridSnapping.scale) * this.gridSnapping.scale;
+						if (getYRotationDirection(targetRotationY) === '+x' || getYRotationDirection(targetRotationY) === '-x') {
+							newPos.z = Math.round(newPos.z / this.gridSnapping.scale) * this.gridSnapping.scale;
+						} else {
+							newPos.x = Math.round(newPos.x / this.gridSnapping.scale) * this.gridSnapping.scale;
+						}
+
+						this.gridPlane.rotationQuaternion = null;
+						this.gridPlane.rotation.x = Math.PI;
+						this.gridPlane.rotation.y = targetRotationY;
+						this.gridPlane.position = new BABYLON.Vector3(newPos.x, newPos.y, newPos.z).addInPlace(pickedMeshNormal.scale(cm(0.1)));
+						this.gridPlane.isVisible = true;
+					}
+				}
+			} else if (placement === 'bottom' || placement === 'ceiling') {
+				// 上に向かってレイを飛ばす
+				const ray = new BABYLON.Ray(pos, new BABYLON.Vector3(0, 1, 0), cm(1000));
+				const hit = placement === 'bottom' ? this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_CEILING__') || m.name.includes('__ROOM_BOTTOM__') || m.name.includes('__BOTTOM__'))) : this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_CEILING__')));
+				if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
+					sticky = true;
+					newPos.x = hit.pickedPoint.x;
+					newPos.y = hit.pickedPoint.y;
+					newPos.z = hit.pickedPoint.z;
+					stickyOtherObject = hit.pickedMesh.metadata?.objectId ?? null;
+
+					if (this.gridSnapping.enabled) {
+						newPos.x = Math.round(newPos.x / this.gridSnapping.scale) * this.gridSnapping.scale;
+						newPos.z = Math.round(newPos.z / this.gridSnapping.scale) * this.gridSnapping.scale;
+
+						this.gridPlane.rotationQuaternion = null;
+						this.gridPlane.rotation.x = Math.PI * 1.5;
+						this.gridPlane.rotation.y = 0;
+						this.gridPlane.position = new BABYLON.Vector3(grabbing.mesh.position.x, grabbing.mesh.position.y - cm(0.1), grabbing.mesh.position.z);
+						this.gridPlane.isVisible = true;
+					}
+				}
+			} else { // top or floor
+				// 下に向かってレイを飛ばす
+				const ray = new BABYLON.Ray(pos, new BABYLON.Vector3(0, -1, 0), cm(1000));
+				const hit = placement === 'top' ? this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_FLOOR__') || m.name.includes('__ROOM_TOP__') || m.name.includes('__TOP__'))) : this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_FLOOR__')));
+				if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
+					sticky = true;
+					newPos.x = hit.pickedPoint.x;
+					newPos.y = hit.pickedPoint.y;
+					newPos.z = hit.pickedPoint.z;
+					stickyOtherObject = hit.pickedMesh.metadata?.objectId ?? null;
+
+					if (this.gridSnapping.enabled) {
+						newPos.x = Math.round(newPos.x / this.gridSnapping.scale) * this.gridSnapping.scale;
+						newPos.z = Math.round(newPos.z / this.gridSnapping.scale) * this.gridSnapping.scale;
+
+						this.gridPlane.rotationQuaternion = null;
+						this.gridPlane.rotation.x = Math.PI / 2;
+						this.gridPlane.rotation.y = 0;
+						this.gridPlane.position = new BABYLON.Vector3(grabbing.mesh.position.x, grabbing.mesh.position.y + cm(0.1), grabbing.mesh.position.z);
+						this.gridPlane.isVisible = true;
+					}
 				}
 			}
-		} else if (placement === 'bottom' || placement === 'ceiling') {
-			// 上に向かってレイを飛ばす
-			const ray = new BABYLON.Ray(newPos, new BABYLON.Vector3(0, 1, 0), cm(1000));
-			const hit = placement === 'bottom' ? this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_CEILING__') || m.name.includes('__ROOM_BOTTOM__') || m.name.includes('__BOTTOM__'))) : this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_CEILING__')));
-			if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
-				sticky = true;
-				newPos.y = hit.pickedPoint.y;
-				stickyOtherObject = hit.pickedMesh.metadata?.objectId ?? null;
 
-				if (this.gridSnapping.enabled) {
-					this.gridPlane.rotationQuaternion = null;
-					this.gridPlane.rotation.x = Math.PI * 1.5;
-					this.gridPlane.rotation.y = 0;
-					this.gridPlane.position = new BABYLON.Vector3(grabbing.mesh.position.x, grabbing.mesh.position.y - cm(0.1), grabbing.mesh.position.z);
-					this.gridPlane.isVisible = true;
-				}
-			}
-		} else { // top or floor
-			// 下に向かってレイを飛ばす
-			const ray = new BABYLON.Ray(newPos, new BABYLON.Vector3(0, -1, 0), cm(1000));
-			const hit = placement === 'top' ? this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_FLOOR__') || m.name.includes('__ROOM_TOP__') || m.name.includes('__TOP__'))) : this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_FLOOR__')));
-			if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
+			if (!sticky && prevSticky) {
 				sticky = true;
-				newPos.y = hit.pickedPoint.y;
-				stickyOtherObject = hit.pickedMesh.metadata?.objectId ?? null;
-
-				if (this.gridSnapping.enabled) {
-					this.gridPlane.rotationQuaternion = null;
-					this.gridPlane.rotation.x = Math.PI / 2;
-					this.gridPlane.rotation.y = 0;
-					this.gridPlane.position = new BABYLON.Vector3(grabbing.mesh.position.x, grabbing.mesh.position.y + cm(0.1), grabbing.mesh.position.z);
-					this.gridPlane.isVisible = true;
-				}
+				break;
 			}
 		}
 
 		if (sticky) {
+			if (this.gridSnapping.enabled) {
+				newRotation.y = Math.round(newRotation.y / (Math.PI / 8)) * (Math.PI / 8);
+			}
+
 			grabbing.mesh.position = newPos;
 			grabbing.mesh.rotation = newRotation;
 		}
