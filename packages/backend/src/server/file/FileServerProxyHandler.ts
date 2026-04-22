@@ -4,8 +4,11 @@
  */
 
 import * as fs from 'node:fs';
+import { Readable } from 'node:stream';
+import { resolve } from 'node:path';
 import sharp from 'sharp';
 import { sharpBmp } from '@misskey-dev/sharp-read-bmp';
+import { serveStatic } from '@hono/node-server/serve-static';
 import type { Config } from '@/config.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 import { StatusError } from '@/misc/status-error.js';
@@ -13,9 +16,9 @@ import { contentDisposition } from '@/misc/content-disposition.js';
 import { correctFilename } from '@/misc/correct-filename.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
 import { IImageStreamable, ImageProcessingService, webpDefault } from '@/core/ImageProcessingService.js';
-import { createRangeStream, attachStreamCleanup, needsCleanup } from './FileServerUtils.js';
+import { createRangeStream, attachStreamCleanup, needsCleanup, nodeStreamToWebStream, bufferToWebStream } from './FileServerUtils.js';
 import type { DownloadedFileResult, FileResolveResult, FileServerFileResolver } from './FileServerFileResolver.js';
-import type { FastifyReply, FastifyRequest } from 'fastify';
+import type { Context as HonoContext } from 'hono';
 
 type ProxySource = DownloadedFileResult | FileResolveResult;
 type CleanupableFile = ProxySource & { cleanup: () => void };
@@ -38,53 +41,48 @@ export class FileServerProxyHandler {
 		private imageProcessingService: ImageProcessingService,
 	) {}
 
-	public async handle(request: FastifyRequest<{ Params: { url: string }; Querystring: ProxyQuery }>, reply: FastifyReply) {
-		const url = 'url' in request.query ? request.query.url : 'https://' + request.params.url;
+	public async handle(ctx: HonoContext) {
+		const url = ctx.req.query('url') || `https://${ctx.req.param('url')}`;
 
 		if (typeof url !== 'string') {
-			reply.code(400);
+			ctx.status(400);
 			return;
 		}
 
 		// アバタークロップなど、どうしてもオリジンである必要がある場合
-		const mustOrigin = 'origin' in request.query;
+		const mustOrigin = ctx.req.query('origin') != null;
 
 		if (this.config.externalMediaProxyEnabled && !mustOrigin) {
-			return await this.redirectToExternalProxy(request, reply);
+			return await this.redirectToExternalProxy(ctx);
 		}
 
-		this.validateUserAgent(request);
+		this.validateUserAgent(ctx);
 
 		// Create temp file
 		const file = await this.getStreamAndTypeFromUrl(url);
 		if (file.kind === 'not-found') {
-			reply.code(404);
-			reply.header('Cache-Control', 'max-age=86400');
-			return reply.sendFile('/dummy.png', this.assetsPath);
+			ctx.status(404);
+			ctx.header('Cache-Control', 'max-age=86400');
+			return serveStatic({ path: resolve(this.assetsPath, 'dummy.png') });
 		}
 
 		if (file.kind === 'unavailable') {
-			reply.code(204);
-			reply.header('Cache-Control', 'max-age=86400');
+			ctx.status(204);
+			ctx.header('Cache-Control', 'max-age=86400');
 			return;
 		}
 
 		try {
-			const image = await this.processImage(file, request, reply);
+			const image = await this.processImage(file, ctx);
 
 			if (needsCleanup(file)) {
 				attachStreamCleanup(image.data, file.cleanup);
 			}
 
-			reply.header('Content-Type', image.type);
-			reply.header('Cache-Control', 'max-age=31536000, immutable');
-			reply.header('Content-Disposition',
-				contentDisposition(
-					'inline',
-					correctFilename(file.filename, image.ext),
-				),
-			);
-			return image.data;
+			ctx.header('Content-Type', image.type);
+			ctx.header('Cache-Control', 'max-age=31536000, immutable');
+			ctx.header('Content-Disposition', contentDisposition('inline', correctFilename(file.filename, image.ext)));
+			return ctx.body(image.data instanceof Readable ? nodeStreamToWebStream(image.data) : bufferToWebStream(image.data));
 		} catch (e) {
 			if (needsCleanup(file)) file.cleanup();
 			throw e;
@@ -94,29 +92,27 @@ export class FileServerProxyHandler {
 	/**
 	 * 外部メディアプロキシにリダイレクトする
 	 */
-	private async redirectToExternalProxy(
-		request: FastifyRequest<{ Params: { url: string }; Querystring: ProxyQuery }>,
-		reply: FastifyReply,
-	) {
-		reply.header('Cache-Control', 'public, max-age=259200'); // 3 days
+	private async redirectToExternalProxy(ctx: HonoContext) {
+		ctx.header('Cache-Control', 'public, max-age=259200'); // 3 days
 
-		const url = new URL(`${this.config.mediaProxy}/${request.params.url || ''}`);
+		const url = new URL(`${this.config.mediaProxy}/${ctx.req.param('url') || ''}`);
 
-		for (const [key, value] of Object.entries(request.query)) {
+		for (const [key, value] of Object.entries(ctx.req.query())) {
 			url.searchParams.append(key, value);
 		}
 
-		return reply.redirect(url.toString(), 301);
+		return ctx.redirect(url.toString(), 301);
 	}
 
 	/**
 	 * User-Agent を検証する
 	 */
-	private validateUserAgent(request: FastifyRequest): void {
-		if (!request.headers['user-agent']) {
+	private validateUserAgent(ctx: HonoContext) {
+		const ua = ctx.req.header('User-Agent');
+		if (ua == null) {
 			throw new StatusError('User-Agent is required', 400, 'User-Agent is required');
 		}
-		if (request.headers['user-agent'].toLowerCase().indexOf('misskey/') !== -1) {
+		if (ua.toLowerCase().indexOf('misskey/') !== -1) {
 			throw new StatusError('Refusing to proxy a request from another proxy', 403, 'Proxy is recursive');
 		}
 	}
@@ -126,10 +122,9 @@ export class FileServerProxyHandler {
 	 */
 	private async processImage(
 		file: AvailableFile,
-		request: FastifyRequest<{ Params: { url: string }; Querystring: ProxyQuery }>,
-		reply: FastifyReply,
+		ctx: HonoContext,
 	): Promise<IImageStreamable> {
-		const query = request.query;
+		const query = ctx.req.query();
 
 		const requiresImageConversion = 'emoji' in query || 'avatar' in query || 'static' in query || 'preview' in query || 'badge' in query;
 		const isConvertibleImage = isMimeImage(file.mime, 'sharp-convertible-image-with-bmp');
@@ -161,7 +156,7 @@ export class FileServerProxyHandler {
 			throw new StatusError('Rejected type', 403, 'Rejected type');
 		}
 
-		return this.createDefaultStream(file, request, reply);
+		return this.createDefaultStream(file, ctx);
 	}
 
 	/**
@@ -234,16 +229,16 @@ export class FileServerProxyHandler {
 	 */
 	private createDefaultStream(
 		file: AvailableFile,
-		request: FastifyRequest,
-		reply: FastifyReply,
+		ctx: HonoContext,
 	): IImageStreamable {
-		if (request.headers.range && 'file' in file && file.file.size > 0) {
-			const { stream, start, end, chunksize } = createRangeStream(request.headers.range as string, file.file.size, file.path);
+		const rangeHeader = ctx.req.header('Range');
+		if (rangeHeader != null && 'file' in file && file.file.size > 0) {
+			const { stream, start, end, chunksize } = createRangeStream(rangeHeader, file.file.size, file.path);
 
-			reply.header('Content-Range', `bytes ${start}-${end}/${file.file.size}`);
-			reply.header('Accept-Ranges', 'bytes');
-			reply.header('Content-Length', chunksize);
-			reply.code(206);
+			ctx.header('Content-Range', `bytes ${start}-${end}/${file.file.size}`);
+			ctx.header('Accept-Ranges', 'bytes');
+			ctx.header('Content-Length', chunksize.toString());
+			ctx.status(206);
 
 			return {
 				data: stream,

@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as fs from 'node:fs';
 import { resolve } from 'node:path';
 import { Inject, Injectable } from '@nestjs/common';
+import { Hono } from 'hono';
+import { serveStatic } from '@hono/node-server/serve-static';
 import type { Config } from '@/config.js';
 import type { DriveFilesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
@@ -18,11 +19,11 @@ import { ImageProcessingService } from '@/core/ImageProcessingService.js';
 import { VideoProcessingService } from '@/core/VideoProcessingService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
-import { handleRequestRedirectToOmitSearch } from '@/misc/fastify-hook-handlers.js';
+import { handleRequestRedirectToOmitSearch } from '@/misc/hono-middleware-handlers.js';
 import { FileServerDriveHandler } from './file/FileServerDriveHandler.js';
 import { FileServerFileResolver } from './file/FileServerFileResolver.js';
 import { FileServerProxyHandler } from './file/FileServerProxyHandler.js';
-import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
+import type { Context as HonoContext } from 'hono';
 
 @Injectable()
 export class FileServerService {
@@ -72,61 +73,55 @@ export class FileServerService {
 	}
 
 	@bindThis
-	public createServer(fastify: FastifyInstance, options: FastifyPluginOptions, done: (err?: Error) => void) {
-		fastify.addHook('onRequest', (request, reply, done) => {
-			reply.header('Content-Security-Policy', 'default-src \'none\'; img-src \'self\'; media-src \'self\'; style-src \'unsafe-inline\'');
+	public createServer(): Hono {
+		const hono = new Hono();
+
+		hono.use(async (ctx, next) => {
+			ctx.header('Content-Security-Policy', 'default-src \'none\'; img-src \'self\'; media-src \'self\'; style-src \'unsafe-inline\'');
 			if (process.env.NODE_ENV === 'development') {
-				reply.header('Access-Control-Allow-Origin', '*');
+				ctx.header('Access-Control-Allow-Origin', '*');
 			}
-			done();
+			await next();
 		});
 
-		fastify.register((fastify, options, done) => {
-			fastify.addHook('onRequest', handleRequestRedirectToOmitSearch);
-			fastify.get('/files/app-default.jpg', (request, reply) => {
-				const file = fs.createReadStream(`${this.assets}/dummy.png`);
-				reply.header('Content-Type', 'image/jpeg');
-				reply.header('Cache-Control', 'max-age=31536000, immutable');
-				return reply.send(file);
-			});
+		hono.use(handleRequestRedirectToOmitSearch);
 
-			fastify.get<{ Params: { key: string; } }>('/files/:key', async (request, reply) => {
-				return await this.driveHandler.handle(request, reply)
-					.catch(err => this.errorHandler(request, reply, err));
-			});
-			fastify.get<{ Params: { key: string; } }>('/files/:key/*', async (request, reply) => {
-				return await reply.redirect(`${this.config.url}/files/${request.params.key}`, 301);
-			});
-			done();
+		hono.get('/files/app-default.jpg', serveStatic({
+			path: resolve(this.assets, 'dummy.png'),
+		}), async (ctx, next) => {
+			ctx.header('Content-Type', 'image/jpeg');
+			ctx.header('Cache-Control', 'max-age=31536000, immutable');
+			await next();
 		});
 
-		fastify.get<{
-			Params: { url: string; };
-			Querystring: { url?: string; };
-		}>('/proxy/:url*', async (request, reply) => {
-			return await this.proxyHandler.handle(request, reply)
-				.catch(err => this.errorHandler(request, reply, err));
+		hono.get('/files/:key', this.driveHandler.handle);
+		hono.get('/files/:key/*', (ctx) => {
+			return ctx.redirect(`${this.config.url}/files/${ctx.req.param('key')}`, 301);
 		});
 
-		done();
+		hono.get('/proxy/:url*', this.proxyHandler.handle);
+
+		hono.onError(this.errorHandler);
+
+		return hono;
 	}
 
 	@bindThis
-	private async errorHandler(request: FastifyRequest<{ Params?: { [x: string]: any }; Querystring?: { [x: string]: any }; }>, reply: FastifyReply, err?: any) {
+	private async errorHandler(err: any, ctx: HonoContext) {
 		this.logger.error(`${err}`);
 
-		reply.header('Cache-Control', 'max-age=300');
+		ctx.header('Cache-Control', 'max-age=300');
 
-		if (request.query && 'fallback' in request.query) {
-			return reply.sendFile('/dummy.png', this.assets);
+		if (ctx.req.query('static') != null) {
+			return serveStatic({ path: resolve(this.assets, '/dummy.png') });
 		}
 
 		if (err instanceof StatusError && (err.statusCode === 302 || err.isClientError)) {
-			reply.code(err.statusCode);
-			return;
+			ctx.status(err.statusCode);
+			return ctx.text(err.message);
 		}
 
-		reply.code(500);
-		return;
+		ctx.status(500);
+		return ctx.text('Internal Server Error');
 	}
 }
