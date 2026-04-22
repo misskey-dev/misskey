@@ -5,6 +5,7 @@
 
 import { reactive, ref, shallowRef, triggerRef, watch } from 'vue';
 import * as BABYLON from '@babylonjs/core';
+import { cm } from '../utility.js';
 import RoomWorker from './worker?worker';
 import { RoomEngine } from './engine.js';
 import type { ShallowRef } from 'vue';
@@ -20,7 +21,7 @@ export class RoomController {
 	public isSitting = ref(false);
 	public isEditMode = ref(false);
 	public grabbing = ref<{ forInstall: boolean } | null>(null);
-	public gridSnapping = ref({ enabled: true, scale: 4 });
+	public gridSnapping = ref({ enabled: true, scale: cm(4) });
 	public selected = ref<{
 		objectId: string;
 		objectState: RoomStateObject;
@@ -227,6 +228,14 @@ export class RoomController {
 			this.worker.postMessage({ type: 'endGrabbing' });
 		} else if (this.engine != null) {
 			this.engine.endGrabbing();
+		}
+	}
+
+	public cancelGrabbing() {
+		if (this.worker != null) {
+			this.worker.postMessage({ type: 'cancelGrabbing' });
+		} else if (this.engine != null) {
+			this.engine.endGrabbing(true);
 		}
 	}
 

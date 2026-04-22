@@ -24,6 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template v-if="!isZenMode">
 			<div v-if="controller.isReady.value" class="_buttonsCenter" :class="$style.overlayControls">
 				<template v-if="controller.isEditMode.value">
+					<MkButton v-if="controller.grabbing.value" @click="cancelGrabbing"><i class="ti ti-x"></i> cancel</MkButton>
 					<MkButton v-if="controller.grabbing.value && !controller.grabbing.value.forInstall" @click="endGrabbing"><i class="ti ti-check"></i> (E)</MkButton>
 					<MkButton v-else-if="controller.grabbing.value && controller.grabbing.value.forInstall" @click="endGrabbing"><i class="ti ti-check"></i> (E)</MkButton>
 					<MkButton v-else-if="controller.selected.value != null" @click="beginSelectedInstalledObjectGrabbing"><i class="ti ti-hand-grab"></i> (E)</MkButton>
@@ -40,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 			</div>
 
-			<div v-if="controller.isReady.value && controller.isEditMode.value && controller.selected.value != null" :key="controller.selected.value.objectId" class="_panel" :class="$style.overlayObjectInfoPanel">
+			<div v-if="controller.isReady.value && controller.isEditMode.value && controller.selected.value != null && !controller.grabbing.value" :key="controller.selected.value.objectId" class="_panel" :class="$style.overlayObjectInfoPanel">
 				{{ controller.selected.value.objectDef.name }}
 
 				<div class="_gaps">
@@ -239,6 +240,11 @@ function beginSelectedInstalledObjectGrabbing() {
 
 function endGrabbing() {
 	controller.endGrabbing();
+	canvas.value!.focus();
+}
+
+function cancelGrabbing() {
+	controller.cancelGrabbing();
 	canvas.value!.focus();
 }
 

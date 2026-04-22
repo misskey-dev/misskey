@@ -1211,7 +1211,20 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 				sticky = info.sticky;
 			},
 			onCancel: () => {
-				// todo: initialPositionなどを復元
+				selectedObject.position = initialPosition.clone();
+				selectedObject.rotation = initialRotation.clone();
+
+				// 親から先に外していく
+				const removeStickyParentRecursively = (mesh: BABYLON.Mesh) => {
+					const stickyObjectIds = Array.from(this.roomState.installedObjects.filter(o => o.sticky === mesh.metadata.objectId)).map(o => o.id);
+					for (const soid of stickyObjectIds) {
+						const soMesh = this.objectEntities.get(soid)!.rootMesh;
+						soMesh.setParent(null);
+
+						removeStickyParentRecursively(soMesh);
+					}
+				};
+				removeStickyParentRecursively(selectedObject);
 			},
 			onDone: () => { // todo: sticky状態などを引数でもらうようにしたい
 				this.putParticleSystem.emitter = selectedObject.position.clone();
@@ -1282,12 +1295,16 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		});
 	}
 
-	public endGrabbing() {
+	public endGrabbing(cancel = false) {
 		if (this.grabbingCtx == null) return;
 
 		//this.grabbing.ghost.dispose(false, true);
 		this.grabbingCtx.ghost.dispose(false, false);
-		this.grabbingCtx.onDone?.();
+		if (cancel) {
+			this.grabbingCtx.onCancel?.();
+		} else {
+			this.grabbingCtx.onDone?.();
+		}
 		this.grabbingCtx = null;
 
 		this.gridPlane.isVisible = false;
