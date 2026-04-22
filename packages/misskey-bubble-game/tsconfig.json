@@ -15,6 +15,7 @@
 		"experimentalDecorators": true,
 		"noImplicitReturns": true,
 		"esModuleInterop": true,
+		"rootDir": ".",
 		"typeRoots": [
 			"./node_modules/@types"
 		],

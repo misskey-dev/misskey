@@ -16,6 +16,7 @@
 		"noImplicitReturns": true,
 		"esModuleInterop": true,
 		"exactOptionalPropertyTypes": true,
+		"rootDir": ".",
 		"typeRoots": [
 			"./node_modules/@types"
 		],
