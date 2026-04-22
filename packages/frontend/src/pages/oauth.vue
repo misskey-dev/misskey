@@ -81,7 +81,7 @@ definePage(() => ({
 
 <style lang="scss" module>
 .formContainer {
-	min-height: 100svh;
+	min-height: var(--MI-100svh);
 	padding: 32px 32px calc(env(safe-area-inset-bottom, 0px) + 32px) 32px;
 	box-sizing: border-box;
 	display: grid;
@@ -96,8 +96,8 @@ definePage(() => ({
 	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 	overflow: clip;
 	max-width: 500px;
-	width: calc(100vw - 64px);
-	height: min(65svh, calc(100svh - calc(env(safe-area-inset-bottom, 0px) + 64px)));
+	width: calc(var(--MI-100vw) - 64px);
+	height: min(calc(65 * var(--MI-svh)), calc(var(--MI-100svh) - calc(env(safe-area-inset-bottom, 0px) + 64px)));
 	overflow-y: scroll;
 }
 </style>

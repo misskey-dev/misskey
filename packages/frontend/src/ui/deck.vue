@@ -264,7 +264,7 @@ window.document.documentElement.style.scrollBehavior = 'auto';
 
 	display: flex;
 	flex-direction: column;
-	height: 100dvh;
+	height: var(--MI-100dvh);
 	box-sizing: border-box;
 	flex: 1;
 	background: var(--MI_THEME-navBg);

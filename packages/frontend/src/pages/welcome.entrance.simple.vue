@@ -34,8 +34,8 @@ import { instance as meta } from '@/instance.js';
 	position: fixed;
 	top: 0;
 	right: 0;
-	width: 100vw;
-	height: 100vh;
+	width: var(--MI-100vw);
+	height: var(--MI-100vh);
 }
 
 .logoWrapper {

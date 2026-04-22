@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		:class="$style.menu"
 		:style="{
 			width: (width && !asDrawer) ? `${width}px` : '',
-			maxHeight: maxHeight ? `min(${maxHeight}px, calc(100dvh - 32px))` : 'calc(100dvh - 32px)',
+			maxHeight: maxHeight ? `min(${maxHeight}px, calc(var(--MI-100dvh) - 32px))` : 'calc(var(--MI-100dvh) - 32px)',
 		}"
 		@keydown.stop="() => {}"
 		@contextmenu.self.prevent="() => {}"
@@ -622,7 +622,7 @@ function guardMouseMove(ev: MouseEvent) {
 .menu {
 	padding: 8px 0;
 	box-sizing: border-box;
-	max-width: 100vw;
+	max-width: var(--MI-100vw);
 	min-width: 200px;
 	overflow: auto;
 	overscroll-behavior: contain;
@@ -729,7 +729,7 @@ function guardMouseMove(ev: MouseEvent) {
 
 .item_content {
 	width: 100%;
-	max-width: 100vw;
+	max-width: var(--MI-100vw);
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -738,7 +738,7 @@ function guardMouseMove(ev: MouseEvent) {
 }
 
 .item_content_text {
-	max-width: calc(100vw - 4rem);
+	max-width: calc(var(--MI-100vw) - 4rem);
 }
 
 .item_content_text_title {
