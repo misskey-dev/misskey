@@ -669,10 +669,25 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			}
 		}
 
-		grabbing.mesh.rotation = newRotation;
-		grabbing.mesh.position = newPos;
+		if (sticky) {
+			grabbing.mesh.position = newPos;
+			grabbing.mesh.rotation = newRotation;
+		}
 
-		console.log(sticky);
+		if (!sticky) {
+			this.gridPlane.isVisible = false;
+			//for (const mesh of grabbing.ghost.getChildMeshes()) {
+			if (mesh.material instanceof BABYLON.MultiMaterial) {
+				for (const subMat of mesh.material.subMaterials) {
+					if (subMat instanceof BABYLON.PBRMaterial) {
+						subMat.emissiveColor = new BABYLON.Color3(1, 0, 0);
+					}
+				}
+			} else {
+				mesh.material.emissiveColor = new BABYLON.Color3(1, 0, 0);
+			}
+			//}
+		}
 
 		//const pos = new BABYLON.Vector3(this.camera.position.x, this.camera.position.y, this.camera.position.z);
 		//const _dir = newPos.subtract(pos).normalize();
