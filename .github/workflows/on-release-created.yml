@@ -28,6 +28,9 @@ jobs:
           cache: 'pnpm'
           # see https://docs.github.com/actions/use-cases-and-examples/publishing-packages/publishing-nodejs-packages#publishing-packages-to-the-npm-registry
           registry-url: 'https://registry.npmjs.org'
+      # Ensure npm 11.5.1 or later is installed
+      - name: Update npm
+        run: npm install -g npm@latest
       - name: Publish package
         run: |
           pnpm i --frozen-lockfile
