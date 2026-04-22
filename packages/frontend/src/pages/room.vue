@@ -93,13 +93,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="controller.isReady.value" class="_buttons" :class="$style.controls">
 			<!--<MkButton v-for="action in actions" :key="action.key" @click="action.fn">{{ action.label }}{{ hotkeyToLabel(action.hotkey) }}</MkButton>-->
 			<MkButton @click="toggleLight">Toggle Light</MkButton>
-			<MkButton v-if="controller.isEditMode.value" primary @click="save">Save</MkButton>
 			<MkButton v-if="controller.isEditMode.value" @click="exitEditMode">Exit edit mode</MkButton>
 			<MkButton v-if="!controller.isEditMode.value" @click="enterEditMode">Edit mode</MkButton>
 			<MkButton v-if="controller.isEditMode.value" @click="addObject">addObject</MkButton>
 			<MkButton v-if="controller.isEditMode.value" @click="() => isRoomSettingsOpen = !isRoomSettingsOpen">roomSettings</MkButton>
 			<MkButton @click="expor">Export</MkButton>
 			<MkButton @click="impor">Import</MkButton>
+		</div>
+		<div v-if="isChanged" class="_buttons">
+			保存していない変更があります
+			<MkButton danger @click="revert">戻す</MkButton>
+			<MkButton primary @click="save">保存</MkButton>
 		</div>
 	</template>
 </div>
@@ -118,6 +122,7 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkRange from '@/components/MkRange.vue';
 import { RoomController } from '@/world/room/controller.js';
 import { cm } from '@/world/utility.js';
+import { deepClone } from '@/utility/clone.js';
 
 const canvas = useTemplateRef('canvas');
 
@@ -134,6 +139,7 @@ function resize() {
 
 const isZenMode = ref(false);
 const isRoomSettingsOpen = ref(false);
+const isChanged = ref(false);
 
 const data = localStorage.getItem('roomData') != null ? { ...JSON.parse(localStorage.getItem('roomData')!), ...{
 	heya: {
@@ -204,6 +210,8 @@ const data = localStorage.getItem('roomData') != null ? { ...JSON.parse(localSto
 
 console.log(data);
 
+let latestData = deepClone(data);
+
 const controller = new RoomController(data);
 
 onMounted(async () => {
@@ -212,6 +220,10 @@ onMounted(async () => {
 	canvas.value!.focus();
 
 	window.addEventListener('resize', resize);
+
+	watch(controller.roomState, () => {
+		isChanged.value = true;
+	});
 
 	//watch(controller.selected, (v) => {
 	//	if (v == null) {
@@ -332,7 +344,14 @@ function getRgb(hex: string | number): [number, number, number] | null {
 }
 
 function save() {
-	localStorage.setItem('roomData', JSON.stringify(controller.roomState.value));
+	latestData = deepClone(controller.roomState.value);
+	localStorage.setItem('roomData', JSON.stringify(latestData));
+	isChanged.value = false;
+}
+
+async function revert() {
+	await controller.reset(latestData);
+	isChanged.value = false;
 }
 
 function expor() {
