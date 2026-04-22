@@ -25,6 +25,7 @@ export const books = defineObject({
 	placement: 'top',
 	hasCollisions: false,
 	hasTexture: true,
+	canPreMeshesMerging: false,
 	createInstance: ({ scene, options, model }) => {
 		const coverMaterial = model.findMaterial('__X_COVER__');
 
@@ -54,13 +55,15 @@ export const books = defineObject({
 		];
 
 		for (const meshes of bookMeshes) {
-			const z = Math.random() * cm(0.005);
-			const y = Math.random() * cm(0.0025);
+			const z = Math.random() * 0.005;
+			const y = Math.random() * 0.0025;
 			for (const mesh of meshes) {
 				mesh.position.z -= z;
 				mesh.position.y += y;
 			}
 		}
+
+		model.updated();
 
 		return {
 			onOptionsUpdated: ([k, v]) => {
