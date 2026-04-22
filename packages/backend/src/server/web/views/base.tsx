@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { raw } from 'hono/utils/html';
+import type { PropsWithChildren, Child } from 'hono/jsx';
 import { comment, defaultDescription } from '@/server/web/views/_.js';
 import { Splash } from '@/server/web/views/_splash.js';
 import type { CommonProps } from '@/server/web/views/_.js';
-import type { PropsWithChildren, Children } from '@kitajs/html';
 
 export function Layout(props: PropsWithChildren<CommonProps<{
 	title?: string;
@@ -19,21 +20,24 @@ export function Layout(props: PropsWithChildren<CommonProps<{
 	metaJson?: string;
 	clientCtxJson?: string;
 
-	titleSlot?: Children;
-	descSlot?: Children;
-	metaSlot?: Children;
-	ogSlot?: Children;
+	titleSlot?: Child;
+	descSlot?: Child;
+	metaSlot?: Child;
+	ogSlot?: Child;
 }>>) {
 	const now = Date.now();
 
 	// 変数名をsafeで始めることでエラーをスキップ
-	const safeMetaJson = props.metaJson;
-	const safeClientCtxJson = props.clientCtxJson;
+	const metaJson = props.metaJson;
+	const clientCtxJson = props.clientCtxJson;
+
+	const doctypeTag = raw('<!DOCTYPE html>');
+	const commentTag = raw(comment);
 
 	return (
 		<>
-			{'<!DOCTYPE html>'}
-			{comment}
+			{doctypeTag}
+			{commentTag}
 			<html>
 				<head>
 					<meta charset="UTF-8" />
@@ -59,7 +63,7 @@ export function Layout(props: PropsWithChildren<CommonProps<{
 						<link rel="stylesheet" href={`/vite/${href}`} />
 					))}
 
-					{props.titleSlot ?? <title safe>{props.title || 'Misskey'}</title>}
+					{props.titleSlot ?? <title>{props.title || 'Misskey'}</title>}
 
 					{props.noindex ? <meta name="robots" content="noindex" /> : null}
 
@@ -76,16 +80,14 @@ export function Layout(props: PropsWithChildren<CommonProps<{
 						</>
 					)}
 
-					{props.frontendBootloaderCss != null ? <style safe>{props.frontendBootloaderCss}</style> : <link rel="stylesheet" href="/vite/loader/style.css" />}
+					{props.frontendBootloaderCss != null ? <style>{props.frontendBootloaderCss}</style> : <link rel="stylesheet" href="/vite/loader/style.css" />}
 
-					<script>
-						const VERSION = '{props.version}';
-						const CLIENT_ENTRY = {JSON.stringify(props.frontendViteFiles?.entryJs ?? null)};
-						const LANGS = {JSON.stringify(props.langs)};
-					</script>
+					<script dangerouslySetInnerHTML={{
+						__html: `const VERSION = '${props.version}'; const CLIENT_ENTRY = ${JSON.stringify(props.frontendViteFiles?.entryJs ?? null)}; const LANGS = ${JSON.stringify(props.langs)};`,
+					}}></script>
 
-					{safeMetaJson != null ? <script type="application/json" id="misskey_meta" data-generated-at={now}>{safeMetaJson}</script> : null}
-					{safeClientCtxJson != null ? <script type="application/json" id="misskey_clientCtx" data-generated-at={now}>{safeClientCtxJson}</script> : null}
+					{metaJson != null ? <script type="application/json" id="misskey_meta" data-generated-at={now} dangerouslySetInnerHTML={{ __html: metaJson }}></script> : null}
+					{clientCtxJson != null ? <script type="application/json" id="misskey_embedCtx" data-generated-at={now} dangerouslySetInnerHTML={{ __html: clientCtxJson }}></script> : null}
 
 					{props.frontendBootloaderJs != null ? <script>{props.frontendBootloaderJs}</script> : <script src="/vite/loader/boot.js"></script>}
 				</head>

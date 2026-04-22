@@ -24,7 +24,7 @@
 		"resolveJsonModule": true,
 		"isolatedModules": true,
 		"jsx": "react-jsx",
-		"jsxImportSource": "@kitajs/html",
+		"jsxImportSource": "hono/jsx",
 		"paths": {
 			"@/*": ["../src/*"]
 		},

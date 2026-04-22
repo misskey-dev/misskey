@@ -7,6 +7,7 @@ import cluster from 'node:cluster';
 import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
+import { createAdaptorServer } from '@hono/node-server';
 import Fastify, { type FastifyInstance } from 'fastify';
 import fastifyStatic from '@fastify/static';
 import fastifyRawBody from 'fastify-raw-body';
@@ -238,7 +239,20 @@ export class ServerService implements OnApplicationShutdown {
 			}
 		});
 
-		fastify.register(this.clientServerService.createServer);
+		// fastify.register(this.clientServerService.createServer);
+
+		// Create node-native clientserver
+		const clientHonoServer = this.clientServerService.createServer();
+		const clientNodeServer = createAdaptorServer({
+			fetch: clientHonoServer.fetch,
+		});
+		// If hono matches, let it handle the request
+		fastify.addHook('onRequest', (request, reply) => new Promise<void>((resolve) => {
+			clientNodeServer.on('close', () => {
+				resolve();
+			});
+			clientNodeServer.emit('request', request.raw, reply.raw);
+		}));
 
 		this.streamingApiServerService.attach(fastify.server);
 

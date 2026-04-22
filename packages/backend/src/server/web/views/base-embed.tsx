@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { raw } from 'hono/utils/html';
+import type { PropsWithChildren, Child } from 'hono/jsx';
 import { comment } from '@/server/web/views/_.js';
 import type { CommonProps } from '@/server/web/views/_.js';
 import { Splash } from '@/server/web/views/_splash.js';
-import type { PropsWithChildren, Children } from '@kitajs/html';
 
 export function BaseEmbed(props: PropsWithChildren<CommonProps<{
 	title?: string;
@@ -19,19 +20,21 @@ export function BaseEmbed(props: PropsWithChildren<CommonProps<{
 	metaJson?: string;
 	embedCtxJson?: string;
 
-	titleSlot?: Children;
-	metaSlot?: Children;
+	titleSlot?: Child;
+	metaSlot?: Child;
 }>>) {
 	const now = Date.now();
 
-	// 変数名をsafeで始めることでエラーをスキップ
-	const safeMetaJson = props.metaJson;
-	const safeEmbedCtxJson = props.embedCtxJson;
+	const metaJson = props.metaJson;
+	const embedCtxJson = props.embedCtxJson;
+
+	const doctypeTag = raw('<!DOCTYPE html>');
+	const commentTag = raw(comment);
 
 	return (
 		<>
-			{'<!DOCTYPE html>'}
-			{comment}
+			{doctypeTag}
+			{commentTag}
 			<html>
 				<head>
 					<meta charset="UTF-8" />
@@ -52,24 +55,22 @@ export function BaseEmbed(props: PropsWithChildren<CommonProps<{
 						<link rel="stylesheet" href={`/embed_vite/${href}`} />
 					))}
 
-					{props.titleSlot ?? <title safe>{props.title || 'Misskey'}</title>}
+					{props.titleSlot ?? <title>{props.title || 'Misskey'}</title>}
 
 					{props.metaSlot}
 
 					<meta name="robots" content="noindex" />
 
-					{props.frontendEmbedBootloaderCss != null ? <style safe>{props.frontendEmbedBootloaderCss}</style> : <link rel="stylesheet" href="/embed_vite/loader/style.css" />}
+					{props.frontendEmbedBootloaderCss != null ? <style>{props.frontendEmbedBootloaderCss}</style> : <link rel="stylesheet" href="/embed_vite/loader/style.css" />}
 
-					<script>
-						const VERSION = '{props.version}';
-						const CLIENT_ENTRY = {JSON.stringify(props.frontendEmbedViteFiles?.entryJs ?? null)};
-						const LANGS = {JSON.stringify(props.langs)};
-					</script>
+					<script dangerouslySetInnerHTML={{
+						__html: `const VERSION = '${props.version}'; const CLIENT_ENTRY = ${JSON.stringify(props.frontendEmbedViteFiles?.entryJs ?? null)}; const LANGS = ${JSON.stringify(props.langs)};`,
+					}}></script>
 
-					{safeMetaJson != null ? <script type="application/json" id="misskey_meta" data-generated-at={now}>{safeMetaJson}</script> : null}
-					{safeEmbedCtxJson != null ? <script type="application/json" id="misskey_embedCtx" data-generated-at={now}>{safeEmbedCtxJson}</script> : null}
+					{metaJson != null ? <script type="application/json" id="misskey_meta" data-generated-at={now} dangerouslySetInnerHTML={{ __html: metaJson }}></script> : null}
+					{embedCtxJson != null ? <script type="application/json" id="misskey_embedCtx" data-generated-at={now} dangerouslySetInnerHTML={{ __html: embedCtxJson }}></script> : null}
 
-					{props.frontendEmbedBootloaderJs != null ? <script>{props.frontendEmbedBootloaderJs}</script> : <script src="/embed_vite/loader/boot.js"></script>}
+					{props.frontendEmbedBootloaderJs != null ? <script dangerouslySetInnerHTML={{ __html: props.frontendEmbedBootloaderJs }}></script> : <script src="/embed_vite/loader/boot.js"></script>}
 				</head>
 				<body>
 					<noscript>
