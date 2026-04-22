@@ -27,6 +27,7 @@ const BAKE_TRANSFORM = false; // 実験的
 const SNAPSHOT_RENDERING = true; // 実験的
 const IGNORE_OBJECTS: string[] = []; // for debug
 const USE_GLOW = true; // ドローコールが増えて重い
+const RENDER_OUTDOOR_ENV = false;
 const IN_WEB_WORKER = typeof window === 'undefined';
 
 export type RoomState = {
@@ -279,7 +280,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.camera = new BABYLON.UniversalCamera('camera', new BABYLON.Vector3(0, cm(130), cm(0)), this.scene);
 		this.camera.attachControl(this.canvas);
 		this.camera.minZ = cm(1);
-		this.camera.maxZ = cm(2000);
+		this.camera.maxZ = RENDER_OUTDOOR_ENV ? cm(10000) : cm(1000);
 		this.camera.fov = 1;
 		this.camera.ellipsoid = new BABYLON.Vector3(cm(15), cm(65), cm(15));
 		this.camera.checkCollisions = true;
@@ -342,6 +343,10 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.shadowGeneratorForSunLight.getShadowMap().refreshRate = 60;
 
 		this.lightContainer = new BABYLON.ClusteredLightContainer('clustered', [], this.scene);
+		this.lightContainer.maxRange = cm(1000);
+		this.lightContainer.verticalTiles = 32;
+		this.lightContainer.horizontalTiles = 32;
+		this.lightContainer.depthSlices = 32;
 
 		this.turnOnRoomLight(true);
 
@@ -421,7 +426,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 	public async init() {
 		await this.loadHeya();
-		//await this.loadEnvModel();
+		if (RENDER_OUTDOOR_ENV) await this.loadEnvModel();
 
 		const objects = this.roomState.installedObjects.filter(o => !IGNORE_OBJECTS.includes(o.type));
 		let loadedCount = 0;
