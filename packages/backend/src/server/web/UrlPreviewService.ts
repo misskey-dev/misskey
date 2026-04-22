@@ -14,7 +14,7 @@ import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import { ApiError } from '@/server/api/error.js';
 import { MiMeta } from '@/models/Meta.js';
-import type { FastifyRequest, FastifyReply } from 'fastify';
+import type { Context } from 'hono';
 
 @Injectable()
 export class UrlPreviewService {
@@ -45,23 +45,23 @@ export class UrlPreviewService {
 
 	@bindThis
 	public async handle(
-		request: FastifyRequest<{ Querystring: { url: string; lang?: string; } }>,
-		reply: FastifyReply,
+		c: Context,
 	): Promise<object | undefined> {
-		const url = request.query.url;
+		const url = c.req.query('url');
 		if (typeof url !== 'string') {
-			reply.code(400);
+			c.status(400);
 			return;
 		}
 
-		const lang = request.query.lang;
-		if (Array.isArray(lang)) {
-			reply.code(400);
+		const _lang = c.req.queries('lang') ?? [];
+		if (_lang.length > 1) {
+			c.status(400);
 			return;
 		}
+		const lang = _lang[0];
 
 		if (!this.meta.urlPreviewEnabled) {
-			reply.code(403);
+			c.status(403);
 			return {
 				error: new ApiError({
 					message: 'URL preview is disabled',
@@ -94,14 +94,14 @@ export class UrlPreviewService {
 			summary.thumbnail = this.wrap(summary.thumbnail);
 
 			// Cache 1day
-			reply.header('Cache-Control', 'max-age=86400, immutable');
+			c.res.headers.set('Cache-Control', 'max-age=86400, immutable');
 
 			return summary;
 		} catch (err) {
 			this.logger.warn(`Failed to get preview of ${url}: ${err}`);
 
-			reply.code(422);
-			reply.header('Cache-Control', 'max-age=86400, immutable');
+			c.status(422);
+			c.res.headers.set('Cache-Control', 'max-age=86400, immutable');
 			return {
 				error: new ApiError({
 					message: 'Failed to get preview',
