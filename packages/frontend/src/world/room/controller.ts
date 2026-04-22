@@ -9,7 +9,8 @@ import { cm } from '../utility.js';
 import RoomWorker from './worker?worker';
 import { RoomEngine } from './engine.js';
 import type { ShallowRef } from 'vue';
-import type { ObjectDef, RoomState, RoomStateObject } from './engine.js';
+import type { RoomState } from './engine.js';
+import type { ObjectDef, RoomStateObject } from './object.js';
 import * as sound from '@/utility/sound.js';
 
 // 抽象化レイヤー
@@ -134,11 +135,11 @@ export class RoomController {
 	}
 
 	private onCanvasPointerdown(ev: PointerEvent) {
-		this.canvas.setPointerCapture(ev.pointerId);
+		this.canvas?.setPointerCapture(ev.pointerId);
 	}
 
 	private onCanvasPointermove(ev: PointerEvent) {
-		if (this.canvas.hasPointerCapture(ev.pointerId)) {
+		if (this.canvas?.hasPointerCapture(ev.pointerId)) {
 			this.isCanvasDragging = true;
 		}
 	}
@@ -146,7 +147,7 @@ export class RoomController {
 	private onCanvasPointerup(ev: PointerEvent) {
 		window.setTimeout(() => {
 			this.isCanvasDragging = false;
-			this.canvas.releasePointerCapture(ev.pointerId);
+			this.canvas?.releasePointerCapture(ev.pointerId);
 		}, 0);
 	}
 
