@@ -27,7 +27,6 @@ export function Layout(props: PropsWithChildren<CommonProps<{
 }>>) {
 	const now = Date.now();
 
-	// 変数名をsafeで始めることでエラーをスキップ
 	const metaJson = props.metaJson;
 	const clientCtxJson = props.clientCtxJson;
 
