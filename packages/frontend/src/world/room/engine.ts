@@ -655,7 +655,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		} else if (placement === 'bottom') {
 			// 上に向かってレイを飛ばす
 			const ray = new BABYLON.Ray(newPos, new BABYLON.Vector3(0, 1, 0), cm(1000));
-			const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_CEILING__') || m.name.includes('__BOTTOM__')));
+			const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_CEILING__') || m.name.includes('__ROOM_BOTTOM__') || m.name.includes('__BOTTOM__')));
 			if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
 				newPos.y = hit.pickedPoint.y;
 				sticky = hit.pickedMesh.metadata?.objectId ?? null;
