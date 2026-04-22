@@ -677,15 +677,15 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		if (!sticky) {
 			this.gridPlane.isVisible = false;
 			//for (const mesh of grabbing.ghost.getChildMeshes()) {
-			if (mesh.material instanceof BABYLON.MultiMaterial) {
-				for (const subMat of mesh.material.subMaterials) {
-					if (subMat instanceof BABYLON.PBRMaterial) {
-						subMat.emissiveColor = new BABYLON.Color3(1, 0, 0);
-					}
-				}
-			} else {
-				mesh.material.emissiveColor = new BABYLON.Color3(1, 0, 0);
-			}
+			//if (mesh.material instanceof BABYLON.MultiMaterial) {
+			//	for (const subMat of mesh.material.subMaterials) {
+			//		if (subMat instanceof BABYLON.PBRMaterial) {
+			//			subMat.emissiveColor = new BABYLON.Color3(1, 0, 0);
+			//		}
+			//	}
+			//} else {
+			//	mesh.material.emissiveColor = new BABYLON.Color3(1, 0, 0);
+			//}
 			//}
 		}
 
