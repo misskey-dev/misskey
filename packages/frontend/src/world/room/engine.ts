@@ -448,30 +448,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			this.sr.enableSnapshotRendering();
 		}
 
-		if (this.fps == null) {
-			this.engine.runRenderLoop(() => {
-				this.scene.render();
-			});
-		} else {
-			let then = 0;
-			const interval = 1000 / this.fps;
-
-			const renderLoop = (timeStamp: number) => {
-				if (this.disposed) return;
-
-				window.requestAnimationFrame(renderLoop);
-
-				const delta = timeStamp - then;
-				if (delta <= interval) return;
-				then = timeStamp - (delta % interval);
-
-				this.engine.beginFrame();
-				this.scene.render();
-				this.engine.endFrame();
-			};
-
-			window.requestAnimationFrame(renderLoop);
-		}
+		this.startRenderLoop();
 
 		this.domEvents.on('keydown', (ev) => {
 			if (ev.code === 'KeyE') {
@@ -553,6 +530,47 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 				}
 			}
 		});
+	}
+
+	private currentRafId: number | null = null;
+
+	private startRenderLoop() {
+		if (this.fps == null) {
+			this.engine.runRenderLoop(() => {
+				this.scene.render();
+			});
+		} else {
+			let then = 0;
+			const interval = 1000 / this.fps;
+
+			const renderLoop = (timeStamp: number) => {
+				if (this.disposed) return;
+
+				this.currentRafId = window.requestAnimationFrame(renderLoop);
+
+				const delta = timeStamp - then;
+				if (delta <= interval) return;
+				then = timeStamp - (delta % interval);
+
+				this.engine.beginFrame();
+				this.scene.render();
+				this.engine.endFrame();
+			};
+
+			this.currentRafId = window.requestAnimationFrame(renderLoop);
+		}
+	}
+
+	public pauseRender() {
+		this.engine.stopRenderLoop();
+		if (this.currentRafId != null) {
+			window.cancelAnimationFrame(this.currentRafId);
+			this.currentRafId = null;
+		}
+	}
+
+	public resumeRender() {
+		this.startRenderLoop();
 	}
 
 	public selectObject(objectId: string | null) {
@@ -1659,6 +1677,10 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	}
 
 	public destroy() {
+		if (this.currentRafId != null) {
+			window.cancelAnimationFrame(this.currentRafId);
+			this.currentRafId = null;
+		}
 		this.timer.dispose();
 		this.engine.dispose();
 		this.disposed = true;

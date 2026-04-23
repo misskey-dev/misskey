@@ -175,6 +175,22 @@ export class RoomController {
 		await this.init(canvas ?? this.canvas!, workerMode);
 	}
 
+	public pauseRender() {
+		if (this.worker != null) {
+			this.worker.postMessage({ type: 'pauseRender' });
+		} else if (this.engine != null) {
+			this.engine.pauseRender();
+		}
+	}
+
+	public resumeRender() {
+		if (this.worker != null) {
+			this.worker.postMessage({ type: 'resumeRender' });
+		} else if (this.engine != null) {
+			this.engine.resumeRender();
+		}
+	}
+
 	public enterEditMode() {
 		if (this.worker != null) {
 			this.worker.postMessage({ type: 'enterEditMode' });

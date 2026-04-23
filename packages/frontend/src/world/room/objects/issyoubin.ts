@@ -19,6 +19,10 @@ export const issyoubin = defineObject({
 	hasCollisions: false,
 	hasTexture: true,
 	createInstance: ({ model, options, scene }) => {
+		const liquidMesh = model.findMesh('__X_LIQUID__');
+		const liquidMaterial = model.findMaterial('__X_LIQUID__');
+		const bottleMaterial = model.findMaterial('__X_BOTTLE__');
+
 		// 以下を行うとレンダリングのグリッチが直るが、残念ながらWebGPUかつNCMでは動作しない
 		// https://doc.babylonjs.com/setup/support/webGPU/webGPUOptimization/webGPUNonCompatibilityMode/#dodont-in-non-compatibility-mode-ncm
 		//for (const m of model.root.getChildMeshes()) {
@@ -26,6 +30,10 @@ export const issyoubin = defineObject({
 		//		(m.material as BABYLON.PBRMaterial).separateCullingPass = true;
 		//	}
 		//}
+
+		// しょうがないので不透明にする
+		bottleMaterial.transparencyMode = BABYLON.PBRMaterial.PBRMATERIAL_ALPHATEST;
+
 		return {
 			onOptionsUpdated: ([k, v]) => {
 			},

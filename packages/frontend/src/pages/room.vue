@@ -278,13 +278,18 @@ function rotate() {
 }
 
 async function addObject(ev: PointerEvent) {
+	// 重いので止める
+	controller.pauseRender();
 	const { dispose } = await os.popupAsyncWithDialog(import('./room.add-object-dialog.vue').then(x => x.default), {
 	}, {
 		ok: async (res) => {
 			controller.addObject(res);
 			canvas.value!.focus();
 		},
-		closed: () => dispose(),
+		closed: () => {
+			controller.resumeRender();
+			dispose();
+		},
 	});
 }
 
