@@ -50,6 +50,7 @@ export const randomBooks = defineObject({
 	placement: 'top',
 	hasCollisions: false,
 	hasTexture: true,
+	canPreMeshesMerging: false,
 	createInstance: ({ options, model, scene, id }) => {
 		const bodyMesh = model.findMesh('__X_BODY__');
 		const tex = new BABYLON.Texture('/client-assets/room/objects/random-books/texture.png', scene, {
@@ -57,6 +58,7 @@ export const randomBooks = defineObject({
 			samplingMode: BABYLON.Texture.NEAREST_SAMPLINGMODE,
 		});
 		bodyMesh.material.albedoTexture = tex;
+		bodyMesh.isVisible = false;
 
 		const TEXTURE_DIVISION = 8;
 		let bookMeshes: BABYLON.Mesh[] = [];
@@ -126,8 +128,6 @@ export const randomBooks = defineObject({
 					bookMeshes[i].position.x -= accumulatedPos / 2 / WORLD_SCALE;
 				}
 			}
-
-			bodyMesh.isVisible = false;
 
 			model.updated();
 		};

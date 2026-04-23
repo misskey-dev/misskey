@@ -269,11 +269,18 @@ export class ModelManager {
 			_toMerge.push(fixedMesh);
 		}
 
+		let hasMorphTarget = false;
+
 		const toMerge = [] as BABYLON.Mesh[];
 		for (const mesh of _toMerge) {
 			const newMesh = mesh.name.endsWith('_realized') ? mesh : mesh.clone(mesh.name + '_bakeMerged', null, true);
 			newMesh.makeGeometryUnique();
-			applyMorphTargetsToMesh(newMesh);
+			if (newMesh.morphTargetManager != null && newMesh.morphTargetManager.numTargets > 0) {
+				hasMorphTarget = true;
+				applyMorphTargetsToMesh(newMesh);
+				newMesh.morphTargetManager?.dispose();
+				newMesh.morphTargetManager = null;
+			}
 			if (newMesh.parent === this.root) {
 				newMesh.parent = null;
 			} else {
@@ -306,11 +313,15 @@ export class ModelManager {
 
 		const merged = BABYLON.Mesh.MergeMeshes(toMerge, true, false, undefined, false, true);
 		merged.parent = this.root;
+		merged.morphTargetManager?.dispose();
+		merged.morphTargetManager = null;
 
-		merged.material.freeze();
-		if (merged.material instanceof BABYLON.MultiMaterial) {
-			for (const subMat of merged.material.subMaterials) {
-				(subMat as BABYLON.PBRMaterial).freeze();
+		if (!hasMorphTarget) { // https://forum.babylonjs.com/t/is-it-intentional-that-morph-targets-do-not-work-on-meshes-with-frozen-materials/63252
+			merged.material.freeze();
+			if (merged.material instanceof BABYLON.MultiMaterial) {
+				for (const subMat of merged.material.subMaterials) {
+					(subMat as BABYLON.PBRMaterial).freeze();
+				}
 			}
 		}
 
