@@ -48,7 +48,7 @@ export const wallClock = defineObject({
 					const mAngle = -(minutes / 60) * Math.PI * 2;
 					hourHand.rotation = new BABYLON.Vector3(0, 0, hAngle);
 					minuteHand.rotation = new BABYLON.Vector3(0, 0, mAngle);
-					room?.sr.updateMesh([hourHand, minuteHand]);
+					room?.sr.updateMesh([hourHand, minuteHand], false);
 				}, 1000);
 			},
 			onOptionsUpdated: ([k, v]) => {

@@ -34,6 +34,7 @@ export const tabletopDigitalClock = defineObject({
 	},
 	placement: 'top',
 	hasCollisions: false,
+	canPreMeshesMerging: false,
 	createInstance: ({ root, room, options, model, scene, timer }) => {
 		const light = new BABYLON.SpotLight('', new BABYLON.Vector3(0, cm(3), cm(1)), new BABYLON.Vector3(0, 0, 1), Math.PI / 1, 2, scene, room?.lightContainer != null);
 		light.parent = root;
@@ -106,18 +107,15 @@ export const tabletopDigitalClock = defineObject({
 
 					for (const mesh of Object.values(segmentMeshes)) {
 						const isVisible = onMeshes.includes(mesh);
-						// 本当ならisVisibleで制御したいが、snapshot renderingではvisibilityはupdateMeshを呼んだとしても反映されないので、メッシュをめっちゃ縮めることで非表示を実現する(メッシュをめっちゃ遠くに飛ばすことも試みたけど、シーン全体の影のレンダリングがおかしくなるため断念。あとバウンディングボックスが大きくなるから不都合が出そう)
-						//mesh.isVisible = isVisible;
-						mesh.scaling.y = isVisible ? 1 : 0;
+						mesh.isVisible = isVisible;
 					}
 
 					for (const mesh of colonMeshes) {
 						const isVisible = Date.now() % 2000 < 1000;
-						// 本当ならisVisibleで制御したいが、snapshot renderingではvisibilityはupdateMeshを呼んだとしても反映されないので、メッシュをめっちゃ縮めることで非表示を実現する(メッシュをめっちゃ遠くに飛ばすことも試みたけど、シーン全体の影のレンダリングがおかしくなるため断念。あとバウンディングボックスが大きくなるから不都合が出そう)
-						//mesh.isVisible = isVisible;
-						mesh.scaling.y = isVisible ? 1 : 0;
+						mesh.isVisible = isVisible;
 					}
 
+					// なぜか反映されない。バグ？ https://forum.babylonjs.com/t/visibility-of-instancedmesh-is-not-reflected-under-fast-snapshot-rendering/63251
 					room?.sr.updateMesh([...Object.values(segmentMeshes), ...colonMeshes]);
 				}, 1000);
 			},

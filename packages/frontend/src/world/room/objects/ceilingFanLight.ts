@@ -33,7 +33,7 @@ export const ceilingFanLight = defineObject({
 				]);
 				rotor.animations = [anim];
 				animationObserver = scene.onAfterAnimationsObservable.add(() => {
-					room?.sr.updateMesh([rotor, ...rotor.getChildMeshes()]);
+					room?.sr.updateMesh([rotor, ...rotor.getChildMeshes()], false);
 				});
 				scene.beginAnimation(rotor, 0, 100, true);
 			},

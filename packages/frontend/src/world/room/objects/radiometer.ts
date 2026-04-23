@@ -31,7 +31,7 @@ export const radiometer = defineObject({
 				]);
 				vanes.animations = [anim];
 				animationObserver = scene.onAfterAnimationsObservable.add(() => {
-					room?.sr.updateMesh([...vanes.getChildMeshes()]);
+					room?.sr.updateMesh([...vanes.getChildMeshes()], true);
 				});
 				scene.beginAnimation(vanes, 0, 240, true);
 			},
