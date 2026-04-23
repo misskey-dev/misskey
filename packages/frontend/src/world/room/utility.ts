@@ -278,8 +278,9 @@ export class ModelManager {
 			if (newMesh.morphTargetManager != null && newMesh.morphTargetManager.numTargets > 0) {
 				hasMorphTarget = true;
 				applyMorphTargetsToMesh(newMesh);
-				newMesh.morphTargetManager?.dispose();
-				newMesh.morphTargetManager = null;
+				// 消すと選択解除した後に再度選択した時にエンジンがクラッシュする
+				//newMesh.morphTargetManager?.dispose();
+				//newMesh.morphTargetManager = null;
 			}
 			if (newMesh.parent === this.root) {
 				newMesh.parent = null;
@@ -313,8 +314,9 @@ export class ModelManager {
 
 		const merged = BABYLON.Mesh.MergeMeshes(toMerge, true, false, undefined, false, true);
 		merged.parent = this.root;
-		merged.morphTargetManager?.dispose();
-		merged.morphTargetManager = null;
+		// 消すと選択解除した後に再度選択した時にエンジンがクラッシュする
+		//merged.morphTargetManager?.dispose();
+		//merged.morphTargetManager = null;
 
 		if (!hasMorphTarget) { // https://forum.babylonjs.com/t/is-it-intentional-that-morph-targets-do-not-work-on-meshes-with-frozen-materials/63252
 			merged.material.freeze();
