@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div v-adaptive-bg :class="[$style.root]">
 	<MkAvatar :class="$style.avatar" :user="user" indicator/>
 	<div :class="$style.body">
-		<span :class="$style.name"><MkUserName :user="user"/></span>
+		<span :class="$style.name"><MkUserName :user="user"/><slot name="nameSuffix"></slot></span>
 		<span :class="$style.sub"><slot name="sub"><span class="_monospace">@{{ acct(user) }}</span></slot></span>
 	</div>
 	<MkMiniChart v-if="chartValues" :class="$style.chart" :src="chartValues"/>

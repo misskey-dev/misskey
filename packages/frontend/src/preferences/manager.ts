@@ -95,7 +95,9 @@ export type StorageProvider = {
 
 type PreferencesDefinitionRecord<Default, T = Default extends (...args: any) => infer R ? R : Default> = {
 	default: Default;
+	/** アカウントごとに異なる設定値をもたせるかどうか */
 	accountDependent?: boolean;
+	/** サーバーごとに異なる設定値をもたせるかどうか（他のサーバーを同一クライアントから操作できるようになった際に使用） */
 	serverDependent?: boolean;
 	mergeStrategy?: (a: T, b: T) => T;
 };
@@ -451,6 +453,33 @@ export class PreferencesManager extends EventEmitter<PreferencesManagerEvents> {
 		this.rewriteRawState(key, this.getMatchedRecordOf(key)[1]);
 
 		this.save();
+	}
+
+	/** 現在の操作アカウントに紐づく設定値をデバイスから削除します（ログアウト時などに使用） */
+	public clearAccountSettingsFromDevice(targetHost = host, id = this.currentAccount?.id) {
+		if (id == null) return;
+
+		let changed = false;
+
+		for (const _key in PREF_DEF) {
+			const key = _key as keyof PREF;
+			const records = this.profile.preferences[key];
+
+			const index = records.findIndex((record: PrefRecord<typeof key>) => {
+				const scope = parseScope(record[0]);
+				return scope.server === targetHost && scope.account === id;
+			});
+			if (index === -1) continue;
+
+			records.splice(index, 1);
+			changed = true;
+
+			this.rewriteRawState(key, this.getMatchedRecordOf(key)[1]);
+		}
+
+		if (changed) {
+			this.save();
+		}
 	}
 
 	public isSyncEnabled<K extends keyof PREF>(key: K): boolean {

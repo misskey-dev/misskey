@@ -50,6 +50,7 @@ import { useRouter } from '@/router.js';
 import { enableAutoBackup, getPreferencesProfileMenu } from '@/preferences/utility.js';
 import { store } from '@/store.js';
 import { signout } from '@/signout.js';
+import { getAccounts } from '@/accounts.js';
 import { genSearchIndexes } from '@/utility/inapp-search.js';
 import { enableStoragePersistence, getStoragePersistenceStatusRef, storagePersistenceSupported, skipStoragePersistence } from '@/utility/storage.js';
 
@@ -182,14 +183,37 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		type: 'button',
 		icon: 'ti ti-power',
 		text: i18n.ts.logout,
-		action: async () => {
-			const { canceled } = await os.confirm({
-				type: 'warning',
-				title: i18n.ts.logoutConfirm,
-				text: i18n.ts.logoutWillClearClientData,
-			});
-			if (canceled) return;
-			signout();
+		action: async (ev) => {
+			async function signoutWithConfirm(all?: boolean) {
+				const { canceled } = await os.confirm({
+					type: 'warning',
+					title: i18n.ts.logoutConfirm,
+					text: i18n.ts.logoutWillClearClientData,
+				});
+				if (canceled) return;
+				signout(all);
+			}
+
+			const accounts = await getAccounts();
+			if (accounts.length <= 1) {
+				await signoutWithConfirm();
+				return;
+			} else {
+				os.popupMenu([{
+					text: i18n.ts.logoutFromThisAccount,
+					icon: 'ti ti-power',
+					action: async () => {
+						await signoutWithConfirm();
+					},
+				}, {
+					text: i18n.ts.logoutFromAll,
+					icon: 'ti ti-copy-x',
+					danger: true,
+					action: async () => {
+						await signoutWithConfirm(true);
+					},
+				}], ev.currentTarget ?? ev.target);
+			}
 		},
 		danger: true,
 	}],
