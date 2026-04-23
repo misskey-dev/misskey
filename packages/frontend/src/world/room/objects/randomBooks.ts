@@ -96,6 +96,7 @@ export const randomBooks = defineObject({
 				const width = randomRange(0.125, 0.175);
 				const height = randomRange(0.3, 0.4);
 				const thickness = randomRange(0, 0.03);
+				// なぜか(bakeが走るまでは)morphTargetManagerがcloneされていないような挙動をする。babylonのバグ？
 				mesh.morphTargetManager!.getTargetByName('Width')!.influence = width;
 				mesh.morphTargetManager!.getTargetByName('Height')!.influence = height;
 				mesh.morphTargetManager!.getTargetByName('Thickness')!.influence = thickness;
