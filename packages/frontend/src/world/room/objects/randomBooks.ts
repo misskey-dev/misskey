@@ -28,6 +28,10 @@ export const randomBooks = defineObject({
 				max: 30,
 				step: 1,
 			},
+			stackVertically: {
+				type: 'boolean',
+				label: 'Stack vertically',
+			},
 			seed: {
 				type: 'range',
 				label: 'Seed',
@@ -39,6 +43,7 @@ export const randomBooks = defineObject({
 		default: {
 			plainCover: false,
 			count: 10,
+			stackVertically: false,
 			seed: 0,
 		},
 	},
@@ -96,9 +101,18 @@ export const randomBooks = defineObject({
 				mesh.morphTargetManager!.getTargetByName('Thickness')!.influence = thickness;
 				const thicknessCm = cm(2) + remap(thickness, 0, 1, 0, cm(100));
 				const widthCm = cm(2) + remap(width, 0, 1, 0, cm(100));
-				const gap = cm(0.25);
-				mesh.position.x = (accumulatedPos + (thicknessCm / 2)) / WORLD_SCALE;
-				mesh.position.z = widthCm / 2 / WORLD_SCALE;
+				const heightCm = cm(4) + remap(height, 0, 1, 0, cm(50));
+				const gap = options.stackVertically ? 0 : cm(0.25);
+				if (options.stackVertically) {
+					mesh.rotationQuaternion = null;
+					mesh.rotation = new BABYLON.Vector3(0, randomRange(-0.15, 0.15), Math.PI / 2);
+					mesh.position.x = (heightCm / 2) / WORLD_SCALE;
+					mesh.position.y = (accumulatedPos + (thicknessCm / 2)) / WORLD_SCALE;
+					mesh.position.z = widthCm / 2 / WORLD_SCALE;
+				} else {
+					mesh.position.x = (accumulatedPos + (thicknessCm / 2)) / WORLD_SCALE;
+					mesh.position.z = widthCm / 2 / WORLD_SCALE;
+				}
 				mesh.refreshBoundingInfo();
 				mesh.computeWorldMatrix(true);
 				accumulatedPos += thicknessCm + gap;
@@ -106,8 +120,10 @@ export const randomBooks = defineObject({
 			}
 
 			// centering
-			for (let i = 0; i < options.count; i++) {
-				bookMeshes[i].position.x -= accumulatedPos / 2 / WORLD_SCALE;
+			if (!options.stackVertically) {
+				for (let i = 0; i < options.count; i++) {
+					bookMeshes[i].position.x -= accumulatedPos / 2 / WORLD_SCALE;
+				}
 			}
 
 			bodyMesh.isVisible = false;
@@ -125,6 +141,7 @@ export const randomBooks = defineObject({
 				switch (k) {
 					case 'seed': gen(); break;
 					case 'count': gen(); break;
+					case 'stackVertically': gen(); break;
 				}
 			},
 			interactions: {},
