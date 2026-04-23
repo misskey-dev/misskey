@@ -75,6 +75,8 @@ export const tabletopDigitalClock = defineObject({
 
 		const colonMeshes = model.findMeshes('__TIME_7SEG_COLON__');
 
+		const defaultSegMeshDepth = colonMeshes[0].position.y; // セグメントを90度回して立てているためz軸が奥行きになっている
+
 		model.bakeExcludeMeshes = Object.values(segmentMeshes).concat(colonMeshes);
 
 		const bodyMesh = model.findMesh('__X_BODY__');
@@ -107,15 +109,18 @@ export const tabletopDigitalClock = defineObject({
 
 					for (const mesh of Object.values(segmentMeshes)) {
 						const isVisible = onMeshes.includes(mesh);
-						mesh.isVisible = isVisible;
+						// 本当ならisVisibleで制御したいが、snapshot renderingではvisibilityはupdateMeshを呼んだとしても反映されないのと、もしsnapshot rendering開始時にisVisible: falseだったらドローコールが記録されずその後表示できないので、メッシュを後ろにずらすことで隠す
+						//mesh.isVisible = isVisible;
+						mesh.position.y = isVisible ? defaultSegMeshDepth : defaultSegMeshDepth - cm(2);
 					}
 
 					for (const mesh of colonMeshes) {
 						const isVisible = Date.now() % 2000 < 1000;
-						mesh.isVisible = isVisible;
+						// 本当ならisVisibleで制御したいが、snapshot renderingではvisibilityはupdateMeshを呼んだとしても反映されないのと、もしsnapshot rendering開始時にisVisible: falseだったらドローコールが記録されずその後表示できないので、メッシュを後ろにずらすことで隠す
+						//mesh.isVisible = isVisible;
+						mesh.position.y = isVisible ? defaultSegMeshDepth : defaultSegMeshDepth - cm(2);
 					}
 
-					// なぜか反映されない。バグ？ https://forum.babylonjs.com/t/visibility-of-instancedmesh-is-not-reflected-under-fast-snapshot-rendering/63251
 					room?.sr.updateMesh([...Object.values(segmentMeshes), ...colonMeshes]);
 				}, 1000);
 			},
