@@ -29,6 +29,7 @@ import { desk } from './objects/desk.js';
 import { desktopPc } from './objects/desktopPc.js';
 import { djMixer } from './objects/djMixer.js';
 import { djPlayer } from './objects/djPlayer.js';
+import { ductRailSpotLights } from './objects/ductRailSpotLights.js';
 import { ductTape } from './objects/ductTape.js';
 import { emptyBento } from './objects/emptyBento.js';
 import { energyDrink } from './objects/energyDrink.js';
@@ -125,6 +126,7 @@ export const OBJECT_DEFS = [
 	desktopPc,
 	djMixer,
 	djPlayer,
+	ductRailSpotLights,
 	ductTape,
 	emptyBento,
 	energyDrink,
