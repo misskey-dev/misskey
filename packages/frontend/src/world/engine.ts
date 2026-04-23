@@ -327,6 +327,7 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 				'This is a virtual space for Misskey users!',
 				//'You can chat, play games, and more!',
 				//'Check out the bulletin board for announcements',
+				'Have a nice day with Misskey!',
 				'MAINTENANCE will begin at 9:00 A.M.',
 			];
 

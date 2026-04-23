@@ -19,6 +19,11 @@ export const issyoubin = defineObject({
 	hasCollisions: false,
 	hasTexture: true,
 	createInstance: ({ model, options }) => {
+		for (const m of model.root.getChildMeshes()) {
+			if (m.material != null) {
+				(m.material as BABYLON.PBRMaterial).separateCullingPass = true;
+			}
+		}
 		return {
 			onOptionsUpdated: ([k, v]) => {
 			},
