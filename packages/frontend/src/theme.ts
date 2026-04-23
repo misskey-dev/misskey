@@ -110,7 +110,9 @@ function applyThemeInternal(theme: Theme, persist: boolean) {
 
 	for (const tag of window.document.head.children) {
 		if (tag.tagName === 'META' && tag.getAttribute('name') === 'theme-color') {
-			tag.setAttribute('content', props['htmlThemeColor']);
+			// @ts-expect-error Experimental API
+			const windowControlsOverlayVisible = navigator.windowControlsOverlay?.visible ?? false;
+			tag.setAttribute('content', windowControlsOverlayVisible ? props['navBg'] : props['htmlThemeColor']);
 			break;
 		}
 	}

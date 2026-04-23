@@ -21,6 +21,14 @@ export function calcPopupPosition(el: HTMLElement, props: {
 		rect = props.anchorElement.getBoundingClientRect();
 	}
 
+	// タイトルバーの高さ
+	let topOffset: number = 0;
+
+	if ('windowControlsOverlay' in navigator) {
+		// @ts-expect-error Experimental API
+		topOffset = navigator.windowControlsOverlay.visible ? navigator.windowControlsOverlay.getTitlebarAreaRect().height : 0;
+	}
+
 	const calcPosWhenTop = () => {
 		let left: number;
 		let top: number;
@@ -139,7 +147,7 @@ export function calcPopupPosition(el: HTMLElement, props: {
 				const [left, top] = calcPosWhenTop();
 
 				// ツールチップを上に向かって表示するスペースがなければ下に向かって出す
-				if (top - window.scrollY < 0) {
+				if (top - window.scrollY < Math.max(topOffset, 0)) {
 					const [left, top] = calcPosWhenBottom();
 					return { left, top, transformOrigin: 'center top' };
 				}

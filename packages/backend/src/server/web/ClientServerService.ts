@@ -187,6 +187,9 @@ export class ClientServerService {
 					'url': 'url',
 				},
 			},
+			'display_override': [
+				'window-controls-overlay',
+			],
 			'shortcuts': [{
 				'name': 'Safemode',
 				'url': '/?safemode=true',

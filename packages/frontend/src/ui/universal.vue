@@ -5,12 +5,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="[$style.root, { '_forceShrinkSpacer': deviceKind === 'smartphone' }]">
-	<XTitlebar v-if="prefer.r.showTitlebar.value" style="flex-shrink: 0;"/>
+	<XTitlebar v-if="shouldShowTitlebar" style="flex-shrink: 0;"/>
 
 	<div :class="$style.nonTitlebarArea">
 		<XSidebar v-if="!isMobile" :class="$style.sidebar" :showWidgetButton="!showWidgetsSide" @widgetButtonClick="widgetsShowing = true"/>
 
-		<div :class="[$style.contents, !isMobile && prefer.r.showTitlebar.value ? $style.withSidebarAndTitlebar : null]" @contextmenu.stop="onContextmenu">
+		<div :class="[$style.contents, !isMobile && shouldShowTitlebar ? $style.withSidebarAndTitlebar : null]" @contextmenu.stop="onContextmenu">
 			<div>
 				<XReloadSuggestion v-if="shouldSuggestReload"/>
 				<XPreferenceRestore v-if="shouldSuggestRestoreBackup"/>
@@ -53,6 +53,7 @@ import { prefer } from '@/preferences.js';
 import { shouldSuggestRestoreBackup } from '@/preferences/utility.js';
 import { DI } from '@/di.js';
 import { shouldSuggestReload } from '@/utility/reload-suggest.js';
+import { getWindowControlsOverlayVisible } from '@/utility/pwa.js';
 
 const XWidgets = defineAsyncComponent(() => import('./_common_/widgets.vue'));
 const XStatusBars = defineAsyncComponent(() => import('@/ui/_common_/statusbars.vue'));
@@ -70,6 +71,9 @@ const isMobile = ref(deviceKind === 'smartphone' || window.innerWidth <= MOBILE_
 window.addEventListener('resize', () => {
 	isMobile.value = deviceKind === 'smartphone' || window.innerWidth <= MOBILE_THRESHOLD;
 });
+
+const windowControlsVisible = getWindowControlsOverlayVisible();
+const shouldShowTitlebar = computed(() => prefer.r.showTitlebar.value || windowControlsVisible.value);
 
 const pageMetadata = ref<null | PageMetadata>(null);
 const widgetsShowing = ref(false);
