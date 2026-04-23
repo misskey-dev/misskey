@@ -18,7 +18,7 @@ export const issyoubin = defineObject({
 			},
 		},
 		default: {
-			variation: 'ai',
+			variation: 'misuki',
 		},
 	},
 	placement: 'top',
