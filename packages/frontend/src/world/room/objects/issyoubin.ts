@@ -18,12 +18,14 @@ export const issyoubin = defineObject({
 	placement: 'top',
 	hasCollisions: false,
 	hasTexture: true,
-	createInstance: ({ model, options }) => {
-		for (const m of model.root.getChildMeshes()) {
-			if (m.material != null) {
-				(m.material as BABYLON.PBRMaterial).separateCullingPass = true;
-			}
-		}
+	createInstance: ({ model, options, scene }) => {
+		// 以下を行うとレンダリングのグリッチが直るが、残念ながらWebGPUかつNCMでは動作しない
+		// https://doc.babylonjs.com/setup/support/webGPU/webGPUOptimization/webGPUNonCompatibilityMode/#dodont-in-non-compatibility-mode-ncm
+		//for (const m of model.root.getChildMeshes()) {
+		//	if (m.material != null) {
+		//		(m.material as BABYLON.PBRMaterial).separateCullingPass = true;
+		//	}
+		//}
 		return {
 			onOptionsUpdated: ([k, v]) => {
 			},
