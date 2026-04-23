@@ -108,7 +108,7 @@ export const randomBooks = defineObject({
 					mesh.rotation = new BABYLON.Vector3(0, randomRange(-0.15, 0.15), Math.PI / 2);
 					mesh.position.x = (heightCm / 2) / WORLD_SCALE;
 					mesh.position.y = (accumulatedPos + (thicknessCm / 2)) / WORLD_SCALE;
-					mesh.position.z = widthCm / 2 / WORLD_SCALE;
+					//mesh.position.z = widthCm / 2 / WORLD_SCALE;
 				} else {
 					mesh.position.x = (accumulatedPos + (thicknessCm / 2)) / WORLD_SCALE;
 					mesh.position.z = widthCm / 2 / WORLD_SCALE;
