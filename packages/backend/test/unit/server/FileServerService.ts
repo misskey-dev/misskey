@@ -479,6 +479,24 @@ describe('FileServerService', () => {
 			expect(res.headers['cache-control']).toBe('max-age=86400');
 		});
 
+		test('GET /files/:key DBに存在するがストレージ上に存在しないファイルにアクセスしたときエラーのキャッシュをimmutableにしない', async () => {
+			const accessKey = randomString();
+			// Insert into DB as storedInternal but do NOT write the file to disk
+			await insertDriveFile({
+				accessKey,
+				storedInternal: true,
+				isLink: false,
+			});
+
+			const res = await fastify.inject({
+				method: 'GET',
+				url: `/files/${accessKey}`,
+			});
+
+			expect(res.statusCode).toBe(500);
+			expect(res.headers['cache-control']).toBe('max-age=300');
+		});
+
 		test('GET /files/:key 外部リンクを取得して配信する', async () => {
 			const accessKey = randomString();
 			await insertDriveFile({
@@ -765,6 +783,27 @@ describe('FileServerService', () => {
 			expect(res.headers['content-type']).toBe('image/png');
 			expect(res.headers['cache-control']).toBe('max-age=31536000, immutable');
 			expect(res.headers['content-disposition'] ?? '').toContain('dummy.png');
+		});
+
+		test('GET /proxy/:url* DBに存在するがストレージ上に存在しないファイルにアクセスしたときエラーのキャッシュをimmutableにしない', async () => {
+			const accessKey = randomString();
+			// Insert into DB as storedInternal but do NOT write the file to disk
+			await insertDriveFile({
+				accessKey,
+				storedInternal: true,
+				isLink: false,
+			});
+
+			const res = await fastify.inject({
+				method: 'GET',
+				url: `/proxy/any?url=${encodeURIComponent(`${config.url}/files/${accessKey}`)}&origin=1`,
+				headers: {
+					'user-agent': 'Mozilla/5.0',
+				},
+			});
+
+			expect(res.statusCode).toBe(500);
+			expect(res.headers['cache-control']).toBe('max-age=300');
 		});
 	});
 });
