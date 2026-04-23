@@ -11,8 +11,14 @@ export const issyoubin = defineObject({
 	name: 'issyoubin',
 	options: {
 		schema: {
+			variation: {
+				type: 'enum',
+				label: 'Variation',
+				enum: ['misuki', 'ai'],
+			},
 		},
 		default: {
+			variation: 'ai',
 		},
 	},
 	placement: 'top',
@@ -34,8 +40,25 @@ export const issyoubin = defineObject({
 		// しょうがないので不透明にする
 		bottleMaterial.transparencyMode = BABYLON.PBRMaterial.PBRMATERIAL_ALPHATEST;
 
+		const applyVariation = () => {
+			if (options.variation === 'misuki') {
+				const tex = new BABYLON.Texture('/client-assets/room/objects/issyoubin/textures/misuki.png', scene, false, false);
+				bottleMaterial.albedoTexture = tex;
+			} else if (options.variation === 'ai') {
+				const tex = new BABYLON.Texture('/client-assets/room/objects/issyoubin/textures/ai.png', scene, false, false);
+				bottleMaterial.albedoTexture = tex;
+			}
+		};
+
+		applyVariation();
+
 		return {
 			onOptionsUpdated: ([k, v]) => {
+				switch (k) {
+					case 'variation':
+						applyVariation();
+						break;
+				}
 			},
 			interactions: {},
 		};
