@@ -41,3 +41,5 @@ minimumReleaseAgeExclude:
   - '@fastify/reply-from' # 脆弱性対応。そのうち消す
   - '@fastify/static' # 脆弱性対応。そのうち消す
   - sanitize-html # 脆弱性対応。そのうち消す
+  # Renovate security update: uuid@14.0.0
+  - uuid@14.0.0
