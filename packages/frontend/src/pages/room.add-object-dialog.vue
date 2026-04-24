@@ -27,12 +27,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			>
 				<img :class="$style.catalogItemThumbnail" :src="`/client-assets/room/object-thumbs/${camelToKebab(def.id)}.png`"/>
 				<div :class="$style.catalogItemName"><MkCondensedLine :minScale="0.5">{{ def.name }}</MkCondensedLine></div>
+				<i v-if="Object.keys(def.options.schema).length > 0" :class="$style.catalogItemCustomizable" class="ti ti-tool"></i>
 			</div>
 		</div>
 		<div v-show="selectedId != null" :class="$style.preview" class="_panel">
 			<canvas ref="canvas" :class="$style.canvas"></canvas>
 			<MkButton :class="$style.unselectButton" small iconOnly @click="selectedId = null"><i class="ti ti-x"></i></MkButton>
-			<MkButton v-if="selectedObjectDef != null && Object.keys(selectedObjectDef.options.schema).length > 0" :class="$style.customizeButton" small iconOnly @click="showObjectOptions = !showObjectOptions"><i class="ti ti-settings"></i></MkButton>
+			<MkButton v-if="selectedObjectDef != null && Object.keys(selectedObjectDef.options.schema).length > 0" :class="$style.customizeButton" small iconOnly @click="showObjectOptions = !showObjectOptions"><i class="ti ti-tool"></i></MkButton>
 
 			<Transition
 				:enterActiveClass="prefer.s.animation ? $style.transition_options_enterActive : ''"
@@ -151,6 +152,7 @@ async function cancel() {
 }
 
 .catalogItem {
+	position: relative;
 	padding: 12px;
 	border: 1px solid var(--border-color);
 	border-radius: 4px;
@@ -168,6 +170,14 @@ async function cancel() {
 
 .catalogItemName {
 	text-align: center;
+}
+
+.catalogItemCustomizable {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	color: var(--MI_THEME-accent);
+	opacity: 0.5;
 }
 
 .preview {
