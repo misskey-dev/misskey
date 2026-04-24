@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton :class="$style.unselectButton" small iconOnly @click="selectedId = null"><i class="ti ti-x"></i></MkButton>
 			<MkButton :class="$style.customizeButton" small iconOnly @click=""><i class="ti ti-settings"></i></MkButton>
 			<div v-if="selectedObjectDef != null && selectedInstanceId != null" :class="$style.customize">
-				<XObjectCustomizeForm :schema="selectedObjectDef.options.schema" :options="selectedObjectOptionsState" @update="(k, v) => { engine.updateObjectOption(k, v); triggerRef(selectedObjectOptionsState) }"></XObjectCustomizeForm>
+				<XObjectCustomizeForm :schema="selectedObjectDef.options.schema" :options="selectedObjectOptionsState" @update="(k, v) => updateObjectOption(k, v)"></XObjectCustomizeForm>
 			</div>
 		</div>
 	</div>
@@ -99,6 +99,11 @@ watch(selectedId, (newId) => {
 		});
 	}
 });
+
+function updateObjectOption(k: string, v: any) {
+	engine.value!.updateObjectOption(k, v);
+	triggerRef(selectedObjectOptionsState);
+}
 
 function ok() {
 	if (selectedId.value == null) return;
