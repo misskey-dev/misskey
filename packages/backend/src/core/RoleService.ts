@@ -533,7 +533,8 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			roleId: In(administratorRoles.map(r => r.id)),
 		}) : [];
 		// TODO: isRootなアカウントも含める
-		return assigns.map(a => a.userId);
+		// Setを経由して重複を除去（ユーザIDは重複する可能性があるので）
+		return [...new Set(assigns.map(a => a.userId))].sort((x, y) => x.localeCompare(y));
 	}
 
 	@bindThis
