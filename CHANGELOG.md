@@ -23,6 +23,8 @@
 - Fix: ID生成アルゴリズムにULIDを使用している場合にMisskeyが正しく動作しない問題を修正
 - Fix: リレー経由で届いたノートがリノートとして表示される問題を修正
 - Fix: robots.txtの内容を調整
+- Fix: 特定のユーザーに管理者権限を持つロールが複数ついている際に、取得できるユーザーIDが重複する問題を修正  
+  (Cherry-picked from https://github.com/lqvp/misskey-tempura/commit/17ed4108cec4b6bd2fd989db5a9091db91fa37a7)
 - Fix: ノートに関する通知で公開範囲が考慮されていない問題を修正  
   (Cherry-picked from https://github.com/lqvp/misskey-tempura/commit/cbce96c520a138b8bcd16890ff6f2952830fa166 originally presented in https://github.com/yojo-art/cherrypick/pull/743)
 
