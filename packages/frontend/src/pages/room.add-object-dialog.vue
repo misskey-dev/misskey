@@ -62,6 +62,7 @@ import { createRoomObjectPreviewEngine, RoomObjectPreviewEngine } from '@/world/
 import { camelToKebab } from '@/world/utility.js';
 import MkButton from '@/components/MkButton.vue';
 import { prefer } from '@/preferences.js';
+import { deepClone } from '@/utility/clone.js';
 
 // TODO: instanceのidと紛らわしいのでid -> typeにする
 
@@ -78,7 +79,7 @@ const dialog = useTemplateRef('dialog');
 const canvas = useTemplateRef('canvas');
 const selectedId = ref<string | null>(null);
 const selectedInstanceId = ref<string | null>(null);
-const selectedObjectOptionsState = shallowRef<RoomStateObject | null>(null);
+const selectedObjectOptionsState = ref<RoomStateObject | null>(null);
 const selectedObjectDef = computed(() => OBJECT_DEFS.find(def => def.id === selectedId.value) ?? null);
 const showObjectOptions = ref(false);
 const engine = shallowRef<RoomObjectPreviewEngine | null>(null);
@@ -106,7 +107,7 @@ watch(selectedId, (newId) => {
 		nextTick(() => {
 			engine.value!.load(newId).then(res => {
 				selectedInstanceId.value = res.id;
-				selectedObjectOptionsState.value = res.options;
+				selectedObjectOptionsState.value = deepClone(res.options);
 				engine.value!.resize();
 			});
 		});
@@ -114,15 +115,15 @@ watch(selectedId, (newId) => {
 });
 
 function updateObjectOption(k: string, v: any) {
-	engine.value!.updateObjectOption(k, v);
-	triggerRef(selectedObjectOptionsState);
+	const updatedOptions = engine.value!.updateObjectOption(k, v);
+	selectedObjectOptionsState.value = deepClone(updatedOptions);
 }
 
 function ok() {
 	if (selectedId.value == null) return;
 	emit('ok', {
 		id: selectedId.value,
-		options: selectedObjectOptionsState.value,
+		options: deepClone(selectedObjectOptionsState.value),
 	});
 	dialog.value?.close();
 }

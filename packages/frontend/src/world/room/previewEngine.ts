@@ -303,6 +303,7 @@ export class RoomObjectPreviewEngine {
 	public updateObjectOption(key: string, value: any) {
 		this.objectOptions[key] = value;
 		this.objectInstance?.onOptionsUpdated?.([key, value]);
+		return this.objectOptions;
 	}
 
 	public clear() {
