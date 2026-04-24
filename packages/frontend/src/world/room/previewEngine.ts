@@ -88,6 +88,12 @@ export class RoomObjectPreviewEngine {
 		this.zGridPreviewPlane.material = gridMaterial;
 		this.zGridPreviewPlane.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
 
+		const gl = new BABYLON.GlowLayer('glow', this.scene, {
+			blurKernelSize: 64,
+		});
+		gl.intensity = 0.5;
+		this.scene.setRenderingAutoClearDepthStencil(gl.renderingGroupId, false);
+
 		if (_DEV_) {
 			window.takeScreenshot = () => {
 				const def = getObjectDef(this.objectType);
