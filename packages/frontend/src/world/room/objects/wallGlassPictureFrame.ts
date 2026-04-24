@@ -93,6 +93,12 @@ export const wallGlassPictureFrame = defineObject({
 		applySize();
 
 		const applyCustomPicture = () => new Promise<void>((resolve) => {
+			// テクスチャの読み込みに失敗したときの救済
+			// TODO: 丁寧な実装に直す
+			setTimeout(() => {
+				resolve();
+			}, 10000);
+
 			if (options.customPicture != null) {
 				const tex = new BABYLON.Texture(options.customPicture, scene, false, false);
 				tex.wrapU = BABYLON.Texture.MIRROR_ADDRESSMODE;
