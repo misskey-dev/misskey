@@ -455,7 +455,8 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			this.emit('loadingProgress', { progress: loadedCount / objects.length });
 		})));
 
-		this.scene.blockMaterialDirtyMechanism = true;
+		// 不具合のもと
+		//this.scene.blockMaterialDirtyMechanism = true;
 
 		if (SNAPSHOT_RENDERING) {
 			// 早く有効にしすぎることが原因かは不明だがクラッシュすることがあるので遅らせてみる

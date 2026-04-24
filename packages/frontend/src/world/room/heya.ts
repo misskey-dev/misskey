@@ -59,10 +59,10 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 	private wallSRoot: BABYLON.TransformNode | null = null;
 	private wallWRoot: BABYLON.TransformNode | null = null;
 	private wallERoot: BABYLON.TransformNode | null = null;
-	private wallNMaterial: BABYLON.Material | null = null;
-	private wallSMaterial: BABYLON.Material | null = null;
-	private wallWMaterial: BABYLON.Material | null = null;
-	private wallEMaterial: BABYLON.Material | null = null;
+	private wallNMaterial: BABYLON.PBRMaterial | null = null;
+	private wallSMaterial: BABYLON.PBRMaterial | null = null;
+	private wallWMaterial: BABYLON.PBRMaterial | null = null;
+	private wallEMaterial: BABYLON.PBRMaterial | null = null;
 
 	constructor(onMeshUpdatedCallback?: ((meshes: BABYLON.AbstractMesh[]) => void) | null) {
 		super(onMeshUpdatedCallback);
@@ -120,14 +120,46 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 			m.material = this.wallEMaterial;
 		}
 
-		this.applyOptions(options);
+		await this.applyOptions(options);
 	}
 
 	public applyOptions(options: SimpleHeyaOptions) {
-		this.wallNMaterial.albedoColor = new BABYLON.Color3(...options.wallN.color);
-		this.wallSMaterial.albedoColor = new BABYLON.Color3(...options.wallS.color);
-		this.wallWMaterial.albedoColor = new BABYLON.Color3(...options.wallW.color);
-		this.wallEMaterial.albedoColor = new BABYLON.Color3(...options.wallE.color);
+		// TODO: 返り値をpromiseにしてちゃんとテクスチャが読み終わってからresolveする
+
+		const apply = (wall: 'N' | 'S' | 'W' | 'E') => {
+			const wallOptions =
+				wall === 'N' ? options.wallN :
+				wall === 'S' ? options.wallS :
+				wall === 'W' ? options.wallW :
+				options.wallE;
+			const targetMaterial =
+				wall === 'N' ? this.wallNMaterial :
+				wall === 'S' ? this.wallSMaterial :
+				wall === 'W' ? this.wallWMaterial :
+				this.wallEMaterial;
+
+			targetMaterial.unfreeze();
+
+			targetMaterial.albedoColor = new BABYLON.Color3(...wallOptions.color);
+
+			const texPath = wallOptions.material === 'wood' ? '/client-assets/room/wall-textures/wood.png'
+				: wallOptions.material === 'concrete' ? '/client-assets/room/wall-textures/concrete.png'
+				: null;
+
+			if (texPath != null) {
+				const tex = new BABYLON.Texture(texPath, this.meshes[0].getScene(), false, false);
+				targetMaterial.albedoTexture = tex;
+			} else {
+				targetMaterial.albedoTexture = null;
+			}
+
+			targetMaterial.freeze();
+		};
+
+		apply('N');
+		apply('S');
+		apply('W');
+		apply('E');
 
 		this.onMeshUpdatedCallback?.(this.meshes);
 	}
