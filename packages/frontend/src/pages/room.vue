@@ -94,6 +94,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton danger @click="revert">戻す</MkButton>
 			<MkButton primary @click="save">保存</MkButton>
 		</div>
+		<MkSelect
+			:modelValue="graphicsQuality" :items="[
+				{ label: 'High', value: 'high' },
+				{ label: 'Medium', value: 'medium' },
+				{ label: 'Low', value: 'low' },
+			]" @update:modelValue="v => graphicsQuality = v"
+		>
+			<template #label>Graphics quality</template>
+		</MkSelect>
+		<MkButton danger @click="reload">reload</MkButton>
 	</template>
 </div>
 </template>
@@ -130,6 +140,7 @@ function resize() {
 const isZenMode = ref(false);
 const isRoomSettingsOpen = ref(false);
 const isChanged = ref(false);
+const graphicsQuality = ref<'low' | 'medium' | 'high'>('medium');
 
 const data = localStorage.getItem('roomData') != null ? JSON.parse(localStorage.getItem('roomData')!) : {
 	heya: {
@@ -166,14 +177,14 @@ const data = localStorage.getItem('roomData') != null ? JSON.parse(localStorage.
 	installedObjects: [],
 };
 
-console.log(data);
-
 let latestData = deepClone(data);
 
 const controller = new RoomController(data);
 
 onMounted(async () => {
-	controller.init(canvas.value!);
+	controller.init(canvas.value!, {
+		graphicsQuality: graphicsQuality.value,
+	});
 
 	canvas.value!.focus();
 
@@ -297,6 +308,12 @@ function save() {
 async function revert() {
 	await controller.reset(latestData);
 	isChanged.value = false;
+}
+
+async function reload() {
+	await controller.reset(null, null, {
+		graphicsQuality: graphicsQuality.value,
+	});
 }
 
 function expor() {

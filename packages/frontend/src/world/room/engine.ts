@@ -26,7 +26,6 @@ import { deepClone } from '@/utility/clone.js';
 const BAKE_TRANSFORM = false; // 実験的
 const SNAPSHOT_RENDERING = true; // 実験的
 const IGNORE_OBJECTS: string[] = []; // for debug
-const USE_GLOW = true; // ドローコールが増えて重い
 const RENDER_OUTDOOR_ENV = false;
 const IN_WEB_WORKER = typeof window === 'undefined';
 
@@ -117,6 +116,7 @@ export type RoomEngineEvents = {
 };
 
 export class RoomEngine extends EventEmitter<RoomEngineEvents> {
+	private useGlow: boolean;
 	private canvas: HTMLCanvasElement;
 	private engine: BABYLON.WebGPUEngine;
 	public scene: BABYLON.Scene;
@@ -218,6 +218,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	constructor(roomState: RoomState, options: {
 		canvas: HTMLCanvasElement;
 		engine: BABYLON.WebGPUEngine;
+		graphicsQuality?: 'low' | 'medium' | 'high';
 	}) {
 		super();
 
@@ -230,9 +231,13 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		};
 		this.canvas = options.canvas;
 
+		this.fps = options.graphicsQuality === 'low' || options.graphicsQuality === 'medium' ? 30 : null;
+		this.useGlow = options.graphicsQuality !== 'low';
+
 		registerBuiltInLoaders();
 
 		this.engine = options.engine;
+		if (options.graphicsQuality === 'low') this.engine.setHardwareScalingLevel(2);
 		this.scene = new BABYLON.Scene(this.engine);
 		// なんかレンダリングがおかしくなるときがあるのでコメントアウト
 		// オブジェクトを選択し、後ろを向いて別のオブジェクトを選択した後、最初のオブジェクトに振り返ると消えているなど
@@ -350,7 +355,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 		this.turnOnRoomLight(true);
 
-		if (USE_GLOW) {
+		if (this.useGlow) {
 			this.gl = new BABYLON.GlowLayer('glow', this.scene, {
 				//mainTextureFixedSize: 512,
 				blurKernelSize: 64,
@@ -407,7 +412,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 		if (_DEV_) {
 			// snapshot renderingかつglow layerが有効だとなんかクラッシュする
-			if (!(SNAPSHOT_RENDERING && USE_GLOW)) {
+			if (!(SNAPSHOT_RENDERING && this.useGlow)) {
 				const axes = new AxesViewer(this.scene, 30);
 				axes.xAxis.position = new BABYLON.Vector3(0, 30, 0);
 				axes.yAxis.position = new BABYLON.Vector3(0, 30, 0);

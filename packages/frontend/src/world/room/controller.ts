@@ -13,11 +13,17 @@ import type { RoomState } from './engine.js';
 import type { ObjectDef, RoomStateObject } from './object.js';
 import * as sound from '@/utility/sound.js';
 
+type Options = {
+	workerMode?: boolean;
+	graphicsQuality?: 'low' | 'medium' | 'high';
+};
+
 // 抽象化レイヤー
 export class RoomController {
 	private worker: Worker | null = null;
 	private engine: RoomEngine | null = null;
 	private canvas: HTMLCanvasElement | null = null;
+	private options: Options = {};
 	private isCanvasDragging = false;
 	public isReady = ref(false);
 	public isSitting = ref(false);
@@ -44,21 +50,23 @@ export class RoomController {
 		this.onCanvasClick = this.onCanvasClick.bind(this);
 	}
 
-	public async init(canvas: HTMLCanvasElement, workerMode = false) {
+	public async init(canvas: HTMLCanvasElement, options: Options = {}) {
 		this.canvas = canvas;
 		this.canvas.width = canvas.clientWidth;
 		this.canvas.height = canvas.clientHeight;
+		this.options = options;
 
-		if (workerMode) {
+		if (options.workerMode) {
 			const offscreen = canvas.transferControlToOffscreen();
 			this.worker = new RoomWorker();
-			this.worker.postMessage({ type: 'init', canvas: offscreen, roomState: this.roomState.value }, [offscreen]);
+			this.worker.postMessage({ type: 'init', canvas: offscreen, roomState: this.roomState.value, graphicsQuality: options.graphicsQuality }, [offscreen]);
 			this.isReady.value = true;
 		} else {
 			const babylonEngine = new BABYLON.WebGPUEngine(canvas, { doNotHandleContextLost: true });
 			babylonEngine.compatibilityMode = false;
 			await babylonEngine.initAsync();
-			this.engine = new RoomEngine(this.roomState.value, { canvas, engine: babylonEngine });
+
+			this.engine = new RoomEngine(this.roomState.value, { canvas, engine: babylonEngine, graphicsQuality: options.graphicsQuality });
 			this.engine.on('loadingProgress', ({ progress }) => {
 				this.initializeProgress.value = progress;
 			});
@@ -163,16 +171,16 @@ export class RoomController {
 		return false;
 	}
 
-	public async reset(roomState: RoomState, canvas?: HTMLCanvasElement, workerMode = false) {
+	public async reset(roomState?: RoomState, canvas?: HTMLCanvasElement, options: Options = {}) {
 		this.destroy();
-		this.roomState.value = roomState;
+		if (roomState != null) this.roomState.value = roomState;
 		this.isReady.value = false;
 		this.isSitting.value = false;
 		this.isEditMode.value = false;
 		this.grabbing.value = null;
 		this.selected.value = null;
 		this.initializeProgress.value = 0;
-		await this.init(canvas ?? this.canvas!, workerMode);
+		await this.init(canvas ?? this.canvas!, options ?? this.options);
 	}
 
 	public pauseRender() {
