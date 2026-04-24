@@ -816,6 +816,11 @@ export class NoteCreateService implements OnApplicationShutdown {
 			//#region AP deliver
 			if (!data.localOnly && this.userEntityService.isLocalUser(user)) {
 				(async () => {
+					if (note.visibility === 'specified' && isRenote(note) && note.visibleUserIds.length === 0) {
+						// 自分しか見えるべきではないので配送する必要はない
+						return;
+					}
+
 					const noteActivity = await this.renderNoteOrRenoteActivity(data, note);
 					const dm = this.apDeliverManagerService.createDeliverManager(user, noteActivity);
 
