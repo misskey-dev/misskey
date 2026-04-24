@@ -562,6 +562,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkPreferenceContainer>
 							</SearchMarker>
 
+							<SearchMarker :keywords="['textarea', 'form', 'input', 'resize']">
+								<MkPreferenceContainer k="useTextareaAutoSize">
+									<MkSwitch v-model="useTextareaAutoSize">
+										<template #label><SearchLabel>{{ i18n.ts.textareaAutoSize }}</SearchLabel></template>
+									</MkSwitch>
+								</MkPreferenceContainer>
+							</SearchMarker>
+
 							<SearchMarker :keywords="['text', 'selectable']">
 								<MkPreferenceContainer k="makeEveryTextElementsSelectable">
 									<MkSwitch v-model="makeEveryTextElementsSelectable">
@@ -954,6 +962,7 @@ const enableHorizontalSwipe = prefer.model('enableHorizontalSwipe');
 const showPageTabBarBottom = prefer.model('showPageTabBarBottom');
 const enablePullToRefresh = prefer.model('enablePullToRefresh');
 const useNativeUiForVideoAudioPlayer = prefer.model('useNativeUiForVideoAudioPlayer');
+const useTextareaAutoSize = prefer.model('useTextareaAutoSize');
 const contextMenu = prefer.model('contextMenu');
 const menuStyle = prefer.model('menuStyle');
 const makeEveryTextElementsSelectable = prefer.model('makeEveryTextElementsSelectable');

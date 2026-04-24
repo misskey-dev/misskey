@@ -10,7 +10,7 @@ const onInput = (arg: Event | HTMLTextAreaElement) => {
 
 export const textareaAutosizeDirective = {
 	mounted(el) {
-		if (!prefer.s.useTextAreaAutoSize) return;
+		if (!prefer.s.useTextareaAutoSize) return;
 		onInput(el);
 		el.addEventListener('input', onInput);
 		el.style.resize = 'none';

@@ -1409,6 +1409,7 @@ presets: "プリセット"
 zeroPadding: "ゼロ埋め"
 nothingToConfigure: "設定項目はありません"
 viewRenotedChannel: "リノート先のチャンネルを見る"
+textareaAutoSize: "テキストエリアのサイズを自動で調整する"
 
 _imageEditing:
   _vars:
