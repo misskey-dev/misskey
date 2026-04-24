@@ -348,7 +348,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.shadowGeneratorForSunLight.getShadowMap().refreshRate = 60;
 
 		this.lightContainer = new BABYLON.ClusteredLightContainer('clustered', [], this.scene);
-		this.lightContainer.maxRange = cm(1000);
+		this.lightContainer.maxRange = options.graphicsQuality === 'high' ? cm(1000) : options.graphicsQuality === 'medium' ? cm(100) : cm(50);
 		this.lightContainer.verticalTiles = 32;
 		this.lightContainer.horizontalTiles = 32;
 		this.lightContainer.depthSlices = 32;
