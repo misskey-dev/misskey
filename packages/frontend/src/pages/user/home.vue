@@ -74,8 +74,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<div class="heading">{{ i18n.ts.memo }}</div>
 							<textarea
 								ref="memoTextareaEl"
-								v-autosize
 								v-model="memoDraft"
+								v-autosize
 								rows="1"
 								@focus="isEditingMemo = true"
 								@blur="updateMemo"
