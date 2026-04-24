@@ -5,8 +5,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_panel" :class="$style.root">
-	<div :class="$style.banner" :style="user.bannerUrl ? `background-image: url(${defaultStore.state.disableShowingAnimatedImages ? getStaticImageUrl(user.bannerUrl) : user.bannerUrl})` : ''"></div>
-	<MkAvatar :class="$style.avatar" :user="user" indicator/>
+	<div :class="$style.banner" :style="user.bannerUrl ? { backgroundImage: `url(${prefer.s.disableShowingAnimatedImages ? getStaticImageUrl(user.bannerUrl) : user.bannerUrl})` } : ''"></div>
+	<MkA :to="userPage(user)">
+		<MkAvatar :class="$style.avatar" :user="user" indicator/>
+	</MkA>
 	<div :class="$style.title">
 		<MkA :class="$style.name" :to="userPage(user)"><MkUserName :user="user" :nowrap="false"/></MkA>
 		<p :class="$style.username"><MkAcct :user="user"/></p>
@@ -19,15 +21,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<span v-else style="opacity: 0.7;">{{ i18n.ts.noAccountDescription }}</span>
 	</div>
 	<div :class="$style.status">
-		<div :class="$style.statusItem">
+		<MkA :class="$style.statusItem" :to="userPage(user, 'notes')">
 			<p :class="$style.statusItemLabel">{{ i18n.ts.notes }}</p><span :class="$style.statusItemValue">{{ number(user.notesCount) }}</span>
-		</div>
-		<div v-if="isFollowingVisibleForMe(user)" :class="$style.statusItem">
+		</MkA>
+		<MkA v-if="isFollowingVisibleForMe(user)" :class="$style.statusItem" :to="userPage(user, 'following')">
 			<p :class="$style.statusItemLabel">{{ i18n.ts.following }}</p><span :class="$style.statusItemValue">{{ number(user.followingCount) }}</span>
-		</div>
-		<div v-if="isFollowersVisibleForMe(user)" :class="$style.statusItem">
+		</MkA>
+		<MkA v-if="isFollowersVisibleForMe(user)" :class="$style.statusItem" :to="userPage(user, 'followers')">
 			<p :class="$style.statusItemLabel">{{ i18n.ts.followers }}</p><span :class="$style.statusItemValue">{{ number(user.followersCount) }}</span>
-		</div>
+		</MkA>
 	</div>
 	<MkFollowButton v-if="user.id != $i?.id" :class="$style.follow" :user="user" mini/>
 </div>
@@ -39,10 +41,10 @@ import MkFollowButton from '@/components/MkFollowButton.vue';
 import number from '@/filters/number.js';
 import { userPage } from '@/filters/user.js';
 import { i18n } from '@/i18n.js';
-import { $i } from '@/account.js';
-import { isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/scripts/isFfVisibleForMe.js';
-import { getStaticImageUrl } from '@/scripts/media-proxy.js';
-import { defaultStore } from '@/store.js';
+import { $i } from '@/i.js';
+import { isFollowingVisibleForMe, isFollowersVisibleForMe } from '@/utility/isFfVisibleForMe.js';
+import { getStaticImageUrl } from '@/utility/media-proxy.js';
+import { prefer } from '@/preferences.js';
 
 defineProps<{
 	user: Misskey.entities.UserDetailed;

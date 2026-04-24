@@ -5,38 +5,44 @@
 
 // TODO: なんでもかんでもos.tsに突っ込むのやめたいのでよしなに分割する
 
-import { Component, markRaw, Ref, ref, defineAsyncComponent, nextTick } from 'vue';
-import { EventEmitter } from 'eventemitter3';
+import { markRaw, ref, defineAsyncComponent, nextTick, effectScope, isRef, shallowReactive, watch } from 'vue';
 import * as Misskey from 'misskey-js';
-import type { ComponentProps as CP } from 'vue-component-type-helpers';
-import type { Form, GetFormResultType } from '@/scripts/form.js';
+import type { Component, MaybeRef, ShallowReactive } from 'vue';
+import type { ComponentEmit, ComponentProps as CP } from 'vue-component-type-helpers';
+import type { Form, GetFormResultType } from '@/utility/form.js';
 import type { MenuItem } from '@/types/menu.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { defaultStore } from '@/store.js';
+import type { PostFormProps } from '@/types/post-form.js';
+import type { UploaderFeatures } from '@/composables/use-uploader.js';
+import type { MkSelectItem } from '@/components/MkSelect.vue';
+import type { OptionValue } from '@/types/option-value.js';
+import type { MkDialogReturnType } from '@/components/MkDialog.vue';
+import type { OverloadToUnion } from '@/types/overload-to-union.js';
+import type MkRoleSelectDialog_TypeReferenceOnly from '@/components/MkRoleSelectDialog.vue';
+import type MkEmojiPickerDialog_TypeReferenceOnly from '@/components/MkEmojiPickerDialog.vue';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { prefer } from '@/preferences.js';
 import { i18n } from '@/i18n.js';
 import MkPostFormDialog from '@/components/MkPostFormDialog.vue';
 import MkWaitingDialog from '@/components/MkWaitingDialog.vue';
 import MkPageWindow from '@/components/MkPageWindow.vue';
 import MkToast from '@/components/MkToast.vue';
 import MkDialog from '@/components/MkDialog.vue';
-import MkPasswordDialog from '@/components/MkPasswordDialog.vue';
-import MkEmojiPickerDialog from '@/components/MkEmojiPickerDialog.vue';
 import MkPopupMenu from '@/components/MkPopupMenu.vue';
 import MkContextMenu from '@/components/MkContextMenu.vue';
-import { copyToClipboard } from '@/scripts/copy-to-clipboard.js';
-import { pleaseLogin } from '@/scripts/please-login.js';
-import { showMovedDialog } from '@/scripts/show-moved-dialog.js';
-import { getHTMLElementOrNull } from '@/scripts/get-dom-node-or-null.js';
-import { focusParent } from '@/scripts/focus.js';
-import type { PostFormProps } from '@/types/post-form.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
+import { pleaseLogin } from '@/utility/please-login.js';
+import { showMovedDialog } from '@/utility/show-moved-dialog.js';
+import { getHTMLElementOrNull } from '@/utility/get-dom-node-or-null.js';
+import { focusParent } from '@/utility/focus.js';
 
 export const openingWindowsCount = ref(0);
 
-export const apiWithDialog = (<E extends keyof Misskey.Endpoints, P extends Misskey.Endpoints[E]['req'] = Misskey.Endpoints[E]['req']>(
+export type ApiWithDialogCustomErrors = Record<string, { title?: string; text: string; }>;
+export const apiWithDialog = (<E extends keyof Misskey.Endpoints>(
 	endpoint: E,
-	data: P,
+	data: Misskey.Endpoints[E]['req'],
 	token?: string | null | undefined,
-	customErrors?: Record<string, { title?: string; text: string; }>,
+	customErrors?: ApiWithDialogCustomErrors,
 ) => {
 	const promise = misskeyApi(endpoint, data, token);
 	promiseDialog(promise, null, async (err) => {
@@ -61,7 +67,6 @@ export const apiWithDialog = (<E extends keyof Misskey.Endpoints, P extends Miss
 			});
 			if (result === 'copy') {
 				copyToClipboard(`Endpoint: ${endpoint}\nInfo: ${JSON.stringify(err.info)}\nDate: ${date}`);
-				success();
 			}
 			return;
 		} else if (err.code === 'RATE_LIMIT_EXCEEDED') {
@@ -73,7 +78,7 @@ export const apiWithDialog = (<E extends keyof Misskey.Endpoints, P extends Miss
 		} else if (err.code === 'ROLE_PERMISSION_DENIED') {
 			title = i18n.ts.permissionDeniedError;
 			text = i18n.ts.permissionDeniedErrorDescription;
-		} else if (err.code.startsWith('TOO_MANY')) {
+		} else if (err.code.startsWith('TOO_MANY')) { // TODO: バックエンドに kind: client/contentsLimitExceeded みたいな感じで送るように統一してもらってそれで判定する
 			title = i18n.ts.youCannotCreateAnymore;
 			text = `${i18n.ts.error}: ${err.id}`;
 		} else if (err.message.startsWith('Unexpected token')) {
@@ -140,7 +145,7 @@ let popupIdCount = 0;
 export const popups = ref<{
 	id: number;
 	component: Component;
-	props: Record<string, any>;
+	props: ShallowReactive<Record<string, any>>;
 	events: Record<string, any>;
 }[]>([]);
 
@@ -155,54 +160,118 @@ export function claimZIndex(priority: keyof typeof zIndexes = 'low'): number {
 	return zIndexes[priority];
 }
 
-// InstanceType<typeof Component>['$emit'] だとインターセクション型が返ってきて
-// 使い物にならないので、代わりに ['$props'] から色々省くことで emit の型を生成する
-// FIXME: 何故か *.ts ファイルからだと型がうまく取れない？ことがあるのをなんとかしたい
-type ComponentEmit<T> = T extends new () => { $props: infer Props }
-	? [keyof Pick<T, Extract<keyof T, `on${string}`>>] extends [never]
-		? Record<string, unknown> // *.ts ファイルから型がうまく取れないとき用（これがないと {} になって型エラーがうるさい）
-		: EmitsExtractor<Props>
-	: T extends (...args: any) => any
-		? ReturnType<T> extends { [x: string]: any; __ctx?: { [x: string]: any; props: infer Props } }
-			? [keyof Pick<T, Extract<keyof T, `on${string}`>>] extends [never]
-				? Record<string, unknown>
-				: EmitsExtractor<Props>
-			: never
-		: never;
-
 // props に ref を許可するようにする
-type ComponentProps<T extends Component> = { [K in keyof CP<T>]: CP<T>[K] | Ref<CP<T>[K]> };
+type PropsWithRefs<P> = { [K in keyof P]: MaybeRef<P[K]> };
+type ComponentProps<T extends Component> = PropsWithRefs<CP<T>>;
 
-type EmitsExtractor<T> = {
-	[K in keyof T as K extends `onVnode${string}` ? never : K extends `on${infer E}` ? Uncapitalize<E> : K extends string ? never : K]: T[K];
+// 関数の引数が any[] (もっとも広義なもの) かどうかを判定し、any[] の場合は排除 (never) するヘルパー
+type FilterSpecificFunc<T> = T extends (...args: any[]) => void
+	? (any[] extends Parameters<T> ? never : T)
+	: T;
+
+// オブジェクトの各プロパティに対して再帰的、あるいは単純に適用する型関数
+type CleanFunctions<T> = {
+	[K in keyof T]: T[K] extends (...args: any[]) => any
+		? FilterSpecificFunc<T[K]>
+		: T[K];
 };
 
+// emitの関数群をオブジェクト型に変換する（InstanceType<Component>['$emit']はFunctionalComponent = ジェネリックコンポーネントでは使用できない）
+type ComponentEmitsObject<C extends Component, IE = OverloadToUnion<ComponentEmit<C>>> = CleanFunctions<{
+	[K in IE extends (evName: infer U, ...args: any[]) => any ? U & PropertyKey : never]: IE extends (evName: K, ...args: infer A) => infer R
+		? (...args: A) => R
+		: (...args: any[]) => void;
+}>;
+
+// ref をそのまま保持せず popup 側の reactive props に同期するようにして、スコープをまたいでリアクティビティが切れるのを防止する
+function normalizePopupProps<T extends Record<string, any>>(props: T): {
+	resolvedProps: ShallowReactive<T>;
+	stopSync: () => void;
+} {
+	const resolvedProps = shallowReactive<T>({} as T) as T; // shallowReactiveの返り値はreadonlyだが、実際には書き換えるので元の型で扱う
+	const scope = effectScope();
+
+	scope.run(() => {
+		for (const [key, value] of Object.entries(props)) {
+			if (isRef(value)) {
+				watch(value, (resolvedValue) => {
+					resolvedProps[key as keyof T] = resolvedValue as T[keyof T];
+				}, { immediate: true });
+			} else {
+				resolvedProps[key as keyof T] = value;
+			}
+		}
+	});
+
+	return {
+		resolvedProps: resolvedProps as ShallowReactive<T>,
+		stopSync: () => scope.stop(),
+	};
+}
+
+// NOTE: ジェネリック型つきのコンポーネントでは、emitsの型推論がうまく働かない（型変数を取り出すことはできないため）
+// NOTE: emitsがOverloadToUnionで対応しているオーバーロードの数を超える場合は、OverloadToUnionの個数を増やせばOK
 export function popup<T extends Component>(
 	component: T,
 	props: ComponentProps<T>,
-	events: ComponentEmit<T> = {} as ComponentEmit<T>,
+	events: Partial<ComponentEmitsObject<T>> = {},
 ): { dispose: () => void } {
 	markRaw(component);
 
 	const id = ++popupIdCount;
+	const { resolvedProps, stopSync } = normalizePopupProps(props);
+	let disposed = false;
 	const dispose = () => {
-		// このsetTimeoutが無いと挙動がおかしくなる(autocompleteが閉じなくなる)。Vueのバグ？
-		window.setTimeout(() => {
+		if (disposed) return;
+		disposed = true;
+		stopSync();
+
+		nextTick(() => {
 			popups.value = popups.value.filter(p => p.id !== id);
-		}, 0);
-	};
-	const state = {
-		component,
-		props,
-		events,
-		id,
+		});
 	};
 
-	popups.value.push(state);
+	popups.value.push({
+		component,
+		props: resolvedProps,
+		events,
+		id,
+	});
 
 	return {
 		dispose,
 	};
+}
+
+export async function popupAsyncWithDialog<T extends Component>(
+	componentFetching: Promise<T>,
+	props: ComponentProps<T>,
+	events: Partial<ComponentEmitsObject<T>> = {},
+): Promise<{ dispose: () => void }> {
+	let component: T;
+	let closeWaiting = () => { };
+
+	const timer = window.setTimeout(() => {
+		closeWaiting = waiting();
+	}, 100); // コンポーネントがキャッシュされている場合にもwaitingが表示されて画面がちらつくのを防止するためにラグを追加
+
+	try {
+		component = await componentFetching;
+	} catch (err) {
+		window.clearTimeout(timer);
+		closeWaiting();
+		alert({
+			type: 'error',
+			title: i18n.ts.somethingHappened,
+			text: 'CODE: ASYNC_COMP_LOAD_FAIL',
+		});
+		throw err;
+	}
+
+	window.clearTimeout(timer);
+	closeWaiting();
+
+	return popup(component, props, events);
 }
 
 export function pageWindow(path: string) {
@@ -256,23 +325,19 @@ export function confirm(props: {
 	});
 }
 
-// TODO: const T extends ... にしたい
-// https://zenn.dev/general_link/articles/813e47b7a0eef7#const-type-parameters
-export function actions<T extends {
+type ActionsAction = {
 	value: string;
 	text: string;
-	primary?: boolean,
-	danger?: boolean,
-}[]>(props: {
+	primary?: boolean;
+	danger?: boolean;
+};
+
+export function actions<const T extends ActionsAction[]>(props: {
 	type: 'error' | 'info' | 'success' | 'warning' | 'waiting' | 'question';
 	title?: string;
 	text?: string;
 	actions: T;
-}): Promise<{
-	canceled: true; result: undefined;
-} | {
-	canceled: false; result: T[number]['value'];
-}> {
+}): Promise<MkDialogReturnType<T[number]['value']>> {
 	return new Promise(resolve => {
 		const { dispose } = popup(MkDialog, {
 			...props,
@@ -286,7 +351,7 @@ export function actions<T extends {
 			})),
 		}, {
 			done: result => {
-				resolve(result ? result : { canceled: true });
+				resolve(result as MkDialogReturnType<T[number]['value']>);
 			},
 			closed: () => dispose(),
 		});
@@ -303,11 +368,18 @@ export function inputText(props: {
 	default: string;
 	minLength?: number;
 	maxLength?: number;
-}): Promise<{
-	canceled: true; result: undefined;
-} | {
-	canceled: false; result: string;
-}>;
+}): Promise<MkDialogReturnType<string>>;
+// min lengthが指定されてたら result は null になり得ないことを保証する overload function
+export function inputText(props: {
+	type?: 'text' | 'email' | 'password' | 'url';
+	title?: string;
+	text?: string;
+	placeholder?: string | null;
+	autocomplete?: string;
+	default?: string;
+	minLength: number;
+	maxLength?: number;
+}): Promise<MkDialogReturnType<string>>;
 export function inputText(props: {
 	type?: 'text' | 'email' | 'password' | 'url';
 	title?: string;
@@ -317,11 +389,7 @@ export function inputText(props: {
 	default?: string | null;
 	minLength?: number;
 	maxLength?: number;
-}): Promise<{
-	canceled: true; result: undefined;
-} | {
-	canceled: false; result: string | null;
-}>;
+}): Promise<MkDialogReturnType<string | null>>;
 export function inputText(props: {
 	type?: 'text' | 'email' | 'password' | 'url';
 	title?: string;
@@ -331,11 +399,7 @@ export function inputText(props: {
 	default?: string | null;
 	minLength?: number;
 	maxLength?: number;
-}): Promise<{
-	canceled: true; result: undefined;
-} | {
-	canceled: false; result: string | null;
-}> {
+}): Promise<MkDialogReturnType<string | null>> {
 	return new Promise(resolve => {
 		const { dispose } = popup(MkDialog, {
 			title: props.title,
@@ -350,7 +414,7 @@ export function inputText(props: {
 			},
 		}, {
 			done: result => {
-				resolve(result ? result : { canceled: true });
+				resolve(result as MkDialogReturnType<string | null>);
 			},
 			closed: () => dispose(),
 		});
@@ -364,33 +428,21 @@ export function inputNumber(props: {
 	placeholder?: string | null;
 	autocomplete?: string;
 	default: number;
-}): Promise<{
-	canceled: true; result: undefined;
-} | {
-	canceled: false; result: number;
-}>;
+}): Promise<MkDialogReturnType<number>>;
 export function inputNumber(props: {
 	title?: string;
 	text?: string;
 	placeholder?: string | null;
 	autocomplete?: string;
 	default?: number | null;
-}): Promise<{
-	canceled: true; result: undefined;
-} | {
-	canceled: false; result: number | null;
-}>;
+}): Promise<MkDialogReturnType<number | null>>;
 export function inputNumber(props: {
 	title?: string;
 	text?: string;
 	placeholder?: string | null;
 	autocomplete?: string;
 	default?: number | null;
-}): Promise<{
-	canceled: true; result: undefined;
-} | {
-	canceled: false; result: number | null;
-}> {
+}): Promise<MkDialogReturnType<number | null>> {
 	return new Promise(resolve => {
 		const { dispose } = popup(MkDialog, {
 			title: props.title,
@@ -403,35 +455,31 @@ export function inputNumber(props: {
 			},
 		}, {
 			done: result => {
-				resolve(result ? result : { canceled: true });
+				resolve(result as MkDialogReturnType<number | null>);
 			},
 			closed: () => dispose(),
 		});
 	});
 }
 
-export function inputDate(props: {
+export function inputDatetime(props: {
 	title?: string;
 	text?: string;
 	placeholder?: string | null;
 	default?: string | null;
-}): Promise<{
-	canceled: true; result: undefined;
-} | {
-	canceled: false; result: Date;
-}> {
+}): Promise<MkDialogReturnType<Date>> {
 	return new Promise(resolve => {
 		const { dispose } = popup(MkDialog, {
 			title: props.title,
 			text: props.text,
 			input: {
-				type: 'date',
+				type: 'datetime-local',
 				placeholder: props.placeholder,
 				default: props.default ?? null,
 			},
 		}, {
 			done: result => {
-				resolve(result ? { result: new Date(result.result), canceled: false } : { result: undefined, canceled: true });
+				resolve(result != null && typeof result.result === 'string' ? { result: new Date(result.result), canceled: false } : { result: undefined, canceled: true });
 			},
 			closed: () => dispose(),
 		});
@@ -444,7 +492,7 @@ export function authenticateDialog(): Promise<{
 	canceled: false; result: { password: string; token: string | null; };
 }> {
 	return new Promise(resolve => {
-		const { dispose } = popup(MkPasswordDialog, {}, {
+		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkPasswordDialog.vue')), {}, {
 			done: result => {
 				resolve(result ? { canceled: false, result } : { canceled: true, result: undefined });
 			},
@@ -453,51 +501,12 @@ export function authenticateDialog(): Promise<{
 	});
 }
 
-type SelectItem<C> = {
-	value: C;
-	text: string;
-};
-
-// default が指定されていたら result は null になり得ないことを保証する overload function
-export function select<C = unknown>(props: {
+export function select<C extends OptionValue, D extends C | null = null>(props: {
 	title?: string;
 	text?: string;
-	default: string;
-	items: (SelectItem<C> | {
-		sectionTitle: string;
-		items: SelectItem<C>[];
-	} | undefined)[];
-}): Promise<{
-	canceled: true; result: undefined;
-} | {
-	canceled: false; result: C;
-}>;
-export function select<C = unknown>(props: {
-	title?: string;
-	text?: string;
-	default?: string | null;
-	items: (SelectItem<C> | {
-		sectionTitle: string;
-		items: SelectItem<C>[];
-	} | undefined)[];
-}): Promise<{
-	canceled: true; result: undefined;
-} | {
-	canceled: false; result: C | null;
-}>;
-export function select<C = unknown>(props: {
-	title?: string;
-	text?: string;
-	default?: string | null;
-	items: (SelectItem<C> | {
-		sectionTitle: string;
-		items: SelectItem<C>[];
-	} | undefined)[];
-}): Promise<{
-	canceled: true; result: undefined;
-} | {
-	canceled: false; result: C | null;
-}> {
+	default?: D;
+	items: (MkSelectItem<C> | undefined)[];
+}): Promise<MkDialogReturnType<Exclude<D, undefined> extends null ? C | null : C>> {
 	return new Promise(resolve => {
 		const { dispose } = popup(MkDialog, {
 			title: props.title,
@@ -508,7 +517,7 @@ export function select<C = unknown>(props: {
 			},
 		}, {
 			done: result => {
-				resolve(result ? result : { canceled: true });
+				resolve(result as MkDialogReturnType<Exclude<D, undefined> extends null ? C | null : C>);
 			},
 			closed: () => dispose(),
 		});
@@ -531,24 +540,43 @@ export function success(): Promise<void> {
 	});
 }
 
-export function waiting(): Promise<void> {
-	return new Promise(resolve => {
-		const showing = ref(true);
-		const { dispose } = popup(MkWaitingDialog, {
-			success: false,
-			showing: showing,
-		}, {
-			done: () => resolve(),
-			closed: () => dispose(),
-		});
+export function waiting(options: { text?: string } = {}) {
+	window.document.body.setAttribute('inert', 'true');
+
+	const showing = ref(true);
+	const isSuccess = ref(false);
+
+	function done(doneOptions: { success?: boolean } = {}) {
+		if (doneOptions.success) {
+			isSuccess.value = true;
+			window.setTimeout(() => {
+				showing.value = false;
+			}, 1000);
+		} else {
+			showing.value = false;
+		}
+	}
+
+	// NOTE: dynamic importすると挙動がおかしくなる(showingの変更が伝播しない)
+	const { dispose } = popup(MkWaitingDialog, {
+		success: isSuccess,
+		showing: showing,
+		text: options.text,
+	}, {
+		closed: () => {
+			window.document.body.removeAttribute('inert');
+			dispose();
+		},
 	});
+
+	return done;
 }
 
 export function form<F extends Form>(title: string, f: F): Promise<{ canceled: true, result?: undefined } | { canceled?: false, result: GetFormResultType<F> }> {
 	return new Promise(resolve => {
 		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkFormDialog.vue')), { title, form: f }, {
 			done: result => {
-				resolve(result);
+				resolve(result as { canceled?: false, result: GetFormResultType<F> });
 			},
 			closed: () => dispose(),
 		});
@@ -569,42 +597,27 @@ export async function selectUser(opts: { includeSelf?: boolean; localOnly?: bool
 	});
 }
 
-export async function selectDriveFile(multiple: boolean): Promise<Misskey.entities.DriveFile[]> {
-	return new Promise(resolve => {
-		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkDriveSelectDialog.vue')), {
-			type: 'file',
-			multiple,
-		}, {
-			done: files => {
-				if (files) {
-					resolve(files);
-				}
+export async function selectRole(params: ComponentProps<typeof MkRoleSelectDialog_TypeReferenceOnly>): Promise<
+	{ canceled: true; result: undefined; } |
+	{ canceled: false; result: Misskey.entities.Role[] }
+> {
+	return new Promise((resolve) => {
+		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkRoleSelectDialog.vue')), params, {
+			done: roles => {
+				resolve({ canceled: false, result: roles });
+			},
+			close: () => {
+				resolve({ canceled: true, result: undefined });
 			},
 			closed: () => dispose(),
 		});
 	});
 }
 
-export async function selectDriveFolder(multiple: boolean): Promise<Misskey.entities.DriveFolder[]> {
+export async function pickEmoji(anchorElement: HTMLElement, opts: ComponentProps<typeof MkEmojiPickerDialog_TypeReferenceOnly>): Promise<string> {
 	return new Promise(resolve => {
-		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkDriveSelectDialog.vue')), {
-			type: 'folder',
-			multiple,
-		}, {
-			done: folders => {
-				if (folders) {
-					resolve(folders);
-				}
-			},
-			closed: () => dispose(),
-		});
-	});
-}
-
-export async function pickEmoji(src: HTMLElement, opts: ComponentProps<typeof MkEmojiPickerDialog>): Promise<string> {
-	return new Promise(resolve => {
-		const { dispose } = popup(MkEmojiPickerDialog, {
-			src,
+		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerDialog.vue')), {
+			anchorElement,
 			...opts,
 		}, {
 			done: emoji => {
@@ -615,42 +628,50 @@ export async function pickEmoji(src: HTMLElement, opts: ComponentProps<typeof Mk
 	});
 }
 
-export async function cropImage(image: Misskey.entities.DriveFile, options: {
-	aspectRatio: number;
-	uploadFolder?: string | null;
-}): Promise<Misskey.entities.DriveFile> {
+export async function cropImageFile<F extends File | Blob>(imageFile: F, options: {
+	aspectRatio: number | null;
+}): Promise<F> {
 	return new Promise(resolve => {
 		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkCropperDialog.vue')), {
-			file: image,
+			imageFile: imageFile,
 			aspectRatio: options.aspectRatio,
-			uploadFolder: options.uploadFolder,
 		}, {
 			ok: x => {
-				resolve(x);
+				resolve(x as F);
 			},
 			closed: () => dispose(),
 		});
 	});
 }
 
-export function popupMenu(items: MenuItem[], src?: HTMLElement | EventTarget | null, options?: {
+export function popupMenu(items: (MenuItem | null)[], anchorElement?: HTMLElement | EventTarget | null, options?: {
 	align?: string;
 	width?: number;
 	onClosing?: () => void;
+	onClosed?: () => void;
+	debugDisablePredictionCone?: boolean;
+	debugShowPredictionCone?: boolean;
 }): Promise<void> {
-	let returnFocusTo = getHTMLElementOrNull(src) ?? getHTMLElementOrNull(document.activeElement);
+	if (!(anchorElement instanceof HTMLElement)) {
+		anchorElement = null;
+	}
+
+	let returnFocusTo = getHTMLElementOrNull(anchorElement) ?? getHTMLElementOrNull(window.document.activeElement);
 	return new Promise(resolve => nextTick(() => {
 		const { dispose } = popup(MkPopupMenu, {
-			items,
-			src,
+			items: items.filter(x => x != null),
+			anchorElement,
 			width: options?.width,
 			align: options?.align,
 			returnFocusTo,
+			debugDisablePredictionCone: options?.debugDisablePredictionCone,
+			debugShowPredictionCone: options?.debugShowPredictionCone,
 		}, {
 			closed: () => {
 				resolve();
 				dispose();
 				returnFocusTo = null;
+				options?.onClosed?.();
 			},
 			closing: () => {
 				options?.onClosing?.();
@@ -659,15 +680,15 @@ export function popupMenu(items: MenuItem[], src?: HTMLElement | EventTarget | n
 	}));
 }
 
-export function contextMenu(items: MenuItem[], ev: MouseEvent): Promise<void> {
+export function contextMenu(items: MenuItem[], ev: PointerEvent): Promise<void> {
 	if (
-		defaultStore.state.contextMenu === 'native' ||
-		(defaultStore.state.contextMenu === 'appWithShift' && !ev.shiftKey)
+		prefer.s.contextMenu === 'native' ||
+		(prefer.s.contextMenu === 'appWithShift' && !ev.shiftKey)
 	) {
 		return Promise.resolve();
 	}
 
-	let returnFocusTo = getHTMLElementOrNull(ev.currentTarget ?? ev.target) ?? getHTMLElementOrNull(document.activeElement);
+	let returnFocusTo = getHTMLElementOrNull(ev.currentTarget ?? ev.target) ?? getHTMLElementOrNull(window.document.activeElement);
 	ev.preventDefault();
 	return new Promise(resolve => nextTick(() => {
 		const { dispose } = popup(MkContextMenu, {
@@ -688,8 +709,8 @@ export function contextMenu(items: MenuItem[], ev: MouseEvent): Promise<void> {
 	}));
 }
 
-export function post(props: PostFormProps = {}): Promise<void> {
-	pleaseLogin({
+export async function post(props: PostFormProps = {}): Promise<void> {
+	const isLoggedIn = await pleaseLogin({
 		openOnRemote: (props.initialText || props.initialNote ? {
 			type: 'share',
 			params: {
@@ -699,6 +720,7 @@ export function post(props: PostFormProps = {}): Promise<void> {
 			},
 		} : undefined),
 	});
+	if (!isLoggedIn) return;
 
 	showMovedDialog();
 	return new Promise(resolve => {
@@ -716,8 +738,6 @@ export function post(props: PostFormProps = {}): Promise<void> {
 	});
 }
 
-export const deckGlobalEvents = new EventEmitter();
-
 /*
 export function checkExistence(fileData: ArrayBuffer): Promise<any> {
 	return new Promise((resolve, reject) => {
@@ -731,3 +751,57 @@ export function checkExistence(fileData: ArrayBuffer): Promise<any> {
 		});
 	});
 }*/
+
+export function chooseFileFromPc(
+	options: {
+		multiple?: boolean;
+	} = {},
+): Promise<File[]> {
+	return new Promise((res, rej) => {
+		const input = window.document.createElement('input');
+		input.type = 'file';
+		input.multiple = options.multiple ?? false;
+		input.onchange = () => {
+			if (!input.files) return res([]);
+
+			res(Array.from(input.files));
+
+			// 一応廃棄
+			(window as any).__misskey_input_ref__ = null;
+		};
+
+		// https://qiita.com/fukasawah/items/b9dc732d95d99551013d
+		// iOS Safari で正常に動かす為のおまじない
+		(window as any).__misskey_input_ref__ = input;
+
+		input.click();
+	});
+}
+
+export async function launchUploader(
+	files: File[],
+	options?: {
+		folderId?: string | null;
+		multiple?: boolean;
+		features?: UploaderFeatures;
+	},
+): Promise<Misskey.entities.DriveFile[]> {
+	return new Promise((res, rej) => {
+		if (files.length === 0) return rej();
+		let dispose: () => void;
+		popupAsyncWithDialog(import('@/components/MkUploaderDialog.vue').then(x => x.default), {
+			files: markRaw(files),
+			folderId: options?.folderId,
+			multiple: options?.multiple,
+			features: options?.features,
+		}, {
+			done: driveFiles => {
+				if (driveFiles.length === 0) return rej();
+				res(driveFiles);
+			},
+			closed: () => dispose(),
+		}).then(d => dispose = d.dispose, rej);
+	});
+}
+
+export const pageFolderTeleportCount = ref(0);

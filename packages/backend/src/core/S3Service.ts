@@ -28,7 +28,7 @@ export class S3Service {
 			? `${meta.objectStorageUseSSL ? 'https' : 'http'}://${meta.objectStorageEndpoint}`
 			: `${meta.objectStorageUseSSL ? 'https' : 'http'}://example.net`; // dummy url to select http(s) agent
 
-		const agent = this.httpRequestService.getAgentByUrl(new URL(u), !meta.objectStorageUseProxy);
+		const agent = this.httpRequestService.getAgentByUrl(new URL(u), !meta.objectStorageUseProxy, true);
 		const handlerOption: NodeHttpHandlerOptions = {};
 		if (meta.objectStorageUseSSL) {
 			handlerOption.httpsAgent = agent as https.Agent;
@@ -46,6 +46,8 @@ export class S3Service {
 			tls: meta.objectStorageUseSSL,
 			forcePathStyle: meta.objectStorageEndpoint ? meta.objectStorageS3ForcePathStyle : false, // AWS with endPoint omitted
 			requestHandler: new NodeHttpHandler(handlerOption),
+			requestChecksumCalculation: 'WHEN_REQUIRED',
+			responseChecksumValidation: 'WHEN_REQUIRED',
 		});
 	}
 

@@ -2,7 +2,7 @@
 	"compilerOptions": {
 		"allowJs": true,
 		"noEmitOnError": false,
-		"noImplicitAny": false,
+		"noImplicitAny": true,
 		"noImplicitReturns": true,
 		"noUnusedParameters": false,
 		"noUnusedLocals": false,
@@ -10,8 +10,8 @@
 		"declaration": false,
 		"sourceMap": false,
 		"target": "ES2022",
-		"module": "nodenext",
-		"moduleResolution": "nodenext",
+		"module": "ES2022",
+		"moduleResolution": "Bundler",
 		"removeComments": false,
 		"noLib": false,
 		"strict": true,
@@ -21,7 +21,7 @@
 		"allowSyntheticDefaultImports": true,
 		"isolatedModules": true,
 		"useDefineForClassFields": true,
-		"baseUrl": ".",
+		"verbatimModuleSyntax": true,
 		"paths": {
 			"@/*": ["./src/*"],
 			"@@/*": ["../frontend-shared/*"]

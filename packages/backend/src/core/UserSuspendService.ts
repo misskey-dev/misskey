@@ -49,8 +49,8 @@ export class UserSuspendService {
 		});
 
 		(async () => {
-			await this.postSuspend(user).catch(e => {});
-			await this.unFollowAll(user).catch(e => {});
+			await this.postSuspend(user).catch(_ => {});
+			await this.unFollowAll(user).catch(_ => {});
 		})();
 	}
 
@@ -67,7 +67,7 @@ export class UserSuspendService {
 		});
 
 		(async () => {
-			await this.postUnsuspend(user).catch(e => {});
+			await this.postUnsuspend(user).catch(_ => {});
 		})();
 	}
 

@@ -21,28 +21,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { Interpreter, Parser, utils } from '@syuilo/aiscript';
-import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import { GetFormResultType } from '@/scripts/form.js';
+import { useWidgetPropsManager } from './widget.js';
+import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
+import type { Value } from '@syuilo/aiscript/interpreter/value.js';
 import * as os from '@/os.js';
 import MkContainer from '@/components/MkContainer.vue';
-import { aiScriptReadline, createAiScriptEnv } from '@/scripts/aiscript/api.js';
-import { $i } from '@/account.js';
+import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
+import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
+import { genId } from '@/utility/id.js';
 
 const name = 'aiscript';
 
 const widgetPropsDef = {
 	showHeader: {
-		type: 'boolean' as const,
+		type: 'boolean',
+		label: i18n.ts._widgetOptions.showHeader,
 		default: true,
 	},
 	script: {
-		type: 'string' as const,
+		type: 'string',
+		label: i18n.ts.script,
 		multiline: true,
 		default: '(1 + 1)',
 		hidden: true,
 	},
-};
+} satisfies FormWithDefault;
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
@@ -72,7 +77,7 @@ const run = async () => {
 		in: aiScriptReadline,
 		out: (value) => {
 			logs.value.push({
-				id: Math.random().toString(),
+				id: genId(),
 				text: value.type === 'str' ? value.value : utils.valToString(value),
 				print: true,
 			});
@@ -80,8 +85,8 @@ const run = async () => {
 		log: (type, params) => {
 			switch (type) {
 				case 'end': logs.value.push({
-					id: Math.random().toString(),
-					text: utils.valToString(params.val, true),
+					id: genId(),
+					text: utils.valToString(params.val as Value, true),
 					print: false,
 				}); break;
 				default: break;
@@ -104,7 +109,7 @@ const run = async () => {
 	} catch (err) {
 		os.alert({
 			type: 'error',
-			text: err,
+			text: err instanceof Error ? err.message : String(err),
 		});
 	}
 };

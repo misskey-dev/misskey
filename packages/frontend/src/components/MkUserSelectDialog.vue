@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header>{{ i18n.ts.selectUser }}</template>
 	<div>
 		<div :class="$style.form">
-			<MkInput v-if="localOnly" v-model="username" :autofocus="true" @update:modelValue="search">
+			<MkInput v-if="computedLocalOnly" v-model="username" :autofocus="true" @update:modelValue="search">
 				<template #label>{{ i18n.ts.username }}</template>
 				<template #prefix>@</template>
 			</MkInput>
@@ -61,16 +61,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, shallowRef } from 'vue';
+import { onMounted, ref, computed, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
+import { host as currentHost, hostname } from '@@/js/config.js';
 import MkInput from '@/components/MkInput.vue';
 import FormSplit from '@/components/form/split.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { defaultStore } from '@/store.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
-import { $i } from '@/account.js';
-import { host as currentHost, hostname } from '@@/js/config.js';
+import { $i } from '@/i.js';
+import { instance } from '@/instance.js';
 
 const emit = defineEmits<{
 	(ev: 'ok', selected: Misskey.entities.UserDetailed): void;
@@ -86,12 +87,14 @@ const props = withDefaults(defineProps<{
 	localOnly: false,
 });
 
+const computedLocalOnly = computed(() => props.localOnly || instance.federation === 'none');
+
 const username = ref('');
 const host = ref('');
 const users = ref<Misskey.entities.UserLite[]>([]);
 const recentUsers = ref<Misskey.entities.UserDetailed[]>([]);
 const selected = ref<Misskey.entities.UserLite | null>(null);
-const dialogEl = shallowRef<InstanceType<typeof MkModalWindow>>();
+const dialogEl = useTemplateRef('dialogEl');
 
 function search() {
 	if (username.value === '' && host.value === '') {
@@ -100,7 +103,7 @@ function search() {
 	}
 	misskeyApi('users/search-by-username-and-host', {
 		username: username.value,
-		host: props.localOnly ? '.' : host.value,
+		host: computedLocalOnly.value ? '.' : host.value,
 		limit: 10,
 		detail: false,
 	}).then(_users => {
@@ -125,10 +128,10 @@ async function ok() {
 	dialogEl.value?.close();
 
 	// 最近使ったユーザー更新
-	let recents = defaultStore.state.recentlyUsedUsers;
+	let recents = store.s.recentlyUsedUsers;
 	recents = recents.filter(x => x !== selected.value?.id);
 	recents.unshift(selected.value.id);
-	defaultStore.set('recentlyUsedUsers', recents.splice(0, 16));
+	store.set('recentlyUsedUsers', recents.splice(0, 16));
 }
 
 function cancel() {
@@ -138,11 +141,11 @@ function cancel() {
 
 onMounted(() => {
 	misskeyApi('users/show', {
-		userIds: defaultStore.state.recentlyUsedUsers,
+		userIds: store.s.recentlyUsedUsers,
 	}).then(foundUsers => {
 		let _users = foundUsers;
 		_users = _users.filter((u) => {
-			if (props.localOnly) {
+			if (computedLocalOnly.value) {
 				return u.host == null;
 			} else {
 				return true;
@@ -195,7 +198,7 @@ onMounted(() => {
 	font-size: 14px;
 
 	&:hover {
-		background: var(--MI_THEME-X7);
+		background: light-dark(rgba(0, 0, 0, 0.05), rgba(255, 255, 255, 0.05));
 	}
 
 	&.selected {

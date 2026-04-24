@@ -5,11 +5,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps_m">
-	<MkSelect v-model="statusbar.type" placeholder="Please select">
+	<MkSelect v-model="statusbar.type" :items="statusbarTypeDef">
 		<template #label>{{ i18n.ts.type }}</template>
-		<option value="rss">RSS</option>
-		<option value="federation">Federation</option>
-		<option value="userList">User list timeline</option>
 	</MkSelect>
 
 	<MkInput v-model="statusbar.name" manualSave>
@@ -20,13 +17,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #label>Black</template>
 	</MkSwitch>
 
-	<MkRadios v-model="statusbar.size">
+	<MkRadios
+		v-model="statusbar.size"
+		:options="[
+			{ value: 'verySmall', label: i18n.ts.small + '+' },
+			{ value: 'small', label: i18n.ts.small },
+			{ value: 'medium', label: i18n.ts.medium },
+			{ value: 'large', label: i18n.ts.large },
+			{ value: 'veryLarge', label: i18n.ts.large + '+' },
+		]"
+	>
 		<template #label>{{ i18n.ts.size }}</template>
-		<option value="verySmall">{{ i18n.ts.small }}+</option>
-		<option value="small">{{ i18n.ts.small }}</option>
-		<option value="medium">{{ i18n.ts.medium }}</option>
-		<option value="large">{{ i18n.ts.large }}</option>
-		<option value="veryLarge">{{ i18n.ts.large }}+</option>
 	</MkRadios>
 
 	<template v-if="statusbar.type === 'rss'">
@@ -36,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSwitch v-model="statusbar.props.shuffle">
 			<template #label>{{ i18n.ts.shuffle }}</template>
 		</MkSwitch>
-		<MkInput v-model="statusbar.props.refreshIntervalSec" manualSave type="number" min="1">
+		<MkInput v-model="statusbar.props.refreshIntervalSec" manualSave type="number" :min="1">
 			<template #label>{{ i18n.ts.refreshInterval }}</template>
 		</MkInput>
 		<MkRange v-model="statusbar.props.marqueeDuration" :min="5" :max="150" :step="1">
@@ -48,7 +49,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkSwitch>
 	</template>
 	<template v-else-if="statusbar.type === 'federation'">
-		<MkInput v-model="statusbar.props.refreshIntervalSec" manualSave type="number" min="1">
+		<MkInput v-model="statusbar.props.refreshIntervalSec" manualSave type="number" :min="1">
 			<template #label>{{ i18n.ts.refreshInterval }}</template>
 		</MkInput>
 		<MkRange v-model="statusbar.props.marqueeDuration" :min="5" :max="150" :step="1">
@@ -63,9 +64,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkSwitch>
 	</template>
 	<template v-else-if="statusbar.type === 'userList' && userLists != null">
-		<MkSelect v-model="statusbar.props.userListId">
+		<MkSelect v-model="statusbar.props.userListId" :items="userListsDef">
 			<template #label>{{ i18n.ts.userList }}</template>
-			<option v-for="list in userLists" :value="list.id">{{ list.name }}</option>
 		</MkSelect>
 		<MkInput v-model="statusbar.props.refreshIntervalSec" manualSave type="number">
 			<template #label>{{ i18n.ts.refreshInterval }}</template>
@@ -86,7 +86,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { reactive, watch } from 'vue';
+import { reactive, computed, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -94,16 +94,36 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkRadios from '@/components/MkRadios.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkRange from '@/components/MkRange.vue';
-import { defaultStore } from '@/store.js';
 import { i18n } from '@/i18n.js';
-import { deepClone } from '@/scripts/clone.js';
+import { instance } from '@/instance.js';
+import { deepClone } from '@/utility/clone.js';
+import { prefer } from '@/preferences.js';
+import type { MkSelectItem } from '@/components/MkSelect.vue';
+import type { StatusbarStore } from '@/preferences/def.js';
 
 const props = defineProps<{
 	_id: string;
 	userLists: Misskey.entities.UserList[] | null;
 }>();
 
-const statusbar = reactive(deepClone(defaultStore.state.statusbars.find(x => x.id === props._id)));
+const statusbar = reactive<StatusbarStore>(deepClone(prefer.s.statusbars.find(x => x.id === props._id)!));
+
+const statusbarTypeDef = computed(() => {
+	const items = [
+		{ label: 'RSS', value: 'rss' },
+	] satisfies MkSelectItem[];
+	if (instance.federation !== 'none') {
+		items.push({ label: 'Federation', value: 'federation' });
+	}
+	if (props.userLists != null) {
+		items.push({ label: i18n.ts.userList, value: 'userList' });
+	}
+	return items;
+});
+
+const userListsDef = computed(() => {
+	return (props.userLists ?? []).map(x => ({ label: x.name, value: x.id })) satisfies MkSelectItem[];
+});
 
 watch(() => statusbar.type, () => {
 	if (statusbar.type === 'rss') {
@@ -133,13 +153,13 @@ watch(() => statusbar.type, () => {
 watch(statusbar, save);
 
 async function save() {
-	const i = defaultStore.state.statusbars.findIndex(x => x.id === props._id);
-	const statusbars = deepClone(defaultStore.state.statusbars);
+	const i = prefer.s.statusbars.findIndex(x => x.id === props._id);
+	const statusbars = deepClone(prefer.s.statusbars);
 	statusbars[i] = deepClone(statusbar);
-	defaultStore.set('statusbars', statusbars);
+	prefer.commit('statusbars', statusbars);
 }
 
 function del() {
-	defaultStore.set('statusbars', defaultStore.state.statusbars.filter(x => x.id !== props._id));
+	prefer.commit('statusbars', prefer.s.statusbars.filter(x => x.id !== props._id));
 }
 </script>

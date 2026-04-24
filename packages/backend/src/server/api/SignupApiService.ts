@@ -129,7 +129,8 @@ export class SignupApiService {
 
 		let ticket: MiRegistrationTicket | null = null;
 
-		if (this.meta.disableRegistration) {
+		// テスト時はこの機構は障害となるため無効にする
+		if (process.env.NODE_ENV !== 'test' && this.meta.disableRegistration) {
 			if (invitationCode == null || typeof invitationCode !== 'string') {
 				reply.code(400);
 				return;
@@ -254,7 +255,7 @@ export class SignupApiService {
 				throw new FastifyReplyError(400, 'EXPIRED');
 			}
 
-			const { account, secret } = await this.signupService.signup({
+			const { account } = await this.signupService.signup({
 				username: pendingUser.username,
 				passwordHash: pendingUser.password,
 			});

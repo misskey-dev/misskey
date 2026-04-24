@@ -5,15 +5,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div>
-	<Transition :name="defaultStore.state.animation ? '_transition_zoom' : ''" mode="out-in">
+	<Transition :name="prefer.s.animation ? '_transition_zoom' : ''" mode="out-in">
 		<MkLoading v-if="fetching"/>
-		<div v-else :class="$style.root">
+		<div v-else-if="stats != null" :class="$style.root">
 			<div class="item _panel users">
 				<div class="icon"><i class="ti ti-users"></i></div>
 				<div class="body">
 					<div class="value">
 						<MkNumber :value="stats.originalUsersCount" style="margin-right: 0.5em;"/>
-						<MkNumberDiff v-tooltip="i18n.ts.dayOverDayChanges" class="diff" :value="usersComparedToThePrevDay"></MkNumberDiff>
+						<MkNumberDiff v-if="usersComparedToThePrevDay != null" v-tooltip="i18n.ts.dayOverDayChanges" class="diff" :value="usersComparedToThePrevDay"></MkNumberDiff>
 					</div>
 					<div class="label">Users</div>
 				</div>
@@ -23,7 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="body">
 					<div class="value">
 						<MkNumber :value="stats.originalNotesCount" style="margin-right: 0.5em;"/>
-						<MkNumberDiff v-tooltip="i18n.ts.dayOverDayChanges" class="diff" :value="notesComparedToThePrevDay"></MkNumberDiff>
+						<MkNumberDiff v-if="notesComparedToThePrevDay != null" v-tooltip="i18n.ts.dayOverDayChanges" class="diff" :value="notesComparedToThePrevDay"></MkNumberDiff>
 					</div>
 					<div class="label">Notes</div>
 				</div>
@@ -56,6 +56,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 		</div>
+		<MkError v-else/>
 	</Transition>
 </div>
 </template>
@@ -63,16 +64,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { misskeyApi, misskeyApiGet } from '@/scripts/misskey-api.js';
+import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
 import MkNumberDiff from '@/components/MkNumberDiff.vue';
 import MkNumber from '@/components/MkNumber.vue';
 import { i18n } from '@/i18n.js';
 import { customEmojis } from '@/custom-emojis.js';
-import { defaultStore } from '@/store.js';
+import { prefer } from '@/preferences.js';
 
 const stats = ref<Misskey.entities.StatsResponse | null>(null);
-const usersComparedToThePrevDay = ref<number>();
-const notesComparedToThePrevDay = ref<number>();
+const usersComparedToThePrevDay = ref<number | null>(null);
+const notesComparedToThePrevDay = ref<number | null>(null);
 const onlineUsersCount = ref(0);
 const fetching = ref(true);
 
@@ -85,11 +86,11 @@ onMounted(async () => {
 	onlineUsersCount.value = _onlineUsersCount;
 
 	misskeyApiGet('charts/users', { limit: 2, span: 'day' }).then(chart => {
-		usersComparedToThePrevDay.value = stats.value.originalUsersCount - chart.local.total[1];
+		usersComparedToThePrevDay.value = _stats.originalUsersCount - chart.local.total[1];
 	});
 
 	misskeyApiGet('charts/notes', { limit: 2, span: 'day' }).then(chart => {
-		notesComparedToThePrevDay.value = stats.value.originalNotesCount - chart.local.total[1];
+		notesComparedToThePrevDay.value = _stats.originalNotesCount - chart.local.total[1];
 	});
 
 	fetching.value = false;

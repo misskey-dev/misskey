@@ -7,7 +7,6 @@ import { randomUUID } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as stream from 'node:stream/promises';
 import { Inject, Injectable } from '@nestjs/common';
-import * as Sentry from '@sentry/node';
 import { DI } from '@/di-symbols.js';
 import { getIpHash } from '@/misc/get-ip-hash.js';
 import type { MiLocalUser, MiUser } from '@/models/User.js';
@@ -37,6 +36,7 @@ export class ApiCallService implements OnApplicationShutdown {
 	private logger: Logger;
 	private userIpHistories: Map<MiUser['id'], Set<string>>;
 	private userIpHistoriesClearIntervalId: NodeJS.Timeout;
+	private Sentry: typeof import('@sentry/node') | null = null;
 
 	constructor(
 		@Inject(DI.meta)
@@ -59,6 +59,12 @@ export class ApiCallService implements OnApplicationShutdown {
 		this.userIpHistoriesClearIntervalId = setInterval(() => {
 			this.userIpHistories.clear();
 		}, 1000 * 60 * 60);
+
+		if (this.config.sentryForBackend) {
+			import('@sentry/node').then((Sentry) => {
+				this.Sentry = Sentry;
+			});
+		}
 	}
 
 	#sendApiError(reply: FastifyReply, err: ApiError): void {
@@ -120,8 +126,8 @@ export class ApiCallService implements OnApplicationShutdown {
 				},
 			});
 
-			if (this.config.sentryForBackend) {
-				Sentry.captureMessage(`Internal error occurred in ${ep.name}: ${err.message}`, {
+			if (this.Sentry != null) {
+				this.Sentry.captureMessage(`Internal error occurred in ${ep.name}: ${err.message}`, {
 					level: 'error',
 					user: {
 						id: userId,
@@ -307,11 +313,14 @@ export class ApiCallService implements OnApplicationShutdown {
 		}
 
 		if (ep.meta.limit) {
-			// koa will automatically load the `X-Forwarded-For` header if `proxy: true` is configured in the app.
-			let limitActor: string;
+			let limitActor: string | null = null;
 			if (user) {
 				limitActor = user.id;
-			} else {
+			} else if (this.config.enableIpRateLimit) {
+				if (process.env.NODE_ENV === 'production' && (request.ip === '::1' || request.ip === '127.0.0.1')) {
+					this.logger.warn('Recieved API request from localhost IP address for rate limiting in production environment. This is likely due to an improper trustProxy setting in the config file.');
+				}
+
 				limitActor = getIpHash(request.ip);
 			}
 
@@ -324,21 +333,17 @@ export class ApiCallService implements OnApplicationShutdown {
 			// TODO: 毎リクエスト計算するのもあれだしキャッシュしたい
 			const factor = user ? (await this.roleService.getUserPolicies(user.id)).rateLimitFactor : 1;
 
-			if (factor > 0) {
+			if (limitActor != null && factor > 0) {
 				// Rate limit
-				await this.rateLimiterService.limit(limit as IEndpointMeta['limit'] & { key: NonNullable<string> }, limitActor, factor).catch(err => {
-					if ('info' in err) {
-						// errはLimiter.LimiterInfoであることが期待される
-						throw new ApiError({
-							message: 'Rate limit exceeded. Please try again later.',
-							code: 'RATE_LIMIT_EXCEEDED',
-							id: 'd5826d14-3982-4d2e-8011-b9e9f02499ef',
-							httpStatusCode: 429,
-						}, err.info);
-					} else {
-						throw new TypeError('information must be a rate-limiter information.');
-					}
-				});
+				const rateLimit = await this.rateLimiterService.limit(limit as IEndpointMeta['limit'] & { key: NonNullable<string> }, limitActor, factor);
+				if (rateLimit != null) {
+					throw new ApiError({
+						message: 'Rate limit exceeded. Please try again later.',
+						code: 'RATE_LIMIT_EXCEEDED',
+						id: 'd5826d14-3982-4d2e-8011-b9e9f02499ef',
+						httpStatusCode: 429,
+					}, rateLimit.info);
+				}
 			}
 		}
 
@@ -371,7 +376,7 @@ export class ApiCallService implements OnApplicationShutdown {
 			}
 		}
 
-		if ((ep.meta.requireModerator || ep.meta.requireAdmin) && !user!.isRoot) {
+		if ((ep.meta.requireModerator || ep.meta.requireAdmin) && (this.meta.rootUserId !== user!.id)) {
 			const myRoles = await this.roleService.getUserRoles(user!.id);
 			if (ep.meta.requireModerator && !myRoles.some(r => r.isModerator || r.isAdministrator)) {
 				throw new ApiError({
@@ -391,10 +396,10 @@ export class ApiCallService implements OnApplicationShutdown {
 			}
 		}
 
-		if (ep.meta.requireRolePolicy != null && !user!.isRoot) {
+		if (ep.meta.requiredRolePolicy != null && (this.meta.rootUserId !== user!.id)) {
 			const myRoles = await this.roleService.getUserRoles(user!.id);
 			const policies = await this.roleService.getUserPolicies(user!.id);
-			if (!policies[ep.meta.requireRolePolicy] && !myRoles.some(r => r.isAdministrator)) {
+			if (!policies[ep.meta.requiredRolePolicy] && !myRoles.some(r => r.isAdministrator)) {
 				throw new ApiError({
 					message: 'You are not assigned to a required role.',
 					code: 'ROLE_PERMISSION_DENIED',
@@ -421,7 +426,7 @@ export class ApiCallService implements OnApplicationShutdown {
 				if (['boolean', 'number', 'integer'].includes(param.type ?? '') && typeof data[k] === 'string') {
 					try {
 						data[k] = JSON.parse(data[k]);
-					} catch (e) {
+					} catch (_) {
 						throw new ApiError({
 							message: 'Invalid param.',
 							code: 'INVALID_PARAM',
@@ -436,8 +441,8 @@ export class ApiCallService implements OnApplicationShutdown {
 		}
 
 		// API invoking
-		if (this.config.sentryForBackend) {
-			return await Sentry.startSpan({
+		if (this.Sentry != null) {
+			return await this.Sentry.startSpan({
 				name: 'API: ' + ep.name,
 			}, () => ep.exec(data, user, token, file, request.ip, request.headers)
 				.catch((err: Error) => this.#onExecError(ep, data, err, user?.id)));

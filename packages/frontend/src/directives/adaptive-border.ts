@@ -3,19 +3,34 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Directive } from 'vue';
-import { getBgColor } from '@/scripts/get-bg-color.js';
+import type { Directive } from 'vue';
+import { getBgColor } from '@/utility/get-bg-color.js';
+import { globalEvents } from '@/events.js';
 
-export default {
-	mounted(src, binding, vn) {
-		const parentBg = getBgColor(src.parentElement) ?? 'transparent';
+const handlerMap = new WeakMap<HTMLElement, () => void>();
 
-		const myBg = window.getComputedStyle(src).backgroundColor;
+export const adaptiveBorderDirective = {
+	mounted(src) {
+		function calc() {
+			const parentBg = getBgColor(src.parentElement) ?? 'transparent';
 
-		if (parentBg === myBg) {
-			src.style.borderColor = 'var(--MI_THEME-divider)';
-		} else {
-			src.style.borderColor = myBg;
+			const myBg = window.getComputedStyle(src).backgroundColor;
+
+			if (parentBg === myBg) {
+				src.style.borderColor = 'var(--MI_THEME-divider)';
+			} else {
+				src.style.borderColor = myBg;
+			}
 		}
+
+		handlerMap.set(src, calc);
+
+		calc();
+
+		globalEvents.on('themeChanged', calc);
 	},
-} as Directive;
+
+	unmounted(src) {
+		globalEvents.off('themeChanged', handlerMap.get(src));
+	},
+} as Directive<HTMLElement>;

@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { VNode, h, SetupContext, provide } from 'vue';
+import { h, provide } from 'vue';
+import type { VNode, SetupContext } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
 import { host } from '@@/js/config.js';
@@ -298,7 +299,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 						]);
 					}
 					case 'clickable': {
-						return h('span', { onClick(ev: MouseEvent): void {
+						return h('span', { onClick(ev: PointerEvent): void {
 							ev.stopPropagation();
 							ev.preventDefault();
 							const clickEv = typeof token.props.args.ev === 'string' ? token.props.args.ev : '';
@@ -415,8 +416,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 				return [h(EmEmoji, {
 					key: Math.random(),
 					emoji: token.props.emoji,
-					menu: props.enableEmojiMenu,
-					menuReaction: props.enableEmojiMenuReaction,
 				})];
 			}
 

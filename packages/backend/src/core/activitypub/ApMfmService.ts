@@ -25,17 +25,17 @@ export class ApMfmService {
 	}
 
 	@bindThis
-	public getNoteHtml(note: Pick<MiNote, 'text' | 'mentionedRemoteUsers'>, apAppend?: string) {
+	public getNoteHtml(note: Pick<MiNote, 'text' | 'mentionedRemoteUsers'>, extraHtml: string | null = null) {
 		let noMisskeyContent = false;
-		const srcMfm = (note.text ?? '') + (apAppend ?? '');
+		const srcMfm = (note.text ?? '');
 
 		const parsed = mfm.parse(srcMfm);
 
-		if (!apAppend && parsed?.every(n => ['text', 'unicodeEmoji', 'emojiCode', 'mention', 'hashtag', 'url'].includes(n.type))) {
+		if (extraHtml == null && parsed.every(n => ['text', 'unicodeEmoji', 'emojiCode', 'mention', 'hashtag', 'url'].includes(n.type))) {
 			noMisskeyContent = true;
 		}
 
-		const content = this.mfmService.toHtml(parsed, JSON.parse(note.mentionedRemoteUsers));
+		const content = this.mfmService.toHtml(parsed, JSON.parse(note.mentionedRemoteUsers), extraHtml);
 
 		return {
 			content,

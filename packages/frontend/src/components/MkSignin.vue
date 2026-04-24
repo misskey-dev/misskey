@@ -20,6 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			key="input"
 			:message="message"
 			:openOnRemote="openOnRemote"
+			:initialUsername="initialUsername"
 
 			@usernameSubmitted="onUsernameSubmitted"
 			@passkeyClick="onPasskeyLogin"
@@ -67,19 +68,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { nextTick, onBeforeUnmount, ref, shallowRef, useTemplateRef } from 'vue';
 import * as Misskey from 'misskey-js';
 import { supported as webAuthnSupported, parseRequestOptionsFromJSON } from '@github/webauthn-json/browser-ponyfill';
-
 import type { AuthenticationPublicKeyCredential } from '@github/webauthn-json/browser-ponyfill';
-import type { OpenOnRemoteOptions } from '@/scripts/please-login.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
-import { showSuspendedDialog } from '@/scripts/show-suspended-dialog.js';
-import { login } from '@/account.js';
+import type { OpenOnRemoteOptions } from '@/utility/please-login.js';
+import type { PwResponse } from '@/components/MkSignin.password.vue';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import { showSuspendedDialog } from '@/utility/show-suspended-dialog.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
 
 import XInput from '@/components/MkSignin.input.vue';
-import XPassword, { type PwResponse } from '@/components/MkSignin.password.vue';
+import XPassword from '@/components/MkSignin.password.vue';
 import XTotp from '@/components/MkSignin.totp.vue';
 import XPasskey from '@/components/MkSignin.passkey.vue';
+import { login } from '@/accounts.js';
 
 const emit = defineEmits<{
 	(ev: 'login', v: Misskey.entities.SigninFlowResponse & { finished: true }): void;
@@ -89,10 +90,12 @@ const props = withDefaults(defineProps<{
 	autoSet?: boolean;
 	message?: string,
 	openOnRemote?: OpenOnRemoteOptions,
+	initialUsername?: string;
 }>(), {
 	autoSet: false,
 	message: '',
 	openOnRemote: undefined,
+	initialUsername: undefined,
 });
 
 const page = ref<'input' | 'password' | 'totp' | 'passkey'>('input');
@@ -117,6 +120,7 @@ function onPasskeyLogin(): void {
 			.then((res) => {
 				passkeyContext.value = res.context ?? '';
 				credentialRequest.value = parseRequestOptionsFromJSON({
+					// @ts-expect-error TODO: misskey-js由来の型（@simplewebauthn/types）とフロントエンド由来の型（@github/webauthn-json）が合わない
 					publicKey: res.option,
 				});
 
@@ -131,7 +135,7 @@ function onPasskeyDone(credential: AuthenticationPublicKeyCredential): void {
 	waiting.value = true;
 
 	if (doingPasskeyFromInputPage.value) {
-		misskeyApi('signin-with-passkey', {
+		misskeyApi<Misskey.entities.SigninWithPasskeyResponse>('signin-with-passkey', {
 			credential: credential.toJSON(),
 			context: passkeyContext.value,
 		}).then((res) => {
@@ -140,11 +144,13 @@ function onPasskeyDone(credential: AuthenticationPublicKeyCredential): void {
 				return;
 			}
 			emit('login', res.signinResponse);
+			onLoginSucceeded(res.signinResponse);
 		}).catch(onSigninApiError);
 	} else if (userInfo.value != null) {
 		tryLogin({
 			username: userInfo.value.username,
 			password: password.value,
+			// @ts-expect-error TODO: misskey-js由来の型（@simplewebauthn/types）とフロントエンド由来の型（@github/webauthn-json）が合わない
 			credential: credential.toJSON(),
 		});
 	}
@@ -249,6 +255,7 @@ async function tryLogin(req: Partial<Misskey.entities.SigninFlowRequest>): Promi
 				case 'passkey': {
 					if (webAuthnSupported()) {
 						credentialRequest.value = parseRequestOptionsFromJSON({
+							// @ts-expect-error TODO: misskey-js由来の型（@simplewebauthn/types）とフロントエンド由来の型（@github/webauthn-json）が合わない
 							publicKey: res.authRequest,
 						});
 						page.value = 'passkey';

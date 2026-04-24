@@ -5,14 +5,15 @@
 
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { In } from 'typeorm';
+import * as Redis from 'ioredis';
 import { DI } from '@/di-symbols.js';
 import type { PollsRepository, EmojisRepository, MiMeta } from '@/models/_.js';
 import type { Config } from '@/config.js';
 import type { MiRemoteUser } from '@/models/User.js';
 import type { MiNote } from '@/models/Note.js';
+import { acquireApObjectLock } from '@/misc/distributed-lock.js';
 import { toArray, toSingle, unique } from '@/misc/prelude/array.js';
 import type { MiEmoji } from '@/models/Emoji.js';
-import { AppLockService } from '@/core/AppLockService.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
 import type Logger from '@/logger.js';
@@ -48,6 +49,9 @@ export class ApNoteService {
 		@Inject(DI.meta)
 		private meta: MiMeta,
 
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
+
 		@Inject(DI.pollsRepository)
 		private pollsRepository: PollsRepository,
 
@@ -67,7 +71,6 @@ export class ApNoteService {
 		private apMentionService: ApMentionService,
 		private apImageService: ApImageService,
 		private apQuestionService: ApQuestionService,
-		private appLockService: AppLockService,
 		private pollService: PollService,
 		private noteCreateService: NoteCreateService,
 		private apDbResolverService: ApDbResolverService,
@@ -125,7 +128,7 @@ export class ApNoteService {
 	@bindThis
 	public async createNote(value: string | IObject, actor?: MiRemoteUser, resolver?: Resolver, silent = false): Promise<MiNote | null> {
 		// eslint-disable-next-line no-param-reassign
-		if (resolver == null) resolver = this.apResolverService.createResolver();
+		if (resolver == null) resolver = await this.apResolverService.createResolver();
 
 		const object = await resolver.resolve(value);
 
@@ -154,14 +157,8 @@ export class ApNoteService {
 
 		const url = getOneApHrefNullable(note.url);
 
-		if (url != null) {
-			if (!checkHttps(url)) {
-				throw new Error('unexpected schema of note url: ' + url);
-			}
-
-			if (this.utilityService.punyHost(url) !== this.utilityService.punyHost(note.id)) {
-				throw new Error(`note url & uri host mismatch: note url: ${url}, note uri: ${note.id}`);
-			}
+		if (url && !checkHttps(url)) {
+			throw new Error('unexpected schema of note url: ' + url);
 		}
 
 		this.logger.info(`Creating the Note: ${note.id}`);
@@ -360,7 +357,7 @@ export class ApNoteService {
 			throw new StatusError('blocked host', 451);
 		}
 
-		const unlock = await this.appLockService.getApLock(uri);
+		const unlock = await acquireApObjectLock(this.redisClient, uri);
 
 		try {
 			//#region このサーバーに既に登録されていたらそれを返す
@@ -414,6 +411,8 @@ export class ApNoteService {
 						originalUrl: tag.icon.url,
 						publicUrl: tag.icon.url,
 						updatedAt: new Date(),
+						// _misskey_license が存在しなければ `null`
+						license: (tag._misskey_license?.freeText ?? null)
 					});
 
 					const emoji = await this.emojisRepository.findOneBy({ host, name });
@@ -435,6 +434,8 @@ export class ApNoteService {
 				publicUrl: tag.icon.url,
 				updatedAt: new Date(),
 				aliases: [],
+				// _misskey_license が存在しなければ `null`
+				license: (tag._misskey_license?.freeText ?? null)
 			});
 		}));
 	}

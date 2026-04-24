@@ -21,25 +21,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
- 
+
 import { defineAsyncComponent, inject, onMounted, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { v4 as uuid } from 'uuid';
 import XContainer from '../page-editor.container.vue';
+import { genId } from '@/utility/id.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
-import { deepClone } from '@/scripts/clone.js';
+import { deepClone } from '@/utility/clone.js';
 import MkButton from '@/components/MkButton.vue';
 import { getPageBlockList } from '@/pages/page-editor/common.js';
 
 const XBlocks = defineAsyncComponent(() => import('../page-editor.blocks.vue'));
 
 const props = defineProps<{
-	modelValue: Misskey.entities.PageBlock & { type: 'section'; },
+	modelValue: Extract<Misskey.entities.PageBlock, { type: 'section'; }>,
 }>();
 
 const emit = defineEmits<{
-	(ev: 'update:modelValue', value: Misskey.entities.PageBlock & { type: 'section' }): void;
+	(ev: 'update:modelValue', value: Extract<Misskey.entities.PageBlock, { type: 'section'; }>): void;
 	(ev: 'remove'): void;
 }>();
 
@@ -59,7 +59,7 @@ async function rename() {
 		title: i18n.ts._pages.enterSectionTitle,
 		default: props.modelValue.title,
 	});
-	if (canceled) return;
+	if (canceled || title == null) return;
 	emit('update:modelValue', {
 		...props.modelValue,
 		title,
@@ -71,10 +71,38 @@ async function add() {
 		title: i18n.ts._pages.chooseBlock,
 		items: getPageBlockList(),
 	});
-	if (canceled) return;
+	if (canceled || type == null) return;
 
-	const id = uuid();
-	children.value.push({ id, type });
+	const id = genId();
+
+	// TODO: page-editor.vueのと共通化
+	if (type === 'text') {
+		children.value.push({
+			id,
+			type,
+			text: '',
+		});
+	} else if (type === 'section') {
+		children.value.push({
+			id,
+			type,
+			title: '',
+			children: [],
+		});
+	} else if (type === 'image') {
+		children.value.push({
+			id,
+			type,
+			fileId: null,
+		});
+	} else if (type === 'note') {
+		children.value.push({
+			id,
+			type,
+			detailed: false,
+			note: null,
+		});
+	}
 }
 
 onMounted(() => {

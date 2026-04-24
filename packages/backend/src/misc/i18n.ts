@@ -26,7 +26,7 @@ export class I18n<T extends Record<string, any>> {
 				}
 			}
 			return str;
-		} catch (e) {
+		} catch (_) {
 			console.warn(`missing localization '${key}'`);
 			return key;
 		}

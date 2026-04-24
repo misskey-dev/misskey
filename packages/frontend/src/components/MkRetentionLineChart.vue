@@ -8,19 +8,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, shallowRef } from 'vue';
+import { onMounted, useTemplateRef } from 'vue';
 import { Chart } from 'chart.js';
+import type { ScatterDataPoint } from 'chart.js';
 import tinycolor from 'tinycolor2';
-import { defaultStore } from '@/store.js';
-import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
-import { chartVLine } from '@/scripts/chart-vline.js';
-import { alpha } from '@/scripts/color.js';
-import { initChart } from '@/scripts/init-chart.js';
-import { misskeyApi } from '@/scripts/misskey-api.js';
+import { store } from '@/store.js';
+import { useChartTooltip } from '@/composables/use-chart-tooltip.js';
+import { chartVLine } from '@/utility/chart-vline.js';
+import { alpha } from '@/utility/color.js';
+import { initChart } from '@/utility/init-chart.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+
+interface RetentionPoint extends ScatterDataPoint {
+	x: number;
+	y: number;
+	d: string;
+}
 
 initChart();
 
-const chartEl = shallowRef<HTMLCanvasElement | null>(null);
+const chartEl = useTemplateRef('chartEl');
 
 const { handler: externalTooltipHandler } = useChartTooltip();
 
@@ -42,9 +49,9 @@ const getDate = (ymd: string) => {
 onMounted(async () => {
 	let raw = await misskeyApi('retention', { });
 
-	const vLineColor = defaultStore.state.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
+	const vLineColor = store.s.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
 
-	const accent = tinycolor(getComputedStyle(document.documentElement).getPropertyValue('--MI_THEME-accent'));
+	const accent = tinycolor(getComputedStyle(window.document.documentElement).getPropertyValue('--MI_THEME-accent'));
 	const color = accent.toHex();
 
 	if (chartEl.value == null) return;
@@ -62,14 +69,14 @@ onMounted(async () => {
 				fill: false,
 				tension: 0.4,
 				data: [{
-					x: '0',
+					x: 0,
 					y: 100,
 					d: getYYYYMMDD(new Date(record.createdAt)),
 				}, ...Object.entries(record.data).sort((a, b) => getDate(a[0]) > getDate(b[0]) ? 1 : -1).map(([k, v], i) => ({
-					x: (i + 1).toString(),
+					x: i + 1,
 					y: (v / record.users) * 100,
 					d: getYYYYMMDD(new Date(record.createdAt)),
-				}))] as any,
+				}))],
 			})),
 		},
 		options: {
@@ -111,11 +118,11 @@ onMounted(async () => {
 					enabled: false,
 					callbacks: {
 						title(context) {
-							const v = context[0].dataset.data[context[0].dataIndex] as unknown as { x: string, y: number, d: string };
+							const v = context[0].dataset.data[context[0].dataIndex] as RetentionPoint;
 							return `${v.x} days later`;
 						},
 						label(context) {
-							const v = context.dataset.data[context.dataIndex] as unknown as { x: string, y: number, d: string };
+							const v = context.dataset.data[context.dataIndex] as RetentionPoint;
 							const p = Math.round(v.y) + '%';
 							return `${v.d} ${p}`;
 						},

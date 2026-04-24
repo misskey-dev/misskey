@@ -23,9 +23,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="item _panel sub">
 				<div class="icon"><i class="ti ti-world-download"></i></div>
 				<div class="body">
-					<div class="value">
+					<div v-if="federationSubActive != null" class="value">
 						{{ number(federationSubActive) }}
-						<MkNumberDiff v-tooltip="i18n.ts.dayOverDayChanges" class="diff" :value="federationSubActiveDiff"></MkNumberDiff>
+						<MkNumberDiff v-if="federationSubActiveDiff != null" v-tooltip="i18n.ts.dayOverDayChanges" class="diff" :value="federationSubActiveDiff"></MkNumberDiff>
 					</div>
 					<div class="label">Sub</div>
 				</div>
@@ -33,9 +33,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="item _panel pub">
 				<div class="icon"><i class="ti ti-world-upload"></i></div>
 				<div class="body">
-					<div class="value">
+					<div v-if="federationPubActive != null" class="value">
 						{{ number(federationPubActive) }}
-						<MkNumberDiff v-tooltip="i18n.ts.dayOverDayChanges" class="diff" :value="federationPubActiveDiff"></MkNumberDiff>
+						<MkNumberDiff v-if="federationPubActiveDiff != null" v-tooltip="i18n.ts.dayOverDayChanges" class="diff" :value="federationPubActiveDiff"></MkNumberDiff>
 					</div>
 					<div class="label">Pub</div>
 				</div>
@@ -47,13 +47,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
-import XPie, { type InstanceForPie } from './overview.pie.vue';
+import XPie from './overview.pie.vue';
+import type { InstanceForPie } from './overview.pie.vue';
 import * as os from '@/os.js';
-import { misskeyApiGet } from '@/scripts/misskey-api.js';
+import { misskeyApiGet } from '@/utility/misskey-api.js';
 import number from '@/filters/number.js';
 import MkNumberDiff from '@/components/MkNumberDiff.vue';
 import { i18n } from '@/i18n.js';
-import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
+import { useChartTooltip } from '@/composables/use-chart-tooltip.js';
 
 const topSubInstancesForPie = ref<InstanceForPie[] | null>(null);
 const topPubInstancesForPie = ref<InstanceForPie[] | null>(null);

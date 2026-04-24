@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { describe, expect, test } from 'vitest';
 import { isQuote, isRenote } from '@/misc/is-renote.js';
 import { MiNote } from '@/models/Note.js';
 
@@ -23,6 +24,7 @@ const base: MiNote = {
 	renoteCount: 0,
 	repliesCount: 0,
 	clippedCount: 0,
+	pageCount: 0,
 	reactions: {},
 	visibility: 'public',
 	uri: null,
@@ -43,6 +45,7 @@ const base: MiNote = {
 	replyUserHost: null,
 	renoteUserId: null,
 	renoteUserHost: null,
+	renoteChannelId: null,
 };
 
 describe('misc:is-renote', () => {

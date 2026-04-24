@@ -15,7 +15,6 @@
 		header: ':alpha<0.7<@panel',
 		navBg: '#fff',
 		panel: '#fff',
-		panelHeaderDivider: '@divider',
 		mentionMe: 'rgb(0, 179, 70)',
 	},
 }

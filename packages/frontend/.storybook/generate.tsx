@@ -3,12 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, globSync } from 'node:fs';
 import { writeFile } from 'node:fs/promises';
 import { basename, dirname } from 'node:path/posix';
 import { GENERATOR, type State, generate } from 'astring';
 import type * as estree from 'estree';
-import glob from 'fast-glob';
 import { format } from 'prettier';
 
 interface SatisfiesExpression extends estree.BaseExpression {
@@ -17,8 +16,52 @@ interface SatisfiesExpression extends estree.BaseExpression {
 	reference: estree.Identifier;
 }
 
+interface ImportDeclaration extends estree.ImportDeclaration {
+	kind?: 'type';
+}
+
 const generator = {
 	...GENERATOR,
+	ImportDeclaration(node: ImportDeclaration, state: State) {
+		state.write('import ');
+		if (node.kind === 'type') state.write('type ');
+		const { specifiers } = node;
+		if (specifiers.length > 0) {
+			let i = 0;
+			for (; i < specifiers.length; i++) {
+				if (i > 0) {
+					state.write(', ');
+				}
+				const specifier = specifiers[i]!;
+				if (specifier.type === 'ImportDefaultSpecifier') {
+					state.write(specifier.local.name, specifier);
+				} else if (specifier.type === 'ImportNamespaceSpecifier') {
+					state.write(`* as ${specifier.local.name}`, specifier);
+				} else {
+					break;
+				}
+			}
+			if (i < specifiers.length) {
+				state.write('{');
+				for (; i < specifiers.length; i++) {
+					const specifier = specifiers[i]! as estree.ImportSpecifier;
+					const { name } = specifier.imported as estree.Identifier;
+					state.write(name, specifier);
+					if (name !== specifier.local.name) {
+						state.write(` as ${specifier.local.name}`);
+					}
+					if (i < specifiers.length - 1) {
+						state.write(', ');
+					}
+				}
+				state.write('}');
+			}
+			state.write(' from ');
+		}
+		this.Literal(node.source, state);
+
+		state.write(';');
+	},
 	SatisfiesExpression(node: SatisfiesExpression, state: State) {
 		switch (node.expression.type) {
 			case 'ArrowFunctionExpression': {
@@ -62,7 +105,7 @@ type ToKebab<T extends readonly string[]> = T extends readonly [
 	: T extends readonly [
 			infer XH extends string,
 			...infer XR extends readonly string[]
-	  ]
+		]
 	? `${XH}${XR extends readonly string[] ? `-${ToKebab<XR>}` : ''}`
 	: '';
 
@@ -132,7 +175,7 @@ function toStories(component: string): Promise<string> {
 								kind={'init' as const}
 								shorthand
 							/> as estree.Property,
-					  ]
+						]
 					: []),
 			]}
 		/> as estree.ObjectExpression;
@@ -155,7 +198,8 @@ function toStories(component: string): Promise<string> {
 									/> as estree.ImportSpecifier,
 								]),
 					]}
-				/> as estree.ImportDeclaration,
+					kind={'type'}
+				/> as ImportDeclaration,
 				...(hasMsw
 					? [
 							<import-declaration
@@ -165,8 +209,8 @@ function toStories(component: string): Promise<string> {
 										local={<identifier name='msw' /> as estree.Identifier}
 									/> as estree.ImportNamespaceSpecifier,
 								]}
-							/> as estree.ImportDeclaration,
-					  ]
+							/> as ImportDeclaration,
+						]
 					: []),
 				...(hasImplStories
 					? []
@@ -176,8 +220,8 @@ function toStories(component: string): Promise<string> {
 								specifiers={[
 									<import-default-specifier local={identifier} /> as estree.ImportDefaultSpecifier,
 								]}
-							/> as estree.ImportDeclaration,
-					  ]),
+							/> as ImportDeclaration,
+						]),
 				...(hasMetaStories
 					? [
 							<import-declaration
@@ -187,7 +231,7 @@ function toStories(component: string): Promise<string> {
 										local={<identifier name='storiesMeta' /> as estree.Identifier}
 									/> as estree.ImportNamespaceSpecifier,
 								]}
-							/> as estree.ImportDeclaration,
+							/> as ImportDeclaration,
 						]
 					: []),
 				<variable-declaration
@@ -394,33 +438,37 @@ function toStories(component: string): Promise<string> {
 
 // glob('src/{components,pages,ui,widgets}/**/*.vue')
 (async () => {
-	const globs = await Promise.all([
-		glob('src/components/global/Mk*.vue'),
-		glob('src/components/global/RouterView.vue'),
-		glob('src/components/MkAbuseReportWindow.vue'),
-		glob('src/components/MkAccountMoved.vue'),
-		glob('src/components/MkAchievements.vue'),
-		glob('src/components/MkAnalogClock.vue'),
-		glob('src/components/MkAnimBg.vue'),
-		glob('src/components/MkAnnouncementDialog.vue'),
-		glob('src/components/MkAntennaEditor.vue'),
-		glob('src/components/MkAntennaEditorDialog.vue'),
-		glob('src/components/MkAsUi.vue'),
-		glob('src/components/MkAutocomplete.vue'),
-		glob('src/components/MkAvatars.vue'),
-		glob('src/components/Mk[B-E]*.vue'),
-		glob('src/components/MkFlashPreview.vue'),
-		glob('src/components/MkGalleryPostPreview.vue'),
-		glob('src/components/MkSignupServerRules.vue'),
-		glob('src/components/MkUserSetupDialog.vue'),
-		glob('src/components/MkUserSetupDialog.*.vue'),
-		glob('src/components/MkInstanceCardMini.vue'),
-		glob('src/components/MkInviteCode.vue'),
-		glob('src/pages/admin/overview.ap-requests.vue'),
-		glob('src/pages/user/home.vue'),
-		glob('src/pages/search.vue'),
-	]);
-	const components = globs.flat();
+	const components = [
+		globSync('src/components/global/Mk*.vue'),
+		globSync('src/components/global/RouterView.vue'),
+		globSync('src/components/MkAbuseReportWindow.vue'),
+		globSync('src/components/MkAccountMoved.vue'),
+		globSync('src/components/MkAchievements.vue'),
+		globSync('src/components/MkAnalogClock.vue'),
+		globSync('src/components/MkAnimBg.vue'),
+		globSync('src/components/MkAnnouncementDialog.vue'),
+		globSync('src/components/MkAntennaEditor.vue'),
+		globSync('src/components/MkAntennaEditorDialog.vue'),
+		globSync('src/components/MkAsUi.vue'),
+		globSync('src/components/MkAutocomplete.vue'),
+		globSync('src/components/MkAvatars.vue'),
+		globSync('src/components/Mk[B-E]*.vue'),
+		globSync('src/components/MkFlashPreview.vue'),
+		globSync('src/components/MkGalleryPostPreview.vue'),
+		globSync('src/components/MkSignupServerRules.vue'),
+		globSync('src/components/MkUserSetupDialog.vue'),
+		globSync('src/components/MkUserSetupDialog.*.vue'),
+		globSync('src/components/MkImgPreviewDialog.vue'),
+		globSync('src/components/MkInstanceCardMini.vue'),
+		globSync('src/components/MkInviteCode.vue'),
+		globSync('src/components/MkTagItem.vue'),
+		globSync('src/components/MkRoleSelectDialog.vue'),
+		globSync('src/components/grid/MkGrid.vue'),
+		globSync('src/pages/admin/custom-emojis-manager2.vue'),
+		globSync('src/pages/admin/overview.ap-requests.vue'),
+		globSync('src/pages/user/home.vue'),
+		globSync('src/pages/search.vue'),
+	].flat();
 	await Promise.all(components.map(async (component) => {
 		const stories = component.replace(/\.vue$/, '.stories.ts');
 		await writeFile(stories, await toStories(component));

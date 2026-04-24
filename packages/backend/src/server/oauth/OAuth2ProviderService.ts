@@ -6,18 +6,15 @@
 import dns from 'node:dns/promises';
 import { fileURLToPath } from 'node:url';
 import { Inject, Injectable } from '@nestjs/common';
-import { JSDOM } from 'jsdom';
+import * as htmlParser from 'node-html-parser';
 import httpLinkHeader from 'http-link-header';
 import ipaddr from 'ipaddr.js';
 import oauth2orize, { type OAuth2, AuthorizationError, ValidateFunctionArity2, OAuth2Req, MiddlewareRequest } from 'oauth2orize';
 import oauth2Pkce from 'oauth2orize-pkce';
 import fastifyCors from '@fastify/cors';
-import fastifyView from '@fastify/view';
-import pug from 'pug';
 import bodyParser from 'body-parser';
 import fastifyExpress from '@fastify/express';
 import { verifyChallenge } from 'pkce-challenge';
-import { mf2 } from 'microformats-parser';
 import { permissions as kinds } from 'misskey-js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
@@ -32,6 +29,8 @@ import { MemoryKVCache } from '@/misc/cache.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import Logger from '@/logger.js';
 import { StatusError } from '@/misc/status-error.js';
+import { HtmlTemplateService } from '@/server/web/HtmlTemplateService.js';
+import { OAuthPage } from '@/server/web/views/oauth.js';
 import type { ServerResponse } from 'node:http';
 import type { FastifyInstance } from 'fastify';
 
@@ -95,40 +94,115 @@ interface ClientInformation {
 	id: string;
 	redirectUris: string[];
 	name: string;
+	logo: string | null;
 }
 
-// https://indieauth.spec.indieweb.org/#client-information-discovery
-// "Authorization servers SHOULD support parsing the [h-app] Microformat from the client_id,
-// and if there is an [h-app] with a url property matching the client_id URL,
-// then it should use the name and icon and display them on the authorization prompt."
-// (But we don't display any icon for now)
-// https://indieauth.spec.indieweb.org/#redirect-url
-// "The client SHOULD publish one or more <link> tags or Link HTTP headers with a rel attribute
-// of redirect_uri at the client_id URL.
-// Authorization endpoints verifying that a redirect_uri is allowed for use by a client MUST
-// look for an exact match of the given redirect_uri in the request against the list of
-// redirect_uris discovered after resolving any relative URLs."
+function parseMicroformats(doc: htmlParser.HTMLElement, baseUrl: string, id: string): { name: string | null; logo: string | null; } {
+	let name: string | null = null;
+	let logo: string | null = null;
+
+	const hApp = doc.querySelector('.h-app');
+	if (hApp == null) return { name, logo };
+
+	const nameEl = hApp.querySelector('.p-name');
+	if (nameEl != null) {
+		const href = nameEl.attributes.href || nameEl.attributes.src;
+		if (href != null && new URL(href, baseUrl).toString() === new URL(id).toString()) {
+			name = nameEl.textContent.trim();
+		}
+	}
+
+	const logoEl = hApp.querySelector('.u-logo');
+	if (logoEl != null) {
+		const href = logoEl.attributes.href || logoEl.attributes.src;
+		if (href != null) {
+			logo = new URL(href, baseUrl).toString();
+		}
+	}
+
+	return { name, logo };
+}
+
 async function discoverClientInformation(logger: Logger, httpRequestService: HttpRequestService, id: string): Promise<ClientInformation> {
 	try {
 		const res = await httpRequestService.send(id);
-		const redirectUris: string[] = [];
 
+		const redirectUris: string[] = [];
+		let name = id;
+		let logo: string | null = null;
+
+		// https://indieauth.spec.indieweb.org/#redirect-url
+		// "The client SHOULD publish one or more <link> tags or Link HTTP headers with a rel attribute
+		// of redirect_uri at the client_id URL.
+		// Authorization endpoints verifying that a redirect_uri is allowed for use by a client MUST
+		// look for an exact match of the given redirect_uri in the request against the list of
+		// redirect_uris discovered after resolving any relative URLs."
 		const linkHeader = res.headers.get('link');
 		if (linkHeader) {
 			redirectUris.push(...httpLinkHeader.parse(linkHeader).get('rel', 'redirect_uri').map(r => r.uri));
 		}
 
-		const text = await res.text();
-		const fragment = JSDOM.fragment(text);
+		const contentType = res.headers.get('content-type');
+		const mediaType = contentType ? contentType.split(';')[0].trim() : null;
+		if (mediaType === 'application/json') {
+			// Client discovery via JSON document (11 July 2024 spec)
+			// https://indieauth.spec.indieweb.org/#client-metadata
+			// "Clients SHOULD have a JSON [RFC7159] document at their client_id URL containing
+			// client metadata defined in [RFC7591], the minimum properties for an IndieAuth
+			// client defined below."
 
-		redirectUris.push(...[...fragment.querySelectorAll<HTMLLinkElement>('link[rel=redirect_uri][href]')].map(el => el.href));
+			const json = await res.json() as {
+				client_id: string;
+				client_name?: string;
+				client_uri: string;
+				logo_uri?: string;
+				redirect_uris?: string[];
+			};
 
-		let name = id;
-		if (text) {
-			const microformats = mf2(text, { baseUrl: res.url });
-			const nameProperty = microformats.items.find(item => item.type?.includes('h-app') && item.properties.url.includes(id))?.properties.name[0];
-			if (typeof nameProperty === 'string') {
-				name = nameProperty;
+			// https://indieauth.spec.indieweb.org/#client-metadata-li-1
+			// "The authorization server MUST verify that the client_id in the document matches the
+			// client_id of the URL where the document was retrieved."
+			if (json.client_id !== id) {
+				throw new AuthorizationError('client_id in the document does not match the client_id URL', 'invalid_request');
+			}
+
+			// https://indieauth.spec.indieweb.org/#client-metadata-li-1
+			// "The client_uri MUST be a prefix of the client_id."
+			if (!json.client_uri || !id.startsWith(json.client_uri)) {
+				throw new AuthorizationError('client_uri is not a prefix of client_id', 'invalid_request');
+			}
+
+			if (typeof json.client_name === 'string') {
+				name = json.client_name;
+			}
+
+			if (typeof json.logo_uri === 'string') {
+				// Since uri can be relative, resolve it against the document URL
+				logo = new URL(json.logo_uri, res.url).toString();
+			}
+
+			if (Array.isArray(json.redirect_uris)) {
+				redirectUris.push(...json.redirect_uris.filter((uri): uri is string => typeof uri === 'string'));
+			}
+		} else {
+			// Client discovery via HTML microformats (12 February 2022 spec)
+			// https://indieauth.spec.indieweb.org/20220212/#client-information-discovery
+			// "Authorization servers SHOULD support parsing the [h-app] Microformat from the client_id,
+			// and if there is an [h-app] with a url property matching the client_id URL,
+			// then it should use the name and icon and display them on the authorization prompt."
+			const text = await res.text();
+			const doc = htmlParser.parse(`<div>${text}</div>`);
+
+			redirectUris.push(...[...doc.querySelectorAll('link[rel=redirect_uri][href]')].map(el => el.attributes.href));
+
+			if (text) {
+				const microformats = parseMicroformats(doc, res.url, id);
+				if (typeof microformats.name === 'string') {
+					name = microformats.name;
+				}
+				if (typeof microformats.logo === 'string') {
+					logo = microformats.logo;
+				}
 			}
 		}
 
@@ -136,12 +210,15 @@ async function discoverClientInformation(logger: Logger, httpRequestService: Htt
 			id,
 			redirectUris: redirectUris.map(uri => new URL(uri, res.url).toString()),
 			name: typeof name === 'string' ? name : id,
+			logo,
 		};
 	} catch (err) {
 		console.error(err);
 		logger.error('Error while fetching client information', { err });
 		if (err instanceof StatusError) {
 			throw new AuthorizationError('Failed to fetch client information', 'invalid_request');
+		} else if (err instanceof AuthorizationError) {
+			throw err;
 		} else {
 			throw new AuthorizationError('Failed to parse client information', 'server_error');
 		}
@@ -243,6 +320,7 @@ export class OAuth2ProviderService {
 		private usersRepository: UsersRepository,
 		private cacheService: CacheService,
 		loggerService: LoggerService,
+		private htmlTemplateService: HtmlTemplateService,
 	) {
 		this.#logger = loggerService.getLogger('oauth');
 
@@ -376,22 +454,15 @@ export class OAuth2ProviderService {
 			this.#logger.info(`Rendering authorization page for "${oauth2.client.name}"`);
 
 			reply.header('Cache-Control', 'no-store');
-			return await reply.view('oauth', {
+			return await HtmlTemplateService.replyHtml(reply, OAuthPage({
+				...await this.htmlTemplateService.getCommonData(),
 				transactionId: oauth2.transactionID,
 				clientName: oauth2.client.name,
-				scope: oauth2.req.scope.join(' '),
-			});
+				clientLogo: oauth2.client.logo ?? undefined,
+				scope: oauth2.req.scope,
+			}));
 		});
 		fastify.post('/decision', async () => { });
-
-		fastify.register(fastifyView, {
-			root: fileURLToPath(new URL('../web/views', import.meta.url)),
-			engine: { pug },
-			defaultContext: {
-				version: this.config.version,
-				config: this.config,
-			},
-		});
 
 		await fastify.register(fastifyExpress);
 		fastify.use('/authorize', this.#server.authorize(((areq, done) => {

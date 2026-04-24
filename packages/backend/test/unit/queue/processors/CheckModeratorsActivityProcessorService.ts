@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { jest } from '@jest/globals';
+import { describe, expect, test, beforeAll, beforeEach, afterEach, afterAll, vi } from 'vitest';
+import type { Mocked } from 'vitest';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as lolex from '@sinonjs/fake-timers';
 import { addHours, addSeconds, subDays, subHours, subSeconds } from 'date-fns';
@@ -18,12 +19,13 @@ import { QueueLoggerService } from '@/queue/QueueLoggerService.js';
 import { EmailService } from '@/core/EmailService.js';
 import { SystemWebhookService } from '@/core/SystemWebhookService.js';
 import { AnnouncementService } from '@/core/AnnouncementService.js';
+import { SystemWebhookEventType } from '@/models/SystemWebhook.js';
 
 const baseDate = new Date(Date.UTC(2000, 11, 15, 12, 0, 0));
 
 describe('CheckModeratorsActivityProcessorService', () => {
 	let app: TestingModule;
-	let clock: lolex.InstalledClock;
+	let clock: lolex.Clock;
 	let service: CheckModeratorsActivityProcessorService;
 
 	// --------------------------------------------------------------------------------------
@@ -31,10 +33,10 @@ describe('CheckModeratorsActivityProcessorService', () => {
 	let usersRepository: UsersRepository;
 	let userProfilesRepository: UserProfilesRepository;
 	let idService: IdService;
-	let roleService: jest.Mocked<RoleService>;
-	let announcementService: jest.Mocked<AnnouncementService>;
-	let emailService: jest.Mocked<EmailService>;
-	let systemWebhookService: jest.Mocked<SystemWebhookService>;
+	let roleService: Mocked<RoleService>;
+	let announcementService: Mocked<AnnouncementService>;
+	let emailService: Mocked<EmailService>;
+	let systemWebhookService: Mocked<SystemWebhookService>;
 
 	let systemWebhook1: MiSystemWebhook;
 	let systemWebhook2: MiSystemWebhook;
@@ -93,30 +95,30 @@ describe('CheckModeratorsActivityProcessorService', () => {
 					CheckModeratorsActivityProcessorService,
 					IdService,
 					{
-						provide: RoleService, useFactory: () => ({ getModerators: jest.fn() }),
+						provide: RoleService, useFactory: () => ({ getModerators: vi.fn() }),
 					},
 					{
-						provide: MetaService, useFactory: () => ({ fetch: jest.fn() }),
+						provide: MetaService, useFactory: () => ({ fetch: vi.fn() }),
 					},
 					{
-						provide: AnnouncementService, useFactory: () => ({ create: jest.fn() }),
+						provide: AnnouncementService, useFactory: () => ({ create: vi.fn() }),
 					},
 					{
-						provide: EmailService, useFactory: () => ({ sendEmail: jest.fn() }),
+						provide: EmailService, useFactory: () => ({ sendEmail: vi.fn() }),
 					},
 					{
 						provide: SystemWebhookService, useFactory: () => ({
-							fetchActiveSystemWebhooks: jest.fn(),
-							enqueueSystemWebhook: jest.fn(),
+							fetchActiveSystemWebhooks: vi.fn(),
+							enqueueSystemWebhook: vi.fn(),
 						}),
 					},
 					{
 						provide: QueueLoggerService, useFactory: () => ({
 							logger: ({
 								createSubLogger: () => ({
-									info: jest.fn(),
-									warn: jest.fn(),
-									succ: jest.fn(),
+									info: vi.fn(),
+									warn: vi.fn(),
+									succ: vi.fn(),
 								}),
 							}),
 						}),
@@ -130,16 +132,18 @@ describe('CheckModeratorsActivityProcessorService', () => {
 
 		service = app.get(CheckModeratorsActivityProcessorService);
 		idService = app.get(IdService);
-		roleService = app.get(RoleService) as jest.Mocked<RoleService>;
-		announcementService = app.get(AnnouncementService) as jest.Mocked<AnnouncementService>;
-		emailService = app.get(EmailService) as jest.Mocked<EmailService>;
-		systemWebhookService = app.get(SystemWebhookService) as jest.Mocked<SystemWebhookService>;
+		roleService = app.get(RoleService) as Mocked<RoleService>;
+		announcementService = app.get(AnnouncementService) as Mocked<AnnouncementService>;
+		emailService = app.get(EmailService) as Mocked<EmailService>;
+		systemWebhookService = app.get(SystemWebhookService) as Mocked<SystemWebhookService>;
 
 		app.enableShutdownHooks();
 	});
 
 	beforeEach(async () => {
 		clock = lolex.install({
+			// https://github.com/sinonjs/sinon/issues/2620
+			toFake: Object.keys(lolex.timers).filter((key) => !['nextTick', 'queueMicrotask'].includes(key)) as lolex.FakeMethod[],
 			now: new Date(baseDate),
 			shouldClearNativeTimers: true,
 		});
@@ -156,8 +160,8 @@ describe('CheckModeratorsActivityProcessorService', () => {
 
 	afterEach(async () => {
 		clock.uninstall();
-		await usersRepository.delete({});
-		await userProfilesRepository.delete({});
+		await usersRepository.createQueryBuilder().delete().execute();
+		await userProfilesRepository.createQueryBuilder().delete().execute();
 		roleService.getModerators.mockReset();
 		announcementService.create.mockReset();
 		emailService.sendEmail.mockReset();
@@ -315,7 +319,7 @@ describe('CheckModeratorsActivityProcessorService', () => {
 				createUser({}, { email: 'user2@example.com', emailVerified: false }),
 				createUser({}, { email: null, emailVerified: false }),
 				createUser({}, { email: 'user4@example.com', emailVerified: true }),
-				createUser({ isRoot: true }, { email: 'root@example.com', emailVerified: true }),
+				createUser({}, { email: 'root@example.com', emailVerified: true }),
 			]);
 
 			mockModeratorRole([user1, user2, user3, root]);
@@ -334,9 +338,10 @@ describe('CheckModeratorsActivityProcessorService', () => {
 			mockModeratorRole([user1]);
 			await service.notifyInactiveModeratorsWarning({ time: 1, asDays: 0, asHours: 0 });
 
-			expect(systemWebhookService.enqueueSystemWebhook).toHaveBeenCalledTimes(2);
-			expect(systemWebhookService.enqueueSystemWebhook.mock.calls[0][0]).toEqual(systemWebhook1);
-			expect(systemWebhookService.enqueueSystemWebhook.mock.calls[1][0]).toEqual(systemWebhook2);
+			// typeとactiveによる絞り込みが機能しているかはSystemWebhookServiceのテストで確認する.
+			// ここでは呼び出されているか、typeが正しいかのみを確認する
+			expect(systemWebhookService.enqueueSystemWebhook).toHaveBeenCalledTimes(1);
+			expect(systemWebhookService.enqueueSystemWebhook.mock.calls[0][0] as SystemWebhookEventType).toEqual('inactiveModeratorsWarning');
 		});
 	});
 
@@ -347,7 +352,7 @@ describe('CheckModeratorsActivityProcessorService', () => {
 				createUser({}, { email: 'user2@example.com', emailVerified: false }),
 				createUser({}, { email: null, emailVerified: false }),
 				createUser({}, { email: 'user4@example.com', emailVerified: true }),
-				createUser({ isRoot: true }, { email: 'root@example.com', emailVerified: true }),
+				createUser({}, { email: 'root@example.com', emailVerified: true }),
 			]);
 
 			mockModeratorRole([user1, user2, user3, root]);
@@ -372,8 +377,10 @@ describe('CheckModeratorsActivityProcessorService', () => {
 			mockModeratorRole([user1]);
 			await service.notifyChangeToInvitationOnly();
 
+			// typeとactiveによる絞り込みが機能しているかはSystemWebhookServiceのテストで確認する.
+			// ここでは呼び出されているか、typeが正しいかのみを確認する
 			expect(systemWebhookService.enqueueSystemWebhook).toHaveBeenCalledTimes(1);
-			expect(systemWebhookService.enqueueSystemWebhook.mock.calls[0][0]).toEqual(systemWebhook2);
+			expect(systemWebhookService.enqueueSystemWebhook.mock.calls[0][0] as SystemWebhookEventType).toEqual('inactiveModeratorsInvitationOnlyChanged');
 		});
 	});
 });

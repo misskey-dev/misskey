@@ -13,7 +13,7 @@ import { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataServic
 import InstanceChart from '@/core/chart/charts/instance.js';
 import ApRequestChart from '@/core/chart/charts/ap-request.js';
 import FederationChart from '@/core/chart/charts/federation.js';
-import { getApId } from '@/core/activitypub/type.js';
+import { getApId, isActor, isDelete } from '@/core/activitypub/type.js';
 import type { IActivity } from '@/core/activitypub/type.js';
 import type { MiRemoteUser } from '@/models/User.js';
 import type { MiUserPublickey } from '@/models/UserPublickey.js';
@@ -84,6 +84,23 @@ export class InboxProcessorService implements OnApplicationShutdown {
 			return `Old keyId is no longer supported. ${keyIdLower}`;
 		}
 
+		{
+			let userExistenceCheckApId: string | null = null;
+
+			// 存在しないActorに対するActorのDeleteアクティビティは無視する。
+			// actorとobjectが同じならばそれはActorに違いない
+			if (isDelete(activity) && typeof activity.object === 'object' && (isActor(activity.object) || getApId(activity.actor) === getApId(activity.object))) {
+				userExistenceCheckApId = getApId(activity.object);
+			}
+
+			if (userExistenceCheckApId != null) {
+				const user = await this.apDbResolverService.getUserFromApId(userExistenceCheckApId);
+				if (user == null) {
+					throw new Bull.UnrecoverableError(`skip: user not found for delete activity. ${getApId(userExistenceCheckApId)}`);
+				}
+			}
+		}
+
 		// HTTP-Signature keyIdを元にDBから取得
 		let authUser: {
 			user: MiRemoteUser;
@@ -107,12 +124,12 @@ export class InboxProcessorService implements OnApplicationShutdown {
 
 		// それでもわからなければ終了
 		if (authUser == null) {
-			throw new Bull.UnrecoverableError('skip: failed to resolve user');
+			throw new Bull.UnrecoverableError(`skip: failed to resolve user ${getApId(activity.actor)}`);
 		}
 
 		// publicKey がなくても終了
 		if (authUser.key == null) {
-			throw new Bull.UnrecoverableError('skip: failed to resolve user publicKey');
+			throw new Bull.UnrecoverableError(`skip: failed to resolve user publicKey ${getApId(activity.actor)}`);
 		}
 
 		// HTTP-Signatureの検証
@@ -234,6 +251,9 @@ export class InboxProcessorService implements OnApplicationShutdown {
 				}
 				if (e.id === 'd450b8a9-48e4-4dab-ae36-f4db763fda7c') { // invalid Note
 					return e.message;
+				}
+				if (e.id === '9f466dab-c856-48cd-9e65-ff90ff750580') {
+					return 'note contains too many mentions';
 				}
 			}
 			throw e;

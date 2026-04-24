@@ -9,13 +9,13 @@ import { basename, isAbsolute } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { inspect } from 'node:util';
 import WebSocket, { ClientOptions } from 'ws';
-import fetch, { File, RequestInit, type Headers } from 'node-fetch';
+import fetch, { RequestInit, type Headers } from 'node-fetch';
+import * as htmlParser from 'node-html-parser';
 import { DataSource } from 'typeorm';
-import { JSDOM } from 'jsdom';
 import { type Response } from 'node-fetch';
 import Fastify from 'fastify';
-import { entities } from '../src/postgres.js';
-import { loadConfig } from '../src/config.js';
+import { entities } from '@/postgres.js';
+import { loadConfig } from '@/config.js';
 import type * as misskey from 'misskey-js';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 import { validateContentTypeSetAsActivityPub } from '@/core/activitypub/misc/validator.js';
@@ -35,7 +35,7 @@ export type SystemWebhookPayload = {
 	createdAt: string;
 	type: string;
 	body: any;
-}
+};
 
 const config = loadConfig();
 export const port = config.port;
@@ -44,10 +44,6 @@ export const host = new URL(config.url).host;
 
 export const WEBHOOK_HOST = 'http://localhost:15080';
 export const WEBHOOK_PORT = 15080;
-
-export const cookie = (me: UserToken): string => {
-	return `token=${me.token};`;
-};
 
 export type ApiRequest<E extends keyof misskey.Endpoints, P extends misskey.Endpoints[E]['req'] = misskey.Endpoints[E]['req']> = {
 	endpoint: E,
@@ -320,8 +316,12 @@ export const uploadFile = async (user?: UserToken, { path, name, blob }: UploadO
 			: new URL(path, new URL('resources/', import.meta.url));
 
 	const formData = new FormData();
-	formData.append('file', blob ??
-		new File([await readFile(absPath)], basename(absPath.toString())));
+	formData.append(
+		'file',
+		blob ?? new Blob([new Uint8Array(await readFile(absPath))]),
+		basename(absPath.toString()),
+	);
+
 	formData.append('force', 'true');
 	if (name) {
 		formData.append('name', name);
@@ -404,37 +404,28 @@ export function connectStream<C extends keyof misskey.Channels>(user: UserToken,
 }
 
 export const waitFire = async <C extends keyof misskey.Channels>(user: UserToken, channel: C, trgr: () => any, cond: (msg: Record<string, any>) => boolean, params?: misskey.Channels[C]['params']) => {
-	return new Promise<boolean>(async (res, rej) => {
-		let timer: NodeJS.Timeout | null = null;
+	let ws: WebSocket | undefined;
 
-		let ws: WebSocket;
-		try {
-			ws = await connectStream(user, channel, msg => {
+	try {
+		let callback: (msg: Record<string, unknown>) => void;
+		const receivedPromise = new Promise<boolean>((resolve) => {
+			callback = (msg: Record<string, unknown>) => {
 				if (cond(msg)) {
-					ws.close();
-					if (timer) clearTimeout(timer);
-					res(true);
+					resolve(true);
 				}
-			}, params);
-		} catch (e) {
-			rej(e);
-		}
+			};
+		});
 
-		if (!ws!) return;
+		ws = await connectStream(user, channel, callback!, params);
+		await trgr();
 
-		timer = setTimeout(() => {
-			ws.close();
-			res(false);
-		}, 3000);
-
-		try {
-			await trgr();
-		} catch (e) {
-			ws.close();
-			if (timer) clearTimeout(timer);
-			rej(e);
-		}
-	});
+		return await Promise.race([
+			receivedPromise,
+			new Promise<void>((r) => setTimeout(() => r(), 3000)).then(() => false),
+		]);
+	} finally {
+		if (ws) ws.close();
+	}
 };
 
 /**
@@ -468,7 +459,7 @@ export function makeStreamCatcher<T>(
 
 export type SimpleGetResponse = {
 	status: number,
-	body: any | JSDOM | null,
+	body: any | null,
 	type: string | null,
 	location: string | null
 };
@@ -499,7 +490,7 @@ export const simpleGet = async (path: string, accept = '*/*', cookie: any = unde
 
 	const body =
 		jsonTypes.includes(res.headers.get('content-type') ?? '') ? await res.json() :
-		htmlTypes.includes(res.headers.get('content-type') ?? '') ? new JSDOM(await res.text()) :
+		htmlTypes.includes(res.headers.get('content-type') ?? '') ? htmlParser.parse(await res.text()) :
 		await bodyExtractor(res);
 
 	return {
@@ -612,8 +603,8 @@ export async function initTestDb(justBorrow = false, initEntities?: any[]) {
 		username: config.db.user,
 		password: config.db.pass,
 		database: config.db.db,
-		synchronize: true && !justBorrow,
-		dropSchema: true && !justBorrow,
+		synchronize: !justBorrow,
+		dropSchema: !justBorrow,
 		entities: initEntities ?? entities,
 	});
 
@@ -665,7 +656,9 @@ export async function captureWebhook<T = SystemWebhookPayload>(postAction: () =>
 	let timeoutHandle: NodeJS.Timeout | null = null;
 	const result = await new Promise<string>(async (resolve, reject) => {
 		fastify.all('/', async (req, res) => {
-			timeoutHandle && clearTimeout(timeoutHandle);
+			if (timeoutHandle) {
+				clearTimeout(timeoutHandle);
+			}
 
 			const body = JSON.stringify(req.body);
 			res.status(200).send('ok');

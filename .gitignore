@@ -46,6 +46,7 @@ docker-compose.yml
 built
 built-test
 js-built
+src-js
 /data
 /.cache-loader
 /db

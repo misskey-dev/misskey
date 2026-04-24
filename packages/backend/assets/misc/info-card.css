@@ -1,0 +1,35 @@
+html,
+body {
+	margin: 0;
+	padding: 0;
+	min-height: 100vh;
+	background: #fff;
+}
+
+#a {
+	display: block;
+}
+
+#banner {
+	background-size: cover;
+	background-position: center center;
+}
+
+#title {
+	display: inline-block;
+	margin: 24px;
+	padding: 0.5em 0.8em;
+	color: #fff;
+	background: rgba(0, 0, 0, 0.5);
+	font-weight: bold;
+	font-size: 1.3em;
+}
+
+#content {
+	overflow: auto;
+	color: #353c3e;
+}
+
+#description {
+	margin: 24px;
+}

@@ -7,38 +7,38 @@
 	"exports": {
 		".": {
 			"import": "./built/index.js",
-			"types": "./built/index.d.ts"
+			"types": "./built/index.d.ts",
+			"default": "./built/index.js"
 		},
 		"./*": {
 			"import": "./built/*",
-			"types": "./built/*"
+			"types": "./built/*",
+			"default": "./built/*"
 		}
 	},
 	"scripts": {
 		"build": "node ./build.js",
 		"watch": "nodemon -w package.json -e json --exec \"node ./build.js --watch\"",
 		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
-		"typecheck": "tsc --noEmit",
+		"typecheck": "tsgo --noEmit",
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"devDependencies": {
-		"@types/matter-js": "0.19.7",
+		"@types/matter-js": "0.20.2",
+		"@types/node": "24.12.2",
 		"@types/seedrandom": "3.0.8",
-		"@types/node": "22.9.0",
-		"@typescript-eslint/eslint-plugin": "7.1.0",
-		"@typescript-eslint/parser": "7.1.0",
-		"nodemon": "3.1.7",
-		"execa": "8.0.1",
-		"typescript": "5.6.3",
-		"esbuild": "0.24.0",
-		"glob": "11.0.0"
+		"@typescript-eslint/eslint-plugin": "8.58.2",
+		"@typescript-eslint/parser": "8.58.2",
+		"esbuild": "0.28.0",
+		"execa": "9.6.1",
+		"nodemon": "3.1.14"
 	},
 	"files": [
 		"built"
 	],
 	"dependencies": {
-		"eventemitter3": "5.0.1",
-		"matter-js": "0.19.0",
+		"eventemitter3": "5.0.4",
+		"matter-js": "0.20.0",
 		"seedrandom": "3.0.5"
 	}
 }

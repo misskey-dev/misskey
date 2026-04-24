@@ -12,7 +12,7 @@ export function getIpHash(ip: string): string {
 		// (this means for IPv4 the entire address is used)
 		const prefix = IPCIDR.createAddress(ip).mask(64);
 		return 'ip-' + BigInt('0b' + prefix).toString(36);
-	} catch (e) {
+	} catch (_) {
 		const prefix = IPCIDR.createAddress(ip.replace(/:[0-9]+$/, '')).mask(64);
 		return 'ip-' + BigInt('0b' + prefix).toString(36);
 	}

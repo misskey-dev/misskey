@@ -1,0 +1,132 @@
+{
+	$schema: 'https://docs.renovatebot.com/renovate-schema.json',
+	extends: [
+		'config:recommended',
+	],
+	timezone: 'Asia/Tokyo',
+	schedule: [
+		'* 0 * * *',
+	],
+	prHourlyLimit: 5,
+	labels: [
+		'dependencies',
+	],
+	dependencyDashboardApproval: true,
+	dependencyDashboardAutoclose: true,
+	osvVulnerabilityAlerts: true,
+	dependencyDashboardOSVVulnerabilitySummary: 'unresolved',
+	minimumReleaseAge: '7 days',
+	ignoreDeps: [
+		// https://github.com/misskey-dev/misskey/pull/15489#issuecomment-2660717458
+		'@typescript/lib-webworker',
+		// https://github.com/misskey-dev/misskey/pull/15494#issuecomment-2660775258
+		'nsfwjs',
+    // https://github.com/misskey-dev/misskey/issues/15920
+    'sharp',
+		'@misskey-dev/sharp-read-bmp',
+		'@syuilo/aiscript-0-19-0',
+	],
+	packageRules: [
+		{
+			groupName: '[Backend] Update dependencies',
+			matchFileNames: [
+				'packages/backend/**/package.json',
+			],
+		},
+		{
+			groupName: '[Frontend] Update dependencies',
+			matchFileNames: [
+				'packages/frontend/**/package.json',
+				'packages/frontend-embed/**/package.json',
+				'packages/frontend-shared/**/package.json',
+				'packages/frontend-builder/**/package.json',
+				'packages/misskey-bubble-game/**/package.json',
+				'packages/misskey-reversi/**/package.json',
+				'packages/sw/**/package.json',
+				'packages/icons-subsetter/**/package.json',
+			],
+			// prevent wastage of Chromatic snapshots
+			rebaseWhen: 'never',
+		},
+		{
+			groupName: '[misskey-js] Update dependencies',
+			matchFileNames: [
+				'packages/misskey-js/**/package.json',
+			],
+		},
+		{
+			groupName: '[Root] Update dependencies',
+			matchFileNames: [
+				'package.json',
+			],
+		},
+		{
+			groupName: '[Tools] Update dependencies',
+			matchFileNames: [
+				'scripts/**/package.json',
+			],
+		},
+		{
+			groupName: '[GitHub Actions] Update dependencies',
+			matchFileNames: [
+				'.github/workflows/**/*.yml',
+			],
+		},
+		{
+			groupName: '[Node.js] Update dependencies',
+			matchFileNames: [
+				'.node-version',
+			],
+		},
+		{
+			groupName: '[Node.js] Update dependencies',
+			matchManagers: ['custom.regex'],
+			matchPackageNames: ['node'],
+		},
+		{
+			groupName: '[Node.js] Update dependencies',
+			matchDepNames: ['ghcr.io/devcontainers/features/node:1'],
+			matchFileNames: [
+				'.devcontainer/**',
+			],
+		},
+		{
+			groupName: '[Docker] Update dependencies',
+			matchFileNames: [
+				'compose.local-db.yml',
+				'compose_example.yml',
+				'packages/backend/test-federation/*.yml',
+				'Dockerfile',
+			],
+		},
+		{
+			groupName: '[devcontainer] Update dependencies',
+			matchDepNames: ['!ghcr.io/devcontainers/features/node:1'],
+			matchFileNames: [
+				'.devcontainer/**',
+			],
+		},
+		{
+			// devcontainer (Dockerfile用の設定)
+			groupName: '[devcontainer] Update dependencies',
+			matchFileNames: ['.devcontainer/Dockerfile'],
+			matchDepNames: ['mcr.microsoft.com/devcontainers/javascript-node'],
+			allowedVersions: '/-[0-9]+-trixie$/',
+
+			// major/minor/patch: devcontainer の semver
+			// build: Node メジャー
+			// dist: Debian codename (e.g., bullseye, bookworm)（比較には使わない）
+			versioning: 'regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)-(?<build>\\d+)-(?<dist>.+)$',
+		},
+	],
+	customManagers: [
+		{
+			customType: 'regex',
+			managerFilePatterns: ['/^Dockerfile$/'],
+			matchStrings: ['ARG NODE_VERSION=(?<currentValue>.*?)\\n'],
+			datasourceTemplate: 'docker',
+			depNameTemplate: 'node',
+			versioningTemplate: 'docker',
+		},
+	],
+}

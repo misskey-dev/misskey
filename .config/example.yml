@@ -105,6 +105,54 @@ port: 3000
 # socket: /path/to/misskey.sock
 # chmodSocket: '777'
 
+# Proxy trust settings
+#
+# Specifies the IP addresses that Misskey will use as trusted
+# reverse proxies (e.g., nginx, Cloudflare). This affects how
+# Misskey determines the source IP for each request and is used
+# for important rate limiting and security features. If the value
+# is not set correctly, Misskey may use the IP address of the
+# reverse proxy instead of the actual source IP, which may lead to
+# unintended rate limiting or security vulnerabilities.
+# By default, the loopback network and private network address
+# ranges shown below are trusted.
+# If you are using a single reverse proxy and it is on the same
+# machine or the same private network as Misskey, it is unlikely you
+# need to change this setting, and the default setting is fine.
+# Also, if you are using multiple reverse proxy servers and they are
+# all on the same private network as Misskey, the default setting
+# is fine.
+# However, if you are using a reverse proxy server that accesses
+# Misskey web servers and streaming servers via public IP addresses
+# (for example, Cloudflare), you must set this variable.
+# When changing this setting, you can use one of the following values:
+#
+# - true: Trust all proxies
+# - false: Do not trust any proxies
+# - IP address, IP address range, or array of them: Trust hops that
+#   match the specified criteria.
+# - Integer: Trust the nth hop from the front-facing proxy server as
+#   the client.
+# For more information on how to configure this setting, please refer
+# to the Fastify documentation:
+# https://fastify.dev/docs/latest/Reference/Server/#trustproxy
+#
+# Note that if this variable is set, it overrides the default range,
+# so if you have both an external reverse proxy and a proxy on the
+# local host, you must include both IPs (or IP ranges).
+#
+#trustProxy:
+#  - '10.0.0.0/8'
+#  - '172.16.0.0/12'
+#  - '192.168.0.0/16'
+#  - '127.0.0.1/32'
+#  - '::1/128'
+#  - 'fc00::/7'
+#  # Example: If you are using some external reverse proxies like CDNs,
+#  # you may need to add the CDN IP ranges here.
+#  # If you're using Cloudflare, you can find IP Ranges at:
+#  # https://www.cloudflare.com/ips/
+
 #   ┌──────────────────────────┐
 #───┘ PostgreSQL configuration └────────────────────────────────
 
@@ -196,9 +244,27 @@ redis:
 #  # You can specify more ioredis options...
 #  #username: example-username
 
-#   ┌───────────────────────────┐
-#───┘ MeiliSearch configuration └─────────────────────────────
+#   ┌───────────────────────────────┐
+#───┘ Fulltext search configuration └─────────────────────────────
 
+# These are the setting items for the full-text search provider.
+fulltextSearch:
+  # You can select the ID generation method.
+  # - sqlLike (default)
+  #   Use SQL-like search.
+  #   This is a standard feature of PostgreSQL, so no special extensions are required.
+  # - sqlPgroonga
+  #   Use pgroonga.
+  #   You need to install pgroonga and configure it as a PostgreSQL extension.
+  #   In addition to the above, you need to create a pgroonga index on the text column of the note table.
+  #   see: https://pgroonga.github.io/tutorial/
+  # - meilisearch
+  #   Use Meilisearch.
+  #   You need to install Meilisearch and configure.
+  provider: sqlLike
+
+# For Meilisearch settings.
+# If you select "meilisearch" for "fulltextSearch.provider", it must be set.
 # You can set scope to local (default value) or global
 # (include notes from remote).
 
@@ -241,6 +307,11 @@ id: 'aidx'
 #    dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0'
 
 #sentryForFrontend:
+#  vueIntegration:
+#    tracingOptions:
+#      trackComponents: true
+#  browserTracingIntegration:
+#  replayIntegration:
 #  options:
 #    dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0'
 
@@ -249,6 +320,10 @@ id: 'aidx'
 
 # Whether disable HSTS
 #disableHsts: true
+
+# Enable internal IP-based rate limiting (default: true)
+# To configure them in reverse proxy instead, set this to false.
+#enableIpRateLimit: true
 
 # Number of worker processes
 #clusterLimit: 1
@@ -296,18 +371,11 @@ proxyBypassHosts:
 # * Perform image compression (on a different server resource than the main process)
 #mediaProxy: https://example.com/proxy
 
-# Proxy remote files (default: true)
-# Proxy remote files by this instance or mediaProxy to prevent remote files from running in remote domains.
-proxyRemoteFiles: true
-
 # Movie Thumbnail Generation URL
 # There is no reference implementation.
 # For example, Misskey will point to the following URL:
 #   https://example.com/thumbnail.webp?thumbnail=1&url=https%3A%2F%2Fstorage.example.com%2Fpath%2Fto%2Fvideo.mp4
 #videoThumbnailGenerator: https://example.com
-
-# Sign to ActivityPub GET request (default: true)
-signToActivityPubGet: true
 
 # For security reasons, uploading attachments from the intranet is prohibited,
 # but exceptions can be made from the following settings. Default value is "undefined".
@@ -321,3 +389,13 @@ signToActivityPubGet: true
 
 # PID File of master process
 #pidFile: /tmp/misskey.pid
+
+# Log settings
+# logging:
+#   sql:
+#     # Outputs query parameters during SQL execution to the log.
+#     # default: false
+#     enableQueryParamLogging: false
+#     # Disable query truncation. If set to true, the full text of the query will be output to the log.
+#     # default: false
+#     disableQueryTruncation: false

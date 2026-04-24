@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ACHIEVEMENT_TYPES } from '@/core/AchievementService.js';
 import { notificationTypes, userExportableEntities } from '@/types.js';
 
 const baseSchema = {
@@ -215,6 +214,36 @@ export const packedNotificationSchema = {
 			type: {
 				type: 'string',
 				optional: false, nullable: false,
+				enum: ['scheduledNotePosted'],
+			},
+			note: {
+				type: 'object',
+				ref: 'Note',
+				optional: false, nullable: false,
+			},
+		},
+	}, {
+		type: 'object',
+		properties: {
+			...baseSchema.properties,
+			type: {
+				type: 'string',
+				optional: false, nullable: false,
+				enum: ['scheduledNotePostFailed'],
+			},
+			noteDraft: {
+				type: 'object',
+				ref: 'NoteDraft',
+				optional: false, nullable: false,
+			},
+		},
+	}, {
+		type: 'object',
+		properties: {
+			...baseSchema.properties,
+			type: {
+				type: 'string',
+				optional: false, nullable: false,
 				enum: ['follow'],
 			},
 			user: {
@@ -294,12 +323,25 @@ export const packedNotificationSchema = {
 			type: {
 				type: 'string',
 				optional: false, nullable: false,
+				enum: ['chatRoomInvitationReceived'],
+			},
+			invitation: {
+				type: 'object',
+				ref: 'ChatRoomInvitation',
+				optional: false, nullable: false,
+			},
+		},
+	}, {
+		type: 'object',
+		properties: {
+			...baseSchema.properties,
+			type: {
+				type: 'string',
+				optional: false, nullable: false,
 				enum: ['achievementEarned'],
 			},
 			achievement: {
-				type: 'string',
-				optional: false, nullable: false,
-				enum: ACHIEVEMENT_TYPES,
+				ref: 'AchievementName',
 			},
 		},
 	}, {
@@ -330,6 +372,16 @@ export const packedNotificationSchema = {
 				type: 'string',
 				optional: false, nullable: false,
 				enum: ['login'],
+			},
+		},
+	}, {
+		type: 'object',
+		properties: {
+			...baseSchema.properties,
+			type: {
+				type: 'string',
+				optional: false, nullable: false,
+				enum: ['createToken'],
 			},
 		},
 	}, {

@@ -9,31 +9,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #header>Chart</template>
 		<div :class="$style.chart">
 			<div class="selects">
-				<MkSelect v-model="chartSrc" style="margin: 0; flex: 1;">
-					<optgroup :label="i18n.ts.federation">
-						<option value="federation">{{ i18n.ts._charts.federation }}</option>
-						<option value="ap-request">{{ i18n.ts._charts.apRequest }}</option>
-					</optgroup>
-					<optgroup :label="i18n.ts.users">
-						<option value="users">{{ i18n.ts._charts.usersIncDec }}</option>
-						<option value="users-total">{{ i18n.ts._charts.usersTotal }}</option>
-						<option value="active-users">{{ i18n.ts._charts.activeUsers }}</option>
-					</optgroup>
-					<optgroup :label="i18n.ts.notes">
-						<option value="notes">{{ i18n.ts._charts.notesIncDec }}</option>
-						<option value="local-notes">{{ i18n.ts._charts.localNotesIncDec }}</option>
-						<option value="remote-notes">{{ i18n.ts._charts.remoteNotesIncDec }}</option>
-						<option value="notes-total">{{ i18n.ts._charts.notesTotal }}</option>
-					</optgroup>
-					<optgroup :label="i18n.ts.drive">
-						<option value="drive-files">{{ i18n.ts._charts.filesIncDec }}</option>
-						<option value="drive">{{ i18n.ts._charts.storageUsageIncDec }}</option>
-					</optgroup>
-				</MkSelect>
-				<MkSelect v-model="chartSpan" style="margin: 0 0 0 10px;">
-					<option value="hour">{{ i18n.ts.perHour }}</option>
-					<option value="day">{{ i18n.ts.perDay }}</option>
-				</MkSelect>
+				<MkSelect v-model="chartSrc" :items="chartSrcDef" style="margin: 0; flex: 1;"></MkSelect>
+				<MkSelect v-model="chartSpan" :items="chartSpanDef" style="margin: 0 0 0 10px;"></MkSelect>
 			</div>
 			<div class="chart _panel">
 				<MkChart :src="chartSrc" :span="chartSpan" :limit="chartLimit" :detailed="true"></MkChart>
@@ -43,13 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<MkFoldableSection class="item">
 		<template #header>Active users heatmap</template>
-		<MkSelect v-model="heatmapSrc" style="margin: 0 0 12px 0;">
-			<option value="active-users">Active users</option>
-			<option value="notes">Notes</option>
-			<option value="ap-requests-inbox-received">AP Requests: inboxReceived</option>
-			<option value="ap-requests-deliver-succeeded">AP Requests: deliverSucceeded</option>
-			<option value="ap-requests-deliver-failed">AP Requests: deliverFailed</option>
-		</MkSelect>
+		<MkSelect v-model="heatmapSrc" :items="heatmapSrcDef" style="margin: 0 0 12px 0;"></MkSelect>
 		<div class="_panel" :class="$style.heatmap">
 			<MkHeatmap :src="heatmapSrc" :label="'Read & Write'"/>
 		</div>
@@ -65,7 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</MkFoldableSection>
 
-	<MkFoldableSection class="item">
+	<MkFoldableSection v-if="shouldShowFederation" class="item">
 		<template #header>Federation</template>
 		<div :class="$style.federation">
 			<div class="pies">
@@ -84,28 +55,115 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, shallowRef } from 'vue';
+import { onMounted, computed, useTemplateRef } from 'vue';
 import { Chart } from 'chart.js';
+import type { MkSelectItem, ItemOption } from '@/components/MkSelect.vue';
+import type { ChartSrc } from '@/components/MkChart.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkChart from '@/components/MkChart.vue';
-import { useChartTooltip } from '@/scripts/use-chart-tooltip.js';
+import { useChartTooltip } from '@/composables/use-chart-tooltip.js';
+import { $i } from '@/i.js';
 import * as os from '@/os.js';
-import { misskeyApiGet } from '@/scripts/misskey-api.js';
+import { misskeyApiGet } from '@/utility/misskey-api.js';
+import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
-import MkHeatmap, { type HeatmapSource } from '@/components/MkHeatmap.vue';
+import MkHeatmap from '@/components/MkHeatmap.vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import MkRetentionHeatmap from '@/components/MkRetentionHeatmap.vue';
 import MkRetentionLineChart from '@/components/MkRetentionLineChart.vue';
-import { initChart } from '@/scripts/init-chart.js';
+import { initChart } from '@/utility/init-chart.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 
 initChart();
 
+const shouldShowFederation = computed(() => instance.federation !== 'none' || $i?.isModerator);
+
 const chartLimit = 500;
-const chartSpan = ref<'hour' | 'day'>('hour');
-const chartSrc = ref('active-users');
-const heatmapSrc = ref<HeatmapSource>('active-users');
-const subDoughnutEl = shallowRef<HTMLCanvasElement>();
-const pubDoughnutEl = shallowRef<HTMLCanvasElement>();
+const {
+	model: chartSpan,
+	def: chartSpanDef,
+} = useMkSelect({
+	items: [
+		{ value: 'hour', label: i18n.ts.perHour },
+		{ value: 'day', label: i18n.ts.perDay },
+	],
+	initialValue: 'hour',
+});
+const {
+	model: chartSrc,
+	def: chartSrcDef,
+} = useMkSelect({
+	items: computed<MkSelectItem<ChartSrc>[]>(() => {
+		const items: MkSelectItem<ChartSrc>[] = [];
+
+		if (shouldShowFederation.value) {
+			items.push({
+				type: 'group',
+				label: i18n.ts.federation,
+				items: [
+					{ value: 'federation', label: i18n.ts._charts.federation },
+					{ value: 'ap-request', label: i18n.ts._charts.apRequest },
+				],
+			});
+		}
+
+		items.push({
+			type: 'group',
+			label: i18n.ts.users,
+			items: [
+				{ value: 'users', label: i18n.ts._charts.usersIncDec },
+				{ value: 'users-total', label: i18n.ts._charts.usersTotal },
+				{ value: 'active-users', label: i18n.ts._charts.activeUsers },
+			],
+		});
+
+		const notesItems: ItemOption<ChartSrc>[] = [
+			{ value: 'notes', label: i18n.ts._charts.notesIncDec },
+			{ value: 'local-notes', label: i18n.ts._charts.localNotesIncDec },
+		];
+
+		if (shouldShowFederation.value) notesItems.push({ value: 'remote-notes', label: i18n.ts._charts.remoteNotesIncDec });
+
+		notesItems.push(
+			{ value: 'notes-total', label: i18n.ts._charts.notesTotal },
+		);
+
+		items.push({
+			type: 'group',
+			label: i18n.ts.notes,
+			items: notesItems,
+		});
+
+		items.push({
+			type: 'group',
+			label: i18n.ts.drive,
+			items: [
+				{ value: 'drive-files', label: i18n.ts._charts.filesIncDec },
+				{ value: 'drive', label: i18n.ts._charts.storageUsageIncDec },
+			],
+		});
+
+		return items;
+	}),
+	initialValue: 'active-users',
+});
+const {
+	model: heatmapSrc,
+	def: heatmapSrcDef,
+} = useMkSelect({
+	items: computed(() => [
+		{ value: 'active-users' as const, label: 'Active Users' },
+		{ value: 'notes' as const, label: 'Notes' },
+		...(shouldShowFederation.value ? [
+			{ value: 'ap-requests-inbox-received' as const, label: 'AP Requests: inboxReceived' },
+			{ value: 'ap-requests-deliver-succeeded' as const, label: 'AP Requests: deliverSucceeded' },
+			{ value: 'ap-requests-deliver-failed' as const, label: 'AP Requests: deliverFailed' },
+		] : []),
+	]),
+	initialValue: 'active-users',
+});
+const subDoughnutEl = useTemplateRef('subDoughnutEl');
+const pubDoughnutEl = useTemplateRef('pubDoughnutEl');
 
 const { handler: externalTooltipHandler1 } = useChartTooltip({
 	position: 'middle',
@@ -114,14 +172,21 @@ const { handler: externalTooltipHandler2 } = useChartTooltip({
 	position: 'middle',
 });
 
-function createDoughnut(chartEl, tooltip, data) {
+type ChartData = {
+	name: string,
+	color: string,
+	value: number,
+	onClick?: () => void,
+}[];
+
+function createDoughnut(chartEl: HTMLCanvasElement, tooltip: ReturnType<typeof useChartTooltip>['handler'], data: ChartData) {
 	const chartInstance = new Chart(chartEl, {
 		type: 'doughnut',
 		data: {
 			labels: data.map(x => x.name),
 			datasets: [{
 				backgroundColor: data.map(x => x.color),
-				borderColor: getComputedStyle(document.documentElement).getPropertyValue('--MI_THEME-panel'),
+				borderColor: getComputedStyle(window.document.documentElement).getPropertyValue('--MI_THEME-panel'),
 				borderWidth: 2,
 				hoverOffset: 0,
 				data: data.map(x => x.value),
@@ -140,8 +205,8 @@ function createDoughnut(chartEl, tooltip, data) {
 			onClick: (ev) => {
 				if (ev.native == null) return;
 				const hit = chartInstance.getElementsAtEventForMode(ev.native, 'nearest', { intersect: true }, false)[0];
-				if (hit && data[hit.index].onClick) {
-					data[hit.index].onClick();
+				if (hit != null) {
+					data[hit.index].onClick?.();
 				}
 			},
 			plugins: {
@@ -165,16 +230,9 @@ function createDoughnut(chartEl, tooltip, data) {
 
 onMounted(() => {
 	misskeyApiGet('federation/stats', { limit: 30 }).then(fedStats => {
-		type ChartData = {
-			name: string,
-			color: string | null,
-			value: number,
-			onClick?: () => void,
-		}[];
-
 		const subs: ChartData = fedStats.topSubInstances.map(x => ({
 			name: x.host,
-			color: x.themeColor,
+			color: x.themeColor ?? '#888888',
 			value: x.followersCount,
 			onClick: () => {
 				os.pageWindow(`/instance-info/${x.host}`);
@@ -187,11 +245,11 @@ onMounted(() => {
 			value: fedStats.otherFollowersCount,
 		});
 
-		createDoughnut(subDoughnutEl.value, externalTooltipHandler1, subs);
+		if (subDoughnutEl.value != null) createDoughnut(subDoughnutEl.value, externalTooltipHandler1, subs);
 
 		const pubs: ChartData = fedStats.topPubInstances.map(x => ({
 			name: x.host,
-			color: x.themeColor,
+			color: x.themeColor ?? '#888888',
 			value: x.followingCount,
 			onClick: () => {
 				os.pageWindow(`/instance-info/${x.host}`);
@@ -204,7 +262,7 @@ onMounted(() => {
 			value: fedStats.otherFollowingCount,
 		});
 
-		createDoughnut(pubDoughnutEl.value, externalTooltipHandler2, pubs);
+		if (pubDoughnutEl.value != null) createDoughnut(pubDoughnutEl.value, externalTooltipHandler2, pubs);
 	});
 });
 </script>

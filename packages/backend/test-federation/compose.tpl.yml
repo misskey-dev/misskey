@@ -1,6 +1,6 @@
 services:
   nginx:
-    image: nginx:1.27
+    image: nginx:1.29
     volumes:
       - type: bind
         source: ./certificates/rootCA.crt
@@ -12,7 +12,7 @@ services:
       retries: 20
 
   misskey:
-    image: node:20
+    image: node:${NODE_VERSION}
     env_file:
       - ./.config/docker.env
     environment:
@@ -21,6 +21,10 @@ services:
       - type: bind
         source: ../../../built
         target: /misskey/built
+        read_only: false
+      - type: bind
+        source: ./.config/dummy.yml
+        target: /misskey/.config/default.yml
         read_only: true
       - type: bind
         source: ../assets
@@ -29,6 +33,10 @@ services:
       - type: bind
         source: ../built
         target: /misskey/packages/backend/built
+        read_only: true
+      - type: bind
+        source: ../src-js
+        target: /misskey/packages/backend/src-js
         read_only: true
       - type: bind
         source: ../migration
@@ -43,12 +51,24 @@ services:
         target: /misskey/packages/backend/package.json
         read_only: true
       - type: bind
+        source: ../scripts/compile_config.js
+        target: /misskey/packages/backend/scripts/compile_config.js
+        read_only: true
+      - type: bind
         source: ../../misskey-js/built
         target: /misskey/packages/misskey-js/built
         read_only: true
       - type: bind
         source: ../../misskey-js/package.json
         target: /misskey/packages/misskey-js/package.json
+        read_only: true
+      - type: bind
+        source: ../../i18n/built
+        target: /misskey/packages/i18n/built
+        read_only: true
+      - type: bind
+        source: ../../i18n/package.json
+        target: /misskey/packages/i18n/package.json
         read_only: true
       - type: bind
         source: ../../misskey-reversi/built
@@ -75,13 +95,17 @@ services:
         target: /misskey/pnpm-workspace.yaml
         read_only: true
       - type: bind
+        source: ../../../patches
+        target: /misskey/patches
+        read_only: true
+      - type: bind
         source: ./certificates/rootCA.crt
         target: /usr/local/share/ca-certificates/rootCA.crt
         read_only: true
     working_dir: /misskey
     command: >
       bash -c "
-        corepack enable && corepack prepare
+        npm install -g pnpm
         pnpm -F backend migrate
         pnpm -F backend start
       "
@@ -91,7 +115,7 @@ services:
       retries: 20
 
   db:
-    image: postgres:15-alpine
+    image: postgres:18-alpine
     env_file:
       - ./.config/docker.env
     volumes:

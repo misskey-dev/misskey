@@ -1,10 +1,10 @@
-
 /*
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { afterEach, beforeEach, describe, expect, jest } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, test, beforeAll, afterAll, vi } from 'vitest';
+import type { Mocked } from 'vitest';
 import { Test, TestingModule } from '@nestjs/testing';
 import { randomString } from '../utils.js';
 import { MiUser } from '@/models/User.js';
@@ -26,7 +26,7 @@ describe('UserWebhookService', () => {
 	let usersRepository: UsersRepository;
 	let userWebhooksRepository: WebhooksRepository;
 	let idService: IdService;
-	let queueService: jest.Mocked<QueueService>;
+	let queueService: Mocked<QueueService>;
 
 	// --------------------------------------------------------------------------------------
 
@@ -71,7 +71,7 @@ describe('UserWebhookService', () => {
 					LoggerService,
 					GlobalEventService,
 					{
-						provide: QueueService, useFactory: () => ({ systemWebhookDeliver: jest.fn() }),
+						provide: QueueService, useFactory: () => ({ userWebhookDeliver: vi.fn() }),
 					},
 				],
 			})
@@ -82,7 +82,7 @@ describe('UserWebhookService', () => {
 
 		service = app.get(UserWebhookService);
 		idService = app.get(IdService);
-		queueService = app.get(QueueService) as jest.Mocked<QueueService>;
+		queueService = app.get(QueueService) as Mocked<QueueService>;
 
 		app.enableShutdownHooks();
 	}
@@ -92,12 +92,12 @@ describe('UserWebhookService', () => {
 	}
 
 	async function beforeEachImpl() {
-		root = await createUser({ isRoot: true, username: 'root', usernameLower: 'root' });
+		root = await createUser({ username: 'root', usernameLower: 'root' });
 	}
 
 	async function afterEachImpl() {
-		await usersRepository.delete({});
-		await userWebhooksRepository.delete({});
+		await usersRepository.createQueryBuilder().delete().execute();
+		await userWebhooksRepository.createQueryBuilder().delete().execute();
 	}
 
 	// --------------------------------------------------------------------------------------
@@ -239,6 +239,94 @@ describe('UserWebhookService', () => {
 
 				const fetchedWebhooks = await service.fetchWebhooks({ ids: [webhook1.id, webhook4.id], isActive: false });
 				expect(fetchedWebhooks).toEqual([webhook4]);
+			});
+		});
+	});
+
+	describe('アプリを毎回作り直す必要があるグループ', () => {
+		beforeEach(async () => {
+			await beforeAllImpl();
+			await beforeEachImpl();
+		});
+
+		afterEach(async () => {
+			await afterEachImpl();
+			await afterAllImpl();
+		});
+
+		describe('enqueueUserWebhook', () => {
+			test('キューに追加成功', async () => {
+				const webhook = await createWebhook({
+					active: true,
+					on: ['note'],
+				});
+				await service.enqueueUserWebhook(webhook.userId, 'note', { foo: 'bar' } as any);
+
+				expect(queueService.userWebhookDeliver).toHaveBeenCalledTimes(1);
+				expect(queueService.userWebhookDeliver.mock.calls[0][0] as MiWebhook).toEqual(webhook);
+			});
+
+			test('非アクティブなWebhookはキューに追加されない', async () => {
+				const webhook = await createWebhook({
+					active: false,
+					on: ['note'],
+				});
+				await service.enqueueUserWebhook(webhook.userId, 'note', { foo: 'bar' } as any);
+
+				expect(queueService.userWebhookDeliver).not.toHaveBeenCalled();
+			});
+
+			test('未許可のイベント種別が渡された場合はWebhookはキューに追加されない', async () => {
+				const webhook1 = await createWebhook({
+					active: true,
+					on: [],
+				});
+				const webhook2 = await createWebhook({
+					active: true,
+					on: ['note'],
+				});
+				await service.enqueueUserWebhook(webhook1.userId, 'renote', { foo: 'bar' } as any);
+				await service.enqueueUserWebhook(webhook2.userId, 'renote', { foo: 'bar' } as any);
+
+				expect(queueService.userWebhookDeliver).not.toHaveBeenCalled();
+			});
+
+			test('ユーザIDが異なるWebhookはキューに追加されない', async () => {
+				const webhook = await createWebhook({
+					active: true,
+					on: ['note'],
+				});
+				await service.enqueueUserWebhook(idService.gen(), 'note', { foo: 'bar' } as any);
+
+				expect(queueService.userWebhookDeliver).not.toHaveBeenCalled();
+			});
+
+			test('混在した時、有効かつ許可されたイベント種別のみ', async () => {
+				const userId = root.id;
+				const webhook1 = await createWebhook({
+					userId,
+					active: true,
+					on: ['note'],
+				});
+				const webhook2 = await createWebhook({
+					userId,
+					active: true,
+					on: ['renote'],
+				});
+				const webhook3 = await createWebhook({
+					userId,
+					active: false,
+					on: ['note'],
+				});
+				const webhook4 = await createWebhook({
+					userId,
+					active: false,
+					on: ['renote'],
+				});
+				await service.enqueueUserWebhook(userId, 'note', { foo: 'bar' } as any);
+
+				expect(queueService.userWebhookDeliver).toHaveBeenCalledTimes(1);
+				expect(queueService.userWebhookDeliver.mock.calls[0][0] as MiWebhook).toEqual(webhook1);
 			});
 		});
 	});

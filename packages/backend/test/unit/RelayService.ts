@@ -5,29 +5,24 @@
 
 process.env.NODE_ENV = 'test';
 
-import { jest } from '@jest/globals';
-import { ModuleMocker } from 'jest-mock';
+import { afterAll, beforeAll, describe, test, expect, vi } from 'vitest';
+import type { Mocked } from 'vitest';
 import { Test } from '@nestjs/testing';
-import { GlobalModule } from '@/GlobalModule.js';
-import { RelayService } from '@/core/RelayService.js';
-import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
-import { CreateSystemUserService } from '@/core/CreateSystemUserService.js';
-import { UserEntityService } from '@/core/entities/UserEntityService.js';
-import { QueueService } from '@/core/QueueService.js';
-import { IdService } from '@/core/IdService.js';
-import type { RelaysRepository } from '@/models/_.js';
-import { DI } from '@/di-symbols.js';
+import { mockDeep } from 'vitest-mock-extended';
 import type { TestingModule } from '@nestjs/testing';
-import type { MockFunctionMetadata } from 'jest-mock';
-
-const moduleMocker = new ModuleMocker(global);
+import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { IdService } from '@/core/IdService.js';
+import { QueueService } from '@/core/QueueService.js';
+import { RelayService } from '@/core/RelayService.js';
+import { SystemAccountService } from '@/core/SystemAccountService.js';
+import { GlobalModule } from '@/GlobalModule.js';
+import { UtilityService } from '@/core/UtilityService.js';
 
 describe('RelayService', () => {
 	let app: TestingModule;
 	let relayService: RelayService;
-	let queueService: jest.Mocked<QueueService>;
-	let relaysRepository: RelaysRepository;
-	let userEntityService: UserEntityService;
+	let queueService: Mocked<QueueService>;
 
 	beforeAll(async () => {
 		app = await Test.createTestingModule({
@@ -36,20 +31,19 @@ describe('RelayService', () => {
 			],
 			providers: [
 				IdService,
-				CreateSystemUserService,
 				ApRendererService,
 				RelayService,
 				UserEntityService,
+				SystemAccountService,
+				UtilityService,
 			],
 		})
 			.useMocker((token) => {
 				if (token === QueueService) {
-					return { deliver: jest.fn() };
+					return { deliver: vi.fn() };
 				}
 				if (typeof token === 'function') {
-					const mockMetadata = moduleMocker.getMetadata(token) as MockFunctionMetadata<any, any>;
-					const Mock = moduleMocker.generateFromMetadata(mockMetadata);
-					return new Mock();
+					return mockDeep<typeof token>();
 				}
 			})
 			.compile();
@@ -57,9 +51,7 @@ describe('RelayService', () => {
 		app.enableShutdownHooks();
 
 		relayService = app.get<RelayService>(RelayService);
-		queueService = app.get<QueueService>(QueueService) as jest.Mocked<QueueService>;
-		relaysRepository = app.get<RelaysRepository>(DI.relaysRepository);
-		userEntityService = app.get<UserEntityService>(UserEntityService);
+		queueService = app.get<QueueService>(QueueService) as Mocked<QueueService>;
 	});
 
 	afterAll(async () => {

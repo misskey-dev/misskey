@@ -17,30 +17,36 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onUnmounted, ref, watch } from 'vue';
-import { useWidgetPropsManager, WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
-import { GetFormResultType } from '@/scripts/form.js';
+import { useWidgetPropsManager } from './widget.js';
+import { i18n } from '@/i18n.js';
+import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 
 const name = 'unixClock';
 
 const widgetPropsDef = {
 	transparent: {
-		type: 'boolean' as const,
+		type: 'boolean',
+		label: i18n.ts._widgetOptions.transparent,
 		default: false,
 	},
 	fontSize: {
-		type: 'number' as const,
+		type: 'number',
+		label: i18n.ts.fontSize,
 		default: 1.5,
 		step: 0.1,
 	},
 	showMs: {
-		type: 'boolean' as const,
+		type: 'boolean',
+		label: i18n.ts._widgetOptions._clock.showMs,
 		default: true,
 	},
 	showLabel: {
-		type: 'boolean' as const,
+		type: 'boolean',
+		label: i18n.ts._widgetOptions._clock.showLabel,
 		default: true,
 	},
-};
+} satisfies FormWithDefault;
 
 type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
 
@@ -53,7 +59,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 	emit,
 );
 
-let intervalId;
+let intervalId: number | null = null;
 const ss = ref('');
 const ms = ref('');
 const showColon = ref(false);
@@ -83,7 +89,10 @@ watch(() => widgetProps.showMs, () => {
 }, { immediate: true });
 
 onUnmounted(() => {
-	window.clearInterval(intervalId);
+	if (intervalId) {
+		window.clearInterval(intervalId);
+		intervalId = null;
+	}
 });
 
 defineExpose<WidgetComponentExpose>({

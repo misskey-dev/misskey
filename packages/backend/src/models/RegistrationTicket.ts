@@ -23,7 +23,7 @@ export class MiRegistrationTicket {
 	})
 	public expiresAt: Date | null;
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(() => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
@@ -36,7 +36,7 @@ export class MiRegistrationTicket {
 	})
 	public createdById: MiUser['id'] | null;
 
-	@OneToOne(type => MiUser, {
+	@OneToOne(() => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()

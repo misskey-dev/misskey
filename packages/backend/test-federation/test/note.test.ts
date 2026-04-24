@@ -1,3 +1,4 @@
+import { describe, test, beforeAll, afterAll } from 'vitest';
 import assert, { rejects, strictEqual } from 'node:assert';
 import * as Misskey from 'misskey-js';
 import { addCustomEmoji, createAccount, createModerator, deepStrictEqualWithExcludedFields, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep, uploadFile } from './utils.js';
@@ -63,7 +64,6 @@ describe('Note', () => {
 			deepStrictEqualWithExcludedFields(note, resolvedNote, [
 				'id',
 				'emojis',
-				'reactionAcceptance',
 				'replyId',
 				'reply',
 				'userId',
@@ -105,7 +105,6 @@ describe('Note', () => {
 			deepStrictEqualWithExcludedFields(note, resolvedNote, [
 				'id',
 				'emojis',
-				'reactionAcceptance',
 				'renoteId',
 				'renote',
 				'userId',
@@ -131,11 +130,7 @@ describe('Note', () => {
 			rejects(
 				async () => await bob.client.request('ap/show', { uri: `https://a.test/notes/${note.id}` }),
 				(err: any) => {
-					/**
-					 * FIXME: this error is not handled
-					 * @see https://github.com/misskey-dev/misskey/issues/12736
-					 */
-					strictEqual(err.code, 'INTERNAL_ERROR');
+					strictEqual(err.code, 'REQUEST_FAILED');
 					return true;
 				},
 			);
@@ -143,29 +138,99 @@ describe('Note', () => {
 	});
 
 	describe('Deletion', () => {
-		describe('Check Delete consistency', () => {
-			let carol: LoginUser;
+		describe('Check Delete is delivered', () => {
+			describe('To followers', () => {
+				let carol: LoginUser;
 
-			beforeAll(async () => {
-				carol = await createAccount('a.test');
+				beforeAll(async () => {
+					carol = await createAccount('a.test');
 
-				await carol.client.request('following/create', { userId: bobInA.id });
-				await sleep();
+					await carol.client.request('following/create', { userId: bobInA.id });
+					await sleep();
+				});
+
+				test('Check', async () => {
+					const note = (await bob.client.request('notes/create', { text: 'I\'m Bob.' })).createdNote;
+					const noteInA = await resolveRemoteNote('b.test', note.id, carol);
+					await bob.client.request('notes/delete', { noteId: note.id });
+					await sleep();
+
+					await rejects(
+						async () => await carol.client.request('notes/show', { noteId: noteInA.id }),
+						(err: any) => {
+							strictEqual(err.code, 'NO_SUCH_NOTE');
+							return true;
+						},
+					);
+				});
+
+				afterAll(async () => {
+					await carol.client.request('following/delete', { userId: bobInA.id });
+					await sleep();
+				});
 			});
 
-			test('Delete is derivered to followers', async () => {
-				const note = (await bob.client.request('notes/create', { text: 'I\'m Bob.' })).createdNote;
-				const noteInA = await resolveRemoteNote('b.test', note.id, carol);
-				await bob.client.request('notes/delete', { noteId: note.id });
-				await sleep();
+			describe('To renoted and not followed user', () => {
+				test('Check', async () => {
+					const note = (await bob.client.request('notes/create', { text: 'I\'m Bob.' })).createdNote;
+					const noteInA = await resolveRemoteNote('b.test', note.id, alice);
+					await alice.client.request('notes/create', { renoteId: noteInA.id });
+					await sleep();
 
-				await rejects(
-					async () => await carol.client.request('notes/show', { noteId: noteInA.id }),
-					(err: any) => {
-						strictEqual(err.code, 'NO_SUCH_NOTE');
-						return true;
-					},
-				);
+					await bob.client.request('notes/delete', { noteId: note.id });
+					await sleep();
+
+					await rejects(
+						async () => await alice.client.request('notes/show', { noteId: noteInA.id }),
+						(err: any) => {
+							strictEqual(err.code, 'NO_SUCH_NOTE');
+							return true;
+						},
+					);
+				});
+			});
+
+			describe('To replied and not followed user', () => {
+				test('Check', async () => {
+					const note = (await bob.client.request('notes/create', { text: 'I\'m Bob.' })).createdNote;
+					const noteInA = await resolveRemoteNote('b.test', note.id, alice);
+					await alice.client.request('notes/create', { text: 'Hello Bob!', replyId: noteInA.id });
+					await sleep();
+
+					await bob.client.request('notes/delete', { noteId: note.id });
+					await sleep();
+
+					await rejects(
+						async () => await alice.client.request('notes/show', { noteId: noteInA.id }),
+						(err: any) => {
+							strictEqual(err.code, 'NO_SUCH_NOTE');
+							return true;
+						},
+					);
+				});
+			});
+
+			/**
+			 * FIXME: not delivered
+			 * @see https://github.com/misskey-dev/misskey/issues/15548
+			 */
+			describe('To only resolved and not followed user', () => {
+				test.skip('Check', async () => {
+					const note = (await bob.client.request('notes/create', { text: 'I\'m Bob.' })).createdNote;
+					const noteInA = await resolveRemoteNote('b.test', note.id, alice);
+					await sleep();
+
+					await bob.client.request('notes/delete', { noteId: note.id });
+					await sleep();
+
+					await rejects(
+						async () => await alice.client.request('notes/show', { noteId: noteInA.id }),
+						(err: any) => {
+							strictEqual(err.code, 'NO_SUCH_NOTE');
+							return true;
+						},
+					);
+				});
 			});
 		});
 
@@ -190,7 +255,7 @@ describe('Note', () => {
 			 * FIXME: implement soft deletion as well as user?
 			 *        @see https://github.com/misskey-dev/misskey/issues/11437
 			 */
-			test.failing('Not found even if resolve again', async () => {
+			test.skip('Not found even if resolve again', async () => {
 				const noteInB = await resolveRemoteNote('a.test', note.id, bob);
 				await rejects(
 					async () => await bob.client.request('notes/show', { noteId: noteInB.id }),

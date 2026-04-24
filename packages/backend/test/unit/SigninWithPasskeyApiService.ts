@@ -4,12 +4,12 @@
  */
 
 import { IncomingHttpHeaders } from 'node:http';
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, jest, test } from '@jest/globals';
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { mockDeep } from 'vitest-mock-extended';
 import { Test, TestingModule } from '@nestjs/testing';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { AuthenticationResponseJSON } from '@simplewebauthn/types';
 import { HttpHeader } from 'fastify/types/utils.js';
-import { MockFunctionMetadata, ModuleMocker } from 'jest-mock';
 import { MiUser } from '@/models/User.js';
 import { MiUserProfile, UserProfilesRepository, UsersRepository } from '@/models/_.js';
 import { IdService } from '@/core/IdService.js';
@@ -21,8 +21,6 @@ import { RateLimiterService } from '@/server/api/RateLimiterService.js';
 import { WebAuthnService } from '@/core/WebAuthnService.js';
 import { SigninService } from '@/server/api/SigninService.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-
-const moduleMocker = new ModuleMocker(global);
 
 class FakeLimiter {
 	public async limit() {
@@ -89,15 +87,13 @@ describe('SigninWithPasskeyApiService', () => {
 		app = await Test.createTestingModule({
 			imports: [GlobalModule, CoreModule],
 			providers: [
-				SigninWithPasskeyApiService, 
-				{ provide: RateLimiterService, useClass: FakeLimiter }, 
+				SigninWithPasskeyApiService,
+				{ provide: RateLimiterService, useClass: FakeLimiter },
 				{ provide: SigninService, useClass: FakeSigninService },
 			],
 		}).useMocker((token) => {
 			if (typeof token === 'function') {
-				const mockMetadata = moduleMocker.getMetadata(token) as MockFunctionMetadata<any, any>;
-				const Mock = moduleMocker.generateFromMetadata(mockMetadata);
-				return new Mock();
+				return mockDeep<typeof token>();
 			}
 		}).compile();
 		passkeyApiService = app.get<SigninWithPasskeyApiService>(SigninWithPasskeyApiService);
@@ -112,10 +108,10 @@ describe('SigninWithPasskeyApiService', () => {
 		FakeWebauthnVerify = async () => {
 			return uid;
 		};
-		jest.spyOn(webAuthnService, 'verifySignInWithPasskeyAuthentication').mockImplementation(FakeWebauthnVerify);
+		vi.spyOn(webAuthnService, 'verifySignInWithPasskeyAuthentication').mockImplementation(FakeWebauthnVerify);
 
 		const dummyUser = {
-			id: uid, username: uid, usernameLower: uid.toLocaleLowerCase(), uri: null, host: null,
+			id: uid, username: uid, usernameLower: uid.toLowerCase(), uri: null, host: null,
 		 };
 		const dummyProfile = {
 			userId: uid,
@@ -159,7 +155,7 @@ describe('SigninWithPasskeyApiService', () => {
 		it('Should return 403 When Challenge Verify fail', async () => {
 			const req = new DummyFastifyRequest({ context: 'misskey-1234', credential: { dummy: [] } }) as ApiFastifyRequestType;
 			const res = new DummyFastifyReply() as FastifyReply;
-			jest.spyOn(webAuthnService, 'verifySignInWithPasskeyAuthentication')
+			vi.spyOn(webAuthnService, 'verifySignInWithPasskeyAuthentication')
 				.mockImplementation(async () => {
 					throw new IdentifiableError('THIS_ERROR_CODE_SHOULD_BE_FORWARDED');
 				});
