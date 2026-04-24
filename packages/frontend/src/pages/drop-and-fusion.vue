@@ -87,7 +87,7 @@ import * as Misskey from 'misskey-js';
 import XGame from './drop-and-fusion.game.vue';
 import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
-import { $i } from '@/account.js';
+import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import MkInfo from '@/components/MkInfo.vue';
 import { useMkSelect } from '@/composables/use-mkselect.js';
