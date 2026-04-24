@@ -25,6 +25,8 @@
 - Fix: robots.txtの内容を調整
 - Fix: 特定のユーザーに管理者権限を持つロールが複数ついている際に、取得できるユーザーIDが重複する問題を修正  
   (Cherry-picked from https://github.com/lqvp/misskey-tempura/commit/17ed4108cec4b6bd2fd989db5a9091db91fa37a7)
+- Fix: ブロックしたサーバーからのInboxジョブが蓄積し続ける問題を修正  
+  (Cherry-picked from https://github.com/lqvp/misskey-tempura/commit/3f0f4bfe923f2b3a7837017b54841598f421c6ef)
 
 ## 2026.3.2
 
