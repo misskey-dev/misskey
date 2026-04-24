@@ -1333,8 +1333,13 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	public endGrabbing(cancel = false) {
 		if (this.grabbingCtx == null) return;
 
-		//this.grabbing.ghost.dispose(false, true);
-		this.grabbingCtx.ghost.dispose(false, false);
+		// 一度に子までdisposeしようとするとなぜか照明系の家具の場合エンジンがクラッシュする(消しちゃまずいものが子に混じっている？)ので、まず子からちびちび消していく
+		//this.grabbingCtx.ghost.dispose(false, false);
+		for (const m of this.grabbingCtx.ghost.getChildMeshes()) {
+			m.dispose(true, false);
+		}
+		this.grabbingCtx.ghost.dispose(true, false);
+
 		if (cancel) {
 			this.grabbingCtx.onCancel?.();
 		} else {
@@ -1403,6 +1408,8 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	}
 
 	private createGhost(mesh: BABYLON.Mesh): BABYLON.Mesh {
+		// 対象のメッシュの子に、「子にlightを持つメッシュ」が含まれているとエンジンがクラッシュするので、とりあえず適当なメッシュを使う
+		/*
 		const ghost = mesh.clone('ghost', null, false)!;
 		ghost.metadata = { isGhost: true };
 		ghost.checkCollisions = false;
@@ -1441,6 +1448,13 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 				m.material = ghostMaterial;
 			}
 		}
+
+		return ghost;
+		*/
+
+		const ghost = new BABYLON.Mesh('ghost', this.scene);
+		ghost.metadata = { isGhost: true };
+		ghost.checkCollisions = false;
 
 		return ghost;
 	}
