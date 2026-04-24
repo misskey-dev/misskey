@@ -32,10 +32,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-show="selectedId != null" :class="$style.preview" class="_panel">
 			<canvas ref="canvas" :class="$style.canvas"></canvas>
 			<MkButton :class="$style.unselectButton" small iconOnly @click="selectedId = null"><i class="ti ti-x"></i></MkButton>
-			<MkButton :class="$style.customizeButton" small iconOnly @click=""><i class="ti ti-settings"></i></MkButton>
-			<div v-if="selectedObjectDef != null && selectedInstanceId != null" :class="$style.customize">
-				<XObjectCustomizeForm :schema="selectedObjectDef.options.schema" :options="selectedObjectOptionsState" @update="(k, v) => updateObjectOption(k, v)"></XObjectCustomizeForm>
-			</div>
+			<MkButton v-if="selectedObjectDef != null && Object.keys(selectedObjectDef.options.schema).length > 0" :class="$style.customizeButton" small iconOnly @click="showObjectOptions = !showObjectOptions"><i class="ti ti-settings"></i></MkButton>
+
+			<Transition
+				:enterActiveClass="prefer.s.animation ? $style.transition_options_enterActive : ''"
+				:leaveActiveClass="prefer.s.animation ? $style.transition_options_leaveActive : ''"
+				:enterFromClass="prefer.s.animation ? $style.transition_options_enterFrom : ''"
+				:leaveToClass="prefer.s.animation ? $style.transition_options_leaveTo : ''"
+			>
+				<div v-if="selectedObjectDef != null && selectedInstanceId != null && showObjectOptions" :class="$style.customize" class="_panel _shadow">
+					<XObjectCustomizeForm :schema="selectedObjectDef.options.schema" :options="selectedObjectOptionsState" @update="(k, v) => updateObjectOption(k, v)"></XObjectCustomizeForm>
+				</div>
+			</Transition>
 		</div>
 	</div>
 </MkModalWindow>
@@ -52,6 +60,7 @@ import { OBJECT_DEFS } from '@/world/room/object-defs.js';
 import { createRoomObjectPreviewEngine, RoomObjectPreviewEngine } from '@/world/room/previewEngine.js';
 import { camelToKebab } from '@/world/utility.js';
 import MkButton from '@/components/MkButton.vue';
+import { prefer } from '@/preferences.js';
 
 // TODO: instanceのidと紛らわしいのでid -> typeにする
 
@@ -70,6 +79,7 @@ const selectedId = ref<string | null>(null);
 const selectedInstanceId = ref<string | null>(null);
 const selectedObjectOptionsState = shallowRef<RoomStateObject | null>(null);
 const selectedObjectDef = computed(() => OBJECT_DEFS.find(def => def.id === selectedId.value) ?? null);
+const showObjectOptions = ref(false);
 const engine = shallowRef<RoomObjectPreviewEngine | null>(null);
 
 onMounted(async () => {
@@ -85,6 +95,8 @@ onUnmounted(() => {
 });
 
 watch(selectedId, (newId) => {
+	showObjectOptions.value = false;
+
 	if (newId == null) {
 		engine.value!.clear();
 		selectedInstanceId.value = null;
@@ -164,6 +176,7 @@ async function cancel() {
 	left: 0;
 	width: 100%;
 	height: 100%;
+	overflow: clip;
 }
 
 .canvas {
@@ -189,7 +202,25 @@ async function cancel() {
 
 .customize {
 	position: absolute;
-	top: 8px;
-	left: 8px;
+	top: 0;
+	right: 0;
+	margin: 32px 8px 8px 8px;
+	max-height: stretch;
+	width: 300px;
+	overflow: auto;
+	box-sizing: border-box;
+	padding: 24px;
+}
+
+.transition_options_enterActive,
+.transition_options_leaveActive {
+	opacity: 1;
+	transform: translateX(0);
+	transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1), opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.transition_options_enterFrom,
+.transition_options_leaveTo {
+	opacity: 0;
+	transform: translateX(200px);
 }
 </style>
