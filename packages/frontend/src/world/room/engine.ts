@@ -324,7 +324,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.roomLight.shadowMaxZ = cm(300);
 		this.roomLight.radius = cm(30);
 
-		this.shadowGeneratorForRoomLight = new BABYLON.ShadowGenerator(2048, this.roomLight);
+		this.shadowGeneratorForRoomLight = new BABYLON.ShadowGenerator(options.graphicsQuality <= GRAPHICS_QUALITY_LOW ? 1024 : 2048, this.roomLight);
 		this.shadowGeneratorForRoomLight.forceBackFacesOnly = true;
 		this.shadowGeneratorForRoomLight.bias = 0.00001;
 		this.shadowGeneratorForRoomLight.normalBias = 0.005;
