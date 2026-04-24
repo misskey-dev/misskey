@@ -243,20 +243,17 @@ export class InboxProcessorService implements OnApplicationShutdown {
 			}
 		} catch (e) {
 			if (e instanceof IdentifiableError) {
-				if (e.id === '689ee33f-f97c-479a-ac49-1b9f8140af99') {
-					return 'blocked notes with prohibited words';
-				}
-				if (e.id === '85ab9bd7-3a41-4530-959d-f07073900109') {
-					return 'actor has been suspended';
-				}
-				if (e.id === 'd450b8a9-48e4-4dab-ae36-f4db763fda7c') { // invalid Note
-					return e.message;
-				}
-				if (e.id === '9f466dab-c856-48cd-9e65-ff90ff750580') {
-					return 'note contains too many mentions';
-				}
-				if (e.id === '09d79f9e-64f1-4316-9cfa-e75c4d091574') { // Instance is blocked
-					return 'skip: blocked instance';
+				switch (e.id) {
+					case '689ee33f-f97c-479a-ac49-1b9f8140af99':
+						return 'blocked notes with prohibited words';
+					case '85ab9bd7-3a41-4530-959d-f07073900109':
+						return 'actor has been suspended';
+					case 'd450b8a9-48e4-4dab-ae36-f4db763fda7c': // invalid Note
+						return e.message;
+					case '9f466dab-c856-48cd-9e65-ff90ff750580':
+						return 'note contains too many mentions';
+					case '09d79f9e-64f1-4316-9cfa-e75c4d091574': // Instance is blocked
+						return 'skip: blocked instance';
 				}
 			}
 			throw e;
