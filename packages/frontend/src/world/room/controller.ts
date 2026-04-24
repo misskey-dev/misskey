@@ -15,7 +15,7 @@ import * as sound from '@/utility/sound.js';
 
 type Options = {
 	workerMode?: boolean;
-	graphicsQuality?: 'low' | 'medium' | 'high';
+	graphicsQuality: number;
 };
 
 // 抽象化レイヤー
@@ -38,8 +38,9 @@ export class RoomController {
 	public roomState: ShallowRef<RoomState>;
 	public initializeProgress = ref(0);
 
-	constructor(roomState: RoomState) {
+	constructor(roomState: RoomState, options: Options) {
 		this.roomState = shallowRef(roomState);
+		this.options = options;
 
 		this.onCanvasKeydown = this.onCanvasKeydown.bind(this);
 		this.onCanvasKeyup = this.onCanvasKeyup.bind(this);
@@ -50,23 +51,22 @@ export class RoomController {
 		this.onCanvasClick = this.onCanvasClick.bind(this);
 	}
 
-	public async init(canvas: HTMLCanvasElement, options: Options = {}) {
+	public async init(canvas: HTMLCanvasElement) {
 		this.canvas = canvas;
 		this.canvas.width = canvas.clientWidth;
 		this.canvas.height = canvas.clientHeight;
-		this.options = options;
 
-		if (options.workerMode) {
+		if (this.options.workerMode) {
 			const offscreen = canvas.transferControlToOffscreen();
 			this.worker = new RoomWorker();
-			this.worker.postMessage({ type: 'init', canvas: offscreen, roomState: this.roomState.value, graphicsQuality: options.graphicsQuality }, [offscreen]);
+			this.worker.postMessage({ type: 'init', canvas: offscreen, roomState: this.roomState.value, graphicsQuality: this.options.graphicsQuality }, [offscreen]);
 			this.isReady.value = true;
 		} else {
 			const babylonEngine = new BABYLON.WebGPUEngine(canvas, { doNotHandleContextLost: true });
 			babylonEngine.compatibilityMode = false;
 			await babylonEngine.initAsync();
 
-			this.engine = new RoomEngine(this.roomState.value, { canvas, engine: babylonEngine, graphicsQuality: options.graphicsQuality });
+			this.engine = new RoomEngine(this.roomState.value, { canvas, engine: babylonEngine, graphicsQuality: this.options.graphicsQuality });
 			this.engine.on('loadingProgress', ({ progress }) => {
 				this.initializeProgress.value = progress;
 			});
@@ -171,16 +171,17 @@ export class RoomController {
 		return false;
 	}
 
-	public async reset(roomState?: RoomState, canvas?: HTMLCanvasElement, options: Options = {}) {
+	public async reset(roomState?: RoomState | null, options?: Options | null, canvas?: HTMLCanvasElement | null) {
 		this.destroy();
 		if (roomState != null) this.roomState.value = roomState;
+		if (options != null) this.options = options;
 		this.isReady.value = false;
 		this.isSitting.value = false;
 		this.isEditMode.value = false;
 		this.grabbing.value = null;
 		this.selected.value = null;
 		this.initializeProgress.value = 0;
-		await this.init(canvas ?? this.canvas!, options ?? this.options);
+		await this.init(canvas ?? this.canvas!);
 	}
 
 	public pauseRender() {

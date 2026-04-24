@@ -93,6 +93,10 @@ function enableObjectCollision(meshes: BABYLON.Mesh[]) {
 	}
 }
 
+export const GRAPHICS_QUALITY_HIGH = 1;
+export const GRAPHICS_QUALITY_MEDIUM = 0;
+export const GRAPHICS_QUALITY_LOW = -1;
+
 export type RoomEngineEvents = {
 	'changeSelectedState': (ctx: {
 		selected: {
@@ -121,7 +125,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	private engine: BABYLON.WebGPUEngine;
 	public scene: BABYLON.Scene;
 	private shadowGeneratorForRoomLight: BABYLON.ShadowGenerator;
-	private shadowGeneratorForSunLight: BABYLON.ShadowGenerator;
+	private shadowGeneratorForSunLight: BABYLON.ShadowGenerator | null = null;
 	public camera: BABYLON.UniversalCamera;
 	public objectEntities: Map<string, {
 		rootMesh: BABYLON.Mesh;
@@ -218,7 +222,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	constructor(roomState: RoomState, options: {
 		canvas: HTMLCanvasElement;
 		engine: BABYLON.WebGPUEngine;
-		graphicsQuality?: 'low' | 'medium' | 'high';
+		graphicsQuality: number;
 	}) {
 		super();
 
@@ -231,13 +235,13 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		};
 		this.canvas = options.canvas;
 
-		this.fps = options.graphicsQuality === 'low' || options.graphicsQuality === 'medium' ? 30 : null;
-		this.useGlow = options.graphicsQuality !== 'low';
+		this.fps = options.graphicsQuality >= GRAPHICS_QUALITY_HIGH ? null : 30;
+		this.useGlow = options.graphicsQuality >= GRAPHICS_QUALITY_MEDIUM;
 
 		registerBuiltInLoaders();
 
 		this.engine = options.engine;
-		if (options.graphicsQuality === 'low') this.engine.setHardwareScalingLevel(2);
+		if (options.graphicsQuality <= GRAPHICS_QUALITY_LOW) this.engine.setHardwareScalingLevel(2);
 		this.scene = new BABYLON.Scene(this.engine);
 		// なんかレンダリングがおかしくなるときがあるのでコメントアウト
 		// オブジェクトを選択し、後ろを向いて別のオブジェクトを選択した後、最初のオブジェクトに振り返ると消えているなど
@@ -314,11 +318,6 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 		//this.scene.activeCamera = this.camera;
 
-		const ambientLight = new BABYLON.HemisphericLight('ambientLight', new BABYLON.Vector3(0, 1, -0.5), this.scene);
-		ambientLight.diffuse = new BABYLON.Color3(1.0, 1.0, 1.0);
-		ambientLight.intensity = 0.3;
-		//ambientLight.intensity = 0;
-
 		this.roomLight = new BABYLON.SpotLight('roomLight', new BABYLON.Vector3(0, cm(249), 0), new BABYLON.Vector3(0, -1, 0), 16, 8, this.scene);
 		this.roomLight.diffuse = new BABYLON.Color3(1.0, 0.9, 0.8);
 		this.roomLight.shadowMinZ = cm(10);
@@ -327,28 +326,36 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 		this.shadowGeneratorForRoomLight = new BABYLON.ShadowGenerator(2048, this.roomLight);
 		this.shadowGeneratorForRoomLight.forceBackFacesOnly = true;
-		this.shadowGeneratorForRoomLight.bias = 0.0001;
+		this.shadowGeneratorForRoomLight.bias = 0.00001;
 		this.shadowGeneratorForRoomLight.usePercentageCloserFiltering = true;
 		this.shadowGeneratorForRoomLight.filteringQuality = BABYLON.ShadowGenerator.QUALITY_HIGH;
-		this.shadowGeneratorForRoomLight.getShadowMap().refreshRate = 60;
+		if (options.graphicsQuality <= GRAPHICS_QUALITY_LOW) {
+			this.shadowGeneratorForRoomLight.getShadowMap().refreshRate = 120;
+		} else if (options.graphicsQuality <= GRAPHICS_QUALITY_MEDIUM) {
+			this.shadowGeneratorForRoomLight.getShadowMap().refreshRate = 60;
+		}
 		//this.shadowGenerator1.useContactHardeningShadow = true;
 
-		const sunLight = new BABYLON.DirectionalLight('sunLight', new BABYLON.Vector3(0.2, -1, -1), this.scene);
-		sunLight.position = new BABYLON.Vector3(cm(-20), cm(1000), cm(1000));
-		sunLight.diffuse = this.time === 0 ? new BABYLON.Color3(1.0, 0.9, 0.8) : this.time === 1 ? new BABYLON.Color3(1.0, 0.8, 0.6) : new BABYLON.Color3(0.6, 0.8, 1.0);
-		sunLight.intensity = this.time === 0 ? 3 : this.time === 1 ? 1 : 0.25;
-		sunLight.shadowMinZ = cm(1000);
-		sunLight.shadowMaxZ = cm(2000);
+		if (options.graphicsQuality >= GRAPHICS_QUALITY_MEDIUM) {
+			const sunLight = new BABYLON.DirectionalLight('sunLight', new BABYLON.Vector3(0.2, -1, -1), this.scene);
+			sunLight.position = new BABYLON.Vector3(cm(-20), cm(1000), cm(1000));
+			sunLight.diffuse = this.time === 0 ? new BABYLON.Color3(1.0, 0.9, 0.8) : this.time === 1 ? new BABYLON.Color3(1.0, 0.8, 0.6) : new BABYLON.Color3(0.6, 0.8, 1.0);
+			sunLight.intensity = this.time === 0 ? 3 : this.time === 1 ? 1 : 0.25;
+			sunLight.shadowMinZ = cm(1000);
+			sunLight.shadowMaxZ = cm(2000);
 
-		this.shadowGeneratorForSunLight = new BABYLON.ShadowGenerator(2048, sunLight);
-		this.shadowGeneratorForSunLight.forceBackFacesOnly = true;
-		this.shadowGeneratorForSunLight.bias = 0.0001;
-		this.shadowGeneratorForSunLight.usePercentageCloserFiltering = true;
-		this.shadowGeneratorForSunLight.usePoissonSampling = true;
-		this.shadowGeneratorForSunLight.getShadowMap().refreshRate = 60;
+			this.shadowGeneratorForSunLight = new BABYLON.ShadowGenerator(2048, sunLight);
+			this.shadowGeneratorForSunLight.forceBackFacesOnly = true;
+			this.shadowGeneratorForSunLight.bias = 0.00001;
+			this.shadowGeneratorForSunLight.usePercentageCloserFiltering = true;
+			this.shadowGeneratorForSunLight.usePoissonSampling = true;
+			if (options.graphicsQuality <= GRAPHICS_QUALITY_MEDIUM) {
+				this.shadowGeneratorForSunLight.getShadowMap().refreshRate = 60;
+			}
+		}
 
 		this.lightContainer = new BABYLON.ClusteredLightContainer('clustered', [], this.scene);
-		this.lightContainer.maxRange = options.graphicsQuality === 'high' ? cm(1000) : options.graphicsQuality === 'medium' ? cm(100) : cm(50);
+		this.lightContainer.maxRange = options.graphicsQuality >= GRAPHICS_QUALITY_HIGH ? cm(1000) : options.graphicsQuality >= GRAPHICS_QUALITY_MEDIUM ? cm(100) : cm(50);
 		this.lightContainer.verticalTiles = 32;
 		this.lightContainer.horizontalTiles = 32;
 		this.lightContainer.depthSlices = 32;
@@ -829,7 +836,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 				m.checkCollisions = false;
 				m.receiveShadows = true;
 				this.shadowGeneratorForRoomLight.addShadowCaster(m);
-				this.shadowGeneratorForSunLight.addShadowCaster(m);
+				this.shadowGeneratorForSunLight?.addShadowCaster(m);
 				//if (m.material) (m.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(1, 1, 1);
 				if (m.material) {
 					(m.material as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
@@ -1081,7 +1088,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 					if (def.receiveShadows !== false) mesh.receiveShadows = true;
 					if (def.castShadows !== false) {
 						this.shadowGeneratorForRoomLight.addShadowCaster(mesh);
-						this.shadowGeneratorForSunLight.addShadowCaster(mesh);
+						this.shadowGeneratorForSunLight?.addShadowCaster(mesh);
 					}
 
 					//if (mesh.material) (mesh.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(0.2, 0.2, 0.2);
@@ -1369,7 +1376,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 	private turnOnRoomLight(forInit = false) {
 		if (!forInit && SNAPSHOT_RENDERING) this.sr.disableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
-		this.roomLight.intensity = 10 * WORLD_SCALE * WORLD_SCALE;
+		this.roomLight.intensity = 15 * WORLD_SCALE * WORLD_SCALE;
 		this.envMapIndoor.level = 0.6;
 		if (!forInit && SNAPSHOT_RENDERING) {
 			setTimeout(() => {
@@ -1381,7 +1388,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	private turnOffRoomLight() {
 		if (SNAPSHOT_RENDERING) this.sr.disableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 		this.roomLight.intensity = 0;
-		this.envMapIndoor.level = 0;
+		this.envMapIndoor.level = 0.025;
 		setTimeout(() => {
 			if (SNAPSHOT_RENDERING) this.sr.enableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 		}, 10);

@@ -96,9 +96,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<MkSelect
 			:modelValue="graphicsQuality" :items="[
-				{ label: 'High', value: 'high' },
-				{ label: 'Medium', value: 'medium' },
-				{ label: 'Low', value: 'low' },
+				{ label: 'High', value: GRAPHICS_QUALITY_HIGH },
+				{ label: 'Medium', value: GRAPHICS_QUALITY_MEDIUM },
+				{ label: 'Low', value: GRAPHICS_QUALITY_LOW },
 			]" @update:modelValue="v => graphicsQuality = v"
 		>
 			<template #label>Graphics quality</template>
@@ -123,6 +123,7 @@ import MkRange from '@/components/MkRange.vue';
 import { RoomController } from '@/world/room/controller.js';
 import { cm, getHex, getRgb } from '@/world/utility.js';
 import { deepClone } from '@/utility/clone.js';
+import { GRAPHICS_QUALITY_HIGH, GRAPHICS_QUALITY_LOW, GRAPHICS_QUALITY_MEDIUM } from '@/world/room/engine.js';
 
 const canvas = useTemplateRef('canvas');
 
@@ -140,7 +141,7 @@ function resize() {
 const isZenMode = ref(false);
 const isRoomSettingsOpen = ref(false);
 const isChanged = ref(false);
-const graphicsQuality = ref<'low' | 'medium' | 'high'>('medium');
+const graphicsQuality = ref<number>(0);
 
 const data = localStorage.getItem('roomData') != null ? JSON.parse(localStorage.getItem('roomData')!) : {
 	heya: {
@@ -179,12 +180,12 @@ const data = localStorage.getItem('roomData') != null ? JSON.parse(localStorage.
 
 let latestData = deepClone(data);
 
-const controller = new RoomController(data);
+const controller = new RoomController(data, {
+	graphicsQuality: graphicsQuality.value,
+});
 
 onMounted(async () => {
-	controller.init(canvas.value!, {
-		graphicsQuality: graphicsQuality.value,
-	});
+	controller.init(canvas.value!);
 
 	canvas.value!.focus();
 
@@ -311,7 +312,7 @@ async function revert() {
 }
 
 async function reload() {
-	await controller.reset(null, null, {
+	await controller.reset(null, {
 		graphicsQuality: graphicsQuality.value,
 	});
 }
