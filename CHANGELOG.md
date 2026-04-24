@@ -11,7 +11,7 @@
 
 ### Server
 
-- Fix: support activity with `actor` as an id string or embedded object in inbox processor
+- Fix: support activity with `actor` as an id string or embedded object in inbox processor and ActivityPub inbox service
 - Enhance: メモリ使用量を削減
 - Enhance: 起動の高速化
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/1410)
