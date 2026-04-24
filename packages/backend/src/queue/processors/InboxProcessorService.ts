@@ -115,9 +115,9 @@ export class InboxProcessorService implements OnApplicationShutdown {
 				// 対象が4xxならスキップ
 				if (err instanceof StatusError) {
 					if (!err.isRetryable) {
-						throw new Bull.UnrecoverableError(`skip: Ignored deleted actors on both ends ${activity.actor} - ${err.statusCode}`);
+						throw new Bull.UnrecoverableError(`skip: Ignored deleted actors on both ends ${getApId(activity.actor)} - ${err.statusCode}`);
 					}
-					throw new Error(`Error in actor ${activity.actor} - ${err.statusCode}`);
+					throw new Error(`Error in actor ${getApId(activity.actor)} - ${err.statusCode}`);
 				}
 			}
 		}
@@ -136,7 +136,7 @@ export class InboxProcessorService implements OnApplicationShutdown {
 		const httpSignatureValidated = httpSignature.verifySignature(signature, authUser.key.keyPem);
 
 		// また、signatureのsignerは、activity.actorと一致する必要がある
-		if (!httpSignatureValidated || authUser.user.uri !== activity.actor) {
+		if (!httpSignatureValidated || authUser.user.uri !== getApId(activity.actor)) {
 			// 一致しなくても、でもLD-Signatureがありそうならそっちも見る
 			const ldSignature = activity.signature;
 			if (ldSignature) {
@@ -187,8 +187,8 @@ export class InboxProcessorService implements OnApplicationShutdown {
 				//#endregion
 
 				// もう一度actorチェック
-				if (authUser.user.uri !== activity.actor) {
-					throw new Bull.UnrecoverableError(`skip: LD-Signature user(${authUser.user.uri}) !== activity.actor(${activity.actor})`);
+				if (authUser.user.uri !== getApId(activity.actor)) {
+					throw new Bull.UnrecoverableError(`skip: LD-Signature user(${authUser.user.uri}) !== activity.actor(${getApId(activity.actor)})`);
 				}
 
 				const ldHost = this.utilityService.extractDbHost(authUser.user.uri);
