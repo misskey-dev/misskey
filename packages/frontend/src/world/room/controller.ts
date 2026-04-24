@@ -64,6 +64,7 @@ export class RoomController {
 		} else {
 			const babylonEngine = new BABYLON.WebGPUEngine(canvas, { doNotHandleContextLost: true });
 			babylonEngine.compatibilityMode = false;
+			babylonEngine.enableOfflineSupport = false;
 			await babylonEngine.initAsync();
 
 			this.engine = new RoomEngine(this.roomState.value, { canvas, engine: babylonEngine, graphicsQuality: this.options.graphicsQuality });
