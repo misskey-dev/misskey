@@ -1,6 +1,7 @@
 ## 2026.4.0
 
 ### General
+- Feat: Misskey Gamesのプレイ可否をロールで設定可能に
 - Enhance: アバターデコレーションにカテゴリを設定できるように
 
 ### Client
@@ -875,7 +876,6 @@ v2025.12.0で行われた「configの`trustProxy`のデフォルト値を`false`
 ### General
 - Feat: コンテンツの表示にログインを必須にできるように
 - Feat: 過去のノートを非公開化/フォロワーのみ表示可能にできるように
-- Feat: Misskey Gamesのプレイ可否をロールで設定可能に
 - Enhance: 依存関係の更新
 - Enhance: l10nの更新
 - Fix: お知らせ作成時に画像URL入力欄を空欄に変更できないのを修正 ( #14976 )
