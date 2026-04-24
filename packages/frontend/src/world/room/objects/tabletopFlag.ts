@@ -52,25 +52,21 @@ export const tabletopFlag = defineObject({
 		applyFit();
 
 		const applyCustomPicture = () => new Promise<void>((resolve) => {
-			// テクスチャの読み込みに失敗したときの救済
-			// TODO: 丁寧な実装に直す
-			setTimeout(() => {
-				resolve();
-			}, 10000);
-
 			if (options.customPicture != null) {
-				const tex = new BABYLON.Texture(options.customPicture, scene, false, false);
-				tex.wrapU = BABYLON.Texture.MIRROR_ADDRESSMODE;
-				tex.wrapV = BABYLON.Texture.MIRROR_ADDRESSMODE;
-
 				flagMaterial.unfreeze();
-				flagMaterial.albedoColor = new BABYLON.Color3(1, 1, 1);
-				flagMaterial.albedoTexture = tex;
-
-				tex.onLoadObservable.addOnce(() => {
+				const tex = new BABYLON.Texture(options.customPicture, scene, false, false, undefined, () => {
+					flagMaterial.albedoColor = new BABYLON.Color3(1, 1, 1);
+					flagMaterial.albedoTexture = tex;
 					applyFit();
 					resolve();
+				}, (message, exception) => {
+					console.warn('Failed to load texture:', message, exception);
+					flagMaterial.albedoColor = new BABYLON.Color3(0, 1, 0);
+					flagMaterial.albedoTexture = null;
+					resolve();
 				});
+				tex.wrapU = BABYLON.Texture.MIRROR_ADDRESSMODE;
+				tex.wrapV = BABYLON.Texture.MIRROR_ADDRESSMODE;
 			} else {
 				flagMaterial.albedoColor = new BABYLON.Color3(0.5, 0.5, 0.5);
 				flagMaterial.albedoTexture = null;

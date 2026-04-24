@@ -74,26 +74,20 @@ export const tabletopLcdButtonsController = defineObject({
 		applyFit();
 
 		const applyCustomPicture = () => new Promise<void>((resolve) => {
-			// テクスチャの読み込みに失敗したときの救済
-			// TODO: 丁寧な実装に直す
-			setTimeout(() => {
-				resolve();
-			}, 10000);
-
 			if (options.customPicture != null && options.customPicture !== '') {
-				const tex = new BABYLON.Texture(options.customPicture, scene, false, false);
-				tex.wrapU = BABYLON.Texture.MIRROR_ADDRESSMODE;
-				tex.wrapV = BABYLON.Texture.MIRROR_ADDRESSMODE;
-				tex.level = 0.5;
-
 				screenMaterial.unfreeze();
-				screenMaterial.emissiveTexture = tex;
-				screenMaterial.emissiveTexture.level = 2;
-
-				tex.onLoadObservable.addOnce(() => {
+				const tex = new BABYLON.Texture(options.customPicture, scene, false, false, undefined, () => {
+					screenMaterial.emissiveTexture = tex;
+					screenMaterial.emissiveTexture.level = 2;
 					applyFit();
 					resolve();
+				}, (message, exception) => {
+					console.warn('Failed to load texture:', message, exception);
+					screenMaterial.emissiveColor = new BABYLON.Color3(0, 1, 0);
+					screenMaterial.emissiveTexture = null;
+					resolve();
 				});
+				tex.level = 0.5;
 			} else {
 				screenMaterial.emissiveTexture = defaultScreenTexture;
 				screenMaterial.emissiveTexture.level = 2;

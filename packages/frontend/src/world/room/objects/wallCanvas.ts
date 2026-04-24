@@ -83,25 +83,21 @@ export const wallCanvas = defineObject({
 		applySize();
 
 		const applyCustomPicture = () => new Promise<void>((resolve) => {
-			// テクスチャの読み込みに失敗したときの救済
-			// TODO: 丁寧な実装に直す
-			setTimeout(() => {
-				resolve();
-			}, 10000);
-
 			if (options.customPicture != null) {
-				const tex = new BABYLON.Texture(options.customPicture, scene, false, false);
-				tex.wrapU = BABYLON.Texture.MIRROR_ADDRESSMODE;
-				tex.wrapV = BABYLON.Texture.MIRROR_ADDRESSMODE;
-
 				canvasMaterial.unfreeze();
-				canvasMaterial.albedoColor = new BABYLON.Color3(1, 1, 1);
-				canvasMaterial.albedoTexture = tex;
-
-				tex.onLoadObservable.addOnce(() => {
+				const tex = new BABYLON.Texture(options.customPicture, scene, false, false, undefined, () => {
+					canvasMaterial.albedoColor = new BABYLON.Color3(1, 1, 1);
+					canvasMaterial.albedoTexture = tex;
 					applyFit();
 					resolve();
+				}, (message, exception) => {
+					console.warn('Failed to load texture:', message, exception);
+					canvasMaterial.albedoColor = new BABYLON.Color3(0, 1, 0);
+					canvasMaterial.albedoTexture = null;
+					resolve();
 				});
+				tex.wrapU = BABYLON.Texture.MIRROR_ADDRESSMODE;
+				tex.wrapV = BABYLON.Texture.MIRROR_ADDRESSMODE;
 			} else {
 				canvasMaterial.albedoColor = new BABYLON.Color3(0.5, 0.5, 0.5);
 				canvasMaterial.albedoTexture = null;

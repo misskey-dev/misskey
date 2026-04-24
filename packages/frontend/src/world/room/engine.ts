@@ -7,6 +7,7 @@
 // TODO: 近くのオブジェクトの端にスナップオプション
 // TODO: 近くのオブジェクトの原点に軸を揃えるオプション
 // TODO: glbを事前に最適化(なるべくメッシュをマージするなど)するツールもしくはMisskeyビルド時処理。ついでにカタログ用スクショも自動生成したい
+// TODO: テクスチャ置き換え時、元のテクスチャをちゃんとdispose
 
 import * as BABYLON from '@babylonjs/core';
 import { AxesViewer } from '@babylonjs/core/Debug/axesViewer';
@@ -453,6 +454,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		}).then(() => {
 			loadedCount++;
 			this.emit('loadingProgress', { progress: loadedCount / objects.length });
+			console.log(`Loaded object ${o.id} (${o.type})`);
 		})));
 
 		// 不具合のもと
