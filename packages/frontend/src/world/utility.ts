@@ -589,3 +589,21 @@ export function getYRotationDirection(rotationY: number): '+x' | '+z' | '-x' | '
 		return '+x';
 	}
 }
+
+export function getHex(c: [number, number, number]) {
+	return `#${c.map(x => Math.round(x * 255).toString(16).padStart(2, '0')).join('')}`;
+}
+
+export function getRgb(hex: string | number): [number, number, number] | null {
+	if (
+		typeof hex === 'number' ||
+		typeof hex !== 'string' ||
+		!/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(hex)
+	) {
+		return null;
+	}
+
+	const m = hex.slice(1).match(/[0-9a-fA-F]{2}/g);
+	if (m == null) return [0, 0, 0];
+	return m.map(x => parseInt(x, 16) / 255) as [number, number, number];
+}

@@ -44,26 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-if="controller.isReady.value && controller.isEditMode.value && controller.selected.value != null && !controller.grabbing.value" :key="controller.selected.value.objectId" class="_panel" :class="$style.overlayObjectInfoPanel">
 				{{ controller.selected.value.objectDef.name }}
 
-				<div class="_gaps">
-					<div v-for="[k, s] in Object.entries(controller.selected.value.objectDef.options.schema)" :key="k">
-						<div>{{ s.label }}</div>
-						<div v-if="s.type === 'color'">
-							<MkInput :modelValue="getHex(controller.selected.value.objectState.options[k])" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) controller.updateObjectOption(controller.selected.value.objectId, k, c); }"></MkInput>
-						</div>
-						<div v-else-if="s.type === 'boolean'">
-							<MkSwitch :modelValue="controller.selected.value.objectState.options[k]" @update:modelValue="v => controller.updateObjectOption(controller.selected.value.objectId, k, v)"></MkSwitch>
-						</div>
-						<div v-else-if="s.type === 'enum'">
-							<MkSelect :items="s.enum.map(e => ({ label: e, value: e }))" :modelValue="controller.selected.value.objectState.options[k]" @update:modelValue="v => controller.updateObjectOption(controller.selected.value.objectId, k, v)"></MkSelect>
-						</div>
-						<div v-else-if="s.type === 'range'">
-							<MkRange :continuousUpdate="true" :min="s.min" :max="s.max" :step="s.step" :modelValue="controller.selected.value.objectState.options[k]" @update:modelValue="v => controller.updateObjectOption(controller.selected.value.objectId, k, v)"></MkRange>
-						</div>
-						<div v-else-if="s.type === 'image'">
-							<MkInput type="text" :modelValue="controller.selected.value.objectState.options[k]" @update:modelValue="v => controller.updateObjectOption(controller.selected.value.objectId, k, v)"></MkInput>
-						</div>
-					</div>
-				</div>
+				<XObjectCustomizeForm :schema="controller.selected.value.objectDef.options.schema" :options="controller.selected.value.objectState.options" @update="(k, v) => controller.updateObjectOption(controller.selected.value.objectId, k, v)"></XObjectCustomizeForm>
 			</div>
 
 			<div v-if="isRoomSettingsOpen" class="_panel" :class="$style.overlayObjectInfoPanel">
@@ -119,6 +100,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
+import XObjectCustomizeForm from './room.object-customize-form.vue';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import { ensureSignin } from '@/i';
@@ -129,7 +111,7 @@ import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRange from '@/components/MkRange.vue';
 import { RoomController } from '@/world/room/controller.js';
-import { cm } from '@/world/utility.js';
+import { cm, getHex, getRgb } from '@/world/utility.js';
 import { deepClone } from '@/utility/clone.js';
 
 const canvas = useTemplateRef('canvas');
@@ -283,7 +265,7 @@ async function addObject(ev: PointerEvent) {
 	const { dispose } = await os.popupAsyncWithDialog(import('./room.add-object-dialog.vue').then(x => x.default), {
 	}, {
 		ok: async (res) => {
-			controller.addObject(res);
+			controller.addObject(res.id, res.options);
 			canvas.value!.focus();
 		},
 		closed: () => {
@@ -304,24 +286,6 @@ function enterEditMode() {
 
 function exitEditMode() {
 	controller.exitEditMode();
-}
-
-function getHex(c: [number, number, number]) {
-	return `#${c.map(x => Math.round(x * 255).toString(16).padStart(2, '0')).join('')}`;
-}
-
-function getRgb(hex: string | number): [number, number, number] | null {
-	if (
-		typeof hex === 'number' ||
-		typeof hex !== 'string' ||
-		!/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(hex)
-	) {
-		return null;
-	}
-
-	const m = hex.slice(1).match(/[0-9a-fA-F]{2}/g);
-	if (m == null) return [0, 0, 0];
-	return m.map(x => parseInt(x, 16) / 255) as [number, number, number];
 }
 
 function save() {

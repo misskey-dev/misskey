@@ -28,7 +28,8 @@ export class RoomObjectPreviewEngine {
 	private shadowGenerator: BABYLON.ShadowGenerator;
 	private camera: BABYLON.ArcRotateCamera;
 	private objectMesh: BABYLON.Mesh | null = null;
-	private objectInstance: RoomObjectInstance<any> | null = null;
+	private objectInstance: RoomObjectInstance | null = null;
+	private objectOptions: any = null;
 	private objectType: string | null = null;
 	private envMapIndoor: BABYLON.CubeTexture;
 	private roomLight: BABYLON.SpotLight;
@@ -152,21 +153,20 @@ export class RoomObjectPreviewEngine {
 	}
 
 	public async load(type: string) {
-		if (this.objectInstance != null) {
-			this.objectInstance.dispose?.();
-			this.objectInstance = null;
-			this.objectMesh!.dispose();
-		}
-
-		const def = getObjectDef(type);
-
-		const options = deepClone(def.options.default);
+		this.clear();
 
 		const id = genId();
+		const def = getObjectDef(type);
+		this.objectOptions = deepClone(def.options.default);
+		for (const [key, value] of Object.entries(def.options.schema)) {
+			if (value.type === 'seed') {
+				this.objectOptions[key] = Math.floor(Math.random() * 1000);
+			}
+		}
 
 		await this.loadObject({
 			type,
-			options,
+			options: this.objectOptions,
 			id,
 		});
 
@@ -214,6 +214,12 @@ export class RoomObjectPreviewEngine {
 			//this.camera.orthoTop = distance;
 			//this.camera.orthoBottom = -distance;
 		}, 10);
+
+		return {
+			id,
+			objectInstance: this.objectInstance,
+			options: this.objectOptions,
+		};
 	}
 
 	private async loadObject(args: {
@@ -236,10 +242,8 @@ export class RoomObjectPreviewEngine {
 
 		root.addChild(subRoot);
 
-		const model = new ModelManager(subRoot, loaderResult.meshes.filter(m => !m.isDisposed() && m !== subRoot), def.hasTexture, (meshes) => {
-			for (const m of meshes) {
-				const mesh = m;
-
+		const updateMeshes = (meshes: BABYLON.AbstractMesh[]) => {
+			for (const mesh of meshes) {
 				// シェイプキー(morph)を考慮してbounding boxを更新するために必要
 				mesh.refreshBoundingInfo({ applyMorph: true });
 
@@ -269,11 +273,14 @@ export class RoomObjectPreviewEngine {
 
 				if (!this.scene.meshes.includes(mesh)) this.scene.addMesh(mesh);
 			}
+		};
+
+		const model = new ModelManager(subRoot, loaderResult.meshes.filter(m => !m.isDisposed() && m !== subRoot), def.hasTexture, (meshes) => {
+			updateMeshes(meshes);
 		});
 
-		if (this.timerForEachObject != null) {
-			this.timerForEachObject.dispose();
-		}
+		updateMeshes(subRoot.getChildMeshes());
+
 		this.timerForEachObject = new Timer();
 
 		const objectInstance = await def.createInstance({
@@ -288,15 +295,29 @@ export class RoomObjectPreviewEngine {
 
 		objectInstance.onInited?.();
 
-		model.bakeMesh();
-
 		this.objectType = args.type;
 		this.objectInstance = objectInstance;
 		this.objectMesh = root;
 	}
 
 	public updateObjectOption(key: string, value: any) {
+		this.objectOptions[key] = value;
 		this.objectInstance?.onOptionsUpdated?.([key, value]);
+	}
+
+	public clear() {
+		if (this.timerForEachObject != null) {
+			this.timerForEachObject.dispose();
+			this.timerForEachObject = null;
+		}
+		if (this.objectInstance != null) {
+			this.objectInstance.dispose?.();
+			this.objectInstance = null;
+			this.objectOptions = null;
+			this.objectMesh!.dispose();
+			this.objectMesh = null;
+			this.objectType = null;
+		}
 	}
 
 	public resize() {

@@ -125,7 +125,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	public camera: BABYLON.UniversalCamera;
 	public objectEntities: Map<string, {
 		rootMesh: BABYLON.Mesh;
-		instance: RoomObjectInstance<any>;
+		instance: RoomObjectInstance;
 		model: ModelManager;
 	}> = new Map();
 	private heyaManager: HeyaManager | null = null;
@@ -1433,7 +1433,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		return ghost;
 	}
 
-	public async addObject(type: string) {
+	public async addObject(type: string, _options?: any) {
 		if (!this.isEditMode) return;
 		if (this.grabbingCtx != null) return;
 		this.selectObject(null);
@@ -1445,7 +1445,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 		const def = getObjectDef(type);
 
-		const options = deepClone(def.options.default);
+		const options = _options != null ? deepClone(_options) : deepClone(def.options.default);
 
 		const { root } = await this.loadObject({
 			id: id,

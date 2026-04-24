@@ -255,11 +255,11 @@ export class RoomController {
 		}
 	}
 
-	public addObject(type: string) {
+	public addObject(type: string, options: any) {
 		if (this.worker != null) {
-			this.worker.postMessage({ type: 'addObject', objectType: type });
+			this.worker.postMessage({ type: 'addObject', objectType: type, objectOptions: options });
 		} else if (this.engine != null) {
-			this.engine.addObject(type);
+			this.engine.addObject(type, options);
 		}
 	}
 

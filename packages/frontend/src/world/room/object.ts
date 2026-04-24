@@ -22,7 +22,7 @@ export type RoomStateObject<Options = any> = {
 	sticky?: string | null;
 };
 
-export type RoomObjectInstance<Options> = {
+export type RoomObjectInstance<Options = any> = {
 	onInited?: () => void;
 	onOptionsUpdated?: <K extends keyof Options, V extends Options[K]>(kv: [K, V]) => void;
 	interactions: Record<string, {
@@ -71,7 +71,12 @@ type ImageOptionSchema = {
 	label: string;
 };
 
-type OptionsSchema = Record<string, NumberOptionSchema | BooleanOptionSchema | ColorOptionSchema | EnumOptionSchema | RangeOptionSchema | ImageOptionSchema>;
+type SeedOptionSchema = {
+	type: 'seed';
+	label: string;
+};
+
+type OptionsSchema = Record<string, NumberOptionSchema | BooleanOptionSchema | ColorOptionSchema | EnumOptionSchema | RangeOptionSchema | ImageOptionSchema | SeedOptionSchema>;
 
 type GetOptionsSchemaValues<T extends OptionsSchema> = {
 	[K in keyof T]:
@@ -81,6 +86,7 @@ type GetOptionsSchemaValues<T extends OptionsSchema> = {
 	T[K] extends EnumOptionSchema ? T[K]['enum'][number] :
 	T[K] extends RangeOptionSchema ? number :
 	T[K] extends ImageOptionSchema ? string | null :
+	T[K] extends SeedOptionSchema ? number :
 	never;
 };
 

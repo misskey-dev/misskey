@@ -33,11 +33,8 @@ export const randomBooks = defineObject({
 				label: 'Stack vertically',
 			},
 			seed: {
-				type: 'range',
+				type: 'seed',
 				label: 'Seed',
-				min: 0,
-				max: 1000,
-				step: 1,
 			},
 		},
 		default: {
@@ -51,7 +48,7 @@ export const randomBooks = defineObject({
 	hasCollisions: false,
 	hasTexture: true,
 	canPreMeshesMerging: false,
-	createInstance: ({ options, model, scene, id }) => {
+	createInstance: ({ options, model, scene }) => {
 		const bodyMesh = model.findMesh('__X_BODY__');
 		const tex = new BABYLON.Texture('/client-assets/room/objects/random-books/texture.png', scene, {
 			invertY: false,
@@ -69,7 +66,7 @@ export const randomBooks = defineObject({
 			}
 			bookMeshes = [];
 
-			const rng = seedrandom(options.seed === 0 ? id : options.seed.toString());
+			const rng = seedrandom(options.seed.toString());
 			const randomRange = (min: number, max: number) => rng() * (max - min) + min;
 
 			let accumulatedPos = 0;

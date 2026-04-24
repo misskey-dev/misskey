@@ -31,23 +31,35 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div v-show="selectedId != null" :class="$style.preview" class="_panel">
 			<canvas ref="canvas" :class="$style.canvas"></canvas>
-			<button :class="$style.unselectButton" @click="selectedId = null">x</button>
+			<MkButton :class="$style.unselectButton" small iconOnly @click="selectedId = null"><i class="ti ti-x"></i></MkButton>
+			<MkButton :class="$style.customizeButton" small iconOnly @click=""><i class="ti ti-settings"></i></MkButton>
+			<div v-if="selectedObjectDef != null && selectedInstanceId != null" :class="$style.customize">
+				<XObjectCustomizeForm :schema="selectedObjectDef.options.schema" :options="selectedObjectOptionsState" @update="(k, v) => { engine.updateObjectOption(k, v); triggerRef(selectedObjectOptionsState) }"></XObjectCustomizeForm>
+			</div>
 		</div>
 	</div>
 </MkModalWindow>
 </template>
 
 <script setup lang="ts">
-import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick, shallowRef } from 'vue';
+import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick, shallowRef, computed, triggerRef } from 'vue';
+import XObjectCustomizeForm from './room.object-customize-form.vue';
+import type { RoomObjectInstance, RoomStateObject } from '@/world/room/object.js';
 import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import * as os from '@/os.js';
 import { OBJECT_DEFS } from '@/world/room/object-defs.js';
 import { createRoomObjectPreviewEngine, RoomObjectPreviewEngine } from '@/world/room/previewEngine.js';
 import { camelToKebab } from '@/world/utility.js';
+import MkButton from '@/components/MkButton.vue';
+
+// TODO: instanceのidと紛らわしいのでid -> typeにする
 
 const emit = defineEmits<{
-	(ev: 'ok', id: string): void;
+	(ev: 'ok', ctx: {
+		id: string;
+		options: any;
+	}): void;
 	(ev: 'cancel'): void;
 	(ev: 'closed'): void;
 }>();
@@ -55,6 +67,9 @@ const emit = defineEmits<{
 const dialog = useTemplateRef('dialog');
 const canvas = useTemplateRef('canvas');
 const selectedId = ref<string | null>(null);
+const selectedInstanceId = ref<string | null>(null);
+const selectedObjectOptionsState = shallowRef<RoomStateObject | null>(null);
+const selectedObjectDef = computed(() => OBJECT_DEFS.find(def => def.id === selectedId.value) ?? null);
 const engine = shallowRef<RoomObjectPreviewEngine | null>(null);
 
 onMounted(async () => {
@@ -70,17 +85,27 @@ onUnmounted(() => {
 });
 
 watch(selectedId, (newId) => {
-	if (newId == null) return;
-
-	nextTick(() => {
-		engine.value!.load(newId);
-		engine.value!.resize();
-	});
+	if (newId == null) {
+		engine.value!.clear();
+		selectedInstanceId.value = null;
+		selectedObjectOptionsState.value = null;
+	} else {
+		nextTick(() => {
+			engine.value!.load(newId).then(res => {
+				selectedInstanceId.value = res.id;
+				selectedObjectOptionsState.value = res.options;
+				engine.value!.resize();
+			});
+		});
+	}
 });
 
 function ok() {
 	if (selectedId.value == null) return;
-	emit('ok', selectedId.value);
+	emit('ok', {
+		id: selectedId.value,
+		options: selectedObjectOptionsState.value,
+	});
 	dialog.value?.close();
 }
 
@@ -148,6 +173,18 @@ async function cancel() {
 .unselectButton {
 	position: absolute;
 	top: 8px;
+	left: 8px;
+}
+
+.customizeButton {
+	position: absolute;
+	top: 8px;
 	right: 8px;
+}
+
+.customize {
+	position: absolute;
+	top: 8px;
+	left: 8px;
 }
 </style>
