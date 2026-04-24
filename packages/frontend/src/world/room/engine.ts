@@ -327,6 +327,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.shadowGeneratorForRoomLight = new BABYLON.ShadowGenerator(2048, this.roomLight);
 		this.shadowGeneratorForRoomLight.forceBackFacesOnly = true;
 		this.shadowGeneratorForRoomLight.bias = 0.00001;
+		this.shadowGeneratorForRoomLight.normalBias = 0.005;
 		this.shadowGeneratorForRoomLight.usePercentageCloserFiltering = true;
 		this.shadowGeneratorForRoomLight.filteringQuality = BABYLON.ShadowGenerator.QUALITY_HIGH;
 		if (options.graphicsQuality <= GRAPHICS_QUALITY_LOW) {
@@ -457,7 +458,10 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.scene.blockMaterialDirtyMechanism = true;
 
 		if (SNAPSHOT_RENDERING) {
-			this.sr.enableSnapshotRendering();
+			// 早く有効にしすぎることが原因かは不明だがクラッシュすることがあるので遅らせてみる
+			setTimeout(() => {
+				this.sr.enableSnapshotRendering();
+			}, 100);
 		}
 
 		this.startRenderLoop();
@@ -1381,7 +1385,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 	private turnOnRoomLight(forInit = false) {
 		if (!forInit && SNAPSHOT_RENDERING) this.sr.disableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
-		this.roomLight.intensity = 15 * WORLD_SCALE * WORLD_SCALE;
+		this.roomLight.intensity = 18 * WORLD_SCALE * WORLD_SCALE;
 		this.envMapIndoor.level = 0.6;
 		if (!forInit && SNAPSHOT_RENDERING) {
 			setTimeout(() => {
