@@ -3557,3 +3557,4 @@ _qr:
 _room:
   snapToGrid: "グリッドにスナップ"
   gridScale: "グリッドサイズ"
+  revertAllChangesConfirmation: "全ての変更を取り消し、部屋を最後に保存した状態まで戻しますか？"

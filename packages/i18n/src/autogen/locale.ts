@@ -13271,5 +13271,9 @@ export interface Locale extends ILocale {
          * グリッドサイズ
          */
         "gridScale": string;
+        /**
+         * 全ての変更を取り消し、部屋を最後に保存した状態まで戻しますか？
+         */
+        "revertAllChangesConfirmation": string;
     };
 }
