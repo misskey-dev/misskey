@@ -123,6 +123,7 @@ import * as os from '@/os.js';
 import { pleaseLogin } from '@/utility/please-login.js';
 import * as sound from '@/utility/sound.js';
 import { Paginator } from '@/utility/paginator.js';
+import type { APIError } from 'misskey-js/api.js';
 
 const myGamesPaginator = markRaw(new Paginator('reversi/games', {
 	limit: 10,
@@ -198,7 +199,7 @@ async function matchHeatbeat() {
 	}
 }
 
-function onApiError(err) {
+function onApiError(err: APIError) {
 	if (err.id != null) {
 		let title: string | null = null;
 		let text = i18n.ts.somethingHappened;
