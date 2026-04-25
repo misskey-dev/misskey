@@ -468,6 +468,9 @@ export const PREF_DEF = definePreferences({
 	defaultVideoCompressionLevel: {
 		default: 2 as 0 | 1 | 2 | 3,
 	},
+	coverMediaList: {
+		default: false,
+	},
 
 	'sound.masterVolume': {
 		default: 0.5,
