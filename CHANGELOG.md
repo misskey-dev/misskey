@@ -10,10 +10,8 @@
 - Fix: 連合が無効化されたサーバーで一部の設定項目が空欄で表示される問題を修正
 
 ### Server
-
-- Fix: support activity with `actor` as an id string or embedded object in inbox processor and ActivityPub inbox service
 - Enhance: メモリ使用量を削減
-- Enhance: 起動の高速化
+- Enhance: 起動の高速化  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/1410)
 - Enhance: バックエンドの開発モード時の安定性向上
 - Enhance: バックエンドビルド・テスト時に使用する依存関係の整理（swc/esbuild→Rolldown, Jest→Vitest）
@@ -25,8 +23,9 @@
 - Fix: ID生成アルゴリズムにULIDを使用している場合にMisskeyが正しく動作しない問題を修正
 - Fix: リレー経由で届いたノートがリノートとして表示される問題を修正
 - Fix: robots.txtの内容を調整
-- Fix: 特定のユーザーに管理者権限を持つロールが複数ついている際に、取得できるユーザーIDが重複する問題を修正
+- Fix: 特定のユーザーに管理者権限を持つロールが複数ついている際に、取得できるユーザーIDが重複する問題を修正  
   (Cherry-picked from https://github.com/lqvp/misskey-tempura/commit/17ed4108cec4b6bd2fd989db5a9091db91fa37a7)
+- Fix: support activity with `actor` as an id string or embedded object in inbox processor and ActivityPub inbox service
 
 ## 2026.3.2
 
