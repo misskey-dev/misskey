@@ -75,6 +75,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<textarea
 								ref="memoTextareaEl"
 								v-model="memoDraft"
+								v-autosize
 								rows="1"
 								@focus="isEditingMemo = true"
 								@blur="updateMemo"

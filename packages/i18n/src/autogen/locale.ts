@@ -5651,6 +5651,10 @@ export interface Locale extends ILocale {
      * リノート先のチャンネルを見る
      */
     "viewRenotedChannel": string;
+    /**
+     * テキストエリアのサイズを自動で調整する
+     */
+    "textareaAutoSize": string;
     "_imageEditing": {
         "_vars": {
             /**
