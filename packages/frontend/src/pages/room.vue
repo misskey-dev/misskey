@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.root">
-	<div :class="[$style.screen, { [$style.zen]: isZenMode }]">
+	<div :class="[$style.screen, { [$style.zen]: false }]">
 		<canvas ref="canvas" :class="$style.canvas" tabindex="-1" :style="{ visibility: controller.isReady.value ? 'visible' : 'hidden' }"></canvas>
 
 		<Transition
@@ -20,17 +20,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</Transition>
 
 		<div :class="$style.overlayTop">
-			<div :class="$style.topMenu" class="_panel _shadow">
-				<template v-if="controller.isReady.value">
-					<button v-tooltip="'照明切り替え'" :class="$style.topMenuButton" class="_button" @click="toggleLight"><i class="ti ti-bulb"></i></button>
-					<button v-if="controller.isEditMode.value" :class="$style.topMenuButton" class="_button" style="color: var(--MI_THEME-accent)" @click="exitEditMode"><i class="ti ti-paint"></i></button>
-					<button v-if="!controller.isEditMode.value" :class="$style.topMenuButton" class="_button" @click="enterEditMode"><i class="ti ti-paint"></i></button>
-					<button v-if="controller.isEditMode.value" :class="$style.topMenuButton" class="_button" @click="addObject"><i class="ti ti-plus"></i></button>
-					<button v-if="controller.isEditMode.value" :class="$style.topMenuButton" class="_button" @click="showSnappingMenu"><i class="ti ti-grid-4x4"></i></button>
-					<button v-if="controller.isEditMode.value && !isRoomSettingsOpen" :class="$style.topMenuButton" class="_button" @click="() => isRoomSettingsOpen = true"><i class="ti ti-home-cog"></i></button>
-					<button v-if="controller.isEditMode.value && isRoomSettingsOpen" :class="$style.topMenuButton" class="_button" style="color: var(--MI_THEME-accent)" @click="() => isRoomSettingsOpen = false"><i class="ti ti-home-cog"></i></button>
-				</template>
-				<button :class="$style.topMenuButton" class="_button" @click="showOtherMenu"><i class="ti ti-dots"></i></button>
+			<div :class="$style.topMain">
+				<div :class="$style.topMenu" class="_panel _shadow">
+					<template v-if="controller.isReady.value">
+						<button v-tooltip="'照明切り替え'" :class="$style.topMenuButton" class="_button" @click="toggleLight"><i class="ti ti-bulb"></i></button>
+						<button v-if="controller.isEditMode.value" :class="$style.topMenuButton" class="_button" style="color: var(--MI_THEME-accent)" @click="exitEditMode"><i class="ti ti-paint"></i></button>
+						<button v-if="!controller.isEditMode.value" :class="$style.topMenuButton" class="_button" @click="enterEditMode"><i class="ti ti-paint"></i></button>
+						<button v-if="controller.isEditMode.value" :class="$style.topMenuButton" class="_button" @click="addObject"><i class="ti ti-plus"></i></button>
+						<button v-if="controller.isEditMode.value" :class="$style.topMenuButton" class="_button" @click="showSnappingMenu"><i class="ti ti-grid-4x4"></i></button>
+						<button v-if="controller.isEditMode.value && !isRoomSettingsOpen" :class="$style.topMenuButton" class="_button" @click="() => isRoomSettingsOpen = true"><i class="ti ti-home-cog"></i></button>
+						<button v-if="controller.isEditMode.value && isRoomSettingsOpen" :class="$style.topMenuButton" class="_button" style="color: var(--MI_THEME-accent)" @click="() => isRoomSettingsOpen = false"><i class="ti ti-home-cog"></i></button>
+					</template>
+					<button :class="$style.topMenuButton" class="_button" @click="showOtherMenu"><i class="ti ti-dots"></i></button>
+				</div>
+				<div v-if="isModified" :class="$style.modified" class="_panel _shadow">
+					<span :class="$style.modifiedText">{{ i18n.ts._room.thereAreUnsavedChanges }}</span>
+					<button class="_button" style="color: var(--MI_THEME-error)" @click="revert">戻す</button>
+					<button class="_button" style="color: var(--MI_THEME-accent)" @click="save">保存</button>
+				</div>
 			</div>
 		</div>
 
@@ -64,102 +71,93 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 
-		<template v-if="!isZenMode">
-			<div v-if="controller.isReady.value && controller.isEditMode.value && controller.selected.value != null && !controller.grabbing.value" :key="controller.selected.value.objectId" class="_panel" :class="$style.overlayObjectInfoPanel">
-				{{ controller.selected.value.objectDef.name }}
+		<div v-if="controller.isReady.value && controller.isEditMode.value && controller.selected.value != null && !controller.grabbing.value" :key="controller.selected.value.objectId" class="_panel" :class="$style.overlayObjectInfoPanel">
+			{{ controller.selected.value.objectDef.name }}
 
-				<XObjectCustomizeForm :schema="controller.selected.value.objectDef.options.schema" :options="controller.selected.value.objectState.options" @update="(k, v) => controller.updateObjectOption(controller.selected.value.objectId, k, v)"></XObjectCustomizeForm>
+			<XObjectCustomizeForm :schema="controller.selected.value.objectDef.options.schema" :options="controller.selected.value.objectState.options" @update="(k, v) => controller.updateObjectOption(controller.selected.value.objectId, k, v)"></XObjectCustomizeForm>
+		</div>
+
+		<div v-if="isRoomSettingsOpen" class="_panel" :class="$style.overlayObjectInfoPanel">
+			<div class="_gaps">
+				Room options
+
+				<MkSelect
+					:items="[
+						{ label: 'Simple', value: 'simple' },
+					]" :modelValue="controller.roomState.value.heya.type" @update:modelValue="v => controller.changeHeyaType(v)"
+				>
+					<template #label>Heya type</template>
+				</MkSelect>
+
+				<template v-if="controller.roomState.value.heya.type === 'simple'">
+					<div>
+						<div>Wall N</div>
+						<MkSelect
+							:items="[
+								{ label: 'None', value: null },
+								{ label: 'Wood', value: 'wood' },
+								{ label: 'Concrete', value: 'concrete' },
+							]" :modelValue="controller.roomState.value.heya.options.wallN.material" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallN: { ...controller.roomState.value.heya.options.wallN, material: v } }); }"
+						>
+							<template #label>wallpaper</template>
+						</MkSelect>
+						<MkInput :modelValue="getHex(controller.roomState.value.heya.options.wallN.color)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallN: { ...controller.roomState.value.heya.options.wallN, color: c } }); }">
+							<template #label>color</template>
+						</MkInput>
+					</div>
+					<div>
+						<div>Wall E</div>
+						<MkSelect
+							:items="[
+								{ label: 'None', value: null },
+								{ label: 'Wood', value: 'wood' },
+								{ label: 'Concrete', value: 'concrete' },
+							]" :modelValue="controller.roomState.value.heya.options.wallE.material" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallE: { ...controller.roomState.value.heya.options.wallE, material: v } }); }"
+						>
+							<template #label>wallpaper</template>
+						</MkSelect>
+						<MkInput :modelValue="getHex(controller.roomState.value.heya.options.wallE.color)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallE: { ...controller.roomState.value.heya.options.wallE, color: c } }); }">
+							<template #label>color</template>
+						</MkInput>
+					</div>
+					<div>
+						<div>Wall S</div>
+						<MkSelect
+							:items="[
+								{ label: 'None', value: null },
+								{ label: 'Wood', value: 'wood' },
+								{ label: 'Concrete', value: 'concrete' },
+							]" :modelValue="controller.roomState.value.heya.options.wallS.material" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallS: { ...controller.roomState.value.heya.options.wallS, material: v } }); }"
+						>
+							<template #label>wallpaper</template>
+						</MkSelect>
+						<MkInput :modelValue="getHex(controller.roomState.value.heya.options.wallS.color)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallS: { ...controller.roomState.value.heya.options.wallS, color: c } }); }">
+							<template #label>color</template>
+						</MkInput>
+					</div>
+					<div>
+						<div>Wall W</div>
+						<MkSelect
+							:items="[
+								{ label: 'None', value: null },
+								{ label: 'Wood', value: 'wood' },
+								{ label: 'Concrete', value: 'concrete' },
+							]" :modelValue="controller.roomState.value.heya.options.wallW.material" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallW: { ...controller.roomState.value.heya.options.wallW, material: v } }); }"
+						>
+							<template #label>wallpaper</template>
+						</MkSelect>
+						<MkInput :modelValue="getHex(controller.roomState.value.heya.options.wallW.color)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallW: { ...controller.roomState.value.heya.options.wallW, color: c } }); }">
+							<template #label>color</template>
+						</MkInput>
+					</div>
+				</template>
 			</div>
-
-			<div v-if="isRoomSettingsOpen" class="_panel" :class="$style.overlayObjectInfoPanel">
-				<div class="_gaps">
-					Room options
-
-					<MkSelect
-						:items="[
-							{ label: 'Simple', value: 'simple' },
-						]" :modelValue="controller.roomState.value.heya.type" @update:modelValue="v => controller.changeHeyaType(v)"
-					>
-						<template #label>Heya type</template>
-					</MkSelect>
-
-					<template v-if="controller.roomState.value.heya.type === 'simple'">
-						<div>
-							<div>Wall N</div>
-							<MkSelect
-								:items="[
-									{ label: 'None', value: null },
-									{ label: 'Wood', value: 'wood' },
-									{ label: 'Concrete', value: 'concrete' },
-								]" :modelValue="controller.roomState.value.heya.options.wallN.material" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallN: { ...controller.roomState.value.heya.options.wallN, material: v } }); }"
-							>
-								<template #label>wallpaper</template>
-							</MkSelect>
-							<MkInput :modelValue="getHex(controller.roomState.value.heya.options.wallN.color)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallN: { ...controller.roomState.value.heya.options.wallN, color: c } }); }">
-								<template #label>color</template>
-							</MkInput>
-						</div>
-						<div>
-							<div>Wall E</div>
-							<MkSelect
-								:items="[
-									{ label: 'None', value: null },
-									{ label: 'Wood', value: 'wood' },
-									{ label: 'Concrete', value: 'concrete' },
-								]" :modelValue="controller.roomState.value.heya.options.wallE.material" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallE: { ...controller.roomState.value.heya.options.wallE, material: v } }); }"
-							>
-								<template #label>wallpaper</template>
-							</MkSelect>
-							<MkInput :modelValue="getHex(controller.roomState.value.heya.options.wallE.color)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallE: { ...controller.roomState.value.heya.options.wallE, color: c } }); }">
-								<template #label>color</template>
-							</MkInput>
-						</div>
-						<div>
-							<div>Wall S</div>
-							<MkSelect
-								:items="[
-									{ label: 'None', value: null },
-									{ label: 'Wood', value: 'wood' },
-									{ label: 'Concrete', value: 'concrete' },
-								]" :modelValue="controller.roomState.value.heya.options.wallS.material" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallS: { ...controller.roomState.value.heya.options.wallS, material: v } }); }"
-							>
-								<template #label>wallpaper</template>
-							</MkSelect>
-							<MkInput :modelValue="getHex(controller.roomState.value.heya.options.wallS.color)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallS: { ...controller.roomState.value.heya.options.wallS, color: c } }); }">
-								<template #label>color</template>
-							</MkInput>
-						</div>
-						<div>
-							<div>Wall W</div>
-							<MkSelect
-								:items="[
-									{ label: 'None', value: null },
-									{ label: 'Wood', value: 'wood' },
-									{ label: 'Concrete', value: 'concrete' },
-								]" :modelValue="controller.roomState.value.heya.options.wallW.material" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallW: { ...controller.roomState.value.heya.options.wallW, material: v } }); }"
-							>
-								<template #label>wallpaper</template>
-							</MkSelect>
-							<MkInput :modelValue="getHex(controller.roomState.value.heya.options.wallW.color)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallW: { ...controller.roomState.value.heya.options.wallW, color: c } }); }">
-								<template #label>color</template>
-							</MkInput>
-						</div>
-					</template>
-				</div>
-			</div>
-		</template>
+		</div>
 	</div>
 
-	<template v-if="!isZenMode">
-		<div v-if="controller.isReady.value" class="_buttons" :class="$style.controls">
-			<!--<MkButton v-for="action in actions" :key="action.key" @click="action.fn">{{ action.label }}{{ hotkeyToLabel(action.hotkey) }}</MkButton>-->
-		</div>
-		<div v-if="isChanged" class="_buttons">
-			保存していない変更があります
-			<MkButton danger @click="revert">戻す</MkButton>
-			<MkButton primary @click="save">保存</MkButton>
-		</div>
-	</template>
+	<div v-if="controller.isReady.value" class="_buttons" :class="$style.controls">
+		<!--<MkButton v-for="action in actions" :key="action.key" @click="action.fn">{{ action.label }}{{ hotkeyToLabel(action.hotkey) }}</MkButton>-->
+	</div>
 </div>
 </template>
 
@@ -198,9 +196,8 @@ function resize() {
 	controller.resize();
 }
 
-const isZenMode = ref(false);
 const isRoomSettingsOpen = ref(false);
-const isChanged = ref(false);
+const isModified = ref(false);
 
 const graphicsQualityRaw = prefer.model('world.graphicsQuality');
 const graphicsQualityAutoValue = computed<number>(() => deviceKind === 'smartphone' ? GRAPHICS_QUALITY_LOW : GRAPHICS_QUALITY_MEDIUM);
@@ -276,7 +273,7 @@ onMounted(async () => {
 	window.addEventListener('resize', resize);
 
 	watch(controller.roomState, () => {
-		isChanged.value = true;
+		isModified.value = true;
 	});
 
 	//watch(controller.selected, (v) => {
@@ -413,12 +410,19 @@ function exitEditMode() {
 function save() {
 	latestData = deepClone(controller.roomState.value);
 	localStorage.setItem('roomData', JSON.stringify(latestData));
-	isChanged.value = false;
+	isModified.value = false;
 }
 
 async function revert() {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		title: i18n.ts.areYouSure,
+		text: i18n.ts._room.revertAllChangesConfirmation,
+	});
+	if (canceled) return;
+
 	await controller.reset(latestData);
-	isChanged.value = false;
+	isModified.value = false;
 }
 
 async function refresh() {
@@ -590,6 +594,12 @@ definePage(() => ({
 	width: 100%;
 }
 
+.topMain {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+}
+
 .topMenu {
 	margin: 16px;
 	display: flex;
@@ -605,6 +615,25 @@ definePage(() => ({
 }
 .topMenuButton:last-child {
 	padding-right: 16px;
+}
+
+.modified {
+	display: flex;
+	align-items: center;
+	font-size: 90%;
+	gap: 1em;
+	padding: 8px 16px;
+}
+
+.modifiedText {
+	color: var(--MI_THEME-warn);
+	animation: modified-blink 2s infinite;
+}
+
+@keyframes modified-blink {
+	0% { opacity: 1; }
+	50% { opacity: 0.5; }
+	100% { opacity: 1; }
 }
 
 .overlayControls {

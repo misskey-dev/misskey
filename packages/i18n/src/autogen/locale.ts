@@ -13272,6 +13272,10 @@ export interface Locale extends ILocale {
          */
         "gridScale": string;
         /**
+         * 未保存の変更があります
+         */
+        "thereAreUnsavedChanges": string;
+        /**
          * 全ての変更を取り消し、部屋を最後に保存した状態まで戻しますか？
          */
         "revertAllChangesConfirmation": string;
