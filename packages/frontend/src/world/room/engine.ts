@@ -462,15 +462,13 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		// 不具合のもと
 		//this.scene.blockMaterialDirtyMechanism = true;
 
-		await this.scene.whenReadyAsync();
-
 		this.startRenderLoop();
 
+		await this.scene.whenReadyAsync();
+
 		if (SNAPSHOT_RENDERING) {
-			// 早く有効にしすぎることが原因かは不明だがクラッシュすることがあるので遅らせてみる
-			setTimeout(() => {
-				this.sr.enableSnapshotRendering();
-			}, 1000);
+			// 必ずシーンが少なくとも1フレームレンダリングがされてから呼ばれるように注意すること。そうしないとタイミングによってはエンジンがクラッシュする
+			this.sr.enableSnapshotRendering();
 		}
 
 		this.domEvents.on('keydown', (ev) => {
