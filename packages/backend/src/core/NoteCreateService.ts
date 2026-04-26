@@ -119,18 +119,19 @@ class NotificationManager {
 				visibleUserIds = new Set(this.note.visibleUserIds.filter(id => targetUserIds.includes(id)));
 				break;
 
-			case 'followers': {
-				const followers = await this.followingsRepository.find({
-					where: {
-						followeeId: this.note.userId,
-						followerId: In(targetUserIds),
-						isFollowerHibernated: false,
-					},
-					select: ['followerId'],
-				});
-				visibleUserIds = new Set(followers.map(f => f.followerId));
-				break;
-			}
+			// TODO: フォロワー限定ノートにフォロワーではない人がメンションされた場合通知されるのが正しい挙動なのか確認（一部に挙動の不一致がありそう）。現状は通知されるためフィルタしない
+			// case 'followers': {
+			// 	const followers = await this.followingsRepository.find({
+			// 		where: {
+			// 			followeeId: this.note.userId,
+			// 			followerId: In(targetUserIds),
+			// 			isFollowerHibernated: false,
+			// 		},
+			// 		select: ['followerId'],
+			// 	});
+			// 	visibleUserIds = new Set(followers.map(f => f.followerId));
+			// 	break;
+			// }
 
 			default:
 				visibleUserIds = new Set();
