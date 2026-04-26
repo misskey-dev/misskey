@@ -172,6 +172,7 @@ import { RoomController } from '@/world/room/controller.js';
 import { cm, getHex, getRgb } from '@/world/utility.js';
 import { deepClone } from '@/utility/clone.js';
 import { GRAPHICS_QUALITY_HIGH, GRAPHICS_QUALITY_LOW, GRAPHICS_QUALITY_MEDIUM } from '@/world/room/engine.js';
+import { deviceKind } from '@/utility/device-kind.js';
 
 const canvas = useTemplateRef('canvas');
 
@@ -189,7 +190,7 @@ function resize() {
 const isZenMode = ref(false);
 const isRoomSettingsOpen = ref(false);
 const isChanged = ref(false);
-const graphicsQuality = ref<number>(0);
+const graphicsQuality = ref<number>(deviceKind === 'smartphone' ? GRAPHICS_QUALITY_LOW : GRAPHICS_QUALITY_MEDIUM);
 
 const data = localStorage.getItem('roomData') != null ? JSON.parse(localStorage.getItem('roomData')!) : {
 	heya: {
