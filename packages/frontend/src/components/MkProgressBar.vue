@@ -33,7 +33,7 @@ const props = withDefaults(defineProps<{
 	border-radius: 999px;
 	overflow: clip;
 	background: linear-gradient(-45deg, var(--c2) 25%, var(--c1) 25%,var(--c1) 50%, var(--c2) 50%, var(--c2) 75%, var(--c1) 75%, var(--c1));
-	background-size: 25px 25px;
+	background-size: 30px 30px;
 	animation: stripe .8s infinite linear;
 
 	&::before {
@@ -55,6 +55,6 @@ const props = withDefaults(defineProps<{
 
 @keyframes stripe {
 	0% { background-position-x: 0; }
-	100% { background-position-x: -25px; }
+	100% { background-position-x: -30px; }
 }
 </style>
