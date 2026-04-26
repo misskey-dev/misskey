@@ -462,16 +462,16 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		// 不具合のもと
 		//this.scene.blockMaterialDirtyMechanism = true;
 
-		this.scene.executeWhenReady(() => {
-			if (SNAPSHOT_RENDERING) {
-				// 早く有効にしすぎることが原因かは不明だがクラッシュすることがあるので遅らせてみる
-				setTimeout(() => {
-					this.sr.enableSnapshotRendering();
-				}, 100);
-			}
+		await this.scene.whenReadyAsync();
 
-			this.startRenderLoop();
-		});
+		this.startRenderLoop();
+
+		if (SNAPSHOT_RENDERING) {
+			// 早く有効にしすぎることが原因かは不明だがクラッシュすることがあるので遅らせてみる
+			setTimeout(() => {
+				this.sr.enableSnapshotRendering();
+			}, 100);
+		}
 
 		this.domEvents.on('keydown', (ev) => {
 			if (ev.code === 'KeyE') {
