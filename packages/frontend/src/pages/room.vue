@@ -15,9 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:leaveToClass="$style.transition_fade_leaveTo"
 		>
 			<div v-if="!controller.isReady.value" :class="$style.loading">
-				<div :class="$style.progressBar">
-					<div :class="$style.progressBarValue" :style="{ width: `${controller.initializeProgress.value * 100}%` }"></div>
-				</div>
+				<MkProgressBar :class="$style.progressBar" :progress="controller.initializeProgress.value" :waiting="controller.initializeProgress.value === 1"/>
 			</div>
 		</Transition>
 
@@ -173,6 +171,7 @@ import { cm, getHex, getRgb } from '@/world/utility.js';
 import { deepClone } from '@/utility/clone.js';
 import { GRAPHICS_QUALITY_HIGH, GRAPHICS_QUALITY_LOW, GRAPHICS_QUALITY_MEDIUM } from '@/world/room/engine.js';
 import { deviceKind } from '@/utility/device-kind.js';
+import MkProgressBar from '@/components/MkProgressBar.vue';
 
 const canvas = useTemplateRef('canvas');
 
@@ -461,16 +460,6 @@ definePage(() => ({
 
 .progressBar {
 	width: 75%;
-	height: 4px;
-	border-radius: 999px;
-	overflow: clip;
-	background-color: var(--MI_THEME-accentedBg);
-}
-
-.progressBarValue {
-	height: 100%;
-	background: linear-gradient(90deg, var(--MI_THEME-buttonGradateA), var(--MI_THEME-buttonGradateB));
-	transition: all 0.5s cubic-bezier(0,.5,.5,1);
 }
 
 .transition_fade_enterActive,
