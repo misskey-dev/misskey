@@ -25,6 +25,10 @@
 - Fix: robots.txtの内容を調整
 - Fix: 特定のユーザーに管理者権限を持つロールが複数ついている際に、取得できるユーザーIDが重複する問題を修正  
   (Cherry-picked from https://github.com/lqvp/misskey-tempura/commit/17ed4108cec4b6bd2fd989db5a9091db91fa37a7)
+- Fix: ブロックしたサーバーからのInboxジョブが蓄積し続ける問題を修正  
+  (Cherry-picked from https://github.com/lqvp/misskey-tempura/commit/3f0f4bfe923f2b3a7837017b54841598f421c6ef)
+- Fix: support activity with `actor` as an id string or embedded object in inbox processor and ActivityPub inbox service
+- Fix: コンフィグファイルに `meilisearch` の設定がある状態でほかの検索プロバイダを利用すると、UI上からリモートのノートの検索ができない問題を修正
 - Fix: ノートに関する通知で公開範囲が考慮されていない問題を修正  
   (Cherry-picked from https://github.com/lqvp/misskey-tempura/commit/cbce96c520a138b8bcd16890ff6f2952830fa166 originally presented in https://github.com/yojo-art/cherrypick/pull/743)
 
