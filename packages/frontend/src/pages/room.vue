@@ -19,6 +19,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</Transition>
 
+		<div :class="$style.overlayTop">
+			<div :class="$style.topMenu" class="_panel _shadow">
+				<template v-if="controller.isReady.value">
+					<button v-tooltip="'照明切り替え'" :class="$style.topMenuButton" class="_button" @click="toggleLight"><i class="ti ti-bulb"></i></button>
+					<button v-if="controller.isEditMode.value" :class="$style.topMenuButton" class="_button" style="color: var(--MI_THEME-accent)" @click="exitEditMode"><i class="ti ti-paint"></i></button>
+					<button v-if="!controller.isEditMode.value" :class="$style.topMenuButton" class="_button" @click="enterEditMode"><i class="ti ti-paint"></i></button>
+					<button v-if="controller.isEditMode.value" :class="$style.topMenuButton" class="_button" @click="addObject"><i class="ti ti-plus"></i></button>
+					<button v-if="controller.isEditMode.value && !isRoomSettingsOpen" :class="$style.topMenuButton" class="_button" @click="() => isRoomSettingsOpen = true"><i class="ti ti-home-cog"></i></button>
+					<button v-if="controller.isEditMode.value && isRoomSettingsOpen" :class="$style.topMenuButton" class="_button" style="color: var(--MI_THEME-accent)" @click="() => isRoomSettingsOpen = false"><i class="ti ti-home-cog"></i></button>
+				</template>
+				<button :class="$style.topMenuButton" class="_button" @click="showOtherMenu"><i class="ti ti-dots"></i></button>
+			</div>
+		</div>
+
 		<div :class="$style.overlayBottom">
 			<div v-if="controller.isReady.value" class="_buttonsCenter" :class="$style.overlayControls">
 				<template v-if="controller.isEditMode.value">
@@ -140,41 +154,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template v-if="!isZenMode">
 		<div v-if="controller.isReady.value" class="_buttons" :class="$style.controls">
 			<!--<MkButton v-for="action in actions" :key="action.key" @click="action.fn">{{ action.label }}{{ hotkeyToLabel(action.hotkey) }}</MkButton>-->
-			<MkButton @click="toggleLight">Toggle Light</MkButton>
-			<MkButton v-if="controller.isEditMode.value" @click="exitEditMode">Exit edit mode</MkButton>
-			<MkButton v-if="!controller.isEditMode.value" @click="enterEditMode">Edit mode</MkButton>
-			<MkButton v-if="controller.isEditMode.value" @click="addObject">addObject</MkButton>
-			<MkButton v-if="controller.isEditMode.value" @click="() => isRoomSettingsOpen = !isRoomSettingsOpen">roomSettings</MkButton>
-			<MkButton @click="expor">Export</MkButton>
-			<MkButton @click="impor">Import</MkButton>
 		</div>
 		<div v-if="isChanged" class="_buttons">
 			保存していない変更があります
 			<MkButton danger @click="revert">戻す</MkButton>
 			<MkButton primary @click="save">保存</MkButton>
 		</div>
-		<MkSelect
-			v-model="graphicsQualityRaw" :items="[
-				{ label: `Auto (${graphicsQualityAutoValue})`, value: null },
-				{ label: 'High', value: GRAPHICS_QUALITY_HIGH },
-				{ label: 'Medium', value: GRAPHICS_QUALITY_MEDIUM },
-				{ label: 'Low', value: GRAPHICS_QUALITY_LOW },
-			]"
-		>
-			<template #label>Graphics quality</template>
-		</MkSelect>
-		<MkSelect
-			v-model="fpsRaw" :items="[
-				{ label: `Auto (${fpsAutoValue})`, value: null },
-				{ label: 'Max', value: 'max' },
-				{ label: '~120fps', value: '120' },
-				{ label: '~60fps', value: '60' },
-				{ label: '~30fps', value: '30' },
-			]"
-		>
-			<template #label>Framerate</template>
-		</MkSelect>
-		<MkButton danger @click="reload">reload</MkButton>
 	</template>
 </div>
 </template>
@@ -437,7 +422,7 @@ async function revert() {
 	isChanged.value = false;
 }
 
-async function reload() {
+async function refresh() {
 	await controller.reset(null, {
 		graphicsQuality: graphicsQuality.value,
 		fps: fps.value,
@@ -472,6 +457,46 @@ function impor() {
 		reader.readAsText(file);
 	});
 	inputElem.click();
+}
+
+function showOtherMenu(ev: PointerEvent) {
+	os.popupMenu([{
+		type: 'radio',
+		text: 'Graphics quality',
+		caption: graphicsQualityRaw.value == null ? i18n.ts.auto : graphicsQualityRaw.value === GRAPHICS_QUALITY_HIGH ? 'High' : graphicsQualityRaw.value === GRAPHICS_QUALITY_MEDIUM ? 'Medium' : 'Low',
+		options: {
+			[`Auto (${graphicsQualityAutoValue.value})`]: null,
+			'High': GRAPHICS_QUALITY_HIGH,
+			'Medium': GRAPHICS_QUALITY_MEDIUM,
+			'Low': GRAPHICS_QUALITY_LOW,
+		},
+		ref: graphicsQualityRaw,
+	}, {
+		type: 'radio',
+		text: 'Framerate',
+		caption: fpsRaw.value == null ? i18n.ts.auto : fpsRaw.value === 'max' ? 'Max' : `~${fpsRaw.value}fps`,
+		options: {
+			[`Auto (${fpsAutoValue.value})`]: null,
+			'Max': 'max',
+			'~120fps': '120',
+			'~60fps': '60',
+			'~30fps': '30',
+		},
+		ref: fpsRaw,
+	}, {
+		type: 'divider',
+	}, {
+		text: 'Export',
+		action: expor,
+	}, {
+		text: 'Import',
+		action: impor,
+	}, {
+		type: 'divider',
+	}, {
+		text: 'Refresh',
+		action: refresh,
+	}], ev.currentTarget ?? ev.target);
 }
 
 definePage(() => ({
@@ -553,12 +578,37 @@ definePage(() => ({
 	pointer-events: none;
 }
 
+.overlayTop {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 1;
+	width: 100%;
+}
+
 .overlayBottom {
 	position: absolute;
 	bottom: 0;
 	left: 0;
 	z-index: 1;
 	width: 100%;
+}
+
+.topMenu {
+	margin: 16px;
+	display: flex;
+	box-sizing: border-box;
+	width: max-content;
+}
+
+.topMenuButton {
+	padding: 8px;
+}
+.topMenuButton:first-child {
+	padding-left: 16px;
+}
+.topMenuButton:last-child {
+	padding-right: 16px;
 }
 
 .overlayControls {
