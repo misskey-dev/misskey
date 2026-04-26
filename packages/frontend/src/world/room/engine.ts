@@ -470,7 +470,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			// 早く有効にしすぎることが原因かは不明だがクラッシュすることがあるので遅らせてみる
 			setTimeout(() => {
 				this.sr.enableSnapshotRendering();
-			}, 100);
+			}, 1000);
 		}
 
 		this.domEvents.on('keydown', (ev) => {
