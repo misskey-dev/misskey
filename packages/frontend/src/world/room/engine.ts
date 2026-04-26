@@ -23,6 +23,8 @@ import type { HeyaManager, JapaneseHeyaOptions, SimpleHeyaOptions } from './heya
 import type { ObjectDef, RoomObjectInstance, RoomStateObject } from './object.js';
 import { genId } from '@/utility/id.js';
 import { deepClone } from '@/utility/clone.js';
+import { isTouchUsing } from '@/utility/touch.js';
+import { deviceKind } from '@/utility/device-kind.js';
 
 const BAKE_TRANSFORM = false; // 実験的
 const SNAPSHOT_RENDERING = true; // 実験的
@@ -287,8 +289,14 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 		this.scene.collisionsEnabled = true;
 
-		this.camera = new BABYLON.UniversalCamera('camera', new BABYLON.Vector3(0, cm(130), cm(0)), this.scene);
+		const useVirtualJoystick = isTouchUsing && (deviceKind === 'smartphone' || deviceKind === 'tablet');
+
+		this.camera = useVirtualJoystick ? new BABYLON.VirtualJoysticksCamera('camera', new BABYLON.Vector3(0, cm(130), cm(0)), this.scene) : new BABYLON.UniversalCamera('camera', new BABYLON.Vector3(0, cm(130), cm(0)), this.scene);
 		this.camera.attachControl(this.canvas);
+		if (useVirtualJoystick) {
+			(this.camera.inputs.attached.virtualJoystick as BABYLON.FreeCameraVirtualJoystickInput).getLeftJoystick().setJoystickSensibility(0.3);
+			(this.camera.inputs.attached.virtualJoystick as BABYLON.FreeCameraVirtualJoystickInput).getRightJoystick().setJoystickSensibility(0.025);
+		}
 		this.camera.minZ = cm(1);
 		this.camera.maxZ = RENDER_OUTDOOR_ENV ? cm(10000) : cm(1000);
 		this.camera.fov = 1;
