@@ -224,6 +224,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		canvas: HTMLCanvasElement;
 		engine: BABYLON.WebGPUEngine;
 		graphicsQuality: number;
+		fps: number | null;
 		useVirtualJoystick?: boolean;
 	}) {
 		super();
@@ -237,7 +238,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		};
 		this.canvas = options.canvas;
 
-		this.fps = options.graphicsQuality >= GRAPHICS_QUALITY_HIGH ? null : 30;
+		this.fps = options.fps;
 		this.useGlow = options.graphicsQuality >= GRAPHICS_QUALITY_MEDIUM;
 
 		registerBuiltInLoaders();

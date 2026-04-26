@@ -16,6 +16,7 @@ import * as sound from '@/utility/sound.js';
 type Options = {
 	workerMode?: boolean;
 	graphicsQuality: number;
+	fps: number | null;
 	useVirtualJoystick?: boolean;
 };
 
@@ -24,7 +25,7 @@ export class RoomController {
 	private worker: Worker | null = null;
 	private engine: RoomEngine | null = null;
 	private canvas: HTMLCanvasElement | null = null;
-	private options: Options = {};
+	private options: Options;
 	private isCanvasDragging = false;
 	public isReady = ref(false);
 	public isSitting = ref(false);
@@ -60,7 +61,7 @@ export class RoomController {
 		if (this.options.workerMode) {
 			const offscreen = canvas.transferControlToOffscreen();
 			this.worker = new RoomWorker();
-			this.worker.postMessage({ type: 'init', canvas: offscreen, roomState: this.roomState.value, graphicsQuality: this.options.graphicsQuality, useVirtualJoystick: this.options.useVirtualJoystick }, [offscreen]);
+			this.worker.postMessage({ type: 'init', canvas: offscreen, roomState: this.roomState.value, ...this.options }, [offscreen]);
 			this.isReady.value = true;
 		} else {
 			const babylonEngine = new BABYLON.WebGPUEngine(canvas, { doNotHandleContextLost: true });
@@ -68,7 +69,7 @@ export class RoomController {
 			babylonEngine.enableOfflineSupport = false;
 			await babylonEngine.initAsync();
 
-			this.engine = new RoomEngine(this.roomState.value, { canvas, engine: babylonEngine, graphicsQuality: this.options.graphicsQuality, useVirtualJoystick: this.options.useVirtualJoystick });
+			this.engine = new RoomEngine(this.roomState.value, { canvas, engine: babylonEngine, ...this.options });
 			this.engine.on('loadingProgress', ({ progress }) => {
 				this.initializeProgress.value = progress;
 			});

@@ -533,6 +533,13 @@ export const PREF_DEF = definePreferences({
 		},
 	},
 
+	'world.graphicsQuality': {
+		default: null as number | null,
+	},
+	'world.fps': {
+		default: null as 'max' | '120' | '60' | '30' | null,
+	},
+
 	'experimental.stackingRouterView': {
 		default: false,
 	},

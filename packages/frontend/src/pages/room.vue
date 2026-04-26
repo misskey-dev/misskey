@@ -154,13 +154,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkButton primary @click="save">保存</MkButton>
 		</div>
 		<MkSelect
-			:modelValue="graphicsQuality" :items="[
+			v-model="graphicsQualityRaw" :items="[
+				{ label: `Auto (${graphicsQualityAutoValue})`, value: null },
 				{ label: 'High', value: GRAPHICS_QUALITY_HIGH },
 				{ label: 'Medium', value: GRAPHICS_QUALITY_MEDIUM },
 				{ label: 'Low', value: GRAPHICS_QUALITY_LOW },
-			]" @update:modelValue="v => graphicsQuality = v"
+			]"
 		>
 			<template #label>Graphics quality</template>
+		</MkSelect>
+		<MkSelect
+			v-model="fpsRaw" :items="[
+				{ label: `Auto (${fpsAutoValue})`, value: null },
+				{ label: 'Max', value: 'max' },
+				{ label: '~120fps', value: '120' },
+				{ label: '~60fps', value: '60' },
+				{ label: '~30fps', value: '30' },
+			]"
+		>
+			<template #label>Framerate</template>
 		</MkSelect>
 		<MkButton danger @click="reload">reload</MkButton>
 	</template>
@@ -187,6 +199,7 @@ import { deviceKind } from '@/utility/device-kind.js';
 import MkProgressBar from '@/components/MkProgressBar.vue';
 import { Joystick } from '@/world/joystick.js';
 import { isTouchUsing } from '@/utility/touch.js';
+import { prefer } from '@/preferences.js';
 
 const canvas = useTemplateRef('canvas');
 
@@ -204,7 +217,20 @@ function resize() {
 const isZenMode = ref(false);
 const isRoomSettingsOpen = ref(false);
 const isChanged = ref(false);
-const graphicsQuality = ref<number>(deviceKind === 'smartphone' ? GRAPHICS_QUALITY_LOW : GRAPHICS_QUALITY_MEDIUM);
+
+const graphicsQualityRaw = prefer.model('world.graphicsQuality');
+const graphicsQualityAutoValue = computed<number>(() => deviceKind === 'smartphone' ? GRAPHICS_QUALITY_LOW : GRAPHICS_QUALITY_MEDIUM);
+const graphicsQuality = computed<number>(() => graphicsQualityRaw.value ?? graphicsQualityAutoValue.value);
+
+const fpsRaw = prefer.model('world.fps');
+const fpsAutoValue = computed<number | null>(() => graphicsQuality.value >= GRAPHICS_QUALITY_HIGH ? null : 30);
+const fps = computed<number | null>(() =>
+	fpsRaw.value == null ? fpsAutoValue.value :
+	fpsRaw.value === 'max' ? null :
+	fpsRaw.value === '120' ? 120 :
+	fpsRaw.value === '60' ? 60 :
+	30);
+
 const useVirtualJoystick = isTouchUsing && (deviceKind === 'smartphone' || deviceKind === 'tablet');
 
 const joyStickRadiusPx = 100;
@@ -254,6 +280,7 @@ let latestData = deepClone(data);
 
 const controller = new RoomController(data, {
 	graphicsQuality: graphicsQuality.value,
+	fps: fps.value,
 	useVirtualJoystick,
 });
 
@@ -413,6 +440,7 @@ async function revert() {
 async function reload() {
 	await controller.reset(null, {
 		graphicsQuality: graphicsQuality.value,
+		fps: fps.value,
 		useVirtualJoystick,
 	});
 }
