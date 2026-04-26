@@ -539,6 +539,9 @@ export const PREF_DEF = definePreferences({
 	'world.fps': {
 		default: null as 'max' | '120' | '60' | '30' | null,
 	},
+	'world.resolution': {
+		default: null as 0.5 | 1 | 2 | null,
+	},
 
 	'experimental.stackingRouterView': {
 		default: false,

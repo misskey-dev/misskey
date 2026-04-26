@@ -244,7 +244,6 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		registerBuiltInLoaders();
 
 		this.engine = options.engine;
-		if (options.graphicsQuality <= GRAPHICS_QUALITY_LOW) this.engine.setHardwareScalingLevel(2);
 		this.scene = new BABYLON.Scene(this.engine);
 		// なんかレンダリングがおかしくなるときがあるのでコメントアウト
 		// オブジェクトを選択し、後ろを向いて別のオブジェクトを選択した後、最初のオブジェクトに振り返ると消えているなど

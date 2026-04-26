@@ -164,6 +164,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import XObjectCustomizeForm from './room.object-customize-form.vue';
+import type { RoomControllerOptions } from '@/world/room/controller.js';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import { ensureSignin } from '@/i';
@@ -204,13 +205,17 @@ const graphicsQualityAutoValue = computed<number>(() => deviceKind === 'smartpho
 const graphicsQuality = computed<number>(() => graphicsQualityRaw.value ?? graphicsQualityAutoValue.value);
 
 const fpsRaw = prefer.model('world.fps');
-const fpsAutoValue = computed<number | null>(() => graphicsQuality.value >= GRAPHICS_QUALITY_HIGH ? null : 30);
+const fpsAutoValue = computed<number | null>(() => deviceKind === 'smartphone' ? 30 : 60);
 const fps = computed<number | null>(() =>
 	fpsRaw.value == null ? fpsAutoValue.value :
 	fpsRaw.value === 'max' ? null :
 	fpsRaw.value === '120' ? 120 :
 	fpsRaw.value === '60' ? 60 :
 	30);
+
+const resolutionRaw = prefer.model('world.resolution');
+const resolutionAutoValue = computed<number>(() => deviceKind === 'smartphone' ? 0.5 : 1);
+const resolution = computed<number>(() => resolutionRaw.value ?? resolutionAutoValue.value);
 
 const useVirtualJoystick = isTouchUsing && (deviceKind === 'smartphone' || deviceKind === 'tablet');
 
@@ -259,11 +264,14 @@ const data = localStorage.getItem('roomData') != null ? JSON.parse(localStorage.
 
 let latestData = deepClone(data);
 
-const controller = new RoomController(data, {
+const roomControllerOptions = computed<RoomControllerOptions>(() => ({
 	graphicsQuality: graphicsQuality.value,
 	fps: fps.value,
+	resolution: resolution.value,
 	useVirtualJoystick,
-});
+}));
+
+const controller = new RoomController(data, roomControllerOptions.value);
 
 onMounted(async () => {
 	controller.init(canvas.value!);
@@ -314,6 +322,10 @@ onMounted(async () => {
 			controller.setCameraJoystickRotateVector(vector);
 		});
 	}
+
+	watch([graphicsQuality, fps, resolution], () => {
+		refresh();
+	});
 });
 
 onUnmounted(() => {
@@ -426,11 +438,7 @@ async function revert() {
 }
 
 async function refresh() {
-	await controller.reset(null, {
-		graphicsQuality: graphicsQuality.value,
-		fps: fps.value,
-		useVirtualJoystick,
-	});
+	await controller.reset(null, roomControllerOptions.value);
 }
 
 function expor() {
@@ -486,6 +494,17 @@ function showOtherMenu(ev: PointerEvent) {
 			'~30fps': '30',
 		},
 		ref: fpsRaw,
+	}, {
+		type: 'radio',
+		text: 'Resolution',
+		caption: resolutionRaw.value == null ? i18n.ts.auto : resolutionRaw.value + 'x',
+		options: {
+			[`Auto (${resolutionAutoValue.value})`]: null,
+			'2x': 2,
+			'1x': 1,
+			'0.5x': 0.5,
+		},
+		ref: resolutionRaw,
 	}, {
 		type: 'divider',
 	}, {

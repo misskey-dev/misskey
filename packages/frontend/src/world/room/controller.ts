@@ -13,10 +13,11 @@ import type { RoomState } from './engine.js';
 import type { ObjectDef, RoomStateObject } from './object.js';
 import * as sound from '@/utility/sound.js';
 
-type Options = {
+export type RoomControllerOptions = {
 	workerMode?: boolean;
 	graphicsQuality: number;
 	fps: number | null;
+	resolution: number | null;
 	useVirtualJoystick?: boolean;
 };
 
@@ -25,7 +26,7 @@ export class RoomController {
 	private worker: Worker | null = null;
 	private engine: RoomEngine | null = null;
 	private canvas: HTMLCanvasElement | null = null;
-	private options: Options;
+	private options: RoomControllerOptions;
 	private isCanvasDragging = false;
 	public isReady = ref(false);
 	public isSitting = ref(false);
@@ -40,7 +41,7 @@ export class RoomController {
 	public roomState: ShallowRef<RoomState>;
 	public initializeProgress = ref(0);
 
-	constructor(roomState: RoomState, options: Options) {
+	constructor(roomState: RoomState, options: RoomControllerOptions) {
 		this.roomState = shallowRef(roomState);
 		this.options = options;
 
@@ -68,6 +69,8 @@ export class RoomController {
 			babylonEngine.compatibilityMode = false;
 			babylonEngine.enableOfflineSupport = false;
 			await babylonEngine.initAsync();
+			if (this.options.resolution === 2) babylonEngine.setHardwareScalingLevel(0.5);
+			if (this.options.resolution === 0.5) babylonEngine.setHardwareScalingLevel(2);
 
 			this.engine = new RoomEngine(this.roomState.value, { canvas, engine: babylonEngine, ...this.options });
 			this.engine.on('loadingProgress', ({ progress }) => {
@@ -174,7 +177,7 @@ export class RoomController {
 		return false;
 	}
 
-	public async reset(roomState?: RoomState | null, options?: Options | null, canvas?: HTMLCanvasElement | null) {
+	public async reset(roomState?: RoomState | null, options?: RoomControllerOptions | null, canvas?: HTMLCanvasElement | null) {
 		this.destroy();
 		if (roomState != null) this.roomState.value = roomState;
 		if (options != null) this.options = options;
