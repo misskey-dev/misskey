@@ -259,7 +259,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-		(ev: 'close', actioned?: boolean): void;
+	(ev: 'close', actioned?: boolean): void;
 	(ev: 'hide'): void;
 }>();
 
