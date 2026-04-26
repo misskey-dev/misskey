@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.root" class="_pageScrollable">
+<div :class="$style.root">
 	<div :class="[$style.screen, { [$style.zen]: isZenMode }]">
 		<canvas ref="canvas" :class="$style.canvas" tabindex="-1" :style="{ visibility: controller.isReady.value ? 'visible' : 'hidden' }"></canvas>
 
@@ -26,6 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<button v-if="controller.isEditMode.value" :class="$style.topMenuButton" class="_button" style="color: var(--MI_THEME-accent)" @click="exitEditMode"><i class="ti ti-paint"></i></button>
 					<button v-if="!controller.isEditMode.value" :class="$style.topMenuButton" class="_button" @click="enterEditMode"><i class="ti ti-paint"></i></button>
 					<button v-if="controller.isEditMode.value" :class="$style.topMenuButton" class="_button" @click="addObject"><i class="ti ti-plus"></i></button>
+					<button v-if="controller.isEditMode.value" :class="$style.topMenuButton" class="_button" @click="showSnappingMenu"><i class="ti ti-grid-4x4"></i></button>
 					<button v-if="controller.isEditMode.value && !isRoomSettingsOpen" :class="$style.topMenuButton" class="_button" @click="() => isRoomSettingsOpen = true"><i class="ti ti-home-cog"></i></button>
 					<button v-if="controller.isEditMode.value && isRoomSettingsOpen" :class="$style.topMenuButton" class="_button" style="color: var(--MI_THEME-accent)" @click="() => isRoomSettingsOpen = false"><i class="ti ti-home-cog"></i></button>
 				</template>
@@ -42,8 +43,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkButton v-else-if="controller.selected.value != null" @click="beginSelectedInstalledObjectGrabbing"><i class="ti ti-hand-grab"></i> (E)</MkButton>
 
 					<MkButton v-if="controller.grabbing.value" @click="rotate"><i class="ti ti-view-360-arrow"></i> (R)</MkButton>
-
-					<MkButton :primary="controller.gridSnapping.value.enabled" @click="showSnappingMenu">Grid Snap: {{ controller.gridSnapping.value.enabled ? 'on' : 'off' }}</MkButton>
 
 					<MkButton v-if="!controller.grabbing.value && controller.selected.value != null" @click="removeSelectedObject"><i class="ti ti-trash"></i> (X)</MkButton>
 				</template>
@@ -514,10 +513,7 @@ definePage(() => ({
 .screen {
 	position: relative;
 	width: 100%;
-	height: 90cqh;
-}
-.screen.zen {
-	height: 100%;
+	height: 100cqh;
 }
 
 .canvas {
