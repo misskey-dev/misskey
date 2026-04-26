@@ -195,7 +195,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	private gridMaterial: GridMaterial;
 	private gridPlane: BABYLON.Mesh;
 	private gizmoManager: BABYLON.GizmoManager;
-	private selectionOutlineLayer: BABYLON.SelectionOutlineLayer;
+	private selectionOutlineLayer: BABYLON.SelectionOutlineLayer | null = null;
 	public sr: BABYLON.SnapshotRenderingHelper;
 	private gl: BABYLON.GlowLayer | null = null;
 	public timer: Timer = new Timer();
@@ -413,10 +413,12 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.gridPlane.isPickable = false;
 		this.gridPlane.isVisible = false;
 
-		this.selectionOutlineLayer = new BABYLON.SelectionOutlineLayer('outliner', this.scene);
-		this.scene.setRenderingAutoClearDepthStencil(this.selectionOutlineLayer.renderingGroupId, false);
-		if (SNAPSHOT_RENDERING) {
-			this.sr.updateMeshesForEffectLayer(this.selectionOutlineLayer);
+		if (options.graphicsQuality >= GRAPHICS_QUALITY_MEDIUM) {
+			this.selectionOutlineLayer = new BABYLON.SelectionOutlineLayer('outliner', this.scene);
+			this.scene.setRenderingAutoClearDepthStencil(this.selectionOutlineLayer.renderingGroupId, false);
+			if (SNAPSHOT_RENDERING) {
+				this.sr.updateMeshesForEffectLayer(this.selectionOutlineLayer);
+			}
 		}
 
 		if (_DEV_) {
@@ -1176,6 +1178,8 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	}
 
 	private highlightMeshes(meshes: BABYLON.AbstractMesh[]) {
+		if (this.selectionOutlineLayer == null) return;
+
 		//if (this.engine.snapshotRendering) return; // snapshot rendering内でそのままやろうとするとエラーになる 回避実装もめんどいので単に無視
 		if (SNAPSHOT_RENDERING) this.sr.disableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 		this.clearHighlight();
@@ -1184,6 +1188,8 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	}
 
 	private clearHighlight() {
+		if (this.selectionOutlineLayer == null) return;
+
 		//if (this.engine.snapshotRendering) return; // snapshot rendering内でそのままやろうとするとエラーになる 回避実装もめんどいので単に無視
 		if (SNAPSHOT_RENDERING) this.sr.disableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 		this.selectionOutlineLayer.clearSelection();
