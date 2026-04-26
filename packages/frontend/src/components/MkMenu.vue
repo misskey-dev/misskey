@@ -132,6 +132,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:class="['_button', $style.item, $style.parent, { [$style.active]: childShowingItem === item }]"
 				:disabled="unref(item.disabled)"
 				@mouseenter.prevent="preferClick ? null : showRadioOptions(item, $event)"
+				@mousemove="parentMouseMove"
 				@keydown.enter.prevent="preferClick ? null : showRadioOptions(item, $event)"
 				@click.prevent="!preferClick ? null : showRadioOptions(item, $event)"
 			>
