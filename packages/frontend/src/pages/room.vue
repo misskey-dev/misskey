@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</Transition>
 
-		<template v-if="!isZenMode">
+		<div :class="$style.overlayBottom">
 			<div v-if="controller.isReady.value" class="_buttonsCenter" :class="$style.overlayControls">
 				<template v-if="controller.isEditMode.value">
 					<MkButton v-if="controller.grabbing.value" @click="cancelGrabbing"><i class="ti ti-x"></i> cancel</MkButton>
@@ -39,6 +39,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 			</div>
 
+			<div v-if="useVirtualJoystick" :class="$style.joySticks">
+				<div ref="joyStickLeftEl" :class="$style.joyStickLeft" :style="{ '--startXPx': (joyStickLeftStartPos?.x ?? 0) + 'px', '--startYPx': (joyStickLeftStartPos?.y ?? 0) + 'px', '--rPx': joyStickRadiusPx + 'px' }">
+					<div v-show="joyStickLeftStartPos != null" :class="$style.joyStickRangeCircle"></div>
+					<div v-show="joyStickLeftVec.x !== 0 || joyStickLeftVec.y !== 0" :class="$style.joyStickPuck" :style="{ '--x': joyStickLeftVec.x, '--y': joyStickLeftVec.y }"></div>
+				</div>
+				<div ref="joyStickRightEl" :class="$style.joyStickRight" :style="{ '--startXPx': (joyStickRightStartPos?.x ?? 0) + 'px', '--startYPx': (joyStickRightStartPos?.y ?? 0) + 'px', '--rPx': joyStickRadiusPx + 'px' }">
+					<div v-show="joyStickRightStartPos != null" :class="$style.joyStickRangeCircle"></div>
+					<div v-show="joyStickRightVec.x !== 0 || joyStickRightVec.y !== 0" :class="$style.joyStickPuck" :style="{ '--x': joyStickRightVec.x, '--y': joyStickRightVec.y }"></div>
+				</div>
+			</div>
+		</div>
+
+		<template v-if="!isZenMode">
 			<div v-if="controller.isReady.value && controller.isEditMode.value && controller.selected.value != null && !controller.grabbing.value" :key="controller.selected.value.objectId" class="_panel" :class="$style.overlayObjectInfoPanel">
 				{{ controller.selected.value.objectDef.name }}
 
@@ -172,6 +185,8 @@ import { deepClone } from '@/utility/clone.js';
 import { GRAPHICS_QUALITY_HIGH, GRAPHICS_QUALITY_LOW, GRAPHICS_QUALITY_MEDIUM } from '@/world/room/engine.js';
 import { deviceKind } from '@/utility/device-kind.js';
 import MkProgressBar from '@/components/MkProgressBar.vue';
+import { Joystick } from '@/world/joystick.js';
+import { isTouchUsing } from '@/utility/touch.js';
 
 const canvas = useTemplateRef('canvas');
 
@@ -190,6 +205,15 @@ const isZenMode = ref(false);
 const isRoomSettingsOpen = ref(false);
 const isChanged = ref(false);
 const graphicsQuality = ref<number>(deviceKind === 'smartphone' ? GRAPHICS_QUALITY_LOW : GRAPHICS_QUALITY_MEDIUM);
+const useVirtualJoystick = isTouchUsing && (deviceKind === 'smartphone' || deviceKind === 'tablet');
+
+const joyStickRadiusPx = 100;
+const joyStickLeftEl = useTemplateRef('joyStickLeftEl');
+const joyStickRightEl = useTemplateRef('joyStickRightEl');
+const joyStickLeftVec = ref({ x: 0, y: 0 });
+const joyStickRightVec = ref({ x: 0, y: 0 });
+const joyStickLeftStartPos = ref<{ x: number; y: number } | null>(null);
+const joyStickRightStartPos = ref<{ x: number; y: number } | null>(null);
 
 const data = localStorage.getItem('roomData') != null ? JSON.parse(localStorage.getItem('roomData')!) : {
 	heya: {
@@ -230,6 +254,7 @@ let latestData = deepClone(data);
 
 const controller = new RoomController(data, {
 	graphicsQuality: graphicsQuality.value,
+	useVirtualJoystick,
 });
 
 onMounted(async () => {
@@ -255,6 +280,32 @@ onMounted(async () => {
 	//		}));
 	//	}
 	//});
+
+	if (joyStickLeftEl.value != null && joyStickRightEl.value != null) {
+		const joyStickLeft = new Joystick(joyStickLeftEl.value!, { radiusPx: joyStickRadiusPx });
+		joyStickLeft.on('start', (vector) => {
+			joyStickLeftStartPos.value = vector;
+		});
+		joyStickLeft.on('end', () => {
+			joyStickLeftStartPos.value = null;
+		});
+		joyStickLeft.on('updateVector', (vector) => {
+			joyStickLeftVec.value = vector;
+			controller.setCameraJoystickMoveVector(vector);
+		});
+
+		const joyStickRight = new Joystick(joyStickRightEl.value!, { radiusPx: joyStickRadiusPx });
+		joyStickRight.on('start', (vector) => {
+			joyStickRightStartPos.value = vector;
+		});
+		joyStickRight.on('end', () => {
+			joyStickRightStartPos.value = null;
+		});
+		joyStickRight.on('updateVector', (vector) => {
+			joyStickRightVec.value = vector;
+			controller.setCameraJoystickRotateVector(vector);
+		});
+	}
 });
 
 onUnmounted(() => {
@@ -362,6 +413,7 @@ async function revert() {
 async function reload() {
 	await controller.reset(null, {
 		graphicsQuality: graphicsQuality.value,
+		useVirtualJoystick,
 	});
 }
 
@@ -426,15 +478,63 @@ definePage(() => ({
 	}
 }
 
-.controls {
+.joySticks {
+	display: flex;
+	width: 100%;
 }
 
-.overlayControls {
+.joyStickLeft, .joyStickRight {
+	position: relative;
+	flex: 1;
+	height: 70px;
+	box-sizing: border-box;
+	padding: 8px;
+}
+
+.joyStickLeft::before, .joyStickRight::before {
+	content: '';
+	display: block;
+	width: 100%;
+	height: 100%;
+	border: solid 2px #fff;
+	border-radius: 16px;
+	pointer-events: none;
+}
+
+.joyStickRangeCircle {
+	position: absolute;
+	top: var(--startYPx);
+	left: var(--startXPx);
+	width: calc(var(--rPx) * 2);
+	height: calc(var(--rPx) * 2);
+	border: solid 2px rgba(255, 255, 255, 0.5);
+	border-radius: 100%;
+	transform: translate(-50%, -50%);
+	pointer-events: none;
+}
+
+.joyStickPuck {
+	position: absolute;
+	top: calc(var(--startYPx) + (var(--y) * var(--rPx)));
+	left: calc(var(--startXPx) + (var(--x) * var(--rPx)));
+	width: 30px;
+	height: 30px;
+	background: #fff;
+	border-radius: 100%;
+	transform: translate(-50%, -50%);
+	pointer-events: none;
+}
+
+.overlayBottom {
 	position: absolute;
 	bottom: 0;
 	left: 0;
 	z-index: 1;
 	width: 100%;
+}
+
+.overlayControls {
+
 }
 
 .overlayObjectInfoPanel {

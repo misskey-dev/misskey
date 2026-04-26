@@ -16,6 +16,7 @@ import * as sound from '@/utility/sound.js';
 type Options = {
 	workerMode?: boolean;
 	graphicsQuality: number;
+	useVirtualJoystick?: boolean;
 };
 
 // 抽象化レイヤー
@@ -59,7 +60,7 @@ export class RoomController {
 		if (this.options.workerMode) {
 			const offscreen = canvas.transferControlToOffscreen();
 			this.worker = new RoomWorker();
-			this.worker.postMessage({ type: 'init', canvas: offscreen, roomState: this.roomState.value, graphicsQuality: this.options.graphicsQuality }, [offscreen]);
+			this.worker.postMessage({ type: 'init', canvas: offscreen, roomState: this.roomState.value, graphicsQuality: this.options.graphicsQuality, useVirtualJoystick: this.options.useVirtualJoystick }, [offscreen]);
 			this.isReady.value = true;
 		} else {
 			const babylonEngine = new BABYLON.WebGPUEngine(canvas, { doNotHandleContextLost: true });
@@ -67,7 +68,7 @@ export class RoomController {
 			babylonEngine.enableOfflineSupport = false;
 			await babylonEngine.initAsync();
 
-			this.engine = new RoomEngine(this.roomState.value, { canvas, engine: babylonEngine, graphicsQuality: this.options.graphicsQuality });
+			this.engine = new RoomEngine(this.roomState.value, { canvas, engine: babylonEngine, graphicsQuality: this.options.graphicsQuality, useVirtualJoystick: this.options.useVirtualJoystick });
 			this.engine.on('loadingProgress', ({ progress }) => {
 				this.initializeProgress.value = progress;
 			});
@@ -198,6 +199,22 @@ export class RoomController {
 			this.worker.postMessage({ type: 'resumeRender' });
 		} else if (this.engine != null) {
 			this.engine.resumeRender();
+		}
+	}
+
+	public setCameraJoystickMoveVector(vec: { x: number; y: number }) {
+		if (this.worker != null) {
+			this.worker.postMessage({ type: 'setCameraJoystickMoveVector', vec });
+		} else if (this.engine != null) {
+			this.engine.cameraJoystickMove(vec);
+		}
+	}
+
+	public setCameraJoystickRotateVector(vec: { x: number; y: number }) {
+		if (this.worker != null) {
+			this.worker.postMessage({ type: 'setCameraJoystickRotateVector', vec });
+		} else if (this.engine != null) {
+			this.engine.cameraJoystickRotate(vec);
 		}
 	}
 

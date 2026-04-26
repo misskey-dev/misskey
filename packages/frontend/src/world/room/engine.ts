@@ -15,7 +15,7 @@ import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
 import { BoundingBoxRenderer } from '@babylonjs/core/Rendering/boundingBoxRenderer';
 import { GridMaterial } from '@babylonjs/materials';
 import { EventEmitter } from 'eventemitter3';
-import { TIME_MAP, scaleMorph, camelToKebab, cm, WORLD_SCALE, getMeshesBoundingBox, Timer, getYRotationDirection } from '../utility.js';
+import { TIME_MAP, scaleMorph, camelToKebab, cm, WORLD_SCALE, getMeshesBoundingBox, Timer, getYRotationDirection, FreeCameraTouchVirtualJoystickInput } from '../utility.js';
 import { getObjectDef } from './object-defs.js';
 import { findMaterial, ModelManager, SYSTEM_HEYA_MESH_NAMES, SYSTEM_MESH_NAMES } from './utility.js';
 import { SimpleHeyaManager } from './heya.js';
@@ -23,8 +23,6 @@ import type { HeyaManager, JapaneseHeyaOptions, SimpleHeyaOptions } from './heya
 import type { ObjectDef, RoomObjectInstance, RoomStateObject } from './object.js';
 import { genId } from '@/utility/id.js';
 import { deepClone } from '@/utility/clone.js';
-import { isTouchUsing } from '@/utility/touch.js';
-import { deviceKind } from '@/utility/device-kind.js';
 
 const BAKE_TRANSFORM = false; // 実験的
 const SNAPSHOT_RENDERING = true; // 実験的
@@ -226,6 +224,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		canvas: HTMLCanvasElement;
 		engine: BABYLON.WebGPUEngine;
 		graphicsQuality: number;
+		useVirtualJoystick?: boolean;
 	}) {
 		super();
 
@@ -289,14 +288,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 		this.scene.collisionsEnabled = true;
 
-		const useVirtualJoystick = isTouchUsing && (deviceKind === 'smartphone' || deviceKind === 'tablet');
-
-		this.camera = useVirtualJoystick ? new BABYLON.VirtualJoysticksCamera('camera', new BABYLON.Vector3(0, cm(130), cm(0)), this.scene) : new BABYLON.UniversalCamera('camera', new BABYLON.Vector3(0, cm(130), cm(0)), this.scene);
-		this.camera.attachControl(this.canvas);
-		if (useVirtualJoystick) {
-			(this.camera.inputs.attached.virtualJoystick as BABYLON.FreeCameraVirtualJoystickInput).getLeftJoystick().setJoystickSensibility(0.3);
-			(this.camera.inputs.attached.virtualJoystick as BABYLON.FreeCameraVirtualJoystickInput).getRightJoystick().setJoystickSensibility(0.025);
-		}
+		this.camera = options.useVirtualJoystick ? new BABYLON.FreeCamera('camera', new BABYLON.Vector3(0, cm(130), cm(0)), this.scene) : new BABYLON.UniversalCamera('camera', new BABYLON.Vector3(0, cm(130), cm(0)), this.scene);
 		this.camera.minZ = cm(1);
 		this.camera.maxZ = RENDER_OUTDOOR_ENV ? cm(10000) : cm(1000);
 		this.camera.fov = 1;
@@ -304,26 +296,39 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.camera.checkCollisions = true;
 		this.camera.applyGravity = true;
 		this.camera.needMoveForGravity = true;
-		this.camera.keysUp.push(87); // W
-		this.camera.keysDown.push(83); // S
-		this.camera.keysLeft.push(65); // A
-		this.camera.keysRight.push(68); // D
-		const normalSpeed = 0.02 * WORLD_SCALE;
-		this.camera.speed = normalSpeed;
-		this.scene.onKeyboardObservable.add((kbInfo) => {
-			switch (kbInfo.type) {
-				case BABYLON.KeyboardEventTypes.KEYDOWN:
-					if (kbInfo.event.key === 'Shift') {
-						this.camera.speed = normalSpeed * 4;
-					}
-					break;
-				case BABYLON.KeyboardEventTypes.KEYUP:
-					if (kbInfo.event.key === 'Shift') {
-						this.camera.speed = normalSpeed;
-					}
-					break;
-			}
-		});
+
+		if (options.useVirtualJoystick) {
+			this.camera.inputs.clear();
+			this.camera.inputs.add(new FreeCameraTouchVirtualJoystickInput({
+				moveSensitivity: 0.015 * WORLD_SCALE,
+				rotationSensitivity: 0.1,
+			}));
+			this.camera.inertia = 0.75;
+		} else {
+			const normalSpeed = 0.02 * WORLD_SCALE;
+			this.camera.speed = normalSpeed;
+
+			this.camera.keysUp.push(87); // W
+			this.camera.keysDown.push(83); // S
+			this.camera.keysLeft.push(65); // A
+			this.camera.keysRight.push(68); // D
+			this.scene.onKeyboardObservable.add((kbInfo) => {
+				switch (kbInfo.type) {
+					case BABYLON.KeyboardEventTypes.KEYDOWN:
+						if (kbInfo.event.key === 'Shift') {
+							this.camera.speed = normalSpeed * 4;
+						}
+						break;
+					case BABYLON.KeyboardEventTypes.KEYUP:
+						if (kbInfo.event.key === 'Shift') {
+							this.camera.speed = normalSpeed;
+						}
+						break;
+				}
+			});
+		}
+
+		this.camera.attachControl(this.canvas);
 
 		//this.scene.activeCamera = this.camera;
 
@@ -446,6 +451,14 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 				};
 			}
 		}
+	}
+
+	public cameraJoystickMove(vector: { x: number; y: number; }) {
+		this.camera.inputs.attached.joystick.setJoystickMoveVector(vector);
+	}
+
+	public cameraJoystickRotate(vector: { x: number; y: number; }) {
+		this.camera.inputs.attached.joystick.setJoystickRotationVector(vector);
 	}
 
 	public async init() {
