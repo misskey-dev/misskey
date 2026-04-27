@@ -13291,5 +13291,13 @@ export interface Locale extends ILocale {
          * 解像度
          */
         "resolution": string;
+        /**
+         * お使いのデバイスはMisskeyRoomをサポートしていません。
+         */
+        "yourDeviceNotSupported_title": string;
+        /**
+         * MisskeyRoomを動作させるには、WebGPUをサポートするデバイスが必要です。
+         */
+        "yourDeviceNotSupported_description": string;
     };
 }

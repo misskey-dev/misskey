@@ -3562,3 +3562,5 @@ _room:
   graphicsQuality: "グラフィックの品質"
   frameRate: "フレームレート"
   resolution: "解像度"
+  yourDeviceNotSupported_title: "お使いのデバイスはMisskeyRoomをサポートしていません。"
+  yourDeviceNotSupported_description: "MisskeyRoomを動作させるには、WebGPUをサポートするデバイスが必要です。"

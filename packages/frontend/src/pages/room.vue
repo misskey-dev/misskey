@@ -163,6 +163,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
+import * as BABYLON from '@babylonjs/core';
 import XObjectCustomizeForm from './room.object-customize-form.vue';
 import type { RoomControllerOptions } from '@/world/room/controller.js';
 import { definePage } from '@/page.js';
@@ -275,6 +276,15 @@ const roomControllerOptions = computed<RoomControllerOptions>(() => ({
 const controller = new RoomController(data, roomControllerOptions.value);
 
 onMounted(async () => {
+	if (!await BABYLON.WebGPUEngine.IsSupportedAsync) {
+		os.alert({
+			type: 'warning',
+			title: i18n.ts._room.yourDeviceNotSupported_title,
+			text: i18n.ts._room.yourDeviceNotSupported_description,
+		});
+		return;
+	}
+
 	controller.init(canvas.value!);
 
 	canvas.value!.focus();
