@@ -12,12 +12,12 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
-import { GridMaterial } from '@babylonjs/materials';
 import { EventEmitter } from 'eventemitter3';
 import { TIME_MAP, scaleMorph, camelToKebab, cm, WORLD_SCALE, getMeshesBoundingBox, Timer, getYRotationDirection, FreeCameraTouchVirtualJoystickInput } from '../utility.js';
 import { getObjectDef } from './object-defs.js';
 import { findMaterial, ModelManager, SYSTEM_HEYA_MESH_NAMES, SYSTEM_MESH_NAMES } from './utility.js';
 import { SimpleHeyaManager } from './heya.js';
+import type { GridMaterial } from '@babylonjs/materials';
 import type { HeyaManager, JapaneseHeyaOptions, SimpleHeyaOptions } from './heya.js';
 import type { ObjectDef, RoomObjectInstance, RoomStateObject } from './object.js';
 import { genId } from '@/utility/id.js';
@@ -183,7 +183,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	}
 	set gridSnapping(v) {
 		this._gridSnapping = v;
-		this.gridMaterial.gridRatio = v.scale; // setter内でconstructor内設定の値に依存するのはタイミングによってはundefinedになりそうなので、実際に当該マテリアルを表示する必要が生じる直前に利用側で設定させた方がいいかもしれない
+		if (this.gridMaterial != null) this.gridMaterial.gridRatio = v.scale; // setter内でconstructor内設定の値に依存するのはタイミングによってはundefinedになりそうなので、実際に当該マテリアルを表示する必要が生じる直前に利用側で設定させた方がいいかもしれない
 		this.emit('changeGridSnapping', { gridSnapping: v });
 	}
 
@@ -192,7 +192,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	private envMapOutdoor: BABYLON.CubeTexture;
 	private roomLight: BABYLON.SpotLight;
 	public lightContainer: BABYLON.ClusteredLightContainer;
-	private gridMaterial: GridMaterial;
+	private gridMaterial: GridMaterial | null = null;
 	private gridPlane: BABYLON.Mesh;
 	private gizmoManager: BABYLON.GizmoManager;
 	private selectionOutlineLayer: BABYLON.SelectionOutlineLayer | null = null;
@@ -415,18 +415,10 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.gizmoManager = new BABYLON.GizmoManager(this.scene);
 		this.gizmoManager.positionGizmoEnabled = false;
 
-		this.gridMaterial = new GridMaterial('grid', this.scene);
-		this.gridMaterial.lineColor = new BABYLON.Color3(0.5, 0.5, 0.5);
-		this.gridMaterial.mainColor = new BABYLON.Color3(0, 0, 0);
-		this.gridMaterial.minorUnitVisibility = 1;
-		this.gridMaterial.opacity = 0.5;
-		this.gridMaterial.gridRatio = this.gridSnapping.scale;
-		this.gridMaterial.backFaceCulling = false;
-
 		this.gridPlane = BABYLON.MeshBuilder.CreatePlane('gridPlane', { width: cm(1000), height: cm(1000) }, this.scene);
-		this.gridPlane.material = this.gridMaterial;
 		this.gridPlane.isPickable = false;
 		this.gridPlane.isVisible = false;
+		this.gridPlane.setEnabled(false);
 
 		if (options.graphicsQuality >= GRAPHICS_QUALITY_MEDIUM) {
 			this.selectionOutlineLayer = new BABYLON.SelectionOutlineLayer('outliner', this.scene);
@@ -1648,6 +1640,21 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		}
 		if (this.gl != null) {
 			this.gl.isEnabled = false; // 重いので切る
+		}
+
+		if (this.gridPlane.material == null) {
+			import('@babylonjs/materials').then(m => {
+				this.gridMaterial = new m.GridMaterial('grid', this.scene);
+				this.gridMaterial.lineColor = new BABYLON.Color3(0.5, 0.5, 0.5);
+				this.gridMaterial.mainColor = new BABYLON.Color3(0, 0, 0);
+				this.gridMaterial.minorUnitVisibility = 1;
+				this.gridMaterial.opacity = 0.5;
+				this.gridMaterial.gridRatio = this.gridSnapping.scale;
+				this.gridMaterial.backFaceCulling = false;
+
+				this.gridPlane.material = this.gridMaterial;
+				this.gridPlane.setEnabled(true);
+			});
 		}
 	}
 
