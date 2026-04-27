@@ -201,11 +201,11 @@ const isRoomSettingsOpen = ref(false);
 const isModified = ref(false);
 
 const graphicsQualityRaw = prefer.model('world.graphicsQuality');
-const graphicsQualityAutoValue = computed<number>(() => deviceKind === 'smartphone' ? GRAPHICS_QUALITY_LOW : GRAPHICS_QUALITY_MEDIUM);
+const graphicsQualityAutoValue = computed<number>(() => deviceKind !== 'desktop' ? GRAPHICS_QUALITY_LOW : GRAPHICS_QUALITY_MEDIUM);
 const graphicsQuality = computed<number>(() => graphicsQualityRaw.value ?? graphicsQualityAutoValue.value);
 
 const fpsRaw = prefer.model('world.fps');
-const fpsAutoValue = computed<number | null>(() => deviceKind === 'smartphone' ? 30 : 60);
+const fpsAutoValue = computed<number | null>(() => deviceKind !== 'desktop' ? 30 : 60);
 const fps = computed<number | null>(() =>
 	fpsRaw.value == null ? fpsAutoValue.value :
 	fpsRaw.value === 'max' ? null :
@@ -214,7 +214,7 @@ const fps = computed<number | null>(() =>
 	30);
 
 const resolutionRaw = prefer.model('world.resolution');
-const resolutionAutoValue = computed<number>(() => deviceKind === 'smartphone' ? 0.5 : 1);
+const resolutionAutoValue = computed<number>(() => deviceKind !== 'desktop' ? 0.5 : 1);
 const resolution = computed<number>(() => resolutionRaw.value ?? resolutionAutoValue.value);
 
 const useVirtualJoystick = isTouchUsing && (deviceKind === 'smartphone' || deviceKind === 'tablet');
