@@ -80,7 +80,7 @@ export class RoomController {
 				}
 			};
 		} else {
-			const babylonEngine = new BABYLON.WebGPUEngine(canvas, { doNotHandleContextLost: true });
+			const babylonEngine = new BABYLON.WebGPUEngine(canvas, { doNotHandleContextLost: true, powerPreference: 'high-performance' });
 			babylonEngine.compatibilityMode = false;
 			babylonEngine.enableOfflineSupport = false;
 			await babylonEngine.initAsync();

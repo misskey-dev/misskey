@@ -17,7 +17,7 @@ onmessage = async (event) => {
 		case 'init': {
 			const roomState = event.data.roomState as RoomState;
 			canvas = event.data.canvas as HTMLCanvasElement;
-			const babylonEngine = new BABYLON.WebGPUEngine(canvas, { doNotHandleContextLost: true });
+			const babylonEngine = new BABYLON.WebGPUEngine(canvas, { doNotHandleContextLost: true, powerPreference: 'high-performance' });
 			babylonEngine.compatibilityMode = false;
 			babylonEngine.enableOfflineSupport = false;
 			await babylonEngine.initAsync();

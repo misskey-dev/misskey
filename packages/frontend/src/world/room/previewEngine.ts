@@ -15,7 +15,7 @@ import { deepClone } from '@/utility/clone.js';
 import { store } from '@/store.js';
 
 export async function createRoomObjectPreviewEngine(canvas: HTMLCanvasElement) {
-	const babylonEngine = new BABYLON.WebGPUEngine(canvas, { doNotHandleContextLost: true });
+	const babylonEngine = new BABYLON.WebGPUEngine(canvas, { doNotHandleContextLost: true, powerPreference: 'low-power' });
 	babylonEngine.compatibilityMode = false;
 	babylonEngine.enableOfflineSupport = false;
 	await babylonEngine.initAsync();
