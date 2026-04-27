@@ -36,6 +36,7 @@ export type RoomState = {
 		type: 'japanese';
 		options: JapaneseHeyaOptions;
 	};
+	roomLightColor: [number, number, number];
 	installedObjects: RoomStateObject<any>[];
 };
 
@@ -282,6 +283,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		roomCollisionCube.position.y = cm(150);
 		roomCollisionCube.scaling.x = -1; // flip normals
 		roomCollisionCube.isVisible = false;
+		roomCollisionCube.isPickable = false;
 		roomCollisionCube.checkCollisions = true;
 
 		this.scene.collisionsEnabled = true;
@@ -331,7 +333,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		//this.scene.activeCamera = this.camera;
 
 		this.roomLight = new BABYLON.SpotLight('roomLight', new BABYLON.Vector3(0, cm(249), 0), new BABYLON.Vector3(0, -1, 0), 16, 8, this.scene);
-		this.roomLight.diffuse = new BABYLON.Color3(1.0, 0.9, 0.8);
+		this.roomLight.diffuse = roomState.roomLightColor != null ? new BABYLON.Color3(...roomState.roomLightColor) : new BABYLON.Color3(1.0, 0.9, 0.8);
 		this.roomLight.shadowMinZ = cm(10);
 		this.roomLight.shadowMaxZ = cm(300);
 		this.roomLight.radius = cm(30);
@@ -444,14 +446,6 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 				});
 			}
 		}
-	}
-
-	public cameraJoystickMove(vector: { x: number; y: number; }) {
-		this.camera.inputs.attached.joystick.setJoystickMoveVector(vector);
-	}
-
-	public cameraJoystickRotate(vector: { x: number; y: number; }) {
-		this.camera.inputs.attached.joystick.setJoystickRotationVector(vector);
 	}
 
 	public async init() {
@@ -609,6 +603,14 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 	public resumeRender() {
 		this.startRenderLoop();
+	}
+
+	public cameraJoystickMove(vector: { x: number; y: number; }) {
+		(this.camera.inputs.attached.joystick as FreeCameraTouchVirtualJoystickInput).setJoystickMoveVector(vector);
+	}
+
+	public cameraJoystickRotate(vector: { x: number; y: number; }) {
+		(this.camera.inputs.attached.joystick as FreeCameraTouchVirtualJoystickInput).setJoystickRotationVector(vector);
 	}
 
 	public selectObject(objectId: string | null) {
@@ -1409,11 +1411,19 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.fixedCamera.parent = null;
 	}
 
+	public updateRoomLightColor(color: [number, number, number]) {
+		this.roomLight.diffuse = new BABYLON.Color3(...color);
+		this.roomState.roomLightColor = color;
+		this.emit('changeRoomState', { roomState: this.roomState });
+	}
+
 	private turnOnRoomLight(forInit = false) {
 		if (!forInit && SNAPSHOT_RENDERING) this.sr.disableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 		this.roomLight.intensity = 18 * WORLD_SCALE * WORLD_SCALE;
 		this.envMapIndoor.level = 0.6;
 		if (!forInit && SNAPSHOT_RENDERING) {
+			// workerで実行される可能性がある
+			// eslint-disable-next-line no-restricted-globals
 			setTimeout(() => {
 				this.sr.enableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 			}, 10);
@@ -1424,6 +1434,8 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		if (SNAPSHOT_RENDERING) this.sr.disableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 		this.roomLight.intensity = 0;
 		this.envMapIndoor.level = 0.025;
+		// workerで実行される可能性がある
+		// eslint-disable-next-line no-restricted-globals
 		setTimeout(() => {
 			if (SNAPSHOT_RENDERING) this.sr.enableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 		}, 10);

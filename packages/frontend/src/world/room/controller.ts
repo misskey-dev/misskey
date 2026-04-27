@@ -293,6 +293,14 @@ export class RoomController {
 		}
 	}
 
+	public updateRoomLightColor(color: [number, number, number]) {
+		if (this.worker != null) {
+			this.worker.postMessage({ type: 'updateRoomLightColor', color });
+		} else if (this.engine != null) {
+			this.engine.updateRoomLightColor(color);
+		}
+	}
+
 	public beginSelectedInstalledObjectGrabbing() {
 		if (this.worker != null) {
 			this.worker.postMessage({ type: 'beginSelectedInstalledObjectGrabbing' });
