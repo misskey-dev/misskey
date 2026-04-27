@@ -36,7 +36,10 @@ minimumReleaseAgeExclude:
   - '@syuilo/aiscript'
   - '@babylonjs/*'
   - '@napi-rs/wasm-runtime' # そのうち消す
+  - '@typescript/native-preview*'
   - fastify # 脆弱性対応。そのうち消す
   - '@fastify/express' # 脆弱性対応。そのうち消す
   - '@fastify/http-proxy' # 脆弱性対応。そのうち消す
   - '@fastify/reply-from' # 脆弱性対応。そのうち消す
+  - '@fastify/static' # 脆弱性対応。そのうち消す
+  - sanitize-html # 脆弱性対応。そのうち消す
