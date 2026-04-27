@@ -13279,5 +13279,17 @@ export interface Locale extends ILocale {
          * 全ての変更を取り消し、部屋を最後に保存した状態まで戻しますか？
          */
         "revertAllChangesConfirmation": string;
+        /**
+         * グラフィックの品質
+         */
+        "graphicsQuality": string;
+        /**
+         * フレームレート
+         */
+        "frameRate": string;
+        /**
+         * 解像度
+         */
+        "resolution": string;
     };
 }

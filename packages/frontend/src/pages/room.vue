@@ -474,12 +474,12 @@ function impor() {
 function showOtherMenu(ev: PointerEvent) {
 	os.popupMenu([{
 		type: 'radio',
-		text: 'Graphics quality',
+		text: i18n.ts._room.graphicsQuality,
 		caption: graphicsQualityRaw.value == null ? i18n.ts.auto : graphicsQualityRaw.value === GRAPHICS_QUALITY_HIGH ? 'High' : graphicsQualityRaw.value === GRAPHICS_QUALITY_MEDIUM ? 'Medium' : 'Low',
 		options: [{
-			label: `Auto (${graphicsQualityAutoValue.value === GRAPHICS_QUALITY_HIGH ? 'High' : graphicsQualityAutoValue.value === GRAPHICS_QUALITY_MEDIUM ? 'Medium' : 'Low'})`,
+			label: `${i18n.ts.auto} (${graphicsQualityAutoValue.value === GRAPHICS_QUALITY_HIGH ? 'High' : graphicsQualityAutoValue.value === GRAPHICS_QUALITY_MEDIUM ? 'Medium' : 'Low'})`,
 			value: null,
-		}, {
+		}, { type: 'divider' }, {
 			label: 'High',
 			value: GRAPHICS_QUALITY_HIGH,
 		}, {
@@ -492,12 +492,12 @@ function showOtherMenu(ev: PointerEvent) {
 		ref: graphicsQualityRaw,
 	}, {
 		type: 'radio',
-		text: 'Framerate',
+		text: i18n.ts._room.frameRate,
 		caption: fpsRaw.value == null ? i18n.ts.auto : fpsRaw.value === 'max' ? 'Max' : `~${fpsRaw.value}fps`,
 		options: [{
-			label: `Auto (${fpsAutoValue.value}fps)`,
+			label: `${i18n.ts.auto} (${fpsAutoValue.value}fps)`,
 			value: null,
-		}, {
+		}, { type: 'divider' }, {
 			label: 'Max',
 			value: 'max',
 		}, {
@@ -513,12 +513,12 @@ function showOtherMenu(ev: PointerEvent) {
 		ref: fpsRaw,
 	}, {
 		type: 'radio',
-		text: 'Resolution',
+		text: i18n.ts._room.resolution,
 		caption: resolutionRaw.value == null ? i18n.ts.auto : resolutionRaw.value + 'x',
 		options: [{
-			label: `Auto (${resolutionAutoValue.value}x)`,
+			label: `${i18n.ts.auto} (${resolutionAutoValue.value}x)`,
 			value: null,
-		}, {
+		}, { type: 'divider' }, {
 			label: '2x',
 			value: 2,
 		}, {

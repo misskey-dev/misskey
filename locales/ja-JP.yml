@@ -3559,3 +3559,6 @@ _room:
   gridScale: "グリッドサイズ"
   thereAreUnsavedChanges: "未保存の変更があります"
   revertAllChangesConfirmation: "全ての変更を取り消し、部屋を最後に保存した状態まで戻しますか？"
+  graphicsQuality: "グラフィックの品質"
+  frameRate: "フレームレート"
+  resolution: "解像度"
