@@ -126,10 +126,10 @@ export function updateCurrentAccount(accountData: Misskey.entities.MeDetailed) {
 	if (!$i) return;
 	const token = $i.token;
 	for (const key of Object.keys($i)) {
-		delete $i[key];
+		delete $i[key as keyof typeof $i];
 	}
 	for (const [key, value] of Object.entries(accountData)) {
-		$i[key] = value;
+		($i[key as keyof typeof accountData] as any) = value;
 	}
 	store.set('accountInfos', { ...store.s.accountInfos, [host + '/' + $i.id]: $i });
 	$i.token = token;
@@ -139,7 +139,7 @@ export function updateCurrentAccount(accountData: Misskey.entities.MeDetailed) {
 export function updateCurrentAccountPartial(accountData: Partial<Misskey.entities.MeDetailed>) {
 	if (!$i) return;
 	for (const [key, value] of Object.entries(accountData)) {
-		$i[key] = value;
+		($i[key as keyof typeof accountData] as any) = value;
 	}
 
 	store.set('accountInfos', { ...store.s.accountInfos, [host + '/' + $i.id]: $i });
@@ -211,13 +211,13 @@ export async function switchAccount(host: string, id: string) {
 	}
 }
 
-export async function openAccountMenu(opts: {
+export async function getAccountMenu(opts: {
 	includeCurrentAccount?: boolean;
 	withExtraOperation: boolean;
 	active?: Misskey.entities.User['id'];
 	onChoose?: (account: Misskey.entities.MeDetailed) => void;
-}, ev: MouseEvent) {
-	if (!$i) return;
+}) {
+	if ($i == null) throw new Error('No current account');
 	const me = $i;
 
 	const callback = opts.onChoose;
@@ -338,9 +338,7 @@ export async function openAccountMenu(opts: {
 		menuItems.push(...accountItems);
 	}
 
-	popupMenu(menuItems, ev.currentTarget ?? ev.target, {
-		align: 'left',
-	});
+	return menuItems;
 }
 
 export function getAccountWithSigninDialog(): Promise<{ id: string, token: string } | null> {

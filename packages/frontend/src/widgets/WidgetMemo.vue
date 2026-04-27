@@ -29,10 +29,12 @@ const name = 'memo';
 const widgetPropsDef = {
 	showHeader: {
 		type: 'boolean',
+		label: i18n.ts._widgetOptions.showHeader,
 		default: true,
 	},
 	height: {
 		type: 'number',
+		label: i18n.ts.height,
 		default: 100,
 	},
 } satisfies FormWithDefault;
@@ -50,7 +52,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 
 const text = ref<string | null>(store.s.memo);
 const changed = ref(false);
-let timeoutId;
+let timeoutId: number | null = null;
 
 const saveMemo = () => {
 	store.set('memo', text.value);
@@ -59,7 +61,7 @@ const saveMemo = () => {
 
 const onChange = () => {
 	changed.value = true;
-	window.clearTimeout(timeoutId);
+	if (timeoutId != null) window.clearTimeout(timeoutId);
 	timeoutId = window.setTimeout(saveMemo, 1000);
 };
 

@@ -28,13 +28,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4.3.0
+    - uses: actions/checkout@v6.0.2
       with:
         submodules: true
     - name: Setup pnpm
-      uses: pnpm/action-setup@v4.1.0
+      uses: pnpm/action-setup@v4.4.0
     - name: Use Node.js
-      uses: actions/setup-node@v4.4.0
+      uses: actions/setup-node@v6.3.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
@@ -64,7 +64,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:15
+        image: postgres:18
         ports:
           - 54312:5432
         env:
@@ -76,7 +76,7 @@ jobs:
           - 56312:6379
 
     steps:
-    - uses: actions/checkout@v4.3.0
+    - uses: actions/checkout@v6.0.2
       with:
         submodules: true
     # https://github.com/cypress-io/cypress-docker-images/issues/150
@@ -86,9 +86,9 @@ jobs:
     #- uses: browser-actions/setup-firefox@latest
     #  if: ${{ matrix.browser == 'firefox' }}
     - name: Setup pnpm
-      uses: pnpm/action-setup@v4.1.0
+      uses: pnpm/action-setup@v4.4.0
     - name: Use Node.js
-      uses: actions/setup-node@v4.4.0
+      uses: actions/setup-node@v6.3.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'
@@ -113,12 +113,12 @@ jobs:
         wait-on: 'http://localhost:61812'
         headed: true
         browser: ${{ matrix.browser }}
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v6
       if: failure()
       with:
         name: ${{ matrix.browser }}-cypress-screenshots
         path: cypress/screenshots
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v6
       if: always()
       with:
         name: ${{ matrix.browser }}-cypress-videos

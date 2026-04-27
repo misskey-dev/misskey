@@ -19,7 +19,7 @@ let serverService: ServerService;
 /**
  * テスト用のサーバインスタンスを起動する
  */
-async function launch() {
+export async function setup() {
 	await killTestServer();
 
 	console.log('starting application...');
@@ -36,6 +36,15 @@ async function launch() {
 	// ジョブキューが動くとテスト結果の確認に支障が出ることがあるので意図的に動かさないでいる
 
 	console.log('application initialized.');
+}
+
+/**
+ * テスト用のサーバインスタンスを停止する
+ */
+export async function teardown() {
+	await serverService.dispose();
+	await app.close();
+	await killTestServer();
 }
 
 /**
@@ -94,5 +103,3 @@ async function startControllerEndpoints(port = config.port + 1000) {
 
 	await fastify.listen({ port: port, host: 'localhost' });
 }
-
-export default launch;

@@ -28,15 +28,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 						<template #default="{ items }">
 							<div class="_gaps_s">
-								<div v-for="item in items" :key="item.user.id" :class="[$style.userItem, { [$style.userItemOpened]: expandedItems.includes(item.id) }]">
+								<div v-for="item in items" :key="item.user.id" :class="[$style.userItem, { [$style.userItemOpened]: expandedItemIds.includes(item.id) }]">
 									<div :class="$style.userItemMain">
 										<MkA :class="$style.userItemMainBody" :to="`/admin/user/${item.user.id}`">
 											<MkUserCardMini :user="item.user"/>
 										</MkA>
-										<button class="_button" :class="$style.userToggle" @click="toggleItem(item)"><i :class="$style.chevron" class="ti ti-chevron-down"></i></button>
-										<button class="_button" :class="$style.unassign" @click="unassign(item.user, $event)"><i class="ti ti-x"></i></button>
+										<button class="_button" :class="$style.userToggle" @click="toggleItem(item.id)"><i :class="$style.chevron" class="ti ti-chevron-down"></i></button>
+										<button class="_button" :class="$style.unassign" @click="unassign(item.user.id, $event)"><i class="ti ti-x"></i></button>
 									</div>
-									<div v-if="expandedItems.includes(item.id)" :class="$style.userItemSub">
+									<div v-if="expandedItemIds.includes(item.id)" :class="$style.userItemSub">
 										<div>Assigned: <MkTime :time="item.createdAt" mode="detail"/></div>
 										<div v-if="item.expiresAt">Period: {{ new Date(item.expiresAt).toLocaleString() }}</div>
 										<div v-else>Period: {{ i18n.ts.indefinitely }}</div>
@@ -55,6 +55,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, markRaw, reactive, ref } from 'vue';
+import * as Misskey from 'misskey-js';
 import XEditor from './roles.editor.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os.js';
@@ -81,7 +82,7 @@ const usersPaginator = markRaw(new Paginator('admin/roles/users', {
 	}) : undefined),
 }));
 
-const expandedItems = ref<string[]>([]);
+const expandedItemIds = ref<Misskey.entities.AdminRolesUsersResponse[number]['id'][]>([]);
 
 const role = reactive(await misskeyApi('admin/roles/show', {
 	roleId: props.id,
@@ -91,7 +92,7 @@ function edit() {
 	router.push('/admin/roles/:id/edit', {
 		params: {
 			id: role.id,
-		}
+		},
 	});
 }
 
@@ -140,23 +141,23 @@ async function assign() {
 	//role.users.push(user);
 }
 
-async function unassign(user, ev) {
+async function unassign(userId: Misskey.entities.User['id'], ev: PointerEvent) {
 	os.popupMenu([{
 		text: i18n.ts.unassign,
 		icon: 'ti ti-x',
 		danger: true,
 		action: async () => {
-			await os.apiWithDialog('admin/roles/unassign', { roleId: role.id, userId: user.id });
-			//role.users = role.users.filter(u => u.id !== user.id);
+			await os.apiWithDialog('admin/roles/unassign', { roleId: role.id, userId: userId });
+			//role.users = role.users.filter(u => u.id !== userId);
 		},
 	}], ev.currentTarget ?? ev.target);
 }
 
-async function toggleItem(item) {
-	if (expandedItems.value.includes(item.id)) {
-		expandedItems.value = expandedItems.value.filter(x => x !== item.id);
+async function toggleItem(itemId: string) {
+	if (expandedItemIds.value.includes(itemId)) {
+		expandedItemIds.value = expandedItemIds.value.filter(x => x !== itemId);
 	} else {
-		expandedItems.value.push(item.id);
+		expandedItemIds.value.push(itemId);
 	}
 }
 

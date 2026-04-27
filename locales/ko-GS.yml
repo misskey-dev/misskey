@@ -651,6 +651,9 @@ renotes: "리노트"
 attach: "옇기"
 surrender: "아이예"
 information: "정보"
+_imageEditing:
+  _vars:
+    filename: "파일 이럼"
 _chat:
   invitations: "초대하기"
   noHistory: "기록이 없십니다"

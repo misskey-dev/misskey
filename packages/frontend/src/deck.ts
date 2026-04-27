@@ -5,6 +5,7 @@
 
 import { notificationTypes } from 'misskey-js';
 import { ref } from 'vue';
+import { EventEmitter } from 'eventemitter3';
 import { i18n } from './i18n.js';
 import type { BasicTimelineType } from '@/timelines.js';
 import type { SoundStore } from '@/preferences/def.js';
@@ -13,6 +14,13 @@ import { genId } from '@/utility/id.js';
 import { deepClone } from '@/utility/clone.js';
 import { prefer } from '@/preferences.js';
 import * as os from '@/os.js';
+
+type DeckEvents = {
+	'column.dragStart': () => void;
+	'column.dragEnd': () => void;
+};
+
+export const deckGlobalEvents = new EventEmitter<DeckEvents>();
 
 export type DeckProfile = {
 	name: string;
@@ -316,14 +324,14 @@ export function updateColumn(id: Column['id'], column: Partial<Column>) {
 	const currentColumn = deepClone(columns.value[columnIndex]);
 	if (currentColumn == null) return;
 	for (const [k, v] of Object.entries(column)) {
-		currentColumn[k] = v;
+		(currentColumn[k as keyof typeof column] as any) = v;
 	}
 	newColumns[columnIndex] = currentColumn;
 	columns.value = newColumns;
 	saveCurrentDeckProfile();
 }
 
-export function switchProfileMenu(ev: MouseEvent) {
+export function switchProfileMenu(ev: PointerEvent) {
 	const items: MenuItem[] = prefer.s['deck.profile'] ? [{
 		text: prefer.s['deck.profile'],
 		active: true,

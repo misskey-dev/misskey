@@ -4,6 +4,7 @@ packages:
   - packages/frontend
   - packages/frontend-builder
   - packages/frontend-embed
+  - packages/i18n
   - packages/icons-subsetter
   - packages/sw
   - packages/misskey-js
@@ -14,7 +15,7 @@ onlyBuiltDependencies:
   - '@nestjs/core'
   - '@parcel/watcher'
   - '@sentry/profiling-node'
-  - '@swc/core'
+  - '@sentry-internal/node-cpu-profiler'
   - '@tensorflow/tfjs-node'
   - bufferutil
   - canvas
@@ -31,3 +32,12 @@ onlyBuiltDependencies:
   - vue-demi
 ignorePatchFailures: false
 minimumReleaseAge: 10080 # delay 7days to mitigate supply-chain attack
+minimumReleaseAgeExclude:
+  - '@syuilo/aiscript'
+  - '@typescript/native-preview*'
+  - fastify # 脆弱性対応。そのうち消す
+  - '@fastify/express' # 脆弱性対応。そのうち消す
+  - '@fastify/http-proxy' # 脆弱性対応。そのうち消す
+  - '@fastify/reply-from' # 脆弱性対応。そのうち消す
+  - '@fastify/static' # 脆弱性対応。そのうち消す
+  - sanitize-html # 脆弱性対応。そのうち消す

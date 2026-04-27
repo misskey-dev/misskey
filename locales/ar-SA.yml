@@ -1010,6 +1010,15 @@ postForm: "أنشئ ملاحظة"
 information: "عن"
 inMinutes: "د"
 inDays: "ي"
+widgets: "التطبيقات المُصغّرة"
+presets: "إعدادات مسبقة"
+_imageEditing:
+  _vars:
+    filename: "اسم الملف"
+_imageFrameEditor:
+  font: "الخط"
+  fontSerif: "Serif"
+  fontSansSerif: "Sans Serif"
 _chat:
   invitations: "دعوة"
   noHistory: "السجل فارغ"
@@ -1356,6 +1365,14 @@ _widgets:
   userList: "قائمة المستخدمين"
   _userList:
     chooseList: "اختر قائمة"
+_widgetOptions:
+  height: "الإرتفاع"
+  _button:
+    colored: "ملوّن"
+  _clock:
+    size: "الحجم"
+  _birthdayFollowings:
+    period: "المدة"
 _cw:
   hide: "إخفاء"
   show: "عرض المزيد"
@@ -1396,6 +1413,9 @@ _postForm:
   replyPlaceholder: "رد على هذه الملاحظة…"
   quotePlaceholder: "اقتبس هذه الملاحظة…"
   channelPlaceholder: "انشر في قناة..."
+  _howToUse:
+    visibility_title: "الظهور"
+    menu_title: "القائمة"
   _placeholders:
     a: "ما الذي تنوي فعله؟"
     b: "ماذا يحدث حولك ؟"

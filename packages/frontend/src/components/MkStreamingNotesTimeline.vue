@@ -74,6 +74,7 @@ import { store } from '@/store.js';
 import MkNote from '@/components/MkNote.vue';
 import MkButton from '@/components/MkButton.vue';
 import { i18n } from '@/i18n.js';
+import { DI } from '@/di.js';
 import { globalEvents, useGlobalEvent } from '@/events.js';
 import { isSeparatorNeeded, getSeparatorInfo } from '@/utility/timeline-date-separate.js';
 import { Paginator } from '@/utility/paginator.js';
@@ -101,7 +102,7 @@ const props = withDefaults(defineProps<{
 
 provide('inTimeline', true);
 provide('tl_withSensitive', computed(() => props.withSensitive));
-provide('inChannel', computed(() => props.src === 'channel'));
+provide(DI.inChannel, computed(() => props.src === 'channel' ? props.channel ?? null : null));
 
 let paginator: IPaginator<Misskey.entities.Note>;
 
@@ -350,13 +351,12 @@ function connectChannel() {
 		connections.main = stream.useChannel('main');
 		connections.main.on('mention', prepend);
 	} else if (props.src === 'directs') {
-		const onNote = note => {
+		connections.main = stream.useChannel('main');
+		connections.main.on('mention', note => {
 			if (note.visibility === 'specified') {
 				prepend(note);
 			}
-		};
-		connections.main = stream.useChannel('main');
-		connections.main.on('mention', onNote);
+		});
 	} else if (props.src === 'list') {
 		if (props.list == null) return;
 		connections.userList = stream.useChannel('userList', {

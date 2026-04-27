@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { Directive } from 'vue';
 import MkRippleEffect from '@/components/MkRippleEffect.vue';
 import { prefer } from '@/preferences.js';
 import { popup } from '@/os.js';
 
-export default {
-	mounted(el, binding, vn) {
+export const rippleDirective = {
+	mounted(el, binding) {
 		// 明示的に false であればバインドしない
 		if (binding.value === false) return;
 		if (!prefer.s.animation) return;
@@ -24,4 +25,4 @@ export default {
 			});
 		});
 	},
-};
+} as Directive<HTMLElement, boolean | undefined>;

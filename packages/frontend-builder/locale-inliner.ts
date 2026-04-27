@@ -10,7 +10,7 @@ import { collectModifications } from './locale-inliner/collect-modifications.js'
 import { applyWithLocale } from './locale-inliner/apply-with-locale.js';
 import { blankLogger } from './logger.js';
 import type { Logger } from './logger.js';
-import type { Locale } from '../../locales/index.js';
+import type { Locale } from 'i18n';
 import type { Manifest as ViteManifest } from 'vite';
 
 export class LocaleInliner {

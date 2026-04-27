@@ -24,6 +24,7 @@ import { Interpreter, Parser, utils } from '@syuilo/aiscript';
 import { useWidgetPropsManager } from './widget.js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
+import type { Value } from '@syuilo/aiscript/interpreter/value.js';
 import * as os from '@/os.js';
 import MkContainer from '@/components/MkContainer.vue';
 import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
@@ -36,10 +37,12 @@ const name = 'aiscript';
 const widgetPropsDef = {
 	showHeader: {
 		type: 'boolean',
+		label: i18n.ts._widgetOptions.showHeader,
 		default: true,
 	},
 	script: {
 		type: 'string',
+		label: i18n.ts.script,
 		multiline: true,
 		default: '(1 + 1)',
 		hidden: true,
@@ -83,7 +86,7 @@ const run = async () => {
 			switch (type) {
 				case 'end': logs.value.push({
 					id: genId(),
-					text: utils.valToString(params.val, true),
+					text: utils.valToString(params.val as Value, true),
 					print: false,
 				}); break;
 				default: break;

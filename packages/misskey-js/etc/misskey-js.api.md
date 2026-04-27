@@ -854,7 +854,14 @@ export type Channels = {
                 key: K;
                 value: ReversiGameDetailed[K];
             }) => void;
-            log: (payload: Record<string, unknown>) => void;
+            log: (payload: {
+                time: number;
+                player: boolean;
+                operation: 'put';
+                pos: number;
+            } & {
+                id: string | null;
+            }) => void;
         };
         receives: {
             putStone: {
@@ -937,6 +944,15 @@ type ChannelsFollowedResponse = operations['channels___followed']['responses']['
 
 // @public (undocumented)
 type ChannelsFollowRequest = operations['channels___follow']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChannelsMuteCreateRequest = operations['channels___mute___create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChannelsMuteDeleteRequest = operations['channels___mute___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChannelsMuteListResponse = operations['channels___mute___list']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type ChannelsMyFavoritesResponse = operations['channels___my-favorites']['responses']['200']['content']['application/json'];
@@ -1678,6 +1694,9 @@ declare namespace entities {
         ChannelsFollowRequest,
         ChannelsFollowedRequest,
         ChannelsFollowedResponse,
+        ChannelsMuteCreateRequest,
+        ChannelsMuteDeleteRequest,
+        ChannelsMuteListResponse,
         ChannelsMyFavoritesResponse,
         ChannelsOwnedRequest,
         ChannelsOwnedResponse,
@@ -2109,6 +2128,8 @@ declare namespace entities {
         UsersFollowingResponse,
         UsersGalleryPostsRequest,
         UsersGalleryPostsResponse,
+        UsersGetFollowingUsersByBirthdayRequest,
+        UsersGetFollowingUsersByBirthdayResponse,
         UsersGetFrequentlyRepliedUsersRequest,
         UsersGetFrequentlyRepliedUsersResponse,
         UsersListsCreateRequest,
@@ -2209,6 +2230,7 @@ declare namespace entities {
         MetaLite,
         MetaDetailedOnly,
         MetaDetailed,
+        MetaClientOptions,
         UserWebhook,
         SystemWebhook,
         AbuseReportNotificationRecipient,
@@ -2800,6 +2822,9 @@ type MeDetailed = components['schemas']['MeDetailed'];
 type MeDetailedOnly = components['schemas']['MeDetailedOnly'];
 
 // @public (undocumented)
+type MetaClientOptions = components['schemas']['MetaClientOptions'];
+
+// @public (undocumented)
 type MetaDetailed = components['schemas']['MetaDetailed'];
 
 // @public (undocumented)
@@ -3226,7 +3251,7 @@ type Notification_2 = components['schemas']['Notification'];
 type NotificationsCreateRequest = operations['notifications___create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-export const notificationTypes: readonly ["note", "follow", "mention", "reply", "renote", "quote", "reaction", "pollEnded", "scheduledNotePosted", "scheduledNotePostFailed", "receiveFollowRequest", "followRequestAccepted", "groupInvited", "app", "roleAssigned", "chatRoomInvitationReceived", "achievementEarned", "exportCompleted", "test", "login", "createToken"];
+export const notificationTypes: readonly ["note", "follow", "mention", "reply", "renote", "quote", "reaction", "pollEnded", "scheduledNotePosted", "scheduledNotePostFailed", "receiveFollowRequest", "followRequestAccepted", "app", "roleAssigned", "chatRoomInvitationReceived", "achievementEarned", "exportCompleted", "test", "login", "createToken"];
 
 // @public (undocumented)
 export function nyaize(text: string): string;
@@ -3500,6 +3525,7 @@ type SigninFlowRequest = {
     'g-recaptcha-response'?: string | null;
     'turnstile-response'?: string | null;
     'm-captcha-response'?: string | null;
+    'testcaptcha-response'?: string | null;
 };
 
 // @public (undocumented)
@@ -3715,6 +3741,12 @@ type UsersGalleryPostsRequest = operations['users___gallery___posts']['requestBo
 type UsersGalleryPostsResponse = operations['users___gallery___posts']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type UsersGetFollowingUsersByBirthdayRequest = operations['users___get-following-users-by-birthday']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersGetFollowingUsersByBirthdayResponse = operations['users___get-following-users-by-birthday']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type UsersGetFrequentlyRepliedUsersRequest = operations['users___get-frequently-replied-users']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -3851,7 +3883,7 @@ type VerifyEmailRequest = operations['verify-email']['requestBody']['content']['
 // src/entities.ts:55:2 - (ae-forgotten-export) The symbol "ModerationLogPayloads" needs to be exported by the entry point index.d.ts
 // src/streaming.ts:57:3 - (ae-forgotten-export) The symbol "ReconnectingWebSocket" needs to be exported by the entry point index.d.ts
 // src/streaming.types.ts:226:4 - (ae-forgotten-export) The symbol "ReversiUpdateKey" needs to be exported by the entry point index.d.ts
-// src/streaming.types.ts:236:4 - (ae-forgotten-export) The symbol "ReversiUpdateSettings" needs to be exported by the entry point index.d.ts
+// src/streaming.types.ts:241:4 - (ae-forgotten-export) The symbol "ReversiUpdateSettings" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

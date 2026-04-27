@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { afterAll, beforeAll, beforeEach, describe, expect, jest } from '@jest/globals';
+import { afterAll, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
+import type { Mocked } from 'vitest';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Response } from 'node-fetch';
 import {
@@ -22,8 +23,8 @@ import { LoggerService } from '@/core/LoggerService.js';
 describe('CaptchaService', () => {
 	let app: TestingModule;
 	let service: CaptchaService;
-	let httpRequestService: jest.Mocked<HttpRequestService>;
-	let metaService: jest.Mocked<MetaService>;
+	let httpRequestService: Mocked<HttpRequestService>;
+	let metaService: Mocked<MetaService>;
 
 	beforeAll(async () => {
 		app = await Test.createTestingModule({
@@ -34,12 +35,12 @@ describe('CaptchaService', () => {
 				CaptchaService,
 				LoggerService,
 				{
-					provide: HttpRequestService, useFactory: () => ({ send: jest.fn() }),
+					provide: HttpRequestService, useFactory: () => ({ send: vi.fn() }),
 				},
 				{
 					provide: MetaService, useFactory: () => ({
-						fetch: jest.fn(),
-						update: jest.fn(),
+						fetch: vi.fn(),
+						update: vi.fn(),
 					}),
 				},
 			],
@@ -48,8 +49,8 @@ describe('CaptchaService', () => {
 		app.enableShutdownHooks();
 
 		service = app.get(CaptchaService);
-		httpRequestService = app.get(HttpRequestService) as jest.Mocked<HttpRequestService>;
-		metaService = app.get(MetaService) as jest.Mocked<MetaService>;
+		httpRequestService = app.get(HttpRequestService) as Mocked<HttpRequestService>;
+		metaService = app.get(MetaService) as Mocked<MetaService>;
 	});
 
 	beforeEach(() => {
@@ -446,7 +447,7 @@ describe('CaptchaService', () => {
 				if (!res.success) {
 					expect(res.error.code).toBe(code);
 				}
-				expect(metaService.update).not.toBeCalled();
+				expect(metaService.update).not.toHaveBeenCalled();
 			}
 
 			describe('invalidParameters', () => {

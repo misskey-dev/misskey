@@ -34,6 +34,7 @@ import { computed, watch, provide, ref, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
 import type { MenuItem } from '@/types/menu.js';
+import type { PageHeaderItem } from '@/types/page-header.js';
 import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
@@ -105,7 +106,7 @@ async function unfavorite() {
 	});
 }
 
-const headerActions = computed(() => clip.value && isOwned.value ? [{
+const headerActions = computed<PageHeaderItem[] | null>(() => clip.value && isOwned.value ? [{
 	icon: 'ti ti-pencil',
 	text: i18n.ts.edit,
 	handler: async (): Promise<void> => {
@@ -144,7 +145,7 @@ const headerActions = computed(() => clip.value && isOwned.value ? [{
 }, ...(clip.value.isPublic ? [{
 	icon: 'ti ti-share',
 	text: i18n.ts.share,
-	handler: (ev: MouseEvent): void => {
+	handler: (ev): void => {
 		const menuItems: MenuItem[] = [];
 
 		menuItems.push({
@@ -177,7 +178,7 @@ const headerActions = computed(() => clip.value && isOwned.value ? [{
 
 		os.popupMenu(menuItems, ev.currentTarget ?? ev.target);
 	},
-}] : []), {
+}] satisfies PageHeaderItem[] : []), {
 	icon: 'ti ti-trash',
 	text: i18n.ts.delete,
 	danger: true,
@@ -196,7 +197,7 @@ const headerActions = computed(() => clip.value && isOwned.value ? [{
 
 		clipsCache.delete();
 	},
-}] : null);
+}] satisfies PageHeaderItem[] : null);
 
 definePage(() => ({
 	title: clip.value ? clip.value.name : i18n.ts.clip,

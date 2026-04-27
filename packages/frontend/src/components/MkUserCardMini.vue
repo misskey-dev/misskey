@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<MkAvatar :class="$style.avatar" :user="user" indicator/>
 	<div :class="$style.body">
 		<span :class="$style.name"><MkUserName :user="user"/></span>
-		<span :class="$style.sub"><span class="_monospace">@{{ acct(user) }}</span></span>
+		<span :class="$style.sub"><slot name="sub"><span class="_monospace">@{{ acct(user) }}</span></slot></span>
 	</div>
 	<MkMiniChart v-if="chartValues" :class="$style.chart" :src="chartValues"/>
 </div>

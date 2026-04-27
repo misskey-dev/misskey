@@ -20,8 +20,8 @@ import { AiService } from '@/core/AiService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import type Logger from '@/logger.js';
 import { bindThis } from '@/decorators.js';
-import type { PredictionType } from 'nsfwjs';
 import { isMimeImage } from '@/misc/is-mime-image.js';
+import type { PredictionType } from 'nsfwjs';
 
 export type FileInfo = {
 	size: number;
@@ -339,7 +339,7 @@ export class FileInfoService {
 	}
 
 	@bindThis
-	public fixMime(mime: string | fileType.MimeType): string {
+	public fixMime(mime: string): string {
 		// see https://github.com/misskey-dev/misskey/pull/10686
 		if (mime === 'audio/x-flac') {
 			return 'audio/flac';
@@ -484,25 +484,13 @@ export class FileInfoService {
 	 * Calculate blurhash string of image
 	 */
 	@bindThis
-	private getBlurhash(path: string, type: string): Promise<string> {
-		return new Promise(async (resolve, reject) => {
-			(await sharpBmp(path, type))
-				.raw()
-				.ensureAlpha()
-				.resize(64, 64, { fit: 'inside' })
-				.toBuffer((err, buffer, info) => {
-					if (err) return reject(err);
-
-					let hash;
-
-					try {
-						hash = blurhash.encode(new Uint8ClampedArray(buffer), info.width, info.height, 5, 5);
-					} catch (e) {
-						return reject(e);
-					}
-
-					resolve(hash);
-				});
-		});
+	private async getBlurhash(path: string, type: string): Promise<string> {
+		const sharp = await sharpBmp(path, type);
+		const { data: buffer, info } = await sharp
+			.raw()
+			.ensureAlpha()
+			.resize(64, 64, { fit: 'inside' })
+			.toBuffer({ resolveWithObject: true });
+		return blurhash.encode(new Uint8ClampedArray(buffer), info.width, info.height, 5, 5);
 	}
 }

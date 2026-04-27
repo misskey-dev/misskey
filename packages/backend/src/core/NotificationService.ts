@@ -202,7 +202,7 @@ export class NotificationService implements OnApplicationShutdown {
 	}
 
 	// TODO
-	//const locales = await import('../../../../locales/index.js');
+	//const locales = await import('i18n');
 
 	// TODO: locale ファイルをクライアント用とサーバー用で分けたい
 
@@ -271,7 +271,7 @@ export class NotificationService implements OnApplicationShutdown {
 		let untilTime = untilId ? this.toXListId(untilId) : null;
 
 		let notifications: MiNotification[];
-		for (;;) {
+		for (; ;) {
 			let notificationsRes: [id: string, fields: string[]][];
 
 			// sinceidのみの場合は古い順、そうでない場合は新しい順。 QueryService.makePaginationQueryも参照

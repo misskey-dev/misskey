@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div class="_gaps">
-	<MkButton v-if="$i && ($i.isModerator || $i.policies.canManageCustomEmojis)" primary link to="/custom-emojis-manager">{{ i18n.ts.manageCustomEmojis }}</MkButton>
+	<MkButton v-if="$i && ($i.isModerator || $i.policies.canManageCustomEmojis)" primary type="routerLink" to="/custom-emojis-manager">{{ i18n.ts.manageCustomEmojis }}</MkButton>
 
 	<div class="query">
 		<MkInput v-model="q" class="" :placeholder="i18n.ts.search" autocapitalize="off">
@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</MkFoldableSection>
 
-	<MkFoldableSection v-for="category in customEmojiCategories" v-once :key="category ?? '___root___'">
+	<MkFoldableSection v-for="category in customEmojiCategories" v-once :key="category ?? '___root___'" :expanded="false">
 		<template #header>{{ category || i18n.ts.other }}</template>
 		<div :class="$style.emojis">
 			<XEmoji v-for="emoji in customEmojis.filter(e => e.category === category)" :key="emoji.name" :emoji="emoji"/>

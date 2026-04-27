@@ -71,7 +71,7 @@ function setPosition() {
 	el.value.style.top = data.top + 'px';
 }
 
-let loopHandler;
+let loopHandler: number | null = null;
 
 onMounted(() => {
 	nextTick(() => {
@@ -87,7 +87,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-	window.cancelAnimationFrame(loopHandler);
+	if (loopHandler != null) window.cancelAnimationFrame(loopHandler);
 });
 </script>
 

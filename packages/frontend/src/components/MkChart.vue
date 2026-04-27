@@ -94,8 +94,8 @@ const props = withDefaults(defineProps<{
 
 const legendEl = useTemplateRef('legendEl');
 
-const sum = (...arr) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
-const negate = arr => arr.map(x => -x);
+const sum = (...arr: number[][]) => arr.reduce((r, a) => r.map((b, i) => a[i] + b));
+const negate = (arr: number[]) => arr.map((x) => -x);
 
 const colors = {
 	blue: '#008FFB',
@@ -108,7 +108,7 @@ const colors = {
 	cyan: '#00e0e0',
 };
 const colorSets = [colors.blue, colors.green, colors.yellow, colors.red, colors.purple];
-const getColor = (i) => {
+const getColor = (i: number) => {
 	return colorSets[i % colorSets.length];
 };
 
@@ -142,7 +142,7 @@ const getDate = (ago: number) => {
 	return props.span === 'day' ? new Date(y, m, d - ago) : new Date(y, m, d, h - ago);
 };
 
-const format = (arr) => {
+const format = (arr: number[]) => {
 	return arr.map((v, i) => ({
 		x: getDate(i).getTime(),
 		y: v,
@@ -371,7 +371,7 @@ const fetchApRequestChart = async (): Promise<typeof chartData> => {
 	};
 };
 
-const fetchNotesChart = async (type: string): Promise<typeof chartData> => {
+const fetchNotesChart = async (type: 'local' | 'remote' | 'combined'): Promise<typeof chartData> => {
 	const raw = await misskeyApiGet('charts/notes', { limit: props.limit, span: props.span });
 	return {
 		series: [{

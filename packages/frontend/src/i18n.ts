@@ -6,7 +6,7 @@
 import { markRaw } from 'vue';
 import { I18n } from '@@/js/i18n.js';
 import { locale } from '@@/js/locale.js';
-import type { Locale } from '../../../locales/index.js';
+import type { Locale } from 'i18n';
 
 export const i18n = markRaw(new I18n<Locale>(locale, _DEV_));
 

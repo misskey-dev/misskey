@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { defineAsyncComponent } from 'vue';
-import { genId } from '@/utility/id.js';
 import { url } from '@@/js/config.js';
 import { defaultEmbedParams, embedRouteWithScrollbar } from '@@/js/embed-page.js';
 import type { EmbedParams, EmbeddableEntity } from '@@/js/embed-page.js';
+import { genId } from '@/utility/id.js';
 import * as os from '@/os.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 
@@ -21,19 +21,20 @@ export function normalizeEmbedParams(params: EmbedParams): Record<string, string
 	// paramsのvalueをすべてstringに変換。undefinedやnullはプロパティごと消す
 	const normalizedParams: Record<string, string> = {};
 	for (const key in params) {
+		const k = key as keyof EmbedParams;
 		// デフォルトの値と同じならparamsに含めない
-		if (params[key] == null || params[key] === defaultEmbedParams[key]) {
+		if (params[k] == null || params[k] === defaultEmbedParams[k]) {
 			continue;
 		}
-		switch (typeof params[key]) {
+		switch (typeof params[k]) {
 			case 'number':
-				normalizedParams[key] = params[key].toString();
+				normalizedParams[k] = params[k].toString();
 				break;
 			case 'boolean':
-				normalizedParams[key] = params[key] ? 'true' : 'false';
+				normalizedParams[k] = params[k] ? 'true' : 'false';
 				break;
 			default:
-				normalizedParams[key] = params[key];
+				normalizedParams[k] = params[k];
 				break;
 		}
 	}

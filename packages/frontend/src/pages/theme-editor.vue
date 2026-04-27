@@ -160,11 +160,11 @@ function setBgColor(color: typeof bgColors[number]) {
 	}
 }
 
-function setAccentColor(color) {
+function setAccentColor(color: string) {
 	theme.value.props.accent = color;
 }
 
-function setFgColor(color) {
+function setFgColor(color: typeof fgColors[number]) {
 	theme.value.props.fg = theme.value.base === 'light' ? color.forLight : color.forDark;
 }
 

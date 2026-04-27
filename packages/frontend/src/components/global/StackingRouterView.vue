@@ -74,6 +74,7 @@ function mount() {
 }
 
 function back() {
+	if (tabs.value.length <= 1) return; // transitionの関係でタブが1つの状態でbackが呼ばれることがある
 	const prev = tabs.value[tabs.value.length - 2];
 	tabs.value = [...tabs.value.slice(0, tabs.value.length - 1)];
 	router?.replaceByPath(prev.fullPath);
@@ -170,12 +171,6 @@ router.useListener('replace', ({ fullPath }) => {
 			width: 100%;
 			height: 100%;
 		}
-
-		.tabContent {
-			position: relative;
-			width: 100%;
-			height: 100%;
-		}
 	}
 
 	&:not(:first-child) {
@@ -208,11 +203,15 @@ router.useListener('replace', ({ fullPath }) => {
 
 		.tabContent {
 			flex: 1;
-			width: 100%;
-			height: 100%;
-			background: var(--MI_THEME-bg);
 		}
 	}
+}
+
+.tabContent {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	background: var(--MI_THEME-bg);
 }
 
 .tabMenu {

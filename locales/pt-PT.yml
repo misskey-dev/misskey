@@ -1389,6 +1389,18 @@ scheduleToPostOnX: "Agendar nota para {x}"
 scheduledToPostOnX: "A nota está agendada para {x}"
 schedule: "Agendar"
 scheduled: "Agendado"
+widgets: "Widgets"
+presets: "Predefinições"
+_imageEditing:
+  _vars:
+    filename: "Nome do Ficheiro"
+_imageFrameEditor:
+  header: "Cabeçalho"
+  withQrCode: "Código QR"
+  font: "Fonte"
+  fontSerif: "Serif"
+  fontSansSerif: "Sans Serif"
+  quitWithoutSaveConfirm: "Descartar mudanças?"
 _compression:
   _quality:
     high: "Qualidade alta"
@@ -2477,6 +2489,15 @@ _widgets:
   clicker: "Clicker"
   birthdayFollowings: "Usuários de aniversário hoje"
   chat: "Conversar com usuário"
+_widgetOptions:
+  showHeader: "Exibir cabeçalho"
+  height: "Altura"
+  _button:
+    colored: "Colorido"
+  _clock:
+    size: "Tamanho"
+  _birthdayFollowings:
+    period: "Duração"
 _cw:
   hide: "Esconder"
   show: "Carregar mais"
@@ -2521,6 +2542,9 @@ _postForm:
   replyPlaceholder: "Responder a essa nota..."
   quotePlaceholder: "Citar essa nota..."
   channelPlaceholder: "Postar em canal..."
+  _howToUse:
+    visibility_title: "Visibilidade"
+    menu_title: "Menu\n"
   _placeholders:
     a: "Como vão as coisas?"
     b: "O que está rolando por aí?"
@@ -3215,7 +3239,6 @@ _imageEffector:
   title: "Efeitos"
   addEffect: "Adicionar efeitos"
   discardChangesConfirm: "Tem certeza que deseja sair? Há mudanças não salvas."
-  nothingToConfigure: "Não há nada para configurar"
   _fxs:
     chromaticAberration: "Aberração cromática"
     glitch: "Glitch"
@@ -3266,11 +3289,7 @@ _imageEffector:
     threshold: "Limiar"
     centerX: "Centralizar X"
     centerY: "Centralizar Y"
-    zoomLinesSmoothing: "Suavização"
-    zoomLinesSmoothingDescription: "Suavização e largura das linhas de zoom não podem ser utilizados simultaneamente."
-    zoomLinesThreshold: "Largura das linhas de zoom"
     zoomLinesMaskSize: "Diâmetro do centro"
-    zoomLinesBlack: "Linhas pretas"
     circle: "Circular"
 drafts: "Rascunhos"
 _drafts:

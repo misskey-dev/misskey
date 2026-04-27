@@ -22,18 +22,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkTextarea v-model="text">
 					<template #label>{{ i18n.ts.text }}</template>
 				</MkTextarea>
-				<MkRadios v-model="icon">
+				<MkRadios
+					v-model="icon"
+					:options="[
+						{ value: 'info', icon: 'ti ti-info-circle' },
+						{ value: 'warning', icon: 'ti ti-alert-triangle', iconStyle: 'color: var(--MI_THEME-warn);' },
+						{ value: 'error', icon: 'ti ti-circle-x', iconStyle: 'color: var(--MI_THEME-error);' },
+						{ value: 'success', icon: 'ti ti-check', iconStyle: 'color: var(--MI_THEME-success);' },
+					]"
+				>
 					<template #label>{{ i18n.ts.icon }}</template>
-					<option value="info"><i class="ti ti-info-circle"></i></option>
-					<option value="warning"><i class="ti ti-alert-triangle" style="color: var(--MI_THEME-warn);"></i></option>
-					<option value="error"><i class="ti ti-circle-x" style="color: var(--MI_THEME-error);"></i></option>
-					<option value="success"><i class="ti ti-check" style="color: var(--MI_THEME-success);"></i></option>
 				</MkRadios>
-				<MkRadios v-model="display">
+				<MkRadios
+					v-model="display"
+					:options="[
+						{ value: 'normal', label: i18n.ts.normal },
+						{ value: 'banner', label: i18n.ts.banner },
+						{ value: 'dialog', label: i18n.ts.dialog },
+					]"
+				>
 					<template #label>{{ i18n.ts.display }}</template>
-					<option value="normal">{{ i18n.ts.normal }}</option>
-					<option value="banner">{{ i18n.ts.banner }}</option>
-					<option value="dialog">{{ i18n.ts.dialog }}</option>
 				</MkRadios>
 				<MkSwitch v-model="needConfirmationToRead">
 					{{ i18n.ts._announcement.needConfirmationToRead }}

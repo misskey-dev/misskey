@@ -43,7 +43,7 @@ export async function fetchInstance(force = false): Promise<Misskey.entities.Met
 	});
 
 	for (const [k, v] of Object.entries(meta)) {
-		instance[k] = v;
+		(instance[k as keyof typeof meta] as any) = v;
 	}
 
 	miLocalStorage.setItem('instance', JSON.stringify(instance));
@@ -51,9 +51,3 @@ export async function fetchInstance(force = false): Promise<Misskey.entities.Met
 
 	return instance;
 }
-
-export type ClientOptions = {
-	entrancePageStyle: 'classic' | 'simple';
-	showTimelineForVisitor: boolean;
-	showActivitiesForVisitor: boolean;
-};

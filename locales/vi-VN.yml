@@ -1,5 +1,5 @@
 ---
-_lang_: "Tiếng Việt "
+_lang_: "Tiếng Việt"
 headlineMisskey: "Mạng xã hội liên hợp"
 introMisskey: "Xin chào! Misskey là một nền tảng tiểu blog phi tập trung mã nguồn mở.\nViết \"tút\" để chia sẻ những suy nghĩ của bạn 📡\nBằng \"biểu cảm\", bạn có thể bày tỏ nhanh chóng cảm xúc của bạn với các tút 👍\nHãy khám phá một thế giới mới! 🚀"
 poweredByMisskeyDescription: "{name} là một trong những chủ máy của <b>Misskey</b> là nền tảng mã nguồn mở"
@@ -576,6 +576,7 @@ showFixedPostForm: "Hiện khung soạn tút ở phía trên bảng tin"
 showFixedPostFormInChannel: "Hiển thị mẫu bài đăng ở phía trên bản tin"
 withRepliesByDefaultForNewlyFollowed: "Mặc định hiển thị trả lời từ những người dùng mới theo dõi trong dòng thời gian"
 newNoteRecived: "Đã nhận tút mới"
+newNote: "Ghi chú mới"
 sounds: "Âm thanh"
 sound: "Âm thanh"
 notificationSoundSettings: "Cài đặt âm thanh thông báo"
@@ -848,7 +849,7 @@ hideOnlineStatus: "Ẩn trạng thái online"
 hideOnlineStatusDescription: "Ẩn trạng thái online của bạn làm giảm sự tiện lợi của một số tính năng như tìm kiếm."
 online: "Online"
 active: "Hoạt động"
-offline: "Offline"
+offline: "Ngoại tuyến"
 notRecommended: "Không đề xuất"
 botProtection: "Bảo vệ Bot"
 instanceBlocking: "Máy chủ đã chặn"
@@ -1220,8 +1221,19 @@ information: "Giới thiệu"
 chat: "Trò chuyện"
 migrateOldSettings: "Di chuyển cài đặt cũ"
 migrateOldSettings_description: "Thông thường, quá trình này diễn ra tự động, nhưng nếu vì lý do nào đó mà quá trình di chuyển không thành công, bạn có thể kích hoạt thủ công quy trình di chuyển, quá trình này sẽ ghi đè lên thông tin cấu hình hiện tại của bạn."
+driveAboutTip: "Trong Drive, danh sách các tệp bạn đã tải lên trước đây sẽ được hiển thị.<br>\nBạn có thể sử dụng lại chúng khi đính kèm vào ghi chú, hoặc tải lên trước các tệp để đăng sau.<br>\n<b>Lưu ý rằng nếu bạn xóa một tệp, tệp đó cũng sẽ biến mất khỏi tất cả những nơi đã sử dụng tệp đó (ghi chú, trang, ảnh đại diện, biểu ngữ, v.v.).</b><br>\nBạn cũng có thể tạo các thư mục để sắp xếp chúng."
 inMinutes: "phút"
 inDays: "ngày"
+widgets: "Tiện ích"
+presets: "Mẫu thiết lập"
+_imageEditing:
+  _vars:
+    filename: "Tên tập tin"
+_imageFrameEditor:
+  header: "Ảnh bìa"
+  font: "Phông chữ"
+  fontSerif: "Serif"
+  fontSansSerif: "Sans Serif"
 _chat:
   invitations: "Mời"
   noHistory: "Không có dữ liệu"
@@ -1816,6 +1828,14 @@ _widgets:
   _userList:
     chooseList: "Chọn danh sách"
   clicker: "clicker"
+_widgetOptions:
+  height: "Chiều cao"
+  _button:
+    colored: "Với màu"
+  _clock:
+    size: "Kích thước"
+  _birthdayFollowings:
+    period: "Thời hạn"
 _cw:
   hide: "Ẩn"
   show: "Tải thêm"
@@ -1858,6 +1878,9 @@ _postForm:
   replyPlaceholder: "Trả lời tút này"
   quotePlaceholder: "Trích dẫn tút này"
   channelPlaceholder: "Đăng lên một kênh"
+  _howToUse:
+    visibility_title: "Hiển thị"
+    menu_title: "Menu"
   _placeholders:
     a: "Bạn đang định làm gì?"
     b: "Hôm nay bạn có gì vui?"

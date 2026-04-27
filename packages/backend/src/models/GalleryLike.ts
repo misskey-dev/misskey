@@ -18,7 +18,7 @@ export class MiGalleryLike {
 	@Column(id())
 	public userId: MiUser['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(() => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
@@ -27,7 +27,7 @@ export class MiGalleryLike {
 	@Column(id())
 	public postId: MiGalleryPost['id'];
 
-	@ManyToOne(type => MiGalleryPost, {
+	@ManyToOne(() => MiGalleryPost, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()

@@ -13,7 +13,6 @@ import type {
 	Role,
 	ReversiGameDetailed,
 	SystemWebhook,
-	UserLite,
 	ChatRoom,
 } from './autogen/models.js';
 
@@ -30,7 +29,6 @@ export const notificationTypes = [
 	'scheduledNotePostFailed',
 	'receiveFollowRequest',
 	'followRequestAccepted',
-	'groupInvited',
 	'app',
 	'roleAssigned',
 	'chatRoomInvitationReceived',

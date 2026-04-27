@@ -3,15 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { markRaw, ref } from 'vue';
+import { markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
-import lightTheme from '@@/themes/l-light.json5';
-import darkTheme from '@@/themes/d-green-lime.json5';
+import { prefersReducedMotion } from '@@/js/config.js';
 import { hemisphere } from '@@/js/intl-const.js';
 import type { DeviceKind } from '@/utility/device-kind.js';
-import type { Plugin } from '@/plugin.js';
 import type { TIPS } from '@/tips.js';
-import { miLocalStorage } from '@/local-storage.js';
 import { Pizzax } from '@/lib/pizzax.js';
 import { DEFAULT_DEVICE_KIND } from '@/utility/device-kind.js';
 
@@ -82,7 +79,7 @@ export const store = markRaw(new Pizzax('base', {
 	},
 	menuDisplay: {
 		where: 'device',
-		default: 'sideFull' as 'sideFull' | 'sideIcon' | 'top',
+		default: 'sideFull' as 'sideFull' | 'sideIcon'/* | 'top' */,
 	},
 	postFormWithHashtags: {
 		where: 'device',
@@ -114,6 +111,10 @@ export const store = markRaw(new Pizzax('base', {
 		default: false,
 	},
 	showPreferencesAutoCloudBackupSuggestion: {
+		where: 'device',
+		default: true,
+	},
+	showStoragePersistenceSuggestion: {
 		where: 'device',
 		default: true,
 	},
@@ -220,11 +221,11 @@ export const store = markRaw(new Pizzax('base', {
 	},
 	animation: {
 		where: 'device',
-		default: !window.matchMedia('(prefers-reduced-motion)').matches,
+		default: !prefersReducedMotion,
 	},
 	animatedMfm: {
 		where: 'device',
-		default: !window.matchMedia('(prefers-reduced-motion)').matches,
+		default: !prefersReducedMotion,
 	},
 	advancedMfm: {
 		where: 'device',
@@ -248,11 +249,11 @@ export const store = markRaw(new Pizzax('base', {
 	},
 	disableShowingAnimatedImages: {
 		where: 'device',
-		default: window.matchMedia('(prefers-reduced-motion)').matches,
+		default: prefersReducedMotion,
 	},
 	emojiStyle: {
 		where: 'device',
-		default: 'twemoji', // twemoji / fluentEmoji / native
+		default: 'twemoji' as 'twemoji' | 'fluentEmoji' | 'native',
 	},
 	menuStyle: {
 		where: 'device',
@@ -472,90 +473,4 @@ const PREFIX = 'miux:' as const;
 interface Watcher {
 	key: string;
 	callback: (value: unknown) => void;
-}
-
-// TODO: 消す(preferに移行済みのため)
-/**
- * 常にメモリにロードしておく必要がないような設定情報を保管するストレージ(非リアクティブ)
- */
-export class ColdDeviceStorage {
-	public static default = {
-		lightTheme, // TODO: 消す(preferに移行済みのため)
-		darkTheme, // TODO: 消す(preferに移行済みのため)
-		syncDeviceDarkMode: true, // TODO: 消す(preferに移行済みのため)
-		plugins: [] as (Omit<Plugin, 'installId'> & { id: string })[], // TODO: 消す(preferに移行済みのため)
-	};
-
-	public static watchers: Watcher[] = [];
-
-	public static get<T extends keyof typeof ColdDeviceStorage.default>(key: T): typeof ColdDeviceStorage.default[T] {
-		// TODO: indexedDBにする
-		//       ただしその際はnullチェックではなくキー存在チェックにしないとダメ
-		//       (indexedDBはnullを保存できるため、ユーザーが意図してnullを格納した可能性がある)
-		const value = miLocalStorage.getItem(`${PREFIX}${key}`);
-		if (value == null) {
-			return ColdDeviceStorage.default[key];
-		} else {
-			return JSON.parse(value);
-		}
-	}
-
-	public static getAll(): Partial<typeof this.default> {
-		return (Object.keys(this.default) as (keyof typeof this.default)[]).reduce<Partial<typeof this.default>>((acc, key) => {
-			const value = localStorage.getItem(PREFIX + key);
-			if (value != null) {
-				acc[key] = JSON.parse(value);
-			}
-			return acc;
-		}, {});
-	}
-
-	public static set<T extends keyof typeof ColdDeviceStorage.default>(key: T, value: typeof ColdDeviceStorage.default[T]): void {
-		// 呼び出し側のバグ等で undefined が来ることがある
-		// undefined を文字列として miLocalStorage に入れると参照する際の JSON.parse でコケて不具合の元になるため無視
-
-		if (value === undefined) {
-			console.error(`attempt to store undefined value for key '${key}'`);
-			return;
-		}
-
-		miLocalStorage.setItem(`${PREFIX}${key}`, JSON.stringify(value));
-
-		for (const watcher of this.watchers) {
-			if (watcher.key === key) watcher.callback(value);
-		}
-	}
-
-	public static watch(key, callback) {
-		this.watchers.push({ key, callback });
-	}
-
-	// TODO: VueのcustomRef使うと良い感じになるかも
-	public static ref<T extends keyof typeof ColdDeviceStorage.default>(key: T) {
-		const v = ColdDeviceStorage.get(key);
-		const r = ref(v);
-		// TODO: このままではwatcherがリークするので開放する方法を考える
-		this.watch(key, v => {
-			r.value = v;
-		});
-		return r;
-	}
-
-	/**
-	 * 特定のキーの、簡易的なgetter/setterを作ります
-	 * 主にvue場で設定コントロールのmodelとして使う用
-	 */
-	public static makeGetterSetter<K extends keyof typeof ColdDeviceStorage.default>(key: K) {
-		// TODO: VueのcustomRef使うと良い感じになるかも
-		const valueRef = ColdDeviceStorage.ref(key);
-		return {
-			get: () => {
-				return valueRef.value;
-			},
-			set: (value: typeof ColdDeviceStorage.default[K]) => {
-				const val = value;
-				ColdDeviceStorage.set(key, val);
-			},
-		};
-	}
 }

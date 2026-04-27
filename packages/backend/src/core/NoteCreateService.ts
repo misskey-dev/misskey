@@ -71,6 +71,7 @@ class NotificationManager {
 	constructor(
 		private mutingsRepository: MutingsRepository,
 		private notificationService: NotificationService,
+		private followingsRepository: FollowingsRepository,
 		notifier: { id: MiUser['id']; },
 		note: MiNote,
 	) {
@@ -101,7 +102,47 @@ class NotificationManager {
 
 	@bindThis
 	public async notify() {
+		if (this.queue.length === 0) {
+			return;
+		}
+
+		const targetUserIds = this.queue.map(x => x.target);
+		let visibleUserIds: Set<string>;
+
+		switch (this.note.visibility) {
+			case 'public':
+			case 'home':
+				visibleUserIds = new Set(targetUserIds);
+				break;
+
+			case 'specified':
+				visibleUserIds = new Set(this.note.visibleUserIds.filter(id => targetUserIds.includes(id)));
+				break;
+
+			// TODO: フォロワー限定ノートにフォロワーではない人がメンションされた場合通知されるのが正しい挙動なのか確認（一部に挙動の不一致がありそう）。現状は通知されるためフィルタしない
+			// case 'followers': {
+			// 	const followers = await this.followingsRepository.find({
+			// 		where: {
+			// 			followeeId: this.note.userId,
+			// 			followerId: In(targetUserIds),
+			// 			isFollowerHibernated: false,
+			// 		},
+			// 		select: ['followerId'],
+			// 	});
+			// 	visibleUserIds = new Set(followers.map(f => f.followerId));
+			// 	break;
+			// }
+
+			default:
+				visibleUserIds = new Set();
+				break;
+		}
+
 		for (const x of this.queue) {
+			if (!visibleUserIds.has(x.target)) {
+				continue;
+			}
+
 			if (x.reason === 'renote') {
 				this.notificationService.createNotification(x.target, 'renote', {
 					noteId: this.note.id,
@@ -604,6 +645,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 			replyUserHost: data.reply ? data.reply.userHost : null,
 			renoteUserId: data.renote ? data.renote.userId : null,
 			renoteUserHost: data.renote ? data.renote.userHost : null,
+			renoteChannelId: data.renote ? data.renote.channelId : null,
 			userHost: user.host,
 		});
 
@@ -771,7 +813,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 			this.webhookService.enqueueUserWebhook(user.id, 'note', { note: noteObj });
 
-			const nm = new NotificationManager(this.mutingsRepository, this.notificationService, user, note);
+			const nm = new NotificationManager(this.mutingsRepository, this.notificationService, this.followingsRepository, user, note);
 
 			await this.createMentionedEvents(mentionedUsers, note, nm);
 

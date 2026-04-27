@@ -48,8 +48,8 @@ export async function pleaseLogin(opts: {
 	path?: string;
 	message?: string;
 	openOnRemote?: OpenOnRemoteOptions;
-} = {}) {
-	if ($i) return;
+} = {}): Promise<boolean> {
+	if ($i != null) return true;
 
 	let _openOnRemote: OpenOnRemoteOptions | undefined = undefined;
 
@@ -71,5 +71,5 @@ export async function pleaseLogin(opts: {
 		closed: () => dispose(),
 	});
 
-	throw new Error('signin required');
+	return false;
 }

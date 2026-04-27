@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.root" class="_panel _gaps_s">
-	<div :class="$style.rightDivider" style="width: 80px;"><span :class="`ti ${methodIcon}`"/> {{ methodName }}</div>
+	<div :class="$style.rightDivider" style="width: 80px;"><span :class="`ti ${methodIcon}`"></span> {{ methodName }}</div>
 	<div :class="$style.rightDivider" style="flex: 0.5">{{ entity.name }}</div>
 	<div :class="$style.rightDivider" style="flex: 1">
 		<div v-if="method === 'email' && user">
@@ -19,10 +19,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<div :class="$style.recipientButtons" style="margin-left: auto">
 		<button :class="$style.recipientButton" @click="onEditButtonClicked()">
-			<span class="ti ti-settings"/>
+			<span class="ti ti-settings"></span>
 		</button>
 		<button :class="$style.recipientButton" @click="onDeleteButtonClicked()">
-			<span class="ti ti-trash"/>
+			<span class="ti ti-trash"></span>
 		</button>
 	</div>
 </div>

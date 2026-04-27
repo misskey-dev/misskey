@@ -915,6 +915,15 @@ postForm: "Napísať poznámku"
 information: "Informácie"
 inMinutes: "min"
 inDays: "dní"
+widgets: "Widgety"
+_imageEditing:
+  _vars:
+    filename: "Názov súboru"
+_imageFrameEditor:
+  header: "Hlavička"
+  font: "Písmo"
+  fontSerif: "Pätkové"
+  fontSansSerif: "Bezpätkové"
 _chat:
   invitations: "Pozvať"
   noHistory: "Žiadna história"
@@ -1223,6 +1232,14 @@ _widgets:
   aichan: "Ai"
   _userList:
     chooseList: "Vyberte zoznam"
+_widgetOptions:
+  height: "Výška"
+  _button:
+    colored: "Farebné"
+  _clock:
+    size: "Veľkosť"
+  _birthdayFollowings:
+    period: "Trvanie"
 _cw:
   hide: "Skryť"
   show: "Zobraziť viac"
@@ -1263,6 +1280,9 @@ _postForm:
   replyPlaceholder: "Odpoveď na túto poznámku..."
   quotePlaceholder: "Citovanie tejto poznámky..."
   channelPlaceholder: "Poslať do kanála..."
+  _howToUse:
+    visibility_title: "Viditeľnosť"
+    menu_title: "Menu"
   _placeholders:
     a: "Čo máte v pláne?"
     b: "Čo sa deje?"

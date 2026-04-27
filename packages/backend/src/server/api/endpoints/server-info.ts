@@ -4,7 +4,6 @@
  */
 
 import * as os from 'node:os';
-import si from 'systeminformation';
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { MiMeta } from '@/models/_.js';
@@ -92,6 +91,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					used: 0,
 				},
 			};
+
+			const si = await import('systeminformation');
 
 			const memStats = await si.mem();
 			const fsStats = await si.fsSize();

@@ -255,7 +255,7 @@ export class SignupApiService {
 				throw new FastifyReplyError(400, 'EXPIRED');
 			}
 
-			const { account, secret } = await this.signupService.signup({
+			const { account } = await this.signupService.signup({
 				username: pendingUser.username,
 				passwordHash: pendingUser.password,
 			});

@@ -45,7 +45,7 @@ export class ApQuestionService {
 	@bindThis
 	public async extractPollFromQuestion(source: string | IObject, resolver?: Resolver): Promise<IPoll> {
 		// eslint-disable-next-line no-param-reassign
-		if (resolver == null) resolver = this.apResolverService.createResolver();
+		if (resolver == null) resolver = await this.apResolverService.createResolver();
 
 		const question = await resolver.resolve(source);
 		if (!isQuestion(question)) throw new Error('invalid type');
@@ -91,7 +91,7 @@ export class ApQuestionService {
 
 		// resolve new Question object
 		// eslint-disable-next-line no-param-reassign
-		if (resolver == null) resolver = this.apResolverService.createResolver();
+		if (resolver == null) resolver = await this.apResolverService.createResolver();
 		const question = await resolver.resolve(value);
 		this.logger.debug(`fetched question: ${JSON.stringify(question, null, 2)}`);
 

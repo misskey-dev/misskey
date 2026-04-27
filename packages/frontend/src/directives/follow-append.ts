@@ -6,8 +6,12 @@
 import type { Directive } from 'vue';
 import { getScrollContainer, getScrollPosition } from '@@/js/scroll.js';
 
-export default {
-	mounted(src, binding, vn) {
+interface HTMLElementWithRO extends HTMLElement {
+	_ro_?: ResizeObserver;
+}
+
+export const followAppendDirective = {
+	mounted(src, binding) {
 		if (binding.value === false) return;
 
 		let isBottom = true;
@@ -34,7 +38,7 @@ export default {
 		src._ro_ = ro;
 	},
 
-	unmounted(src, binding, vn) {
+	unmounted(src) {
 		if (src._ro_) src._ro_.unobserve(src);
 	},
-} as Directive;
+} as Directive<HTMLElementWithRO, boolean>;

@@ -6,8 +6,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <MkWindow
 	ref="window"
-	:initialWidth="800"
-	:initialHeight="500"
 	:canResize="true"
 	@closed="emit('closed')"
 >

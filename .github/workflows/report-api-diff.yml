@@ -16,7 +16,7 @@ jobs:
 # api-artifact
     steps:
       - name: Download artifact
-        uses: actions/github-script@v7.1.0
+        uses: actions/github-script@v8.0.0
         with:
           script: |
             const fs = require('fs');
@@ -60,7 +60,7 @@ jobs:
       - name: Echo full diff
         run: cat ./api-full.json.diff
       - name: Upload full diff to Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: api-artifact
           path: |
@@ -73,9 +73,9 @@ jobs:
           HEADER="このPRによるapi.jsonの差分"
           FOOTER="[Get diff files from Workflow Page](https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})"
           DIFF_BYTES="$(stat ./api.json.diff -c '%s' | tr -d '\n')"
-          
+
           echo "$HEADER" > ./output.md
-          
+
           if (( "$DIFF_BYTES" <= 1 )); then
             echo '差分はありません。' >> ./output.md
           else
@@ -87,18 +87,18 @@ jobs:
             echo '```' >> ./output.md
             echo '</details>' >> .output.md
           fi
-          
+
           echo "$FOOTER" >> ./output.md
-      - uses: thollander/actions-comment-pull-request@v2
+      - uses: thollander/actions-comment-pull-request@v3
         with:
-          pr_number: ${{ steps.load-pr-num.outputs.pr-number }}
-          comment_tag: show_diff
-          filePath: ./output.md
+          pr-number: ${{ steps.load-pr-num.outputs.pr-number }}
+          comment-tag: show_diff
+          file-path: ./output.md
       - name: Tell error to PR
-        uses: thollander/actions-comment-pull-request@v2
+        uses: thollander/actions-comment-pull-request@v3
         if: failure() && steps.load-pr-num.outputs.pr-number
         with:
-          pr_number: ${{ steps.load-pr-num.outputs.pr-number }}
-          comment_tag: show_diff_error
+          pr-number: ${{ steps.load-pr-num.outputs.pr-number }}
+          comment-tag: show_diff_error
           message: |
             api.jsonの差分作成中にエラーが発生しました。詳細は[Workflowのログ](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})を確認してください。

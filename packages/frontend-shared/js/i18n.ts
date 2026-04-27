@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { ILocale, ParameterizedString } from '../../../locales/index.js';
+import type { ILocale, ParameterizedString } from 'i18n';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type TODO = any;

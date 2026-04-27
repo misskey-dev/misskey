@@ -28,6 +28,7 @@ const name = 'onlineUsers';
 const widgetPropsDef = {
 	transparent: {
 		type: 'boolean',
+		label: i18n.ts._widgetOptions.transparent,
 		default: true,
 	},
 } satisfies FormWithDefault;

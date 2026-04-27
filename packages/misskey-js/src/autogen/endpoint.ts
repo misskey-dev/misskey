@@ -182,6 +182,9 @@ import type {
 	ChannelsFollowRequest,
 	ChannelsFollowedRequest,
 	ChannelsFollowedResponse,
+	ChannelsMuteCreateRequest,
+	ChannelsMuteDeleteRequest,
+	ChannelsMuteListResponse,
 	ChannelsMyFavoritesResponse,
 	ChannelsOwnedRequest,
 	ChannelsOwnedResponse,
@@ -613,6 +616,8 @@ import type {
 	UsersFollowingResponse,
 	UsersGalleryPostsRequest,
 	UsersGalleryPostsResponse,
+	UsersGetFollowingUsersByBirthdayRequest,
+	UsersGetFollowingUsersByBirthdayResponse,
 	UsersGetFrequentlyRepliedUsersRequest,
 	UsersGetFrequentlyRepliedUsersResponse,
 	UsersListsCreateRequest,
@@ -782,6 +787,9 @@ export type Endpoints = {
 	'channels/featured': { req: EmptyRequest; res: ChannelsFeaturedResponse };
 	'channels/follow': { req: ChannelsFollowRequest; res: EmptyResponse };
 	'channels/followed': { req: ChannelsFollowedRequest; res: ChannelsFollowedResponse };
+	'channels/mute/create': { req: ChannelsMuteCreateRequest; res: EmptyResponse };
+	'channels/mute/delete': { req: ChannelsMuteDeleteRequest; res: EmptyResponse };
+	'channels/mute/list': { req: EmptyRequest; res: ChannelsMuteListResponse };
 	'channels/my-favorites': { req: EmptyRequest; res: ChannelsMyFavoritesResponse };
 	'channels/owned': { req: ChannelsOwnedRequest; res: ChannelsOwnedResponse };
 	'channels/search': { req: ChannelsSearchRequest; res: ChannelsSearchResponse };
@@ -1061,6 +1069,7 @@ export type Endpoints = {
 	'users/followers': { req: UsersFollowersRequest; res: UsersFollowersResponse };
 	'users/following': { req: UsersFollowingRequest; res: UsersFollowingResponse };
 	'users/gallery/posts': { req: UsersGalleryPostsRequest; res: UsersGalleryPostsResponse };
+	'users/get-following-users-by-birthday': { req: UsersGetFollowingUsersByBirthdayRequest; res: UsersGetFollowingUsersByBirthdayResponse };
 	'users/get-frequently-replied-users': { req: UsersGetFrequentlyRepliedUsersRequest; res: UsersGetFrequentlyRepliedUsersResponse };
 	'users/lists/create': { req: UsersListsCreateRequest; res: UsersListsCreateResponse };
 	'users/lists/create-from-public': { req: UsersListsCreateFromPublicRequest; res: UsersListsCreateFromPublicResponse };

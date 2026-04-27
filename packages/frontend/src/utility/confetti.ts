@@ -5,13 +5,21 @@
 
 import _confetti from 'canvas-confetti';
 import * as os from '@/os.js';
+import { prefer } from '@/preferences.js';
 
 export function confetti(options: { duration?: number; } = {}) {
+	if (!prefer.s.animation) return;
+
 	const duration = options.duration ?? 1000 * 4;
 	const animationEnd = Date.now() + duration;
-	const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: os.claimZIndex('high') };
+	const defaults = {
+		startVelocity: 30,
+		spread: 360,
+		ticks: 60,
+		zIndex: os.claimZIndex('high'),
+	} satisfies _confetti.Options;
 
-	function randomInRange(min, max) {
+	function randomInRange(min: number, max: number) {
 		return Math.random() * (max - min) + min;
 	}
 

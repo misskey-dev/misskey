@@ -32,6 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue';
 import type { SoundType } from '@/utility/sound.js';
+import type { SoundStore } from '@/preferences/def.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkRange from '@/components/MkRange.vue';
@@ -41,7 +42,6 @@ import { useMkSelect } from '@/composables/use-mkselect.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { playMisskeySfxFile, soundsTypes, getSoundDuration } from '@/utility/sound.js';
 import { selectFile } from '@/utility/drive.js';
-import type { SoundStore } from '@/preferences/def.js';
 
 const props = defineProps<{
 	def: SoundStore;
@@ -100,7 +100,7 @@ const friendlyFileName = computed<string>(() => {
 	return i18n.ts._soundSettings.driveFileWarn;
 });
 
-function selectSound(ev) {
+function selectSound(ev: PointerEvent) {
 	selectFile({
 		anchorElement: ev.currentTarget ?? ev.target,
 		multiple: false,

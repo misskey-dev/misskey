@@ -20,7 +20,7 @@ export class MiRenoteMuting {
 	})
 	public muteeId: MiUser['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(() => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
@@ -33,7 +33,7 @@ export class MiRenoteMuting {
 	})
 	public muterId: MiUser['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(() => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()

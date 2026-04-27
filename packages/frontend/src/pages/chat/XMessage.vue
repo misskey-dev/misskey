@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:enableEmojiMenu="true"
 				:enableEmojiMenuReaction="true"
 			/>
-			<MkMediaList v-if="message.file" :mediaList="[message.file]" :class="$style.file"/>
+			<MkMediaList v-if="message.file" :mediaList="[message.file]"/>
 		</MkFukidashi>
 		<MkUrlPreview v-for="url in urls" :key="url" :url="url" style="margin: 8px 0;"/>
 		<div :class="$style.footer">
@@ -94,7 +94,7 @@ provide(DI.mfmEmojiReactCallback, (reaction) => {
 	});
 });
 
-function react(ev: MouseEvent) {
+function react(ev: PointerEvent) {
 	if ($i.policies.chatAvailability !== 'available') return;
 
 	const targetEl = getHTMLElementOrNull(ev.currentTarget ?? ev.target);
@@ -128,14 +128,14 @@ function onReactionClick(record: Misskey.entities.ChatMessage['reactions'][0]) {
 	}
 }
 
-function onContextmenu(ev: MouseEvent) {
+function onContextmenu(ev: PointerEvent) {
 	if (ev.target && isLink(ev.target as HTMLElement)) return;
 	if (window.getSelection()?.toString() !== '') return;
 
 	showMenu(ev, true);
 }
 
-function showMenu(ev: MouseEvent, contextmenu = false) {
+function showMenu(ev: PointerEvent, contextmenu = false) {
 	const menu: MenuItem[] = [];
 
 	if (!isMe.value && $i.policies.chatAvailability === 'available') {

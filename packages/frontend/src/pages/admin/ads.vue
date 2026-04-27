@@ -22,21 +22,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label>{{ i18n.ts.imageUrl }}</template>
 				</MkInput>
 
-				<MkRadios v-model="ad.place">
+				<MkRadios
+					v-model="ad.place"
+					:options="[
+						{ value: 'square' },
+						{ value: 'horizontal' },
+						{ value: 'horizontal-big' },
+					]"
+				>
 					<template #label>Form</template>
-					<option value="square">square</option>
-					<option value="horizontal">horizontal</option>
-					<option value="horizontal-big">horizontal-big</option>
 				</MkRadios>
-
-				<!--
-			<div style="margin: 32px 0;">
-				{{ i18n.ts.priority }}
-				<MkRadio v-model="ad.priority" value="high">{{ i18n.ts.high }}</MkRadio>
-				<MkRadio v-model="ad.priority" value="middle">{{ i18n.ts.middle }}</MkRadio>
-				<MkRadio v-model="ad.priority" value="low">{{ i18n.ts.low }}</MkRadio>
-			</div>
-			-->
 
 				<FormSplit>
 					<MkInput v-model="ad.ratio" type="number">
@@ -109,7 +104,11 @@ import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
 
-const ads = ref<Misskey.entities.Ad[]>([]);
+type Ad = Misskey.entities.Ad & {
+	place: 'square' | 'horizontal' | 'horizontal-big';
+};
+
+const ads = ref<Ad[]>([]);
 
 // ISO形式はTZがUTCになってしまうので、TZ分ずらして時間を初期化
 const localTime = new Date();
@@ -136,7 +135,7 @@ misskeyApi('admin/ad/list', { publishing: publishing }).then(adsResponse => {
 			exdate.setMilliseconds(exdate.getMilliseconds() - localTimeDiff);
 			stdate.setMilliseconds(stdate.getMilliseconds() - localTimeDiff);
 			return {
-				...r,
+				...(r as Ad),
 				expiresAt: exdate.toISOString().slice(0, 16),
 				startsAt: stdate.toISOString().slice(0, 16),
 			};
@@ -239,7 +238,7 @@ function more() {
 			exdate.setMilliseconds(exdate.getMilliseconds() - localTimeDiff);
 			stdate.setMilliseconds(stdate.getMilliseconds() - localTimeDiff);
 			return {
-				...r,
+				...(r as Ad),
 				expiresAt: exdate.toISOString().slice(0, 16),
 				startsAt: stdate.toISOString().slice(0, 16),
 			};
@@ -256,7 +255,7 @@ function refresh() {
 			exdate.setMilliseconds(exdate.getMilliseconds() - localTimeDiff);
 			stdate.setMilliseconds(stdate.getMilliseconds() - localTimeDiff);
 			return {
-				...r,
+				...(r as Ad),
 				expiresAt: exdate.toISOString().slice(0, 16),
 				startsAt: stdate.toISOString().slice(0, 16),
 			};

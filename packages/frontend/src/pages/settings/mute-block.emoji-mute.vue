@@ -55,12 +55,12 @@ import {
 
 const emojis = prefer.model('mutingEmojis');
 
-function getHTMLElement(ev: MouseEvent): HTMLElement {
+function getHTMLElement(ev: PointerEvent): HTMLElement {
 	const target = ev.currentTarget ?? ev.target;
 	return target as HTMLElement;
 }
 
-function add(ev: MouseEvent) {
+function add(ev: PointerEvent) {
 	os.pickEmoji(getHTMLElement(ev), { showPinned: false }).then((emoji) => {
 		if (emoji) {
 			muteEmoji(emoji);
@@ -68,7 +68,7 @@ function add(ev: MouseEvent) {
 	});
 }
 
-function onEmojiClick(ev: MouseEvent, emoji: string) {
+function onEmojiClick(ev: PointerEvent, emoji: string) {
 	const menuItems : MenuItem[] = [{
 		type: 'label',
 		text: emoji,

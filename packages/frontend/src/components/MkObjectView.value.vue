@@ -42,7 +42,7 @@ const props = defineProps<{
 	value: unknown;
 }>();
 
-const collapsed = reactive({});
+const collapsed = reactive<Record<string, boolean>>({});
 
 if (isObject(props.value)) {
 	for (const key in props.value) {

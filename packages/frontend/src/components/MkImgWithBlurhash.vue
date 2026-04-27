@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			draggable="false"
 			tabindex="-1"
 			style="-webkit-user-drag: none;"
-		/>
+		></canvas>
 		<img
 			v-show="!hide"
 			key="img"

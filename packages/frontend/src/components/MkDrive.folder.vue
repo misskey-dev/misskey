@@ -57,7 +57,7 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{
 	(ev: 'chosen', v: Misskey.entities.DriveFolder): void;
 	(ev: 'unchose', v: Misskey.entities.DriveFolder): void;
-	(ev: 'upload', files: File[], folder: Misskey.entities.DriveFolder);
+	(ev: 'upload', files: File[], folder: Misskey.entities.DriveFolder): void;
 	(ev: 'dragstart'): void;
 	(ev: 'dragend'): void;
 }>();
@@ -231,17 +231,17 @@ function rename() {
 }
 
 function move() {
-	selectDriveFolder(null).then(folder => {
-		if (folder[0] && folder[0].id === props.folder.id) return;
+	selectDriveFolder(null).then(({ canceled, folders }) => {
+		if (canceled || (folders[0] && folders[0].id === props.folder.id)) return;
 
 		misskeyApi('drive/folders/update', {
 			folderId: props.folder.id,
-			parentId: folder[0] ? folder[0].id : null,
+			parentId: folders[0] ? folders[0].id : null,
 		}).then(() => {
 			globalEvents.emit('driveFoldersUpdated', [{
 				...props.folder,
-				parentId: folder[0] ? folder[0].id : null,
-				parent: folder[0] ?? null,
+				parentId: folders[0] ? folders[0].id : null,
+				parent: folders[0] ?? null,
 			}]);
 		});
 	});
@@ -277,7 +277,7 @@ function setAsUploadFolder() {
 	prefer.commit('uploadFolder', props.folder.id);
 }
 
-function onContextmenu(ev: MouseEvent) {
+function onContextmenu(ev: PointerEvent) {
 	let menu: MenuItem[];
 	menu = [{
 		text: i18n.ts.openInWindow,

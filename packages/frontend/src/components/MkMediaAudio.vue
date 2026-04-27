@@ -100,6 +100,7 @@ import { hms } from '@/filters/hms.js';
 import MkMediaRange from '@/components/MkMediaRange.vue';
 import { $i, iAmModerator } from '@/i.js';
 import { prefer } from '@/preferences.js';
+import { canRevealFile, shouldHideFileByDefault } from '@/utility/sensitive-file.js';
 
 const props = defineProps<{
 	audio: Misskey.entities.DriveFile;
@@ -154,16 +155,11 @@ function hasFocus() {
 const playerEl = useTemplateRef('playerEl');
 const audioEl = useTemplateRef('audioEl');
 
-// eslint-disable-next-line vue/no-setup-props-reactivity-loss
-const hide = ref((prefer.s.nsfw === 'force' || prefer.s.dataSaver.media) ? true : (props.audio.isSensitive && prefer.s.nsfw !== 'ignore'));
+const hide = ref(shouldHideFileByDefault(props.audio));
 
 async function reveal() {
-	if (props.audio.isSensitive && prefer.s.confirmWhenRevealingSensitiveMedia) {
-		const { canceled } = await os.confirm({
-			type: 'question',
-			text: i18n.ts.sensitiveMediaRevealConfirm,
-		});
-		if (canceled) return;
+	if (!(await canRevealFile(props.audio))) {
+		return;
 	}
 
 	hide.value = false;
@@ -186,15 +182,28 @@ function showMenu(ev: MouseEvent) {
 			text: i18n.ts._mediaControls.playbackRate,
 			icon: 'ti ti-clock-play',
 			ref: speed,
-			options: {
-				'0.25x': 0.25,
-				'0.5x': 0.5,
-				'0.75x': 0.75,
-				'1.0x': 1,
-				'1.25x': 1.25,
-				'1.5x': 1.5,
-				'2.0x': 2,
-			},
+			options: [{
+				label: '0.25x',
+				value: 0.25,
+			}, {
+				label: '0.5x',
+				value: 0.5,
+			}, {
+				label: '0.75x',
+				value: 0.75,
+			}, {
+				label: '1.0x',
+				value: 1,
+			}, {
+				label: '1.25x',
+				value: 1.25,
+			}, {
+				label: '1.5x',
+				value: 1.5,
+			}, {
+				label: '2.0x',
+				value: 2,
+			}],
 		},
 		{
 			type: 'divider',

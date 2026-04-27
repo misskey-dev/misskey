@@ -6,6 +6,7 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
+import { describe, beforeAll, test } from 'vitest';
 import { WebSocket } from 'ws';
 import { MiFollowing } from '@/models/Following.js';
 import { api, createAppToken, initTestDb, port, post, signup, waitFire } from '../utils.js';
@@ -172,7 +173,7 @@ describe('Streaming', () => {
 				const fired = await waitFire(
 					ayano, 'homeTimeline',		// ayano:home
 					() => api('notes/create', { text: 'bar', visibility: 'followers', replyId: note.id }, kyoko),	// kyoko posts
-					msg => msg.type === 'note' && msg.body.userId === kyoko.id && msg.body.reply.text === 'foo',
+					msg => msg.type === 'note' && msg.body.userId === kyoko.id && msg.body.replyId === note.id,
 				);
 
 				assert.strictEqual(fired, true);

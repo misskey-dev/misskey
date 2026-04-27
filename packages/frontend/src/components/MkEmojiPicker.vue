@@ -326,7 +326,7 @@ watch(q, () => {
 
 			for (const index of Object.values(store.s.additionalUnicodeEmojiIndexes)) {
 				for (const emoji of emojis) {
-					if (keywords.every(keyword => index[emoji.char].some(k => k.includes(keyword)))) {
+					if (keywords.every(keyword => index[emoji.char]?.some(k => k.includes(keyword)))) {
 						matches.add(emoji);
 						if (matches.size >= max) break;
 					}
@@ -343,7 +343,7 @@ watch(q, () => {
 
 			for (const index of Object.values(store.s.additionalUnicodeEmojiIndexes)) {
 				for (const emoji of emojis) {
-					if (index[emoji.char].some(k => k.startsWith(newQ))) {
+					if (index[emoji.char]?.some(k => k.startsWith(newQ))) {
 						matches.add(emoji);
 						if (matches.size >= max) break;
 					}
@@ -360,7 +360,7 @@ watch(q, () => {
 
 			for (const index of Object.values(store.s.additionalUnicodeEmojiIndexes)) {
 				for (const emoji of emojis) {
-					if (index[emoji.char].some(k => k.includes(newQ))) {
+					if (index[emoji.char]?.some(k => k.includes(newQ))) {
 						matches.add(emoji);
 						if (matches.size >= max) break;
 					}
@@ -412,13 +412,13 @@ function getDef(emoji: string): string | Misskey.entities.EmojiSimple | UnicodeE
 }
 
 /** @see MkEmojiPicker.section.vue */
-function computeButtonTitle(ev: MouseEvent): void {
+function computeButtonTitle(ev: PointerEvent): void {
 	const elm = ev.target as HTMLElement;
 	const emoji = elm.dataset.emoji as string;
 	elm.title = getEmojiName(emoji);
 }
 
-function chosen(emoji: string | Misskey.entities.EmojiSimple | UnicodeEmojiDef, ev?: MouseEvent) {
+function chosen(emoji: string | Misskey.entities.EmojiSimple | UnicodeEmojiDef, ev?: PointerEvent) {
 	const el = ev && (ev.currentTarget ?? ev.target) as HTMLElement | null | undefined;
 	if (el && prefer.s.animation) {
 		const rect = el.getBoundingClientRect();
@@ -539,45 +539,43 @@ defineExpose({
 	}
 
 	&.w1 {
-		width: calc((var(--eachSize) * 5) + (#{$pad} * 2));
-		--columns: 1fr 1fr 1fr 1fr 1fr;
+		--columns: 5;
 	}
 
 	&.w2 {
-		width: calc((var(--eachSize) * 6) + (#{$pad} * 2));
-		--columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+		--columns: 6;
 	}
 
 	&.w3 {
-		width: calc((var(--eachSize) * 7) + (#{$pad} * 2));
-		--columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+		--columns: 7;
 	}
 
 	&.w4 {
-		width: calc((var(--eachSize) * 8) + (#{$pad} * 2));
-		--columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+		--columns: 8;
 	}
 
 	&.w5 {
-		width: calc((var(--eachSize) * 9) + (#{$pad} * 2));
-		--columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+		--columns: 9;
 	}
 
 	&.h1 {
-		height: calc((var(--eachSize) * 4) + (#{$pad} * 2));
+		--rows: 4;
 	}
 
 	&.h2 {
-		height: calc((var(--eachSize) * 6) + (#{$pad} * 2));
+		--rows: 6;
 	}
 
 	&.h3 {
-		height: calc((var(--eachSize) * 8) + (#{$pad} * 2));
+		--rows: 8;
 	}
 
 	&.h4 {
-		height: calc((var(--eachSize) * 10) + (#{$pad} * 2));
+		--rows: 10;
 	}
+
+	width: calc((var(--eachSize) * var(--columns)) + (#{$pad} * 2));
+	height: calc((var(--eachSize) * var(--rows)) + (#{$pad} * 2));
 
 	&.asDrawer {
 		width: 100% !important;
@@ -593,7 +591,7 @@ defineExpose({
 
 				> .body {
 					display: grid;
-					grid-template-columns: var(--columns);
+					grid-template-columns: repeat(var(--columns), 1fr);
 					font-size: 30px;
 
 					> .config {
@@ -635,7 +633,7 @@ defineExpose({
 			::v-deep(section) {
 				> .body {
 					display: grid;
-					grid-template-columns: var(--columns);
+					grid-template-columns: repeat(var(--columns), 1fr);
 					font-size: 30px;
 
 					> .item {

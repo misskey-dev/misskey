@@ -125,8 +125,7 @@ async function renderChart() {
 				data: format(values) as any,
 				borderWidth: 0,
 				borderRadius: 3,
-				backgroundColor(c) {
-					// @ts-expect-error TS(2339)
+				backgroundColor(c: any) {
 					const value = c.dataset.data[c.dataIndex].v as number;
 					let a = (value - min) / max;
 					if (value !== 0) { // 0でない限りは完全に不可視にはしない
@@ -195,7 +194,7 @@ async function renderChart() {
 						font: {
 							size: 9,
 						},
-						callback: (value, index, values) => ['', 'Mon', '', 'Wed', '', 'Fri', ''][value],
+						callback: (value, index, values) => ['', 'Mon', '', 'Wed', '', 'Fri', ''][value as any],
 					},
 				},
 			},

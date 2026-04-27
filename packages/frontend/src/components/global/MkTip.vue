@@ -32,7 +32,7 @@ function _closeTip() {
 	closeTip(props.k);
 }
 
-function showMenu(ev: MouseEvent) {
+function showMenu(ev: PointerEvent) {
 	os.popupMenu([{
 		icon: 'ti ti-bulb-off',
 		text: i18n.ts.hideAllTips,

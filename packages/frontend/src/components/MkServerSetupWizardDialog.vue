@@ -33,7 +33,7 @@ import MkModalWindow from '@/components/MkModalWindow.vue';
 import MkServerSetupWizard from '@/components/MkServerSetupWizard.vue';
 
 const emit = defineEmits<{
-	(ev: 'closed'),
+	(ev: 'closed'): void;
 }>();
 
 const windowEl = useTemplateRef('windowEl');

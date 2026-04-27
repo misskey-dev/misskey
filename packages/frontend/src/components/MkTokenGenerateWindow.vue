@@ -33,12 +33,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton inline @click="enableAll">{{ i18n.ts.enableAll }}</MkButton>
 			</div>
 			<div class="_gaps_s">
-				<MkSwitch v-for="kind in Object.keys(permissionSwitches)" :key="kind" v-model="permissionSwitches[kind]">{{ i18n.ts._permissions[kind] }}</MkSwitch>
+				<MkSwitch v-for="kind in Object.keys(permissionSwitches)" :key="kind" v-model="permissionSwitches[kind as keyof typeof permissionSwitches]">{{ i18n.ts._permissions[kind as keyof typeof permissionSwitches] }}</MkSwitch>
 			</div>
 			<div v-if="iAmAdmin" :class="$style.adminPermissions">
 				<div :class="$style.adminPermissionsHeader"><b>{{ i18n.ts.adminPermission }}</b></div>
 				<div class="_gaps_s">
-					<MkSwitch v-for="kind in Object.keys(permissionSwitchesForAdmin)" :key="kind" v-model="permissionSwitchesForAdmin[kind]">{{ i18n.ts._permissions[kind] }}</MkSwitch>
+					<MkSwitch v-for="kind in Object.keys(permissionSwitchesForAdmin)" :key="kind" v-model="permissionSwitchesForAdmin[kind as keyof typeof permissionSwitchesForAdmin]">{{ i18n.ts._permissions[kind as keyof typeof permissionSwitchesForAdmin] }}</MkSwitch>
 				</div>
 			</div>
 		</div>
@@ -102,8 +102,8 @@ function ok(): void {
 	emit('done', {
 		name: name.value,
 		permissions: [
-			...Object.keys(permissionSwitches.value).filter(p => permissionSwitches.value[p]),
-			...(iAmAdmin ? Object.keys(permissionSwitchesForAdmin.value).filter(p => permissionSwitchesForAdmin.value[p]) : []),
+			...Object.keys(permissionSwitches.value).filter(p => permissionSwitches.value[p as (typeof Misskey.permissions)[number]]),
+			...(iAmAdmin ? Object.keys(permissionSwitchesForAdmin.value).filter(p => permissionSwitchesForAdmin.value[p as (typeof Misskey.permissions)[number]]) : []),
 		],
 	});
 	dialog.value?.close();
@@ -111,22 +111,22 @@ function ok(): void {
 
 function disableAll(): void {
 	for (const p in permissionSwitches.value) {
-		permissionSwitches.value[p] = false;
+		permissionSwitches.value[p as (typeof Misskey.permissions)[number]] = false;
 	}
 	if (iAmAdmin) {
 		for (const p in permissionSwitchesForAdmin.value) {
-			permissionSwitchesForAdmin.value[p] = false;
+			permissionSwitchesForAdmin.value[p as (typeof Misskey.permissions)[number]] = false;
 		}
 	}
 }
 
 function enableAll(): void {
 	for (const p in permissionSwitches.value) {
-		permissionSwitches.value[p] = true;
+		permissionSwitches.value[p as (typeof Misskey.permissions)[number]] = true;
 	}
 	if (iAmAdmin) {
 		for (const p in permissionSwitchesForAdmin.value) {
-			permissionSwitchesForAdmin.value[p] = true;
+			permissionSwitchesForAdmin.value[p as (typeof Misskey.permissions)[number]] = true;
 		}
 	}
 }

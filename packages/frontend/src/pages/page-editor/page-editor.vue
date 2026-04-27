@@ -7,7 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs">
 	<div class="_spacer" style="--MI_SPACER-w: 700px;">
 		<div class="jqqmcavi">
-			<MkButton v-if="pageId && author != null" class="button" inline link :to="`/@${ author.username }/pages/${ currentName }`"><i class="ti ti-external-link"></i> {{ i18n.ts._pages.viewPage }}</MkButton>
+			<MkButton v-if="pageId && author != null" class="button" inline type="routerLink" :to="`/@${ author.username }/pages/${ currentName }`"><i class="ti ti-external-link"></i> {{ i18n.ts._pages.viewPage }}</MkButton>
 			<MkButton v-if="!readonly" inline primary class="button" @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 			<MkButton v-if="pageId" inline class="button" @click="duplicate"><i class="ti ti-copy"></i> {{ i18n.ts.duplicate }}</MkButton>
 			<MkButton v-if="pageId && !readonly" inline class="button" danger @click="del"><i class="ti ti-trash"></i> {{ i18n.ts.delete }}</MkButton>
@@ -60,9 +60,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, provide, watch, ref } from 'vue';
 import * as Misskey from 'misskey-js';
-import { genId } from '@/utility/id.js';
 import { url } from '@@/js/config.js';
 import XBlocks from './page-editor.blocks.vue';
+import { genId } from '@/utility/id.js';
 import MkButton from '@/components/MkButton.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
@@ -216,12 +216,40 @@ async function add() {
 	if (canceled || type == null) return;
 
 	const id = genId();
-	content.value.push({ id, type });
+
+	// TODO: page-editor.el.section.vueのと共通化
+	if (type === 'text') {
+		content.value.push({
+			id,
+			type,
+			text: '',
+		});
+	} else if (type === 'section') {
+		content.value.push({
+			id,
+			type,
+			title: '',
+			children: [],
+		});
+	} else if (type === 'image') {
+		content.value.push({
+			id,
+			type,
+			fileId: null,
+		});
+	} else if (type === 'note') {
+		content.value.push({
+			id,
+			type,
+			detailed: false,
+			note: null,
+		});
+	}
 }
 
-function setEyeCatchingImage(img: Event) {
+function setEyeCatchingImage(ev: PointerEvent) {
 	selectFile({
-		anchorElement: img.currentTarget ?? img.target,
+		anchorElement: ev.currentTarget ?? ev.target,
 		multiple: false,
 	}).then(file => {
 		eyeCatchingImageId.value = file.id;

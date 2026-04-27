@@ -4,6 +4,7 @@
  */
 
 import * as assert from 'assert';
+import { describe, test } from 'vitest';
 
 import { parse } from 'mfm-js';
 import { extractMentions } from '@/misc/extract-mentions.js';

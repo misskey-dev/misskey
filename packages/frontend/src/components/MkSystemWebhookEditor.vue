@@ -245,7 +245,7 @@ onMounted(async () => {
 					secret.value = res.secret;
 					isActive.value = res.isActive;
 					for (const ev of Object.keys(events.value)) {
-						events.value[ev] = res.on.includes(ev as SystemWebhookEventType);
+						events.value[ev as SystemWebhookEventType] = res.on.includes(ev as SystemWebhookEventType);
 					}
 					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				} catch (ex: any) {

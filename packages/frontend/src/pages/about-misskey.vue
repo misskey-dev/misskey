@@ -150,6 +150,7 @@ import { definePage } from '@/page.js';
 import { claimAchievement, claimedAchievements } from '@/utility/achievements.js';
 import { $i } from '@/i.js';
 import { prefer } from '@/preferences.js';
+import { DEFAULT_EMOJIS } from '@@/js/const.js';
 
 const patronsWithIcon = [{
 	name: 'カイヤン',
@@ -295,6 +296,9 @@ const patronsWithIcon = [{
 }, {
 	name: 'しゃどかの',
 	icon: 'https://assets.misskey-hub.net/patrons/5bec3c6b402942619e03f7a2ae76d69e.jpg',
+}, {
+	name: '大賀愛一郎',
+	icon: 'https://assets.misskey-hub.net/patrons/c701a797d1df4125970f25d3052250ac.jpg',
 }];
 
 const patrons = [
@@ -426,7 +430,12 @@ const containerEl = useTemplateRef('containerEl');
 
 function iconLoaded() {
 	if (containerEl.value == null) return;
-	const emojis = prefer.s.emojiPalettes[0].emojis;
+	const emojis = prefer.s.emojiPalettes[0]?.emojis ?? [];
+
+	if (emojis.length < DEFAULT_EMOJIS.length) {
+		emojis.push(...DEFAULT_EMOJIS.slice(0, DEFAULT_EMOJIS.length - emojis.length));
+	}
+
 	const containerWidth = containerEl.value.offsetWidth;
 	for (let i = 0; i < 32; i++) {
 		easterEggEmojis.value.push({

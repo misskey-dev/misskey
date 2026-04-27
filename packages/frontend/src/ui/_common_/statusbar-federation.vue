@@ -67,7 +67,7 @@ useInterval(tick, Math.max(5000, props.refreshIntervalSec * 1000), {
 	afterMounted: true,
 });
 
-function getInstanceIcon(instance): string {
+function getInstanceIcon(instance: Misskey.entities.FederationInstance): string {
 	return getProxiedImageUrlNullable(instance.iconUrl, 'preview') ?? getProxiedImageUrlNullable(instance.faviconUrl, 'preview') ?? '/client-assets/dummy.png';
 }
 </script>

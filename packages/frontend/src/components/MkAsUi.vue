@@ -64,13 +64,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
 import type { Ref } from 'vue';
+import type { AsUiComponent, AsUiRoot, AsUiPostFormButton } from '@/aiscript/ui.js';
 import * as os from '@/os.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkSelect from '@/components/MkSelect.vue';
-import type { AsUiComponent, AsUiRoot, AsUiPostFormButton } from '@/aiscript/ui.js';
 import MkFolder from '@/components/MkFolder.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
 import { useMkSelect } from '@/composables/use-mkselect.js';
@@ -106,7 +106,7 @@ const containerStyle = computed(() => {
 	const isBordered = c.borderWidth ?? c.borderColor ?? c.borderStyle;
 
 	const border = isBordered ? {
-		borderWidth: c.borderWidth ?? '1px',
+		borderWidth: `${c.borderWidth ?? 1}px`,
 		borderColor: c.borderColor ?? 'var(--MI_THEME-divider)',
 		borderStyle: c.borderStyle ?? 'solid',
 	} : undefined;
@@ -144,7 +144,7 @@ const {
 	initialValue: (c.type === 'select' && 'default' in c && typeof c.default !== 'boolean') ? c.default ?? null : null,
 });
 
-function onSelectUpdate(v) {
+function onSelectUpdate(v: string | null) {
 	valueForSelect.value = v;
 	if ('onChange' in c && c.onChange) {
 		c.onChange(v as never);

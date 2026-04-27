@@ -76,11 +76,11 @@ const $i = ensureSignin();
 
 const emailAddress = ref($i.email ?? '');
 
-const onChangeReceiveAnnouncementEmail = (v) => {
+function onChangeReceiveAnnouncementEmail(v: boolean) {
 	misskeyApi('i/update', {
 		receiveAnnouncementEmail: v,
 	});
-};
+}
 
 async function saveEmailAddress() {
 	const auth = await os.authenticateDialog();

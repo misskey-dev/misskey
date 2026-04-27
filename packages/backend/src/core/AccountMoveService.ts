@@ -75,7 +75,7 @@ export class AccountMoveService {
 	 */
 	@bindThis
 	public async moveFromLocal(src: MiLocalUser, dst: MiLocalUser | MiRemoteUser): Promise<unknown> {
-		const srcUri = this.userEntityService.getUserUri(src);
+		const _srcUri = this.userEntityService.getUserUri(src);
 		const dstUri = this.userEntityService.getUserUri(dst);
 
 		// add movedToUri to indicate that the user has moved

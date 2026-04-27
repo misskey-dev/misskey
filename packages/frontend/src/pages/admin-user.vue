@@ -105,7 +105,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<template #label>{{ i18n.ts._role.policies }}</template>
 						<div class="_gaps">
 							<div v-for="policy in Object.keys(info.policies)" :key="policy">
-								{{ policy }} ... {{ info.policies[policy] }}
+								{{ policy }} ... {{ info.policies[policy as keyof typeof info.policies] }}
 							</div>
 						</div>
 					</MkFolder>
@@ -151,7 +151,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 
 		<div v-else-if="tab === 'announcements'" class="_gaps">
-			<MkButton primary rounded @click="createAnnouncement"><i class="ti ti-plus"></i> {{ i18n.ts.new }}</MkButton>
+			<MkButton primary rounded @click="createAnnouncement"><i class="ti ti-plus"></i> {{ i18n.ts.createNew }}</MkButton>
 
 			<MkSelect v-model="announcementsStatus" :items="announcementsStatusDef">
 				<template #label>{{ i18n.ts.filter }}</template>
@@ -209,6 +209,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, defineAsyncComponent, watch, ref, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import { url } from '@@/js/config.js';
+import type { ChartSrc } from '@/components/MkChart.vue';
 import MkChart from '@/components/MkChart.vue';
 import MkObjectView from '@/components/MkObjectView.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
@@ -231,7 +232,6 @@ import { ensureSignin, iAmAdmin, iAmModerator } from '@/i.js';
 import MkRolePreview from '@/components/MkRolePreview.vue';
 import MkPagination from '@/components/MkPagination.vue';
 import { Paginator } from '@/utility/paginator.js';
-import type { ChartSrc } from '@/components/MkChart.vue';
 
 const $i = ensureSignin();
 
@@ -251,13 +251,13 @@ const {
 } = useMkSelect({
 	items: [
 		{ label: i18n.ts.notes, value: 'per-user-notes' },
-],
+	],
 	initialValue: 'per-user-notes',
 });
 const user = ref(result.user);
 const info = ref(result.info);
 const ips = ref(result.ips);
-const ap = ref<any>(null);
+const ap = ref<Misskey.entities.ApGetResponse | null>(null);
 const moderator = ref(info.value.isModerator);
 const silenced = ref(info.value.isSilenced);
 const suspended = ref(info.value.isSuspended);
@@ -344,7 +344,7 @@ async function resetPassword() {
 	}
 }
 
-async function toggleSuspend(v) {
+async function toggleSuspend(v: boolean) {
 	const confirm = await os.confirm({
 		type: 'warning',
 		text: v ? i18n.ts.suspendConfirm : i18n.ts.unsuspendConfirm,
@@ -475,7 +475,7 @@ async function assignRole() {
 	refreshUser();
 }
 
-async function unassignRole(role: typeof info.value.roles[number], ev: MouseEvent) {
+async function unassignRole(role: typeof info.value.roles[number], ev: PointerEvent) {
 	os.popupMenu([{
 		text: i18n.ts.unassign,
 		icon: 'ti ti-x',
@@ -503,7 +503,7 @@ async function createAnnouncement() {
 	});
 }
 
-async function editAnnouncement(announcement) {
+async function editAnnouncement(announcement: Misskey.entities.AdminAnnouncementsListResponse[number]) {
 	const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkUserAnnouncementEditDialog.vue').then(x => x.default), {
 		user: user.value,
 		announcement,

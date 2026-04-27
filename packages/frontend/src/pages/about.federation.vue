@@ -97,7 +97,7 @@ const paginator = markRaw(new Paginator('federation/instances', {
 	})),
 }));
 
-function getStatus(instance) {
+function getStatus(instance: Misskey.entities.FederationInstance) {
 	if (instance.isSuspended) return 'Suspended';
 	if (instance.isBlocked) return 'Blocked';
 	if (instance.isSilenced) return 'Silenced';

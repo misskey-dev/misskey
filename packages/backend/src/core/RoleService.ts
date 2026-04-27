@@ -109,8 +109,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	canImportUserLists: false,
 	chatAvailability: 'available',
 	uploadableFileTypes: [
-		'text/plain',
-		'text/csv',
+		'text/*',
 		'application/json',
 		'image/*',
 		'video/*',
@@ -315,7 +314,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 				default:
 					return false;
 			}
-		} catch (err) {
+		} catch (_) {
 			// TODO: log error
 			return false;
 		}
@@ -534,7 +533,8 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			roleId: In(administratorRoles.map(r => r.id)),
 		}) : [];
 		// TODO: isRootなアカウントも含める
-		return assigns.map(a => a.userId);
+		// Setを経由して重複を除去（ユーザIDは重複する可能性があるので）
+		return [...new Set(assigns.map(a => a.userId))].sort((x, y) => x.localeCompare(y));
 	}
 
 	@bindThis

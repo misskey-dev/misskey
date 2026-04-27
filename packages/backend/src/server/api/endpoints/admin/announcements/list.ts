@@ -51,11 +51,13 @@ export const meta = {
 				},
 				icon: {
 					type: 'string',
-					optional: false, nullable: true,
+					optional: false, nullable: false,
+					enum: ['info', 'warning', 'error', 'success'],
 				},
 				display: {
 					type: 'string',
 					optional: false, nullable: false,
+					enum: ['normal', 'banner', 'dialog'],
 				},
 				isActive: {
 					type: 'boolean',

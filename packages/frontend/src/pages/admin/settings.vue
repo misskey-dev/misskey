@@ -258,11 +258,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 						<div class="_gaps">
 							<SearchMarker>
-								<MkRadios v-model="federationForm.state.federation">
+								<MkRadios
+									v-model="federationForm.state.federation"
+									:options="[
+										{ value: 'all', label: i18n.ts.all },
+										{ value: 'specified', label: i18n.ts.specifyHost },
+										{ value: 'none', label: i18n.ts.none },
+									]"
+								>
 									<template #label><SearchLabel>{{ i18n.ts.behavior }}</SearchLabel><span v-if="federationForm.modifiedStates.federation" class="_modified">{{ i18n.ts.modified }}</span></template>
-									<option value="all">{{ i18n.ts.all }}</option>
-									<option value="specified">{{ i18n.ts.specifyHost }}</option>
-									<option value="none">{{ i18n.ts.none }}</option>
 								</MkRadios>
 							</SearchMarker>
 
