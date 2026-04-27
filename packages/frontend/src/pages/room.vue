@@ -559,7 +559,7 @@ definePage(() => ({
 .joyStickLeft, .joyStickRight {
 	position: relative;
 	flex: 1;
-	height: 70px;
+	height: 100px;
 	box-sizing: border-box;
 	padding: 8px;
 }
