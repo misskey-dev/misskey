@@ -337,6 +337,7 @@ export class RoomObjectPreviewEngine {
 			this.timerForEachObject.dispose();
 		}
 		this.engine.dispose();
+		this.scene.dispose();
 		this.disposed = true;
 	}
 }

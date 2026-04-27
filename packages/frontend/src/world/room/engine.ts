@@ -1767,6 +1767,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		}
 		this.timer.dispose();
 		this.engine.dispose();
+		this.scene.dispose();
 		this.disposed = true;
 	}
 }
