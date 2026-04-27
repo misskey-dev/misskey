@@ -19,7 +19,7 @@ export type RoomControllerOptions = {
 	workerMode?: boolean;
 	graphicsQuality: number;
 	fps: number | null;
-	resolution: number | null;
+	resolution: number;
 	useVirtualJoystick?: boolean;
 };
 
@@ -96,11 +96,19 @@ export class RoomController {
 			if (this.options.resolution === 2) babylonEngine.setHardwareScalingLevel(0.5);
 			if (this.options.resolution === 0.5) babylonEngine.setHardwareScalingLevel(2);
 
-			this.engine = new RoomEngine(this.roomState.value, { canvas, engine: babylonEngine, ...this.options });
+			this.engine = new RoomEngine(this.roomState.value, {
+				canvas,
+				engine: babylonEngine,
+				sharpen: this.options.resolution >= 1,
+				...this.options,
+			});
+
 			this.engine.on('loadingProgress', ({ progress }) => {
 				this.initializeProgress.value = progress;
 			});
+
 			await this.engine.init();
+
 			this.initializeProgress.value = 1;
 			this.isReady.value = true;
 

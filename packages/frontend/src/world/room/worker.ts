@@ -24,11 +24,19 @@ onmessage = async (event) => {
 			if (event.data.options.resolution === 2) babylonEngine.setHardwareScalingLevel(0.5);
 			if (event.data.options.resolution === 0.5) babylonEngine.setHardwareScalingLevel(2);
 
-			engine = new RoomEngine(roomState, { canvas, engine: babylonEngine, ...event.data.options });
+			engine = new RoomEngine(roomState, {
+				canvas,
+				engine: babylonEngine,
+				sharpen: event.data.options.resolution >= 1,
+				...event.data.options,
+			});
+
 			engine.on('loadingProgress', ({ progress }) => {
 				self.postMessage({ type: 'progress', progress });
 			});
+
 			await engine.init();
+
 			self.postMessage({ type: 'inited' });
 			break;
 		}

@@ -225,6 +225,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		engine: BABYLON.WebGPUEngine;
 		graphicsQuality: number;
 		fps: number | null;
+		sharpen: boolean;
 		useVirtualJoystick?: boolean;
 	}) {
 		super();
@@ -455,8 +456,10 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 				//pipeline.chromaticAberration.radialIntensity = 2;
 			}
 
-			pipeline.sharpenEnabled = true;
-			pipeline.sharpen.edgeAmount = 0.5;
+			if (options.sharpen) {
+				pipeline.sharpenEnabled = true;
+				pipeline.sharpen.edgeAmount = 0.5;
+			}
 		}
 
 		if (_DEV_) {
