@@ -63,6 +63,10 @@ onmessage = async (event) => {
 			engine.scene.onPointerObservable.notifyObservers({ type: BABYLON.PointerEventTypes.POINTERDOWN, event: event.data.ev });
 			break;
 		}
+		case 'call': {
+			if (engine != null) engine[event.data.fn](...event.data.args);
+			break;
+		}
 		default: {
 			console.warn('Unrecognized message type:', event.data?.type);
 		}

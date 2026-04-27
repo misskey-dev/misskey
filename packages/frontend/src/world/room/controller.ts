@@ -232,7 +232,7 @@ export class RoomController {
 
 	public pauseRender() {
 		if (this.worker != null) {
-			this.worker.postMessage({ type: 'pauseRender' });
+			this.worker.postMessage({ type: 'call', fn: 'pauseRender' });
 		} else if (this.engine != null) {
 			this.engine.pauseRender();
 		}
@@ -240,7 +240,7 @@ export class RoomController {
 
 	public resumeRender() {
 		if (this.worker != null) {
-			this.worker.postMessage({ type: 'resumeRender' });
+			this.worker.postMessage({ type: 'call', fn: 'resumeRender' });
 		} else if (this.engine != null) {
 			this.engine.resumeRender();
 		}
@@ -248,7 +248,7 @@ export class RoomController {
 
 	public setCameraJoystickMoveVector(vec: { x: number; y: number }) {
 		if (this.worker != null) {
-			this.worker.postMessage({ type: 'setCameraJoystickMoveVector', vec });
+			this.worker.postMessage({ type: 'call', fn: 'cameraJoystickMove', args: [vec] });
 		} else if (this.engine != null) {
 			this.engine.cameraJoystickMove(vec);
 		}
@@ -256,7 +256,7 @@ export class RoomController {
 
 	public setCameraJoystickRotateVector(vec: { x: number; y: number }) {
 		if (this.worker != null) {
-			this.worker.postMessage({ type: 'setCameraJoystickRotateVector', vec });
+			this.worker.postMessage({ type: 'call', fn: 'cameraJoystickRotate', args: [vec] });
 		} else if (this.engine != null) {
 			this.engine.cameraJoystickRotate(vec);
 		}
@@ -264,7 +264,7 @@ export class RoomController {
 
 	public enterEditMode() {
 		if (this.worker != null) {
-			this.worker.postMessage({ type: 'enterEditMode' });
+			this.worker.postMessage({ type: 'call', fn: 'enterEditMode' });
 		} else if (this.engine != null) {
 			this.engine.enterEditMode();
 		}
@@ -272,7 +272,7 @@ export class RoomController {
 
 	public exitEditMode() {
 		if (this.worker != null) {
-			this.worker.postMessage({ type: 'exitEditMode' });
+			this.worker.postMessage({ type: 'call', fn: 'exitEditMode' });
 		} else if (this.engine != null) {
 			this.engine.exitEditMode();
 		}
@@ -288,7 +288,7 @@ export class RoomController {
 
 	public updateObjectOption(objectId: string, key: string, value: any) {
 		if (this.worker != null) {
-			this.worker.postMessage({ type: 'updateObjectOption', objectId, key, value });
+			this.worker.postMessage({ type: 'call', fn: 'updateObjectOption', args: [objectId, key, value] });
 		} else if (this.engine != null) {
 			this.engine.updateObjectOption(objectId, key, value);
 		}
@@ -296,7 +296,7 @@ export class RoomController {
 
 	public changeHeyaType(type: RoomState['heya']['type']) {
 		if (this.worker != null) {
-			this.worker.postMessage({ type: 'changeHeyaType', heyaType: type });
+			this.worker.postMessage({ type: 'call', fn: 'changeHeyaType', args: [type] });
 		} else if (this.engine != null) {
 			this.engine.changeHeyaType(type);
 		}
@@ -304,7 +304,7 @@ export class RoomController {
 
 	public updateHeyaOptions(options: RoomState['heya']['options']) {
 		if (this.worker != null) {
-			this.worker.postMessage({ type: 'updateHeyaOptions', heyaOptions: options });
+			this.worker.postMessage({ type: 'call', fn: 'updateHeyaOptions', args: [options] });
 		} else if (this.engine != null) {
 			this.engine.updateHeyaOptions(options);
 		}
@@ -312,7 +312,7 @@ export class RoomController {
 
 	public updateRoomLightColor(color: [number, number, number]) {
 		if (this.worker != null) {
-			this.worker.postMessage({ type: 'updateRoomLightColor', color });
+			this.worker.postMessage({ type: 'call', fn: 'updateRoomLightColor', args: [color] });
 		} else if (this.engine != null) {
 			this.engine.updateRoomLightColor(color);
 		}
@@ -320,7 +320,7 @@ export class RoomController {
 
 	public beginSelectedInstalledObjectGrabbing() {
 		if (this.worker != null) {
-			this.worker.postMessage({ type: 'beginSelectedInstalledObjectGrabbing' });
+			this.worker.postMessage({ type: 'call', fn: 'beginSelectedInstalledObjectGrabbing' });
 		} else if (this.engine != null) {
 			this.engine.beginSelectedInstalledObjectGrabbing();
 		}
@@ -328,7 +328,7 @@ export class RoomController {
 
 	public removeSelectedObject() {
 		if (this.worker != null) {
-			this.worker.postMessage({ type: 'removeSelectedObject' });
+			this.worker.postMessage({ type: 'call', fn: 'removeSelectedObject' });
 		} else if (this.engine != null) {
 			this.engine.removeSelectedObject();
 		}
@@ -336,7 +336,7 @@ export class RoomController {
 
 	public addObject(type: string, options: any) {
 		if (this.worker != null) {
-			this.worker.postMessage({ type: 'addObject', objectType: type, objectOptions: options });
+			this.worker.postMessage({ type: 'call', fn: 'addObject', args: [type, options] });
 		} else if (this.engine != null) {
 			this.engine.addObject(type, options);
 		}
@@ -344,7 +344,7 @@ export class RoomController {
 
 	public endGrabbing() {
 		if (this.worker != null) {
-			this.worker.postMessage({ type: 'endGrabbing' });
+			this.worker.postMessage({ type: 'call', fn: 'endGrabbing' });
 		} else if (this.engine != null) {
 			this.engine.endGrabbing();
 		}
@@ -352,7 +352,7 @@ export class RoomController {
 
 	public cancelGrabbing() {
 		if (this.worker != null) {
-			this.worker.postMessage({ type: 'cancelGrabbing' });
+			this.worker.postMessage({ type: 'call', fn: 'endGrabbing', args: [true] });
 		} else if (this.engine != null) {
 			this.engine.endGrabbing(true);
 		}
@@ -360,7 +360,7 @@ export class RoomController {
 
 	public toggleRoomLight() {
 		if (this.worker != null) {
-			this.worker.postMessage({ type: 'toggleRoomLight' });
+			this.worker.postMessage({ type: 'call', fn: 'toggleRoomLight' });
 		} else if (this.engine != null) {
 			this.engine.toggleRoomLight();
 		}
