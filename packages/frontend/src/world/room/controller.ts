@@ -62,8 +62,23 @@ export class RoomController {
 		if (this.options.workerMode) {
 			const offscreen = canvas.transferControlToOffscreen();
 			this.worker = new RoomWorker();
-			this.worker.postMessage({ type: 'init', canvas: offscreen, roomState: this.roomState.value, ...this.options }, [offscreen]);
-			this.isReady.value = true;
+			this.worker.postMessage({ type: 'init', canvas: offscreen, roomState: this.roomState.value, options: this.options }, [offscreen]);
+			this.worker.onmessage = (event) => {
+				switch (event.data?.type) {
+					case 'progress': {
+						this.initializeProgress.value = event.data.progress;
+						break;
+					}
+					case 'inited': {
+						this.initializeProgress.value = 1;
+						this.isReady.value = true;
+						break;
+					}
+					default: {
+						console.warn('Unrecognized message from worker:', event.data?.type);
+					}
+				}
+			};
 		} else {
 			const babylonEngine = new BABYLON.WebGPUEngine(canvas, { doNotHandleContextLost: true });
 			babylonEngine.compatibilityMode = false;
@@ -104,6 +119,14 @@ export class RoomController {
 			this.engine.on('playSfxUrl', ({ url, options }) => {
 				sound.playUrl(url, options);
 			});
+
+			if (_DEV_) {
+				(window as any).showBabylonInspector = () => {
+					import('@babylonjs/inspector').then(({ ShowInspector }) => {
+						ShowInspector(this.engine.scene);
+					});
+				};
+			}
 		}
 
 		this.canvas.addEventListener('keydown', this.onCanvasKeydown);

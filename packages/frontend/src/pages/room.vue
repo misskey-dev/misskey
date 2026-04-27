@@ -269,6 +269,7 @@ const roomControllerOptions = computed<RoomControllerOptions>(() => ({
 	fps: fps.value,
 	resolution: resolution.value,
 	useVirtualJoystick,
+	workerMode: false,
 }));
 
 const controller = new RoomController(data, roomControllerOptions.value);

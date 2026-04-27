@@ -10,9 +10,7 @@
 // TODO: テクスチャ置き換え時、元のテクスチャをちゃんとdispose
 
 import * as BABYLON from '@babylonjs/core';
-import { AxesViewer } from '@babylonjs/core/Debug/axesViewer';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
-import { BoundingBoxRenderer } from '@babylonjs/core/Rendering/boundingBoxRenderer';
 import { GridMaterial } from '@babylonjs/materials';
 import { EventEmitter } from 'eventemitter3';
 import { TIME_MAP, scaleMorph, camelToKebab, cm, WORLD_SCALE, getMeshesBoundingBox, Timer, getYRotationDirection, FreeCameraTouchVirtualJoystickInput } from '../utility.js';
@@ -437,18 +435,13 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		if (_DEV_) {
 			// snapshot renderingかつglow layerが有効だとなんかクラッシュする
 			if (!(SNAPSHOT_RENDERING && this.useGlow)) {
-				const axes = new AxesViewer(this.scene, 30);
-				axes.xAxis.position = new BABYLON.Vector3(0, 30, 0);
-				axes.yAxis.position = new BABYLON.Vector3(0, 30, 0);
-				axes.zAxis.position = new BABYLON.Vector3(0, 30, 0);
-			}
-
-			if (!IN_WEB_WORKER) {
-				(window as any).showBabylonInspector = () => {
-					import('@babylonjs/inspector').then(({ ShowInspector }) => {
-						ShowInspector(this.scene);
-					});
-				};
+				import('@babylonjs/core/Debug/axesViewer').then(m => {
+					const { AxesViewer } = m;
+					const axes = new AxesViewer(this.scene, 30);
+					axes.xAxis.position = new BABYLON.Vector3(0, 30, 0);
+					axes.yAxis.position = new BABYLON.Vector3(0, 30, 0);
+					axes.zAxis.position = new BABYLON.Vector3(0, 30, 0);
+				});
 			}
 		}
 	}
@@ -588,7 +581,8 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			const renderLoop = (timeStamp: number) => {
 				if (this.disposed) return;
 
-				this.currentRafId = window.requestAnimationFrame(renderLoop);
+				// workerで実行される可能性がある
+				this.currentRafId = requestAnimationFrame(renderLoop);
 
 				const delta = timeStamp - then;
 				if (delta <= interval) return;
@@ -599,14 +593,16 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 				this.engine.endFrame();
 			};
 
-			this.currentRafId = window.requestAnimationFrame(renderLoop);
+			// workerで実行される可能性がある
+			this.currentRafId = requestAnimationFrame(renderLoop);
 		}
 	}
 
 	public pauseRender() {
 		this.engine.stopRenderLoop();
 		if (this.currentRafId != null) {
-			window.cancelAnimationFrame(this.currentRafId);
+			// workerで実行される可能性がある
+			cancelAnimationFrame(this.currentRafId);
 			this.currentRafId = null;
 		}
 	}
@@ -1638,7 +1634,9 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.scene.customRenderTargets.push(reflectionProbe.cubeTexture);
 		reflectionProbe.cubeTexture.render();
 
-		await new Promise(res => window.setTimeout(res, 2000));
+		// workerで実行される可能性がある
+		// eslint-disable-next-line no-restricted-globals
+		await new Promise(res => setTimeout(res, 2000));
 
 		const tex = reflectionProbe.cubeTexture;
 		reflectionProbe.renderList = [];
@@ -1731,6 +1729,8 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		// ↑追記: engine.resizeした後に一瞬待つことで回避できることが判明
 		if (SNAPSHOT_RENDERING) this.sr.disableSnapshotRendering();
 		this.engine.resize();
+		// workerで実行される可能性がある
+		// eslint-disable-next-line no-restricted-globals
 		setTimeout(() => {
 			if (SNAPSHOT_RENDERING) this.sr.enableSnapshotRendering();
 		}, 1);
@@ -1738,7 +1738,8 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 	public destroy() {
 		if (this.currentRafId != null) {
-			window.cancelAnimationFrame(this.currentRafId);
+			// workerで実行される可能性がある
+			cancelAnimationFrame(this.currentRafId);
 			this.currentRafId = null;
 		}
 		this.timer.dispose();

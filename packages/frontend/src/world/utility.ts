@@ -544,6 +544,8 @@ export class RecyvlingTextGrid {
 }
 
 export function sleep(ms: number) {
+	// workerで実行される可能性がある
+	// eslint-disable-next-line no-restricted-globals
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
@@ -552,7 +554,9 @@ export class Timer {
 	private intervalIds: number[] = [];
 
 	public setTimeout(callback: () => void, ms: number) {
-		const id = window.setTimeout(() => {
+		// workerで実行される可能性がある
+		// eslint-disable-next-line no-restricted-globals
+		const id = setTimeout(() => {
 			this.timeoutIds = this.timeoutIds.filter(i => i !== id);
 			callback();
 		}, ms);
@@ -560,18 +564,24 @@ export class Timer {
 	}
 
 	public setInterval(callback: () => void, ms: number) {
-		const id = window.setInterval(callback, ms);
+		// workerで実行される可能性がある
+		// eslint-disable-next-line no-restricted-globals
+		const id = setInterval(callback, ms);
 		this.intervalIds.push(id);
 	}
 
 	public dispose() {
 		for (const id of this.timeoutIds) {
-			window.clearTimeout(id);
+			// workerで実行される可能性がある
+			// eslint-disable-next-line no-restricted-globals
+			clearTimeout(id);
 		}
 		this.timeoutIds = [];
 
 		for (const id of this.intervalIds) {
-			window.clearInterval(id);
+			// workerで実行される可能性がある
+		// eslint-disable-next-line no-restricted-globals
+			clearInterval(id);
 		}
 		this.intervalIds = [];
 	}
