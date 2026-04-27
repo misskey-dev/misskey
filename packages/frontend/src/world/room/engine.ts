@@ -435,14 +435,28 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			}
 		}
 
-		if (options.graphicsQuality >= GRAPHICS_QUALITY_HIGH) {
+		if (options.graphicsQuality >= GRAPHICS_QUALITY_MEDIUM) {
 			const pipeline = new BABYLON.DefaultRenderingPipeline('default', true, this.scene);
 
-			pipeline.bloomEnabled = true;
-			pipeline.bloomThreshold = 0.95;
-			pipeline.bloomWeight = 0.3;
-			pipeline.bloomKernel = 256;
-			pipeline.bloomScale = 2;
+			if (options.graphicsQuality >= GRAPHICS_QUALITY_HIGH) {
+				// snapshot renderingと相性が悪そう
+				//pipeline.depthOfFieldEnabled = true;
+				//pipeline.depthOfField.focusDistance = 1500;
+				//pipeline.depthOfField.focalLength = 20;
+				//pipeline.depthOfField.fStop = 1.4;
+
+				pipeline.bloomEnabled = true;
+				pipeline.bloomThreshold = 0.95;
+				pipeline.bloomWeight = 0.3;
+				pipeline.bloomKernel = 256;
+				pipeline.bloomScale = 2;
+
+				//pipeline.chromaticAberrationEnabled = true;
+				//pipeline.chromaticAberration.radialIntensity = 2;
+			}
+
+			pipeline.sharpenEnabled = true;
+			pipeline.sharpen.edgeAmount = 0.5;
 		}
 
 		if (_DEV_) {
