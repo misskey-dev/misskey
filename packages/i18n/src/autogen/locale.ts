@@ -13303,5 +13303,9 @@ export interface Locale extends ILocale {
          * 初期化に失敗しました
          */
         "failedToInitialize": string;
+        /**
+         * バグ、またはデバイスのリソース不足の可能性が考えられます。
+         */
+        "crushed_description": string;
     };
 }

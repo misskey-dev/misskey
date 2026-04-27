@@ -12,6 +12,8 @@ import type { ShallowRef } from 'vue';
 import type { RoomState } from './engine.js';
 import type { ObjectDef, RoomStateObject } from './object.js';
 import * as sound from '@/utility/sound.js';
+import * as os from '@/os.js';
+import { i18n } from '@/i18n.js';
 
 export type RoomControllerOptions = {
 	workerMode?: boolean;
@@ -83,6 +85,13 @@ export class RoomController {
 			const babylonEngine = new BABYLON.WebGPUEngine(canvas, { doNotHandleContextLost: true, powerPreference: 'high-performance' });
 			babylonEngine.compatibilityMode = false;
 			babylonEngine.enableOfflineSupport = false;
+			babylonEngine.onContextLostObservable.add(() => {
+				os.alert({
+					type: 'error',
+					title: i18n.ts.somethingHappened,
+					text: i18n.ts._room.crushed_description,
+				});
+			});
 			await babylonEngine.initAsync();
 			if (this.options.resolution === 2) babylonEngine.setHardwareScalingLevel(0.5);
 			if (this.options.resolution === 0.5) babylonEngine.setHardwareScalingLevel(2);
