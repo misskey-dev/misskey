@@ -435,6 +435,16 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			}
 		}
 
+		if (options.graphicsQuality >= GRAPHICS_QUALITY_HIGH) {
+			const pipeline = new BABYLON.DefaultRenderingPipeline('default', true, this.scene);
+
+			pipeline.bloomEnabled = true;
+			pipeline.bloomThreshold = 0.95;
+			pipeline.bloomWeight = 0.3;
+			pipeline.bloomKernel = 256;
+			pipeline.bloomScale = 2;
+		}
+
 		if (_DEV_) {
 			// snapshot renderingかつglow layerが有効だとなんかクラッシュする
 			if (!(SNAPSHOT_RENDERING && this.useGlow)) {
