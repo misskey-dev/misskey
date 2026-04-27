@@ -233,7 +233,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
-import { computed, defineAsyncComponent, inject, nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, unref, watch, shallowRef, reactive } from 'vue';
+import { computed, defineAsyncComponent, inject, nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, unref, watch, shallowRef, reactive, isRef } from 'vue';
 import type { MenuItem, InnerMenuItem, MenuPending, MenuAction, MenuSwitch, MenuRadio, MenuRadioOption, MenuParent } from '@/types/menu.js';
 import type { Keymap } from '@/utility/hotkey.js';
 import MkSwitchButton from '@/components/MkSwitch.button.vue';
@@ -345,7 +345,7 @@ async function showRadioOptions(item: MenuRadio, ev: MouseEvent | PointerEvent |
 			type: 'radioOption',
 			text: key,
 			action: () => {
-				if ('value' in item.ref) {
+				if (isRef(item.ref)) {
 					item.ref.value = value;
 				} else {
 					// @ts-expect-error リアクティビティは保たれる
@@ -353,7 +353,7 @@ async function showRadioOptions(item: MenuRadio, ev: MouseEvent | PointerEvent |
 				}
 			},
 			active: computed(() => {
-				if ('value' in item.ref) {
+				if (isRef(item.ref)) {
 					return item.ref.value === value;
 				} else {
 					return item.ref === value;
