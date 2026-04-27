@@ -574,12 +574,15 @@ definePage(() => ({
 <style lang="scss" module>
 .root {
 	height: 100%;
+	overflow: clip;
+	background: var(--MI_THEME-bg);
 }
 
 .screen {
 	position: relative;
 	width: 100%;
 	height: 100cqh;
+	overflow: clip;
 }
 
 .canvas {
