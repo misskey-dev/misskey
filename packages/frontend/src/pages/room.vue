@@ -476,35 +476,58 @@ function showOtherMenu(ev: PointerEvent) {
 		type: 'radio',
 		text: 'Graphics quality',
 		caption: graphicsQualityRaw.value == null ? i18n.ts.auto : graphicsQualityRaw.value === GRAPHICS_QUALITY_HIGH ? 'High' : graphicsQualityRaw.value === GRAPHICS_QUALITY_MEDIUM ? 'Medium' : 'Low',
-		options: {
-			[`Auto (${graphicsQualityAutoValue.value})`]: null,
-			'High': GRAPHICS_QUALITY_HIGH,
-			'Medium': GRAPHICS_QUALITY_MEDIUM,
-			'Low': GRAPHICS_QUALITY_LOW,
-		},
+		options: [{
+			label: `Auto (${graphicsQualityAutoValue.value === GRAPHICS_QUALITY_HIGH ? 'High' : graphicsQualityAutoValue.value === GRAPHICS_QUALITY_MEDIUM ? 'Medium' : 'Low'})`,
+			value: null,
+		}, {
+			label: 'High',
+			value: GRAPHICS_QUALITY_HIGH,
+		}, {
+			label: 'Medium',
+			value: GRAPHICS_QUALITY_MEDIUM,
+		}, {
+			label: 'Low',
+			value: GRAPHICS_QUALITY_LOW,
+		}],
 		ref: graphicsQualityRaw,
 	}, {
 		type: 'radio',
 		text: 'Framerate',
 		caption: fpsRaw.value == null ? i18n.ts.auto : fpsRaw.value === 'max' ? 'Max' : `~${fpsRaw.value}fps`,
-		options: {
-			[`Auto (${fpsAutoValue.value})`]: null,
-			'Max': 'max',
-			'~120fps': '120',
-			'~60fps': '60',
-			'~30fps': '30',
-		},
+		options: [{
+			label: `Auto (${fpsAutoValue.value}fps)`,
+			value: null,
+		}, {
+			label: 'Max',
+			value: 'max',
+		}, {
+			label: '~120fps',
+			value: '120',
+		}, {
+			label: '~60fps',
+			value: '60',
+		}, {
+			label: '~30fps',
+			value: '30',
+		}],
 		ref: fpsRaw,
 	}, {
 		type: 'radio',
 		text: 'Resolution',
 		caption: resolutionRaw.value == null ? i18n.ts.auto : resolutionRaw.value + 'x',
-		options: {
-			[`Auto (${resolutionAutoValue.value})`]: null,
-			'2x': 2,
-			'1x': 1,
-			'0.5x': 0.5,
-		},
+		options: [{
+			label: `Auto (${resolutionAutoValue.value}x)`,
+			value: null,
+		}, {
+			label: '2x',
+			value: 2,
+		}, {
+			label: '1x',
+			value: 1,
+		}, {
+			label: '0.5x',
+			value: 0.5,
+		}],
 		ref: resolutionRaw,
 	}, {
 		type: 'divider',
