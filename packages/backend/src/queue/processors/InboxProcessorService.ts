@@ -119,6 +119,10 @@ export class InboxProcessorService implements OnApplicationShutdown {
 					}
 					throw new Error(`Error in actor ${getApId(activity.actor)} - ${err.statusCode}`);
 				}
+				// ブロックされたインスタンスからのリレー経由アクティビティをスキップ
+				if (err instanceof IdentifiableError && err.id === '09d79f9e-64f1-4316-9cfa-e75c4d091574') {
+					throw new Bull.UnrecoverableError(`skip: ${err.message}`);
+				}
 			}
 		}
 
@@ -254,6 +258,9 @@ export class InboxProcessorService implements OnApplicationShutdown {
 						return 'note contains too many mentions';
 					case '09d79f9e-64f1-4316-9cfa-e75c4d091574': // Instance is blocked
 						return 'skip: blocked instance';
+				}
+				if (e.id === '09d79f9e-64f1-4316-9cfa-e75c4d091574') { // Instance is blocked
+					return 'skip: blocked instance';
 				}
 			}
 			throw e;
