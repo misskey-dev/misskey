@@ -339,24 +339,23 @@ function onItemMouseLeave() {
 }
 
 async function showRadioOptions(item: MenuRadio, ev: MouseEvent | PointerEvent | KeyboardEvent) {
-	const children: MenuItem[] = Object.keys(item.options).map<MenuRadioOption>(key => {
-		const value = item.options[key];
+	const children: MenuItem[] = item.options.map<MenuRadioOption>(def => {
 		return {
 			type: 'radioOption',
-			text: key,
+			text: def.label,
 			action: () => {
 				if (isRef(item.ref)) {
-					item.ref.value = value;
+					item.ref.value = def.value;
 				} else {
 					// @ts-expect-error リアクティビティは保たれる
-					item.ref = value;
+					item.ref = def.value;
 				}
 			},
 			active: computed(() => {
 				if (isRef(item.ref)) {
-					return item.ref.value === value;
+					return item.ref.value === def.value;
 				} else {
-					return item.ref === value;
+					return item.ref === def.value;
 				}
 			}),
 		};
@@ -421,9 +420,14 @@ function close(actioned = false) {
 	});
 }
 
-function switchItem(item: MenuSwitch & { ref: any }) {
+function switchItem(item: MenuSwitch) {
 	if (item.disabled !== undefined && (typeof item.disabled === 'boolean' ? item.disabled : item.disabled.value)) return;
-	item.ref = !item.ref;
+	if (isRef(item.ref)) {
+		item.ref.value = !item.ref.value;
+	} else {
+		// @ts-expect-error リアクティビティは保たれる
+		item.ref = !item.ref;
+	}
 }
 
 function focusUp() {
