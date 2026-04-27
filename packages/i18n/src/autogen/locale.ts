@@ -13299,5 +13299,9 @@ export interface Locale extends ILocale {
          * MisskeyRoomを動作させるには、WebGPUをサポートするデバイスが必要です。
          */
         "yourDeviceNotSupported_description": string;
+        /**
+         * 初期化に失敗しました
+         */
+        "failedToInitialize": string;
     };
 }

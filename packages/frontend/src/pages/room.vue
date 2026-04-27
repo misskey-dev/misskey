@@ -285,7 +285,16 @@ onMounted(async () => {
 		return;
 	}
 
-	controller.init(canvas.value!);
+	try {
+		await controller.init(canvas.value!);
+	} catch (err) {
+		os.alert({
+			type: 'error',
+			title: i18n.ts._room.failedToInitialize,
+			text: (err instanceof Error ? err.message : String(err)),
+		});
+		return;
+	}
 
 	canvas.value!.focus();
 
