@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@v6.0.2
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4.4.0
+        uses: pnpm/action-setup@v6.0.3
 
       - name: Setup Node.js
         uses: actions/setup-node@v6.3.0
@@ -48,7 +48,7 @@ jobs:
           CI: true
 
       - name: Upload Coverage
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./packages/misskey-js/coverage/coverage-final.json

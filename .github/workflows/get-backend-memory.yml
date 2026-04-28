@@ -45,7 +45,7 @@ jobs:
         ref: ${{ matrix.ref }}
         submodules: true
     - name: Setup pnpm
-      uses: pnpm/action-setup@v4.4.0
+      uses: pnpm/action-setup@v6.0.3
     - name: Use Node.js
       uses: actions/setup-node@v6.3.0
       with:
@@ -67,7 +67,7 @@ jobs:
         # Start the server and measure memory usage
         node packages/backend/scripts/measure-memory.mjs > ${{ matrix.memory-json-name }}
     - name: Upload Artifact
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: memory-artifact-${{ matrix.memory-json-name }}
         path: ${{ matrix.memory-json-name }}
@@ -81,7 +81,7 @@ jobs:
           PR_NUMBER: ${{ github.event.number }}
         run: |
           echo "$PR_NUMBER" > ./pr_number
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: memory-artifact-pr-number
           path: pr_number
