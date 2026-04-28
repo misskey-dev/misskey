@@ -9,6 +9,7 @@
 // TODO: glbを事前に最適化(なるべくメッシュをマージするなど)するツールもしくはMisskeyビルド時処理。ついでにカタログ用スクショも自動生成したい
 // TODO: テクスチャ置き換え時、元のテクスチャをちゃんとdispose
 // TODO: Safariでテクスチャの読み込みに失敗かつ無ハンドリングだとsrが有効にできなくなる現象をbabylonに報告
+// TODO: GridMaterialは今のところwgslにネイティブ対応しておらず、読み込むとwgslへの変換コードが読み込まれるっぽく無駄だしweb worker内ではそのままではインポートエラーになるのでどうにかする
 
 import * as BABYLON from '@babylonjs/core';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';

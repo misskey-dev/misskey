@@ -77,7 +77,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<XObjectCustomizeForm :schema="controller.selected.value.objectDef.options.schema" :options="controller.selected.value.objectState.options" @update="(k, v) => controller.updateObjectOption(controller.selected.value.objectId, k, v)"></XObjectCustomizeForm>
 		</div>
 
-		<div v-if="isRoomSettingsOpen" class="_panel" :class="$style.overlayObjectInfoPanel">
+		<div v-if="isRoomSettingsOpen && controller.isEditMode.value" class="_panel" :class="$style.overlayObjectInfoPanel">
 			<div class="_gaps">
 				Room options
 
