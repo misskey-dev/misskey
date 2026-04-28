@@ -618,20 +618,20 @@ export function getRgb(hex: string | number): [number, number, number] | null {
 	return m.map(x => parseInt(x, 16) / 255) as [number, number, number];
 }
 
-export class FreeCameraTouchVirtualJoystickInput implements BABYLON.ICameraInput<BABYLON.FreeCamera> {
+export class FreeCameraVirtualJoystickInput implements BABYLON.ICameraInput<BABYLON.FreeCamera> {
 	public camera: BABYLON.FreeCamera;
-	private joystickMoveSensitivity: number;
-	private joystickRotationSensitivity: number;
-	private joystickMoveVector = BABYLON.Vector3.Zero();
-	private joystickRotationVecX = 0;
-	private joystickRotationVecY = 0;
+	private moveSensitivity: number;
+	private rotationSensitivity: number;
+	private moveVector = BABYLON.Vector3.Zero();
+	private rotationVecX = 0;
+	private rotationVecY = 0;
 
 	constructor(options: {
 		moveSensitivity?: number;
 		rotationSensitivity?: number;
 	}) {
-		this.joystickMoveSensitivity = options.moveSensitivity ?? 0.01;
-		this.joystickRotationSensitivity = options.rotationSensitivity ?? 0.01;
+		this.moveSensitivity = options.moveSensitivity ?? 0.01;
+		this.rotationSensitivity = options.rotationSensitivity ?? 0.01;
 	}
 
 	getClassName = () => this.constructor.name;
@@ -645,7 +645,7 @@ export class FreeCameraTouchVirtualJoystickInput implements BABYLON.ICameraInput
 	}
 
 	public setJoystickMoveVector(vec: { x: number; y: number }) {
-		this.joystickMoveVector = new BABYLON.Vector3(vec.x, 0, -vec.y).scale(this.joystickMoveSensitivity);
+		this.moveVector = new BABYLON.Vector3(vec.x, 0, -vec.y).scale(this.moveSensitivity);
 	}
 
 	public setJoystickRotationVector(vec: { x: number; y: number }) {
@@ -653,16 +653,65 @@ export class FreeCameraTouchVirtualJoystickInput implements BABYLON.ICameraInput
 		if (this.camera.getScene().useRightHandedSystem) directionAdjust *= -1;
 		if (this.camera.parent && this.camera.parent._getWorldMatrixDeterminant() < 0) directionAdjust *= -1;
 
-		this.joystickRotationVecX = vec.y * this.joystickRotationSensitivity * this.joystickRotationSensitivity;
-		this.joystickRotationVecY = vec.x * this.joystickRotationSensitivity * directionAdjust * this.joystickRotationSensitivity;
+		this.rotationVecX = vec.y * this.rotationSensitivity;
+		this.rotationVecY = vec.x * this.rotationSensitivity * directionAdjust;
 	}
 
 	checkInputs() {
-		this.camera.cameraRotation.y += this.joystickRotationVecY;
-		this.camera.cameraRotation.x += this.joystickRotationVecX;
+		this.camera.cameraRotation.y += this.rotationVecY;
+		this.camera.cameraRotation.x += this.rotationVecX;
 
 		this.camera.cameraDirection.addInPlace(
-			BABYLON.Vector3.TransformCoordinates(this.joystickMoveVector, BABYLON.Matrix.RotationY(this.camera.rotation.y)),
+			BABYLON.Vector3.TransformCoordinates(this.moveVector, BABYLON.Matrix.RotationY(this.camera.rotation.y)),
+		);
+	}
+}
+
+export class FreeCameraManualInput implements BABYLON.ICameraInput<BABYLON.FreeCamera> {
+	public camera: BABYLON.FreeCamera;
+	private moveSensitivity: number;
+	private rotationSensitivity: number;
+	private moveVector = BABYLON.Vector3.Zero();
+	private rotationVecX = 0;
+	private rotationVecY = 0;
+
+	constructor(options: {
+		moveSensitivity?: number;
+		rotationSensitivity?: number;
+	}) {
+		this.moveSensitivity = options.moveSensitivity ?? 0.01;
+		this.rotationSensitivity = options.rotationSensitivity ?? 0.01;
+	}
+
+	getClassName = () => this.constructor.name;
+
+	getSimpleName = () => 'manual';
+
+	attachControl(noPreventDefault) {
+	}
+
+	detachControl() {
+	}
+
+	public setMoveVector(vec: { x: number; y: number }) {
+		this.moveVector = new BABYLON.Vector3(vec.x, 0, -vec.y).scale(this.moveSensitivity);
+	}
+
+	public setRotationVector(vec: { x: number; y: number }) {
+		let directionAdjust = 1;
+		if (this.camera.getScene().useRightHandedSystem) directionAdjust *= -1;
+		if (this.camera.parent && this.camera.parent._getWorldMatrixDeterminant() < 0) directionAdjust *= -1;
+
+		this.rotationVecX = vec.y * this.rotationSensitivity;
+		this.rotationVecY = vec.x * this.rotationSensitivity * directionAdjust;
+	}
+
+	checkInputs() {
+		this.camera.cameraRotation.y += this.rotationVecY;
+		this.camera.cameraRotation.x += this.rotationVecX;
+
+		this.camera.cameraDirection.addInPlace(
+			BABYLON.Vector3.TransformCoordinates(this.moveVector, BABYLON.Matrix.RotationY(this.camera.rotation.y)),
 		);
 	}
 }

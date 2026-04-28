@@ -245,6 +245,22 @@ export class RoomController {
 		}
 	}
 
+	public setCameraMoveVector(vec: { x: number; y: number }, dash: boolean) {
+		if (this.worker != null) {
+			this.worker.postMessage({ type: 'call', fn: 'cameraMove', args: [vec, dash] });
+		} else if (this.engine != null) {
+			this.engine.cameraMove(vec, dash);
+		}
+	}
+
+	public setCameraRotateVector(vec: { x: number; y: number }) {
+		if (this.worker != null) {
+			this.worker.postMessage({ type: 'call', fn: 'cameraRotate', args: [vec] });
+		} else if (this.engine != null) {
+			this.engine.cameraRotate(vec);
+		}
+	}
+
 	public setCameraJoystickMoveVector(vec: { x: number; y: number }) {
 		if (this.worker != null) {
 			this.worker.postMessage({ type: 'call', fn: 'cameraJoystickMove', args: [vec] });

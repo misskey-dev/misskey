@@ -14,7 +14,7 @@
 import * as BABYLON from '@babylonjs/core';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
 import { EventEmitter } from 'eventemitter3';
-import { TIME_MAP, scaleMorph, camelToKebab, cm, WORLD_SCALE, getMeshesBoundingBox, Timer, getYRotationDirection, FreeCameraTouchVirtualJoystickInput } from '../utility.js';
+import { TIME_MAP, scaleMorph, camelToKebab, cm, WORLD_SCALE, getMeshesBoundingBox, Timer, getYRotationDirection, FreeCameraVirtualJoystickInput, FreeCameraManualInput } from '../utility.js';
 import { getObjectDef } from './object-defs.js';
 import { findMaterial, ModelManager, SYSTEM_HEYA_MESH_NAMES, SYSTEM_MESH_NAMES } from './utility.js';
 import { SimpleHeyaManager } from './heya.js';
@@ -26,7 +26,7 @@ import { deepClone } from '@/utility/clone.js';
 
 const BAKE_TRANSFORM = false; // 実験的
 const SNAPSHOT_RENDERING = true; // 実験的
-const IGNORE_OBJECTS: string[] = []; // for debug
+const IGNORE_OBJECTS: string[] = ['aquarium']; // for debug
 const RENDER_OUTDOOR_ENV = false;
 const IN_WEB_WORKER = typeof window === 'undefined';
 
@@ -290,7 +290,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 		this.scene.collisionsEnabled = true;
 
-		this.camera = options.useVirtualJoystick ? new BABYLON.FreeCamera('camera', new BABYLON.Vector3(0, cm(130), cm(0)), this.scene) : new BABYLON.UniversalCamera('camera', new BABYLON.Vector3(0, cm(130), cm(0)), this.scene);
+		this.camera = new BABYLON.FreeCamera('camera', new BABYLON.Vector3(0, cm(130), cm(0)), this.scene);
 		this.camera.minZ = cm(1);
 		this.camera.maxZ = RENDER_OUTDOOR_ENV ? cm(10000) : cm(1000);
 		this.camera.fov = 1;
@@ -298,36 +298,19 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.camera.checkCollisions = true;
 		this.camera.applyGravity = true;
 		this.camera.needMoveForGravity = true;
+		this.camera.inputs.clear();
 
 		if (options.useVirtualJoystick) {
-			this.camera.inputs.clear();
-			this.camera.inputs.add(new FreeCameraTouchVirtualJoystickInput({
+			this.camera.inputs.add(new FreeCameraVirtualJoystickInput({
 				moveSensitivity: 0.015 * WORLD_SCALE,
-				rotationSensitivity: 0.1,
+				rotationSensitivity: 0.01,
 			}));
 			this.camera.inertia = 0.75;
 		} else {
-			const normalSpeed = 0.02 * WORLD_SCALE;
-			this.camera.speed = normalSpeed;
-
-			this.camera.keysUp.push(87); // W
-			this.camera.keysDown.push(83); // S
-			this.camera.keysLeft.push(65); // A
-			this.camera.keysRight.push(68); // D
-			this.scene.onKeyboardObservable.add((kbInfo) => {
-				switch (kbInfo.type) {
-					case BABYLON.KeyboardEventTypes.KEYDOWN:
-						if (kbInfo.event.key === 'Shift') {
-							this.camera.speed = normalSpeed * 4;
-						}
-						break;
-					case BABYLON.KeyboardEventTypes.KEYUP:
-						if (kbInfo.event.key === 'Shift') {
-							this.camera.speed = normalSpeed;
-						}
-						break;
-				}
-			});
+			this.camera.inputs.add(new FreeCameraManualInput({
+				moveSensitivity: 0.001 * WORLD_SCALE,
+				rotationSensitivity: 0.01,
+			}));
 		}
 
 		this.camera.attachControl(this.canvas);
@@ -622,12 +605,20 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.startRenderLoop();
 	}
 
+	public cameraMove(vector: { x: number; y: number; }, dash: boolean) {
+		(this.camera.inputs.attached.manual as FreeCameraManualInput).setMoveVector(dash ? { x: vector.x * 4, y: vector.y * 4 } : vector);
+	}
+
+	public cameraRotate(vector: { x: number; y: number; }) {
+		(this.camera.inputs.attached.manual as FreeCameraManualInput).setRotationVector(vector);
+	}
+
 	public cameraJoystickMove(vector: { x: number; y: number; }) {
-		(this.camera.inputs.attached.joystick as FreeCameraTouchVirtualJoystickInput).setJoystickMoveVector(vector);
+		(this.camera.inputs.attached.joystick as FreeCameraVirtualJoystickInput).setJoystickMoveVector(vector);
 	}
 
 	public cameraJoystickRotate(vector: { x: number; y: number; }) {
-		(this.camera.inputs.attached.joystick as FreeCameraTouchVirtualJoystickInput).setJoystickRotationVector(vector);
+		(this.camera.inputs.attached.joystick as FreeCameraVirtualJoystickInput).setJoystickRotationVector(vector);
 	}
 
 	public selectObject(objectId: string | null) {

@@ -220,6 +220,10 @@ const resolution = computed<number>(() => resolutionRaw.value ?? resolutionAutoV
 
 const useVirtualJoystick = isTouchUsing && (deviceKind === 'smartphone' || deviceKind === 'tablet');
 
+const wasdVec = { x: 0, y: 0 };
+const pointerVec = { x: 0, y: 0 };
+let isDashing = false;
+
 const joyStickRadiusPx = 100;
 const joyStickLeftEl = useTemplateRef('joyStickLeftEl');
 const joyStickRightEl = useTemplateRef('joyStickRightEl');
@@ -270,7 +274,7 @@ const roomControllerOptions = computed<RoomControllerOptions>(() => ({
 	fps: fps.value,
 	resolution: resolution.value,
 	useVirtualJoystick,
-	workerMode: false,
+	workerMode: true,
 }));
 
 const controller = new RoomController(data, roomControllerOptions.value);
@@ -342,6 +346,104 @@ onMounted(async () => {
 			controller.setCameraJoystickRotateVector(vector);
 		});
 	}
+
+	canvas.value!.addEventListener('keydown', (ev) => {
+		if (ev.repeat) return;
+
+		switch (ev.code) {
+			case 'KeyW':
+				wasdVec.y = -1;
+				controller.setCameraMoveVector(wasdVec, isDashing);
+				break;
+			case 'KeyS':
+				wasdVec.y = 1;
+				controller.setCameraMoveVector(wasdVec, isDashing);
+				break;
+			case 'KeyA':
+				wasdVec.x = -1;
+				controller.setCameraMoveVector(wasdVec, isDashing);
+				break;
+			case 'KeyD':
+				wasdVec.x = 1;
+				controller.setCameraMoveVector(wasdVec, isDashing);
+				break;
+			case 'ShiftLeft':
+			case 'ShiftRight':
+				isDashing = true;
+				controller.setCameraMoveVector(wasdVec, isDashing);
+				break;
+		}
+	});
+
+	canvas.value!.addEventListener('keyup', (ev) => {
+		switch (ev.code) {
+			case 'KeyW':
+				wasdVec.y = 0;
+				controller.setCameraMoveVector(wasdVec, isDashing);
+				break;
+			case 'KeyS':
+				wasdVec.y = 0;
+				controller.setCameraMoveVector(wasdVec, isDashing);
+				break;
+			case 'KeyA':
+				wasdVec.x = 0;
+				controller.setCameraMoveVector(wasdVec, isDashing);
+				break;
+			case 'KeyD':
+				wasdVec.x = 0;
+				controller.setCameraMoveVector(wasdVec, isDashing);
+				break;
+			case 'ShiftLeft':
+			case 'ShiftRight':
+				isDashing = false;
+				controller.setCameraMoveVector(wasdVec, isDashing);
+				break;
+		}
+	});
+
+	canvas.value!.addEventListener('pointerdown', (ev) => {
+		pointerVec.x = ev.clientX;
+		pointerVec.y = ev.clientY;
+
+		let timeoutId: number | null = null;
+
+		const onMove = (ev: PointerEvent) => {
+			if (timeoutId != null) {
+				window.clearTimeout(timeoutId);
+				timeoutId = null;
+			}
+
+			const before = pointerVec;
+			const after = { x: ev.clientX, y: ev.clientY };
+
+			controller.setCameraRotateVector({
+				x: after.x - before.x,
+				y: after.y - before.y,
+			});
+
+			pointerVec.x = after.x;
+			pointerVec.y = after.y;
+
+			timeoutId = window.setTimeout(() => {
+				timeoutId = null;
+				pointerVec.x = 0;
+				pointerVec.y = 0;
+
+				controller.setCameraRotateVector(pointerVec);
+			}, 10);
+		};
+
+		canvas.value!.addEventListener('pointermove', onMove);
+
+		canvas.value!.addEventListener('pointerup', (ev) => {
+			canvas.value!.removeEventListener('pointermove', onMove);
+
+			pointerVec.x = 0;
+			pointerVec.y = 0;
+
+			controller.setCameraRotateVector(pointerVec);
+		});
+	});
 
 	watch([graphicsQuality, fps, resolution], () => {
 		refresh();
