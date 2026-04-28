@@ -34,6 +34,10 @@ onmessage = async (event) => {
 				self.postMessage({ type: 'progress', progress });
 			});
 
+			engine.on('changeEditMode', ({ isEditMode }) => {
+				self.postMessage({ type: 'changeEditMode', isEditMode });
+			});
+
 			await engine.init();
 
 			self.postMessage({ type: 'inited' });
@@ -68,7 +72,7 @@ onmessage = async (event) => {
 			break;
 		}
 		case 'call': {
-			if (engine != null) engine[event.data.fn](...event.data.args);
+			if (engine != null) engine[event.data.fn](...(event.data.args ?? []));
 			break;
 		}
 		default: {

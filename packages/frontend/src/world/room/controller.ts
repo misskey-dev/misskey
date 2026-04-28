@@ -74,6 +74,10 @@ export class RoomController {
 						this.isReady.value = true;
 						break;
 					}
+					case 'changeEditMode': {
+						this.isEditMode.value = event.data.isEditMode;
+						break;
+					}
 					default: {
 						console.warn('Unrecognized message from worker:', event.data?.type);
 					}
