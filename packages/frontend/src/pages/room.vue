@@ -219,6 +219,7 @@ const resolutionAutoValue = computed<number>(() => deviceKind !== 'desktop' ? 0.
 const resolution = computed<number>(() => resolutionRaw.value ?? resolutionAutoValue.value);
 
 const useVirtualJoystick = isTouchUsing && (deviceKind === 'smartphone' || deviceKind === 'tablet');
+//const useVirtualJoystick = true;
 
 const wasdVec = { x: 0, y: 0 };
 const pointerVec = { x: 0, y: 0 };
@@ -426,10 +427,11 @@ onMounted(async () => {
 
 			timeoutId = window.setTimeout(() => {
 				timeoutId = null;
-				pointerVec.x = 0;
-				pointerVec.y = 0;
 
-				controller.setCameraRotateVector(pointerVec);
+				controller.setCameraRotateVector({
+					x: 0,
+					y: 0,
+				});
 			}, 10);
 		};
 

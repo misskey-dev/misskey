@@ -308,12 +308,10 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			this.camera.inertia = 0.75;
 		} else {
 			this.camera.inputs.add(new FreeCameraManualInput({
-				moveSensitivity: 0.001 * WORLD_SCALE,
-				rotationSensitivity: 0.01,
+				moveSensitivity: 0.002 * WORLD_SCALE,
+				rotationSensitivity: 0.0003,
 			}));
 		}
-
-		this.camera.attachControl(this.canvas);
 
 		//this.scene.activeCamera = this.camera;
 
@@ -606,7 +604,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	}
 
 	public cameraMove(vector: { x: number; y: number; }, dash: boolean) {
-		(this.camera.inputs.attached.manual as FreeCameraManualInput).setMoveVector(dash ? { x: vector.x * 4, y: vector.y * 4 } : vector);
+		(this.camera.inputs.attached.manual as FreeCameraManualInput).setMoveVector(dash ? { x: vector.x * 3, y: vector.y * 3 } : vector);
 	}
 
 	public cameraRotate(vector: { x: number; y: number; }) {

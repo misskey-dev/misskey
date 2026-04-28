@@ -653,7 +653,7 @@ export class FreeCameraVirtualJoystickInput implements BABYLON.ICameraInput<BABY
 		if (this.camera.getScene().useRightHandedSystem) directionAdjust *= -1;
 		if (this.camera.parent && this.camera.parent._getWorldMatrixDeterminant() < 0) directionAdjust *= -1;
 
-		this.rotationVecX = vec.y * this.rotationSensitivity;
+		this.rotationVecX = vec.y * this.rotationSensitivity * directionAdjust;
 		this.rotationVecY = vec.x * this.rotationSensitivity * directionAdjust;
 	}
 
@@ -672,8 +672,6 @@ export class FreeCameraManualInput implements BABYLON.ICameraInput<BABYLON.FreeC
 	private moveSensitivity: number;
 	private rotationSensitivity: number;
 	private moveVector = BABYLON.Vector3.Zero();
-	private rotationVecX = 0;
-	private rotationVecY = 0;
 
 	constructor(options: {
 		moveSensitivity?: number;
@@ -702,16 +700,21 @@ export class FreeCameraManualInput implements BABYLON.ICameraInput<BABYLON.FreeC
 		if (this.camera.getScene().useRightHandedSystem) directionAdjust *= -1;
 		if (this.camera.parent && this.camera.parent._getWorldMatrixDeterminant() < 0) directionAdjust *= -1;
 
-		this.rotationVecX = vec.y * this.rotationSensitivity;
-		this.rotationVecY = vec.x * this.rotationSensitivity * directionAdjust;
+		this.camera.cameraRotation.x += vec.y * this.rotationSensitivity * directionAdjust;
+		this.camera.cameraRotation.y += vec.x * this.rotationSensitivity * directionAdjust;
 	}
 
 	checkInputs() {
-		this.camera.cameraRotation.y += this.rotationVecY;
-		this.camera.cameraRotation.x += this.rotationVecX;
-
 		this.camera.cameraDirection.addInPlace(
 			BABYLON.Vector3.TransformCoordinates(this.moveVector, BABYLON.Matrix.RotationY(this.camera.rotation.y)),
 		);
+
+		//const engine = this.camera.getEngine();
+		//const v = this.moveVector.scale(Math.sqrt(engine.getDeltaTime() / (engine.getFps() * 100.0)));
+		//console.log(v);
+		//this.camera._localDirection.copyFromFloats(v.x, v.y, v.z);
+		//this.camera.getViewMatrix().invertToRef(this.camera._cameraTransformMatrix);
+		//BABYLON.Vector3.TransformNormalToRef(this.camera._localDirection, this.camera._cameraTransformMatrix, this.camera._transformedDirection);
+		//this.camera.cameraDirection.addInPlace(this.camera._transformedDirection);
 	}
 }
