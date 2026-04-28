@@ -216,7 +216,6 @@ const resolution = computed<number>(() => resolutionRaw.value ?? resolutionAutoV
 const useVirtualJoystick = true;
 
 const wasdVec = { x: 0, y: 0 };
-const pointerVec = { x: 0, y: 0 };
 let isDashing = false;
 
 const joyStickRadiusPx = 100;
@@ -379,51 +378,6 @@ onMounted(async () => {
 				controller.setCameraMoveVector(wasdVec, isDashing);
 				break;
 		}
-	});
-
-	canvas.value!.addEventListener('pointerdown', (ev) => {
-		pointerVec.x = ev.clientX;
-		pointerVec.y = ev.clientY;
-
-		let timeoutId: number | null = null;
-
-		const onMove = (ev: PointerEvent) => {
-			if (timeoutId != null) {
-				window.clearTimeout(timeoutId);
-				timeoutId = null;
-			}
-
-			const before = pointerVec;
-			const after = { x: ev.clientX, y: ev.clientY };
-
-			controller.setCameraRotateVector({
-				x: after.x - before.x,
-				y: after.y - before.y,
-			});
-
-			pointerVec.x = after.x;
-			pointerVec.y = after.y;
-
-			timeoutId = window.setTimeout(() => {
-				timeoutId = null;
-
-				controller.setCameraRotateVector({
-					x: 0,
-					y: 0,
-				});
-			}, 10);
-		};
-
-		canvas.value!.addEventListener('pointermove', onMove);
-
-		canvas.value!.addEventListener('pointerup', (ev) => {
-			canvas.value!.removeEventListener('pointermove', onMove);
-
-			pointerVec.x = 0;
-			pointerVec.y = 0;
-
-			controller.setCameraRotateVector(pointerVec);
-		});
 	});
 
 	watch([graphicsQuality, fps, resolution], () => {

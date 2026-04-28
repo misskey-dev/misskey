@@ -188,8 +188,60 @@ export class RoomController {
 	}
 
 	private onCanvasPointerdown(ev: PointerEvent) {
+		ev.preventDefault();
+		ev.stopPropagation();
+
 		this.pointerDownPosition = { x: ev.offsetX, y: ev.offsetY };
 		this.canvas!.setPointerCapture(ev.pointerId);
+
+		const pointerVec = { x: ev.clientX, y: ev.clientY };
+
+		let timeoutId: number | null = null;
+
+		const onMove = (ev: PointerEvent) => {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			if (timeoutId != null) {
+				window.clearTimeout(timeoutId);
+				timeoutId = null;
+			}
+
+			const before = pointerVec;
+			const after = { x: ev.clientX, y: ev.clientY };
+
+			this.setCameraRotateVector({
+				x: after.x - before.x,
+				y: after.y - before.y,
+			});
+
+			pointerVec.x = after.x;
+			pointerVec.y = after.y;
+
+			timeoutId = window.setTimeout(() => {
+				timeoutId = null;
+
+				this.setCameraRotateVector({
+					x: 0,
+					y: 0,
+				});
+			}, 10);
+
+			return false;
+		};
+
+		this.canvas!.addEventListener('pointermove', onMove);
+
+		this.canvas!.addEventListener('pointerup', (ev) => {
+			this.canvas!.removeEventListener('pointermove', onMove);
+
+			pointerVec.x = 0;
+			pointerVec.y = 0;
+
+			this.setCameraRotateVector(pointerVec);
+		}, { once: true });
+
+		return false;
 	}
 
 	private onCanvasPointerup(ev: PointerEvent) {
