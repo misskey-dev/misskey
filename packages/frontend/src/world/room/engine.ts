@@ -1241,6 +1241,9 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		const selectedObject = this.selected.objectEntity.rootMesh;
 		this.clearHighlight();
 
+		const initialPosition = selectedObject.position.clone();
+		const initialRotation = selectedObject.rotation.clone();
+
 		// 子から先に適用していく
 		const setStickyParentRecursively = (mesh: BABYLON.AbstractMesh) => {
 			const stickyObjectIds = Array.from(this.roomState.installedObjects.filter(o => o.sticky === mesh.metadata.objectId)).map(o => o.id);
@@ -1277,9 +1280,6 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		const ghost = this.createGhost(selectedObject);
 
 		const dir = this.camera.getDirection(BABYLON.Axis.Z).scale(this.scene.useRightHandedSystem ? -1 : 1);
-
-		const initialPosition = selectedObject.position.clone();
-		const initialRotation = selectedObject.rotation.clone();
 
 		let sticky: string | null;
 
