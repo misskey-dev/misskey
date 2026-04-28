@@ -207,9 +207,9 @@ export class RoomController {
 	private onCanvasClick(ev: MouseEvent) {
 		if (this.isCanvasDragging) return;
 		if (this.worker != null) {
-			this.worker.postMessage({ type: 'dom:click', ev: { offsetX: ev.offsetX, offsetY: ev.offsetY } });
+			this.worker.postMessage({ type: 'dom:click', ev: { x: ev.offsetX, y: ev.offsetY } });
 		} else if (this.engine != null) {
-			this.engine.domEvents.emit('click', { offsetX: ev.offsetX, offsetY: ev.offsetY });
+			this.engine.domEvents.emit('click', { x: ev.offsetX, y: ev.offsetY });
 		}
 		ev.preventDefault();
 		ev.stopPropagation();

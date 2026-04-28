@@ -62,6 +62,11 @@ onmessage = async (event) => {
 			engine.scene.onPointerObservable.notifyObservers({ type: BABYLON.PointerEventTypes.POINTERDOWN, event: event.data.ev });
 			break;
 		}
+		case 'dom:click': {
+			if (engine == null) break;
+			engine.domEvents.emit('click', event.data.ev);
+			break;
+		}
 		case 'call': {
 			if (engine != null) engine[event.data.fn](...event.data.args);
 			break;

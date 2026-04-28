@@ -215,7 +215,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	private disposed = false;
 
 	public domEvents: EventEmitter<{
-		'click': (event: { offsetX: number; offsetY: number; }) => void;
+		'click': (event: { x: number; y: number; }) => void;
 		'keydown': (event: { code: string; shiftKey: boolean; }) => void;
 		'keyup': (event: { code: string; shiftKey: boolean; }) => void;
 		'wheel': (event: { deltaY: number; }) => void;
@@ -520,7 +520,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			this.selectObject(null);
 
 			// TODO: __PICK__考慮
-			const pickingInfo = this.scene.pick(this.scene.pointerX, this.scene.pointerY,
+			const pickingInfo = this.scene.pick(ev.x, ev.y,
 				(m) => m.name.includes('__PICK__') || (m.isVisible && m.isEnabled() && m.metadata?.objectId != null && this.objectEntities.has(m.metadata.objectId)));
 
 			if (pickingInfo.pickedMesh != null) {
