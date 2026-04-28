@@ -212,8 +212,8 @@ const resolutionRaw = prefer.model('world.resolution');
 const resolutionAutoValue = computed<number>(() => deviceKind !== 'desktop' ? 0.5 : 1);
 const resolution = computed<number>(() => resolutionRaw.value ?? resolutionAutoValue.value);
 
-//const useVirtualJoystick = isTouchUsing && (deviceKind === 'smartphone' || deviceKind === 'tablet');
-const useVirtualJoystick = true;
+const useVirtualJoystick = isTouchUsing && (deviceKind === 'smartphone' || deviceKind === 'tablet');
+//const useVirtualJoystick = true;
 
 const wasdVec = { x: 0, y: 0 };
 let isDashing = false;

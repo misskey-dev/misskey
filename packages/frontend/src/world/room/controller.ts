@@ -191,6 +191,8 @@ export class RoomController {
 		ev.preventDefault();
 		ev.stopPropagation();
 
+		this.canvas!.focus();
+
 		this.pointerDownPosition = { x: ev.offsetX, y: ev.offsetY };
 		this.canvas!.setPointerCapture(ev.pointerId);
 

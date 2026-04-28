@@ -620,14 +620,16 @@ export function getRgb(hex: string | number): [number, number, number] | null {
 
 export class FreeCameraManualInput implements BABYLON.ICameraInput<BABYLON.FreeCamera> {
 	public camera: BABYLON.FreeCamera;
+	private scene: BABYLON.Scene;
 	private moveSensitivity: number;
 	private rotationSensitivity: number;
 	private moveVector = BABYLON.Vector3.Zero();
 
-	constructor(options: {
+	constructor(scene: BABYLON.Scene, options: {
 		moveSensitivity?: number;
 		rotationSensitivity?: number;
 	}) {
+		this.scene = scene;
 		this.moveSensitivity = options.moveSensitivity ?? 0.01;
 		this.rotationSensitivity = options.rotationSensitivity ?? 0.01;
 	}
@@ -648,7 +650,7 @@ export class FreeCameraManualInput implements BABYLON.ICameraInput<BABYLON.FreeC
 
 	public setRotationVector(vec: { x: number; y: number }) {
 		let directionAdjust = 1;
-		if (this.camera.getScene().useRightHandedSystem) directionAdjust *= -1;
+		if (this.scene.useRightHandedSystem) directionAdjust *= -1;
 		if (this.camera.parent && this.camera.parent._getWorldMatrixDeterminant() < 0) directionAdjust *= -1;
 
 		this.camera.cameraRotation.x += vec.y * this.rotationSensitivity * directionAdjust;
@@ -656,8 +658,9 @@ export class FreeCameraManualInput implements BABYLON.ICameraInput<BABYLON.FreeC
 	}
 
 	checkInputs() {
+		const ratio = this.scene.getAnimationRatio();
 		this.camera.cameraDirection.addInPlace(
-			BABYLON.Vector3.TransformCoordinates(this.moveVector, BABYLON.Matrix.RotationY(this.camera.rotation.y)),
+			BABYLON.Vector3.TransformCoordinates(this.moveVector.scale(ratio), BABYLON.Matrix.RotationY(this.camera.rotation.y)),
 		);
 
 		//const engine = this.camera.getEngine();

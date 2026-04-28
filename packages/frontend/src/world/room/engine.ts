@@ -301,13 +301,13 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.camera.inputs.clear();
 
 		if (options.useVirtualJoystick) {
-			this.camera.inputs.add(new FreeCameraManualInput({
+			this.camera.inputs.add(new FreeCameraManualInput(this.scene, {
 				moveSensitivity: 0.015 * WORLD_SCALE,
-				rotationSensitivity: 0.0005,
+				rotationSensitivity: 0.0007,
 			}));
 			this.camera.inertia = 0.75;
 		} else {
-			this.camera.inputs.add(new FreeCameraManualInput({
+			this.camera.inputs.add(new FreeCameraManualInput(this.scene, {
 				moveSensitivity: 0.002 * WORLD_SCALE,
 				rotationSensitivity: 0.0003,
 			}));
