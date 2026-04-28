@@ -4,7 +4,7 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { RoomEngine } from './engine.js';
+import { GRAPHICS_QUALITY_MEDIUM, RoomEngine } from './engine.js';
 import type { RoomState } from './engine.js';
 
 let engine: RoomEngine | null = null;
@@ -17,7 +17,7 @@ onmessage = async (event) => {
 		case 'init': {
 			const roomState = event.data.roomState as RoomState;
 			canvas = event.data.canvas as HTMLCanvasElement;
-			const babylonEngine = new BABYLON.WebGPUEngine(canvas, { doNotHandleContextLost: true, powerPreference: 'high-performance' });
+			const babylonEngine = new BABYLON.WebGPUEngine(canvas, { doNotHandleContextLost: true, powerPreference: 'high-performance', antialias: event.data.options.graphicsQuality >= GRAPHICS_QUALITY_MEDIUM });
 			babylonEngine.compatibilityMode = false;
 			babylonEngine.enableOfflineSupport = false;
 			await babylonEngine.initAsync();
@@ -27,7 +27,6 @@ onmessage = async (event) => {
 			engine = new RoomEngine(roomState, {
 				canvas,
 				engine: babylonEngine,
-				sharpen: event.data.options.resolution >= 1,
 				...event.data.options,
 			});
 

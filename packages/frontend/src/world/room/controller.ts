@@ -7,7 +7,7 @@ import { reactive, ref, shallowRef, triggerRef, watch } from 'vue';
 import * as BABYLON from '@babylonjs/core';
 import { cm } from '../utility.js';
 import RoomWorker from './worker?worker';
-import { RoomEngine } from './engine.js';
+import { GRAPHICS_QUALITY_MEDIUM, RoomEngine } from './engine.js';
 import type { ShallowRef } from 'vue';
 import type { RoomState } from './engine.js';
 import type { ObjectDef, RoomStateObject } from './object.js';
@@ -82,7 +82,7 @@ export class RoomController {
 				}
 			};
 		} else {
-			const babylonEngine = new BABYLON.WebGPUEngine(canvas, { doNotHandleContextLost: true, powerPreference: 'high-performance' });
+			const babylonEngine = new BABYLON.WebGPUEngine(canvas, { doNotHandleContextLost: true, powerPreference: 'high-performance', antialias: this.options.graphicsQuality >= GRAPHICS_QUALITY_MEDIUM });
 			babylonEngine.compatibilityMode = false;
 			babylonEngine.enableOfflineSupport = false;
 			babylonEngine.onContextLostObservable.add(() => {
@@ -99,7 +99,6 @@ export class RoomController {
 			this.engine = new RoomEngine(this.roomState.value, {
 				canvas,
 				engine: babylonEngine,
-				sharpen: this.options.resolution >= 1,
 				...this.options,
 			});
 
