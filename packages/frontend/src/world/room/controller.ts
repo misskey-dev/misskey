@@ -29,7 +29,6 @@ export class RoomController {
 	private engine: RoomEngine | null = null;
 	private canvas: HTMLCanvasElement | null = null;
 	private options: RoomControllerOptions;
-	private isCanvasDragging = false;
 	public isReady = ref(false);
 	public isSitting = ref(false);
 	public isEditMode = ref(false);
@@ -42,6 +41,7 @@ export class RoomController {
 	} | null>(null);
 	public roomState: ShallowRef<RoomState>;
 	public initializeProgress = ref(0);
+	private pointerDownPosition: { x: number; y: number } | null = null;
 
 	constructor(roomState: RoomState, options: RoomControllerOptions) {
 		this.roomState = shallowRef(roomState);
@@ -51,9 +51,7 @@ export class RoomController {
 		this.onCanvasKeyup = this.onCanvasKeyup.bind(this);
 		this.onCanvasWheel = this.onCanvasWheel.bind(this);
 		this.onCanvasPointerdown = this.onCanvasPointerdown.bind(this);
-		this.onCanvasPointermove = this.onCanvasPointermove.bind(this);
 		this.onCanvasPointerup = this.onCanvasPointerup.bind(this);
-		this.onCanvasClick = this.onCanvasClick.bind(this);
 	}
 
 	public async init(canvas: HTMLCanvasElement) {
@@ -149,9 +147,7 @@ export class RoomController {
 		this.canvas.addEventListener('keyup', this.onCanvasKeyup);
 		this.canvas.addEventListener('wheel', this.onCanvasWheel);
 		this.canvas.addEventListener('pointerdown', this.onCanvasPointerdown);
-		this.canvas.addEventListener('pointermove', this.onCanvasPointermove);
 		this.canvas.addEventListener('pointerup', this.onCanvasPointerup);
-		this.canvas.addEventListener('click', this.onCanvasClick);
 	}
 
 	private onCanvasKeydown(ev: KeyboardEvent) {
@@ -188,32 +184,23 @@ export class RoomController {
 	}
 
 	private onCanvasPointerdown(ev: PointerEvent) {
-		this.canvas?.setPointerCapture(ev.pointerId);
-	}
-
-	private onCanvasPointermove(ev: PointerEvent) {
-		if (this.canvas?.hasPointerCapture(ev.pointerId)) {
-			this.isCanvasDragging = true;
-		}
+		this.pointerDownPosition = { x: ev.offsetX, y: ev.offsetY };
 	}
 
 	private onCanvasPointerup(ev: PointerEvent) {
-		window.setTimeout(() => {
-			this.isCanvasDragging = false;
-			this.canvas?.releasePointerCapture(ev.pointerId);
-		}, 0);
-	}
-
-	private onCanvasClick(ev: MouseEvent) {
-		if (this.isCanvasDragging) return;
-		if (this.worker != null) {
-			this.worker.postMessage({ type: 'dom:click', ev: { x: ev.offsetX, y: ev.offsetY } });
-		} else if (this.engine != null) {
-			this.engine.domEvents.emit('click', { x: ev.offsetX, y: ev.offsetY });
+		if (this.pointerDownPosition != null) {
+			const dx = Math.abs(ev.offsetX - this.pointerDownPosition.x);
+			const dy = Math.abs(ev.offsetY - this.pointerDownPosition.y);
+			if (dx < 10 && dy < 10) {
+				const median = { x: (ev.offsetX + this.pointerDownPosition.x) / 2, y: (ev.offsetY + this.pointerDownPosition.y) / 2 };
+				if (this.worker != null) {
+					this.worker.postMessage({ type: 'dom:click', ev: { x: median.x, y: median.y } });
+				} else if (this.engine != null) {
+					this.engine.domEvents.emit('click', { x: median.x, y: median.y });
+				}
+			}
 		}
-		ev.preventDefault();
-		ev.stopPropagation();
-		return false;
+		this.pointerDownPosition = null;
 	}
 
 	public async reset(roomState?: RoomState | null, options?: RoomControllerOptions | null, canvas?: HTMLCanvasElement | null) {
@@ -397,9 +384,7 @@ export class RoomController {
 		this.canvas?.removeEventListener('keyup', this.onCanvasKeyup);
 		this.canvas?.removeEventListener('wheel', this.onCanvasWheel);
 		this.canvas?.removeEventListener('pointerdown', this.onCanvasPointerdown);
-		this.canvas?.removeEventListener('pointermove', this.onCanvasPointermove);
 		this.canvas?.removeEventListener('pointerup', this.onCanvasPointerup);
-		this.canvas?.removeEventListener('click', this.onCanvasClick);
 
 		if (this.worker != null) {
 			this.worker.terminate();
