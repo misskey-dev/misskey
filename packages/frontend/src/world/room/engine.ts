@@ -14,7 +14,7 @@
 import * as BABYLON from '@babylonjs/core';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
 import { EventEmitter } from 'eventemitter3';
-import { TIME_MAP, scaleMorph, camelToKebab, cm, WORLD_SCALE, getMeshesBoundingBox, Timer, getYRotationDirection, FreeCameraVirtualJoystickInput, FreeCameraManualInput } from '../utility.js';
+import { TIME_MAP, scaleMorph, camelToKebab, cm, WORLD_SCALE, getMeshesBoundingBox, Timer, getYRotationDirection, FreeCameraManualInput } from '../utility.js';
 import { getObjectDef } from './object-defs.js';
 import { findMaterial, ModelManager, SYSTEM_HEYA_MESH_NAMES, SYSTEM_MESH_NAMES } from './utility.js';
 import { SimpleHeyaManager } from './heya.js';
@@ -301,9 +301,9 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		this.camera.inputs.clear();
 
 		if (options.useVirtualJoystick) {
-			this.camera.inputs.add(new FreeCameraVirtualJoystickInput({
+			this.camera.inputs.add(new FreeCameraManualInput({
 				moveSensitivity: 0.015 * WORLD_SCALE,
-				rotationSensitivity: 0.01,
+				rotationSensitivity: 0.0005,
 			}));
 			this.camera.inertia = 0.75;
 		} else {
@@ -612,11 +612,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	}
 
 	public cameraJoystickMove(vector: { x: number; y: number; }) {
-		(this.camera.inputs.attached.joystick as FreeCameraVirtualJoystickInput).setJoystickMoveVector(vector);
-	}
-
-	public cameraJoystickRotate(vector: { x: number; y: number; }) {
-		(this.camera.inputs.attached.joystick as FreeCameraVirtualJoystickInput).setJoystickRotationVector(vector);
+		(this.camera.inputs.attached.manual as FreeCameraManualInput).setMoveVector(vector);
 	}
 
 	public selectObject(objectId: string | null) {

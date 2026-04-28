@@ -59,15 +59,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 			</div>
 
-			<div v-if="useVirtualJoystick" :class="$style.joySticks">
-				<div ref="joyStickLeftEl" :class="$style.joyStickLeft" :style="{ '--startXPx': (joyStickLeftStartPos?.x ?? 0) + 'px', '--startYPx': (joyStickLeftStartPos?.y ?? 0) + 'px', '--rPx': joyStickRadiusPx + 'px' }">
-					<div v-show="joyStickLeftStartPos != null" :class="$style.joyStickRangeCircle"></div>
-					<div v-show="joyStickLeftVec.x !== 0 || joyStickLeftVec.y !== 0" :class="$style.joyStickPuck" :style="{ '--x': joyStickLeftVec.x, '--y': joyStickLeftVec.y }"></div>
-				</div>
-				<div ref="joyStickRightEl" :class="$style.joyStickRight" :style="{ '--startXPx': (joyStickRightStartPos?.x ?? 0) + 'px', '--startYPx': (joyStickRightStartPos?.y ?? 0) + 'px', '--rPx': joyStickRadiusPx + 'px' }">
-					<div v-show="joyStickRightStartPos != null" :class="$style.joyStickRangeCircle"></div>
-					<div v-show="joyStickRightVec.x !== 0 || joyStickRightVec.y !== 0" :class="$style.joyStickPuck" :style="{ '--x': joyStickRightVec.x, '--y': joyStickRightVec.y }"></div>
-				</div>
+			<div v-if="useVirtualJoystick" ref="joyStickEl" :class="$style.joyStick" :style="{ '--startXPx': (joyStickStartPos?.x ?? 0) + 'px', '--startYPx': (joyStickStartPos?.y ?? 0) + 'px', '--rPx': joyStickRadiusPx + 'px' }">
+				<div v-show="joyStickStartPos != null" :class="$style.joyStickRangeCircle"></div>
+				<div v-show="joyStickVec.x !== 0 || joyStickVec.y !== 0" :class="$style.joyStickPuck" :style="{ '--x': joyStickVec.x, '--y': joyStickVec.y }"></div>
 			</div>
 		</div>
 
@@ -218,20 +212,17 @@ const resolutionRaw = prefer.model('world.resolution');
 const resolutionAutoValue = computed<number>(() => deviceKind !== 'desktop' ? 0.5 : 1);
 const resolution = computed<number>(() => resolutionRaw.value ?? resolutionAutoValue.value);
 
-const useVirtualJoystick = isTouchUsing && (deviceKind === 'smartphone' || deviceKind === 'tablet');
-//const useVirtualJoystick = true;
+//const useVirtualJoystick = isTouchUsing && (deviceKind === 'smartphone' || deviceKind === 'tablet');
+const useVirtualJoystick = true;
 
 const wasdVec = { x: 0, y: 0 };
 const pointerVec = { x: 0, y: 0 };
 let isDashing = false;
 
 const joyStickRadiusPx = 100;
-const joyStickLeftEl = useTemplateRef('joyStickLeftEl');
-const joyStickRightEl = useTemplateRef('joyStickRightEl');
-const joyStickLeftVec = ref({ x: 0, y: 0 });
-const joyStickRightVec = ref({ x: 0, y: 0 });
-const joyStickLeftStartPos = ref<{ x: number; y: number } | null>(null);
-const joyStickRightStartPos = ref<{ x: number; y: number } | null>(null);
+const joyStickEl = useTemplateRef('joyStickEl');
+const joyStickVec = ref({ x: 0, y: 0 });
+const joyStickStartPos = ref<{ x: number; y: number } | null>(null);
 
 const data = localStorage.getItem('roomData') != null ? JSON.parse(localStorage.getItem('roomData')!) : {
 	heya: {
@@ -322,29 +313,17 @@ onMounted(async () => {
 	//	}
 	//});
 
-	if (joyStickLeftEl.value != null && joyStickRightEl.value != null) {
-		const joyStickLeft = new Joystick(joyStickLeftEl.value!, { radiusPx: joyStickRadiusPx });
-		joyStickLeft.on('start', (vector) => {
-			joyStickLeftStartPos.value = vector;
+	if (joyStickEl.value != null) {
+		const joyStick = new Joystick(joyStickEl.value!, { radiusPx: joyStickRadiusPx });
+		joyStick.on('start', (vector) => {
+			joyStickStartPos.value = vector;
 		});
-		joyStickLeft.on('end', () => {
-			joyStickLeftStartPos.value = null;
+		joyStick.on('end', () => {
+			joyStickStartPos.value = null;
 		});
-		joyStickLeft.on('updateVector', (vector) => {
-			joyStickLeftVec.value = vector;
+		joyStick.on('updateVector', (vector) => {
+			joyStickVec.value = vector;
 			controller.setCameraJoystickMoveVector(vector);
-		});
-
-		const joyStickRight = new Joystick(joyStickRightEl.value!, { radiusPx: joyStickRadiusPx });
-		joyStickRight.on('start', (vector) => {
-			joyStickRightStartPos.value = vector;
-		});
-		joyStickRight.on('end', () => {
-			joyStickRightStartPos.value = null;
-		});
-		joyStickRight.on('updateVector', (vector) => {
-			joyStickRightVec.value = vector;
-			controller.setCameraJoystickRotateVector(vector);
 		});
 	}
 
@@ -700,20 +679,15 @@ definePage(() => ({
 	}
 }
 
-.joySticks {
-	display: flex;
-	width: 100%;
-}
-
-.joyStickLeft, .joyStickRight {
+.joyStick {
 	position: relative;
-	flex: 1;
+	width: 50%;
 	height: 100px;
 	box-sizing: border-box;
 	padding: 8px;
 }
 
-.joyStickLeft::before, .joyStickRight::before {
+.joyStick::before {
 	content: '';
 	display: block;
 	width: 100%;

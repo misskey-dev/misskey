@@ -618,55 +618,6 @@ export function getRgb(hex: string | number): [number, number, number] | null {
 	return m.map(x => parseInt(x, 16) / 255) as [number, number, number];
 }
 
-export class FreeCameraVirtualJoystickInput implements BABYLON.ICameraInput<BABYLON.FreeCamera> {
-	public camera: BABYLON.FreeCamera;
-	private moveSensitivity: number;
-	private rotationSensitivity: number;
-	private moveVector = BABYLON.Vector3.Zero();
-	private rotationVecX = 0;
-	private rotationVecY = 0;
-
-	constructor(options: {
-		moveSensitivity?: number;
-		rotationSensitivity?: number;
-	}) {
-		this.moveSensitivity = options.moveSensitivity ?? 0.01;
-		this.rotationSensitivity = options.rotationSensitivity ?? 0.01;
-	}
-
-	getClassName = () => this.constructor.name;
-
-	getSimpleName = () => 'joystick';
-
-	attachControl(noPreventDefault) {
-	}
-
-	detachControl() {
-	}
-
-	public setJoystickMoveVector(vec: { x: number; y: number }) {
-		this.moveVector = new BABYLON.Vector3(vec.x, 0, -vec.y).scale(this.moveSensitivity);
-	}
-
-	public setJoystickRotationVector(vec: { x: number; y: number }) {
-		let directionAdjust = 1;
-		if (this.camera.getScene().useRightHandedSystem) directionAdjust *= -1;
-		if (this.camera.parent && this.camera.parent._getWorldMatrixDeterminant() < 0) directionAdjust *= -1;
-
-		this.rotationVecX = vec.y * this.rotationSensitivity * directionAdjust;
-		this.rotationVecY = vec.x * this.rotationSensitivity * directionAdjust;
-	}
-
-	checkInputs() {
-		this.camera.cameraRotation.y += this.rotationVecY;
-		this.camera.cameraRotation.x += this.rotationVecX;
-
-		this.camera.cameraDirection.addInPlace(
-			BABYLON.Vector3.TransformCoordinates(this.moveVector, BABYLON.Matrix.RotationY(this.camera.rotation.y)),
-		);
-	}
-}
-
 export class FreeCameraManualInput implements BABYLON.ICameraInput<BABYLON.FreeCamera> {
 	public camera: BABYLON.FreeCamera;
 	private moveSensitivity: number;

@@ -185,6 +185,7 @@ export class RoomController {
 
 	private onCanvasPointerdown(ev: PointerEvent) {
 		this.pointerDownPosition = { x: ev.offsetX, y: ev.offsetY };
+		this.canvas!.setPointerCapture(ev.pointerId);
 	}
 
 	private onCanvasPointerup(ev: PointerEvent) {
@@ -201,6 +202,7 @@ export class RoomController {
 			}
 		}
 		this.pointerDownPosition = null;
+		this.canvas!.releasePointerCapture(ev.pointerId);
 	}
 
 	public async reset(roomState?: RoomState | null, options?: RoomControllerOptions | null, canvas?: HTMLCanvasElement | null) {
@@ -253,14 +255,6 @@ export class RoomController {
 			this.worker.postMessage({ type: 'call', fn: 'cameraJoystickMove', args: [vec] });
 		} else if (this.engine != null) {
 			this.engine.cameraJoystickMove(vec);
-		}
-	}
-
-	public setCameraJoystickRotateVector(vec: { x: number; y: number }) {
-		if (this.worker != null) {
-			this.worker.postMessage({ type: 'call', fn: 'cameraJoystickRotate', args: [vec] });
-		} else if (this.engine != null) {
-			this.engine.cameraJoystickRotate(vec);
 		}
 	}
 
