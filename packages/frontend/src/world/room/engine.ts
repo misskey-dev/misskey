@@ -511,7 +511,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 			this.selectObject(null);
 
-			// TODO: __PICK__考慮
+			// TODO: GPUPickerを使いたいが、なぜか一部のメッシュが反応しない
 			const pickingInfo = this.scene.pick(ev.x, ev.y,
 				(m) => m.name.includes('__PICK__') || (m.isVisible && m.isEnabled() && m.metadata?.objectId != null && this.objectEntities.has(m.metadata.objectId)));
 
