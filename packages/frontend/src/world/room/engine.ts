@@ -1110,6 +1110,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 				} else {
 					if (def.receiveShadows !== false) mesh.receiveShadows = true;
 					if (def.castShadows !== false) {
+						// TODO: メモリリークしそうだからいい感じにする
 						this.shadowGeneratorForRoomLight?.addShadowCaster(mesh);
 						this.shadowGeneratorForSunLight?.addShadowCaster(mesh);
 					}
