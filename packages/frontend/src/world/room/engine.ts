@@ -646,7 +646,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		const placement = getObjectDef(grabbing.objectType).placement;
 
 		const dir = this.camera.getDirection(BABYLON.Axis.Z).scale(this.scene.useRightHandedSystem ? -1 : 1);
-		const newPos = this.camera.position.add(dir.scale(grabbing.distance)).add(grabbing.originalDiffOfPosition);
+		let newPos = this.camera.position.add(dir.scale(grabbing.distance)).add(grabbing.originalDiffOfPosition);
 		const newRotation = new BABYLON.Vector3(0, this.camera.rotation.y + grabbing.originalDiffOfRotationY + grabbing.rotation, 0);
 		grabbing.ghost.position = newPos.clone();
 		grabbing.ghost.rotation = newRotation.clone();
@@ -674,12 +674,10 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 				const hit = placement === 'side' ? this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_WALL__') || m.name.includes('__SIDE__'))) : this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_WALL__')));
 				if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
 					sticky = true;
-					const pickedMeshNormal = hit.getNormal(true, true);
+					const pickedMeshNormal = hit.getNormal(true, true)!;
 					const targetRotationY = Math.atan2(pickedMeshNormal.x, pickedMeshNormal.z);
 					newRotation.y = targetRotationY;
-					newPos.x = hit.pickedPoint.x;
-					newPos.y = hit.pickedPoint.y;
-					newPos.z = hit.pickedPoint.z;
+					newPos = hit.pickedPoint;
 					stickyOtherObject = hit.pickedMesh.metadata?.objectId ?? null;
 
 					if (this.gridSnapping.enabled) {
@@ -693,7 +691,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 						this.gridPlane.rotationQuaternion = null;
 						this.gridPlane.rotation.x = Math.PI;
 						this.gridPlane.rotation.y = targetRotationY;
-						this.gridPlane.position = new BABYLON.Vector3(newPos.x, newPos.y, newPos.z).addInPlace(pickedMeshNormal.scale(cm(0.1)));
+						this.gridPlane.position = newPos.add(pickedMeshNormal.scale(cm(0.1)));
 						this.gridPlane.isVisible = true;
 					}
 				}
@@ -703,9 +701,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 				const hit = placement === 'bottom' ? this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_CEILING__') || m.name.includes('__ROOM_BOTTOM__') || m.name.includes('__BOTTOM__'))) : this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_CEILING__')));
 				if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
 					sticky = true;
-					newPos.x = hit.pickedPoint.x;
-					newPos.y = hit.pickedPoint.y;
-					newPos.z = hit.pickedPoint.z;
+					newPos = hit.pickedPoint;
 					stickyOtherObject = hit.pickedMesh.metadata?.objectId ?? null;
 
 					if (this.gridSnapping.enabled) {
@@ -725,9 +721,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 				const hit = placement === 'top' ? this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_FLOOR__') || m.name.includes('__ROOM_TOP__') || m.name.includes('__TOP__'))) : this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_FLOOR__')));
 				if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
 					sticky = true;
-					newPos.x = hit.pickedPoint.x;
-					newPos.y = hit.pickedPoint.y;
-					newPos.z = hit.pickedPoint.z;
+					newPos = hit.pickedPoint;
 					stickyOtherObject = hit.pickedMesh.metadata?.objectId ?? null;
 
 					if (this.gridSnapping.enabled) {
