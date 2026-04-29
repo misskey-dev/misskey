@@ -80,6 +80,7 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 		e: BABYLON.PBRMaterial;
 	} | null = null;
 	private ceilingMaterial: BABYLON.PBRMaterial | null = null;
+	private floorMaterial: BABYLON.PBRMaterial | null = null;
 
 	constructor(onMeshUpdatedCallback?: ((meshes: BABYLON.AbstractMesh[]) => void) | null) {
 		super(onMeshUpdatedCallback);
@@ -146,6 +147,7 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 		}
 
 		this.ceilingMaterial = findMaterial(this.meshes[0], '__X_CEILING__');
+		this.floorMaterial = findMaterial(this.meshes[0], '__X_FLOOR__');
 
 		await this.applyOptions(options);
 	}
@@ -171,8 +173,8 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 				targetMaterial.unfreeze();
 				targetMaterial.albedoColor = new BABYLON.Color3(...wallOptions.color);
 
-				const texPath = wallOptions.material === 'wood' ? '/client-assets/room/wall-textures/wood.png'
-					: wallOptions.material === 'concrete' ? '/client-assets/room/wall-textures/concrete.png'
+				const texPath = wallOptions.material === 'wood' ? '/client-assets/room/textures/wall-wood.png'
+					: wallOptions.material === 'concrete' ? '/client-assets/room/textures/wall-concrete.png'
 					: null;
 
 				if (texPath != null) {
@@ -191,8 +193,8 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 				targetMaterial.unfreeze();
 				targetMaterial.albedoColor = new BABYLON.Color3(...wallOptions.hariColor);
 
-				const texPath = wallOptions.hariMaterial === 'wood' ? '/client-assets/room/wall-textures/wood.png'
-					: wallOptions.hariMaterial === 'concrete' ? '/client-assets/room/wall-textures/concrete.png'
+				const texPath = wallOptions.hariMaterial === 'wood' ? '/client-assets/room/textures/wall-wood.png'
+					: wallOptions.hariMaterial === 'concrete' ? '/client-assets/room/textures/wall-concrete.png'
 					: null;
 
 				if (texPath != null) {
@@ -210,8 +212,8 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 			this.ceilingMaterial.unfreeze();
 			this.ceilingMaterial.albedoColor = new BABYLON.Color3(...options.ceiling.color);
 
-			const texPath = options.ceiling.material === 'wood' ? '/client-assets/room/wall-textures/wood.png'
-				: options.ceiling.material === 'concrete' ? '/client-assets/room/wall-textures/concrete.png'
+			const texPath = options.ceiling.material === 'wood' ? '/client-assets/room/textures/ceiling-wood.png'
+				: options.ceiling.material === 'concrete' ? '/client-assets/room/textures/ceiling-concrete.png'
 				: null;
 
 			if (texPath != null) {
@@ -222,6 +224,24 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 			}
 
 			this.ceilingMaterial.freeze();
+		}
+
+		{
+			this.floorMaterial.unfreeze();
+			this.floorMaterial.albedoColor = new BABYLON.Color3(...options.flooring.color);
+
+			const texPath = options.flooring.material === 'wood' ? '/client-assets/room/textures/flooring-wood.png'
+				: options.flooring.material === 'concrete' ? '/client-assets/room/textures/flooring-concrete.png'
+				: null;
+
+			if (texPath != null) {
+				const tex = new BABYLON.Texture(texPath, this.meshes[0].getScene(), false, false);
+				this.floorMaterial.albedoTexture = tex;
+			} else {
+				this.floorMaterial.albedoTexture = null;
+			}
+
+			this.floorMaterial.freeze();
 		}
 
 		this.onMeshUpdatedCallback?.(this.meshes);

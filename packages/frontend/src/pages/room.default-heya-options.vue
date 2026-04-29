@@ -10,18 +10,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #label>Wall N</template>
 			<XWallOption :options="options.walls.n" @update="v => { update({ walls: { ...options.walls, n: v } }); }"></XWallOption>
 		</MkFolder>
+
 		<MkFolder>
 			<template #label>Wall S</template>
 			<XWallOption :options="options.walls.s" @update="v => { update({ walls: { ...options.walls, s: v } }); }"></XWallOption>
 		</MkFolder>
+
 		<MkFolder>
 			<template #label>Wall W</template>
 			<XWallOption :options="options.walls.w" @update="v => { update({ walls: { ...options.walls, w: v } }); }"></XWallOption>
 		</MkFolder>
+
 		<MkFolder>
 			<template #label>Wall E</template>
 			<XWallOption :options="options.walls.e" @update="v => { update({ walls: { ...options.walls, e: v } }); }"></XWallOption>
 		</MkFolder>
+
 		<MkFolder>
 			<template #label>Ceiling</template>
 			<MkSelect
@@ -34,6 +38,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #label>wallpaper</template>
 			</MkSelect>
 			<MkInput :modelValue="getHex(options.ceiling.color)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) update({ ceiling: { ...options.ceiling, color: c } }); }">
+				<template #label>color</template>
+			</MkInput>
+		</MkFolder>
+
+		<MkFolder>
+			<template #label>Flooring</template>
+			<MkSelect
+				:items="[
+					{ label: 'None', value: null },
+					{ label: 'Wood', value: 'wood' },
+					{ label: 'Concrete', value: 'concrete' },
+				]" :modelValue="options.flooring.material" @update:modelValue="v => { update({ flooring: { ...options.flooring, material: v } }); }"
+			>
+				<template #label>material</template>
+			</MkSelect>
+			<MkInput :modelValue="getHex(options.flooring.color)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) update({ flooring: { ...options.flooring, color: c } }); }">
 				<template #label>color</template>
 			</MkInput>
 		</MkFolder>
