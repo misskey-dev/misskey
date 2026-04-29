@@ -8,19 +8,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_gaps">
 		<MkFolder>
 			<template #label>Wall N</template>
-			<XWallOption :options="options.walls.n" @update="v => { emit('update', { ...options, walls: { ...options.walls, n: v } }); }"></XWallOption>
+			<XWallOption :options="options.walls.n" @update="v => { update({ walls: { ...options.walls, n: v } }); }"></XWallOption>
 		</MkFolder>
 		<MkFolder>
 			<template #label>Wall S</template>
-			<XWallOption :options="options.walls.s" @update="v => { emit('update', { ...options, walls: { ...options.walls, s: v } }); }"></XWallOption>
+			<XWallOption :options="options.walls.s" @update="v => { update({ walls: { ...options.walls, s: v } }); }"></XWallOption>
 		</MkFolder>
 		<MkFolder>
 			<template #label>Wall W</template>
-			<XWallOption :options="options.walls.w" @update="v => { emit('update', { ...options, walls: { ...options.walls, w: v } }); }"></XWallOption>
+			<XWallOption :options="options.walls.w" @update="v => { update({ walls: { ...options.walls, w: v } }); }"></XWallOption>
 		</MkFolder>
 		<MkFolder>
 			<template #label>Wall E</template>
-			<XWallOption :options="options.walls.e" @update="v => { emit('update', { ...options, walls: { ...options.walls, e: v } }); }"></XWallOption>
+			<XWallOption :options="options.walls.e" @update="v => { update({ walls: { ...options.walls, e: v } }); }"></XWallOption>
+		</MkFolder>
+		<MkFolder>
+			<template #label>Ceiling</template>
+			<MkSelect
+				:items="[
+					{ label: 'None', value: null },
+					{ label: 'Wood', value: 'wood' },
+					{ label: 'Concrete', value: 'concrete' },
+				]" :modelValue="options.ceiling.material" @update:modelValue="v => { update({ ceiling: { ...options.ceiling, material: v } }); }"
+			>
+				<template #label>wallpaper</template>
+			</MkSelect>
+			<MkInput :modelValue="getHex(options.ceiling.color)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) update({ ceiling: { ...options.ceiling, color: c } }); }">
+				<template #label>color</template>
+			</MkInput>
 		</MkFolder>
 	</div>
 </div>
@@ -48,6 +63,10 @@ const props = defineProps<{
 const emit = defineEmits<{
 	(ev: 'update', v: SimpleHeyaOptions): void;
 }>();
+
+function update(v: Partial<SimpleHeyaOptions>) {
+	emit('update', { ...props.options, ...v });
+}
 </script>
 
 <style lang="scss" module>
