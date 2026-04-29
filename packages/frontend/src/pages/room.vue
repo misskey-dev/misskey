@@ -98,6 +98,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkInput :modelValue="getHex(controller.roomState.value.heya.options.wallN.color)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallN: { ...controller.roomState.value.heya.options.wallN, color: c } }); }">
 							<template #label>color</template>
 						</MkInput>
+						<hr>
+						<MkSwitch :modelValue="controller.roomState.value.heya.options.wallN.withHari" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallN: { ...controller.roomState.value.heya.options.wallN, withHari: v } }); }">
+							<template #label>with Hari</template>
+						</MkSwitch>
+						<MkSelect
+							:items="[
+								{ label: 'None', value: null },
+								{ label: 'Wood', value: 'wood' },
+								{ label: 'Concrete', value: 'concrete' },
+							]" :modelValue="controller.roomState.value.heya.options.wallN.hariMaterial" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallN: { ...controller.roomState.value.heya.options.wallN, hariMaterial: v } }); }"
+						>
+							<template #label>hari material</template>
+						</MkSelect>
+						<MkInput :modelValue="getHex(controller.roomState.value.heya.options.wallN.hariColor)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallN: { ...controller.roomState.value.heya.options.wallN, hariColor: c } }); }">
+							<template #label>hari color</template>
+						</MkInput>
+						<hr>
+						<MkSwitch :modelValue="controller.roomState.value.heya.options.wallN.withHabaki" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallN: { ...controller.roomState.value.heya.options.wallN, withHabaki: v } }); }">
+							<template #label>with Habaki</template>
+						</MkSwitch>
 					</div>
 					<div>
 						<div>Wall E</div>
@@ -113,6 +133,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkInput :modelValue="getHex(controller.roomState.value.heya.options.wallE.color)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallE: { ...controller.roomState.value.heya.options.wallE, color: c } }); }">
 							<template #label>color</template>
 						</MkInput>
+						<hr>
+						<MkSwitch :modelValue="controller.roomState.value.heya.options.wallE.withHari" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallE: { ...controller.roomState.value.heya.options.wallE, withHari: v } }); }">
+							<template #label>with Hari</template>
+						</MkSwitch>
+						<MkSelect
+							:items="[
+								{ label: 'None', value: null },
+								{ label: 'Wood', value: 'wood' },
+								{ label: 'Concrete', value: 'concrete' },
+							]" :modelValue="controller.roomState.value.heya.options.wallE.hariMaterial" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallE: { ...controller.roomState.value.heya.options.wallE, hariMaterial: v } }); }"
+						>
+							<template #label>hari material</template>
+						</MkSelect>
+						<MkInput :modelValue="getHex(controller.roomState.value.heya.options.wallE.hariColor)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallE: { ...controller.roomState.value.heya.options.wallE, hariColor: c } }); }">
+							<template #label>hari color</template>
+						</MkInput>
+						<hr>
+						<MkSwitch :modelValue="controller.roomState.value.heya.options.wallE.withHabaki" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallE: { ...controller.roomState.value.heya.options.wallE, withHabaki: v } }); }">
+							<template #label>with Habaki</template>
+						</MkSwitch>
 					</div>
 					<div>
 						<div>Wall S</div>
@@ -128,6 +168,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkInput :modelValue="getHex(controller.roomState.value.heya.options.wallS.color)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallS: { ...controller.roomState.value.heya.options.wallS, color: c } }); }">
 							<template #label>color</template>
 						</MkInput>
+						<hr>
+						<MkSwitch :modelValue="controller.roomState.value.heya.options.wallS.withHari" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallS: { ...controller.roomState.value.heya.options.wallS, withHari: v } }); }">
+							<template #label>with Hari</template>
+						</MkSwitch>
+						<MkSelect
+							:items="[
+								{ label: 'None', value: null },
+								{ label: 'Wood', value: 'wood' },
+								{ label: 'Concrete', value: 'concrete' },
+							]" :modelValue="controller.roomState.value.heya.options.wallS.hariMaterial" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallS: { ...controller.roomState.value.heya.options.wallS, hariMaterial: v } }); }"
+						>
+							<template #label>hari material</template>
+						</MkSelect>
+						<MkInput :modelValue="getHex(controller.roomState.value.heya.options.wallS.hariColor)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallS: { ...controller.roomState.value.heya.options.wallS, hariColor: c } }); }">
+							<template #label>hari color</template>
+						</MkInput>
+						<hr>
+						<MkSwitch :modelValue="controller.roomState.value.heya.options.wallS.withHabaki" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallS: { ...controller.roomState.value.heya.options.wallS, withHabaki: v } }); }">
+							<template #label>with Habaki</template>
+						</MkSwitch>
 					</div>
 					<div>
 						<div>Wall W</div>
@@ -143,6 +203,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<MkInput :modelValue="getHex(controller.roomState.value.heya.options.wallW.color)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallW: { ...controller.roomState.value.heya.options.wallW, color: c } }); }">
 							<template #label>color</template>
 						</MkInput>
+						<hr>
+						<MkSwitch :modelValue="controller.roomState.value.heya.options.wallW.withHari" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallW: { ...controller.roomState.value.heya.options.wallW, withHari: v } }); }">
+							<template #label>with Hari</template>
+						</MkSwitch>
+						<MkSelect
+							:items="[
+								{ label: 'None', value: null },
+								{ label: 'Wood', value: 'wood' },
+								{ label: 'Concrete', value: 'concrete' },
+							]" :modelValue="controller.roomState.value.heya.options.wallW.hariMaterial" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallW: { ...controller.roomState.value.heya.options.wallW, hariMaterial: v } }); }"
+						>
+							<template #label>hari material</template>
+						</MkSelect>
+						<MkInput :modelValue="getHex(controller.roomState.value.heya.options.wallW.hariColor)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallW: { ...controller.roomState.value.heya.options.wallW, hariColor: c } }); }">
+							<template #label>hari color</template>
+						</MkInput>
+						<hr>
+						<MkSwitch :modelValue="controller.roomState.value.heya.options.wallW.withHabaki" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallW: { ...controller.roomState.value.heya.options.wallW, withHabaki: v } }); }">
+							<template #label>with Habaki</template>
+						</MkSwitch>
 					</div>
 				</template>
 			</div>
@@ -259,6 +339,12 @@ const data = localStorage.getItem('roomData') != null ? JSON.parse(localStorage.
 	},
 	installedObjects: [],
 };
+
+// 後方互換性のため
+if (data.heya.options.wallE.hariColor == null) data.heya.options.wallE.hariColor = [0.8, 0.8, 0.8];
+if (data.heya.options.wallN.hariColor == null) data.heya.options.wallN.hariColor = [0.8, 0.8, 0.8];
+if (data.heya.options.wallS.hariColor == null) data.heya.options.wallS.hariColor = [0.8, 0.8, 0.8];
+if (data.heya.options.wallW.hariColor == null) data.heya.options.wallW.hariColor = [0.8, 0.8, 0.8];
 
 let latestData = deepClone(data);
 
@@ -754,6 +840,9 @@ definePage(() => ({
 	padding: 16px;
 	box-sizing: border-box;
 	width: 300px;
+	max-height: 100%;
+	box-sizing: border-box;
+	overflow: auto;
 }
 
 .loading {

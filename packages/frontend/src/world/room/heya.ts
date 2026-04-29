@@ -29,6 +29,10 @@ export abstract class HeyaManager<T = any> {
 type SimpleHeyaWallBase = {
 	material: null | 'wood' | 'concrete';
 	color: [number, number, number];
+	withHari: boolean;
+	hariMaterial: null | 'wood' | 'concrete';
+	hariColor: [number, number, number];
+	withHabaki: boolean;
 };
 
 export type SimpleHeyaOptions = {
@@ -63,6 +67,10 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 	private wallSMaterial: BABYLON.PBRMaterial | null = null;
 	private wallWMaterial: BABYLON.PBRMaterial | null = null;
 	private wallEMaterial: BABYLON.PBRMaterial | null = null;
+	private wallNHariMaterial: BABYLON.PBRMaterial | null = null;
+	private wallSHariMaterial: BABYLON.PBRMaterial | null = null;
+	private wallWHariMaterial: BABYLON.PBRMaterial | null = null;
+	private wallEHariMaterial: BABYLON.PBRMaterial | null = null;
 
 	constructor(onMeshUpdatedCallback?: ((meshes: BABYLON.AbstractMesh[]) => void) | null) {
 		super(onMeshUpdatedCallback);
@@ -120,46 +128,105 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 			m.material = this.wallEMaterial;
 		}
 
+		const hariMaterial = findMaterial(this.meshes[0], '__X_HARI__');
+		this.wallNHariMaterial = hariMaterial.clone('wallNHariMaterial');
+		this.wallSHariMaterial = hariMaterial.clone('wallSHariMaterial');
+		this.wallWHariMaterial = hariMaterial.clone('wallWHariMaterial');
+		this.wallEHariMaterial = hariMaterial.clone('wallEHariMaterial');
+
+		for (const m of this.wallNRoot.getChildMeshes().filter(m => m.material === hariMaterial)) {
+			m.material = this.wallNHariMaterial;
+		}
+		for (const m of this.wallSRoot.getChildMeshes().filter(m => m.material === hariMaterial)) {
+			m.material = this.wallSHariMaterial;
+		}
+		for (const m of this.wallWRoot.getChildMeshes().filter(m => m.material === hariMaterial)) {
+			m.material = this.wallWHariMaterial;
+		}
+		for (const m of this.wallERoot.getChildMeshes().filter(m => m.material === hariMaterial)) {
+			m.material = this.wallEHariMaterial;
+		}
+
 		await this.applyOptions(options);
 	}
 
 	public applyOptions(options: SimpleHeyaOptions) {
 		// TODO: 返り値をpromiseにしてちゃんとテクスチャが読み終わってからresolveする
 
-		const apply = (wall: 'N' | 'S' | 'W' | 'E') => {
+		const applyWall = (wall: 'N' | 'S' | 'W' | 'E') => {
+			const wallRoot =
+				wall === 'N' ? this.wallNRoot :
+				wall === 'S' ? this.wallSRoot :
+				wall === 'W' ? this.wallWRoot :
+				this.wallERoot;
+
 			const wallOptions =
 				wall === 'N' ? options.wallN :
 				wall === 'S' ? options.wallS :
 				wall === 'W' ? options.wallW :
 				options.wallE;
-			const targetMaterial =
-				wall === 'N' ? this.wallNMaterial :
-				wall === 'S' ? this.wallSMaterial :
-				wall === 'W' ? this.wallWMaterial :
-				this.wallEMaterial;
 
-			targetMaterial.unfreeze();
-
-			targetMaterial.albedoColor = new BABYLON.Color3(...wallOptions.color);
-
-			const texPath = wallOptions.material === 'wood' ? '/client-assets/room/wall-textures/wood.png'
-				: wallOptions.material === 'concrete' ? '/client-assets/room/wall-textures/concrete.png'
-				: null;
-
-			if (texPath != null) {
-				const tex = new BABYLON.Texture(texPath, this.meshes[0].getScene(), false, false);
-				targetMaterial.albedoTexture = tex;
-			} else {
-				targetMaterial.albedoTexture = null;
+			for (const mesh of wallRoot.getChildMeshes()) {
+				if (mesh.name.includes('__X_HARI__')) {
+					mesh.isVisible = wallOptions.withHari;
+				} else if (mesh.name.includes('__X_HABAKI__')) {
+					mesh.isVisible = wallOptions.withHabaki;
+				}
 			}
 
-			targetMaterial.freeze();
+			{
+				const targetMaterial =
+					wall === 'N' ? this.wallNMaterial :
+					wall === 'S' ? this.wallSMaterial :
+					wall === 'W' ? this.wallWMaterial :
+					this.wallEMaterial;
+
+				targetMaterial.unfreeze();
+				targetMaterial.albedoColor = new BABYLON.Color3(...wallOptions.color);
+
+				const texPath = wallOptions.material === 'wood' ? '/client-assets/room/wall-textures/wood.png'
+					: wallOptions.material === 'concrete' ? '/client-assets/room/wall-textures/concrete.png'
+					: null;
+
+				if (texPath != null) {
+					const tex = new BABYLON.Texture(texPath, this.meshes[0].getScene(), false, false);
+					targetMaterial.albedoTexture = tex;
+				} else {
+					targetMaterial.albedoTexture = null;
+				}
+
+				targetMaterial.freeze();
+			}
+
+			{
+				const targetMaterial =
+					wall === 'N' ? this.wallNHariMaterial :
+					wall === 'S' ? this.wallSHariMaterial :
+					wall === 'W' ? this.wallWHariMaterial :
+					this.wallEHariMaterial;
+
+				targetMaterial.unfreeze();
+				targetMaterial.albedoColor = new BABYLON.Color3(...wallOptions.hariColor);
+
+				const texPath = wallOptions.hariMaterial === 'wood' ? '/client-assets/room/wall-textures/wood.png'
+					: wallOptions.hariMaterial === 'concrete' ? '/client-assets/room/wall-textures/concrete.png'
+					: null;
+
+				if (texPath != null) {
+					const tex = new BABYLON.Texture(texPath, this.meshes[0].getScene(), false, false);
+					targetMaterial.albedoTexture = tex;
+				} else {
+					targetMaterial.albedoTexture = null;
+				}
+
+				targetMaterial.freeze();
+			}
 		};
 
-		apply('N');
-		apply('S');
-		apply('W');
-		apply('E');
+		applyWall('N');
+		applyWall('S');
+		applyWall('W');
+		applyWall('E');
 
 		this.onMeshUpdatedCallback?.(this.meshes);
 	}
