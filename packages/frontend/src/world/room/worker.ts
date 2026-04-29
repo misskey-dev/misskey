@@ -50,24 +50,22 @@ onmessage = async (event) => {
 		}
 		case 'dom:keydown': {
 			if (engine == null) break;
-			engine.scene.onKeyboardObservable.notifyObservers({ type: BABYLON.KeyboardEventTypes.KEYDOWN, event: event.data.ev });
+			engine.domEvents.emit('keydown', event.data.ev);
 			break;
 		}
 		case 'dom:keyup': {
 			if (engine == null) break;
-			engine.scene.onKeyboardObservable.notifyObservers({ type: BABYLON.KeyboardEventTypes.KEYUP, event: event.data.ev });
-			break;
-		}
-		case 'dom:pointerdown': {
-			if (engine == null) break;
-			event.data.ev.preventDefault = () => {};
-			event.data.ev.stopPropagation = () => {};
-			engine.scene.onPointerObservable.notifyObservers({ type: BABYLON.PointerEventTypes.POINTERDOWN, event: event.data.ev });
+			engine.domEvents.emit('keyup', event.data.ev);
 			break;
 		}
 		case 'dom:click': {
 			if (engine == null) break;
 			engine.domEvents.emit('click', event.data.ev);
+			break;
+		}
+		case 'dom:wheel': {
+			if (engine == null) break;
+			engine.domEvents.emit('wheel', event.data.ev);
 			break;
 		}
 		case 'call': {
