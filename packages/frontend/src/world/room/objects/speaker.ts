@@ -27,12 +27,11 @@ export const speaker = defineObject({
 	},
 	placement: 'top',
 	hasCollisions: false,
+	hasTexture: false,
+	canPreMeshesMerging: true,
 	createInstance: ({ options, model }) => {
-		const outerMesh = model.findMesh('__X_COVER__');
-		const outerMaterial = outerMesh.material as BABYLON.PBRMaterial;
-
-		const innerMesh = model.findMesh('__X_BODY__');
-		const innerMaterial = innerMesh.material as BABYLON.PBRMaterial;
+		const outerMaterial = model.findMaterial('__X_COVER__');
+		const innerMaterial = model.findMaterial('__X_BODY__');
 
 		const applyOuterColor = () => {
 			const [r, g, b] = options.outerColor;
