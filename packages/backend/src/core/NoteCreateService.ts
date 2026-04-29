@@ -770,10 +770,11 @@ export class NoteCreateService implements OnApplicationShutdown {
 			// TODO: キャッシュ
 			this.followingsRepository.findBy({
 				followeeId: user.id,
-				notify: 'normal',
+				notify: In(['normal', 'withFile']),
 			}).then(async followings => {
 				if (note.visibility !== 'specified') {
 					const isPureRenote = this.isRenote(data) && !this.isQuote(data) ? true : false;
+					const hasFiles = data.files != null && data.files.length > 0;
 					for (const following of followings) {
 						// TODO: ワードミュート考慮
 						let isRenoteMuted = false;
@@ -782,9 +783,11 @@ export class NoteCreateService implements OnApplicationShutdown {
 							isRenoteMuted = userIdsWhoMeMutingRenotes.has(user.id);
 						}
 						if (!isRenoteMuted) {
-							this.notificationService.createNotification(following.followerId, 'note', {
-								noteId: note.id,
-							}, user.id);
+							if (following.notify === 'normal' || (following.notify === 'withFile' && hasFiles)) {
+								this.notificationService.createNotification(following.followerId, 'note', {
+									noteId: note.id,
+								}, user.id);
+							}
 						}
 					}
 				}

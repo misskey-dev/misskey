@@ -4130,7 +4130,7 @@ export type components = {
             isMuted?: boolean;
             isRenoteMuted?: boolean;
             /** @enum {string} */
-            notify?: 'normal' | 'none';
+            notify?: 'normal' | 'withFile' | 'none';
             withReplies?: boolean;
         };
         MeDetailedOnly: {
@@ -23248,7 +23248,7 @@ export interface operations {
                     /** Format: misskey:id */
                     userId: string;
                     /** @enum {string} */
-                    notify?: 'normal' | 'none';
+                    notify?: 'normal' | 'withFile' | 'none';
                     withReplies?: boolean;
                 };
             };
@@ -23324,7 +23324,7 @@ export interface operations {
             content: {
                 'application/json': {
                     /** @enum {string} */
-                    notify?: 'normal' | 'none';
+                    notify?: 'normal' | 'withFile' | 'none';
                     withReplies?: boolean;
                 };
             };
