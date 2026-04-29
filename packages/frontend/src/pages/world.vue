@@ -101,6 +101,7 @@ definePage(() => ({
 	width: 100%;
 	height: 100%;
 	display: block;
+	touch-action: none;
 	background: #000;
 
 	&:focus {
@@ -114,6 +115,7 @@ definePage(() => ({
 	height: 100px;
 	box-sizing: border-box;
 	padding: 8px;
+	touch-action: none;
 }
 
 .joyStick::before {
