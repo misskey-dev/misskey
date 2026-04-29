@@ -26,7 +26,6 @@ import { genId } from '@/utility/id.js';
 import { deepClone } from '@/utility/clone.js';
 
 const BAKE_TRANSFORM = false; // 実験的
-const SNAPSHOT_RENDERING = true; // 実験的
 const IGNORE_OBJECTS: string[] = ['aquarium']; // for debug
 const RENDER_OUTDOOR_ENV = false;
 const IN_WEB_WORKER = typeof window === 'undefined';
@@ -369,9 +368,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			this.gl.intensity = 0.5;
 			this.scene.setRenderingAutoClearDepthStencil(this.gl.renderingGroupId, false);
 
-			if (SNAPSHOT_RENDERING) {
-				this.sr.updateMeshesForEffectLayer(this.gl);
-			}
+			this.sr.updateMeshesForEffectLayer(this.gl);
 		}
 
 		this.putParticleSystem = new BABYLON.ParticleSystem('', 64, this.scene);
@@ -405,9 +402,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		if (options.graphicsQuality >= GRAPHICS_QUALITY_MEDIUM) {
 			this.selectionOutlineLayer = new BABYLON.SelectionOutlineLayer('outliner', this.scene);
 			this.scene.setRenderingAutoClearDepthStencil(this.selectionOutlineLayer.renderingGroupId, false);
-			if (SNAPSHOT_RENDERING) {
-				this.sr.updateMeshesForEffectLayer(this.selectionOutlineLayer);
-			}
+			this.sr.updateMeshesForEffectLayer(this.selectionOutlineLayer);
 		}
 
 		if (options.graphicsQuality >= GRAPHICS_QUALITY_HIGH) {
@@ -435,15 +430,13 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 		if (_DEV_) {
 			// snapshot renderingかつglow layerが有効だとなんかクラッシュする
-			if (!(SNAPSHOT_RENDERING && this.useGlow)) {
-				import('@babylonjs/core/Debug/axesViewer').then(m => {
-					const { AxesViewer } = m;
-					const axes = new AxesViewer(this.scene, 30);
-					axes.xAxis.position = new BABYLON.Vector3(0, 30, 0);
-					axes.yAxis.position = new BABYLON.Vector3(0, 30, 0);
-					axes.zAxis.position = new BABYLON.Vector3(0, 30, 0);
-				});
-			}
+			//import('@babylonjs/core/Debug/axesViewer').then(m => {
+			//	const { AxesViewer } = m;
+			//	const axes = new AxesViewer(this.scene, 30);
+			//	axes.xAxis.position = new BABYLON.Vector3(0, 30, 0);
+			//	axes.yAxis.position = new BABYLON.Vector3(0, 30, 0);
+			//	axes.zAxis.position = new BABYLON.Vector3(0, 30, 0);
+			//});
 		}
 	}
 
@@ -473,10 +466,8 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 		await this.scene.whenReadyAsync();
 
-		if (SNAPSHOT_RENDERING) {
-			// 必ずシーンが少なくとも1フレームレンダリングがされてから呼ばれるように注意すること。そうしないとタイミングによってはエンジンがクラッシュする
-			this.sr.enableSnapshotRendering();
-		}
+		// 必ずシーンが少なくとも1フレームレンダリングがされてから呼ばれるように注意すること。そうしないとタイミングによってはエンジンがクラッシュする
+		this.sr.enableSnapshotRendering();
 
 		this.domEvents.on('keydown', (ev) => {
 			if (ev.code === 'KeyE') {
@@ -549,10 +540,9 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 						animTarget.setEasingFunction(easing);
 						this.camera.animations.push(animTarget);
 						this.scene.beginAnimation(this.camera, 0, 30, false, undefined, () => {
-							if (SNAPSHOT_RENDERING) { // 視点が動くとアウトラインが薄くなるのでリセット (babylonのバグ？)
-								this.sr.disableSnapshotRendering();
-								this.sr.enableSnapshotRendering();
-							}
+							// 視点が動くとアウトラインが薄くなるのでリセット (babylonのバグ？)
+							this.sr.disableSnapshotRendering();
+							this.sr.enableSnapshotRendering();
 						});
 					}
 				}
@@ -617,7 +607,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	}
 
 	public selectObject(objectId: string | null) {
-		if (SNAPSHOT_RENDERING) this.sr.disableSnapshotRendering(); // snapshot rendering中にbake/unbakeするとエラーになる。なおこのメソッドは参照カウント方式な点に留意
+		this.sr.disableSnapshotRendering(); // snapshot rendering中にbake/unbakeするとエラーになる。なおこのメソッドは参照カウント方式な点に留意
 
 		const currentSelected = this.selected;
 		if (currentSelected != null) {
@@ -644,7 +634,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			}
 		}
 
-		if (SNAPSHOT_RENDERING) this.sr.enableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
+		this.sr.enableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 	}
 
 	private handleGrabbing() {
@@ -1212,19 +1202,19 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		if (this.selectionOutlineLayer == null) return;
 
 		//if (this.engine.snapshotRendering) return; // snapshot rendering内でそのままやろうとするとエラーになる 回避実装もめんどいので単に無視
-		if (SNAPSHOT_RENDERING) this.sr.disableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
+		this.sr.disableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 		this.clearHighlight();
 		this.selectionOutlineLayer.addSelection(meshes);
-		if (SNAPSHOT_RENDERING) this.sr.enableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
+		this.sr.enableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 	}
 
 	private clearHighlight() {
 		if (this.selectionOutlineLayer == null) return;
 
 		//if (this.engine.snapshotRendering) return; // snapshot rendering内でそのままやろうとするとエラーになる 回避実装もめんどいので単に無視
-		if (SNAPSHOT_RENDERING) this.sr.disableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
+		this.sr.disableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 		this.selectionOutlineLayer.clearSelection();
-		if (SNAPSHOT_RENDERING) this.sr.enableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
+		this.sr.enableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 	}
 
 	public beginSelectedInstalledObjectGrabbing() {
@@ -1430,10 +1420,10 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	}
 
 	private turnOnRoomLight(forInit = false) {
-		if (!forInit && SNAPSHOT_RENDERING) this.sr.disableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
+		if (!forInit) this.sr.disableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 		this.roomLight.intensity = 18 * WORLD_SCALE * WORLD_SCALE;
 		this.envMapIndoor.level = 0.6;
-		if (!forInit && SNAPSHOT_RENDERING) {
+		if (!forInit) {
 			// workerで実行される可能性がある
 			// eslint-disable-next-line no-restricted-globals
 			setTimeout(() => {
@@ -1443,13 +1433,13 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	}
 
 	private turnOffRoomLight() {
-		if (SNAPSHOT_RENDERING) this.sr.disableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
+		this.sr.disableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 		this.roomLight.intensity = 0;
 		this.envMapIndoor.level = 0.025;
 		// workerで実行される可能性がある
 		// eslint-disable-next-line no-restricted-globals
 		setTimeout(() => {
-			if (SNAPSHOT_RENDERING) this.sr.enableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
+			this.sr.enableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 		}, 10);
 	}
 
@@ -1627,9 +1617,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			entity.instance.resetTemporaryState?.();
 		}
 
-		if (SNAPSHOT_RENDERING) {
-			this.sr.disableSnapshotRendering();
-		}
+		this.sr.disableSnapshotRendering();
 		if (this.gl != null) {
 			this.gl.isEnabled = false; // 重いので切る
 		}
@@ -1656,9 +1644,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 		await this.bake();
 
-		if (SNAPSHOT_RENDERING) {
-			this.sr.enableSnapshotRendering();
-		}
+		this.sr.enableSnapshotRendering();
 		if (this.gl != null) {
 			this.gl.isEnabled = true;
 		}
@@ -1766,12 +1752,12 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		// 一旦snapshot renderingを無効にしておかないとエラーが出る(babylonのバグ？)
 		// ~~...が、一旦無効にしたらしたで複数のマテリアルがそれぞれ入れ替わる(?)という謎の現象が発生するためコメントアウトしとく(エラー出てもレンダリングが止まったりするわけでもないし)~~
 		// ↑追記: engine.resizeした後に一瞬待つことで回避できることが判明
-		if (SNAPSHOT_RENDERING) this.sr.disableSnapshotRendering();
+		this.sr.disableSnapshotRendering();
 		this.engine.resize();
 		// workerで実行される可能性がある
 		// eslint-disable-next-line no-restricted-globals
 		setTimeout(() => {
-			if (SNAPSHOT_RENDERING) this.sr.enableSnapshotRendering();
+			this.sr.enableSnapshotRendering();
 		}, 1);
 	}
 
