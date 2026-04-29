@@ -1152,6 +1152,15 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			if (def.hasCollisions) {
 				enableObjectCollision(meshes);
 			}
+
+			/* なんかバグる
+			for (const mesh of meshes) {
+				if (mesh.checkCollisions || SYSTEM_MESH_NAMES.some(n => mesh.name.includes(n))) continue;
+
+				// コリジョンや(ray) pickingに使わないメッシュの頂点情報はCPU側に保持しておく必要がない(通常のpickingはGPUPickerを使えるのでCPUは関与しない)
+				mesh.geometry.clearCachedData();
+			}
+			*/
 		});
 
 		const objectInstance = await def.createInstance({
