@@ -69,7 +69,7 @@ export async function generateLocaleInterface(localesDir: string): Promise<void>
 		ts.factory.createImportDeclaration(
 			undefined,
 			ts.factory.createImportClause(
-				false,
+				undefined,
 				undefined,
 				ts.factory.createNamedImports([
 					ts.factory.createImportSpecifier(
