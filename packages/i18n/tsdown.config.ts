@@ -4,6 +4,7 @@ import { promises as fsp } from 'fs';
 import { resolve } from 'path';
 
 import { generateLocaleInterface } from './scripts/generateLocaleInterface.ts';
+import { writeFrontendLocalesJson as write } from './scripts/build.ts';
 
 const isProduction = process.env.NODE_ENV === 'production';
 const args = process.argv.slice(2).map(arg => arg.toLowerCase());
@@ -28,8 +29,6 @@ function i18nBuildPlugin(): Plugin {
 	}
 
 	async function writeFrontendLocalesJson(): Promise<void> {
-		// 動的 import でビルド済みモジュールから読み込み（循環参照回避）
-		const { writeFrontendLocalesJson: write } = await import('./built/index.js');
 		await write(frontendLocalesDir, rootPackage.version);
 	}
 
