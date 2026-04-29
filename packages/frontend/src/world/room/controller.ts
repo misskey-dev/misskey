@@ -277,148 +277,94 @@ export class RoomController {
 		await this.init(canvas ?? this.canvas!);
 	}
 
-	public pauseRender() {
+	// TODO: いい感じに型付け
+	private call(fn, args = []) {
 		if (this.worker != null) {
-			this.worker.postMessage({ type: 'call', fn: 'pauseRender' });
+			this.worker.postMessage({ type: 'call', fn, args });
 		} else if (this.engine != null) {
-			this.engine.pauseRender();
+			this.engine[fn](...args);
 		}
+	}
+
+	// TODO: いい感じに型付け
+	private set(key, value) {
+		if (this.worker != null) {
+			this.worker.postMessage({ type: 'set', key, value });
+		} else if (this.engine != null) {
+			this.engine[key] = value;
+		}
+	}
+
+	public pauseRender() {
+		this.call('pauseRender');
 	}
 
 	public resumeRender() {
-		if (this.worker != null) {
-			this.worker.postMessage({ type: 'call', fn: 'resumeRender' });
-		} else if (this.engine != null) {
-			this.engine.resumeRender();
-		}
+		this.call('resumeRender');
 	}
 
 	public setCameraMoveVector(vec: { x: number; y: number }, dash: boolean) {
-		if (this.worker != null) {
-			this.worker.postMessage({ type: 'call', fn: 'cameraMove', args: [vec, dash] });
-		} else if (this.engine != null) {
-			this.engine.cameraMove(vec, dash);
-		}
+		this.call('cameraMove', [vec, dash]);
 	}
 
 	public setCameraRotateVector(vec: { x: number; y: number }) {
-		if (this.worker != null) {
-			this.worker.postMessage({ type: 'call', fn: 'cameraRotate', args: [vec] });
-		} else if (this.engine != null) {
-			this.engine.cameraRotate(vec);
-		}
+		this.call('cameraRotate', [vec]);
 	}
 
 	public setCameraJoystickMoveVector(vec: { x: number; y: number }) {
-		if (this.worker != null) {
-			this.worker.postMessage({ type: 'call', fn: 'cameraJoystickMove', args: [vec] });
-		} else if (this.engine != null) {
-			this.engine.cameraJoystickMove(vec);
-		}
+		this.call('cameraJoystickMove', [vec]);
 	}
 
 	public enterEditMode() {
-		if (this.worker != null) {
-			this.worker.postMessage({ type: 'call', fn: 'enterEditMode' });
-		} else if (this.engine != null) {
-			this.engine.enterEditMode();
-		}
+		this.call('enterEditMode');
 	}
 
 	public exitEditMode() {
-		if (this.worker != null) {
-			this.worker.postMessage({ type: 'call', fn: 'exitEditMode' });
-		} else if (this.engine != null) {
-			this.engine.exitEditMode();
-		}
+		this.call('exitEditMode');
 	}
 
 	public setGridSnapping(gridSnapping: { enabled: boolean; scale: number }) {
-		if (this.worker != null) {
-			this.worker.postMessage({ type: 'setGridSnapping', gridSnapping });
-		} else if (this.engine != null) {
-			this.engine.gridSnapping = gridSnapping;
-		}
+		this.set('gridSnapping', gridSnapping);
 	}
 
 	public updateObjectOption(objectId: string, key: string, value: any) {
-		if (this.worker != null) {
-			this.worker.postMessage({ type: 'call', fn: 'updateObjectOption', args: [objectId, key, value] });
-		} else if (this.engine != null) {
-			this.engine.updateObjectOption(objectId, key, value);
-		}
+		this.call('updateObjectOption', [objectId, key, value]);
 	}
 
 	public changeHeyaType(type: RoomState['heya']['type']) {
-		if (this.worker != null) {
-			this.worker.postMessage({ type: 'call', fn: 'changeHeyaType', args: [type] });
-		} else if (this.engine != null) {
-			this.engine.changeHeyaType(type);
-		}
+		this.call('changeHeyaType', [type]);
 	}
 
 	public updateHeyaOptions(options: RoomState['heya']['options']) {
-		if (this.worker != null) {
-			this.worker.postMessage({ type: 'call', fn: 'updateHeyaOptions', args: [options] });
-		} else if (this.engine != null) {
-			this.engine.updateHeyaOptions(options);
-		}
+		this.call('updateHeyaOptions', [options]);
 	}
 
 	public updateRoomLightColor(color: [number, number, number]) {
-		if (this.worker != null) {
-			this.worker.postMessage({ type: 'call', fn: 'updateRoomLightColor', args: [color] });
-		} else if (this.engine != null) {
-			this.engine.updateRoomLightColor(color);
-		}
+		this.call('updateRoomLightColor', [color]);
 	}
 
 	public beginSelectedInstalledObjectGrabbing() {
-		if (this.worker != null) {
-			this.worker.postMessage({ type: 'call', fn: 'beginSelectedInstalledObjectGrabbing' });
-		} else if (this.engine != null) {
-			this.engine.beginSelectedInstalledObjectGrabbing();
-		}
+		this.call('beginSelectedInstalledObjectGrabbing');
 	}
 
 	public removeSelectedObject() {
-		if (this.worker != null) {
-			this.worker.postMessage({ type: 'call', fn: 'removeSelectedObject' });
-		} else if (this.engine != null) {
-			this.engine.removeSelectedObject();
-		}
+		this.call('removeSelectedObject');
 	}
 
 	public addObject(type: string, options: any) {
-		if (this.worker != null) {
-			this.worker.postMessage({ type: 'call', fn: 'addObject', args: [type, options] });
-		} else if (this.engine != null) {
-			this.engine.addObject(type, options);
-		}
+		this.call('addObject', [type, options]);
 	}
 
 	public endGrabbing() {
-		if (this.worker != null) {
-			this.worker.postMessage({ type: 'call', fn: 'endGrabbing' });
-		} else if (this.engine != null) {
-			this.engine.endGrabbing();
-		}
+		this.call('endGrabbing');
 	}
 
 	public cancelGrabbing() {
-		if (this.worker != null) {
-			this.worker.postMessage({ type: 'call', fn: 'endGrabbing', args: [true] });
-		} else if (this.engine != null) {
-			this.engine.endGrabbing(true);
-		}
+		this.call('endGrabbing', [true]);
 	}
 
 	public toggleRoomLight() {
-		if (this.worker != null) {
-			this.worker.postMessage({ type: 'call', fn: 'toggleRoomLight' });
-		} else if (this.engine != null) {
-			this.engine.toggleRoomLight();
-		}
+		this.call('toggleRoomLight');
 	}
 
 	public resize() {

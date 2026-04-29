@@ -75,6 +75,10 @@ onmessage = async (event) => {
 			if (engine != null) engine[event.data.fn](...(event.data.args ?? []));
 			break;
 		}
+		case 'set': {
+			if (engine != null) engine[event.data.key] = event.data.value;
+			break;
+		}
 		default: {
 			console.warn('Unrecognized message type:', event.data?.type);
 		}
