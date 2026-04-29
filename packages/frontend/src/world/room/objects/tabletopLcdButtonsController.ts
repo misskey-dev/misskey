@@ -35,7 +35,7 @@ export const tabletopLcdButtonsController = defineObject({
 		},
 		default: {
 			bodyColor: [0.05, 0.05, 0.05],
-			screenBrightness: 0.3,
+			screenBrightness: 0.5,
 			customPicture: null,
 			fit: 'cover',
 		},
