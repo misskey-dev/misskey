@@ -9,11 +9,6 @@
 			"import": "./built/index.js",
 			"types": "./built/index.d.ts",
 			"default": "./built/index.js"
-		},
-		"./*": {
-			"import": "./built/*",
-			"types": "./built/*",
-			"default": "./built/*"
 		}
 	},
 	"scripts": {

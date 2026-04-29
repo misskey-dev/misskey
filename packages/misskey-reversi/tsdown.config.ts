@@ -15,7 +15,6 @@ export default defineConfig({
 	minify: isProduction,
 	platform: 'neutral',
 	format: 'esm',
-	unbundle: true,
 	customLogger: {
 		...globalLogger,
 		clearScreen: () => {}, // スクリーンのclearを無効化
