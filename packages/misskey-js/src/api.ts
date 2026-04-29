@@ -1,6 +1,5 @@
-import './autogen/apiClientJSDoc.js';
-
 import { endpointReqTypes } from './autogen/endpoint.js';
+import type { APIClient as APIClientJSDoc } from './autogen/apiClientJSDoc.js';
 import type { SwitchCaseResponseType, Endpoints } from './api.types.js';
 
 export type {
@@ -126,3 +125,6 @@ export class APIClient {
 		});
 	}
 }
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface APIClient extends APIClientJSDoc {}
