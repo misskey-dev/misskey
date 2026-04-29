@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { markRaw, ref, watch } from 'vue';
-import type { Component } from 'vue';
+import { markRaw, shallowRef, ref, watch } from 'vue';
+import type MkEmojiPickerDialog__TypeReferenceOnly from '@/components/MkEmojiPickerDialog.vue';
 import { popup, popupAsyncWithDialog } from '@/os.js';
 import { prefer } from '@/preferences.js';
 
@@ -15,7 +15,7 @@ import { prefer } from '@/preferences.js';
  * 一度表示したダイアログを連続で使用できることが望ましいシーンでの利用が想定される。
  */
 class EmojiPicker {
-	private loadedComponent: Component | null = null;
+	private loadedComponent: typeof MkEmojiPickerDialog__TypeReferenceOnly | null = null;
 	private emojisRef = ref<string[]>([]);
 
 	constructor() {
@@ -23,7 +23,7 @@ class EmojiPicker {
 	}
 
 	public init() {
-		// チャンクをプリロードしてキャッシュしておく。
+		// コンポーネントをプリロードしてキャッシュしておく。
 		// iOS PWA では await を挟むとユーザーアクティベーションが失われfocusが効かなくなるため、
 		// show() 呼び出し時には同期的に popup() できるよう事前にコンポーネントを解決しておく。
 		import('@/components/MkEmojiPickerDialog.vue').then(m => {
@@ -44,10 +44,10 @@ class EmojiPicker {
 		onChosen?: (emoji: string) => void,
 		onClosed?: () => void,
 	) {
-		const anchorRef = ref(anchorElement);
+		const anchorRef = shallowRef(anchorElement);
 
 		if (this.loadedComponent) {
-			// 通常パス: コンポーネント解決済みのため同期的に popup() できる。
+			// コンポーネント解決済みのため同期的に popup() できる。
 			// ユーザーアクティベーションコンテキストが維持されiOSでもfocusが機能する。
 			const { dispose } = popup(this.loadedComponent, {
 				anchorElement: anchorRef,
@@ -58,18 +58,17 @@ class EmojiPicker {
 				done: (emoji: string) => {
 					if (onChosen) onChosen(emoji);
 				},
-				close: () => { /* MkModal が自身でclose処理を行う */ },
 				closed: () => {
 					if (onClosed) onClosed();
 					dispose();
 				},
 			});
 		} else {
-			// フォールバック: 初回タップがプリロード完了前の稀なケース
+			// フォールバック: 初回タップがプリロード完了前
 			popupAsyncWithDialog(
 				import('@/components/MkEmojiPickerDialog.vue').then(m => {
 					this.loadedComponent = markRaw(m.default);
-					return this.loadedComponent as Component;
+					return this.loadedComponent;
 				}),
 				{
 					anchorElement: anchorRef,
@@ -81,7 +80,6 @@ class EmojiPicker {
 					done: (emoji: string) => {
 						if (onChosen) onChosen(emoji);
 					},
-					close: () => { /* MkModal が自身でclose処理を行う */ },
 					closed: () => {
 						if (onClosed) onClosed();
 					},

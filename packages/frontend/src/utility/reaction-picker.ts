@@ -4,13 +4,13 @@
  */
 
 import * as Misskey from 'misskey-js';
-import { markRaw, ref, watch } from 'vue';
-import type { Component } from 'vue';
+import { markRaw, shallowRef, ref, watch } from 'vue';
+import type MkEmojiPickerDialog__TypeReferenceOnly from '@/components/MkEmojiPickerDialog.vue';
 import { popup, popupAsyncWithDialog } from '@/os.js';
 import { prefer } from '@/preferences.js';
 
 class ReactionPicker {
-	private loadedComponent: Component | null = null;
+	private loadedComponent: typeof MkEmojiPickerDialog__TypeReferenceOnly | null = null;
 	private reactionsRef = ref<string[]>([]);
 
 	constructor() {
@@ -18,7 +18,7 @@ class ReactionPicker {
 	}
 
 	public init() {
-		// チャンクをプリロードしてキャッシュしておく。
+		// コンポーネントをプリロードしてキャッシュしておく。
 		// iOS PWA では await を挟むとユーザーアクティベーションが失われfocusが効かなくなるため、
 		// show() 呼び出し時には同期的に popup() できるよう事前にコンポーネントを解決しておく。
 		import('@/components/MkEmojiPickerDialog.vue').then(m => {
@@ -34,8 +34,13 @@ class ReactionPicker {
 		});
 	}
 
-	public show(anchorElement: HTMLElement | null, targetNote: Misskey.entities.Note | null, onChosen?: (reaction: string) => void, onClosed?: () => void) {
-		const anchorRef = ref(anchorElement);
+	public show(
+		anchorElement: HTMLElement | null,
+		targetNote: Misskey.entities.Note | null,
+		onChosen?: (reaction: string) => void,
+		onClosed?: () => void,
+	) {
+		const anchorRef = shallowRef(anchorElement);
 		const targetNoteRef = ref(targetNote);
 
 		if (this.loadedComponent) {
@@ -50,18 +55,17 @@ class ReactionPicker {
 				done: (reaction: string) => {
 					if (onChosen) onChosen(reaction);
 				},
-				close: () => { /* MkModal が自身でclose処理を行う */ },
 				closed: () => {
 					if (onClosed) onClosed();
 					dispose();
 				},
 			});
 		} else {
-			// フォールバック: 初回タップがプリロード完了前の稀なケース
+			// フォールバック: 初回タップがプリロード完了前
 			popupAsyncWithDialog(
 				import('@/components/MkEmojiPickerDialog.vue').then(m => {
 					this.loadedComponent = markRaw(m.default);
-					return this.loadedComponent as Component;
+					return this.loadedComponent;
 				}),
 				{
 					anchorElement: anchorRef,
@@ -73,7 +77,6 @@ class ReactionPicker {
 					done: (reaction: string) => {
 						if (onChosen) onChosen(reaction);
 					},
-					close: () => { /* MkModal が自身でclose処理を行う */ },
 					closed: () => {
 						if (onClosed) onClosed();
 					},
