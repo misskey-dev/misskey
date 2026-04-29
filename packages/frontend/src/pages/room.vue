@@ -212,6 +212,8 @@ const resolutionRaw = prefer.model('world.resolution');
 const resolutionAutoValue = computed<number>(() => deviceKind !== 'desktop' ? 0.5 : 1);
 const resolution = computed<number>(() => resolutionRaw.value ?? resolutionAutoValue.value);
 
+const antialias = prefer.model('world.antialias');
+
 const useVirtualJoystick = isTouchUsing && (deviceKind === 'smartphone' || deviceKind === 'tablet');
 //const useVirtualJoystick = true;
 
@@ -264,6 +266,7 @@ const roomControllerOptions = computed<RoomControllerOptions>(() => ({
 	graphicsQuality: graphicsQuality.value,
 	fps: fps.value,
 	resolution: resolution.value,
+	antialias: antialias.value,
 	useVirtualJoystick,
 	workerMode: true,
 }));
@@ -380,7 +383,7 @@ onMounted(async () => {
 		}
 	});
 
-	watch([graphicsQuality, fps, resolution], () => {
+	watch([graphicsQuality, fps, resolution, antialias], () => {
 		refresh();
 	});
 });
@@ -585,6 +588,10 @@ function showOtherMenu(ev: PointerEvent) {
 			value: 0.5,
 		}],
 		ref: resolutionRaw,
+	}, {
+		type: 'switch',
+		text: i18n.ts._room.antialiasing,
+		ref: antialias,
 	}, {
 		type: 'divider',
 	}, {

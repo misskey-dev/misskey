@@ -20,6 +20,7 @@ export type RoomControllerOptions = {
 	graphicsQuality: number;
 	fps: number | null;
 	resolution: number;
+	antialias: boolean;
 	useVirtualJoystick?: boolean;
 };
 
@@ -84,7 +85,7 @@ export class RoomController {
 				}
 			};
 		} else {
-			const babylonEngine = new BABYLON.WebGPUEngine(canvas, { doNotHandleContextLost: true, powerPreference: 'high-performance', antialias: this.options.graphicsQuality >= GRAPHICS_QUALITY_MEDIUM });
+			const babylonEngine = new BABYLON.WebGPUEngine(canvas, { doNotHandleContextLost: true, powerPreference: 'high-performance', antialias: this.options.antialias });
 			babylonEngine.compatibilityMode = false;
 			babylonEngine.enableOfflineSupport = false;
 			babylonEngine.onContextLostObservable.add(() => {

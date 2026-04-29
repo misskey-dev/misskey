@@ -542,6 +542,9 @@ export const PREF_DEF = definePreferences({
 	'world.resolution': {
 		default: null as 0.5 | 1 | 2 | null,
 	},
+	'world.antialias': {
+		default: true,
+	},
 
 	'experimental.stackingRouterView': {
 		default: false,

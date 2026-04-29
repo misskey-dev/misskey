@@ -226,6 +226,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		engine: BABYLON.WebGPUEngine;
 		graphicsQuality: number;
 		fps: number | null;
+		antialias: boolean;
 		useVirtualJoystick?: boolean;
 	}) {
 		super();
@@ -407,7 +408,9 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 
 		if (options.graphicsQuality >= GRAPHICS_QUALITY_HIGH) {
 			const pipeline = new BABYLON.DefaultRenderingPipeline('default', true, this.scene);
-			pipeline.samples = 4;
+			if (options.antialias) {
+				pipeline.samples = 4;
+			}
 
 			// snapshot renderingと相性が悪そう
 			//pipeline.depthOfFieldEnabled = true;
@@ -456,7 +459,6 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		}).then(() => {
 			loadedCount++;
 			this.emit('loadingProgress', { progress: loadedCount / objects.length });
-			console.log(`Loaded object ${o.id} (${o.type})`);
 		})));
 
 		// 不具合のもと

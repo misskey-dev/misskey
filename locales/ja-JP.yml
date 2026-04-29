@@ -3566,3 +3566,4 @@ _room:
   yourDeviceNotSupported_description: "MisskeyRoomを動作させるには、WebGPUをサポートするデバイスが必要です。"
   failedToInitialize: "初期化に失敗しました"
   crushed_description: "バグ、またはデバイスのリソース不足の可能性が考えられます。"
+  antialiasing: "アンチエイリアス"

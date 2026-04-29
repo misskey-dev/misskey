@@ -13307,5 +13307,9 @@ export interface Locale extends ILocale {
          * バグ、またはデバイスのリソース不足の可能性が考えられます。
          */
         "crushed_description": string;
+        /**
+         * アンチエイリアス
+         */
+        "antialiasing": string;
     };
 }
