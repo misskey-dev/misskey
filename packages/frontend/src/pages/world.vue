@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.root" class="_pageScrollable">
+<div :class="$style.root">
 	<div :class="[$style.screen, { [$style.zen]: isZenMode }]">
 		<canvas ref="canvas" :class="$style.canvas" tabindex="-1" :style="{ visibility: controller.isReady.value ? 'visible' : 'hidden' }"></canvas>
 
@@ -15,9 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:leaveToClass="$style.transition_fade_leaveTo"
 		>
 			<div v-if="!controller.isReady.value" :class="$style.loading">
-				<div :class="$style.progressBar">
-					<div :class="$style.progressBarValue" :style="{ width: `${controller.initializeProgress.value * 100}%` }"></div>
-				</div>
+				<MkProgressBar :class="$style.progressBar" :progress="controller.initializeProgress.value" :waiting="controller.initializeProgress.value === 1"/>
 			</div>
 		</Transition>
 
@@ -88,15 +86,15 @@ definePage(() => ({
 <style lang="scss" module>
 .root {
 	height: 100%;
+	overflow: clip;
+	background: var(--MI_THEME-bg);
 }
 
 .screen {
 	position: relative;
 	width: 100%;
-	height: 90cqh;
-}
-.screen.zen {
-	height: 100%;
+	height: 100cqh;
+	overflow: clip;
 }
 
 .canvas {
@@ -110,7 +108,118 @@ definePage(() => ({
 	}
 }
 
-.controls {
+.joyStick {
+	position: relative;
+	width: 50%;
+	height: 100px;
+	box-sizing: border-box;
+	padding: 8px;
+}
+
+.joyStick::before {
+	content: '';
+	display: block;
+	width: 100%;
+	height: 100%;
+	border: solid 2px #fff;
+	border-radius: 16px;
+	pointer-events: none;
+}
+
+.joyStickRangeCircle {
+	position: absolute;
+	top: var(--startYPx);
+	left: var(--startXPx);
+	width: calc(var(--rPx) * 2);
+	height: calc(var(--rPx) * 2);
+	border: solid 2px rgba(255, 255, 255, 0.5);
+	border-radius: 100%;
+	transform: translate(-50%, -50%);
+	pointer-events: none;
+}
+
+.joyStickPuck {
+	position: absolute;
+	top: calc(var(--startYPx) + (var(--y) * var(--rPx)));
+	left: calc(var(--startXPx) + (var(--x) * var(--rPx)));
+	width: 30px;
+	height: 30px;
+	background: #fff;
+	border-radius: 100%;
+	transform: translate(-50%, -50%);
+	pointer-events: none;
+}
+
+.overlayTop {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 1;
+	width: 100%;
+}
+
+.overlayBottom {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	z-index: 1;
+	width: 100%;
+}
+
+.topMain {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+}
+
+.topMenu {
+	margin: 16px;
+	display: flex;
+	box-sizing: border-box;
+	width: max-content;
+}
+
+.topMenuButton {
+	padding: 8px;
+}
+.topMenuButton:first-child {
+	padding-left: 16px;
+}
+.topMenuButton:last-child {
+	padding-right: 16px;
+}
+
+.modified {
+	display: flex;
+	align-items: center;
+	font-size: 90%;
+	gap: 1em;
+	padding: 8px 16px;
+}
+
+.modifiedText {
+	color: var(--MI_THEME-warn);
+	animation: modified-blink 2s infinite;
+}
+
+@keyframes modified-blink {
+	0% { opacity: 1; }
+	50% { opacity: 0.5; }
+	100% { opacity: 1; }
+}
+
+.overlayControls {
+
+}
+
+.overlayObjectInfoPanel {
+	position: absolute;
+	top: 16px;
+	right: 16px;
+	z-index: 1;
+	padding: 16px;
+	box-sizing: border-box;
+	width: 300px;
 }
 
 .loading {
@@ -126,16 +235,6 @@ definePage(() => ({
 
 .progressBar {
 	width: 75%;
-	height: 4px;
-	border-radius: 999px;
-	overflow: clip;
-	background-color: var(--MI_THEME-accentedBg);
-}
-
-.progressBarValue {
-	height: 100%;
-	background: linear-gradient(90deg, var(--MI_THEME-buttonGradateA), var(--MI_THEME-buttonGradateB));
-	transition: all 0.5s cubic-bezier(0,.5,.5,1);
 }
 
 .transition_fade_enterActive,

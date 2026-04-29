@@ -8,6 +8,7 @@ import { AxesViewer } from '@babylonjs/core/Debug/axesViewer';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
 import { EventEmitter } from 'eventemitter3';
 import tinycolor from 'tinycolor2';
+import Hls from 'hls.js';
 import { RecyvlingTextGrid, Timer, WORLD_SCALE, camelToKebab, cm, createPlaneUvMapper, normalizeUvToSquare, randomRange } from './utility.js';
 import { TIME_MAP } from './utility.js';
 import { genId } from '@/utility/id.js';
@@ -181,10 +182,10 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 		if (_DEV_) {
 			// snapshot renderingかつglow layerが有効だとなんかクラッシュする
 			if (!(SNAPSHOT_RENDERING && USE_GLOW)) {
-				const axes = new AxesViewer(this.scene, 30);
-				axes.xAxis.position = new BABYLON.Vector3(0, 30, 0);
-				axes.yAxis.position = new BABYLON.Vector3(0, 30, 0);
-				axes.zAxis.position = new BABYLON.Vector3(0, 30, 0);
+				//const axes = new AxesViewer(this.scene, 30);
+				//axes.xAxis.position = new BABYLON.Vector3(0, 30, 0);
+				//axes.yAxis.position = new BABYLON.Vector3(0, 30, 0);
+				//axes.zAxis.position = new BABYLON.Vector3(0, 30, 0);
 			}
 
 			if (!IN_WEB_WORKER) {
@@ -538,8 +539,15 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 		const screenMeshes = envObj.meshes.filter(m => m.name.includes('__SCREEN__'));
 		const screenMaterial = screenMeshes[0].material as BABYLON.PBRMaterial;
 
+		const videoEl = document.createElement('video');
+		videoEl.crossOrigin = 'anonymous';
+
+		const hls = new Hls();
+		hls.loadSource('https://tvs.misskey.io/official/hq-beta/ts:abr.m3u8');
+		hls.attachMedia(videoEl);
+
 		this.timer.setTimeout(() => {
-			const tex = new BABYLON.VideoTexture('', 'http://syu-win.local:3000/files/931c02c3-6238-4c29-9371-06bab78950bb', this.scene, true, true);
+			const tex = new BABYLON.VideoTexture('', videoEl, this.scene, true, true);
 			tex.level = 0.5;
 			tex.video.loop = true;
 			tex.video.volume = 0.25;

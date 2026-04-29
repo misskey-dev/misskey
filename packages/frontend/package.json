@@ -18,9 +18,9 @@
 	"dependencies": {
 		"@analytics/google-analytics": "1.1.0",
 		"@babylonjs/core": "9.3.4",
+		"@babylonjs/inspector": "9.3.4",
 		"@babylonjs/loaders": "9.3.4",
 		"@babylonjs/materials": "9.3.4",
-		"@babylonjs/inspector": "9.3.4",
 		"@discordapp/twemoji": "16.0.1",
 		"@github/webauthn-json": "2.1.1",
 		"@mcaptcha/core-glue": "0.1.0-alpha-5",
@@ -48,6 +48,7 @@
 		"execa": "9.6.1",
 		"exifreader": "4.38.1",
 		"frontend-shared": "workspace:*",
+		"hls.js": "1.6.16",
 		"i18n": "workspace:*",
 		"icons-subsetter": "workspace:*",
 		"idb-keyval": "6.2.2",
