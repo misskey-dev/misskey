@@ -5,9 +5,9 @@
 
 // TODO: なんでもかんでもos.tsに突っ込むのやめたいのでよしなに分割する
 
-import { markRaw, ref, defineAsyncComponent, nextTick, effectScope, isRef, shallowReactive, watch } from 'vue';
+import { markRaw, ref, defineAsyncComponent, nextTick } from 'vue';
 import * as Misskey from 'misskey-js';
-import type { Component, MaybeRef, ShallowReactive } from 'vue';
+import type { Component, MaybeRef } from 'vue';
 import type { ComponentEmit, ComponentProps as CP } from 'vue-component-type-helpers';
 import type { Form, GetFormResultType } from '@/utility/form.js';
 import type { MenuItem } from '@/types/menu.js';
@@ -145,7 +145,7 @@ let popupIdCount = 0;
 export const popups = ref<{
 	id: number;
 	component: Component;
-	props: ShallowReactive<Record<string, any>>;
+	props: Record<string, any>;
 	events: Record<string, any>;
 }[]>([]);
 
@@ -183,32 +183,6 @@ type ComponentEmitsObject<C extends Component, IE = OverloadToUnion<ComponentEmi
 		: (...args: any[]) => void;
 }>;
 
-// ref をそのまま保持せず popup 側の reactive props に同期するようにして、スコープをまたいでリアクティビティが切れるのを防止する
-function normalizePopupProps<T extends Record<string, any>>(props: T): {
-	resolvedProps: ShallowReactive<T>;
-	stopSync: () => void;
-} {
-	const resolvedProps = shallowReactive<T>({} as T) as T; // shallowReactiveの返り値はreadonlyだが、実際には書き換えるので元の型で扱う
-	const scope = effectScope();
-
-	scope.run(() => {
-		for (const [key, value] of Object.entries(props)) {
-			if (isRef(value)) {
-				watch(value, (resolvedValue) => {
-					resolvedProps[key as keyof T] = resolvedValue as T[keyof T];
-				}, { immediate: true });
-			} else {
-				resolvedProps[key as keyof T] = value;
-			}
-		}
-	});
-
-	return {
-		resolvedProps: resolvedProps as ShallowReactive<T>,
-		stopSync: () => scope.stop(),
-	};
-}
-
 // NOTE: ジェネリック型つきのコンポーネントでは、emitsの型推論がうまく働かない（型変数を取り出すことはできないため）
 // NOTE: emitsがOverloadToUnionで対応しているオーバーロードの数を超える場合は、OverloadToUnionの個数を増やせばOK
 export function popup<T extends Component>(
@@ -219,24 +193,20 @@ export function popup<T extends Component>(
 	markRaw(component);
 
 	const id = ++popupIdCount;
-	const { resolvedProps, stopSync } = normalizePopupProps(props);
-	let disposed = false;
 	const dispose = () => {
-		if (disposed) return;
-		disposed = true;
-		stopSync();
-
-		nextTick(() => {
+		// このsetTimeoutが無いと挙動がおかしくなる(autocompleteが閉じなくなる)。Vueのバグ？
+		window.setTimeout(() => {
 			popups.value = popups.value.filter(p => p.id !== id);
-		});
+		}, 0);
 	};
-
-	popups.value.push({
+	const state = {
 		component,
-		props: resolvedProps,
+		props,
 		events,
 		id,
-	});
+	};
+
+	popups.value.push(state);
 
 	return {
 		dispose,
@@ -271,7 +241,27 @@ export async function popupAsyncWithDialog<T extends Component>(
 	window.clearTimeout(timer);
 	closeWaiting();
 
-	return popup(component, props, events);
+	markRaw(component);
+
+	const id = ++popupIdCount;
+	const dispose = () => {
+		// このsetTimeoutが無いと挙動がおかしくなる(autocompleteが閉じなくなる)。Vueのバグ？
+		window.setTimeout(() => {
+			popups.value = popups.value.filter(p => p.id !== id);
+		}, 0);
+	};
+	const state = {
+		component,
+		props,
+		events,
+		id,
+	};
+
+	popups.value.push(state);
+
+	return {
+		dispose,
+	};
 }
 
 export function pageWindow(path: string) {
