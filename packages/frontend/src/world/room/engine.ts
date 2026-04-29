@@ -123,7 +123,6 @@ export type RoomEngineEvents = {
 
 export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	private useGlow: boolean;
-	private canvas: HTMLCanvasElement;
 	private engine: BABYLON.WebGPUEngine;
 	public scene: BABYLON.Scene;
 	private shadowGeneratorForRoomLight: BABYLON.ShadowGenerator | null = null;
@@ -222,7 +221,6 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	}> = new EventEmitter();
 
 	constructor(roomState: RoomState, options: {
-		canvas: HTMLCanvasElement;
 		engine: BABYLON.WebGPUEngine;
 		graphicsQuality: number;
 		fps: number | null;
@@ -238,7 +236,6 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 				options: { ...getObjectDef(o.type).options.default, ...o.options },
 			})),
 		};
-		this.canvas = options.canvas;
 
 		this.fps = options.fps;
 		this.useGlow = options.graphicsQuality >= GRAPHICS_QUALITY_MEDIUM;

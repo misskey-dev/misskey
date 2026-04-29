@@ -25,7 +25,6 @@ onmessage = async (event) => {
 			if (event.data.options.resolution === 0.5) babylonEngine.setHardwareScalingLevel(2);
 
 			engine = new RoomEngine(roomState, {
-				canvas,
 				engine: babylonEngine,
 				...event.data.options,
 			});

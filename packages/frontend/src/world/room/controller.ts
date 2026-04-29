@@ -100,7 +100,6 @@ export class RoomController {
 			if (this.options.resolution === 0.5) babylonEngine.setHardwareScalingLevel(2);
 
 			this.engine = new RoomEngine(this.roomState.value, {
-				canvas,
 				engine: babylonEngine,
 				...this.options,
 			});
