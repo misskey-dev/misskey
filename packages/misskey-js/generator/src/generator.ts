@@ -204,7 +204,7 @@ async function generateEndpoints(
 
 async function generateApiClientJSDoc(
 	openApiDocs: OpenAPIV3_1.Document,
-	apiTypesFileName: string,
+	apiClientFileName: string,
 	endpointsFileName: string,
 	warningsOutputPath: string,
 ) {
@@ -238,29 +238,31 @@ async function generateApiClientJSDoc(
 
 	const endpointOutputLine: string[] = [];
 
-	endpointOutputLine.push(`import type { SwitchCaseResponseType } from '${toImportPath(apiTypesFileName)}';`);
+	endpointOutputLine.push(`import type { SwitchCaseResponseType } from '${toImportPath(apiClientFileName)}';`);
 	endpointOutputLine.push(`import type { Endpoints } from '${toImportPath(endpointsFileName)}';`);
 	endpointOutputLine.push('');
 
-	endpointOutputLine.push('export interface APIClient {');
+	endpointOutputLine.push(`declare module '${toImportPath(apiClientFileName)}' {`);
+	endpointOutputLine.push('  export interface APIClient {');
 	for (let i = 0; i < endpoints.length; i++) {
 		const endpoint = endpoints[i];
 
 		endpointOutputLine.push(
-			'  /**',
-			`   * ${endpoint.description.split('\n').join('\n     * ')}`,
-			'   */',
-			`  request<E extends '${endpoint.path}', P extends Endpoints[E][\'req\']>(`,
-			'    endpoint: E,',
-			'    params: P,',
-			'    credential?: string | null,',
-			'  ): Promise<SwitchCaseResponseType<E, P>>;',
+			'    /**',
+			`     * ${endpoint.description.split('\n').join('\n     * ')}`,
+			'     */',
+			`    request<E extends '${endpoint.path}', P extends Endpoints[E][\'req\']>(`,
+			'      endpoint: E,',
+			'      params: P,',
+			'      credential?: string | null,',
+			'    ): Promise<SwitchCaseResponseType<E, P>>;',
 		);
 
 		if (i < endpoints.length - 1) {
 			endpointOutputLine.push('\n');
 		}
 	}
+	endpointOutputLine.push('  }');
 	endpointOutputLine.push('}');
 	endpointOutputLine.push('');
 
@@ -412,7 +414,7 @@ async function main() {
 	await generateEndpoints(openApiDocs, typeFileName, entitiesFileName, endpointFileName);
 
 	const apiClientWarningFileName = `${generatePath}/apiClientJSDoc.ts`;
-	await generateApiClientJSDoc(openApiDocs, '../api.types.ts', endpointFileName, apiClientWarningFileName);
+	await generateApiClientJSDoc(openApiDocs, '../api.ts', endpointFileName, apiClientWarningFileName);
 }
 
 main();
