@@ -9,8 +9,7 @@
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"devDependencies": {
-		"@types/node": "24.12.2",
-		"@typescript-eslint/parser": "8.58.1",
+		"@typescript-eslint/parser": "8.58.2",
 		"@typescript/lib-webworker": "npm:@types/serviceworker@0.0.74",
 		"eslint-plugin-import": "2.32.0",
 		"i18n": "workspace:*",

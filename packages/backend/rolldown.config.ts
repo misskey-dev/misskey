@@ -74,6 +74,7 @@ export default defineConfig((args) => {
 		're2',
 		'ipaddr.js',
 		'oauth2orize',
+		'file-type',
 	];
 
 	if (isE2E) {
