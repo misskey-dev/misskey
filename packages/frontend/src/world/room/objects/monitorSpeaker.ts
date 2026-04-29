@@ -22,9 +22,9 @@ export const monitorSpeaker = defineObject({
 	},
 	placement: 'top',
 	hasCollisions: false,
+	canPreMeshesMerging: true,
 	createInstance: ({ options, model }) => {
-		const bodyMesh = model.findMesh('__X_BODY__');
-		const bodyMaterial = bodyMesh.material as BABYLON.PBRMaterial;
+		const bodyMaterial = model.findMaterial('__X_BODY__');
 
 		const applyColor = () => {
 			const [r, g, b] = options.color;

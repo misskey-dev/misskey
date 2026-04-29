@@ -17,6 +17,7 @@ export const mug = defineObject({
 	},
 	placement: 'top',
 	hasCollisions: false,
+	canPreMeshesMerging: true,
 	createInstance: ({ scene, root }) => {
 		let yugeDispose: (() => void) | null = null;
 

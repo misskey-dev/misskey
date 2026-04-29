@@ -15,6 +15,7 @@ export const mixer = defineObject({
 	placement: 'top',
 	hasCollisions: false,
 	hasTexture: true,
+	canPreMeshesMerging: true,
 	createInstance: () => {
 		return {
 			interactions: {},

@@ -13,6 +13,7 @@ export const letterCase = defineObject({
 		default: {},
 	},
 	placement: 'top',
+	hasCollisions: false,
 	canPreMeshesMerging: true,
 	createInstance: () => {
 		return {

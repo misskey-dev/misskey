@@ -14,6 +14,7 @@ export const plant2 = defineObject({
 	},
 	placement: 'top',
 	hasTexture: true,
+	canPreMeshesMerging: true,
 	createInstance: () => {
 		return {
 			interactions: {},
