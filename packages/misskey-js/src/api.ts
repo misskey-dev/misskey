@@ -33,6 +33,7 @@ export type FetchLike = (input: string, init?: {
 	json(): Promise<any>;
 }>;
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class APIClient {
 	public origin: string;
 	public credential: string | null | undefined;
@@ -126,5 +127,5 @@ export class APIClient {
 	}
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type, @typescript-eslint/no-unsafe-declaration-merging
 export interface APIClient extends APIClientJSDoc {}
