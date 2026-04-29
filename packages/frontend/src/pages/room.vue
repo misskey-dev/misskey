@@ -84,146 +84,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkSelect>
 
 				<template v-if="controller.roomState.value.heya.type === 'simple'">
-					<div>
-						<div>Wall N</div>
-						<MkSelect
-							:items="[
-								{ label: 'None', value: null },
-								{ label: 'Wood', value: 'wood' },
-								{ label: 'Concrete', value: 'concrete' },
-							]" :modelValue="controller.roomState.value.heya.options.wallN.material" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallN: { ...controller.roomState.value.heya.options.wallN, material: v } }); }"
-						>
-							<template #label>wallpaper</template>
-						</MkSelect>
-						<MkInput :modelValue="getHex(controller.roomState.value.heya.options.wallN.color)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallN: { ...controller.roomState.value.heya.options.wallN, color: c } }); }">
-							<template #label>color</template>
-						</MkInput>
-						<hr>
-						<MkSwitch :modelValue="controller.roomState.value.heya.options.wallN.withHari" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallN: { ...controller.roomState.value.heya.options.wallN, withHari: v } }); }">
-							<template #label>with Hari</template>
-						</MkSwitch>
-						<MkSelect
-							:items="[
-								{ label: 'None', value: null },
-								{ label: 'Wood', value: 'wood' },
-								{ label: 'Concrete', value: 'concrete' },
-							]" :modelValue="controller.roomState.value.heya.options.wallN.hariMaterial" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallN: { ...controller.roomState.value.heya.options.wallN, hariMaterial: v } }); }"
-						>
-							<template #label>hari material</template>
-						</MkSelect>
-						<MkInput :modelValue="getHex(controller.roomState.value.heya.options.wallN.hariColor)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallN: { ...controller.roomState.value.heya.options.wallN, hariColor: c } }); }">
-							<template #label>hari color</template>
-						</MkInput>
-						<hr>
-						<MkSwitch :modelValue="controller.roomState.value.heya.options.wallN.withHabaki" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallN: { ...controller.roomState.value.heya.options.wallN, withHabaki: v } }); }">
-							<template #label>with Habaki</template>
-						</MkSwitch>
-					</div>
-					<div>
-						<div>Wall E</div>
-						<MkSelect
-							:items="[
-								{ label: 'None', value: null },
-								{ label: 'Wood', value: 'wood' },
-								{ label: 'Concrete', value: 'concrete' },
-							]" :modelValue="controller.roomState.value.heya.options.wallE.material" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallE: { ...controller.roomState.value.heya.options.wallE, material: v } }); }"
-						>
-							<template #label>wallpaper</template>
-						</MkSelect>
-						<MkInput :modelValue="getHex(controller.roomState.value.heya.options.wallE.color)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallE: { ...controller.roomState.value.heya.options.wallE, color: c } }); }">
-							<template #label>color</template>
-						</MkInput>
-						<hr>
-						<MkSwitch :modelValue="controller.roomState.value.heya.options.wallE.withHari" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallE: { ...controller.roomState.value.heya.options.wallE, withHari: v } }); }">
-							<template #label>with Hari</template>
-						</MkSwitch>
-						<MkSelect
-							:items="[
-								{ label: 'None', value: null },
-								{ label: 'Wood', value: 'wood' },
-								{ label: 'Concrete', value: 'concrete' },
-							]" :modelValue="controller.roomState.value.heya.options.wallE.hariMaterial" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallE: { ...controller.roomState.value.heya.options.wallE, hariMaterial: v } }); }"
-						>
-							<template #label>hari material</template>
-						</MkSelect>
-						<MkInput :modelValue="getHex(controller.roomState.value.heya.options.wallE.hariColor)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallE: { ...controller.roomState.value.heya.options.wallE, hariColor: c } }); }">
-							<template #label>hari color</template>
-						</MkInput>
-						<hr>
-						<MkSwitch :modelValue="controller.roomState.value.heya.options.wallE.withHabaki" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallE: { ...controller.roomState.value.heya.options.wallE, withHabaki: v } }); }">
-							<template #label>with Habaki</template>
-						</MkSwitch>
-					</div>
-					<div>
-						<div>Wall S</div>
-						<MkSelect
-							:items="[
-								{ label: 'None', value: null },
-								{ label: 'Wood', value: 'wood' },
-								{ label: 'Concrete', value: 'concrete' },
-							]" :modelValue="controller.roomState.value.heya.options.wallS.material" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallS: { ...controller.roomState.value.heya.options.wallS, material: v } }); }"
-						>
-							<template #label>wallpaper</template>
-						</MkSelect>
-						<MkInput :modelValue="getHex(controller.roomState.value.heya.options.wallS.color)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallS: { ...controller.roomState.value.heya.options.wallS, color: c } }); }">
-							<template #label>color</template>
-						</MkInput>
-						<hr>
-						<MkSwitch :modelValue="controller.roomState.value.heya.options.wallS.withHari" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallS: { ...controller.roomState.value.heya.options.wallS, withHari: v } }); }">
-							<template #label>with Hari</template>
-						</MkSwitch>
-						<MkSelect
-							:items="[
-								{ label: 'None', value: null },
-								{ label: 'Wood', value: 'wood' },
-								{ label: 'Concrete', value: 'concrete' },
-							]" :modelValue="controller.roomState.value.heya.options.wallS.hariMaterial" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallS: { ...controller.roomState.value.heya.options.wallS, hariMaterial: v } }); }"
-						>
-							<template #label>hari material</template>
-						</MkSelect>
-						<MkInput :modelValue="getHex(controller.roomState.value.heya.options.wallS.hariColor)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallS: { ...controller.roomState.value.heya.options.wallS, hariColor: c } }); }">
-							<template #label>hari color</template>
-						</MkInput>
-						<hr>
-						<MkSwitch :modelValue="controller.roomState.value.heya.options.wallS.withHabaki" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallS: { ...controller.roomState.value.heya.options.wallS, withHabaki: v } }); }">
-							<template #label>with Habaki</template>
-						</MkSwitch>
-					</div>
-					<div>
-						<div>Wall W</div>
-						<MkSelect
-							:items="[
-								{ label: 'None', value: null },
-								{ label: 'Wood', value: 'wood' },
-								{ label: 'Concrete', value: 'concrete' },
-							]" :modelValue="controller.roomState.value.heya.options.wallW.material" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallW: { ...controller.roomState.value.heya.options.wallW, material: v } }); }"
-						>
-							<template #label>wallpaper</template>
-						</MkSelect>
-						<MkInput :modelValue="getHex(controller.roomState.value.heya.options.wallW.color)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallW: { ...controller.roomState.value.heya.options.wallW, color: c } }); }">
-							<template #label>color</template>
-						</MkInput>
-						<hr>
-						<MkSwitch :modelValue="controller.roomState.value.heya.options.wallW.withHari" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallW: { ...controller.roomState.value.heya.options.wallW, withHari: v } }); }">
-							<template #label>with Hari</template>
-						</MkSwitch>
-						<MkSelect
-							:items="[
-								{ label: 'None', value: null },
-								{ label: 'Wood', value: 'wood' },
-								{ label: 'Concrete', value: 'concrete' },
-							]" :modelValue="controller.roomState.value.heya.options.wallW.hariMaterial" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallW: { ...controller.roomState.value.heya.options.wallW, hariMaterial: v } }); }"
-						>
-							<template #label>hari material</template>
-						</MkSelect>
-						<MkInput :modelValue="getHex(controller.roomState.value.heya.options.wallW.hariColor)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallW: { ...controller.roomState.value.heya.options.wallW, hariColor: c } }); }">
-							<template #label>hari color</template>
-						</MkInput>
-						<hr>
-						<MkSwitch :modelValue="controller.roomState.value.heya.options.wallW.withHabaki" @update:modelValue="v => { controller.updateHeyaOptions({ ...controller.roomState.value.heya.options, wallW: { ...controller.roomState.value.heya.options.wallW, withHabaki: v } }); }">
-							<template #label>with Habaki</template>
-						</MkSwitch>
-					</div>
+					<XDefaultHeyaOptions :options="controller.roomState.value.heya.options" @update="v => controller.updateHeyaOptions(v)"></XDefaultHeyaOptions>
 				</template>
 			</div>
 		</div>
@@ -239,6 +100,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import * as BABYLON from '@babylonjs/core';
 import XObjectCustomizeForm from './room.object-customize-form.vue';
+import XDefaultHeyaOptions from './room.default-heya-options.vue';
 import type { RoomControllerOptions } from '@/world/room/controller.js';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
@@ -311,21 +173,39 @@ const data = localStorage.getItem('roomData') != null ? JSON.parse(localStorage.
 		options: {
 			dimension: [300, 300],
 			window: 'demado',
-			wallN: {
-				material: null,
-				color: [0.9, 0.9, 0.9],
-			},
-			wallE: {
-				material: null,
-				color: [0.9, 0.9, 0.9],
-			},
-			wallS: {
-				material: null,
-				color: [0.9, 0.9, 0.9],
-			},
-			wallW: {
-				material: null,
-				color: [0.9, 0.9, 0.9],
+			walls: {
+				n: {
+					material: null,
+					color: [0.9, 0.9, 0.9],
+					withHari: false,
+					hariMaterial: null,
+					hariColor: [0.8, 0.8, 0.8],
+					withHabaki: false,
+				},
+				e: {
+					material: null,
+					color: [0.9, 0.9, 0.9],
+					withHari: false,
+					hariMaterial: null,
+					hariColor: [0.8, 0.8, 0.8],
+					withHabaki: false,
+				},
+				s: {
+					material: null,
+					color: [0.9, 0.9, 0.9],
+					withHari: false,
+					hariMaterial: null,
+					hariColor: [0.8, 0.8, 0.8],
+					withHabaki: false,
+				},
+				w: {
+					material: null,
+					color: [0.9, 0.9, 0.9],
+					withHari: false,
+					hariMaterial: null,
+					hariColor: [0.8, 0.8, 0.8],
+					withHabaki: false,
+				},
 			},
 			flooring: {
 				material: 'wood',
@@ -341,10 +221,42 @@ const data = localStorage.getItem('roomData') != null ? JSON.parse(localStorage.
 };
 
 // 後方互換性のため
-if (data.heya.options.wallE.hariColor == null) data.heya.options.wallE.hariColor = [0.8, 0.8, 0.8];
-if (data.heya.options.wallN.hariColor == null) data.heya.options.wallN.hariColor = [0.8, 0.8, 0.8];
-if (data.heya.options.wallS.hariColor == null) data.heya.options.wallS.hariColor = [0.8, 0.8, 0.8];
-if (data.heya.options.wallW.hariColor == null) data.heya.options.wallW.hariColor = [0.8, 0.8, 0.8];
+if (data.heya.options.walls == null) {
+	data.heya.options.walls = {
+		n: {
+			material: null,
+			color: [0.9, 0.9, 0.9],
+			withHari: false,
+			hariMaterial: null,
+			hariColor: [0.8, 0.8, 0.8],
+			withHabaki: false,
+		},
+		e: {
+			material: null,
+			color: [0.9, 0.9, 0.9],
+			withHari: false,
+			hariMaterial: null,
+			hariColor: [0.8, 0.8, 0.8],
+			withHabaki: false,
+		},
+		s: {
+			material: null,
+			color: [0.9, 0.9, 0.9],
+			withHari: false,
+			hariMaterial: null,
+			hariColor: [0.8, 0.8, 0.8],
+			withHabaki: false,
+		},
+		w: {
+			material: null,
+			color: [0.9, 0.9, 0.9],
+			withHari: false,
+			hariMaterial: null,
+			hariColor: [0.8, 0.8, 0.8],
+			withHabaki: false,
+		},
+	};
+}
 
 let latestData = deepClone(data);
 

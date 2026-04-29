@@ -38,10 +38,12 @@ type SimpleHeyaWallBase = {
 export type SimpleHeyaOptions = {
 	dimension: [number, number];
 	window: 'none' | 'kosidakamado' | 'demado' | 'hakidasimado';
-	wallN: SimpleHeyaWallBase;
-	wallE: SimpleHeyaWallBase;
-	wallS: SimpleHeyaWallBase;
-	wallW: SimpleHeyaWallBase;
+	walls: {
+		n: SimpleHeyaWallBase;
+		s: SimpleHeyaWallBase;
+		w: SimpleHeyaWallBase;
+		e: SimpleHeyaWallBase;
+	};
 	flooring: {
 		material: null | 'wood' | 'concrete';
 		color: [number, number, number];
@@ -59,18 +61,24 @@ export type JapaneseHeyaOptions = {
 export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 	private loaderResult: BABYLON.ISceneLoaderAsyncResult | null = null;
 	private meshes: BABYLON.Mesh[] = [];
-	private wallNRoot: BABYLON.TransformNode | null = null;
-	private wallSRoot: BABYLON.TransformNode | null = null;
-	private wallWRoot: BABYLON.TransformNode | null = null;
-	private wallERoot: BABYLON.TransformNode | null = null;
-	private wallNMaterial: BABYLON.PBRMaterial | null = null;
-	private wallSMaterial: BABYLON.PBRMaterial | null = null;
-	private wallWMaterial: BABYLON.PBRMaterial | null = null;
-	private wallEMaterial: BABYLON.PBRMaterial | null = null;
-	private wallNHariMaterial: BABYLON.PBRMaterial | null = null;
-	private wallSHariMaterial: BABYLON.PBRMaterial | null = null;
-	private wallWHariMaterial: BABYLON.PBRMaterial | null = null;
-	private wallEHariMaterial: BABYLON.PBRMaterial | null = null;
+	private wallRoots: {
+		n: BABYLON.TransformNode;
+		s: BABYLON.TransformNode;
+		w: BABYLON.TransformNode;
+		e: BABYLON.TransformNode;
+	} | null = null;
+	private wallMaterials: {
+		n: BABYLON.PBRMaterial;
+		s: BABYLON.PBRMaterial;
+		w: BABYLON.PBRMaterial;
+		e: BABYLON.PBRMaterial;
+	} | null = null;
+	private wallHariMaterials: {
+		n: BABYLON.PBRMaterial;
+		s: BABYLON.PBRMaterial;
+		w: BABYLON.PBRMaterial;
+		e: BABYLON.PBRMaterial;
+	} | null = null;
 
 	constructor(onMeshUpdatedCallback?: ((meshes: BABYLON.AbstractMesh[]) => void) | null) {
 		super(onMeshUpdatedCallback);
@@ -104,47 +112,36 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 			}
 		}
 
-		this.wallNRoot = this.loaderResult.transformNodes.find(t => t.name.includes('__WALL_N__'))!;
-		this.wallSRoot = this.loaderResult.transformNodes.find(t => t.name.includes('__WALL_S__'))!;
-		this.wallWRoot = this.loaderResult.transformNodes.find(t => t.name.includes('__WALL_W__'))!;
-		this.wallERoot = this.loaderResult.transformNodes.find(t => t.name.includes('__WALL_E__'))!;
+		this.wallRoots = {
+			n: this.loaderResult.transformNodes.find(t => t.name.includes('__WALL_N__'))!,
+			s: this.loaderResult.transformNodes.find(t => t.name.includes('__WALL_S__'))!,
+			w: this.loaderResult.transformNodes.find(t => t.name.includes('__WALL_W__'))!,
+			e: this.loaderResult.transformNodes.find(t => t.name.includes('__WALL_E__'))!,
+		};
 
 		const wallMaterial = findMaterial(this.meshes[0], '__X_WALL__');
-		this.wallNMaterial = wallMaterial.clone('wallNMaterial');
-		this.wallSMaterial = wallMaterial.clone('wallSMaterial');
-		this.wallWMaterial = wallMaterial.clone('wallWMaterial');
-		this.wallEMaterial = wallMaterial.clone('wallEMaterial');
-
-		for (const m of this.wallNRoot.getChildMeshes().filter(m => m.material === wallMaterial)) {
-			m.material = this.wallNMaterial;
-		}
-		for (const m of this.wallSRoot.getChildMeshes().filter(m => m.material === wallMaterial)) {
-			m.material = this.wallSMaterial;
-		}
-		for (const m of this.wallWRoot.getChildMeshes().filter(m => m.material === wallMaterial)) {
-			m.material = this.wallWMaterial;
-		}
-		for (const m of this.wallERoot.getChildMeshes().filter(m => m.material === wallMaterial)) {
-			m.material = this.wallEMaterial;
-		}
+		this.wallMaterials = {
+			n: wallMaterial.clone('wallNMaterial'),
+			s: wallMaterial.clone('wallSMaterial'),
+			w: wallMaterial.clone('wallWMaterial'),
+			e: wallMaterial.clone('wallEMaterial'),
+		};
 
 		const hariMaterial = findMaterial(this.meshes[0], '__X_HARI__');
-		this.wallNHariMaterial = hariMaterial.clone('wallNHariMaterial');
-		this.wallSHariMaterial = hariMaterial.clone('wallSHariMaterial');
-		this.wallWHariMaterial = hariMaterial.clone('wallWHariMaterial');
-		this.wallEHariMaterial = hariMaterial.clone('wallEHariMaterial');
+		this.wallHariMaterials = {
+			n: hariMaterial.clone('wallNHariMaterial'),
+			s: hariMaterial.clone('wallSHariMaterial'),
+			w: hariMaterial.clone('wallWHariMaterial'),
+			e: hariMaterial.clone('wallEHariMaterial'),
+		};
 
-		for (const m of this.wallNRoot.getChildMeshes().filter(m => m.material === hariMaterial)) {
-			m.material = this.wallNHariMaterial;
-		}
-		for (const m of this.wallSRoot.getChildMeshes().filter(m => m.material === hariMaterial)) {
-			m.material = this.wallSHariMaterial;
-		}
-		for (const m of this.wallWRoot.getChildMeshes().filter(m => m.material === hariMaterial)) {
-			m.material = this.wallWHariMaterial;
-		}
-		for (const m of this.wallERoot.getChildMeshes().filter(m => m.material === hariMaterial)) {
-			m.material = this.wallEHariMaterial;
+		for (const [k, v] of Object.entries(this.wallRoots)) {
+			for (const m of v.getChildMeshes().filter(m => m.material === wallMaterial)) {
+				m.material = this.wallMaterials[k];
+			}
+			for (const m of v.getChildMeshes().filter(m => m.material === hariMaterial)) {
+				m.material = this.wallHariMaterials[k];
+			}
 		}
 
 		await this.applyOptions(options);
@@ -153,18 +150,9 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 	public applyOptions(options: SimpleHeyaOptions) {
 		// TODO: 返り値をpromiseにしてちゃんとテクスチャが読み終わってからresolveする
 
-		const applyWall = (wall: 'N' | 'S' | 'W' | 'E') => {
-			const wallRoot =
-				wall === 'N' ? this.wallNRoot :
-				wall === 'S' ? this.wallSRoot :
-				wall === 'W' ? this.wallWRoot :
-				this.wallERoot;
-
-			const wallOptions =
-				wall === 'N' ? options.wallN :
-				wall === 'S' ? options.wallS :
-				wall === 'W' ? options.wallW :
-				options.wallE;
+		for (const type of ['n', 's', 'w', 'e'] as const) {
+			const wallRoot = this.wallRoots[type];
+			const wallOptions = options.walls[type];
 
 			for (const mesh of wallRoot.getChildMeshes()) {
 				if (mesh.name.includes('__X_HARI__')) {
@@ -175,11 +163,7 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 			}
 
 			{
-				const targetMaterial =
-					wall === 'N' ? this.wallNMaterial :
-					wall === 'S' ? this.wallSMaterial :
-					wall === 'W' ? this.wallWMaterial :
-					this.wallEMaterial;
+				const targetMaterial = this.wallMaterials[type];
 
 				targetMaterial.unfreeze();
 				targetMaterial.albedoColor = new BABYLON.Color3(...wallOptions.color);
@@ -199,11 +183,7 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 			}
 
 			{
-				const targetMaterial =
-					wall === 'N' ? this.wallNHariMaterial :
-					wall === 'S' ? this.wallSHariMaterial :
-					wall === 'W' ? this.wallWHariMaterial :
-					this.wallEHariMaterial;
+				const targetMaterial = this.wallHariMaterials[type];
 
 				targetMaterial.unfreeze();
 				targetMaterial.albedoColor = new BABYLON.Color3(...wallOptions.hariColor);
@@ -221,12 +201,7 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 
 				targetMaterial.freeze();
 			}
-		};
-
-		applyWall('N');
-		applyWall('S');
-		applyWall('W');
-		applyWall('E');
+		}
 
 		this.onMeshUpdatedCallback?.(this.meshes);
 	}
@@ -243,9 +218,11 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 		for (const m of this.meshes) {
 			m.dispose();
 		}
-		this.wallNMaterial?.dispose();
-		this.wallSMaterial?.dispose();
-		this.wallWMaterial?.dispose();
-		this.wallEMaterial?.dispose();
+		for (const m of Object.values(this.wallMaterials ?? {})) {
+			m.dispose();
+		}
+		for (const m of Object.values(this.wallHariMaterials ?? {})) {
+			m.dispose();
+		}
 	}
 }
