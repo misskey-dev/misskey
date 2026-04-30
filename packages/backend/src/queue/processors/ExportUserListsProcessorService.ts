@@ -70,7 +70,7 @@ export class ExportUserListsProcessorService {
 				const usersWithReplies = new Set(memberships.filter(m => m.withReplies).map(m => m.userId));
 
 				for (const u of users) {
-					const acct = this.utilityService.getFullApAccount(u.username, u.host);
+					const acct = this.utilityService.getFullApAccount(u);
 					// 3rd column and later will be key=value pairs
 					const content = `${list.name},${acct},withReplies=${usersWithReplies.has(u.id)}`;
 					await new Promise<void>((res, rej) => {

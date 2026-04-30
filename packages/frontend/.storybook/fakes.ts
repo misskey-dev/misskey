@@ -250,6 +250,7 @@ export function userLite(id = 'someuserid', username = 'miskist', host: entities
 		id,
 		username,
 		host,
+		acct: host ? `@${username}@${host}` : null,
 		name,
 		onlineStatus: 'unknown',
 		avatarUrl: 'https://github.com/misskey-dev/misskey/blob/master/packages/frontend/assets/about-icon.png?raw=true',

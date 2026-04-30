@@ -1,3 +1,5 @@
+import { UserLite } from './entities.js';
+
 export type Acct = {
 	username: string;
 	host: string | null;
@@ -5,6 +7,7 @@ export type Acct = {
 
 export function parse(_acct: string): Acct {
 	let acct = _acct;
+	if (acct.startsWith('acct:')) acct = acct.substring(5);
 	if (acct.startsWith('@')) acct = acct.substring(1);
 	const split = acct.split('@', 2);
 	return { username: split[0], host: split[1] || null };
@@ -12,4 +15,12 @@ export function parse(_acct: string): Acct {
 
 export function toString(acct: Acct): string {
 	return acct.host == null ? acct.username : `${acct.username}@${acct.host}`;
+}
+
+export function fromUser(u: UserLite): Acct {
+	return u.acct ? parse(u.acct) : { username: u.username, host: u.host };
+}
+
+export function validate(acct: string): boolean {
+	return acct.match(/^(acct:)?[@]?[^@]+@[^@]+\.[^@]+$/) !== null;
 }

@@ -69,9 +69,10 @@ function _fetch_() {
 			uri = uri.slice(5);
 		}
 		promise = misskeyApi('users/show', Misskey.acct.parse(uri)).then(user => {
+			const acct = Misskey.acct.fromUser(user);
 			mainRouter.replace('/@:acct/:page?', {
 				params: {
-					acct: user.host != null ? `${user.username}@${user.host}` : user.username,
+					acct: Misskey.acct.toString(acct),
 				},
 			});
 		});

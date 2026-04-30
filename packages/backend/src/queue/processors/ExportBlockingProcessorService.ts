@@ -87,7 +87,7 @@ export class ExportBlockingProcessorService {
 						exportedCount++; continue;
 					}
 
-					const content = this.utilityService.getFullApAccount(u.username, u.host);
+					const content = this.utilityService.getFullApAccount(u);
 					await new Promise<void>((res, rej) => {
 						stream.write(content + '\n', err => {
 							if (err) {

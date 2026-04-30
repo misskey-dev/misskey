@@ -10,11 +10,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #sub>
 				<span>{{ countdownDate }}</span>
 				<span> / </span>
-				<span class="_monospace">@{{ acct(item.user) }}</span>
+				<span class="_monospace">@{{ acctFilter(item.user) }}</span>
 			</template>
 		</MkUserCardMini>
 	</MkA>
-	<button v-tooltip.noDelay="i18n.ts.note" class="_button" :class="$style.post" @click="os.post({initialText: `@${item.user.username}${item.user.host ? `@${item.user.host}` : ''} `})">
+	<button v-tooltip.noDelay="i18n.ts.note" class="_button" :class="$style.post" @click="os.post({initialText: `@${Misskey.acct.toString(acct)}`})">
 		<i class="ti-fw ti ti-confetti" :class="$style.postIcon"></i>
 	</button>
 </div>
@@ -27,7 +27,7 @@ import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { useLowresTime } from '@/composables/use-lowres-time.js';
-import { userPage, acct } from '@/filters/user.js';
+import { userPage, acct as acctFilter } from '@/filters/user.js';
 
 const props = defineProps<{
 	item: Misskey.entities.UsersGetFollowingUsersByBirthdayResponse[number];
@@ -53,6 +53,10 @@ const countdownDate = computed(() => {
 	} else {
 		return i18n.tsx._ago.daysAgo({ n: Math.abs(days) });
 	}
+});
+
+const acct = computed(() => {
+	return Misskey.acct.fromUser(props.item.user);
 });
 </script>
 

@@ -8,8 +8,10 @@ import { HttpResponse, http } from 'msw';
 import search_ from './search.vue';
 import { userDetailed } from '@/../.storybook/fakes.js';
 import { commonHandlers } from '@/../.storybook/mocks.js';
+import * as Misskey from 'misskey-js';
 
 const localUser = userDetailed('someuserid', 'miskist', null, 'Local Misskey User');
+const localAcct = Misskey.acct.fromUser(localUser);
 
 export const Default = {
 	render(args) {
@@ -61,8 +63,8 @@ export const WithUsernameLocal = {
 
 	args: {
 		...Default.args,
-		username: localUser.username,
-		host: localUser.host,
+		username: localAcct.username,
+		host: localAcct.host,
 	},
 	parameters: {
 		layout: 'fullscreen',

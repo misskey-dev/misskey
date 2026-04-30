@@ -23,6 +23,7 @@ import { getPluginHandlers } from '@/plugin.js';
 
 export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router = mainRouter) {
 	const meId = $i ? $i.id : null;
+	const acct = Misskey.acct.fromUser(user);
 
 	const cleanups = [] as (() => void)[];
 
@@ -171,7 +172,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 		icon: 'ti ti-at',
 		text: i18n.ts.copyUsername,
 		action: () => {
-			copyToClipboard(`@${user.username}@${user.host ?? host}`);
+			copyToClipboard(`@${acct.username}@${acct.host ?? host}`);
 		},
 	});
 
@@ -179,7 +180,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 		icon: 'ti ti-share',
 		text: i18n.ts.copyProfileUrl,
 		action: () => {
-			const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${toUnicode(user.host)}`;
+			const canonical = `@${Misskey.acct.toString(acct)}`;
 			copyToClipboard(`${url}/${canonical}`);
 		},
 	});
@@ -231,11 +232,11 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 			text: i18n.ts.searchThisUsersNotes,
 			action: () => {
 				const query = {
-						username: user.username,
+						username: acct.username,
 					} as { username: string, host?: string };
 
-				if (user.host !== null) {
-					query.host = user.host;
+				if (acct.host !== null) {
+					query.host = acct.host;
 				}
 
 				router.push('/search', {
@@ -289,7 +290,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 			text: i18n.ts.addToAntenna,
 			children: async () => {
 				const antennas = await antennasCache.fetch();
-				const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${toUnicode(user.host)}`;
+				const canonical = `@${Misskey.acct.toString(acct)}`;
 				return antennas.filter((a) => a.src === 'users').map(antenna => ({
 					text: antenna.name,
 					action: async () => {
@@ -384,7 +385,7 @@ export function getUserMenu(user: Misskey.entities.UserDetailed, router: Router 
 			icon: 'ti ti-pencil-heart',
 			text: i18n.ts.createUserSpecifiedNote,
 			action: () => {
-				const canonical = user.host === null ? `@${user.username}` : `@${user.username}@${user.host}`;
+				const canonical = `@${Misskey.acct.toString(acct)}`;
 				os.post({ specified: user, initialText: `${canonical} ` });
 			},
 		});

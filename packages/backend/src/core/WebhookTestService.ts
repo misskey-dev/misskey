@@ -63,6 +63,7 @@ function generateDummyUser(override?: Partial<MiUser>): MiUser {
 		uri: null,
 		followersUri: null,
 		token: null,
+		acct: null,
 		...override,
 	};
 }
@@ -411,6 +412,7 @@ export class WebhookTestService {
 			name: user.name,
 			username: user.username,
 			host: user.host,
+			acct: user.acct,
 			avatarUrl: (user.avatarId == null ? null : user.avatarUrl) ?? '',
 			avatarBlurhash: user.avatarId == null ? null : user.avatarBlurhash,
 			avatarDecorations: user.avatarDecorations.map(it => ({
