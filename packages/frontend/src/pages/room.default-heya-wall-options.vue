@@ -19,24 +19,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #label>color</template>
 		</MkInput>
 		<hr>
-		<MkSwitch :modelValue="options.withHari" @update:modelValue="v => { update({ withHari: v }); }">
-			<template #label>with Hari</template>
+		<MkSwitch :modelValue="options.withBeam" @update:modelValue="v => { update({ withBeam: v }); }">
+			<template #label>with Beam</template>
 		</MkSwitch>
 		<MkSelect
 			:items="[
 				{ label: 'None', value: null },
 				{ label: 'Wood', value: 'wood' },
 				{ label: 'Concrete', value: 'concrete' },
-			]" :modelValue="options.hariMaterial" @update:modelValue="v => { update({ hariMaterial: v }); }"
+			]" :modelValue="options.beamMaterial" @update:modelValue="v => { update({ beamMaterial: v }); }"
 		>
-			<template #label>hari material</template>
+			<template #label>beam material</template>
 		</MkSelect>
-		<MkInput :modelValue="getHex(options.hariColor)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) update({ hariColor: c }); }">
-			<template #label>hari color</template>
+		<MkInput :modelValue="getHex(options.beamColor)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) update({ beamColor: c }); }">
+			<template #label>beam color</template>
 		</MkInput>
 		<hr>
-		<MkSwitch :modelValue="options.withHabaki" @update:modelValue="v => { update({ withHabaki: v }); }">
-			<template #label>with Habaki</template>
+		<MkSwitch :modelValue="options.withBaseboard" @update:modelValue="v => { update({ withBaseboard: v }); }">
+			<template #label>with Baseboard</template>
 		</MkSwitch>
 	</div>
 </div>

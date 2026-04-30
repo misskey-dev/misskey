@@ -33,10 +33,10 @@ export type SimpleHeyaOptions = {
 	walls: Record<'n' | 's' | 'w' | 'e', {
 		material: null | 'wood' | 'concrete';
 		color: [number, number, number];
-		withHari: boolean;
-		hariMaterial: null | 'wood' | 'concrete';
-		hariColor: [number, number, number];
-		withHabaki: boolean;
+		withBeam: boolean;
+		beamMaterial: null | 'wood' | 'concrete';
+		beamColor: [number, number, number];
+		withBaseboard: boolean;
 	}>;
 	pillars: Record<'nw' | 'ne' | 'sw' | 'se', {
 		material: null | 'wood' | 'concrete';
@@ -64,7 +64,7 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 	private meshes: BABYLON.Mesh[] = [];
 	private wallRoots: Record<'n' | 's' | 'w' | 'e', BABYLON.TransformNode> = null as any;
 	private wallMaterials: Record<'n' | 's' | 'w' | 'e', BABYLON.PBRMaterial> | null = null;
-	private wallHariMaterials: Record<'n' | 's' | 'w' | 'e', BABYLON.PBRMaterial> | null = null;
+	private wallBeamMaterials: Record<'n' | 's' | 'w' | 'e', BABYLON.PBRMaterial> | null = null;
 	private pillarRoots: Record<'nw' | 'ne' | 'sw' | 'se', BABYLON.TransformNode> | null = null;
 	private pillarMaterials: Record<'nw' | 'ne' | 'sw' | 'se', BABYLON.PBRMaterial> | null = null;
 	private ceilingMaterial: BABYLON.PBRMaterial | null = null;
@@ -116,7 +116,7 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 			se: this.loaderResult.transformNodes.find(t => t.name.includes('__PILLAR_SE__'))!,
 		};
 
-		const wallMaterial = findMaterial(this.meshes[0], '__X_WALL__');
+		const wallMaterial = findMaterial(this.meshes[0], '__WALL__');
 		this.wallMaterials = {
 			n: wallMaterial.clone('wallNMaterial'),
 			s: wallMaterial.clone('wallSMaterial'),
@@ -124,15 +124,15 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 			e: wallMaterial.clone('wallEMaterial'),
 		};
 
-		const hariMaterial = findMaterial(this.meshes[0], '__X_HARI__');
-		this.wallHariMaterials = {
-			n: hariMaterial.clone('wallNHariMaterial'),
-			s: hariMaterial.clone('wallSHariMaterial'),
-			w: hariMaterial.clone('wallWHariMaterial'),
-			e: hariMaterial.clone('wallEHariMaterial'),
+		const beamMaterial = findMaterial(this.meshes[0], '__BEAM__');
+		this.wallBeamMaterials = {
+			n: beamMaterial.clone('wallNBeamMaterial'),
+			s: beamMaterial.clone('wallSBeamMaterial'),
+			w: beamMaterial.clone('wallWBeamMaterial'),
+			e: beamMaterial.clone('wallEBeamMaterial'),
 		};
 
-		const pillarMaterial = findMaterial(this.meshes[0], '__X_PILLAR__');
+		const pillarMaterial = findMaterial(this.meshes[0], '__PILLAR__');
 		this.pillarMaterials = {
 			nw: pillarMaterial.clone('pillarNWMaterial'),
 			ne: pillarMaterial.clone('pillarNEMaterial'),
@@ -144,8 +144,8 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 			for (const m of v.getChildMeshes().filter(m => m.material === wallMaterial)) {
 				m.material = this.wallMaterials[k];
 			}
-			for (const m of v.getChildMeshes().filter(m => m.material === hariMaterial)) {
-				m.material = this.wallHariMaterials[k];
+			for (const m of v.getChildMeshes().filter(m => m.material === beamMaterial)) {
+				m.material = this.wallBeamMaterials[k];
 			}
 		}
 		for (const [k, v] of Object.entries(this.pillarRoots)) {
@@ -154,8 +154,8 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 			}
 		}
 
-		this.ceilingMaterial = findMaterial(this.meshes[0], '__X_CEILING__');
-		this.floorMaterial = findMaterial(this.meshes[0], '__X_FLOOR__');
+		this.ceilingMaterial = findMaterial(this.meshes[0], '__CEILING__');
+		this.floorMaterial = findMaterial(this.meshes[0], '__FLOOR__');
 
 		await this.applyOptions(options);
 	}
@@ -168,10 +168,10 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 			const wallOptions = options.walls[type];
 
 			for (const mesh of wallRoot.getChildMeshes()) {
-				if (mesh.name.includes('__X_HARI__')) {
-					mesh.setEnabled(wallOptions.withHari);
-				} else if (mesh.name.includes('__X_HABAKI__')) {
-					mesh.setEnabled(wallOptions.withHabaki);
+				if (mesh.name.includes('__BEAM__')) {
+					mesh.setEnabled(wallOptions.withBeam);
+				} else if (mesh.name.includes('__BASEBOARD__')) {
+					mesh.setEnabled(wallOptions.withBaseboard);
 				}
 			}
 
@@ -196,13 +196,13 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 			}
 
 			{
-				const targetMaterial = this.wallHariMaterials[type];
+				const targetMaterial = this.wallBeamMaterials[type];
 
 				targetMaterial.unfreeze();
-				targetMaterial.albedoColor = new BABYLON.Color3(...wallOptions.hariColor);
+				targetMaterial.albedoColor = new BABYLON.Color3(...wallOptions.beamColor);
 
-				const texPath = wallOptions.hariMaterial === 'wood' ? '/client-assets/room/textures/wall-wood2.png'
-					: wallOptions.hariMaterial === 'concrete' ? '/client-assets/room/textures/concrete1.png'
+				const texPath = wallOptions.beamMaterial === 'wood' ? '/client-assets/room/textures/wall-wood2.png'
+					: wallOptions.beamMaterial === 'concrete' ? '/client-assets/room/textures/concrete1.png'
 					: null;
 
 				if (texPath != null) {
@@ -224,13 +224,13 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 			if (!isEnabled) {
 				// 梁同士が直交することは許さない(z-fightingが発生する)ので柱を強制追加
 				if (type === 'nw') {
-					isEnabled = options.walls.n.withHari && options.walls.w.withHari;
+					isEnabled = options.walls.n.withBeam && options.walls.w.withBeam;
 				} else if (type === 'ne') {
-					isEnabled = options.walls.n.withHari && options.walls.e.withHari;
+					isEnabled = options.walls.n.withBeam && options.walls.e.withBeam;
 				} else if (type === 'sw') {
-					isEnabled = options.walls.s.withHari && options.walls.w.withHari;
+					isEnabled = options.walls.s.withBeam && options.walls.w.withBeam;
 				} else if (type === 'se') {
-					isEnabled = options.walls.s.withHari && options.walls.e.withHari;
+					isEnabled = options.walls.s.withBeam && options.walls.e.withBeam;
 				}
 			}
 			pillarRoot.setEnabled(isEnabled);
@@ -308,7 +308,7 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 		for (const m of Object.values(this.wallMaterials ?? {})) {
 			m.dispose();
 		}
-		for (const m of Object.values(this.wallHariMaterials ?? {})) {
+		for (const m of Object.values(this.wallBeamMaterials ?? {})) {
 			m.dispose();
 		}
 		for (const m of Object.values(this.pillarMaterials ?? {})) {

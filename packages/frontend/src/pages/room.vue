@@ -178,34 +178,34 @@ const data = localStorage.getItem('roomData') != null ? JSON.parse(localStorage.
 				n: {
 					material: null,
 					color: [0.9, 0.9, 0.9],
-					withHari: false,
-					hariMaterial: null,
-					hariColor: [0.8, 0.8, 0.8],
-					withHabaki: false,
+					withBeam: false,
+					beamMaterial: null,
+					beamColor: [0.8, 0.8, 0.8],
+					withBaseboard: true,
 				},
 				e: {
 					material: null,
 					color: [0.9, 0.9, 0.9],
-					withHari: false,
-					hariMaterial: null,
-					hariColor: [0.8, 0.8, 0.8],
-					withHabaki: false,
+					withBeam: false,
+					beamMaterial: null,
+					beamColor: [0.8, 0.8, 0.8],
+					withBaseboard: true,
 				},
 				s: {
 					material: null,
 					color: [0.9, 0.9, 0.9],
-					withHari: false,
-					hariMaterial: null,
-					hariColor: [0.8, 0.8, 0.8],
-					withHabaki: false,
+					withBeam: false,
+					beamMaterial: null,
+					beamColor: [0.8, 0.8, 0.8],
+					withBaseboard: true,
 				},
 				w: {
 					material: null,
 					color: [0.9, 0.9, 0.9],
-					withHari: false,
-					hariMaterial: null,
-					hariColor: [0.8, 0.8, 0.8],
-					withHabaki: false,
+					withBeam: false,
+					beamMaterial: null,
+					beamColor: [0.8, 0.8, 0.8],
+					withBaseboard: true,
 				},
 			},
 			pillars: {
@@ -242,68 +242,6 @@ const data = localStorage.getItem('roomData') != null ? JSON.parse(localStorage.
 	},
 	installedObjects: [],
 };
-
-// 後方互換性のため
-if (data.heya.options.walls == null) {
-	data.heya.options.walls = {
-		n: {
-			material: null,
-			color: [0.9, 0.9, 0.9],
-			withHari: false,
-			hariMaterial: null,
-			hariColor: [0.8, 0.8, 0.8],
-			withHabaki: false,
-		},
-		e: {
-			material: null,
-			color: [0.9, 0.9, 0.9],
-			withHari: false,
-			hariMaterial: null,
-			hariColor: [0.8, 0.8, 0.8],
-			withHabaki: false,
-		},
-		s: {
-			material: null,
-			color: [0.9, 0.9, 0.9],
-			withHari: false,
-			hariMaterial: null,
-			hariColor: [0.8, 0.8, 0.8],
-			withHabaki: false,
-		},
-		w: {
-			material: null,
-			color: [0.9, 0.9, 0.9],
-			withHari: false,
-			hariMaterial: null,
-			hariColor: [0.8, 0.8, 0.8],
-			withHabaki: false,
-		},
-	};
-}
-if (data.heya.options.pillars == null) {
-	data.heya.options.pillars = {
-		nw: {
-			material: null,
-			color: [0.9, 0.9, 0.9],
-			show: false,
-		},
-		ne: {
-			material: null,
-			color: [0.9, 0.9, 0.9],
-			show: false,
-		},
-		sw: {
-			material: null,
-			color: [0.9, 0.9, 0.9],
-			show: false,
-		},
-		se: {
-			material: null,
-			color: [0.9, 0.9, 0.9],
-			show: false,
-		},
-	};
-}
 
 console.log('installedObjects:', data.installedObjects.length);
 
