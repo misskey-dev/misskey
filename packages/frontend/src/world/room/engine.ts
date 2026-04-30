@@ -104,7 +104,6 @@ export type RoomEngineEvents = {
 		selected: {
 			objectId: string;
 			objectState: RoomStateObject<any>;
-			objectDef: ObjectDef<any>;
 		} | null;
 	}) => void;
 	'changeGrabbingState': (ctx: { grabbing: { forInstall: boolean } | null }) => void;
@@ -121,7 +120,7 @@ export type RoomEngineEvents = {
 	'loadingProgress': (ctx: { progress: number }) => void;
 };
 
-export class RoomEngine extends EventEmitter<RoomEngineEvents> {
+export class RoomEngine extends EventEmitter {
 	private useGlow: boolean;
 	private engine: BABYLON.WebGPUEngine;
 	public scene: BABYLON.Scene;
@@ -156,7 +155,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	}
 	set grabbingCtx(v) {
 		this._grabbingCtx = v;
-		this.emit('changeGrabbingState', { grabbing: v == null ? null : { forInstall: v.forInstall } });
+		this.ev('changeGrabbingState', { grabbing: v == null ? null : { forInstall: v.forInstall } });
 	}
 
 	// TODO: たぶんオブジェクト内の値のmutateはsetで検知できないので、そのような操作を実際に行うようになった & それを検知する必要性が出てきたら専用の設定関数などを新設してそれを使わせる
@@ -171,7 +170,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	}
 	set selected(v) {
 		this._selected = v;
-		this.emit('changeSelectedState', { selected: v == null ? null : { objectId: v.objectId, objectState: v.objectState, objectDef: v.objectDef } });
+		this.ev('changeSelectedState', { selected: v == null ? null : { objectId: v.objectId, objectState: v.objectState } });
 	}
 
 	private time: 0 | 1 | 2 = 0; // 0: 昼, 1: 夕, 2: 夜
@@ -184,7 +183,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	set gridSnapping(v) {
 		this._gridSnapping = v;
 		if (this.gridMaterial != null) this.gridMaterial.gridRatio = v.scale; // setter内でconstructor内設定の値に依存するのはタイミングによってはundefinedになりそうなので、実際に当該マテリアルを表示する必要が生じる直前に利用側で設定させた方がいいかもしれない
-		this.emit('changeGridSnapping', { gridSnapping: v });
+		this.ev('changeGridSnapping', { gridSnapping: v });
 	}
 
 	private putParticleSystem: BABYLON.ParticleSystem;
@@ -206,7 +205,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	}
 	set isEditMode(v) {
 		this._isEditMode = v;
-		this.emit('changeEditMode', { isEditMode: v });
+		this.ev('changeEditMode', { isEditMode: v });
 	}
 
 	public isSitting = false;
@@ -440,6 +439,11 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		}
 	}
 
+	private ev<K extends keyof RoomEngineEvents>(type: K, ctx: Parameters<RoomEngineEvents[K]>[0]) {
+		console.log(type, ctx);
+		this.emit('ev', { type, ctx });
+	}
+
 	public async init() {
 		await this.loadHeya();
 		if (RENDER_OUTDOOR_ENV) await this.loadEnvModel();
@@ -455,7 +459,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			options: o.options,
 		}).then(() => {
 			loadedCount++;
-			this.emit('loadingProgress', { progress: loadedCount / objects.length });
+			this.ev('loadingProgress', { progress: loadedCount / objects.length });
 		})));
 
 		// 不具合のもと
@@ -829,7 +833,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		}
 	}
 
-	public async changeHeyaType(type: RoomState['heya']['type']) {
+	public async changeHeyaType(type: RoomState['heya']['type'], forInit = false) {
 		this.roomState.heya.type = type;
 
 		if (this.heyaManager != null) {
@@ -867,11 +871,13 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 			// TODO
 		}
 
-		this.emit('changeRoomState', { roomState: this.roomState });
+		if (!forInit) {
+			this.ev('changeRoomState', { roomState: this.roomState });
+		}
 	}
 
 	private async loadHeya() {
-		await this.changeHeyaType(this.roomState.heya.type);
+		await this.changeHeyaType(this.roomState.heya.type, true);
 	}
 
 	private async loadObject(args: {
@@ -1343,7 +1349,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 					this.roomState.installedObjects.find(o => o.id === selectedObject.metadata.objectId)!.position = [pos.x, pos.y, pos.z];
 					this.roomState.installedObjects.find(o => o.id === selectedObject.metadata.objectId)!.rotation = [rotation.x, rotation.y, rotation.z];
 
-					this.emit('changeRoomState', { roomState: this.roomState });
+					this.ev('changeRoomState', { roomState: this.roomState });
 				});
 			},
 		};
@@ -1410,7 +1416,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	public updateRoomLightColor(color: [number, number, number]) {
 		this.roomLight.diffuse = new BABYLON.Color3(...color);
 		this.roomState.roomLightColor = color;
-		this.emit('changeRoomState', { roomState: this.roomState });
+		this.ev('changeRoomState', { roomState: this.roomState });
 	}
 
 	private turnOnRoomLight(forInit = false) {
@@ -1590,7 +1596,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 					options,
 				});
 
-				this.emit('changeRoomState', { roomState: this.roomState });
+				this.ev('changeRoomState', { roomState: this.roomState });
 			},
 		};
 
@@ -1700,7 +1706,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		for (const o of this.roomState.installedObjects.filter(o => o.sticky === objectId)) {
 			o.sticky = null;
 		}
-		this.emit('changeRoomState', { roomState: this.roomState });
+		this.ev('changeRoomState', { roomState: this.roomState });
 		this.selected = null;
 
 		this.playSfxUrl('/client-assets/room/sfx/remove.mp3', {
@@ -1725,7 +1731,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		if (options == null) return;
 		options[key] = value;
 
-		this.emit('changeRoomState', { roomState: this.roomState });
+		this.ev('changeRoomState', { roomState: this.roomState });
 
 		const entity = this.objectEntities.get(objectId);
 		if (entity == null) return;
@@ -1735,11 +1741,11 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 	public updateHeyaOptions(options: RoomState['heya']['options']) {
 		this.roomState.heya.options = options;
 		this.heyaManager.applyOptions(options);
-		this.emit('changeRoomState', { roomState: this.roomState });
+		this.ev('changeRoomState', { roomState: this.roomState });
 	}
 
 	private playSfxUrl(url: string, options: { volume: number; playbackRate: number }) {
-		this.emit('playSfxUrl', { url, options });
+		this.ev('playSfxUrl', { url, options });
 	}
 
 	public resize() {

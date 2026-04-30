@@ -65,10 +65,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 
-		<div v-if="controller.isReady.value && controller.isEditMode.value && controller.selected.value != null && !controller.grabbing.value" :key="controller.selected.value.objectId" class="_panel" :class="$style.overlayObjectInfoPanel">
-			{{ controller.selected.value.objectDef.name }}
+		<div v-if="controller.isReady.value && controller.isEditMode.value && controller.selected.value != null && selectedObjectDef != null && !controller.grabbing.value" :key="controller.selected.value.objectId" class="_panel" :class="$style.overlayObjectInfoPanel">
+			{{ selectedObjectDef.name }}
 
-			<XObjectCustomizeForm :schema="controller.selected.value.objectDef.options.schema" :options="controller.selected.value.objectState.options" @update="(k, v) => controller.updateObjectOption(controller.selected.value.objectId, k, v)"></XObjectCustomizeForm>
+			<XObjectCustomizeForm :schema="selectedObjectDef.options.schema" :options="controller.selected.value.objectState.options" @update="(k, v) => controller.updateObjectOption(controller.selected.value.objectId, k, v)"></XObjectCustomizeForm>
 		</div>
 
 		<div v-if="isRoomSettingsOpen && controller.isEditMode.value" class="_panel" :class="$style.overlayObjectInfoPanel">
@@ -120,6 +120,7 @@ import MkProgressBar from '@/components/MkProgressBar.vue';
 import { Joystick } from '@/world/joystick.js';
 import { isTouchUsing } from '@/utility/touch.js';
 import { prefer } from '@/preferences.js';
+import { getObjectDef } from '@/world/room/object-defs.js';
 
 const canvas = useTemplateRef('canvas');
 
@@ -304,6 +305,8 @@ if (data.heya.options.pillars == null) {
 	};
 }
 
+console.log('installedObjects:', data.installedObjects.length);
+
 let latestData = deepClone(data);
 
 const roomControllerOptions = computed<RoomControllerOptions>(() => ({
@@ -316,6 +319,8 @@ const roomControllerOptions = computed<RoomControllerOptions>(() => ({
 }));
 
 const controller = new RoomController(data, roomControllerOptions.value);
+
+const selectedObjectDef = computed(() => controller.selected.value == null ? null : getObjectDef(controller.selected.value.objectState.type));
 
 onMounted(async () => {
 	if (!await BABYLON.WebGPUEngine.IsSupportedAsync) {

@@ -5,11 +5,12 @@
 
 import { reactive, ref, shallowRef, triggerRef, watch } from 'vue';
 import * as BABYLON from '@babylonjs/core';
+import { EventEmitter } from 'eventemitter3';
 import { cm } from '../utility.js';
 import RoomWorker from './worker?worker';
 import { GRAPHICS_QUALITY_MEDIUM, RoomEngine } from './engine.js';
 import type { ShallowRef } from 'vue';
-import type { RoomState } from './engine.js';
+import type { RoomEngineEvents, RoomState } from './engine.js';
 import type { ObjectDef, RoomStateObject } from './object.js';
 import * as sound from '@/utility/sound.js';
 import * as os from '@/os.js';
@@ -38,7 +39,6 @@ export class RoomController {
 	public selected = ref<{
 		objectId: string;
 		objectState: RoomStateObject;
-		objectDef: ObjectDef;
 	} | null>(null);
 	public roomState: ShallowRef<RoomState>;
 	public initializeProgress = ref(0);
@@ -60,23 +60,22 @@ export class RoomController {
 		this.canvas.width = canvas.clientWidth;
 		this.canvas.height = canvas.clientHeight;
 
+		const engineEvents = new EventEmitter<RoomEngineEvents>();
+
 		if (this.options.workerMode) {
 			const offscreen = canvas.transferControlToOffscreen();
 			this.worker = new RoomWorker();
 			this.worker.postMessage({ type: 'init', canvas: offscreen, roomState: this.roomState.value, options: this.options }, [offscreen]);
 			this.worker.onmessage = (event) => {
 				switch (event.data?.type) {
-					case 'progress': {
-						this.initializeProgress.value = event.data.progress;
-						break;
-					}
 					case 'inited': {
 						this.initializeProgress.value = 1;
 						this.isReady.value = true;
 						break;
 					}
-					case 'changeEditMode': {
-						this.isEditMode.value = event.data.isEditMode;
+					case 'ev': {
+						const { type, ctx } = event.data.ev;
+						engineEvents.emit(type, ctx);
 						break;
 					}
 					default: {
@@ -104,39 +103,14 @@ export class RoomController {
 				...this.options,
 			});
 
-			this.engine.on('loadingProgress', ({ progress }) => {
-				this.initializeProgress.value = progress;
+			this.engine.on('ev', ({ type, ctx }) => {
+				engineEvents.emit(type, ctx);
 			});
 
 			await this.engine.init();
 
 			this.initializeProgress.value = 1;
 			this.isReady.value = true;
-
-			this.engine.on('changeGrabbingState', ({ grabbing }) => {
-				this.grabbing.value = grabbing;
-			});
-
-			this.engine.on('changeEditMode', ({ isEditMode }) => {
-				this.isEditMode.value = isEditMode;
-			});
-
-			this.engine.on('changeGridSnapping', ({ gridSnapping }) => {
-				this.gridSnapping.value = gridSnapping;
-			});
-
-			this.engine.on('changeSelectedState', ({ selected }) => {
-				this.selected.value = selected;
-			});
-
-			this.engine.on('changeRoomState', ({ roomState }) => {
-				this.roomState.value = roomState;
-				triggerRef(this.selected);
-			});
-
-			this.engine.on('playSfxUrl', ({ url, options }) => {
-				sound.playUrl(url, options);
-			});
 
 			if (_DEV_) {
 				(window as any).showBabylonInspector = () => {
@@ -146,6 +120,35 @@ export class RoomController {
 				};
 			}
 		}
+
+		engineEvents.on('loadingProgress', ({ progress }) => {
+			this.initializeProgress.value = progress;
+		});
+
+		engineEvents.on('changeGrabbingState', ({ grabbing }) => {
+			this.grabbing.value = grabbing;
+		});
+
+		engineEvents.on('changeEditMode', ({ isEditMode }) => {
+			this.isEditMode.value = isEditMode;
+		});
+
+		engineEvents.on('changeGridSnapping', ({ gridSnapping }) => {
+			this.gridSnapping.value = gridSnapping;
+		});
+
+		engineEvents.on('changeSelectedState', ({ selected }) => {
+			this.selected.value = selected;
+		});
+
+		engineEvents.on('changeRoomState', ({ roomState }) => {
+			this.roomState.value = roomState;
+			triggerRef(this.selected);
+		});
+
+		engineEvents.on('playSfxUrl', ({ url, options }) => {
+			sound.playUrl(url, options);
+		});
 
 		this.canvas.addEventListener('keydown', this.onCanvasKeydown);
 		this.canvas.addEventListener('keyup', this.onCanvasKeyup);

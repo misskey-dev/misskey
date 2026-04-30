@@ -29,12 +29,8 @@ onmessage = async (event) => {
 				...event.data.options,
 			});
 
-			engine.on('loadingProgress', ({ progress }) => {
-				self.postMessage({ type: 'progress', progress });
-			});
-
-			engine.on('changeEditMode', ({ isEditMode }) => {
-				self.postMessage({ type: 'changeEditMode', isEditMode });
+			engine.on('ev', ({ type, ctx }) => {
+				self.postMessage({ type: 'ev', ev: { type, ctx } });
 			});
 
 			await engine.init();
