@@ -27,7 +27,7 @@ export const electronicDisplayBoard = defineObject({
 		},
 		default: {
 			text: 'Hello, Misskey!',
-			frameColor: [0.2, 0.2, 0.2],
+			frameColor: [0.05, 0.05, 0.05],
 			ledColor: [1, 1, 1],
 		},
 	},
@@ -44,6 +44,7 @@ export const electronicDisplayBoard = defineObject({
 		const texLoading = Promise.withResolvers<void>();
 
 		const tex = new BABYLON.Texture('/client-assets/room/textures/dot-matrix-chars.png', scene, false, false, undefined, () => {
+			tex.level = 2;
 			textMaterial.emissiveTexture = tex;
 			textMaterial.albedoTexture = tex;
 			textMaterial.disableLighting = true;
@@ -68,6 +69,7 @@ export const electronicDisplayBoard = defineObject({
 		const textManager = new RecyvlingTextGrid(displayMesh, maxChars, {
 			meshFlipped: true,
 			material: textMaterial,
+			charUScale: 1.15,
 		});
 
 		model.bakeExcludeMeshes = [displayMesh];

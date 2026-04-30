@@ -1612,9 +1612,9 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		}
 
 		this.sr.disableSnapshotRendering();
-		if (this.gl != null) {
-			this.gl.isEnabled = false; // 重いので切る
-		}
+		//if (this.gl != null) {
+		//	this.gl.isEnabled = false; // 重いので切る
+		//}
 
 		if (this.gridPlane.material == null) {
 			import('@babylonjs/materials').then(m => {
@@ -1639,9 +1639,9 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		await this.bake();
 
 		this.sr.enableSnapshotRendering();
-		if (this.gl != null) {
-			this.gl.isEnabled = true;
-		}
+		//if (this.gl != null) {
+		//	this.gl.isEnabled = true;
+		//}
 	}
 
 	public async bake() {

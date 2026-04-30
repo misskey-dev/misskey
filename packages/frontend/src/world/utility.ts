@@ -392,6 +392,7 @@ export class RecyvlingTextGrid {
 	private currentText = '';
 	private meshFlipped: boolean;
 	private repeatSeparator: string;
+	private charUScale: number;
 
 	/* (non-flipped)
 		a   d--e
@@ -416,6 +417,7 @@ export class RecyvlingTextGrid {
 		meshFlipped: boolean;
 		material: BABYLON.StandardMaterial;
 		repeatSeparator?: string;
+		charUScale?: number;
 	}) {
 		this.mesh = mesh;
 		this.mesh.material = options.material;
@@ -426,6 +428,7 @@ export class RecyvlingTextGrid {
 		this.uvs = mesh.getVerticesData(BABYLON.VertexBuffer.UVKind)!;
 		this.meshFlipped = options.meshFlipped;
 		this.repeatSeparator = options.repeatSeparator ?? ' ■ ';
+		this.charUScale = options.charUScale ?? 1;
 
 		for (let j = 0; j < (this.verticesCountPerFace * 2); j += 2) {
 			const x = this.uvs[j];
@@ -515,14 +518,14 @@ export class RecyvlingTextGrid {
 			const uvIndex = i * (this.verticesCountPerFace * 2); // uvは(x,y)の2要素なので*2
 
 			if (this.meshFlipped) {
-				this.uvs[uvIndex + this.aIndex + 0] = this.uvs[uvIndex + this.cIndex + 0] = this.uvs[uvIndex + this.eIndex + 0] = (charX + 0) / TEXT_TEXTURE_CHAR_COLS;
+				this.uvs[uvIndex + this.aIndex + 0] = this.uvs[uvIndex + this.cIndex + 0] = this.uvs[uvIndex + this.eIndex + 0] = ((charX + 0) / TEXT_TEXTURE_CHAR_COLS) - ((1 / TEXT_TEXTURE_CHAR_COLS) * (1 - this.charUScale));
 				this.uvs[uvIndex + this.aIndex + 1] = this.uvs[uvIndex + this.bIndex + 1] = this.uvs[uvIndex + this.dIndex + 1] = (charY + 0) / TEXT_TEXTURE_CHAR_ROWS;
-				this.uvs[uvIndex + this.bIndex + 0] = this.uvs[uvIndex + this.dIndex + 0] = this.uvs[uvIndex + this.fIndex + 0] = (charX + 1) / TEXT_TEXTURE_CHAR_COLS;
+				this.uvs[uvIndex + this.bIndex + 0] = this.uvs[uvIndex + this.dIndex + 0] = this.uvs[uvIndex + this.fIndex + 0] = ((charX + 1) / TEXT_TEXTURE_CHAR_COLS) + ((1 / TEXT_TEXTURE_CHAR_COLS) * (1 - this.charUScale));
 				this.uvs[uvIndex + this.cIndex + 1] = this.uvs[uvIndex + this.eIndex + 1] = this.uvs[uvIndex + this.fIndex + 1] = (charY + 1) / TEXT_TEXTURE_CHAR_ROWS;
 			} else {
-				this.uvs[uvIndex + this.aIndex + 0] = this.uvs[uvIndex + this.dIndex + 0] = this.uvs[uvIndex + this.bIndex + 0] = (charX + 0) / TEXT_TEXTURE_CHAR_COLS;
+				this.uvs[uvIndex + this.aIndex + 0] = this.uvs[uvIndex + this.dIndex + 0] = this.uvs[uvIndex + this.bIndex + 0] = ((charX + 0) / TEXT_TEXTURE_CHAR_COLS) - ((1 / TEXT_TEXTURE_CHAR_COLS) * (1 - this.charUScale));
 				this.uvs[uvIndex + this.aIndex + 1] = this.uvs[uvIndex + this.dIndex + 1] = this.uvs[uvIndex + this.eIndex + 1] = (charY + 0) / TEXT_TEXTURE_CHAR_ROWS;
-				this.uvs[uvIndex + this.eIndex + 0] = this.uvs[uvIndex + this.fIndex + 0] = this.uvs[uvIndex + this.cIndex + 0] = (charX + 1) / TEXT_TEXTURE_CHAR_COLS;
+				this.uvs[uvIndex + this.eIndex + 0] = this.uvs[uvIndex + this.fIndex + 0] = this.uvs[uvIndex + this.cIndex + 0] = ((charX + 1) / TEXT_TEXTURE_CHAR_COLS) + ((1 / TEXT_TEXTURE_CHAR_COLS) * (1 - this.charUScale));
 				this.uvs[uvIndex + this.bIndex + 1] = this.uvs[uvIndex + this.cIndex + 1] = this.uvs[uvIndex + this.fIndex + 1] = (charY + 1) / TEXT_TEXTURE_CHAR_ROWS;
 			}
 		}
