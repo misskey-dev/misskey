@@ -69,7 +69,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			>
 				<template #label>wallpaper</template>
 			</MkSelect>
-			<!-- debounceしないとカラーピッカー上で高速でなぞったときになぜか無限ループになる -->
+			<!-- debounceしないとカラーピッカー上で高速でなぞったときになぜか無限ループになる。ワーカーとの間でラグがあるため、少し前の値がまたmodelValueとしてフィードバックされてしまうためだと思われる -->
 			<MkInput :modelValue="getHex(options.ceiling.color)" type="color" debounce @update:modelValue="v => { const c = getRgb(v); if (c != null) update({ ceiling: { ...options.ceiling, color: c } }); }">
 				<template #label>color</template>
 			</MkInput>
@@ -86,7 +86,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			>
 				<template #label>material</template>
 			</MkSelect>
-			<!-- debounceしないとカラーピッカー上で高速でなぞったときになぜか無限ループになる -->
+			<!-- debounceしないとカラーピッカー上で高速でなぞったときになぜか無限ループになる。ワーカーとの間でラグがあるため、少し前の値がまたmodelValueとしてフィードバックされてしまうためだと思われる -->
 			<MkInput :modelValue="getHex(options.flooring.color)" type="color" debounce @update:modelValue="v => { const c = getRgb(v); if (c != null) update({ flooring: { ...options.flooring, color: c } }); }">
 				<template #label>color</template>
 			</MkInput>
