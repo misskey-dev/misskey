@@ -36,13 +36,13 @@ jobs:
         with:
           submodules: true
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4.4.0
+        uses: pnpm/action-setup@v6.0.3
       - name: Get current date
         id: current-date
         run: echo "today=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
       - name: Setup and Restore ffmpeg/ffprobe Cache
         id: cache-ffmpeg
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             /usr/local/bin/ffmpeg
