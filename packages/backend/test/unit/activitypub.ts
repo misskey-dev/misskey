@@ -270,7 +270,7 @@ describe('ActivityPub', () => {
 	});
 
 	describe('Collection visibility', () => {
-		test('Public following/followers', async () => {
+		test('Public following/followers/reactions', async () => {
 			const actor = createRandomActor();
 			actor.following = {
 				id: `${actor.id}/following`,
@@ -279,6 +279,12 @@ describe('ActivityPub', () => {
 				first: `${actor.id}/following?page=1`,
 			};
 			actor.followers = `${actor.id}/followers`;
+			actor.liked = {
+				id: `${actor.id}/following`,
+				type: 'OrderedCollection',
+				totalItems: 0,
+				orderedItems: [],
+			};
 
 			resolver.register(actor.id, actor);
 			resolver.register(actor.followers, {
@@ -293,9 +299,10 @@ describe('ActivityPub', () => {
 
 			assert.deepStrictEqual(userProfile.followingVisibility, 'public');
 			assert.deepStrictEqual(userProfile.followersVisibility, 'public');
+			assert.deepStrictEqual(userProfile.publicReactions, true);
 		});
 
-		test('Private following/followers', async () => {
+		test('Private following/followers/reactions', async () => {
 			const actor = createRandomActor();
 			actor.following = {
 				id: `${actor.id}/following`,
@@ -304,6 +311,7 @@ describe('ActivityPub', () => {
 				// first: …
 			};
 			actor.followers = `${actor.id}/followers`;
+			// actor.liked = …;
 
 			resolver.register(actor.id, actor);
 			//resolver.register(actor.followers, { … });
@@ -313,6 +321,7 @@ describe('ActivityPub', () => {
 
 			assert.deepStrictEqual(userProfile.followingVisibility, 'private');
 			assert.deepStrictEqual(userProfile.followersVisibility, 'private');
+			assert.deepStrictEqual(userProfile.publicReactions, false);
 		});
 	});
 
