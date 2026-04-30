@@ -182,7 +182,7 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 				targetMaterial.albedoColor = new BABYLON.Color3(...wallOptions.color);
 
 				const texPath = wallOptions.material === 'wood' ? '/client-assets/room/textures/wall-wood2.png'
-					: wallOptions.material === 'concrete' ? '/client-assets/room/textures/wall-concrete.png'
+					: wallOptions.material === 'concrete' ? '/client-assets/room/textures/concrete1.png'
 					: null;
 
 				if (texPath != null) {
@@ -202,7 +202,7 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 				targetMaterial.albedoColor = new BABYLON.Color3(...wallOptions.hariColor);
 
 				const texPath = wallOptions.hariMaterial === 'wood' ? '/client-assets/room/textures/wall-wood2.png'
-					: wallOptions.hariMaterial === 'concrete' ? '/client-assets/room/textures/wall-concrete.png'
+					: wallOptions.hariMaterial === 'concrete' ? '/client-assets/room/textures/concrete1.png'
 					: null;
 
 				if (texPath != null) {
@@ -228,7 +228,7 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 			targetMaterial.albedoColor = new BABYLON.Color3(...pillarOptions.color);
 
 			const texPath = pillarOptions.material === 'wood' ? '/client-assets/room/textures/wall-wood2.png'
-				: pillarOptions.material === 'concrete' ? '/client-assets/room/textures/wall-concrete.png'
+				: pillarOptions.material === 'concrete' ? '/client-assets/room/textures/concrete1.png'
 				: null;
 
 			if (texPath != null) {
@@ -246,7 +246,7 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 			this.ceilingMaterial.albedoColor = new BABYLON.Color3(...options.ceiling.color);
 
 			const texPath = options.ceiling.material === 'wood' ? '/client-assets/room/textures/ceiling-wood.png'
-				: options.ceiling.material === 'concrete' ? '/client-assets/room/textures/ceiling-concrete.png'
+				: options.ceiling.material === 'concrete' ? '/client-assets/room/textures/concrete3.png'
 				: null;
 
 			if (texPath != null) {
@@ -264,7 +264,7 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 			this.floorMaterial.albedoColor = new BABYLON.Color3(...options.flooring.color);
 
 			const texPath = options.flooring.material === 'wood' ? '/client-assets/room/textures/flooring-wood.png'
-				: options.flooring.material === 'concrete' ? '/client-assets/room/textures/flooring-concrete.png'
+				: options.flooring.material === 'concrete' ? '/client-assets/room/textures/concrete3.png'
 				: null;
 
 			if (texPath != null) {
