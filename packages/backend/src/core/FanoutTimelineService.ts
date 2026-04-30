@@ -14,9 +14,9 @@ export type FanoutTimelineName = (
 	| `homeTimeline:${string}`
 	| `homeTimelineWithFiles:${string}` // only notes with files are included
 	// local timeline
-	| `localTimeline` // replies are not included
-	| `localTimelineWithFiles` // only non-reply notes with files are included
-	| `localTimelineWithReplies` // only replies are included
+	| 'localTimeline' // replies are not included
+	| 'localTimelineWithFiles' // only non-reply notes with files are included
+	| 'localTimelineWithReplies' // only replies are included
 	| `localTimelineWithReplyTo:${string}` // Only replies to specific local user are included. Parameter is reply user id.
 
 	// antenna
@@ -106,6 +106,21 @@ export class FanoutTimelineService {
 							: ids.sort((a, b) => a > b ? -1 : 1),
 			);
 		});
+	}
+
+	@bindThis
+	injectDummy(tl: FanoutTimelineName, id: string) {
+		return this.redisForTimelines.lpush('list:' + tl, id);
+	}
+
+	@bindThis
+	public injectDummyIfEmpty(tl: FanoutTimelineName, id: string): Promise<boolean> {
+		return this.redisForTimelines.eval(
+			'if redis.call("LLEN", KEYS[1]) == 0 then redis.call("LPUSH", KEYS[1], ARGV[1]) return 1 else return 0 end',
+			1,
+			'list:' + tl,
+			id,
+		).then(res => res === 1);
 	}
 
 	@bindThis

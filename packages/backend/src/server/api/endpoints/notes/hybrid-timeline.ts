@@ -197,6 +197,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		withReplies: boolean,
 	}, me: MiLocalUser) {
 		const followees = await this.userFollowingService.getFollowees(me.id);
+		const followeeIds = followees.map(f => f.followeeId);
+		const meOrFolloweeIds = [me.id, ...followeeIds];
+		const followeeWithRepliesIds = followees.filter(f => f.withReplies).map(f => f.followeeId);
+		const meOrFolloweeWithRepliesIds = [...meOrFolloweeIds, ...followeeWithRepliesIds];
 
 		const mutingChannelIds = await this.channelMutingService
 			.list({ requestUserId: me.id }, { idOnly: true })
@@ -207,14 +211,39 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 		const query = this.queryService.makePaginationQuery(this.notesRepository.createQueryBuilder('note'), ps.sinceId, ps.untilId)
 			.andWhere(new Brackets(qb => {
+				// 自分自身
+				qb.where('note.userId = :meId', { meId: me.id });
+
+				// フォローしている人
 				if (followees.length > 0) {
-					const meOrFolloweeIds = [me.id, ...followees.map(f => f.followeeId)];
-					qb.where('note.userId IN (:...meOrFolloweeIds)', { meOrFolloweeIds: meOrFolloweeIds });
-					qb.orWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)');
-				} else {
-					qb.where('note.userId = :meId', { meId: me.id });
-					qb.orWhere('(note.visibility = \'public\') AND (note.userHost IS NULL)');
+					qb.orWhere(new Brackets(qb => {
+						qb.where('note.userId IN (:...followeeIds)', { followeeIds });
+
+						// 自身に関係ないリプライを除外
+						if (ps.withReplies) {
+							qb.andWhere(new Brackets(qb => {
+								qb.where('note.replyId IS NULL')
+									.orWhere('note.replyUserId IN (:...meOrFolloweeWithRepliesIds)', { meOrFolloweeWithRepliesIds });
+
+								if (followeeWithRepliesIds.length > 0) {
+									qb.orWhere(new Brackets(qb => {
+										qb.where('note.userId IN (:...followeeWithRepliesIds)', { followeeWithRepliesIds })
+											.andWhere(new Brackets(qb => {
+												qb.where('reply.visibility != \'followers\'')
+													.orWhere('note.replyUserId IN (:...followeeIds)', { followeeIds });
+											}));
+									}));
+								}
+							}));
+						}
+					}));
 				}
+
+				// ローカルのpublicノート
+				qb.orWhere(new Brackets(qb => {
+					qb.where('note.visibility = \'public\'')
+						.andWhere('note.userHost IS NULL');
+				}));
 			}))
 			.innerJoinAndSelect('note.user', 'user')
 			.leftJoinAndSelect('note.reply', 'reply')
@@ -246,7 +275,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						qb // 返信だけど投稿者自身への返信
 							.where('note.replyId IS NOT NULL')
 							.andWhere('note.replyUserId = note.userId');
-					}));
+					}))
+					.orWhere('note.replyUserId = :meId', { meId: me.id }); // 自分への返信
 			}));
 		}
 
