@@ -351,7 +351,7 @@ export class RoomEngine extends EventEmitter<RoomEngineEvents> {
 		}
 
 		this.lightContainer = new BABYLON.ClusteredLightContainer('clustered', [], this.scene);
-		this.lightContainer.maxRange = options.graphicsQuality >= GRAPHICS_QUALITY_HIGH ? cm(1000) : options.graphicsQuality >= GRAPHICS_QUALITY_MEDIUM ? cm(100) : cm(30);
+		this.lightContainer.maxRange = options.graphicsQuality >= GRAPHICS_QUALITY_HIGH ? cm(1000) : options.graphicsQuality >= GRAPHICS_QUALITY_MEDIUM ? cm(90) : cm(30);
 		this.lightContainer.verticalTiles = 32;
 		this.lightContainer.horizontalTiles = 32;
 		this.lightContainer.depthSlices = 32;
