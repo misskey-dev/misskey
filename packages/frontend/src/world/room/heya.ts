@@ -220,7 +220,20 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 			const pillarRoot = this.pillarRoots[type];
 			const pillarOptions = options.pillars[type];
 
-			pillarRoot.setEnabled(pillarOptions.show);
+			let isEnabled = pillarOptions.show;
+			if (!isEnabled) {
+				// 梁同士が直交することは許さない(z-fightingが発生する)ので柱を強制追加
+				if (type === 'nw') {
+					isEnabled = options.walls.n.withHari && options.walls.w.withHari;
+				} else if (type === 'ne') {
+					isEnabled = options.walls.n.withHari && options.walls.e.withHari;
+				} else if (type === 'sw') {
+					isEnabled = options.walls.s.withHari && options.walls.w.withHari;
+				} else if (type === 'se') {
+					isEnabled = options.walls.s.withHari && options.walls.e.withHari;
+				}
+			}
+			pillarRoot.setEnabled(isEnabled);
 
 			const targetMaterial = this.pillarMaterials[type];
 
