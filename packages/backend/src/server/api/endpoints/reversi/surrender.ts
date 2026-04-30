@@ -10,6 +10,7 @@ import { ApiError } from '../../error.js';
 
 export const meta = {
 	requireCredential: true,
+	requireRolePolicy: 'canPlayGames',
 
 	kind: 'write:account',
 

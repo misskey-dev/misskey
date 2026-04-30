@@ -253,7 +253,7 @@ function show() {
 		outline: none;
 	}
 
-	&:hover {
+	&:hover:not(.disabled) {
 		> .inputCore {
 			border-color: var(--MI_THEME-inputBorderHover) !important;
 		}

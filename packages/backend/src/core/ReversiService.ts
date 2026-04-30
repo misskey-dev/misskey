@@ -17,12 +17,14 @@ import type { MiUser } from '@/models/User.js';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { CacheService } from '@/core/CacheService.js';
+import { RoleService } from '@/core/RoleService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { IdService } from '@/core/IdService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import { Serialized } from '@/types.js';
 import { ReversiGameEntityService } from './entities/ReversiGameEntityService.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 import type { OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
 
 const INVITATION_TIMEOUT_MS = 1000 * 20; // 20sec
@@ -41,6 +43,7 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 		private reversiGamesRepository: ReversiGamesRepository,
 
 		private cacheService: CacheService,
+		private roleService: RoleService,
 		private userEntityService: UserEntityService,
 		private globalEventService: GlobalEventService,
 		private reversiGameEntityService: ReversiGameEntityService,
@@ -93,7 +96,14 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 	@bindThis
 	public async matchSpecificUser(me: MiUser, targetUser: MiUser, multiple = false): Promise<MiReversiGame | null> {
 		if (targetUser.id === me.id) {
-			throw new Error('You cannot match yourself.');
+			throw new IdentifiableError('eeb95261-6538-4294-a1d1-ed9a40d2c25b', 'You cannot match with yourself.');
+		}
+
+		const myPolicy = await this.roleService.getUserPolicies(me.id);
+		const targetPolicy = await this.roleService.getUserPolicies(targetUser.id);
+
+		if (!myPolicy.canPlayGames || !targetPolicy.canPlayGames) {
+			throw new IdentifiableError('6a8a09eb-f359-4339-9b1d-2fb3f8c0df45', 'You or target user is not available due to server policy.');
 		}
 
 		if (!multiple) {
@@ -143,6 +153,11 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 
 	@bindThis
 	public async matchAnyUser(me: MiUser, options: { noIrregularRules: boolean }, multiple = false): Promise<MiReversiGame | null> {
+		const myPolicy = await this.roleService.getUserPolicies(me.id);
+		if (!myPolicy.canPlayGames) {
+			throw new IdentifiableError('6a8a09eb-f359-4339-9b1d-2fb3f8c0df45', 'You cannot play due to server policy.');
+		}
+
 		if (!multiple) {
 			// 既にマッチしている対局が無いか探す(3分以内)
 			const games = await this.reversiGamesRepository.find({

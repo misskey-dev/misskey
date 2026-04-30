@@ -23,15 +23,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div class="_woodenFrame" style="text-align: center;">
 					<div class="_woodenFrameInner">
 						<div class="_gaps" style="padding: 16px;">
+							<MkInfo v-if="$i && !$i.policies.canPlayGames" warn>{{ i18n.ts.youCannotPlayGames }}</MkInfo>
 							<MkSelect v-model="gameMode" :items="gameModeDef">
 							</MkSelect>
-							<MkButton primary gradate large rounded inline @click="start">{{ i18n.ts.start }}</MkButton>
+							<MkButton primary gradate large rounded inline :disabled="$i == null || !$i.policies.canPlayGames" @click="start">{{ i18n.ts.start }}</MkButton>
 						</div>
 					</div>
 					<div class="_woodenFrameInner">
 						<div class="_gaps" style="padding: 16px;">
 							<div style="font-size: 90%;"><i class="ti ti-music"></i> {{ i18n.ts.soundWillBePlayed }}</div>
-							<MkSwitch v-model="mute">
+							<MkSwitch v-model="mute" :disabled="$i == null || !$i.policies.canPlayGames">
 								<template #label>{{ i18n.ts.mute }}</template>
 							</MkSwitch>
 						</div>
@@ -86,7 +87,9 @@ import * as Misskey from 'misskey-js';
 import XGame from './drop-and-fusion.game.vue';
 import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
+import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
+import MkInfo from '@/components/MkInfo.vue';
 import { useMkSelect } from '@/composables/use-mkselect.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';

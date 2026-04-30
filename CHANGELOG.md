@@ -1,6 +1,7 @@
 ## 2026.4.0
 
 ### General
+- Feat: Misskey Gamesのプレイ可否をロールで設定可能に
 - Enhance: アバターデコレーションにカテゴリを設定できるように
 
 ### Client
