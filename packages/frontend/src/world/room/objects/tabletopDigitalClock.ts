@@ -36,11 +36,11 @@ export const tabletopDigitalClock = defineObject({
 	hasCollisions: false,
 	canPreMeshesMerging: false,
 	createInstance: ({ root, room, options, model, scene, timer }) => {
-		const light = new BABYLON.SpotLight('', new BABYLON.Vector3(0, cm(3), cm(1)), new BABYLON.Vector3(0, 0, 1), Math.PI / 1, 2, scene, room?.lightContainer != null);
-		light.parent = root;
-		light.intensity = 0.01 * WORLD_SCALE * WORLD_SCALE;
-		light.range = cm(30);
-		if (room?.lightContainer != null) room.lightContainer.addLight(light);
+		//const light = new BABYLON.SpotLight('', new BABYLON.Vector3(0, cm(3), cm(1)), new BABYLON.Vector3(0, 0, 1), Math.PI / 1, 2, scene, room?.lightContainer != null);
+		//light.parent = root;
+		//light.intensity = 0.01 * WORLD_SCALE * WORLD_SCALE;
+		//light.range = cm(30);
+		//if (room?.lightContainer != null) room.lightContainer.addLight(light);
 
 		const segmentMeshes = {
 			'1a': model.findMesh('__TIME_7SEG_1A__'),
@@ -95,7 +95,7 @@ export const tabletopDigitalClock = defineObject({
 			const mat = segmentMeshes['1a'].material as BABYLON.PBRMaterial;
 			const [r, g, b] = options.lcdColor;
 			mat.emissiveColor = new BABYLON.Color3(r, g, b);
-			light.diffuse = new BABYLON.Color3(r, g, b);
+			//light.diffuse = new BABYLON.Color3(r, g, b);
 		};
 
 		return {
