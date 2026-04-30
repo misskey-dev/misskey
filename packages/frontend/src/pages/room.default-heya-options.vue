@@ -7,23 +7,55 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div :class="$style.root">
 	<div class="_gaps">
 		<MkFolder>
-			<template #label>Wall N</template>
-			<XWallOption :options="options.walls.n" @update="v => { update({ walls: { ...options.walls, n: v } }); }"></XWallOption>
+			<template #label>Walls</template>
+
+			<div class="_gaps_s">
+				<MkFolder>
+					<template #label>Wall N</template>
+					<XWallOption :options="options.walls.n" @update="v => { update({ walls: { ...options.walls, n: v } }); }"></XWallOption>
+				</MkFolder>
+
+				<MkFolder>
+					<template #label>Wall S</template>
+					<XWallOption :options="options.walls.s" @update="v => { update({ walls: { ...options.walls, s: v } }); }"></XWallOption>
+				</MkFolder>
+
+				<MkFolder>
+					<template #label>Wall W</template>
+					<XWallOption :options="options.walls.w" @update="v => { update({ walls: { ...options.walls, w: v } }); }"></XWallOption>
+				</MkFolder>
+
+				<MkFolder>
+					<template #label>Wall E</template>
+					<XWallOption :options="options.walls.e" @update="v => { update({ walls: { ...options.walls, e: v } }); }"></XWallOption>
+				</MkFolder>
+			</div>
 		</MkFolder>
 
 		<MkFolder>
-			<template #label>Wall S</template>
-			<XWallOption :options="options.walls.s" @update="v => { update({ walls: { ...options.walls, s: v } }); }"></XWallOption>
-		</MkFolder>
+			<template #label>Pillars</template>
 
-		<MkFolder>
-			<template #label>Wall W</template>
-			<XWallOption :options="options.walls.w" @update="v => { update({ walls: { ...options.walls, w: v } }); }"></XWallOption>
-		</MkFolder>
+			<div class="_gaps_s">
+				<MkFolder>
+					<template #label>Pillar NW</template>
+					<XPillarOption :options="options.pillars.nw" @update="v => { update({ pillars: { ...options.pillars, nw: v } }); }"></XPillarOption>
+				</MkFolder>
 
-		<MkFolder>
-			<template #label>Wall E</template>
-			<XWallOption :options="options.walls.e" @update="v => { update({ walls: { ...options.walls, e: v } }); }"></XWallOption>
+				<MkFolder>
+					<template #label>Pillar NE</template>
+					<XPillarOption :options="options.pillars.ne" @update="v => { update({ pillars: { ...options.pillars, ne: v } }); }"></XPillarOption>
+				</MkFolder>
+
+				<MkFolder>
+					<template #label>Pillar SW</template>
+					<XPillarOption :options="options.pillars.sw" @update="v => { update({ pillars: { ...options.pillars, sw: v } }); }"></XPillarOption>
+				</MkFolder>
+
+				<MkFolder>
+					<template #label>Pillar SE</template>
+					<XPillarOption :options="options.pillars.se" @update="v => { update({ pillars: { ...options.pillars, se: v } }); }"></XPillarOption>
+				</MkFolder>
+			</div>
 		</MkFolder>
 
 		<MkFolder>
@@ -64,6 +96,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import XWallOption from './room.default-heya-wall-options.vue';
+import XPillarOption from './room.default-heya-pillar-options.vue';
 import type { ObjectDef } from '@/world/room/object.js';
 import type { SimpleHeyaOptions } from '@/world/room/heya.js';
 import { i18n } from '@/i18n.js';

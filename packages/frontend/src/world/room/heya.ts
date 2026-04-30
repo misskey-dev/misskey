@@ -1,3 +1,4 @@
+/* eslint-disable id-denylist */
 /*
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
@@ -26,24 +27,22 @@ export abstract class HeyaManager<T = any> {
 	abstract dispose(): void;
 }
 
-type SimpleHeyaWallBase = {
-	material: null | 'wood' | 'concrete';
-	color: [number, number, number];
-	withHari: boolean;
-	hariMaterial: null | 'wood' | 'concrete';
-	hariColor: [number, number, number];
-	withHabaki: boolean;
-};
-
 export type SimpleHeyaOptions = {
 	dimension: [number, number];
 	window: 'none' | 'kosidakamado' | 'demado' | 'hakidasimado';
-	walls: {
-		n: SimpleHeyaWallBase;
-		s: SimpleHeyaWallBase;
-		w: SimpleHeyaWallBase;
-		e: SimpleHeyaWallBase;
-	};
+	walls: Record<'n' | 's' | 'w' | 'e', {
+		material: null | 'wood' | 'concrete';
+		color: [number, number, number];
+		withHari: boolean;
+		hariMaterial: null | 'wood' | 'concrete';
+		hariColor: [number, number, number];
+		withHabaki: boolean;
+	}>;
+	pillars: Record<'nw' | 'ne' | 'sw' | 'se', {
+		material: null | 'wood' | 'concrete';
+		color: [number, number, number];
+		show: boolean;
+	}>;
 	flooring: {
 		material: null | 'wood' | 'concrete';
 		color: [number, number, number];
@@ -58,27 +57,16 @@ export type JapaneseHeyaOptions = {
 	window: 'none' | 'kosidakamado' | 'demado' | 'hakidasimado';
 };
 
+// TODO: マテリアルは必要になるまで作成しないようにする
+
 export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 	private loaderResult: BABYLON.ISceneLoaderAsyncResult | null = null;
 	private meshes: BABYLON.Mesh[] = [];
-	private wallRoots: {
-		n: BABYLON.TransformNode;
-		s: BABYLON.TransformNode;
-		w: BABYLON.TransformNode;
-		e: BABYLON.TransformNode;
-	} | null = null;
-	private wallMaterials: {
-		n: BABYLON.PBRMaterial;
-		s: BABYLON.PBRMaterial;
-		w: BABYLON.PBRMaterial;
-		e: BABYLON.PBRMaterial;
-	} | null = null;
-	private wallHariMaterials: {
-		n: BABYLON.PBRMaterial;
-		s: BABYLON.PBRMaterial;
-		w: BABYLON.PBRMaterial;
-		e: BABYLON.PBRMaterial;
-	} | null = null;
+	private wallRoots: Record<'n' | 's' | 'w' | 'e', BABYLON.TransformNode> = null as any;
+	private wallMaterials: Record<'n' | 's' | 'w' | 'e', BABYLON.PBRMaterial> | null = null;
+	private wallHariMaterials: Record<'n' | 's' | 'w' | 'e', BABYLON.PBRMaterial> | null = null;
+	private pillarRoots: Record<'nw' | 'ne' | 'sw' | 'se', BABYLON.TransformNode> | null = null;
+	private pillarMaterials: Record<'nw' | 'ne' | 'sw' | 'se', BABYLON.PBRMaterial> | null = null;
 	private ceilingMaterial: BABYLON.PBRMaterial | null = null;
 	private floorMaterial: BABYLON.PBRMaterial | null = null;
 
@@ -121,6 +109,13 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 			e: this.loaderResult.transformNodes.find(t => t.name.includes('__WALL_E__'))!,
 		};
 
+		this.pillarRoots = {
+			nw: this.loaderResult.transformNodes.find(t => t.name.includes('__PILLAR_NW__'))!,
+			ne: this.loaderResult.transformNodes.find(t => t.name.includes('__PILLAR_NE__'))!,
+			sw: this.loaderResult.transformNodes.find(t => t.name.includes('__PILLAR_SW__'))!,
+			se: this.loaderResult.transformNodes.find(t => t.name.includes('__PILLAR_SE__'))!,
+		};
+
 		const wallMaterial = findMaterial(this.meshes[0], '__X_WALL__');
 		this.wallMaterials = {
 			n: wallMaterial.clone('wallNMaterial'),
@@ -137,12 +132,25 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 			e: hariMaterial.clone('wallEHariMaterial'),
 		};
 
+		const pillarMaterial = findMaterial(this.meshes[0], '__X_PILLAR__');
+		this.pillarMaterials = {
+			nw: pillarMaterial.clone('pillarNWMaterial'),
+			ne: pillarMaterial.clone('pillarNEMaterial'),
+			sw: pillarMaterial.clone('pillarSWMaterial'),
+			se: pillarMaterial.clone('pillarSEMaterial'),
+		};
+
 		for (const [k, v] of Object.entries(this.wallRoots)) {
 			for (const m of v.getChildMeshes().filter(m => m.material === wallMaterial)) {
 				m.material = this.wallMaterials[k];
 			}
 			for (const m of v.getChildMeshes().filter(m => m.material === hariMaterial)) {
 				m.material = this.wallHariMaterials[k];
+			}
+		}
+		for (const [k, v] of Object.entries(this.pillarRoots)) {
+			for (const m of v.getChildMeshes().filter(m => m.material === pillarMaterial)) {
+				m.material = this.pillarMaterials[k];
 			}
 		}
 
@@ -161,9 +169,9 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 
 			for (const mesh of wallRoot.getChildMeshes()) {
 				if (mesh.name.includes('__X_HARI__')) {
-					mesh.isVisible = wallOptions.withHari;
+					mesh.setEnabled(wallOptions.withHari);
 				} else if (mesh.name.includes('__X_HABAKI__')) {
-					mesh.isVisible = wallOptions.withHabaki;
+					mesh.setEnabled(wallOptions.withHabaki);
 				}
 			}
 
@@ -208,6 +216,31 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 			}
 		}
 
+		for (const type of ['nw', 'ne', 'sw', 'se'] as const) {
+			const pillarRoot = this.pillarRoots[type];
+			const pillarOptions = options.pillars[type];
+
+			pillarRoot.setEnabled(pillarOptions.show);
+
+			const targetMaterial = this.pillarMaterials[type];
+
+			targetMaterial.unfreeze();
+			targetMaterial.albedoColor = new BABYLON.Color3(...pillarOptions.color);
+
+			const texPath = pillarOptions.material === 'wood' ? '/client-assets/room/textures/wall-wood2.png'
+				: pillarOptions.material === 'concrete' ? '/client-assets/room/textures/wall-concrete.png'
+				: null;
+
+			if (texPath != null) {
+				const tex = new BABYLON.Texture(texPath, this.meshes[0].getScene(), false, false);
+				targetMaterial.albedoTexture = tex;
+			} else {
+				targetMaterial.albedoTexture = null;
+			}
+
+			targetMaterial.freeze();
+		}
+
 		{
 			this.ceilingMaterial.unfreeze();
 			this.ceilingMaterial.albedoColor = new BABYLON.Color3(...options.ceiling.color);
@@ -250,19 +283,22 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 	public dispose() {
 		if (this.loaderResult != null) {
 			for (const m of this.loaderResult.meshes) {
-				m.dispose();
+				m.dispose(false, true);
 			}
 			for (const t of this.loaderResult.transformNodes) {
-				t.dispose();
+				t.dispose(false, true);
 			}
 		}
 		for (const m of this.meshes) {
-			m.dispose();
+			m.dispose(false, true);
 		}
 		for (const m of Object.values(this.wallMaterials ?? {})) {
 			m.dispose();
 		}
 		for (const m of Object.values(this.wallHariMaterials ?? {})) {
+			m.dispose();
+		}
+		for (const m of Object.values(this.pillarMaterials ?? {})) {
 			m.dispose();
 		}
 	}

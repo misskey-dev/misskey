@@ -207,6 +207,28 @@ const data = localStorage.getItem('roomData') != null ? JSON.parse(localStorage.
 					withHabaki: false,
 				},
 			},
+			pillars: {
+				nw: {
+					material: null,
+					color: [0.9, 0.9, 0.9],
+					show: false,
+				},
+				ne: {
+					material: null,
+					color: [0.9, 0.9, 0.9],
+					show: false,
+				},
+				sw: {
+					material: null,
+					color: [0.9, 0.9, 0.9],
+					show: false,
+				},
+				se: {
+					material: null,
+					color: [0.9, 0.9, 0.9],
+					show: false,
+				},
+			},
 			flooring: {
 				material: 'wood',
 				color: [0.9, 0.9, 0.9],
@@ -254,6 +276,30 @@ if (data.heya.options.walls == null) {
 			hariMaterial: null,
 			hariColor: [0.8, 0.8, 0.8],
 			withHabaki: false,
+		},
+	};
+}
+if (data.heya.options.pillars == null) {
+	data.heya.options.pillars = {
+		nw: {
+			material: null,
+			color: [0.9, 0.9, 0.9],
+			show: false,
+		},
+		ne: {
+			material: null,
+			color: [0.9, 0.9, 0.9],
+			show: false,
+		},
+		sw: {
+			material: null,
+			color: [0.9, 0.9, 0.9],
+			show: false,
+		},
+		se: {
+			material: null,
+			color: [0.9, 0.9, 0.9],
+			show: false,
 		},
 	};
 }
