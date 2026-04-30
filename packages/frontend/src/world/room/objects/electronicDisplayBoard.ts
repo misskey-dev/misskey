@@ -45,6 +45,7 @@ export const electronicDisplayBoard = defineObject({
 
 		const tex = new BABYLON.Texture('/client-assets/room/textures/dot-matrix-chars.png', scene, false, false, undefined, () => {
 			tex.level = 2;
+			textMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
 			textMaterial.emissiveTexture = tex;
 			textMaterial.albedoTexture = tex;
 			textMaterial.disableLighting = true;

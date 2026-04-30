@@ -60,13 +60,20 @@ export const djPlayer = defineObject({
 
 		applyFit();
 
+		const applyScreenBrightness = () => {
+			const b = options.screenBrightness;
+			screenMaterial.emissiveColor = new BABYLON.Color3(b, b, b);
+		};
+
+		applyScreenBrightness();
+
 		const applyCustomPicture = () => new Promise<void>((resolve) => {
 			if (options.customPicture != null && options.customPicture !== '') {
 				screenMaterial.unfreeze();
 				const tex = new BABYLON.Texture(options.customPicture, scene, false, false, undefined, () => {
-					screenMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
 					screenMaterial.emissiveTexture = tex;
 					applyFit();
+					applyScreenBrightness();
 					resolve();
 				}, (message, exception) => {
 					console.warn('Failed to load texture:', message, exception);
@@ -83,13 +90,6 @@ export const djPlayer = defineObject({
 		});
 
 		await applyCustomPicture();
-
-		const applyScreenBrightness = () => {
-			const b = options.screenBrightness;
-			screenMaterial.emissiveColor = new BABYLON.Color3(b, b, b);
-		};
-
-		applyScreenBrightness();
 
 		return {
 			onOptionsUpdated: ([k, v]) => {

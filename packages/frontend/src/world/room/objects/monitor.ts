@@ -79,6 +79,14 @@ export const monitor = defineObject({
 
 		applyFit();
 
+		const applyScreenBrightness = () => {
+			const b = options.screenBrightness;
+			screenMaterial.emissiveColor = new BABYLON.Color3(b, b, b);
+			light.intensity = (5 * b) * WORLD_SCALE * WORLD_SCALE;
+		};
+
+		applyScreenBrightness();
+
 		const applyCustomPicture = () => new Promise<void>((resolve) => {
 			if (options.customPicture != null) {
 				screenMaterial.unfreeze();
@@ -86,6 +94,7 @@ export const monitor = defineObject({
 					screenMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
 					screenMaterial.emissiveTexture = tex;
 					applyFit();
+					applyScreenBrightness();
 					resolve();
 				}, (message, exception) => {
 					console.warn('Failed to load texture:', message, exception);
@@ -101,14 +110,6 @@ export const monitor = defineObject({
 		});
 
 		await applyCustomPicture();
-
-		const applyScreenBrightness = () => {
-			const b = options.screenBrightness;
-			screenMaterial.emissiveColor = new BABYLON.Color3(b, b, b);
-			light.intensity = (5 * b) * WORLD_SCALE * WORLD_SCALE;
-		};
-
-		applyScreenBrightness();
 
 		const applyBodyColor = () => {
 			const [r, g, b] = options.bodyColor;
