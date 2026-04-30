@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { toUnicode } from 'punycode.js';
 import { computed } from 'vue';
-import { host as localHost } from '@@/js/config.js';
+import { localHost } from '@@/js/config.js';
 import type { MkABehavior } from '@/components/global/MkA.vue';
 import { $i } from '@/i.js';
 import { getStaticImageUrl } from '@/utility/media-proxy.js';

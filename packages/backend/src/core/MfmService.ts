@@ -386,7 +386,7 @@ export class MfmService {
 				const remoteUserInfo = mentionedRemoteUsers.find(remoteUser => remoteUser.username.toLowerCase() === username.toLowerCase() && remoteUser.host?.toLowerCase() === host?.toLowerCase());
 				const href = remoteUserInfo
 					? (remoteUserInfo.url ? remoteUserInfo.url : remoteUserInfo.uri)
-					: `${this.config.url}/${acct.endsWith(`@${this.config.url}`) ? acct.substring(0, acct.length - this.config.url.length - 1) : acct}`;
+					: `${this.config.url}/${acct.endsWith(`@${this.config.localHost}`) ? acct.substring(0, acct.length - this.config.localHost.length - 1) : acct}`;
 				try {
 					const url = new URL(href);
 					return `<a href="${escapeHtml(url.href)}" class="u-url mention">${escapeHtml(acct)}</a>`;

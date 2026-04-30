@@ -6,7 +6,7 @@
 import { h } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
-import { host } from '@@/js/config.js';
+import { localHost } from '@@/js/config.js';
 import type { VNode, SetupContext } from 'vue';
 import type { MkABehavior } from '@/components/global/MkA.vue';
 import MkUrl from '@/components/global/MkUrl.vue';
@@ -369,7 +369,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 			case 'mention': {
 				return [h(MkMention, {
 					key: Math.random(),
-					host: (token.props.host == null && props.author && props.author.host != null ? props.author.host : token.props.host) ?? host,
+					host: (token.props.host == null && props.author && props.author.host != null ? props.author.host : token.props.host) ?? localHost,
 					username: token.props.username,
 					navigationBehavior: props.linkNavigationBehavior,
 				})];

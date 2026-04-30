@@ -5,7 +5,7 @@
 
 import { customRef, ref, watch, onScopeDispose } from 'vue';
 import { EventEmitter } from 'eventemitter3';
-import { host, version } from '@@/js/config.js';
+import { localHost, version } from '@@/js/config.js';
 import { PREF_DEF } from './def.js';
 import type { Ref } from 'vue';
 import type { MenuItem } from '@/types/menu.js';
@@ -155,28 +155,28 @@ function normalizePreferences(preferences: PossiblyNonNormalizedPreferencesProfi
 			const v = getInitialPrefValue(key as keyof typeof PREF_DEF);
 			if (isAccountDependentKey(key as keyof typeof PREF_DEF)) {
 				data[key] = account ? [[makeScope({}), v, {}], [makeScope({
-					server: host,
+					server: localHost,
 					account: account.id,
 				}), v, {}]] : [[makeScope({}), v, {}]];
 			} else if (isServerDependentKey(key as keyof typeof PREF_DEF)) {
 				data[key] = [[makeScope({
-					server: host,
+					server: localHost,
 				}), v, {}]];
 			} else {
 				data[key] = [[makeScope({}), v, {}]];
 			}
 			continue;
 		} else {
-			if (account && isAccountDependentKey(key as keyof typeof PREF_DEF) && !records.some(([scope]) => parseScope(scope).server === host && parseScope(scope).account === account.id)) {
+			if (account && isAccountDependentKey(key as keyof typeof PREF_DEF) && !records.some(([scope]) => parseScope(scope).server === localHost && parseScope(scope).account === account.id)) {
 				data[key] = records.concat([[makeScope({
-					server: host,
+					server: localHost,
 					account: account.id,
 				}), getInitialPrefValue(key as keyof typeof PREF_DEF), {}]]);
 				continue;
 			}
-			if (account && isServerDependentKey(key as keyof typeof PREF_DEF) && !records.some(([scope]) => parseScope(scope).server === host)) {
+			if (account && isServerDependentKey(key as keyof typeof PREF_DEF) && !records.some(([scope]) => parseScope(scope).server === localHost)) {
 				data[key] = records.concat([[makeScope({
-					server: host,
+					server: localHost,
 				}), getInitialPrefValue(key as keyof typeof PREF_DEF), {}]]);
 				continue;
 			}
@@ -273,7 +273,7 @@ export class PreferencesManager extends EventEmitter<PreferencesManagerEvents> {
 
 		if (parseScope(record[0]).account == null && isAccountDependentKey(key) && currentAccount != null) {
 			this.profile.preferences[key].push([makeScope({
-				server: host,
+				server: localHost,
 				account: currentAccount.id,
 			}), v, {}]);
 			_save();
@@ -282,7 +282,7 @@ export class PreferencesManager extends EventEmitter<PreferencesManagerEvents> {
 
 		if (parseScope(record[0]).server == null && isServerDependentKey(key)) {
 			this.profile.preferences[key].push([makeScope({
-				server: host,
+				server: localHost,
 			}), v, {}]);
 			_save();
 			return;
@@ -401,10 +401,10 @@ export class PreferencesManager extends EventEmitter<PreferencesManagerEvents> {
 			return record;
 		}
 
-		const accountOverrideRecord = records.find(([scope, v]) => parseScope(scope).server === host && parseScope(scope).account === currentAccount.id);
+		const accountOverrideRecord = records.find(([scope, v]) => parseScope(scope).server === localHost && parseScope(scope).account === currentAccount.id);
 		if (accountOverrideRecord) return accountOverrideRecord;
 
-		const serverOverrideRecord = records.find(([scope, v]) => parseScope(scope).server === host && parseScope(scope).account == null);
+		const serverOverrideRecord = records.find(([scope, v]) => parseScope(scope).server === localHost && parseScope(scope).account == null);
 		if (serverOverrideRecord) return serverOverrideRecord;
 
 		const record = records.find(([scope, v]) => parseScope(scope).account == null);
@@ -418,7 +418,7 @@ export class PreferencesManager extends EventEmitter<PreferencesManagerEvents> {
 	public isAccountOverrided<K extends keyof PREF>(key: K): boolean {
 		const currentAccount = this.currentAccount; // TSを黙らせるため
 		if (currentAccount == null) return false;
-		return this.profile.preferences[key].some(([scope, v]) => parseScope(scope).server === host && parseScope(scope).account === currentAccount.id);
+		return this.profile.preferences[key].some(([scope, v]) => parseScope(scope).server === localHost && parseScope(scope).account === currentAccount.id);
 	}
 
 	public setAccountOverride<K extends keyof PREF>(key: K) {
@@ -429,7 +429,7 @@ export class PreferencesManager extends EventEmitter<PreferencesManagerEvents> {
 
 		const records = this.profile.preferences[key];
 		records.push([makeScope({
-			server: host,
+			server: localHost,
 			account: currentAccount.id,
 		}), this.s[key], {}]);
 
@@ -443,7 +443,7 @@ export class PreferencesManager extends EventEmitter<PreferencesManagerEvents> {
 
 		const records = this.profile.preferences[key];
 
-		const index = records.findIndex(([scope, v]) => parseScope(scope).server === host && parseScope(scope).account === currentAccount.id);
+		const index = records.findIndex(([scope, v]) => parseScope(scope).server === localHost && parseScope(scope).account === currentAccount.id);
 		if (index === -1) return;
 
 		records.splice(index, 1);

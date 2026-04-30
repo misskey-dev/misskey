@@ -110,7 +110,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, markRaw, ref, shallowRef, toRef } from 'vue';
-import { host as localHost } from '@@/js/config.js';
+import { host } from '@@/js/config.js';
 import type * as Misskey from 'misskey-js';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
@@ -208,7 +208,7 @@ type SearchParams = {
 };
 
 const fixHostIfLocal = (target: string | null | undefined) => {
-	if (!target || target === localHost) return '.';
+	if (!target || target === host) return '.';
 	return target;
 };
 

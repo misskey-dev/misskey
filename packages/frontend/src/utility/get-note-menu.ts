@@ -140,10 +140,10 @@ export function getAbuseNoteMenu(note: Misskey.entities.Note, text: string): Men
 		icon: 'ti ti-exclamation-circle',
 		text,
 		action: async (): Promise<void> => {
-			const localUrl = `${url}/notes/${note.id}`;
+			const localHost = `${url}/notes/${note.id}`;
 			let noteInfo = '';
 			if (note.url ?? note.uri != null) noteInfo = `Note: ${note.url ?? note.uri}\n`;
-			noteInfo += `Local Note: ${localUrl}\n`;
+			noteInfo += `Local Note: ${localHost}\n`;
 			const { dispose } = await os.popupAsyncWithDialog(import('@/components/MkAbuseReportWindow.vue').then(x => x.default), {
 				user: note.user,
 				initialComment: `${noteInfo}-----\n`,

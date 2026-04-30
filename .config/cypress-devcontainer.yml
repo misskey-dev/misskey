@@ -21,6 +21,11 @@ setupPassword: example_password_please_change_this_or_you_will_get_hacked
 # Final accessible URL seen by a user.
 url: 'http://misskey.local'
 
+# Use a seperate hostname for federation. All users on this
+# instance will appear with this host instead of the one with
+# the misskey web url if set.
+#localHost: 'misskey.local'
+
 # ONCE YOU HAVE STARTED THE INSTANCE, DO NOT CHANGE THE
 # URL SETTINGS AFTER THAT!
 
