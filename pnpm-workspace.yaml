@@ -16,7 +16,6 @@ onlyBuiltDependencies:
   - '@parcel/watcher'
   - '@sentry/profiling-node'
   - '@sentry-internal/node-cpu-profiler'
-  - '@swc/core'
   - '@tensorflow/tfjs-node'
   - bufferutil
   - canvas
@@ -35,5 +34,10 @@ ignorePatchFailures: false
 minimumReleaseAge: 10080 # delay 7days to mitigate supply-chain attack
 minimumReleaseAgeExclude:
   - '@syuilo/aiscript'
-  - 'tar' # 脆弱性対応 そのうち消す
-  - 'fastify' # 脆弱性対応 そのうち消す
+  - '@typescript/native-preview*'
+  - fastify # 脆弱性対応。そのうち消す
+  - '@fastify/express' # 脆弱性対応。そのうち消す
+  - '@fastify/http-proxy' # 脆弱性対応。そのうち消す
+  - '@fastify/reply-from' # 脆弱性対応。そのうち消す
+  - '@fastify/static' # 脆弱性対応。そのうち消す
+  - sanitize-html # 脆弱性対応。そのうち消す

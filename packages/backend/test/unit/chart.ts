@@ -6,7 +6,8 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { jest } from '@jest/globals';
+import { describe, beforeEach, afterEach, afterAll, test } from 'vitest';
+import type { Mocked } from 'vitest';
 import * as lolex from '@sinonjs/fake-timers';
 import { DataSource } from 'typeorm';
 import * as Redis from 'ioredis';
@@ -28,13 +29,13 @@ describe('Chart', () => {
 	let redisClient = {
 		set: () => Promise.resolve('OK'),
 		get: () => Promise.resolve(null),
-	} as unknown as jest.Mocked<Redis.Redis>;
+	} as unknown as Mocked<Redis.Redis>;
 
 	let testChart: TestChart;
 	let testGroupedChart: TestGroupedChart;
 	let testUniqueChart: TestUniqueChart;
 	let testIntersectionChart: TestIntersectionChart;
-	let clock: lolex.InstalledClock;
+	let clock: lolex.Clock;
 
 	beforeEach(async () => {
 		if (db) db.destroy();

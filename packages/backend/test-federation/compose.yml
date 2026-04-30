@@ -43,16 +43,12 @@ services:
         target: /misskey/packages/backend/test-federation/test
         read_only: true
       - type: bind
-        source: ../jest.config.cjs
-        target: /misskey/packages/backend/jest.config.cjs
+        source: ../vitest.config.ts
+        target: /misskey/packages/backend/vitest.config.ts
         read_only: true
       - type: bind
-        source: ../jest.config.fed.cjs
-        target: /misskey/packages/backend/jest.config.fed.cjs
-        read_only: true
-      - type: bind
-        source: ../jest.js
-        target: /misskey/packages/backend/jest.js
+        source: ../vitest.config.fed.ts
+        target: /misskey/packages/backend/vitest.config.fed.ts
         read_only: true
       - type: bind
         source: ../scripts/compile_config.js

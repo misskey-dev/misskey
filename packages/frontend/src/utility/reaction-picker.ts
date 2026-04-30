@@ -4,57 +4,85 @@
  */
 
 import * as Misskey from 'misskey-js';
-import { defineAsyncComponent, ref, watch } from 'vue';
-import type { Ref } from 'vue';
-import { popup } from '@/os.js';
+import { markRaw, shallowRef, ref, watch } from 'vue';
+import type MkEmojiPickerDialog__TypeReferenceOnly from '@/components/MkEmojiPickerDialog.vue';
+import { popup, popupAsyncWithDialog } from '@/os.js';
 import { prefer } from '@/preferences.js';
 
 class ReactionPicker {
-	private anchorElement: Ref<HTMLElement | null> = ref(null);
-	private manualShowing = ref(false);
-	private targetNote: Ref<Misskey.entities.Note | null> = ref(null);
-	private onChosen?: (reaction: string) => void;
-	private onClosed?: () => void;
+	private loadedComponent: typeof MkEmojiPickerDialog__TypeReferenceOnly | null = null;
+	private reactionsRef = ref<string[]>([]);
 
 	constructor() {
 		// nop
 	}
 
-	public async init() {
-		const reactionsRef = ref<string[]>([]);
+	public init() {
+		// コンポーネントをプリロードしてキャッシュしておく。
+		// iOS PWA では await を挟むとユーザーアクティベーションが失われfocusが効かなくなるため、
+		// show() 呼び出し時には同期的に popup() できるよう事前にコンポーネントを解決しておく。
+		import('@/components/MkEmojiPickerDialog.vue').then(m => {
+			this.loadedComponent = markRaw(m.default);
+		}).catch(err => {
+			console.error('[ReactionPicker] Failed to preload MkEmojiPickerDialog:', err);
+		});
 
 		watch([prefer.r.emojiPaletteForReaction, prefer.r.emojiPalettes], () => {
-			reactionsRef.value = prefer.s.emojiPaletteForReaction == null ? prefer.s.emojiPalettes[0].emojis : prefer.s.emojiPalettes.find(palette => palette.id === prefer.s.emojiPaletteForReaction)?.emojis ?? [];
+			this.reactionsRef.value = prefer.s.emojiPaletteForReaction == null ? prefer.s.emojiPalettes[0].emojis : prefer.s.emojiPalettes.find(palette => palette.id === prefer.s.emojiPaletteForReaction)?.emojis ?? [];
 		}, {
 			immediate: true,
 		});
-
-		await popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerDialog.vue')), {
-			anchorElement: this.anchorElement,
-			pinnedEmojis: reactionsRef,
-			asReactionPicker: true,
-			targetNote: this.targetNote,
-			manualShowing: this.manualShowing,
-		}, {
-			done: reaction => {
-				if (this.onChosen) this.onChosen(reaction);
-			},
-			close: () => {
-				this.manualShowing.value = false;
-			},
-			closed: () => {
-				this.anchorElement.value = null;
-				if (this.onClosed) this.onClosed();
-			},
-		});
 	}
 
-	public show(anchorElement: HTMLElement | null, targetNote: Misskey.entities.Note | null, onChosen?: ReactionPicker['onChosen'], onClosed?: ReactionPicker['onClosed']) {
-		this.anchorElement.value = anchorElement;
-		this.targetNote.value = targetNote;
-		this.manualShowing.value = true;
-		this.onChosen = onChosen;
-		this.onClosed = onClosed;
+	public show(
+		anchorElement: HTMLElement | null,
+		targetNote: Misskey.entities.Note | null,
+		onChosen?: (reaction: string) => void,
+		onClosed?: () => void,
+	) {
+		const anchorRef = shallowRef(anchorElement);
+		const targetNoteRef = ref(targetNote);
+
+		if (this.loadedComponent) {
+			// 通常パス: コンポーネント解決済みのため同期的に popup() できる。
+			// ユーザーアクティベーションコンテキストが維持されiOSでもfocusが機能する。
+			const { dispose } = popup(this.loadedComponent, {
+				anchorElement: anchorRef,
+				pinnedEmojis: this.reactionsRef,
+				asReactionPicker: true,
+				targetNote: targetNoteRef,
+			}, {
+				done: (reaction: string) => {
+					if (onChosen) onChosen(reaction);
+				},
+				closed: () => {
+					if (onClosed) onClosed();
+					dispose();
+				},
+			});
+		} else {
+			// フォールバック: 初回タップがプリロード完了前
+			popupAsyncWithDialog(
+				import('@/components/MkEmojiPickerDialog.vue').then(m => {
+					this.loadedComponent = markRaw(m.default);
+					return this.loadedComponent;
+				}),
+				{
+					anchorElement: anchorRef,
+					pinnedEmojis: this.reactionsRef,
+					asReactionPicker: true,
+					targetNote: targetNoteRef,
+				},
+				{
+					done: (reaction: string) => {
+						if (onChosen) onChosen(reaction);
+					},
+					closed: () => {
+						if (onClosed) onClosed();
+					},
+				},
+			);
+		}
 	}
 }
 

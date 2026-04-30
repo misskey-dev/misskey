@@ -55,7 +55,7 @@ async function getMemoryUsage(pid) {
 
 async function measureMemory() {
 	// Start the Misskey backend server using fork to enable IPC
-	const serverProcess = fork(join(__dirname, '../built/boot/entry.js'), ['expose-gc'], {
+	const serverProcess = fork(join(__dirname, '../built/entry.js'), ['expose-gc'], {
 		cwd: join(__dirname, '..'),
 		env: {
 			...process.env,

@@ -13,8 +13,6 @@ import chalk from 'chalk';
 import Xev from 'xev';
 import Logger from '@/logger.js';
 import { envOption } from '../env.js';
-import { masterMain } from './master.js';
-import { workerMain } from './worker.js';
 import { readyRef } from './ready.js';
 
 import 'reflect-metadata';
@@ -71,10 +69,12 @@ process.on('exit', code => {
 if (!envOption.disableClustering) {
 	if (cluster.isPrimary) {
 		logger.info(`Start main process... pid: ${process.pid}`);
+		const { masterMain } = await import('./master.js');
 		await masterMain();
 		ev.mount();
 	} else if (cluster.isWorker) {
 		logger.info(`Start worker process... pid: ${process.pid}`);
+		const { workerMain } = await import('./worker.js');
 		await workerMain();
 	} else {
 		throw new Error('Unknown process type');
@@ -82,6 +82,7 @@ if (!envOption.disableClustering) {
 } else {
 	// 非clusterの場合はMasterのみが起動するため、Workerの処理は行わない(cluster.isWorker === trueの状態でこのブロックに来ることはない)
 	logger.info(`Start main process... pid: ${process.pid}`);
+	const { masterMain } = await import('./master.js');
 	await masterMain();
 	ev.mount();
 }

@@ -6,7 +6,6 @@
 // TODO: なんでもかんでもos.tsに突っ込むのやめたいのでよしなに分割する
 
 import { markRaw, ref, defineAsyncComponent, nextTick } from 'vue';
-import { EventEmitter } from 'eventemitter3';
 import * as Misskey from 'misskey-js';
 import type { Component, MaybeRef } from 'vue';
 import type { ComponentEmit, ComponentProps as CP } from 'vue-component-type-helpers';
@@ -196,9 +195,9 @@ export function popup<T extends Component>(
 	const id = ++popupIdCount;
 	const dispose = () => {
 		// このsetTimeoutが無いと挙動がおかしくなる(autocompleteが閉じなくなる)。Vueのバグ？
-		window.setTimeout(() => {
+		nextTick(() => {
 			popups.value = popups.value.filter(p => p.id !== id);
-		}, 0);
+		});
 	};
 	const state = {
 		component,
@@ -242,27 +241,7 @@ export async function popupAsyncWithDialog<T extends Component>(
 	window.clearTimeout(timer);
 	closeWaiting();
 
-	markRaw(component);
-
-	const id = ++popupIdCount;
-	const dispose = () => {
-		// このsetTimeoutが無いと挙動がおかしくなる(autocompleteが閉じなくなる)。Vueのバグ？
-		window.setTimeout(() => {
-			popups.value = popups.value.filter(p => p.id !== id);
-		}, 0);
-	};
-	const state = {
-		component,
-		props,
-		events,
-		id,
-	};
-
-	popups.value.push(state);
-
-	return {
-		dispose,
-	};
+	return popup(component, props, events);
 }
 
 export function pageWindow(path: string) {
@@ -640,6 +619,8 @@ export function popupMenu(items: (MenuItem | null)[], anchorElement?: HTMLElemen
 	width?: number;
 	onClosing?: () => void;
 	onClosed?: () => void;
+	debugDisablePredictionCone?: boolean;
+	debugShowPredictionCone?: boolean;
 }): Promise<void> {
 	if (!(anchorElement instanceof HTMLElement)) {
 		anchorElement = null;
@@ -653,6 +634,8 @@ export function popupMenu(items: (MenuItem | null)[], anchorElement?: HTMLElemen
 			width: options?.width,
 			align: options?.align,
 			returnFocusTo,
+			debugDisablePredictionCone: options?.debugDisablePredictionCone,
+			debugShowPredictionCone: options?.debugShowPredictionCone,
 		}, {
 			closed: () => {
 				resolve();
@@ -724,8 +707,6 @@ export async function post(props: PostFormProps = {}): Promise<void> {
 		});
 	});
 }
-
-export const deckGlobalEvents = new EventEmitter();
 
 /*
 export function checkExistence(fileData: ArrayBuffer): Promise<any> {

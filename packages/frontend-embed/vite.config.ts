@@ -7,10 +7,10 @@ import { promises as fsp } from 'fs';
 import locales from 'i18n';
 import meta from '../../package.json';
 import packageInfo from './package.json' with { type: 'json' };
-import pluginJson5 from './vite.json5.js';
+import pluginJson5 from './lib/vite-plugin-json5.js';
 import { pluginRemoveUnrefI18n } from '../frontend-builder/rollup-plugin-remove-unref-i18n';
 
-const url = process.env.NODE_ENV === 'development' ? yaml.load(await fsp.readFile('../../.config/default.yml', 'utf-8')).url : null;
+const url = process.env.NODE_ENV === 'development' ? (yaml.load(await fsp.readFile('../../.config/default.yml', 'utf-8')) as any).url : null;
 const host = url ? (new URL(url)).hostname : undefined;
 
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
@@ -113,11 +113,6 @@ export function getConfig(): UserConfig {
 					}
 				},
 			},
-			preprocessorOptions: {
-				scss: {
-					api: 'modern-compiler',
-				},
-			},
 		},
 
 		define: {
@@ -137,7 +132,10 @@ export function getConfig(): UserConfig {
 				'safari16',
 			],
 			manifest: 'manifest.json',
-			rollupOptions: {
+			rolldownOptions: {
+				experimental: {
+					nativeMagicString: true,
+				},
 				input: {
 					i18n: './src/i18n.ts',
 					entry: './src/boot.ts',
@@ -145,10 +143,15 @@ export function getConfig(): UserConfig {
 				external: externalPackages.map(p => p.match),
 				preserveEntrySignatures: 'allow-extension',
 				output: {
-					manualChunks: {
-						vue: ['vue'],
-						// dependencies of i18n.ts
-						'config': ['@@/js/config.js'],
+					codeSplitting: {
+						groups: [{
+							name: 'vue',
+							test: /node_modules[\\/]vue/,
+						}, {
+							// dependencies of i18n.ts
+							name: 'config',
+							test: /@@[\\/]js[\\/]config\.js/,
+						}],
 					},
 					entryFileNames: `scripts/${localesHash}-[hash:8].js`,
 					chunkFileNames: `scripts/${localesHash}-[hash:8].js`,

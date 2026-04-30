@@ -9,6 +9,7 @@
 // pnpm jest -- e2e/timelines.ts
 
 import * as assert from 'assert';
+import { describe, beforeAll, test } from 'vitest';
 import { setTimeout } from 'node:timers/promises';
 import { entities } from 'misskey-js';
 import { Redis } from 'ioredis';

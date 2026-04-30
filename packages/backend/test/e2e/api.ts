@@ -6,7 +6,8 @@
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { IncomingMessage } from 'http';
+import { describe, beforeAll, test } from 'vitest';
+import { IncomingMessage } from 'node:http';
 import {
 	api,
 	connectStream,

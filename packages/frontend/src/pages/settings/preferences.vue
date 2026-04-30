@@ -293,21 +293,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkPreferenceContainer>
 							</SearchMarker>
 
-							<SearchMarker :keywords="['ticker', 'information', 'label', 'instance', 'server', 'host', 'federation']">
-								<MkPreferenceContainer k="instanceTicker">
-									<MkSelect
-										v-if="instance.federation !== 'none'"
-										v-model="instanceTicker"
-										:items="[
-											{ label: i18n.ts._instanceTicker.none, value: 'none' },
-											{ label: i18n.ts._instanceTicker.remote, value: 'remote' },
-											{ label: i18n.ts._instanceTicker.always, value: 'always' },
-										]"
-									>
-										<template #label><SearchLabel>{{ i18n.ts.instanceTicker }}</SearchLabel></template>
-									</MkSelect>
-								</MkPreferenceContainer>
-							</SearchMarker>
+							<template v-if="instance.federation !== 'none'">
+								<SearchMarker :keywords="['ticker', 'information', 'label', 'instance', 'server', 'host', 'federation']">
+									<MkPreferenceContainer k="instanceTicker">
+										<MkSelect
+											v-model="instanceTicker"
+											:items="[
+												{ label: i18n.ts._instanceTicker.none, value: 'none' },
+												{ label: i18n.ts._instanceTicker.remote, value: 'remote' },
+												{ label: i18n.ts._instanceTicker.always, value: 'always' },
+											]"
+										>
+											<template #label><SearchLabel>{{ i18n.ts.instanceTicker }}</SearchLabel></template>
+										</MkSelect>
+									</MkPreferenceContainer>
+								</SearchMarker>
+							</template>
 
 							<SearchMarker :keywords="['attachment', 'image', 'photo', 'picture', 'media', 'thumbnail', 'nsfw', 'sensitive', 'display', 'show', 'hide', 'visibility']">
 								<MkPreferenceContainer k="nsfw">

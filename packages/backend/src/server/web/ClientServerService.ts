@@ -4,9 +4,7 @@
  */
 
 import { randomUUID } from 'node:crypto';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import * as fs from 'node:fs';
+import { resolve } from 'node:path';
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
 import sharp from 'sharp';
@@ -67,35 +65,17 @@ import { ErrorPage } from './views/error.js';
 
 import type { FastifyError, FastifyInstance, FastifyPluginOptions, FastifyReply } from 'fastify';
 
-const _filename = fileURLToPath(import.meta.url);
-const _dirname = dirname(_filename);
-
-let rootDir = _dirname;
-// 見つかるまで上に遡る
-while (!fs.existsSync(resolve(rootDir, 'packages'))) {
-	const parentDir = dirname(rootDir);
-	if (parentDir === rootDir) {
-		throw new Error('Cannot find root directory');
-	}
-	rootDir = parentDir;
-}
-
-const backendRootDir = resolve(rootDir, 'packages/backend');
-const frontendRootDir = resolve(rootDir, 'packages/frontend');
-
-const staticAssets = resolve(backendRootDir, 'assets');
-const clientAssets = resolve(frontendRootDir, 'assets');
-const assets = resolve(rootDir, 'built/_frontend_dist_');
-const swAssets = resolve(rootDir, 'built/_sw_dist_');
-const fluentEmojisDir = resolve(rootDir, 'fluent-emojis/dist');
-const twemojiDir = resolve(backendRootDir, 'node_modules/@discordapp/twemoji/dist/svg');
-const frontendViteOut = resolve(rootDir, 'built/_frontend_vite_');
-const frontendEmbedViteOut = resolve(rootDir, 'built/_frontend_embed_vite_');
-const tarball = resolve(rootDir, 'built/tarball');
-
 @Injectable()
 export class ClientServerService {
-	private logger: Logger;
+	private readonly staticAssets: string;
+	private readonly clientAssets: string;
+	private readonly assets: string;
+	private readonly swAssets: string;
+	private readonly fluentEmojisDir: string;
+	private readonly twemojiDir: string;
+	private readonly frontendViteOut: string;
+	private readonly frontendEmbedViteOut: string;
+	private readonly tarball: string;
 
 	constructor(
 		@Inject(DI.config)
@@ -149,6 +129,17 @@ export class ClientServerService {
 		private clientLoggerService: ClientLoggerService,
 	) {
 		//this.createServer = this.createServer.bind(this);
+		const backendRootdir = resolve(this.config.rootDir, 'packages/backend');
+		const frontendRootdir = resolve(this.config.rootDir, 'packages/frontend');
+		this.staticAssets = resolve(backendRootdir, 'assets');
+		this.clientAssets = resolve(frontendRootdir, 'assets');
+		this.assets = resolve(this.config.rootDir, 'built/_frontend_dist_');
+		this.swAssets = resolve(this.config.rootDir, 'built/_sw_dist_');
+		this.fluentEmojisDir = resolve(this.config.rootDir, 'fluent-emojis/dist');
+		this.twemojiDir = resolve(backendRootdir, 'node_modules/@discordapp/twemoji/dist/svg');
+		this.frontendViteOut = resolve(this.config.rootDir, 'built/_frontend_vite_');
+		this.frontendEmbedViteOut = resolve(this.config.rootDir, 'built/_frontend_embed_vite_');
+		this.tarball = resolve(this.config.rootDir, 'built/tarball');
 	}
 
 	@bindThis
@@ -223,17 +214,17 @@ export class ClientServerService {
 
 		//#region vite assets
 		if (this.config.frontendEmbedManifestExists) {
-			console.log(`[ClientServerService] Using built frontend vite assets. ${frontendViteOut}`);
+			this.clientLoggerService.logger.info(`[ClientServerService] Using built frontend vite assets. ${this.frontendViteOut}`);
 			fastify.register((fastify, options, done) => {
 				fastify.register(fastifyStatic, {
-					root: frontendViteOut,
+					root: this.frontendViteOut,
 					prefix: '/vite/',
 					maxAge: ms('30 days'),
 					immutable: true,
 					decorateReply: false,
 				});
 				fastify.register(fastifyStatic, {
-					root: frontendEmbedViteOut,
+					root: this.frontendEmbedViteOut,
 					prefix: '/embed_vite/',
 					maxAge: ms('30 days'),
 					immutable: true,
@@ -265,21 +256,21 @@ export class ClientServerService {
 		//#region static assets
 
 		fastify.register(fastifyStatic, {
-			root: staticAssets,
+			root: this.staticAssets,
 			prefix: '/static-assets/',
 			maxAge: ms('7 days'),
 			decorateReply: false,
 		});
 
 		fastify.register(fastifyStatic, {
-			root: clientAssets,
+			root: this.clientAssets,
 			prefix: '/client-assets/',
 			maxAge: ms('7 days'),
 			decorateReply: false,
 		});
 
 		fastify.register(fastifyStatic, {
-			root: assets,
+			root: this.assets,
 			prefix: '/assets/',
 			maxAge: ms('7 days'),
 			decorateReply: false,
@@ -287,7 +278,7 @@ export class ClientServerService {
 
 		fastify.register((fastify, options, done) => {
 			fastify.register(fastifyStatic, {
-				root: tarball,
+				root: this.tarball,
 				prefix: '/tarball/',
 				maxAge: ms('30 days'),
 				immutable: true,
@@ -298,11 +289,11 @@ export class ClientServerService {
 		});
 
 		fastify.get('/favicon.ico', async (request, reply) => {
-			return reply.sendFile('/favicon.ico', staticAssets);
+			return reply.sendFile('/favicon.ico', this.staticAssets);
 		});
 
 		fastify.get('/apple-touch-icon.png', async (request, reply) => {
-			return reply.sendFile('/apple-touch-icon.png', staticAssets);
+			return reply.sendFile('/apple-touch-icon.png', this.staticAssets);
 		});
 
 		fastify.get<{ Params: { path: string } }>('/fluent-emoji/:path(.*)', async (request, reply) => {
@@ -315,7 +306,7 @@ export class ClientServerService {
 
 			reply.header('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
 
-			return reply.sendFile(path, fluentEmojisDir, {
+			return reply.sendFile(path, this.fluentEmojisDir, {
 				maxAge: ms('30 days'),
 			});
 		});
@@ -330,7 +321,7 @@ export class ClientServerService {
 
 			reply.header('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
 
-			return reply.sendFile(path, twemojiDir, {
+			return reply.sendFile(path, this.twemojiDir, {
 				maxAge: ms('30 days'),
 			});
 		});
@@ -344,7 +335,7 @@ export class ClientServerService {
 			}
 
 			const mask = await sharp(
-				`${twemojiDir}/${path.replace('.png', '')}.svg`,
+				`${this.twemojiDir}/${path.replace('.png', '')}.svg`,
 				{ density: 1000 },
 			)
 				.resize(488, 488)
@@ -380,7 +371,7 @@ export class ClientServerService {
 
 		// ServiceWorker
 		fastify.get('/sw.js', async (request, reply) => {
-			return await reply.sendFile('/sw.js', swAssets, {
+			return await reply.sendFile('/sw.js', this.swAssets, {
 				maxAge: ms('10 minutes'),
 			});
 		});
@@ -390,13 +381,40 @@ export class ClientServerService {
 
 		// Embed Javascript
 		fastify.get('/embed.js', async (request, reply) => {
-			return await reply.sendFile('/embed.js', staticAssets, {
+			return await reply.sendFile('/embed.js', this.staticAssets, {
 				maxAge: ms('1 day'),
 			});
 		});
 
 		fastify.get('/robots.txt', async (request, reply) => {
-			return await reply.sendFile('/robots.txt', staticAssets);
+			const disallowedPaths = [
+				'/settings',
+				'/admin',
+				'/custom-emojis-manager',
+				'/avatar-decorations',
+				'/share',
+				'/my',
+				'/api',
+				'/inbox',
+				'/oauth',
+				'/proxy',
+				'/url',
+			];
+
+			if (this.meta.ugcVisibilityForVisitor === 'none') {
+				disallowedPaths.push(
+					'/@',
+					'/notes',
+				);
+			}
+
+			let content = `User-agent: *\n`;
+			content += disallowedPaths.map((path) => `Disallow: ${path}`).join('\n') + '\n';
+			content += 'Allow: /\n';
+			content += '\n# todo: sitemap\n';
+
+			reply.header('Content-Type', 'text/plain; charset=utf-8');
+			return await reply.send(content);
 		});
 
 		// OpenSearch XML
