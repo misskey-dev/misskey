@@ -8,15 +8,16 @@
 		"declarationMap": true,
 		"sourceMap": false,
 		"outDir": "./built",
-		"removeComments": true,
 		"strict": true,
 		"strictFunctionTypes": true,
 		"strictNullChecks": true,
-		"experimentalDecorators": true,
 		"noImplicitReturns": true,
 		"esModuleInterop": true,
 		"exactOptionalPropertyTypes": true,
-		"rootDir": "./src",
+		"skipLibCheck": true,
+		"paths": {
+			"@/*": ["./src"]
+		},
 		"typeRoots": [
 			"./node_modules/@types"
 		],

@@ -16,6 +16,7 @@
 		"noLib": false,
 		"strict": true,
 		"strictNullChecks": true,
+		"skipLibCheck": true,
 		"experimentalDecorators": true,
 		"resolveJsonModule": true,
 		"isolatedModules": true,

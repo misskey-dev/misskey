@@ -8,10 +8,7 @@ export default [
 		ignores: [
 			'**/node_modules',
 			'built',
-			'coverage',
-			'jest.config.ts',
-			'test',
-			'test-d',
+			'tsdown.config.ts',
 		],
 	},
 	{
