@@ -313,7 +313,7 @@ export class RoomEngine extends EventEmitter {
 		//this.scene.activeCamera = this.camera;
 
 		this.roomLight = new BABYLON.SpotLight('roomLight', new BABYLON.Vector3(0, cm(249), 0), new BABYLON.Vector3(0, -1, 0), 16, 8, this.scene);
-		this.roomLight.diffuse = roomState.roomLightColor != null ? new BABYLON.Color3(...roomState.roomLightColor) : new BABYLON.Color3(1.0, 0.9, 0.8);
+		this.roomLight.diffuse = new BABYLON.Color3(...roomState.roomLightColor);
 		this.roomLight.shadowMinZ = cm(10);
 		this.roomLight.shadowMaxZ = cm(300);
 		this.roomLight.radius = cm(30);
@@ -1414,6 +1414,7 @@ export class RoomEngine extends EventEmitter {
 	}
 
 	public updateRoomLightColor(color: [number, number, number]) {
+		if (this.roomLight.diffuse.equalsFloats(...color)) return;
 		this.roomLight.diffuse = new BABYLON.Color3(...color);
 		this.roomState.roomLightColor = color;
 		this.ev('changeRoomState', { roomState: this.roomState });

@@ -15,6 +15,7 @@ import type { ObjectDef, RoomStateObject } from './object.js';
 import * as sound from '@/utility/sound.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
+import { deepEqual } from '@/utility/deep-equal.js';
 
 export type RoomControllerOptions = {
 	workerMode?: boolean;
@@ -142,6 +143,7 @@ export class RoomController {
 		});
 
 		engineEvents.on('changeRoomState', ({ roomState }) => {
+			if (deepEqual(this.roomState.value, roomState)) return; // vueのリアクティビティが反応して無限ループになることがあるため
 			this.roomState.value = roomState;
 			triggerRef(this.selected);
 		});

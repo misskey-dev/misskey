@@ -72,21 +72,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 
 		<div v-if="isRoomSettingsOpen && controller.isEditMode.value" class="_panel" :class="$style.overlayObjectInfoPanel">
-			<div class="_gaps">
-				Room options
-
-				<MkSelect
-					:items="[
-						{ label: 'Simple', value: 'simple' },
-					]" :modelValue="controller.roomState.value.heya.type" @update:modelValue="v => controller.changeHeyaType(v)"
-				>
-					<template #label>Heya type</template>
-				</MkSelect>
-
-				<template v-if="controller.roomState.value.heya.type === 'simple'">
-					<XDefaultHeyaOptions :options="controller.roomState.value.heya.options" @update="v => controller.updateHeyaOptions(v)"></XDefaultHeyaOptions>
-				</template>
-			</div>
+			<XHeyaOptions :controller="controller"/>
 		</div>
 	</div>
 
@@ -97,20 +83,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
+import { computed, defineAsyncComponent, markRaw, nextTick, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import * as BABYLON from '@babylonjs/core';
 import XObjectCustomizeForm from './room.object-customize-form.vue';
-import XDefaultHeyaOptions from './room.default-heya-options.vue';
+import XHeyaOptions from './room.heya-options.vue';
 import type { RoomControllerOptions } from '@/world/room/controller.js';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import { ensureSignin } from '@/i';
 import MkButton from '@/components/MkButton.vue';
-import MkSelect from '@/components/MkSelect.vue';
 import * as os from '@/os.js';
-import MkInput from '@/components/MkInput.vue';
-import MkSwitch from '@/components/MkSwitch.vue';
-import MkRange from '@/components/MkRange.vue';
 import { RoomController } from '@/world/room/controller.js';
 import { cm, getHex, getRgb } from '@/world/utility.js';
 import { deepClone } from '@/utility/clone.js';
@@ -256,7 +238,7 @@ const roomControllerOptions = computed<RoomControllerOptions>(() => ({
 	workerMode: true,
 }));
 
-const controller = new RoomController(data, roomControllerOptions.value);
+const controller = markRaw(new RoomController(data, roomControllerOptions.value));
 
 const selectedObjectDef = computed(() => controller.selected.value == null ? null : getObjectDef(controller.selected.value.objectState.type));
 

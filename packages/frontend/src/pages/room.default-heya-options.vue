@@ -69,7 +69,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			>
 				<template #label>wallpaper</template>
 			</MkSelect>
-			<MkInput :modelValue="getHex(options.ceiling.color)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) update({ ceiling: { ...options.ceiling, color: c } }); }">
+			<!-- debounceしないとカラーピッカー上で高速でなぞったときになぜか無限ループになる -->
+			<MkInput :modelValue="getHex(options.ceiling.color)" type="color" debounce @update:modelValue="v => { const c = getRgb(v); if (c != null) update({ ceiling: { ...options.ceiling, color: c } }); }">
 				<template #label>color</template>
 			</MkInput>
 		</MkFolder>
@@ -85,7 +86,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			>
 				<template #label>material</template>
 			</MkSelect>
-			<MkInput :modelValue="getHex(options.flooring.color)" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) update({ flooring: { ...options.flooring, color: c } }); }">
+			<!-- debounceしないとカラーピッカー上で高速でなぞったときになぜか無限ループになる -->
+			<MkInput :modelValue="getHex(options.flooring.color)" type="color" debounce @update:modelValue="v => { const c = getRgb(v); if (c != null) update({ flooring: { ...options.flooring, color: c } }); }">
 				<template #label>color</template>
 			</MkInput>
 		</MkFolder>
