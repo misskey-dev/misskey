@@ -31,6 +31,7 @@ import { djMixer } from './objects/djMixer.js';
 import { djPlayer } from './objects/djPlayer.js';
 import { ductRailSpotLights } from './objects/ductRailSpotLights.js';
 import { ductTape } from './objects/ductTape.js';
+import { electronicDisplayBoard } from './objects/electronicDisplayBoard.js';
 import { emptyBento } from './objects/emptyBento.js';
 import { energyDrink } from './objects/energyDrink.js';
 import { envelope } from './objects/envelope.js';
@@ -128,6 +129,7 @@ export const OBJECT_DEFS = [
 	djPlayer,
 	ductRailSpotLights,
 	ductTape,
+	electronicDisplayBoard,
 	emptyBento,
 	energyDrink,
 	envelope,

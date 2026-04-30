@@ -47,6 +47,11 @@ type BooleanOptionSchema = {
 	label: string;
 };
 
+type StringOptionSchema = {
+	type: 'string';
+	label: string;
+};
+
 type ColorOptionSchema = {
 	type: 'color';
 	label: string;
@@ -76,12 +81,13 @@ type SeedOptionSchema = {
 	label: string;
 };
 
-type OptionsSchema = Record<string, NumberOptionSchema | BooleanOptionSchema | ColorOptionSchema | EnumOptionSchema | RangeOptionSchema | ImageOptionSchema | SeedOptionSchema>;
+type OptionsSchema = Record<string, NumberOptionSchema | BooleanOptionSchema | StringOptionSchema | ColorOptionSchema | EnumOptionSchema | RangeOptionSchema | ImageOptionSchema | SeedOptionSchema>;
 
 type GetOptionsSchemaValues<T extends OptionsSchema> = {
 	[K in keyof T]:
 	T[K] extends NumberOptionSchema ? number :
 	T[K] extends BooleanOptionSchema ? boolean :
+	T[K] extends StringOptionSchema ? string :
 	T[K] extends ColorOptionSchema ? [number, number, number] :
 	T[K] extends EnumOptionSchema ? T[K]['enum'][number] :
 	T[K] extends RangeOptionSchema ? number :

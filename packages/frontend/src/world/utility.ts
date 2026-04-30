@@ -384,6 +384,7 @@ export class RecyvlingText {
 	}
 }
 
+// 各面はUV展開時に全ての面が0~1の正方形に"reset"されていること。(全ての面がUV的に重なっている状態)
 export class RecyvlingTextGrid {
 	public facesCount: number;
 	public mesh: BABYLON.Mesh;
@@ -487,7 +488,7 @@ export class RecyvlingTextGrid {
 		}
 
 		for (let i = 0; i < this.facesCount; i++) {
-			if (i + text.length >= (maxRepeat * text.length)) {
+			if (maxRepeat > 1 && (i + text.length >= (maxRepeat * text.length))) {
 				if (i >= this.facesCount - this.repeatSeparator.length) {
 					charIndexes.push(TEXT_TEXTURE_CHAR_MAP[this.repeatSeparator[(i - (this.facesCount - this.repeatSeparator.length)) % this.repeatSeparator.length]]);
 				} else {

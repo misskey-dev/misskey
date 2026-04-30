@@ -17,6 +17,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-else-if="s.type === 'enum'">
 				<MkSelect :items="s.enum.map(e => ({ label: e, value: e }))" :modelValue="options[k]" @update:modelValue="v => emit('update', k, v)"></MkSelect>
 			</div>
+			<div v-else-if="s.type === 'string'">
+				<MkInput type="text" :modelValue="options[k]" @update:modelValue="v => emit('update', k, v)"></MkInput>
+			</div>
 			<div v-else-if="s.type === 'range'">
 				<MkRange :continuousUpdate="true" :min="s.min" :max="s.max" :step="s.step" :modelValue="options[k]" @update:modelValue="v => emit('update', k, v)"></MkRange>
 			</div>
