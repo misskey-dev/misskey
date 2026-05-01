@@ -68,6 +68,7 @@ import { poster } from './objects/poster.js';
 import { powerStrip } from './objects/powerStrip.js';
 import { radiometer } from './objects/radiometer.js';
 import { randomBooks } from './objects/randomBooks.js';
+import { recordPlayer } from './objects/recordPlayer.js';
 import { rolledUpPoster } from './objects/rolledUpPoster.js';
 import { roundRug } from './objects/roundRug.js';
 import { router } from './objects/router.js';
@@ -168,6 +169,7 @@ export const OBJECT_DEFS = [
 	powerStrip,
 	radiometer,
 	randomBooks,
+	recordPlayer,
 	rolledUpPoster,
 	roundRug,
 	router,
