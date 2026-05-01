@@ -222,6 +222,7 @@ const data = localStorage.getItem('roomData') != null ? JSON.parse(localStorage.
 			},
 		},
 	},
+	roomLightColor: [1.0, 0.9, 0.8],
 	installedObjects: [],
 };
 
@@ -570,6 +571,19 @@ function showOtherMenu(ev: PointerEvent) {
 	}, {
 		text: 'Import',
 		action: impor,
+	}, {
+		text: 'Delete',
+		danger: true,
+		action: () => {
+			os.confirm({
+				type: 'warning',
+				title: i18n.ts.areYouSure,
+			}).then(({ canceled }) => {
+				if (canceled) return;
+				localStorage.removeItem('roomData');
+				window.location.reload();
+			});
+		},
 	}, {
 		type: 'divider',
 	}, {

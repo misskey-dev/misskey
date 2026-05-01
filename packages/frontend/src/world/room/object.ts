@@ -107,7 +107,7 @@ export type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 	placement: 'top' | 'side' | 'bottom' | 'wall' | 'ceiling' | 'floor';
 	hasCollisions?: boolean;
 	hasTexture?: boolean;
-	canPreMeshesMerging?: boolean;
+	canPreMeshesMerging?: boolean; // TODO: 除外するメッシュ名を指定できるようにする
 	//groupingMeshes: string[]; // multi-materialなメッシュは複数のメッシュに分割されるが、それだと不便な場合に追加の親メッシュでグルーピングするための指定
 	isChair?: boolean;
 	treatLoaderResult?: (loaderResult: BABYLON.AssetContainer) => void;
