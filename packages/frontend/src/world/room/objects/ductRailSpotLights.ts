@@ -88,7 +88,7 @@ export const ductRailSpotLights = defineObject({
 		const applyLightBrightness = () => {
 			for (const light of lights) {
 				light.intensity = 1 * options.lightBrightness * WORLD_SCALE * WORLD_SCALE;
-				light.range = cm(200) * options.lightBrightness;
+				light.range = cm(300) * options.lightBrightness;
 			}
 			for (const lamp of lamps) {
 				const emissive = lamp.material as BABYLON.PBRMaterial;
