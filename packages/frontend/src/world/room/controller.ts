@@ -144,7 +144,7 @@ export class RoomController {
 
 		engineEvents.on('changeRoomState', ({ roomState }) => {
 			if (deepEqual(this.roomState.value, roomState)) return; // vueのリアクティビティが反応して無限ループになることがあるため
-			this.roomState.value = roomState;
+			this.roomState.value = JSON.parse(JSON.stringify(roomState));
 			triggerRef(this.selected);
 		});
 
