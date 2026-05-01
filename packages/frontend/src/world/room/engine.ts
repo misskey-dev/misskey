@@ -441,7 +441,6 @@ export class RoomEngine extends EventEmitter {
 	}
 
 	private ev<K extends keyof RoomEngineEvents>(type: K, ctx: Parameters<RoomEngineEvents[K]>[0]) {
-		console.log(type, ctx);
 		this.emit('ev', { type, ctx });
 	}
 
@@ -452,10 +451,22 @@ export class RoomEngine extends EventEmitter {
 		const objects = this.roomState.installedObjects.filter(o => !IGNORE_OBJECTS.includes(o.type));
 		let loadedCount = 0;
 
+		if (this.roomState.worldScale !== WORLD_SCALE) {
+			for (const o of objects) {
+				o.position = [
+					remap(o.position[0], 0, this.roomState.worldScale, 0, WORLD_SCALE),
+					remap(o.position[1], 0, this.roomState.worldScale, 0, WORLD_SCALE),
+					remap(o.position[2], 0, this.roomState.worldScale, 0, WORLD_SCALE),
+				];
+			}
+			this.roomState.worldScale = WORLD_SCALE;
+			this.ev('changeRoomState', { roomState: this.roomState });
+		}
+
 		await Promise.all(objects.map(o => this.loadObject({
 			id: o.id,
 			type: o.type,
-			position: this.roomState.worldScale !== WORLD_SCALE ? new BABYLON.Vector3(remap(o.position[0], 0, this.roomState.worldScale, 0, WORLD_SCALE), remap(o.position[1], 0, this.roomState.worldScale, 0, WORLD_SCALE), remap(o.position[2], 0, this.roomState.worldScale, 0, WORLD_SCALE)) : new BABYLON.Vector3(...o.position),
+			position: new BABYLON.Vector3(...o.position),
 			rotation: new BABYLON.Vector3(o.rotation[0], o.rotation[1], o.rotation[2]),
 			options: o.options,
 		}).then(() => {
