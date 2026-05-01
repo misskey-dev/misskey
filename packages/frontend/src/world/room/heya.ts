@@ -117,6 +117,7 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 		};
 
 		const wallMaterial = findMaterial(this.meshes[0], '__WALL__');
+		//wallMaterial.metadata.disableEnvMap = true;
 		this.wallMaterials = {
 			n: wallMaterial.clone('wallNMaterial'),
 			s: wallMaterial.clone('wallSMaterial'),
@@ -125,6 +126,7 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 		};
 
 		const beamMaterial = findMaterial(this.meshes[0], '__BEAM__');
+		//beamMaterial.metadata.disableEnvMap = true;
 		this.wallBeamMaterials = {
 			n: beamMaterial.clone('wallNBeamMaterial'),
 			s: beamMaterial.clone('wallSBeamMaterial'),
@@ -133,6 +135,7 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 		};
 
 		const pillarMaterial = findMaterial(this.meshes[0], '__PILLAR__');
+		//pillarMaterial.metadata.disableEnvMap = true;
 		this.pillarMaterials = {
 			nw: pillarMaterial.clone('pillarNWMaterial'),
 			ne: pillarMaterial.clone('pillarNEMaterial'),
@@ -155,7 +158,12 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 		}
 
 		this.ceilingMaterial = findMaterial(this.meshes[0], '__CEILING__');
+		//this.ceilingMaterial.metadata.disableEnvMap = true;
 		this.floorMaterial = findMaterial(this.meshes[0], '__FLOOR__');
+		//this.floorMaterial.metadata.disableEnvMap = true;
+
+		const baseboardMaterial = findMaterial(this.meshes[0], '__BASEBOARD__');
+		//baseboardMaterial.metadata.disableEnvMap = true;
 
 		await this.applyOptions(options);
 	}

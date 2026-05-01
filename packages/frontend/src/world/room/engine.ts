@@ -858,8 +858,11 @@ export class RoomEngine extends EventEmitter {
 				this.shadowGeneratorForSunLight?.addShadowCaster(m);
 				//if (m.material) (m.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(1, 1, 1);
 				if (m.material) {
-					(m.material as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
-					//(m.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(0.5, 0.5, 0.5);
+					if ((m.material as BABYLON.PBRMaterial).metadata?.disableEnvMap) {
+						(m.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(0.5, 0.5, 0.5);
+					} else {
+						(m.material as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
+					}
 					(m.material as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
 				}
 			}
@@ -1426,6 +1429,11 @@ export class RoomEngine extends EventEmitter {
 		if (!forInit) this.sr.disableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 		this.roomLight.intensity = 18 * WORLD_SCALE * WORLD_SCALE;
 		this.envMapIndoor.level = 0.6;
+		for (const m of this.scene.materials) {
+			if (m.metadata?.disableEnvMap) {
+				m.ambientColor = new BABYLON.Color3(0.5, 0.5, 0.5);
+			}
+		}
 		if (!forInit) {
 			// workerで実行される可能性がある
 			// eslint-disable-next-line no-restricted-globals
@@ -1439,6 +1447,11 @@ export class RoomEngine extends EventEmitter {
 		this.sr.disableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 		this.roomLight.intensity = 0;
 		this.envMapIndoor.level = 0.025;
+		for (const m of this.scene.materials) {
+			if (m.metadata?.disableEnvMap) {
+				m.ambientColor = new BABYLON.Color3(0.025, 0.025, 0.025);
+			}
+		}
 		// workerで実行される可能性がある
 		// eslint-disable-next-line no-restricted-globals
 		setTimeout(() => {

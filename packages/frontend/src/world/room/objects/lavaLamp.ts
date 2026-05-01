@@ -25,15 +25,17 @@ export const lavaLamp = defineObject({
 				light.range = cm(100);
 				if (room?.lightContainer != null) room.lightContainer.addLight(light);
 
+				const mat = new BABYLON.PBRMaterial('lavaLampLightMat', scene);
+				mat.emissiveColor = new BABYLON.Color3(1.0, 0.5, 0.2);
+				mat.disableLighting = true;
 				const sphere = BABYLON.MeshBuilder.CreateSphere('lavaLampLightSphere', { diameter: cm(4) }, scene);
 				sphere.parent = root;
 				sphere.position = new BABYLON.Vector3(0, cm(15), 0);
-				const mat = new BABYLON.StandardMaterial('lavaLampLightMat', scene);
-				mat.emissiveColor = new BABYLON.Color3(1.0, 0.5, 0.2);
-
-				mat.alpha = 0.5;
-				//mat.disableLighting = true;
 				sphere.material = mat;
+				const sphere2 = BABYLON.MeshBuilder.CreateSphere('lavaLampLightSphere2', { diameter: cm(2) }, scene);
+				sphere2.parent = root;
+				sphere2.position = new BABYLON.Vector3(0, cm(15), 0);
+				sphere2.material = mat;
 
 				const anim = new BABYLON.Animation('lavaLampLightAnim', 'position.y', 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
 				anim.setKeys([
@@ -42,6 +44,8 @@ export const lavaLamp = defineObject({
 				]);
 				sphere.animations = [anim];
 				scene.beginAnimation(sphere, 0, 500, true);
+				sphere2.animations = [anim];
+				scene.beginAnimation(sphere2, 0, 500, true, 0.6);
 
 				const emitter = new BABYLON.TransformNode('emitter', scene);
 				emitter.parent = root;
