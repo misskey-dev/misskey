@@ -23,11 +23,16 @@ export const lavaLamp = defineObject({
 				type: 'color',
 				label: 'Light color',
 			},
+			lavaColor: {
+				type: 'color',
+				label: 'Lava color',
+			},
 		},
 		default: {
 			bodyColor: [0.8, 0.8, 0.8],
 			glassColor: [0.8, 0, 0.1],
 			lightColor: [1, 0.175, 0.175],
+			lavaColor: [1, 0.5, 0.2],
 		},
 	},
 	placement: 'top',
@@ -52,36 +57,42 @@ export const lavaLamp = defineObject({
 
 		applyGlassColor();
 
+		const light = new BABYLON.PointLight('lavaLampLight', new BABYLON.Vector3(0, cm(11), 0), scene, room?.lightContainer != null);
+		light.parent = root;
+		light.intensity = 0.03 * WORLD_SCALE * WORLD_SCALE;
+		light.range = cm(50);
+		if (room?.lightContainer != null) room.lightContainer.addLight(light);
+
 		const applyLightColor = () => {
 			const [r, g, b] = options.lightColor;
 			lightMaterial.emissiveColor = new BABYLON.Color3(r, g, b);
+			light.diffuse = new BABYLON.Color3(r, g, b);
 		};
 
 		applyLightColor();
+
+		const lavaMat = new BABYLON.PBRMaterial('lavaLampLightMat', scene);
+		lavaMat.disableLighting = true;
+		const sphere = BABYLON.MeshBuilder.CreateSphere('lavaLampLightSphere', { diameter: cm(4) }, scene);
+		sphere.parent = root;
+		sphere.position = new BABYLON.Vector3(0, cm(15), 0);
+		sphere.material = lavaMat;
+		const sphere2 = BABYLON.MeshBuilder.CreateSphere('lavaLampLightSphere2', { diameter: cm(2) }, scene);
+		sphere2.parent = root;
+		sphere2.position = new BABYLON.Vector3(0, cm(15), 0);
+		sphere2.material = lavaMat;
+
+		const applyLavaColor = () => {
+			const [r, g, b] = options.lavaColor;
+			lavaMat.emissiveColor = new BABYLON.Color3(r, g, b);
+		};
+
+		applyLavaColor();
 
 		let animationObserver: BABYLON.Observer<BABYLON.Scene>;
 
 		return {
 			onInited: () => {
-				const light = new BABYLON.PointLight('lavaLampLight', new BABYLON.Vector3(0, cm(11), 0), scene, room?.lightContainer != null);
-				light.parent = root;
-				light.diffuse = new BABYLON.Color3(1.0, 0.5, 0.2);
-				light.intensity = 0.03 * WORLD_SCALE * WORLD_SCALE;
-				light.range = cm(100);
-				if (room?.lightContainer != null) room.lightContainer.addLight(light);
-
-				const mat = new BABYLON.PBRMaterial('lavaLampLightMat', scene);
-				mat.emissiveColor = new BABYLON.Color3(1.0, 0.5, 0.2);
-				mat.disableLighting = true;
-				const sphere = BABYLON.MeshBuilder.CreateSphere('lavaLampLightSphere', { diameter: cm(4) }, scene);
-				sphere.parent = root;
-				sphere.position = new BABYLON.Vector3(0, cm(15), 0);
-				sphere.material = mat;
-				const sphere2 = BABYLON.MeshBuilder.CreateSphere('lavaLampLightSphere2', { diameter: cm(2) }, scene);
-				sphere2.parent = root;
-				sphere2.position = new BABYLON.Vector3(0, cm(15), 0);
-				sphere2.material = mat;
-
 				const anim = new BABYLON.Animation('lavaLampLightAnim', 'position.y', 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
 				anim.setKeys([
 					{ frame: 0, value: cm(11) },
@@ -127,6 +138,7 @@ export const lavaLamp = defineObject({
 					case 'bodyColor': applyBodyColor(); break;
 					case 'glassColor': applyGlassColor(); break;
 					case 'lightColor': applyLightColor(); break;
+					case 'lavaColor': applyLavaColor(); break;
 				}
 			},
 			dispose: () => {
