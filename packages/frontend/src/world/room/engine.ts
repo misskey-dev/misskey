@@ -15,7 +15,7 @@
 import * as BABYLON from '@babylonjs/core';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
 import { EventEmitter } from 'eventemitter3';
-import { TIME_MAP, scaleMorph, camelToKebab, cm, WORLD_SCALE, getMeshesBoundingBox, Timer, getYRotationDirection, FreeCameraManualInput } from '../utility.js';
+import { TIME_MAP, scaleMorph, camelToKebab, cm, WORLD_SCALE, getMeshesBoundingBox, Timer, getYRotationDirection, FreeCameraManualInput, remap } from '../utility.js';
 import { getObjectDef } from './object-defs.js';
 import { findMaterial, ModelManager, SYSTEM_HEYA_MESH_NAMES, SYSTEM_MESH_NAMES } from './utility.js';
 import { SimpleHeyaManager } from './heya.js';
@@ -40,6 +40,7 @@ export type RoomState = {
 	};
 	roomLightColor: [number, number, number];
 	installedObjects: RoomStateObject<any>[];
+	worldScale: number;
 };
 
 function mergeMeshes(meshes: BABYLON.Mesh[], root: BABYLON.Mesh, hasTexture: boolean) {
@@ -454,7 +455,7 @@ export class RoomEngine extends EventEmitter {
 		await Promise.all(objects.map(o => this.loadObject({
 			id: o.id,
 			type: o.type,
-			position: new BABYLON.Vector3(...o.position),
+			position: this.roomState.worldScale !== WORLD_SCALE ? new BABYLON.Vector3(remap(o.position[0], 0, this.roomState.worldScale, 0, WORLD_SCALE), remap(o.position[1], 0, this.roomState.worldScale, 0, WORLD_SCALE), remap(o.position[2], 0, this.roomState.worldScale, 0, WORLD_SCALE)) : new BABYLON.Vector3(...o.position),
 			rotation: new BABYLON.Vector3(o.rotation[0], o.rotation[1], o.rotation[2]),
 			options: o.options,
 		}).then(() => {

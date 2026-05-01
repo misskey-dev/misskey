@@ -94,7 +94,7 @@ import { ensureSignin } from '@/i';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { RoomController } from '@/world/room/controller.js';
-import { cm, getHex, getRgb } from '@/world/utility.js';
+import { cm, getHex, getRgb, WORLD_SCALE } from '@/world/utility.js';
 import { deepClone } from '@/utility/clone.js';
 import { GRAPHICS_QUALITY_HIGH, GRAPHICS_QUALITY_LOW, GRAPHICS_QUALITY_MEDIUM } from '@/world/room/engine.js';
 import { deviceKind } from '@/utility/device-kind.js';
@@ -224,7 +224,13 @@ const data = localStorage.getItem('roomData') != null ? JSON.parse(localStorage.
 	},
 	roomLightColor: [1.0, 0.9, 0.8],
 	installedObjects: [],
+	worldScale: WORLD_SCALE,
 };
+
+// 後方互換性のため
+if (data.worldScale == null) {
+	data.worldScale = 1;
+}
 
 console.log('installedObjects:', data.installedObjects.length);
 
@@ -270,6 +276,7 @@ onMounted(async () => {
 	window.addEventListener('resize', resize);
 
 	watch(controller.roomState, () => {
+		controller.roomState.value.worldScale = WORLD_SCALE;
 		isModified.value = true;
 	});
 
