@@ -859,6 +859,7 @@ export class RoomEngine extends EventEmitter {
 				//if (m.material) (m.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(1, 1, 1);
 				if (m.material) {
 					(m.material as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
+					//(m.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(0.5, 0.5, 0.5);
 					(m.material as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
 				}
 			}
