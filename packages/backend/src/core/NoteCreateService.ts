@@ -93,12 +93,10 @@ class NotificationManager {
 				exist.reason = reason;
 			}
 		} else {
-			const notification = {
+			this.queue.set(notifiee, {
 				reason: reason,
 				target: notifiee,
-			};
-
-			this.queue.set(notifiee, notification);
+			});
 		}
 	}
 
