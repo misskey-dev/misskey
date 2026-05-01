@@ -10,12 +10,55 @@ export const lavaLamp = defineObject({
 	id: 'lavaLamp',
 	name: 'Lava Lamp',
 	options: {
-		schema: {},
-		default: {},
+		schema: {
+			bodyColor: {
+				type: 'color',
+				label: 'Body color',
+			},
+			glassColor: {
+				type: 'color',
+				label: 'Glass color',
+			},
+			lightColor: {
+				type: 'color',
+				label: 'Light color',
+			},
+		},
+		default: {
+			bodyColor: [0.8, 0.8, 0.8],
+			glassColor: [0.8, 0, 0.1],
+			lightColor: [1, 0.175, 0.175],
+		},
 	},
 	placement: 'top',
 	hasCollisions: false,
-	createInstance: ({ room, scene, root }) => {
+	canPreMeshesMerging: true,
+	createInstance: ({ options, room, scene, root, model }) => {
+		const bodyMaterial = model.findMaterial('__X_BODY__');
+		const glassMaterial = model.findMaterial('__X_GLASS__');
+		const lightMaterial = model.findMaterial('__X_LIGHT__');
+
+		const applyBodyColor = () => {
+			const [r, g, b] = options.bodyColor;
+			bodyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		};
+
+		applyBodyColor();
+
+		const applyGlassColor = () => {
+			const [r, g, b] = options.glassColor;
+			glassMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		};
+
+		applyGlassColor();
+
+		const applyLightColor = () => {
+			const [r, g, b] = options.lightColor;
+			lightMaterial.emissiveColor = new BABYLON.Color3(r, g, b);
+		};
+
+		applyLightColor();
+
 		return {
 			onInited: () => {
 				const light = new BABYLON.PointLight('lavaLampLight', new BABYLON.Vector3(0, cm(11), 0), scene, room?.lightContainer != null);
@@ -73,6 +116,13 @@ export const lavaLamp = defineObject({
 				ps.start();
 			},
 			interactions: {},
+			onOptionsUpdated: ([k, v]) => {
+				switch (k) {
+					case 'bodyColor': applyBodyColor(); break;
+					case 'glassColor': applyGlassColor(); break;
+					case 'lightColor': applyLightColor(); break;
+				}
+			},
 		};
 	},
 
