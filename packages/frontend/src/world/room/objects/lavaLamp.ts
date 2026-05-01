@@ -59,6 +59,8 @@ export const lavaLamp = defineObject({
 
 		applyLightColor();
 
+		let animationObserver: BABYLON.Observer<BABYLON.Scene>;
+
 		return {
 			onInited: () => {
 				const light = new BABYLON.PointLight('lavaLampLight', new BABYLON.Vector3(0, cm(11), 0), scene, room?.lightContainer != null);
@@ -89,6 +91,10 @@ export const lavaLamp = defineObject({
 				scene.beginAnimation(sphere, 0, 500, true);
 				sphere2.animations = [anim];
 				scene.beginAnimation(sphere2, 0, 500, true, 0.6);
+
+				animationObserver = scene.onAfterAnimationsObservable.add(() => {
+					room?.sr.updateMesh([sphere, sphere2], false);
+				});
 
 				const emitter = new BABYLON.TransformNode('emitter', scene);
 				emitter.parent = root;
@@ -123,7 +129,11 @@ export const lavaLamp = defineObject({
 					case 'lightColor': applyLightColor(); break;
 				}
 			},
+			dispose: () => {
+				if (animationObserver != null) {
+					scene.onAfterAnimationsObservable.remove(animationObserver);
+				}
+			},
 		};
 	},
-
 });
