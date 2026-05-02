@@ -1,7 +1,7 @@
 ## Unreleased
 
 ### General
--
+- Fix: `.devcontainer/compose.yml`のvolumeのマウントパスを修正
 
 ### Client
 -
