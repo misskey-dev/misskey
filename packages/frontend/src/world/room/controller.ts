@@ -139,13 +139,26 @@ export class RoomController {
 		});
 
 		engineEvents.on('changeSelectedState', ({ selected }) => {
-			this.selected.value = selected;
+			this.selected.value = JSON.parse(JSON.stringify(selected));
 		});
 
 		engineEvents.on('changeRoomState', ({ roomState }) => {
 			if (deepEqual(this.roomState.value, roomState)) return; // vueのリアクティビティが反応して無限ループになることがあるため
 			this.roomState.value = JSON.parse(JSON.stringify(roomState));
-			triggerRef(this.selected);
+			if (this.selected.value != null) {
+				// そのまま入れると「オブジェクト(newSelected)の内容」は変わってるけど「オブジェクトの参照」そのものは変化していないから、
+				// その状態で代入しようがtriggerRef呼ぼうがVueは「子に対しては」更新があったと見做してくれない(親から当該refをwatchする場合は発火する)っぽい(バグか仕様かは不明)
+				// そのため新しい参照にするためにdeepClone
+				const newSelected = JSON.parse(JSON.stringify(roomState.installedObjects.find(o => o.id === this.selected.value.objectId)));
+				if (newSelected) {
+					this.selected.value = {
+						objectId: newSelected.id,
+						objectState: newSelected,
+					};
+				} else {
+					this.selected.value = null;
+				}
+			}
 		});
 
 		engineEvents.on('playSfxUrl', ({ url, options }) => {
