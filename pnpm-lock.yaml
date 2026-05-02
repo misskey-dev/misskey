@@ -409,9 +409,6 @@ importers:
       '@sentry/vue':
         specifier: 10.48.0
         version: 10.48.0(vue@3.5.32(typescript@5.9.3))
-      '@simplewebauthn/types':
-        specifier: 12.0.0
-        version: 12.0.0
       '@types/accepts':
         specifier: 1.3.7
         version: 1.3.7
@@ -614,9 +611,6 @@ importers:
       '@discordapp/twemoji':
         specifier: 16.0.1
         version: 16.0.1
-      '@github/webauthn-json':
-        specifier: 2.1.1
-        version: 2.1.1
       '@mcaptcha/core-glue':
         specifier: 0.1.0-alpha-5
         version: 0.1.0-alpha-5
@@ -626,6 +620,9 @@ importers:
       '@sentry/vue':
         specifier: 10.48.0
         version: 10.48.0(vue@3.5.32(typescript@5.9.3))
+      '@simplewebauthn/browser':
+        specifier: 13.3.0
+        version: 13.3.0
       '@syuilo/aiscript':
         specifier: 1.2.1
         version: 1.2.1
@@ -1302,9 +1299,9 @@ importers:
 
   packages/misskey-js:
     dependencies:
-      '@simplewebauthn/types':
-        specifier: 12.0.0
-        version: 12.0.0
+      '@simplewebauthn/browser':
+        specifier: 13.3.0
+        version: 13.3.0
       eventemitter3:
         specifier: 5.0.4
         version: 5.0.4
@@ -2245,11 +2242,6 @@ packages:
 
   '@file-type/xml@0.4.4':
     resolution: {integrity: sha512-NhCyXoHlVZ8TqM476hyzwGJ24+D5IPSaZhmrPj7qXnEVb3q6jrFzA3mM9TBpknKSI9EuQeGTKRg2DXGUwvBBoQ==}
-
-  '@github/webauthn-json@2.1.1':
-    resolution: {integrity: sha512-XrftRn4z75SnaJOmZQbt7Mk+IIjqVHw+glDGOxuHwXkZBZh/MBoRS7MHjSZMDaLhT4RjN2VqiEU7EOYleuJWSQ==}
-    deprecated: 'Deprecated: Modern browsers support built-in WebAuthn JSON methods. Please use native browser methods instead. For more information, visit https://github.com/github/webauthn-json'
-    hasBin: true
 
   '@hapi/address@5.1.1':
     resolution: {integrity: sha512-A+po2d/dVoY7cYajycYI43ZbYMXukuopIsqCjh5QzsBCipDtdofHntljDlpccMjIfTy6UOkg+5KPriwYch2bXA==}
@@ -3599,13 +3591,12 @@ packages:
   '@sideway/pinpoint@2.0.0':
     resolution: {integrity: sha512-RNiOoTPkptFtSVzQevY/yWtZwf/RxyVnPy/OcA9HBM3MlGDnBEYL5B41H0MTn0Uec8Hi+2qUtTfG2WWZBmMejQ==}
 
+  '@simplewebauthn/browser@13.3.0':
+    resolution: {integrity: sha512-BE/UWv6FOToAdVk0EokzkqQQDOWtNydYlY6+OrmiZ5SCNmb41VehttboTetUM3T/fr6EAFYVXjz4My2wg230rQ==}
+
   '@simplewebauthn/server@13.3.0':
     resolution: {integrity: sha512-MLHYFrYG8/wK2i+86XMhiecK72nMaHKKt4bo+7Q1TbuG9iGjlSdfkPWKO5ZFE/BX+ygCJ7pr8H/AJeyAj1EaTQ==}
     engines: {node: '>=20.0.0'}
-
-  '@simplewebauthn/types@12.0.0':
-    resolution: {integrity: sha512-q6y8MkoV8V8jB4zzp18Uyj2I7oFp2/ONL8c3j8uT06AOWu3cIChc1au71QYHrP2b+xDapkGTiv+9lX7xkTlAsA==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   '@sinclair/typebox@0.27.8':
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
@@ -10044,10 +10035,12 @@ packages:
 
   uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
+    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
     hasBin: true
 
   uuid@9.0.1:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
+    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
     hasBin: true
 
   v-code-diff@1.13.1:
@@ -11640,8 +11633,6 @@ snapshots:
       sax: 1.5.0
       strtok3: 10.3.5
 
-  '@github/webauthn-json@2.1.1': {}
-
   '@hapi/address@5.1.1':
     dependencies:
       '@hapi/hoek': 11.0.7
@@ -12962,6 +12953,8 @@ snapshots:
 
   '@sideway/pinpoint@2.0.0': {}
 
+  '@simplewebauthn/browser@13.3.0': {}
+
   '@simplewebauthn/server@13.3.0':
     dependencies:
       '@hexagon/base64': 1.1.28
@@ -12972,8 +12965,6 @@ snapshots:
       '@peculiar/asn1-schema': 2.6.0
       '@peculiar/asn1-x509': 2.6.1
       '@peculiar/x509': 1.14.3
-
-  '@simplewebauthn/types@12.0.0': {}
 
   '@sinclair/typebox@0.27.8': {}
 

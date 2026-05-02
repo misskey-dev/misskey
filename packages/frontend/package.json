@@ -18,10 +18,10 @@
 	"dependencies": {
 		"@analytics/google-analytics": "1.1.0",
 		"@discordapp/twemoji": "16.0.1",
-		"@github/webauthn-json": "2.1.1",
 		"@mcaptcha/core-glue": "0.1.0-alpha-5",
 		"@misskey-dev/browser-image-resizer": "2024.1.0",
 		"@sentry/vue": "10.48.0",
+		"@simplewebauthn/browser": "13.3.0",
 		"@syuilo/aiscript": "1.2.1",
 		"@syuilo/aiscript-0-19-0": "npm:@syuilo/aiscript@^0.19.0",
 		"@twemoji/parser": "16.0.0",

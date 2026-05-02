@@ -54,7 +54,7 @@
 		"built"
 	],
 	"dependencies": {
-		"@simplewebauthn/types": "12.0.0",
+		"@simplewebauthn/browser": "13.3.0",
 		"eventemitter3": "5.0.4",
 		"reconnecting-websocket": "4.4.0"
 	}
