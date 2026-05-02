@@ -386,6 +386,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkSwitch>
 			</template>
 		</XFolder>
+
+		<XFolder v-if="matchQuery([i18n.ts._role._options.canPlayGames, 'canPlayGames'])" v-model:policyMeta="policyMetaModel.canPlayGames" :isBaseRole="isBaseRole" :readonly="readonly">
+			<template #label>{{ i18n.ts._role._options.canPlayGames }}</template>
+			<template #valueText>{{ valuesModel.canPlayGames ? i18n.ts.yes : i18n.ts.no }}</template>
+			<template #default="{ disabled }">
+				<MkSwitch v-model="valuesModel.canPlayGames" :disabled="disabled">
+					<template #label>{{ i18n.ts.enable }}</template>
+				</MkSwitch>
+			</template>
+		</XFolder>
 	</div>
 </template>
 

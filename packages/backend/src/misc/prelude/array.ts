@@ -104,3 +104,8 @@ export function toArray<T>(x: T | T[] | undefined): T[] {
 export function toSingle<T>(x: T | T[] | undefined): T | undefined {
 	return Array.isArray(x) ? x[0] : x;
 }
+
+export async function asyncFilter<T>(xs: T[], f: (x: T) => Promise<boolean>): Promise<T[]> {
+	const bits = await Promise.all(xs.map(f));
+	return xs.filter((_, i) => bits[i]);
+}

@@ -5651,6 +5651,10 @@ export interface Locale extends ILocale {
      * リノート先のチャンネルを見る
      */
     "viewRenotedChannel": string;
+    /**
+     * このアカウントではMisskey Gamesをプレイできません。
+     */
+    "youCannotPlayGames": string;
     "_imageEditing": {
         "_vars": {
             /**
@@ -8229,6 +8233,10 @@ export interface Locale extends ILocale {
              * ウォーターマーク機能の使用可否
              */
             "watermarkAvailable": string;
+            /**
+             * Misskey Gamesの利用
+             */
+            "canPlayGames": string;
         };
         "_condition": {
             /**
@@ -11954,6 +11962,14 @@ export interface Locale extends ILocale {
          * 石をアイコンにする
          */
         "useAvatarAsStone": string;
+        /**
+         * 相手はMisskey Gamesをプレイできません。
+         */
+        "targetUserIsNotAvailable": string;
+        /**
+         * 相手に自分自身を指定することはできません。
+         */
+        "targetIsYourself": string;
     };
     "_offlineScreen": {
         /**

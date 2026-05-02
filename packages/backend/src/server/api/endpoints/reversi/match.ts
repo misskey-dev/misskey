@@ -5,13 +5,16 @@
 
 import { Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
+import { RoleService } from '@/core/RoleService.js';
 import { ReversiService } from '@/core/ReversiService.js';
 import { ReversiGameEntityService } from '@/core/entities/ReversiGameEntityService.js';
 import { ApiError } from '../../error.js';
 import { GetterService } from '../../GetterService.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 
 export const meta = {
 	requireCredential: true,
+	requireRolePolicy: 'canPlayGames',
 
 	kind: 'write:account',
 
@@ -26,6 +29,12 @@ export const meta = {
 			message: 'Target user is yourself.',
 			code: 'TARGET_IS_YOURSELF',
 			id: '96fd7bd6-d2bc-426c-a865-d055dcd2828e',
+		},
+
+		isNotAvailable: {
+			message: 'You or target user is not available due to server policy.',
+			code: 'TARGET_IS_NOT_AVAILABLE',
+			id: '3a8a677f-98e5-4c4d-b059-e5874b44bd4f',
 		},
 	},
 
@@ -61,13 +70,28 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw err;
 			}) : null;
 
-			const game = target
-				? await this.reversiService.matchSpecificUser(me, target, ps.multiple)
-				: await this.reversiService.matchAnyUser(me, { noIrregularRules: ps.noIrregularRules }, ps.multiple);
+			try {
+				const game = target
+					? await this.reversiService.matchSpecificUser(me, target, ps.multiple)
+					: await this.reversiService.matchAnyUser(me, { noIrregularRules: ps.noIrregularRules }, ps.multiple);
 
-			if (game == null) return;
+				if (game == null) return;
 
-			return await this.reversiGameEntityService.packDetail(game);
+				return await this.reversiGameEntityService.packDetail(game);
+			} catch (err) {
+				if (err instanceof IdentifiableError) {
+					switch (err.id) {
+						case 'eeb95261-6538-4294-a1d1-ed9a40d2c25b':
+							throw new ApiError(meta.errors.isYourself);
+						case '6a8a09eb-f359-4339-9b1d-2fb3f8c0df45':
+							throw new ApiError(meta.errors.isNotAvailable);
+						default:
+							throw err;
+					}
+				} else {
+					throw err;
+				}
+			}
 		});
 	}
 }
