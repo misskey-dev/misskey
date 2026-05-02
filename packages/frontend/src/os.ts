@@ -194,7 +194,6 @@ export function popup<T extends Component>(
 
 	const id = ++popupIdCount;
 	const dispose = () => {
-		// このsetTimeoutが無いと挙動がおかしくなる(autocompleteが閉じなくなる)。Vueのバグ？
 		nextTick(() => {
 			popups.value = popups.value.filter(p => p.id !== id);
 		});

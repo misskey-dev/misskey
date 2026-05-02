@@ -1,4 +1,16 @@
-## 2026.4.0
+## Unreleased
+
+### General
+-
+
+### Client
+-
+
+### Server
+-
+
+
+## 2026.5.0
 
 ### General
 - Enhance: アバターデコレーションにカテゴリを設定できるように
