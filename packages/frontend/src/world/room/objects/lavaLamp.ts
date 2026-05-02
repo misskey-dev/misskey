@@ -77,10 +77,14 @@ export const lavaLamp = defineObject({
 		sphere.parent = root;
 		sphere.position = new BABYLON.Vector3(0, cm(15), 0);
 		sphere.material = lavaMat;
-		const sphere2 = BABYLON.MeshBuilder.CreateSphere('lavaLampLightSphere2', { diameter: cm(2) }, scene);
+		const sphere2 = BABYLON.MeshBuilder.CreateSphere('lavaLampLightSphere2', { diameter: cm(3) }, scene);
 		sphere2.parent = root;
 		sphere2.position = new BABYLON.Vector3(0, cm(15), 0);
 		sphere2.material = lavaMat;
+		const sphere3 = BABYLON.MeshBuilder.CreateSphere('lavaLampLightSphere3', { diameter: cm(2) }, scene);
+		sphere3.parent = root;
+		sphere3.position = new BABYLON.Vector3(0, cm(15), 0);
+		sphere3.material = lavaMat;
 
 		const applyLavaColor = () => {
 			const [r, g, b] = options.lavaColor;
@@ -96,15 +100,17 @@ export const lavaLamp = defineObject({
 				const anim = new BABYLON.Animation('lavaLampLightAnim', 'position.y', 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
 				anim.setKeys([
 					{ frame: 0, value: cm(11) },
-					{ frame: 500, value: cm(38) },
+					{ frame: 800, value: cm(38) },
 				]);
 				sphere.animations = [anim];
-				scene.beginAnimation(sphere, 0, 500, true);
+				scene.beginAnimation(sphere, 0, 800, true);
 				sphere2.animations = [anim];
-				scene.beginAnimation(sphere2, 0, 500, true, 0.6);
+				scene.beginAnimation(sphere2, 0, 800, true, 0.65);
+				sphere3.animations = [anim];
+				scene.beginAnimation(sphere3, 0, 800, true, 0.6);
 
 				animationObserver = scene.onAfterAnimationsObservable.add(() => {
-					room?.sr.updateMesh([sphere, sphere2], false);
+					room?.sr.updateMesh([sphere, sphere2, sphere3], false);
 				});
 
 				const emitter = new BABYLON.TransformNode('emitter', scene);
@@ -116,11 +122,11 @@ export const lavaLamp = defineObject({
 				ps.isLocal = true;
 				ps.minEmitBox = new BABYLON.Vector3(cm(-1), 0, cm(-1));
 				ps.maxEmitBox = new BABYLON.Vector3(cm(1), 0, cm(1));
-				ps.minEmitPower = cm(2);
-				ps.maxEmitPower = cm(3);
-				ps.minLifeTime = 10;
-				ps.maxLifeTime = 10;
-				ps.minSize = cm(0.5);
+				ps.minEmitPower = cm(1);
+				ps.maxEmitPower = cm(2.5);
+				ps.minLifeTime = 12;
+				ps.maxLifeTime = 12;
+				ps.minSize = cm(0.25);
 				ps.maxSize = cm(1.25);
 				ps.direction1 = new BABYLON.Vector3(0, 1, 0);
 				ps.direction2 = new BABYLON.Vector3(0, 1, 0);
@@ -129,7 +135,7 @@ export const lavaLamp = defineObject({
 				ps.color1 = new BABYLON.Color4(1, 1, 1, 1);
 				ps.color2 = new BABYLON.Color4(1, 1, 1, 0.75);
 				ps.colorDead = new BABYLON.Color4(1, 1, 1, 0);
-				ps.preWarmCycles = Math.random() * 1000;
+				ps.preWarmCycles = 100;
 				ps.start();
 			},
 			interactions: {},

@@ -44,6 +44,7 @@ import { ironFrameTable } from './objects/ironFrameTable.js';
 import { issyoubin } from './objects/issyoubin.js';
 import { keyboard } from './objects/keyboard.js';
 import { laptopPc } from './objects/laptopPc.js';
+import { largeMousepad } from './objects/largeMousepad.js';
 import { lavaLamp } from './objects/lavaLamp.js';
 import { letterCase } from './objects/letterCase.js';
 import { miObjet } from './objects/mi-objet.js';
@@ -145,6 +146,7 @@ export const OBJECT_DEFS = [
 	issyoubin,
 	keyboard,
 	laptopPc,
+	largeMousepad,
 	lavaLamp,
 	letterCase,
 	miObjet,
