@@ -4,7 +4,7 @@
 - Fix: `.devcontainer/compose.yml`のvolumeのマウントパスを修正
 
 ### Client
--
+- Fix: ロール設定画面でロールをアサイン/アサイン解除した際、リロードしなくても画面に反映されるよう修正
 
 ### Server
 - Fix: ID生成アルゴリズムにULIDを使用している場合に通知が約10秒遅延する問題を修正
