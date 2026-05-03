@@ -50,7 +50,4 @@ minimumReleaseAgeExclude:
   - slacc-linux-x64-musl
   - slacc-win32-arm64-msvc
   - slacc-win32-x64-msvc
-  - fastify # 脆弱性対応。そのうち消す
-  - '@fastify/express' # 脆弱性対応。そのうち消す
-  - '@fastify/http-proxy' # 脆弱性対応。そのうち消す
-  - '@fastify/reply-from' # 脆弱性対応。そのうち消す
+  - '@typescript/native-preview*'

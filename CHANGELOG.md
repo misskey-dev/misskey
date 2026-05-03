@@ -1,4 +1,19 @@
-## 2026.4.0
+## 2026.5.1
+
+### General
+- Fix: `.devcontainer/compose.yml`のvolumeのマウントパスを修正
+
+### Client
+- Fix: ロール設定画面でロールをアサイン/アサイン解除した際、リロードしなくても画面に反映されるよう修正
+
+### Server
+- Enhance: RSA 署名処理のオフロード
+- Fix: ID生成アルゴリズムにULIDを使用している場合に通知が約10秒遅延する問題を修正
+- Fix: 公開範囲がフォロワーの投稿が通知されない問題を修正
+- Fix: URLプレビューが動作しない問題を修正
+
+
+## 2026.5.0
 
 ### Note
 - config に `threadPoolSize` オプションが追加されました。
@@ -10,9 +25,11 @@
 
 ### Client
 - Enhance: チャンネル指定リノートでリノート先のチャンネルに移動できるように
+- Enhance: ベータ版でのアップデート時のダイアログの更新情報リンクをGitHubのReleasesページに遷移するようにし、正しく閲覧できるように
 - Fix: 一部のページ内リンクが正しく動作しない問題を修正
 - Fix: ドライブへの画像アップロード時にファイル名の変更が無視される不具合を修正
 - Fix: 連合が無効化されたサーバーで一部の設定項目が空欄で表示される問題を修正
+- Fix: オーディオ、動画の再生速度メニューが開けない問題を修正
 
 ### Server
 - Enhance: メモリ使用量を削減
@@ -20,7 +37,6 @@
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/1410)
 - Enhance: バックエンドの開発モード時の安定性向上
 - Enhance: バックエンドビルド・テスト時に使用する依存関係の整理（swc/esbuild→Rolldown, Jest→Vitest）
-- Enhance: RSA 署名処理のオフロード
 - Fix: ファイルシステムを用いる処理におけるパスの取り扱いを改善
 - Fix: `/api-doc` にアクセスできない問題を修正
 - Fix: support `alsoKnownAs` from remote actors as either array or unwrapped singleton
@@ -29,6 +45,14 @@
 - Fix: ID生成アルゴリズムにULIDを使用している場合にMisskeyが正しく動作しない問題を修正
 - Fix: リレー経由で届いたノートがリノートとして表示される問題を修正
 - Fix: robots.txtの内容を調整
+- Fix: 特定のユーザーに管理者権限を持つロールが複数ついている際に、取得できるユーザーIDが重複する問題を修正  
+  (Cherry-picked from https://github.com/lqvp/misskey-tempura/commit/17ed4108cec4b6bd2fd989db5a9091db91fa37a7)
+- Fix: ブロックしたサーバーからのInboxジョブが蓄積し続ける問題を修正  
+  (Cherry-picked from https://github.com/lqvp/misskey-tempura/commit/3f0f4bfe923f2b3a7837017b54841598f421c6ef)
+- Fix: support activity with `actor` as an id string or embedded object in inbox processor and ActivityPub inbox service
+- Fix: コンフィグファイルに `meilisearch` の設定がある状態でほかの検索プロバイダを利用すると、UI上からリモートのノートの検索ができない問題を修正
+- Fix: ノートに関する通知で公開範囲が考慮されていない問題を修正  
+  (Cherry-picked from https://github.com/lqvp/misskey-tempura/commit/cbce96c520a138b8bcd16890ff6f2952830fa166 originally presented in https://github.com/yojo-art/cherrypick/pull/743)
 
 ## 2026.3.2
 

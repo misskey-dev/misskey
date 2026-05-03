@@ -696,6 +696,19 @@ describe('RoleService', () => {
 			expect(adminIds).toHaveLength(0);
 		});
 
+		test('should not include duplicate user IDs if a user has multiple administrator roles', async () => {
+			const adminUser = await createUser();
+			const adminRole1 = await createRole({ name: 'admin1', isAdministrator: true });
+			const adminRole2 = await createRole({ name: 'admin2', isAdministrator: true });
+
+			await roleService.assign(adminUser.id, adminRole1.id);
+			await roleService.assign(adminUser.id, adminRole2.id);
+
+			const adminIds = await roleService.getAdministratorIds();
+
+			expect(adminIds).toEqual([adminUser.id]);
+		});
+
 		// TODO: rootユーザーは現在実装に含まれていないため、テストもそれに倣う
 		test('should not include the root user', async () => {
 			const rootUser = await createUser();
