@@ -324,3 +324,63 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 		}
 	}
 }
+
+export type MuseumHeyaOptions = any;
+
+export class MuseumHeyaManager extends HeyaManager<MuseumHeyaOptions> {
+	private loaderResult: BABYLON.ISceneLoaderAsyncResult | null = null;
+	private meshes: BABYLON.Mesh[] = [];
+
+	constructor(onMeshUpdatedCallback?: ((meshes: BABYLON.AbstractMesh[]) => void) | null) {
+		super(onMeshUpdatedCallback);
+	}
+
+	public async load(options: MuseumHeyaOptions, scene: BABYLON.Scene) {
+		this.loaderResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300.glb', scene);
+
+		this.meshes = this.loaderResult.meshes.filter(m => m instanceof BABYLON.Mesh);
+		this.meshes[0].scaling = this.meshes[0].scaling.scale(WORLD_SCALE);
+		this.meshes[0].rotationQuaternion = null;
+		this.meshes[0].rotation = new BABYLON.Vector3(0, 0, 0);
+
+		// instanced mesh を通常の mesh に変換 (そうしないとマテリアルが共有される)
+		for (const mesh of this.loaderResult.meshes) {
+			if (mesh instanceof BABYLON.InstancedMesh) {
+				const realizedMesh = mesh.sourceMesh.clone(mesh.name, null, true);
+
+				realizedMesh.position = mesh.position.clone();
+				if (mesh.rotationQuaternion) {
+					realizedMesh.rotationQuaternion = mesh.rotationQuaternion.clone();
+				} else {
+					realizedMesh.rotation = mesh.rotation.clone();
+				}
+				realizedMesh.scaling = mesh.scaling.clone();
+				realizedMesh.parent = mesh.parent;
+
+				mesh.dispose();
+				scene.removeMesh(mesh);
+				this.meshes.push(realizedMesh);
+			}
+		}
+
+		await this.applyOptions(options);
+	}
+
+	public applyOptions(options: MuseumHeyaOptions) {
+		this.onMeshUpdatedCallback?.(this.meshes);
+	}
+
+	public dispose() {
+		if (this.loaderResult != null) {
+			for (const m of this.loaderResult.meshes) {
+				m.dispose(false, true);
+			}
+			for (const t of this.loaderResult.transformNodes) {
+				t.dispose(false, true);
+			}
+		}
+		for (const m of this.meshes) {
+			m.dispose(false, true);
+		}
+	}
+}

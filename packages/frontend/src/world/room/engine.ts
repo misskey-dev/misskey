@@ -18,7 +18,7 @@ import { EventEmitter } from 'eventemitter3';
 import { TIME_MAP, scaleMorph, camelToKebab, cm, WORLD_SCALE, getMeshesBoundingBox, Timer, getYRotationDirection, FreeCameraManualInput, remap } from '../utility.js';
 import { getObjectDef } from './object-defs.js';
 import { findMaterial, ModelManager, SYSTEM_HEYA_MESH_NAMES, SYSTEM_MESH_NAMES } from './utility.js';
-import { SimpleHeyaManager } from './heya.js';
+import { MuseumHeyaManager, SimpleHeyaManager } from './heya.js';
 import type { GridMaterial } from '@babylonjs/materials';
 import type { HeyaManager, JapaneseHeyaOptions, SimpleHeyaOptions } from './heya.js';
 import type { ObjectDef, RoomObjectInstance, RoomStateObject } from './object.js';
@@ -893,6 +893,10 @@ export class RoomEngine extends EventEmitter {
 			this.heyaManager = heyaManager;
 		} else if (this.roomState.heya.type === 'japanese') {
 			// TODO
+		} else if (this.roomState.heya.type === 'museum') {
+			const heyaManager = new MuseumHeyaManager(onMeshUpdatedCallback);
+			await heyaManager.load(this.roomState.heya.options, this.scene);
+			this.heyaManager = heyaManager;
 		}
 
 		if (!forInit) {
