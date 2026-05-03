@@ -9,16 +9,11 @@
 			"import": "./built/index.js",
 			"types": "./built/index.d.ts",
 			"default": "./built/index.js"
-		},
-		"./*": {
-			"import": "./built/*",
-			"types": "./built/*",
-			"default": "./built/*"
 		}
 	},
 	"scripts": {
-		"build": "node ./build.js",
-		"watch": "nodemon -w package.json -e json --exec \"node ./build.js --watch\"",
+		"build": "tsdown",
+		"watch": "tsdown --watch ./src",
 		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
 		"typecheck": "tsgo --noEmit",
 		"lint": "pnpm typecheck && pnpm eslint"
@@ -28,10 +23,7 @@
 		"@types/node": "24.12.2",
 		"@types/seedrandom": "3.0.8",
 		"@typescript-eslint/eslint-plugin": "8.58.2",
-		"@typescript-eslint/parser": "8.58.2",
-		"esbuild": "0.28.0",
-		"execa": "9.6.1",
-		"nodemon": "3.1.14"
+		"@typescript-eslint/parser": "8.58.2"
 	},
 	"files": [
 		"built"

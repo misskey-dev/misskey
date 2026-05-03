@@ -17,8 +17,8 @@
 	"scripts": {
 		"generate": "tsx scripts/generateLocaleInterface.ts",
 		"verify": "tsx scripts/verify.ts",
-		"build": "tsx ./build.ts",
-		"watch": "nodemon -w package.json -e json --exec \"tsx ./build.ts --watch\"",
+		"build": "tsdown",
+		"watch": "tsdown --watch",
 		"tsd": "tsd",
 		"typecheck": "tsgo --noEmit",
 		"lint": "pnpm typecheck && pnpm eslint",
@@ -32,10 +32,7 @@
 		"@types/node": "24.12.2",
 		"@typescript-eslint/eslint-plugin": "8.58.2",
 		"@typescript-eslint/parser": "8.58.2",
-		"chokidar": "5.0.0",
-		"esbuild": "0.28.0",
-		"execa": "9.6.1",
-		"nodemon": "3.1.14",
+		"rolldown": "1.0.0-rc.15",
 		"tsx": "4.21.0"
 	},
 	"dependencies": {

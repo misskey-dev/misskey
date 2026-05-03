@@ -19,8 +19,8 @@
 		}
 	},
 	"scripts": {
-		"build": "node ./build.js",
-		"watch": "nodemon -w package.json -e json --exec \"node ./build.js --watch\"",
+		"build": "tsdown",
+		"watch": "tsdown --watch ./src",
 		"tsd": "tsd",
 		"api": "pnpm api-extractor run --local --verbose",
 		"api-prod": "pnpm api-extractor run --verbose",
@@ -42,10 +42,7 @@
 		"@typescript-eslint/eslint-plugin": "8.58.2",
 		"@typescript-eslint/parser": "8.58.2",
 		"@vitest/coverage-v8": "4.1.4",
-		"esbuild": "0.28.0",
-		"execa": "9.6.1",
 		"ncp": "2.0.0",
-		"nodemon": "3.1.14",
 		"tsd": "0.33.0",
 		"vitest": "4.1.4",
 		"vitest-websocket-mock": "0.5.0"

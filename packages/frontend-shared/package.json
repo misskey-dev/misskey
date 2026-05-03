@@ -1,21 +1,8 @@
 {
 	"name": "frontend-shared",
 	"type": "module",
-	"main": "./js-built/index.js",
-	"types": "./js-built/index.d.ts",
-	"exports": {
-		".": {
-			"import": "./js-built/index.js",
-			"types": "./js-built/index.d.ts"
-		},
-		"./*": {
-			"import": "./js-built/*",
-			"types": "./js-built/*"
-		}
-	},
+	"private": true,
 	"scripts": {
-		"build": "node ./build.js",
-		"watch": "nodemon -w package.json -e json --exec \"node ./build.js --watch\"",
 		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
 		"typecheck": "tsgo --noEmit",
 		"lint": "pnpm typecheck && pnpm eslint"
@@ -24,14 +11,9 @@
 		"@types/node": "24.12.2",
 		"@typescript-eslint/eslint-plugin": "8.58.2",
 		"@typescript-eslint/parser": "8.58.2",
-		"esbuild": "0.28.0",
 		"eslint-plugin-vue": "10.8.0",
-		"nodemon": "3.1.14",
 		"vue-eslint-parser": "10.4.0"
 	},
-	"files": [
-		"js-built"
-	],
 	"dependencies": {
 		"i18n": "workspace:*",
 		"misskey-js": "workspace:*",
