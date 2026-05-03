@@ -5,7 +5,7 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { WORLD_SCALE } from '../utility.js';
+import { cm, WORLD_SCALE } from '../utility.js';
 import { findMaterial } from './utility.js';
 
 //export interface HeyaManager<T = any> {

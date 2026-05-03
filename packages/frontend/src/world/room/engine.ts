@@ -279,13 +279,6 @@ export class RoomEngine extends EventEmitter {
 		this.envMapOutdoor = BABYLON.CubeTexture.CreateFromPrefilteredData(this.time === 2 ? '/client-assets/room/outdoor-night.env' : '/client-assets/room/outdoor-day.env', this.scene);
 		this.envMapOutdoor.level = this.time === 0 ? 0.5 : this.time === 1 ? 0.3 : 0.1;
 
-		const roomCollisionCube = BABYLON.MeshBuilder.CreateBox('roomCollisionCube', { size: cm(300) }, this.scene);
-		roomCollisionCube.position.y = cm(150);
-		roomCollisionCube.scaling.x = -1; // flip normals
-		roomCollisionCube.isVisible = false;
-		roomCollisionCube.isPickable = false;
-		roomCollisionCube.checkCollisions = true;
-
 		this.scene.collisionsEnabled = true;
 
 		this.camera = new BABYLON.FreeCamera('camera', new BABYLON.Vector3(0, cm(130), cm(0)), this.scene);
@@ -871,6 +864,9 @@ export class RoomEngine extends EventEmitter {
 					m.receiveShadows = false;
 					m.isVisible = false;
 					m.checkCollisions = false;
+					if (m.name.includes('__COLLISION__')) {
+						m.checkCollisions = true;
+					}
 					continue;
 				}
 

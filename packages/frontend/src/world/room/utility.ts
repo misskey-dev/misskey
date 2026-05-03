@@ -7,7 +7,7 @@ import * as BABYLON from '@babylonjs/core';
 import { applyMorphTargetsToMesh, cm, getPlaneUvIndexes, Timer } from '../utility.js';
 
 export const SYSTEM_MESH_NAMES = ['__TOP__', '__SIDE__', '__PICK__', '__COLLISION__'];
-export const SYSTEM_HEYA_MESH_NAMES = ['__ROOM_WALL__', '__ROOM_SIDE__', '__ROOM_FLOOR__', '__ROOM_CEILING__', '__ROOM_TOP__', '__ROOM_BOTTOM__'];
+export const SYSTEM_HEYA_MESH_NAMES = ['__ROOM_WALL__', '__ROOM_SIDE__', '__ROOM_FLOOR__', '__ROOM_CEILING__', '__ROOM_TOP__', '__ROOM_BOTTOM__', '__COLLISION__'];
 
 export function yuge(scene: BABYLON.Scene, mesh: BABYLON.Mesh, offset: BABYLON.Vector3) {
 	const emitter = new BABYLON.TransformNode('emitter', scene);
