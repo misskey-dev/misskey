@@ -28,7 +28,7 @@ jobs:
         uses: pnpm/action-setup@v6.0.3
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6.3.0
+        uses: actions/setup-node@v6.4.0
         with:
           node-version-file: '.node-version'
           cache: 'pnpm'
