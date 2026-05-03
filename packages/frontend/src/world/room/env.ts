@@ -70,6 +70,7 @@ export class SimpleEnvManager extends EnvManager<SimpleEnvOptions> {
 	private pillarMaterials: Record<'nw' | 'ne' | 'sw' | 'se', BABYLON.PBRMaterial> | null = null;
 	private ceilingMaterial: BABYLON.PBRMaterial | null = null;
 	private floorMaterial: BABYLON.PBRMaterial | null = null;
+	public envMapIndoor: BABYLON.CubeTexture | null = null;
 
 	constructor(onMeshUpdatedCallback?: ((meshes: BABYLON.AbstractMesh[]) => void) | null) {
 		super(onMeshUpdatedCallback);
