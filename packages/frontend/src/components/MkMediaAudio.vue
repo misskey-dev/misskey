@@ -182,15 +182,28 @@ function showMenu(ev: MouseEvent) {
 			text: i18n.ts._mediaControls.playbackRate,
 			icon: 'ti ti-clock-play',
 			ref: speed,
-			options: {
-				'0.25x': 0.25,
-				'0.5x': 0.5,
-				'0.75x': 0.75,
-				'1.0x': 1,
-				'1.25x': 1.25,
-				'1.5x': 1.5,
-				'2.0x': 2,
-			},
+			options: [{
+				label: '0.25x',
+				value: 0.25,
+			}, {
+				label: '0.5x',
+				value: 0.5,
+			}, {
+				label: '0.75x',
+				value: 0.75,
+			}, {
+				label: '1.0x',
+				value: 1,
+			}, {
+				label: '1.25x',
+				value: 1.25,
+			}, {
+				label: '1.5x',
+				value: 1.5,
+			}, {
+				label: '2.0x',
+				value: 2,
+			}],
 		},
 		{
 			type: 'divider',

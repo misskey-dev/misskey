@@ -132,6 +132,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:class="['_button', $style.item, $style.parent, { [$style.active]: childShowingItem === item }]"
 				:disabled="unref(item.disabled)"
 				@mouseenter.prevent="preferClick ? null : showRadioOptions(item, $event)"
+				@mousemove="parentMouseMove"
 				@keydown.enter.prevent="preferClick ? null : showRadioOptions(item, $event)"
 				@click.prevent="!preferClick ? null : showRadioOptions(item, $event)"
 			>
@@ -232,7 +233,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts">
-import { computed, defineAsyncComponent, inject, nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, unref, watch, shallowRef, reactive } from 'vue';
+import { computed, defineAsyncComponent, inject, nextTick, onBeforeUnmount, onMounted, ref, useTemplateRef, unref, watch, shallowRef, reactive, isRef } from 'vue';
 import type { MenuItem, InnerMenuItem, MenuPending, MenuAction, MenuSwitch, MenuRadio, MenuRadioOption, MenuParent } from '@/types/menu.js';
 import type { Keymap } from '@/utility/hotkey.js';
 import MkSwitchButton from '@/components/MkSwitch.button.vue';
@@ -338,24 +339,23 @@ function onItemMouseLeave() {
 }
 
 async function showRadioOptions(item: MenuRadio, ev: MouseEvent | PointerEvent | KeyboardEvent) {
-	const children: MenuItem[] = Object.keys(item.options).map<MenuRadioOption>(key => {
-		const value = item.options[key];
+	const children: MenuItem[] = item.options.map<MenuRadioOption>(def => {
 		return {
 			type: 'radioOption',
-			text: key,
+			text: def.label,
 			action: () => {
-				if ('value' in item.ref) {
-					item.ref.value = value;
+				if (isRef(item.ref)) {
+					item.ref.value = def.value;
 				} else {
 					// @ts-expect-error リアクティビティは保たれる
-					item.ref = value;
+					item.ref = def.value;
 				}
 			},
 			active: computed(() => {
-				if ('value' in item.ref) {
-					return item.ref.value === value;
+				if (isRef(item.ref)) {
+					return item.ref.value === def.value;
 				} else {
-					return item.ref === value;
+					return item.ref === def.value;
 				}
 			}),
 		};
@@ -420,9 +420,14 @@ function close(actioned = false) {
 	});
 }
 
-function switchItem(item: MenuSwitch & { ref: any }) {
+function switchItem(item: MenuSwitch) {
 	if (item.disabled !== undefined && (typeof item.disabled === 'boolean' ? item.disabled : item.disabled.value)) return;
-	item.ref = !item.ref;
+	if (isRef(item.ref)) {
+		item.ref.value = !item.ref.value;
+	} else {
+		// @ts-expect-error リアクティビティは保たれる
+		item.ref = !item.ref;
+	}
 }
 
 function focusUp() {

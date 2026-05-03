@@ -34,7 +34,7 @@ await Promise.all([
 		stdout: process.stdout,
 		stderr: process.stderr,
 	}),
-	execa('pnpm', ['--filter', 'backend...', 'build'], {
+	execa('pnpm', ['--filter', 'backend...', '--filter=!backend', 'build'], {
 		cwd: _dirname + '/../',
 		stdout: process.stdout,
 		stderr: process.stderr,
