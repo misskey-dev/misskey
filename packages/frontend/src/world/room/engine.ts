@@ -187,7 +187,7 @@ export class RoomEngine extends EventEmitter {
 	}
 
 	private putParticleSystem: BABYLON.ParticleSystem;
-	private roomLight: BABYLON.SpotLight;
+	private roomLight: BABYLON.SpotLight; // TODO: これの管理もenv側に持ってく？
 	public lightContainer: BABYLON.ClusteredLightContainer;
 	private gridMaterial: GridMaterial | null = null;
 	private gridPlane: BABYLON.Mesh;
