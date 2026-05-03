@@ -5,7 +5,7 @@
 
 process.env.NODE_ENV = 'test';
 
-import { afterAll, beforeAll, beforeEach, describe, expect, jest, test } from '@jest/globals';
+import { afterAll, beforeAll, beforeEach, describe, expect, vi, test } from 'vitest';
 import { Test } from '@nestjs/testing';
 import type { TestingModule } from '@nestjs/testing';
 import type { DriveFilesRepository, DriveFoldersRepository, UsersRepository } from '@/models/_.js';
@@ -30,13 +30,13 @@ describe('DriveFileEntityService', () => {
 	let idCounter = 0;
 
 	const userEntityServiceMock = {
-		packMany: jest.fn(async (users: Array<string | { id: string }>) => {
+		packMany: vi.fn(async (users: Array<string | { id: string }>) => {
 			return users.map(u => ({
 				id: typeof u === 'string' ? u : u.id,
 				username: 'user',
 			}));
 		}),
-		pack: jest.fn(async (user: string | { id: string }) => {
+		pack: vi.fn(async (user: string | { id: string }) => {
 			return {
 				id: typeof user === 'string' ? user : user.id,
 				username: 'user',
@@ -195,7 +195,7 @@ describe('DriveFileEntityService', () => {
 		test('detail: true uses DriveFolderEntityService pack', async () => {
 			const folder = await createFolder('packmany-folder', null);
 			const file = await createFile(folder.id, null);
-			const packSpy = jest.spyOn(driveFolderEntityService, 'pack');
+			const packSpy = vi.spyOn(driveFolderEntityService, 'pack');
 
 			await service.packMany([file], { detail: true, self: true });
 			expect(packSpy).toHaveBeenCalled();

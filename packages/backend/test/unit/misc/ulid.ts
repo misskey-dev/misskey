@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, test } from 'vitest';
 import { parseUlidFull } from '@/misc/id/ulid.js';
 
 // Timestamp part "01KPS7S300" encodes 1776816000000ms (2026-04-22T00:00:00.000Z)
@@ -37,5 +37,13 @@ describe('misc:ulid', () => {
 		expect(() => parseUlidFull('01KPS7S300ABCDEFY000000000')).not.toThrow();
 		// id[16] = Z
 		expect(() => parseUlidFull('01KPS7S300ABCDEFZ000000000')).not.toThrow();
+	});
+
+	test('parseUlidFull - additional exceeds uint64 max (all-Z randomness)', () => {
+		// All 16 random chars = 'Z' (Crockford max) → 80-bit value > uint64 max
+		const { additional } = parseUlidFull('01ARZ3NDEKZZZZZZZZZZZZZZZZ');
+		const uint64Max = 2n ** 64n - 1n;
+		expect(additional > uint64Max).toBe(true);
+		expect(BigInt.asUintN(64, additional) <= uint64Max).toBe(true);
 	});
 });
