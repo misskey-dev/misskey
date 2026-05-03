@@ -533,6 +533,7 @@ export class RoomEngine extends EventEmitter {
 		this.startRenderLoop();
 	}
 
+	// TODO: 初回以外で呼び出すとエンジンがクラッシュするのを修正
 	public async changeEnvType(type: RoomState['env']['type'], forInit = false) {
 		this.roomState.env.type = type;
 
@@ -565,14 +566,14 @@ export class RoomEngine extends EventEmitter {
 		let envManager: EnvManager;
 
 		if (this.roomState.env.type === 'simple') {
-			envManager = new SimpleEnvManager(onMeshUpdatedCallback);
+			envManager = new SimpleEnvManager(this, onMeshUpdatedCallback);
 		} else if (this.roomState.env.type === 'japanese') {
 			// TODO
 		} else if (this.roomState.env.type === 'museum') {
-			envManager = new MuseumEnvManager(onMeshUpdatedCallback);
+			envManager = new MuseumEnvManager(this, onMeshUpdatedCallback);
 		}
 
-		await envManager.load(this.roomState.env.options, this.scene, this);
+		await envManager.load(this.roomState.env.options);
 		envManager.setTime(this.time);
 
 		for (const mat of this.scene.materials) {
@@ -1386,12 +1387,6 @@ export class RoomEngine extends EventEmitter {
 	public turnOnRoomLight(forInit = false) {
 		if (!forInit) this.sr.disableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 		this.envManager.turnOnRoomLight();
-		if (this.envManager?.envMapIndoor != null) this.envManager.envMapIndoor.level = 0.6;
-		for (const m of this.scene.materials) {
-			if (m.metadata?.disableEnvMap) {
-				m.ambientColor = new BABYLON.Color3(0.5, 0.5, 0.5);
-			}
-		}
 		if (!forInit) {
 			// workerで実行される可能性がある
 			// eslint-disable-next-line no-restricted-globals
@@ -1404,12 +1399,6 @@ export class RoomEngine extends EventEmitter {
 	public turnOffRoomLight() {
 		this.sr.disableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 		this.envManager.turnOffRoomLight();
-		if (this.envManager?.envMapIndoor != null) this.envManager.envMapIndoor.level = 0.025;
-		for (const m of this.scene.materials) {
-			if (m.metadata?.disableEnvMap) {
-				m.ambientColor = new BABYLON.Color3(0.025, 0.025, 0.025);
-			}
-		}
 		// workerで実行される可能性がある
 		// eslint-disable-next-line no-restricted-globals
 		setTimeout(() => {
@@ -1729,12 +1718,14 @@ export class RoomEngine extends EventEmitter {
 	}
 
 	public destroy() {
+		this.engine.stopRenderLoop();
 		if (this.currentRafId != null) {
 			// workerで実行される可能性がある
 			cancelAnimationFrame(this.currentRafId);
 			this.currentRafId = null;
 		}
 		this.timer.dispose();
+		this.envManager.dispose();
 		this.engine.dispose();
 		this.scene.dispose();
 		this.disposed = true;
