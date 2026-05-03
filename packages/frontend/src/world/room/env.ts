@@ -17,7 +17,8 @@ import { findMaterial } from './utility.js';
 
 export abstract class EnvManager<T = any> {
 	protected onMeshUpdatedCallback: ((meshes: BABYLON.AbstractMesh[]) => void) | null = null;
-	abstract envMapIndoor: BABYLON.CubeTexture | null;
+	public abstract envMapIndoor: BABYLON.CubeTexture | null;
+	public abstract maxCameraZ: number;
 
 	constructor(onMeshUpdatedCallback?: ((meshes: BABYLON.AbstractMesh[]) => void) | null) {
 		this.onMeshUpdatedCallback = onMeshUpdatedCallback ?? null;
@@ -25,6 +26,7 @@ export abstract class EnvManager<T = any> {
 
 	abstract load(options: T, scene: BABYLON.Scene): Promise<void>;
 	abstract applyOptions(options: T): void;
+	abstract setTime(time: number): void;
 	abstract dispose(): void;
 }
 
@@ -70,13 +72,23 @@ export class SimpleEnvManager extends EnvManager<SimpleEnvOptions> {
 	private pillarMaterials: Record<'nw' | 'ne' | 'sw' | 'se', BABYLON.PBRMaterial> | null = null;
 	private ceilingMaterial: BABYLON.PBRMaterial | null = null;
 	private floorMaterial: BABYLON.PBRMaterial | null = null;
+	private skybox: BABYLON.Mesh | null = null;
+	private skyboxMat: BABYLON.StandardMaterial | null = null;
 	public envMapIndoor: BABYLON.CubeTexture | null = null;
+	public maxCameraZ = cm(1000);
 
 	constructor(onMeshUpdatedCallback?: ((meshes: BABYLON.AbstractMesh[]) => void) | null) {
 		super(onMeshUpdatedCallback);
 	}
 
 	public async load(options: SimpleEnvOptions, scene: BABYLON.Scene) {
+		this.skybox = BABYLON.MeshBuilder.CreateBox('skybox', { size: cm(1000) }, scene);
+		this.skyboxMat = new BABYLON.StandardMaterial('skyboxMat', scene);
+		this.skyboxMat.backFaceCulling = false;
+		this.skyboxMat.disableLighting = true;
+		this.skybox.material = this.skyboxMat;
+		this.skybox.infiniteDistance = true;
+
 		this.loaderResult = await BABYLON.ImportMeshAsync('/client-assets/room/envs/default/300.glb', scene);
 
 		this.envMapIndoor = BABYLON.CubeTexture.CreateFromPrefilteredData('/client-assets/room/indoor.env', scene);
@@ -171,6 +183,16 @@ export class SimpleEnvManager extends EnvManager<SimpleEnvOptions> {
 		//baseboardMaterial.metadata.disableEnvMap = true;
 
 		await this.applyOptions(options);
+	}
+
+	public setTime(time: number) {
+		if (time === 0) {
+			this.skyboxMat.emissiveColor = new BABYLON.Color3(0.7, 0.9, 1.0);
+		} else if (time === 1) {
+			this.skyboxMat.emissiveColor = new BABYLON.Color3(0.8, 0.5, 0.3);
+		} else {
+			this.skyboxMat.emissiveColor = new BABYLON.Color3(0.05, 0.05, 0.2);
+		}
 	}
 
 	public applyOptions(options: SimpleEnvOptions) {
@@ -337,6 +359,9 @@ export class SimpleEnvManager extends EnvManager<SimpleEnvOptions> {
 		for (const m of Object.values(this.pillarMaterials ?? {})) {
 			m.dispose();
 		}
+		this.skybox?.dispose();
+		this.skyboxMat?.dispose();
+		this.envMapIndoor?.dispose();
 	}
 }
 
@@ -345,6 +370,8 @@ export type MuseumEnvOptions = any;
 export class MuseumEnvManager extends EnvManager<MuseumEnvOptions> {
 	private loaderResult: BABYLON.ISceneLoaderAsyncResult | null = null;
 	private meshes: BABYLON.Mesh[] = [];
+	public envMapIndoor: BABYLON.CubeTexture | null = null;
+	public maxCameraZ = cm(5000);
 
 	constructor(onMeshUpdatedCallback?: ((meshes: BABYLON.AbstractMesh[]) => void) | null) {
 		super(onMeshUpdatedCallback);
@@ -352,6 +379,9 @@ export class MuseumEnvManager extends EnvManager<MuseumEnvOptions> {
 
 	public async load(options: MuseumEnvOptions, scene: BABYLON.Scene) {
 		this.loaderResult = await BABYLON.ImportMeshAsync('/client-assets/room/envs/museum/museum.glb', scene);
+
+		this.envMapIndoor = BABYLON.CubeTexture.CreateFromPrefilteredData('/client-assets/room/indoor.env', scene);
+		this.envMapIndoor.boundingBoxSize = new BABYLON.Vector3(cm(500), cm(500), cm(500));
 
 		this.meshes = this.loaderResult.meshes.filter(m => m instanceof BABYLON.Mesh);
 		this.meshes[0].scaling = this.meshes[0].scaling.scale(WORLD_SCALE);
@@ -381,6 +411,9 @@ export class MuseumEnvManager extends EnvManager<MuseumEnvOptions> {
 		await this.applyOptions(options);
 	}
 
+	public setTime(time: number) {
+	}
+
 	public applyOptions(options: MuseumEnvOptions) {
 		this.onMeshUpdatedCallback?.(this.meshes);
 	}
@@ -397,5 +430,6 @@ export class MuseumEnvManager extends EnvManager<MuseumEnvOptions> {
 		for (const m of this.meshes) {
 			m.dispose(false, true);
 		}
+		this.envMapIndoor?.dispose();
 	}
 }

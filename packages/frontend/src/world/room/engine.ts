@@ -27,7 +27,6 @@ import { deepClone } from '@/utility/clone.js';
 
 const BAKE_TRANSFORM = false; // 実験的
 const IGNORE_OBJECTS: string[] = ['aquarium']; // for debug
-const RENDER_OUTDOOR_ENV = false;
 const IN_WEB_WORKER = typeof window === 'undefined';
 
 export type RoomState = {
@@ -237,6 +236,7 @@ export class RoomEngine extends EventEmitter {
 
 		this.fps = options.fps;
 		this.useGlow = options.graphicsQuality >= GRAPHICS_QUALITY_MEDIUM;
+		this.time = TIME_MAP[new Date().getHours() as keyof typeof TIME_MAP];
 
 		registerBuiltInLoaders();
 
@@ -250,32 +250,14 @@ export class RoomEngine extends EventEmitter {
 		this.scene.skipPointerMovePicking = true;
 		this.scene.skipFrustumClipping = true; // snapshot renderingでは全てのメッシュがアクティブになっている必要があるため
 		this.scene.gravity = new BABYLON.Vector3(0, -0.1, 0).scale(WORLD_SCALE);
+		this.scene.ambientColor = new BABYLON.Color3(1.0, 0.9, 0.8);
+		this.scene.collisionsEnabled = true;
 
 		this.sr = new BABYLON.SnapshotRenderingHelper(this.scene);
 
-		const skybox = BABYLON.MeshBuilder.CreateBox('skybox', { size: cm(1000) }, this.scene);
-		const skyboxMat = new BABYLON.StandardMaterial('skyboxMat', this.scene);
-		skyboxMat.backFaceCulling = false;
-		skyboxMat.disableLighting = true;
-		skybox.material = skyboxMat;
-		skybox.infiniteDistance = true;
-
-		this.time = TIME_MAP[new Date().getHours() as keyof typeof TIME_MAP];
-
-		if (this.time === 0) {
-			skyboxMat.emissiveColor = new BABYLON.Color3(0.7, 0.9, 1.0);
-		} else if (this.time === 1) {
-			skyboxMat.emissiveColor = new BABYLON.Color3(0.8, 0.5, 0.3);
-		} else {
-			skyboxMat.emissiveColor = new BABYLON.Color3(0.05, 0.05, 0.2);
-		}
-		this.scene.ambientColor = new BABYLON.Color3(1.0, 0.9, 0.8);
-
-		this.scene.collisionsEnabled = true;
-
 		this.camera = new BABYLON.FreeCamera('camera', new BABYLON.Vector3(0, cm(130), cm(0)), this.scene);
 		this.camera.minZ = cm(1);
-		this.camera.maxZ = RENDER_OUTDOOR_ENV ? cm(10000) : cm(1000);
+		this.camera.maxZ = cm(1000);
 		this.camera.fov = 1;
 		this.camera.ellipsoid = new BABYLON.Vector3(cm(15), cm(65), cm(15));
 		this.camera.checkCollisions = true;
@@ -580,7 +562,7 @@ export class RoomEngine extends EventEmitter {
 		}
 	}
 
-	public pauseRender() {
+	public pauseRender() { // TODO: srと同じく参照カウント方式にした方が便利そう
 		this.engine.stopRenderLoop();
 		if (this.currentRafId != null) {
 			// workerで実行される可能性がある
@@ -828,9 +810,8 @@ export class RoomEngine extends EventEmitter {
 	public async changeEnvType(type: RoomState['env']['type'], forInit = false) {
 		this.roomState.env.type = type;
 
-		if (this.envManager != null) {
-			this.envManager.dispose();
-		}
+		this.sr.disableSnapshotRendering();
+		this.pauseRender();
 
 		const onMeshUpdatedCallback = (meshes: BABYLON.AbstractMesh[]) => {
 			for (const m of meshes) {
@@ -856,17 +837,40 @@ export class RoomEngine extends EventEmitter {
 			}
 		};
 
+		let envManager: EnvManager;
+
 		if (this.roomState.env.type === 'simple') {
-			const envManager = new SimpleEnvManager(onMeshUpdatedCallback);
-			await envManager.load(this.roomState.env.options, this.scene);
-			this.envManager = envManager;
+			envManager = new SimpleEnvManager(onMeshUpdatedCallback);
 		} else if (this.roomState.env.type === 'japanese') {
 			// TODO
 		} else if (this.roomState.env.type === 'museum') {
-			const envManager = new MuseumEnvManager(onMeshUpdatedCallback);
-			await envManager.load(this.roomState.env.options, this.scene);
-			this.envManager = envManager;
+			envManager = new MuseumEnvManager(onMeshUpdatedCallback);
 		}
+
+		await envManager.load(this.roomState.env.options, this.scene);
+		envManager.setTime(this.time);
+
+		for (const mat of this.scene.materials) {
+			mat.unfreeze();
+			if (mat instanceof BABYLON.MultiMaterial) {
+				for (const subMat of mat.subMaterials) {
+					if (subMat.metadata.useEnvMapAsObjectMaterial) subMat.reflectionTexture = envManager.envMapIndoor;
+				}
+			} else {
+				if (mat.metadata?.useEnvMapAsObjectMaterial) mat.reflectionTexture = envManager.envMapIndoor;
+			}
+		}
+
+		if (this.envManager != null) {
+			this.envManager.dispose();
+		}
+
+		this.envManager = envManager;
+
+		this.camera.maxZ = this.envManager.maxCameraZ;
+
+		this.resumeRender();
+		this.sr.enableSnapshotRendering();
 
 		if (!forInit) {
 			this.ev('changeRoomState', { roomState: this.roomState });
@@ -1118,6 +1122,7 @@ export class RoomEngine extends EventEmitter {
 									(subMat as BABYLON.PBRMaterial).transparencyMode = BABYLON.PBRMaterial.PBRMATERIAL_ALPHABLEND;
 								}
 								(subMat as BABYLON.PBRMaterial).reflectionTexture = this.envManager?.envMapIndoor;
+								(subMat as BABYLON.PBRMaterial).metadata.useEnvMapAsObjectMaterial = true;
 								(subMat as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
 								(subMat as BABYLON.PBRMaterial).anisotropy.isEnabled = false; // なんかきれいにレンダリングされないため
 							}
@@ -1127,6 +1132,7 @@ export class RoomEngine extends EventEmitter {
 								(mesh.material as BABYLON.PBRMaterial).transparencyMode = BABYLON.PBRMaterial.PBRMATERIAL_ALPHABLEND;
 							}
 							(mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.envManager?.envMapIndoor;
+							(mesh.material as BABYLON.PBRMaterial).metadata.useEnvMapAsObjectMaterial = true;
 							(mesh.material as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
 							(mesh.material as BABYLON.PBRMaterial).anisotropy.isEnabled = false; // なんかきれいにレンダリングされないため
 						}
