@@ -9,7 +9,6 @@
 // TODO: glbを事前に最適化(なるべくメッシュをマージするなど)するツールもしくはMisskeyビルド時処理。ついでにカタログ用スクショも自動生成したい
 // TODO: テクスチャ置き換え時、元のテクスチャをちゃんとdispose
 // TODO: Safariでテクスチャの読み込みに失敗かつ無ハンドリングだとsrが有効にできなくなる現象をbabylonに報告
-// TODO: GridMaterialは今のところwgslにネイティブ対応しておらず、読み込むとwgslへの変換コードが読み込まれるっぽく無駄だしweb worker内ではそのままではインポートエラーになるのでどうにかする
 // TODO: なぜかTVのライトだけmaxRangeによる制限が効かないのを調査
 // TODO: 二つのダクトレールをそれぞれ色を変えた後にペンダントライトを設定しようとする際のクラッシュを直す (https://forum.babylonjs.com/t/issue-when-using-lights-with-a-mesh-as-a-parent-in-clustered-lighting/63308)
 
@@ -706,6 +705,13 @@ export class RoomEngine extends EventEmitter {
 						this.gridPlane.rotation.x = Math.PI;
 						this.gridPlane.rotation.y = targetRotationY;
 						this.gridPlane.position = newPos.add(pickedMeshNormal.scale(cm(0.1)));
+						if (getYRotationDirection(targetRotationY) === '+x' || getYRotationDirection(targetRotationY) === '-x') {
+							this.gridPlane.position.y = 0;
+							this.gridPlane.position.z = 0;
+						} else {
+							this.gridPlane.position.y = 0;
+							this.gridPlane.position.x = 0;
+						}
 						this.gridPlane.isVisible = true;
 					}
 				}
@@ -726,6 +732,8 @@ export class RoomEngine extends EventEmitter {
 						this.gridPlane.rotation.x = Math.PI * 1.5;
 						this.gridPlane.rotation.y = 0;
 						this.gridPlane.position = new BABYLON.Vector3(grabbing.mesh.position.x, grabbing.mesh.position.y - cm(0.1), grabbing.mesh.position.z);
+						this.gridPlane.position.x = 0;
+						this.gridPlane.position.z = 0;
 						this.gridPlane.isVisible = true;
 					}
 				}
@@ -746,6 +754,8 @@ export class RoomEngine extends EventEmitter {
 						this.gridPlane.rotation.x = Math.PI / 2;
 						this.gridPlane.rotation.y = 0;
 						this.gridPlane.position = new BABYLON.Vector3(grabbing.mesh.position.x, grabbing.mesh.position.y + cm(0.1), grabbing.mesh.position.z);
+						this.gridPlane.position.x = 0;
+						this.gridPlane.position.z = 0;
 						this.gridPlane.isVisible = true;
 					}
 				}
@@ -1655,7 +1665,8 @@ export class RoomEngine extends EventEmitter {
 				this.gridMaterial = new m.GridMaterial('grid', this.scene);
 				this.gridMaterial.lineColor = new BABYLON.Color3(0.5, 0.5, 0.5);
 				this.gridMaterial.mainColor = new BABYLON.Color3(0, 0, 0);
-				this.gridMaterial.minorUnitVisibility = 1;
+				this.gridMaterial.majorUnitFrequency = 10;
+				this.gridMaterial.minorUnitVisibility = 0.3;
 				this.gridMaterial.opacity = 0.5;
 				this.gridMaterial.gridRatio = this.gridSnapping.scale;
 				this.gridMaterial.backFaceCulling = false;
