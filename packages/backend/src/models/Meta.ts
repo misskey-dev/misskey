@@ -609,6 +609,11 @@ export class MiMeta {
 	})
 	public enableReactionsBuffering: boolean;
 
+	@Column('boolean', {
+		default: true,
+	})
+	public deliverReactionsToRelays: boolean;
+
 	@Column('integer', {
 		default: 0,
 	})

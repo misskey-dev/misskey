@@ -1752,6 +1752,8 @@ _serverSettings:
   fanoutTimelineDbFallback: "データベースへのフォールバック"
   fanoutTimelineDbFallbackDescription: "有効にすると、タイムラインがキャッシュされていない場合にDBへ追加で問い合わせを行うフォールバック処理を行います。無効にすると、フォールバック処理を行わないことでさらにサーバーの負荷を軽減することができますが、タイムラインが取得できる範囲に制限が生じます。"
   reactionsBufferingDescription: "有効にすると、リアクション作成時のパフォーマンスが大幅に向上し、データベースへの負荷を軽減することが可能です。ただし、Redisのメモリ使用量は増加します。"
+  deliverReactionsToRelays: "リアクションをリレーに配信する"
+  deliverReactionsToRelaysDescription: "有効にすると、公開ノートへのリアクション(Like)アクティビティをリレーサーバーへも配信します。リレー経由でノートを取得している連合サーバーがリアクションも受信できるようになります。リアクションは投稿より頻度が高いため、リレーや配信先の負荷を考慮して無効化することもできます。"
   remoteNotesCleaning: "リモート投稿の自動クリーニング"
   remoteNotesCleaning_description: "有効にすると、一定期間経過したリモートの投稿を定期的にクリーンアップしてデータベースの肥大化を抑制します。"
   remoteNotesCleaningMaxProcessingDuration: "最大クリーニング処理継続時間"

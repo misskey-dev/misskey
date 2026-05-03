@@ -6869,6 +6869,14 @@ export interface Locale extends ILocale {
          */
         "reactionsBufferingDescription": string;
         /**
+         * リアクションをリレーに配信する
+         */
+        "deliverReactionsToRelays": string;
+        /**
+         * 有効にすると、公開ノートへのリアクション(Like)アクティビティをリレーサーバーへも配信します。リレー経由でノートを取得している連合サーバーがリアクションも受信できるようになります。リアクションは投稿より頻度が高いため、リレーや配信先の負荷を考慮して無効化することもできます。
+         */
+        "deliverReactionsToRelaysDescription": string;
+        /**
          * リモート投稿の自動クリーニング
          */
         "remoteNotesCleaning": string;
