@@ -17,6 +17,7 @@ import { findMaterial } from './utility.js';
 
 export abstract class HeyaManager<T = any> {
 	protected onMeshUpdatedCallback: ((meshes: BABYLON.AbstractMesh[]) => void) | null = null;
+	abstract envMapIndoor: BABYLON.CubeTexture | null;
 
 	constructor(onMeshUpdatedCallback?: ((meshes: BABYLON.AbstractMesh[]) => void) | null) {
 		this.onMeshUpdatedCallback = onMeshUpdatedCallback ?? null;
@@ -76,6 +77,9 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 
 	public async load(options: SimpleHeyaOptions, scene: BABYLON.Scene) {
 		this.loaderResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300.glb', scene);
+
+		this.envMapIndoor = BABYLON.CubeTexture.CreateFromPrefilteredData('/client-assets/room/indoor.env', scene);
+		this.envMapIndoor.boundingBoxSize = new BABYLON.Vector3(cm(500), cm(500), cm(500));
 
 		this.meshes = this.loaderResult.meshes.filter(m => m instanceof BABYLON.Mesh);
 		this.meshes[0].scaling = this.meshes[0].scaling.scale(WORLD_SCALE);
@@ -296,6 +300,16 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 			}
 
 			this.floorMaterial.freeze();
+		}
+
+		for (const mesh of this.meshes) {
+			if (mesh.material != null) {
+				if ((mesh.material as BABYLON.PBRMaterial).metadata?.disableEnvMap) {
+					(mesh.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(0.5, 0.5, 0.5);
+				} else {
+					(mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
+				}
+			}
 		}
 
 		this.onMeshUpdatedCallback?.(this.meshes);

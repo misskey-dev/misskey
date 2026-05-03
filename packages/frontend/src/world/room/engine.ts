@@ -188,8 +188,6 @@ export class RoomEngine extends EventEmitter {
 	}
 
 	private putParticleSystem: BABYLON.ParticleSystem;
-	private envMapIndoor: BABYLON.CubeTexture;
-	private envMapOutdoor: BABYLON.CubeTexture;
 	private roomLight: BABYLON.SpotLight;
 	public lightContainer: BABYLON.ClusteredLightContainer;
 	private gridMaterial: GridMaterial | null = null;
@@ -272,12 +270,6 @@ export class RoomEngine extends EventEmitter {
 			skyboxMat.emissiveColor = new BABYLON.Color3(0.05, 0.05, 0.2);
 		}
 		this.scene.ambientColor = new BABYLON.Color3(1.0, 0.9, 0.8);
-
-		this.envMapIndoor = BABYLON.CubeTexture.CreateFromPrefilteredData('/client-assets/room/indoor.env', this.scene);
-		this.envMapIndoor.boundingBoxSize = new BABYLON.Vector3(cm(500), cm(500), cm(500));
-
-		this.envMapOutdoor = BABYLON.CubeTexture.CreateFromPrefilteredData(this.time === 2 ? '/client-assets/room/outdoor-night.env' : '/client-assets/room/outdoor-day.env', this.scene);
-		this.envMapOutdoor.level = this.time === 0 ? 0.5 : this.time === 1 ? 0.3 : 0.1;
 
 		this.scene.collisionsEnabled = true;
 
@@ -439,7 +431,6 @@ export class RoomEngine extends EventEmitter {
 
 	public async init() {
 		await this.loadHeya();
-		if (RENDER_OUTDOOR_ENV) await this.loadEnvModel();
 
 		const objects = this.roomState.installedObjects.filter(o => !IGNORE_OBJECTS.includes(o.type));
 		let loadedCount = 0;
@@ -834,22 +825,6 @@ export class RoomEngine extends EventEmitter {
 		});
 	}
 
-	private async loadEnvModel() {
-		const envObj = await BABYLON.ImportMeshAsync('/client-assets/room/env.glb', this.scene);
-		envObj.meshes[0].scaling = envObj.meshes[0].scaling.scale(WORLD_SCALE);
-		envObj.meshes[0].bakeCurrentTransformIntoVertices();
-		envObj.meshes[0].position = new BABYLON.Vector3(0, cm(-900), 0); // 4階くらいの想定
-		envObj.meshes[0].rotation = new BABYLON.Vector3(0, -Math.PI, 0);
-		for (const mesh of envObj.meshes) {
-			mesh.isPickable = false;
-			mesh.checkCollisions = false;
-
-			//if (mesh.name === '__root__') continue;
-			mesh.receiveShadows = false;
-			if (mesh.material) (mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.envMapOutdoor;
-		}
-	}
-
 	public async changeHeyaType(type: RoomState['heya']['type'], forInit = false) {
 		this.roomState.heya.type = type;
 
@@ -875,13 +850,7 @@ export class RoomEngine extends EventEmitter {
 				m.receiveShadows = true;
 				this.shadowGeneratorForRoomLight?.addShadowCaster(m);
 				this.shadowGeneratorForSunLight?.addShadowCaster(m);
-				//if (m.material) (m.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(1, 1, 1);
-				if (m.material) {
-					if ((m.material as BABYLON.PBRMaterial).metadata?.disableEnvMap) {
-						(m.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(0.5, 0.5, 0.5);
-					} else {
-						(m.material as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
-					}
+				if (m.material != null) {
 					(m.material as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
 				}
 			}
@@ -1148,7 +1117,7 @@ export class RoomEngine extends EventEmitter {
 									(subMat as BABYLON.PBRMaterial).subSurface.isRefractionEnabled = false; // 有効にするとドローコールが激増する(babylonのバグか仕様かは不明)
 									(subMat as BABYLON.PBRMaterial).transparencyMode = BABYLON.PBRMaterial.PBRMATERIAL_ALPHABLEND;
 								}
-								(subMat as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
+								(subMat as BABYLON.PBRMaterial).reflectionTexture = this.heyaManager?.envMapIndoor;
 								(subMat as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
 								(subMat as BABYLON.PBRMaterial).anisotropy.isEnabled = false; // なんかきれいにレンダリングされないため
 							}
@@ -1157,7 +1126,7 @@ export class RoomEngine extends EventEmitter {
 								(mesh.material as BABYLON.PBRMaterial).subSurface.isRefractionEnabled = false; // 有効にするとドローコールが激増する(babylonのバグか仕様かは不明)
 								(mesh.material as BABYLON.PBRMaterial).transparencyMode = BABYLON.PBRMaterial.PBRMATERIAL_ALPHABLEND;
 							}
-							(mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
+							(mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.heyaManager?.envMapIndoor;
 							(mesh.material as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
 							(mesh.material as BABYLON.PBRMaterial).anisotropy.isEnabled = false; // なんかきれいにレンダリングされないため
 						}
@@ -1451,7 +1420,7 @@ export class RoomEngine extends EventEmitter {
 	private turnOnRoomLight(forInit = false) {
 		if (!forInit) this.sr.disableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 		this.roomLight.intensity = 18 * WORLD_SCALE * WORLD_SCALE;
-		this.envMapIndoor.level = 0.6;
+		if (this.heyaManager?.envMapIndoor != null) this.heyaManager.envMapIndoor.level = 0.6;
 		for (const m of this.scene.materials) {
 			if (m.metadata?.disableEnvMap) {
 				m.ambientColor = new BABYLON.Color3(0.5, 0.5, 0.5);
@@ -1469,7 +1438,7 @@ export class RoomEngine extends EventEmitter {
 	private turnOffRoomLight() {
 		this.sr.disableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 		this.roomLight.intensity = 0;
-		this.envMapIndoor.level = 0.025;
+		if (this.heyaManager?.envMapIndoor != null) this.heyaManager.envMapIndoor.level = 0.025;
 		for (const m of this.scene.materials) {
 			if (m.metadata?.disableEnvMap) {
 				m.ambientColor = new BABYLON.Color3(0.025, 0.025, 0.025);
