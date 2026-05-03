@@ -204,14 +204,12 @@ export class RedisSingleCache<T> {
 	}
 }
 
-// TODO: メモリ節約のためあまり参照されないキーを定期的に削除できるようにする？
-
 export class MemoryKVCache<T> {
-	private readonly cache = new Map<string, { date: number; value: T; }>();
+	protected readonly cache = new Map<string, { date: number; value: T; }>();
 	private readonly gcIntervalHandle = setInterval(() => this.gc(), 1000 * 60 * 3); // 3m
 
 	constructor(
-		private readonly lifetime: number,
+		protected readonly lifetime: number,
 	) {}
 
 	@bindThis
@@ -315,6 +313,32 @@ export class MemoryKVCache<T> {
 
 	public get entries() {
 		return this.cache.entries();
+	}
+}
+
+export class MemoryLRUKVCache<T> extends MemoryKVCache<T> {
+	constructor(
+		lifetime: number,
+		private readonly limit: number,
+	) {
+		if (limit <= 0) {
+			throw new Error('Limit must be greater than 0');
+		}
+
+		super(lifetime);
+	}
+
+	@bindThis
+	public set(key: string, value: T): void {
+		while (this.cache.size >= this.limit) {
+			// 古い順から削除していく
+			const oldestKey = this.cache.keys().next().value;
+			if (oldestKey == null) {
+				throw new Error('Cache is empty but size exceeds the limit');
+			}
+			this.cache.delete(oldestKey);
+		}
+		super.set(key, value);
 	}
 }
 
