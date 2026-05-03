@@ -9,7 +9,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-for="[k, s] in Object.entries(schema)" :key="k">
 			<div>{{ s.label }}</div>
 			<div v-if="s.type === 'color'">
-				<MkInput :modelValue="getHex(options[k])" type="color" @update:modelValue="v => { const c = getRgb(v); if (c != null) emit('update', k, c); }"></MkInput>
+				<!-- debounceしないとカラーピッカー上で高速でなぞったときになぜか無限ループになる。ワーカーとの間でラグがあるため、少し前の値がまたmodelValueとしてフィードバックされてしまうためだと思われる -->
+				<MkInput :modelValue="getHex(options[k])" type="color" debounce @update:modelValue="v => { const c = getRgb(v); if (c != null) emit('update', k, c); }"></MkInput>
 			</div>
 			<div v-else-if="s.type === 'boolean'">
 				<MkSwitch :modelValue="options[k]" @update:modelValue="v => emit('update', k, v)"></MkSwitch>
