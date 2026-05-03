@@ -142,7 +142,7 @@ export class RoomEngine extends EventEmitter {
 		forInstall: boolean;
 		mesh: BABYLON.TransformNode;
 		originalDiffOfPosition: BABYLON.Vector3;
-		originalDiffOfRotationY: number;
+		originalDiffOfRotation: BABYLON.Vector3;
 		distance: number;
 		rotation: number;
 		ghost: BABYLON.AbstractMesh;
@@ -497,7 +497,7 @@ export class RoomEngine extends EventEmitter {
 				}
 			} else if (ev.code === 'KeyR') {
 				if (this.grabbingCtx != null) {
-					this.changeGrabbingRotationY(Math.PI / 8);
+					this.changeGrabbingRotation(Math.PI / 8);
 				}
 			} else if (ev.code === 'KeyQ') {
 				if (this.isSitting) {
@@ -660,7 +660,7 @@ export class RoomEngine extends EventEmitter {
 
 		const dir = this.camera.getDirection(BABYLON.Axis.Z).scale(this.scene.useRightHandedSystem ? -1 : 1);
 		let newPos = this.camera.position.add(dir.scale(grabbing.distance)).add(grabbing.originalDiffOfPosition);
-		const newRotation = new BABYLON.Vector3(0, this.camera.rotation.y + grabbing.originalDiffOfRotationY + grabbing.rotation, 0);
+		const newRotation = new BABYLON.Vector3(0, this.camera.rotation.y + grabbing.originalDiffOfRotation.y + grabbing.rotation, 0);
 		grabbing.ghost.position = newPos.clone();
 		grabbing.ghost.rotation = newRotation.clone();
 
@@ -690,6 +690,7 @@ export class RoomEngine extends EventEmitter {
 					const pickedMeshNormal = hit.getNormal(true, true)!;
 					const targetRotationY = Math.atan2(pickedMeshNormal.x, pickedMeshNormal.z);
 					newRotation.y = targetRotationY;
+					newRotation.z = grabbing.originalDiffOfRotation.z + grabbing.rotation;
 					newPos = hit.pickedPoint;
 					stickyOtherObject = hit.pickedMesh.metadata?.objectId ?? null;
 
@@ -1298,7 +1299,7 @@ export class RoomEngine extends EventEmitter {
 			forInstall: false,
 			mesh: selectedObject,
 			originalDiffOfPosition: selectedObject.position.subtract(this.camera.position.add(dir.scale(distance))),
-			originalDiffOfRotationY: selectedObject.rotation.subtract(this.camera.rotation).y,
+			originalDiffOfRotation: selectedObject.rotation.subtract(this.camera.rotation),
 			distance: distance,
 			rotation: 0,
 			ghost: ghost,
@@ -1579,7 +1580,7 @@ export class RoomEngine extends EventEmitter {
 			forInstall: true,
 			mesh: root,
 			originalDiffOfPosition: new BABYLON.Vector3(0, 0, 0),
-			originalDiffOfRotationY: Math.PI,
+			originalDiffOfRotation: new BABYLON.Vector3(0, Math.PI, 0),
 			distance: distance,
 			rotation: 0,
 			ghost: ghost,
@@ -1760,7 +1761,7 @@ export class RoomEngine extends EventEmitter {
 		if (this.grabbingCtx.distance < cm(5)) this.grabbingCtx.distance = cm(5);
 	}
 
-	public changeGrabbingRotationY(delta: number) {
+	public changeGrabbingRotation(delta: number) {
 		if (this.grabbingCtx == null) return;
 		this.grabbingCtx.rotation += delta;
 	}
