@@ -244,6 +244,8 @@ const data = localStorage.getItem('roomData') != null ? JSON.parse(localStorage.
 if (data.worldScale == null) {
 	data.worldScale = 1;
 }
+if (data.heya != null) {
+	data.env = data.heya;
 	delete data.heya;
 }
 
