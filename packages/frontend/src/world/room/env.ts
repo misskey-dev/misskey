@@ -6,8 +6,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { cm, WORLD_SCALE } from '../utility.js';
-import { findMaterial, SYSTEM_HEYA_MESH_NAMES } from './utility.js';
-import { GRAPHICS_QUALITY_MEDIUM } from './engine.js';
+import { findMaterial, GRAPHICS_QUALITY, SYSTEM_HEYA_MESH_NAMES } from './utility.js';
 import type { RoomEngine } from './engine.js';
 
 //export interface EnvManager<T = any> {
@@ -122,32 +121,32 @@ export class SimpleEnvManager extends EnvManager<SimpleEnvOptions> {
 		this.roomLight.shadowMaxZ = cm(300);
 		this.roomLight.radius = cm(30);
 
-		if (this.engine.graphicsQuality >= GRAPHICS_QUALITY_MEDIUM) {
-			const shadowGeneratorForRoomLight = new BABYLON.ShadowGenerator(this.engine.graphicsQuality <= GRAPHICS_QUALITY_MEDIUM ? 1024 : 2048, this.roomLight);
+		if (this.engine.graphicsQuality >= GRAPHICS_QUALITY.MEDIUM) {
+			const shadowGeneratorForRoomLight = new BABYLON.ShadowGenerator(this.engine.graphicsQuality <= GRAPHICS_QUALITY.MEDIUM ? 1024 : 2048, this.roomLight);
 			shadowGeneratorForRoomLight.forceBackFacesOnly = true;
 			shadowGeneratorForRoomLight.bias = 0.00001;
 			shadowGeneratorForRoomLight.normalBias = 0.005;
 			shadowGeneratorForRoomLight.usePercentageCloserFiltering = true;
 			shadowGeneratorForRoomLight.filteringQuality = BABYLON.ShadowGenerator.QUALITY_HIGH;
-			if (this.engine.graphicsQuality <= GRAPHICS_QUALITY_MEDIUM) {
+			if (this.engine.graphicsQuality <= GRAPHICS_QUALITY.MEDIUM) {
 				shadowGeneratorForRoomLight.getShadowMap().refreshRate = 60;
 			}
 			//this.shadowGeneratorForRoomLight.useContactHardeningShadow = true;
 			this.shadowGenerators.push(shadowGeneratorForRoomLight);
 		}
 
-		if (this.engine.graphicsQuality >= GRAPHICS_QUALITY_MEDIUM) {
+		if (this.engine.graphicsQuality >= GRAPHICS_QUALITY.MEDIUM) {
 			this.sunLight = new BABYLON.DirectionalLight('simpleEnv:SunLight', new BABYLON.Vector3(0.2, -1, -1), this.engine.scene);
 			this.sunLight.position = new BABYLON.Vector3(cm(-20), cm(1000), cm(1000));
 			this.sunLight.shadowMinZ = cm(1000);
 			this.sunLight.shadowMaxZ = cm(2000);
 
-			const shadowGeneratorForSunLight = new BABYLON.ShadowGenerator(this.engine.graphicsQuality <= GRAPHICS_QUALITY_MEDIUM ? 1024 : 2048, this.sunLight);
+			const shadowGeneratorForSunLight = new BABYLON.ShadowGenerator(this.engine.graphicsQuality <= GRAPHICS_QUALITY.MEDIUM ? 1024 : 2048, this.sunLight);
 			shadowGeneratorForSunLight.forceBackFacesOnly = true;
 			shadowGeneratorForSunLight.bias = 0.00001;
 			shadowGeneratorForSunLight.usePercentageCloserFiltering = true;
 			shadowGeneratorForSunLight.usePoissonSampling = true;
-			if (this.engine.graphicsQuality <= GRAPHICS_QUALITY_MEDIUM) {
+			if (this.engine.graphicsQuality <= GRAPHICS_QUALITY.MEDIUM) {
 				shadowGeneratorForSunLight.getShadowMap().refreshRate = 60;
 			}
 			this.shadowGenerators.push(shadowGeneratorForSunLight);
@@ -536,14 +535,14 @@ export class MuseumEnvManager extends EnvManager<MuseumEnvOptions> {
 		this.roomLight.shadowMaxZ = cm(500);
 		this.roomLight.radius = cm(30);
 
-		if (this.engine.graphicsQuality >= GRAPHICS_QUALITY_MEDIUM) {
-			const shadowGeneratorForRoomLight = new BABYLON.ShadowGenerator(this.engine.graphicsQuality <= GRAPHICS_QUALITY_MEDIUM ? 1024 : 2048, this.roomLight);
+		if (this.engine.graphicsQuality >= GRAPHICS_QUALITY.MEDIUM) {
+			const shadowGeneratorForRoomLight = new BABYLON.ShadowGenerator(this.engine.graphicsQuality <= GRAPHICS_QUALITY.MEDIUM ? 1024 : 2048, this.roomLight);
 			shadowGeneratorForRoomLight.forceBackFacesOnly = true;
 			shadowGeneratorForRoomLight.bias = 0.00001;
 			shadowGeneratorForRoomLight.normalBias = 0.005;
 			shadowGeneratorForRoomLight.usePercentageCloserFiltering = true;
 			shadowGeneratorForRoomLight.filteringQuality = BABYLON.ShadowGenerator.QUALITY_HIGH;
-			if (this.engine.graphicsQuality <= GRAPHICS_QUALITY_MEDIUM) {
+			if (this.engine.graphicsQuality <= GRAPHICS_QUALITY.MEDIUM) {
 				shadowGeneratorForRoomLight.getShadowMap().refreshRate = 60;
 			}
 			//this.shadowGeneratorForRoomLight.useContactHardeningShadow = true;

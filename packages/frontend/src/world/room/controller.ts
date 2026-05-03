@@ -8,7 +8,7 @@ import * as BABYLON from '@babylonjs/core';
 import { EventEmitter } from 'eventemitter3';
 import { cm } from '../utility.js';
 import RoomWorker from './worker?worker';
-import { GRAPHICS_QUALITY_MEDIUM, RoomEngine } from './engine.js';
+import { RoomEngine } from './engine.js';
 import type { ShallowRef } from 'vue';
 import type { RoomEngineEvents, RoomState } from './engine.js';
 import type { ObjectDef, RoomStateObject } from './object.js';

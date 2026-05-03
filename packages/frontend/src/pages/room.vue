@@ -96,13 +96,13 @@ import * as os from '@/os.js';
 import { RoomController } from '@/world/room/controller.js';
 import { cm, getHex, getRgb, WORLD_SCALE } from '@/world/utility.js';
 import { deepClone } from '@/utility/clone.js';
-import { GRAPHICS_QUALITY_HIGH, GRAPHICS_QUALITY_LOW, GRAPHICS_QUALITY_MEDIUM } from '@/world/room/engine.js';
 import { deviceKind } from '@/utility/device-kind.js';
 import MkProgressBar from '@/components/MkProgressBar.vue';
 import { Joystick } from '@/world/joystick.js';
 import { isTouchUsing } from '@/utility/touch.js';
 import { prefer } from '@/preferences.js';
 import { getObjectDef } from '@/world/room/object-defs.js';
+import { GRAPHICS_QUALITY } from '@/world/room/utility.js';
 
 const canvas = useTemplateRef('canvas');
 
@@ -121,7 +121,7 @@ const isRoomSettingsOpen = ref(false);
 const isModified = ref(false);
 
 const graphicsQualityRaw = prefer.model('world.graphicsQuality');
-const graphicsQualityAutoValue = computed<number>(() => deviceKind !== 'desktop' ? GRAPHICS_QUALITY_LOW : GRAPHICS_QUALITY_MEDIUM);
+const graphicsQualityAutoValue = computed<number>(() => deviceKind !== 'desktop' ? GRAPHICS_QUALITY.LOW : GRAPHICS_QUALITY.MEDIUM);
 const graphicsQuality = computed<number>(() => graphicsQualityRaw.value ?? graphicsQualityAutoValue.value);
 
 const fpsRaw = prefer.model('world.fps');
@@ -531,17 +531,17 @@ function showOtherMenu(ev: PointerEvent) {
 		text: i18n.ts._room.graphicsQuality,
 		caption: graphicsQualityRaw.value == null ? i18n.ts.auto : graphicsQualityRaw.value === GRAPHICS_QUALITY_HIGH ? 'High' : graphicsQualityRaw.value === GRAPHICS_QUALITY_MEDIUM ? 'Medium' : 'Low',
 		options: [{
-			label: `${i18n.ts.auto} (${graphicsQualityAutoValue.value === GRAPHICS_QUALITY_HIGH ? 'High' : graphicsQualityAutoValue.value === GRAPHICS_QUALITY_MEDIUM ? 'Medium' : 'Low'})`,
+			label: `${i18n.ts.auto} (${graphicsQualityAutoValue.value === GRAPHICS_QUALITY.HIGH ? 'High' : graphicsQualityAutoValue.value === GRAPHICS_QUALITY.MEDIUM ? 'Medium' : 'Low'})`,
 			value: null,
 		}, { type: 'divider' }, {
 			label: 'High',
-			value: GRAPHICS_QUALITY_HIGH,
+			value: GRAPHICS_QUALITY.HIGH,
 		}, {
 			label: 'Medium',
-			value: GRAPHICS_QUALITY_MEDIUM,
+			value: GRAPHICS_QUALITY.MEDIUM,
 		}, {
 			label: 'Low',
-			value: GRAPHICS_QUALITY_LOW,
+			value: GRAPHICS_QUALITY.LOW,
 		}],
 		ref: graphicsQualityRaw,
 	}, {

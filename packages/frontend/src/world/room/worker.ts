@@ -4,7 +4,7 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { GRAPHICS_QUALITY_MEDIUM, RoomEngine } from './engine.js';
+import { RoomEngine } from './engine.js';
 import type { RoomState } from './engine.js';
 
 let engine: RoomEngine | null = null;

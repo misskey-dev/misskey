@@ -17,7 +17,7 @@ import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
 import { EventEmitter } from 'eventemitter3';
 import { TIME_MAP, scaleMorph, camelToKebab, cm, WORLD_SCALE, getMeshesBoundingBox, Timer, getYRotationDirection, FreeCameraManualInput, remap } from '../utility.js';
 import { getObjectDef } from './object-defs.js';
-import { findMaterial, ModelManager, SYSTEM_HEYA_MESH_NAMES, SYSTEM_MESH_NAMES } from './utility.js';
+import { findMaterial, GRAPHICS_QUALITY, ModelManager, SYSTEM_HEYA_MESH_NAMES, SYSTEM_MESH_NAMES } from './utility.js';
 import { MuseumEnvManager, SimpleEnvManager } from './env.js';
 import type { GridMaterial } from '@babylonjs/materials';
 import type { EnvManager, JapaneseEnvOptions, SimpleEnvOptions } from './env.js';
@@ -94,10 +94,6 @@ function enableObjectCollision(meshes: BABYLON.Mesh[]) {
 		}
 	}
 }
-
-export const GRAPHICS_QUALITY_HIGH = 1;
-export const GRAPHICS_QUALITY_MEDIUM = 0;
-export const GRAPHICS_QUALITY_LOW = -1;
 
 export type RoomEngineEvents = {
 	'changeSelectedState': (ctx: {
@@ -233,7 +229,7 @@ export class RoomEngine extends EventEmitter {
 		};
 		this.graphicsQuality = options.graphicsQuality;
 		this.fps = options.fps;
-		this.useGlow = this.graphicsQuality >= GRAPHICS_QUALITY_MEDIUM;
+		this.useGlow = this.graphicsQuality >= GRAPHICS_QUALITY.MEDIUM;
 		this.time = TIME_MAP[new Date().getHours() as keyof typeof TIME_MAP];
 
 		registerBuiltInLoaders();
@@ -278,7 +274,7 @@ export class RoomEngine extends EventEmitter {
 		//this.scene.activeCamera = this.camera;
 
 		this.lightContainer = new BABYLON.ClusteredLightContainer('clustered', [], this.scene);
-		this.lightContainer.maxRange = this.graphicsQuality >= GRAPHICS_QUALITY_HIGH ? cm(200) : this.graphicsQuality >= GRAPHICS_QUALITY_MEDIUM ? cm(90) : cm(30);
+		this.lightContainer.maxRange = this.graphicsQuality >= GRAPHICS_QUALITY.HIGH ? cm(200) : this.graphicsQuality >= GRAPHICS_QUALITY.MEDIUM ? cm(90) : cm(30);
 		this.lightContainer.verticalTiles = 32;
 		this.lightContainer.horizontalTiles = 32;
 		this.lightContainer.depthSlices = 32;
@@ -322,13 +318,13 @@ export class RoomEngine extends EventEmitter {
 		this.gridPlane.isVisible = false;
 		this.gridPlane.setEnabled(false);
 
-		if (this.graphicsQuality >= GRAPHICS_QUALITY_MEDIUM) {
+		if (this.graphicsQuality >= GRAPHICS_QUALITY.MEDIUM) {
 			this.selectionOutlineLayer = new BABYLON.SelectionOutlineLayer('outliner', this.scene);
 			this.scene.setRenderingAutoClearDepthStencil(this.selectionOutlineLayer.renderingGroupId, false);
 			this.sr.updateMeshesForEffectLayer(this.selectionOutlineLayer);
 		}
 
-		if (this.graphicsQuality >= GRAPHICS_QUALITY_HIGH) {
+		if (this.graphicsQuality >= GRAPHICS_QUALITY.HIGH) {
 			const pipeline = new BABYLON.DefaultRenderingPipeline('default', true, this.scene);
 			if (options.antialias) {
 				pipeline.samples = 4;
