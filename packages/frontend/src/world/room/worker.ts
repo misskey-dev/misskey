@@ -8,7 +8,7 @@ import { GRAPHICS_QUALITY_MEDIUM, RoomEngine } from './engine.js';
 import type { RoomState } from './engine.js';
 
 let engine: RoomEngine | null = null;
-let canvas: HTMLCanvasElement | null = null;
+let canvas: OffscreenCanvas | null = null;
 
 onmessage = async (event) => {
 	//console.log('Worker received message:', event.data);
@@ -16,7 +16,7 @@ onmessage = async (event) => {
 	switch (event.data?.type) {
 		case 'init': {
 			const roomState = event.data.roomState as RoomState;
-			canvas = event.data.canvas as HTMLCanvasElement;
+			canvas = event.data.canvas as OffscreenCanvas;
 			const babylonEngine = new BABYLON.WebGPUEngine(canvas, { doNotHandleContextLost: true, powerPreference: 'high-performance', antialias: event.data.options.antialias });
 			babylonEngine.compatibilityMode = false;
 			babylonEngine.enableOfflineSupport = false;
