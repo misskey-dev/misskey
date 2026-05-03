@@ -2098,6 +2098,7 @@ _role:
     canSearchNotes: "是否可以搜索帖子"
     canSearchUsers: "使用用户检索"
     canUseTranslator: "使用翻译功能"
+    canCreateChannel: "创建频道"
     avatarDecorationLimit: "可添加头像挂件的最大个数"
     canImportAntennas: "允许导入天线"
     canImportBlocking: "允许导入禁止与我互动的列表"
