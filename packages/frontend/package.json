@@ -127,7 +127,7 @@
 		"prettier": "3.8.3",
 		"react": "19.2.5",
 		"react-dom": "19.2.5",
-		"rolldown": "1.0.0-rc.17",
+		"rolldown": "1.0.0-rc.15",
 		"sass-embedded": "1.99.0",
 		"seedrandom": "3.0.5",
 		"start-server-and-test": "3.0.2",

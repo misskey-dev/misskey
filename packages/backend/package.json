@@ -202,7 +202,7 @@
 		"fkill": "10.0.3",
 		"js-yaml": "4.1.1",
 		"pid-port": "2.1.1",
-		"rolldown": "1.0.0-rc.17",
+		"rolldown": "1.0.0-rc.15",
 		"simple-oauth2": "5.1.0",
 		"supertest": "7.2.2",
 		"vite": "8.0.10",
