@@ -529,7 +529,7 @@ function showOtherMenu(ev: PointerEvent) {
 	os.popupMenu([{
 		type: 'radio',
 		text: i18n.ts._room.graphicsQuality,
-		caption: graphicsQualityRaw.value == null ? i18n.ts.auto : graphicsQualityRaw.value === GRAPHICS_QUALITY_HIGH ? 'High' : graphicsQualityRaw.value === GRAPHICS_QUALITY_MEDIUM ? 'Medium' : 'Low',
+		caption: graphicsQualityRaw.value == null ? i18n.ts.auto : graphicsQualityRaw.value === GRAPHICS_QUALITY.HIGH ? 'High' : graphicsQualityRaw.value === GRAPHICS_QUALITY.MEDIUM ? 'Medium' : 'Low',
 		options: [{
 			label: `${i18n.ts.auto} (${graphicsQualityAutoValue.value === GRAPHICS_QUALITY.HIGH ? 'High' : graphicsQualityAutoValue.value === GRAPHICS_QUALITY.MEDIUM ? 'Medium' : 'Low'})`,
 			value: null,
