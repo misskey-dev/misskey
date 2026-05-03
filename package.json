@@ -58,7 +58,7 @@
 		"execa": "9.6.1",
 		"ignore-walk": "8.0.0",
 		"js-yaml": "4.1.1",
-		"postcss": "8.5.9",
+		"postcss": "8.5.10",
 		"tar": "7.5.13",
 		"terser": "5.46.1"
 	},

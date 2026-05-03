@@ -36,3 +36,5 @@ minimumReleaseAgeExclude:
   - '@syuilo/aiscript'
   - '@misskey-dev/*'
   - '@typescript/native-preview*'
+  # Renovate security update: postcss@8.5.10
+  - postcss@8.5.10
