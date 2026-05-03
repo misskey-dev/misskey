@@ -82,9 +82,9 @@ export const wallMountSpotLight = defineObject({
 
 		const applyLightBrightness = () => {
 			light.intensity = 1 * options.lightBrightness * WORLD_SCALE * WORLD_SCALE;
-			light.range = cm(200) * options.lightBrightness;
+			light.range = cm(200);
 			const emissive = lamp.material as BABYLON.PBRMaterial;
-			emissive.emissiveIntensity = options.lightBrightness * 10;
+			emissive.emissiveIntensity = options.lightBrightness * 20;
 		};
 
 		applyLightBrightness();
