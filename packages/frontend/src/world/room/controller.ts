@@ -35,6 +35,7 @@ export class RoomController {
 	public isReady = ref(false);
 	public isSitting = ref(false);
 	public isEditMode = ref(false);
+	public isRoomLightOn = ref(true);
 	public grabbing = ref<{ forInstall: boolean } | null>(null);
 	public gridSnapping = ref({ enabled: true, scale: cm(4) });
 	public selected = ref<{
@@ -279,6 +280,7 @@ export class RoomController {
 		this.isReady.value = false;
 		this.isSitting.value = false;
 		this.isEditMode.value = false;
+		this.isRoomLightOn.value = true;
 		this.grabbing.value = null;
 		this.selected.value = null;
 		this.initializeProgress.value = 0;
@@ -372,7 +374,12 @@ export class RoomController {
 	}
 
 	public toggleRoomLight() {
-		this.call('toggleRoomLight');
+		if (this.isRoomLightOn.value) {
+			this.call('turnOffRoomLight');
+		} else {
+			this.call('turnOnRoomLight');
+		}
+		this.isRoomLightOn.value = !this.isRoomLightOn.value;
 	}
 
 	public resize() {

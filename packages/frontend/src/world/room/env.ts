@@ -6,7 +6,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { cm, WORLD_SCALE } from '../utility.js';
-import { findMaterial } from './utility.js';
+import { findMaterial, SYSTEM_HEYA_MESH_NAMES } from './utility.js';
+import { GRAPHICS_QUALITY_MEDIUM } from './engine.js';
+import type { RoomEngine } from './engine.js';
 
 //export interface EnvManager<T = any> {
 //	constructor(onMeshUpdatedCallback?: ((meshes: BABYLON.AbstractMesh[]) => void) | null): void;
@@ -19,15 +21,36 @@ export abstract class EnvManager<T = any> {
 	protected onMeshUpdatedCallback: ((meshes: BABYLON.AbstractMesh[]) => void) | null = null;
 	public abstract envMapIndoor: BABYLON.CubeTexture | null;
 	public abstract maxCameraZ: number;
+	protected shadowGenerators: BABYLON.ShadowGenerator[] = [];
 
 	constructor(onMeshUpdatedCallback?: ((meshes: BABYLON.AbstractMesh[]) => void) | null) {
 		this.onMeshUpdatedCallback = onMeshUpdatedCallback ?? null;
 	}
 
-	abstract load(options: T, scene: BABYLON.Scene): Promise<void>;
+	abstract load(options: T, scene: BABYLON.Scene, engine: RoomEngine): Promise<void>;
 	abstract applyOptions(options: T): void;
 	abstract setTime(time: number): void;
-	abstract dispose(): void;
+	abstract updateRoomLightColor(color: BABYLON.Color3): void;
+	abstract turnOnRoomLight(): void;
+	abstract turnOffRoomLight(): void;
+
+	public addShadowCaster(mesh: BABYLON.AbstractMesh) {
+		for (const shadowGen of this.shadowGenerators) {
+			shadowGen.addShadowCaster(mesh);
+		}
+	}
+
+	public removeShadowCaster(mesh: BABYLON.AbstractMesh) {
+		for (const shadowGen of this.shadowGenerators) {
+			shadowGen.removeShadowCaster(mesh);
+		}
+	}
+
+	public dispose() {
+		for (const shadowGen of this.shadowGenerators) {
+			shadowGen.dispose();
+		}
+	}
 }
 
 export type SimpleEnvOptions = {
@@ -74,6 +97,8 @@ export class SimpleEnvManager extends EnvManager<SimpleEnvOptions> {
 	private floorMaterial: BABYLON.PBRMaterial | null = null;
 	private skybox: BABYLON.Mesh | null = null;
 	private skyboxMat: BABYLON.StandardMaterial | null = null;
+	private roomLight: BABYLON.SpotLight | null = null;
+	private sunLight: BABYLON.DirectionalLight | null = null;
 	public envMapIndoor: BABYLON.CubeTexture | null = null;
 	public maxCameraZ = cm(1000);
 
@@ -81,13 +106,50 @@ export class SimpleEnvManager extends EnvManager<SimpleEnvOptions> {
 		super(onMeshUpdatedCallback);
 	}
 
-	public async load(options: SimpleEnvOptions, scene: BABYLON.Scene) {
+	public async load(options: SimpleEnvOptions, scene: BABYLON.Scene, engine: RoomEngine) {
 		this.skybox = BABYLON.MeshBuilder.CreateBox('skybox', { size: cm(1000) }, scene);
 		this.skyboxMat = new BABYLON.StandardMaterial('skyboxMat', scene);
 		this.skyboxMat.backFaceCulling = false;
 		this.skyboxMat.disableLighting = true;
 		this.skybox.material = this.skyboxMat;
 		this.skybox.infiniteDistance = true;
+
+		this.roomLight = new BABYLON.SpotLight('roomLight', new BABYLON.Vector3(0, cm(249), 0), new BABYLON.Vector3(0, -1, 0), 16, 8, scene);
+		this.roomLight.diffuse = new BABYLON.Color3(...engine.roomState.roomLightColor);
+		this.roomLight.shadowMinZ = cm(10);
+		this.roomLight.shadowMaxZ = cm(300);
+		this.roomLight.radius = cm(30);
+
+		if (engine.graphicsQuality >= GRAPHICS_QUALITY_MEDIUM) {
+			const shadowGeneratorForRoomLight = new BABYLON.ShadowGenerator(engine.graphicsQuality <= GRAPHICS_QUALITY_MEDIUM ? 1024 : 2048, this.roomLight);
+			shadowGeneratorForRoomLight.forceBackFacesOnly = true;
+			shadowGeneratorForRoomLight.bias = 0.00001;
+			shadowGeneratorForRoomLight.normalBias = 0.005;
+			shadowGeneratorForRoomLight.usePercentageCloserFiltering = true;
+			shadowGeneratorForRoomLight.filteringQuality = BABYLON.ShadowGenerator.QUALITY_HIGH;
+			if (engine.graphicsQuality <= GRAPHICS_QUALITY_MEDIUM) {
+				shadowGeneratorForRoomLight.getShadowMap().refreshRate = 60;
+			}
+			//this.shadowGeneratorForRoomLight.useContactHardeningShadow = true;
+			this.shadowGenerators.push(shadowGeneratorForRoomLight);
+		}
+
+		if (engine.graphicsQuality >= GRAPHICS_QUALITY_MEDIUM) {
+			this.sunLight = new BABYLON.DirectionalLight('sunLight', new BABYLON.Vector3(0.2, -1, -1), scene);
+			this.sunLight.position = new BABYLON.Vector3(cm(-20), cm(1000), cm(1000));
+			this.sunLight.shadowMinZ = cm(1000);
+			this.sunLight.shadowMaxZ = cm(2000);
+
+			const shadowGeneratorForSunLight = new BABYLON.ShadowGenerator(engine.graphicsQuality <= GRAPHICS_QUALITY_MEDIUM ? 1024 : 2048, this.sunLight);
+			shadowGeneratorForSunLight.forceBackFacesOnly = true;
+			shadowGeneratorForSunLight.bias = 0.00001;
+			shadowGeneratorForSunLight.usePercentageCloserFiltering = true;
+			shadowGeneratorForSunLight.usePoissonSampling = true;
+			if (engine.graphicsQuality <= GRAPHICS_QUALITY_MEDIUM) {
+				shadowGeneratorForSunLight.getShadowMap().refreshRate = 60;
+			}
+			this.shadowGenerators.push(shadowGeneratorForSunLight);
+		}
 
 		this.loaderResult = await BABYLON.ImportMeshAsync('/client-assets/room/envs/default/300.glb', scene);
 
@@ -182,6 +244,15 @@ export class SimpleEnvManager extends EnvManager<SimpleEnvOptions> {
 		const baseboardMaterial = findMaterial(this.meshes[0], '__BASEBOARD__');
 		//baseboardMaterial.metadata.disableEnvMap = true;
 
+		for (const mesh of this.meshes) {
+			if (SYSTEM_HEYA_MESH_NAMES.some(name => mesh.name.includes(name))) continue;
+			mesh.receiveShadows = true;
+
+			if (mesh.material !== this.floorMaterial) { // 床は他の何にも影を落とさないことが確定している
+				this.addShadowCaster(mesh);
+			}
+		}
+
 		await this.applyOptions(options);
 	}
 
@@ -193,6 +264,26 @@ export class SimpleEnvManager extends EnvManager<SimpleEnvOptions> {
 		} else {
 			this.skyboxMat.emissiveColor = new BABYLON.Color3(0.05, 0.05, 0.2);
 		}
+
+		if (this.sunLight != null) {
+			this.sunLight.diffuse = time === 0 ? new BABYLON.Color3(1.0, 0.9, 0.8) : time === 1 ? new BABYLON.Color3(1.0, 0.8, 0.6) : new BABYLON.Color3(0.6, 0.8, 1.0);
+			this.sunLight.intensity = time === 0 ? 3 : time === 1 ? 1 : 0.25;
+		}
+	}
+
+	public updateRoomLightColor(color: BABYLON.Color3): void {
+		if (this.roomLight == null) return;
+		this.roomLight.diffuse = color;
+	}
+
+	public turnOnRoomLight(): void {
+		if (this.roomLight == null) return;
+		this.roomLight.intensity = 18 * WORLD_SCALE * WORLD_SCALE;
+	}
+
+	public turnOffRoomLight(): void {
+		if (this.roomLight == null) return;
+		this.roomLight.intensity = 0;
 	}
 
 	public applyOptions(options: SimpleEnvOptions) {
@@ -362,6 +453,9 @@ export class SimpleEnvManager extends EnvManager<SimpleEnvOptions> {
 		this.skybox?.dispose();
 		this.skyboxMat?.dispose();
 		this.envMapIndoor?.dispose();
+		this.roomLight?.dispose();
+		this.sunLight?.dispose();
+		super.dispose();
 	}
 }
 
@@ -431,5 +525,6 @@ export class MuseumEnvManager extends EnvManager<MuseumEnvOptions> {
 			m.dispose(false, true);
 		}
 		this.envMapIndoor?.dispose();
+		super.dispose();
 	}
 }
