@@ -3401,6 +3401,8 @@ _imageEffector:
     threshold: "เทรชโฮลด์"
     centerX: "กลาง X"
     centerY: "กลาง Y"
+    density: "ความหนาทึบ"
+    zoomLinesOutlineThickness: "ความหนาของเงาเส้น"
     zoomLinesMaskSize: "ขนาดพื้นที่ตรงกลาง"
     circle: "ทรงกลม"
 drafts: "ร่าง"

@@ -3312,7 +3312,7 @@ _clientPerformanceIssueTip:
 _clip:
   tip: "Clip es una función que permite organizar varias notas."
 _userLists:
-  tip: "Las listas pueden contener cualquier usuario que especifiques al crearlas, la lista creada puede mostrarse entonces como una línea de tiempo mostrando solo los usuarios especificados."
+  tip: "Puedes crear listas que incluyan a cualquier usuario. Las listas creadas se pueden visualizar en forma de cronología."
 watermark: "Marca de Agua"
 defaultPreset: "Por defecto"
 _watermarkEditor:

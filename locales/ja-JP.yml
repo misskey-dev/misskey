@@ -1413,6 +1413,7 @@ presets: "プリセット"
 zeroPadding: "ゼロ埋め"
 muteConfirm: "ミュートしますか？"
 nothingToConfigure: "設定項目はありません"
+viewRenotedChannel: "リノート先のチャンネルを見る"
 
 _imageEditing:
   _vars:
