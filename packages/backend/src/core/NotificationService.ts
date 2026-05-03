@@ -108,7 +108,8 @@ export class NotificationService implements OnApplicationShutdown {
 			}
 
 			const mutings = await this.cacheService.userMutingsCache.fetch(notifieeId);
-			if (mutings.has(notifierId)) {
+			const muting = mutings.get(notifierId);
+			if (muting != null && muting.mutingType === 'all') {
 				return null;
 			}
 

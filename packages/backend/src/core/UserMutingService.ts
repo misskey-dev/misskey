@@ -24,12 +24,13 @@ export class UserMutingService {
 	}
 
 	@bindThis
-	public async mute(user: MiUser, target: MiUser, expiresAt: Date | null = null): Promise<void> {
+	public async mute(user: MiUser, target: MiUser, expiresAt: Date | null = null, mutingType: 'all' | 'timelineOnly' = 'all'): Promise<void> {
 		await this.mutingsRepository.insert({
 			id: this.idService.gen(),
 			expiresAt: expiresAt ?? null,
 			muterId: user.id,
 			muteeId: target.id,
+			mutingType: mutingType,
 		});
 
 		this.cacheService.userMutingsCache.refresh(user.id);

@@ -5,7 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
-import type { BlockingsRepository, FollowingsRepository, MutingsRepository, RenoteMutingsRepository, MiUserProfile, UserProfilesRepository, UsersRepository, MiFollowing } from '@/models/_.js';
+import type { BlockingsRepository, FollowingsRepository, MutingsRepository, RenoteMutingsRepository, MiUserProfile, UserProfilesRepository, UsersRepository, MiFollowing, MiMuting } from '@/models/_.js';
 import { MemoryKVCache, RedisKVCache } from '@/misc/cache.js';
 import type { MiLocalUser, MiUser } from '@/models/User.js';
 import { DI } from '@/di-symbols.js';
@@ -21,7 +21,7 @@ export class CacheService implements OnApplicationShutdown {
 	public localUserByIdCache: MemoryKVCache<MiLocalUser>;
 	public uriPersonCache: MemoryKVCache<MiUser | null>;
 	public userProfileCache: RedisKVCache<MiUserProfile>;
-	public userMutingsCache: RedisKVCache<Set<string>>;
+	public userMutingsCache: RedisKVCache<Map<string, Pick<MiMuting, 'mutingType'>>>;
 	public userBlockingCache: RedisKVCache<Set<string>>;
 	public userBlockedCache: RedisKVCache<Set<string>>; // NOTE: 「被」Blockキャッシュ
 	public renoteMutingsCache: RedisKVCache<Set<string>>;
@@ -69,12 +69,12 @@ export class CacheService implements OnApplicationShutdown {
 			fromRedisConverter: (value) => JSON.parse(value), // TODO: date型の考慮
 		});
 
-		this.userMutingsCache = new RedisKVCache<Set<string>>(this.redisClient, 'userMutings', {
+		this.userMutingsCache = new RedisKVCache<Map<string, Pick<MiMuting, 'mutingType'>>>(this.redisClient, 'userMutings', {
 			lifetime: 1000 * 60 * 30, // 30m
 			memoryCacheLifetime: 1000 * 60, // 1m
-			fetcher: (key) => this.mutingsRepository.find({ where: { muterId: key }, select: ['muteeId'] }).then(xs => new Set(xs.map(x => x.muteeId))),
-			toRedisConverter: (value) => JSON.stringify(Array.from(value)),
-			fromRedisConverter: (value) => new Set(JSON.parse(value)),
+			fetcher: (key) => this.mutingsRepository.find({ where: { muterId: key }, select: ['muteeId', 'mutingType'] }).then(xs => new Map(xs.map(x => [x.muteeId, { mutingType: x.mutingType }]))),
+			toRedisConverter: (value) => JSON.stringify(Array.from(value.entries())),
+			fromRedisConverter: (value) => new Map(JSON.parse(value)),
 		});
 
 		this.userBlockingCache = new RedisKVCache<Set<string>>(this.redisClient, 'userBlocking', {
