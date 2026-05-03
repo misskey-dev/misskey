@@ -437,7 +437,7 @@ function showSnappingMenu(ev: PointerEvent) {
 }
 
 function rotate() {
-	controller.changeGrabbingRotationY(Math.PI / 8);
+	controller.changeGrabbingRotation(Math.PI / 8);
 	canvas.value!.focus();
 }
 
