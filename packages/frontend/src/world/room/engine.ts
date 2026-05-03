@@ -809,8 +809,10 @@ export class RoomEngine extends EventEmitter {
 	public async changeEnvType(type: RoomState['env']['type'], forInit = false) {
 		this.roomState.env.type = type;
 
-		this.sr.disableSnapshotRendering();
-		this.pauseRender();
+		if (!forInit) {
+			this.sr.disableSnapshotRendering();
+			this.pauseRender();
+		}
 
 		const onMeshUpdatedCallback = (meshes: BABYLON.AbstractMesh[]) => {
 			for (const m of meshes) {
@@ -868,8 +870,10 @@ export class RoomEngine extends EventEmitter {
 
 		this.camera.maxZ = this.envManager.maxCameraZ;
 
-		this.resumeRender();
-		this.sr.enableSnapshotRendering();
+		if (!forInit) {
+			this.resumeRender();
+			this.sr.enableSnapshotRendering();
+		}
 
 		if (!forInit) {
 			this.ev('changeRoomState', { roomState: this.roomState });
