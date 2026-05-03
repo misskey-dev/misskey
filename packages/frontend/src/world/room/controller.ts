@@ -339,12 +339,12 @@ export class RoomController {
 		this.call('updateObjectOption', [objectId, key, value]);
 	}
 
-	public changeHeyaType(type: RoomState['heya']['type']) {
-		this.call('changeHeyaType', [type]);
+	public changeEnvType(type: RoomState['env']['type']) {
+		this.call('changeEnvType', [type]);
 	}
 
-	public updateHeyaOptions(options: RoomState['heya']['options']) {
-		this.call('updateHeyaOptions', [options]);
+	public updateEnvOptions(options: RoomState['env']['options']) {
+		this.call('updateEnvOptions', [options]);
 	}
 
 	public updateRoomLightColor(color: [number, number, number]) {

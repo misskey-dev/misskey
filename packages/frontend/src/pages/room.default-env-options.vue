@@ -97,10 +97,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
-import XWallOption from './room.default-heya-wall-options.vue';
-import XPillarOption from './room.default-heya-pillar-options.vue';
+import XWallOption from './room.default-env-wall-options.vue';
+import XPillarOption from './room.default-env-pillar-options.vue';
 import type { ObjectDef } from '@/world/room/object.js';
-import type { SimpleHeyaOptions } from '@/world/room/heya.js';
+import type { SimpleEnvOptions } from '@/world/room/env.js';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -112,14 +112,14 @@ import { getHex, getRgb } from '@/world/utility.js';
 import MkFolder from '@/components/MkFolder.vue';
 
 const props = defineProps<{
-	options: SimpleHeyaOptions;
+	options: SimpleEnvOptions;
 }>();
 
 const emit = defineEmits<{
-	(ev: 'update', v: SimpleHeyaOptions): void;
+	(ev: 'update', v: SimpleEnvOptions): void;
 }>();
 
-function update(v: Partial<SimpleHeyaOptions>) {
+function update(v: Partial<SimpleEnvOptions>) {
 	emit('update', { ...props.options, ...v });
 }
 </script>

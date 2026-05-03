@@ -18,9 +18,9 @@ import { EventEmitter } from 'eventemitter3';
 import { TIME_MAP, scaleMorph, camelToKebab, cm, WORLD_SCALE, getMeshesBoundingBox, Timer, getYRotationDirection, FreeCameraManualInput, remap } from '../utility.js';
 import { getObjectDef } from './object-defs.js';
 import { findMaterial, ModelManager, SYSTEM_HEYA_MESH_NAMES, SYSTEM_MESH_NAMES } from './utility.js';
-import { MuseumHeyaManager, SimpleHeyaManager } from './heya.js';
+import { MuseumEnvManager, SimpleEnvManager } from './env.js';
 import type { GridMaterial } from '@babylonjs/materials';
-import type { HeyaManager, JapaneseHeyaOptions, SimpleHeyaOptions } from './heya.js';
+import type { EnvManager, JapaneseEnvOptions, SimpleEnvOptions } from './env.js';
 import type { ObjectDef, RoomObjectInstance, RoomStateObject } from './object.js';
 import { genId } from '@/utility/id.js';
 import { deepClone } from '@/utility/clone.js';
@@ -31,12 +31,12 @@ const RENDER_OUTDOOR_ENV = false;
 const IN_WEB_WORKER = typeof window === 'undefined';
 
 export type RoomState = {
-	heya: {
+	env: {
 		type: 'simple';
-		options: SimpleHeyaOptions;
+		options: SimpleEnvOptions;
 	} | {
 		type: 'japanese';
-		options: JapaneseHeyaOptions;
+		options: JapaneseEnvOptions;
 	};
 	roomLightColor: [number, number, number];
 	installedObjects: RoomStateObject<any>[];
@@ -133,7 +133,7 @@ export class RoomEngine extends EventEmitter {
 		instance: RoomObjectInstance;
 		model: ModelManager;
 	}> = new Map();
-	private heyaManager: HeyaManager | null = null;
+	private envManager: EnvManager | null = null;
 
 	// TODO: たぶんオブジェクト内の値のmutateはsetで検知できないので、そのような操作を実際に行うようになった & それを検知する必要性が出てきたら専用の設定関数などを新設してそれを使わせる
 	private _grabbingCtx: {
@@ -430,7 +430,7 @@ export class RoomEngine extends EventEmitter {
 	}
 
 	public async init() {
-		await this.loadHeya();
+		await this.loadEnv();
 
 		const objects = this.roomState.installedObjects.filter(o => !IGNORE_OBJECTS.includes(o.type));
 		let loadedCount = 0;
@@ -825,11 +825,11 @@ export class RoomEngine extends EventEmitter {
 		});
 	}
 
-	public async changeHeyaType(type: RoomState['heya']['type'], forInit = false) {
-		this.roomState.heya.type = type;
+	public async changeEnvType(type: RoomState['env']['type'], forInit = false) {
+		this.roomState.env.type = type;
 
-		if (this.heyaManager != null) {
-			this.heyaManager.dispose();
+		if (this.envManager != null) {
+			this.envManager.dispose();
 		}
 
 		const onMeshUpdatedCallback = (meshes: BABYLON.AbstractMesh[]) => {
@@ -856,16 +856,16 @@ export class RoomEngine extends EventEmitter {
 			}
 		};
 
-		if (this.roomState.heya.type === 'simple') {
-			const heyaManager = new SimpleHeyaManager(onMeshUpdatedCallback);
-			await heyaManager.load(this.roomState.heya.options, this.scene);
-			this.heyaManager = heyaManager;
-		} else if (this.roomState.heya.type === 'japanese') {
+		if (this.roomState.env.type === 'simple') {
+			const envManager = new SimpleEnvManager(onMeshUpdatedCallback);
+			await envManager.load(this.roomState.env.options, this.scene);
+			this.envManager = envManager;
+		} else if (this.roomState.env.type === 'japanese') {
 			// TODO
-		} else if (this.roomState.heya.type === 'museum') {
-			const heyaManager = new MuseumHeyaManager(onMeshUpdatedCallback);
-			await heyaManager.load(this.roomState.heya.options, this.scene);
-			this.heyaManager = heyaManager;
+		} else if (this.roomState.env.type === 'museum') {
+			const envManager = new MuseumEnvManager(onMeshUpdatedCallback);
+			await envManager.load(this.roomState.env.options, this.scene);
+			this.envManager = envManager;
 		}
 
 		if (!forInit) {
@@ -873,8 +873,8 @@ export class RoomEngine extends EventEmitter {
 		}
 	}
 
-	private async loadHeya() {
-		await this.changeHeyaType(this.roomState.heya.type, true);
+	private async loadEnv() {
+		await this.changeEnvType(this.roomState.env.type, true);
 	}
 
 	private async loadObject(args: {
@@ -1117,7 +1117,7 @@ export class RoomEngine extends EventEmitter {
 									(subMat as BABYLON.PBRMaterial).subSurface.isRefractionEnabled = false; // 有効にするとドローコールが激増する(babylonのバグか仕様かは不明)
 									(subMat as BABYLON.PBRMaterial).transparencyMode = BABYLON.PBRMaterial.PBRMATERIAL_ALPHABLEND;
 								}
-								(subMat as BABYLON.PBRMaterial).reflectionTexture = this.heyaManager?.envMapIndoor;
+								(subMat as BABYLON.PBRMaterial).reflectionTexture = this.envManager?.envMapIndoor;
 								(subMat as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
 								(subMat as BABYLON.PBRMaterial).anisotropy.isEnabled = false; // なんかきれいにレンダリングされないため
 							}
@@ -1126,7 +1126,7 @@ export class RoomEngine extends EventEmitter {
 								(mesh.material as BABYLON.PBRMaterial).subSurface.isRefractionEnabled = false; // 有効にするとドローコールが激増する(babylonのバグか仕様かは不明)
 								(mesh.material as BABYLON.PBRMaterial).transparencyMode = BABYLON.PBRMaterial.PBRMATERIAL_ALPHABLEND;
 							}
-							(mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.heyaManager?.envMapIndoor;
+							(mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.envManager?.envMapIndoor;
 							(mesh.material as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
 							(mesh.material as BABYLON.PBRMaterial).anisotropy.isEnabled = false; // なんかきれいにレンダリングされないため
 						}
@@ -1420,7 +1420,7 @@ export class RoomEngine extends EventEmitter {
 	private turnOnRoomLight(forInit = false) {
 		if (!forInit) this.sr.disableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 		this.roomLight.intensity = 18 * WORLD_SCALE * WORLD_SCALE;
-		if (this.heyaManager?.envMapIndoor != null) this.heyaManager.envMapIndoor.level = 0.6;
+		if (this.envManager?.envMapIndoor != null) this.envManager.envMapIndoor.level = 0.6;
 		for (const m of this.scene.materials) {
 			if (m.metadata?.disableEnvMap) {
 				m.ambientColor = new BABYLON.Color3(0.5, 0.5, 0.5);
@@ -1438,7 +1438,7 @@ export class RoomEngine extends EventEmitter {
 	private turnOffRoomLight() {
 		this.sr.disableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 		this.roomLight.intensity = 0;
-		if (this.heyaManager?.envMapIndoor != null) this.heyaManager.envMapIndoor.level = 0.025;
+		if (this.envManager?.envMapIndoor != null) this.envManager.envMapIndoor.level = 0.025;
 		for (const m of this.scene.materials) {
 			if (m.metadata?.disableEnvMap) {
 				m.ambientColor = new BABYLON.Color3(0.025, 0.025, 0.025);
@@ -1747,9 +1747,9 @@ export class RoomEngine extends EventEmitter {
 		entity.instance.onOptionsUpdated?.([key, value]);
 	}
 
-	public updateHeyaOptions(options: RoomState['heya']['options']) {
-		this.roomState.heya.options = options;
-		this.heyaManager.applyOptions(options);
+	public updateEnvOptions(options: RoomState['env']['options']) {
+		this.roomState.env.options = options;
+		this.envManager.applyOptions(options);
 		this.ev('changeRoomState', { roomState: this.roomState });
 	}
 

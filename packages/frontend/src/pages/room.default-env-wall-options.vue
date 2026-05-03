@@ -47,7 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import type { ObjectDef } from '@/world/room/object.js';
-import type { SimpleHeyaOptions } from '@/world/room/heya.js';
+import type { SimpleEnvOptions } from '@/world/room/env.js';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -58,14 +58,14 @@ import MkRange from '@/components/MkRange.vue';
 import { getHex, getRgb } from '@/world/utility.js';
 
 const props = defineProps<{
-	options: SimpleHeyaOptions['walls']['n' | 's' | 'w' | 'e'];
+	options: SimpleEnvOptions['walls']['n' | 's' | 'w' | 'e'];
 }>();
 
 const emit = defineEmits<{
-	(ev: 'update', v: SimpleHeyaOptions['walls']['n' | 's' | 'w' | 'e']): void;
+	(ev: 'update', v: SimpleEnvOptions['walls']['n' | 's' | 'w' | 'e']): void;
 }>();
 
-function update(v: Partial<SimpleHeyaOptions['walls']['n' | 's' | 'w' | 'e']>) {
+function update(v: Partial<SimpleEnvOptions['walls']['n' | 's' | 'w' | 'e']>) {
 	emit('update', { ...props.options, ...v });
 }
 </script>

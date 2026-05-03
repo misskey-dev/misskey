@@ -9,9 +9,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSelect
 			:items="[
 				{ label: 'Simple', value: 'simple' },
-			]" :modelValue="controller.roomState.value.heya.type" @update:modelValue="v => controller.changeHeyaType(v)"
+			]" :modelValue="controller.roomState.value.env.type" @update:modelValue="v => controller.changeEnvType(v)"
 		>
-			<template #label>Heya type</template>
+			<template #label>Env type</template>
 		</MkSelect>
 
 		<!-- debounceしないとカラーピッカー上で高速でなぞったときになぜか無限ループになる。ワーカーとの間でラグがあるため、少し前の値がまたmodelValueとしてフィードバックされてしまうためだと思われる -->
@@ -19,8 +19,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #label>light color</template>
 		</MkInput>
 
-		<template v-if="controller.roomState.value.heya.type === 'simple'">
-			<XDefaultHeyaOptions :options="controller.roomState.value.heya.options" @update="v => controller.updateHeyaOptions(v)"></XDefaultHeyaOptions>
+		<template v-if="controller.roomState.value.env.type === 'simple'">
+			<XDefaultEnvOptions :options="controller.roomState.value.env.options" @update="v => controller.updateEnvOptions(v)"></XDefaultEnvOptions>
 		</template>
 	</div>
 </div>
@@ -28,11 +28,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
-import XWallOption from './room.default-heya-wall-options.vue';
-import XPillarOption from './room.default-heya-pillar-options.vue';
-import XDefaultHeyaOptions from './room.default-heya-options.vue';
+import XWallOption from './room.default-env-wall-options.vue';
+import XPillarOption from './room.default-env-pillar-options.vue';
+import XDefaultEnvOptions from './room.default-env-options.vue';
 import type { ObjectDef } from '@/world/room/object.js';
-import type { SimpleHeyaOptions } from '@/world/room/heya.js';
+import type { SimpleEnvOptions } from '@/world/room/env.js';
 import type { RoomState } from '@/world/room/engine.js';
 import type { RoomController } from '@/world/room/controller.js';
 import { i18n } from '@/i18n.js';

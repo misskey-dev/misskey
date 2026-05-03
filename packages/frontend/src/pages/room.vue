@@ -72,7 +72,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 
 		<div v-if="isRoomSettingsOpen && controller.isEditMode.value" class="_panel" :class="$style.overlayObjectInfoPanel">
-			<XHeyaOptions :controller="controller"/>
+			<XEnvOptions :controller="controller"/>
 		</div>
 	</div>
 
@@ -86,7 +86,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, defineAsyncComponent, markRaw, nextTick, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import * as BABYLON from '@babylonjs/core';
 import XObjectCustomizeForm from './room.object-customize-form.vue';
-import XHeyaOptions from './room.heya-options.vue';
+import XEnvOptions from './room.env-options.vue';
 import type { RoomControllerOptions } from '@/world/room/controller.js';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
@@ -164,7 +164,7 @@ const joyStickVec = ref({ x: 0, y: 0 });
 const joyStickStartPos = ref<{ x: number; y: number } | null>(null);
 
 const data = localStorage.getItem('roomData') != null ? JSON.parse(localStorage.getItem('roomData')!) : {
-	heya: {
+	env: {
 		type: 'simple',
 		options: {
 			dimension: [300, 300],
@@ -244,6 +244,8 @@ const data = localStorage.getItem('roomData') != null ? JSON.parse(localStorage.
 if (data.worldScale == null) {
 	data.worldScale = 1;
 }
+	delete data.heya;
+}
 
 console.log('installedObjects:', data.installedObjects.length);
 
@@ -255,7 +257,7 @@ const roomControllerOptions = computed<RoomControllerOptions>(() => ({
 	resolution: resolution.value,
 	antialias: antialias.value,
 	useVirtualJoystick,
-	workerMode: true,
+	workerMode: false,
 }));
 
 const controller = markRaw(new RoomController(data, roomControllerOptions.value));

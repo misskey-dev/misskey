@@ -8,14 +8,14 @@ import * as BABYLON from '@babylonjs/core';
 import { cm, WORLD_SCALE } from '../utility.js';
 import { findMaterial } from './utility.js';
 
-//export interface HeyaManager<T = any> {
+//export interface EnvManager<T = any> {
 //	constructor(onMeshUpdatedCallback?: ((meshes: BABYLON.AbstractMesh[]) => void) | null): void;
 //	load: (options: T, scene: BABYLON.Scene) => Promise<void>;
 //	applyOptions: (options: T) => void;
 //	dispose: () => void;
 //}
 
-export abstract class HeyaManager<T = any> {
+export abstract class EnvManager<T = any> {
 	protected onMeshUpdatedCallback: ((meshes: BABYLON.AbstractMesh[]) => void) | null = null;
 	abstract envMapIndoor: BABYLON.CubeTexture | null;
 
@@ -28,7 +28,7 @@ export abstract class HeyaManager<T = any> {
 	abstract dispose(): void;
 }
 
-export type SimpleHeyaOptions = {
+export type SimpleEnvOptions = {
 	dimension: [number, number];
 	window: 'none' | 'kosidakamado' | 'demado' | 'hakidasimado';
 	walls: Record<'n' | 's' | 'w' | 'e', {
@@ -54,13 +54,13 @@ export type SimpleHeyaOptions = {
 	};
 };
 
-export type JapaneseHeyaOptions = {
+export type JapaneseEnvOptions = {
 	window: 'none' | 'kosidakamado' | 'demado' | 'hakidasimado';
 };
 
 // TODO: マテリアルは必要になるまで作成しないようにする
 
-export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
+export class SimpleEnvManager extends EnvManager<SimpleEnvOptions> {
 	private loaderResult: BABYLON.ISceneLoaderAsyncResult | null = null;
 	private meshes: BABYLON.Mesh[] = [];
 	private wallRoots: Record<'n' | 's' | 'w' | 'e', BABYLON.TransformNode> = null as any;
@@ -75,8 +75,8 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 		super(onMeshUpdatedCallback);
 	}
 
-	public async load(options: SimpleHeyaOptions, scene: BABYLON.Scene) {
-		this.loaderResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300.glb', scene);
+	public async load(options: SimpleEnvOptions, scene: BABYLON.Scene) {
+		this.loaderResult = await BABYLON.ImportMeshAsync('/client-assets/room/envs/default/300.glb', scene);
 
 		this.envMapIndoor = BABYLON.CubeTexture.CreateFromPrefilteredData('/client-assets/room/indoor.env', scene);
 		this.envMapIndoor.boundingBoxSize = new BABYLON.Vector3(cm(500), cm(500), cm(500));
@@ -172,7 +172,7 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 		await this.applyOptions(options);
 	}
 
-	public applyOptions(options: SimpleHeyaOptions) {
+	public applyOptions(options: SimpleEnvOptions) {
 		// TODO: 返り値をpromiseにしてちゃんとテクスチャが読み終わってからresolveする
 
 		for (const type of ['n', 's', 'w', 'e'] as const) {
@@ -339,9 +339,9 @@ export class SimpleHeyaManager extends HeyaManager<SimpleHeyaOptions> {
 	}
 }
 
-export type MuseumHeyaOptions = any;
+export type MuseumEnvOptions = any;
 
-export class MuseumHeyaManager extends HeyaManager<MuseumHeyaOptions> {
+export class MuseumEnvManager extends EnvManager<MuseumEnvOptions> {
 	private loaderResult: BABYLON.ISceneLoaderAsyncResult | null = null;
 	private meshes: BABYLON.Mesh[] = [];
 
@@ -349,8 +349,8 @@ export class MuseumHeyaManager extends HeyaManager<MuseumHeyaOptions> {
 		super(onMeshUpdatedCallback);
 	}
 
-	public async load(options: MuseumHeyaOptions, scene: BABYLON.Scene) {
-		this.loaderResult = await BABYLON.ImportMeshAsync('/client-assets/room/rooms/default/300.glb', scene);
+	public async load(options: MuseumEnvOptions, scene: BABYLON.Scene) {
+		this.loaderResult = await BABYLON.ImportMeshAsync('/client-assets/room/envs/museum/museum.glb', scene);
 
 		this.meshes = this.loaderResult.meshes.filter(m => m instanceof BABYLON.Mesh);
 		this.meshes[0].scaling = this.meshes[0].scaling.scale(WORLD_SCALE);
@@ -380,7 +380,7 @@ export class MuseumHeyaManager extends HeyaManager<MuseumHeyaOptions> {
 		await this.applyOptions(options);
 	}
 
-	public applyOptions(options: MuseumHeyaOptions) {
+	public applyOptions(options: MuseumEnvOptions) {
 		this.onMeshUpdatedCallback?.(this.meshes);
 	}
 

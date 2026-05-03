@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import type { ObjectDef } from '@/world/room/object.js';
-import type { SimpleHeyaOptions } from '@/world/room/heya.js';
+import type { SimpleEnvOptions } from '@/world/room/env.js';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -40,14 +40,14 @@ import MkRange from '@/components/MkRange.vue';
 import { getHex, getRgb } from '@/world/utility.js';
 
 const props = defineProps<{
-	options: SimpleHeyaOptions['pillars']['nw' | 'ne' | 'sw' | 'se'];
+	options: SimpleEnvOptions['pillars']['nw' | 'ne' | 'sw' | 'se'];
 }>();
 
 const emit = defineEmits<{
-	(ev: 'update', v: SimpleHeyaOptions['pillars']['nw' | 'ne' | 'sw' | 'se']): void;
+	(ev: 'update', v: SimpleEnvOptions['pillars']['nw' | 'ne' | 'sw' | 'se']): void;
 }>();
 
-function update(v: Partial<SimpleHeyaOptions['pillars']['nw' | 'ne' | 'sw' | 'se']>) {
+function update(v: Partial<SimpleEnvOptions['pillars']['nw' | 'ne' | 'sw' | 'se']>) {
 	emit('update', { ...props.options, ...v });
 }
 </script>
