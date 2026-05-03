@@ -71,6 +71,68 @@ describe('Note', () => {
 		assert.strictEqual(resHanami.body[0].text, 'あ');
 	});
 
+	test('検索結果に凍結されたユーザーの投稿が含まれない', async () => {
+		const user = await signup({ username: 'search_suspended_user' });
+		const suspendedText = 'search_suspended_note';
+		const visibleText = `${suspendedText} visible`;
+
+		await api('notes/create', { text: suspendedText }, user);
+		await api('notes/create', { text: visibleText }, alice);
+		await api('admin/suspend-user', { userId: user.id }, root);
+		// indexに反映されるまで待つ(indexが終わったことを確認できないので時間を目分量で決める)
+		await wait(10000);
+
+		const resMeili = await api('notes/search', {
+			query: suspendedText,
+		}, alice);
+		const resHanami = await api('notes/hanamisearch-v1', {
+			query: suspendedText,
+		}, alice);
+
+		assert.strictEqual(resMeili.status, 200);
+		assert.strictEqual(Array.isArray(resMeili.body), true);
+		assert.strictEqual(resMeili.body.some(note => note.userId === user.id), false);
+		assert.strictEqual(resMeili.body.some(note => note.text === visibleText), true);
+
+		assert.strictEqual(resHanami.status, 200);
+		assert.strictEqual(Array.isArray(resHanami.body), true);
+		assert.strictEqual(resHanami.body.some(note => note.userId === user.id), false);
+		assert.strictEqual(resHanami.body.some(note => note.text === visibleText), true);
+	});
+
+	test('検索結果の先頭候補がフィルタで除外されても次の候補を返す', async () => {
+		const viewer = await signup({ username: 'search_mute_viewer' });
+		const mutee = await signup({ username: 'search_mute_mutee' });
+		const query = 'search_muted_empty_page';
+		const visibleText = `${query} visible`;
+		const mutedText = `${query} muted`;
+
+		await api('notes/create', { text: visibleText }, alice);
+		await api('notes/create', { text: mutedText }, mutee);
+		await api('mute/create', { userId: mutee.id }, viewer);
+		// indexに反映されるまで待つ(indexが終わったことを確認できないので時間を目分量で決める)
+		await wait(10000);
+
+		const resMeili = await api('notes/search', {
+			query,
+			limit: 1,
+		}, viewer);
+		const resHanami = await api('notes/hanamisearch-v1', {
+			query,
+			limit: 1,
+		}, viewer);
+
+		assert.strictEqual(resMeili.status, 200);
+		assert.strictEqual(Array.isArray(resMeili.body), true);
+		assert.strictEqual(resMeili.body.length, 1);
+		assert.strictEqual(resMeili.body[0].text, visibleText);
+
+		assert.strictEqual(resHanami.status, 200);
+		assert.strictEqual(Array.isArray(resHanami.body), true);
+		assert.strictEqual(resHanami.body.length, 1);
+		assert.strictEqual(resHanami.body[0].text, visibleText);
+	});
+
 	test('ファイルを添付できる', async () => {
 		const file = await uploadUrl(alice, 'https://raw.githubusercontent.com/misskey-dev/misskey/develop/packages/backend/test/resources/192.jpg');
 
