@@ -250,7 +250,6 @@ export class RoomEngine extends EventEmitter {
 		this.scene.skipPointerMovePicking = true;
 		this.scene.skipFrustumClipping = true; // snapshot renderingでは全てのメッシュがアクティブになっている必要があるため
 		this.scene.gravity = new BABYLON.Vector3(0, -0.1, 0).scale(WORLD_SCALE);
-		this.scene.ambientColor = new BABYLON.Color3(1.0, 0.9, 0.8);
 		this.scene.collisionsEnabled = true;
 
 		this.sr = new BABYLON.SnapshotRenderingHelper(this.scene);
@@ -854,7 +853,7 @@ export class RoomEngine extends EventEmitter {
 			mat.unfreeze();
 			if (mat instanceof BABYLON.MultiMaterial) {
 				for (const subMat of mat.subMaterials) {
-					if (subMat.metadata.useEnvMapAsObjectMaterial) subMat.reflectionTexture = envManager.envMapIndoor;
+					if (subMat.metadata?.useEnvMapAsObjectMaterial) subMat.reflectionTexture = envManager.envMapIndoor;
 				}
 			} else {
 				if (mat.metadata?.useEnvMapAsObjectMaterial) mat.reflectionTexture = envManager.envMapIndoor;
@@ -1122,6 +1121,7 @@ export class RoomEngine extends EventEmitter {
 									(subMat as BABYLON.PBRMaterial).transparencyMode = BABYLON.PBRMaterial.PBRMATERIAL_ALPHABLEND;
 								}
 								(subMat as BABYLON.PBRMaterial).reflectionTexture = this.envManager?.envMapIndoor;
+								if ((subMat as BABYLON.PBRMaterial).metadata == null) (subMat as BABYLON.PBRMaterial).metadata = {};
 								(subMat as BABYLON.PBRMaterial).metadata.useEnvMapAsObjectMaterial = true;
 								(subMat as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
 								(subMat as BABYLON.PBRMaterial).anisotropy.isEnabled = false; // なんかきれいにレンダリングされないため
@@ -1132,6 +1132,7 @@ export class RoomEngine extends EventEmitter {
 								(mesh.material as BABYLON.PBRMaterial).transparencyMode = BABYLON.PBRMaterial.PBRMATERIAL_ALPHABLEND;
 							}
 							(mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.envManager?.envMapIndoor;
+							if ((mesh.material as BABYLON.PBRMaterial).metadata == null) (mesh.material as BABYLON.PBRMaterial).metadata = {};
 							(mesh.material as BABYLON.PBRMaterial).metadata.useEnvMapAsObjectMaterial = true;
 							(mesh.material as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
 							(mesh.material as BABYLON.PBRMaterial).anisotropy.isEnabled = false; // なんかきれいにレンダリングされないため
