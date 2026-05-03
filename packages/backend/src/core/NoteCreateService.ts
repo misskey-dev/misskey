@@ -118,8 +118,8 @@ class NotificationManager {
 				visibleUserIds = new Set(this.note.visibleUserIds);
 				break;
 
+			case 'followers': {
 			// TODO: フォロワー限定ノートにフォロワーではない人がメンションされた場合通知されるのが正しい挙動なのか確認（一部に挙動の不一致がありそう）。現状は通知されるためフィルタしない
-			// case 'followers': {
 			// 	const targetUserIds = this.queue.map(x => x.target);
 			// 	const followers = await this.followingsRepository.find({
 			// 		where: {
@@ -130,8 +130,9 @@ class NotificationManager {
 			// 		select: ['followerId'],
 			// 	});
 			// 	visibleUserIds = new Set(followers.map(f => f.followerId));
-			// 	break;
-			// }
+				visibleUserIds = null;
+				break;
+			}
 
 			default:
 				visibleUserIds = new Set();
