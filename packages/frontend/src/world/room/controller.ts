@@ -44,16 +44,11 @@ export class RoomController {
 	public roomState: ShallowRef<RoomState>;
 	public initializeProgress = ref(0);
 	private pointerDownPosition: { x: number; y: number } | null = null;
+	private abortController = new AbortController();
 
 	constructor(roomState: RoomState, options: RoomControllerOptions) {
 		this.roomState = shallowRef(roomState);
 		this.options = options;
-
-		this.onCanvasKeydown = this.onCanvasKeydown.bind(this);
-		this.onCanvasKeyup = this.onCanvasKeyup.bind(this);
-		this.onCanvasWheel = this.onCanvasWheel.bind(this);
-		this.onCanvasPointerdown = this.onCanvasPointerdown.bind(this);
-		this.onCanvasPointerup = this.onCanvasPointerup.bind(this);
 	}
 
 	public async init(canvas: HTMLCanvasElement) {
@@ -165,124 +160,119 @@ export class RoomController {
 			sound.playUrl(url, options);
 		});
 
-		this.canvas.addEventListener('keydown', this.onCanvasKeydown);
-		this.canvas.addEventListener('keyup', this.onCanvasKeyup);
-		this.canvas.addEventListener('wheel', this.onCanvasWheel);
-		this.canvas.addEventListener('pointerdown', this.onCanvasPointerdown);
-		this.canvas.addEventListener('pointerup', this.onCanvasPointerup);
-	}
+		this.canvas.addEventListener('keydown', (ev) => {
+			if (this.worker != null) {
+				this.worker.postMessage({ type: 'dom:keydown', ev: { code: ev.code, shiftKey: ev.shiftKey } });
+			} else if (this.engine != null) {
+				this.engine.domEvents.emit('keydown', { code: ev.code, shiftKey: ev.shiftKey });
+			}
+			ev.preventDefault();
+			ev.stopPropagation();
+			return false;
+		}, { signal: this.abortController.signal });
 
-	private onCanvasKeydown(ev: KeyboardEvent) {
-		if (this.worker != null) {
-			this.worker.postMessage({ type: 'dom:keydown', ev: { code: ev.code, shiftKey: ev.shiftKey } });
-		} else if (this.engine != null) {
-			this.engine.domEvents.emit('keydown', { code: ev.code, shiftKey: ev.shiftKey });
-		}
-		ev.preventDefault();
-		ev.stopPropagation();
-		return false;
-	}
+		this.canvas.addEventListener('keyup', (ev) => {
+			if (this.worker != null) {
+				this.worker.postMessage({ type: 'dom:keyup', ev: { code: ev.code, shiftKey: ev.shiftKey } });
+			} else if (this.engine != null) {
+				this.engine.domEvents.emit('keyup', { code: ev.code, shiftKey: ev.shiftKey });
+			}
+			ev.preventDefault();
+			ev.stopPropagation();
+			return false;
+		}, { signal: this.abortController.signal });
 
-	private onCanvasKeyup(ev: KeyboardEvent) {
-		if (this.worker != null) {
-			this.worker.postMessage({ type: 'dom:keyup', ev: { code: ev.code, shiftKey: ev.shiftKey } });
-		} else if (this.engine != null) {
-			this.engine.domEvents.emit('keyup', { code: ev.code, shiftKey: ev.shiftKey });
-		}
-		ev.preventDefault();
-		ev.stopPropagation();
-		return false;
-	}
+		this.canvas.addEventListener('wheel', (ev) => {
+			if (this.worker != null) {
+				this.worker.postMessage({ type: 'dom:wheel', ev: { deltaY: ev.deltaY } });
+			} else if (this.engine != null) {
+				this.engine.domEvents.emit('wheel', { deltaY: ev.deltaY });
+			}
+			ev.preventDefault();
+			ev.stopPropagation();
+			return false;
+		}, { signal: this.abortController.signal });
 
-	private onCanvasWheel(ev: WheelEvent) {
-		if (this.worker != null) {
-			this.worker.postMessage({ type: 'dom:wheel', ev: { deltaY: ev.deltaY } });
-		} else if (this.engine != null) {
-			this.engine.domEvents.emit('wheel', { deltaY: ev.deltaY });
-		}
-		ev.preventDefault();
-		ev.stopPropagation();
-		return false;
-	}
-
-	private onCanvasPointerdown(ev: PointerEvent) {
-		ev.preventDefault();
-		ev.stopPropagation();
-
-		this.canvas!.focus();
-
-		this.pointerDownPosition = { x: ev.offsetX, y: ev.offsetY };
-		this.canvas!.setPointerCapture(ev.pointerId);
-
-		const pointerVec = { x: ev.clientX, y: ev.clientY };
-
-		let timeoutId: number | null = null;
-
-		const onMove = (ev: PointerEvent) => {
+		this.canvas.addEventListener('pointerdown', (ev) => {
 			ev.preventDefault();
 			ev.stopPropagation();
 
-			if (timeoutId != null) {
-				window.clearTimeout(timeoutId);
-				timeoutId = null;
-			}
+			this.canvas!.focus();
 
-			const before = pointerVec;
-			const after = { x: ev.clientX, y: ev.clientY };
+			this.pointerDownPosition = { x: ev.offsetX, y: ev.offsetY };
+			this.canvas!.setPointerCapture(ev.pointerId);
 
-			this.setCameraRotateVector({
-				x: after.x - before.x,
-				y: after.y - before.y,
-			});
+			const pointerVec = { x: ev.clientX, y: ev.clientY };
 
-			pointerVec.x = after.x;
-			pointerVec.y = after.y;
+			let timeoutId: number | null = null;
 
-			timeoutId = window.setTimeout(() => {
-				timeoutId = null;
+			const onMove = (ev: PointerEvent) => {
+				ev.preventDefault();
+				ev.stopPropagation();
+
+				if (timeoutId != null) {
+					window.clearTimeout(timeoutId);
+					timeoutId = null;
+				}
+
+				const before = pointerVec;
+				const after = { x: ev.clientX, y: ev.clientY };
 
 				this.setCameraRotateVector({
-					x: 0,
-					y: 0,
+					x: after.x - before.x,
+					y: after.y - before.y,
 				});
-			}, 10);
+
+				pointerVec.x = after.x;
+				pointerVec.y = after.y;
+
+				timeoutId = window.setTimeout(() => {
+					timeoutId = null;
+
+					this.setCameraRotateVector({
+						x: 0,
+						y: 0,
+					});
+				}, 10);
+
+				return false;
+			};
+
+			this.canvas!.addEventListener('pointermove', onMove);
+
+			this.canvas!.addEventListener('pointerup', (ev) => {
+				this.canvas!.removeEventListener('pointermove', onMove);
+
+				pointerVec.x = 0;
+				pointerVec.y = 0;
+
+				this.setCameraRotateVector(pointerVec);
+			}, { once: true });
 
 			return false;
-		};
+		}, { signal: this.abortController.signal });
 
-		this.canvas!.addEventListener('pointermove', onMove);
-
-		this.canvas!.addEventListener('pointerup', (ev) => {
-			this.canvas!.removeEventListener('pointermove', onMove);
-
-			pointerVec.x = 0;
-			pointerVec.y = 0;
-
-			this.setCameraRotateVector(pointerVec);
-		}, { once: true });
-
-		return false;
-	}
-
-	private onCanvasPointerup(ev: PointerEvent) {
-		if (this.pointerDownPosition != null) {
-			const dx = Math.abs(ev.offsetX - this.pointerDownPosition.x);
-			const dy = Math.abs(ev.offsetY - this.pointerDownPosition.y);
-			if (dx < 10 && dy < 10) {
-				const median = { x: (ev.offsetX + this.pointerDownPosition.x) / 2, y: (ev.offsetY + this.pointerDownPosition.y) / 2 };
-				if (this.worker != null) {
-					this.worker.postMessage({ type: 'dom:click', ev: { x: median.x, y: median.y } });
-				} else if (this.engine != null) {
-					this.engine.domEvents.emit('click', { x: median.x, y: median.y });
+		this.canvas.addEventListener('pointerup', (ev) => {
+			if (this.pointerDownPosition != null) {
+				const dx = Math.abs(ev.offsetX - this.pointerDownPosition.x);
+				const dy = Math.abs(ev.offsetY - this.pointerDownPosition.y);
+				if (dx < 10 && dy < 10) {
+					const median = { x: (ev.offsetX + this.pointerDownPosition.x) / 2, y: (ev.offsetY + this.pointerDownPosition.y) / 2 };
+					if (this.worker != null) {
+						this.worker.postMessage({ type: 'dom:click', ev: { x: median.x, y: median.y } });
+					} else if (this.engine != null) {
+						this.engine.domEvents.emit('click', { x: median.x, y: median.y });
+					}
 				}
 			}
-		}
-		this.pointerDownPosition = null;
-		this.canvas!.releasePointerCapture(ev.pointerId);
+			this.pointerDownPosition = null;
+			this.canvas!.releasePointerCapture(ev.pointerId);
+		}, { signal: this.abortController.signal });
 	}
 
 	public async reset(roomState?: RoomState | null, options?: RoomControllerOptions | null, canvas?: HTMLCanvasElement | null) {
 		this.destroy();
+		this.abortController = new AbortController();
 		if (roomState != null) this.roomState.value = roomState;
 		if (options != null) this.options = options;
 		this.isReady.value = false;
@@ -396,11 +386,7 @@ export class RoomController {
 	}
 
 	public destroy() {
-		this.canvas?.removeEventListener('keydown', this.onCanvasKeydown);
-		this.canvas?.removeEventListener('keyup', this.onCanvasKeyup);
-		this.canvas?.removeEventListener('wheel', this.onCanvasWheel);
-		this.canvas?.removeEventListener('pointerdown', this.onCanvasPointerdown);
-		this.canvas?.removeEventListener('pointerup', this.onCanvasPointerup);
+		this.abortController.abort();
 
 		if (this.worker != null) {
 			this.worker.terminate();
