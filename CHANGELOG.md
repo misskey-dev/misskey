@@ -1,12 +1,13 @@
 ## Unreleased
 
 ### General
--
+- Fix: `.devcontainer/compose.yml`のvolumeのマウントパスを修正
 
 ### Client
 -
 
 ### Server
+- Fix: ID生成アルゴリズムにULIDを使用している場合に通知が約10秒遅延する問題を修正
 - Fix: URLプレビューが動作しない問題を修正
 
 
