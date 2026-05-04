@@ -2098,6 +2098,7 @@ _role:
     canSearchNotes: "การใช้การค้นหาโน้ต"
     canSearchUsers: "ค้นหาผู้ใช้"
     canUseTranslator: "การใช้งานแปล"
+    canCreateChannel: "สร้างช่องใหม่"
     avatarDecorationLimit: "จำนวนของตกแต่งไอคอนสูงสุดที่สามารถติดตั้งได้"
     canImportAntennas: "อนุญาตให้นำเข้าเสาอากาศ"
     canImportBlocking: "อนุญาตให้นำเข้าการบล็อก"
