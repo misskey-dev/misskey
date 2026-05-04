@@ -96,10 +96,10 @@ export const woodRingsPendantLight = defineObject({
 		applyLightColor();
 
 		const applyLightBrightness = () => {
-			light.intensity = 1 * options.lightBrightness * WORLD_SCALE * WORLD_SCALE;
+			light.intensity = 2 * options.lightBrightness * WORLD_SCALE * WORLD_SCALE;
 			light.range = cm(200) * getLightRangeFactorByGraphicsQuality(graphicsQuality);
 			const emissive = lamp.material as BABYLON.PBRMaterial;
-			emissive.emissiveIntensity = options.lightBrightness * 10;
+			emissive.emissiveIntensity = options.lightBrightness * 20;
 		};
 
 		applyLightBrightness();
