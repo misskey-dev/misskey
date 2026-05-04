@@ -9,6 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkSelect
 			:items="[
 				{ label: 'Simple', value: 'simple' },
+				{ label: 'Japanese', value: 'japanese' },
 				{ label: 'Museum', value: 'museum' },
 			]" :modelValue="controller.roomState.value.env.type" @update:modelValue="v => controller.changeEnvType(v)"
 		>

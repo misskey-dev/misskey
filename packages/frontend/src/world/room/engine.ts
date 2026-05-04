@@ -18,7 +18,7 @@ import { EventEmitter } from 'eventemitter3';
 import { TIME_MAP, scaleMorph, camelToKebab, cm, WORLD_SCALE, getMeshesBoundingBox, Timer, getYRotationDirection, FreeCameraManualInput, remap } from '../utility.js';
 import { getObjectDef } from './object-defs.js';
 import { findMaterial, GRAPHICS_QUALITY, ModelManager, SYSTEM_HEYA_MESH_NAMES, SYSTEM_MESH_NAMES } from './utility.js';
-import { MuseumEnvManager, SimpleEnvManager } from './env.js';
+import { JapaneseEnvManager, MuseumEnvManager, SimpleEnvManager } from './env.js';
 import type { GridMaterial } from '@babylonjs/materials';
 import type { EnvManager, JapaneseEnvOptions, SimpleEnvOptions } from './env.js';
 import type { ObjectDef, RoomObjectInstance, RoomStateObject } from './object.js';
@@ -313,7 +313,7 @@ export class RoomEngine extends EventEmitter {
 		this.gizmoManager = new BABYLON.GizmoManager(this.scene);
 		this.gizmoManager.positionGizmoEnabled = false;
 
-		this.gridPlane = BABYLON.MeshBuilder.CreatePlane('gridPlane', { width: cm(1000), height: cm(1000) }, this.scene);
+		this.gridPlane = BABYLON.MeshBuilder.CreatePlane('gridPlane', { width: cm(10000), height: cm(10000) }, this.scene);
 		this.gridPlane.isPickable = false;
 		this.gridPlane.isVisible = false;
 		this.gridPlane.setEnabled(false);
@@ -564,7 +564,7 @@ export class RoomEngine extends EventEmitter {
 		if (this.roomState.env.type === 'simple') {
 			envManager = new SimpleEnvManager(this, onMeshUpdatedCallback);
 		} else if (this.roomState.env.type === 'japanese') {
-			// TODO
+			envManager = new JapaneseEnvManager(this, onMeshUpdatedCallback);
 		} else if (this.roomState.env.type === 'museum') {
 			envManager = new MuseumEnvManager(this, onMeshUpdatedCallback);
 		}
