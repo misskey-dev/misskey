@@ -124,14 +124,14 @@ export class SimpleEnvManager extends EnvManager<SimpleEnvOptions> {
 		if (this.engine.graphicsQuality >= GRAPHICS_QUALITY.MEDIUM) {
 			const shadowGeneratorForRoomLight = new BABYLON.ShadowGenerator(this.engine.graphicsQuality <= GRAPHICS_QUALITY.MEDIUM ? 1024 : 2048, this.roomLight);
 			shadowGeneratorForRoomLight.forceBackFacesOnly = true;
-			shadowGeneratorForRoomLight.bias = 0.00001;
-			shadowGeneratorForRoomLight.normalBias = 0.005;
+			shadowGeneratorForRoomLight.bias = 0.0005;
 			shadowGeneratorForRoomLight.usePercentageCloserFiltering = true;
 			shadowGeneratorForRoomLight.filteringQuality = BABYLON.ShadowGenerator.QUALITY_HIGH;
 			if (this.engine.graphicsQuality <= GRAPHICS_QUALITY.MEDIUM) {
 				shadowGeneratorForRoomLight.getShadowMap().refreshRate = 60;
 			}
-			//this.shadowGeneratorForRoomLight.useContactHardeningShadow = true;
+			//shadowGeneratorForRoomLight.useContactHardeningShadow = true;
+			//shadowGeneratorForRoomLight.contactHardeningLightSizeUVRatio = 0.01;
 			this.shadowGenerators.push(shadowGeneratorForRoomLight);
 		}
 
