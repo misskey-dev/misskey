@@ -40,11 +40,16 @@ export const hangingDuctRail = defineObject({
 	hasCollisions: false,
 	createInstance: async ({ options, model }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
-		const bodyMesh = model.findMesh('__X_BODY__');
 
 		const applySize = () => {
-			bodyMesh.morphTargetManager!.getTargetByName('W')!.influence = options.width;
-			bodyMesh.morphTargetManager!.getTargetByName('H')!.influence = options.height;
+			for (const mesh of model.root.getChildMeshes()) {
+				if (mesh.morphTargetManager != null && mesh.morphTargetManager.getTargetByName('W') != null) {
+					mesh.morphTargetManager.getTargetByName('W').influence = options.width;
+				}
+				if (mesh.morphTargetManager != null && mesh.morphTargetManager.getTargetByName('H') != null) {
+					mesh.morphTargetManager.getTargetByName('H').influence = options.height;
+				}
+			}
 			model.updated();
 		};
 
