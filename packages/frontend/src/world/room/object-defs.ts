@@ -25,6 +25,7 @@ import { cuboid } from './objects/cuboid.js';
 import { cupNoodle } from './objects/cupNoodle.js';
 import { custardPudding } from './objects/custardPudding.js';
 import { debugHipoly } from './objects/debugHipoly.js';
+import { descriptionPlate } from './objects/descriptionPlate.js';
 import { desk } from './objects/desk.js';
 import { desktopPc } from './objects/desktopPc.js';
 import { djMixer } from './objects/djMixer.js';
@@ -48,6 +49,7 @@ import { laptopPc } from './objects/laptopPc.js';
 import { largeMousepad } from './objects/largeMousepad.js';
 import { lavaLamp } from './objects/lavaLamp.js';
 import { letterCase } from './objects/letterCase.js';
+import { lowPartitionBar } from './objects/lowPartitionBar.js';
 import { miObjet } from './objects/mi-objet.js';
 import { milk } from './objects/milk.js';
 import { miPlate } from './objects/miPlate.js';
@@ -209,6 +211,8 @@ export const OBJECT_DEFS = [
 	woodSoundAbsorbingPanel,
 	hangingDuctRail,
 	spotLight,
+	lowPartitionBar,
+	descriptionPlate,
 ];
 
 export function getObjectDef(type: string): typeof OBJECT_DEFS[number] {

@@ -716,7 +716,7 @@ export class MuseumEnvManager extends EnvManager<MuseumEnvOptions> {
 			this.shadowGenerators.push(shadowGeneratorForRoomLight);
 		}
 
-		for (const node of this.loaderResult.transformNodes.filter(node => node.name.includes('__LIGHT__'))) {
+		for (const node of this.meshes.filter(mesh => mesh.name.includes('__LIGHT__'))) {
 			const light = new BABYLON.SpotLight('museumEnv:SubRoomLight', node.position, new BABYLON.Vector3(0, -1, 0), 16, 8, this.engine.scene, true);
 			light.diffuse = new BABYLON.Color3(...this.engine.roomState.roomLightColor);
 			light.range = cm(500);
