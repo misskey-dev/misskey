@@ -63,6 +63,7 @@ import { camelToKebab } from '@/world/utility.js';
 import MkButton from '@/components/MkButton.vue';
 import { prefer } from '@/preferences.js';
 import { deepClone } from '@/utility/clone.js';
+import { store } from '@/store.js';
 
 // TODO: instanceのidと紛らわしいのでid -> typeにする
 
@@ -121,10 +122,19 @@ function updateObjectOption(k: string, v: any) {
 
 function ok() {
 	if (selectedId.value == null) return;
+
+	const recentlyUsed = store.s.recentlyUsedRoomObjects;
+	if (!recentlyUsed.includes(selectedId.value)) {
+		recentlyUsed.unshift(selectedId.value);
+		if (recentlyUsed.length > 30) recentlyUsed.pop();
+		store.set('recentlyUsedRoomObjects', recentlyUsed);
+	}
+
 	emit('ok', {
 		id: selectedId.value,
 		options: deepClone(selectedObjectOptionsState.value),
 	});
+
 	dialog.value?.close();
 }
 
