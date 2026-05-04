@@ -51,6 +51,7 @@ export const desktopPc = defineObject({
 	hasCollisions: true,
 	canPreMeshesMerging: true,
 	createInstance: ({ options, model, root, scene, room, graphicsQuality }) => {
+		// TODO: graphicsQualityがLOWならそもそも追加しない
 		const light1 = new BABYLON.SpotLight('', new BABYLON.Vector3(0, cm(10), cm(22)), new BABYLON.Vector3(0, 0, 1), Math.PI / 1, 2, scene, room?.lightContainer != null);
 		light1.parent = root;
 		light1.intensity = 0.05 * WORLD_SCALE * WORLD_SCALE;

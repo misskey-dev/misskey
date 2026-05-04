@@ -58,6 +58,7 @@ export const lavaLamp = defineObject({
 
 		applyGlassColor();
 
+		// TODO: graphicsQualityがLOWならそもそも追加しない
 		const light = new BABYLON.PointLight('lavaLampLight', new BABYLON.Vector3(0, cm(11), 0), scene, room?.lightContainer != null);
 		light.parent = root;
 		light.intensity = 0.03 * WORLD_SCALE * WORLD_SCALE;
