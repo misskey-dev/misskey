@@ -549,14 +549,14 @@ export class MuseumEnvManager extends EnvManager<MuseumEnvOptions> {
 			this.shadowGenerators.push(shadowGeneratorForRoomLight);
 		}
 
-		//for (const node of this.loaderResult.transformNodes.filter(node => node.name.includes('__LIGHT__'))) {
-		//	const light = new BABYLON.SpotLight('museumEnv:SubRoomLight', node.position.scale(WORLD_SCALE), new BABYLON.Vector3(0, -1, 0), 16, 8, this.engine.scene, true);
-		//	light.diffuse = new BABYLON.Color3(...this.engine.roomState.roomLightColor);
-		//	light.range = cm(500);
-		//	light.radius = cm(15);
-		//	this.engine.lightContainer.addLight(light);
-		//	this.subRoomLights.push(light);
-		//}
+		for (const node of this.loaderResult.transformNodes.filter(node => node.name.includes('__LIGHT__'))) {
+			const light = new BABYLON.SpotLight('museumEnv:SubRoomLight', node.position.scale(WORLD_SCALE), new BABYLON.Vector3(0, -1, 0), 16, 8, this.engine.scene, true);
+			light.diffuse = new BABYLON.Color3(...this.engine.roomState.roomLightColor);
+			light.range = cm(500);
+			light.radius = cm(15);
+			this.engine.lightContainer.addLight(light);
+			this.subRoomLights.push(light);
+		}
 
 		for (const mesh of this.meshes) {
 			if (SYSTEM_HEYA_MESH_NAMES.some(name => mesh.name.includes(name))) continue;
