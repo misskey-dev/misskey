@@ -46,7 +46,7 @@ export const ductRailSpotLights = defineObject({
 		default: {
 			bodyColor: [0.05, 0.05, 0.05],
 			lightColor: [1, 0.5, 0.2],
-			lightBrightness: 0.5,
+			lightBrightness: 0.2,
 			angleV: 0.75,
 			angleH: 0.5,
 		},
@@ -88,8 +88,8 @@ export const ductRailSpotLights = defineObject({
 
 		const applyLightBrightness = () => {
 			for (const light of lights) {
-				light.intensity = 3 * options.lightBrightness * WORLD_SCALE * WORLD_SCALE;
-				light.range = cm(300) * getLightRangeFactorByGraphicsQuality(graphicsQuality);
+				light.intensity = 5 * options.lightBrightness * WORLD_SCALE * WORLD_SCALE;
+				light.range = remap(options.lightBrightness, 0, 1, cm(200), cm(400)) * getLightRangeFactorByGraphicsQuality(graphicsQuality);
 			}
 			for (const lamp of lamps) {
 				const emissive = lamp.material as BABYLON.PBRMaterial;
