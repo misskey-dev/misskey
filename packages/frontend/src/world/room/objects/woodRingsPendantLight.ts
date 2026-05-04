@@ -5,6 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 import { cm, WORLD_SCALE } from '@/world/utility.js';
 
 const remap = (value: number, fromMin: number, fromMax: number, toMin: number, toMax: number) => {
@@ -53,7 +54,7 @@ export const woodRingsPendantLight = defineObject({
 	},
 	placement: 'ceiling',
 	hasCollisions: false,
-	createInstance: ({ room, scene, options, model }) => {
+	createInstance: ({ room, scene, options, model, graphicsQuality }) => {
 		const shadeMaterial = model.findMaterial('__X_SHADE__');
 
 		const applyShadeColor = () => {
@@ -96,7 +97,7 @@ export const woodRingsPendantLight = defineObject({
 
 		const applyLightBrightness = () => {
 			light.intensity = 1 * options.lightBrightness * WORLD_SCALE * WORLD_SCALE;
-			light.range = cm(200) * options.lightBrightness;
+			light.range = cm(200) * getLightRangeFactorByGraphicsQuality(graphicsQuality);
 			const emissive = lamp.material as BABYLON.PBRMaterial;
 			emissive.emissiveIntensity = options.lightBrightness * 10;
 		};

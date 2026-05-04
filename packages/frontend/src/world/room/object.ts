@@ -119,6 +119,7 @@ export type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 		model: ModelManager;
 		id: string;
 		timer: Timer;
+		graphicsQuality: number;
 		stickyMarkerMeshUpdated?: (mesh: BABYLON.Mesh) => void;
 	}) => RoomObjectInstance<GetOptionsSchemaValues<OpSc>> | Promise<RoomObjectInstance<GetOptionsSchemaValues<OpSc>>>; // TODO: createInstanceをasyncにするのではなく、別にreadyみたいなものを返させる
 };

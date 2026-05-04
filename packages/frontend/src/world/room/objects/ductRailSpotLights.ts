@@ -5,6 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 import { cm, remap, WORLD_SCALE } from '@/world/utility.js';
 
 export const ductRailSpotLights = defineObject({
@@ -52,7 +53,7 @@ export const ductRailSpotLights = defineObject({
 	},
 	placement: 'ceiling',
 	hasCollisions: false,
-	createInstance: ({ room, scene, options, model }) => {
+	createInstance: ({ room, scene, options, model, graphicsQuality }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 
 		const applyBodyColor = () => {
@@ -88,7 +89,7 @@ export const ductRailSpotLights = defineObject({
 		const applyLightBrightness = () => {
 			for (const light of lights) {
 				light.intensity = 2 * options.lightBrightness * WORLD_SCALE * WORLD_SCALE;
-				light.range = cm(300);
+				light.range = cm(300) * getLightRangeFactorByGraphicsQuality(graphicsQuality);
 			}
 			for (const lamp of lamps) {
 				const emissive = lamp.material as BABYLON.PBRMaterial;

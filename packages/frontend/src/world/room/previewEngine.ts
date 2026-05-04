@@ -8,7 +8,7 @@ import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic.js';
 import { GridMaterial } from '@babylonjs/materials';
 import { camelToKebab, WORLD_SCALE, cm, getMeshesBoundingBox, Timer } from '../utility.js';
 import { getObjectDef } from './object-defs.js';
-import { SYSTEM_MESH_NAMES, ModelManager } from './utility.js';
+import { SYSTEM_MESH_NAMES, ModelManager, GRAPHICS_QUALITY } from './utility.js';
 import type { RoomObjectInstance } from './object.js';
 import { genId } from '@/utility/id.js';
 import { deepClone } from '@/utility/clone.js';
@@ -298,6 +298,7 @@ export class RoomObjectPreviewEngine {
 			model,
 			id: args.id,
 			timer: this.timerForEachObject,
+			graphicsQuality: GRAPHICS_QUALITY.MEDIUM,
 		});
 
 		objectInstance.onInited?.();

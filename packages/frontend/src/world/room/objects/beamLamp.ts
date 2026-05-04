@@ -6,6 +6,7 @@
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { cm, WORLD_SCALE } from '../../utility.js';
+import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 
 export const beamLamp = defineObject({
 	id: 'beamLamp',
@@ -17,14 +18,14 @@ export const beamLamp = defineObject({
 	placement: 'top',
 	hasCollisions: false,
 	canPreMeshesMerging: true,
-	createInstance: ({ room, root, scene }) => {
+	createInstance: ({ room, root, scene, graphicsQuality }) => {
 		return {
 			onInited: () => {
 				const light = new BABYLON.PointLight('beamLampLight', new BABYLON.Vector3(0, cm(10), 0), scene, room?.lightContainer != null);
 				light.parent = root;
 				light.diffuse = new BABYLON.Color3(1.0, 0.5, 0.2);
 				light.intensity = 0.03 * WORLD_SCALE * WORLD_SCALE;
-				light.range = cm(100);
+				light.range = cm(100) * getLightRangeFactorByGraphicsQuality(graphicsQuality);
 				if (room?.lightContainer != null) room.lightContainer.addLight(light);
 			},
 			interactions: {},

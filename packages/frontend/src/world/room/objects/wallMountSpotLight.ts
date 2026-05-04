@@ -5,6 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 import { cm, WORLD_SCALE } from '@/world/utility.js';
 
 export const wallMountSpotLight = defineObject({
@@ -54,7 +55,7 @@ export const wallMountSpotLight = defineObject({
 	hasCollisions: false,
 	canPreMeshesMerging: false,
 	hasTexture: false,
-	createInstance: ({ room, scene, options, model }) => {
+	createInstance: ({ room, scene, options, model, graphicsQuality }) => {
 		const bodyMesh = model.findMesh('__X_BODY__');
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 
@@ -82,7 +83,7 @@ export const wallMountSpotLight = defineObject({
 
 		const applyLightBrightness = () => {
 			light.intensity = 1 * options.lightBrightness * WORLD_SCALE * WORLD_SCALE;
-			light.range = cm(200);
+			light.range = cm(200) * getLightRangeFactorByGraphicsQuality(graphicsQuality);
 			const emissive = lamp.material as BABYLON.PBRMaterial;
 			emissive.emissiveIntensity = options.lightBrightness * 20;
 		};

@@ -6,6 +6,7 @@
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { cm, WORLD_SCALE, createPlaneUvMapper, normalizeUvToSquare } from '../../utility.js';
+import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 
 export const monitor = defineObject({
 	id: 'monitor',
@@ -42,7 +43,7 @@ export const monitor = defineObject({
 	},
 	placement: 'top',
 	hasTexture: true,
-	createInstance: async ({ room, scene, options, model }) => {
+	createInstance: async ({ room, scene, options, model, graphicsQuality }) => {
 		const matrix = model.root.getWorldMatrix(true);
 		const scale = new BABYLON.Vector3();
 		matrix.decompose(scale);
@@ -50,7 +51,7 @@ export const monitor = defineObject({
 		const light = new BABYLON.SpotLight('', new BABYLON.Vector3(cm(0), cm(20) / Math.abs(scale.y), 0), new BABYLON.Vector3(0, 0, 1), Math.PI / 1, 2, scene, room?.lightContainer != null);
 		light.parent = model.root;
 		light.diffuse = new BABYLON.Color3(1.0, 1.0, 1.0);
-		light.range = cm(100);
+		light.range = cm(100) * getLightRangeFactorByGraphicsQuality(graphicsQuality);
 		light.radius = cm(20);
 		if (room?.lightContainer != null) room.lightContainer.addLight(light);
 

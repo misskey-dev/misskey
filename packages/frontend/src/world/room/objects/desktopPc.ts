@@ -6,6 +6,7 @@
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { cm, WORLD_SCALE } from '../../utility.js';
+import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 
 export const desktopPc = defineObject({
 	id: 'desktopPc',
@@ -49,17 +50,17 @@ export const desktopPc = defineObject({
 	placement: 'top',
 	hasCollisions: true,
 	canPreMeshesMerging: true,
-	createInstance: ({ options, model, root, scene, room }) => {
+	createInstance: ({ options, model, root, scene, room, graphicsQuality }) => {
 		const light1 = new BABYLON.SpotLight('', new BABYLON.Vector3(0, cm(10), cm(22)), new BABYLON.Vector3(0, 0, 1), Math.PI / 1, 2, scene, room?.lightContainer != null);
 		light1.parent = root;
 		light1.intensity = 0.05 * WORLD_SCALE * WORLD_SCALE;
-		light1.range = cm(30);
+		light1.range = cm(30) * getLightRangeFactorByGraphicsQuality(graphicsQuality);
 		if (room?.lightContainer != null) room.lightContainer.addLight(light1);
 
 		const light2 = new BABYLON.SpotLight('', new BABYLON.Vector3(cm(-5), cm(33), cm(-9)), new BABYLON.Vector3(1, 0, 0), Math.PI / 1, 2, scene, room?.lightContainer != null);
 		light2.parent = root;
 		light2.intensity = 0.05 * WORLD_SCALE * WORLD_SCALE;
-		light2.range = cm(30);
+		light2.range = cm(30) * getLightRangeFactorByGraphicsQuality(graphicsQuality);
 		if (room?.lightContainer != null) room.lightContainer.addLight(light2);
 
 		const bodyMaterial = model.findMaterial('__X_BODY__');

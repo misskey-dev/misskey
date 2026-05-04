@@ -274,7 +274,7 @@ export class RoomEngine extends EventEmitter {
 		//this.scene.activeCamera = this.camera;
 
 		this.lightContainer = new BABYLON.ClusteredLightContainer('clustered', [], this.scene);
-		this.lightContainer.maxRange = this.graphicsQuality >= GRAPHICS_QUALITY.HIGH ? cm(200) : this.graphicsQuality >= GRAPHICS_QUALITY.MEDIUM ? cm(90) : cm(30);
+		this.lightContainer.maxRange = cm(1000);
 		this.lightContainer.verticalTiles = 32;
 		this.lightContainer.horizontalTiles = 32;
 		this.lightContainer.depthSlices = 32;
@@ -890,6 +890,7 @@ export class RoomEngine extends EventEmitter {
 			model,
 			id: args.id,
 			timer: this.timer, // TODO: 家具が撤去された後も動作し続けるのをどうにかする
+			graphicsQuality: this.graphicsQuality,
 			stickyMarkerMeshUpdated: (mesh) => {
 				// TODO
 				//// stickyな子の位置を更新

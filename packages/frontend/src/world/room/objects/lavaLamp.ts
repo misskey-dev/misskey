@@ -5,6 +5,7 @@
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { cm, WORLD_SCALE } from '../../utility.js';
+import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 
 export const lavaLamp = defineObject({
 	id: 'lavaLamp',
@@ -38,7 +39,7 @@ export const lavaLamp = defineObject({
 	placement: 'top',
 	hasCollisions: false,
 	canPreMeshesMerging: true,
-	createInstance: ({ options, room, scene, root, model }) => {
+	createInstance: ({ options, room, scene, root, model, graphicsQuality }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 		const glassMaterial = model.findMaterial('__X_GLASS__');
 		const lightMaterial = model.findMaterial('__X_LIGHT__');
@@ -60,7 +61,8 @@ export const lavaLamp = defineObject({
 		const light = new BABYLON.PointLight('lavaLampLight', new BABYLON.Vector3(0, cm(11), 0), scene, room?.lightContainer != null);
 		light.parent = root;
 		light.intensity = 0.03 * WORLD_SCALE * WORLD_SCALE;
-		light.range = cm(50);
+		light.range = cm(50) * getLightRangeFactorByGraphicsQuality(graphicsQuality);
+		light.radius = cm(5);
 		if (room?.lightContainer != null) room.lightContainer.addLight(light);
 
 		const applyLightColor = () => {

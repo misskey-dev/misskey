@@ -12,6 +12,16 @@ export const GRAPHICS_QUALITY = {
 	LOW: -1,
 } as const;
 
+export function getLightRangeFactorByGraphicsQuality(quality: number) {
+	if (quality >= GRAPHICS_QUALITY.HIGH) {
+		return 1;
+	} else if (quality >= GRAPHICS_QUALITY.MEDIUM) {
+		return 0.5;
+	} else {
+		return 0.25;
+	}
+}
+
 export const SYSTEM_MESH_NAMES = ['__TOP__', '__SIDE__', '__PICK__', '__COLLISION__'];
 export const SYSTEM_HEYA_MESH_NAMES = ['__ROOM_WALL__', '__ROOM_SIDE__', '__ROOM_FLOOR__', '__ROOM_CEILING__', '__ROOM_TOP__', '__ROOM_BOTTOM__', '__COLLISION__'];
 
