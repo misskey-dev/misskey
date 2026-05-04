@@ -37,6 +37,7 @@ import { energyDrink } from './objects/energyDrink.js';
 import { envelope } from './objects/envelope.js';
 import { facialTissue } from './objects/facialTissue.js';
 import { glassCylinderPotPlant } from './objects/glassCylinderPotPlant.js';
+import { hangingDuctRail } from './objects/hangingDuctRail.js';
 import { hangingTShirt } from './objects/hangingTShirt.js';
 import { icosahedron } from './objects/icosahedron.js';
 import { ironFrameShelf5, ironFrameShelf4, ironFrameShelf3 } from './objects/ironFrameShelf.js';
@@ -78,6 +79,7 @@ import { snakeplant } from './objects/snakeplant.js';
 import { sofa } from './objects/sofa.js';
 import { speaker } from './objects/speaker.js';
 import { speakerStand } from './objects/speakerStand.js';
+import { spotLight } from './objects/spotLight.js';
 import { sprayer } from './objects/sprayer.js';
 import { steelRack } from './objects/steelRack.js';
 import { stormGlass } from './objects/stormGlass.js';
@@ -205,6 +207,8 @@ export const OBJECT_DEFS = [
 	woodRingFloorLamp,
 	woodRingsPendantLight,
 	woodSoundAbsorbingPanel,
+	hangingDuctRail,
+	spotLight,
 ];
 
 export function getObjectDef(type: string): typeof OBJECT_DEFS[number] {

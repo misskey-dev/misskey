@@ -36,6 +36,10 @@ export const tabletopDigitalClock = defineObject({
 	hasCollisions: false,
 	canPreMeshesMerging: false,
 	createInstance: ({ root, room, options, model, scene, timer }) => {
+		const matrix = model.root.getWorldMatrix(true);
+		const scale = new BABYLON.Vector3();
+		matrix.decompose(scale);
+
 		//const light = new BABYLON.SpotLight('', new BABYLON.Vector3(0, cm(3), cm(1)), new BABYLON.Vector3(0, 0, 1), Math.PI / 1, 2, scene, room?.lightContainer != null);
 		//light.parent = root;
 		//light.intensity = 0.01 * WORLD_SCALE * WORLD_SCALE;
@@ -112,11 +116,11 @@ export const tabletopDigitalClock = defineObject({
 					// また、scalingを0にすることでも見た目上非表示にすることはできるが、なぜかその状態でsnapshot renderingが開始されるとその後にscaleを戻しても表示されなくなる(バグ？)
 					for (const mesh of Object.values(segmentMeshes)) {
 						const isVisible = onMeshes.includes(mesh);
-						mesh.position.y = isVisible ? defaultSegMeshDepth : defaultSegMeshDepth - cm(2);
+						mesh.position.y = isVisible ? defaultSegMeshDepth : defaultSegMeshDepth - (cm(2) / Math.abs(scale.y));
 					}
 					for (const mesh of colonMeshes) {
 						const isVisible = Date.now() % 2000 < 1000;
-						mesh.position.y = isVisible ? defaultSegMeshDepth : defaultSegMeshDepth - cm(2);
+						mesh.position.y = isVisible ? defaultSegMeshDepth : defaultSegMeshDepth - (cm(2) / Math.abs(scale.y));
 					}
 
 					room?.sr.updateMesh([...Object.values(segmentMeshes), ...colonMeshes]);

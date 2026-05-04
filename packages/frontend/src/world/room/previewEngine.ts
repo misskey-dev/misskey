@@ -36,6 +36,7 @@ export class RoomObjectPreviewEngine {
 	private roomLight: BABYLON.SpotLight;
 	private zGridPreviewPlane: BABYLON.Mesh;
 	private timerForEachObject: Timer | null = null;
+	private pipeline: BABYLON.DefaultRenderingPipeline;
 	private fps: number | null = null;
 	private disposed = false;
 
@@ -94,6 +95,16 @@ export class RoomObjectPreviewEngine {
 		});
 		gl.intensity = 0.5;
 		this.scene.setRenderingAutoClearDepthStencil(gl.renderingGroupId, false);
+
+		this.pipeline = new BABYLON.DefaultRenderingPipeline('default', true, this.scene);
+		this.pipeline.samples = 4;
+		this.pipeline.bloomEnabled = true;
+		this.pipeline.bloomThreshold = 0.95;
+		this.pipeline.bloomWeight = 0.1;
+		this.pipeline.bloomKernel = 256;
+		this.pipeline.bloomScale = 2;
+		this.pipeline.sharpenEnabled = true;
+		this.pipeline.sharpen.edgeAmount = 0.5;
 
 		if (_DEV_) {
 			window.takeScreenshot = () => {
@@ -181,6 +192,7 @@ export class RoomObjectPreviewEngine {
 		window.setTimeout(() => {
 			const boundingInfo = getMeshesBoundingBox(this.objectMesh!.getChildMeshes().filter(m => m.isEnabled() && m.isVisible));
 
+			this.pipeline.removeCamera(this.camera);
 			this.camera.dispose();
 
 			this.camera = new BABYLON.ArcRotateCamera('camera', Math.PI / 2, Math.PI / 2.5, cm(300), new BABYLON.Vector3(0, cm(90), 0), this.scene);
@@ -220,6 +232,8 @@ export class RoomObjectPreviewEngine {
 			//this.camera.orthoRight = distance;
 			//this.camera.orthoTop = distance;
 			//this.camera.orthoBottom = -distance;
+
+			this.pipeline.addCamera(this.camera);
 		}, 10);
 
 		return {
