@@ -437,6 +437,11 @@ function showSnappingMenu(ev: PointerEvent) {
 		text: '8cm',
 		active: computed(() => controller.gridSnapping.value.scale === cm(8)),
 		action: () => controller.setGridSnapping({ ...controller.gridSnapping.value, scale: cm(8) }),
+	}, {
+		type: 'radioOption',
+		text: '16cm',
+		active: computed(() => controller.gridSnapping.value.scale === cm(16)),
+		action: () => controller.setGridSnapping({ ...controller.gridSnapping.value, scale: cm(16) }),
 	}], ev.currentTarget ?? ev.target);
 }
 
