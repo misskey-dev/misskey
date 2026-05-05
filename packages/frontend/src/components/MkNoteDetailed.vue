@@ -133,7 +133,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<footer>
 				<div :class="$style.noteFooterInfo">
 					<MkA :to="notePage(appearNote)">
-						<MkTime :class="$style.time" :time="appearNote.createdAt" mode="detail" colored/>
+						<MkTime :time="appearNote.createdAt" mode="detail" colored/>
 					</MkA>
 					<span style="margin-left: 0.5em;">
 						<span style="border: 1px solid var(--MI_THEME-divider); margin-right: 0.5em;"></span>
