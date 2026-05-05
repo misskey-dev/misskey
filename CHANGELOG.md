@@ -2,6 +2,8 @@
 
 ### General
 - Enhance: チャンネルの作成の可否をロールポリシーで制御できるように
+- Enhance: ノートの詳細表示での公開範囲の表示を改善  
+  (Cherry-picked from https://github.com/kokonect-link/cherrypick/commit/ecc75563f4e428b66adccc379bf317b5b21ed8e6)
 - Fix: `.devcontainer/compose.yml`のvolumeのマウントパスを修正
 
 ### Client
