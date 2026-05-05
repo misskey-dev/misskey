@@ -98,48 +98,52 @@ export const lavaLamp = defineObject({
 
 		let animationObserver: BABYLON.Observer<BABYLON.Scene>;
 
+		const anim = new BABYLON.Animation('lavaLampLightAnim', 'position.y', 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+		anim.setKeys([
+			{ frame: 0, value: cm(11) },
+			{ frame: 800, value: cm(38) },
+		]);
+		sphere.animations = [anim];
+		scene.beginAnimation(sphere, 0, 800, true);
+		sphere2.animations = [anim];
+		scene.beginAnimation(sphere2, 0, 800, true, 0.65);
+		sphere3.animations = [anim];
+		scene.beginAnimation(sphere3, 0, 800, true, 0.6);
+
+		animationObserver = scene.onAfterAnimationsObservable.add(() => {
+			room?.sr.updateMesh([sphere, sphere2, sphere3], false);
+		});
+
+		const emitter = new BABYLON.TransformNode('emitter', scene);
+		emitter.parent = root;
+		emitter.position = new BABYLON.Vector3(0, cm(10), 0);
+		const ps = new BABYLON.ParticleSystem('', 32, scene);
+		ps.particleTexture = new BABYLON.Texture('/client-assets/room/objects/lava-lamp/bubble.png');
+		ps.emitter = emitter;
+		ps.isLocal = true;
+		ps.minEmitBox = new BABYLON.Vector3(cm(-1), 0, cm(-1));
+		ps.maxEmitBox = new BABYLON.Vector3(cm(1), 0, cm(1));
+		ps.minEmitPower = cm(1);
+		ps.maxEmitPower = cm(2.5);
+		ps.minLifeTime = 12;
+		ps.maxLifeTime = 12;
+		ps.minSize = cm(0.25);
+		ps.maxSize = cm(1.25);
+		ps.direction1 = new BABYLON.Vector3(0, 1, 0);
+		ps.direction2 = new BABYLON.Vector3(0, 1, 0);
+		ps.emitRate = 1;
+		ps.blendMode = BABYLON.ParticleSystem.BLENDMODE_ADD;
+		ps.color1 = new BABYLON.Color4(1, 1, 1, 1);
+		ps.color2 = new BABYLON.Color4(1, 1, 1, 0.75);
+		ps.colorDead = new BABYLON.Color4(1, 1, 1, 0);
+		ps.preWarmCycles = 100;
+		ps.start();
+
+		room?.sr.fixParticleSystem(ps);
+
 		return {
 			onInited: () => {
-				const anim = new BABYLON.Animation('lavaLampLightAnim', 'position.y', 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
-				anim.setKeys([
-					{ frame: 0, value: cm(11) },
-					{ frame: 800, value: cm(38) },
-				]);
-				sphere.animations = [anim];
-				scene.beginAnimation(sphere, 0, 800, true);
-				sphere2.animations = [anim];
-				scene.beginAnimation(sphere2, 0, 800, true, 0.65);
-				sphere3.animations = [anim];
-				scene.beginAnimation(sphere3, 0, 800, true, 0.6);
 
-				animationObserver = scene.onAfterAnimationsObservable.add(() => {
-					room?.sr.updateMesh([sphere, sphere2, sphere3], false);
-				});
-
-				const emitter = new BABYLON.TransformNode('emitter', scene);
-				emitter.parent = root;
-				emitter.position = new BABYLON.Vector3(0, cm(10), 0);
-				const ps = new BABYLON.ParticleSystem('', 32, scene);
-				ps.particleTexture = new BABYLON.Texture('/client-assets/room/objects/lava-lamp/bubble.png');
-				ps.emitter = emitter;
-				ps.isLocal = true;
-				ps.minEmitBox = new BABYLON.Vector3(cm(-1), 0, cm(-1));
-				ps.maxEmitBox = new BABYLON.Vector3(cm(1), 0, cm(1));
-				ps.minEmitPower = cm(1);
-				ps.maxEmitPower = cm(2.5);
-				ps.minLifeTime = 12;
-				ps.maxLifeTime = 12;
-				ps.minSize = cm(0.25);
-				ps.maxSize = cm(1.25);
-				ps.direction1 = new BABYLON.Vector3(0, 1, 0);
-				ps.direction2 = new BABYLON.Vector3(0, 1, 0);
-				ps.emitRate = 1;
-				ps.blendMode = BABYLON.ParticleSystem.BLENDMODE_ADD;
-				ps.color1 = new BABYLON.Color4(1, 1, 1, 1);
-				ps.color2 = new BABYLON.Color4(1, 1, 1, 0.75);
-				ps.colorDead = new BABYLON.Color4(1, 1, 1, 0);
-				ps.preWarmCycles = 100;
-				ps.start();
 			},
 			interactions: {},
 			onOptionsUpdated: ([k, v]) => {

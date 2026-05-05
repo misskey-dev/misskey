@@ -60,6 +60,10 @@ export const pictureFrame = defineObject({
 				max: 1,
 				step: 0.01,
 			},
+			withCover: {
+				type: 'boolean',
+				label: 'With cover',
+			},
 			customPicture: {
 				type: 'image',
 				label: 'Custom picture',
@@ -78,6 +82,7 @@ export const pictureFrame = defineObject({
 			depth: 0,
 			matHThickness: 0.35,
 			matVThickness: 0.35,
+			withCover: true,
 			customPicture: null,
 			fit: 'cover',
 		},
@@ -160,6 +165,13 @@ export const pictureFrame = defineObject({
 
 		applyDepth();
 
+		const applyWithCover = () => {
+			coverMesh.isVisible = options.withCover;
+			model.updated();
+		};
+
+		applyWithCover();
+
 		const applyCustomPicture = () => new Promise<void>((resolve) => {
 			if (options.customPicture != null) {
 				pictureMaterial.unfreeze();
@@ -199,26 +211,17 @@ export const pictureFrame = defineObject({
 
 			},
 			onOptionsUpdated: ([k, v]) => {
-				if (k === 'frameColor') {
-					applyFrameColor();
-				}
-				if (k === 'width' || k === 'height') {
-					applySize();
-				}
-				if (k === 'frameThickness') {
-					applyFrameThickness();
-				}
-				if (k === 'depth') {
-					applyDepth();
-				}
-				if (k === 'matHThickness' || k === 'matVThickness') {
-					applyMatThickness();
-				}
-				if (k === 'customPicture') {
-					applyCustomPicture();
-				}
-				if (k === 'fit') {
-					applyFit();
+				switch (k) {
+					case 'frameColor': applyFrameColor(); break;
+					case 'width':
+					case 'height': applySize(); break;
+					case 'frameThickness': applyFrameThickness(); break;
+					case 'matHThickness':
+					case 'matVThickness': applyMatThickness(); break;
+					case 'depth': applyDepth(); break;
+					case 'withCover': applyWithCover(); break;
+					case 'customPicture':
+					case 'fit': applyCustomPicture(); break;
 				}
 			},
 			interactions: {},
