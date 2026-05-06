@@ -1404,15 +1404,22 @@ export class RoomEngine extends EventEmitter {
 	}
 
 	private createGhost(mesh: BABYLON.Mesh): BABYLON.Mesh {
-		// 対象のメッシュの子に、「子にlightを持つメッシュ」が含まれているとエンジンがクラッシュするので、とりあえず適当なメッシュを使う
-		/*
-		const ghost = mesh.clone('ghost', null, false)!;
+		// cloneの第三引数を利用する形で子まで再帰的にcloneしてしまうと、当該メッシュを親に持つlightまでもcloneされてしまい、
+		// Clustered Lightingの関係上エンジンがクラッシュしたり不具合の原因になるため、独自に(通常のmeshとtransform nodeだけ)再帰cloneする実装としている
+		const ghost = mesh.clone('ghost', null, true)!;
 		ghost.metadata = { isGhost: true };
 		ghost.checkCollisions = false;
-		for (const m of ghost.getChildMeshes()) {
-			m.metadata = { isGhost: true };
-			m.checkCollisions = false;
-		}
+
+		const cloneChildrenRecursively = (source: BABYLON.Node, target: BABYLON.Node) => {
+			for (const child of source.getChildren()) {
+				if (!(child instanceof BABYLON.Mesh) && !(child instanceof BABYLON.TransformNode)) continue;
+				const childClone = child.clone(child.name, target, true)!;
+				childClone.metadata = { isGhost: true };
+				if (childClone instanceof BABYLON.Mesh) childClone.checkCollisions = false;
+				cloneChildrenRecursively(child, childClone);
+			}
+		};
+		cloneChildrenRecursively(mesh, ghost);
 
 		const materials = new WeakMap<BABYLON.Material, BABYLON.Material>();
 
@@ -1444,13 +1451,6 @@ export class RoomEngine extends EventEmitter {
 				m.material = ghostMaterial;
 			}
 		}
-
-		return ghost;
-		*/
-
-		const ghost = new BABYLON.Mesh('ghost', this.scene);
-		ghost.metadata = { isGhost: true };
-		ghost.checkCollisions = false;
 
 		return ghost;
 	}
