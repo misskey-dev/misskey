@@ -17,8 +17,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><i class="ti ti-box"></i> カタログ</template>
 
 	<div :class="$style.root">
-		<div :class="$style.catalogItems">
-			<XItem v-for="def in OBJECT_DEFS" :key="def.id" :def="def" :class="[$style.catalogItem, { [$style.selected]: selectedId === def.id }]" @click="selectedId = def.id"/>
+		<div :class="$style.main">
+			<MkFoldableSection v-if="recentlyUsedDefs.length > 0" :expanded="true">
+				<template #header>{{ i18n.ts.recentUsed }}</template>
+				<div :class="$style.catalogItems">
+					<XItem v-for="def in recentlyUsedDefs" :key="def.id" :def="def" :class="[$style.catalogItem]" @click="selectedId = def.id"/>
+				</div>
+			</MkFoldableSection>
+			<MkFoldableSection :expanded="true">
+				<template #header>{{ i18n.ts.all }}</template>
+				<div :class="$style.catalogItems">
+					<XItem v-for="def in OBJECT_DEFS" :key="def.id" :def="def" :class="[$style.catalogItem]" @click="selectedId = def.id"/>
+				</div>
+			</MkFoldableSection>
 		</div>
 		<div v-show="selectedId != null" :class="$style.preview" class="_panel">
 			<canvas ref="canvas" :class="$style.canvas"></canvas>
@@ -55,6 +66,7 @@ import MkButton from '@/components/MkButton.vue';
 import { prefer } from '@/preferences.js';
 import { deepClone } from '@/utility/clone.js';
 import { store } from '@/store.js';
+import MkFoldableSection from '@/components/MkFoldableSection.vue';
 
 // TODO: instanceのidと紛らわしいのでid -> typeにする
 
@@ -75,6 +87,11 @@ const selectedObjectOptionsState = ref<RoomStateObject | null>(null);
 const selectedObjectDef = computed(() => OBJECT_DEFS.find(def => def.id === selectedId.value) ?? null);
 const showObjectOptions = ref(false);
 const engine = shallowRef<RoomObjectPreviewEngine | null>(null);
+
+const recentlyUsedDefs = computed(() => {
+	const recentlyUsed = store.s.recentlyUsedRoomObjects;
+	return recentlyUsed.map(id => OBJECT_DEFS.find(def => def.id === id)).filter((def): def is typeof OBJECT_DEFS[number] => def != null);
+});
 
 onMounted(async () => {
 	engine.value = await createRoomObjectPreviewEngine(canvas.value!);
@@ -142,20 +159,22 @@ async function cancel() {
 	position: relative;
 }
 
-.catalogItems {
-	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-	grid-gap: 12px;
-	padding: 12px;
+.main {
 	height: 100%;
 	box-sizing: border-box;
 	overflow-y: scroll;
 	background: var(--MI_THEME-bg);
 }
 
-.catalogItem {
+.catalogItems {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+	grid-gap: 12px;
+	padding: 12px;
+	box-sizing: border-box;
 }
-.selected {
+
+.catalogItem {
 }
 
 .preview {
