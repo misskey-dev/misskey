@@ -10189,7 +10189,7 @@ export interface Locale extends ILocale {
          */
         "channelDescription": string;
         /**
-         * 選択中:{name}
+         * 選択中: {name}
          */
         "channelSelected": ParameterizedString<"name">;
         /**
