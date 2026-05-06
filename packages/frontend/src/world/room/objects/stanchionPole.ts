@@ -26,7 +26,7 @@ export const stanchionPole = defineObject({
 		},
 	},
 	placement: 'floor',
-	hasCollisions: false,
+	hasCollisions: true,
 	hasTexture: false,
 	createInstance: ({ options, model }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
