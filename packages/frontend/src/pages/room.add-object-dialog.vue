@@ -18,17 +18,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div :class="$style.root">
 		<div :class="$style.catalogItems">
-			<div
-				v-for="def in OBJECT_DEFS"
-				:key="def.id"
-				class="_panel"
-				:class="[$style.catalogItem, { [$style.selected]: selectedId === def.id }]"
-				@click="selectedId = def.id"
-			>
-				<img :class="$style.catalogItemThumbnail" :src="`/client-assets/room/object-thumbs/${camelToKebab(def.id)}.png`"/>
-				<div :class="$style.catalogItemName"><MkCondensedLine :minScale="0.5">{{ def.name }}</MkCondensedLine></div>
-				<i v-if="Object.keys(def.options.schema).length > 0" :class="$style.catalogItemCustomizable" class="ti ti-tool"></i>
-			</div>
+			<XItem v-for="def in OBJECT_DEFS" :key="def.id" :def="def" :class="[$style.catalogItem, { [$style.selected]: selectedId === def.id }]" @click="selectedId = def.id"/>
 		</div>
 		<div v-show="selectedId != null" :class="$style.preview" class="_panel">
 			<canvas ref="canvas" :class="$style.canvas"></canvas>
@@ -53,6 +43,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick, shallowRef, computed, triggerRef } from 'vue';
 import XObjectCustomizeForm from './room.object-customize-form.vue';
+import XItem from './room.add-object-dialog.item.vue';
 import type { RoomObjectInstance, RoomStateObject } from '@/world/room/object.js';
 import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
@@ -163,32 +154,8 @@ async function cancel() {
 }
 
 .catalogItem {
-	position: relative;
-	padding: 12px;
-	border: 1px solid var(--border-color);
-	border-radius: 4px;
-	cursor: pointer;
 }
 .selected {
-	color: var(--MI_THEME-accent);
-	background-color: var(--MI_THEME-accentedBg);
-}
-
-.catalogItemThumbnail {
-	width: 100%;
-	aspect-ratio: 1;
-}
-
-.catalogItemName {
-	text-align: center;
-}
-
-.catalogItemCustomizable {
-	position: absolute;
-	top: 10px;
-	right: 10px;
-	color: var(--MI_THEME-accent);
-	opacity: 0.5;
 }
 
 .preview {
