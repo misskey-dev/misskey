@@ -23,7 +23,7 @@ type ThemeManagerEvents = {
 	'themeChanging': () => void;
 	'themeChanged': () => void;
 	'previewStateChanged': (isPreview: boolean) => void;
-	'requestUpdateThemeCache': (theme: Theme) => void;
+	'requestUpdateThemeCache': (theme: Theme, compiled: CompiledTheme) => void;
 };
 
 class ThemeManager extends EventEmitter<ThemeManagerEvents> {
@@ -139,7 +139,7 @@ class ThemeManager extends EventEmitter<ThemeManagerEvents> {
 		}
 
 		if (!this.isPreviewMode) {
-			this.emit('requestUpdateThemeCache', this.currentTheme);
+			this.emit('requestUpdateThemeCache', this.currentTheme, this.currentCompiledTheme);
 		}
 	}
 
@@ -174,8 +174,8 @@ class ThemeManager extends EventEmitter<ThemeManagerEvents> {
 export const themeManager = new ThemeManager();
 export const isPreviewMode = ref(false);
 
-themeManager.on('requestUpdateThemeCache', (theme) => {
-	miLocalStorage.setItem('theme', JSON.stringify(theme));
+themeManager.on('requestUpdateThemeCache', (theme, props) => {
+	miLocalStorage.setItem('theme', JSON.stringify(props));
 	miLocalStorage.setItem('themeId', theme.id);
 	miLocalStorage.setItem('themeCachedVersion', version);
 });
