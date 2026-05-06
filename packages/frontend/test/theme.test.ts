@@ -9,6 +9,22 @@ import lightTheme from '@@/themes/_light.json5';
 import darkTheme from '@@/themes/_dark.json5';
 import './init';
 
+vi.mock('@/i18n.js', () => ({
+	i18n: {
+		ts: {
+			_theme: {
+				alreadyInstalled: 'already installed',
+				invalid: 'invalid',
+			},
+		},
+	},
+	updateI18n: vi.fn(),
+}));
+
+vi.mock('@/os.js', () => ({
+	alert: vi.fn(),
+}));
+
 const cloneTheme = <T>(value: T): T => structuredClone(value);
 
 const createTheme = (base: 'light' | 'dark', options: {
