@@ -9,8 +9,6 @@
 // TODO: glbを事前に最適化(なるべくメッシュをマージするなど)するツールもしくはMisskeyビルド時処理。ついでにカタログ用スクショも自動生成したい
 // TODO: テクスチャ置き換え時、元のテクスチャをちゃんとdispose
 // TODO: Safariでテクスチャの読み込みに失敗かつ無ハンドリングだとsrが有効にできなくなる現象をbabylonに報告
-// TODO: なぜかTVのライトだけmaxRangeによる制限が効かないのを調査
-// TODO: 二つのダクトレールをそれぞれ色を変えた後にペンダントライトを設定しようとする際のクラッシュを直す (https://forum.babylonjs.com/t/issue-when-using-lights-with-a-mesh-as-a-parent-in-clustered-lighting/63308)
 
 import * as BABYLON from '@babylonjs/core';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
