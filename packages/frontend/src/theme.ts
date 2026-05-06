@@ -50,8 +50,6 @@ class ThemeManager extends EventEmitter<ThemeManagerEvents> {
 		}
 	}
 
-	private timeoutId: number | null = null;
-
 	constructor() {
 		super();
 	}
@@ -111,11 +109,6 @@ class ThemeManager extends EventEmitter<ThemeManagerEvents> {
 	/** currentThemeを適用します。 */
 	private applyTheme() {
 		if (this.currentTheme == null || this.currentCompiledTheme == null) return;
-
-		if (this.timeoutId) {
-			clearTimeout(this.timeoutId);
-			this.timeoutId = null;
-		}
 
 		// visibilityStateがhiddenな状態でstartViewTransitionするとブラウザによってはエラーになる
 		// 通常hiddenな時に呼ばれることはないが、iOSのPWAだとアプリ切り替え時に(何故か)hiddenな状態で(何故か)一瞬デバイスのダークモード判定が変わりapplyThemeが呼ばれる場合がある

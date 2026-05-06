@@ -18,9 +18,11 @@ export type Theme = {
 	props: Record<string, string>;
 	codeHighlighter?: {
 		base: BundledTheme;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		overrides?: Record<string, any>;
 	} | {
 		base: '_none_';
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		overrides: Record<string, any>;
 	};
 };
@@ -99,7 +101,7 @@ function genValue(c: tinycolor.Instance): string {
 	return c.toRgbString();
 }
 
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function validateTheme(theme: Record<string, any>): boolean {
 	if (theme.id == null || typeof theme.id !== 'string') return false;
 	if (theme.name == null || typeof theme.name !== 'string') return false;
