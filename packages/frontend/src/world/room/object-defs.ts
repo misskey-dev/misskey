@@ -38,6 +38,7 @@ import { energyDrink } from './objects/energyDrink.js';
 import { envelope } from './objects/envelope.js';
 import { facialTissue } from './objects/facialTissue.js';
 import { glassCylinderPotPlant } from './objects/glassCylinderPotPlant.js';
+import { handheldGameConsole } from './objects/handheldGameConsole.js';
 import { hangingDuctRail } from './objects/hangingDuctRail.js';
 import { hangingTShirt } from './objects/hangingTShirt.js';
 import { icosahedron } from './objects/icosahedron.js';
@@ -215,6 +216,7 @@ export const OBJECT_DEFS = [
 	lowPartitionBar,
 	descriptionPlate,
 	stanchionPole,
+	handheldGameConsole,
 ];
 
 export function getObjectDef(type: string): typeof OBJECT_DEFS[number] {
