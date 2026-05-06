@@ -3717,14 +3717,14 @@ export type paths = {
          */
         post: operations['users___gallery___posts'];
     };
-    '/users/get-following-birthday-users': {
+    '/users/get-following-users-by-birthday': {
         /**
-         * users/get-following-birthday-users
-         * @description Find users who have a birthday on the specified range.
+         * users/get-following-users-by-birthday
+         * @description Retrieve users who have a birthday on the specified range.
          *
          *     **Credential required**: *Yes* / **Permission**: *read:account*
          */
-        post: operations['users___get-following-birthday-users'];
+        post: operations['users___get-following-users-by-birthday'];
     };
     '/users/get-frequently-replied-users': {
         /**
@@ -5322,6 +5322,7 @@ export type components = {
             canSearchUsers: boolean;
             canUseTranslator: boolean;
             canHideAds: boolean;
+            canCreateChannel: boolean;
             driveCapacityMb: number;
             maxFileSizeMb: number;
             uploadableFileTypes: string[];
@@ -6964,6 +6965,7 @@ export interface operations {
                     description: string;
                     url: string;
                     roleIdsThatCanBeUsedThisDecoration?: string[];
+                    category?: string | null;
                 };
             };
         };
@@ -6985,6 +6987,7 @@ export interface operations {
                         description: string;
                         url: string;
                         roleIdsThatCanBeUsedThisDecoration: string[];
+                        category: string | null;
                     };
                 };
             };
@@ -7136,6 +7139,7 @@ export interface operations {
                         description: string;
                         url: string;
                         roleIdsThatCanBeUsedThisDecoration: string[];
+                        category?: string | null;
                     }[];
                 };
             };
@@ -7196,6 +7200,7 @@ export interface operations {
                     description?: string;
                     url?: string;
                     roleIdsThatCanBeUsedThisDecoration?: string[];
+                    category?: string | null;
                 };
             };
         };
@@ -23633,6 +23638,7 @@ export interface operations {
                         description: string;
                         url: string;
                         roleIdsThatCanBeUsedThisDecoration: string[];
+                        category?: string | null;
                     }[];
                 };
             };
@@ -24020,6 +24026,8 @@ export interface operations {
                     tag: string;
                     /** @default 10 */
                     limit?: number;
+                    /** @default 0 */
+                    offset?: number;
                     /** @enum {string} */
                     sort: '+follower' | '-follower' | '+createdAt' | '-createdAt' | '+updatedAt' | '-updatedAt';
                     /**
@@ -24438,41 +24446,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': {
-                        rp: {
-                            id?: string;
-                        };
-                        user: {
-                            id: string;
-                            name: string;
-                            displayName: string;
-                        };
-                        challenge: string;
-                        pubKeyCredParams: {
-                            type: string;
-                            alg: number;
-                        }[];
-                        timeout: number | null;
-                        excludeCredentials: {
-                            id: string;
-                            type: string;
-                            transports: ('ble' | 'cable' | 'hybrid' | 'internal' | 'nfc' | 'smart-card' | 'usb')[];
-                        }[] | null;
-                        authenticatorSelection: {
-                            /** @enum {string} */
-                            authenticatorAttachment: 'cross-platform' | 'platform';
-                            requireResidentKey: boolean;
-                            /** @enum {string} */
-                            userVerification: 'discouraged' | 'preferred' | 'required';
-                        } | null;
-                        /** @enum {string|null} */
-                        attestation: 'direct' | 'enterprise' | 'indirect' | 'none' | null;
-                        extensions: {
-                            appid: string | null;
-                            credProps: boolean | null;
-                            hmacCreateSecret: boolean | null;
-                        } | null;
-                    };
+                    'application/json': Record<string, never>;
                 };
             };
             /** @description Client error */
@@ -34880,7 +34854,7 @@ export interface operations {
                     untilDate?: number;
                     /** @default 10 */
                     limit?: number;
-                    /** @description @deprecated use get-following-birthday-users instead. */
+                    /** @description @deprecated use get-following-users-by-birthday instead. */
                     birthday?: string | null;
                 };
             };
@@ -35016,7 +34990,7 @@ export interface operations {
             };
         };
     };
-    'users___get-following-birthday-users': {
+    'users___get-following-users-by-birthday': {
         requestBody: {
             content: {
                 'application/json': {

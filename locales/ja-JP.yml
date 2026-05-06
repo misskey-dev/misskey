@@ -1408,6 +1408,7 @@ frame: "フレーム"
 presets: "プリセット"
 zeroPadding: "ゼロ埋め"
 nothingToConfigure: "設定項目はありません"
+viewRenotedChannel: "リノート先のチャンネルを見る"
 
 _imageEditing:
   _vars:
@@ -2121,6 +2122,7 @@ _role:
     canSearchNotes: "ノート検索の利用"
     canSearchUsers: "ユーザー検索の利用"
     canUseTranslator: "翻訳機能の利用"
+    canCreateChannel: "チャンネルの作成"
     avatarDecorationLimit: "アイコンデコレーションの最大取付個数"
     canImportAntennas: "アンテナのインポートを許可"
     canImportBlocking: "ブロックのインポートを許可"
@@ -3515,11 +3517,9 @@ _imageEffector:
     threshold: "しきい値"
     centerX: "中心X"
     centerY: "中心Y"
-    zoomLinesSmoothing: "スムージング"
-    zoomLinesSmoothingDescription: "スムージングと集中線の幅の設定は併用できません。"
-    zoomLinesThreshold: "集中線の幅"
+    density: "密度"
+    zoomLinesOutlineThickness: "線の影の太さ"
     zoomLinesMaskSize: "中心径"
-    zoomLinesBlack: "黒色にする"
     circle: "円形"
 
 drafts: "下書き"

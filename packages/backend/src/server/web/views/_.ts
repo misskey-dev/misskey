@@ -24,6 +24,12 @@ export type MinimumCommonData = {
 	config: Config;
 };
 
+export type ViteFiles = {
+	entryJs: string | null;
+	css: string[];
+	modulePreloads: string[];
+};
+
 export type CommonData = MinimumCommonData & {
 	langs: string[];
 	instanceName: string;
@@ -36,8 +42,10 @@ export type CommonData = MinimumCommonData & {
 	instanceUrl: string;
 	now: number;
 	federationEnabled: boolean;
+	frontendViteFiles: ViteFiles | null;
 	frontendBootloaderJs: string | null;
 	frontendBootloaderCss: string | null;
+	frontendEmbedViteFiles: ViteFiles | null;
 	frontendEmbedBootloaderJs: string | null;
 	frontendEmbedBootloaderCss: string | null;
 	metaJson?: string;

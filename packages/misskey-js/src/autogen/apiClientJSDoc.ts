@@ -1,5 +1,5 @@
 import type { SwitchCaseResponseType } from '../api.js';
-import type { Endpoints } from './endpoint.js';
+import type { Endpoints } from '../api.types.js';
 
 declare module '../api.js' {
   export interface APIClient {
@@ -4533,11 +4533,11 @@ declare module '../api.js' {
     ): Promise<SwitchCaseResponseType<E, P>>;
 
     /**
-     * Find users who have a birthday on the specified range.
+     * Retrieve users who have a birthday on the specified range.
      * 
      * **Credential required**: *Yes* / **Permission**: *read:account*
      */
-    request<E extends 'users/get-following-birthday-users', P extends Endpoints[E]['req']>(
+    request<E extends 'users/get-following-users-by-birthday', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,

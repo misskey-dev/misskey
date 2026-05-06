@@ -4,8 +4,31 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkModal ref="modal" v-slot="{ type, maxHeight }" :manualShowing="manualShowing" :zPriority="'high'" :anchorElement="anchorElement" :transparentBg="true" :returnFocusTo="returnFocusTo" @click="click" @close="onModalClose" @closed="onModalClosed">
-	<MkMenu :items="items" :align="align" :width="width" :max-height="maxHeight" :asDrawer="type === 'drawer'" :returnFocusTo="returnFocusTo" :class="{ [$style.drawer]: type === 'drawer' }" @close="onMenuClose" @hide="hide"/>
+<MkModal
+	ref="modal"
+	v-slot="{ type, maxHeight }"
+	:manualShowing="manualShowing"
+	:zPriority="'high'"
+	:anchorElement="anchorElement"
+	:transparentBg="true"
+	:returnFocusTo="returnFocusTo"
+	@click="click"
+	@close="onModalClose"
+	@closed="onModalClosed"
+>
+	<MkMenu
+		:items="items"
+		:align="align"
+		:width="width"
+		:max-height="maxHeight"
+		:asDrawer="type === 'drawer'"
+		:returnFocusTo="returnFocusTo"
+		:debugDisablePredictionCone="debugDisablePredictionCone"
+		:debugShowPredictionCone="debugShowPredictionCone"
+		:class="{ [$style.drawer]: type === 'drawer' }"
+		@close="onMenuClose"
+		@hide="hide"
+	/>
 </MkModal>
 </template>
 
@@ -21,6 +44,8 @@ defineProps<{
 	width?: number;
 	anchorElement?: HTMLElement | null;
 	returnFocusTo?: HTMLElement | null;
+	debugDisablePredictionCone?: boolean;
+	debugShowPredictionCone?: boolean;
 }>();
 
 const emit = defineEmits<{
