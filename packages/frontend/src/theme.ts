@@ -15,6 +15,8 @@ import type { Theme, CompiledTheme } from '@@/js/theme.js';
 import { deepClone } from '@/utility/clone.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { $i } from '@/i.js';
+import { i18n } from '@/i18n.js';
+import * as os from '@/os.js';
 import { prefer } from '@/preferences.js';
 
 type ThemeManagerEvents = {
@@ -218,4 +220,27 @@ export function clearAppliedThemeCache() {
 	miLocalStorage.removeItem('theme');
 	miLocalStorage.removeItem('themeId');
 	miLocalStorage.removeItem('themeCachedVersion');
+}
+
+export function handleThemeInstallError(err: unknown) {
+	if (err instanceof Error) {
+		let message = '';
+		switch (err.message.toLowerCase()) {
+			case 'this theme is already installed':
+			case 'already exists':
+			case 'builtin theme':
+				message = i18n.ts._theme.alreadyInstalled;
+				break;
+			default:
+				message = i18n.ts._theme.invalid;
+				break;
+		}
+
+		os.alert({
+			type: 'error',
+			text: message,
+		});
+	}
+
+	console.error(err);
 }

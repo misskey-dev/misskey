@@ -218,7 +218,7 @@ import FormLink from '@/components/form/link.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkThemePreview from '@/components/MkThemePreview.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import { installTheme, removeTheme } from '@/theme.js';
+import { handleThemeInstallError, installTheme, removeTheme } from '@/theme.js';
 import { getBuiltinThemes } from '@@/js/theme.js';
 import { isDeviceDarkmode } from '@/utility/is-device-darkmode.js';
 import { store } from '@/store.js';
@@ -357,7 +357,7 @@ async function onDrop(ev: DragEvent) {
 		try {
 			await installTheme(code);
 		} catch (err) {
-			// nop
+			handleThemeInstallError(err);
 		}
 	}
 }
