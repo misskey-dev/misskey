@@ -81,7 +81,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, onMounted, onBeforeUnmount, ref } from 'vue';
 import tinycolor from 'tinycolor2';
-import { globalEvents } from '@/events.js';
+import { themeManager } from '@/theme.js';
 import { defaultIdlingRenderScheduler } from '@/utility/idle-render.js';
 
 // https://stackoverflow.com/questions/1878907/how-can-i-find-the-difference-between-two-angles
@@ -207,13 +207,13 @@ calcColors();
 
 onMounted(() => {
 	defaultIdlingRenderScheduler.add(tick);
-	globalEvents.on('themeChanged', calcColors);
+	themeManager.on('themeChanged', calcColors);
 });
 
 onBeforeUnmount(() => {
 	enabled = false;
 	defaultIdlingRenderScheduler.delete(tick);
-	globalEvents.off('themeChanged', calcColors);
+	themeManager.off('themeChanged', calcColors);
 });
 </script>
 

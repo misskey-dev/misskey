@@ -5651,6 +5651,14 @@ export interface Locale extends ILocale {
      * リノート先のチャンネルを見る
      */
     "viewRenotedChannel": string;
+    /**
+     * テーマのプレビュー中
+     */
+    "previewingTheme": string;
+    /**
+     * 元に戻す
+     */
+    "previewingThemeRestore": string;
     "_imageEditing": {
         "_vars": {
             /**
