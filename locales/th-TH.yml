@@ -2098,6 +2098,7 @@ _role:
     canSearchNotes: "การใช้การค้นหาโน้ต"
     canSearchUsers: "ค้นหาผู้ใช้"
     canUseTranslator: "การใช้งานแปล"
+    canCreateChannel: "สร้างช่องใหม่"
     avatarDecorationLimit: "จำนวนของตกแต่งไอคอนสูงสุดที่สามารถติดตั้งได้"
     canImportAntennas: "อนุญาตให้นำเข้าเสาอากาศ"
     canImportBlocking: "อนุญาตให้นำเข้าการบล็อก"
@@ -2137,7 +2138,7 @@ _sensitiveMediaDetection:
   sensitivityDescription: "เมื่อความไวต่ำ Misdetection (ผลบวกลวง) จะลดลง, เมื่อความไวสูง Missed detection (ผลลบลวง) จะลดลง"
   setSensitiveFlagAutomatically: "ทำเครื่องหมายว่ามีเนื้อหาละเอียดอ่อน"
   setSensitiveFlagAutomaticallyDescription: "ผลลัพธ์ของการตรวจจับภายในนั้นจะยังคงอยู่ ถึงแม้ว่าจะปิดตัวเลือกนี้"
-  analyzeVideos: "เปิดใช้งานวิเคราะห์ของวิดีโอ"
+  analyzeVideos: "เปิดใช้งานวิเคราะห์วิดีโอ"
   analyzeVideosDescription: "การวิเคราะห์วิดีโอนอกเหนือจากรูปภาพนั้น การทำสิ่งนี้จะทำให้เพิ่มภาระบนเซิร์ฟเวอร์เล็กน้อย"
 _emailUnavailable:
   used: "ที่อยู่อีเมลนี้ได้ถูกใช้ไปแล้ว"
@@ -2587,7 +2588,7 @@ _widgetOptions:
     period: "ระยะเวลา"
 _cw:
   hide: "ซ่อน"
-  show: "โหลดเพิ่มเติม"
+  show: "ดูเพิ่มเติม"
   chars: "{count} ตัวอักษร"
   files: "{count} ไฟล์"
 _poll:
@@ -3030,7 +3031,7 @@ _externalResourceInstaller:
       description: "เกิดปัญหาระหว่างการติดตั้งธีม กรุณาลองอีกครั้ง. รายละเอียดข้อผิดพลาดสามารถดูได้ในคอนโซล Javascript"
 _dataSaver:
   _media:
-    title: "โหลดสื่อ"
+    title: "ปิดใช้งานการโหลดสื่ออัตโนมัติ"
     description: "กันไม่ให้ภาพและวิดีโอโหลดโดยอัตโนมัติ แตะรูปภาพ/วิดีโอที่ซ่อนอยู่เพื่อโหลด"
   _avatar:
     title: "ปิดใช้งานภาพเคลื่อนไหวของไอคอนประจำตัว"
@@ -3112,7 +3113,7 @@ _urlPreviewSetting:
   summaryProxyDescription: "สร้างการแสดงตัวอย่างด้วย summary Proxy แทนที่จะใช้เนื้อหา Misskey"
   summaryProxyDescription2: "พารามิเตอร์ต่อไปนี้จะถูกใช้เป็นสตริงการสืบค้นเพื่อเชื่อมต่อกับพร็อกซี หากฝั่งพร็อกซีไม่รองรับการตั้งค่าเหล่านี้จะถูกละเว้น"
 _mediaControls:
-  pip: "รูปภาพในรูปภาม"
+  pip: "ภาพซ้อนภาพ (PiP)"
   playbackRate: "ความเร็วในการเล่น"
   loop: "เล่นวนซ้ำ"
 _contextMenu:
