@@ -1409,6 +1409,7 @@ presets: "Preimpostato"
 zeroPadding: "Al vivo"
 nothingToConfigure: "Niente da configurare"
 viewRenotedChannel: "Visualizza il canale del Rinota"
+previewingThemeRestore: "Ripristina"
 _imageEditing:
   _vars:
     caption: "Didascalia dell'immagine"
