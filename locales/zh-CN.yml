@@ -1409,6 +1409,7 @@ presets: "预设值"
 zeroPadding: "填充 0"
 nothingToConfigure: "没有项目"
 viewRenotedChannel: "查看转帖所属频道"
+previewingThemeRestore: "还原"
 _imageEditing:
   _vars:
     caption: "文件标题"
