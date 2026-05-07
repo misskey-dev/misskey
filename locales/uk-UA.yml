@@ -922,6 +922,7 @@ information: "Інформація"
 inMinutes: "х"
 inDays: "д"
 widgets: "Віджети"
+previewingThemeRestore: "Відновити"
 _imageEditing:
   _vars:
     filename: "Ім'я файлу"
