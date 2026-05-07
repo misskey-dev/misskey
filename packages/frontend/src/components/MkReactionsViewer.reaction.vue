@@ -326,7 +326,7 @@ if (!mock) {
 .count {
         font-size: 0.55em;
         line-height: 48px;
-        margin: 0 2px 0 8px;
+        margin: 0 2px 0 14px;
         min-width: 0.8em;
         text-align: center;
 }
