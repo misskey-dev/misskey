@@ -1409,6 +1409,7 @@ presets: "Preset"
 zeroPadding: "Zero padding"
 nothingToConfigure: "No configurable options available"
 viewRenotedChannel: "Show renoted channel"
+previewingThemeRestore: "Restore"
 _imageEditing:
   _vars:
     caption: "File caption"
