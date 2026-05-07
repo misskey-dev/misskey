@@ -2098,6 +2098,7 @@ _role:
     canSearchNotes: "노트 검색 이용 가능 여부"
     canSearchUsers: "유저 검색 이용"
     canUseTranslator: "번역 기능의 사용"
+    canCreateChannel: "패널 생성"
     avatarDecorationLimit: "아바타 장식의 최대 붙임 개수"
     canImportAntennas: "안테나 가져오기 허용"
     canImportBlocking: "차단 목록 가져오기 허용"

@@ -27,8 +27,8 @@
 		"@types/matter-js": "0.20.2",
 		"@types/node": "24.12.2",
 		"@types/seedrandom": "3.0.8",
-		"@typescript-eslint/eslint-plugin": "8.58.2",
-		"@typescript-eslint/parser": "8.58.2",
+		"@typescript-eslint/eslint-plugin": "8.59.0",
+		"@typescript-eslint/parser": "8.59.0",
 		"esbuild": "0.28.0",
 		"execa": "9.6.1",
 		"nodemon": "3.1.14"

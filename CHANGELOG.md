@@ -10,6 +10,23 @@
 -
 
 
+## 2026.5.1
+
+### General
+- Enhance: チャンネルの作成の可否をロールポリシーで制御できるように
+- Fix: `.devcontainer/compose.yml`のvolumeのマウントパスを修正
+
+### Client
+- Enhance: ノートの詳細表示での公開範囲の表示を改善  
+  (Cherry-picked from https://github.com/kokonect-link/cherrypick/commit/ecc75563f4e428b66adccc379bf317b5b21ed8e6)
+- Fix: ロール設定画面でロールをアサイン/アサイン解除した際、リロードしなくても画面に反映されるよう修正
+
+### Server
+- Fix: ID生成アルゴリズムにULIDを使用している場合に通知が約10秒遅延する問題を修正
+- Fix: 公開範囲がフォロワーの投稿が通知されない問題を修正
+- Fix: URLプレビューが動作しない問題を修正
+
+
 ## 2026.5.0
 
 ### General
