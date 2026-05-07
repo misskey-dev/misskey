@@ -23,6 +23,7 @@ import { coffeeCup } from './objects/coffeeCup.js';
 import { colorBox } from './objects/colorBox.js';
 import { cuboid } from './objects/cuboid.js';
 import { cupNoodle } from './objects/cupNoodle.js';
+import { curtain } from './objects/curtain.js';
 import { custardPudding } from './objects/custardPudding.js';
 import { debugHipoly } from './objects/debugHipoly.js';
 import { debugMetal } from './objects/debugMetal.js';
@@ -219,6 +220,7 @@ export const OBJECT_DEFS = [
 	stanchionPole,
 	handheldGameConsole,
 	debugMetal,
+	curtain,
 ];
 
 export function getObjectDef(type: string): typeof OBJECT_DEFS[number] {
