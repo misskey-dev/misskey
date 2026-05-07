@@ -249,6 +249,8 @@ if (data.heya != null) {
 	delete data.heya;
 }
 
+data.env.type = 'japanese';
+
 console.log('installedObjects:', data.installedObjects.length);
 
 let latestData = deepClone(data);
