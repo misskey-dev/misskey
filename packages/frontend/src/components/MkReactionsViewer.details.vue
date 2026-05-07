@@ -63,11 +63,13 @@ function getReactionName(reaction: string): string {
 
 .reactionIcon {
 	display: block;
-	width: 60px;
-	max-height: 60px;
-	font-size: 60px; // unicodeな絵文字についてはwidthが効かないため
+	width: 80px;
+	max-height: 80px;
+	font-size: 80px; // unicodeな絵文字についてはwidthが効かないため
 	object-fit: contain;
 	margin: 0 auto;
+        max-width: 130px;
+        padding-right: 14px;
 }
 
 .reactionName {

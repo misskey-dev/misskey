@@ -84,4 +84,4 @@ export const MFM_PARAMS: Record<typeof MFM_TAGS[number], string[]> = {
  * デフォルトの絵文字。UIの演出などでも使用されるため空にしてはいけない
  * （絵文字パレットのデフォルト絵文字を空にする等の場合は、preferenceのdefinition側の値を空にすること）
  */
-export const DEFAULT_EMOJIS = ['👍', '❤️', '😆', '🤔', '😮', '🎉', '💢', '😥', '😇', '🍮'];
+export const DEFAULT_EMOJIS = ['👍', '❤️', '😆', '🤔', '😮', '🎉', '🍮', ':nanosan_itumo_arigato:', ':e_ga_umai:', ':katudou_love_icon:', ':big_love:', ':ore:'];
