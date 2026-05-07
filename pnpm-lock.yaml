@@ -765,6 +765,9 @@ importers:
         specifier: 5.3.1
         version: 5.3.1
     devDependencies:
+      '@misskey-dev/emoji-assets':
+        specifier: 17.0.2
+        version: 17.0.2
       '@misskey-dev/summaly':
         specifier: 5.3.0
         version: 5.3.0
@@ -1064,6 +1067,9 @@ importers:
         specifier: 3.5.33
         version: 3.5.33(typescript@5.9.3)
     devDependencies:
+      '@misskey-dev/emoji-assets':
+        specifier: 17.0.2
+        version: 17.0.2
       '@misskey-dev/summaly':
         specifier: 5.3.0
         version: 5.3.0
