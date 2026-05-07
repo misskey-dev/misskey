@@ -1012,6 +1012,7 @@ inMinutes: "د"
 inDays: "ي"
 widgets: "التطبيقات المُصغّرة"
 presets: "إعدادات مسبقة"
+previewingThemeRestore: "استرجاع"
 _imageEditing:
   _vars:
     filename: "اسم الملف"
