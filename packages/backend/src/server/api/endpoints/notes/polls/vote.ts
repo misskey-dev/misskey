@@ -155,7 +155,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const index = ps.choice + 1; // In SQL, array index is 1 based
 			await this.pollsRepository.query(`UPDATE poll SET votes[${index}] = votes[${index}] + 1 WHERE "noteId" = '${poll.noteId}'`);
 
-			this.globalEventService.publishNoteStream(note.id, 'pollVoted', {
+			this.globalEventService.publishNoteStream(note, 'pollVoted', {
 				choice: ps.choice,
 				userId: me.id,
 			});

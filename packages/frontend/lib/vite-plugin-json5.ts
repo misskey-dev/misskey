@@ -1,7 +1,10 @@
-// Original: https://github.com/rollup/plugins/tree/8835dd2aed92f408d7dc72d7cc25a9728e16face/packages/json
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
 
 import JSON5 from 'json5';
-import { Plugin } from 'rollup';
+import { Plugin } from 'vite';
 import { createFilter, dataToEsm } from '@rollup/pluginutils';
 import { RollupJsonOptions } from '@rollup/plugin-json';
 

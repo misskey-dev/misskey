@@ -9,6 +9,7 @@ process.env.NODE_ENV = 'test';
 
 import { setTimeout } from 'node:timers/promises';
 import * as assert from 'assert';
+import { afterAll, beforeAll, afterEach, describe, test } from 'vitest';
 import { loadConfig } from '@/config.js';
 import { MiRepository, MiUser, UsersRepository, miRepository } from '@/models/_.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';

@@ -48,11 +48,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 							{{ i18n.ts._2fa.securityKeyInfo }}
 						</MkInfo>
 
-						<MkInfo v-if="!webAuthnSupported()" warn>
+						<MkInfo v-if="!browserSupportsWebAuthn()" warn>
 							{{ i18n.ts._2fa.securityKeyNotSupported }}
 						</MkInfo>
 
-						<MkInfo v-else-if="webAuthnSupported() && !$i.twoFactorEnabled" warn>
+						<MkInfo v-else-if="browserSupportsWebAuthn() && !$i.twoFactorEnabled" warn>
 							{{ i18n.ts._2fa.registerTOTPBeforeKey }}
 						</MkInfo>
 
@@ -83,8 +83,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, computed } from 'vue';
-import { supported as webAuthnSupported, create as webAuthnCreate, parseCreationOptionsFromJSON } from '@github/webauthn-json/browser-ponyfill';
+import { computed } from 'vue';
+import { browserSupportsWebAuthn, startRegistration } from '@simplewebauthn/browser';
 import * as Misskey from 'misskey-js';
 import MkButton from '@/components/MkButton.vue';
 import MkInfo from '@/components/MkInfo.vue';
@@ -196,12 +196,9 @@ async function addSecurityKey() {
 	const auth = await os.authenticateDialog();
 	if (auth.canceled) return;
 
-	const registrationOptions = parseCreationOptionsFromJSON({
-		// @ts-expect-error misskey-js側に型がない
-		publicKey: await os.apiWithDialog('i/2fa/register-key', {
-			password: auth.result.password,
-			token: auth.result.token,
-		}),
+	const registrationOptions = await os.apiWithDialog('i/2fa/register-key', {
+		password: auth.result.password,
+		token: auth.result.token,
 	});
 
 	const name = await os.inputText({
@@ -214,7 +211,7 @@ async function addSecurityKey() {
 	if (name.canceled) return;
 
 	const credential = await os.promiseDialog(
-		webAuthnCreate(registrationOptions),
+		startRegistration({ optionsJSON: registrationOptions }),
 		null,
 		() => {}, // ユーザーのキャンセルはrejectなのでエラーダイアログを出さない
 		i18n.ts._2fa.tapSecurityKey,
@@ -228,8 +225,7 @@ async function addSecurityKey() {
 		password: auth.result.password,
 		token: auth.result.token,
 		name: name.result,
-		// @ts-expect-error misskey-js側に型がない
-		credential: credential.toJSON(),
+		credential: credential,
 	});
 }
 

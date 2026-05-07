@@ -63,20 +63,21 @@ type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 class NotificationManager {
 	private notifier: { id: MiUser['id']; };
 	private note: MiNote;
-	private queue: {
+	private queue: Map<MiLocalUser['id'], {
 		target: MiLocalUser['id'];
 		reason: NotificationType;
-	}[];
+	}>;
 
 	constructor(
 		private mutingsRepository: MutingsRepository,
 		private notificationService: NotificationService,
+		private followingsRepository: FollowingsRepository,
 		notifier: { id: MiUser['id']; },
 		note: MiNote,
 	) {
 		this.notifier = notifier;
 		this.note = note;
-		this.queue = [];
+		this.queue = new Map();
 	}
 
 	@bindThis
@@ -84,7 +85,7 @@ class NotificationManager {
 		// 自分自身へは通知しない
 		if (this.notifier.id === notifiee) return;
 
-		const exist = this.queue.find(x => x.target === notifiee);
+		const exist = this.queue.get(notifiee);
 
 		if (exist) {
 			// 「メンションされているかつ返信されている」場合は、メンションとしての通知ではなく返信としての通知にする
@@ -92,7 +93,7 @@ class NotificationManager {
 				exist.reason = reason;
 			}
 		} else {
-			this.queue.push({
+			this.queue.set(notifiee, {
 				reason: reason,
 				target: notifiee,
 			});
@@ -101,7 +102,50 @@ class NotificationManager {
 
 	@bindThis
 	public async notify() {
-		for (const x of this.queue) {
+		if (this.queue.size === 0) {
+			return;
+		}
+
+		let visibleUserIds: Set<MiUser['id']> | null;
+
+		switch (this.note.visibility) {
+			case 'public':
+			case 'home':
+				visibleUserIds = null;
+				break;
+
+			case 'specified':
+				visibleUserIds = new Set(this.note.visibleUserIds);
+				break;
+
+			case 'followers': {
+			// TODO: フォロワー限定ノートにフォロワーではない人がメンションされた場合通知されるのが正しい挙動なのか確認（一部に挙動の不一致がありそう）。現状は通知されるためフィルタしない
+			// 	const targetUserIds = this.queue.map(x => x.target);
+			// 	const followers = await this.followingsRepository.find({
+			// 		where: {
+			// 			followeeId: this.note.userId,
+			// 			followerId: In(targetUserIds),
+			// 			isFollowerHibernated: false,
+			// 		},
+			// 		select: ['followerId'],
+			// 	});
+			// 	visibleUserIds = new Set(followers.map(f => f.followerId));
+				visibleUserIds = null;
+				break;
+			}
+
+			default:
+				visibleUserIds = new Set();
+				break;
+		}
+
+		for (const x of this.queue.values()) {
+			const isVisibleToTarget = visibleUserIds === null || visibleUserIds.has(x.target);
+
+			if (!isVisibleToTarget) {
+				continue;
+			}
+
 			if (x.reason === 'renote') {
 				this.notificationService.createNotification(x.target, 'renote', {
 					noteId: this.note.id,
@@ -800,7 +844,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 			this.webhookService.enqueueUserWebhook(user.id, 'note', { note: noteObj });
 
-			const nm = new NotificationManager(this.mutingsRepository, this.notificationService, user, note);
+			const nm = new NotificationManager(this.mutingsRepository, this.notificationService, this.followingsRepository, user, note);
 
 			await this.createMentionedEvents(mentionedUsers, note, nm);
 

@@ -16,7 +16,6 @@ onlyBuiltDependencies:
   - '@parcel/watcher'
   - '@sentry/profiling-node'
   - '@sentry-internal/node-cpu-profiler'
-  - '@swc/core'
   - '@tensorflow/tfjs-node'
   - bufferutil
   - canvas
@@ -35,4 +34,5 @@ ignorePatchFailures: false
 minimumReleaseAge: 10080 # delay 7days to mitigate supply-chain attack
 minimumReleaseAgeExclude:
   - '@syuilo/aiscript'
-  - systeminformation # 脆弱性対応。そのうち消すこと
+  - '@misskey-dev/*'
+  - '@typescript/native-preview*'

@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { afterAll, afterEach, beforeAll, describe, expect, test } from '@jest/globals';
+import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest';
 import { Test, TestingModule } from '@nestjs/testing';
-import type { Index, MeiliSearch } from 'meilisearch';
+import type { Index, Meilisearch } from 'meilisearch';
 import { type Config, loadConfig } from '@/config.js';
 import { GlobalModule } from '@/GlobalModule.js';
 import { CoreModule } from '@/core/CoreModule.js';
@@ -416,7 +416,7 @@ describe('SearchService', () => {
 
 	describe('meilisearch', () => {
 		let ctx: TestContext;
-		let meilisearch: MeiliSearch;
+		let meilisearch: Meilisearch;
 		let meilisearchIndex: Index;
 		let meiliConfig: Config;
 
@@ -438,7 +438,7 @@ describe('SearchService', () => {
 			};
 
 			ctx = await buildContext(meiliConfig);
-			meilisearch = ctx.app.get(DI.meilisearch) as MeiliSearch;
+			meilisearch = ctx.app.get(DI.meilisearch) as Meilisearch;
 			meilisearchIndex = meilisearch.index(`${meiliConfig.meilisearch!.index}---notes`);
 
 			const settingsTask = await meilisearchIndex.updateSettings(meilisearchSettings);

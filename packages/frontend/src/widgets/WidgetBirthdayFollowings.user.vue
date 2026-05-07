@@ -30,7 +30,7 @@ import { useLowresTime } from '@/composables/use-lowres-time.js';
 import { userPage, acct } from '@/filters/user.js';
 
 const props = defineProps<{
-	item: Misskey.entities.UsersGetFollowingBirthdayUsersResponse[number];
+	item: Misskey.entities.UsersGetFollowingUsersByBirthdayResponse[number];
 }>();
 
 const now = useLowresTime();
