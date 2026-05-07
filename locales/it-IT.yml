@@ -1409,6 +1409,7 @@ presets: "Preimpostato"
 zeroPadding: "Al vivo"
 nothingToConfigure: "Niente da configurare"
 viewRenotedChannel: "Visualizza il canale del Rinota"
+previewingTheme: "Anteprima del Tema"
 previewingThemeRestore: "Ripristina"
 _imageEditing:
   _vars:
@@ -2099,6 +2100,7 @@ _role:
     canSearchNotes: "Ricercare nelle Note"
     canSearchUsers: "Può cercare profili"
     canUseTranslator: "Tradurre le Note"
+    canCreateChannel: "Può creare canali"
     avatarDecorationLimit: "Numero massimo di decorazioni foto profilo installabili"
     canImportAntennas: "Può importare Antenne"
     canImportBlocking: "Può importare Blocchi"
