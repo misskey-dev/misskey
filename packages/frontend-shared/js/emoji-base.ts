@@ -21,5 +21,5 @@ export function char2fluentEmojiFilePath(char: string): string {
 	if (!codes.includes('200d')) codes = codes.filter(x => x !== 'fe0f');
 	codes = codes.filter(x => x && x.length);
 	const fileName = codes.join('-');
-	return `${fluentEmojiPngBase}/${fileName}.svg`;
+	return `${fluentEmojiPngBase}/${fileName}.png`;
 }
