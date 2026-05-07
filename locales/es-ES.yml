@@ -1409,6 +1409,7 @@ presets: "Predefinido"
 zeroPadding: "Relleno cero"
 nothingToConfigure: "No hay nada que configurar"
 viewRenotedChannel: "Ver el canal al que te has suscrito"
+previewingThemeRestore: "Regresar"
 _imageEditing:
   _vars:
     caption: "Título del archivo"
