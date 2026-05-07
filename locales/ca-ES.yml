@@ -1409,6 +1409,7 @@ presets: "Predefinit"
 zeroPadding: "Sense omplir"
 nothingToConfigure: "No hi ha res a configurar"
 viewRenotedChannel: "Mirar el canal d'impulsos "
+previewingTheme: "Creació de canal"
 previewingThemeRestore: "Restaurar"
 _imageEditing:
   _vars:
@@ -2099,6 +2100,7 @@ _role:
     canSearchNotes: "Pot cercar notes"
     canSearchUsers: "Pot cercar usuaris"
     canUseTranslator: "Pot fer servir el traductor"
+    canCreateChannel: "Previsualitzant el tema"
     avatarDecorationLimit: "Nombre màxim de decoracions que es poden aplicar els avatars"
     canImportAntennas: "Autoritza la importació d'antenes "
     canImportBlocking: "Autoritza la importació de bloquejats"
