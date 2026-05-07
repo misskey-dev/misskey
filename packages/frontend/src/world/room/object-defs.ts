@@ -19,6 +19,7 @@ import { cactusS } from './objects/cactusS.js';
 import { cardboardBox } from './objects/cardboardBox.js';
 import { ceilingFanLight } from './objects/ceilingFanLight.js';
 import { chair } from './objects/chair.js';
+import { clippedPicture } from './objects/clippedPicture.js';
 import { coffeeCup } from './objects/coffeeCup.js';
 import { colorBox } from './objects/colorBox.js';
 import { cuboid } from './objects/cuboid.js';
@@ -108,6 +109,8 @@ import { wallGlassPictureFrame } from './objects/wallGlassPictureFrame.js';
 import { wallMirror } from './objects/wallMirror.js';
 import { wallMountSpotLight } from './objects/wallMountSpotLight.js';
 import { wallShelf } from './objects/wallShelf.js';
+import { wireBasket } from './objects/wireBasket.js';
+import { wireNet } from './objects/wireNet.js';
 import { woodRingFloorLamp } from './objects/woodRingFloorLamp.js';
 import { woodRingsPendantLight } from './objects/woodRingsPendantLight.js';
 import { woodSoundAbsorbingPanel } from './objects/woodSoundAbsorbingPanel.js';
@@ -221,6 +224,9 @@ export const OBJECT_DEFS = [
 	handheldGameConsole,
 	debugMetal,
 	curtain,
+	wireNet,
+	clippedPicture,
+	wireBasket,
 ];
 
 export function getObjectDef(type: string): typeof OBJECT_DEFS[number] {
