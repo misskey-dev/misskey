@@ -25,6 +25,7 @@ import { cuboid } from './objects/cuboid.js';
 import { cupNoodle } from './objects/cupNoodle.js';
 import { custardPudding } from './objects/custardPudding.js';
 import { debugHipoly } from './objects/debugHipoly.js';
+import { debugMetal } from './objects/debugMetal.js';
 import { descriptionPlate } from './objects/descriptionPlate.js';
 import { desk } from './objects/desk.js';
 import { desktopPc } from './objects/desktopPc.js';
@@ -217,6 +218,7 @@ export const OBJECT_DEFS = [
 	descriptionPlate,
 	stanchionPole,
 	handheldGameConsole,
+	debugMetal,
 ];
 
 export function getObjectDef(type: string): typeof OBJECT_DEFS[number] {
