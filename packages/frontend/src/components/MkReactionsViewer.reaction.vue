@@ -256,13 +256,17 @@ if (!mock) {
 
 <style lang="scss" module>
 .root {
-	display: inline-flex;
-	height: 42px;
-	padding: 0 6px;
-	font-size: 1.5em;
+        display: inline-flex;
+        height: 48px;
+        padding: 0 8px;
+        font-size: 1.65em;
 	border-radius: 6px;
 	align-items: center;
 	justify-content: center;
+
+        > :first-child {
+                transform: scale(1.2);
+        }
 
 	&.canToggle {
 		background: var(--MI_THEME-buttonBg);
@@ -308,8 +312,9 @@ if (!mock) {
 		}
 
 		> .icon {
-			filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
-		}
+        filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
+        transform: scale(1.15);
+}
 	}
 }
 
@@ -319,8 +324,10 @@ if (!mock) {
 }
 
 .count {
-	font-size: 0.55em;
-	line-height: 42px;
-	margin: 0 0 0 4px;
+        font-size: 0.55em;
+        line-height: 48px;
+        margin: 0 2px 0 8px;
+        min-width: 0.8em;
+        text-align: center;
 }
 </style>
