@@ -1409,6 +1409,8 @@ presets: "プリセット"
 zeroPadding: "ゼロ埋め"
 nothingToConfigure: "設定項目はありません"
 viewRenotedChannel: "リノート先のチャンネルを見る"
+previewingTheme: "テーマのプレビュー中"
+previewingThemeRestore: "元に戻す"
 
 _imageEditing:
   _vars:
