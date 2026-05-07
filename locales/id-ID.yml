@@ -1291,6 +1291,7 @@ inMinutes: "menit"
 inDays: "hari"
 widgets: "Widget"
 presets: "Prasetel"
+previewingThemeRestore: "Kembalikan"
 _imageEditing:
   _vars:
     filename: "Nama berkas"
