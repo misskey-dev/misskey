@@ -62,7 +62,7 @@ export const tv = defineObject({
 
 		const applyScreenBrightness = () => {
 			const b = options.screenBrightness;
-			screenMaterial.emissiveColor = new BABYLON.Color3(b, b, b);
+			screenMaterial.emissiveIntensity = b * 2;
 			light.intensity = (7 * b) * WORLD_SCALE * WORLD_SCALE;
 		};
 

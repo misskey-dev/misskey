@@ -36,7 +36,7 @@ export const monitor = defineObject({
 		},
 		default: {
 			bodyColor: [0.1, 0.1, 0.1],
-			screenBrightness: 0.35,
+			screenBrightness: 0.5,
 			customPicture: null,
 			fit: 'cover',
 		},
@@ -48,6 +48,7 @@ export const monitor = defineObject({
 		const scale = new BABYLON.Vector3();
 		matrix.decompose(scale);
 
+		// TODO: graphicsQualityがLOWならそもそも追加しない
 		const light = new BABYLON.SpotLight('', new BABYLON.Vector3(cm(0), cm(20) / Math.abs(scale.y), 0), new BABYLON.Vector3(0, 0, 1), Math.PI / 1, 2, scene, room?.lightContainer != null);
 		light.parent = model.root;
 		light.diffuse = new BABYLON.Color3(1.0, 1.0, 1.0);
@@ -82,8 +83,8 @@ export const monitor = defineObject({
 
 		const applyScreenBrightness = () => {
 			const b = options.screenBrightness;
-			screenMaterial.emissiveColor = new BABYLON.Color3(b, b, b);
-			light.intensity = (5 * b) * WORLD_SCALE * WORLD_SCALE;
+			screenMaterial.emissiveIntensity = b * 2;
+			light.intensity = (1 * b) * WORLD_SCALE * WORLD_SCALE;
 		};
 
 		applyScreenBrightness();

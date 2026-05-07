@@ -77,6 +77,7 @@ export const tabletopLcdButtonsController = defineObject({
 			if (options.customPicture != null && options.customPicture !== '') {
 				screenMaterial.unfreeze();
 				const tex = new BABYLON.Texture(options.customPicture, scene, false, false, undefined, () => {
+					screenMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
 					screenMaterial.emissiveTexture = tex;
 					screenMaterial.emissiveTexture.level = 2;
 					applyFit();
@@ -100,7 +101,7 @@ export const tabletopLcdButtonsController = defineObject({
 
 		const applyScreenBrightness = () => {
 			const b = options.screenBrightness;
-			screenMaterial.emissiveColor = new BABYLON.Color3(b, b, b);
+			screenMaterial.emissiveIntensity = b * 2;
 		};
 
 		applyScreenBrightness();

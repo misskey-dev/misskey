@@ -48,7 +48,7 @@ export const laptopPc = defineObject({
 		default: {
 			bodyColor: [1, 1, 1],
 			bezelColor: [0, 0, 0],
-			screenBrightness: 0.35,
+			screenBrightness: 0.5,
 			customPicture: null,
 			fit: 'cover',
 			openAngle: 0,
@@ -98,7 +98,7 @@ export const laptopPc = defineObject({
 
 		const applyScreenBrightness = () => {
 			const b = options.screenBrightness;
-			screenMaterial.emissiveColor = new BABYLON.Color3(b, b, b);
+			screenMaterial.emissiveIntensity = b * 2;
 			light.intensity = (2 * b) * WORLD_SCALE * WORLD_SCALE;
 		};
 
@@ -108,6 +108,7 @@ export const laptopPc = defineObject({
 			if (options.customPicture != null) {
 				screenMaterial.unfreeze();
 				const tex = new BABYLON.Texture(options.customPicture, scene, false, false, undefined, () => {
+					screenMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
 					screenMaterial.emissiveTexture = tex;
 					applyFit();
 					applyScreenBrightness();

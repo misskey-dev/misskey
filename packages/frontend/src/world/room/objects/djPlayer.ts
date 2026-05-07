@@ -30,7 +30,7 @@ export const djPlayer = defineObject({
 			},
 		},
 		default: {
-			screenBrightness: 0.35,
+			screenBrightness: 0.5,
 			customPicture: null,
 			fit: 'cover',
 		},
@@ -62,7 +62,7 @@ export const djPlayer = defineObject({
 
 		const applyScreenBrightness = () => {
 			const b = options.screenBrightness;
-			screenMaterial.emissiveColor = new BABYLON.Color3(b, b, b);
+			screenMaterial.emissiveIntensity = b * 2;
 		};
 
 		applyScreenBrightness();
@@ -71,6 +71,7 @@ export const djPlayer = defineObject({
 			if (options.customPicture != null && options.customPicture !== '') {
 				screenMaterial.unfreeze();
 				const tex = new BABYLON.Texture(options.customPicture, scene, false, false, undefined, () => {
+					screenMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
 					screenMaterial.emissiveTexture = tex;
 					applyFit();
 					applyScreenBrightness();
@@ -83,6 +84,7 @@ export const djPlayer = defineObject({
 				});
 				tex.level = 0.5;
 			} else {
+				screenMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
 				screenMaterial.emissiveTexture = defaultScreenTexture;
 				applyFit();
 				resolve();
