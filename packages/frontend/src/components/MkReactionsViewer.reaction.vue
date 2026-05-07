@@ -319,7 +319,7 @@ if (!mock) {
 }
 
 .count {
-	font-size: 0.7em;
+	font-size: 0.55em;
 	line-height: 42px;
 	margin: 0 0 0 4px;
 }
