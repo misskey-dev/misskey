@@ -79,7 +79,6 @@ export const tabletopLcdButtonsController = defineObject({
 				const tex = new BABYLON.Texture(options.customPicture, scene, false, false, undefined, () => {
 					screenMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
 					screenMaterial.emissiveTexture = tex;
-					screenMaterial.emissiveTexture.level = 2;
 					applyFit();
 					resolve();
 				}, (message, exception) => {
@@ -88,10 +87,10 @@ export const tabletopLcdButtonsController = defineObject({
 					screenMaterial.emissiveTexture = null;
 					resolve();
 				});
-				tex.level = 0.5;
+				tex.level = 0.75;
 			} else {
 				screenMaterial.emissiveTexture = defaultScreenTexture;
-				screenMaterial.emissiveTexture.level = 2;
+				defaultScreenTexture.level = 0.75;
 				applyFit();
 				resolve();
 			}
