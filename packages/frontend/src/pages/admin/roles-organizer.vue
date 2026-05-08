@@ -31,11 +31,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 						<div v-if="getRolesByCategory(category.key).length > 0" :class="$style.roleList">
 							<div v-for="role in getRolesByCategory(category.key)" :key="role.id" :class="$style.compactRoleRow">
-								<span :class="$style.compactRoleName">{{ role.name }}</span>
+																<span :class="$style.compactRoleName">{{ role.name }}</span>
 								<span :class="$style.compactRoleOrder">
 									現在: {{ role.displayOrder }} → 推奨: {{ getSuggestedDisplayOrder(role, category.key) }}
 								</span>
-							</div>
+								<span
+									:class="[
+										$style.orderStatus,
+										isDisplayOrderDifferent(role, category.key) ? $style.orderStatusWarning : $style.orderStatusOk,
+									]"
+								>
+									{{ isDisplayOrderDifferent(role, category.key) ? '整理推奨' : 'OK' }}
+								</span>							</div>
 						</div>
 
 						<p v-else :class="$style.emptyCategory">このカテゴリに入るロールはありません。</p>
@@ -131,6 +138,10 @@ function getSuggestedDisplayOrder(role: typeof roles[number], categoryKey: strin
 	if (index < 0) return role.displayOrder;
 
 	return category.baseOrder - (index * 10);
+}
+
+function isDisplayOrderDifferent(role: typeof roles[number], categoryKey: string) {
+	return role.displayOrder !== getSuggestedDisplayOrder(role, categoryKey);
 }
 
 const manualRoles = computed(() => sortedRoles.value.filter(role => role.target === 'manual'));
@@ -262,5 +273,23 @@ definePage(() => ({
 	margin: 0;
 	color: var(--MI_THEME-fg);
 	opacity: 0.65;
+}
+
+.orderStatus {
+	flex-shrink: 0;
+	padding: 3px 8px;
+	border-radius: 999px;
+	font-size: 0.82em;
+	font-weight: 700;
+}
+
+.orderStatusWarning {
+	background: rgba(251, 191, 36, 0.18);
+	color: #b45309;
+}
+
+.orderStatusOk {
+	background: rgba(34, 197, 94, 0.16);
+	color: #15803d;
 }
 </style>
