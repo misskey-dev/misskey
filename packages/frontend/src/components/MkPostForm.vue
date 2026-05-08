@@ -408,6 +408,13 @@ function clearActivityAnnouncement() {
 	if (hashtags.value.trim() === '') withHashtags.value = false;
 }
 
+function insertActivityAnnouncementTemplate() {
+	if (textareaEl.value == null) return;
+
+	insertTextAtCursor(textareaEl.value, '#活動告知\n\n【内容】\n\n【日時】\n\n【URL】\n');
+	withHashtags.value = false;
+}
+
 function showActivityAnnouncementMenu(ev: PointerEvent) {
 	const items: MenuItem[] = [
 		...activityAnnouncementGenres.map(genre => ({
@@ -420,6 +427,14 @@ function showActivityAnnouncementMenu(ev: PointerEvent) {
 		})),
 		{
 			type: 'divider' as const,
+		},
+		{
+			type: 'button' as const,
+			icon: 'ti ti-pencil',
+			text: '本文にテンプレを挿入',
+			action: () => {
+				insertActivityAnnouncementTemplate();
+			},
 		},
 		{
 			type: 'button' as const,
