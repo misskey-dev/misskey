@@ -99,6 +99,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button v-tooltip="i18n.ts.poll" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: poll }]" @click="togglePoll"><i class="ti ti-chart-arrows"></i></button>
 			<button v-tooltip="i18n.ts.useCw" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: useCw }]" @click="useCw = !useCw"><i class="ti ti-eye-off"></i></button>
 			<button v-tooltip="i18n.ts.hashtags" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: withHashtags }]" @click="withHashtags = !withHashtags"><i class="ti ti-hash"></i></button>
+                        <button v-tooltip="'活動告知として投稿'" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: isActivityAnnouncement }]" @click="toggleActivityAnnouncement"><i class="ti ti-speakerphone"></i></button>
 			<button v-tooltip="i18n.ts.mention" class="_button" :class="$style.footerButton" @click="insertMention"><i class="ti ti-at"></i></button>
 			<button v-if="showAddMfmFunction" v-tooltip="i18n.ts.addMfmFunction" :class="['_button', $style.footerButton]" @click="insertMfmFunction"><i class="ti ti-palette"></i></button>
 			<button v-if="postFormActions.length > 0" v-tooltip="i18n.ts.plugins" class="_button" :class="$style.footerButton" @click="showActions"><i class="ti ti-plug"></i></button>
@@ -335,6 +336,26 @@ const canSaveAsServerDraft = computed((): boolean => {
 
 const withHashtags = store.model('postFormWithHashtags');
 const hashtags = store.model('postFormHashtags');
+
+const activityAnnouncementTag = '活動告知';
+
+const isActivityAnnouncement = computed(() => {
+	const current = hashtags.value.trim().split(/\s+/).filter(x => x !== '');
+	return current.includes(activityAnnouncementTag) || current.includes(`#${activityAnnouncementTag}`);
+});
+
+function toggleActivityAnnouncement() {
+	const current = hashtags.value.trim().split(/\s+/).filter(x => x !== '');
+
+	if (isActivityAnnouncement.value) {
+		hashtags.value = current.filter(x => x !== activityAnnouncementTag && x !== `#${activityAnnouncementTag}`).join(' ');
+		if (hashtags.value.trim() === '') withHashtags.value = false;
+		return;
+	}
+
+	hashtags.value = [...current, activityAnnouncementTag].join(' ');
+	withHashtags.value = true;
+}
 
 watch(text, () => {
 	checkMissingMention();
