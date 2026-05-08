@@ -437,19 +437,23 @@ export const ROUTE_DEF = [{
 		path: '/roles/:id/edit',
 		name: 'roles',
 		component: page(() => import('@/pages/admin/roles.edit.vue')),
-	}, {
-		path: '/roles/new',
-		name: 'roles',
-		component: page(() => import('@/pages/admin/roles.edit.vue')),
-	}, {
-		path: '/roles/:id',
-		name: 'roles',
-		component: page(() => import('@/pages/admin/roles.role.vue')),
-	}, {
-		path: '/roles',
-		name: 'roles',
-		component: page(() => import('@/pages/admin/roles.vue')),
-	}, {
+        }, {
+                path: '/roles/new',
+                name: 'roles',
+                component: page(() => import('@/pages/admin/roles.edit.vue')),
+        }, {
+                path: '/roles-organizer',
+                name: 'roles-organizer',
+                component: page(() => import('@/pages/admin/roles-organizer.vue')),
+        }, {
+                path: '/roles/:id',
+                name: 'roles',
+                component: page(() => import('@/pages/admin/roles.role.vue')),
+        }, {
+                path: '/roles',
+                name: 'roles',
+                component: page(() => import('@/pages/admin/roles.vue')),
+        }, {
 		path: '/database',
 		name: 'database',
 		component: page(() => import('@/pages/admin/database.vue')),
