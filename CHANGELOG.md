@@ -1,7 +1,7 @@
 ## Unreleased
 
 ### General
--
+- Enhance: Unicode 17.0 に収録されている絵文字に対応
 
 ### Client
 - Enhance: テーマのプレビュー時、リロードせずにもとのテーマに戻せるように
