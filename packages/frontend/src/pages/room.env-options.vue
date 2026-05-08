@@ -16,8 +16,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #label>Env type</template>
 		</MkSelect>
 
-		<!-- debounceしないとカラーピッカー上で高速でなぞったときになぜか無限ループになる。ワーカーとの間でラグがあるため、少し前の値がまたmodelValueとしてフィードバックされてしまうためだと思われる -->
-		<MkInput :modelValue="getHex(controller.roomState.value.roomLightColor)" type="color" debounce @update:modelValue="v => { const c = getRgb(v); if (c != null) controller.updateRoomLightColor(c); }">
+		<!-- debounce or throttleしないとカラーピッカー上で高速でなぞったときになぜか無限ループになる。ワーカーとの間でラグがあるため、少し前の値がまたmodelValueとしてフィードバックされてしまうためだと思われる -->
+		<MkInput :modelValue="getHex(controller.roomState.value.roomLightColor)" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) controller.updateRoomLightColor(c); }">
 			<template #label>light color</template>
 		</MkInput>
 

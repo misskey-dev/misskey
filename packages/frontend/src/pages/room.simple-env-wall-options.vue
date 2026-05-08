@@ -15,8 +15,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		>
 			<template #label>wallpaper</template>
 		</MkSelect>
-		<!-- debounceしないとカラーピッカー上で高速でなぞったときになぜか無限ループになる。ワーカーとの間でラグがあるため、少し前の値がまたmodelValueとしてフィードバックされてしまうためだと思われる -->
-		<MkInput :modelValue="getHex(options.color)" type="color" debounce @update:modelValue="v => { const c = getRgb(v); if (c != null) update({ color: c }); }">
+		<!-- debounce or throttleしないとカラーピッカー上で高速でなぞったときになぜか無限ループになる。ワーカーとの間でラグがあるため、少し前の値がまたmodelValueとしてフィードバックされてしまうためだと思われる -->
+		<MkInput :modelValue="getHex(options.color)" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) update({ color: c }); }">
 			<template #label>color</template>
 		</MkInput>
 		<hr>
@@ -32,8 +32,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		>
 			<template #label>beam material</template>
 		</MkSelect>
-		<!-- debounceしないとカラーピッカー上で高速でなぞったときになぜか無限ループになる。ワーカーとの間でラグがあるため、少し前の値がまたmodelValueとしてフィードバックされてしまうためだと思われる -->
-		<MkInput :modelValue="getHex(options.beamColor)" type="color" debounce @update:modelValue="v => { const c = getRgb(v); if (c != null) update({ beamColor: c }); }">
+		<!-- debounce or throttleしないとカラーピッカー上で高速でなぞったときになぜか無限ループになる。ワーカーとの間でラグがあるため、少し前の値がまたmodelValueとしてフィードバックされてしまうためだと思われる -->
+		<MkInput :modelValue="getHex(options.beamColor)" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) update({ beamColor: c }); }">
 			<template #label>beam color</template>
 		</MkInput>
 		<hr>
