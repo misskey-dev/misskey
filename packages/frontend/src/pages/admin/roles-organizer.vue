@@ -18,6 +18,36 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 
 			<MkFoldableSection>
+				<template #header>変更予定一覧</template>
+				<div class="_gaps_s">
+					<div class="_panel" :class="$style.changeSummary">
+						<div :class="$style.changeSummaryTitle">
+							整理対象: {{ displayOrderChanges.length }}件
+						</div>
+						<p :class="$style.changeSummaryDescription">
+							ここに表示されているロールは、現在の displayOrder と推奨 displayOrder が異なります。まだ実際のロール設定は変更されません。
+						</p>
+					</div>
+
+					<div v-if="displayOrderChanges.length > 0" :class="$style.changeList">
+						<div v-for="change in displayOrderChanges" :key="change.id" class="_panel" :class="$style.changeCard">
+							<div>
+								<div :class="$style.changeRoleName">{{ change.name }}</div>
+								<div :class="$style.changeCategory">{{ change.categoryLabel }}</div>
+							</div>
+							<div :class="$style.changeOrder">
+								{{ change.currentDisplayOrder }} → {{ change.suggestedDisplayOrder }}
+							</div>
+						</div>
+					</div>
+
+					<div v-else class="_panel" :class="$style.changeSummary">
+						整理が必要なロールはありません。
+					</div>
+				</div>
+			</MkFoldableSection>
+
+			<MkFoldableSection>
 				<template #header>カテゴリ別ロール</template>
 				<div class="_gaps_s">
 					<div v-for="category in roleCategories" :key="category.key" class="_panel" :class="$style.categoryCard">
@@ -157,6 +187,20 @@ function isDisplayOrderDifferent(role: typeof roles[number], categoryKey: string
 function getDifferentDisplayOrderCount(categoryKey: string) {
 	return getRolesByCategory(categoryKey).filter(role => isDisplayOrderDifferent(role, categoryKey)).length;
 }
+
+const displayOrderChanges = computed(() => {
+	return roleCategories.flatMap(category => {
+		return getRolesByCategory(category.key)
+			.filter(role => isDisplayOrderDifferent(role, category.key))
+			.map(role => ({
+				id: role.id,
+				name: role.name,
+				categoryLabel: category.label,
+				currentDisplayOrder: role.displayOrder,
+				suggestedDisplayOrder: getSuggestedDisplayOrder(role, category.key),
+			}));
+	});
+});
 
 const manualRoles = computed(() => sortedRoles.value.filter(role => role.target === 'manual'));
 const conditionalRoles = computed(() => sortedRoles.value.filter(role => role.target === 'conditional'));
@@ -330,5 +374,56 @@ definePage(() => ({
 .categoryDiffCountOk {
 	background: rgba(34, 197, 94, 0.16);
 	color: #15803d;
+}
+
+.changeSummary {
+	padding: 14px 16px;
+}
+
+.changeSummaryTitle {
+	font-weight: 700;
+	font-size: 1.05em;
+}
+
+.changeSummaryDescription {
+	margin: 8px 0 0;
+	color: var(--MI_THEME-fg);
+	opacity: 0.75;
+	line-height: 1.7;
+}
+
+.changeList {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.changeCard {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 12px 14px;
+}
+
+.changeRoleName {
+	font-weight: 700;
+}
+
+.changeCategory {
+	margin-top: 4px;
+	font-size: 0.85em;
+	color: var(--MI_THEME-fg);
+	opacity: 0.65;
+}
+
+.changeOrder {
+	flex-shrink: 0;
+	padding: 4px 8px;
+	border-radius: 999px;
+	background: rgba(251, 191, 36, 0.18);
+	color: #b45309;
+	font-size: 0.9em;
+	font-weight: 700;
 }
 </style>
