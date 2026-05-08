@@ -434,6 +434,10 @@ function insertActivityAnnouncementTemplate(genreTag: string | null = null) {
 
 function showActivityAnnouncementMenu(ev: PointerEvent) {
 	const items: MenuItem[] = [
+		{
+			type: 'label' as const,
+			text: 'ハッシュタグとして設定',
+		},
 		...activityAnnouncementGenres.map(genre => ({
 			type: 'button' as const,
 			icon: genre.icon,
@@ -444,6 +448,13 @@ function showActivityAnnouncementMenu(ev: PointerEvent) {
 		})),
 		{
 			type: 'divider' as const,
+		},
+		{
+			type: 'divider' as const,
+		},
+		{
+			type: 'label' as const,
+			text: '本文テンプレを挿入',
 		},
 		{
 			type: 'button' as const,
