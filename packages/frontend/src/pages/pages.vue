@@ -6,6 +6,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <PageWithHeader v-model:tab="tab" :actions="headerActions" :tabs="headerTabs" :swipable="true">
 	<div class="_spacer" style="--MI_SPACER-w: 700px;">
+		<div class="_gaps_s" style="margin-bottom: 16px;">
+			<MkButton primary @click="create()">
+				<i class="ti ti-plus"></i>
+				<span>ページを作成する</span>
+			</MkButton>
+		</div>
+		<div class="_gaps_s" style="margin-bottom: 16px;">
+			<MkButton @click="openAnnouncements()">
+				<i class="ti ti-megaphone"></i>
+				<span>活動告知を見る</span>
+			</MkButton>
+		</div>
 		<div v-if="tab === 'featured'">
 			<MkPagination v-slot="{items}" :paginator="featuredPagesPaginator">
 				<div class="_gaps">
@@ -15,10 +27,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 
 		<div v-else-if="tab === 'my'" class="_gaps">
-			<MkButton class="new" primary @click="create()">
-	<i class="ti ti-plus"></i>
-	<span>ページを作成する</span>
-</MkButton>
 			<MkPagination v-slot="{items}" :paginator="myPagesPaginator">
 				<div class="_gaps">
 					<MkPagePreview v-for="page in items" :key="page.id" :page="page"/>
@@ -63,6 +71,10 @@ const likedPagesPaginator = markRaw(new Paginator('i/page-likes', {
 
 function create() {
 	router.push('/pages/new');
+}
+
+function openAnnouncements() {
+	router.push('/tags/活動告知');
 }
 
 const headerActions = computed(() => [{
