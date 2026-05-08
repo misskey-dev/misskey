@@ -29,6 +29,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</p>
 </div>
 
+				<div :class="$style.requestBox">
+					<div :class="$style.requestTitle">投稿するときのお願い</div>
+					<ul :class="$style.requestList">
+						<li>活動に関するお知らせに使ってください。</li>
+						<li>同じ内容の短時間連投は、できるだけ控えてください。</li>
+						<li>内容に合う場合は、ジャンルタグも一緒に使うと見つけてもらいやすくなります。</li>
+						<li>雑談や感想は、通常投稿でも大丈夫です。</li>
+					</ul>
+				</div>
+
 				<div :class="$style.categoryBox">
 					<div :class="$style.categoryTitle">ジャンル別に見る</div>
 					<p :class="$style.categoryDescription">
@@ -186,6 +196,27 @@ function composeAnnouncement() {
 	line-height: 1.7;
 	color: var(--MI_THEME-fg);
 	opacity: 0.85;
+}
+
+.requestBox {
+	margin-top: 14px;
+	padding: 14px 16px;
+	border-radius: 12px;
+	background: rgba(56, 189, 248, 0.08);
+	border: solid 1px rgba(56, 189, 248, 0.26);
+}
+
+.requestTitle {
+	font-weight: 700;
+	margin-bottom: 8px;
+	color: #0284c7;
+}
+
+.requestList {
+	margin: 0;
+	padding-left: 1.4em;
+	line-height: 1.8;
+	color: var(--MI_THEME-fg);
 }
 
 .categoryBox {
