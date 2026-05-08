@@ -50,6 +50,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkAvatar :class="[$style.avatar, prefer.s.useStickyIcons ? $style.useSticky : null]" :user="appearNote.user" :link="!mock" :preview="!mock"/>
 		<div :class="$style.main">
 			<MkNoteHeader :note="appearNote" :mini="true"/>
+<div v-if="isActivityAnnouncement" :class="$style.activityAnnouncementBadge">
+	<i class="ti ti-speakerphone"></i>
+	<span>活動告知</span>
+</div>
 			<MkInstanceTicker v-if="showTicker" :host="appearNote.user.host" :instance="appearNote.user.instance"/>
 			<div style="container-type: inline-size;">
 				<p v-if="appearNote.cw != null" :class="$style.cw">
@@ -306,6 +310,9 @@ const isMyRenote = $i && ($i.id === note.userId);
 const showContent = ref(false);
 const parsed = computed(() => appearNote.text ? mfm.parse(appearNote.text) : null);
 const urls = computed(() => parsed.value ? extractUrlFromMfm(parsed.value).filter((url) => appearNote.renote?.url !== url && appearNote.renote?.uri !== url) : null);
+const isActivityAnnouncement = computed(() => {
+	return appearNote.text?.includes('#活動告知') ?? false;
+});
 const isLong = shouldCollapsed(appearNote, urls.value ?? []);
 const collapsed = ref(appearNote.cw == null && isLong);
 const muted = ref(checkMute(appearNote, $i?.mutedWords));
@@ -925,6 +932,20 @@ function emitUpdReaction(emoji: string, delta: number) {
 .main {
 	flex: 1;
 	min-width: 0;
+}
+
+.activityAnnouncementBadge {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	width: fit-content;
+	margin: 6px 0 4px;
+	padding: 3px 9px;
+	border-radius: 999px;
+	background: var(--MI_THEME-accentedBg);
+	color: var(--MI_THEME-accent);
+	font-size: 0.85em;
+	font-weight: 700;
 }
 
 .cw {
