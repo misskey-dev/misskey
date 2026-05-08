@@ -99,7 +99,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button v-tooltip="i18n.ts.poll" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: poll }]" @click="togglePoll"><i class="ti ti-chart-arrows"></i></button>
 			<button v-tooltip="i18n.ts.useCw" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: useCw }]" @click="useCw = !useCw"><i class="ti ti-eye-off"></i></button>
 			<button v-tooltip="i18n.ts.hashtags" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: withHashtags }]" @click="withHashtags = !withHashtags"><i class="ti ti-hash"></i></button>
-                        <button v-tooltip="'活動告知として投稿'" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: isActivityAnnouncement }]" @click="toggleActivityAnnouncement"><i class="ti ti-speakerphone"></i></button>
+						<button v-tooltip="'活動告知として投稿'" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: isActivityAnnouncement }]" @click="showActivityAnnouncementMenu"><i class="ti ti-speakerphone"></i></button>
 			<button v-tooltip="i18n.ts.mention" class="_button" :class="$style.footerButton" @click="insertMention"><i class="ti ti-at"></i></button>
 			<button v-if="showAddMfmFunction" v-tooltip="i18n.ts.addMfmFunction" :class="['_button', $style.footerButton]" @click="insertMfmFunction"><i class="ti ti-palette"></i></button>
 			<button v-if="postFormActions.length > 0" v-tooltip="i18n.ts.plugins" class="_button" :class="$style.footerButton" @click="showActions"><i class="ti ti-plug"></i></button>
@@ -339,22 +339,99 @@ const hashtags = store.model('postFormHashtags');
 
 const activityAnnouncementTag = '活動告知';
 
+const activityAnnouncementGenres = [
+	{
+		text: '活動告知のみ',
+		icon: 'ti ti-speakerphone',
+		tag: null,
+	},
+	{
+		text: '配信',
+		icon: 'ti ti-device-tv',
+		tag: '活動告知_配信',
+	},
+	{
+		text: '動画',
+		icon: 'ti ti-movie',
+		tag: '活動告知_動画',
+	},
+	{
+		text: '作品公開',
+		icon: 'ti ti-palette',
+		tag: '活動告知_作品公開',
+	},
+	{
+		text: 'イベント',
+		icon: 'ti ti-calendar-event',
+		tag: '活動告知_イベント',
+	},
+	{
+		text: '募集',
+		icon: 'ti ti-users',
+		tag: '活動告知_募集',
+	},
+];
+
 const isActivityAnnouncement = computed(() => {
-	const current = hashtags.value.trim().split(/\s+/).filter(x => x !== '');
-	return current.includes(activityAnnouncementTag) || current.includes(`#${activityAnnouncementTag}`);
+	const current = hashtags.value.trim().split(/\s+/).filter(x => x !== '').map(normalizeActivityAnnouncementTag);
+	return current.includes(activityAnnouncementTag);
 });
 
-function toggleActivityAnnouncement() {
-	const current = hashtags.value.trim().split(/\s+/).filter(x => x !== '');
+function normalizeActivityAnnouncementTag(tag: string) {
+	return tag.startsWith('#') ? tag.slice(1) : tag;
+}
 
-	if (isActivityAnnouncement.value) {
-		hashtags.value = current.filter(x => x !== activityAnnouncementTag && x !== `#${activityAnnouncementTag}`).join(' ');
-		if (hashtags.value.trim() === '') withHashtags.value = false;
-		return;
+function setActivityAnnouncementGenre(genreTag: string | null) {
+	const current = hashtags.value.trim().split(/\s+/).filter(x => x !== '');
+	const withoutActivityAnnouncement = current.filter(x => {
+		const normalized = normalizeActivityAnnouncementTag(x);
+		return normalized !== activityAnnouncementTag && !normalized.startsWith(`${activityAnnouncementTag}_`);
+	});
+
+	const next = [...withoutActivityAnnouncement, activityAnnouncementTag];
+
+	if (genreTag != null) {
+		next.push(genreTag);
 	}
 
-	hashtags.value = [...current, activityAnnouncementTag].join(' ');
+	hashtags.value = next.join(' ');
 	withHashtags.value = true;
+}
+
+function clearActivityAnnouncement() {
+	const current = hashtags.value.trim().split(/\s+/).filter(x => x !== '');
+	hashtags.value = current.filter(x => {
+		const normalized = normalizeActivityAnnouncementTag(x);
+		return normalized !== activityAnnouncementTag && !normalized.startsWith(`${activityAnnouncementTag}_`);
+	}).join(' ');
+
+	if (hashtags.value.trim() === '') withHashtags.value = false;
+}
+
+function showActivityAnnouncementMenu(ev: PointerEvent) {
+	const items: MenuItem[] = [
+		...activityAnnouncementGenres.map(genre => ({
+			type: 'button' as const,
+			icon: genre.icon,
+			text: genre.text,
+			action: () => {
+				setActivityAnnouncementGenre(genre.tag);
+			},
+		})),
+		{
+			type: 'divider' as const,
+		},
+		{
+			type: 'button' as const,
+			icon: 'ti ti-x',
+			text: '活動告知を外す',
+			action: () => {
+				clearActivityAnnouncement();
+			},
+		},
+	];
+
+	os.popupMenu(items, ev.currentTarget ?? ev.target);
 }
 
 watch(text, () => {
