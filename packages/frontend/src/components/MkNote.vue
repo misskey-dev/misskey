@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkAvatar :class="$style.collapsedRenoteTargetAvatar" :user="appearNote.user" link preview/>
 		<Mfm :text="getNoteSummary(appearNote)" :plain="true" :nowrap="true" :author="appearNote.user" :nyaize="'respect'" :class="$style.collapsedRenoteTargetText" @click="renoteCollapsed = false"/>
 	</div>
-	<article v-else :class="$style.article" @contextmenu.stop="onContextmenu">
+	<article v-else :class="[$style.article, { [$style.activityAnnouncementArticle]: isActivityAnnouncement }]" @contextmenu.stop="onContextmenu">
 		<div v-if="appearNote.channel" :class="$style.colorBar" :style="{ background: appearNote.channel.color }"></div>
 		<MkAvatar :class="[$style.avatar, prefer.s.useStickyIcons ? $style.useSticky : null]" :user="appearNote.user" :link="!mock" :preview="!mock"/>
 		<div :class="$style.main">
@@ -905,6 +905,22 @@ function emitUpdReaction(emoji: string, delta: number) {
 	padding: 28px 32px;
 }
 
+.activityAnnouncementArticle {
+	position: relative;
+}
+
+.activityAnnouncementArticle::before {
+	content: "";
+	position: absolute;
+	top: 12px;
+	bottom: 12px;
+	left: 0;
+	width: 4px;
+	border-radius: 999px;
+	background: #38bdf8;
+	opacity: 0.9;
+}
+
 .colorBar {
 	position: absolute;
 	top: 8px;
@@ -942,8 +958,8 @@ function emitUpdReaction(emoji: string, delta: number) {
 	margin: 6px 0 4px;
 	padding: 3px 9px;
 	border-radius: 999px;
-	background: var(--MI_THEME-accentedBg);
-	color: var(--MI_THEME-accent);
+	background: rgba(56, 189, 248, 0.16);
+	color: #0284c7;
 	font-size: 0.85em;
 	font-weight: 700;
 }
