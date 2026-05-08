@@ -35,31 +35,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 						活動内容に合わせて、ジャンル別の活動告知を見られます。
 					</p>
 					<div :class="$style.categoryTabs">
-						<a :class="[$style.categoryTab, $style.categoryTabActive]" href="/activity-announcements">
-							<i class="ti ti-speakerphone"></i>
-							<span>すべて</span>
+						<a
+							v-for="genre in activityAnnouncementGenres"
+							:key="genre.key"
+							:class="[$style.categoryTab, { [$style.categoryTabActive]: selectedTag === genre.tag }]"
+							:href="genre.href"
+						>
+							<i :class="genre.icon"></i>
+							<span>{{ genre.label }}</span>
 						</a>
-						<a :class="$style.categoryTab" href="/tags/活動告知_配信">
-							<i class="ti ti-device-tv"></i>
-							<span>配信</span>
-						</a>
-						<a :class="$style.categoryTab" href="/tags/活動告知_動画">
-							<i class="ti ti-movie"></i>
-							<span>動画</span>
-						</a>
-						<a :class="$style.categoryTab" href="/tags/活動告知_作品公開">
-							<i class="ti ti-palette"></i>
-							<span>作品公開</span>
-						</a>
-						<a :class="$style.categoryTab" href="/tags/活動告知_イベント">
-							<i class="ti ti-calendar-event"></i>
-							<span>イベント</span>
-						</a>
-						<a :class="$style.categoryTab" href="/tags/活動告知_募集">
-							<i class="ti ti-users"></i>
-							<span>募集</span>
-						</a>
-					</div>
+					</div>	
+
 				</div>
 
 					<div :class="$style.actions">
@@ -82,7 +68,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</div>
 
-					<MkNotesTimeline :paginator="paginator"/>
+					<MkNotesTimeline :key="selectedTag" :paginator="paginator"/>
 				</section>
 			</div>
 		</div>
@@ -90,7 +76,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { markRaw } from 'vue';
+import { computed, markRaw } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
 import { Paginator } from '@/utility/paginator.js';
@@ -98,12 +84,61 @@ import * as os from '@/os.js';
 
 const headerActions = [];
 const headerTabs = [];
-const paginator = markRaw(new Paginator('notes/search-by-tag', {
+const activityAnnouncementGenres = [
+	{
+		key: 'all',
+		label: 'すべて',
+		icon: 'ti ti-speakerphone',
+		tag: '活動告知',
+		href: '/activity-announcements',
+	},
+	{
+		key: 'stream',
+		label: '配信',
+		icon: 'ti ti-device-tv',
+		tag: '活動告知_配信',
+		href: '/activity-announcements?tag=活動告知_配信',
+	},
+	{
+		key: 'video',
+		label: '動画',
+		icon: 'ti ti-movie',
+		tag: '活動告知_動画',
+		href: '/activity-announcements?tag=活動告知_動画',
+	},
+	{
+		key: 'works',
+		label: '作品公開',
+		icon: 'ti ti-palette',
+		tag: '活動告知_作品公開',
+		href: '/activity-announcements?tag=活動告知_作品公開',
+	},
+	{
+		key: 'event',
+		label: 'イベント',
+		icon: 'ti ti-calendar-event',
+		tag: '活動告知_イベント',
+		href: '/activity-announcements?tag=活動告知_イベント',
+	},
+	{
+		key: 'recruit',
+		label: '募集',
+		icon: 'ti ti-users',
+		tag: '活動告知_募集',
+		href: '/activity-announcements?tag=活動告知_募集',
+	},
+];
+
+const selectedTag = computed(() => {
+	const tag = new URLSearchParams(location.search).get('tag');
+	return activityAnnouncementGenres.some(genre => genre.tag === tag) ? tag : '活動告知';
+});
+const paginator = computed(() => markRaw(new Paginator('notes/search-by-tag', {
 	limit: 10,
 	params: {
-		tag: '活動告知',
+		tag: selectedTag.value,
 	},
-}));
+})));
 
 function openTag() {
 	location.href = '/tags/活動告知';
