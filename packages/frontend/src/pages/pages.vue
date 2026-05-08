@@ -74,7 +74,7 @@ function create() {
 }
 
 function openAnnouncements() {
-	router.push('/tags/活動告知');
+	router.push('/activity-announcements');
 }
 
 const headerActions = computed(() => [{

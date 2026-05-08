@@ -301,6 +301,9 @@ export const ROUTE_DEF = [{
 	path: '/tags/:tag',
 	component: page(() => import('@/pages/tag.vue')),
 }, {
+	path: '/activity-announcements',
+	component: page(() => import('@/pages/activity-announcements.vue')),
+}, {
 	path: '/pages/new',
 	component: page(() => import('@/pages/page-editor/page-editor.vue')),
 	loginRequired: true,
