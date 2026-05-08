@@ -33,7 +33,7 @@
 		"js-built"
 	],
 	"dependencies": {
-		"@misskey-dev/emoji-data": "17.0.2",
+		"@misskey-dev/emoji-data": "17.0.3",
 		"i18n": "workspace:*",
 		"misskey-js": "workspace:*",
 		"vue": "3.5.33"
