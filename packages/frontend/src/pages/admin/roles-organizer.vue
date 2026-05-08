@@ -32,7 +32,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div v-if="getRolesByCategory(category.key).length > 0" :class="$style.roleList">
 							<div v-for="role in getRolesByCategory(category.key)" :key="role.id" :class="$style.compactRoleRow">
 								<span :class="$style.compactRoleName">{{ role.name }}</span>
-								<span :class="$style.compactRoleOrder">displayOrder: {{ role.displayOrder }}</span>
+								<span :class="$style.compactRoleOrder">
+									現在: {{ role.displayOrder }} → 推奨: {{ getSuggestedDisplayOrder(role, category.key) }}
+								</span>
 							</div>
 						</div>
 
@@ -119,6 +121,16 @@ function getRoleCategoryKey(role: typeof roles[number]) {
 
 function getRolesByCategory(categoryKey: string) {
 	return sortedRoles.value.filter(role => getRoleCategoryKey(role) === categoryKey);
+}
+
+function getSuggestedDisplayOrder(role: typeof roles[number], categoryKey: string) {
+	const category = roleCategories.find(x => x.key === categoryKey);
+	if (category == null) return role.displayOrder;
+
+	const index = getRolesByCategory(categoryKey).findIndex(x => x.id === role.id);
+	if (index < 0) return role.displayOrder;
+
+	return category.baseOrder - (index * 10);
 }
 
 const manualRoles = computed(() => sortedRoles.value.filter(role => role.target === 'manual'));
