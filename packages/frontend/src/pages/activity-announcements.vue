@@ -29,6 +29,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</p>
 </div>
 
+<div :class="$style.categoryBox">
+	<div :class="$style.categoryTitle">おすすめ活動タグ</div>
+	<p :class="$style.categoryDescription">
+		内容に合わせて追加すると、活動内容をさらに見つけてもらいやすくなります。
+	</p>
+	<div :class="$style.categoryList">
+		<a :class="$style.categoryTag" href="/tags/活動告知_配信">#活動告知_配信</a>
+		<a :class="$style.categoryTag" href="/tags/活動告知_動画">#活動告知_動画</a>
+		<a :class="$style.categoryTag" href="/tags/活動告知_作品公開">#活動告知_作品公開</a>
+		<a :class="$style.categoryTag" href="/tags/活動告知_イベント">#活動告知_イベント</a>
+		<a :class="$style.categoryTag" href="/tags/活動告知_募集">#活動告知_募集</a>
+	</div>
+</div>
+
 					<div :class="$style.actions">
 						<MkButton primary @click="openTag">
 							#活動告知 を見る
@@ -118,6 +132,50 @@ function composeAnnouncement() {
 	line-height: 1.7;
 	color: var(--MI_THEME-fg);
 	opacity: 0.85;
+}
+
+.categoryBox {
+	margin-top: 14px;
+	padding: 14px 16px;
+	border-radius: 12px;
+	background: var(--MI_THEME-panel);
+	border: solid 1px var(--MI_THEME-divider);
+}
+
+.categoryTitle {
+	font-weight: 700;
+	margin-bottom: 6px;
+}
+
+.categoryDescription {
+	margin: 0 0 12px;
+	font-size: 0.95em;
+	color: var(--MI_THEME-fg);
+	opacity: 0.75;
+	line-height: 1.7;
+}
+
+.categoryList {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.categoryTag {
+	display: inline-flex;
+	align-items: center;
+	padding: 6px 10px;
+	border-radius: 999px;
+	background: var(--MI_THEME-accentedBg);
+	color: var(--MI_THEME-accent);
+	font-size: 0.9em;
+	font-weight: 700;
+	text-decoration: none;
+}
+
+.categoryTag:hover {
+	text-decoration: none;
+	filter: brightness(1.05);
 }
 
 .actions {
