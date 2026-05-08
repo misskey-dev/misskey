@@ -186,8 +186,8 @@ export const PREF_DEF = definePreferences({
 		default: true,
 	},
 	menu: {
-	        default: KATSUDO_DEFAULT_MENU,
-        },
+		default: KATSUDO_DEFAULT_MENU,
+	},
 	statusbars: {
 		default: [] as StatusbarStore[],
 	},
