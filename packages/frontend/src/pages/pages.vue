@@ -15,7 +15,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 
 		<div v-else-if="tab === 'my'" class="_gaps">
-			<MkButton class="new" @click="create()"><i class="ti ti-plus"></i></MkButton>
+			<MkButton class="new" primary @click="create()">
+	<i class="ti ti-plus"></i>
+	<span>ページを作成する</span>
+</MkButton>
 			<MkPagination v-slot="{items}" :paginator="myPagesPaginator">
 				<div class="_gaps">
 					<MkPagePreview v-for="page in items" :key="page.id" :page="page"/>
@@ -64,7 +67,7 @@ function create() {
 
 const headerActions = computed(() => [{
 	icon: 'ti ti-plus',
-	text: i18n.ts.create,
+	text: 'ページを作成',
 	handler: create,
 }]);
 
