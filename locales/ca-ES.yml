@@ -1409,7 +1409,7 @@ presets: "Predefinit"
 zeroPadding: "Sense omplir"
 nothingToConfigure: "No hi ha res a configurar"
 viewRenotedChannel: "Mirar el canal d'impulsos "
-previewingTheme: "Creació de canal"
+previewingTheme: "Previsualització del tema"
 previewingThemeRestore: "Restaurar"
 _imageEditing:
   _vars:
