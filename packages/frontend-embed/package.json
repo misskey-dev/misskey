@@ -19,7 +19,7 @@
 		"i18n": "workspace:*",
 		"icons-subsetter": "workspace:*",
 		"json5": "2.2.3",
-		"mfm-js": "0.25.0",
+		"mfm-js": "0.26.0",
 		"misskey-js": "workspace:*",
 		"punycode.js": "2.3.1",
 		"rollup": "4.60.2",

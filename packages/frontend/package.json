@@ -52,7 +52,7 @@
 		"json5": "2.2.3",
 		"matter-js": "0.20.0",
 		"mediabunny": "1.41.0",
-		"mfm-js": "0.25.0",
+		"mfm-js": "0.26.0",
 		"misskey-bubble-game": "workspace:*",
 		"misskey-js": "workspace:*",
 		"misskey-reversi": "workspace:*",

@@ -265,8 +265,8 @@ importers:
         specifier: 0.57.0
         version: 0.57.0
       mfm-js:
-        specifier: 0.25.0
-        version: 0.25.0
+        specifier: 0.26.0
+        version: 0.26.0
       mime-types:
         specifier: 3.0.2
         version: 3.0.2
@@ -714,8 +714,8 @@ importers:
         specifier: 1.41.0
         version: 1.41.0
       mfm-js:
-        specifier: 0.25.0
-        version: 0.25.0
+        specifier: 0.26.0
+        version: 0.26.0
       misskey-bubble-game:
         specifier: workspace:*
         version: link:../misskey-bubble-game
@@ -1043,8 +1043,8 @@ importers:
         specifier: 2.2.3
         version: 2.2.3
       mfm-js:
-        specifier: 0.25.0
-        version: 0.25.0
+        specifier: 0.26.0
+        version: 0.26.0
       misskey-js:
         specifier: workspace:*
         version: link:../misskey-js
@@ -2559,6 +2559,9 @@ packages:
 
   '@misskey-dev/emoji-assets@17.0.2':
     resolution: {integrity: sha512-QunpgpwR7HO2Tor/F0rZnJ5191zr4QRhar/jJNfokXpIPC/Y0cIwezOiKJT6OBViPcz2xRYa8sPu9+ybkJU9MQ==}
+
+  '@misskey-dev/emoji-data@17.0.0':
+    resolution: {integrity: sha512-grMnsmTm7VSah5heS1fIfOfoQmIpzo6ZU5AV5yRxCy7ivtWhFU3fpMfXZyKsH9G9/HZiLRsClKtyjHKMlxjt7g==}
 
   '@misskey-dev/emoji-data@17.0.2':
     resolution: {integrity: sha512-dDckrmbp/219Y71+aR0Eyf/asO6zVQdQnh1TJVSHd0BreJpmPjaa7kzVGVTrMPm1zpnXZhC+DkdQYadul5C3lg==}
@@ -4269,9 +4272,6 @@ packages:
   '@tsd/typescript@5.9.3':
     resolution: {integrity: sha512-JSSdNiS0wgd8GHhBwnMAI18Y8XPhLVN+dNelPfZCXFhy9Lb3NbnFyp9JKxxr54jSUkEJPk3cidvCoHducSaRMQ==}
     engines: {node: '>=14.17'}
-
-  '@twemoji/parser@16.0.0':
-    resolution: {integrity: sha512-jmuIjkp3OIaEemwMy3sArBwZSuZkRqmueGwRe2Zk4cFzbUJISFBJSZLDUUBNIgq3c+nY49ideYN2OiII6JUqwA==}
 
   '@tybys/wasm-util@0.10.1':
     resolution: {integrity: sha512-9tTaPJLSiejZKx+Bmog4uSubteqTvFrVrURwkmHixBo0G4seD0zUxp98E1DzUBJxLQ3NPwXrGKDiVjwx/DpPsg==}
@@ -7618,8 +7618,8 @@ packages:
     resolution: {integrity: sha512-iclAHeNqNm68zFtnZ0e+1L2yUIdvzNoauKU4WBA3VvH/vPFieF7qfRlwUZU+DA9P9bPXIS90ulxoUoCH23sV2w==}
     engines: {node: '>= 0.6'}
 
-  mfm-js@0.25.0:
-    resolution: {integrity: sha512-JoK5TOtswXIvZSZ9hUEL+ZkcNV4onu/DtkaKeXK846+sJBBF8DvxYmPutt7nPaRDsUMmJGr64PNVMFpMGdk3hw==}
+  mfm-js@0.26.0:
+    resolution: {integrity: sha512-JEbaa1GBJBcpsk9/6tGaOgo1WewUhL9cIFl3VhIZ2a/89X83hzwxwVZOEebFaWdOufwFxnti44QMR/TWcAxSzg==}
 
   micromark-core-commonmark@2.0.3:
     resolution: {integrity: sha512-RDBrHEMSxVFLg6xvnXmb1Ayr2WzLAWjeSATAoxwKYJV94TeNavgoIdA0a9ytzDSVzBy2YKFK+emCPOEibLeCrg==}
@@ -12015,6 +12015,8 @@ snapshots:
 
   '@misskey-dev/emoji-assets@17.0.2': {}
 
+  '@misskey-dev/emoji-data@17.0.0': {}
+
   '@misskey-dev/emoji-data@17.0.2': {}
 
   '@misskey-dev/eslint-plugin@2.1.0(@eslint/compat@1.4.0(eslint@9.39.4))(@stylistic/eslint-plugin@5.5.0(eslint@9.39.4))(@typescript-eslint/eslint-plugin@8.59.0(@typescript-eslint/parser@8.59.0(eslint@9.39.4)(typescript@5.9.3))(eslint@9.39.4)(typescript@5.9.3))(@typescript-eslint/parser@8.59.0(eslint@9.39.4)(typescript@5.9.3))(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.59.0(eslint@9.39.4)(typescript@5.9.3))(eslint@9.39.4))(eslint@9.39.4)(globals@17.5.0)':
@@ -13923,8 +13925,6 @@ snapshots:
   '@tokenizer/token@0.3.0': {}
 
   '@tsd/typescript@5.9.3': {}
-
-  '@twemoji/parser@16.0.0': {}
 
   '@tybys/wasm-util@0.10.1':
     dependencies:
@@ -17803,9 +17803,9 @@ snapshots:
 
   methods@1.1.2: {}
 
-  mfm-js@0.25.0:
+  mfm-js@0.26.0:
     dependencies:
-      '@twemoji/parser': 16.0.0
+      '@misskey-dev/emoji-data': 17.0.0
 
   micromark-core-commonmark@2.0.3:
     dependencies:
