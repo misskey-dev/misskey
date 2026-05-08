@@ -4,41 +4,161 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<PageWithHeader>
-	<div class="_spacer" style="--MI_SPACER-w: 700px;">
-		<div class="_gaps">
-			<div class="_panel" style="padding: 24px;">
-				<h2 style="margin-top: 0;">活動告知TL</h2>
-				<p>
-					歌ってみた・配信開始・重大発表・作品公開など、活動に関する告知を見るためのページです。
-				</p>
-				<p>
-					活動に関するお知らせを投稿するときは、本文に <b>#活動告知</b> を入れてください。
-				</p>
-				<MkButton primary @click="openTag">
-					<i class="ti ti-megaphone"></i>
-					<span>#活動告知 の投稿を見る</span>
-				</MkButton>
+	<MkStickyContainer>
+		<template #header>
+			<MkPageHeader :actions="headerActions" :tabs="headerTabs"/>
+		</template>
+
+		<div class="_spacer" style="--MI_SPACER-w: 700px;">
+			<div class="$style.root">
+				<section class="_panel" :class="$style.hero">
+					<div :class="$style.badge">#活動告知</div>
+					<h1 :class="$style.title">活動告知TL</h1>
+					<p :class="$style.description">
+						配信、動画投稿、作品公開、イベント告知など、活動のお知らせを見つけやすくするための専用ページです。
+					</p>
+
+					<div :class="$style.actions">
+						<MkButton primary @click="openTag">
+							#活動告知 を見る
+						</MkButton>
+						<MkButton @click="composeAnnouncement">
+							活動告知を投稿する
+						</MkButton>
+					</div>
+				</section>
+
+				<section class="_panel" :class="$style.timelinePlaceholder">
+					<div :class="$style.timelineHeader">
+						<div>
+							<h2 :class="$style.timelineTitle">活動告知の投稿</h2>
+							<p :class="$style.timelineDescription">
+								ここに #活動告知 の投稿を直接表示できるようにしていく予定です。
+							</p>
+						</div>
+					</div>
+
+					<div :class="$style.empty">
+						<div :class="$style.emptyIcon">📣</div>
+						<div>
+							<p :class="$style.emptyTitle">まだ準備中です</p>
+							<p :class="$style.emptyText">
+								次の段階で、この場所に #活動告知 の投稿一覧を表示します。
+							</p>
+						</div>
+					</div>
+				</section>
 			</div>
 		</div>
-	</div>
-</PageWithHeader>
+	</MkStickyContainer>
 </template>
 
 <script lang="ts" setup>
 import MkButton from '@/components/MkButton.vue';
-import PageWithHeader from '@/components/global/PageWithHeader.vue';
-import { definePage } from '@/page.js';
-import { useRouter } from '@/router.js';
+import * as os from '@/os.js';
 
-const router = useRouter();
+const headerActions = [];
+const headerTabs = [];
 
 function openTag() {
-	router.push('/tags/活動告知');
+	location.href = '/tags/活動告知';
 }
 
-definePage(() => ({
-	title: '活動告知TL',
-	icon: 'ti ti-megaphone',
-}));
+function composeAnnouncement() {
+	os.post({
+		initialText: '#活動告知 ',
+	});
+}
+
 </script>
+
+<style lang="scss" module>
+.root {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.hero {
+	padding: 24px;
+}
+
+.badge {
+	display: inline-flex;
+	align-items: center;
+	width: fit-content;
+	margin-bottom: 12px;
+	padding: 4px 10px;
+	border-radius: 999px;
+	background: var(--MI_THEME-accentedBg);
+	color: var(--MI_THEME-accent);
+	font-size: 0.9em;
+	font-weight: 700;
+}
+
+.title {
+	margin: 0;
+	font-size: 1.6em;
+}
+
+.description {
+	margin: 12px 0 0;
+	line-height: 1.7;
+	color: var(--MI_THEME-fg);
+	opacity: 0.85;
+}
+
+.actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin-top: 20px;
+}
+
+.timelinePlaceholder {
+	overflow: hidden;
+}
+
+.timelineHeader {
+	display: flex;
+	justify-content: space-between;
+	gap: 16px;
+	padding: 20px 24px;
+	border-bottom: solid 1px var(--MI_THEME-divider);
+}
+
+.timelineTitle {
+	margin: 0;
+	font-size: 1.1em;
+}
+
+.timelineDescription {
+	margin: 8px 0 0;
+	font-size: 0.95em;
+	color: var(--MI_THEME-fg);
+	opacity: 0.75;
+}
+
+.empty {
+	display: flex;
+	gap: 14px;
+	padding: 28px 24px;
+}
+
+.emptyIcon {
+	font-size: 2em;
+	line-height: 1;
+}
+
+.emptyTitle {
+	margin: 0;
+	font-weight: 700;
+}
+
+.emptyText {
+	margin: 6px 0 0;
+	color: var(--MI_THEME-fg);
+	opacity: 0.75;
+	line-height: 1.7;
+}
+</style>
