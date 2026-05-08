@@ -9,9 +9,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:width="1000"
 	:height="600"
 	:scroll="false"
-	:withOkButton="true"
+	:withOkButton="false"
 	@close="cancel()"
-	@ok="ok()"
 	@closed="emit('closed')"
 >
 	<template #header><i class="ti ti-box"></i> カタログ</template>
@@ -31,22 +30,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</MkFoldableSection>
 		</div>
-		<div v-show="selectedId != null" :class="$style.preview" class="_panel">
-			<canvas ref="canvas" :class="$style.canvas"></canvas>
-			<MkButton :class="$style.unselectButton" small iconOnly @click="selectedId = null"><i class="ti ti-x"></i></MkButton>
-			<MkButton v-if="selectedObjectDef != null && Object.keys(selectedObjectDef.options.schema).length > 0" :class="$style.customizeButton" small iconOnly @click="showObjectOptions = !showObjectOptions"><i class="ti ti-tool"></i></MkButton>
+		<Transition
+			:enterActiveClass="prefer.s.animation ? $style.transition_preview_enterActive : ''"
+			:leaveActiveClass="prefer.s.animation ? $style.transition_preview_leaveActive : ''"
+			:enterFromClass="prefer.s.animation ? $style.transition_preview_enterFrom : ''"
+			:leaveToClass="prefer.s.animation ? $style.transition_preview_leaveTo : ''"
+			:duration="300"
+		>
+			<div v-show="selectedId != null" :class="$style.previewContainer" @click="selectedId = null">
+				<div :class="$style.preview" @click.stop>
+					<canvas ref="canvas" :class="$style.canvas"></canvas>
+					<MkButton :class="$style.unselectButton" small rounded iconOnly @click="selectedId = null"><i class="ti ti-x"></i></MkButton>
+					<MkButton v-if="selectedObjectDef != null && Object.keys(selectedObjectDef.options.schema).length > 0" :class="$style.customizeButton" small rounded iconOnly @click="showObjectOptions = !showObjectOptions"><i class="ti ti-tool"></i></MkButton>
+					<MkButton :class="$style.addButton" small rounded primary @click="ok"><i class="ti ti-plus"></i></MkButton>
 
-			<Transition
-				:enterActiveClass="prefer.s.animation ? $style.transition_options_enterActive : ''"
-				:leaveActiveClass="prefer.s.animation ? $style.transition_options_leaveActive : ''"
-				:enterFromClass="prefer.s.animation ? $style.transition_options_enterFrom : ''"
-				:leaveToClass="prefer.s.animation ? $style.transition_options_leaveTo : ''"
-			>
-				<div v-if="selectedObjectDef != null && selectedInstanceId != null && showObjectOptions" :class="$style.customize" class="_panel _shadow">
-					<XObjectCustomizeForm :schema="selectedObjectDef.options.schema" :options="selectedObjectOptionsState" @update="(k, v) => updateObjectOption(k, v)"></XObjectCustomizeForm>
+					<Transition
+						:enterActiveClass="prefer.s.animation ? $style.transition_options_enterActive : ''"
+						:leaveActiveClass="prefer.s.animation ? $style.transition_options_leaveActive : ''"
+						:enterFromClass="prefer.s.animation ? $style.transition_options_enterFrom : ''"
+						:leaveToClass="prefer.s.animation ? $style.transition_options_leaveTo : ''"
+					>
+						<div v-if="selectedObjectDef != null && selectedInstanceId != null && showObjectOptions" :class="$style.customize" class="_panel _shadow">
+							<XObjectCustomizeForm :schema="selectedObjectDef.options.schema" :options="selectedObjectOptionsState" @update="(k, v) => updateObjectOption(k, v)"></XObjectCustomizeForm>
+						</div>
+					</Transition>
 				</div>
-			</Transition>
-		</div>
+			</div>
+		</Transition>
 	</div>
 </MkModalWindow>
 </template>
@@ -131,12 +141,11 @@ function updateObjectOption(k: string, v: any) {
 function ok() {
 	if (selectedId.value == null) return;
 
-	const recentlyUsed = store.s.recentlyUsedRoomObjects;
-	if (!recentlyUsed.includes(selectedId.value)) {
-		recentlyUsed.unshift(selectedId.value);
-		if (recentlyUsed.length > 30) recentlyUsed.pop();
-		store.set('recentlyUsedRoomObjects', recentlyUsed);
-	}
+	let recentlyUsed = store.s.recentlyUsedRoomObjects;
+	if (recentlyUsed.includes(selectedId.value)) recentlyUsed = recentlyUsed.filter(id => id !== selectedId.value);
+	recentlyUsed.unshift(selectedId.value);
+	if (recentlyUsed.length > 30) recentlyUsed.pop();
+	store.set('recentlyUsedRoomObjects', recentlyUsed);
 
 	emit('ok', {
 		id: selectedId.value,
@@ -177,7 +186,7 @@ async function cancel() {
 .catalogItem {
 }
 
-.preview {
+.previewContainer {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -185,6 +194,19 @@ async function cancel() {
 	height: 100%;
 	z-index: 10;
 	overflow: clip;
+	backdrop-filter: blur(12px);
+}
+
+.preview {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: calc(100% - 30px);
+	z-index: 10;
+	border-radius: 16px 16px 0 0;
+	overflow: clip;
+	background: var(--MI_THEME-panel)
 }
 
 .canvas {
@@ -198,14 +220,22 @@ async function cancel() {
 
 .unselectButton {
 	position: absolute;
-	top: 8px;
-	left: 8px;
+	top: 10px;
+	left: 10px;
 }
 
 .customizeButton {
 	position: absolute;
-	top: 8px;
-	right: 8px;
+	top: 10px;
+	right: 10px;
+}
+
+.addButton {
+	position: absolute;
+	bottom: 10px;
+	left: 0;
+	right: 0;
+	margin: 0 auto;
 }
 
 .customize {
@@ -218,6 +248,26 @@ async function cancel() {
 	overflow: auto;
 	box-sizing: border-box;
 	padding: 24px;
+}
+
+.transition_preview_enterActive,
+.transition_preview_leaveActive {
+	opacity: 1;
+	transition: opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.transition_preview_enterFrom,
+.transition_preview_leaveTo {
+	opacity: 0;
+}
+
+.transition_preview_enterActive .preview,
+.transition_preview_leaveActive .preview {
+	transform: translateX(0);
+	transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.transition_preview_enterFrom .preview,
+.transition_preview_leaveTo .preview {
+	transform: translateY(200px);
 }
 
 .transition_options_enterActive,
