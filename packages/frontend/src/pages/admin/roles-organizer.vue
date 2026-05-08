@@ -219,11 +219,57 @@ const displayOrderChanges = computed(() => {
 });
 
 async function confirmBulkDisplayOrderUpdate() {
-	await os.confirm({
+	const changes = [...displayOrderChanges.value];
+
+	const { canceled } = await os.confirm({
 		type: 'warning',
 		title: 'displayOrderを一括整理',
-		text: `整理対象: ${displayOrderChanges.value.length}件\n\nまだこの段階では実際の更新は行われません。`,
+		text: `整理対象: ${changes.length}件\n\ndisplayOrderを推奨値へ更新します。`,
 	});
+
+	if (canceled) return;
+
+	try {
+		for (const change of changes) {
+			const role = roles.find(x => x.id === change.id);
+			if (role == null) continue;
+
+			await misskeyApi('admin/roles/update', {
+				roleId: role.id,
+				name: role.name,
+				description: role.description,
+				color: role.color,
+				iconUrl: role.iconUrl,
+				target: role.target,
+				isPublic: role.isPublic,
+				isExplorable: role.isExplorable,
+				asBadge: role.asBadge,
+				canEditMembersByModerator: role.canEditMembersByModerator,
+				displayOrder: change.suggestedDisplayOrder,
+				isAdministrator: role.isAdministrator,
+				isModerator: role.isModerator,
+				policies: role.policies,
+				condFormula: role.condFormula,
+				preserveAssignmentOnMoveAccount: role.preserveAssignmentOnMoveAccount,
+			});
+		}
+
+		await os.alert({
+			type: 'success',
+			title: '整理完了',
+			text: `${changes.length}件のdisplayOrderを更新しました。`,
+		});
+
+		location.reload();
+	} catch (err) {
+		console.error(err);
+
+		await os.alert({
+			type: 'error',
+			title: '更新失敗',
+			text: 'displayOrderの更新中にエラーが発生しました。',
+		});
+	}
 }
 
 const manualRoles = computed(() => sortedRoles.value.filter(role => role.target === 'manual'));
