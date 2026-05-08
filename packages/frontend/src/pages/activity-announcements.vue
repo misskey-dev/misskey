@@ -38,15 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</div>
 					</div>
 
-					<div :class="$style.empty">
-						<div :class="$style.emptyIcon">📣</div>
-						<div>
-							<p :class="$style.emptyTitle">まだ準備中です</p>
-							<p :class="$style.emptyText">
-								次の段階で、この場所に #活動告知 の投稿一覧を表示します。
-							</p>
-						</div>
-					</div>
+					<MkNotesTimeline :paginator="paginator"/>
 				</section>
 			</div>
 		</div>
@@ -54,11 +46,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { markRaw } from 'vue';
 import MkButton from '@/components/MkButton.vue';
+import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
+import { Paginator } from '@/utility/paginator.js';
 import * as os from '@/os.js';
 
 const headerActions = [];
 const headerTabs = [];
+const paginator = markRaw(new Paginator('notes/search-by-tag', {
+	limit: 10,
+	params: {
+		tag: '活動告知',
+	},
+}));
 
 function openTag() {
 	location.href = '/tags/活動告知';
@@ -137,28 +138,5 @@ function composeAnnouncement() {
 	font-size: 0.95em;
 	color: var(--MI_THEME-fg);
 	opacity: 0.75;
-}
-
-.empty {
-	display: flex;
-	gap: 14px;
-	padding: 28px 24px;
-}
-
-.emptyIcon {
-	font-size: 2em;
-	line-height: 1;
-}
-
-.emptyTitle {
-	margin: 0;
-	font-weight: 700;
-}
-
-.emptyText {
-	margin: 6px 0 0;
-	color: var(--MI_THEME-fg);
-	opacity: 0.75;
-	line-height: 1.7;
 }
 </style>
