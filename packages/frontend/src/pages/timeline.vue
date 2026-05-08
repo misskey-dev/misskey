@@ -289,7 +289,15 @@ const headerTabs = computed(() => [...(prefer.r.pinnedUserLists.value.map(l => (
 	title: i18n.ts.channel,
 	iconOnly: true,
 	onClick: chooseChannel,
-}] as Tab[]);
+}, {
+	key: 'activity-announcements',
+	icon: 'ti ti-speakerphone',
+	title: '活動告知',
+	iconOnly: true,
+	onClick: () => {
+		location.href = '/activity-announcements';
+	},
+}]);
 
 const headerTabsWhenNotLogin = computed(() => [...availableBasicTimelines().map(tl => ({
 	key: tl,
