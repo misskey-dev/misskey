@@ -17,6 +17,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<p :class="$style.description">
 						配信、動画投稿、作品公開、イベント告知など、活動のお知らせを見つけやすくするための専用ページです。
 					</p>
+<div :class="$style.guide">
+	<div :class="$style.guideTitle">こんな時に使えます</div>
+	<ul :class="$style.guideList">
+		<li>配信開始・配信予定のお知らせ</li>
+		<li>動画投稿・歌ってみた・作品公開の告知</li>
+		<li>イベント、企画、募集などのお知らせ</li>
+	</ul>
+	<p :class="$style.guideNote">
+		投稿フォームのスピーカーボタン、または「活動告知を投稿する」ボタンから簡単に投稿できます。
+	</p>
+</div>
 
 					<div :class="$style.actions">
 						<MkButton primary @click="openTag">
@@ -114,6 +125,33 @@ function composeAnnouncement() {
 	flex-wrap: wrap;
 	gap: 10px;
 	margin-top: 20px;
+}
+
+.guide {
+	margin-top: 18px;
+	padding: 14px 16px;
+	border-radius: 12px;
+	background: var(--MI_THEME-bg);
+	border: solid 1px var(--MI_THEME-divider);
+}
+
+.guideTitle {
+	font-weight: 700;
+	margin-bottom: 8px;
+}
+
+.guideList {
+	margin: 0;
+	padding-left: 1.4em;
+	line-height: 1.8;
+}
+
+.guideNote {
+	margin: 10px 0 0;
+	font-size: 0.95em;
+	color: var(--MI_THEME-fg);
+	opacity: 0.75;
+	line-height: 1.7;
 }
 
 .timelinePlaceholder {
