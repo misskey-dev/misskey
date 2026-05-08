@@ -408,10 +408,27 @@ function clearActivityAnnouncement() {
 	if (hashtags.value.trim() === '') withHashtags.value = false;
 }
 
-function insertActivityAnnouncementTemplate() {
+function insertActivityAnnouncementTemplate(genreTag: string | null = null) {
 	if (textareaEl.value == null) return;
 
-	insertTextAtCursor(textareaEl.value, '#活動告知\n\n【内容】\n\n【日時】\n\n【URL】\n');
+	const tags = genreTag == null ? '#活動告知' : `#活動告知 #${genreTag}`;
+	let template = '';
+
+	if (genreTag === '活動告知_配信') {
+		template = `${tags}\n\n【配信内容】\n\n【開始時間】\n\n【配信URL】\n`;
+	} else if (genreTag === '活動告知_動画') {
+		template = `${tags}\n\n【動画内容】\n\n【公開場所】\n\n【URL】\n`;
+	} else if (genreTag === '活動告知_作品公開') {
+		template = `${tags}\n\n【作品内容】\n\n【公開場所】\n\n【URL】\n`;
+	} else if (genreTag === '活動告知_イベント') {
+		template = `${tags}\n\n【イベント内容】\n\n【開催日時】\n\n【参加方法】\n`;
+	} else if (genreTag === '活動告知_募集') {
+		template = `${tags}\n\n【募集内容】\n\n【条件】\n\n【応募・参加方法】\n`;
+	} else {
+		template = `${tags}\n\n【内容】\n\n【日時】\n\n【URL】\n`;
+	}
+
+	insertTextAtCursor(textareaEl.value, template);
 	withHashtags.value = false;
 }
 
@@ -431,11 +448,19 @@ function showActivityAnnouncementMenu(ev: PointerEvent) {
 		{
 			type: 'button' as const,
 			icon: 'ti ti-pencil',
-			text: '本文にテンプレを挿入',
+			text: '通常テンプレを挿入',
 			action: () => {
 				insertActivityAnnouncementTemplate();
 			},
 		},
+		...activityAnnouncementGenres.filter(genre => genre.tag != null).map(genre => ({
+			type: 'button' as const,
+			icon: genre.icon,
+			text: `${genre.text}テンプレを挿入`,
+			action: () => {
+				insertActivityAnnouncementTemplate(genre.tag);
+			},
+		})),
 		{
 			type: 'button' as const,
 			icon: 'ti ti-x',
