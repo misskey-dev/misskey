@@ -1169,9 +1169,18 @@ importers:
       i18n:
         specifier: workspace:*
         version: link:../i18n
+      json5:
+        specifier: 2.2.3
+        version: 2.2.3
       misskey-js:
         specifier: workspace:*
         version: link:../misskey-js
+      shiki:
+        specifier: 4.0.2
+        version: 4.0.2
+      tinycolor2:
+        specifier: 1.6.0
+        version: 1.6.0
       vue:
         specifier: 3.5.33
         version: 3.5.33(typescript@5.9.3)
@@ -1179,21 +1188,18 @@ importers:
       '@types/node':
         specifier: 24.12.2
         version: 24.12.2
+      '@types/tinycolor2':
+        specifier: 1.4.6
+        version: 1.4.6
       '@typescript-eslint/eslint-plugin':
         specifier: 8.59.0
         version: 8.59.0(@typescript-eslint/parser@8.59.0(eslint@9.39.4)(typescript@5.9.3))(eslint@9.39.4)(typescript@5.9.3)
       '@typescript-eslint/parser':
         specifier: 8.59.0
         version: 8.59.0(eslint@9.39.4)(typescript@5.9.3)
-      esbuild:
-        specifier: 0.28.0
-        version: 0.28.0
       eslint-plugin-vue:
         specifier: 10.9.0
         version: 10.9.0(@stylistic/eslint-plugin@5.5.0(eslint@9.39.4))(@typescript-eslint/parser@8.59.0(eslint@9.39.4)(typescript@5.9.3))(eslint@9.39.4)(vue-eslint-parser@10.4.0(eslint@9.39.4))
-      nodemon:
-        specifier: 3.1.14
-        version: 3.1.14
       vue-eslint-parser:
         specifier: 10.4.0
         version: 10.4.0(eslint@9.39.4)
