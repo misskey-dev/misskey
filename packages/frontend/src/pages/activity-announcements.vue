@@ -45,15 +45,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 						活動内容に合わせて、ジャンル別の活動告知を見られます。
 					</p>
 					<div :class="$style.categoryTabs">
-						<a
+						<button
 							v-for="genre in activityAnnouncementGenres"
 							:key="genre.key"
+							type="button"
 							:class="[$style.categoryTab, { [$style.categoryTabActive]: selectedTag === genre.tag }]"
-							:href="genre.href"
+							@click="selectActivityAnnouncementGenre(genre.tag)"
 						>
 							<i :class="genre.icon"></i>
 							<span>{{ genre.label }}</span>
-						</a>
+						</button>
 					</div>	
 
 				</div>
@@ -86,7 +87,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, markRaw } from 'vue';
+import { computed, markRaw, ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkNotesTimeline from '@/components/MkNotesTimeline.vue';
 import { Paginator } from '@/utility/paginator.js';
@@ -100,28 +101,24 @@ const activityAnnouncementGenres = [
 		label: 'すべて',
 		icon: 'ti ti-speakerphone',
 		tag: '活動告知',
-		href: '/activity-announcements',
 	},
 	{
 		key: 'stream',
 		label: '配信',
 		icon: 'ti ti-device-tv',
 		tag: '活動告知_配信',
-		href: '/activity-announcements?tag=活動告知_配信',
 	},
 	{
 		key: 'video',
 		label: '動画',
 		icon: 'ti ti-movie',
 		tag: '活動告知_動画',
-		href: '/activity-announcements?tag=活動告知_動画',
 	},
 	{
 		key: 'works',
 		label: '作品公開',
 		icon: 'ti ti-palette',
 		tag: '活動告知_作品公開',
-		href: '/activity-announcements?tag=活動告知_作品公開',
 	},
 	{
 		key: 'event',
@@ -139,16 +136,17 @@ const activityAnnouncementGenres = [
 	},
 ];
 
-const selectedTag = computed(() => {
-	const tag = new URLSearchParams(location.search).get('tag');
-	return activityAnnouncementGenres.some(genre => genre.tag === tag) ? tag : '活動告知';
-});
+const selectedTag = ref('活動告知');
 const paginator = computed(() => markRaw(new Paginator('notes/search-by-tag', {
 	limit: 10,
 	params: {
 		tag: selectedTag.value,
 	},
 })));
+
+function selectActivityAnnouncementGenre(tag: string) {
+	selectedTag.value = tag;
+}
 
 function openTag() {
 	location.href = '/tags/活動告知';
@@ -244,6 +242,9 @@ function composeAnnouncement() {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 8px;
+	cursor: pointer;
+	appearance: none;
+	font: inherit;
 }
 
 .categoryTab {
