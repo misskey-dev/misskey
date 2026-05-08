@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 
 					<div v-if="displayOrderChanges.length > 0" :class="$style.bulkActionArea">
-						<MkButton primary rounded>
+						<MkButton primary rounded @click="confirmBulkDisplayOrderUpdate">
 							<i class="ti ti-arrows-sort"></i>
 							displayOrderを一括整理
 						</MkButton>
@@ -161,6 +161,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import MkButton from '@/components/MkButton.vue';
 import { definePage } from '@/page.js';
 import { katsudoRoleCategories } from './katsudo-role-categories.js';
+import * as os from '@/os.js';
 
 const roles = await misskeyApi('admin/roles/list');
 
@@ -216,6 +217,14 @@ const displayOrderChanges = computed(() => {
 			}));
 	});
 });
+
+async function confirmBulkDisplayOrderUpdate() {
+	await os.confirm({
+		type: 'warning',
+		title: 'displayOrderを一括整理',
+		text: `整理対象: ${displayOrderChanges.value.length}件\n\nまだこの段階では実際の更新は行われません。`,
+	});
+}
 
 const manualRoles = computed(() => sortedRoles.value.filter(role => role.target === 'manual'));
 const conditionalRoles = computed(() => sortedRoles.value.filter(role => role.target === 'conditional'));
