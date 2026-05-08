@@ -17,3 +17,19 @@ export const KATSUDO_DEFAULT_EMOJIS = [
     ':big_love:',
     ':ore:'
 ];
+
+export const KATSUDO_DEFAULT_MENU = [
+	'notifications',
+	'chat',
+	'channels',
+	'pages',
+	'announcements',
+	'search',
+	'-',
+	'clips',
+	'drive',
+	'followRequests',
+	'explore',
+	'-',
+	'ui',
+];
