@@ -26,7 +26,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<div :class="$style.categoryName">{{ category.label }}</div>
 								<div :class="$style.categoryRange">{{ category.range }}</div>
 							</div>
-							<div :class="$style.categoryCount">{{ getRolesByCategory(category.key).length }}件</div>
+							<div :class="$style.categoryBadges">
+								<span :class="$style.categoryCount">{{ getRolesByCategory(category.key).length }}件</span>
+								<span
+									:class="[
+										$style.categoryDiffCount,
+										getDifferentDisplayOrderCount(category.key) > 0 ? $style.categoryDiffCountWarning : $style.categoryDiffCountOk,
+									]"
+								>
+									整理推奨 {{ getDifferentDisplayOrderCount(category.key) }}件
+								</span>
+							</div>
 						</div>
 
 						<div v-if="getRolesByCategory(category.key).length > 0" :class="$style.roleList">
@@ -142,6 +152,10 @@ function getSuggestedDisplayOrder(role: typeof roles[number], categoryKey: strin
 
 function isDisplayOrderDifferent(role: typeof roles[number], categoryKey: string) {
 	return role.displayOrder !== getSuggestedDisplayOrder(role, categoryKey);
+}
+
+function getDifferentDisplayOrderCount(categoryKey: string) {
+	return getRolesByCategory(categoryKey).filter(role => isDisplayOrderDifferent(role, categoryKey)).length;
 }
 
 const manualRoles = computed(() => sortedRoles.value.filter(role => role.target === 'manual'));
@@ -289,6 +303,31 @@ definePage(() => ({
 }
 
 .orderStatusOk {
+	background: rgba(34, 197, 94, 0.16);
+	color: #15803d;
+}
+
+.categoryBadges {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+	gap: 6px;
+}
+
+.categoryDiffCount {
+	flex-shrink: 0;
+	padding: 4px 8px;
+	border-radius: 999px;
+	font-size: 0.85em;
+	font-weight: 700;
+}
+
+.categoryDiffCountWarning {
+	background: rgba(251, 191, 36, 0.18);
+	color: #b45309;
+}
+
+.categoryDiffCountOk {
 	background: rgba(34, 197, 94, 0.16);
 	color: #15803d;
 }
