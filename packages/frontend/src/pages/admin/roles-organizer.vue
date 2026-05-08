@@ -29,6 +29,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</p>
 					</div>
 
+					<div v-if="displayOrderChanges.length > 0" :class="$style.bulkActionArea">
+						<MkButton primary rounded>
+							<i class="ti ti-arrows-sort"></i>
+							displayOrderを一括整理
+						</MkButton>
+					</div>
+
 					<div v-if="displayOrderChanges.length > 0" :class="$style.changeList">
 						<div v-for="change in displayOrderChanges" :key="change.id" class="_panel" :class="$style.changeCard">
 							<div>
@@ -39,6 +46,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 								{{ change.currentDisplayOrder }} → {{ change.suggestedDisplayOrder }}
 							</div>
 						</div>
+					</div>
+
+					<div v-if="displayOrderChanges.length > 0" :class="$style.bulkActionArea">
+						<MkButton primary rounded>
+							<i class="ti ti-arrows-sort"></i>
+							displayOrderを一括整理
+						</MkButton>
 					</div>
 
 					<div v-else class="_panel" :class="$style.changeSummary">
@@ -144,6 +158,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed } from 'vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import MkButton from '@/components/MkButton.vue';
 import { definePage } from '@/page.js';
 import { katsudoRoleCategories } from './katsudo-role-categories.js';
 
@@ -425,5 +440,15 @@ definePage(() => ({
 	color: #b45309;
 	font-size: 0.9em;
 	font-weight: 700;
+}
+
+.bulkActionArea {
+	display: flex;
+	justify-content: flex-end;
+}
+
+.bulkActionArea {
+	display: flex;
+	justify-content: flex-end;
 }
 </style>
