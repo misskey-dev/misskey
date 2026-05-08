@@ -29,19 +29,38 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</p>
 </div>
 
-<div :class="$style.categoryBox">
-	<div :class="$style.categoryTitle">おすすめ活動タグ</div>
-	<p :class="$style.categoryDescription">
-		内容に合わせて追加すると、活動内容をさらに見つけてもらいやすくなります。
-	</p>
-	<div :class="$style.categoryList">
-		<a :class="$style.categoryTag" href="/tags/活動告知_配信">#活動告知_配信</a>
-		<a :class="$style.categoryTag" href="/tags/活動告知_動画">#活動告知_動画</a>
-		<a :class="$style.categoryTag" href="/tags/活動告知_作品公開">#活動告知_作品公開</a>
-		<a :class="$style.categoryTag" href="/tags/活動告知_イベント">#活動告知_イベント</a>
-		<a :class="$style.categoryTag" href="/tags/活動告知_募集">#活動告知_募集</a>
-	</div>
-</div>
+				<div :class="$style.categoryBox">
+					<div :class="$style.categoryTitle">ジャンル別に見る</div>
+					<p :class="$style.categoryDescription">
+						活動内容に合わせて、ジャンル別の活動告知を見られます。
+					</p>
+					<div :class="$style.categoryTabs">
+						<a :class="[$style.categoryTab, $style.categoryTabActive]" href="/activity-announcements">
+							<i class="ti ti-speakerphone"></i>
+							<span>すべて</span>
+						</a>
+						<a :class="$style.categoryTab" href="/tags/活動告知_配信">
+							<i class="ti ti-device-tv"></i>
+							<span>配信</span>
+						</a>
+						<a :class="$style.categoryTab" href="/tags/活動告知_動画">
+							<i class="ti ti-movie"></i>
+							<span>動画</span>
+						</a>
+						<a :class="$style.categoryTab" href="/tags/活動告知_作品公開">
+							<i class="ti ti-palette"></i>
+							<span>作品公開</span>
+						</a>
+						<a :class="$style.categoryTab" href="/tags/活動告知_イベント">
+							<i class="ti ti-calendar-event"></i>
+							<span>イベント</span>
+						</a>
+						<a :class="$style.categoryTab" href="/tags/活動告知_募集">
+							<i class="ti ti-users"></i>
+							<span>募集</span>
+						</a>
+					</div>
+				</div>
 
 					<div :class="$style.actions">
 						<MkButton primary @click="openTag">
@@ -155,27 +174,38 @@ function composeAnnouncement() {
 	line-height: 1.7;
 }
 
-.categoryList {
+.categoryTabs {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 8px;
 }
 
-.categoryTag {
+.categoryTab {
 	display: inline-flex;
 	align-items: center;
-	padding: 6px 10px;
+	gap: 6px;
+	padding: 8px 12px;
 	border-radius: 999px;
-	background: var(--MI_THEME-accentedBg);
-	color: var(--MI_THEME-accent);
-	font-size: 0.9em;
+	background: var(--MI_THEME-bg);
+	border: solid 1px var(--MI_THEME-divider);
+	color: var(--MI_THEME-fg);
+	font-size: 0.92em;
 	font-weight: 700;
 	text-decoration: none;
+	transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
 }
 
-.categoryTag:hover {
+.categoryTab:hover {
 	text-decoration: none;
-	filter: brightness(1.05);
+	transform: translateY(-1px);
+	border-color: rgba(56, 189, 248, 0.55);
+	background: rgba(56, 189, 248, 0.10);
+}
+
+.categoryTabActive {
+	background: rgba(56, 189, 248, 0.16);
+	border-color: rgba(56, 189, 248, 0.55);
+	color: #0284c7;
 }
 
 .actions {
