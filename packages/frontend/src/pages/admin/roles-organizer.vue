@@ -172,13 +172,12 @@ SPDX-License-Identifier: AGPL-3.0-only
                                                                 </span>
 
 								<select
-									v-if="category.key === 'uncategorized'"
 									:class="$style.moveCategorySelect"
 									@change="moveRoleToCategoryFromSelect(role.name, $event)"
 								>
 									<option value="">移動先を選択</option>
 									<option
-										v-for="targetCategory in movableRoleCategories"
+										v-for="targetCategory in getMovableRoleCategories(category.key)"
 										:key="targetCategory.key"
 										:value="targetCategory.key"
 									>
@@ -284,9 +283,9 @@ const roleCategories = computed(() => editableRoleCategories.value);
 const newCategoryLabel = ref('');
 const newCategoryBaseOrder = ref(3000);
 
-const movableRoleCategories = computed(() => {
-	return roleCategories.value.filter(category => category.key !== 'uncategorized');
-});
+function getMovableRoleCategories(currentCategoryKey: string) {
+	return roleCategories.value.filter(category => category.key !== currentCategoryKey);
+}
 
 function getRoleCategoryKey(role: typeof roles[number]) {
 	for (const category of roleCategories.value) {
