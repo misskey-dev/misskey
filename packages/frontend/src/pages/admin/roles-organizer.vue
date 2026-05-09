@@ -57,6 +57,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<summary :class="$style.settingsJsonSummary">
 							現在の一時設定JSONを見る
 						</summary>
+
+						<div :class="$style.settingsJsonActions">
+							<MkButton rounded @click="copyEditableRoleCategoriesJson">
+								JSONをコピー
+							</MkButton>
+						</div>
+
 						<pre :class="$style.settingsJsonPreview">{{ editableRoleCategoriesJson }}</pre>
 					</details>
 
@@ -381,6 +388,16 @@ function resetTemporaryRoleCategories() {
 	editableRoleCategories.value = createEditableRoleCategories();
 	newCategoryLabel.value = '';
 	newCategoryBaseOrder.value = 3000;
+}
+
+async function copyEditableRoleCategoriesJson() {
+	await navigator.clipboard.writeText(editableRoleCategoriesJson.value);
+
+	await os.alert({
+		type: 'success',
+		title: 'コピーしました',
+		text: '現在の一時設定JSONをクリップボードにコピーしました。',
+	});
 }
 
 function getUncategorizedRoleNamesText() {
@@ -873,5 +890,11 @@ definePage(() => ({
 	font-family: monospace;
 	font-size: 0.85em;
 	white-space: pre;
+}
+
+.settingsJsonActions {
+	display: flex;
+	justify-content: flex-end;
+	margin-top: 10px;
 }
 </style>
