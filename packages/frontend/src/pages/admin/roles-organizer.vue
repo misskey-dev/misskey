@@ -99,10 +99,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 
 					<div v-if="displayOrderChanges.length > 0" :class="$style.bulkActionArea">
-                                                <MkButton primary rounded @click="confirmBulkDisplayOrderUpdate">
-                                                        <i class="ti ti-arrows-sort"></i>
-                                                        displayOrderを一括整理
-                                                </MkButton>
+						<MkButton primary rounded @click="confirmBulkDisplayOrderUpdate">
+							<i class="ti ti-arrows-sort"></i>
+							displayOrderを一括整理
+						</MkButton>
 					</div>
 
 					<div v-else class="_panel" :class="$style.changeSummary">
@@ -151,13 +151,20 @@ SPDX-License-Identifier: AGPL-3.0-only
                                                                         {{ category.key }}
                                                                 </span>
 
-								<MkButton
+								<select
 									v-if="category.key === 'uncategorized'"
-									rounded
-									@click="moveRoleToCategory(role.name, 'rank')"
+									:class="$style.moveCategorySelect"
+									@change="moveRoleToCategoryFromSelect(role.name, $event)"
 								>
-									活動称号系へ
-								</MkButton>
+									<option value="">移動先を選択</option>
+									<option
+										v-for="targetCategory in movableRoleCategories"
+										:key="targetCategory.key"
+										:value="targetCategory.key"
+									>
+										{{ targetCategory.label }}
+									</option>
+								</select>
 
                                                                 <span :class="$style.compactRoleOrder">
                                                                         現在: {{ role.displayOrder }} → 推奨: {{ getSuggestedDisplayOrder(role, category.key) }}
@@ -254,6 +261,10 @@ const editableRoleCategories = ref(katsudoRoleCategories.map(category => ({
 
 const roleCategories = computed(() => editableRoleCategories.value);
 
+const movableRoleCategories = computed(() => {
+	return roleCategories.value.filter(category => category.key !== 'uncategorized');
+});
+
 function getRoleCategoryKey(role: typeof roles[number]) {
 	for (const category of roleCategories.value) {
 		if (category.key === 'uncategorized') continue;
@@ -289,6 +300,14 @@ function moveRoleToCategory(roleName: string, targetCategoryKey: string) {
 	if (!targetCategory.roleNames.includes(roleName)) {
 		targetCategory.roleNames.push(roleName);
 	}
+}
+
+function moveRoleToCategoryFromSelect(roleName: string, ev: Event) {
+	const select = ev.target as HTMLSelectElement;
+	if (select.value === '') return;
+
+	moveRoleToCategory(roleName, select.value);
+	select.value = '';
 }
 
 function getUncategorizedRoleNamesText() {
@@ -715,5 +734,17 @@ definePage(() => ({
 	border-radius: 8px;
 	background: var(--MI_THEME-panel);
 	color: var(--MI_THEME-fg);
+}
+
+.moveCategorySelect {
+	flex-shrink: 0;
+	max-width: 160px;
+	padding: 5px 8px;
+	border: solid 1px var(--MI_THEME-divider);
+	border-radius: 8px;
+	background: var(--MI_THEME-panel);
+	color: var(--MI_THEME-fg);
+	font: inherit;
+	font-size: 0.85em;
 }
 </style>
