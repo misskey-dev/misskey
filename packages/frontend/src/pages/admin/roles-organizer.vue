@@ -47,6 +47,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkButton>
 					</div>
 
+					<div :class="$style.settingsActions">
+						<MkButton rounded @click="resetTemporaryRoleCategories">
+							一時変更を元に戻す
+						</MkButton>
+					</div>
+
 					<div :class="$style.settingsCategoryList">
 						<div
 							v-for="category in roleCategories"
@@ -270,13 +276,17 @@ const sortedRoles = computed(() => {
 	return [...roles].sort((a, b) => b.displayOrder - a.displayOrder);
 });
 
-const editableRoleCategories = ref(katsudoRoleCategories.map(category => ({
-	key: category.key,
-	label: category.label,
-	range: category.range,
-	baseOrder: Number(category.baseOrder),
-	roleNames: [...category.roleNames],
-})));
+function createEditableRoleCategories() {
+	return katsudoRoleCategories.map(category => ({
+		key: category.key,
+		label: category.label,
+		range: category.range,
+		baseOrder: Number(category.baseOrder),
+		roleNames: [...category.roleNames],
+	}));
+}
+
+const editableRoleCategories = ref(createEditableRoleCategories());
 
 const roleCategories = computed(() => editableRoleCategories.value);
 
@@ -354,6 +364,12 @@ function addTemporaryRoleCategory() {
 	});
 
 	newCategoryLabel.value = '';
+}
+
+function resetTemporaryRoleCategories() {
+	editableRoleCategories.value = createEditableRoleCategories();
+	newCategoryLabel.value = '';
+	newCategoryBaseOrder.value = 3000;
 }
 
 function getUncategorizedRoleNamesText() {
@@ -818,5 +834,11 @@ definePage(() => ({
 	border-radius: 8px;
 	background: var(--MI_THEME-panel);
 	color: var(--MI_THEME-fg);
+}
+
+.settingsActions {
+	display: flex;
+	justify-content: flex-end;
+	margin-top: 10px;
 }
 </style>
