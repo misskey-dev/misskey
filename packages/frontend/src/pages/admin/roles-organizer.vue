@@ -53,6 +53,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkButton>
 					</div>
 
+					<details :class="$style.settingsJsonDetails">
+						<summary :class="$style.settingsJsonSummary">
+							現在の一時設定JSONを見る
+						</summary>
+						<pre :class="$style.settingsJsonPreview">{{ editableRoleCategoriesJson }}</pre>
+					</details>
+
 					<div :class="$style.settingsCategoryList">
 						<div
 							v-for="category in roleCategories"
@@ -289,6 +296,10 @@ function createEditableRoleCategories() {
 const editableRoleCategories = ref(createEditableRoleCategories());
 
 const roleCategories = computed(() => editableRoleCategories.value);
+
+const editableRoleCategoriesJson = computed(() => {
+	return JSON.stringify(editableRoleCategories.value, null, 2);
+});
 
 const newCategoryLabel = ref('');
 const newCategoryBaseOrder = ref(3000);
@@ -840,5 +851,27 @@ definePage(() => ({
 	display: flex;
 	justify-content: flex-end;
 	margin-top: 10px;
+}
+
+.settingsJsonDetails {
+	margin-top: 12px;
+}
+
+.settingsJsonSummary {
+	cursor: pointer;
+	font-weight: 700;
+}
+
+.settingsJsonPreview {
+	margin: 10px 0 0;
+	padding: 12px;
+	max-height: 260px;
+	overflow: auto;
+	border-radius: 10px;
+	background: var(--MI_THEME-bg);
+	border: solid 1px var(--MI_THEME-divider);
+	font-family: monospace;
+	font-size: 0.85em;
+	white-space: pre;
 }
 </style>
