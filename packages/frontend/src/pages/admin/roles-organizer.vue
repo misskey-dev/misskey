@@ -27,6 +27,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 						現在はコード上のカテゴリ設定を読み込んでいます。今後ここからカテゴリ・基準値・ロール分類を編集できるようにします。
 					</p>
 
+					<div :class="$style.newCategoryForm">
+						<input
+							v-model="newCategoryLabel"
+							type="text"
+							placeholder="新規カテゴリ名"
+							:class="$style.newCategoryInput"
+						>
+
+						<input
+							v-model.number="newCategoryBaseOrder"
+							type="number"
+							placeholder="基準値"
+							:class="$style.newCategoryBaseOrderInput"
+						>
+
+						<MkButton rounded @click="addTemporaryRoleCategory">
+							カテゴリ追加
+						</MkButton>
+					</div>
+
 					<div :class="$style.settingsCategoryList">
 						<div
 							v-for="category in roleCategories"
@@ -261,6 +281,9 @@ const editableRoleCategories = ref(katsudoRoleCategories.map(category => ({
 
 const roleCategories = computed(() => editableRoleCategories.value);
 
+const newCategoryLabel = ref('');
+const newCategoryBaseOrder = ref(3000);
+
 const movableRoleCategories = computed(() => {
 	return roleCategories.value.filter(category => category.key !== 'uncategorized');
 });
@@ -308,6 +331,30 @@ function moveRoleToCategoryFromSelect(roleName: string, ev: Event) {
 
 	moveRoleToCategory(roleName, select.value);
 	select.value = '';
+}
+
+function addTemporaryRoleCategory() {
+	const label = newCategoryLabel.value.trim();
+	if (label === '') return;
+
+	const keyBase = label
+		.toLowerCase()
+		.replace(/\s+/g, '-')
+		.replace(/[^a-z0-9_-]/g, '');
+
+	const key = keyBase !== '' ? `custom-${keyBase}` : `custom-${Date.now()}`;
+
+	if (editableRoleCategories.value.some(category => category.key === key)) return;
+
+	editableRoleCategories.value.push({
+		key,
+		label,
+		range: `${newCategoryBaseOrder.value}〜`,
+		baseOrder: Number(newCategoryBaseOrder.value),
+		roleNames: [],
+	});
+
+	newCategoryLabel.value = '';
 }
 
 function getUncategorizedRoleNamesText() {
@@ -746,5 +793,31 @@ definePage(() => ({
 	color: var(--MI_THEME-fg);
 	font: inherit;
 	font-size: 0.85em;
+}
+
+.newCategoryForm {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-top: 14px;
+}
+
+.newCategoryInput {
+	flex: 1;
+	min-width: 180px;
+	padding: 6px 10px;
+	border: solid 1px var(--MI_THEME-divider);
+	border-radius: 8px;
+	background: var(--MI_THEME-panel);
+	color: var(--MI_THEME-fg);
+}
+
+.newCategoryBaseOrderInput {
+	width: 110px;
+	padding: 6px 10px;
+	border: solid 1px var(--MI_THEME-divider);
+	border-radius: 8px;
+	background: var(--MI_THEME-panel);
+	color: var(--MI_THEME-fg);
 }
 </style>
