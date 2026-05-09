@@ -53,10 +53,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 									登録 {{ user.daysSinceCreated }}日 / ノート {{ user.notesCount }}個
 								</div>
 							</div>
-                                                        <div :class="$style.rankInfo">
-                                                                <div>現在：{{ user.currentRankName }}</div>
-                                                                <div>推奨：{{ user.suggestedRank.name }}</div>
-                                                        </div>
+<div :class="$style.rankInfo">
+	<div>
+		現在：{{ user.currentRankName }}
+	</div>
+
+	<div>
+		推奨：{{ user.suggestedRank.name }}
+	</div>
+
+	<div>
+		状態：
+
+		<span
+			:class="[
+				$style.statusBadge,
+				$style[user.rankStatus],
+			]"
+		>
+			{{ user.rankStatusLabel }}
+		</span>
+	</div>
+</div>
 						</div>
 					</div>
 				</div>
@@ -106,6 +124,56 @@ function getSuggestedRank(daysSinceCreated: number, notesCount: number) {
 	}) ?? katsudoRankDefinitions[0];
 }
 
+function getRankStatus(
+	currentRankName: string,
+	suggestedRankName: string,
+) {
+	if (currentRankName === '未付与') {
+		return 'notAssigned';
+	}
+
+	if (currentRankName === suggestedRankName) {
+		return 'ok';
+	}
+
+	const currentIndex = katsudoRankDefinitions.findIndex(rank => {
+		return rank.name === currentRankName;
+	});
+
+	const suggestedIndex = katsudoRankDefinitions.findIndex(rank => {
+		return rank.name === suggestedRankName;
+	});
+
+	if (currentIndex === -1 || suggestedIndex === -1) {
+		return 'ok';
+	}
+
+	if (currentIndex < suggestedIndex) {
+		return 'promotable';
+	}
+
+	return 'demotionCandidate';
+}
+
+function getRankStatusLabel(status: string) {
+	switch (status) {
+		case 'ok':
+			return 'OK';
+
+		case 'promotable':
+			return '昇格可能';
+
+		case 'demotionCandidate':
+			return '降格候補';
+
+		case 'notAssigned':
+			return '未付与';
+
+		default:
+			return 'OK';
+	}
+}
+
 const rankedUsers = computed(() => {
 	return users.map(user => {
 		const daysSinceCreated = getDaysSinceCreated(user.createdAt);
@@ -115,14 +183,28 @@ const rankedUsers = computed(() => {
                 const detail = userDetails.find(x => x.id === user.id);
                 const currentRank = detail?.roles?.find(role => katsudoRankDefinitions.some(rank => rank.name === role.name)) ?? null;
 
-		return {
-			id: user.id,
-			username: user.username,
-			daysSinceCreated,
-			notesCount,
-			suggestedRank,
-                        currentRankName: currentRank?.name ?? '未付与',
-		};
+const currentRankName =
+	currentRank?.name ?? '未付与';
+
+const rankStatus = getRankStatus(
+	currentRankName,
+	suggestedRank.name,
+);
+
+return {
+	id: user.id,
+	username: user.username,
+	daysSinceCreated,
+	notesCount,
+	suggestedRank,
+
+	currentRankName,
+
+	rankStatus,
+
+	rankStatusLabel:
+		getRankStatusLabel(rankStatus),
+};
 	});
 });
 
@@ -220,5 +302,45 @@ definePage(() => ({
         font-size: 0.9em;
         font-weight: 700;
         line-height: 1.6;
+}
+
+.statusBadge {
+	display: inline-block;
+
+	margin-left: 4px;
+	padding: 2px 8px;
+
+	border-radius: 999px;
+
+	font-size: 0.85em;
+	font-weight: 700;
+}
+
+.ok {
+	background:
+		rgba(52, 199, 89, 0.18);
+
+	color: #34c759;
+}
+
+.promotable {
+	background:
+		rgba(46, 204, 113, 0.18);
+
+	color: #2ecc71;
+}
+
+.demotionCandidate {
+	background:
+		rgba(241, 196, 15, 0.18);
+
+	color: #d4a000;
+}
+
+.notAssigned {
+	background:
+		rgba(231, 76, 60, 0.18);
+
+	color: #e74c3c;
 }
 </style>
