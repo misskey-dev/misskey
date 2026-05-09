@@ -81,6 +81,9 @@ SPDX-License-Identifier: AGPL-3.0-only
                                                                 <div :class="$style.categoryRange">
                                                                         基準値: {{ category.baseOrder }}
                                                                 </div>
+                                                                <div v-if="category.key === 'uncategorized'" :class="$style.categoryNotice">
+                                                                        このロールは分類設定に未登録です。分類したい場合はカテゴリ設定にロール名を追加してください。
+                                                                </div>
 							</div>
 							<div :class="$style.categoryBadges">
 								<span :class="$style.categoryCount">{{ getRolesByCategory(category.key).length }}件</span>
@@ -527,5 +530,10 @@ definePage(() => ({
         margin-left: 8px;
         font-weight: 700;
         opacity: 0.75;
+}
+.categoryNotice {
+        margin-top: 6px;
+        font-size: 0.85em;
+        color: var(--MI_THEME-warn);
 }
 </style>
