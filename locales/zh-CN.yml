@@ -1709,7 +1709,7 @@ _initialTutorial:
     _exampleNote:
       note: "拆纳豆包装时失手了…"
     method: "要标注附件为敏感内容，请单击该文件以打开菜单，然后单击 “标记为敏感内容”。"
-    sensitiveSucceeded: "附加文件时，请遵循服务器的条款来设置正确敏感设定。\n"
+    sensitiveSucceeded: "添加附件时，请遵循服务器的条款、适当设定敏感内容。"
     doItToContinue: "将图像标记为敏感后才能够继续"
   _done:
     title: "恭喜您，已经完成了教程🎉\n"
