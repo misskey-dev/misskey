@@ -43,7 +43,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<div :class="$style.changeCategory">{{ change.categoryLabel }}</div>
 							</div>
 							<div :class="$style.changeOrder">
-								{{ change.currentDisplayOrder }} → {{ change.suggestedDisplayOrder }}
+								{{ change.currentDisplayOrder }}
+→
+{{ change.suggestedDisplayOrder }}
+
+<span
+        v-if="change.suggestedDisplayOrder > change.currentDisplayOrder"
+        :class="$style.moveUp"
+>
+        ↑ 上に移動
+</span>
+
+<span
+        v-else-if="change.suggestedDisplayOrder < change.currentDisplayOrder"
+        :class="$style.moveDown"
+>
+        ↓ 下に移動
+</span>
 							</div>
 						</div>
 					</div>
@@ -505,5 +521,15 @@ definePage(() => ({
 .bulkActionArea {
 	display: flex;
 	justify-content: flex-end;
+}
+.moveUp {
+        margin-left: 8px;
+        font-weight: 700;
+}
+
+.moveDown {
+        margin-left: 8px;
+        font-weight: 700;
+        opacity: 0.75;
 }
 </style>
