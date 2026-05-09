@@ -133,10 +133,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<div class="_gaps_m">
 					<SearchMarker :keywords="['cat']">
-						<MkSwitch v-model="profile.isCat">
-							<template #label><SearchLabel>{{ i18n.ts.flagAsCat }}</SearchLabel></template>
-							<template #caption>{{ i18n.ts.flagAsCatDescription }}</template>
-						</MkSwitch>
+												<MkSwitch v-model="profile.isCat">
+														<template #label><SearchLabel>{{ i18n.ts.flagAsCat }}</SearchLabel></template>
+														<template #caption>
+																{{ i18n.ts.flagAsCatDescription }}<br>
+																活動すきーでは、アンケート結果を受けて本文の「にゃ」変換を現在停止しています。<br>
+																この設定をONにしても、投稿本文や引用文の自動変換は行われません。
+														</template>
+												</MkSwitch>
 					</SearchMarker>
 
 					<SearchMarker :keywords="['bot']">
