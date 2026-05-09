@@ -338,6 +338,8 @@ export class MemoryLRUKVCache<T> extends MemoryKVCache<T> {
 			}
 			this.cache.delete(oldestKey);
 		}
+		// 挿入順を更新するために一度削除してから再挿入する
+		this.cache.delete(key);
 		super.set(key, value);
 	}
 }
