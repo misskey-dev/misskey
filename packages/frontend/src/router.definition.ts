@@ -450,6 +450,10 @@ export const ROUTE_DEF = [{
 		name: 'katsudo-ranks',
 		component: page(() => import('@/pages/admin/katsudo-ranks.vue')),
 	}, {
+		path: '/my-note-cleaner',
+		name: 'my-note-cleaner',
+		component: page(() => import('@/pages/admin/my-note-cleaner.vue')),
+	}, {
                 path: '/roles/:id',
                 name: 'roles',
                 component: page(() => import('@/pages/admin/roles.role.vue')),

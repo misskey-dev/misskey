@@ -127,6 +127,11 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
                 to: '/admin/roles-organizer',
                 active: currentPage.value?.route.name === 'roles-organizer',
 	}, {
+		icon: 'ti ti-search',
+		text: '自分のノート検索',
+		to: '/admin/my-note-cleaner',
+		active: currentPage.value?.route.name === 'my-note-cleaner',
+	}, {
 		icon: 'ti ti-trophy',
 		text: 'かつ廃ランク',
 		to: '/admin/katsudo-ranks',
