@@ -37,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:leaveToClass="prefer.s.animation ? $style.transition_preview_leaveTo : ''"
 			:duration="300"
 		>
-			<div v-show="selectedId != null" :class="$style.previewContainer" @click="selectedId = null">
+			<div v-show="showPreview" :class="$style.previewContainer" @click="selectedId = null">
 				<div :class="$style.preview" @click.stop>
 					<canvas ref="canvas" :class="$style.canvas"></canvas>
 					<MkButton :class="$style.unselectButton" small rounded iconOnly @click="selectedId = null"><i class="ti ti-x"></i></MkButton>
@@ -92,6 +92,7 @@ const emit = defineEmits<{
 const dialog = useTemplateRef('dialog');
 const canvas = useTemplateRef('canvas');
 const selectedId = ref<string | null>(null);
+const showPreview = ref(false);
 const selectedInstanceId = ref<string | null>(null);
 const selectedObjectOptionsState = ref<RoomStateObject | null>(null);
 const selectedObjectDef = computed(() => OBJECT_DEFS.find(def => def.id === selectedId.value) ?? null);
@@ -115,6 +116,7 @@ onUnmounted(() => {
 
 watch(selectedId, (newId) => {
 	showObjectOptions.value = false;
+	showPreview.value = false;
 
 	if (newId == null) {
 		engine.value!.clear();
@@ -127,9 +129,12 @@ watch(selectedId, (newId) => {
 			engine.value!.load(newId).then(res => {
 				selectedInstanceId.value = res.id;
 				selectedObjectOptionsState.value = deepClone(res.options);
-				engine.value!.resize();
 				engine.value!.resumeRender();
 				closeWaiting();
+				showPreview.value = true;
+				nextTick(() => {
+					engine.value!.resize();
+				});
 			}).catch(err => {
 				console.error(err);
 				closeWaiting();
