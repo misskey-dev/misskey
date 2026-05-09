@@ -101,6 +101,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div v-if="getRolesByCategory(category.key).length > 0" :class="$style.roleList">
 							<div v-for="role in getRolesByCategory(category.key)" :key="role.id" :class="$style.compactRoleRow">
 																<span :class="$style.compactRoleName">{{ role.name }}</span>
+                                                                <span :class="$style.compactRoleCategoryKey">
+                                                                        {{ category.key }}
+                                                                </span>
 								<span :class="$style.compactRoleOrder">
 									現在: {{ role.displayOrder }} → 推奨: {{ getSuggestedDisplayOrder(role, category.key) }}
 								</span>
@@ -535,5 +538,10 @@ definePage(() => ({
         margin-top: 6px;
         font-size: 0.85em;
         color: var(--MI_THEME-warn);
+}
+.compactRoleCategoryKey {
+        margin-left: 8px;
+        font-size: 0.8em;
+        opacity: 0.65;
 }
 </style>
