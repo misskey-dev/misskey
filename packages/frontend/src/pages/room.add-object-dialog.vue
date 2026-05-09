@@ -106,9 +106,7 @@ const recentlyUsedDefs = computed(() => {
 onMounted(async () => {
 	engine.value = await createRoomObjectPreviewEngine(canvas.value!);
 
-	engine.value.init();
-
-	canvas.value!.focus();
+	await engine.value.init();
 });
 
 onUnmounted(() => {
@@ -120,14 +118,21 @@ watch(selectedId, (newId) => {
 
 	if (newId == null) {
 		engine.value!.clear();
+		engine.value!.pauseRender();
 		selectedInstanceId.value = null;
 		selectedObjectOptionsState.value = null;
 	} else {
+		const closeWaiting = os.waiting();
 		nextTick(() => {
 			engine.value!.load(newId).then(res => {
 				selectedInstanceId.value = res.id;
 				selectedObjectOptionsState.value = deepClone(res.options);
 				engine.value!.resize();
+				engine.value!.resumeRender();
+				closeWaiting();
+			}).catch(err => {
+				console.error(err);
+				closeWaiting();
 			});
 		});
 	}

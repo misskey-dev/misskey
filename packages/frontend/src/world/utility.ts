@@ -271,11 +271,12 @@ export const camelToKebab = (s: string) => {
 };
 
 // この実装方法だとマイナスの座標をうまく処理できず結果がおかしくなるので応急処置で全体を+10000cmオフセットしてから計算している
-export function getMeshesBoundingBox(meshes: BABYLON.Mesh[]): BABYLON.BoundingBox {
+export function getMeshesBoundingBox(meshes: BABYLON.Mesh[], forceComputeWorldMatrix = false): BABYLON.BoundingBox {
 	let min = new BABYLON.Vector3(Number.MAX_VALUE, Number.MAX_VALUE, Number.MAX_VALUE);
 	let max = new BABYLON.Vector3(Number.MIN_VALUE, Number.MIN_VALUE, Number.MIN_VALUE);
 
 	for (const mesh of meshes) {
+		if (forceComputeWorldMatrix) mesh.computeWorldMatrix(true);
 		const boundingInfo = mesh.getBoundingInfo();
 		min = BABYLON.Vector3.Minimize(min, boundingInfo.boundingBox.minimumWorld.add(new BABYLON.Vector3(10000, 10000, 10000)));
 		max = BABYLON.Vector3.Maximize(max, boundingInfo.boundingBox.maximumWorld.add(new BABYLON.Vector3(10000, 10000, 10000)));

@@ -6,7 +6,7 @@
 import * as BABYLON from '@babylonjs/core';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic.js';
 import { GridMaterial } from '@babylonjs/materials';
-import { camelToKebab, WORLD_SCALE, cm, getMeshesBoundingBox, Timer } from '../utility.js';
+import { camelToKebab, WORLD_SCALE, cm, getMeshesBoundingBox, Timer, sleep } from '../utility.js';
 import { getObjectDef } from './object-defs.js';
 import { SYSTEM_MESH_NAMES, ModelManager, GRAPHICS_QUALITY } from './utility.js';
 import type { RoomObjectInstance } from './object.js';
@@ -143,7 +143,9 @@ export class RoomObjectPreviewEngine {
 		}
 	}
 
-	public async init() {
+	private currentRafId: number | null = null;
+
+	private startRenderLoop() {
 		if (this.fps == null) {
 			this.engine.runRenderLoop(() => {
 				this.scene.render();
@@ -155,7 +157,8 @@ export class RoomObjectPreviewEngine {
 			const renderLoop = (timeStamp: number) => {
 				if (this.disposed) return;
 
-				window.requestAnimationFrame(renderLoop);
+				// workerで実行される可能性がある
+				this.currentRafId = requestAnimationFrame(renderLoop);
 
 				const delta = timeStamp - then;
 				if (delta <= interval) return;
@@ -166,8 +169,26 @@ export class RoomObjectPreviewEngine {
 				this.engine.endFrame();
 			};
 
-			window.requestAnimationFrame(renderLoop);
+			// workerで実行される可能性がある
+			this.currentRafId = requestAnimationFrame(renderLoop);
 		}
+	}
+
+	public pauseRender() { // TODO: srと同じく参照カウント方式にした方が便利そう
+		this.engine.stopRenderLoop();
+		if (this.currentRafId != null) {
+			// workerで実行される可能性がある
+			cancelAnimationFrame(this.currentRafId);
+			this.currentRafId = null;
+		}
+	}
+
+	public resumeRender() {
+		this.startRenderLoop();
+	}
+
+	public async init() {
+		// 特になし
 	}
 
 	public async load(type: string) {
@@ -188,53 +209,51 @@ export class RoomObjectPreviewEngine {
 			id,
 		});
 
-		// なぜかちょっと待たないとbounding boxのサイズが正しくない
-		window.setTimeout(() => {
-			const boundingInfo = getMeshesBoundingBox(this.objectMesh!.getChildMeshes().filter(m => m.isEnabled() && m.isVisible));
+		const boundingInfo = getMeshesBoundingBox(this.objectMesh!.getChildMeshes().filter(m => m.isEnabled() && m.isVisible), true);
 
-			this.pipeline.removeCamera(this.camera);
-			this.camera.dispose();
+		this.pipeline.removeCamera(this.camera);
+		this.camera.dispose();
 
-			this.camera = new BABYLON.ArcRotateCamera('camera', Math.PI / 2, Math.PI / 2.5, cm(300), new BABYLON.Vector3(0, cm(90), 0), this.scene);
-			this.camera.attachControl(this.canvas);
-			this.camera.minZ = cm(1);
-			this.camera.maxZ = cm(100000);
-			this.camera.fov = 0.5;
-			this.camera.lowerRadiusLimit = cm(50);
-			this.camera.upperRadiusLimit = cm(1000);
-			this.camera.useAutoRotationBehavior = true;
-			this.camera.autoRotationBehavior!.idleRotationSpeed = 0.3;
-			this.camera.panningSensibility = 0;
-			this.camera.wheelDeltaPercentage = 0.01;
-			//this.camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
-			this.camera.setTarget(new BABYLON.Vector3(0, boundingInfo.center.y, 0));
+		this.camera = new BABYLON.ArcRotateCamera('camera', Math.PI / 2, Math.PI / 2.5, cm(300), new BABYLON.Vector3(0, cm(90), 0), this.scene);
+		this.camera.attachControl(this.canvas);
+		this.camera.minZ = cm(1);
+		this.camera.maxZ = cm(100000);
+		this.camera.fov = 0.5;
+		this.camera.lowerRadiusLimit = cm(50);
+		this.camera.upperRadiusLimit = cm(1000);
+		this.camera.useAutoRotationBehavior = true;
+		this.camera.autoRotationBehavior!.idleRotationSpeed = 0.3;
+		this.camera.panningSensibility = 0;
+		this.camera.wheelDeltaPercentage = 0.01;
+		//this.camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
+		this.camera.setTarget(new BABYLON.Vector3(0, boundingInfo.centerWorld.y, 0));
+		console.log(boundingInfo.centerWorld.y);
 
-			if (def.placement === 'wall' || def.placement === 'side') {
-				this.camera.lowerBetaLimit = 0;
-				this.camera.upperBetaLimit = Math.PI;
-				this.zGridPreviewPlane.rotation = new BABYLON.Vector3(0, Math.PI, 0);
-			} else if (def.placement === 'ceiling' || def.placement === 'bottom') {
-				this.camera.lowerBetaLimit = (Math.PI / 2) - 0.1;
-				this.camera.upperBetaLimit = Math.PI;
-				this.camera.beta = Math.PI / 1.75;
-				this.zGridPreviewPlane.rotation = new BABYLON.Vector3(-Math.PI / 2, 0, 0);
-			} else {
-				this.camera.lowerBetaLimit = 0;
-				this.camera.upperBetaLimit = (Math.PI / 2) + 0.1;
-				this.zGridPreviewPlane.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
-			}
+		if (def.placement === 'wall' || def.placement === 'side') {
+			this.camera.lowerBetaLimit = 0;
+			this.camera.upperBetaLimit = Math.PI;
+			this.zGridPreviewPlane.rotation = new BABYLON.Vector3(0, Math.PI, 0);
+		} else if (def.placement === 'ceiling' || def.placement === 'bottom') {
+			this.camera.lowerBetaLimit = (Math.PI / 2) - 0.1;
+			this.camera.upperBetaLimit = Math.PI;
+			this.camera.beta = Math.PI / 1.75;
+			this.zGridPreviewPlane.rotation = new BABYLON.Vector3(-Math.PI / 2, 0, 0);
+		} else {
+			this.camera.lowerBetaLimit = 0;
+			this.camera.upperBetaLimit = (Math.PI / 2) + 0.1;
+			this.zGridPreviewPlane.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
+		}
 
-			// zoom to fit
-			const size = boundingInfo.extendSize;
-			const distance = Math.max(size.x, size.y, size.z) * 2;
-			this.camera.radius = distance * 3;
-			//this.camera.orthoLeft = -distance;
-			//this.camera.orthoRight = distance;
-			//this.camera.orthoTop = distance;
-			//this.camera.orthoBottom = -distance;
+		// zoom to fit
+		const size = boundingInfo.extendSize;
+		const distance = Math.max(size.x, size.y, size.z) * 2;
+		this.camera.radius = distance * 3;
+		//this.camera.orthoLeft = -distance;
+		//this.camera.orthoRight = distance;
+		//this.camera.orthoTop = distance;
+		//this.camera.orthoBottom = -distance;
 
-			this.pipeline.addCamera(this.camera);
-		}, 10);
+		this.pipeline.addCamera(this.camera);
 
 		return {
 			id,
@@ -348,6 +367,12 @@ export class RoomObjectPreviewEngine {
 	}
 
 	public destroy() {
+		this.engine.stopRenderLoop();
+		if (this.currentRafId != null) {
+			// workerで実行される可能性がある
+			cancelAnimationFrame(this.currentRafId);
+			this.currentRafId = null;
+		}
 		if (this.timerForEachObject != null) {
 			this.timerForEachObject.dispose();
 		}
