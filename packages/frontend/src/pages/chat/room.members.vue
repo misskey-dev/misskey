@@ -19,6 +19,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkA>
 	</div>
 
+	<div v-if="isOwner && memberships.length > 0" class="_panel" :class="$style.experimentalMemberTools">
+		<div :class="$style.experimentalMemberToolsTitle">
+			実験機能: メンバー管理
+		</div>
+		<div :class="$style.experimentalMemberToolsDescription">
+			ここには今後、グループチャットからメンバーを外す機能を追加します。現在は確認用の表示だけです。
+		</div>
+	</div>
+
 	<template v-if="isOwner">
 		<hr>
 
@@ -94,5 +103,20 @@ onMounted(async () => {
 	flex: 1;
 	min-width: 0;
 	margin-right: 8px;
+}
+
+.experimentalMemberTools {
+	padding: 16px;
+}
+
+.experimentalMemberToolsTitle {
+	font-weight: 700;
+}
+
+.experimentalMemberToolsDescription {
+	margin-top: 6px;
+	font-size: 0.9em;
+	color: var(--MI_THEME-fg);
+	opacity: 0.75;
 }
 </style>
