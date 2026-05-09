@@ -84,6 +84,10 @@ SPDX-License-Identifier: AGPL-3.0-only
                                                                 <div v-if="category.key === 'uncategorized'" :class="$style.categoryNotice">
                                                                         このロールは分類設定に未登録です。分類したい場合はカテゴリ設定にロール名を追加してください。
                                                                 </div>
+                                                                <pre
+                                                                        v-if="category.key === 'uncategorized' && getRolesByCategory(category.key).length > 0"
+                                                                        :class="$style.uncategorizedRoleNames"
+                                                                >{{ getUncategorizedRoleNamesText() }}</pre>
 							</div>
 							<div :class="$style.categoryBadges">
 								<span :class="$style.categoryCount">{{ getRolesByCategory(category.key).length }}件</span>
@@ -202,6 +206,12 @@ function getRoleCategoryKey(role: typeof roles[number]) {
 
 function getRolesByCategory(categoryKey: string) {
 	return sortedRoles.value.filter(role => getRoleCategoryKey(role) === categoryKey);
+}
+
+function getUncategorizedRoleNamesText() {
+        return getRolesByCategory('uncategorized')
+                .map(role => `'${role.name}',`)
+                .join('\n');
 }
 
 function getSuggestedDisplayOrder(role: typeof roles[number], categoryKey: string) {
@@ -543,5 +553,16 @@ definePage(() => ({
         margin-left: 8px;
         font-size: 0.8em;
         opacity: 0.65;
+}
+
+.uncategorizedRoleNames {
+        margin: 8px 0 0;
+        padding: 10px;
+        font-family: monospace;
+        font-size: 0.85em;
+        white-space: pre-wrap;
+        background: var(--MI_THEME-panel);
+        border-radius: 8px;
+        opacity: 0.9;
 }
 </style>
