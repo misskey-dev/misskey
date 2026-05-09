@@ -27,6 +27,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<p :class="$style.settingsDescription">
 						現在はコード上のカテゴリ設定を読み込んでいます。今後ここからカテゴリ・基準値・ロール分類を編集できるようにします。
 					</p>
+
+					<div :class="$style.settingsCategoryList">
+						<div
+							v-for="category in roleCategories"
+							:key="category.key"
+							:class="$style.settingsCategoryRow"
+						>
+							<div>
+								<div :class="$style.settingsCategoryName">{{ category.label }}</div>
+								<div :class="$style.settingsCategoryMeta">
+									{{ category.range }} / 基準値: {{ category.baseOrder }}
+								</div>
+							</div>
+
+							<div :class="$style.settingsCategoryCount">
+								登録ロール {{ category.roleNames.length }}件
+							</div>
+						</div>
+					</div>
 				</div>
 			</MkFoldableSection>
 				<template #header>変更予定一覧</template>
@@ -593,5 +612,42 @@ definePage(() => ({
 	color: var(--MI_THEME-fg);
 	opacity: 0.75;
 	line-height: 1.7;
+}
+
+.settingsCategoryList {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-top: 14px;
+}
+
+.settingsCategoryRow {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 10px 0;
+	border-top: solid 1px var(--MI_THEME-divider);
+}
+
+.settingsCategoryName {
+	font-weight: 700;
+}
+
+.settingsCategoryMeta {
+	margin-top: 4px;
+	font-size: 0.85em;
+	color: var(--MI_THEME-fg);
+	opacity: 0.7;
+}
+
+.settingsCategoryCount {
+	flex-shrink: 0;
+	padding: 4px 8px;
+	border-radius: 999px;
+	background: var(--MI_THEME-bg);
+	border: solid 1px var(--MI_THEME-divider);
+	font-size: 0.85em;
+	font-weight: 700;
 }
 </style>
