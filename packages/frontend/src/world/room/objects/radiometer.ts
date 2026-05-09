@@ -15,7 +15,7 @@ export const radiometer = defineObject({
 	},
 	placement: 'top',
 	hasCollisions: false,
-	createInstance: ({ room, scene, model }) => {
+	createInstance: ({ sr, scene, model }) => {
 		const vanes = model.findTransformNode('__X_VANES__');
 		model.bakeExcludeMeshes = [...vanes.getChildMeshes()];
 
@@ -31,7 +31,7 @@ export const radiometer = defineObject({
 				]);
 				vanes.animations = [anim];
 				animationObserver = scene.onAfterAnimationsObservable.add(() => {
-					room?.sr.updateMesh([...vanes.getChildMeshes()], true);
+					sr.updateMesh([...vanes.getChildMeshes()], true);
 				});
 				scene.beginAnimation(vanes, 0, 240, true);
 			},

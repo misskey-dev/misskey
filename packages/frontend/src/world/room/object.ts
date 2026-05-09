@@ -114,6 +114,7 @@ export type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 	createInstance: (args: {
 		room?: RoomEngine | null;
 		scene: BABYLON.Scene;
+		sr: BABYLON.SnapshotRenderingHelper;
 		root: BABYLON.Mesh;
 		options: Readonly<GetOptionsSchemaValues<OpSc>>;
 		model: ModelManager;

@@ -203,6 +203,7 @@ export function findMaterial(rootMesh: BABYLON.AbstractMesh, keyword: string, al
 export class ModelManager {
 	public root: BABYLON.Mesh;
 	public bakedCallback: (() => void) | null = null;
+	public updatedCallback: (() => void) | null = null;
 	public bakeExcludeMeshes: BABYLON.Mesh[] = [];
 	private originalMeshes: BABYLON.Mesh[] = [];
 	private bakedMeshes: BABYLON.Mesh[] = [];
@@ -241,6 +242,7 @@ export class ModelManager {
 	}
 
 	public updated() {
+		this.updatedCallback?.();
 	}
 
 	public bakeMesh() {

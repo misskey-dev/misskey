@@ -39,7 +39,7 @@ export const lavaLamp = defineObject({
 	placement: 'top',
 	hasCollisions: false,
 	canPreMeshesMerging: true,
-	createInstance: ({ options, room, scene, root, model, graphicsQuality }) => {
+	createInstance: ({ options, room, scene, sr, root, model, graphicsQuality }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 		const glassMaterial = model.findMaterial('__X_GLASS__');
 		const lightMaterial = model.findMaterial('__X_LIGHT__');
@@ -111,7 +111,7 @@ export const lavaLamp = defineObject({
 		scene.beginAnimation(sphere3, 0, 800, true, 0.6);
 
 		animationObserver = scene.onAfterAnimationsObservable.add(() => {
-			room?.sr.updateMesh([sphere, sphere2, sphere3], false);
+			sr.updateMesh([sphere, sphere2, sphere3], false);
 		});
 
 		const emitter = new BABYLON.TransformNode('emitter', scene);
@@ -139,7 +139,7 @@ export const lavaLamp = defineObject({
 		ps.preWarmCycles = 100;
 		ps.start();
 
-		room?.sr.fixParticleSystem(ps);
+		sr.fixParticleSystem(ps);
 
 		return {
 			onInited: () => {

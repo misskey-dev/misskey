@@ -883,6 +883,7 @@ export class RoomEngine extends EventEmitter {
 		const objectInstance = await def.createInstance({
 			room: this,
 			scene: this.scene,
+			sr: this.sr,
 			root,
 			options: args.options,
 			model,

@@ -35,7 +35,7 @@ export const tabletopDigitalClock = defineObject({
 	placement: 'top',
 	hasCollisions: false,
 	canPreMeshesMerging: false,
-	createInstance: ({ root, room, options, model, scene, timer }) => {
+	createInstance: ({ sr, options, model, timer }) => {
 		const matrix = model.root.getWorldMatrix(true);
 		const scale = new BABYLON.Vector3();
 		matrix.decompose(scale);
@@ -123,7 +123,7 @@ export const tabletopDigitalClock = defineObject({
 						mesh.position.y = isVisible ? defaultSegMeshDepth : defaultSegMeshDepth - (cm(2) / Math.abs(scale.y));
 					}
 
-					room?.sr.updateMesh([...Object.values(segmentMeshes), ...colonMeshes]);
+					sr.updateMesh([...Object.values(segmentMeshes), ...colonMeshes]);
 				}, 1000);
 			},
 			onOptionsUpdated: ([k, v]) => {

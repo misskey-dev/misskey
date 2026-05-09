@@ -26,6 +26,7 @@ export class RoomObjectPreviewEngine {
 	private canvas: HTMLCanvasElement;
 	private engine: BABYLON.WebGPUEngine;
 	private scene: BABYLON.Scene;
+	private sr: BABYLON.SnapshotRenderingHelper;
 	private shadowGenerator: BABYLON.ShadowGenerator;
 	private camera: BABYLON.ArcRotateCamera;
 	private objectMesh: BABYLON.Mesh | null = null;
@@ -50,9 +51,10 @@ export class RoomObjectPreviewEngine {
 
 		this.engine = options.engine;
 		this.scene = new BABYLON.Scene(this.engine);
-		this.scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
-		this.scene.autoClear = true;
+		this.scene.autoClear = false;
 		this.scene.skipPointerMovePicking = true;
+
+		this.sr = new BABYLON.SnapshotRenderingHelper(this.scene);
 
 		this.camera = new BABYLON.ArcRotateCamera('camera', -Math.PI / 2, Math.PI / 2.5, cm(300), new BABYLON.Vector3(0, cm(90), 0), this.scene);
 
@@ -95,6 +97,7 @@ export class RoomObjectPreviewEngine {
 		});
 		gl.intensity = 0.5;
 		this.scene.setRenderingAutoClearDepthStencil(gl.renderingGroupId, false);
+		this.sr.updateMeshesForEffectLayer(gl);
 
 		this.pipeline = new BABYLON.DefaultRenderingPipeline('default', true, this.scene);
 		this.pipeline.samples = 4;
@@ -188,10 +191,12 @@ export class RoomObjectPreviewEngine {
 	}
 
 	public async init() {
-		// 特になし
+		await this.scene.whenReadyAsync();
+		this.sr.enableSnapshotRendering();
 	}
 
 	public async load(type: string) {
+		this.sr.disableSnapshotRendering();
 		this.clear();
 
 		const id = genId();
@@ -253,6 +258,8 @@ export class RoomObjectPreviewEngine {
 		//this.camera.orthoBottom = -distance;
 
 		this.pipeline.addCamera(this.camera);
+
+		this.sr.enableSnapshotRendering();
 
 		return {
 			id,
@@ -317,6 +324,10 @@ export class RoomObjectPreviewEngine {
 		const model = new ModelManager(subRoot, loaderResult.meshes.filter(m => !m.isDisposed() && m !== subRoot), def.hasTexture, (meshes) => {
 			updateMeshes(meshes);
 		});
+		//model.updatedCallback = () => {
+		//	this.sr.disableSnapshotRendering();
+		//	this.sr.enableSnapshotRendering();
+		//};
 
 		updateMeshes(subRoot.getChildMeshes());
 
@@ -325,6 +336,7 @@ export class RoomObjectPreviewEngine {
 		const objectInstance = await def.createInstance({
 			room: null,
 			scene: this.scene,
+			sr: this.sr,
 			root,
 			options: args.options,
 			model,
@@ -341,12 +353,15 @@ export class RoomObjectPreviewEngine {
 	}
 
 	public updateObjectOption(key: string, value: any) {
+		this.sr.disableSnapshotRendering();
 		this.objectOptions[key] = value;
 		this.objectInstance?.onOptionsUpdated?.([key, value]);
+		this.sr.enableSnapshotRendering();
 		return this.objectOptions;
 	}
 
 	public clear() {
+		this.sr.disableSnapshotRendering();
 		if (this.timerForEachObject != null) {
 			this.timerForEachObject.dispose();
 			this.timerForEachObject = null;
@@ -359,10 +374,20 @@ export class RoomObjectPreviewEngine {
 			this.objectMesh = null;
 			this.objectType = null;
 		}
+		this.sr.enableSnapshotRendering();
 	}
 
 	public resize() {
+		// 一旦snapshot renderingを無効にしておかないとエラーが出る(babylonのバグ？)
+		// ~~...が、一旦無効にしたらしたで複数のマテリアルがそれぞれ入れ替わる(?)という謎の現象が発生するためコメントアウトしとく(エラー出てもレンダリングが止まったりするわけでもないし)~~
+		// ↑追記: engine.resizeした後に一瞬待つことで回避できることが判明
+		this.sr.disableSnapshotRendering();
 		this.engine.resize();
+		// workerで実行される可能性がある
+		// eslint-disable-next-line no-restricted-globals
+		setTimeout(() => {
+			this.sr.enableSnapshotRendering();
+		}, 1);
 	}
 
 	public destroy() {

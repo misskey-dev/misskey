@@ -24,7 +24,7 @@ export const ceilingFanLight = defineObject({
 	hasCollisions: false,
 	receiveShadows: false,
 	castShadows: false,
-	createInstance: ({ options, room, scene, model }) => {
+	createInstance: ({ options, sr, scene, model }) => {
 		const shadeMaterial = model.findMaterial('__X_SHADE__');
 
 		const applyShadeColor = () => {
@@ -49,7 +49,7 @@ export const ceilingFanLight = defineObject({
 				]);
 				rotor.animations = [anim];
 				animationObserver = scene.onAfterAnimationsObservable.add(() => {
-					room?.sr.updateMesh([rotor, ...rotor.getChildMeshes()], false);
+					sr.updateMesh([rotor, ...rotor.getChildMeshes()], false);
 				});
 				scene.beginAnimation(rotor, 0, 100, true);
 			},
