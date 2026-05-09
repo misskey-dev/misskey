@@ -18,6 +18,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 
 			<MkFoldableSection>
+			<MkFoldableSection>
+				<template #header>ロール整理設定</template>
+				<div class="_panel" :class="$style.settingsPanel">
+					<div :class="$style.settingsTitle">
+						現在の設定
+					</div>
+					<p :class="$style.settingsDescription">
+						現在はコード上のカテゴリ設定を読み込んでいます。今後ここからカテゴリ・基準値・ロール分類を編集できるようにします。
+					</p>
+				</div>
+			</MkFoldableSection>
 				<template #header>変更予定一覧</template>
 				<div class="_gaps_s">
 					<div class="_panel" :class="$style.changeSummary">
@@ -566,5 +577,21 @@ definePage(() => ({
 	background: var(--MI_THEME-panel);
 	border-radius: 8px;
 	opacity: 0.9;
+}
+
+.settingsPanel {
+	padding: 16px;
+}
+
+.settingsTitle {
+	font-weight: 700;
+	font-size: 1.05em;
+}
+
+.settingsDescription {
+	margin: 8px 0 0;
+	color: var(--MI_THEME-fg);
+	opacity: 0.75;
+	line-height: 1.7;
 }
 </style>
