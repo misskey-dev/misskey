@@ -211,7 +211,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import MkButton from '@/components/MkButton.vue';
@@ -225,10 +225,15 @@ const sortedRoles = computed(() => {
 	return [...roles].sort((a, b) => b.displayOrder - a.displayOrder);
 });
 
-const roleCategories = katsudoRoleCategories;
+const editableRoleCategories = ref(katsudoRoleCategories.map(category => ({
+	...category,
+	roleNames: [...category.roleNames],
+})));
+
+const roleCategories = computed(() => editableRoleCategories.value);
 
 function getRoleCategoryKey(role: typeof roles[number]) {
-	for (const category of roleCategories) {
+	for (const category of roleCategories.value) {
 		if (category.key === 'uncategorized') continue;
 		if ((category.roleNames as readonly string[]).includes(role.name)) {
 			return category.key;
@@ -249,7 +254,7 @@ function getUncategorizedRoleNamesText() {
 }
 
 function getSuggestedDisplayOrder(role: typeof roles[number], categoryKey: string) {
-	const category = roleCategories.find(x => x.key === categoryKey);
+	const category = roleCategories.value.find(x => x.key === categoryKey);
 	if (category == null) return role.displayOrder;
 
 	const index = getRolesByCategory(categoryKey).findIndex(x => x.id === role.id);
@@ -267,7 +272,7 @@ function getDifferentDisplayOrderCount(categoryKey: string) {
 }
 
 const displayOrderChanges = computed(() => {
-	return roleCategories.flatMap(category => {
+	return roleCategories.value.flatMap(category => {
 		return getRolesByCategory(category.key)
 			.filter(role => isDisplayOrderDifferent(role, category.key))
 			.map(role => ({
