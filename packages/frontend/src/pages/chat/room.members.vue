@@ -33,10 +33,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkUserCardMini :user="membership.user!"/>
 				</MkA>
 
-				<MkButton danger rounded @click="confirmRemoveMemberPreview(membership)">
+				<MkButton
+					v-if="membership.user?.id !== $i.id"
+					danger
+					rounded
+					@click="confirmRemoveMemberPreview(membership)"
+				>
 					<i class="ti ti-user-x"></i>
 					外す
 				</MkButton>
+
 			</div>
 		</div>
 	</div>
