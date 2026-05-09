@@ -109,6 +109,12 @@ async function confirmRemoveMemberPreview(membership: Misskey.entities.ChatRoomM
 	});
 
 	memberships.value = memberships.value.filter(x => x.id !== membership.id);
+
+	await os.alert({
+		type: 'success',
+		title: 'メンバーを外しました',
+		text: `${user.name ?? user.username} さんをこのグループチャットから外しました。`,
+	});
 }
 
 onMounted(async () => {
