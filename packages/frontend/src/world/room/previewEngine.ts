@@ -97,11 +97,12 @@ export class RoomObjectPreviewEngine {
 
 		this.pipeline = new BABYLON.DefaultRenderingPipeline('default', true, this.scene);
 		this.pipeline.samples = 4;
-		this.pipeline.bloomEnabled = true;
-		this.pipeline.bloomThreshold = 0.95;
-		this.pipeline.bloomWeight = 0.1;
-		this.pipeline.bloomKernel = 256;
-		this.pipeline.bloomScale = 2;
+		// 重い
+		//this.pipeline.bloomEnabled = true;
+		//this.pipeline.bloomThreshold = 0.95;
+		//this.pipeline.bloomWeight = 0.1;
+		//this.pipeline.bloomKernel = 256;
+		//this.pipeline.bloomScale = 2;
 		this.pipeline.sharpenEnabled = true;
 		this.pipeline.sharpen.edgeAmount = 0.5;
 
