@@ -1,32 +1,20 @@
-export const katsudoRankDefinitions = [
-	{
-		key: 'beginner',
-		name: 'かつ廃見習い',
-		minDays: 0,
-		minNotes: 0,
-	},
-	{
-		key: 'grade3',
-		name: 'かつ廃三級',
-		minDays: 3,
-		minNotes: 100,
-	},
-	{
-		key: 'grade2',
-		name: 'かつ廃二級',
-		minDays: 7,
-		minNotes: 500,
-	},
-	{
-		key: 'grade1',
-		name: 'かつ廃一級',
-		minDays: 14,
-		minNotes: 1500,
-	},
-	{
-		key: 'dan1',
-		name: 'かつ廃一段',
-		minDays: 30,
-		minNotes: 3000,
-	},
+const katsudoRankTable = [
+        ['かつ廃見習い', 0, 0],
+        ['かつ廃三級', 3, 100],
+        ['かつ廃二級', 7, 500],
+        ['かつ廃一級', 14, 1500],
+        ['かつ廃一段', 30, 3000],
 ] as const;
+
+export const katsudoRankDefinitions = katsudoRankTable.map((
+        [name, minDays, minNotes],
+        index,
+) => ({
+        key: `rank-${index}`,
+
+        name,
+
+        minDays,
+
+        minNotes,
+}));
