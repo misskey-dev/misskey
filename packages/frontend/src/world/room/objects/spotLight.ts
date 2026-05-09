@@ -53,7 +53,7 @@ export const spotLight = defineObject({
 	},
 	placement: 'bottom',
 	hasCollisions: false,
-	createInstance: ({ room, scene, options, model, graphicsQuality }) => {
+	createInstance: ({ lc, scene, options, model, graphicsQuality }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 
 		const applyBodyColor = () => {
@@ -64,10 +64,10 @@ export const spotLight = defineObject({
 		applyBodyColor();
 
 		const lamp = model.findMesh('__X_LAMP__');
-		const light = new BABYLON.SpotLight('', new BABYLON.Vector3(cm(0), cm(0), 0), new BABYLON.Vector3(0, -1, 0), Math.PI / 1, 2, scene, room?.lightContainer != null);
+		const light = new BABYLON.SpotLight('', new BABYLON.Vector3(cm(0), cm(0), 0), new BABYLON.Vector3(0, -1, 0), Math.PI / 1, 2, scene, lc != null);
 		light.parent = lamp;
 		light.radius = cm(8);
-		if (room?.lightContainer != null) room.lightContainer.addLight(light);
+		if (lc != null) lc.addLight(light);
 
 		const applyLightColor = () => {
 			const [r, g, b] = options.lightColor;
@@ -112,6 +112,10 @@ export const spotLight = defineObject({
 				}
 			},
 			interactions: {},
+			dispose: () => {
+				light.dispose();
+				if (lc != null) lc.removeLight(light);
+			},
 		};
 	},
 });

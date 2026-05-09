@@ -112,9 +112,9 @@ export type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 	isChair?: boolean;
 	treatLoaderResult?: (loaderResult: BABYLON.AssetContainer) => void;
 	createInstance: (args: {
-		room?: RoomEngine | null;
 		scene: BABYLON.Scene;
 		sr: BABYLON.SnapshotRenderingHelper;
+		lc: BABYLON.ClusteredLightContainer | null;
 		root: BABYLON.Mesh;
 		options: Readonly<GetOptionsSchemaValues<OpSc>>;
 		model: ModelManager;

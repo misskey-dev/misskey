@@ -54,7 +54,7 @@ export const woodRingsPendantLight = defineObject({
 	},
 	placement: 'ceiling',
 	hasCollisions: false,
-	createInstance: ({ room, scene, options, model, graphicsQuality }) => {
+	createInstance: ({ lc, scene, options, model, graphicsQuality }) => {
 		const shadeMaterial = model.findMaterial('__X_SHADE__');
 
 		const applyShadeColor = () => {
@@ -74,10 +74,10 @@ export const woodRingsPendantLight = defineObject({
 		applyBodyColor();
 
 		const lamp = model.findMesh('__X_LAMP__');
-		const light = new BABYLON.PointLight('', new BABYLON.Vector3(0, 0, 0), scene, room?.lightContainer != null);
+		const light = new BABYLON.PointLight('', new BABYLON.Vector3(0, 0, 0), scene, lc != null);
 		light.parent = lamp;
 		light.radius = cm(5);
-		if (room?.lightContainer != null) room.lightContainer.addLight(light);
+		if (lc != null) lc.addLight(light);
 
 		//const lensFlareSystem = new BABYLON.LensFlareSystem('lensFlareSystem', light, scene);
 		//const flare00 = new BABYLON.LensFlare(0.1, 1.7, new BABYLON.Color3(...options.lightColor), '/client-assets/world/lensflare.png', lensFlareSystem);
@@ -126,6 +126,10 @@ export const woodRingsPendantLight = defineObject({
 				}
 			},
 			interactions: {},
+			dispose: () => {
+				light.dispose();
+				if (lc != null) lc.removeLight(light);
+			},
 		};
 	},
 });

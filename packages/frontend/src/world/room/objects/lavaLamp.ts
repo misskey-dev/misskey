@@ -39,7 +39,7 @@ export const lavaLamp = defineObject({
 	placement: 'top',
 	hasCollisions: false,
 	canPreMeshesMerging: true,
-	createInstance: ({ options, room, scene, sr, root, model, graphicsQuality }) => {
+	createInstance: ({ options, lc, scene, sr, root, model, graphicsQuality }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 		const glassMaterial = model.findMaterial('__X_GLASS__');
 		const lightMaterial = model.findMaterial('__X_LIGHT__');
@@ -59,12 +59,12 @@ export const lavaLamp = defineObject({
 		applyGlassColor();
 
 		// TODO: graphicsQualityがLOWならそもそも追加しない
-		const light = new BABYLON.PointLight('lavaLampLight', new BABYLON.Vector3(0, cm(11), 0), scene, room?.lightContainer != null);
+		const light = new BABYLON.PointLight('lavaLampLight', new BABYLON.Vector3(0, cm(11), 0), scene, lc != null);
 		light.parent = root;
 		light.intensity = 0.03 * WORLD_SCALE * WORLD_SCALE;
 		light.range = cm(50) * getLightRangeFactorByGraphicsQuality(graphicsQuality);
 		light.radius = cm(5);
-		if (room?.lightContainer != null) room.lightContainer.addLight(light);
+		if (lc != null) lc.addLight(light);
 
 		const applyLightColor = () => {
 			const [r, g, b] = options.lightColor;
@@ -155,9 +155,12 @@ export const lavaLamp = defineObject({
 				}
 			},
 			dispose: () => {
+				light.dispose();
+				if (lc != null) lc.removeLight(light);
 				if (animationObserver != null) {
 					scene.onAfterAnimationsObservable.remove(animationObserver);
 				}
+				ps.dispose();
 			},
 		};
 	},

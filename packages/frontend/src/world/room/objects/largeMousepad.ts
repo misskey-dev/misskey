@@ -30,7 +30,7 @@ export const largeMousepad = defineObject({
 	placement: 'top',
 	hasCollisions: false,
 	hasTexture: true,
-	createInstance: async ({ room, scene, options, model }) => {
+	createInstance: async ({ scene, options, model }) => {
 		const padMesh = model.findMesh('__X_PAD__');
 		const padMaterial = model.findMaterial('__X_PAD__');
 

@@ -33,17 +33,17 @@ export const tv = defineObject({
 	placement: 'top',
 	hasCollisions: true,
 	hasTexture: true,
-	createInstance: ({ options, room, model, scene, timer, graphicsQuality }) => {
+	createInstance: ({ options, lc, model, scene, timer, graphicsQuality }) => {
 		const matrix = model.root.getWorldMatrix(true);
 		const scale = new BABYLON.Vector3();
 		matrix.decompose(scale);
 
-		const light = new BABYLON.SpotLight('', new BABYLON.Vector3(cm(0), cm(30) / Math.abs(scale.y), 0), new BABYLON.Vector3(0, 0, 1), Math.PI / 1, 2, scene, room?.lightContainer != null);
+		const light = new BABYLON.SpotLight('', new BABYLON.Vector3(cm(0), cm(30) / Math.abs(scale.y), 0), new BABYLON.Vector3(0, 0, 1), Math.PI / 1, 2, scene, lc != null);
 		light.parent = model.root;
 		light.diffuse = new BABYLON.Color3(1.0, 1.0, 1.0);
 		light.range = cm(200) * getLightRangeFactorByGraphicsQuality(graphicsQuality);
 		light.radius = cm(40);
-		if (room?.lightContainer != null) room.lightContainer.addLight(light);
+		if (lc != null) lc.addLight(light);
 
 		const screenMesh = model.findMesh('__TV_SCREEN__');
 		screenMesh.markVerticesDataAsUpdatable(BABYLON.VertexBuffer.UVKind, true);
@@ -96,6 +96,10 @@ export const tv = defineObject({
 				}
 			},
 			interactions: {},
+			dispose: () => {
+				light.dispose();
+				if (lc != null) lc.removeLight(light);
+			},
 		};
 	},
 });

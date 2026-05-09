@@ -334,7 +334,6 @@ export class RoomObjectPreviewEngine {
 		this.timerForEachObject = new Timer();
 
 		const objectInstance = await def.createInstance({
-			room: null,
 			scene: this.scene,
 			sr: this.sr,
 			root,

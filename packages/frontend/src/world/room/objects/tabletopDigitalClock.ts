@@ -40,11 +40,11 @@ export const tabletopDigitalClock = defineObject({
 		const scale = new BABYLON.Vector3();
 		matrix.decompose(scale);
 
-		//const light = new BABYLON.SpotLight('', new BABYLON.Vector3(0, cm(3), cm(1)), new BABYLON.Vector3(0, 0, 1), Math.PI / 1, 2, scene, room?.lightContainer != null);
+		//const light = new BABYLON.SpotLight('', new BABYLON.Vector3(0, cm(3), cm(1)), new BABYLON.Vector3(0, 0, 1), Math.PI / 1, 2, scene, lc != null);
 		//light.parent = root;
 		//light.intensity = 0.01 * WORLD_SCALE * WORLD_SCALE;
 		//light.range = cm(30);
-		//if (room?.lightContainer != null) room.lightContainer.addLight(light);
+		//if (lc != null) lc.addLight(light);
 
 		const segmentMeshes = {
 			'1a': model.findMesh('__TIME_7SEG_1A__'),

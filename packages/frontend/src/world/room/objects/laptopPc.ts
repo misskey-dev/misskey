@@ -57,7 +57,7 @@ export const laptopPc = defineObject({
 	placement: 'top',
 	hasCollisions: false,
 	hasTexture: true,
-	createInstance: async ({ room, scene, options, model, graphicsQuality }) => {
+	createInstance: async ({ lc, scene, options, model, graphicsQuality }) => {
 		const matrix = model.root.getWorldMatrix(true);
 		const scale = new BABYLON.Vector3();
 		matrix.decompose(scale);
@@ -66,12 +66,12 @@ export const laptopPc = defineObject({
 		const hutaNode = model.findTransformNode('__X_HUTA__');
 
 		// TODO: graphicsQualityがLOWならそもそも追加しない
-		const light = new BABYLON.SpotLight('', new BABYLON.Vector3(cm(0), cm(10) / Math.abs(scale.y), 0), new BABYLON.Vector3(0, 0, 1), Math.PI / 1, 2, scene, room?.lightContainer != null);
+		const light = new BABYLON.SpotLight('', new BABYLON.Vector3(cm(0), cm(10) / Math.abs(scale.y), 0), new BABYLON.Vector3(0, 0, 1), Math.PI / 1, 2, scene, lc != null);
 		light.parent = hutaNode;
 		light.diffuse = new BABYLON.Color3(1.0, 1.0, 1.0);
 		light.range = cm(100) * getLightRangeFactorByGraphicsQuality(graphicsQuality);
 		light.radius = cm(15);
-		if (room?.lightContainer != null) room.lightContainer.addLight(light);
+		if (lc != null) lc.addLight(light);
 
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 		const bezelMaterial = model.findMaterial('__X_BEZEL__');
@@ -167,6 +167,10 @@ export const laptopPc = defineObject({
 				}
 			},
 			interactions: {},
+			dispose: () => {
+				light.dispose();
+				if (lc != null) lc.removeLight(light);
+			},
 		};
 	},
 });

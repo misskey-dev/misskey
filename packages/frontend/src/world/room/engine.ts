@@ -881,9 +881,9 @@ export class RoomEngine extends EventEmitter {
 		});
 
 		const objectInstance = await def.createInstance({
-			room: this,
 			scene: this.scene,
 			sr: this.sr,
+			lc: this.lightContainer,
 			root,
 			options: args.options,
 			model,

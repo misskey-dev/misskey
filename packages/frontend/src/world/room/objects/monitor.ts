@@ -43,18 +43,18 @@ export const monitor = defineObject({
 	},
 	placement: 'top',
 	hasTexture: true,
-	createInstance: async ({ room, scene, options, model, graphicsQuality }) => {
+	createInstance: async ({ lc, scene, options, model, graphicsQuality }) => {
 		const matrix = model.root.getWorldMatrix(true);
 		const scale = new BABYLON.Vector3();
 		matrix.decompose(scale);
 
 		// TODO: graphicsQualityがLOWならそもそも追加しない
-		const light = new BABYLON.SpotLight('', new BABYLON.Vector3(cm(0), cm(20) / Math.abs(scale.y), 0), new BABYLON.Vector3(0, 0, 1), Math.PI / 1, 2, scene, room?.lightContainer != null);
+		const light = new BABYLON.SpotLight('', new BABYLON.Vector3(cm(0), cm(20) / Math.abs(scale.y), 0), new BABYLON.Vector3(0, 0, 1), Math.PI / 1, 2, scene, lc != null);
 		light.parent = model.root;
 		light.diffuse = new BABYLON.Color3(1.0, 1.0, 1.0);
 		light.range = cm(100) * getLightRangeFactorByGraphicsQuality(graphicsQuality);
 		light.radius = cm(20);
-		if (room?.lightContainer != null) room.lightContainer.addLight(light);
+		if (lc != null) lc.addLight(light);
 
 		const screenMesh = model.findMesh('__X_SCREEN__');
 
@@ -130,6 +130,10 @@ export const monitor = defineObject({
 				}
 			},
 			interactions: {},
+			dispose: () => {
+				light.dispose();
+				if (lc != null) lc.removeLight(light);
+			},
 		};
 	},
 });

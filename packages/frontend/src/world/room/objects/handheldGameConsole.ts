@@ -44,7 +44,7 @@ export const handheldGameConsole = defineObject({
 	placement: 'top',
 	hasCollisions: false,
 	hasTexture: true,
-	createInstance: async ({ room, scene, options, model, graphicsQuality }) => {
+	createInstance: async ({ scene, options, model, graphicsQuality }) => {
 		const screenMesh = model.findMesh('__X_SCREEN__');
 
 		const bodyMaterial = model.findMaterial('__X_BODY__');

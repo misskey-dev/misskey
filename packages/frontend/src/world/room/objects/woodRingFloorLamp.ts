@@ -42,7 +42,7 @@ export const woodRingFloorLamp = defineObject({
 	},
 	placement: 'floor',
 	hasCollisions: true,
-	createInstance: ({ room, scene, options, model, graphicsQuality }) => {
+	createInstance: ({ lc, scene, options, model, graphicsQuality }) => {
 		const shadeMaterial = model.findMaterial('__X_SHADE__');
 
 		const applyShadeColor = () => {
@@ -64,10 +64,10 @@ export const woodRingFloorLamp = defineObject({
 		const lamps = model.findMeshes('__X_LAMP__');
 		const lights: BABYLON.SpotLight[] = [];
 		for (const lamp of lamps) {
-			const light = new BABYLON.SpotLight('', new BABYLON.Vector3(cm(0), cm(0), 0), new BABYLON.Vector3(0, -1, 0), Math.PI / 1, 2, scene, room?.lightContainer != null);
+			const light = new BABYLON.SpotLight('', new BABYLON.Vector3(cm(0), cm(0), 0), new BABYLON.Vector3(0, -1, 0), Math.PI / 1, 2, scene, lc != null);
 			light.parent = lamp;
 			light.radius = cm(5);
-			if (room?.lightContainer != null) room.lightContainer.addLight(light);
+			if (lc != null) lc.addLight(light);
 			lights.push(light);
 		}
 
@@ -105,6 +105,12 @@ export const woodRingFloorLamp = defineObject({
 				applyLightBrightness();
 			},
 			interactions: {},
+			dispose: () => {
+				for (const light of lights) {
+					light.dispose();
+					if (lc != null) lc.removeLight(light);
+				}
+			}
 		};
 	},
 });

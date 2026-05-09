@@ -50,19 +50,19 @@ export const desktopPc = defineObject({
 	placement: 'top',
 	hasCollisions: true,
 	canPreMeshesMerging: true,
-	createInstance: ({ options, model, root, scene, room, graphicsQuality }) => {
+	createInstance: ({ options, model, root, scene, lc, graphicsQuality }) => {
 		// TODO: graphicsQualityがLOWならそもそも追加しない
-		const light1 = new BABYLON.SpotLight('', new BABYLON.Vector3(0, cm(10), cm(22)), new BABYLON.Vector3(0, 0, 1), Math.PI / 1, 2, scene, room?.lightContainer != null);
+		const light1 = new BABYLON.SpotLight('', new BABYLON.Vector3(0, cm(10), cm(22)), new BABYLON.Vector3(0, 0, 1), Math.PI / 1, 2, scene, lc != null);
 		light1.parent = root;
 		light1.intensity = 0.05 * WORLD_SCALE * WORLD_SCALE;
 		light1.range = cm(30) * getLightRangeFactorByGraphicsQuality(graphicsQuality);
-		if (room?.lightContainer != null) room.lightContainer.addLight(light1);
+		if (lc != null) lc.addLight(light1);
 
-		const light2 = new BABYLON.SpotLight('', new BABYLON.Vector3(cm(-5), cm(33), cm(-9)), new BABYLON.Vector3(1, 0, 0), Math.PI / 1, 2, scene, room?.lightContainer != null);
+		const light2 = new BABYLON.SpotLight('', new BABYLON.Vector3(cm(-5), cm(33), cm(-9)), new BABYLON.Vector3(1, 0, 0), Math.PI / 1, 2, scene, lc != null);
 		light2.parent = root;
 		light2.intensity = 0.05 * WORLD_SCALE * WORLD_SCALE;
 		light2.range = cm(30) * getLightRangeFactorByGraphicsQuality(graphicsQuality);
-		if (room?.lightContainer != null) room.lightContainer.addLight(light2);
+		if (lc != null) lc.addLight(light2);
 
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 		const coverMaterial = model.findMaterial('__X_COVER__');
@@ -127,6 +127,14 @@ export const desktopPc = defineObject({
 				applyLedColor();
 			},
 			interactions: {},
+			dispose: () => {
+				light1.dispose();
+				light2.dispose();
+				if (lc != null) {
+					lc.removeLight(light1);
+					lc.removeLight(light2);
+				}
+			},
 		};
 	},
 });
