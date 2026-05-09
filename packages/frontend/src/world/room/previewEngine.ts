@@ -227,7 +227,6 @@ export class RoomObjectPreviewEngine {
 		this.camera.wheelDeltaPercentage = 0.01;
 		//this.camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
 		this.camera.setTarget(new BABYLON.Vector3(0, boundingInfo.centerWorld.y, 0));
-		console.log(boundingInfo.centerWorld.y);
 
 		if (def.placement === 'wall' || def.placement === 'side') {
 			this.camera.lowerBetaLimit = 0;
