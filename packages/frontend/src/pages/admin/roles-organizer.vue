@@ -64,6 +64,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</MkButton>
 						</div>
 
+						<textarea
+							v-model="importRoleCategoriesJson"
+							:class="$style.settingsJsonImport"
+							placeholder="ここにJSONを貼り付けると、一時設定として読み込めます。"
+						></textarea>
+
+						<div :class="$style.settingsJsonActions">
+							<MkButton rounded @click="importEditableRoleCategoriesJson">
+								JSONを読み込む
+							</MkButton>
+						</div>
+
 						<pre :class="$style.settingsJsonPreview">{{ editableRoleCategoriesJson }}</pre>
 					</details>
 
@@ -308,6 +320,8 @@ const editableRoleCategoriesJson = computed(() => {
 	return JSON.stringify(editableRoleCategories.value, null, 2);
 });
 
+const importRoleCategoriesJson = ref('');
+
 const newCategoryLabel = ref('');
 const newCategoryBaseOrder = ref(3000);
 
@@ -398,6 +412,53 @@ async function copyEditableRoleCategoriesJson() {
 		title: 'コピーしました',
 		text: '現在の一時設定JSONをクリップボードにコピーしました。',
 	});
+}
+
+async function importEditableRoleCategoriesJson() {
+	try {
+		const parsed = JSON.parse(importRoleCategoriesJson.value);
+
+		if (!Array.isArray(parsed)) {
+			throw new Error('JSON root must be an array');
+		}
+
+		const categories = parsed.map(category => {
+			if (
+				typeof category.key !== 'string' ||
+				typeof category.label !== 'string' ||
+				typeof category.range !== 'string' ||
+				typeof category.baseOrder !== 'number' ||
+				!Array.isArray(category.roleNames)
+			) {
+				throw new Error('Invalid category format');
+			}
+
+			return {
+				key: category.key,
+				label: category.label,
+				range: category.range,
+				baseOrder: category.baseOrder,
+				roleNames: category.roleNames.filter((roleName: unknown): roleName is string => typeof roleName === 'string'),
+			};
+		});
+
+		editableRoleCategories.value = categories;
+		importRoleCategoriesJson.value = '';
+
+		await os.alert({
+			type: 'success',
+			title: '読み込みました',
+			text: 'JSONから一時設定を読み込みました。',
+		});
+	} catch (err) {
+		console.error(err);
+
+		await os.alert({
+			type: 'error',
+			title: '読み込み失敗',
+			text: 'JSONの形式が正しくありません。',
+		});
+	}
 }
 
 function getUncategorizedRoleNamesText() {
@@ -896,5 +957,20 @@ definePage(() => ({
 	display: flex;
 	justify-content: flex-end;
 	margin-top: 10px;
+}
+
+.settingsJsonImport {
+	display: block;
+	width: 100%;
+	min-height: 120px;
+	margin-top: 10px;
+	padding: 10px;
+	border: solid 1px var(--MI_THEME-divider);
+	border-radius: 10px;
+	background: var(--MI_THEME-panel);
+	color: var(--MI_THEME-fg);
+	font-family: monospace;
+	font-size: 0.85em;
+	resize: vertical;
 }
 </style>
