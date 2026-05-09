@@ -34,6 +34,19 @@ export const katsudoRoleCategories = [
 		baseOrder: 5000,
 		roleNames: ['配信者', '絵チャ配信者', 'ゲーム実況者', 'YouTuber', 'ITuber', '歌い手', 'ボカロP', 'UTAU音源制作者', '絵師', 'ロゴ師', '写真家', '声優'],
 	},
+        {
+                key: 'rank',
+                label: '活動称号系',
+                range: '2000〜2999',
+                baseOrder: 2000,
+                roleNames: [
+                        'かつ廃見習い',
+                        'かつ廃三級',
+                        'かつ廃二級',
+                        'かつ廃一級',
+                        'かつ廃一段',
+                ],
+        },
 	{
 		key: 'fan',
 		label: 'ファンロール系',
