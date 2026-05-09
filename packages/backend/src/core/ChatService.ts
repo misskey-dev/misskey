@@ -741,6 +741,41 @@ export class ChatService {
 		await redisPipeline.exec();
 	}
 
+        @bindThis
+        public async katsudoKickRoomMember(
+                operatorId: MiUser['id'],
+                roomId: MiChatRoom['id'],
+                targetUserId: MiUser['id'],
+        ) {
+                const room = await this.chatRoomsRepository.findOneByOrFail({ id: roomId });
+
+                if (room.ownerId !== operatorId) {
+                        throw new Error('only room owner can kick member');
+                }
+
+                if (room.ownerId === targetUserId) {
+                        throw new Error('cannot kick room owner');
+                }
+
+                if (operatorId === targetUserId) {
+                        throw new Error('cannot kick yourself');
+                }
+
+                const membership = await this.chatRoomMembershipsRepository.findOneByOrFail({
+                        roomId,
+                        userId: targetUserId,
+                });
+
+                await this.chatRoomMembershipsRepository.delete(membership.id);
+
+                // 活動すきー実験機能:
+                // グループチャットからメンバーを外した時、そのユーザーの未読フラグも消す。
+                const redisPipeline = this.redisClient.pipeline();
+                redisPipeline.del(`newRoomChatMessageExists:${targetUserId}:${roomId}`);
+                redisPipeline.srem(`newChatMessagesExists:${targetUserId}`, `room:${roomId}`);
+                await redisPipeline.exec();
+        }
+
 	@bindThis
 	public async muteRoom(userId: MiUser['id'], roomId: MiChatRoom['id'], mute: boolean) {
 		const membership = await this.chatRoomMembershipsRepository.findOneByOrFail({ roomId, userId });
