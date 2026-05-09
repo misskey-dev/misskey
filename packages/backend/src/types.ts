@@ -18,6 +18,7 @@
  * followRequestAccepted - 自分の送ったフォローリクエストが承認された
  * roleAssigned - ロールが付与された
  * chatRoomInvitationReceived - チャットルームに招待された
+ * katsudoChatRoomMemberRemoved - 活動すきー独自: グループチャットから外された
  * achievementEarned - 実績を獲得
  * exportCompleted - エクスポートが完了
  * login - ログイン
@@ -40,6 +41,7 @@ export const notificationTypes = [
 	'followRequestAccepted',
 	'roleAssigned',
 	'chatRoomInvitationReceived',
+	'katsudoChatRoomMemberRemoved',
 	'achievementEarned',
 	'exportCompleted',
 	'login',

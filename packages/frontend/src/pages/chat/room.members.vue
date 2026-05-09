@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			実験機能: メンバー管理
 		</div>
 		<div :class="$style.experimentalMemberToolsDescription">
-			グループチャットからメンバーを外すための実験機能です。現在は確認ダイアログの表示だけを行います。
+			グループチャットからメンバーを外すための実験機能です。外されたメンバーは再招待すると戻せます。
 		</div>
 
 		<div :class="$style.experimentalMemberList">

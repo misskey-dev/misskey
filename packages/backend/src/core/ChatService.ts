@@ -785,6 +785,10 @@ export class ChatService {
                         targetUserUsername: targetUser.username,
                         targetUserHost: targetUser.host,
                 });
+                await this.notificationService.createNotification(targetUser.id, 'katsudoChatRoomMemberRemoved', {
+                        roomId: room.id,
+                        roomName: room.name,
+                }, operatorId);
         }
 
 	@bindThis
