@@ -129,9 +129,10 @@ export const moderationLogTypes = [
 	'deleteAccount',
 	'deletePage',
 	'deleteFlash',
-	'deleteGalleryPost',
-	'deleteChatRoom',
-	'updateProxyAccountDescription',
+        'deleteGalleryPost',
+        'deleteChatRoom',
+        'katsudoKickChatRoomMember',
+        'updateProxyAccountDescription',
 ] as const;
 
 export type ModerationLogPayloads = {
@@ -384,14 +385,21 @@ export type ModerationLogPayloads = {
 		postUserUsername: string;
 		post: any;
 	};
-	deleteChatRoom: {
-		roomId: string;
-		room: any;
-	};
-	updateProxyAccountDescription: {
-		before: string | null;
-		after: string | null;
-	};
+        deleteChatRoom: {
+                roomId: string;
+                room: any;
+        };
+        katsudoKickChatRoomMember: {
+                roomId: string;
+                roomName: string;
+                targetUserId: string;
+                targetUserUsername: string;
+                targetUserHost: string | null;
+        };
+        updateProxyAccountDescription: {
+                before: string | null;
+                after: string | null;
+        };
 };
 
 export type Serialized<T> = {

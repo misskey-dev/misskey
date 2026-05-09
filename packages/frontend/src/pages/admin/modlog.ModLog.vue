@@ -39,9 +39,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					'deleteAccount',
 					'deletePage',
 					'deleteFlash',
-					'deleteGalleryPost',
-					'deleteChatRoom',
-				].includes(log.type)
+                                        'deleteGalleryPost',
+                                        'deleteChatRoom',
+                                        'katsudoKickChatRoomMember',
+                                ].includes(log.type)
 			}"
 		>{{ i18n.ts._moderationLogTypes[log.type] }}</b>
 		<span v-if="log.type === 'updateUserNote'">: @{{ log.info.userUsername }}{{ log.info.userHost ? '@' + log.info.userHost : '' }}</span>
@@ -82,6 +83,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<span v-else-if="log.type === 'deleteFlash'">: @{{ log.info.flashUserUsername }}</span>
 		<span v-else-if="log.type === 'deleteGalleryPost'">: @{{ log.info.postUserUsername }}</span>
 		<span v-else-if="log.type === 'deleteChatRoom'">: @{{ log.info.room.name }}</span>
+                <span v-else-if="log.type === 'katsudoKickChatRoomMember'">: {{ log.info.roomName }} / @{{ log.info.targetUserUsername }}{{ log.info.targetUserHost ? '@' + log.info.targetUserHost : '' }}</span>
 	</template>
 	<template #icon>
 		<i v-if="log.type === 'updateServerSettings'" class="ti ti-settings"></i>
@@ -126,6 +128,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<i v-else-if="log.type === 'deleteFlash'" class="ti ti-trash"></i>
 		<i v-else-if="log.type === 'deleteGalleryPost'" class="ti ti-trash"></i>
 		<i v-else-if="log.type === 'deleteChatRoom'" class="ti ti-trash"></i>
+                <i v-else-if="log.type === 'katsudoKickChatRoomMember'" class="ti ti-user-x"></i>
 	</template>
 	<template #suffix>
 		<MkTime :time="log.createdAt"/>
