@@ -29,13 +29,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</p>
 					</div>
 
-					<div v-if="displayOrderChanges.length > 0" :class="$style.bulkActionArea">
-						<MkButton primary rounded @click="confirmBulkDisplayOrderUpdate">
-							<i class="ti ti-arrows-sort"></i>
-							displayOrderを一括整理
-						</MkButton>
-					</div>
-
 					<div v-if="displayOrderChanges.length > 0" :class="$style.changeList">
 						<div v-for="change in displayOrderChanges" :key="change.id" class="_panel" :class="$style.changeCard">
 							<div>
