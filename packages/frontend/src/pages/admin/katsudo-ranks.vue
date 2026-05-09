@@ -53,9 +53,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 									登録 {{ user.daysSinceCreated }}日 / ノート {{ user.notesCount }}個
 								</div>
 							</div>
-							<div :class="$style.rankBadge">
-								{{ user.suggestedRank.name }}
-							</div>
+                                                        <div :class="$style.rankInfo">
+                                                                <div>現在：{{ user.currentRankName }}</div>
+                                                                <div>推奨：{{ user.suggestedRank.name }}</div>
+                                                        </div>
 						</div>
 					</div>
 				</div>
@@ -73,7 +74,7 @@ import { definePage } from '@/page.js';
 import { katsudoRankDefinitions } from './katsudo-rank-definitions.js';
 
 const users = await misskeyApi('admin/show-users', {
-	limit: 100,
+	limit: 20,
 	offset: 0,
 	sort: '+createdAt',
 	state: 'all',
@@ -81,6 +82,12 @@ const users = await misskeyApi('admin/show-users', {
 });
 
 const roles = await misskeyApi('admin/roles/list');
+
+const userDetails = await Promise.all(users.map(user => misskeyApi('admin/show-user', {
+        userId: user.id,
+})));
+
+console.log('katsudo rank users:', users);
 
 function getDaysSinceCreated(createdAt: string) {
 	const created = new Date(createdAt).getTime();
@@ -105,12 +112,16 @@ const rankedUsers = computed(() => {
 		const notesCount = user.notesCount ?? 0;
 		const suggestedRank = getSuggestedRank(daysSinceCreated, notesCount);
 
+                const detail = userDetails.find(x => x.id === user.id);
+                const currentRank = detail?.roles?.find(role => katsudoRankDefinitions.some(rank => rank.name === role.name)) ?? null;
+
 		return {
 			id: user.id,
 			username: user.username,
 			daysSinceCreated,
 			notesCount,
 			suggestedRank,
+                        currentRankName: currentRank?.name ?? '未付与',
 		};
 	});
 });
@@ -198,5 +209,16 @@ definePage(() => ({
 	margin-top: 6px;
 	font-size: 0.85em;
 	opacity: 0.8;
+}
+
+.rankInfo {
+        flex-shrink: 0;
+        padding: 6px 10px;
+        border-radius: 12px;
+        background: var(--MI_THEME-accentedBg);
+        color: var(--MI_THEME-accent);
+        font-size: 0.9em;
+        font-weight: 700;
+        line-height: 1.6;
 }
 </style>
