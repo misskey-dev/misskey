@@ -35,24 +35,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<div :class="$style.changeRoleName">{{ change.name }}</div>
 								<div :class="$style.changeCategory">{{ change.categoryLabel }}</div>
 							</div>
-							<div :class="$style.changeOrder">
-								{{ change.currentDisplayOrder }}
-→
-{{ change.suggestedDisplayOrder }}
+                                                        <div :class="$style.changeOrder">
+                                                                <span>
+                                                                        {{ change.currentDisplayOrder }} → {{ change.suggestedDisplayOrder }}
+                                                                </span>
 
-<span
-        v-if="change.suggestedDisplayOrder > change.currentDisplayOrder"
-        :class="$style.moveUp"
->
-        ↑ 上に移動
-</span>
+                                                                <span
+                                                                        v-if="change.suggestedDisplayOrder > change.currentDisplayOrder"
+                                                                        :class="$style.moveUp"
+                                                                >
+                                                                        ↑ 上に移動
+                                                                </span>
 
-<span
-        v-else-if="change.suggestedDisplayOrder < change.currentDisplayOrder"
-        :class="$style.moveDown"
->
-        ↓ 下に移動
-</span>
+                                                                <span
+                                                                        v-else-if="change.suggestedDisplayOrder < change.currentDisplayOrder"
+                                                                        :class="$style.moveDown"
+                                                                >
+                                                                        ↓ 下に移動
+                                                                </span>
 							</div>
 						</div>
 					</div>
@@ -102,28 +102,32 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</div>
 						</div>
 
-						<div v-if="getRolesByCategory(category.key).length > 0" :class="$style.roleList">
-							<div v-for="role in getRolesByCategory(category.key)" :key="role.id" :class="$style.compactRoleRow">
-																<span :class="$style.compactRoleName">{{ role.name }}</span>
+                                                <div v-if="getRolesByCategory(category.key).length > 0" :class="$style.roleList">
+                                                        <div v-for="role in getRolesByCategory(category.key)" :key="role.id" :class="$style.compactRoleRow">
+                                                                <span :class="$style.compactRoleName">{{ role.name }}</span>
+
                                                                 <span :class="$style.compactRoleCategoryKey">
                                                                         {{ category.key }}
                                                                 </span>
-								<span :class="$style.compactRoleOrder">
-									現在: {{ role.displayOrder }} → 推奨: {{ getSuggestedDisplayOrder(role, category.key) }}
-								</span>
-								<span
-									:class="[
-										$style.orderStatus,
-										isDisplayOrderDifferent(role, category.key) ? $style.orderStatusWarning : $style.orderStatusOk,
-									]"
-								>
-									{{ isDisplayOrderDifferent(role, category.key) ? '整理推奨' : 'OK' }}
-								</span>							</div>
-						</div>
 
-						<p v-else :class="$style.emptyCategory">このカテゴリに入るロールはありません。</p>
-					</div>
-				</div>
+                                                                <span :class="$style.compactRoleOrder">
+                                                                        現在: {{ role.displayOrder }} → 推奨: {{ getSuggestedDisplayOrder(role, category.key) }}
+                                                                </span>
+
+                                                                <span
+                                                                        :class="[
+                                                                                $style.orderStatus,
+                                                                                isDisplayOrderDifferent(role, category.key) ? $style.orderStatusWarning : $style.orderStatusOk,
+                                                                        ]"
+                                                                >
+                                                                        {{ isDisplayOrderDifferent(role, category.key) ? '整理推奨' : 'OK' }}
+                                                                </span>
+                                                        </div>
+                                                </div>
+
+                                                <p v-else :class="$style.emptyCategory">このカテゴリに入るロールはありません。</p>
+                                        </div>
+                                </div>
 			</MkFoldableSection>
 
 			<MkFoldableSection>
@@ -530,10 +534,6 @@ definePage(() => ({
 	justify-content: flex-end;
 }
 
-.bulkActionArea {
-	display: flex;
-	justify-content: flex-end;
-}
 .moveUp {
         margin-left: 8px;
         font-weight: 700;
