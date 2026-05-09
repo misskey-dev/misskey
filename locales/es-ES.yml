@@ -987,7 +987,7 @@ requireAdminForView: "Necesitas iniciar sesión como administrador para ver esto
 isSystemAccount: "Cuenta creada y operada automáticamente por el sistema"
 typeToConfirm: "Ingrese {x} para confirmar"
 deleteAccount: "Borrar cuenta"
-document: "Documento"
+document: "Guía de usuario"
 numberOfPageCache: "Cantidad de páginas cacheadas"
 numberOfPageCacheDescription: "Al aumentar el número mejora la conveniencia pero también puede aumentar la carga y la memoria a usarse"
 logoutConfirm: "¿Cerrar sesión?"
