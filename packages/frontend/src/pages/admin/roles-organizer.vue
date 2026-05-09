@@ -535,34 +535,36 @@ definePage(() => ({
 }
 
 .moveUp {
-        margin-left: 8px;
-        font-weight: 700;
+	margin-left: 8px;
+	font-weight: 700;
 }
 
 .moveDown {
-        margin-left: 8px;
-        font-weight: 700;
-        opacity: 0.75;
+	margin-left: 8px;
+	font-weight: 700;
+	opacity: 0.75;
 }
+
 .categoryNotice {
-        margin-top: 6px;
-        font-size: 0.85em;
-        color: var(--MI_THEME-warn);
+	margin-top: 6px;
+	font-size: 0.85em;
+	color: var(--MI_THEME-warn);
 }
+
 .compactRoleCategoryKey {
-        margin-left: 8px;
-        font-size: 0.8em;
-        opacity: 0.65;
+	margin-left: 8px;
+	font-size: 0.8em;
+	opacity: 0.65;
 }
 
 .uncategorizedRoleNames {
-        margin: 8px 0 0;
-        padding: 10px;
-        font-family: monospace;
-        font-size: 0.85em;
-        white-space: pre-wrap;
-        background: var(--MI_THEME-panel);
-        border-radius: 8px;
-        opacity: 0.9;
+	margin: 8px 0 0;
+	padding: 10px;
+	font-family: monospace;
+	font-size: 0.85em;
+	white-space: pre-wrap;
+	background: var(--MI_THEME-panel);
+	border-radius: 8px;
+	opacity: 0.9;
 }
 </style>
