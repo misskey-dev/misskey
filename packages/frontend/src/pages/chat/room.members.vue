@@ -87,11 +87,28 @@ async function confirmRemoveMemberPreview(membership: Misskey.entities.ChatRoomM
 	const user = membership.user;
 	if (user == null) return;
 
-	await os.alert({
-		type: 'info',
-		title: '実験機能: メンバー管理',
-		text: `${user.name ?? user.username} さんをこのグループチャットから外す予定です。\n\n現在は確認表示だけで、実際には外しません。`,
+	const firstConfirm = await os.confirm({
+		type: 'warning',
+		title: 'メンバーを外しますか？',
+		text: `${user.name ?? user.username} さんをこのグループチャットから外します。\n\nこれはBANではないため、再招待すれば戻せます。`,
 	});
+
+	if (firstConfirm.canceled) return;
+
+	const secondConfirm = await os.confirm({
+		type: 'warning',
+		title: '実験機能の確認',
+		text: 'この機能は活動すきー独自の実験機能です。\n\n本当に実行しますか？',
+	});
+
+	if (secondConfirm.canceled) return;
+
+	await os.apiWithDialog('chat/rooms/remove-member', {
+		roomId: props.room.id,
+		userId: user.id,
+	});
+
+	memberships.value = memberships.value.filter(x => x.id !== membership.id);
 }
 
 onMounted(async () => {
