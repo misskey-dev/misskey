@@ -4,14 +4,14 @@ export const katsudoRoleCategories = [
 		label: '役職系',
 		range: '90000〜99990',
 		baseOrder: 90000,
-		roleNames: ['管理人', 'モデレーター', '貢献者', '信頼できる人'],
+                roleNames: ['管理人', 'モデレーター', 'モデレーター見習い', '貢献者', '信頼できる人'],
 	},
 	{
 		key: 'recruit',
 		label: '募集・依頼系',
 		range: '80000〜89990',
 		baseOrder: 80000,
-		roleNames: ['イラスト依頼受付中', 'グループメンバー募集中'],
+                roleNames: ['イラスト依頼受付中', 'グループメンバー募集中', 'スカウト募集'],
 	},
 	{
 		key: 'bot',
