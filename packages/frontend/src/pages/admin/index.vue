@@ -126,6 +126,11 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
                 text: 'ロール整理',
                 to: '/admin/roles-organizer',
                 active: currentPage.value?.route.name === 'roles-organizer',
+	}, {
+		icon: 'ti ti-trophy',
+		text: 'かつ廃ランク',
+		to: '/admin/katsudo-ranks',
+		active: currentPage.value?.route.name === 'katsudo-ranks',
         }, {
                 icon: 'ti ti-icons',
                 text: i18n.ts.customEmojis,

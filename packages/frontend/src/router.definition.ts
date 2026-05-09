@@ -445,7 +445,11 @@ export const ROUTE_DEF = [{
                 path: '/roles-organizer',
                 name: 'roles-organizer',
                 component: page(() => import('@/pages/admin/roles-organizer.vue')),
-        }, {
+	}, {
+		path: '/katsudo-ranks',
+		name: 'katsudo-ranks',
+		component: page(() => import('@/pages/admin/katsudo-ranks.vue')),
+	}, {
                 path: '/roles/:id',
                 name: 'roles',
                 component: page(() => import('@/pages/admin/roles.role.vue')),
