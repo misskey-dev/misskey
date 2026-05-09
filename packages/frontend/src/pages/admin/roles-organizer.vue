@@ -151,6 +151,14 @@ SPDX-License-Identifier: AGPL-3.0-only
                                                                         {{ category.key }}
                                                                 </span>
 
+								<MkButton
+									v-if="category.key === 'uncategorized'"
+									rounded
+									@click="moveRoleToCategory(role.name, 'rank')"
+								>
+									活動称号系へ
+								</MkButton>
+
                                                                 <span :class="$style.compactRoleOrder">
                                                                         現在: {{ role.displayOrder }} → 推奨: {{ getSuggestedDisplayOrder(role, category.key) }}
                                                                 </span>
@@ -268,6 +276,19 @@ function updateCategoryBaseOrder(
 	const input = ev.target as HTMLInputElement;
 
 	category.baseOrder = Number(input.value);
+}
+
+function moveRoleToCategory(roleName: string, targetCategoryKey: string) {
+	for (const category of editableRoleCategories.value) {
+		category.roleNames = category.roleNames.filter(x => x !== roleName);
+	}
+
+	const targetCategory = editableRoleCategories.value.find(x => x.key === targetCategoryKey);
+	if (targetCategory == null) return;
+
+	if (!targetCategory.roleNames.includes(roleName)) {
+		targetCategory.roleNames.push(roleName);
+	}
 }
 
 function getUncategorizedRoleNamesText() {
