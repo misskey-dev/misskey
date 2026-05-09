@@ -18,7 +18,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 
 			<MkFoldableSection>
-			<MkFoldableSection>
 				<template #header>ロール整理設定</template>
 				<div class="_panel" :class="$style.settingsPanel">
 					<div :class="$style.settingsTitle">
@@ -37,8 +36,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<div>
 								<div :class="$style.settingsCategoryName">{{ category.label }}</div>
 								<div :class="$style.settingsCategoryMeta">
-									{{ category.range }} / 基準値: {{ category.baseOrder }}
+									{{ category.range }}
 								</div>
+
+								<label :class="$style.settingsCategoryBaseOrder">
+									<span>基準値</span>
+									<input
+										:value="category.baseOrder"
+										type="number"
+										:class="$style.settingsCategoryInput"
+										@input="updateCategoryBaseOrder(category, $event)"
+									>
+								</label>
 							</div>
 
 							<div :class="$style.settingsCategoryCount">
@@ -48,6 +57,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					</div>
 				</div>
 			</MkFoldableSection>
+
+			<MkFoldableSection>
 				<template #header>変更予定一覧</template>
 				<div class="_gaps_s">
 					<div class="_panel" :class="$style.changeSummary">
@@ -226,7 +237,10 @@ const sortedRoles = computed(() => {
 });
 
 const editableRoleCategories = ref(katsudoRoleCategories.map(category => ({
-	...category,
+	key: category.key,
+	label: category.label,
+	range: category.range,
+	baseOrder: Number(category.baseOrder),
 	roleNames: [...category.roleNames],
 })));
 
@@ -245,6 +259,15 @@ function getRoleCategoryKey(role: typeof roles[number]) {
 
 function getRolesByCategory(categoryKey: string) {
 	return sortedRoles.value.filter(role => getRoleCategoryKey(role) === categoryKey);
+}
+
+function updateCategoryBaseOrder(
+	category: typeof editableRoleCategories.value[number],
+	ev: Event,
+) {
+	const input = ev.target as HTMLInputElement;
+
+	category.baseOrder = Number(input.value);
 }
 
 function getUncategorizedRoleNamesText() {
@@ -654,5 +677,22 @@ definePage(() => ({
 	border: solid 1px var(--MI_THEME-divider);
 	font-size: 0.85em;
 	font-weight: 700;
+}
+
+.settingsCategoryBaseOrder {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-top: 6px;
+	font-size: 0.85em;
+}
+
+.settingsCategoryInput {
+	width: 110px;
+	padding: 4px 8px;
+	border: solid 1px var(--MI_THEME-divider);
+	border-radius: 8px;
+	background: var(--MI_THEME-panel);
+	color: var(--MI_THEME-fg);
 }
 </style>
