@@ -23,8 +23,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div v-for="rank in katsudoRankDefinitions" :key="rank.key" class="_panel" :class="$style.rankCard">
 						<div :class="$style.rankName">{{ rank.name }}</div>
 						<div :class="$style.rankCondition">
+
 							登録 {{ rank.minDays }}日以上 / ノート {{ rank.minNotes }}個以上
 						</div>
+<div :class="$style.roleStatus">
+	<span v-if="getRoleByName(rank.name)">
+		✅ ロールあり
+	</span>
+	<span v-else>
+		❌ ロールなし
+	</span>
+</div>
 					</div>
 				</div>
 			</MkFoldableSection>
@@ -71,11 +80,17 @@ const users = await misskeyApi('admin/show-users', {
 	origin: 'local',
 });
 
+const roles = await misskeyApi('admin/roles/list');
+
 function getDaysSinceCreated(createdAt: string) {
 	const created = new Date(createdAt).getTime();
 	const now = Date.now();
 
 	return Math.max(0, Math.floor((now - created) / (1000 * 60 * 60 * 24)));
+}
+
+function getRoleByName(name: string) {
+	return roles.find(role => role.name === name) ?? null;
 }
 
 function getSuggestedRank(daysSinceCreated: number, notesCount: number) {
@@ -178,5 +193,10 @@ definePage(() => ({
 	color: var(--MI_THEME-accent);
 	font-size: 0.9em;
 	font-weight: 700;
+}
+.roleStatus {
+	margin-top: 6px;
+	font-size: 0.85em;
+	opacity: 0.8;
 }
 </style>
