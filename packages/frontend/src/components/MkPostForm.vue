@@ -370,6 +370,16 @@ const activityAnnouncementGenres = [
 		icon: 'ti ti-users',
 		tag: '活動告知_募集',
 	},
+	{
+		text: 'デビュー',
+		icon: 'ti ti-sparkles',
+		tag: '活動告知_デビュー',
+	},
+	{
+		text: 'お披露目',
+		icon: 'ti ti-shirt',
+		tag: '活動告知_お披露目',
+	},
 ];
 
 const isActivityAnnouncement = computed(() => {
@@ -423,10 +433,14 @@ function insertActivityAnnouncementTemplate(genreTag: string | null = null) {
 	} else if (genreTag === '活動告知_イベント') {
 		template = `${tags}\n\n【イベント内容】\n\n【開催日時】\n\n【参加方法】\n`;
 	} else if (genreTag === '活動告知_募集') {
-		template = `${tags}\n\n【募集内容】\n\n【条件】\n\n【応募・参加方法】\n`;
-	} else {
-		template = `${tags}\n\n【内容】\n\n【日時】\n\n【URL】\n`;
-	}
+            template = `${tags}\n\n【募集内容】\n\n【条件】\n\n【応募・参加方法】\n`;
+	} else if (genreTag === '活動告知_デビュー') {
+            template = `${tags}\n\n【デビュー内容】\n\n【日時】\n\n【見どころ】\n\n【URL】\n`;
+　　    } else if (genreTag === '活動告知_お披露目') {
+            template = `${tags}\n\n【お披露目内容】\n\n【日時】\n\n【見どころ】\n\n【URL】\n`;
+    　　} else {
+            template = `${tags}\n\n【内容】\n\n【日時】\n\n【URL】\n`;
+    　　}
 
 	insertTextAtCursor(textareaEl.value, template);
 	withHashtags.value = false;

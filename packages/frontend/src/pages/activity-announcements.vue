@@ -134,6 +134,14 @@ const activityAnnouncementGenres = [
 		tag: '活動告知_募集',
 		href: '/activity-announcements?tag=活動告知_募集',
 	},
+	{
+		key: 'debutShowcase',
+		label: 'デビュー・お披露目',
+		icon: 'ti ti-sparkles',
+		tag: '活動告知_デビュー',
+		tags: ['活動告知_デビュー', '活動告知_お披露目'],
+		href: '/activity-announcements?tag=活動告知_デビュー',
+	},
 ];
 
 const selectedTag = ref('活動告知');
