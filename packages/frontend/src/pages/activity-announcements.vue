@@ -22,6 +22,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<ul :class="$style.guideList">
 		<li>配信開始・配信予定のお知らせ</li>
 		<li>動画投稿・歌ってみた・作品公開の告知</li>
+		<li>デビュー・お披露目など、大きなお知らせ</li>
 		<li>イベント、企画、募集などのお知らせ</li>
 	</ul>
 	<p :class="$style.guideNote">
@@ -119,6 +120,18 @@ const activityAnnouncementGenres = [
 		label: '作品公開',
 		icon: 'ti ti-palette',
 		tag: '活動告知_作品公開',
+	},
+	{
+		key: 'debut',
+		label: 'デビュー',
+		icon: 'ti ti-sparkles',
+		tag: '活動告知_デビュー',
+	},
+	{
+		key: 'reveal',
+		label: 'お披露目',
+		icon: 'ti ti-confetti',
+		tag: '活動告知_お披露目',
 	},
 	{
 		key: 'event',
