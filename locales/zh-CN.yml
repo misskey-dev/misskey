@@ -2151,7 +2151,7 @@ _emailUnavailable:
   banned: "无法使用此邮件地址注册"
 _ffVisibility:
   public: "公开"
-  followers: "只有关注你的用户能看到"
+  followers: "仅关注者可见"
   private: "私密"
 _signup:
   almostThere: "即将完成"
