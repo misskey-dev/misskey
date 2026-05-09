@@ -24,7 +24,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 			実験機能: メンバー管理
 		</div>
 		<div :class="$style.experimentalMemberToolsDescription">
-			ここには今後、グループチャットからメンバーを外す機能を追加します。現在は確認用の表示だけです。
+			グループチャットからメンバーを外すための実験機能です。現在は確認ダイアログの表示だけを行います。
+		</div>
+
+		<div :class="$style.experimentalMemberList">
+			<div v-for="membership in memberships" :key="membership.id" :class="$style.experimentalMemberRow">
+				<MkA :class="$style.experimentalMemberBody" :to="`${userPage(membership.user!)}`">
+					<MkUserCardMini :user="membership.user!"/>
+				</MkA>
+
+				<MkButton danger rounded @click="confirmRemoveMemberPreview(membership)">
+					<i class="ti ti-user-x"></i>
+					外す
+				</MkButton>
+			</div>
 		</div>
 	</div>
 
@@ -51,6 +64,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
 import { userPage } from '@/filters/user.js';
 import { ensureSignin } from '@/i.js';
+import * as os from '@/os.js';
 
 const $i = ensureSignin();
 
@@ -68,6 +82,17 @@ const isOwner = computed(() => {
 
 const memberships = ref<Misskey.entities.ChatRoomMembership[]>([]);
 const invitations = ref<Misskey.entities.ChatRoomInvitation[]>([]);
+
+async function confirmRemoveMemberPreview(membership: Misskey.entities.ChatRoomMembership) {
+	const user = membership.user;
+	if (user == null) return;
+
+	await os.alert({
+		type: 'info',
+		title: '実験機能: メンバー管理',
+		text: `${user.name ?? user.username} さんをこのグループチャットから外す予定です。\n\n現在は確認表示だけで、実際には外しません。`,
+	});
+}
 
 onMounted(async () => {
 	memberships.value = await misskeyApi('chat/rooms/members', {
@@ -118,5 +143,23 @@ onMounted(async () => {
 	font-size: 0.9em;
 	color: var(--MI_THEME-fg);
 	opacity: 0.75;
+}
+
+.experimentalMemberList {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-top: 12px;
+}
+
+.experimentalMemberRow {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.experimentalMemberBody {
+	flex: 1;
+	min-width: 0;
 }
 </style>
