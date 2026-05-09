@@ -62,9 +62,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<XSearch :userId="userId" :roomId="roomId"/>
 	</div>
 
-	<div v-else-if="tab === 'members'" class="_spacer" style="--MI_SPACER-w: 700px;">
-		<XMembers v-if="room != null" :room="room" @inviteUser="inviteUser"/>
-	</div>
+        <div v-else-if="tab === 'members'" class="_spacer" style="--MI_SPACER-w: 700px;">
+                <div class="_gaps">
+                        <XMembers v-if="room != null" :room="room" @inviteUser="inviteUser"/>
+
+                        <div v-if="room != null && room.ownerId !== $i.id" class="_panel" :class="$style.leaveRoomPanel">
+                                <div :class="$style.leaveRoomTitle">
+                                        このグループから退出
+                                </div>
+                                <div :class="$style.leaveRoomDescription">
+                                        退出すると、このグループチャットのメンバーではなくなります。
+                                </div>
+                                <MkButton danger rounded @click="leaveRoom">
+                                        <i class="ti ti-x"></i>
+                                        退出する
+                                </MkButton>
+                        </div>
+                </div>
+        </div>
 
 	<div v-else-if="tab === 'info'" class="_spacer" style="--MI_SPACER-w: 700px;">
 		<XInfo v-if="room != null" :room="room"/>
@@ -554,5 +569,20 @@ definePage(computed(() => {
 	width: fit-content;
 	padding: 0.5em 1em;
 	margin: 0 auto;
+}
+
+.leaveRoomPanel {
+        padding: 16px;
+}
+
+.leaveRoomTitle {
+        font-weight: 700;
+}
+
+.leaveRoomDescription {
+        margin: 6px 0 12px;
+        font-size: 0.9em;
+        color: var(--MI_THEME-fg);
+        opacity: 0.75;
 }
 </style>
