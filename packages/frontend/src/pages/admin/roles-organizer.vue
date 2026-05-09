@@ -78,6 +78,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<div>
 								<div :class="$style.categoryName">{{ category.label }}</div>
 								<div :class="$style.categoryRange">{{ category.range }}</div>
+                                                                <div :class="$style.categoryRange">
+                                                                        基準値: {{ category.baseOrder }}
+                                                                </div>
 							</div>
 							<div :class="$style.categoryBadges">
 								<span :class="$style.categoryCount">{{ getRolesByCategory(category.key).length }}件</span>
