@@ -5,9 +5,9 @@
 				<div :class="$style.heroOverlay">
 					<p :class="$style.badge">活動ページ・プレビュー</p>
 					<h1 :class="$style.title">{{ siteTitle }}</h1>
-					<p :class="$style.catch">
-						作曲・創作・活動のお知らせをまとめる、活動者向けの公式ホームページ風ページです。
-					</p>
+<p :class="$style.catch">
+	{{ siteCatchphrase }}
+</p>
 
 <div :class="$style.heroActions">
 	<a :class="$style.primaryButton" href="#links">リンクを見る</a>
@@ -43,15 +43,15 @@
 					<div :class="$style.statusList">
 						<div :class="$style.statusItem">
 							<span>依頼受付</span>
-							<strong>受付中</strong>
+							<strong>{{ site?.commissionStatus || '受付中' }}</strong>
 						</div>
 						<div :class="$style.statusItem">
 							<span>コラボ</span>
-							<strong>相談OK</strong>
+							<strong>{{ site?.collabStatus || '相談OK' }}</strong>
 						</div>
 						<div :class="$style.statusItem">
 							<span>ファンアート</span>
-							<strong>歓迎</strong>
+							<strong>{{ site?.fanartStatus || '歓迎' }}</strong>
 						</div>
 					</div>
 				</section>
@@ -94,10 +94,19 @@
 			<section id="guideline" :class="$style.panel">
 				<p :class="$style.label">Guideline</p>
 				<h2 :class="$style.sectionTitle">ガイドライン</h2>
-				<p :class="$style.bodyText">
-					ここには、二次創作・ファンアート・依頼・納品物の扱いなど、
-					活動者ごとの個人ガイドラインを表示できるようにする予定です。
-				</p>
+<p :class="$style.bodyText">
+	{{ site?.guidelineText || 'ここには、二次創作・ファンアート・依頼・納品物の扱いなど、活動者ごとの個人ガイドラインを表示できるようにする予定です。' }}
+</p>
+
+<a
+	v-if="site?.guidelineUrl"
+	:class="$style.guidelineButton"
+	:href="site.guidelineUrl"
+	target="_blank"
+	rel="noopener noreferrer"
+>
+	ガイドラインを開く
+</a>
 			</section>
 		</div>
 	</MkSpacer>
@@ -119,12 +128,32 @@ const acct = computed(() => {
 
 const user = ref<Misskey.entities.UserDetailed | null>(null);
 
+type CreatorSite = {
+	id: string;
+	userId: string;
+	title: string | null;
+	catchphrase: string | null;
+	commissionStatus: string | null;
+	collabStatus: string | null;
+	fanartStatus: string | null;
+	guidelineUrl: string | null;
+	guidelineText: string | null;
+	createdAt: string;
+	updatedAt: string;
+};
+
+const site = ref<CreatorSite | null>(null);
+
 const displayName = computed(() => {
 	return user.value?.name || acct.value;
 });
 
 const siteTitle = computed(() => {
-	return `${displayName.value} official site`;
+	return site.value?.title || `${displayName.value} official site`;
+});
+
+const siteCatchphrase = computed(() => {
+	return site.value?.catchphrase || '作曲・創作・活動のお知らせをまとめる、活動者向けの公式ホームページ風ページです。';
 });
 
 const profilePath = computed(() => {
@@ -139,22 +168,30 @@ const editPath = computed(() => {
 	return `/settings/creator-site`;
 });
 
-function fetchUser(): void {
+async function fetchUser(): Promise<void> {
 	user.value = null;
+	site.value = null;
 
 	if (props.acct == null) return;
 
 	const normalizedAcct = props.acct.replace(/^@/, '');
 	const [username, host] = normalizedAcct.split('@');
 
-	misskeyApi('users/show', {
-		username,
-		host: host || null,
-	}).then((res) => {
+	try {
+		const res = await misskeyApi('users/show', {
+			username,
+			host: host || null,
+		});
+
 		user.value = res;
-	}).catch(() => {
+
+		site.value = await misskeyApi('creator-site/show', {
+			userId: res.id,
+		});
+	} catch {
 		user.value = null;
-	});
+		site.value = null;
+	}
 }
 
 watch(() => props.acct, fetchUser, {
@@ -375,5 +412,33 @@ watch(() => props.acct, fetchUser, {
 	.grid {
 		grid-template-columns: 1fr;
 	}
+}
+
+.guidelineButton {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 38px;
+	margin-top: 16px;
+	padding: 0 16px;
+	border-radius: 999px;
+	background: var(--MI_THEME-buttonBg);
+	color: var(--MI_THEME-fg);
+	text-decoration: none;
+	font-weight: 700;
+}
+
+guidelineButton {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 38px;
+	margin-top: 16px;
+	padding: 0 16px;
+	border-radius: 999px;
+	background: var(--MI_THEME-buttonBg);
+	color: var(--MI_THEME-fg);
+	text-decoration: none;
+	font-weight: 700;
 }
 </style>
