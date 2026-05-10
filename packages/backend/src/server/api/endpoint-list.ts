@@ -416,6 +416,7 @@ export * as 'users/search' from './endpoints/users/search.js';
 export * as 'users/search-by-username-and-host' from './endpoints/users/search-by-username-and-host.js';
 export * as 'users/show' from './endpoints/users/show.js';
 export * as 'creator-site/show' from './endpoints/creator-site/show.js';
+export * as 'creator-site/update' from './endpoints/creator-site/update.js';
 export * as 'users/update-memo' from './endpoints/users/update-memo.js';
 export * as 'verify-email' from './endpoints/verify-email.js';
 export * as 'chat/messages/create-to-user' from './endpoints/chat/messages/create-to-user.js';
