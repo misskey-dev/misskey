@@ -71,7 +71,7 @@ export class ClientServerService {
 	private readonly clientAssets: string;
 	private readonly assets: string;
 	private readonly swAssets: string;
-	private readonly fluentEmojisDir: string;
+	private readonly fluentEmojiDir: string;
 	private readonly twemojiDir: string;
 	private readonly frontendViteOut: string;
 	private readonly frontendEmbedViteOut: string;
@@ -135,8 +135,8 @@ export class ClientServerService {
 		this.clientAssets = resolve(frontendRootdir, 'assets');
 		this.assets = resolve(this.config.rootDir, 'built/_frontend_dist_');
 		this.swAssets = resolve(this.config.rootDir, 'built/_sw_dist_');
-		this.fluentEmojisDir = resolve(this.config.rootDir, 'fluent-emojis/dist');
-		this.twemojiDir = resolve(backendRootdir, 'node_modules/@discordapp/twemoji/dist/svg');
+		this.fluentEmojiDir = resolve(backendRootdir, 'node_modules/@misskey-dev/emoji-assets/built/fluent-emoji');
+		this.twemojiDir = resolve(backendRootdir, 'node_modules/@misskey-dev/emoji-assets/built/twemoji');
 		this.frontendViteOut = resolve(this.config.rootDir, 'built/_frontend_vite_');
 		this.frontendEmbedViteOut = resolve(this.config.rootDir, 'built/_frontend_embed_vite_');
 		this.tarball = resolve(this.config.rootDir, 'built/tarball');
@@ -306,7 +306,7 @@ export class ClientServerService {
 
 			reply.header('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
 
-			return reply.sendFile(path, this.fluentEmojisDir, {
+			return reply.sendFile(path, this.fluentEmojiDir, {
 				maxAge: ms('30 days'),
 			});
 		});

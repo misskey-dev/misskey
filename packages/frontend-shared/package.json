@@ -19,6 +19,7 @@
 		"js-built"
 	],
 	"dependencies": {
+		"@misskey-dev/emoji-data": "17.0.3",
 		"i18n": "workspace:*",
 		"json5": "2.2.3",
 		"misskey-js": "workspace:*",
