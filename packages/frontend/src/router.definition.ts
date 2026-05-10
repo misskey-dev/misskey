@@ -81,6 +81,10 @@ export const ROUTE_DEF = [{
 		name: 'profile',
 		component: page(() => import('@/pages/settings/profile.vue')),
 	}, {
+		path: '/creator-site',
+		name: 'creator-site',
+		component: page(() => import('@/pages/settings/creator-site.vue')),
+	}, {
 		path: '/avatar-decoration',
 		name: 'avatarDecoration',
 		component: page(() => import('@/pages/settings/avatar-decoration.vue')),
@@ -301,7 +305,13 @@ export const ROUTE_DEF = [{
 	path: '/tags/:tag',
 	component: page(() => import('@/pages/tag.vue')),
 }, {
-	path: '/activity-announcements',
+	path: '/site/@:acct',
+	component: page(() => import('@/pages/creator-site.vue')),
+}, {
+	path: '/creator-site',
+	redirect: '/site/@nano_katudolove',
+}, {
+	path: '/pages/new',
 	component: page(() => import('@/pages/activity-announcements.vue')),
 }, {
 	path: '/pages/new',
