@@ -98,6 +98,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 									</ul>
 									<p v-else :class="$style.diffDetailsEmpty">ロール構成変更はありません。</p>
 								</div>
+								<div>
+									<div :class="$style.diffDetailsHeading">ロール移動</div>
+									<ul v-if="roleCategoryDiffDetails.movedRoles.length > 0" :class="$style.diffDetailsList">
+										<li v-for="role in roleCategoryDiffDetails.movedRoles" :key="role.id">
+											{{ role.name }}: {{ role.beforeCategoryLabel }} → {{ role.afterCategoryLabel }}
+										</li>
+									</ul>
+									<p v-else :class="$style.diffDetailsEmpty">移動されたロールはありません。</p>
+								</div>
 							</div>
 						</details>
 					</div>
@@ -455,6 +464,22 @@ const roleCategoryDiffDetails = computed(() => {
 		})
 		.filter(x => x != null);
 
+	const movedRoles = roles
+		.map(role => {
+			const beforeCategory = originalCategories.find(category => category.roleNames.includes(role.name));
+			const afterCategory = editableRoleCategories.value.find(category => category.roleNames.includes(role.name));
+
+			if (beforeCategory?.key === afterCategory?.key) return null;
+
+			return {
+				id: role.id,
+				name: role.name,
+				beforeCategoryLabel: beforeCategory?.label ?? '未分類',
+				afterCategoryLabel: afterCategory?.label ?? '未分類',
+			};
+		})
+		.filter(x => x != null);
+
 	const changedRoleNameCategories = editableRoleCategories.value
 		.map(category => {
 			const original = originalCategories.find(x => x.key === category.key);
@@ -474,6 +499,7 @@ const roleCategoryDiffDetails = computed(() => {
 		addedCategories,
 		changedBaseOrderCategories,
 		changedRoleNameCategories,
+		movedRoles,
 	};
 });
 
