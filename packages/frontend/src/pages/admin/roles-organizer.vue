@@ -128,6 +128,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<pre :class="$style.settingsJsonPreview">{{ editableRoleCategoriesJson }}</pre>
 					</details>
 
+					<details :class="$style.settingsJsonDetails">
+						<summary :class="$style.settingsJsonSummary">
+							katsudo-role-categories.ts 用コードを見る
+						</summary>
+
+						<div :class="$style.settingsJsonActions">
+							<MkButton rounded @click="copyEditableRoleCategoriesTs">
+								TSコードをコピー
+							</MkButton>
+						</div>
+
+						<pre :class="$style.settingsJsonPreview">{{ editableRoleCategoriesTs }}</pre>
+					</details>
+
 					<div :class="$style.settingsCategoryList">
 						<div
 							v-for="category in roleCategories"
@@ -369,6 +383,28 @@ const editableRoleCategoriesJson = computed(() => {
 	return JSON.stringify(editableRoleCategories.value, null, 2);
 });
 
+const editableRoleCategoriesTs = computed(() => {
+	const body = editableRoleCategories.value.map(category => {
+		const roleNames = category.roleNames
+			.map(roleName => `\t\t'${roleName.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}',`)
+			.join('\n');
+
+		return [
+			'\t{',
+			`\t\tkey: '${category.key.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}',`,
+			`\t\tlabel: '${category.label.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}',`,
+			`\t\trange: '${category.range.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}',`,
+			`\t\tbaseOrder: ${category.baseOrder},`,
+			'\t\troleNames: [',
+			roleNames,
+			'\t\t],',
+			'\t},',
+		].join('\n');
+	}).join('\n');
+
+	return `export const katsudoRoleCategories = [\n${body}\n] as const;\n`;
+});
+
 const roleCategoryDiffSummary = computed(() => {
 	const originalCategories = createEditableRoleCategories();
 
@@ -532,6 +568,16 @@ async function copyEditableRoleCategoriesJson() {
 		type: 'success',
 		title: 'コピーしました',
 		text: '現在の一時設定JSONをクリップボードにコピーしました。',
+	});
+}
+
+async function copyEditableRoleCategoriesTs() {
+	await navigator.clipboard.writeText(editableRoleCategoriesTs.value);
+
+	await os.alert({
+		type: 'success',
+		title: 'コピーしました',
+		text: 'katsudo-role-categories.ts 用のコードをコピーしました。',
 	});
 }
 
