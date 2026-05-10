@@ -53,6 +53,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 						</MkButton>
 					</div>
 
+					<div class="_panel" :class="$style.diffSummaryPanel">
+						<div :class="$style.diffSummaryTitle">
+							一時変更の概要
+						</div>
+						<div :class="$style.diffSummaryItems">
+							<span>追加カテゴリ: {{ roleCategoryDiffSummary.addedCategoryCount }}件</span>
+							<span>基準値変更: {{ roleCategoryDiffSummary.changedBaseOrderCount }}件</span>
+							<span>ロール構成変更: {{ roleCategoryDiffSummary.changedRoleNamesCount }}件</span>
+						</div>
+					</div>
+
 					<details :class="$style.settingsJsonDetails">
 						<summary :class="$style.settingsJsonSummary">
 							現在の一時設定JSONを見る
@@ -318,6 +329,34 @@ const roleCategories = computed(() => editableRoleCategories.value);
 
 const editableRoleCategoriesJson = computed(() => {
 	return JSON.stringify(editableRoleCategories.value, null, 2);
+});
+
+const roleCategoryDiffSummary = computed(() => {
+	const originalCategories = createEditableRoleCategories();
+
+	const addedCategoryCount = editableRoleCategories.value.filter(category => {
+		return !originalCategories.some(original => original.key === category.key);
+	}).length;
+
+	const changedBaseOrderCount = editableRoleCategories.value.filter(category => {
+		const original = originalCategories.find(x => x.key === category.key);
+		if (original == null) return false;
+
+		return original.baseOrder !== category.baseOrder;
+	}).length;
+
+	const changedRoleNamesCount = editableRoleCategories.value.filter(category => {
+		const original = originalCategories.find(x => x.key === category.key);
+		if (original == null) return false;
+
+		return original.roleNames.join('\n') !== category.roleNames.join('\n');
+	}).length;
+
+	return {
+		addedCategoryCount,
+		changedBaseOrderCount,
+		changedRoleNamesCount,
+	};
 });
 
 const importRoleCategoriesJson = ref('');
@@ -972,5 +1011,24 @@ definePage(() => ({
 	font-family: monospace;
 	font-size: 0.85em;
 	resize: vertical;
+}
+
+.diffSummaryPanel {
+	margin-top: 12px;
+	padding: 12px 14px;
+}
+
+.diffSummaryTitle {
+	font-weight: 700;
+}
+
+.diffSummaryItems {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px 12px;
+	margin-top: 8px;
+	font-size: 0.9em;
+	color: var(--MI_THEME-fg);
+	opacity: 0.8;
 }
 </style>
