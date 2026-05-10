@@ -116,14 +116,29 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		text: i18n.ts.invite,
 		to: '/admin/invites',
 		active: currentPage.value?.route.name === 'invites',
+        }, {
+                icon: 'ti ti-badges',
+                text: i18n.ts.roles,
+                to: '/admin/roles',
+                active: currentPage.value?.route.name === 'roles',
+        }, {
+                icon: 'ti ti-list-check',
+                text: 'ロール整理',
+                to: '/admin/roles-organizer',
+                active: currentPage.value?.route.name === 'roles-organizer',
 	}, {
-		icon: 'ti ti-badges',
-		text: i18n.ts.roles,
-		to: '/admin/roles',
-		active: currentPage.value?.route.name === 'roles',
+		icon: 'ti ti-search',
+		text: '自分のノート検索',
+		to: '/admin/my-note-cleaner',
+		active: currentPage.value?.route.name === 'my-note-cleaner',
 	}, {
-		icon: 'ti ti-icons',
-		text: i18n.ts.customEmojis,
+		icon: 'ti ti-trophy',
+		text: 'かつ廃ランク',
+		to: '/admin/katsudo-ranks',
+		active: currentPage.value?.route.name === 'katsudo-ranks',
+        }, {
+                icon: 'ti ti-icons',
+                text: i18n.ts.customEmojis,
 		to: '/admin/emojis',
 		active: currentPage.value?.route.name === 'emojis',
 	}, {

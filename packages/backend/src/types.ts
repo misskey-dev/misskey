@@ -18,6 +18,7 @@
  * followRequestAccepted - 自分の送ったフォローリクエストが承認された
  * roleAssigned - ロールが付与された
  * chatRoomInvitationReceived - チャットルームに招待された
+ * katsudoChatRoomMemberRemoved - 活動すきー独自: グループチャットから外された
  * achievementEarned - 実績を獲得
  * exportCompleted - エクスポートが完了
  * login - ログイン
@@ -40,6 +41,7 @@ export const notificationTypes = [
 	'followRequestAccepted',
 	'roleAssigned',
 	'chatRoomInvitationReceived',
+	'katsudoChatRoomMemberRemoved',
 	'achievementEarned',
 	'exportCompleted',
 	'login',
@@ -129,9 +131,10 @@ export const moderationLogTypes = [
 	'deleteAccount',
 	'deletePage',
 	'deleteFlash',
-	'deleteGalleryPost',
-	'deleteChatRoom',
-	'updateProxyAccountDescription',
+        'deleteGalleryPost',
+        'deleteChatRoom',
+        'katsudoKickChatRoomMember',
+        'updateProxyAccountDescription',
 ] as const;
 
 export type ModerationLogPayloads = {
@@ -384,14 +387,21 @@ export type ModerationLogPayloads = {
 		postUserUsername: string;
 		post: any;
 	};
-	deleteChatRoom: {
-		roomId: string;
-		room: any;
-	};
-	updateProxyAccountDescription: {
-		before: string | null;
-		after: string | null;
-	};
+        deleteChatRoom: {
+                roomId: string;
+                room: any;
+        };
+        katsudoKickChatRoomMember: {
+                roomId: string;
+                roomName: string;
+                targetUserId: string;
+                targetUserUsername: string;
+                targetUserHost: string | null;
+        };
+        updateProxyAccountDescription: {
+                before: string | null;
+                after: string | null;
+        };
 };
 
 export type Serialized<T> = {

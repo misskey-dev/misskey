@@ -45,11 +45,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkAvatar :class="$style.collapsedRenoteTargetAvatar" :user="appearNote.user" link preview/>
 		<Mfm :text="getNoteSummary(appearNote)" :plain="true" :nowrap="true" :author="appearNote.user" :nyaize="'respect'" :class="$style.collapsedRenoteTargetText" @click="renoteCollapsed = false"/>
 	</div>
-	<article v-else :class="$style.article" @contextmenu.stop="onContextmenu">
+	<article v-else :class="[$style.article, { [$style.activityAnnouncementArticle]: isActivityAnnouncement }]" @contextmenu.stop="onContextmenu">
 		<div v-if="appearNote.channel" :class="$style.colorBar" :style="{ background: appearNote.channel.color }"></div>
 		<MkAvatar :class="[$style.avatar, prefer.s.useStickyIcons ? $style.useSticky : null]" :user="appearNote.user" :link="!mock" :preview="!mock"/>
 		<div :class="$style.main">
 			<MkNoteHeader :note="appearNote" :mini="true"/>
+<div v-if="isActivityAnnouncement" :class="$style.activityAnnouncementBadge">
+	<i class="ti ti-speakerphone"></i>
+	<span>活動告知</span>
+</div>
 			<MkInstanceTicker v-if="showTicker" :host="appearNote.user.host" :instance="appearNote.user.instance"/>
 			<div style="container-type: inline-size;">
 				<p v-if="appearNote.cw != null" :class="$style.cw">
@@ -306,6 +310,9 @@ const isMyRenote = $i && ($i.id === note.userId);
 const showContent = ref(false);
 const parsed = computed(() => appearNote.text ? mfm.parse(appearNote.text) : null);
 const urls = computed(() => parsed.value ? extractUrlFromMfm(parsed.value).filter((url) => appearNote.renote?.url !== url && appearNote.renote?.uri !== url) : null);
+const isActivityAnnouncement = computed(() => {
+	return appearNote.text?.includes('#活動告知') ?? false;
+});
 const isLong = shouldCollapsed(appearNote, urls.value ?? []);
 const collapsed = ref(appearNote.cw == null && isLong);
 const muted = ref(checkMute(appearNote, $i?.mutedWords));
@@ -898,6 +905,22 @@ function emitUpdReaction(emoji: string, delta: number) {
 	padding: 28px 32px;
 }
 
+.activityAnnouncementArticle {
+	position: relative;
+}
+
+.activityAnnouncementArticle::before {
+	content: "";
+	position: absolute;
+	top: 12px;
+	bottom: 12px;
+	left: 0;
+	width: 4px;
+	border-radius: 999px;
+	background: #38bdf8;
+	opacity: 0.9;
+}
+
 .colorBar {
 	position: absolute;
 	top: 8px;
@@ -925,6 +948,20 @@ function emitUpdReaction(emoji: string, delta: number) {
 .main {
 	flex: 1;
 	min-width: 0;
+}
+
+.activityAnnouncementBadge {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	width: fit-content;
+	margin: 6px 0 4px;
+	padding: 3px 9px;
+	border-radius: 999px;
+	background: rgba(56, 189, 248, 0.16);
+	color: #0284c7;
+	font-size: 0.85em;
+	font-weight: 700;
 }
 
 .cw {

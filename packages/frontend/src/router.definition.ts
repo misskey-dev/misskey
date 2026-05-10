@@ -81,6 +81,10 @@ export const ROUTE_DEF = [{
 		name: 'profile',
 		component: page(() => import('@/pages/settings/profile.vue')),
 	}, {
+		path: '/creator-site',
+		name: 'creator-site',
+		component: page(() => import('@/pages/settings/creator-site.vue')),
+	}, {
 		path: '/avatar-decoration',
 		name: 'avatarDecoration',
 		component: page(() => import('@/pages/settings/avatar-decoration.vue')),
@@ -301,6 +305,15 @@ export const ROUTE_DEF = [{
 	path: '/tags/:tag',
 	component: page(() => import('@/pages/tag.vue')),
 }, {
+	path: '/site/@:acct',
+	component: page(() => import('@/pages/creator-site.vue')),
+}, {
+	path: '/creator-site',
+	redirect: '/site/@nano_katudolove',
+}, {
+	path: '/pages/new',
+	component: page(() => import('@/pages/activity-announcements.vue')),
+}, {
 	path: '/pages/new',
 	component: page(() => import('@/pages/page-editor/page-editor.vue')),
 	loginRequired: true,
@@ -434,19 +447,31 @@ export const ROUTE_DEF = [{
 		path: '/roles/:id/edit',
 		name: 'roles',
 		component: page(() => import('@/pages/admin/roles.edit.vue')),
+        }, {
+                path: '/roles/new',
+                name: 'roles',
+                component: page(() => import('@/pages/admin/roles.edit.vue')),
+        }, {
+                path: '/roles-organizer',
+                name: 'roles-organizer',
+                component: page(() => import('@/pages/admin/roles-organizer.vue')),
 	}, {
-		path: '/roles/new',
-		name: 'roles',
-		component: page(() => import('@/pages/admin/roles.edit.vue')),
+		path: '/katsudo-ranks',
+		name: 'katsudo-ranks',
+		component: page(() => import('@/pages/admin/katsudo-ranks.vue')),
 	}, {
-		path: '/roles/:id',
-		name: 'roles',
-		component: page(() => import('@/pages/admin/roles.role.vue')),
+		path: '/my-note-cleaner',
+		name: 'my-note-cleaner',
+		component: page(() => import('@/pages/admin/my-note-cleaner.vue')),
 	}, {
-		path: '/roles',
-		name: 'roles',
-		component: page(() => import('@/pages/admin/roles.vue')),
-	}, {
+                path: '/roles/:id',
+                name: 'roles',
+                component: page(() => import('@/pages/admin/roles.role.vue')),
+        }, {
+                path: '/roles',
+                name: 'roles',
+                component: page(() => import('@/pages/admin/roles.vue')),
+        }, {
 		path: '/database',
 		name: 'database',
 		component: page(() => import('@/pages/admin/database.vue')),

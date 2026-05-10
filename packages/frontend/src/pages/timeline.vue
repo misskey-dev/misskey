@@ -205,7 +205,13 @@ onActivated(() => {
 });
 
 const headerActions = computed<PageHeaderItem[]>(() => {
-	const items: PageHeaderItem[] = [{
+	return [{
+		icon: 'ti ti-speakerphone',
+		text: '活動告知',
+		handler: () => {
+			location.href = '/activity-announcements';
+		},
+	}, {
 		icon: 'ti ti-dots',
 		text: i18n.ts.options,
 		handler: (ev) => {
@@ -265,7 +271,7 @@ const headerActions = computed<PageHeaderItem[]>(() => {
 });
 
 const headerTabs = computed(() => [...(prefer.r.pinnedUserLists.value.map(l => ({
-	key: 'list:' + l.id,
+	key: `list:${l.id}`,
 	title: l.name,
 	icon: 'ti ti-star',
 	iconOnly: true,
@@ -289,14 +295,14 @@ const headerTabs = computed(() => [...(prefer.r.pinnedUserLists.value.map(l => (
 	title: i18n.ts.channel,
 	iconOnly: true,
 	onClick: chooseChannel,
-}] as Tab[]);
+}]);
 
 const headerTabsWhenNotLogin = computed(() => [...availableBasicTimelines().map(tl => ({
 	key: tl,
 	title: i18n.ts._timelines[tl],
 	icon: basicTimelineIconClass(tl),
 	iconOnly: true,
-}))] as Tab[]);
+}))]);
 
 definePage(() => ({
 	title: i18n.ts.timeline,

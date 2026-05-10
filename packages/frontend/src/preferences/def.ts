@@ -5,7 +5,7 @@
 
 import * as Misskey from 'misskey-js';
 import { hemisphere } from '@@/js/intl-const.js';
-import { DEFAULT_EMOJIS } from '@@/js/const.js';
+import { KATSUDO_DEFAULT_EMOJIS, KATSUDO_DEFAULT_MENU } from '@@/js/katsudo-const.js';
 import { prefersReducedMotion } from '@@/js/config.js';
 import { definePreferences } from './manager.js';
 import type { Theme } from '@@/js/theme.js';
@@ -104,7 +104,7 @@ export const PREF_DEF = definePreferences({
 		default: () => [{
 			id: genId(),
 			name: '',
-			emojis: DEFAULT_EMOJIS,
+			emojis: KATSUDO_DEFAULT_EMOJIS,
 		}] as {
 			id: string;
 			name: string;
@@ -186,20 +186,7 @@ export const PREF_DEF = definePreferences({
 		default: true,
 	},
 	menu: {
-		default: [
-			'notifications',
-			'clips',
-			'drive',
-			'followRequests',
-			'chat',
-			'-',
-			'explore',
-			'announcements',
-			'channels',
-			'search',
-			'-',
-			'ui',
-		],
+		default: KATSUDO_DEFAULT_MENU,
 	},
 	statusbars: {
 		default: [] as StatusbarStore[],

@@ -25,7 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, computed, watch, ref } from 'vue';
+import { defineAsyncComponent, computed, watch, ref, nextTick } from 'vue';
 import * as Misskey from 'misskey-js';
 import { acct as getAcct } from '@/filters/user.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -87,6 +87,17 @@ watch(() => props.acct, fetchUser, {
 	immediate: true,
 });
 
+watch(tab, () => {
+	if (tab.value !== 'creatorSite') return;
+	if (user.value == null) return;
+
+	window.location.href = `/site/@${getAcct(user.value)}`;
+
+	nextTick(() => {
+		tab.value = props.page;
+	});
+});
+
 const headerActions = computed(() => []);
 
 const headerTabs = computed(() => user.value ? [{
@@ -125,6 +136,10 @@ const headerTabs = computed(() => user.value ? [{
 	key: 'pages',
 	title: i18n.ts.pages,
 	icon: 'ti ti-news',
+}, {
+	key: 'creatorSite',
+	title: '活動ページ',
+	icon: 'ti ti-id-badge-2',
 }, {
 	key: 'flashs',
 	title: 'Play',
