@@ -62,6 +62,44 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<span>基準値変更: {{ roleCategoryDiffSummary.changedBaseOrderCount }}件</span>
 							<span>ロール構成変更: {{ roleCategoryDiffSummary.changedRoleNamesCount }}件</span>
 						</div>
+
+						<details :class="$style.diffDetails">
+							<summary :class="$style.diffDetailsSummary">
+								差分の詳細を見る
+							</summary>
+
+							<div :class="$style.diffDetailsBody">
+								<div>
+									<div :class="$style.diffDetailsHeading">追加カテゴリ</div>
+									<ul v-if="roleCategoryDiffDetails.addedCategories.length > 0" :class="$style.diffDetailsList">
+										<li v-for="category in roleCategoryDiffDetails.addedCategories" :key="category.key">
+											{{ category.label }} / 基準値: {{ category.baseOrder }}
+										</li>
+									</ul>
+									<p v-else :class="$style.diffDetailsEmpty">追加カテゴリはありません。</p>
+								</div>
+
+								<div>
+									<div :class="$style.diffDetailsHeading">基準値変更</div>
+									<ul v-if="roleCategoryDiffDetails.changedBaseOrderCategories.length > 0" :class="$style.diffDetailsList">
+										<li v-for="category in roleCategoryDiffDetails.changedBaseOrderCategories" :key="category.key">
+											{{ category.label }}: {{ category.before }} → {{ category.after }}
+										</li>
+									</ul>
+									<p v-else :class="$style.diffDetailsEmpty">基準値変更はありません。</p>
+								</div>
+
+								<div>
+									<div :class="$style.diffDetailsHeading">ロール構成変更</div>
+									<ul v-if="roleCategoryDiffDetails.changedRoleNameCategories.length > 0" :class="$style.diffDetailsList">
+										<li v-for="category in roleCategoryDiffDetails.changedRoleNameCategories" :key="category.key">
+											{{ category.label }}: {{ category.beforeCount }}件 → {{ category.afterCount }}件
+										</li>
+									</ul>
+									<p v-else :class="$style.diffDetailsEmpty">ロール構成変更はありません。</p>
+								</div>
+							</div>
+						</details>
 					</div>
 
 					<details :class="$style.settingsJsonDetails">
@@ -356,6 +394,50 @@ const roleCategoryDiffSummary = computed(() => {
 		addedCategoryCount,
 		changedBaseOrderCount,
 		changedRoleNamesCount,
+	};
+});
+
+const roleCategoryDiffDetails = computed(() => {
+	const originalCategories = createEditableRoleCategories();
+
+	const addedCategories = editableRoleCategories.value.filter(category => {
+		return !originalCategories.some(original => original.key === category.key);
+	});
+
+	const changedBaseOrderCategories = editableRoleCategories.value
+		.map(category => {
+			const original = originalCategories.find(x => x.key === category.key);
+			if (original == null) return null;
+			if (original.baseOrder === category.baseOrder) return null;
+
+			return {
+				key: category.key,
+				label: category.label,
+				before: original.baseOrder,
+				after: category.baseOrder,
+			};
+		})
+		.filter(x => x != null);
+
+	const changedRoleNameCategories = editableRoleCategories.value
+		.map(category => {
+			const original = originalCategories.find(x => x.key === category.key);
+			if (original == null) return null;
+			if (original.roleNames.join('\n') === category.roleNames.join('\n')) return null;
+
+			return {
+				key: category.key,
+				label: category.label,
+				beforeCount: original.roleNames.length,
+				afterCount: category.roleNames.length,
+			};
+		})
+		.filter(x => x != null);
+
+	return {
+		addedCategories,
+		changedBaseOrderCategories,
+		changedRoleNameCategories,
 	};
 });
 
@@ -1030,5 +1112,37 @@ definePage(() => ({
 	font-size: 0.9em;
 	color: var(--MI_THEME-fg);
 	opacity: 0.8;
+}
+
+.diffDetails {
+	margin-top: 10px;
+}
+
+.diffDetailsSummary {
+	cursor: pointer;
+	font-weight: 700;
+}
+
+.diffDetailsBody {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	margin-top: 10px;
+}
+
+.diffDetailsHeading {
+	font-weight: 700;
+}
+
+.diffDetailsList {
+	margin: 6px 0 0;
+	padding-left: 1.4em;
+	line-height: 1.7;
+}
+
+.diffDetailsEmpty {
+	margin: 6px 0 0;
+	color: var(--MI_THEME-fg);
+	opacity: 0.65;
 }
 </style>
