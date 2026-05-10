@@ -7,7 +7,7 @@
 					<h1 :class="$style.title">活動ページ設定</h1>
 					<p :class="$style.description">
 						活動者向けの公式ホームページ風ページに表示する内容を設定できます。
-						まだ保存機能は未実装なので、今回は画面プレビュー用です。
+						入力した内容は活動ページに保存され、外部の人にも見える公開ページに反映されます。
 					</p>
 				</div>
 			</div>
@@ -66,9 +66,9 @@
 			</MkFolder>
 
 			<div :class="$style.actions">
-				<MkButton primary disabled>
-					保存する（未実装）
-				</MkButton>
+<MkButton primary :disabled="loading || saving" @click="save">
+	{{ saving ? '保存中...' : '保存する' }}
+</MkButton>
 				<MkButton :to="previewPath">
 					活動ページを見る
 				</MkButton>
@@ -78,12 +78,14 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import MkButton from '@/components/MkButton.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
+import { misskeyApi } from '@/utility/misskey-api.js';
 import { $i } from '@/i.js';
+import * as os from '@/os.js';
 
 const siteTitle = ref('');
 const catchphrase = ref('');
@@ -93,8 +95,78 @@ const fanartStatus = ref('歓迎');
 const guidelineUrl = ref('');
 const guidelineText = ref('');
 
+const loading = ref(true);
+const saving = ref(false);
+
 const previewPath = computed(() => {
 	return $i ? `/site/@${$i.username}` : '/site/@unknown';
+});
+
+async function load(): Promise<void> {
+	if ($i == null) {
+		loading.value = false;
+		return;
+	}
+
+	loading.value = true;
+
+	try {
+		const site = await misskeyApi('creator-site/show', {
+			userId: $i.id,
+		});
+
+		if (site != null) {
+			siteTitle.value = site.title ?? '';
+			catchphrase.value = site.catchphrase ?? '';
+			commissionStatus.value = site.commissionStatus ?? '受付中';
+			collabStatus.value = site.collabStatus ?? '相談OK';
+			fanartStatus.value = site.fanartStatus ?? '歓迎';
+			guidelineUrl.value = site.guidelineUrl ?? '';
+			guidelineText.value = site.guidelineText ?? '';
+		}
+	} catch (err) {
+		console.error(err);
+		os.alert({
+			type: 'error',
+			title: '読み込みに失敗しました',
+			text: '活動ページ設定を読み込めませんでした。',
+		});
+	} finally {
+		loading.value = false;
+	}
+}
+
+async function save(): Promise<void> {
+	if ($i == null || saving.value) return;
+
+	saving.value = true;
+
+	try {
+		await misskeyApi('creator-site/update', {
+			title: siteTitle.value,
+			catchphrase: catchphrase.value,
+			commissionStatus: commissionStatus.value,
+			collabStatus: collabStatus.value,
+			fanartStatus: fanartStatus.value,
+			guidelineUrl: guidelineUrl.value,
+			guidelineText: guidelineText.value,
+		});
+
+		os.toast('活動ページ設定を保存しました');
+	} catch (err) {
+		console.error(err);
+		os.alert({
+			type: 'error',
+			title: '保存に失敗しました',
+			text: '入力内容を確認して、もう一度お試しください。',
+		});
+	} finally {
+		saving.value = false;
+	}
+}
+
+onMounted(() => {
+	load();
 });
 </script>
 
