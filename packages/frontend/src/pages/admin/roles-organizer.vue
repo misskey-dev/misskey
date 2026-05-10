@@ -158,7 +158,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 							:class="$style.settingsCategoryRow"
 						>
 							<div>
-								<div :class="$style.settingsCategoryName">{{ category.label }}</div>
+								<input
+									v-model="category.label"
+									type="text"
+									:class="$style.settingsCategoryNameInput"
+								>
 								<div :class="$style.settingsCategoryMeta">
 									{{ category.range }}
 								</div>
@@ -1216,5 +1220,18 @@ definePage(() => ({
 	margin: 6px 0 0;
 	color: var(--MI_THEME-fg);
 	opacity: 0.65;
+}
+
+.settingsCategoryNameInput {
+	display: block;
+	width: 100%;
+	max-width: 240px;
+	padding: 4px 8px;
+	border: solid 1px var(--MI_THEME-divider);
+	border-radius: 8px;
+	background: var(--MI_THEME-panel);
+	color: var(--MI_THEME-fg);
+	font: inherit;
+	font-weight: 700;
 }
 </style>
