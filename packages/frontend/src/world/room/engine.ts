@@ -973,7 +973,14 @@ export class RoomEngine extends EventEmitter {
 		let newPos = this.camera.position.add(dir.scale(grabbing.distance)).add(grabbing.originalDiffOfPosition);
 		const newRotation = new BABYLON.Vector3(0, this.camera.rotation.y + grabbing.originalDiffOfRotation.y + grabbing.rotation, 0);
 		grabbing.ghost.position = newPos.clone();
-		grabbing.ghost.rotation = newRotation.clone();
+		const arrowMesh = grabbing.ghost.getChildMeshes()[0];
+		if (placement === 'side' || placement === 'wall') {
+			arrowMesh.isVisible = false;
+		} else if (placement === 'bottom' || placement === 'ceiling') {
+			arrowMesh.scaling = new BABYLON.Vector3(1, 1, 1);
+		} else if (placement === 'top' || placement === 'floor') {
+			arrowMesh.scaling = new BABYLON.Vector3(1, -1, 1);
+		}
 
 		let stickyOtherObject: string | null = null;
 		let sticky = false;
@@ -1398,56 +1405,13 @@ export class RoomEngine extends EventEmitter {
 	private createGhost(mesh: BABYLON.Mesh): BABYLON.TransformNode {
 		const root = new BABYLON.TransformNode('ghost_root', this.scene);
 
-		// cloneの第三引数を利用する形で子まで再帰的にcloneしてしまうと、当該メッシュを親に持つlightまでもcloneされてしまい、
-		// Clustered Lightingの関係上エンジンがクラッシュしたり不具合の原因になるため、独自に(通常のmeshとtransform nodeだけ)再帰cloneする実装としている
-		const ghost = mesh.clone('ghost', null, true)!;
-		ghost.metadata = { isGhost: true };
-		ghost.checkCollisions = false;
-		ghost.position = new BABYLON.Vector3(0, 0, 0);
-		ghost.rotation = new BABYLON.Vector3(0, 0, 0);
-		ghost.parent = root;
-
-		const cloneChildrenRecursively = (source: BABYLON.Node, target: BABYLON.Node) => {
-			for (const child of source.getChildren()) {
-				if (!(child instanceof BABYLON.Mesh) && !(child instanceof BABYLON.TransformNode)) continue;
-				const childClone = child.clone(child.name, target, true)!;
-				childClone.metadata = { isGhost: true };
-				if (childClone instanceof BABYLON.Mesh) childClone.checkCollisions = false;
-				cloneChildrenRecursively(child, childClone);
-			}
-		};
-		cloneChildrenRecursively(mesh, ghost);
-
-		const materials = new WeakMap<BABYLON.Material, BABYLON.Material>();
-
-		for (const m of ghost.getChildMeshes() as BABYLON.Mesh[]) {
-			if (m.material == null) continue;
-
-			if (materials.has(m.material)) {
-				m.material = materials.get(m.material)!;
-				continue;
-			}
-
-			if (m.subMeshes != null && m.subMeshes.length > 0 && m.material.subMaterials != null) {
-				const multiGhostMaterial = m.material.clone(`${m.material.name}_ghost`) as BABYLON.MultiMaterial;
-
-				for (let i = 0; i < multiGhostMaterial.subMaterials.length; i++) {
-					const subMaterial = multiGhostMaterial.subMaterials[i];
-					const ghostMaterial = subMaterial.clone(`${subMaterial.name}_ghost`);
-					ghostMaterial.alpha = 0.3;
-					ghostMaterial.transparencyMode = BABYLON.Material.MATERIAL_ALPHABLEND;
-					multiGhostMaterial.subMaterials[i] = ghostMaterial;
-					materials.set(m.material, multiGhostMaterial);
-					m.material = multiGhostMaterial;
-				}
-			} else {
-				const ghostMaterial = m.material.clone(`${m.material.name}_ghost`);
-				ghostMaterial.alpha = 0.3;
-				ghostMaterial.transparencyMode = BABYLON.Material.MATERIAL_ALPHABLEND;
-				materials.set(m.material, ghostMaterial);
-				m.material = ghostMaterial;
-			}
-		}
+		const arrowGhost = BABYLON.MeshBuilder.CreateCylinder('', { height: cm(10), diameterBottom: cm(5), diameterTop: 0, tessellation: 8 });
+		arrowGhost.parent = root;
+		const arrowGhostMat = new BABYLON.StandardMaterial('', this.scene);
+		arrowGhostMat.emissiveColor = new BABYLON.Color3(0, 1, 0);
+		arrowGhostMat.alpha = 0.5;
+		arrowGhostMat.disableLighting = true;
+		arrowGhost.material = arrowGhostMat;
 
 		return root;
 	}
