@@ -1156,6 +1156,8 @@ export class RoomEngine extends EventEmitter {
 	public beginSelectedInstalledObjectGrabbing() {
 		if (this.selected == null) return;
 
+		this.sr.disableSnapshotRendering();
+
 		const selectedObject = this.selected.objectEntity.rootMesh;
 		this.clearHighlight();
 
@@ -1298,8 +1300,8 @@ export class RoomEngine extends EventEmitter {
 			},
 		};
 
-		this.sr.disableSnapshotRendering();
 		this.gridPlane.isVisible = true;
+
 		this.sr.enableSnapshotRendering();
 
 		this.timer.setInterval(() => {
