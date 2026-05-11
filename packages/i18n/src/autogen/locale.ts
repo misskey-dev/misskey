@@ -10276,7 +10276,7 @@ export interface Locale extends ILocale {
              */
             "genericDescription": string;
             /**
-             * お使いのアカウントではノートを投稿することはできません。
+             * お使いのアカウントにはノートを投稿する権限がありません。
              */
             "rolePolicyDeniedDescription": string;
             /**
@@ -10324,15 +10324,15 @@ export interface Locale extends ILocale {
              */
             "tooManyFilesDescription": string;
             /**
-             * お使いのアカウントではノートを引用することはできません。
+             * お使いのアカウントにはノートを引用する権限がありません。
              */
             "quoteForbiddenDescription": string;
             /**
-             * お使いのアカウントでは指名ノートを作成することはできません。
+             * お使いのアカウントには指名ノートを作成する権限がありません。
              */
             "directNoteCreationForbiddenDescription": string;
             /**
-             * お使いのアカウントでは連合するノートを作成することができませんが、指名ノートの宛先にリモートのユーザーが含まれているため、投稿できません。
+             * お使いのアカウントには連合するノートを作成する権限がありませんが、指名ノートの宛先にリモートのユーザーが含まれているため、投稿できません。
              */
             "remoteDirectNoteCreationForbiddenDescription": string;
         };

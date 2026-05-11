@@ -2709,7 +2709,7 @@ _postForm:
   _noteCreateErors:
     genericTitle: "ノートの投稿に失敗しました"
     genericDescription: "時間を置いてからもう一度試してください。"
-    rolePolicyDeniedDescription: "お使いのアカウントではノートを投稿することはできません。"
+    rolePolicyDeniedDescription: "お使いのアカウントにはノートを投稿する権限がありません。"
     noSuchRenoteTargetDescription: "引用元のノートが見つかりませんでした。ノートが削除された可能性があります。"
     noSuchReplyTargetDescription: "返信先のノートが見つかりませんでした。ノートが削除された可能性があります。"
     cannotReplyToInvisibleNoteDescription: "非表示となっているノートには返信できません。"
@@ -2721,9 +2721,9 @@ _postForm:
     containsProhibitedWordsDescription: "ノートに禁止ワードが含まれているため投稿できません。"
     containsTooManyMentionsDescription: "ノートに付与できるメンション数の上限を超えているため投稿できません。"
     tooManyFilesDescription: "ノートに添付できるファイル数の上限を超えているため投稿できません。"
-    quoteForbiddenDescription: "お使いのアカウントではノートを引用することはできません。"
-    directNoteCreationForbiddenDescription: "お使いのアカウントでは指名ノートを作成することはできません。"
-    remoteDirectNoteCreationForbiddenDescription: "お使いのアカウントでは連合するノートを作成することができませんが、指名ノートの宛先にリモートのユーザーが含まれているため、投稿できません。"
+    quoteForbiddenDescription: "お使いのアカウントにはノートを引用する権限がありません。"
+    directNoteCreationForbiddenDescription: "お使いのアカウントには指名ノートを作成する権限がありません。"
+    remoteDirectNoteCreationForbiddenDescription: "お使いのアカウントには連合するノートを作成する権限がありませんが、指名ノートの宛先にリモートのユーザーが含まれているため、投稿できません。"
   _noteDraftErrors:
     draftTitle: "下書きの保存に失敗しました"
     scheduleTitle: "投稿の予約に失敗しました"
