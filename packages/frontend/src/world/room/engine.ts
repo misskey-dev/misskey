@@ -136,7 +136,7 @@ export class RoomEngine extends EventEmitter {
 		originalDiffOfRotation: BABYLON.Vector3;
 		distance: number;
 		rotation: number;
-		ghost: BABYLON.AbstractMesh;
+		ghost: BABYLON.TransformNode;
 		descendantStickyObjectIds: string[];
 		onMove?: (info: { position: BABYLON.Vector3; rotation: BABYLON.Vector3; sticky: string | null; }) => void;
 		onCancel?: () => void;
@@ -1395,12 +1395,17 @@ export class RoomEngine extends EventEmitter {
 		}, 10);
 	}
 
-	private createGhost(mesh: BABYLON.Mesh): BABYLON.Mesh {
+	private createGhost(mesh: BABYLON.Mesh): BABYLON.TransformNode {
+		const root = new BABYLON.TransformNode('ghost_root', this.scene);
+
 		// cloneの第三引数を利用する形で子まで再帰的にcloneしてしまうと、当該メッシュを親に持つlightまでもcloneされてしまい、
 		// Clustered Lightingの関係上エンジンがクラッシュしたり不具合の原因になるため、独自に(通常のmeshとtransform nodeだけ)再帰cloneする実装としている
 		const ghost = mesh.clone('ghost', null, true)!;
 		ghost.metadata = { isGhost: true };
 		ghost.checkCollisions = false;
+		ghost.position = new BABYLON.Vector3(0, 0, 0);
+		ghost.rotation = new BABYLON.Vector3(0, 0, 0);
+		ghost.parent = root;
 
 		const cloneChildrenRecursively = (source: BABYLON.Node, target: BABYLON.Node) => {
 			for (const child of source.getChildren()) {
@@ -1444,7 +1449,7 @@ export class RoomEngine extends EventEmitter {
 			}
 		}
 
-		return ghost;
+		return root;
 	}
 
 	public async addObject(type: string, _options?: any) {
