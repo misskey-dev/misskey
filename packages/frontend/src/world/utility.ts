@@ -571,11 +571,17 @@ export class Timer {
 		this.timeoutIds.push(id);
 	}
 
-	public setInterval(callback: () => void, ms: number) {
+	public setInterval(callback: () => void, ms: number, signal?: AbortSignal) {
 		// workerで実行される可能性がある
 		// eslint-disable-next-line no-restricted-globals
 		const id = setInterval(callback, ms);
 		this.intervalIds.push(id);
+		if (signal != null) {
+			signal.addEventListener('abort', () => {
+				clearInterval(id);
+				this.intervalIds = this.intervalIds.filter(i => i !== id);
+			});
+		}
 	}
 
 	public dispose() {
