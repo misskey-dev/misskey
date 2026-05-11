@@ -8,7 +8,7 @@ import type { Repository } from "typeorm";
 process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
-import { describe, beforeAll, afterAll, test } from 'vitest';
+import { describe, beforeAll, afterAll, test, afterEach } from 'vitest';
 import { MiNote } from '@/models/Note.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { api, castAsError, initTestDb, post, role, signup, uploadFile, uploadUrl } from '../utils.js';
@@ -704,128 +704,138 @@ describe('Note', () => {
 			assert.strictEqual(res.status, 400);
 		});
 
-		test('センシティブな投稿はhomeになる (単語指定)', async () => {
-			const sensitive = await api('admin/update-meta', {
-				sensitiveWords: [
-					'test',
-				],
-			}, root);
+		describe('センシティブワード・禁止ワード', () => {
+			afterEach(async () => {
+				// 禁止ワード・センシティブワードをリセット
+				await api('admin/update-meta', {
+					sensitiveWords: [],
+					bannedWords: [],
+				}, root);
+			});
 
-			assert.strictEqual(sensitive.status, 204);
+			test('センシティブな投稿はhomeになる (単語指定)', async () => {
+				const sensitive = await api('admin/update-meta', {
+					sensitiveWords: [
+						'test',
+					],
+				}, root);
 
-			await new Promise(x => setTimeout(x, 2));
+				assert.strictEqual(sensitive.status, 204);
 
-			const note1 = await api('notes/create', {
-				text: 'hogetesthuge',
-			}, alice);
+				await new Promise(x => setTimeout(x, 2));
 
-			assert.strictEqual(note1.status, 200);
-			assert.strictEqual(note1.body.createdNote.visibility, 'home');
-		});
+				const note1 = await api('notes/create', {
+					text: 'hogetesthuge',
+				}, alice);
 
-		test('センシティブな投稿はhomeになる (正規表現)', async () => {
-			const sensitive = await api('admin/update-meta', {
-				sensitiveWords: [
-					'/Test/i',
-				],
-			}, root);
+				assert.strictEqual(note1.status, 200);
+				assert.strictEqual(note1.body.createdNote.visibility, 'home');
+			});
 
-			assert.strictEqual(sensitive.status, 204);
+			test('センシティブな投稿はhomeになる (正規表現)', async () => {
+				const sensitive = await api('admin/update-meta', {
+					sensitiveWords: [
+						'/Test/i',
+					],
+				}, root);
 
-			const note2 = await api('notes/create', {
-				text: 'hogetesthuge',
-			}, alice);
+				assert.strictEqual(sensitive.status, 204);
 
-			assert.strictEqual(note2.status, 200);
-			assert.strictEqual(note2.body.createdNote.visibility, 'home');
-		});
+				const note2 = await api('notes/create', {
+					text: 'hogetesthuge',
+				}, alice);
 
-		test('センシティブな投稿はhomeになる (スペースアンド)', async () => {
-			const sensitive = await api('admin/update-meta', {
-				sensitiveWords: [
-					'Test hoge',
-				],
-			}, root);
+				assert.strictEqual(note2.status, 200);
+				assert.strictEqual(note2.body.createdNote.visibility, 'home');
+			});
 
-			assert.strictEqual(sensitive.status, 204);
+			test('センシティブな投稿はhomeになる (スペースアンド)', async () => {
+				const sensitive = await api('admin/update-meta', {
+					sensitiveWords: [
+						'Test hoge',
+					],
+				}, root);
 
-			const note2 = await api('notes/create', {
-				text: 'hogeTesthuge',
-			}, alice);
+				assert.strictEqual(sensitive.status, 204);
 
-			assert.strictEqual(note2.status, 200);
-			assert.strictEqual(note2.body.createdNote.visibility, 'home');
-		});
+				const note2 = await api('notes/create', {
+					text: 'hogeTesthuge',
+				}, alice);
 
-		test('禁止ワードを含む投稿はエラーになる (単語指定)', async () => {
-			const prohibited = await api('admin/update-meta', {
-				prohibitedWords: [
-					'test',
-				],
-			}, root);
+				assert.strictEqual(note2.status, 200);
+				assert.strictEqual(note2.body.createdNote.visibility, 'home');
+			});
 
-			assert.strictEqual(prohibited.status, 204);
+			test('禁止ワードを含む投稿はエラーになる (単語指定)', async () => {
+				const prohibited = await api('admin/update-meta', {
+					prohibitedWords: [
+						'test',
+					],
+				}, root);
 
-			await new Promise(x => setTimeout(x, 2));
+				assert.strictEqual(prohibited.status, 204);
 
-			const note1 = await api('notes/create', {
-				text: 'hogetesthuge',
-			}, alice);
+				await new Promise(x => setTimeout(x, 2));
 
-			assert.strictEqual(note1.status, 400);
-			assert.strictEqual(castAsError(note1.body).error.code, 'CONTAINS_PROHIBITED_WORDS');
-		});
+				const note1 = await api('notes/create', {
+					text: 'hogetesthuge',
+				}, alice);
 
-		test('禁止ワードを含む投稿はエラーになる (正規表現)', async () => {
-			const prohibited = await api('admin/update-meta', {
-				prohibitedWords: [
-					'/Test/i',
-				],
-			}, root);
+				assert.strictEqual(note1.status, 400);
+				assert.strictEqual(castAsError(note1.body).error.code, 'CONTAINS_PROHIBITED_WORDS');
+			});
 
-			assert.strictEqual(prohibited.status, 204);
+			test('禁止ワードを含む投稿はエラーになる (正規表現)', async () => {
+				const prohibited = await api('admin/update-meta', {
+					prohibitedWords: [
+						'/Test/i',
+					],
+				}, root);
 
-			const note2 = await api('notes/create', {
-				text: 'hogetesthuge',
-			}, alice);
+				assert.strictEqual(prohibited.status, 204);
 
-			assert.strictEqual(note2.status, 400);
-			assert.strictEqual(castAsError(note2.body).error.code, 'CONTAINS_PROHIBITED_WORDS');
-		});
+				const note2 = await api('notes/create', {
+					text: 'hogetesthuge',
+				}, alice);
 
-		test('禁止ワードを含む投稿はエラーになる (スペースアンド)', async () => {
-			const prohibited = await api('admin/update-meta', {
-				prohibitedWords: [
-					'Test hoge',
-				],
-			}, root);
+				assert.strictEqual(note2.status, 400);
+				assert.strictEqual(castAsError(note2.body).error.code, 'CONTAINS_PROHIBITED_WORDS');
+			});
 
-			assert.strictEqual(prohibited.status, 204);
+			test('禁止ワードを含む投稿はエラーになる (スペースアンド)', async () => {
+				const prohibited = await api('admin/update-meta', {
+					prohibitedWords: [
+						'Test hoge',
+					],
+				}, root);
 
-			const note2 = await api('notes/create', {
-				text: 'hogeTesthuge',
-			}, alice);
+				assert.strictEqual(prohibited.status, 204);
 
-			assert.strictEqual(note2.status, 400);
-			assert.strictEqual(castAsError(note2.body).error.code, 'CONTAINS_PROHIBITED_WORDS');
-		});
+				const note2 = await api('notes/create', {
+					text: 'hogeTesthuge',
+				}, alice);
 
-		test('禁止ワードを含んでるリモートノートもエラーになる', async () => {
-			const prohibited = await api('admin/update-meta', {
-				prohibitedWords: [
-					'test',
-				],
-			}, root);
+				assert.strictEqual(note2.status, 400);
+				assert.strictEqual(castAsError(note2.body).error.code, 'CONTAINS_PROHIBITED_WORDS');
+			});
 
-			assert.strictEqual(prohibited.status, 204);
+			test('禁止ワードを含んでるリモートノートもエラーになる', async () => {
+				const prohibited = await api('admin/update-meta', {
+					prohibitedWords: [
+						'test',
+					],
+				}, root);
 
-			await new Promise(x => setTimeout(x, 2));
+				assert.strictEqual(prohibited.status, 204);
 
-			const note1 = await api('notes/create', {
-				text: 'hogetesthuge',
-			}, tom);
+				await new Promise(x => setTimeout(x, 2));
 
-			assert.strictEqual(note1.status, 400);
+				const note1 = await api('notes/create', {
+					text: 'hogetesthuge',
+				}, tom);
+
+				assert.strictEqual(note1.status, 400);
+			});
 		});
 
 		describe('ロールポリシー', () => {
@@ -857,11 +867,11 @@ describe('Note', () => {
 				}, async () => {
 					const createdNote = await expectCreateNoteSuccess({
 						text: 'test',
-						visibility: 'home',
+						visibility: 'public',
 						localOnly: false,
 					});
 
-					assert.strictEqual(createdNote.visibility, 'home');
+					assert.strictEqual(createdNote.visibility, 'public');
 					assert.strictEqual(createdNote.localOnly, true);
 				});
 			});
@@ -900,7 +910,7 @@ describe('Note', () => {
 					await expectCreateNoteError({
 						fileIds: [file1.body!.id, file2.body!.id],
 					}, {
-						code: 'TOO_MANY_FILES_ATTACHED_TO_NOTE',
+						code: 'CONTAINS_TOO_MANY_FILES',
 						id: '8d28ca32-a244-4cf7-bc29-97895fdc3604',
 					});
 				});
