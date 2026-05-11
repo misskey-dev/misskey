@@ -392,6 +392,11 @@ export class RoomEngine extends EventEmitter {
 		// 不具合のもと
 		//this.scene.blockMaterialDirtyMechanism = true;
 
+		const box = BABYLON.MeshBuilder.CreateBox('', { size: cm(10) }, this.scene);
+		window.setInterval(() => {
+        box.position = new BABYLON.Vector3(0, Math.random() * cm(10), 0);
+    }, 10);
+
 		this.startRenderLoop();
 
 		await this.scene.whenReadyAsync();
@@ -1664,7 +1669,10 @@ export class RoomEngine extends EventEmitter {
 
 		const entity = this.objectEntities.get(objectId);
 		if (entity == null) return;
+
+		this.sr.disableSnapshotRendering();
 		entity.instance.onOptionsUpdated?.([key, value]);
+		this.sr.enableSnapshotRendering();
 	}
 
 	public updateEnvOptions(options: RoomState['env']['options']) {

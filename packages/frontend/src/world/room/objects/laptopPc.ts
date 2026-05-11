@@ -131,13 +131,11 @@ export const laptopPc = defineObject({
 		const applyBodyColor = () => {
 			const [r, g, b] = options.bodyColor;
 			bodyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
-			sr.reset();
 		};
 
 		const applyBezelColor = () => {
 			const [r, g, b] = options.bezelColor;
 			bezelMaterial.albedoColor = new BABYLON.Color3(r, g, b);
-			sr.reset();
 		};
 
 		applyBodyColor();
@@ -153,7 +151,6 @@ export const laptopPc = defineObject({
 				light.intensity = (2 * options.screenBrightness) * WORLD_SCALE * WORLD_SCALE;
 			}
 			model.updated();
-			sr.updateMesh(hutaNode.getChildMeshes());
 		};
 
 		applyOpenAngle();
