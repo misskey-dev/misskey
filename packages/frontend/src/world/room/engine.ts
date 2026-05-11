@@ -977,6 +977,8 @@ export class RoomEngine extends EventEmitter {
 		this.sr.enableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 	}
 
+	private previousGridPlanePosition: BABYLON.Vector3 | null = null;
+
 	private handleGrabbing() {
 		if (this.grabbingCtx == null) return;
 		const grabbing = this.grabbingCtx;
@@ -1046,8 +1048,6 @@ export class RoomEngine extends EventEmitter {
 							this.gridPlane.position.y = 0;
 							this.gridPlane.position.x = 0;
 						}
-						//this.gridPlane.isVisible = true;
-						this.gridPlane.scaling = new BABYLON.Vector3(1, 1, 1);
 					}
 				}
 			} else if (placement === 'bottom' || placement === 'ceiling') {
@@ -1069,8 +1069,6 @@ export class RoomEngine extends EventEmitter {
 						this.gridPlane.position = new BABYLON.Vector3(grabbing.mesh.position.x, grabbing.mesh.position.y - cm(0.1), grabbing.mesh.position.z);
 						this.gridPlane.position.x = 0;
 						this.gridPlane.position.z = 0;
-						//this.gridPlane.isVisible = true;
-						this.gridPlane.scaling = new BABYLON.Vector3(1, 1, 1);
 					}
 				}
 			} else { // top or floor
@@ -1092,8 +1090,6 @@ export class RoomEngine extends EventEmitter {
 						this.gridPlane.position = new BABYLON.Vector3(grabbing.mesh.position.x, grabbing.mesh.position.y + cm(0.1), grabbing.mesh.position.z);
 						this.gridPlane.position.x = 0;
 						this.gridPlane.position.z = 0;
-						//this.gridPlane.isVisible = true;
-						this.gridPlane.scaling = new BABYLON.Vector3(1, 1, 1);
 					}
 				}
 			}
@@ -1115,66 +1111,21 @@ export class RoomEngine extends EventEmitter {
 			this.sr.updateMesh(grabbing.mesh.getChildMeshes());
 		}
 
-		if (!sticky) {
-			//this.gridPlane.isVisible = false;
-			this.gridPlane.scaling = new BABYLON.Vector3(0, 0, 0);
+		// 浮動小数点数のわずかな誤差が出るため0.01cm以下の変動は無視する
+		const gridPlaneUpdated = this.previousGridPlanePosition == null || (
+			Math.abs(this.previousGridPlanePosition.x - this.gridPlane.position.x) > cm(0.01) ||
+			Math.abs(this.previousGridPlanePosition.y - this.gridPlane.position.y) > cm(0.01) ||
+			Math.abs(this.previousGridPlanePosition.z - this.gridPlane.position.z) > cm(0.01)
+		);
 
-			//for (const mesh of grabbing.ghost.getChildMeshes()) {
-			//if (mesh.material instanceof BABYLON.MultiMaterial) {
-			//	for (const subMat of mesh.material.subMaterials) {
-			//		if (subMat instanceof BABYLON.PBRMaterial) {
-			//			subMat.emissiveColor = new BABYLON.Color3(1, 0, 0);
-			//		}
-			//	}
-			//} else {
-			//	mesh.material.emissiveColor = new BABYLON.Color3(1, 0, 0);
-			//}
-			//}
+		if (gridPlaneUpdated) {
+			// おそらくGridMaterialの都合上updateMeshでは不十分
+			//this.sr.updateMesh(this.gridPlane);
+			this.sr.disableSnapshotRendering();
+			this.sr.enableSnapshotRendering();
 		}
 
-		this.sr.updateMesh(this.gridPlane);
-
-		//const pos = new BABYLON.Vector3(this.camera.position.x, this.camera.position.y, this.camera.position.z);
-		//const _dir = newPos.subtract(pos).normalize();
-		//for (let i = 0; i < grabbing.distance; i++) {
-		//	// posを1cmずつnewPosの方向に動かす
-		//	pos.addInPlace(_dir.scale(cm(1)));
-		//	// 前方に向かってレイを飛ばして衝突チェック
-		//	const ray = new BABYLON.Ray(this.camera.position, dir, i);
-		//	const hit = this.scene.pickWithRay(ray, (m) => isCollisionTarget(m));
-		//	if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
-		//		//const isCollided = grabbing.mesh.intersectsMesh(hit.pickedMesh, false);
-		//		//if (isCollided) {
-		//		break;
-		//		//}
-		//	}
-		//	grabbing.mesh.position = pos.clone();
-		//}
-
-		//const ray = new BABYLON.Ray(this.camera.position, this.camera.getDirection(BABYLON.Axis.Z), cm(1000));
-		//const hit = this.scene.pickWithRay(ray, (m) => m.name.includes('__COLLISION_WALL__'))!;
-		//if (hit.pickedMesh != null) {
-		//	const grabbingBox = this.grabbing.mesh.getBoundingInfo().boundingBox;
-		//	const grabDistanceVector = this.grabbing.mesh.position.subtract(this.camera.position);
-		//	if (grabDistanceVector.length() > hit.distance) {
-		//		this.grabbing.mesh.position = this.camera.position.add(dir.scale(hit.distance));
-		//		this.grabbing.mesh.position.y = y;
-		//	}
-		//}
-
-		//const displacementVector = new BABYLON.Vector3(
-		//	this.grabbing.ghost.position.x - this.grabbing.mesh.position.x,
-		//	0,
-		//	this.grabbing.ghost.position.z - this.grabbing.mesh.position.z,
-		//);
-		//this.grabbing.mesh.moveWithCollisions(displacementVector);
-		//this.grabbing.mesh.position.y = y;
-
-		//for (const soid of stickyObjectIds) {
-		//	//const soMesh = this.objectMeshs.get(soid)!;
-		//	//const offset = this.grabbing.mesh!.position.subtract(soMeshStartPosition);
-		//	//soMesh.position = this.grabbing.mesh!.position.subtract(offset);
-		//}
+		this.previousGridPlanePosition = this.gridPlane.position.clone();
 
 		grabbing.onMove?.({
 			position: newPos,
@@ -1346,7 +1297,9 @@ export class RoomEngine extends EventEmitter {
 			},
 		};
 
+		this.sr.disableSnapshotRendering();
 		this.gridPlane.isVisible = true;
+		this.sr.enableSnapshotRendering();
 
 		this.timer.setInterval(() => {
 			this.handleGrabbing();
@@ -1375,7 +1328,9 @@ export class RoomEngine extends EventEmitter {
 		}
 		this.grabbingCtx = null;
 
+		this.sr.disableSnapshotRendering();
 		this.gridPlane.isVisible = false;
+		this.sr.enableSnapshotRendering();
 	}
 
 	public interact(oid: string) {
@@ -1550,7 +1505,9 @@ export class RoomEngine extends EventEmitter {
 			},
 		};
 
+		this.sr.disableSnapshotRendering();
 		this.gridPlane.isVisible = true;
+		this.sr.enableSnapshotRendering();
 
 		this.timer.setInterval(() => {
 			this.handleGrabbing();
