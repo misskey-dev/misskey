@@ -36,6 +36,7 @@ minimumReleaseAgeExclude:
   - '@misskey-dev/*'
   - '@syuilo/aiscript'
   - buraha
+  - mfm-js
   - slacc
   - slacc-android-arm-eabi
   - slacc-android-arm64

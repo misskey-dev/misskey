@@ -16,11 +16,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { onMounted, watch, onBeforeUnmount, ref, useTemplateRef } from 'vue';
+import { themeManager } from '@/theme.js';
 import tinycolor from 'tinycolor2';
 
 const loaded = !!window.TagCanvas;
 const SAFE_FOR_HTML_ID = 'abcdefghijklmnopqrstuvwxyz';
-const computedStyle = getComputedStyle(window.document.documentElement);
 const idForCanvas = Array.from({ length: 16 }, () => SAFE_FOR_HTML_ID[Math.floor(Math.random() * SAFE_FOR_HTML_ID.length)]).join('');
 const idForTags = Array.from({ length: 16 }, () => SAFE_FOR_HTML_ID[Math.floor(Math.random() * SAFE_FOR_HTML_ID.length)]).join('');
 const available = ref(false);
@@ -33,7 +33,7 @@ watch(available, () => {
 	try {
 		window.TagCanvas.Start(idForCanvas, idForTags, {
 			textColour: '#ffffff',
-			outlineColour: tinycolor(computedStyle.getPropertyValue('--MI_THEME-accent')).toHexString(),
+			outlineColour: tinycolor(themeManager.currentCompiledTheme!.accent).toHexString(),
 			outlineRadius: 10,
 			initial: [-0.030, -0.010],
 			frontSelect: true,

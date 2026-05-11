@@ -313,7 +313,8 @@ export class ApInboxService {
 		// アナウンス先が許可されているかチェック
 		if (!this.utilityService.isFederationAllowedUri(uri)) return;
 
-		const unlock = await acquireApObjectLock(this.redisClient, uri);
+		const activityUri = getApId(activity);
+		const unlock = await acquireApObjectLock(this.redisClient, activityUri);
 
 		try {
 			// 既に同じURIを持つものが登録されていないかチェック
