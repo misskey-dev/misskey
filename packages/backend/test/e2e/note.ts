@@ -709,7 +709,7 @@ describe('Note', () => {
 				// 禁止ワード・センシティブワードをリセット
 				await api('admin/update-meta', {
 					sensitiveWords: [],
-					bannedWords: [],
+					prohibitedWords: [],
 				}, root);
 			});
 
