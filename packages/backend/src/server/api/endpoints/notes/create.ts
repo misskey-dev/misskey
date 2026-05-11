@@ -40,6 +40,12 @@ export const meta = {
 	},
 
 	errors: {
+		cannotCreateNote: {
+			message: 'You are not allowed to create notes.',
+			code: 'CANNOT_CREATE_NOTE',
+			id: 'f35c0bd4-9dca-4998-ae4b-fa0e7c54d16a',
+		},
+
 		noSuchRenoteTarget: {
 			message: 'No such renote target.',
 			code: 'NO_SUCH_RENOTE_TARGET',
@@ -122,6 +128,36 @@ export const meta = {
 			message: 'Cannot post because it exceeds the allowed number of mentions.',
 			code: 'CONTAINS_TOO_MANY_MENTIONS',
 			id: '4de0363a-3046-481b-9b0f-feff3e211025',
+		},
+
+		tooManyFilesAttachedToNote: {
+			message: 'Cannot post because too many files are attached.',
+			code: 'CONTAINS_TOO_MANY_FILES',
+			id: '8d28ca32-a244-4cf7-bc29-97895fdc3604',
+		},
+
+		renoteForbidden: {
+			message: 'You are not allowed to Renote.',
+			code: 'RENOTE_FORBIDDEN',
+			id: 'c5b0bcc1-9db1-4178-b130-920a4e150b58',
+		},
+
+		quoteForbidden: {
+			message: 'You are not allowed to quote.',
+			code: 'QUOTE_FORBIDDEN',
+			id: 'ae77a039-588a-40c3-8358-cc9c15ec7bbb',
+		},
+
+		directNoteCreationForbidden: {
+			message: 'You are not allowed to send specified notes.',
+			code: 'SPECIFIED_NOTE_CREATION_FORBIDDEN',
+			id: 'fe35a6b4-f595-4cbc-ab56-f31fa68be1f0',
+		},
+
+		remoteDirectNoteCreationForbidden: {
+			message: 'You are not allowed to send specified notes to remote users.',
+			code: 'REMOTE_SPECIFIED_NOTE_CREATION_FORBIDDEN',
+			id: 'dd9e27c6-7cba-4587-92c7-672c82d9cc46',
 		},
 	},
 } as const;
@@ -250,10 +286,22 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				// TODO: 他のErrorもここでキャッチしてエラーメッセージを当てるようにしたい
 				if (err instanceof IdentifiableError) {
 					switch (err.id) {
+						case 'ebd9b2a9-4d95-4b01-8824-e701629b65e7':
+							throw new ApiError(meta.errors.cannotCreateNote);
 						case '689ee33f-f97c-479a-ac49-1b9f8140af99':
 							throw new ApiError(meta.errors.containsProhibitedWords);
 						case '9f466dab-c856-48cd-9e65-ff90ff750580':
 							throw new ApiError(meta.errors.containsTooManyMentions);
+						case '80dc1304-d910-4daa-b26f-4220b6c944ff':
+							throw new ApiError(meta.errors.tooManyFilesAttachedToNote);
+						case 'd35d80dc-02ba-4c9b-b9b8-905d306dcb67':
+							throw new ApiError(meta.errors.renoteForbidden);
+						case '3a97010b-c338-4cdf-a567-24c54b67726e':
+							throw new ApiError(meta.errors.quoteForbidden);
+						case '80d26afb-d466-4d86-9c01-11b9cad9da24':
+							throw new ApiError(meta.errors.directNoteCreationForbidden);
+						case '5bbfae8d-097c-4c58-93f4-bc242d600529':
+							throw new ApiError(meta.errors.remoteDirectNoteCreationForbidden);
 						case '801c046c-5bf5-4234-ad2b-e78fc20a2ac7':
 							throw new ApiError(meta.errors.noSuchFile);
 						case '53983c56-e163-45a6-942f-4ddc485d4290':
