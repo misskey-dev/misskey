@@ -35,4 +35,5 @@ minimumReleaseAge: 10080 # delay 7days to mitigate supply-chain attack
 minimumReleaseAgeExclude:
   - '@syuilo/aiscript'
   - '@misskey-dev/*'
+  - mfm-js
   - '@typescript/native-preview*'

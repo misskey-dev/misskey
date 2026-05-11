@@ -17,14 +17,13 @@
 	},
 	"dependencies": {
 		"@analytics/google-analytics": "1.1.0",
-		"@discordapp/twemoji": "16.0.1",
 		"@mcaptcha/core-glue": "0.1.0-alpha-5",
 		"@misskey-dev/browser-image-resizer": "2024.1.0",
+		"@misskey-dev/emoji-data": "17.0.3",
 		"@sentry/vue": "10.50.0",
 		"@simplewebauthn/browser": "13.3.0",
 		"@syuilo/aiscript": "1.2.1",
 		"@syuilo/aiscript-0-19-0": "npm:@syuilo/aiscript@^0.19.0",
-		"@twemoji/parser": "16.0.0",
 		"@vitejs/plugin-vue": "6.0.6",
 		"aiscript-vscode": "github:aiscript-dev/aiscript-vscode#v0.1.16",
 		"analytics": "0.8.19",
@@ -53,7 +52,7 @@
 		"json5": "2.2.3",
 		"matter-js": "0.20.0",
 		"mediabunny": "1.41.0",
-		"mfm-js": "0.25.0",
+		"mfm-js": "0.26.0",
 		"misskey-bubble-game": "workspace:*",
 		"misskey-js": "workspace:*",
 		"misskey-reversi": "workspace:*",
@@ -72,6 +71,7 @@
 		"wanakana": "5.3.1"
 	},
 	"devDependencies": {
+		"@misskey-dev/emoji-assets": "17.0.3",
 		"@misskey-dev/summaly": "5.3.0",
 		"@rollup/plugin-json": "6.1.0",
 		"@rollup/pluginutils": "5.3.0",
