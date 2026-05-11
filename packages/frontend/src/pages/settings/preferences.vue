@@ -324,10 +324,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 									</MkSelect>
 								</MkPreferenceContainer>
 							</SearchMarker>
+
+								<SearchMarker :keywords="['urlpreview', 'link', 'preview', 'card', 'large', 'compact']">
+									<MkPreferenceContainer k="forceCompactUrlPreview">
+										<MkSwitch v-model="forceCompactUrlPreview" :disabled="!instance.enableUrlPreview || dataSaver.disableUrlPreview">
+											<template #label><SearchLabel>{{ i18n.ts.forceCompactUrlPreview }}</SearchLabel></template>
+											<template #caption>{{ i18n.ts._forceCompactUrlPreview.description }}</template>
+										</MkSwitch>
+									</MkPreferenceContainer>
+								</SearchMarker>
+							</div>
 						</div>
-					</div>
-				</MkFolder>
-			</SearchMarker>
+					</MkFolder>
+				</SearchMarker>
 
 			<SearchMarker v-slot="slotProps" :keywords="['post', 'form']">
 				<MkFolder :defaultOpen="slotProps.isParentOfTarget">
@@ -936,6 +945,7 @@ const reactionsDisplaySize = prefer.model('reactionsDisplaySize');
 const limitWidthOfReaction = prefer.model('limitWidthOfReaction');
 const squareAvatars = prefer.model('squareAvatars');
 const enableSeasonalScreenEffect = prefer.model('enableSeasonalScreenEffect');
+const forceCompactUrlPreview = prefer.model('forceCompactUrlPreview');
 const showAvatarDecorations = prefer.model('showAvatarDecorations');
 const nsfw = prefer.model('nsfw');
 const emojiStyle = prefer.model('emojiStyle');

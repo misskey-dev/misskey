@@ -65,7 +65,7 @@
 		"@misskey-dev/emoji-assets": "17.0.3",
 		"@misskey-dev/emoji-data": "17.0.3",
 		"@misskey-dev/sharp-read-bmp": "1.2.0",
-		"@misskey-dev/summaly": "5.3.0",
+		"@misskey-dev/summaly": "5.4.0",
 		"@napi-rs/canvas": "0.1.100",
 		"@nestjs/common": "11.1.19",
 		"@nestjs/core": "11.1.19",

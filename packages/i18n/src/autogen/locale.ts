@@ -3605,6 +3605,16 @@ export interface Locale extends ILocale {
      */
     "squareAvatars": string;
     /**
+     * URLプレビューを常にコンパクト表示にする
+     */
+    "forceCompactUrlPreview": string;
+    "_forceCompactUrlPreview": {
+        /**
+         * リンク先のカード表示指定に関わらず常に小さいカードで表示するようになります
+         */
+        "description": string;
+    };
+    /**
      * 送信
      */
     "sent": string;

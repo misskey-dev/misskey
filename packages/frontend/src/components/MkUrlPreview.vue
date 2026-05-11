@@ -44,8 +44,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 </template>
 <div v-else>
-	<component :is="self ? 'MkA' : 'a'" :class="[$style.link, { [$style.compact]: compact }]" :[attr]="maybeRelativeUrl" rel="nofollow noopener" :target="target" :title="url">
-		<div v-if="thumbnail && !sensitive" :class="$style.thumbnail" :style="prefer.s.dataSaver.urlPreviewThumbnail ? '' : { backgroundImage: `url('${thumbnail}')` }">
+	<component :is="self ? 'MkA' : 'a'" :class="[$style.link, { [$style.compact]: compact, [$style.large]: isLargeImage }]" :[attr]="maybeRelativeUrl" rel="nofollow noopener" :target="target" :title="url">
+		<div v-if="thumbnail && !sensitive" :class="$style.thumbnail" :style="displayThumbnail ? { backgroundImage: `url('${displayThumbnail}')` } : ''">
 		</div>
 		<article :class="$style.body">
 			<header :class="$style.header">
@@ -83,7 +83,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { defineAsyncComponent, onDeactivated, onUnmounted, ref } from 'vue';
+import { computed, defineAsyncComponent, onDeactivated, onUnmounted, ref } from 'vue';
 import { url as local } from '@@/js/config.js';
 import { versatileLang } from '@@/js/intl-const.js';
 import type { SummalyResult } from '@misskey-dev/summaly';
@@ -118,9 +118,28 @@ const fetching = ref(true);
 const title = ref<string | null>(null);
 const description = ref<string | null>(null);
 const thumbnail = ref<string | null>(null);
+const thumbnailStyle = ref<'summary' | 'summary_large_image' | null>(null);
 const icon = ref<string | null>(null);
 const sitename = ref<string | null>(null);
 const sensitive = ref<boolean>(false);
+const isLargeImage = computed(() =>
+	thumbnail.value !== null &&
+	!sensitive.value &&
+	thumbnailStyle.value === 'summary_large_image' &&
+	!prefer.s.forceCompactUrlPreview,
+);
+const displayThumbnail = computed(() => {
+	if (!thumbnail.value || prefer.s.dataSaver.urlPreviewThumbnail) return null;
+	if (!isLargeImage.value) return thumbnail.value;
+	// large card: preview=1を取り除いて高解像度の画像にする
+	try {
+		const u = new URL(thumbnail.value);
+		u.searchParams.delete('preview');
+		return u.toString();
+	} catch {
+		return thumbnail.value;
+	}
+});
 const player = ref({
 	url: null,
 	width: null,
@@ -175,6 +194,7 @@ window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${versatileLa
 		title.value = info.title;
 		description.value = info.description;
 		thumbnail.value = info.thumbnail;
+		thumbnailStyle.value = info.thumbnailStyle ?? null;
 		icon.value = info.icon;
 		sitename.value = info.sitename;
 		player.value = info.player;
@@ -264,6 +284,24 @@ onUnmounted(() => {
 				white-space: nowrap;
 				text-overflow: ellipsis;
 			}
+		}
+	}
+
+	&.large {
+		> .thumbnail {
+			position: relative;
+			width: 100%;
+			height: auto;
+			aspect-ratio: 16 / 9;
+
+			& + .body {
+				left: 0;
+				width: 100%;
+			}
+		}
+
+		> .body {
+			padding: 16px;
 		}
 	}
 }
