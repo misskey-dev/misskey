@@ -42,14 +42,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 
 		<div :class="$style.overlayBottom">
-			<div v-if="controller.isReady.value" class="_buttonsCenter" :class="$style.overlayControls">
+			<div v-if="controller.isReady.value" class="_buttonsCenter _panel _shadow" :class="$style.overlayControls">
 				<template v-if="controller.isEditMode.value">
-					<MkButton v-if="controller.grabbing.value" @click="cancelGrabbing"><i class="ti ti-x"></i> cancel</MkButton>
-					<MkButton v-if="controller.grabbing.value && !controller.grabbing.value.forInstall" @click="endGrabbing"><i class="ti ti-check"></i> (E)</MkButton>
-					<MkButton v-else-if="controller.grabbing.value && controller.grabbing.value.forInstall" @click="endGrabbing"><i class="ti ti-check"></i> (E)</MkButton>
-					<MkButton v-else-if="controller.selected.value != null" @click="beginSelectedInstalledObjectGrabbing"><i class="ti ti-hand-grab"></i> (E)</MkButton>
+					<MkButton v-if="controller.grabbing.value" @click="cancelGrabbing" iconOnly v-tooltip="'Cancel (Q)'"><i class="ti ti-x"></i></MkButton>
+					<MkButton v-if="controller.grabbing.value && !controller.grabbing.value.forInstall" @click="endGrabbing" iconOnly v-tooltip="'Put (E)'"><i class="ti ti-check"></i></MkButton>
+					<MkButton v-else-if="controller.grabbing.value && controller.grabbing.value.forInstall" @click="endGrabbing" iconOnly v-tooltip="'Put (E)'"><i class="ti ti-check"></i></MkButton>
+					<MkButton v-else-if="controller.selected.value != null" @click="beginSelectedInstalledObjectGrabbing" iconOnly v-tooltip="'Grab (E)'"><i class="ti ti-hand-grab"></i></MkButton>
 
-					<MkButton v-if="controller.grabbing.value" @click="rotate"><i class="ti ti-view-360-arrow"></i> (R)</MkButton>
+					<MkButton v-if="controller.grabbing.value" @click="controller.changeGrabbingRotation(Math.PI / 8)" iconOnly><i class="ti ti-rotate-clockwise"></i></MkButton>
+					<MkButton v-if="controller.grabbing.value" @click="controller.changeGrabbingRotation(-Math.PI / 8)" iconOnly><i class="ti ti-rotate"></i></MkButton>
+					<MkButton v-if="controller.grabbing.value" @click="controller.changeGrabbingDistance(10)" iconOnly><i class="ti ti-arrows-maximize"></i></MkButton>
+					<MkButton v-if="controller.grabbing.value" @click="controller.changeGrabbingDistance(-10)" iconOnly><i class="ti ti-arrows-minimize"></i></MkButton>
 
 					<MkButton v-if="!controller.grabbing.value && controller.selected.value != null" @click="removeSelectedObject"><i class="ti ti-trash"></i> (X)</MkButton>
 				</template>
@@ -447,11 +450,6 @@ function showSnappingMenu(ev: PointerEvent) {
 	}], ev.currentTarget ?? ev.target);
 }
 
-function rotate() {
-	controller.changeGrabbingRotation(Math.PI / 8);
-	canvas.value!.focus();
-}
-
 async function addObject(ev: PointerEvent) {
 	// 重いので止める
 	controller.pauseRender();
@@ -758,7 +756,10 @@ definePage(() => ({
 }
 
 .overlayControls {
-
+	margin: 16px auto;
+	display: flex;
+	box-sizing: border-box;
+	width: max-content;
 }
 
 .overlayObjectInfoPanel {

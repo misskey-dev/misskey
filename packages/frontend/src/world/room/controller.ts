@@ -373,6 +373,14 @@ export class RoomController {
 		this.call('endGrabbing', [true]);
 	}
 
+	public changeGrabbingDistance(delta: number) {
+		this.call('changeGrabbingDistance', [delta]);
+	}
+
+	public changeGrabbingRotation(delta: number) {
+		this.call('changeGrabbingRotation', [delta]);
+	}
+
 	public toggleRoomLight() {
 		if (this.isRoomLightOn.value) {
 			this.call('turnOffRoomLight');
