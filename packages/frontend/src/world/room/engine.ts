@@ -1202,6 +1202,7 @@ export class RoomEngine extends EventEmitter {
 		const dir = this.camera.getDirection(BABYLON.Axis.Z).scale(this.scene.useRightHandedSystem ? -1 : 1);
 
 		let sticky: string | null;
+		let grabbingEnded = false;
 
 		this.grabbingCtx = {
 			objectId: selectedObject.metadata.objectId,
@@ -1218,6 +1219,7 @@ export class RoomEngine extends EventEmitter {
 				sticky = info.sticky;
 			},
 			onCancel: () => {
+				grabbingEnded = true;
 				this.sr.disableSnapshotRendering();
 				selectedObject.position = initialPosition.clone();
 				selectedObject.rotation = initialRotation.clone();
@@ -1236,6 +1238,7 @@ export class RoomEngine extends EventEmitter {
 				this.sr.enableSnapshotRendering();
 			},
 			onDone: () => { // todo: sticky状態などを引数でもらうようにしたい
+				grabbingEnded = true;
 				this.putParticleSystem.emitter = selectedObject.position.clone();
 				this.putParticleSystem.start();
 
@@ -1304,7 +1307,11 @@ export class RoomEngine extends EventEmitter {
 
 		this.sr.enableSnapshotRendering();
 
-		this.timer.setInterval(() => {
+		const stopHandleGrabbing = this.timer.setInterval(() => {
+			if (grabbingEnded) {
+				stopHandleGrabbing();
+				return;
+			}
 			this.handleGrabbing();
 		}, 10);
 
@@ -1437,6 +1444,7 @@ export class RoomEngine extends EventEmitter {
 		const ghost = this.createGhost(root);
 
 		let sticky: string | null;
+		let grabbingEnded = false;
 
 		this.grabbingCtx = {
 			objectId: id,
@@ -1453,9 +1461,12 @@ export class RoomEngine extends EventEmitter {
 				sticky = info.sticky;
 			},
 			onCancel: () => {
+				grabbingEnded = true;
 				// todo
 			},
 			onDone: () => { // todo: sticky状態などを引数でもらうようにしたい
+				grabbingEnded = true;
+
 				if (def.hasCollisions) {
 					enableObjectCollision(root.getChildMeshes());
 				}
@@ -1511,7 +1522,11 @@ export class RoomEngine extends EventEmitter {
 		this.gridPlane.isVisible = true;
 		this.sr.enableSnapshotRendering();
 
-		this.timer.setInterval(() => {
+		const stopHandleGrabbing = this.timer.setInterval(() => {
+			if (grabbingEnded) {
+				stopHandleGrabbing();
+				return;
+			}
 			this.handleGrabbing();
 		}, 10);
 

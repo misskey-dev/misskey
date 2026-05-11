@@ -569,6 +569,7 @@ export class Timer {
 			callback();
 		}, ms);
 		this.timeoutIds.push(id);
+		return () => this.clearTimeout(id);
 	}
 
 	public setInterval(callback: () => void, ms: number, signal?: AbortSignal) {
@@ -578,10 +579,24 @@ export class Timer {
 		this.intervalIds.push(id);
 		if (signal != null) {
 			signal.addEventListener('abort', () => {
-				clearInterval(id);
-				this.intervalIds = this.intervalIds.filter(i => i !== id);
+				this.clearInterval(id);
 			});
 		}
+		return () => this.clearInterval(id);
+	}
+
+	private clearTimeout(id: number) {
+		// workerで実行される可能性がある
+		// eslint-disable-next-line no-restricted-globals
+		clearTimeout(id);
+		this.timeoutIds = this.timeoutIds.filter(i => i !== id);
+	}
+
+	private clearInterval(id: number) {
+		// workerで実行される可能性がある
+		// eslint-disable-next-line no-restricted-globals
+		clearInterval(id);
+		this.intervalIds = this.intervalIds.filter(i => i !== id);
 	}
 
 	public dispose() {
