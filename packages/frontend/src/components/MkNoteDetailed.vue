@@ -152,7 +152,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:myReaction="$appearNote.myReaction"
 					:noteId="appearNote.id"
 				/>
-				<button class="_button" :class="$style.noteFooterButton" @click="reply()">
+				<button
+					class="_button"
+					:class="$style.noteFooterButton"
+					:disabled="!canReply"
+					@click="reply()"
+				>
 					<i class="ti ti-arrow-back-up"></i>
 					<p v-if="appearNote.repliesCount > 0" :class="$style.noteFooterButtonCount">{{ number(appearNote.repliesCount) }}</p>
 				</button>
@@ -343,6 +348,7 @@ const urls = parsed ? extractUrlFromMfm(parsed).filter((url) => appearNote.renot
 const showTicker = (prefer.s.instanceTicker === 'always') || (prefer.s.instanceTicker === 'remote' && appearNote.user.instance);
 const conversation = ref<Misskey.entities.Note[]>([]);
 const replies = ref<Misskey.entities.Note[]>([]);
+const canReply = computed(() => $i == null || ($i.policies.canNote && $i.policies.mentionLimit > 0));
 const canRenote = computed(() => (
 	(['public', 'home'].includes(appearNote.visibility) || (appearNote.visibility === 'followers' && appearNote.userId === $i?.id)) &&
 	($i == null || ($i.policies.canNote && $i.policies.renotePolicy !== 'disallow'))
@@ -881,7 +887,11 @@ function loadConversation() {
 		margin-right: 28px;
 	}
 
-	&:hover {
+	&:disabled {
+		cursor: not-allowed;
+	}
+
+	&:not(:disabled):hover {
 		color: var(--MI_THEME-fgHighlighted);
 	}
 }
