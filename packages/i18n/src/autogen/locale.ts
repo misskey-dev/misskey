@@ -8122,6 +8122,10 @@ export interface Locale extends ILocale {
              */
             "maxFileSize_caption": string;
             /**
+             * サーバー全体の最大ファイルサイズ設定は {max} です。これより大きいファイルをアップロードできるようにするには、Misskeyの設定ファイルからこの設定を緩和してください。
+             */
+            "maxFileSize_caption2": ParameterizedString<"max">;
+            /**
              * ファイルにNSFWを常に付与
              */
             "alwaysMarkNsfw": string;
