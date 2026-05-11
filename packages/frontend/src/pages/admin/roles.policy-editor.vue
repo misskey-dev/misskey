@@ -397,6 +397,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 		</XFolder>
 
+		<XFolder v-if="matchQuery([i18n.ts._role._options.canNote, 'canNote'])" v-model:policyMeta="policyMetaModel.canNote" :isBaseRole="isBaseRole" :readonly="readonly">
+			<template #label>{{ i18n.ts._role._options.canNote }}</template>
+			<template #valueText>{{ valuesModel.canNote ? i18n.ts.yes : i18n.ts.no }}</template>
+			<template #default="{ disabled }">
+				<MkSwitch v-model="valuesModel.canNote" :disabled="disabled">
+					<template #label>{{ i18n.ts.enable }}</template>
+				</MkSwitch>
+			</template>
+		</XFolder>
+
 		<XFolder v-if="matchQuery([i18n.ts._role._options.renotePolicy, 'renotePolicy'])" v-model:policyMeta="policyMetaModel.renotePolicy" :isBaseRole="isBaseRole" :readonly="readonly">
 			<template #label>{{ i18n.ts._role._options.renotePolicy }}</template>
 			<template #valueText>{{ valuesModel.renotePolicy === 'allow' ? i18n.ts._role._options.renotePolicy_allow : valuesModel.renotePolicy === 'renoteOnly' ? i18n.ts._role._options.renotePolicy_renoteOnly : i18n.ts._role._options.renotePolicy_disallow }}</template>
