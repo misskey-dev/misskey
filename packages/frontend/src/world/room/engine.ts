@@ -1284,6 +1284,7 @@ export class RoomEngine extends EventEmitter {
 						}
 					};
 					removeStickyParentRecursively(selectedObject);
+
 					this.sr.enableSnapshotRendering();
 
 					const pos = selectedObject.position.clone();
@@ -1314,12 +1315,15 @@ export class RoomEngine extends EventEmitter {
 	public endGrabbing(cancel = false) {
 		if (this.grabbingCtx == null) return;
 
+		this.sr.disableSnapshotRendering();
 		// 一度に子までdisposeしようとするとなぜか照明系の家具の場合エンジンがクラッシュする(消しちゃまずいものが子に混じっている？)ので、まず子からちびちび消していく
 		//this.grabbingCtx.ghost.dispose(false, false);
 		for (const m of this.grabbingCtx.ghost.getChildMeshes()) {
 			m.dispose(true, false);
 		}
 		this.grabbingCtx.ghost.dispose(true, false);
+		this.gridPlane.isVisible = false;
+		this.sr.enableSnapshotRendering();
 
 		if (cancel) {
 			this.grabbingCtx.onCancel?.();
@@ -1327,10 +1331,6 @@ export class RoomEngine extends EventEmitter {
 			this.grabbingCtx.onDone?.();
 		}
 		this.grabbingCtx = null;
-
-		this.sr.disableSnapshotRendering();
-		this.gridPlane.isVisible = false;
-		this.sr.enableSnapshotRendering();
 	}
 
 	public interact(oid: string) {
