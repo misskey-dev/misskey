@@ -828,348 +828,352 @@ describe('Note', () => {
 			assert.strictEqual(note1.status, 400);
 		});
 
-		test('canPublicNote=false の場合は visibility が public から home に降格される', async () => {
-			await withAliceRolePolicies({
-				canPublicNote: {
-					useDefault: false,
-					priority: 1,
-					value: false,
-				},
-			}, async () => {
-				const createdNote = await expectCreateNoteSuccess({
-					text: 'test',
-					visibility: 'public',
-				});
-
-				assert.strictEqual(createdNote.visibility, 'home');
-				assert.strictEqual(createdNote.localOnly, false);
-			});
-		});
-
-		test('canFederateNote=false の場合は localOnly=false が true に降格される', async () => {
-			await withAliceRolePolicies({
-				canFederateNote: {
-					useDefault: false,
-					priority: 1,
-					value: false,
-				},
-			}, async () => {
-				const createdNote = await expectCreateNoteSuccess({
-					text: 'test',
-					visibility: 'home',
-					localOnly: false,
-				});
-
-				assert.strictEqual(createdNote.visibility, 'home');
-				assert.strictEqual(createdNote.localOnly, true);
-			});
-		});
-
-		test('canNote=false の場合は投稿できない', async () => {
-			await withAliceRolePolicies({
-				canNote: {
-					useDefault: false,
-					priority: 1,
-					value: false,
-				},
-			}, async () => {
-				await expectCreateNoteError({
-					text: 'test',
-				}, {
-					code: 'CANNOT_CREATE_NOTE',
-					id: 'f35c0bd4-9dca-4998-ae4b-fa0e7c54d16a',
-				});
-			});
-		});
-
-		test('noteFilesLimit を超えると投稿できない', async () => {
-			const file1 = await uploadFile(alice);
-			const file2 = await uploadFile(alice);
-
-			assert.strictEqual(file1.status, 200);
-			assert.strictEqual(file2.status, 200);
-
-			await withAliceRolePolicies({
-				noteFilesLimit: {
-					useDefault: false,
-					priority: 1,
-					value: 1,
-				},
-			}, async () => {
-				await expectCreateNoteError({
-					fileIds: [file1.body!.id, file2.body!.id],
-				}, {
-					code: 'TOO_MANY_FILES_ATTACHED_TO_NOTE',
-					id: '8d28ca32-a244-4cf7-bc29-97895fdc3604',
-				});
-			});
-		});
-
-		test('renotePolicy=disallow の場合はRenoteできない', async () => {
-			const target = await post(bob, {
-				text: 'renote target',
-			});
-
-			await withAliceRolePolicies({
-				renotePolicy: {
-					useDefault: false,
-					priority: 1,
-					value: 'disallow',
-				},
-			}, async () => {
-				await expectCreateNoteError({
-					renoteId: target.id,
-				}, {
-					code: 'RENOTE_FORBIDDEN',
-					id: 'c5b0bcc1-9db1-4178-b130-920a4e150b58',
-				});
-			});
-		});
-
-		test('renotePolicy=renoteOnly の場合は引用Renoteできない', async () => {
-			const target = await post(bob, {
-				text: 'quote target',
-			});
-
-			await withAliceRolePolicies({
-				renotePolicy: {
-					useDefault: false,
-					priority: 1,
-					value: 'renoteOnly',
-				},
-			}, async () => {
-				await expectCreateNoteError({
-					text: 'quote',
-					renoteId: target.id,
-				}, {
-					code: 'QUOTE_FORBIDDEN',
-					id: 'ae77a039-588a-40c3-8358-cc9c15ec7bbb',
-				});
-			});
-		});
-
-		test('canCreateSpecifiedNote=false の場合はダイレクト投稿できない', async () => {
-			await withAliceRolePolicies({
-				canCreateSpecifiedNote: {
-					useDefault: false,
-					priority: 1,
-					value: false,
-				},
-			}, async () => {
-				await expectCreateNoteError({
-					text: 'test',
-					visibility: 'specified',
-					visibleUserIds: [bob.id],
-				}, {
-					code: 'SPECIFIED_NOTE_CREATION_FORBIDDEN',
-					id: 'fe35a6b4-f595-4cbc-ab56-f31fa68be1f0',
-				});
-			});
-		});
-
-		test('canFederateNote=false の場合はリモート宛てダイレクト投稿できない', async () => {
-			await withAliceRolePolicies({
-				canFederateNote: {
-					useDefault: false,
-					priority: 1,
-					value: false,
-				},
-			}, async () => {
-				await expectCreateNoteError({
-					text: 'test',
-					visibility: 'specified',
-					visibleUserIds: [tom.id],
-				}, {
-					code: 'REMOTE_SPECIFIED_NOTE_CREATION_FORBIDDEN',
-					id: 'dd9e27c6-7cba-4587-92c7-672c82d9cc46',
-				});
-			});
-		});
-
-		test('canFederateNote=false の場合は、リモートとローカル両方を宛先とするダイレクト投稿もできない', async () => {
-			await withAliceRolePolicies({
-				canFederateNote: {
-					useDefault: false,
-					priority: 1,
-					value: false,
-				},
-			}, async () => {
-				await expectCreateNoteError({
-					text: 'test',
-					visibility: 'specified',
-					visibleUserIds: [bob.id, tom.id],
-				}, {
-					code: 'REMOTE_SPECIFIED_NOTE_CREATION_FORBIDDEN',
-					id: 'dd9e27c6-7cba-4587-92c7-672c82d9cc46',
-				});
-			});
-		});
-
-		test('メンションの数が上限を超えるとエラーになる', async () => {
-			const res = await api('admin/roles/create', {
-				name: 'test',
-				description: '',
-				color: null,
-				iconUrl: null,
-				displayOrder: 0,
-				target: 'manual',
-				condFormula: {},
-				isAdministrator: false,
-				isModerator: false,
-				isPublic: false,
-				isExplorable: false,
-				asBadge: false,
-				canEditMembersByModerator: false,
-				policies: {
-					mentionLimit: {
+		describe('ロールポリシー', () => {
+			test('canPublicNote=false の場合は visibility が public から home に降格される', async () => {
+				await withAliceRolePolicies({
+					canPublicNote: {
 						useDefault: false,
 						priority: 1,
-						value: 0,
+						value: false,
 					},
-				},
-			}, root);
+				}, async () => {
+					const createdNote = await expectCreateNoteSuccess({
+						text: 'test',
+						visibility: 'public',
+					});
 
-			assert.strictEqual(res.status, 200);
+					assert.strictEqual(createdNote.visibility, 'home');
+					assert.strictEqual(createdNote.localOnly, false);
+				});
+			});
 
-			await new Promise(x => setTimeout(x, 2));
-
-			const assign = await api('admin/roles/assign', {
-				userId: alice.id,
-				roleId: res.body.id,
-			}, root);
-
-			assert.strictEqual(assign.status, 204);
-
-			await new Promise(x => setTimeout(x, 2));
-
-			const note = await api('notes/create', {
-				text: '@bob potentially annoying text',
-			}, alice);
-
-			assert.strictEqual(note.status, 400);
-			assert.strictEqual(castAsError(note.body).error.code, 'CONTAINS_TOO_MANY_MENTIONS');
-			assert.strictEqual(castAsError(note.body).error.id, '4de0363a-3046-481b-9b0f-feff3e211025');
-
-			await api('admin/roles/unassign', {
-				userId: alice.id,
-				roleId: res.body.id,
-			}, root);
-
-			await api('admin/roles/delete', {
-				roleId: res.body.id,
-			}, root);
-		});
-
-		test('ダイレクト投稿もエラーになる', async () => {
-			const res = await api('admin/roles/create', {
-				name: 'test',
-				description: '',
-				color: null,
-				iconUrl: null,
-				displayOrder: 0,
-				target: 'manual',
-				condFormula: {},
-				isAdministrator: false,
-				isModerator: false,
-				isPublic: false,
-				isExplorable: false,
-				asBadge: false,
-				canEditMembersByModerator: false,
-				policies: {
-					mentionLimit: {
+			test('canFederateNote=false の場合は localOnly=false が true に降格される', async () => {
+				await withAliceRolePolicies({
+					canFederateNote: {
 						useDefault: false,
 						priority: 1,
-						value: 0,
+						value: false,
 					},
-				},
-			}, root);
+				}, async () => {
+					const createdNote = await expectCreateNoteSuccess({
+						text: 'test',
+						visibility: 'home',
+						localOnly: false,
+					});
 
-			assert.strictEqual(res.status, 200);
+					assert.strictEqual(createdNote.visibility, 'home');
+					assert.strictEqual(createdNote.localOnly, true);
+				});
+			});
 
-			await new Promise(x => setTimeout(x, 2));
+			test('canNote=false の場合は投稿できない', async () => {
+				await withAliceRolePolicies({
+					canNote: {
+						useDefault: false,
+						priority: 1,
+						value: false,
+					},
+				}, async () => {
+					await expectCreateNoteError({
+						text: 'test',
+					}, {
+						code: 'CANNOT_CREATE_NOTE',
+						id: 'f35c0bd4-9dca-4998-ae4b-fa0e7c54d16a',
+					});
+				});
+			});
 
-			const assign = await api('admin/roles/assign', {
-				userId: alice.id,
-				roleId: res.body.id,
-			}, root);
+			test('noteFilesLimit を超えると投稿できない', async () => {
+				const file1 = await uploadFile(alice);
+				const file2 = await uploadFile(alice);
 
-			assert.strictEqual(assign.status, 204);
+				assert.strictEqual(file1.status, 200);
+				assert.strictEqual(file2.status, 200);
 
-			await new Promise(x => setTimeout(x, 2));
-
-			const note = await api('notes/create', {
-				text: 'potentially annoying text',
-				visibility: 'specified',
-				visibleUserIds: [bob.id],
-			}, alice);
-
-			assert.strictEqual(note.status, 400);
-			assert.strictEqual(castAsError(note.body).error.code, 'CONTAINS_TOO_MANY_MENTIONS');
-			assert.strictEqual(castAsError(note.body).error.id, '4de0363a-3046-481b-9b0f-feff3e211025');
-
-			await api('admin/roles/unassign', {
-				userId: alice.id,
-				roleId: res.body.id,
-			}, root);
-
-			await api('admin/roles/delete', {
-				roleId: res.body.id,
-			}, root);
-		});
-
-		test('ダイレクトの宛先とメンションが同じ場合は重複してカウントしない', async () => {
-			const res = await api('admin/roles/create', {
-				name: 'test',
-				description: '',
-				color: null,
-				iconUrl: null,
-				displayOrder: 0,
-				target: 'manual',
-				condFormula: {},
-				isAdministrator: false,
-				isModerator: false,
-				isPublic: false,
-				isExplorable: false,
-				asBadge: false,
-				canEditMembersByModerator: false,
-				policies: {
-					mentionLimit: {
+				await withAliceRolePolicies({
+					noteFilesLimit: {
 						useDefault: false,
 						priority: 1,
 						value: 1,
 					},
-				},
-			}, root);
+				}, async () => {
+					await expectCreateNoteError({
+						fileIds: [file1.body!.id, file2.body!.id],
+					}, {
+						code: 'TOO_MANY_FILES_ATTACHED_TO_NOTE',
+						id: '8d28ca32-a244-4cf7-bc29-97895fdc3604',
+					});
+				});
+			});
 
-			assert.strictEqual(res.status, 200);
+			test('renotePolicy=disallow の場合はRenoteできない', async () => {
+				const target = await post(bob, {
+					text: 'renote target',
+				});
 
-			await new Promise(x => setTimeout(x, 2));
+				await withAliceRolePolicies({
+					renotePolicy: {
+						useDefault: false,
+						priority: 1,
+						value: 'disallow',
+					},
+				}, async () => {
+					await expectCreateNoteError({
+						renoteId: target.id,
+					}, {
+						code: 'RENOTE_FORBIDDEN',
+						id: 'c5b0bcc1-9db1-4178-b130-920a4e150b58',
+					});
+				});
+			});
 
-			const assign = await api('admin/roles/assign', {
-				userId: alice.id,
-				roleId: res.body.id,
-			}, root);
+			test('renotePolicy=renoteOnly の場合は引用Renoteできない', async () => {
+				const target = await post(bob, {
+					text: 'quote target',
+				});
 
-			assert.strictEqual(assign.status, 204);
+				await withAliceRolePolicies({
+					renotePolicy: {
+						useDefault: false,
+						priority: 1,
+						value: 'renoteOnly',
+					},
+				}, async () => {
+					await expectCreateNoteError({
+						text: 'quote',
+						renoteId: target.id,
+					}, {
+						code: 'QUOTE_FORBIDDEN',
+						id: 'ae77a039-588a-40c3-8358-cc9c15ec7bbb',
+					});
+				});
+			});
 
-			await new Promise(x => setTimeout(x, 2));
+			test('canCreateSpecifiedNote=false の場合はダイレクト投稿できない', async () => {
+				await withAliceRolePolicies({
+					canCreateSpecifiedNote: {
+						useDefault: false,
+						priority: 1,
+						value: false,
+					},
+				}, async () => {
+					await expectCreateNoteError({
+						text: 'test',
+						visibility: 'specified',
+						visibleUserIds: [bob.id],
+					}, {
+						code: 'SPECIFIED_NOTE_CREATION_FORBIDDEN',
+						id: 'fe35a6b4-f595-4cbc-ab56-f31fa68be1f0',
+					});
+				});
+			});
 
-			const note = await api('notes/create', {
-				text: '@bob potentially annoying text',
-				visibility: 'specified',
-				visibleUserIds: [bob.id],
-			}, alice);
+			test('canFederateNote=false の場合はリモート宛てダイレクト投稿できない', async () => {
+				await withAliceRolePolicies({
+					canFederateNote: {
+						useDefault: false,
+						priority: 1,
+						value: false,
+					},
+				}, async () => {
+					await expectCreateNoteError({
+						text: 'test',
+						visibility: 'specified',
+						visibleUserIds: [tom.id],
+					}, {
+						code: 'REMOTE_SPECIFIED_NOTE_CREATION_FORBIDDEN',
+						id: 'dd9e27c6-7cba-4587-92c7-672c82d9cc46',
+					});
+				});
+			});
 
-			assert.strictEqual(note.status, 200);
+			test('canFederateNote=false の場合は、リモートとローカル両方を宛先とするダイレクト投稿もできない', async () => {
+				await withAliceRolePolicies({
+					canFederateNote: {
+						useDefault: false,
+						priority: 1,
+						value: false,
+					},
+				}, async () => {
+					await expectCreateNoteError({
+						text: 'test',
+						visibility: 'specified',
+						visibleUserIds: [bob.id, tom.id],
+					}, {
+						code: 'REMOTE_SPECIFIED_NOTE_CREATION_FORBIDDEN',
+						id: 'dd9e27c6-7cba-4587-92c7-672c82d9cc46',
+					});
+				});
+			});
 
-			await api('admin/roles/unassign', {
-				userId: alice.id,
-				roleId: res.body.id,
-			}, root);
+			describe('mentionLimit', () => {
+				test('メンションの数が上限を超えるとエラーになる', async () => {
+					const res = await api('admin/roles/create', {
+						name: 'test',
+						description: '',
+						color: null,
+						iconUrl: null,
+						displayOrder: 0,
+						target: 'manual',
+						condFormula: {},
+						isAdministrator: false,
+						isModerator: false,
+						isPublic: false,
+						isExplorable: false,
+						asBadge: false,
+						canEditMembersByModerator: false,
+						policies: {
+							mentionLimit: {
+								useDefault: false,
+								priority: 1,
+								value: 0,
+							},
+						},
+					}, root);
 
-			await api('admin/roles/delete', {
-				roleId: res.body.id,
-			}, root);
+					assert.strictEqual(res.status, 200);
+
+					await new Promise(x => setTimeout(x, 2));
+
+					const assign = await api('admin/roles/assign', {
+						userId: alice.id,
+						roleId: res.body.id,
+					}, root);
+
+					assert.strictEqual(assign.status, 204);
+
+					await new Promise(x => setTimeout(x, 2));
+
+					const note = await api('notes/create', {
+						text: '@bob potentially annoying text',
+					}, alice);
+
+					assert.strictEqual(note.status, 400);
+					assert.strictEqual(castAsError(note.body).error.code, 'CONTAINS_TOO_MANY_MENTIONS');
+					assert.strictEqual(castAsError(note.body).error.id, '4de0363a-3046-481b-9b0f-feff3e211025');
+
+					await api('admin/roles/unassign', {
+						userId: alice.id,
+						roleId: res.body.id,
+					}, root);
+
+					await api('admin/roles/delete', {
+						roleId: res.body.id,
+					}, root);
+				});
+
+				test('ダイレクト投稿もエラーになる', async () => {
+					const res = await api('admin/roles/create', {
+						name: 'test',
+						description: '',
+						color: null,
+						iconUrl: null,
+						displayOrder: 0,
+						target: 'manual',
+						condFormula: {},
+						isAdministrator: false,
+						isModerator: false,
+						isPublic: false,
+						isExplorable: false,
+						asBadge: false,
+						canEditMembersByModerator: false,
+						policies: {
+							mentionLimit: {
+								useDefault: false,
+								priority: 1,
+								value: 0,
+							},
+						},
+					}, root);
+
+					assert.strictEqual(res.status, 200);
+
+					await new Promise(x => setTimeout(x, 2));
+
+					const assign = await api('admin/roles/assign', {
+						userId: alice.id,
+						roleId: res.body.id,
+					}, root);
+
+					assert.strictEqual(assign.status, 204);
+
+					await new Promise(x => setTimeout(x, 2));
+
+					const note = await api('notes/create', {
+						text: 'potentially annoying text',
+						visibility: 'specified',
+						visibleUserIds: [bob.id],
+					}, alice);
+
+					assert.strictEqual(note.status, 400);
+					assert.strictEqual(castAsError(note.body).error.code, 'CONTAINS_TOO_MANY_MENTIONS');
+					assert.strictEqual(castAsError(note.body).error.id, '4de0363a-3046-481b-9b0f-feff3e211025');
+
+					await api('admin/roles/unassign', {
+						userId: alice.id,
+						roleId: res.body.id,
+					}, root);
+
+					await api('admin/roles/delete', {
+						roleId: res.body.id,
+					}, root);
+				});
+
+				test('ダイレクトの宛先とメンションが同じ場合は重複してカウントしない', async () => {
+					const res = await api('admin/roles/create', {
+						name: 'test',
+						description: '',
+						color: null,
+						iconUrl: null,
+						displayOrder: 0,
+						target: 'manual',
+						condFormula: {},
+						isAdministrator: false,
+						isModerator: false,
+						isPublic: false,
+						isExplorable: false,
+						asBadge: false,
+						canEditMembersByModerator: false,
+						policies: {
+							mentionLimit: {
+								useDefault: false,
+								priority: 1,
+								value: 1,
+							},
+						},
+					}, root);
+
+					assert.strictEqual(res.status, 200);
+
+					await new Promise(x => setTimeout(x, 2));
+
+					const assign = await api('admin/roles/assign', {
+						userId: alice.id,
+						roleId: res.body.id,
+					}, root);
+
+					assert.strictEqual(assign.status, 204);
+
+					await new Promise(x => setTimeout(x, 2));
+
+					const note = await api('notes/create', {
+						text: '@bob potentially annoying text',
+						visibility: 'specified',
+						visibleUserIds: [bob.id],
+					}, alice);
+
+					assert.strictEqual(note.status, 200);
+
+					await api('admin/roles/unassign', {
+						userId: alice.id,
+						roleId: res.body.id,
+					}, root);
+
+					await api('admin/roles/delete', {
+						roleId: res.body.id,
+					}, root);
+				});
+			});
 		});
 	});
 
