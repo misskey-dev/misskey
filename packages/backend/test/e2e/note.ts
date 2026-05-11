@@ -927,7 +927,27 @@ describe('Note', () => {
 				});
 			});
 
-			test('renotePolicy=renoteOnly の場合は引用Renoteできない', async () => {
+			test('renotePolicy=renoteOnly の場合はRenoteはできる', async () => {
+				const target = await post(bob, {
+					text: 'renote target',
+				});
+
+				await withAliceRolePolicies({
+					renotePolicy: {
+						useDefault: false,
+						priority: 1,
+						value: 'renoteOnly',
+					},
+				}, async () => {
+					const createdNote = await expectCreateNoteSuccess({
+						renoteId: target.id,
+					});
+
+					assert.strictEqual(createdNote.renoteId, target.id);
+				});
+			});
+
+			test('renotePolicy=renoteOnly の場合は引用できない', async () => {
 				const target = await post(bob, {
 					text: 'quote target',
 				});
