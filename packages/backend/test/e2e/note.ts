@@ -573,6 +573,15 @@ describe('Note', () => {
 			assert.strictEqual(castAsError(res.body).error.id, error.id);
 		};
 
+		const expectCreateNoteSuccess = async (payload: Record<string, unknown>) => {
+			const res = await api('notes/create', payload, alice);
+
+			assert.strictEqual(res.status, 200);
+			assert.strictEqual(typeof res.body === 'object' && !Array.isArray(res.body), true);
+
+			return res.body.createdNote;
+		};
+
 		test('投票を添付できる', async () => {
 			const res = await api('notes/create', {
 				text: 'test',
@@ -819,7 +828,44 @@ describe('Note', () => {
 			assert.strictEqual(note1.status, 400);
 		});
 
-		test('canNote=false の場合は投稿できず正しいエラーIDが返る', async () => {
+		test('canPublicNote=false の場合は visibility が public から home に降格される', async () => {
+			await withAliceRolePolicies({
+				canPublicNote: {
+					useDefault: false,
+					priority: 1,
+					value: false,
+				},
+			}, async () => {
+				const createdNote = await expectCreateNoteSuccess({
+					text: 'test',
+					visibility: 'public',
+				});
+
+				assert.strictEqual(createdNote.visibility, 'home');
+				assert.strictEqual(createdNote.localOnly, false);
+			});
+		});
+
+		test('canFederateNote=false の場合は localOnly=false が true に降格される', async () => {
+			await withAliceRolePolicies({
+				canFederateNote: {
+					useDefault: false,
+					priority: 1,
+					value: false,
+				},
+			}, async () => {
+				const createdNote = await expectCreateNoteSuccess({
+					text: 'test',
+					visibility: 'home',
+					localOnly: false,
+				});
+
+				assert.strictEqual(createdNote.visibility, 'home');
+				assert.strictEqual(createdNote.localOnly, true);
+			});
+		});
+
+		test('canNote=false の場合は投稿できない', async () => {
 			await withAliceRolePolicies({
 				canNote: {
 					useDefault: false,
@@ -836,7 +882,7 @@ describe('Note', () => {
 			});
 		});
 
-		test('noteFilesLimit を超えると投稿できず正しいエラーIDが返る', async () => {
+		test('noteFilesLimit を超えると投稿できない', async () => {
 			const file1 = await uploadFile(alice);
 			const file2 = await uploadFile(alice);
 
@@ -859,7 +905,7 @@ describe('Note', () => {
 			});
 		});
 
-		test('renotePolicy=disallow の場合はRenoteできず正しいエラーIDが返る', async () => {
+		test('renotePolicy=disallow の場合はRenoteできない', async () => {
 			const target = await post(bob, {
 				text: 'renote target',
 			});
@@ -880,7 +926,7 @@ describe('Note', () => {
 			});
 		});
 
-		test('renotePolicy=renoteOnly の場合は引用Renoteできず正しいエラーIDが返る', async () => {
+		test('renotePolicy=renoteOnly の場合は引用Renoteできない', async () => {
 			const target = await post(bob, {
 				text: 'quote target',
 			});
@@ -902,7 +948,7 @@ describe('Note', () => {
 			});
 		});
 
-		test('canCreateSpecifiedNote=false の場合はダイレクト投稿できず正しいエラーIDが返る', async () => {
+		test('canCreateSpecifiedNote=false の場合はダイレクト投稿できない', async () => {
 			await withAliceRolePolicies({
 				canCreateSpecifiedNote: {
 					useDefault: false,
@@ -921,7 +967,7 @@ describe('Note', () => {
 			});
 		});
 
-		test('canFederateNote=false の場合はリモート宛てダイレクト投稿できず正しいエラーIDが返る', async () => {
+		test('canFederateNote=false の場合はリモート宛てダイレクト投稿できない', async () => {
 			await withAliceRolePolicies({
 				canFederateNote: {
 					useDefault: false,
@@ -933,6 +979,25 @@ describe('Note', () => {
 					text: 'test',
 					visibility: 'specified',
 					visibleUserIds: [tom.id],
+				}, {
+					code: 'REMOTE_SPECIFIED_NOTE_CREATION_FORBIDDEN',
+					id: 'dd9e27c6-7cba-4587-92c7-672c82d9cc46',
+				});
+			});
+		});
+
+		test('canFederateNote=false の場合は、リモートとローカル両方を宛先とするダイレクト投稿もできない', async () => {
+			await withAliceRolePolicies({
+				canFederateNote: {
+					useDefault: false,
+					priority: 1,
+					value: false,
+				},
+			}, async () => {
+				await expectCreateNoteError({
+					text: 'test',
+					visibility: 'specified',
+					visibleUserIds: [bob.id, tom.id],
 				}, {
 					code: 'REMOTE_SPECIFIED_NOTE_CREATION_FORBIDDEN',
 					id: 'dd9e27c6-7cba-4587-92c7-672c82d9cc46',
