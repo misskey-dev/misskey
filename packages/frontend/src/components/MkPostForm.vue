@@ -330,7 +330,7 @@ const canPost = computed((): boolean => {
 	const isCwValid = useCw.value
 		? cw.value != null && cw.value.trim() !== '' && cwTextLength.value <= maxCwTextLength
 		: true;
-	const isFilesCountValid = files.value.length <= $i.policies.noteFilesLimit;
+	const isFilesCountValid = (files.value.length + uploader.items.value.length) <= $i.policies.noteFilesLimit;
 	const isPollValid = !poll.value || poll.value.choices.length >= 2;
 
 	return (
@@ -935,6 +935,8 @@ function deleteDraft() {
 async function saveServerDraft(options: {
 	isActuallyScheduled?: boolean;
 } = {}) {
+	const errorTitle = options.isActuallyScheduled ? i18n.ts._postForm._noteDraftErrors.scheduleTitle : i18n.ts._postForm._noteDraftErrors.draftTitle;
+
 	return await os.apiWithDialog(serverDraftId.value == null ? 'notes/drafts/create' : 'notes/drafts/update', {
 		...(serverDraftId.value == null ? {} : { draftId: serverDraftId.value }),
 		text: text.value,
@@ -951,6 +953,63 @@ async function saveServerDraft(options: {
 		reactionAcceptance: reactionAcceptance.value,
 		scheduledAt: scheduledAt.value,
 		isActuallyScheduled: options.isActuallyScheduled ?? false,
+	}, undefined, {
+		'b5c90186-4ab0-49c8-9bba-a1f76c282ba4': {
+			title: errorTitle,
+			text: i18n.ts._postForm._noteCreateErors.noSuchRenoteTargetDescription,
+		},
+		'749ee0f6-d3da-459a-bf02-282e2da4292c': {
+			title: errorTitle,
+			text: i18n.ts._postForm._noteCreateErors.noSuchReplyTargetDescription,
+		},
+		'b98980fa-3780-406c-a935-b6d0eeee10d1': {
+			title: errorTitle,
+			text: i18n.ts._postForm._noteCreateErors.cannotReplyToInvisibleNoteDescription,
+		},
+		'ed940410-535c-4d5e-bfa3-af798671e93c': {
+			title: errorTitle,
+			text: i18n.ts._postForm._noteCreateErors.cannotReplyToSpecifiedVisibilityNoteWithExtendedVisibilityDescription,
+		},
+		'04da457d-b083-4055-9082-955525eda5a5': {
+			title: errorTitle,
+			text: i18n.ts._postForm._noteCreateErors.cannotCreateAlreadyExpiredPollDescription,
+		},
+		'b1653923-5453-4edc-b786-7c4f39bb0bbb': {
+			title: errorTitle,
+			text: i18n.ts._postForm._noteCreateErors.noSuchChannelDescription,
+		},
+		'b390d7e1-8a5e-46ed-b625-06271cafd3d3': {
+			title: errorTitle,
+			text: i18n.ts._postForm._noteCreateErors.youHaveBeenBlockedDescription,
+		},
+		'b6992544-63e7-67f0-fa7f-32444b1b5306': {
+			title: errorTitle,
+			text: i18n.ts._postForm._noteCreateErors.noSuchFileDescription,
+		},
+		// 'aa6e01d3-a85c-669d-758a-76aab43af334': {
+		// 	title: errorTitle,
+		// 	text: i18n.ts._postForm._noteCreateErors.containsProhibitedWordsDescription,
+		// },
+		// '4de0363a-3046-481b-9b0f-feff3e211025': {
+		// 	title: errorTitle,
+		// 	text: i18n.ts._postForm._noteCreateErors.containsTooManyMentionsDescription,
+		// },
+		// '8d28ca32-a244-4cf7-bc29-97895fdc3604': {
+		// 	title: errorTitle,
+		// 	text: i18n.ts._postForm._noteCreateErors.tooManyFilesDescription,
+		// },
+		'9ee33bbe-fde3-4c71-9b51-e50492c6b9c8': {
+			title: errorTitle,
+			text: i18n.ts._postForm._noteDraftErrors.tooManyDraftsDescription,
+		},
+		'22ae69eb-09e3-4541-a850-773cfa45e693': {
+			title: errorTitle,
+			text: i18n.ts._postForm._noteDraftErrors.tooManyScheduledNotesDescription,
+		},
+		'e4bed6c9-017e-4934-aed0-01c22cc60ec1': {
+			title: errorTitle,
+			text: i18n.ts._postForm._noteDraftErrors.scheduleMustBeInFutureDescription,
+		},
 	});
 }
 
@@ -1095,6 +1154,16 @@ async function post(ev?: PointerEvent) {
 		}
 	}
 
+	// ファイルアップロードにより条件が変わる可能性があるため、再度canPostを確認する
+	if (!canPost.value) {
+		await os.alert({
+			type: 'error',
+			title: i18n.ts._postForm.thisNoteCannotBePostedTitle,
+			text: i18n.ts._postForm.thisNoteCannotBePostedDescription,
+		});
+		return;
+	}
+
 	posting.value = true;
 	misskeyApi('notes/create', postData, token).then((res) => {
 		if (props.freezeAfterPosted) {
@@ -1164,9 +1233,48 @@ async function post(ev?: PointerEvent) {
 		});
 	}).catch(err => {
 		posting.value = false;
+		const title = i18n.ts._postForm._noteCreateErors.genericTitle;
+		const description = (() => {
+			switch (err.id) {
+				case 'f35c0bd4-9dca-4998-ae4b-fa0e7c54d16a':
+					return i18n.ts._postForm._noteCreateErors.rolePolicyDeniedDescription;
+				case 'b5c90186-4ab0-49c8-9bba-a1f76c282ba4':
+					return i18n.ts._postForm._noteCreateErors.noSuchRenoteTargetDescription;
+				case '749ee0f6-d3da-459a-bf02-282e2da4292c':
+					return i18n.ts._postForm._noteCreateErors.noSuchReplyTargetDescription;
+				case 'b98980fa-3780-406c-a935-b6d0eeee10d1':
+					return i18n.ts._postForm._noteCreateErors.cannotReplyToInvisibleNoteDescription;
+				case 'ed940410-535c-4d5e-bfa3-af798671e93c':
+					return i18n.ts._postForm._noteCreateErors.cannotReplyToSpecifiedVisibilityNoteWithExtendedVisibilityDescription;
+				case '04da457d-b083-4055-9082-955525eda5a5':
+					return i18n.ts._postForm._noteCreateErors.cannotCreateAlreadyExpiredPollDescription;
+				case 'b1653923-5453-4edc-b786-7c4f39bb0bbb':
+					return i18n.ts._postForm._noteCreateErors.noSuchChannelDescription;
+				case 'b390d7e1-8a5e-46ed-b625-06271cafd3d3':
+					return i18n.ts._postForm._noteCreateErors.youHaveBeenBlockedDescription;
+				case 'b6992544-63e7-67f0-fa7f-32444b1b5306':
+					return i18n.ts._postForm._noteCreateErors.noSuchFileDescription;
+				case 'aa6e01d3-a85c-669d-758aab43af334':
+					return i18n.ts._postForm._noteCreateErors.containsProhibitedWordsDescription;
+				case '4de0363a-3046-481b-9b0f-feff3e211025':
+					return i18n.ts._postForm._noteCreateErors.containsTooManyMentionsDescription;
+				case '8d28ca32-a244-4cf7-bc29-97895fdc3604':
+					return i18n.ts._postForm._noteCreateErors.tooManyFilesDescription;
+				case 'ae77a039-588a-40c3-8358-cc9c15ec7bbb':
+					return i18n.ts._postForm._noteCreateErors.quoteForbiddenDescription;
+				case 'fe35a6b4-f595-4cbc-ab56-f31fa68be1f0':
+					return i18n.ts._postForm._noteCreateErors.directNoteCreationForbiddenDescription;
+				case 'dd9e27c6-7cba-4587-92c7-672c82d9cc46':
+					return i18n.ts._postForm._noteCreateErors.remoteDirectNoteCreationForbiddenDescription;
+				default:
+					return i18n.ts._postForm._noteCreateErors.genericDescription + (err.message ? `\n${err.message}` : '') + (err.id ? `\n${err.id}` : '');
+			}
+		})();
+
 		os.alert({
 			type: 'error',
-			text: err.message + '\n' + (err as any).id,
+			title,
+			text: description,
 		});
 	});
 }

@@ -10258,6 +10258,106 @@ export interface Locale extends ILocale {
          * フォームの説明を表示
          */
         "showHowToUse": string;
+        /**
+         * このノートは投稿できません
+         */
+        "thisNoteCannotBePostedTitle": string;
+        /**
+         * ファイルのアップロードなどによりアカウントの制限を超えた可能性があります。内容を再度お確かめください。
+         */
+        "thisNoteCannotBePostedDescription": string;
+        "_noteCreateErors": {
+            /**
+             * ノートの投稿に失敗しました
+             */
+            "genericTitle": string;
+            /**
+             * 時間を置いてからもう一度試してください。
+             */
+            "genericDescription": string;
+            /**
+             * お使いのアカウントではノートを投稿することはできません。
+             */
+            "rolePolicyDeniedDescription": string;
+            /**
+             * 引用元のノートが見つかりませんでした。ノートが削除された可能性があります。
+             */
+            "noSuchRenoteTargetDescription": string;
+            /**
+             * 返信先のノートが見つかりませんでした。ノートが削除された可能性があります。
+             */
+            "noSuchReplyTargetDescription": string;
+            /**
+             * 非表示となっているノートには返信できません。
+             */
+            "cannotReplyToInvisibleNoteDescription": string;
+            /**
+             * 公開範囲が「指名」のノートには、公開範囲を「指名」以外にして返信することはできません。
+             */
+            "cannotReplyToSpecifiedVisibilityNoteWithExtendedVisibilityDescription": string;
+            /**
+             * アンケートの期限が過去の日時に設定されています。
+             */
+            "cannotCreateAlreadyExpiredPollDescription": string;
+            /**
+             * 投稿対象のチャンネルが見つかりませんでした。チャンネルが削除された可能性があります。
+             */
+            "noSuchChannelDescription": string;
+            /**
+             * このユーザーからブロックされているため、ノートを投稿できません。
+             */
+            "youHaveBeenBlockedDescription": string;
+            /**
+             * 一部の添付ファイルが見つかりませんでした。
+             */
+            "noSuchFileDescription": string;
+            /**
+             * ノートに禁止ワードが含まれているため投稿できません。
+             */
+            "containsProhibitedWordsDescription": string;
+            /**
+             * ノートに付与できるメンション数の上限を超えているため投稿できません。
+             */
+            "containsTooManyMentionsDescription": string;
+            /**
+             * ノートに添付できるファイル数の上限を超えているため投稿できません。
+             */
+            "tooManyFilesDescription": string;
+            /**
+             * お使いのアカウントではノートを引用することはできません。
+             */
+            "quoteForbiddenDescription": string;
+            /**
+             * お使いのアカウントでは指名ノートを作成することはできません。
+             */
+            "directNoteCreationForbiddenDescription": string;
+            /**
+             * お使いのアカウントでは連合するノートを作成することができませんが、指名ノートの宛先にリモートのユーザーが含まれているため、投稿できません。
+             */
+            "remoteDirectNoteCreationForbiddenDescription": string;
+        };
+        "_noteDraftErrors": {
+            /**
+             * 下書きの保存に失敗しました
+             */
+            "draftTitle": string;
+            /**
+             * 投稿の予約に失敗しました
+             */
+            "scheduleTitle": string;
+            /**
+             * 下書きの数が上限を超えています。
+             */
+            "tooManyDraftsDescription": string;
+            /**
+             * 予約投稿の数が上限を超えています。
+             */
+            "tooManyScheduledNotesDescription": string;
+            /**
+             * 過去の日時に投稿を予約することはできません。
+             */
+            "scheduleMustBeInFutureDescription": string;
+        };
         "_howToUse": {
             /**
              * 本文
