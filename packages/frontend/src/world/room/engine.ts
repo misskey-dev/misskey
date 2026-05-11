@@ -198,6 +198,7 @@ export class RoomEngine extends EventEmitter {
 	}
 
 	public isSitting = false;
+	private inited = false;
 	private fps: number | null = null;
 	private disposed = false;
 
@@ -477,6 +478,8 @@ export class RoomEngine extends EventEmitter {
 				}
 			}
 		});
+
+		this.inited = true;
 	}
 
 	private currentRafId: number | null = null;
@@ -878,7 +881,18 @@ export class RoomEngine extends EventEmitter {
 
 		const objectInstance = await def.createInstance({
 			scene: this.scene,
-			sr: this.sr,
+			sr: {
+				updateMesh: (mesh) => {
+					if (!this.inited) return;
+					this.sr.updateMesh(mesh);
+				},
+				reset: () => {
+					if (!this.inited) return;
+					this.sr.disableSnapshotRendering();
+					this.sr.enableSnapshotRendering();
+				},
+				fixParticleSystem: (ps) => this.sr.fixParticleSystem(ps),
+			},
 			lc: this.lightContainer,
 			root,
 			options: args.options,
@@ -981,6 +995,7 @@ export class RoomEngine extends EventEmitter {
 		} else if (placement === 'top' || placement === 'floor') {
 			arrowMesh.scaling = new BABYLON.Vector3(1, -1, 1);
 		}
+		this.sr.updateMesh(arrowMesh);
 
 		let stickyOtherObject: string | null = null;
 		let sticky = false;
@@ -1031,7 +1046,8 @@ export class RoomEngine extends EventEmitter {
 							this.gridPlane.position.y = 0;
 							this.gridPlane.position.x = 0;
 						}
-						this.gridPlane.isVisible = true;
+						//this.gridPlane.isVisible = true;
+						this.gridPlane.scaling = new BABYLON.Vector3(1, 1, 1);
 					}
 				}
 			} else if (placement === 'bottom' || placement === 'ceiling') {
@@ -1053,7 +1069,8 @@ export class RoomEngine extends EventEmitter {
 						this.gridPlane.position = new BABYLON.Vector3(grabbing.mesh.position.x, grabbing.mesh.position.y - cm(0.1), grabbing.mesh.position.z);
 						this.gridPlane.position.x = 0;
 						this.gridPlane.position.z = 0;
-						this.gridPlane.isVisible = true;
+						//this.gridPlane.isVisible = true;
+						this.gridPlane.scaling = new BABYLON.Vector3(1, 1, 1);
 					}
 				}
 			} else { // top or floor
@@ -1075,7 +1092,8 @@ export class RoomEngine extends EventEmitter {
 						this.gridPlane.position = new BABYLON.Vector3(grabbing.mesh.position.x, grabbing.mesh.position.y + cm(0.1), grabbing.mesh.position.z);
 						this.gridPlane.position.x = 0;
 						this.gridPlane.position.z = 0;
-						this.gridPlane.isVisible = true;
+						//this.gridPlane.isVisible = true;
+						this.gridPlane.scaling = new BABYLON.Vector3(1, 1, 1);
 					}
 				}
 			}
@@ -1093,10 +1111,14 @@ export class RoomEngine extends EventEmitter {
 
 			grabbing.mesh.position = newPos;
 			grabbing.mesh.rotation = newRotation;
+
+			this.sr.updateMesh(grabbing.mesh.getChildMeshes());
 		}
 
 		if (!sticky) {
-			this.gridPlane.isVisible = false;
+			//this.gridPlane.isVisible = false;
+			this.gridPlane.scaling = new BABYLON.Vector3(0, 0, 0);
+
 			//for (const mesh of grabbing.ghost.getChildMeshes()) {
 			//if (mesh.material instanceof BABYLON.MultiMaterial) {
 			//	for (const subMat of mesh.material.subMaterials) {
@@ -1109,6 +1131,8 @@ export class RoomEngine extends EventEmitter {
 			//}
 			//}
 		}
+
+		this.sr.updateMesh(this.gridPlane);
 
 		//const pos = new BABYLON.Vector3(this.camera.position.x, this.camera.position.y, this.camera.position.z);
 		//const _dir = newPos.subtract(pos).normalize();
@@ -1241,6 +1265,7 @@ export class RoomEngine extends EventEmitter {
 				sticky = info.sticky;
 			},
 			onCancel: () => {
+				this.sr.disableSnapshotRendering();
 				selectedObject.position = initialPosition.clone();
 				selectedObject.rotation = initialRotation.clone();
 
@@ -1255,6 +1280,7 @@ export class RoomEngine extends EventEmitter {
 					}
 				};
 				removeStickyParentRecursively(selectedObject);
+				this.sr.enableSnapshotRendering();
 			},
 			onDone: () => { // todo: sticky状態などを引数でもらうようにしたい
 				this.putParticleSystem.emitter = selectedObject.position.clone();
@@ -1264,6 +1290,8 @@ export class RoomEngine extends EventEmitter {
 					volume: 1,
 					playbackRate: 1,
 				});
+
+				this.sr.disableSnapshotRendering();
 
 				// put animation
 				const animTarget = new BABYLON.Animation(
@@ -1284,9 +1312,11 @@ export class RoomEngine extends EventEmitter {
 				selectedObject.animations.push(animTarget);
 				const animating = Promise.withResolvers<void>();
 				this.scene.beginAnimation(selectedObject, 0, 60, false, 3, () => { animating.resolve(); });
+				this.sr.enableSnapshotRendering();
 
 				// TODO: アニメーションの完了まで親子関係の解除を遅延するため、一瞬「grabbingが終わっているのに親子関係が解除されていない」状態が発生する。その間に新たにgrabbingを開始するなどの別の操作が発生すると不具合のもとになるのでそれを防止する仕組みを作る
 				animating.promise.then(() => {
+					this.sr.disableSnapshotRendering();
 					// 親から先に外していく
 					const removeStickyParentRecursively = (mesh: BABYLON.Mesh) => {
 						const stickyObjectIds = Array.from(this.roomState.installedObjects.filter(o => o.sticky === mesh.metadata.objectId)).map(o => o.id);
@@ -1303,6 +1333,7 @@ export class RoomEngine extends EventEmitter {
 						}
 					};
 					removeStickyParentRecursively(selectedObject);
+					this.sr.enableSnapshotRendering();
 
 					const pos = selectedObject.position.clone();
 					const rotation = selectedObject.rotation.clone();
@@ -1314,6 +1345,8 @@ export class RoomEngine extends EventEmitter {
 				});
 			},
 		};
+
+		this.gridPlane.isVisible = true;
 
 		this.timer.setInterval(() => {
 			this.handleGrabbing();
@@ -1481,6 +1514,8 @@ export class RoomEngine extends EventEmitter {
 					playbackRate: 1,
 				});
 
+				this.sr.disableSnapshotRendering();
+
 				// put animation
 				const animTarget = new BABYLON.Animation(
 					'',
@@ -1500,6 +1535,8 @@ export class RoomEngine extends EventEmitter {
 				root.animations.push(animTarget);
 				this.scene.beginAnimation(root, 0, 60, false, 3);
 
+				this.sr.enableSnapshotRendering();
+
 				this.roomState.installedObjects.push({
 					id,
 					type,
@@ -1512,6 +1549,8 @@ export class RoomEngine extends EventEmitter {
 				this.ev('changeRoomState', { roomState: this.roomState });
 			},
 		};
+
+		this.gridPlane.isVisible = true;
 
 		this.timer.setInterval(() => {
 			this.handleGrabbing();
@@ -1530,13 +1569,14 @@ export class RoomEngine extends EventEmitter {
 			entity.instance.resetTemporaryState?.();
 		}
 
-		this.sr.disableSnapshotRendering();
 		//if (this.gl != null) {
 		//	this.gl.isEnabled = false; // 重いので切る
 		//}
 
 		if (this.gridPlane.material == null) {
 			import('@babylonjs/materials').then(m => {
+				this.sr.disableSnapshotRendering();
+
 				this.gridMaterial = new m.GridMaterial('grid', this.scene);
 				this.gridMaterial.lineColor = new BABYLON.Color3(0.5, 0.5, 0.5);
 				this.gridMaterial.mainColor = new BABYLON.Color3(0, 0, 0);
@@ -1548,6 +1588,8 @@ export class RoomEngine extends EventEmitter {
 
 				this.gridPlane.material = this.gridMaterial;
 				this.gridPlane.setEnabled(true);
+
+				this.sr.enableSnapshotRendering();
 			});
 		}
 	}
@@ -1558,7 +1600,6 @@ export class RoomEngine extends EventEmitter {
 
 		await this.bake();
 
-		this.sr.enableSnapshotRendering();
 		//if (this.gl != null) {
 		//	this.gl.isEnabled = true;
 		//}

@@ -57,7 +57,7 @@ export const laptopPc = defineObject({
 	placement: 'top',
 	hasCollisions: false,
 	hasTexture: true,
-	createInstance: async ({ lc, scene, options, model, graphicsQuality }) => {
+	createInstance: async ({ lc, sr, scene, options, model, graphicsQuality }) => {
 		const matrix = model.root.getWorldMatrix(true);
 		const scale = new BABYLON.Vector3();
 		matrix.decompose(scale);
@@ -131,11 +131,13 @@ export const laptopPc = defineObject({
 		const applyBodyColor = () => {
 			const [r, g, b] = options.bodyColor;
 			bodyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+			sr.reset();
 		};
 
 		const applyBezelColor = () => {
 			const [r, g, b] = options.bezelColor;
 			bezelMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+			sr.reset();
 		};
 
 		applyBodyColor();
@@ -151,6 +153,7 @@ export const laptopPc = defineObject({
 				light.intensity = (2 * options.screenBrightness) * WORLD_SCALE * WORLD_SCALE;
 			}
 			model.updated();
+			sr.updateMesh(hutaNode.getChildMeshes());
 		};
 
 		applyOpenAngle();

@@ -113,7 +113,13 @@ export type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 	treatLoaderResult?: (loaderResult: BABYLON.AssetContainer) => void;
 	createInstance: (args: {
 		scene: BABYLON.Scene;
-		sr: BABYLON.SnapshotRenderingHelper;
+		// TODO: snapshot renderingの関心を隠蔽した方が綺麗かもしれない
+		// 例えばmaterialUpdatedというメソッドを用意して内部的にresetを呼ぶなど
+		sr: {
+			updateMesh: (meshes: BABYLON.Mesh[]) => void;
+			reset: () => void;
+			fixParticleSystem: (ps: BABYLON.ParticleSystem) => void;
+		};
 		lc: BABYLON.ClusteredLightContainer | null;
 		root: BABYLON.Mesh;
 		options: Readonly<GetOptionsSchemaValues<OpSc>>;

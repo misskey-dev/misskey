@@ -332,7 +332,16 @@ export class RoomObjectPreviewEngine {
 
 		const objectInstance = await def.createInstance({
 			scene: this.scene,
-			sr: this.sr,
+			sr: {
+				updateMesh: (mesh) => {
+					this.sr.updateMesh(mesh);
+				},
+				reset: () => {
+					this.sr.disableSnapshotRendering();
+					this.sr.enableSnapshotRendering();
+				},
+				fixParticleSystem: (ps) => this.sr.fixParticleSystem(ps),
+			},
 			root,
 			options: args.options,
 			model,

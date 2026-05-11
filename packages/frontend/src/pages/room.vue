@@ -264,7 +264,7 @@ const roomControllerOptions = computed<RoomControllerOptions>(() => ({
 	resolution: resolution.value,
 	antialias: antialias.value,
 	useVirtualJoystick,
-	workerMode: true,
+	workerMode: false,
 }));
 
 const controller = markRaw(new RoomController(data, roomControllerOptions.value));
