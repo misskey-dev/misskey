@@ -19,6 +19,7 @@ import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { AP_RESOLVER_ERRORS } from '@/core/activitypub/errors.js';
 import { FetchAllowSoftFailMask } from '@/core/activitypub/misc/check-against-url.js';
 import { ApiError } from '../../error.js';
 
@@ -154,23 +155,23 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			if (err instanceof IdentifiableError) {
 				switch (err.id) {
 					// resolve
-					case 'b94fd5b1-0e3b-4678-9df2-dad4cd515ab2':
+					case AP_RESOLVER_ERRORS.URL_WITH_FRAGMENT.id:
 						throw new ApiError(meta.errors.uriInvalid);
-					case '0dc86cf6-7cd6-4e56-b1e6-5903d62d7ea5':
-					case 'd592da9f-822f-4d91-83d7-4ceefabcf3d2':
+					case AP_RESOLVER_ERRORS.ALREADY_RESOLVED.id:
+					case AP_RESOLVER_ERRORS.RECURSION_LIMIT.id:
 						throw new ApiError(meta.errors.requestFailed);
-					case '09d79f9e-64f1-4316-9cfa-e75c4d091574':
+					case AP_RESOLVER_ERRORS.INSTANCE_BLOCKED.id:
 						throw new ApiError(meta.errors.federationNotAllowed);
-					case '72180409-793c-4973-868e-5a118eb5519b':
+					case AP_RESOLVER_ERRORS.INVALID_RESPONSE.id:
 						throw new ApiError(meta.errors.responseInvalid);
 
 					// resolveLocal
-					case '02b40cd0-fa92-4b0c-acc9-fb2ada952ab8':
+					case AP_RESOLVER_ERRORS.NOT_LOCAL.id:
 						throw new ApiError(meta.errors.uriInvalid);
-					case 'a9d946e5-d276-47f8-95fb-f04230289bb0':
-					case '06ae3170-1796-4d93-a697-2611ea6d83b6':
+					case AP_RESOLVER_ERRORS.INVALID_FOLLOW_REQUEST_ID.id:
+					case AP_RESOLVER_ERRORS.FOLLOWER_OR_FOLLOWEE_NOT_FOUND.id:
 						throw new ApiError(meta.errors.noSuchObject);
-					case '7a5d2fc0-94bc-4db6-b8b8-1bf24a2e23d0':
+					case AP_RESOLVER_ERRORS.UNHANDLED_TYPE.id:
 						throw new ApiError(meta.errors.responseInvalid);
 				}
 			}

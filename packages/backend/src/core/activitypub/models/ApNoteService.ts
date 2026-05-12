@@ -23,7 +23,7 @@ import { StatusError } from '@/misc/status-error.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { checkHttps } from '@/misc/check-https.js';
-import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { AP_NOTE_ERRORS, apNoteErr } from '../errors.js';
 import { getOneApId, getApId, getOneApHrefNullable, validPost, isEmoji, getApType } from '../type.js';
 import { ApLoggerService } from '../ApLoggerService.js';
 import { ApMfmService } from '../ApMfmService.js';
@@ -85,27 +85,27 @@ export class ApNoteService {
 		const apType = getApType(object);
 
 		if (apType == null || !validPost.includes(apType)) {
-			return new IdentifiableError('d450b8a9-48e4-4dab-ae36-f4db763fda7c', `invalid Note: invalid object type ${apType ?? 'undefined'}`);
+			return apNoteErr(AP_NOTE_ERRORS.INVALID_NOTE, `invalid Note: invalid object type ${apType ?? 'undefined'}`);
 		}
 
 		if (object.id && this.utilityService.extractDbHost(object.id) !== expectHost) {
-			return new IdentifiableError('d450b8a9-48e4-4dab-ae36-f4db763fda7c', `invalid Note: id has different host. expected: ${expectHost}, actual: ${this.utilityService.extractDbHost(object.id)}`);
+			return apNoteErr(AP_NOTE_ERRORS.INVALID_NOTE, `invalid Note: id has different host. expected: ${expectHost}, actual: ${this.utilityService.extractDbHost(object.id)}`);
 		}
 
 		const actualHost = object.attributedTo && this.utilityService.extractDbHost(getOneApId(object.attributedTo));
 		if (object.attributedTo && actualHost !== expectHost) {
-			return new IdentifiableError('d450b8a9-48e4-4dab-ae36-f4db763fda7c', `invalid Note: attributedTo has different host. expected: ${expectHost}, actual: ${actualHost}`);
+			return apNoteErr(AP_NOTE_ERRORS.INVALID_NOTE, `invalid Note: attributedTo has different host. expected: ${expectHost}, actual: ${actualHost}`);
 		}
 
 		if (object.published && !this.idService.isSafeT(new Date(object.published).valueOf())) {
-			return new IdentifiableError('d450b8a9-48e4-4dab-ae36-f4db763fda7c', 'invalid Note: published timestamp is malformed');
+			return apNoteErr(AP_NOTE_ERRORS.INVALID_NOTE, 'invalid Note: published timestamp is malformed');
 		}
 
 		if (actor) {
 			const attribution = (object.attributedTo) ? getOneApId(object.attributedTo) : actor.uri;
 
 			if (attribution !== actor.uri) {
-				return new IdentifiableError('d450b8a9-48e4-4dab-ae36-f4db763fda7c', `invalid Note: attribution does not match the actor that send it. attribution: ${attribution}, actor: ${actor.uri}`);
+				return apNoteErr(AP_NOTE_ERRORS.INVALID_NOTE, `invalid Note: attribution does not match the actor that send it. attribution: ${attribution}, actor: ${actor.uri}`);
 			}
 		}
 
@@ -174,7 +174,7 @@ export class ApNoteService {
 		// eslint-disable-next-line no-param-reassign
 		actor ??= await this.apPersonService.fetchPerson(uri) as MiRemoteUser | undefined;
 		if (actor && actor.isSuspended) {
-			throw new IdentifiableError('85ab9bd7-3a41-4530-959d-f07073900109', 'actor has been suspended');
+			throw apNoteErr(AP_NOTE_ERRORS.ACTOR_SUSPENDED, 'actor has been suspended');
 		}
 
 		const apMentions = await this.apMentionService.extractApMentions(note.tag, resolver);
@@ -201,7 +201,7 @@ export class ApNoteService {
 		 */
 		const hasProhibitedWords = this.noteCreateService.checkProhibitedWordsContain({ cw, text, pollChoices: poll?.choices });
 		if (hasProhibitedWords) {
-			throw new IdentifiableError('689ee33f-f97c-479a-ac49-1b9f8140af99', 'Note contains prohibited words');
+			throw apNoteErr(AP_NOTE_ERRORS.PROHIBITED_WORDS, 'Note contains prohibited words');
 		}
 		//#endregion
 
@@ -210,7 +210,7 @@ export class ApNoteService {
 
 		// 解決した投稿者が凍結されていたらスキップ
 		if (actor.isSuspended) {
-			throw new IdentifiableError('85ab9bd7-3a41-4530-959d-f07073900109', 'actor has been suspended');
+			throw apNoteErr(AP_NOTE_ERRORS.ACTOR_SUSPENDED, 'actor has been suspended');
 		}
 
 		const noteAudience = await this.apAudienceService.parseAudience(actor, note.to, note.cc, resolver);
