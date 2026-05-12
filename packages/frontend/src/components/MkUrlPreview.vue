@@ -101,10 +101,12 @@ const props = withDefaults(defineProps<{
 	detail?: boolean;
 	compact?: boolean;
 	showActions?: boolean;
+	forceCompactCard?: boolean;
 }>(), {
 	detail: false,
 	compact: false,
 	showActions: true,
+	forceCompactCard: false,
 });
 
 const MOBILE_THRESHOLD = 500;
@@ -126,7 +128,8 @@ const isLargeImage = computed(() =>
 	thumbnail.value !== null &&
 	!sensitive.value &&
 	thumbnailStyle.value === 'summary_large_image' &&
-	!prefer.s.forceCompactUrlPreview,
+	!prefer.s.forceCompactUrlPreview &&
+	!props.forceCompactCard,
 );
 const displayThumbnail = computed(() => {
 	if (!thumbnail.value || prefer.s.dataSaver.urlPreviewThumbnail) return null;
