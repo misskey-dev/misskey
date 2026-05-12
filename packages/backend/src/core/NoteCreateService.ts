@@ -58,6 +58,11 @@ import { CollapsedQueue } from '@/misc/collapsed-queue.js';
 import { CacheService } from '@/core/CacheService.js';
 import { isQuote, isRenote } from '@/misc/is-renote.js';
 
+// TODO: 他のUUIDも定数化が揃った段階で core/errors/note.ts 等に切り出す
+export const NOTE_CREATE_ERRORS = {
+	PROHIBITED_WORDS: { id: '689ee33f-f97c-479a-ac49-1b9f8140af99' },
+} as const;
+
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
 class NotificationManager {
@@ -480,7 +485,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 		}, this.meta.prohibitedWords);
 
 		if (hasProhibitedWords) {
-			throw new IdentifiableError('689ee33f-f97c-479a-ac49-1b9f8140af99', 'Note contains prohibited words');
+			throw new IdentifiableError(NOTE_CREATE_ERRORS.PROHIBITED_WORDS.id, 'Note contains prohibited words');
 		}
 
 		const inSilencedInstance = this.utilityService.isSilencedHost(this.meta.silencedHosts, user.host);

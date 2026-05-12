@@ -11,7 +11,7 @@ import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-import { AP_NOTE_ERRORS } from '@/core/activitypub/errors.js';
+import { NOTE_CREATE_ERRORS } from '@/core/NoteCreateService.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
@@ -250,7 +250,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			} catch (err) {
 				// TODO: 他のErrorもここでキャッチしてエラーメッセージを当てるようにしたい
 				if (err instanceof IdentifiableError) {
-					if (err.id === AP_NOTE_ERRORS.PROHIBITED_WORDS.id) {
+					if (err.id === NOTE_CREATE_ERRORS.PROHIBITED_WORDS.id) {
 						throw new ApiError(meta.errors.containsProhibitedWords);
 					} else if (err.id === '9f466dab-c856-48cd-9e65-ff90ff750580') {
 						throw new ApiError(meta.errors.containsTooManyMentions);

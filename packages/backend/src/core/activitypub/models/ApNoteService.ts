@@ -23,6 +23,8 @@ import { StatusError } from '@/misc/status-error.js';
 import { UtilityService } from '@/core/UtilityService.js';
 import { bindThis } from '@/decorators.js';
 import { checkHttps } from '@/misc/check-https.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { NOTE_CREATE_ERRORS } from '@/core/NoteCreateService.js';
 import { AP_NOTE_ERRORS, apNoteErr } from '../errors.js';
 import { getOneApId, getApId, getOneApHrefNullable, validPost, isEmoji, getApType } from '../type.js';
 import { ApLoggerService } from '../ApLoggerService.js';
@@ -201,7 +203,9 @@ export class ApNoteService {
 		 */
 		const hasProhibitedWords = this.noteCreateService.checkProhibitedWordsContain({ cw, text, pollChoices: poll?.choices });
 		if (hasProhibitedWords) {
-			throw apNoteErr(AP_NOTE_ERRORS.PROHIBITED_WORDS, 'Note contains prohibited words');
+			// NoteCreateService側でも同じエラーコードを使用しているため、こちらでも同じIDを使用する.
+			// FIXME: checkProhibitedWordsContainの中にthrowを押し込んでもいいかもしれない
+			throw new IdentifiableError(NOTE_CREATE_ERRORS.PROHIBITED_WORDS.id, 'Note contains prohibited words');
 		}
 		//#endregion
 
@@ -412,7 +416,7 @@ export class ApNoteService {
 						publicUrl: tag.icon.url,
 						updatedAt: new Date(),
 						// _misskey_license が存在しなければ `null`
-						license: (tag._misskey_license?.freeText ?? null)
+						license: (tag._misskey_license?.freeText ?? null),
 					});
 
 					const emoji = await this.emojisRepository.findOneBy({ host, name });
@@ -435,7 +439,7 @@ export class ApNoteService {
 				updatedAt: new Date(),
 				aliases: [],
 				// _misskey_license が存在しなければ `null`
-				license: (tag._misskey_license?.freeText ?? null)
+				license: (tag._misskey_license?.freeText ?? null),
 			});
 		}));
 	}
