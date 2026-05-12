@@ -6,7 +6,7 @@
 import ms from 'ms';
 import { In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
+import { MAX_NOTE_ATTACHMENTS, MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
@@ -40,6 +40,12 @@ export const meta = {
 	},
 
 	errors: {
+		cannotCreateNote: {
+			message: 'You are not allowed to create notes.',
+			code: 'CANNOT_CREATE_NOTE',
+			id: 'f35c0bd4-9dca-4998-ae4b-fa0e7c54d16a',
+		},
+
 		noSuchRenoteTarget: {
 			message: 'No such renote target.',
 			code: 'NO_SUCH_RENOTE_TARGET',
@@ -123,6 +129,36 @@ export const meta = {
 			code: 'CONTAINS_TOO_MANY_MENTIONS',
 			id: '4de0363a-3046-481b-9b0f-feff3e211025',
 		},
+
+		tooManyFilesAttachedToNote: {
+			message: 'Cannot post because too many files are attached.',
+			code: 'CONTAINS_TOO_MANY_FILES',
+			id: '8d28ca32-a244-4cf7-bc29-97895fdc3604',
+		},
+
+		renoteForbidden: {
+			message: 'You are not allowed to Renote.',
+			code: 'RENOTE_FORBIDDEN',
+			id: 'c5b0bcc1-9db1-4178-b130-920a4e150b58',
+		},
+
+		quoteForbidden: {
+			message: 'You are not allowed to quote.',
+			code: 'QUOTE_FORBIDDEN',
+			id: 'ae77a039-588a-40c3-8358-cc9c15ec7bbb',
+		},
+
+		directNoteCreationForbidden: {
+			message: 'You are not allowed to send specified notes.',
+			code: 'SPECIFIED_NOTE_CREATION_FORBIDDEN',
+			id: 'fe35a6b4-f595-4cbc-ab56-f31fa68be1f0',
+		},
+
+		remoteDirectNoteCreationForbidden: {
+			message: 'You are not allowed to send specified notes to remote users.',
+			code: 'REMOTE_SPECIFIED_NOTE_CREATION_FORBIDDEN',
+			id: 'dd9e27c6-7cba-4587-92c7-672c82d9cc46',
+		},
 	},
 } as const;
 
@@ -155,14 +191,14 @@ export const paramDef = {
 			type: 'array',
 			uniqueItems: true,
 			minItems: 1,
-			maxItems: 16,
+			maxItems: MAX_NOTE_ATTACHMENTS,
 			items: { type: 'string', format: 'misskey:id' },
 		},
 		mediaIds: {
 			type: 'array',
 			uniqueItems: true,
 			minItems: 1,
-			maxItems: 16,
+			maxItems: MAX_NOTE_ATTACHMENTS,
 			items: { type: 'string', format: 'misskey:id' },
 		},
 		poll: {
@@ -249,40 +285,53 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			} catch (err) {
 				// TODO: 他のErrorもここでキャッチしてエラーメッセージを当てるようにしたい
 				if (err instanceof IdentifiableError) {
-					if (err.id === '689ee33f-f97c-479a-ac49-1b9f8140af99') {
-						throw new ApiError(meta.errors.containsProhibitedWords);
-					} else if (err.id === '9f466dab-c856-48cd-9e65-ff90ff750580') {
-						throw new ApiError(meta.errors.containsTooManyMentions);
-					} else if (err.id === '801c046c-5bf5-4234-ad2b-e78fc20a2ac7') {
-						throw new ApiError(meta.errors.noSuchFile);
-					} else if (err.id === '53983c56-e163-45a6-942f-4ddc485d4290') {
-						throw new ApiError(meta.errors.noSuchRenoteTarget);
-					} else if (err.id === 'bde24c37-121f-4e7d-980d-cec52f599f02') {
-						throw new ApiError(meta.errors.cannotReRenote);
-					} else if (err.id === '2b4fe776-4414-4a2d-ae39-f3418b8fd4d3') {
-						throw new ApiError(meta.errors.youHaveBeenBlocked);
-					} else if (err.id === '90b9d6f0-893a-4fef-b0f1-e9a33989f71a') {
-						throw new ApiError(meta.errors.cannotRenoteDueToVisibility);
-					} else if (err.id === '48d7a997-da5c-4716-b3c3-92db3f37bf7d') {
-						throw new ApiError(meta.errors.cannotRenoteDueToVisibility);
-					} else if (err.id === 'b060f9a6-8909-4080-9e0b-94d9fa6f6a77') {
-						throw new ApiError(meta.errors.noSuchChannel);
-					} else if (err.id === '7e435f4a-780d-4cfc-a15a-42519bd6fb67') {
-						throw new ApiError(meta.errors.cannotRenoteOutsideOfChannel);
-					} else if (err.id === '60142edb-1519-408e-926d-4f108d27bee0') {
-						throw new ApiError(meta.errors.noSuchReplyTarget);
-					} else if (err.id === 'f089e4e2-c0e7-4f60-8a23-e5a6bf786b36') {
-						throw new ApiError(meta.errors.cannotReplyToPureRenote);
-					} else if (err.id === '11cd37b3-a411-4f77-8633-c580ce6a8dce') {
-						throw new ApiError(meta.errors.cannotReplyToInvisibleNote);
-					} else if (err.id === 'ced780a1-2012-4caf-bc7e-a95a291294cb') {
-						throw new ApiError(meta.errors.cannotReplyToSpecifiedVisibilityNoteWithExtendedVisibility);
-					} else if (err.id === 'b0df6025-f2e8-44b4-a26a-17ad99104612') {
-						throw new ApiError(meta.errors.youHaveBeenBlocked);
-					} else if (err.id === '0c11c11e-0c8d-48e7-822c-76ccef660068') {
-						throw new ApiError(meta.errors.cannotCreateAlreadyExpiredPoll);
-					} else if (err.id === 'bfa3905b-25f5-4894-b430-da331a490e4b') {
-						throw new ApiError(meta.errors.noSuchChannel);
+					switch (err.id) {
+						case 'ebd9b2a9-4d95-4b01-8824-e701629b65e7':
+							throw new ApiError(meta.errors.cannotCreateNote);
+						case '689ee33f-f97c-479a-ac49-1b9f8140af99':
+							throw new ApiError(meta.errors.containsProhibitedWords);
+						case '9f466dab-c856-48cd-9e65-ff90ff750580':
+							throw new ApiError(meta.errors.containsTooManyMentions);
+						case '80dc1304-d910-4daa-b26f-4220b6c944ff':
+							throw new ApiError(meta.errors.tooManyFilesAttachedToNote);
+						case 'd35d80dc-02ba-4c9b-b9b8-905d306dcb67':
+							throw new ApiError(meta.errors.renoteForbidden);
+						case '3a97010b-c338-4cdf-a567-24c54b67726e':
+							throw new ApiError(meta.errors.quoteForbidden);
+						case '80d26afb-d466-4d86-9c01-11b9cad9da24':
+							throw new ApiError(meta.errors.directNoteCreationForbidden);
+						case '5bbfae8d-097c-4c58-93f4-bc242d600529':
+							throw new ApiError(meta.errors.remoteDirectNoteCreationForbidden);
+						case '801c046c-5bf5-4234-ad2b-e78fc20a2ac7':
+							throw new ApiError(meta.errors.noSuchFile);
+						case '53983c56-e163-45a6-942f-4ddc485d4290':
+							throw new ApiError(meta.errors.noSuchRenoteTarget);
+						case 'bde24c37-121f-4e7d-980d-cec52f599f02':
+							throw new ApiError(meta.errors.cannotReRenote);
+						case '2b4fe776-4414-4a2d-ae39-f3418b8fd4d3':
+							throw new ApiError(meta.errors.youHaveBeenBlocked);
+						case '90b9d6f0-893a-4fef-b0f1-e9a33989f71a':
+							throw new ApiError(meta.errors.cannotRenoteDueToVisibility);
+						case '48d7a997-da5c-4716-b3c3-92db3f37bf7d':
+							throw new ApiError(meta.errors.cannotRenoteDueToVisibility);
+						case 'b060f9a6-8909-4080-9e0b-94d9fa6f6a77':
+							throw new ApiError(meta.errors.noSuchChannel);
+						case '7e435f4a-780d-4cfc-a15a-42519bd6fb67':
+							throw new ApiError(meta.errors.cannotRenoteOutsideOfChannel);
+						case '60142edb-1519-408e-926d-4f108d27bee0':
+							throw new ApiError(meta.errors.noSuchReplyTarget);
+						case 'f089e4e2-c0e7-4f60-8a23-e5a6bf786b36':
+							throw new ApiError(meta.errors.cannotReplyToPureRenote);
+						case '11cd37b3-a411-4f77-8633-c580ce6a8dce':
+							throw new ApiError(meta.errors.cannotReplyToInvisibleNote);
+						case 'ced780a1-2012-4caf-bc7e-a95a291294cb':
+							throw new ApiError(meta.errors.cannotReplyToSpecifiedVisibilityNoteWithExtendedVisibility);
+						case 'b0df6025-f2e8-44b4-a26a-17ad99104612':
+							throw new ApiError(meta.errors.youHaveBeenBlocked);
+						case '0c11c11e-0c8d-48e7-822c-76ccef660068':
+							throw new ApiError(meta.errors.cannotCreateAlreadyExpiredPoll);
+						case 'bfa3905b-25f5-4894-b430-da331a490e4b':
+							throw new ApiError(meta.errors.noSuchChannel);
 					}
 				}
 				throw err;

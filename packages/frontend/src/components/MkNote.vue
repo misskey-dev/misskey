@@ -127,7 +127,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 			</MkReactionsViewer>
 			<footer :class="$style.footer">
-				<button :class="$style.footerButton" class="_button" @click="reply()">
+				<button
+					:class="$style.footerButton"
+					class="_button"
+					:disabled="!canReply"
+					@click="reply()"
+				>
 					<i class="ti ti-arrow-back-up"></i>
 					<p v-if="appearNote.repliesCount > 0" :class="$style.footerButtonCount">{{ number(appearNote.repliesCount) }}</p>
 				</button>
@@ -314,7 +319,11 @@ const showSoftWordMutedWord = computed(() => prefer.s.showSoftWordMutedWord);
 const translation = ref<Misskey.entities.NotesTranslateResponse | null>(null);
 const translating = ref(false);
 const showTicker = (prefer.s.instanceTicker === 'always') || (prefer.s.instanceTicker === 'remote' && appearNote.user.instance);
-const canRenote = computed(() => ['public', 'home'].includes(appearNote.visibility) || (appearNote.visibility === 'followers' && appearNote.userId === $i?.id));
+const canReply = computed(() => $i == null || ($i.policies.canNote && $i.policies.mentionLimit > 0));
+const canRenote = computed(() => (
+	(['public', 'home'].includes(appearNote.visibility) || (appearNote.visibility === 'followers' && appearNote.userId === $i?.id)) &&
+	($i == null || ($i.policies.canNote && $i.policies.renotePolicy !== 'disallow'))
+));
 const renoteCollapsed = ref(
 	prefer.s.collapseRenotes && isRenote && (
 		($i && ($i.id === note.userId || $i.id === appearNote.userId)) || // `||` must be `||`! See https://github.com/misskey-dev/misskey/issues/13131
@@ -1034,7 +1043,11 @@ function emitUpdReaction(emoji: string, delta: number) {
 		margin-right: 28px;
 	}
 
-	&:hover {
+	&:disabled {
+		cursor: not-allowed;
+	}
+
+	&:not(:disabled):hover {
 		color: var(--MI_THEME-fgHighlighted);
 	}
 }

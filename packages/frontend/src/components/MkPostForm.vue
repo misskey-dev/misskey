@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span :class="$style.headerRightButtonText">{{ targetChannel.name }}</span>
 				</button>
 			</template>
-			<button v-if="visibility !== 'specified'" v-tooltip="i18n.ts._visibility.disableFederation" class="_button" :class="[$style.headerRightItem, { [$style.danger]: localOnly }]" :disabled="targetChannel != null" @click="toggleLocalOnly">
+			<button v-if="visibility !== 'specified'" v-tooltip="i18n.ts._visibility.disableFederation" class="_button" :class="[$style.headerRightItem, { [$style.danger]: localOnly }]" :disabled="targetChannel != null || !$i.policies.canFederateNote" @click="toggleLocalOnly">
 				<span v-if="!localOnly"><i class="ti ti-rocket"></i></span>
 				<span v-else><i class="ti ti-rocket-off"></i></span>
 			</button>
@@ -70,7 +70,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 		</I18n> - <button class="_textButton" @click="cancelSchedule()">{{ i18n.ts.cancel }}</button>
 	</MkInfo>
-	<MkInfo v-if="hasNotSpecifiedMentions" warn :class="$style.hasNotSpecifiedMentions">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
+	<MkInfo v-if="!$i.policies.canNote" warn :class="$style.formWarn">{{ i18n.ts.youAreNotAllowedToCreateNote }}</MkInfo>
+	<MkInfo v-if="hasNotSpecifiedMentions" warn :class="$style.formWarn">{{ i18n.ts.notSpecifiedMentionWarning }} - <button class="_textButton" @click="addMissingMention()">{{ i18n.ts.add }}</button></MkInfo>
 	<div v-show="useCw" :class="$style.cwOuter">
 		<input ref="cwInputEl" v-model="cw" :class="$style.cw" :placeholder="i18n.ts.annotation" @keydown="onKeydown" @keyup="onKeyup" @compositionend="onCompositionEnd">
 		<div v-if="maxCwTextLength - cwTextLength < 20" :class="['_acrylic', $style.cwTextCount, { [$style.cwTextOver]: cwTextLength > maxCwTextLength }]">{{ maxCwTextLength - cwTextLength }}</div>
@@ -94,8 +95,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<footer ref="footerEl" :class="$style.footer">
 		<div :class="$style.footerLeft">
-			<button v-tooltip="i18n.ts.attachFile + ' (' + i18n.ts.upload + ')'" class="_button" :class="$style.footerButton" @click="chooseFileFromPc"><i class="ti ti-photo-plus"></i></button>
-			<button v-tooltip="i18n.ts.attachFile + ' (' + i18n.ts.fromDrive + ')'" class="_button" :class="$style.footerButton" @click="chooseFileFromDrive"><i class="ti ti-cloud-download"></i></button>
+			<button v-if="$i.policies.noteFilesLimit > 0" v-tooltip="i18n.ts.attachFile + ' (' + i18n.ts.upload + ')'" class="_button" :class="$style.footerButton" @click="chooseFileFromPc"><i class="ti ti-photo-plus"></i></button>
+			<button v-if="$i.policies.noteFilesLimit > 0" v-tooltip="i18n.ts.attachFile + ' (' + i18n.ts.fromDrive + ')'" class="_button" :class="$style.footerButton" @click="chooseFileFromDrive"><i class="ti ti-cloud-download"></i></button>
 			<button v-tooltip="i18n.ts.poll" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: poll }]" @click="togglePoll"><i class="ti ti-chart-arrows"></i></button>
 			<button v-tooltip="i18n.ts.useCw" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: useCw }]" @click="useCw = !useCw"><i class="ti ti-eye-off"></i></button>
 			<button v-tooltip="i18n.ts.hashtags" class="_button" :class="[$style.footerButton, { [$style.footerButtonActive]: withHashtags }]" @click="withHashtags = !withHashtags"><i class="ti ti-hash"></i></button>
@@ -307,25 +308,44 @@ const cwTextLength = computed((): number => {
 const maxCwTextLength = 100;
 
 const canPost = computed((): boolean => {
-	return !props.mock && !posting.value && !posted.value && !uploader.uploading.value && (uploader.items.value.length === 0 || uploader.readyForUpload.value) &&
-		(
-			1 <= textLength.value ||
-			1 <= files.value.length ||
-			1 <= uploader.items.value.length ||
-			poll.value != null ||
-			renoteTargetNote.value != null ||
-			quoteId.value != null
-		) &&
-		(textLength.value <= maxTextLength.value) &&
-		(
-			useCw.value ?
-				(
-					cw.value != null && cw.value.trim() !== '' &&
-					cwTextLength.value <= maxCwTextLength
-				) : true
-		) &&
-		(files.value.length <= 16) &&
-		(!poll.value || poll.value.choices.length >= 2);
+	const isNotMock = !props.mock;
+
+	const canNote = $i.policies.canNote;
+	const canQuote = renoteTargetNote.value ? $i.policies.renotePolicy === 'allow' : true;
+
+	const isNotPosting = !posting.value && !posted.value;
+	const isNotUploading = !uploader.uploading.value;
+	const isUploaderReady = uploader.items.value.length === 0 || uploader.readyForUpload.value;
+
+	const hasContent = (
+		textLength.value >= 1 ||
+		files.value.length >= 1 ||
+		uploader.items.value.length >= 1 ||
+		poll.value != null ||
+		renoteTargetNote.value != null ||
+		quoteId.value != null
+	);
+
+	const isTextLengthValid = textLength.value <= maxTextLength.value;
+	const isCwValid = useCw.value
+		? cw.value != null && cw.value.trim() !== '' && cwTextLength.value <= maxCwTextLength
+		: true;
+	const isFilesCountValid = (files.value.length + uploader.items.value.length) <= $i.policies.noteFilesLimit;
+	const isPollValid = !poll.value || poll.value.choices.length >= 2;
+
+	return (
+		isNotMock &&
+		canNote &&
+		canQuote &&
+		isNotPosting &&
+		isNotUploading &&
+		isUploaderReady &&
+		hasContent &&
+		isTextLengthValid &&
+		isCwValid &&
+		isFilesCountValid &&
+		isPollValid
+	);
 });
 
 // cannot save pure renote as draft
@@ -769,7 +789,7 @@ async function onPaste(ev: ClipboardEvent) {
 
 	const paste = ev.clipboardData.getData('text');
 
-	if (!renoteTargetNote.value && !quoteId.value && paste.startsWith(url + '/notes/')) {
+	if (!renoteTargetNote.value && !quoteId.value && paste.startsWith(url + '/notes/') && $i.policies.renotePolicy === 'allow') {
 		ev.preventDefault();
 
 		const { canceled } = await os.confirm({
@@ -931,6 +951,11 @@ async function saveServerDraft(options: {
 		reactionAcceptance: reactionAcceptance.value,
 		scheduledAt: scheduledAt.value,
 		isActuallyScheduled: options.isActuallyScheduled ?? false,
+	}, undefined, (err) => {
+		return {
+			title: options.isActuallyScheduled ? i18n.ts._postForm._noteDraftErrors.scheduleTitle : i18n.ts._postForm._noteDraftErrors.draftTitle,
+			text: getErrorDescription(err.id) ?? (i18n.ts._postForm._noteCreateErors.genericDescription + (err.message ? `\n${err.message}` : '') + (err.id ? `\n${err.id}` : '')),
+		};
 	});
 }
 
@@ -1075,6 +1100,16 @@ async function post(ev?: PointerEvent) {
 		}
 	}
 
+	// ファイルアップロードにより条件が変わる可能性があるため、再度canPostを確認する
+	if (!canPost.value) {
+		await os.alert({
+			type: 'error',
+			title: i18n.ts._postForm.thisNoteCannotBePostedTitle,
+			text: i18n.ts._postForm.thisNoteCannotBePostedDescription,
+		});
+		return;
+	}
+
 	posting.value = true;
 	misskeyApi('notes/create', postData, token).then((res) => {
 		if (props.freezeAfterPosted) {
@@ -1146,7 +1181,8 @@ async function post(ev?: PointerEvent) {
 		posting.value = false;
 		os.alert({
 			type: 'error',
-			text: err.message + '\n' + (err as any).id,
+			title: i18n.ts._postForm._noteCreateErors.genericTitle,
+			text: getErrorDescription(err.id) ?? (i18n.ts._postForm._noteCreateErors.genericDescription + (err.message ? `\n${err.message}` : '') + (err.id ? `\n${err.id}` : '')),
 		});
 	});
 }
@@ -1401,6 +1437,54 @@ function showTour() {
 	}]).then(() => {
 		closeTip('postForm');
 	});
+}
+
+function getErrorDescription(errId: string): string | null {
+	switch (errId) {
+		// Note create errors
+		case 'f35c0bd4-9dca-4998-ae4b-fa0e7c54d16a':
+			return i18n.ts._postForm._noteCreateErors.rolePolicyDeniedDescription;
+		case 'b5c90186-4ab0-49c8-9bba-a1f76c282ba4':
+			return i18n.ts._postForm._noteCreateErors.noSuchRenoteTargetDescription;
+		case '749ee0f6-d3da-459a-bf02-282e2da4292c':
+			return i18n.ts._postForm._noteCreateErors.noSuchReplyTargetDescription;
+		case 'b98980fa-3780-406c-a935-b6d0eeee10d1':
+			return i18n.ts._postForm._noteCreateErors.cannotReplyToInvisibleNoteDescription;
+		case 'ed940410-535c-4d5e-bfa3-af798671e93c':
+			return i18n.ts._postForm._noteCreateErors.cannotReplyToSpecifiedVisibilityNoteWithExtendedVisibilityDescription;
+		case '04da457d-b083-4055-9082-955525eda5a5':
+			return i18n.ts._postForm._noteCreateErors.cannotCreateAlreadyExpiredPollDescription;
+		case 'b1653923-5453-4edc-b786-7c4f39bb0bbb':
+			return i18n.ts._postForm._noteCreateErors.noSuchChannelDescription;
+		case 'b390d7e1-8a5e-46ed-b625-06271cafd3d3':
+			return i18n.ts._postForm._noteCreateErors.youHaveBeenBlockedDescription;
+		case 'b6992544-63e7-67f0-fa7f-32444b1b5306':
+			return i18n.ts._postForm._noteCreateErors.noSuchFileDescription;
+		case 'aa6e01d3-a85c-669d-758aab43af334':
+			return i18n.ts._postForm._noteCreateErors.containsProhibitedWordsDescription;
+		case '4de0363a-3046-481b-9b0f-feff3e211025':
+			return i18n.ts._postForm._noteCreateErors.containsTooManyMentionsDescription;
+		case '8d28ca32-a244-4cf7-bc29-97895fdc3604':
+			return i18n.ts._postForm._noteCreateErors.tooManyFilesDescription;
+		case 'ae77a039-588a-40c3-8358-cc9c15ec7bbb':
+			return i18n.ts._postForm._noteCreateErors.quoteForbiddenDescription;
+		case 'fe35a6b4-f595-4cbc-ab56-f31fa68be1f0':
+			return i18n.ts._postForm._noteCreateErors.directNoteCreationForbiddenDescription;
+		case 'dd9e27c6-7cba-4587-92c7-672c82d9cc46':
+			return i18n.ts._postForm._noteCreateErors.remoteDirectNoteCreationForbiddenDescription;
+
+		// Draft errors
+		case '9ee33bbe-fde3-4c71-9b51-e50492c6b9c8':
+			return i18n.ts._postForm._noteDraftErrors.tooManyDraftsDescription;
+		case '22ae69eb-09e3-4541-a850-773cfa45e693':
+			return i18n.ts._postForm._noteDraftErrors.tooManyScheduledNotesDescription;
+		case 'e4bed6c9-017e-4934-aed0-01c22cc60ec1':
+			return i18n.ts._postForm._noteDraftErrors.scheduleMustBeInFutureDescription;
+
+		// Fallback
+		default:
+			return null;
+	}
 }
 
 onMounted(() => {
@@ -1689,7 +1773,7 @@ html[data-color-scheme=light] .preview {
 	background: light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1));
 }
 
-.hasNotSpecifiedMentions {
+.formWarn {
 	margin: 0 20px 16px 20px;
 }
 

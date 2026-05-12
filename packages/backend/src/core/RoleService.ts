@@ -30,6 +30,7 @@ import type { Packed } from '@/misc/json-schema.js';
 import { FanoutTimelineService } from '@/core/FanoutTimelineService.js';
 import { NotificationService } from '@/core/NotificationService.js';
 import type { OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
+import { MAX_NOTE_ATTACHMENTS } from '@/const.js';
 
 // misskey-js の rolePolicies と同期すべし
 export type RolePolicies = {
@@ -72,6 +73,11 @@ export type RolePolicies = {
 	noteDraftLimit: number;
 	scheduledNoteLimit: number;
 	watermarkAvailable: boolean;
+	canNote: boolean;
+	renotePolicy: 'allow' | 'renoteOnly' | 'disallow';
+	canCreateSpecifiedNote: boolean;
+	canFederateNote: boolean;
+	noteFilesLimit: number;
 };
 
 export const DEFAULT_POLICIES: RolePolicies = {
@@ -120,6 +126,11 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	noteDraftLimit: 10,
 	scheduledNoteLimit: 1,
 	watermarkAvailable: true,
+	canNote: true,
+	renotePolicy: 'allow',
+	canCreateSpecifiedNote: true,
+	canFederateNote: true,
+	noteFilesLimit: MAX_NOTE_ATTACHMENTS,
 };
 
 @Injectable()
@@ -378,7 +389,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 		const roles = await this.getUserRoles(userId);
 
 		function calc<T extends keyof RolePolicies>(name: T, aggregate: (values: RolePolicies[T][]) => RolePolicies[T]) {
-			if (roles.length === 0) return basePolicies[name];
+			if (roles.length === 0) return aggregate([basePolicies[name]]);
 
 			const policies = roles.map(role => role.policies[name] ?? { priority: 0, useDefault: true });
 
@@ -395,6 +406,12 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			if (vs.some(v => v === 'available')) return 'available';
 			if (vs.some(v => v === 'readonly')) return 'readonly';
 			return 'unavailable';
+		}
+
+		function aggregateRenotePolicy(vs: RolePolicies['renotePolicy'][]) {
+			if (vs.some(v => v === 'allow')) return 'allow';
+			if (vs.some(v => v === 'renoteOnly')) return 'renoteOnly';
+			return 'disallow';
 		}
 
 		return {
@@ -446,6 +463,11 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			noteDraftLimit: calc('noteDraftLimit', vs => Math.max(...vs)),
 			scheduledNoteLimit: calc('scheduledNoteLimit', vs => Math.max(...vs)),
 			watermarkAvailable: calc('watermarkAvailable', vs => vs.some(v => v === true)),
+			canNote: calc('canNote', vs => vs.some(v => v === true)),
+			renotePolicy: calc('renotePolicy', aggregateRenotePolicy),
+			canCreateSpecifiedNote: calc('canCreateSpecifiedNote', vs => vs.some(v => v === true)),
+			canFederateNote: calc('canFederateNote', vs => vs.some(v => v === true)),
+			noteFilesLimit: calc('noteFilesLimit', vs => Math.min(Math.max(...vs), MAX_NOTE_ATTACHMENTS)),
 		};
 	}
 

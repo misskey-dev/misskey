@@ -396,6 +396,62 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkSwitch>
 			</template>
 		</XFolder>
+
+		<XFolder v-if="matchQuery([i18n.ts._role._options.canNote, 'canNote'])" v-model:policyMeta="policyMetaModel.canNote" :isBaseRole="isBaseRole" :readonly="readonly">
+			<template #label>{{ i18n.ts._role._options.canNote }}</template>
+			<template #valueText>{{ valuesModel.canNote ? i18n.ts.yes : i18n.ts.no }}</template>
+			<template #default="{ disabled }">
+				<MkSwitch v-model="valuesModel.canNote" :disabled="disabled">
+					<template #label>{{ i18n.ts.enable }}</template>
+				</MkSwitch>
+			</template>
+		</XFolder>
+
+		<XFolder v-if="matchQuery([i18n.ts._role._options.renotePolicy, 'renotePolicy'])" v-model:policyMeta="policyMetaModel.renotePolicy" :isBaseRole="isBaseRole" :readonly="readonly">
+			<template #label>{{ i18n.ts._role._options.renotePolicy }}</template>
+			<template #valueText>{{ valuesModel.renotePolicy === 'allow' ? i18n.ts._role._options.renotePolicy_allow : valuesModel.renotePolicy === 'renoteOnly' ? i18n.ts._role._options.renotePolicy_renoteOnly : i18n.ts._role._options.renotePolicy_disallow }}</template>
+			<template #default="{ disabled }">
+				<MkSelect
+					v-model="valuesModel.renotePolicy"
+					:disabled="disabled"
+					:items="[
+						{ label: i18n.ts._role._options.renotePolicy_allow, value: 'allow' },
+						{ label: i18n.ts._role._options.renotePolicy_renoteOnly, value: 'renoteOnly' },
+						{ label: i18n.ts._role._options.renotePolicy_disallow, value: 'disallow' },
+					]"
+				>
+					<template #label>{{ i18n.ts.enable }}</template>
+				</MkSelect>
+			</template>
+		</XFolder>
+
+		<XFolder v-if="matchQuery([i18n.ts._role._options.canCreateSpecifiedNote, 'canCreateSpecifiedNote'])" v-model:policyMeta="policyMetaModel.canCreateSpecifiedNote" :isBaseRole="isBaseRole" :readonly="readonly">
+			<template #label>{{ i18n.ts._role._options.canCreateSpecifiedNote }}</template>
+			<template #valueText>{{ valuesModel.canCreateSpecifiedNote ? i18n.ts.yes : i18n.ts.no }}</template>
+			<template #default="{ disabled }">
+				<MkSwitch v-model="valuesModel.canCreateSpecifiedNote" :disabled="disabled">
+					<template #label>{{ i18n.ts.enable }}</template>
+				</MkSwitch>
+			</template>
+		</XFolder>
+
+		<XFolder v-if="matchQuery([i18n.ts._role._options.canFederateNote, 'canFederateNote'])" v-model:policyMeta="policyMetaModel.canFederateNote" :isBaseRole="isBaseRole" :readonly="readonly">
+			<template #label>{{ i18n.ts._role._options.canFederateNote }}</template>
+			<template #valueText>{{ valuesModel.canFederateNote ? i18n.ts.yes : i18n.ts.no }}</template>
+			<template #default="{ disabled }">
+				<MkSwitch v-model="valuesModel.canFederateNote" :disabled="disabled">
+					<template #label>{{ i18n.ts.enable }}</template>
+				</MkSwitch>
+			</template>
+		</XFolder>
+
+		<XFolder v-if="matchQuery([i18n.ts._role._options.noteFilesLimit, 'noteFilesLimit'])" v-model:policyMeta="policyMetaModel.noteFilesLimit" :isBaseRole="isBaseRole" :readonly="readonly">
+			<template #label>{{ i18n.ts._role._options.noteFilesLimit }}</template>
+			<template #valueText>{{ valuesModel.noteFilesLimit }}</template>
+			<template #default="{ disabled }">
+				<MkInput v-model="valuesModel.noteFilesLimit" type="number" :disabled="disabled" :max="16" :min="0"/>
+			</template>
+		</XFolder>
 	</div>
 </template>
 
