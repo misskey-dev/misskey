@@ -170,11 +170,12 @@ export class ApNoteService {
 
 		const uri = getOneApId(note.attributedTo);
 
-		// ローカルで投稿者を検索し、もし凍結されていたらスキップ
+		// ローカルで投稿者を検索し、もし凍結または論理削除されていたらスキップ
 		// eslint-disable-next-line no-param-reassign
 		actor ??= await this.apPersonService.fetchPerson(uri) as MiRemoteUser | undefined;
-		if (actor && actor.isSuspended) {
-			throw new IdentifiableError('85ab9bd7-3a41-4530-959d-f07073900109', 'actor has been suspended');
+		if (actor) {
+			if (actor.isSuspended) throw new IdentifiableError('85ab9bd7-3a41-4530-959d-f07073900109', 'actor has been suspended');
+			if (actor.isDeleted) throw new IdentifiableError('bdf46093-6804-5632-2e4f-55d23d0bf9c2', 'actor has been deleted');
 		}
 
 		const apMentions = await this.apMentionService.extractApMentions(note.tag, resolver);
@@ -208,10 +209,9 @@ export class ApNoteService {
 		// eslint-disable-next-line no-param-reassign
 		actor ??= await this.apPersonService.resolvePerson(uri, resolver) as MiRemoteUser;
 
-		// 解決した投稿者が凍結されていたらスキップ
-		if (actor.isSuspended) {
-			throw new IdentifiableError('85ab9bd7-3a41-4530-959d-f07073900109', 'actor has been suspended');
-		}
+		// 解決した投稿者が凍結または論理削除されていたらスキップ
+		if (actor.isSuspended) throw new IdentifiableError('85ab9bd7-3a41-4530-959d-f07073900109', 'actor has been suspended');
+		if (actor.isDeleted) throw new IdentifiableError('bdf46093-6804-5632-2e4f-55d23d0bf9c2', 'actor has been deleted');
 
 		const noteAudience = await this.apAudienceService.parseAudience(actor, note.to, note.cc, resolver);
 		let visibility = noteAudience.visibility;
@@ -412,7 +412,7 @@ export class ApNoteService {
 						publicUrl: tag.icon.url,
 						updatedAt: new Date(),
 						// _misskey_license が存在しなければ `null`
-						license: (tag._misskey_license?.freeText ?? null)
+						license: (tag._misskey_license?.freeText ?? null),
 					});
 
 					const emoji = await this.emojisRepository.findOneBy({ host, name });
@@ -435,7 +435,7 @@ export class ApNoteService {
 				updatedAt: new Date(),
 				aliases: [],
 				// _misskey_license が存在しなければ `null`
-				license: (tag._misskey_license?.freeText ?? null)
+				license: (tag._misskey_license?.freeText ?? null),
 			});
 		}));
 	}
