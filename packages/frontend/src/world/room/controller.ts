@@ -195,66 +195,89 @@ export class RoomController {
 			return false;
 		}, { signal: this.abortController.signal });
 
+		const pointerEventCache = new Map<number, PointerEvent>();
+		let pointerVec = { x: 0, y: 0 };
+
 		this.canvas.addEventListener('pointerdown', (ev) => {
 			ev.preventDefault();
 			ev.stopPropagation();
-
 			this.canvas!.focus();
-
-			this.pointerDownPosition = { x: ev.offsetX, y: ev.offsetY };
+			pointerEventCache.set(ev.pointerId, ev);
 			this.canvas!.setPointerCapture(ev.pointerId);
 
-			const pointerVec = { x: ev.clientX, y: ev.clientY };
+			pointerVec = { x: ev.clientX, y: ev.clientY };
 
-			let timeoutId: number | null = null;
+			this.pointerDownPosition = { x: ev.offsetX, y: ev.offsetY };
 
-			const onMove = (ev: PointerEvent) => {
-				ev.preventDefault();
-				ev.stopPropagation();
+			return false;
+		}, { signal: this.abortController.signal });
 
-				if (timeoutId != null) {
-					window.clearTimeout(timeoutId);
-					timeoutId = null;
+		let prevTwoTouchPointsDistance = 0;
+
+		this.canvas!.addEventListener('pointermove', (ev) => {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			if (pointerEventCache.size === 0) {
+				return;
+			}
+
+			pointerEventCache.set(ev.pointerId, ev);
+
+			if (pointerEventCache.size > 1) {
+				const a = Array.from(pointerEventCache.values())[0];
+				const b = Array.from(pointerEventCache.values())[1];
+				const distance = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+				if (prevTwoTouchPointsDistance > 0) {
+					const delta = distance - prevTwoTouchPointsDistance;
+					if (this.worker != null) {
+						this.worker.postMessage({ type: 'dom:wheel', ev: { deltaY: -delta * 3 } });
+					} else if (this.engine != null) {
+						this.engine.domEvents.emit('wheel', { deltaY: -delta * 3 });
+					}
 				}
+				prevTwoTouchPointsDistance = distance;
 
-				const before = pointerVec;
-				const after = { x: ev.clientX, y: ev.clientY };
+				pointerVec = { x: 0, y: 0 };
+				this.setCameraRotateVector({
+					x: 0,
+					y: 0,
+				});
+				return;
+			}
 
+			prevTwoTouchPointsDistance = 0;
+
+			const before = pointerVec;
+			const after = { x: ev.clientX, y: ev.clientY };
+
+			if (pointerVec.x !== 0 || pointerVec.y !== 0) {
 				this.setCameraRotateVector({
 					x: after.x - before.x,
 					y: after.y - before.y,
 				});
+			}
 
-				pointerVec.x = after.x;
-				pointerVec.y = after.y;
-
-				timeoutId = window.setTimeout(() => {
-					timeoutId = null;
-
-					this.setCameraRotateVector({
-						x: 0,
-						y: 0,
-					});
-				}, 10);
-
-				return false;
-			};
-
-			this.canvas!.addEventListener('pointermove', onMove);
-
-			this.canvas!.addEventListener('pointerup', (ev) => {
-				this.canvas!.removeEventListener('pointermove', onMove);
-
-				pointerVec.x = 0;
-				pointerVec.y = 0;
-
-				this.setCameraRotateVector(pointerVec);
-			}, { once: true });
+			pointerVec.x = after.x;
+			pointerVec.y = after.y;
 
 			return false;
 		}, { signal: this.abortController.signal });
 
 		this.canvas.addEventListener('pointerup', (ev) => {
+			pointerEventCache.delete(ev.pointerId);
+			this.canvas!.releasePointerCapture(ev.pointerId);
+
+			prevTwoTouchPointsDistance = 0;
+
+			if (pointerEventCache.size > 0) {
+				return;
+			}
+
+			pointerVec.x = 0;
+			pointerVec.y = 0;
+			this.setCameraRotateVector(pointerVec);
+
 			if (this.pointerDownPosition != null) {
 				const dx = Math.abs(ev.offsetX - this.pointerDownPosition.x);
 				const dy = Math.abs(ev.offsetY - this.pointerDownPosition.y);
@@ -268,7 +291,6 @@ export class RoomController {
 				}
 			}
 			this.pointerDownPosition = null;
-			this.canvas!.releasePointerCapture(ev.pointerId);
 		}, { signal: this.abortController.signal });
 	}
 
