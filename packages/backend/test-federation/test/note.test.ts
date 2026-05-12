@@ -1,7 +1,7 @@
 import { describe, test, beforeAll, afterAll } from 'vitest';
 import assert, { rejects, strictEqual } from 'node:assert';
 import * as Misskey from 'misskey-js';
-import { addCustomEmoji, createAccount, createModerator, deepStrictEqualWithExcludedFields, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep, uploadFile } from './utils.js';
+import { addCustomEmoji, createAccount, createModerator, deepStrictEqualWithExcludedFields, fetchAdmin, type LoginUser, resolveRemoteNote, resolveRemoteUser, sleep, uploadFile } from './utils.js';
 
 describe('Note', () => {
 	let alice: LoginUser, bob: LoginUser;
@@ -324,6 +324,75 @@ describe('Note', () => {
 				const reactions = await alice.client.request('notes/reactions', { noteId: note.id });
 				strictEqual(reactions.length, 1);
 				strictEqual(reactions[0].type, `:${emoji.name}@b.test:`);
+			});
+		});
+	});
+
+	describe('Deleted user', () => {
+		/**
+		 * Issueの再現シナリオ:
+		 * A側でリモートBのユーザー(bob)を論理削除した後に、
+		 * B側の別ユーザー(carol)がbobのノートをAnnounce/Replyで
+		 * A側inboxに送っても、bobのノートがA側DBに作成されないことを確認する。
+		 * @see https://github.com/misskey-dev/misskey/issues/17393
+		 */
+		describe('Announce/Reply from a healthy user targeting a locally-deleted user\'s note is rejected', () => {
+			let bob: LoginUser, carol: LoginUser;
+			let bobInA: Misskey.entities.UserDetailedNotMe;
+
+			beforeAll(async () => {
+				// bob: B側で健在のユーザー（A側で論理削除対象）
+				// carol: B側で健在の別ユーザー（Announceを行う側）
+				[bob, carol] = await Promise.all([
+					createAccount('b.test'),
+					createAccount('b.test'),
+				]);
+
+				// A側にbobを認識させる
+				bobInA = await resolveRemoteUser('b.test', bob.id, alice);
+
+				// A側adminがbobを論理削除（soft delete）
+				const aAdmin = await fetchAdmin('a.test');
+				await aAdmin.client.request('admin/delete-account', { userId: bobInA.id });
+				await sleep();
+			});
+
+			test('Announce of deleted user\'s note is not created in A', async () => {
+				// B側でbobが新規ノートを投稿（A側にはまだキャッシュされていない）
+				const bobNote = (await bob.client.request('notes/create', { text: 'I am Bob and this should not appear in A' })).createdNote;
+
+				// carolがbobのノートをrenote（→ A側inboxにAnnounce Activityが届く）
+				const carolRenote = (await carol.client.request('notes/create', { renoteId: bobNote.id })).createdNote;
+				await sleep();
+
+				// A側でcarolのrenote（およびそのrenote元 = bobのノート）が作成されていないことを確認
+				await rejects(
+					async () => await alice.client.request('ap/show', { uri: `https://b.test/notes/${carolRenote.id}` }),
+					(err: any) => {
+						// bobのノートがisDeletedで弾かれるため、carolのrenoteも作成できずエラーになる
+						strictEqual(err.code, 'REQUEST_FAILED');
+						return true;
+					},
+				);
+			});
+
+			test('Reply to deleted user\'s note is not created in A', async () => {
+				// B側でbobが新規ノートを投稿（A側にはまだキャッシュされていない）
+				const bobNote = (await bob.client.request('notes/create', { text: 'reply target from deleted user' })).createdNote;
+
+				// carolがbobのノートにreply（→ A側inboxにCreate Activityが届く）
+				const carolReply = (await carol.client.request('notes/create', { text: 'reply to deleted', replyId: bobNote.id })).createdNote;
+				await sleep();
+
+				// A側でcarolのreply（およびそのreply先 = bobのノート）が作成されていないことを確認
+				await rejects(
+					async () => await alice.client.request('ap/show', { uri: `https://b.test/notes/${carolReply.id}` }),
+					(err: any) => {
+						// bobのノートがisDeletedで弾かれるため、carolのreplyも作成できずエラーになる
+						strictEqual(err.code, 'REQUEST_FAILED');
+						return true;
+					},
+				);
 			});
 		});
 	});

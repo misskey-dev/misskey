@@ -141,7 +141,7 @@ export class ApInboxService {
 
 	@bindThis
 	public async performOneActivity(actor: MiRemoteUser, activity: IObject, resolver?: Resolver): Promise<string | void> {
-		if (actor.isSuspended) return;
+		if (actor.isSuspended || actor.isDeleted) return;
 
 		if (isCreate(activity)) {
 			return await this.create(actor, activity, resolver);
@@ -302,7 +302,7 @@ export class ApInboxService {
 
 	@bindThis
 	private async announceNote(actor: MiRemoteUser, activity: IAnnounce, target: IPost, resolver?: Resolver): Promise<string | void> {
-		if (actor.isSuspended) {
+		if (actor.isSuspended || actor.isDeleted) {
 			return;
 		}
 

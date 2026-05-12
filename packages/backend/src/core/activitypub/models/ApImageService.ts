@@ -41,10 +41,9 @@ export class ApImageService {
 	 */
 	@bindThis
 	public async createImage(actor: MiRemoteUser, value: string | IObject): Promise<MiDriveFile | null> {
-		// 投稿者が凍結されていたらスキップ
-		if (actor.isSuspended) {
-			throw new Error('actor has been suspended');
-		}
+		// 投稿者が凍結または論理削除されていたらスキップ
+		if (actor.isSuspended) throw new Error('actor has been suspended');
+		if (actor.isDeleted) throw new Error('actor has been deleted');
 
 		const image = await (await this.apResolverService.createResolver()).resolve(value);
 
