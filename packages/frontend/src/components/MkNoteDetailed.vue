@@ -100,6 +100,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						:emojiUrls="appearNote.emojis"
 						:enableEmojiMenu="true"
 						:enableEmojiMenuReaction="true"
+						:forceCompactUrlPreview="(urls?.length ?? 0) >= 2 || (appearNote.files != null && appearNote.files.length > 0)"
 						class="_selectable"
 					/>
 					<a v-if="appearNote.renote != null" :class="$style.rn">RN:</a>
@@ -124,7 +125,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						:class="$style.poll"
 					/>
 					<div v-if="isEnabledUrlPreview">
-						<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="true" :forceCompactCard="(urls?.length ?? 0) >= 2" style="margin-top: 6px;"/>
+						<MkUrlPreview v-for="url in urls" :key="url" :url="url" :compact="true" :detail="true" :forceCompactCard="(urls?.length ?? 0) >= 2 || (appearNote.files != null && appearNote.files.length > 0)" style="margin-top: 6px;"/>
 					</div>
 					<div v-if="appearNote.renote" :class="$style.quote"><MkNoteSimple :note="appearNote.renote" :class="$style.quoteNote"/></div>
 				</div>
