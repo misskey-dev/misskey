@@ -2105,7 +2105,7 @@ _role:
     canImportAntennas: "允许导入天线"
     canImportBlocking: "允许导入禁止与我互动的列表"
     canImportFollowing: "允许导入关注列表"
-    canImportMuting: "允许导入隐藏列表"
+    canImportMuting: "允许导入屏蔽列表"
     canImportUserLists: "允许导入用户列表"
     chatAvailability: "允许私信"
     uploadableFileTypes: "可上传的文件类型"
@@ -2260,7 +2260,7 @@ _menuDisplay:
   top: "顶部"
   hide: "隐藏"
 _wordMute:
-  muteWords: "要屏蔽的词"
+  muteWords: "要折叠的词"
   muteWordsDescription: "AND 条件用空格分隔，OR 条件用换行符分隔。"
   muteWordsDescription2: "正则表达式用斜线包裹"
 _instanceMute:
