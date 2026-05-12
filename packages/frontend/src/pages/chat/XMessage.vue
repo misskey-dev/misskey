@@ -21,7 +21,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			/>
 			<MkMediaList v-if="message.file" :mediaList="[message.file]"/>
 		</MkFukidashi>
-		<MkUrlPreview v-for="url in urls" :key="url" :url="url" style="margin: 8px 0;"/>
+		<MkUrlPreview v-for="url in urls" :key="url" :url="url" :forceCompactCard="urls.length >= 2 || message.file != null" style="margin: 8px 0;"/>
 		<div :class="$style.footer">
 			<button class="_textButton" style="color: currentColor;" @click="showMenu"><i class="ti ti-dots-circle-horizontal"></i></button>
 			<MkTime :class="$style.time" :time="message.createdAt"/>
