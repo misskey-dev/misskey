@@ -131,10 +131,13 @@ const isLargeImage = computed(() =>
 const displayThumbnail = computed(() => {
 	if (!thumbnail.value || prefer.s.dataSaver.urlPreviewThumbnail) return null;
 	if (!isLargeImage.value) return thumbnail.value;
-	// large card: preview=1を取り除いて高解像度の画像にする
+	// large card: preview=1 を thumbnail=1 (1280x720, GIFアニメ解除) に切り替える
+	// thumbnail を理解しない外部プロキシでも GIF アニメが止まるよう static=1 もフォールバックとして併記
 	try {
 		const u = new URL(thumbnail.value);
 		u.searchParams.delete('preview');
+		u.searchParams.set('thumbnail', '1');
+		u.searchParams.set('static', '1');
 		return u.toString();
 	} catch {
 		return thumbnail.value;
