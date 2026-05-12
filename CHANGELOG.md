@@ -1,4 +1,4 @@
-## Unreleased
+## 2026.5.2
 
 ### Note
 - config に `threadPoolSize` オプションが追加されました。
