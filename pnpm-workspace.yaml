@@ -52,3 +52,5 @@ minimumReleaseAgeExclude:
   - slacc-win32-arm64-msvc
   - slacc-win32-x64-msvc
   - '@typescript/native-preview*'
+  # Renovate security update: systeminformation@5.31.6
+  - systeminformation@5.31.6
