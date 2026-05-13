@@ -10,6 +10,7 @@ import type { ShallowRef } from 'vue';
 import * as sound from '@/utility/sound.js';
 
 // 抽象化レイヤー
+// TODO: 他のcontrollerと共通部分を抽出してabstract classを作ってそこから派生する形にする
 export class WorldController {
 	private worker: Worker | null = null;
 	private engine: WorldEngine | null = null;
@@ -50,9 +51,9 @@ export class WorldController {
 
 		this.canvas.addEventListener('keydown', (ev) => {
 			if (this.worker != null) {
-				this.worker.postMessage({ type: 'dom:keydown', ev: { code: ev.code, shiftKey: ev.shiftKey } });
+				this.worker.postMessage({ type: 'input:keydown', ev: { code: ev.code, shiftKey: ev.shiftKey } });
 			} else if (this.engine != null) {
-				this.engine.domEvents.emit('keydown', { code: ev.code, shiftKey: ev.shiftKey });
+				this.engine.inputs.emit('keydown', { code: ev.code, shiftKey: ev.shiftKey });
 			}
 			ev.preventDefault();
 			ev.stopPropagation();
@@ -61,9 +62,9 @@ export class WorldController {
 
 		this.canvas.addEventListener('keyup', (ev) => {
 			if (this.worker != null) {
-				this.worker.postMessage({ type: 'dom:keyup', ev: { code: ev.code, shiftKey: ev.shiftKey } });
+				this.worker.postMessage({ type: 'input:keyup', ev: { code: ev.code, shiftKey: ev.shiftKey } });
 			} else if (this.engine != null) {
-				this.engine.domEvents.emit('keyup', { code: ev.code, shiftKey: ev.shiftKey });
+				this.engine.inputs.emit('keyup', { code: ev.code, shiftKey: ev.shiftKey });
 			}
 			ev.preventDefault();
 			ev.stopPropagation();
@@ -76,9 +77,9 @@ export class WorldController {
 
 		this.canvas.addEventListener('wheel', (ev) => {
 			if (this.worker != null) {
-				this.worker.postMessage({ type: 'dom:wheel', ev: { deltaY: ev.deltaY } });
+				this.worker.postMessage({ type: 'input:wheel', ev: { deltaY: ev.deltaY } });
 			} else if (this.engine != null) {
-				this.engine.domEvents.emit('wheel', { deltaY: ev.deltaY });
+				this.engine.inputs.emit('wheel', { deltaY: ev.deltaY });
 			}
 			ev.preventDefault();
 			ev.stopPropagation();
@@ -107,9 +108,9 @@ export class WorldController {
 		this.canvas.addEventListener('click', (ev) => {
 			if (isDragging) return;
 			if (this.worker != null) {
-				this.worker.postMessage({ type: 'dom:click', ev: { offsetX: ev.offsetX, offsetY: ev.offsetY } });
+				this.worker.postMessage({ type: 'input:click', ev: { offsetX: ev.offsetX, offsetY: ev.offsetY } });
 			} else if (this.engine != null) {
-				this.engine.domEvents.emit('click', { offsetX: ev.offsetX, offsetY: ev.offsetY });
+				this.engine.inputs.emit('click', { offsetX: ev.offsetX, offsetY: ev.offsetY });
 			}
 			ev.preventDefault();
 			ev.stopPropagation();

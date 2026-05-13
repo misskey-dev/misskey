@@ -62,23 +62,28 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick, shallowRef, computed, triggerRef } from 'vue';
+import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick, shallowRef, computed, triggerRef, markRaw } from 'vue';
 import XObjectCustomizeForm from './room.object-customize-form.vue';
 import XItem from './room.add-object-dialog.item.vue';
 import type { RoomObjectInstance, RoomStateObject } from '@/world/room/object.js';
+import type { PreviewEngineControllerOptions } from '@/world/room/previewEngineController.js';
 import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import * as os from '@/os.js';
 import { OBJECT_DEFS } from '@/world/room/object-defs.js';
-import { createRoomObjectPreviewEngine, RoomObjectPreviewEngine } from '@/world/room/previewEngine.js';
 import { camelToKebab } from '@/world/utility.js';
 import MkButton from '@/components/MkButton.vue';
 import { prefer } from '@/preferences.js';
 import { deepClone } from '@/utility/clone.js';
 import { store } from '@/store.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
+import { PreviewEngineController } from '@/world/room/previewEngineController.js';
 
 // TODO: instanceのidと紛らわしいのでid -> typeにする
+
+const props = defineProps<{
+	graphicsQuality: number;
+}>();
 
 const emit = defineEmits<{
 	(ev: 'ok', ctx: {
@@ -97,7 +102,15 @@ const selectedInstanceId = ref<string | null>(null);
 const selectedObjectOptionsState = ref<RoomStateObject | null>(null);
 const selectedObjectDef = computed(() => OBJECT_DEFS.find(def => def.id === selectedId.value) ?? null);
 const showObjectOptions = ref(false);
-const engine = shallowRef<RoomObjectPreviewEngine | null>(null);
+
+const previewEngineControllerOptions = computed<PreviewEngineControllerOptions>(() => ({
+	graphicsQuality: props.graphicsQuality,
+	fps: null,
+	resolution: 1,
+	workerMode: true,
+}));
+
+const controller = markRaw(new PreviewEngineController(previewEngineControllerOptions.value));
 
 const recentlyUsedDefs = computed(() => {
 	const recentlyUsed = store.s.recentlyUsedRoomObjects;
@@ -105,13 +118,23 @@ const recentlyUsedDefs = computed(() => {
 });
 
 onMounted(async () => {
-	engine.value = await createRoomObjectPreviewEngine(canvas.value!);
+	try {
+		await controller.init(canvas.value!);
+	} catch (err) {
+		console.error(err);
+		os.alert({
+			type: 'error',
+			title: i18n.ts._room.failedToInitialize,
+			text: (err instanceof Error ? err.message : String(err)),
+		});
+		return;
+	}
 
-	await engine.value.init();
+	canvas.value!.focus();
 });
 
 onUnmounted(() => {
-	engine.value.destroy();
+	controller.destroy();
 });
 
 watch(selectedId, (newId) => {
@@ -119,21 +142,21 @@ watch(selectedId, (newId) => {
 	showPreview.value = false;
 
 	if (newId == null) {
-		engine.value!.clear();
-		engine.value!.pauseRender();
+		controller.clearObject();
+		controller.pauseRender();
 		selectedInstanceId.value = null;
 		selectedObjectOptionsState.value = null;
 	} else {
 		const closeWaiting = os.waiting();
 		nextTick(() => {
-			engine.value!.load(newId).then(res => {
+			controller.loadObject(newId).then(res => {
 				selectedInstanceId.value = res.id;
 				selectedObjectOptionsState.value = deepClone(res.options);
-				engine.value!.resumeRender();
+				controller.resumeRender();
 				closeWaiting();
 				showPreview.value = true;
 				nextTick(() => {
-					engine.value!.resize();
+					controller.resize();
 				});
 			}).catch(err => {
 				console.error(err);
@@ -144,8 +167,8 @@ watch(selectedId, (newId) => {
 });
 
 function updateObjectOption(k: string, v: any) {
-	const updatedOptions = engine.value!.updateObjectOption(k, v);
-	selectedObjectOptionsState.value = deepClone(updatedOptions);
+	controller.updateObjectOption(k, v);
+	selectedObjectOptionsState.value![k] = v;
 }
 
 function ok() {

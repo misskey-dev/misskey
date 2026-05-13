@@ -701,3 +701,38 @@ export class FreeCameraManualInput implements BABYLON.ICameraInput<BABYLON.FreeC
 		//this.camera.cameraDirection.addInPlace(this.camera._transformedDirection);
 	}
 }
+
+export class ArcRotateCameraManualInput implements BABYLON.ICameraInput<BABYLON.ArcRotateCamera> {
+	public camera: BABYLON.ArcRotateCamera;
+	private scene: BABYLON.Scene;
+	private rotationSensitivity: number;
+
+	constructor(scene: BABYLON.Scene, options: {
+		rotationSensitivity?: number;
+	}) {
+		this.scene = scene;
+		this.rotationSensitivity = options.rotationSensitivity ?? 0.01;
+	}
+
+	getClassName = () => this.constructor.name;
+
+	getSimpleName = () => 'manual';
+
+	attachControl(noPreventDefault) {
+	}
+
+	detachControl() {
+	}
+
+	public setRotationVector(vec: { x: number; y: number }) {
+		let directionAdjust = 1;
+		if (this.scene.useRightHandedSystem) directionAdjust *= -1;
+		if (this.camera.parent && this.camera.parent._getWorldMatrixDeterminant() < 0) directionAdjust *= -1;
+
+		this.camera.inertialBetaOffset += -vec.y * this.rotationSensitivity * directionAdjust;
+		this.camera.inertialAlphaOffset += -vec.x * this.rotationSensitivity * directionAdjust;
+	}
+
+	checkInputs() {
+	}
+}

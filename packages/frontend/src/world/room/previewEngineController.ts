@@ -6,51 +6,35 @@
 import { reactive, ref, shallowRef, triggerRef, watch } from 'vue';
 import * as BABYLON from '@babylonjs/core';
 import { EventEmitter } from 'eventemitter3';
-import { cm } from '../utility.js';
-import RoomWorker from './worker?worker';
-import { RoomEngine } from './engine.js';
+import PreviewEngineWorker from './previewEngineWorker?worker';
+import { RoomObjectPreviewEngine } from './previewEngine.js';
 import type { ShallowRef } from 'vue';
 import type { RoomEngineEvents, RoomState } from './engine.js';
-import type { ObjectDef, RoomStateObject } from './object.js';
 import * as sound from '@/utility/sound.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { deepEqual } from '@/utility/deep-equal.js';
 
-export type RoomControllerOptions = {
+export type PreviewEngineControllerOptions = {
 	workerMode?: boolean;
 	graphicsQuality: number;
 	fps: number | null;
 	resolution: number;
-	antialias: boolean;
-	useVirtualJoystick?: boolean;
 };
 
 // 抽象化レイヤー
 // TODO: 他のcontrollerと共通部分を抽出してabstract classを作ってそこから派生する形にする
-export class RoomController {
+export class PreviewEngineController {
 	private worker: Worker | null = null;
-	private engine: RoomEngine | null = null;
+	private engine: RoomObjectPreviewEngine | null = null;
 	private canvas: HTMLCanvasElement | null = null;
-	private options: RoomControllerOptions;
+	private options: PreviewEngineControllerOptions;
 	private returnHooks = new Map<number, (value: any) => void>();
 	public isReady = ref(false);
-	public isSitting = ref(false);
-	public isEditMode = ref(false);
-	public isRoomLightOn = ref(true);
-	public grabbing = ref<{ forInstall: boolean } | null>(null);
-	public gridSnapping = ref({ enabled: true, scale: cm(4) });
-	public selected = ref<{
-		objectId: string;
-		objectState: RoomStateObject;
-	} | null>(null);
-	public roomState: ShallowRef<RoomState>;
-	public initializeProgress = ref(0);
 	private pointerDownPosition: { x: number; y: number } | null = null;
 	private abortController = new AbortController();
 
-	constructor(roomState: RoomState, options: RoomControllerOptions) {
-		this.roomState = shallowRef(roomState);
+	constructor(options: PreviewEngineControllerOptions) {
 		this.options = options;
 	}
 
@@ -63,12 +47,11 @@ export class RoomController {
 
 		if (this.options.workerMode) {
 			const offscreen = canvas.transferControlToOffscreen();
-			this.worker = new RoomWorker();
-			this.worker.postMessage({ type: 'init', canvas: offscreen, roomState: this.roomState.value, options: this.options }, [offscreen]);
+			this.worker = new PreviewEngineWorker();
+			this.worker.postMessage({ type: 'init', canvas: offscreen, options: this.options }, [offscreen]);
 			this.worker.onmessage = (event) => {
 				switch (event.data?.type) {
 					case 'inited': {
-						this.initializeProgress.value = 1;
 						this.isReady.value = true;
 						break;
 					}
@@ -92,7 +75,7 @@ export class RoomController {
 				}
 			};
 		} else {
-			const babylonEngine = new BABYLON.WebGPUEngine(canvas, { doNotHandleContextLost: true, powerPreference: 'high-performance', antialias: this.options.antialias });
+			const babylonEngine = new BABYLON.WebGPUEngine(canvas, { doNotHandleContextLost: true, powerPreference: 'low-power', antialias: true });
 			babylonEngine.compatibilityMode = false;
 			babylonEngine.enableOfflineSupport = false;
 			babylonEngine.onContextLostObservable.add(() => {
@@ -106,7 +89,7 @@ export class RoomController {
 			if (this.options.resolution === 2) babylonEngine.setHardwareScalingLevel(0.5);
 			if (this.options.resolution === 0.5) babylonEngine.setHardwareScalingLevel(2);
 
-			this.engine = new RoomEngine(this.roomState.value, {
+			this.engine = new RoomObjectPreviewEngine({
 				engine: babylonEngine,
 				...this.options,
 			});
@@ -117,83 +100,8 @@ export class RoomController {
 
 			await this.engine.init();
 
-			this.initializeProgress.value = 1;
 			this.isReady.value = true;
-
-			if (_DEV_) {
-				(window as any).showBabylonInspector = () => {
-					import('@babylonjs/inspector').then(({ ShowInspector }) => {
-						ShowInspector(this.engine.scene);
-					});
-				};
-			}
 		}
-
-		engineEvents.on('loadingProgress', ({ progress }) => {
-			this.initializeProgress.value = progress;
-		});
-
-		engineEvents.on('changeGrabbingState', ({ grabbing }) => {
-			this.grabbing.value = grabbing;
-		});
-
-		engineEvents.on('changeEditMode', ({ isEditMode }) => {
-			this.isEditMode.value = isEditMode;
-		});
-
-		engineEvents.on('changeGridSnapping', ({ gridSnapping }) => {
-			this.gridSnapping.value = gridSnapping;
-		});
-
-		engineEvents.on('changeSelectedState', ({ selected }) => {
-			this.selected.value = JSON.parse(JSON.stringify(selected));
-		});
-
-		engineEvents.on('changeRoomState', ({ roomState }) => {
-			if (deepEqual(this.roomState.value, roomState)) return; // vueのリアクティビティが反応して無限ループになることがあるため
-			this.roomState.value = JSON.parse(JSON.stringify(roomState));
-			if (this.selected.value != null) {
-				const newSelected = roomState.installedObjects.find(o => o.id === this.selected.value.objectId);
-				if (newSelected) {
-					this.selected.value = {
-						objectId: newSelected.id,
-
-						// そのまま入れると「オブジェクト(newSelected)の内容」は変わってるけど「オブジェクトの参照」そのものは変化していないから、
-						// その状態で代入しようがtriggerRef呼ぼうがVueは「子に対しては」更新があったと見做してくれない(親から当該refをwatchする場合は発火する)っぽい(バグか仕様かは不明)
-						// そのため新しい参照にするためにdeepClone
-						objectState: JSON.parse(JSON.stringify(newSelected)),
-					};
-				} else {
-					this.selected.value = null;
-				}
-			}
-		});
-
-		engineEvents.on('playSfxUrl', ({ url, options }) => {
-			sound.playUrl(url, options);
-		});
-
-		this.canvas.addEventListener('keydown', (ev) => {
-			if (this.worker != null) {
-				this.worker.postMessage({ type: 'input:keydown', ev: { code: ev.code, shiftKey: ev.shiftKey } });
-			} else if (this.engine != null) {
-				this.engine.inputs.emit('keydown', { code: ev.code, shiftKey: ev.shiftKey });
-			}
-			ev.preventDefault();
-			ev.stopPropagation();
-			return false;
-		}, { signal: this.abortController.signal });
-
-		this.canvas.addEventListener('keyup', (ev) => {
-			if (this.worker != null) {
-				this.worker.postMessage({ type: 'input:keyup', ev: { code: ev.code, shiftKey: ev.shiftKey } });
-			} else if (this.engine != null) {
-				this.engine.inputs.emit('keyup', { code: ev.code, shiftKey: ev.shiftKey });
-			}
-			ev.preventDefault();
-			ev.stopPropagation();
-			return false;
-		}, { signal: this.abortController.signal });
 
 		this.canvas.addEventListener('wheel', (ev) => {
 			if (this.worker != null) {
@@ -305,21 +213,6 @@ export class RoomController {
 		}, { signal: this.abortController.signal });
 	}
 
-	public async reset(roomState?: RoomState | null, options?: RoomControllerOptions | null, canvas?: HTMLCanvasElement | null) {
-		this.destroy();
-		this.abortController = new AbortController();
-		if (roomState != null) this.roomState.value = roomState;
-		if (options != null) this.options = options;
-		this.isReady.value = false;
-		this.isSitting.value = false;
-		this.isEditMode.value = false;
-		this.isRoomLightOn.value = true;
-		this.grabbing.value = null;
-		this.selected.value = null;
-		this.initializeProgress.value = 0;
-		await this.init(canvas ?? this.canvas!);
-	}
-
 	private callCounter = 0;
 
 	// TODO: いい感じに型付け
@@ -358,81 +251,20 @@ export class RoomController {
 		this.call('resumeRender');
 	}
 
-	public setCameraMoveVector(vec: { x: number; y: number }, dash: boolean) {
-		this.call('cameraMove', [vec, dash]);
-	}
-
 	public setCameraRotateVector(vec: { x: number; y: number }) {
 		this.call('cameraRotate', [vec]);
 	}
 
-	public setCameraJoystickMoveVector(vec: { x: number; y: number }) {
-		this.call('cameraJoystickMove', [vec]);
+	public updateObjectOption(key: string, value: any) {
+		this.call('updateObjectOption', [key, value]);
 	}
 
-	public enterEditMode() {
-		this.call('enterEditMode');
+	public loadObject(type: string) {
+		return this.call('loadObject', [type], true);
 	}
 
-	public exitEditMode() {
-		this.call('exitEditMode');
-	}
-
-	public setGridSnapping(gridSnapping: { enabled: boolean; scale: number }) {
-		this.set('gridSnapping', gridSnapping);
-	}
-
-	public updateObjectOption(objectId: string, key: string, value: any) {
-		this.call('updateObjectOption', [objectId, key, value]);
-	}
-
-	public changeEnvType(type: RoomState['env']['type']) {
-		this.call('changeEnvType', [type]);
-	}
-
-	public updateEnvOptions(options: RoomState['env']['options']) {
-		this.call('updateEnvOptions', [options]);
-	}
-
-	public updateRoomLightColor(color: [number, number, number]) {
-		this.call('updateRoomLightColor', [color]);
-	}
-
-	public beginSelectedInstalledObjectGrabbing() {
-		this.call('beginSelectedInstalledObjectGrabbing');
-	}
-
-	public removeSelectedObject() {
-		this.call('removeSelectedObject');
-	}
-
-	public addObject(type: string, options: any) {
-		this.call('addObject', [type, options]);
-	}
-
-	public endGrabbing() {
-		this.call('endGrabbing');
-	}
-
-	public cancelGrabbing() {
-		this.call('endGrabbing', [true]);
-	}
-
-	public changeGrabbingDistance(delta: number) {
-		this.call('changeGrabbingDistance', [delta]);
-	}
-
-	public changeGrabbingRotation(delta: number) {
-		this.call('changeGrabbingRotation', [delta]);
-	}
-
-	public toggleRoomLight() {
-		if (this.isRoomLightOn.value) {
-			this.call('turnOffRoomLight');
-		} else {
-			this.call('turnOnRoomLight');
-		}
-		this.isRoomLightOn.value = !this.isRoomLightOn.value;
+	public clearObject() {
+		this.call('clearObject');
 	}
 
 	public resize() {

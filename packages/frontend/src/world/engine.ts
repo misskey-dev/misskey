@@ -49,7 +49,7 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 	private fps: number | null = null;
 	private disposed = false;
 
-	public domEvents: EventEmitter<{
+	public inputs: EventEmitter<{
 		'click': (event: { offsetX: number; offsetY: number; }) => void;
 		'keydown': (event: { code: string; shiftKey: boolean; }) => void;
 		'keyup': (event: { code: string; shiftKey: boolean; }) => void;
@@ -230,15 +230,15 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 			window.requestAnimationFrame(renderLoop);
 		}
 
-		this.domEvents.on('keydown', (ev) => {
+		this.inputs.on('keydown', (ev) => {
 		});
 
-		this.domEvents.on('wheel', (ev) => {
+		this.inputs.on('wheel', (ev) => {
 			this.camera.fov += ev.deltaY * 0.001;
 			this.camera.fov = Math.max(0.25, Math.min(1, this.camera.fov));
 		});
 
-		this.domEvents.on('click', (ev) => {
+		this.inputs.on('click', (ev) => {
 
 		});
 	}

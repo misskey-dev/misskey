@@ -202,7 +202,7 @@ export class RoomEngine extends EventEmitter {
 	private fps: number | null = null;
 	private disposed = false;
 
-	public domEvents: EventEmitter<{
+	public inputs: EventEmitter<{
 		'click': (event: { x: number; y: number; }) => void;
 		'keydown': (event: { code: string; shiftKey: boolean; }) => void;
 		'keyup': (event: { code: string; shiftKey: boolean; }) => void;
@@ -394,8 +394,8 @@ export class RoomEngine extends EventEmitter {
 
 		const box = BABYLON.MeshBuilder.CreateBox('', { size: cm(10) }, this.scene);
 		window.setInterval(() => {
-        box.position = new BABYLON.Vector3(0, Math.random() * cm(10), 0);
-    }, 10);
+			box.position = new BABYLON.Vector3(0, Math.random() * cm(10), 0);
+		}, 10);
 
 		this.startRenderLoop();
 
@@ -404,7 +404,7 @@ export class RoomEngine extends EventEmitter {
 		// 必ずシーンが少なくとも1フレームレンダリングがされてから呼ばれるように注意すること。そうしないとタイミングによってはエンジンがクラッシュする
 		this.sr.enableSnapshotRendering();
 
-		this.domEvents.on('keydown', (ev) => {
+		this.inputs.on('keydown', (ev) => {
 			if (ev.code === 'KeyE') {
 				if (this.isEditMode) {
 					if (this.grabbingCtx != null) {
@@ -432,7 +432,7 @@ export class RoomEngine extends EventEmitter {
 			}
 		});
 
-		this.domEvents.on('wheel', (ev) => {
+		this.inputs.on('wheel', (ev) => {
 			if (this.grabbingCtx != null) {
 				this.changeGrabbingDistance(ev.deltaY * 0.025);
 			} else {
@@ -441,7 +441,7 @@ export class RoomEngine extends EventEmitter {
 			}
 		});
 
-		this.domEvents.on('click', (ev) => {
+		this.inputs.on('click', (ev) => {
 			if (this.grabbingCtx != null) return;
 
 			this.selectObject(null);
@@ -454,7 +454,7 @@ export class RoomEngine extends EventEmitter {
 				const oid = pickingInfo.pickedMesh.metadata.objectId;
 				if (oid != null && this.objectEntities.has(oid)) {
 					const o = this.objectEntities.get(oid)!;
-					const boundingInfo = getMeshesBoundingBox(o.rootMesh.getChildMeshes().filter(m => m.isEnabled() && m.isVisible && !m.isDisposed()));
+					const boundingInfo = getMeshesBoundingBox(o.rootMesh.getChildMeshes().filter(m => m.isEnabled() && m.isVisible && !m.isDisposed()), true);
 					this.selectObject(oid);
 
 					{ // camera animation

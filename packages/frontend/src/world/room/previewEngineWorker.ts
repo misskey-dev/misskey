@@ -4,10 +4,9 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { RoomEngine } from './engine.js';
-import type { RoomState } from './engine.js';
+import { RoomObjectPreviewEngine } from './previewEngine.js';
 
-let engine: RoomEngine | null = null;
+let engine: RoomObjectPreviewEngine | null = null;
 let canvas: OffscreenCanvas | null = null;
 
 onmessage = async (event) => {
@@ -15,16 +14,15 @@ onmessage = async (event) => {
 
 	switch (event.data?.type) {
 		case 'init': {
-			const roomState = event.data.roomState as RoomState;
 			canvas = event.data.canvas as OffscreenCanvas;
-			const babylonEngine = new BABYLON.WebGPUEngine(canvas, { doNotHandleContextLost: true, powerPreference: 'high-performance', antialias: event.data.options.antialias });
+			const babylonEngine = new BABYLON.WebGPUEngine(canvas, { doNotHandleContextLost: true, powerPreference: 'low-power', antialias: true });
 			babylonEngine.compatibilityMode = false;
 			babylonEngine.enableOfflineSupport = false;
 			await babylonEngine.initAsync();
 			if (event.data.options.resolution === 2) babylonEngine.setHardwareScalingLevel(0.5);
 			if (event.data.options.resolution === 0.5) babylonEngine.setHardwareScalingLevel(2);
 
-			engine = new RoomEngine(roomState, {
+			engine = new RoomObjectPreviewEngine({
 				engine: babylonEngine,
 				...event.data.options,
 			});

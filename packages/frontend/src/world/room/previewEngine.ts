@@ -6,24 +6,15 @@
 import * as BABYLON from '@babylonjs/core';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic.js';
 import { GridMaterial } from '@babylonjs/materials';
-import { camelToKebab, WORLD_SCALE, cm, getMeshesBoundingBox, Timer, sleep } from '../utility.js';
+import EventEmitter from 'eventemitter3';
+import { camelToKebab, WORLD_SCALE, cm, getMeshesBoundingBox, Timer, sleep, ArcRotateCameraManualInput } from '../utility.js';
 import { getObjectDef } from './object-defs.js';
 import { SYSTEM_MESH_NAMES, ModelManager, GRAPHICS_QUALITY } from './utility.js';
 import type { RoomObjectInstance } from './object.js';
 import { genId } from '@/utility/id.js';
 import { deepClone } from '@/utility/clone.js';
-import { store } from '@/store.js';
 
-export async function createRoomObjectPreviewEngine(canvas: HTMLCanvasElement) {
-	const babylonEngine = new BABYLON.WebGPUEngine(canvas, { doNotHandleContextLost: true, powerPreference: 'low-power' });
-	babylonEngine.compatibilityMode = false;
-	babylonEngine.enableOfflineSupport = false;
-	await babylonEngine.initAsync();
-	return new RoomObjectPreviewEngine({ canvas, engine: babylonEngine });
-}
-
-export class RoomObjectPreviewEngine {
-	private canvas: HTMLCanvasElement;
+export class RoomObjectPreviewEngine extends EventEmitter {
 	private engine: BABYLON.WebGPUEngine;
 	private scene: BABYLON.Scene;
 	private sr: BABYLON.SnapshotRenderingHelper;
@@ -38,16 +29,28 @@ export class RoomObjectPreviewEngine {
 	private zGridPreviewPlane: BABYLON.Mesh;
 	private timerForEachObject: Timer | null = null;
 	private pipeline: BABYLON.DefaultRenderingPipeline;
+	private graphicsQuality: number;
 	private fps: number | null = null;
 	private disposed = false;
 
+	public inputs: EventEmitter<{
+		'click': (event: { x: number; y: number; }) => void;
+		'keydown': (event: { code: string; shiftKey: boolean; }) => void;
+		'keyup': (event: { code: string; shiftKey: boolean; }) => void;
+		'wheel': (event: { deltaY: number; }) => void;
+	}> = new EventEmitter();
+
 	constructor(options: {
-		canvas: HTMLCanvasElement;
 		engine: BABYLON.WebGPUEngine;
+		graphicsQuality: number;
+		fps: number | null;
 	}) {
-		this.canvas = options.canvas;
+		super();
 
 		registerBuiltInLoaders();
+
+		this.graphicsQuality = options.graphicsQuality;
+		this.fps = options.fps;
 
 		this.engine = options.engine;
 		this.scene = new BABYLON.Scene(this.engine);
@@ -78,7 +81,7 @@ export class RoomObjectPreviewEngine {
 		this.shadowGenerator.getShadowMap().refreshRate = 60;
 
 		const gridMaterial = new GridMaterial('grid', this.scene);
-		gridMaterial.lineColor = store.s.darkMode ? new BABYLON.Color3(1, 1, 1) : new BABYLON.Color3(0, 0, 0);
+		gridMaterial.lineColor = new BABYLON.Color3(1, 1, 1);
 		gridMaterial.mainColor = new BABYLON.Color3(0, 0, 0);
 		gridMaterial.minorUnitVisibility = 1;
 		gridMaterial.opacity = 0.05;
@@ -97,16 +100,17 @@ export class RoomObjectPreviewEngine {
 
 		this.pipeline = new BABYLON.DefaultRenderingPipeline('default', true, this.scene);
 		this.pipeline.samples = 4;
-		// 重い
-		//this.pipeline.bloomEnabled = true;
-		//this.pipeline.bloomThreshold = 0.95;
-		//this.pipeline.bloomWeight = 0.1;
-		//this.pipeline.bloomKernel = 256;
-		//this.pipeline.bloomScale = 2;
+		if (this.graphicsQuality >= GRAPHICS_QUALITY.HIGH) {
+			this.pipeline.bloomEnabled = true;
+			this.pipeline.bloomThreshold = 0.95;
+			this.pipeline.bloomWeight = 0.1;
+			this.pipeline.bloomKernel = 256;
+			this.pipeline.bloomScale = 2;
+		}
 		this.pipeline.sharpenEnabled = true;
 		this.pipeline.sharpen.edgeAmount = 0.5;
 
-		if (_DEV_) {
+		if (_DEV_ && typeof window !== 'undefined') {
 			window.takeScreenshot = () => {
 				const def = getObjectDef(this.objectType);
 
@@ -190,11 +194,16 @@ export class RoomObjectPreviewEngine {
 	public async init() {
 		await this.scene.whenReadyAsync();
 		this.sr.enableSnapshotRendering();
+
+		this.inputs.on('wheel', (ev) => {
+			this.camera.fov += ev.deltaY * 0.001;
+			this.camera.fov = Math.max(0.25, Math.min(0.5, this.camera.fov));
+		});
 	}
 
-	public async load(type: string) {
+	public async loadObject(type: string) {
 		this.sr.disableSnapshotRendering();
-		this.clear();
+		this.clearObject();
 
 		const id = genId();
 		const def = getObjectDef(type);
@@ -205,7 +214,7 @@ export class RoomObjectPreviewEngine {
 			}
 		}
 
-		await this.loadObject({
+		await this.loadObject_({
 			type,
 			options: this.objectOptions,
 			id,
@@ -217,7 +226,6 @@ export class RoomObjectPreviewEngine {
 		this.camera.dispose();
 
 		this.camera = new BABYLON.ArcRotateCamera('camera', Math.PI / 2, Math.PI / 2.5, cm(300), new BABYLON.Vector3(0, cm(90), 0), this.scene);
-		this.camera.attachControl(this.canvas);
 		this.camera.minZ = cm(1);
 		this.camera.maxZ = cm(100000);
 		this.camera.fov = 0.5;
@@ -229,6 +237,11 @@ export class RoomObjectPreviewEngine {
 		this.camera.wheelDeltaPercentage = 0.01;
 		//this.camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
 		this.camera.setTarget(new BABYLON.Vector3(0, boundingInfo.centerWorld.y, 0));
+		this.camera.inputs.clear();
+
+		this.camera.inputs.add(new ArcRotateCameraManualInput(this.scene, {
+			rotationSensitivity: 0.0005,
+		}));
 
 		if (def.placement === 'wall' || def.placement === 'side') {
 			this.camera.lowerBetaLimit = 0;
@@ -260,12 +273,11 @@ export class RoomObjectPreviewEngine {
 
 		return {
 			id,
-			objectInstance: this.objectInstance,
 			options: this.objectOptions,
 		};
 	}
 
-	private async loadObject(args: {
+	private async loadObject_(args: {
 		type: string;
 		options: any;
 		id: string;
@@ -365,7 +377,7 @@ export class RoomObjectPreviewEngine {
 		return this.objectOptions;
 	}
 
-	public clear() {
+	public clearObject() {
 		this.sr.disableSnapshotRendering();
 		if (this.timerForEachObject != null) {
 			this.timerForEachObject.dispose();
@@ -380,6 +392,10 @@ export class RoomObjectPreviewEngine {
 			this.objectType = null;
 		}
 		this.sr.enableSnapshotRendering();
+	}
+
+	public cameraRotate(vector: { x: number; y: number; }) {
+		(this.camera.inputs.attached.manual as ArcRotateCameraManualInput).setRotationVector(vector);
 	}
 
 	public resize() {
