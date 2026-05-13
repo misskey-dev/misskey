@@ -141,6 +141,8 @@ watch(selectedId, (newId) => {
 	showObjectOptions.value = false;
 	showPreview.value = false;
 
+	if (!controller.isReady.value) return;
+
 	if (newId == null) {
 		controller.clearObject();
 		controller.pauseRender();

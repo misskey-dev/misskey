@@ -295,6 +295,8 @@ export abstract class EngineControllerBase {
 			}
 		} else if (this.engine != null) {
 			return this.engine[fn](...args);
+		} else {
+			throw new Error('Engine is not initialized');
 		}
 	}
 
@@ -304,6 +306,8 @@ export abstract class EngineControllerBase {
 			this.worker.postMessage({ type: 'set', key, value });
 		} else if (this.engine != null) {
 			this.engine[key] = value;
+		} else {
+			throw new Error('Engine is not initialized');
 		}
 	}
 
@@ -326,6 +330,7 @@ export abstract class EngineControllerBase {
 		}
 	}
 
+	// TODO: isReadyになる前に呼ばれたらメモリリークしそうな気もするから調査の上いい感じにする
 	public destroy() {
 		this.abortController.abort();
 
