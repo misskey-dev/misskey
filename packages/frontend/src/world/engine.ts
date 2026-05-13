@@ -29,6 +29,7 @@ export type WorldEngineEvents = {
 	'loadingProgress': (ctx: { progress: number }) => void;
 };
 
+// TODO: RoomEngineBaseとしてabstract classを抽出
 export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 	private canvas: HTMLCanvasElement;
 	private engine: BABYLON.WebGPUEngine;
@@ -616,7 +617,7 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 	}
 
 	public resize() {
-		this.engine.resize();
+		this.engine.resize(true);
 	}
 
 	public destroy() {

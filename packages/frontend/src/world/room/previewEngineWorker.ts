@@ -9,6 +9,7 @@ import { RoomObjectPreviewEngine } from './previewEngine.js';
 let engine: RoomObjectPreviewEngine | null = null;
 let canvas: OffscreenCanvas | null = null;
 
+// TODO: 他のWorkerと実装を共通化
 onmessage = async (event) => {
 	//console.log('Worker received message:', event.data);
 
@@ -60,6 +61,11 @@ onmessage = async (event) => {
 		case 'input:wheel': {
 			if (engine == null) break;
 			engine.inputs.emit('wheel', event.data.ev);
+			break;
+		}
+		case 'input:pointer': {
+			if (engine == null) break;
+			engine.inputs.emit('pointer', event.data.ev);
 			break;
 		}
 		case 'call': {

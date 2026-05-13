@@ -114,6 +114,7 @@ export type RoomEngineEvents = {
 	'loadingProgress': (ctx: { progress: number }) => void;
 };
 
+// TODO: RoomEngineBaseとしてabstract classを抽出
 export class RoomEngine extends EventEmitter {
 	private useGlow: boolean;
 	private engine: BABYLON.WebGPUEngine;
@@ -207,6 +208,7 @@ export class RoomEngine extends EventEmitter {
 		'keydown': (event: { code: string; shiftKey: boolean; }) => void;
 		'keyup': (event: { code: string; shiftKey: boolean; }) => void;
 		'wheel': (event: { deltaY: number; }) => void;
+		'pointer': (event: { x: number; y: number; }) => void;
 	}> = new EventEmitter();
 
 	constructor(roomState: RoomState, options: {
@@ -393,7 +395,8 @@ export class RoomEngine extends EventEmitter {
 		//this.scene.blockMaterialDirtyMechanism = true;
 
 		const box = BABYLON.MeshBuilder.CreateBox('', { size: cm(10) }, this.scene);
-		window.setInterval(() => {
+		// eslint-disable-next-line no-restricted-globals
+		setInterval(() => {
 			box.position = new BABYLON.Vector3(0, Math.random() * cm(10), 0);
 		}, 10);
 
@@ -482,6 +485,10 @@ export class RoomEngine extends EventEmitter {
 					}
 				}
 			}
+		});
+
+		this.inputs.on('pointer', (ev) => {
+			(this.camera.inputs.attached.manual as FreeCameraManualInput).setRotationVector({ x: ev.x, y: ev.y });
 		});
 
 		this.inited = true;
@@ -1690,7 +1697,7 @@ export class RoomEngine extends EventEmitter {
 		// ~~...が、一旦無効にしたらしたで複数のマテリアルがそれぞれ入れ替わる(?)という謎の現象が発生するためコメントアウトしとく(エラー出てもレンダリングが止まったりするわけでもないし)~~
 		// ↑追記: engine.resizeした後に一瞬待つことで回避できることが判明
 		this.sr.disableSnapshotRendering();
-		this.engine.resize();
+		this.engine.resize(true);
 		// workerで実行される可能性がある
 		// eslint-disable-next-line no-restricted-globals
 		setTimeout(() => {

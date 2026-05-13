@@ -14,6 +14,7 @@ import type { RoomObjectInstance } from './object.js';
 import { genId } from '@/utility/id.js';
 import { deepClone } from '@/utility/clone.js';
 
+// TODO: RoomEngineBaseとしてabstract classを抽出
 export class RoomObjectPreviewEngine extends EventEmitter {
 	private engine: BABYLON.WebGPUEngine;
 	private scene: BABYLON.Scene;
@@ -38,6 +39,7 @@ export class RoomObjectPreviewEngine extends EventEmitter {
 		'keydown': (event: { code: string; shiftKey: boolean; }) => void;
 		'keyup': (event: { code: string; shiftKey: boolean; }) => void;
 		'wheel': (event: { deltaY: number; }) => void;
+		'pointer': (event: { x: number; y: number; }) => void;
 	}> = new EventEmitter();
 
 	constructor(options: {
@@ -196,8 +198,12 @@ export class RoomObjectPreviewEngine extends EventEmitter {
 		this.sr.enableSnapshotRendering();
 
 		this.inputs.on('wheel', (ev) => {
-			this.camera.fov += ev.deltaY * 0.001;
+			this.camera.fov += ev.deltaY * 0.0005;
 			this.camera.fov = Math.max(0.25, Math.min(0.5, this.camera.fov));
+		});
+
+		this.inputs.on('pointer', (ev) => {
+			(this.camera.inputs.attached.manual as ArcRotateCameraManualInput).setRotationVector({ x: ev.x, y: ev.y });
 		});
 	}
 
@@ -403,7 +409,7 @@ export class RoomObjectPreviewEngine extends EventEmitter {
 		// ~~...が、一旦無効にしたらしたで複数のマテリアルがそれぞれ入れ替わる(?)という謎の現象が発生するためコメントアウトしとく(エラー出てもレンダリングが止まったりするわけでもないし)~~
 		// ↑追記: engine.resizeした後に一瞬待つことで回避できることが判明
 		this.sr.disableSnapshotRendering();
-		this.engine.resize();
+		this.engine.resize(true);
 		// workerで実行される可能性がある
 		// eslint-disable-next-line no-restricted-globals
 		setTimeout(() => {

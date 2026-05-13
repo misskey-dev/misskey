@@ -3,140 +3,41 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { reactive, ref, shallowRef, triggerRef, watch } from 'vue';
-import * as BABYLON from '@babylonjs/core';
-import { WorldEngine } from './engine.js';
-import type { ShallowRef } from 'vue';
-import * as sound from '@/utility/sound.js';
+import { EngineControllerBase } from './engineControllerBase.js';
+
+export type WorldEngineControllerOptions = {
+	workerMode?: boolean;
+	graphicsQuality: number;
+	fps: number | null;
+	resolution: number;
+	antialias: boolean;
+};
 
 // 抽象化レイヤー
-// TODO: 他のcontrollerと共通部分を抽出してabstract classを作ってそこから派生する形にする
-export class WorldController {
-	private worker: Worker | null = null;
-	private engine: WorldEngine | null = null;
-	private canvas: HTMLCanvasElement | null = null;
-	public isReady = ref(false);
-	public isSitting = ref(false);
-	public initializeProgress = ref(0);
-
-	constructor() {
-	}
-
-	public async init(canvas: HTMLCanvasElement, workerMode = false) {
-		this.canvas = canvas;
-		this.canvas.width = canvas.clientWidth;
-		this.canvas.height = canvas.clientHeight;
-
-		if (workerMode) {
-			//const offscreen = canvas.transferControlToOffscreen();
-			//this.worker = new RoomWorker();
-			//this.worker.postMessage({ type: 'init', canvas: offscreen }, [offscreen]);
-			//this.isReady.value = true;
-		} else {
-			const babylonEngine = new BABYLON.WebGPUEngine(canvas, { doNotHandleContextLost: true });
-			babylonEngine.compatibilityMode = false;
-			await babylonEngine.initAsync();
-			this.engine = new WorldEngine({ canvas, engine: babylonEngine });
-			this.engine.on('loadingProgress', ({ progress }) => {
-				this.initializeProgress.value = progress;
-			});
-			await this.engine.init();
-			this.initializeProgress.value = 1;
-			this.isReady.value = true;
-
-			this.engine.on('playSfxUrl', ({ url, options }) => {
-				sound.playUrl(url, options);
-			});
-		}
-
-		this.canvas.addEventListener('keydown', (ev) => {
-			if (this.worker != null) {
-				this.worker.postMessage({ type: 'input:keydown', ev: { code: ev.code, shiftKey: ev.shiftKey } });
-			} else if (this.engine != null) {
-				this.engine.inputs.emit('keydown', { code: ev.code, shiftKey: ev.shiftKey });
-			}
-			ev.preventDefault();
-			ev.stopPropagation();
-			return false;
-		});
-
-		this.canvas.addEventListener('keyup', (ev) => {
-			if (this.worker != null) {
-				this.worker.postMessage({ type: 'input:keyup', ev: { code: ev.code, shiftKey: ev.shiftKey } });
-			} else if (this.engine != null) {
-				this.engine.inputs.emit('keyup', { code: ev.code, shiftKey: ev.shiftKey });
-			}
-			ev.preventDefault();
-			ev.stopPropagation();
-			return false;
-		});
-
-		this.canvas.addEventListener('pointerdown', (ev) => {
-			// todo
-		});
-
-		this.canvas.addEventListener('wheel', (ev) => {
-			if (this.worker != null) {
-				this.worker.postMessage({ type: 'input:wheel', ev: { deltaY: ev.deltaY } });
-			} else if (this.engine != null) {
-				this.engine.inputs.emit('wheel', { deltaY: ev.deltaY });
-			}
-			ev.preventDefault();
-			ev.stopPropagation();
-			return false;
-		});
-
-		let isDragging = false;
-
-		this.canvas.addEventListener('pointerdown', (ev) => {
-			this.canvas.setPointerCapture(ev.pointerId);
-		});
-
-		this.canvas.addEventListener('pointermove', (ev) => {
-			if (this.canvas.hasPointerCapture(ev.pointerId)) {
-				isDragging = true;
-			}
-		});
-
-		this.canvas.addEventListener('pointerup', (ev) => {
-			window.setTimeout(() => {
-				isDragging = false;
-				this.canvas.releasePointerCapture(ev.pointerId);
-			}, 0);
-		});
-
-		this.canvas.addEventListener('click', (ev) => {
-			if (isDragging) return;
-			if (this.worker != null) {
-				this.worker.postMessage({ type: 'input:click', ev: { offsetX: ev.offsetX, offsetY: ev.offsetY } });
-			} else if (this.engine != null) {
-				this.engine.inputs.emit('click', { offsetX: ev.offsetX, offsetY: ev.offsetY });
-			}
-			ev.preventDefault();
-			ev.stopPropagation();
-			return false;
+export class WorldEngineController extends EngineControllerBase {
+	constructor(options: WorldEngineControllerOptions) {
+		super({
+			...options,
 		});
 	}
 
-	public resize() {
-		if (this.canvas == null) return;
-		const width = this.canvas.clientWidth;
-		const height = this.canvas.clientHeight;
-		if (this.worker != null) {
-			this.worker.postMessage({ type: 'resize', width, height });
-		} else if (this.engine != null) {
-			this.engine.resize();
-		}
-	}
-
-	public destroy() {
-		if (this.worker != null) {
-			this.worker.terminate();
-			this.worker = null;
-		}
-		if (this.engine != null) {
-			this.engine.destroy();
-			this.engine = null;
-		}
+	public async init(canvas: HTMLCanvasElement) {
+		await this._init_(canvas, {
+			createWorker: (offscreen) => new Promise((resolve) => {
+				import('./worker?worker').then(({ default: WorldEngineWorker }) => {
+					const worker = new WorldEngineWorker();
+					worker.postMessage({ type: 'init', canvas: offscreen, options: this.options }, [offscreen]);
+					resolve(worker);
+				});
+			}),
+			createEngine: (babylonEngine) => new Promise((resolve) => {
+				import('./engine.js').then(({ WorldEngine }) => {
+					resolve(new WorldEngine({
+						engine: babylonEngine,
+						...this.options,
+					}));
+				});
+			}),
+		});
 	}
 }

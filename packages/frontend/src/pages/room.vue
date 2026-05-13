@@ -44,15 +44,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.overlayBottom">
 			<div v-if="controller.isReady.value" class="_buttonsCenter _panel _shadow" :class="$style.overlayControls">
 				<template v-if="controller.isEditMode.value">
-					<MkButton v-if="controller.grabbing.value" @click="cancelGrabbing" iconOnly v-tooltip="'Cancel (Q)'"><i class="ti ti-x"></i></MkButton>
-					<MkButton v-if="controller.grabbing.value && !controller.grabbing.value.forInstall" @click="endGrabbing" iconOnly v-tooltip="'Put (E)'"><i class="ti ti-check"></i></MkButton>
-					<MkButton v-else-if="controller.grabbing.value && controller.grabbing.value.forInstall" @click="endGrabbing" iconOnly v-tooltip="'Put (E)'"><i class="ti ti-check"></i></MkButton>
-					<MkButton v-else-if="controller.selected.value != null" @click="beginSelectedInstalledObjectGrabbing" iconOnly v-tooltip="'Grab (E)'"><i class="ti ti-hand-grab"></i></MkButton>
+					<MkButton v-if="controller.grabbing.value" v-tooltip="'Cancel (Q)'" iconOnly @click="cancelGrabbing"><i class="ti ti-x"></i></MkButton>
+					<MkButton v-if="controller.grabbing.value && !controller.grabbing.value.forInstall" v-tooltip="'Put (E)'" iconOnly @click="endGrabbing"><i class="ti ti-check"></i></MkButton>
+					<MkButton v-else-if="controller.grabbing.value && controller.grabbing.value.forInstall" v-tooltip="'Put (E)'" iconOnly @click="endGrabbing"><i class="ti ti-check"></i></MkButton>
+					<MkButton v-else-if="controller.selected.value != null" v-tooltip="'Grab (E)'" iconOnly @click="beginSelectedInstalledObjectGrabbing"><i class="ti ti-hand-grab"></i></MkButton>
 
-					<MkButton v-if="controller.grabbing.value" @click="controller.changeGrabbingRotation(Math.PI / 8)" iconOnly><i class="ti ti-rotate-clockwise"></i></MkButton>
-					<MkButton v-if="controller.grabbing.value" @click="controller.changeGrabbingRotation(-Math.PI / 8)" iconOnly><i class="ti ti-rotate"></i></MkButton>
-					<MkButton v-if="controller.grabbing.value" @click="controller.changeGrabbingDistance(10)" iconOnly><i class="ti ti-arrows-maximize"></i></MkButton>
-					<MkButton v-if="controller.grabbing.value" @click="controller.changeGrabbingDistance(-10)" iconOnly><i class="ti ti-arrows-minimize"></i></MkButton>
+					<MkButton v-if="controller.grabbing.value" iconOnly @click="controller.changeGrabbingRotation(Math.PI / 8)"><i class="ti ti-rotate-clockwise"></i></MkButton>
+					<MkButton v-if="controller.grabbing.value" iconOnly @click="controller.changeGrabbingRotation(-Math.PI / 8)"><i class="ti ti-rotate"></i></MkButton>
+					<MkButton v-if="controller.grabbing.value" iconOnly @click="controller.changeGrabbingDistance(10)"><i class="ti ti-arrows-maximize"></i></MkButton>
+					<MkButton v-if="controller.grabbing.value" iconOnly @click="controller.changeGrabbingDistance(-10)"><i class="ti ti-arrows-minimize"></i></MkButton>
 
 					<MkButton v-if="!controller.grabbing.value && controller.selected.value != null" @click="removeSelectedObject"><i class="ti ti-trash"></i> (X)</MkButton>
 				</template>
@@ -264,7 +264,7 @@ const roomControllerOptions = computed<RoomControllerOptions>(() => ({
 	resolution: resolution.value,
 	antialias: antialias.value,
 	useVirtualJoystick,
-	workerMode: false,
+	workerMode: true,
 }));
 
 const controller = markRaw(new RoomController(data, roomControllerOptions.value));
