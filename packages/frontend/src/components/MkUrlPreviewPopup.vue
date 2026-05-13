@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.root" :style="{ zIndex, top: top + 'px', left: left + 'px' }">
 	<Transition :name="prefer.s.animation ? '_transition_zoom' : ''" @afterLeave="emit('closed')">
-		<MkUrlPreview v-if="showing" class="_popup _shadow" :url="url" :showActions="false" :forceCompactCard="forceCompactCard"/>
+		<MkUrlPreview v-if="showing" class="_popup _shadow" :url="url" :showActions="false" forceCompactCard/>
 	</Transition>
 </div>
 </template>
@@ -21,7 +21,6 @@ const props = defineProps<{
 	showing: boolean;
 	url: string;
 	anchorElement: HTMLElement;
-	forceCompactCard?: boolean;
 }>();
 
 const emit = defineEmits<{

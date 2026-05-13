@@ -47,10 +47,8 @@ const props = withDefaults(defineProps<{
 	rel?: string;
 	showUrlPreview?: boolean;
 	navigationBehavior?: MkABehavior;
-	forceCompactPreview?: boolean;
 }>(), {
 	showUrlPreview: true,
-	forceCompactPreview: false,
 });
 
 const maybeRelativeUrl = maybeMakeRelative(props.url, local);
@@ -65,7 +63,6 @@ if (props.showUrlPreview && isEnabledUrlPreview.value) {
 			showing,
 			url: props.url,
 			anchorElement: el.value instanceof HTMLElement ? el.value : el.value?.$el,
-			forceCompactCard: props.forceCompactPreview,
 		}, {
 			closed: () => dispose(),
 		});

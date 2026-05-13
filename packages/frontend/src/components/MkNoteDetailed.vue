@@ -100,7 +100,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 						:emojiUrls="appearNote.emojis"
 						:enableEmojiMenu="true"
 						:enableEmojiMenuReaction="true"
-						:forceCompactUrlPreview="(urls?.length ?? 0) >= 2 || (appearNote.files != null && appearNote.files.length > 0)"
 						class="_selectable"
 					/>
 					<a v-if="appearNote.renote != null" :class="$style.rn">RN:</a>

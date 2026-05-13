@@ -120,7 +120,7 @@ const fetching = ref(true);
 const title = ref<string | null>(null);
 const description = ref<string | null>(null);
 const thumbnail = ref<string | null>(null);
-const thumbnailStyle = ref<'summary' | 'summary_large_image' | null>(null);
+const thumbnailStyle = ref<SummalyResult['thumbnailStyle']>(null);
 const icon = ref<string | null>(null);
 const sitename = ref<string | null>(null);
 const sensitive = ref<boolean>(false);
@@ -298,7 +298,7 @@ onUnmounted(() => {
 			position: relative;
 			width: 100%;
 			height: auto;
-			aspect-ratio: 16 / 9;
+			aspect-ratio: 1.91;
 
 			& + .body {
 				left: 0;
