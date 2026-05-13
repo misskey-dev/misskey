@@ -18,9 +18,9 @@ export type EngineControllerBaseOptions = {
 };
 
 // 抽象化レイヤー
-export abstract class EngineControllerBase {
+export abstract class EngineControllerBase<T extends RoomEngineBase> {
 	private worker: Worker | null = null;
-	private engine: RoomEngineBase | null = null;
+	private engine: T | null = null;
 	private canvas: HTMLCanvasElement | null = null;
 	protected options: EngineControllerBaseOptions;
 	private returnHooks = new Map<number, (value: any) => void>();
@@ -35,7 +35,7 @@ export abstract class EngineControllerBase {
 
 	protected async _init_(canvas: HTMLCanvasElement, params: {
 		createWorker: (offscreen: OffscreenCanvas) => Promise<Worker>;
-		createEngine: (babylonEngine: BABYLON.WebGPUEngine) => Promise<RoomEngineBase>;
+		createEngine: (babylonEngine: BABYLON.WebGPUEngine) => Promise<T>;
 	}) {
 		this.canvas = canvas;
 
