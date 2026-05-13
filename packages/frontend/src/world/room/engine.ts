@@ -120,6 +120,7 @@ export class RoomEngine extends EventEmitter {
 	private engine: BABYLON.WebGPUEngine;
 	public scene: BABYLON.Scene;
 	public camera: BABYLON.UniversalCamera;
+	private fixedCamera: BABYLON.FreeCamera;
 	public objectEntities: Map<string, {
 		rootMesh: BABYLON.Mesh;
 		instance: RoomObjectInstance;
@@ -272,7 +273,12 @@ export class RoomEngine extends EventEmitter {
 			}));
 		}
 
-		//this.scene.activeCamera = this.camera;
+		this.scene.activeCamera = this.camera;
+
+		this.fixedCamera = new BABYLON.FreeCamera('fixedCamera', new BABYLON.Vector3(0, cm(130), cm(0)), this.scene);
+		this.fixedCamera.minZ = cm(1);
+		this.fixedCamera.maxZ = cm(1000);
+		this.fixedCamera.inputs.clear();
 
 		this.lightContainer = new BABYLON.ClusteredLightContainer('clustered', [], this.scene);
 		this.lightContainer.maxRange = cm(1000);
@@ -1380,7 +1386,7 @@ export class RoomEngine extends EventEmitter {
 
 	public sitChair(objectId: string) {
 		this.isSitting = true;
-		this.fixedCamera.parent = this.objectMeshs.get(objectId);
+		this.fixedCamera.parent = this.objectEntities.get(objectId)!.rootMesh;
 		this.fixedCamera.position = new BABYLON.Vector3(0, cm(120), 0);
 		this.fixedCamera.rotation = new BABYLON.Vector3(0, 0, 0);
 		this.scene.activeCamera = this.fixedCamera;
