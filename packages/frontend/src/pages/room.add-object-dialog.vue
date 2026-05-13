@@ -17,18 +17,21 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div :class="$style.root">
 		<div :class="$style.main">
-			<MkFoldableSection v-if="recentlyUsedDefs.length > 0" :expanded="true">
-				<template #header>{{ i18n.ts.recentUsed }}</template>
-				<div :class="$style.catalogItems">
-					<XItem v-for="def in recentlyUsedDefs" :key="def.id" :def="def" :class="[$style.catalogItem]" @click="selectedId = def.id"/>
-				</div>
-			</MkFoldableSection>
-			<MkFoldableSection :expanded="true">
-				<template #header>{{ i18n.ts.all }}</template>
-				<div :class="$style.catalogItems">
-					<XItem v-for="def in OBJECT_DEFS" :key="def.id" :def="def" :class="[$style.catalogItem]" @click="selectedId = def.id"/>
-				</div>
-			</MkFoldableSection>
+			<div class="_spacer _gaps">
+				<MkInput v-model="searchKeyword" type="search" :placeholder="i18n.ts.search"></MkInput>
+				<MkFoldableSection v-if="recentlyUsedDefs.length > 0" :expanded="true">
+					<template #header>{{ i18n.ts.recentUsed }}</template>
+					<div :class="$style.catalogItems">
+						<XItem v-for="def in recentlyUsedDefs" :key="def.id" :def="def" :class="[$style.catalogItem]" @click="selectedId = def.id"/>
+					</div>
+				</MkFoldableSection>
+				<MkFoldableSection :expanded="true">
+					<template #header>{{ i18n.ts.all }}</template>
+					<div :class="$style.catalogItems">
+						<XItem v-for="def in OBJECT_DEFS" :key="def.id" :def="def" :class="[$style.catalogItem]" @click="selectedId = def.id"/>
+					</div>
+				</MkFoldableSection>
+			</div>
 		</div>
 		<Transition
 			:enterActiveClass="prefer.s.animation ? $style.transition_preview_enterActive : ''"
@@ -78,6 +81,7 @@ import { deepClone } from '@/utility/clone.js';
 import { store } from '@/store.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { PreviewEngineController } from '@/world/room/previewEngineController.js';
+import MkInput from '@/components/MkInput.vue';
 
 // TODO: instanceのidと紛らわしいのでid -> typeにする
 
@@ -102,6 +106,7 @@ const selectedInstanceId = ref<string | null>(null);
 const selectedObjectOptionsState = ref<RoomStateObject | null>(null);
 const selectedObjectDef = computed(() => OBJECT_DEFS.find(def => def.id === selectedId.value) ?? null);
 const showObjectOptions = ref(false);
+const searchKeyword = ref('');
 
 const previewEngineControllerOptions = computed<PreviewEngineControllerOptions>(() => ({
 	graphicsQuality: props.graphicsQuality,
@@ -219,7 +224,7 @@ async function cancel() {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
 	grid-gap: 12px;
-	padding: 12px;
+	padding: 8px 0;
 	box-sizing: border-box;
 }
 
