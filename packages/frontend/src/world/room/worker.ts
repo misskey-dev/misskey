@@ -71,22 +71,28 @@ onmessage = async (event) => {
 			break;
 		}
 		case 'call': {
-			if (engine != null) {
-				const res = engine[event.data.fn](...(event.data.args ?? []));
-				if (event.data.needReturnValue) {
-					if (res instanceof Promise) {
-						res.then((r) => {
-							self.postMessage({ type: 'return', id: event.data.id, value: r });
-						});
-					} else {
-						self.postMessage({ type: 'return', id: event.data.id, value: res });
-					}
+			if (engine == null) {
+				console.error('Failed to call: Engine is not initialized yet!!!');
+				break;
+			}
+			const res = engine[event.data.fn](...(event.data.args ?? []));
+			if (event.data.needReturnValue) {
+				if (res instanceof Promise) {
+					res.then((r) => {
+						self.postMessage({ type: 'return', id: event.data.id, value: r });
+					});
+				} else {
+					self.postMessage({ type: 'return', id: event.data.id, value: res });
 				}
 			}
 			break;
 		}
 		case 'set': {
-			if (engine != null) engine[event.data.key] = event.data.value;
+			if (engine == null) {
+				console.error('Failed to set: Engine is not initialized yet!!!');
+				break;
+			}
+			engine[event.data.key] = event.data.value;
 			break;
 		}
 		default: {

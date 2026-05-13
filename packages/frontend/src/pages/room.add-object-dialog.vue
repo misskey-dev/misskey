@@ -151,19 +151,24 @@ watch(selectedId, (newId) => {
 	} else {
 		const closeWaiting = os.waiting();
 		nextTick(() => {
-			controller.loadObject(newId).then(res => {
-				selectedInstanceId.value = res.id;
-				selectedObjectOptionsState.value = deepClone(res.options);
-				controller.resumeRender();
-				closeWaiting();
-				showPreview.value = true;
-				nextTick(() => {
-					controller.resize();
+			try {
+				controller.loadObject(newId).then(res => {
+					selectedInstanceId.value = res.id;
+					selectedObjectOptionsState.value = deepClone(res.options);
+					controller.resumeRender();
+					closeWaiting();
+					showPreview.value = true;
+					nextTick(() => {
+						controller.resize();
+					});
+				}).catch(err => {
+					console.error(err);
+					closeWaiting();
 				});
-			}).catch(err => {
+			} catch (err) {
 				console.error(err);
 				closeWaiting();
-			});
+			}
 		});
 	}
 });

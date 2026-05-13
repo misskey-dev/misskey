@@ -281,6 +281,9 @@ export abstract class EngineControllerBase {
 
 	// TODO: いい感じに型付け
 	protected call(fn, args = [], needReturnValue = false) {
+		if (!this.isReady.value) {
+			throw new Error('Engine is not initialized');
+		}
 		if (this.worker != null) {
 			if (needReturnValue) {
 				return new Promise((resolve) => {
@@ -302,6 +305,9 @@ export abstract class EngineControllerBase {
 
 	// TODO: いい感じに型付け
 	protected set(key, value) {
+		if (!this.isReady.value) {
+			throw new Error('Engine is not initialized');
+		}
 		if (this.worker != null) {
 			this.worker.postMessage({ type: 'set', key, value });
 		} else if (this.engine != null) {
