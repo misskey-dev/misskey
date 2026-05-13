@@ -125,7 +125,9 @@ const icon = ref<string | null>(null);
 const sitename = ref<string | null>(null);
 const sensitive = ref<boolean>(false);
 const isLargeImage = computed(() =>
-	thumbnail.value !== null &&
+	thumbnail.value != null &&
+	player.value.url == null &&
+	tweetId.value == null &&
 	!sensitive.value &&
 	thumbnailStyle.value === 'summary_large_image' &&
 	!prefer.s.forceCompactUrlPreview &&
