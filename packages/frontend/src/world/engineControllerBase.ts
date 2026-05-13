@@ -89,10 +89,6 @@ export abstract class EngineControllerBase {
 			if (this.options.resolution === 2) babylonEngine.setHardwareScalingLevel(0.5);
 			if (this.options.resolution === 0.5) babylonEngine.setHardwareScalingLevel(2);
 
-			//this.engine = new RoomEngine(this.roomState.value, {
-			//	engine: babylonEngine,
-			//	...this.options,
-			//});
 			this.engine = await params.createEngine(babylonEngine);
 
 			this.engine.on('ev', ({ type, ctx }) => {

@@ -248,6 +248,7 @@ async function cancel() {
 	display: block;
 	touch-action: none;
 	background: #000;
+	cursor: grab;
 }
 .canvas:focus {
 	outline: none;

@@ -116,6 +116,11 @@ export class RoomObjectPreviewEngine extends EventEmitter {
 			window.takeScreenshot = () => {
 				const def = getObjectDef(this.objectType);
 
+				this.scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
+				this.scene.autoClear = true;
+				this.sr.disableSnapshotRendering();
+				this.pipeline.dispose();
+
 				const boundingInfo = getMeshesBoundingBox(this.objectMesh!.getChildMeshes().filter(m => m.isEnabled() && m.isVisible));
 
 				const camera = new BABYLON.ArcRotateCamera('camera', Math.PI / 4, Math.PI / 2.5, cm(300), new BABYLON.Vector3(0, cm(90), 0), this.scene);
@@ -268,10 +273,6 @@ export class RoomObjectPreviewEngine extends EventEmitter {
 		const size = boundingInfo.extendSize;
 		const distance = Math.max(size.x, size.y, size.z) * 2;
 		this.camera.radius = distance * 3;
-		//this.camera.orthoLeft = -distance;
-		//this.camera.orthoRight = distance;
-		//this.camera.orthoTop = distance;
-		//this.camera.orthoBottom = -distance;
 
 		this.pipeline.addCamera(this.camera);
 
