@@ -162,12 +162,12 @@ watch(selectedId, (newId) => {
 						controller.resize();
 					});
 				}).catch(err => {
-					console.error(err);
 					closeWaiting();
+					throw err;
 				});
 			} catch (err) {
-				console.error(err);
 				closeWaiting();
+				throw err;
 			}
 		});
 	}
