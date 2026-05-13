@@ -182,9 +182,9 @@ export abstract class EngineControllerBase {
 				if (prevTwoTouchPointsDistance > 0) {
 					const delta = distance - prevTwoTouchPointsDistance;
 					if (this.worker != null) {
-						this.worker.postMessage({ type: 'input:wheel', ev: { deltaY: -delta * 3 } });
+						this.worker.postMessage({ type: 'input:zoom', ev: { delta: delta } });
 					} else if (this.engine != null) {
-						this.engine.inputs.emit('wheel', { deltaY: -delta * 3 });
+						this.engine.inputs.emit('zoom', { delta: delta });
 					}
 				}
 				prevTwoTouchPointsDistance = distance;

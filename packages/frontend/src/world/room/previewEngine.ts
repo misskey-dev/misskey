@@ -39,6 +39,7 @@ export class RoomObjectPreviewEngine extends EventEmitter {
 		'keydown': (event: { code: string; shiftKey: boolean; }) => void;
 		'keyup': (event: { code: string; shiftKey: boolean; }) => void;
 		'wheel': (event: { deltaY: number; }) => void;
+		'zoom': (event: { delta: number; }) => void;
 		'pointer': (event: { x: number; y: number; }) => void;
 	}> = new EventEmitter();
 
@@ -207,6 +208,11 @@ export class RoomObjectPreviewEngine extends EventEmitter {
 			this.camera.fov = Math.max(0.25, Math.min(0.5, this.camera.fov));
 		});
 
+		this.inputs.on('zoom', (ev) => {
+			this.camera.fov += -ev.delta * 0.0015;
+			this.camera.fov = Math.max(0.25, Math.min(0.5, this.camera.fov));
+		});
+
 		this.inputs.on('pointer', (ev) => {
 			(this.camera.inputs.attached.manual as ArcRotateCameraManualInput).setRotationVector({ x: ev.x, y: ev.y });
 		});
@@ -244,8 +250,6 @@ export class RoomObjectPreviewEngine extends EventEmitter {
 		this.camera.upperRadiusLimit = cm(1000);
 		this.camera.useAutoRotationBehavior = true;
 		this.camera.autoRotationBehavior!.idleRotationSpeed = 0.3;
-		this.camera.panningSensibility = 0;
-		this.camera.wheelDeltaPercentage = 0.01;
 		//this.camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
 		this.camera.setTarget(new BABYLON.Vector3(0, boundingInfo.centerWorld.y, 0));
 		this.camera.inputs.clear();

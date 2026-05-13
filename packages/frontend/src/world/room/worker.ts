@@ -65,6 +65,11 @@ onmessage = async (event) => {
 			engine.inputs.emit('wheel', event.data.ev);
 			break;
 		}
+		case 'input:zoom': {
+			if (engine == null) break;
+			engine.inputs.emit('zoom', event.data.ev);
+			break;
+		}
 		case 'input:pointer': {
 			if (engine == null) break;
 			engine.inputs.emit('pointer', event.data.ev);

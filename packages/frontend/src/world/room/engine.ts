@@ -208,6 +208,7 @@ export class RoomEngine extends EventEmitter {
 		'keydown': (event: { code: string; shiftKey: boolean; }) => void;
 		'keyup': (event: { code: string; shiftKey: boolean; }) => void;
 		'wheel': (event: { deltaY: number; }) => void;
+		'zoom': (event: { delta: number; }) => void;
 		'pointer': (event: { x: number; y: number; }) => void;
 	}> = new EventEmitter();
 
@@ -440,6 +441,15 @@ export class RoomEngine extends EventEmitter {
 				this.changeGrabbingDistance(ev.deltaY * 0.025);
 			} else {
 				this.camera.fov += ev.deltaY * 0.001;
+				this.camera.fov = Math.max(0.25, Math.min(1, this.camera.fov));
+			}
+		});
+
+		this.inputs.on('zoom', (ev) => {
+			if (this.grabbingCtx != null) {
+				this.changeGrabbingDistance(ev.delta * 0.1);
+			} else {
+				this.camera.fov += -ev.delta * 0.003;
 				this.camera.fov = Math.max(0.25, Math.min(1, this.camera.fov));
 			}
 		});
