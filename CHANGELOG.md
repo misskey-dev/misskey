@@ -22,6 +22,7 @@
 
 ### Server
 - Enhance: RSA 署名処理のオフロード
+- Fix: Startup and shutdown failures (port-in-use, socket permission denied, plugin timeouts, leaked WebSocket connections) are now reported through the misskey logger instead of an UnhandledPromiseRejectionWarning stack trace
 
 
 ## 2026.5.1
