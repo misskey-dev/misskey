@@ -19,9 +19,23 @@ import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { QueryService } from '@/core/QueryService.js';
 
-// TODO: やっていく
 const driveFileReferencingOptions = {
+	clippedPicture: ['customPicture'],
 	tapestry: ['customPicture'],
+	poster: ['customPicture'],
+	pictureFrame: ['customPicture'],
+	tabletopPictureFrame: ['customPicture'],
+	tabletopGlassPictureFrame: ['customPicture'],
+	wallCanvas: ['customPicture'],
+	wallGlassPictureFrame: ['customPicture'],
+	tabletopFlag: ['customPicture'],
+	tabletopLcdButtonsController: ['customPicture'],
+	djPlayer: ['customPicture'],
+	monitor: ['customPicture'],
+	allInOnePc: ['customPicture'],
+	laptopPc: ['customPicture'],
+	handheldGameConsole: ['customPicture'],
+	largeMousepad: ['customPicture'],
 } as Record<string, string[]>;
 
 @Injectable()
