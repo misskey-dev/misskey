@@ -8,7 +8,6 @@ import { DataSource, In, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import {
 	MiDriveFile,
-	type UsersRepository,
 	WorldRoomsRepository,
 	MiWorldRoom,
 } from '@/models/_.js';
