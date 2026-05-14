@@ -23,6 +23,7 @@ export function getLightRangeFactorByGraphicsQuality(quality: number) {
 	}
 }
 
+// TODO: addFileみたいなメソッドを持つクラス化して引き回させた方が便利かもしれない
 export type RoomAttachments = {
 	files: Misskey.entities.DriveFile[];
 };
