@@ -168,6 +168,7 @@ watch(selectedId, (newId) => {
 		const closeWaiting = os.waiting();
 		nextTick(() => {
 			try {
+				// TODO: timeout
 				controller.loadObject(newId).then(res => {
 					selectedInstanceId.value = res.id;
 					selectedObjectOptionsState.value = deepClone(res.options);
