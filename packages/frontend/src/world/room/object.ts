@@ -115,13 +115,13 @@ type GetConvertedOptionsSchemaValues<T extends OptionsSchema> = {
 	never;
 };
 
-export type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
+export type ObjectDef<OpSc extends OptionsSchema | undefined = undefined> = {
 	id: string;
 	name: string;
 	path?: string;
 	options: {
-		schema: OpSc;
-		default: GetRawOptionsSchemaValues<OpSc>;
+		schema: OpSc extends undefined ? OptionsSchema : NonNullable<OpSc>;
+		default: OpSc extends undefined ? RawOptions : GetRawOptionsSchemaValues<NonNullable<OpSc>>;
 	};
 	placement: 'top' | 'side' | 'bottom' | 'wall' | 'ceiling' | 'floor';
 	hasCollisions?: boolean;
@@ -141,13 +141,13 @@ export type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 		};
 		lc: BABYLON.ClusteredLightContainer | null;
 		root: BABYLON.Mesh;
-		options: Readonly<GetConvertedOptionsSchemaValues<OpSc>>;
+		options: OpSc extends undefined ? ConvertedOptions : Readonly<GetConvertedOptionsSchemaValues<NonNullable<OpSc>>>;
 		model: ModelManager;
 		id: string;
 		timer: Timer;
 		graphicsQuality: number;
 		stickyMarkerMeshUpdated?: (mesh: BABYLON.Mesh) => void;
-	}) => RoomObjectInstance<GetConvertedOptionsSchemaValues<OpSc>> | Promise<RoomObjectInstance<GetConvertedOptionsSchemaValues<OpSc>>>; // TODO: createInstanceをasyncにするのではなく、別にreadyみたいなものを返させる
+	}) => RoomObjectInstance<OpSc extends undefined ? ConvertedOptions : GetConvertedOptionsSchemaValues<NonNullable<OpSc>>> | Promise<OpSc extends undefined ? ConvertedOptions : RoomObjectInstance<GetConvertedOptionsSchemaValues<NonNullable<OpSc>>>>; // TODO: createInstanceをasyncにするのではなく、別にreadyみたいなものを返させる
 };
 
 export function defineObject<const OpSc extends OptionsSchema>(def: ObjectDef<OpSc>): ObjectDef<OpSc> {
@@ -162,8 +162,8 @@ export function defineObjectClass<const OpSc extends OptionsSchema>(baseDef: Par
 	};
 }
 
-export function convertRawOptions<OpSc extends OptionsSchema>(schema: OpSc, raw: RawOptions, attachments: RoomAttachments): GetConvertedOptionsSchemaValues<OpSc> {
-	const converted = {} as GetConvertedOptionsSchemaValues<OpSc>;
+export function convertRawOptions<OpSc extends OptionsSchema>(schema: OpSc, raw: RawOptions, attachments: RoomAttachments): ConvertedOptions {
+	const converted = {} as ConvertedOptions;
 	for (const record of Object.entries(schema)) {
 		const k = record[0];
 		const v = raw[k];

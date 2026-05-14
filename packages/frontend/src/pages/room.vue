@@ -71,7 +71,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="controller.isReady.value && controller.isEditMode.value && controller.selected.value != null && selectedObjectDef != null && !controller.grabbing.value" :key="controller.selected.value.objectId" class="_panel" :class="$style.overlayObjectInfoPanel">
 			{{ selectedObjectDef.name }}
 
-			<XObjectCustomizeForm :addFileAttachment="addFileAttachment" :schema="selectedObjectDef.options.schema" :options="controller.selected.value.objectState.options" @update="(k, v) => controller.updateObjectOption(controller.selected.value.objectId, k, v, attachments)"></XObjectCustomizeForm>
+			<XObjectCustomizeForm :addFileAttachment="addFileAttachment" :schema="selectedObjectDef.options.schema" :options="controller.selected.value.objectState.options" @update="(k, v) => updateObjectOption(k, v)"></XObjectCustomizeForm>
 		</div>
 
 		<div v-if="isRoomSettingsOpen && controller.isEditMode.value" class="_panel" :class="$style.overlayObjectInfoPanel">
@@ -265,6 +265,7 @@ const attachments = {
 } as RoomAttachments;
 
 function addFileAttachment(file: Misskey.entities.DriveFile) {
+	// TODO: clean unused attachment
 	attachments.files.push(file);
 }
 
@@ -458,6 +459,11 @@ function showSnappingMenu(ev: PointerEvent) {
 		active: computed(() => controller.gridSnapping.value.scale === cm(16)),
 		action: () => controller.setGridSnapping({ ...controller.gridSnapping.value, scale: cm(16) }),
 	}], ev.currentTarget ?? ev.target);
+}
+
+function updateObjectOption(k: string, v: any) {
+	// TODO: podtMrssageのコスト削減のためattachmentsは更新がある場合のみ送る
+	controller.updateObjectOption(controller.selected.value.objectId, k, v, attachments);
 }
 
 async function addObject(ev: PointerEvent) {

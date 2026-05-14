@@ -19,7 +19,7 @@ import { findMaterial, GRAPHICS_QUALITY, ModelManager, SYSTEM_HEYA_MESH_NAMES, S
 import { JapaneseEnvManager, MuseumEnvManager, SimpleEnvManager } from './env.js';
 import { convertRawOptions } from './object.js';
 import type { RoomAttachments } from './utility.js';
-import type { ConvertedOptions, ObjectDef, RoomObjectInstance, RoomStateObject } from './object.js';
+import type { ConvertedOptions, ObjectDef, RawOptions, RoomObjectInstance, RoomStateObject } from './object.js';
 import type { GridMaterial } from '@babylonjs/materials';
 import type { EnvManager, JapaneseEnvOptions, SimpleEnvOptions } from './env.js';
 import { genId } from '@/utility/id.js';
@@ -41,6 +41,22 @@ export type RoomState = {
 	installedObjects: RoomStateObject[];
 	worldScale: number;
 };
+
+export function collectAttachmentFileIds(roomState: RoomState) {
+	const fileIds = new Set<string>();
+	for (const o of roomState.installedObjects) {
+		const def = getObjectDef(o.type);
+		for (const schemaRecord of Object.entries(def.options.schema)) {
+			if (schemaRecord[1].type === 'file') {
+				const optionValue = o.options[schemaRecord[0]];
+				if (optionValue != null && optionValue !== '') {
+					fileIds.add(optionValue);
+				}
+			}
+		}
+	}
+	return fileIds;
+}
 
 function mergeMeshes(meshes: BABYLON.Mesh[], root: BABYLON.Mesh, hasTexture: boolean) {
 	const excludeMeshes = root.getChildMeshes().filter(m => SYSTEM_MESH_NAMES.some(s => m.name.includes(s)));
@@ -641,7 +657,7 @@ export class RoomEngine extends EventEmitter {
 		id: string;
 		position: BABYLON.Vector3;
 		rotation: BABYLON.Vector3;
-		options: any;
+		options: RawOptions;
 	}) {
 		const def = getObjectDef(args.type);
 
@@ -1448,7 +1464,7 @@ export class RoomEngine extends EventEmitter {
 		return root;
 	}
 
-	public async addObject(type: string, _options?: any, attachments?: RoomAttachments) {
+	public async addObject(type: string, _options?: RawOptions, attachments?: RoomAttachments) {
 		if (!this.isEditMode) return;
 		if (this.grabbingCtx != null) return;
 

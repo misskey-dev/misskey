@@ -114,6 +114,7 @@ import { wireNet } from './objects/wireNet.js';
 import { woodRingFloorLamp } from './objects/woodRingFloorLamp.js';
 import { woodRingsPendantLight } from './objects/woodRingsPendantLight.js';
 import { woodSoundAbsorbingPanel } from './objects/woodSoundAbsorbingPanel.js';
+import type { ObjectDef } from './object.js';
 
 export const OBJECT_DEFS = [
 	a4Case,
@@ -229,8 +230,8 @@ export const OBJECT_DEFS = [
 	wireBasket,
 ];
 
-export function getObjectDef(type: string): typeof OBJECT_DEFS[number] {
-	const def = OBJECT_DEFS.find(x => x.id === type);
+export function getObjectDef(type: string): ObjectDef {
+	const def = OBJECT_DEFS.find(x => x.id === type) as ObjectDef | undefined;
 	if (def == null) {
 		throw new Error(`Unrecognized object type: ${type}`);
 	}
