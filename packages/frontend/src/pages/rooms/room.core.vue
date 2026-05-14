@@ -4,83 +4,77 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="$style.root">
-	<div :class="[$style.screen, { [$style.zen]: false }]">
-		<canvas ref="canvas" :class="$style.canvas" tabindex="-1"></canvas>
+<div :class="[$style.screen, { [$style.zen]: false }]">
+	<canvas ref="canvas" :class="$style.canvas" tabindex="-1"></canvas>
 
-		<Transition
-			:enterActiveClass="$style.transition_fade_enterActive"
-			:leaveActiveClass="$style.transition_fade_leaveActive"
-			:enterFromClass="$style.transition_fade_enterFrom"
-			:leaveToClass="$style.transition_fade_leaveTo"
-		>
-			<div v-if="!controller.isReady.value" :class="$style.loading">
-				<MkProgressBar :class="$style.progressBar" :progress="controller.initializeProgress.value" :waiting="controller.initializeProgress.value === 1"/>
-			</div>
-		</Transition>
-
-		<div :class="$style.overlayTop">
-			<div :class="$style.topMain">
-				<div :class="$style.topMenu" class="_panel _shadow">
-					<template v-if="controller.isReady.value">
-						<button v-tooltip="'照明切り替え'" :class="$style.topMenuButton" class="_button" @click="toggleLight"><i class="ti ti-bulb"></i></button>
-						<button v-if="controller.isEditMode.value" :class="$style.topMenuButton" class="_button" style="color: var(--MI_THEME-accent)" @click="exitEditMode"><i class="ti ti-paint"></i></button>
-						<button v-if="!controller.isEditMode.value" :class="$style.topMenuButton" class="_button" @click="enterEditMode"><i class="ti ti-paint"></i></button>
-						<button v-if="controller.isEditMode.value" :class="$style.topMenuButton" class="_button" @click="addObject"><i class="ti ti-plus"></i></button>
-						<button v-if="controller.isEditMode.value" :class="$style.topMenuButton" class="_button" @click="showSnappingMenu"><i class="ti ti-grid-4x4"></i></button>
-						<button v-if="controller.isEditMode.value && !isRoomSettingsOpen" :class="$style.topMenuButton" class="_button" @click="() => isRoomSettingsOpen = true"><i class="ti ti-home-cog"></i></button>
-						<button v-if="controller.isEditMode.value && isRoomSettingsOpen" :class="$style.topMenuButton" class="_button" style="color: var(--MI_THEME-accent)" @click="() => isRoomSettingsOpen = false"><i class="ti ti-home-cog"></i></button>
-					</template>
-					<button :class="$style.topMenuButton" class="_button" @click="showOtherMenu"><i class="ti ti-dots"></i></button>
-				</div>
-				<div v-if="isModified" :class="$style.modified" class="_panel _shadow">
-					<span :class="$style.modifiedText">{{ i18n.ts._room.thereAreUnsavedChanges }}</span>
-					<button class="_button" style="color: var(--MI_THEME-error)" @click="revert">戻す</button>
-					<button class="_button" style="color: var(--MI_THEME-accent)" @click="save">保存</button>
-				</div>
-			</div>
+	<Transition
+		:enterActiveClass="$style.transition_fade_enterActive"
+		:leaveActiveClass="$style.transition_fade_leaveActive"
+		:enterFromClass="$style.transition_fade_enterFrom"
+		:leaveToClass="$style.transition_fade_leaveTo"
+	>
+		<div v-if="!controller.isReady.value" :class="$style.loading">
+			<MkProgressBar :class="$style.progressBar" :progress="controller.initializeProgress.value" :waiting="controller.initializeProgress.value === 1"/>
 		</div>
+	</Transition>
 
-		<div :class="$style.overlayBottom">
-			<div v-if="controller.isReady.value" class="_buttonsCenter _panel _shadow" :class="$style.overlayControls">
-				<template v-if="controller.isEditMode.value">
-					<MkButton v-if="controller.grabbing.value" v-tooltip="'Cancel (Q)'" iconOnly @click="cancelGrabbing"><i class="ti ti-x"></i></MkButton>
-					<MkButton v-if="controller.grabbing.value && !controller.grabbing.value.forInstall" v-tooltip="'Put (E)'" iconOnly @click="endGrabbing"><i class="ti ti-check"></i></MkButton>
-					<MkButton v-else-if="controller.grabbing.value && controller.grabbing.value.forInstall" v-tooltip="'Put (E)'" iconOnly @click="endGrabbing"><i class="ti ti-check"></i></MkButton>
-					<MkButton v-else-if="controller.selected.value != null" v-tooltip="'Grab (E)'" iconOnly @click="beginSelectedInstalledObjectGrabbing"><i class="ti ti-hand-grab"></i></MkButton>
-
-					<MkButton v-if="controller.grabbing.value" iconOnly @click="controller.changeGrabbingRotation(Math.PI / 8)"><i class="ti ti-rotate-clockwise"></i></MkButton>
-					<MkButton v-if="controller.grabbing.value" iconOnly @click="controller.changeGrabbingRotation(-Math.PI / 8)"><i class="ti ti-rotate"></i></MkButton>
-					<MkButton v-if="controller.grabbing.value" iconOnly @click="controller.changeGrabbingDistance(10)"><i class="ti ti-arrows-maximize"></i></MkButton>
-					<MkButton v-if="controller.grabbing.value" iconOnly @click="controller.changeGrabbingDistance(-10)"><i class="ti ti-arrows-minimize"></i></MkButton>
-
-					<MkButton v-if="!controller.grabbing.value && controller.selected.value != null" @click="removeSelectedObject"><i class="ti ti-trash"></i> (X)</MkButton>
+	<div :class="$style.overlayTop">
+		<div :class="$style.topMain">
+			<div :class="$style.topMenu" class="_panel _shadow">
+				<template v-if="controller.isReady.value">
+					<button v-tooltip="'照明切り替え'" :class="$style.topMenuButton" class="_button" @click="toggleLight"><i class="ti ti-bulb"></i></button>
+					<button v-if="controller.isEditMode.value" :class="$style.topMenuButton" class="_button" style="color: var(--MI_THEME-accent)" @click="exitEditMode"><i class="ti ti-paint"></i></button>
+					<button v-if="!controller.isEditMode.value" :class="$style.topMenuButton" class="_button" @click="enterEditMode"><i class="ti ti-paint"></i></button>
+					<button v-if="controller.isEditMode.value" :class="$style.topMenuButton" class="_button" @click="addObject"><i class="ti ti-plus"></i></button>
+					<button v-if="controller.isEditMode.value" :class="$style.topMenuButton" class="_button" @click="showSnappingMenu"><i class="ti ti-grid-4x4"></i></button>
+					<button v-if="controller.isEditMode.value && !isRoomSettingsOpen" :class="$style.topMenuButton" class="_button" @click="() => isRoomSettingsOpen = true"><i class="ti ti-home-cog"></i></button>
+					<button v-if="controller.isEditMode.value && isRoomSettingsOpen" :class="$style.topMenuButton" class="_button" style="color: var(--MI_THEME-accent)" @click="() => isRoomSettingsOpen = false"><i class="ti ti-home-cog"></i></button>
 				</template>
-				<MkButton v-if="controller.isSitting.value" @click="controller.standUp()">降りる (Q)</MkButton>
-				<template v-for="interaction in interacions" :key="interaction.id">
-					<MkButton inline @click="interaction.fn()">{{ interaction.label }}{{ interaction.isPrimary ? ' (E)' : '' }}</MkButton>
-				</template>
+				<button :class="$style.topMenuButton" class="_button" @click="showOtherMenu"><i class="ti ti-dots"></i></button>
 			</div>
-
-			<div v-if="useVirtualJoystick" ref="joyStickEl" :class="$style.joyStick" :style="{ '--startXPx': (joyStickStartPos?.x ?? 0) + 'px', '--startYPx': (joyStickStartPos?.y ?? 0) + 'px', '--rPx': joyStickRadiusPx + 'px' }">
-				<div v-show="joyStickStartPos != null" :class="$style.joyStickRangeCircle"></div>
-				<div v-show="joyStickVec.x !== 0 || joyStickVec.y !== 0" :class="$style.joyStickPuck" :style="{ '--x': joyStickVec.x, '--y': joyStickVec.y }"></div>
+			<div v-if="isModified" :class="$style.modified" class="_panel _shadow">
+				<span :class="$style.modifiedText">{{ i18n.ts._room.thereAreUnsavedChanges }}</span>
+				<button class="_button" style="color: var(--MI_THEME-error)" @click="revert">戻す</button>
+				<button class="_button" style="color: var(--MI_THEME-accent)" @click="save">保存</button>
 			</div>
-		</div>
-
-		<div v-if="controller.isReady.value && controller.isEditMode.value && controller.selected.value != null && selectedObjectDef != null && !controller.grabbing.value" :key="controller.selected.value.objectId" class="_panel" :class="$style.overlayObjectInfoPanel">
-			{{ selectedObjectDef.name }}
-
-			<XObjectCustomizeForm :addFileAttachment="addFileAttachment" :schema="selectedObjectDef.options.schema" :options="controller.selected.value.objectState.options" @update="(k, v) => updateObjectOption(k, v)"></XObjectCustomizeForm>
-		</div>
-
-		<div v-if="isRoomSettingsOpen && controller.isEditMode.value" class="_panel" :class="$style.overlayObjectInfoPanel">
-			<XEnvOptions :controller="controller"/>
 		</div>
 	</div>
 
-	<div v-if="controller.isReady.value" class="_buttons" :class="$style.controls">
-		<!--<MkButton v-for="action in actions" :key="action.key" @click="action.fn">{{ action.label }}{{ hotkeyToLabel(action.hotkey) }}</MkButton>-->
+	<div :class="$style.overlayBottom">
+		<div v-if="controller.isReady.value" class="_buttonsCenter _panel _shadow" :class="$style.overlayControls">
+			<template v-if="controller.isEditMode.value">
+				<MkButton v-if="controller.grabbing.value" v-tooltip="'Cancel (Q)'" iconOnly @click="cancelGrabbing"><i class="ti ti-x"></i></MkButton>
+				<MkButton v-if="controller.grabbing.value && !controller.grabbing.value.forInstall" v-tooltip="'Put (E)'" iconOnly @click="endGrabbing"><i class="ti ti-check"></i></MkButton>
+				<MkButton v-else-if="controller.grabbing.value && controller.grabbing.value.forInstall" v-tooltip="'Put (E)'" iconOnly @click="endGrabbing"><i class="ti ti-check"></i></MkButton>
+				<MkButton v-else-if="controller.selected.value != null" v-tooltip="'Grab (E)'" iconOnly @click="beginSelectedInstalledObjectGrabbing"><i class="ti ti-hand-grab"></i></MkButton>
+
+				<MkButton v-if="controller.grabbing.value" iconOnly @click="controller.changeGrabbingRotation(Math.PI / 8)"><i class="ti ti-rotate-clockwise"></i></MkButton>
+				<MkButton v-if="controller.grabbing.value" iconOnly @click="controller.changeGrabbingRotation(-Math.PI / 8)"><i class="ti ti-rotate"></i></MkButton>
+				<MkButton v-if="controller.grabbing.value" iconOnly @click="controller.changeGrabbingDistance(10)"><i class="ti ti-arrows-maximize"></i></MkButton>
+				<MkButton v-if="controller.grabbing.value" iconOnly @click="controller.changeGrabbingDistance(-10)"><i class="ti ti-arrows-minimize"></i></MkButton>
+
+				<MkButton v-if="!controller.grabbing.value && controller.selected.value != null" @click="removeSelectedObject"><i class="ti ti-trash"></i> (X)</MkButton>
+			</template>
+			<MkButton v-if="controller.isSitting.value" @click="controller.standUp()">降りる (Q)</MkButton>
+			<template v-for="interaction in interacions" :key="interaction.id">
+				<MkButton inline @click="interaction.fn()">{{ interaction.label }}{{ interaction.isPrimary ? ' (E)' : '' }}</MkButton>
+			</template>
+		</div>
+
+		<div v-if="useVirtualJoystick" ref="joyStickEl" :class="$style.joyStick" :style="{ '--startXPx': (joyStickStartPos?.x ?? 0) + 'px', '--startYPx': (joyStickStartPos?.y ?? 0) + 'px', '--rPx': joyStickRadiusPx + 'px' }">
+			<div v-show="joyStickStartPos != null" :class="$style.joyStickRangeCircle"></div>
+			<div v-show="joyStickVec.x !== 0 || joyStickVec.y !== 0" :class="$style.joyStickPuck" :style="{ '--x': joyStickVec.x, '--y': joyStickVec.y }"></div>
+		</div>
+	</div>
+
+	<div v-if="controller.isReady.value && controller.isEditMode.value && controller.selected.value != null && selectedObjectDef != null && !controller.grabbing.value" :key="controller.selected.value.objectId" class="_panel" :class="$style.overlayObjectInfoPanel">
+		{{ selectedObjectDef.name }}
+
+		<XObjectCustomizeForm :addFileAttachment="addFileAttachment" :schema="selectedObjectDef.options.schema" :options="controller.selected.value.objectState.options" @update="(k, v) => updateObjectOption(k, v)"></XObjectCustomizeForm>
+	</div>
+
+	<div v-if="isRoomSettingsOpen && controller.isEditMode.value" class="_panel" :class="$style.overlayObjectInfoPanel">
+		<XEnvOptions :controller="controller"/>
 	</div>
 </div>
 </template>
@@ -93,9 +87,8 @@ import XObjectCustomizeForm from './room.object-customize-form.vue';
 import XEnvOptions from './room.env-options.vue';
 import type { RoomControllerOptions } from '@/world/room/controller.js';
 import type { RoomAttachments } from '@/world/room/utility.js';
-import { definePage } from '@/page.js';
+import type { RoomState } from '@/world/room/engine.js';
 import { i18n } from '@/i18n.js';
-import { ensureSignin } from '@/i';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { RoomController } from '@/world/room/controller.js';
@@ -108,6 +101,11 @@ import { isTouchUsing } from '@/utility/touch.js';
 import { prefer } from '@/preferences.js';
 import { getObjectDef } from '@/world/room/object-defs.js';
 import { GRAPHICS_QUALITY } from '@/world/room/utility.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+
+const props = defineProps<{
+	room: Misskey.entities.WorldRoomDetailed;
+}>();
 
 const canvas = useTemplateRef('canvas');
 
@@ -168,100 +166,10 @@ const joyStickEl = useTemplateRef('joyStickEl');
 const joyStickVec = ref({ x: 0, y: 0 });
 const joyStickStartPos = ref<{ x: number; y: number } | null>(null);
 
-const data = localStorage.getItem('roomData') != null ? JSON.parse(localStorage.getItem('roomData')!) : {
-	env: {
-		type: 'simple',
-		options: {
-			dimension: [300, 300],
-			window: 'demado',
-			walls: {
-				n: {
-					material: null,
-					color: [0.9, 0.9, 0.9],
-					withBeam: false,
-					beamMaterial: null,
-					beamColor: [0.8, 0.8, 0.8],
-					withBaseboard: true,
-				},
-				e: {
-					material: null,
-					color: [0.9, 0.9, 0.9],
-					withBeam: false,
-					beamMaterial: null,
-					beamColor: [0.8, 0.8, 0.8],
-					withBaseboard: true,
-				},
-				s: {
-					material: null,
-					color: [0.9, 0.9, 0.9],
-					withBeam: false,
-					beamMaterial: null,
-					beamColor: [0.8, 0.8, 0.8],
-					withBaseboard: true,
-				},
-				w: {
-					material: null,
-					color: [0.9, 0.9, 0.9],
-					withBeam: false,
-					beamMaterial: null,
-					beamColor: [0.8, 0.8, 0.8],
-					withBaseboard: true,
-				},
-			},
-			pillars: {
-				nw: {
-					material: null,
-					color: [0.9, 0.9, 0.9],
-					show: false,
-				},
-				ne: {
-					material: null,
-					color: [0.9, 0.9, 0.9],
-					show: false,
-				},
-				sw: {
-					material: null,
-					color: [0.9, 0.9, 0.9],
-					show: false,
-				},
-				se: {
-					material: null,
-					color: [0.9, 0.9, 0.9],
-					show: false,
-				},
-			},
-			flooring: {
-				material: 'wood',
-				color: [0.9, 0.9, 0.9],
-			},
-			ceiling: {
-				material: null,
-				color: [0.9, 0.9, 0.9],
-			},
-		},
-	},
-	roomLightColor: [1.0, 0.9, 0.8],
-	installedObjects: [],
-	worldScale: WORLD_SCALE,
-};
-
-// 後方互換性のため
-if (data.worldScale == null) {
-	data.worldScale = 1;
-}
-if (data.heya != null) {
-	data.env = data.heya;
-	delete data.heya;
-}
-
-data.env.type = 'japanese';
-
-console.log('installedObjects:', data.installedObjects.length);
-
-let latestData = deepClone(data);
+let latestData = deepClone(props.room.def) as unknown as RoomState;
 
 const attachments = {
-	files: [],
+	files: deepClone(props.room.attachedFiles),
 } as RoomAttachments;
 
 function addFileAttachment(file: Misskey.entities.DriveFile) {
@@ -275,10 +183,10 @@ const roomControllerOptions = computed<RoomControllerOptions>(() => ({
 	resolution: resolution.value,
 	antialias: antialias.value,
 	useVirtualJoystick,
-	workerMode: true,
+	workerMode: false,
 }));
 
-const controller = markRaw(new RoomController(data, roomControllerOptions.value));
+const controller = markRaw(new RoomController(props.room.def, roomControllerOptions.value));
 
 const selectedObjectDef = computed(() => controller.selected.value == null ? null : getObjectDef(controller.selected.value.objectState.type));
 
@@ -497,9 +405,12 @@ function exitEditMode() {
 	controller.exitEditMode();
 }
 
-function save() {
+async function save() {
 	latestData = deepClone(controller.roomState.value);
-	localStorage.setItem('roomData', JSON.stringify(latestData));
+	await os.apiWithDialog('world/rooms/update', {
+		roomId: props.room.id,
+		def: controller.roomState.value,
+	});
 	isModified.value = false;
 }
 
@@ -519,14 +430,19 @@ async function refresh() {
 	await controller.reset(null, roomControllerOptions.value);
 }
 
+// TODO: ちゃんと書く
 function expor() {
-	const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(controller.roomState.value));
+	const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify({
+		attachments,
+		def: controller.roomState.value,
+	}));
 	const dlAnchorElem = window.document.createElement('a');
 	dlAnchorElem.setAttribute('href', dataStr);
 	dlAnchorElem.setAttribute('download', 'room.json');
 	dlAnchorElem.click();
 }
 
+// TODO: ちゃんと書く
 function impor() {
 	const inputElem = window.document.createElement('input');
 	inputElem.setAttribute('type', 'file');
@@ -638,21 +554,9 @@ function showOtherMenu(ev: PointerEvent) {
 		action: refresh,
 	}], ev.currentTarget ?? ev.target);
 }
-
-definePage(() => ({
-	title: 'Room',
-	icon: 'ti ti-door',
-	needWideArea: true,
-}));
 </script>
 
 <style lang="scss" module>
-.root {
-	height: 100%;
-	overflow: clip;
-	background: var(--MI_THEME-bg);
-}
-
 .screen {
 	position: relative;
 	width: 100%;

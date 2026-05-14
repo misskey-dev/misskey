@@ -87,6 +87,7 @@ export class WorldRoomService {
 		room: MiWorldRoom,
 		body: Partial<MiWorldRoom>,
 	): Promise<void> {
+		body.updatedAt = new Date();
 		return this.worldRoomsRepository.createQueryBuilder().update()
 			.set(body)
 			.where('id = :id', { id: room.id })

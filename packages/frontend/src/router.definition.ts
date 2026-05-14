@@ -598,8 +598,11 @@ export const ROUTE_DEF = [{
 	path: '/world',
 	component: page(() => import('@/pages/world.vue')),
 }, {
-	path: '/room',
-	component: page(() => import('@/pages/room.vue')),
+	path: '/rooms',
+	component: page(() => import('@/pages/rooms/index.vue')),
+}, {
+	path: '/rooms/:roomId',
+	component: page(() => import('@/pages/rooms/room.vue')),
 }, {
 	path: '/debug',
 	component: page(() => import('@/pages/debug.vue')),

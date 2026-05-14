@@ -38,7 +38,7 @@ export class RoomController extends EngineControllerBase<RoomEngine> {
 
 	constructor(roomState: RoomState, options: RoomControllerOptions) {
 		super(options);
-		this.roomState = shallowRef(roomState);
+		this.roomState = shallowRef(deepClone(roomState));
 	}
 
 	public async init(canvas: HTMLCanvasElement, attachments: RoomAttachments) {

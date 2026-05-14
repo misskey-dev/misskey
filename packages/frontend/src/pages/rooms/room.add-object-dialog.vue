@@ -124,7 +124,7 @@ const previewEngineControllerOptions = computed<PreviewEngineControllerOptions>(
 	graphicsQuality: props.graphicsQuality,
 	fps: null,
 	resolution: 1,
-	workerMode: true,
+	workerMode: false,
 }));
 
 const controller = markRaw(new PreviewEngineController(previewEngineControllerOptions.value));
