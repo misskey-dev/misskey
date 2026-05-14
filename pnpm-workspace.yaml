@@ -11,26 +11,26 @@ packages:
   - packages/misskey-js/generator
   - packages/misskey-reversi
   - packages/misskey-bubble-game
-onlyBuiltDependencies:
-  - '@nestjs/core'
-  - '@parcel/watcher'
-  - '@sentry/profiling-node'
-  - '@sentry-internal/node-cpu-profiler'
-  - '@tensorflow/tfjs-node'
-  - bufferutil
-  - canvas
-  - core-js
-  - cypress
-  - esbuild
-  - msgpackr-extract
-  - msw
-  - nice-napi
-  - re2
-  - sharp
-  - utf-8-validate
-  - v-code-diff
-  - vue-demi
-ignorePatchFailures: false
+allowBuilds:
+  '@nestjs/core': true
+  '@parcel/watcher': true
+  '@sentry/profiling-node': true
+  '@sentry-internal/node-cpu-profiler': true
+  '@tensorflow/tfjs-node': true
+  bufferutil: true
+  canvas: true
+  core-js: true
+  cypress: true
+  esbuild: true
+  msgpackr-extract: true
+  msw: true
+  nice-napi: true
+  re2: true
+  sharp: true
+  utf-8-validate: true
+  v-code-diff: true
+  vue-demi: true
+  exifreader: false
 minimumReleaseAge: 10080 # delay 7days to mitigate supply-chain attack
 minimumReleaseAgeExclude:
   - '@misskey-dev/*'
@@ -52,3 +52,12 @@ minimumReleaseAgeExclude:
   - slacc-win32-arm64-msvc
   - slacc-win32-x64-msvc
   - '@typescript/native-preview*'
+  - pnpm
+  - systeminformation # 脆弱性対応。そのうち消す
+overrides:
+  '@aiscript-dev/aiscript-languageserver': '-'
+  chokidar: 5.0.0
+  lodash: 4.18.1
+engineStrict: true
+saveExact: true
+shellEmulator: true
