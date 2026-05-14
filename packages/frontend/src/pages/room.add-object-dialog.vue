@@ -84,6 +84,7 @@ import { store } from '@/store.js';
 import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { PreviewEngineController } from '@/world/room/previewEngineController.js';
 import MkInput from '@/components/MkInput.vue';
+import { withTimeout } from '@/utility/promise-timeout.js';
 
 // TODO: instanceのidと紛らわしいのでid -> typeにする
 
@@ -168,8 +169,7 @@ watch(selectedId, (newId) => {
 		const closeWaiting = os.waiting();
 		nextTick(() => {
 			try {
-				// TODO: timeout
-				controller.loadObject(newId).then(res => {
+				withTimeout(controller.loadObject(newId), 10000).then(res => {
 					selectedInstanceId.value = res.id;
 					selectedObjectOptionsState.value = deepClone(res.options);
 					controller.resumeRender();

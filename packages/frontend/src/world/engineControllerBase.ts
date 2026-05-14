@@ -292,7 +292,7 @@ export abstract class EngineControllerBase<T extends RoomEngineBase> {
 		}
 	}
 
-	protected callAndWaitReturn<FN extends keyof T>(fn: FN, args: Parameters<T[FN]> = [] as any): Promise<ReturnType<T[FN]>> {
+	protected callAndWaitReturn<FN extends keyof T>(fn: FN, args: Parameters<T[FN]> = [] as any): ReturnType<T[FN]> extends Promise<any> ? ReturnType<T[FN]> : Promise<ReturnType<T[FN]>> {
 		if (!this.isReady.value) {
 			throw new Error('Engine is not initialized');
 		}
