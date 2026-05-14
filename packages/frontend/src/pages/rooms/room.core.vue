@@ -440,6 +440,7 @@ function expor() {
 	const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify({
 		attachments,
 		def: controller.roomState.value,
+		v: roomSpecVersion,
 	}));
 	const dlAnchorElem = window.document.createElement('a');
 	dlAnchorElem.setAttribute('href', dataStr);
