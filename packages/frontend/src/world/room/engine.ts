@@ -1453,7 +1453,7 @@ export class RoomEngine extends EventEmitter {
 	private createGhost(mesh: BABYLON.Mesh): BABYLON.TransformNode {
 		const root = new BABYLON.TransformNode('ghost_root', this.scene);
 
-		const arrowGhost = BABYLON.MeshBuilder.CreateCylinder('', { height: cm(10), diameterBottom: cm(5), diameterTop: 0, tessellation: 8 });
+		const arrowGhost = BABYLON.MeshBuilder.CreateCylinder('', { height: cm(10), diameterBottom: cm(5), diameterTop: 0, tessellation: 8 }, this.scene);
 		arrowGhost.parent = root;
 		const arrowGhostMat = new BABYLON.StandardMaterial('', this.scene);
 		arrowGhostMat.emissiveColor = new BABYLON.Color3(0, 1, 0);
