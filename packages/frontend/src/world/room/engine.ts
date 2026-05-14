@@ -42,7 +42,7 @@ export type RoomState = {
 	worldScale: number;
 };
 
-export function collectAttachmentFileIds(roomState: RoomState) {
+export function collectReferencedDriveFileIds(roomState: RoomState) {
 	const fileIds = new Set<string>();
 	for (const o of roomState.installedObjects) {
 		const def = getObjectDef(o.type);

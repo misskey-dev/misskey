@@ -7,7 +7,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DataSource, In, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import {
-	MiPage,
 	MiDriveFile,
 	type UsersRepository,
 	WorldRoomsRepository,
@@ -19,6 +18,11 @@ import { IdService } from '@/core/IdService.js';
 import type { MiUser } from '@/models/User.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
+
+// TODO: やっていく
+const driveFileReferencingOptions = {
+	tapestry: ['customPicture'],
+} as Record<string, string[]>;
 
 @Injectable()
 export class WorldRoomService {
@@ -74,17 +78,15 @@ export class WorldRoomService {
 		await this.worldRoomsRepository.delete(roomId);
 	}
 
-	// TODO: engineの実装と共通化
 	collectReferencedDriveFileIds(roomState: MiWorldRoom['def']): Set<MiDriveFile['id']> {
 		const fileIds = new Set<MiDriveFile['id']>();
 		for (const o of roomState.installedObjects) {
-			const def = getObjectDef(o.type); // 家具定義をバックエンドで利用するにはcreateInstance定義を分離し、それ以外を別パッケージとして抽出する必要がありそう しかしそれ以外の定義についてもi18nされたlabelなど、バックエンドには相応しくない情報も含まれているのでどうするか
-			for (const schemaRecord of Object.entries(def.options.schema)) {
-				if (schemaRecord[1].type === 'file') {
-					const optionValue = o.options[schemaRecord[0]];
-					if (optionValue != null && optionValue !== '') {
-						fileIds.add(optionValue);
-					}
+			const def = driveFileReferencingOptions[o.type];
+			if (def == null) continue;
+			for (const key of def) {
+				const optionValue = o.options[key];
+				if (optionValue != null && optionValue !== '') {
+					fileIds.add(optionValue);
 				}
 			}
 		}
