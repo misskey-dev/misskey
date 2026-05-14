@@ -147,7 +147,7 @@ export type ObjectDef<OpSc extends OptionsSchema | undefined = undefined> = {
 		timer: Timer;
 		graphicsQuality: number;
 		stickyMarkerMeshUpdated?: (mesh: BABYLON.Mesh) => void;
-	}) => RoomObjectInstance<OpSc extends undefined ? ConvertedOptions : GetConvertedOptionsSchemaValues<NonNullable<OpSc>>> | Promise<OpSc extends undefined ? ConvertedOptions : RoomObjectInstance<GetConvertedOptionsSchemaValues<NonNullable<OpSc>>>>; // TODO: createInstanceをasyncにするのではなく、別にreadyみたいなものを返させる
+	}) => RoomObjectInstance<OpSc extends undefined ? ConvertedOptions : GetConvertedOptionsSchemaValues<NonNullable<OpSc>>> | Promise<RoomObjectInstance<OpSc extends undefined ? ConvertedOptions : GetConvertedOptionsSchemaValues<NonNullable<OpSc>>>>; // TODO: createInstanceをasyncにするのではなく、別にreadyみたいなものを返させる
 };
 
 export function defineObject<const OpSc extends OptionsSchema>(def: ObjectDef<OpSc>): ObjectDef<OpSc> {
