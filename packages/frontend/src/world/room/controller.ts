@@ -9,8 +9,10 @@ import { EngineControllerBase } from '../engineControllerBase.js';
 import type { ShallowRef } from 'vue';
 import type { RoomState } from './engine.js';
 import type { RoomStateObject } from './object.js';
+import type { RoomAttachments } from './utility.js';
 import * as sound from '@/utility/sound.js';
 import { deepEqual } from '@/utility/deep-equal.js';
+import { deepClone } from '@/utility/clone.js';
 
 export type RoomControllerOptions = {
 	workerMode?: boolean;
@@ -39,18 +41,18 @@ export class RoomController extends EngineControllerBase {
 		this.roomState = shallowRef(roomState);
 	}
 
-	public async init(canvas: HTMLCanvasElement) {
+	public async init(canvas: HTMLCanvasElement, attachments: RoomAttachments) {
 		const { engineEvents } = await this._init_(canvas, {
 			createWorker: (offscreen) => new Promise((resolve) => {
 				import('./worker?worker').then(({ default: RoomWorker }) => {
 					const worker = new RoomWorker();
-					worker.postMessage({ type: 'init', canvas: offscreen, options: this.options, roomState: this.roomState.value }, [offscreen]);
+					worker.postMessage({ type: 'init', canvas: offscreen, options: this.options, roomState: this.roomState.value, roomAttachments: attachments }, [offscreen]);
 					resolve(worker);
 				});
 			}),
 			createEngine: (babylonEngine) => new Promise((resolve) => {
 				import('./engine.js').then(({ RoomEngine }) => {
-					resolve(new RoomEngine(this.roomState.value, {
+					resolve(new RoomEngine(this.roomState.value, attachments, {
 						engine: babylonEngine,
 						...this.options,
 					}));
@@ -138,8 +140,8 @@ export class RoomController extends EngineControllerBase {
 		this.set('gridSnapping', gridSnapping);
 	}
 
-	public updateObjectOption(objectId: string, key: string, value: any) {
-		this.call('updateObjectOption', [objectId, key, value]);
+	public updateObjectOption(objectId: string, key: string, value: any, attachments?: RoomAttachments) {
+		this.call('updateObjectOption', deepClone([objectId, key, value, attachments])); // 場合によってはvueによって(postMessage不能な)proxy化された値が来ることも考えられるのでdeepClone
 	}
 
 	public changeEnvType(type: RoomState['env']['type']) {
@@ -162,8 +164,8 @@ export class RoomController extends EngineControllerBase {
 		this.call('removeSelectedObject');
 	}
 
-	public addObject(type: string, options: any) {
-		this.call('addObject', [type, options]);
+	public addObject(type: string, options: any, attachments?: RoomAttachments) {
+		this.call('addObject', deepClone([type, options, attachments])); // 場合によってはvueによって(postMessage不能な)proxy化された値が来ることも考えられるのでdeepClone
 	}
 
 	public endGrabbing() {

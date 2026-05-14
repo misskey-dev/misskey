@@ -29,6 +29,7 @@ import * as Misskey from 'misskey-js';
 import MkDrive from '@/components/MkDrive.vue';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import { i18n } from '@/i18n.js';
+import { deepClone } from '@/utility/clone.js';
 
 withDefaults(defineProps<{
 	initialFolder?: Misskey.entities.DriveFolder['id'] | null;
@@ -46,7 +47,7 @@ const dialog = useTemplateRef('dialog');
 const selected = ref<Misskey.entities.DriveFile[]>([]);
 
 function ok() {
-	emit('done', selected.value);
+	emit('done', deepClone(selected.value)); // selected.valueをそのまま渡すと純粋なオブジェクトではなくProxyが渡されてしまい、シチュエーションによってはそれによって不具合の原因になる(workerにpostMessageで渡せないなど)
 	dialog.value?.close();
 }
 

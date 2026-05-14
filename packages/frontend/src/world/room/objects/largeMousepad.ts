@@ -53,7 +53,7 @@ export const largeMousepad = defineObject({
 		const applyCustomPicture = () => new Promise<void>((resolve) => {
 			if (options.customPicture != null) {
 				padMaterial.unfreeze();
-				const tex = new BABYLON.Texture(options.customPicture, scene, false, false, undefined, () => {
+				const tex = new BABYLON.Texture(options.customPicture.url, scene, false, false, undefined, () => {
 					padMaterial.albedoColor = new BABYLON.Color3(1, 1, 1);
 					padMaterial.albedoTexture = tex;
 					applyFit();

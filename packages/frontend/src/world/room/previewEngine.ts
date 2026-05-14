@@ -10,7 +10,9 @@ import EventEmitter from 'eventemitter3';
 import { camelToKebab, WORLD_SCALE, cm, getMeshesBoundingBox, Timer, sleep, ArcRotateCameraManualInput } from '../utility.js';
 import { getObjectDef } from './object-defs.js';
 import { SYSTEM_MESH_NAMES, ModelManager, GRAPHICS_QUALITY } from './utility.js';
-import type { RoomObjectInstance } from './object.js';
+import { convertRawOptions } from './object.js';
+import type { ConvertedOptions, RawOptions, RoomObjectInstance } from './object.js';
+import type { RoomAttachments } from './utility.js';
 import { genId } from '@/utility/id.js';
 import { deepClone } from '@/utility/clone.js';
 
@@ -23,7 +25,8 @@ export class RoomObjectPreviewEngine extends EventEmitter {
 	private camera: BABYLON.ArcRotateCamera;
 	private objectMesh: BABYLON.Mesh | null = null;
 	private objectInstance: RoomObjectInstance | null = null;
-	private objectOptions: any = null;
+	private objectOptions: RawOptions | null = null;
+	private convertedObjectOptions: ConvertedOptions | null = null;
 	private objectType: string | null = null;
 	private envMapIndoor: BABYLON.CubeTexture;
 	private roomLight: BABYLON.SpotLight;
@@ -230,10 +233,10 @@ export class RoomObjectPreviewEngine extends EventEmitter {
 				this.objectOptions[key] = Math.floor(Math.random() * 1000);
 			}
 		}
+		this.convertedObjectOptions = convertRawOptions(def.options.schema, this.objectOptions, { files: [] });
 
 		await this.loadObject_({
 			type,
-			options: this.objectOptions,
 			id,
 		});
 
@@ -290,7 +293,6 @@ export class RoomObjectPreviewEngine extends EventEmitter {
 
 	private async loadObject_(args: {
 		type: string;
-		options: any;
 		id: string;
 	}) {
 		const def = getObjectDef(args.type);
@@ -366,7 +368,7 @@ export class RoomObjectPreviewEngine extends EventEmitter {
 				fixParticleSystem: (ps) => this.sr.fixParticleSystem(ps),
 			},
 			root,
-			options: args.options,
+			options: this.convertedObjectOptions,
 			model,
 			id: args.id,
 			timer: this.timerForEachObject,
@@ -380,10 +382,12 @@ export class RoomObjectPreviewEngine extends EventEmitter {
 		this.objectMesh = root;
 	}
 
-	public updateObjectOption(key: string, value: any) {
+	public updateObjectOption(key: string, value: any, attachments?: RoomAttachments) {
 		this.sr.disableSnapshotRendering();
 		this.objectOptions[key] = value;
-		this.objectInstance?.onOptionsUpdated?.([key, value]);
+		const convertedOptions = convertRawOptions(getObjectDef(this.objectType!).options.schema, this.objectOptions, attachments ?? { files: [] });
+		this.convertedObjectOptions[key] = convertedOptions[key];
+		this.objectInstance?.onOptionsUpdated?.([key, convertedOptions[key]]);
 		this.sr.enableSnapshotRendering();
 		return this.objectOptions;
 	}
@@ -398,6 +402,7 @@ export class RoomObjectPreviewEngine extends EventEmitter {
 			this.objectInstance.dispose?.();
 			this.objectInstance = null;
 			this.objectOptions = null;
+			this.convertedObjectOptions = null;
 			this.objectMesh!.dispose();
 			this.objectMesh = null;
 			this.objectType = null;

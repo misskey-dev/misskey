@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.root">
 	<div :class="[$style.screen, { [$style.zen]: false }]">
-		<canvas ref="canvas" :class="$style.canvas" tabindex="-1" :style="{ visibility: controller.isReady.value ? 'visible' : 'hidden' }"></canvas>
+		<canvas ref="canvas" :class="$style.canvas" tabindex="-1"></canvas>
 
 		<Transition
 			:enterActiveClass="$style.transition_fade_enterActive"
@@ -71,7 +71,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div v-if="controller.isReady.value && controller.isEditMode.value && controller.selected.value != null && selectedObjectDef != null && !controller.grabbing.value" :key="controller.selected.value.objectId" class="_panel" :class="$style.overlayObjectInfoPanel">
 			{{ selectedObjectDef.name }}
 
-			<XObjectCustomizeForm :schema="selectedObjectDef.options.schema" :options="controller.selected.value.objectState.options" @update="(k, v) => controller.updateObjectOption(controller.selected.value.objectId, k, v)"></XObjectCustomizeForm>
+			<XObjectCustomizeForm :addFileAttachment="addFileAttachment" :schema="selectedObjectDef.options.schema" :options="controller.selected.value.objectState.options" @update="(k, v) => controller.updateObjectOption(controller.selected.value.objectId, k, v, attachments)"></XObjectCustomizeForm>
 		</div>
 
 		<div v-if="isRoomSettingsOpen && controller.isEditMode.value" class="_panel" :class="$style.overlayObjectInfoPanel">
@@ -88,9 +88,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, markRaw, nextTick, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import * as BABYLON from '@babylonjs/core';
+import * as Misskey from 'misskey-js';
 import XObjectCustomizeForm from './room.object-customize-form.vue';
 import XEnvOptions from './room.env-options.vue';
 import type { RoomControllerOptions } from '@/world/room/controller.js';
+import type { RoomAttachments } from '@/world/room/utility.js';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
 import { ensureSignin } from '@/i';
@@ -258,6 +260,14 @@ console.log('installedObjects:', data.installedObjects.length);
 
 let latestData = deepClone(data);
 
+const attachments = {
+	files: [],
+} as RoomAttachments;
+
+function addFileAttachment(file: Misskey.entities.DriveFile) {
+	attachments.files.push(file);
+}
+
 const roomControllerOptions = computed<RoomControllerOptions>(() => ({
 	graphicsQuality: graphicsQuality.value,
 	fps: fps.value,
@@ -282,7 +292,7 @@ onMounted(async () => {
 	}
 
 	try {
-		await controller.init(canvas.value!);
+		await controller.init(canvas.value!, attachments);
 	} catch (err) {
 		console.error(err);
 		os.alert({
@@ -457,7 +467,8 @@ async function addObject(ev: PointerEvent) {
 		graphicsQuality: graphicsQuality.value,
 	}, {
 		ok: async (res) => {
-			controller.addObject(res.id, res.options);
+			attachments.files.push(...res.attachments.files); // TODO: mergeAttachmentsみたいな関数を実装して使う
+			controller.addObject(res.id, res.options, attachments);
 			canvas.value!.focus();
 		},
 		closed: () => {

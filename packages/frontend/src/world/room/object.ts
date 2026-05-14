@@ -4,17 +4,16 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import type { RoomEngine } from './engine.js';
-import type { ModelManager } from './utility.js';
+import type { ModelManager, RoomAttachments } from './utility.js';
 import type { Timer } from '../utility.js';
 
 // babylonのドメイン知識は持たない
-export type RoomStateObject<Options = any> = {
+export type RoomStateObject = {
 	id: string;
 	type: string;
 	position: [number, number, number];
 	rotation: [number, number, number];
-	options: Options;
+	options: RawOptions;
 
 	/**
 	 * 別のオブジェクトのID
@@ -83,7 +82,15 @@ type SeedOptionSchema = {
 
 type OptionsSchema = Record<string, NumberOptionSchema | BooleanOptionSchema | StringOptionSchema | ColorOptionSchema | EnumOptionSchema | RangeOptionSchema | ImageOptionSchema | SeedOptionSchema>;
 
-type GetOptionsSchemaValues<T extends OptionsSchema> = {
+export type RawOptions = Record<string, unknown> & {
+	readonly __brand: unique symbol;
+};
+
+export type ConvertedOptions = Record<string, unknown> & {
+	readonly __brand: unique symbol;
+};
+
+type GetRawOptionsSchemaValues<T extends OptionsSchema> = {
 	[K in keyof T]:
 	T[K] extends NumberOptionSchema ? number :
 	T[K] extends BooleanOptionSchema ? boolean :
@@ -95,6 +102,18 @@ type GetOptionsSchemaValues<T extends OptionsSchema> = {
 	T[K] extends SeedOptionSchema ? number :
 	never;
 };
+type GetConvertedOptionsSchemaValues<T extends OptionsSchema> = {
+	[K in keyof T]:
+	T[K] extends NumberOptionSchema ? number :
+	T[K] extends BooleanOptionSchema ? boolean :
+	T[K] extends StringOptionSchema ? string :
+	T[K] extends ColorOptionSchema ? [number, number, number] :
+	T[K] extends EnumOptionSchema ? T[K]['enum'][number] :
+	T[K] extends RangeOptionSchema ? number :
+	T[K] extends ImageOptionSchema ? { url: string; } | null :
+	T[K] extends SeedOptionSchema ? number :
+	never;
+};
 
 export type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 	id: string;
@@ -102,7 +121,7 @@ export type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 	path?: string;
 	options: {
 		schema: OpSc;
-		default: GetOptionsSchemaValues<OpSc>;
+		default: GetRawOptionsSchemaValues<OpSc>;
 	};
 	placement: 'top' | 'side' | 'bottom' | 'wall' | 'ceiling' | 'floor';
 	hasCollisions?: boolean;
@@ -122,13 +141,13 @@ export type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 		};
 		lc: BABYLON.ClusteredLightContainer | null;
 		root: BABYLON.Mesh;
-		options: Readonly<GetOptionsSchemaValues<OpSc>>;
+		options: Readonly<GetConvertedOptionsSchemaValues<OpSc>>;
 		model: ModelManager;
 		id: string;
 		timer: Timer;
 		graphicsQuality: number;
 		stickyMarkerMeshUpdated?: (mesh: BABYLON.Mesh) => void;
-	}) => RoomObjectInstance<GetOptionsSchemaValues<OpSc>> | Promise<RoomObjectInstance<GetOptionsSchemaValues<OpSc>>>; // TODO: createInstanceをasyncにするのではなく、別にreadyみたいなものを返させる
+	}) => RoomObjectInstance<GetConvertedOptionsSchemaValues<OpSc>> | Promise<RoomObjectInstance<GetConvertedOptionsSchemaValues<OpSc>>>; // TODO: createInstanceをasyncにするのではなく、別にreadyみたいなものを返させる
 };
 
 export function defineObject<const OpSc extends OptionsSchema>(def: ObjectDef<OpSc>): ObjectDef<OpSc> {
@@ -141,4 +160,27 @@ export function defineObjectClass<const OpSc extends OptionsSchema>(baseDef: Par
 	return {
 		extend: (childDef) => ({ ...baseDef, ...childDef }) as ObjectDef<OpSc>,
 	};
+}
+
+export function convertRawOptions<OpSc extends OptionsSchema>(schema: OpSc, raw: RawOptions, attachments: RoomAttachments): GetConvertedOptionsSchemaValues<OpSc> {
+	const converted = {} as GetConvertedOptionsSchemaValues<OpSc>;
+	for (const record of Object.entries(schema)) {
+		const k = record[0];
+		const v = raw[k];
+		if (record[1].type === 'image' && v != null) {
+			if (v === '') {
+				converted[k] = null;
+				continue;
+			}
+			const file = attachments.files.find(f => f.id === v);
+			if (file != null) {
+				converted[k] = { url: file.url };
+			} else {
+				converted[k] = null;
+			}
+		} else {
+			converted[k] = v;
+		}
+	}
+	return converted;
 }

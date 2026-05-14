@@ -54,7 +54,7 @@ export const tabletopFlag = defineObject({
 		const applyCustomPicture = () => new Promise<void>((resolve) => {
 			if (options.customPicture != null) {
 				flagMaterial.unfreeze();
-				const tex = new BABYLON.Texture(options.customPicture, scene, false, false, undefined, () => {
+				const tex = new BABYLON.Texture(options.customPicture.url, scene, false, false, undefined, () => {
 					flagMaterial.albedoColor = new BABYLON.Color3(1, 1, 1);
 					flagMaterial.albedoTexture = tex;
 					applyFit();

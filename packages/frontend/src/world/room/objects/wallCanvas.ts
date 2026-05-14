@@ -85,7 +85,7 @@ export const wallCanvas = defineObject({
 		const applyCustomPicture = () => new Promise<void>((resolve) => {
 			if (options.customPicture != null) {
 				canvasMaterial.unfreeze();
-				const tex = new BABYLON.Texture(options.customPicture, scene, false, false, undefined, () => {
+				const tex = new BABYLON.Texture(options.customPicture.url, scene, false, false, undefined, () => {
 					canvasMaterial.albedoColor = new BABYLON.Color3(1, 1, 1);
 					canvasMaterial.albedoTexture = tex;
 					applyFit();

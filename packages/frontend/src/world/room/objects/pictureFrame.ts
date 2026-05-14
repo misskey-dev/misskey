@@ -175,7 +175,7 @@ export const pictureFrame = defineObject({
 		const applyCustomPicture = () => new Promise<void>((resolve) => {
 			if (options.customPicture != null) {
 				pictureMaterial.unfreeze();
-				const tex = new BABYLON.Texture(options.customPicture, scene, false, false, undefined, () => {
+				const tex = new BABYLON.Texture(options.customPicture.url, scene, false, false, undefined, () => {
 					pictureMaterial.albedoColor = new BABYLON.Color3(1, 1, 1);
 					pictureMaterial.albedoTexture = tex;
 					applyFit();

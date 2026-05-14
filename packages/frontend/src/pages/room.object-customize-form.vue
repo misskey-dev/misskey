@@ -25,7 +25,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkRange :continuousUpdate="true" :min="s.min" :max="s.max" :step="s.step" :modelValue="options[k]" @update:modelValue="v => emit('update', k, v)"></MkRange>
 			</div>
 			<div v-else-if="s.type === 'image'">
-				<MkInput type="text" :modelValue="options[k]" @update:modelValue="v => emit('update', k, v)"></MkInput>
+				<MkButton primary inline @click="changeImage(k)">Change</MkButton>
+				<MkButton v-if="options[k] != null" danger inline iconOnly @click="clearImage(k)"><i class="ti ti-x"></i></MkButton>
 			</div>
 			<div v-else-if="s.type === 'seed'">
 				<MkRange :continuousUpdate="true" :min="0" :max="1000" :step="1" :modelValue="options[k]" @update:modelValue="v => emit('update', k, v)"></MkRange>
@@ -37,6 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
+import * as Misskey from 'misskey-js';
 import type { ObjectDef } from '@/world/room/object.js';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
@@ -46,15 +48,44 @@ import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRange from '@/components/MkRange.vue';
 import { getHex, getRgb } from '@/world/utility.js';
+import { chooseDriveFile } from '@/utility/drive.js';
 
 const props = defineProps<{
 	schema: ObjectDef['options']['schema'];
 	options: any;
+	addFileAttachment: ((file: Misskey.entities.DriveFile) => void);
 }>();
 
 const emit = defineEmits<{
 	(ev: 'update', k: string, v: any): void;
 }>();
+
+async function changeImage(k: string) {
+	chooseDriveFile({ multiple: false }).then((fileResponse) => {
+		if (fileResponse.length === 0) return;
+		const file = fileResponse[0];
+		if (!file.type.startsWith('image/')) {
+			os.alert({
+				type: 'error',
+				text: 'The selected file is not an image.',
+			});
+			return;
+		}
+		if (file.size > 1024 * 1024 * 5) {
+			os.alert({
+				type: 'error',
+				text: 'The file size exceeds the limit of 5MB.',
+			});
+			return;
+		}
+		props.addFileAttachment(file);
+		emit('update', k, file.id);
+	});
+}
+
+function clearImage(k: string) {
+	emit('update', k, null);
+}
 </script>
 
 <style lang="scss" module>

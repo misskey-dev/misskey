@@ -92,7 +92,7 @@ export const monitor = defineObject({
 		const applyCustomPicture = () => new Promise<void>((resolve) => {
 			if (options.customPicture != null) {
 				screenMaterial.unfreeze();
-				const tex = new BABYLON.Texture(options.customPicture, scene, false, false, undefined, () => {
+				const tex = new BABYLON.Texture(options.customPicture.url, scene, false, false, undefined, () => {
 					screenMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
 					screenMaterial.emissiveTexture = tex;
 					applyFit();

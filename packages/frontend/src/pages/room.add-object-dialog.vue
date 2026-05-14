@@ -54,7 +54,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						:leaveToClass="prefer.s.animation ? $style.transition_options_leaveTo : ''"
 					>
 						<div v-if="selectedObjectDef != null && selectedInstanceId != null && showObjectOptions" :class="$style.customize" class="_panel _shadow">
-							<XObjectCustomizeForm :schema="selectedObjectDef.options.schema" :options="selectedObjectOptionsState" @update="(k, v) => updateObjectOption(k, v)"></XObjectCustomizeForm>
+							<XObjectCustomizeForm :addFileAttachment="addFileAttachment" :schema="selectedObjectDef.options.schema" :options="selectedObjectOptionsState" @update="(k, v) => updateObjectOption(k, v)"></XObjectCustomizeForm>
 						</div>
 					</Transition>
 				</div>
@@ -66,10 +66,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick, shallowRef, computed, triggerRef, markRaw } from 'vue';
+import * as Misskey from 'misskey-js';
 import XObjectCustomizeForm from './room.object-customize-form.vue';
 import XItem from './room.add-object-dialog.item.vue';
-import type { RoomObjectInstance, RoomStateObject } from '@/world/room/object.js';
+import type { RawOptions, RoomObjectInstance, RoomStateObject } from '@/world/room/object.js';
 import type { PreviewEngineControllerOptions } from '@/world/room/previewEngineController.js';
+import type { RoomAttachments } from '@/world/room/utility.js';
 import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import * as os from '@/os.js';
@@ -93,6 +95,7 @@ const emit = defineEmits<{
 	(ev: 'ok', ctx: {
 		id: string;
 		options: any;
+		attachments: RoomAttachments;
 	}): void;
 	(ev: 'cancel'): void;
 	(ev: 'closed'): void;
@@ -103,10 +106,18 @@ const canvas = useTemplateRef('canvas');
 const selectedId = ref<string | null>(null);
 const showPreview = ref(false);
 const selectedInstanceId = ref<string | null>(null);
-const selectedObjectOptionsState = ref<RoomStateObject | null>(null);
+const selectedObjectOptionsState = ref<RawOptions | null>(null);
 const selectedObjectDef = computed(() => OBJECT_DEFS.find(def => def.id === selectedId.value) ?? null);
 const showObjectOptions = ref(false);
 const searchKeyword = ref('');
+
+const attachments = {
+	files: [],
+} as RoomAttachments;
+
+function addFileAttachment(file: Misskey.entities.DriveFile) {
+	attachments.files.push(file);
+}
 
 const previewEngineControllerOptions = computed<PreviewEngineControllerOptions>(() => ({
 	graphicsQuality: props.graphicsQuality,
@@ -179,7 +190,7 @@ watch(selectedId, (newId) => {
 });
 
 function updateObjectOption(k: string, v: any) {
-	controller.updateObjectOption(k, v);
+	controller.updateObjectOption(k, v, attachments);
 	selectedObjectOptionsState.value![k] = v;
 }
 
@@ -195,6 +206,7 @@ function ok() {
 	emit('ok', {
 		id: selectedId.value,
 		options: deepClone(selectedObjectOptionsState.value),
+		attachments: deepClone(attachments),
 	});
 
 	dialog.value?.close();

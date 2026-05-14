@@ -4,6 +4,7 @@
  */
 
 import { EngineControllerBase } from '../engineControllerBase.js';
+import type { RoomAttachments } from './utility.js';
 
 export type PreviewEngineControllerOptions = {
 	workerMode?: boolean;
@@ -41,8 +42,8 @@ export class PreviewEngineController extends EngineControllerBase {
 		});
 	}
 
-	public updateObjectOption(key: string, value: any) {
-		this.call('updateObjectOption', [key, value]);
+	public updateObjectOption(key: string, value: any, attachments?: RoomAttachments) {
+		this.call('updateObjectOption', [key, value, attachments]);
 	}
 
 	public loadObject(type: string) {

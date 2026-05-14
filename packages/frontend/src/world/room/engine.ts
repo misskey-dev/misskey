@@ -17,9 +17,11 @@ import { TIME_MAP, scaleMorph, camelToKebab, cm, WORLD_SCALE, getMeshesBoundingB
 import { getObjectDef } from './object-defs.js';
 import { findMaterial, GRAPHICS_QUALITY, ModelManager, SYSTEM_HEYA_MESH_NAMES, SYSTEM_MESH_NAMES } from './utility.js';
 import { JapaneseEnvManager, MuseumEnvManager, SimpleEnvManager } from './env.js';
+import { convertRawOptions } from './object.js';
+import type { RoomAttachments } from './utility.js';
+import type { ConvertedOptions, ObjectDef, RoomObjectInstance, RoomStateObject } from './object.js';
 import type { GridMaterial } from '@babylonjs/materials';
 import type { EnvManager, JapaneseEnvOptions, SimpleEnvOptions } from './env.js';
-import type { ObjectDef, RoomObjectInstance, RoomStateObject } from './object.js';
 import { genId } from '@/utility/id.js';
 import { deepClone } from '@/utility/clone.js';
 
@@ -36,7 +38,7 @@ export type RoomState = {
 		options: JapaneseEnvOptions;
 	};
 	roomLightColor: [number, number, number];
-	installedObjects: RoomStateObject<any>[];
+	installedObjects: RoomStateObject[];
 	worldScale: number;
 };
 
@@ -97,7 +99,7 @@ export type RoomEngineEvents = {
 	'changeSelectedState': (ctx: {
 		selected: {
 			objectId: string;
-			objectState: RoomStateObject<any>;
+			objectState: RoomStateObject;
 		} | null;
 	}) => void;
 	'changeGrabbingState': (ctx: { grabbing: { forInstall: boolean } | null }) => void;
@@ -123,6 +125,7 @@ export class RoomEngine extends EventEmitter {
 	private fixedCamera: BABYLON.FreeCamera;
 	public objectEntities: Map<string, {
 		rootMesh: BABYLON.Mesh;
+		convertedOptions: ConvertedOptions;
 		instance: RoomObjectInstance;
 		model: ModelManager;
 	}> = new Map();
@@ -156,7 +159,7 @@ export class RoomEngine extends EventEmitter {
 	private _selected: {
 		objectId: string;
 		objectEntity: RoomEngine['objectEntities'] extends Map<string, infer V> ? V : never;
-		objectState: RoomStateObject<any>;
+		objectState: RoomStateObject;
 		objectDef: ObjectDef;
 	} | null = null;
 	get selected() {
@@ -169,6 +172,7 @@ export class RoomEngine extends EventEmitter {
 
 	private time: 0 | 1 | 2 = 0; // 0: 昼, 1: 夕, 2: 夜
 	public roomState: RoomState;
+	public roomAttachments: RoomAttachments;
 
 	private _gridSnapping = { enabled: true, scale: cm(4) };
 	get gridSnapping() {
@@ -213,7 +217,7 @@ export class RoomEngine extends EventEmitter {
 		'pointer': (event: { x: number; y: number; }) => void;
 	}> = new EventEmitter();
 
-	constructor(roomState: RoomState, options: {
+	constructor(roomState: RoomState, roomAttachments: RoomAttachments, options: {
 		engine: BABYLON.WebGPUEngine;
 		graphicsQuality: number;
 		fps: number | null;
@@ -229,6 +233,7 @@ export class RoomEngine extends EventEmitter {
 				options: { ...getObjectDef(o.type).options.default, ...o.options },
 			})),
 		};
+		this.roomAttachments = roomAttachments;
 		this.graphicsQuality = options.graphicsQuality;
 		this.fps = options.fps;
 		this.useGlow = this.graphicsQuality >= GRAPHICS_QUALITY.MEDIUM;
@@ -907,6 +912,8 @@ export class RoomEngine extends EventEmitter {
 			*/
 		});
 
+		const convertedOptions = convertRawOptions(def.options.schema, args.options, this.roomAttachments);
+
 		const objectInstance = await def.createInstance({
 			scene: this.scene,
 			sr: {
@@ -923,7 +930,7 @@ export class RoomEngine extends EventEmitter {
 			},
 			lc: this.lightContainer,
 			root,
-			options: args.options,
+			options: convertedOptions,
 			model,
 			id: args.id,
 			timer: this.timer, // TODO: 家具が撤去された後も動作し続けるのをどうにかする
@@ -960,7 +967,7 @@ export class RoomEngine extends EventEmitter {
 			enableObjectCollision(root.getChildMeshes());
 		}
 
-		this.objectEntities.set(args.id, { instance: objectInstance, rootMesh: root, model });
+		this.objectEntities.set(args.id, { convertedOptions, instance: objectInstance, rootMesh: root, model });
 
 		return { root, objectInstance };
 	}
@@ -1441,9 +1448,14 @@ export class RoomEngine extends EventEmitter {
 		return root;
 	}
 
-	public async addObject(type: string, _options?: any) {
+	public async addObject(type: string, _options?: any, attachments?: RoomAttachments) {
 		if (!this.isEditMode) return;
 		if (this.grabbingCtx != null) return;
+
+		if (attachments != null) {
+			this.roomAttachments = attachments;
+		}
+
 		this.selectObject(null);
 
 		const dir = this.camera.getDirection(BABYLON.Axis.Z).scale(this.scene.useRightHandedSystem ? -1 : 1);
@@ -1683,18 +1695,27 @@ export class RoomEngine extends EventEmitter {
 		this.grabbingCtx.rotation += delta;
 	}
 
-	public updateObjectOption(objectId: string, key: string, value: any) {
-		const options = this.roomState.installedObjects.find(o => o.id === objectId)?.options;
-		if (options == null) return;
-		options[key] = value;
+	public updateObjectOption(objectId: string, key: string, value: any, attachments?: RoomAttachments) {
+		if (attachments != null) {
+			this.roomAttachments = attachments;
+		}
+
+		const o = this.roomState.installedObjects.find(o => o.id === objectId);
+		if (o == null) return;
+
+		const def = getObjectDef(o.type);
+		o.options[key] = value;
 
 		this.ev('changeRoomState', { roomState: this.roomState });
 
 		const entity = this.objectEntities.get(objectId);
 		if (entity == null) return;
 
+		const converted = convertRawOptions(def.options.schema, o.options, this.roomAttachments);
+		entity.convertedOptions[key] = converted[key];
+
 		this.sr.disableSnapshotRendering();
-		entity.instance.onOptionsUpdated?.([key, value]);
+		entity.instance.onOptionsUpdated?.([key, converted[key]]);
 		this.sr.enableSnapshotRendering();
 	}
 
