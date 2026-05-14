@@ -10,10 +10,8 @@
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"dependencies": {
-		"@discordapp/twemoji": "16.0.1",
 		"@rollup/plugin-json": "6.1.0",
 		"@rollup/pluginutils": "5.3.0",
-		"@twemoji/parser": "16.0.0",
 		"@vitejs/plugin-vue": "6.0.6",
 		"buraha": "0.0.1",
 		"estree-walker": "3.0.3",
@@ -21,7 +19,7 @@
 		"i18n": "workspace:*",
 		"icons-subsetter": "workspace:*",
 		"json5": "2.2.3",
-		"mfm-js": "0.25.0",
+		"mfm-js": "0.26.0",
 		"misskey-js": "workspace:*",
 		"punycode.js": "2.3.1",
 		"rollup": "4.60.2",
@@ -31,6 +29,7 @@
 		"vue": "3.5.33"
 	},
 	"devDependencies": {
+		"@misskey-dev/emoji-assets": "17.0.3",
 		"@misskey-dev/summaly": "5.3.0",
 		"@tabler/icons-webfont": "3.35.0",
 		"@testing-library/vue": "8.1.0",

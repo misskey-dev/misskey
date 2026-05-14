@@ -1040,9 +1040,9 @@ function downloadEmojiIndex(lang: typeof emojiIndexLangs[number]) {
 
 		function download() {
 			switch (lang) {
-				case 'en-US': return import('../../unicode-emoji-indexes/en-US.json').then(x => x.default);
-				case 'ja-JP': return import('../../unicode-emoji-indexes/ja-JP.json').then(x => x.default);
-				case 'ja-JP_hira': return import('../../unicode-emoji-indexes/ja-JP_hira.json').then(x => x.default);
+				case 'en-US': return import('@misskey-dev/emoji-data/indexes/en-US.json').then(x => x.default);
+				case 'ja-JP': return import('@misskey-dev/emoji-data/indexes/ja-JP.json').then(x => x.default);
+				case 'ja-JP_hira': return import('@misskey-dev/emoji-data/indexes/ja-JP_hira.json').then(x => x.default);
 				default: throw new Error('unrecognized lang: ' + lang);
 			}
 		}

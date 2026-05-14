@@ -4698,6 +4698,17 @@ declare module '../api.js' {
     ): Promise<SwitchCaseResponseType<E, P>>;
 
     /**
+     * List of following users with notification enabled.
+     * 
+     * **Credential required**: *Yes* / **Permission**: *read:following*
+     */
+    request<E extends 'users/notify/list', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
      * Show all pages this user created.
      * 
      * **Credential required**: *No*
