@@ -2252,7 +2252,9 @@ declare namespace entities {
         ChatMessageLiteForRoom,
         ChatRoom,
         ChatRoomInvitation,
-        ChatRoomMembership
+        ChatRoomMembership,
+        WorldRoomLite,
+        WorldRoomDetailed
     }
 }
 export { entities }
@@ -3900,6 +3902,12 @@ type V2AdminEmojiListResponse = operations['v2___admin___emoji___list']['respons
 
 // @public (undocumented)
 type VerifyEmailRequest = operations['verify-email']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type WorldRoomDetailed = components['schemas']['WorldRoomDetailed'];
+
+// @public (undocumented)
+type WorldRoomLite = components['schemas']['WorldRoomLite'];
 
 // Warnings were encountered during analysis:
 //

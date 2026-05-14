@@ -43,7 +43,7 @@ import * as os from '@/os.js';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRange from '@/components/MkRange.vue';
-import { WorldController } from '@/world/controller.js';
+import { WorldEngineController } from '@/world/controller.js';
 
 const canvas = useTemplateRef('canvas');
 
@@ -60,7 +60,7 @@ function resize() {
 
 const isZenMode = ref(false);
 
-const controller = new WorldController();
+const controller = new WorldEngineController();
 
 onMounted(async () => {
 	controller.init(canvas.value!);

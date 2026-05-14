@@ -33,7 +33,6 @@ export class MiWorldRoom {
 	@Index()
 	@Column({
 		...id(),
-		comment: 'The ID of author.',
 	})
 	public userId: MiUser['id'];
 

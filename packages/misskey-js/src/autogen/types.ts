@@ -5688,6 +5688,34 @@ export type components = {
             roomId: string;
             room?: components['schemas']['ChatRoom'];
         };
+        WorldRoomLite: {
+            /** Format: id */
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** Format: id */
+            userId: string;
+            user: components['schemas']['UserLite'];
+            name: string;
+            description: string;
+        };
+        WorldRoomDetailed: {
+            /** Format: id */
+            id: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** Format: id */
+            userId: string;
+            user: components['schemas']['UserLite'];
+            name: string;
+            description: string;
+            def: Record<string, never>;
+            attachedFiles: components['schemas']['DriveFile'][];
+        };
     };
     responses: never;
     parameters: never;

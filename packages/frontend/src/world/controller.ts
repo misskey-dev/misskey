@@ -22,6 +22,7 @@ export class WorldEngineController extends EngineControllerBase {
 	}
 
 	public async init(canvas: HTMLCanvasElement) {
+		/*
 		await this._init_(canvas, {
 			createWorker: (offscreen) => new Promise((resolve) => {
 				import('./worker?worker').then(({ default: WorldEngineWorker }) => {
@@ -39,5 +40,6 @@ export class WorldEngineController extends EngineControllerBase {
 				});
 			}),
 		});
+		*/
 	}
 }

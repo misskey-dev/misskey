@@ -69,3 +69,5 @@ export type ChatMessageLiteForRoom = components['schemas']['ChatMessageLiteForRo
 export type ChatRoom = components['schemas']['ChatRoom'];
 export type ChatRoomInvitation = components['schemas']['ChatRoomInvitation'];
 export type ChatRoomMembership = components['schemas']['ChatRoomMembership'];
+export type WorldRoomLite = components['schemas']['WorldRoomLite'];
+export type WorldRoomDetailed = components['schemas']['WorldRoomDetailed'];
