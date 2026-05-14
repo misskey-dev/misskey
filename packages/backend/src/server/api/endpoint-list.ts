@@ -443,4 +443,9 @@ export * as 'chat/rooms/invitations/inbox' from './endpoints/chat/rooms/invitati
 export * as 'chat/rooms/invitations/outbox' from './endpoints/chat/rooms/invitations/outbox.js';
 export * as 'chat/history' from './endpoints/chat/history.js';
 export * as 'chat/read-all' from './endpoints/chat/read-all.js';
+export * as 'world/rooms/create' from './endpoints/world/rooms/create.js';
+export * as 'world/rooms/update' from './endpoints/world/rooms/update.js';
+export * as 'world/rooms/delete' from './endpoints/world/rooms/delete.js';
+export * as 'world/rooms/list-by-user' from './endpoints/world/rooms/list-by-user.js';
+export * as 'world/rooms/show' from './endpoints/world/rooms/show.js';
 export * as 'v2/admin/emoji/list' from './endpoints/v2/admin/emoji/list.js';

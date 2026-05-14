@@ -17,6 +17,7 @@ import { IdService } from '@/core/IdService.js';
 import type { MiUser } from '@/models/User.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { QueryService } from '@/core/QueryService.js';
 
 // TODO: やっていく
 const driveFileReferencingOptions = {
@@ -34,8 +35,33 @@ export class WorldRoomService {
 
 		private roleService: RoleService,
 		private moderationLogService: ModerationLogService,
+		private queryService: QueryService,
 		private idService: IdService,
 	) {
+	}
+
+	@bindThis
+	public async findMyRoomById(userId: MiUser['id'], roomId: MiWorldRoom['id']) {
+		return this.worldRoomsRepository.findOneBy({ id: roomId, userId: userId });
+	}
+
+	@bindThis
+	public async findRoomById(roomId: MiWorldRoom['id']) {
+		return this.worldRoomsRepository.findOne({ where: { id: roomId }, relations: ['user'] });
+	}
+
+	@bindThis
+	public async getRoomsOfUserWithPagination(userId: MiUser['id'], self: boolean, limit: number, sinceId?: MiWorldRoom['id'] | null, untilId?: MiWorldRoom['id'] | null) {
+		const query = this.queryService.makePaginationQuery(this.worldRoomsRepository.createQueryBuilder('room'), sinceId, untilId)
+			.andWhere('room.userId = :userId', { userId });
+
+		if (!self) {
+			query.andWhere('room.visibility = :visibility', { visibility: 'public' });
+		}
+
+		const rooms = await query.take(limit).getMany();
+
+		return rooms;
 	}
 
 	@bindThis
@@ -50,7 +76,7 @@ export class WorldRoomService {
 			description: body.description,
 			def: body.def,
 			userId: me.id,
-			visibility: 'public',
+			visibility: body.visibility,
 		}));
 
 		return room;
@@ -58,13 +84,12 @@ export class WorldRoomService {
 
 	@bindThis
 	public async update(
-		me: MiUser,
-		roomId: MiWorldRoom['id'],
+		room: MiWorldRoom,
 		body: Partial<MiWorldRoom>,
 	): Promise<void> {
 		return this.worldRoomsRepository.createQueryBuilder().update()
 			.set(body)
-			.where('id = :id', { id: roomId })
+			.where('id = :id', { id: room.id })
 			.returning('*')
 			.execute()
 			.then((response) => {
@@ -73,8 +98,8 @@ export class WorldRoomService {
 	}
 
 	@bindThis
-	public async delete(me: MiUser, roomId: MiWorldRoom['id']): Promise<void> {
-		await this.worldRoomsRepository.delete(roomId);
+	public async delete(room: MiWorldRoom, deleter?: MiUser): Promise<void> {
+		await this.worldRoomsRepository.delete(room.id);
 	}
 
 	collectReferencedDriveFileIds(roomState: MiWorldRoom['def']): Set<MiDriveFile['id']> {

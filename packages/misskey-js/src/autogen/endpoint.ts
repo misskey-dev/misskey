@@ -661,6 +661,15 @@ import type {
 	V2AdminEmojiListRequest,
 	V2AdminEmojiListResponse,
 	VerifyEmailRequest,
+	WorldRoomsCreateRequest,
+	WorldRoomsCreateResponse,
+	WorldRoomsDeleteRequest,
+	WorldRoomsListByUserRequest,
+	WorldRoomsListByUserResponse,
+	WorldRoomsShowRequest,
+	WorldRoomsShowResponse,
+	WorldRoomsUpdateRequest,
+	WorldRoomsUpdateResponse,
 } from './entities.js';
 
 export type Endpoints = {
@@ -1098,6 +1107,11 @@ export type Endpoints = {
 	'users/update-memo': { req: UsersUpdateMemoRequest; res: EmptyResponse };
 	'v2/admin/emoji/list': { req: V2AdminEmojiListRequest; res: V2AdminEmojiListResponse };
 	'verify-email': { req: VerifyEmailRequest; res: EmptyResponse };
+	'world/rooms/create': { req: WorldRoomsCreateRequest; res: WorldRoomsCreateResponse };
+	'world/rooms/delete': { req: WorldRoomsDeleteRequest; res: EmptyResponse };
+	'world/rooms/list-by-user': { req: WorldRoomsListByUserRequest; res: WorldRoomsListByUserResponse };
+	'world/rooms/show': { req: WorldRoomsShowRequest; res: WorldRoomsShowResponse };
+	'world/rooms/update': { req: WorldRoomsUpdateRequest; res: WorldRoomsUpdateResponse };
 };
 
 /**

@@ -2183,6 +2183,15 @@ declare namespace entities {
         V2AdminEmojiListRequest,
         V2AdminEmojiListResponse,
         VerifyEmailRequest,
+        WorldRoomsCreateRequest,
+        WorldRoomsCreateResponse,
+        WorldRoomsDeleteRequest,
+        WorldRoomsListByUserRequest,
+        WorldRoomsListByUserResponse,
+        WorldRoomsShowRequest,
+        WorldRoomsShowResponse,
+        WorldRoomsUpdateRequest,
+        WorldRoomsUpdateResponse,
         Error_2 as Error,
         UserLite,
         UserDetailedNotMeOnly,
@@ -3908,6 +3917,33 @@ type WorldRoomDetailed = components['schemas']['WorldRoomDetailed'];
 
 // @public (undocumented)
 type WorldRoomLite = components['schemas']['WorldRoomLite'];
+
+// @public (undocumented)
+type WorldRoomsCreateRequest = operations['world___rooms___create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type WorldRoomsCreateResponse = operations['world___rooms___create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type WorldRoomsDeleteRequest = operations['world___rooms___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type WorldRoomsListByUserRequest = operations['world___rooms___list-by-user']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type WorldRoomsListByUserResponse = operations['world___rooms___list-by-user']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type WorldRoomsShowRequest = operations['world___rooms___show']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type WorldRoomsShowResponse = operations['world___rooms___show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type WorldRoomsUpdateRequest = operations['world___rooms___update']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type WorldRoomsUpdateResponse = operations['world___rooms___update']['responses']['200']['content']['application/json'];
 
 // Warnings were encountered during analysis:
 //
