@@ -7,7 +7,7 @@ import { ref, shallowRef } from 'vue';
 import { cm } from '../utility.js';
 import { EngineControllerBase } from '../engineControllerBase.js';
 import type { ShallowRef } from 'vue';
-import type { RoomState } from './engine.js';
+import type { RoomEngine, RoomState } from './engine.js';
 import type { RoomStateObject } from './object.js';
 import type { RoomAttachments } from './utility.js';
 import * as sound from '@/utility/sound.js';
@@ -24,7 +24,7 @@ export type RoomControllerOptions = {
 };
 
 // 抽象化レイヤー
-export class RoomController extends EngineControllerBase {
+export class RoomController extends EngineControllerBase<RoomEngine> {
 	public isSitting = ref(false);
 	public isEditMode = ref(false);
 	public isRoomLightOn = ref(true);

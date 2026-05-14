@@ -4,6 +4,7 @@
  */
 
 import { EngineControllerBase } from '../engineControllerBase.js';
+import type { RoomObjectPreviewEngine } from './previewEngine.js';
 import type { RoomAttachments } from './utility.js';
 
 export type PreviewEngineControllerOptions = {
@@ -14,7 +15,7 @@ export type PreviewEngineControllerOptions = {
 };
 
 // 抽象化レイヤー
-export class PreviewEngineController extends EngineControllerBase {
+export class PreviewEngineController extends EngineControllerBase<RoomObjectPreviewEngine> {
 	constructor(options: PreviewEngineControllerOptions) {
 		super({
 			...options,
