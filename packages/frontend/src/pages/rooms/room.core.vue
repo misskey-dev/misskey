@@ -103,6 +103,8 @@ import { getObjectDef } from '@/world/room/object-defs.js';
 import { GRAPHICS_QUALITY } from '@/world/room/utility.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 
+const roomSpecVersion = 0;
+
 const props = defineProps<{
 	room: Misskey.entities.WorldRoomDetailed;
 }>();
@@ -409,7 +411,10 @@ async function save() {
 	latestData = deepClone(controller.roomState.value);
 	await os.apiWithDialog('world/rooms/update', {
 		roomId: props.room.id,
-		def: controller.roomState.value,
+		def: {
+			...controller.roomState.value,
+			_v: roomSpecVersion,
+		},
 	});
 	isModified.value = false;
 }
