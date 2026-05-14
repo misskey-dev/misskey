@@ -51,7 +51,6 @@ type MfmProps = {
 	enableEmojiMenu?: boolean;
 	enableEmojiMenuReaction?: boolean;
 	linkNavigationBehavior?: MkABehavior;
-	forceCompactUrlPreview?: boolean;
 };
 
 type MfmEvents = {
@@ -355,7 +354,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 					url: token.props.url,
 					rel: 'nofollow noopener',
 					navigationBehavior: props.linkNavigationBehavior,
-					forceCompactPreview: props.forceCompactUrlPreview,
 				})];
 			}
 
@@ -365,7 +363,6 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 					url: token.props.url,
 					rel: 'nofollow noopener',
 					navigationBehavior: props.linkNavigationBehavior,
-					forceCompactPreview: props.forceCompactUrlPreview,
 				}, { default: () => genEl(token.children, scale, true) })];
 			}
 

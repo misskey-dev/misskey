@@ -23,14 +23,11 @@ import { useTooltip } from '@/composables/use-tooltip.js';
 import * as os from '@/os.js';
 import { isEnabledUrlPreview } from '@/utility/url-preview.js';
 
-const props = withDefaults(defineProps<{
+const props = defineProps<{
 	url: string;
 	rel?: null | string;
 	navigationBehavior?: MkABehavior;
-	forceCompactPreview?: boolean;
-}>(), {
-	forceCompactPreview: false,
-});
+}>();
 
 const maybeRelativeUrl = maybeMakeRelative(props.url, local);
 const self = maybeRelativeUrl !== props.url;
@@ -47,7 +44,6 @@ if (isEnabledUrlPreview.value) {
 			showing,
 			url: props.url,
 			anchorElement: anchorElement,
-			forceCompactCard: props.forceCompactPreview,
 		}, {
 			closed: () => dispose(),
 		});

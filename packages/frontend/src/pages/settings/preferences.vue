@@ -329,7 +329,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<MkPreferenceContainer k="forceCompactUrlPreview">
 										<MkSwitch v-model="forceCompactUrlPreview" :disabled="!instance.enableUrlPreview || dataSaver.disableUrlPreview">
 											<template #label><SearchLabel>{{ i18n.ts.forceCompactUrlPreview }}</SearchLabel></template>
-											<template #caption>{{ i18n.ts._forceCompactUrlPreview.description }}</template>
 										</MkSwitch>
 									</MkPreferenceContainer>
 								</SearchMarker>
@@ -1008,6 +1007,7 @@ watch([
 	limitWidthOfReaction,
 	instanceTicker,
 	squareAvatars,
+	forceCompactUrlPreview,
 	highlightSensitiveMedia,
 	enableSeasonalScreenEffect,
 	chatShowSenderName,
