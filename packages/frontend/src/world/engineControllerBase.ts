@@ -313,8 +313,7 @@ export abstract class EngineControllerBase<T extends RoomEngineBase> {
 		}
 	}
 
-	// TODO: いい感じに型付け
-	protected set(key, value) {
+	protected set<K extends keyof T>(key: K, value: T[K]) {
 		if (!this.isReady.value) {
 			throw new Error('Engine is not initialized');
 		}
