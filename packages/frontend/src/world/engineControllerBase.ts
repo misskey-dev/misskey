@@ -279,25 +279,35 @@ export abstract class EngineControllerBase<T extends RoomEngineBase> {
 
 	private callCounter = 0;
 
-	// TODO: いい感じに型付け
-	protected call(fn, args = [], needReturnValue = false) {
+	protected call<FN extends keyof T>(fn: FN, args: Parameters<T[FN]> = [] as any): void {
 		if (!this.isReady.value) {
 			throw new Error('Engine is not initialized');
 		}
 		if (this.worker != null) {
-			if (needReturnValue) {
-				return new Promise((resolve) => {
-					const id = this.callCounter++;
-					this.returnHooks.set(id, (value) => {
-						resolve(value);
-					});
-					this.worker!.postMessage({ type: 'call', fn, args, needReturnValue: true, id });
-				});
-			} else {
-				this.worker.postMessage({ type: 'call', fn, args });
-			}
+			this.worker.postMessage({ type: 'call', fn, args });
 		} else if (this.engine != null) {
-			return this.engine[fn](...args);
+			this.engine[fn](...args);
+		} else {
+			throw new Error('Engine is not initialized');
+		}
+	}
+
+	protected callAndWaitReturn<FN extends keyof T>(fn: FN, args: Parameters<T[FN]> = [] as any): Promise<ReturnType<T[FN]>> {
+		if (!this.isReady.value) {
+			throw new Error('Engine is not initialized');
+		}
+		if (this.worker != null) {
+			return new Promise((resolve) => {
+				const id = this.callCounter++;
+				this.returnHooks.set(id, (value) => {
+					resolve(value);
+				});
+				this.worker!.postMessage({ type: 'call', fn, args, needReturnValue: true, id });
+			});
+		} else if (this.engine != null) {
+			return new Promise((resolve) => {
+				resolve(this.engine![fn](...args));
+			});
 		} else {
 			throw new Error('Engine is not initialized');
 		}

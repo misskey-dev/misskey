@@ -48,7 +48,7 @@ export class PreviewEngineController extends EngineControllerBase<RoomObjectPrev
 	}
 
 	public loadObject(type: string) {
-		return this.call('loadObject', [type], true);
+		return this.callAndWaitReturn('loadObject', [type]);
 	}
 
 	public clearObject() {
