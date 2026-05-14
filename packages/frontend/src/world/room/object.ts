@@ -174,7 +174,11 @@ export function convertRawOptions<OpSc extends OptionsSchema>(schema: OpSc, raw:
 			}
 			const file = attachments.files.find(f => f.id === v);
 			if (file != null) {
-				converted[k] = { url: file.url };
+				if (file.url.startsWith('http://syu-win.local:3000/')) { // debug
+					converted[k] = { url: file.url.replace('http://syu-win.local:3000/', 'https://local-mi.syuilo.dev/') };
+				} else {
+					converted[k] = { url: file.url };
+				}
 			} else {
 				converted[k] = null;
 			}
