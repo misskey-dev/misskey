@@ -459,8 +459,30 @@ function impor() {
 		const reader = new FileReader();
 		reader.onload = () => {
 			try {
-				localStorage.setItem('roomData', reader.result as string);
-				window.location.reload();
+				let data = JSON.parse(reader.result as string);
+				// 後方互換性のため
+				if (data.attachments == null) {
+					data = {
+						def: data,
+						attachments: { files: [] },
+					};
+				}
+				if (data.def.worldScale == null) {
+					data.def.worldScale = 1;
+				}
+				if (data.def.heya != null) {
+					data.def.env = data.def.heya;
+					delete data.def.heya;
+				}
+				os.apiWithDialog('world/rooms/update', {
+					roomId: props.room.id,
+					def: {
+						...data.def,
+						_v: roomSpecVersion,
+					},
+				}).then(() => {
+					window.location.reload();
+				});
 			} catch (e) {
 				alert('Failed to load room data: ' + e);
 			}
