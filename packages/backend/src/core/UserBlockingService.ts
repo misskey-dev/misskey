@@ -4,9 +4,7 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { IdService } from '@/core/IdService.js';
 import type { MiUser } from '@/models/User.js';
-import type { MiBlocking } from '@/models/Blocking.js';
 import { QueueService } from '@/core/QueueService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
@@ -36,7 +34,6 @@ export class UserBlockingService {
 
 		private blockingDataAccessService: BlockingDataAccessService,
 		private userEntityService: UserEntityService,
-		private idService: IdService,
 		private queueService: QueueService,
 		private globalEventService: GlobalEventService,
 		private webhookService: UserWebhookService,
@@ -57,15 +54,14 @@ export class UserBlockingService {
 			this.removeFromList(blockee, blocker),
 		]);
 
-		const blocking = {
-			id: this.idService.gen(),
-			blocker,
+		const blocking = await this.blockingDataAccessService.createBlocking({
 			blockerId: blocker.id,
-			blockee,
 			blockeeId: blockee.id,
-		} as MiBlocking;
+		});
 
-		await this.blockingDataAccessService.createBlocking(blocking);
+		// AP renderer に渡すため relation を補完
+		blocking.blocker = blocker;
+		blocking.blockee = blockee;
 
 		if (this.userEntityService.isLocalUser(blocker) && this.userEntityService.isRemoteUser(blockee)) {
 			const content = this.apRendererService.addContext(this.apRendererService.renderBlock(blocking));

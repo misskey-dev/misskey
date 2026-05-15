@@ -10,6 +10,7 @@ import type { MiBlocking } from '@/models/Blocking.js';
 import type { MiUser } from '@/models/User.js';
 import { CacheService } from '@/core/CacheService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { IdService } from '@/core/IdService.js';
 import { bindThis } from '@/decorators.js';
 
 /**
@@ -22,6 +23,7 @@ export class BlockingDataAccessService {
 		@Inject(DI.blockingsRepository)
 		private blockingsRepository: BlockingsRepository,
 
+		private idService: IdService,
 		private cacheService: CacheService,
 		private globalEventService: GlobalEventService,
 	) {
@@ -41,7 +43,14 @@ export class BlockingDataAccessService {
 	}
 
 	@bindThis
-	public async createBlocking(blocking: MiBlocking): Promise<void> {
+	public async createBlocking(input: Pick<MiBlocking, 'blockerId' | 'blockeeId'>): Promise<MiBlocking> {
+		const blocking: MiBlocking = {
+			id: this.idService.gen(),
+			blocker: null,
+			blockee: null,
+			...input,
+		};
+
 		await this.blockingsRepository.insert(blocking);
 
 		this.cacheService.userBlockingCache.refresh(blocking.blockerId);
@@ -51,6 +60,8 @@ export class BlockingDataAccessService {
 			blockerId: blocking.blockerId,
 			blockeeId: blocking.blockeeId,
 		});
+
+		return blocking;
 	}
 
 	@bindThis
