@@ -244,7 +244,7 @@ export class RoomEngine extends EventEmitter {
 		super();
 
 		this.roomState = {
-			...JSON.parse(JSON.stringify(roomState)),
+			...deepClone(roomState),
 			installedObjects: roomState.installedObjects.map(o => ({
 				...o,
 				options: { ...getObjectDef(o.type).options.default, ...o.options },
