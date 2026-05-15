@@ -402,11 +402,13 @@ export class RoomEngine extends EventEmitter {
 		// 不具合のもと
 		//this.scene.blockMaterialDirtyMechanism = true;
 
-		const box = BABYLON.MeshBuilder.CreateBox('', { size: cm(10) }, this.scene);
-		// eslint-disable-next-line no-restricted-globals
-		setInterval(() => {
-			box.position = new BABYLON.Vector3(0, Math.random() * cm(10), 0);
-		}, 10);
+		if (_DEV_) { // SR状態確認用
+			const box = BABYLON.MeshBuilder.CreateBox('', { size: cm(10) }, this.scene);
+			// eslint-disable-next-line no-restricted-globals
+			setInterval(() => {
+				box.position = new BABYLON.Vector3(0, Math.random() * cm(10), 0);
+			}, 10);
+		}
 
 		this.startRenderLoop();
 
