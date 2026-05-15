@@ -1364,7 +1364,7 @@ export class RoomEngine extends EventEmitter {
 				return;
 			}
 			this.handleGrabbing();
-		}, 10);
+		}, 100);
 
 		this.playSfxUrl('/client-assets/room/sfx/grab.mp3', {
 			volume: 1,
@@ -1584,7 +1584,7 @@ export class RoomEngine extends EventEmitter {
 				return;
 			}
 			this.handleGrabbing();
-		}, 10);
+		}, 100);
 
 		this.playSfxUrl('/client-assets/room/sfx/grab.mp3', {
 			volume: 1,
