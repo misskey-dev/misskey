@@ -116,6 +116,7 @@ definePage(() => ({
 	box-sizing: border-box;
 	padding: 8px;
 	touch-action: none;
+	pointer-events: auto;
 }
 
 .joyStick::before {
@@ -166,6 +167,7 @@ definePage(() => ({
 	left: 0;
 	z-index: 1;
 	width: 100%;
+	pointer-events: none;
 }
 
 .topMain {
@@ -211,7 +213,10 @@ definePage(() => ({
 }
 
 .overlayControls {
-
+	pointer-events: auto;
+}
+.overlayControls:empty {
+	display: none;
 }
 
 .overlayObjectInfoPanel {

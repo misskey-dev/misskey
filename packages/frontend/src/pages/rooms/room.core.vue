@@ -638,6 +638,7 @@ function showOtherMenu(ev: PointerEvent) {
 	box-sizing: border-box;
 	padding: 8px;
 	touch-action: none;
+	pointer-events: auto;
 }
 
 .joyStick::before {
@@ -688,6 +689,7 @@ function showOtherMenu(ev: PointerEvent) {
 	left: 0;
 	z-index: 1;
 	width: 100%;
+	pointer-events: none;
 }
 
 .topMain {
@@ -737,6 +739,10 @@ function showOtherMenu(ev: PointerEvent) {
 	display: flex;
 	box-sizing: border-box;
 	width: max-content;
+	pointer-events: auto;
+}
+.overlayControls:empty {
+	display: none;
 }
 
 .overlayObjectInfoPanel {
