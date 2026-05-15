@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				{ label: 'Simple', value: 'simple' },
 				{ label: 'Japanese', value: 'japanese' },
 				{ label: 'Museum', value: 'museum' },
-			]" :modelValue="controller.roomState.value.env.type" @update:modelValue="v => controller.changeEnvType(v)"
+			]" :modelValue="controller.roomState.value.env.type" @update:modelValue="v => emit('changeEnvType', v)"
 		>
 			<template #label>Env type</template>
 		</MkSelect>
@@ -49,6 +49,10 @@ import MkFolder from '@/components/MkFolder.vue';
 
 const props = defineProps<{
 	controller: RoomController;
+}>();
+
+const emit = defineEmits<{
+	(ev: 'changeEnvType', value: string): void;
 }>();
 
 </script>

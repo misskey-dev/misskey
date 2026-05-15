@@ -74,13 +74,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 
 	<div v-if="isRoomSettingsOpen && controller.isEditMode.value" class="_panel" :class="$style.overlayObjectInfoPanel">
-		<XEnvOptions :controller="controller"/>
+		<XEnvOptions :controller="controller" @changeEnvType="changeEnvType"/>
 	</div>
 </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, markRaw, nextTick, onActivated, onDeactivated, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
+import { computed, defineAsyncComponent, markRaw, nextTick, onActivated, onDeactivated, onMounted, onUnmounted, ref, shallowRef, triggerRef, useTemplateRef, watch } from 'vue';
 import * as BABYLON from '@babylonjs/core';
 import * as Misskey from 'misskey-js';
 import XObjectCustomizeForm from './room.object-customize-form.vue';
@@ -403,6 +403,12 @@ async function addObject(ev: PointerEvent) {
 			dispose();
 		},
 	});
+}
+
+function changeEnvType(type: RoomState['env']['type']) {
+	controller.roomState.value.env.type = type;
+	triggerRef(controller.roomState);
+	refresh();
 }
 
 function removeSelectedObject() {

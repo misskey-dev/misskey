@@ -141,9 +141,10 @@ export class RoomController extends EngineControllerBase<RoomEngine> {
 		this.call('updateObjectOption', deepClone([objectId, key, value, attachments])); // 場合によってはvueによって(postMessage不能な)proxy化された値が来ることも考えられるのでdeepClone
 	}
 
-	public changeEnvType(type: RoomState['env']['type']) {
-		this.call('changeEnvType', [type]);
-	}
+	// エラーになる
+	//public changeEnvType(type: RoomState['env']['type']) {
+	//	this.call('changeEnvType', [type]);
+	//}
 
 	public updateEnvOptions(options: RoomState['env']['options']) {
 		this.call('updateEnvOptions', [options]);
