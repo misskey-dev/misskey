@@ -1,3 +1,4 @@
+import { describe, test, beforeAll, afterAll } from 'vitest';
 import { strictEqual } from 'assert';
 import * as Misskey from 'misskey-js';
 import { createAccount, fetchAdmin, isNoteUpdatedEventFired, isFired, type LoginUser, type Request, resolveRemoteUser, sleep, createRole } from './utils.js';
@@ -117,7 +118,7 @@ describe('Timeline', () => {
 			 * FIXME: can receive this
 			 * @see https://github.com/misskey-dev/misskey/issues/14083
 			 */
-			test.failing('Don\'t receive remote followee\'s invisible and mentioned specified-only Note', async () => {
+			test.skip('Don\'t receive remote followee\'s invisible and mentioned specified-only Note', async () => {
 				await postAndCheckReception(homeTimeline, false, { text: `@${bob.username}@b.test Hello`, visibility: 'specified' });
 			});
 
@@ -125,7 +126,7 @@ describe('Timeline', () => {
 			 * FIXME: cannot receive this
 			 * @see https://github.com/misskey-dev/misskey/issues/14084
 			 */
-			test.failing('Receive remote followee\'s visible specified-only reply to invisible specified-only Note', async () => {
+			test.skip('Receive remote followee\'s visible specified-only reply to invisible specified-only Note', async () => {
 				const note = (await alice.client.request('notes/create', { text: 'a', visibility: 'specified' })).createdNote;
 				await postAndCheckReception(homeTimeline, true, { replyId: note.id, visibility: 'specified', visibleUserIds: [bobInA.id] });
 			});

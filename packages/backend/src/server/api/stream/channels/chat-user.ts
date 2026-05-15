@@ -29,11 +29,16 @@ export class ChatUserChannel extends Channel {
 	}
 
 	@bindThis
-	public async init(params: JsonObject) {
-		if (typeof params.otherId !== 'string') return;
+	public async init(params: JsonObject): Promise<boolean> {
+		if (typeof params.otherId !== 'string') return false;
+		if (!this.user) return false;
+		if (params.otherId === this.user.id) return false;
+
 		this.otherId = params.otherId;
 
-		this.subscriber.on(`chatUserStream:${this.user!.id}-${this.otherId}`, this.onEvent);
+		this.subscriber.on(`chatUserStream:${this.user.id}-${this.otherId}`, this.onEvent);
+
+		return true;
 	}
 
 	@bindThis

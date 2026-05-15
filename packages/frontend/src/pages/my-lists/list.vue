@@ -99,7 +99,7 @@ function fetchList() {
 }
 
 function addUser() {
-	os.selectUser().then(user => {
+	os.selectUser({ includeSelf: true }).then(user => {
 		if (!list.value) return;
 		os.apiWithDialog('users/lists/push', {
 			listId: list.value.id,

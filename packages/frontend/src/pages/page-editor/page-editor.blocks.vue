@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 >
 	<template #default="{ item }">
 		<div>
-			<!-- divが無いとエラーになる https://github.com/SortableJS/vue.draggable.next/issues/189 -->
+			<!-- divが無いとエラーになる -->
 			<component :is="getComponent(item.type) as any" :modelValue="item" @update:modelValue="updateItem" @remove="() => removeItem(item)"/>
 		</div>
 	</template>

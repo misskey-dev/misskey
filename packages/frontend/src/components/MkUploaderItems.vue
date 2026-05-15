@@ -6,39 +6,42 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.root" class="_gaps_s">
 	<div
-		v-for="item in props.items"
-		:key="item.id"
+		v-for="displayItem in displayItems"
+		:key="displayItem.item.id"
 		v-panel
-		:class="[$style.item, { [$style.itemWaiting]: item.preprocessing, [$style.itemCompleted]: item.uploaded, [$style.itemFailed]: item.uploadFailed }]"
+		:class="[$style.item, { [$style.itemWaiting]: displayItem.item.preprocessing, [$style.itemCompleted]: displayItem.item.uploaded, [$style.itemFailed]: displayItem.item.uploadFailed }]"
 		:style="{
-			'--p': item.progress != null ? `${item.progress.value / item.progress.max * 100}%` : '0%',
-			'--pp': item.preprocessProgress != null ? `${item.preprocessProgress * 100}%` : '100%',
+			'--p': displayItem.item.progress != null ? `${displayItem.item.progress.value / displayItem.item.progress.max * 100}%` : '0%',
+			'--pp': displayItem.item.preprocessProgress != null ? `${displayItem.item.preprocessProgress * 100}%` : '100%',
 		}"
-		@contextmenu.prevent.stop="onContextmenu(item, $event)"
+		@contextmenu.prevent.stop="onContextmenu(displayItem.item, $event)"
 	>
 		<div :class="$style.itemInner">
 			<div :class="$style.itemActionWrapper">
-				<MkButton :iconOnly="true" rounded @click="emit('showMenu', item, $event)"><i class="ti ti-dots"></i></MkButton>
+				<MkButton :iconOnly="true" rounded @click="emit('showMenu', displayItem.item, $event)"><i class="ti ti-dots"></i></MkButton>
 			</div>
-			<div :class="$style.itemThumbnail" :style="{ backgroundImage: `url(${ item.thumbnail })` }" @click="onThumbnailClick(item, $event)"></div>
+			<div :class="$style.itemThumbnail" :style="{ backgroundImage: `url(${ displayItem.item.thumbnail })` }" @click="onThumbnailClick(displayItem.item, $event)"></div>
 			<div :class="$style.itemBody">
 				<div>
-					<i v-if="item.isSensitive" style="color: var(--MI_THEME-warn); margin-right: 0.5em;" class="ti ti-eye-exclamation"></i>
-					<MkCondensedLine :minScale="2 / 3">{{ item.name }}</MkCondensedLine>
+					<i v-if="displayItem.item.isSensitive" style="color: var(--MI_THEME-warn); margin-right: 0.5em;" class="ti ti-eye-exclamation"></i>
+					<MkCondensedLine :minScale="2 / 3">
+						<span>{{ displayItem.nameParts.baseName }}</span>
+						<span v-if="displayItem.nameParts.extension != null" style="opacity: 0.5;">{{ displayItem.nameParts.extension }}</span>
+					</MkCondensedLine>
 				</div>
 				<div :class="$style.itemInfo">
-					<span>{{ item.file.type }}</span>
-					<span v-if="item.compressedSize">({{ i18n.tsx._uploader.compressedToX({ x: bytes(item.compressedSize) }) }} = {{ i18n.tsx._uploader.savedXPercent({ x: Math.round((1 - item.compressedSize / item.file.size) * 100) }) }})</span>
-					<span v-else>{{ bytes(item.file.size) }}</span>
-					<span v-if="item.preprocessing">{{ i18n.ts.preprocessing }}<MkLoading inline em style="margin-left: 0.5em;"/></span>
+					<span>{{ displayItem.item.file.type }}</span>
+					<span v-if="displayItem.item.compressedSize">({{ i18n.tsx._uploader.compressedToX({ x: bytes(displayItem.item.compressedSize) }) }} = {{ i18n.tsx._uploader.savedXPercent({ x: Math.round((1 - displayItem.item.compressedSize / displayItem.item.file.size) * 100) }) }})</span>
+					<span v-else>{{ bytes(displayItem.item.file.size) }}</span>
+					<span v-if="displayItem.item.preprocessing">{{ i18n.ts.preprocessing }}<MkLoading inline em style="margin-left: 0.5em;"/></span>
 				</div>
 				<div>
 				</div>
 			</div>
 			<div :class="$style.itemIconWrapper">
-				<MkSystemIcon v-if="item.uploading" :class="$style.itemIcon" type="waiting"/>
-				<MkSystemIcon v-else-if="item.uploaded" :class="$style.itemIcon" type="success"/>
-				<MkSystemIcon v-else-if="item.uploadFailed" :class="$style.itemIcon" type="error"/>
+				<MkSystemIcon v-if="displayItem.item.uploading" :class="$style.itemIcon" type="waiting"/>
+				<MkSystemIcon v-else-if="displayItem.item.uploaded" :class="$style.itemIcon" type="success"/>
+				<MkSystemIcon v-else-if="displayItem.item.uploadFailed" :class="$style.itemIcon" type="error"/>
 			</div>
 		</div>
 	</div>
@@ -46,7 +49,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
+import { computed } from 'vue';
 import { isLink } from '@@/js/is-link.js';
+import { getUploadName } from '@/composables/use-uploader.js';
 import type { UploaderItem } from '@/composables/use-uploader.js';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
@@ -56,10 +61,35 @@ const props = defineProps<{
 	items: UploaderItem[];
 }>();
 
+const displayItems = computed(() => props.items.map(item => ({
+	item,
+	nameParts: getUploadNameParts(item),
+})));
+
 const emit = defineEmits<{
 	(ev: 'showMenu', item: UploaderItem, event: PointerEvent): void;
 	(ev: 'showMenuViaContextmenu', item: UploaderItem, event: PointerEvent): void;
 }>();
+
+function getUploadNameParts(item: UploaderItem): {
+	baseName: string;
+	extension: string | null;
+} {
+	const name = getUploadName(item);
+	const extensionIndex = name.lastIndexOf('.');
+
+	if (extensionIndex === -1) {
+		return {
+			baseName: name,
+			extension: null,
+		};
+	}
+
+	return {
+		baseName: name.substring(0, extensionIndex),
+		extension: name.substring(extensionIndex),
+	};
+}
 
 function onContextmenu(item: UploaderItem, ev: PointerEvent) {
 	if (ev.target && isLink(ev.target as HTMLElement)) return;

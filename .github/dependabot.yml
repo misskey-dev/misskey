@@ -34,9 +34,6 @@ updates:
       patterns:
         - "storybook*"
         - "@storybook/*"
-    swc-core:
-      patterns:
-        - "@swc/core*"
     typescript-eslint:
       patterns:
         - "@typescript-eslint/*"

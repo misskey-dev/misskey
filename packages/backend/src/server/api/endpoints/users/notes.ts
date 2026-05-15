@@ -185,7 +185,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		if (ps.withChannelNotes) {
 			query.andWhere(new Brackets(qb => {
 				if (mutingChannelIds.length > 0) {
-					qb.andWhere('note.channelId NOT IN (:...mutingChannelIds)', { mutingChannelIds: mutingChannelIds });
+					qb.andWhere(new Brackets(qb2 => {
+						qb2.orWhere('note.channelId IS NULL');
+						qb2.orWhere('note.channelId NOT IN (:...mutingChannelIds)', { mutingChannelIds });
+					}));
 				}
 
 				if (!isSelf) {

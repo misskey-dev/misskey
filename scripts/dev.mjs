@@ -34,7 +34,7 @@ await Promise.all([
 		stdout: process.stdout,
 		stderr: process.stderr,
 	}),
-	execa('pnpm', ['--filter', 'backend...', 'build'], {
+	execa('pnpm', ['--filter', 'backend...', '--filter=!backend', 'build'], {
 		cwd: _dirname + '/../',
 		stdout: process.stdout,
 		stderr: process.stderr,
@@ -65,12 +65,6 @@ execa('pnpm', ['build-assets', '--watch'], {
 });
 
 execa('pnpm', ['--filter', 'backend', 'dev'], {
-	cwd: _dirname + '/../',
-	stdout: process.stdout,
-	stderr: process.stderr,
-});
-
-execa('pnpm', ['--filter', 'frontend-shared', 'watch', '--no-clean'], {
 	cwd: _dirname + '/../',
 	stdout: process.stdout,
 	stderr: process.stderr,
