@@ -101,19 +101,16 @@ export class RoomController extends EngineControllerBase<RoomEngine> {
 		});
 	}
 
-	public async reset(roomState?: RoomState | null, options?: RoomControllerOptions | null, canvas?: HTMLCanvasElement | null) {
-		this.destroy();
-		this.abortController = new AbortController();
+	public async reset(canvas: HTMLCanvasElement, attachments: RoomAttachments, roomState?: RoomState | null, options?: RoomControllerOptions | null) {
+		this._reset_();
 		if (roomState != null) this.roomState.value = roomState;
 		if (options != null) this.options = options;
-		this.isReady.value = false;
 		this.isSitting.value = false;
 		this.isEditMode.value = false;
 		this.isRoomLightOn.value = true;
 		this.grabbing.value = null;
 		this.selected.value = null;
-		this.initializeProgress.value = 0;
-		await this.init(canvas ?? this.canvas!);
+		await this.init(canvas, attachments);
 	}
 
 	public setCameraMoveVector(vec: { x: number; y: number }, dash: boolean) {

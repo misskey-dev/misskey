@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="[$style.screen, { [$style.zen]: false }]">
-	<canvas ref="canvas" :class="$style.canvas" tabindex="-1"></canvas>
+	<canvas ref="canvas" :key="canvasKey" :class="$style.canvas" tabindex="-1"></canvas>
 
 	<Transition
 		:enterActiveClass="$style.transition_fade_enterActive"
@@ -109,6 +109,7 @@ const props = defineProps<{
 	room: Misskey.entities.WorldRoomDetailed;
 }>();
 
+const canvasKey = ref(0); // 一度ワーカーに渡したcanvasは再利用できないため作り直すためのkey
 const canvas = useTemplateRef('canvas');
 
 const interacions = shallowRef<{
@@ -433,12 +434,16 @@ async function revert() {
 	});
 	if (canceled) return;
 
-	await controller.reset(latestData);
+	canvasKey.value++;
+	await nextTick();
+	await controller.reset(canvas.value!, attachments, latestData);
 	isModified.value = false;
 }
 
 async function refresh() {
-	await controller.reset(null, roomControllerOptions.value);
+	canvasKey.value++;
+	await nextTick();
+	await controller.reset(canvas.value!, attachments, null, roomControllerOptions.value);
 }
 
 // TODO: ちゃんと書く

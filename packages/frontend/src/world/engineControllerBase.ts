@@ -262,19 +262,11 @@ export abstract class EngineControllerBase<T extends RoomEngineBase> {
 		};
 	}
 
-	public async reset(roomState?: RoomState | null, options?: RoomControllerOptions | null, canvas?: HTMLCanvasElement | null) {
+	protected async _reset_() {
 		this.destroy();
 		this.abortController = new AbortController();
-		if (roomState != null) this.roomState.value = roomState;
-		if (options != null) this.options = options;
 		this.isReady.value = false;
-		this.isSitting.value = false;
-		this.isEditMode.value = false;
-		this.isRoomLightOn.value = true;
-		this.grabbing.value = null;
-		this.selected.value = null;
 		this.initializeProgress.value = 0;
-		await this.init(canvas ?? this.canvas!);
 	}
 
 	private callCounter = 0;
