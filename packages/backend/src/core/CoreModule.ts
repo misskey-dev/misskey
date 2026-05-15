@@ -57,6 +57,7 @@ import { S3Service } from './S3Service.js';
 import { SignupService } from './SignupService.js';
 import { WebAuthnService } from './WebAuthnService.js';
 import { UserBlockingService } from './UserBlockingService.js';
+import { BlockingDataAccessService } from './data-access/BlockingDataAccessService.js';
 import { CacheService } from './CacheService.js';
 import { UserService } from './UserService.js';
 import { UserFollowingService } from './UserFollowingService.js';
@@ -201,6 +202,7 @@ const $S3Service: Provider = { provide: 'S3Service', useExisting: S3Service };
 const $SignupService: Provider = { provide: 'SignupService', useExisting: SignupService };
 const $WebAuthnService: Provider = { provide: 'WebAuthnService', useExisting: WebAuthnService };
 const $UserBlockingService: Provider = { provide: 'UserBlockingService', useExisting: UserBlockingService };
+const $BlockingDataAccessService: Provider = { provide: 'BlockingDataAccessService', useExisting: BlockingDataAccessService };
 const $CacheService: Provider = { provide: 'CacheService', useExisting: CacheService };
 const $UserService: Provider = { provide: 'UserService', useExisting: UserService };
 const $UserFollowingService: Provider = { provide: 'UserFollowingService', useExisting: UserFollowingService };
@@ -354,6 +356,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		SignupService,
 		WebAuthnService,
 		UserBlockingService,
+		BlockingDataAccessService,
 		CacheService,
 		UserService,
 		UserFollowingService,
@@ -504,6 +507,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$SignupService,
 		$WebAuthnService,
 		$UserBlockingService,
+		$BlockingDataAccessService,
 		$CacheService,
 		$UserService,
 		$UserFollowingService,
@@ -654,6 +658,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		SignupService,
 		WebAuthnService,
 		UserBlockingService,
+		BlockingDataAccessService,
 		CacheService,
 		UserService,
 		UserFollowingService,
@@ -803,6 +808,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$SignupService,
 		$WebAuthnService,
 		$UserBlockingService,
+		$BlockingDataAccessService,
 		$CacheService,
 		$UserService,
 		$UserFollowingService,

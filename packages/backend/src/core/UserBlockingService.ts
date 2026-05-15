@@ -3,37 +3,30 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
-import { ModuleRef } from '@nestjs/core';
+import { Inject, Injectable } from '@nestjs/common';
 import { IdService } from '@/core/IdService.js';
 import type { MiUser } from '@/models/User.js';
 import type { MiBlocking } from '@/models/Blocking.js';
 import { QueueService } from '@/core/QueueService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { DI } from '@/di-symbols.js';
-import type { FollowRequestsRepository, BlockingsRepository, UserListsRepository, UserListMembershipsRepository } from '@/models/_.js';
+import type { FollowRequestsRepository, UserListsRepository, UserListMembershipsRepository } from '@/models/_.js';
 import Logger from '@/logger.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { UserWebhookService } from '@/core/UserWebhookService.js';
 import { bindThis } from '@/decorators.js';
-import { CacheService } from '@/core/CacheService.js';
+import { BlockingDataAccessService } from '@/core/data-access/BlockingDataAccessService.js';
 import { UserFollowingService } from '@/core/UserFollowingService.js';
 
 @Injectable()
-export class UserBlockingService implements OnModuleInit {
+export class UserBlockingService {
 	private logger: Logger;
-	private userFollowingService: UserFollowingService;
 
 	constructor(
-		private moduleRef: ModuleRef,
-
 		@Inject(DI.followRequestsRepository)
 		private followRequestsRepository: FollowRequestsRepository,
-
-		@Inject(DI.blockingsRepository)
-		private blockingsRepository: BlockingsRepository,
 
 		@Inject(DI.userListsRepository)
 		private userListsRepository: UserListsRepository,
@@ -41,7 +34,7 @@ export class UserBlockingService implements OnModuleInit {
 		@Inject(DI.userListMembershipsRepository)
 		private userListMembershipsRepository: UserListMembershipsRepository,
 
-		private cacheService: CacheService,
+		private blockingDataAccessService: BlockingDataAccessService,
 		private userEntityService: UserEntityService,
 		private idService: IdService,
 		private queueService: QueueService,
@@ -49,12 +42,9 @@ export class UserBlockingService implements OnModuleInit {
 		private webhookService: UserWebhookService,
 		private apRendererService: ApRendererService,
 		private loggerService: LoggerService,
+		private userFollowingService: UserFollowingService,
 	) {
 		this.logger = this.loggerService.getLogger('user-block');
-	}
-
-	onModuleInit() {
-		this.userFollowingService = this.moduleRef.get('UserFollowingService');
 	}
 
 	@bindThis
@@ -75,15 +65,7 @@ export class UserBlockingService implements OnModuleInit {
 			blockeeId: blockee.id,
 		} as MiBlocking;
 
-		await this.blockingsRepository.insert(blocking);
-
-		this.cacheService.userBlockingCache.refresh(blocker.id);
-		this.cacheService.userBlockedCache.refresh(blockee.id);
-
-		this.globalEventService.publishInternalEvent('blockingCreated', {
-			blockerId: blocker.id,
-			blockeeId: blockee.id,
-		});
+		await this.blockingDataAccessService.createBlocking(blocking);
 
 		if (this.userEntityService.isLocalUser(blocker) && this.userEntityService.isRemoteUser(blockee)) {
 			const content = this.apRendererService.addContext(this.apRendererService.renderBlock(blocking));
@@ -151,10 +133,7 @@ export class UserBlockingService implements OnModuleInit {
 
 	@bindThis
 	public async unblock(blocker: MiUser, blockee: MiUser) {
-		const blocking = await this.blockingsRepository.findOneBy({
-			blockerId: blocker.id,
-			blockeeId: blockee.id,
-		});
+		const blocking = await this.blockingDataAccessService.findBlocking(blocker.id, blockee.id);
 
 		if (blocking == null) {
 			this.logger.warn('ブロック解除がリクエストされましたがブロックしていませんでした');
@@ -166,15 +145,7 @@ export class UserBlockingService implements OnModuleInit {
 		blocking.blocker = blocker;
 		blocking.blockee = blockee;
 
-		await this.blockingsRepository.delete(blocking.id);
-
-		this.cacheService.userBlockingCache.refresh(blocker.id);
-		this.cacheService.userBlockedCache.refresh(blockee.id);
-
-		this.globalEventService.publishInternalEvent('blockingDeleted', {
-			blockerId: blocker.id,
-			blockeeId: blockee.id,
-		});
+		await this.blockingDataAccessService.deleteBlocking(blocking.id, blocker.id, blockee.id);
 
 		// deliver if remote bloking
 		if (this.userEntityService.isLocalUser(blocker) && this.userEntityService.isRemoteUser(blockee)) {
@@ -183,8 +154,11 @@ export class UserBlockingService implements OnModuleInit {
 		}
 	}
 
+	// TODO: 呼び出し側 (PollService / ReactionService / notes/polls/vote.ts /
+	// ChatService / NoteCreateService 等) を BlockingDataAccessService.isBlocking に
+	// 直接置換し、このラッパを削除する
 	@bindThis
-	public async checkBlocked(blockerId: MiUser['id'], blockeeId: MiUser['id']): Promise<boolean> {
-		return (await this.cacheService.userBlockingCache.fetch(blockerId)).has(blockeeId);
+	public checkBlocked(blockerId: MiUser['id'], blockeeId: MiUser['id']): Promise<boolean> {
+		return this.blockingDataAccessService.isBlocking(blockerId, blockeeId);
 	}
 }
