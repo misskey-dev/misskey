@@ -200,7 +200,7 @@ export class RoomEngine extends EventEmitter {
 		this.ev('changeGridSnapping', { gridSnapping: v });
 	}
 
-	private putParticleSystem: BABYLON.ParticleSystem;
+	private putParticleSystem: BABYLON.ParticleSystem | null = null;
 	public lightContainer: BABYLON.ClusteredLightContainer;
 	private gridMaterial: GridMaterial | null = null;
 	private gridPlane: BABYLON.Mesh;
@@ -317,26 +317,6 @@ export class RoomEngine extends EventEmitter {
 
 			this.sr.updateMeshesForEffectLayer(this.gl);
 		}
-
-		this.putParticleSystem = new BABYLON.ParticleSystem('', 64, this.scene);
-		this.putParticleSystem.particleTexture = new BABYLON.Texture('/client-assets/room/steam.png');
-		this.putParticleSystem.createCylinderEmitter(cm(5), cm(1), cm(5));
-		this.putParticleSystem.minEmitBox = new BABYLON.Vector3(cm(-3), 0, cm(-3));
-		this.putParticleSystem.maxEmitBox = new BABYLON.Vector3(cm(3), 0, cm(3));
-		this.putParticleSystem.minEmitPower = cm(700);
-		this.putParticleSystem.maxEmitPower = cm(1000);
-		this.putParticleSystem.addVelocityGradient(0, 1);
-		this.putParticleSystem.addVelocityGradient(1, 0);
-		this.putParticleSystem.minLifeTime = 0.2;
-		this.putParticleSystem.maxLifeTime = 0.2;
-		this.putParticleSystem.minSize = cm(1);
-		this.putParticleSystem.maxSize = cm(4);
-		this.putParticleSystem.emitRate = 256;
-		this.putParticleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ADD;
-		this.putParticleSystem.color1 = new BABYLON.Color4(1, 1, 1, 0.3);
-		this.putParticleSystem.color2 = new BABYLON.Color4(1, 1, 1, 0.2);
-		this.putParticleSystem.colorDead = new BABYLON.Color4(1, 1, 1, 0);
-		this.putParticleSystem.targetStopDuration = 0.05;
 
 		this.gridPlane = BABYLON.MeshBuilder.CreatePlane('gridPlane', { width: cm(10000), height: cm(10000) }, this.scene);
 		this.gridPlane.isPickable = false;
@@ -1185,6 +1165,31 @@ export class RoomEngine extends EventEmitter {
 		});
 	}
 
+	private getPutParticleSystem() {
+		if (this.putParticleSystem != null) return this.putParticleSystem;
+		this.putParticleSystem = new BABYLON.ParticleSystem('', 64, this.scene);
+		this.putParticleSystem.particleTexture = new BABYLON.Texture('/client-assets/room/steam.png');
+		this.putParticleSystem.createCylinderEmitter(cm(5), cm(1), cm(5));
+		this.putParticleSystem.minEmitBox = new BABYLON.Vector3(cm(-3), 0, cm(-3));
+		this.putParticleSystem.maxEmitBox = new BABYLON.Vector3(cm(3), 0, cm(3));
+		this.putParticleSystem.minEmitPower = cm(700);
+		this.putParticleSystem.maxEmitPower = cm(1000);
+		this.putParticleSystem.addVelocityGradient(0, 1);
+		this.putParticleSystem.addVelocityGradient(1, 0);
+		this.putParticleSystem.minLifeTime = 0.2;
+		this.putParticleSystem.maxLifeTime = 0.2;
+		this.putParticleSystem.minSize = cm(1);
+		this.putParticleSystem.maxSize = cm(4);
+		this.putParticleSystem.emitRate = 256;
+		this.putParticleSystem.blendMode = BABYLON.ParticleSystem.BLENDMODE_ADD;
+		this.putParticleSystem.color1 = new BABYLON.Color4(1, 1, 1, 0.3);
+		this.putParticleSystem.color2 = new BABYLON.Color4(1, 1, 1, 0.2);
+		this.putParticleSystem.colorDead = new BABYLON.Color4(1, 1, 1, 0);
+		this.putParticleSystem.targetStopDuration = 0.05;
+		this.sr.fixParticleSystem(this.putParticleSystem);
+		return this.putParticleSystem;
+	}
+
 	private highlightMeshes(meshes: BABYLON.AbstractMesh[]) {
 		if (this.selectionOutlineLayer == null) return;
 
@@ -1290,8 +1295,10 @@ export class RoomEngine extends EventEmitter {
 			},
 			onDone: () => { // todo: sticky状態などを引数でもらうようにしたい
 				grabbingEnded = true;
-				this.putParticleSystem.emitter = selectedObject.position.clone();
-				this.putParticleSystem.start();
+
+				const putParticleSystem = this.getPutParticleSystem();
+				putParticleSystem.emitter = selectedObject.position.clone();
+				putParticleSystem.start();
 
 				this.playSfxUrl('/client-assets/room/sfx/put.mp3', {
 					volume: 1,
@@ -1529,8 +1536,9 @@ export class RoomEngine extends EventEmitter {
 				const pos = root.position.clone();
 				const rotation = root.rotation.clone();
 
-				this.putParticleSystem.emitter = pos;
-				this.putParticleSystem.start();
+				const putParticleSystem = this.getPutParticleSystem();
+				putParticleSystem.emitter = pos;
+				putParticleSystem.start();
 
 				this.playSfxUrl('/client-assets/room/sfx/put.mp3', {
 					volume: 1,
