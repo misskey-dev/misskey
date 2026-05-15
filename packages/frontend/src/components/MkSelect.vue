@@ -54,7 +54,11 @@ export type ItemGroup<T extends OptionValue = OptionValue> = {
 	items: ItemOption<T>[];
 };
 
-export type MkSelectItem<T extends OptionValue = OptionValue> = ItemOption<T> | ItemGroup<T>;
+export type ItemDivider = {
+	type: 'divider';
+};
+
+export type MkSelectItem<T extends OptionValue = OptionValue> = ItemOption<T> | ItemGroup<T> | ItemDivider;
 
 export type GetMkSelectValueType<T extends MkSelectItem> = T extends ItemGroup
 	? T['items'][number]['value']
@@ -146,6 +150,8 @@ watch([model, () => props.items], () => {
 					break;
 				}
 			}
+		} else if (item.type === 'divider') {
+			continue;
 		} else {
 			if (item.value === model.value) {
 				found = item;
@@ -183,6 +189,10 @@ function show() {
 					},
 				});
 			}
+		} else if (item.type === 'divider') {
+			menu.push({
+				type: 'divider',
+			});
 		} else {
 			menu.push({
 				text: item.label,

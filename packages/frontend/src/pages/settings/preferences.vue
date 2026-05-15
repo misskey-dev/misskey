@@ -763,6 +763,66 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkPreferenceContainer>
 							</SearchMarker>
 						</div>
+
+						<SearchMarker :keywords="['graphics', 'quality']">
+							<MkPreferenceContainer k="world.graphicsQuality">
+								<MkSelect
+									v-model="worldGraphicsQuality"
+									:items="[
+										{ label: i18n.ts.auto, value: null },
+										{ type: 'divider' },
+										{ label: i18n.ts.high, value: GRAPHICS_QUALITY.HIGH },
+										{ label: i18n.ts.medium, value: GRAPHICS_QUALITY.MEDIUM },
+										{ label: i18n.ts.low, value: GRAPHICS_QUALITY.LOW },
+									]"
+								>
+									<template #label><SearchLabel>{{ i18n.ts._miWorld.graphicsQuality }}</SearchLabel></template>
+								</MkSelect>
+							</MkPreferenceContainer>
+						</SearchMarker>
+
+						<SearchMarker :keywords="['framerate', 'fps']">
+							<MkPreferenceContainer k="world.fps">
+								<MkSelect
+									v-model="worldFps"
+									:items="[
+										{ label: i18n.ts.auto, value: null },
+										{ type: 'divider' },
+										{ label: 'Max', value: 'max' },
+										{ label: '~120fps', value: '120' },
+										{ label: '~60fps', value: '60' },
+										{ label: '~30fps', value: '30' },
+									]"
+								>
+									<template #label><SearchLabel>{{ i18n.ts._miWorld.frameRate }}</SearchLabel></template>
+								</MkSelect>
+							</MkPreferenceContainer>
+						</SearchMarker>
+
+						<SearchMarker :keywords="['resolution']">
+							<MkPreferenceContainer k="world.resolution">
+								<MkSelect
+									v-model="worldResolution"
+									:items="[
+										{ label: i18n.ts.auto, value: null },
+										{ type: 'divider' },
+										{ label: '2x', value: 2 },
+										{ label: '1x', value: 1 },
+										{ label: '0.5x', value: 0.5 },
+									]"
+								>
+									<template #label><SearchLabel>{{ i18n.ts._miWorld.resolution }}</SearchLabel></template>
+								</MkSelect>
+							</MkPreferenceContainer>
+						</SearchMarker>
+
+						<SearchMarker :keywords="['antialiasing']">
+							<MkPreferenceContainer k="world.antialias">
+								<MkSwitch v-model="worldAntialias">
+									<template #label><SearchLabel>{{ i18n.ts._miWorld.antialiasing }}</SearchLabel></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
+						</SearchMarker>
 					</div>
 				</MkFolder>
 			</SearchMarker>
@@ -911,6 +971,7 @@ import { instance } from '@/instance.js';
 import { ensureSignin } from '@/i.js';
 import { genId } from '@/utility/id.js';
 import { suggestReload } from '@/utility/reload-suggest.js';
+import { GRAPHICS_QUALITY } from '@/world/room/utility.js';
 
 const $i = ensureSignin();
 
@@ -978,6 +1039,10 @@ const contextMenu = prefer.model('contextMenu');
 const menuStyle = prefer.model('menuStyle');
 const makeEveryTextElementsSelectable = prefer.model('makeEveryTextElementsSelectable');
 const worldSeparateRenderingThread = prefer.model('world.separateRenderingThread');
+const worldGraphicsQuality = prefer.model('world.graphicsQuality');
+const worldFps = prefer.model('world.fps');
+const worldResolution = prefer.model('world.resolution');
+const worldAntialias = prefer.model('world.antialias');
 
 const fontSize = ref(miLocalStorage.getItem('fontSize') as '1' | '2' | '3' | null);
 const useSystemFont = ref(miLocalStorage.getItem('useSystemFont') != null);
@@ -1038,6 +1103,10 @@ watch([
 	animatedMfm,
 	advancedMfm,
 	worldSeparateRenderingThread,
+	worldGraphicsQuality,
+	worldFps,
+	worldResolution,
+	worldAntialias,
 ], () => {
 	suggestReload();
 });
