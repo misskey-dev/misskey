@@ -315,6 +315,9 @@ onMounted(async () => {
 	watch([graphicsQuality, fps, resolution, antialias], () => {
 		refresh();
 	});
+
+	// canvasからフォーカスが外れていることに気づかずsとか押してしまうと検索画面が開かれてroomの状態が失われたりするので無効化
+	(window as any).disableGlobalHotkeys();
 });
 
 onDeactivated(() => {

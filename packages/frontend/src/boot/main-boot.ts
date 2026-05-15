@@ -405,7 +405,13 @@ export async function mainBoot() {
 			allowRepeat: true,
 		},
 	} as const satisfies Keymap;
-	window.document.addEventListener('keydown', makeHotkey(keymap), { passive: false });
+	const listener = makeHotkey(keymap);
+	window.document.addEventListener('keydown', listener, { passive: false });
+
+	// TODO: よりマシな無効化方法を提供する
+	(window as any).disableGlobalHotkeys = () => {
+		window.document.removeEventListener('keydown', listener);
+	};
 
 	initializeSw();
 }
