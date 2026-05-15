@@ -54,6 +54,8 @@ minimumReleaseAgeExclude:
   - '@typescript/native-preview*'
   - pnpm
   - systeminformation # 脆弱性対応。そのうち消す
+  # Renovate security update: sanitize-html@2.17.4
+  - sanitize-html@2.17.4
 overrides:
   '@aiscript-dev/aiscript-languageserver': '-'
   chokidar: 5.0.0
