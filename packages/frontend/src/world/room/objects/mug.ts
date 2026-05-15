@@ -18,12 +18,12 @@ export const mug = defineObject({
 	placement: 'top',
 	hasCollisions: false,
 	canPreMeshesMerging: true,
-	createInstance: ({ scene, root }) => {
+	createInstance: ({ scene, root, sr }) => {
 		let yugeDispose: (() => void) | null = null;
 
 		return {
 			onInited: () => {
-				yugeDispose = yuge(scene, root, new BABYLON.Vector3(0, cm(5), 0));
+				yugeDispose = yuge(scene, root, new BABYLON.Vector3(0, cm(5), 0), sr);
 			},
 			interactions: {},
 			dispose: () => {

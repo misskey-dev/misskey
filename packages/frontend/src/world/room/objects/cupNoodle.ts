@@ -19,12 +19,12 @@ export const cupNoodle = defineObject({
 	hasCollisions: false,
 	hasTexture: true,
 	canPreMeshesMerging: true,
-	createInstance: ({ scene, root }) => {
+	createInstance: ({ scene, root, sr }) => {
 		let yugeDispose: (() => void) | null = null;
 
 		return {
 			onInited: () => {
-				yugeDispose = yuge(scene, root, new BABYLON.Vector3(0, cm(10), 0));
+				yugeDispose = yuge(scene, root, new BABYLON.Vector3(0, cm(10), 0), sr);
 			},
 			interactions: {},
 			dispose: () => {
