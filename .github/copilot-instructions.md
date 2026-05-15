@@ -41,7 +41,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 - Frontend test: `pnpm --filter frontend test`
 - Migration 差分検査: `pnpm --filter backend check-migrations`
 
-> **backend テスト (`test` / `test:e2e` / `test:fed`) 実行前に `.config/test.yml` が必要。** 未作成の場合は `ncp .github/misskey/test.yml .config/test.yml` (または `cp .github/misskey/test.yml .config/test.yml`) を実行してから走らせる。各テストスクリプトが内部で `cross-env NODE_ENV=test pnpm compile-config` を呼ぶため、コピー済みであれば追加の compile-config は不要。
+> **backend テスト (`test` / `test:e2e` / `test:fed`) 実行前に `.config/test.yml` が必要。** 未作成の場合は `ncp .github/misskey/test.yml .config/test.yml` (または `cp .github/misskey/test.yml .config/test.yml`) を実行してから走らせる。
 
 変更範囲に応じて最も近いコマンドから優先して検証し、必要なら全体コマンドに広げること。
 

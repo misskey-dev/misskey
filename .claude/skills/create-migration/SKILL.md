@@ -49,7 +49,6 @@ pnpm --filter backend exec typeorm migration:generate -d ormconfig.js -o --esm m
 
 - `pnpm build-pre` を実行して `built/meta.json` を生成する (`loadConfig()` が `built/meta.json` を必須とするため。`pnpm build` 済みであれば不要)。
 - `.config/default.yml` が存在すること (なければ `.config/example.yml` を参考に作成する)。
-- `pnpm --filter backend compile-config` を実行して `built/.config.json` を生成する (`ormconfig.js` が `loadConfig()` 経由で必須とする。未実行だと "Compiled configuration file not found." エラーになる)。
 - `pnpm --filter backend build` でエンティティを最新ビルド (CLI は `built/` を読む)。
 - ローカル DB を起動する (`docker compose -f compose.local-db.yml up -d`)。
 
