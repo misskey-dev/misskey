@@ -251,7 +251,7 @@ export function loadConfig(): Config {
 	const frontendManifestExists = fs.existsSync(resolve(projectBuiltDir, '_frontend_vite_/manifest.json'));
 	const frontendEmbedManifestExists = fs.existsSync(resolve(projectBuiltDir, '_frontend_embed_vite_/manifest.json'));
 
-	const config = JSON.parse(fs.readFileSync(compiledConfigFilePath, 'utf-8')) as Source;
+	const config = JSON.parse(fs.readFileSync(path, 'utf-8')) as Source;
 
 	const url = tryCreateUrl(config.url ?? process.env.MISSKEY_URL ?? '');
 	const version = meta.version;
