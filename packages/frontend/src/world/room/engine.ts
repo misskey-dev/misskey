@@ -1319,7 +1319,7 @@ export class RoomEngine extends EventEmitter {
 					BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT,
 				);
 				const keys = [
-					{ frame: 0, value: new BABYLON.Vector3(1, 1.2, 1) },
+					{ frame: 0, value: new BABYLON.Vector3(0.8, 1.2, 0.8) },
 					{ frame: 60, value: new BABYLON.Vector3(1, 1, 1) },
 				];
 				animTarget.setKeys(keys);
@@ -1329,7 +1329,7 @@ export class RoomEngine extends EventEmitter {
 				selectedObject.animations.push(animTarget);
 				const animating = Promise.withResolvers<void>();
 				const animationObserver = this.scene.onAfterAnimationsObservable.add(() => {
-					this.sr.updateMesh(selectedObject.getChildMeshes(), false);
+					this.sr.updateMesh(selectedObject.getChildMeshes(), true);
 				});
 				this.scene.beginAnimation(selectedObject, 0, 60, false, 3, () => { animating.resolve(); });
 
@@ -1560,7 +1560,7 @@ export class RoomEngine extends EventEmitter {
 					BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT,
 				);
 				const keys = [
-					{ frame: 0, value: new BABYLON.Vector3(1, 1.2, 1) },
+					{ frame: 0, value: new BABYLON.Vector3(0.8, 1.2, 0.8) },
 					{ frame: 60, value: new BABYLON.Vector3(1, 1, 1) },
 				];
 				animTarget.setKeys(keys);
@@ -1569,7 +1569,7 @@ export class RoomEngine extends EventEmitter {
 				animTarget.setEasingFunction(easing);
 				root.animations.push(animTarget);
 				const animationObserver = this.scene.onAfterAnimationsObservable.add(() => {
-					this.sr.updateMesh(root.getChildMeshes(), false);
+					this.sr.updateMesh(root.getChildMeshes(), true);
 				});
 				this.scene.beginAnimation(root, 0, 60, false, 3, () => {
 					this.scene.onAfterAnimationsObservable.remove(animationObserver);
