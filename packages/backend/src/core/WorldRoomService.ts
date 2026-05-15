@@ -8,9 +8,9 @@ import { DataSource, In, Not } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import {
 	MiDriveFile,
-	WorldRoomsRepository,
 	MiWorldRoom,
 } from '@/models/_.js';
+import type { WorldRoomsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import { IdService } from '@/core/IdService.js';
