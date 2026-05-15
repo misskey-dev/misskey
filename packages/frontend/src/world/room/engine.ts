@@ -1167,6 +1167,7 @@ export class RoomEngine extends EventEmitter {
 
 	private getPutParticleSystem() {
 		if (this.putParticleSystem != null) return this.putParticleSystem;
+		this.sr.disableSnapshotRendering();
 		this.putParticleSystem = new BABYLON.ParticleSystem('', 64, this.scene);
 		this.putParticleSystem.particleTexture = new BABYLON.Texture('/client-assets/room/steam.png');
 		this.putParticleSystem.createCylinderEmitter(cm(5), cm(1), cm(5));
@@ -1187,6 +1188,7 @@ export class RoomEngine extends EventEmitter {
 		this.putParticleSystem.colorDead = new BABYLON.Color4(1, 1, 1, 0);
 		this.putParticleSystem.targetStopDuration = 0.05;
 		this.sr.fixParticleSystem(this.putParticleSystem);
+		this.sr.enableSnapshotRendering();
 		return this.putParticleSystem;
 	}
 
