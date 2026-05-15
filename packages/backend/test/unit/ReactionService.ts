@@ -4,7 +4,7 @@
  */
 
 import * as assert from 'assert';
-import { beforeAll, describe, test } from 'vitest';
+import { beforeAll, describe, test, vi } from 'vitest';
 import { Test } from '@nestjs/testing';
 
 import { CoreModule } from '@/core/CoreModule.js';
@@ -130,6 +130,88 @@ describe('ReactionService', () => {
 			const input = { ':custom_emoji:': 1, ':custom_emoji@.:': 2 };
 			const output = { ':custom_emoji@.:': 3 };
 			assert.deepStrictEqual(reactionService.convertLegacyReactions(input), output);
+		});
+	});
+
+	describe('create', () => {
+		test('ローカル限定カスタム絵文字はリモートノートへのリアクションではハートにフォールバックする', async () => {
+			const inserted: Array<{ reaction: string }> = [];
+			const service = new ReactionService(
+				{ enableReactionsBuffering: false, enableChartsForRemoteUser: false, mediaSilencedHosts: [] } as never,
+				{ findOneBy: vi.fn().mockResolvedValue({ id: 'remote-user', host: 'remote.example' }) } as never,
+				{
+					createQueryBuilder: () => ({
+						update: () => ({
+							set: () => ({
+								where: () => ({
+									execute: vi.fn().mockResolvedValue(undefined),
+								}),
+							}),
+						}),
+					}),
+				} as never,
+				{
+					insert: vi.fn(async (record: { reaction: string }) => {
+						inserted.push(record);
+					}),
+				} as never,
+				{ findOne: vi.fn() } as never,
+				{ toPunyNullable: (host: string | null) => host, isMediaSilencedHost: () => false } as never,
+				{
+					localEmojisCache: {
+						fetch: vi.fn().mockResolvedValue(new Map([['localonly', {
+							name: 'localonly',
+							host: null,
+							localOnly: true,
+							isSensitive: false,
+							roleIdsThatCanBeUsedThisEmojiAsReaction: [],
+						}]])),
+					},
+				} as never,
+				{ getUserRoles: vi.fn() } as never,
+				{ isLocalUser: (user: { host: string | null }) => user.host == null } as never,
+				{ isVisibleForMe: vi.fn().mockResolvedValue(true) } as never,
+				{ checkBlocked: vi.fn().mockResolvedValue(false) } as never,
+				{ create: vi.fn(), delete: vi.fn() } as never,
+				{ gen: vi.fn(() => 'reaction-id'), parse: vi.fn(() => ({ date: new Date() })) } as never,
+				{ updateInChannelNotesRanking: vi.fn(), updateGlobalNotesRanking: vi.fn(), updatePerUserNotesRanking: vi.fn() } as never,
+				{ publishNoteStream: vi.fn() } as never,
+				{
+					addContext: (content: unknown) => content,
+					renderLike: vi.fn().mockResolvedValue({}),
+				} as never,
+				{
+					createDeliverManager: vi.fn(() => ({
+						addDirectRecipe: vi.fn(),
+						addFollowersRecipe: vi.fn(),
+						execute: vi.fn().mockResolvedValue(undefined),
+					})),
+				} as never,
+				{ createNotification: vi.fn() } as never,
+				{ update: vi.fn() } as never,
+			);
+
+			await service.create(
+				{ id: 'local-user', host: null, isBot: false },
+				{
+					id: 'remote-note',
+					userId: 'remote-user',
+					userHost: 'remote.example',
+					renoteId: null,
+					renote: null,
+					renoteUserHost: null,
+					reactionAcceptance: null,
+					reactionAndUserPairCache: [],
+					localOnly: false,
+					visibility: 'public',
+					replyId: null,
+					channelId: null,
+					visibleUserIds: [],
+				} as never,
+				':localonly:',
+			);
+
+			assert.strictEqual(inserted[0].reaction, '❤');
 		});
 	});
 });
