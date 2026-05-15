@@ -1298,8 +1298,6 @@ export class RoomEngine extends EventEmitter {
 					playbackRate: 1,
 				});
 
-				this.sr.disableSnapshotRendering();
-
 				// put animation
 				const animTarget = new BABYLON.Animation(
 					'',
@@ -1318,12 +1316,15 @@ export class RoomEngine extends EventEmitter {
 				animTarget.setEasingFunction(easing);
 				selectedObject.animations.push(animTarget);
 				const animating = Promise.withResolvers<void>();
+				const animationObserver = this.scene.onAfterAnimationsObservable.add(() => {
+					this.sr.updateMesh(selectedObject.getChildMeshes(), false);
+				});
 				this.scene.beginAnimation(selectedObject, 0, 60, false, 3, () => { animating.resolve(); });
-				this.sr.enableSnapshotRendering();
 
 				// TODO: アニメーションの完了まで親子関係の解除を遅延するため、一瞬「grabbingが終わっているのに親子関係が解除されていない」状態が発生する。その間に新たにgrabbingを開始するなどの別の操作が発生すると不具合のもとになるのでそれを防止する仕組みを作る
 				animating.promise.then(() => {
-					this.sr.disableSnapshotRendering();
+					this.scene.onAfterAnimationsObservable.remove(animationObserver);
+
 					// 親から先に外していく
 					const removeStickyParentRecursively = (mesh: BABYLON.Mesh) => {
 						const stickyObjectIds = Array.from(this.roomState.installedObjects.filter(o => o.sticky === mesh.metadata.objectId)).map(o => o.id);
@@ -1340,8 +1341,6 @@ export class RoomEngine extends EventEmitter {
 						}
 					};
 					removeStickyParentRecursively(selectedObject);
-
-					this.sr.enableSnapshotRendering();
 
 					const pos = selectedObject.position.clone();
 					const rotation = selectedObject.rotation.clone();
@@ -1538,8 +1537,6 @@ export class RoomEngine extends EventEmitter {
 					playbackRate: 1,
 				});
 
-				this.sr.disableSnapshotRendering();
-
 				// put animation
 				const animTarget = new BABYLON.Animation(
 					'',
@@ -1557,9 +1554,12 @@ export class RoomEngine extends EventEmitter {
 				easing.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
 				animTarget.setEasingFunction(easing);
 				root.animations.push(animTarget);
-				this.scene.beginAnimation(root, 0, 60, false, 3);
-
-				this.sr.enableSnapshotRendering();
+				const animationObserver = this.scene.onAfterAnimationsObservable.add(() => {
+					this.sr.updateMesh(root.getChildMeshes(), false);
+				});
+				this.scene.beginAnimation(root, 0, 60, false, 3, () => {
+					this.scene.onAfterAnimationsObservable.remove(animationObserver);
+				});
 
 				this.roomState.installedObjects.push({
 					id,
