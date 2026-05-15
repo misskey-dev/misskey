@@ -164,6 +164,66 @@ function calcWasdVec() {
 
 let isDashing = false;
 
+watch(canvas, () => {
+	if (canvas.value == null) return;
+
+	canvas.value!.addEventListener('keydown', (ev) => {
+		if (!controller.isReady.value) return;
+		if (ev.repeat) return;
+
+		switch (ev.code) {
+			case 'KeyW':
+				isWPressing = true;
+				controller.setCameraMoveVector(calcWasdVec(), isDashing);
+				break;
+			case 'KeyS':
+				isSPressing = true;
+				controller.setCameraMoveVector(calcWasdVec(), isDashing);
+				break;
+			case 'KeyA':
+				isAPressing = true;
+				controller.setCameraMoveVector(calcWasdVec(), isDashing);
+				break;
+			case 'KeyD':
+				isDPressing = true;
+				controller.setCameraMoveVector(calcWasdVec(), isDashing);
+				break;
+			case 'ShiftLeft':
+			case 'ShiftRight':
+				isDashing = true;
+				controller.setCameraMoveVector(calcWasdVec(), isDashing);
+				break;
+		}
+	});
+
+	canvas.value!.addEventListener('keyup', (ev) => {
+		if (!controller.isReady.value) return;
+		switch (ev.code) {
+			case 'KeyW':
+				isWPressing = false;
+				controller.setCameraMoveVector(calcWasdVec(), isDashing);
+				break;
+			case 'KeyS':
+				isSPressing = false;
+				controller.setCameraMoveVector(calcWasdVec(), isDashing);
+				break;
+			case 'KeyA':
+				isAPressing = false;
+				controller.setCameraMoveVector(calcWasdVec(), isDashing);
+				break;
+			case 'KeyD':
+				isDPressing = false;
+				controller.setCameraMoveVector(calcWasdVec(), isDashing);
+				break;
+			case 'ShiftLeft':
+			case 'ShiftRight':
+				isDashing = false;
+				controller.setCameraMoveVector(calcWasdVec(), isDashing);
+				break;
+		}
+	});
+});
+
 const joyStickRadiusPx = 100;
 const joyStickEl = useTemplateRef('joyStickEl');
 const joyStickVec = ref({ x: 0, y: 0 });
@@ -250,60 +310,6 @@ onMounted(async () => {
 			controller.setCameraJoystickMoveVector(vector);
 		});
 	}
-
-	canvas.value!.addEventListener('keydown', (ev) => {
-		if (ev.repeat) return;
-
-		switch (ev.code) {
-			case 'KeyW':
-				isWPressing = true;
-				controller.setCameraMoveVector(calcWasdVec(), isDashing);
-				break;
-			case 'KeyS':
-				isSPressing = true;
-				controller.setCameraMoveVector(calcWasdVec(), isDashing);
-				break;
-			case 'KeyA':
-				isAPressing = true;
-				controller.setCameraMoveVector(calcWasdVec(), isDashing);
-				break;
-			case 'KeyD':
-				isDPressing = true;
-				controller.setCameraMoveVector(calcWasdVec(), isDashing);
-				break;
-			case 'ShiftLeft':
-			case 'ShiftRight':
-				isDashing = true;
-				controller.setCameraMoveVector(calcWasdVec(), isDashing);
-				break;
-		}
-	});
-
-	canvas.value!.addEventListener('keyup', (ev) => {
-		switch (ev.code) {
-			case 'KeyW':
-				isWPressing = false;
-				controller.setCameraMoveVector(calcWasdVec(), isDashing);
-				break;
-			case 'KeyS':
-				isSPressing = false;
-				controller.setCameraMoveVector(calcWasdVec(), isDashing);
-				break;
-			case 'KeyA':
-				isAPressing = false;
-				controller.setCameraMoveVector(calcWasdVec(), isDashing);
-				break;
-			case 'KeyD':
-				isDPressing = false;
-				controller.setCameraMoveVector(calcWasdVec(), isDashing);
-				break;
-			case 'ShiftLeft':
-			case 'ShiftRight':
-				isDashing = false;
-				controller.setCameraMoveVector(calcWasdVec(), isDashing);
-				break;
-		}
-	});
 
 	watch([graphicsQuality, fps, resolution, antialias], () => {
 		refresh();
