@@ -17,7 +17,8 @@ export type EngineControllerBaseOptions = {
 	antialias: boolean;
 };
 
-// 抽象化レイヤー
+// UIとエンジンの間に挟まり抽象化を行うレイヤー。
+// UIからは、エンジンが直で動いててもワーカーで動いてても同じように操作できるように見える
 export abstract class EngineControllerBase<T extends RoomEngineBase> {
 	private worker: Worker | null = null;
 	private engine: T | null = null;
