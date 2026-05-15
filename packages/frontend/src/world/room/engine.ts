@@ -1298,9 +1298,10 @@ export class RoomEngine extends EventEmitter {
 			onDone: () => { // todo: sticky状態などを引数でもらうようにしたい
 				grabbingEnded = true;
 
-				const putParticleSystem = this.getPutParticleSystem();
-				putParticleSystem.emitter = selectedObject.position.clone();
-				putParticleSystem.start();
+				// 場合によってはなぜかSRが効かなくなる
+				//const putParticleSystem = this.getPutParticleSystem();
+				//putParticleSystem.emitter = selectedObject.position.clone();
+				//putParticleSystem.start();
 
 				this.playSfxUrl('/client-assets/room/sfx/put.mp3', {
 					volume: 1,
@@ -1538,9 +1539,10 @@ export class RoomEngine extends EventEmitter {
 				const pos = root.position.clone();
 				const rotation = root.rotation.clone();
 
-				const putParticleSystem = this.getPutParticleSystem();
-				putParticleSystem.emitter = pos;
-				putParticleSystem.start();
+				// 場合によってはなぜかSRが効かなくなる
+				//const putParticleSystem = this.getPutParticleSystem();
+				//putParticleSystem.emitter = pos;
+				//putParticleSystem.start();
 
 				this.playSfxUrl('/client-assets/room/sfx/put.mp3', {
 					volume: 1,
