@@ -158,6 +158,10 @@ export class RoomController extends EngineControllerBase<RoomEngine> {
 		this.call('beginSelectedInstalledObjectGrabbing');
 	}
 
+	public duplicateSelectedObject() {
+		this.call('duplicateSelectedObject');
+	}
+
 	public removeSelectedObject() {
 		this.call('removeSelectedObject');
 	}

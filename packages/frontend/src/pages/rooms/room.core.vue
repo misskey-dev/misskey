@@ -53,6 +53,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton v-if="controller.grabbing.value" iconOnly @click="controller.changeGrabbingDistance(10)"><i class="ti ti-arrows-maximize"></i></MkButton>
 				<MkButton v-if="controller.grabbing.value" iconOnly @click="controller.changeGrabbingDistance(-10)"><i class="ti ti-arrows-minimize"></i></MkButton>
 
+				<MkButton v-if="!controller.grabbing.value && controller.selected.value != null" @click="duplicateSelectedObject"><i class="ti ti-copy"></i></MkButton>
 				<MkButton v-if="!controller.grabbing.value && controller.selected.value != null" @click="removeSelectedObject"><i class="ti ti-trash"></i> (X)</MkButton>
 			</template>
 			<MkButton v-if="controller.isSitting.value" @click="controller.standUp()">降りる (Q)</MkButton>
@@ -415,6 +416,11 @@ function changeEnvType(type: RoomState['env']['type']) {
 	controller.roomState.value.env.type = type;
 	triggerRef(controller.roomState);
 	refresh();
+}
+
+function duplicateSelectedObject() {
+	controller.duplicateSelectedObject();
+	canvas.value!.focus();
 }
 
 function removeSelectedObject() {

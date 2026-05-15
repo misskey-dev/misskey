@@ -1673,6 +1673,14 @@ export class RoomEngine extends EventEmitter {
 			*/
 	}
 
+	public duplicateSelectedObject() {
+		if (this.selected == null) return;
+
+		const objectState = this.selected.objectState;
+
+		this.addObject(objectState.type, deepClone(objectState.options));
+	}
+
 	public removeSelectedObject() {
 		if (this.selected == null) return;
 
