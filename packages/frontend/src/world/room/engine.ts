@@ -1599,10 +1599,6 @@ export class RoomEngine extends EventEmitter {
 			entity.instance.resetTemporaryState?.();
 		}
 
-		//if (this.gl != null) {
-		//	this.gl.isEnabled = false; // 重いので切る
-		//}
-
 		if (this.gridPlane.material == null) {
 			import('@babylonjs/materials').then(m => {
 				this.sr.disableSnapshotRendering();
@@ -1629,10 +1625,6 @@ export class RoomEngine extends EventEmitter {
 		this.isEditMode = false;
 
 		await this.bake();
-
-		//if (this.gl != null) {
-		//	this.gl.isEnabled = true;
-		//}
 	}
 
 	public async bake() {
