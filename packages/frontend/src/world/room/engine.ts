@@ -332,7 +332,7 @@ export class RoomEngine extends EventEmitter {
 			BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT,
 		);
 		const keys = [
-			{ frame: 0, value: new BABYLON.Vector3(0.8, 1.2, 0.8) },
+			{ frame: 0, value: new BABYLON.Vector3(0.9, 1.2, 0.9) },
 			{ frame: 60, value: new BABYLON.Vector3(1, 1, 1) },
 		];
 		this.putAnim.setKeys(keys);
