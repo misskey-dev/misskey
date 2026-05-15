@@ -80,7 +80,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, defineAsyncComponent, markRaw, nextTick, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
+import { computed, defineAsyncComponent, markRaw, nextTick, onDeactivated, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import * as BABYLON from '@babylonjs/core';
 import * as Misskey from 'misskey-js';
 import XObjectCustomizeForm from './room.object-customize-form.vue';
@@ -307,6 +307,12 @@ onMounted(async () => {
 	watch([graphicsQuality, fps, resolution, antialias], () => {
 		refresh();
 	});
+});
+
+onDeactivated(() => {
+	controller.destroy();
+
+	window.removeEventListener('resize', resize);
 });
 
 onUnmounted(() => {
