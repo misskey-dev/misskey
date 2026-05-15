@@ -124,7 +124,7 @@ const previewEngineControllerOptions = computed<PreviewEngineControllerOptions>(
 	graphicsQuality: props.graphicsQuality,
 	fps: null,
 	resolution: 1,
-	workerMode: false,
+	workerMode: prefer.s['world.separateRenderingThread'],
 }));
 
 const controller = markRaw(new PreviewEngineController(previewEngineControllerOptions.value));
@@ -141,7 +141,7 @@ onMounted(async () => {
 		console.error(err);
 		os.alert({
 			type: 'error',
-			title: i18n.ts._room.failedToInitialize,
+			title: i18n.ts._miWorld.failedToInitialize,
 			text: (err instanceof Error ? err.message : String(err)),
 		});
 		return;

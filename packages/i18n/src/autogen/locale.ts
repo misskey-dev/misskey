@@ -13278,7 +13278,41 @@ export interface Locale extends ILocale {
          */
         "mfm": string;
     };
-    "_room": {
+    "_miWorld": {
+        /**
+         * 描画を別スレッドに分離
+         */
+        "separateRenderingThread": string;
+        /**
+         * 有効にするとパフォーマンスが向上します。不安定になる場合は無効すると改善する可能性があります。
+         */
+        "separateRenderingThread_description": string;
+        /**
+         * グラフィックの品質
+         */
+        "graphicsQuality": string;
+        /**
+         * フレームレート
+         */
+        "frameRate": string;
+        /**
+         * 解像度
+         */
+        "resolution": string;
+        /**
+         * 初期化に失敗しました
+         */
+        "failedToInitialize": string;
+        /**
+         * バグ、またはデバイスのリソース不足の可能性が考えられます。
+         */
+        "crushed_description": string;
+        /**
+         * アンチエイリアス
+         */
+        "antialiasing": string;
+    };
+    "_miRoom": {
         /**
          * グリッドにスナップ
          */
@@ -13296,18 +13330,6 @@ export interface Locale extends ILocale {
          */
         "revertAllChangesConfirmation": string;
         /**
-         * グラフィックの品質
-         */
-        "graphicsQuality": string;
-        /**
-         * フレームレート
-         */
-        "frameRate": string;
-        /**
-         * 解像度
-         */
-        "resolution": string;
-        /**
          * お使いのデバイスはMisskeyRoomをサポートしていません。
          */
         "yourDeviceNotSupported_title": string;
@@ -13315,17 +13337,5 @@ export interface Locale extends ILocale {
          * MisskeyRoomを動作させるには、WebGPUをサポートするデバイスが必要です。
          */
         "yourDeviceNotSupported_description": string;
-        /**
-         * 初期化に失敗しました
-         */
-        "failedToInitialize": string;
-        /**
-         * バグ、またはデバイスのリソース不足の可能性が考えられます。
-         */
-        "crushed_description": string;
-        /**
-         * アンチエイリアス
-         */
-        "antialiasing": string;
     };
 }

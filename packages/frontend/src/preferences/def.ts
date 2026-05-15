@@ -545,6 +545,9 @@ export const PREF_DEF = definePreferences({
 	'world.antialias': {
 		default: true,
 	},
+	'world.separateRenderingThread': {
+		default: true,
+	},
 
 	'experimental.stackingRouterView': {
 		default: false,

@@ -747,6 +747,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 			</SearchMarker>
 
+			<SearchMarker v-slot="slotProps" :keywords="['world', 'room']">
+				<MkFolder :defaultOpen="slotProps.isParentOfTarget">
+					<template #label><SearchLabel>World / Room</SearchLabel></template>
+					<template #icon><SearchIcon><i class="ti ti-buildings"></i></SearchIcon></template>
+
+					<div class="_gaps_m">
+						<div class="_gaps_s">
+							<SearchMarker :keywords="['rendering', 'thread']">
+								<MkPreferenceContainer k="world.separateRenderingThread">
+									<MkSwitch v-model="worldSeparateRenderingThread">
+										<template #label><SearchLabel>{{ i18n.ts._miWorld.separateRenderingThread }}</SearchLabel></template>
+										<template #caption>{{ i18n.ts._miWorld.separateRenderingThread_description }}</template>
+									</MkSwitch>
+								</MkPreferenceContainer>
+							</SearchMarker>
+						</div>
+					</div>
+				</MkFolder>
+			</SearchMarker>
+
 			<SearchMarker v-slot="slotProps" :keywords="['other']">
 				<MkFolder :defaultOpen="slotProps.isParentOfTarget">
 					<template #label><SearchLabel>{{ i18n.ts.other }}</SearchLabel></template>
@@ -957,6 +977,7 @@ const useNativeUiForVideoAudioPlayer = prefer.model('useNativeUiForVideoAudioPla
 const contextMenu = prefer.model('contextMenu');
 const menuStyle = prefer.model('menuStyle');
 const makeEveryTextElementsSelectable = prefer.model('makeEveryTextElementsSelectable');
+const worldSeparateRenderingThread = prefer.model('world.separateRenderingThread');
 
 const fontSize = ref(miLocalStorage.getItem('fontSize') as '1' | '2' | '3' | null);
 const useSystemFont = ref(miLocalStorage.getItem('useSystemFont') != null);
@@ -1016,6 +1037,7 @@ watch([
 	showAvailableReactionsFirstInNote,
 	animatedMfm,
 	advancedMfm,
+	worldSeparateRenderingThread,
 ], () => {
 	suggestReload();
 });

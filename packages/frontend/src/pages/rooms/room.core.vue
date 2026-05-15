@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<button :class="$style.topMenuButton" class="_button" @click="showOtherMenu"><i class="ti ti-dots"></i></button>
 			</div>
 			<div v-if="isModified" :class="$style.modified" class="_panel _shadow">
-				<span :class="$style.modifiedText">{{ i18n.ts._room.thereAreUnsavedChanges }}</span>
+				<span :class="$style.modifiedText">{{ i18n.ts._miRoom.thereAreUnsavedChanges }}</span>
 				<button class="_button" style="color: var(--MI_THEME-error)" @click="revert">戻す</button>
 				<button class="_button" style="color: var(--MI_THEME-accent)" @click="save">保存</button>
 			</div>
@@ -185,7 +185,7 @@ const roomControllerOptions = computed<RoomControllerOptions>(() => ({
 	resolution: resolution.value,
 	antialias: antialias.value,
 	useVirtualJoystick,
-	workerMode: false,
+	workerMode: prefer.s['world.separateRenderingThread'],
 }));
 
 const controller = markRaw(new RoomController(props.room.def, roomControllerOptions.value));
@@ -196,8 +196,8 @@ onMounted(async () => {
 	if (!await BABYLON.WebGPUEngine.IsSupportedAsync) {
 		os.alert({
 			type: 'warning',
-			title: i18n.ts._room.yourDeviceNotSupported_title,
-			text: i18n.ts._room.yourDeviceNotSupported_description,
+			title: i18n.ts._miRoom.yourDeviceNotSupported_title,
+			text: i18n.ts._miRoom.yourDeviceNotSupported_description,
 		});
 		return;
 	}
@@ -208,7 +208,7 @@ onMounted(async () => {
 		console.error(err);
 		os.alert({
 			type: 'error',
-			title: i18n.ts._room.failedToInitialize,
+			title: i18n.ts._miWorld.failedToInitialize,
 			text: (err instanceof Error ? err.message : String(err)),
 		});
 		return;
@@ -338,7 +338,7 @@ function toggleLight() {
 function showSnappingMenu(ev: PointerEvent) {
 	os.popupMenu([{
 		type: 'switch',
-		text: i18n.ts._room.snapToGrid,
+		text: i18n.ts._miRoom.snapToGrid,
 		ref: computed({
 			get: () => controller.gridSnapping.value.enabled,
 			set: v => controller.setGridSnapping({ ...controller.gridSnapping.value, enabled: v }),
@@ -423,7 +423,7 @@ async function revert() {
 	const { canceled } = await os.confirm({
 		type: 'warning',
 		title: i18n.ts.areYouSure,
-		text: i18n.ts._room.revertAllChangesConfirmation,
+		text: i18n.ts._miRoom.revertAllChangesConfirmation,
 	});
 	if (canceled) return;
 
@@ -495,7 +495,7 @@ function impor() {
 function showOtherMenu(ev: PointerEvent) {
 	os.popupMenu([{
 		type: 'radio',
-		text: i18n.ts._room.graphicsQuality,
+		text: i18n.ts._miWorld.graphicsQuality,
 		caption: graphicsQualityRaw.value == null ? i18n.ts.auto : graphicsQualityRaw.value === GRAPHICS_QUALITY.HIGH ? 'High' : graphicsQualityRaw.value === GRAPHICS_QUALITY.MEDIUM ? 'Medium' : 'Low',
 		options: [{
 			label: `${i18n.ts.auto} (${graphicsQualityAutoValue.value === GRAPHICS_QUALITY.HIGH ? 'High' : graphicsQualityAutoValue.value === GRAPHICS_QUALITY.MEDIUM ? 'Medium' : 'Low'})`,
@@ -513,7 +513,7 @@ function showOtherMenu(ev: PointerEvent) {
 		ref: graphicsQualityRaw,
 	}, {
 		type: 'radio',
-		text: i18n.ts._room.frameRate,
+		text: i18n.ts._miWorld.frameRate,
 		caption: fpsRaw.value == null ? i18n.ts.auto : fpsRaw.value === 'max' ? 'Max' : `~${fpsRaw.value}fps`,
 		options: [{
 			label: `${i18n.ts.auto} (${fpsAutoValue.value}fps)`,
@@ -534,7 +534,7 @@ function showOtherMenu(ev: PointerEvent) {
 		ref: fpsRaw,
 	}, {
 		type: 'radio',
-		text: i18n.ts._room.resolution,
+		text: i18n.ts._miWorld.resolution,
 		caption: resolutionRaw.value == null ? i18n.ts.auto : resolutionRaw.value + 'x',
 		options: [{
 			label: `${i18n.ts.auto} (${resolutionAutoValue.value}x)`,
@@ -552,7 +552,7 @@ function showOtherMenu(ev: PointerEvent) {
 		ref: resolutionRaw,
 	}, {
 		type: 'switch',
-		text: i18n.ts._room.antialiasing,
+		text: i18n.ts._miWorld.antialiasing,
 		ref: antialias,
 	}, {
 		type: 'divider',

@@ -82,7 +82,7 @@ export abstract class EngineControllerBase<T extends RoomEngineBase> {
 				os.alert({
 					type: 'error',
 					title: i18n.ts.somethingHappened,
-					text: i18n.ts._room.crushed_description,
+					text: i18n.ts._miWorld.crushed_description,
 				});
 			});
 			await babylonEngine.initAsync();
