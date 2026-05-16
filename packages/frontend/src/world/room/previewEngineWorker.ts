@@ -20,6 +20,9 @@ onmessage = async (event) => {
 			babylonEngine.compatibilityMode = false;
 			babylonEngine.enableOfflineSupport = false;
 			await babylonEngine.initAsync();
+			babylonEngine._device.lost.then(() => { // TODO: babylonEngineの内部プロパティに依存しない方法をforumで聞く
+				self.postMessage({ type: 'contextlost' });
+			});
 			if (event.data.options.resolution === 2) babylonEngine.setHardwareScalingLevel(0.5);
 			if (event.data.options.resolution === 0.5) babylonEngine.setHardwareScalingLevel(2);
 

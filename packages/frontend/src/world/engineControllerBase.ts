@@ -70,6 +70,10 @@ export abstract class EngineControllerBase<T extends RoomEngineBase> {
 						}
 						break;
 					}
+					case 'contextlost': {
+						this.onContextLost();
+						break;
+					}
 					default: {
 						console.warn('Unrecognized message from worker:', event.data?.type);
 					}
@@ -79,14 +83,18 @@ export abstract class EngineControllerBase<T extends RoomEngineBase> {
 			const babylonEngine = new BABYLON.WebGPUEngine(canvas, { doNotHandleContextLost: true, powerPreference: 'high-performance', antialias: this.options.antialias });
 			babylonEngine.compatibilityMode = false;
 			babylonEngine.enableOfflineSupport = false;
-			babylonEngine.onContextLostObservable.add(() => {
-				os.alert({
-					type: 'error',
-					title: i18n.ts.somethingHappened,
-					text: i18n.ts._miWorld.crushed_description,
-				});
-			});
 			await babylonEngine.initAsync();
+			// doNotHandleContextLostがtrueだとそもそも呼ばれない
+			//babylonEngine.onContextLostObservable.add(() => {
+			//	os.alert({
+			//		type: 'error',
+			//		title: i18n.ts.somethingHappened,
+			//		text: i18n.ts._miWorld.crushed_description,
+			//	});
+			//});
+			babylonEngine._device.lost.then(() => { // TODO: babylonEngineの内部プロパティに依存しない方法をforumで聞く
+				this.onContextLost();
+			});
 			if (this.options.resolution === 2) babylonEngine.setHardwareScalingLevel(0.5);
 			if (this.options.resolution === 0.5) babylonEngine.setHardwareScalingLevel(2);
 
@@ -268,6 +276,14 @@ export abstract class EngineControllerBase<T extends RoomEngineBase> {
 		this.abortController = new AbortController();
 		this.isReady.value = false;
 		this.initializeProgress.value = 0;
+	}
+
+	private onContextLost() {
+		os.alert({
+			type: 'error',
+			title: i18n.ts.somethingHappened,
+			text: i18n.ts._miWorld.crushed_description,
+		});
 	}
 
 	private callCounter = 0;
