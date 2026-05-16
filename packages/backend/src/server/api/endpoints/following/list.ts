@@ -51,7 +51,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const query = this.queryService.makePaginationQuery(this.followingsRepository.createQueryBuilder('following'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
-				.andWhere('following.followerId = :userId', { userId: me.id })
+				.andWhere('following.followerId = :userId', { userId: me.id });
 
 			if (ps.notification) {
 				query.andWhere('following.notify IS NOT NULL');
