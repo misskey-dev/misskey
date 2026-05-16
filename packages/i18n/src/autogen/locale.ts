@@ -13330,11 +13330,12 @@ export interface Locale extends ILocale {
          */
         "revertAllChangesConfirmation": string;
         /**
-         * お使いのデバイスはMisskeyRoomをサポートしていません。
+         * MisskeyRoomを起動できません。
          */
         "yourDeviceNotSupported_title": string;
         /**
-         * MisskeyRoomを動作させるには、WebGPUをサポートするデバイスが必要です。
+         * お使いのデバイスがMisskeyRoomをサポートしていないか、デバイスのリソース不足などにより一時的に利用できなくなっています。
+         * MisskeyRoomを動作させるには、WebGPUをサポートするデバイス・ブラウザが必要です。
          */
         "yourDeviceNotSupported_description": string;
     };

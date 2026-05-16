@@ -3573,5 +3573,5 @@ _miRoom:
   gridScale: "グリッドサイズ"
   thereAreUnsavedChanges: "未保存の変更があります"
   revertAllChangesConfirmation: "全ての変更を取り消し、部屋を最後に保存した状態まで戻しますか？"
-  yourDeviceNotSupported_title: "お使いのデバイスはMisskeyRoomをサポートしていません。"
-  yourDeviceNotSupported_description: "MisskeyRoomを動作させるには、WebGPUをサポートするデバイスが必要です。"
+  yourDeviceNotSupported_title: "MisskeyRoomを起動できません。"
+  yourDeviceNotSupported_description: "お使いのデバイスがMisskeyRoomをサポートしていないか、デバイスのリソース不足などにより一時的に利用できなくなっています。\nMisskeyRoomを動作させるには、WebGPUをサポートするデバイス・ブラウザが必要です。"
