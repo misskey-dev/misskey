@@ -111,6 +111,9 @@ importers:
       '@fastify/multipart':
         specifier: 10.0.0
         version: 10.0.0
+      '@fastify/proxy-addr':
+        specifier: 5.1.0
+        version: 5.1.0
       '@fastify/static':
         specifier: 9.1.3
         version: 9.1.3

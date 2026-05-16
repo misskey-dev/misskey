@@ -25,11 +25,10 @@ export class FileServerDriveHandler {
 		private videoProcessingService: VideoProcessingService,
 	) {}
 
-	public async handle(ctx: HonoContext) {
+	public async handle(ctx: HonoContext): Promise<Response> {
 		const key = ctx.req.param('key');
 		if (key == null) {
-			ctx.status(400);
-			return ctx.text('Bad Request');
+			return ctx.text('Bad Request', 400);
 		}
 
 		const file = await this.fileResolver.resolveFileByAccessKey(key);
@@ -37,15 +36,15 @@ export class FileServerDriveHandler {
 		if (file.kind === 'not-found') {
 			ctx.status(404);
 			ctx.header('Cache-Control', 'max-age=86400');
-			return serveStatic({
+			await serveStatic({
 				path: resolve(this.assetsPath, 'not-found.png'),
-			});
+			})(ctx, async () => {});
+			return ctx.res;
 		}
 
 		if (file.kind === 'unavailable') {
-			ctx.status(204);
 			ctx.header('Cache-Control', 'max-age=86400');
-			return;
+			return ctx.body(null, 204);
 		}
 
 		try {

@@ -5,6 +5,7 @@
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { createAdaptorServer } from '@hono/node-server';
 import fastifyStatic from '@fastify/static';
 import Fastify, { type FastifyInstance } from 'fastify';
 import { describe, expect, test, beforeAll, afterAll, afterEach } from 'vitest';
@@ -29,6 +30,41 @@ const dummySize = fs.statSync(dummyPath).size;
 const dummyBuffer = fs.readFileSync(dummyPath);
 const svgBuffer = Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8"></svg>', 'utf8');
 const textBuffer = Buffer.from('dummy text', 'utf8');
+
+function mountHonoApp(fastify: FastifyInstance, fileServerService: FileServerService): void {
+	const nodeServer = createAdaptorServer({
+		fetch: fileServerService.createServer().fetch,
+	});
+
+	fastify.addHook('onRequest', async (request, reply) => {
+		reply.hijack();
+		await new Promise<void>((resolve, reject) => {
+			let settled = false;
+			const done = () => {
+				if (settled) return;
+				settled = true;
+				reply.raw.off('finish', done);
+				reply.raw.off('close', done);
+				reply.raw.off('error', onError);
+				resolve();
+			};
+			const onError = (error: Error) => {
+				if (settled) return;
+				settled = true;
+				reply.raw.off('finish', done);
+				reply.raw.off('close', done);
+				reply.raw.off('error', onError);
+				reject(error);
+			};
+
+			reply.raw.on('finish', done);
+			reply.raw.on('close', done);
+			reply.raw.on('error', onError);
+
+			nodeServer.emit('request', request.raw, reply.raw);
+		});
+	});
+}
 
 async function createRemoteFileServer() {
 	const flatPngBuffer = await sharp({
@@ -173,7 +209,7 @@ describe('FileServerService', () => {
 			root: path.resolve('src/server/assets'),
 			serve: false,
 		});
-		fileServerService.createServer(fastify, {}, () => {});
+		mountHonoApp(fastify, fileServerService);
 		await fastify.ready();
 
 		const externalConfig = {
@@ -196,7 +232,7 @@ describe('FileServerService', () => {
 			root: path.resolve('src/server/assets'),
 			serve: false,
 		});
-		externalFileServerService.createServer(externalFastify, {}, () => {});
+		mountHonoApp(externalFastify, externalFileServerService);
 		await externalFastify.ready();
 
 		const remoteServerInfo = await createRemoteFileServer();

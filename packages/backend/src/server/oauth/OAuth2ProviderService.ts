@@ -454,7 +454,8 @@ export class OAuth2ProviderService {
 			this.#logger.info(`Rendering authorization page for "${oauth2.client.name}"`);
 
 			reply.header('Cache-Control', 'no-store');
-			return await HtmlTemplateService.replyHtml(reply, OAuthPage({
+			reply.type('text/html; charset=utf-8');
+			return reply.send(OAuthPage({
 				...await this.htmlTemplateService.getCommonData(),
 				transactionId: oauth2.transactionID,
 				clientName: oauth2.client.name,

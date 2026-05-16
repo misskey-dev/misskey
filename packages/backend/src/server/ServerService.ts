@@ -5,12 +5,15 @@
 
 import cluster from 'node:cluster';
 import * as fs from 'node:fs';
+import type { IncomingMessage } from 'node:http';
 import { fileURLToPath } from 'node:url';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { createAdaptorServer } from '@hono/node-server';
 import Fastify, { type FastifyInstance } from 'fastify';
+import proxyAddr from '@fastify/proxy-addr';
 import fastifyStatic from '@fastify/static';
 import fastifyRawBody from 'fastify-raw-body';
+import { Hono } from 'hono';
 import { IsNull } from 'typeorm';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { Config } from '@/config.js';
@@ -39,6 +42,8 @@ const _dirname = fileURLToPath(new URL('.', import.meta.url));
 export class ServerService implements OnApplicationShutdown {
 	private logger: Logger;
 	#fastify: FastifyInstance;
+	#legacyFastify: FastifyInstance | null = null;
+	#trustProxyChecker: ((address: string, hop: number) => boolean) | undefined;
 
 	constructor(
 		@Inject(DI.config)
@@ -80,137 +85,135 @@ export class ServerService implements OnApplicationShutdown {
 			logger: false,
 		});
 		this.#fastify = fastify;
+		this.#trustProxyChecker = this.createTrustProxyChecker();
 
-		// HSTS
-		// 6months (15552000sec)
-		if (this.config.url.startsWith('https') && !this.config.disableHsts) {
-			fastify.addHook('onRequest', (request, reply, done) => {
-				reply.header('strict-transport-security', 'max-age=15552000; preload');
-				done();
-			});
-		}
+		const legacyFastify = Fastify({
+			trustProxy: this.config.trustProxy,
+			logger: false,
+		});
+		this.#legacyFastify = legacyFastify;
 
-		// Register raw-body parser for ActivityPub HTTP signature validation.
-		await fastify.register(fastifyRawBody, {
+		await legacyFastify.register(fastifyRawBody, {
 			global: false,
 			encoding: null,
 			runFirst: true,
 		});
 
-		// Register non-serving static server so that the child services can use reply.sendFile.
-		// `root` here is just a placeholder and each call must use its own `rootPath`.
-		fastify.register(fastifyStatic, {
+		legacyFastify.register(fastifyStatic, {
 			root: _dirname,
 			serve: false,
 		});
 
-		// if the requester looks like to be performing an ActivityPub object lookup, reject all external redirects
-		//
-		// this will break lookup that involve copying a URL from a third-party server, like trying to lookup http://charlie.example.com/@alice@alice.com
-		//
-		// this is not required by standard but protect us from peers that did not validate final URL.
+		legacyFastify.register(this.apiServerService.createServer, { prefix: '/api' });
+		legacyFastify.register(this.activityPubServerService.createServer);
+		legacyFastify.register(this.oauth2ProviderService.createServer, { prefix: '/oauth' });
+		legacyFastify.register(this.oauth2ProviderService.createTokenServer, { prefix: '/oauth/token' });
+		await legacyFastify.ready();
+
+		const hono = new Hono<{ Variables: { ip: string; ips: string[] } }>();
+
+		hono.use(async (ctx, next) => {
+			const incoming = (ctx.env as { incoming?: IncomingMessage }).incoming;
+			if (incoming != null) {
+				const ips = this.resolveClientIps(incoming);
+				ctx.set('ips', ips);
+				ctx.set('ip', ips.at(-1) ?? incoming.socket.remoteAddress ?? '');
+			}
+			await next();
+		});
+
+		if (this.config.url.startsWith('https') && !this.config.disableHsts) {
+			hono.use(async (ctx, next) => {
+				ctx.header('strict-transport-security', 'max-age=15552000; preload');
+				await next();
+			});
+		}
+
 		if (!this.meta.allowExternalApRedirect) {
 			const maybeApLookupRegex = /application\/activity\+json|application\/ld\+json.+activitystreams/i;
-			fastify.addHook('onSend', (request, reply, _, done) => {
-				const location = reply.getHeader('location');
-				if (reply.statusCode < 300 || reply.statusCode >= 400 || typeof location !== 'string') {
-					done();
+			hono.use(async (ctx, next) => {
+				await next();
+
+				const location = ctx.res.headers.get('location');
+				if (ctx.res.status < 300 || ctx.res.status >= 400 || location == null) {
 					return;
 				}
 
-				if (!maybeApLookupRegex.test(request.headers.accept ?? '')) {
-					done();
+				if (!maybeApLookupRegex.test(ctx.req.header('accept') ?? '')) {
 					return;
 				}
 
 				const effectiveLocation = process.env.NODE_ENV === 'production' ? location : location.replace(/^http:\/\//, 'https://');
 				if (effectiveLocation.startsWith(`https://${this.config.host}/`)) {
-					done();
 					return;
 				}
 
-				reply.status(406);
-				reply.removeHeader('location');
-				reply.header('content-type', 'text/plain; charset=utf-8');
-				reply.header('link', `<${encodeURI(location)}>; rel="canonical"`);
-				done(null, [
+				const headers = new Headers(ctx.res.headers);
+				headers.delete('location');
+				headers.set('content-type', 'text/plain; charset=utf-8');
+				headers.set('link', `<${encodeURI(location)}>; rel="canonical"`);
+				return new Response([
 					'Refusing to relay remote ActivityPub object lookup.',
 					'',
 					`Please remove 'application/activity+json' and 'application/ld+json' from the Accept header or fetch using the authoritative URL at ${location}.`,
-				].join('\n'));
+				].join('\n'), { status: 406, headers });
 			});
 		}
 
-		fastify.register(this.apiServerService.createServer, { prefix: '/api' });
-		fastify.register(this.openApiServerService.createServer);
-		fastify.register(this.fileServerService.createServer);
-		fastify.register(this.activityPubServerService.createServer);
-		fastify.register(this.nodeinfoServerService.createServer);
-		fastify.register(this.wellKnownServerService.createServer);
-		fastify.register(this.oauth2ProviderService.createServer, { prefix: '/oauth' });
-		fastify.register(this.oauth2ProviderService.createTokenServer, { prefix: '/oauth/token' });
-		fastify.register(this.healthServerService.createServer, { prefix: '/healthz' });
-
-		fastify.get<{ Params: { path: string }; Querystring: { static?: any; badge?: any; }; }>('/emoji/:path(.*)', async (request, reply) => {
-			const path = request.params.path;
-
-			reply.header('Cache-Control', 'public, max-age=86400');
+		hono.get('/emoji/:path{.*}', async (ctx) => {
+			const path = ctx.req.param('path');
+			ctx.header('Cache-Control', 'public, max-age=86400');
 
 			if (!path.match(/^[a-zA-Z0-9\-_@\.]+?\.webp$/)) {
-				reply.code(404);
-				return;
+				return ctx.body(null, 404);
 			}
 
 			const emojiPath = path.replace(/\.webp$/i, '');
 			const pathChunks = emojiPath.split('@');
-
 			if (pathChunks.length > 2) {
-				reply.code(400);
-				return;
+				return ctx.body(null, 400);
 			}
 
 			const name = pathChunks.shift();
 			const host = pathChunks.pop();
-
 			const emoji = await this.emojisRepository.findOneBy({
-				// `@.` is the spec of ReactionService.decodeReaction
 				host: (host === undefined || host === '.') ? IsNull() : host,
-				name: name,
+				name,
 			});
 
-			reply.header('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
+			ctx.header('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
 
 			if (emoji == null) {
-				if ('fallback' in request.query) {
-					return await reply.redirect('/static-assets/emoji-unknown.png');
-				} else {
-					reply.code(404);
-					return;
+				if (ctx.req.query('fallback') != null) {
+					return ctx.redirect('/static-assets/emoji-unknown.png');
 				}
+				return ctx.body(null, 404);
 			}
 
 			let url: URL;
-			if ('badge' in request.query) {
+			if (ctx.req.query('badge') != null) {
 				url = new URL(`${this.config.mediaProxy}/emoji.png`);
-				// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
 				url.searchParams.set('url', emoji.publicUrl || emoji.originalUrl);
 				url.searchParams.set('badge', '1');
 			} else {
 				url = new URL(`${this.config.mediaProxy}/emoji.webp`);
-				// || emoji.originalUrl してるのは後方互換性のため（publicUrlはstringなので??はだめ）
 				url.searchParams.set('url', emoji.publicUrl || emoji.originalUrl);
 				url.searchParams.set('emoji', '1');
-				if ('static' in request.query) url.searchParams.set('static', '1');
+				if (ctx.req.query('static') != null) {
+					url.searchParams.set('static', '1');
+				}
 			}
 
-			return await reply.redirect(
-				url.toString(),
-				301,
-			);
+			return ctx.redirect(url.toString(), 301);
 		});
 
-		fastify.get<{ Params: { acct: string } }>('/avatar/@:acct', async (request, reply) => {
-			const { username, host } = Acct.parse(request.params.acct);
+		hono.get('/avatar/@:acct', async (ctx) => {
+			const acct = ctx.req.param('acct');
+			if (acct == null) {
+				return ctx.body(null, 400);
+			}
+
+			const { username, host } = Acct.parse(acct);
 			const user = await this.usersRepository.findOne({
 				where: {
 					usernameLower: username.toLowerCase(),
@@ -219,40 +222,96 @@ export class ServerService implements OnApplicationShutdown {
 				},
 			});
 
-			reply.header('Cache-Control', 'public, max-age=86400');
-
-			if (user) {
-				reply.redirect((user.avatarId == null ? null : user.avatarUrl) ?? this.userEntityService.getIdenticonUrl(user));
-			} else {
-				reply.redirect('/static-assets/user-unknown.png');
+			ctx.header('Cache-Control', 'public, max-age=86400');
+			if (user != null) {
+				return ctx.redirect((user.avatarId == null ? null : user.avatarUrl) ?? this.userEntityService.getIdenticonUrl(user));
 			}
+			return ctx.redirect('/static-assets/user-unknown.png');
 		});
 
-		fastify.get<{ Params: { x: string } }>('/identicon/:x', async (request, reply) => {
-			reply.header('Content-Type', 'image/png');
-			reply.header('Cache-Control', 'public, max-age=86400');
-
+		hono.get('/identicon/:x', async (ctx) => {
+			ctx.header('Content-Type', 'image/png');
+			ctx.header('Cache-Control', 'public, max-age=86400');
 			if (this.meta.enableIdenticonGeneration) {
-				return await genIdenticon(request.params.x);
-			} else {
-				return reply.redirect('/static-assets/avatar.png');
+				const image = await genIdenticon(ctx.req.param('x'));
+				return ctx.body(new Uint8Array(image));
 			}
+			return ctx.redirect('/static-assets/avatar.png');
 		});
 
-		// fastify.register(this.clientServerService.createServer);
+		hono.route('/', this.openApiServerService.createServer());
+		hono.route('/', this.nodeinfoServerService.createServer());
+		hono.route('/', this.wellKnownServerService.createServer());
+		hono.route('/healthz', this.healthServerService.createServer());
+		hono.route('/', this.fileServerService.createServer());
+		hono.route('/', this.clientServerService.createServer());
 
-		// Create node-native clientserver
-		const clientHonoServer = this.clientServerService.createServer();
-		const clientNodeServer = createAdaptorServer({
-			fetch: clientHonoServer.fetch,
+		hono.all('*', async (ctx) => {
+			const requestUrl = new URL(ctx.req.url);
+			const method = ctx.req.method;
+			const body = method === 'GET' || method === 'HEAD'
+				? undefined
+				: Buffer.from(await ctx.req.raw.arrayBuffer());
+
+			const incoming = (ctx.env as { incoming?: IncomingMessage }).incoming;
+			const response = await legacyFastify.inject({
+				method: method as any,
+				url: `${requestUrl.pathname}${requestUrl.search}`,
+				headers: Object.fromEntries(ctx.req.raw.headers.entries()),
+				payload: body,
+				remoteAddress: incoming?.socket.remoteAddress,
+			} as any) as {
+				statusCode: number;
+				headers: Record<string, string | string[] | number | undefined>;
+				payload: string;
+			};
+
+			const headers = new Headers();
+			for (const [key, value] of Object.entries(response.headers)) {
+				if (Array.isArray(value)) {
+					for (const item of value) {
+						headers.append(key, String(item));
+					}
+				} else if (value != null) {
+					headers.set(key, String(value));
+				}
+			}
+
+			return new Response(response.payload, { status: response.statusCode, headers });
 		});
-		// If hono matches, let it handle the request
-		fastify.addHook('onRequest', (request, reply) => new Promise<void>((resolve) => {
-			clientNodeServer.on('close', () => {
-				resolve();
+
+		const honoNodeServer = createAdaptorServer({
+			fetch: hono.fetch,
+		});
+
+		fastify.addHook('onRequest', async (request, reply) => {
+			reply.hijack();
+			await new Promise<void>((resolve, reject) => {
+				let settled = false;
+				const done = () => {
+					if (settled) return;
+					settled = true;
+					reply.raw.off('finish', done);
+					reply.raw.off('close', done);
+					reply.raw.off('error', onError);
+					resolve();
+				};
+				const onError = (error: Error) => {
+					if (settled) return;
+					settled = true;
+					reply.raw.off('finish', done);
+					reply.raw.off('close', done);
+					reply.raw.off('error', onError);
+					reject(error);
+				};
+
+				reply.raw.on('finish', done);
+				reply.raw.on('close', done);
+				reply.raw.on('error', onError);
+
+				honoNodeServer.emit('request', request.raw, reply.raw);
 			});
-			clientNodeServer.emit('request', request.raw, reply.raw);
-		}));
+		});
 
 		this.streamingApiServerService.attach(fastify.server);
 
@@ -272,7 +331,6 @@ export class ServerService implements OnApplicationShutdown {
 			if (cluster.isWorker) {
 				process.send!('listenFailed');
 			} else {
-				// disableClustering
 				process.exit(1);
 			}
 		});
@@ -281,7 +339,7 @@ export class ServerService implements OnApplicationShutdown {
 			if (fs.existsSync(this.config.socket)) {
 				fs.unlinkSync(this.config.socket);
 			}
-			fastify.listen({ path: this.config.socket }, (err, address) => {
+			fastify.listen({ path: this.config.socket }, () => {
 				if (this.config.chmodSocket) {
 					fs.chmodSync(this.config.socket!, this.config.chmodSocket);
 				}
@@ -293,9 +351,47 @@ export class ServerService implements OnApplicationShutdown {
 		await fastify.ready();
 	}
 
+	private createTrustProxyChecker(): ((address: string, hop: number) => boolean) | undefined {
+		const trustProxy = this.config.trustProxy;
+		if (trustProxy === false) {
+			return undefined;
+		}
+
+		if (trustProxy === true) {
+			return () => true;
+		}
+
+		if (typeof trustProxy === 'number') {
+			return (_address, hop) => hop < trustProxy;
+		}
+
+		if (typeof trustProxy === 'function') {
+			return trustProxy;
+		}
+
+		return proxyAddr.compile(trustProxy);
+	}
+
+	private resolveClientIps(request: IncomingMessage): string[] {
+		const socketAddress = request.socket.remoteAddress;
+		if (this.#trustProxyChecker == null) {
+			return socketAddress == null ? [] : [socketAddress];
+		}
+
+		try {
+			return proxyAddr.all(request, this.#trustProxyChecker);
+		} catch {
+			return socketAddress == null ? [] : [socketAddress];
+		}
+	}
+
 	@bindThis
 	public async dispose(): Promise<void> {
 		await this.streamingApiServerService.detach();
+		if (this.#legacyFastify != null) {
+			await this.#legacyFastify.close();
+			this.#legacyFastify = null;
+		}
 		await this.#fastify.close();
 	}
 

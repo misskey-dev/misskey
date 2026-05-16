@@ -41,12 +41,11 @@ export class FileServerProxyHandler {
 		private imageProcessingService: ImageProcessingService,
 	) {}
 
-	public async handle(ctx: HonoContext) {
+	public async handle(ctx: HonoContext): Promise<Response> {
 		const url = ctx.req.query('url') || `https://${ctx.req.param('url')}`;
 
 		if (typeof url !== 'string') {
-			ctx.status(400);
-			return;
+			return ctx.body(null, 400);
 		}
 
 		// アバタークロップなど、どうしてもオリジンである必要がある場合
@@ -63,13 +62,13 @@ export class FileServerProxyHandler {
 		if (file.kind === 'not-found') {
 			ctx.status(404);
 			ctx.header('Cache-Control', 'max-age=86400');
-			return serveStatic({ path: resolve(this.assetsPath, 'dummy.png') });
+			await serveStatic({ path: resolve(this.assetsPath, 'dummy.png') })(ctx, async () => {});
+			return ctx.res;
 		}
 
 		if (file.kind === 'unavailable') {
-			ctx.status(204);
 			ctx.header('Cache-Control', 'max-age=86400');
-			return;
+			return ctx.body(null, 204);
 		}
 
 		try {

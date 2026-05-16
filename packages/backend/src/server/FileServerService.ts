@@ -92,6 +92,7 @@ export class FileServerService {
 			ctx.header('Content-Type', 'image/jpeg');
 			ctx.header('Cache-Control', 'max-age=31536000, immutable');
 			await next();
+			return;
 		});
 
 		hono.get('/files/:key', this.driveHandler.handle);
@@ -107,13 +108,14 @@ export class FileServerService {
 	}
 
 	@bindThis
-	private async errorHandler(err: any, ctx: HonoContext) {
+	private async errorHandler(err: any, ctx: HonoContext): Promise<Response> {
 		this.logger.error(`${err}`);
 
 		ctx.header('Cache-Control', 'max-age=300');
 
 		if (ctx.req.query('static') != null) {
-			return serveStatic({ path: resolve(this.assets, '/dummy.png') });
+			await serveStatic({ path: resolve(this.assets, 'dummy.png') })(ctx, async () => {});
+			return ctx.res;
 		}
 
 		if (err instanceof StatusError && (err.statusCode === 302 || err.isClientError)) {
