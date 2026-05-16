@@ -9,7 +9,7 @@ import { ModuleRef } from '@nestjs/core';
 import { Hono } from 'hono';
 import { bodyLimit } from 'hono/body-limit';
 import { cors } from 'hono/cors';
-import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
+import { HttpStatusError } from '@/misc/http-status-error.js';
 import type { Config } from '@/config.js';
 import type { InstancesRepository, AccessTokensRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
@@ -128,7 +128,7 @@ export class ApiServerService {
 		try {
 			return this.finalize(ctx, await handler());
 		} catch (err) {
-			if (err instanceof FastifyReplyError) {
+			if (err instanceof HttpStatusError) {
 				return ctx.body(err.message, err.statusCode as never);
 			}
 

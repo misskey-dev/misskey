@@ -15,7 +15,7 @@ import { SignupService } from '@/core/SignupService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { EmailService } from '@/core/EmailService.js';
 import { MiLocalUser } from '@/models/User.js';
-import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
+import { HttpStatusError } from '@/misc/http-status-error.js';
 import { bindThis } from '@/decorators.js';
 import { L_CHARS, secureRndstr } from '@/misc/secure-rndstr.js';
 import { SigninService } from './SigninService.js';
@@ -75,31 +75,31 @@ export class SignupApiService {
 		if (process.env.NODE_ENV !== 'test') {
 			if (this.meta.enableHcaptcha && this.meta.hcaptchaSecretKey) {
 				await this.captchaService.verifyHcaptcha(this.meta.hcaptchaSecretKey, body['hcaptcha-response']).catch(err => {
-					throw new FastifyReplyError(400, err);
+					throw new HttpStatusError(400, err);
 				});
 			}
 
 			if (this.meta.enableMcaptcha && this.meta.mcaptchaSecretKey && this.meta.mcaptchaSitekey && this.meta.mcaptchaInstanceUrl) {
 				await this.captchaService.verifyMcaptcha(this.meta.mcaptchaSecretKey, this.meta.mcaptchaSitekey, this.meta.mcaptchaInstanceUrl, body['m-captcha-response']).catch(err => {
-					throw new FastifyReplyError(400, err);
+					throw new HttpStatusError(400, err);
 				});
 			}
 
 			if (this.meta.enableRecaptcha && this.meta.recaptchaSecretKey) {
 				await this.captchaService.verifyRecaptcha(this.meta.recaptchaSecretKey, body['g-recaptcha-response']).catch(err => {
-					throw new FastifyReplyError(400, err);
+					throw new HttpStatusError(400, err);
 				});
 			}
 
 			if (this.meta.enableTurnstile && this.meta.turnstileSecretKey) {
 				await this.captchaService.verifyTurnstile(this.meta.turnstileSecretKey, body['turnstile-response']).catch(err => {
-					throw new FastifyReplyError(400, err);
+					throw new HttpStatusError(400, err);
 				});
 			}
 
 			if (this.meta.enableTestcaptcha) {
 				await this.captchaService.verifyTestcaptcha(body['testcaptcha-response']).catch(err => {
-					throw new FastifyReplyError(400, err);
+					throw new HttpStatusError(400, err);
 				});
 			}
 		}
@@ -177,17 +177,17 @@ export class SignupApiService {
 
 		if (this.meta.emailRequiredForSignup) {
 			if (await this.usersRepository.exists({ where: { usernameLower: username.toLowerCase(), host: IsNull() } })) {
-				throw new FastifyReplyError(400, 'DUPLICATED_USERNAME');
+				throw new HttpStatusError(400, 'DUPLICATED_USERNAME');
 			}
 
 			// Check deleted username duplication
 			if (await this.usedUsernamesRepository.exists({ where: { username: username.toLowerCase() } })) {
-				throw new FastifyReplyError(400, 'USED_USERNAME');
+				throw new HttpStatusError(400, 'USED_USERNAME');
 			}
 
 			const isPreserved = this.meta.preservedUsernames.map(x => x.toLowerCase()).includes(username.toLowerCase());
 			if (isPreserved) {
-				throw new FastifyReplyError(400, 'DENIED_USERNAME');
+				throw new HttpStatusError(400, 'DENIED_USERNAME');
 			}
 
 			const code = secureRndstr(16, { chars: L_CHARS });
@@ -243,7 +243,7 @@ export class SignupApiService {
 					token: secret,
 				};
 			} catch (err) {
-				throw new FastifyReplyError(400, typeof err === 'string' ? err : (err as Error).toString());
+				throw new HttpStatusError(400, typeof err === 'string' ? err : (err as Error).toString());
 			}
 		}
 	}
@@ -256,7 +256,7 @@ export class SignupApiService {
 			const pendingUser = await this.userPendingsRepository.findOneByOrFail({ code });
 
 			if (this.idService.parse(pendingUser.id).date.getTime() + (1000 * 60 * 30) < Date.now()) {
-				throw new FastifyReplyError(400, 'EXPIRED');
+				throw new HttpStatusError(400, 'EXPIRED');
 			}
 
 			const { account } = await this.signupService.signup({
@@ -287,7 +287,7 @@ export class SignupApiService {
 
 			return this.signinService.signin(ctx, account as MiLocalUser);
 		} catch (err) {
-			throw new FastifyReplyError(400, typeof err === 'string' ? err : (err as Error).toString());
+			throw new HttpStatusError(400, typeof err === 'string' ? err : (err as Error).toString());
 		}
 	}
 }
