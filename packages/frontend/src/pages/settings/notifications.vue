@@ -47,10 +47,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div class="_gaps_s">
 							<div v-for="item in items" :key="item.id" :class="[$style.userItem ]">
 								<div :class="$style.userItemMain">
-									<MkA :class="$style.userItemMainBody" :to="userPage(item)">
-										<MkUserCardMini :user="item"/>
+									<MkA :class="$style.userItemMainBody" :to="userPage(item.followee!)">
+										<MkUserCardMini :user="item.followee!"/>
 									</MkA>
-									<button class="_button" :class="$style.notifyMenu" @click="showNotifyMenu(item, $event)"><i class="ti ti-dots"></i></button>
+									<button class="_button" :class="$style.notifyMenu" @click="showNotifyMenu(item.followee!, $event)"><i class="ti ti-dots"></i></button>
 								</div>
 							</div>
 						</div>
