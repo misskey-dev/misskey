@@ -12,7 +12,15 @@ import fastifyCors from '@fastify/cors';
 import checkPKCE from 'oidc-provider/lib/helpers/pkce.js';
 import { permissions as kinds } from 'misskey-js';
 import redirectUri from 'oidc-provider/lib/helpers/redirect_uri.js';
-import { errors as oidcErrors } from 'oidc-provider';
+import {
+	AccessDenied,
+	InvalidGrant,
+	InvalidRequest,
+	InvalidScope,
+	OIDCProviderError,
+	UnsupportedGrantType,
+	UnsupportedResponseType,
+} from 'oidc-provider/lib/helpers/errors.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import type { Config } from '@/config.js';
@@ -30,6 +38,8 @@ import { HtmlTemplateService } from '@/server/web/HtmlTemplateService.js';
 import { OAuthPage } from '@/server/web/views/oauth.js';
 import type { FastifyInstance, FastifyReply } from 'fastify';
 
+type OIDCProviderErrorInstance = InstanceType<typeof OIDCProviderError>;
+
 // TODO: Consider migrating to @node-oauth/oauth2-server once
 // https://github.com/node-oauth/node-oauth2-server/issues/180 is figured out.
 // Upstream the various validations and RFC9207 implementation in that case.
@@ -43,7 +53,7 @@ function validateClientId(raw: string): URL {
 		try {
 			return new URL(raw);
 		} catch {
-			throw new oidcErrors.InvalidRequest('client_id must be a valid URL');
+			throw new InvalidRequest('client_id must be a valid URL');
 		}
 	})();
 
@@ -54,7 +64,7 @@ function validateClientId(raw: string): URL {
 	// in Section 1.6 when the requested response type is "code" or "token"'
 	const allowedProtocols = process.env.NODE_ENV === 'test' ? ['http:', 'https:'] : ['https:'];
 	if (!allowedProtocols.includes(url.protocol)) {
-		throw new oidcErrors.InvalidRequest('client_id must be a valid HTTPS URL');
+		throw new InvalidRequest('client_id must be a valid HTTPS URL');
 	}
 
 	// "MUST contain a path component (new URL() implicitly adds one)"
@@ -62,19 +72,19 @@ function validateClientId(raw: string): URL {
 	// "MUST NOT contain single-dot or double-dot path segments,"
 	const segments = url.pathname.split('/');
 	if (segments.includes('.') || segments.includes('..')) {
-		throw new oidcErrors.InvalidRequest('client_id must not contain dot path segments');
+		throw new InvalidRequest('client_id must not contain dot path segments');
 	}
 
 	// ("MAY contain a query string component")
 
 	// "MUST NOT contain a fragment component"
 	if (url.hash) {
-		throw new oidcErrors.InvalidRequest('client_id must not contain a fragment component');
+		throw new InvalidRequest('client_id must not contain a fragment component');
 	}
 
 	// "MUST NOT contain a username or password component"
 	if (url.username || url.password) {
-		throw new oidcErrors.InvalidRequest('client_id must not contain a username or a password');
+		throw new InvalidRequest('client_id must not contain a username or a password');
 	}
 
 	// ("MAY contain a port")
@@ -82,7 +92,7 @@ function validateClientId(raw: string): URL {
 	// "host names MUST be domain names or a loopback interface and MUST NOT be
 	// IPv4 or IPv6 addresses except for IPv4 127.0.0.1 or IPv6 [::1]."
 	if (!url.hostname.match(/\.\w+$/) && !['localhost', '127.0.0.1', '[::1]'].includes(url.hostname)) {
-		throw new oidcErrors.InvalidRequest('client_id must have a domain name as a host name');
+		throw new InvalidRequest('client_id must have a domain name as a host name');
 	}
 
 	return url;
@@ -200,13 +210,13 @@ async function discoverClientInformation(logger: Logger, httpRequestService: Htt
 			// "The authorization server MUST verify that the client_id in the document matches the
 			// client_id of the URL where the document was retrieved."
 			if (json.client_id !== id) {
-				throw new oidcErrors.InvalidRequest('client_id in the document does not match the client_id URL');
+				throw new InvalidRequest('client_id in the document does not match the client_id URL');
 			}
 
 			// https://indieauth.spec.indieweb.org/#client-metadata-li-1
 			// "The client_uri MUST be a prefix of the client_id."
 			if (!json.client_uri || !id.startsWith(json.client_uri)) {
-				throw new oidcErrors.InvalidRequest('client_uri is not a prefix of client_id');
+				throw new InvalidRequest('client_uri is not a prefix of client_id');
 			}
 
 			if (typeof json.client_name === 'string') {
@@ -252,13 +262,13 @@ async function discoverClientInformation(logger: Logger, httpRequestService: Htt
 	} catch (err) {
 		logger.error('Error while fetching client information', { err });
 		if (err instanceof StatusError) {
-			throw new oidcErrors.InvalidRequest('Failed to fetch client information');
+			throw new InvalidRequest('Failed to fetch client information');
 		}
-		if (err instanceof oidcErrors.OIDCProviderError) {
+		if (err instanceof OIDCProviderError) {
 			throw err;
 		}
 
-		const wrapped = new oidcErrors.InvalidRequest('Failed to parse client information');
+		const wrapped = new InvalidRequest('Failed to parse client information');
 		wrapped.status = 500;
 		wrapped.statusCode = 500;
 		wrapped.error = 'server_error';
@@ -288,33 +298,33 @@ function applyNoStore(reply: FastifyReply): void {
 	reply.header('Pragma', 'no-cache');
 }
 
-function createUnsupportedResponseTypeError(): oidcErrors.OIDCProviderError {
-	const error = new oidcErrors.UnsupportedResponseType();
+function createUnsupportedResponseTypeError(): OIDCProviderErrorInstance {
+	const error = new UnsupportedResponseType();
 	error.status = 501;
 	error.statusCode = 501;
 	return error;
 }
 
-function createForbiddenAccessDenied(description: string): oidcErrors.OIDCProviderError {
-	const error = new oidcErrors.AccessDenied(description);
+function createForbiddenAccessDenied(description: string): OIDCProviderErrorInstance {
+	const error = new AccessDenied(description);
 	error.status = 403;
 	error.statusCode = 403;
 	return error;
 }
 
-function normalizeOAuthError(error: unknown): oidcErrors.OIDCProviderError {
-	if (error instanceof oidcErrors.OIDCProviderError) {
+function normalizeOAuthError(error: unknown): OIDCProviderErrorInstance {
+	if (error instanceof OIDCProviderError) {
 		return error;
 	}
 
-	const wrapped = new oidcErrors.InvalidRequest('request is invalid');
+	const wrapped = new InvalidRequest('request is invalid');
 	if (error instanceof Error) {
 		wrapped.error_description = error.message;
 	}
 	return wrapped;
 }
 
-function sendOAuthError(reply: FastifyReply, error: oidcErrors.OIDCProviderError): void {
+function sendOAuthError(reply: FastifyReply, error: OIDCProviderErrorInstance): void {
 	applyNoStore(reply);
 	reply.code(error.statusCode ?? error.status ?? 400);
 	reply.send({
@@ -404,7 +414,7 @@ export class OAuth2ProviderService {
 		}
 
 		if (!clientId) {
-			throw new oidcErrors.InvalidRequest('client_id must be provided');
+			throw new InvalidRequest('client_id must be provided');
 		}
 
 		const clientUrl = validateClientId(clientId);
@@ -416,7 +426,7 @@ export class OAuth2ProviderService {
 		if (process.env.NODE_ENV !== 'test' || process.env.MISSKEY_TEST_CHECK_IP_RANGE === '1') {
 			const lookup = await dns.lookup(clientUrl.hostname);
 			if (ipaddr.parse(lookup.address).range() !== 'unicast') {
-				throw new oidcErrors.InvalidRequest('client_id resolves to disallowed IP range.');
+				throw new InvalidRequest('client_id resolves to disallowed IP range.');
 			}
 		}
 
@@ -426,7 +436,7 @@ export class OAuth2ProviderService {
 		// Require the redirect URI to be included in an explicit list, per
 		// https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics#section-4.1.3
 		if (!redirectUriValue || !clientInfo.redirectUris.includes(redirectUriValue)) {
-			throw new oidcErrors.InvalidRequest('Invalid redirect_uri');
+			throw new InvalidRequest('Invalid redirect_uri');
 		}
 
 		return {
@@ -443,17 +453,17 @@ export class OAuth2ProviderService {
 	#finalizeAuthorizationRequest(seed: AuthorizationRequestSeed): AuthorizationRequest {
 		const scopes = [...new Set(seed.requestedScope)].filter(scope => (<readonly string[]>kinds).includes(scope));
 		if (!seed.requestedScope.length || !scopes.length) {
-			throw new oidcErrors.InvalidScope('`scope` parameter has no known scope', '');
+			throw new InvalidScope('`scope` parameter has no known scope', seed.requestedScope.join(' '));
 		}
 
 		// Require PKCE parameters.
 		// Recommended by https://indieauth.spec.indieweb.org/#authorization-request, but also prevents downgrade attack:
 		// https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics#name-pkce-downgrade-attack
 		if (typeof seed.codeChallenge !== 'string') {
-			throw new oidcErrors.InvalidRequest('`code_challenge` parameter is required');
+			throw new InvalidRequest('`code_challenge` parameter is required');
 		}
 		if (seed.codeChallengeMethod !== 'S256') {
-			throw new oidcErrors.InvalidRequest('`code_challenge_method` parameter must be set as S256');
+			throw new InvalidRequest('`code_challenge_method` parameter must be set as S256');
 		}
 
 		return {
@@ -470,7 +480,7 @@ export class OAuth2ProviderService {
 		const user = await this.cacheService.localUserByNativeTokenCache.fetch(loginToken,
 			() => this.usersRepository.findOneBy({ token: loginToken }) as Promise<MiLocalUser | null>);
 		if (!user) {
-			throw new oidcErrors.InvalidRequest('No such user');
+			throw new InvalidRequest('No such user');
 		}
 
 		return user;
@@ -551,7 +561,7 @@ export class OAuth2ProviderService {
 				const body = toRequestParameters(request.body);
 				const transactionId = firstValue(body.transaction_id);
 				if (!transactionId) {
-					throw new oidcErrors.InvalidRequest('Missing transaction ID');
+					throw new InvalidRequest('Missing transaction ID');
 				}
 
 				const transaction = this.#authorizationTransactionCache.get(transactionId);
@@ -572,7 +582,7 @@ export class OAuth2ProviderService {
 
 				const loginToken = firstValue(body.login_token);
 				if (!loginToken) {
-					throw new oidcErrors.InvalidRequest('No user');
+					throw new InvalidRequest('No user');
 				}
 
 				this.#logger.info(`Checking the user before sending authorization code to ${transaction.client.id}`);
@@ -623,10 +633,10 @@ export class OAuth2ProviderService {
 				const body = toRequestParameters(request.body);
 				const grantType = firstValue(body.grant_type);
 				if (!grantType) {
-					throw new oidcErrors.InvalidRequest('grant_type is required');
+					throw new InvalidRequest('grant_type is required');
 				}
 				if (grantType !== 'authorization_code') {
-					throw new oidcErrors.UnsupportedGrantType();
+					throw new UnsupportedGrantType();
 				}
 
 				const code = firstValue(body.code);
@@ -636,12 +646,12 @@ export class OAuth2ProviderService {
 
 				this.#logger.info('Checking the received authorization code for the exchange');
 				if (!code || !clientId || !redirectUriValue || !codeVerifier) {
-					throw new oidcErrors.InvalidGrant('Missing required parameters');
+					throw new InvalidGrant('grant request is invalid');
 				}
 
 				const granted = this.#grantCodeCache.get(code);
 				if (!granted) {
-					throw new oidcErrors.InvalidGrant('Invalid authorization code');
+					throw new InvalidGrant('grant request is invalid');
 				}
 
 				// https://datatracker.ietf.org/doc/html/rfc6749.html#section-4.1.2
@@ -650,13 +660,13 @@ export class OAuth2ProviderService {
 				// previously issued based on that authorization code."
 				if (granted.used) {
 					await this.#revokeGrantCode(granted, code);
-					throw new oidcErrors.InvalidGrant('Authorization code has already been used');
+					throw new InvalidGrant('grant request is invalid');
 				}
 				granted.used = true;
 
 				// https://datatracker.ietf.org/doc/html/rfc6749.html#section-4.1.3
 				if (clientId !== granted.clientId || redirectUriValue !== granted.redirectUri) {
-					throw new oidcErrors.InvalidGrant('client_id or redirect_uri does not match the authorization code');
+					throw new InvalidGrant('grant request is invalid');
 				}
 
 				// https://datatracker.ietf.org/doc/html/rfc7636.html#section-4.6
@@ -679,7 +689,7 @@ export class OAuth2ProviderService {
 				if (granted.revoked) {
 					this.#logger.info('Canceling the token as the authorization code was revoked in parallel during the process.');
 					await this.accessTokensRepository.delete({ token: accessToken });
-					throw new oidcErrors.InvalidGrant('Authorization code has been revoked');
+					throw new InvalidGrant('grant request is invalid');
 				}
 
 				granted.grantedToken = accessToken;
