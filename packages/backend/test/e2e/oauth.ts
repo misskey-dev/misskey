@@ -252,7 +252,11 @@ describe('OAuth', () => {
 		// https://indieauth.spec.indieweb.org/#authorization-server-confirmation
 		// Clients must be able to rediscover the same authorization server
 		// from the returned canonical profile URL.
-		const meResponse = await fetch(toReachableTestUrl(token.token.me as string));
+		const meResponse = await fetch(toReachableTestUrl(token.token.me as string), {
+			headers: {
+				'Accept': 'text/html',
+			},
+		});
 		assert.strictEqual(meResponse.status, 200);
 		const metadataHref = getLinkHref(await meResponse.text(), 'indieauth-metadata');
 		assert.strictEqual(metadataHref, 'http://misskey.local/.well-known/oauth-authorization-server');
