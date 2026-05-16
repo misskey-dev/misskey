@@ -1,13 +1,58 @@
-## 2026.4.0
+## 2026.5.2
+
+### Note
+- config に `threadPoolSize` オプションが追加されました。
+  - デフォルトは `1` で、ワーカーごとに指定した数のスレッドが作成されます。
+  - スレッドプールは CPU バウンドな処理をオフロードするために使用されるため、みだりに大きな値を指定しないでください。
+
+### General
+- Enhance: Unicode 17.0 に収録されている絵文字の処理・表示に対応
+  - Fluent Emojiや端末ネイティブの絵文字を利用している場合は、最新の絵文字に対応しておらず正しく表示できない可能性があります。絵文字が表示できない場合は、表示に使用する絵文字をTwemojiに切り替えてご利用ください。
+- 投稿通知設定したユーザーをリストで見ることができるように
+
+### Client
+- Enhance: テーマのプレビュー時、リロードせずにもとのテーマに戻せるように
+- Enhance: Fluent Emojiを更新し、Unicode 15+相当の絵文字の表示に対応
+- Fix: テーマエディター使用時に、最初の変更のみ適用される問題を修正
+- Fix: テーマのプレビュー時、既存のテーマとIDが被っている場合にプレビューできない問題を修正
+- Fix: テーマのインストールエラーの表示を改善
+- Fix: リスト編集画面におけるユーザー追加時のユーザー選択ダイアログにおいて、自身のアカウントが検索結果の一覧に表示されない問題を修正
+- Fix: デッキのカラムから開いたアンテナ・リストの編集ウィンドウを、"ポップアウト"、"新しいタブで表示"、"リンクをコピー"した場合に誤ったリンクが与えられる問題を修正
+- Fix: チャンネルの作成ロールポリシーにて、ヘッダーにロールポリシーの値が表示されない問題を修正
+
+### Server
+- Enhance: RSA 署名処理のオフロード
+
+
+## 2026.5.1
+
+### General
+- Enhance: チャンネルの作成の可否をロールポリシーで制御できるように
+- Fix: `.devcontainer/compose.yml`のvolumeのマウントパスを修正
+
+### Client
+- Enhance: ノートの詳細表示での公開範囲の表示を改善  
+  (Cherry-picked from https://github.com/kokonect-link/cherrypick/commit/ecc75563f4e428b66adccc379bf317b5b21ed8e6)
+- Fix: ロール設定画面でロールをアサイン/アサイン解除した際、リロードしなくても画面に反映されるよう修正
+
+### Server
+- Fix: ID生成アルゴリズムにULIDを使用している場合に通知が約10秒遅延する問題を修正
+- Fix: 公開範囲がフォロワーの投稿が通知されない問題を修正
+- Fix: URLプレビューが動作しない問題を修正
+
+
+## 2026.5.0
 
 ### General
 - Enhance: アバターデコレーションにカテゴリを設定できるように
 
 ### Client
 - Enhance: チャンネル指定リノートでリノート先のチャンネルに移動できるように
+- Enhance: ベータ版でのアップデート時のダイアログの更新情報リンクをGitHubのReleasesページに遷移するようにし、正しく閲覧できるように
 - Fix: 一部のページ内リンクが正しく動作しない問題を修正
 - Fix: ドライブへの画像アップロード時にファイル名の変更が無視される不具合を修正
 - Fix: 連合が無効化されたサーバーで一部の設定項目が空欄で表示される問題を修正
+- Fix: オーディオ、動画の再生速度メニューが開けない問題を修正
 
 ### Server
 - Enhance: メモリ使用量を削減
@@ -23,6 +68,14 @@
 - Fix: ID生成アルゴリズムにULIDを使用している場合にMisskeyが正しく動作しない問題を修正
 - Fix: リレー経由で届いたノートがリノートとして表示される問題を修正
 - Fix: robots.txtの内容を調整
+- Fix: 特定のユーザーに管理者権限を持つロールが複数ついている際に、取得できるユーザーIDが重複する問題を修正  
+  (Cherry-picked from https://github.com/lqvp/misskey-tempura/commit/17ed4108cec4b6bd2fd989db5a9091db91fa37a7)
+- Fix: ブロックしたサーバーからのInboxジョブが蓄積し続ける問題を修正  
+  (Cherry-picked from https://github.com/lqvp/misskey-tempura/commit/3f0f4bfe923f2b3a7837017b54841598f421c6ef)
+- Fix: support activity with `actor` as an id string or embedded object in inbox processor and ActivityPub inbox service
+- Fix: コンフィグファイルに `meilisearch` の設定がある状態でほかの検索プロバイダを利用すると、UI上からリモートのノートの検索ができない問題を修正
+- Fix: ノートに関する通知で公開範囲が考慮されていない問題を修正  
+  (Cherry-picked from https://github.com/lqvp/misskey-tempura/commit/cbce96c520a138b8bcd16890ff6f2952830fa166 originally presented in https://github.com/yojo-art/cherrypick/pull/743)
 
 ## 2026.3.2
 

@@ -4881,6 +4881,10 @@ export interface Locale extends ILocale {
      */
     "unnotifyNotes": string;
     /**
+     * 投稿通知を設定したユーザー
+     */
+    "notifyUsers": string;
+    /**
      * 認証
      */
     "authentication": string;
@@ -5651,6 +5655,14 @@ export interface Locale extends ILocale {
      * リノート先のチャンネルを見る
      */
     "viewRenotedChannel": string;
+    /**
+     * テーマのプレビュー中
+     */
+    "previewingTheme": string;
+    /**
+     * 元に戻す
+     */
+    "previewingThemeRestore": string;
     "_imageEditing": {
         "_vars": {
             /**
@@ -8177,6 +8189,10 @@ export interface Locale extends ILocale {
              * 翻訳機能の利用
              */
             "canUseTranslator": string;
+            /**
+             * チャンネルの作成
+             */
+            "canCreateChannel": string;
             /**
              * アイコンデコレーションの最大取付個数
              */

@@ -11,8 +11,9 @@ export function popout(path: string, w?: HTMLElement) {
 	url = appendQuery(url, 'zen');
 	if (w) {
 		const position = w.getBoundingClientRect();
-		const width = parseInt(getComputedStyle(w, '').width, 10);
-		const height = parseInt(getComputedStyle(w, '').height, 10);
+		const computedStyle = getComputedStyle(w, '');
+		const width = parseInt(computedStyle.width, 10);
+		const height = parseInt(computedStyle.height, 10);
 		const x = window.screenX + position.left;
 		const y = window.screenY + position.top;
 		window.open(url, url,

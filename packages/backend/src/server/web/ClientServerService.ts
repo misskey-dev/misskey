@@ -73,7 +73,7 @@ export class ClientServerService {
 	private readonly clientAssets: string;
 	private readonly assets: string;
 	private readonly swAssets: string;
-	private readonly fluentEmojisDir: string;
+	private readonly fluentEmojiDir: string;
 	private readonly twemojiDir: string;
 	private readonly frontendViteOut: string;
 	private readonly frontendEmbedViteOut: string;
@@ -137,8 +137,8 @@ export class ClientServerService {
 		this.clientAssets = resolve(frontendRootdir, 'assets');
 		this.assets = resolve(this.config.rootDir, 'built/_frontend_dist_');
 		this.swAssets = resolve(this.config.rootDir, 'built/_sw_dist_');
-		this.fluentEmojisDir = resolve(this.config.rootDir, 'fluent-emojis/dist');
-		this.twemojiDir = resolve(backendRootdir, 'node_modules/@discordapp/twemoji/dist/svg');
+		this.fluentEmojiDir = resolve(backendRootdir, 'node_modules/@misskey-dev/emoji-assets/built/fluent-emoji');
+		this.twemojiDir = resolve(backendRootdir, 'node_modules/@misskey-dev/emoji-assets/built/twemoji');
 		this.frontendViteOut = resolve(this.config.rootDir, 'built/_frontend_vite_');
 		this.frontendEmbedViteOut = resolve(this.config.rootDir, 'built/_frontend_embed_vite_');
 		this.tarball = resolve(this.config.rootDir, 'built/tarball');
@@ -300,7 +300,7 @@ export class ClientServerService {
 		}));
 
 		hono.get('/fluent-emoji/:filename{[0-9a-f-]+\\.png}', serveStatic({
-			root: this.fluentEmojisDir,
+			root: this.fluentEmojiDir,
 		}), async (ctx, next) => {
 			ctx.header('Cache-Control', `max-age=${ms('30 days') / 1000}`);
 			await next();
@@ -310,7 +310,7 @@ export class ClientServerService {
 			root: this.twemojiDir,
 		}), async (ctx, next) => {
 			ctx.header('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
-			
+
 			ctx.header('Cache-Control', `max-age=${ms('30 days') / 1000}`);
 			await next();
 		});
