@@ -46,6 +46,10 @@ export abstract class EngineControllerBase<T extends RoomEngineBase> {
 
 		const engineEvents = new EventEmitter<RoomEngineBaseEvents>();
 
+		engineEvents.on('loadingProgress', ({ progress }) => {
+			this.initializeProgress.value = progress;
+		});
+
 		if (this.options.workerMode) {
 			const offscreen = canvas.transferControlToOffscreen();
 			this.worker = await params.createWorker(offscreen);
@@ -117,10 +121,6 @@ export abstract class EngineControllerBase<T extends RoomEngineBase> {
 				};
 			}
 		}
-
-		engineEvents.on('loadingProgress', ({ progress }) => {
-			this.initializeProgress.value = progress;
-		});
 
 		this.canvas.addEventListener('keydown', (ev) => {
 			if (this.worker != null) {

@@ -3565,7 +3565,7 @@ _miWorld:
   frameRate: "フレームレート"
   resolution: "解像度"
   failedToInitialize: "初期化に失敗しました"
-  crushed_description: "バグ、またはデバイスのリソース不足の可能性が考えられます。"
+  crushed_description: "描画が継続できなくなりました。デバイスのリソース不足の可能性が考えられます。"
   antialiasing: "アンチエイリアス"
 
 _miRoom:
@@ -3573,5 +3573,5 @@ _miRoom:
   gridScale: "グリッドサイズ"
   thereAreUnsavedChanges: "未保存の変更があります"
   revertAllChangesConfirmation: "全ての変更を取り消し、部屋を最後に保存した状態まで戻しますか？"
-  yourDeviceNotSupported_title: "MisskeyRoomを起動できません。"
+  yourDeviceNotSupported_title: "MisskeyRoomを起動できません"
   yourDeviceNotSupported_description: "お使いのデバイスがMisskeyRoomをサポートしていないか、デバイスのリソース不足などにより一時的に利用できなくなっています。\nMisskeyRoomを動作させるには、WebGPUをサポートするデバイス・ブラウザが必要です。"

@@ -13304,7 +13304,7 @@ export interface Locale extends ILocale {
          */
         "failedToInitialize": string;
         /**
-         * バグ、またはデバイスのリソース不足の可能性が考えられます。
+         * 描画が継続できなくなりました。デバイスのリソース不足の可能性が考えられます。
          */
         "crushed_description": string;
         /**
@@ -13330,7 +13330,7 @@ export interface Locale extends ILocale {
          */
         "revertAllChangesConfirmation": string;
         /**
-         * MisskeyRoomを起動できません。
+         * MisskeyRoomを起動できません
          */
         "yourDeviceNotSupported_title": string;
         /**
