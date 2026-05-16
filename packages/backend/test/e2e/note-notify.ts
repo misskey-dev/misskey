@@ -64,7 +64,7 @@ describe('following/list', () => {
 		assert.deepStrictEqual(ids, [bob.id, carol.id].sort());
 	});
 
-	test('通知設定をOFF（none）にすると一覧から外れる', async () => {
+	test('通知設定をOFF（none）にすると notification: true な一覧から外れる', async () => {
 		await api('following/update', { userId: bob.id, notify: 'none' }, alice);
 
 		const res1 = await api('following/list', { notification: true }, alice);
