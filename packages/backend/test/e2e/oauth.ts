@@ -259,7 +259,7 @@ describe('OAuth', () => {
 		});
 		assert.strictEqual(meResponse.status, 200);
 		const metadataHref = getLinkHref(await meResponse.text(), 'indieauth-metadata');
-		assert.strictEqual(metadataHref, 'http://misskey.local/.well-known/oauth-authorization-server');
+		assert.strictEqual(metadataHref, `http://127.0.0.1:${clientPort}/.well-known/oauth-authorization-server`);
 
 		const metadataResponse = await fetch(toReachableTestUrl(metadataHref as string));
 		assert.strictEqual(metadataResponse.status, 200);
@@ -268,9 +268,9 @@ describe('OAuth', () => {
 			authorization_endpoint: string;
 			token_endpoint: string;
 		};
-		assert.strictEqual(metadata.issuer, 'http://misskey.local');
-		assert.strictEqual(metadata.authorization_endpoint, 'http://misskey.local/oauth/authorize');
-		assert.strictEqual(metadata.token_endpoint, 'http://misskey.local/oauth/token');
+		assert.strictEqual(metadata.issuer, `http://127.0.0.1:${clientPort}`);
+		assert.strictEqual(metadata.authorization_endpoint, `http://127.0.0.1:${clientPort}/oauth/authorize`);
+		assert.strictEqual(metadata.token_endpoint, `http://127.0.0.1:${clientPort}/oauth/token`);
 
 		const createResult = await api('notes/create', { text: 'test' }, {
 			token: token.token.access_token as string,
