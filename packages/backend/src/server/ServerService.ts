@@ -105,7 +105,6 @@ export class ServerService implements OnApplicationShutdown {
 		});
 
 		legacyFastify.register(this.apiServerService.createServer, { prefix: '/api' });
-		legacyFastify.register(this.activityPubServerService.createServer);
 		legacyFastify.register(this.oauth2ProviderService.createServer, { prefix: '/oauth' });
 		legacyFastify.register(this.oauth2ProviderService.createTokenServer, { prefix: '/oauth/token' });
 		await legacyFastify.ready();
@@ -243,6 +242,7 @@ export class ServerService implements OnApplicationShutdown {
 		hono.route('/', this.nodeinfoServerService.createServer());
 		hono.route('/', this.wellKnownServerService.createServer());
 		hono.route('/healthz', this.healthServerService.createServer());
+		hono.route('/', this.activityPubServerService.createServer());
 		hono.route('/', this.fileServerService.createServer());
 		hono.route('/', this.clientServerService.createServer());
 
