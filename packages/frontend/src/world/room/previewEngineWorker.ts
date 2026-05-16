@@ -20,8 +20,8 @@ onmessage = async (event) => {
 			babylonEngine.compatibilityMode = false;
 			babylonEngine.enableOfflineSupport = false;
 			await babylonEngine.initAsync();
-			babylonEngine._device.lost.then(() => { // TODO: babylonEngineの内部プロパティに依存しない方法をforumで聞く
-				self.postMessage({ type: 'contextlost' });
+			babylonEngine._device.lost.then((info) => { // TODO: babylonEngineの内部プロパティに依存しない方法をforumで聞く
+				self.postMessage({ type: 'contextlost', info: { reason: info.reason, message: info.message } }); // transferableじゃないデータが含まれている可能性も考慮してinfoそのままは送らない
 			});
 			if (event.data.options.resolution === 2) babylonEngine.setHardwareScalingLevel(0.5);
 			if (event.data.options.resolution === 0.5) babylonEngine.setHardwareScalingLevel(2);

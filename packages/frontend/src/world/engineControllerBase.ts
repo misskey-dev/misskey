@@ -75,7 +75,7 @@ export abstract class EngineControllerBase<T extends RoomEngineBase> {
 						break;
 					}
 					case 'contextlost': {
-						this.onContextLost();
+						this.onContextLost(event.data.info);
 						break;
 					}
 					default: {
@@ -96,8 +96,8 @@ export abstract class EngineControllerBase<T extends RoomEngineBase> {
 			//		text: i18n.ts._miWorld.crushed_description,
 			//	});
 			//});
-			babylonEngine._device.lost.then(() => { // TODO: babylonEngineの内部プロパティに依存しない方法をforumで聞く
-				this.onContextLost();
+			babylonEngine._device.lost.then((info) => { // TODO: babylonEngineの内部プロパティに依存しない方法をforumで聞く
+				this.onContextLost(info);
 			});
 			if (this.options.resolution === 2) babylonEngine.setHardwareScalingLevel(0.5);
 			if (this.options.resolution === 0.5) babylonEngine.setHardwareScalingLevel(2);
@@ -278,11 +278,13 @@ export abstract class EngineControllerBase<T extends RoomEngineBase> {
 		this.initializeProgress.value = 0;
 	}
 
-	private onContextLost() {
+	private onContextLost(info) {
+		console.log('Context lost:', info);
+		if (info.reason === 'destroyed') return; // 正常な終了なので
 		os.alert({
 			type: 'error',
 			title: i18n.ts.somethingHappened,
-			text: i18n.ts._miWorld.crushed_description,
+			text: i18n.ts._miWorld.crushed_description + '\nERR: ' + info.message,
 		});
 	}
 
