@@ -34,6 +34,7 @@ import { MemoryKVCache } from '@/misc/cache.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import Logger from '@/logger.js';
 import { StatusError } from '@/misc/status-error.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { HtmlTemplateService } from '@/server/web/HtmlTemplateService.js';
 import { OAuthPage } from '@/server/web/views/oauth.js';
 import type { FastifyInstance, FastifyReply } from 'fastify';
@@ -392,6 +393,7 @@ export class OAuth2ProviderService {
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 		private cacheService: CacheService,
+		private userEntityService: UserEntityService,
 		loggerService: LoggerService,
 		private htmlTemplateService: HtmlTemplateService,
 	) {
@@ -556,6 +558,12 @@ export class OAuth2ProviderService {
 			}
 		});
 
+		// https://indieauth.spec.indieweb.org/#profile-url-response
+		// 11 July 2024 spec also allows redeeming an authorization code at the
+		// authorization endpoint itself when the client only needs the canonical
+		// profile URL and not an access token. Misskey currently uses this route
+		// only for the browser-based consent UI and issues tokens through
+		// /oauth/token, so the profile-only redemption flow remains unimplemented.
 		fastify.post('/decision', async (request, reply) => {
 			try {
 				const body = toRequestParameters(request.body);
@@ -675,10 +683,21 @@ export class OAuth2ProviderService {
 				}
 				checkPKCE(codeVerifier, granted.codeChallenge, 'S256');
 
+				// https://indieauth.spec.indieweb.org/#access-token-response
+				// The token response MUST include the canonical profile URL as `me`.
+				// Misskey uses the stable local actor URL so clients can later confirm
+				// that the returned profile URL declares the same authorization server.
+				const me = this.userEntityService.genLocalUserUri(granted.userId);
+
 				const accessToken = secureRndstr(128);
 				const now = new Date();
 
 				// NOTE: we don't have a setup for automatic token expiration
+				// https://indieauth.spec.indieweb.org/#access-token-response
+				// `expires_in` is only RECOMMENDED there, and RFC6749 Section 5.1 also
+				// allows omitting it when the server documents or otherwise defines the
+				// token lifetime. Misskey currently issues bearer tokens without a
+				// published expiration timestamp.
 				await this.accessTokensRepository.insert({
 					id: this.idService.gen(now.getTime()),
 					lastUsedAt: now,
@@ -702,6 +721,7 @@ export class OAuth2ProviderService {
 					access_token: accessToken,
 					token_type: 'Bearer',
 					scope: granted.scopes.join(' '),
+					me,
 				});
 			} catch (error) {
 				sendOAuthError(reply, normalizeOAuthError(error));
