@@ -11,6 +11,8 @@ import type * as Sentry from '@sentry/node';
 import type * as SentryVue from '@sentry/vue';
 import type { RedisOptions } from 'ioredis';
 
+type TrustProxyOption = boolean | string | string[] | ((address: string, hop: number) => boolean);
+
 type RedisOptionsSource = Partial<RedisOptions> & {
 	host: string;
 	port: number;
@@ -27,7 +29,7 @@ type Source = {
 	url?: string;
 	port?: number;
 	socket?: string;
-	trustProxy?: FastifyServerOptions['trustProxy'];
+	trustProxy?: TrustProxyOption;
 	chmodSocket?: string;
 	enableIpRateLimit?: boolean;
 	disableHsts?: boolean;

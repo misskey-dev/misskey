@@ -104,7 +104,6 @@ export class ServerService implements OnApplicationShutdown {
 			serve: false,
 		});
 
-		legacyFastify.register(this.apiServerService.createServer, { prefix: '/api' });
 		legacyFastify.register(this.oauth2ProviderService.createServer, { prefix: '/oauth' });
 		legacyFastify.register(this.oauth2ProviderService.createTokenServer, { prefix: '/oauth/token' });
 		await legacyFastify.ready();
@@ -238,6 +237,7 @@ export class ServerService implements OnApplicationShutdown {
 			return ctx.redirect('/static-assets/avatar.png');
 		});
 
+		hono.route('/api', this.apiServerService.createServer());
 		hono.route('/', this.openApiServerService.createServer());
 		hono.route('/', this.nodeinfoServerService.createServer());
 		hono.route('/', this.wellKnownServerService.createServer());

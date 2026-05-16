@@ -14,7 +14,8 @@ import { SigninEntityService } from '@/core/entities/SigninEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { EmailService } from '@/core/EmailService.js';
 import { NotificationService } from '@/core/NotificationService.js';
-import type { FastifyRequest, FastifyReply } from 'fastify';
+import { headersToObject } from './ApiServerTypes.js';
+import type { ApiContext } from './ApiServerTypes.js';
 
 @Injectable()
 export class SigninService {
@@ -34,15 +35,15 @@ export class SigninService {
 	}
 
 	@bindThis
-	public signin(request: FastifyRequest, reply: FastifyReply, user: MiLocalUser) {
+	public signin(ctx: ApiContext, user: MiLocalUser) {
 		setImmediate(async () => {
 			this.notificationService.createNotification(user.id, 'login', {});
 
 			const record = await this.signinsRepository.insertOne({
 				id: this.idService.gen(),
 				userId: user.id,
-				ip: request.ip,
-				headers: request.headers as any,
+				ip: ctx.var.ip,
+				headers: headersToObject(ctx.req.raw.headers) as any,
 				success: true,
 			});
 
@@ -56,7 +57,7 @@ export class SigninService {
 			}
 		});
 
-		reply.code(200);
+		ctx.status(200);
 		return {
 			finished: true,
 			id: user.id,

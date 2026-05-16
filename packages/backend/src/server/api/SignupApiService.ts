@@ -19,7 +19,7 @@ import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
 import { bindThis } from '@/decorators.js';
 import { L_CHARS, secureRndstr } from '@/misc/secure-rndstr.js';
 import { SigninService } from './SigninService.js';
-import type { FastifyRequest, FastifyReply } from 'fastify';
+import type { ApiContext } from './ApiServerTypes.js';
 
 @Injectable()
 export class SignupApiService {
@@ -56,24 +56,20 @@ export class SignupApiService {
 
 	@bindThis
 	public async signup(
-		request: FastifyRequest<{
-			Body: {
-				username: string;
-				password: string;
-				host?: string;
-				invitationCode?: string;
-				emailAddress?: string;
-				'hcaptcha-response'?: string;
-				'g-recaptcha-response'?: string;
-				'turnstile-response'?: string;
-				'm-captcha-response'?: string;
-				'testcaptcha-response'?: string;
-			}
-		}>,
-		reply: FastifyReply,
+		ctx: ApiContext,
+		body: {
+			username?: string;
+			password?: string;
+			host?: string;
+			invitationCode?: string;
+			emailAddress?: string;
+			'hcaptcha-response'?: string;
+			'g-recaptcha-response'?: string;
+			'turnstile-response'?: string;
+			'm-captcha-response'?: string;
+			'testcaptcha-response'?: string;
+		},
 	) {
-		const body = request.body;
-
 		// Verify *Captcha
 		// ただしテスト時はこの機構は障害となるため無効にする
 		if (process.env.NODE_ENV !== 'test') {
@@ -114,15 +110,25 @@ export class SignupApiService {
 		const invitationCode = body['invitationCode'];
 		const emailAddress = body['emailAddress'];
 
+		if (typeof username !== 'string' || typeof password !== 'string') {
+			ctx.status(400);
+			return;
+		}
+
+		if (host != null && typeof host !== 'string') {
+			ctx.status(400);
+			return;
+		}
+
 		if (this.meta.emailRequiredForSignup) {
 			if (emailAddress == null || typeof emailAddress !== 'string') {
-				reply.code(400);
+				ctx.status(400);
 				return;
 			}
 
 			const res = await this.emailService.validateEmailForAccount(emailAddress);
 			if (!res.available) {
-				reply.code(400);
+				ctx.status(400);
 				return;
 			}
 		}
@@ -132,7 +138,7 @@ export class SignupApiService {
 		// テスト時はこの機構は障害となるため無効にする
 		if (process.env.NODE_ENV !== 'test' && this.meta.disableRegistration) {
 			if (invitationCode == null || typeof invitationCode !== 'string') {
-				reply.code(400);
+				ctx.status(400);
 				return;
 			}
 
@@ -141,12 +147,12 @@ export class SignupApiService {
 			});
 
 			if (ticket == null || ticket.usedById != null) {
-				reply.code(400);
+				ctx.status(400);
 				return;
 			}
 
 			if (ticket.expiresAt && ticket.expiresAt < new Date()) {
-				reply.code(400);
+				ctx.status(400);
 				return;
 			}
 
@@ -154,17 +160,17 @@ export class SignupApiService {
 			if (this.meta.emailRequiredForSignup) {
 				// メアド認証済みならエラー
 				if (ticket.usedBy) {
-					reply.code(400);
+					ctx.status(400);
 					return;
 				}
 
 				// 認証しておらず、メール送信から30分以内ならエラー
 				if (ticket.usedAt && ticket.usedAt.getTime() + (1000 * 60 * 30) > Date.now()) {
-					reply.code(400);
+					ctx.status(400);
 					return;
 				}
 			} else if (ticket.usedAt) {
-				reply.code(400);
+				ctx.status(400);
 				return;
 			}
 		}
@@ -211,7 +217,7 @@ export class SignupApiService {
 				});
 			}
 
-			reply.code(204);
+			ctx.status(204);
 			return;
 		} else {
 			try {
@@ -243,9 +249,7 @@ export class SignupApiService {
 	}
 
 	@bindThis
-	public async signupPending(request: FastifyRequest<{ Body: { code: string; } }>, reply: FastifyReply) {
-		const body = request.body;
-
+	public async signupPending(ctx: ApiContext, body: { code?: string; }) {
 		const code = body['code'];
 
 		try {
@@ -281,7 +285,7 @@ export class SignupApiService {
 				});
 			}
 
-			return this.signinService.signin(request, reply, account as MiLocalUser);
+			return this.signinService.signin(ctx, account as MiLocalUser);
 		} catch (err) {
 			throw new FastifyReplyError(400, typeof err === 'string' ? err : (err as Error).toString());
 		}

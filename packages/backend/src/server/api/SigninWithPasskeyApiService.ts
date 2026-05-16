@@ -24,7 +24,8 @@ import type { IdentifiableError } from '@/misc/identifiable-error.js';
 import { RateLimiterService } from './RateLimiterService.js';
 import { SigninService } from './SigninService.js';
 import type { AuthenticationResponseJSON } from '@simplewebauthn/server';
-import type { FastifyReply, FastifyRequest } from 'fastify';
+import { headersToObject } from './ApiServerTypes.js';
+import type { ApiContext } from './ApiServerTypes.js';
 
 @Injectable()
 export class SigninWithPasskeyApiService {
@@ -53,22 +54,19 @@ export class SigninWithPasskeyApiService {
 
 	@bindThis
 	public async signin(
-		request: FastifyRequest<{
-			Body: {
-				credential?: AuthenticationResponseJSON;
-				context?: string;
-			};
-		}>,
-		reply: FastifyReply,
+		ctx: ApiContext,
+		body: {
+			credential?: AuthenticationResponseJSON;
+			context?: string;
+		},
 	) {
-		reply.header('Access-Control-Allow-Origin', this.config.url);
-		reply.header('Access-Control-Allow-Credentials', 'true');
+		ctx.header('Access-Control-Allow-Origin', this.config.url);
+		ctx.header('Access-Control-Allow-Credentials', 'true');
 
-		const body = request.body;
 		const credential = body['credential'];
 
 		function error(status: number, error: { id: string }) {
-			reply.code(status);
+			ctx.status(status as never);
 			return { error };
 		}
 
@@ -77,24 +75,24 @@ export class SigninWithPasskeyApiService {
 			await this.signinsRepository.insert({
 				id: this.idService.gen(),
 				userId: userId,
-				ip: request.ip,
-				headers: request.headers as any,
+				ip: ctx.var.ip,
+				headers: headersToObject(ctx.req.raw.headers) as any,
 				success: false,
 			});
 			return error(status ?? 500, failure ?? { id: '4e30e80c-e338-45a0-8c8f-44455efa3b76' });
 		};
 
 		if (this.config.enableIpRateLimit) {
-			if (process.env.NODE_ENV === 'production' && (request.ip === '::1' || request.ip === '127.0.0.1')) {
+			if (process.env.NODE_ENV === 'production' && (ctx.var.ip === '::1' || ctx.var.ip === '127.0.0.1')) {
 				this.logger.warn('Recieved signin with passkey request from localhost IP address for rate limiting in production environment. This is likely due to an improper trustProxy setting in the config file.');
 			}
 
 			try {
 			// Not more than 1 API call per 250ms and not more than 100 attempts per 30min
 			// NOTE: 1 Sign-in require 2 API calls
-				await this.rateLimiterService.limit({ key: 'signin-with-passkey', duration: 60 * 30 * 1000, max: 200, minInterval: 250 }, getIpHash(request.ip));
+				await this.rateLimiterService.limit({ key: 'signin-with-passkey', duration: 60 * 30 * 1000, max: 200, minInterval: 250 }, getIpHash(ctx.var.ip));
 			} catch (_) {
-				reply.code(429);
+				ctx.status(429);
 				return {
 					error: {
 						message: 'Too many failed attempts to sign in. Try again later.',
@@ -113,7 +111,7 @@ export class SigninWithPasskeyApiService {
 				option: await this.webAuthnService.initiateSignInWithPasskeyAuthentication(context),
 				context: context,
 			};
-			reply.code(200);
+			ctx.status(200);
 			return authChallengeOptions;
 		}
 
@@ -171,7 +169,7 @@ export class SigninWithPasskeyApiService {
 			});
 		}
 
-		const signinResponse = this.signinService.signin(request, reply, user);
+		const signinResponse = this.signinService.signin(ctx, user);
 		return {
 			signinResponse: signinResponse,
 		};
