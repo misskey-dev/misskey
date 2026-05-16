@@ -88,6 +88,15 @@ function getLinkHref(html: string, rel: string): string | undefined {
 	return doc.querySelector(`link[rel="${rel}"]`)?.attributes.href;
 }
 
+function toReachableTestUrl(url: string): string {
+	const canonicalUrl = new URL(url);
+	const reachableUrl = new URL(host);
+	reachableUrl.pathname = canonicalUrl.pathname;
+	reachableUrl.search = canonicalUrl.search;
+	reachableUrl.hash = canonicalUrl.hash;
+	return reachableUrl.toString();
+}
+
 function fetchDecision(transactionId: string, user: misskey.entities.SignupResponse, { cancel }: { cancel?: boolean } = {}): Promise<Response> {
 	return fetch(new URL('/oauth/decision', host), {
 		method: 'post',
@@ -243,12 +252,12 @@ describe('OAuth', () => {
 		// https://indieauth.spec.indieweb.org/#authorization-server-confirmation
 		// Clients must be able to rediscover the same authorization server
 		// from the returned canonical profile URL.
-		const meResponse = await fetch(token.token.me as string);
+		const meResponse = await fetch(toReachableTestUrl(token.token.me as string));
 		assert.strictEqual(meResponse.status, 200);
 		const metadataHref = getLinkHref(await meResponse.text(), 'indieauth-metadata');
 		assert.strictEqual(metadataHref, 'http://misskey.local/.well-known/oauth-authorization-server');
 
-		const metadataResponse = await fetch(metadataHref as string);
+		const metadataResponse = await fetch(toReachableTestUrl(metadataHref as string));
 		assert.strictEqual(metadataResponse.status, 200);
 		const metadata = await metadataResponse.json() as {
 			issuer: string;
