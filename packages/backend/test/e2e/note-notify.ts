@@ -9,7 +9,7 @@ import { describe, beforeAll, test } from 'vitest';
 import { api, signup } from '../utils.js';
 import type * as misskey from 'misskey-js';
 
-describe('users/notify/list', () => {
+describe('following/list', () => {
 	let alice: misskey.entities.SignupResponse;
 	let bob: misskey.entities.SignupResponse;
 	let carol: misskey.entities.SignupResponse;
@@ -24,11 +24,19 @@ describe('users/notify/list', () => {
 		// alice が bob を普通にフォロー（通知設定なし）
 		await api('following/create', { userId: bob.id }, alice);
 
-		const res = await api('users/notify/list', {}, alice);
+		const res1 = await api('following/list', { notification: true }, alice);
+		const res2 = await api('following/list', {}, alice);
 
-		assert.strictEqual(res.status, 200);
-		assert.strictEqual(Array.isArray(res.body), true);
-		assert.strictEqual(res.body.length, 0);
+		// notification: true の場合は通知設定なしのフォローは返らない
+		assert.strictEqual(res1.status, 200);
+		assert.strictEqual(Array.isArray(res1.body), true);
+		assert.strictEqual(res1.body.length, 0);
+
+		// notification パラメータなしの場合は通知設定なしのフォローも返る
+		assert.strictEqual(res2.status, 200);
+		assert.strictEqual(Array.isArray(res2.body), true);
+		assert.strictEqual(res2.body.length, 1);
+		assert.strictEqual(res2.body[0].id, bob.id);
 	});
 
 	test('通知設定ありのフォローがある場合、そのユーザーが返る', async () => {
@@ -36,7 +44,7 @@ describe('users/notify/list', () => {
 		await api('following/create', { userId: carol.id, withReplies: false }, alice);
 		await api('following/update', { userId: carol.id, notify: 'normal' }, alice);
 
-		const res = await api('users/notify/list', {}, alice);
+		const res = await api('following/list', { notification: true }, alice);
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(res.body.length, 1);
@@ -47,7 +55,7 @@ describe('users/notify/list', () => {
 		// bob にも通知設定をON
 		await api('following/update', { userId: bob.id, notify: 'normal' }, alice);
 
-		const res = await api('users/notify/list', {}, alice);
+		const res = await api('following/list', { notification: true }, alice);
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(res.body.length, 2);
@@ -59,11 +67,19 @@ describe('users/notify/list', () => {
 	test('通知設定をOFF（none）にすると一覧から外れる', async () => {
 		await api('following/update', { userId: bob.id, notify: 'none' }, alice);
 
-		const res = await api('users/notify/list', {}, alice);
+		const res1 = await api('following/list', { notification: true }, alice);
+		const res2 = await api('following/list', {}, alice);
 
-		assert.strictEqual(res.status, 200);
-		assert.strictEqual(res.body.length, 1);
-		assert.strictEqual(res.body[0].id, carol.id);
+		// notification: true の場合は bob は返らない
+		assert.strictEqual(res1.status, 200);
+		assert.strictEqual(res1.body.length, 1);
+		assert.strictEqual(res1.body[0].id, carol.id);
+
+		// notification パラメータなしの場合は bob も返る
+		assert.strictEqual(res2.status, 200);
+		assert.strictEqual(res2.body.length, 2);
+		const ids = res2.body.map((u: { id: string }) => u.id).sort();
+		assert.deepStrictEqual(ids, [bob.id, carol.id].sort());
 	});
 
 	test('他のユーザーの通知対象は見えない', async () => {
@@ -72,12 +88,12 @@ describe('users/notify/list', () => {
 		await api('following/update', { userId: carol.id, notify: 'normal' }, bob);
 
 		// alice の一覧には bob の通知設定は反映されない
-		const aliceRes = await api('users/notify/list', {}, alice);
+		const aliceRes = await api('following/list', { notification: true }, alice);
 		const aliceIds = aliceRes.body.map((u: { id: string }) => u.id);
 		assert.strictEqual(aliceIds.includes(bob.id), false);
 
 		// bob の一覧には carol だけが含まれる
-		const bobRes = await api('users/notify/list', {}, bob);
+		const bobRes = await api('following/list', { notification: true }, bob);
 		assert.strictEqual(bobRes.body.length, 1);
 		assert.strictEqual(bobRes.body[0].id, carol.id);
 
@@ -114,18 +130,18 @@ describe('users/notify/list', () => {
 		await api('following/update', { userId: bob.id, notify: 'normal' }, alice);
 
 		// limitなしだと2件返ることを確認
-		const allRes = await api('users/notify/list', {}, alice);
+		const allRes = await api('following/list', { notification: true }, alice);
 		assert.strictEqual(allRes.status, 200);
 		assert.strictEqual(allRes.body.length, 2);
 
 		// limit:1 で1件に絞られることを確認
-		const res = await api('users/notify/list', { limit: 1 }, alice);
+		const res = await api('following/list', { notification: true, limit: 1 }, alice);
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(res.body.length, 1);
 	});
 
 	test('未認証の場合はエラー', async () => {
-		const res = await api('users/notify/list', {});
+		const res = await api('following/list', {});
 		assert.strictEqual(res.status, 401);
 	});
 });

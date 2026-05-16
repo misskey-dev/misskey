@@ -125,8 +125,11 @@ async function showNotifyMenu(user: Misskey.entities.UserDetailed, ev: PointerEv
 	}], ev.currentTarget ?? ev.target);
 }
 
-const notifyUserPaginator = markRaw(new Paginator('users/notify/list', {
+const notifyUserPaginator = markRaw(new Paginator('following/list', {
 	limit: 10,
+	params: {
+		notification: true,
+	},
 }));
 
 const nonConfigurableNotificationTypes = ['note', 'roleAssigned', 'followRequestAccepted', 'test', 'exportCompleted'] as const satisfies (typeof notificationTypes[number])[];
