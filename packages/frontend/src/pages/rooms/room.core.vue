@@ -103,6 +103,7 @@ import { prefer } from '@/preferences.js';
 import { getObjectDef } from '@/world/room/object-defs.js';
 import { GRAPHICS_QUALITY } from '@/world/room/utility.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import { miLocalStorage } from '@/local-storage.js';
 
 const roomSpecVersion = 0;
 
@@ -230,11 +231,27 @@ const joyStickEl = useTemplateRef('joyStickEl');
 const joyStickVec = ref({ x: 0, y: 0 });
 const joyStickStartPos = ref<{ x: number; y: number } | null>(null);
 
-let latestData = deepClone(props.room.def) as unknown as RoomState;
+let latestSavedRoomState = deepClone(props.room.def) as unknown as RoomState;
+let initialRoomState = latestSavedRoomState;
 
-const attachments = {
+let attachments = {
 	files: deepClone(props.room.attachedFiles),
 } as RoomAttachments;
+
+type RoomTemp = {
+	date: number;
+	roomState: RoomState;
+	attachments: RoomAttachments;
+};
+
+const cachedUnsavedTempDataStr = miLocalStorage.getItem(`miWorldRoomTemp:${props.room.id}`);
+const cachedUnsavedTempDataParsed = cachedUnsavedTempDataStr != null ? JSON.parse(cachedUnsavedTempDataStr) as RoomTemp : null;
+const cachedUnsavedTempData = cachedUnsavedTempDataParsed != null && cachedUnsavedTempDataParsed.date > new Date(props.room.updatedAt).getTime() ? cachedUnsavedTempDataParsed : null;
+if (cachedUnsavedTempData != null) {
+	initialRoomState = cachedUnsavedTempData.roomState;
+	attachments = cachedUnsavedTempData.attachments;
+	isModified.value = true;
+}
 
 function addFileAttachment(file: Misskey.entities.DriveFile) {
 	// TODO: clean unused attachment
@@ -250,7 +267,7 @@ const roomControllerOptions = computed<RoomControllerOptions>(() => ({
 	workerMode: prefer.s['world.separateRenderingThread'],
 }));
 
-const controller = markRaw(new RoomController(props.room.def, roomControllerOptions.value));
+const controller = markRaw(new RoomController(deepClone(initialRoomState), roomControllerOptions.value));
 
 const selectedObjectDef = computed(() => controller.selected.value == null ? null : getObjectDef(controller.selected.value.objectState.type));
 
@@ -282,6 +299,11 @@ onMounted(async () => {
 
 	watch(controller.roomState, () => {
 		controller.roomState.value.worldScale = WORLD_SCALE;
+		miLocalStorage.setItem(`miWorldRoomTemp:${props.room.id}`, JSON.stringify({
+			date: Date.now(),
+			roomState: controller.roomState.value,
+			attachments,
+		} as RoomTemp));
 		isModified.value = true;
 	});
 
@@ -440,7 +462,7 @@ function exitEditMode() {
 }
 
 async function save() {
-	latestData = deepClone(controller.roomState.value);
+	latestSavedRoomState = deepClone(controller.roomState.value);
 	await os.apiWithDialog('world/rooms/update', {
 		roomId: props.room.id,
 		def: {
@@ -448,6 +470,7 @@ async function save() {
 			_v: roomSpecVersion,
 		},
 	});
+	miLocalStorage.removeItem(`miWorldRoomTemp:${props.room.id}`);
 	isModified.value = false;
 }
 
@@ -459,9 +482,13 @@ async function revert() {
 	});
 	if (canceled) return;
 
+	attachments = {
+		files: deepClone(props.room.attachedFiles),
+	};
 	canvasKey.value++;
 	await nextTick();
-	await controller.reset(canvas.value!, attachments, latestData);
+	await controller.reset(canvas.value!, attachments, latestSavedRoomState);
+	miLocalStorage.removeItem(`miWorldRoomTemp:${props.room.id}`);
 	isModified.value = false;
 }
 
