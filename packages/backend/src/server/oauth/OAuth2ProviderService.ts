@@ -521,10 +521,10 @@ export class OAuth2ProviderService {
 
 			try {
 				const seed = await this.#resolveAuthorizationRequest(request.query as OAuthRequestParameters);
-				const authorizationRequest = this.#finalizeAuthorizationRequest(seed);
 				const { clientInfo } = seed;
-				validatedRedirectUri = authorizationRequest.redirectUri;
-				state = authorizationRequest.state;
+				validatedRedirectUri = seed.redirectUri;
+				state = seed.state;
+				const authorizationRequest = this.#finalizeAuthorizationRequest(seed);
 
 				const transactionId = secureRndstr(128);
 				this.#authorizationTransactionCache.set(transactionId, {
@@ -645,7 +645,7 @@ export class OAuth2ProviderService {
 				const codeVerifier = firstValue(body.code_verifier);
 
 				this.#logger.info('Checking the received authorization code for the exchange');
-				if (!code || !clientId || !redirectUriValue || !codeVerifier) {
+				if (!code) {
 					throw new InvalidGrant('grant request is invalid');
 				}
 
@@ -670,6 +670,9 @@ export class OAuth2ProviderService {
 				}
 
 				// https://datatracker.ietf.org/doc/html/rfc7636.html#section-4.6
+				if (!codeVerifier) {
+					throw new InvalidGrant('grant request is invalid');
+				}
 				checkPKCE(codeVerifier, granted.codeChallenge, 'S256');
 
 				const accessToken = secureRndstr(128);
