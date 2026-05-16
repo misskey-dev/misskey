@@ -36,7 +36,7 @@ describe('following/list', () => {
 		assert.strictEqual(res2.status, 200);
 		assert.strictEqual(Array.isArray(res2.body), true);
 		assert.strictEqual(res2.body.length, 1);
-		assert.strictEqual(res2.body[0].id, bob.id);
+		assert.strictEqual(res2.body[0].followeeId, bob.id);
 	});
 
 	test('通知設定ありのフォローがある場合、そのユーザーが返る', async () => {
@@ -48,7 +48,7 @@ describe('following/list', () => {
 
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(res.body.length, 1);
-		assert.strictEqual(res.body[0].id, carol.id);
+		assert.strictEqual(res.body[0].followeeId, carol.id);
 	});
 
 	test('複数ユーザーで通知設定ありの場合、全員返る', async () => {
@@ -60,7 +60,7 @@ describe('following/list', () => {
 		assert.strictEqual(res.status, 200);
 		assert.strictEqual(res.body.length, 2);
 
-		const ids = res.body.map((u: { id: string }) => u.id).sort();
+		const ids = res.body.map((u) => u.followeeId).sort();
 		assert.deepStrictEqual(ids, [bob.id, carol.id].sort());
 	});
 
@@ -78,7 +78,7 @@ describe('following/list', () => {
 		// notification パラメータなしの場合は bob も返る
 		assert.strictEqual(res2.status, 200);
 		assert.strictEqual(res2.body.length, 2);
-		const ids = res2.body.map((u: { id: string }) => u.id).sort();
+		const ids = res2.body.map((u) => u.followeeId).sort();
 		assert.deepStrictEqual(ids, [bob.id, carol.id].sort());
 	});
 
@@ -89,7 +89,7 @@ describe('following/list', () => {
 
 		// alice の一覧には bob の通知設定は反映されない
 		const aliceRes = await api('following/list', { notification: true }, alice);
-		const aliceIds = aliceRes.body.map((u: { id: string }) => u.id);
+		const aliceIds = aliceRes.body.map((u) => u.followeeId);
 		assert.strictEqual(aliceIds.includes(bob.id), false);
 
 		// bob の一覧には carol だけが含まれる
