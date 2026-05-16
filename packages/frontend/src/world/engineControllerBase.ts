@@ -29,6 +29,7 @@ export abstract class EngineControllerBase<T extends RoomEngineBase> {
 	public initializeProgress = ref(0);
 	private pointerDownPosition: { x: number; y: number } | null = null;
 	private abortController = new AbortController();
+	private destroyed = false;
 
 	constructor(options: EngineControllerBaseOptions) {
 		this.options = options;
@@ -266,6 +267,9 @@ export abstract class EngineControllerBase<T extends RoomEngineBase> {
 			this.pointerDownPosition = null;
 		}, { signal: this.abortController.signal });
 
+		// reset経由で_init_が呼ばれた場合destoryedフラグはまだtrueのままなのでfalseに戻す
+		this.destroyed = false;
+
 		return {
 			engineEvents,
 		};
@@ -279,12 +283,16 @@ export abstract class EngineControllerBase<T extends RoomEngineBase> {
 	}
 
 	private onContextLost(info) {
+		// iOSの場合、OS側の都合でlostさせられた場合でもreasonがdestroyedになる場合があるので、destroyedだからといって正常な終了として無視することはできない
 		console.log('Context lost:', info);
-		if (info.reason === 'destroyed') return; // 正常な終了なので
+
+		// そのため正常な終了かどうかのフラグは自前で用意してそれを見る
+		if (this.destroyed) return;
+
 		os.alert({
 			type: 'error',
 			title: i18n.ts.somethingHappened,
-			text: i18n.ts._miWorld.crushed_description + '\nERR: ' + info.message,
+			text: i18n.ts._miWorld.crushed_description + '\nERR: ' + info.message + ' (' + info.reason + ')',
 		});
 	}
 
@@ -358,6 +366,7 @@ export abstract class EngineControllerBase<T extends RoomEngineBase> {
 
 	// TODO: isReadyになる前に呼ばれたらメモリリークしそうな気もするから調査の上いい感じにする
 	public destroy() {
+		this.destroyed = true;
 		this.abortController.abort();
 
 		if (this.worker != null) {
