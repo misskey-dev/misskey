@@ -103,7 +103,7 @@ export class RoomController extends EngineControllerBase<RoomEngine> {
 
 	public async reset(canvas: HTMLCanvasElement, attachments: RoomAttachments, roomState?: RoomState | null, options?: RoomControllerOptions | null) {
 		this._reset_();
-		if (roomState != null) this.roomState.value = roomState;
+		if (roomState != null) this.roomState.value = deepClone(roomState);
 		if (options != null) this.options = options;
 		this.isSitting.value = false;
 		this.isEditMode.value = false;

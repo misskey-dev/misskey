@@ -234,9 +234,11 @@ const joyStickStartPos = ref<{ x: number; y: number } | null>(null);
 let latestSavedRoomState = deepClone(props.room.def) as unknown as RoomState;
 let initialRoomState = latestSavedRoomState;
 
-let attachments = {
+let latestSavedAttachments = {
 	files: deepClone(props.room.attachedFiles),
 } as RoomAttachments;
+
+let attachments = deepClone(latestSavedAttachments);
 
 type RoomTemp = {
 	date: number;
@@ -462,7 +464,6 @@ function exitEditMode() {
 }
 
 async function save() {
-	latestSavedRoomState = deepClone(controller.roomState.value);
 	await os.apiWithDialog('world/rooms/update', {
 		roomId: props.room.id,
 		def: {
@@ -470,6 +471,8 @@ async function save() {
 			_v: roomSpecVersion,
 		},
 	});
+	latestSavedRoomState = deepClone(controller.roomState.value);
+	latestSavedAttachments = deepClone(attachments);
 	miLocalStorage.removeItem(`miWorldRoomTemp:${props.room.id}`);
 	isModified.value = false;
 }
@@ -482,12 +485,10 @@ async function revert() {
 	});
 	if (canceled) return;
 
-	attachments = {
-		files: deepClone(props.room.attachedFiles),
-	};
+	attachments = deepClone(latestSavedAttachments);
 	canvasKey.value++;
 	await nextTick();
-	await controller.reset(canvas.value!, attachments, latestSavedRoomState);
+	await controller.reset(canvas.value!, attachments, deepClone(latestSavedRoomState));
 	miLocalStorage.removeItem(`miWorldRoomTemp:${props.room.id}`);
 	isModified.value = false;
 }
