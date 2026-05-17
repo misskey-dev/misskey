@@ -13,6 +13,7 @@ import { contentDisposition } from '@/misc/content-disposition.js';
 import { correctFilename } from '@/misc/correct-filename.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
 import { VideoProcessingService } from '@/core/VideoProcessingService.js';
+import { bindThis } from '@/decorators.js';
 import { attachStreamCleanup, handleRangeRequest, setFileResponseHeaders, getSafeContentType, nodeStreamToWebStream, bufferToWebStream } from './FileServerUtils.js';
 import type { FileServerFileResolver } from './FileServerFileResolver.js';
 import type { Context as HonoContext } from 'hono';
@@ -25,6 +26,7 @@ export class FileServerDriveHandler {
 		private videoProcessingService: VideoProcessingService,
 	) {}
 
+	@bindThis
 	public async handle(ctx: HonoContext): Promise<Response> {
 		const key = ctx.req.param('key');
 		if (key == null) {

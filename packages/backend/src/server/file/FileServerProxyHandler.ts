@@ -15,6 +15,7 @@ import { StatusError } from '@/misc/status-error.js';
 import { contentDisposition } from '@/misc/content-disposition.js';
 import { correctFilename } from '@/misc/correct-filename.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
+import { bindThis } from '@/decorators.js';
 import { IImageStreamable, ImageProcessingService, webpDefault } from '@/core/ImageProcessingService.js';
 import { createRangeStream, attachStreamCleanup, needsCleanup, nodeStreamToWebStream, bufferToWebStream } from './FileServerUtils.js';
 import type { DownloadedFileResult, FileResolveResult, FileServerFileResolver } from './FileServerFileResolver.js';
@@ -41,6 +42,7 @@ export class FileServerProxyHandler {
 		private imageProcessingService: ImageProcessingService,
 	) {}
 
+	@bindThis
 	public async handle(ctx: HonoContext): Promise<Response> {
 		const url = ctx.req.query('url') || `https://${ctx.req.param('url')}`;
 
