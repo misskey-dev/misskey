@@ -5,6 +5,7 @@
 
 import cluster from 'node:cluster';
 import * as fs from 'node:fs';
+import type { Socket } from 'node:net';
 import type { IncomingMessage } from 'node:http';
 import { fileURLToPath } from 'node:url';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
@@ -242,6 +243,7 @@ export class ServerService implements OnApplicationShutdown {
 		hono.route('/', this.nodeinfoServerService.createServer());
 		hono.route('/', this.wellKnownServerService.createServer());
 		hono.route('/healthz', this.healthServerService.createServer());
+		hono.route('/', this.streamingApiServerService.createServer());
 		hono.route('/', this.activityPubServerService.createServer());
 		hono.route('/', this.fileServerService.createServer());
 		hono.route('/', this.clientServerService.createServer());
@@ -282,6 +284,9 @@ export class ServerService implements OnApplicationShutdown {
 
 		const honoNodeServer = createAdaptorServer({
 			fetch: hono.fetch,
+			websocket: {
+				server: this.streamingApiServerService.createWebSocketServer(),
+			},
 		});
 
 		fastify.addHook('onRequest', async (request, reply) => {
@@ -313,7 +318,9 @@ export class ServerService implements OnApplicationShutdown {
 			});
 		});
 
-		this.streamingApiServerService.attach(fastify.server);
+		fastify.server.on('upgrade', (request: IncomingMessage, socket: Socket, head: Buffer) => {
+			honoNodeServer.emit('upgrade', request, socket, head);
+		});
 
 		fastify.server.on('error', err => {
 			switch ((err as any).code) {

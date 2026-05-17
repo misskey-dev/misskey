@@ -7,6 +7,9 @@ import { EventEmitter } from 'events';
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import * as WebSocket from 'ws';
+import { Hono } from 'hono';
+import { upgradeWebSocket } from '@hono/node-server';
+import type { HttpBindings } from '@hono/node-server';
 import { DI } from '@/di-symbols.js';
 import type { MiAccessToken } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
@@ -17,11 +20,20 @@ import MainStreamConnection, { ConnectionRequest } from './stream/Connection.js'
 import type * as http from 'node:http';
 import { ContextIdFactory, ModuleRef } from '@nestjs/core';
 
+type StreamingContext = {
+	stream: MainStreamConnection;
+	user: MiLocalUser | null;
+	app: MiAccessToken | null;
+};
+
 @Injectable()
 export class StreamingApiServerService {
-	#wss: WebSocket.WebSocketServer;
+	#wss: WebSocket.WebSocketServer | null = null;
 	#connections = new Map<WebSocket.WebSocket, number>();
+	#pendingConnections = new WeakMap<http.IncomingMessage, StreamingContext>();
 	#cleanConnectionsIntervalId: NodeJS.Timeout | null = null;
+	#globalEv: EventEmitter | null = null;
+	#initialized = false;
 
 	constructor(
 		@Inject(DI.redisForSub)
@@ -34,29 +46,38 @@ export class StreamingApiServerService {
 	}
 
 	@bindThis
-	public attach(server: http.Server): void {
-		this.#wss = new WebSocket.WebSocketServer({
-			noServer: true,
-		});
+	public createWebSocketServer(): WebSocket.WebSocketServer {
+		this.initialize();
+		return this.#wss!;
+	}
 
-		server.on('upgrade', async (request, socket, head) => {
-			if (request.url == null) {
-				socket.write('HTTP/1.1 400 Bad Request\r\n\r\n');
-				socket.destroy();
+	@bindThis
+	public createServer(): Hono {
+		this.initialize();
+
+		const hono = new Hono<{ Bindings: HttpBindings }>();
+
+		hono.get('/streaming', async (ctx, next) => {
+			if (ctx.req.header('upgrade')?.toLowerCase() !== 'websocket') {
+				await next();
 				return;
 			}
 
-			const q = new URL(request.url, `http://${request.headers.host}`).searchParams;
-
-			let user: MiLocalUser | null = null;
-			let app: MiAccessToken | null = null;
+			const incoming = ctx.env.incoming;
+			if (incoming == null) {
+				return ctx.body(null, 400);
+			}
 
 			// https://datatracker.ietf.org/doc/html/rfc6750.html#section-2.1
 			// Note that the standard WHATWG WebSocket API does not support setting any headers,
 			// but non-browser apps may still be able to set it.
-			const token = request.headers.authorization?.startsWith('Bearer ')
-				? request.headers.authorization.slice(7)
-				: q.get('i');
+			const authorization = ctx.req.header('authorization');
+			const token = authorization?.startsWith('Bearer ')
+				? authorization.slice(7)
+				: ctx.req.query('i');
+
+			let user: MiLocalUser | null = null;
+			let app: MiAccessToken | null = null;
 
 			try {
 				[user, app] = await this.authenticateService.authenticate(token);
@@ -66,21 +87,15 @@ export class StreamingApiServerService {
 				}
 			} catch (e) {
 				if (e instanceof AuthenticationError) {
-					socket.write([
-						'HTTP/1.1 401 Unauthorized',
-						'WWW-Authenticate: Bearer realm="Misskey", error="invalid_token", error_description="Failed to authenticate"',
-					].join('\r\n') + '\r\n\r\n');
-				} else {
-					socket.write('HTTP/1.1 500 Internal Server Error\r\n\r\n');
+					ctx.header('WWW-Authenticate', 'Bearer realm="Misskey", error="invalid_token", error_description="Failed to authenticate"');
+					return ctx.body(null, 401);
 				}
-				socket.destroy();
-				return;
+
+				return ctx.body(null, 500);
 			}
 
 			if (user?.isSuspended) {
-				socket.write('HTTP/1.1 403 Forbidden\r\n\r\n');
-				socket.destroy();
-				return;
+				return ctx.body(null, 403);
 			}
 
 			const contextId = ContextIdFactory.create();
@@ -89,28 +104,46 @@ export class StreamingApiServerService {
 				token: app,
 			}, contextId);
 			const stream = await this.moduleRef.create(MainStreamConnection, contextId);
-
 			await stream.init();
 
-			this.#wss.handleUpgrade(request, socket, head, (ws) => {
-				this.#wss.emit('connection', ws, request, {
-					stream, user, app,
-				});
+			this.#pendingConnections.set(incoming, {
+				stream,
+				user,
+				app,
 			});
+
+			return await upgradeWebSocket(ctx, {});
 		});
 
-		const globalEv = new EventEmitter();
+		return hono as unknown as Hono;
+	}
+
+	@bindThis
+	private initialize(): void {
+		if (this.#initialized) {
+			return;
+		}
+
+		this.#initialized = true;
+		this.#wss = new WebSocket.WebSocketServer({
+			noServer: true,
+		});
+		this.#globalEv = new EventEmitter();
 
 		this.redisForSub.on('message', (_: string, data: string) => {
 			const parsed = JSON.parse(data);
-			globalEv.emit('message', parsed);
+			this.#globalEv!.emit('message', parsed);
 		});
 
-		this.#wss.on('connection', async (connection: WebSocket.WebSocket, request: http.IncomingMessage, ctx: {
-			stream: MainStreamConnection,
-			user: MiLocalUser | null;
-			app: MiAccessToken | null
-		}) => {
+		this.#wss.on('connection', async (connection: WebSocket.WebSocket, request: http.IncomingMessage) => {
+			const ctx = this.#pendingConnections.get(request);
+			if (ctx == null) {
+				connection.close();
+				return;
+			}
+
+			this.#pendingConnections.delete(request);
+
 			const { stream, user } = ctx;
 
 			const ev = new EventEmitter();
@@ -119,7 +152,7 @@ export class StreamingApiServerService {
 				ev.emit(data.channel, data.message);
 			}
 
-			globalEv.on('message', onRedisMessage);
+			this.#globalEv!.on('message', onRedisMessage);
 
 			await stream.listen(ev, connection);
 
@@ -135,7 +168,7 @@ export class StreamingApiServerService {
 			connection.once('close', () => {
 				ev.removeAllListeners();
 				stream.dispose();
-				globalEv.off('message', onRedisMessage);
+				this.#globalEv!.off('message', onRedisMessage);
 				this.#connections.delete(connection);
 				if (userUpdateIntervalId) clearInterval(userUpdateIntervalId);
 			});
@@ -161,12 +194,16 @@ export class StreamingApiServerService {
 
 	@bindThis
 	public detach(): Promise<void> {
+		if (this.#wss == null) {
+			return Promise.resolve();
+		}
+
 		if (this.#cleanConnectionsIntervalId) {
 			clearInterval(this.#cleanConnectionsIntervalId);
 			this.#cleanConnectionsIntervalId = null;
 		}
 		return new Promise((resolve) => {
-			this.#wss.close(() => resolve());
+			this.#wss!.close(() => resolve());
 		});
 	}
 }
