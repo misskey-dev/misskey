@@ -6,6 +6,8 @@
 import { resolve } from 'node:path';
 import { Inject, Injectable } from '@nestjs/common';
 import { Hono } from 'hono';
+import type { Context as HonoContext } from 'hono';
+import { createMiddleware } from 'hono/factory';
 import { serveStatic } from '@hono/node-server/serve-static';
 import type { Config } from '@/config.js';
 import type { DriveFilesRepository } from '@/models/_.js';
@@ -23,7 +25,6 @@ import { handleRequestRedirectToOmitSearch } from '@/misc/hono-middleware-handle
 import { FileServerDriveHandler } from './file/FileServerDriveHandler.js';
 import { FileServerFileResolver } from './file/FileServerFileResolver.js';
 import { FileServerProxyHandler } from './file/FileServerProxyHandler.js';
-import type { Context as HonoContext } from 'hono';
 
 @Injectable()
 export class FileServerService {
@@ -76,7 +77,7 @@ export class FileServerService {
 	public createServer(): Hono {
 		const hono = new Hono();
 
-		hono.use(async (ctx, next) => {
+		const fileRouteMiddleware = createMiddleware(async (ctx, next) => {
 			ctx.header('Content-Security-Policy', 'default-src \'none\'; img-src \'self\'; media-src \'self\'; style-src \'unsafe-inline\'');
 			if (process.env.NODE_ENV === 'development') {
 				ctx.header('Access-Control-Allow-Origin', '*');
@@ -84,7 +85,8 @@ export class FileServerService {
 			await next();
 		});
 
-		hono.use(handleRequestRedirectToOmitSearch);
+		hono.use('/files/*', fileRouteMiddleware, handleRequestRedirectToOmitSearch);
+		hono.use('/proxy/*', fileRouteMiddleware, handleRequestRedirectToOmitSearch);
 
 		hono.get('/files/app-default.jpg', serveStatic({
 			path: resolve(this.assets, 'dummy.png'),

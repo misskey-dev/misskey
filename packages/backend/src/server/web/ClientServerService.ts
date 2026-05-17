@@ -10,6 +10,7 @@ import ms from 'ms';
 import sharp from 'sharp';
 import { In, IsNull } from 'typeorm';
 import { Hono } from 'hono';
+import { createMiddleware } from 'hono/factory';
 import { proxy } from 'hono/proxy';
 import { serveStatic } from '@hono/node-server/serve-static';
 import type { Config } from '@/config.js';
@@ -207,6 +208,8 @@ export class ClientServerService {
 	public createServer(): Hono {
 		const hono = new Hono();
 		const configUrl = new URL(this.config.url);
+		const staticAssetNotFound = createMiddleware(async (ctx: HonoContext) => ctx.body(null, 404));
+		const rewriteStaticPath = (prefix: string) => (path: string) => path.startsWith(prefix) ? path.slice(prefix.length) : path;
 
 		hono.use(async (ctx, next) => {
 			if (
@@ -225,18 +228,20 @@ export class ClientServerService {
 			this.clientLoggerService.logger.info(`[ClientServerService] Using built frontend vite assets. ${this.frontendViteOut}`);
 			hono.get('/vite/*', serveStatic({
 				root: this.frontendViteOut,
+				rewriteRequestPath: rewriteStaticPath('/vite'),
 				onFound: (_, ctx) => {
 					ctx.header('Cache-Control', `max-age=${ms('30 days') / 1000}, immutable`);
 				},
-			}), handleRequestRedirectToOmitSearch);
+			}), handleRequestRedirectToOmitSearch, staticAssetNotFound);
 			hono.get('/embed_vite/*', serveStatic({
 				root: this.frontendEmbedViteOut,
+				rewriteRequestPath: rewriteStaticPath('/embed_vite'),
 				onFound: (_, ctx) => {
 					ctx.header('Cache-Control', `max-age=${ms('30 days') / 1000}, immutable`);
 				},
-			}), handleRequestRedirectToOmitSearch);
+			}), handleRequestRedirectToOmitSearch, staticAssetNotFound);
 		} else {
-			console.log('[ClientServerService] Proxying to Vite dev server.');
+			this.clientLoggerService.logger.info(`[ClientServerService] Proxying to Vite dev server. ${configUrl.origin}`);
 			const urlOriginWithoutPort = configUrl.origin.replace(/:\d+$/, '');
 
 			const port = (process.env.VITE_PORT ?? '5173');
@@ -255,31 +260,35 @@ export class ClientServerService {
 
 		hono.get('/static-assets/*', serveStatic({
 			root: this.staticAssets,
-		}), async (ctx, next) => {
-			ctx.header('Cache-Control', `max-age=${ms('7 days') / 1000}`);
-			await next();
-		});
+			rewriteRequestPath: rewriteStaticPath('/static-assets'),
+			onFound: (_, ctx) => {
+				ctx.header('Cache-Control', `max-age=${ms('7 days') / 1000}`);
+			},
+		}), staticAssetNotFound);
 
 		hono.get('/client-assets/*', serveStatic({
 			root: this.clientAssets,
-		}), async (ctx, next) => {
-			ctx.header('Cache-Control', `max-age=${ms('7 days') / 1000}`);
-			await next();
-		});
+			rewriteRequestPath: rewriteStaticPath('/client-assets'),
+			onFound: (_, ctx) => {
+				ctx.header('Cache-Control', `max-age=${ms('7 days') / 1000}`);
+			},
+		}), staticAssetNotFound);
 
 		hono.get('/assets/*', serveStatic({
 			root: this.assets,
-		}), async (ctx, next) => {
-			ctx.header('Cache-Control', `max-age=${ms('7 days') / 1000}`);
-			await next();
-		});
+			rewriteRequestPath: rewriteStaticPath('/assets'),
+			onFound: (_, ctx) => {
+				ctx.header('Cache-Control', `max-age=${ms('7 days') / 1000}`);
+			},
+		}), staticAssetNotFound);
 
 		hono.get('/tarball/*', serveStatic({
 			root: this.tarball,
+			rewriteRequestPath: rewriteStaticPath('/tarball'),
 			onFound: (_, ctx) => {
 				ctx.header('Cache-Control', `max-age=${ms('30 days') / 1000}, immutable`);
 			},
-		}), handleRequestRedirectToOmitSearch);
+		}), handleRequestRedirectToOmitSearch, staticAssetNotFound);
 
 		hono.get('/favicon.ico', serveStatic({
 			path: resolve(this.staticAssets, 'favicon.ico'),
@@ -291,18 +300,20 @@ export class ClientServerService {
 
 		hono.get('/fluent-emoji/:filename{[0-9a-f-]+\\.png}', serveStatic({
 			root: this.fluentEmojiDir,
+			rewriteRequestPath: rewriteStaticPath('/fluent-emoji'),
 			onFound: (_, ctx) => {
 				ctx.header('Cache-Control', `max-age=${ms('30 days') / 1000}, immutable`);
 			},
-		}));
+		}), staticAssetNotFound);
 
 		hono.get('/twemoji/:filename{[0-9a-f-]+\\.svg}', serveStatic({
 			root: this.twemojiDir,
+			rewriteRequestPath: rewriteStaticPath('/twemoji'),
 			onFound: (_, ctx) => {
 				ctx.header('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
 				ctx.header('Cache-Control', `max-age=${ms('30 days') / 1000}, immutable`);
 			},
-		}));
+		}), staticAssetNotFound);
 
 		hono.get('/twemoji-badge/:filename{[0-9a-f-]+\\.png}', async (ctx) => {
 			const filename = ctx.req.param('filename');
