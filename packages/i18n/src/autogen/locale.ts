@@ -5663,6 +5663,18 @@ export interface Locale extends ILocale {
      * 元に戻す
      */
     "previewingThemeRestore": string;
+    /**
+     * 絵文字パレットを選択
+     */
+    "chooseEmojiPalette": string;
+    /**
+     * 絵文字パレットに追加
+     */
+    "addToEmojiPalette": string;
+    /**
+     * この絵文字はすでにこの絵文字パレットに含まれています。削除しますか？
+     */
+    "emojiPaletteAlreadyAddedConfirm": string;
     "_imageEditing": {
         "_vars": {
             /**
