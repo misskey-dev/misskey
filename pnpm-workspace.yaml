@@ -57,6 +57,8 @@ minimumReleaseAgeExclude:
   - re2 # そのうち消す
   - nan # そのうち消す
   - systeminformation # 脆弱性対応。そのうち消す
+  - sanitize-html # 脆弱性対応。そのうち消す
+  - launder # 脆弱性対応。そのうち消す
 overrides:
   '@aiscript-dev/aiscript-languageserver': '-'
   chokidar: 5.0.0
