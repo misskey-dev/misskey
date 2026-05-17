@@ -48,6 +48,8 @@ const title = ref<string | null>(null);
 const player = ref<SummalyResult['player'] | null>(null);
 
 async function ytFetch() {
+	title.value = null;
+	player.value = null;
 	fetching.value = true;
 	iframeLoaded.value = false;
 
