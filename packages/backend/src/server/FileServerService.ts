@@ -86,7 +86,7 @@ export class FileServerService {
 		});
 
 		hono.use('/files/*', fileRouteMiddleware, handleRequestRedirectToOmitSearch);
-		hono.use('/proxy/*', fileRouteMiddleware, handleRequestRedirectToOmitSearch);
+		hono.use('/proxy/*', fileRouteMiddleware);
 
 		hono.get('/files/app-default.jpg', serveStatic({
 			path: resolve(this.assets, 'dummy.png'),
