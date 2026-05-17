@@ -46,7 +46,7 @@ export async function addToEmojiPalette(emoji: string) {
 				return {
 					...p,
 					emojis,
-				}
+				};
 			} else {
 				return p;
 			}
@@ -67,7 +67,7 @@ export async function addToEmojiPalette(emoji: string) {
 				return {
 					...p,
 					emojis,
-				}
+				};
 			} else {
 				return p;
 			}
