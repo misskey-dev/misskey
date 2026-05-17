@@ -134,7 +134,7 @@ onDeactivated(() => {
 	playerEnabled.value = false;
 });
 
-const requestUrl = new URL(props.url, location.href);
+const requestUrl = new URL(props.url, window.location.href);
 if (!['http:', 'https:'].includes(requestUrl.protocol)) throw new Error('invalid url');
 
 if (requestUrl.hostname === 'twitter.com' || requestUrl.hostname === 'mobile.twitter.com' || requestUrl.hostname === 'x.com' || requestUrl.hostname === 'mobile.x.com') {

@@ -56,7 +56,7 @@ async function ytFetch() {
 	let info: SummalyResult;
 
 	if (typeof props.urlOrSummalyResult === 'string') {
-		const requestUrl = new URL(props.urlOrSummalyResult, location.href);
+		const requestUrl = new URL(props.urlOrSummalyResult, window.location.href);
 		if (requestUrl.protocol !== 'http:' && requestUrl.protocol !== 'https:') {
 			// Invalid URL
 			fetching.value = false;
