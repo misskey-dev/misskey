@@ -217,6 +217,7 @@ export * as 'flash/search' from './endpoints/flash/search.js';
 export * as 'following/create' from './endpoints/following/create.js';
 export * as 'following/delete' from './endpoints/following/delete.js';
 export * as 'following/invalidate' from './endpoints/following/invalidate.js';
+export * as 'following/list' from './endpoints/following/list.js';
 export * as 'following/requests/accept' from './endpoints/following/requests/accept.js';
 export * as 'following/requests/cancel' from './endpoints/following/requests/cancel.js';
 export * as 'following/requests/list' from './endpoints/following/requests/list.js';
