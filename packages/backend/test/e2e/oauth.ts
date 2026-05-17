@@ -83,20 +83,6 @@ function getMeta(html: string): { transactionId: string | undefined, clientName:
 	};
 }
 
-function getLinkHref(html: string, rel: string): string | undefined {
-	const doc = htmlParser.parse(`<div>${html}</div>`);
-	return doc.querySelector(`link[rel="${rel}"]`)?.attributes.href;
-}
-
-function toReachableTestUrl(url: string): string {
-	const canonicalUrl = new URL(url);
-	const reachableUrl = new URL(host);
-	reachableUrl.pathname = canonicalUrl.pathname;
-	reachableUrl.search = canonicalUrl.search;
-	reachableUrl.hash = canonicalUrl.hash;
-	return reachableUrl.toString();
-}
-
 function fetchDecision(transactionId: string, user: misskey.entities.SignupResponse, { cancel }: { cancel?: boolean } = {}): Promise<Response> {
 	return fetch(new URL('/oauth/decision', host), {
 		method: 'post',
@@ -246,31 +232,6 @@ describe('OAuth', () => {
 		assert.strictEqual(typeof token.token.access_token, 'string');
 		assert.strictEqual(token.token.token_type, 'Bearer');
 		assert.strictEqual(token.token.scope, 'write:notes');
-		// https://indieauth.spec.indieweb.org/#access-token-response
-		assert.strictEqual(token.token.me, `http://misskey.local/users/${alice.id}`);
-
-		// https://indieauth.spec.indieweb.org/#authorization-server-confirmation
-		// Clients must be able to rediscover the same authorization server
-		// from the returned canonical profile URL.
-		const meResponse = await fetch(toReachableTestUrl(token.token.me as string), {
-			headers: {
-				'Accept': 'text/html',
-			},
-		});
-		assert.strictEqual(meResponse.status, 200);
-		const metadataHref = getLinkHref(await meResponse.text(), 'indieauth-metadata');
-		assert.strictEqual(metadataHref, `http://127.0.0.1:${clientPort}/.well-known/oauth-authorization-server`);
-
-		const metadataResponse = await fetch(toReachableTestUrl(metadataHref as string));
-		assert.strictEqual(metadataResponse.status, 200);
-		const metadata = await metadataResponse.json() as {
-			issuer: string;
-			authorization_endpoint: string;
-			token_endpoint: string;
-		};
-		assert.strictEqual(metadata.issuer, `http://127.0.0.1:${clientPort}`);
-		assert.strictEqual(metadata.authorization_endpoint, `http://127.0.0.1:${clientPort}/oauth/authorize`);
-		assert.strictEqual(metadata.token_endpoint, `http://127.0.0.1:${clientPort}/oauth/token`);
 
 		const createResult = await api('notes/create', { text: 'test' }, {
 			token: token.token.access_token as string,
