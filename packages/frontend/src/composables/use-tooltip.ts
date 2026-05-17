@@ -22,7 +22,7 @@ export function useTooltip(
 
 	let changeShowingState: (() => void) | null;
 
-	let autoHidingTimer;
+	let autoHidingTimer: number | null = null;
 
 	const open = () => {
 		close();
@@ -43,7 +43,7 @@ export function useTooltip(
 				isHovering = false;
 				window.clearTimeout(timeoutId);
 				close();
-				window.clearInterval(autoHidingTimer);
+				if (autoHidingTimer != null) window.clearInterval(autoHidingTimer);
 			}
 		}, 1000);
 	};
@@ -66,7 +66,7 @@ export function useTooltip(
 		if (!isHovering) return;
 		isHovering = false;
 		window.clearTimeout(timeoutId);
-		window.clearInterval(autoHidingTimer);
+		if (autoHidingTimer != null) window.clearInterval(autoHidingTimer);
 		close();
 	};
 
@@ -81,7 +81,7 @@ export function useTooltip(
 		if (!isHovering) return;
 		isHovering = false;
 		window.clearTimeout(timeoutId);
-		window.clearInterval(autoHidingTimer);
+		if (autoHidingTimer != null) window.clearInterval(autoHidingTimer);
 		close();
 	};
 

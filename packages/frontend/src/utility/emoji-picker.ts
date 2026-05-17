@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineAsyncComponent, ref, watch } from 'vue';
-import type { Ref } from 'vue';
+import { shallowRef, ref, watch } from 'vue';
+import MkEmojiPickerDialog from '@/components/MkEmojiPickerDialog.vue';
 import { popup } from '@/os.js';
 import { prefer } from '@/preferences.js';
 
@@ -15,53 +15,42 @@ import { prefer } from '@/preferences.js';
  * 一度表示したダイアログを連続で使用できることが望ましいシーンでの利用が想定される。
  */
 class EmojiPicker {
-	private anchorElement: Ref<HTMLElement | null> = ref(null);
-	private manualShowing = ref(false);
-	private onChosen?: (emoji: string) => void;
-	private onClosed?: () => void;
+	private emojisRef = ref<string[]>([]);
 
 	constructor() {
 		// nop
 	}
 
-	public async init() {
-		const emojisRef = ref<string[]>([]);
-
+	public init() {
 		watch([prefer.r.emojiPaletteForMain, prefer.r.emojiPalettes], () => {
-			emojisRef.value = prefer.s.emojiPaletteForMain == null ? prefer.s.emojiPalettes[0].emojis : prefer.s.emojiPalettes.find(palette => palette.id === prefer.s.emojiPaletteForMain)?.emojis ?? [];
+			this.emojisRef.value = prefer.s.emojiPaletteForMain == null ? prefer.s.emojiPalettes[0].emojis : prefer.s.emojiPalettes.find(palette => palette.id === prefer.s.emojiPaletteForMain)?.emojis ?? [];
 		}, {
 			immediate: true,
-		});
-
-		await popup(defineAsyncComponent(() => import('@/components/MkEmojiPickerDialog.vue')), {
-			anchorElement: this.anchorElement,
-			pinnedEmojis: emojisRef,
-			asReactionPicker: false,
-			manualShowing: this.manualShowing,
-			choseAndClose: false,
-		}, {
-			done: emoji => {
-				if (this.onChosen) this.onChosen(emoji);
-			},
-			close: () => {
-				this.manualShowing.value = false;
-			},
-			closed: () => {
-				this.anchorElement.value = null;
-				if (this.onClosed) this.onClosed();
-			},
 		});
 	}
 
 	public show(
 		anchorElement: HTMLElement,
-		onChosen?: EmojiPicker['onChosen'],
-		onClosed?: EmojiPicker['onClosed'],
+		onChosen?: (emoji: string) => void,
+		onClosed?: () => void,
 	) {
-		this.anchorElement.value = anchorElement;
-		this.manualShowing.value = true;
-		this.onChosen = onChosen;
-		this.onClosed = onClosed;
+		const anchorRef = shallowRef(anchorElement);
+
+		// defineAsyncComponentはiOS等でユーザーアクティベーションが失われてfocusが効かなくなるため使用不可
+		const { dispose } = popup(MkEmojiPickerDialog, {
+			anchorElement: anchorRef,
+			pinnedEmojis: this.emojisRef,
+			asReactionPicker: false,
+			choseAndClose: false,
+		}, {
+			done: (emoji: string) => {
+				if (onChosen) onChosen(emoji);
+			},
+			closed: () => {
+				if (onClosed) onClosed();
+				dispose();
+			},
+		});
 	}
 }
 

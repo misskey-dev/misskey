@@ -39,137 +39,6 @@ export const meta = {
 
 	res: {
 		type: 'object',
-		nullable: false,
-		optional: false,
-		properties: {
-			rp: {
-				type: 'object',
-				properties: {
-					id: {
-						type: 'string',
-						optional: true,
-					},
-				},
-			},
-			user: {
-				type: 'object',
-				properties: {
-					id: {
-						type: 'string',
-					},
-					name: {
-						type: 'string',
-					},
-					displayName: {
-						type: 'string',
-					},
-				},
-			},
-			challenge: {
-				type: 'string',
-			},
-			pubKeyCredParams: {
-				type: 'array',
-				items: {
-					type: 'object',
-					properties: {
-						type: {
-							type: 'string',
-						},
-						alg: {
-							type: 'number',
-						},
-					},
-				},
-			},
-			timeout: {
-				type: 'number',
-				nullable: true,
-			},
-			excludeCredentials: {
-				type: 'array',
-				nullable: true,
-				items: {
-					type: 'object',
-					properties: {
-						id: {
-							type: 'string',
-						},
-						type: {
-							type: 'string',
-						},
-						transports: {
-							type: 'array',
-							items: {
-								type: 'string',
-								enum: [
-									'ble',
-									'cable',
-									'hybrid',
-									'internal',
-									'nfc',
-									'smart-card',
-									'usb',
-								],
-							},
-						},
-					},
-				},
-			},
-			authenticatorSelection: {
-				type: 'object',
-				nullable: true,
-				properties: {
-					authenticatorAttachment: {
-						type: 'string',
-						enum: [
-							'cross-platform',
-							'platform',
-						],
-					},
-					requireResidentKey: {
-						type: 'boolean',
-					},
-					userVerification: {
-						type: 'string',
-						enum: [
-							'discouraged',
-							'preferred',
-							'required',
-						],
-					},
-				},
-			},
-			attestation: {
-				type: 'string',
-				nullable: true,
-				enum: [
-					'direct',
-					'enterprise',
-					'indirect',
-					'none',
-					null,
-				],
-			},
-			extensions: {
-				type: 'object',
-				nullable: true,
-				properties: {
-					appid: {
-						type: 'string',
-						nullable: true,
-					},
-					credProps: {
-						type: 'boolean',
-						nullable: true,
-					},
-					hmacCreateSecret: {
-						type: 'boolean',
-						nullable: true,
-					},
-				},
-			},
-		},
 	},
 } as const;
 
@@ -212,7 +81,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 				try {
 					await this.userAuthService.twoFactorAuthenticate(profile, token);
-				} catch (e) {
+				} catch (_) {
 					throw new Error('authentication failed');
 				}
 			}

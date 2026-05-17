@@ -64,7 +64,7 @@ const url = computed(() => (props.raw)
 	: props.image.thumbnailUrl,
 );
 
-async function onclick(ev: MouseEvent) {
+async function onclick(ev: PointerEvent) {
 	if (hide.value) {
 		ev.stopPropagation();
 		hide.value = false;

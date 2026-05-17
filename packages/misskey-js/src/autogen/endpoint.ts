@@ -616,6 +616,8 @@ import type {
 	UsersFollowingResponse,
 	UsersGalleryPostsRequest,
 	UsersGalleryPostsResponse,
+	UsersGetFollowingUsersByBirthdayRequest,
+	UsersGetFollowingUsersByBirthdayResponse,
 	UsersGetFrequentlyRepliedUsersRequest,
 	UsersGetFrequentlyRepliedUsersResponse,
 	UsersListsCreateRequest,
@@ -638,6 +640,8 @@ import type {
 	UsersListsUpdateMembershipRequest,
 	UsersNotesRequest,
 	UsersNotesResponse,
+	UsersNotifyListRequest,
+	UsersNotifyListResponse,
 	UsersPagesRequest,
 	UsersPagesResponse,
 	UsersReactionsRequest,
@@ -1067,6 +1071,7 @@ export type Endpoints = {
 	'users/followers': { req: UsersFollowersRequest; res: UsersFollowersResponse };
 	'users/following': { req: UsersFollowingRequest; res: UsersFollowingResponse };
 	'users/gallery/posts': { req: UsersGalleryPostsRequest; res: UsersGalleryPostsResponse };
+	'users/get-following-users-by-birthday': { req: UsersGetFollowingUsersByBirthdayRequest; res: UsersGetFollowingUsersByBirthdayResponse };
 	'users/get-frequently-replied-users': { req: UsersGetFrequentlyRepliedUsersRequest; res: UsersGetFrequentlyRepliedUsersResponse };
 	'users/lists/create': { req: UsersListsCreateRequest; res: UsersListsCreateResponse };
 	'users/lists/create-from-public': { req: UsersListsCreateFromPublicRequest; res: UsersListsCreateFromPublicResponse };
@@ -1081,6 +1086,7 @@ export type Endpoints = {
 	'users/lists/update': { req: UsersListsUpdateRequest; res: UsersListsUpdateResponse };
 	'users/lists/update-membership': { req: UsersListsUpdateMembershipRequest; res: EmptyResponse };
 	'users/notes': { req: UsersNotesRequest; res: UsersNotesResponse };
+	'users/notify/list': { req: UsersNotifyListRequest; res: UsersNotifyListResponse };
 	'users/pages': { req: UsersPagesRequest; res: UsersPagesResponse };
 	'users/reactions': { req: UsersReactionsRequest; res: UsersReactionsResponse };
 	'users/recommendation': { req: UsersRecommendationRequest; res: UsersRecommendationResponse };

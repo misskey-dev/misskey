@@ -39,7 +39,7 @@ export async function getUserEnvironment(): Promise<UserEnvironment> {
 				}
 			}
 
-			const browserData = uaData.fullVersionList.find((item) => !/^\s*not.+a.+brand\s*$/i.test(item.brand));
+			const browserData = uaData.fullVersionList.find((item: any) => !/^\s*not.+a.+brand\s*$/i.test(item.brand));
 			return {
 				os: `${uaData.platform} ${osVersion}`,
 				browser: browserData ? `${browserData.brand} v${browserData.version}` : 'Unknown',

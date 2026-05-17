@@ -138,7 +138,7 @@ export class ChatEntityService {
 		const reactions: { reaction: string; }[] = [];
 
 		for (const record of message.reactions) {
-			const [userId, reaction] = record.split('/');
+			const [, reaction] = record.split('/');
 			reactions.push({
 				reaction,
 			});

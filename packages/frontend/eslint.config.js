@@ -42,7 +42,6 @@ export default [
 			},
 		},
 		rules: {
-			'@typescript-eslint/no-unused-vars': 'off',
 			'@typescript-eslint/no-empty-interface': ['error', {
 				allowSingleExtends: true,
 			}],
@@ -148,7 +147,15 @@ export default [
 			'vue/return-in-computed-property': 'warn',
 			'vue/no-setup-props-reactivity-loss': 'warn',
 			'vue/max-attributes-per-line': 'off',
-			'vue/html-self-closing': 'off',
+			'vue/html-self-closing': ['error', {
+				html: {
+					void: 'any',
+					normal: 'never',
+					component: 'any',
+				},
+				svg: 'any',
+				math: 'any',
+			}],
 			'vue/singleline-html-element-content-newline': 'off',
 			'vue/v-on-event-hyphenation': ['error', 'never', {
 				autofix: true,

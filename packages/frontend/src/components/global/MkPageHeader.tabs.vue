@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts">
 export type Tab = {
 	key: string;
-	onClick?: (ev: MouseEvent) => void;
+	onClick?: (ev: PointerEvent) => void;
 	iconOnly?: boolean;
 	title: string;
 	icon?: string;
@@ -70,8 +70,8 @@ const props = withDefaults(defineProps<{
 });
 
 const emit = defineEmits<{
-	(ev: 'update:tab', key: string);
-	(ev: 'tabClick', key: string);
+	(ev: 'update:tab', key: string): void;
+	(ev: 'tabClick', key: string): void;
 }>();
 
 const el = useTemplateRef('el');
@@ -96,7 +96,7 @@ function onTabMousedown(tab: Tab, ev: MouseEvent): void {
 	}
 }
 
-function onTabClick(t: Tab, ev: MouseEvent): void {
+function onTabClick(t: Tab, ev: PointerEvent): void {
 	emit('tabClick', t.key);
 
 	if (t.onClick) {

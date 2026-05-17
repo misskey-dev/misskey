@@ -137,8 +137,8 @@ watch(visibility, () => {
 	}
 });
 
-function onNotification(notification) {
-	const isMuted = props.excludeTypes ? props.excludeTypes.includes(notification.type) : false;
+function onNotification(notification: Misskey.entities.Notification) {
+	const isMuted = props.excludeTypes ? props.excludeTypes.includes(notification.type as typeof notificationTypes[number]) : false;
 	if (isMuted || window.document.visibilityState === 'visible') {
 		if (store.s.realtimeMode) {
 			useStream().send('readNotification');

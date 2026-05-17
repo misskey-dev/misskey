@@ -126,10 +126,10 @@ export function replaceCurrentAccountData(accountData: Misskey.entities.MeDetail
 	if (!$i) return;
 	const token = $i.token;
 	for (const key of Object.keys($i)) {
-		delete $i[key];
+		delete $i[key as keyof typeof $i];
 	}
 	for (const [key, value] of Object.entries(accountData)) {
-		$i[key] = value;
+		($i[key as keyof typeof accountData] as any) = value;
 	}
 	store.set('accountInfos', { ...store.s.accountInfos, [host + '/' + $i.id]: $i });
 	$i.token = token;
@@ -139,7 +139,7 @@ export function replaceCurrentAccountData(accountData: Misskey.entities.MeDetail
 export function updateCurrentAccount(accountData: Partial<Misskey.entities.MeDetailed>) {
 	if (!$i) return;
 	for (const [key, value] of Object.entries(accountData)) {
-		$i[key] = value;
+		($i[key as keyof typeof accountData] as any) = value;
 	}
 
 	store.set('accountInfos', { ...store.s.accountInfos, [host + '/' + $i.id]: $i });

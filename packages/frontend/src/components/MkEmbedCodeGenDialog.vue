@@ -23,9 +23,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:enterFromClass="$style.transition_x_enterFrom"
 			:leaveToClass="$style.transition_x_leaveTo"
 		>
-			<div v-if="phase === 'input'" key="input" :class="$style.embedCodeGenInputRoot">
-				<div :class="[$style.embedCodeGenPreviewRoot, prefer.s.animation ? $style.animatedBg : null]">
-					<MkLoading v-if="iframeLoading" :class="$style.embedCodeGenPreviewSpinner"/>
+			<MkPreviewWithControls v-if="phase === 'input'" key="input" :previewLoading="iframeLoading">
+				<template #preview>
 					<div :class="$style.embedCodeGenPreviewWrapper">
 						<div class="_acrylic" :class="$style.embedCodeGenPreviewTitle">{{ i18n.ts.preview }}</div>
 						<div ref="resizerRootEl" :class="$style.embedCodeGenPreviewResizerRoot" inert>
@@ -43,27 +42,29 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</div>
 						</div>
 					</div>
-				</div>
-				<div :class="$style.embedCodeGenSettings" class="_gaps">
-					<MkInput v-if="isEmbedWithScrollbar" v-model="maxHeight" type="number" :min="0">
-						<template #label>{{ i18n.ts._embedCodeGen.maxHeight }}</template>
-						<template #suffix>px</template>
-						<template #caption>{{ i18n.ts._embedCodeGen.maxHeightDescription }}</template>
-					</MkInput>
-					<MkSelect v-model="colorMode" :items="colorModeDef">
-						<template #label>{{ i18n.ts.theme }}</template>
-					</MkSelect>
-					<MkSwitch v-if="isEmbedWithScrollbar" v-model="header">{{ i18n.ts._embedCodeGen.header }}</MkSwitch>
-					<MkSwitch v-model="rounded">{{ i18n.ts._embedCodeGen.rounded }}</MkSwitch>
-					<MkSwitch v-model="border">{{ i18n.ts._embedCodeGen.border }}</MkSwitch>
-					<MkInfo v-if="isEmbedWithScrollbar && (!maxHeight || maxHeight <= 0)" warn>{{ i18n.ts._embedCodeGen.maxHeightWarn }}</MkInfo>
-					<MkInfo v-if="typeof maxHeight === 'number' && (maxHeight <= 0 || maxHeight > 700)">{{ i18n.ts._embedCodeGen.previewIsNotActual }}</MkInfo>
-					<div class="_buttons">
-						<MkButton :disabled="iframeLoading" @click="applyToPreview">{{ i18n.ts._embedCodeGen.applyToPreview }}</MkButton>
-						<MkButton :disabled="iframeLoading" primary @click="generate">{{ i18n.ts._embedCodeGen.generateCode }} <i class="ti ti-arrow-right"></i></MkButton>
+				</template>
+				<template #controls>
+					<div class="_spacer _gaps">
+						<MkInput v-if="isEmbedWithScrollbar" v-model="maxHeight" type="number" :min="0">
+							<template #label>{{ i18n.ts._embedCodeGen.maxHeight }}</template>
+							<template #suffix>px</template>
+							<template #caption>{{ i18n.ts._embedCodeGen.maxHeightDescription }}</template>
+						</MkInput>
+						<MkSelect v-model="colorMode" :items="colorModeDef">
+							<template #label>{{ i18n.ts.theme }}</template>
+						</MkSelect>
+						<MkSwitch v-if="isEmbedWithScrollbar" v-model="header">{{ i18n.ts._embedCodeGen.header }}</MkSwitch>
+						<MkSwitch v-model="rounded">{{ i18n.ts._embedCodeGen.rounded }}</MkSwitch>
+						<MkSwitch v-model="border">{{ i18n.ts._embedCodeGen.border }}</MkSwitch>
+						<MkInfo v-if="isEmbedWithScrollbar && (!maxHeight || maxHeight <= 0)" warn>{{ i18n.ts._embedCodeGen.maxHeightWarn }}</MkInfo>
+						<MkInfo v-if="typeof maxHeight === 'number' && (maxHeight <= 0 || maxHeight > 700)">{{ i18n.ts._embedCodeGen.previewIsNotActual }}</MkInfo>
+						<div class="_buttons">
+							<MkButton :disabled="iframeLoading" @click="applyToPreview">{{ i18n.ts._embedCodeGen.applyToPreview }}</MkButton>
+							<MkButton :disabled="iframeLoading" primary @click="generate">{{ i18n.ts._embedCodeGen.generateCode }} <i class="ti ti-arrow-right"></i></MkButton>
+						</div>
 					</div>
-				</div>
-			</div>
+				</template>
+			</MkPreviewWithControls>
 			<div v-else-if="phase === 'result'" key="result" :class="$style.embedCodeGenResultRoot">
 				<div :class="$style.embedCodeGenResultWrapper" class="_gaps">
 					<div class="_gaps_s">
@@ -89,18 +90,17 @@ import { url } from '@@/js/config.js';
 import { embedRouteWithScrollbar } from '@@/js/embed-page.js';
 import type { EmbeddableEntity, EmbedParams } from '@@/js/embed-page.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
+import MkPreviewWithControls from '@/components/MkPreviewWithControls.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkCode from '@/components/MkCode.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { normalizeEmbedParams, getEmbedCode } from '@/utility/get-embed-code.js';
-import { prefer } from '@/preferences.js';
 
 const emit = defineEmits<{
 	(ev: 'ok'): void;
@@ -302,29 +302,6 @@ onUnmounted(() => {
 	height: 100%;
 }
 
-.embedCodeGenInputRoot {
-	height: 100%;
-	display: grid;
-	grid-template-columns: 1fr 400px;
-}
-
-.embedCodeGenPreviewRoot {
-	position: relative;
-	cursor: not-allowed;
-	background-color: var(--MI_THEME-bg);
-	background-image: linear-gradient(135deg, transparent 30%, var(--MI_THEME-panel) 30%, var(--MI_THEME-panel) 50%, transparent 50%, transparent 80%, var(--MI_THEME-panel) 80%, var(--MI_THEME-panel) 100%);
-	background-size: 20px 20px;
-}
-
-.animatedBg {
-	animation: bg 1.2s linear infinite;
-}
-
-@keyframes bg {
-	0% { background-position: 0 0; }
-	100% { background-position: -20px -20px; }
-}
-
 .embedCodeGenPreviewWrapper {
 	display: flex;
 	flex-direction: column;
@@ -372,11 +349,6 @@ onUnmounted(() => {
 	color-scheme: light dark;
 }
 
-.embedCodeGenSettings {
-	padding: 24px;
-	overflow-y: scroll;
-}
-
 .embedCodeGenResultRoot {
 	box-sizing: border-box;
 	padding: 24px;
@@ -416,12 +388,5 @@ onUnmounted(() => {
 
 .embedCodeGenResultButtons {
 	margin: 0 auto;
-}
-
-@container (max-width: 800px) {
-	.embedCodeGenInputRoot {
-		grid-template-columns: 1fr;
-		grid-template-rows: 1fr 1fr;
-	}
 }
 </style>

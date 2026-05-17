@@ -8,8 +8,6 @@ import * as Misskey from 'misskey-js';
 import { onBeforeUnmount } from 'vue';
 
 type Events = {
-	themeChanging: () => void;
-	themeChanged: () => void;
 	clientNotification: (notification: Misskey.entities.Notification) => void;
 	notePosted: (note: Misskey.entities.Note) => void;
 	noteDeleted: (noteId: Misskey.entities.Note['id']) => void;

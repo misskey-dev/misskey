@@ -13,7 +13,7 @@ type TourStep = {
 };
 
 export function startTour(steps: TourStep[]) {
-	return new Promise<void>(async (resolve) => {
+	return new Promise<void>((resolve) => {
 		const currentStepIndex = ref(0);
 		const titleRef = ref(steps[0].title);
 		const descriptionRef = ref(steps[0].description);

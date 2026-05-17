@@ -100,11 +100,14 @@ function getSoundTypeName(f: SoundType): string {
 	}
 }
 
-async function updated(type: keyof typeof sounds.value, sound) {
-	const v: SoundStore = {
+async function updated(type: keyof typeof sounds.value, sound: { type: SoundType; fileId?: string; fileUrl?: string; volume: number; }) {
+	const v: SoundStore = sound.type === '_driveFile_' ? {
 		type: sound.type,
-		fileId: sound.fileId,
-		fileUrl: sound.fileUrl,
+		fileId: sound.fileId!,
+		fileUrl: sound.fileUrl!,
+		volume: sound.volume,
+	} : {
+		type: sound.type,
 		volume: sound.volume,
 	};
 

@@ -46,7 +46,7 @@ export class ApImageService {
 			throw new Error('actor has been suspended');
 		}
 
-		const image = await this.apResolverService.createResolver().resolve(value);
+		const image = await (await this.apResolverService.createResolver()).resolve(value);
 
 		if (!isDocument(image)) return null;
 

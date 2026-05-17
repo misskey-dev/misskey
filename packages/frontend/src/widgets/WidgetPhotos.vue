@@ -39,10 +39,12 @@ const name = 'photos';
 const widgetPropsDef = {
 	showHeader: {
 		type: 'boolean',
+		label: i18n.ts._widgetOptions.showHeader,
 		default: true,
 	},
 	transparent: {
 		type: 'boolean',
+		label: i18n.ts._widgetOptions.transparent,
 		default: false,
 	},
 } satisfies FormWithDefault;
@@ -62,12 +64,12 @@ const connection = useStream().useChannel('main');
 const images = ref<Misskey.entities.DriveFile[]>([]);
 const fetching = ref(true);
 
-const onDriveFileCreated = (file) => {
+function onDriveFileCreated(file: Misskey.entities.DriveFile) {
 	if (/^image\/.+$/.test(file.type)) {
 		images.value.unshift(file);
 		if (images.value.length > 9) images.value.pop();
 	}
-};
+}
 
 const thumbnail = (image: Misskey.entities.DriveFile): string => {
 	return prefer.s.disableShowingAnimatedImages

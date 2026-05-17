@@ -27,7 +27,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<SearchMarker :keywords="['signin', 'login', 'history', 'log']">
 			<FormSection>
 				<template #label><SearchLabel>{{ i18n.ts.signinHistory }}</SearchLabel></template>
-				<MkPagination :paginator="paginator" withControl>
+				<MkPagination :paginator="paginator" withControl :forceDisableInfiniteScroll="true">
 					<template #default="{items}">
 						<div>
 							<div v-for="item in items" :key="item.id" v-panel class="timnmucd">

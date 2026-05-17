@@ -62,8 +62,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
-import type { Ref } from 'vue';
 import { getEmojiName } from '@@/js/emojilist.js';
+import type { Ref } from 'vue';
 import type { CustomEmojiFolderTree } from '@@/js/emojilist.js';
 import { i18n } from '@/i18n.js';
 import { customEmojis } from '@/custom-emojis.js';
@@ -78,7 +78,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'chosen', v: string, event: MouseEvent): void;
+	(ev: 'chosen', v: string, event: PointerEvent): void;
 }>();
 
 const emojis = computed(() => Array.isArray(props.emojis) ? props.emojis : props.emojis.value);
@@ -86,13 +86,13 @@ const emojis = computed(() => Array.isArray(props.emojis) ? props.emojis : props
 const shown = ref(!!props.initialShown);
 
 /** @see MkEmojiPicker.vue */
-function computeButtonTitle(ev: MouseEvent): void {
+function computeButtonTitle(ev: PointerEvent): void {
 	const elm = ev.target as HTMLElement;
 	const emoji = elm.dataset.emoji as string;
 	elm.title = getEmojiName(emoji);
 }
 
-function nestedChosen(emoji: string, ev: MouseEvent) {
+function nestedChosen(emoji: string, ev: PointerEvent) {
 	emit('chosen', emoji, ev);
 }
 </script>

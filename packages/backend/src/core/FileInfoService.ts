@@ -484,25 +484,13 @@ export class FileInfoService {
 	 * Calculate blurhash string of image
 	 */
 	@bindThis
-	private getBlurhash(path: string, type: string): Promise<string> {
-		return new Promise(async (resolve, reject) => {
-			(await sharpBmp(path, type))
-				.raw()
-				.ensureAlpha()
-				.resize(64, 64, { fit: 'inside' })
-				.toBuffer((err, buffer, info) => {
-					if (err) return reject(err);
-
-					let hash;
-
-					try {
-						hash = blurhash.encode(new Uint8ClampedArray(buffer), info.width, info.height, 5, 5);
-					} catch (e) {
-						return reject(e);
-					}
-
-					resolve(hash);
-				});
-		});
+	private async getBlurhash(path: string, type: string): Promise<string> {
+		const sharp = await sharpBmp(path, type);
+		const { data: buffer, info } = await sharp
+			.raw()
+			.ensureAlpha()
+			.resize(64, 64, { fit: 'inside' })
+			.toBuffer({ resolveWithObject: true });
+		return blurhash.encode(new Uint8ClampedArray(buffer), info.width, info.height, 5, 5);
 	}
 }

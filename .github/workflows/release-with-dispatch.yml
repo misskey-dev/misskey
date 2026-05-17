@@ -36,7 +36,7 @@ jobs:
     outputs:
       pr_number: ${{ steps.get_pr.outputs.pr_number }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       # headが$GITHUB_REF_NAME, baseが$STABLE_BRANCHかつopenのPRを1つ取得
       - name: Get PRs
         run: |

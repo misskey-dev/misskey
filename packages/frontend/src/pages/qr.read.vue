@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #header>
 			<div :class="$style.view">
 				<video ref="videoEl" :class="$style.video" autoplay muted playsinline></video>
-				<div ref="overlayEl" :class="$style.overlay"></div>
+				<div ref="overlayEl"></div>
 				<div :class="$style.controls">
 					<MkButton v-tooltip="i18n.ts._qr.scanFile" iconOnly @click="upload"><i class="ti ti-photo-plus"></i></MkButton>
 

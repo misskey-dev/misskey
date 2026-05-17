@@ -58,11 +58,11 @@ function back() {
 	history.back();
 }
 */
-function onContextmenu(ev: MouseEvent) {
+function onContextmenu(ev: PointerEvent) {
 	if (!ev.target) return;
 
 	if (isLink(ev.target as HTMLElement)) return;
-	if (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes((ev.target as HTMLElement).tagName) || (ev.target as HTMLElement).attributes['contenteditable']) return;
+	if (['INPUT', 'TEXTAREA', 'IMG', 'VIDEO', 'CANVAS'].includes((ev.target as HTMLElement).tagName) || (ev.target as HTMLElement).attributes.getNamedItem('contenteditable') != null) return;
 	if (window.getSelection()?.toString() !== '') return;
 	const path = mainRouter.currentRoute.value.path;
 	os.contextMenu([{
