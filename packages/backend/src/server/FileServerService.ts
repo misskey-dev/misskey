@@ -88,12 +88,11 @@ export class FileServerService {
 
 		hono.get('/files/app-default.jpg', serveStatic({
 			path: resolve(this.assets, 'dummy.png'),
-		}), async (ctx, next) => {
-			ctx.header('Content-Type', 'image/jpeg');
-			ctx.header('Cache-Control', 'max-age=31536000, immutable');
-			await next();
-			return;
-		});
+			onFound: (_, ctx) => {
+				ctx.header('Content-Type', 'image/jpeg');
+				ctx.header('Cache-Control', 'max-age=31536000, immutable');
+			},
+		}));
 
 		hono.get('/files/:key', this.driveHandler.handle);
 		hono.get('/files/:key/*', (ctx) => {

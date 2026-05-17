@@ -10,7 +10,6 @@ import ms from 'ms';
 import sharp from 'sharp';
 import { In, IsNull } from 'typeorm';
 import { Hono } from 'hono';
-import { every } from 'hono/combine';
 import { proxy } from 'hono/proxy';
 import { serveStatic } from '@hono/node-server/serve-static';
 import type { Config } from '@/config.js';
@@ -226,22 +225,16 @@ export class ClientServerService {
 			this.clientLoggerService.logger.info(`[ClientServerService] Using built frontend vite assets. ${this.frontendViteOut}`);
 			hono.get('/vite/*', serveStatic({
 				root: this.frontendViteOut,
-			}), every(
-				handleRequestRedirectToOmitSearch,
-				async (ctx, next) => {
+				onFound: (_, ctx) => {
 					ctx.header('Cache-Control', `max-age=${ms('30 days') / 1000}, immutable`);
-					await next();
 				},
-			));
+			}), handleRequestRedirectToOmitSearch);
 			hono.get('/embed_vite/*', serveStatic({
 				root: this.frontendEmbedViteOut,
-			}), every(
-				handleRequestRedirectToOmitSearch,
-				async (ctx, next) => {
+				onFound: (_, ctx) => {
 					ctx.header('Cache-Control', `max-age=${ms('30 days') / 1000}, immutable`);
-					await next();
 				},
-			));
+			}), handleRequestRedirectToOmitSearch);
 		} else {
 			console.log('[ClientServerService] Proxying to Vite dev server.');
 			const urlOriginWithoutPort = configUrl.origin.replace(/:\d+$/, '');
@@ -271,25 +264,22 @@ export class ClientServerService {
 			root: this.clientAssets,
 		}), async (ctx, next) => {
 			ctx.header('Cache-Control', `max-age=${ms('7 days') / 1000}`);
-			await next()
+			await next();
 		});
 
 		hono.get('/assets/*', serveStatic({
 			root: this.assets,
 		}), async (ctx, next) => {
 			ctx.header('Cache-Control', `max-age=${ms('7 days') / 1000}`);
-			await next()
+			await next();
 		});
 
 		hono.get('/tarball/*', serveStatic({
 			root: this.tarball,
-		}), every(
-			handleRequestRedirectToOmitSearch,
-			async (ctx, next) => {
+			onFound: (_, ctx) => {
 				ctx.header('Cache-Control', `max-age=${ms('30 days') / 1000}, immutable`);
-				await next();
 			},
-		));
+		}), handleRequestRedirectToOmitSearch);
 
 		hono.get('/favicon.ico', serveStatic({
 			path: resolve(this.staticAssets, 'favicon.ico'),
@@ -301,19 +291,18 @@ export class ClientServerService {
 
 		hono.get('/fluent-emoji/:filename{[0-9a-f-]+\\.png}', serveStatic({
 			root: this.fluentEmojiDir,
-		}), async (ctx, next) => {
-			ctx.header('Cache-Control', `max-age=${ms('30 days') / 1000}`);
-			await next();
-		});
+			onFound: (_, ctx) => {
+				ctx.header('Cache-Control', `max-age=${ms('30 days') / 1000}, immutable`);
+			},
+		}));
 
 		hono.get('/twemoji/:filename{[0-9a-f-]+\\.svg}', serveStatic({
 			root: this.twemojiDir,
-		}), async (ctx, next) => {
-			ctx.header('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
-
-			ctx.header('Cache-Control', `max-age=${ms('30 days') / 1000}`);
-			await next();
-		});
+			onFound: (_, ctx) => {
+				ctx.header('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
+				ctx.header('Cache-Control', `max-age=${ms('30 days') / 1000}, immutable`);
+			},
+		}));
 
 		hono.get('/twemoji-badge/:filename{[0-9a-f-]+\\.png}', async (ctx) => {
 			const filename = ctx.req.param('filename');
