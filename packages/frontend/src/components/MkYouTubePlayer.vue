@@ -11,14 +11,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</template>
 
 	<div class="poamfof">
-		<Transition :name="prefer.s.animation ? 'fade' : ''" mode="out-in">
-			<div v-if="player.url && (player.url.startsWith('http://') || player.url.startsWith('https://'))" class="player">
-				<iframe v-if="!fetching" :src="transformPlayerUrl(player.url)" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-			</div>
-			<span v-else>invalid url</span>
-		</Transition>
-		<MkLoading v-if="fetching"/>
-		<MkError v-else-if="!player.url" @retry="ytFetch()"/>
+		<MkLoading v-if="fetching || !iframeLoaded"/>
+		<div v-if="!fetching && player?.url != null" class="player">
+			<iframe
+				:src="transformPlayerUrl(player.url)"
+				frameborder="0"
+				:allow="player.allow.join('; ')"
+				allowfullscreen
+				:style="{ opacity: iframeLoaded ? 1 : 0, transition: 'opacity 0.3s' }"
+				@load="onFrameLoad"
+			></iframe>
+		</div>
+		<MkError v-else @retry="ytFetch()"/>
 	</div>
 </MkWindow>
 </template>
@@ -28,41 +32,63 @@ import { ref } from 'vue';
 import { versatileLang } from '@@/js/intl-const.js';
 import MkWindow from '@/components/MkWindow.vue';
 import { transformPlayerUrl } from '@/utility/url-preview.js';
-import { prefer } from '@/preferences.js';
+import type { SummalyResult } from '@misskey-dev/summaly';
 
 const props = defineProps<{
-	url: string;
+	urlOrSummalyResult: string | SummalyResult;
 }>();
 
 const emit = defineEmits<{
 	(ev: 'closed'): void;
 }>();
 
-const requestUrl = new URL(props.url);
-if (!['http:', 'https:'].includes(requestUrl.protocol)) throw new Error('invalid url');
-
 const fetching = ref(true);
+const iframeLoaded = ref(false);
 const title = ref<string | null>(null);
-const player = ref({
-	url: null as string | null,
-	width: null,
-	height: null,
-});
+const player = ref<SummalyResult['player'] | null>(null);
 
-const ytFetch = (): void => {
+async function ytFetch() {
 	fetching.value = true;
-	window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${versatileLang}`).then(res => {
-		res.json().then(info => {
-			if (info.url == null) return;
-			title.value = info.title;
+	iframeLoaded.value = false;
+
+	let info: SummalyResult;
+
+	if (typeof props.urlOrSummalyResult === 'string') {
+		const requestUrl = new URL(props.urlOrSummalyResult, location.href);
+		if (requestUrl.protocol !== 'http:' && requestUrl.protocol !== 'https:') {
+			// Invalid URL
 			fetching.value = false;
-			player.value = info.player;
-		});
-	});
+			return;
+		}
+
+		const res = await window.fetch(`/url?url=${encodeURIComponent(requestUrl.href)}&lang=${versatileLang}`);
+		info = await res.json() as SummalyResult;
+	} else {
+		info = props.urlOrSummalyResult;
+	}
+
+	if (info.url == null || info.player?.url == null) {
+		// No URL or player info
+		fetching.value = false;
+		return;
+	}
+
+	if (!info.player.url.startsWith('https://') && !info.player.url.startsWith('http://')) {
+		// Invalid player URL
+		fetching.value = false;
+		return;
+	}
+
+	title.value = info.title;
+	player.value = info.player;
+	fetching.value = false;
+}
+
+const onFrameLoad = (): void => {
+	iframeLoaded.value = true;
 };
 
-ytFetch();
-
+void ytFetch();
 </script>
 
 <style lang="scss">
