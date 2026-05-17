@@ -226,6 +226,7 @@ export class ClientServerService {
 		//#region vite assets
 		if (this.config.frontendEmbedManifestExists) {
 			this.clientLoggerService.logger.info(`[ClientServerService] Using built frontend vite assets. ${this.frontendViteOut}`);
+
 			hono.get('/vite/*', serveStatic({
 				root: this.frontendViteOut,
 				rewriteRequestPath: rewriteStaticPath('/vite'),
@@ -233,6 +234,7 @@ export class ClientServerService {
 					ctx.header('Cache-Control', `max-age=${ms('30 days') / 1000}, immutable`);
 				},
 			}), handleRequestRedirectToOmitSearch, staticAssetNotFound);
+
 			hono.get('/embed_vite/*', serveStatic({
 				root: this.frontendEmbedViteOut,
 				rewriteRequestPath: rewriteStaticPath('/embed_vite'),
@@ -242,16 +244,27 @@ export class ClientServerService {
 			}), handleRequestRedirectToOmitSearch, staticAssetNotFound);
 		} else {
 			this.clientLoggerService.logger.info(`[ClientServerService] Proxying to Vite dev server. ${configUrl.origin}`);
-			const urlOriginWithoutPort = configUrl.origin.replace(/:\d+$/, '');
 
 			const port = (process.env.VITE_PORT ?? '5173');
 			hono.get('/vite/*', (ctx) => {
-				return proxy(`${urlOriginWithoutPort}:${port}${ctx.req.path}`);
+				const url = new URL(ctx.req.url);
+				url.port = port;
+				return proxy(url, {
+					headers: {
+						...ctx.req.header(),
+					},
+				});
 			});
 
 			const embedPort = (process.env.EMBED_VITE_PORT ?? '5174');
 			hono.get('/embed_vite/*', (ctx) => {
-				return proxy(`${urlOriginWithoutPort}:${embedPort}${ctx.req.path}`);
+				const url = new URL(ctx.req.url);
+				url.port = embedPort;
+				return proxy(url, {
+					headers: {
+						...ctx.req.header(),
+					},
+				});
 			});
 		}
 		//#endregion
