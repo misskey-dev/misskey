@@ -1738,7 +1738,9 @@ export class RoomEngine extends EventEmitter {
 
 	public updateEnvOptions(options: RoomState['env']['options']) {
 		this.roomState.env.options = options;
+		this.sr.disableSnapshotRendering();
 		this.envManager.applyOptions(options);
+		this.sr.enableSnapshotRendering();
 		this.ev('changeRoomState', { roomState: this.roomState });
 	}
 
