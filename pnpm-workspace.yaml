@@ -52,6 +52,7 @@ minimumReleaseAgeExclude:
   - slacc-win32-arm64-msvc
   - slacc-win32-x64-msvc
   - '@typescript/native-preview*'
+  - hono
   - '@hono/node-server'
   - pnpm
   - re2 # そのうち消す
