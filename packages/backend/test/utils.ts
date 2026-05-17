@@ -13,7 +13,8 @@ import fetch, { RequestInit, type Headers } from 'node-fetch';
 import * as htmlParser from 'node-html-parser';
 import { DataSource } from 'typeorm';
 import { type Response } from 'node-fetch';
-import Fastify from 'fastify';
+import { serve, type ServerType } from '@hono/node-server';
+import { Hono } from 'hono';
 import { entities } from '@/postgres.js';
 import { loadConfig } from '@/config.js';
 import type * as misskey from 'misskey-js';
@@ -651,37 +652,72 @@ export function castAsError(obj: Record<string, unknown>): { error: ApiError } {
 }
 
 export async function captureWebhook<T = SystemWebhookPayload>(postAction: () => Promise<void>, port = WEBHOOK_PORT): Promise<T> {
-	const fastify = Fastify();
+	const hono = new Hono();
+	let server: ServerType | null = null;
+
+	const closeServer = async () => {
+		if (server == null || !server.listening) return;
+
+		const currentServer = server;
+		server = null;
+
+		await new Promise<void>((resolve, reject) => {
+			currentServer.close((err) => {
+				if (err != null) {
+					reject(err);
+					return;
+				}
+
+				resolve();
+			});
+		});
+	};
 
 	let timeoutHandle: NodeJS.Timeout | null = null;
 	const result = await new Promise<string>(async (resolve, reject) => {
-		fastify.all('/', async (req, res) => {
+		hono.all('/', async (ctx) => {
 			if (timeoutHandle) {
 				clearTimeout(timeoutHandle);
 			}
 
-			const body = JSON.stringify(req.body);
-			res.status(200).send('ok');
-			await fastify.close();
+			const body = await ctx.req.text();
+			await closeServer();
 			resolve(body);
+			return ctx.text('ok');
 		});
 
-		await fastify.listen({ port });
+		await new Promise<void>((resolveListen, rejectListen) => {
+			const onError = (error: Error) => {
+				server?.off('error', onError);
+				rejectListen(error);
+			};
+
+			server = serve({
+				fetch: hono.fetch,
+				hostname: '127.0.0.1',
+				port,
+			}, () => {
+				server?.off('error', onError);
+				resolveListen();
+			});
+
+			server.once('error', onError);
+		});
 
 		timeoutHandle = setTimeout(async () => {
-			await fastify.close();
+			await closeServer();
 			reject(new Error('timeout'));
 		}, 3000);
 
 		try {
 			await postAction();
 		} catch (e) {
-			await fastify.close();
+			await closeServer();
 			reject(e);
 		}
 	});
 
-	await fastify.close();
+	await closeServer();
 
 	return JSON.parse(result) as T;
 }
