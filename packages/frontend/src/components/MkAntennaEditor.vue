@@ -34,12 +34,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkSwitch v-model="caseSensitive">{{ i18n.ts.caseSensitive }}</MkSwitch>
 			<MkSwitch v-model="withFile">{{ i18n.ts.withFileAntenna }}</MkSwitch>
 			<MkSwitch v-model="excludeNotesInSensitiveChannel">{{ i18n.ts.excludeNotesInSensitiveChannel }}</MkSwitch>
-			<MkSwitch v-model="isPublic" :disabled="src !== 'all'">
+			<MkSwitch v-model="isPublic">
 				{{ i18n.ts._antenna.public }}
 				<template #caption>
 					{{ i18n.ts._antenna.publicDescription }}
 					<span :class="$style.publicConditionsExposed">{{ i18n.ts._antenna.publicConditionsExposed }}</span>
-					<span v-if="src !== 'all'" :class="$style.publicNonAllWarn">{{ i18n.ts._antenna.publicNonAllSrcNotAllowed }}</span>
 				</template>
 			</MkSwitch>
 		</div>
@@ -148,10 +147,6 @@ watch(() => src.value, async () => {
 	if (src.value === 'list' && userLists.value === null) {
 		userLists.value = await misskeyApi('users/lists/list');
 	}
-	// 公開できるのは src=all のときだけ
-	if (src.value !== 'all' && isPublic.value) {
-		isPublic.value = false;
-	}
 });
 
 async function saveAntenna() {
@@ -217,11 +212,5 @@ function addUser() {
 	display: block;
 	margin-top: 4px;
 	color: var(--MI_THEME-fgTransparentWeak);
-}
-
-.publicNonAllWarn {
-	display: block;
-	margin-top: 4px;
-	color: var(--MI_THEME-warn);
 }
 </style>

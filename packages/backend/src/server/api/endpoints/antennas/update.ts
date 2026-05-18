@@ -38,12 +38,6 @@ export const meta = {
 			code: 'EMPTY_KEYWORD',
 			id: '721aaff6-4e1b-4d88-8de6-877fae9f68c4',
 		},
-
-		publicNonAllSrcNotAllowed: {
-			message: 'Only antennas with src=all can be public.',
-			code: 'PUBLIC_NON_ALL_SRC_NOT_ALLOWED',
-			id: 'c5f3a7b9-2d3e-4c1a-8b5f-7e9a1b2c3d4e',
-		},
 	},
 
 	res: {
@@ -110,12 +104,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (antenna == null) {
 				throw new ApiError(meta.errors.noSuchAntenna);
-			}
-
-			const nextSrc = ps.src ?? antenna.src;
-			const nextIsPublic = ps.isPublic ?? antenna.isPublic;
-			if (nextIsPublic === true && nextSrc !== 'all') {
-				throw new ApiError(meta.errors.publicNonAllSrcNotAllowed);
 			}
 
 			let userList;

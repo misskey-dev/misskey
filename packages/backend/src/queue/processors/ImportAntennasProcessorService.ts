@@ -99,8 +99,7 @@ export class ImportAntennasProcessorService {
 					withReplies: antenna.withReplies,
 					withFile: antenna.withFile,
 					excludeNotesInSensitiveChannel: antenna.excludeNotesInSensitiveChannel,
-					// src=all 以外のアンテナは公開化できない (src/isPublic 整合)
-					isPublic: antenna.src === 'all' ? (antenna.isPublic ?? false) : false,
+					isPublic: antenna.isPublic,
 				});
 				this.logger.succ('Antenna created: ' + result.id);
 				this.globalEventService.publishInternalEvent('antennaCreated', result);

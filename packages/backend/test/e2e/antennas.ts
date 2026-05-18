@@ -739,56 +739,51 @@ describe('アンテナ', () => {
 	describe('の共有 (isPublic)', () => {
 		const sharedKeyword = 'sharedAntennaKeyword';
 
-		describe('作成・更新の制約', () => {
+		describe('作成・更新で isPublic を任意の src と組み合わせられる', () => {
 			test.each([
+				{ src: 'all' as const },
 				{ src: 'home' as const },
 				{ src: 'users' as const },
 				{ src: 'users_blacklist' as const },
 				{ src: 'list' as const, userListId: () => aliceList.id },
-			])('src=$src と isPublic=true は同時に指定できない (create)', async ({ src, userListId }) => {
-				await failedApiCall({
+			])('src=$src で isPublic=true として作成できる', async ({ src, userListId }) => {
+				const response = await successfulApiCall({
 					endpoint: 'antennas/create',
 					parameters: { ...defaultParam, src, userListId: userListId ? userListId() : null, isPublic: true },
 					user: alice,
-				}, {
-					status: 400,
-					code: 'PUBLIC_NON_ALL_SRC_NOT_ALLOWED',
-					id: 'b4e3f5cd-9f5e-4f17-9d2e-1f5e10c3f3f1',
 				});
+				assert.strictEqual(response.src, src);
+				assert.strictEqual(response.isPublic, true);
 			});
 
-			test('既存の公開アンテナ (src=all) を src=users に変更しようとするとエラー', async () => {
+			test('既存の公開アンテナ (src=all) を src=users に変更しても公開状態を維持できる', async () => {
 				const antenna = await successfulApiCall({
 					endpoint: 'antennas/create',
 					parameters: { ...defaultParam, isPublic: true },
 					user: alice,
 				});
-				await failedApiCall({
+				const response = await successfulApiCall({
 					endpoint: 'antennas/update',
 					parameters: { antennaId: antenna.id, ...defaultParam, src: 'users', isPublic: true },
 					user: alice,
-				}, {
-					status: 400,
-					code: 'PUBLIC_NON_ALL_SRC_NOT_ALLOWED',
-					id: 'c5f3a7b9-2d3e-4c1a-8b5f-7e9a1b2c3d4e',
 				});
+				assert.strictEqual(response.src, 'users');
+				assert.strictEqual(response.isPublic, true);
 			});
 
-			test('既存の src=list アンテナを isPublic=true に変更しようとするとエラー', async () => {
+			test('既存の src=list アンテナを isPublic=true に変更できる', async () => {
 				const antenna = await successfulApiCall({
 					endpoint: 'antennas/create',
 					parameters: { ...defaultParam, src: 'list', userListId: aliceList.id },
 					user: alice,
 				});
-				await failedApiCall({
+				const response = await successfulApiCall({
 					endpoint: 'antennas/update',
 					parameters: { antennaId: antenna.id, ...defaultParam, src: 'list', userListId: aliceList.id, isPublic: true },
 					user: alice,
-				}, {
-					status: 400,
-					code: 'PUBLIC_NON_ALL_SRC_NOT_ALLOWED',
-					id: 'c5f3a7b9-2d3e-4c1a-8b5f-7e9a1b2c3d4e',
 				});
+				assert.strictEqual(response.src, 'list');
+				assert.strictEqual(response.isPublic, true);
 			});
 		});
 

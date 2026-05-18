@@ -40,12 +40,6 @@ export const meta = {
 			code: 'EMPTY_KEYWORD',
 			id: '53ee222e-1ddd-4f9a-92e5-9fb82ddb463a',
 		},
-
-		publicNonAllSrcNotAllowed: {
-			message: 'Only antennas with src=all can be public.',
-			code: 'PUBLIC_NON_ALL_SRC_NOT_ALLOWED',
-			id: 'b4e3f5cd-9f5e-4f17-9d2e-1f5e10c3f3f1',
-		},
 	},
 
 	res: {
@@ -102,10 +96,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		super(meta, paramDef, async (ps, me) => {
 			if (ps.keywords.flat().every(x => x === '') && ps.excludeKeywords.flat().every(x => x === '')) {
 				throw new ApiError(meta.errors.emptyKeyword);
-			}
-
-			if (ps.isPublic === true && ps.src !== 'all') {
-				throw new ApiError(meta.errors.publicNonAllSrcNotAllowed);
 			}
 
 			const currentAntennasCount = await this.antennasRepository.countBy({

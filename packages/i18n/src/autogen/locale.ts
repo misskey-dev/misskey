@@ -9785,10 +9785,6 @@ export interface Locale extends ILocale {
          */
         "publicConditionsExposed": string;
         /**
-         * 受信ソースが「全てのノート」のアンテナのみ公開できます。
-         */
-        "publicNonAllSrcNotAllowed": string;
-        /**
          * お気に入りの公開アンテナ
          */
         "favoritedPublicAntennas": string;
