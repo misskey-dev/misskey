@@ -1,4 +1,4 @@
-## Unreleased
+## 2026.5.3
 
 ### General
 - Fix: Dockerで起動に失敗する問題を修正
