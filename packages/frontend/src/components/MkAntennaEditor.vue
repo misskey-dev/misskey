@@ -38,6 +38,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				{{ i18n.ts._antenna.public }}
 				<template #caption>
 					{{ i18n.ts._antenna.publicDescription }}
+					<span :class="$style.publicConditionsExposed">{{ i18n.ts._antenna.publicConditionsExposed }}</span>
 					<span v-if="src !== 'all'" :class="$style.publicNonAllWarn">{{ i18n.ts._antenna.publicNonAllSrcNotAllowed }}</span>
 				</template>
 			</MkSwitch>
@@ -210,6 +211,12 @@ function addUser() {
 	margin-top: 16px;
 	padding: 24px 0;
 	border-top: solid 0.5px var(--MI_THEME-divider);
+}
+
+.publicConditionsExposed {
+	display: block;
+	margin-top: 4px;
+	color: var(--MI_THEME-fgTransparentWeak);
 }
 
 .publicNonAllWarn {

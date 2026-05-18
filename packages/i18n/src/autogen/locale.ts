@@ -9781,6 +9781,10 @@ export interface Locale extends ILocale {
          */
         "publicDescription": string;
         /**
+         * アンテナのキーワードや指定したユーザー等の条件も、他のユーザーから閲覧可能になります。
+         */
+        "publicConditionsExposed": string;
+        /**
          * 受信ソースが「全てのノート」のアンテナのみ公開できます。
          */
         "publicNonAllSrcNotAllowed": string;

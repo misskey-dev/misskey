@@ -2572,6 +2572,7 @@ _antennaSources:
 _antenna:
   public: "公開する"
   publicDescription: "公開すると、他のユーザーがこのアンテナをタイムラインとして購読・お気に入りできます。あなたから見えるノートのうち、購読ユーザーから見えるものだけが配信されます。"
+  publicConditionsExposed: "アンテナのキーワードや指定したユーザー等の条件も、他のユーザーから閲覧可能になります。"
   publicNonAllSrcNotAllowed: "受信ソースが「全てのノート」のアンテナのみ公開できます。"
   favoritedPublicAntennas: "お気に入りの公開アンテナ"
 
