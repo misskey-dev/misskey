@@ -3,12 +3,6 @@
 ### General
 - Fix: Dockerで起動に失敗する問題を修正
 
-### Client
--
-
-### Server
--
-
 
 ## 2026.5.2
 
