@@ -23,7 +23,7 @@ import { LoggerService } from '@/core/LoggerService.js';
 import type { IdentifiableError } from '@/misc/identifiable-error.js';
 import { RateLimiterService } from './RateLimiterService.js';
 import { SigninService } from './SigninService.js';
-import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
+import type { AuthenticationResponseJSON } from '@simplewebauthn/server';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 @Injectable()
@@ -93,7 +93,7 @@ export class SigninWithPasskeyApiService {
 			// Not more than 1 API call per 250ms and not more than 100 attempts per 30min
 			// NOTE: 1 Sign-in require 2 API calls
 				await this.rateLimiterService.limit({ key: 'signin-with-passkey', duration: 60 * 30 * 1000, max: 200, minInterval: 250 }, getIpHash(request.ip));
-			} catch (err) {
+			} catch (_) {
 				reply.code(429);
 				return {
 					error: {

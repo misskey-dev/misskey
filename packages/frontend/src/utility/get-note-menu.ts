@@ -262,7 +262,7 @@ export function getNoteMenu(props: {
 		os.apiWithDialog('clips/remove-note', { clipId: props.currentClip.id, noteId: appearNote.id });
 	}
 
-	async function promote(): Promise<void> {
+	async function _promote(): Promise<void> {
 		const { canceled, result: days } = await os.inputNumber({
 			title: i18n.ts.numberOfDays,
 		});

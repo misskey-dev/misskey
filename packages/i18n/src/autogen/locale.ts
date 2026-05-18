@@ -2185,6 +2185,10 @@ export interface Locale extends ILocale {
      */
     "limitTo": ParameterizedString<"x">;
     /**
+     * 画面幅が広いときはメディアリストを横並びで表示する
+     */
+    "showMediaListByGridInWideArea": string;
+    /**
      * フォロー申請はありません
      */
     "noFollowRequests": string;
@@ -4877,6 +4881,10 @@ export interface Locale extends ILocale {
      */
     "unnotifyNotes": string;
     /**
+     * 投稿通知を設定したユーザー
+     */
+    "notifyUsers": string;
+    /**
      * 認証
      */
     "authentication": string;
@@ -5639,6 +5647,22 @@ export interface Locale extends ILocale {
      * ゼロ埋め
      */
     "zeroPadding": string;
+    /**
+     * 設定項目はありません
+     */
+    "nothingToConfigure": string;
+    /**
+     * リノート先のチャンネルを見る
+     */
+    "viewRenotedChannel": string;
+    /**
+     * テーマのプレビュー中
+     */
+    "previewingTheme": string;
+    /**
+     * 元に戻す
+     */
+    "previewingThemeRestore": string;
     "_imageEditing": {
         "_vars": {
             /**
@@ -8166,6 +8190,10 @@ export interface Locale extends ILocale {
              */
             "canUseTranslator": string;
             /**
+             * チャンネルの作成
+             */
+            "canCreateChannel": string;
+            /**
              * アイコンデコレーションの最大取付個数
              */
             "avatarDecorationLimit": string;
@@ -9881,13 +9909,151 @@ export interface Locale extends ILocale {
          */
         "clicker": string;
         /**
-         * 今日誕生日のユーザー
+         * もうすぐ誕生日のユーザー
          */
         "birthdayFollowings": string;
         /**
          * ダイレクトメッセージ
          */
         "chat": string;
+    };
+    "_widgetOptions": {
+        /**
+         * ヘッダーを表示
+         */
+        "showHeader": string;
+        /**
+         * 背景を透明にする
+         */
+        "transparent": string;
+        /**
+         * 高さ
+         */
+        "height": string;
+        "_button": {
+            /**
+             * 色付き
+             */
+            "colored": string;
+        };
+        "_clock": {
+            /**
+             * サイズ
+             */
+            "size": string;
+            /**
+             * 針の太さ
+             */
+            "thickness": string;
+            /**
+             * 細い
+             */
+            "thicknessThin": string;
+            /**
+             * 普通
+             */
+            "thicknessMedium": string;
+            /**
+             * 太い
+             */
+            "thicknessThick": string;
+            /**
+             * 文字盤の目盛り
+             */
+            "graduations": string;
+            /**
+             * ドット
+             */
+            "graduationDots": string;
+            /**
+             * アラビア数字
+             */
+            "graduationArabic": string;
+            /**
+             * 目盛りをフェード
+             */
+            "fadeGraduations": string;
+            /**
+             * 秒針のアニメーション
+             */
+            "sAnimation": string;
+            /**
+             * リアル
+             */
+            "sAnimationElastic": string;
+            /**
+             * 滑らか
+             */
+            "sAnimationEaseOut": string;
+            /**
+             * 24時間表示
+             */
+            "twentyFour": string;
+            /**
+             * 時刻
+             */
+            "labelTime": string;
+            /**
+             * タイムゾーン
+             */
+            "labelTz": string;
+            /**
+             * 時刻とタイムゾーン
+             */
+            "labelTimeAndTz": string;
+            /**
+             * タイムゾーン
+             */
+            "timezone": string;
+            /**
+             * ミリ秒を表示
+             */
+            "showMs": string;
+            /**
+             * ラベルを表示
+             */
+            "showLabel": string;
+        };
+        "_jobQueue": {
+            /**
+             * 音を鳴らす
+             */
+            "sound": string;
+        };
+        "_rss": {
+            /**
+             * RSSフィードのURL
+             */
+            "url": string;
+            /**
+             * 更新間隔(秒)
+             */
+            "refreshIntervalSec": string;
+            /**
+             * 最大表示件数
+             */
+            "maxEntries": string;
+        };
+        "_rssTicker": {
+            /**
+             * 表示順をシャッフル
+             */
+            "shuffle": string;
+            /**
+             * ティッカーのスクロール速度(秒)
+             */
+            "duration": string;
+            /**
+             * 逆方向にスクロール
+             */
+            "reverse": string;
+        };
+        "_birthdayFollowings": {
+            /**
+             * 期間
+             */
+            "period": string;
+        };
     };
     "_cw": {
         /**
@@ -12772,10 +12938,6 @@ export interface Locale extends ILocale {
          */
         "discardChangesConfirm": string;
         /**
-         * 設定項目はありません
-         */
-        "nothingToConfigure": string;
-        /**
          * 画像の読み込みに失敗しました
          */
         "failedToLoadImage": string;
@@ -12975,25 +13137,17 @@ export interface Locale extends ILocale {
              */
             "centerY": string;
             /**
-             * スムージング
+             * 密度
              */
-            "zoomLinesSmoothing": string;
+            "density": string;
             /**
-             * スムージングと集中線の幅の設定は併用できません。
+             * 線の影の太さ
              */
-            "zoomLinesSmoothingDescription": string;
-            /**
-             * 集中線の幅
-             */
-            "zoomLinesThreshold": string;
+            "zoomLinesOutlineThickness": string;
             /**
              * 中心径
              */
             "zoomLinesMaskSize": string;
-            /**
-             * 黒色にする
-             */
-            "zoomLinesBlack": string;
             /**
              * 円形
              */

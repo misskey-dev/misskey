@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[$style.root, accented ? $style.accented : null, revered ? $style.revered : null]"/>
+<div :class="[$style.root, accented ? $style.accented : null, revered ? $style.revered : null]"></div>
 </template>
 
 <script lang="ts" setup>

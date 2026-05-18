@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<button v-tooltip="i18n.ts.shareWithNote" v-click-anime class="_button" @click="shareWithNote"><i class="ti ti-repeat ti-fw"></i></button>
 								<button v-tooltip="i18n.ts.copyLink" v-click-anime class="_button" @click="copyLink"><i class="ti ti-link ti-fw"></i></button>
 								<button v-if="isSupportShare()" v-tooltip="i18n.ts.share" v-click-anime class="_button" @click="share"><i class="ti ti-share ti-fw"></i></button>
-								<button v-if="$i && $i.id !== post.user.id" v-click-anime class="_button" @mousedown="showMenu"><i class="ti ti-dots ti-fw"></i></button>
+								<button v-if="$i && $i.id !== post.user.id" v-click-anime class="_button" @click="showMenu"><i class="ti ti-dots ti-fw"></i></button>
 							</div>
 						</div>
 						<div class="user">
@@ -175,7 +175,7 @@ async function reportAbuse() {
 	});
 }
 
-function showMenu(ev: MouseEvent) {
+function showMenu(ev: PointerEvent) {
 	if (!post.value) return;
 
 	const menuItems: MenuItem[] = [];

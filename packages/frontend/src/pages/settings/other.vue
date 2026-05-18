@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 								<div class="_gaps_s">
 									<div v-for="policy in Object.keys($i.policies)" :key="policy">
-										{{ policy }} ... {{ $i.policies[policy] }}
+										{{ policy }} ... {{ $i.policies[policy as keyof typeof $i.policies] }}
 									</div>
 								</div>
 							</MkFolder>
@@ -142,7 +142,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<hr>
 		</template>
 
-		<MkButton v-if="!storagePersisted" @click="enableStoragePersistence">{{ i18n.ts._settings.settingsPersistence_title }}</MkButton>
+		<MkButton v-if="storagePersistenceSupported && !storagePersisted" @click="enableStoragePersistence">{{ i18n.ts._settings.settingsPersistence_title }}</MkButton>
 
 		<MkButton @click="forceCloudBackup">{{ i18n.ts._preferencesBackup.forceBackup }}</MkButton>
 
@@ -165,7 +165,7 @@ import MkKeyValue from '@/components/MkKeyValue.vue';
 import MkButton from '@/components/MkButton.vue';
 import FormSlot from '@/components/form/slot.vue';
 import * as os from '@/os.js';
-import { enableStoragePersistence, storagePersisted, skipStoragePersistence } from '@/utility/storage.js';
+import { enableStoragePersistence, getStoragePersistenceStatusRef, storagePersistenceSupported } from '@/utility/storage.js';
 import { ensureSignin } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
@@ -179,6 +179,8 @@ import { suggestReload } from '@/utility/reload-suggest.js';
 import { cloudBackup } from '@/preferences/utility.js';
 
 const $i = ensureSignin();
+
+const storagePersisted = await getStoragePersistenceStatusRef();
 
 const reportError = prefer.model('reportError');
 const enableCondensedLine = prefer.model('enableCondensedLine');

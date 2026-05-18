@@ -4,6 +4,7 @@
  */
 
 import * as assert from 'assert';
+import { describe, test, beforeAll } from 'vitest';
 import { Test } from '@nestjs/testing';
 
 import { CoreModule } from '@/core/CoreModule.js';

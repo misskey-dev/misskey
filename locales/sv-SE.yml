@@ -639,6 +639,9 @@ _widgets:
   jobQueue: "Jobbkö"
   _userList:
     chooseList: "Välj lista"
+_widgetOptions:
+  _clock:
+    size: "Storlek"
 _cw:
   hide: "Dölj"
   show: "Ladda mer"

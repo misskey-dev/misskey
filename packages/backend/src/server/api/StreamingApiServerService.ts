@@ -111,7 +111,7 @@ export class StreamingApiServerService {
 			user: MiLocalUser | null;
 			app: MiAccessToken | null
 		}) => {
-			const { stream, user, app } = ctx;
+			const { stream, user } = ctx;
 
 			const ev = new EventEmitter();
 

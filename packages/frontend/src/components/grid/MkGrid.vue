@@ -715,7 +715,7 @@ function onMouseUp(ev: MouseEvent) {
 	}
 }
 
-function onContextMenu(ev: MouseEvent) {
+function onContextMenu(ev: PointerEvent) {
 	const cellAddress = getCellAddress(ev.target as HTMLElement);
 	if (_DEV_) {
 		console.log(`[grid][context-menu] button: ${ev.button}, cell: ${cellAddress.row}x${cellAddress.col}`);

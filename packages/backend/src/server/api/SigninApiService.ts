@@ -28,7 +28,7 @@ import { LoggerService } from '@/core/LoggerService.js';
 import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
 import { RateLimiterService } from './RateLimiterService.js';
 import { SigninService } from './SigninService.js';
-import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
+import type { AuthenticationResponseJSON } from '@simplewebauthn/server';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 @Injectable()
@@ -231,7 +231,7 @@ export class SigninApiService {
 
 			try {
 				await this.userAuthService.twoFactorAuthenticate(profile, token);
-			} catch (e) {
+			} catch (_) {
 				return await fail(403, {
 					id: 'cdf1235b-ac71-46d4-a3a6-84ccce48df6f',
 				});

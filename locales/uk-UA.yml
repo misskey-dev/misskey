@@ -1430,6 +1430,14 @@ _widgets:
   userList: "Список користувачів"
   _userList:
     chooseList: "Виберіть список"
+_widgetOptions:
+  height: "Висота"
+  _button:
+    colored: "Кольоровий"
+  _clock:
+    size: "Розмір"
+  _birthdayFollowings:
+    period: "Тривалість"
 _cw:
   hide: "Сховати"
   show: "Показати більше"
