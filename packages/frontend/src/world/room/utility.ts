@@ -182,7 +182,7 @@ export function initTv(scene: BABYLON.Scene, screenMesh: BABYLON.Mesh, timer: Ti
 	};
 }
 
-export function findMaterial(rootMesh: BABYLON.AbstractMesh, keyword: string, allowMultiMaterial = false): BABYLON.PBRMaterial {
+export function findMaterial(rootMesh: BABYLON.AbstractMesh | BABYLON.TransformNode, keyword: string, allowMultiMaterial = false): BABYLON.PBRMaterial {
 	for (const m of rootMesh.getChildMeshes()) {
 		if (m.material == null) continue;
 		if (m.material instanceof BABYLON.MultiMaterial) {
@@ -208,7 +208,7 @@ export function findMaterial(rootMesh: BABYLON.AbstractMesh, keyword: string, al
 }
 
 export class ModelManager {
-	public root: BABYLON.Mesh;
+	public root: BABYLON.TransformNode;
 	public bakedCallback: ((meshes: (BABYLON.Mesh | BABYLON.AbstractMesh)[]) => void) | null = null;
 	public updatedCallback: (() => void) | null = null;
 	public bakeExcludeMeshes: BABYLON.Mesh[] = [];
@@ -343,12 +343,13 @@ export class ModelManager {
 		//merged.morphTargetManager = null;
 
 		if (!hasMorphTarget) { // https://forum.babylonjs.com/t/is-it-intentional-that-morph-targets-do-not-work-on-meshes-with-frozen-materials/63252
-			merged.material!.freeze();
-			if (merged.material instanceof BABYLON.MultiMaterial) {
-				for (const subMat of merged.material.subMaterials) {
-					(subMat as BABYLON.PBRMaterial).freeze();
-				}
-			}
+			// instancedMeshを持つオブジェクトに対してfreezeするとアニメーションさせたあとunbakeしたとき(mesh.setEnabled(true)したとき)エラーが出る
+			//merged.material!.freeze();
+			//if (merged.material instanceof BABYLON.MultiMaterial) {
+			//	for (const subMat of merged.material.subMaterials) {
+			//		(subMat as BABYLON.PBRMaterial).freeze();
+			//	}
+			//}
 		}
 
 		merged.freezeWorldMatrix();
