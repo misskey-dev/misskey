@@ -109,11 +109,22 @@ const setSrc = (src: TlSrc) => {
 
 const choose = async (ev: PointerEvent) => {
 	menuOpened.value = true;
-	const [antennas, lists] = await Promise.all([
+	const [antennas, favoritedAntennas, lists] = await Promise.all([
 		misskeyApi('antennas/list'),
+		misskeyApi('antennas/my-favorites'),
 		misskeyApi('users/lists/list'),
 	]);
+	const ownAntennaIds = new Set(antennas.map(a => a.id));
+	const subscribedAntennas = favoritedAntennas.filter(a => !ownAntennaIds.has(a.id));
 	const antennaItems = antennas.map(antenna => ({
+		text: antenna.name,
+		icon: 'ti ti-antenna',
+		action: () => {
+			widgetProps.antenna = antenna;
+			setSrc('antenna');
+		},
+	}));
+	const subscribedAntennaItems = subscribedAntennas.map(antenna => ({
 		text: antenna.name,
 		icon: 'ti ti-antenna',
 		action: () => {
@@ -141,6 +152,12 @@ const choose = async (ev: PointerEvent) => {
 	if (antennaItems.length > 0) {
 		menuItems.push({ type: 'divider' });
 		menuItems.push(...antennaItems);
+	}
+
+	if (subscribedAntennaItems.length > 0) {
+		menuItems.push({ type: 'divider' });
+		menuItems.push({ type: 'label', text: i18n.ts._antenna.favoritedPublicAntennas });
+		menuItems.push(...subscribedAntennaItems);
 	}
 
 	if (listItems.length > 0) {

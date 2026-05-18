@@ -9671,6 +9671,14 @@ export interface Locale extends ILocale {
          */
         "read:clip-favorite": string;
         /**
+         * アンテナのお気に入りを操作する
+         */
+        "write:antenna-favorite": string;
+        /**
+         * アンテナのお気に入りを見る
+         */
+        "read:antenna-favorite": string;
+        /**
          * 連合に関する情報を取得する
          */
         "read:federation": string;
@@ -9762,6 +9770,24 @@ export interface Locale extends ILocale {
          * 指定した一人または複数のユーザーを除いた全てのノート
          */
         "userBlacklist": string;
+    };
+    "_antenna": {
+        /**
+         * 公開する
+         */
+        "public": string;
+        /**
+         * 公開すると、他のユーザーがこのアンテナをタイムラインとして購読・お気に入りできます。あなたから見えるノートのうち、購読ユーザーから見えるものだけが配信されます。
+         */
+        "publicDescription": string;
+        /**
+         * 受信ソースが「全てのノート」のアンテナのみ公開できます。
+         */
+        "publicNonAllSrcNotAllowed": string;
+        /**
+         * お気に入りの公開アンテナ
+         */
+        "favoritedPublicAntennas": string;
     };
     "_weekday": {
         /**

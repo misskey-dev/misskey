@@ -105,5 +105,28 @@ export const packedAntennaSchema = {
 			optional: false, nullable: false,
 			default: false,
 		},
+		isPublic: {
+			type: 'boolean',
+			optional: false, nullable: false,
+			default: false,
+		},
+		userId: {
+			type: 'string',
+			optional: false, nullable: false,
+			format: 'id',
+		},
+		user: {
+			type: 'object',
+			ref: 'UserLite',
+			optional: false, nullable: false,
+		},
+		favoritedCount: {
+			type: 'number',
+			optional: false, nullable: false,
+		},
+		isFavorited: {
+			type: 'boolean',
+			optional: true, nullable: false,
+		},
 	},
 } as const;

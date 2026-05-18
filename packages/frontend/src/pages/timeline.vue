@@ -39,7 +39,7 @@ import { store } from '@/store.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/i.js';
 import { definePage } from '@/page.js';
-import { antennasCache, userListsCache, favoritedChannelsCache } from '@/cache.js';
+import { antennasCache, userListsCache, favoritedChannelsCache, favoritedAntennasCache } from '@/cache.js';
 import { deviceKind } from '@/utility/device-kind.js';
 import { deepMerge } from '@/utility/merge.js';
 import { miLocalStorage } from '@/local-storage.js';
@@ -126,7 +126,12 @@ async function chooseList(ev: PointerEvent): Promise<void> {
 }
 
 async function chooseAntenna(ev: PointerEvent): Promise<void> {
-	const antennas = await antennasCache.fetch();
+	const [antennas, favorited] = await Promise.all([
+		antennasCache.fetch(),
+		favoritedAntennasCache.fetch(),
+	]);
+	const ownIds = new Set(antennas.map(a => a.id));
+	const subscribed = favorited.filter(a => !ownIds.has(a.id));
 	const items: (MenuItem | undefined)[] = [
 		...antennas.map(antenna => ({
 			type: 'link' as const,
@@ -134,7 +139,14 @@ async function chooseAntenna(ev: PointerEvent): Promise<void> {
 			indicate: antenna.hasUnreadNote,
 			to: `/timeline/antenna/${antenna.id}`,
 		})),
-		(antennas.length === 0 ? undefined : { type: 'divider' }),
+		((antennas.length > 0 && subscribed.length > 0) ? { type: 'divider' as const } : undefined),
+		(subscribed.length > 0 ? { type: 'label' as const, text: i18n.ts._antenna.favoritedPublicAntennas } : undefined),
+		...subscribed.map(antenna => ({
+			type: 'link' as const,
+			text: antenna.name,
+			to: `/timeline/antenna/${antenna.id}`,
+		})),
+		((antennas.length > 0 || subscribed.length > 0) ? { type: 'divider' as const } : undefined),
 		{
 			type: 'link' as const,
 			icon: 'ti ti-plus',

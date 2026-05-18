@@ -129,6 +129,8 @@ export const permissions = [
 	'read:invite-codes',
 	'write:clip-favorite',
 	'read:clip-favorite',
+	'write:antenna-favorite',
+	'read:antenna-favorite',
 	'read:federation',
 	'write:report-abuse',
 	'write:chat',

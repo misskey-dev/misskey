@@ -1151,6 +1151,17 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
+     * **Credential required**: *Yes* / **Permission**: *write:antenna-favorite*
+     */
+    request<E extends 'antennas/favorite', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
      * **Credential required**: *Yes* / **Permission**: *read:account*
      */
     request<E extends 'antennas/list', P extends Endpoints[E]['req']>(
@@ -1162,7 +1173,18 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *Yes* / **Permission**: *read:account*
+     * **Credential required**: *Yes* / **Permission**: *read:antenna-favorite*
+     */
+    request<E extends 'antennas/my-favorites', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Credential required**: *No* / **Permission**: *read:account*
      */
     request<E extends 'antennas/notes', P extends Endpoints[E]['req']>(
       endpoint: E,
@@ -1173,9 +1195,20 @@ declare module '../api.js' {
     /**
      * No description provided.
      * 
-     * **Credential required**: *Yes* / **Permission**: *read:account*
+     * **Credential required**: *No* / **Permission**: *read:account*
      */
     request<E extends 'antennas/show', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * No description provided.
+     * 
+     * **Credential required**: *Yes* / **Permission**: *write:antenna-favorite*
+     */
+    request<E extends 'antennas/unfavorite', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,
@@ -4472,6 +4505,17 @@ declare module '../api.js' {
      * **Credential required**: *No*
      */
     request<E extends 'users/achievements', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * Show all public antennas this user owns.
+     * 
+     * **Credential required**: *No*
+     */
+    request<E extends 'users/antennas', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,

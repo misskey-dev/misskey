@@ -13,6 +13,7 @@ import {
 	MiAnnouncement,
 	MiAnnouncementRead,
 	MiAntenna,
+	MiAntennaFavorite,
 	MiApp,
 	MiAuthSession,
 	MiAvatarDecoration,
@@ -394,6 +395,12 @@ const $antennasRepository: Provider = {
 	inject: [DI.db],
 };
 
+const $antennaFavoritesRepository: Provider = {
+	provide: DI.antennaFavoritesRepository,
+	useFactory: (db: DataSource) => db.getRepository(MiAntennaFavorite).extend(miRepository as MiRepository<MiAntennaFavorite>),
+	inject: [DI.db],
+};
+
 const $promoNotesRepository: Provider = {
 	provide: DI.promoNotesRepository,
 	useFactory: (db: DataSource) => db.getRepository(MiPromoNote).extend(miRepository as MiRepository<MiPromoNote>),
@@ -598,6 +605,7 @@ const $reversiGamesRepository: Provider = {
 		$clipNotesRepository,
 		$clipFavoritesRepository,
 		$antennasRepository,
+		$antennaFavoritesRepository,
 		$promoNotesRepository,
 		$promoReadsRepository,
 		$relaysRepository,
@@ -676,6 +684,7 @@ const $reversiGamesRepository: Provider = {
 		$clipNotesRepository,
 		$clipFavoritesRepository,
 		$antennasRepository,
+		$antennaFavoritesRepository,
 		$promoNotesRepository,
 		$promoReadsRepository,
 		$relaysRepository,

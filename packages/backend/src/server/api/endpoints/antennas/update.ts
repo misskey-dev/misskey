@@ -38,6 +38,12 @@ export const meta = {
 			code: 'EMPTY_KEYWORD',
 			id: '721aaff6-4e1b-4d88-8de6-877fae9f68c4',
 		},
+
+		publicNonAllSrcNotAllowed: {
+			message: 'Only antennas with src=all can be public.',
+			code: 'PUBLIC_NON_ALL_SRC_NOT_ALLOWED',
+			id: 'c5f3a7b9-2d3e-4c1a-8b5f-7e9a1b2c3d4e',
+		},
 	},
 
 	res: {
@@ -73,6 +79,7 @@ export const paramDef = {
 		withReplies: { type: 'boolean' },
 		withFile: { type: 'boolean' },
 		excludeNotesInSensitiveChannel: { type: 'boolean' },
+		isPublic: { type: 'boolean' },
 	},
 	required: ['antennaId'],
 } as const;
@@ -105,6 +112,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchAntenna);
 			}
 
+			const nextSrc = ps.src ?? antenna.src;
+			const nextIsPublic = ps.isPublic ?? antenna.isPublic;
+			if (nextIsPublic === true && nextSrc !== 'all') {
+				throw new ApiError(meta.errors.publicNonAllSrcNotAllowed);
+			}
+
 			let userList;
 
 			if ((ps.src === 'list' || antenna.src === 'list') && ps.userListId) {
@@ -131,13 +144,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				withReplies: ps.withReplies,
 				withFile: ps.withFile,
 				excludeNotesInSensitiveChannel: ps.excludeNotesInSensitiveChannel,
+				isPublic: ps.isPublic,
 				isActive: true,
 				lastUsedAt: new Date(),
 			});
 
 			this.globalEventService.publishInternalEvent('antennaUpdated', await this.antennasRepository.findOneByOrFail({ id: antenna.id }));
 
-			return await this.antennaEntityService.pack(antenna.id);
+			return await this.antennaEntityService.pack(antenna.id, me);
 		});
 	}
 }

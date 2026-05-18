@@ -4,31 +4,32 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
+import type { AntennasRepository, AntennaFavoritesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { AntennasRepository } from '@/models/_.js';
-import { AntennaEntityService } from '@/core/entities/AntennaEntityService.js';
 import { DI } from '@/di-symbols.js';
 import { ApiError } from '../../error.js';
 
 export const meta = {
-	tags: ['antennas', 'account'],
+	tags: ['antennas'],
 
-	requireCredential: false,
+	requireCredential: true,
 
-	kind: 'read:account',
+	prohibitMoved: true,
+
+	kind: 'write:antenna-favorite',
 
 	errors: {
 		noSuchAntenna: {
 			message: 'No such antenna.',
 			code: 'NO_SUCH_ANTENNA',
-			id: 'c06569fb-b025-4f23-b22d-1fcd20d2816b',
+			id: 'e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b',
 		},
-	},
 
-	res: {
-		type: 'object',
-		optional: false, nullable: false,
-		ref: 'Antenna',
+		notFavorited: {
+			message: 'You have not favorited the antenna.',
+			code: 'NOT_FAVORITED',
+			id: 'b6a7c8d9-e0f1-4a2b-9c3d-4e5f6a7b8c9d',
+		},
 	},
 } as const;
 
@@ -46,22 +47,25 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.antennasRepository)
 		private antennasRepository: AntennasRepository,
 
-		private antennaEntityService: AntennaEntityService,
+		@Inject(DI.antennaFavoritesRepository)
+		private antennaFavoritesRepository: AntennaFavoritesRepository,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const antenna = await this.antennasRepository.findOneBy({
-				id: ps.antennaId,
-			});
-
+			const antenna = await this.antennasRepository.findOneBy({ id: ps.antennaId });
 			if (antenna == null) {
 				throw new ApiError(meta.errors.noSuchAntenna);
 			}
 
-			if (!antenna.isPublic && (me == null || antenna.userId !== me.id)) {
-				throw new ApiError(meta.errors.noSuchAntenna);
+			const exist = await this.antennaFavoritesRepository.findOneBy({
+				antennaId: antenna.id,
+				userId: me.id,
+			});
+
+			if (exist == null) {
+				throw new ApiError(meta.errors.notFavorited);
 			}
 
-			return await this.antennaEntityService.pack(antenna, me);
+			await this.antennaFavoritesRepository.delete(exist.id);
 		});
 	}
 }

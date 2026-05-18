@@ -49,6 +49,7 @@ const exportedAntennaSchema = {
 		withReplies: { type: 'boolean' },
 		withFile: { type: 'boolean' },
 		excludeNotesInSensitiveChannel: { type: 'boolean' },
+		isPublic: { type: 'boolean' },
 	},
 	required: ['name', 'src', 'keywords', 'excludeKeywords', 'users', 'caseSensitive', 'withReplies', 'withFile'],
 } as const satisfies Schema;
@@ -98,6 +99,8 @@ export class ImportAntennasProcessorService {
 					withReplies: antenna.withReplies,
 					withFile: antenna.withFile,
 					excludeNotesInSensitiveChannel: antenna.excludeNotesInSensitiveChannel,
+					// src=all 以外のアンテナは公開化できない (src/isPublic 整合)
+					isPublic: antenna.src === 'all' ? (antenna.isPublic ?? false) : false,
 				});
 				this.logger.succ('Antenna created: ' + result.id);
 				this.globalEventService.publishInternalEvent('antennaCreated', result);

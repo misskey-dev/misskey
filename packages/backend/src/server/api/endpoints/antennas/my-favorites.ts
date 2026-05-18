@@ -5,16 +5,16 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
-import type { AntennasRepository } from '@/models/_.js';
-import { AntennaEntityService } from '@/core/entities/AntennaEntityService.js';
+import type { AntennaFavoritesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
+import { AntennaEntityService } from '@/core/entities/AntennaEntityService.js';
 
 export const meta = {
-	tags: ['antennas', 'account'],
+	tags: ['account', 'antennas'],
 
 	requireCredential: true,
 
-	kind: 'read:account',
+	kind: 'read:antenna-favorite',
 
 	res: {
 		type: 'array',
@@ -29,24 +29,26 @@ export const meta = {
 
 export const paramDef = {
 	type: 'object',
-	properties: {},
+	properties: {
+	},
 	required: [],
 } as const;
 
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.antennasRepository)
-		private antennasRepository: AntennasRepository,
+		@Inject(DI.antennaFavoritesRepository)
+		private antennaFavoritesRepository: AntennaFavoritesRepository,
 
 		private antennaEntityService: AntennaEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const antennas = await this.antennasRepository.findBy({
-				userId: me.id,
-			});
+			const favorites = await this.antennaFavoritesRepository.createQueryBuilder('favorite')
+				.andWhere('favorite.userId = :meId', { meId: me.id })
+				.leftJoinAndSelect('favorite.antenna', 'antenna')
+				.getMany();
 
-			return await this.antennaEntityService.packMany(antennas, me);
+			return this.antennaEntityService.packMany(favorites.map(x => x.antenna!), me);
 		});
 	}
 }

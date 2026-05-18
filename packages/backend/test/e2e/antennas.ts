@@ -167,6 +167,11 @@ describe('アンテナ', () => {
 			excludeBots: false,
 			localOnly: false,
 			notify: false,
+			isPublic: false,
+			userId: response.userId,
+			user: response.user,
+			favoritedCount: response.favoritedCount,
+			isFavorited: response.isFavorited,
 		};
 		assert.deepStrictEqual(response, expected);
 	});
@@ -728,4 +733,411 @@ describe('アンテナ', () => {
 
 		//#endregion
 	});
+
+	//#region 共有アンテナ (isPublic, favorite)
+
+	describe('の共有 (isPublic)', () => {
+		const sharedKeyword = 'sharedAntennaKeyword';
+
+		describe('作成・更新の制約', () => {
+			test.each([
+				{ src: 'home' as const },
+				{ src: 'users' as const },
+				{ src: 'users_blacklist' as const },
+				{ src: 'list' as const, userListId: () => aliceList.id },
+			])('src=$src と isPublic=true は同時に指定できない (create)', async ({ src, userListId }) => {
+				await failedApiCall({
+					endpoint: 'antennas/create',
+					parameters: { ...defaultParam, src, userListId: userListId ? userListId() : null, isPublic: true },
+					user: alice,
+				}, {
+					status: 400,
+					code: 'PUBLIC_NON_ALL_SRC_NOT_ALLOWED',
+					id: 'b4e3f5cd-9f5e-4f17-9d2e-1f5e10c3f3f1',
+				});
+			});
+
+			test('既存の公開アンテナ (src=all) を src=users に変更しようとするとエラー', async () => {
+				const antenna = await successfulApiCall({
+					endpoint: 'antennas/create',
+					parameters: { ...defaultParam, isPublic: true },
+					user: alice,
+				});
+				await failedApiCall({
+					endpoint: 'antennas/update',
+					parameters: { antennaId: antenna.id, ...defaultParam, src: 'users', isPublic: true },
+					user: alice,
+				}, {
+					status: 400,
+					code: 'PUBLIC_NON_ALL_SRC_NOT_ALLOWED',
+					id: 'c5f3a7b9-2d3e-4c1a-8b5f-7e9a1b2c3d4e',
+				});
+			});
+
+			test('既存の src=list アンテナを isPublic=true に変更しようとするとエラー', async () => {
+				const antenna = await successfulApiCall({
+					endpoint: 'antennas/create',
+					parameters: { ...defaultParam, src: 'list', userListId: aliceList.id },
+					user: alice,
+				});
+				await failedApiCall({
+					endpoint: 'antennas/update',
+					parameters: { antennaId: antenna.id, ...defaultParam, src: 'list', userListId: aliceList.id, isPublic: true },
+					user: alice,
+				}, {
+					status: 400,
+					code: 'PUBLIC_NON_ALL_SRC_NOT_ALLOWED',
+					id: 'c5f3a7b9-2d3e-4c1a-8b5f-7e9a1b2c3d4e',
+				});
+			});
+		});
+
+		describe('アクセス制御', () => {
+			test('公開アンテナは他ユーザでも show できる', async () => {
+				const antenna = await successfulApiCall({
+					endpoint: 'antennas/create',
+					parameters: { ...defaultParam, isPublic: true },
+					user: alice,
+				});
+				const response = await successfulApiCall({
+					endpoint: 'antennas/show',
+					parameters: { antennaId: antenna.id },
+					user: carol,
+				});
+				assert.strictEqual(response.id, antenna.id);
+				assert.strictEqual(response.isPublic, true);
+				assert.strictEqual(response.userId, alice.id);
+			});
+
+			test('公開アンテナは未ログインでも show できる', async () => {
+				const antenna = await successfulApiCall({
+					endpoint: 'antennas/create',
+					parameters: { ...defaultParam, isPublic: true },
+					user: alice,
+				});
+				const response = await successfulApiCall({
+					endpoint: 'antennas/show',
+					parameters: { antennaId: antenna.id },
+					user: undefined,
+				});
+				assert.strictEqual(response.id, antenna.id);
+			});
+
+			test('非公開アンテナは他ユーザだと NO_SUCH_ANTENNA', async () => {
+				const antenna = await successfulApiCall({
+					endpoint: 'antennas/create',
+					parameters: { ...defaultParam },
+					user: alice,
+				});
+				await failedApiCall({
+					endpoint: 'antennas/show',
+					parameters: { antennaId: antenna.id },
+					user: carol,
+				}, {
+					status: 400,
+					code: 'NO_SUCH_ANTENNA',
+					id: 'c06569fb-b025-4f23-b22d-1fcd20d2816b',
+				});
+			});
+
+			test('他人の公開アンテナは update/delete できない', async () => {
+				const antenna = await successfulApiCall({
+					endpoint: 'antennas/create',
+					parameters: { ...defaultParam, isPublic: true },
+					user: alice,
+				});
+				await failedApiCall({
+					endpoint: 'antennas/update',
+					parameters: { antennaId: antenna.id, ...defaultParam, isPublic: true, name: 'hijack' },
+					user: bob,
+				}, {
+					status: 400,
+					code: 'NO_SUCH_ANTENNA',
+					id: '10c673ac-8852-48eb-aa1f-f5b67f069290',
+				});
+				await failedApiCall({
+					endpoint: 'antennas/delete',
+					parameters: { antennaId: antenna.id },
+					user: bob,
+				}, {
+					status: 400,
+					code: 'NO_SUCH_ANTENNA',
+					id: 'b34dcf9d-348f-44bb-99d0-6c9314cfe2df',
+				});
+			});
+
+			test('users/antennas は対象ユーザの公開アンテナだけを返す', async () => {
+				const publicAntenna = await successfulApiCall({
+					endpoint: 'antennas/create',
+					parameters: { ...defaultParam, isPublic: true, name: 'public-1' },
+					user: alice,
+				});
+				await successfulApiCall({
+					endpoint: 'antennas/create',
+					parameters: { ...defaultParam, isPublic: false, name: 'private-1' },
+					user: alice,
+				});
+				const response = await successfulApiCall({
+					endpoint: 'users/antennas',
+					parameters: { userId: alice.id },
+					user: carol,
+				});
+				assert.strictEqual(response.length, 1);
+				assert.strictEqual(response[0].id, publicAntenna.id);
+			});
+		});
+
+		describe('ノートの可視性 (漏洩検証)', () => {
+			test('所有者宛の followers 限定ノートは、投稿者をフォローしていない購読者には漏れない', async () => {
+				// alice は userFollowedByAlice をフォローしている (beforeAll で設定済)
+				// carol は userFollowedByAlice をフォローしていない
+				const antenna = await successfulApiCall({
+					endpoint: 'antennas/create',
+					parameters: { ...defaultParam, isPublic: true, keywords: [[sharedKeyword]] },
+					user: alice,
+				});
+				const note = await post(userFollowedByAlice, { text: `${sharedKeyword} followers-only`, visibility: 'followers' });
+
+				// alice (所有者) 視点では含まれる
+				const aliceView = await successfulApiCall({
+					endpoint: 'antennas/notes',
+					parameters: { antennaId: antenna.id },
+					user: alice,
+				});
+				assert.ok(aliceView.some(n => n.id === note.id), 'owner should see the followers-only note');
+
+				// carol (購読者・未フォロー) 視点では漏れない
+				const carolView = await successfulApiCall({
+					endpoint: 'antennas/notes',
+					parameters: { antennaId: antenna.id },
+					user: carol,
+				});
+				assert.ok(!carolView.some(n => n.id === note.id), 'non-follower subscriber must not see the followers-only note');
+			});
+
+			test('所有者宛の specified ノートは、宛先でない購読者には漏れない', async () => {
+				const antenna = await successfulApiCall({
+					endpoint: 'antennas/create',
+					parameters: { ...defaultParam, isPublic: true, keywords: [[sharedKeyword]] },
+					user: alice,
+				});
+				const note = await post(bob, {
+					text: `${sharedKeyword} dm`,
+					visibility: 'specified',
+					visibleUserIds: [alice.id],
+				});
+
+				const aliceView = await successfulApiCall({
+					endpoint: 'antennas/notes',
+					parameters: { antennaId: antenna.id },
+					user: alice,
+				});
+				assert.ok(aliceView.some(n => n.id === note.id), 'owner should see specified note');
+
+				const carolView = await successfulApiCall({
+					endpoint: 'antennas/notes',
+					parameters: { antennaId: antenna.id },
+					user: carol,
+				});
+				assert.ok(!carolView.some(n => n.id === note.id), 'unrelated subscriber must not see specified note');
+			});
+
+			test('投稿者が購読者をブロックしている場合、そのノートは含まれない', async () => {
+				const antenna = await successfulApiCall({
+					endpoint: 'antennas/create',
+					parameters: { ...defaultParam, isPublic: true, keywords: [[sharedKeyword]] },
+					user: alice,
+				});
+				// bob が carol をブロックする
+				await api('blocking/create', { userId: carol.id }, bob);
+				const note = await post(bob, { text: `${sharedKeyword} bob-blocks-carol` });
+
+				const carolView = await successfulApiCall({
+					endpoint: 'antennas/notes',
+					parameters: { antennaId: antenna.id },
+					user: carol,
+				});
+				assert.ok(!carolView.some(n => n.id === note.id), 'note from a user who blocked the subscriber must not be visible');
+
+				// 後片付け
+				await api('blocking/delete', { userId: carol.id }, bob);
+			});
+
+			test('公開アンテナのノートは未ログインでも公開ノートのみ取得できる', async () => {
+				const antenna = await successfulApiCall({
+					endpoint: 'antennas/create',
+					parameters: { ...defaultParam, isPublic: true, keywords: [[sharedKeyword]] },
+					user: alice,
+				});
+				const publicNote = await post(bob, { text: `${sharedKeyword} public` });
+				const followersNote = await post(userFollowedByAlice, { text: `${sharedKeyword} followers`, visibility: 'followers' });
+
+				const anonView = await successfulApiCall({
+					endpoint: 'antennas/notes',
+					parameters: { antennaId: antenna.id },
+					user: undefined,
+				});
+				assert.ok(anonView.some(n => n.id === publicNote.id), 'anon should see public note');
+				assert.ok(!anonView.some(n => n.id === followersNote.id), 'anon must not see followers-only note');
+			});
+
+			test('非公開アンテナのノートは他ユーザだと取得できない', async () => {
+				const antenna = await successfulApiCall({
+					endpoint: 'antennas/create',
+					parameters: { ...defaultParam, keywords: [[sharedKeyword]] },
+					user: alice,
+				});
+				await failedApiCall({
+					endpoint: 'antennas/notes',
+					parameters: { antennaId: antenna.id },
+					user: carol,
+				}, {
+					status: 400,
+					code: 'NO_SUCH_ANTENNA',
+					id: '850926e0-fd3b-49b6-b69a-b28a5dbd82fe',
+				});
+			});
+		});
+
+		describe('お気に入り (favorite)', () => {
+			test('公開アンテナを他ユーザがお気に入りできる', async () => {
+				const antenna = await successfulApiCall({
+					endpoint: 'antennas/create',
+					parameters: { ...defaultParam, isPublic: true },
+					user: alice,
+				});
+				await successfulApiCall({
+					endpoint: 'antennas/favorite',
+					parameters: { antennaId: antenna.id },
+					user: carol,
+				});
+				const shown = await successfulApiCall({
+					endpoint: 'antennas/show',
+					parameters: { antennaId: antenna.id },
+					user: carol,
+				});
+				assert.strictEqual(shown.isFavorited, true);
+				assert.strictEqual(shown.favoritedCount, 1);
+			});
+
+			test('非公開アンテナを他ユーザはお気に入りできない', async () => {
+				const antenna = await successfulApiCall({
+					endpoint: 'antennas/create',
+					parameters: { ...defaultParam },
+					user: alice,
+				});
+				await failedApiCall({
+					endpoint: 'antennas/favorite',
+					parameters: { antennaId: antenna.id },
+					user: carol,
+				}, {
+					status: 400,
+					code: 'NO_SUCH_ANTENNA',
+					id: 'a4d3b7f0-1c1e-4e16-9a8b-3a7e1d2f4b6a',
+				});
+			});
+
+			test('自分のアンテナはお気に入り可 (公開非公開問わず)', async () => {
+				const antenna = await successfulApiCall({
+					endpoint: 'antennas/create',
+					parameters: { ...defaultParam },
+					user: alice,
+				});
+				await successfulApiCall({
+					endpoint: 'antennas/favorite',
+					parameters: { antennaId: antenna.id },
+					user: alice,
+				});
+			});
+
+			test('重複 favorite はエラー', async () => {
+				const antenna = await successfulApiCall({
+					endpoint: 'antennas/create',
+					parameters: { ...defaultParam, isPublic: true },
+					user: alice,
+				});
+				await successfulApiCall({
+					endpoint: 'antennas/favorite',
+					parameters: { antennaId: antenna.id },
+					user: carol,
+				});
+				await failedApiCall({
+					endpoint: 'antennas/favorite',
+					parameters: { antennaId: antenna.id },
+					user: carol,
+				}, {
+					status: 400,
+					code: 'ALREADY_FAVORITED',
+					id: 'd2a4e1c6-3b5e-4a8d-9f0c-1e2d3f4a5b6c',
+				});
+			});
+
+			test('unfavorite で取り消せる / 未 favorite で NOT_FAVORITED', async () => {
+				const antenna = await successfulApiCall({
+					endpoint: 'antennas/create',
+					parameters: { ...defaultParam, isPublic: true },
+					user: alice,
+				});
+				await failedApiCall({
+					endpoint: 'antennas/unfavorite',
+					parameters: { antennaId: antenna.id },
+					user: carol,
+				}, {
+					status: 400,
+					code: 'NOT_FAVORITED',
+					id: 'b6a7c8d9-e0f1-4a2b-9c3d-4e5f6a7b8c9d',
+				});
+				await successfulApiCall({
+					endpoint: 'antennas/favorite',
+					parameters: { antennaId: antenna.id },
+					user: carol,
+				});
+				await successfulApiCall({
+					endpoint: 'antennas/unfavorite',
+					parameters: { antennaId: antenna.id },
+					user: carol,
+				});
+				const shown = await successfulApiCall({
+					endpoint: 'antennas/show',
+					parameters: { antennaId: antenna.id },
+					user: carol,
+				});
+				assert.strictEqual(shown.isFavorited, false);
+				assert.strictEqual(shown.favoritedCount, 0);
+			});
+
+			test('my-favorites でお気に入りした公開アンテナの一覧が取れる', async () => {
+				const a1 = await successfulApiCall({
+					endpoint: 'antennas/create',
+					parameters: { ...defaultParam, isPublic: true, name: 'fav-1' },
+					user: alice,
+				});
+				const a2 = await successfulApiCall({
+					endpoint: 'antennas/create',
+					parameters: { ...defaultParam, isPublic: true, name: 'fav-2' },
+					user: bob,
+				});
+				await successfulApiCall({
+					endpoint: 'antennas/favorite',
+					parameters: { antennaId: a1.id },
+					user: carol,
+				});
+				await successfulApiCall({
+					endpoint: 'antennas/favorite',
+					parameters: { antennaId: a2.id },
+					user: carol,
+				});
+				const favs = await successfulApiCall({
+					endpoint: 'antennas/my-favorites',
+					parameters: {},
+					user: carol,
+				});
+				const ids = new Set(favs.map(x => x.id));
+				assert.ok(ids.has(a1.id));
+				assert.ok(ids.has(a2.id));
+			});
+		});
+	});
+
+	//#endregion
 });

@@ -2540,6 +2540,8 @@ _permissions:
   "read:invite-codes": "招待コードを取得する"
   "write:clip-favorite": "クリップのいいねを操作する"
   "read:clip-favorite": "クリップのいいねを見る"
+  "write:antenna-favorite": "アンテナのお気に入りを操作する"
+  "read:antenna-favorite": "アンテナのお気に入りを見る"
   "read:federation": "連合に関する情報を取得する"
   "write:report-abuse": "違反を報告する"
   "write:chat": "ダイレクトメッセージを操作する"
@@ -2566,6 +2568,12 @@ _antennaSources:
   users: "指定した一人または複数のユーザーのノート"
   userList: "指定したリストのユーザーのノート"
   userBlacklist: "指定した一人または複数のユーザーを除いた全てのノート"
+
+_antenna:
+  public: "公開する"
+  publicDescription: "公開すると、他のユーザーがこのアンテナをタイムラインとして購読・お気に入りできます。あなたから見えるノートのうち、購読ユーザーから見えるものだけが配信されます。"
+  publicNonAllSrcNotAllowed: "受信ソースが「全てのノート」のアンテナのみ公開できます。"
+  favoritedPublicAntennas: "お気に入りの公開アンテナ"
 
 _weekday:
   sunday: "日曜日"

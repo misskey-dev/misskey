@@ -4,7 +4,6 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import * as Redis from 'ioredis';
 import { Brackets } from 'typeorm';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { NotesRepository, AntennasRepository } from '@/models/_.js';
@@ -21,7 +20,7 @@ import { ApiError } from '../../error.js';
 export const meta = {
 	tags: ['antennas', 'account', 'notes'],
 
-	requireCredential: true,
+	requireCredential: false,
 
 	kind: 'read:account',
 
@@ -79,10 +78,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const antenna = await this.antennasRepository.findOneBy({
 				id: ps.antennaId,
-				userId: me.id,
 			});
 
 			if (antenna == null) {
+				throw new ApiError(meta.errors.noSuchAntenna);
+			}
+
+			if (!antenna.isPublic && (me == null || antenna.userId !== me.id)) {
 				throw new ApiError(meta.errors.noSuchAntenna);
 			}
 
@@ -111,19 +113,21 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				.leftJoinAndSelect('reply.user', 'replyUser')
 				.leftJoinAndSelect('renote.user', 'renoteUser');
 
-			// -- ミュートされたチャンネル対策
-			const mutingChannelIds = await this.channelMutingService
-				.list({ requestUserId: me.id }, { idOnly: true })
-				.then(x => x.map(x => x.id));
-			if (mutingChannelIds.length > 0) {
-				query.andWhere(new Brackets(qb => {
-					qb.orWhere('note.channelId IS NULL');
-					qb.orWhere('note.channelId NOT IN (:...mutingChannelIds)', { mutingChannelIds });
-				}));
-				query.andWhere(new Brackets(qb => {
-					qb.orWhere('note.renoteChannelId IS NULL');
-					qb.orWhere('note.renoteChannelId NOT IN (:...mutingChannelIds)', { mutingChannelIds });
-				}));
+			// -- ミュートされたチャンネル対策 (ログインユーザのみ)
+			if (me) {
+				const mutingChannelIds = await this.channelMutingService
+					.list({ requestUserId: me.id }, { idOnly: true })
+					.then(x => x.map(x => x.id));
+				if (mutingChannelIds.length > 0) {
+					query.andWhere(new Brackets(qb => {
+						qb.orWhere('note.channelId IS NULL');
+						qb.orWhere('note.channelId NOT IN (:...mutingChannelIds)', { mutingChannelIds });
+					}));
+					query.andWhere(new Brackets(qb => {
+						qb.orWhere('note.renoteChannelId IS NULL');
+						qb.orWhere('note.renoteChannelId NOT IN (:...mutingChannelIds)', { mutingChannelIds });
+					}));
+				}
 			}
 
 			// NOTE: センシティブ除外の設定はこのエンドポイントでは無視する。
