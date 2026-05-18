@@ -1,13 +1,7 @@
 ## Unreleased
 
 ### General
--
-
-### Client
--
-
-### Server
--
+- Fix: Dockerで起動に失敗する問題を修正
 
 
 ## 2026.5.2
