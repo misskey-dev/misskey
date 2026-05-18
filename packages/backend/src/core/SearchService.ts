@@ -234,14 +234,14 @@ export class SearchService {
 			}
 		}
 
-		if (opts.rangeStartAt) {
-			const date = this.idService.gen(opts.rangeStartAt);
-			query.andWhere('note.id >= :rangeStartAt', { rangeStartAt: date });
+		if (opts.rangeStartAt != null) {
+			const date = this.idService.gen(opts.rangeStartAt - 1);
+			query.andWhere('note.id > :rangeStartAt', { rangeStartAt: date });
 		}
 
-		if (opts.rangeEndAt) {
-			const date = this.idService.gen(opts.rangeEndAt);
-			query.andWhere('note.id <= :rangeEndAt', { rangeEndAt: date });
+		if (opts.rangeEndAt != null) {
+			const date = this.idService.gen(opts.rangeEndAt + 1);
+			query.andWhere('note.id < :rangeEndAt', { rangeEndAt: date });
 		}
 
 		this.queryService.generateVisibilityQuery(query, me);
