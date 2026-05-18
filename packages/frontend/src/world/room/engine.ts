@@ -204,7 +204,8 @@ export class RoomEngine extends EventEmitter {
 	public lightContainer: BABYLON.ClusteredLightContainer;
 	private gridMaterial: GridMaterial | null = null;
 	private gridPlane: BABYLON.Mesh;
-	private putAnim: BABYLON.Animation;
+	private putAnimV: BABYLON.Animation;
+	private putAnimH: BABYLON.Animation;
 	private selectionOutlineLayer: BABYLON.SelectionOutlineLayer | null = null;
 	public sr: BABYLON.SnapshotRenderingHelper;
 	private gl: BABYLON.GlowLayer | null = null;
@@ -324,21 +325,36 @@ export class RoomEngine extends EventEmitter {
 		this.gridPlane.isVisible = false;
 		this.gridPlane.setEnabled(false);
 
-		this.putAnim = new BABYLON.Animation(
-			'',
-			'scaling',
-			60,
-			BABYLON.Animation.ANIMATIONTYPE_VECTOR3,
-			BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT,
-		);
-		const keys = [
-			{ frame: 0, value: new BABYLON.Vector3(0.9, 1.2, 0.9) },
-			{ frame: 60, value: new BABYLON.Vector3(1, 1, 1) },
-		];
-		this.putAnim.setKeys(keys);
-		const easing = new BABYLON.ElasticEase(2);
-		easing.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
-		this.putAnim.setEasingFunction(easing);
+		{
+			const easing = new BABYLON.ElasticEase(2);
+			easing.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
+
+			this.putAnimV = new BABYLON.Animation(
+				'',
+				'scaling',
+				60,
+				BABYLON.Animation.ANIMATIONTYPE_VECTOR3,
+				BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT,
+			);
+			this.putAnimV.setKeys([
+				{ frame: 0, value: new BABYLON.Vector3(0.9, 1.2, 0.9) },
+				{ frame: 60, value: new BABYLON.Vector3(1, 1, 1) },
+			]);
+			this.putAnimV.setEasingFunction(easing);
+
+			this.putAnimH = new BABYLON.Animation(
+				'',
+				'scaling',
+				60,
+				BABYLON.Animation.ANIMATIONTYPE_VECTOR3,
+				BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT,
+			);
+			this.putAnimH.setKeys([
+				{ frame: 0, value: new BABYLON.Vector3(0.9, 0.9, 1.2) },
+				{ frame: 60, value: new BABYLON.Vector3(1, 1, 1) },
+			]);
+			this.putAnimH.setEasingFunction(easing);
+		}
 
 		if (this.graphicsQuality >= GRAPHICS_QUALITY.MEDIUM) {
 			this.selectionOutlineLayer = new BABYLON.SelectionOutlineLayer('outliner', this.scene);
@@ -1328,7 +1344,7 @@ export class RoomEngine extends EventEmitter {
 				});
 
 				// put animation
-				selectedObject.animations.push(this.putAnim);
+				selectedObject.animations.push(placement === 'side' || placement === 'wall' ? this.putAnimH : this.putAnimV);
 				const animating = Promise.withResolvers<void>();
 				const animationObserver = this.scene.onAfterAnimationsObservable.add(() => {
 					this.sr.updateMesh(selectedObject.getChildMeshes(), true);
@@ -1554,7 +1570,7 @@ export class RoomEngine extends EventEmitter {
 				});
 
 				// put animation
-				root.animations.push(this.putAnim);
+				root.animations.push(def.placement === 'side' || def.placement === 'wall' ? this.putAnimH : this.putAnimV);
 				const animationObserver = this.scene.onAfterAnimationsObservable.add(() => {
 					this.sr.updateMesh(root.getChildMeshes(), true);
 				});
