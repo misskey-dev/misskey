@@ -140,7 +140,7 @@ export class RoomEngine extends EventEmitter {
 	public camera: BABYLON.UniversalCamera;
 	private fixedCamera: BABYLON.FreeCamera;
 	public objectEntities: Map<string, {
-		rootMesh: BABYLON.Mesh;
+		rootMesh: BABYLON.TransformNode;
 		convertedOptions: ConvertedOptions;
 		instance: RoomObjectInstance;
 		model: ModelManager;
