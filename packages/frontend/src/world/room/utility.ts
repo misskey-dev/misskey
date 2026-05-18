@@ -209,14 +209,14 @@ export function findMaterial(rootMesh: BABYLON.AbstractMesh, keyword: string, al
 
 export class ModelManager {
 	public root: BABYLON.Mesh;
-	public bakedCallback: (() => void) | null = null;
+	public bakedCallback: ((meshes: (BABYLON.Mesh | BABYLON.AbstractMesh)[]) => void) | null = null;
 	public updatedCallback: (() => void) | null = null;
 	public bakeExcludeMeshes: BABYLON.Mesh[] = [];
 	private originalMeshes: BABYLON.Mesh[] = [];
 	private bakedMeshes: BABYLON.Mesh[] = [];
 	private hasTexture: boolean;
 
-	constructor(root: BABYLON.Mesh, originalMeshes: BABYLON.Mesh[], hasTexture: boolean, bakedCallback: ((meshes: BABYLON.Mesh[]) => void) | null = null) {
+	constructor(root: BABYLON.Mesh, originalMeshes: BABYLON.Mesh[], hasTexture: boolean, bakedCallback: ((meshes: (BABYLON.Mesh | BABYLON.AbstractMesh)[]) => void) | null = null) {
 		this.root = root;
 		this.originalMeshes = originalMeshes;
 		this.hasTexture = hasTexture;
@@ -290,7 +290,7 @@ export class ModelManager {
 				fixedMesh = realizedMesh;
 			}
 
-			_toMerge.push(fixedMesh);
+			_toMerge.push(fixedMesh as BABYLON.Mesh);
 		}
 
 		let hasMorphTarget = false;
@@ -336,14 +336,14 @@ export class ModelManager {
 			return;
 		}
 
-		const merged = BABYLON.Mesh.MergeMeshes(toMerge, true, false, undefined, false, true);
+		const merged = BABYLON.Mesh.MergeMeshes(toMerge, true, false, undefined, false, true)!;
 		merged.parent = this.root;
 		// 消すと選択解除した後に再度選択した時にエンジンがクラッシュする
 		//merged.morphTargetManager?.dispose();
 		//merged.morphTargetManager = null;
 
 		if (!hasMorphTarget) { // https://forum.babylonjs.com/t/is-it-intentional-that-morph-targets-do-not-work-on-meshes-with-frozen-materials/63252
-			merged.material.freeze();
+			merged.material!.freeze();
 			if (merged.material instanceof BABYLON.MultiMaterial) {
 				for (const subMat of merged.material.subMaterials) {
 					(subMat as BABYLON.PBRMaterial).freeze();
