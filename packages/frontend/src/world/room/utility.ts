@@ -216,7 +216,7 @@ export class ModelManager {
 	private bakedMeshes: BABYLON.Mesh[] = [];
 	private hasTexture: boolean;
 
-	constructor(root: BABYLON.Mesh, originalMeshes: BABYLON.Mesh[], hasTexture: boolean, bakedCallback: ((meshes: (BABYLON.Mesh | BABYLON.AbstractMesh)[]) => void) | null = null) {
+	constructor(root: BABYLON.TransformNode, originalMeshes: BABYLON.Mesh[], hasTexture: boolean, bakedCallback: ((meshes: (BABYLON.Mesh | BABYLON.AbstractMesh)[]) => void) | null = null) {
 		this.root = root;
 		this.originalMeshes = originalMeshes;
 		this.hasTexture = hasTexture;
