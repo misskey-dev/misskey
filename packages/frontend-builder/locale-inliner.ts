@@ -58,7 +58,7 @@ export class LocaleInliner {
 
 	collectsModifications() {
 		for (const chunk of this.chunks) {
-			if (!chunk.sourceCode) {
+			if (chunk.sourceCode == null) {
 				throw new Error(`Source code for ${chunk.fileName} is not loaded.`);
 			}
 			const fileLogger = this.logger.prefixed(`${chunk.fileName} (${chunk.chunkName}): `);
