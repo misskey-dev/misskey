@@ -1,7 +1,7 @@
 ## Unreleased
 
 ### General
--
+- Feat: ジョブキュー管理画面からキューの一時停止/再開ができるように
 
 ### Client
 -
