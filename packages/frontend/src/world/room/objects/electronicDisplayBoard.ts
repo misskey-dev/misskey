@@ -24,11 +24,21 @@ export const electronicDisplayBoard = defineObject({
 				type: 'color',
 				label: 'LED color',
 			},
+			ledBrightness: {
+				type: 'range',
+				label: 'LED brightness',
+				min: 0,
+				max: 1,
+				step: 0.01,
+			},
+		},
+		defaults: {
 		},
 		default: {
 			text: 'Hello, Misskey!',
 			frameColor: [0.05, 0.05, 0.05],
 			ledColor: [1, 1, 1],
+			ledBrightness: 0.5,
 		},
 	},
 	placement: 'side',
@@ -44,7 +54,7 @@ export const electronicDisplayBoard = defineObject({
 		const texLoading = Promise.withResolvers<void>();
 
 		const tex = new BABYLON.Texture('/client-assets/room/textures/dot-matrix-chars.png', scene, false, false, undefined, () => {
-			tex.level = 2;
+			tex.level = 1;
 			textMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
 			textMaterial.emissiveTexture = tex;
 			textMaterial.albedoTexture = tex;
@@ -89,6 +99,12 @@ export const electronicDisplayBoard = defineObject({
 
 		applyLedColor();
 
+		const applyLedBrightness = () => {
+			textMaterial.emissiveIntensity = options.ledBrightness * 2;
+		};
+
+		applyLedBrightness();
+
 		let text = '';
 
 		const applyText = () => {
@@ -117,6 +133,7 @@ export const electronicDisplayBoard = defineObject({
 					case 'text': applyText(); break;
 					case 'frameColor': applyFrameColor(); break;
 					case 'ledColor': applyLedColor(); break;
+					case 'ledBrightness': applyLedBrightness(); break;
 				}
 			},
 			interactions: {},
