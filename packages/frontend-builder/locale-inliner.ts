@@ -80,7 +80,7 @@ export class LocaleInliner {
 		await fs.mkdir(path.join(this.outputDir, localeName), { recursive: true });
 		const localeLogger = localeName === 'ja-JP' ? this.logger : blankLogger; // we want to log for single locale only
 		for (const chunk of this.chunks) {
-			if (!chunk.sourceCode || !chunk.modifications) {
+			if (chunk.sourceCode == null || !chunk.modifications) {
 				throw new Error(`Source code or modifications for ${chunk.fileName} is not available.`);
 			}
 			const fileLogger = localeLogger.prefixed(`${chunk.fileName} (${chunk.chunkName}): `);
