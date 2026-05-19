@@ -49,7 +49,9 @@ import type { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
 import { ChatService } from '@/core/ChatService.js';
 import type { OnModuleInit } from '@nestjs/common';
+import type { MiNotification } from '@/models/Notification.js';
 import type { NoteEntityService } from './NoteEntityService.js';
+import type { NotificationEntityService } from './NotificationEntityService.js';
 import type { PageEntityService } from './PageEntityService.js';
 import { toArray } from '@/misc/prelude/array.js';
 
@@ -87,6 +89,7 @@ export type UserRelation = {
 export class UserEntityService implements OnModuleInit {
 	private apPersonService: ApPersonService;
 	private noteEntityService: NoteEntityService;
+	private notificationEntityService: NotificationEntityService;
 	private pageEntityService: PageEntityService;
 	private customEmojiService: CustomEmojiService;
 	private announcementService: AnnouncementService;
@@ -143,6 +146,7 @@ export class UserEntityService implements OnModuleInit {
 	onModuleInit() {
 		this.apPersonService = this.moduleRef.get('ApPersonService');
 		this.noteEntityService = this.moduleRef.get('NoteEntityService');
+		this.notificationEntityService = this.moduleRef.get('NotificationEntityService');
 		this.pageEntityService = this.moduleRef.get('PageEntityService');
 		this.customEmojiService = this.moduleRef.get('CustomEmojiService');
 		this.announcementService = this.moduleRef.get('AnnouncementService');
@@ -342,21 +346,33 @@ export class UserEntityService implements OnModuleInit {
 
 		const latestReadNotificationId = await this.redisClient.get(`latestReadNotification:${userId}`);
 
-		if (!latestReadNotificationId) {
-			response.unreadCount = await this.redisClient.xlen(`notificationTimeline:${userId}`);
-		} else {
-			const latestNotificationIdsRes = await this.redisClient.xrevrange(
+		// 未読範囲の Stream エントリを取得する。
+		// latestReadNotificationId が無い (一度も既読化していない) 場合は Stream 全体が未読範囲。
+		// 既読位置がある場合は exclusive 比較で「既読位置より新しい」エントリだけ拾う。
+		const notificationsRes = latestReadNotificationId
+			? await this.redisClient.xrevrange(
 				`notificationTimeline:${userId}`,
 				'+',
-				latestReadNotificationId,
+				'(' + latestReadNotificationId,
+			)
+			: await this.redisClient.xrevrange(
+				`notificationTimeline:${userId}`,
+				'+',
+				'-',
 			);
 
-			response.unreadCount = (latestNotificationIdsRes.length - 1 >= 0) ? latestNotificationIdsRes.length - 1 : 0;
-		}
+		if (notificationsRes.length === 0) return response;
 
-		if (response.unreadCount > 0) {
-			response.hasUnread = true;
-		}
+		// Stream 上のエントリ数をそのまま未読カウントにすると、
+		// packMany で除外される通知 (削除済みノート・サスペンドされた notifier・
+		// 解決済みフォローリクエスト・削除済みロール等) も含めてしまい、
+		// 「通知ページには表示されないのにバッジだけ残る」という乖離が発生する (misskey-dev/misskey#17427)。
+		// API 表示と一致させるため、packMany と同じバリデータを通した件数を未読数とする。
+		const notifications = notificationsRes.map(x => JSON.parse(x[1][1])) as MiNotification[];
+		const validNotifications = await this.notificationEntityService.packMany(notifications, userId);
+
+		response.unreadCount = validNotifications.length;
+		response.hasUnread = response.unreadCount > 0;
 
 		return response;
 	}
