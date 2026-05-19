@@ -22,7 +22,6 @@ type EngineEventsOf<T> = T extends EngineBase<infer X> ? X : EngineBaseEvents;
 
 // UIとエンジンの間に挟まり抽象化を行うレイヤー。
 // UIからは、エンジンが直で動いててもワーカーで動いてても同じように操作できるように見える
-// infer EVs from T
 export abstract class EngineControllerBase<T extends EngineBase<EngineBaseEvents>> {
 	private worker: Worker | null = null;
 	private engine: T | null = null;
