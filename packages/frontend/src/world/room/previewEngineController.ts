@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { EngineControllerBase } from '../engineControllerBase.js';
+import { EngineControllerBase } from '../EngineControllerBase.js';
 import type { RoomObjectPreviewEngine } from './previewEngine.js';
 import type { RoomAttachments } from './utility.js';
 

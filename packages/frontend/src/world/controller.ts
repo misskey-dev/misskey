@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { EngineControllerBase } from './engineControllerBase.js';
+import { EngineControllerBase } from './EngineControllerBase.js';
+import type { WorldEngine } from './engine.js';
 
 export type WorldEngineControllerOptions = {
 	workerMode?: boolean;
@@ -14,7 +15,7 @@ export type WorldEngineControllerOptions = {
 };
 
 // 抽象化レイヤー
-export class WorldEngineController extends EngineControllerBase {
+export class WorldEngineController extends EngineControllerBase<WorldEngine> {
 	constructor(options: WorldEngineControllerOptions) {
 		super({
 			...options,

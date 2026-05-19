@@ -6,6 +6,7 @@
 import { reactive, ref, shallowRef, triggerRef, watch } from 'vue';
 import * as BABYLON from '@babylonjs/core';
 import { EventEmitter } from 'eventemitter3';
+import type { EngineBase, EngineBaseEvents } from './EngineBase.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 
@@ -17,9 +18,12 @@ export type EngineControllerBaseOptions = {
 	antialias: boolean;
 };
 
+type EngineEventsOf<T> = T extends EngineBase<infer X> ? X : EngineBaseEvents;
+
 // UIとエンジンの間に挟まり抽象化を行うレイヤー。
 // UIからは、エンジンが直で動いててもワーカーで動いてても同じように操作できるように見える
-export abstract class EngineControllerBase<T extends RoomEngineBase> {
+// infer EVs from T
+export abstract class EngineControllerBase<T extends EngineBase<EngineBaseEvents>> {
 	private worker: Worker | null = null;
 	private engine: T | null = null;
 	private canvas: HTMLCanvasElement | null = null;
@@ -45,7 +49,7 @@ export abstract class EngineControllerBase<T extends RoomEngineBase> {
 		this.canvas.width = canvas.clientWidth > 4 ? canvas.clientWidth : 4;
 		this.canvas.height = canvas.clientHeight > 4 ? canvas.clientHeight : 4;
 
-		const engineEvents = new EventEmitter<RoomEngineBaseEvents>();
+		const engineEvents = new EventEmitter<EngineEventsOf<T>>();
 
 		engineEvents.on('loadingProgress', ({ progress }) => {
 			this.initializeProgress.value = progress;

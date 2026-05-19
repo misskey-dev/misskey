@@ -6,8 +6,8 @@
 import * as BABYLON from '@babylonjs/core';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic.js';
 import { GridMaterial } from '@babylonjs/materials';
-import EventEmitter from 'eventemitter3';
 import { camelToKebab, WORLD_SCALE, cm, getMeshesBoundingBox, Timer, sleep, ArcRotateCameraManualInput } from '../utility.js';
+import { EngineBase } from '../EngineBase.js';
 import { getObjectDef } from './object-defs.js';
 import { SYSTEM_MESH_NAMES, ModelManager, GRAPHICS_QUALITY } from './utility.js';
 import { convertRawOptions } from './object.js';
@@ -16,10 +16,9 @@ import type { RoomAttachments } from './utility.js';
 import { genId } from '@/utility/id.js';
 import { deepClone } from '@/utility/clone.js';
 
-// TODO: RoomEngineBaseとしてabstract classを抽出
-export class RoomObjectPreviewEngine extends EventEmitter {
-	private engine: BABYLON.WebGPUEngine;
-	private scene: BABYLON.Scene;
+export class RoomObjectPreviewEngine extends EngineBase<{
+	'loadingProgress': (ctx: { progress: number }) => void;
+}> {
 	private sr: BABYLON.SnapshotRenderingHelper;
 	private shadowGenerator: BABYLON.ShadowGenerator;
 	private camera: BABYLON.ArcRotateCamera;
@@ -34,32 +33,21 @@ export class RoomObjectPreviewEngine extends EventEmitter {
 	private timerForEachObject: Timer | null = null;
 	private pipeline: BABYLON.DefaultRenderingPipeline;
 	private graphicsQuality: number;
-	private fps: number | null = null;
-	private disposed = false;
-
-	public inputs: EventEmitter<{
-		'click': (event: { x: number; y: number; }) => void;
-		'keydown': (event: { code: string; shiftKey: boolean; }) => void;
-		'keyup': (event: { code: string; shiftKey: boolean; }) => void;
-		'wheel': (event: { deltaY: number; }) => void;
-		'zoom': (event: { delta: number; }) => void;
-		'pointer': (event: { x: number; y: number; }) => void;
-	}> = new EventEmitter();
 
 	constructor(options: {
 		engine: BABYLON.WebGPUEngine;
 		graphicsQuality: number;
 		fps: number | null;
 	}) {
-		super();
+		super({
+			engine: options.engine,
+			fps: options.fps,
+		});
 
 		registerBuiltInLoaders();
 
 		this.graphicsQuality = options.graphicsQuality;
-		this.fps = options.fps;
 
-		this.engine = options.engine;
-		this.scene = new BABYLON.Scene(this.engine);
 		this.scene.autoClear = false;
 		this.scene.skipPointerMovePicking = true;
 		this.scene.skipFrustumClipping = true; // snapshot renderingでは全てのメッシュがアクティブになっている必要があるため
@@ -156,50 +144,6 @@ export class RoomObjectPreviewEngine extends EventEmitter {
 				}, 100);
 			};
 		}
-	}
-
-	private currentRafId: number | null = null;
-
-	private startRenderLoop() {
-		if (this.fps == null) {
-			this.engine.runRenderLoop(() => {
-				this.scene.render();
-			});
-		} else {
-			let then = 0;
-			const interval = 1000 / this.fps;
-
-			const renderLoop = (timeStamp: number) => {
-				if (this.disposed) return;
-
-				// workerで実行される可能性がある
-				this.currentRafId = requestAnimationFrame(renderLoop);
-
-				const delta = timeStamp - then;
-				if (delta <= interval) return;
-				then = timeStamp - (delta % interval);
-
-				this.engine.beginFrame();
-				this.scene.render();
-				this.engine.endFrame();
-			};
-
-			// workerで実行される可能性がある
-			this.currentRafId = requestAnimationFrame(renderLoop);
-		}
-	}
-
-	public pauseRender() { // TODO: srと同じく参照カウント方式にした方が便利そう
-		this.engine.stopRenderLoop();
-		if (this.currentRafId != null) {
-			// workerで実行される可能性がある
-			cancelAnimationFrame(this.currentRafId);
-			this.currentRafId = null;
-		}
-	}
-
-	public resumeRender() {
-		this.startRenderLoop();
 	}
 
 	public async init() {
@@ -428,17 +372,9 @@ export class RoomObjectPreviewEngine extends EventEmitter {
 	}
 
 	public destroy() {
-		this.engine.stopRenderLoop();
-		if (this.currentRafId != null) {
-			// workerで実行される可能性がある
-			cancelAnimationFrame(this.currentRafId);
-			this.currentRafId = null;
-		}
+		super.destroy();
 		if (this.timerForEachObject != null) {
 			this.timerForEachObject.dispose();
 		}
-		this.engine.dispose();
-		this.scene.dispose();
-		this.disposed = true;
 	}
 }

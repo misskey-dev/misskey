@@ -11,6 +11,7 @@ import tinycolor from 'tinycolor2';
 import Hls from 'hls.js';
 import { RecyvlingTextGrid, Timer, WORLD_SCALE, camelToKebab, cm, createPlaneUvMapper, normalizeUvToSquare, randomRange } from './utility.js';
 import { TIME_MAP } from './utility.js';
+import { EngineBase } from './EngineBase.js';
 import { genId } from '@/utility/id.js';
 import { deepClone } from '@/utility/clone.js';
 
@@ -18,7 +19,7 @@ const SNAPSHOT_RENDERING = false; // 実験的
 const USE_GLOW = true; // ドローコールが増えて重い
 const IN_WEB_WORKER = typeof window === 'undefined';
 
-export type WorldEngineEvents = {
+export class WorldEngine extends EngineBase<{
 	'playSfxUrl': (ctx: {
 		url: string;
 		options: {
@@ -27,13 +28,7 @@ export type WorldEngineEvents = {
 		};
 	}) => void;
 	'loadingProgress': (ctx: { progress: number }) => void;
-};
-
-// TODO: RoomEngineBaseとしてabstract classを抽出
-export class WorldEngine extends EventEmitter<WorldEngineEvents> {
-	private canvas: HTMLCanvasElement;
-	private engine: BABYLON.WebGPUEngine;
-	public scene: BABYLON.Scene;
+}> {
 	private shadowGeneratorForSunLight: BABYLON.ShadowGenerator;
 	public camera: BABYLON.UniversalCamera;
 	private time: 0 | 1 | 2 = 0; // 0: 昼, 1: 夕, 2: 夜
@@ -45,30 +40,19 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 	private translucentTextMaterial: BABYLON.StandardMaterial;
 	private reflectionProbe: BABYLON.ReflectionProbe;
 	public timer: Timer = new Timer();
-
 	public isSitting = false;
-	private fps: number | null = null;
-	private disposed = false;
-
-	public inputs: EventEmitter<{
-		'click': (event: { offsetX: number; offsetY: number; }) => void;
-		'keydown': (event: { code: string; shiftKey: boolean; }) => void;
-		'keyup': (event: { code: string; shiftKey: boolean; }) => void;
-		'wheel': (event: { deltaY: number; }) => void;
-	}> = new EventEmitter();
 
 	constructor(options: {
 		canvas: HTMLCanvasElement;
 		engine: BABYLON.WebGPUEngine;
 	}) {
-		super();
-
-		this.canvas = options.canvas;
+		super({
+			engine: options.engine,
+			fps: null,
+		});
 
 		registerBuiltInLoaders();
 
-		this.engine = options.engine;
-		this.scene = new BABYLON.Scene(this.engine);
 		this.scene.autoClear = false;
 		//this.scene.autoClearDepthAndStencil = false;
 		this.scene.skipPointerMovePicking = true;
@@ -204,31 +188,6 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 
 		if (SNAPSHOT_RENDERING) {
 			this.sr.enableSnapshotRendering();
-		}
-
-		if (this.fps == null) {
-			this.engine.runRenderLoop(() => {
-				this.scene.render();
-			});
-		} else {
-			let then = 0;
-			const interval = 1000 / this.fps;
-
-			const renderLoop = (timeStamp: number) => {
-				if (this.disposed) return;
-
-				window.requestAnimationFrame(renderLoop);
-
-				const delta = timeStamp - then;
-				if (delta <= interval) return;
-				then = timeStamp - (delta % interval);
-
-				this.engine.beginFrame();
-				this.scene.render();
-				this.engine.endFrame();
-			};
-
-			window.requestAnimationFrame(renderLoop);
 		}
 
 		this.inputs.on('keydown', (ev) => {
@@ -621,9 +580,8 @@ export class WorldEngine extends EventEmitter<WorldEngineEvents> {
 	}
 
 	public destroy() {
+		super.destroy();
 		this.timer.dispose();
-		this.engine.dispose();
-		this.disposed = true;
 	}
 }
 

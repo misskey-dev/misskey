@@ -5,7 +5,7 @@
 
 import { ref, shallowRef } from 'vue';
 import { cm } from '../utility.js';
-import { EngineControllerBase } from '../engineControllerBase.js';
+import { EngineControllerBase } from '../EngineControllerBase.js';
 import type { ShallowRef } from 'vue';
 import type { RoomEngine, RoomState } from './engine.js';
 import type { RoomStateObject } from './object.js';
