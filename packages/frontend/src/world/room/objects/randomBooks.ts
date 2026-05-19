@@ -17,9 +17,10 @@ export const randomBooks = defineObject({
 	name: '雑多な本',
 	options: {
 		schema: {
-			plainCover: {
-				type: 'boolean',
-				label: 'Plain cover',
+			variation: {
+				type: 'enum',
+				label: 'Variation',
+				enum: ['mix', 'mix-plain'],
 			},
 			count: {
 				type: 'range',
@@ -38,7 +39,7 @@ export const randomBooks = defineObject({
 			},
 		},
 		default: {
-			plainCover: false,
+			variation: 'mix',
 			count: 10,
 			stackVertically: false,
 			seed: 0,
@@ -50,12 +51,19 @@ export const randomBooks = defineObject({
 	canPreMeshesMerging: false,
 	createInstance: ({ options, model, scene }) => {
 		const bodyMesh = model.findMesh('__X_BODY__');
-		const tex = new BABYLON.Texture('/client-assets/room/objects/random-books/texture.png', scene, {
-			invertY: false,
-			samplingMode: BABYLON.Texture.NEAREST_SAMPLINGMODE,
-		});
-		bodyMesh.material.albedoTexture = tex;
 		bodyMesh.isVisible = false;
+
+		const applyVariation = () => {
+			if (options.variation === 'mix') {
+				const tex = new BABYLON.Texture('/client-assets/room/objects/random-books/textures/mix.png', scene, false, false);
+				bodyMesh.material.albedoTexture = tex;
+			} else if (options.variation === 'mix-plain') {
+				const tex = new BABYLON.Texture('/client-assets/room/objects/random-books/textures/mix-plain.png', scene, false, false);
+				bodyMesh.material.albedoTexture = tex;
+			}
+		};
+
+		applyVariation();
 
 		const TEXTURE_DIVISION = 8;
 		let bookMeshes: BABYLON.Mesh[] = [];
@@ -137,6 +145,7 @@ export const randomBooks = defineObject({
 			},
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
+					case 'variation': applyVariation(); break;
 					case 'seed': gen(); break;
 					case 'count': gen(); break;
 					case 'stackVertically': gen(); break;
