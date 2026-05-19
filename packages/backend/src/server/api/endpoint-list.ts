@@ -72,8 +72,8 @@ export * as 'admin/queue/remove-job' from './endpoints/admin/queue/remove-job.js
 export * as 'admin/queue/show-job' from './endpoints/admin/queue/show-job.js';
 export * as 'admin/queue/show-job-logs' from './endpoints/admin/queue/show-job-logs.js';
 export * as 'admin/queue/promote-jobs' from './endpoints/admin/queue/promote-jobs.js';
-export * as 'admin/queue/pause-queue' from './endpoints/admin/queue/pause-queue.js';
-export * as 'admin/queue/resume-queue' from './endpoints/admin/queue/resume-queue.js';
+export * as 'admin/queue/pause' from './endpoints/admin/queue/pause.js';
+export * as 'admin/queue/resume' from './endpoints/admin/queue/resume.js';
 export * as 'admin/queue/jobs' from './endpoints/admin/queue/jobs.js';
 export * as 'admin/queue/stats' from './endpoints/admin/queue/stats.js';
 export * as 'admin/queue/queues' from './endpoints/admin/queue/queues.js';

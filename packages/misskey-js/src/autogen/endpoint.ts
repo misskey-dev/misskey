@@ -80,13 +80,13 @@ import type {
 	AdminQueueInboxDelayedResponse,
 	AdminQueueJobsRequest,
 	AdminQueueJobsResponse,
-	AdminQueuePauseQueueRequest,
+	AdminQueuePauseRequest,
 	AdminQueuePromoteJobsRequest,
 	AdminQueueQueueStatsRequest,
 	AdminQueueQueueStatsResponse,
 	AdminQueueQueuesResponse,
 	AdminQueueRemoveJobRequest,
-	AdminQueueResumeQueueRequest,
+	AdminQueueResumeRequest,
 	AdminQueueRetryJobRequest,
 	AdminQueueShowJobRequest,
 	AdminQueueShowJobResponse,
@@ -724,12 +724,12 @@ export type Endpoints = {
 	'admin/queue/deliver-delayed': { req: EmptyRequest; res: AdminQueueDeliverDelayedResponse };
 	'admin/queue/inbox-delayed': { req: EmptyRequest; res: AdminQueueInboxDelayedResponse };
 	'admin/queue/jobs': { req: AdminQueueJobsRequest; res: AdminQueueJobsResponse };
-	'admin/queue/pause-queue': { req: AdminQueuePauseQueueRequest; res: EmptyResponse };
+	'admin/queue/pause': { req: AdminQueuePauseRequest; res: EmptyResponse };
 	'admin/queue/promote-jobs': { req: AdminQueuePromoteJobsRequest; res: EmptyResponse };
 	'admin/queue/queue-stats': { req: AdminQueueQueueStatsRequest; res: AdminQueueQueueStatsResponse };
 	'admin/queue/queues': { req: EmptyRequest; res: AdminQueueQueuesResponse };
 	'admin/queue/remove-job': { req: AdminQueueRemoveJobRequest; res: EmptyResponse };
-	'admin/queue/resume-queue': { req: AdminQueueResumeQueueRequest; res: EmptyResponse };
+	'admin/queue/resume': { req: AdminQueueResumeRequest; res: EmptyResponse };
 	'admin/queue/retry-job': { req: AdminQueueRetryJobRequest; res: EmptyResponse };
 	'admin/queue/show-job': { req: AdminQueueShowJobRequest; res: AdminQueueShowJobResponse };
 	'admin/queue/show-job-logs': { req: AdminQueueShowJobLogsRequest; res: AdminQueueShowJobLogsResponse };

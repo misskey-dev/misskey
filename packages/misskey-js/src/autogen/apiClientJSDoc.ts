@@ -652,7 +652,7 @@ declare module '../api.js' {
      * 
      * **Credential required**: *Yes* / **Permission**: *write:admin:queue*
      */
-    request<E extends 'admin/queue/pause-queue', P extends Endpoints[E]['req']>(
+    request<E extends 'admin/queue/pause', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,
@@ -707,7 +707,7 @@ declare module '../api.js' {
      * 
      * **Credential required**: *Yes* / **Permission**: *write:admin:queue*
      */
-    request<E extends 'admin/queue/resume-queue', P extends Endpoints[E]['req']>(
+    request<E extends 'admin/queue/resume', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,

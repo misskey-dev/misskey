@@ -301,7 +301,7 @@ async function pauseQueue() {
 	});
 	if (canceled) return;
 
-	await os.apiWithDialog('admin/queue/pause-queue', { queue: tab.value });
+	await os.apiWithDialog('admin/queue/pause', { queue: tab.value });
 
 	fetchCurrentQueue();
 	fetchJobs();
@@ -310,7 +310,7 @@ async function pauseQueue() {
 async function resumeQueue() {
 	if (tab.value === '-') return;
 
-	await os.apiWithDialog('admin/queue/resume-queue', { queue: tab.value });
+	await os.apiWithDialog('admin/queue/resume', { queue: tab.value });
 
 	fetchCurrentQueue();
 	fetchJobs();

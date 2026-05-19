@@ -530,14 +530,14 @@ export type paths = {
          */
         post: operations['admin___queue___jobs'];
     };
-    '/admin/queue/pause-queue': {
+    '/admin/queue/pause': {
         /**
-         * admin/queue/pause-queue
+         * admin/queue/pause
          * @description No description provided.
          *
          *     **Credential required**: *Yes* / **Permission**: *write:admin:queue*
          */
-        post: operations['admin___queue___pause-queue'];
+        post: operations['admin___queue___pause'];
     };
     '/admin/queue/promote-jobs': {
         /**
@@ -575,14 +575,14 @@ export type paths = {
          */
         post: operations['admin___queue___remove-job'];
     };
-    '/admin/queue/resume-queue': {
+    '/admin/queue/resume': {
         /**
-         * admin/queue/resume-queue
+         * admin/queue/resume
          * @description No description provided.
          *
          *     **Credential required**: *Yes* / **Permission**: *write:admin:queue*
          */
-        post: operations['admin___queue___resume-queue'];
+        post: operations['admin___queue___resume'];
     };
     '/admin/queue/retry-job': {
         /**
@@ -9921,7 +9921,7 @@ export interface operations {
             };
         };
     };
-    'admin___queue___pause-queue': {
+    admin___queue___pause: {
         requestBody: {
             content: {
                 'application/json': {
@@ -10278,7 +10278,7 @@ export interface operations {
             };
         };
     };
-    'admin___queue___resume-queue': {
+    admin___queue___resume: {
         requestBody: {
             content: {
                 'application/json': {
