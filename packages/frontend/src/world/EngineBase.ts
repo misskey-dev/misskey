@@ -13,6 +13,8 @@ export type EngineBaseEvents = {
 export abstract class EngineBase<EVs extends EngineBaseEvents> extends EventEmitter<{
 	'ev': (ctx: { type: keyof EVs; ctx: Parameters<EVs[keyof EVs]>[0] }) => void;
 }> {
+	declare _eventTypes?: EVs;
+
 	protected engine: BABYLON.WebGPUEngine;
 	protected scene: BABYLON.Scene;
 	protected fps: number | null = null;
