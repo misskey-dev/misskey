@@ -7,8 +7,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div v-if="!muted" :class="[$style.root, { [$style.children]: depth > 1 }]">
 	<div :class="$style.main">
 		<div v-if="note?.channel" :class="$style.colorBar" :style="{ background: note.channel.color }"></div>
-		<MkAvatar v-if="note && !note.deletedAt" :class="$style.avatar" :user="note.user" link preview/>
-		<div v-else :class="$style.avatar"></div>
+		<MkNoteUserAvatar :class="$style.avatar" :note="note" link preview/>
 		<div :class="$style.body">
 			<MkNoteHeader :class="$style.header" :note="note" :mini="true"/>
 			<div>
@@ -33,9 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div v-else-if="note" :class="$style.muted" @click="muted = false">
 	<I18n :src="i18n.ts.userSaysSomething" tag="small">
 		<template #name>
-			<MkA v-user-preview="note.userId" :to="userPage(note.user)">
-				<MkUserName :user="note.user"/>
-			</MkA>
+			<MkNoteUserName :note="note" link/>
 		</template>
 	</I18n>
 </div>
@@ -45,13 +42,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
+import MkNoteUserAvatar from '@/components/MkNoteUserAvatar.vue';
+import MkNoteUserName from '@/components/MkNoteUserName.vue';
 import MkSubNoteContent from '@/components/MkSubNoteContent.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
 import { notePage } from '@/filters/note.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { $i } from '@/i.js';
-import { userPage } from '@/filters/user.js';
 import { checkWordMute } from '@/utility/check-word-mute.js';
 
 const props = withDefaults(defineProps<{

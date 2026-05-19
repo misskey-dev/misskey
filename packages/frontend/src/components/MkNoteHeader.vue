@@ -6,12 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <header :class="$style.root">
 	<template v-if="note && !note.deletedAt">
-		<div v-if="mock" :class="$style.name">
-			<MkUserName :user="note.user"/>
-		</div>
-		<MkA v-else v-user-preview="note.user.id" :class="$style.name" :to="userPage(note.user)">
-			<MkUserName :user="note.user"/>
-		</MkA>
+		<MkNoteUserName :class="$style.name" :note="note" :link="!mock"/>
 		<div v-if="note.user.isBot" :class="$style.isBot">bot</div>
 		<div :class="$style.username"><MkAcct :user="note.user"/></div>
 		<div v-if="note.user.badgeRoles" :class="$style.badgeRoles">
@@ -19,9 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</template>
 	<template v-else>
-		<div :class="$style.name" style="opacity: 0.5;">
-			Unknown User
-		</div>
+		<MkNoteUserName :class="$style.name" :note="note"/>
 	</template>
 	<div v-if="note" :class="$style.info">
 		<div v-if="mock">
@@ -46,7 +39,7 @@ import { inject } from 'vue';
 import * as Misskey from 'misskey-js';
 import { i18n } from '@/i18n.js';
 import { notePage } from '@/filters/note.js';
-import { userPage } from '@/filters/user.js';
+import MkNoteUserName from '@/components/MkNoteUserName.vue';
 import { DI } from '@/di.js';
 
 defineProps<{

@@ -5,8 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.root">
-	<MkAvatar v-if="note != null && !note.deletedAt" :class="[$style.avatar, prefer.s.useStickyIcons ? $style.useSticky : null]" :user="note.user" link preview/>
-	<div v-else :class="[$style.avatar, prefer.s.useStickyIcons ? $style.useSticky : null]"></div>
+	<MkNoteUserAvatar :class="[$style.avatar, prefer.s.useStickyIcons ? $style.useSticky : null]" :note="note" link preview/>
 	<div :class="$style.main">
 		<MkNoteHeader :class="$style.header" :note="note" :mini="true"/>
 		<div>
@@ -26,12 +25,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
+import MkNoteUserAvatar from '@/components/MkNoteUserAvatar.vue';
 import MkSubNoteContent from '@/components/MkSubNoteContent.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
-import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 
-const props = defineProps<{
+defineProps<{
 	note: Misskey.entities.Note | null;
 }>();
 

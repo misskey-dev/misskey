@@ -45,20 +45,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<article :class="$style.note" @contextmenu.stop="onContextmenu">
 		<header :class="$style.noteHeader">
-			<div v-if="appearNote.deletedAt" :class="$style.noteHeaderAvatar"></div>
-			<MkAvatar v-else :class="$style.noteHeaderAvatar" :user="appearNote.user" indicator link preview/>
-			<div v-if="appearNote.deletedAt" :class="$style.noteHeaderBody">
-				<div :class="$style.noteHeaderName" style="opacity: 0.5;">
-					Unknown User
-				</div>
-			</div>
-			<div v-else :class="$style.noteHeaderBody">
+			<MkNoteUserAvatar :class="$style.noteHeaderAvatar" :note="appearNote" indicator link preview/>
+			<div :class="$style.noteHeaderBody">
 				<div>
-					<MkA v-user-preview="appearNote.user.id" :class="$style.noteHeaderName" :to="userPage(appearNote.user)">
-						<MkUserName :nowrap="false" :user="appearNote.user"/>
-					</MkA>
-					<span v-if="appearNote.user.isBot" :class="$style.isBot">bot</span>
-					<div :class="$style.noteHeaderInfo">
+					<MkNoteUserName :class="$style.noteHeaderName" :note="appearNote" :nowrap="false"/>
+					<span v-if="!appearNote.deletedAt && appearNote.user.isBot" :class="$style.isBot">bot</span>
+					<div v-if="!appearNote.deletedAt" :class="$style.noteHeaderInfo">
 						<span v-if="appearNote.visibility !== 'public'" style="margin-left: 0.5em;" :title="i18n.ts._visibility[appearNote.visibility]">
 							<i v-if="appearNote.visibility === 'home'" class="ti ti-home"></i>
 							<i v-else-if="appearNote.visibility === 'followers'" class="ti ti-lock"></i>
@@ -67,7 +59,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<span v-if="appearNote.localOnly" style="margin-left: 0.5em;" :title="i18n.ts._visibility['disableFederation']"><i class="ti ti-rocket-off"></i></span>
 					</div>
 				</div>
-				<div :class="$style.noteHeaderUsernameAndBadgeRoles">
+				<div v-if="!appearNote.deletedAt" :class="$style.noteHeaderUsernameAndBadgeRoles">
 					<div :class="$style.noteHeaderUsername">
 						<MkAcct :user="appearNote.user"/>
 					</div>
@@ -75,7 +67,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<img v-for="(role, i) in appearNote.user.badgeRoles" :key="i" v-tooltip="role.name" :class="$style.noteHeaderBadgeRole" :src="role.iconUrl!"/>
 					</div>
 				</div>
-				<MkInstanceTicker v-if="showTicker" :host="appearNote.user.host" :instance="appearNote.user.instance"/>
+				<MkInstanceTicker v-if="!appearNote.deletedAt && showTicker" :host="appearNote.user.host" :instance="appearNote.user.instance"/>
 			</div>
 		</header>
 		<div :class="$style.noteContent">
@@ -247,9 +239,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div v-else-if="muted" class="_panel" :class="$style.muted" @click="muted = false">
 	<I18n :src="i18n.ts.userSaysSomething" tag="small">
 		<template #name>
-			<MkA v-user-preview="appearNote.userId" :to="userPage(appearNote.user)">
-				<MkUserName :user="appearNote.user"/>
-			</MkA>
+			<MkNoteUserName :note="appearNote"/>
 		</template>
 	</I18n>
 </div>
@@ -274,6 +264,8 @@ import MkPoll from '@/components/MkPoll.vue';
 import MkUsersTooltip from '@/components/MkUsersTooltip.vue';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
 import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
+import MkNoteUserAvatar from '@/components/MkNoteUserAvatar.vue';
+import MkNoteUserName from '@/components/MkNoteUserName.vue';
 import { pleaseLogin } from '@/utility/please-login.js';
 import { checkWordMute } from '@/utility/check-word-mute.js';
 import { userPage } from '@/filters/user.js';
