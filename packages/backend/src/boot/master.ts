@@ -5,15 +5,18 @@
 
 import * as fs from 'node:fs';
 import * as os from 'node:os';
-import cluster from 'node:cluster';
 import chalk from 'chalk';
 import chalkTemplate from 'chalk-template';
+import { forkConfiguredWorker } from '@/boot/cluster.js';
+import { WorkerArguments } from '@/boot/const.js';
+import { sentryInit } from '@/boot/sentry.js';
+import { computeWorkerArguments } from '@/boot/worker.js';
 import Logger from '@/logger.js';
 import { loadConfig } from '@/config.js';
 import type { Config } from '@/config.js';
 import { showMachineInfo } from '@/misc/show-machine-info.js';
 import { envOption } from '@/env.js';
-import { initExtraThreadPool, jobQueue, server } from './common.js';
+import { isHttpServerOnPrimary, initExtraThreadPool, jobQueue, server } from './common.js';
 
 const logger = new Logger('core', 'cyan');
 const bootLogger = logger.createSubLogger('boot', 'magenta');
@@ -66,26 +69,7 @@ export async function masterMain() {
 
 	initExtraThreadPool(config);
 
-	if (config.sentryForBackend) {
-		const Sentry = await import('@sentry/node');
-		const { nodeProfilingIntegration } = await import('@sentry/profiling-node');
-
-		Sentry.init({
-			integrations: [
-				...(config.sentryForBackend.enableNodeProfiling ? [nodeProfilingIntegration()] : []),
-			],
-
-			// Performance Monitoring
-			tracesSampleRate: 1.0, //  Capture 100% of the transactions
-
-			// Set sampling rate for profiling - this is relative to tracesSampleRate
-			profilesSampleRate: 1.0,
-
-			maxBreadcrumbs: 0,
-
-			...config.sentryForBackend.options,
-		});
-	}
+	await sentryInit(config);
 
 	bootLogger.info(
 		`mode: [disableClustering: ${envOption.disableClustering}, onlyServer: ${envOption.onlyServer}, onlyQueue: ${envOption.onlyQueue}]`,
@@ -94,8 +78,8 @@ export async function masterMain() {
 	if (!envOption.disableClustering) {
 		// clusterモジュール有効時
 
-		if (envOption.onlyServer) {
-			// onlyServer かつ enableCluster な場合、メインプロセスはforkのみに制限する(listenしない)。
+		if (envOption.onlyServer || !isHttpServerOnPrimary(config)) {
+			// このブロックに入る場合はワーカープロセス側でのlistenが必要になると判断されているため、メインプロセスはforkのみに制限する(listenしない)。
 			// ワーカープロセス側でlistenすると、メインプロセスでポートへの着信を受け入れてワーカープロセスへの分配を行う動作をする。
 			// そのため、メインプロセスでも直接listenするとポートの競合が発生して起動に失敗してしまう。
 			// see: https://nodejs.org/api/cluster.html#cluster
@@ -105,7 +89,7 @@ export async function masterMain() {
 			await server();
 		}
 
-		await spawnWorkers(config.clusterLimit);
+		await spawnWorkers(config);
 	} else {
 		// clusterモジュール無効時
 
@@ -183,16 +167,20 @@ async function connectDb(): Promise<void> {
 }
 */
 
-async function spawnWorkers(limit = 1) {
-	const workers = Math.min(limit, os.cpus().length);
-	bootLogger.info(`Starting ${workers} worker${workers === 1 ? '' : 's'}...`);
-	await Promise.all([...Array(workers)].map(spawnWorker));
+async function spawnWorkers(config: Config) {
+	const workerArgs = computeWorkerArguments(config, envOption);
+	bootLogger.info(`Starting ${workerArgs.length} worker${workerArgs.length === 1 ? '' : 's'}...`);
+
+	await Promise.all(
+		workerArgs.map(it => spawnWorker(it)),
+	);
+
 	bootLogger.succ('All workers started');
 }
 
-function spawnWorker(): Promise<void> {
+function spawnWorker(env: WorkerArguments): Promise<void> {
 	return new Promise(res => {
-		const worker = cluster.fork();
+		const worker = forkConfiguredWorker(env);
 		worker.on('message', message => {
 			if (message === 'listenFailed') {
 				bootLogger.error('The server Listen failed due to the previous error.');

@@ -11,13 +11,12 @@ import cluster from 'node:cluster';
 import { EventEmitter } from 'node:events';
 import chalk from 'chalk';
 import Xev from 'xev';
+import { forkReplacementWorker } from '@/boot/cluster.js';
 import Logger from '@/logger.js';
 import { envOption } from '../env.js';
 import { readyRef } from './ready.js';
 
 import 'reflect-metadata';
-
-process.title = `Misskey (${cluster.isPrimary ? 'master' : 'worker'})`;
 
 Error.stackTraceLimit = Infinity;
 EventEmitter.defaultMaxListeners = 128;
@@ -43,7 +42,7 @@ cluster.on('exit', worker => {
 	// Replace the dead worker,
 	// we're not sentimental
 	clusterLogger.error(chalk.red(`[${worker.id}] died :(`));
-	cluster.fork();
+	forkReplacementWorker(worker);
 });
 
 // Display detail of unhandled promise rejection
@@ -70,12 +69,17 @@ if (!envOption.disableClustering) {
 	if (cluster.isPrimary) {
 		logger.info(`Start main process... pid: ${process.pid}`);
 		const { masterMain } = await import('./master.js');
+		process.title = 'Misskey (master)';
 		await masterMain();
 		ev.mount();
 	} else if (cluster.isWorker) {
 		logger.info(`Start worker process... pid: ${process.pid}`);
-		const { workerMain } = await import('./worker.js');
-		await workerMain();
+		const { workerMain, parseWorkerArguments } = await import('./worker.js');
+
+		const workerArguments = parseWorkerArguments(process.env);
+		process.title = `Misskey (worker${workerArguments.__workerName ? `: ${workerArguments.__workerName}` : ''})`;
+
+		await workerMain(workerArguments);
 	} else {
 		throw new Error('Unknown process type');
 	}
@@ -83,6 +87,7 @@ if (!envOption.disableClustering) {
 	// 非clusterの場合はMasterのみが起動するため、Workerの処理は行わない(cluster.isWorker === trueの状態でこのブロックに来ることはない)
 	logger.info(`Start main process... pid: ${process.pid}`);
 	const { masterMain } = await import('./master.js');
+	process.title = 'Misskey (master)';
 	await masterMain();
 	ev.mount();
 }
