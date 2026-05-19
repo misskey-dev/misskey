@@ -18,7 +18,7 @@ interface WalkerContext {
 }
 
 export function collectModifications(sourceCode: string, fileName: string, fileLogger: Logger, inliner: LocaleInliner): TextModification[] {
-	if (sourceCode == '') return [];
+	if (sourceCode === '') return [];
 	let programNode: RolldownESTree.Program;
 	try {
 		programNode = parseAst(sourceCode);
