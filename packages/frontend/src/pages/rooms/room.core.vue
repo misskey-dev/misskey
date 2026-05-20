@@ -57,8 +57,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton v-if="!controller.grabbing.value && controller.selected.value != null" @click="removeSelectedObject"><i class="ti ti-trash"></i> (X)</MkButton>
 			</template>
 			<MkButton v-if="controller.isSitting.value" @click="controller.standUp()">降りる (Q)</MkButton>
-			<template v-for="interaction in interacions" :key="interaction.id">
-				<MkButton inline @click="interaction.fn()">{{ interaction.label }}{{ interaction.isPrimary ? ' (E)' : '' }}</MkButton>
+			<template v-if="controller.selected.value != null">
+				<template v-for="interaction in controller.selected.value.interacions" :key="interaction.id">
+					<MkButton inline @click="controller.interact(interaction.id)">{{ interaction.label }}{{ interaction.isPrimary ? ' (E)' : '' }}</MkButton>
+				</template>
 			</template>
 		</div>
 
@@ -113,13 +115,6 @@ const props = defineProps<{
 
 const canvasKey = ref(0); // 一度ワーカーに渡したcanvasは再利用できないため作り直すためのkey
 const canvas = useTemplateRef('canvas');
-
-const interacions = shallowRef<{
-	id: string;
-	label: string;
-	isPrimary: boolean;
-	fn: () => void;
-}[]>([]);
 
 function resize() {
 	controller.resize();
@@ -308,19 +303,6 @@ onMounted(async () => {
 		} as RoomTemp));
 		isModified.value = true;
 	});
-
-	//watch(controller.selected, (v) => {
-	//	if (v == null) {
-	//		interacions.value = [];
-	//	} else {
-	//		interacions.value = Object.entries(v.objectEntity.instance.interactions).map(([interactionId, interactionInfo]) => ({
-	//			id: interactionId,
-	//			label: interactionInfo.label,
-	//			isPrimary: v.objectEntity.instance.primaryInteraction === interactionId,
-	//			fn: interactionInfo.fn,
-	//		}));
-	//	}
-	//});
 
 	if (joyStickEl.value != null) {
 		const joyStick = new Joystick(joyStickEl.value!, { radiusPx: joyStickRadiusPx });

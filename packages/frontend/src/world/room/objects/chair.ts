@@ -29,7 +29,7 @@ export const chair = defineObject({
 	hasCollisions: true,
 	isChair: true,
 	canPreMeshesMerging: true,
-	createInstance: ({ model, options }) => {
+	createInstance: ({ model, options, sitChair }) => {
 		const primaryMaterial = model.findMaterial('__X_PRIMARY__');
 		const secondaryMaterial = model.findMaterial('__X_SECONDARY__');
 
@@ -51,7 +51,15 @@ export const chair = defineObject({
 				applyPrimaryColor();
 				applySecondaryColor();
 			},
-			interactions: {},
+			interactions: {
+				sit: {
+					label: 'Sit',
+					fn: () => {
+						sitChair?.();
+					},
+				},
+			},
+			primaryInteraction: 'sit',
 		};
 	},
 });

@@ -117,6 +117,11 @@ export class RoomEngine extends EngineBase<{
 		selected: {
 			objectId: string;
 			objectState: RoomStateObject;
+			interacions: {
+				id: string;
+				label: string;
+				isPrimary: boolean;
+			}[];
 		} | null;
 	}) => void;
 	'changeGrabbingState': (ctx: { grabbing: { forInstall: boolean } | null }) => void;
@@ -179,7 +184,19 @@ export class RoomEngine extends EngineBase<{
 	}
 	set selected(v) {
 		this._selected = v;
-		this.ev('changeSelectedState', { selected: v == null ? null : { objectId: v.objectId, objectState: v.objectState } });
+		if (v == null) {
+			this.ev('changeSelectedState', { selected: null });
+			return;
+		}
+		this.ev('changeSelectedState', { selected: {
+			objectId: v.objectId,
+			objectState: v.objectState,
+			interacions: Object.entries(v.objectEntity.instance.interactions).map(([interactionId, interactionInfo]) => ({
+				id: interactionId,
+				label: interactionInfo.label,
+				isPrimary: v.objectEntity.instance.primaryInteraction === interactionId,
+			})),
+		} });
 	}
 
 	private time: 0 | 1 | 2 = 0; // 0: 昼, 1: 夕, 2: 夜
@@ -903,6 +920,9 @@ export class RoomEngine extends EngineBase<{
 			id: args.id,
 			timer: this.timer, // TODO: 家具が撤去された後も動作し続けるのをどうにかする
 			graphicsQuality: this.graphicsQuality,
+			sitChair: () => {
+				this.sitChair(args.id);
+			},
 			stickyMarkerMeshUpdated: (mesh) => {
 				// TODO
 				//// stickyな子の位置を更新
@@ -1359,17 +1379,16 @@ export class RoomEngine extends EngineBase<{
 		this.grabbingCtx = null;
 	}
 
-	public interact(oid: string) {
+	public interact(oid: string, iid: string | null = null) {
 		const o = this.roomState.installedObjects.find(o => o.id === oid)!;
-		const objDef = getObjectDef(o.type);
 		const entity = this.objectEntities.get(o.id)!;
 
-		if (objDef.isChair) {
-			this.sitChair(o.id);
-		} else {
+		if (iid == null) {
 			if (entity.instance.primaryInteraction != null) {
 				entity.instance.interactions[entity.instance.primaryInteraction].fn();
 			}
+		} else {
+			entity.instance.interactions[iid].fn();
 		}
 	}
 

@@ -140,13 +140,14 @@ export type ObjectDef<OpSc extends OptionsSchema | undefined = undefined> = {
 			fixParticleSystem: (ps: BABYLON.ParticleSystem) => void;
 		};
 		lc: BABYLON.ClusteredLightContainer | null;
-		root: BABYLON.Mesh;
+		root: BABYLON.TransformNode;
 		options: OpSc extends undefined ? ConvertedOptions : Readonly<GetConvertedOptionsSchemaValues<NonNullable<OpSc>>>;
 		model: ModelManager;
 		id: string;
 		timer: Timer;
 		graphicsQuality: number;
 		stickyMarkerMeshUpdated?: (mesh: BABYLON.Mesh) => void;
+		sitChair?: () => void;
 	}) => RoomObjectInstance<OpSc extends undefined ? ConvertedOptions : GetConvertedOptionsSchemaValues<NonNullable<OpSc>>> | Promise<RoomObjectInstance<OpSc extends undefined ? ConvertedOptions : GetConvertedOptionsSchemaValues<NonNullable<OpSc>>>>; // TODO: createInstanceをasyncにするのではなく、別にreadyみたいなものを返させる
 };
 

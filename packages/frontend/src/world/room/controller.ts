@@ -30,9 +30,14 @@ export class RoomController extends EngineControllerBase<RoomEngine> {
 	public isRoomLightOn = ref(true);
 	public grabbing = ref<{ forInstall: boolean } | null>(null);
 	public gridSnapping = ref({ enabled: true, scale: cm(4) });
-	public selected = ref<{
+	public selected = shallowRef<{
 		objectId: string;
 		objectState: RoomStateObject;
+		interacions: {
+			id: string;
+			label: string;
+			isPrimary: boolean;
+		}[];
 	} | null>(null);
 	public roomState: ShallowRef<RoomState>;
 
@@ -193,5 +198,9 @@ export class RoomController extends EngineControllerBase<RoomEngine> {
 			this.call('turnOnRoomLight');
 		}
 		this.isRoomLightOn.value = !this.isRoomLightOn.value;
+	}
+
+	public interact(id: string) {
+		this.call('interact', [this.selected.value!.objectId, id]);
 	}
 }
