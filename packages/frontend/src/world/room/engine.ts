@@ -293,7 +293,6 @@ export class RoomEngine extends EngineBase<{
 		this.camera.applyGravity = true;
 		this.camera.needMoveForGravity = true;
 		this.camera.inputs.clear();
-
 		if (options.useVirtualJoystick) {
 			this.camera.inputs.add(new FreeCameraManualInput(this.scene, {
 				moveSensitivity: 0.015 * WORLD_SCALE,
@@ -313,6 +312,10 @@ export class RoomEngine extends EngineBase<{
 		this.fixedCamera.minZ = cm(1);
 		this.fixedCamera.maxZ = cm(1000);
 		this.fixedCamera.inputs.clear();
+		this.fixedCamera.inputs.add(new FreeCameraManualInput(this.scene, {
+			moveSensitivity: 0.002 * WORLD_SCALE,
+			rotationSensitivity: 0.0003,
+		}));
 
 		this.lightContainer = new BABYLON.ClusteredLightContainer('clustered', [], this.scene);
 		this.lightContainer.maxRange = cm(1000);
@@ -547,7 +550,11 @@ export class RoomEngine extends EngineBase<{
 		});
 
 		this.inputs.on('pointer', (ev) => {
-			(this.camera.inputs.attached.manual as FreeCameraManualInput).setRotationVector({ x: ev.x, y: ev.y });
+			if (this.isSitting) {
+				(this.fixedCamera.inputs.attached.manual as FreeCameraManualInput).setRotationVector({ x: ev.x, y: ev.y });
+			} else {
+				(this.camera.inputs.attached.manual as FreeCameraManualInput).setRotationVector({ x: ev.x, y: ev.y });
+			}
 		});
 
 		this.inited = true;
