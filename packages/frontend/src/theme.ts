@@ -37,7 +37,7 @@ export type Theme = {
 	};
 };
 
-const MAX_THEME_REFERENCE_DEPTH = 4;
+const MAX_THEME_REFERENCE_DEPTH = 8;
 
 export const themeProps = Object.keys(lightTheme.props).filter(key => !key.startsWith('X'));
 
@@ -192,15 +192,15 @@ function getThemeReferenceColor(theme: Theme, key: string, stack: string[], dept
 }
 
 function getColor(theme: Theme, val: string, stack: string[] = [], depth = 0): tinycolor.Instance {
-	if (depth >= MAX_THEME_REFERENCE_DEPTH) {
-		throw new Error('Theme reference limit exceeded');
-	}
-
 	if (val[0] === '@') { // ref (prop)
 		return getThemeReferenceColor(theme, val.substring(1), stack, depth);
 	} else if (val[0] === '$') { // ref (const)
 		return getThemeReferenceColor(theme, val, stack, depth);
 	} else if (val[0] === ':') { // func
+		if (depth >= MAX_THEME_REFERENCE_DEPTH) {
+			throw new Error('Theme reference limit exceeded');
+		}
+
 		const parts = val.split('<');
 		const funcTxt = parts.shift();
 		const argTxt = parts.shift();
