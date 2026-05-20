@@ -7,6 +7,7 @@ import * as crypto from 'node:crypto';
 import { Injectable } from '@nestjs/common';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import { bindThis } from '@/decorators.js';
+import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { CONTEXT, PRELOADED_CONTEXTS } from './misc/contexts.js';
 import { validateContentTypeSetAsJsonLD } from './misc/validator.js';
 import type { JsonLdDocument } from 'jsonld';
@@ -14,7 +15,40 @@ import type { JsonLd as JsonLdObject, RemoteDocument } from 'jsonld/jsonld-spec.
 
 // RsaSignature2017 implementation is based on https://github.com/transmute-industries/RsaSignature2017
 
-class JsonLd {
+export class JsonLdError extends IdentifiableError {
+	constructor(id: string, message?: string) {
+		super(id, message);
+	}
+}
+
+export class JsonLdCacheOverflowError extends JsonLdError {
+	constructor() {
+		super('42fb039c-69fb-4f75-8187-d3aee412423e', 'context cache overflow');
+	}
+}
+
+export class JsonLdCacheFrozenError extends JsonLdError {
+	constructor() {
+		super('202c41fa-72d5-4e22-95af-94a8ac83346f', 'attempt to insert into frozen context cache');
+	}
+}
+
+export class JsonLdForbiddenDriectiveError extends JsonLdError {
+	constructor(public directive: string) {
+		super('0297f79b-0ed9-4b6c-875f-b0a82ff96781', `${directive} is forbidden by Misskey in ActivityPub documents`);
+	}
+}
+
+export class JsonLd {
+	private static forbiddenDirectives = new Set([
+		'@included',
+		'@graph',
+		'@reverse',
+	]);
+
+	private frozen = false;
+	private cache: Map<string, RemoteDocument> = new Map();
+
 	public debug = false;
 	public preLoad = true;
 	public loderTimeout = 5000;
@@ -81,9 +115,9 @@ class JsonLd {
 		const optionsHash = this.sha256(canonizedOptions.toString());
 		const transformedData = { ...data };
 		delete transformedData['signature'];
-		const cannonidedData = await this.normalize(transformedData);
-		if (this.debug) console.debug(`cannonidedData: ${cannonidedData}`);
-		const documentHash = this.sha256(cannonidedData.toString());
+		const cannonizedData = await this.normalize(transformedData);
+		if (this.debug) console.debug(`cannonizedData: ${cannonizedData}`);
+		const documentHash = this.sha256(cannonizedData.toString());
 		const verifyData = `${optionsHash}${documentHash}`;
 		return verifyData;
 	}
@@ -106,6 +140,34 @@ class JsonLd {
 		});
 	}
 
+	/**
+	 * Prevent any further HTTP requests from being made for the sake of
+	 * validating JSON-LD signatures.
+	 */
+	@bindThis
+	public freeze(): void { this.frozen = true; }
+
+	@bindThis
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	public checkForForbiddenDirectives(value: any): void {
+		if (typeof value === 'object' && value !== null) {
+			if (Array.isArray(value)) {
+				for (const item of value) this.checkForForbiddenDirectives(item);
+			} else {
+				const object = value;
+				for (const [key, value] of Object.entries(object)) {
+					if (JsonLd.forbiddenDirectives.has(key)) {
+						throw new JsonLdForbiddenDriectiveError(key);
+					}
+
+					if (typeof value === 'object' && value !== null) {
+						this.checkForForbiddenDirectives(value);
+					}
+				}
+			}
+		}
+	}
+
 	@bindThis
 	private getLoader() {
 		return async (url: string): Promise<RemoteDocument> => {
@@ -122,13 +184,27 @@ class JsonLd {
 				}
 			}
 
+			const cached = this.cache.get(url);
+			if (cached) {
+				if (this.debug) console.debug(`HIT: ${url}`);
+				return cached;
+			}
+
 			if (this.debug) console.debug(`MISS: ${url}`);
+
+			if (this.frozen) throw new JsonLdCacheFrozenError();
+
 			const document = await this.fetchDocument(url);
-			return {
+			this.checkForForbiddenDirectives(document);
+
+			const remoteDocument = {
 				contextUrl: undefined,
 				document: document,
 				documentUrl: url,
 			};
+			this.cache.set(url, remoteDocument);
+			if (this.cache.size > 256) throw new JsonLdCacheOverflowError();
+			return remoteDocument;
 		};
 	}
 
