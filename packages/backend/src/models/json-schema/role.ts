@@ -369,6 +369,16 @@ export const packedRoleLiteSchema = {
 			optional: false, nullable: false,
 			example: false,
 		},
+		asBadge: {
+			type: 'boolean',
+			optional: false, nullable: false,
+			example: false,
+		},
+		isPublicDisplayRequired: {
+			type: 'boolean',
+			optional: false, nullable: false,
+			example: false,
+		},
 		displayOrder: {
 			type: 'integer',
 			optional: false, nullable: false,
@@ -408,6 +418,11 @@ export const packedRoleSchema = {
 					ref: 'RoleCondFormulaValue',
 				},
 				isPublic: {
+					type: 'boolean',
+					optional: false, nullable: false,
+					example: false,
+				},
+				isPublicDisplayRequired: {
 					type: 'boolean',
 					optional: false, nullable: false,
 					example: false,
