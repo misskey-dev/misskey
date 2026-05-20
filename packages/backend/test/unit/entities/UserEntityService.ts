@@ -14,7 +14,10 @@ import { genAidx } from '@/misc/id/aidx.js';
 import {
 	BlockingsRepository,
 	FollowingsRepository, FollowRequestsRepository,
+	MiRole,
 	MiUserProfile, MutingsRepository, RenoteMutingsRepository,
+	RoleAssignmentsRepository,
+	RolesRepository,
 	UserMemoRepository,
 	UserProfilesRepository,
 	UsersRepository,
@@ -67,6 +70,9 @@ describe('UserEntityService', () => {
 		let blockingRepository: BlockingsRepository;
 		let mutingRepository: MutingsRepository;
 		let renoteMutingsRepository: RenoteMutingsRepository;
+		let rolesRepository: RolesRepository;
+		let roleAssignmentsRepository: RoleAssignmentsRepository;
+		let roleService: RoleService;
 
 		async function createUser(userData: Partial<MiUser> = {}, profileData: Partial<MiUserProfile> = {}) {
 			const un = secureRndstr(16);
@@ -85,6 +91,32 @@ describe('UserEntityService', () => {
 			});
 
 			return user;
+		}
+
+		async function createRole(roleData: Partial<MiRole> = {}) {
+			const role = await rolesRepository
+				.insert({
+					id: genAidx(Date.now()),
+					updatedAt: new Date(),
+					lastUsedAt: new Date(),
+					name: '',
+					description: '',
+					...roleData,
+				})
+				.then(x => rolesRepository.findOneByOrFail(x.identifiers[0]));
+
+			(roleService as any).rolesCache.delete();
+			return role;
+		}
+
+		async function assignRole(user: MiUser, role: MiRole) {
+			await roleAssignmentsRepository.insert({
+				id: genAidx(Date.now()),
+				userId: user.id,
+				roleId: role.id,
+			});
+
+			(roleService as any).roleAssignmentByUserIdCache.delete(user.id);
 		}
 
 		async function memo(writer: MiUser, target: MiUser, memo: string) {
@@ -196,6 +228,9 @@ describe('UserEntityService', () => {
 			blockingRepository = app.get<BlockingsRepository>(DI.blockingsRepository);
 			mutingRepository = app.get<MutingsRepository>(DI.mutingsRepository);
 			renoteMutingsRepository = app.get<RenoteMutingsRepository>(DI.renoteMutingsRepository);
+			rolesRepository = app.get<RolesRepository>(DI.rolesRepository);
+			roleAssignmentsRepository = app.get<RoleAssignmentsRepository>(DI.roleAssignmentsRepository);
+			roleService = app.get<RoleService>(RoleService);
 		});
 
 		afterAll(async () => {
@@ -247,6 +282,60 @@ describe('UserEntityService', () => {
 			expect(actual.birthday).toBe('2000-01-01');
 			// is detail and me
 			expect(actual.achievements).toEqual(achievements);
+		});
+
+		test('MeDetailed hiddenRoleIds are sanitized to assigned public non-forced roles in stored order', async() => {
+			const me = await createUser();
+			const visibleRole = await createRole({ name: 'visible', isPublic: true });
+			const secondVisibleRole = await createRole({ name: 'visible2', isPublic: true });
+			const privateRole = await createRole({ name: 'private', isPublic: false });
+			const forcedRole = await createRole({ name: 'forced', isPublic: true, isPublicDisplayRequired: true });
+			const unassignedRole = await createRole({ name: 'unassigned', isPublic: true });
+
+			await assignRole(me, visibleRole);
+			await assignRole(me, secondVisibleRole);
+			await assignRole(me, privateRole);
+			await assignRole(me, forcedRole);
+			await usersRepository.update(me.id, {
+				hiddenRoleIds: [
+					secondVisibleRole.id,
+					'unknownroleid',
+					unassignedRole.id,
+					privateRole.id,
+					forcedRole.id,
+					visibleRole.id,
+					secondVisibleRole.id,
+				],
+			});
+			const updatedMe = await usersRepository.findOneByOrFail({ id: me.id });
+
+			const actual = await service.pack(updatedMe, updatedMe, { schema: 'MeDetailed' }) as any;
+
+			expect(actual.hiddenRoleIds).toEqual([secondVisibleRole.id, visibleRole.id]);
+		});
+
+		test('UserDetailed filters hidden display roles for normal viewers, preserves forced roles, and bypasses for moderators', async() => {
+			const [viewer, moderator, target] = await Promise.all([createUser(), createUser(), createUser()]);
+			const hiddenRole = await createRole({ name: 'hidden', isPublic: true, asBadge: true, displayOrder: 30 });
+			const visibleRole = await createRole({ name: 'visible', isPublic: true, asBadge: true, displayOrder: 20 });
+			const forcedRole = await createRole({ name: 'forced', isPublic: true, isPublicDisplayRequired: true, asBadge: true, displayOrder: 10 });
+			const moderatorRole = await createRole({ name: 'moderator', isModerator: true });
+
+			await assignRole(target, hiddenRole);
+			await assignRole(target, visibleRole);
+			await assignRole(target, forcedRole);
+			await assignRole(moderator, moderatorRole);
+			await usersRepository.update(target.id, { hiddenRoleIds: [hiddenRole.id, forcedRole.id] });
+			const updatedTarget = await usersRepository.findOneByOrFail({ id: target.id });
+
+			const normalView = await service.pack(updatedTarget, viewer, { schema: 'UserDetailed' }) as any;
+			const moderatorView = await service.pack(updatedTarget, moderator, { schema: 'UserDetailed' }) as any;
+
+			expect(normalView.roles.map((role: any) => role.id)).toEqual([visibleRole.id, forcedRole.id]);
+			expect(normalView.badgeRoles.map((role: any) => role.id)).toEqual([visibleRole.id, forcedRole.id]);
+			expect(normalView.badgeRoles.every((role: any) => typeof role.id === 'string')).toBe(true);
+			expect(moderatorView.roles.map((role: any) => role.id)).toEqual([hiddenRole.id, visibleRole.id, forcedRole.id]);
+			expect(moderatorView.badgeRoles.map((role: any) => role.id)).toEqual([hiddenRole.id, visibleRole.id, forcedRole.id]);
 		});
 
 		test('alsoKnownAs as string does not throw', async () => {
