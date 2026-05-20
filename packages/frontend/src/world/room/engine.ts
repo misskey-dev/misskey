@@ -126,6 +126,7 @@ export class RoomEngine extends EngineBase<{
 	}) => void;
 	'changeGrabbingState': (ctx: { grabbing: { forInstall: boolean } | null }) => void;
 	'changeEditMode': (ctx: { isEditMode: boolean }) => void;
+	'changeSittingState': (ctx: { isSitting: boolean }) => void;
 	'changeGridSnapping': (ctx: { gridSnapping: { enabled: boolean; scale: number } }) => void;
 	'changeRoomState': (ctx: { roomState: RoomState }) => void;
 	'playSfxUrl': (ctx: {
@@ -234,7 +235,15 @@ export class RoomEngine extends EngineBase<{
 		this.ev('changeEditMode', { isEditMode: v });
 	}
 
-	public isSitting = false;
+	private _isSitting = false;
+	get isSitting() {
+		return this._isSitting;
+	}
+	set isSitting(v) {
+		this._isSitting = v;
+		this.ev('changeSittingState', { isSitting: v });
+	}
+
 	private inited = false;
 
 	constructor(roomState: RoomState, roomAttachments: RoomAttachments, options: {

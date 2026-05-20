@@ -73,6 +73,10 @@ export class RoomController extends EngineControllerBase<RoomEngine> {
 			this.isEditMode.value = isEditMode;
 		});
 
+		engineEvents.on('changeSittingState', ({ isSitting }) => {
+			this.isSitting.value = isSitting;
+		});
+
 		engineEvents.on('changeGridSnapping', ({ gridSnapping }) => {
 			this.gridSnapping.value = gridSnapping;
 		});
@@ -202,5 +206,9 @@ export class RoomController extends EngineControllerBase<RoomEngine> {
 
 	public interact(id: string) {
 		this.call('interact', [this.selected.value!.objectId, id]);
+	}
+
+	public standUp() {
+		this.call('standUp');
 	}
 }
