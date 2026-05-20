@@ -147,6 +147,7 @@ import type {
 	AntennasListResponse,
 	AntennasNotesRequest,
 	AntennasNotesResponse,
+	AntennasRemoveNoteRequest,
 	AntennasShowRequest,
 	AntennasShowResponse,
 	AntennasUpdateRequest,
@@ -769,6 +770,7 @@ export type Endpoints = {
 	'antennas/delete': { req: AntennasDeleteRequest; res: EmptyResponse };
 	'antennas/list': { req: EmptyRequest; res: AntennasListResponse };
 	'antennas/notes': { req: AntennasNotesRequest; res: AntennasNotesResponse };
+	'antennas/remove-note': { req: AntennasRemoveNoteRequest; res: EmptyResponse };
 	'antennas/show': { req: AntennasShowRequest; res: AntennasShowResponse };
 	'antennas/update': { req: AntennasUpdateRequest; res: AntennasUpdateResponse };
 	'ap/get': { req: ApGetRequest; res: ApGetResponse };

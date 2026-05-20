@@ -1,3 +1,15 @@
+## Unreleased
+
+### General
+- Feat: アンテナのタイムラインから個別のノートを削除できるように
+
+### Client
+-
+
+### Server
+-
+
+
 ## 2026.5.4
 
 ### General
