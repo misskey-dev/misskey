@@ -4025,6 +4025,8 @@ export type components = {
             /** @enum {string} */
             onlineStatus: 'unknown' | 'online' | 'active' | 'offline';
             badgeRoles?: {
+                /** Format: id */
+                id: string;
                 name: string;
                 iconUrl: string | null;
                 displayOrder: number;
@@ -4115,6 +4117,7 @@ export type components = {
             preventAiLearning: boolean;
             isExplorable: boolean;
             isDeleted: boolean;
+            hiddenRoleIds: string[];
             /** @enum {string} */
             twoFactorBackupCodesStock: 'full' | 'partial' | 'none';
             hideOnlineStatus: boolean;
@@ -5286,6 +5289,10 @@ export type components = {
             isModerator: boolean;
             /** @example false */
             isAdministrator: boolean;
+            /** @example false */
+            asBadge: boolean;
+            /** @example false */
+            isPublicDisplayRequired: boolean;
             /** @example 0 */
             displayOrder: number;
         };
@@ -5299,6 +5306,8 @@ export type components = {
             condFormula: components['schemas']['RoleCondFormulaValue'];
             /** @example false */
             isPublic: boolean;
+            /** @example false */
+            isPublicDisplayRequired: boolean;
             /** @example false */
             isExplorable: boolean;
             /** @example false */
@@ -10874,6 +10883,8 @@ export interface operations {
                     target: 'manual' | 'conditional';
                     condFormula: Record<string, never>;
                     isPublic: boolean;
+                    /** @default false */
+                    isPublicDisplayRequired?: boolean;
                     isModerator: boolean;
                     isAdministrator: boolean;
                     /** @default false */
@@ -11209,6 +11220,7 @@ export interface operations {
                     target?: 'manual' | 'conditional';
                     condFormula?: Record<string, never>;
                     isPublic?: boolean;
+                    isPublicDisplayRequired?: boolean;
                     isModerator?: boolean;
                     isAdministrator?: boolean;
                     isExplorable?: boolean;
@@ -27589,6 +27601,7 @@ export interface operations {
                     followersVisibility?: 'public' | 'followers' | 'private';
                     /** @enum {string} */
                     chatScope?: 'everyone' | 'followers' | 'following' | 'mutual' | 'none';
+                    hiddenRoleIds?: string[];
                     /** Format: misskey:id */
                     pinnedPageId?: string | null;
                     mutedWords?: (string[] | string)[];

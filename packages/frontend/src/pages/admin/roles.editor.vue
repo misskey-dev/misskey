@@ -62,6 +62,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #caption>{{ i18n.ts._role.descriptionOfIsPublic }}</template>
 	</MkSwitch>
 
+	<MkSwitch v-model="role.isPublicDisplayRequired" :readonly="readonly">
+		<template #label>{{ i18n.ts._role.isPublicDisplayRequired }}</template>
+		<template #caption>{{ i18n.ts._role.descriptionOfIsPublicDisplayRequired }}</template>
+	</MkSwitch>
+
 	<MkSwitch v-model="role.asBadge" :readonly="readonly">
 		<template #label>{{ i18n.ts._role.asBadge }}</template>
 		<template #caption>{{ i18n.ts._role.descriptionOfAsBadge }}</template>
@@ -110,7 +115,7 @@ import { instance } from '@/instance.js';
 import { deepClone } from '@/utility/clone.js';
 import type { PolicyMeta } from './roles.policy-editor.vue';
 
-type RoleLike = Pick<Misskey.entities.Role, 'name' | 'description' | 'isAdministrator' | 'isModerator' | 'color' | 'iconUrl' | 'target' | 'isPublic' | 'isExplorable' | 'asBadge' | 'canEditMembersByModerator' | 'displayOrder' | 'preserveAssignmentOnMoveAccount'> & {
+type RoleLike = Pick<Misskey.entities.Role, 'name' | 'description' | 'isAdministrator' | 'isModerator' | 'color' | 'iconUrl' | 'target' | 'isPublic' | 'isPublicDisplayRequired' | 'isExplorable' | 'asBadge' | 'canEditMembersByModerator' | 'displayOrder' | 'preserveAssignmentOnMoveAccount'> & {
 	id?: Misskey.entities.Role['id'] | null;
 	condFormula: any;
 	policies: any;
@@ -200,6 +205,7 @@ const save = throttle(100, () => {
 		isAdministrator: role.value.isAdministrator,
 		isModerator: role.value.isModerator,
 		isPublic: role.value.isPublic,
+		isPublicDisplayRequired: role.value.isPublicDisplayRequired,
 		isExplorable: role.value.isExplorable,
 		asBadge: role.value.asBadge,
 		canEditMembersByModerator: role.value.canEditMembersByModerator,
