@@ -33,7 +33,7 @@ export class JsonLdCacheFrozenError extends JsonLdError {
 	}
 }
 
-export class JsonLdForbiddenDriectiveError extends JsonLdError {
+export class JsonLdForbiddenDirectiveError extends JsonLdError {
 	constructor(public directive: string) {
 		super('0297f79b-0ed9-4b6c-875f-b0a82ff96781', `${directive} is forbidden by Misskey in ActivityPub documents`);
 	}
@@ -157,7 +157,7 @@ export class JsonLd {
 				const object = value;
 				for (const [key, value] of Object.entries(object)) {
 					if (JsonLd.forbiddenDirectives.has(key)) {
-						throw new JsonLdForbiddenDriectiveError(key);
+						throw new JsonLdForbiddenDirectiveError(key);
 					}
 
 					if (typeof value === 'object' && value !== null) {
