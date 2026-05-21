@@ -5333,6 +5333,10 @@ export interface Locale extends ILocale {
      */
     "draftsAndScheduledNotes": string;
     /**
+     * 予約投稿
+     */
+    "scheduledNotes": string;
+    /**
      * リアクションする際に確認する
      */
     "confirmOnReact": string;
@@ -10223,6 +10227,10 @@ export interface Locale extends ILocale {
          */
         "channelPlaceholder": string;
         /**
+         * 投稿するアカウント
+         */
+        "postAccount": string;
+        /**
          * フォームの説明を表示
          */
         "showHowToUse": string;
@@ -10248,7 +10256,7 @@ export interface Locale extends ILocale {
              */
             "account_title": string;
             /**
-             * 投稿するアカウントを切り替えたり、アカウントに保存した下書き・予約投稿を一覧できます。
+             * 投稿するアカウントを切り替えることができます。
              */
             "account_description": string;
             /**
