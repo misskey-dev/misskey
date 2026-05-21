@@ -2571,6 +2571,17 @@ declare module '../api.js' {
     ): Promise<SwitchCaseResponseType<E, P>>;
 
     /**
+     * List of following users
+     * 
+     * **Credential required**: *Yes* / **Permission**: *read:following*
+     */
+    request<E extends 'following/list', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
      * No description provided.
      * 
      * **Credential required**: *Yes* / **Permission**: *write:following*
@@ -4692,17 +4703,6 @@ declare module '../api.js' {
      * **Credential required**: *No*
      */
     request<E extends 'users/notes', P extends Endpoints[E]['req']>(
-      endpoint: E,
-      params: P,
-      credential?: string | null,
-    ): Promise<SwitchCaseResponseType<E, P>>;
-
-    /**
-     * List of following users with notification enabled.
-     * 
-     * **Credential required**: *Yes* / **Permission**: *read:following*
-     */
-    request<E extends 'users/notify/list', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,

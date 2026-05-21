@@ -26,7 +26,9 @@ _settings:
   general: "全般"
   appearance: "外観"
 
-# パラメータ付き (ICU MessageFormat 互換)
+# パラメータ付き (単純なプレースホルダ置換)
+# ICU MessageFormat の plural / select / number / date などは非対応
+# 使えるのは `{name}` のような単純な置換のみ
 greeting: "こんにちは、{name}さん"
 ```
 
