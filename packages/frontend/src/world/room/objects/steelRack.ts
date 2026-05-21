@@ -231,3 +231,9 @@ export const steelRack60x35 = base.extend({
 	name: 'steelRack60x35',
 	path: 'steel-rack/60-35',
 });
+
+export const steelRack90x35 = base.extend({
+	id: 'steelRack90x35',
+	name: 'steelRack90x35',
+	path: 'steel-rack/90-35',
+});
