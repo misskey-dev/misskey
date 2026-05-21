@@ -88,7 +88,7 @@ import { speakerStand } from './objects/speakerStand.js';
 import { spotLight } from './objects/spotLight.js';
 import { sprayer } from './objects/sprayer.js';
 import { stanchionPole } from './objects/stanchionPole.js';
-import { steelRack } from './objects/steelRack.js';
+import { steelRack60x35 } from './objects/steelRack.js';
 import { stormGlass } from './objects/stormGlass.js';
 import { tableSalt } from './objects/tableSalt.js';
 import { tabletopCalendar } from './objects/tabletopCalendar.js';
@@ -193,7 +193,7 @@ export const OBJECT_DEFS = [
 	speaker,
 	speakerStand,
 	sprayer,
-	steelRack,
+	steelRack60x35,
 	stormGlass,
 	tableSalt,
 	tabletopCalendar,
