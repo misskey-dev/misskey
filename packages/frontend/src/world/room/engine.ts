@@ -492,8 +492,13 @@ export class RoomEngine extends EngineBase<{
 			if (this.grabbingCtx != null) {
 				this.changeGrabbingDistance(ev.deltaY * 0.025);
 			} else {
-				this.camera.fov += ev.deltaY * 0.001;
-				this.camera.fov = Math.max(0.25, Math.min(1, this.camera.fov));
+				if (this.scene.activeCamera === this.camera) {
+					this.camera.fov += ev.deltaY * 0.001;
+					this.camera.fov = Math.max(0.25, Math.min(1, this.camera.fov));
+				} else if (this.scene.activeCamera === this.fixedCamera) {
+					this.fixedCamera.fov += ev.deltaY * 0.001;
+					this.fixedCamera.fov = Math.max(0.25, Math.min(1, this.fixedCamera.fov));
+				}
 			}
 		});
 
@@ -550,10 +555,10 @@ export class RoomEngine extends EngineBase<{
 		});
 
 		this.inputs.on('pointer', (ev) => {
-			if (this.isSitting) {
-				(this.fixedCamera.inputs.attached.manual as FreeCameraManualInput).setRotationVector({ x: ev.x, y: ev.y });
-			} else {
+			if (this.scene.activeCamera === this.camera) {
 				(this.camera.inputs.attached.manual as FreeCameraManualInput).setRotationVector({ x: ev.x, y: ev.y });
+			} else if (this.scene.activeCamera === this.fixedCamera) {
+				(this.fixedCamera.inputs.attached.manual as FreeCameraManualInput).setRotationVector({ x: ev.x, y: ev.y });
 			}
 		});
 
