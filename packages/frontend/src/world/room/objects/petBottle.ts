@@ -11,6 +11,11 @@ export const petBottle = defineObject({
 	name: 'PET Bottle',
 	options: {
 		schema: {
+			variation: {
+				type: 'enum',
+				label: 'Variation',
+				enum: ['mineral-water', 'green-tea'],
+			},
 			withCap: {
 				type: 'boolean',
 				label: 'With Cap',
@@ -21,6 +26,7 @@ export const petBottle = defineObject({
 			},
 		},
 		default: {
+			variation: 'mineral-water',
 			withCap: true,
 			empty: false,
 		},
@@ -28,10 +34,11 @@ export const petBottle = defineObject({
 	placement: 'top',
 	hasCollisions: false,
 	hasTexture: true,
-	createInstance: ({ model, options }) => {
+	createInstance: ({ model, options, scene }) => {
 		const capMesh = model.findMesh('__X_CAP__');
 		const liquidMesh = model.findMesh('__X_LIQUID__');
 		const labelMaterial = model.findMaterial('__X_LABEL__');
+		const liquidMaterial = model.findMaterial('__X_LIQUID__');
 
 		labelMaterial.transparencyMode = BABYLON.PBRMaterial.PBRMATERIAL_ALPHATEST;
 		labelMaterial.alphaCutOff = 0.5;
@@ -47,10 +54,33 @@ export const petBottle = defineObject({
 		applyWithCap();
 		applyEmpty();
 
+		const applyVariation = () => {
+			if (options.variation === 'mineral-water') {
+				const tex = new BABYLON.Texture('/client-assets/room/objects/pet-bottle/textures/mineral-water.png', scene, false, false);
+				labelMaterial.albedoTexture = tex;
+				liquidMaterial.albedoColor = new BABYLON.Color3(1, 1, 1);
+			} else if (options.variation === 'green-tea') {
+				const tex = new BABYLON.Texture('/client-assets/room/objects/pet-bottle/textures/green-tea.png', scene, false, false);
+				labelMaterial.albedoTexture = tex;
+				liquidMaterial.albedoColor = new BABYLON.Color3(0.56, 0.44, 0);
+			}
+		};
+
+		applyVariation();
+
 		return {
 			onOptionsUpdated: ([k, v]) => {
-				applyWithCap();
-				applyEmpty();
+				switch (k) {
+					case 'withCap':
+						applyWithCap();
+						break;
+					case 'empty':
+						applyEmpty();
+						break;
+					case 'variation':
+						applyVariation();
+						break;
+				}
 			},
 			interactions: {},
 		};
