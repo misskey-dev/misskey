@@ -7,7 +7,9 @@ import * as BABYLON from '@babylonjs/core';
 import { scaleMorph, camelToKebab, cm, WORLD_SCALE, Timer } from '../utility.js';
 import { getObjectDef } from './object-defs.js';
 import { ModelManager, SYSTEM_MESH_NAMES } from './utility.js';
-import type { ConvertedOptions, RoomObjectInstance } from './object.js';
+import { convertRawOptions } from './object.js';
+import type { RoomAttachments } from './utility.js';
+import type { ConvertedOptions, RawOptions, RoomObjectInstance } from './object.js';
 
 function mergeMeshes(meshes: BABYLON.Mesh[], root: BABYLON.Mesh, hasTexture: boolean) {
 	const excludeMeshes = root.getChildMeshes().filter(m => SYSTEM_MESH_NAMES.some(s => m.name.includes(s)));
@@ -54,7 +56,7 @@ function mergeMeshes(meshes: BABYLON.Mesh[], root: BABYLON.Mesh, hasTexture: boo
 export class ObjectContainer {
 	public id: string;
 	public type: string;
-	public options: ConvertedOptions;
+	private options: ConvertedOptions;
 	public root: BABYLON.TransformNode;
 	private subRoot: BABYLON.TransformNode | null = null;
 	private metadata: any;
@@ -72,7 +74,8 @@ export class ObjectContainer {
 	constructor(args: {
 		id: string;
 		type: string;
-		options: ConvertedOptions;
+		options: RawOptions;
+		roomAttachments: RoomAttachments;
 		position: BABYLON.Vector3;
 		rotation: BABYLON.Vector3;
 		metadata: any;
@@ -85,7 +88,8 @@ export class ObjectContainer {
 	}) {
 		this.id = args.id;
 		this.type = args.type;
-		this.options = args.options;
+		const def = getObjectDef(this.type);
+		this.options = convertRawOptions(def.options.schema, args.options, args.roomAttachments);
 		this.sr = args.sr;
 		this.getIsSrReady = args.getIsSrReady;
 		this.lightContainer = args.lightContainer;
@@ -248,9 +252,14 @@ export class ObjectContainer {
 		this.sr.enableSnapshotRendering();
 	}
 
-	public optionsUpdated(key: string, value: any) {
+	public optionsUpdated(options: RawOptions, key: string, value: any, roomAttachments: RoomAttachments) {
 		if (this.instance == null) return;
-		this.instance.onOptionsUpdated?.([key, value]);
+		const def = getObjectDef(this.type);
+		const convertedOptions = convertRawOptions(def.options.schema, options, roomAttachments);
+		this.options[key] = convertedOptions[key]; // 参照を切れさせないようにプロパティ個別にmutate
+		this.sr.disableSnapshotRendering();
+		this.instance.onOptionsUpdated?.([key, this.options[key]]);
+		this.sr.enableSnapshotRendering();
 	}
 
 	public destroy() {

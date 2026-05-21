@@ -19,10 +19,9 @@ import { EngineBase } from '../EngineBase.js';
 import { getObjectDef } from './object-defs.js';
 import { findMaterial, GRAPHICS_QUALITY, ModelManager, SYSTEM_HEYA_MESH_NAMES, SYSTEM_MESH_NAMES } from './utility.js';
 import { JapaneseEnvManager, MuseumEnvManager, SimpleEnvManager } from './env.js';
-import { convertRawOptions } from './object.js';
 import { ObjectContainer } from './objectContainer.js';
 import type { RoomAttachments } from './utility.js';
-import type { ConvertedOptions, ObjectDef, RawOptions, RoomObjectInstance, RoomStateObject } from './object.js';
+import type { ObjectDef, RawOptions, RoomObjectInstance, RoomStateObject } from './object.js';
 import type { GridMaterial } from '@babylonjs/materials';
 import type { EnvManager, JapaneseEnvOptions, SimpleEnvOptions } from './env.js';
 import { genId } from '@/utility/id.js';
@@ -605,7 +604,6 @@ export class RoomEngine extends EngineBase<{
 		options: RawOptions;
 	}) {
 		const def = getObjectDef(args.type);
-		const convertedOptions = convertRawOptions(def.options.schema, args.options, this.roomAttachments);
 
 		const metadata = {
 			isObject: true,
@@ -618,7 +616,8 @@ export class RoomEngine extends EngineBase<{
 			type: args.type,
 			position: args.position.clone(),
 			rotation: args.rotation.clone(),
-			options: convertedOptions,
+			options: args.options,
+			roomAttachments: this.roomAttachments,
 			metadata,
 			sr: this.sr,
 			getIsSrReady: () => this.inited,
@@ -1431,7 +1430,6 @@ export class RoomEngine extends EngineBase<{
 		const o = this.roomState.installedObjects.find(o => o.id === objectId);
 		if (o == null) return;
 
-		const def = getObjectDef(o.type);
 		o.options[key] = value;
 
 		this.ev('changeRoomState', { roomState: this.roomState });
@@ -1439,12 +1437,7 @@ export class RoomEngine extends EngineBase<{
 		const container = this.objectContainers.get(objectId);
 		if (container == null) return;
 
-		const convertedOptions = convertRawOptions(def.options.schema, o.options, this.roomAttachments);
-		container.options[key] = convertedOptions[key];
-
-		this.sr.disableSnapshotRendering();
-		container.optionsUpdated(key, convertedOptions[key]);
-		this.sr.enableSnapshotRendering();
+		container.optionsUpdated(o.options, key, value, this.roomAttachments);
 	}
 
 	public updateEnvOptions(options: RoomState['env']['options']) {

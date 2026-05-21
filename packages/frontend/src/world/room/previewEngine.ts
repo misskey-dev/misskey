@@ -10,9 +10,8 @@ import { camelToKebab, WORLD_SCALE, cm, getMeshesBoundingBox, Timer, sleep, ArcR
 import { EngineBase } from '../EngineBase.js';
 import { getObjectDef } from './object-defs.js';
 import { SYSTEM_MESH_NAMES, ModelManager, GRAPHICS_QUALITY } from './utility.js';
-import { convertRawOptions } from './object.js';
 import { ObjectContainer } from './objectContainer.js';
-import type { ConvertedOptions, RawOptions, RoomObjectInstance } from './object.js';
+import type { RawOptions, RoomObjectInstance } from './object.js';
 import type { RoomAttachments } from './utility.js';
 import { genId } from '@/utility/id.js';
 import { deepClone } from '@/utility/clone.js';
@@ -175,10 +174,54 @@ export class RoomObjectPreviewEngine extends EngineBase<{
 			}
 		}
 
-		this.objectContainer = await this.loadObject_({
-			type,
-			id,
+		this.objectContainer = new ObjectContainer({
+			id: id,
+			type: type,
+			position: new BABYLON.Vector3(0, 0, 0),
+			rotation: new BABYLON.Vector3(0, 0, 0),
+			options: this.objectOptions,
+			roomAttachments: { files: [] },
+			metadata: {},
+			sr: this.sr,
+			getIsSrReady: () => true,
+			lightContainer: null,
+			graphicsQuality: this.graphicsQuality,
+			scene: this.scene,
 		});
+		this.objectContainer.onMeshesUpdated = (meshes) => {
+			for (const mesh of meshes) {
+				// シェイプキー(morph)を考慮してbounding boxを更新するために必要
+				mesh.refreshBoundingInfo({ applyMorph: true });
+
+				if (SYSTEM_MESH_NAMES.some(n => mesh.name.includes(n))) {
+					mesh.receiveShadows = false;
+					mesh.isVisible = false;
+				} else {
+					if (def.receiveShadows !== false) mesh.receiveShadows = true;
+					if (def.castShadows !== false) {
+						this.shadowGenerator.addShadowCaster(mesh);
+					}
+
+					if (mesh.material) {
+						if (mesh.material instanceof BABYLON.MultiMaterial) {
+							for (const subMat of mesh.material.subMaterials) {
+								(subMat as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
+								(subMat as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
+								(subMat as BABYLON.PBRMaterial).anisotropy.isEnabled = false; // なんかきれいにレンダリングされないため
+							}
+						} else {
+							(mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
+							(mesh.material as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
+							(mesh.material as BABYLON.PBRMaterial).anisotropy.isEnabled = false; // なんかきれいにレンダリングされないため
+						}
+					}
+				}
+
+				if (!this.scene.meshes.includes(mesh)) this.scene.addMesh(mesh);
+			}
+		};
+
+		await this.objectContainer.load();
 
 		const boundingInfo = getMeshesBoundingBox(this.objectContainer.root.getChildMeshes().filter(m => m.isEnabled() && m.isVisible), true);
 
@@ -231,71 +274,14 @@ export class RoomObjectPreviewEngine extends EngineBase<{
 		};
 	}
 
-	private async loadObject_(args: {
-		type: string;
-		id: string;
-	}) {
-		const def = getObjectDef(args.type);
-		const convertedOptions = convertRawOptions(def.options.schema, this.objectOptions, { files: [] });
-
-		const container = new ObjectContainer({
-			id: args.id,
-			type: args.type,
-			position: new BABYLON.Vector3(0, 0, 0),
-			rotation: new BABYLON.Vector3(0, 0, 0),
-			options: convertedOptions,
-			metadata: {},
-			sr: this.sr,
-			getIsSrReady: () => true,
-			lightContainer: this.lightContainer,
-			graphicsQuality: this.graphicsQuality,
-			scene: this.scene,
-		});
-		container.onMeshesUpdated = (meshes) => {
-			for (const mesh of meshes) {
-				// シェイプキー(morph)を考慮してbounding boxを更新するために必要
-				mesh.refreshBoundingInfo({ applyMorph: true });
-
-				if (SYSTEM_MESH_NAMES.some(n => mesh.name.includes(n))) {
-					mesh.receiveShadows = false;
-					mesh.isVisible = false;
-				} else {
-					if (def.receiveShadows !== false) mesh.receiveShadows = true;
-					if (def.castShadows !== false) {
-						this.shadowGenerator.addShadowCaster(mesh);
-					}
-
-					if (mesh.material) {
-						if (mesh.material instanceof BABYLON.MultiMaterial) {
-							for (const subMat of mesh.material.subMaterials) {
-								(subMat as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
-								(subMat as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
-								(subMat as BABYLON.PBRMaterial).anisotropy.isEnabled = false; // なんかきれいにレンダリングされないため
-							}
-						} else {
-							(mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
-							(mesh.material as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
-							(mesh.material as BABYLON.PBRMaterial).anisotropy.isEnabled = false; // なんかきれいにレンダリングされないため
-						}
-					}
-				}
-
-				if (!this.scene.meshes.includes(mesh)) this.scene.addMesh(mesh);
-			}
-		};
-
-		await container.load();
-
-		return container;
-	}
-
 	public updateObjectOption(key: string, value: any, attachments?: RoomAttachments) {
-		this.sr.disableSnapshotRendering();
+		if (this.objectOptions == null) return;
 		this.objectOptions[key] = value;
-		const convertedOptions = convertRawOptions(getObjectDef(this.objectContainer.type).options.schema, this.objectOptions, attachments ?? { files: [] });
-		this.objectContainer.options[key] = convertedOptions[key];
-		this.objectContainer.optionsUpdated(key, convertedOptions[key]);
-		this.sr.enableSnapshotRendering();
+
+		if (this.objectContainer != null) {
+			this.objectContainer.optionsUpdated(this.objectOptions, key, value, attachments ?? { files: [] });
+		}
+
 		return this.objectOptions;
 	}
 
