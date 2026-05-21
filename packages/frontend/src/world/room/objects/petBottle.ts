@@ -31,6 +31,10 @@ export const petBottle = defineObject({
 	createInstance: ({ model, options }) => {
 		const capMesh = model.findMesh('__X_CAP__');
 		const liquidMesh = model.findMesh('__X_LIQUID__');
+		const labelMaterial = model.findMaterial('__X_LABEL__');
+
+		labelMaterial.transparencyMode = BABYLON.PBRMaterial.PBRMATERIAL_ALPHATEST;
+		labelMaterial.alphaCutOff = 0.5;
 
 		const applyWithCap = () => {
 			capMesh.isVisible = options.withCap;

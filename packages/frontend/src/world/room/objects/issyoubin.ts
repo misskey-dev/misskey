@@ -28,25 +28,24 @@ export const issyoubin = defineObject({
 		const liquidMesh = model.findMesh('__X_LIQUID__');
 		const liquidMaterial = model.findMaterial('__X_LIQUID__');
 		const bottleMaterial = model.findMaterial('__X_BOTTLE__');
+		const labelMaterial = model.findMaterial('__X_LABEL__');
 
-		// 以下を行うとレンダリングのグリッチが直るが、残念ながらWebGPUかつNCMでは動作しない
-		// https://doc.babylonjs.com/setup/support/webGPU/webGPUOptimization/webGPUNonCompatibilityMode/#dodont-in-non-compatibility-mode-ncm
-		//for (const m of model.root.getChildMeshes()) {
-		//	if (m.material != null) {
-		//		(m.material as BABYLON.PBRMaterial).separateCullingPass = true;
-		//	}
-		//}
+		labelMaterial.transparencyMode = BABYLON.PBRMaterial.PBRMATERIAL_ALPHATEST;
+		labelMaterial.alphaCutOff = 0.5;
 
-		// しょうがないので不透明にする
-		bottleMaterial.transparencyMode = BABYLON.PBRMaterial.PBRMATERIAL_ALPHATEST;
+		bottleMaterial.transparencyMode = BABYLON.PBRMaterial.PBRMATERIAL_ALPHATESTANDBLEND;
 
 		const applyVariation = () => {
 			if (options.variation === 'misuki') {
 				const tex = new BABYLON.Texture('/client-assets/room/objects/issyoubin/textures/misuki.png', scene, false, false);
-				bottleMaterial.albedoTexture = tex;
+				labelMaterial.albedoTexture = tex;
+				bottleMaterial.albedoColor = new BABYLON.Color3(0.5, 0.2, 0);
+				bottleMaterial.alpha = 0.8;
 			} else if (options.variation === 'ai') {
 				const tex = new BABYLON.Texture('/client-assets/room/objects/issyoubin/textures/ai.png', scene, false, false);
-				bottleMaterial.albedoTexture = tex;
+				labelMaterial.albedoTexture = tex;
+				bottleMaterial.albedoColor = new BABYLON.Color3(0.0, 0.5, 0.14);
+				bottleMaterial.alpha = 0.8;
 			}
 		};
 

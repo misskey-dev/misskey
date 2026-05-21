@@ -9,6 +9,7 @@
 // TODO: glbを事前に最適化(なるべくメッシュをマージするなど)するツールもしくはMisskeyビルド時処理。ついでにカタログ用スクショも自動生成したい
 // TODO: テクスチャ置き換え時、元のテクスチャをちゃんとdispose
 // TODO: Safariでテクスチャの読み込みに失敗かつ無ハンドリングだとsrが有効にできなくなる現象をbabylonに報告
+// TODO: 一升瓶を選択するとエラーが出る現象をbabylonに報告
 
 import * as BABYLON from '@babylonjs/core';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
