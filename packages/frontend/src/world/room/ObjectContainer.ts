@@ -63,7 +63,7 @@ export class ObjectContainer {
 	public instance: RoomObjectInstance | null = null;
 	public model: ModelManager | null = null;
 	private scene: BABYLON.Scene;
-	public onMeshesUpdated: (meshes: BABYLON.Mesh[]) => void = () => {};
+	public registerMeshes: (meshes: BABYLON.Mesh[]) => void = () => {};
 	private sr: BABYLON.SnapshotRenderingHelper;
 	private getIsSrReady: () => boolean;
 	private lightContainer: BABYLON.ClusteredLightContainer;
@@ -165,8 +165,10 @@ export class ObjectContainer {
 
 		def.treatLoaderResult?.(loaderResult);
 
+		this.registerMeshes(this.subRoot.getChildMeshes());
+
 		this.model = new ModelManager(this.subRoot, loaderResult.meshes.filter(m => !m.isDisposed() && m.name !== '__root__'), def.hasTexture, (meshes) => {
-			this.onMeshesUpdated(meshes);
+			this.registerMeshes(meshes);
 		});
 
 		this.instance = await def.createInstance({
@@ -221,8 +223,6 @@ export class ObjectContainer {
 		});
 
 		this.instance.onInited?.();
-
-		this.model.bakeMesh();
 	}
 
 	public interact(iid: string | null = null) {
@@ -267,5 +267,6 @@ export class ObjectContainer {
 		this.instance?.dispose?.();
 		this.subRoot?.dispose();
 		this.root.dispose(true);
+		this.scene.removeTransformNode(this.root);
 	}
 }

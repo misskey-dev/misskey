@@ -10,7 +10,7 @@ import { camelToKebab, WORLD_SCALE, cm, getMeshesBoundingBox, Timer, sleep, ArcR
 import { EngineBase } from '../EngineBase.js';
 import { getObjectDef } from './object-defs.js';
 import { SYSTEM_MESH_NAMES, ModelManager, GRAPHICS_QUALITY } from './utility.js';
-import { ObjectContainer } from './objectContainer.js';
+import { ObjectContainer } from './ObjectContainer.js';
 import type { RawOptions, RoomObjectInstance } from './object.js';
 import type { RoomAttachments } from './utility.js';
 import { genId } from '@/utility/id.js';
@@ -159,6 +159,14 @@ export class RoomObjectPreviewEngine extends EngineBase<{
 		this.inputs.on('pointer', (ev) => {
 			(this.camera.inputs.attached.manual as ArcRotateCameraManualInput).setRotationVector({ x: ev.x, y: ev.y });
 		});
+
+		if (_DEV_) { // SR状態確認用
+			const box = BABYLON.MeshBuilder.CreateBox('', { size: cm(10) }, this.scene);
+			// eslint-disable-next-line no-restricted-globals
+			setInterval(() => {
+				box.position = new BABYLON.Vector3(0, Math.random() * cm(10), 0);
+			}, 10);
+		}
 	}
 
 	public async loadObject(type: string) {
@@ -188,7 +196,7 @@ export class RoomObjectPreviewEngine extends EngineBase<{
 			graphicsQuality: this.graphicsQuality,
 			scene: this.scene,
 		});
-		this.objectContainer.onMeshesUpdated = (meshes) => {
+		this.objectContainer.registerMeshes = (meshes) => {
 			for (const mesh of meshes) {
 				// シェイプキー(morph)を考慮してbounding boxを更新するために必要
 				mesh.refreshBoundingInfo({ applyMorph: true });
@@ -281,8 +289,6 @@ export class RoomObjectPreviewEngine extends EngineBase<{
 		if (this.objectContainer != null) {
 			this.objectContainer.optionsUpdated(this.objectOptions, key, value, attachments ?? { files: [] });
 		}
-
-		return this.objectOptions;
 	}
 
 	public clearObject() {

@@ -19,7 +19,7 @@ import { EngineBase } from '../EngineBase.js';
 import { getObjectDef } from './object-defs.js';
 import { findMaterial, GRAPHICS_QUALITY, ModelManager, SYSTEM_HEYA_MESH_NAMES, SYSTEM_MESH_NAMES } from './utility.js';
 import { JapaneseEnvManager, MuseumEnvManager, SimpleEnvManager } from './env.js';
-import { ObjectContainer } from './objectContainer.js';
+import { ObjectContainer } from './ObjectContainer.js';
 import type { RoomAttachments } from './utility.js';
 import type { ObjectDef, RawOptions, RoomObjectInstance, RoomStateObject } from './object.js';
 import type { GridMaterial } from '@babylonjs/materials';
@@ -628,7 +628,7 @@ export class RoomEngine extends EngineBase<{
 				this.sitChair(args.id);
 			},
 		});
-		container.onMeshesUpdated = (meshes) => {
+		container.registerMeshes = (meshes) => {
 			if (this.selected?.objectId === args.id) {
 				this.highlightMeshes(meshes);
 			}
@@ -695,6 +695,8 @@ export class RoomEngine extends EngineBase<{
 		};
 
 		await container.load();
+
+		container!.model!.bakeMesh();
 
 		if (def.hasCollisions) {
 			enableObjectCollision(container.root.getChildMeshes());
