@@ -59,6 +59,8 @@ minimumReleaseAgeExclude:
   - systeminformation # 脆弱性対応。そのうち消す
   - sanitize-html # 脆弱性対応。そのうち消す
   - launder # 脆弱性対応。そのうち消す
+  # Renovate security update: ws@8.20.1
+  - ws@8.20.1
 overrides:
   '@aiscript-dev/aiscript-languageserver': '-'
   chokidar: 5.0.0
