@@ -130,6 +130,7 @@ export const ductRailSpotLights = defineObject({
 				for (const light of lights) {
 					light.dispose();
 					if (lc != null) lc.removeLight(light);
+					scene.removeLight(light); // lc使用時はsceneには追加してないはずだが、これがないとクラッシュする babylonのバグ？
 				}
 			},
 		};

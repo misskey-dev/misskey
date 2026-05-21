@@ -157,6 +157,7 @@ export const lavaLamp = defineObject({
 			dispose: () => {
 				light.dispose();
 				if (lc != null) lc.removeLight(light);
+				scene.removeLight(light); // lc使用時はsceneには追加してないはずだが、これがないとクラッシュする babylonのバグ？
 				if (animationObserver != null) {
 					scene.onAfterAnimationsObservable.remove(animationObserver);
 				}

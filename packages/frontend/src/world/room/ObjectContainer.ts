@@ -243,6 +243,7 @@ export class ObjectContainer {
 		this.model = null;
 		this.subRoot?.dispose();
 		this.root.removeChild(this.subRoot);
+		this.scene.removeTransformNode(this.subRoot);
 
 		this.timer = new Timer();
 
@@ -263,10 +264,12 @@ export class ObjectContainer {
 	}
 
 	public destroy() {
+		this.sr.disableSnapshotRendering();
 		this.timer.dispose();
 		this.instance?.dispose?.();
-		this.subRoot?.dispose();
-		this.root.dispose(true);
+		this.subRoot.dispose();
+		this.root.dispose();
 		this.scene.removeTransformNode(this.root);
+		this.sr.enableSnapshotRendering();
 	}
 }

@@ -33,6 +33,7 @@ export const beamLamp = defineObject({
 			dispose: () => {
 				light.dispose();
 				if (lc != null) lc.removeLight(light);
+				scene.removeLight(light); // lc使用時はsceneには追加してないはずだが、これがないとクラッシュする babylonのバグ？
 			},
 		};
 	},

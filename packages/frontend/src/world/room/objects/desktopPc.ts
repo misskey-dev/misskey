@@ -134,6 +134,8 @@ export const desktopPc = defineObject({
 					lc.removeLight(light1);
 					lc.removeLight(light2);
 				}
+				scene.removeLight(light1); // lc使用時はsceneには追加してないはずだが、これがないとクラッシュする babylonのバグ？
+				scene.removeLight(light2); // lc使用時はsceneには追加してないはずだが、これがないとクラッシュする babylonのバグ？
 			},
 		};
 	},
