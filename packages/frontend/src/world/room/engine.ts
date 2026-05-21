@@ -1471,5 +1471,9 @@ export class RoomEngine extends EngineBase<{
 		super.destroy();
 		this.timer.dispose();
 		this.envManager.dispose();
+		for (const container of this.objectContainers.values()) {
+			container.destroy();
+		}
+		this.objectContainers.clear();
 	}
 }
