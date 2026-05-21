@@ -10,6 +10,14 @@ import { cm, remap } from '@/world/utility.js';
 const base = defineObjectClass({
 	options: {
 		schema: {
+			shelfColor: {
+				type: 'color',
+				label: 'Shelf color',
+			},
+			poleColor: {
+				type: 'color',
+				label: 'Pole color',
+			},
 			height: {
 				type: 'range',
 				label: 'Height',
@@ -96,6 +104,8 @@ const base = defineObjectClass({
 			},
 		},
 		default: {
+			shelfColor: [0.8, 0.8, 0.8],
+			poleColor: [0.8, 0.8, 0.8],
 			height: 5,
 			numberOfShelfs: 5,
 			shelf1Position: 0.0,
@@ -176,9 +186,27 @@ const base = defineObjectClass({
 
 		applyHeight();
 
+		const shelfMaterial = model.findMaterial('__X_SHELF__');
+		const poleMaterial = model.findMaterial('__X_POLE__');
+
+		const applyShelfColor = () => {
+			const [r, g, b] = options.shelfColor;
+			shelfMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		};
+
+		const applyPoleColor = () => {
+			const [r, g, b] = options.poleColor;
+			poleMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		};
+
+		applyShelfColor();
+		applyPoleColor();
+
 		return {
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
+					case 'shelfColor': applyShelfColor(); break;
+					case 'poleColor': applyPoleColor(); break;
 					case 'height': applyHeight(); break;
 					case 'numberOfShelfs': applyNumberOfShelfs(); break;
 					case 'shelf1Position':
