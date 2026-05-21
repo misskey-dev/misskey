@@ -484,7 +484,13 @@ type AntennasCreateResponse = operations['antennas___create']['responses']['200'
 type AntennasDeleteRequest = operations['antennas___delete']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AntennasFavoriteRequest = operations['antennas___favorite']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
 type AntennasListResponse = operations['antennas___list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AntennasMyFavoritesResponse = operations['antennas___my-favorites']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type AntennasNotesRequest = operations['antennas___notes']['requestBody']['content']['application/json'];
@@ -497,6 +503,9 @@ type AntennasShowRequest = operations['antennas___show']['requestBody']['content
 
 // @public (undocumented)
 type AntennasShowResponse = operations['antennas___show']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AntennasUnfavoriteRequest = operations['antennas___unfavorite']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type AntennasUpdateRequest = operations['antennas___update']['requestBody']['content']['application/json'];
@@ -1668,11 +1677,14 @@ declare namespace entities {
         AntennasCreateRequest,
         AntennasCreateResponse,
         AntennasDeleteRequest,
+        AntennasFavoriteRequest,
         AntennasListResponse,
+        AntennasMyFavoritesResponse,
         AntennasNotesRequest,
         AntennasNotesResponse,
         AntennasShowRequest,
         AntennasShowResponse,
+        AntennasUnfavoriteRequest,
         AntennasUpdateRequest,
         AntennasUpdateResponse,
         ApGetRequest,
@@ -2128,6 +2140,8 @@ declare namespace entities {
         UsersResponse,
         UsersAchievementsRequest,
         UsersAchievementsResponse,
+        UsersAntennasRequest,
+        UsersAntennasResponse,
         UsersClipsRequest,
         UsersClipsResponse,
         UsersFeaturedNotesRequest,
@@ -3337,7 +3351,7 @@ type PartialRolePolicyOverride = Partial<{
 }>;
 
 // @public (undocumented)
-export const permissions: readonly ["read:account", "write:account", "read:blocks", "write:blocks", "read:drive", "write:drive", "read:favorites", "write:favorites", "read:following", "write:following", "read:messaging", "write:messaging", "read:mutes", "write:mutes", "write:notes", "read:notifications", "write:notifications", "read:reactions", "write:reactions", "write:votes", "read:pages", "write:pages", "write:page-likes", "read:page-likes", "read:user-groups", "write:user-groups", "read:channels", "write:channels", "read:gallery", "write:gallery", "read:gallery-likes", "write:gallery-likes", "read:flash", "write:flash", "read:flash-likes", "write:flash-likes", "read:admin:abuse-user-reports", "write:admin:delete-account", "write:admin:delete-all-files-of-a-user", "read:admin:index-stats", "read:admin:table-stats", "read:admin:user-ips", "read:admin:meta", "write:admin:reset-password", "write:admin:resolve-abuse-user-report", "write:admin:send-email", "read:admin:server-info", "read:admin:show-moderation-log", "read:admin:show-user", "write:admin:suspend-user", "write:admin:unset-user-avatar", "write:admin:unset-user-banner", "write:admin:unsuspend-user", "write:admin:meta", "write:admin:user-note", "write:admin:roles", "read:admin:roles", "write:admin:relays", "read:admin:relays", "write:admin:invite-codes", "read:admin:invite-codes", "write:admin:announcements", "read:admin:announcements", "write:admin:avatar-decorations", "read:admin:avatar-decorations", "write:admin:federation", "write:admin:account", "read:admin:account", "write:admin:emoji", "read:admin:emoji", "write:admin:queue", "read:admin:queue", "write:admin:promo", "write:admin:drive", "read:admin:drive", "write:admin:ad", "read:admin:ad", "write:invite-codes", "read:invite-codes", "write:clip-favorite", "read:clip-favorite", "read:federation", "write:report-abuse", "write:chat", "read:chat"];
+export const permissions: readonly ["read:account", "write:account", "read:blocks", "write:blocks", "read:drive", "write:drive", "read:favorites", "write:favorites", "read:following", "write:following", "read:messaging", "write:messaging", "read:mutes", "write:mutes", "write:notes", "read:notifications", "write:notifications", "read:reactions", "write:reactions", "write:votes", "read:pages", "write:pages", "write:page-likes", "read:page-likes", "read:user-groups", "write:user-groups", "read:channels", "write:channels", "read:gallery", "write:gallery", "read:gallery-likes", "write:gallery-likes", "read:flash", "write:flash", "read:flash-likes", "write:flash-likes", "read:admin:abuse-user-reports", "write:admin:delete-account", "write:admin:delete-all-files-of-a-user", "read:admin:index-stats", "read:admin:table-stats", "read:admin:user-ips", "read:admin:meta", "write:admin:reset-password", "write:admin:resolve-abuse-user-report", "write:admin:send-email", "read:admin:server-info", "read:admin:show-moderation-log", "read:admin:show-user", "write:admin:suspend-user", "write:admin:unset-user-avatar", "write:admin:unset-user-banner", "write:admin:unsuspend-user", "write:admin:meta", "write:admin:user-note", "write:admin:roles", "read:admin:roles", "write:admin:relays", "read:admin:relays", "write:admin:invite-codes", "read:admin:invite-codes", "write:admin:announcements", "read:admin:announcements", "write:admin:avatar-decorations", "read:admin:avatar-decorations", "write:admin:federation", "write:admin:account", "read:admin:account", "write:admin:emoji", "read:admin:emoji", "write:admin:queue", "read:admin:queue", "write:admin:promo", "write:admin:drive", "read:admin:drive", "write:admin:ad", "read:admin:ad", "write:invite-codes", "read:invite-codes", "write:clip-favorite", "read:clip-favorite", "write:antenna-favorite", "read:antenna-favorite", "read:federation", "write:report-abuse", "write:chat", "read:chat"];
 
 // @public (undocumented)
 type PingResponse = operations['ping']['responses']['200']['content']['application/json'];
@@ -3726,6 +3740,12 @@ type UsersAchievementsRequest = operations['users___achievements']['requestBody'
 
 // @public (undocumented)
 type UsersAchievementsResponse = operations['users___achievements']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UsersAntennasRequest = operations['users___antennas']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UsersAntennasResponse = operations['users___antennas']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type UsersClipsRequest = operations['users___clips']['requestBody']['content']['application/json'];

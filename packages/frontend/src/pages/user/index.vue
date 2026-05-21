@@ -14,6 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<XReactions v-else-if="tab === 'reactions'" :user="user"/>
 		<XClips v-else-if="tab === 'clips'" :user="user"/>
 		<XLists v-else-if="tab === 'lists'" :user="user"/>
+		<XAntennas v-else-if="tab === 'antennas'" :user="user"/>
 		<XPages v-else-if="tab === 'pages'" :user="user"/>
 		<XFlashs v-else-if="tab === 'flashs'" :user="user"/>
 		<XGallery v-else-if="tab === 'gallery'" :user="user"/>
@@ -42,6 +43,7 @@ const XAchievements = defineAsyncComponent(() => import('./achievements.vue'));
 const XReactions = defineAsyncComponent(() => import('./reactions.vue'));
 const XClips = defineAsyncComponent(() => import('./clips.vue'));
 const XLists = defineAsyncComponent(() => import('./lists.vue'));
+const XAntennas = defineAsyncComponent(() => import('./antennas.vue'));
 const XPages = defineAsyncComponent(() => import('./pages.vue'));
 const XFlashs = defineAsyncComponent(() => import('./flashs.vue'));
 const XGallery = defineAsyncComponent(() => import('./gallery.vue'));
@@ -121,6 +123,10 @@ const headerTabs = computed(() => user.value ? [{
 	key: 'lists',
 	title: i18n.ts.lists,
 	icon: 'ti ti-list',
+}, {
+	key: 'antennas',
+	title: i18n.ts.antennas,
+	icon: 'ti ti-antenna',
 }, {
 	key: 'pages',
 	title: i18n.ts.pages,

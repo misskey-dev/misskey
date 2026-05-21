@@ -144,11 +144,14 @@ import type {
 	AntennasCreateRequest,
 	AntennasCreateResponse,
 	AntennasDeleteRequest,
+	AntennasFavoriteRequest,
 	AntennasListResponse,
+	AntennasMyFavoritesResponse,
 	AntennasNotesRequest,
 	AntennasNotesResponse,
 	AntennasShowRequest,
 	AntennasShowResponse,
+	AntennasUnfavoriteRequest,
 	AntennasUpdateRequest,
 	AntennasUpdateResponse,
 	ApGetRequest,
@@ -606,6 +609,8 @@ import type {
 	UsersResponse,
 	UsersAchievementsRequest,
 	UsersAchievementsResponse,
+	UsersAntennasRequest,
+	UsersAntennasResponse,
 	UsersClipsRequest,
 	UsersClipsResponse,
 	UsersFeaturedNotesRequest,
@@ -767,9 +772,12 @@ export type Endpoints = {
 	'announcements/show': { req: AnnouncementsShowRequest; res: AnnouncementsShowResponse };
 	'antennas/create': { req: AntennasCreateRequest; res: AntennasCreateResponse };
 	'antennas/delete': { req: AntennasDeleteRequest; res: EmptyResponse };
+	'antennas/favorite': { req: AntennasFavoriteRequest; res: EmptyResponse };
 	'antennas/list': { req: EmptyRequest; res: AntennasListResponse };
+	'antennas/my-favorites': { req: EmptyRequest; res: AntennasMyFavoritesResponse };
 	'antennas/notes': { req: AntennasNotesRequest; res: AntennasNotesResponse };
 	'antennas/show': { req: AntennasShowRequest; res: AntennasShowResponse };
+	'antennas/unfavorite': { req: AntennasUnfavoriteRequest; res: EmptyResponse };
 	'antennas/update': { req: AntennasUpdateRequest; res: AntennasUpdateResponse };
 	'ap/get': { req: ApGetRequest; res: ApGetResponse };
 	'ap/show': { req: ApShowRequest; res: ApShowResponse };
@@ -1066,6 +1074,7 @@ export type Endpoints = {
 	'username/available': { req: UsernameAvailableRequest; res: UsernameAvailableResponse };
 	'users': { req: UsersRequest; res: UsersResponse };
 	'users/achievements': { req: UsersAchievementsRequest; res: UsersAchievementsResponse };
+	'users/antennas': { req: UsersAntennasRequest; res: UsersAntennasResponse };
 	'users/clips': { req: UsersClipsRequest; res: UsersClipsResponse };
 	'users/featured-notes': { req: UsersFeaturedNotesRequest; res: UsersFeaturedNotesResponse };
 	'users/flashs': { req: UsersFlashsRequest; res: UsersFlashsResponse };

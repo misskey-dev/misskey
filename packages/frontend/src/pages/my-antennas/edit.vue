@@ -18,6 +18,7 @@ import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import { antennasCache } from '@/cache.js';
 import { useRouter } from '@/router.js';
+import { $i } from '@/i.js';
 
 const router = useRouter();
 
@@ -33,6 +34,11 @@ function onAntennaUpdated() {
 }
 
 misskeyApi('antennas/show', { antennaId: props.antennaId }).then((antennaResponse) => {
+	// 所有者でない購読アンテナを編集ページで開いた場合はタイムラインへ案内する
+	if (!$i || antennaResponse.userId !== $i.id) {
+		router.replace('/timeline/antenna/:antennaId', { params: { antennaId: antennaResponse.id } });
+		return;
+	}
 	antenna.value = antennaResponse;
 });
 

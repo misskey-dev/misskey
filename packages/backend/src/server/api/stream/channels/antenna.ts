@@ -44,14 +44,12 @@ export class AntennaChannel extends Channel {
 
 		this.antennaId = params.antennaId;
 
-		const antennaExists = await this.antennasReposiotry.exists({
-			where: {
-				id: this.antennaId,
-				userId: this.user.id,
-			},
+		const antenna = await this.antennasReposiotry.findOneBy({
+			id: this.antennaId,
 		});
 
-		if (!antennaExists) return false;
+		if (antenna == null) return false;
+		if (!antenna.isPublic && antenna.userId !== this.user.id) return false;
 
 		// Subscribe stream
 		this.subscriber.on(`antennaStream:${this.antennaId}`, this.onEvent);

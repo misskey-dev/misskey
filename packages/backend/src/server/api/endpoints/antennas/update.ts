@@ -73,6 +73,7 @@ export const paramDef = {
 		withReplies: { type: 'boolean' },
 		withFile: { type: 'boolean' },
 		excludeNotesInSensitiveChannel: { type: 'boolean' },
+		isPublic: { type: 'boolean' },
 	},
 	required: ['antennaId'],
 } as const;
@@ -131,13 +132,14 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				withReplies: ps.withReplies,
 				withFile: ps.withFile,
 				excludeNotesInSensitiveChannel: ps.excludeNotesInSensitiveChannel,
+				isPublic: ps.isPublic,
 				isActive: true,
 				lastUsedAt: new Date(),
 			});
 
 			this.globalEventService.publishInternalEvent('antennaUpdated', await this.antennasRepository.findOneByOrFail({ id: antenna.id }));
 
-			return await this.antennaEntityService.pack(antenna.id);
+			return await this.antennaEntityService.pack(antenna.id, me);
 		});
 	}
 }

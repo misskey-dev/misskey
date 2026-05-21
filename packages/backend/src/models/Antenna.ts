@@ -105,6 +105,11 @@ export class MiAntenna {
 		default: false,
 	})
 	public excludeNotesInSensitiveChannel: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public isPublic: boolean;
 }
 // Note for future developers: When you added a new column,
 // You should update ExportAntennaProcessorService and ImportAntennaProcessorService

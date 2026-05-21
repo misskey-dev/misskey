@@ -4,17 +4,16 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { AntennasRepository } from '@/models/_.js';
+import { Endpoint } from '@/server/api/endpoint-base.js';
+import { QueryService } from '@/core/QueryService.js';
 import { AntennaEntityService } from '@/core/entities/AntennaEntityService.js';
 import { DI } from '@/di-symbols.js';
 
 export const meta = {
-	tags: ['antennas', 'account'],
+	tags: ['users', 'antennas'],
 
-	requireCredential: true,
-
-	kind: 'read:account',
+	description: 'Show all public antennas this user owns.',
 
 	res: {
 		type: 'array',
@@ -29,8 +28,15 @@ export const meta = {
 
 export const paramDef = {
 	type: 'object',
-	properties: {},
-	required: [],
+	properties: {
+		userId: { type: 'string', format: 'misskey:id' },
+		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		sinceId: { type: 'string', format: 'misskey:id' },
+		untilId: { type: 'string', format: 'misskey:id' },
+		sinceDate: { type: 'integer' },
+		untilDate: { type: 'integer' },
+	},
+	required: ['userId'],
 } as const;
 
 @Injectable()
@@ -40,11 +46,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private antennasRepository: AntennasRepository,
 
 		private antennaEntityService: AntennaEntityService,
+		private queryService: QueryService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const antennas = await this.antennasRepository.findBy({
-				userId: me.id,
-			});
+			const query = this.queryService.makePaginationQuery(this.antennasRepository.createQueryBuilder('antenna'), ps.sinceId, ps.untilId, ps.sinceDate, ps.untilDate)
+				.andWhere('antenna.userId = :userId', { userId: ps.userId })
+				.andWhere('antenna.isPublic = true');
+
+			const antennas = await query
+				.limit(ps.limit)
+				.getMany();
 
 			return await this.antennaEntityService.packMany(antennas, me);
 		});

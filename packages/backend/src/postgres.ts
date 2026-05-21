@@ -18,6 +18,7 @@ import { MiAd } from '@/models/Ad.js';
 import { MiAnnouncement } from '@/models/Announcement.js';
 import { MiAnnouncementRead } from '@/models/AnnouncementRead.js';
 import { MiAntenna } from '@/models/Antenna.js';
+import { MiAntennaFavorite } from '@/models/AntennaFavorite.js';
 import { MiApp } from '@/models/App.js';
 import { MiAvatarDecoration } from '@/models/AvatarDecoration.js';
 import { MiAuthSession } from '@/models/AuthSession.js';
@@ -227,6 +228,7 @@ export const entities = [
 	MiClipNote,
 	MiClipFavorite,
 	MiAntenna,
+	MiAntennaFavorite,
 	MiPromoNote,
 	MiPromoRead,
 	MiRelay,

@@ -941,6 +941,15 @@ export type paths = {
          */
         post: operations['antennas___delete'];
     };
+    '/antennas/favorite': {
+        /**
+         * antennas/favorite
+         * @description No description provided.
+         *
+         *     **Credential required**: *Yes* / **Permission**: *write:antenna-favorite*
+         */
+        post: operations['antennas___favorite'];
+    };
     '/antennas/list': {
         /**
          * antennas/list
@@ -950,12 +959,21 @@ export type paths = {
          */
         post: operations['antennas___list'];
     };
+    '/antennas/my-favorites': {
+        /**
+         * antennas/my-favorites
+         * @description No description provided.
+         *
+         *     **Credential required**: *Yes* / **Permission**: *read:antenna-favorite*
+         */
+        post: operations['antennas___my-favorites'];
+    };
     '/antennas/notes': {
         /**
          * antennas/notes
          * @description No description provided.
          *
-         *     **Credential required**: *Yes* / **Permission**: *read:account*
+         *     **Credential required**: *No* / **Permission**: *read:account*
          */
         post: operations['antennas___notes'];
     };
@@ -964,9 +982,18 @@ export type paths = {
          * antennas/show
          * @description No description provided.
          *
-         *     **Credential required**: *Yes* / **Permission**: *read:account*
+         *     **Credential required**: *No* / **Permission**: *read:account*
          */
         post: operations['antennas___show'];
+    };
+    '/antennas/unfavorite': {
+        /**
+         * antennas/unfavorite
+         * @description No description provided.
+         *
+         *     **Credential required**: *Yes* / **Permission**: *write:antenna-favorite*
+         */
+        post: operations['antennas___unfavorite'];
     };
     '/antennas/update': {
         /**
@@ -3672,6 +3699,15 @@ export type paths = {
          */
         post: operations['users___achievements'];
     };
+    '/users/antennas': {
+        /**
+         * users/antennas
+         * @description Show all public antennas this user owns.
+         *
+         *     **Credential required**: *No*
+         */
+        post: operations['users___antennas'];
+    };
     '/users/clips': {
         /**
          * users/clips
@@ -5069,6 +5105,13 @@ export type components = {
             notify: boolean;
             /** @default false */
             excludeNotesInSensitiveChannel: boolean;
+            /** @default false */
+            isPublic: boolean;
+            /** Format: id */
+            userId: string;
+            user: components['schemas']['UserLite'];
+            favoritedCount: number;
+            isFavorited?: boolean;
         };
         Clip: {
             /**
@@ -13204,6 +13247,7 @@ export interface operations {
                     withReplies: boolean;
                     withFile: boolean;
                     excludeNotesInSensitiveChannel?: boolean;
+                    isPublic?: boolean;
                 };
             };
         };
@@ -13327,7 +13371,128 @@ export interface operations {
             };
         };
     };
+    antennas___favorite: {
+        requestBody: {
+            content: {
+                'application/json': {
+                    /** Format: misskey:id */
+                    antennaId: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK (without any results) */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+            };
+            /** @description Client error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Authentication error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Forbidden error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description I'm Ai */
+            418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
     antennas___list: {
+        responses: {
+            /** @description OK (with results) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Antenna'][];
+                };
+            };
+            /** @description Client error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Authentication error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Forbidden error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description I'm Ai */
+            418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
+    'antennas___my-favorites': {
         responses: {
             /** @description OK (with results) */
             200: {
@@ -13525,6 +13690,69 @@ export interface operations {
             };
         };
     };
+    antennas___unfavorite: {
+        requestBody: {
+            content: {
+                'application/json': {
+                    /** Format: misskey:id */
+                    antennaId: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK (without any results) */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+            };
+            /** @description Client error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Authentication error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Forbidden error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description I'm Ai */
+            418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
     antennas___update: {
         requestBody: {
             content: {
@@ -13545,6 +13773,7 @@ export interface operations {
                     withReplies?: boolean;
                     withFile?: boolean;
                     excludeNotesInSensitiveChannel?: boolean;
+                    isPublic?: boolean;
                 };
             };
         };
@@ -34572,6 +34801,80 @@ export interface operations {
                 };
                 content: {
                     'application/json': components['schemas']['Achievement'][];
+                };
+            };
+            /** @description Client error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Authentication error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Forbidden error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description I'm Ai */
+            418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
+    users___antennas: {
+        requestBody: {
+            content: {
+                'application/json': {
+                    /** Format: misskey:id */
+                    userId: string;
+                    /** @default 10 */
+                    limit?: number;
+                    /** Format: misskey:id */
+                    sinceId?: string;
+                    /** Format: misskey:id */
+                    untilId?: string;
+                    sinceDate?: number;
+                    untilDate?: number;
+                };
+            };
+        };
+        responses: {
+            /** @description OK (with results) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Antenna'][];
                 };
             };
             /** @description Client error */

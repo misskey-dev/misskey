@@ -74,6 +74,7 @@ export const paramDef = {
 		withReplies: { type: 'boolean' },
 		withFile: { type: 'boolean' },
 		excludeNotesInSensitiveChannel: { type: 'boolean' },
+		isPublic: { type: 'boolean' },
 	},
 	required: ['name', 'src', 'keywords', 'excludeKeywords', 'users', 'caseSensitive', 'withReplies', 'withFile'],
 } as const;
@@ -135,11 +136,12 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				withReplies: ps.withReplies,
 				withFile: ps.withFile,
 				excludeNotesInSensitiveChannel: ps.excludeNotesInSensitiveChannel,
+				isPublic: ps.isPublic ?? false,
 			});
 
 			this.globalEventService.publishInternalEvent('antennaCreated', antenna);
 
-			return await this.antennaEntityService.pack(antenna);
+			return await this.antennaEntityService.pack(antenna, me);
 		});
 	}
 }

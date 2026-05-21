@@ -34,6 +34,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkSwitch v-model="caseSensitive">{{ i18n.ts.caseSensitive }}</MkSwitch>
 			<MkSwitch v-model="withFile">{{ i18n.ts.withFileAntenna }}</MkSwitch>
 			<MkSwitch v-model="excludeNotesInSensitiveChannel">{{ i18n.ts.excludeNotesInSensitiveChannel }}</MkSwitch>
+			<MkSwitch v-model="isPublic">
+				{{ i18n.ts._antenna.public }}
+				<template #caption>
+					{{ i18n.ts._antenna.publicDescription }}
+					<span :class="$style.publicConditionsExposed">{{ i18n.ts._antenna.publicConditionsExposed }}</span>
+				</template>
+			</MkSwitch>
 		</div>
 		<div :class="$style.actions">
 			<div class="_buttons">
@@ -60,7 +67,7 @@ import { i18n } from '@/i18n.js';
 import { deepMerge } from '@/utility/merge.js';
 import { useMkSelect } from '@/composables/use-mkselect.js';
 
-type PartialAllowedAntenna = Omit<Misskey.entities.Antenna, 'id' | 'createdAt' | 'updatedAt'> & {
+type PartialAllowedAntenna = Omit<Misskey.entities.Antenna, 'id' | 'createdAt' | 'updatedAt' | 'user' | 'userId' | 'favoritedCount'> & {
 	id?: string;
 	createdAt?: string;
 	updatedAt?: string;
@@ -86,6 +93,7 @@ const initialAntenna = deepMerge<PartialAllowedAntenna>(props.antenna ?? {}, {
 	isActive: true,
 	hasUnreadNote: false,
 	notify: false,
+	isPublic: false,
 });
 
 const emit = defineEmits<{
@@ -132,6 +140,7 @@ const excludeBots = ref<boolean>(initialAntenna.excludeBots);
 const withReplies = ref<boolean>(initialAntenna.withReplies);
 const withFile = ref<boolean>(initialAntenna.withFile);
 const excludeNotesInSensitiveChannel = ref<boolean>(initialAntenna.excludeNotesInSensitiveChannel);
+const isPublic = ref<boolean>(initialAntenna.isPublic);
 const userLists = ref<Misskey.entities.UserList[] | null>(null);
 
 watch(() => src.value, async () => {
@@ -151,6 +160,7 @@ async function saveAntenna() {
 		excludeNotesInSensitiveChannel: excludeNotesInSensitiveChannel.value,
 		caseSensitive: caseSensitive.value,
 		localOnly: localOnly.value,
+		isPublic: isPublic.value,
 		users: users.value.trim().split('\n').map(x => x.trim()),
 		keywords: keywords.value.trim().split('\n').map(x => x.trim().split(' ')),
 		excludeKeywords: excludeKeywords.value.trim().split('\n').map(x => x.trim().split(' ')),
@@ -196,5 +206,11 @@ function addUser() {
 	margin-top: 16px;
 	padding: 24px 0;
 	border-top: solid 0.5px var(--MI_THEME-divider);
+}
+
+.publicConditionsExposed {
+	display: block;
+	margin-top: 4px;
+	color: var(--MI_THEME-fgTransparentWeak);
 }
 </style>
