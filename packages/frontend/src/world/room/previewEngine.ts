@@ -243,7 +243,7 @@ export class RoomObjectPreviewEngine extends EngineBase<{
 
 		const root = new BABYLON.Mesh(`object_${args.type}`, this.scene);
 
-		const filePath = def.path != null ? `/client-assets/room/objects/${def.path}.glb` : `/client-assets/room/objects/${camelToKebab(args.type)}/${camelToKebab(args.type)}.glb`;
+		const filePath = def.path != null ? `/client-assets/room/objects/${def.path(this.convertedObjectOptions!)}.glb` : `/client-assets/room/objects/${camelToKebab(args.type)}/${camelToKebab(args.type)}.glb`;
 		const loaderResult = await BABYLON.LoadAssetContainerAsync(filePath, this.scene);
 
 		// babylonによって自動で追加される右手系変換用ノード
@@ -312,11 +312,14 @@ export class RoomObjectPreviewEngine extends EngineBase<{
 				fixParticleSystem: (ps) => this.sr.fixParticleSystem(ps),
 			},
 			root,
-			options: this.convertedObjectOptions,
+			options: this.convertedObjectOptions!,
 			model,
 			id: args.id,
 			timer: this.timerForEachObject,
 			graphicsQuality: GRAPHICS_QUALITY.MEDIUM,
+			reloadModel: () => {
+				this.reloadModel();
+			},
 		});
 
 		objectInstance.onInited?.();
@@ -352,6 +355,15 @@ export class RoomObjectPreviewEngine extends EngineBase<{
 			this.objectType = null;
 		}
 		this.sr.enableSnapshotRendering();
+	}
+
+	private async reloadModel() {
+		if (this.objectType == null) return;
+		this.clearObject();
+		await this.loadObject_({
+			type,
+			id,
+		});
 	}
 
 	public cameraRotate(vector: { x: number; y: number; }) {

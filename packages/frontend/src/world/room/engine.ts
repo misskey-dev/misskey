@@ -20,6 +20,7 @@ import { getObjectDef } from './object-defs.js';
 import { findMaterial, GRAPHICS_QUALITY, ModelManager, SYSTEM_HEYA_MESH_NAMES, SYSTEM_MESH_NAMES } from './utility.js';
 import { JapaneseEnvManager, MuseumEnvManager, SimpleEnvManager } from './env.js';
 import { convertRawOptions } from './object.js';
+import { ObjectContainer } from './objectContainer.js';
 import type { RoomAttachments } from './utility.js';
 import type { ConvertedOptions, ObjectDef, RawOptions, RoomObjectInstance, RoomStateObject } from './object.js';
 import type { GridMaterial } from '@babylonjs/materials';
@@ -58,48 +59,6 @@ export function collectReferencedDriveFileIds(roomState: RoomState) {
 		}
 	}
 	return fileIds;
-}
-
-function mergeMeshes(meshes: BABYLON.Mesh[], root: BABYLON.Mesh, hasTexture: boolean) {
-	const excludeMeshes = root.getChildMeshes().filter(m => SYSTEM_MESH_NAMES.some(s => m.name.includes(s)));
-
-	const childMeshes = root.getChildMeshes().filter(m => !excludeMeshes.some(x => x === m) && m.isVisible && !m.isDisposed());
-
-	const toMerge = [] as BABYLON.Mesh[];
-	for (const mesh of childMeshes) {
-		if (mesh instanceof BABYLON.InstancedMesh) {
-			continue;
-		}
-
-		if (mesh.hasInstances) continue;
-
-		if (mesh instanceof BABYLON.Mesh) {
-			toMerge.push(mesh);
-		}
-	}
-
-	if (toMerge.length <= 1) { // マージ対象が一つしかない状態でマージするのは単純に無駄なのと、babylonのバグが知らないけどなぜか法線が反転する
-		return null;
-	}
-
-	for (const mesh of toMerge) {
-		if (hasTexture) {
-			if (mesh.getVerticesData(BABYLON.VertexBuffer.UVKind) == null) {
-				const vertexCount = mesh.getTotalVertices();
-				const uvs = new Array(vertexCount * 2).fill(0);
-				mesh.setVerticesData(BABYLON.VertexBuffer.UVKind, uvs, false, 2);
-			}
-			if (mesh.getVerticesData(BABYLON.VertexBuffer.UV2Kind) == null) {
-				const vertexCount = mesh.getTotalVertices();
-				const uvs = new Array(vertexCount * 2).fill(0);
-				mesh.setVerticesData(BABYLON.VertexBuffer.UV2Kind, uvs, false, 2);
-			}
-		}
-	}
-
-	const merged = BABYLON.Mesh.MergeMeshes(toMerge, true, false, undefined, false, true);
-
-	return merged;
 }
 
 function enableObjectCollision(meshes: BABYLON.Mesh[]) {
@@ -142,12 +101,7 @@ export class RoomEngine extends EngineBase<{
 	private useGlow: boolean;
 	public camera: BABYLON.UniversalCamera;
 	private fixedCamera: BABYLON.FreeCamera;
-	public objectEntities: Map<string, {
-		rootMesh: BABYLON.TransformNode;
-		convertedOptions: ConvertedOptions;
-		instance: RoomObjectInstance;
-		model: ModelManager;
-	}> = new Map();
+	public objectContainers: Map<string, ObjectContainer> = new Map();
 	private envManager: EnvManager | null = null;
 
 	// TODO: たぶんオブジェクト内の値のmutateはsetで検知できないので、そのような操作を実際に行うようになった & それを検知する必要性が出てきたら専用の設定関数などを新設してそれを使わせる
@@ -177,7 +131,7 @@ export class RoomEngine extends EngineBase<{
 	// TODO: たぶんオブジェクト内の値のmutateはsetで検知できないので、そのような操作を実際に行うようになった & それを検知する必要性が出てきたら専用の設定関数などを新設してそれを使わせる
 	private _selected: {
 		objectId: string;
-		objectEntity: RoomEngine['objectEntities'] extends Map<string, infer V> ? V : never;
+		objectContainer: RoomEngine['objectContainers'] extends Map<string, infer V> ? V : never;
 		objectState: RoomStateObject;
 		objectDef: ObjectDef;
 	} | null = null;
@@ -193,10 +147,10 @@ export class RoomEngine extends EngineBase<{
 		this.ev('changeSelectedState', { selected: {
 			objectId: v.objectId,
 			objectState: v.objectState,
-			interacions: Object.entries(v.objectEntity.instance.interactions).map(([interactionId, interactionInfo]) => ({
+			interacions: Object.entries(v.objectContainer.instance.interactions).map(([interactionId, interactionInfo]) => ({
 				id: interactionId,
 				label: interactionInfo.label,
-				isPrimary: v.objectEntity.instance.primaryInteraction === interactionId,
+				isPrimary: v.objectContainer.instance.primaryInteraction === interactionId,
 			})),
 		} });
 	}
@@ -519,13 +473,13 @@ export class RoomEngine extends EngineBase<{
 
 			// TODO: GPUPickerを使いたいが、なぜか一部のメッシュが反応しない
 			const pickingInfo = this.scene.pick(ev.x, ev.y,
-				(m) => m.name.includes('__PICK__') || (m.isVisible && m.isEnabled() && m.metadata?.objectId != null && this.objectEntities.has(m.metadata.objectId)));
+				(m) => m.name.includes('__PICK__') || (m.isVisible && m.isEnabled() && m.metadata?.objectId != null && this.objectContainers.has(m.metadata.objectId)));
 
 			if (pickingInfo.pickedMesh != null) {
 				const oid = pickingInfo.pickedMesh.metadata.objectId;
-				if (oid != null && this.objectEntities.has(oid)) {
-					const o = this.objectEntities.get(oid)!;
-					const boundingInfo = getMeshesBoundingBox(o.rootMesh.getChildMeshes().filter(m => m.isEnabled() && m.isVisible && !m.isDisposed()), true);
+				if (oid != null && this.objectContainers.has(oid)) {
+					const o = this.objectContainers.get(oid)!;
+					const boundingInfo = getMeshesBoundingBox(o.root.getChildMeshes().filter(m => m.isEnabled() && m.isVisible && !m.isDisposed()), true);
 					this.selectObject(oid);
 
 					{ // camera animation
@@ -651,193 +605,7 @@ export class RoomEngine extends EngineBase<{
 		options: RawOptions;
 	}) {
 		const def = getObjectDef(args.type);
-
-		const root = new BABYLON.TransformNode(`object_${args.id}_${args.type}`, this.scene);
-
-		const filePath = def.path != null ? `/client-assets/room/objects/${def.path}.glb` : `/client-assets/room/objects/${camelToKebab(args.type)}/${camelToKebab(args.type)}.glb`;
-		const loaderResult = await BABYLON.LoadAssetContainerAsync(filePath, this.scene);
-
-		// babylonによって自動で追加される右手系変換用ノード
-		let subRoot = loaderResult.meshes[0] as BABYLON.TransformNode;
-
-		// 不要なUVを掃除
-		if (!def.hasTexture) {
-			for (const m of loaderResult.meshes) {
-				if (m.geometry != null) {
-					m.geometry.removeVerticesData(BABYLON.VertexBuffer.UVKind);
-					m.geometry.removeVerticesData(BABYLON.VertexBuffer.UV2Kind);
-					m.geometry.removeVerticesData(BABYLON.VertexBuffer.UV3Kind);
-					m.geometry.removeVerticesData(BABYLON.VertexBuffer.UV4Kind);
-					m.geometry.removeVerticesData(BABYLON.VertexBuffer.UV5Kind);
-					m.geometry.removeVerticesData(BABYLON.VertexBuffer.UV6Kind);
-				}
-			}
-		}
-
-		if (def.canPreMeshesMerging) {
-			const merged = mergeMeshes(loaderResult.meshes, subRoot, def.hasTexture);
-			if (merged != null) {
-				merged.setParent(subRoot);
-				merged.name = 'preMerged';
-
-				merged.material.freeze();
-				if (merged.material instanceof BABYLON.MultiMaterial) {
-					for (const subMat of merged.material.subMaterials) {
-						subMat.freeze();
-					}
-				}
-
-				// TODO: 再帰的にする
-				for (const m of loaderResult.transformNodes) {
-					if (m.getChildren().length === 0) {
-						m.dispose();
-					}
-				}
-			}
-		}
-
-		if (BAKE_TRANSFORM) {
-			subRoot.scaling = new BABYLON.Vector3(1, 1, 1);
-			subRoot.rotationQuaternion = null;
-			subRoot.rotation = new BABYLON.Vector3(0, 0, 0);
-			//subRoot.scaling = subRoot.scaling.scale(WORLD_SCALE);// cmをmに
-			//subRoot.bakeCurrentTransformIntoVertices();
-			//subRoot.bakeTransformIntoVertices(BABYLON.Matrix.Scaling(WORLD_SCALE, WORLD_SCALE, WORLD_SCALE));
-
-			for (const m of loaderResult.transformNodes) {
-				if (m.name === '__root__') continue;
-				if (m.parent === subRoot) {
-					m.setParent(root);
-				//m.parent = root;
-				}
-			}
-			for (const m of loaderResult.meshes) {
-				if (m.name === '__root__') continue;
-				if (m.parent === subRoot) {
-					m.setParent(root);
-				//m.parent = root;
-				}
-			}
-
-			const bakeTransformNode = (m: BABYLON.TransformNode) => {
-				m.position.x *= -WORLD_SCALE;
-				m.position.y *= WORLD_SCALE;
-				m.position.z *= WORLD_SCALE;
-				m.rotation = m.rotationQuaternion.toEulerAngles();
-				m.rotationQuaternion = null;
-				//m.rotation.x = -m.rotation.x;
-				m.rotation.y = -m.rotation.y;
-				m.rotation.z = -m.rotation.z;
-				for (const child of m.getChildren()) {
-					if (child instanceof BABYLON.Mesh) {
-					//child.scaling = child.scaling.scale(WORLD_SCALE);// cmをmに
-					//child.position = child.position.scale(WORLD_SCALE);
-
-						const pos = child.position.clone();
-						const scaling = child.scaling.clone();
-						child.scaling.x = -WORLD_SCALE;
-						child.scaling.y = WORLD_SCALE;
-						child.scaling.z = WORLD_SCALE;
-
-						const rotation = child.rotationQuaternion ? child.rotationQuaternion.toEulerAngles() : child.rotation.clone();
-						child.rotationQuaternion = null;
-						child.position = new BABYLON.Vector3(0, 0, 0);
-
-						child.parent = root;
-						child.bakeCurrentTransformIntoVertices();
-						child.parent = m;
-						child.scaling = scaling;
-						child.position.x = pos.x * -WORLD_SCALE;
-						child.position.y = pos.y * WORLD_SCALE;
-						child.position.z = pos.z * WORLD_SCALE;
-
-						child.rotation = rotation;
-
-						scaleMorph(child, [-WORLD_SCALE, WORLD_SCALE, WORLD_SCALE]);
-
-					//const indices = child.getIndices();
-					//const positions = child.getVerticesData(BABYLON.VertexBuffer.PositionKind);
-					//const normals = child.getVerticesData(BABYLON.VertexBuffer.NormalKind);
-					//BABYLON.VertexData.ComputeNormals(positions, indices, normals);
-					//child.updateVerticesData(BABYLON.VertexBuffer.NormalKind, normals, false, false);
-					} else if (child instanceof BABYLON.InstancedMesh) {
-						const pos = child.position.clone();
-						child.position.x = pos.x * -WORLD_SCALE;
-						child.position.y = pos.y * WORLD_SCALE;
-						child.position.z = pos.z * WORLD_SCALE;
-					} else if (child instanceof BABYLON.TransformNode) {
-						bakeTransformNode(child);
-					}
-				}
-			};
-
-			const bakeChildren = (node: BABYLON.Node) => {
-				for (const m of node.getChildren(undefined, true)) {
-					if (m instanceof BABYLON.Mesh) {
-						const scaling = m.scaling.clone();
-						m.scaling.x = -WORLD_SCALE;
-						m.scaling.y = WORLD_SCALE;
-						m.scaling.z = WORLD_SCALE;
-						//m.position.x *= -WORLD_SCALE;
-						//m.position.y *= WORLD_SCALE;
-						//m.position.z *= WORLD_SCALE;
-						const pos = m.position.clone();
-						const rotation = m.rotationQuaternion.toEulerAngles();
-						m.rotationQuaternion = null;
-						m.rotation = new BABYLON.Vector3(0, 0, 0);
-						m.position = new BABYLON.Vector3(0, 0, 0);
-						m.bakeCurrentTransformIntoVertices();
-						m.scaling.x = scaling.x;
-						m.scaling.y = scaling.y;
-						m.scaling.z = scaling.z;
-						m.position.x = pos.x * -WORLD_SCALE;
-						m.position.y = pos.y * WORLD_SCALE;
-						m.position.z = pos.z * WORLD_SCALE;
-						m.rotation = rotation;
-						//m.rotation.x = -m.rotation.x;
-						m.rotation.y = -m.rotation.y;
-						m.rotation.z = -m.rotation.z;
-
-						scaleMorph(m, [-WORLD_SCALE, WORLD_SCALE, WORLD_SCALE]);
-					} else if (m instanceof BABYLON.InstancedMesh) {
-					//const pos = m.position.clone();
-					//m.position.x = pos.x * -WORLD_SCALE;
-					//m.position.y = pos.y * WORLD_SCALE;
-					//m.position.z = pos.z * WORLD_SCALE;
-						m.position.x *= -WORLD_SCALE;
-						m.position.y *= WORLD_SCALE;
-						m.position.z *= WORLD_SCALE;
-						m.rotation = m.rotationQuaternion.toEulerAngles();
-						m.rotationQuaternion = null;
-						m.rotation.x = -m.rotation.x;
-						m.rotation.y = -m.rotation.y;
-						m.rotation.z = -m.rotation.z;
-					} else if (m instanceof BABYLON.TransformNode) {
-						bakeTransformNode(m);
-					}
-				}
-			};
-
-			bakeChildren(root);
-
-			subRoot.dispose();
-		} else {
-			// meshじゃなくtransform nodeにしてパフォーマンス向上
-			const _subRoot = new BABYLON.TransformNode('__root__', this.scene);
-			_subRoot.scaling.x = -1;
-			_subRoot.scaling = _subRoot.scaling.scale(WORLD_SCALE);// cmをmに
-
-			for (const m of subRoot.getChildren()) {
-				if (m.parent === subRoot) {
-					m.parent = _subRoot;
-				}
-			}
-
-			subRoot.dispose();
-			subRoot = _subRoot;
-		}
-
-		def.treatLoaderResult?.(loaderResult);
+		const convertedOptions = convertRawOptions(def.options.schema, args.options, this.roomAttachments);
 
 		const metadata = {
 			isObject: true,
@@ -845,15 +613,23 @@ export class RoomEngine extends EngineBase<{
 			objectType: args.type,
 		};
 
-		if (!BAKE_TRANSFORM) {
-			root.addChild(subRoot);
-		}
-
-		root.position = args.position.clone();
-		root.rotation = args.rotation.clone();
-		root.metadata = metadata;
-
-		const model = new ModelManager(BAKE_TRANSFORM ? root : subRoot, loaderResult.meshes.filter(m => !m.isDisposed() && m.name !== '__root__'), def.hasTexture, (meshes) => {
+		const container = new ObjectContainer({
+			id: args.id,
+			type: args.type,
+			position: args.position.clone(),
+			rotation: args.rotation.clone(),
+			options: convertedOptions,
+			metadata,
+			sr: this.sr,
+			getIsSrReady: () => this.inited,
+			lightContainer: this.lightContainer,
+			graphicsQuality: this.graphicsQuality,
+			scene: this.scene,
+			sitChair: () => {
+				this.sitChair(args.id);
+			},
+		});
+		container.onMeshesUpdated = (meshes) => {
 			if (this.selected?.objectId === args.id) {
 				this.highlightMeshes(meshes);
 			}
@@ -917,69 +693,17 @@ export class RoomEngine extends EngineBase<{
 				mesh.geometry.clearCachedData();
 			}
 			*/
-		});
+		};
 
-		const convertedOptions = convertRawOptions(def.options.schema, args.options, this.roomAttachments);
-
-		const objectInstance = await def.createInstance({
-			scene: this.scene,
-			sr: {
-				updateMesh: (mesh) => {
-					if (!this.inited) return;
-					this.sr.updateMesh(mesh);
-				},
-				reset: () => {
-					if (!this.inited) return;
-					this.sr.disableSnapshotRendering();
-					this.sr.enableSnapshotRendering();
-				},
-				fixParticleSystem: (ps) => this.sr.fixParticleSystem(ps),
-			},
-			lc: this.lightContainer,
-			root,
-			options: convertedOptions,
-			model,
-			id: args.id,
-			timer: this.timer, // TODO: 家具が撤去された後も動作し続けるのをどうにかする
-			graphicsQuality: this.graphicsQuality,
-			sitChair: () => {
-				this.sitChair(args.id);
-			},
-			stickyMarkerMeshUpdated: (mesh) => {
-				// TODO
-				//// stickyな子の位置を更新
-				//if (mesh.name.includes('__TOP__')) {
-				//	mesh.unfreezeWorldMatrix();
-				//	mesh.computeWorldMatrix(true);
-				//	const updateChildStickyObjectPosition = (objectId: string) => {
-				//		const stickyObjectIds = Array.from(this.roomState.installedObjects.filter(o => o.sticky === objectId)).map(o => o.id);
-				//		for (const soid of stickyObjectIds) {
-				//			const soMesh = this.objectEntities.get(soid)!.rootMesh;
-				//			soMesh.unfreezeWorldMatrix();
-				//			for (const m of soMesh.getChildMeshes()) {
-				//				m.unfreezeWorldMatrix();
-				//			}
-				//			console.log(mesh.getAbsolutePosition().y);
-				//			soMesh.position.y = mesh.getAbsolutePosition().y;
-				//			updateChildStickyObjectPosition(soid);
-				//		}
-				//	};
-				//	updateChildStickyObjectPosition(args.id);
-				//}
-			},
-		});
-
-		objectInstance.onInited?.();
-
-		model.bakeMesh();
+		await container.load();
 
 		if (def.hasCollisions) {
-			enableObjectCollision(root.getChildMeshes());
+			enableObjectCollision(container.root.getChildMeshes());
 		}
 
-		this.objectEntities.set(args.id, { convertedOptions, instance: objectInstance, rootMesh: root, model });
+		this.objectContainers.set(args.id, container);
 
-		return { root, objectInstance };
+		return container;
 	}
 
 	public cameraMove(vector: { x: number; y: number; }, dash: boolean) {
@@ -1001,18 +725,18 @@ export class RoomEngine extends EngineBase<{
 		if (currentSelected != null) {
 			this.selected = null;
 			this.clearHighlight();
-			currentSelected.objectEntity.model.bakeMesh();
+			currentSelected.objectContainer.model.bakeMesh();
 		}
 
 		if (objectId != null) {
-			const entity = this.objectEntities.get(objectId);
-			if (entity != null) {
-				entity.model.unbakeMesh();
-				this.highlightMeshes(entity.rootMesh.getChildMeshes());
+			const container = this.objectContainers.get(objectId);
+			if (container != null) {
+				container.model.unbakeMesh();
+				this.highlightMeshes(container.root.getChildMeshes());
 				const state = this.roomState.installedObjects.find(o => o.id === objectId)!;
 				this.selected = {
 					objectId,
-					objectEntity: entity,
+					objectContainer: container,
 					objectState: state,
 					objectDef: getObjectDef(state.type),
 				};
@@ -1230,7 +954,7 @@ export class RoomEngine extends EngineBase<{
 
 		this.sr.disableSnapshotRendering();
 
-		const selectedObject = this.selected.objectEntity.rootMesh;
+		const selectedObject = this.selected.objectContainer.root;
 		this.clearHighlight();
 
 		const initialPosition = selectedObject.position.clone();
@@ -1240,7 +964,7 @@ export class RoomEngine extends EngineBase<{
 		const setStickyParentRecursively = (mesh: BABYLON.AbstractMesh) => {
 			const stickyObjectIds = Array.from(this.roomState.installedObjects.filter(o => o.sticky === mesh.metadata.objectId)).map(o => o.id);
 			for (const soid of stickyObjectIds) {
-				const soMesh = this.objectEntities.get(soid)!.rootMesh;
+				const soMesh = this.objectContainers.get(soid)!.root;
 				setStickyParentRecursively(soMesh);
 				soMesh.setParent(mesh);
 				soMesh.unfreezeWorldMatrix();
@@ -1300,7 +1024,7 @@ export class RoomEngine extends EngineBase<{
 				const removeStickyParentRecursively = (mesh: BABYLON.Mesh) => {
 					const stickyObjectIds = Array.from(this.roomState.installedObjects.filter(o => o.sticky === mesh.metadata.objectId)).map(o => o.id);
 					for (const soid of stickyObjectIds) {
-						const soMesh = this.objectEntities.get(soid)!.rootMesh;
+						const soMesh = this.objectContainers.get(soid)!.root;
 						soMesh.setParent(null);
 
 						removeStickyParentRecursively(soMesh);
@@ -1338,7 +1062,7 @@ export class RoomEngine extends EngineBase<{
 					const removeStickyParentRecursively = (mesh: BABYLON.Mesh) => {
 						const stickyObjectIds = Array.from(this.roomState.installedObjects.filter(o => o.sticky === mesh.metadata.objectId)).map(o => o.id);
 						for (const soid of stickyObjectIds) {
-							const soMesh = this.objectEntities.get(soid)!.rootMesh;
+							const soMesh = this.objectContainers.get(soid)!.root;
 							soMesh.setParent(null);
 
 							const pos = soMesh.position.clone();
@@ -1403,7 +1127,7 @@ export class RoomEngine extends EngineBase<{
 
 	public interact(oid: string, iid: string | null = null) {
 		const o = this.roomState.installedObjects.find(o => o.id === oid)!;
-		const entity = this.objectEntities.get(o.id)!;
+		const entity = this.objectContainers.get(o.id)!;
 
 		if (iid == null) {
 			if (entity.instance.primaryInteraction != null) {
@@ -1416,7 +1140,7 @@ export class RoomEngine extends EngineBase<{
 
 	public sitChair(objectId: string) {
 		this.isSitting = true;
-		this.fixedCamera.parent = this.objectEntities.get(objectId)!.rootMesh;
+		this.fixedCamera.parent = this.objectContainers.get(objectId)!.root;
 		this.fixedCamera.position = new BABYLON.Vector3(0, cm(120), 0);
 		this.fixedCamera.rotation = new BABYLON.Vector3(0, 0, 0);
 		this.scene.activeCamera = this.fixedCamera;
@@ -1475,22 +1199,14 @@ export class RoomEngine extends EngineBase<{
 		if (!this.isEditMode) return;
 		if (this.grabbingCtx != null) return;
 
-		if (attachments != null) {
-			this.roomAttachments = attachments;
-		}
-
+		if (attachments != null) this.roomAttachments = attachments;
 		this.selectObject(null);
 
-		const dir = this.camera.getDirection(BABYLON.Axis.Z).scale(this.scene.useRightHandedSystem ? -1 : 1);
-		const distance = cm(50);
-
 		const id = genId();
-
 		const def = getObjectDef(type);
-
 		const options = _options != null ? deepClone(_options) : deepClone(def.options.default);
 
-		const { root } = await this.loadObject({
+		const container = await this.loadObject({
 			id: id,
 			type,
 			position: new BABYLON.Vector3(0, 0, 0),
@@ -1498,13 +1214,14 @@ export class RoomEngine extends EngineBase<{
 			options,
 		});
 
-		root.unfreezeWorldMatrix();
-		for (const m of root.getChildMeshes()) {
+		container.root.unfreezeWorldMatrix();
+		for (const m of container.root.getChildMeshes()) {
 			m.unfreezeWorldMatrix();
 			m.checkCollisions = false;
 		}
 
-		const ghost = this.createGhost(root);
+		const ghost = this.createGhost(container.root);
+		const distance = cm(50);
 
 		let sticky: string | null;
 		let grabbingEnded = false;
@@ -1513,7 +1230,7 @@ export class RoomEngine extends EngineBase<{
 			objectId: id,
 			objectType: type,
 			forInstall: true,
-			mesh: root,
+			mesh: container.root,
 			originalDiffOfPosition: new BABYLON.Vector3(0, 0, 0),
 			originalDiffOfRotation: new BABYLON.Vector3(0, Math.PI, 0),
 			distance: distance,
@@ -1531,11 +1248,11 @@ export class RoomEngine extends EngineBase<{
 				grabbingEnded = true;
 
 				if (def.hasCollisions) {
-					enableObjectCollision(root.getChildMeshes());
+					enableObjectCollision(container.root.getChildMeshes());
 				}
 
-				const pos = root.position.clone();
-				const rotation = root.rotation.clone();
+				const pos = container.root.position.clone();
+				const rotation = container.root.rotation.clone();
 
 				// 場合によってはなぜかSRが効かなくなる
 				//const putParticleSystem = this.getPutParticleSystem();
@@ -1548,11 +1265,11 @@ export class RoomEngine extends EngineBase<{
 				});
 
 				// put animation
-				root.animations.push(def.placement === 'side' || def.placement === 'wall' ? this.putAnimH : this.putAnimV);
+				container.root.animations.push(def.placement === 'side' || def.placement === 'wall' ? this.putAnimH : this.putAnimV);
 				const animationObserver = this.scene.onAfterAnimationsObservable.add(() => {
-					this.sr.updateMesh(root.getChildMeshes(), true);
+					this.sr.updateMesh(container.root.getChildMeshes(), true);
 				});
-				this.scene.beginAnimation(root, 0, 60, false, 3, () => {
+				this.scene.beginAnimation(container.root, 0, 60, false, 3, () => {
 					this.scene.onAfterAnimationsObservable.remove(animationObserver);
 				});
 
@@ -1590,7 +1307,7 @@ export class RoomEngine extends EngineBase<{
 	public enterEditMode() {
 		this.isEditMode = true;
 
-		for (const entity of this.objectEntities.values()) {
+		for (const entity of this.objectContainers.values()) {
 			entity.instance.resetTemporaryState?.();
 		}
 
@@ -1680,8 +1397,8 @@ export class RoomEngine extends EngineBase<{
 
 		const objectId = this.selected.objectId;
 
-		this.objectEntities.get(objectId)?.rootMesh.dispose();
-		this.objectEntities.delete(objectId);
+		this.objectContainers.get(objectId)?.destroy();
+		this.objectContainers.delete(objectId);
 		this.roomState.installedObjects = this.roomState.installedObjects.filter(o => o.id !== objectId);
 		for (const o of this.roomState.installedObjects.filter(o => o.sticky === objectId)) {
 			o.sticky = null;
@@ -1719,14 +1436,14 @@ export class RoomEngine extends EngineBase<{
 
 		this.ev('changeRoomState', { roomState: this.roomState });
 
-		const entity = this.objectEntities.get(objectId);
-		if (entity == null) return;
+		const container = this.objectContainers.get(objectId);
+		if (container == null) return;
 
 		const converted = convertRawOptions(def.options.schema, o.options, this.roomAttachments);
-		entity.convertedOptions[key] = converted[key];
+		container.options[key] = converted[key];
 
 		this.sr.disableSnapshotRendering();
-		entity.instance.onOptionsUpdated?.([key, converted[key]]);
+		container.optionsUpdated(key, converted[key]);
 		this.sr.enableSnapshotRendering();
 	}
 

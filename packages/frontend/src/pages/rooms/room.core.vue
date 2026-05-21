@@ -617,8 +617,8 @@ function showOtherMenu(ev: PointerEvent) {
 				title: i18n.ts.areYouSure,
 			}).then(({ canceled }) => {
 				if (canceled) return;
-				localStorage.removeItem('roomData');
-				window.location.reload();
+
+				// TODO
 			});
 		},
 	}, {

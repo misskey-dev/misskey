@@ -4,10 +4,12 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObjectClass } from '../object.js';
+import { defineObject } from '../object.js';
 import { cm, remap } from '@/world/utility.js';
 
-const base = defineObjectClass({
+export const steelRack = defineObject({
+	id: 'steelRack',
+	name: 'steelRack',
 	options: {
 		schema: {
 			shelfColor: {
@@ -17,6 +19,11 @@ const base = defineObjectClass({
 			poleColor: {
 				type: 'color',
 				label: 'Pole color',
+			},
+			widthAndDepthVariation: {
+				type: 'enum',
+				label: 'W x D',
+				enum: ['60-35', '90-35'],
 			},
 			height: {
 				type: 'range',
@@ -106,6 +113,7 @@ const base = defineObjectClass({
 		default: {
 			shelfColor: [0.8, 0.8, 0.8],
 			poleColor: [0.8, 0.8, 0.8],
+			widthAndDepthVariation: '60-35',
 			height: 5,
 			numberOfShelfs: 5,
 			shelf1Position: 0.0,
@@ -123,7 +131,8 @@ const base = defineObjectClass({
 	placement: 'floor',
 	hasCollisions: true,
 	hasTexture: true,
-	createInstance: ({ options, model }) => {
+	path: (options) => `steel-rack/${options.widthAndDepthVariation}`,
+	createInstance: ({ options, model, reloadModel }) => {
 		const matrix = model.root.getWorldMatrix(true);
 		const scale = new BABYLON.Vector3();
 		matrix.decompose(scale);
@@ -207,6 +216,7 @@ const base = defineObjectClass({
 				switch (k) {
 					case 'shelfColor': applyShelfColor(); break;
 					case 'poleColor': applyPoleColor(); break;
+					case 'widthAndDepthVariation': reloadModel(); break;
 					case 'height': applyHeight(); break;
 					case 'numberOfShelfs': applyNumberOfShelfs(); break;
 					case 'shelf1Position':
@@ -224,16 +234,4 @@ const base = defineObjectClass({
 			interactions: {},
 		};
 	},
-});
-
-export const steelRack60x35 = base.extend({
-	id: 'steelRack60x35',
-	name: 'steelRack60x35',
-	path: 'steel-rack/60-35',
-});
-
-export const steelRack90x35 = base.extend({
-	id: 'steelRack90x35',
-	name: 'steelRack90x35',
-	path: 'steel-rack/90-35',
 });

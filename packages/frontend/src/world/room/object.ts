@@ -115,10 +115,15 @@ type GetConvertedOptionsSchemaValues<T extends OptionsSchema> = {
 	never;
 };
 
+export type SnapshotRenderingHelperWrapper = {
+	updateMesh: (meshes: BABYLON.Mesh[]) => void;
+	reset: () => void;
+	fixParticleSystem: (ps: BABYLON.ParticleSystem) => void;
+};
+
 export type ObjectDef<OpSc extends OptionsSchema | undefined = undefined> = {
 	id: string;
 	name: string;
-	path?: string;
 	options: {
 		schema: OpSc extends undefined ? OptionsSchema : NonNullable<OpSc>;
 		default: OpSc extends undefined ? RawOptions : GetRawOptionsSchemaValues<NonNullable<OpSc>>;
@@ -130,15 +135,12 @@ export type ObjectDef<OpSc extends OptionsSchema | undefined = undefined> = {
 	//groupingMeshes: string[]; // multi-materialなメッシュは複数のメッシュに分割されるが、それだと不便な場合に追加の親メッシュでグルーピングするための指定
 	isChair?: boolean;
 	treatLoaderResult?: (loaderResult: BABYLON.AssetContainer) => void;
+	path?: (options: OpSc extends undefined ? ConvertedOptions : Readonly<GetConvertedOptionsSchemaValues<NonNullable<OpSc>>>) => string;
 	createInstance: (args: {
 		scene: BABYLON.Scene;
 		// TODO: snapshot renderingの関心を隠蔽した方が綺麗かもしれない
 		// 例えばmaterialUpdatedというメソッドを用意して内部的にresetを呼ぶなど
-		sr: {
-			updateMesh: (meshes: BABYLON.Mesh[]) => void;
-			reset: () => void;
-			fixParticleSystem: (ps: BABYLON.ParticleSystem) => void;
-		};
+		sr: SnapshotRenderingHelperWrapper;
 		lc: BABYLON.ClusteredLightContainer | null;
 		root: BABYLON.TransformNode;
 		options: OpSc extends undefined ? ConvertedOptions : Readonly<GetConvertedOptionsSchemaValues<NonNullable<OpSc>>>;
@@ -148,6 +150,7 @@ export type ObjectDef<OpSc extends OptionsSchema | undefined = undefined> = {
 		graphicsQuality: number;
 		stickyMarkerMeshUpdated?: (mesh: BABYLON.Mesh) => void;
 		sitChair?: () => void;
+		reloadModel: () => void;
 	}) => RoomObjectInstance<OpSc extends undefined ? ConvertedOptions : GetConvertedOptionsSchemaValues<NonNullable<OpSc>>> | Promise<RoomObjectInstance<OpSc extends undefined ? ConvertedOptions : GetConvertedOptionsSchemaValues<NonNullable<OpSc>>>>; // TODO: createInstanceをasyncにするのではなく、別にreadyみたいなものを返させる
 };
 

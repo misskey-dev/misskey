@@ -43,7 +43,7 @@ export abstract class EngineBase<EVs extends EngineBaseEvents> extends EventEmit
 
 	private currentRafId: number | null = null;
 
-	private startRenderLoop() {
+	protected startRenderLoop() {
 		if (this.fps == null) {
 			this.engine.runRenderLoop(() => {
 				this.scene.render();
