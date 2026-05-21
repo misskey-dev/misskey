@@ -20,6 +20,10 @@ export const petBottle = defineObject({
 				type: 'boolean',
 				label: 'With Cap',
 			},
+			withLabel: {
+				type: 'boolean',
+				label: 'With Label',
+			},
 			empty: {
 				type: 'boolean',
 				label: 'Empty',
@@ -28,6 +32,7 @@ export const petBottle = defineObject({
 		default: {
 			variation: 'mineral-water',
 			withCap: true,
+			withLabel: true,
 			empty: false,
 		},
 	},
@@ -37,6 +42,7 @@ export const petBottle = defineObject({
 	createInstance: ({ model, options, scene }) => {
 		const capMesh = model.findMesh('__X_CAP__');
 		const liquidMesh = model.findMesh('__X_LIQUID__');
+		const labelMesh = model.findMesh('__X_LABEL__');
 		const labelMaterial = model.findMaterial('__X_LABEL__');
 		const liquidMaterial = model.findMaterial('__X_LIQUID__');
 
@@ -51,8 +57,13 @@ export const petBottle = defineObject({
 			liquidMesh.isVisible = !options.empty;
 		};
 
+		const applyWithLabel = () => {
+			labelMesh.isVisible = options.withLabel;
+		};
+
 		applyWithCap();
 		applyEmpty();
+		applyWithLabel();
 
 		const applyVariation = () => {
 			if (options.variation === 'mineral-water') {
@@ -71,15 +82,10 @@ export const petBottle = defineObject({
 		return {
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
-					case 'withCap':
-						applyWithCap();
-						break;
-					case 'empty':
-						applyEmpty();
-						break;
-					case 'variation':
-						applyVariation();
-						break;
+					case 'withCap': applyWithCap(); break;
+					case 'empty': applyEmpty(); break;
+					case 'withLabel': applyWithLabel(); break;
+					case 'variation': applyVariation(); break;
 				}
 			},
 			interactions: {},
