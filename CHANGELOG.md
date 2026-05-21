@@ -1,3 +1,30 @@
+## Unreleased
+
+### General
+-
+
+### Client
+-
+
+### Server
+-
+
+
+## 2026.5.4
+
+### General
+- セキュリティに関する修正
+
+### Client
+- Fix: ビルドに失敗することがある問題を修正
+
+
+## 2026.5.3
+
+### General
+- Fix: Dockerで起動に失敗する問題を修正
+
+
 ## 2026.5.2
 
 ### Note

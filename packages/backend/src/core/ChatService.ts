@@ -573,6 +573,27 @@ export class ChatService {
 	}
 
 	@bindThis
+	public async hasPermissionToViewRoomInfo(meId: MiUser['id'], room: MiChatRoom) {
+		if (room.ownerId === meId) {
+			return true;
+		}
+
+		if (await this.isRoomMember(room, meId)) {
+			return true;
+		}
+
+		if (await this.chatRoomInvitationsRepository.findOneBy({ roomId: room.id, userId: meId })) {
+			return true;
+		}
+
+		if (await this.roleService.isModerator({ id: meId })) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@bindThis
 	public async hasPermissionToDeleteRoom(meId: MiUser['id'], room: MiChatRoom) {
 		if (room.ownerId === meId) {
 			return true;
