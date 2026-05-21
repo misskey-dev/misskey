@@ -90,6 +90,7 @@ export * as 'admin/roles/unassign' from './endpoints/admin/roles/unassign.js';
 export * as 'admin/roles/update' from './endpoints/admin/roles/update.js';
 export * as 'admin/roles/update-default-policies' from './endpoints/admin/roles/update-default-policies.js';
 export * as 'admin/roles/users' from './endpoints/admin/roles/users.js';
+export * as 'admin/search/reindex' from './endpoints/admin/search/reindex.js';
 export * as 'admin/send-email' from './endpoints/admin/send-email.js';
 export * as 'admin/server-info' from './endpoints/admin/server-info.js';
 export * as 'admin/show-moderation-logs' from './endpoints/admin/show-moderation-logs.js';

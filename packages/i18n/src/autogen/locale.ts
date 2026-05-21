@@ -12542,6 +12542,72 @@ export interface Locale extends ILocale {
          */
         "serverHostPlaceholder": string;
     };
+    "_meilisearchReIndex": {
+        /**
+         * Meilisearch 再インデックス
+         */
+        "title": string;
+        /**
+         * 対象期間のノートを Meilisearch に再投入します。実行中はサーバーと Meilisearch の負荷が上がるため、利用者の少ない時間帯に実行することを推奨します。
+         */
+        "description": string;
+        /**
+         * 詳細設定 (期間指定)
+         */
+        "advanced": string;
+        /**
+         * 開始日 (この日以降のノートのみ対象)
+         */
+        "sinceDate": string;
+        /**
+         * 終了日 (この日以前のノートのみ対象)
+         */
+        "untilDate": string;
+        /**
+         * 再インデックスを開始
+         */
+        "start": string;
+        /**
+         * 本当に実行しますか?
+         */
+        "confirmTitle": string;
+        /**
+         * 対象期間のノートを全て Meilisearch に再投入します。完了まで時間がかかる場合があります。
+         */
+        "confirmText": string;
+        /**
+         * ジョブを投入しました
+         */
+        "startedTitle": string;
+        /**
+         * 進捗は「ジョブキュー」画面で確認できます。
+         */
+        "startedText": string;
+        /**
+         * ジョブキューを開く
+         */
+        "openJobQueue": string;
+        /**
+         * 既に再インデックスが実行中です。
+         */
+        "alreadyRunning": string;
+        /**
+         * Meilisearch が有効になっていないため実行できません。
+         */
+        "notActive": string;
+        /**
+         * 未実行
+         */
+        "statusIdle": string;
+        /**
+         * 実行中
+         */
+        "statusRunning": string;
+        /**
+         * Meilisearch の再インデックスが完了しました ({fetched} 件投入 / {errors} 件失敗)
+         */
+        "completedNotification": ParameterizedString<"fetched" | "errors">;
+    };
     "_serverSetupWizard": {
         /**
          * Misskeyのインストールが完了しました！
