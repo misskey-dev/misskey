@@ -149,7 +149,7 @@ const base = defineObjectClass({
 			clonedShelfMeshes.length = 0;
 
 			for (let i = 0; i < options.numberOfShelfs - 1; i++) {
-				const clonedShelf = shelf.clone(`__X_SHELF_CLONE_${i}__`, shelf.parent);
+				const clonedShelf = shelf.clone('', shelf.parent);
 				clonedShelf.isVisible = true;
 				clonedShelfMeshes.push(clonedShelf);
 			}
@@ -166,7 +166,7 @@ const base = defineObjectClass({
 			clonedPoleMeshes.length = 0;
 
 			for (let i = 1; i < options.height; i++) {
-				const clonedPole = pole.clone(`__X_POLE_CLONE_${i}__`);
+				const clonedPole = pole.clone('');
 				clonedPole.position.y = (i * cm(30)) / Math.abs(scale.y);
 				clonedPoleMeshes.push(clonedPole);
 			}
