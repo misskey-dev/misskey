@@ -11,6 +11,7 @@ import { EngineBase } from '../EngineBase.js';
 import { getObjectDef } from './object-defs.js';
 import { SYSTEM_MESH_NAMES, ModelManager, GRAPHICS_QUALITY } from './utility.js';
 import { convertRawOptions } from './object.js';
+import { ObjectContainer } from './objectContainer.js';
 import type { ConvertedOptions, RawOptions, RoomObjectInstance } from './object.js';
 import type { RoomAttachments } from './utility.js';
 import { genId } from '@/utility/id.js';
@@ -22,15 +23,11 @@ export class RoomObjectPreviewEngine extends EngineBase<{
 	private sr: BABYLON.SnapshotRenderingHelper;
 	private shadowGenerator: BABYLON.ShadowGenerator;
 	private camera: BABYLON.ArcRotateCamera;
-	private objectMesh: BABYLON.Mesh | null = null;
-	private objectInstance: RoomObjectInstance | null = null;
+	private objectContainer: ObjectContainer | null = null;
 	private objectOptions: RawOptions | null = null;
-	private convertedObjectOptions: ConvertedOptions | null = null;
-	private objectType: string | null = null;
 	private envMapIndoor: BABYLON.CubeTexture;
 	private roomLight: BABYLON.SpotLight;
 	private zGridPreviewPlane: BABYLON.Mesh;
-	private timerForEachObject: Timer | null = null;
 	private pipeline: BABYLON.DefaultRenderingPipeline;
 	private graphicsQuality: number;
 
@@ -106,14 +103,14 @@ export class RoomObjectPreviewEngine extends EngineBase<{
 
 		if (_DEV_ && typeof window !== 'undefined') {
 			window.takeScreenshot = () => {
-				const def = getObjectDef(this.objectType);
+				const def = getObjectDef(this.objectContainer.type);
 
 				this.scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
 				this.scene.autoClear = true;
 				this.sr.disableSnapshotRendering();
 				this.pipeline.dispose();
 
-				const boundingInfo = getMeshesBoundingBox(this.objectMesh!.getChildMeshes().filter(m => m.isEnabled() && m.isVisible));
+				const boundingInfo = getMeshesBoundingBox(this.objectContainer.root.getChildMeshes().filter(m => m.isEnabled() && m.isVisible));
 
 				const camera = new BABYLON.ArcRotateCamera('camera', Math.PI / 4, Math.PI / 2.5, cm(300), new BABYLON.Vector3(0, cm(90), 0), this.scene);
 				camera.inputs.clear();
@@ -140,7 +137,7 @@ export class RoomObjectPreviewEngine extends EngineBase<{
 				this.zGridPreviewPlane.isVisible = false;
 
 				window.setTimeout(() => {
-					BABYLON.Tools.CreateScreenshotUsingRenderTarget(this.engine, camera, { width: 256, height: 256 }, undefined, undefined, undefined, true, `${camelToKebab(this.objectType!)}.png`);
+					BABYLON.Tools.CreateScreenshotUsingRenderTarget(this.engine, camera, { width: 256, height: 256 }, undefined, undefined, undefined, true, `${camelToKebab(this.objectContainer.type!)}.png`);
 				}, 100);
 			};
 		}
@@ -177,14 +174,13 @@ export class RoomObjectPreviewEngine extends EngineBase<{
 				this.objectOptions[key] = Math.floor(Math.random() * 1000);
 			}
 		}
-		this.convertedObjectOptions = convertRawOptions(def.options.schema, this.objectOptions, { files: [] });
 
-		await this.loadObject_({
+		this.objectContainer = await this.loadObject_({
 			type,
 			id,
 		});
 
-		const boundingInfo = getMeshesBoundingBox(this.objectMesh!.getChildMeshes().filter(m => m.isEnabled() && m.isVisible), true);
+		const boundingInfo = getMeshesBoundingBox(this.objectContainer.root.getChildMeshes().filter(m => m.isEnabled() && m.isVisible), true);
 
 		this.pipeline.removeCamera(this.camera);
 		this.camera.dispose();
@@ -240,21 +236,22 @@ export class RoomObjectPreviewEngine extends EngineBase<{
 		id: string;
 	}) {
 		const def = getObjectDef(args.type);
+		const convertedOptions = convertRawOptions(def.options.schema, this.objectOptions, { files: [] });
 
-		const root = new BABYLON.Mesh(`object_${args.type}`, this.scene);
-
-		const filePath = def.path != null ? `/client-assets/room/objects/${def.path(this.convertedObjectOptions!)}.glb` : `/client-assets/room/objects/${camelToKebab(args.type)}/${camelToKebab(args.type)}.glb`;
-		const loaderResult = await BABYLON.LoadAssetContainerAsync(filePath, this.scene);
-
-		// babylonによって自動で追加される右手系変換用ノード
-		const subRoot = loaderResult.meshes[0];
-		subRoot.scaling = subRoot.scaling.scale(WORLD_SCALE);// cmをmに
-
-		def.treatLoaderResult?.(loaderResult);
-
-		root.addChild(subRoot);
-
-		const updateMeshes = (meshes: BABYLON.AbstractMesh[]) => {
+		const container = new ObjectContainer({
+			id: args.id,
+			type: args.type,
+			position: new BABYLON.Vector3(0, 0, 0),
+			rotation: new BABYLON.Vector3(0, 0, 0),
+			options: convertedOptions,
+			metadata: {},
+			sr: this.sr,
+			getIsSrReady: () => true,
+			lightContainer: this.lightContainer,
+			graphicsQuality: this.graphicsQuality,
+			scene: this.scene,
+		});
+		container.onMeshesUpdated = (meshes) => {
 			for (const mesh of meshes) {
 				// シェイプキー(morph)を考慮してbounding boxを更新するために必要
 				mesh.refreshBoundingInfo({ applyMorph: true });
@@ -287,83 +284,29 @@ export class RoomObjectPreviewEngine extends EngineBase<{
 			}
 		};
 
-		const model = new ModelManager(subRoot, loaderResult.meshes.filter(m => !m.isDisposed() && m !== subRoot), def.hasTexture, (meshes) => {
-			updateMeshes(meshes);
-		});
-		//model.updatedCallback = () => {
-		//	this.sr.disableSnapshotRendering();
-		//	this.sr.enableSnapshotRendering();
-		//};
+		await container.load();
 
-		updateMeshes(subRoot.getChildMeshes());
-
-		this.timerForEachObject = new Timer();
-
-		const objectInstance = await def.createInstance({
-			scene: this.scene,
-			sr: {
-				updateMesh: (mesh) => {
-					this.sr.updateMesh(mesh);
-				},
-				reset: () => {
-					this.sr.disableSnapshotRendering();
-					this.sr.enableSnapshotRendering();
-				},
-				fixParticleSystem: (ps) => this.sr.fixParticleSystem(ps),
-			},
-			root,
-			options: this.convertedObjectOptions!,
-			model,
-			id: args.id,
-			timer: this.timerForEachObject,
-			graphicsQuality: GRAPHICS_QUALITY.MEDIUM,
-			reloadModel: () => {
-				this.reloadModel();
-			},
-		});
-
-		objectInstance.onInited?.();
-
-		this.objectType = args.type;
-		this.objectInstance = objectInstance;
-		this.objectMesh = root;
+		return container;
 	}
 
 	public updateObjectOption(key: string, value: any, attachments?: RoomAttachments) {
 		this.sr.disableSnapshotRendering();
 		this.objectOptions[key] = value;
-		const convertedOptions = convertRawOptions(getObjectDef(this.objectType!).options.schema, this.objectOptions, attachments ?? { files: [] });
-		this.convertedObjectOptions[key] = convertedOptions[key];
-		this.objectInstance?.onOptionsUpdated?.([key, convertedOptions[key]]);
+		const convertedOptions = convertRawOptions(getObjectDef(this.objectContainer.type).options.schema, this.objectOptions, attachments ?? { files: [] });
+		this.objectContainer.options[key] = convertedOptions[key];
+		this.objectContainer.optionsUpdated(key, convertedOptions[key]);
 		this.sr.enableSnapshotRendering();
 		return this.objectOptions;
 	}
 
 	public clearObject() {
 		this.sr.disableSnapshotRendering();
-		if (this.timerForEachObject != null) {
-			this.timerForEachObject.dispose();
-			this.timerForEachObject = null;
-		}
-		if (this.objectInstance != null) {
-			this.objectInstance.dispose?.();
-			this.objectInstance = null;
+		if (this.objectContainer != null) {
+			this.objectContainer.destroy();
+			this.objectContainer = null;
 			this.objectOptions = null;
-			this.convertedObjectOptions = null;
-			this.objectMesh!.dispose();
-			this.objectMesh = null;
-			this.objectType = null;
 		}
 		this.sr.enableSnapshotRendering();
-	}
-
-	private async reloadModel() {
-		if (this.objectType == null) return;
-		this.clearObject();
-		await this.loadObject_({
-			type,
-			id,
-		});
 	}
 
 	public cameraRotate(vector: { x: number; y: number; }) {
@@ -385,8 +328,6 @@ export class RoomObjectPreviewEngine extends EngineBase<{
 
 	public destroy() {
 		super.destroy();
-		if (this.timerForEachObject != null) {
-			this.timerForEachObject.dispose();
-		}
+		this.objectContainer?.destroy();
 	}
 }

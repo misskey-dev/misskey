@@ -1439,11 +1439,11 @@ export class RoomEngine extends EngineBase<{
 		const container = this.objectContainers.get(objectId);
 		if (container == null) return;
 
-		const converted = convertRawOptions(def.options.schema, o.options, this.roomAttachments);
-		container.options[key] = converted[key];
+		const convertedOptions = convertRawOptions(def.options.schema, o.options, this.roomAttachments);
+		container.options[key] = convertedOptions[key];
 
 		this.sr.disableSnapshotRendering();
-		container.optionsUpdated(key, converted[key]);
+		container.optionsUpdated(key, convertedOptions[key]);
 		this.sr.enableSnapshotRendering();
 	}
 

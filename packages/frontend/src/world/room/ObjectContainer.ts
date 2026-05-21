@@ -234,7 +234,7 @@ export class ObjectContainer {
 
 	public async reload() {
 		this.timer.dispose();
-		this.instance?.dispose();
+		this.instance?.dispose?.();
 		this.instance = null;
 		this.model = null;
 		this.subRoot?.dispose();
@@ -255,7 +255,7 @@ export class ObjectContainer {
 
 	public destroy() {
 		this.timer.dispose();
-		this.instance?.dispose();
+		this.instance?.dispose?.();
 		this.subRoot?.dispose();
 		this.root.dispose(true);
 	}
