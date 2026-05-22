@@ -5,7 +5,5 @@
 
 import { genId } from '@/utility/id.js';
 
-// HMR有効時にバグか知らんけど複数回実行されるのでその対策
-export const TAB_ID = window.sessionStorage.getItem('TAB_ID') ?? genId();
-window.sessionStorage.setItem('TAB_ID', TAB_ID);
+export const TAB_ID = genId();
 if (_DEV_) console.log('TAB_ID', TAB_ID);

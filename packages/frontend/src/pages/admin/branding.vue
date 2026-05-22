@@ -9,10 +9,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<SearchMarker path="/admin/branding" :label="i18n.ts.branding" :keywords="['branding']" icon="ti ti-paint">
 			<div class="_gaps_m">
 				<SearchMarker :keywords="['entrance', 'welcome', 'landing', 'front', 'home', 'page', 'style']">
-					<MkRadios v-model="entrancePageStyle">
+					<MkRadios
+						v-model="entrancePageStyle"
+						:options="[
+							{ value: 'classic' },
+							{ value: 'simple' },
+						]"
+					>
 						<template #label><SearchLabel>{{ i18n.ts._serverSettings.entrancePageStyle }}</SearchLabel></template>
-						<option value="classic">Classic</option>
-						<option value="simple">Simple</option>
 					</MkRadios>
 				</SearchMarker>
 
@@ -151,6 +155,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
 import JSON5 from 'json5';
+import * as Misskey from 'misskey-js';
 import { host } from '@@/js/config.js';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
@@ -166,9 +171,13 @@ import MkSwitch from '@/components/MkSwitch.vue';
 
 const meta = await misskeyApi('admin/meta');
 
-const entrancePageStyle = ref(meta.clientOptions.entrancePageStyle ?? 'classic');
-const showTimelineForVisitor = ref(meta.clientOptions.showTimelineForVisitor ?? true);
-const showActivitiesForVisitor = ref(meta.clientOptions.showActivitiesForVisitor ?? true);
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+const entrancePageStyle = ref<Misskey.entities.MetaClientOptions['entrancePageStyle']>(meta.clientOptions.entrancePageStyle ?? 'classic');
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+const showTimelineForVisitor = ref<Misskey.entities.MetaClientOptions['showTimelineForVisitor']>(meta.clientOptions.showTimelineForVisitor ?? true);
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+const showActivitiesForVisitor = ref<Misskey.entities.MetaClientOptions['showActivitiesForVisitor']>(meta.clientOptions.showActivitiesForVisitor ?? true);
+
 const iconUrl = ref(meta.iconUrl);
 const app192IconUrl = ref(meta.app192IconUrl);
 const app512IconUrl = ref(meta.app512IconUrl);

@@ -1,32 +1,36 @@
 {
 	"name": "misskey",
-	"version": "2025.8.0-beta.4",
+	"version": "2026.5.4",
 	"codename": "nasubi",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/misskey-dev/misskey.git"
 	},
-	"packageManager": "pnpm@10.15.0",
+	"packageManager": "pnpm@11.1.2",
 	"workspaces": [
-		"packages/frontend-shared",
-		"packages/frontend",
-		"packages/frontend-embed",
-		"packages/icons-subsetter",
-		"packages/backend",
-		"packages/sw",
 		"packages/misskey-js",
+		"packages/i18n",
 		"packages/misskey-reversi",
-		"packages/misskey-bubble-game"
+		"packages/misskey-bubble-game",
+		"packages/icons-subsetter",
+		"packages/frontend-shared",
+		"packages/frontend-builder",
+		"packages/sw",
+		"packages/backend",
+		"packages/frontend",
+		"packages/frontend-embed"
 	],
 	"private": true,
 	"scripts": {
-		"build-pre": "node ./scripts/build-pre.js",
+		"compile-config": "cd packages/backend && pnpm compile-config",
+		"build-pre": "node scripts/build-pre.mjs",
 		"build-assets": "node ./scripts/build-assets.mjs",
 		"build": "pnpm build-pre && pnpm -r build && pnpm build-assets",
 		"build-storybook": "pnpm --filter frontend build-storybook",
 		"build-misskey-js-with-types": "pnpm build-pre && pnpm --filter backend... --filter=!misskey-js build && pnpm --filter backend generate-api-json --no-build && ncp packages/backend/built/api.json packages/misskey-js/generator/api.json && pnpm --filter misskey-js update-autogen-code && pnpm --filter misskey-js build && pnpm --filter misskey-js api",
-		"start": "pnpm check:connect && cd packages/backend && node ./built/boot/entry.js",
-		"start:test": "ncp ./.github/misskey/test.yml ./.config/test.yml && cd packages/backend && cross-env NODE_ENV=test node ./built/boot/entry.js",
+		"start": "cd packages/backend && pnpm compile-config && node ./built/entry.js",
+		"start:inspect": "cd packages/backend && pnpm compile-config && node --inspect ./built/entry.js",
+		"start:test": "ncp ./.github/misskey/test.yml ./.config/test.yml && cd packages/backend && cross-env NODE_ENV=test pnpm compile-config && cross-env NODE_ENV=test node ./built/entry.js",
 		"cli": "cd packages/backend && pnpm cli",
 		"init": "pnpm migrate",
 		"migrate": "cd packages/backend && pnpm migrate",
@@ -35,58 +39,47 @@
 		"migrateandstart": "pnpm migrate && pnpm start",
 		"watch": "pnpm dev",
 		"dev": "node scripts/dev.mjs",
-		"lint": "pnpm -r lint",
+		"lint": "pnpm --no-bail -r lint",
 		"cy:open": "pnpm cypress open --config-file=cypress.config.ts",
 		"cy:run": "pnpm cypress run",
 		"e2e": "pnpm start-server-and-test start:test http://localhost:61812 cy:run",
 		"e2e-dev-container": "ncp ./.config/cypress-devcontainer.yml ./.config/test.yml && pnpm start-server-and-test start:test http://localhost:61812 cy:run",
-		"jest": "cd packages/backend && pnpm jest",
-		"jest-and-coverage": "cd packages/backend && pnpm jest-and-coverage",
+		"backend-unit-test": "cd packages/backend && pnpm test",
+		"backend-unit-test-and-coverage": "cd packages/backend && pnpm test-and-coverage",
 		"test": "pnpm -r test",
 		"test-and-coverage": "pnpm -r test-and-coverage",
-		"clean": "node ./scripts/clean.js",
-		"clean-all": "node ./scripts/clean-all.js",
+		"clean": "node scripts/clean.mjs",
+		"clean-all": "node scripts/clean-all.mjs",
 		"cleanall": "pnpm clean-all"
 	},
-	"resolutions": {
-		"chokidar": "4.0.3",
-		"lodash": "4.17.21"
-	},
 	"dependencies": {
-		"cssnano": "7.1.1",
-		"esbuild": "0.25.9",
-		"execa": "9.6.0",
-		"fast-glob": "3.3.3",
-		"glob": "11.0.3",
-		"ignore-walk": "7.0.0",
-		"js-yaml": "4.1.0",
-		"postcss": "8.5.6",
-		"tar": "7.4.3",
-		"terser": "5.43.1",
-		"typescript": "5.9.2"
+		"cssnano": "8.0.1",
+		"esbuild": "0.28.0",
+		"execa": "9.6.1",
+		"ignore-walk": "8.0.0",
+		"js-yaml": "4.1.1",
+		"postcss": "8.5.14",
+		"tar": "7.5.15",
+		"terser": "5.47.1"
 	},
 	"devDependencies": {
+		"@eslint/js": "9.39.4",
 		"@misskey-dev/eslint-plugin": "2.1.0",
-		"@types/node": "22.17.2",
-		"@typescript-eslint/eslint-plugin": "8.40.0",
-		"@typescript-eslint/parser": "8.40.0",
-		"cross-env": "7.0.3",
-		"cypress": "14.5.4",
-		"eslint": "9.34.0",
-		"globals": "16.3.0",
+		"@types/js-yaml": "4.0.9",
+		"@types/node": "24.12.4",
+		"@typescript-eslint/eslint-plugin": "8.59.3",
+		"@typescript-eslint/parser": "8.59.3",
+		"@typescript/native-preview": "7.0.0-dev.20260426.1",
+		"cross-env": "10.1.0",
+		"cypress": "15.15.0",
+		"eslint": "9.39.4",
+		"globals": "17.6.0",
 		"ncp": "2.0.0",
-		"pnpm": "10.15.0",
-		"start-server-and-test": "2.0.13"
+		"pnpm": "11.1.2",
+		"start-server-and-test": "3.0.5",
+		"typescript": "5.9.3"
 	},
 	"optionalDependencies": {
 		"@tensorflow/tfjs-core": "4.22.0"
-	},
-	"pnpm": {
-		"overrides": {
-			"@aiscript-dev/aiscript-languageserver": "-"
-		},
-		"patchedDependencies": {
-			"typeorm": "patches/typeorm.patch"
-		}
 	}
 }

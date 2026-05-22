@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { Locale } from '../../../locales/index.js';
+import type { Locale } from 'i18n';
 
 type BootLoaderLocaleBody = Locale['_bootErrors'] & { reload: Locale['reload'] };
 

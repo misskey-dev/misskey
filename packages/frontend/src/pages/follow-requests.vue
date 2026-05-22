@@ -18,11 +18,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<p class="acct">@{{ acct(displayUser(req)) }}</p>
 							</div>
 							<div v-if="tab === 'list'" class="commands">
-								<MkButton class="command" rounded primary @click="accept(displayUser(req))"><i class="ti ti-check"/> {{ i18n.ts.accept }}</MkButton>
-								<MkButton class="command" rounded danger @click="reject(displayUser(req))"><i class="ti ti-x"/> {{ i18n.ts.reject }}</MkButton>
+								<MkButton class="command" rounded primary @click="accept(displayUser(req))"><i class="ti ti-check"></i> {{ i18n.ts.accept }}</MkButton>
+								<MkButton class="command" rounded danger @click="reject(displayUser(req))"><i class="ti ti-x"></i> {{ i18n.ts.reject }}</MkButton>
 							</div>
 							<div v-else class="commands">
-								<MkButton class="command" rounded danger @click="cancel(displayUser(req))"><i class="ti ti-x"/> {{ i18n.ts.cancel }}</MkButton>
+								<MkButton class="command" rounded danger @click="cancel(displayUser(req))"><i class="ti ti-x"></i> {{ i18n.ts.cancel }}</MkButton>
 							</div>
 						</div>
 					</div>
@@ -63,19 +63,33 @@ function accept(user: Misskey.entities.UserLite) {
 	});
 }
 
-function reject(user: Misskey.entities.UserLite) {
-	os.apiWithDialog('following/requests/reject', { userId: user.id }).then(() => {
+async function reject(user: Misskey.entities.UserLite) {
+	const { canceled } = await os.confirm({
+		type: 'question',
+		text: i18n.tsx.rejectFollowRequestConfirm({ name: user.name || user.username }),
+	});
+
+	if (canceled) return;
+
+	await os.apiWithDialog('following/requests/reject', { userId: user.id }).then(() => {
 		paginator.reload();
 	});
 }
 
-function cancel(user: Misskey.entities.UserLite) {
-	os.apiWithDialog('following/requests/cancel', { userId: user.id }).then(() => {
+async function cancel(user: Misskey.entities.UserLite) {
+	const { canceled } = await os.confirm({
+		type: 'question',
+		text: i18n.tsx.cancelFollowRequestConfirm({ name: user.name || user.username }),
+	});
+
+	if (canceled) return;
+
+	await os.apiWithDialog('following/requests/cancel', { userId: user.id }).then(() => {
 		paginator.reload();
 	});
 }
 
-function displayUser(req) {
+function displayUser(req: Misskey.entities.FollowingRequestsListResponse[number]) {
 	return tab.value === 'list' ? req.follower : req.followee;
 }
 

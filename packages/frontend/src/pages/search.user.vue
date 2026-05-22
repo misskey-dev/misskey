@@ -9,10 +9,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkInput v-model="searchQuery" :large="true" :autofocus="true" type="search" @enter.prevent="search">
 			<template #prefix><i class="ti ti-search"></i></template>
 		</MkInput>
-		<MkRadios v-if="instance.federation !== 'none'" v-model="searchOrigin" @update:modelValue="search()">
-			<option value="combined">{{ i18n.ts.all }}</option>
-			<option value="local">{{ i18n.ts.local }}</option>
-			<option value="remote">{{ i18n.ts.remote }}</option>
+		<MkRadios
+			v-if="instance.federation !== 'none'"
+			v-model="searchOrigin"
+			:options="[
+				{ value: 'combined', label: i18n.ts.all },
+				{ value: 'local', label: i18n.ts.local },
+				{ value: 'remote', label: i18n.ts.remote },
+			]"
+			@update:modelValue="search()"
+		>
 		</MkRadios>
 		<MkButton large primary gradate rounded @click="search">{{ i18n.ts.search }}</MkButton>
 	</div>

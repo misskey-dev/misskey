@@ -14,6 +14,10 @@ import { bindThis } from '@/decorators.js';
 import { IdService } from '@/core/IdService.js';
 import { UserEntityService } from './UserEntityService.js';
 
+function assertBw(bw: string): bw is Packed<'ReversiGameDetailed'>['bw'] {
+	return ['random', '1', '2'].includes(bw);
+}
+
 @Injectable()
 export class ReversiGameEntityService {
 	constructor(
@@ -58,7 +62,7 @@ export class ReversiGameEntityService {
 			surrenderedUserId: game.surrenderedUserId,
 			timeoutUserId: game.timeoutUserId,
 			black: game.black,
-			bw: game.bw,
+			bw: assertBw(game.bw) ? game.bw : 'random',
 			isLlotheo: game.isLlotheo,
 			canPutEverywhere: game.canPutEverywhere,
 			loopedBoard: game.loopedBoard,
@@ -116,7 +120,7 @@ export class ReversiGameEntityService {
 			surrenderedUserId: game.surrenderedUserId,
 			timeoutUserId: game.timeoutUserId,
 			black: game.black,
-			bw: game.bw,
+			bw: assertBw(game.bw) ? game.bw : 'random',
 			isLlotheo: game.isLlotheo,
 			canPutEverywhere: game.canPutEverywhere,
 			loopedBoard: game.loopedBoard,

@@ -9,7 +9,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts" generic="T extends string | ParameterizedString">
 import { computed, h } from 'vue';
-import type { ParameterizedString } from '../../../../locales/index.js';
+import type { ParameterizedString } from 'i18n';
 
 const props = withDefaults(defineProps<{
 	src: T;
@@ -25,7 +25,7 @@ const slots = defineSlots<T extends ParameterizedString<infer R> ? { [K in R]: (
 const parsed = computed(() => {
 	let str = props.src as string;
 	const value: (string | { arg: string; })[] = [];
-	for (;;) {
+	for (; ;) {
 		const nextBracketOpen = str.indexOf('{');
 		const nextBracketClose = str.indexOf('}');
 

@@ -53,7 +53,8 @@ import FormSection from '@/components/form/section.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { parsePluginMeta, installPlugin } from '@/plugin.js';
-import { parseThemeCode, installTheme } from '@/theme.js';
+import { installTheme } from '@/theme.js';
+import { parseThemeCode } from '@@/js/theme.js';
 import { unisonReload } from '@/utility/unison-reload.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
@@ -80,7 +81,7 @@ function close_(): void {
 	}
 }
 
-async function fetch() {
+async function _fetch_() {
 	if (!url.value || !hash.value) {
 		errorKV.value = {
 			title: i18n.ts._externalResourceInstaller._errors._invalidParams.title,
@@ -162,6 +163,10 @@ async function fetch() {
 					raw: res.data,
 				};
 			} catch (err) {
+				if (!(err instanceof Error)) {
+					throw err;
+				}
+
 				switch (err.message.toLowerCase()) {
 					case 'this theme is already installed':
 						errorKV.value = {
@@ -229,7 +234,7 @@ async function install() {
 const urlParams = new URLSearchParams(window.location.search);
 url.value = urlParams.get('url');
 hash.value = urlParams.get('hash');
-fetch();
+_fetch_();
 
 definePage(() => ({
 	title: i18n.ts._externalResourceInstaller.title,

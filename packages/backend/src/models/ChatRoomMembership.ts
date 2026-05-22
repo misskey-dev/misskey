@@ -20,7 +20,7 @@ export class MiChatRoomMembership {
 	})
 	public userId: MiUser['id'];
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(() => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
@@ -32,7 +32,7 @@ export class MiChatRoomMembership {
 	})
 	public roomId: MiChatRoom['id'];
 
-	@ManyToOne(type => MiChatRoom, {
+	@ManyToOne(() => MiChatRoom, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()

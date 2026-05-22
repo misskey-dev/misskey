@@ -21,7 +21,7 @@ import { execa } from 'execa';
 		});
 	}, 3000);
 
-	execa('tsc', ['-w', '-p', 'tsconfig.json'], {
+	execa('tsgo', ['-w', '-p', 'tsconfig.json'], {
 		stdout: process.stdout,
 		stderr: process.stderr,
 	});
