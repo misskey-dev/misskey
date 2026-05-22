@@ -379,8 +379,8 @@ importers:
         specifier: 1.8.17
         version: 1.8.17
       typeorm:
-        specifier: 0.3.30
-        version: 0.3.30(ioredis@5.10.1)(pg@8.20.0)
+        specifier: 1.0.0
+        version: 1.0.0(ioredis@5.10.1)(pg@8.20.0)
       ulid:
         specifier: 3.0.2
         version: 3.0.2
@@ -4898,10 +4898,6 @@ packages:
     resolution: {integrity: sha512-HqZ5rWlFjGiV0tDm3UxxgNRqsOTniqoKZu0pIAfh7TZQMGuZK+hH0drySty0si0QXj1ieop4+SkSfPZBPPkHig==}
     engines: {node: '>=14'}
 
-  app-root-path@3.1.0:
-    resolution: {integrity: sha512-biN3PwB2gUtjaYy/isrU3aNWI5w+fAfvHkSvCKeQGxhmYpwKFUxudR3Yya+KqVRHBmEDYh+/lTozYCFbmzX4nA==}
-    engines: {node: '>= 6.0.0'}
-
   append-field@1.0.0:
     resolution: {integrity: sha512-klpgFSWLW1ZEs8svjfb7g4qWY0YS5imI82dTg+QahUvJ8YqAY0P10Uk8tTyh9ZGuYEZEMaeJYCF5BFuX552hsw==}
 
@@ -5878,10 +5874,6 @@ packages:
 
   domutils@3.2.2:
     resolution: {integrity: sha512-6kZKyUajlDuqlHKVX1w7gyslj9MPIXzIFiz/rGu35uC1wMi+kMhQwGhl4lt9unC9Vb9INnY9Z3/ZA3+FhASLaw==}
-
-  dotenv@16.6.1:
-    resolution: {integrity: sha512-uBq4egWHTcTt33a72vpSG0z3HnPuIl6NqYcTrKEg2azoEyl2hpW0zqlxysq2pK9HlDIHyHyakeYaYnSAwd8bow==}
-    engines: {node: '>=12'}
 
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
@@ -9081,11 +9073,6 @@ packages:
   setprototypeof@1.2.0:
     resolution: {integrity: sha512-E5LDX7Wrp85Kil5bhZv46j8jOeboKq5JMmYM3gVGdGH8xFpPWXUMsNrlODCrkoxMEeNi/XZIwuRvY4XNwYMJpw==}
 
-  sha.js@2.4.12:
-    resolution: {integrity: sha512-8LzC5+bvI45BjpfXU8V5fdU2mfeKiQe1D1gIMn7XUlF3OTUrpdJpPPH4EMAnF0DsHHdSZqCdSss5qCmJKuiO3w==}
-    engines: {node: '>= 0.10'}
-    hasBin: true
-
   sharp@0.33.5:
     resolution: {integrity: sha512-haPVm1EkS9pgvHrQ/F3Xy+hgcuMV0Wm9vfIBSiwZ05k+xgb0PkBQpGsAA/oWdDobNaZTH5ppvHtzCFbnSEwHVw==}
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
@@ -9611,10 +9598,6 @@ packages:
     resolution: {integrity: sha512-voyz6MApa1rQGUxT3E+BK7/ROe8itEx7vD8/HEvt4xwXucvQ5G5oeEiHkmHZJuBO21RpOf+YYm9MOivj709jow==}
     engines: {node: '>=14.14'}
 
-  to-buffer@1.2.2:
-    resolution: {integrity: sha512-db0E3UJjcFhpDhAF4tLo03oli3pwl3dbnzXOUIlRKrp+ldk/VUxzpWYZENsw2SZiuBjHAk7DfB0VU7NKdpb6sw==}
-    engines: {node: '>= 0.4'}
-
   to-data-view@1.1.0:
     resolution: {integrity: sha512-1eAdufMg6mwgmlojAx3QeMnzB/BTVp7Tbndi3U7ftcT2zCZadjxkkmLmd97zmaxWi+sgGcgWrokmpEoy0Dn0vQ==}
 
@@ -9795,27 +9778,26 @@ packages:
   typedarray@0.0.6:
     resolution: {integrity: sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==}
 
-  typeorm@0.3.30:
-    resolution: {integrity: sha512-8T35PzjefOdqc2ZR9mwLQj0pUGp6lQhMbK2EvVMwJVJWlaoHm0v/Q6dThNOZkFchD+0yMg8gwjKM28ePiLSXSQ==}
-    engines: {node: '>=16.13.0'}
+  typeorm@1.0.0:
+    resolution: {integrity: sha512-2mSKNqucP8vo+xQLP59xlHUcqLvG6qajxA7q7tnhJgeZjTrA6lK/Ar7LRyiAxdXhyXmGbIPsArPmcUB9Xg+M7w==}
+    engines: {node: ^20.19.0 || ^22.13.0 || >=24.11.0}
     hasBin: true
     peerDependencies:
-      '@google-cloud/spanner': ^5.18.0 || ^6.0.0 || ^7.0.0 || ^8.0.0
+      '@google-cloud/spanner': ^8.0.0
       '@sap/hana-client': ^2.14.22
-      better-sqlite3: ^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0 || ^12.0.0
+      better-sqlite3: ^12.0.0
       ioredis: ^5.0.4
-      mongodb: ^5.8.0 || ^6.0.0
-      mssql: ^9.1.1 || ^10.0.0 || ^11.0.0 || ^12.0.0
-      mysql2: ^2.2.5 || ^3.0.1
+      mongodb: ^7.0.0
+      mssql: ^12.0.0
+      mysql2: ^3.15.3
       oracledb: ^6.3.0
       pg: ^8.5.1
       pg-native: ^3.0.0
       pg-query-stream: ^4.0.0
-      redis: ^3.1.1 || ^4.0.0 || ^5.0.14
+      redis: ^5.0.0
       sql.js: ^1.4.0
-      sqlite3: ^5.0.3
-      ts-node: ^10.7.0
-      typeorm-aurora-data-api-driver: ^2.0.0 || ^3.0.0
+      ts-node: ^10.9.2
+      typeorm-aurora-data-api-driver: ^3.0.0
     peerDependenciesMeta:
       '@google-cloud/spanner':
         optional: true
@@ -9842,8 +9824,6 @@ packages:
       redis:
         optional: true
       sql.js:
-        optional: true
-      sqlite3:
         optional: true
       ts-node:
         optional: true
@@ -9969,10 +9949,6 @@ packages:
 
   uuid@11.1.0:
     resolution: {integrity: sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A==}
-    hasBin: true
-
-  uuid@11.1.1:
-    resolution: {integrity: sha512-vIYxrBCC/N/K+Js3qSN88go7kIfNPssr/hHCesKCQNAjmgvYS2oqr69kIufEG+O4+PfezOH4EbIeHCfFov8ZgQ==}
     hasBin: true
 
   uuid@14.0.0:
@@ -14189,8 +14165,6 @@ snapshots:
 
   ansis@4.2.0: {}
 
-  app-root-path@3.1.0: {}
-
   append-field@1.0.0: {}
 
   aproba@2.1.0:
@@ -15245,8 +15219,6 @@ snapshots:
       dom-serializer: 2.0.0
       domelementtype: 2.3.0
       domhandler: 5.0.3
-
-  dotenv@16.6.1: {}
 
   dunder-proto@1.0.1:
     dependencies:
@@ -18985,12 +18957,6 @@ snapshots:
 
   setprototypeof@1.2.0: {}
 
-  sha.js@2.4.12:
-    dependencies:
-      inherits: 2.0.4
-      safe-buffer: 5.2.1
-      to-buffer: 1.2.2
-
   sharp@0.33.5:
     dependencies:
       color: 4.2.3
@@ -19572,12 +19538,6 @@ snapshots:
 
   tmp@0.2.5: {}
 
-  to-buffer@1.2.2:
-    dependencies:
-      isarray: 2.0.5
-      safe-buffer: 5.2.1
-      typed-array-buffer: 1.0.3
-
   to-data-view@1.1.0: {}
 
   to-regex-range@5.0.1:
@@ -19753,23 +19713,18 @@ snapshots:
 
   typedarray@0.0.6: {}
 
-  typeorm@0.3.30(ioredis@5.10.1)(pg@8.20.0):
+  typeorm@1.0.0(ioredis@5.10.1)(pg@8.20.0):
     dependencies:
       '@sqltools/formatter': 1.2.5
       ansis: 4.2.0
-      app-root-path: 3.1.0
-      buffer: 6.0.3
       dayjs: 1.11.20
       debug: 4.4.3(supports-color@10.2.2)
       dedent: 1.7.2
-      dotenv: 16.6.1
-      glob: 10.5.0
       reflect-metadata: 0.2.2
-      sha.js: 2.4.12
       sql-highlight: 6.1.0
+      tinyglobby: 0.2.16
       tslib: 2.8.1
-      uuid: 11.1.1
-      yargs: 17.7.2
+      yargs: 18.0.0
     optionalDependencies:
       ioredis: 5.10.1
       pg: 8.20.0
@@ -19889,8 +19844,6 @@ snapshots:
   utils-merge@1.0.1: {}
 
   uuid@11.1.0: {}
-
-  uuid@11.1.1: {}
 
   uuid@14.0.0: {}
 

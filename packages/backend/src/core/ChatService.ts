@@ -644,7 +644,7 @@ export class ChatService {
 
 	@bindThis
 	public async findRoomById(roomId: MiChatRoom['id']) {
-		return this.chatRoomsRepository.findOne({ where: { id: roomId }, relations: ['owner'] });
+		return this.chatRoomsRepository.findOne({ where: { id: roomId }, relations: { owner: true }});
 	}
 
 	@bindThis
@@ -888,7 +888,7 @@ export class ChatService {
 		const room = message.toRoomId ? await this.chatRoomsRepository.findOneByOrFail({ id: message.toRoomId }) : null;
 
 		if (room) {
-			if (!await this.isRoomMember(room, userId)) {
+			if (!(await this.isRoomMember(room, userId))) {
 				throw new Error('cannot react to others message');
 			}
 		}
