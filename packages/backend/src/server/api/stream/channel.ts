@@ -8,6 +8,7 @@ import { isInstanceMuted } from '@/misc/is-instance-muted.js';
 import { isUserRelated } from '@/misc/is-user-related.js';
 import { isQuotePacked, isRenotePacked } from '@/misc/is-renote.js';
 import { isChannelRelated } from '@/misc/is-channel-related.js';
+import type { Awaitable } from '@/types.js';
 import type { Packed } from '@/misc/json-schema.js';
 import type { JsonObject, JsonValue } from '@/misc/json-value.js';
 import type Connection from './Connection.js';
@@ -64,6 +65,43 @@ export default abstract class Channel {
 		return this.connection.subscriber;
 	}
 
+	protected isNoteVisibleForMe(note: Packed<'Note'>): boolean {
+		// This code must always be synchronized with the checks in QueryService.generateVisibilityQuery.
+		const meId = this.connection.user?.id ?? null;
+
+		// visibility が specified かつ自分が指定されていなかったら非表示
+		if (note.visibility === 'specified') {
+			if (meId == null) {
+				return false;
+			} else if (meId === note.userId) {
+				return true;
+			} else {
+				// 指定されているかどうか
+				return note.visibleUserIds?.some(id => meId === id) ?? false;
+			}
+		}
+
+		// visibility が followers かつ自分が投稿者のフォロワーでなかったら非表示
+		if (note.visibility === 'followers') {
+			if (meId == null) {
+				return false;
+			} else if (meId === note.userId) {
+				return true;
+			} else if (note.reply && (meId === note.reply.userId)) {
+				// 自分の投稿に対するリプライ
+				return true;
+			} else if (note.mentions && note.mentions.some(id => meId === id)) {
+				// 自分へのメンション
+				return true;
+			} else {
+				// フォロワーかどうか
+				return Object.hasOwn(this.following, note.userId);
+			}
+		}
+
+		return true;
+	}
+
 	/*
 	 * ミュートとブロックされてるを処理する
 	 */
@@ -104,7 +142,14 @@ export default abstract class Channel {
 		});
 	}
 
-	public abstract init(params: JsonObject): void;
+	/**
+	 * チャンネルの初期化処理（接続時点での接続可否チェックを兼ねる）
+	 *
+	 * - `void / Promise<void>` を返す場合は、チェックなし
+	 * - `true / Promise<true>` を返す場合は、接続可能
+	 * - `false / Promise<false>` を返す場合は、接続不可（接続を切断）
+	 */
+	public abstract init(params: JsonObject): Awaitable<void | boolean>;
 
 	public dispose?(): void;
 

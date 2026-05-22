@@ -24,7 +24,6 @@ export const fn = defineImageCompositorFunction<{
 		gl.uniform1i(u.ellipse, params.ellipse ? 1 : 0);
 		gl.uniform1f(u.angle, params.angle / 2);
 		gl.uniform1f(u.radius, params.radius);
-		gl.uniform1i(u.samples, 256);
 	},
 });
 
@@ -84,10 +83,10 @@ export const uiDefinition = {
 		radius: {
 			label: i18n.ts._imageEffector._fxProps.strength,
 			type: 'number',
-			default: 10.0,
+			default: 0.15,
 			min: 0.0,
-			max: 20.0,
-			step: 0.5,
+			max: 0.3,
+			step: 0.01,
 		},
 	},
 } satisfies ImageEffectorUiDefinition<typeof fn>;

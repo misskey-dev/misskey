@@ -15,6 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<XReloadSuggestion v-if="shouldSuggestReload"/>
 			<XPreferenceRestore v-if="shouldSuggestRestoreBackup"/>
+			<XThemePreviewing v-if="isThemePreviewMode"/>
 			<XAnnouncements v-if="$i"/>
 			<XStatusBars/>
 			<div :class="$style.columnsWrapper">
@@ -94,12 +95,14 @@ import XMobileFooterMenu from '@/ui/_common_/mobile-footer-menu.vue';
 import XTitlebar from '@/ui/_common_/titlebar.vue';
 import XPreferenceRestore from '@/ui/_common_/PreferenceRestore.vue';
 import XReloadSuggestion from '@/ui/_common_/ReloadSuggestion.vue';
+import XThemePreviewing from '@/ui/_common_/ThemePreviewing.vue';
 import * as os from '@/os.js';
 import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
 import { deviceKind } from '@/utility/device-kind.js';
 import { prefer } from '@/preferences.js';
 import { store } from '@/store.js';
+import { isPreviewMode as isThemePreviewMode } from '@/theme.js';
 import XMainColumn from '@/ui/deck/main-column.vue';
 import XTlColumn from '@/ui/deck/tl-column.vue';
 import XAntennaColumn from '@/ui/deck/antenna-column.vue';

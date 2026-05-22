@@ -4,14 +4,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<button
-	v-if="!link"
-	ref="el" class="_button"
+<component
+	:is="component"
+	ref="el"
+	class="_button"
 	:class="[$style.root, { [$style.inline]: inline, [$style.primary]: primary, [$style.gradate]: gradate, [$style.danger]: danger, [$style.rounded]: rounded, [$style.full]: full, [$style.small]: small, [$style.large]: large, [$style.transparent]: transparent, [$style.asLike]: asLike, [$style.iconOnly]: iconOnly, [$style.wait]: wait, [$style.active]: active }]"
-	:type="type"
-	:name="name"
-	:value="value"
-	:disabled="disabled || wait"
+	v-bind="cProps"
 	@click="emit('click', $event)"
 	@mousedown="onMousedown"
 >
@@ -19,34 +17,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.content">
 		<slot></slot>
 	</div>
-</button>
-<MkA
-	v-else class="_button"
-	:class="[$style.root, { [$style.inline]: inline, [$style.primary]: primary, [$style.gradate]: gradate, [$style.danger]: danger, [$style.rounded]: rounded, [$style.full]: full, [$style.small]: small, [$style.large]: large, [$style.transparent]: transparent, [$style.asLike]: asLike, [$style.iconOnly]: iconOnly, [$style.wait]: wait, [$style.active]: active }]"
-	:to="to ?? '#'"
-	:behavior="linkBehavior"
-	@mousedown="onMousedown"
->
-	<div ref="ripples" :class="$style.ripples" :data-children-class="$style.ripple"></div>
-	<div :class="$style.content">
-		<slot></slot>
-	</div>
-</MkA>
+</component>
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onMounted, useTemplateRef } from 'vue';
+import { nextTick, computed, onMounted, useTemplateRef } from 'vue';
+import MkA from '@/components/global/MkA.vue';
 import type { MkABehavior } from '@/components/global/MkA.vue';
 
 const props = defineProps<{
-	type?: 'button' | 'submit' | 'reset';
+	type?: 'button' | 'submit' | 'reset' | 'a' | 'routerLink';
 	primary?: boolean;
 	gradate?: boolean;
 	rounded?: boolean;
 	inline?: boolean;
-	link?: boolean;
-	to?: string;
-	linkBehavior?: MkABehavior;
 	autofocus?: boolean;
 	wait?: boolean;
 	danger?: boolean;
@@ -55,11 +39,22 @@ const props = defineProps<{
 	large?: boolean;
 	transparent?: boolean;
 	asLike?: boolean;
+	iconOnly?: boolean;
+	active?: boolean;
+
+	// for type=button
 	name?: string;
 	value?: string;
 	disabled?: boolean;
-	iconOnly?: boolean;
-	active?: boolean;
+
+	// for type=a
+	href?: string;
+	target?: string;
+	rel?: string;
+
+	// for type=routerLink
+	to?: string;
+	linkBehavior?: MkABehavior;
 }>();
 
 const emit = defineEmits<{
@@ -68,6 +63,22 @@ const emit = defineEmits<{
 
 const el = useTemplateRef('el');
 const ripples = useTemplateRef('ripples');
+
+const component = computed(() => {
+	if (props.type === 'a') return 'a';
+	if (props.type === 'routerLink') return MkA;
+	return 'button';
+});
+const cProps = computed(() => {
+	if (props.type === 'a') return { href: props.href ?? '#', target: props.target, rel: props.rel };
+	if (props.type === 'routerLink') return { to: props.to!, behavior: props.linkBehavior };
+	return {
+		type: props.type ?? 'button',
+		name: props.name,
+		value: props.value,
+		disabled: props.disabled || props.wait,
+	};
+});
 
 onMounted(() => {
 	if (props.autofocus) {

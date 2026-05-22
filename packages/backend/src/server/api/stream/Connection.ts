@@ -4,23 +4,19 @@
  */
 
 import * as WebSocket from 'ws';
-import type { MiUser } from '@/models/User.js';
-import type { MiAccessToken } from '@/models/AccessToken.js';
-import { NotificationService } from '@/core/NotificationService.js';
-import { bindThis } from '@/decorators.js';
-import { CacheService } from '@/core/CacheService.js';
-import { MiFollowing, MiUserProfile } from '@/models/_.js';
-import type { GlobalEvents, StreamEventEmitter } from '@/core/GlobalEventService.js';
-import { ChannelFollowingService } from '@/core/ChannelFollowingService.js';
-import { ChannelMutingService } from '@/core/ChannelMutingService.js';
-import type { JsonObject, JsonValue } from '@/misc/json-value.js';
-import { isJsonObject } from '@/misc/json-value.js';
-import type { EventEmitter } from 'events';
-import type Channel from './channel.js';
-import type { ChannelConstructor } from './channel.js';
-import type { ChannelRequest } from './channel.js';
 import { ContextIdFactory, ModuleRef, REQUEST } from '@nestjs/core';
 import { Inject, Injectable, Scope } from '@nestjs/common';
+import { isJsonObject } from '@/misc/json-value.js';
+import type { JsonObject, JsonValue } from '@/misc/json-value.js';
+import { ChannelMutingService } from '@/core/ChannelMutingService.js';
+import { ChannelFollowingService } from '@/core/ChannelFollowingService.js';
+import type { GlobalEvents, StreamEventEmitter } from '@/core/GlobalEventService.js';
+import { MiFollowing, MiUserProfile } from '@/models/_.js';
+import { CacheService } from '@/core/CacheService.js';
+import { bindThis } from '@/decorators.js';
+import { NotificationService } from '@/core/NotificationService.js';
+import type { MiAccessToken } from '@/models/AccessToken.js';
+import type { MiUser } from '@/models/User.js';
 import { MainChannel } from '@/server/api/stream/channels/main.js';
 import { HomeTimelineChannel } from '@/server/api/stream/channels/home-timeline.js';
 import { LocalTimelineChannel } from '@/server/api/stream/channels/local-timeline.js';
@@ -39,20 +35,24 @@ import { ChatUserChannel } from '@/server/api/stream/channels/chat-user.js';
 import { ChatRoomChannel } from '@/server/api/stream/channels/chat-room.js';
 import { ReversiChannel } from '@/server/api/stream/channels/reversi.js';
 import { ReversiGameChannel } from '@/server/api/stream/channels/reversi-game.js';
+import type { ChannelRequest } from './channel.js';
+import type { ChannelConstructor } from './channel.js';
+import type Channel from './channel.js';
+import type { EventEmitter } from 'events';
 
 const MAX_CHANNELS_PER_CONNECTION = 32;
 
 /**
  * Main stream connection
  */
-// eslint-disable-next-line import/no-default-export
+
 @Injectable({ scope: Scope.TRANSIENT })
 export default class Connection {
 	public user?: MiUser;
 	public token?: MiAccessToken;
 	private wsConnection: WebSocket.WebSocket;
 	public subscriber: StreamEventEmitter;
-	private channels: Channel[] = [];
+	private channels: Map<string, Channel> = new Map();
 	private subscribingNotes: Partial<Record<string, number>> = {};
 	public userProfile: MiUserProfile | null = null;
 	public following: Record<string, Pick<MiFollowing, 'withReplies'> | undefined> = {};
@@ -206,6 +206,19 @@ export default class Connection {
 
 	@bindThis
 	private async onNoteStreamMessage(data: GlobalEvents['note']['payload']) {
+		// 自分自身ではないかつ
+		if (data.body.userId !== this.user?.id) {
+			// 公開範囲が指名で自分が含まれてない
+			if (data.body.visibility === 'specified' && (this.user == null || !data.body.visibleUserIds.includes(this.user.id))) {
+				return;
+			}
+
+			// 公開範囲がフォロワーで自分がフォロワーでない
+			if (data.body.visibility === 'followers' && !Object.hasOwn(this.following, data.body.userId)) {
+				return;
+			}
+		}
+
 		this.sendMessageToWs('noteUpdated', {
 			id: data.body.id,
 			type: data.type,
@@ -254,7 +267,11 @@ export default class Connection {
 	 */
 	@bindThis
 	public async connectChannel(id: string, params: JsonObject | undefined, channel: string, pong = false) {
-		if (this.channels.length >= MAX_CHANNELS_PER_CONNECTION) {
+		if (this.channels.has(id)) {
+			this.disconnectChannel(id);
+		}
+
+		if (this.channels.size >= MAX_CHANNELS_PER_CONNECTION) {
 			return;
 		}
 
@@ -270,8 +287,12 @@ export default class Connection {
 		}
 
 		// 共有可能チャンネルに接続しようとしていて、かつそのチャンネルに既に接続していたら無意味なので無視
-		if (channelConstructor.shouldShare && this.channels.some(c => c.chName === channel)) {
-			return;
+		if (channelConstructor.shouldShare) {
+			for (const c of this.channels.values()) {
+				if (c.chName === channel) {
+					return;
+				}
+			}
 		}
 
 		const contextId = ContextIdFactory.create();
@@ -281,8 +302,13 @@ export default class Connection {
 		}, contextId);
 		const ch: Channel = await this.moduleRef.create<Channel>(channelConstructor, contextId);
 
-		this.channels.push(ch);
-		ch.init(params ?? {});
+		this.channels.set(ch.id, ch);
+		const valid = await ch.init(params ?? {});
+		if (typeof valid === 'boolean' && !valid) {
+			// 初期化処理の結果、接続拒否されたので切断
+			this.disconnectChannel(id);
+			return;
+		}
 
 		if (pong) {
 			this.sendMessageToWs('connected', {
@@ -324,11 +350,11 @@ export default class Connection {
 	 */
 	@bindThis
 	public disconnectChannel(id: string) {
-		const channel = this.channels.find(c => c.id === id);
+		const channel = this.channels.get(id);
 
 		if (channel) {
 			if (channel.dispose) channel.dispose();
-			this.channels = this.channels.filter(c => c.id !== id);
+			this.channels.delete(id);
 		}
 	}
 
@@ -343,7 +369,7 @@ export default class Connection {
 		if (typeof data.type !== 'string') return;
 		if (typeof data.body === 'undefined') return;
 
-		const channel = this.channels.find(c => c.id === data.id);
+		const channel = this.channels.get(data.id);
 		if (channel != null && channel.onMessage != null) {
 			channel.onMessage(data.type, data.body);
 		}
@@ -355,7 +381,7 @@ export default class Connection {
 	@bindThis
 	public dispose() {
 		if (this.fetchIntervalId) clearInterval(this.fetchIntervalId);
-		for (const c of this.channels.filter(c => c.dispose)) {
+		for (const c of this.channels.values()) {
 			if (c.dispose) c.dispose();
 		}
 	}
