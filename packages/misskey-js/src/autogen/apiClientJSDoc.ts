@@ -1172,7 +1172,7 @@ declare module '../api.js' {
 
     /**
      * No description provided.
-     *
+     * 
      * **Credential required**: *Yes* / **Permission**: *write:account*
      */
     request<E extends 'antennas/remove-note', P extends Endpoints[E]['req']>(
