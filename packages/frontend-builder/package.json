@@ -14,13 +14,13 @@
 		"@types/node": "24.12.4",
 		"@typescript-eslint/eslint-plugin": "8.59.3",
 		"@typescript-eslint/parser": "8.59.3",
-		"rollup": "4.60.3"
+		"rollup": "4.60.4"
 	},
 	"dependencies": {
 		"estree-walker": "3.0.3",
 		"i18n": "workspace:*",
 		"magic-string": "0.30.21",
 		"rolldown": "1.0.1",
-		"vite": "8.0.12"
+		"vite": "8.0.13"
 	}
 }
