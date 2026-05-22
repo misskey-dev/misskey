@@ -17,8 +17,4 @@ export default new DataSource({
 	entities: entities,
 	migrations: ['migration/*.js'],
 	migrationsTransactionMode: isConcurrentIndexMigrationEnabled ? 'each' : 'all',
-	invalidWhereValuesBehavior: {
-		null: 'ignore',
-		undefined: 'ignore',
-	},
 });
