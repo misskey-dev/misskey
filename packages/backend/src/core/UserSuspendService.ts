@@ -86,7 +86,7 @@ export class UserSuspendService {
 			const manager = this.apDeliverManagerService.createDeliverManager(user, content);
 			manager.addAllKnowingSharedInboxRecipe();
 			manager.addFollowersRecipe();
-			manager.execute();
+			await manager.execute();
 		}
 	}
 
@@ -99,7 +99,7 @@ export class UserSuspendService {
 			const manager = this.apDeliverManagerService.createDeliverManager(user, content);
 			manager.addAllKnowingSharedInboxRecipe();
 			manager.addFollowersRecipe();
-			manager.execute();
+			await manager.execute();
 		}
 	}
 
