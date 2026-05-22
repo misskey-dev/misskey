@@ -11,6 +11,10 @@ import type { RoomAttachments } from './utility.js';
 let engine: RoomEngine | null = null;
 let canvas: OffscreenCanvas | null = null;
 
+//BABYLON.RegisterStandardEngineExtensions();
+//BABYLON.RegisterEnginesExtensionsEngineRawTexture();
+//BABYLON.RegisterCollisionCoordinator();
+
 // TODO: 他のWorkerと実装を共通化
 onmessage = async (event) => {
 	//console.log('Worker received message:', event.data);

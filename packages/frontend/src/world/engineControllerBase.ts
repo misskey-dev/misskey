@@ -88,6 +88,10 @@ export abstract class EngineControllerBase<T extends EngineBase<EngineBaseEvents
 				}
 			};
 		} else {
+			//BABYLON.RegisterStandardEngineExtensions();
+			//BABYLON.RegisterEnginesExtensionsEngineRawTexture();
+			//BABYLON.RegisterCollisionCoordinator();
+
 			const babylonEngine = new BABYLON.WebGPUEngine(canvas, { doNotHandleContextLost: true, powerPreference: 'high-performance', antialias: this.options.antialias });
 			babylonEngine.compatibilityMode = false;
 			babylonEngine.enableOfflineSupport = false;

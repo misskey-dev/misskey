@@ -9,6 +9,10 @@ import { RoomObjectPreviewEngine } from './previewEngine.js';
 let engine: RoomObjectPreviewEngine | null = null;
 let canvas: OffscreenCanvas | null = null;
 
+//BABYLON.RegisterStandardEngineExtensions();
+//BABYLON.RegisterEnginesExtensionsEngineRawTexture();
+//BABYLON.RegisterCollisionCoordinator();
+
 // TODO: 他のWorkerと実装を共通化
 onmessage = async (event) => {
 	//console.log('Worker received message:', event.data);
