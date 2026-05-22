@@ -11,6 +11,8 @@ export const TIPS = [
 	'postFormUploader',
 	'clips',
 	'userLists',
+	'postForm',
+	'deck',
 	'tl.home',
 	'tl.local',
 	'tl.social',
@@ -30,7 +32,7 @@ export function resetAllTips() {
 }
 
 export function hideAllTips() {
-	const v = {};
+	const v = {} as Record<typeof TIPS[number], boolean>;
 	for (const k of TIPS) {
 		v[k] = true;
 	}

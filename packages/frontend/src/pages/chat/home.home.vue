@@ -64,7 +64,7 @@ const searchQuery = ref('');
 const searched = ref(false);
 const searchResults = ref<Misskey.entities.ChatMessage[]>([]);
 
-function start(ev: MouseEvent) {
+function start(ev: PointerEvent) {
 	os.popupMenu([{
 		text: i18n.ts._chat.individualChat,
 		caption: i18n.ts._chat.individualChat_description,
@@ -89,7 +89,7 @@ async function startUser() {
 		router.push('/chat/user/:userId', {
 			params: {
 				userId: user.id,
-			}
+			},
 		});
 	});
 }
@@ -108,7 +108,7 @@ async function createRoom() {
 	router.push('/chat/room/:roomId', {
 		params: {
 			roomId: room.id,
-		}
+		},
 	});
 }
 

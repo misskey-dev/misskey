@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, useTemplateRef } from 'vue';
-import { notificationTypes } from '@@/js/const.js';
+import { notificationTypes } from 'misskey-js';
 import MkSwitch from './MkSwitch.vue';
 import MkInfo from './MkInfo.vue';
 import MkButton from './MkButton.vue';
@@ -42,7 +42,7 @@ import { i18n } from '@/i18n.js';
 type TypesMap = Record<typeof notificationTypes[number], Ref<boolean>>;
 
 const emit = defineEmits<{
-	(ev: 'done', v: { excludeTypes: string[] }): void,
+	(ev: 'done', v: { excludeTypes: typeof notificationTypes[number][] }): void,
 	(ev: 'closed'): void,
 }>();
 

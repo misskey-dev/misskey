@@ -29,7 +29,7 @@ import MkButton from '@/components/MkButton.vue';
 
 const state = ref<'fetching' | 'done'>('fetching');
 
-function fetch() {
+function _fetch_() {
 	const params = new URL(window.location.href).searchParams;
 
 	// acctのほうはdeprecated
@@ -44,20 +44,18 @@ function fetch() {
 	if (uri.startsWith('https://')) {
 		promise = misskeyApi('ap/show', {
 			uri,
-		});
-
-		promise.then(res => {
+		}).then(res => {
 			if (res.type === 'User') {
 				mainRouter.replace('/@:acct/:page?', {
 					params: {
-						acct: res.host != null ? `${res.object.username}@${res.object.host}` : res.object.username,
-					}
+						acct: res.object.host != null ? `${res.object.username}@${res.object.host}` : res.object.username,
+					},
 				});
 			} else if (res.type === 'Note') {
 				mainRouter.replace('/notes/:noteId/:initialTab?', {
 					params: {
 						noteId: res.object.id,
-					}
+					},
 				});
 			} else {
 				os.alert({
@@ -70,12 +68,11 @@ function fetch() {
 		if (uri.startsWith('acct:')) {
 			uri = uri.slice(5);
 		}
-		promise = misskeyApi('users/show', Misskey.acct.parse(uri));
-		promise.then(user => {
+		promise = misskeyApi('users/show', Misskey.acct.parse(uri)).then(user => {
 			mainRouter.replace('/@:acct/:page?', {
 				params: {
 					acct: user.host != null ? `${user.username}@${user.host}` : user.username,
-				}
+				},
 			});
 		});
 	}
@@ -96,7 +93,7 @@ function goToMisskey(): void {
 	window.location.href = '/';
 }
 
-fetch();
+_fetch_();
 
 const headerActions = computed(() => []);
 

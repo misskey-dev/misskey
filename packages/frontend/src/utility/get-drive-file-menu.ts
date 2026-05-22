@@ -24,6 +24,8 @@ function rename(file: Misskey.entities.DriveFile) {
 		misskeyApi('drive/files/update', {
 			fileId: file.id,
 			name: name,
+		}).then(updated => {
+			globalEvents.emit('driveFilesUpdated', [updated]);
 		});
 	});
 }
@@ -37,6 +39,8 @@ async function describe(file: Misskey.entities.DriveFile) {
 			misskeyApi('drive/files/update', {
 				fileId: file.id,
 				comment: caption.length === 0 ? null : caption,
+			}).then(updated => {
+				globalEvents.emit('driveFilesUpdated', [updated]);
 			});
 		},
 		closed: () => dispose(),
@@ -44,10 +48,13 @@ async function describe(file: Misskey.entities.DriveFile) {
 }
 
 function move(file: Misskey.entities.DriveFile) {
-	selectDriveFolder(null).then(folder => {
+	selectDriveFolder(null).then(({ canceled, folders }) => {
+		if (canceled) return;
 		misskeyApi('drive/files/update', {
 			fileId: file.id,
-			folderId: folder[0] ? folder[0].id : null,
+			folderId: folders[0] ? folders[0].id : null,
+		}).then(updated => {
+			globalEvents.emit('driveFilesUpdated', [updated]);
 		});
 	});
 }
@@ -56,6 +63,8 @@ function toggleSensitive(file: Misskey.entities.DriveFile) {
 	misskeyApi('drive/files/update', {
 		fileId: file.id,
 		isSensitive: !file.isSensitive,
+	}).then(updated => {
+		globalEvents.emit('driveFilesUpdated', [updated]);
 	}).catch(err => {
 		os.alert({
 			type: 'error',
@@ -89,7 +98,7 @@ async function deleteFile(file: Misskey.entities.DriveFile) {
 }
 
 export function getDriveFileMenu(file: Misskey.entities.DriveFile, folder?: Misskey.entities.DriveFolder | null): MenuItem[] {
-	const isImage = file.type.startsWith('image/');
+	const _isImage = file.type.startsWith('image/');
 
 	const menuItems: MenuItem[] = [];
 

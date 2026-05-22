@@ -37,17 +37,23 @@ class HttpRequestServiceAgent extends http.Agent {
 
 	@bindThis
 	public createConnection(options: http.ClientRequestArgs, callback?: (err: Error | null, stream: stream.Duplex) => void): stream.Duplex {
-		const socket = super.createConnection(options, callback)
-			.on('connect', () => {
-				if (socket instanceof net.Socket && process.env.NODE_ENV === 'production') {
-					const address = socket.remoteAddress;
-					if (address && ipaddr.isValid(address)) {
-						if (this.isPrivateIp(address)) {
-							socket.destroy(new Error(`Blocked address: ${address}`));
-						}
+		const socket = super.createConnection(options, callback);
+
+		if (socket == null) {
+			throw new Error('Failed to create socket');
+		}
+
+		socket.on('connect', () => {
+			if (socket instanceof net.Socket && process.env.NODE_ENV === 'production') {
+				const address = socket.remoteAddress;
+				if (address && ipaddr.isValid(address)) {
+					if (this.isPrivateIp(address)) {
+						socket.destroy(new Error(`Blocked address: ${address}`));
 					}
 				}
-			});
+			}
+		});
+
 		return socket;
 	}
 
@@ -76,17 +82,23 @@ class HttpsRequestServiceAgent extends https.Agent {
 
 	@bindThis
 	public createConnection(options: http.ClientRequestArgs, callback?: (err: Error | null, stream: stream.Duplex) => void): stream.Duplex {
-		const socket = super.createConnection(options, callback)
-			.on('connect', () => {
-				if (socket instanceof net.Socket && process.env.NODE_ENV === 'production') {
-					const address = socket.remoteAddress;
-					if (address && ipaddr.isValid(address)) {
-						if (this.isPrivateIp(address)) {
-							socket.destroy(new Error(`Blocked address: ${address}`));
-						}
+		const socket = super.createConnection(options, callback);
+
+		if (socket == null) {
+			throw new Error('Failed to create socket');
+		}
+
+		socket.on('connect', () => {
+			if (socket instanceof net.Socket && process.env.NODE_ENV === 'production') {
+				const address = socket.remoteAddress;
+				if (address && ipaddr.isValid(address)) {
+					if (this.isPrivateIp(address)) {
+						socket.destroy(new Error(`Blocked address: ${address}`));
 					}
 				}
-			});
+			}
+		});
+
 		return socket;
 	}
 

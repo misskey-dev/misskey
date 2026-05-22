@@ -5,7 +5,8 @@
 
 process.env.NODE_ENV = 'test';
 
-import { jest } from '@jest/globals';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { Mocked } from 'vitest';
 import { Test } from '@nestjs/testing';
 import type { TestingModule } from '@nestjs/testing';
 import type { MiLocalUser, MiRemoteUser } from '@/models/User.js';
@@ -19,9 +20,9 @@ import { secureRndstr } from '@/misc/secure-rndstr.js';
 
 describe('ApDeliverManagerService', () => {
 	let service: ApDeliverManagerService;
-	let followingsRepository: jest.Mocked<FollowingsRepository>;
-	let queueService: jest.Mocked<QueueService>;
-	let apLoggerService: jest.Mocked<ApLoggerService>;
+	let followingsRepository: Mocked<FollowingsRepository>;
+	let queueService: Mocked<QueueService>;
+	let apLoggerService: Mocked<ApLoggerService>;
 
 	const mockLocalUser: MiLocalUser = {
 		id: 'local-user-id',
@@ -60,24 +61,24 @@ describe('ApDeliverManagerService', () => {
 				{
 					provide: DI.followingsRepository,
 					useValue: {
-						find: jest.fn(),
-						createQueryBuilder: jest.fn(),
+						find: vi.fn(),
+						createQueryBuilder: vi.fn(),
 					},
 				},
 				{
 					provide: QueueService,
 					useValue: {
-						deliverMany: jest.fn(),
+						deliverMany: vi.fn(),
 					},
 				},
 				{
 					provide: ApLoggerService,
 					useValue: {
 						logger: {
-							createSubLogger: jest.fn().mockReturnValue({
-								info: jest.fn(),
-								warn: jest.fn(),
-								error: jest.fn(),
+							createSubLogger: vi.fn().mockReturnValue({
+								info: vi.fn(),
+								warn: vi.fn(),
+								error: vi.fn(),
 							}),
 						},
 					},
@@ -92,7 +93,7 @@ describe('ApDeliverManagerService', () => {
 	});
 
 	beforeEach(() => {
-		jest.clearAllMocks();
+		vi.clearAllMocks();
 	});
 
 	describe('deliverToFollowers', () => {
@@ -299,11 +300,11 @@ describe('ApDeliverManagerService', () => {
 	describe('AllKnowingSharedInbox recipe', () => {
 		it('should collect all shared inboxes when using AllKnowingSharedInbox', async () => {
 			const mockQueryBuilder = {
-				select: jest.fn().mockReturnThis(),
-				where: jest.fn().mockReturnThis(),
-				orWhere: jest.fn().mockReturnThis(),
-				distinct: jest.fn().mockReturnThis(),
-				getRawMany: jest.fn<any>().mockResolvedValue([
+				select: vi.fn().mockReturnThis(),
+				where: vi.fn().mockReturnThis(),
+				orWhere: vi.fn().mockReturnThis(),
+				distinct: vi.fn().mockReturnThis(),
+				getRawMany: vi.fn<any>().mockResolvedValue([
 					{ f_followerSharedInbox: 'https://shared1.example.com/inbox' },
 					{ f_followeeSharedInbox: 'https://shared2.example.com/inbox' },
 				]),
@@ -336,7 +337,7 @@ describe('ApDeliverManagerService (SQL)', () => {
 	let service: ApDeliverManagerService;
 	let followingsRepository: FollowingsRepository;
 	let usersRepository: UsersRepository;
-	let queueService: jest.Mocked<QueueService>;
+	let queueService: Mocked<QueueService>;
 
 	async function createUser(data: Partial<{ id: string; username: string; host: string | null; inbox: string | null; sharedInbox: string | null; isSuspended: boolean }> = {}): Promise<any> {
 		const user = {
@@ -393,17 +394,17 @@ describe('ApDeliverManagerService (SQL)', () => {
 				{
 					provide: QueueService,
 					useFactory: () => ({
-						deliverMany: jest.fn(),
+						deliverMany: vi.fn(),
 					}),
 				},
 				{
 					provide: ApLoggerService,
 					useValue: {
 						logger: {
-							createSubLogger: jest.fn().mockReturnValue({
-								info: jest.fn(),
-								warn: jest.fn(),
-								error: jest.fn(),
+							createSubLogger: vi.fn().mockReturnValue({
+								info: vi.fn(),
+								warn: vi.fn(),
+								error: vi.fn(),
 							}),
 						},
 					},
@@ -416,10 +417,10 @@ describe('ApDeliverManagerService (SQL)', () => {
 		service = app.get<ApDeliverManagerService>(ApDeliverManagerService);
 		followingsRepository = app.get<FollowingsRepository>(DI.followingsRepository);
 		usersRepository = app.get<UsersRepository>(DI.usersRepository);
-		queueService = app.get<QueueService>(QueueService) as jest.Mocked<QueueService>;
+		queueService = app.get<QueueService>(QueueService) as Mocked<QueueService>;
 
 		// Reset mocks
-		jest.clearAllMocks();
+		vi.clearAllMocks();
 	});
 
 	afterEach(async () => {

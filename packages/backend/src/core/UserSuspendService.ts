@@ -4,7 +4,6 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { Not, IsNull } from 'typeorm';
 import type { FollowingsRepository, FollowRequestsRepository, UsersRepository } from '@/models/_.js';
 import type { MiUser } from '@/models/User.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
@@ -48,8 +47,8 @@ export class UserSuspendService {
 		});
 
 		(async () => {
-			await this.postSuspend(user).catch((e: any) => {});
-			await this.suspendFollowings(user).catch((e: any) => {});
+			await this.postSuspend(user).catch(_ => {});
+			await this.suspendFollowings(user).catch(_ => {});
 		})();
 	}
 
@@ -66,8 +65,8 @@ export class UserSuspendService {
 		});
 
 		(async () => {
-			await this.postUnsuspend(user).catch((e: any) => {});
-			await this.restoreFollowings(user).catch((e: any) => {});
+			await this.postUnsuspend(user).catch(_ => {});
+			await this.restoreFollowings(user).catch(_ => {});
 		})();
 	}
 

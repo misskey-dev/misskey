@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.root">
 	<div :class="$style.control">
-		<MkSelect v-model="order" :class="$style.order" :items="[{ label: i18n.ts._order.newest, value: 'newest' }, { label: i18n.ts._order.oldest, value: 'oldest' }]">
+		<MkSelect v-model="order" :class="$style.order" :items="orderDef">
 			<template #prefix><i class="ti ti-arrows-sort"></i></template>
 		</MkSelect>
 		<MkButton v-if="paginator.canSearch" v-tooltip="i18n.ts.search" iconOnly transparent rounded :active="searchOpened" @click="searchOpened = !searchOpened"><i class="ti ti-search"></i></MkButton>
@@ -45,6 +45,7 @@ import { i18n } from '@/i18n.js';
 import MkSelect from '@/components/MkSelect.vue';
 import MkInput from '@/components/MkInput.vue';
 import { formatDateTimeString } from '@/utility/format-time-string.js';
+import { useMkSelect } from '@/composables/use-mkselect.js';
 
 const props = withDefaults(defineProps<{
 	paginator: T;
@@ -58,7 +59,16 @@ const props = withDefaults(defineProps<{
 const searchOpened = ref(false);
 const filterOpened = ref(props.filterOpened);
 
-const order = ref<'newest' | 'oldest'>('newest');
+const {
+	model: order,
+	def: orderDef,
+} = useMkSelect({
+	items: [
+		{ label: i18n.ts._order.newest, value: 'newest' },
+		{ label: i18n.ts._order.oldest, value: 'oldest' },
+	],
+	initialValue: 'newest',
+});
 const date = ref<number | null>(null);
 const q = ref<string | null>(null);
 

@@ -50,12 +50,12 @@ let latestHotkey: Pattern & { callback: CallbackFunction } | null = null;
 //#endregion
 
 //#region impl
-export const makeHotkey = (keymap: Keymap) => {
+export const makeHotkey = (keymap: Keymap, ignoreElements = IGNORE_ELEMENTS) => {
 	const actions = parseKeymap(keymap);
 	return (ev: KeyboardEvent) => {
 		if ('pswp' in window && window.pswp != null) return;
 		if (window.document.activeElement != null) {
-			if (IGNORE_ELEMENTS.includes(window.document.activeElement.tagName.toLowerCase())) return;
+			if (ignoreElements.includes(window.document.activeElement.tagName.toLowerCase())) return;
 			if (getHTMLElementOrNull(window.document.activeElement)?.isContentEditable) return;
 		}
 		for (const action of actions) {

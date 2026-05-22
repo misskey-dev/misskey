@@ -17,6 +17,7 @@ import { deepClone } from '@/misc/clone.js';
 import { bindThis } from '@/decorators.js';
 import { isMimeImage } from '@/misc/is-mime-image.js';
 import { IdService } from '@/core/IdService.js';
+import { uniqueByKey } from '@/misc/unique-by-key.js';
 import { UtilityService } from '../UtilityService.js';
 import { VideoProcessingService } from '../VideoProcessingService.js';
 import { UserEntityService } from './UserEntityService.js';
@@ -226,6 +227,7 @@ export class DriveFileEntityService {
 		options?: PackOptions,
 		hint?: {
 			packedUser?: Packed<'UserLite'>
+			packedFolder?: Packed<'DriveFolder'>
 		},
 	): Promise<Packed<'DriveFile'> | null> {
 		const opts = Object.assign({
@@ -250,9 +252,9 @@ export class DriveFileEntityService {
 			thumbnailUrl: this.getThumbnailUrl(file),
 			comment: file.comment,
 			folderId: file.folderId,
-			folder: opts.detail && file.folderId ? this.driveFolderEntityService.pack(file.folderId, {
+			folder: opts.detail && file.folderId ? (hint?.packedFolder ?? this.driveFolderEntityService.pack(file.folderId, {
 				detail: true,
-			}) : null,
+			})) : null,
 			userId: file.userId,
 			user: (opts.withUser && file.userId) ? hint?.packedUser ?? this.userEntityService.pack(file.userId) : null,
 		});
@@ -263,10 +265,41 @@ export class DriveFileEntityService {
 		files: MiDriveFile[],
 		options?: PackOptions,
 	): Promise<Packed<'DriveFile'>[]> {
-		const _user = files.map(({ user, userId }) => user ?? userId).filter(x => x != null);
-		const _userMap = await this.userEntityService.packMany(_user)
-			.then(users => new Map(users.map(user => [user.id, user])));
-		const items = await Promise.all(files.map(f => this.packNullable(f, options, f.userId ? { packedUser: _userMap.get(f.userId) } : {})));
+		// -- ユーザ情報の事前取得 --
+
+		let userMap: Map<string, Packed<'UserLite'>> | null = null;
+		if (options?.withUser) {
+			const users = files
+				.map(({ user, userId }) => user ?? userId)
+				.filter(x => x != null);
+
+			const uniqueUsers = uniqueByKey(users, (user) => typeof user === 'string' ? user : user.id);
+			const packedUsers = await this.userEntityService.packMany(uniqueUsers);
+			userMap = new Map(packedUsers.map(user => [user.id, user]));
+		}
+
+		// -- フォルダ情報の事前取得 --
+
+		let folderMap: Map<string, Packed<'DriveFolder'>> | null = null;
+		if (options?.detail) {
+			const folders = files
+				.map(({ folder, folderId }) => folder ?? folderId)
+				.filter(x => x != null);
+
+			const uniqueFolders = uniqueByKey(folders, (folder) => typeof folder === 'string' ? folder : folder.id);
+			const packedFolders = await this.driveFolderEntityService.packMany(uniqueFolders, { detail: true });
+			folderMap = new Map(packedFolders.map(folder => [folder.id, folder]));
+		}
+
+		const items = await Promise.all(files.map(f => this.packNullable(
+			f,
+			options,
+			{
+				packedUser: f.userId ? userMap?.get(f.userId) : undefined,
+				packedFolder: f.folderId ? folderMap?.get(f.folderId) : undefined,
+			},
+		)));
+
 		return items.filter(x => x != null);
 	}
 

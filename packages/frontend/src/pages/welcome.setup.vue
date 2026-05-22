@@ -89,7 +89,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 					<Suspense>
 						<template #default>
-							<MkServerSetupWizard :token="token" @finished="onWizardFinished"/>
+							<MkServerSetupWizard :token="token!" @finished="onWizardFinished"/>
 						</template>
 						<template #fallback>
 							<MkLoading/>
@@ -124,8 +124,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from 'vue';
-import * as Misskey from 'misskey-js';
+import { ref } from 'vue';
 import { host, version } from '@@/js/config.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -143,7 +142,7 @@ const accountCreating = ref(false);
 const accountCreated = ref(false);
 const step = ref(0);
 
-let token;
+let token: string | null = null;
 
 function createAccount() {
 	if (accountCreating.value) return;
@@ -191,6 +190,7 @@ function skipSettings() {
 }
 
 function finish() {
+	if (token == null) return;
 	login(token);
 }
 </script>

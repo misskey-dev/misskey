@@ -6,17 +6,10 @@
 import ms from 'ms';
 import { In } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
-import type { MiUser } from '@/models/User.js';
-import type { UsersRepository, NotesRepository, BlockingsRepository, DriveFilesRepository, ChannelsRepository } from '@/models/_.js';
-import type { MiDriveFile } from '@/models/DriveFile.js';
-import type { MiNote } from '@/models/Note.js';
-import type { MiChannel } from '@/models/Channel.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
-import { DI } from '@/di-symbols.js';
-import { isQuote, isRenote } from '@/misc/is-renote.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { ApiError } from '../../error.js';
 
@@ -223,168 +216,28 @@ export const paramDef = {
 @Injectable()
 export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-disable-line import/no-default-export
 	constructor(
-		@Inject(DI.usersRepository)
-		private usersRepository: UsersRepository,
-
-		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
-
-		@Inject(DI.blockingsRepository)
-		private blockingsRepository: BlockingsRepository,
-
-		@Inject(DI.driveFilesRepository)
-		private driveFilesRepository: DriveFilesRepository,
-
-		@Inject(DI.channelsRepository)
-		private channelsRepository: ChannelsRepository,
-
 		private noteEntityService: NoteEntityService,
 		private noteCreateService: NoteCreateService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			let visibleUsers: MiUser[] = [];
-			if (ps.visibleUserIds) {
-				visibleUsers = await this.usersRepository.findBy({
-					id: In(ps.visibleUserIds),
-				});
-			}
-
-			let files: MiDriveFile[] = [];
-			const fileIds = ps.fileIds ?? ps.mediaIds ?? null;
-			if (fileIds != null) {
-				files = await this.driveFilesRepository.createQueryBuilder('file')
-					.where('file.userId = :userId AND file.id IN (:...fileIds)', {
-						userId: me.id,
-						fileIds,
-					})
-					.orderBy('array_position(ARRAY[:...fileIds], "id"::text)')
-					.setParameters({ fileIds })
-					.getMany();
-
-				if (files.length !== fileIds.length) {
-					throw new ApiError(meta.errors.noSuchFile);
-				}
-			}
-
-			let renote: MiNote | null = null;
-			if (ps.renoteId != null) {
-				// Fetch renote to note
-				renote = await this.notesRepository.findOne({
-					where: { id: ps.renoteId },
-					relations: ['user', 'renote', 'reply'],
-				});
-
-				if (renote == null) {
-					throw new ApiError(meta.errors.noSuchRenoteTarget);
-				} else if (isRenote(renote) && !isQuote(renote)) {
-					throw new ApiError(meta.errors.cannotReRenote);
-				}
-
-				// Check blocking
-				if (renote.userId !== me.id) {
-					const blockExist = await this.blockingsRepository.exists({
-						where: {
-							blockerId: renote.userId,
-							blockeeId: me.id,
-						},
-					});
-					if (blockExist) {
-						throw new ApiError(meta.errors.youHaveBeenBlocked);
-					}
-				}
-
-				if (renote.visibility === 'followers' && renote.userId !== me.id) {
-					// 他人のfollowers noteはreject
-					throw new ApiError(meta.errors.cannotRenoteDueToVisibility);
-				} else if (renote.visibility === 'specified') {
-					// specified / direct noteはreject
-					throw new ApiError(meta.errors.cannotRenoteDueToVisibility);
-				}
-
-				if (renote.channelId && renote.channelId !== ps.channelId) {
-					// チャンネルのノートに対しリノート要求がきたとき、チャンネル外へのリノート可否をチェック
-					// リノートのユースケースのうち、チャンネル内→チャンネル外は少数だと考えられるため、JOINはせず必要な時に都度取得する
-					const renoteChannel = await this.channelsRepository.findOneBy({ id: renote.channelId });
-					if (renoteChannel == null) {
-						// リノートしたいノートが書き込まれているチャンネルが無い
-						throw new ApiError(meta.errors.noSuchChannel);
-					} else if (!renoteChannel.allowRenoteToExternal) {
-						// リノート作成のリクエストだが、対象チャンネルがリノート禁止だった場合
-						throw new ApiError(meta.errors.cannotRenoteOutsideOfChannel);
-					}
-				}
-			}
-
-			let reply: MiNote | null = null;
-			if (ps.replyId != null) {
-				// Fetch reply
-				reply = await this.notesRepository.findOne({
-					where: { id: ps.replyId },
-					relations: ['user'],
-				});
-
-				if (reply == null) {
-					throw new ApiError(meta.errors.noSuchReplyTarget);
-				} else if (isRenote(reply) && !isQuote(reply)) {
-					throw new ApiError(meta.errors.cannotReplyToPureRenote);
-				} else if (!await this.noteEntityService.isVisibleForMe(reply, me.id)) {
-					throw new ApiError(meta.errors.cannotReplyToInvisibleNote);
-				} else if (reply.visibility === 'specified' && ps.visibility !== 'specified') {
-					throw new ApiError(meta.errors.cannotReplyToSpecifiedVisibilityNoteWithExtendedVisibility);
-				}
-
-				// Check blocking
-				if (reply.userId !== me.id) {
-					const blockExist = await this.blockingsRepository.exists({
-						where: {
-							blockerId: reply.userId,
-							blockeeId: me.id,
-						},
-					});
-					if (blockExist) {
-						throw new ApiError(meta.errors.youHaveBeenBlocked);
-					}
-				}
-			}
-
-			if (ps.poll) {
-				if (typeof ps.poll.expiresAt === 'number') {
-					if (ps.poll.expiresAt < Date.now()) {
-						throw new ApiError(meta.errors.cannotCreateAlreadyExpiredPoll);
-					}
-				} else if (typeof ps.poll.expiredAfter === 'number') {
-					ps.poll.expiresAt = Date.now() + ps.poll.expiredAfter;
-				}
-			}
-
-			let channel: MiChannel | null = null;
-			if (ps.channelId != null) {
-				channel = await this.channelsRepository.findOneBy({ id: ps.channelId, isArchived: false });
-
-				if (channel == null) {
-					throw new ApiError(meta.errors.noSuchChannel);
-				}
-			}
-
-			// 投稿を作成
 			try {
-				const note = await this.noteCreateService.create(me, {
+				const note = await this.noteCreateService.fetchAndCreate(me, {
 					createdAt: new Date(),
-					files: files,
+					fileIds: ps.fileIds ?? ps.mediaIds ?? [],
 					poll: ps.poll ? {
 						choices: ps.poll.choices,
 						multiple: ps.poll.multiple ?? false,
-						expiresAt: ps.poll.expiresAt ? new Date(ps.poll.expiresAt) : null,
-					} : undefined,
-					text: ps.text ?? undefined,
-					reply,
-					renote,
-					cw: ps.cw,
+						expiresAt: ps.poll.expiredAfter ? new Date(Date.now() + ps.poll.expiredAfter) : ps.poll.expiresAt ? new Date(ps.poll.expiresAt) : null,
+					} : null,
+					text: ps.text ?? null,
+					replyId: ps.replyId ?? null,
+					renoteId: ps.renoteId ?? null,
+					cw: ps.cw ?? null,
 					localOnly: ps.localOnly,
 					reactionAcceptance: ps.reactionAcceptance,
 					visibility: ps.visibility,
-					visibleUsers,
-					channel,
+					visibleUserIds: ps.visibleUserIds ?? [],
+					channelId: ps.channelId ?? null,
 					apMentions: ps.noExtractMentions ? [] : undefined,
 					apHashtags: ps.noExtractHashtags ? [] : undefined,
 					apEmojis: ps.noExtractEmojis ? [] : undefined,
@@ -393,16 +246,46 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				return {
 					createdNote: await this.noteEntityService.pack(note, me),
 				};
-			} catch (e) {
+			} catch (err) {
 				// TODO: 他のErrorもここでキャッチしてエラーメッセージを当てるようにしたい
-				if (e instanceof IdentifiableError) {
-					if (e.id === '689ee33f-f97c-479a-ac49-1b9f8140af99') {
+				if (err instanceof IdentifiableError) {
+					if (err.id === '689ee33f-f97c-479a-ac49-1b9f8140af99') {
 						throw new ApiError(meta.errors.containsProhibitedWords);
-					} else if (e.id === '9f466dab-c856-48cd-9e65-ff90ff750580') {
+					} else if (err.id === '9f466dab-c856-48cd-9e65-ff90ff750580') {
 						throw new ApiError(meta.errors.containsTooManyMentions);
+					} else if (err.id === '801c046c-5bf5-4234-ad2b-e78fc20a2ac7') {
+						throw new ApiError(meta.errors.noSuchFile);
+					} else if (err.id === '53983c56-e163-45a6-942f-4ddc485d4290') {
+						throw new ApiError(meta.errors.noSuchRenoteTarget);
+					} else if (err.id === 'bde24c37-121f-4e7d-980d-cec52f599f02') {
+						throw new ApiError(meta.errors.cannotReRenote);
+					} else if (err.id === '2b4fe776-4414-4a2d-ae39-f3418b8fd4d3') {
+						throw new ApiError(meta.errors.youHaveBeenBlocked);
+					} else if (err.id === '90b9d6f0-893a-4fef-b0f1-e9a33989f71a') {
+						throw new ApiError(meta.errors.cannotRenoteDueToVisibility);
+					} else if (err.id === '48d7a997-da5c-4716-b3c3-92db3f37bf7d') {
+						throw new ApiError(meta.errors.cannotRenoteDueToVisibility);
+					} else if (err.id === 'b060f9a6-8909-4080-9e0b-94d9fa6f6a77') {
+						throw new ApiError(meta.errors.noSuchChannel);
+					} else if (err.id === '7e435f4a-780d-4cfc-a15a-42519bd6fb67') {
+						throw new ApiError(meta.errors.cannotRenoteOutsideOfChannel);
+					} else if (err.id === '60142edb-1519-408e-926d-4f108d27bee0') {
+						throw new ApiError(meta.errors.noSuchReplyTarget);
+					} else if (err.id === 'f089e4e2-c0e7-4f60-8a23-e5a6bf786b36') {
+						throw new ApiError(meta.errors.cannotReplyToPureRenote);
+					} else if (err.id === '11cd37b3-a411-4f77-8633-c580ce6a8dce') {
+						throw new ApiError(meta.errors.cannotReplyToInvisibleNote);
+					} else if (err.id === 'ced780a1-2012-4caf-bc7e-a95a291294cb') {
+						throw new ApiError(meta.errors.cannotReplyToSpecifiedVisibilityNoteWithExtendedVisibility);
+					} else if (err.id === 'b0df6025-f2e8-44b4-a26a-17ad99104612') {
+						throw new ApiError(meta.errors.youHaveBeenBlocked);
+					} else if (err.id === '0c11c11e-0c8d-48e7-822c-76ccef660068') {
+						throw new ApiError(meta.errors.cannotCreateAlreadyExpiredPoll);
+					} else if (err.id === 'bfa3905b-25f5-4894-b430-da331a490e4b') {
+						throw new ApiError(meta.errors.noSuchChannel);
 					}
 				}
-				throw e;
+				throw err;
 			}
 		});
 	}

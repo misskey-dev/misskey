@@ -292,30 +292,28 @@ async function composeNotification(data: PushNotificationDataMap[keyof PushNotif
 }
 
 export async function createEmptyNotification(): Promise<void> {
-	return new Promise<void>(async res => {
-		const i18n = await (swLang.i18n ?? swLang.fetchLocale());
-
-		await globalThis.registration.showNotification(
-			(new URL(origin)).host,
-			{
-				body: `Misskey v${_VERSION_}`,
-				silent: true,
-				badge: iconUrl('null'),
-				tag: 'read_notification',
-				actions: [
-					{
-						action: 'markAllAsRead',
-						title: i18n.ts.markAllAsRead,
-					},
-					{
-						action: 'settings',
-						title: i18n.ts.notificationSettings,
-					},
-				],
-				data: {},
-			},
-		);
-
+	const i18n = await (swLang.i18n ?? swLang.fetchLocale());
+	await globalThis.registration.showNotification(
+		(new URL(origin)).host,
+		{
+			body: `Misskey v${_VERSION_}`,
+			silent: true,
+			badge: iconUrl('null'),
+			tag: 'read_notification',
+			actions: [
+				{
+					action: 'markAllAsRead',
+					title: i18n.ts.markAllAsRead,
+				},
+				{
+					action: 'settings',
+					title: i18n.ts.notificationSettings,
+				},
+			],
+			data: {},
+		},
+	);
+	return new Promise<void>(res => {
 		setTimeout(async () => {
 			try {
 				await closeNotificationsByTags(['user_visible_auto_notification']);
