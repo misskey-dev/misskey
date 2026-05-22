@@ -10,6 +10,7 @@
 // TODO: テクスチャ置き換え時、元のテクスチャをちゃんとdispose
 // TODO: Safariでテクスチャの読み込みに失敗かつ無ハンドリングだとsrが有効にできなくなる現象をbabylonに報告
 // TODO: 一升瓶を選択するとエラーが出る現象をbabylonに報告
+// TODO: pure barrel importが機能しない問題をbabylonに報告
 
 import * as BABYLON from '@babylonjs/core';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
