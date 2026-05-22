@@ -124,7 +124,7 @@ export class SimpleEnvManager extends EnvManager<SimpleEnvOptions> {
 			shadowGeneratorForRoomLight.usePercentageCloserFiltering = true;
 			shadowGeneratorForRoomLight.filteringQuality = BABYLON.ShadowGenerator.QUALITY_HIGH;
 			if (this.engine.graphicsQuality <= GRAPHICS_QUALITY.MEDIUM) {
-				shadowGeneratorForRoomLight.getShadowMap().refreshRate = 60;
+				shadowGeneratorForRoomLight.getShadowMap().refreshRate = 60; // 効いてなさそう babylonのバグ？
 			}
 			//shadowGeneratorForRoomLight.useContactHardeningShadow = true;
 			//shadowGeneratorForRoomLight.contactHardeningLightSizeUVRatio = 0.01;
@@ -143,7 +143,7 @@ export class SimpleEnvManager extends EnvManager<SimpleEnvOptions> {
 			shadowGeneratorForSunLight.usePercentageCloserFiltering = true;
 			shadowGeneratorForSunLight.usePoissonSampling = true;
 			if (this.engine.graphicsQuality <= GRAPHICS_QUALITY.MEDIUM) {
-				shadowGeneratorForSunLight.getShadowMap().refreshRate = 60;
+				shadowGeneratorForSunLight.getShadowMap().refreshRate = 60; // 効いてなさそう babylonのバグ？
 			}
 			this.shadowGenerators.push(shadowGeneratorForSunLight);
 		}
