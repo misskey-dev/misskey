@@ -1461,7 +1461,7 @@ export class RoomEngine extends EngineBase<{
 	}
 
 	public resize() {
-		// 一旦snapshot renderingを無効にしておかないとエラーが出る(babylonのバグ？)
+		// 一旦snapshot renderingを無効にしておかないとエラーが出る
 		// ~~...が、一旦無効にしたらしたで複数のマテリアルがそれぞれ入れ替わる(?)という謎の現象が発生するためコメントアウトしとく(エラー出てもレンダリングが止まったりするわけでもないし)~~
 		// ↑追記: engine.resizeした後に一瞬待つことで回避できることが判明
 		this.sr.disableSnapshotRendering();
