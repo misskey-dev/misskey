@@ -18,7 +18,7 @@ export function useScrollPositionKeeper(scrollContainerRef: Ref<HTMLElement | nu
 	watch(scrollContainerRef, (el) => {
 		if (!el) return;
 
-		const onScroll = () => {
+		const captureAnchor = () => {
 			if (!el) return;
 			if (!ready) return;
 
@@ -47,7 +47,10 @@ export function useScrollPositionKeeper(scrollContainerRef: Ref<HTMLElement | nu
 		// ほんとはscrollイベントじゃなくてonBeforeDeactivatedでやりたい
 		// https://github.com/vuejs/vue/issues/9454
 		// https://github.com/vuejs/rfcs/pull/284
-		el.addEventListener('scroll', throttle(1000, onScroll), { passive: true });
+		el.addEventListener('scroll', throttle(1000, captureAnchor), { passive: true });
+		// スクロール後すぐにクリックするとthrottleによりanchorIdが古いまま残るため、
+		// pointerdownで遷移直前のアンカーを同期的に取得する
+		el.addEventListener('pointerdown', captureAnchor, { passive: true });
 	}, {
 		immediate: true,
 	});
