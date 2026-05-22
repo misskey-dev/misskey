@@ -107,7 +107,7 @@ export class UserSuspendService {
 		});
 
 		if (this.userEntityService.isLocalUser(user)) {
-			this.accountUpdateService.publishToFollowersAndSharedInboxAndRelays(user.id);
+			await this.accountUpdateService.publishToFollowersAndSharedInboxAndRelays(user.id);
 		}
 	}
 
@@ -119,7 +119,7 @@ export class UserSuspendService {
 		);
 
 		if (this.userEntityService.isLocalUser(user)) {
-			this.accountUpdateService.publishToFollowersAndSharedInboxAndRelays(user.id);
+			await this.accountUpdateService.publishToFollowersAndSharedInboxAndRelays(user.id);
 		}
 	}
 

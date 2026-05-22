@@ -669,12 +669,12 @@ export class ApPersonService implements OnModuleInit {
 		if (exist.isRemoteSuspended === false && person.suspended === true) {
 			// リモートサーバーでアカウントが凍結された
 			this.logger.info(`Remote User Suspended: acct=${exist.username}@${exist.host} id=${exist.id} uri=${exist.uri}`);
-			this.userSuspendService.suspendFromRemote({ id: exist.id, host: exist.host });
+			await this.userSuspendService.suspendFromRemote({ id: exist.id, host: exist.host });
 		}
 		if (exist.isRemoteSuspended === true && person.suspended === false) {
 			// リモートサーバーでアカウントが解凍された
 			this.logger.info(`Remote User Unsuspended: acct=${exist.username}@${exist.host} id=${exist.id} uri=${exist.uri}`);
-			this.userSuspendService.unsuspendFromRemote({ id: exist.id, host: exist.host });
+			await this.userSuspendService.unsuspendFromRemote({ id: exist.id, host: exist.host });
 		}
 		//#endregion
 
