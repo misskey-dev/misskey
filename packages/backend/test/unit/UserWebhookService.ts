@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { afterEach, beforeEach, describe, expect, jest } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, test, beforeAll, afterAll, vi } from 'vitest';
+import type { Mocked } from 'vitest';
 import { Test, TestingModule } from '@nestjs/testing';
 import { randomString } from '../utils.js';
 import { MiUser } from '@/models/User.js';
@@ -25,7 +26,7 @@ describe('UserWebhookService', () => {
 	let usersRepository: UsersRepository;
 	let userWebhooksRepository: WebhooksRepository;
 	let idService: IdService;
-	let queueService: jest.Mocked<QueueService>;
+	let queueService: Mocked<QueueService>;
 
 	// --------------------------------------------------------------------------------------
 
@@ -70,7 +71,7 @@ describe('UserWebhookService', () => {
 					LoggerService,
 					GlobalEventService,
 					{
-						provide: QueueService, useFactory: () => ({ userWebhookDeliver: jest.fn() }),
+						provide: QueueService, useFactory: () => ({ userWebhookDeliver: vi.fn() }),
 					},
 				],
 			})
@@ -81,7 +82,7 @@ describe('UserWebhookService', () => {
 
 		service = app.get(UserWebhookService);
 		idService = app.get(IdService);
-		queueService = app.get(QueueService) as jest.Mocked<QueueService>;
+		queueService = app.get(QueueService) as Mocked<QueueService>;
 
 		app.enableShutdownHooks();
 	}

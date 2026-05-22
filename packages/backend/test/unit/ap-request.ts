@@ -4,6 +4,7 @@
  */
 
 import * as assert from 'assert';
+import { describe, expect, test } from 'vitest';
 
 import { assertActivityMatchesUrl, FetchAllowSoftFailMask } from '@/core/activitypub/misc/check-against-url.js';
 import { IObject } from '@/core/activitypub/type.js';

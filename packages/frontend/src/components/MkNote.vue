@@ -263,7 +263,7 @@ const emit = defineEmits<{
 
 const inTimeline = inject<boolean>('inTimeline', false);
 const tl_withSensitive = inject<Ref<boolean>>('tl_withSensitive', ref(true));
-const inChannel = inject('inChannel', null);
+const inChannel = inject(DI.inChannel, null);
 const currentClip = inject<Ref<Misskey.entities.Clip> | null>('currentClip', null);
 
 let note = deepClone(props.note);
@@ -650,23 +650,35 @@ async function showRenoteMenu() {
 		};
 	}
 
-	const renoteDetailsMenu: MenuItem = {
+	const renoteDetailsMenu: MenuItem[] = [{
 		type: 'link',
 		text: i18n.ts.renoteDetails,
 		icon: 'ti ti-info-circle',
 		to: notePage(note),
-	};
+	}];
+
+	if (
+		props.note.channelId != null &&
+		(inChannel == null || props.note.channelId !== inChannel.value)
+	) {
+		renoteDetailsMenu.push({
+			type: 'link',
+			text: i18n.ts.viewRenotedChannel,
+			icon: 'ti ti-device-tv',
+			to: `/channels/${props.note.channelId}`,
+		});
+	}
 
 	if (isMyRenote) {
 		os.popupMenu([
-			renoteDetailsMenu,
+			...renoteDetailsMenu,
 			getCopyNoteLinkMenu(note, i18n.ts.copyLinkRenote),
 			{ type: 'divider' },
 			getUnrenote(),
 		], renoteTime.value);
 	} else {
 		os.popupMenu([
-			renoteDetailsMenu,
+			...renoteDetailsMenu,
 			getCopyNoteLinkMenu(note, i18n.ts.copyLinkRenote),
 			{ type: 'divider' },
 			getAbuseNoteMenu(note, i18n.ts.reportAbuseRenote),

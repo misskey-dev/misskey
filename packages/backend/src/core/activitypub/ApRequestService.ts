@@ -67,7 +67,7 @@ export async function createSignedGet(args: { level: string; key: PrivateKey; ur
 	const result = await signAsDraftToRequest(
 		request,
 		args.key,
-		['(request-target)', 'date', 'host', 'accept'],
+		['(request-target)', 'date', 'host'],
 	);
 
 	return {

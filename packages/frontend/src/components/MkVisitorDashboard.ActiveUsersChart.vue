@@ -15,9 +15,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { onMounted, useTemplateRef, ref, nextTick } from 'vue';
 import { Chart } from 'chart.js';
-import gradient from 'chartjs-plugin-gradient';
 import tinycolor from 'tinycolor2';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import { themeManager } from '@/theme.js';
 import { store } from '@/store.js';
 import { useChartTooltip } from '@/composables/use-chart-tooltip.js';
 import { chartVLine } from '@/utility/chart-vline.js';
@@ -61,8 +61,7 @@ async function renderChart() {
 
 	const vLineColor = store.s.darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
 
-	const computedStyle = getComputedStyle(window.document.documentElement);
-	const accent = tinycolor(computedStyle.getPropertyValue('--MI_THEME-accent')).toHexString();
+	const accent = tinycolor(themeManager.currentCompiledTheme!.accent).toHexString();
 
 	const colorRead = accent;
 	const colorWrite = '#2ecc71';

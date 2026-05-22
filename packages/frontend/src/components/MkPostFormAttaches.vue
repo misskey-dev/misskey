@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				tabindex="0"
 				@click="showFileMenu(item, $event)"
 				@keydown.space.enter="showFileMenu(item, $event)"
-				@contextmenu.prevent="showFileMenu(item, $event)"
+				@contextmenu.prevent.stop="showFileMenu(item, $event)"
 			>
 				<!-- pointer-eventsをnoneにしておかないとiOSなどでドラッグしたときに画像の方に判定が持ってかれる -->
 				<MkDriveFileThumbnail style="pointer-events: none;" :data-id="item.id" :class="$style.thumbnail" :file="item" fit="cover"/>

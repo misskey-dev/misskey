@@ -4881,6 +4881,10 @@ export interface Locale extends ILocale {
      */
     "unnotifyNotes": string;
     /**
+     * 投稿通知を設定したユーザー
+     */
+    "notifyUsers": string;
+    /**
      * 認証
      */
     "authentication": string;
@@ -5647,6 +5651,18 @@ export interface Locale extends ILocale {
      * 設定項目はありません
      */
     "nothingToConfigure": string;
+    /**
+     * リノート先のチャンネルを見る
+     */
+    "viewRenotedChannel": string;
+    /**
+     * テーマのプレビュー中
+     */
+    "previewingTheme": string;
+    /**
+     * 元に戻す
+     */
+    "previewingThemeRestore": string;
     "_imageEditing": {
         "_vars": {
             /**
@@ -8173,6 +8189,10 @@ export interface Locale extends ILocale {
              * 翻訳機能の利用
              */
             "canUseTranslator": string;
+            /**
+             * チャンネルの作成
+             */
+            "canCreateChannel": string;
             /**
              * アイコンデコレーションの最大取付個数
              */
@@ -13109,25 +13129,17 @@ export interface Locale extends ILocale {
              */
             "centerY": string;
             /**
-             * スムージング
+             * 密度
              */
-            "zoomLinesSmoothing": string;
+            "density": string;
             /**
-             * スムージングと集中線の幅の設定は併用できません。
+             * 線の影の太さ
              */
-            "zoomLinesSmoothingDescription": string;
-            /**
-             * 集中線の幅
-             */
-            "zoomLinesThreshold": string;
+            "zoomLinesOutlineThickness": string;
             /**
              * 中心径
              */
             "zoomLinesMaskSize": string;
-            /**
-             * 黒色にする
-             */
-            "zoomLinesBlack": string;
             /**
              * 円形
              */

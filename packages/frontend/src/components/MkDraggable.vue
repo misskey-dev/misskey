@@ -24,7 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 	<div
 		v-for="(item, i) in modelValue"
-		:key="item.id"
+		:key="`MkDraggableRoot:${item.id}`"
 		:class="$style.item"
 		:draggable="!manualDragStart"
 		@dragstart.stop="onDragstart($event, item)"
@@ -35,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@dragleave="onDragleave($event, item)"
 			@drop.prevent.stop="onDrop($event, item, false)"
 		></div>
-		<div style="position: relative; z-index: 0;">
+		<div :key="`MkDraggableItem:${item.id}`" style="position: relative; z-index: 0;">
 			<slot :item="item" :index="i" :dragStart="(ev) => onDragstart(ev, item)"></slot>
 		</div>
 		<div
@@ -109,6 +109,7 @@ function onDragstart(ev: DragEvent, item: T) {
 
 	// Chromeのバグで、Dragstartハンドラ内ですぐにDOMを変更する(=リアクティブなプロパティを変更する)とDragが終了してしまう
 	// SEE: https://stackoverflow.com/questions/19639969/html5-dragend-event-firing-immediately
+	// SEE: https://issues.chromium.org/issues/41150279
 	window.setTimeout(() => {
 		dragging.value = true;
 	}, 10);

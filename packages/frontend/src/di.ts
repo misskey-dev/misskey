@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { InjectionKey, Ref } from 'vue';
+import type { InjectionKey, Ref, ComputedRef } from 'vue';
 import type { PageMetadata } from '@/page.js';
 import type { Router } from '@/router.js';
 
@@ -18,4 +18,5 @@ export const DI = {
 	mfmEmojiReactCallback: Symbol() as InjectionKey<(emoji: string) => void>,
 	inModal: Symbol() as InjectionKey<boolean>,
 	inAppSearchMarkerId: Symbol() as InjectionKey<Ref<string | null>>,
+	inChannel: Symbol() as InjectionKey<ComputedRef<string | null> | null>, // 現在開いているチャンネルのID
 };

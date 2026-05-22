@@ -116,7 +116,7 @@ import * as Misskey from 'misskey-js';
 import * as Reversi from 'misskey-reversi';
 import type { MenuItem } from '@/types/menu.js';
 import { i18n } from '@/i18n.js';
-import { ensureSignin } from '@/i.js';
+import { $i } from '@/i.js';
 import { deepClone } from '@/utility/clone.js';
 import MkButton from '@/components/MkButton.vue';
 import MkRadios from '@/components/MkRadios.vue';
@@ -125,8 +125,6 @@ import MkFolder from '@/components/MkFolder.vue';
 import * as os from '@/os.js';
 import type { MkRadiosOption } from '@/components/MkRadios.vue';
 import { useRouter } from '@/router.js';
-
-const $i = ensureSignin();
 
 const router = useRouter();
 
@@ -158,13 +156,13 @@ const mapName = computed(() => {
 	return found ? found.name! : '-Custom-';
 });
 const isReady = computed(() => {
-	if (game.value.user1Id === $i.id && game.value.user1Ready) return true;
-	if (game.value.user2Id === $i.id && game.value.user2Ready) return true;
+	if (game.value.user1Id === $i?.id && game.value.user1Ready) return true;
+	if (game.value.user2Id === $i?.id && game.value.user2Ready) return true;
 	return false;
 });
 const isOpReady = computed(() => {
-	if (game.value.user1Id !== $i.id && game.value.user1Ready) return true;
-	if (game.value.user2Id !== $i.id && game.value.user2Ready) return true;
+	if (game.value.user1Id !== $i?.id && game.value.user1Ready) return true;
+	if (game.value.user2Id !== $i?.id && game.value.user2Ready) return true;
 	return false;
 });
 
@@ -241,7 +239,7 @@ function updateSettings(key: typeof Misskey.reversiUpdateKeys[number]) {
 }
 
 function onUpdateSettings<K extends typeof Misskey.reversiUpdateKeys[number]>({ userId, key, value }: { userId: string; key: K; value: Misskey.entities.ReversiGameDetailed[K]; }) {
-	if (userId === $i.id) return;
+	if (userId === $i?.id) return;
 	if (game.value[key] === value) return;
 	game.value[key] = value;
 	if (isReady.value) {

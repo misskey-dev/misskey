@@ -13,13 +13,13 @@ import { FetchInstanceMetadataService } from '@/core/FetchInstanceMetadataServic
 import InstanceChart from '@/core/chart/charts/instance.js';
 import ApRequestChart from '@/core/chart/charts/ap-request.js';
 import FederationChart from '@/core/chart/charts/federation.js';
-import { getApId } from '@/core/activitypub/type.js';
+import { getApId, isActor, isDelete } from '@/core/activitypub/type.js';
 import type { IActivity } from '@/core/activitypub/type.js';
 import { ApDbResolverService } from '@/core/activitypub/ApDbResolverService.js';
 import { StatusError } from '@/misc/status-error.js';
 import * as Acct from '@/misc/acct.js';
 import { UtilityService } from '@/core/UtilityService.js';
-import { JsonLdService } from '@/core/activitypub/JsonLdService.js';
+import { JsonLdError, JsonLdService } from '@/core/activitypub/JsonLdService.js';
 import { ApInboxService } from '@/core/activitypub/ApInboxService.js';
 import { bindThis } from '@/decorators.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
@@ -81,6 +81,30 @@ export class InboxProcessorService implements OnApplicationShutdown {
 
 		if (!this.utilityService.isFederationAllowedHost(host)) {
 			return `Blocked request: ${host}`;
+		}
+
+		if (signature != null) {
+			const keyIdLower = signature.keyId.toLowerCase();
+			if (keyIdLower.startsWith('acct:')) {
+				return `Old keyId is no longer supported. ${keyIdLower}`;
+			}
+		}
+
+		{
+			let userExistenceCheckApId: string | null = null;
+
+			// 存在しないActorに対するActorのDeleteアクティビティは無視する。
+			// actorとobjectが同じならばそれはActorに違いない
+			if (isDelete(activity) && typeof activity.object === 'object' && (isActor(activity.object) || getApId(activity.actor) === getApId(activity.object))) {
+				userExistenceCheckApId = getApId(activity.object);
+			}
+
+			if (userExistenceCheckApId != null) {
+				const user = await this.apDbResolverService.getUserFromApId(userExistenceCheckApId);
+				if (user == null) {
+					return `skip: user not found for delete activity. ${getApId(userExistenceCheckApId)}`;
+				}
+			}
 		}
 
 		// HTTP-Signature keyIdを元にDBから取得
@@ -157,25 +181,18 @@ export class InboxProcessorService implements OnApplicationShutdown {
 
 				const jsonLd = this.jsonLdService.use();
 
-				// LD-Signature検証
-				const verified = await jsonLd.verifyRsaSignature2017(activity, authUser.key.keyPem).catch(() => false);
-				if (!verified) {
-					throw new Bull.UnrecoverableError('skip: LD-Signatureの検証に失敗しました');
-				}
-
-				// ブロックしてたら中断
-				const ldHost = this.utilityService.extractDbHost(authUser.user.uri);
-				if (this.utilityService.isFederationAllowedHost(ldHost)) {
-					throw new Bull.UnrecoverableError(`Blocked request: ${ldHost}`);
-				}
-
 				// アクティビティを正規化
 				// GHSA-2vxv-pv3m-3wvj
 				delete activity.signature;
 				try {
 					activity = await jsonLd.compact(activity) as IActivity;
-				} catch (e) {
-					throw new Bull.UnrecoverableError(`skip: failed to compact activity: ${e}`);
+				} catch (error) {
+					throw new Bull.UnrecoverableError(`skip: failed to compact activity: ${error}`);
+				}
+				try {
+					jsonLd.checkForForbiddenDirectives(activity);
+				} catch (error) {
+					throw new Bull.UnrecoverableError(`skip: ${error}`);
 				}
 
 				// actorが正規化前後で一致しているか確認
@@ -193,8 +210,30 @@ export class InboxProcessorService implements OnApplicationShutdown {
 				delete compactedInfo['@context'];
 				this.logger.debug(`compacted: ${JSON.stringify(compactedInfo, null, 2)}`);
 				//#endregion
+
+				jsonLd.freeze();
+
+				// LD-Signature検証
+				let verified;
+				try {
+					verified = await jsonLd.verifyRsaSignature2017(activity, authUser.key.keyPem);
+					if (!verified) {
+						throw new Bull.UnrecoverableError('skip: LD-Signatureの検証に失敗しました');
+					}
+				} catch (error) {
+					if (error instanceof JsonLdError) {
+						throw new Bull.UnrecoverableError(`skip: encountered a JSON-LD error while verifying signature: ${error}`);
+					} else {
+						throw error;
+					}
+				}
+
+				const ldHost = this.utilityService.extractDbHost(authUser.user.uri);
+				if (!this.utilityService.isFederationAllowedHost(ldHost)) {
+					throw new Bull.UnrecoverableError(`Blocked request: ${ldHost}`);
+				}
 			} else {
-				throw new Error(`http-signature verification failed and no LD-Signature. http_signature_keyId=${signature?.keyId}`);
+				throw new Bull.UnrecoverableError(`skip: http-signature verification failed and no LD-Signature. http_signature_keyId=${signature?.keyId}`);
 			}
 		}
 
@@ -250,6 +289,12 @@ export class InboxProcessorService implements OnApplicationShutdown {
 				}
 				if (e.id === 'd450b8a9-48e4-4dab-ae36-f4db763fda7c') { // invalid Note
 					return e.message;
+				}
+				if (e.id === '9f466dab-c856-48cd-9e65-ff90ff750580') {
+					return 'note contains too many mentions';
+				}
+				if (e.id === '09d79f9e-64f1-4316-9cfa-e75c4d091574') { // Instance is blocked
+					return 'skip: blocked instance';
 				}
 			}
 			throw e;

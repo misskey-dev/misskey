@@ -5,7 +5,8 @@
 
 process.env.NODE_ENV = 'test';
 
-import { jest } from '@jest/globals';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { Mocked } from 'vitest';
 import { Test } from '@nestjs/testing';
 import type { TestingModule } from '@nestjs/testing';
 import type { MiLocalUser, MiRemoteUser } from '@/models/User.js';
@@ -13,17 +14,16 @@ import type { IActivity } from '@/core/activitypub/type.js';
 import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
 import { ApLoggerService } from '@/core/activitypub/ApLoggerService.js';
 import { QueueService } from '@/core/QueueService.js';
+import { UserKeypairService } from '@/core/UserKeypairService.js';
 import { FollowingsRepository, UsersRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
-import { UserKeypairService } from '@/core/UserKeypairService.js';
-import { AccountUpdateService } from '@/core/AccountUpdateService.js';
 
 describe('ApDeliverManagerService', () => {
 	let service: ApDeliverManagerService;
-	let followingsRepository: jest.Mocked<FollowingsRepository>;
-	let queueService: jest.Mocked<QueueService>;
-	let apLoggerService: jest.Mocked<ApLoggerService>;
+	let followingsRepository: Mocked<FollowingsRepository>;
+	let queueService: Mocked<QueueService>;
+	let apLoggerService: Mocked<ApLoggerService>;
 
 	const mockLocalUser: MiLocalUser = {
 		id: 'local-user-id',
@@ -60,45 +60,36 @@ describe('ApDeliverManagerService', () => {
 			providers: [
 				ApDeliverManagerService,
 				{
-					provide: ApDeliverManagerService.name,
-					useExisting: ApDeliverManagerService,
-				},
-				{
 					provide: DI.followingsRepository,
 					useValue: {
-						find: jest.fn(),
-						createQueryBuilder: jest.fn(),
+						find: vi.fn(),
+						createQueryBuilder: vi.fn(),
+					},
+				},
+				{
+					provide: UserKeypairService,
+					useValue: {
+						refreshAndPrepareEd25519KeyPair: vi.fn(),
+						getLocalUserPrivateKeyPem: vi.fn(),
 					},
 				},
 				{
 					provide: QueueService,
 					useValue: {
-						deliverMany: jest.fn(),
+						deliverMany: vi.fn(),
 					},
 				},
 				{
 					provide: ApLoggerService,
 					useValue: {
 						logger: {
-							createSubLogger: jest.fn().mockReturnValue({
-								info: jest.fn(),
-								warn: jest.fn(),
-								error: jest.fn(),
+							createSubLogger: vi.fn().mockReturnValue({
+								info: vi.fn(),
+								warn: vi.fn(),
+								error: vi.fn(),
 							}),
 						},
 					},
-				},
-				{
-					provide: UserKeypairService,
-					useFactory: () => ({
-						refreshAndPrepareEd25519KeyPair: jest.fn(),
-					}),
-				},
-				{
-					provide: AccountUpdateService.name,
-					useFactory: () => ({
-						publishToFollowers: jest.fn(),
-					}),
 				},
 			],
 		}).compile();
@@ -107,12 +98,10 @@ describe('ApDeliverManagerService', () => {
 		followingsRepository = module.get(DI.followingsRepository);
 		queueService = module.get(QueueService);
 		apLoggerService = module.get(ApLoggerService);
-
-		await service.onModuleInit();
 	});
 
 	beforeEach(() => {
-		jest.clearAllMocks();
+		vi.clearAllMocks();
 	});
 
 	describe('deliverToFollowers', () => {
@@ -321,11 +310,11 @@ describe('ApDeliverManagerService', () => {
 	describe('AllKnowingSharedInbox recipe', () => {
 		it('should collect all shared inboxes when using AllKnowingSharedInbox', async () => {
 			const mockQueryBuilder = {
-				select: jest.fn().mockReturnThis(),
-				where: jest.fn().mockReturnThis(),
-				orWhere: jest.fn().mockReturnThis(),
-				distinct: jest.fn().mockReturnThis(),
-				getRawMany: jest.fn<any>().mockResolvedValue([
+				select: vi.fn().mockReturnThis(),
+				where: vi.fn().mockReturnThis(),
+				orWhere: vi.fn().mockReturnThis(),
+				distinct: vi.fn().mockReturnThis(),
+				getRawMany: vi.fn<any>().mockResolvedValue([
 					{ f_followerSharedInbox: 'https://shared1.example.com/inbox' },
 					{ f_followeeSharedInbox: 'https://shared2.example.com/inbox' },
 				]),
@@ -358,7 +347,7 @@ describe('ApDeliverManagerService (SQL)', () => {
 	let service: ApDeliverManagerService;
 	let followingsRepository: FollowingsRepository;
 	let usersRepository: UsersRepository;
-	let queueService: jest.Mocked<QueueService>;
+	let queueService: Mocked<QueueService>;
 
 	async function createUser(data: Partial<{ id: string; username: string; host: string | null; inbox: string | null; sharedInbox: string | null; isSuspended: boolean }> = {}): Promise<any> {
 		const user = {
@@ -413,52 +402,42 @@ describe('ApDeliverManagerService (SQL)', () => {
 			providers: [
 				ApDeliverManagerService,
 				{
-					provide: ApDeliverManagerService.name,
-					useExisting: ApDeliverManagerService,
+					provide: UserKeypairService,
+					useValue: {
+						refreshAndPrepareEd25519KeyPair: vi.fn(),
+						getLocalUserPrivateKeyPem: vi.fn(),
+					},
 				},
 				{
 					provide: QueueService,
 					useFactory: () => ({
-						deliverMany: jest.fn(),
+						deliverMany: vi.fn(),
 					}),
 				},
 				{
 					provide: ApLoggerService,
 					useValue: {
 						logger: {
-							createSubLogger: jest.fn().mockReturnValue({
-								info: jest.fn(),
-								warn: jest.fn(),
-								error: jest.fn(),
+							createSubLogger: vi.fn().mockReturnValue({
+								info: vi.fn(),
+								warn: vi.fn(),
+								error: vi.fn(),
 							}),
 						},
 					},
-				},
-				{
-					provide: UserKeypairService,
-					useFactory: () => ({
-						refreshAndPrepareEd25519KeyPair: jest.fn(),
-					}),
-				},
-				{
-					provide: AccountUpdateService.name,
-					useFactory: () => ({
-						publishToFollowers: jest.fn(),
-					}),
 				},
 			],
 		}).compile();
 
 		app.enableShutdownHooks();
-		// Reset mocks
-		jest.clearAllMocks();
 
 		service = app.get<ApDeliverManagerService>(ApDeliverManagerService);
 		followingsRepository = app.get<FollowingsRepository>(DI.followingsRepository);
 		usersRepository = app.get<UsersRepository>(DI.usersRepository);
-		queueService = app.get<QueueService>(QueueService) as jest.Mocked<QueueService>;
+		queueService = app.get<QueueService>(QueueService) as Mocked<QueueService>;
 
-		await service.onModuleInit();
+		// Reset mocks
+		vi.clearAllMocks();
 	});
 
 	afterEach(async () => {
@@ -656,4 +635,3 @@ describe('ApDeliverManagerService (SQL)', () => {
 		});
 	});
 });
-

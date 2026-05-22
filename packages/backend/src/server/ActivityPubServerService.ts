@@ -31,9 +31,9 @@ import { isQuote, isRenote } from '@/misc/is-renote.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import Logger from '@/logger.js';
 import * as Acct from '@/misc/acct.js';
+import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
 import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions, FastifyBodyParser } from 'fastify';
 import type { FindOptionsWhere } from 'typeorm';
-import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
 
 const ACTIVITY_JSON = 'application/activity+json; charset=utf-8';
 const LD_JSON = 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8';
@@ -161,6 +161,12 @@ export class ActivityPubServerService {
 			}
 
 			this.inboxLogger.warn('signature header parsing failed and LD signature not found', { err });
+			reply.code(401);
+			return;
+		}
+
+		if (request.headers.host !== this.config.host) {
+			this.inboxLogger.warn('host verification failed');
 			reply.code(401);
 			return;
 		}
