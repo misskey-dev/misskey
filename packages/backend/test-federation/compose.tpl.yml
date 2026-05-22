@@ -43,8 +43,8 @@ services:
         target: /misskey/packages/backend/migration
         read_only: true
       - type: bind
-        source: ../ormconfig.ts
-        target: /misskey/packages/backend/ormconfig.ts
+        source: ../ormconfig.js
+        target: /misskey/packages/backend/ormconfig.js
         read_only: true
       - type: bind
         source: ../package.json
