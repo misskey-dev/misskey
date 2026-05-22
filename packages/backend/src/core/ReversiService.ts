@@ -295,7 +295,12 @@ export class ReversiService implements OnApplicationShutdown, OnModuleInit {
 			bw: 'random',
 			isLlotheo: false,
 			noIrregularRules: options.noIrregularRules,
-		}, { relations: ['user1', 'user2'] });
+		}, {
+			relations: {
+				user1: true,
+				user2: true,
+			},
+		});
 		this.cacheGame(game);
 
 		const packed = await this.reversiGameEntityService.packDetail(game);
