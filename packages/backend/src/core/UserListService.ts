@@ -49,7 +49,10 @@ export class UserListService implements OnApplicationShutdown, OnModuleInit {
 		this.membersCache = new RedisKVCache<Set<string>>(this.redisClient, 'userListMembers', {
 			lifetime: 1000 * 60 * 30, // 30m
 			memoryCacheLifetime: 1000 * 60, // 1m
-			fetcher: (key) => this.userListMembershipsRepository.find({ where: { userListId: key }, select: { userId: true }}).then(xs => new Set(xs.map(x => x.userId))),
+			fetcher: (key) => this.userListMembershipsRepository.find({
+				where: { userListId: key },
+				select: { userId: true },
+			}).then(xs => new Set(xs.map(x => x.userId))),
 			toRedisConverter: (value) => JSON.stringify(Array.from(value)),
 			fromRedisConverter: (value) => new Set(JSON.parse(value)),
 		});
