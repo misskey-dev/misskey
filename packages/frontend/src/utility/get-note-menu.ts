@@ -530,9 +530,7 @@ export function getNoteMenu(props: {
 				danger: true,
 				action: del,
 			});
-		}
-
-		if (props.currentAntenna != null && appearNote.userId !== $i.id && !$i.isModerator && !$i.isAdmin) {
+		} else if (props.currentAntenna != null) {
 			menuItems.push({ type: 'divider' });
 			menuItems.push({
 				icon: 'ti ti-trash',
