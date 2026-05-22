@@ -8,6 +8,7 @@ import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { mainRouter } from '@/router.js';
+import { acct } from '@/filters/user';
 
 export async function lookup(router?: Router) {
 	const _router = router ?? mainRouter;
@@ -38,7 +39,7 @@ export async function lookup(router?: Router) {
 		if (res.type === 'User') {
 			_router.push('/@:acct/:page?', {
 				params: {
-					acct: `${res.object.username}@${res.object.host}`,
+					acct: acct(res.object),
 				},
 			});
 		} else if (res.type === 'Note') {

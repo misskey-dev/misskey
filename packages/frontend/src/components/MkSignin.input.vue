@@ -69,19 +69,21 @@ import MkInfo from '@/components/MkInfo.vue';
 const props = withDefaults(defineProps<{
 	message?: string,
 	openOnRemote?: OpenOnRemoteOptions,
+	initialUsername?: string;
 }>(), {
 	message: '',
 	openOnRemote: undefined,
+	initialUsername: undefined,
 });
 
 const emit = defineEmits<{
 	(ev: 'usernameSubmitted', v: string): void;
-	(ev: 'passkeyClick', v: MouseEvent): void;
+	(ev: 'passkeyClick', v: PointerEvent): void;
 }>();
 
 const host = toUnicode(configHost);
 
-const username = ref('');
+const username = ref(props.initialUsername ?? '');
 
 //#region Open on remote
 function openRemote(options: OpenOnRemoteOptions, targetHost?: string): void {

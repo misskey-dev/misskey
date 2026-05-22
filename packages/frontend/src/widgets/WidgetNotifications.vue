@@ -17,8 +17,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { defineAsyncComponent } from 'vue';
-import type { notificationTypes as notificationTypes_typeReferenceOnly } from '@@/js/const.js';
 import { useWidgetPropsManager } from './widget.js';
+import type { notificationTypes as notificationTypes_typeReferenceOnly } from 'misskey-js';
 import type { WidgetComponentEmits, WidgetComponentExpose, WidgetComponentProps } from './widget.js';
 import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import MkContainer from '@/components/MkContainer.vue';
@@ -31,10 +31,12 @@ const name = 'notifications';
 const widgetPropsDef = {
 	showHeader: {
 		type: 'boolean',
+		label: i18n.ts._widgetOptions.showHeader,
 		default: true,
 	},
 	height: {
 		type: 'number',
+		label: i18n.ts.height,
 		default: 300,
 	},
 	excludeTypes: {

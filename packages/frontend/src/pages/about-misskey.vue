@@ -15,7 +15,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div class="version">v{{ version }}</div>
 						<span v-for="emoji in easterEggEmojis" :key="emoji.id" class="emoji" :data-physics-x="emoji.left" :data-physics-y="emoji.top" :class="{ _physics_circle_: !emoji.emoji.startsWith(':') }">
 							<MkCustomEmoji v-if="emoji.emoji[0] === ':'" class="emoji" :name="emoji.emoji" :normal="true" :noStyle="true" :fallbackToImage="true"/>
-							<MkEmoji v-else class="emoji" :emoji="emoji.emoji" :normal="true" :noStyle="true"/>
+							<MkEmoji v-else class="emoji unicode" :emoji="emoji.emoji" :normal="true" :noStyle="true"/>
 						</span>
 					</div>
 					<button v-if="thereIsTreasure" class="_button treasure" @click="getTreasure"><img src="/fluent-emoji/1f3c6.png" class="treasureImg"></button>
@@ -138,6 +138,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { nextTick, onBeforeUnmount, ref, useTemplateRef, computed } from 'vue';
 import { host, version } from '@@/js/config.js';
+import { DEFAULT_EMOJIS } from '@@/js/const.js';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -295,6 +296,12 @@ const patronsWithIcon = [{
 }, {
 	name: 'しゃどかの',
 	icon: 'https://assets.misskey-hub.net/patrons/5bec3c6b402942619e03f7a2ae76d69e.jpg',
+}, {
+	name: '大賀愛一郎',
+	icon: 'https://assets.misskey-hub.net/patrons/c701a797d1df4125970f25d3052250ac.jpg',
+}, {
+	name: '西野マチ',
+	icon: 'https://assets.misskey-hub.net/patrons/962ff1d2f3d040ed8973b62bbff84391.jpg',
 }];
 
 const patrons = [
@@ -410,6 +417,7 @@ const patrons = [
 	'ほとラズ',
 	'スズカケン',
 	'蒼井よみこ',
+	'忍猫',
 ];
 
 const thereIsTreasure = ref($i && !claimedAchievements.includes('foundTreasure'));
@@ -426,7 +434,12 @@ const containerEl = useTemplateRef('containerEl');
 
 function iconLoaded() {
 	if (containerEl.value == null) return;
-	const emojis = prefer.s.emojiPalettes[0].emojis;
+	const emojis = prefer.s.emojiPalettes[0]?.emojis ?? [];
+
+	if (emojis.length < DEFAULT_EMOJIS.length) {
+		emojis.push(...DEFAULT_EMOJIS.slice(0, DEFAULT_EMOJIS.length - emojis.length));
+	}
+
 	const containerWidth = containerEl.value.offsetWidth;
 	for (let i = 0; i < 32; i++) {
 		easterEggEmojis.value.push({
@@ -551,6 +564,10 @@ definePage(() => ({
 					pointer-events: none;
 					font-size: 24px;
 					width: 24px;
+
+					&.unicode {
+						height: 24px;
+					}
 				}
 			}
 		}

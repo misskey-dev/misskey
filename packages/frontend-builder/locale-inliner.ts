@@ -10,7 +10,7 @@ import { collectModifications } from './locale-inliner/collect-modifications.js'
 import { applyWithLocale } from './locale-inliner/apply-with-locale.js';
 import { blankLogger } from './logger.js';
 import type { Logger } from './logger.js';
-import type { Locale } from '../../locales/index.js';
+import type { Locale } from 'i18n';
 import type { Manifest as ViteManifest } from 'vite';
 
 export class LocaleInliner {
@@ -58,7 +58,7 @@ export class LocaleInliner {
 
 	collectsModifications() {
 		for (const chunk of this.chunks) {
-			if (!chunk.sourceCode) {
+			if (chunk.sourceCode == null) {
 				throw new Error(`Source code for ${chunk.fileName} is not loaded.`);
 			}
 			const fileLogger = this.logger.prefixed(`${chunk.fileName} (${chunk.chunkName}): `);
@@ -80,7 +80,7 @@ export class LocaleInliner {
 		await fs.mkdir(path.join(this.outputDir, localeName), { recursive: true });
 		const localeLogger = localeName === 'ja-JP' ? this.logger : blankLogger; // we want to log for single locale only
 		for (const chunk of this.chunks) {
-			if (!chunk.sourceCode || !chunk.modifications) {
+			if (chunk.sourceCode == null || !chunk.modifications) {
 				throw new Error(`Source code or modifications for ${chunk.fileName} is not available.`);
 			}
 			const fileLogger = localeLogger.prefixed(`${chunk.fileName} (${chunk.chunkName}): `);

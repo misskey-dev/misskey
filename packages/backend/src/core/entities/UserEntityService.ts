@@ -51,6 +51,7 @@ import { ChatService } from '@/core/ChatService.js';
 import type { OnModuleInit } from '@nestjs/common';
 import type { NoteEntityService } from './NoteEntityService.js';
 import type { PageEntityService } from './PageEntityService.js';
+import { toArray } from '@/misc/prelude/array.js';
 
 const Ajv = _Ajv.default;
 const ajv = new Ajv();
@@ -471,8 +472,8 @@ export class UserEntityService implements OnModuleInit {
 			(profile.followersVisibility === 'followers') && (relation && relation.isFollowing) ? user.followersCount :
 			null;
 
-		const isModerator = isMe && isDetailed ? this.roleService.isModerator(user) : null;
-		const isAdmin = isMe && isDetailed ? this.roleService.isAdministrator(user) : null;
+		const isModerator = isMe && isDetailed ? this.roleService.isModerator(user) : undefined;
+		const isAdmin = isMe && isDetailed ? this.roleService.isAdministrator(user) : undefined;
 		const unreadAnnouncements = isMe && isDetailed ?
 			(await this.announcementService.getUnreadAnnouncements(user)).map((announcement) => ({
 				createdAt: this.idService.parse(announcement.id).date.toISOString(),
@@ -481,6 +482,7 @@ export class UserEntityService implements OnModuleInit {
 
 		const notificationsInfo = isMe && isDetailed ? await this.getNotificationsInfo(user.id) : null;
 
+		// TODO: 例えば avatarUrl: true など間違った型を設定しても型エラーにならないのをどうにかする(ジェネリクス使わない方法で実装するしかなさそう？)
 		const packed = {
 			id: user.id,
 			name: user.name,
@@ -511,8 +513,8 @@ export class UserEntityService implements OnModuleInit {
 			} : undefined) : undefined,
 			emojis: this.customEmojiService.populateEmojis(user.emojis, user.host),
 			onlineStatus: this.getOnlineStatus(user),
-			// パフォーマンス上の理由でローカルユーザーのみ
-			badgeRoles: user.host == null ? this.roleService.getUserBadgeRoles(user.id).then((rs) => rs
+			// パフォーマンス上の理由で、明示的に設定しない場合はローカルユーザーのみ取得
+			badgeRoles: (this.meta.showRoleBadgesOfRemoteUsers || user.host == null) ? this.roleService.getUserBadgeRoles(user.id).then((rs) => rs
 				.filter((r) => r.isPublic || iAmModerator)
 				.sort((a, b) => b.displayOrder - a.displayOrder)
 				.map((r) => ({
@@ -526,10 +528,10 @@ export class UserEntityService implements OnModuleInit {
 				url: profile!.url,
 				uri: user.uri,
 				movedTo: user.movedToUri ? this.apPersonService.resolvePerson(user.movedToUri).then(user => user.id).catch(() => null) : null,
-				alsoKnownAs: user.alsoKnownAs
-					? Promise.all(user.alsoKnownAs.map(uri => this.apPersonService.fetchPerson(uri).then(user => user?.id).catch(() => null)))
-						.then(xs => xs.length === 0 ? null : xs.filter(x => x != null))
-					: null,
+				alsoKnownAs: user.alsoKnownAs ?
+					Promise.all(toArray(user.alsoKnownAs).map(uri => this.apPersonService.fetchPerson(uri).then(user => user?.id).catch(() => null)))
+				.then(xs => xs.length === 0 ? null : xs.filter(x => x != null))
+				: null,
 				createdAt: this.idService.parse(user.id).date.toISOString(),
 				updatedAt: user.updatedAt ? user.updatedAt.toISOString() : null,
 				lastFetchedAt: user.lastFetchedAt ? user.lastFetchedAt.toISOString() : null,
@@ -719,7 +721,7 @@ export class UserEntityService implements OnModuleInit {
 				me,
 				{
 					...options,
-					userProfile: profilesMap.get(u.id),
+					userProfile: profilesMap?.get(u.id),
 					userRelations: userRelations,
 					userMemos: userMemos,
 					pinNotes: pinNotes,

@@ -29,6 +29,7 @@ import { prefer } from '@/preferences.js';
 import { updateCurrentAccountPartial } from '@/accounts.js';
 import { migrateOldSettings } from '@/pref-migrate.js';
 import { unisonReload } from '@/utility/unison-reload.js';
+import { isBirthday } from '@/utility/is-birthday.js';
 
 export async function mainBoot() {
 	const { isClientUpdated, lastVersion } = await common(async () => {
@@ -144,12 +145,8 @@ export async function mainBoot() {
 		const m = now.getMonth() + 1;
 		const d = now.getDate();
 
-		if ($i.birthday) {
-			const bm = parseInt($i.birthday.split('-')[1]);
-			const bd = parseInt($i.birthday.split('-')[2]);
-			if (m === bm && d === bd) {
-				claimAchievement('loggedInOnBirthday');
-			}
+		if (isBirthday($i, now)) {
+			claimAchievement('loggedInOnBirthday');
 		}
 
 		if (m === 1 && d === 1) {
@@ -303,13 +300,6 @@ export async function mainBoot() {
 			});
 		}
 
-		if ('Notification' in window) {
-			// 許可を得ていなかったらリクエスト
-			if (Notification.permission === 'default') {
-				Notification.requestPermission();
-			}
-		}
-
 		if (store.s.realtimeMode) {
 			const stream = useStream();
 
@@ -366,11 +356,6 @@ export async function mainBoot() {
 					hasUnreadNotification: true,
 					unreadNotificationsCount,
 				});
-			});
-
-			main.on('unreadAntenna', () => {
-				updateCurrentAccountPartial({ hasUnreadAntenna: true });
-				sound.playMisskeySfx('antenna');
 			});
 
 			main.on('newChatMessage', () => {

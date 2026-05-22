@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #suffix>{{ getSoundTypeName(sounds[type].type) }}</template>
 					<Suspense>
 						<template #default>
-							<XSound :type="sounds[type].type" :volume="sounds[type].volume" :fileId="sounds[type].fileId" :fileUrl="sounds[type].fileUrl" @update="(res) => updated(type, res)"/>
+							<XSound :def="sounds[type]" @update="(res) => updated(type, res)"/>
 						</template>
 						<template #fallback>
 							<MkLoading/>
@@ -100,11 +100,14 @@ function getSoundTypeName(f: SoundType): string {
 	}
 }
 
-async function updated(type: keyof typeof sounds.value, sound) {
-	const v: SoundStore = {
+async function updated(type: keyof typeof sounds.value, sound: { type: SoundType; fileId?: string; fileUrl?: string; volume: number; }) {
+	const v: SoundStore = sound.type === '_driveFile_' ? {
 		type: sound.type,
-		fileId: sound.fileId,
-		fileUrl: sound.fileUrl,
+		fileId: sound.fileId!,
+		fileUrl: sound.fileUrl!,
+		volume: sound.volume,
+	} : {
+		type: sound.type,
 		volume: sound.volume,
 	};
 

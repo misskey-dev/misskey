@@ -14,13 +14,30 @@ import { popup, alert } from '@/os.js';
 const start = isTouchUsing ? 'touchstart' : 'mouseenter';
 const end = isTouchUsing ? 'touchend' : 'mouseleave';
 
-export default {
-	mounted(el: HTMLElement, binding, vn) {
+type TooltipDirectiveState = {
+	text: string | null | undefined;
+	_close: null | (() => void);
+	showTimer: number | null;
+	hideTimer: number | null;
+	checkTimer: number | null;
+	show: () => void;
+	close: () => void;
+};
+
+interface TooltipDirectiveElement extends HTMLElement {
+	_tooltipDirective_?: TooltipDirectiveState;
+}
+
+type TooltipDirectiveModifiers = 'left' | 'right' | 'top' | 'bottom' | 'mfm' | 'noDelay';
+type TooltipDirectiveArg = 'dialog';
+
+export const tooltipDirective = {
+	mounted(el, binding) {
 		const delay = binding.modifiers.noDelay ? 0 : 100;
 
-		const self = (el as any)._tooltipDirective_ = {} as any;
+		const self = el._tooltipDirective_ = {} as TooltipDirectiveState;
 
-		self.text = binding.value as string;
+		self.text = binding.value;
 		self._close = null;
 		self.showTimer = null;
 		self.hideTimer = null;
@@ -28,7 +45,7 @@ export default {
 
 		self.close = () => {
 			if (self._close) {
-				window.clearInterval(self.checkTimer);
+				if (self.checkTimer) window.clearInterval(self.checkTimer);
 				self._close();
 				self._close = null;
 			}
@@ -36,6 +53,7 @@ export default {
 
 		if (binding.arg === 'dialog') {
 			el.addEventListener('click', (ev) => {
+				if (binding.value == null) return;
 				ev.preventDefault();
 				ev.stopPropagation();
 				alert({
@@ -72,8 +90,8 @@ export default {
 		});
 
 		el.addEventListener(start, (ev) => {
-			window.clearTimeout(self.showTimer);
-			window.clearTimeout(self.hideTimer);
+			if (self.showTimer) window.clearTimeout(self.showTimer);
+			if (self.hideTimer) window.clearTimeout(self.hideTimer);
 			if (delay === 0) {
 				self.show();
 			} else {
@@ -82,8 +100,8 @@ export default {
 		}, { passive: true });
 
 		el.addEventListener(end, () => {
-			window.clearTimeout(self.showTimer);
-			window.clearTimeout(self.hideTimer);
+			if (self.showTimer) window.clearTimeout(self.showTimer);
+			if (self.hideTimer) window.clearTimeout(self.hideTimer);
 			if (delay === 0) {
 				self.close();
 			} else {
@@ -92,18 +110,23 @@ export default {
 		}, { passive: true });
 
 		el.addEventListener('click', () => {
-			window.clearTimeout(self.showTimer);
+			if (self.showTimer) window.clearTimeout(self.showTimer);
 			self.close();
 		});
 	},
 
 	updated(el, binding) {
 		const self = el._tooltipDirective_;
+		if (self == null) return;
 		self.text = binding.value as string;
 	},
 
-	unmounted(el, binding, vn) {
+	unmounted(el) {
 		const self = el._tooltipDirective_;
-		window.clearInterval(self.checkTimer);
+		if (self == null) return;
+		if (self.showTimer) window.clearTimeout(self.showTimer);
+		if (self.hideTimer) window.clearTimeout(self.hideTimer);
+		if (self.checkTimer) window.clearTimeout(self.checkTimer);
+		self.close();
 	},
-} as Directive;
+} as Directive<TooltipDirectiveElement, string | null | undefined, TooltipDirectiveModifiers, TooltipDirectiveArg>;

@@ -72,8 +72,7 @@ export const packedMetaLiteSchema = {
 			optional: false, nullable: true,
 		},
 		clientOptions: {
-			type: 'object',
-			optional: false, nullable: false,
+			ref: 'MetaClientOptions',
 		},
 		disableRegistration: {
 			type: 'boolean',
@@ -194,6 +193,10 @@ export const packedMetaLiteSchema = {
 					dayOfWeek: {
 						type: 'integer',
 						optional: false, nullable: false,
+					},
+					isSensitive: {
+						type: 'boolean',
+						optional: true, nullable: false,
 					},
 				},
 			},
@@ -392,4 +395,24 @@ export const packedMetaDetailedSchema = {
 			ref: 'MetaDetailedOnly',
 		},
 	],
+} as const;
+
+export const packedMetaClientOptionsSchema = {
+	type: 'object',
+	optional: false, nullable: false,
+	properties: {
+		entrancePageStyle: {
+			type: 'string',
+			enum: ['classic', 'simple'],
+			optional: false, nullable: false,
+		},
+		showTimelineForVisitor: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		showActivitiesForVisitor: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+	},
 } as const;

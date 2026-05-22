@@ -38,3 +38,14 @@ export function initShaderProgram(gl: WebGL2RenderingContext, vsSource: string, 
 
 	return shaderProgram;
 }
+
+export function createTexture(gl: WebGL2RenderingContext): WebGLTexture {
+	const texture = gl.createTexture();
+	gl.bindTexture(gl.TEXTURE_2D, texture);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.MIRRORED_REPEAT);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.MIRRORED_REPEAT);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+	gl.bindTexture(gl.TEXTURE_2D, null);
+	return texture;
+}

@@ -67,7 +67,7 @@ function unmute() {
 	});
 }
 
-function onClick(ev: MouseEvent) {
+function onClick(ev: PointerEvent) {
 	if (props.menu) {
 		const menuItems: MenuItem[] = [];
 

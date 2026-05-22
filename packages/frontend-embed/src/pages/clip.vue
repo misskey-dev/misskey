@@ -84,7 +84,7 @@ const pagination = computed(() => ({
 
 const notesEl = useTemplateRef('notesEl');
 
-function top(ev: MouseEvent) {
+function top(ev: PointerEvent) {
 	const target = ev.target as HTMLElement | null;
 	if (target && isLink(target)) return;
 

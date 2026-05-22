@@ -26,7 +26,7 @@ export class MiDriveFolder {
 	})
 	public userId: MiUser['id'] | null;
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(() => MiUser, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()
@@ -40,7 +40,7 @@ export class MiDriveFolder {
 	})
 	public parentId: MiDriveFolder['id'] | null;
 
-	@ManyToOne(type => MiDriveFolder, {
+	@ManyToOne(() => MiDriveFolder, {
 		onDelete: 'SET NULL',
 	})
 	@JoinColumn()

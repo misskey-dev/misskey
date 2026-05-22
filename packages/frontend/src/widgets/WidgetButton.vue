@@ -20,22 +20,26 @@ import * as os from '@/os.js';
 import { aiScriptReadline, createAiScriptEnv } from '@/aiscript/api.js';
 import { $i } from '@/i.js';
 import MkButton from '@/components/MkButton.vue';
+import { i18n } from '@/i18n.js';
 
 const name = 'button';
 
 const widgetPropsDef = {
 	label: {
 		type: 'string',
+		label: i18n.ts.label,
 		default: 'BUTTON',
 	},
 	colored: {
 		type: 'boolean',
+		label: i18n.ts._widgetOptions._button.colored,
 		default: true,
 	},
 	script: {
 		type: 'string',
+		label: i18n.ts.script,
 		multiline: true,
-		default: 'Mk:dialog("hello" "world")',
+		default: 'Mk:dialog("hello", "world")',
 	},
 } satisfies FormWithDefault;
 
@@ -52,7 +56,7 @@ const { widgetProps, configure } = useWidgetPropsManager(name,
 
 const parser = new Parser();
 
-const run = async () => {
+async function run() {
 	const aiscript = new Interpreter(createAiScriptEnv({
 		storageKey: 'widget',
 		token: $i?.token,
@@ -84,7 +88,7 @@ const run = async () => {
 			text: err instanceof Error ? err.message : String(err),
 		});
 	}
-};
+}
 
 defineExpose<WidgetComponentExpose>({
 	name,

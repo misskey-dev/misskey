@@ -39,7 +39,7 @@ export class AvatarDecorationService implements OnApplicationShutdown {
 		const obj = JSON.parse(data);
 
 		if (obj.channel === 'internal') {
-			const { type, body } = obj.message as GlobalEvents['internal']['payload'];
+			const { type, body: _ } = obj.message as GlobalEvents['internal']['payload'];
 			switch (type) {
 				case 'avatarDecorationCreated':
 				case 'avatarDecorationUpdated':
