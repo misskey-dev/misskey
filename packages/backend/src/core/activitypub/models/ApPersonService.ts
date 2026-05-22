@@ -691,14 +691,14 @@ export class ApPersonService implements OnModuleInit {
 					userId: exist.id,
 					keyPem: key.publicKeyPem,
 				})));
-			}
 
-			this.userPublickeysRepository.delete({
-				keyId: Not(In(Array.from(publicKeys.keys()))),
-				userId: exist.id,
-			}).catch(err => {
-				this.logger.error('something happened while deleting remote user public keys:', { userId: exist.id, err });
-			});
+				this.userPublickeysRepository.delete({
+					keyId: Not(In(Array.from(publicKeys.keys()))),
+					userId: exist.id,
+				}).catch(err => {
+					this.logger.error('something happened while deleting remote user public keys:', { userId: exist.id, err });
+				});
+			}
 		} catch (err) {
 			this.logger.error('something happened while updating remote user public keys:', { userId: exist.id, err });
 		}

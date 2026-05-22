@@ -65,8 +65,7 @@ export class InboxProcessorService implements OnApplicationShutdown {
 			'version' in job.data.signature ? job.data.signature.value : job.data.signature
 			: null;
 		if (Array.isArray(signature)) {
-			// RFC 9401はsignatureが配列になるが、とりあえずエラーにする
-			throw new Error('signature is array');
+			throw new Bull.UnrecoverableError('skip: RFC9421 HTTP Message Signatures are not supported for inbox verification yet');
 		}
 		let activity = job.data.activity;
 		let actorUri = getApId(activity.actor);

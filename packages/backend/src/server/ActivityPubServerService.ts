@@ -141,7 +141,7 @@ export class ActivityPubServerService {
 
 		try {
 			signature = parseRequestSignature(request.raw, {
-				requiredInputs: {
+				requiredComponents: {
 					draft: ['(request-target)', 'digest', 'host', 'date'],
 				},
 				clockSkew: {
@@ -149,6 +149,9 @@ export class ActivityPubServerService {
 					delay: 300_000,
 				},
 			});
+			if (signature.version === 'rfc9421') {
+				throw new Error('RFC9421 HTTP Message Signatures are not supported for inbox verification yet');
+			}
 
 			this.inboxLogger.debug('signature header parsed', { signature, body: request.body });
 		} catch (err) {
