@@ -64,7 +64,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div :class="$style.text">
 						<span v-if="appearNote.isHidden" style="opacity: 0.5">({{ i18n.ts.private }})</span>
 						<MkA v-if="appearNote.replyId" :class="$style.replyIcon" :to="`/notes/${appearNote.replyId}`"><i class="ti ti-arrow-back-up"></i></MkA>
-						<span v-if="note.deletedAt" style="opacity: 0.5">({{ i18n.ts.deletedNote }})</span>
+						<span v-if="appearNote.deletedAt" style="opacity: 0.5">({{ i18n.ts.deletedNote }})</span>
 						<Mfm
 							v-else-if="appearNote.text"
 							:parsedNodes="parsed"
@@ -111,7 +111,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkA v-if="appearNote.channel && !inChannel" :class="$style.channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
 			</div>
 			<MkReactionsViewer
-				v-if="appearNote.reactionAcceptance !== 'likeOnly'"
+				v-if="!appearNote.deletedAt && appearNote.reactionAcceptance !== 'likeOnly'"
 				style="margin-top: 6px;"
 				:reactions="$appearNote.reactions"
 				:reactionEmojis="$appearNote.reactionEmojis"
@@ -155,12 +155,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<button v-else :class="$style.footerButton" class="_button" disabled>
 					<i class="ti ti-ban"></i>
 				</button>
-				<button v-if="prefer.s.showClipButtonInNoteFooter" ref="clipButton" :class="$style.footerButton" class="_button" @mousedown.prevent="clip()">
-					<i class="ti ti-paperclip"></i>
-				</button>
-				<button v-else-if="appearNote.deletedAt" :class="$style.noteFooterButton" class="_button" disabled>
-					<i class="ti ti-ban"></i>
-				</button>
+				<template v-if="prefer.s.showClipButtonInNoteFooter">
+					<button v-if="!appearNote.deletedAt" ref="clipButton" :class="$style.footerButton" class="_button" @mousedown.prevent="clip()">
+						<i class="ti ti-paperclip"></i>
+					</button>
+					<button v-else :class="$style.noteFooterButton" class="_button" disabled>
+						<i class="ti ti-ban"></i>
+					</button>
+				</template>
 				<button ref="menuButton" :class="$style.footerButton" class="_button" @mousedown.prevent="showMenu()">
 					<i class="ti ti-dots"></i>
 				</button>
