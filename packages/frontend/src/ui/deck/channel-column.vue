@@ -9,12 +9,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<i class="ti ti-device-tv"></i><span style="margin-left: 8px;">{{ column.name || column.timelineNameCache || i18n.ts._deck._columns.channel }}</span>
 	</template>
 
-	<template v-if="column.channelId">
-		<div style="padding: 8px; text-align: center;">
+	<div v-if="column.channelId" class="_gaps_s">
+		<MkPostForm v-if="$i && channel != null && prefer.r.showFixedPostFormInChannel.value" :channel="channel" :class="$style.postForm" fixed :autofocus="deviceKind === 'desktop'"/>
+		<div v-else style="padding: 10px 8px 0; text-align: center;">
 			<MkButton primary gradate rounded inline small @click="post"><i class="ti ti-pencil"></i></MkButton>
 		</div>
 		<MkStreamingNotesTimeline ref="timeline" src="channel" :channel="column.channelId"/>
-	</template>
+	</div>
 </XColumn>
 </template>
 
@@ -27,11 +28,15 @@ import type { MenuItem } from '@/types/menu.js';
 import type { SoundStore } from '@/preferences/def.js';
 import { updateColumn } from '@/deck.js';
 import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
+import MkPostForm from '@/components/MkPostForm.vue';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { favoritedChannelsCache } from '@/cache.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
+import { prefer } from '@/preferences.js';
+import { $i } from '@/i.js';
 import { i18n } from '@/i18n.js';
+import { deviceKind } from '@/utility/device-kind.js';
 import { soundSettingsButton } from '@/ui/deck/tl-note-notification.js';
 
 const props = defineProps<{
@@ -43,14 +48,17 @@ const timeline = useTemplateRef('timeline');
 const channel = shallowRef<Misskey.entities.Channel>();
 const soundSetting = ref<SoundStore>(props.column.soundSetting ?? { type: null, volume: 1 });
 
-onMounted(() => {
-	if (props.column.channelId == null) {
+watch(() => props.column.channelId, (newChannelId) => {
+	if (newChannelId == null) {
 		setChannel();
-	} else if (!props.column.name && props.column.channelId) {
-		misskeyApi('channels/show', { channelId: props.column.channelId })
-			.then(value => updateColumn(props.column.id, { timelineNameCache: value.name }));
+	} else if (channel.value == null || channel.value.id !== newChannelId) {
+		misskeyApi('channels/show', { channelId: newChannelId })
+			.then(value => {
+				updateColumn(props.column.id, { timelineNameCache: value.name });
+				channel.value = value;
+			});
 	}
-});
+}, { immediate: true });
 
 watch(soundSetting, v => {
 	updateColumn(props.column.id, { soundSetting: v });
@@ -96,3 +104,10 @@ const menu: MenuItem[] = [{
 	action: () => soundSettingsButton(soundSetting),
 }];
 </script>
+
+<style module>
+.postForm {
+	background: var(--MI_THEME-panel);
+	overflow: clip;
+}
+</style>
