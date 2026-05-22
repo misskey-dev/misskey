@@ -14,8 +14,12 @@ export class FollowingIsFollowerSuspendedCopySuspendedState1752410900000 {
 				FROM "user"
 				WHERE "following"."followerId" = "user"."id"
 			`);
-    }
+	}
 
-    async down(queryRunner) {
-    }
+	async down(queryRunner) {
+		await queryRunner.query(`
+			UPDATE "following"
+			SET "isFollowerSuspended" = false
+		`);
+	}
 }
