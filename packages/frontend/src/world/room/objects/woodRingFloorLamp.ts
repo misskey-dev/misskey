@@ -7,37 +7,33 @@ import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 import { cm, WORLD_SCALE } from '@/world/utility.js';
+import { i18n } from '@/i18n.js';
 
 export const woodRingFloorLamp = defineObject({
 	id: 'woodRingFloorLamp',
-	name: 'Wood Ring Floor Lamp',
+	name: i18n.ts._miRoom._objects.woodRingFloorLamp,
 	options: {
 		schema: {
 			shadeMat: {
 				type: 'material',
-				label: 'Shade material',
+				label: i18n.ts._miRoom._objects._woodRingFloorLamp.shadeMat,
 			},
 			bodyMat: {
 				type: 'material',
-				label: 'Body material',
+				label: i18n.ts._miRoom._objects._woodRingFloorLamp.bodyMat,
 			},
-			lightColor: {
-				type: 'color',
-				label: 'Light color',
-			},
-			lightBrightness: {
-				type: 'range',
-				label: 'Light brightness',
-				min: 0,
-				max: 1,
-				step: 0.01,
+			light: {
+				type: 'light',
+				label: i18n.ts._miRoom._objects._woodRingFloorLamp.light,
 			},
 		},
 		default: {
 			shadeMat: { color: [0.21, 0.04, 0], metallic: 0, roughness: 0.5 },
 			bodyMat: { color: [0.05, 0.05, 0.05], metallic: 1, roughness: 0.5 },
-			lightColor: [1, 0.5, 0.2],
-			lightBrightness: 0.5,
+			light: {
+				color: [1, 0.5, 0.2],
+				brightness: 0.5,
+			},
 		},
 	},
 	placement: 'floor',
@@ -74,13 +70,11 @@ export const woodRingFloorLamp = defineObject({
 		}
 
 		const applyLightColor = () => {
-			const [r, g, b] = options.lightColor;
 			for (const light of lights) {
-				light.diffuse = new BABYLON.Color3(r, g, b);
+				light.diffuse = new BABYLON.Color3(options.light.color[0], options.light.color[1], options.light.color[2]);
 			}
 			for (const lamp of lamps) {
-				const emissive = lamp.material as BABYLON.PBRMaterial;
-				emissive.emissiveColor = new BABYLON.Color3(r, g, b);
+				(lamp.material as BABYLON.PBRMaterial).emissiveColor = new BABYLON.Color3(options.light.color[0], options.light.color[1], options.light.color[2]);
 			}
 		};
 
@@ -88,12 +82,11 @@ export const woodRingFloorLamp = defineObject({
 
 		const applyLightBrightness = () => {
 			for (const light of lights) {
-				light.intensity = 1 * options.lightBrightness * WORLD_SCALE * WORLD_SCALE;
+				light.intensity = 1 * options.light.brightness * WORLD_SCALE * WORLD_SCALE;
 				light.range = cm(200) * getLightRangeFactorByGraphicsQuality(graphicsQuality);
 			}
 			for (const lamp of lamps) {
-				const emissive = lamp.material as BABYLON.PBRMaterial;
-				emissive.emissiveIntensity = options.lightBrightness * 10;
+				(lamp.material as BABYLON.PBRMaterial).emissiveIntensity = options.light.brightness * 10;
 			}
 		};
 

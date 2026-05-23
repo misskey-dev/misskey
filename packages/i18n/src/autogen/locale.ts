@@ -13366,5 +13366,29 @@ export interface Locale extends ILocale {
          * 粗さ
          */
         "material_roughness": string;
+        /**
+         * 明るさ
+         */
+        "light_brightness": string;
+        "_objects": {
+            /**
+             * リングシェードフロアランプ
+             */
+            "woodRingFloorLamp": string;
+            "_woodRingFloorLamp": {
+                /**
+                 * シェードの素材
+                 */
+                "shadeMat": string;
+                /**
+                 * 本体の素材
+                 */
+                "bodyMat": string;
+                /**
+                 * 照明
+                 */
+                "light": string;
+            };
+        };
     };
 }

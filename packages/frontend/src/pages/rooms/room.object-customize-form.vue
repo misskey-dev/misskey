@@ -24,6 +24,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label>{{ i18n.ts._miRoom.material_roughness }}</template>
 				</MkRange>
 			</div>
+			<div v-else-if="s.type === 'light'" class="_gaps_s">
+				<!-- debounce or throttleしないとカラーピッカー上で高速でなぞったときになぜか無限ループになる。ワーカーとの間でラグがあるため、少し前の値がまたmodelValueとしてフィードバックされてしまうためだと思われる -->
+				<MkInput :modelValue="getHex(options[k].color)" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) updateLightColor(k, c); }">
+					<template #label>{{ i18n.ts.color }}</template>
+				</MkInput>
+				<MkRange :continuousUpdate="true" :min="0" :max="1" :step="0.1" :modelValue="options[k].brightness" @update:modelValue="v => updateLightBrightness(k, v)">
+					<template #label>{{ i18n.ts._miRoom.light_brightness }}</template>
+				</MkRange>
+			</div>
 			<div v-else-if="s.type === 'boolean'">
 				<MkSwitch :modelValue="options[k]" @update:modelValue="v => emit('update', k, v)"></MkSwitch>
 			</div>
@@ -132,6 +141,14 @@ function updateMaterialMetallic(k: string, metallic: number) {
 
 function updateMaterialRoughness(k: string, roughness: number) {
 	emit('update', k, { ...props.options[k], roughness });
+}
+
+function updateLightColor(k: string, color: { r: number; g: number; b: number }) {
+	emit('update', k, { ...props.options[k], color });
+}
+
+function updateLightBrightness(k: string, brightness: number) {
+	emit('update', k, { ...props.options[k], brightness });
 }
 </script>
 

@@ -3582,3 +3582,11 @@ _miRoom:
   imageFit_stretch: "引き伸ばす"
   material_metallic: "光沢"
   material_roughness: "粗さ"
+  light_brightness: "明るさ"
+
+  _objects:
+    woodRingFloorLamp: "リングシェードフロアランプ"
+    _woodRingFloorLamp:
+      shadeMat: "シェードの素材"
+      bodyMat: "本体の素材"
+      light: "照明"
