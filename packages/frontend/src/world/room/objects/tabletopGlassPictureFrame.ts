@@ -50,6 +50,7 @@ export const tabletopGlassPictureFrame = defineObject({
 		const frameMesh = model.findMesh('__X_FRAME__');
 		const pinMeshes = model.findMeshes('__X_PIN__');
 		const pictureMaterial = model.findMaterial('__X_PICTURE__');
+		pictureMaterial.albedoColor = new BABYLON.Color3(1, 1, 1);
 
 		const textureManager = createTextureManager(pictureMesh, () => {
 			const targetWidth = remap(options.width, 0, 1, 2, 76); // 最小値(値を0にした場合)でのサイズは2cmで、最大値(値を1にした場合)でのサイズは76cmなので。比率の計算だから単位はなんでもいいけど、とにかく0が0にならない点を考慮させる必要がある

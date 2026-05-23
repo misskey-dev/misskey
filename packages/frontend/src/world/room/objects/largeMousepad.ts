@@ -28,6 +28,7 @@ export const largeMousepad = defineObject({
 	createInstance: async ({ scene, options, model }) => {
 		const padMesh = model.findMesh('__X_PAD__');
 		const padMaterial = model.findMaterial('__X_PAD__');
+		padMaterial.albedoColor = new BABYLON.Color3(1, 1, 1);
 
 		const textureManager = createTextureManager(padMesh, () => 70 / 30, scene);
 

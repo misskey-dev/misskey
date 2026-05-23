@@ -46,6 +46,7 @@ export const wallCanvas = defineObject({
 		canvasMesh.rotationQuaternion = null;
 
 		const canvasMaterial = model.findMaterial('__X_CANVAS__');
+		canvasMaterial.albedoColor = new BABYLON.Color3(1, 1, 1);
 
 		const textureManager = createTextureManager(canvasMesh, () => {
 			const targetWidth = options.width;

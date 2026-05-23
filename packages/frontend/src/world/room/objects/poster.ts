@@ -50,6 +50,7 @@ export const poster = defineObject({
 		pictureMesh.rotationQuaternion = null;
 
 		const pictureMaterial = model.findMaterial('__X_PICTURE__');
+		pictureMaterial.albedoColor = new BABYLON.Color3(1, 1, 1);
 
 		const pinMeshes = model.findMeshes('__X_PIN__');
 

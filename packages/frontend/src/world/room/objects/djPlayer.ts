@@ -22,12 +22,15 @@ export const djPlayer = defineObject({
 			image: {
 				type: 'image',
 				label: 'Image',
-				presets: [],
+				presets: [{
+					label: 'Waveform',
+					value: 'waveform',
+				}],
 			},
 		},
 		default: {
 			screenBrightness: 0.5,
-			image: { type: null },
+			image: { type: 'waveform' },
 		},
 	},
 	placement: 'top',
@@ -36,7 +39,7 @@ export const djPlayer = defineObject({
 	createInstance: async ({ model, options, scene }) => {
 		const screenMesh = model.findMesh('__X_SCREEN__');
 		const screenMaterial = model.findMaterial('__X_SCREEN__');
-		const defaultScreenTexture = screenMaterial.emissiveTexture;
+		screenMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
 
 		normalizeUvToSquare(screenMesh);
 
@@ -54,6 +57,8 @@ export const djPlayer = defineObject({
 			let url: string | null = null;
 			if (options.image.type === '_custom_') {
 				url = options.image.custom?.url ?? null;
+			} else if (options.image.type === 'waveform') {
+				url = '/client-assets/room/objects/dj-player/textures/display-waveform.png';
 			}
 			return textureManager.change(url, options.image.fit).then((tex) => {
 				screenMaterial.emissiveTexture = tex;

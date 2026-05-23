@@ -91,6 +91,7 @@ export const tabletopPictureFrame = defineObject({
 		pictureMesh.rotationQuaternion = null;
 
 		const pictureMaterial = model.findMaterial('__X_PICTURE__');
+		pictureMaterial.albedoColor = new BABYLON.Color3(1, 1, 1);
 
 		const textureManager = createTextureManager(pictureMesh, () => {
 			const targetWidth = options.width * (1 - options.matHThickness);

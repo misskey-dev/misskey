@@ -71,7 +71,7 @@ export const laptopPc = defineObject({
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 		const bezelMaterial = model.findMaterial('__X_BEZEL__');
 		const screenMaterial = model.findMaterial('__X_SCREEN__');
-
+		screenMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
 		screenMaterial.ambientColor = new BABYLON.Color3(0, 0, 0);
 		screenMaterial.albedoColor = new BABYLON.Color3(0, 0, 0);
 

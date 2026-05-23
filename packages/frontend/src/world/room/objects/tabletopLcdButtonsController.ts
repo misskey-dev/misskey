@@ -42,7 +42,7 @@ export const tabletopLcdButtonsController = defineObject({
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 		const screenMesh = model.findMesh('__X_SCREEN__');
 		const screenMaterial = model.findMaterial('__X_SCREEN__');
-		const defaultScreenTexture = screenMaterial.emissiveTexture;
+		screenMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
 
 		normalizeUvToSquare(screenMesh);
 

@@ -54,6 +54,7 @@ export const tapestry = defineObject({
 		const ropeMesh = model.findMesh('__X_ROPE__');
 
 		const pictureMaterial = model.findMaterial('__X_PICTURE__');
+		pictureMaterial.albedoColor = new BABYLON.Color3(1, 1, 1);
 
 		const textureManager = createTextureManager(pictureMesh, () => {
 			const targetWidth = remap(options.width, 0, 1, 2, 100); // 最小値(値を0にした場合)でのサイズは2cmで、最大値(値を1にした場合)でのサイズは100cmなので。比率の計算だから単位はなんでもいいけど、とにかく0が0にならない点を考慮させる必要がある
