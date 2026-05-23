@@ -14,7 +14,16 @@ export const cardboardBox = defineObject({
 			variation: {
 				type: 'enum',
 				label: 'Variation',
-				enum: ['default', 'mikan', 'aizon'],
+				enum: [{
+					label: 'Default',
+					value: 'default',
+				}, {
+					label: 'Mikan',
+					value: 'mikan',
+				}, {
+					label: 'Aizon',
+					value: 'aizon',
+				}],
 			},
 		},
 		default: {
