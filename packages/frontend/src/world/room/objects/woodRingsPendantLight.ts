@@ -25,16 +25,9 @@ export const woodRingsPendantLight = defineObject({
 				type: 'color',
 				label: 'Body color',
 			},
-			lightColor: {
-				type: 'color',
-				label: 'Light color',
-			},
-			lightBrightness: {
-				type: 'range',
-				label: 'Light brightness',
-				min: 0,
-				max: 1,
-				step: 0.01,
+			light: {
+				type: 'light',
+				label: 'Light',
 			},
 			length: {
 				type: 'range',
@@ -47,8 +40,10 @@ export const woodRingsPendantLight = defineObject({
 		default: {
 			shadeColor: [0.21, 0.04, 0],
 			bodyColor: [0.05, 0.05, 0.05],
-			lightColor: [1, 0.5, 0.2],
-			lightBrightness: 0.5,
+			light: {
+				color: [1, 0.5, 0.2],
+				brightness: 0.5,
+			},
 			length: 0.2,
 		},
 	},
@@ -86,23 +81,17 @@ export const woodRingsPendantLight = defineObject({
 		//const flare03 = new BABYLON.LensFlare(0.15, -1.5, new BABYLON.Color3(...options.lightColor), '/client-assets/world/lensflare.png', lensFlareSystem);
 		//const flare04 = new BABYLON.LensFlare(0.3, -2, new BABYLON.Color3(...options.lightColor), '/client-assets/world/lensflare.png', lensFlareSystem);
 
-		const applyLightColor = () => {
-			const [r, g, b] = options.lightColor;
+		const applyLight = () => {
+			const [r, g, b] = options.light.color;
 			light.diffuse = new BABYLON.Color3(r, g, b);
-			const emissive = lamp.material as BABYLON.PBRMaterial;
-			emissive.emissiveColor = new BABYLON.Color3(r, g, b);
-		};
-
-		applyLightColor();
-
-		const applyLightBrightness = () => {
-			light.intensity = 2 * options.lightBrightness * WORLD_SCALE * WORLD_SCALE;
+			light.intensity = 2 * options.light.brightness * WORLD_SCALE * WORLD_SCALE;
 			light.range = cm(200) * getLightRangeFactorByGraphicsQuality(graphicsQuality);
 			const emissive = lamp.material as BABYLON.PBRMaterial;
-			emissive.emissiveIntensity = options.lightBrightness * 20;
+			emissive.emissiveColor = new BABYLON.Color3(r, g, b);
+			emissive.emissiveIntensity = options.light.brightness * 20;
 		};
 
-		applyLightBrightness();
+		applyLight();
 
 		const mainNode = model.findTransformNode('__X_MAIN__');
 		const codeMesh = model.findMesh('__X_CODE__');
@@ -120,8 +109,7 @@ export const woodRingsPendantLight = defineObject({
 				switch (k) {
 					case 'shadeColor': applyShadeColor(); break;
 					case 'bodyColor': applyBodyColor(); break;
-					case 'lightColor': applyLightColor(); break;
-					case 'lightBrightness': applyLightBrightness(); break;
+					case 'light': applyLight(); break;
 					case 'length': applyLength(); break;
 				}
 			},

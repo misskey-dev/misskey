@@ -69,35 +69,27 @@ export const woodRingFloorLamp = defineObject({
 			lights.push(light);
 		}
 
-		const applyLightColor = () => {
+		const applyLight = () => {
 			for (const light of lights) {
 				light.diffuse = new BABYLON.Color3(options.light.color[0], options.light.color[1], options.light.color[2]);
-			}
-			for (const lamp of lamps) {
-				(lamp.material as BABYLON.PBRMaterial).emissiveColor = new BABYLON.Color3(options.light.color[0], options.light.color[1], options.light.color[2]);
-			}
-		};
-
-		applyLightColor();
-
-		const applyLightBrightness = () => {
-			for (const light of lights) {
 				light.intensity = 1 * options.light.brightness * WORLD_SCALE * WORLD_SCALE;
 				light.range = cm(200) * getLightRangeFactorByGraphicsQuality(graphicsQuality);
 			}
 			for (const lamp of lamps) {
+				(lamp.material as BABYLON.PBRMaterial).emissiveColor = new BABYLON.Color3(options.light.color[0], options.light.color[1], options.light.color[2]);
 				(lamp.material as BABYLON.PBRMaterial).emissiveIntensity = options.light.brightness * 10;
 			}
 		};
 
-		applyLightBrightness();
+		applyLight();
 
 		return {
 			onOptionsUpdated: ([k, v]) => {
-				applyShadeColor();
-				applyBodyColor();
-				applyLightColor();
-				applyLightBrightness();
+				switch (k) {
+					case 'shadeMat': applyShadeColor(); break;
+					case 'bodyMat': applyBodyColor(); break;
+					case 'light': applyLight(); break;
+				}
 			},
 			interactions: {},
 			dispose: () => {

@@ -17,16 +17,9 @@ export const ductRailSpotLights = defineObject({
 				type: 'color',
 				label: 'Body color',
 			},
-			lightColor: {
-				type: 'color',
-				label: 'Light color',
-			},
-			lightBrightness: {
-				type: 'range',
-				label: 'Light brightness',
-				min: 0,
-				max: 1,
-				step: 0.01,
+			light: {
+				type: 'light',
+				label: 'Light',
 			},
 			angleV: {
 				type: 'range',
@@ -45,8 +38,10 @@ export const ductRailSpotLights = defineObject({
 		},
 		default: {
 			bodyColor: [0.05, 0.05, 0.05],
-			lightColor: [1, 0.5, 0.2],
-			lightBrightness: 0.2,
+			light: {
+				color: [1, 0.5, 0.2],
+				brightness: 0.2,
+			},
 			angleV: 0.75,
 			angleH: 0.5,
 		},
@@ -73,31 +68,21 @@ export const ductRailSpotLights = defineObject({
 			lights.push(light);
 		}
 
-		const applyLightColor = () => {
-			const [r, g, b] = options.lightColor;
+		const applyLight = () => {
+			const [r, g, b] = options.light.color;
 			for (const light of lights) {
 				light.diffuse = new BABYLON.Color3(r, g, b);
+				light.intensity = 5 * options.light.brightness * WORLD_SCALE * WORLD_SCALE;
+				light.range = remap(options.light.brightness, 0, 1, cm(200), cm(400)) * getLightRangeFactorByGraphicsQuality(graphicsQuality);
 			}
 			for (const lamp of lamps) {
 				const emissive = lamp.material as BABYLON.PBRMaterial;
 				emissive.emissiveColor = new BABYLON.Color3(r, g, b);
+				emissive.emissiveIntensity = options.light.brightness * 100;
 			}
 		};
 
-		applyLightColor();
-
-		const applyLightBrightness = () => {
-			for (const light of lights) {
-				light.intensity = 5 * options.lightBrightness * WORLD_SCALE * WORLD_SCALE;
-				light.range = remap(options.lightBrightness, 0, 1, cm(200), cm(400)) * getLightRangeFactorByGraphicsQuality(graphicsQuality);
-			}
-			for (const lamp of lamps) {
-				const emissive = lamp.material as BABYLON.PBRMaterial;
-				emissive.emissiveIntensity = options.lightBrightness * 100;
-			}
-		};
-
-		applyLightBrightness();
+		applyLight();
 
 		const shades = model.findMeshes('__X_SHADE__');
 
@@ -117,8 +102,7 @@ export const ductRailSpotLights = defineObject({
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
 					case 'bodyColor': applyBodyColor(); break;
-					case 'lightColor': applyLightColor(); break;
-					case 'lightBrightness': applyLightBrightness(); break;
+					case 'light': applyLight(); break;
 					case 'angleV':
 					case 'angleH':
 						applyAngle();

@@ -17,16 +17,9 @@ export const wallMountSpotLight = defineObject({
 				type: 'color',
 				label: 'Body color',
 			},
-			lightColor: {
-				type: 'color',
-				label: 'Light color',
-			},
-			lightBrightness: {
-				type: 'range',
-				label: 'Light brightness',
-				min: 0,
-				max: 1,
-				step: 0.01,
+			light: {
+				type: 'light',
+				label: 'Light',
 			},
 			angleV: {
 				type: 'range',
@@ -45,8 +38,10 @@ export const wallMountSpotLight = defineObject({
 		},
 		default: {
 			bodyColor: [0.05, 0.05, 0.05],
-			lightColor: [1, 0.5, 0.2],
-			lightBrightness: 0.5,
+			light: {
+				color: [1, 0.5, 0.2],
+				brightness: 0.5,
+			},
 			angleV: 0.1,
 			angleH: 0.5,
 		},
@@ -72,23 +67,17 @@ export const wallMountSpotLight = defineObject({
 		light.radius = cm(5);
 		if (lc != null) lc.addLight(light);
 
-		const applyLightColor = () => {
-			const [r, g, b] = options.lightColor;
+		const applyLight = () => {
+			const [r, g, b] = options.light.color;
 			light.diffuse = new BABYLON.Color3(r, g, b);
-			const emissive = lamp.material as BABYLON.PBRMaterial;
-			emissive.emissiveColor = new BABYLON.Color3(r, g, b);
-		};
-
-		applyLightColor();
-
-		const applyLightBrightness = () => {
-			light.intensity = 1 * options.lightBrightness * WORLD_SCALE * WORLD_SCALE;
+			light.intensity = 1 * options.light.brightness * WORLD_SCALE * WORLD_SCALE;
 			light.range = cm(200) * getLightRangeFactorByGraphicsQuality(graphicsQuality);
 			const emissive = lamp.material as BABYLON.PBRMaterial;
-			emissive.emissiveIntensity = options.lightBrightness * 20;
+			emissive.emissiveColor = new BABYLON.Color3(r, g, b);
+			emissive.emissiveIntensity = options.light.brightness * 20;
 		};
 
-		applyLightBrightness();
+		applyLight();
 
 		const applyAngle = () => {
 			bodyMesh.rotationQuaternion = null;
@@ -104,8 +93,7 @@ export const wallMountSpotLight = defineObject({
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
 					case 'bodyColor': applyBodyColor(); break;
-					case 'lightColor': applyLightColor(); break;
-					case 'lightBrightness': applyLightBrightness(); break;
+					case 'light': applyLight(); break;
 					case 'angleV':
 					case 'angleH':
 						applyAngle();
