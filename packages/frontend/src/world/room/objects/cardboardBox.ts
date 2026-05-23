@@ -54,6 +54,13 @@ export const cardboardBox = defineObject({
 		applyVariation();
 
 		return {
+			onOptionsUpdated: ([k, v]) => {
+				switch (k) {
+					case 'variation':
+						applyVariation();
+						break;
+				}
+			},
 			interactions: {},
 			dispose: () => {
 				if (tex) {
