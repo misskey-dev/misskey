@@ -19,6 +19,7 @@ export const stormGlass = defineObject({
 	createInstance: () => {
 		return {
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

@@ -16,6 +16,7 @@ export const debugHipoly = defineObject({
 	createInstance: () => {
 		return {
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

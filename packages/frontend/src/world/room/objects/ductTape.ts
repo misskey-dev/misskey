@@ -18,6 +18,7 @@ export const ductTape = defineObject({
 	createInstance: () => {
 		return {
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

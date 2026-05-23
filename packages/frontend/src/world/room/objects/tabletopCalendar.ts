@@ -19,6 +19,7 @@ export const tabletopCalendar = defineObject({
 	createInstance: () => {
 		return {
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

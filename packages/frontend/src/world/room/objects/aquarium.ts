@@ -53,6 +53,9 @@ export const aquarium = defineObject({
 				ps.start();
 			},
 			interactions: {},
+			dispose: () => {
+				// TODO
+			},
 		};
 	},
 });

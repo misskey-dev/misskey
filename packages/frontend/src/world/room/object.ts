@@ -31,7 +31,7 @@ export type RoomObjectInstance<Options = any> = {
 	}>;
 	primaryInteraction?: string | null;
 	resetTemporaryState?: () => void;
-	dispose?: () => void;
+	dispose: () => void;
 };
 
 type NumberOptionSchema = {

@@ -18,6 +18,7 @@ export const roundRug = defineObject({
 	createInstance: () => {
 		return {
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

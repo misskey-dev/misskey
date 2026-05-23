@@ -41,6 +41,7 @@ export const monstera = defineObject({
 				}
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

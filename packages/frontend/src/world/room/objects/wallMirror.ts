@@ -85,6 +85,7 @@ export const wallMirror = defineObject({
 				}
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

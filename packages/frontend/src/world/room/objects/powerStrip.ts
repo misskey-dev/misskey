@@ -18,6 +18,7 @@ export const powerStrip = defineObject({
 	createInstance: () => {
 		return {
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

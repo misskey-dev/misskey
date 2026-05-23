@@ -41,6 +41,7 @@ export const pachira = defineObject({
 				}
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

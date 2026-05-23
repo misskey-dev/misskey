@@ -72,6 +72,7 @@ export const book = defineObject({
 				}
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

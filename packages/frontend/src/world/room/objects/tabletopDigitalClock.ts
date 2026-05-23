@@ -123,6 +123,7 @@ export const tabletopDigitalClock = defineObject({
 				}
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

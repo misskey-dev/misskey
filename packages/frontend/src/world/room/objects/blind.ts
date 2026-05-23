@@ -132,6 +132,7 @@ export const blind = defineObject({
 				applyOpeningState();
 			},
 			primaryInteraction: 'openClose',
+			dispose: () => {},
 		};
 	},
 });

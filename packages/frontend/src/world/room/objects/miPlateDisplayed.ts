@@ -18,6 +18,7 @@ export const miPlateDisplayed = defineObject({
 	createInstance: () => {
 		return {
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

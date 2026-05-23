@@ -17,6 +17,7 @@ export const twistedCubeObjet = defineObject({
 	createInstance: () => {
 		return {
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

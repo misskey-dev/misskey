@@ -19,6 +19,7 @@ export const hangingTShirt = defineObject({
 	createInstance: () => {
 		return {
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

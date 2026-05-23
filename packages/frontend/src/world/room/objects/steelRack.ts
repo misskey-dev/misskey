@@ -238,6 +238,7 @@ export const steelRack = defineObject({
 				}
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

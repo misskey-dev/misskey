@@ -71,6 +71,7 @@ const base = defineObjectClass({
 				}
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

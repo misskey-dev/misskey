@@ -48,6 +48,7 @@ export const cardboardBox = defineObject({
 				}
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

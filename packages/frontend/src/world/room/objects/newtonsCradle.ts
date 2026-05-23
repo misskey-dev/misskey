@@ -40,6 +40,7 @@ export const newtonsCradle = defineObject({
 				}
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

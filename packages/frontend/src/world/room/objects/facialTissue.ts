@@ -19,6 +19,7 @@ export const facialTissue = defineObject({
 	createInstance: () => {
 		return {
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

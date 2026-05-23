@@ -55,6 +55,7 @@ export const wallClock = defineObject({
 				applyFrameColor();
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

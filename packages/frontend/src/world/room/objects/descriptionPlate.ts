@@ -18,6 +18,7 @@ export const descriptionPlate = defineObject({
 	createInstance: () => {
 		return {
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

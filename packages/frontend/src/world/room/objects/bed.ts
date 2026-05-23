@@ -39,6 +39,7 @@ export const bed = defineObject({
 				applyColor();
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

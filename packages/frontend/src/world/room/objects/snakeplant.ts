@@ -41,6 +41,7 @@ export const snakeplant = defineObject({
 				}
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

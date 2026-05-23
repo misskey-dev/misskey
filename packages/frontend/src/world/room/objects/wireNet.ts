@@ -39,6 +39,7 @@ export const wireNet = defineObject({
 				applyBodyColor();
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

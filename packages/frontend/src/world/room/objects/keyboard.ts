@@ -54,6 +54,7 @@ export const keyboard = defineObject({
 				}
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

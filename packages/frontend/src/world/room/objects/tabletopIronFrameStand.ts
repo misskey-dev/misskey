@@ -97,6 +97,7 @@ export const tabletopIronFrameStand = defineObject({
 				}
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

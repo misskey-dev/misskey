@@ -77,6 +77,7 @@ export const hangingDuctRail = defineObject({
 				}
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

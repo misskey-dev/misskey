@@ -59,6 +59,7 @@ export const lowPartitionBar = defineObject({
 				}
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

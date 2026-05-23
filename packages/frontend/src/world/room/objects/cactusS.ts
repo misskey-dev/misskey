@@ -39,6 +39,7 @@ export const cactusS = defineObject({
 				applyPotColor();
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

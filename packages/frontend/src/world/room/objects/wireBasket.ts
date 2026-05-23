@@ -39,6 +39,7 @@ export const wireBasket = defineObject({
 				applyBodyColor();
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

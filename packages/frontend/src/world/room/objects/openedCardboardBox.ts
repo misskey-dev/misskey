@@ -16,6 +16,7 @@ export const openedCardboardBox = defineObject({
 	createInstance: () => {
 		return {
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

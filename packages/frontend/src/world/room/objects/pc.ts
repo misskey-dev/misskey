@@ -37,6 +37,7 @@ export const pc = defineObject({
 				applyColor();
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

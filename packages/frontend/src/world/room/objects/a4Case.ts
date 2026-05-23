@@ -38,6 +38,7 @@ export const a4Case = defineObject({
 				applyColor();
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

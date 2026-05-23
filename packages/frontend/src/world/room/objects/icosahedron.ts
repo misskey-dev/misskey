@@ -17,6 +17,7 @@ export const icosahedron = defineObject({
 	createInstance: () => {
 		return {
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

@@ -60,6 +60,7 @@ export const chair = defineObject({
 				},
 			},
 			primaryInteraction: 'sit',
+			dispose: () => {},
 		};
 	},
 });

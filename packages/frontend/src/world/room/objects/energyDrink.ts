@@ -18,6 +18,7 @@ export const energyDrink = defineObject({
 	createInstance: () => {
 		return {
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

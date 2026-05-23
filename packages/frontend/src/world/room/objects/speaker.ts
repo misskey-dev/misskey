@@ -52,6 +52,7 @@ export const speaker = defineObject({
 				applyInnerColor();
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

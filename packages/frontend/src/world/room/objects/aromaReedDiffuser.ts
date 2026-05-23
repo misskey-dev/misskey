@@ -52,6 +52,7 @@ export const aromaReedDiffuser = defineObject({
 				applyOilColor();
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

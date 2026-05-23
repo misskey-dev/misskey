@@ -60,6 +60,7 @@ export const speakerStand = defineObject({
 				}
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

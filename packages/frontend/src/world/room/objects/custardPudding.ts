@@ -18,6 +18,7 @@ export const custardPudding = defineObject({
 	createInstance: () => {
 		return {
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

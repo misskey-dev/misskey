@@ -17,6 +17,7 @@ export const emptyBento = defineObject({
 	createInstance: () => {
 		return {
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

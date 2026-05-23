@@ -39,6 +39,7 @@ export const colorBox = defineObject({
 				applyColor();
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

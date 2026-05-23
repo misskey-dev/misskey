@@ -158,6 +158,7 @@ export const randomBooks = defineObject({
 				}
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

@@ -18,6 +18,7 @@ export const debugMetal = defineObject({
 	createInstance: () => {
 		return {
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

@@ -85,6 +85,7 @@ export const books = defineObject({
 				applyVariation();
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

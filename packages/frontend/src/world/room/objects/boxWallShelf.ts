@@ -95,6 +95,7 @@ export const boxWallShelf = defineObject({
 				}
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

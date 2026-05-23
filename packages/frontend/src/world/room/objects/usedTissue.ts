@@ -17,6 +17,7 @@ export const usedTissue = defineObject({
 	createInstance: () => {
 		return {
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

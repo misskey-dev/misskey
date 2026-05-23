@@ -17,6 +17,7 @@ export const tetrapod = defineObject({
 	createInstance: () => {
 		return {
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

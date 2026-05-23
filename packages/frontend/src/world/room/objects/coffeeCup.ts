@@ -19,6 +19,7 @@ export const coffeeCup = defineObject({
 	createInstance: () => {
 		return {
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

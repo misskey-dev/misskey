@@ -17,6 +17,7 @@ export const rolledUpPoster = defineObject({
 	createInstance: () => {
 		return {
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

@@ -38,6 +38,7 @@ export const piano = defineObject({
 				applyBodyColor();
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

@@ -85,6 +85,7 @@ export const desk = defineObject({
 				}
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

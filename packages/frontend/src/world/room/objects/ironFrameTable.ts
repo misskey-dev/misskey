@@ -99,6 +99,7 @@ export const ironFrameTable = defineObject({
 				}
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

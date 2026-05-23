@@ -137,6 +137,9 @@ export const electronicDisplayBoard = defineObject({
 				}
 			},
 			interactions: {},
+			dispose: () => {
+				textManager.dispose();
+			},
 		};
 	},
 });

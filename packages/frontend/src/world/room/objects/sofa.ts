@@ -39,6 +39,7 @@ export const sofa = defineObject({
 				applyBodyColor();
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

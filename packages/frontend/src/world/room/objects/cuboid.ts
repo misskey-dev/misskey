@@ -82,6 +82,7 @@ export const cuboid = defineObject({
 				}
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

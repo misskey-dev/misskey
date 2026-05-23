@@ -64,6 +64,7 @@ export const issyoubin = defineObject({
 				}
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

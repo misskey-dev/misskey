@@ -18,6 +18,7 @@ export const recordPlayer = defineObject({
 	createInstance: () => {
 		return {
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

@@ -17,6 +17,7 @@ export const woodSoundAbsorbingPanel = defineObject({
 	createInstance: () => {
 		return {
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

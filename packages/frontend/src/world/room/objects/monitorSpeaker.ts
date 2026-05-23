@@ -38,6 +38,7 @@ export const monitorSpeaker = defineObject({
 				applyColor();
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

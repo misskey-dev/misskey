@@ -95,6 +95,7 @@ export const petBottle = defineObject({
 				}
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

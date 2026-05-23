@@ -19,6 +19,7 @@ export const tableSalt = defineObject({
 	createInstance: () => {
 		return {
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

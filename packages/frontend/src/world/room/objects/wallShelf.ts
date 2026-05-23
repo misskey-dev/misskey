@@ -102,6 +102,7 @@ export const wallShelf = defineObject({
 				}
 			},
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });

@@ -549,6 +549,9 @@ export class RecyvlingTextGrid {
 			await sleep(20);
 		}
 	}
+
+	public dispose() {
+	}
 }
 
 export function sleep(ms: number) {

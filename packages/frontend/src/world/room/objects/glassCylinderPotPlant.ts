@@ -19,6 +19,7 @@ export const glassCylinderPotPlant = defineObject({
 	createInstance: () => {
 		return {
 			interactions: {},
+			dispose: () => {},
 		};
 	},
 });
