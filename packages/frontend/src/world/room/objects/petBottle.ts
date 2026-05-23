@@ -14,7 +14,13 @@ export const petBottle = defineObject({
 			variation: {
 				type: 'enum',
 				label: 'Variation',
-				enum: ['mineral-water', 'green-tea'],
+				enum: [{
+					label: 'Mineral Water',
+					value: 'mineral-water',
+				}, {
+					label: 'Green Tea',
+					value: 'green-tea',
+				}],
 			},
 			withCap: {
 				type: 'boolean',

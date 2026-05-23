@@ -23,7 +23,13 @@ export const steelRack = defineObject({
 			widthAndDepthVariation: {
 				type: 'enum',
 				label: 'W x D',
-				enum: ['60-35', '90-35'],
+				enum: [{
+					label: '60 x 35',
+					value: '60-35',
+				}, {
+					label: '90 x 35',
+					value: '90-35',
+				}],
 			},
 			height: {
 				type: 'range',

@@ -14,12 +14,30 @@ export const wallShelf = defineObject({
 			style: {
 				type: 'enum',
 				label: 'Style',
-				enum: ['A', 'B', 'C', 'D'],
+				enum: [{
+					label: 'A',
+					value: 'A',
+				}, {
+					label: 'B',
+					value: 'B',
+				}, {
+					label: 'C',
+					value: 'C',
+				}, {
+					label: 'D',
+					value: 'D',
+				}],
 			},
 			boardStyle: {
 				type: 'enum',
 				label: 'Board style',
-				enum: ['color', 'wood'],
+				enum: [{
+					label: 'Wood',
+					value: 'wood',
+				}, {
+					label: 'Color',
+					value: 'color',
+				}],
 			},
 			boardColor: {
 				type: 'color',
@@ -77,8 +95,11 @@ export const wallShelf = defineObject({
 
 		return {
 			onOptionsUpdated: ([k, v]) => {
-				applyStyle();
-				applyBoardColor();
+				switch (k) {
+					case 'style': applyStyle(); break;
+					case 'boardStyle':
+					case 'boardColor': applyBoardColor(); break;
+				}
 			},
 			interactions: {},
 		};

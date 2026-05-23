@@ -59,7 +59,10 @@ type ColorOptionSchema = {
 type EnumOptionSchema = {
 	type: 'enum';
 	label: string;
-	enum: string[];
+	enum: {
+		label: string;
+		value: string | number;
+	}[];
 };
 
 type RangeOptionSchema = {
@@ -96,7 +99,7 @@ type GetRawOptionsSchemaValues<T extends OptionsSchema> = {
 	T[K] extends BooleanOptionSchema ? boolean :
 	T[K] extends StringOptionSchema ? string :
 	T[K] extends ColorOptionSchema ? [number, number, number] :
-	T[K] extends EnumOptionSchema ? T[K]['enum'][number] :
+	T[K] extends EnumOptionSchema ? T[K]['enum'][number]['value'] :
 	T[K] extends RangeOptionSchema ? number :
 	T[K] extends ImageOptionSchema ? string | null :
 	T[K] extends SeedOptionSchema ? number :
@@ -108,7 +111,7 @@ type GetConvertedOptionsSchemaValues<T extends OptionsSchema> = {
 	T[K] extends BooleanOptionSchema ? boolean :
 	T[K] extends StringOptionSchema ? string :
 	T[K] extends ColorOptionSchema ? [number, number, number] :
-	T[K] extends EnumOptionSchema ? T[K]['enum'][number] :
+	T[K] extends EnumOptionSchema ? T[K]['enum'][number]['value'] :
 	T[K] extends RangeOptionSchema ? number :
 	T[K] extends ImageOptionSchema ? { url: string; } | null :
 	T[K] extends SeedOptionSchema ? number :
@@ -121,12 +124,12 @@ export type SnapshotRenderingHelperWrapper = {
 	fixParticleSystem: (ps: BABYLON.ParticleSystem) => void;
 };
 
-export type ObjectDef<OpSc extends OptionsSchema | undefined = undefined> = {
+export type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 	id: string;
 	name: string;
 	options: {
-		schema: OpSc extends undefined ? OptionsSchema : NonNullable<OpSc>;
-		default: OpSc extends undefined ? RawOptions : GetRawOptionsSchemaValues<NonNullable<OpSc>>;
+		schema: string extends keyof OpSc ? OptionsSchema : OpSc;
+		default: string extends keyof OpSc ? RawOptions : GetRawOptionsSchemaValues<OpSc>;
 	};
 	placement: 'top' | 'side' | 'bottom' | 'wall' | 'ceiling' | 'floor';
 	hasCollisions?: boolean;
@@ -135,7 +138,7 @@ export type ObjectDef<OpSc extends OptionsSchema | undefined = undefined> = {
 	//groupingMeshes: string[]; // multi-materialなメッシュは複数のメッシュに分割されるが、それだと不便な場合に追加の親メッシュでグルーピングするための指定
 	isChair?: boolean;
 	treatLoaderResult?: (loaderResult: BABYLON.AssetContainer) => void;
-	path?: (options: OpSc extends undefined ? ConvertedOptions : Readonly<GetConvertedOptionsSchemaValues<NonNullable<OpSc>>>) => string;
+	path?: (options: string extends keyof OpSc ? ConvertedOptions : Readonly<GetConvertedOptionsSchemaValues<OpSc>>) => string;
 	createInstance: (args: {
 		scene: BABYLON.Scene;
 		// TODO: snapshot renderingの関心を隠蔽した方が綺麗かもしれない
@@ -143,7 +146,7 @@ export type ObjectDef<OpSc extends OptionsSchema | undefined = undefined> = {
 		sr: SnapshotRenderingHelperWrapper;
 		lc: BABYLON.ClusteredLightContainer | null;
 		root: BABYLON.TransformNode;
-		options: OpSc extends undefined ? ConvertedOptions : Readonly<GetConvertedOptionsSchemaValues<NonNullable<OpSc>>>;
+		options: string extends keyof OpSc ? ConvertedOptions : Readonly<GetConvertedOptionsSchemaValues<OpSc>>;
 		model: ModelManager;
 		id: string;
 		timer: Timer;
@@ -151,7 +154,7 @@ export type ObjectDef<OpSc extends OptionsSchema | undefined = undefined> = {
 		stickyMarkerMeshUpdated?: (mesh: BABYLON.Mesh) => void;
 		sitChair?: () => void;
 		reloadModel: () => void;
-	}) => RoomObjectInstance<OpSc extends undefined ? ConvertedOptions : GetConvertedOptionsSchemaValues<NonNullable<OpSc>>> | Promise<RoomObjectInstance<OpSc extends undefined ? ConvertedOptions : GetConvertedOptionsSchemaValues<NonNullable<OpSc>>>>; // TODO: createInstanceをasyncにするのではなく、別にreadyみたいなものを返させる
+	}) => RoomObjectInstance<string extends keyof OpSc ? ConvertedOptions : GetConvertedOptionsSchemaValues<OpSc>> | Promise<RoomObjectInstance<OpSc extends undefined ? ConvertedOptions : GetConvertedOptionsSchemaValues<OpSc>>>; // TODO: createInstanceをasyncにするのではなく、別にreadyみたいなものを返させる
 };
 
 export function defineObject<const OpSc extends OptionsSchema>(def: ObjectDef<OpSc>): ObjectDef<OpSc> {

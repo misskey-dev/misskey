@@ -15,7 +15,22 @@ export const books = defineObject({
 			variation: {
 				type: 'enum',
 				label: 'Variation',
-				enum: ['A', 'B', 'C', 'D', 'E'],
+				enum: [{
+					label: 'A',
+					value: 'A',
+				}, {
+					label: 'B',
+					value: 'B',
+				}, {
+					label: 'C',
+					value: 'C',
+				}, {
+					label: 'D',
+					value: 'D',
+				}, {
+					label: 'E',
+					value: 'E',
+				}],
 			},
 		},
 		default: {

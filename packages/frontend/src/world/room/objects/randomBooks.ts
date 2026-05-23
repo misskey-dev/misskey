@@ -20,7 +20,13 @@ export const randomBooks = defineObject({
 			variation: {
 				type: 'enum',
 				label: 'Variation',
-				enum: ['mix', 'mix-plain'],
+				enum: [{
+					label: 'Mix',
+					value: 'mix',
+				}, {
+					label: 'Mix (Plain)',
+					value: 'mix-plain',
+				}],
 			},
 			count: {
 				type: 'range',

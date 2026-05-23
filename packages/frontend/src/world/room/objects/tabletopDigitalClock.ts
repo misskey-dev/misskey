@@ -12,11 +12,6 @@ export const tabletopDigitalClock = defineObject({
 	name: 'Tabletop Digital Clock',
 	options: {
 		schema: {
-			bodyStyle: {
-				type: 'enum',
-				label: 'Body Style',
-				enum: ['color', 'wood'],
-			},
 			bodyColor: {
 				type: 'color',
 				label: 'Body Color',
@@ -27,7 +22,6 @@ export const tabletopDigitalClock = defineObject({
 			},
 		},
 		default: {
-			bodyStyle: 'color',
 			bodyColor: [0.45, 0.8, 0],
 			lcdColor: [1, 1, 1],
 		},
@@ -87,12 +81,8 @@ export const tabletopDigitalClock = defineObject({
 		const bodyMaterial = bodyMesh.material as BABYLON.PBRMaterial;
 
 		const applyBodyColor = () => {
-			if (options.bodyStyle === 'color') {
-				const [r, g, b] = options.bodyColor;
-				bodyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
-			} else {
-
-			}
+			const [r, g, b] = options.bodyColor;
+			bodyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
 		};
 
 		const applyLcdColor = () => {
@@ -127,10 +117,9 @@ export const tabletopDigitalClock = defineObject({
 				}, 1000);
 			},
 			onOptionsUpdated: ([k, v]) => {
-				if (k === 'bodyColor') {
-					applyBodyColor();
-				} else if (k === 'lcdColor') {
-					applyLcdColor();
+				switch (k) {
+					case 'bodyColor': applyBodyColor(); break;
+					case 'lcdColor': applyLcdColor(); break;
 				}
 			},
 			interactions: {},

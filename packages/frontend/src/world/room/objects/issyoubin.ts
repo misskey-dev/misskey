@@ -14,7 +14,13 @@ export const issyoubin = defineObject({
 			variation: {
 				type: 'enum',
 				label: 'Variation',
-				enum: ['misuki', 'ai'],
+				enum: [{
+					label: 'Misuki',
+					value: 'misuki',
+				}, {
+					label: 'AI',
+					value: 'ai',
+				}],
 			},
 		},
 		default: {
@@ -54,9 +60,7 @@ export const issyoubin = defineObject({
 		return {
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
-					case 'variation':
-						applyVariation();
-						break;
+					case 'variation': applyVariation(); break;
 				}
 			},
 			interactions: {},
