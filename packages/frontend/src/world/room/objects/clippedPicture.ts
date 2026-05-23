@@ -93,6 +93,9 @@ export const clippedPicture = defineObject({
 				}
 			},
 			interactions: {},
+			dispose: () => {
+				textureManager.dispose();
+			},
 		};
 	},
 });

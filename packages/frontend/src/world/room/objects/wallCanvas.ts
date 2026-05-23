@@ -4,7 +4,7 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../object.js';
+import { createTextureManager, defineObject } from '../object.js';
 import { createPlaneUvMapper, getPlaneUvIndexes } from '../../utility.js';
 
 export const wallCanvas = defineObject({
@@ -35,7 +35,7 @@ export const wallCanvas = defineObject({
 		default: {
 			width: 0.15,
 			height: 0.15,
-			customPicture: null,
+			image: { type: null },
 		},
 	},
 	placement: 'side',
@@ -47,60 +47,34 @@ export const wallCanvas = defineObject({
 
 		const canvasMaterial = model.findMaterial('__X_CANVAS__');
 
-		const updateUv = createPlaneUvMapper(canvasMesh);
-
-		const applyFit = () => {
-			const tex = canvasMaterial.albedoTexture;
-			if (tex == null) return;
-
-			const srcWidth = tex.getSize().width;
-			const srcHeight = tex.getSize().height;
-			const srcAspect = srcWidth / srcHeight;
+		const textureManager = createTextureManager(canvasMesh, () => {
 			const targetWidth = options.width;
 			const targetHeight = options.height;
-			const targetAspect = targetWidth / targetHeight;
-
-			updateUv(srcAspect, targetAspect, options.fit);
-
-			model.updated();
-		};
-
-		applyFit();
+			return targetWidth / targetHeight;
+		}, scene);
 
 		const applySize = () => {
 			canvasMesh.morphTargetManager!.getTargetByName('Width')!.influence = options.width;
 			canvasMesh.morphTargetManager!.getTargetByName('Height')!.influence = options.height;
 			model.updated();
 
-			applyFit();
+			textureManager.applyFit();
 		};
 
 		applySize();
 
-		const applyCustomPicture = () => new Promise<void>((resolve) => {
-			if (options.customPicture != null) {
-				canvasMaterial.unfreeze();
-				const tex = new BABYLON.Texture(options.customPicture.url, scene, false, false, undefined, () => {
-					canvasMaterial.albedoColor = new BABYLON.Color3(1, 1, 1);
-					canvasMaterial.albedoTexture = tex;
-					applyFit();
-					resolve();
-				}, (message, exception) => {
-					console.warn('Failed to load texture:', message, exception);
-					canvasMaterial.albedoColor = new BABYLON.Color3(0, 1, 0);
-					canvasMaterial.albedoTexture = null;
-					resolve();
-				});
-				tex.wrapU = BABYLON.Texture.MIRROR_ADDRESSMODE;
-				tex.wrapV = BABYLON.Texture.MIRROR_ADDRESSMODE;
-			} else {
-				canvasMaterial.albedoColor = new BABYLON.Color3(0.5, 0.5, 0.5);
-				canvasMaterial.albedoTexture = null;
-				resolve();
+		const applyImage = () => {
+			canvasMaterial.unfreeze();
+			let url: string | null = null;
+			if (options.image.type === '_custom_') {
+				url = options.image.custom?.url ?? null;
 			}
-		});
+			return textureManager.change(url, options.image.fit).then((tex) => {
+				canvasMaterial.albedoTexture = tex;
+			});
+		};
 
-		await applyCustomPicture();
+		await applyImage();
 
 		return {
 			onInited: () => {
@@ -112,12 +86,15 @@ export const wallCanvas = defineObject({
 					case 'height':
 						applySize();
 						break;
-					case 'customPicture':
-						applyCustomPicture();
+					case 'image':
+						applyImage();
 						break;
 				}
 			},
 			interactions: {},
+			dispose: () => {
+				textureManager.dispose();
+			},
 		};
 	},
 });

@@ -4,7 +4,7 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../object.js';
+import { createTextureManager, defineObject } from '../object.js';
 import { createPlaneUvMapper } from '../../utility.js';
 
 export const tabletopFlag = defineObject({
@@ -19,7 +19,7 @@ export const tabletopFlag = defineObject({
 			},
 		},
 		default: {
-			customPicture: null,
+			image: { type: null },
 		},
 	},
 	placement: 'top',
@@ -29,55 +29,31 @@ export const tabletopFlag = defineObject({
 		const flagMesh = model.findMesh('__X_FLAG__');
 		const flagMaterial = model.findMaterial('__X_FLAG__');
 
-		const updateUv = createPlaneUvMapper(flagMesh);
+		const textureManager = createTextureManager(flagMesh, () => 24 / 16, scene);
 
-		const applyFit = () => {
-			const tex = flagMaterial.albedoTexture;
-			if (tex == null) return;
-
-			const srcWidth = tex.getSize().width;
-			const srcHeight = tex.getSize().height;
-			const srcAspect = srcWidth / srcHeight;
-
-			updateUv(srcAspect, 24 / 16, options.fit);
-
-			model.updated();
+		const applyImage = () => {
+			flagMaterial.unfreeze();
+			let url: string | null = null;
+			if (options.image.type === '_custom_') {
+				url = options.image.custom?.url ?? null;
+			}
+			return textureManager.change(url, options.image.fit).then((tex) => {
+				flagMaterial.albedoTexture = tex;
+			});
 		};
 
-		applyFit();
-
-		const applyCustomPicture = () => new Promise<void>((resolve) => {
-			if (options.customPicture != null) {
-				flagMaterial.unfreeze();
-				const tex = new BABYLON.Texture(options.customPicture.url, scene, false, false, undefined, () => {
-					flagMaterial.albedoColor = new BABYLON.Color3(1, 1, 1);
-					flagMaterial.albedoTexture = tex;
-					applyFit();
-					resolve();
-				}, (message, exception) => {
-					console.warn('Failed to load texture:', message, exception);
-					flagMaterial.albedoColor = new BABYLON.Color3(0, 1, 0);
-					flagMaterial.albedoTexture = null;
-					resolve();
-				});
-				tex.wrapU = BABYLON.Texture.MIRROR_ADDRESSMODE;
-				tex.wrapV = BABYLON.Texture.MIRROR_ADDRESSMODE;
-			} else {
-				flagMaterial.albedoColor = new BABYLON.Color3(0.5, 0.5, 0.5);
-				flagMaterial.albedoTexture = null;
-				resolve();
-			}
-		});
-
-		await applyCustomPicture();
+		await applyImage();
 
 		return {
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
-					case 'customPicture': applyCustomPicture(); break;
+					case 'image': applyImage(); break;
 				}
 			},
 			interactions: {},
+			dispose: () => {
+				textureManager.dispose();
+			},
 		};
 	},
 });

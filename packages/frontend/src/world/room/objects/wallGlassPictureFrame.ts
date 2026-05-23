@@ -4,7 +4,7 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../object.js';
+import { createTextureManager, defineObject } from '../object.js';
 import { createPlaneUvMapper, getPlaneUvIndexes } from '../../utility.js';
 
 const remap = (value: number, fromMin: number, fromMax: number, toMin: number, toMax: number) => {
@@ -39,7 +39,7 @@ export const wallGlassPictureFrame = defineObject({
 		default: {
 			width: 0.1,
 			height: 0.1,
-			customPicture: null,
+			image: { type: null },
 		},
 	},
 	placement: 'wall',
@@ -51,25 +51,11 @@ export const wallGlassPictureFrame = defineObject({
 		const pinMeshes = model.findMeshes('__X_PIN__');
 		const pictureMaterial = model.findMaterial('__X_PICTURE__');
 
-		const updateUv = createPlaneUvMapper(pictureMesh);
-
-		const applyFit = () => {
-			const tex = pictureMaterial.albedoTexture;
-			if (tex == null) return;
-
-			const srcWidth = tex.getSize().width;
-			const srcHeight = tex.getSize().height;
-			const srcAspect = srcWidth / srcHeight;
+		const textureManager = createTextureManager(pictureMesh, () => {
 			const targetWidth = remap(options.width, 0, 1, 2, 172); // 最小値(値を0にした場合)でのサイズは2cmで、最大値(値を1にした場合)でのサイズは172cmなので。比率の計算だから単位はなんでもいいけど、とにかく0が0にならない点を考慮させる必要がある
 			const targetHeight = remap(options.height, 0, 1, 2, 172); // 最小値(値を0にした場合)でのサイズは2cmで、最大値(値を1にした場合)でのサイズは172cmなので。比率の計算だから単位はなんでもいいけど、とにかく0が0にならない点を考慮させる必要がある
-			const targetAspect = targetWidth / targetHeight;
-
-			updateUv(srcAspect, targetAspect, options.fit);
-
-			model.updated();
-		};
-
-		applyFit();
+			return targetWidth / targetHeight;
+		}, scene);
 
 		const applySize = () => {
 			pictureMesh.morphTargetManager!.getTargetByName('Width')!.influence = options.width;
@@ -82,35 +68,23 @@ export const wallGlassPictureFrame = defineObject({
 			}
 			model.updated();
 
-			applyFit();
+			textureManager.applyFit();
 		};
 
 		applySize();
 
-		const applyCustomPicture = () => new Promise<void>((resolve) => {
-			if (options.customPicture != null) {
-				pictureMaterial.unfreeze();
-				const tex = new BABYLON.Texture(options.customPicture.url, scene, false, false, undefined, () => {
-					pictureMaterial.albedoColor = new BABYLON.Color3(1, 1, 1);
-					pictureMaterial.albedoTexture = tex;
-					applyFit();
-					resolve();
-				}, (message, exception) => {
-					console.warn('Failed to load texture:', message, exception);
-					pictureMaterial.albedoColor = new BABYLON.Color3(0, 1, 0);
-					pictureMaterial.albedoTexture = null;
-					resolve();
-				});
-				tex.wrapU = BABYLON.Texture.MIRROR_ADDRESSMODE;
-				tex.wrapV = BABYLON.Texture.MIRROR_ADDRESSMODE;
-			} else {
-				pictureMaterial.albedoColor = new BABYLON.Color3(0.5, 0.5, 0.5);
-				pictureMaterial.albedoTexture = null;
-				resolve();
+		const applyImage = () => {
+			pictureMaterial.unfreeze();
+			let url: string | null = null;
+			if (options.image.type === '_custom_') {
+				url = options.image.custom?.url ?? null;
 			}
-		});
+			return textureManager.change(url, options.image.fit).then((tex) => {
+				pictureMaterial.albedoTexture = tex;
+			});
+		};
 
-		await applyCustomPicture();
+		await applyImage();
 
 		return {
 			onInited: () => {
@@ -122,12 +96,15 @@ export const wallGlassPictureFrame = defineObject({
 					case 'height':
 						applySize();
 						break;
-					case 'customPicture':
-						applyCustomPicture();
+					case 'image':
+						applyImage();
 						break;
 				}
 			},
 			interactions: {},
+			dispose: () => {
+				textureManager.dispose();
+			},
 		};
 	},
 });

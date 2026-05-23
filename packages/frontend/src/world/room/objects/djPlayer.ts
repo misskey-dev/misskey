@@ -4,7 +4,7 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../object.js';
+import { createTextureManager, defineObject } from '../object.js';
 import { createPlaneUvMapper, normalizeUvToSquare } from '../../utility.js';
 
 export const djPlayer = defineObject({
@@ -27,7 +27,7 @@ export const djPlayer = defineObject({
 		},
 		default: {
 			screenBrightness: 0.5,
-			customPicture: null,
+			image: { type: null },
 		},
 	},
 	placement: 'top',
@@ -39,21 +39,8 @@ export const djPlayer = defineObject({
 		const defaultScreenTexture = screenMaterial.emissiveTexture;
 
 		normalizeUvToSquare(screenMesh);
-		const updateUv = createPlaneUvMapper(screenMesh);
 
-		const applyFit = () => {
-			const tex = screenMaterial.emissiveTexture;
-			if (tex == null) return;
-
-			const srcAspect = tex.getSize().width / tex.getSize().height;
-			const targetAspect = 15.6 / 8.33;
-
-			updateUv(srcAspect, targetAspect, options.fit);
-
-			model.updated();
-		};
-
-		applyFit();
+		const textureManager = createTextureManager(screenMesh, () => 15.6 / 8.33, scene);
 
 		const applyScreenBrightness = () => {
 			const b = options.screenBrightness;
@@ -62,40 +49,30 @@ export const djPlayer = defineObject({
 
 		applyScreenBrightness();
 
-		const applyCustomPicture = () => new Promise<void>((resolve) => {
-			if (options.customPicture != null) {
-				screenMaterial.unfreeze();
-				const tex = new BABYLON.Texture(options.customPicture.url, scene, false, false, undefined, () => {
-					screenMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
-					screenMaterial.emissiveTexture = tex;
-					applyFit();
-					applyScreenBrightness();
-					resolve();
-				}, (message, exception) => {
-					console.warn('Failed to load texture:', message, exception);
-					screenMaterial.emissiveColor = new BABYLON.Color3(0, 1, 0);
-					screenMaterial.emissiveTexture = null;
-					resolve();
-				});
-				tex.level = 0.5;
-			} else {
-				screenMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
-				screenMaterial.emissiveTexture = defaultScreenTexture;
-				applyFit();
-				resolve();
+		const applyImage = () => {
+			screenMaterial.unfreeze();
+			let url: string | null = null;
+			if (options.image.type === '_custom_') {
+				url = options.image.custom?.url ?? null;
 			}
-		});
+			return textureManager.change(url, options.image.fit).then((tex) => {
+				screenMaterial.emissiveTexture = tex;
+			});
+		};
 
-		await applyCustomPicture();
+		await applyImage();
 
 		return {
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
 					case 'screenBrightness': applyScreenBrightness(); break;
-					case 'customPicture': applyCustomPicture(); break;
+					case 'image': applyImage(); break;
 				}
 			},
 			interactions: {},
+			dispose: () => {
+				textureManager.dispose();
+			},
 		};
 	},
 });

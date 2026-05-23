@@ -4,7 +4,7 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../object.js';
+import { createTextureManager, defineObject } from '../object.js';
 import { createPlaneUvMapper } from '../../utility.js';
 
 // NOTE: シェイプキーのnormalのエクスポートは無効にしないとmatを大きくしたときに面のレンダリングがグリッチする
@@ -74,7 +74,7 @@ export const tabletopPictureFrame = defineObject({
 			depth: 0,
 			matHThickness: 0,
 			matVThickness: 0,
-			customPicture: null,
+			image: { type: null },
 		},
 	},
 	placement: 'top',
@@ -92,25 +92,11 @@ export const tabletopPictureFrame = defineObject({
 
 		const pictureMaterial = model.findMaterial('__X_PICTURE__');
 
-		const updateUv = createPlaneUvMapper(pictureMesh);
-
-		const applyFit = () => {
-			const tex = pictureMaterial.albedoTexture;
-			if (tex == null) return;
-
-			const srcWidth = tex.getSize().width;
-			const srcHeight = tex.getSize().height;
-			const srcAspect = srcWidth / srcHeight;
+		const textureManager = createTextureManager(pictureMesh, () => {
 			const targetWidth = options.width * (1 - options.matHThickness);
 			const targetHeight = options.height * (1 - options.matVThickness);
-			const targetAspect = targetWidth / targetHeight;
-
-			updateUv(srcAspect, targetAspect, options.fit);
-
-			model.updated();
-		};
-
-		applyFit();
+			return targetWidth / targetHeight;
+		}, scene);
 
 		const applyFrameThickness = () => {
 			frameMesh.morphTargetManager!.getTargetByName('Thickness')!.influence = options.frameThickness;
@@ -132,7 +118,7 @@ export const tabletopPictureFrame = defineObject({
 			matMesh.isVisible = options.matHThickness > 0 || options.matVThickness > 0;
 			model.updated();
 
-			applyFit();
+			textureManager.applyFit();
 		};
 
 		applyMatThickness();
@@ -160,30 +146,18 @@ export const tabletopPictureFrame = defineObject({
 
 		applyDepth();
 
-		const applyCustomPicture = () => new Promise<void>((resolve) => {
-			if (options.customPicture != null) {
-				pictureMaterial.unfreeze();
-				const tex = new BABYLON.Texture(options.customPicture.url, scene, false, false, undefined, () => {
-					pictureMaterial.albedoColor = new BABYLON.Color3(1, 1, 1);
-					pictureMaterial.albedoTexture = tex;
-					applyFit();
-					resolve();
-				}, (message, exception) => {
-					console.warn('Failed to load texture:', message, exception);
-					pictureMaterial.albedoColor = new BABYLON.Color3(0, 1, 0);
-					pictureMaterial.albedoTexture = null;
-					resolve();
-				});
-				tex.wrapU = BABYLON.Texture.MIRROR_ADDRESSMODE;
-				tex.wrapV = BABYLON.Texture.MIRROR_ADDRESSMODE;
-			} else {
-				pictureMaterial.albedoColor = new BABYLON.Color3(0.5, 0.5, 0.5);
-				pictureMaterial.albedoTexture = null;
-				resolve();
+		const applyImage = () => {
+			pictureMaterial.unfreeze();
+			let url: string | null = null;
+			if (options.image.type === '_custom_') {
+				url = options.image.custom?.url ?? null;
 			}
-		});
+			return textureManager.change(url, options.image.fit).then((tex) => {
+				pictureMaterial.albedoTexture = tex;
+			});
+		};
 
-		await applyCustomPicture();
+		await applyImage();
 
 		const frameMaterial = model.findMaterial('__X_FRAME__');
 
@@ -207,10 +181,13 @@ export const tabletopPictureFrame = defineObject({
 					case 'depth': applyDepth(); break;
 					case 'matHThickness':
 					case 'matVThickness': applyMatThickness(); break;
-					case 'customPicture': applyCustomPicture(); break;
+					case 'image': applyImage(); break;
 				}
 			},
 			interactions: {},
+			dispose: () => {
+				textureManager.dispose();
+			},
 		};
 	},
 });

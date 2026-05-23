@@ -4,7 +4,7 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../object.js';
+import { createTextureManager, defineObject } from '../object.js';
 import { cm, WORLD_SCALE, createPlaneUvMapper } from '../../utility.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 
@@ -45,7 +45,7 @@ export const laptopPc = defineObject({
 			bodyColor: [1, 1, 1],
 			bezelColor: [0, 0, 0],
 			screenBrightness: 0.5,
-			customPicture: null,
+			image: { type: null },
 			openAngle: 0,
 		},
 	},
@@ -75,21 +75,7 @@ export const laptopPc = defineObject({
 		screenMaterial.ambientColor = new BABYLON.Color3(0, 0, 0);
 		screenMaterial.albedoColor = new BABYLON.Color3(0, 0, 0);
 
-		const updateUv = createPlaneUvMapper(screenMesh);
-
-		const applyFit = () => {
-			const tex = screenMaterial.emissiveTexture;
-			if (tex == null) return;
-
-			const srcAspect = tex.getSize().width / tex.getSize().height;
-			const targetAspect = 31 / 19;
-
-			updateUv(srcAspect, targetAspect, options.fit);
-
-			model.updated();
-		};
-
-		applyFit();
+		const textureManager = createTextureManager(screenMesh, () => 31 / 19, scene);
 
 		const applyScreenBrightness = () => {
 			const b = options.screenBrightness;
@@ -99,29 +85,18 @@ export const laptopPc = defineObject({
 
 		applyScreenBrightness();
 
-		const applyCustomPicture = () => new Promise<void>((resolve) => {
-			if (options.customPicture != null) {
-				screenMaterial.unfreeze();
-				const tex = new BABYLON.Texture(options.customPicture.url, scene, false, false, undefined, () => {
-					screenMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
-					screenMaterial.emissiveTexture = tex;
-					applyFit();
-					applyScreenBrightness();
-					resolve();
-				}, (message, exception) => {
-					console.warn('Failed to load texture:', message, exception);
-					screenMaterial.emissiveColor = new BABYLON.Color3(0, 1, 0);
-					screenMaterial.emissiveTexture = null;
-					resolve();
-				});
-				tex.level = 0.5;
-			} else {
-				screenMaterial.emissiveTexture = null;
-				resolve();
+		const applyImage = () => {
+			screenMaterial.unfreeze();
+			let url: string | null = null;
+			if (options.image.type === '_custom_') {
+				url = options.image.custom?.url ?? null;
 			}
-		});
+			return textureManager.change(url, options.image.fit).then((tex) => {
+				screenMaterial.emissiveTexture = tex;
+			});
+		};
 
-		await applyCustomPicture();
+		await applyImage();
 
 		const applyBodyColor = () => {
 			const [r, g, b] = options.bodyColor;
@@ -156,7 +131,7 @@ export const laptopPc = defineObject({
 					case 'bodyColor': applyBodyColor(); break;
 					case 'bezelColor': applyBezelColor(); break;
 					case 'screenBrightness': applyScreenBrightness(); break;
-					case 'customPicture': applyCustomPicture(); break;
+					case 'image': applyImage(); break;
 					case 'openAngle': applyOpenAngle(); break;
 				}
 			},
@@ -165,6 +140,8 @@ export const laptopPc = defineObject({
 				light.dispose();
 				if (lc != null) lc.removeLight(light);
 				scene.removeLight(light); // lc使用時はsceneには追加してないはずだが、これがないとクラッシュする babylonのバグ？
+
+				textureManager.dispose();
 			},
 		};
 	},
