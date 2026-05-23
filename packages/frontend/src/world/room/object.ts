@@ -235,7 +235,7 @@ export const createTextureManager = (targetMesh: BABYLON.Mesh, calcTargetAspect:
 			return;
 		}
 		currentTexture = new BABYLON.Texture(url, scene, false, false, undefined, () => {
-			currentTexture!.level = 0.5;
+			currentTexture!.level = 1;
 			currentTexture!.wrapU = BABYLON.Texture.MIRROR_ADDRESSMODE;
 			currentTexture!.wrapV = BABYLON.Texture.MIRROR_ADDRESSMODE;
 			applyFit(fit);
