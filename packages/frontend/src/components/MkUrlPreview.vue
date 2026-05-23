@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<template v-if="player.url && playerEnabled">
+<div v-if="player.url && playerEnabled">
 	<div
 		:class="$style.player"
 		:style="player.width ? `padding: ${(player.height || 0) / player.width * 100}% 0 0` : `padding: ${(player.height || 0)}px 0 0`"
@@ -25,8 +25,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<i class="ti ti-x"></i> {{ i18n.ts.disablePlayer }}
 		</MkButton>
 	</div>
-</template>
-<template v-else-if="tweetId && tweetExpanded">
+</div>
+<div v-else-if="tweetId && tweetExpanded">
 	<div ref="twitter">
 		<iframe
 			ref="tweet"
@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<i class="ti ti-x"></i> {{ i18n.ts.close }}
 		</MkButton>
 	</div>
-</template>
+</div>
 <div v-else>
 	<component :is="self ? 'MkA' : 'a'" :class="[$style.link, { [$style.compact]: compact, [$style.large]: isLargeImage }]" :[attr]="maybeRelativeUrl" rel="nofollow noopener" :target="target" :title="url">
 		<div v-if="thumbnail && !sensitive" :class="$style.thumbnail" :style="displayThumbnail ? { backgroundImage: `url('${displayThumbnail}')` } : ''">
@@ -126,7 +126,6 @@ const sitename = ref<string | null>(null);
 const sensitive = ref<boolean>(false);
 const isLargeImage = computed(() =>
 	thumbnail.value != null &&
-	player.value.url == null &&
 	tweetId.value == null &&
 	!sensitive.value &&
 	thumbnailStyle.value === 'summary_large_image' &&
