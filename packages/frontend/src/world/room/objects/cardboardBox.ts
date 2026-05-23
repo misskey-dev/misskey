@@ -34,21 +34,32 @@ export const cardboardBox = defineObject({
 	hasCollisions: true,
 	hasTexture: true,
 	createInstance: ({ scene, options, model }) => {
+		const material = model.findMaterial('__X_BODY__');
+		let tex: BABYLON.Texture | null = null;
+
+		const applyVariation = () => {
+			if (options.variation === 'mikan') {
+				tex = new BABYLON.Texture('/client-assets/room/objects/cardboard-box/textures/mikan.png', scene, false, false);
+			} else if (options.variation === 'aizon') {
+				tex = new BABYLON.Texture('/client-assets/room/objects/cardboard-box/textures/aizon.png', scene, false, false);
+			}
+
+			if (tex) {
+				material.albedoTexture = tex;
+			} else {
+				material.albedoTexture = null;
+			}
+		};
+
+		applyVariation();
+
 		return {
-			onInited: () => {
-				const material = model.findMaterial('__X_BODY__');
-				if (options.variation === 'mikan') {
-					const tex = new BABYLON.Texture('/client-assets/room/objects/cardboard-box/textures/mikan.png', scene, false, false);
-					material.albedoTexture = tex;
-					material.albedoColor = new BABYLON.Color3(1, 1, 1);
-				} else if (options.variation === 'aizon') {
-					const tex = new BABYLON.Texture('/client-assets/room/objects/cardboard-box/textures/aizon.png', scene, false, false);
-					material.albedoTexture = tex;
-					material.albedoColor = new BABYLON.Color3(1, 1, 1);
+			interactions: {},
+			dispose: () => {
+				if (tex) {
+					tex.dispose();
 				}
 			},
-			interactions: {},
-			dispose: () => {},
 		};
 	},
 });
