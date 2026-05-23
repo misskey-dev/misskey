@@ -61,7 +61,7 @@ Misskey 本体は **AGPL-3.0-only** で配布されているが、`.claude/` 配
 - MIT が要求する条件 (copyright notice + license text の保持) を本ファイル + 各ファイル冒頭の SPDX/出典コメントで満たしている
 - Misskey 全体の配布物としては AGPL-3.0-only で扱われるが、`.claude/` 配下の MIT ファイルは個別に MIT として識別可能
 
-`.ts` / `.js` / `.vue` / `.scss` の SPDX 義務化 ([AGENTS.md §1](../AGENTS.md#1-spdx-ヘッダー必須)) は Misskey 本体コード向けで、`.claude/` 配下の `.md` / `.sh` には適用されない。
+`.ts` / `.js` / `.vue` / `.scss` の SPDX 義務化 ([AGENTS.md](../AGENTS.md) の「絶対にやってはいけない事」§コード・データ関連) は Misskey 本体コード向けで、`.claude/` 配下の `.md` / `.sh` には適用されない。
 
 ---
 
@@ -73,4 +73,4 @@ Misskey 本体は **AGPL-3.0-only** で配布されているが、`.claude/` 配
 2. 各ファイル冒頭に SPDX ヘッダ + 出典コメントを追加
 3. 本ファイル §1 のテーブルに 1 行追記
 4. 必要なら新しいセクションでライセンス全文を同梱
-5. AGENTS.md からの参照を確認 (現状の [AGENTS.md §ツール固有の補助ファイル](../AGENTS.md) で `THIRD_PARTY_LICENSES.md` を案内済。CLAUDE.md は `@AGENTS.md` 経由で読み込むので個別の追記は不要)
+5. AGENTS.md からの参照を確認 (現状の [AGENTS.md](../AGENTS.md) の「Claude Code 固有の補助ファイル」章で `THIRD_PARTY_LICENSES.md` を案内済。CLAUDE.md は `@AGENTS.md` 経由で読み込むので個別の追記は不要)

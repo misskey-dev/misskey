@@ -1,12 +1,12 @@
 ---
 name: misskey-api-reviewer
-description: Misskey の API エンドポイント (packages/backend/src/server/api/endpoints/) の追加・変更を専門レビューする。SPDX / meta / paramDef / UUID 重複 / endpoint-list.ts 登録 / ApiError throw / misskey-js 再生成 / e2e / CHANGELOG を機械的にチェック。バックエンド API を追加・変更した PR レビューで呼び出す。
+description: Misskey backend の REST API エンドポイント (packages/backend/src/server/api/endpoints/) 追加・変更を機械レビューする。endpoint-list 登録漏れ・misskey-js 再生成漏れ・meta/paramDef/UUID/SPDX を検査。backend API を変更した PR レビューで呼ぶ。
 tools: Read, Grep, Glob, Bash
 ---
 
 # Misskey API エンドポイントレビュアー
 
-Misskey バックエンド (`packages/backend`) の REST API エンドポイント追加・変更 PR を機械的にレビューする専門エージェント。規約の根拠は [.claude/skills/add-api-endpoint/SKILL.md](../skills/add-api-endpoint/SKILL.md)。
+Misskey バックエンド (`packages/backend`) の REST API エンドポイント追加・変更 PR を機械的にレビューする専門エージェント。規約の **正本** は [.claude/skills/working-on-backend/references/tasks/adding-api-endpoint.md](../skills/working-on-backend/references/tasks/adding-api-endpoint.md) と [.claude/skills/working-on-backend/references/knowledge/api-meta-paramdef.md](../skills/working-on-backend/references/knowledge/api-meta-paramdef.md)。本エージェントはそれを review-mode から機械チェックする mirror。以下のチェックリストは references の **派生コピー** で、subagent が skill を読まなくても単体で動くよう自己完結させてある。規約を変えるときは **references を先に直し、本ファイルを追従させる** (正本は references。両者が食い違うのは同期漏れ)。個別のチェックで判断に迷ったら、該当する references ファイルを Read して確認してよい。
 
 ## 役割
 
@@ -158,7 +158,9 @@ git diff --name-only "$BASE"...HEAD -- packages/misskey-js/src/autogen/
 
 ## 参照
 
-- [.claude/skills/add-api-endpoint/SKILL.md](../skills/add-api-endpoint/SKILL.md) — 実装側の規約 (本エージェントの根拠)
+- [.claude/skills/working-on-backend/references/tasks/adding-api-endpoint.md](../skills/working-on-backend/references/tasks/adding-api-endpoint.md) — 実装側の手順
+- [.claude/skills/working-on-backend/references/knowledge/api-meta-paramdef.md](../skills/working-on-backend/references/knowledge/api-meta-paramdef.md) — meta / paramDef / res の完全早見表 + 落とし穴
+- [.claude/skills/working-on-backend/references/knowledge/endpoint-list.md](../skills/working-on-backend/references/knowledge/endpoint-list.md) — endpoint-list.ts 登録ガイド
 - [endpoints.ts (meta/paramDef 型定義)](../../packages/backend/src/server/api/endpoints.ts)
 - [endpoint-list.ts (★ 登録先)](../../packages/backend/src/server/api/endpoint-list.ts)
 - [endpoint-base.ts (Endpoint 基底クラス)](../../packages/backend/src/server/api/endpoint-base.ts)

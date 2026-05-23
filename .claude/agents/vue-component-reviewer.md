@@ -1,12 +1,12 @@
 ---
 name: vue-component-reviewer
-description: Misskey フロントエンド (packages/frontend/src/components/ / pages/) の Vue 3 SFC 変更を専門レビューする。SPDX (HTML コメント) / Mk* 命名 / <script lang="ts" setup> / type-only defineProps / <style lang="scss" module> / CSS 変数 / i18n.ts と i18n.tsx の使い分け / os.* 経由 / a11y / Storybook (*.stories.impl.ts) を機械的にチェック。フロントエンドの .vue 変更を含む PR レビューで呼び出す。
+description: Misskey frontend の Vue 3 SFC (packages/frontend/src/components/ / pages/ の *.vue) 変更を機械レビューする。SPDX (HTML コメント)・Mk* 命名・i18n.ts/tsx・SCSS 変数・os.* 経由・a11y・Storybook 併設 (*.stories.impl.ts) を検査。frontend の .vue を変更した PR レビューで呼ぶ。
 tools: Read, Grep, Glob, Bash
 ---
 
 # Misskey Vue コンポーネントレビュアー
 
-Misskey フロントエンド (`packages/frontend`) の Vue 3 SFC 変更を機械的にレビューする専門エージェント。規約の根拠は [.claude/skills/add-mk-component/SKILL.md](../skills/add-mk-component/SKILL.md)。
+Misskey フロントエンド (`packages/frontend`) の Vue 3 SFC 変更を機械的にレビューする専門エージェント。規約の **正本** は [.claude/skills/working-on-frontend/references/tasks/adding-mk-component.md](../skills/working-on-frontend/references/tasks/adding-mk-component.md) および同 `references/knowledge/` 配下の各ファイル。本エージェントはそれを review-mode から機械チェックする mirror。以下のチェックリストは references の **派生コピー** で、subagent が skill を読まなくても単体で動くよう自己完結させてある。規約を変えるときは **references を先に直し、本ファイルを追従させる** (正本は references。両者が食い違うのは同期漏れ)。個別のチェックで判断に迷ったら、該当する references ファイルを Read して確認してよい。
 
 ## 役割
 
@@ -46,7 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 ```
 
-`/* ... */` (TS 形式) は禁止。既存 SFC の慣習・SFC 先頭として自然な形式に統一するため (CI の `spdx` ジョブはコメント形式ではなく SPDX 文字列の有無のみを検査するため、形式が違っても CI は通るが、規約違反として指摘する)。
+`/* ... */` (TS 形式) は禁止 (CI の `spdx` ジョブはコメント形式ではなく SPDX 文字列の有無のみを検査するため、形式が違っても CI は通るが、規約違反として指摘する)。形式の根拠は references/knowledge 側を参照。
 
 ### 2. 命名規約 (Major)
 
@@ -167,8 +167,10 @@ git diff --name-only --diff-filter=A "$BASE"...HEAD -- \
 
 ## 参照
 
-- [.claude/skills/add-mk-component/SKILL.md](../skills/add-mk-component/SKILL.md) — 実装側の規約 (本エージェントの根拠)
-- [.claude/skills/add-i18n-key/SKILL.md](../skills/add-i18n-key/SKILL.md) — i18n キー追加のルール
+- [.claude/skills/working-on-frontend/references/tasks/adding-mk-component.md](../skills/working-on-frontend/references/tasks/adding-mk-component.md) — 実装側の手順
+- [.claude/skills/working-on-frontend/references/tasks/adding-i18n-key.md](../skills/working-on-frontend/references/tasks/adding-i18n-key.md) — i18n キー追加のルール
+- [.claude/skills/working-on-frontend/references/knowledge/component-conventions.md](../skills/working-on-frontend/references/knowledge/component-conventions.md) — SFC 規約・a11y チェックリスト
+- [.claude/skills/working-on-frontend/references/knowledge/scss-modules.md](../skills/working-on-frontend/references/knowledge/scss-modules.md) — SCSS Modules / CSS 変数
 - [os.ts](../../packages/frontend/src/os.ts) — UI 操作 API
 - [MkButton.vue](../../packages/frontend/src/components/MkButton.vue)
 - [MkInput.vue](../../packages/frontend/src/components/MkInput.vue) — generic SFC 例
