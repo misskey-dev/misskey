@@ -325,17 +325,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkPreferenceContainer>
 							</SearchMarker>
 
-								<SearchMarker :keywords="['urlpreview', 'link', 'preview', 'card', 'large', 'compact']">
-									<MkPreferenceContainer k="forceCompactUrlPreview">
-										<MkSwitch v-model="forceCompactUrlPreview" :disabled="!instance.enableUrlPreview || dataSaver.disableUrlPreview">
-											<template #label><SearchLabel>{{ i18n.ts.forceCompactUrlPreview }}</SearchLabel></template>
-										</MkSwitch>
-									</MkPreferenceContainer>
-								</SearchMarker>
-							</div>
+							<SearchMarker :keywords="['urlpreview', 'link', 'preview', 'card', 'large', 'compact']">
+								<MkPreferenceContainer k="forceCompactUrlPreview">
+									<MkSwitch v-model="forceCompactUrlPreview" :disabled="!instance.enableUrlPreview || dataSaver.disableUrlPreview">
+										<template #label><SearchLabel>{{ i18n.ts.forceCompactUrlPreview }}</SearchLabel></template>
+									</MkSwitch>
+								</MkPreferenceContainer>
+							</SearchMarker>
 						</div>
-					</MkFolder>
-				</SearchMarker>
+					</div>
+				</MkFolder>
+			</SearchMarker>
 
 			<SearchMarker v-slot="slotProps" :keywords="['post', 'form']">
 				<MkFolder :defaultOpen="slotProps.isParentOfTarget">
