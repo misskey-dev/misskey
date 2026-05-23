@@ -6,7 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.root">
 	<div class="_gaps_s">
-		<MkFolder v-for="[k, s] in Object.entries(schema)" :key="k" defaultOpen>
+		<MkFolder v-for="[k, s] in Object.entries(schema)" :key="k">
 			<template #label>{{ s.label }}</template>
 			<div v-if="s.type === 'color'">
 				<!-- debounce or throttleしないとカラーピッカー上で高速でなぞったときになぜか無限ループになる。ワーカーとの間でラグがあるため、少し前の値がまたmodelValueとしてフィードバックされてしまうためだと思われる -->
