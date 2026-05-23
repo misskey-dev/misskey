@@ -4,8 +4,9 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import type { ModelManager, RoomAttachments } from './utility.js';
+import { createPlaneUvMapper } from '../utility.js';
 import type { Timer } from '../utility.js';
+import type { ModelManager, RoomAttachments } from './utility.js';
 
 // babylonのドメイン知識は持たない
 export type RoomStateObject = {
@@ -76,6 +77,10 @@ type RangeOptionSchema = {
 type ImageOptionSchema = {
 	type: 'image';
 	label: string;
+	presets: {
+		label: string;
+		value: string | number;
+	}[];
 };
 
 type SeedOptionSchema = {
@@ -101,7 +106,7 @@ type GetRawOptionsSchemaValues<T extends OptionsSchema> = {
 	T[K] extends ColorOptionSchema ? [number, number, number] :
 	T[K] extends EnumOptionSchema ? T[K]['enum'][number]['value'] :
 	T[K] extends RangeOptionSchema ? number :
-	T[K] extends ImageOptionSchema ? string | null :
+	T[K] extends ImageOptionSchema ? { type: T[K]['presets'][number]['value'] | null | '_custom_'; driveFileId?: string | null; fit?: 'cover' | 'contain' | 'stretch'; } :
 	T[K] extends SeedOptionSchema ? number :
 	never;
 };
@@ -113,7 +118,7 @@ type GetConvertedOptionsSchemaValues<T extends OptionsSchema> = {
 	T[K] extends ColorOptionSchema ? [number, number, number] :
 	T[K] extends EnumOptionSchema ? T[K]['enum'][number]['value'] :
 	T[K] extends RangeOptionSchema ? number :
-	T[K] extends ImageOptionSchema ? { url: string; } | null :
+	T[K] extends ImageOptionSchema ? { type: T[K]['presets'][number]['value'] | null | '_custom_'; custom?: { url: string; } | null; fit?: 'cover' | 'contain' | 'stretch'; } :
 	T[K] extends SeedOptionSchema ? number :
 	never;
 };
@@ -174,24 +179,69 @@ export function convertRawOptions<OpSc extends OptionsSchema>(schema: OpSc, raw:
 	for (const record of Object.entries(schema)) {
 		const k = record[0];
 		const v = raw[k];
-		if (record[1].type === 'image' && v != null) {
-			if (v === '') {
-				converted[k] = null;
-				continue;
+		if (record[1].type === 'image') {
+			const file = v.type === '_custom_' ? attachments.files.find(f => f.id === v.driveFileId) : null;
+			if (file != null && file.url.startsWith('http://syu-win.local:3000/')) { // debug
+				file.url = file.url.replace('http://syu-win.local:3000/', 'https://local-mi.syuilo.dev/');
 			}
-			const file = attachments.files.find(f => f.id === v);
-			if (file != null) {
-				if (file.url.startsWith('http://syu-win.local:3000/')) { // debug
-					converted[k] = { url: file.url.replace('http://syu-win.local:3000/', 'https://local-mi.syuilo.dev/') };
-				} else {
-					converted[k] = { url: file.url };
-				}
-			} else {
-				converted[k] = null;
-			}
+
+			converted[k] = { type: v.type, custom: file != null ? { url: file.url } : null, fit: v.fit };
 		} else {
 			converted[k] = v;
 		}
 	}
 	return converted;
 }
+
+export const createTextureManager = (targetMesh: BABYLON.Mesh, targetAspect: number, scene: BABYLON.Scene) => {
+	let currentUrl: string | null = null;
+	let currentTexture: BABYLON.Texture | null = null;
+
+	const updateUv = createPlaneUvMapper(targetMesh);
+
+	const applyFit = (method?: 'cover' | 'contain' | 'stretch') => {
+		if (currentTexture == null) return;
+
+		const srcAspect = currentTexture.getSize().width / currentTexture.getSize().height;
+
+		updateUv(srcAspect, targetAspect, method ?? 'cover');
+	};
+
+	const change = (url: string | null, fit?: 'cover' | 'contain' | 'stretch') => new Promise<BABYLON.Texture | null>((resolve) => {
+		if (currentUrl === url) {
+			applyFit(fit);
+			resolve(currentTexture);
+			return;
+		}
+
+		if (currentTexture != null) {
+			currentTexture.dispose();
+		}
+
+		currentUrl = url;
+		if (url == null) {
+			currentTexture = null;
+			resolve(null);
+			return;
+		}
+		currentTexture = new BABYLON.Texture(url, scene, false, false, undefined, () => {
+			currentTexture!.level = 0.5;
+			applyFit(fit);
+			resolve(currentTexture);
+		}, (message, exception) => {
+			console.warn('Failed to load texture:', message, exception);
+			currentTexture!.dispose();
+			currentTexture = null;
+			resolve(null);
+		});
+	});
+
+	return {
+		change,
+		dispose: () => {
+			if (currentTexture != null) {
+				currentTexture.dispose();
+			}
+		},
+	};
+};

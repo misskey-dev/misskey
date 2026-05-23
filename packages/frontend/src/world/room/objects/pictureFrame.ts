@@ -68,11 +68,6 @@ export const pictureFrame = defineObject({
 				type: 'image',
 				label: 'Custom picture',
 			},
-			fit: {
-				type: 'enum',
-				label: 'Custom picture fit',
-				enum: ['cover', 'contain', 'stretch'],
-			},
 		},
 		default: {
 			frameColor: [0.71, 0.58, 0.39],
@@ -84,7 +79,6 @@ export const pictureFrame = defineObject({
 			matVThickness: 0.35,
 			withCover: true,
 			customPicture: null,
-			fit: 'cover',
 		},
 	},
 	placement: 'side',
@@ -221,48 +215,9 @@ export const pictureFrame = defineObject({
 					case 'depth': applyDepth(); break;
 					case 'withCover': applyWithCover(); break;
 					case 'customPicture':
-					case 'fit': applyCustomPicture(); break;
 				}
 			},
 			interactions: {},
 		};
 	},
 });
-
-/*
-
-const applyDirection = () => {
-	if (options.direction === 'vertical') {
-		frameMesh.rotation.z = 0;
-		matMesh.rotation.z = 0;
-		coverMesh.rotation.z = 0;
-		pictureMesh.rotation.z = 0;
-
-		uvs[6] = ax;
-		uvs[7] = ay;
-		uvs[2] = bx;
-		uvs[3] = by;
-		uvs[4] = cx;
-		uvs[5] = cy;
-		uvs[0] = dx;
-		uvs[1] = dy;
-	} else if (options.direction === 'horizontal') {
-		frameMesh.rotation.z = -Math.PI / 2;
-		matMesh.rotation.z = -Math.PI / 2;
-		coverMesh.rotation.z = -Math.PI / 2;
-		pictureMesh.rotation.z = -Math.PI / 2;
-
-		uvs[6] = cy;
-		uvs[7] = cx;
-		uvs[2] = dy;
-		uvs[3] = dx;
-		uvs[4] = ay;
-		uvs[5] = ax;
-		uvs[0] = by;
-		uvs[1] = bx;
-	}
-
-	pictureMesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
-};
-
-*/

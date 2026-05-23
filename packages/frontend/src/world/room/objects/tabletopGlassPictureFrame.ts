@@ -34,17 +34,11 @@ export const tabletopGlassPictureFrame = defineObject({
 				type: 'image',
 				label: 'Custom picture',
 			},
-			fit: {
-				type: 'enum',
-				label: 'Custom picture fit',
-				enum: ['cover', 'contain', 'stretch'],
-			},
 		},
 		default: {
 			width: 0.1,
 			height: 0.1,
 			customPicture: null,
-			fit: 'cover',
 		},
 	},
 	placement: 'top',
@@ -129,9 +123,6 @@ export const tabletopGlassPictureFrame = defineObject({
 						break;
 					case 'customPicture':
 						applyCustomPicture();
-						break;
-					case 'fit':
-						applyFit();
 						break;
 				}
 			},

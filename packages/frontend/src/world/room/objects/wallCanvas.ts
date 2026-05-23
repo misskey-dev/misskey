@@ -30,17 +30,11 @@ export const wallCanvas = defineObject({
 				type: 'image',
 				label: 'Custom picture',
 			},
-			fit: {
-				type: 'enum',
-				label: 'Custom picture fit',
-				enum: ['cover', 'contain', 'stretch'],
-			},
 		},
 		default: {
 			width: 0.15,
 			height: 0.15,
 			customPicture: null,
-			fit: 'cover',
 		},
 	},
 	placement: 'side',
@@ -118,7 +112,6 @@ export const wallCanvas = defineObject({
 						applySize();
 						break;
 					case 'customPicture':
-					case 'fit':
 						applyCustomPicture();
 						break;
 				}

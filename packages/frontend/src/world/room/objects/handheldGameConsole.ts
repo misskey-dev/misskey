@@ -28,17 +28,11 @@ export const handheldGameConsole = defineObject({
 				type: 'image',
 				label: 'Custom picture',
 			},
-			fit: {
-				type: 'enum',
-				label: 'Custom picture fit',
-				enum: ['cover', 'contain', 'stretch'],
-			},
 		},
 		default: {
 			bodyColor: [1, 1, 1],
 			screenBrightness: 0.5,
 			customPicture: null,
-			fit: 'cover',
 		},
 	},
 	placement: 'top',
@@ -113,7 +107,6 @@ export const handheldGameConsole = defineObject({
 					case 'bodyColor': applyBodyColor(); break;
 					case 'screenBrightness': applyScreenBrightness(); break;
 					case 'customPicture': applyCustomPicture(); break;
-					case 'fit': applyFit(); break;
 				}
 			},
 			interactions: {},

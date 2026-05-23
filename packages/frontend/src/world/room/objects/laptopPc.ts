@@ -32,11 +32,6 @@ export const laptopPc = defineObject({
 				type: 'image',
 				label: 'Custom picture',
 			},
-			fit: {
-				type: 'enum',
-				label: 'Custom picture fit',
-				enum: ['cover', 'contain', 'stretch'],
-			},
 			openAngle: {
 				type: 'range',
 				label: 'Open',
@@ -50,7 +45,6 @@ export const laptopPc = defineObject({
 			bezelColor: [0, 0, 0],
 			screenBrightness: 0.5,
 			customPicture: null,
-			fit: 'cover',
 			openAngle: 0,
 		},
 	},
@@ -162,7 +156,6 @@ export const laptopPc = defineObject({
 					case 'bezelColor': applyBezelColor(); break;
 					case 'screenBrightness': applyScreenBrightness(); break;
 					case 'customPicture': applyCustomPicture(); break;
-					case 'fit': applyFit(); break;
 					case 'openAngle': applyOpenAngle(); break;
 				}
 			},

@@ -34,17 +34,11 @@ export const tapestry = defineObject({
 				type: 'image',
 				label: 'Custom picture',
 			},
-			fit: {
-				type: 'enum',
-				label: 'Custom picture fit',
-				enum: ['cover', 'contain', 'stretch'],
-			},
 		},
 		default: {
 			width: 0.15,
 			height: 0.15,
 			customPicture: null,
-			fit: 'cover',
 		},
 	},
 	placement: 'side',
@@ -126,14 +120,10 @@ export const tapestry = defineObject({
 
 			},
 			onOptionsUpdated: ([k, v]) => {
-				if (k === 'width' || k === 'height') {
-					applySize();
-				}
-				if (k === 'customPicture') {
-					applyCustomPicture();
-				}
-				if (k === 'fit') {
-					applyFit();
+				switch (k) {
+					case 'width':
+					case 'height': applySize(); break;
+					case 'customPicture': applyCustomPicture(); break;
 				}
 			},
 			interactions: {},

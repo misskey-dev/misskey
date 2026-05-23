@@ -16,15 +16,9 @@ export const largeMousepad = defineObject({
 				type: 'image',
 				label: 'Custom picture',
 			},
-			fit: {
-				type: 'enum',
-				label: 'Custom picture fit',
-				enum: ['cover', 'contain', 'stretch'],
-			},
 		},
 		default: {
 			customPicture: null,
-			fit: 'cover',
 		},
 	},
 	placement: 'top',
@@ -79,7 +73,6 @@ export const largeMousepad = defineObject({
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
 					case 'customPicture': applyCustomPicture(); break;
-					case 'fit': applyFit(); break;
 				}
 			},
 			interactions: {},

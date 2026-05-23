@@ -64,11 +64,6 @@ export const tabletopPictureFrame = defineObject({
 				type: 'image',
 				label: 'Custom picture',
 			},
-			fit: {
-				type: 'enum',
-				label: 'Custom picture fit',
-				enum: ['cover', 'contain', 'stretch'],
-			},
 		},
 		default: {
 			frameColor: [0.71, 0.58, 0.39],
@@ -79,7 +74,6 @@ export const tabletopPictureFrame = defineObject({
 			matHThickness: 0,
 			matVThickness: 0,
 			customPicture: null,
-			fit: 'cover',
 		},
 	},
 	placement: 'top',
@@ -204,67 +198,18 @@ export const tabletopPictureFrame = defineObject({
 
 			},
 			onOptionsUpdated: ([k, v]) => {
-				if (k === 'frameColor') {
-					applyFrameColor();
-				}
-				if (k === 'width' || k === 'height') {
-					applySize();
-				}
-				if (k === 'frameThickness') {
-					applyFrameThickness();
-				}
-				if (k === 'depth') {
-					applyDepth();
-				}
-				if (k === 'matHThickness' || k === 'matVThickness') {
-					applyMatThickness();
-				}
-				if (k === 'customPicture') {
-					applyCustomPicture();
-				}
-				if (k === 'fit') {
-					applyFit();
+				switch (k) {
+					case 'frameColor': applyFrameColor(); break;
+					case 'width':
+					case 'height': applySize(); break;
+					case 'frameThickness': applyFrameThickness(); break;
+					case 'depth': applyDepth(); break;
+					case 'matHThickness':
+					case 'matVThickness': applyMatThickness(); break;
+					case 'customPicture': applyCustomPicture(); break;
 				}
 			},
 			interactions: {},
 		};
 	},
 });
-
-/*
-
-const applyDirection = () => {
-	if (options.direction === 'vertical') {
-		frameMesh.rotation.z = 0;
-		matMesh.rotation.z = 0;
-		coverMesh.rotation.z = 0;
-		pictureMesh.rotation.z = 0;
-
-		uvs[6] = ax;
-		uvs[7] = ay;
-		uvs[2] = bx;
-		uvs[3] = by;
-		uvs[4] = cx;
-		uvs[5] = cy;
-		uvs[0] = dx;
-		uvs[1] = dy;
-	} else if (options.direction === 'horizontal') {
-		frameMesh.rotation.z = -Math.PI / 2;
-		matMesh.rotation.z = -Math.PI / 2;
-		coverMesh.rotation.z = -Math.PI / 2;
-		pictureMesh.rotation.z = -Math.PI / 2;
-
-		uvs[6] = cy;
-		uvs[7] = cx;
-		uvs[2] = dy;
-		uvs[3] = dx;
-		uvs[4] = ay;
-		uvs[5] = ax;
-		uvs[0] = by;
-		uvs[1] = bx;
-	}
-
-	pictureMesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
-};
-
-*/

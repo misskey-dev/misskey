@@ -30,17 +30,11 @@ export const clippedPicture = defineObject({
 				type: 'image',
 				label: 'Custom picture',
 			},
-			fit: {
-				type: 'enum',
-				label: 'Custom picture fit',
-				enum: ['cover', 'contain', 'stretch'],
-			},
 		},
 		default: {
 			width: 0.1,
 			height: 0.1,
 			customPicture: null,
-			fit: 'cover',
 		},
 	},
 	placement: 'side',
@@ -121,7 +115,6 @@ export const clippedPicture = defineObject({
 					case 'width': applySize(); break;
 					case 'height': applySize(); break;
 					case 'customPicture': applyCustomPicture(); break;
-					case 'fit': applyFit(); break;
 				}
 			},
 			interactions: {},

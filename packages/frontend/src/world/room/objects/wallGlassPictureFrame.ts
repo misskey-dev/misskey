@@ -34,17 +34,11 @@ export const wallGlassPictureFrame = defineObject({
 				type: 'image',
 				label: 'Custom picture',
 			},
-			fit: {
-				type: 'enum',
-				label: 'Custom picture fit',
-				enum: ['cover', 'contain', 'stretch'],
-			},
 		},
 		default: {
 			width: 0.1,
 			height: 0.1,
 			customPicture: null,
-			fit: 'cover',
 		},
 	},
 	placement: 'wall',
@@ -129,9 +123,6 @@ export const wallGlassPictureFrame = defineObject({
 						break;
 					case 'customPicture':
 						applyCustomPicture();
-						break;
-					case 'fit':
-						applyFit();
 						break;
 				}
 			},

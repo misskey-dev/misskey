@@ -4,7 +4,7 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../object.js';
+import { createTextureManager, defineObject } from '../object.js';
 import { cm, WORLD_SCALE, createPlaneUvMapper } from '../../utility.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 
@@ -28,22 +28,22 @@ export const allInOnePc = defineObject({
 				max: 1,
 				step: 0.01,
 			},
-			customPicture: {
+			image: {
 				type: 'image',
-				label: 'Custom picture',
-			},
-			fit: {
-				type: 'enum',
-				label: 'Custom picture fit',
-				enum: ['cover', 'contain', 'stretch'],
+				label: 'Screen image',
+				presets: [{
+					label: 'Desktop',
+					value: 'desktop',
+				}],
 			},
 		},
 		default: {
 			bodyColor: [1, 1, 1],
 			bezelColor: [0, 0, 0],
 			screenBrightness: 0.5,
-			customPicture: null,
-			fit: 'cover',
+			image: {
+				type: null,
+			},
 		},
 	},
 	placement: 'top',
@@ -69,22 +69,9 @@ export const allInOnePc = defineObject({
 
 		screenMaterial.ambientColor = new BABYLON.Color3(0, 0, 0);
 		screenMaterial.albedoColor = new BABYLON.Color3(0, 0, 0);
+		screenMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
 
-		const updateUv = createPlaneUvMapper(screenMesh);
-
-		const applyFit = () => {
-			const tex = screenMaterial.emissiveTexture;
-			if (tex == null) return;
-
-			const srcAspect = tex.getSize().width / tex.getSize().height;
-			const targetAspect = 50 / 27.5;
-
-			updateUv(srcAspect, targetAspect, options.fit);
-
-			model.updated();
-		};
-
-		applyFit();
+		const textureManager = createTextureManager(screenMesh, 50 / 27.5, scene);
 
 		const applyScreenBrightness = () => {
 			const b = options.screenBrightness;
@@ -94,29 +81,20 @@ export const allInOnePc = defineObject({
 
 		applyScreenBrightness();
 
-		const applyCustomPicture = () => new Promise<void>((resolve) => {
-			if (options.customPicture != null) {
-				screenMaterial.unfreeze();
-				const tex = new BABYLON.Texture(options.customPicture.url, scene, false, false, undefined, () => {
-					screenMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
-					screenMaterial.emissiveTexture = tex;
-					applyFit();
-					applyScreenBrightness();
-					resolve();
-				}, (message, exception) => {
-					console.warn('Failed to load texture:', message, exception);
-					screenMaterial.emissiveColor = new BABYLON.Color3(0, 1, 0);
-					screenMaterial.emissiveTexture = null;
-					resolve();
-				});
-				tex.level = 0.5;
-			} else {
-				screenMaterial.emissiveTexture = null;
-				resolve();
+		const applyImage = () => {
+			screenMaterial.unfreeze();
+			let url: string | null = null;
+			if (options.image.type === '_custom_') {
+				url = options.image.custom?.url ?? null;
+			} else if (options.image.type === 'desktop') {
+				url = '/assets/objects/all-in-one-pc/desktop.png';
 			}
-		});
+			return textureManager.change(url, options.image.fit).then((tex) => {
+				screenMaterial.emissiveTexture = tex;
+			});
+		};
 
-		await applyCustomPicture();
+		await applyImage();
 
 		const applyBodyColor = () => {
 			const [r, g, b] = options.bodyColor;
@@ -137,8 +115,7 @@ export const allInOnePc = defineObject({
 					case 'bodyColor': applyBodyColor(); break;
 					case 'bezelColor': applyBezelColor(); break;
 					case 'screenBrightness': applyScreenBrightness(); break;
-					case 'customPicture': applyCustomPicture(); break;
-					case 'fit': applyFit(); break;
+					case 'image': applyImage(); break;
 				}
 			},
 			interactions: {},
@@ -146,6 +123,8 @@ export const allInOnePc = defineObject({
 				light.dispose();
 				if (lc != null) lc.removeLight(light);
 				scene.removeLight(light); // lc使用時はsceneには追加してないはずだが、これがないとクラッシュする babylonのバグ？
+
+				textureManager.dispose();
 			},
 		};
 	},

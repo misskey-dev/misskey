@@ -20,22 +20,22 @@ import { ModerationLogService } from '@/core/ModerationLogService.js';
 import { QueryService } from '@/core/QueryService.js';
 
 const driveFileReferencingOptions = {
-	clippedPicture: ['customPicture'],
-	tapestry: ['customPicture'],
-	poster: ['customPicture'],
-	pictureFrame: ['customPicture'],
-	tabletopPictureFrame: ['customPicture'],
-	tabletopGlassPictureFrame: ['customPicture'],
-	wallCanvas: ['customPicture'],
-	wallGlassPictureFrame: ['customPicture'],
-	tabletopFlag: ['customPicture'],
-	tabletopLcdButtonsController: ['customPicture'],
-	djPlayer: ['customPicture'],
-	monitor: ['customPicture'],
-	allInOnePc: ['customPicture'],
-	laptopPc: ['customPicture'],
-	handheldGameConsole: ['customPicture'],
-	largeMousepad: ['customPicture'],
+	clippedPicture: ['image'],
+	tapestry: ['image'],
+	poster: ['image'],
+	pictureFrame: ['image'],
+	tabletopPictureFrame: ['image'],
+	tabletopGlassPictureFrame: ['image'],
+	wallCanvas: ['image'],
+	wallGlassPictureFrame: ['image'],
+	tabletopFlag: ['image'],
+	tabletopLcdButtonsController: ['image'],
+	djPlayer: ['image'],
+	monitor: ['image'],
+	allInOnePc: ['image'],
+	laptopPc: ['image'],
+	handheldGameConsole: ['image'],
+	largeMousepad: ['image'],
 } as Record<string, string[]>;
 
 @Injectable()
@@ -124,8 +124,8 @@ export class WorldRoomService {
 			if (def == null) continue;
 			for (const key of def) {
 				const optionValue = o.options[key];
-				if (optionValue != null && optionValue !== '') {
-					fileIds.add(optionValue);
+				if (optionValue != null && optionValue.driveFileId != null && optionValue.driveFileId !== '') {
+					fileIds.add(optionValue.driveFileId);
 				}
 			}
 		}
