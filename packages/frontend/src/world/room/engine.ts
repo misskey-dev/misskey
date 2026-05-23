@@ -220,7 +220,7 @@ export class RoomEngine extends EngineBase<{
 			...deepClone(roomState),
 			installedObjects: roomState.installedObjects.map(o => ({
 				...o,
-				options: { ...getObjectDef(o.type).options.default, ...o.options },
+				options: { ...deepClone(getObjectDef(o.type).options.default), ...o.options },
 			})),
 		};
 		this.roomAttachments = roomAttachments;
