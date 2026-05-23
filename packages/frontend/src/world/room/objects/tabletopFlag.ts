@@ -12,9 +12,10 @@ export const tabletopFlag = defineObject({
 	name: 'Tabletop flag',
 	options: {
 		schema: {
-			customPicture: {
+			image: {
 				type: 'image',
-				label: 'Custom picture',
+				label: 'Image',
+				presets: [],
 			},
 		},
 		default: {

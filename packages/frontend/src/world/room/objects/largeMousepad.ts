@@ -12,9 +12,10 @@ export const largeMousepad = defineObject({
 	name: 'largeMousepad',
 	options: {
 		schema: {
-			customPicture: {
+			image: {
 				type: 'image',
-				label: 'Custom picture',
+				label: 'Image',
+				presets: [],
 			},
 		},
 		default: {

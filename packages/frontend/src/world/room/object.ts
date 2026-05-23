@@ -193,7 +193,7 @@ export function convertRawOptions<OpSc extends OptionsSchema>(schema: OpSc, raw:
 	return converted;
 }
 
-export const createTextureManager = (targetMesh: BABYLON.Mesh, targetAspect: number, scene: BABYLON.Scene) => {
+export const createTextureManager = (targetMesh: BABYLON.Mesh, calcTargetAspect: () => number, scene: BABYLON.Scene) => {
 	let currentUrl: string | null = null;
 	let currentTexture: BABYLON.Texture | null = null;
 
@@ -204,7 +204,7 @@ export const createTextureManager = (targetMesh: BABYLON.Mesh, targetAspect: num
 
 		const srcAspect = currentTexture.getSize().width / currentTexture.getSize().height;
 
-		updateUv(srcAspect, targetAspect, method ?? 'cover');
+		updateUv(srcAspect, calcTargetAspect(), method ?? 'cover');
 	};
 
 	const change = (url: string | null, fit?: 'cover' | 'contain' | 'stretch') => new Promise<BABYLON.Texture | null>((resolve) => {
@@ -226,6 +226,8 @@ export const createTextureManager = (targetMesh: BABYLON.Mesh, targetAspect: num
 		}
 		currentTexture = new BABYLON.Texture(url, scene, false, false, undefined, () => {
 			currentTexture!.level = 0.5;
+			currentTexture!.wrapU = BABYLON.Texture.MIRROR_ADDRESSMODE;
+			currentTexture!.wrapV = BABYLON.Texture.MIRROR_ADDRESSMODE;
 			applyFit(fit);
 			resolve(currentTexture);
 		}, (message, exception) => {
@@ -238,6 +240,7 @@ export const createTextureManager = (targetMesh: BABYLON.Mesh, targetAspect: num
 
 	return {
 		change,
+		applyFit,
 		dispose: () => {
 			if (currentTexture != null) {
 				currentTexture.dispose();

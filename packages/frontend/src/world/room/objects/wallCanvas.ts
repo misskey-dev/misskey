@@ -26,9 +26,10 @@ export const wallCanvas = defineObject({
 				max: 1,
 				step: 0.01,
 			},
-			customPicture: {
+			image: {
 				type: 'image',
-				label: 'Custom picture',
+				label: 'Image',
+				presets: [],
 			},
 		},
 		default: {

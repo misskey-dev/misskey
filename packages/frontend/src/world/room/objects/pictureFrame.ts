@@ -64,9 +64,10 @@ export const pictureFrame = defineObject({
 				type: 'boolean',
 				label: 'With cover',
 			},
-			customPicture: {
+			image: {
 				type: 'image',
-				label: 'Custom picture',
+				label: 'Image',
+				presets: [],
 			},
 		},
 		default: {

@@ -71,7 +71,7 @@ export const allInOnePc = defineObject({
 		screenMaterial.albedoColor = new BABYLON.Color3(0, 0, 0);
 		screenMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
 
-		const textureManager = createTextureManager(screenMesh, 50 / 27.5, scene);
+		const textureManager = createTextureManager(screenMesh, () => 50 / 27.5, scene);
 
 		const applyScreenBrightness = () => {
 			const b = options.screenBrightness;
