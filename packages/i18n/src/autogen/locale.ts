@@ -4389,6 +4389,10 @@ export interface Locale extends ILocale {
      */
     "rolesAssignedToMe": string;
     /**
+     * ロール設定
+     */
+    "roleSettings": string;
+    /**
      * パスワードリセットしますか？
      */
     "resetPasswordConfirm": string;

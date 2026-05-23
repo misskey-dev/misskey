@@ -51,41 +51,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkSwitch>
 		</SearchMarker>
 
-		<SearchMarker :keywords="['role', 'badge', 'visibility']">
-			<FormSection>
-				<template #label><SearchLabel>{{ i18n.ts._roleDisplay.title }}</SearchLabel></template>
-				<template #description><SearchText>{{ i18n.ts._roleDisplay.description }}</SearchText></template>
-
-				<div class="_gaps_s">
-					<MkInfo v-if="roleDisplayRoles.length === 0">{{ i18n.ts._roleDisplay.noRoles }}</MkInfo>
-					<MkSwitch
-						v-for="role in roleDisplayRoles"
-						:key="role.id"
-						:modelValue="isRoleDisplayShown(role)"
-						:disabled="role.isPublicDisplayRequired"
-						@update:modelValue="value => updateRoleDisplay(role, value)"
-					>
-						<template #label>
-							<SearchLabel>
-								<span :class="$style.roleLabel" :style="{ '--color': role.color ?? '' }">
-									<span :class="$style.roleIcon">
-										<img v-if="role.iconUrl" :class="$style.roleBadge" :src="role.iconUrl"/>
-										<i v-else-if="role.isAdministrator" class="ti ti-crown"></i>
-										<i v-else-if="role.isModerator" class="ti ti-shield"></i>
-										<i v-else class="ti ti-user"></i>
-									</span>
-									<span>{{ role.name }}</span>
-								</span>
-							</SearchLabel>
-						</template>
-						<template #caption>
-							<SearchText v-if="role.isPublicDisplayRequired">{{ i18n.ts._roleDisplay.alwaysShownByAdmin }}</SearchText>
-						</template>
-					</MkSwitch>
-				</div>
-			</FormSection>
-		</SearchMarker>
-
 		<SearchMarker :keywords="['crawle', 'index', 'search']">
 			<MkSwitch v-model="noCrawle" @update:modelValue="save()">
 				<template #label><SearchLabel>{{ i18n.ts.noCrawle }}</SearchLabel></template>
@@ -248,7 +213,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed, watch } from 'vue';
-import * as Misskey from 'misskey-js';
 import type { MkSelectItem } from '@/components/MkSelect.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -266,22 +230,8 @@ import * as os from '@/os.js';
 import MkDisableSection from '@/components/MkDisableSection.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
-import { updateCurrentAccount } from '@/accounts.js';
 
 const $i = ensureSignin();
-
-type RoleDisplayRole = Misskey.entities.IResponse['roles'][number] & {
-	isPublicDisplayRequired?: boolean;
-};
-type MeDetailedWithRoleDisplay = Misskey.entities.MeDetailed & {
-	hiddenRoleIds?: string[];
-	roles: RoleDisplayRole[];
-};
-type IUpdateWithHiddenRoleIdsRequest = Misskey.Endpoints['i/update']['req'] & {
-	hiddenRoleIds: string[];
-};
-
-const me = $i as MeDetailedWithRoleDisplay;
 
 const isLocked = ref($i.isLocked);
 const autoAcceptFollowed = ref($i.autoAcceptFollowed);
@@ -292,8 +242,6 @@ const requireSigninToViewContents = ref($i.requireSigninToViewContents ?? false)
 const makeNotesFollowersOnlyBefore = ref($i.makeNotesFollowersOnlyBefore ?? null);
 const makeNotesHiddenBefore = ref($i.makeNotesHiddenBefore ?? null);
 const hideOnlineStatus = ref($i.hideOnlineStatus);
-const hiddenRoleIds = ref([...getHiddenRoleIds(me)]);
-const roleDisplayRoles = computed(() => me.roles);
 const publicReactions = ref($i.publicReactions);
 const {
 	model: followingVisibility,
@@ -452,35 +400,6 @@ async function update_requireSigninToViewContents(value: boolean) {
 	save();
 }
 
-function getHiddenRoleIds(user: { hiddenRoleIds?: string[] }): string[] {
-	return user.hiddenRoleIds ?? [];
-}
-
-function isRoleDisplayShown(role: RoleDisplayRole): boolean {
-	return role.isPublicDisplayRequired === true || !hiddenRoleIds.value.includes(role.id);
-}
-
-async function updateRoleDisplay(role: RoleDisplayRole, visible: boolean) {
-	if (role.isPublicDisplayRequired === true) return;
-
-	const nextHiddenRoleIds = new Set(hiddenRoleIds.value);
-	if (visible) {
-		nextHiddenRoleIds.delete(role.id);
-	} else {
-		nextHiddenRoleIds.add(role.id);
-	}
-
-	const nextIds = roleDisplayRoles.value
-		.filter(role => role.isPublicDisplayRequired !== true && nextHiddenRoleIds.has(role.id))
-		.map(role => role.id);
-	const updated = await misskeyApi<MeDetailedWithRoleDisplay, 'i/update', IUpdateWithHiddenRoleIdsRequest>('i/update', {
-		hiddenRoleIds: nextIds,
-	});
-
-	updateCurrentAccount(updated);
-	hiddenRoleIds.value = [...getHiddenRoleIds(updated)];
-}
-
 function save() {
 	misskeyApi('i/update', {
 		isLocked: !!isLocked.value,
@@ -508,24 +427,3 @@ definePage(() => ({
 	icon: 'ti ti-lock-open',
 }));
 </script>
-
-<style lang="scss" module>
-.roleLabel {
-	display: inline-flex;
-	align-items: center;
-	gap: 8px;
-	color: var(--color, inherit);
-}
-
-.roleIcon {
-	display: inline-flex;
-	align-items: center;
-	width: 1.3em;
-	justify-content: center;
-}
-
-.roleBadge {
-	height: 1.3em;
-	vertical-align: -20%;
-}
-</style>
