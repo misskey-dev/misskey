@@ -136,7 +136,7 @@ export type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 	name: string;
 	options: {
 		schema: string extends keyof OpSc ? OptionsSchema : OpSc;
-		default: string extends keyof OpSc ? RawOptions : GetRawOptionsSchemaValues<OpSc>;
+		default: string extends keyof OpSc ? RawOptions : GetRawOptionsSchemaValues<OpSc>; // 関数にした方が使用側でdeepCloneの必要がなくて綺麗かもしれない
 	};
 	placement: 'top' | 'side' | 'bottom' | 'wall' | 'ceiling' | 'floor';
 	hasCollisions?: boolean;
