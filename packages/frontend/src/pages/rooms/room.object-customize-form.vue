@@ -12,6 +12,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<!-- debounce or throttleしないとカラーピッカー上で高速でなぞったときになぜか無限ループになる。ワーカーとの間でラグがあるため、少し前の値がまたmodelValueとしてフィードバックされてしまうためだと思われる -->
 				<MkInput :modelValue="getHex(options[k])" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) emit('update', k, c); }"></MkInput>
 			</div>
+			<div v-else-if="s.type === 'material'" class="_gaps_s">
+				<!-- debounce or throttleしないとカラーピッカー上で高速でなぞったときになぜか無限ループになる。ワーカーとの間でラグがあるため、少し前の値がまたmodelValueとしてフィードバックされてしまうためだと思われる -->
+				<MkInput :modelValue="getHex(options[k].color)" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) updateMaterialColor(k, c); }">
+					<template #label>{{ i18n.ts.color }}</template>
+				</MkInput>
+				<MkRange :continuousUpdate="true" :min="0" :max="1" :step="0.1" :modelValue="options[k].metallic" @update:modelValue="v => updateMaterialMetallic(k, v)">
+					<template #label>{{ i18n.ts._miRoom.material_metallic }}</template>
+				</MkRange>
+				<MkRange :continuousUpdate="true" :min="0" :max="1" :step="0.1" :modelValue="options[k].roughness" @update:modelValue="v => updateMaterialRoughness(k, v)">
+					<template #label>{{ i18n.ts._miRoom.material_roughness }}</template>
+				</MkRange>
+			</div>
 			<div v-else-if="s.type === 'boolean'">
 				<MkSwitch :modelValue="options[k]" @update:modelValue="v => emit('update', k, v)"></MkSwitch>
 			</div>
@@ -108,6 +120,18 @@ function clearImage(k: string) {
 
 function changeImageFit(k: string, fit: string) {
 	emit('update', k, { ...props.options[k], fit });
+}
+
+function updateMaterialColor(k: string, color: { r: number; g: number; b: number }) {
+	emit('update', k, { ...props.options[k], color });
+}
+
+function updateMaterialMetallic(k: string, metallic: number) {
+	emit('update', k, { ...props.options[k], metallic });
+}
+
+function updateMaterialRoughness(k: string, roughness: number) {
+	emit('update', k, { ...props.options[k], roughness });
 }
 </script>
 

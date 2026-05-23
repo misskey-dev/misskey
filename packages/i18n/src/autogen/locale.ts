@@ -13358,5 +13358,13 @@ export interface Locale extends ILocale {
          * 引き伸ばす
          */
         "imageFit_stretch": string;
+        /**
+         * 光沢
+         */
+        "material_metallic": string;
+        /**
+         * 粗さ
+         */
+        "material_roughness": string;
     };
 }

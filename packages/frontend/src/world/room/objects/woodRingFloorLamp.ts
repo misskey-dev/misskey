@@ -13,13 +13,13 @@ export const woodRingFloorLamp = defineObject({
 	name: 'Wood Ring Floor Lamp',
 	options: {
 		schema: {
-			shadeColor: {
-				type: 'color',
-				label: 'Shade color',
+			shadeMat: {
+				type: 'material',
+				label: 'Shade material',
 			},
-			bodyColor: {
-				type: 'color',
-				label: 'Body color',
+			bodyMat: {
+				type: 'material',
+				label: 'Body material',
 			},
 			lightColor: {
 				type: 'color',
@@ -34,8 +34,8 @@ export const woodRingFloorLamp = defineObject({
 			},
 		},
 		default: {
-			shadeColor: [0.21, 0.04, 0],
-			bodyColor: [0.05, 0.05, 0.05],
+			shadeMat: { color: [0.21, 0.04, 0], metallic: 0, roughness: 0.5 },
+			bodyMat: { color: [0.05, 0.05, 0.05], metallic: 1, roughness: 0.5 },
 			lightColor: [1, 0.5, 0.2],
 			lightBrightness: 0.5,
 		},
@@ -46,8 +46,9 @@ export const woodRingFloorLamp = defineObject({
 		const shadeMaterial = model.findMaterial('__X_SHADE__');
 
 		const applyShadeColor = () => {
-			const [r, g, b] = options.shadeColor;
-			shadeMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+			shadeMaterial.albedoColor = new BABYLON.Color3(options.shadeMat.color[0], options.shadeMat.color[1], options.shadeMat.color[2]);
+			shadeMaterial.metallic = options.shadeMat.metallic;
+			shadeMaterial.roughness = options.shadeMat.roughness;
 		};
 
 		applyShadeColor();
@@ -55,8 +56,9 @@ export const woodRingFloorLamp = defineObject({
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 
 		const applyBodyColor = () => {
-			const [r, g, b] = options.bodyColor;
-			bodyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+			bodyMaterial.albedoColor = new BABYLON.Color3(options.bodyMat.color[0], options.bodyMat.color[1], options.bodyMat.color[2]);
+			bodyMaterial.metallic = options.bodyMat.metallic;
+			bodyMaterial.roughness = options.bodyMat.roughness;
 		};
 
 		applyBodyColor();
