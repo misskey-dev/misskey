@@ -79,7 +79,7 @@ type ImageOptionSchema = {
 	label: string;
 	presets: {
 		label: string;
-		value: string | number;
+		value: string;
 	}[];
 };
 
@@ -98,6 +98,7 @@ export type ConvertedOptions = Record<string, unknown> & {
 	readonly __brand: unique symbol;
 };
 
+type RawImageValue<Presets extends string = string> = { type: Presets | null | '_custom_'; driveFileId?: string | null; fit?: 'cover' | 'contain' | 'stretch'; };
 type GetRawOptionsSchemaValues<T extends OptionsSchema> = {
 	[K in keyof T]:
 	T[K] extends NumberOptionSchema ? number :
@@ -106,10 +107,11 @@ type GetRawOptionsSchemaValues<T extends OptionsSchema> = {
 	T[K] extends ColorOptionSchema ? [number, number, number] :
 	T[K] extends EnumOptionSchema ? T[K]['enum'][number]['value'] :
 	T[K] extends RangeOptionSchema ? number :
-	T[K] extends ImageOptionSchema ? { type: T[K]['presets'][number]['value'] | null | '_custom_'; driveFileId?: string | null; fit?: 'cover' | 'contain' | 'stretch'; } :
+	T[K] extends ImageOptionSchema ? RawImageValue<T[K]['presets'][number]['value']> :
 	T[K] extends SeedOptionSchema ? number :
 	never;
 };
+type ConvertedImageValue<Presets extends string = string> = { type: Presets | null | '_custom_'; custom?: { url: string; } | null; fit?: 'cover' | 'contain' | 'stretch'; };
 type GetConvertedOptionsSchemaValues<T extends OptionsSchema> = {
 	[K in keyof T]:
 	T[K] extends NumberOptionSchema ? number :
@@ -118,7 +120,7 @@ type GetConvertedOptionsSchemaValues<T extends OptionsSchema> = {
 	T[K] extends ColorOptionSchema ? [number, number, number] :
 	T[K] extends EnumOptionSchema ? T[K]['enum'][number]['value'] :
 	T[K] extends RangeOptionSchema ? number :
-	T[K] extends ImageOptionSchema ? { type: T[K]['presets'][number]['value'] | null | '_custom_'; custom?: { url: string; } | null; fit?: 'cover' | 'contain' | 'stretch'; } :
+	T[K] extends ImageOptionSchema ? ConvertedImageValue<T[K]['presets'][number]['value']> :
 	T[K] extends SeedOptionSchema ? number :
 	never;
 };
@@ -180,12 +182,13 @@ export function convertRawOptions<OpSc extends OptionsSchema>(schema: OpSc, raw:
 		const k = record[0];
 		const v = raw[k];
 		if (record[1].type === 'image') {
-			const file = v.type === '_custom_' ? attachments.files.find(f => f.id === v.driveFileId) : null;
+			const _v = v as unknown as RawImageValue;
+			const file = _v.type === '_custom_' ? attachments.files.find(f => f.id === _v.driveFileId) : null;
 			if (file != null && file.url.startsWith('http://syu-win.local:3000/')) { // debug
 				file.url = file.url.replace('http://syu-win.local:3000/', 'https://local-mi.syuilo.dev/');
 			}
 
-			converted[k] = { type: v.type, custom: file != null ? { url: file.url } : null, fit: v.fit };
+			converted[k] = { type: _v.type, custom: file != null ? { url: file.url } : null, fit: _v.fit } satisfies ConvertedImageValue;
 		} else {
 			converted[k] = v;
 		}
