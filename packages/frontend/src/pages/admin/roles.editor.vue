@@ -62,7 +62,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #caption>{{ i18n.ts._role.descriptionOfIsPublic }}</template>
 	</MkSwitch>
 
-	<MkSwitch v-model="role.isPublicDisplayRequired" :readonly="readonly">
+	<MkSwitch v-if="role.isPublic" v-model="role.isPublicDisplayRequired" :readonly="readonly">
 		<template #label>{{ i18n.ts._role.isPublicDisplayRequired }}</template>
 		<template #caption>{{ i18n.ts._role.descriptionOfIsPublicDisplayRequired }}</template>
 	</MkSwitch>
