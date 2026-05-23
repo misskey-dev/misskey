@@ -5663,6 +5663,10 @@ export interface Locale extends ILocale {
      * 元に戻す
      */
     "previewingThemeRestore": string;
+    /**
+     * 選択
+     */
+    "choose": string;
     "_imageEditing": {
         "_vars": {
             /**
@@ -13338,5 +13342,21 @@ export interface Locale extends ILocale {
          * MisskeyRoomを動作させるには、WebGPUをサポートするデバイス・ブラウザが必要です。
          */
         "yourDeviceNotSupported_description": string;
+        /**
+         * 画像のはめ込み
+         */
+        "imageFit": string;
+        /**
+         * 覆う
+         */
+        "imageFit_cover": string;
+        /**
+         * 収める
+         */
+        "imageFit_contain": string;
+        /**
+         * 引き伸ばす
+         */
+        "imageFit_stretch": string;
     };
 }

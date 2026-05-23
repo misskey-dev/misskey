@@ -70,8 +70,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 
-	<div v-if="controller.isReady.value && controller.isEditMode.value && controller.selected.value != null && selectedObjectDef != null && !controller.grabbing.value" :key="controller.selected.value.objectId" class="_panel" :class="$style.overlayObjectInfoPanel">
-		{{ selectedObjectDef.name }}
+	<div v-if="controller.isReady.value && controller.isEditMode.value && controller.selected.value != null && selectedObjectDef != null && !controller.grabbing.value" :key="controller.selected.value.objectId" :class="$style.overlayObjectInfoPanel">
+		<div style="margin-bottom: 8px; font-weight: bold; text-align: center;">{{ selectedObjectDef.name }}</div>
 
 		<XObjectCustomizeForm :addFileAttachment="addFileAttachment" :schema="selectedObjectDef.options.schema" :options="controller.selected.value.objectState.options" @update="(k, v) => updateObjectOption(k, v)"></XObjectCustomizeForm>
 	</div>
@@ -785,6 +785,10 @@ function showOtherMenu(ev: PointerEvent) {
 	max-height: 100%;
 	box-sizing: border-box;
 	overflow: auto;
+	border-radius: 12px;
+	background: color(from var(--MI_THEME-panel) srgb r g b / 0.5);
+	-webkit-backdrop-filter: blur(15px);
+	backdrop-filter: blur(15px);
 }
 
 .loading {

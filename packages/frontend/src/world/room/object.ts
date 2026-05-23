@@ -57,6 +57,11 @@ type ColorOptionSchema = {
 	label: string;
 };
 
+type MaterialOptionSchema = {
+	type: 'material';
+	label: string;
+};
+
 type EnumOptionSchema = {
 	type: 'enum';
 	label: string;
@@ -105,6 +110,7 @@ type GetRawOptionsSchemaValues<T extends OptionsSchema> = {
 	T[K] extends BooleanOptionSchema ? boolean :
 	T[K] extends StringOptionSchema ? string :
 	T[K] extends ColorOptionSchema ? [number, number, number] :
+	T[K] extends MaterialOptionSchema ? { color: [number, number, number]; metallic: number; roughness: number; } :
 	T[K] extends EnumOptionSchema ? T[K]['enum'][number]['value'] :
 	T[K] extends RangeOptionSchema ? number :
 	T[K] extends ImageOptionSchema ? RawImageValue<T[K]['presets'][number]['value']> :
@@ -118,6 +124,7 @@ type GetConvertedOptionsSchemaValues<T extends OptionsSchema> = {
 	T[K] extends BooleanOptionSchema ? boolean :
 	T[K] extends StringOptionSchema ? string :
 	T[K] extends ColorOptionSchema ? [number, number, number] :
+	T[K] extends MaterialOptionSchema ? { color: [number, number, number]; metallic: number; roughness: number; } :
 	T[K] extends EnumOptionSchema ? T[K]['enum'][number]['value'] :
 	T[K] extends RangeOptionSchema ? number :
 	T[K] extends ImageOptionSchema ? ConvertedImageValue<T[K]['presets'][number]['value']> :

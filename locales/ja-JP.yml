@@ -1412,6 +1412,7 @@ nothingToConfigure: "設定項目はありません"
 viewRenotedChannel: "リノート先のチャンネルを見る"
 previewingTheme: "テーマのプレビュー中"
 previewingThemeRestore: "元に戻す"
+choose: "選択"
 
 _imageEditing:
   _vars:
@@ -3575,3 +3576,7 @@ _miRoom:
   revertAllChangesConfirmation: "全ての変更を取り消し、部屋を最後に保存した状態まで戻しますか？"
   yourDeviceNotSupported_title: "MisskeyRoomを起動できません"
   yourDeviceNotSupported_description: "お使いのデバイスがMisskeyRoomをサポートしていないか、デバイスのリソース不足などにより一時的に利用できなくなっています。\nMisskeyRoomを動作させるには、WebGPUをサポートするデバイス・ブラウザが必要です。"
+  imageFit: "画像のはめ込み"
+  imageFit_cover: "覆う"
+  imageFit_contain: "収める"
+  imageFit_stretch: "引き伸ばす"

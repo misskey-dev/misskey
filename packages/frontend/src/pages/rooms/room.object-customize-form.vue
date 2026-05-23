@@ -5,9 +5,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <div :class="$style.root">
-	<div class="_gaps">
-		<div v-for="[k, s] in Object.entries(schema)" :key="k">
-			<div>{{ s.label }}</div>
+	<div class="_gaps_s">
+		<MkFolder v-for="[k, s] in Object.entries(schema)" :key="k" defaultOpen>
+			<template #label>{{ s.label }}</template>
 			<div v-if="s.type === 'color'">
 				<!-- debounce or throttleしないとカラーピッカー上で高速でなぞったときになぜか無限ループになる。ワーカーとの間でラグがあるため、少し前の値がまたmodelValueとしてフィードバックされてしまうためだと思われる -->
 				<MkInput :modelValue="getHex(options[k])" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) emit('update', k, c); }"></MkInput>
@@ -24,20 +24,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-else-if="s.type === 'range'">
 				<MkRange :continuousUpdate="true" :min="s.min" :max="s.max" :step="s.step" :modelValue="options[k]" @update:modelValue="v => emit('update', k, v)"></MkRange>
 			</div>
-			<div v-else-if="s.type === 'image'">
+			<div v-else-if="s.type === 'image'" class="_gaps_s">
 				<MkSelect :items="[{ label: i18n.ts.none, value: null }, { label: i18n.ts.custom, value: '_custom_' }, ...(s.presets.length > 0 ? [{ type: 'divider' } as const] : []), ...s.presets.map(e => ({ label: e.label, value: e.value }))]" :modelValue="options[k].type" @update:modelValue="v => changeImageType(k, v)"></MkSelect>
 
-				<div v-if="options[k].type === '_custom_'">
-					<MkButton primary inline @click="changeImage(k)">Change</MkButton>
+				<div v-if="options[k].type === '_custom_'" class="_buttons">
+					<MkButton primary inline @click="changeImage(k)"><i class="ti ti-cloud"></i> {{ i18n.ts.choose }}...</MkButton>
 					<MkButton v-if="options[k].driveFileId != null" danger inline iconOnly @click="clearImage(k)"><i class="ti ti-x"></i></MkButton>
 				</div>
 
-				<MkRadios :options="[{ label: 'cover', value: 'cover' }, { label: 'contain', value: 'contain' }, { label: 'stretch', value: 'stretch' }]" :modelValue="options[k].fit ?? 'cover'" @update:modelValue="v => changeImageFit(k, v)"></MkRadios>
+				<hr>
+
+				<MkRadios :options="[{ label: i18n.ts._miRoom.imageFit_cover, value: 'cover' }, { label: i18n.ts._miRoom.imageFit_contain, value: 'contain' }, { label: i18n.ts._miRoom.imageFit_stretch, value: 'stretch' }]" :modelValue="options[k].fit ?? 'cover'" @update:modelValue="v => changeImageFit(k, v)">
+					<template #label>{{ i18n.ts._miRoom.imageFit }}</template>
+				</MkRadios>
 			</div>
 			<div v-else-if="s.type === 'seed'">
 				<MkRange :continuousUpdate="true" :min="0" :max="1000" :step="1" :modelValue="options[k]" @update:modelValue="v => emit('update', k, v)"></MkRange>
 			</div>
-		</div>
+		</MkFolder>
 	</div>
 </div>
 </template>
@@ -56,6 +60,7 @@ import MkRange from '@/components/MkRange.vue';
 import { getHex, getRgb } from '@/world/utility.js';
 import { chooseDriveFile } from '@/utility/drive.js';
 import MkRadios from '@/components/MkRadios.vue';
+import MkFolder from '@/components/MkFolder.vue';
 
 const props = defineProps<{
 	schema: ObjectDef['options']['schema'];
