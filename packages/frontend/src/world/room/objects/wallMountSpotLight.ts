@@ -37,7 +37,7 @@ export const wallMountSpotLight = defineObject({
 			},
 		},
 		default: {
-			bodyMat: { color: [0.05, 0.05, 0.05], roughness: 0.5, metallic: 0 },
+			bodyMat: { color: [0.05, 0.05, 0.05], roughness: 0.5, metallic: 0.3 },
 			light: {
 				color: [1, 0.5, 0.2],
 				brightness: 0.5,

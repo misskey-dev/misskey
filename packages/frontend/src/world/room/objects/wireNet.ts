@@ -17,16 +17,15 @@ export const wireNet = defineObject({
 			},
 		},
 		default: {
-			bodyMat: { color: [0.03, 0.03, 0.03], roughness: -1, metallic: -1 },
+			bodyMat: { color: [0.03, 0.03, 0.03], roughness: 0.5, metallic: 0.5 },
 		},
 	},
 	placement: 'side',
 	hasCollisions: false,
 	canPreMeshesMerging: true,
 	hasTexture: false,
-	createInstance: ({ options, model, id }) => {
+	createInstance: ({ options, model }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
-		console.log(id, bodyMaterial.roughness, bodyMaterial.metallic);
 
 		const applyBodyMat = () => {
 			bodyMaterial.albedoColor = new BABYLON.Color3(options.bodyMat.color[0], options.bodyMat.color[1], options.bodyMat.color[2]);

@@ -17,15 +17,14 @@ export const piano = defineObject({
 			},
 		},
 		default: {
-			bodyMat: { color: [0, 0, 0], roughness: -1, metallic: -1 },
+			bodyMat: { color: [0, 0, 0], roughness: 0.5, metallic: 0 },
 		},
 	},
 	placement: 'floor',
 	hasCollisions: true,
 	canPreMeshesMerging: true,
-	createInstance: ({ options, model, id }) => {
+	createInstance: ({ options, model }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
-		console.log(id, bodyMaterial.roughness, bodyMaterial.metallic);
 
 		const applyBodyMat = () => {
 			bodyMaterial.albedoColor = new BABYLON.Color3(options.bodyMat.color[0], options.bodyMat.color[1], options.bodyMat.color[2]);

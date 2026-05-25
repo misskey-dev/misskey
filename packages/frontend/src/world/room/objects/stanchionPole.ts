@@ -21,16 +21,15 @@ export const stanchionPole = defineObject({
 			},
 		},
 		default: {
-			bodyMat: { color: [0.8, 0.39, 0.1], roughness: -1, metallic: -1 },
-			ropeMat: { color: [0.21, 0.0, 0.0], roughness: -1, metallic: -1 },
+			bodyMat: { color: [0.8, 0.39, 0.1], roughness: 0.2, metallic: 1 },
+			ropeMat: { color: [0.21, 0.0, 0.0], roughness: 0.7, metallic: 0 },
 		},
 	},
 	placement: 'floor',
 	hasCollisions: true,
 	hasTexture: false,
-	createInstance: ({ options, model, id }) => {
+	createInstance: ({ options, model }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
-		console.log(id, bodyMaterial.roughness, bodyMaterial.metallic);
 
 		const applyBodyMat = () => {
 			bodyMaterial.albedoColor = new BABYLON.Color3(options.bodyMat.color[0], options.bodyMat.color[1], options.bodyMat.color[2]);
@@ -41,7 +40,6 @@ export const stanchionPole = defineObject({
 		applyBodyMat();
 
 		const ropeMaterial = model.findMaterial('__X_ROPE__');
-		console.log(id, ropeMaterial.roughness, ropeMaterial.metallic);
 
 		const applyRopeMat = () => {
 			ropeMaterial.albedoColor = new BABYLON.Color3(options.ropeMat.color[0], options.ropeMat.color[1], options.ropeMat.color[2]);

@@ -37,7 +37,7 @@ export const spotLight = defineObject({
 			},
 		},
 		default: {
-			bodyMat: { color: [0.05, 0.05, 0.05], roughness: -1, metallic: -1 },
+			bodyMat: { color: [0.05, 0.05, 0.05], roughness: 0.5, metallic: 0.3 },
 			light: {
 				color: [1, 0.5, 0.2],
 				brightness: 0.2,
@@ -48,9 +48,8 @@ export const spotLight = defineObject({
 	},
 	placement: 'bottom',
 	hasCollisions: false,
-	createInstance: ({ lc, scene, options, model, graphicsQuality, id }) => {
+	createInstance: ({ lc, scene, options, model, graphicsQuality }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
-		console.log(id, bodyMaterial.roughness, bodyMaterial.metallic);
 
 		const applyBodyMat = () => {
 			bodyMaterial.albedoColor = new BABYLON.Color3(options.bodyMat.color[0], options.bodyMat.color[1], options.bodyMat.color[2]);
