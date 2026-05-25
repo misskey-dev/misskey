@@ -13,25 +13,25 @@ export const desktopPc = defineObject({
 	name: 'Desktop PC',
 	options: {
 		schema: {
-			bodyColor: {
-				type: 'color',
-				label: 'Body color',
+			bodyMat: {
+				type: 'material',
+				label: 'Body material',
 			},
-			coverColor: {
-				type: 'color',
-				label: 'Cover color',
+			coverMat: {
+				type: 'material',
+				label: 'Cover material',
 			},
-			inner1Color: {
-				type: 'color',
-				label: 'Inner color 1',
+			inner1Mat: {
+				type: 'material',
+				label: 'Inner material 1',
 			},
-			inner2Color: {
-				type: 'color',
-				label: 'Inner color 2',
+			inner2Mat: {
+				type: 'material',
+				label: 'Inner material 2',
 			},
-			inner3Color: {
-				type: 'color',
-				label: 'Inner color 3',
+			inner3Mat: {
+				type: 'material',
+				label: 'Inner material 3',
 			},
 			ledColor: {
 				type: 'color',
@@ -39,11 +39,11 @@ export const desktopPc = defineObject({
 			},
 		},
 		default: {
-			bodyColor: [0.05, 0.05, 0.05],
-			coverColor: [0.85, 0.85, 0.85],
-			inner1Color: [1, 1, 1],
-			inner2Color: [1, 1, 1],
-			inner3Color: [0.1, 0.1, 0.1],
+			bodyMat: { color: [0.05, 0.05, 0.05], roughness: 0.5, metallic: 0.25 },
+			coverMat: { color: [0.85, 0.85, 0.85], roughness: 0.2, metallic: 0 },
+			inner1Mat: { color: [1, 1, 1], roughness: 0.2, metallic: 0 },
+			inner2Mat: { color: [1, 1, 1], roughness: 0.2, metallic: 0 },
+			inner3Mat: { color: [0.1, 0.1, 0.1], roughness: 0.4, metallic: 0.7 },
 			ledColor: [0.5, 0.9, 0],
 		},
 	},
@@ -73,40 +73,45 @@ export const desktopPc = defineObject({
 
 		ledMaterial.emissiveIntensity = 1;
 
-		const applyBodyColor = () => {
-			const [r, g, b] = options.bodyColor;
-			bodyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyBodyMat = () => {
+			bodyMaterial.albedoColor = new BABYLON.Color3(options.bodyMat.color[0], options.bodyMat.color[1], options.bodyMat.color[2]);
+			bodyMaterial.roughness = options.bodyMat.roughness;
+			bodyMaterial.metallic = options.bodyMat.metallic;
 		};
 
-		applyBodyColor();
+		applyBodyMat();
 
-		const applyCoverColor = () => {
-			const [r, g, b] = options.coverColor;
-			coverMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyCoverMat = () => {
+			coverMaterial.albedoColor = new BABYLON.Color3(options.coverMat.color[0], options.coverMat.color[1], options.coverMat.color[2]);
+			coverMaterial.roughness = options.coverMat.roughness;
+			coverMaterial.metallic = options.coverMat.metallic;
 		};
 
-		applyCoverColor();
+		applyCoverMat();
 
-		const applyInner1Color = () => {
-			const [r, g, b] = options.inner1Color;
-			inner1Material.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyInner1Mat = () => {
+			inner1Material.albedoColor = new BABYLON.Color3(options.inner1Mat.color[0], options.inner1Mat.color[1], options.inner1Mat.color[2]);
+			inner1Material.roughness = options.inner1Mat.roughness;
+			inner1Material.metallic = options.inner1Mat.metallic;
 		};
 
-		applyInner1Color();
+		applyInner1Mat();
 
-		const applyInner2Color = () => {
-			const [r, g, b] = options.inner2Color;
-			inner2Material.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyInner2Mat = () => {
+			inner2Material.albedoColor = new BABYLON.Color3(options.inner2Mat.color[0], options.inner2Mat.color[1], options.inner2Mat.color[2]);
+			inner2Material.roughness = options.inner2Mat.roughness;
+			inner2Material.metallic = options.inner2Mat.metallic;
 		};
 
-		applyInner2Color();
+		applyInner2Mat();
 
-		const applyInner3Color = () => {
-			const [r, g, b] = options.inner3Color;
-			inner3Material.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyInner3Mat = () => {
+			inner3Material.albedoColor = new BABYLON.Color3(options.inner3Mat.color[0], options.inner3Mat.color[1], options.inner3Mat.color[2]);
+			inner3Material.roughness = options.inner3Mat.roughness;
+			inner3Material.metallic = options.inner3Mat.metallic;
 		};
 
-		applyInner3Color();
+		applyInner3Mat();
 
 		const applyLedColor = () => {
 			const [r, g, b] = options.ledColor;
@@ -119,11 +124,11 @@ export const desktopPc = defineObject({
 
 		return {
 			onOptionsUpdated: ([k, v]) => {
-				applyBodyColor();
-				applyCoverColor();
-				applyInner1Color();
-				applyInner2Color();
-				applyInner3Color();
+				applyBodyMat();
+				applyCoverMat();
+				applyInner1Mat();
+				applyInner2Mat();
+				applyInner3Mat();
 				applyLedColor();
 			},
 			interactions: {},

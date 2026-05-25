@@ -11,18 +11,18 @@ export const aromaReedDiffuser = defineObject({
 	name: 'Aroma Reed Diffuser',
 	options: {
 		schema: {
-			bottleColor: {
-				type: 'color',
-				label: 'Bottle Color',
+			bottleMat: {
+				type: 'material',
+				label: 'Bottle Material',
 			},
-			oilColor: {
-				type: 'color',
-				label: 'Oil Color',
+			oilMat: {
+				type: 'material',
+				label: 'Oil Material',
 			},
 		},
 		default: {
-			bottleColor: [1, 0.83, 0.48],
-			oilColor: [1, 0.4, 0],
+			bottleMat: { color: [1, 0.83, 0.48], roughness: 0, metallic: 0.7 },
+			oilMat: { color: [1, 0.4, 0], roughness: 0, metallic: 1 },
 		},
 	},
 	placement: 'top',
@@ -33,23 +33,25 @@ export const aromaReedDiffuser = defineObject({
 		const bottleMaterial = model.findMaterial('__X_BOTTLE__');
 		const oilMaterial = model.findMaterial('__X_OIL__');
 
-		const applyBottleColor = () => {
-			const [r, g, b] = options.bottleColor;
-			bottleMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyBottleMat = () => {
+			bottleMaterial.albedoColor = new BABYLON.Color3(options.bottleMat.color[0], options.bottleMat.color[1], options.bottleMat.color[2]);
+			bottleMaterial.roughness = options.bottleMat.roughness;
+			bottleMaterial.metallic = options.bottleMat.metallic;
 		};
 
-		const applyOilColor = () => {
-			const [r, g, b] = options.oilColor;
-			oilMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyOilMat = () => {
+			oilMaterial.albedoColor = new BABYLON.Color3(options.oilMat.color[0], options.oilMat.color[1], options.oilMat.color[2]);
+			oilMaterial.roughness = options.oilMat.roughness;
+			oilMaterial.metallic = options.oilMat.metallic;
 		};
 
-		applyBottleColor();
-		applyOilColor();
+		applyBottleMat();
+		applyOilMat();
 
 		return {
 			onOptionsUpdated: ([k, v]) => {
-				applyBottleColor();
-				applyOilColor();
+				applyBottleMat();
+				applyOilMat();
 			},
 			interactions: {},
 			dispose: () => {},

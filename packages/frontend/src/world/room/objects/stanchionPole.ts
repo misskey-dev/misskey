@@ -11,47 +11,51 @@ export const stanchionPole = defineObject({
 	name: 'stanchionPole',
 	options: {
 		schema: {
-			bodyColor: {
-				type: 'color',
-				label: 'Body color',
+			bodyMat: {
+				type: 'material',
+				label: 'Body material',
 			},
-			ropeColor: {
-				type: 'color',
-				label: 'Rope color',
+			ropeMat: {
+				type: 'material',
+				label: 'Rope material',
 			},
 		},
 		default: {
-			bodyColor: [0.8, 0.39, 0.1],
-			ropeColor: [0.21, 0.0, 0.0],
+			bodyMat: { color: [0.8, 0.39, 0.1], roughness: -1, metallic: -1 },
+			ropeMat: { color: [0.21, 0.0, 0.0], roughness: -1, metallic: -1 },
 		},
 	},
 	placement: 'floor',
 	hasCollisions: true,
 	hasTexture: false,
-	createInstance: ({ options, model }) => {
+	createInstance: ({ options, model, id }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
+		console.log(id, bodyMaterial.roughness, bodyMaterial.metallic);
 
-		const applyBodyColor = () => {
-			const [r, g, b] = options.bodyColor;
-			bodyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyBodyMat = () => {
+			bodyMaterial.albedoColor = new BABYLON.Color3(options.bodyMat.color[0], options.bodyMat.color[1], options.bodyMat.color[2]);
+			bodyMaterial.roughness = options.bodyMat.roughness;
+			bodyMaterial.metallic = options.bodyMat.metallic;
 		};
 
-		applyBodyColor();
+		applyBodyMat();
 
 		const ropeMaterial = model.findMaterial('__X_ROPE__');
+		console.log(id, ropeMaterial.roughness, ropeMaterial.metallic);
 
-		const applyRopeColor = () => {
-			const [r, g, b] = options.ropeColor;
-			ropeMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyRopeMat = () => {
+			ropeMaterial.albedoColor = new BABYLON.Color3(options.ropeMat.color[0], options.ropeMat.color[1], options.ropeMat.color[2]);
+			ropeMaterial.roughness = options.ropeMat.roughness;
+			ropeMaterial.metallic = options.ropeMat.metallic;
 		};
 
-		applyRopeColor();
+		applyRopeMat();
 
 		return {
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
-					case 'bodyColor': applyBodyColor(); break;
-					case 'ropeColor': applyRopeColor(); break;
+					case 'bodyMat': applyBodyMat(); break;
+					case 'ropeMat': applyRopeMat(); break;
 				}
 			},
 			interactions: {},

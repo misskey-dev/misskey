@@ -9,13 +9,13 @@ import { defineObject, defineObjectClass } from '../object.js';
 const base = defineObjectClass({
 	options: {
 		schema: {
-			frameColor: {
-				type: 'color',
-				label: 'Frame color',
+			frameMat: {
+				type: 'material',
+				label: 'Frame material',
 			},
-			boardColor: {
-				type: 'color',
-				label: 'Board color',
+			boardMat: {
+				type: 'material',
+				label: 'Board material',
 			},
 			width: {
 				type: 'range',
@@ -26,8 +26,8 @@ const base = defineObjectClass({
 			},
 		},
 		default: {
-			frameColor: [0.2, 0.2, 0.2],
-			boardColor: [0.8, 0.4, 0.1],
+			frameMat: { color: [0.2, 0.2, 0.2], roughness: 0.4, metallic: 1 },
+			boardMat: { color: [0.8, 0.4, 0.1], roughness: 0.7, metallic: 0 },
 			width: 0.2,
 		},
 	},
@@ -37,19 +37,21 @@ const base = defineObjectClass({
 		const frameMaterial = model.findMaterial('__X_FRAME__');
 		const boardMaterial = model.findMaterial('__X_BOARD__');
 
-		const applyFrameColor = () => {
-			const [r, g, b] = options.frameColor;
-			frameMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyFrameMat = () => {
+			frameMaterial.albedoColor = new BABYLON.Color3(options.frameMat.color[0], options.frameMat.color[1], options.frameMat.color[2]);
+			frameMaterial.roughness = options.frameMat.roughness;
+			frameMaterial.metallic = options.frameMat.metallic;
 		};
 
-		applyFrameColor();
+		applyFrameMat();
 
-		const applyBoardColor = () => {
-			const [r, g, b] = options.boardColor;
-			boardMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyBoardMat = () => {
+			boardMaterial.albedoColor = new BABYLON.Color3(options.boardMat.color[0], options.boardMat.color[1], options.boardMat.color[2]);
+			boardMaterial.roughness = options.boardMat.roughness;
+			boardMaterial.metallic = options.boardMat.metallic;
 		};
 
-		applyBoardColor();
+		applyBoardMat();
 
 		const applySize = () => {
 			for (const mesh of model.root.getChildMeshes()) {
@@ -65,8 +67,8 @@ const base = defineObjectClass({
 		return {
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
-					case 'frameColor': applyFrameColor(); break;
-					case 'boardColor': applyBoardColor(); break;
+					case 'frameMat': applyFrameMat(); break;
+					case 'boardMat': applyBoardMat(); break;
 					case 'width': applySize(); break;
 				}
 			},

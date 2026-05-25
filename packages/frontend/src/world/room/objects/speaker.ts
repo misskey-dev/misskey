@@ -11,18 +11,18 @@ export const speaker = defineObject({
 	name: 'Speaker',
 	options: {
 		schema: {
-			outerColor: {
-				type: 'color',
-				label: 'Outer Color',
+			outerMat: {
+				type: 'material',
+				label: 'Outer Material',
 			},
-			innerColor: {
-				type: 'color',
-				label: 'Inner Color',
+			innerMat: {
+				type: 'material',
+				label: 'Inner Material',
 			},
 		},
 		default: {
-			outerColor: [0.45, 0.8, 0],
-			innerColor: [0, 0, 0],
+			outerMat: { color: [0.45, 0.8, 0], roughness: 0.1, metallic: 0 },
+			innerMat: { color: [0, 0, 0], roughness: 0.5, metallic: 0.5 },
 		},
 	},
 	placement: 'top',
@@ -33,23 +33,25 @@ export const speaker = defineObject({
 		const outerMaterial = model.findMaterial('__X_COVER__');
 		const innerMaterial = model.findMaterial('__X_BODY__');
 
-		const applyOuterColor = () => {
-			const [r, g, b] = options.outerColor;
-			outerMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyOuterMat = () => {
+			outerMaterial.albedoColor = new BABYLON.Color3(options.outerMat.color[0], options.outerMat.color[1], options.outerMat.color[2]);
+			outerMaterial.roughness = options.outerMat.roughness;
+			outerMaterial.metallic = options.outerMat.metallic;
 		};
 
-		const applyInnerColor = () => {
-			const [r, g, b] = options.innerColor;
-			innerMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyInnerMat = () => {
+			innerMaterial.albedoColor = new BABYLON.Color3(options.innerMat.color[0], options.innerMat.color[1], options.innerMat.color[2]);
+			innerMaterial.roughness = options.innerMat.roughness;
+			innerMaterial.metallic = options.innerMat.metallic;
 		};
 
-		applyOuterColor();
-		applyInnerColor();
+		applyOuterMat();
+		applyInnerMat();
 
 		return {
 			onOptionsUpdated: ([k, v]) => {
-				applyOuterColor();
-				applyInnerColor();
+				applyOuterMat();
+				applyInnerMat();
 			},
 			interactions: {},
 			dispose: () => {},

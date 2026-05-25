@@ -32,16 +32,16 @@ export const wallMirror = defineObject({
 				max: 1,
 				step: 0.01,
 			},
-			frameColor: {
-				type: 'color',
-				label: 'Frame color',
+			frameMat: {
+				type: 'material',
+				label: 'Frame material',
 			},
 		},
 		default: {
 			width: 0.2,
 			height: 0.2,
 			frameThickness: 0.1,
-			frameColor: [0.8, 0.28, 0.06],
+			frameMat: { color: [0.8, 0.28, 0.06], roughness: 0.5, metallic: 0 },
 		},
 	},
 	placement: 'side',
@@ -62,11 +62,13 @@ export const wallMirror = defineObject({
 
 		applySize();
 
-		const applyFrameColor = () => {
-			frameMaterial.albedoColor = new BABYLON.Color3(...options.frameColor);
+		const applyFrameMat = () => {
+			frameMaterial.albedoColor = new BABYLON.Color3(options.frameMat.color[0], options.frameMat.color[1], options.frameMat.color[2]);
+			frameMaterial.roughness = options.frameMat.roughness;
+			frameMaterial.metallic = options.frameMat.metallic;
 		};
 
-		applyFrameColor();
+		applyFrameMat();
 
 		return {
 			onInited: () => {
@@ -79,8 +81,8 @@ export const wallMirror = defineObject({
 					case 'frameThickness':
 						applySize();
 						break;
-					case 'frameColor':
-						applyFrameColor();
+					case 'frameMat':
+						applyFrameMat();
 						break;
 				}
 			},

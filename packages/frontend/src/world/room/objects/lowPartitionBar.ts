@@ -11,9 +11,9 @@ export const lowPartitionBar = defineObject({
 	name: 'lowPartitionBar',
 	options: {
 		schema: {
-			bodyColor: {
-				type: 'color',
-				label: 'Body color',
+			bodyMat: {
+				type: 'material',
+				label: 'Body material',
 			},
 			width: {
 				type: 'range',
@@ -24,21 +24,23 @@ export const lowPartitionBar = defineObject({
 			},
 		},
 		default: {
-			bodyColor: [0.8, 0.8, 0.8],
+			bodyMat: { color: [0.8, 0.8, 0.8], roughness: -1, metallic: -1 },
 			width: 0.5,
 		},
 	},
 	placement: 'top',
 	//hasCollisions: true,
-	createInstance: ({ options, model }) => {
+	createInstance: ({ options, model, id }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
+		console.log(id, bodyMaterial.roughness, bodyMaterial.metallic);
 
-		const applyBodyColor = () => {
-			const [r, g, b] = options.bodyColor;
-			bodyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyBodyMat = () => {
+			bodyMaterial.albedoColor = new BABYLON.Color3(options.bodyMat.color[0], options.bodyMat.color[1], options.bodyMat.color[2]);
+			bodyMaterial.roughness = options.bodyMat.roughness;
+			bodyMaterial.metallic = options.bodyMat.metallic;
 		};
 
-		applyBodyColor();
+		applyBodyMat();
 
 		const applySize = () => {
 			for (const mesh of model.root.getChildMeshes()) {
@@ -54,7 +56,7 @@ export const lowPartitionBar = defineObject({
 		return {
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
-					case 'bodyColor': applyBodyColor(); break;
+					case 'bodyMat': applyBodyMat(); break;
 					case 'width': applySize(); break;
 				}
 			},

@@ -12,13 +12,13 @@ export const lavaLamp = defineObject({
 	name: 'Lava Lamp',
 	options: {
 		schema: {
-			bodyColor: {
-				type: 'color',
-				label: 'Body color',
+			bodyMat: {
+				type: 'material',
+				label: 'Body material',
 			},
-			glassColor: {
-				type: 'color',
-				label: 'Glass color',
+			glassMat: {
+				type: 'material',
+				label: 'Glass material',
 			},
 			lightColor: {
 				type: 'color',
@@ -30,8 +30,8 @@ export const lavaLamp = defineObject({
 			},
 		},
 		default: {
-			bodyColor: [0.8, 0.8, 0.8],
-			glassColor: [0.8, 0, 0.1],
+			bodyMat: { color: [0.8, 0.8, 0.8], roughness: 0.5, metallic: 0.7 },
+			glassMat: { color: [0.8, 0, 0.1], roughness: 0, metallic: 0 },
 			lightColor: [1, 0.175, 0.175],
 			lavaColor: [1, 0.5, 0.2],
 		},
@@ -44,19 +44,21 @@ export const lavaLamp = defineObject({
 		const glassMaterial = model.findMaterial('__X_GLASS__');
 		const lightMaterial = model.findMaterial('__X_LIGHT__');
 
-		const applyBodyColor = () => {
-			const [r, g, b] = options.bodyColor;
-			bodyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyBodyMat = () => {
+			bodyMaterial.albedoColor = new BABYLON.Color3(options.bodyMat.color[0], options.bodyMat.color[1], options.bodyMat.color[2]);
+			bodyMaterial.roughness = options.bodyMat.roughness;
+			bodyMaterial.metallic = options.bodyMat.metallic;
 		};
 
-		applyBodyColor();
+		applyBodyMat();
 
-		const applyGlassColor = () => {
-			const [r, g, b] = options.glassColor;
-			glassMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyGlassMat = () => {
+			glassMaterial.albedoColor = new BABYLON.Color3(options.glassMat.color[0], options.glassMat.color[1], options.glassMat.color[2]);
+			glassMaterial.roughness = options.glassMat.roughness;
+			glassMaterial.metallic = options.glassMat.metallic;
 		};
 
-		applyGlassColor();
+		applyGlassMat();
 
 		// TODO: graphicsQualityがLOWならそもそも追加しない
 		const light = new BABYLON.PointLight('lavaLampLight', new BABYLON.Vector3(0, cm(11), 0), scene, lc != null);
@@ -148,8 +150,8 @@ export const lavaLamp = defineObject({
 			interactions: {},
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
-					case 'bodyColor': applyBodyColor(); break;
-					case 'glassColor': applyGlassColor(); break;
+					case 'bodyMat': applyBodyMat(); break;
+					case 'glassMat': applyGlassMat(); break;
 					case 'lightColor': applyLightColor(); break;
 					case 'lavaColor': applyLavaColor(); break;
 				}

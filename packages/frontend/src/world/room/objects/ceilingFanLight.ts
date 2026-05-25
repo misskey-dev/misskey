@@ -11,13 +11,13 @@ export const ceilingFanLight = defineObject({
 	name: 'Ceiling Fan Light',
 	options: {
 		schema: {
-			shadeColor: {
-				type: 'color',
-				label: 'Shade color',
+			shadeMat: {
+				type: 'material',
+				label: 'Shade material',
 			},
 		},
 		default: {
-			shadeColor: [0.8, 0.19, 0],
+			shadeMat: { color: [0.8, 0.19, 0], roughness: 0.5, metallic: 0 },
 		},
 	},
 	placement: 'ceiling',
@@ -27,12 +27,13 @@ export const ceilingFanLight = defineObject({
 	createInstance: ({ options, sr, scene, model }) => {
 		const shadeMaterial = model.findMaterial('__X_SHADE__');
 
-		const applyShadeColor = () => {
-			const [r, g, b] = options.shadeColor;
-			shadeMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyShadeMat = () => {
+			shadeMaterial.albedoColor = new BABYLON.Color3(options.shadeMat.color[0], options.shadeMat.color[1], options.shadeMat.color[2]);
+			shadeMaterial.roughness = options.shadeMat.roughness;
+			shadeMaterial.metallic = options.shadeMat.metallic;
 		};
 
-		applyShadeColor();
+		applyShadeMat();
 
 		const rotor = model.findMesh('Rotor');
 		model.bakeExcludeMeshes = [rotor, ...rotor.getChildMeshes()];
@@ -55,7 +56,7 @@ export const ceilingFanLight = defineObject({
 			},
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
-					case 'shadeColor': applyShadeColor(); break;
+					case 'shadeMat': applyShadeMat(); break;
 				}
 			},
 			interactions: {},

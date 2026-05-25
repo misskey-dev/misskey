@@ -41,23 +41,23 @@ export const woodRingFloorLamp = defineObject({
 	createInstance: ({ lc, scene, options, model, graphicsQuality }) => {
 		const shadeMaterial = model.findMaterial('__X_SHADE__');
 
-		const applyShadeColor = () => {
+		const applyShadeMat = () => {
 			shadeMaterial.albedoColor = new BABYLON.Color3(options.shadeMat.color[0], options.shadeMat.color[1], options.shadeMat.color[2]);
 			shadeMaterial.metallic = options.shadeMat.metallic;
 			shadeMaterial.roughness = options.shadeMat.roughness;
 		};
 
-		applyShadeColor();
+		applyShadeMat();
 
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 
-		const applyBodyColor = () => {
+		const applyBodyMat = () => {
 			bodyMaterial.albedoColor = new BABYLON.Color3(options.bodyMat.color[0], options.bodyMat.color[1], options.bodyMat.color[2]);
 			bodyMaterial.metallic = options.bodyMat.metallic;
 			bodyMaterial.roughness = options.bodyMat.roughness;
 		};
 
-		applyBodyColor();
+		applyBodyMat();
 
 		const lamps = model.findMeshes('__X_LAMP__');
 		const lights: BABYLON.SpotLight[] = [];
@@ -86,8 +86,8 @@ export const woodRingFloorLamp = defineObject({
 		return {
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
-					case 'shadeMat': applyShadeColor(); break;
-					case 'bodyMat': applyBodyColor(); break;
+					case 'shadeMat': applyShadeMat(); break;
+					case 'bodyMat': applyBodyMat(); break;
 					case 'light': applyLight(); break;
 				}
 			},

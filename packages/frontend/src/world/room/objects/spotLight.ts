@@ -13,9 +13,9 @@ export const spotLight = defineObject({
 	name: 'spotLight',
 	options: {
 		schema: {
-			bodyColor: {
-				type: 'color',
-				label: 'Body color',
+			bodyMat: {
+				type: 'material',
+				label: 'Body material',
 			},
 			light: {
 				type: 'light',
@@ -37,7 +37,7 @@ export const spotLight = defineObject({
 			},
 		},
 		default: {
-			bodyColor: [0.05, 0.05, 0.05],
+			bodyMat: { color: [0.05, 0.05, 0.05], roughness: -1, metallic: -1 },
 			light: {
 				color: [1, 0.5, 0.2],
 				brightness: 0.2,
@@ -48,15 +48,17 @@ export const spotLight = defineObject({
 	},
 	placement: 'bottom',
 	hasCollisions: false,
-	createInstance: ({ lc, scene, options, model, graphicsQuality }) => {
+	createInstance: ({ lc, scene, options, model, graphicsQuality, id }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
+		console.log(id, bodyMaterial.roughness, bodyMaterial.metallic);
 
-		const applyBodyColor = () => {
-			const [r, g, b] = options.bodyColor;
-			bodyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyBodyMat = () => {
+			bodyMaterial.albedoColor = new BABYLON.Color3(options.bodyMat.color[0], options.bodyMat.color[1], options.bodyMat.color[2]);
+			bodyMaterial.roughness = options.bodyMat.roughness;
+			bodyMaterial.metallic = options.bodyMat.metallic;
 		};
 
-		applyBodyColor();
+		applyBodyMat();
 
 		const lamp = model.findMesh('__X_LAMP__');
 		const light = new BABYLON.SpotLight('', new BABYLON.Vector3(cm(0), cm(0), 0), new BABYLON.Vector3(0, -1, 0), Math.PI / 1, 2, scene, lc != null);
@@ -91,7 +93,7 @@ export const spotLight = defineObject({
 		return {
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
-					case 'bodyColor': applyBodyColor(); break;
+					case 'bodyMat': applyBodyMat(); break;
 					case 'light': applyLight(); break;
 					case 'angleV':
 					case 'angleH':

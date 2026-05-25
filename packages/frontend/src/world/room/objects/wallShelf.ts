@@ -39,15 +39,15 @@ export const wallShelf = defineObject({
 					value: 'color',
 				}],
 			},
-			boardColor: {
-				type: 'color',
-				label: 'Board color',
+			boardMat: {
+				type: 'material',
+				label: 'Board material',
 			},
 		},
 		default: {
 			style: 'A',
 			boardStyle: 'wood',
-			boardColor: [1, 1, 1],
+			boardMat: { color: [1, 1, 1], roughness: 0.5, metallic: 0 },
 		},
 	},
 	placement: 'side',
@@ -80,9 +80,10 @@ export const wallShelf = defineObject({
 		const bodyMaterial = bodyMesh.material as BABYLON.PBRMaterial;
 		const bodyTexture = bodyMaterial.albedoTexture as BABYLON.Texture;
 
-		const applyBoardColor = () => {
-			const [r, g, b] = options.boardColor;
-			bodyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyBoardMat = () => {
+			bodyMaterial.albedoColor = new BABYLON.Color3(options.boardMat.color[0], options.boardMat.color[1], options.boardMat.color[2]);
+			bodyMaterial.roughness = options.boardMat.roughness;
+			bodyMaterial.metallic = options.boardMat.metallic;
 
 			if (options.boardStyle === 'color') {
 				bodyMaterial.albedoTexture = null;
@@ -91,14 +92,14 @@ export const wallShelf = defineObject({
 			}
 		};
 
-		applyBoardColor();
+		applyBoardMat();
 
 		return {
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
 					case 'style': applyStyle(); break;
 					case 'boardStyle':
-					case 'boardColor': applyBoardColor(); break;
+					case 'boardMat': applyBoardMat(); break;
 				}
 			},
 			interactions: {},

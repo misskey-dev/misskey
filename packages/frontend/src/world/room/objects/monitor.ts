@@ -13,9 +13,9 @@ export const monitor = defineObject({
 	name: 'Monitor',
 	options: {
 		schema: {
-			bodyColor: {
-				type: 'color',
-				label: 'Body color',
+			bodyMat: {
+				type: 'material',
+				label: 'Body material',
 			},
 			screenBrightness: {
 				type: 'range',
@@ -31,7 +31,7 @@ export const monitor = defineObject({
 			},
 		},
 		default: {
-			bodyColor: [0.1, 0.1, 0.1],
+			bodyMat: { color: [0.1, 0.1, 0.1], roughness: 0.5, metallic: 0 },
 			screenBrightness: 0.5,
 			image: { type: null },
 		},
@@ -84,17 +84,18 @@ export const monitor = defineObject({
 
 		await applyImage();
 
-		const applyBodyColor = () => {
-			const [r, g, b] = options.bodyColor;
-			bodyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyBodyMat = () => {
+			bodyMaterial.albedoColor = new BABYLON.Color3(options.bodyMat.color[0], options.bodyMat.color[1], options.bodyMat.color[2]);
+			bodyMaterial.roughness = options.bodyMat.roughness;
+			bodyMaterial.metallic = options.bodyMat.metallic;
 		};
 
-		applyBodyColor();
+		applyBodyMat();
 
 		return {
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
-					case 'bodyColor': applyBodyColor(); break;
+					case 'bodyMat': applyBodyMat(); break;
 					case 'screenBrightness': applyScreenBrightness(); break;
 					case 'image': applyImage(); break;
 				}

@@ -11,13 +11,13 @@ export const wallClock = defineObject({
 	name: 'Wall Clock',
 	options: {
 		schema: {
-			frameColor: {
-				type: 'color',
-				label: 'Frame color',
+			frameMat: {
+				type: 'material',
+				label: 'Frame material',
 			},
 		},
 		default: {
-			frameColor: [0.71, 0.58, 0.39],
+			frameMat: { color: [0.71, 0.58, 0.39], roughness: 0.75, metallic: 0 },
 		},
 	},
 	placement: 'side',
@@ -28,12 +28,13 @@ export const wallClock = defineObject({
 
 		const frameMaterial = model.findMaterial('__X_FRAME__');
 
-		const applyFrameColor = () => {
-			const [r, g, b] = options.frameColor;
-			frameMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyFrameMat = () => {
+			frameMaterial.albedoColor = new BABYLON.Color3(options.frameMat.color[0], options.frameMat.color[1], options.frameMat.color[2]);
+			frameMaterial.roughness = options.frameMat.roughness;
+			frameMaterial.metallic = options.frameMat.metallic;
 		};
 
-		applyFrameColor();
+		applyFrameMat();
 
 		model.bakeExcludeMeshes = [hourHand, minuteHand];
 
@@ -52,7 +53,7 @@ export const wallClock = defineObject({
 				}, 1000);
 			},
 			onOptionsUpdated: ([k, v]) => {
-				applyFrameColor();
+				applyFrameMat();
 			},
 			interactions: {},
 			dispose: () => {},

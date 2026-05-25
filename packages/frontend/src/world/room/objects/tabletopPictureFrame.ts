@@ -14,9 +14,9 @@ export const tabletopPictureFrame = defineObject({
 	name: 'Tabletop simple picture frame',
 	options: {
 		schema: {
-			frameColor: {
-				type: 'color',
-				label: 'Frame color',
+			frameMat: {
+				type: 'material',
+				label: 'Frame material',
 			},
 			width: {
 				type: 'range',
@@ -67,7 +67,7 @@ export const tabletopPictureFrame = defineObject({
 			},
 		},
 		default: {
-			frameColor: [0.71, 0.58, 0.39],
+			frameMat: { color: [0.71, 0.58, 0.39], roughness: 0.5, metallic: 0 },
 			width: 0.07,
 			height: 0.07,
 			frameThickness: 0.1,
@@ -162,12 +162,13 @@ export const tabletopPictureFrame = defineObject({
 
 		const frameMaterial = model.findMaterial('__X_FRAME__');
 
-		const applyFrameColor = () => {
-			const [r, g, b] = options.frameColor;
-			frameMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyFrameMat = () => {
+			frameMaterial.albedoColor = new BABYLON.Color3(options.frameMat.color[0], options.frameMat.color[1], options.frameMat.color[2]);
+			frameMaterial.roughness = options.frameMat.roughness;
+			frameMaterial.metallic = options.frameMat.metallic;
 		};
 
-		applyFrameColor();
+		applyFrameMat();
 
 		return {
 			onInited: () => {
@@ -175,7 +176,7 @@ export const tabletopPictureFrame = defineObject({
 			},
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
-					case 'frameColor': applyFrameColor(); break;
+					case 'frameMat': applyFrameMat(); break;
 					case 'width':
 					case 'height': applySize(); break;
 					case 'frameThickness': applyFrameThickness(); break;

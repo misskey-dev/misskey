@@ -11,13 +11,13 @@ export const bed = defineObject({
 	name: 'Bed',
 	options: {
 		schema: {
-			color: {
-				type: 'color',
-				label: 'Color',
+			mat: {
+				type: 'material',
+				label: 'Material',
 			},
 		},
 		default: {
-			color: [0.2, 0.1, 0.02],
+			mat: { color: [0.2, 0.1, 0.02], roughness: -1, metallic: -1 },
 		},
 	},
 	placement: 'floor',
@@ -26,17 +26,19 @@ export const bed = defineObject({
 	createInstance: ({ options, model }) => {
 		const bodyMesh = model.findMesh('__X_BODY__');
 		const bodyMaterial = bodyMesh.material as BABYLON.PBRMaterial;
+		console.log('bed', bodyMaterial.roughness, bodyMaterial.metallic);
 
-		const applyColor = () => {
-			const [r, g, b] = options.color;
-			bodyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyMat = () => {
+			bodyMaterial.albedoColor = new BABYLON.Color3(options.mat.color[0], options.mat.color[1], options.mat.color[2]);
+			bodyMaterial.roughness = options.mat.roughness;
+			bodyMaterial.metallic = options.mat.metallic;
 		};
 
-		applyColor();
+		applyMat();
 
 		return {
 			onOptionsUpdated: ([k, v]) => {
-				applyColor();
+				applyMat();
 			},
 			interactions: {},
 			dispose: () => {},

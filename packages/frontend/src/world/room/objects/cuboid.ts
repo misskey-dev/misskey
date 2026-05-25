@@ -32,16 +32,16 @@ export const cuboid = defineObject({
 				max: 1,
 				step: 0.01,
 			},
-			color: {
-				type: 'color',
-				label: 'Color',
+			mat: {
+				type: 'material',
+				label: 'Material',
 			},
 		},
 		default: {
 			x: 0.01,
 			y: 0.01,
 			z: 0.01,
-			color: [1, 1, 1],
+			mat: { color: [1, 1, 1], roughness: 0, metallic: 0 },
 		},
 	},
 	placement: 'top',
@@ -58,12 +58,13 @@ export const cuboid = defineObject({
 
 		applySize();
 
-		const applyColor = () => {
-			const [r, g, b] = options.color;
-			mat.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyMat = () => {
+			mat.albedoColor = new BABYLON.Color3(options.mat.color[0], options.mat.color[1], options.mat.color[2]);
+			mat.roughness = options.mat.roughness;
+			mat.metallic = options.mat.metallic;
 		};
 
-		applyColor();
+		applyMat();
 
 		return {
 			onInited: () => {
@@ -71,8 +72,8 @@ export const cuboid = defineObject({
 			},
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
-					case 'color':
-						applyColor();
+					case 'mat':
+						applyMat();
 						break;
 					case 'x':
 					case 'y':

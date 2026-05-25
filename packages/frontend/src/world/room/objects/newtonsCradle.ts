@@ -11,13 +11,13 @@ export const newtonsCradle = defineObject({
 	name: 'newtonsCradle',
 	options: {
 		schema: {
-			frameColor: {
-				type: 'color',
-				label: 'Frame color',
+			frameMat: {
+				type: 'material',
+				label: 'Frame material',
 			},
 		},
 		default: {
-			frameColor: [0.15, 0.15, 0.15],
+			frameMat: { color: [0.15, 0.15, 0.15], roughness: 0.4, metallic: 0.8 },
 		},
 	},
 	placement: 'top',
@@ -26,17 +26,18 @@ export const newtonsCradle = defineObject({
 	createInstance: ({ options, model }) => {
 		const frameMaterial = model.findMaterial('__X_FRAME__');
 
-		const applyFrameColor = () => {
-			const [r, g, b] = options.frameColor;
-			frameMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyFrameMat = () => {
+			frameMaterial.albedoColor = new BABYLON.Color3(options.frameMat.color[0], options.frameMat.color[1], options.frameMat.color[2]);
+			frameMaterial.roughness = options.frameMat.roughness;
+			frameMaterial.metallic = options.frameMat.metallic;
 		};
 
-		applyFrameColor();
+		applyFrameMat();
 
 		return {
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
-					case 'frameColor': applyFrameColor(); break;
+					case 'frameMat': applyFrameMat(); break;
 				}
 			},
 			interactions: {},

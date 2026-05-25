@@ -11,13 +11,13 @@ export const a4Case = defineObject({
 	name: 'A4 Case',
 	options: {
 		schema: {
-			color: {
-				type: 'color',
-				label: 'Color',
+			mat: {
+				type: 'material',
+				label: 'Material',
 			},
 		},
 		default: {
-			color: [0.9, 0.9, 0.9],
+			mat: { color: [0.9, 0.9, 0.9], roughness: 0.3, metallic: 0 },
 		},
 	},
 	placement: 'top',
@@ -26,16 +26,17 @@ export const a4Case = defineObject({
 		const bodyMesh = model.findMesh('__X_BODY__');
 		const bodyMaterial = bodyMesh.material as BABYLON.PBRMaterial;
 
-		const applyColor = () => {
-			const [r, g, b] = options.color;
-			bodyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyMat = () => {
+			bodyMaterial.albedoColor = new BABYLON.Color3(options.mat.color[0], options.mat.color[1], options.mat.color[2]);
+			bodyMaterial.roughness = options.mat.roughness;
+			bodyMaterial.metallic = options.mat.metallic;
 		};
 
-		applyColor();
+		applyMat();
 
 		return {
-			onOptionsUpdated: ([k, v]) => {
-				applyColor();
+			onOptionsUpdated: ([k, _v]) => {
+				applyMat();
 			},
 			interactions: {},
 			dispose: () => {},

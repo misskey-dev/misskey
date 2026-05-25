@@ -11,18 +11,18 @@ export const keyboard = defineObject({
 	name: 'Keyboard',
 	options: {
 		schema: {
-			bodyColor: {
-				type: 'color',
-				label: 'Body color',
+			bodyMat: {
+				type: 'material',
+				label: 'Body material',
 			},
-			keyColor: {
-				type: 'color',
-				label: 'key color',
+			keyMat: {
+				type: 'material',
+				label: 'key material',
 			},
 		},
 		default: {
-			bodyColor: [0.3, 0.3, 0.3],
-			keyColor: [0.2, 0.2, 0.2],
+			bodyMat: { color: [0.3, 0.3, 0.3], roughness: 0.6, metallic: 0 },
+			keyMat: { color: [0.2, 0.2, 0.2], roughness: 0.5, metallic: 0 },
 		},
 	},
 	placement: 'top',
@@ -32,25 +32,27 @@ export const keyboard = defineObject({
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 		const keyMaterial = model.findMaterial('__X_KEY__');
 
-		const applyBodyColor = () => {
-			const [r, g, b] = options.bodyColor;
-			bodyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyBodyMat = () => {
+			bodyMaterial.albedoColor = new BABYLON.Color3(options.bodyMat.color[0], options.bodyMat.color[1], options.bodyMat.color[2]);
+			bodyMaterial.roughness = options.bodyMat.roughness;
+			bodyMaterial.metallic = options.bodyMat.metallic;
 		};
 
-		applyBodyColor();
+		applyBodyMat();
 
-		const applyKeyColor = () => {
-			const [r, g, b] = options.keyColor;
-			keyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyKeyMat = () => {
+			keyMaterial.albedoColor = new BABYLON.Color3(options.keyMat.color[0], options.keyMat.color[1], options.keyMat.color[2]);
+			keyMaterial.roughness = options.keyMat.roughness;
+			keyMaterial.metallic = options.keyMat.metallic;
 		};
 
-		applyKeyColor();
+		applyKeyMat();
 
 		return {
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
-					case 'bodyColor': applyBodyColor(); break;
-					case 'keyColor': applyKeyColor(); break;
+					case 'bodyMat': applyBodyMat(); break;
+					case 'keyMat': applyKeyMat(); break;
 				}
 			},
 			interactions: {},

@@ -12,9 +12,9 @@ export const tabletopLcdButtonsController = defineObject({
 	name: 'tabletopLcdButtonsController',
 	options: {
 		schema: {
-			bodyColor: {
-				type: 'color',
-				label: 'Body color',
+			bodyMat: {
+				type: 'material',
+				label: 'Body material',
 			},
 			screenBrightness: {
 				type: 'range',
@@ -30,7 +30,7 @@ export const tabletopLcdButtonsController = defineObject({
 			},
 		},
 		default: {
-			bodyColor: [0.05, 0.05, 0.05],
+			bodyMat: { color: [0.05, 0.05, 0.05], roughness: 0.5, metallic: 0.3 },
 			screenBrightness: 0.5,
 			image: { type: null },
 		},
@@ -48,12 +48,13 @@ export const tabletopLcdButtonsController = defineObject({
 
 		const textureManager = createTextureManager(screenMesh, () => 9.5 / 5.55, scene);
 
-		const applyBodyColor = () => {
-			const [r, g, b] = options.bodyColor;
-			bodyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyBodyMat = () => {
+			bodyMaterial.albedoColor = new BABYLON.Color3(options.bodyMat.color[0], options.bodyMat.color[1], options.bodyMat.color[2]);
+			bodyMaterial.roughness = options.bodyMat.roughness;
+			bodyMaterial.metallic = options.bodyMat.metallic;
 		};
 
-		applyBodyColor();
+		applyBodyMat();
 
 		const applyImage = () => {
 			screenMaterial.unfreeze();
@@ -78,7 +79,7 @@ export const tabletopLcdButtonsController = defineObject({
 		return {
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
-					case 'bodyColor': applyBodyColor(); break;
+					case 'bodyMat': applyBodyMat(); break;
 					case 'screenBrightness': applyScreenBrightness(); break;
 					case 'image': applyImage(); break;
 				}

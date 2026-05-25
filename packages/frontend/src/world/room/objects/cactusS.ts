@@ -11,13 +11,13 @@ export const cactusS = defineObject({
 	name: 'Cactus S',
 	options: {
 		schema: {
-			potColor: {
-				type: 'color',
-				label: 'Pot color',
+			potMat: {
+				type: 'material',
+				label: 'Pot material',
 			},
 		},
 		default: {
-			potColor: [0.45, 0.45, 0.45],
+			potMat: { color: [0.45, 0.45, 0.45], roughness: 0.5, metallic: 0 },
 		},
 	},
 	placement: 'top',
@@ -27,16 +27,17 @@ export const cactusS = defineObject({
 	createInstance: ({ options, model }) => {
 		const potMaterial = model.findMaterial('__X_POT__');
 
-		const applyPotColor = () => {
-			const [r, g, b] = options.potColor;
-			potMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyPotMat = () => {
+			potMaterial.albedoColor = new BABYLON.Color3(options.potMat.color[0], options.potMat.color[1], options.potMat.color[2]);
+			potMaterial.roughness = options.potMat.roughness;
+			potMaterial.metallic = options.potMat.metallic;
 		};
 
-		applyPotColor();
+		applyPotMat();
 
 		return {
 			onOptionsUpdated: ([k, v]) => {
-				applyPotColor();
+				applyPotMat();
 			},
 			interactions: {},
 			dispose: () => {},

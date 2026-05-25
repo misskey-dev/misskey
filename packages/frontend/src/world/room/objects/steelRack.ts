@@ -12,13 +12,13 @@ export const steelRack = defineObject({
 	name: 'steelRack',
 	options: {
 		schema: {
-			shelfColor: {
-				type: 'color',
-				label: 'Shelf color',
+			shelfMat: {
+				type: 'material',
+				label: 'Shelf material',
 			},
-			poleColor: {
-				type: 'color',
-				label: 'Pole color',
+			poleMat: {
+				type: 'material',
+				label: 'Pole material',
 			},
 			widthAndDepthVariation: {
 				type: 'enum',
@@ -117,8 +117,8 @@ export const steelRack = defineObject({
 			},
 		},
 		default: {
-			shelfColor: [0.8, 0.8, 0.8],
-			poleColor: [0.8, 0.8, 0.8],
+			shelfMat: { color: [0.8, 0.8, 0.8], roughness: 0.25, metallic: 0.9 },
+			poleMat: { color: [0.8, 0.8, 0.8], roughness: 0.25, metallic: 0.9 },
 			widthAndDepthVariation: '60-35',
 			height: 5,
 			numberOfShelfs: 5,
@@ -204,24 +204,26 @@ export const steelRack = defineObject({
 		const shelfMaterial = model.findMaterial('__X_SHELF__');
 		const poleMaterial = model.findMaterial('__X_POLE__');
 
-		const applyShelfColor = () => {
-			const [r, g, b] = options.shelfColor;
-			shelfMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyShelfMat = () => {
+			shelfMaterial.albedoColor = new BABYLON.Color3(options.shelfMat.color[0], options.shelfMat.color[1], options.shelfMat.color[2]);
+			shelfMaterial.roughness = options.shelfMat.roughness;
+			shelfMaterial.metallic = options.shelfMat.metallic;
 		};
 
-		const applyPoleColor = () => {
-			const [r, g, b] = options.poleColor;
-			poleMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyPoleMat = () => {
+			poleMaterial.albedoColor = new BABYLON.Color3(options.poleMat.color[0], options.poleMat.color[1], options.poleMat.color[2]);
+			poleMaterial.roughness = options.poleMat.roughness;
+			poleMaterial.metallic = options.poleMat.metallic;
 		};
 
-		applyShelfColor();
-		applyPoleColor();
+		applyShelfMat();
+		applyPoleMat();
 
 		return {
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
-					case 'shelfColor': applyShelfColor(); break;
-					case 'poleColor': applyPoleColor(); break;
+					case 'shelfMat': applyShelfMat(); break;
+					case 'poleMat': applyPoleMat(); break;
 					case 'widthAndDepthVariation': reloadModel(); break;
 					case 'height': applyHeight(); break;
 					case 'numberOfShelfs': applyNumberOfShelfs(); break;

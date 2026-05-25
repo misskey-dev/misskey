@@ -11,32 +11,34 @@ export const wireBasket = defineObject({
 	name: 'wireBasket',
 	options: {
 		schema: {
-			bodyColor: {
-				type: 'color',
-				label: 'bodyColor',
+			bodyMat: {
+				type: 'material',
+				label: 'bodyMaterial',
 			},
 		},
 		default: {
-			bodyColor: [0.03, 0.03, 0.03],
+			bodyMat: { color: [0.03, 0.03, 0.03], roughness: -1, metallic: -1 },
 		},
 	},
 	placement: 'side',
 	hasCollisions: false,
 	canPreMeshesMerging: true,
 	hasTexture: false,
-	createInstance: ({ options, model }) => {
+	createInstance: ({ options, model, id }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
+		console.log(id, bodyMaterial.roughness, bodyMaterial.metallic);
 
-		const applyBodyColor = () => {
-			const [r, g, b] = options.bodyColor;
-			bodyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyBodyMat = () => {
+			bodyMaterial.albedoColor = new BABYLON.Color3(options.bodyMat.color[0], options.bodyMat.color[1], options.bodyMat.color[2]);
+			bodyMaterial.roughness = options.bodyMat.roughness;
+			bodyMaterial.metallic = options.bodyMat.metallic;
 		};
 
-		applyBodyColor();
+		applyBodyMat();
 
 		return {
 			onOptionsUpdated: ([k, v]) => {
-				applyBodyColor();
+				applyBodyMat();
 			},
 			interactions: {},
 			dispose: () => {},

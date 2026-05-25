@@ -25,9 +25,9 @@ export const boxWallShelf = defineObject({
 				max: 1,
 				step: 0.01,
 			},
-			bodyColor: {
-				type: 'color',
-				label: 'Body color',
+			bodyMat: {
+				type: 'material',
+				label: 'Body material',
 			},
 			withBack: {
 				type: 'boolean',
@@ -37,7 +37,7 @@ export const boxWallShelf = defineObject({
 		default: {
 			width: 0.1,
 			height: 0.1,
-			bodyColor: [0.6, 0.35, 0.15],
+			bodyMat: { color: [0.6, 0.35, 0.15], roughness: 0.5, metallic: 0 },
 			withBack: true,
 		},
 	},
@@ -62,12 +62,13 @@ export const boxWallShelf = defineObject({
 
 		applySize();
 
-		const applyBodyColor = () => {
-			const [r, g, b] = options.bodyColor;
-			bodyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyBodyMat = () => {
+			bodyMaterial.albedoColor = new BABYLON.Color3(options.bodyMat.color[0], options.bodyMat.color[1], options.bodyMat.color[2]);
+			bodyMaterial.roughness = options.bodyMat.roughness;
+			bodyMaterial.metallic = options.bodyMat.metallic;
 		};
 
-		applyBodyColor();
+		applyBodyMat();
 
 		const applyWithBack = () => {
 			backMesh.isVisible = options.withBack;
@@ -86,8 +87,8 @@ export const boxWallShelf = defineObject({
 					case 'height':
 						applySize();
 						break;
-					case 'bodyColor':
-						applyBodyColor();
+					case 'bodyMat':
+						applyBodyMat();
 						break;
 					case 'withBack':
 						applyWithBack();

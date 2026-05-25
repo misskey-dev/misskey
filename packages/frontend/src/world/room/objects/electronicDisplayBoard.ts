@@ -16,9 +16,9 @@ export const electronicDisplayBoard = defineObject({
 				type: 'string',
 				label: 'Text',
 			},
-			frameColor: {
-				type: 'color',
-				label: 'Frame color',
+			frameMat: {
+				type: 'material',
+				label: 'Frame material',
 			},
 			ledColor: {
 				type: 'color',
@@ -32,11 +32,9 @@ export const electronicDisplayBoard = defineObject({
 				step: 0.01,
 			},
 		},
-		defaults: {
-		},
 		default: {
 			text: 'Hello, Misskey!',
-			frameColor: [0.05, 0.05, 0.05],
+			frameMat: { color: [0.05, 0.05, 0.05], roughness: 0.2, metallic: 0 },
 			ledColor: [1, 1, 1],
 			ledBrightness: 0.5,
 		},
@@ -85,12 +83,13 @@ export const electronicDisplayBoard = defineObject({
 
 		model.bakeExcludeMeshes = [displayMesh];
 
-		const applyFrameColor = () => {
-			const [r, g, b] = options.frameColor;
-			frameMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyFrameMat = () => {
+			frameMaterial.albedoColor = new BABYLON.Color3(options.frameMat.color[0], options.frameMat.color[1], options.frameMat.color[2]);
+			frameMaterial.roughness = options.frameMat.roughness;
+			frameMaterial.metallic = options.frameMat.metallic;
 		};
 
-		applyFrameColor();
+		applyFrameMat();
 
 		const applyLedColor = () => {
 			const [r, g, b] = options.ledColor;
@@ -131,7 +130,7 @@ export const electronicDisplayBoard = defineObject({
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
 					case 'text': applyText(); break;
-					case 'frameColor': applyFrameColor(); break;
+					case 'frameMat': applyFrameMat(); break;
 					case 'ledColor': applyLedColor(); break;
 					case 'ledBrightness': applyLedBrightness(); break;
 				}

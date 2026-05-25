@@ -11,13 +11,13 @@ export const monitorSpeaker = defineObject({
 	name: 'Monitor Speaker',
 	options: {
 		schema: {
-			color: {
-				type: 'color',
-				label: 'Color',
+			mat: {
+				type: 'material',
+				label: 'Material',
 			},
 		},
 		default: {
-			color: [0, 0, 0],
+			mat: { color: [0, 0, 0], roughness: 0.5, metallic: 0.5 },
 		},
 	},
 	placement: 'top',
@@ -26,16 +26,17 @@ export const monitorSpeaker = defineObject({
 	createInstance: ({ options, model }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 
-		const applyColor = () => {
-			const [r, g, b] = options.color;
-			bodyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyMat = () => {
+			bodyMaterial.albedoColor = new BABYLON.Color3(options.mat.color[0], options.mat.color[1], options.mat.color[2]);
+			bodyMaterial.roughness = options.mat.roughness;
+			bodyMaterial.metallic = options.mat.metallic;
 		};
 
-		applyColor();
+		applyMat();
 
 		return {
 			onOptionsUpdated: ([k, v]) => {
-				applyColor();
+				applyMat();
 			},
 			interactions: {},
 			dispose: () => {},

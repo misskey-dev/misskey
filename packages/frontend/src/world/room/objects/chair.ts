@@ -11,18 +11,18 @@ export const chair = defineObject({
 	name: 'Chair',
 	options: {
 		schema: {
-			primaryColor: {
-				type: 'color',
-				label: 'Primay Color',
+			primaryMat: {
+				type: 'material',
+				label: 'Primay Material',
 			},
-			secondaryColor: {
-				type: 'color',
-				label: 'Secondary Color',
+			secondaryMat: {
+				type: 'material',
+				label: 'Secondary Material',
 			},
 		},
 		default: {
-			primaryColor: [0.44, 0.6, 0],
-			secondaryColor: [0, 0, 0],
+			primaryMat: { color: [0.44, 0.6, 0], roughness: 1, metallic: 0 },
+			secondaryMat: { color: [0, 0, 0], roughness: 0.5, metallic: 0 },
 		},
 	},
 	placement: 'floor',
@@ -33,23 +33,25 @@ export const chair = defineObject({
 		const primaryMaterial = model.findMaterial('__X_PRIMARY__');
 		const secondaryMaterial = model.findMaterial('__X_SECONDARY__');
 
-		const applyPrimaryColor = () => {
-			const [r, g, b] = options.primaryColor;
-			primaryMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyPrimaryMat = () => {
+			primaryMaterial.albedoColor = new BABYLON.Color3(options.primaryMat.color[0], options.primaryMat.color[1], options.primaryMat.color[2]);
+			primaryMaterial.roughness = options.primaryMat.roughness;
+			primaryMaterial.metallic = options.primaryMat.metallic;
 		};
 
-		const applySecondaryColor = () => {
-			const [r, g, b] = options.secondaryColor;
-			secondaryMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applySecondaryMat = () => {
+			secondaryMaterial.albedoColor = new BABYLON.Color3(options.secondaryMat.color[0], options.secondaryMat.color[1], options.secondaryMat.color[2]);
+			secondaryMaterial.roughness = options.secondaryMat.roughness;
+			secondaryMaterial.metallic = options.secondaryMat.metallic;
 		};
 
-		applyPrimaryColor();
-		applySecondaryColor();
+		applyPrimaryMat();
+		applySecondaryMat();
 
 		return {
 			onOptionsUpdated: ([k, v]) => {
-				applyPrimaryColor();
-				applySecondaryColor();
+				applyPrimaryMat();
+				applySecondaryMat();
 			},
 			interactions: {
 				sit: {

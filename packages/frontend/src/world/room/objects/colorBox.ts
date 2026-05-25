@@ -11,13 +11,13 @@ export const colorBox = defineObject({
 	name: 'Color Box',
 	options: {
 		schema: {
-			color: {
-				type: 'color',
-				label: 'Color',
+			mat: {
+				type: 'material',
+				label: 'Material',
 			},
 		},
 		default: {
-			color: [0.6, 0.35, 0.15],
+			mat: { color: [0.6, 0.35, 0.15], roughness: 0.5, metallic: 0 },
 		},
 	},
 	placement: 'floor',
@@ -27,16 +27,17 @@ export const colorBox = defineObject({
 	createInstance: ({ options, model }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 
-		const applyColor = () => {
-			const [r, g, b] = options.color;
-			bodyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyMat = () => {
+			bodyMaterial.albedoColor = new BABYLON.Color3(options.mat.color[0], options.mat.color[1], options.mat.color[2]);
+			bodyMaterial.roughness = options.mat.roughness;
+			bodyMaterial.metallic = options.mat.metallic;
 		};
 
-		applyColor();
+		applyMat();
 
 		return {
 			onOptionsUpdated: ([k, v]) => {
-				applyColor();
+				applyMat();
 			},
 			interactions: {},
 			dispose: () => {},

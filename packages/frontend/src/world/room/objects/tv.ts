@@ -13,9 +13,9 @@ export const tv = defineObject({
 	name: 'TV',
 	options: {
 		schema: {
-			bodyColor: {
-				type: 'color',
-				label: 'Body color',
+			bodyMat: {
+				type: 'material',
+				label: 'Body material',
 			},
 			screenBrightness: {
 				type: 'range',
@@ -26,7 +26,7 @@ export const tv = defineObject({
 			},
 		},
 		default: {
-			bodyColor: [0, 0, 0],
+			bodyMat: { color: [0, 0, 0], roughness: 0.3, metallic: 0.5 },
 			screenBrightness: 0.5,
 		},
 	},
@@ -81,17 +81,18 @@ export const tv = defineObject({
 
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 
-		const applyBodyColor = () => {
-			const [r, g, b] = options.bodyColor;
-			bodyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyBodyMat = () => {
+			bodyMaterial.albedoColor = new BABYLON.Color3(options.bodyMat.color[0], options.bodyMat.color[1], options.bodyMat.color[2]);
+			bodyMaterial.roughness = options.bodyMat.roughness;
+			bodyMaterial.metallic = options.bodyMat.metallic;
 		};
 
-		applyBodyColor();
+		applyBodyMat();
 
 		return {
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
-					case 'bodyColor': applyBodyColor(); break;
+					case 'bodyMat': applyBodyMat(); break;
 					case 'screenBrightness': applyScreenBrightness(); break;
 				}
 			},

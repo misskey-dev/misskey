@@ -11,13 +11,13 @@ export const snakeplant = defineObject({
 	name: 'Snake Plant',
 	options: {
 		schema: {
-			potColor: {
-				type: 'color',
-				label: 'potColor',
+			potMat: {
+				type: 'material',
+				label: 'potMaterial',
 			},
 		},
 		default: {
-			potColor: [0.7, 0.7, 0.7],
+			potMat: { color: [0.7, 0.7, 0.7], roughness: 1, metallic: 0 },
 		},
 	},
 	placement: 'top',
@@ -27,17 +27,18 @@ export const snakeplant = defineObject({
 	createInstance: ({ options, model }) => {
 		const potMaterial = model.findMaterial('__X_POT__');
 
-		const applyPotColor = () => {
-			const [r, g, b] = options.potColor;
-			potMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyPotMat = () => {
+			potMaterial.albedoColor = new BABYLON.Color3(options.potMat.color[0], options.potMat.color[1], options.potMat.color[2]);
+			potMaterial.roughness = options.potMat.roughness;
+			potMaterial.metallic = options.potMat.metallic;
 		};
 
-		applyPotColor();
+		applyPotMat();
 
 		return {
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
-					case 'potColor': applyPotColor(); break;
+					case 'potMat': applyPotMat(); break;
 				}
 			},
 			interactions: {},

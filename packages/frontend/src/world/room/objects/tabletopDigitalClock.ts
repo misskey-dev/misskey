@@ -12,9 +12,9 @@ export const tabletopDigitalClock = defineObject({
 	name: 'Tabletop Digital Clock',
 	options: {
 		schema: {
-			bodyColor: {
-				type: 'color',
-				label: 'Body Color',
+			bodyMat: {
+				type: 'material',
+				label: 'Body Material',
 			},
 			lcdColor: {
 				type: 'color',
@@ -22,7 +22,7 @@ export const tabletopDigitalClock = defineObject({
 			},
 		},
 		default: {
-			bodyColor: [0.45, 0.8, 0],
+			bodyMat: { color: [0.45, 0.8, 0], roughness: 0.2, metallic: 0 },
 			lcdColor: [1, 1, 1],
 		},
 	},
@@ -80,9 +80,10 @@ export const tabletopDigitalClock = defineObject({
 		const bodyMesh = model.findMesh('__X_BODY__');
 		const bodyMaterial = bodyMesh.material as BABYLON.PBRMaterial;
 
-		const applyBodyColor = () => {
-			const [r, g, b] = options.bodyColor;
-			bodyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyBodyMat = () => {
+			bodyMaterial.albedoColor = new BABYLON.Color3(options.bodyMat.color[0], options.bodyMat.color[1], options.bodyMat.color[2]);
+			bodyMaterial.roughness = options.bodyMat.roughness;
+			bodyMaterial.metallic = options.bodyMat.metallic;
 		};
 
 		const applyLcdColor = () => {
@@ -94,7 +95,7 @@ export const tabletopDigitalClock = defineObject({
 
 		return {
 			onInited: () => {
-				applyBodyColor();
+				applyBodyMat();
 				applyLcdColor();
 
 				// TODO: 家具が撤去された後も呼ばれ続けるのをどうにかする
@@ -118,7 +119,7 @@ export const tabletopDigitalClock = defineObject({
 			},
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
-					case 'bodyColor': applyBodyColor(); break;
+					case 'bodyMat': applyBodyMat(); break;
 					case 'lcdColor': applyLcdColor(); break;
 				}
 			},

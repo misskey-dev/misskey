@@ -25,21 +25,22 @@ export const hangingDuctRail = defineObject({
 				max: 1,
 				step: 0.01,
 			},
-			bodyColor: {
-				type: 'color',
-				label: 'body color',
+			bodyMat: {
+				type: 'material',
+				label: 'body material',
 			},
 		},
 		default: {
 			width: 0.2,
 			height: 0.2,
-			bodyColor: [0.05, 0.05, 0.05],
+			bodyMat: { color: [0.05, 0.05, 0.05], roughness: -1, metallic: -1 },
 		},
 	},
 	placement: 'ceiling',
 	hasCollisions: false,
-	createInstance: async ({ options, model }) => {
+	createInstance: async ({ options, model, id }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
+		console.log(id, bodyMaterial.roughness, bodyMaterial.metallic);
 
 		const applySize = () => {
 			for (const mesh of model.root.getChildMeshes()) {
@@ -55,11 +56,13 @@ export const hangingDuctRail = defineObject({
 
 		applySize();
 
-		const applyBodyColor = () => {
-			bodyMaterial.albedoColor = new BABYLON.Color3(...options.bodyColor);
+		const applyBodyMat = () => {
+			bodyMaterial.albedoColor = new BABYLON.Color3(options.bodyMat.color[0], options.bodyMat.color[1], options.bodyMat.color[2]);
+			bodyMaterial.roughness = options.bodyMat.roughness;
+			bodyMaterial.metallic = options.bodyMat.metallic;
 		};
 
-		applyBodyColor();
+		applyBodyMat();
 
 		return {
 			onInited: () => {
@@ -71,8 +74,8 @@ export const hangingDuctRail = defineObject({
 					case 'height':
 						applySize();
 						break;
-					case 'bodyColor':
-						applyBodyColor();
+					case 'bodyMat':
+						applyBodyMat();
 						break;
 				}
 			},

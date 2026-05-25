@@ -11,30 +11,32 @@ export const pc = defineObject({
 	name: 'PC',
 	options: {
 		schema: {
-			color: {
-				type: 'color',
-				label: 'Color',
+			mat: {
+				type: 'material',
+				label: 'Material',
 			},
 		},
 		default: {
-			color: [0, 0, 0],
+			mat: { color: [0, 0, 0], roughness: -1, metallic: -1 },
 		},
 	},
 	placement: 'top',
-	createInstance: ({ options, root }) => {
+	createInstance: ({ options, root, id }) => {
 		const bodyMesh = root.getChildMeshes().find(m => m.name.includes('__X_BODY__')) as BABYLON.Mesh;
 		const bodyMaterial = bodyMesh.material as BABYLON.PBRMaterial;
+		console.log(id, bodyMaterial.roughness, bodyMaterial.metallic);
 
-		const applyColor = () => {
-			const [r, g, b] = options.color;
-			bodyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyMat = () => {
+			bodyMaterial.albedoColor = new BABYLON.Color3(options.mat.color[0], options.mat.color[1], options.mat.color[2]);
+			bodyMaterial.roughness = options.mat.roughness;
+			bodyMaterial.metallic = options.mat.metallic;
 		};
 
-		applyColor();
+		applyMat();
 
 		return {
 			onOptionsUpdated: ([k, v]) => {
-				applyColor();
+				applyMat();
 			},
 			interactions: {},
 			dispose: () => {},

@@ -13,13 +13,13 @@ export const allInOnePc = defineObject({
 	name: 'All-in-One PC',
 	options: {
 		schema: {
-			bodyColor: {
-				type: 'color',
-				label: 'Body color',
+			bodyMat: {
+				type: 'material',
+				label: 'Body material',
 			},
-			bezelColor: {
-				type: 'color',
-				label: 'Bezel color',
+			bezelMat: {
+				type: 'material',
+				label: 'Bezel material',
 			},
 			screenBrightness: {
 				type: 'range',
@@ -38,8 +38,8 @@ export const allInOnePc = defineObject({
 			},
 		},
 		default: {
-			bodyColor: [1, 1, 1],
-			bezelColor: [0, 0, 0],
+			bodyMat: { color: [1, 1, 1], roughness: 0.5, metallic: 1 },
+			bezelMat: { color: [0, 0, 0], roughness: 0, metallic: 0 },
 			screenBrightness: 0.5,
 			image: {
 				type: null,
@@ -96,24 +96,26 @@ export const allInOnePc = defineObject({
 
 		await applyImage();
 
-		const applyBodyColor = () => {
-			const [r, g, b] = options.bodyColor;
-			bodyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyBodyMat = () => {
+			bodyMaterial.albedoColor = new BABYLON.Color3(options.bodyMat.color[0], options.bodyMat.color[1], options.bodyMat.color[2]);
+			bodyMaterial.roughness = options.bodyMat.roughness;
+			bodyMaterial.metallic = options.bodyMat.metallic;
 		};
 
-		const applyBezelColor = () => {
-			const [r, g, b] = options.bezelColor;
-			bezelMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyBezelMat = () => {
+			bezelMaterial.albedoColor = new BABYLON.Color3(options.bezelMat.color[0], options.bezelMat.color[1], options.bezelMat.color[2]);
+			bezelMaterial.roughness = options.bezelMat.roughness;
+			bezelMaterial.metallic = options.bezelMat.metallic;
 		};
 
-		applyBodyColor();
-		applyBezelColor();
+		applyBodyMat();
+		applyBezelMat();
 
 		return {
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
-					case 'bodyColor': applyBodyColor(); break;
-					case 'bezelColor': applyBezelColor(); break;
+					case 'bodyMat': applyBodyMat(); break;
+					case 'bezelMat': applyBezelMat(); break;
 					case 'screenBrightness': applyScreenBrightness(); break;
 					case 'image': applyImage(); break;
 				}
