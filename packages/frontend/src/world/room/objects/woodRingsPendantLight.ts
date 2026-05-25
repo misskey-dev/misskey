@@ -47,7 +47,7 @@ export const woodRingsPendantLight = defineObject({
 	hasCollisions: false,
 	createInstance: ({ lc, scene, options, model, graphicsQuality }) => {
 		const shadeMaterial = model.findMaterial('__X_SHADE__');
-		console.log(shadeMaterial.roughness, shadeMaterial.metallic);
+		console.log('woodRingsPendantLight', shadeMaterial.roughness, shadeMaterial.metallic);
 
 		const applyShadeMat = () => {
 			shadeMaterial.albedoColor = new BABYLON.Color3(options.shadeMat.color[0], options.shadeMat.color[1], options.shadeMat.color[2]);
@@ -58,7 +58,7 @@ export const woodRingsPendantLight = defineObject({
 		applyShadeMat();
 
 		const bodyMaterial = model.findMaterial('__X_BODY__');
-		console.log(bodyMaterial.roughness, bodyMaterial.metallic);
+		console.log('woodRingsPendantLight', bodyMaterial.roughness, bodyMaterial.metallic);
 
 		const applyBodyMat = () => {
 			bodyMaterial.albedoColor = new BABYLON.Color3(options.bodyMat.color[0], options.bodyMat.color[1], options.bodyMat.color[2]);
