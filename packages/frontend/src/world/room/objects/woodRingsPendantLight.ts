@@ -6,24 +6,20 @@
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
-import { cm, WORLD_SCALE } from '@/world/utility.js';
-
-const remap = (value: number, fromMin: number, fromMax: number, toMin: number, toMax: number) => {
-	return toMin + ((value - fromMin) / (fromMax - fromMin)) * (toMax - toMin);
-};
+import { cm, remap, WORLD_SCALE } from '@/world/utility.js';
 
 export const woodRingsPendantLight = defineObject({
 	id: 'woodRingsPendantLight',
 	name: 'woodRingsPendantLight',
 	options: {
 		schema: {
-			shadeColor: {
-				type: 'color',
-				label: 'Shade color',
+			shadeMat: {
+				type: 'material',
+				label: 'Shade material',
 			},
-			bodyColor: {
-				type: 'color',
-				label: 'Body color',
+			bodyMat: {
+				type: 'material',
+				label: 'Body material',
 			},
 			light: {
 				type: 'light',
@@ -38,8 +34,8 @@ export const woodRingsPendantLight = defineObject({
 			},
 		},
 		default: {
-			shadeColor: [0.21, 0.04, 0],
-			bodyColor: [0.05, 0.05, 0.05],
+			shadeMat: { color: [0.21, 0.04, 0], roughness: 0.5, metallic: 0 },
+			bodyMat: { color: [0.05, 0.05, 0.05], roughness: 0.5, metallic: 0 },
 			light: {
 				color: [1, 0.5, 0.2],
 				brightness: 0.5,
@@ -51,22 +47,26 @@ export const woodRingsPendantLight = defineObject({
 	hasCollisions: false,
 	createInstance: ({ lc, scene, options, model, graphicsQuality }) => {
 		const shadeMaterial = model.findMaterial('__X_SHADE__');
+		console.log(shadeMaterial.roughness, shadeMaterial.metallic);
 
-		const applyShadeColor = () => {
-			const [r, g, b] = options.shadeColor;
-			shadeMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyShadeMat = () => {
+			shadeMaterial.albedoColor = new BABYLON.Color3(options.shadeMat.color[0], options.shadeMat.color[1], options.shadeMat.color[2]);
+			shadeMaterial.roughness = options.shadeMat.roughness;
+			shadeMaterial.metallic = options.shadeMat.metallic;
 		};
 
-		applyShadeColor();
+		applyShadeMat();
 
 		const bodyMaterial = model.findMaterial('__X_BODY__');
+		console.log(bodyMaterial.roughness, bodyMaterial.metallic);
 
-		const applyBodyColor = () => {
-			const [r, g, b] = options.bodyColor;
-			bodyMaterial.albedoColor = new BABYLON.Color3(r, g, b);
+		const applyBodyMat = () => {
+			bodyMaterial.albedoColor = new BABYLON.Color3(options.bodyMat.color[0], options.bodyMat.color[1], options.bodyMat.color[2]);
+			bodyMaterial.roughness = options.bodyMat.roughness;
+			bodyMaterial.metallic = options.bodyMat.metallic;
 		};
 
-		applyBodyColor();
+		applyBodyMat();
 
 		const lamp = model.findMesh('__X_LAMP__');
 		const light = new BABYLON.PointLight('', new BABYLON.Vector3(0, 0, 0), scene, lc != null);
@@ -107,8 +107,8 @@ export const woodRingsPendantLight = defineObject({
 		return {
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
-					case 'shadeColor': applyShadeColor(); break;
-					case 'bodyColor': applyBodyColor(); break;
+					case 'shadeMat': applyShadeMat(); break;
+					case 'bodyMat': applyBodyMat(); break;
 					case 'light': applyLight(); break;
 					case 'length': applyLength(); break;
 				}
