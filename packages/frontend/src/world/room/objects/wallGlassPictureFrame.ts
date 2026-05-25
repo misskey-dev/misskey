@@ -5,12 +5,8 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
-import { createPlaneUvMapper, getPlaneUvIndexes } from '../../utility.js';
 import { i18n } from '@/i18n.js';
-
-const remap = (value: number, fromMin: number, fromMax: number, toMin: number, toMax: number) => {
-	return toMin + ((value - fromMin) / (fromMax - fromMin)) * (toMax - toMin);
-};
+import { remap } from '@/world/utility.js';
 
 export const wallGlassPictureFrame = defineObject({
 	id: 'wallGlassPictureFrame',

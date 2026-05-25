@@ -5,7 +5,6 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
-import { createPlaneUvMapper } from '../../utility.js';
 import { i18n } from '@/i18n.js';
 
 // NOTE: シェイプキーのnormalのエクスポートは無効にしないとmatを大きくしたときに面のレンダリングがグリッチする

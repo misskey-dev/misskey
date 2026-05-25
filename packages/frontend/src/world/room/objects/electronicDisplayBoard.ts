@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { createPlaneUvMapper, RecyvlingTextGrid } from '../../utility.js';
+import { RecyvlingTextGrid } from '../../utility.js';
 import { i18n } from '@/i18n.js';
 
 export const electronicDisplayBoard = defineObject({

@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
-import { cm, WORLD_SCALE, createPlaneUvMapper, normalizeUvToSquare } from '../../utility.js';
+import { cm, WORLD_SCALE, normalizeUvToSquare } from '../../utility.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 import { i18n } from '@/i18n.js';
 

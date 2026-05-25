@@ -6,12 +6,8 @@
 import * as BABYLON from '@babylonjs/core';
 import seedrandom from 'seedrandom';
 import { defineObject } from '../object.js';
-import { cm, WORLD_SCALE } from '@/world/utility.js';
+import { cm, remap, WORLD_SCALE } from '@/world/utility.js';
 import { i18n } from '@/i18n.js';
-
-const remap = (value: number, fromMin: number, fromMax: number, toMin: number, toMax: number) => {
-	return toMin + ((value - fromMin) / (fromMax - fromMin)) * (toMax - toMin);
-};
 
 export const randomBooks = defineObject({
 	id: 'randomBooks',

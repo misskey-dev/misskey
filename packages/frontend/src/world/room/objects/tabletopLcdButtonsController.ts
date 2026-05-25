@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
-import { createPlaneUvMapper, normalizeUvToSquare } from '../../utility.js';
+import { normalizeUvToSquare } from '../../utility.js';
 import { i18n } from '@/i18n.js';
 
 export const tabletopLcdButtonsController = defineObject({
