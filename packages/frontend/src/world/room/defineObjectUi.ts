@@ -5,11 +5,11 @@
 
 import type { GetOptionsSchemaUiDef, OptionsSchema } from './object.js';
 
-type UiDef<OpSc extends OptionsSchema = OptionsSchema> = {
+export type ObjectUiDef<OpSc extends OptionsSchema = OptionsSchema> = {
 	name: string;
 	options: GetOptionsSchemaUiDef<OpSc>;
 };
 
-export function defineObjectUi<const Def extends { options: { schema: OptionsSchema } }>(def: UiDef<Def['options']['schema']>): UiDef<Def['options']['schema']> {
+export function defineObjectUi<const Def extends { options: { schema: OptionsSchema } }>(def: ObjectUiDef<Def['options']['schema']>): ObjectUiDef<Def['options']['schema']> {
 	return def;
 }
