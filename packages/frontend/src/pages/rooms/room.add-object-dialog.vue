@@ -75,7 +75,6 @@ import type { RoomAttachments } from '@/world/room/utility.js';
 import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import * as os from '@/os.js';
-import { OBJECT_DEFS } from '@/world/room/object-defs.js';
 import { camelToKebab } from '@/world/utility.js';
 import MkButton from '@/components/MkButton.vue';
 import { prefer } from '@/preferences.js';

@@ -102,7 +102,6 @@ import MkProgressBar from '@/components/MkProgressBar.vue';
 import { Joystick } from '@/world/joystick.js';
 import { isTouchUsing } from '@/utility/touch.js';
 import { prefer } from '@/preferences.js';
-import { getObjectDef } from '@/world/room/object-defs.js';
 import { GRAPHICS_QUALITY } from '@/world/room/utility.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { miLocalStorage } from '@/local-storage.js';

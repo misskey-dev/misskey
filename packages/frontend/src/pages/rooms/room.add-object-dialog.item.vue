@@ -15,7 +15,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script setup lang="ts">
-import type { OBJECT_DEFS } from '@/world/room/object-defs.js';
 import { camelToKebab } from '@/world/utility.js';
 
 const props = defineProps<{
