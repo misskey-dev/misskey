@@ -20,10 +20,15 @@ export const chair = defineObject({
 				type: 'material',
 				label: i18n.ts._miRoom._objects._chair.secondaryMat,
 			},
+			frameMat: {
+				type: 'material',
+				label: i18n.ts._miRoom._objects._chair.frameMat,
+			},
 		},
 		default: {
 			primaryMat: { color: [0.44, 0.6, 0], roughness: 1, metallic: 0 },
 			secondaryMat: { color: [0, 0, 0], roughness: 0.5, metallic: 0 },
+			frameMat: { color: [0.8, 0.8, 0.8], roughness: 0.25, metallic: 1 },
 		},
 	},
 	placement: 'floor',
@@ -33,6 +38,7 @@ export const chair = defineObject({
 	createInstance: ({ model, options, sitChair }) => {
 		const primaryMaterial = model.findMaterial('__X_PRIMARY__');
 		const secondaryMaterial = model.findMaterial('__X_SECONDARY__');
+		const frameMaterial = model.findMaterial('__X_FRAME__');
 
 		const applyPrimaryMat = () => {
 			primaryMaterial.albedoColor = new BABYLON.Color3(options.primaryMat.color[0], options.primaryMat.color[1], options.primaryMat.color[2]);
@@ -46,13 +52,23 @@ export const chair = defineObject({
 			secondaryMaterial.metallic = options.secondaryMat.metallic;
 		};
 
+		const applyFrameMat = () => {
+			frameMaterial.albedoColor = new BABYLON.Color3(options.frameMat.color[0], options.frameMat.color[1], options.frameMat.color[2]);
+			frameMaterial.roughness = options.frameMat.roughness;
+			frameMaterial.metallic = options.frameMat.metallic;
+		};
+
 		applyPrimaryMat();
 		applySecondaryMat();
+		applyFrameMat();
 
 		return {
 			onOptionsUpdated: ([k, v]) => {
-				applyPrimaryMat();
-				applySecondaryMat();
+				switch (k) {
+					case 'primaryMat': applyPrimaryMat(); break;
+					case 'secondaryMat': applySecondaryMat(); break;
+					case 'frameMat': applyFrameMat(); break;
+				}
 			},
 			interactions: {
 				sit: {

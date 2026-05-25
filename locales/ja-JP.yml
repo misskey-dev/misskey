@@ -3647,6 +3647,7 @@ _miRoom:
     _chair:
       primaryMat: "メインの素材"
       secondaryMat: "サブの素材"
+      frameMat: "フレームの素材"
     clippedPicture: "留められた写真"
     _clippedPicture:
       height: "高さ"

@@ -13592,6 +13592,10 @@ export interface Locale extends ILocale {
                  * サブの素材
                  */
                 "secondaryMat": string;
+                /**
+                 * フレームの素材
+                 */
+                "frameMat": string;
             };
             /**
              * 留められた写真
