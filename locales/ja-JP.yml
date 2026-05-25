@@ -3717,6 +3717,8 @@ _miRoom:
       width: "幅"
     hangingTShirt: "吊り下げTシャツ"
     icosahedron: "正二十面体"
+    _icosahedron:
+      mat: "素材"
     ironFrameShelf3: "アイアンフレームシェルフ 3段"
     ironFrameShelf4: "アイアンフレームシェルフ 4段"
     ironFrameShelf5: "アイアンフレームシェルフ 5段"

@@ -13853,6 +13853,12 @@ export interface Locale extends ILocale {
              * 正二十面体
              */
             "icosahedron": string;
+            "_icosahedron": {
+                /**
+                 * 素材
+                 */
+                "mat": string;
+            };
             /**
              * アイアンフレームシェルフ 3段
              */
