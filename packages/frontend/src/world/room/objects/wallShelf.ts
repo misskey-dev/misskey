@@ -16,28 +16,17 @@ export const wallShelf = defineObject({
 				type: 'enum',
 				label: i18n.ts._miRoom._objects._wallShelf.style,
 				enum: [{
-					label: i18n.ts._miRoom._objects._wallShelf['style:A'],
+					label: 'A',
 					value: 'A',
 				}, {
-					label: i18n.ts._miRoom._objects._wallShelf['style:B'],
+					label: 'B',
 					value: 'B',
 				}, {
-					label: i18n.ts._miRoom._objects._wallShelf['style:C'],
+					label: 'C',
 					value: 'C',
 				}, {
-					label: i18n.ts._miRoom._objects._wallShelf['style:D'],
+					label: 'D',
 					value: 'D',
-				}],
-			},
-			boardStyle: {
-				type: 'enum',
-				label: i18n.ts._miRoom._objects._wallShelf.boardStyle,
-				enum: [{
-					label: i18n.ts._miRoom._objects._wallShelf['boardStyle:wood'],
-					value: 'wood',
-				}, {
-					label: i18n.ts._miRoom._objects._wallShelf['boardStyle:color'],
-					value: 'color',
 				}],
 			},
 			boardMat: {
@@ -47,7 +36,6 @@ export const wallShelf = defineObject({
 		},
 		default: {
 			style: 'A',
-			boardStyle: 'wood',
 			boardMat: { color: [1, 1, 1], roughness: 0.5, metallic: 0 },
 		},
 	},
@@ -85,12 +73,6 @@ export const wallShelf = defineObject({
 			bodyMaterial.albedoColor = new BABYLON.Color3(options.boardMat.color[0], options.boardMat.color[1], options.boardMat.color[2]);
 			bodyMaterial.roughness = options.boardMat.roughness;
 			bodyMaterial.metallic = options.boardMat.metallic;
-
-			if (options.boardStyle === 'color') {
-				bodyMaterial.albedoTexture = null;
-			} else {
-				bodyMaterial.albedoTexture = bodyTexture;
-			}
 		};
 
 		applyBoardMat();
@@ -99,7 +81,6 @@ export const wallShelf = defineObject({
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
 					case 'style': applyStyle(); break;
-					case 'boardStyle':
 					case 'boardMat': applyBoardMat(); break;
 				}
 			},

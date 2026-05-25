@@ -13389,6 +13389,1334 @@ export interface Locale extends ILocale {
                  */
                 "light": string;
             };
+            /**
+             * A4ケース
+             */
+            "a4Case": string;
+            "_a4Case": {
+                /**
+                 * 素材
+                 */
+                "mat": string;
+            };
+            /**
+             * エアコン
+             */
+            "aircon": string;
+            /**
+             * 一体型PC
+             */
+            "allInOnePc": string;
+            "_allInOnePc": {
+                /**
+                 * ベゼルの素材
+                 */
+                "bezelMat": string;
+                /**
+                 * 本体の素材
+                 */
+                "bodyMat": string;
+                /**
+                 * 画面の画像
+                 */
+                "image": string;
+                /**
+                 * デスクトップ
+                 */
+                "image_desktop": string;
+                /**
+                 * 画面の明るさ
+                 */
+                "screenBrightness": string;
+            };
+            /**
+             * 水槽
+             */
+            "aquarium": string;
+            /**
+             * アロマリードディフューザー
+             */
+            "aromaReedDiffuser": string;
+            "_aromaReedDiffuser": {
+                /**
+                 * ボトルの素材
+                 */
+                "bottleMat": string;
+                /**
+                 * オイルの素材
+                 */
+                "oilMat": string;
+            };
+            /**
+             * 紙幣
+             */
+            "banknote": string;
+            /**
+             * ビームランプ
+             */
+            "beamLamp": string;
+            /**
+             * ベッド
+             */
+            "bed": string;
+            "_bed": {
+                /**
+                 * フレームの素材
+                 */
+                "frameMat": string;
+            };
+            /**
+             * ブラインド
+             */
+            "blind": string;
+            "_blind": {
+                /**
+                 * 羽根の回転角度（ラジアン）
+                 */
+                "angle": string;
+                /**
+                 * 羽根の枚数
+                 */
+                "blades": string;
+                /**
+                 * 開閉状態
+                 */
+                "open": string;
+            };
+            /**
+             * 本
+             */
+            "book": string;
+            "_book": {
+                /**
+                 * 高さ
+                 */
+                "height": string;
+                /**
+                 * 厚み
+                 */
+                "thickness": string;
+                /**
+                 * バリエーション
+                 */
+                "variation": string;
+                /**
+                 * 幅
+                 */
+                "width": string;
+            };
+            /**
+             * 本の束
+             */
+            "books": string;
+            "_books": {
+                /**
+                 * バリエーション
+                 */
+                "variation": string;
+            };
+            /**
+             * ボックス型ウォールシェルフ
+             */
+            "boxWallShelf": string;
+            "_boxWallShelf": {
+                /**
+                 * 本体の素材
+                 */
+                "bodyMat": string;
+                /**
+                 * 高さ
+                 */
+                "height": string;
+                /**
+                 * 幅
+                 */
+                "width": string;
+                /**
+                 * 背板あり
+                 */
+                "withBack": string;
+            };
+            /**
+             * サボテン S
+             */
+            "cactusS": string;
+            "_cactusS": {
+                /**
+                 * 鉢の素材
+                 */
+                "potMat": string;
+            };
+            /**
+             * 段ボール箱
+             */
+            "cardboardBox": string;
+            "_cardboardBox": {
+                /**
+                 * バリエーション
+                 */
+                "variation": string;
+                /**
+                 * Aizon
+                 */
+                "variation_aizon": string;
+                /**
+                 * デフォルト
+                 */
+                "variation_default": string;
+                /**
+                 * みかん
+                 */
+                "variation_mikan": string;
+            };
+            /**
+             * シーリングファンライト
+             */
+            "ceilingFanLight": string;
+            "_ceilingFanLight": {
+                /**
+                 * シェードの素材
+                 */
+                "shadeMat": string;
+            };
+            /**
+             * 椅子
+             */
+            "chair": string;
+            "_chair": {
+                /**
+                 * メインの素材
+                 */
+                "primaryMat": string;
+                /**
+                 * サブの素材
+                 */
+                "secondaryMat": string;
+            };
+            /**
+             * 留められた写真
+             */
+            "clippedPicture": string;
+            "_clippedPicture": {
+                /**
+                 * 高さ
+                 */
+                "height": string;
+                /**
+                 * 画像
+                 */
+                "image": string;
+                /**
+                 * 幅
+                 */
+                "width": string;
+            };
+            /**
+             * コーヒーカップ
+             */
+            "coffeeCup": string;
+            /**
+             * カラーボックス
+             */
+            "colorBox": string;
+            "_colorBox": {
+                /**
+                 * 素材
+                 */
+                "mat": string;
+            };
+            /**
+             * 直方体
+             */
+            "cuboid": string;
+            "_cuboid": {
+                /**
+                 * 素材
+                 */
+                "mat": string;
+                /**
+                 * X
+                 */
+                "x": string;
+                /**
+                 * Y
+                 */
+                "y": string;
+                /**
+                 * Z
+                 */
+                "z": string;
+            };
+            /**
+             * カップ麺
+             */
+            "cupNoodle": string;
+            /**
+             * カーテン
+             */
+            "curtain": string;
+            /**
+             * プリン
+             */
+            "custardPudding": string;
+            /**
+             * 説明が書かれたプレート
+             */
+            "descriptionPlate": string;
+            /**
+             * デスク
+             */
+            "desk": string;
+            "_desk": {
+                /**
+                 * 板の素材
+                 */
+                "boardMat": string;
+                /**
+                 * 奥行き
+                 */
+                "depth": string;
+                /**
+                 * フレームの素材
+                 */
+                "frameMat": string;
+                /**
+                 * 幅
+                 */
+                "width": string;
+            };
+            /**
+             * デスクトップPC
+             */
+            "desktopPc": string;
+            "_desktopPc": {
+                /**
+                 * 本体の素材
+                 */
+                "bodyMat": string;
+                /**
+                 * カバーの素材
+                 */
+                "coverMat": string;
+                /**
+                 * 内部素材1
+                 */
+                "inner1Mat": string;
+                /**
+                 * 内部素材2
+                 */
+                "inner2Mat": string;
+                /**
+                 * 内部素材3
+                 */
+                "inner3Mat": string;
+                /**
+                 * LEDの色
+                 */
+                "ledColor": string;
+            };
+            /**
+             * DJミキサー
+             */
+            "djMixer": string;
+            /**
+             * DJプレーヤー
+             */
+            "djPlayer": string;
+            "_djPlayer": {
+                /**
+                 * 画像
+                 */
+                "image": string;
+                /**
+                 * 波形
+                 */
+                "image:waveform": string;
+                /**
+                 * 画面の明るさ
+                 */
+                "screenBrightness": string;
+            };
+            /**
+             * スポットライト付きダクトレール
+             */
+            "ductRailSpotLights": string;
+            "_ductRailSpotLights": {
+                /**
+                 * 横方向の角度
+                 */
+                "angleH": string;
+                /**
+                 * 縦方向の角度
+                 */
+                "angleV": string;
+                /**
+                 * 本体の素材
+                 */
+                "bodyMat": string;
+                /**
+                 * 照明
+                 */
+                "light": string;
+            };
+            /**
+             * ガムテープ
+             */
+            "ductTape": string;
+            /**
+             * 電光掲示板
+             */
+            "electronicDisplayBoard": string;
+            "_electronicDisplayBoard": {
+                /**
+                 * フレームの素材
+                 */
+                "frameMat": string;
+                /**
+                 * LEDの明るさ
+                 */
+                "ledBrightness": string;
+                /**
+                 * LEDの色
+                 */
+                "ledColor": string;
+                /**
+                 * テキスト
+                 */
+                "text": string;
+            };
+            /**
+             * 空の弁当箱
+             */
+            "emptyBento": string;
+            /**
+             * エナジードリンク
+             */
+            "energyDrink": string;
+            /**
+             * 封筒
+             */
+            "envelope": string;
+            /**
+             * ティッシュ
+             */
+            "facialTissue": string;
+            /**
+             * ガラスシリンダー鉢植え
+             */
+            "glassCylinderPotPlant": string;
+            /**
+             * 携帯ゲーム機
+             */
+            "handheldGameConsole": string;
+            "_handheldGameConsole": {
+                /**
+                 * 本体の素材
+                 */
+                "bodyMat": string;
+                /**
+                 * 画像
+                 */
+                "image": string;
+                /**
+                 * 画面の明るさ
+                 */
+                "screenBrightness": string;
+            };
+            /**
+             * 吊り下げダクトレール
+             */
+            "hangingDuctRail": string;
+            "_hangingDuctRail": {
+                /**
+                 * 本体の素材
+                 */
+                "bodyMat": string;
+                /**
+                 * 高さ
+                 */
+                "height": string;
+                /**
+                 * 幅
+                 */
+                "width": string;
+            };
+            /**
+             * 吊り下げTシャツ
+             */
+            "hangingTShirt": string;
+            /**
+             * 正二十面体
+             */
+            "icosahedron": string;
+            /**
+             * アイアンフレームシェルフ 3段
+             */
+            "ironFrameShelf3": string;
+            /**
+             * アイアンフレームシェルフ 4段
+             */
+            "ironFrameShelf4": string;
+            /**
+             * アイアンフレームシェルフ 5段
+             */
+            "ironFrameShelf5": string;
+            /**
+             * アイアンフレームテーブル
+             */
+            "ironFrameTable": string;
+            "_ironFrameTable": {
+                /**
+                 * 板の素材
+                 */
+                "boardMat": string;
+                /**
+                 * 奥行き
+                 */
+                "depth": string;
+                /**
+                 * フレームの素材
+                 */
+                "frameMat": string;
+                /**
+                 * 高さ
+                 */
+                "height": string;
+                /**
+                 * 幅
+                 */
+                "width": string;
+            };
+            /**
+             * 一升瓶
+             */
+            "issyoubin": string;
+            "_issyoubin": {
+                /**
+                 * バリエーション
+                 */
+                "variation": string;
+            };
+            /**
+             * キーボード
+             */
+            "keyboard": string;
+            "_keyboard": {
+                /**
+                 * 本体の素材
+                 */
+                "bodyMat": string;
+                /**
+                 * キーの素材
+                 */
+                "keyMat": string;
+            };
+            /**
+             * ノートPC
+             */
+            "laptopPc": string;
+            "_laptopPc": {
+                /**
+                 * ベゼルの素材
+                 */
+                "bezelMat": string;
+                /**
+                 * 本体の素材
+                 */
+                "bodyMat": string;
+                /**
+                 * 画像
+                 */
+                "image": string;
+                /**
+                 * 開き具合
+                 */
+                "openAngle": string;
+                /**
+                 * 画面の明るさ
+                 */
+                "screenBrightness": string;
+            };
+            /**
+             * 大型マウスパッド
+             */
+            "largeMousepad": string;
+            "_largeMousepad": {
+                /**
+                 * 画像
+                 */
+                "image": string;
+            };
+            /**
+             * ラバランプ
+             */
+            "lavaLamp": string;
+            "_lavaLamp": {
+                /**
+                 * 本体の素材
+                 */
+                "bodyMat": string;
+                /**
+                 * ガラスの素材
+                 */
+                "glassMat": string;
+                /**
+                 * ラバの色
+                 */
+                "lavaColor": string;
+                /**
+                 * 光の色
+                 */
+                "lightColor": string;
+            };
+            /**
+             * レターケース
+             */
+            "letterCase": string;
+            /**
+             * 低いパーティションバー
+             */
+            "lowPartitionBar": string;
+            "_lowPartitionBar": {
+                /**
+                 * 本体の素材
+                 */
+                "bodyMat": string;
+                /**
+                 * 幅
+                 */
+                "width": string;
+            };
+            /**
+             * Miオブジェ
+             */
+            "miObjet": string;
+            /**
+             * Miプレート
+             */
+            "miPlate": string;
+            /**
+             * 飾られたMiプレート
+             */
+            "miPlateDisplayed": string;
+            /**
+             * 牛乳
+             */
+            "milk": string;
+            /**
+             * ミキサー
+             */
+            "mixer": string;
+            /**
+             * モニター
+             */
+            "monitor": string;
+            "_monitor": {
+                /**
+                 * 本体の素材
+                 */
+                "bodyMat": string;
+                /**
+                 * 画像
+                 */
+                "image": string;
+                /**
+                 * 画面の明るさ
+                 */
+                "screenBrightness": string;
+            };
+            /**
+             * モニタースピーカー
+             */
+            "monitorSpeaker": string;
+            "_monitorSpeaker": {
+                /**
+                 * 素材
+                 */
+                "mat": string;
+            };
+            /**
+             * モンステラ
+             */
+            "monstera": string;
+            "_monstera": {
+                /**
+                 * 鉢の素材
+                 */
+                "potMat": string;
+            };
+            /**
+             * マグカップ
+             */
+            "mug": string;
+            /**
+             * ニュートンクレードル
+             */
+            "newtonsCradle": string;
+            "_newtonsCradle": {
+                /**
+                 * フレームの素材
+                 */
+                "frameMat": string;
+            };
+            /**
+             * 開いた段ボール箱
+             */
+            "openedCardboardBox": string;
+            /**
+             * パキラ
+             */
+            "pachira": string;
+            "_pachira": {
+                /**
+                 * 鉢の素材
+                 */
+                "potMat": string;
+            };
+            /**
+             * ペットボトル
+             */
+            "petBottle": string;
+            "_petBottle": {
+                /**
+                 * 空
+                 */
+                "empty": string;
+                /**
+                 * バリエーション
+                 */
+                "variation": string;
+                /**
+                 * 緑茶
+                 */
+                "variation_greenTea": string;
+                /**
+                 * ミネラルウォーター
+                 */
+                "variation_mineralWater": string;
+                /**
+                 * キャップあり
+                 */
+                "withCap": string;
+                /**
+                 * ラベルあり
+                 */
+                "withLabel": string;
+            };
+            /**
+             * ピアノ
+             */
+            "piano": string;
+            "_piano": {
+                /**
+                 * 本体の素材
+                 */
+                "bodyMat": string;
+            };
+            /**
+             * シンプルな額縁
+             */
+            "pictureFrame": string;
+            "_pictureFrame": {
+                /**
+                 * 奥行き
+                 */
+                "depth": string;
+                /**
+                 * フレームの素材
+                 */
+                "frameMat": string;
+                /**
+                 * フレームの厚み
+                 */
+                "frameThickness": string;
+                /**
+                 * 高さ
+                 */
+                "height": string;
+                /**
+                 * 画像
+                 */
+                "image": string;
+                /**
+                 * マットの横幅
+                 */
+                "matHThickness": string;
+                /**
+                 * マットの縦幅
+                 */
+                "matVThickness": string;
+                /**
+                 * 幅
+                 */
+                "width": string;
+                /**
+                 * カバーあり
+                 */
+                "withCover": string;
+            };
+            /**
+             * ピザ
+             */
+            "pizza": string;
+            /**
+             * 植物
+             */
+            "plant": string;
+            /**
+             * 植物 2
+             */
+            "plant2": string;
+            /**
+             * ポスター
+             */
+            "poster": string;
+            "_poster": {
+                /**
+                 * 高さ
+                 */
+                "height": string;
+                /**
+                 * 画像
+                 */
+                "image": string;
+                /**
+                 * 幅
+                 */
+                "width": string;
+            };
+            /**
+             * 電源タップ
+             */
+            "powerStrip": string;
+            /**
+             * ラジオメーター
+             */
+            "radiometer": string;
+            /**
+             * 雑多な本
+             */
+            "randomBooks": string;
+            "_randomBooks": {
+                /**
+                 * 数
+                 */
+                "count": string;
+                /**
+                 * シード
+                 */
+                "seed": string;
+                /**
+                 * 縦に積む
+                 */
+                "stackVertically": string;
+                /**
+                 * バリエーション
+                 */
+                "variation": string;
+                /**
+                 * いろいろ
+                 */
+                "variation_mix": string;
+                /**
+                 * いろいろ（無地）
+                 */
+                "variation_mixPlain": string;
+            };
+            /**
+             * レコードプレーヤー
+             */
+            "recordPlayer": string;
+            /**
+             * 丸めたポスター
+             */
+            "rolledUpPoster": string;
+            /**
+             * 円形のラグ
+             */
+            "roundRug": string;
+            /**
+             * ルーター
+             */
+            "router": string;
+            /**
+             * サイフォン
+             */
+            "siphon": string;
+            /**
+             * サンセベリア
+             */
+            "snakeplant": string;
+            "_snakeplant": {
+                /**
+                 * 鉢の素材
+                 */
+                "potMat": string;
+            };
+            /**
+             * ソファ
+             */
+            "sofa": string;
+            "_sofa": {
+                /**
+                 * 本体の素材
+                 */
+                "bodyMat": string;
+            };
+            /**
+             * スピーカー
+             */
+            "speaker": string;
+            "_speaker": {
+                /**
+                 * 内側の素材
+                 */
+                "innerMat": string;
+                /**
+                 * 外側の素材
+                 */
+                "outerMat": string;
+            };
+            /**
+             * スピーカースタンド
+             */
+            "speakerStand": string;
+            "_speakerStand": {
+                /**
+                 * 本体の素材
+                 */
+                "bodyMat": string;
+                /**
+                 * 高さ
+                 */
+                "height": string;
+            };
+            /**
+             * スポットライト
+             */
+            "spotLight": string;
+            "_spotLight": {
+                /**
+                 * 横方向の角度
+                 */
+                "angleH": string;
+                /**
+                 * 縦方向の角度
+                 */
+                "angleV": string;
+                /**
+                 * 本体の素材
+                 */
+                "bodyMat": string;
+                /**
+                 * 照明
+                 */
+                "light": string;
+            };
+            /**
+             * 霧吹き
+             */
+            "sprayer": string;
+            /**
+             * スタンションポール
+             */
+            "stanchionPole": string;
+            "_stanchionPole": {
+                /**
+                 * 本体の素材
+                 */
+                "bodyMat": string;
+                /**
+                 * ロープの素材
+                 */
+                "ropeMat": string;
+            };
+            /**
+             * スチールラック
+             */
+            "steelRack": string;
+            "_steelRack": {
+                /**
+                 * 高さ
+                 */
+                "height": string;
+                /**
+                 * シェルフの数
+                 */
+                "numberOfShelfs": string;
+                /**
+                 * ポールの素材
+                 */
+                "poleMat": string;
+                /**
+                 * シェルフの位置
+                 */
+                "shelfPositionOf": string;
+                /**
+                 * シェルフの素材
+                 */
+                "shelfMat": string;
+                /**
+                 * W x D
+                 */
+                "widthAndDepthVariation": string;
+            };
+            /**
+             * ストームグラス
+             */
+            "stormGlass": string;
+            /**
+             * 食卓塩
+             */
+            "tableSalt": string;
+            /**
+             * 卓上カレンダー
+             */
+            "tabletopCalendar": string;
+            /**
+             * 卓上デジタル時計
+             */
+            "tabletopDigitalClock": string;
+            "_tabletopDigitalClock": {
+                /**
+                 * 本体の素材
+                 */
+                "bodyMat": string;
+                /**
+                 * LCDの色
+                 */
+                "lcdColor": string;
+            };
+            /**
+             * 卓上フラッグ
+             */
+            "tabletopFlag": string;
+            "_tabletopFlag": {
+                /**
+                 * 画像
+                 */
+                "image": string;
+            };
+            /**
+             * 卓上ガラスフォトフレーム
+             */
+            "tabletopGlassPictureFrame": string;
+            "_tabletopGlassPictureFrame": {
+                /**
+                 * 高さ
+                 */
+                "height": string;
+                /**
+                 * 画像
+                 */
+                "image": string;
+                /**
+                 * 幅
+                 */
+                "width": string;
+            };
+            /**
+             * 卓上アイアンフレームスタンド
+             */
+            "tabletopIronFrameStand": string;
+            "_tabletopIronFrameStand": {
+                /**
+                 * 板の素材
+                 */
+                "boardMat": string;
+                /**
+                 * 奥行き
+                 */
+                "depth": string;
+                /**
+                 * フレームの素材
+                 */
+                "frameMat": string;
+                /**
+                 * 高さ
+                 */
+                "height": string;
+                /**
+                 * 幅
+                 */
+                "width": string;
+            };
+            /**
+             * 卓上LCDボタンコントローラー
+             */
+            "tabletopLcdButtonsController": string;
+            "_tabletopLcdButtonsController": {
+                /**
+                 * 本体の素材
+                 */
+                "bodyMat": string;
+                /**
+                 * 画像
+                 */
+                "image": string;
+                /**
+                 * 画面の明るさ
+                 */
+                "screenBrightness": string;
+            };
+            /**
+             * 卓上シンプル額縁
+             */
+            "tabletopPictureFrame": string;
+            "_tabletopPictureFrame": {
+                /**
+                 * 奥行き
+                 */
+                "depth": string;
+                /**
+                 * フレームの素材
+                 */
+                "frameMat": string;
+                /**
+                 * フレームの厚み
+                 */
+                "frameThickness": string;
+                /**
+                 * 高さ
+                 */
+                "height": string;
+                /**
+                 * 画像
+                 */
+                "image": string;
+                /**
+                 * マットの横幅
+                 */
+                "matHThickness": string;
+                /**
+                 * マットの縦幅
+                 */
+                "matVThickness": string;
+                /**
+                 * 幅
+                 */
+                "width": string;
+            };
+            /**
+             * タペストリー
+             */
+            "tapestry": string;
+            "_tapestry": {
+                /**
+                 * 高さ
+                 */
+                "height": string;
+                /**
+                 * 画像
+                 */
+                "image": string;
+                /**
+                 * 幅
+                 */
+                "width": string;
+            };
+            /**
+             * 波消ブロック
+             */
+            "tetrapod": string;
+            /**
+             * テレビ
+             */
+            "tv": string;
+            "_tv": {
+                /**
+                 * 本体の素材
+                 */
+                "bodyMat": string;
+                /**
+                 * 画面の明るさ
+                 */
+                "screenBrightness": string;
+            };
+            /**
+             * ねじれた立方体のオブジェ
+             */
+            "twistedCubeObjet": string;
+            /**
+             * 使用済みティッシュ
+             */
+            "usedTissue": string;
+            /**
+             * 壁掛けキャンバス
+             */
+            "wallCanvas": string;
+            "_wallCanvas": {
+                /**
+                 * 高さ
+                 */
+                "height": string;
+                /**
+                 * 画像
+                 */
+                "image": string;
+                /**
+                 * 幅
+                 */
+                "width": string;
+            };
+            /**
+             * 壁掛け時計
+             */
+            "wallClock": string;
+            "_wallClock": {
+                /**
+                 * フレームの素材
+                 */
+                "frameMat": string;
+            };
+            /**
+             * ガラスの壁掛けフォトフレーム
+             */
+            "wallGlassPictureFrame": string;
+            "_wallGlassPictureFrame": {
+                /**
+                 * 高さ
+                 */
+                "height": string;
+                /**
+                 * 画像
+                 */
+                "image": string;
+                /**
+                 * 幅
+                 */
+                "width": string;
+            };
+            /**
+             * 壁掛けミラー
+             */
+            "wallMirror": string;
+            "_wallMirror": {
+                /**
+                 * フレームの素材
+                 */
+                "frameMat": string;
+                /**
+                 * フレームの厚み
+                 */
+                "frameThickness": string;
+                /**
+                 * 高さ
+                 */
+                "height": string;
+                /**
+                 * 幅
+                 */
+                "width": string;
+            };
+            /**
+             * ウォールマウントスポットライト
+             */
+            "wallMountSpotLight": string;
+            "_wallMountSpotLight": {
+                /**
+                 * 横方向の角度
+                 */
+                "angleH": string;
+                /**
+                 * 縦方向の角度
+                 */
+                "angleV": string;
+                /**
+                 * 本体の素材
+                 */
+                "bodyMat": string;
+                /**
+                 * 照明
+                 */
+                "light": string;
+            };
+            /**
+             * ウォールシェルフ
+             */
+            "wallShelf": string;
+            "_wallShelf": {
+                /**
+                 * 板の素材
+                 */
+                "boardMat": string;
+                /**
+                 * 板のスタイル
+                 */
+                "boardStyle": string;
+                /**
+                 * 単色
+                 */
+                "boardStyle:color": string;
+                /**
+                 * 木目
+                 */
+                "boardStyle:wood": string;
+                /**
+                 * スタイル
+                 */
+                "style": string;
+            };
+            /**
+             * ワイヤーバスケット
+             */
+            "wireBasket": string;
+            "_wireBasket": {
+                /**
+                 * 本体の素材
+                 */
+                "bodyMat": string;
+            };
+            /**
+             * ワイヤーネット
+             */
+            "wireNet": string;
+            "_wireNet": {
+                /**
+                 * 本体の素材
+                 */
+                "bodyMat": string;
+            };
+            /**
+             * ウッドリングペンダントライト
+             */
+            "woodRingsPendantLight": string;
+            "_woodRingsPendantLight": {
+                /**
+                 * 本体の素材
+                 */
+                "bodyMat": string;
+                /**
+                 * 長さ
+                 */
+                "length": string;
+                /**
+                 * 照明
+                 */
+                "light": string;
+                /**
+                 * シェードの素材
+                 */
+                "shadeMat": string;
+            };
+            /**
+             * 木製吸音パネル
+             */
+            "woodSoundAbsorbingPanel": string;
+            "_ironFrameShelf": {
+                /**
+                 * 板の素材
+                 */
+                "boardMat": string;
+                /**
+                 * フレームの素材
+                 */
+                "frameMat": string;
+                /**
+                 * 幅
+                 */
+                "width": string;
+            };
         };
     };
 }

@@ -4,11 +4,10 @@
  */
 
 import { defineObject } from '../object.js';
-import { i18n } from '@/i18n.js';
 
 export const debugHipoly = defineObject({
 	id: 'debugHipoly',
-	name: i18n.ts._miRoom._objects.debugHipoly,
+	name: 'Debug Hipoly',
 	options: {
 		schema: {},
 		default: {},

@@ -17,19 +17,19 @@ export const books = defineObject({
 				type: 'enum',
 				label: i18n.ts._miRoom._objects._books.variation,
 				enum: [{
-					label: i18n.ts._miRoom._objects._books.variation_a,
+					label: 'A',
 					value: 'A',
 				}, {
-					label: i18n.ts._miRoom._objects._books.variation_b,
+					label: 'B',
 					value: 'B',
 				}, {
-					label: i18n.ts._miRoom._objects._books.variation_c,
+					label: 'C',
 					value: 'C',
 				}, {
-					label: i18n.ts._miRoom._objects._books.variation_d,
+					label: 'D',
 					value: 'D',
 				}, {
-					label: i18n.ts._miRoom._objects._books.variation_e,
+					label: 'E',
 					value: 'E',
 				}],
 			},

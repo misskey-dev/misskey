@@ -16,10 +16,10 @@ export const issyoubin = defineObject({
 				type: 'enum',
 				label: i18n.ts._miRoom._objects._issyoubin.variation,
 				enum: [{
-					label: i18n.ts._miRoom._objects._issyoubin.variation_misuki,
+					label: 'A',
 					value: 'misuki',
 				}, {
-					label: i18n.ts._miRoom._objects._issyoubin.variation_ai,
+					label: 'B',
 					value: 'ai',
 				}],
 			},
