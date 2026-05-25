@@ -35,6 +35,7 @@ export const cardboardBox = defineObject({
 	hasTexture: true,
 	createInstance: ({ scene, options, model }) => {
 		const material = model.findMaterial('__X_BODY__');
+
 		let tex: BABYLON.Texture | null = null;
 
 		const applyVariation = () => {
@@ -44,10 +45,12 @@ export const cardboardBox = defineObject({
 				tex = new BABYLON.Texture('/client-assets/room/objects/cardboard-box/textures/aizon.png', scene, false, false);
 			}
 
-			if (tex) {
+			if (tex != null) {
 				material.albedoTexture = tex;
+				material.albedoColor = new BABYLON.Color3(1, 1, 1);
 			} else {
 				material.albedoTexture = null;
+				material.albedoColor = new BABYLON.Color3(0.6, 0.485, 0.31);
 			}
 		};
 
