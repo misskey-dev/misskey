@@ -5,16 +5,13 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { i18n } from '@/i18n.js';
 
 export const piano = defineObject({
 	id: 'piano',
-	name: i18n.ts._miRoom._objects.piano,
 	options: {
 		schema: {
 			bodyMat: {
 				type: 'material',
-				label: i18n.ts._miRoom._objects._piano.bodyMat,
 			},
 		},
 		default: {

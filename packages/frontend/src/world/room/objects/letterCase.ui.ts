@@ -1,0 +1,13 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { defineObjectUi } from '../defineObjectUi.js';
+import type { letterCase } from './letterCase.js';
+import { i18n } from '@/i18n.js';
+
+export const letterCase_ui = defineObjectUi<typeof letterCase>({
+	name: i18n.ts._miRoom._objects.letterCase,
+	options: {},
+});

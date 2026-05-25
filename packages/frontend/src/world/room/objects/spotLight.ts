@@ -7,31 +7,25 @@ import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 import { cm, remap, WORLD_SCALE } from '@/world/utility.js';
-import { i18n } from '@/i18n.js';
 
 export const spotLight = defineObject({
 	id: 'spotLight',
-	name: i18n.ts._miRoom._objects.spotLight,
 	options: {
 		schema: {
 			bodyMat: {
 				type: 'material',
-				label: i18n.ts._miRoom._objects._spotLight.bodyMat,
 			},
 			light: {
 				type: 'light',
-				label: i18n.ts._miRoom._objects._spotLight.light,
 			},
 			angleV: {
 				type: 'range',
-				label: i18n.ts._miRoom._objects._spotLight.angleV,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			angleH: {
 				type: 'range',
-				label: i18n.ts._miRoom._objects._spotLight.angleH,
 				min: 0,
 				max: 1,
 				step: 0.01,

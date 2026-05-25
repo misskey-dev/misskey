@@ -5,33 +5,25 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { i18n } from '@/i18n.js';
 
 export const wallShelf = defineObject({
 	id: 'wallShelf',
-	name: i18n.ts._miRoom._objects.wallShelf,
 	options: {
 		schema: {
 			style: {
 				type: 'enum',
-				label: i18n.ts._miRoom._objects._wallShelf.style,
 				enum: [{
-					label: 'A',
 					value: 'A',
 				}, {
-					label: 'B',
 					value: 'B',
 				}, {
-					label: 'C',
 					value: 'C',
 				}, {
-					label: 'D',
 					value: 'D',
 				}],
 			},
 			boardMat: {
 				type: 'material',
-				label: i18n.ts._miRoom._objects._wallShelf.boardMat,
 			},
 		},
 		default: {

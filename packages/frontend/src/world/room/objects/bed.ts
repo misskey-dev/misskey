@@ -5,16 +5,13 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { i18n } from '@/i18n.js';
 
 export const bed = defineObject({
 	id: 'bed',
-	name: i18n.ts._miRoom._objects.bed,
 	options: {
 		schema: {
 			frameMat: {
 				type: 'material',
-				label: i18n.ts._miRoom._objects._bed.frameMat,
 			},
 		},
 		default: {

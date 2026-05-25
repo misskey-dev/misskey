@@ -5,20 +5,16 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { i18n } from '@/i18n.js';
 
 export const aromaReedDiffuser = defineObject({
 	id: 'aromaReedDiffuser',
-	name: i18n.ts._miRoom._objects.aromaReedDiffuser,
 	options: {
 		schema: {
 			bottleMat: {
 				type: 'material',
-				label: i18n.ts._miRoom._objects._aromaReedDiffuser.bottleMat,
 			},
 			oilMat: {
 				type: 'material',
-				label: i18n.ts._miRoom._objects._aromaReedDiffuser.oilMat,
 			},
 		},
 		default: {

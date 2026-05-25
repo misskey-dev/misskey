@@ -7,27 +7,22 @@ import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
 import { cm, WORLD_SCALE, normalizeUvToSquare } from '../../utility.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
-import { i18n } from '@/i18n.js';
 
 export const monitor = defineObject({
 	id: 'monitor',
-	name: i18n.ts._miRoom._objects.monitor,
 	options: {
 		schema: {
 			bodyMat: {
 				type: 'material',
-				label: i18n.ts._miRoom._objects._monitor.bodyMat,
 			},
 			screenBrightness: {
 				type: 'range',
-				label: i18n.ts._miRoom._objects._monitor.screenBrightness,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			image: {
 				type: 'image',
-				label: i18n.ts._miRoom._objects._monitor.image,
 				presets: [],
 			},
 		},

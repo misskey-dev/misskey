@@ -5,24 +5,18 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { i18n } from '@/i18n.js';
 
 export const cardboardBox = defineObject({
 	id: 'cardboardBox',
-	name: i18n.ts._miRoom._objects.cardboardBox,
 	options: {
 		schema: {
 			variation: {
 				type: 'enum',
-				label: i18n.ts._miRoom._objects._cardboardBox.variation,
 				enum: [{
-					label: i18n.ts._miRoom._objects._cardboardBox.variation_default,
 					value: 'default',
 				}, {
-					label: i18n.ts._miRoom._objects._cardboardBox.variation_mikan,
 					value: 'mikan',
 				}, {
-					label: i18n.ts._miRoom._objects._cardboardBox.variation_aizon,
 					value: 'aizon',
 				}],
 			},

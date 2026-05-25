@@ -4,11 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
-import { i18n } from '@/i18n.js';
 
 export const siphon = defineObject({
 	id: 'siphon',
-	name: i18n.ts._miRoom._objects.siphon,
 	options: {
 		schema: {},
 		default: {},

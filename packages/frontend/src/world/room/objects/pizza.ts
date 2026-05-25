@@ -4,11 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
-import { i18n } from '@/i18n.js';
 
 export const pizza = defineObject({
 	id: 'pizza',
-	name: i18n.ts._miRoom._objects.pizza,
 	options: {
 		schema: {},
 		default: {},

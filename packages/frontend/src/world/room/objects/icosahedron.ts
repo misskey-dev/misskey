@@ -5,16 +5,13 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { i18n } from '@/i18n.js';
 
 export const icosahedron = defineObject({
 	id: 'icosahedron',
-	name: i18n.ts._miRoom._objects.icosahedron,
 	options: {
 		schema: {
 			mat: {
 				type: 'material',
-				label: i18n.ts._miRoom._objects._icosahedron.mat,
 			},
 		},
 		default: {

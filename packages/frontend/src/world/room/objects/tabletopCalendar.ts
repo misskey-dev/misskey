@@ -4,11 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
-import { i18n } from '@/i18n.js';
 
 export const tabletopCalendar = defineObject({
 	id: 'tabletopCalendar',
-	name: i18n.ts._miRoom._objects.tabletopCalendar,
 	options: {
 		schema: {},
 		default: {},

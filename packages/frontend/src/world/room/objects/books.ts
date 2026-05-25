@@ -6,30 +6,22 @@
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { cm } from '../../utility.js';
-import { i18n } from '@/i18n.js';
 
 export const books = defineObject({
 	id: 'books',
-	name: i18n.ts._miRoom._objects.books,
 	options: {
 		schema: {
 			variation: {
 				type: 'enum',
-				label: i18n.ts._miRoom._objects._books.variation,
 				enum: [{
-					label: 'A',
 					value: 'A',
 				}, {
-					label: 'B',
 					value: 'B',
 				}, {
-					label: 'C',
 					value: 'C',
 				}, {
-					label: 'D',
 					value: 'D',
 				}, {
-					label: 'E',
 					value: 'E',
 				}],
 			},

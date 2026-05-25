@@ -5,16 +5,13 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
-import { i18n } from '@/i18n.js';
 
 export const tabletopFlag = defineObject({
 	id: 'tabletopFlag',
-	name: i18n.ts._miRoom._objects.tabletopFlag,
 	options: {
 		schema: {
 			image: {
 				type: 'image',
-				label: i18n.ts._miRoom._objects._tabletopFlag.image,
 				presets: [],
 			},
 		},

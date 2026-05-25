@@ -7,38 +7,30 @@ import * as BABYLON from '@babylonjs/core';
 import seedrandom from 'seedrandom';
 import { defineObject } from '../object.js';
 import { cm, remap, WORLD_SCALE } from '@/world/utility.js';
-import { i18n } from '@/i18n.js';
 
 export const randomBooks = defineObject({
 	id: 'randomBooks',
-	name: i18n.ts._miRoom._objects.randomBooks,
 	options: {
 		schema: {
 			variation: {
 				type: 'enum',
-				label: i18n.ts._miRoom._objects._randomBooks.variation,
 				enum: [{
-					label: i18n.ts._miRoom._objects._randomBooks.variation_mix,
 					value: 'mix',
 				}, {
-					label: i18n.ts._miRoom._objects._randomBooks.variation_mixPlain,
 					value: 'mix-plain',
 				}],
 			},
 			count: {
 				type: 'range',
-				label: i18n.ts._miRoom._objects._randomBooks.count,
 				min: 1,
 				max: 30,
 				step: 1,
 			},
 			stackVertically: {
 				type: 'boolean',
-				label: i18n.ts._miRoom._objects._randomBooks.stackVertically,
 			},
 			seed: {
 				type: 'seed',
-				label: i18n.ts._miRoom._objects._randomBooks.seed,
 			},
 		},
 		default: {

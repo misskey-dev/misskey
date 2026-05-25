@@ -5,20 +5,16 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { i18n } from '@/i18n.js';
 
 export const keyboard = defineObject({
 	id: 'keyboard',
-	name: i18n.ts._miRoom._objects.keyboard,
 	options: {
 		schema: {
 			bodyMat: {
 				type: 'material',
-				label: i18n.ts._miRoom._objects._keyboard.bodyMat,
 			},
 			keyMat: {
 				type: 'material',
-				label: i18n.ts._miRoom._objects._keyboard.keyMat,
 			},
 		},
 		default: {

@@ -7,24 +7,19 @@ import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 import { cm, WORLD_SCALE } from '@/world/utility.js';
-import { i18n } from '@/i18n.js';
 
 export const woodRingFloorLamp = defineObject({
 	id: 'woodRingFloorLamp',
-	name: i18n.ts._miRoom._objects.woodRingFloorLamp,
 	options: {
 		schema: {
 			shadeMat: {
 				type: 'material',
-				label: i18n.ts._miRoom._objects._woodRingFloorLamp.shadeMat,
 			},
 			bodyMat: {
 				type: 'material',
-				label: i18n.ts._miRoom._objects._woodRingFloorLamp.bodyMat,
 			},
 			light: {
 				type: 'light',
-				label: i18n.ts._miRoom._objects._woodRingFloorLamp.light,
 			},
 		},
 		default: {

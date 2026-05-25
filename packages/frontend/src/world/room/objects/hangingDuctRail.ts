@@ -5,30 +5,25 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { i18n } from '@/i18n.js';
 
 export const hangingDuctRail = defineObject({
 	id: 'hangingDuctRail',
-	name: i18n.ts._miRoom._objects.hangingDuctRail,
 	options: {
 		schema: {
 			width: {
 				type: 'range',
-				label: i18n.ts._miRoom._objects._hangingDuctRail.width,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			height: {
 				type: 'range',
-				label: i18n.ts._miRoom._objects._hangingDuctRail.height,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			bodyMat: {
 				type: 'material',
-				label: i18n.ts._miRoom._objects._hangingDuctRail.bodyMat,
 			},
 		},
 		default: {

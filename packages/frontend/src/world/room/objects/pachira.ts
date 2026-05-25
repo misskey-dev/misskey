@@ -5,16 +5,13 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { i18n } from '@/i18n.js';
 
 export const pachira = defineObject({
 	id: 'pachira',
-	name: i18n.ts._miRoom._objects.pachira,
 	options: {
 		schema: {
 			potMat: {
 				type: 'material',
-				label: i18n.ts._miRoom._objects._pachira.potMat,
 			},
 		},
 		default: {

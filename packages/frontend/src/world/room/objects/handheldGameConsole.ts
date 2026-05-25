@@ -5,27 +5,22 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
-import { i18n } from '@/i18n.js';
 
 export const handheldGameConsole = defineObject({
 	id: 'handheldGameConsole',
-	name: i18n.ts._miRoom._objects.handheldGameConsole,
 	options: {
 		schema: {
 			bodyMat: {
 				type: 'material',
-				label: i18n.ts._miRoom._objects._handheldGameConsole.bodyMat,
 			},
 			screenBrightness: {
 				type: 'range',
-				label: i18n.ts._miRoom._objects._handheldGameConsole.screenBrightness,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			image: {
 				type: 'image',
-				label: i18n.ts._miRoom._objects._handheldGameConsole.image,
 				presets: [],
 			},
 		},

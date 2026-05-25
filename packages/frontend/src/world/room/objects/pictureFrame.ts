@@ -5,68 +5,57 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
-import { i18n } from '@/i18n.js';
 
 // NOTE: シェイプキーのnormalのエクスポートは無効にしないとmatを大きくしたときに面のレンダリングがグリッチする
 
 export const pictureFrame = defineObject({
 	id: 'pictureFrame',
-	name: i18n.ts._miRoom._objects.pictureFrame,
 	options: {
 		schema: {
 			frameMat: {
 				type: 'material',
-				label: i18n.ts._miRoom._objects._pictureFrame.frameMat,
 			},
 			width: {
 				type: 'range',
-				label: i18n.ts._miRoom._objects._pictureFrame.width,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			height: {
 				type: 'range',
-				label: i18n.ts._miRoom._objects._pictureFrame.height,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			frameThickness: {
 				type: 'range',
-				label: i18n.ts._miRoom._objects._pictureFrame.frameThickness,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			depth: {
 				type: 'range',
-				label: i18n.ts._miRoom._objects._pictureFrame.depth,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			matHThickness: {
 				type: 'range',
-				label: i18n.ts._miRoom._objects._pictureFrame.matHThickness,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			matVThickness: {
 				type: 'range',
-				label: i18n.ts._miRoom._objects._pictureFrame.matVThickness,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			withCover: {
 				type: 'boolean',
-				label: i18n.ts._miRoom._objects._pictureFrame.withCover,
 			},
 			image: {
 				type: 'image',
-				label: i18n.ts._miRoom._objects._pictureFrame.image,
 				presets: [],
 			},
 		},

@@ -1,0 +1,23 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { defineObjectUi } from '../defineObjectUi.js';
+import type { wallCanvas } from './wallCanvas.js';
+import { i18n } from '@/i18n.js';
+
+export const wallCanvas_ui = defineObjectUi<typeof wallCanvas>({
+	name: i18n.ts._miRoom._objects.wallCanvas,
+	options: {
+		width: {
+			label: i18n.ts._miRoom._objects._wallCanvas.width,
+		},
+		height: {
+			label: i18n.ts._miRoom._objects._wallCanvas.height,
+		},
+		image: {
+			label: i18n.ts._miRoom._objects._wallCanvas.image,
+		},
+	},
+});

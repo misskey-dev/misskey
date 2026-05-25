@@ -6,28 +6,22 @@
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { RecyvlingTextGrid } from '../../utility.js';
-import { i18n } from '@/i18n.js';
 
 export const electronicDisplayBoard = defineObject({
 	id: 'electronicDisplayBoard',
-	name: i18n.ts._miRoom._objects.electronicDisplayBoard,
 	options: {
 		schema: {
 			text: {
 				type: 'string',
-				label: i18n.ts._miRoom._objects._electronicDisplayBoard.text,
 			},
 			frameMat: {
 				type: 'material',
-				label: i18n.ts._miRoom._objects._electronicDisplayBoard.frameMat,
 			},
 			ledColor: {
 				type: 'color',
-				label: i18n.ts._miRoom._objects._electronicDisplayBoard.ledColor,
 			},
 			ledBrightness: {
 				type: 'range',
-				label: i18n.ts._miRoom._objects._electronicDisplayBoard.ledBrightness,
 				min: 0,
 				max: 1,
 				step: 0.01,

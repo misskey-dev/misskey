@@ -5,37 +5,31 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { i18n } from '@/i18n.js';
 
 export const wallMirror = defineObject({
 	id: 'wallMirror',
-	name: i18n.ts._miRoom._objects.wallMirror,
 	options: {
 		schema: {
 			width: {
 				type: 'range',
-				label: i18n.ts._miRoom._objects._wallMirror.width,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			height: {
 				type: 'range',
-				label: i18n.ts._miRoom._objects._wallMirror.height,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			frameThickness: {
 				type: 'range',
-				label: i18n.ts._miRoom._objects._wallMirror.frameThickness,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			frameMat: {
 				type: 'material',
-				label: i18n.ts._miRoom._objects._wallMirror.frameMat,
 			},
 		},
 		default: {

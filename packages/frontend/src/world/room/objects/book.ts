@@ -4,35 +4,29 @@
  */
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { i18n } from '@/i18n.js';
 
 export const book = defineObject({
 	id: 'book',
-	name: i18n.ts._miRoom._objects.book,
 	options: {
 		schema: {
 			variation: {
 				type: 'enum',
-				label: i18n.ts._miRoom._objects._book.variation,
 				enum: [0, 1],
 			},
 			width: {
 				type: 'range',
-				label: i18n.ts._miRoom._objects._book.width,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			height: {
 				type: 'range',
-				label: i18n.ts._miRoom._objects._book.height,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			thickness: {
 				type: 'range',
-				label: i18n.ts._miRoom._objects._book.thickness,
 				min: 0,
 				max: 1,
 				step: 0.01,

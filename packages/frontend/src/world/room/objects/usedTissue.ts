@@ -4,11 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
-import { i18n } from '@/i18n.js';
 
 export const usedTissue = defineObject({
 	id: 'usedTissue',
-	name: i18n.ts._miRoom._objects.usedTissue,
 	options: {
 		schema: {},
 		default: {},
