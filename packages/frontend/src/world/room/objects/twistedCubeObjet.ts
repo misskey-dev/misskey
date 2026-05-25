@@ -4,10 +4,11 @@
  */
 
 import { defineObject } from '../object.js';
+import { i18n } from '@/i18n.js';
 
 export const twistedCubeObjet = defineObject({
 	id: 'twistedCubeObjet',
-	name: 'twistedCubeObjet',
+	name: i18n.ts._miRoom._objects.twistedCubeObjet,
 	options: {
 		schema: {},
 		default: {},

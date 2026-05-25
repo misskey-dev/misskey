@@ -6,6 +6,7 @@
 import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
 import { createPlaneUvMapper, getPlaneUvIndexes } from '../../utility.js';
+import { i18n } from '@/i18n.js';
 
 const remap = (value: number, fromMin: number, fromMax: number, toMin: number, toMax: number) => {
 	return toMin + ((value - fromMin) / (fromMax - fromMin)) * (toMax - toMin);
@@ -13,26 +14,26 @@ const remap = (value: number, fromMin: number, fromMax: number, toMin: number, t
 
 export const tabletopGlassPictureFrame = defineObject({
 	id: 'tabletopGlassPictureFrame',
-	name: 'tabletopGlassPictureFrame',
+	name: i18n.ts._miRoom._objects.tabletopGlassPictureFrame,
 	options: {
 		schema: {
 			width: {
 				type: 'range',
-				label: 'Width',
+				label: i18n.ts._miRoom._objects._tabletopGlassPictureFrame.width,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			height: {
 				type: 'range',
-				label: 'Height',
+				label: i18n.ts._miRoom._objects._tabletopGlassPictureFrame.height,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			image: {
 				type: 'image',
-				label: 'Image',
+				label: i18n.ts._miRoom._objects._tabletopGlassPictureFrame.image,
 				presets: [],
 			},
 		},

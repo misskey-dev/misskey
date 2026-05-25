@@ -5,15 +5,16 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { i18n } from '@/i18n.js';
 
 export const wireBasket = defineObject({
 	id: 'wireBasket',
-	name: 'wireBasket',
+	name: i18n.ts._miRoom._objects.wireBasket,
 	options: {
 		schema: {
 			bodyMat: {
 				type: 'material',
-				label: 'bodyMaterial',
+				label: i18n.ts._miRoom._objects._wireBasket.bodyMat,
 			},
 		},
 		default: {

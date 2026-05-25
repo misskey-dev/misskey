@@ -5,43 +5,44 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { i18n } from '@/i18n.js';
 
 export const wallShelf = defineObject({
 	id: 'wallShelf',
-	name: 'Wall Shelf',
+	name: i18n.ts._miRoom._objects.wallShelf,
 	options: {
 		schema: {
 			style: {
 				type: 'enum',
-				label: 'Style',
+				label: i18n.ts._miRoom._objects._wallShelf.style,
 				enum: [{
-					label: 'A',
+					label: i18n.ts._miRoom._objects._wallShelf['style:A'],
 					value: 'A',
 				}, {
-					label: 'B',
+					label: i18n.ts._miRoom._objects._wallShelf['style:B'],
 					value: 'B',
 				}, {
-					label: 'C',
+					label: i18n.ts._miRoom._objects._wallShelf['style:C'],
 					value: 'C',
 				}, {
-					label: 'D',
+					label: i18n.ts._miRoom._objects._wallShelf['style:D'],
 					value: 'D',
 				}],
 			},
 			boardStyle: {
 				type: 'enum',
-				label: 'Board style',
+				label: i18n.ts._miRoom._objects._wallShelf.boardStyle,
 				enum: [{
-					label: 'Wood',
+					label: i18n.ts._miRoom._objects._wallShelf['boardStyle:wood'],
 					value: 'wood',
 				}, {
-					label: 'Color',
+					label: i18n.ts._miRoom._objects._wallShelf['boardStyle:color'],
 					value: 'color',
 				}],
 			},
 			boardMat: {
 				type: 'material',
-				label: 'Board material',
+				label: i18n.ts._miRoom._objects._wallShelf.boardMat,
 			},
 		},
 		default: {

@@ -7,19 +7,20 @@ import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { getLightRangeFactorByGraphicsQuality, initTv } from '../utility.js';
 import { cm, WORLD_SCALE } from '@/world/utility.js';
+import { i18n } from '@/i18n.js';
 
 export const tv = defineObject({
 	id: 'tv',
-	name: 'TV',
+	name: i18n.ts._miRoom._objects.tv,
 	options: {
 		schema: {
 			bodyMat: {
 				type: 'material',
-				label: 'Body material',
+				label: i18n.ts._miRoom._objects._tv.bodyMat,
 			},
 			screenBrightness: {
 				type: 'range',
-				label: 'Screen brightness',
+				label: i18n.ts._miRoom._objects._tv.screenBrightness,
 				min: 0,
 				max: 1,
 				step: 0.01,

@@ -4,10 +4,11 @@
  */
 
 import { defineObject } from '../object.js';
+import { i18n } from '@/i18n.js';
 
 export const tableSalt = defineObject({
 	id: 'tableSalt',
-	name: 'tableSalt',
+	name: i18n.ts._miRoom._objects.tableSalt,
 	options: {
 		schema: {},
 		default: {},

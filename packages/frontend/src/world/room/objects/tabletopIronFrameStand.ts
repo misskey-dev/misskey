@@ -5,37 +5,38 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { i18n } from '@/i18n.js';
 
 export const tabletopIronFrameStand = defineObject({
 	id: 'tabletopIronFrameStand',
-	name: 'tabletopIronFrameStand',
+	name: i18n.ts._miRoom._objects.tabletopIronFrameStand,
 	options: {
 		schema: {
 			frameMat: {
 				type: 'material',
-				label: 'Frame material',
+				label: i18n.ts._miRoom._objects._tabletopIronFrameStand.frameMat,
 			},
 			boardMat: {
 				type: 'material',
-				label: 'Board material',
+				label: i18n.ts._miRoom._objects._tabletopIronFrameStand.boardMat,
 			},
 			width: {
 				type: 'range',
-				label: 'Width',
+				label: i18n.ts._miRoom._objects._tabletopIronFrameStand.width,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			depth: {
 				type: 'range',
-				label: 'Depth',
+				label: i18n.ts._miRoom._objects._tabletopIronFrameStand.depth,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			height: {
 				type: 'range',
-				label: 'Height',
+				label: i18n.ts._miRoom._objects._tabletopIronFrameStand.height,
 				min: 0,
 				max: 1,
 				step: 0.01,

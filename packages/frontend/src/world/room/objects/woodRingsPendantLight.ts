@@ -7,27 +7,28 @@ import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 import { cm, remap, WORLD_SCALE } from '@/world/utility.js';
+import { i18n } from '@/i18n.js';
 
 export const woodRingsPendantLight = defineObject({
 	id: 'woodRingsPendantLight',
-	name: 'woodRingsPendantLight',
+	name: i18n.ts._miRoom._objects.woodRingsPendantLight,
 	options: {
 		schema: {
 			shadeMat: {
 				type: 'material',
-				label: 'Shade material',
+				label: i18n.ts._miRoom._objects._woodRingsPendantLight.shadeMat,
 			},
 			bodyMat: {
 				type: 'material',
-				label: 'Body material',
+				label: i18n.ts._miRoom._objects._woodRingsPendantLight.bodyMat,
 			},
 			light: {
 				type: 'light',
-				label: 'Light',
+				label: i18n.ts._miRoom._objects._woodRingsPendantLight.light,
 			},
 			length: {
 				type: 'range',
-				label: 'Length',
+				label: i18n.ts._miRoom._objects._woodRingsPendantLight.length,
 				min: 0,
 				max: 1,
 				step: 0.01,

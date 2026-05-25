@@ -7,30 +7,31 @@ import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 import { cm, WORLD_SCALE } from '@/world/utility.js';
+import { i18n } from '@/i18n.js';
 
 export const wallMountSpotLight = defineObject({
 	id: 'wallMountSpotLight',
-	name: 'wallMountSpotLight',
+	name: i18n.ts._miRoom._objects.wallMountSpotLight,
 	options: {
 		schema: {
 			bodyMat: {
 				type: 'material',
-				label: 'Body material',
+				label: i18n.ts._miRoom._objects._wallMountSpotLight.bodyMat,
 			},
 			light: {
 				type: 'light',
-				label: 'Light',
+				label: i18n.ts._miRoom._objects._wallMountSpotLight.light,
 			},
 			angleV: {
 				type: 'range',
-				label: 'Vertical angle',
+				label: i18n.ts._miRoom._objects._wallMountSpotLight.angleV,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			angleH: {
 				type: 'range',
-				label: 'Horizontal angle',
+				label: i18n.ts._miRoom._objects._wallMountSpotLight.angleH,
 				min: 0,
 				max: 1,
 				step: 0.01,

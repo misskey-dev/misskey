@@ -5,15 +5,16 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { i18n } from '@/i18n.js';
 
 export const wallClock = defineObject({
 	id: 'wallClock',
-	name: 'Wall Clock',
+	name: i18n.ts._miRoom._objects.wallClock,
 	options: {
 		schema: {
 			frameMat: {
 				type: 'material',
-				label: 'Frame material',
+				label: i18n.ts._miRoom._objects._wallClock.frameMat,
 			},
 		},
 		default: {

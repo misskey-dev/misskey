@@ -37,7 +37,7 @@ export const sofa = defineObject({
 		applyBodyMat();
 
 		return {
-			onOptionsUpdated: ([k, v]) => {
+			onOptionsUpdated: () => {
 				applyBodyMat();
 			},
 			interactions: {},

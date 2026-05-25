@@ -44,8 +44,9 @@ export const lowPartitionBar = defineObject({
 
 		const applySize = () => {
 			for (const mesh of model.root.getChildMeshes()) {
-				if (mesh.morphTargetManager != null && mesh.morphTargetManager.getTargetByName('W') != null) {
-					mesh.morphTargetManager.getTargetByName('W').influence = options.width;
+				const widthTarget = mesh.morphTargetManager?.getTargetByName('W');
+				if (widthTarget != null) {
+					widthTarget.influence = options.width;
 				}
 			}
 			model.updated();
@@ -54,7 +55,7 @@ export const lowPartitionBar = defineObject({
 		applySize();
 
 		return {
-			onOptionsUpdated: ([k, v]) => {
+			onOptionsUpdated: ([k]) => {
 				switch (k) {
 					case 'bodyMat': applyBodyMat(); break;
 					case 'width': applySize(); break;

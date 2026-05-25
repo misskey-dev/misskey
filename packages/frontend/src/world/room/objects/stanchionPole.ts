@@ -5,19 +5,20 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { i18n } from '@/i18n.js';
 
 export const stanchionPole = defineObject({
 	id: 'stanchionPole',
-	name: 'stanchionPole',
+	name: i18n.ts._miRoom._objects.stanchionPole,
 	options: {
 		schema: {
 			bodyMat: {
 				type: 'material',
-				label: 'Body material',
+				label: i18n.ts._miRoom._objects._stanchionPole.bodyMat,
 			},
 			ropeMat: {
 				type: 'material',
-				label: 'Rope material',
+				label: i18n.ts._miRoom._objects._stanchionPole.ropeMat,
 			},
 		},
 		default: {

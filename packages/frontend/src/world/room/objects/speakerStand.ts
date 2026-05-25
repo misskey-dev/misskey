@@ -5,19 +5,20 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { i18n } from '@/i18n.js';
 
 export const speakerStand = defineObject({
 	id: 'speakerStand',
-	name: 'speakerStand',
+	name: i18n.ts._miRoom._objects.speakerStand,
 	options: {
 		schema: {
 			bodyMat: {
 				type: 'material',
-				label: 'Body material',
+				label: i18n.ts._miRoom._objects._speakerStand.bodyMat,
 			},
 			height: {
 				type: 'range',
-				label: 'height',
+				label: i18n.ts._miRoom._objects._speakerStand.height,
 				min: 0,
 				max: 1,
 				step: 0.01,

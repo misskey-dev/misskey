@@ -6,29 +6,30 @@
 import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
 import { createPlaneUvMapper, getPlaneUvIndexes } from '../../utility.js';
+import { i18n } from '@/i18n.js';
 
 export const wallCanvas = defineObject({
 	id: 'wallCanvas',
-	name: 'wallCanvas',
+	name: i18n.ts._miRoom._objects.wallCanvas,
 	options: {
 		schema: {
 			width: {
 				type: 'range',
-				label: 'Width',
+				label: i18n.ts._miRoom._objects._wallCanvas.width,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			height: {
 				type: 'range',
-				label: 'Height',
+				label: i18n.ts._miRoom._objects._wallCanvas.height,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			image: {
 				type: 'image',
-				label: 'Image',
+				label: i18n.ts._miRoom._objects._wallCanvas.image,
 				presets: [],
 			},
 		},

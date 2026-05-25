@@ -6,63 +6,64 @@
 import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
 import { createPlaneUvMapper } from '../../utility.js';
+import { i18n } from '@/i18n.js';
 
 // NOTE: シェイプキーのnormalのエクスポートは無効にしないとmatを大きくしたときに面のレンダリングがグリッチする
 
 export const tabletopPictureFrame = defineObject({
 	id: 'tabletopPictureFrame',
-	name: 'Tabletop simple picture frame',
+	name: i18n.ts._miRoom._objects.tabletopPictureFrame,
 	options: {
 		schema: {
 			frameMat: {
 				type: 'material',
-				label: 'Frame material',
+				label: i18n.ts._miRoom._objects._tabletopPictureFrame.frameMat,
 			},
 			width: {
 				type: 'range',
-				label: 'Width',
+				label: i18n.ts._miRoom._objects._tabletopPictureFrame.width,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			height: {
 				type: 'range',
-				label: 'Height',
+				label: i18n.ts._miRoom._objects._tabletopPictureFrame.height,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			frameThickness: {
 				type: 'range',
-				label: 'Frame thickness',
+				label: i18n.ts._miRoom._objects._tabletopPictureFrame.frameThickness,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			depth: {
 				type: 'range',
-				label: 'Depth',
+				label: i18n.ts._miRoom._objects._tabletopPictureFrame.depth,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			matHThickness: {
 				type: 'range',
-				label: 'Mat horizontal thickness',
+				label: i18n.ts._miRoom._objects._tabletopPictureFrame.matHThickness,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			matVThickness: {
 				type: 'range',
-				label: 'Mat vertical thickness',
+				label: i18n.ts._miRoom._objects._tabletopPictureFrame.matVThickness,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			image: {
 				type: 'image',
-				label: 'Image',
+				label: i18n.ts._miRoom._objects._tabletopPictureFrame.image,
 				presets: [],
 			},
 		},

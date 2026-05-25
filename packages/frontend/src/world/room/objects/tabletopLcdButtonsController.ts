@@ -6,26 +6,27 @@
 import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
 import { createPlaneUvMapper, normalizeUvToSquare } from '../../utility.js';
+import { i18n } from '@/i18n.js';
 
 export const tabletopLcdButtonsController = defineObject({
 	id: 'tabletopLcdButtonsController',
-	name: 'tabletopLcdButtonsController',
+	name: i18n.ts._miRoom._objects.tabletopLcdButtonsController,
 	options: {
 		schema: {
 			bodyMat: {
 				type: 'material',
-				label: 'Body material',
+				label: i18n.ts._miRoom._objects._tabletopLcdButtonsController.bodyMat,
 			},
 			screenBrightness: {
 				type: 'range',
-				label: 'Screen brightness',
+				label: i18n.ts._miRoom._objects._tabletopLcdButtonsController.screenBrightness,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			image: {
 				type: 'image',
-				label: 'Image',
+				label: i18n.ts._miRoom._objects._tabletopLcdButtonsController.image,
 				presets: [],
 			},
 		},

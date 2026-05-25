@@ -4,10 +4,11 @@
  */
 
 import { defineObject } from '../object.js';
+import { i18n } from '@/i18n.js';
 
 export const woodSoundAbsorbingPanel = defineObject({
 	id: 'woodSoundAbsorbingPanel',
-	name: 'Wood Sound Absorbing Panel',
+	name: i18n.ts._miRoom._objects.woodSoundAbsorbingPanel,
 	options: {
 		schema: {},
 		default: {},

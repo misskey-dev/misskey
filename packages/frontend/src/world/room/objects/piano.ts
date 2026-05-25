@@ -36,7 +36,7 @@ export const piano = defineObject({
 		applyBodyMat();
 
 		return {
-			onOptionsUpdated: ([k, v]) => {
+			onOptionsUpdated: () => {
 				applyBodyMat();
 			},
 			interactions: {},

@@ -6,19 +6,20 @@
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { cm, get7segMeshesOfCurrentTime, WORLD_SCALE } from '@/world/utility.js';
+import { i18n } from '@/i18n.js';
 
 export const tabletopDigitalClock = defineObject({
 	id: 'tabletopDigitalClock',
-	name: 'Tabletop Digital Clock',
+	name: i18n.ts._miRoom._objects.tabletopDigitalClock,
 	options: {
 		schema: {
 			bodyMat: {
 				type: 'material',
-				label: 'Body Material',
+				label: i18n.ts._miRoom._objects._tabletopDigitalClock.bodyMat,
 			},
 			lcdColor: {
 				type: 'color',
-				label: 'LCD Color',
+				label: i18n.ts._miRoom._objects._tabletopDigitalClock.lcdColor,
 			},
 		},
 		default: {

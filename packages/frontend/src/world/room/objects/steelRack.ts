@@ -6,111 +6,112 @@
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { cm, remap } from '@/world/utility.js';
+import { i18n } from '@/i18n.js';
 
 export const steelRack = defineObject({
 	id: 'steelRack',
-	name: 'steelRack',
+	name: i18n.ts._miRoom._objects.steelRack,
 	options: {
 		schema: {
 			shelfMat: {
 				type: 'material',
-				label: 'Shelf material',
+				label: i18n.ts._miRoom._objects._steelRack.shelfMat,
 			},
 			poleMat: {
 				type: 'material',
-				label: 'Pole material',
+				label: i18n.ts._miRoom._objects._steelRack.poleMat,
 			},
 			widthAndDepthVariation: {
 				type: 'enum',
-				label: 'W x D',
+				label: i18n.ts._miRoom._objects._steelRack.widthAndDepthVariation,
 				enum: [{
-					label: '60 x 35',
+					label: i18n.ts._miRoom._objects._steelRack['widthAndDepthVariation:60-35'],
 					value: '60-35',
 				}, {
-					label: '90 x 35',
+					label: i18n.ts._miRoom._objects._steelRack['widthAndDepthVariation:90-35'],
 					value: '90-35',
 				}],
 			},
 			height: {
 				type: 'range',
-				label: 'Height',
+				label: i18n.ts._miRoom._objects._steelRack.height,
 				min: 1,
 				max: 7,
 				step: 1,
 			},
 			numberOfShelfs: {
 				type: 'range',
-				label: '# of shelfs',
+				label: i18n.ts._miRoom._objects._steelRack.numberOfShelfs,
 				min: 2,
 				max: 10,
 				step: 1,
 			},
 			shelf1Position: {
 				type: 'range',
-				label: 'Shelf1 position',
+				label: i18n.ts._miRoom._objects._steelRack.shelf1Position,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			shelf2Position: {
 				type: 'range',
-				label: 'Shelf2 position',
+				label: i18n.ts._miRoom._objects._steelRack.shelf2Position,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			shelf3Position: {
 				type: 'range',
-				label: 'Shelf3 position',
+				label: i18n.ts._miRoom._objects._steelRack.shelf3Position,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			shelf4Position: {
 				type: 'range',
-				label: 'Shelf4 position',
+				label: i18n.ts._miRoom._objects._steelRack.shelf4Position,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			shelf5Position: {
 				type: 'range',
-				label: 'Shelf5 position',
+				label: i18n.ts._miRoom._objects._steelRack.shelf5Position,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			shelf6Position: {
 				type: 'range',
-				label: 'Shelf6 position',
+				label: i18n.ts._miRoom._objects._steelRack.shelf6Position,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			shelf7Position: {
 				type: 'range',
-				label: 'Shelf7 position',
+				label: i18n.ts._miRoom._objects._steelRack.shelf7Position,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			shelf8Position: {
 				type: 'range',
-				label: 'Shelf8 position',
+				label: i18n.ts._miRoom._objects._steelRack.shelf8Position,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			shelf9Position: {
 				type: 'range',
-				label: 'Shelf9 position',
+				label: i18n.ts._miRoom._objects._steelRack.shelf9Position,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			shelf10Position: {
 				type: 'range',
-				label: 'Shelf10 position',
+				label: i18n.ts._miRoom._objects._steelRack.shelf10Position,
 				min: 0,
 				max: 1,
 				step: 0.01,

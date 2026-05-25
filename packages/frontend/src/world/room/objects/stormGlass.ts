@@ -4,10 +4,11 @@
  */
 
 import { defineObject } from '../object.js';
+import { i18n } from '@/i18n.js';
 
 export const stormGlass = defineObject({
 	id: 'stormGlass',
-	name: 'stormGlass',
+	name: i18n.ts._miRoom._objects.stormGlass,
 	options: {
 		schema: {},
 		default: {},
