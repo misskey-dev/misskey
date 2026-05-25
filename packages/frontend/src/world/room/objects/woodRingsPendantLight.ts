@@ -34,8 +34,8 @@ export const woodRingsPendantLight = defineObject({
 			},
 		},
 		default: {
-			shadeMat: { color: [0.21, 0.04, 0], roughness: 0.5, metallic: 0 },
-			bodyMat: { color: [0.05, 0.05, 0.05], roughness: 0.5, metallic: 0 },
+			shadeMat: { color: [0.21, 0.04, 0], roughness: -1, metallic: -1 },
+			bodyMat: { color: [0.05, 0.05, 0.05], roughness: -1, metallic: -1 },
 			light: {
 				color: [1, 0.5, 0.2],
 				brightness: 0.5,
