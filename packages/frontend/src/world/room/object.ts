@@ -85,7 +85,7 @@ type SeedOptionSchema = {
 	type: 'seed';
 };
 
-export type OptionsSchema = Record<string, NumberOptionSchema | BooleanOptionSchema | StringOptionSchema | ColorOptionSchema | MaterialOptionSchema | LightOptionSchema | EnumOptionSchema | RangeOptionSchema | ImageOptionSchema | SeedOptionSchema>;
+type OptionsSchema = Record<string, NumberOptionSchema | BooleanOptionSchema | StringOptionSchema | ColorOptionSchema | MaterialOptionSchema | LightOptionSchema | EnumOptionSchema | RangeOptionSchema | ImageOptionSchema | SeedOptionSchema>;
 
 export type RawOptions = Record<string, unknown> & {
 	readonly __brand: unique symbol;
@@ -146,7 +146,7 @@ export type SnapshotRenderingHelperWrapper = {
 	fixParticleSystem: (ps: BABYLON.ParticleSystem) => void;
 };
 
-export type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
+export type ObjectSchemaDef<OpSc extends OptionsSchema = OptionsSchema> = {
 	id: string;
 	options: {
 		schema: string extends keyof OpSc ? OptionsSchema : OpSc;
@@ -156,10 +156,11 @@ export type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 	hasCollisions?: boolean;
 	hasTexture?: boolean;
 	canPreMeshesMerging?: boolean; // TODO: 除外するメッシュ名を指定できるようにする
-	//groupingMeshes: string[]; // multi-materialなメッシュは複数のメッシュに分割されるが、それだと不便な場合に追加の親メッシュでグルーピングするための指定
 	isChair?: boolean;
-	treatLoaderResult?: (loaderResult: BABYLON.AssetContainer) => void;
-	path?: (options: string extends keyof OpSc ? ConvertedOptions : Readonly<GetConvertedOptionsSchemaValues<OpSc>>) => string;
+};
+
+export type ObjectDef<Schema extends ObjectSchemaDef = ObjectSchemaDef> = Schema & {
+	path?: (options: string extends keyof Schema['options']['schema'] ? ConvertedOptions : Readonly<GetConvertedOptionsSchemaValues<Schema['options']['schema']>>) => string;
 	createInstance: (args: {
 		scene: BABYLON.Scene;
 		// TODO: snapshot renderingの関心を隠蔽した方が綺麗かもしれない
@@ -167,7 +168,7 @@ export type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 		sr: SnapshotRenderingHelperWrapper;
 		lc: BABYLON.ClusteredLightContainer | null;
 		root: BABYLON.TransformNode;
-		options: string extends keyof OpSc ? ConvertedOptions : Readonly<GetConvertedOptionsSchemaValues<OpSc>>;
+		options: string extends keyof Schema['options']['schema'] ? ConvertedOptions : Readonly<GetConvertedOptionsSchemaValues<Schema['options']['schema']>>;
 		model: ModelManager;
 		id: string;
 		timer: Timer;
@@ -175,18 +176,22 @@ export type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 		stickyMarkerMeshUpdated?: (mesh: BABYLON.Mesh) => void;
 		sitChair?: () => void;
 		reloadModel: () => void;
-	}) => RoomObjectInstance<string extends keyof OpSc ? ConvertedOptions : GetConvertedOptionsSchemaValues<OpSc>> | Promise<RoomObjectInstance<OpSc extends undefined ? ConvertedOptions : GetConvertedOptionsSchemaValues<OpSc>>>; // TODO: createInstanceをasyncにするのではなく、別にreadyみたいなものを返させる
+	}) => RoomObjectInstance<string extends keyof Schema['options']['schema'] ? ConvertedOptions : GetConvertedOptionsSchemaValues<Schema['options']['schema']>> | Promise<RoomObjectInstance<Schema['options']['schema'] extends undefined ? ConvertedOptions : GetConvertedOptionsSchemaValues<Schema['options']['schema']>>>; // TODO: createInstanceをasyncにするのではなく、別にreadyみたいなものを返させる
 };
 
-export function defineObject<const OpSc extends OptionsSchema>(def: ObjectDef<OpSc>): ObjectDef<OpSc> {
+export function defineObjectSchema<const OpSc extends OptionsSchema>(def: ObjectSchemaDef<OpSc>): ObjectSchemaDef<OpSc> {
 	return def;
 }
 
-export function defineObjectClass<const OpSc extends OptionsSchema>(baseDef: Partial<ObjectDef<OpSc>>): {
-	extend: (childDef: Partial<ObjectDef<OpSc>>) => ObjectDef<OpSc>;
+export function defineObject<const Schema extends ObjectSchemaDef<any>>(schema: Schema, def: Pick<ObjectDef<Schema>, 'path' | 'createInstance'>): ObjectDef<Schema> {
+	return { ...schema, ...def };
+}
+
+export function defineObjectClass<const Schema extends ObjectSchemaDef<any>>(baseDef: Partial<ObjectDef<Schema>>): {
+	extend: (childDef: Partial<ObjectDef<Schema>>) => ObjectDef<Schema>;
 } {
 	return {
-		extend: (childDef) => ({ ...baseDef, ...childDef }) as ObjectDef<OpSc>,
+		extend: (childDef) => ({ ...baseDef, ...childDef }) as ObjectDef<Schema>,
 	};
 }
 

@@ -7,41 +7,9 @@ import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
 import { cm, WORLD_SCALE } from '../../utility.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
+import { allInOnePc_schema } from './allInOnePc.schema.js';
 
-export const allInOnePc = defineObject({
-	id: 'allInOnePc',
-	options: {
-		schema: {
-			bodyMat: {
-				type: 'material',
-			},
-			bezelMat: {
-				type: 'material',
-			},
-			screenBrightness: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-			image: {
-				type: 'image',
-				presets: [{
-					value: 'desktop',
-				}],
-			},
-		},
-		default: {
-			bodyMat: { color: [1, 1, 1], roughness: 0.5, metallic: 1 },
-			bezelMat: { color: [0, 0, 0], roughness: 0, metallic: 0 },
-			screenBrightness: 0.5,
-			image: {
-				type: null,
-			},
-		},
-	},
-	placement: 'top',
-	hasTexture: true,
+export const allInOnePc = defineObject(allInOnePc_schema, {
 	createInstance: async ({ lc, scene, options, model, graphicsQuality }) => {
 		const matrix = model.root.getWorldMatrix(true);
 		const scale = new BABYLON.Vector3();

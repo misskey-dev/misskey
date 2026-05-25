@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { GetOptionsSchemaUiDef, OptionsSchema } from './object.js';
+import type { GetOptionsSchemaUiDef, ObjectSchemaDef } from './object.js';
 
-export type ObjectUiDef<OpSc extends OptionsSchema = OptionsSchema> = {
+export type ObjectUiDef<Schema extends ObjectSchemaDef = ObjectSchemaDef> = {
 	name: string;
-	options: GetOptionsSchemaUiDef<OpSc>;
+	options: GetOptionsSchemaUiDef<Schema['options']['schema']>;
 };
 
-export function defineObjectUi<const Def extends { options: { schema: OptionsSchema } }>(def: ObjectUiDef<Def['options']['schema']>): ObjectUiDef<Def['options']['schema']> {
+export function defineObjectUi<const Schema extends ObjectSchemaDef<any>>(def: ObjectUiDef<Schema>): ObjectUiDef<Schema> {
 	return def;
 }

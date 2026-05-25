@@ -69,7 +69,7 @@ import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick,
 import * as Misskey from 'misskey-js';
 import XObjectCustomizeForm from './room.object-customize-form.vue';
 import XItem from './room.add-object-dialog.item.vue';
-import type { RawOptions, RoomObjectInstance, RoomStateObject } from '@/world/room/object.js';
+import type { RawOptions } from '@/world/room/object.js';
 import type { PreviewEngineControllerOptions } from '@/world/room/previewEngineController.js';
 import type { RoomAttachments } from '@/world/room/utility.js';
 import { i18n } from '@/i18n.js';

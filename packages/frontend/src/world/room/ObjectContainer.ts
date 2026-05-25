@@ -163,8 +163,6 @@ export class ObjectContainer {
 
 		subRootMesh.dispose();
 
-		def.treatLoaderResult?.(loaderResult);
-
 		this.registerMeshes(this.subRoot.getChildMeshes());
 
 		this.model = new ModelManager(this.subRoot, loaderResult.meshes.filter(m => !m.isDisposed() && m.name !== '__root__'), def.hasTexture, (meshes) => {

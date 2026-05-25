@@ -25,7 +25,7 @@ import { findMaterial, GRAPHICS_QUALITY, ModelManager, SYSTEM_HEYA_MESH_NAMES, S
 import { JapaneseEnvManager, MuseumEnvManager, SimpleEnvManager } from './env.js';
 import { ObjectContainer } from './ObjectContainer.js';
 import type { RoomAttachments } from './utility.js';
-import type { ObjectDef, RawOptions, RoomObjectInstance, RoomStateObject } from './object.js';
+import type { ObjectDef, RawOptions, RoomStateObject } from './object.js';
 import type { GridMaterial } from '@babylonjs/materials';
 import type { EnvManager, JapaneseEnvOptions, SimpleEnvOptions } from './env.js';
 import { genId } from '@/utility/id.js';

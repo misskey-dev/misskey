@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { allInOnePc } from './allInOnePc.js';
+import type { allInOnePc_schema } from './allInOnePc.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const allInOnePc_ui = defineObjectUi<typeof allInOnePc>({
+export const allInOnePc_ui = defineObjectUi<typeof allInOnePc_schema>({
 	name: i18n.ts._miRoom._objects.allInOnePc,
 	options: {
 		bodyMat: {
