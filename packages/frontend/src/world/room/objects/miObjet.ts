@@ -4,7 +4,7 @@
  */
 
 import { defineObject } from '../object.js';
-import { miObjet_schema } from './mi-objet.schema.js';
+import { miObjet_schema } from './miObjet.schema.js';
 
 export const miObjet = defineObject(miObjet_schema, {
 	createInstance: () => {

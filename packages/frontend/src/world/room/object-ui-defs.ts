@@ -52,7 +52,7 @@ import { largeMousepad_ui } from './objects/largeMousepad.ui.js';
 import { lavaLamp_ui } from './objects/lavaLamp.ui.js';
 import { letterCase_ui } from './objects/letterCase.ui.js';
 import { lowPartitionBar_ui } from './objects/lowPartitionBar.ui.js';
-import { miObjet_ui } from './objects/mi-objet.ui.js';
+import { miObjet_ui } from './objects/miObjet.ui.js';
 import { milk_ui } from './objects/milk.ui.js';
 import { miPlate_ui } from './objects/miPlate.ui.js';
 import { miPlateDisplayed_ui } from './objects/miPlateDisplayed.ui.js';

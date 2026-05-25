@@ -54,7 +54,7 @@ import { largeMousepad } from './objects/largeMousepad.js';
 import { lavaLamp } from './objects/lavaLamp.js';
 import { letterCase } from './objects/letterCase.js';
 import { lowPartitionBar } from './objects/lowPartitionBar.js';
-import { miObjet } from './objects/mi-objet.js';
+import { miObjet } from './objects/miObjet.js';
 import { milk } from './objects/milk.js';
 import { miPlate } from './objects/miPlate.js';
 import { miPlateDisplayed } from './objects/miPlateDisplayed.js';

@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { miObjet_schema } from './mi-objet.schema.js';
+import type { miObjet_schema } from './miObjet.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const miObjet_ui = defineObjectUi<typeof miObjet_schema>({
