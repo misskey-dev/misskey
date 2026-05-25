@@ -26,7 +26,6 @@ export type RoomObjectInstance<Options = any> = {
 	onInited?: () => void;
 	onOptionsUpdated?: <K extends keyof Options, V extends Options[K]>(kv: [K, V]) => void;
 	interactions: Record<string, {
-		label: string;
 		fn: () => void;
 	}>;
 	primaryInteraction?: string | null;
@@ -36,7 +35,6 @@ export type RoomObjectInstance<Options = any> = {
 
 type NumberOptionSchema = {
 	type: 'number';
-	label: string;
 	min?: number;
 	max?: number;
 	step?: number;
@@ -44,41 +42,33 @@ type NumberOptionSchema = {
 
 type BooleanOptionSchema = {
 	type: 'boolean';
-	label: string;
 };
 
 type StringOptionSchema = {
 	type: 'string';
-	label: string;
 };
 
 type ColorOptionSchema = {
 	type: 'color';
-	label: string;
 };
 
 type MaterialOptionSchema = {
 	type: 'material';
-	label: string;
 };
 
 type LightOptionSchema = {
 	type: 'light';
-	label: string;
 };
 
 type EnumOptionSchema = {
 	type: 'enum';
-	label: string;
 	enum: {
-		label: string;
 		value: string | number;
 	}[];
 };
 
 type RangeOptionSchema = {
 	type: 'range';
-	label: string;
 	min: number;
 	max: number;
 	step?: number;
@@ -86,19 +76,16 @@ type RangeOptionSchema = {
 
 type ImageOptionSchema = {
 	type: 'image';
-	label: string;
 	presets: {
-		label: string;
 		value: string;
 	}[];
 };
 
 type SeedOptionSchema = {
 	type: 'seed';
-	label: string;
 };
 
-type OptionsSchema = Record<string, NumberOptionSchema | BooleanOptionSchema | StringOptionSchema | ColorOptionSchema | MaterialOptionSchema | LightOptionSchema | EnumOptionSchema | RangeOptionSchema | ImageOptionSchema | SeedOptionSchema>;
+export type OptionsSchema = Record<string, NumberOptionSchema | BooleanOptionSchema | StringOptionSchema | ColorOptionSchema | MaterialOptionSchema | LightOptionSchema | EnumOptionSchema | RangeOptionSchema | ImageOptionSchema | SeedOptionSchema>;
 
 export type RawOptions = Record<string, unknown> & {
 	readonly __brand: unique symbol;
@@ -138,6 +125,20 @@ type GetConvertedOptionsSchemaValues<T extends OptionsSchema> = {
 	T[K] extends SeedOptionSchema ? number :
 	never;
 };
+export type GetOptionsSchemaUiDef<T extends OptionsSchema> = {
+	[K in keyof T]:
+	T[K] extends NumberOptionSchema ? { label: string; } :
+	T[K] extends BooleanOptionSchema ? { label: string; } :
+	T[K] extends StringOptionSchema ? { label: string; } :
+	T[K] extends ColorOptionSchema ? { label: string; } :
+	T[K] extends MaterialOptionSchema ? { label: string; } :
+	T[K] extends LightOptionSchema ? { label: string; } :
+	T[K] extends EnumOptionSchema ? { label: string; enum: Record<T[K]['enum'][number]['value'], { label: string; }>; } :
+	T[K] extends RangeOptionSchema ? { label: string; } :
+	T[K] extends ImageOptionSchema ? { label: string; presets: Record<T[K]['presets'][number]['value'], { label: string; }>; } :
+	T[K] extends SeedOptionSchema ? { label: string; } :
+	never;
+};
 
 export type SnapshotRenderingHelperWrapper = {
 	updateMesh: (meshes: BABYLON.Mesh[]) => void;
@@ -147,7 +148,6 @@ export type SnapshotRenderingHelperWrapper = {
 
 export type ObjectDef<OpSc extends OptionsSchema = OptionsSchema> = {
 	id: string;
-	name: string;
 	options: {
 		schema: string extends keyof OpSc ? OptionsSchema : OpSc;
 		default: string extends keyof OpSc ? RawOptions : GetRawOptionsSchemaValues<OpSc>; // 関数にした方が使用側でdeepCloneの必要がなくて綺麗かもしれない
