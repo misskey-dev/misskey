@@ -5,28 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { lowPartitionBar_schema } from './lowPartitionBar.schema.js';
 
-export const lowPartitionBar = defineObject({
-	id: 'lowPartitionBar',
-	options: {
-		schema: {
-			bodyMat: {
-				type: 'material',
-			},
-			width: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-		},
-		default: {
-			bodyMat: { color: [0.8, 0.8, 0.8], roughness: 0.1, metallic: 1 },
-			width: 0.5,
-		},
-	},
-	placement: 'top',
-	//hasCollisions: true,
+export const lowPartitionBar = defineObject(lowPartitionBar_schema, {
 	createInstance: ({ options, model }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 

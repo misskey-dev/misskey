@@ -5,39 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { petBottle_schema } from './petBottle.schema.js';
 
-export const petBottle = defineObject({
-	id: 'petBottle',
-	options: {
-		schema: {
-			variation: {
-				type: 'enum',
-				enum: [{
-					value: 'mineral-water',
-				}, {
-					value: 'green-tea',
-				}],
-			},
-			withCap: {
-				type: 'boolean',
-			},
-			withLabel: {
-				type: 'boolean',
-			},
-			empty: {
-				type: 'boolean',
-			},
-		},
-		default: {
-			variation: 'mineral-water',
-			withCap: true,
-			withLabel: true,
-			empty: false,
-		},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	hasTexture: true,
+export const petBottle = defineObject(petBottle_schema, {
 	createInstance: ({ model, options, scene }) => {
 		const capMesh = model.findMesh('__X_CAP__');
 		const liquidMesh = model.findMesh('__X_LIQUID__');

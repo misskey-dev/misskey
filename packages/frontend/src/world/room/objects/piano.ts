@@ -5,22 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { piano_schema } from './piano.schema.js';
 
-export const piano = defineObject({
-	id: 'piano',
-	options: {
-		schema: {
-			bodyMat: {
-				type: 'material',
-			},
-		},
-		default: {
-			bodyMat: { color: [0, 0, 0], roughness: 0.5, metallic: 0 },
-		},
-	},
-	placement: 'floor',
-	hasCollisions: true,
-	canPreMeshesMerging: true,
+export const piano = defineObject(piano_schema, {
 	createInstance: ({ options, model }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 

@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { tabletopPictureFrame } from './tabletopPictureFrame.js';
+import type { tabletopPictureFrame_schema } from './tabletopPictureFrame.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const tabletopPictureFrame_ui = defineObjectUi<typeof tabletopPictureFrame>({
+export const tabletopPictureFrame_ui = defineObjectUi<typeof tabletopPictureFrame_schema>({
 	name: i18n.ts._miRoom._objects.tabletopPictureFrame,
 	options: {
 		frameMat: {

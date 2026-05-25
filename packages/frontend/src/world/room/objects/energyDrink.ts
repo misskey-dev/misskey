@@ -4,16 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { energyDrink_schema } from './energyDrink.schema.js';
 
-export const energyDrink = defineObject({
-	id: 'energyDrink',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	hasTexture: true,
+export const energyDrink = defineObject(energyDrink_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

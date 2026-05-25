@@ -4,17 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { debugMetal_schema } from './debugMetal.schema.js';
 
-export const debugMetal = defineObject({
-	id: 'debugMetal',
-	name: 'Debug Metal',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	canPreMeshesMerging: false,
+export const debugMetal = defineObject(debugMetal_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

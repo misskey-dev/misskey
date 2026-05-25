@@ -4,16 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { plant2_schema } from './plant2.schema.js';
 
-export const plant2 = defineObject({
-	id: 'plant2',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
-	hasTexture: true,
-	canPreMeshesMerging: true,
+export const plant2 = defineObject(plant2_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

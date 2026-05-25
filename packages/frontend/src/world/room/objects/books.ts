@@ -6,34 +6,9 @@
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { cm } from '../../utility.js';
+import { books_schema } from './books.schema.js';
 
-export const books = defineObject({
-	id: 'books',
-	options: {
-		schema: {
-			variation: {
-				type: 'enum',
-				enum: [{
-					value: 'A',
-				}, {
-					value: 'B',
-				}, {
-					value: 'C',
-				}, {
-					value: 'D',
-				}, {
-					value: 'E',
-				}],
-			},
-		},
-		default: {
-			variation: 'A',
-		},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	hasTexture: true,
-	canPreMeshesMerging: false,
+export const books = defineObject(books_schema, {
 	createInstance: ({ scene, options, model }) => {
 		const coverMaterial = model.findMaterial('__X_COVER__');
 

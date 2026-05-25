@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { pictureFrame } from './pictureFrame.js';
+import type { pictureFrame_schema } from './pictureFrame.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const pictureFrame_ui = defineObjectUi<typeof pictureFrame>({
+export const pictureFrame_ui = defineObjectUi<typeof pictureFrame_schema>({
 	name: i18n.ts._miRoom._objects.pictureFrame,
 	options: {
 		frameMat: {

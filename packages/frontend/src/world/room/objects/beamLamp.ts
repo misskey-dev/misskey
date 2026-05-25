@@ -7,16 +7,9 @@ import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { cm, WORLD_SCALE } from '../../utility.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
+import { beamLamp_schema } from './beamLamp.schema.js';
 
-export const beamLamp = defineObject({
-	id: 'beamLamp',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	canPreMeshesMerging: true,
+export const beamLamp = defineObject(beamLamp_schema, {
 	createInstance: ({ lc, root, scene, graphicsQuality }) => {
 		const light = new BABYLON.PointLight('beamLampLight', new BABYLON.Vector3(0, cm(10), 0), scene, lc != null);
 		light.parent = root;

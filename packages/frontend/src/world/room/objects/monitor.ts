@@ -7,33 +7,9 @@ import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
 import { cm, WORLD_SCALE, normalizeUvToSquare } from '../../utility.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
+import { monitor_schema } from './monitor.schema.js';
 
-export const monitor = defineObject({
-	id: 'monitor',
-	options: {
-		schema: {
-			bodyMat: {
-				type: 'material',
-			},
-			screenBrightness: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-			image: {
-				type: 'image',
-				presets: [],
-			},
-		},
-		default: {
-			bodyMat: { color: [0.1, 0.1, 0.1], roughness: 0.5, metallic: 0 },
-			screenBrightness: 0.5,
-			image: { type: null },
-		},
-	},
-	placement: 'top',
-	hasTexture: true,
+export const monitor = defineObject(monitor_schema, {
 	createInstance: async ({ lc, scene, options, model, graphicsQuality }) => {
 		const matrix = model.root.getWorldMatrix(true);
 		const scale = new BABYLON.Vector3();

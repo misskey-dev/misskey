@@ -4,17 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { mixer_schema } from './mixer.schema.js';
 
-export const mixer = defineObject({
-	id: 'mixer',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	hasTexture: true,
-	canPreMeshesMerging: true,
+export const mixer = defineObject(mixer_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

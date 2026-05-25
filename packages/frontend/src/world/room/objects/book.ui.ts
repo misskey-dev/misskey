@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { book } from './book.js';
+import type { book_schema } from './book.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const book_ui = defineObjectUi<typeof book>({
+export const book_ui = defineObjectUi<typeof book_schema>({
 	name: i18n.ts._miRoom._objects.book,
 	options: {
 		variation: {

@@ -5,42 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { wallMirror_schema } from './wallMirror.schema.js';
 
-export const wallMirror = defineObject({
-	id: 'wallMirror',
-	options: {
-		schema: {
-			width: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-			height: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-			frameThickness: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-			frameMat: {
-				type: 'material',
-			},
-		},
-		default: {
-			width: 0.2,
-			height: 0.2,
-			frameThickness: 0.1,
-			frameMat: { color: [0.8, 0.28, 0.06], roughness: 0.5, metallic: 0 },
-		},
-	},
-	placement: 'side',
-	hasCollisions: false,
+export const wallMirror = defineObject(wallMirror_schema, {
 	createInstance: async ({ options, model }) => {
 		const frameMaterial = model.findMaterial('__X_FRAME__');
 		const frameMesh = model.findMesh('__X_FRAME__');

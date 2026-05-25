@@ -7,43 +7,9 @@ import * as BABYLON from '@babylonjs/core';
 import seedrandom from 'seedrandom';
 import { defineObject } from '../object.js';
 import { cm, remap, WORLD_SCALE } from '@/world/utility.js';
+import { randomBooks_schema } from './randomBooks.schema.js';
 
-export const randomBooks = defineObject({
-	id: 'randomBooks',
-	options: {
-		schema: {
-			variation: {
-				type: 'enum',
-				enum: [{
-					value: 'mix',
-				}, {
-					value: 'mix-plain',
-				}],
-			},
-			count: {
-				type: 'range',
-				min: 1,
-				max: 30,
-				step: 1,
-			},
-			stackVertically: {
-				type: 'boolean',
-			},
-			seed: {
-				type: 'seed',
-			},
-		},
-		default: {
-			variation: 'mix',
-			count: 10,
-			stackVertically: false,
-			seed: 0,
-		},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	hasTexture: true,
-	canPreMeshesMerging: false,
+export const randomBooks = defineObject(randomBooks_schema, {
 	createInstance: ({ options, model, scene }) => {
 		const bodyMesh = model.findMesh('__X_BODY__');
 		bodyMesh.isVisible = false;

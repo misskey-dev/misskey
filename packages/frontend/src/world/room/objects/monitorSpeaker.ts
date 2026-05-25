@@ -5,22 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { monitorSpeaker_schema } from './monitorSpeaker.schema.js';
 
-export const monitorSpeaker = defineObject({
-	id: 'monitorSpeaker',
-	options: {
-		schema: {
-			mat: {
-				type: 'material',
-			},
-		},
-		default: {
-			mat: { color: [0, 0, 0], roughness: 0.5, metallic: 0.5 },
-		},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	canPreMeshesMerging: true,
+export const monitorSpeaker = defineObject(monitorSpeaker_schema, {
 	createInstance: ({ options, model }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 

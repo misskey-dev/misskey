@@ -4,17 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { tableSalt_schema } from './tableSalt.schema.js';
 
-export const tableSalt = defineObject({
-	id: 'tableSalt',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	hasTexture: true,
-	canPreMeshesMerging: true,
+export const tableSalt = defineObject(tableSalt_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

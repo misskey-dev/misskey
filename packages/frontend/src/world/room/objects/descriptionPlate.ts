@@ -4,16 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { descriptionPlate_schema } from './descriptionPlate.schema.js';
 
-export const descriptionPlate = defineObject({
-	id: 'descriptionPlate',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'side',
-	hasCollisions: false,
-	hasTexture: true,
+export const descriptionPlate = defineObject(descriptionPlate_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

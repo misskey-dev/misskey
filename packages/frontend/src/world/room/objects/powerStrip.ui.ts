@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { powerStrip } from './powerStrip.js';
+import type { powerStrip_schema } from './powerStrip.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const powerStrip_ui = defineObjectUi<typeof powerStrip>({
+export const powerStrip_ui = defineObjectUi<typeof powerStrip_schema>({
 	name: i18n.ts._miRoom._objects.powerStrip,
 	options: {},
 });

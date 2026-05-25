@@ -7,29 +7,9 @@ import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { getLightRangeFactorByGraphicsQuality, initTv } from '../utility.js';
 import { cm, WORLD_SCALE } from '@/world/utility.js';
+import { tv_schema } from './tv.schema.js';
 
-export const tv = defineObject({
-	id: 'tv',
-	options: {
-		schema: {
-			bodyMat: {
-				type: 'material',
-			},
-			screenBrightness: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-		},
-		default: {
-			bodyMat: { color: [0, 0, 0], roughness: 0.3, metallic: 0.5 },
-			screenBrightness: 0.5,
-		},
-	},
-	placement: 'top',
-	hasCollisions: true,
-	hasTexture: true,
+export const tv = defineObject(tv_schema, {
 	createInstance: ({ options, lc, model, scene, timer, graphicsQuality }) => {
 		const matrix = model.root.getWorldMatrix(true);
 		const scale = new BABYLON.Vector3();

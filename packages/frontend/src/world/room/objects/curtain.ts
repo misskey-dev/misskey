@@ -4,16 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { curtain_schema } from './curtain.schema.js';
 
-export const curtain = defineObject({
-	id: 'curtain',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'wall',
-	hasCollisions: false,
-	hasTexture: true,
+export const curtain = defineObject(curtain_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

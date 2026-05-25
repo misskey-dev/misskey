@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { desk } from './desk.js';
+import type { desk_schema } from './desk.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const desk_ui = defineObjectUi<typeof desk>({
+export const desk_ui = defineObjectUi<typeof desk_schema>({
 	name: i18n.ts._miRoom._objects.desk,
 	options: {
 		frameMat: {

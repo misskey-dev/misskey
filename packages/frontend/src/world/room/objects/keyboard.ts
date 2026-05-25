@@ -5,26 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { keyboard_schema } from './keyboard.schema.js';
 
-export const keyboard = defineObject({
-	id: 'keyboard',
-	options: {
-		schema: {
-			bodyMat: {
-				type: 'material',
-			},
-			keyMat: {
-				type: 'material',
-			},
-		},
-		default: {
-			bodyMat: { color: [0.3, 0.3, 0.3], roughness: 0.6, metallic: 0 },
-			keyMat: { color: [0.2, 0.2, 0.2], roughness: 0.5, metallic: 0 },
-		},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	canPreMeshesMerging: true,
+export const keyboard = defineObject(keyboard_schema, {
 	createInstance: ({ options, model }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 		const keyMaterial = model.findMaterial('__X_KEY__');

@@ -6,34 +6,9 @@
 import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
 import { normalizeUvToSquare } from '../../utility.js';
+import { tabletopLcdButtonsController_schema } from './tabletopLcdButtonsController.schema.js';
 
-export const tabletopLcdButtonsController = defineObject({
-	id: 'tabletopLcdButtonsController',
-	options: {
-		schema: {
-			bodyMat: {
-				type: 'material',
-			},
-			screenBrightness: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-			image: {
-				type: 'image',
-				presets: [],
-			},
-		},
-		default: {
-			bodyMat: { color: [0.05, 0.05, 0.05], roughness: 0.5, metallic: 0.3 },
-			screenBrightness: 0.5,
-			image: { type: null },
-		},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	hasTexture: true,
+export const tabletopLcdButtonsController = defineObject(tabletopLcdButtonsController_schema, {
 	createInstance: async ({ model, options, scene }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 		const screenMesh = model.findMesh('__X_SCREEN__');

@@ -4,16 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { envelope_schema } from './envelope.schema.js';
 
-export const envelope = defineObject({
-	id: 'envelope',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	hasTexture: true,
+export const envelope = defineObject(envelope_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

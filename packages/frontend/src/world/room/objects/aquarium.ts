@@ -6,15 +6,9 @@
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { cm } from '../../utility.js';
+import { aquarium_schema } from './aquarium.schema.js';
 
-export const aquarium = defineObject({
-	id: 'aquarium',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
-	hasCollisions: false,
+export const aquarium = defineObject(aquarium_schema, {
 	createInstance: ({ scene, root }) => {
 		return {
 			onInited: () => {

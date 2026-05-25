@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { largeMousepad } from './largeMousepad.js';
+import type { largeMousepad_schema } from './largeMousepad.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const largeMousepad_ui = defineObjectUi<typeof largeMousepad>({
+export const largeMousepad_ui = defineObjectUi<typeof largeMousepad_schema>({
 	name: i18n.ts._miRoom._objects.largeMousepad,
 	options: {
 		image: {

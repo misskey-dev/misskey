@@ -7,42 +7,9 @@ import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { cm, WORLD_SCALE } from '../../utility.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
+import { desktopPc_schema } from './desktopPc.schema.js';
 
-export const desktopPc = defineObject({
-	id: 'desktopPc',
-	options: {
-		schema: {
-			bodyMat: {
-				type: 'material',
-			},
-			coverMat: {
-				type: 'material',
-			},
-			inner1Mat: {
-				type: 'material',
-			},
-			inner2Mat: {
-				type: 'material',
-			},
-			inner3Mat: {
-				type: 'material',
-			},
-			ledColor: {
-				type: 'color',
-			},
-		},
-		default: {
-			bodyMat: { color: [0.05, 0.05, 0.05], roughness: 0.5, metallic: 0.25 },
-			coverMat: { color: [0.85, 0.85, 0.85], roughness: 0.2, metallic: 0 },
-			inner1Mat: { color: [1, 1, 1], roughness: 0.2, metallic: 0 },
-			inner2Mat: { color: [1, 1, 1], roughness: 0.2, metallic: 0 },
-			inner3Mat: { color: [0.1, 0.1, 0.1], roughness: 0.4, metallic: 0.7 },
-			ledColor: [0.5, 0.9, 0],
-		},
-	},
-	placement: 'top',
-	hasCollisions: true,
-	canPreMeshesMerging: true,
+export const desktopPc = defineObject(desktopPc_schema, {
 	createInstance: ({ options, model, root, scene, lc, graphicsQuality }) => {
 		// TODO: graphicsQualityがLOWならそもそも追加しない
 		const light1 = new BABYLON.SpotLight('', new BABYLON.Vector3(0, cm(10), cm(22)), new BABYLON.Vector3(0, 0, 1), Math.PI / 1, 2, scene, lc != null);

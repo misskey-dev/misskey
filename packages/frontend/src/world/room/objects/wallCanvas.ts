@@ -5,37 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
+import { wallCanvas_schema } from './wallCanvas.schema.js';
 
-export const wallCanvas = defineObject({
-	id: 'wallCanvas',
-	options: {
-		schema: {
-			width: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-			height: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-			image: {
-				type: 'image',
-				presets: [],
-			},
-		},
-		default: {
-			width: 0.15,
-			height: 0.15,
-			image: { type: null },
-		},
-	},
-	placement: 'side',
-	hasCollisions: false,
-	hasTexture: true,
+export const wallCanvas = defineObject(wallCanvas_schema, {
 	createInstance: async ({ scene, options, model }) => {
 		const canvasMesh = model.findMesh('__X_CANVAS__');
 		canvasMesh.rotationQuaternion = null;

@@ -4,15 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { tetrapod_schema } from './tetrapod.schema.js';
 
-export const tetrapod = defineObject({
-	id: 'tetrapod',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
-	hasCollisions: false,
+export const tetrapod = defineObject(tetrapod_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

@@ -4,16 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { recordPlayer_schema } from './recordPlayer.schema.js';
 
-export const recordPlayer = defineObject({
-	id: 'recordPlayer',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	canPreMeshesMerging: false,
+export const recordPlayer = defineObject(recordPlayer_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

@@ -5,27 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { speaker_schema } from './speaker.schema.js';
 
-export const speaker = defineObject({
-	id: 'speaker',
-	options: {
-		schema: {
-			outerMat: {
-				type: 'material',
-			},
-			innerMat: {
-				type: 'material',
-			},
-		},
-		default: {
-			outerMat: { color: [0.45, 0.8, 0], roughness: 0.1, metallic: 0 },
-			innerMat: { color: [0, 0, 0], roughness: 0.5, metallic: 0.5 },
-		},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	hasTexture: false,
-	canPreMeshesMerging: true,
+export const speaker = defineObject(speaker_schema, {
 	createInstance: ({ options, model }) => {
 		const outerMaterial = model.findMaterial('__X_COVER__');
 		const innerMaterial = model.findMaterial('__X_BODY__');

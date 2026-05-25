@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { wallMountSpotLight } from './wallMountSpotLight.js';
+import type { wallMountSpotLight_schema } from './wallMountSpotLight.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const wallMountSpotLight_ui = defineObjectUi<typeof wallMountSpotLight>({
+export const wallMountSpotLight_ui = defineObjectUi<typeof wallMountSpotLight_schema>({
 	name: i18n.ts._miRoom._objects.wallMountSpotLight,
 	options: {
 		bodyMat: {

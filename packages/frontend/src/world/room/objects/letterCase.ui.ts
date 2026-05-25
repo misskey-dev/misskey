@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { letterCase } from './letterCase.js';
+import type { letterCase_schema } from './letterCase.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const letterCase_ui = defineObjectUi<typeof letterCase>({
+export const letterCase_ui = defineObjectUi<typeof letterCase_schema>({
 	name: i18n.ts._miRoom._objects.letterCase,
 	options: {},
 });

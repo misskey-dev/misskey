@@ -4,16 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { roundRug_schema } from './roundRug.schema.js';
 
-export const roundRug = defineObject({
-	id: 'roundRug',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'floor',
-	hasCollisions: false,
-	hasTexture: true,
+export const roundRug = defineObject(roundRug_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

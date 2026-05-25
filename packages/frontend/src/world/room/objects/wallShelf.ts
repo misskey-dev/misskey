@@ -5,33 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { wallShelf_schema } from './wallShelf.schema.js';
 
-export const wallShelf = defineObject({
-	id: 'wallShelf',
-	options: {
-		schema: {
-			style: {
-				type: 'enum',
-				enum: [{
-					value: 'A',
-				}, {
-					value: 'B',
-				}, {
-					value: 'C',
-				}, {
-					value: 'D',
-				}],
-			},
-			boardMat: {
-				type: 'material',
-			},
-		},
-		default: {
-			style: 'A',
-			boardMat: { color: [1, 1, 1], roughness: 0.5, metallic: 0 },
-		},
-	},
-	placement: 'side',
+export const wallShelf = defineObject(wallShelf_schema, {
 	createInstance: ({ model, options }) => {
 		const applyStyle = () => {
 			const aMeshes = model.findMeshes('__X_VARIATION_A__');

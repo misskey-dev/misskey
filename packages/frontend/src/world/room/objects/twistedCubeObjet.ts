@@ -4,15 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { twistedCubeObjet_schema } from './twistedCubeObjet.schema.js';
 
-export const twistedCubeObjet = defineObject({
-	id: 'twistedCubeObjet',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
-	hasCollisions: false,
+export const twistedCubeObjet = defineObject(twistedCubeObjet_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

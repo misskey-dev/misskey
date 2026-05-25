@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { randomBooks } from './randomBooks.js';
+import type { randomBooks_schema } from './randomBooks.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const randomBooks_ui = defineObjectUi<typeof randomBooks>({
+export const randomBooks_ui = defineObjectUi<typeof randomBooks_schema>({
 	name: i18n.ts._miRoom._objects.randomBooks,
 	options: {
 		variation: {

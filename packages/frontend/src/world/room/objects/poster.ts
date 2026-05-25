@@ -6,37 +6,9 @@
 import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
 import { remap } from '@/world/utility.js';
+import { poster_schema } from './poster.schema.js';
 
-export const poster = defineObject({
-	id: 'poster',
-	options: {
-		schema: {
-			width: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-			height: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-			image: {
-				type: 'image',
-				presets: [],
-			},
-		},
-		default: {
-			width: 0.15,
-			height: 0.15,
-			image: { type: null },
-		},
-	},
-	placement: 'side',
-	hasCollisions: false,
-	hasTexture: true,
+export const poster = defineObject(poster_schema, {
 	createInstance: async ({ scene, options, model }) => {
 		const pictureMesh = model.findMesh('__X_PICTURE__');
 		pictureMesh.rotationQuaternion = null;

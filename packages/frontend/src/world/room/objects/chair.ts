@@ -5,31 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { chair_schema } from './chair.schema.js';
 
-export const chair = defineObject({
-	id: 'chair',
-	options: {
-		schema: {
-			primaryMat: {
-				type: 'material',
-			},
-			secondaryMat: {
-				type: 'material',
-			},
-			frameMat: {
-				type: 'material',
-			},
-		},
-		default: {
-			primaryMat: { color: [0.44, 0.6, 0], roughness: 1, metallic: 0 },
-			secondaryMat: { color: [0, 0, 0], roughness: 0.5, metallic: 0 },
-			frameMat: { color: [0.8, 0.8, 0.8], roughness: 0.25, metallic: 1 },
-		},
-	},
-	placement: 'floor',
-	hasCollisions: true,
-	isChair: true,
-	canPreMeshesMerging: true,
+export const chair = defineObject(chair_schema, {
 	createInstance: ({ model, options, sitChair }) => {
 		const primaryMaterial = model.findMaterial('__X_PRIMARY__');
 		const secondaryMaterial = model.findMaterial('__X_SECONDARY__');

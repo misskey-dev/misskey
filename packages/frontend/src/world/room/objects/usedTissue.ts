@@ -4,15 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { usedTissue_schema } from './usedTissue.schema.js';
 
-export const usedTissue = defineObject({
-	id: 'usedTissue',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
-	hasCollisions: false,
+export const usedTissue = defineObject(usedTissue_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

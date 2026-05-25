@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { envelope } from './envelope.js';
+import type { envelope_schema } from './envelope.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const envelope_ui = defineObjectUi<typeof envelope>({
+export const envelope_ui = defineObjectUi<typeof envelope_schema>({
 	name: i18n.ts._miRoom._objects.envelope,
 	options: {},
 });

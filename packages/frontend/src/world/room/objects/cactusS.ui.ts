@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { cactusS } from './cactusS.js';
+import type { cactusS_schema } from './cactusS.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const cactusS_ui = defineObjectUi<typeof cactusS>({
+export const cactusS_ui = defineObjectUi<typeof cactusS_schema>({
 	name: i18n.ts._miRoom._objects.cactusS,
 	options: {
 		potMat: {

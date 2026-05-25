@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { beamLamp } from './beamLamp.js';
+import type { beamLamp_schema } from './beamLamp.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const beamLamp_ui = defineObjectUi<typeof beamLamp>({
+export const beamLamp_ui = defineObjectUi<typeof beamLamp_schema>({
 	name: i18n.ts._miRoom._objects.beamLamp,
 	options: {},
 });

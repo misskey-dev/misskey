@@ -4,17 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { facialTissue_schema } from './facialTissue.schema.js';
 
-export const facialTissue = defineObject({
-	id: 'facialTissue',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	hasTexture: true,
-	canPreMeshesMerging: true,
+export const facialTissue = defineObject(facialTissue_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

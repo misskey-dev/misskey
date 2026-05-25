@@ -4,15 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { emptyBento_schema } from './emptyBento.schema.js';
 
-export const emptyBento = defineObject({
-	id: 'emptyBento',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
-	hasCollisions: false,
+export const emptyBento = defineObject(emptyBento_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

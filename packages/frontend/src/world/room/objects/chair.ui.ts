@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { chair } from './chair.js';
+import type { chair_schema } from './chair.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const chair_ui = defineObjectUi<typeof chair>({
+export const chair_ui = defineObjectUi<typeof chair_schema>({
 	name: i18n.ts._miRoom._objects.chair,
 	options: {
 		primaryMat: {

@@ -4,17 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { stormGlass_schema } from './stormGlass.schema.js';
 
-export const stormGlass = defineObject({
-	id: 'stormGlass',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	hasTexture: false,
-	canPreMeshesMerging: true,
+export const stormGlass = defineObject(stormGlass_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

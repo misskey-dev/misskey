@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { plant2 } from './plant2.js';
+import type { plant2_schema } from './plant2.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const plant2_ui = defineObjectUi<typeof plant2>({
+export const plant2_ui = defineObjectUi<typeof plant2_schema>({
 	name: i18n.ts._miRoom._objects.plant2,
 	options: {},
 });

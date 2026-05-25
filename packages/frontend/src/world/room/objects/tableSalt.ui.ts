@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { tableSalt } from './tableSalt.js';
+import type { tableSalt_schema } from './tableSalt.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const tableSalt_ui = defineObjectUi<typeof tableSalt>({
+export const tableSalt_ui = defineObjectUi<typeof tableSalt_schema>({
 	name: i18n.ts._miRoom._objects.tableSalt,
 	options: {},
 });

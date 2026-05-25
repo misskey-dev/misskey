@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { aircon } from './aircon.js';
+import type { aircon_schema } from './aircon.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const aircon_ui = defineObjectUi<typeof aircon>({
+export const aircon_ui = defineObjectUi<typeof aircon_schema>({
 	name: i18n.ts._miRoom._objects.aircon,
 	options: {},
 });

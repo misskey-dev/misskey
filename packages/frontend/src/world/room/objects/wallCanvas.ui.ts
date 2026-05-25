@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { wallCanvas } from './wallCanvas.js';
+import type { wallCanvas_schema } from './wallCanvas.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const wallCanvas_ui = defineObjectUi<typeof wallCanvas>({
+export const wallCanvas_ui = defineObjectUi<typeof wallCanvas_schema>({
 	name: i18n.ts._miRoom._objects.wallCanvas,
 	options: {
 		width: {

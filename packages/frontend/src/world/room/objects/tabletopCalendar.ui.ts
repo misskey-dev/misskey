@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { tabletopCalendar } from './tabletopCalendar.js';
+import type { tabletopCalendar_schema } from './tabletopCalendar.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const tabletopCalendar_ui = defineObjectUi<typeof tabletopCalendar>({
+export const tabletopCalendar_ui = defineObjectUi<typeof tabletopCalendar_schema>({
 	name: i18n.ts._miRoom._objects.tabletopCalendar,
 	options: {},
 });

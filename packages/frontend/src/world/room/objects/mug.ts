@@ -7,16 +7,9 @@ import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { cm } from '../../utility.js';
 import { yuge } from '../utility.js';
+import { mug_schema } from './mug.schema.js';
 
-export const mug = defineObject({
-	id: 'mug',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	canPreMeshesMerging: true,
+export const mug = defineObject(mug_schema, {
 	createInstance: ({ scene, root, sr }) => {
 		let yugeDispose: (() => void) | null = null;
 

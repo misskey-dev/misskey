@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { facialTissue } from './facialTissue.js';
+import type { facialTissue_schema } from './facialTissue.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const facialTissue_ui = defineObjectUi<typeof facialTissue>({
+export const facialTissue_ui = defineObjectUi<typeof facialTissue_schema>({
 	name: i18n.ts._miRoom._objects.facialTissue,
 	options: {},
 });

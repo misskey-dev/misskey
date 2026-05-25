@@ -5,23 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { wireNet_schema } from './wireNet.schema.js';
 
-export const wireNet = defineObject({
-	id: 'wireNet',
-	options: {
-		schema: {
-			bodyMat: {
-				type: 'material',
-			},
-		},
-		default: {
-			bodyMat: { color: [0.03, 0.03, 0.03], roughness: 0.5, metallic: 0.5 },
-		},
-	},
-	placement: 'side',
-	hasCollisions: false,
-	canPreMeshesMerging: true,
-	hasTexture: false,
+export const wireNet = defineObject(wireNet_schema, {
 	createInstance: ({ options, model }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 

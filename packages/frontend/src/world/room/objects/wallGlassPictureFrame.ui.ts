@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { wallGlassPictureFrame } from './wallGlassPictureFrame.js';
+import type { wallGlassPictureFrame_schema } from './wallGlassPictureFrame.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const wallGlassPictureFrame_ui = defineObjectUi<typeof wallGlassPictureFrame>({
+export const wallGlassPictureFrame_ui = defineObjectUi<typeof wallGlassPictureFrame_schema>({
 	name: i18n.ts._miRoom._objects.wallGlassPictureFrame,
 	options: {
 		width: {

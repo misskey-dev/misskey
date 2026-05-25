@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { wireBasket } from './wireBasket.js';
+import type { wireBasket_schema } from './wireBasket.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const wireBasket_ui = defineObjectUi<typeof wireBasket>({
+export const wireBasket_ui = defineObjectUi<typeof wireBasket_schema>({
 	name: i18n.ts._miRoom._objects.wireBasket,
 	options: {
 		bodyMat: {

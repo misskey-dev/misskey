@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { blind } from './blind.js';
+import type { blind_schema } from './blind.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const blind_ui = defineObjectUi<typeof blind>({
+export const blind_ui = defineObjectUi<typeof blind_schema>({
 	name: i18n.ts._miRoom._objects.blind,
 	options: {
 		blades: {

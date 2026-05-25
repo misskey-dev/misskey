@@ -4,17 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { coffeeCup_schema } from './coffeeCup.schema.js';
 
-export const coffeeCup = defineObject({
-	id: 'coffeeCup',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	hasTexture: true,
-	canPreMeshesMerging: true,
+export const coffeeCup = defineObject(coffeeCup_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

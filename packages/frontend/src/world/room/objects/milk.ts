@@ -4,16 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { milk_schema } from './milk.schema.js';
 
-export const milk = defineObject({
-	id: 'milk',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	hasTexture: true,
+export const milk = defineObject(milk_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

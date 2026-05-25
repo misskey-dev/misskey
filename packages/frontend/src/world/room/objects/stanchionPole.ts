@@ -5,26 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { stanchionPole_schema } from './stanchionPole.schema.js';
 
-export const stanchionPole = defineObject({
-	id: 'stanchionPole',
-	options: {
-		schema: {
-			bodyMat: {
-				type: 'material',
-			},
-			ropeMat: {
-				type: 'material',
-			},
-		},
-		default: {
-			bodyMat: { color: [0.8, 0.39, 0.1], roughness: 0.2, metallic: 1 },
-			ropeMat: { color: [0.21, 0.0, 0.0], roughness: 0.7, metallic: 0 },
-		},
-	},
-	placement: 'floor',
-	hasCollisions: true,
-	hasTexture: false,
+export const stanchionPole = defineObject(stanchionPole_schema, {
 	createInstance: ({ options, model }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 

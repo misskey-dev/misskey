@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { glassCylinderPotPlant } from './glassCylinderPotPlant.js';
+import type { glassCylinderPotPlant_schema } from './glassCylinderPotPlant.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const glassCylinderPotPlant_ui = defineObjectUi<typeof glassCylinderPotPlant>({
+export const glassCylinderPotPlant_ui = defineObjectUi<typeof glassCylinderPotPlant_schema>({
 	name: i18n.ts._miRoom._objects.glassCylinderPotPlant,
 	options: {},
 });

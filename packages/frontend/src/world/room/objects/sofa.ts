@@ -5,23 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { sofa_schema } from './sofa.schema.js';
 
-export const sofa = defineObject({
-	id: 'sofa',
-	options: {
-		schema: {
-			bodyMat: {
-				type: 'material',
-			},
-		},
-		default: {
-			bodyMat: { color: [0.4, 0.4, 0.4], roughness: 0.5, metallic: 0 },
-		},
-	},
-	placement: 'floor',
-	hasCollisions: true,
-	canPreMeshesMerging: true,
-	hasTexture: false,
+export const sofa = defineObject(sofa_schema, {
 	createInstance: ({ options, model }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 

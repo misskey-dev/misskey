@@ -4,16 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { pizza_schema } from './pizza.schema.js';
 
-export const pizza = defineObject({
-	id: 'pizza',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	canPreMeshesMerging: true,
+export const pizza = defineObject(pizza_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

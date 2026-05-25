@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { poster } from './poster.js';
+import type { poster_schema } from './poster.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const poster_ui = defineObjectUi<typeof poster>({
+export const poster_ui = defineObjectUi<typeof poster_schema>({
 	name: i18n.ts._miRoom._objects.poster,
 	options: {
 		width: {

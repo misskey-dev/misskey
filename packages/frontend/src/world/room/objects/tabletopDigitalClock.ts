@@ -6,26 +6,9 @@
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { cm, get7segMeshesOfCurrentTime, WORLD_SCALE } from '@/world/utility.js';
+import { tabletopDigitalClock_schema } from './tabletopDigitalClock.schema.js';
 
-export const tabletopDigitalClock = defineObject({
-	id: 'tabletopDigitalClock',
-	options: {
-		schema: {
-			bodyMat: {
-				type: 'material',
-			},
-			lcdColor: {
-				type: 'color',
-			},
-		},
-		default: {
-			bodyMat: { color: [0.45, 0.8, 0], roughness: 0.2, metallic: 0 },
-			lcdColor: [1, 1, 1],
-		},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	canPreMeshesMerging: false,
+export const tabletopDigitalClock = defineObject(tabletopDigitalClock_schema, {
 	createInstance: ({ sr, options, model, timer }) => {
 		const matrix = model.root.getWorldMatrix(true);
 		const scale = new BABYLON.Vector3();

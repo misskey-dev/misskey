@@ -4,44 +4,9 @@
  */
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { book_schema } from './book.schema.js';
 
-export const book = defineObject({
-	id: 'book',
-	options: {
-		schema: {
-			variation: {
-				type: 'enum',
-				enum: [0, 1],
-			},
-			width: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-			height: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-			thickness: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-		},
-		default: {
-			variation: 0,
-			width: 0.07,
-			height: 0.07,
-			thickness: 0.1,
-		},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	hasTexture: true,
+export const book = defineObject(book_schema, {
 	createInstance: ({ options, model }) => {
 		const bodyMesh = model.findMesh('__X_BODY__');
 

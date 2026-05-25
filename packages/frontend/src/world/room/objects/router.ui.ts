@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { router } from './router.js';
+import type { router_schema } from './router.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const router_ui = defineObjectUi<typeof router>({
+export const router_ui = defineObjectUi<typeof router_schema>({
 	name: i18n.ts._miRoom._objects.router,
 	options: {},
 });

@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { cuboid } from './cuboid.js';
+import type { cuboid_schema } from './cuboid.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const cuboid_ui = defineObjectUi<typeof cuboid>({
+export const cuboid_ui = defineObjectUi<typeof cuboid_schema>({
 	name: i18n.ts._miRoom._objects.cuboid,
 	options: {
 		x: {

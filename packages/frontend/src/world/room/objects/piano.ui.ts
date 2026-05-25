@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { piano } from './piano.js';
+import type { piano_schema } from './piano.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const piano_ui = defineObjectUi<typeof piano>({
+export const piano_ui = defineObjectUi<typeof piano_schema>({
 	name: i18n.ts._miRoom._objects.piano,
 	options: {
 		bodyMat: {

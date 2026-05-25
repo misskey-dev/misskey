@@ -4,16 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { custardPudding_schema } from './custardPudding.schema.js';
 
-export const custardPudding = defineObject({
-	id: 'custardPudding',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	canPreMeshesMerging: true,
+export const custardPudding = defineObject(custardPudding_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

@@ -5,34 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
+import { handheldGameConsole_schema } from './handheldGameConsole.schema.js';
 
-export const handheldGameConsole = defineObject({
-	id: 'handheldGameConsole',
-	options: {
-		schema: {
-			bodyMat: {
-				type: 'material',
-			},
-			screenBrightness: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-			image: {
-				type: 'image',
-				presets: [],
-			},
-		},
-		default: {
-			bodyMat: { color: [1, 1, 1], roughness: 0.5, metallic: 0 },
-			screenBrightness: 0.5,
-			image: { type: null },
-		},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	hasTexture: true,
+export const handheldGameConsole = defineObject(handheldGameConsole_schema, {
 	createInstance: async ({ scene, options, model }) => {
 		const screenMesh = model.findMesh('__X_SCREEN__');
 

@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { cardboardBox } from './cardboardBox.js';
+import type { cardboardBox_schema } from './cardboardBox.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const cardboardBox_ui = defineObjectUi<typeof cardboardBox>({
+export const cardboardBox_ui = defineObjectUi<typeof cardboardBox_schema>({
 	name: i18n.ts._miRoom._objects.cardboardBox,
 	options: {
 		variation: {

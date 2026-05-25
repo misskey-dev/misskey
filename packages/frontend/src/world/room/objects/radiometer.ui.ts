@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { radiometer } from './radiometer.js';
+import type { radiometer_schema } from './radiometer.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const radiometer_ui = defineObjectUi<typeof radiometer>({
+export const radiometer_ui = defineObjectUi<typeof radiometer_schema>({
 	name: i18n.ts._miRoom._objects.radiometer,
 	options: {},
 });

@@ -5,35 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { hangingDuctRail_schema } from './hangingDuctRail.schema.js';
 
-export const hangingDuctRail = defineObject({
-	id: 'hangingDuctRail',
-	options: {
-		schema: {
-			width: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-			height: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-			bodyMat: {
-				type: 'material',
-			},
-		},
-		default: {
-			width: 0.2,
-			height: 0.2,
-			bodyMat: { color: [0.05, 0.05, 0.05], roughness: 0.5, metallic: 0.3 },
-		},
-	},
-	placement: 'ceiling',
-	hasCollisions: false,
+export const hangingDuctRail = defineObject(hangingDuctRail_schema, {
 	createInstance: async ({ options, model }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 

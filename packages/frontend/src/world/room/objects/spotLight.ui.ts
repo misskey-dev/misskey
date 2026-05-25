@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { spotLight } from './spotLight.js';
+import type { spotLight_schema } from './spotLight.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const spotLight_ui = defineObjectUi<typeof spotLight>({
+export const spotLight_ui = defineObjectUi<typeof spotLight_schema>({
 	name: i18n.ts._miRoom._objects.spotLight,
 	options: {
 		bodyMat: {

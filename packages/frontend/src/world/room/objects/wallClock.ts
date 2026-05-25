@@ -5,21 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { wallClock_schema } from './wallClock.schema.js';
 
-export const wallClock = defineObject({
-	id: 'wallClock',
-	options: {
-		schema: {
-			frameMat: {
-				type: 'material',
-			},
-		},
-		default: {
-			frameMat: { color: [0.71, 0.58, 0.39], roughness: 0.75, metallic: 0 },
-		},
-	},
-	placement: 'side',
-	hasCollisions: false,
+export const wallClock = defineObject(wallClock_schema, {
 	createInstance: ({ sr, timer, options, model }) => {
 		const hourHand = model.findMesh('HandH');
 		const minuteHand = model.findMesh('HandM');

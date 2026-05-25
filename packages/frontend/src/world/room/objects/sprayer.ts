@@ -4,16 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { sprayer_schema } from './sprayer.schema.js';
 
-export const sprayer = defineObject({
-	id: 'sprayer',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	canPreMeshesMerging: true,
+export const sprayer = defineObject(sprayer_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

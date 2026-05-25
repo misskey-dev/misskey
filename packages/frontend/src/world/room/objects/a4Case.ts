@@ -5,21 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { a4Case_schema } from './a4Case.schema.js';
 
-export const a4Case = defineObject({
-	id: 'a4Case',
-	options: {
-		schema: {
-			mat: {
-				type: 'material',
-			},
-		},
-		default: {
-			mat: { color: [0.9, 0.9, 0.9], roughness: 0.3, metallic: 0 },
-		},
-	},
-	placement: 'top',
-	hasCollisions: false,
+export const a4Case = defineObject(a4Case_schema, {
 	createInstance: ({ options, model }) => {
 		const bodyMesh = model.findMesh('__X_BODY__');
 		const bodyMaterial = bodyMesh.material as BABYLON.PBRMaterial;

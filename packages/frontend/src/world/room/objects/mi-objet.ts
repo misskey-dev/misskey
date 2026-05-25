@@ -4,16 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { miObjet_schema } from './mi-objet.schema.js';
 
-export const miObjet = defineObject({
-	id: 'miObjet',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	hasTexture: true,
+export const miObjet = defineObject(miObjet_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

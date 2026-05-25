@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { wallClock } from './wallClock.js';
+import type { wallClock_schema } from './wallClock.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const wallClock_ui = defineObjectUi<typeof wallClock>({
+export const wallClock_ui = defineObjectUi<typeof wallClock_schema>({
 	name: i18n.ts._miRoom._objects.wallClock,
 	options: {
 		frameMat: {

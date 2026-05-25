@@ -5,23 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
+import { tabletopFlag_schema } from './tabletopFlag.schema.js';
 
-export const tabletopFlag = defineObject({
-	id: 'tabletopFlag',
-	options: {
-		schema: {
-			image: {
-				type: 'image',
-				presets: [],
-			},
-		},
-		default: {
-			image: { type: null },
-		},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	hasTexture: true,
+export const tabletopFlag = defineObject(tabletopFlag_schema, {
 	createInstance: async ({ model, options, scene }) => {
 		const flagMesh = model.findMesh('__X_FLAG__');
 		const flagMaterial = model.findMaterial('__X_FLAG__');

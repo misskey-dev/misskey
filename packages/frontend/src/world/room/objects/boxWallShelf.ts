@@ -5,40 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { boxWallShelf_schema } from './boxWallShelf.schema.js';
 
-export const boxWallShelf = defineObject({
-	id: 'boxWallShelf',
-	options: {
-		schema: {
-			width: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-			height: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-			bodyMat: {
-				type: 'material',
-			},
-			withBack: {
-				type: 'boolean',
-			},
-		},
-		default: {
-			width: 0.1,
-			height: 0.1,
-			bodyMat: { color: [0.6, 0.35, 0.15], roughness: 0.5, metallic: 0 },
-			withBack: true,
-		},
-	},
-	placement: 'wall',
-	hasCollisions: false,
-	hasTexture: false,
+export const boxWallShelf = defineObject(boxWallShelf_schema, {
 	createInstance: async ({ scene, options, model }) => {
 		const backMesh = model.findMesh('__X_BACK__');
 		const bodyMaterial = model.findMaterial('__X_BODY__');

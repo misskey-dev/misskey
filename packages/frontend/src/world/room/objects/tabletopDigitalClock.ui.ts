@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { tabletopDigitalClock } from './tabletopDigitalClock.js';
+import type { tabletopDigitalClock_schema } from './tabletopDigitalClock.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const tabletopDigitalClock_ui = defineObjectUi<typeof tabletopDigitalClock>({
+export const tabletopDigitalClock_ui = defineObjectUi<typeof tabletopDigitalClock_schema>({
 	name: i18n.ts._miRoom._objects.tabletopDigitalClock,
 	options: {
 		bodyMat: {

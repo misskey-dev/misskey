@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { miPlate } from './miPlate.js';
+import type { miPlate_schema } from './miPlate.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const miPlate_ui = defineObjectUi<typeof miPlate>({
+export const miPlate_ui = defineObjectUi<typeof miPlate_schema>({
 	name: i18n.ts._miRoom._objects.miPlate,
 	options: {},
 });

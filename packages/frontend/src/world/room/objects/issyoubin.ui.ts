@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { issyoubin } from './issyoubin.js';
+import type { issyoubin_schema } from './issyoubin.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const issyoubin_ui = defineObjectUi<typeof issyoubin>({
+export const issyoubin_ui = defineObjectUi<typeof issyoubin_schema>({
 	name: i18n.ts._miRoom._objects.issyoubin,
 	options: {
 		variation: {

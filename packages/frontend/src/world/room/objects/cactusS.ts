@@ -5,23 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { cactusS_schema } from './cactusS.schema.js';
 
-export const cactusS = defineObject({
-	id: 'cactusS',
-	options: {
-		schema: {
-			potMat: {
-				type: 'material',
-			},
-		},
-		default: {
-			potMat: { color: [0.45, 0.45, 0.45], roughness: 0.5, metallic: 0 },
-		},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	hasTexture: true,
-	canPreMeshesMerging: true,
+export const cactusS = defineObject(cactusS_schema, {
 	createInstance: ({ options, model }) => {
 		const potMaterial = model.findMaterial('__X_POT__');
 

@@ -5,29 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { cardboardBox_schema } from './cardboardBox.schema.js';
 
-export const cardboardBox = defineObject({
-	id: 'cardboardBox',
-	options: {
-		schema: {
-			variation: {
-				type: 'enum',
-				enum: [{
-					value: 'default',
-				}, {
-					value: 'mikan',
-				}, {
-					value: 'aizon',
-				}],
-			},
-		},
-		default: {
-			variation: 'default',
-		},
-	},
-	placement: 'top',
-	hasCollisions: true,
-	hasTexture: true,
+export const cardboardBox = defineObject(cardboardBox_schema, {
 	createInstance: ({ scene, options, model }) => {
 		const material = model.findMaterial('__X_BODY__');
 

@@ -5,15 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { radiometer_schema } from './radiometer.schema.js';
 
-export const radiometer = defineObject({
-	id: 'radiometer',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
-	hasCollisions: false,
+export const radiometer = defineObject(radiometer_schema, {
 	createInstance: ({ sr, scene, model }) => {
 		const vanes = model.findTransformNode('__X_VANES__');
 		model.bakeExcludeMeshes = [...vanes.getChildMeshes()];

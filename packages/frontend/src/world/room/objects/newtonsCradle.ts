@@ -5,22 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { newtonsCradle_schema } from './newtonsCradle.schema.js';
 
-export const newtonsCradle = defineObject({
-	id: 'newtonsCradle',
-	options: {
-		schema: {
-			frameMat: {
-				type: 'material',
-			},
-		},
-		default: {
-			frameMat: { color: [0.15, 0.15, 0.15], roughness: 0.4, metallic: 0.8 },
-		},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	canPreMeshesMerging: true,
+export const newtonsCradle = defineObject(newtonsCradle_schema, {
 	createInstance: ({ options, model }) => {
 		const frameMaterial = model.findMaterial('__X_FRAME__');
 

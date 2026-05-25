@@ -5,41 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { cuboid_schema } from './cuboid.schema.js';
 
-export const cuboid = defineObject({
-	id: 'cuboid',
-	options: {
-		schema: {
-			x: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-			y: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-			z: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-			mat: {
-				type: 'material',
-			},
-		},
-		default: {
-			x: 0.01,
-			y: 0.01,
-			z: 0.01,
-			mat: { color: [1, 1, 1], roughness: 0, metallic: 0 },
-		},
-	},
-	placement: 'top',
+export const cuboid = defineObject(cuboid_schema, {
 	createInstance: async ({ scene, options, model }) => {
 		const mesh = model.findMesh('__X_BODY__');
 		const mat = model.findMaterial('__X_BODY__');

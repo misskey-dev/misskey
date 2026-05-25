@@ -4,16 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { miPlate_schema } from './miPlate.schema.js';
 
-export const miPlate = defineObject({
-	id: 'miPlate',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	canPreMeshesMerging: true,
+export const miPlate = defineObject(miPlate_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

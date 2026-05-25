@@ -4,15 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { rolledUpPoster_schema } from './rolledUpPoster.schema.js';
 
-export const rolledUpPoster = defineObject({
-	id: 'rolledUpPoster',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
-	hasCollisions: false,
+export const rolledUpPoster = defineObject(rolledUpPoster_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

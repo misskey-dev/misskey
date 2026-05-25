@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { djPlayer } from './djPlayer.js';
+import type { djPlayer_schema } from './djPlayer.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const djPlayer_ui = defineObjectUi<typeof djPlayer>({
+export const djPlayer_ui = defineObjectUi<typeof djPlayer_schema>({
 	name: i18n.ts._miRoom._objects.djPlayer,
 	options: {
 		screenBrightness: {

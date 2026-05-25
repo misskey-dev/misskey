@@ -7,44 +7,9 @@ import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 import { cm, WORLD_SCALE } from '@/world/utility.js';
+import { wallMountSpotLight_schema } from './wallMountSpotLight.schema.js';
 
-export const wallMountSpotLight = defineObject({
-	id: 'wallMountSpotLight',
-	options: {
-		schema: {
-			bodyMat: {
-				type: 'material',
-			},
-			light: {
-				type: 'light',
-			},
-			angleV: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-			angleH: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-		},
-		default: {
-			bodyMat: { color: [0.05, 0.05, 0.05], roughness: 0.5, metallic: 0.3 },
-			light: {
-				color: [1, 0.5, 0.2],
-				brightness: 0.5,
-			},
-			angleV: 0.1,
-			angleH: 0.5,
-		},
-	},
-	placement: 'side',
-	hasCollisions: false,
-	canPreMeshesMerging: false,
-	hasTexture: false,
+export const wallMountSpotLight = defineObject(wallMountSpotLight_schema, {
 	createInstance: ({ lc, scene, options, model, graphicsQuality }) => {
 		const bodyMesh = model.findMesh('__X_BODY__');
 		const bodyMaterial = model.findMaterial('__X_BODY__');

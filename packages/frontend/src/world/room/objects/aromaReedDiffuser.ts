@@ -5,27 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { aromaReedDiffuser_schema } from './aromaReedDiffuser.schema.js';
 
-export const aromaReedDiffuser = defineObject({
-	id: 'aromaReedDiffuser',
-	options: {
-		schema: {
-			bottleMat: {
-				type: 'material',
-			},
-			oilMat: {
-				type: 'material',
-			},
-		},
-		default: {
-			bottleMat: { color: [1, 0.83, 0.48], roughness: 0, metallic: 0.7 },
-			oilMat: { color: [1, 0.4, 0], roughness: 0, metallic: 1 },
-		},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	hasTexture: true,
-	canPreMeshesMerging: true,
+export const aromaReedDiffuser = defineObject(aromaReedDiffuser_schema, {
 	createInstance: ({ options, model }) => {
 		const bottleMaterial = model.findMaterial('__X_BOTTLE__');
 		const oilMaterial = model.findMaterial('__X_OIL__');

@@ -4,17 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { glassCylinderPotPlant_schema } from './glassCylinderPotPlant.schema.js';
 
-export const glassCylinderPotPlant = defineObject({
-	id: 'glassCylinderPotPlant',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	hasTexture: true,
-	canPreMeshesMerging: true,
+export const glassCylinderPotPlant = defineObject(glassCylinderPotPlant_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

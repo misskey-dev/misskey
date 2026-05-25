@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { petBottle } from './petBottle.js';
+import type { petBottle_schema } from './petBottle.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const petBottle_ui = defineObjectUi<typeof petBottle>({
+export const petBottle_ui = defineObjectUi<typeof petBottle_schema>({
 	name: i18n.ts._miRoom._objects.petBottle,
 	options: {
 		variation: {

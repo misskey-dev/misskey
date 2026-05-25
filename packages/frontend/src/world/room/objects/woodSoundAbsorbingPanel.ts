@@ -4,15 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { woodSoundAbsorbingPanel_schema } from './woodSoundAbsorbingPanel.schema.js';
 
-export const woodSoundAbsorbingPanel = defineObject({
-	id: 'woodSoundAbsorbingPanel',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'side',
-	hasCollisions: false,
+export const woodSoundAbsorbingPanel = defineObject(woodSoundAbsorbingPanel_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

@@ -4,14 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { openedCardboardBox_schema } from './openedCardboardBox.schema.js';
 
-export const openedCardboardBox = defineObject({
-	id: 'openedCardboardBox',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
+export const openedCardboardBox = defineObject(openedCardboardBox_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

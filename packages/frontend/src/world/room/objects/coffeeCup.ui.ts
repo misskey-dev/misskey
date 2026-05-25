@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { coffeeCup } from './coffeeCup.js';
+import type { coffeeCup_schema } from './coffeeCup.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const coffeeCup_ui = defineObjectUi<typeof coffeeCup>({
+export const coffeeCup_ui = defineObjectUi<typeof coffeeCup_schema>({
 	name: i18n.ts._miRoom._objects.coffeeCup,
 	options: {},
 });

@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { clippedPicture } from './clippedPicture.js';
+import type { clippedPicture_schema } from './clippedPicture.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const clippedPicture_ui = defineObjectUi<typeof clippedPicture>({
+export const clippedPicture_ui = defineObjectUi<typeof clippedPicture_schema>({
 	name: i18n.ts._miRoom._objects.clippedPicture,
 	options: {
 		width: {

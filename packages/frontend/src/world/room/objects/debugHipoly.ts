@@ -4,15 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { debugHipoly_schema } from './debugHipoly.schema.js';
 
-export const debugHipoly = defineObject({
-	id: 'debugHipoly',
-	name: 'Debug Hipoly',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
+export const debugHipoly = defineObject(debugHipoly_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

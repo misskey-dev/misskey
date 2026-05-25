@@ -6,37 +6,9 @@
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { RecyvlingTextGrid } from '../../utility.js';
+import { electronicDisplayBoard_schema } from './electronicDisplayBoard.schema.js';
 
-export const electronicDisplayBoard = defineObject({
-	id: 'electronicDisplayBoard',
-	options: {
-		schema: {
-			text: {
-				type: 'string',
-			},
-			frameMat: {
-				type: 'material',
-			},
-			ledColor: {
-				type: 'color',
-			},
-			ledBrightness: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-		},
-		default: {
-			text: 'Hello, Misskey!',
-			frameMat: { color: [0.05, 0.05, 0.05], roughness: 0.2, metallic: 0 },
-			ledColor: [1, 1, 1],
-			ledBrightness: 0.5,
-		},
-	},
-	placement: 'side',
-	hasCollisions: false,
-	hasTexture: true,
+export const electronicDisplayBoard = defineObject(electronicDisplayBoard_schema, {
 	createInstance: async ({ scene, options, model, timer }) => {
 		const frameMaterial = model.findMaterial('__X_BODY__');
 

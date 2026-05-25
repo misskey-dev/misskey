@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { desktopPc } from './desktopPc.js';
+import type { desktopPc_schema } from './desktopPc.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const desktopPc_ui = defineObjectUi<typeof desktopPc>({
+export const desktopPc_ui = defineObjectUi<typeof desktopPc_schema>({
 	name: i18n.ts._miRoom._objects.desktopPc,
 	options: {
 		bodyMat: {

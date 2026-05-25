@@ -7,17 +7,9 @@ import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { cm } from '../../utility.js';
 import { yuge } from '../utility.js';
+import { cupNoodle_schema } from './cupNoodle.schema.js';
 
-export const cupNoodle = defineObject({
-	id: 'cupNoodle',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	hasTexture: true,
-	canPreMeshesMerging: true,
+export const cupNoodle = defineObject(cupNoodle_schema, {
 	createInstance: ({ scene, root, sr }) => {
 		let yugeDispose: (() => void) | null = null;
 

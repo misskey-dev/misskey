@@ -7,38 +7,9 @@ import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { cm, remap } from '../../utility.js';
 import { createOverridedStates } from '../utility.js';
+import { blind_schema } from './blind.schema.js';
 
-export const blind = defineObject({
-	id: 'blind',
-	options: {
-		schema: {
-			blades: {
-				type: 'range',
-				min: 1,
-				max: 100,
-			},
-			angle: {
-				type: 'range',
-				min: -Math.PI / 2,
-				max: Math.PI / 2,
-				step: 0.01,
-			},
-			open: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-		},
-		default: {
-			blades: 24,
-			angle: 0,
-			open: 1,
-		},
-	},
-	placement: 'bottom',
-	hasCollisions: false,
-	hasTexture: false,
+export const blind = defineObject(blind_schema, {
 	createInstance: ({ options, model }) => {
 		const temp = createOverridedStates({
 			angle: () => options.angle,

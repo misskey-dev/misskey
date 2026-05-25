@@ -4,16 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { powerStrip_schema } from './powerStrip.schema.js';
 
-export const powerStrip = defineObject({
-	id: 'powerStrip',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	canPreMeshesMerging: true,
+export const powerStrip = defineObject(powerStrip_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

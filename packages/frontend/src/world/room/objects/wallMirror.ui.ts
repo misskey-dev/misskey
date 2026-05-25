@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { wallMirror } from './wallMirror.js';
+import type { wallMirror_schema } from './wallMirror.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const wallMirror_ui = defineObjectUi<typeof wallMirror>({
+export const wallMirror_ui = defineObjectUi<typeof wallMirror_schema>({
 	name: i18n.ts._miRoom._objects.wallMirror,
 	options: {
 		width: {

@@ -5,46 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { ironFrameTable_schema } from './ironFrameTable.schema.js';
 
-export const ironFrameTable = defineObject({
-	id: 'ironFrameTable',
-	options: {
-		schema: {
-			frameMat: {
-				type: 'material',
-			},
-			boardMat: {
-				type: 'material',
-			},
-			width: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-			depth: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-			height: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-		},
-		default: {
-			frameMat: { color: [0.8, 0.8, 0.8], roughness: 0.3, metallic: 1 },
-			boardMat: { color: [0.8, 0.4, 0.1], roughness: 0.6, metallic: 0 },
-			width: 0.28,
-			depth: 0.25,
-			height: 0.35,
-		},
-	},
-	placement: 'top',
-	hasCollisions: true,
+export const ironFrameTable = defineObject(ironFrameTable_schema, {
 	createInstance: ({ options, model, stickyMarkerMeshUpdated }) => {
 		const frameMaterial = model.findMaterial('__X_FRAME__');
 		const boardMaterial = model.findMaterial('__X_BOARD__');

@@ -5,27 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { issyoubin_schema } from './issyoubin.schema.js';
 
-export const issyoubin = defineObject({
-	id: 'issyoubin',
-	options: {
-		schema: {
-			variation: {
-				type: 'enum',
-				enum: [{
-					value: 'misuki',
-				}, {
-					value: 'ai',
-				}],
-			},
-		},
-		default: {
-			variation: 'misuki',
-		},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	hasTexture: true,
+export const issyoubin = defineObject(issyoubin_schema, {
 	createInstance: ({ model, options, scene }) => {
 		const liquidMesh = model.findMesh('__X_LIQUID__');
 		const liquidMaterial = model.findMaterial('__X_LIQUID__');

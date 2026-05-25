@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { hangingTShirt } from './hangingTShirt.js';
+import type { hangingTShirt_schema } from './hangingTShirt.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const hangingTShirt_ui = defineObjectUi<typeof hangingTShirt>({
+export const hangingTShirt_ui = defineObjectUi<typeof hangingTShirt_schema>({
 	name: i18n.ts._miRoom._objects.hangingTShirt,
 	options: {},
 });

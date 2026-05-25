@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { steelRack } from './steelRack.js';
+import type { steelRack_schema } from './steelRack.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const steelRack_ui = defineObjectUi<typeof steelRack>({
+export const steelRack_ui = defineObjectUi<typeof steelRack_schema>({
 	name: i18n.ts._miRoom._objects.steelRack,
 	options: {
 		shelfMat: {

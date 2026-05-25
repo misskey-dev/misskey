@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { speaker } from './speaker.js';
+import type { speaker_schema } from './speaker.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const speaker_ui = defineObjectUi<typeof speaker>({
+export const speaker_ui = defineObjectUi<typeof speaker_schema>({
 	name: i18n.ts._miRoom._objects.speaker,
 	options: {
 		outerMat: {

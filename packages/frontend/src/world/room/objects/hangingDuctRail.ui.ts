@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { hangingDuctRail } from './hangingDuctRail.js';
+import type { hangingDuctRail_schema } from './hangingDuctRail.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const hangingDuctRail_ui = defineObjectUi<typeof hangingDuctRail>({
+export const hangingDuctRail_ui = defineObjectUi<typeof hangingDuctRail_schema>({
 	name: i18n.ts._miRoom._objects.hangingDuctRail,
 	options: {
 		width: {

@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { boxWallShelf } from './boxWallShelf.js';
+import type { boxWallShelf_schema } from './boxWallShelf.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const boxWallShelf_ui = defineObjectUi<typeof boxWallShelf>({
+export const boxWallShelf_ui = defineObjectUi<typeof boxWallShelf_schema>({
 	name: i18n.ts._miRoom._objects.boxWallShelf,
 	options: {
 		width: {

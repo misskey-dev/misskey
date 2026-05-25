@@ -4,17 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { tabletopCalendar_schema } from './tabletopCalendar.schema.js';
 
-export const tabletopCalendar = defineObject({
-	id: 'tabletopCalendar',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	hasTexture: true,
-	canPreMeshesMerging: true,
+export const tabletopCalendar = defineObject(tabletopCalendar_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

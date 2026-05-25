@@ -4,17 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { hangingTShirt_schema } from './hangingTShirt.schema.js';
 
-export const hangingTShirt = defineObject({
-	id: 'hangingTShirt',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'side',
-	hasCollisions: false,
-	hasTexture: true,
-	canPreMeshesMerging: true,
+export const hangingTShirt = defineObject(hangingTShirt_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

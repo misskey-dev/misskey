@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { ductTape } from './ductTape.js';
+import type { ductTape_schema } from './ductTape.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const ductTape_ui = defineObjectUi<typeof ductTape>({
+export const ductTape_ui = defineObjectUi<typeof ductTape_schema>({
 	name: i18n.ts._miRoom._objects.ductTape,
 	options: {},
 });

@@ -4,16 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { letterCase_schema } from './letterCase.schema.js';
 
-export const letterCase = defineObject({
-	id: 'letterCase',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	canPreMeshesMerging: true,
+export const letterCase = defineObject(letterCase_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

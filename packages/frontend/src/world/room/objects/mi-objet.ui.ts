@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { miObjet } from './mi-objet.js';
+import type { miObjet_schema } from './mi-objet.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const miObjet_ui = defineObjectUi<typeof miObjet>({
+export const miObjet_ui = defineObjectUi<typeof miObjet_schema>({
 	name: i18n.ts._miRoom._objects.miObjet,
 	options: {},
 });

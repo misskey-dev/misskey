@@ -6,37 +6,9 @@
 import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
 import { remap } from '@/world/utility.js';
+import { wallGlassPictureFrame_schema } from './wallGlassPictureFrame.schema.js';
 
-export const wallGlassPictureFrame = defineObject({
-	id: 'wallGlassPictureFrame',
-	options: {
-		schema: {
-			width: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-			height: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-			image: {
-				type: 'image',
-				presets: [],
-			},
-		},
-		default: {
-			width: 0.1,
-			height: 0.1,
-			image: { type: null },
-		},
-	},
-	placement: 'wall',
-	hasCollisions: false,
-	hasTexture: true,
+export const wallGlassPictureFrame = defineObject(wallGlassPictureFrame_schema, {
 	createInstance: async ({ scene, options, model }) => {
 		const pictureMesh = model.findMesh('__X_PICTURE__');
 		const frameMesh = model.findMesh('__X_FRAME__');

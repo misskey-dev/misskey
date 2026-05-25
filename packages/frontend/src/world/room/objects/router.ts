@@ -4,16 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { router_schema } from './router.schema.js';
 
-export const router = defineObject({
-	id: 'router',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	hasTexture: true,
+export const router = defineObject(router_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

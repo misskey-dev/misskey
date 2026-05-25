@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { monitor } from './monitor.js';
+import type { monitor_schema } from './monitor.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const monitor_ui = defineObjectUi<typeof monitor>({
+export const monitor_ui = defineObjectUi<typeof monitor_schema>({
 	name: i18n.ts._miRoom._objects.monitor,
 	options: {
 		bodyMat: {

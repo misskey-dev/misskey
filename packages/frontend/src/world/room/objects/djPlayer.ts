@@ -6,32 +6,9 @@
 import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
 import { normalizeUvToSquare } from '../../utility.js';
+import { djPlayer_schema } from './djPlayer.schema.js';
 
-export const djPlayer = defineObject({
-	id: 'djPlayer',
-	options: {
-		schema: {
-			screenBrightness: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-			image: {
-				type: 'image',
-				presets: [{
-					value: 'waveform',
-				}],
-			},
-		},
-		default: {
-			screenBrightness: 0.5,
-			image: { type: 'waveform' },
-		},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	hasTexture: true,
+export const djPlayer = defineObject(djPlayer_schema, {
 	createInstance: async ({ model, options, scene }) => {
 		const screenMesh = model.findMesh('__X_SCREEN__');
 		const screenMaterial = model.findMaterial('__X_SCREEN__');

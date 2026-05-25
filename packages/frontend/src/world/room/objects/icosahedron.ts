@@ -5,21 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { icosahedron_schema } from './icosahedron.schema.js';
 
-export const icosahedron = defineObject({
-	id: 'icosahedron',
-	options: {
-		schema: {
-			mat: {
-				type: 'material',
-			},
-		},
-		default: {
-			mat: { color: [0.32, 0.12, 0.05], metallic: 1, roughness: 0.5 },
-		},
-	},
-	placement: 'top',
-	hasCollisions: false,
+export const icosahedron = defineObject(icosahedron_schema, {
 	createInstance: ({ options, model }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 

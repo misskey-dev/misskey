@@ -5,23 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { snakeplant_schema } from './snakeplant.schema.js';
 
-export const snakeplant = defineObject({
-	id: 'snakeplant',
-	options: {
-		schema: {
-			potMat: {
-				type: 'material',
-			},
-		},
-		default: {
-			potMat: { color: [0.7, 0.7, 0.7], roughness: 1, metallic: 0 },
-		},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	hasTexture: true,
-	canPreMeshesMerging: true,
+export const snakeplant = defineObject(snakeplant_schema, {
 	createInstance: ({ options, model }) => {
 		const potMaterial = model.findMaterial('__X_POT__');
 

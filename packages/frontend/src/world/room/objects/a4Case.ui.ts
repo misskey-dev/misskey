@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { a4Case } from './a4Case.js';
+import type { a4Case_schema } from './a4Case.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const a4Case_ui = defineObjectUi<typeof a4Case>({
+export const a4Case_ui = defineObjectUi<typeof a4Case_schema>({
 	name: i18n.ts._miRoom._objects.a4Case,
 	options: {
 		mat: {

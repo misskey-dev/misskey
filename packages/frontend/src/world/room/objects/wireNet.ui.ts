@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { wireNet } from './wireNet.js';
+import type { wireNet_schema } from './wireNet.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const wireNet_ui = defineObjectUi<typeof wireNet>({
+export const wireNet_ui = defineObjectUi<typeof wireNet_schema>({
 	name: i18n.ts._miRoom._objects.wireNet,
 	options: {
 		bodyMat: {

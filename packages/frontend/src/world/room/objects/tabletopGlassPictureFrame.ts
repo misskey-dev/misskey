@@ -6,37 +6,9 @@
 import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
 import { remap } from '@/world/utility.js';
+import { tabletopGlassPictureFrame_schema } from './tabletopGlassPictureFrame.schema.js';
 
-export const tabletopGlassPictureFrame = defineObject({
-	id: 'tabletopGlassPictureFrame',
-	options: {
-		schema: {
-			width: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-			height: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-			image: {
-				type: 'image',
-				presets: [],
-			},
-		},
-		default: {
-			width: 0.1,
-			height: 0.1,
-			image: { type: null },
-		},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	hasTexture: true,
+export const tabletopGlassPictureFrame = defineObject(tabletopGlassPictureFrame_schema, {
 	createInstance: async ({ scene, options, model }) => {
 		const pictureMesh = model.findMesh('__X_PICTURE__');
 		const frameMesh = model.findMesh('__X_FRAME__');

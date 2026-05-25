@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { colorBox } from './colorBox.js';
+import type { colorBox_schema } from './colorBox.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const colorBox_ui = defineObjectUi<typeof colorBox>({
+export const colorBox_ui = defineObjectUi<typeof colorBox_schema>({
 	name: i18n.ts._miRoom._objects.colorBox,
 	options: {
 		mat: {

@@ -5,23 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { pachira_schema } from './pachira.schema.js';
 
-export const pachira = defineObject({
-	id: 'pachira',
-	options: {
-		schema: {
-			potMat: {
-				type: 'material',
-			},
-		},
-		default: {
-			potMat: { color: [0.8, 0.8, 0.8], roughness: 0.2, metallic: 0 },
-		},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	hasTexture: true,
-	canPreMeshesMerging: true,
+export const pachira = defineObject(pachira_schema, {
 	createInstance: ({ options, model }) => {
 		const potMaterial = model.findMaterial('__X_POT__');
 

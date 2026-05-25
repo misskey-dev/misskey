@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { tv } from './tv.js';
+import type { tv_schema } from './tv.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const tv_ui = defineObjectUi<typeof tv>({
+export const tv_ui = defineObjectUi<typeof tv_schema>({
 	name: i18n.ts._miRoom._objects.tv,
 	options: {
 		bodyMat: {

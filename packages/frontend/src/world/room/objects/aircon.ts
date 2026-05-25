@@ -4,16 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { aircon_schema } from './aircon.schema.js';
 
-export const aircon = defineObject({
-	id: 'aircon',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'wall',
-	hasCollisions: false,
-	canPreMeshesMerging: true,
+export const aircon = defineObject(aircon_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

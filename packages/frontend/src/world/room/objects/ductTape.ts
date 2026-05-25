@@ -4,16 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { ductTape_schema } from './ductTape.schema.js';
 
-export const ductTape = defineObject({
-	id: 'ductTape',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	hasTexture: true,
+export const ductTape = defineObject(ductTape_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

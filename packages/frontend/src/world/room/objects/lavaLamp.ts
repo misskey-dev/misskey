@@ -6,34 +6,9 @@ import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { cm, WORLD_SCALE } from '../../utility.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
+import { lavaLamp_schema } from './lavaLamp.schema.js';
 
-export const lavaLamp = defineObject({
-	id: 'lavaLamp',
-	options: {
-		schema: {
-			bodyMat: {
-				type: 'material',
-			},
-			glassMat: {
-				type: 'material',
-			},
-			lightColor: {
-				type: 'color',
-			},
-			lavaColor: {
-				type: 'color',
-			},
-		},
-		default: {
-			bodyMat: { color: [0.8, 0.8, 0.8], roughness: 0.5, metallic: 0.7 },
-			glassMat: { color: [0.8, 0, 0.1], roughness: 0, metallic: 0 },
-			lightColor: [1, 0.175, 0.175],
-			lavaColor: [1, 0.5, 0.2],
-		},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	canPreMeshesMerging: true,
+export const lavaLamp = defineObject(lavaLamp_schema, {
 	createInstance: ({ options, lc, scene, sr, root, model, graphicsQuality }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 		const glassMaterial = model.findMaterial('__X_GLASS__');

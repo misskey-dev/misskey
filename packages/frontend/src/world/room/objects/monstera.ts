@@ -5,23 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { monstera_schema } from './monstera.schema.js';
 
-export const monstera = defineObject({
-	id: 'monstera',
-	options: {
-		schema: {
-			potMat: {
-				type: 'material',
-			},
-		},
-		default: {
-			potMat: { color: [0.5, 0.5, 0.5], roughness: 0.7, metallic: 0 },
-		},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	hasTexture: true,
-	canPreMeshesMerging: true,
+export const monstera = defineObject(monstera_schema, {
 	createInstance: ({ options, model }) => {
 		const potMaterial = model.findMaterial('__X_POT__');
 

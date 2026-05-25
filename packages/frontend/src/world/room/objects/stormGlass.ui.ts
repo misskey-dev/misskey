@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { stormGlass } from './stormGlass.js';
+import type { stormGlass_schema } from './stormGlass.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const stormGlass_ui = defineObjectUi<typeof stormGlass>({
+export const stormGlass_ui = defineObjectUi<typeof stormGlass_schema>({
 	name: i18n.ts._miRoom._objects.stormGlass,
 	options: {},
 });

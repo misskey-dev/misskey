@@ -4,17 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { banknote_schema } from './banknote.schema.js';
 
-export const banknote = defineObject({
-	id: 'banknote',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	hasTexture: true,
-	canPreMeshesMerging: true,
+export const banknote = defineObject(banknote_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

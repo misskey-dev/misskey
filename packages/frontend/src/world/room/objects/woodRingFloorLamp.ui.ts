@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { woodRingFloorLamp } from './woodRingFloorLamp.js';
+import type { woodRingFloorLamp_schema } from './woodRingFloorLamp.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const woodRingFloorLamp_ui = defineObjectUi<typeof woodRingFloorLamp>({
+export const woodRingFloorLamp_ui = defineObjectUi<typeof woodRingFloorLamp_schema>({
 	name: i18n.ts._miRoom._objects.woodRingFloorLamp,
 	options: {
 		shadeMat: {

@@ -4,16 +4,9 @@
  */
 
 import { defineObject } from '../object.js';
+import { siphon_schema } from './siphon.schema.js';
 
-export const siphon = defineObject({
-	id: 'siphon',
-	options: {
-		schema: {},
-		default: {},
-	},
-	placement: 'top',
-	hasCollisions: false,
-	canPreMeshesMerging: true,
+export const siphon = defineObject(siphon_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

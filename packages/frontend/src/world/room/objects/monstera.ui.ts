@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { monstera } from './monstera.js';
+import type { monstera_schema } from './monstera.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const monstera_ui = defineObjectUi<typeof monstera>({
+export const monstera_ui = defineObjectUi<typeof monstera_schema>({
 	name: i18n.ts._miRoom._objects.monstera,
 	options: {
 		potMat: {

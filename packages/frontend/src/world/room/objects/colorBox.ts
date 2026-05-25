@@ -5,23 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { colorBox_schema } from './colorBox.schema.js';
 
-export const colorBox = defineObject({
-	id: 'colorBox',
-	options: {
-		schema: {
-			mat: {
-				type: 'material',
-			},
-		},
-		default: {
-			mat: { color: [0.6, 0.35, 0.15], roughness: 0.5, metallic: 0 },
-		},
-	},
-	placement: 'floor',
-	hasCollisions: true,
-	hasTexture: false,
-	canPreMeshesMerging: true,
+export const colorBox = defineObject(colorBox_schema, {
 	createInstance: ({ options, model }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 

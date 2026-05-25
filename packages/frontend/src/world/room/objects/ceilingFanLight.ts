@@ -5,23 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { ceilingFanLight_schema } from './ceilingFanLight.schema.js';
 
-export const ceilingFanLight = defineObject({
-	id: 'ceilingFanLight',
-	options: {
-		schema: {
-			shadeMat: {
-				type: 'material',
-			},
-		},
-		default: {
-			shadeMat: { color: [0.8, 0.19, 0], roughness: 0.5, metallic: 0 },
-		},
-	},
-	placement: 'ceiling',
-	hasCollisions: false,
-	receiveShadows: false,
-	castShadows: false,
+export const ceilingFanLight = defineObject(ceilingFanLight_schema, {
 	createInstance: ({ options, sr, scene, model }) => {
 		const shadeMaterial = model.findMaterial('__X_SHADE__');
 

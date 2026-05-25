@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { woodRingsPendantLight } from './woodRingsPendantLight.js';
+import type { woodRingsPendantLight_schema } from './woodRingsPendantLight.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const woodRingsPendantLight_ui = defineObjectUi<typeof woodRingsPendantLight>({
+export const woodRingsPendantLight_ui = defineObjectUi<typeof woodRingsPendantLight_schema>({
 	name: i18n.ts._miRoom._objects.woodRingsPendantLight,
 	options: {
 		shadeMat: {

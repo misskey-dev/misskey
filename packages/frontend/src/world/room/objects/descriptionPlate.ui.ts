@@ -4,10 +4,10 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { descriptionPlate } from './descriptionPlate.js';
+import type { descriptionPlate_schema } from './descriptionPlate.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const descriptionPlate_ui = defineObjectUi<typeof descriptionPlate>({
+export const descriptionPlate_ui = defineObjectUi<typeof descriptionPlate_schema>({
 	name: i18n.ts._miRoom._objects.descriptionPlate,
 	options: {},
 });
