@@ -6,8 +6,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.root">
 	<div class="_gaps_s">
-		<MkFolder v-for="[k, s] in Object.entries(schema)" :key="k">
-			<template #label>{{ s.label }}</template>
+		<MkFolder v-for="[k, s] in Object.entries(schema.options.schema)" :key="k">
+			<template #label>{{ OBJECT_UI_DEFS[schema.id].options[k].label }}</template>
 			<template #suffix>
 				<span v-if="s.type === 'color'" :style="{ color: getHex(options[k]) }">●</span>
 				<span v-else-if="s.type === 'material'" :style="{ color: getHex(options[k].color) }">●</span>
@@ -75,7 +75,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { } from 'vue';
 import * as Misskey from 'misskey-js';
-import type { ObjectDef } from '@/world/room/object.js';
+import type { ObjectSchemaDef, RawOptions } from '@/world/room/object.js';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -87,10 +87,11 @@ import { getHex, getRgb } from '@/world/utility.js';
 import { chooseDriveFile } from '@/utility/drive.js';
 import MkRadios from '@/components/MkRadios.vue';
 import MkFolder from '@/components/MkFolder.vue';
+import { OBJECT_UI_DEFS } from '@/world/room/object-ui-defs.js';
 
 const props = defineProps<{
-	schema: ObjectDef['options']['schema'];
-	options: any;
+	schema: ObjectSchemaDef<any>;
+	options: RawOptions;
 	addFileAttachment: ((file: Misskey.entities.DriveFile) => void);
 }>();
 

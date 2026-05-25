@@ -19,16 +19,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.main">
 			<div class="_spacer _gaps">
 				<MkInput v-model="searchKeyword" type="search" :placeholder="i18n.ts.search"></MkInput>
-				<MkFoldableSection v-if="recentlyUsedDefs.length > 0" :expanded="true">
+				<MkFoldableSection v-if="recentlyUsedSchemas.length > 0" :expanded="true">
 					<template #header>{{ i18n.ts.recentUsed }}</template>
 					<div :class="$style.catalogItems">
-						<XItem v-for="def in recentlyUsedDefs" :key="def.id" :def="def" :class="[$style.catalogItem]" @click="selectedId = def.id"/>
+						<XItem v-for="def in recentlyUsedSchemas" :key="def.id" :def="def" :class="[$style.catalogItem]" @click="selectedId = def.id"/>
 					</div>
 				</MkFoldableSection>
 				<MkFoldableSection :expanded="true">
 					<template #header>{{ i18n.ts.all }}</template>
 					<div :class="$style.catalogItems">
-						<XItem v-for="def in OBJECT_DEFS" :key="def.id" :def="def" :class="[$style.catalogItem]" @click="selectedId = def.id"/>
+						<XItem v-for="def in OBJECT_SCHEMA_DEFS" :key="def.id" :def="def" :class="[$style.catalogItem]" @click="selectedId = def.id"/>
 					</div>
 				</MkFoldableSection>
 			</div>
@@ -44,7 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div :class="$style.preview" @click.stop>
 					<canvas ref="canvas" :class="$style.canvas"></canvas>
 					<MkButton :class="$style.unselectButton" small rounded iconOnly @click="selectedId = null"><i class="ti ti-x"></i></MkButton>
-					<MkButton v-if="selectedObjectDef != null && Object.keys(selectedObjectDef.options.schema).length > 0" :class="$style.customizeButton" small rounded iconOnly @click="showObjectOptions = !showObjectOptions"><i class="ti ti-tool"></i></MkButton>
+					<MkButton v-if="selectedObjectSchema != null && Object.keys(selectedObjectSchema.options.schema).length > 0" :class="$style.customizeButton" small rounded iconOnly @click="showObjectOptions = !showObjectOptions"><i class="ti ti-tool"></i></MkButton>
 					<MkButton :class="$style.addButton" small rounded primary @click="ok"><i class="ti ti-plus"></i></MkButton>
 
 					<Transition
@@ -53,8 +53,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 						:enterFromClass="prefer.s.animation ? $style.transition_options_enterFrom : ''"
 						:leaveToClass="prefer.s.animation ? $style.transition_options_leaveTo : ''"
 					>
-						<div v-if="selectedObjectDef != null && selectedInstanceId != null && showObjectOptions" :class="$style.customize" class="_shadow">
-							<XObjectCustomizeForm :addFileAttachment="addFileAttachment" :schema="selectedObjectDef.options.schema" :options="selectedObjectOptionsState" @update="(k, v) => updateObjectOption(k, v)"></XObjectCustomizeForm>
+						<div v-if="selectedObjectSchema != null && selectedInstanceId != null && showObjectOptions" :class="$style.customize" class="_shadow">
+							<XObjectCustomizeForm :addFileAttachment="addFileAttachment" :schema="selectedObjectSchema" :options="selectedObjectOptionsState" @update="(k, v) => updateObjectOption(k, v)"></XObjectCustomizeForm>
 						</div>
 					</Transition>
 				</div>
@@ -84,6 +84,7 @@ import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { PreviewEngineController } from '@/world/room/previewEngineController.js';
 import MkInput from '@/components/MkInput.vue';
 import { withTimeout } from '@/utility/promise-timeout.js';
+import { OBJECT_SCHEMA_DEFS } from '@/world/room/object-schema-defs.js';
 
 // TODO: instanceのidと紛らわしいのでid -> typeにする
 
@@ -94,7 +95,7 @@ const props = defineProps<{
 const emit = defineEmits<{
 	(ev: 'ok', ctx: {
 		id: string;
-		options: any;
+		options: RawOptions;
 		attachments: RoomAttachments;
 	}): void;
 	(ev: 'cancel'): void;
@@ -107,7 +108,7 @@ const selectedId = ref<string | null>(null);
 const showPreview = ref(false);
 const selectedInstanceId = ref<string | null>(null);
 const selectedObjectOptionsState = ref<RawOptions | null>(null);
-const selectedObjectDef = computed(() => OBJECT_DEFS.find(def => def.id === selectedId.value) ?? null);
+const selectedObjectSchema = computed(() => selectedId.value == null ? null : OBJECT_SCHEMA_DEFS[selectedId.value]);
 const showObjectOptions = ref(false);
 const searchKeyword = ref('');
 
@@ -128,9 +129,9 @@ const previewEngineControllerOptions = computed<PreviewEngineControllerOptions>(
 
 const controller = markRaw(new PreviewEngineController(previewEngineControllerOptions.value));
 
-const recentlyUsedDefs = computed(() => {
+const recentlyUsedSchemas = computed(() => {
 	const recentlyUsed = store.s.recentlyUsedRoomObjects;
-	return recentlyUsed.map(id => OBJECT_DEFS.find(def => def.id === id)).filter((def): def is typeof OBJECT_DEFS[number] => def != null);
+	return recentlyUsed.map(id => OBJECT_SCHEMA_DEFS[id]).filter((def): def is typeof OBJECT_SCHEMA_DEFS[string] => def != null);
 });
 
 onMounted(async () => {
@@ -205,7 +206,7 @@ function ok() {
 
 	emit('ok', {
 		id: selectedId.value,
-		options: deepClone(selectedObjectOptionsState.value),
+		options: deepClone(selectedObjectOptionsState.value!),
 		attachments: deepClone(attachments),
 	});
 

@@ -223,7 +223,7 @@ export const OBJECT_SCHEMA_DEFS = {
 	wireNet: wireNet_schema,
 	clippedPicture: clippedPicture_schema,
 	wireBasket: wireBasket_schema,
-};
+} as Record<string, ObjectSchemaDef<any>>;
 
 export function getObjectSchemaDef(type: string): ObjectSchemaDef {
 	const def = OBJECT_SCHEMA_DEFS[type as keyof typeof OBJECT_SCHEMA_DEFS];

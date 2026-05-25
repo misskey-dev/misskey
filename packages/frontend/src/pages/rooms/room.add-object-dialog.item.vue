@@ -9,16 +9,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:class="[$style.root]"
 >
 	<img :class="$style.thumbnail" :src="`/client-assets/room/object-thumbs/${camelToKebab(def.id)}.png`"/>
-	<div :class="$style.name"><MkCondensedLine :minScale="0.5">{{ def.name }}</MkCondensedLine></div>
+	<div :class="$style.name"><MkCondensedLine :minScale="0.5">{{ OBJECT_UI_DEFS[def.id].name }}</MkCondensedLine></div>
 	<i v-if="Object.keys(def.options.schema).length > 0" :class="$style.customizable" class="ti ti-tool"></i>
 </div>
 </template>
 
 <script setup lang="ts">
+import type { OBJECT_SCHEMA_DEFS } from '@/world/room/object-schema-defs.js';
+import { OBJECT_UI_DEFS } from '@/world/room/object-ui-defs.js';
 import { camelToKebab } from '@/world/utility.js';
 
 const props = defineProps<{
-	def: typeof OBJECT_DEFS[number];
+	def: typeof OBJECT_SCHEMA_DEFS[string];
 }>();
 </script>
 

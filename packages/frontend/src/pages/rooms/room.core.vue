@@ -70,10 +70,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 
-	<div v-if="controller.isReady.value && controller.isEditMode.value && controller.selected.value != null && selectedObjectDef != null && !controller.grabbing.value" :key="controller.selected.value.objectId" :class="$style.overlayObjectInfoPanel">
-		<div style="margin-bottom: 8px; font-weight: bold; text-align: center;">{{ selectedObjectDef.name }}</div>
+	<div v-if="controller.isReady.value && controller.isEditMode.value && controller.selected.value != null && !controller.grabbing.value" :key="controller.selected.value.objectId" :class="$style.overlayObjectInfoPanel">
+		<div style="margin-bottom: 8px; font-weight: bold; text-align: center;">{{ OBJECT_UI_DEFS[controller.selected.value.objectState.type].name }}</div>
 
-		<XObjectCustomizeForm :addFileAttachment="addFileAttachment" :schema="selectedObjectDef.options.schema" :options="controller.selected.value.objectState.options" @update="(k, v) => updateObjectOption(k, v)"></XObjectCustomizeForm>
+		<XObjectCustomizeForm :addFileAttachment="addFileAttachment" :schema="OBJECT_SCHEMA_DEFS[controller.selected.value.objectState.type]" :options="controller.selected.value.objectState.options" @update="(k, v) => updateObjectOption(k, v)"></XObjectCustomizeForm>
 	</div>
 
 	<div v-if="isRoomSettingsOpen && controller.isEditMode.value" class="_panel" :class="$style.overlayObjectInfoPanel">
@@ -105,6 +105,8 @@ import { prefer } from '@/preferences.js';
 import { GRAPHICS_QUALITY } from '@/world/room/utility.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { miLocalStorage } from '@/local-storage.js';
+import { OBJECT_UI_DEFS } from '@/world/room/object-ui-defs.js';
+import { OBJECT_SCHEMA_DEFS } from '@/world/room/object-schema-defs.js';
 
 const roomSpecVersion = 0;
 
@@ -274,8 +276,6 @@ const roomControllerOptions = computed<RoomControllerOptions>(() => ({
 }));
 
 const controller = markRaw(new RoomController(deepClone(initialRoomState), roomControllerOptions.value));
-
-const selectedObjectDef = computed(() => controller.selected.value == null ? null : getObjectDef(controller.selected.value.objectState.type));
 
 onMounted(async () => {
 	if (!await BABYLON.WebGPUEngine.IsSupportedAsync) {

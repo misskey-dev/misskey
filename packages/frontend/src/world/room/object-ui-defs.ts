@@ -223,7 +223,7 @@ export const OBJECT_UI_DEFS = {
 	wireNet: wireNet_ui,
 	clippedPicture: clippedPicture_ui,
 	wireBasket: wireBasket_ui,
-};
+} as Record<string, ObjectUiDef>;
 
 export function getObjectUiDef(type: string): ObjectUiDef {
 	const def = OBJECT_UI_DEFS[type as keyof typeof OBJECT_UI_DEFS];

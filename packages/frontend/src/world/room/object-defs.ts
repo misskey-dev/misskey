@@ -226,7 +226,7 @@ export const OBJECT_DEFS = [
 	wireNet,
 	clippedPicture,
 	wireBasket,
-];
+] as ObjectDef[];
 
 export function getObjectDef(type: string): ObjectDef {
 	const def = OBJECT_DEFS.find(x => x.id === type) as ObjectDef | undefined;
