@@ -3719,9 +3719,6 @@ _miRoom:
     icosahedron: "正二十面体"
     _icosahedron:
       mat: "素材"
-    ironFrameShelf3: "アイアンフレームシェルフ 3段"
-    ironFrameShelf4: "アイアンフレームシェルフ 4段"
-    ironFrameShelf5: "アイアンフレームシェルフ 5段"
     ironFrameTable: "アイアンフレームテーブル"
     _ironFrameTable:
       boardMat: "板の素材"
@@ -3956,4 +3953,5 @@ _miRoom:
     _ironFrameShelf:
       boardMat: "板の素材"
       frameMat: "フレームの素材"
+      height: "段数"
       width: "幅"

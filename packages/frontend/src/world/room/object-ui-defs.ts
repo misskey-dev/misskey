@@ -43,7 +43,7 @@ import { handheldGameConsole_ui } from './objects/handheldGameConsole.ui.js';
 import { hangingDuctRail_ui } from './objects/hangingDuctRail.ui.js';
 import { hangingTShirt_ui } from './objects/hangingTShirt.ui.js';
 import { icosahedron_ui } from './objects/icosahedron.ui.js';
-import { ironFrameShelf5_ui, ironFrameShelf4_ui, ironFrameShelf3_ui } from './objects/ironFrameShelf.ui.js';
+import { ironFrameShelf_ui } from './objects/ironFrameShelf.ui.js';
 import { ironFrameTable_ui } from './objects/ironFrameTable.ui.js';
 import { issyoubin_ui } from './objects/issyoubin.ui.js';
 import { keyboard_ui } from './objects/keyboard.ui.js';
@@ -149,9 +149,7 @@ export const OBJECT_UI_DEFS = {
 	glassCylinderPotPlant: glassCylinderPotPlant_ui,
 	hangingTShirt: hangingTShirt_ui,
 	icosahedron: icosahedron_ui,
-	ironFrameShelf5: ironFrameShelf5_ui,
-	ironFrameShelf4: ironFrameShelf4_ui,
-	ironFrameShelf3: ironFrameShelf3_ui,
+	ironFrameShelf: ironFrameShelf_ui,
 	ironFrameTable: ironFrameTable_ui,
 	issyoubin: issyoubin_ui,
 	keyboard: keyboard_ui,

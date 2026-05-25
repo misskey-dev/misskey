@@ -13860,18 +13860,6 @@ export interface Locale extends ILocale {
                 "mat": string;
             };
             /**
-             * アイアンフレームシェルフ 3段
-             */
-            "ironFrameShelf3": string;
-            /**
-             * アイアンフレームシェルフ 4段
-             */
-            "ironFrameShelf4": string;
-            /**
-             * アイアンフレームシェルフ 5段
-             */
-            "ironFrameShelf5": string;
-            /**
              * アイアンフレームテーブル
              */
             "ironFrameTable": string;
@@ -14722,6 +14710,10 @@ export interface Locale extends ILocale {
                  * フレームの素材
                  */
                 "frameMat": string;
+                /**
+                 * 段数
+                 */
+                "height": string;
                 /**
                  * 幅
                  */

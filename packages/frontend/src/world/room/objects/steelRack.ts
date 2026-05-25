@@ -5,11 +5,16 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { cm, remap } from '@/world/utility.js';
 import { steelRack_schema } from './steelRack.schema.js';
+import { cm, remap } from '@/world/utility.js';
 
 export const steelRack = defineObject(steelRack_schema, {
-	path: (options) => `steel-rack/${options.widthAndDepthVariation}`,
+	path: (options) => {
+		switch (options.widthAndDepthVariation) {
+			case '60-35': return 'steel-rack/60-35';
+			case '90-35': return 'steel-rack/90-35';
+		}
+	},
 	createInstance: ({ options, model, reloadModel }) => {
 		const matrix = model.root.getWorldMatrix(true);
 		const scale = new BABYLON.Vector3();

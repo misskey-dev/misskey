@@ -43,7 +43,7 @@ import { handheldGameConsole_schema } from './objects/handheldGameConsole.schema
 import { hangingDuctRail_schema } from './objects/hangingDuctRail.schema.js';
 import { hangingTShirt_schema } from './objects/hangingTShirt.schema.js';
 import { icosahedron_schema } from './objects/icosahedron.schema.js';
-import { ironFrameShelf5_schema, ironFrameShelf4_schema, ironFrameShelf3_schema } from './objects/ironFrameShelf.schema.js';
+import { ironFrameShelf_schema } from './objects/ironFrameShelf.schema.js';
 import { ironFrameTable_schema } from './objects/ironFrameTable.schema.js';
 import { issyoubin_schema } from './objects/issyoubin.schema.js';
 import { keyboard_schema } from './objects/keyboard.schema.js';
@@ -149,9 +149,7 @@ export const OBJECT_SCHEMA_DEFS = {
 	glassCylinderPotPlant: glassCylinderPotPlant_schema,
 	hangingTShirt: hangingTShirt_schema,
 	icosahedron: icosahedron_schema,
-	ironFrameShelf5: ironFrameShelf5_schema,
-	ironFrameShelf4: ironFrameShelf4_schema,
-	ironFrameShelf3: ironFrameShelf3_schema,
+	ironFrameShelf: ironFrameShelf_schema,
 	ironFrameTable: ironFrameTable_schema,
 	issyoubin: issyoubin_schema,
 	keyboard: keyboard_schema,

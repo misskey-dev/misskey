@@ -45,7 +45,7 @@ import { handheldGameConsole } from './objects/handheldGameConsole.js';
 import { hangingDuctRail } from './objects/hangingDuctRail.js';
 import { hangingTShirt } from './objects/hangingTShirt.js';
 import { icosahedron } from './objects/icosahedron.js';
-import { ironFrameShelf5, ironFrameShelf4, ironFrameShelf3 } from './objects/ironFrameShelf.js';
+import { ironFrameShelf } from './objects/ironFrameShelf.js';
 import { ironFrameTable } from './objects/ironFrameTable.js';
 import { issyoubin } from './objects/issyoubin.js';
 import { keyboard } from './objects/keyboard.js';
@@ -151,9 +151,7 @@ export const OBJECT_DEFS = [
 	glassCylinderPotPlant,
 	hangingTShirt,
 	icosahedron,
-	ironFrameShelf5,
-	ironFrameShelf4,
-	ironFrameShelf3,
+	ironFrameShelf,
 	ironFrameTable,
 	issyoubin,
 	keyboard,
