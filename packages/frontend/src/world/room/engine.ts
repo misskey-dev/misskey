@@ -48,22 +48,6 @@ export type RoomState = {
 	worldScale: number;
 };
 
-export function collectReferencedDriveFileIds(roomState: RoomState) {
-	const fileIds = new Set<string>();
-	for (const o of roomState.installedObjects) {
-		const def = getObjectDef(o.type);
-		for (const schemaRecord of Object.entries(def.options.schema)) {
-			if (schemaRecord[1].type === 'file') {
-				const optionValue = o.options[schemaRecord[0]];
-				if (optionValue != null && optionValue !== '') {
-					fileIds.add(optionValue);
-				}
-			}
-		}
-	}
-	return fileIds;
-}
-
 function enableObjectCollision(meshes: BABYLON.Mesh[]) {
 	for (const mesh of meshes) {
 		if (mesh.name.includes('__COLLISION__')) {
