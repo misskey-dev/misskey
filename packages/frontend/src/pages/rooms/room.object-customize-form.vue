@@ -8,6 +8,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_gaps_s">
 		<MkFolder v-for="[k, s] in Object.entries(schema)" :key="k">
 			<template #label>{{ s.label }}</template>
+			<template #suffix>
+				<span v-if="s.type === 'color'" :style="{ color: getHex(options[k]) }">●</span>
+				<span v-else-if="s.type === 'material'" :style="{ color: getHex(options[k].color) }">●</span>
+			</template>
+
 			<div v-if="s.type === 'color'">
 				<!-- debounce or throttleしないとカラーピッカー上で高速でなぞったときになぜか無限ループになる。ワーカーとの間でラグがあるため、少し前の値がまたmodelValueとしてフィードバックされてしまうためだと思われる -->
 				<MkInput :modelValue="getHex(options[k])" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) emit('update', k, c); }"></MkInput>
