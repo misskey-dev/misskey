@@ -96,8 +96,8 @@ export const steelRack_schema = defineObjectSchema({
 			},
 		},
 		default: {
-			shelfMat: { color: [0.8, 0.8, 0.8], roughness: 0.25, metallic: 0.9 },
-			poleMat: { color: [0.8, 0.8, 0.8], roughness: 0.25, metallic: 0.9 },
+			shelfMat: { color: [0.8, 0.8, 0.8], roughness: 0.25, metallic: 1 },
+			poleMat: { color: [0.8, 0.8, 0.8], roughness: 0.25, metallic: 1 },
 			widthAndDepthVariation: '60-35',
 			height: 5,
 			numberOfShelfs: 5,
