@@ -3946,7 +3946,7 @@ _miRoom:
     wireNet: "ワイヤーネット"
     _wireNet:
       bodyMat: "本体の素材"
-    woodRingsPendantLight: "ウッドリングペンダントライト"
+    woodRingsPendantLight: "リングペンダントライト"
     _woodRingsPendantLight:
       bodyMat: "本体の素材"
       length: "長さ"

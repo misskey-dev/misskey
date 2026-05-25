@@ -14688,7 +14688,7 @@ export interface Locale extends ILocale {
                 "bodyMat": string;
             };
             /**
-             * ウッドリングペンダントライト
+             * リングペンダントライト
              */
             "woodRingsPendantLight": string;
             "_woodRingsPendantLight": {
