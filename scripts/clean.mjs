@@ -18,5 +18,7 @@ const __dirname = import.meta.dirname;
 	fs.rmSync(__dirname + '/../packages/misskey-js/built', { recursive: true, force: true });
 	fs.rmSync(__dirname + '/../packages/misskey-reversi/built', { recursive: true, force: true });
 	fs.rmSync(__dirname + '/../packages/misskey-bubble-game/built', { recursive: true, force: true });
+	fs.rmSync(__dirname + '/../packages/misskey-world/built', { recursive: true, force: true });
+	fs.rmSync(__dirname + '/../packages/frontend-misskey-world-engine/built', { recursive: true, force: true });
 	fs.rmSync(__dirname + '/../built', { recursive: true, force: true });
 })();

@@ -26,18 +26,16 @@ export class PreviewEngineController extends EngineControllerBase<RoomObjectPrev
 	public async init(canvas: HTMLCanvasElement) {
 		await this._init_(canvas, {
 			createWorker: (offscreen) => new Promise((resolve) => {
-				import('./previewEngineWorker?worker').then(({ default: PreviewEngineWorker }) => {
+				import('misskey-world-engine/src/room/previewEngineWorker?worker').then(({ default: PreviewEngineWorker }) => {
 					const worker = new PreviewEngineWorker();
 					worker.postMessage({ type: 'init', canvas: offscreen, options: this.options }, [offscreen]);
 					resolve(worker);
 				});
 			}),
-			createEngine: (babylonEngine) => new Promise((resolve) => {
-				import('./previewEngine.js').then(({ RoomObjectPreviewEngine }) => {
-					resolve(new RoomObjectPreviewEngine({
-						engine: babylonEngine,
-						...this.options,
-					}));
+			createEngine: () => new Promise((resolve) => {
+				import('misskey-world-engine/src/room/previewEngineNonWorker.js').then(({ createRoomPreviewEngine }) => {
+					const engine = createRoomPreviewEngine({ canvas, options: this.options });
+					resolve(engine);
 				});
 			}),
 		});

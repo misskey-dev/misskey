@@ -1,0 +1,29 @@
+{
+	"type": "module",
+	"name": "frontend-misskey-world-engine",
+	"private": true,
+	"scripts": {
+		"eslint": "eslint './**/*.{js,jsx,ts,tsx}'",
+		"typecheck": "tsgo --noEmit",
+		"lint": "pnpm typecheck && pnpm eslint"
+	},
+	"devDependencies": {
+		"@types/seedrandom": "3.0.8",
+		"@typescript-eslint/eslint-plugin": "8.59.2",
+		"@typescript-eslint/parser": "8.59.2",
+		"esbuild": "0.28.0",
+		"execa": "9.6.1",
+		"nodemon": "3.1.14"
+	},
+	"files": [
+		"built"
+	],
+	"dependencies": {
+		"@babylonjs/core": "9.9.0",
+		"@babylonjs/inspector": "9.9.0",
+		"@babylonjs/loaders": "9.9.0",
+		"@babylonjs/materials": "9.9.0",
+		"eventemitter3": "5.0.4",
+		"seedrandom": "3.0.5"
+	}
+}

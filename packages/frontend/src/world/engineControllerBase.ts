@@ -4,9 +4,8 @@
  */
 
 import { reactive, ref, shallowRef, triggerRef, watch } from 'vue';
-import * as BABYLON from '@babylonjs/core';
 import { EventEmitter } from 'eventemitter3';
-import type { EngineBase, EngineBaseEvents } from './EngineBase.js';
+import type { EngineBase, EngineBaseEvents } from 'frontend-misskey-world-engine/src/EngineBase.js';
 import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 
@@ -40,7 +39,7 @@ export abstract class EngineControllerBase<T extends EngineBase<EngineBaseEvents
 
 	protected async _init_(canvas: HTMLCanvasElement, params: {
 		createWorker: (offscreen: OffscreenCanvas) => Promise<Worker>;
-		createEngine: (babylonEngine: BABYLON.WebGPUEngine) => Promise<T>;
+		createEngine: () => Promise<T>;
 	}) {
 		this.canvas = canvas;
 
@@ -52,6 +51,10 @@ export abstract class EngineControllerBase<T extends EngineBase<EngineBaseEvents
 
 		engineEvents.on('loadingProgress', ({ progress }) => {
 			this.initializeProgress.value = progress;
+		});
+
+		engineEvents.on('contextlost', ({ reason, message }) => {
+			this.onContextLost({ reason, message });
 		});
 
 		if (this.options.workerMode) {
@@ -78,45 +81,19 @@ export abstract class EngineControllerBase<T extends EngineBase<EngineBaseEvents
 						}
 						break;
 					}
-					case 'contextlost': {
-						this.onContextLost(event.data.info);
-						break;
-					}
 					default: {
 						console.warn('Unrecognized message from worker:', event.data?.type);
 					}
 				}
 			};
 		} else {
-			//BABYLON.RegisterStandardEngineExtensions();
-			//BABYLON.RegisterEnginesExtensionsEngineRawTexture();
-			//BABYLON.RegisterCollisionCoordinator();
+			this.engine = await params.createEngine();
 
-			const babylonEngine = new BABYLON.WebGPUEngine(canvas, { doNotHandleContextLost: true, powerPreference: 'high-performance', antialias: this.options.antialias });
-			babylonEngine.compatibilityMode = false;
-			babylonEngine.enableOfflineSupport = false;
-			await babylonEngine.initAsync();
-			// doNotHandleContextLostがtrueだとそもそも呼ばれない
-			//babylonEngine.onContextLostObservable.add(() => {
-			//	os.alert({
-			//		type: 'error',
-			//		title: i18n.ts.somethingHappened,
-			//		text: i18n.ts._miWorld.crushed_description,
-			//	});
-			//});
-			babylonEngine._device.lost.then((info) => { // TODO: babylonEngineの内部プロパティに依存しない方法をforumで聞く
-				this.onContextLost(info);
-			});
-			if (this.options.resolution === 2) babylonEngine.setHardwareScalingLevel(0.5);
-			if (this.options.resolution === 0.5) babylonEngine.setHardwareScalingLevel(2);
-
-			this.engine = await params.createEngine(babylonEngine);
-
-			this.engine.on('ev', ({ type, ctx }) => {
+			this.engine!.on('ev', ({ type, ctx }) => {
 				engineEvents.emit(type, ctx);
 			});
 
-			await this.engine.init();
+			await this.engine!.init();
 
 			this.initializeProgress.value = 1;
 			this.isReady.value = true;
@@ -124,7 +101,7 @@ export abstract class EngineControllerBase<T extends EngineBase<EngineBaseEvents
 			if (_DEV_) {
 				(window as any).showBabylonInspector = () => {
 					import('@babylonjs/inspector').then(({ ShowInspector }) => {
-						ShowInspector(this.engine.scene);
+						ShowInspector(this.engine!.scene);
 					});
 				};
 			}

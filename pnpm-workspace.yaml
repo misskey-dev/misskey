@@ -11,6 +11,8 @@ packages:
   - packages/misskey-js/generator
   - packages/misskey-reversi
   - packages/misskey-bubble-game
+  - packages/misskey-world
+  - packages/frontend-misskey-world-engine
 allowBuilds:
   '@nestjs/core': true
   '@parcel/watcher': true

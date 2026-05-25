@@ -1,0 +1,105 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import * as BABYLON from '@babylonjs/core';
+import { defineObject } from '../object.js';
+import { cm, remap } from '../../../../../frontend-misskey-world-engine/src/utility.js';
+import { createOverridedStates } from '../utility.js';
+import { blind_schema } from './blind.schema.js';
+
+export const blind = defineObject(blind_schema, {
+	createInstance: ({ options, model }) => {
+		const temp = createOverridedStates({
+			angle: () => options.angle,
+			open: () => options.open,
+		});
+
+		const blade = model.findMesh('__X_BLADE__');
+		blade.rotation = new BABYLON.Vector3(options.angle, 0, 0);
+
+		let blades = [] as BABYLON.InstancedMesh[];
+
+		const applyOpeningState = () => {
+			for (const b of blades) {
+				b.dispose();
+			}
+			blades = [];
+
+			const matrix = blade.parent.getWorldMatrix(true);
+			const scale = new BABYLON.Vector3();
+			matrix.decompose(scale);
+
+			for (let i = 0; i < options.blades; i++) {
+				const b = blade.clone('blade_' + i); // createInstanceを使いたいが、削除するときになぜかエラーになる
+				if (i / options.blades < temp.open) {
+					b.position.y -= (i * cm(4)) / Math.abs(scale.y);
+				} else {
+					b.position.y -= (((options.blades - 1) * temp.open * cm(4)) + (i * cm(0.3))) / Math.abs(scale.y);
+				}
+				blades.push(b);
+			}
+
+			const length = Math.abs(blades.at(-1).position.y * Math.abs(scale.y));
+
+			for (const mesh of model.root.getChildMeshes()) {
+				if (mesh.morphTargetManager != null && mesh.morphTargetManager.getTargetByName('Length') != null) {
+					mesh.morphTargetManager.getTargetByName('Length').influence = remap(length, cm(10), cm(200), 0, 1);
+				}
+			}
+			model.updated();
+
+			model.updated();
+		};
+
+		const applyAngle = () => {
+			for (const b of [blade, ...blades]) {
+				b.rotation.x = temp.angle;
+				b.rotation.x += Math.random() * 0.3 - 0.15;
+			}
+		};
+
+		applyOpeningState();
+		applyAngle();
+
+		return {
+			onInited: () => {
+
+			},
+			interactions: {
+				adjustBladeRotation: {
+					label: 'Adjust blade rotation',
+					fn: () => {
+						temp.angle += Math.PI / 8;
+						if (temp.angle >= Math.PI / 2) temp.angle = -Math.PI / 2;
+						applyAngle();
+					},
+				},
+				openClose: {
+					label: 'Open/close',
+					fn: () => {
+						temp.open -= 0.25;
+						if (temp.open < 0) temp.open = 1;
+						applyOpeningState();
+					},
+				},
+			},
+			onOptionsUpdated: ([k, v]) => {
+				temp.$reset();
+				switch (k) {
+					case 'angle': applyAngle(); break;
+					case 'open': applyOpeningState(); break;
+					case 'blades': applyOpeningState(); break;
+				}
+			},
+			resetTemporaryState: () => {
+				temp.$reset();
+				applyAngle();
+				applyOpeningState();
+			},
+			primaryInteraction: 'openClose',
+			dispose: () => {},
+		};
+	},
+});

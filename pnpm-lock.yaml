@@ -608,18 +608,6 @@ importers:
       '@analytics/google-analytics':
         specifier: 1.1.0
         version: 1.1.0
-      '@babylonjs/core':
-        specifier: 9.9.0
-        version: 9.9.0
-      '@babylonjs/inspector':
-        specifier: 9.9.0
-        version: 9.9.0(37580b7f869e99cbbbef9da0435d2619)
-      '@babylonjs/loaders':
-        specifier: 9.9.0
-        version: 9.9.0(@babylonjs/core@9.9.0)(babylonjs-gltf2interface@9.6.0)
-      '@babylonjs/materials':
-        specifier: 9.9.0
-        version: 9.9.0(@babylonjs/core@9.9.0)
       '@mcaptcha/core-glue':
         specifier: 0.1.0-alpha-5
         version: 0.1.0-alpha-5
@@ -695,6 +683,9 @@ importers:
       exifreader:
         specifier: 4.38.1
         version: 4.38.1
+      frontend-misskey-world-engine:
+        specifier: workspace:*
+        version: link:../frontend-misskey-world-engine
       frontend-shared:
         specifier: workspace:*
         version: link:../frontend-shared
@@ -740,6 +731,9 @@ importers:
       misskey-reversi:
         specifier: workspace:*
         version: link:../misskey-reversi
+      misskey-world:
+        specifier: workspace:*
+        version: link:../misskey-world
       photoswipe:
         specifier: 5.4.4
         version: 5.4.4
@@ -1176,6 +1170,46 @@ importers:
         specifier: 3.2.8
         version: 3.2.8(typescript@5.9.3)
 
+  packages/frontend-misskey-world-engine:
+    dependencies:
+      '@babylonjs/core':
+        specifier: 9.9.0
+        version: 9.9.0
+      '@babylonjs/inspector':
+        specifier: 9.9.0
+        version: 9.9.0(37580b7f869e99cbbbef9da0435d2619)
+      '@babylonjs/loaders':
+        specifier: 9.9.0
+        version: 9.9.0(@babylonjs/core@9.9.0)(babylonjs-gltf2interface@9.6.0)
+      '@babylonjs/materials':
+        specifier: 9.9.0
+        version: 9.9.0(@babylonjs/core@9.9.0)
+      eventemitter3:
+        specifier: 5.0.4
+        version: 5.0.4
+      seedrandom:
+        specifier: 3.0.5
+        version: 3.0.5
+    devDependencies:
+      '@types/seedrandom':
+        specifier: 3.0.8
+        version: 3.0.8
+      '@typescript-eslint/eslint-plugin':
+        specifier: 8.59.2
+        version: 8.59.2(@typescript-eslint/parser@8.59.2(eslint@9.39.4)(typescript@5.9.3))(eslint@9.39.4)(typescript@5.9.3)
+      '@typescript-eslint/parser':
+        specifier: 8.59.2
+        version: 8.59.2(eslint@9.39.4)(typescript@5.9.3)
+      esbuild:
+        specifier: 0.28.0
+        version: 0.28.0
+      execa:
+        specifier: 9.6.1
+        version: 9.6.1
+      nodemon:
+        specifier: 3.1.14
+        version: 3.1.14
+
   packages/frontend-shared:
     dependencies:
       '@misskey-dev/emoji-data':
@@ -1406,6 +1440,37 @@ importers:
       '@types/node':
         specifier: 24.12.2
         version: 24.12.2
+      '@typescript-eslint/eslint-plugin':
+        specifier: 8.59.2
+        version: 8.59.2(@typescript-eslint/parser@8.59.2(eslint@9.39.4)(typescript@5.9.3))(eslint@9.39.4)(typescript@5.9.3)
+      '@typescript-eslint/parser':
+        specifier: 8.59.2
+        version: 8.59.2(eslint@9.39.4)(typescript@5.9.3)
+      esbuild:
+        specifier: 0.28.0
+        version: 0.28.0
+      execa:
+        specifier: 9.6.1
+        version: 9.6.1
+      nodemon:
+        specifier: 3.1.14
+        version: 3.1.14
+
+  packages/misskey-world:
+    dependencies:
+      eventemitter3:
+        specifier: 5.0.4
+        version: 5.0.4
+      seedrandom:
+        specifier: 3.0.5
+        version: 3.0.5
+    devDependencies:
+      '@types/node':
+        specifier: 24.12.2
+        version: 24.12.2
+      '@types/seedrandom':
+        specifier: 3.0.8
+        version: 3.0.8
       '@typescript-eslint/eslint-plugin':
         specifier: 8.59.2
         version: 8.59.2(@typescript-eslint/parser@8.59.2(eslint@9.39.4)(typescript@5.9.3))(eslint@9.39.4)(typescript@5.9.3)
@@ -10870,8 +10935,8 @@ packages:
   vue-component-type-helpers@3.2.8:
     resolution: {integrity: sha512-9689efAXhN/EV86plgkL/XFiJSXhGtWPG6JDboZ+QnjlUWUUQrQ0ILKQtw4iQsuwIwu5k6Aw+JnehDe7161e7A==}
 
-  vue-component-type-helpers@3.2.9:
-    resolution: {integrity: sha512-S3BiWYaLSzHxTpln665ELSrMR9UYmrIDUmhik7nVZxmJjTKL2/a+ew1hvGxksKelivm0ujjWfG1fYOiU/2e8rA==}
+  vue-component-type-helpers@3.3.0:
+    resolution: {integrity: sha512-vwR8DDsBysI9NWXa0okPFpCcW+BUC3sPTuLBNo1faMzw4QWMFd+3/lFYFu29ZN0q+8UReXWJHEYesC9dcXYCLg==}
 
   vue-demi@0.14.10:
     resolution: {integrity: sha512-nMZBOwuzabUO0nLgIcc6rycZEebF6eeUfaiQx9+WSk8e29IbLvPU9feI6tqW4kTo3hvoYAJkMh8n8D0fuISphg==}
@@ -15450,7 +15515,7 @@ snapshots:
       storybook: 10.3.6(@testing-library/dom@10.4.0)(bufferutil@4.1.0)(prettier@3.8.3)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(utf-8-validate@6.0.6)
       type-fest: 2.19.0
       vue: 3.5.34(typescript@5.9.3)
-      vue-component-type-helpers: 3.2.9
+      vue-component-type-helpers: 3.3.0
 
   '@stylistic/eslint-plugin@5.10.0(eslint@9.39.4)':
     dependencies:
@@ -22297,7 +22362,7 @@ snapshots:
 
   vue-component-type-helpers@3.2.8: {}
 
-  vue-component-type-helpers@3.2.9: {}
+  vue-component-type-helpers@3.3.0: {}
 
   vue-demi@0.14.10(vue@3.5.34(typescript@5.9.3)):
     dependencies:

@@ -25,7 +25,8 @@
 		"skipLibCheck": true,
 		"paths": {
 			"@/*": ["./src/*"],
-			"@@/*": ["../frontend-shared/*"]
+			"@@/*": ["../frontend-shared/*"],
+			"misskey-world-engine/*": ["../frontend-misskey-world-engine/*"],
 		},
 		"typeRoots": [
 			"./@types",

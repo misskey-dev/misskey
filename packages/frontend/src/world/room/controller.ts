@@ -4,7 +4,7 @@
  */
 
 import { ref, shallowRef } from 'vue';
-import { cm } from '../utility.js';
+import { cm } from '../../../../frontend-misskey-world-engine/src/utility.js';
 import { EngineControllerBase } from '../EngineControllerBase.js';
 import type { ShallowRef } from 'vue';
 import type { RoomEngine, RoomState } from './engine.js';
@@ -49,18 +49,16 @@ export class RoomController extends EngineControllerBase<RoomEngine> {
 	public async init(canvas: HTMLCanvasElement, attachments: RoomAttachments) {
 		const { engineEvents } = await this._init_(canvas, {
 			createWorker: (offscreen) => new Promise((resolve) => {
-				import('./worker?worker').then(({ default: RoomWorker }) => {
+				import('frontend-misskey-world-engine/src/room/worker?worker').then(({ default: RoomWorker }) => {
 					const worker = new RoomWorker();
 					worker.postMessage({ type: 'init', canvas: offscreen, options: this.options, roomState: this.roomState.value, roomAttachments: attachments }, [offscreen]);
 					resolve(worker);
 				});
 			}),
-			createEngine: (babylonEngine) => new Promise((resolve) => {
-				import('./engine.js').then(({ RoomEngine }) => {
-					resolve(new RoomEngine(this.roomState.value, attachments, {
-						engine: babylonEngine,
-						...this.options,
-					}));
+			createEngine: () => new Promise((resolve) => {
+				import('frontend-misskey-world-engine/src/room/nonWorker.js').then(({ createRoomEngine }) => {
+					const engine = createRoomEngine({ canvas, options: this.options, roomState: this.roomState.value, roomAttachments: attachments });
+					resolve(engine);
 				});
 			}),
 		});
