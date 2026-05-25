@@ -53,7 +53,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						:enterFromClass="prefer.s.animation ? $style.transition_options_enterFrom : ''"
 						:leaveToClass="prefer.s.animation ? $style.transition_options_leaveTo : ''"
 					>
-						<div v-if="selectedObjectDef != null && selectedInstanceId != null && showObjectOptions" :class="$style.customize" class="_panel _shadow">
+						<div v-if="selectedObjectDef != null && selectedInstanceId != null && showObjectOptions" :class="$style.customize" class="_shadow">
 							<XObjectCustomizeForm :addFileAttachment="addFileAttachment" :schema="selectedObjectDef.options.schema" :options="selectedObjectOptionsState" @update="(k, v) => updateObjectOption(k, v)"></XObjectCustomizeForm>
 						</div>
 					</Transition>
@@ -308,7 +308,11 @@ async function cancel() {
 	width: 300px;
 	overflow: auto;
 	box-sizing: border-box;
-	padding: 24px;
+	padding: 16px;
+	border-radius: 12px;
+	background: color(from var(--MI_THEME-panel) srgb r g b / 0.5);
+	-webkit-backdrop-filter: blur(15px);
+	backdrop-filter: blur(15px);
 }
 
 .transition_preview_enterActive,
