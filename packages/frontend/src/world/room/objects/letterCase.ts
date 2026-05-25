@@ -4,10 +4,11 @@
  */
 
 import { defineObject } from '../object.js';
+import { i18n } from '@/i18n.js';
 
 export const letterCase = defineObject({
 	id: 'letterCase',
-	name: 'Letter Case',
+	name: i18n.ts._miRoom._objects.letterCase,
 	options: {
 		schema: {},
 		default: {},

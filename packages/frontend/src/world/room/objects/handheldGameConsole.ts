@@ -7,26 +7,27 @@ import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
 import { cm, WORLD_SCALE, createPlaneUvMapper } from '../../utility.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
+import { i18n } from '@/i18n.js';
 
 export const handheldGameConsole = defineObject({
 	id: 'handheldGameConsole',
-	name: 'handheldGameConsole',
+	name: i18n.ts._miRoom._objects.handheldGameConsole,
 	options: {
 		schema: {
 			bodyMat: {
 				type: 'material',
-				label: 'Body material',
+				label: i18n.ts._miRoom._objects._handheldGameConsole.bodyMat,
 			},
 			screenBrightness: {
 				type: 'range',
-				label: 'Screen brightness',
+				label: i18n.ts._miRoom._objects._handheldGameConsole.screenBrightness,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			image: {
 				type: 'image',
-				label: 'Image',
+				label: i18n.ts._miRoom._objects._handheldGameConsole.image,
 				presets: [],
 			},
 		},

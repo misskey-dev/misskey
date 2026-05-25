@@ -7,30 +7,31 @@ import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 import { cm, remap, WORLD_SCALE } from '@/world/utility.js';
+import { i18n } from '@/i18n.js';
 
 export const ductRailSpotLights = defineObject({
 	id: 'ductRailSpotLights',
-	name: 'ductRailSpotLights',
+	name: i18n.ts._miRoom._objects.ductRailSpotLights,
 	options: {
 		schema: {
 			bodyMat: {
 				type: 'material',
-				label: 'Body material',
+				label: i18n.ts._miRoom._objects._ductRailSpotLights.bodyMat,
 			},
 			light: {
 				type: 'light',
-				label: 'Light',
+				label: i18n.ts._miRoom._objects._ductRailSpotLights.light,
 			},
 			angleV: {
 				type: 'range',
-				label: 'Vertical angle',
+				label: i18n.ts._miRoom._objects._ductRailSpotLights.angleV,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			angleH: {
 				type: 'range',
-				label: 'Horizontal angle',
+				label: i18n.ts._miRoom._objects._ductRailSpotLights.angleH,
 				min: 0,
 				max: 1,
 				step: 0.01,

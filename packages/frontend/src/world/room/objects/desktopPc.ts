@@ -7,35 +7,36 @@ import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { cm, WORLD_SCALE } from '../../utility.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
+import { i18n } from '@/i18n.js';
 
 export const desktopPc = defineObject({
 	id: 'desktopPc',
-	name: 'Desktop PC',
+	name: i18n.ts._miRoom._objects.desktopPc,
 	options: {
 		schema: {
 			bodyMat: {
 				type: 'material',
-				label: 'Body material',
+				label: i18n.ts._miRoom._objects._desktopPc.bodyMat,
 			},
 			coverMat: {
 				type: 'material',
-				label: 'Cover material',
+				label: i18n.ts._miRoom._objects._desktopPc.coverMat,
 			},
 			inner1Mat: {
 				type: 'material',
-				label: 'Inner material 1',
+				label: i18n.ts._miRoom._objects._desktopPc.inner1Mat,
 			},
 			inner2Mat: {
 				type: 'material',
-				label: 'Inner material 2',
+				label: i18n.ts._miRoom._objects._desktopPc.inner2Mat,
 			},
 			inner3Mat: {
 				type: 'material',
-				label: 'Inner material 3',
+				label: i18n.ts._miRoom._objects._desktopPc.inner3Mat,
 			},
 			ledColor: {
 				type: 'color',
-				label: 'LED color',
+				label: i18n.ts._miRoom._objects._desktopPc.ledColor,
 			},
 		},
 		default: {

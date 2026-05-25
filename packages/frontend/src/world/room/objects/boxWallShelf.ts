@@ -5,33 +5,34 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { i18n } from '@/i18n.js';
 
 export const boxWallShelf = defineObject({
 	id: 'boxWallShelf',
-	name: 'boxWallShelf',
+	name: i18n.ts._miRoom._objects.boxWallShelf,
 	options: {
 		schema: {
 			width: {
 				type: 'range',
-				label: 'Width',
+				label: i18n.ts._miRoom._objects._boxWallShelf.width,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			height: {
 				type: 'range',
-				label: 'Height',
+				label: i18n.ts._miRoom._objects._boxWallShelf.height,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			bodyMat: {
 				type: 'material',
-				label: 'Body material',
+				label: i18n.ts._miRoom._objects._boxWallShelf.bodyMat,
 			},
 			withBack: {
 				type: 'boolean',
-				label: 'With back',
+				label: i18n.ts._miRoom._objects._boxWallShelf.withBack,
 			},
 		},
 		default: {

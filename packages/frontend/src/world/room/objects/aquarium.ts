@@ -6,10 +6,11 @@
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { cm } from '../../utility.js';
+import { i18n } from '@/i18n.js';
 
 export const aquarium = defineObject({
 	id: 'aquarium',
-	name: 'Aquarium',
+	name: i18n.ts._miRoom._objects.aquarium,
 	options: {
 		schema: {},
 		default: {},

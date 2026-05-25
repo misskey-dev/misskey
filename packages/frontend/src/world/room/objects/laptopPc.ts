@@ -7,35 +7,36 @@ import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
 import { cm, WORLD_SCALE, createPlaneUvMapper } from '../../utility.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
+import { i18n } from '@/i18n.js';
 
 export const laptopPc = defineObject({
 	id: 'laptopPc',
-	name: 'Laptop PC',
+	name: i18n.ts._miRoom._objects.laptopPc,
 	options: {
 		schema: {
 			bodyMat: {
 				type: 'material',
-				label: 'Body material',
+				label: i18n.ts._miRoom._objects._laptopPc.bodyMat,
 			},
 			bezelMat: {
 				type: 'material',
-				label: 'Bezel material',
+				label: i18n.ts._miRoom._objects._laptopPc.bezelMat,
 			},
 			screenBrightness: {
 				type: 'range',
-				label: 'Screen brightness',
+				label: i18n.ts._miRoom._objects._laptopPc.screenBrightness,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			image: {
 				type: 'image',
-				label: 'Image',
+				label: i18n.ts._miRoom._objects._laptopPc.image,
 				presets: [],
 			},
 			openAngle: {
 				type: 'range',
-				label: 'Open',
+				label: i18n.ts._miRoom._objects._laptopPc.openAngle,
 				min: -Math.PI / 2,
 				max: Math.PI / 2,
 				step: 0.01,

@@ -7,6 +7,7 @@ import * as BABYLON from '@babylonjs/core';
 import seedrandom from 'seedrandom';
 import { defineObject } from '../object.js';
 import { cm, WORLD_SCALE } from '@/world/utility.js';
+import { i18n } from '@/i18n.js';
 
 const remap = (value: number, fromMin: number, fromMax: number, toMin: number, toMax: number) => {
 	return toMin + ((value - fromMin) / (fromMax - fromMin)) * (toMax - toMin);
@@ -14,34 +15,34 @@ const remap = (value: number, fromMin: number, fromMax: number, toMin: number, t
 
 export const randomBooks = defineObject({
 	id: 'randomBooks',
-	name: '雑多な本',
+	name: i18n.ts._miRoom._objects.randomBooks,
 	options: {
 		schema: {
 			variation: {
 				type: 'enum',
-				label: 'Variation',
+				label: i18n.ts._miRoom._objects._randomBooks.variation,
 				enum: [{
-					label: 'Mix',
+					label: i18n.ts._miRoom._objects._randomBooks.variation_mix,
 					value: 'mix',
 				}, {
-					label: 'Mix (Plain)',
+					label: i18n.ts._miRoom._objects._randomBooks.variation_mixPlain,
 					value: 'mix-plain',
 				}],
 			},
 			count: {
 				type: 'range',
-				label: 'Count',
+				label: i18n.ts._miRoom._objects._randomBooks.count,
 				min: 1,
 				max: 30,
 				step: 1,
 			},
 			stackVertically: {
 				type: 'boolean',
-				label: 'Stack vertically',
+				label: i18n.ts._miRoom._objects._randomBooks.stackVertically,
 			},
 			seed: {
 				type: 'seed',
-				label: 'Seed',
+				label: i18n.ts._miRoom._objects._randomBooks.seed,
 			},
 		},
 		default: {

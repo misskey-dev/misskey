@@ -5,20 +5,21 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { i18n } from '@/i18n.js';
 
 export const issyoubin = defineObject({
 	id: 'issyoubin',
-	name: 'issyoubin',
+	name: i18n.ts._miRoom._objects.issyoubin,
 	options: {
 		schema: {
 			variation: {
 				type: 'enum',
-				label: 'Variation',
+				label: i18n.ts._miRoom._objects._issyoubin.variation,
 				enum: [{
-					label: 'Misuki',
+					label: i18n.ts._miRoom._objects._issyoubin.variation_misuki,
 					value: 'misuki',
 				}, {
-					label: 'AI',
+					label: i18n.ts._miRoom._objects._issyoubin.variation_ai,
 					value: 'ai',
 				}],
 			},

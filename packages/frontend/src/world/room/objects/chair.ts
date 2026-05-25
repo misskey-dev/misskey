@@ -5,19 +5,20 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { i18n } from '@/i18n.js';
 
 export const chair = defineObject({
 	id: 'chair',
-	name: 'Chair',
+	name: i18n.ts._miRoom._objects.chair,
 	options: {
 		schema: {
 			primaryMat: {
 				type: 'material',
-				label: 'Primay Material',
+				label: i18n.ts._miRoom._objects._chair.primaryMat,
 			},
 			secondaryMat: {
 				type: 'material',
-				label: 'Secondary Material',
+				label: i18n.ts._miRoom._objects._chair.secondaryMat,
 			},
 		},
 		default: {

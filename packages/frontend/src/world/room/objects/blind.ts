@@ -7,28 +7,29 @@ import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { cm, remap } from '../../utility.js';
 import { createOverridedStates } from '../utility.js';
+import { i18n } from '@/i18n.js';
 
 export const blind = defineObject({
 	id: 'blind',
-	name: 'Blind',
+	name: i18n.ts._miRoom._objects.blind,
 	options: {
 		schema: {
 			blades: {
 				type: 'range',
-				label: 'Number of blades',
+				label: i18n.ts._miRoom._objects._blind.blades,
 				min: 1,
 				max: 100,
 			},
 			angle: {
 				type: 'range',
-				label: 'Blade rotation angle (radian)',
+				label: i18n.ts._miRoom._objects._blind.angle,
 				min: -Math.PI / 2,
 				max: Math.PI / 2,
 				step: 0.01,
 			},
 			open: {
 				type: 'range',
-				label: 'Opening state',
+				label: i18n.ts._miRoom._objects._blind.open,
 				min: 0,
 				max: 1,
 				step: 0.01,

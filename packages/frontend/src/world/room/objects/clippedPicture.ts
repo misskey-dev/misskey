@@ -6,29 +6,30 @@
 import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
 import { createPlaneUvMapper, getPlaneUvIndexes, remap } from '../../utility.js';
+import { i18n } from '@/i18n.js';
 
 export const clippedPicture = defineObject({
 	id: 'clippedPicture',
-	name: 'clippedPicture',
+	name: i18n.ts._miRoom._objects.clippedPicture,
 	options: {
 		schema: {
 			width: {
 				type: 'range',
-				label: 'Width',
+				label: i18n.ts._miRoom._objects._clippedPicture.width,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			height: {
 				type: 'range',
-				label: 'Height',
+				label: i18n.ts._miRoom._objects._clippedPicture.height,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			image: {
 				type: 'image',
-				label: 'Custom picture',
+				label: i18n.ts._miRoom._objects._clippedPicture.image,
 				presets: [],
 			},
 		},

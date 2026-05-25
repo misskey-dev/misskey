@@ -5,34 +5,35 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { i18n } from '@/i18n.js';
 
 export const petBottle = defineObject({
 	id: 'petBottle',
-	name: 'PET Bottle',
+	name: i18n.ts._miRoom._objects.petBottle,
 	options: {
 		schema: {
 			variation: {
 				type: 'enum',
-				label: 'Variation',
+				label: i18n.ts._miRoom._objects._petBottle.variation,
 				enum: [{
-					label: 'Mineral Water',
+					label: i18n.ts._miRoom._objects._petBottle.variation_mineralWater,
 					value: 'mineral-water',
 				}, {
-					label: 'Green Tea',
+					label: i18n.ts._miRoom._objects._petBottle.variation_greenTea,
 					value: 'green-tea',
 				}],
 			},
 			withCap: {
 				type: 'boolean',
-				label: 'With Cap',
+				label: i18n.ts._miRoom._objects._petBottle.withCap,
 			},
 			withLabel: {
 				type: 'boolean',
-				label: 'With Label',
+				label: i18n.ts._miRoom._objects._petBottle.withLabel,
 			},
 			empty: {
 				type: 'boolean',
-				label: 'Empty',
+				label: i18n.ts._miRoom._objects._petBottle.empty,
 			},
 		},
 		default: {

@@ -5,21 +5,22 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject, defineObjectClass } from '../object.js';
+import { i18n } from '@/i18n.js';
 
 const base = defineObjectClass({
 	options: {
 		schema: {
 			frameMat: {
 				type: 'material',
-				label: 'Frame material',
+				label: i18n.ts._miRoom._objects._ironFrameShelf.frameMat,
 			},
 			boardMat: {
 				type: 'material',
-				label: 'Board material',
+				label: i18n.ts._miRoom._objects._ironFrameShelf.boardMat,
 			},
 			width: {
 				type: 'range',
-				label: 'Width',
+				label: i18n.ts._miRoom._objects._ironFrameShelf.width,
 				min: 0,
 				max: 1,
 				step: 0.01,
@@ -80,18 +81,18 @@ const base = defineObjectClass({
 
 export const ironFrameShelf5 = base.extend({
 	id: 'ironFrameShelf5',
-	name: 'ironFrameShelf 5',
+	name: i18n.ts._miRoom._objects.ironFrameShelf5,
 	path: () => 'iron-frame-shelf/iron-frame-shelf-5',
 });
 
 export const ironFrameShelf4 = base.extend({
 	id: 'ironFrameShelf4',
-	name: 'ironFrameShelf 4',
+	name: i18n.ts._miRoom._objects.ironFrameShelf4,
 	path: () => 'iron-frame-shelf/iron-frame-shelf-4',
 });
 
 export const ironFrameShelf3 = base.extend({
 	id: 'ironFrameShelf3',
-	name: 'ironFrameShelf 3',
+	name: i18n.ts._miRoom._objects.ironFrameShelf3,
 	path: () => 'iron-frame-shelf/iron-frame-shelf-3',
 });

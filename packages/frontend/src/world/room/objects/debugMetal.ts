@@ -4,10 +4,11 @@
  */
 
 import { defineObject } from '../object.js';
+import { i18n } from '@/i18n.js';
 
 export const debugMetal = defineObject({
 	id: 'debugMetal',
-	name: 'debugMetal',
+	name: i18n.ts._miRoom._objects.debugMetal,
 	options: {
 		schema: {},
 		default: {},

@@ -6,24 +6,25 @@
 import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
 import { createPlaneUvMapper, normalizeUvToSquare } from '../../utility.js';
+import { i18n } from '@/i18n.js';
 
 export const djPlayer = defineObject({
 	id: 'djPlayer',
-	name: 'djPlayer',
+	name: i18n.ts._miRoom._objects.djPlayer,
 	options: {
 		schema: {
 			screenBrightness: {
 				type: 'range',
-				label: 'Screen brightness',
+				label: i18n.ts._miRoom._objects._djPlayer.screenBrightness,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			image: {
 				type: 'image',
-				label: 'Image',
+				label: i18n.ts._miRoom._objects._djPlayer.image,
 				presets: [{
-					label: 'Waveform',
+					label: i18n.ts._miRoom._objects._djPlayer['image:waveform'],
 					value: 'waveform',
 				}],
 			},

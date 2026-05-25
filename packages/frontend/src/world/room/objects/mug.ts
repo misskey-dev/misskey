@@ -7,10 +7,11 @@ import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { cm } from '../../utility.js';
 import { yuge } from '../utility.js';
+import { i18n } from '@/i18n.js';
 
 export const mug = defineObject({
 	id: 'mug',
-	name: 'Mug',
+	name: i18n.ts._miRoom._objects.mug,
 	options: {
 		schema: {},
 		default: {},

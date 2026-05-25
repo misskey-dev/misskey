@@ -5,15 +5,16 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { i18n } from '@/i18n.js';
 
 export const monitorSpeaker = defineObject({
 	id: 'monitorSpeaker',
-	name: 'Monitor Speaker',
+	name: i18n.ts._miRoom._objects.monitorSpeaker,
 	options: {
 		schema: {
 			mat: {
 				type: 'material',
-				label: 'Material',
+				label: i18n.ts._miRoom._objects._monitorSpeaker.mat,
 			},
 		},
 		default: {

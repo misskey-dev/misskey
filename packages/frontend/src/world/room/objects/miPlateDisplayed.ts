@@ -4,10 +4,11 @@
  */
 
 import { defineObject } from '../object.js';
+import { i18n } from '@/i18n.js';
 
 export const miPlateDisplayed = defineObject({
 	id: 'miPlateDisplayed',
-	name: 'Mi Plate (Displayed)',
+	name: i18n.ts._miRoom._objects.miPlateDisplayed,
 	options: {
 		schema: {},
 		default: {},

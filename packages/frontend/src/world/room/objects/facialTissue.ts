@@ -4,10 +4,11 @@
  */
 
 import { defineObject } from '../object.js';
+import { i18n } from '@/i18n.js';
 
 export const facialTissue = defineObject({
 	id: 'facialTissue',
-	name: 'Facial Tissue',
+	name: i18n.ts._miRoom._objects.facialTissue,
 	options: {
 		schema: {},
 		default: {},

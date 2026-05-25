@@ -4,10 +4,11 @@
  */
 
 import { defineObject } from '../object.js';
+import { i18n } from '@/i18n.js';
 
 export const banknote = defineObject({
 	id: 'banknote',
-	name: 'Banknote',
+	name: i18n.ts._miRoom._objects.banknote,
 	options: {
 		schema: {},
 		default: {},

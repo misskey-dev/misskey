@@ -6,27 +6,28 @@ import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { cm, WORLD_SCALE } from '../../utility.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
+import { i18n } from '@/i18n.js';
 
 export const lavaLamp = defineObject({
 	id: 'lavaLamp',
-	name: 'Lava Lamp',
+	name: i18n.ts._miRoom._objects.lavaLamp,
 	options: {
 		schema: {
 			bodyMat: {
 				type: 'material',
-				label: 'Body material',
+				label: i18n.ts._miRoom._objects._lavaLamp.bodyMat,
 			},
 			glassMat: {
 				type: 'material',
-				label: 'Glass material',
+				label: i18n.ts._miRoom._objects._lavaLamp.glassMat,
 			},
 			lightColor: {
 				type: 'color',
-				label: 'Light color',
+				label: i18n.ts._miRoom._objects._lavaLamp.lightColor,
 			},
 			lavaColor: {
 				type: 'color',
-				label: 'Lava color',
+				label: i18n.ts._miRoom._objects._lavaLamp.lavaColor,
 			},
 		},
 		default: {

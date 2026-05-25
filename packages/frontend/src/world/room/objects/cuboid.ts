@@ -5,36 +5,37 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { i18n } from '@/i18n.js';
 
 export const cuboid = defineObject({
 	id: 'cuboid',
-	name: 'cuboid',
+	name: i18n.ts._miRoom._objects.cuboid,
 	options: {
 		schema: {
 			x: {
 				type: 'range',
-				label: 'X',
+				label: i18n.ts._miRoom._objects._cuboid.x,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			y: {
 				type: 'range',
-				label: 'Y',
+				label: i18n.ts._miRoom._objects._cuboid.y,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			z: {
 				type: 'range',
-				label: 'Z',
+				label: i18n.ts._miRoom._objects._cuboid.z,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			mat: {
 				type: 'material',
-				label: 'Material',
+				label: i18n.ts._miRoom._objects._cuboid.mat,
 			},
 		},
 		default: {

@@ -4,10 +4,11 @@
  */
 
 import { defineObject } from '../object.js';
+import { i18n } from '@/i18n.js';
 
 export const energyDrink = defineObject({
 	id: 'energyDrink',
-	name: 'Energy Drink',
+	name: i18n.ts._miRoom._objects.energyDrink,
 	options: {
 		schema: {},
 		default: {},

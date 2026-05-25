@@ -6,27 +6,28 @@
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { createPlaneUvMapper, RecyvlingTextGrid } from '../../utility.js';
+import { i18n } from '@/i18n.js';
 
 export const electronicDisplayBoard = defineObject({
 	id: 'electronicDisplayBoard',
-	name: 'electronicDisplayBoard',
+	name: i18n.ts._miRoom._objects.electronicDisplayBoard,
 	options: {
 		schema: {
 			text: {
 				type: 'string',
-				label: 'Text',
+				label: i18n.ts._miRoom._objects._electronicDisplayBoard.text,
 			},
 			frameMat: {
 				type: 'material',
-				label: 'Frame material',
+				label: i18n.ts._miRoom._objects._electronicDisplayBoard.frameMat,
 			},
 			ledColor: {
 				type: 'color',
-				label: 'LED color',
+				label: i18n.ts._miRoom._objects._electronicDisplayBoard.ledColor,
 			},
 			ledBrightness: {
 				type: 'range',
-				label: 'LED brightness',
+				label: i18n.ts._miRoom._objects._electronicDisplayBoard.ledBrightness,
 				min: 0,
 				max: 1,
 				step: 0.01,

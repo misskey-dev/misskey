@@ -4,10 +4,11 @@
  */
 
 import { defineObject } from '../object.js';
+import { i18n } from '@/i18n.js';
 
 export const milk = defineObject({
 	id: 'milk',
-	name: 'Milk',
+	name: i18n.ts._miRoom._objects.milk,
 	options: {
 		schema: {},
 		default: {},

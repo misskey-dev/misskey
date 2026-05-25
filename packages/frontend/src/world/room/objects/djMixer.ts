@@ -4,10 +4,11 @@
  */
 
 import { defineObject } from '../object.js';
+import { i18n } from '@/i18n.js';
 
 export const djMixer = defineObject({
 	id: 'djMixer',
-	name: 'djMixer',
+	name: i18n.ts._miRoom._objects.djMixer,
 	options: {
 		schema: {},
 		default: {},

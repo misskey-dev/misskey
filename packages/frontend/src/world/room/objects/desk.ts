@@ -5,30 +5,31 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
+import { i18n } from '@/i18n.js';
 
 export const desk = defineObject({
 	id: 'desk',
-	name: 'Desk',
+	name: i18n.ts._miRoom._objects.desk,
 	options: {
 		schema: {
 			frameMat: {
 				type: 'material',
-				label: 'Frame material',
+				label: i18n.ts._miRoom._objects._desk.frameMat,
 			},
 			boardMat: {
 				type: 'material',
-				label: 'Board material',
+				label: i18n.ts._miRoom._objects._desk.boardMat,
 			},
 			width: {
 				type: 'range',
-				label: 'Width',
+				label: i18n.ts._miRoom._objects._desk.width,
 				min: 0,
 				max: 1,
 				step: 0.01,
 			},
 			depth: {
 				type: 'range',
-				label: 'Depth',
+				label: i18n.ts._miRoom._objects._desk.depth,
 				min: 0,
 				max: 1,
 				step: 0.01,

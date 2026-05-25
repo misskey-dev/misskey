@@ -4,10 +4,11 @@
  */
 
 import { defineObject } from '../object.js';
+import { i18n } from '@/i18n.js';
 
 export const emptyBento = defineObject({
 	id: 'emptyBento',
-	name: 'Empty Bento',
+	name: i18n.ts._miRoom._objects.emptyBento,
 	options: {
 		schema: {},
 		default: {},
