@@ -42,7 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch :modelValue="options[k]" @update:modelValue="v => emit('update', k, v)"></MkSwitch>
 			</div>
 			<div v-else-if="s.type === 'enum'">
-				<MkSelect :items="s.enum.map(e => ({ label: e.label, value: e.value }))" :modelValue="options[k]" @update:modelValue="v => emit('update', k, v)"></MkSelect>
+				<MkSelect :items="s.enum.map(e => ({ label: OBJECT_UI_DEFS[schema.id].options[k].enum[e.value].label, value: e.value }))" :modelValue="options[k]" @update:modelValue="v => emit('update', k, v)"></MkSelect>
 			</div>
 			<div v-else-if="s.type === 'string'">
 				<MkInput type="text" :modelValue="options[k]" @update:modelValue="v => emit('update', k, v)"></MkInput>
@@ -51,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkRange :continuousUpdate="true" :min="s.min" :max="s.max" :step="s.step" :modelValue="options[k]" @update:modelValue="v => emit('update', k, v)"></MkRange>
 			</div>
 			<div v-else-if="s.type === 'image'" class="_gaps_s">
-				<MkSelect :items="[{ label: i18n.ts.none, value: null }, { label: i18n.ts.custom, value: '_custom_' }, ...(s.presets.length > 0 ? [{ type: 'divider' } as const] : []), ...s.presets.map(e => ({ label: e.label, value: e.value }))]" :modelValue="options[k].type" @update:modelValue="v => changeImageType(k, v)"></MkSelect>
+				<MkSelect :items="[{ label: i18n.ts.none, value: null }, { label: i18n.ts.custom, value: '_custom_' }, ...(s.presets.length > 0 ? [{ type: 'divider' } as const] : []), ...s.presets.map(e => ({ label: OBJECT_UI_DEFS[schema.id].options[k].presets[e.value].label, value: e.value }))]" :modelValue="options[k].type" @update:modelValue="v => changeImageType(k, v)"></MkSelect>
 
 				<div v-if="options[k].type === '_custom_'" class="_buttons">
 					<MkButton primary inline @click="changeImage(k)"><i class="ti ti-cloud"></i> {{ i18n.ts.choose }}...</MkButton>

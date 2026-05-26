@@ -13533,7 +13533,7 @@ export interface Locale extends ILocale {
                  */
                 "width": string;
                 /**
-                 * 背板あり
+                 * 背板
                  */
                 "withBack": string;
             };
@@ -13936,7 +13936,7 @@ export interface Locale extends ILocale {
                 "screenBrightness": string;
             };
             /**
-             * 大型マウスパッド
+             * 大きいマウスパッド
              */
             "largeMousepad": string;
             "_largeMousepad": {
@@ -14081,7 +14081,7 @@ export interface Locale extends ILocale {
                  */
                 "empty": string;
                 /**
-                 * バリエーション
+                 * 種類
                  */
                 "variation": string;
                 /**
@@ -14093,11 +14093,11 @@ export interface Locale extends ILocale {
                  */
                 "variation_mineralWater": string;
                 /**
-                 * キャップあり
+                 * キャップ
                  */
                 "withCap": string;
                 /**
-                 * ラベルあり
+                 * ラベル
                  */
                 "withLabel": string;
             };
@@ -14117,7 +14117,7 @@ export interface Locale extends ILocale {
             "pictureFrame": string;
             "_pictureFrame": {
                 /**
-                 * 奥行き
+                 * 厚さ
                  */
                 "depth": string;
                 /**
@@ -14125,7 +14125,7 @@ export interface Locale extends ILocale {
                  */
                 "frameMat": string;
                 /**
-                 * フレームの厚み
+                 * フレームの幅
                  */
                 "frameThickness": string;
                 /**
@@ -14205,7 +14205,7 @@ export interface Locale extends ILocale {
                  */
                 "seed": string;
                 /**
-                 * 縦に積む
+                 * 平積み
                  */
                 "stackVertically": string;
                 /**
@@ -14396,7 +14396,7 @@ export interface Locale extends ILocale {
                 "image": string;
             };
             /**
-             * 卓上ガラスフォトフレーム
+             * 卓上ガラス製フォトフレーム
              */
             "tabletopGlassPictureFrame": string;
             "_tabletopGlassPictureFrame": {
@@ -14440,7 +14440,7 @@ export interface Locale extends ILocale {
                 "width": string;
             };
             /**
-             * 卓上LCDボタンコントローラー
+             * LCDボタン付き卓上コントローラー
              */
             "tabletopLcdButtonsController": string;
             "_tabletopLcdButtonsController": {
@@ -14458,12 +14458,12 @@ export interface Locale extends ILocale {
                 "screenBrightness": string;
             };
             /**
-             * 卓上シンプル額縁
+             * 卓上フォトフレーム
              */
             "tabletopPictureFrame": string;
             "_tabletopPictureFrame": {
                 /**
-                 * 奥行き
+                 * 厚さ
                  */
                 "depth": string;
                 /**
@@ -14471,7 +14471,7 @@ export interface Locale extends ILocale {
                  */
                 "frameMat": string;
                 /**
-                 * フレームの厚み
+                 * フレームの幅
                  */
                 "frameThickness": string;
                 /**
@@ -14701,6 +14701,10 @@ export interface Locale extends ILocale {
              * 木製吸音パネル
              */
             "woodSoundAbsorbingPanel": string;
+            /**
+             * アイアンフレームシェルフ
+             */
+            "ironFrameShelf": string;
             "_ironFrameShelf": {
                 /**
                  * 板の素材

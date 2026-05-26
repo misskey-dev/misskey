@@ -4,11 +4,11 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { ironFrameShelf } from './ironFrameShelf.js';
+import type { ironFrameShelf_schema } from 'misskey-world/src/room/objects/ironFrameShelf.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const ironFrameShelf_ui = defineObjectUi<typeof ironFrameShelf>({
-	name: i18n.ts._miRoom._objects.ironFrameShelf5,
+export const ironFrameShelf_ui = defineObjectUi<typeof ironFrameShelf_schema>({
+	name: i18n.ts._miRoom._objects.ironFrameShelf,
 	options: {
 		height: {
 			label: i18n.ts._miRoom._objects._ironFrameShelf.height,

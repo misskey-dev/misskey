@@ -229,12 +229,19 @@ let latestSavedRoomState = deepClone(props.room.def) as unknown as RoomState;
 let initialRoomState = latestSavedRoomState;
 
 // 後方互換性のため
-for (const obj of latestSavedRoomState.installedObjects) {
+for (const obj of initialRoomState.installedObjects) {
 	if (obj.options.customPicture != null) {
 		obj.options.image = {
 			type: null,
 		};
 		delete obj.options.customPicture;
+	}
+	if (obj.type === 'ironFrameShelf5') {
+		obj.type = 'ironFrameShelf';
+	} else if (obj.type === 'ironFrameShelf4') {
+		obj.type = 'ironFrameShelf';
+	} else if (obj.type === 'ironFrameShelf3') {
+		obj.type = 'ironFrameShelf';
 	}
 }
 

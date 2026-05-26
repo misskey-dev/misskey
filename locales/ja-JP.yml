@@ -3630,7 +3630,7 @@ _miRoom:
       bodyMat: "本体の素材"
       height: "高さ"
       width: "幅"
-      withBack: "背板あり"
+      withBack: "背板"
     cactusS: "サボテン S"
     _cactusS:
       potMat: "鉢の素材"
@@ -3740,7 +3740,7 @@ _miRoom:
       image: "画像"
       openAngle: "開き具合"
       screenBrightness: "画面の明るさ"
-    largeMousepad: "大型マウスパッド"
+    largeMousepad: "大きいマウスパッド"
     _largeMousepad:
       image: "画像"
     lavaLamp: "ラバランプ"
@@ -3781,19 +3781,19 @@ _miRoom:
     petBottle: "ペットボトル"
     _petBottle:
       empty: "空"
-      variation: "バリエーション"
+      variation: "種類"
       variation_greenTea: "緑茶"
       variation_mineralWater: "ミネラルウォーター"
-      withCap: "キャップあり"
-      withLabel: "ラベルあり"
+      withCap: "キャップ"
+      withLabel: "ラベル"
     piano: "ピアノ"
     _piano:
       bodyMat: "本体の素材"
     pictureFrame: "シンプルな額縁"
     _pictureFrame:
-      depth: "奥行き"
+      depth: "厚さ"
       frameMat: "フレームの素材"
-      frameThickness: "フレームの厚み"
+      frameThickness: "フレームの幅"
       height: "高さ"
       image: "画像"
       matHThickness: "マットの横幅"
@@ -3814,7 +3814,7 @@ _miRoom:
     _randomBooks:
       count: "数"
       seed: "シード"
-      stackVertically: "縦に積む"
+      stackVertically: "平積み"
       variation: "バリエーション"
       variation_mix: "いろいろ"
       variation_mixPlain: "いろいろ（無地）"
@@ -3866,7 +3866,7 @@ _miRoom:
     tabletopFlag: "卓上フラッグ"
     _tabletopFlag:
       image: "画像"
-    tabletopGlassPictureFrame: "卓上ガラスフォトフレーム"
+    tabletopGlassPictureFrame: "卓上ガラス製フォトフレーム"
     _tabletopGlassPictureFrame:
       height: "高さ"
       image: "画像"
@@ -3878,16 +3878,16 @@ _miRoom:
       frameMat: "フレームの素材"
       height: "高さ"
       width: "幅"
-    tabletopLcdButtonsController: "卓上LCDボタンコントローラー"
+    tabletopLcdButtonsController: "LCDボタン付き卓上コントローラー"
     _tabletopLcdButtonsController:
       bodyMat: "本体の素材"
       image: "画像"
       screenBrightness: "画面の明るさ"
-    tabletopPictureFrame: "卓上シンプル額縁"
+    tabletopPictureFrame: "卓上フォトフレーム"
     _tabletopPictureFrame:
-      depth: "奥行き"
+      depth: "厚さ"
       frameMat: "フレームの素材"
-      frameThickness: "フレームの厚み"
+      frameThickness: "フレームの幅"
       height: "高さ"
       image: "画像"
       matHThickness: "マットの横幅"
@@ -3950,6 +3950,7 @@ _miRoom:
       light: "照明"
       shadeMat: "シェードの素材"
     woodSoundAbsorbingPanel: "木製吸音パネル"
+    ironFrameShelf: "アイアンフレームシェルフ"
     _ironFrameShelf:
       boardMat: "板の素材"
       frameMat: "フレームの素材"
