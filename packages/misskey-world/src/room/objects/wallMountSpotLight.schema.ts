@@ -28,7 +28,7 @@ export const wallMountSpotLight_schema = defineObjectSchema({
 			},
 		},
 		default: {
-			bodyMat: { color: [0.05, 0.05, 0.05], roughness: 0.5, metallic: 0.3 },
+			bodyMat: { color: [0.05, 0.05, 0.05], roughness: 0.5, metallic: 1 },
 			light: {
 				color: [1, 0.5, 0.2],
 				brightness: 0.5,

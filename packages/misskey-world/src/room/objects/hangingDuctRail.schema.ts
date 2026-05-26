@@ -27,7 +27,7 @@ export const hangingDuctRail_schema = defineObjectSchema({
 		default: {
 			width: 0.2,
 			height: 0.2,
-			bodyMat: { color: [0.05, 0.05, 0.05], roughness: 0.5, metallic: 0.3 },
+			bodyMat: { color: [0.05, 0.05, 0.05], roughness: 0.5, metallic: 1 },
 		},
 	},
 	placement: 'ceiling',
