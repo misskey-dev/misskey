@@ -14,7 +14,8 @@ import type { Ref } from 'vue';
 export function useScrollPositionKeeper(scrollContainerRef: Ref<HTMLElement | null | undefined>): void {
 	let anchorId: string | null = null;
 	let anchorIndex = 0;
-	let anchorViewOffset = 0;
+	// キャプチャ時のアンカー要素上端のコンテナ上端からの距離
+	let anchorContainerLocalY = 0;
 	let savedScrollTop = 0;
 	let ready = true;
 
@@ -44,7 +45,7 @@ export function useScrollPositionKeeper(scrollContainerRef: Ref<HTMLElement | nu
 					anchorId = anchorEl.getAttribute('data-scroll-anchor');
 					const allWithSameId = el.querySelectorAll(`[data-scroll-anchor="${CSS.escape(anchorId!)}"]`);
 					anchorIndex = Array.from(allWithSameId).indexOf(anchorEl);
-					anchorViewOffset = viewPosition - anchorTop;
+					anchorContainerLocalY = anchorTop - scrollContainerRect.top;
 					break;
 				}
 			}
@@ -68,12 +69,11 @@ export function useScrollPositionKeeper(scrollContainerRef: Ref<HTMLElement | nu
 		const candidates = scrollContainer.querySelectorAll(`[data-scroll-anchor="${CSS.escape(anchorId)}"]`);
 		const scrollAnchorEl = candidates[anchorIndex] ?? candidates[candidates.length - 1];
 		if (!scrollAnchorEl) return;
-		const containerRect = scrollContainer.getBoundingClientRect();
 		const anchorRect = (scrollAnchorEl as HTMLElement).getBoundingClientRect();
 		// anchorContentY: コンテンツ先頭からのアンカー要素上端の距離（scrollTopに依存しない）
-		const anchorContentY = scrollContainer.scrollTop + (anchorRect.top - containerRect.top);
-		// キャプチャ時と同じ位置関係になるようscrollTopを直接セット
-		scrollContainer.scrollTop = anchorContentY - containerRect.height / 2 + anchorViewOffset;
+		const anchorContentY = scrollContainer.scrollTop + anchorRect.top - scrollContainer.getBoundingClientRect().top;
+		// キャプチャ時と同じ scrollTop になるよう直接セット（コンテナ高さ変化に依存しない）
+		scrollContainer.scrollTop = anchorContentY - anchorContainerLocalY;
 	};
 
 	onDeactivated(() => {
