@@ -8,6 +8,7 @@
 
 ### Server
 - Enhance: リモートノートクリーニングジョブのスキップ処理のパフォーマンス改善
+- Fix: PerUserDriveChart がシステム所有ファイル (userId が null) の更新で `"group"` の非NULL制約違反によりクラッシュする問題を修正 (#17498)
 
 
 ## 2026.5.4
