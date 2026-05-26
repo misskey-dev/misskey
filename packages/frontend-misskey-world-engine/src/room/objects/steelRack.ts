@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { steelRack_schema } from './steelRack.schema.js';
+import { steelRack_schema } from 'misskey-world/src/room/objects/steelRack.schema.js';
 import { cm, remap } from '@/world/utility.js';
 
 export const steelRack = defineObject(steelRack_schema, {

@@ -4,7 +4,7 @@
  */
 
 import { defineObject } from '../object.js';
-import { ductTape_schema } from './ductTape.schema.js';
+import { ductTape_schema } from 'misskey-world/src/room/objects/ductTape.schema.js';
 
 export const ductTape = defineObject(ductTape_schema, {
 	createInstance: () => {

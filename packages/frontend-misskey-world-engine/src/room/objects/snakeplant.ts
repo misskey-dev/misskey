@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { snakeplant_schema } from './snakeplant.schema.js';
+import { snakeplant_schema } from 'misskey-world/src/room/objects/snakeplant.schema.js';
 
 export const snakeplant = defineObject(snakeplant_schema, {
 	createInstance: ({ options, model }) => {

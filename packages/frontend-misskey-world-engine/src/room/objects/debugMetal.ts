@@ -4,7 +4,7 @@
  */
 
 import { defineObject } from '../object.js';
-import { debugMetal_schema } from './debugMetal.schema.js';
+import { debugMetal_schema } from 'misskey-world/src/room/objects/debugMetal.schema.js';
 
 export const debugMetal = defineObject(debugMetal_schema, {
 	createInstance: () => {

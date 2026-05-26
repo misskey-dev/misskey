@@ -4,7 +4,7 @@
  */
 
 import { defineObject } from '../object.js';
-import { tetrapod_schema } from './tetrapod.schema.js';
+import { tetrapod_schema } from 'misskey-world/src/room/objects/tetrapod.schema.js';
 
 export const tetrapod = defineObject(tetrapod_schema, {
 	createInstance: () => {

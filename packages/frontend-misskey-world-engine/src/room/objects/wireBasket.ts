@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { wireBasket_schema } from './wireBasket.schema.js';
+import { wireBasket_schema } from 'misskey-world/src/room/objects/wireBasket.schema.js';
 
 export const wireBasket = defineObject(wireBasket_schema, {
 	createInstance: ({ options, model }) => {

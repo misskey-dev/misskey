@@ -6,7 +6,7 @@
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { cm } from '../../../../../frontend-misskey-world-engine/src/utility.js';
-import { aquarium_schema } from './aquarium.schema.js';
+import { aquarium_schema } from 'misskey-world/src/room/objects/aquarium.schema.js';
 
 export const aquarium = defineObject(aquarium_schema, {
 	createInstance: ({ scene, root }) => {

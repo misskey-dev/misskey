@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { lowPartitionBar_schema } from './lowPartitionBar.schema.js';
+import { lowPartitionBar_schema } from 'misskey-world/src/room/objects/lowPartitionBar.schema.js';
 
 export const lowPartitionBar = defineObject(lowPartitionBar_schema, {
 	createInstance: ({ options, model }) => {

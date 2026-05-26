@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { wallMirror_schema } from './wallMirror.schema.js';
+import { wallMirror_schema } from 'misskey-world/src/room/objects/wallMirror.schema.js';
 
 export const wallMirror = defineObject(wallMirror_schema, {
 	createInstance: async ({ options, model }) => {

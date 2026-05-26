@@ -4,7 +4,7 @@
  */
 
 import { defineObject } from '../object.js';
-import { woodSoundAbsorbingPanel_schema } from './woodSoundAbsorbingPanel.schema.js';
+import { woodSoundAbsorbingPanel_schema } from 'misskey-world/src/room/objects/woodSoundAbsorbingPanel.schema.js';
 
 export const woodSoundAbsorbingPanel = defineObject(woodSoundAbsorbingPanel_schema, {
 	createInstance: () => {

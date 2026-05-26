@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
-import { wallCanvas_schema } from './wallCanvas.schema.js';
+import { wallCanvas_schema } from 'misskey-world/src/room/objects/wallCanvas.schema.js';
 
 export const wallCanvas = defineObject(wallCanvas_schema, {
 	createInstance: async ({ scene, options, model }) => {

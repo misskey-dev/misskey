@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { icosahedron_schema } from './icosahedron.schema.js';
+import { icosahedron_schema } from 'misskey-world/src/room/objects/icosahedron.schema.js';
 
 export const icosahedron = defineObject(icosahedron_schema, {
 	createInstance: ({ options, model }) => {

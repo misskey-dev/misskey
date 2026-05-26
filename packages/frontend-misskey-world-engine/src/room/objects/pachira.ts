@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { pachira_schema } from './pachira.schema.js';
+import { pachira_schema } from 'misskey-world/src/room/objects/pachira.schema.js';
 
 export const pachira = defineObject(pachira_schema, {
 	createInstance: ({ options, model }) => {

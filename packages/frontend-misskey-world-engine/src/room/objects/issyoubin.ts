@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { issyoubin_schema } from './issyoubin.schema.js';
+import { issyoubin_schema } from 'misskey-world/src/room/objects/issyoubin.schema.js';
 
 export const issyoubin = defineObject(issyoubin_schema, {
 	createInstance: ({ model, options, scene }) => {

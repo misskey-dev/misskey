@@ -4,7 +4,7 @@
  */
 
 import { defineObject } from '../object.js';
-import { tableSalt_schema } from './tableSalt.schema.js';
+import { tableSalt_schema } from 'misskey-world/src/room/objects/tableSalt.schema.js';
 
 export const tableSalt = defineObject(tableSalt_schema, {
 	createInstance: () => {

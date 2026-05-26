@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { piano_schema } from './piano.schema.js';
+import { piano_schema } from 'misskey-world/src/room/objects/piano.schema.js';
 
 export const piano = defineObject(piano_schema, {
 	createInstance: ({ options, model }) => {

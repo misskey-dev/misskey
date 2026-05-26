@@ -4,7 +4,7 @@
  */
 
 import { defineObject } from '../object.js';
-import { banknote_schema } from './banknote.schema.js';
+import { banknote_schema } from 'misskey-world/src/room/objects/banknote.schema.js';
 
 export const banknote = defineObject(banknote_schema, {
 	createInstance: () => {

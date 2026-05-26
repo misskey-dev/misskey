@@ -4,7 +4,7 @@
  */
 
 import { defineObject } from '../object.js';
-import { envelope_schema } from './envelope.schema.js';
+import { envelope_schema } from 'misskey-world/src/room/objects/envelope.schema.js';
 
 export const envelope = defineObject(envelope_schema, {
 	createInstance: () => {

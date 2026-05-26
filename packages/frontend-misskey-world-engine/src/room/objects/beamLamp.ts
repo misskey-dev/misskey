@@ -7,7 +7,7 @@ import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { cm, WORLD_SCALE } from '../../../../../frontend-misskey-world-engine/src/utility.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
-import { beamLamp_schema } from './beamLamp.schema.js';
+import { beamLamp_schema } from 'misskey-world/src/room/objects/beamLamp.schema.js';
 
 export const beamLamp = defineObject(beamLamp_schema, {
 	createInstance: ({ lc, root, scene, graphicsQuality }) => {

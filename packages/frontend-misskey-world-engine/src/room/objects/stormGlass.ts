@@ -4,7 +4,7 @@
  */
 
 import { defineObject } from '../object.js';
-import { stormGlass_schema } from './stormGlass.schema.js';
+import { stormGlass_schema } from 'misskey-world/src/room/objects/stormGlass.schema.js';
 
 export const stormGlass = defineObject(stormGlass_schema, {
 	createInstance: () => {

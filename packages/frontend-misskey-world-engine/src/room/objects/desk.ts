@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { desk_schema } from './desk.schema.js';
+import { desk_schema } from 'misskey-world/src/room/objects/desk.schema.js';
 
 export const desk = defineObject(desk_schema, {
 	createInstance: ({ options, model }) => {

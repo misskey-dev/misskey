@@ -4,7 +4,7 @@
  */
 
 import { defineObject } from '../object.js';
-import { rolledUpPoster_schema } from './rolledUpPoster.schema.js';
+import { rolledUpPoster_schema } from 'misskey-world/src/room/objects/rolledUpPoster.schema.js';
 
 export const rolledUpPoster = defineObject(rolledUpPoster_schema, {
 	createInstance: () => {

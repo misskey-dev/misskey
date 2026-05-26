@@ -4,7 +4,7 @@
  */
 
 import { defineObject } from '../object.js';
-import { sprayer_schema } from './sprayer.schema.js';
+import { sprayer_schema } from 'misskey-world/src/room/objects/sprayer.schema.js';
 
 export const sprayer = defineObject(sprayer_schema, {
 	createInstance: () => {

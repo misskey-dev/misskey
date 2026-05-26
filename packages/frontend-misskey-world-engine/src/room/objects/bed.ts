@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { bed_schema } from './bed.schema.js';
+import { bed_schema } from 'misskey-world/src/room/objects/bed.schema.js';
 
 export const bed = defineObject(bed_schema, {
 	createInstance: ({ options, model }) => {

@@ -6,7 +6,7 @@
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { cm, get7segMeshesOfCurrentTime, WORLD_SCALE } from '@/world/utility.js';
-import { tabletopDigitalClock_schema } from './tabletopDigitalClock.schema.js';
+import { tabletopDigitalClock_schema } from 'misskey-world/src/room/objects/tabletopDigitalClock.schema.js';
 
 export const tabletopDigitalClock = defineObject(tabletopDigitalClock_schema, {
 	createInstance: ({ sr, options, model, timer }) => {

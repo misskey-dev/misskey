@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { speakerStand_schema } from './speakerStand.schema.js';
+import { speakerStand_schema } from 'misskey-world/src/room/objects/speakerStand.schema.js';
 
 export const speakerStand = defineObject(speakerStand_schema, {
 	createInstance: ({ options, model }) => {

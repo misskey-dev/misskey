@@ -4,7 +4,7 @@
  */
 
 import { defineObject } from '../object.js';
-import { milk_schema } from './milk.schema.js';
+import { milk_schema } from 'misskey-world/src/room/objects/milk.schema.js';
 
 export const milk = defineObject(milk_schema, {
 	createInstance: () => {

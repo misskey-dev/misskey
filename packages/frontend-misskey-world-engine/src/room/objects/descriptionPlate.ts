@@ -4,7 +4,7 @@
  */
 
 import { defineObject } from '../object.js';
-import { descriptionPlate_schema } from './descriptionPlate.schema.js';
+import { descriptionPlate_schema } from 'misskey-world/src/room/objects/descriptionPlate.schema.js';
 
 export const descriptionPlate = defineObject(descriptionPlate_schema, {
 	createInstance: () => {

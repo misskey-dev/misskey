@@ -4,7 +4,7 @@
  */
 
 import { defineObject } from '../object.js';
-import { pizza_schema } from './pizza.schema.js';
+import { pizza_schema } from 'misskey-world/src/room/objects/pizza.schema.js';
 
 export const pizza = defineObject(pizza_schema, {
 	createInstance: () => {

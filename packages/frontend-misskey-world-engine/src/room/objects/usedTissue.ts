@@ -4,7 +4,7 @@
  */
 
 import { defineObject } from '../object.js';
-import { usedTissue_schema } from './usedTissue.schema.js';
+import { usedTissue_schema } from 'misskey-world/src/room/objects/usedTissue.schema.js';
 
 export const usedTissue = defineObject(usedTissue_schema, {
 	createInstance: () => {

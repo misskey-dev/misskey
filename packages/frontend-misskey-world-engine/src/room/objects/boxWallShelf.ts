@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { boxWallShelf_schema } from './boxWallShelf.schema.js';
+import { boxWallShelf_schema } from 'misskey-world/src/room/objects/boxWallShelf.schema.js';
 
 export const boxWallShelf = defineObject(boxWallShelf_schema, {
 	createInstance: async ({ scene, options, model }) => {

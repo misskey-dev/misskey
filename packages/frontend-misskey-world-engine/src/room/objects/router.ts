@@ -4,7 +4,7 @@
  */
 
 import { defineObject } from '../object.js';
-import { router_schema } from './router.schema.js';
+import { router_schema } from 'misskey-world/src/room/objects/router.schema.js';
 
 export const router = defineObject(router_schema, {
 	createInstance: () => {

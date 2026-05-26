@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
-import { handheldGameConsole_schema } from './handheldGameConsole.schema.js';
+import { handheldGameConsole_schema } from 'misskey-world/src/room/objects/handheldGameConsole.schema.js';
 
 export const handheldGameConsole = defineObject(handheldGameConsole_schema, {
 	createInstance: async ({ scene, options, model }) => {

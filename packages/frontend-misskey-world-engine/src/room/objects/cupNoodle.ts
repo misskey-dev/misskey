@@ -7,7 +7,7 @@ import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { cm } from '../../../../../frontend-misskey-world-engine/src/utility.js';
 import { yuge } from '../utility.js';
-import { cupNoodle_schema } from './cupNoodle.schema.js';
+import { cupNoodle_schema } from 'misskey-world/src/room/objects/cupNoodle.schema.js';
 
 export const cupNoodle = defineObject(cupNoodle_schema, {
 	createInstance: ({ scene, root, sr }) => {

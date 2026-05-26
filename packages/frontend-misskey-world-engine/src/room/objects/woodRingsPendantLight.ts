@@ -7,7 +7,7 @@ import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 import { cm, remap, WORLD_SCALE } from '@/world/utility.js';
-import { woodRingsPendantLight_schema } from './woodRingsPendantLight.schema.js';
+import { woodRingsPendantLight_schema } from 'misskey-world/src/room/objects/woodRingsPendantLight.schema.js';
 
 export const woodRingsPendantLight = defineObject(woodRingsPendantLight_schema, {
 	createInstance: ({ lc, scene, options, model, graphicsQuality }) => {

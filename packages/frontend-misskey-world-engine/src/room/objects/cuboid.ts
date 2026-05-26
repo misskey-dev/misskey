@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { cuboid_schema } from './cuboid.schema.js';
+import { cuboid_schema } from 'misskey-world/src/room/objects/cuboid.schema.js';
 
 export const cuboid = defineObject(cuboid_schema, {
 	createInstance: async ({ scene, options, model }) => {

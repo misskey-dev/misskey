@@ -4,7 +4,7 @@
  */
 
 import { defineObject } from '../object.js';
-import { roundRug_schema } from './roundRug.schema.js';
+import { roundRug_schema } from 'misskey-world/src/room/objects/roundRug.schema.js';
 
 export const roundRug = defineObject(roundRug_schema, {
 	createInstance: () => {

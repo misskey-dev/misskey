@@ -7,7 +7,7 @@ import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { getLightRangeFactorByGraphicsQuality, initTv } from '../utility.js';
 import { cm, WORLD_SCALE } from '@/world/utility.js';
-import { tv_schema } from './tv.schema.js';
+import { tv_schema } from 'misskey-world/src/room/objects/tv.schema.js';
 
 export const tv = defineObject(tv_schema, {
 	createInstance: ({ options, lc, model, scene, timer, graphicsQuality }) => {

@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { colorBox_schema } from './colorBox.schema.js';
+import { colorBox_schema } from 'misskey-world/src/room/objects/colorBox.schema.js';
 
 export const colorBox = defineObject(colorBox_schema, {
 	createInstance: ({ options, model }) => {

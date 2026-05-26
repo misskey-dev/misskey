@@ -4,7 +4,7 @@
  */
 
 import { defineObject } from '../object.js';
-import { energyDrink_schema } from './energyDrink.schema.js';
+import { energyDrink_schema } from 'misskey-world/src/room/objects/energyDrink.schema.js';
 
 export const energyDrink = defineObject(energyDrink_schema, {
 	createInstance: () => {

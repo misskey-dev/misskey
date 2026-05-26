@@ -6,7 +6,7 @@
 import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
 import { remap } from '@/world/utility.js';
-import { poster_schema } from './poster.schema.js';
+import { poster_schema } from 'misskey-world/src/room/objects/poster.schema.js';
 
 export const poster = defineObject(poster_schema, {
 	createInstance: async ({ scene, options, model }) => {

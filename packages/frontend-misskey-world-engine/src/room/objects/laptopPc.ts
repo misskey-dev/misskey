@@ -7,7 +7,7 @@ import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
 import { cm, WORLD_SCALE } from '../../../../../frontend-misskey-world-engine/src/utility.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
-import { laptopPc_schema } from './laptopPc.schema.js';
+import { laptopPc_schema } from 'misskey-world/src/room/objects/laptopPc.schema.js';
 
 export const laptopPc = defineObject(laptopPc_schema, {
 	createInstance: async ({ lc, sr, scene, options, model, graphicsQuality }) => {

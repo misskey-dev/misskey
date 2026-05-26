@@ -4,7 +4,7 @@
  */
 
 import { defineObject } from '../object.js';
-import { miPlate_schema } from './miPlate.schema.js';
+import { miPlate_schema } from 'misskey-world/src/room/objects/miPlate.schema.js';
 
 export const miPlate = defineObject(miPlate_schema, {
 	createInstance: () => {

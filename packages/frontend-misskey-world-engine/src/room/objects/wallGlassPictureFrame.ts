@@ -6,7 +6,7 @@
 import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
 import { remap } from '@/world/utility.js';
-import { wallGlassPictureFrame_schema } from './wallGlassPictureFrame.schema.js';
+import { wallGlassPictureFrame_schema } from 'misskey-world/src/room/objects/wallGlassPictureFrame.schema.js';
 
 export const wallGlassPictureFrame = defineObject(wallGlassPictureFrame_schema, {
 	createInstance: async ({ scene, options, model }) => {

@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { cactusS_schema } from './cactusS.schema.js';
+import { cactusS_schema } from 'misskey-world/src/room/objects/cactusS.schema.js';
 
 export const cactusS = defineObject(cactusS_schema, {
 	createInstance: ({ options, model }) => {

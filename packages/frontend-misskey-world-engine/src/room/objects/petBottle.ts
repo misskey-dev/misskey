@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { petBottle_schema } from './petBottle.schema.js';
+import { petBottle_schema } from 'misskey-world/src/room/objects/petBottle.schema.js';
 
 export const petBottle = defineObject(petBottle_schema, {
 	createInstance: ({ model, options, scene }) => {

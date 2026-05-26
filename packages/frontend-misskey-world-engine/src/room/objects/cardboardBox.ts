@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { cardboardBox_schema } from './cardboardBox.schema.js';
+import { cardboardBox_schema } from 'misskey-world/src/room/objects/cardboardBox.schema.js';
 
 export const cardboardBox = defineObject(cardboardBox_schema, {
 	createInstance: ({ scene, options, model }) => {

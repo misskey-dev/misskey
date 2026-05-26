@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { tabletopIronFrameStand_schema } from './tabletopIronFrameStand.schema.js';
+import { tabletopIronFrameStand_schema } from 'misskey-world/src/room/objects/tabletopIronFrameStand.schema.js';
 
 export const tabletopIronFrameStand = defineObject(tabletopIronFrameStand_schema, {
 	createInstance: ({ options, model }) => {

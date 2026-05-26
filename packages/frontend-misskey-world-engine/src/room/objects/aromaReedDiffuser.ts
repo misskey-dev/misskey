@@ -4,8 +4,8 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
+import { aromaReedDiffuser_schema } from 'misskey-world/src/room/objects/aromaReedDiffuser.schema.js';
 import { defineObject } from '../object.js';
-import { aromaReedDiffuser_schema } from './aromaReedDiffuser.schema.js';
 
 export const aromaReedDiffuser = defineObject(aromaReedDiffuser_schema, {
 	createInstance: ({ options, model }) => {

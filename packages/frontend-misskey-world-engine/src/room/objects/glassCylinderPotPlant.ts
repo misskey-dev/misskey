@@ -4,7 +4,7 @@
  */
 
 import { defineObject } from '../object.js';
-import { glassCylinderPotPlant_schema } from './glassCylinderPotPlant.schema.js';
+import { glassCylinderPotPlant_schema } from 'misskey-world/src/room/objects/glassCylinderPotPlant.schema.js';
 
 export const glassCylinderPotPlant = defineObject(glassCylinderPotPlant_schema, {
 	createInstance: () => {

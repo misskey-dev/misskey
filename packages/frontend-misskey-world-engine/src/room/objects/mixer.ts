@@ -4,7 +4,7 @@
  */
 
 import { defineObject } from '../object.js';
-import { mixer_schema } from './mixer.schema.js';
+import { mixer_schema } from 'misskey-world/src/room/objects/mixer.schema.js';
 
 export const mixer = defineObject(mixer_schema, {
 	createInstance: () => {

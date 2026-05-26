@@ -4,7 +4,7 @@
  */
 
 import { defineObject } from '../object.js';
-import { aircon_schema } from './aircon.schema.js';
+import { aircon_schema } from 'misskey-world/src/room/objects/aircon.schema.js';
 
 export const aircon = defineObject(aircon_schema, {
 	createInstance: () => {

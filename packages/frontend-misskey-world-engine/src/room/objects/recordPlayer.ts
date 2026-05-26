@@ -4,7 +4,7 @@
  */
 
 import { defineObject } from '../object.js';
-import { recordPlayer_schema } from './recordPlayer.schema.js';
+import { recordPlayer_schema } from 'misskey-world/src/room/objects/recordPlayer.schema.js';
 
 export const recordPlayer = defineObject(recordPlayer_schema, {
 	createInstance: () => {

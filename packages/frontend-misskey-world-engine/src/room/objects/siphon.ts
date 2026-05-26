@@ -4,7 +4,7 @@
  */
 
 import { defineObject } from '../object.js';
-import { siphon_schema } from './siphon.schema.js';
+import { siphon_schema } from 'misskey-world/src/room/objects/siphon.schema.js';
 
 export const siphon = defineObject(siphon_schema, {
 	createInstance: () => {

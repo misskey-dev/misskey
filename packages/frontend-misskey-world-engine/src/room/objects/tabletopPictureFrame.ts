@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
-import { tabletopPictureFrame_schema } from './tabletopPictureFrame.schema.js';
+import { tabletopPictureFrame_schema } from 'misskey-world/src/room/objects/tabletopPictureFrame.schema.js';
 
 // NOTE: シェイプキーのnormalのエクスポートは無効にしないとmatを大きくしたときに面のレンダリングがグリッチする
 

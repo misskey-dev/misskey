@@ -4,7 +4,7 @@
  */
 
 import { defineObject } from '../object.js';
-import { custardPudding_schema } from './custardPudding.schema.js';
+import { custardPudding_schema } from 'misskey-world/src/room/objects/custardPudding.schema.js';
 
 export const custardPudding = defineObject(custardPudding_schema, {
 	createInstance: () => {

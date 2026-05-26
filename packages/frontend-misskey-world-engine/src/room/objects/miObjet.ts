@@ -4,7 +4,7 @@
  */
 
 import { defineObject } from '../object.js';
-import { miObjet_schema } from './miObjet.schema.js';
+import { miObjet_schema } from 'misskey-world/src/room/objects/miObjet.schema.js';
 
 export const miObjet = defineObject(miObjet_schema, {
 	createInstance: () => {

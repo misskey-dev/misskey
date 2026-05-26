@@ -7,7 +7,7 @@ import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { cm, WORLD_SCALE } from '../../../../../frontend-misskey-world-engine/src/utility.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
-import { desktopPc_schema } from './desktopPc.schema.js';
+import { desktopPc_schema } from 'misskey-world/src/room/objects/desktopPc.schema.js';
 
 export const desktopPc = defineObject(desktopPc_schema, {
 	createInstance: ({ options, model, root, scene, lc, graphicsQuality }) => {

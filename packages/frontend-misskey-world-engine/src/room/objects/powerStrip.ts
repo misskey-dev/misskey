@@ -4,7 +4,7 @@
  */
 
 import { defineObject } from '../object.js';
-import { powerStrip_schema } from './powerStrip.schema.js';
+import { powerStrip_schema } from 'misskey-world/src/room/objects/powerStrip.schema.js';
 
 export const powerStrip = defineObject(powerStrip_schema, {
 	createInstance: () => {

@@ -7,7 +7,7 @@ import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 import { cm, remap, WORLD_SCALE } from '@/world/utility.js';
-import { spotLight_schema } from './spotLight.schema.js';
+import { spotLight_schema } from 'misskey-world/src/room/objects/spotLight.schema.js';
 
 export const spotLight = defineObject(spotLight_schema, {
 	createInstance: ({ lc, scene, options, model, graphicsQuality }) => {

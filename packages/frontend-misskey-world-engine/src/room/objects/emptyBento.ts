@@ -4,7 +4,7 @@
  */
 
 import { defineObject } from '../object.js';
-import { emptyBento_schema } from './emptyBento.schema.js';
+import { emptyBento_schema } from 'misskey-world/src/room/objects/emptyBento.schema.js';
 
 export const emptyBento = defineObject(emptyBento_schema, {
 	createInstance: () => {

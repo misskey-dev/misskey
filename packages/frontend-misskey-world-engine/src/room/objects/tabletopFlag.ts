@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
-import { tabletopFlag_schema } from './tabletopFlag.schema.js';
+import { tabletopFlag_schema } from 'misskey-world/src/room/objects/tabletopFlag.schema.js';
 
 export const tabletopFlag = defineObject(tabletopFlag_schema, {
 	createInstance: async ({ model, options, scene }) => {

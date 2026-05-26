@@ -6,7 +6,7 @@
 import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
 import { remap } from '../../../../../frontend-misskey-world-engine/src/utility.js';
-import { clippedPicture_schema } from './clippedPicture.schema.js';
+import { clippedPicture_schema } from 'misskey-world/src/room/objects/clippedPicture.schema.js';
 
 export const clippedPicture = defineObject(clippedPicture_schema, {
 	createInstance: async ({ scene, options, model }) => {

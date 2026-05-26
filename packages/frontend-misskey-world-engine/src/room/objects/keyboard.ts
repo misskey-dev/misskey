@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { keyboard_schema } from './keyboard.schema.js';
+import { keyboard_schema } from 'misskey-world/src/room/objects/keyboard.schema.js';
 
 export const keyboard = defineObject(keyboard_schema, {
 	createInstance: ({ options, model }) => {

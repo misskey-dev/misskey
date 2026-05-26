@@ -4,7 +4,7 @@
  */
 
 import { defineObject } from '../object.js';
-import { curtain_schema } from './curtain.schema.js';
+import { curtain_schema } from 'misskey-world/src/room/objects/curtain.schema.js';
 
 export const curtain = defineObject(curtain_schema, {
 	createInstance: () => {

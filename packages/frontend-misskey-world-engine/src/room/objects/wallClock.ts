@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { wallClock_schema } from './wallClock.schema.js';
+import { wallClock_schema } from 'misskey-world/src/room/objects/wallClock.schema.js';
 
 export const wallClock = defineObject(wallClock_schema, {
 	createInstance: ({ sr, timer, options, model }) => {

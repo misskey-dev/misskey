@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { a4Case_schema } from './a4Case.schema.js';
+import { a4Case_schema } from 'misskey-world/src/room/objects/a4Case.schema.js';
 
 export const a4Case = defineObject(a4Case_schema, {
 	createInstance: ({ options, model }) => {

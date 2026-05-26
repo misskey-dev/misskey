@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { monstera_schema } from './monstera.schema.js';
+import { monstera_schema } from 'misskey-world/src/room/objects/monstera.schema.js';
 
 export const monstera = defineObject(monstera_schema, {
 	createInstance: ({ options, model }) => {

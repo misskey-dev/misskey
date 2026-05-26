@@ -4,7 +4,7 @@
  */
 
 import { defineObject } from '../object.js';
-import { facialTissue_schema } from './facialTissue.schema.js';
+import { facialTissue_schema } from 'misskey-world/src/room/objects/facialTissue.schema.js';
 
 export const facialTissue = defineObject(facialTissue_schema, {
 	createInstance: () => {

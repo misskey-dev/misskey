@@ -4,7 +4,7 @@
  */
 
 import { defineObject } from '../object.js';
-import { plant2_schema } from './plant2.schema.js';
+import { plant2_schema } from 'misskey-world/src/room/objects/plant2.schema.js';
 
 export const plant2 = defineObject(plant2_schema, {
 	createInstance: () => {

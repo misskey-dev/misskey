@@ -4,7 +4,7 @@
  */
 
 import { defineObject } from '../object.js';
-import { debugHipoly_schema } from './debugHipoly.schema.js';
+import { debugHipoly_schema } from 'misskey-world/src/room/objects/debugHipoly.schema.js';
 
 export const debugHipoly = defineObject(debugHipoly_schema, {
 	createInstance: () => {

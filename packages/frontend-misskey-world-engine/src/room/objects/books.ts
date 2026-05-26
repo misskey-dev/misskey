@@ -6,7 +6,7 @@
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { cm } from '../../../../../frontend-misskey-world-engine/src/utility.js';
-import { books_schema } from './books.schema.js';
+import { books_schema } from 'misskey-world/src/room/objects/books.schema.js';
 
 export const books = defineObject(books_schema, {
 	createInstance: ({ scene, options, model }) => {

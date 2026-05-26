@@ -4,7 +4,7 @@
  */
 
 import { defineObject } from '../object.js';
-import { coffeeCup_schema } from './coffeeCup.schema.js';
+import { coffeeCup_schema } from 'misskey-world/src/room/objects/coffeeCup.schema.js';
 
 export const coffeeCup = defineObject(coffeeCup_schema, {
 	createInstance: () => {
