@@ -4,9 +4,9 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { createTextureManager, defineObject } from '../object.js';
-import { normalizeUvToSquare } from 'misskey-world/src/utility.js';
 import { tabletopLcdButtonsController_schema } from 'misskey-world/src/room/objects/tabletopLcdButtonsController.schema.js';
+import { createTextureManager, defineObject } from '../object.js';
+import { normalizeUvToSquare } from '@/src/utility.js';
 
 export const tabletopLcdButtonsController = defineObject(tabletopLcdButtonsController_schema, {
 	createInstance: async ({ model, options, scene }) => {

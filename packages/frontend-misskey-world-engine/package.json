@@ -13,7 +13,8 @@
 		"@typescript-eslint/parser": "8.59.2",
 		"esbuild": "0.28.0",
 		"execa": "9.6.1",
-		"nodemon": "3.1.14"
+		"nodemon": "3.1.14",
+		"@types/tinycolor2": "1.4.6"
 	},
 	"files": [
 		"built"
@@ -24,6 +25,8 @@
 		"@babylonjs/loaders": "9.9.0",
 		"@babylonjs/materials": "9.9.0",
 		"eventemitter3": "5.0.4",
-		"seedrandom": "3.0.5"
+		"seedrandom": "3.0.5",
+		"tinycolor2": "1.6.0",
+		"hls.js": "1.6.16"
 	}
 }

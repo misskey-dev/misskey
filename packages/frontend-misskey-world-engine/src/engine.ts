@@ -4,12 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { AxesViewer } from '@babylonjs/core/Debug/axesViewer';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
-import { EventEmitter } from 'eventemitter3';
 import tinycolor from 'tinycolor2';
 import Hls from 'hls.js';
-import { RecyvlingTextGrid, Timer, WORLD_SCALE, camelToKebab, cm, createPlaneUvMapper, normalizeUvToSquare, randomRange } from './utility.js';
+import { RecyvlingTextGrid, Timer, createPlaneUvMapper, randomRange } from './utility.js';
 import { TIME_MAP } from './utility.js';
 import { EngineBase } from './EngineBase.js';
 

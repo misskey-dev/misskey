@@ -4,9 +4,9 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { createTextureManager, defineObject } from '../object.js';
-import { normalizeUvToSquare } from 'misskey-world/src/utility.js';
 import { djPlayer_schema } from 'misskey-world/src/room/objects/djPlayer.schema.js';
+import { createTextureManager, defineObject } from '../object.js';
+import { normalizeUvToSquare } from '@/src/utility.js';
 
 export const djPlayer = defineObject(djPlayer_schema, {
 	createInstance: async ({ model, options, scene }) => {

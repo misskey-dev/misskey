@@ -1187,13 +1187,22 @@ importers:
       eventemitter3:
         specifier: 5.0.4
         version: 5.0.4
+      hls.js:
+        specifier: 1.6.16
+        version: 1.6.16
       seedrandom:
         specifier: 3.0.5
         version: 3.0.5
+      tinycolor2:
+        specifier: 1.6.0
+        version: 1.6.0
     devDependencies:
       '@types/seedrandom':
         specifier: 3.0.8
         version: 3.0.8
+      '@types/tinycolor2':
+        specifier: 1.4.6
+        version: 1.4.6
       '@typescript-eslint/eslint-plugin':
         specifier: 8.59.2
         version: 8.59.2(@typescript-eslint/parser@8.59.2(eslint@9.39.4)(typescript@5.9.3))(eslint@9.39.4)(typescript@5.9.3)

@@ -4,10 +4,11 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { createTextureManager, defineObject } from '../object.js';
-import { cm, WORLD_SCALE, normalizeUvToSquare } from 'misskey-world/src/utility.js';
-import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
+import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { monitor_schema } from 'misskey-world/src/room/objects/monitor.schema.js';
+import { createTextureManager, defineObject } from '../object.js';
+import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
+import { normalizeUvToSquare } from '@/src/utility.js';
 
 export const monitor = defineObject(monitor_schema, {
 	createInstance: async ({ lc, scene, options, model, graphicsQuality }) => {
