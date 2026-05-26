@@ -3613,7 +3613,7 @@ _miRoom:
       frameMat: "フレームの素材"
     blind: "ブラインド"
     _blind:
-      angle: "羽根の回転角度（ラジアン）"
+      angle: "羽根の回転角度"
       blades: "羽根の枚数"
       open: "開閉状態"
     book: "本"
@@ -3636,7 +3636,7 @@ _miRoom:
       potMat: "鉢の素材"
     cardboardBox: "段ボール箱"
     _cardboardBox:
-      variation: "バリエーション"
+      variation: "種類"
       variation_aizon: "Aizon"
       variation_default: "デフォルト"
       variation_mikan: "みかん"
@@ -3663,13 +3663,13 @@ _miRoom:
       x: "X"
       y: "Y"
       z: "Z"
-    cupNoodle: "カップ麺"
+    cupNoodle: "インスタントラーメン"
     curtain: "カーテン"
     custardPudding: "プリン"
     descriptionPlate: "説明が書かれたプレート"
     desk: "デスク"
     _desk:
-      boardMat: "板の素材"
+      boardMat: "天板の素材"
       depth: "奥行き"
       frameMat: "フレームの素材"
       width: "幅"
@@ -3689,8 +3689,8 @@ _miRoom:
       screenBrightness: "画面の明るさ"
     ductRailSpotLights: "スポットライト付きダクトレール"
     _ductRailSpotLights:
-      angleH: "横方向の角度"
-      angleV: "縦方向の角度"
+      angleH: "水平角度"
+      angleV: "垂直角度"
       bodyMat: "本体の素材"
       light: "照明"
     ductTape: "ガムテープ"
@@ -3700,11 +3700,11 @@ _miRoom:
       ledBrightness: "LEDの明るさ"
       ledColor: "LEDの色"
       text: "テキスト"
-    emptyBento: "空の弁当箱"
+    emptyBento: "空の弁当容器"
     energyDrink: "エナジードリンク"
     envelope: "封筒"
     facialTissue: "ティッシュ"
-    glassCylinderPotPlant: "ガラスシリンダー鉢植え"
+    glassCylinderPotPlant: "ガラスシリンダーの鉢植えと植物"
     handheldGameConsole: "携帯ゲーム機"
     _handheldGameConsole:
       bodyMat: "本体の素材"
@@ -3721,14 +3721,14 @@ _miRoom:
       mat: "素材"
     ironFrameTable: "アイアンフレームテーブル"
     _ironFrameTable:
-      boardMat: "板の素材"
+      boardMat: "天板の素材"
       depth: "奥行き"
       frameMat: "フレームの素材"
       height: "高さ"
       width: "幅"
     issyoubin: "一升瓶"
     _issyoubin:
-      variation: "バリエーション"
+      variation: "種類"
     keyboard: "キーボード"
     _keyboard:
       bodyMat: "本体の素材"
@@ -3747,8 +3747,8 @@ _miRoom:
     _lavaLamp:
       bodyMat: "本体の素材"
       glassMat: "ガラスの素材"
-      lavaColor: "ラバの色"
-      lightColor: "光の色"
+      lavaColor: "オイルの色"
+      lightColor: "ランプの色"
     letterCase: "レターケース"
     lowPartitionBar: "低いパーティションバー"
     _lowPartitionBar:

@@ -13471,7 +13471,7 @@ export interface Locale extends ILocale {
             "blind": string;
             "_blind": {
                 /**
-                 * 羽根の回転角度（ラジアン）
+                 * 羽根の回転角度
                  */
                 "angle": string;
                 /**
@@ -13553,7 +13553,7 @@ export interface Locale extends ILocale {
             "cardboardBox": string;
             "_cardboardBox": {
                 /**
-                 * バリエーション
+                 * 種類
                  */
                 "variation": string;
                 /**
@@ -13652,7 +13652,7 @@ export interface Locale extends ILocale {
                 "z": string;
             };
             /**
-             * カップ麺
+             * インスタントラーメン
              */
             "cupNoodle": string;
             /**
@@ -13673,7 +13673,7 @@ export interface Locale extends ILocale {
             "desk": string;
             "_desk": {
                 /**
-                 * 板の素材
+                 * 天板の素材
                  */
                 "boardMat": string;
                 /**
@@ -13747,11 +13747,11 @@ export interface Locale extends ILocale {
             "ductRailSpotLights": string;
             "_ductRailSpotLights": {
                 /**
-                 * 横方向の角度
+                 * 水平角度
                  */
                 "angleH": string;
                 /**
-                 * 縦方向の角度
+                 * 垂直角度
                  */
                 "angleV": string;
                 /**
@@ -13790,7 +13790,7 @@ export interface Locale extends ILocale {
                 "text": string;
             };
             /**
-             * 空の弁当箱
+             * 空の弁当容器
              */
             "emptyBento": string;
             /**
@@ -13806,7 +13806,7 @@ export interface Locale extends ILocale {
              */
             "facialTissue": string;
             /**
-             * ガラスシリンダー鉢植え
+             * ガラスシリンダーの鉢植えと植物
              */
             "glassCylinderPotPlant": string;
             /**
@@ -13865,7 +13865,7 @@ export interface Locale extends ILocale {
             "ironFrameTable": string;
             "_ironFrameTable": {
                 /**
-                 * 板の素材
+                 * 天板の素材
                  */
                 "boardMat": string;
                 /**
@@ -13891,7 +13891,7 @@ export interface Locale extends ILocale {
             "issyoubin": string;
             "_issyoubin": {
                 /**
-                 * バリエーション
+                 * 種類
                  */
                 "variation": string;
             };
@@ -13959,11 +13959,11 @@ export interface Locale extends ILocale {
                  */
                 "glassMat": string;
                 /**
-                 * ラバの色
+                 * オイルの色
                  */
                 "lavaColor": string;
                 /**
-                 * 光の色
+                 * ランプの色
                  */
                 "lightColor": string;
             };
