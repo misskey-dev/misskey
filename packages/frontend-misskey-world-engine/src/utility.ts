@@ -5,14 +5,6 @@
 
 import * as BABYLON from '@babylonjs/core';
 
-// ベクトルが小さいと動きが不自然になったりするので大きくする
-// https://forum.babylonjs.com/t/the-camera-isnt-moving-correctly-in-my-custom-input/63286/2
-export const WORLD_SCALE = 100;
-
-//// cm to meter. 二重に適用しないように注意すること。
-//export const cm = (value: number) => value / 100;
-export const cm = (value: number) => value;
-
 export const TIME_MAP = {
 	0: 2,
 	1: 2,
@@ -556,7 +548,7 @@ export class RecyvlingTextGrid {
 
 export function sleep(ms: number) {
 	// workerで実行される可能性がある
-	// eslint-disable-next-line no-restricted-globals
+	 
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
@@ -566,7 +558,7 @@ export class Timer {
 
 	public setTimeout(callback: () => void, ms: number) {
 		// workerで実行される可能性がある
-		// eslint-disable-next-line no-restricted-globals
+		 
 		const id = setTimeout(() => {
 			this.timeoutIds = this.timeoutIds.filter(i => i !== id);
 			callback();
@@ -577,7 +569,7 @@ export class Timer {
 
 	public setInterval(callback: () => void, ms: number, signal?: AbortSignal) {
 		// workerで実行される可能性がある
-		// eslint-disable-next-line no-restricted-globals
+		 
 		const id = setInterval(callback, ms);
 		this.intervalIds.push(id);
 		if (signal != null) {
@@ -590,14 +582,14 @@ export class Timer {
 
 	private clearTimeout(id: number) {
 		// workerで実行される可能性がある
-		// eslint-disable-next-line no-restricted-globals
+		 
 		clearTimeout(id);
 		this.timeoutIds = this.timeoutIds.filter(i => i !== id);
 	}
 
 	private clearInterval(id: number) {
 		// workerで実行される可能性がある
-		// eslint-disable-next-line no-restricted-globals
+		 
 		clearInterval(id);
 		this.intervalIds = this.intervalIds.filter(i => i !== id);
 	}
@@ -605,14 +597,14 @@ export class Timer {
 	public dispose() {
 		for (const id of this.timeoutIds) {
 			// workerで実行される可能性がある
-			// eslint-disable-next-line no-restricted-globals
+			 
 			clearTimeout(id);
 		}
 		this.timeoutIds = [];
 
 		for (const id of this.intervalIds) {
 			// workerで実行される可能性がある
-		// eslint-disable-next-line no-restricted-globals
+		 
 			clearInterval(id);
 		}
 		this.intervalIds = [];

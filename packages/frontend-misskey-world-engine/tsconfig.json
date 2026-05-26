@@ -17,10 +17,10 @@
 		"noImplicitReturns": true,
 		"esModuleInterop": true,
 		"verbatimModuleSyntax": true,
-		"rootDir": "./src",
 		"paths": {
 			"@/*": ["./*"],
-			"@@/*": ["./*"]
+			"@@/*": ["./*"],
+			"misskey-world/*": ["../misskey-world/*"]
 		},
 		"typeRoots": [
 			"./@types",

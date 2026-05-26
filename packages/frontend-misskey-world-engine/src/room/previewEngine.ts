@@ -6,18 +6,17 @@
 import * as BABYLON from '@babylonjs/core';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic.js';
 import { GridMaterial } from '@babylonjs/materials';
-import { camelToKebab, WORLD_SCALE, cm, getMeshesBoundingBox, Timer, sleep, ArcRotateCameraManualInput } from '../utility.js';
+import { camelToKebab, getMeshesBoundingBox, ArcRotateCameraManualInput } from '../utility.js';
 import { EngineBase } from '../EngineBase.js';
 import { getObjectDef } from './object-defs.js';
 import { SYSTEM_MESH_NAMES, GRAPHICS_QUALITY } from './utility.js';
 import { ObjectContainer } from './ObjectContainer.js';
 import type { RawOptions } from './object.js';
 import type { RoomAttachments } from './utility.js';
-import { genId } from '@/utility/id.js';
-import { deepClone } from '@/utility/clone.js';
 
 export class RoomObjectPreviewEngine extends EngineBase<{
 	'loadingProgress': (ctx: { progress: number }) => void;
+	'contextlost': (ctx: { reason: string; message: string; }) => void;
 }> {
 	private sr: BABYLON.SnapshotRenderingHelper;
 	private shadowGenerator: BABYLON.ShadowGenerator;
@@ -162,7 +161,7 @@ export class RoomObjectPreviewEngine extends EngineBase<{
 
 		if (_DEV_) { // SR状態確認用
 			const box = BABYLON.MeshBuilder.CreateBox('', { size: cm(10) }, this.scene);
-			 
+
 			setInterval(() => {
 				box.position = new BABYLON.Vector3(0, Math.random() * cm(10), 0);
 			}, 10);
@@ -312,7 +311,7 @@ export class RoomObjectPreviewEngine extends EngineBase<{
 		this.sr.disableSnapshotRendering();
 		this.engine.resize(true);
 		// workerで実行される可能性がある
-		 
+
 		setTimeout(() => {
 			this.sr.enableSnapshotRendering();
 		}, 1);

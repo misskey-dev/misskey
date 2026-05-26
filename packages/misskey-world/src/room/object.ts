@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-// babylonのドメイン知識は持たない
 export type RoomStateObject = {
 	id: string;
 	type: string;

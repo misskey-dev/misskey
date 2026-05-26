@@ -17,36 +17,22 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
-import { EventEmitter } from 'eventemitter3';
-import { TIME_MAP, scaleMorph, camelToKebab, cm, WORLD_SCALE, getMeshesBoundingBox, Timer, getYRotationDirection, FreeCameraManualInput, remap } from '../utility.js';
+import { TIME_MAP, getMeshesBoundingBox, Timer, getYRotationDirection, FreeCameraManualInput, remap } from '../utility.js';
 import { EngineBase } from '../EngineBase.js';
 import { getObjectDef } from './object-defs.js';
 import { findMaterial, GRAPHICS_QUALITY, ModelManager, SYSTEM_HEYA_MESH_NAMES, SYSTEM_MESH_NAMES } from './utility.js';
 import { JapaneseEnvManager, MuseumEnvManager, SimpleEnvManager } from './env.js';
 import { ObjectContainer } from './ObjectContainer.js';
 import type { RoomAttachments } from './utility.js';
-import type { ObjectDef, RawOptions, RoomStateObject } from './object.js';
+import type { ObjectDef, RawOptions } from './object.js';
 import type { GridMaterial } from '@babylonjs/materials';
-import type { EnvManager, JapaneseEnvOptions, SimpleEnvOptions } from './env.js';
-import { genId } from '@/utility/id.js';
-import { deepClone } from '@/utility/clone.js';
+import type { EnvManager } from './env.js';
+import type { RoomStateObject } from 'misskey-world/src/room/object.js';
+import type { RoomState } from 'misskey-world/src/room/type.js';
 
 const BAKE_TRANSFORM = false; // 実験的
 const IGNORE_OBJECTS: string[] = ['aquarium']; // for debug
 const IN_WEB_WORKER = typeof window === 'undefined';
-
-export type RoomState = {
-	env: {
-		type: 'simple';
-		options: SimpleEnvOptions;
-	} | {
-		type: 'japanese';
-		options: JapaneseEnvOptions;
-	};
-	roomLightColor: [number, number, number];
-	installedObjects: RoomStateObject[];
-	worldScale: number;
-};
 
 function enableObjectCollision(meshes: BABYLON.Mesh[]) {
 	for (const mesh of meshes) {
@@ -84,6 +70,7 @@ export class RoomEngine extends EngineBase<{
 		};
 	}) => void;
 	'loadingProgress': (ctx: { progress: number }) => void;
+	'contextlost': (ctx: { reason: string; message: string; }) => void;
 }> {
 	private useGlow: boolean;
 	public camera: BABYLON.UniversalCamera;
@@ -389,7 +376,7 @@ export class RoomEngine extends EngineBase<{
 
 		if (_DEV_) { // SR状態確認用
 			const box = BABYLON.MeshBuilder.CreateBox('', { size: cm(10) }, this.scene);
-			 
+
 			setInterval(() => {
 				box.position = new BABYLON.Vector3(0, Math.random() * cm(10), 0);
 			}, 10);
@@ -1157,7 +1144,7 @@ export class RoomEngine extends EngineBase<{
 		this.envManager.turnOnRoomLight();
 		if (!forInit) {
 			// workerで実行される可能性がある
-			 
+
 			setTimeout(() => {
 				this.sr.enableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 			}, 10);
@@ -1168,7 +1155,7 @@ export class RoomEngine extends EngineBase<{
 		this.sr.disableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 		this.envManager.turnOffRoomLight();
 		// workerで実行される可能性がある
-		 
+
 		setTimeout(() => {
 			this.sr.enableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 		}, 10);
@@ -1453,7 +1440,7 @@ export class RoomEngine extends EngineBase<{
 		this.sr.disableSnapshotRendering();
 		this.engine.resize(true);
 		// workerで実行される可能性がある
-		 
+
 		setTimeout(() => {
 			this.sr.enableSnapshotRendering();
 		}, 1);

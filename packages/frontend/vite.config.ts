@@ -136,6 +136,7 @@ export function getConfig(): UserConfig {
 				'@/': __dirname + '/src/',
 				'@@/': __dirname + '/../frontend-shared/',
 				'misskey-world-engine/': __dirname + '/../frontend-misskey-world-engine/',
+				'misskey-world/': __dirname + '/../misskey-world/',
 				'/client-assets/': __dirname + '/assets/',
 				'/static-assets/': __dirname + '/../backend/assets/',
 				'/fluent-emoji/': '@misskey-dev/emoji-assets/fluent-emoji/',

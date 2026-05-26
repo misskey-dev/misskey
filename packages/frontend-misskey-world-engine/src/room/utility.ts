@@ -4,8 +4,7 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import * as Misskey from 'misskey-js';
-import { applyMorphTargetsToMesh, cm, getPlaneUvIndexes, Timer } from '../utility.js';
+import { applyMorphTargetsToMesh, getPlaneUvIndexes, Timer } from '../utility.js';
 
 export const GRAPHICS_QUALITY = {
 	HIGH: 1,
@@ -22,11 +21,6 @@ export function getLightRangeFactorByGraphicsQuality(quality: number) {
 		return 0.25;
 	}
 }
-
-// TODO: addFileみたいなメソッドを持つクラス化して引き回させた方が便利かもしれない
-export type RoomAttachments = {
-	files: Misskey.entities.DriveFile[];
-};
 
 export const SYSTEM_MESH_NAMES = ['__TOP__', '__SIDE__', '__BOTTOM__', '__PICK__', '__COLLISION__'];
 export const SYSTEM_HEYA_MESH_NAMES = ['__ROOM_WALL__', '__ROOM_SIDE__', '__ROOM_FLOOR__', '__ROOM_CEILING__', '__ROOM_TOP__', '__ROOM_BOTTOM__', '__COLLISION__'];

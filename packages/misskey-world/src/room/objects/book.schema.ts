@@ -10,35 +10,25 @@ export const book_schema = defineObjectSchema({
 		schema: {
 			variation: {
 				type: 'enum',
-				enum: [0, 1],
-			},
-			width: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-			height: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
-			},
-			thickness: {
-				type: 'range',
-				min: 0,
-				max: 1,
-				step: 0.01,
+				enum: [{
+					value: 'A',
+				}, {
+					value: 'B',
+				}, {
+					value: 'C',
+				}, {
+					value: 'D',
+				}, {
+					value: 'E',
+				}],
 			},
 		},
 		default: {
-			variation: 0,
-			width: 0.07,
-			height: 0.07,
-			thickness: 0.1,
+			variation: 'A',
 		},
 	},
 	placement: 'top',
 	hasCollisions: false,
 	hasTexture: true,
+	canPreMeshesMerging: true,
 });

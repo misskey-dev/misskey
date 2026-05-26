@@ -27,6 +27,7 @@
 			"@/*": ["./src/*"],
 			"@@/*": ["../frontend-shared/*"],
 			"misskey-world-engine/*": ["../frontend-misskey-world-engine/*"],
+			"misskey-world/*": ["../misskey-world/*"]
 		},
 		"typeRoots": [
 			"./@types",

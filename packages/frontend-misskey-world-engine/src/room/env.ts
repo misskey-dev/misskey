@@ -1,4 +1,4 @@
- 
+
 /*
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
@@ -53,32 +53,6 @@ export abstract class EnvManager<T = any> {
 		}
 	}
 }
-
-export type SimpleEnvOptions = {
-	dimension: [number, number];
-	window: 'none' | 'kosidakamado' | 'demado' | 'hakidasimado';
-	walls: Record<'n' | 's' | 'w' | 'e', {
-		material: null | 'wood' | 'concrete';
-		color: [number, number, number];
-		withBeam: boolean;
-		beamMaterial: null | 'wood' | 'concrete';
-		beamColor: [number, number, number];
-		withBaseboard: boolean;
-	}>;
-	pillars: Record<'nw' | 'ne' | 'sw' | 'se', {
-		material: null | 'wood' | 'concrete';
-		color: [number, number, number];
-		show: boolean;
-	}>;
-	flooring: {
-		material: null | 'wood' | 'concrete';
-		color: [number, number, number];
-	};
-	ceiling: {
-		material: null | 'wood' | 'concrete';
-		color: [number, number, number];
-	};
-};
 
 // TODO: マテリアルは必要になるまで作成しないようにする
 
@@ -469,10 +443,6 @@ export class SimpleEnvManager extends EnvManager<SimpleEnvOptions> {
 	}
 }
 
-export type JapaneseEnvOptions = {
-	window: 'none' | 'kosidakamado' | 'demado' | 'hakidasimado';
-};
-
 export class JapaneseEnvManager extends EnvManager<JapaneseEnvOptions> {
 	private loaderResult: BABYLON.ISceneLoaderAsyncResult | null = null;
 	private meshes: BABYLON.Mesh[] = [];
@@ -649,8 +619,6 @@ export class JapaneseEnvManager extends EnvManager<JapaneseEnvOptions> {
 		super.dispose();
 	}
 }
-
-export type MuseumEnvOptions = any;
 
 export class MuseumEnvManager extends EnvManager<MuseumEnvOptions> {
 	private loaderResult: BABYLON.ISceneLoaderAsyncResult | null = null;

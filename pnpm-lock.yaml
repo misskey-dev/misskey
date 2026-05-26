@@ -1457,20 +1457,7 @@ importers:
         version: 3.1.14
 
   packages/misskey-world:
-    dependencies:
-      eventemitter3:
-        specifier: 5.0.4
-        version: 5.0.4
-      seedrandom:
-        specifier: 3.0.5
-        version: 3.0.5
     devDependencies:
-      '@types/node':
-        specifier: 24.12.2
-        version: 24.12.2
-      '@types/seedrandom':
-        specifier: 3.0.8
-        version: 3.0.8
       '@typescript-eslint/eslint-plugin':
         specifier: 8.59.2
         version: 8.59.2(@typescript-eslint/parser@8.59.2(eslint@9.39.4)(typescript@5.9.3))(eslint@9.39.4)(typescript@5.9.3)

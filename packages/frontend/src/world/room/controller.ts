@@ -4,12 +4,12 @@
  */
 
 import { ref, shallowRef } from 'vue';
-import { cm } from '../../../../frontend-misskey-world-engine/src/utility.js';
+import { cm } from 'misskey-world/src/utility.js';
 import { EngineControllerBase } from '../EngineControllerBase.js';
 import type { ShallowRef } from 'vue';
-import type { RoomEngine, RoomState } from './engine.js';
-import type { RoomStateObject } from './object.js';
-import type { RoomAttachments } from './utility.js';
+import type { RoomStateObject } from 'misskey-world/src/room/object.js';
+import type { RoomEngine } from 'misskey-world-engine/src/room/engine.js';
+import type { RoomAttachments, RoomState } from 'misskey-world/src/room/type.js';
 import * as sound from '@/utility/sound.js';
 import { deepEqual } from '@/utility/deep-equal.js';
 import { deepClone } from '@/utility/clone.js';
