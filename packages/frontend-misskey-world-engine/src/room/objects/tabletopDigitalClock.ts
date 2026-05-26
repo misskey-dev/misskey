@@ -4,9 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../object.js';
-import { cm, get7segMeshesOfCurrentTime, WORLD_SCALE } from 'misskey-world/src/utility.js';
+import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { tabletopDigitalClock_schema } from 'misskey-world/src/room/objects/tabletopDigitalClock.schema.js';
+import { defineObject } from '../object.js';
+import { get7segMeshesOfCurrentTime } from '../../utility.js';
 
 export const tabletopDigitalClock = defineObject(tabletopDigitalClock_schema, {
 	createInstance: ({ sr, options, model, timer }) => {

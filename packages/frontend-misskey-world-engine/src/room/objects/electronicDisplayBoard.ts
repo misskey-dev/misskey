@@ -4,9 +4,9 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../object.js';
-import { RecyvlingTextGrid } from 'misskey-world/src/utility.js';
 import { electronicDisplayBoard_schema } from 'misskey-world/src/room/objects/electronicDisplayBoard.schema.js';
+import { defineObject } from '../object.js';
+import { RecyvlingTextGrid } from '../../utility.js';
 
 export const electronicDisplayBoard = defineObject(electronicDisplayBoard_schema, {
 	createInstance: async ({ scene, options, model, timer }) => {
