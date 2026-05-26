@@ -67,6 +67,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick, shallowRef, computed, triggerRef, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
+import { OBJECT_SCHEMA_DEFS } from 'misskey-world/src/room/object-schema-defs.js';
 import XObjectCustomizeForm from './room.object-customize-form.vue';
 import XItem from './room.add-object-dialog.item.vue';
 import type { PreviewEngineControllerOptions } from '@/world/room/previewEngineController.js';

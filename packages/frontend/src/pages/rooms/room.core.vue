@@ -87,6 +87,7 @@ import { computed, defineAsyncComponent, markRaw, nextTick, onActivated, onDeact
 import * as Misskey from 'misskey-js';
 import { cm, getHex, getRgb, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { GRAPHICS_QUALITY } from 'misskey-world-engine/src/room/utility.js';
+import { OBJECT_SCHEMA_DEFS } from 'misskey-world/src/room/object-schema-defs.js';
 import XObjectCustomizeForm from './room.object-customize-form.vue';
 import XEnvOptions from './room.env-options.vue';
 import type { RoomControllerOptions } from '@/world/room/controller.js';

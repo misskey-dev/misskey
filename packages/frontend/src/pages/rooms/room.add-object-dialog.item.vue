@@ -16,6 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script setup lang="ts">
 import { camelToKebab } from 'misskey-world/src/utility.js';
+import { OBJECT_SCHEMA_DEFS } from 'misskey-world/src/room/object-schema-defs.js';
 import { OBJECT_UI_DEFS } from '@/world/room/object-ui-defs.js';
 
 const props = defineProps<{
