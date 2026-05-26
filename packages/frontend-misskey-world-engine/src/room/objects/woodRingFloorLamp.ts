@@ -6,7 +6,7 @@
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
-import { cm, WORLD_SCALE } from '@/world/utility.js';
+import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { woodRingFloorLamp_schema } from 'misskey-world/src/room/objects/woodRingFloorLamp.schema.js';
 
 export const woodRingFloorLamp = defineObject(woodRingFloorLamp_schema, {

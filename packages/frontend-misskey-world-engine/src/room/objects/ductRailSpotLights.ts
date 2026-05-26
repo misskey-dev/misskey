@@ -6,7 +6,7 @@
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
-import { cm, remap, WORLD_SCALE } from '@/world/utility.js';
+import { cm, remap, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { ductRailSpotLights_schema } from 'misskey-world/src/room/objects/ductRailSpotLights.schema.js';
 
 export const ductRailSpotLights = defineObject(ductRailSpotLights_schema, {

@@ -6,7 +6,7 @@
 import * as BABYLON from '@babylonjs/core';
 import seedrandom from 'seedrandom';
 import { defineObject } from '../object.js';
-import { cm, remap, WORLD_SCALE } from '@/world/utility.js';
+import { cm, remap, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { randomBooks_schema } from 'misskey-world/src/room/objects/randomBooks.schema.js';
 
 export const randomBooks = defineObject(randomBooks_schema, {

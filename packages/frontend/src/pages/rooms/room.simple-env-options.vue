@@ -108,7 +108,7 @@ import * as os from '@/os.js';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRange from '@/components/MkRange.vue';
-import { getHex, getRgb } from '@/world/utility.js';
+import { getHex, getRgb } from 'misskey-world/src/utility.js';
 import MkFolder from '@/components/MkFolder.vue';
 
 const props = defineProps<{

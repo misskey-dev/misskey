@@ -6,7 +6,7 @@
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
 import { getLightRangeFactorByGraphicsQuality, initTv } from '../utility.js';
-import { cm, WORLD_SCALE } from '@/world/utility.js';
+import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { tv_schema } from 'misskey-world/src/room/objects/tv.schema.js';
 
 export const tv = defineObject(tv_schema, {

@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
-import { remap } from '@/world/utility.js';
+import { remap } from 'misskey-world/src/utility.js';
 import { tabletopGlassPictureFrame_schema } from 'misskey-world/src/room/objects/tabletopGlassPictureFrame.schema.js';
 
 export const tabletopGlassPictureFrame = defineObject(tabletopGlassPictureFrame_schema, {

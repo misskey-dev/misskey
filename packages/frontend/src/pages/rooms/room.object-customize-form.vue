@@ -83,7 +83,7 @@ import * as os from '@/os.js';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRange from '@/components/MkRange.vue';
-import { getHex, getRgb } from '@/world/utility.js';
+import { getHex, getRgb } from 'misskey-world/src/utility.js';
 import { chooseDriveFile } from '@/utility/drive.js';
 import MkRadios from '@/components/MkRadios.vue';
 import MkFolder from '@/components/MkFolder.vue';

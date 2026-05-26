@@ -21,7 +21,7 @@ import { ensureSignin } from '@/i';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { WORLD_SCALE } from '@/world/utility.js';
+import { WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { useRouter } from '@/router.js';
 
 const router = useRouter();

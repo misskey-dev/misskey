@@ -75,7 +75,7 @@ import type { RoomAttachments } from '@/world/room/utility.js';
 import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import * as os from '@/os.js';
-import { camelToKebab } from '@/world/utility.js';
+import { camelToKebab } from 'misskey-world/src/utility.js';
 import MkButton from '@/components/MkButton.vue';
 import { prefer } from '@/preferences.js';
 import { deepClone } from '@/utility/clone.js';

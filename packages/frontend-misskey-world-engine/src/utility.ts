@@ -254,14 +254,6 @@ export function applyMorphTargetsToMesh(mesh: BABYLON.Mesh) {
 	mesh.computeWorldMatrix(true);
 }
 
-// ex) hangingTShirt -> hanging-t-shirt
-export const camelToKebab = (s: string) => {
-	return s
-		.replace(/([a-z0-9])([A-Z])/g, '$1-$2')
-		.replace(/([A-Z])([A-Z][a-z])/g, '$1-$2')
-		.toLowerCase();
-};
-
 // この実装方法だとマイナスの座標をうまく処理できず結果がおかしくなるので応急処置で全体を+10000cmオフセットしてから計算している
 export function getMeshesBoundingBox(meshes: BABYLON.Mesh[], forceComputeWorldMatrix = false): BABYLON.BoundingBox {
 	let min = new BABYLON.Vector3(Number.MAX_VALUE, Number.MAX_VALUE, Number.MAX_VALUE);
@@ -548,7 +540,7 @@ export class RecyvlingTextGrid {
 
 export function sleep(ms: number) {
 	// workerで実行される可能性がある
-	 
+
 	return new Promise(resolve => setTimeout(resolve, ms));
 }
 
@@ -558,7 +550,7 @@ export class Timer {
 
 	public setTimeout(callback: () => void, ms: number) {
 		// workerで実行される可能性がある
-		 
+
 		const id = setTimeout(() => {
 			this.timeoutIds = this.timeoutIds.filter(i => i !== id);
 			callback();
@@ -569,7 +561,7 @@ export class Timer {
 
 	public setInterval(callback: () => void, ms: number, signal?: AbortSignal) {
 		// workerで実行される可能性がある
-		 
+
 		const id = setInterval(callback, ms);
 		this.intervalIds.push(id);
 		if (signal != null) {
@@ -582,14 +574,14 @@ export class Timer {
 
 	private clearTimeout(id: number) {
 		// workerで実行される可能性がある
-		 
+
 		clearTimeout(id);
 		this.timeoutIds = this.timeoutIds.filter(i => i !== id);
 	}
 
 	private clearInterval(id: number) {
 		// workerで実行される可能性がある
-		 
+
 		clearInterval(id);
 		this.intervalIds = this.intervalIds.filter(i => i !== id);
 	}
@@ -597,14 +589,14 @@ export class Timer {
 	public dispose() {
 		for (const id of this.timeoutIds) {
 			// workerで実行される可能性がある
-			 
+
 			clearTimeout(id);
 		}
 		this.timeoutIds = [];
 
 		for (const id of this.intervalIds) {
 			// workerで実行される可能性がある
-		 
+
 			clearInterval(id);
 		}
 		this.intervalIds = [];
@@ -622,24 +614,6 @@ export function getYRotationDirection(rotationY: number): '+x' | '+z' | '-x' | '
 	} else {
 		return '+x';
 	}
-}
-
-export function getHex(c: [number, number, number]) {
-	return `#${c.map(x => Math.round(x * 255).toString(16).padStart(2, '0')).join('')}`;
-}
-
-export function getRgb(hex: string | number): [number, number, number] | null {
-	if (
-		typeof hex === 'number' ||
-		typeof hex !== 'string' ||
-		!/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(hex)
-	) {
-		return null;
-	}
-
-	const m = hex.slice(1).match(/[0-9a-fA-F]{2}/g);
-	if (m == null) return [0, 0, 0];
-	return m.map(x => parseInt(x, 16) / 255) as [number, number, number];
 }
 
 export class FreeCameraManualInput implements BABYLON.ICameraInput<BABYLON.FreeCamera> {

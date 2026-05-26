@@ -95,7 +95,7 @@ import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { RoomController } from '@/world/room/controller.js';
-import { cm, getHex, getRgb, WORLD_SCALE } from '@/world/utility.js';
+import { cm, getHex, getRgb, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { deepClone } from '@/utility/clone.js';
 import { deviceKind } from '@/utility/device-kind.js';
 import MkProgressBar from '@/components/MkProgressBar.vue';
