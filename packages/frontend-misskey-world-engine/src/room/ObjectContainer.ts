@@ -4,7 +4,7 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { camelToKebab } from 'misskey-world/src/utility.js';
+import { camelToKebab, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { scaleMorph, Timer } from '../utility.js';
 import { getObjectDef } from './object-defs.js';
 import { ModelManager, SYSTEM_MESH_NAMES } from './utility.js';
