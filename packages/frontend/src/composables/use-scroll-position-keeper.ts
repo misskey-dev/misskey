@@ -13,6 +13,7 @@ import type { Ref } from 'vue';
 
 export function useScrollPositionKeeper(scrollContainerRef: Ref<HTMLElement | null | undefined>): void {
 	let anchorId: string | null = null;
+	let anchorIndex = 0;
 	let ready = true;
 
 	watch(scrollContainerRef, (el) => {
@@ -39,6 +40,8 @@ export function useScrollPositionKeeper(scrollContainerRef: Ref<HTMLElement | nu
 				const anchorBottom = anchorRect.bottom;
 				if (anchorTop <= viewPosition && anchorBottom >= viewPosition) {
 					anchorId = anchorEl.getAttribute('data-scroll-anchor');
+					const allWithSameId = el.querySelectorAll(`[data-scroll-anchor="${CSS.escape(anchorId!)}"]`);
+					anchorIndex = Array.from(allWithSameId).indexOf(anchorEl);
 					break;
 				}
 			}
@@ -59,7 +62,8 @@ export function useScrollPositionKeeper(scrollContainerRef: Ref<HTMLElement | nu
 		if (!anchorId) return;
 		const scrollContainer = scrollContainerRef.value;
 		if (!scrollContainer) return;
-		const scrollAnchorEl = scrollContainer.querySelector(`[data-scroll-anchor="${anchorId}"]`);
+		const candidates = scrollContainer.querySelectorAll(`[data-scroll-anchor="${CSS.escape(anchorId)}"]`);
+		const scrollAnchorEl = candidates[anchorIndex] ?? candidates[candidates.length - 1];
 		if (!scrollAnchorEl) return;
 		scrollAnchorEl.scrollIntoView({
 			behavior: 'instant',
