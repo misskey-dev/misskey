@@ -4,12 +4,12 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { scaleMorph, camelToKebab, cm, WORLD_SCALE, Timer } from '../utility.js';
+import { scaleMorph, camelToKebab, Timer } from '../utility.js';
 import { getObjectDef } from './object-defs.js';
 import { ModelManager, SYSTEM_MESH_NAMES } from './utility.js';
 import { convertRawOptions } from './object.js';
-import type { RoomAttachments } from './utility.js';
 import type { ConvertedOptions, RawOptions, RoomObjectInstance } from './object.js';
+import type { RoomAttachments } from 'misskey-world/src/room/type.js';
 
 function mergeMeshes(meshes: BABYLON.Mesh[], root: BABYLON.Mesh, hasTexture: boolean) {
 	const excludeMeshes = root.getChildMeshes().filter(m => SYSTEM_MESH_NAMES.some(s => m.name.includes(s)));

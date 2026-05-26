@@ -12,7 +12,6 @@ import { getObjectDef } from './object-defs.js';
 import { SYSTEM_MESH_NAMES, GRAPHICS_QUALITY } from './utility.js';
 import { ObjectContainer } from './ObjectContainer.js';
 import type { RawOptions } from './object.js';
-import type { RoomAttachments } from './utility.js';
 
 export class RoomObjectPreviewEngine extends EngineBase<{
 	'loadingProgress': (ctx: { progress: number }) => void;

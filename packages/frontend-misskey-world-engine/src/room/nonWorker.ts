@@ -5,8 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { RoomEngine } from './engine.js';
-import type { RoomState } from './engine.js';
-import type { RoomAttachments } from './utility.js';
+import type { RoomState, RoomAttachments } from 'misskey-world/src/room/type.js';
 
 //BABYLON.RegisterStandardEngineExtensions();
 //BABYLON.RegisterEnginesExtensionsEngineRawTexture();

@@ -19,16 +19,17 @@ import * as BABYLON from '@babylonjs/core';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
 import { TIME_MAP, getMeshesBoundingBox, Timer, getYRotationDirection, FreeCameraManualInput, remap } from '../utility.js';
 import { EngineBase } from '../EngineBase.js';
+import { genId } from '../id.js';
 import { getObjectDef } from './object-defs.js';
 import { findMaterial, GRAPHICS_QUALITY, ModelManager, SYSTEM_HEYA_MESH_NAMES, SYSTEM_MESH_NAMES } from './utility.js';
 import { JapaneseEnvManager, MuseumEnvManager, SimpleEnvManager } from './env.js';
 import { ObjectContainer } from './ObjectContainer.js';
-import type { RoomAttachments } from './utility.js';
 import type { ObjectDef, RawOptions } from './object.js';
 import type { GridMaterial } from '@babylonjs/materials';
 import type { EnvManager } from './env.js';
 import type { RoomStateObject } from 'misskey-world/src/room/object.js';
-import type { RoomState } from 'misskey-world/src/room/type.js';
+import type { RoomAttachments, RoomState } from 'misskey-world/src/room/type.js';
+import type { deepClone } from '../clone.js';
 
 const BAKE_TRANSFORM = false; // 実験的
 const IGNORE_OBJECTS: string[] = ['aquarium']; // for debug

@@ -5,9 +5,9 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { cm, WORLD_SCALE } from '../utility.js';
 import { findMaterial, GRAPHICS_QUALITY, SYSTEM_HEYA_MESH_NAMES } from './utility.js';
 import type { RoomEngine } from './engine.js';
+import type { SimpleEnvOptions, JapaneseEnvOptions, MuseumEnvOptions } from 'misskey-world/src/room/type.js';
 
 //export interface EnvManager<T = any> {
 //	constructor(onMeshUpdatedCallback?: ((meshes: BABYLON.AbstractMesh[]) => void) | null): void;
