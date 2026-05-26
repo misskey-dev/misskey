@@ -17,6 +17,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
+import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { TIME_MAP, getMeshesBoundingBox, Timer, getYRotationDirection, FreeCameraManualInput, remap } from '../utility.js';
 import { EngineBase } from '../EngineBase.js';
 import { genId } from '../id.js';

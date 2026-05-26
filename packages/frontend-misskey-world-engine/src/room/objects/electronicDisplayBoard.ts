@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { RecyvlingTextGrid } from '../../../../../frontend-misskey-world-engine/src/utility.js';
+import { RecyvlingTextGrid } from 'misskey-world/src/utility.js';
 import { electronicDisplayBoard_schema } from 'misskey-world/src/room/objects/electronicDisplayBoard.schema.js';
 
 export const electronicDisplayBoard = defineObject(electronicDisplayBoard_schema, {

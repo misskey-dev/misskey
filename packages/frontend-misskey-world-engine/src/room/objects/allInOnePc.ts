@@ -4,10 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { createTextureManager, defineObject } from '../object.js';
-import { cm, WORLD_SCALE } from '../../../../../frontend-misskey-world-engine/src/utility.js';
-import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
+import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { allInOnePc_schema } from 'misskey-world/src/room/objects/allInOnePc.schema.js';
+import { createTextureManager, defineObject } from '../object.js';
+import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 
 export const allInOnePc = defineObject(allInOnePc_schema, {
 	createInstance: async ({ lc, scene, options, model, graphicsQuality }) => {

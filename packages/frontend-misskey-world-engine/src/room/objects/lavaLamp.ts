@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../object.js';
-import { cm, WORLD_SCALE } from '../../../../../frontend-misskey-world-engine/src/utility.js';
-import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 import { lavaLamp_schema } from 'misskey-world/src/room/objects/lavaLamp.schema.js';
+import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
+import { defineObject } from '../object.js';
+import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 
 export const lavaLamp = defineObject(lavaLamp_schema, {
 	createInstance: ({ options, lc, scene, sr, root, model, graphicsQuality }) => {

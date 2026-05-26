@@ -6,6 +6,7 @@
 import * as BABYLON from '@babylonjs/core';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic.js';
 import { GridMaterial } from '@babylonjs/materials';
+import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { camelToKebab, getMeshesBoundingBox, ArcRotateCameraManualInput } from '../utility.js';
 import { EngineBase } from '../EngineBase.js';
 import { getObjectDef } from './object-defs.js';

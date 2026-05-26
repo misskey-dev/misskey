@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
-import { normalizeUvToSquare } from '../../../../../frontend-misskey-world-engine/src/utility.js';
+import { normalizeUvToSquare } from 'misskey-world/src/utility.js';
 import { tabletopLcdButtonsController_schema } from 'misskey-world/src/room/objects/tabletopLcdButtonsController.schema.js';
 
 export const tabletopLcdButtonsController = defineObject(tabletopLcdButtonsController_schema, {

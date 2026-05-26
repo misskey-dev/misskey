@@ -10,3 +10,7 @@ export const WORLD_SCALE = 100;
 //// cm to meter. 二重に適用しないように注意すること。
 //export const cm = (value: number) => value / 100;
 export const cm = (value: number) => value;
+
+export function remap(value: number, inMin: number, inMax: number, outMin: number, outMax: number) {
+	return outMin + (outMax - outMin) * ((value - inMin) / (inMax - inMin));
+}

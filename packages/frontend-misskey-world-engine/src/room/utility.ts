@@ -4,6 +4,7 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
+import { cm } from 'misskey-world/src/utility.js';
 import { applyMorphTargetsToMesh, getPlaneUvIndexes, Timer } from '../utility.js';
 
 export const GRAPHICS_QUALITY = {

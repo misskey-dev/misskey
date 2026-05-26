@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { defineObject } from '../object.js';
-import { cm } from '../../../../../frontend-misskey-world-engine/src/utility.js';
+import { cm } from 'misskey-world/src/utility.js';
 import { yuge } from '../utility.js';
 import { cupNoodle_schema } from 'misskey-world/src/room/objects/cupNoodle.schema.js';
 

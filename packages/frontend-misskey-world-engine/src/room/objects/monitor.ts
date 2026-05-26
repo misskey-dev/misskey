@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { createTextureManager, defineObject } from '../object.js';
-import { cm, WORLD_SCALE, normalizeUvToSquare } from '../../../../../frontend-misskey-world-engine/src/utility.js';
+import { cm, WORLD_SCALE, normalizeUvToSquare } from 'misskey-world/src/utility.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 import { monitor_schema } from 'misskey-world/src/room/objects/monitor.schema.js';
 

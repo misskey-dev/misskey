@@ -1457,6 +1457,10 @@ importers:
         version: 3.1.14
 
   packages/misskey-world:
+    dependencies:
+      misskey-js:
+        specifier: workspace:*
+        version: link:../misskey-js
     devDependencies:
       '@typescript-eslint/eslint-plugin':
         specifier: 8.59.2
