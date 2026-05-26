@@ -97,14 +97,6 @@ export abstract class EngineControllerBase<T extends EngineBase<EngineBaseEvents
 
 			this.initializeProgress.value = 1;
 			this.isReady.value = true;
-
-			if (_DEV_) {
-				(window as any).showBabylonInspector = () => {
-					import('@babylonjs/inspector').then(({ ShowInspector }) => {
-						ShowInspector(this.engine!.scene);
-					});
-				};
-			}
 		}
 
 		this.canvas.addEventListener('keydown', (ev) => {

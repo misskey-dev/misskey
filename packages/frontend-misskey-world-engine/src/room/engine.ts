@@ -21,6 +21,7 @@ import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { TIME_MAP, getMeshesBoundingBox, Timer, getYRotationDirection, FreeCameraManualInput, remap } from '../utility.js';
 import { EngineBase } from '../EngineBase.js';
 import { genId } from '../id.js';
+import { deepClone } from '../clone.js';
 import { getObjectDef } from './object-defs.js';
 import { findMaterial, GRAPHICS_QUALITY, ModelManager, SYSTEM_HEYA_MESH_NAMES, SYSTEM_MESH_NAMES } from './utility.js';
 import { JapaneseEnvManager, MuseumEnvManager, SimpleEnvManager } from './env.js';
@@ -30,7 +31,6 @@ import type { GridMaterial } from '@babylonjs/materials';
 import type { EnvManager } from './env.js';
 import type { RoomStateObject } from 'misskey-world/src/room/object.js';
 import type { RoomAttachments, RoomState } from 'misskey-world/src/room/type.js';
-import type { deepClone } from '../clone.js';
 
 const BAKE_TRANSFORM = false; // 実験的
 const IGNORE_OBJECTS: string[] = ['aquarium']; // for debug

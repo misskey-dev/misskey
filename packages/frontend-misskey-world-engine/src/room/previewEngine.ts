@@ -10,10 +10,13 @@ import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { camelToKebab } from 'misskey-world/src/utility.js';
 import { getMeshesBoundingBox, ArcRotateCameraManualInput } from '../utility.js';
 import { EngineBase } from '../EngineBase.js';
+import { deepClone } from '../clone.js';
+import { genId } from '../id.js';
 import { getObjectDef } from './object-defs.js';
 import { SYSTEM_MESH_NAMES, GRAPHICS_QUALITY } from './utility.js';
 import { ObjectContainer } from './ObjectContainer.js';
 import type { RawOptions } from './object.js';
+import type { RoomAttachments } from 'misskey-world/src/room/type.js';
 
 export class RoomObjectPreviewEngine extends EngineBase<{
 	'loadingProgress': (ctx: { progress: number }) => void;
