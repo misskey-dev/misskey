@@ -14,6 +14,7 @@ import type { Ref } from 'vue';
 export function useScrollPositionKeeper(scrollContainerRef: Ref<HTMLElement | null | undefined>): void {
 	let anchorId: string | null = null;
 	let anchorIndex = 0;
+	let savedScrollTop = 0;
 	let ready = true;
 
 	watch(scrollContainerRef, (el) => {
@@ -30,7 +31,7 @@ export function useScrollPositionKeeper(scrollContainerRef: Ref<HTMLElement | nu
 			}
 
 			const scrollContainerRect = el.getBoundingClientRect();
-			const viewPosition = scrollContainerRect.height / 2;
+			const viewPosition = scrollContainerRect.top + scrollContainerRect.height / 2;
 
 			const anchorEls = el.querySelectorAll('[data-scroll-anchor]');
 			for (let i = anchorEls.length - 1; i > -1; i--) { // 下から見た方が速い
@@ -73,6 +74,8 @@ export function useScrollPositionKeeper(scrollContainerRef: Ref<HTMLElement | nu
 	};
 
 	onDeactivated(() => {
+		const el = scrollContainerRef.value;
+		if (el) savedScrollTop = el.scrollTop;
 		ready = false;
 	});
 
@@ -82,6 +85,13 @@ export function useScrollPositionKeeper(scrollContainerRef: Ref<HTMLElement | nu
 			restore();
 			window.setTimeout(() => {
 				restore();
+
+				// anchor方式が失敗した場合（anchorIdがnullまたはscrollTopが0のまま）に
+				// deactivate直前に保存したscrollTopでフォールバック復元する
+				const el = scrollContainerRef.value;
+				if (el && el.scrollTop === 0 && savedScrollTop > 0) {
+					el.scrollTop = savedScrollTop;
+				}
 
 				ready = true;
 			}, 100);
