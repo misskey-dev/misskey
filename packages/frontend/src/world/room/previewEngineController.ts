@@ -4,8 +4,8 @@
  */
 
 import { EngineControllerBase } from '../EngineControllerBase.js';
-import type { RoomObjectPreviewEngine } from './previewEngine.js';
-import type { RoomAttachments } from './utility.js';
+import type { RoomObjectPreviewEngine } from 'misskey-world-engine/src/room/previewEngine.js';
+import type { RoomAttachments } from 'misskey-world/src/room/type.js';
 
 export type PreviewEngineControllerOptions = {
 	workerMode?: boolean;

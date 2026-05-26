@@ -6,7 +6,9 @@
 import * as BABYLON from '@babylonjs/core';
 import { createPlaneUvMapper } from '../utility.js';
 import type { Timer } from '../utility.js';
-import type { ModelManager, RoomAttachments } from './utility.js';
+import type { ModelManager } from './utility.js';
+import type { BooleanOptionSchema, ColorOptionSchema, EnumOptionSchema, ImageOptionSchema, LightOptionSchema, MaterialOptionSchema, NumberOptionSchema, ObjectSchemaDef, OptionsSchema, RangeOptionSchema, SeedOptionSchema, StringOptionSchema } from 'misskey-world/src/room/object.js';
+import type { RoomAttachments } from 'misskey-world/src/room/type.js';
 
 export type RoomObjectInstance<Options = any> = {
 	onInited?: () => void;
@@ -42,20 +44,6 @@ type GetConvertedOptionsSchemaValues<T extends OptionsSchema> = {
 	T[K] extends RangeOptionSchema ? number :
 	T[K] extends ImageOptionSchema ? ConvertedImageValue<T[K]['presets'][number]['value']> :
 	T[K] extends SeedOptionSchema ? number :
-	never;
-};
-export type GetOptionsSchemaUiDef<T extends OptionsSchema> = {
-	[K in keyof T]:
-	T[K] extends NumberOptionSchema ? { label: string; } :
-	T[K] extends BooleanOptionSchema ? { label: string; } :
-	T[K] extends StringOptionSchema ? { label: string; } :
-	T[K] extends ColorOptionSchema ? { label: string; } :
-	T[K] extends MaterialOptionSchema ? { label: string; } :
-	T[K] extends LightOptionSchema ? { label: string; } :
-	T[K] extends EnumOptionSchema ? { label: string; enum: Record<T[K]['enum'][number]['value'], { label: string; }>; } :
-	T[K] extends RangeOptionSchema ? { label: string; } :
-	T[K] extends ImageOptionSchema ? { label: string; presets: Record<T[K]['presets'][number]['value'], { label: string; }>; } :
-	T[K] extends SeedOptionSchema ? { label: string; } :
 	never;
 };
 
