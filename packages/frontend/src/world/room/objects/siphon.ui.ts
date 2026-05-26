@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { siphon_schema } from './siphon.schema.js';
+import type { siphon_schema } from 'misskey-world/src/room/objects/siphon.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const siphon_ui = defineObjectUi<typeof siphon_schema>({

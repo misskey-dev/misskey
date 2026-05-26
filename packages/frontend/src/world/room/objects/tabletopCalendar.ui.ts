@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { tabletopCalendar_schema } from './tabletopCalendar.schema.js';
+import type { tabletopCalendar_schema } from 'misskey-world/src/room/objects/tabletopCalendar.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const tabletopCalendar_ui = defineObjectUi<typeof tabletopCalendar_schema>({

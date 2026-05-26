@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { milk_schema } from './milk.schema.js';
+import type { milk_schema } from 'misskey-world/src/room/objects/milk.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const milk_ui = defineObjectUi<typeof milk_schema>({

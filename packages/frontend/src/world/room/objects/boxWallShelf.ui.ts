@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { boxWallShelf_schema } from './boxWallShelf.schema.js';
+import type { boxWallShelf_schema } from 'misskey-world/src/room/objects/boxWallShelf.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const boxWallShelf_ui = defineObjectUi<typeof boxWallShelf_schema>({

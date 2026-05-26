@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { woodRingFloorLamp_schema } from './woodRingFloorLamp.schema.js';
+import type { woodRingFloorLamp_schema } from 'misskey-world/src/room/objects/woodRingFloorLamp.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const woodRingFloorLamp_ui = defineObjectUi<typeof woodRingFloorLamp_schema>({

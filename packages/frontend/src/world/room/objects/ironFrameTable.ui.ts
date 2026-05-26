@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { ironFrameTable_schema } from './ironFrameTable.schema.js';
+import type { ironFrameTable_schema } from 'misskey-world/src/room/objects/ironFrameTable.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const ironFrameTable_ui = defineObjectUi<typeof ironFrameTable_schema>({

@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { allInOnePc_schema } from './allInOnePc.schema.js';
+import type { allInOnePc_schema } from 'misskey-world/src/room/objects/allInOnePc.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const allInOnePc_ui = defineObjectUi<typeof allInOnePc_schema>({

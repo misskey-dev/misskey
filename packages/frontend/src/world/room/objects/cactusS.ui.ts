@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { cactusS_schema } from './cactusS.schema.js';
+import type { cactusS_schema } from 'misskey-world/src/room/objects/cactusS.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const cactusS_ui = defineObjectUi<typeof cactusS_schema>({

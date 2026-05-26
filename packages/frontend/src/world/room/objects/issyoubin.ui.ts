@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { issyoubin_schema } from './issyoubin.schema.js';
+import type { issyoubin_schema } from 'misskey-world/src/room/objects/issyoubin.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const issyoubin_ui = defineObjectUi<typeof issyoubin_schema>({

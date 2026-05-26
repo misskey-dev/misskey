@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { ductTape_schema } from './ductTape.schema.js';
+import type { ductTape_schema } from 'misskey-world/src/room/objects/ductTape.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const ductTape_ui = defineObjectUi<typeof ductTape_schema>({

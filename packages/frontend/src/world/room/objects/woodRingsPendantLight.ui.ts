@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { woodRingsPendantLight_schema } from './woodRingsPendantLight.schema.js';
+import type { woodRingsPendantLight_schema } from 'misskey-world/src/room/objects/woodRingsPendantLight.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const woodRingsPendantLight_ui = defineObjectUi<typeof woodRingsPendantLight_schema>({

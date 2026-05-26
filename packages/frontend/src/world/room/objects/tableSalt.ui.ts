@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { tableSalt_schema } from './tableSalt.schema.js';
+import type { tableSalt_schema } from 'misskey-world/src/room/objects/tableSalt.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const tableSalt_ui = defineObjectUi<typeof tableSalt_schema>({

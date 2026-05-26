@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { tabletopFlag_schema } from './tabletopFlag.schema.js';
+import type { tabletopFlag_schema } from 'misskey-world/src/room/objects/tabletopFlag.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const tabletopFlag_ui = defineObjectUi<typeof tabletopFlag_schema>({

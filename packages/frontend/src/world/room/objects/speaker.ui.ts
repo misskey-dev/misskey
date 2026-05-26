@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { speaker_schema } from './speaker.schema.js';
+import type { speaker_schema } from 'misskey-world/src/room/objects/speaker.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const speaker_ui = defineObjectUi<typeof speaker_schema>({

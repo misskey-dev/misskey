@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { keyboard_schema } from './keyboard.schema.js';
+import type { keyboard_schema } from 'misskey-world/src/room/objects/keyboard.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const keyboard_ui = defineObjectUi<typeof keyboard_schema>({

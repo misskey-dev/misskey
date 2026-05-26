@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { roundRug_schema } from './roundRug.schema.js';
+import type { roundRug_schema } from 'misskey-world/src/room/objects/roundRug.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const roundRug_ui = defineObjectUi<typeof roundRug_schema>({

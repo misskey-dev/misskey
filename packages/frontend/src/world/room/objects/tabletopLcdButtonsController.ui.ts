@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { tabletopLcdButtonsController_schema } from './tabletopLcdButtonsController.schema.js';
+import type { tabletopLcdButtonsController_schema } from 'misskey-world/src/room/objects/tabletopLcdButtonsController.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const tabletopLcdButtonsController_ui = defineObjectUi<typeof tabletopLcdButtonsController_schema>({

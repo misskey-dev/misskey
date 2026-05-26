@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { router_schema } from './router.schema.js';
+import type { router_schema } from 'misskey-world/src/room/objects/router.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const router_ui = defineObjectUi<typeof router_schema>({

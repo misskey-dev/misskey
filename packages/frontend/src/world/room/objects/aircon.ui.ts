@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { aircon_schema } from './aircon.schema.js';
+import type { aircon_schema } from 'misskey-world/src/room/objects/aircon.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const aircon_ui = defineObjectUi<typeof aircon_schema>({

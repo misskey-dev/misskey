@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { cardboardBox_schema } from './cardboardBox.schema.js';
+import type { cardboardBox_schema } from 'misskey-world/src/room/objects/cardboardBox.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const cardboardBox_ui = defineObjectUi<typeof cardboardBox_schema>({

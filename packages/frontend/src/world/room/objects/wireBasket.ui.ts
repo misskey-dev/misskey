@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { wireBasket_schema } from './wireBasket.schema.js';
+import type { wireBasket_schema } from 'misskey-world/src/room/objects/wireBasket.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const wireBasket_ui = defineObjectUi<typeof wireBasket_schema>({

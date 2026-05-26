@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { pizza_schema } from './pizza.schema.js';
+import type { pizza_schema } from 'misskey-world/src/room/objects/pizza.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const pizza_ui = defineObjectUi<typeof pizza_schema>({

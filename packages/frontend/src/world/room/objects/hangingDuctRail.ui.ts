@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { hangingDuctRail_schema } from './hangingDuctRail.schema.js';
+import type { hangingDuctRail_schema } from 'misskey-world/src/room/objects/hangingDuctRail.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const hangingDuctRail_ui = defineObjectUi<typeof hangingDuctRail_schema>({

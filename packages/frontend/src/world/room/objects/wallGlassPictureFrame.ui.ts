@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { wallGlassPictureFrame_schema } from './wallGlassPictureFrame.schema.js';
+import type { wallGlassPictureFrame_schema } from 'misskey-world/src/room/objects/wallGlassPictureFrame.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const wallGlassPictureFrame_ui = defineObjectUi<typeof wallGlassPictureFrame_schema>({

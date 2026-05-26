@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { mug_schema } from './mug.schema.js';
+import type { mug_schema } from 'misskey-world/src/room/objects/mug.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const mug_ui = defineObjectUi<typeof mug_schema>({

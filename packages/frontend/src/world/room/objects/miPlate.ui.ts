@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { miPlate_schema } from './miPlate.schema.js';
+import type { miPlate_schema } from 'misskey-world/src/room/objects/miPlate.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const miPlate_ui = defineObjectUi<typeof miPlate_schema>({

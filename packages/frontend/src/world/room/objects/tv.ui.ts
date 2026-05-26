@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { tv_schema } from './tv.schema.js';
+import type { tv_schema } from 'misskey-world/src/room/objects/tv.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const tv_ui = defineObjectUi<typeof tv_schema>({

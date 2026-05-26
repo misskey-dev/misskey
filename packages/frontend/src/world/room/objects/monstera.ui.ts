@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { monstera_schema } from './monstera.schema.js';
+import type { monstera_schema } from 'misskey-world/src/room/objects/monstera.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const monstera_ui = defineObjectUi<typeof monstera_schema>({

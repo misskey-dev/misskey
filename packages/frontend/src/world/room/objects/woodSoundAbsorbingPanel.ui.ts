@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { woodSoundAbsorbingPanel_schema } from './woodSoundAbsorbingPanel.schema.js';
+import type { woodSoundAbsorbingPanel_schema } from 'misskey-world/src/room/objects/woodSoundAbsorbingPanel.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const woodSoundAbsorbingPanel_ui = defineObjectUi<typeof woodSoundAbsorbingPanel_schema>({

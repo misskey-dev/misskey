@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { poster_schema } from './poster.schema.js';
+import type { poster_schema } from 'misskey-world/src/room/objects/poster.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const poster_ui = defineObjectUi<typeof poster_schema>({

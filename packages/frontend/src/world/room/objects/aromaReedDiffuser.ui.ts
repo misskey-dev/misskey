@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { aromaReedDiffuser_schema } from './aromaReedDiffuser.schema.js';
+import type { aromaReedDiffuser_schema } from 'misskey-world/src/room/objects/aromaReedDiffuser.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const aromaReedDiffuser_ui = defineObjectUi<typeof aromaReedDiffuser_schema>({

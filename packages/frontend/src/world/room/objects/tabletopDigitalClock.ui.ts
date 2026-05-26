@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { tabletopDigitalClock_schema } from './tabletopDigitalClock.schema.js';
+import type { tabletopDigitalClock_schema } from 'misskey-world/src/room/objects/tabletopDigitalClock.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const tabletopDigitalClock_ui = defineObjectUi<typeof tabletopDigitalClock_schema>({

@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { clippedPicture_schema } from './clippedPicture.schema.js';
+import type { clippedPicture_schema } from 'misskey-world/src/room/objects/clippedPicture.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const clippedPicture_ui = defineObjectUi<typeof clippedPicture_schema>({

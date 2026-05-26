@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { colorBox_schema } from './colorBox.schema.js';
+import type { colorBox_schema } from 'misskey-world/src/room/objects/colorBox.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const colorBox_ui = defineObjectUi<typeof colorBox_schema>({

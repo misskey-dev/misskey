@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { bed_schema } from './bed.schema.js';
+import type { bed_schema } from 'misskey-world/src/room/objects/bed.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const bed_ui = defineObjectUi<typeof bed_schema>({

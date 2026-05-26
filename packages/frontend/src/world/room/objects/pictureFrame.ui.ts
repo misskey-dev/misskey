@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { pictureFrame_schema } from './pictureFrame.schema.js';
+import type { pictureFrame_schema } from 'misskey-world/src/room/objects/pictureFrame.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const pictureFrame_ui = defineObjectUi<typeof pictureFrame_schema>({

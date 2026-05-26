@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { usedTissue_schema } from './usedTissue.schema.js';
+import type { usedTissue_schema } from 'misskey-world/src/room/objects/usedTissue.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const usedTissue_ui = defineObjectUi<typeof usedTissue_schema>({

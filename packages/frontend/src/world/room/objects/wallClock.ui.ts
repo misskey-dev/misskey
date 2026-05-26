@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { wallClock_schema } from './wallClock.schema.js';
+import type { wallClock_schema } from 'misskey-world/src/room/objects/wallClock.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const wallClock_ui = defineObjectUi<typeof wallClock_schema>({

@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { twistedCubeObjet_schema } from './twistedCubeObjet.schema.js';
+import type { twistedCubeObjet_schema } from 'misskey-world/src/room/objects/twistedCubeObjet.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const twistedCubeObjet_ui = defineObjectUi<typeof twistedCubeObjet_schema>({

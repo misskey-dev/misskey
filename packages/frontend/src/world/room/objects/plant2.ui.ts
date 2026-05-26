@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { plant2_schema } from './plant2.schema.js';
+import type { plant2_schema } from 'misskey-world/src/room/objects/plant2.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const plant2_ui = defineObjectUi<typeof plant2_schema>({

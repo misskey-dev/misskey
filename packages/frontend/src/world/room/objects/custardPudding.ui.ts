@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { custardPudding_schema } from './custardPudding.schema.js';
+import type { custardPudding_schema } from 'misskey-world/src/room/objects/custardPudding.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const custardPudding_ui = defineObjectUi<typeof custardPudding_schema>({

@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { piano_schema } from './piano.schema.js';
+import type { piano_schema } from 'misskey-world/src/room/objects/piano.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const piano_ui = defineObjectUi<typeof piano_schema>({

@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { electronicDisplayBoard_schema } from './electronicDisplayBoard.schema.js';
+import type { electronicDisplayBoard_schema } from 'misskey-world/src/room/objects/electronicDisplayBoard.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const electronicDisplayBoard_ui = defineObjectUi<typeof electronicDisplayBoard_schema>({

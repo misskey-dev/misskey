@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { djMixer_schema } from './djMixer.schema.js';
+import type { djMixer_schema } from 'misskey-world/src/room/objects/djMixer.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const djMixer_ui = defineObjectUi<typeof djMixer_schema>({

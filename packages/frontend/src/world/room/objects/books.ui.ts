@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { books_schema } from './books.schema.js';
+import type { books_schema } from 'misskey-world/src/room/objects/books.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const books_ui = defineObjectUi<typeof books_schema>({

@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { handheldGameConsole_schema } from './handheldGameConsole.schema.js';
+import type { handheldGameConsole_schema } from 'misskey-world/src/room/objects/handheldGameConsole.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const handheldGameConsole_ui = defineObjectUi<typeof handheldGameConsole_schema>({

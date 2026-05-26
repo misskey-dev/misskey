@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { desktopPc_schema } from './desktopPc.schema.js';
+import type { desktopPc_schema } from 'misskey-world/src/room/objects/desktopPc.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const desktopPc_ui = defineObjectUi<typeof desktopPc_schema>({

@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { envelope_schema } from './envelope.schema.js';
+import type { envelope_schema } from 'misskey-world/src/room/objects/envelope.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const envelope_ui = defineObjectUi<typeof envelope_schema>({

@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { stanchionPole_schema } from './stanchionPole.schema.js';
+import type { stanchionPole_schema } from 'misskey-world/src/room/objects/stanchionPole.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const stanchionPole_ui = defineObjectUi<typeof stanchionPole_schema>({

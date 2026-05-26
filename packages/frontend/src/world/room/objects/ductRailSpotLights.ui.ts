@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { ductRailSpotLights_schema } from './ductRailSpotLights.schema.js';
+import type { ductRailSpotLights_schema } from 'misskey-world/src/room/objects/ductRailSpotLights.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const ductRailSpotLights_ui = defineObjectUi<typeof ductRailSpotLights_schema>({

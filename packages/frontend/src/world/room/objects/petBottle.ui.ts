@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { petBottle_schema } from './petBottle.schema.js';
+import type { petBottle_schema } from 'misskey-world/src/room/objects/petBottle.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const petBottle_ui = defineObjectUi<typeof petBottle_schema>({

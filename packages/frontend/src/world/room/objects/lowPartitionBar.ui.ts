@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { lowPartitionBar_schema } from './lowPartitionBar.schema.js';
+import type { lowPartitionBar_schema } from 'misskey-world/src/room/objects/lowPartitionBar.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const lowPartitionBar_ui = defineObjectUi<typeof lowPartitionBar_schema>({

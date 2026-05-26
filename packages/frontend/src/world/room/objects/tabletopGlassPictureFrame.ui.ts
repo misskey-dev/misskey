@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { tabletopGlassPictureFrame_schema } from './tabletopGlassPictureFrame.schema.js';
+import type { tabletopGlassPictureFrame_schema } from 'misskey-world/src/room/objects/tabletopGlassPictureFrame.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const tabletopGlassPictureFrame_ui = defineObjectUi<typeof tabletopGlassPictureFrame_schema>({

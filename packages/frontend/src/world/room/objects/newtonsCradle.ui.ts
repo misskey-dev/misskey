@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { newtonsCradle_schema } from './newtonsCradle.schema.js';
+import type { newtonsCradle_schema } from 'misskey-world/src/room/objects/newtonsCradle.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const newtonsCradle_ui = defineObjectUi<typeof newtonsCradle_schema>({

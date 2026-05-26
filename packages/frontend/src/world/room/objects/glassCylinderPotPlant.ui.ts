@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { glassCylinderPotPlant_schema } from './glassCylinderPotPlant.schema.js';
+import type { glassCylinderPotPlant_schema } from 'misskey-world/src/room/objects/glassCylinderPotPlant.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const glassCylinderPotPlant_ui = defineObjectUi<typeof glassCylinderPotPlant_schema>({

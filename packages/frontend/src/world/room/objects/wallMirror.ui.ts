@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { wallMirror_schema } from './wallMirror.schema.js';
+import type { wallMirror_schema } from 'misskey-world/src/room/objects/wallMirror.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const wallMirror_ui = defineObjectUi<typeof wallMirror_schema>({

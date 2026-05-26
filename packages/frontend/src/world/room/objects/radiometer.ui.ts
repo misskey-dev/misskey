@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { radiometer_schema } from './radiometer.schema.js';
+import type { radiometer_schema } from 'misskey-world/src/room/objects/radiometer.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const radiometer_ui = defineObjectUi<typeof radiometer_schema>({

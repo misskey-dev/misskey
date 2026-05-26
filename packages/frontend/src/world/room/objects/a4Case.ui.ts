@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { a4Case_schema } from './a4Case.schema.js';
+import type { a4Case_schema } from 'misskey-world/src/room/objects/a4Case.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const a4Case_ui = defineObjectUi<typeof a4Case_schema>({

@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { sofa_schema } from './sofa.schema.js';
+import type { sofa_schema } from 'misskey-world/src/room/objects/sofa.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const sofa_ui = defineObjectUi<typeof sofa_schema>({

@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { sprayer_schema } from './sprayer.schema.js';
+import type { sprayer_schema } from 'misskey-world/src/room/objects/sprayer.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const sprayer_ui = defineObjectUi<typeof sprayer_schema>({

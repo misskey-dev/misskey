@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { wallCanvas_schema } from './wallCanvas.schema.js';
+import type { wallCanvas_schema } from 'misskey-world/src/room/objects/wallCanvas.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const wallCanvas_ui = defineObjectUi<typeof wallCanvas_schema>({

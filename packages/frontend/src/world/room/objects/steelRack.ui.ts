@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { steelRack_schema } from './steelRack.schema.js';
+import type { steelRack_schema } from 'misskey-world/src/room/objects/steelRack.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const steelRack_ui = defineObjectUi<typeof steelRack_schema>({

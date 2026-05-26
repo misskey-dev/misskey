@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { rolledUpPoster_schema } from './rolledUpPoster.schema.js';
+import type { rolledUpPoster_schema } from 'misskey-world/src/room/objects/rolledUpPoster.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const rolledUpPoster_ui = defineObjectUi<typeof rolledUpPoster_schema>({

@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { banknote_schema } from './banknote.schema.js';
+import type { banknote_schema } from 'misskey-world/src/room/objects/banknote.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const banknote_ui = defineObjectUi<typeof banknote_schema>({

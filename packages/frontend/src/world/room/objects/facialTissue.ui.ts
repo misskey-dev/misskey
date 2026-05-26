@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { facialTissue_schema } from './facialTissue.schema.js';
+import type { facialTissue_schema } from 'misskey-world/src/room/objects/facialTissue.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const facialTissue_ui = defineObjectUi<typeof facialTissue_schema>({

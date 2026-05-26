@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { energyDrink_schema } from './energyDrink.schema.js';
+import type { energyDrink_schema } from 'misskey-world/src/room/objects/energyDrink.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const energyDrink_ui = defineObjectUi<typeof energyDrink_schema>({

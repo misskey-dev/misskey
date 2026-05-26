@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { chair_schema } from './chair.schema.js';
+import type { chair_schema } from 'misskey-world/src/room/objects/chair.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const chair_ui = defineObjectUi<typeof chair_schema>({

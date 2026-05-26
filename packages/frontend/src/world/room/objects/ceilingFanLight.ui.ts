@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { ceilingFanLight_schema } from './ceilingFanLight.schema.js';
+import type { ceilingFanLight_schema } from 'misskey-world/src/room/objects/ceilingFanLight.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const ceilingFanLight_ui = defineObjectUi<typeof ceilingFanLight_schema>({

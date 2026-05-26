@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { randomBooks_schema } from './randomBooks.schema.js';
+import type { randomBooks_schema } from 'misskey-world/src/room/objects/randomBooks.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const randomBooks_ui = defineObjectUi<typeof randomBooks_schema>({

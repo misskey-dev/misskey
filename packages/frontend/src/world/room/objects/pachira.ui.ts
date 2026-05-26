@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { pachira_schema } from './pachira.schema.js';
+import type { pachira_schema } from 'misskey-world/src/room/objects/pachira.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const pachira_ui = defineObjectUi<typeof pachira_schema>({

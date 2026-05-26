@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { tabletopIronFrameStand_schema } from './tabletopIronFrameStand.schema.js';
+import type { tabletopIronFrameStand_schema } from 'misskey-world/src/room/objects/tabletopIronFrameStand.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const tabletopIronFrameStand_ui = defineObjectUi<typeof tabletopIronFrameStand_schema>({

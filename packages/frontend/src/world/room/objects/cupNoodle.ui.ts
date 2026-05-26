@@ -4,7 +4,7 @@
  */
 
 import { defineObjectUi } from '../defineObjectUi.js';
-import type { cupNoodle_schema } from './cupNoodle.schema.js';
+import type { cupNoodle_schema } from 'misskey-world/src/room/objects/cupNoodle.schema.js';
 import { i18n } from '@/i18n.js';
 
 export const cupNoodle_ui = defineObjectUi<typeof cupNoodle_schema>({
