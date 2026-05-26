@@ -19,8 +19,7 @@
 		"verbatimModuleSyntax": true,
 		"rootDir": "./src",
 		"paths": {
-			"@/*": ["./*"],
-			"@@/*": ["./*"]
+			"@/*": ["./*"]
 		},
 		"typeRoots": [
 			"./@types",

@@ -19,7 +19,6 @@
 		"verbatimModuleSyntax": true,
 		"paths": {
 			"@/*": ["./*"],
-			"@@/*": ["./*"],
 			"misskey-world/*": ["../misskey-world/*"]
 		},
 		"typeRoots": [

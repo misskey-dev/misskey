@@ -84,29 +84,26 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, markRaw, nextTick, onActivated, onDeactivated, onMounted, onUnmounted, ref, shallowRef, triggerRef, useTemplateRef, watch } from 'vue';
-import * as BABYLON from '@babylonjs/core';
 import * as Misskey from 'misskey-js';
+import { cm, getHex, getRgb, WORLD_SCALE } from 'misskey-world/src/utility.js';
+import { GRAPHICS_QUALITY } from 'misskey-world-engine/src/room/utility.js';
 import XObjectCustomizeForm from './room.object-customize-form.vue';
 import XEnvOptions from './room.env-options.vue';
 import type { RoomControllerOptions } from '@/world/room/controller.js';
-import type { RoomAttachments } from '@/world/room/utility.js';
-import type { RoomState } from '@/world/room/engine.js';
+import type { RoomState, RoomAttachments } from 'misskey-world/src/room/type.js';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { RoomController } from '@/world/room/controller.js';
-import { cm, getHex, getRgb, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { deepClone } from '@/utility/clone.js';
 import { deviceKind } from '@/utility/device-kind.js';
 import MkProgressBar from '@/components/MkProgressBar.vue';
 import { Joystick } from '@/world/joystick.js';
 import { isTouchUsing } from '@/utility/touch.js';
 import { prefer } from '@/preferences.js';
-import { GRAPHICS_QUALITY } from '@/world/room/utility.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { OBJECT_UI_DEFS } from '@/world/room/object-ui-defs.js';
-import { OBJECT_SCHEMA_DEFS } from '@/world/room/object-schema-defs.js';
 
 const roomSpecVersion = 0;
 
@@ -278,14 +275,15 @@ const roomControllerOptions = computed<RoomControllerOptions>(() => ({
 const controller = markRaw(new RoomController(deepClone(initialRoomState), roomControllerOptions.value));
 
 onMounted(async () => {
-	if (!await BABYLON.WebGPUEngine.IsSupportedAsync) {
-		os.alert({
-			type: 'warning',
-			title: i18n.ts._miRoom.yourDeviceNotSupported_title,
-			text: i18n.ts._miRoom.yourDeviceNotSupported_description,
-		});
-		return;
-	}
+	// TODO: babylonに依存しないで判定する
+	//if (!await BABYLON.WebGPUEngine.IsSupportedAsync) {
+	//	os.alert({
+	//		type: 'warning',
+	//		title: i18n.ts._miRoom.yourDeviceNotSupported_title,
+	//		text: i18n.ts._miRoom.yourDeviceNotSupported_description,
+	//	});
+	//	return;
+	//}
 
 	try {
 		await controller.init(canvas.value!, attachments);

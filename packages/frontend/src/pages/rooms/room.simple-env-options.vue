@@ -97,10 +97,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
+import { getHex, getRgb } from 'misskey-world/src/utility.js';
 import XWallOption from './room.simple-env-wall-options.vue';
 import XPillarOption from './room.simple-env-pillar-options.vue';
-import type { ObjectDef } from '@/world/room/object.js';
-import type { SimpleEnvOptions } from '@/world/room/env.js';
+import type { SimpleEnvOptions } from 'misskey-world/src/room/type.js';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -108,7 +108,6 @@ import * as os from '@/os.js';
 import MkInput from '@/components/MkInput.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkRange from '@/components/MkRange.vue';
-import { getHex, getRgb } from 'misskey-world/src/utility.js';
 import MkFolder from '@/components/MkFolder.vue';
 
 const props = defineProps<{
