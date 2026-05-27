@@ -53,6 +53,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private worldRoomEntityService: WorldRoomEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			// TODO: validate room
+
 			const room = await this.worldRoomService.create(me, {
 				name: ps.name,
 				description: ps.description ?? '',

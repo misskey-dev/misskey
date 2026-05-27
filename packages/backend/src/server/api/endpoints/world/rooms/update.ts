@@ -51,6 +51,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchRoom);
 			}
 
+			// TODO: validate room
+
 			await this.worldRoomService.update(room, {
 				name: ps.name,
 				description: ps.description,
