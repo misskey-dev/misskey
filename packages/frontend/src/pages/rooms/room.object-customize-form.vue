@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkRange :continuousUpdate="true" :min="0" :max="1" :step="0.1" :modelValue="options[k].metallic" @update:modelValue="v => updateMaterialMetallic(k, v)">
 						<template #label>{{ i18n.ts._miRoom.material_metallic }}</template>
 					</MkRange>
-					<MkRange :continuousUpdate="true" :min="0" :max="1" :step="0.1" :modelValue="options[k].roughness" @update:modelValue="v => updateMaterialRoughness(k, v)">
+					<MkRange :continuousUpdate="true" :min="0" :max="1" :step="0.05" :modelValue="options[k].roughness" @update:modelValue="v => updateMaterialRoughness(k, v)">
 						<template #label>{{ i18n.ts._miRoom.material_roughness }}</template>
 					</MkRange>
 				</template>

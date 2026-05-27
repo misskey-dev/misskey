@@ -22,6 +22,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.topMain">
 			<div :class="$style.topMenu" class="_panel _shadow">
 				<template v-if="controller.isReady.value">
+					<button v-if="multiplayer.isOnline.value" :class="$style.topMenuButton" class="_button" style="color: var(--MI_THEME-accent)" @click="leaveOnline"><i class="ti ti-world"></i></button>
+					<button v-if="!multiplayer.isOnline.value" :class="$style.topMenuButton" class="_button" @click="enterOnline"><i class="ti ti-world"></i></button>
+
 					<button v-tooltip="'照明切り替え'" :class="$style.topMenuButton" class="_button" @click="toggleLight"><i class="ti ti-bulb"></i></button>
 					<button v-if="controller.isEditMode.value" :class="$style.topMenuButton" class="_button" style="color: var(--MI_THEME-accent)" @click="exitEditMode"><i class="ti ti-paint"></i></button>
 					<button v-if="!controller.isEditMode.value" :class="$style.topMenuButton" class="_button" @click="enterEditMode"><i class="ti ti-paint"></i></button>
@@ -105,6 +108,7 @@ import { prefer } from '@/preferences.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { OBJECT_UI_DEFS } from '@/world/room/object-ui-defs.js';
+import { Multiplayer } from '@/world/room/multiplayer.js';
 
 const roomSpecVersion = 0;
 
@@ -281,6 +285,7 @@ const roomControllerOptions = computed<RoomControllerOptions>(() => ({
 }));
 
 const controller = markRaw(new RoomController(deepClone(initialRoomState), roomControllerOptions.value));
+const multiplayer = markRaw(new Multiplayer(props.room.id));
 
 onMounted(async () => {
 	// TODO: babylonに依存しないで判定する
@@ -343,6 +348,7 @@ onMounted(async () => {
 
 onDeactivated(() => {
 	controller.destroy();
+	multiplayer.dispose();
 
 	window.removeEventListener('resize', resize);
 });
@@ -353,6 +359,7 @@ onActivated(() => {
 
 onUnmounted(() => {
 	controller.destroy();
+	multiplayer.dispose();
 
 	window.removeEventListener('resize', resize);
 });
@@ -642,6 +649,17 @@ function showOtherMenu(ev: PointerEvent) {
 		text: 'Refresh',
 		action: refresh,
 	}], ev.currentTarget ?? ev.target);
+}
+
+function leaveOnline() {
+	multiplayer.leave();
+}
+
+function enterOnline() {
+	const closeWaiting = os.waiting();
+	multiplayer.enter().finally(() => {
+		closeWaiting();
+	});
 }
 </script>
 

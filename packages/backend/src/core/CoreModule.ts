@@ -156,6 +156,7 @@ import { QueueService } from './QueueService.js';
 import { LoggerService } from './LoggerService.js';
 import { WorldRoomService } from './WorldRoomService.js';
 import { WorldRoomEntityService } from './entities/WorldRoomEntityService.js';
+import { WorldRoomMultiplayService } from './WorldRoomMultiplayService.js';
 import type { Provider } from '@nestjs/common';
 
 //#region 文字列ベースでのinjection用(循環参照対応のため)
@@ -232,6 +233,7 @@ const $RegistryApiService: Provider = { provide: 'RegistryApiService', useExisti
 const $ReversiService: Provider = { provide: 'ReversiService', useExisting: ReversiService };
 const $PageService: Provider = { provide: 'PageService', useExisting: PageService };
 const $WorldRoomService: Provider = { provide: 'WorldRoomService', useExisting: WorldRoomService };
+const $WorldRoomMultiplayService: Provider = { provide: 'WorldRoomMultiplayService', useExisting: WorldRoomMultiplayService };
 
 const $ChartLoggerService: Provider = { provide: 'ChartLoggerService', useExisting: ChartLoggerService };
 const $FederationChart: Provider = { provide: 'FederationChart', useExisting: FederationChart };
@@ -387,6 +389,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		ReversiService,
 		PageService,
 		WorldRoomService,
+		WorldRoomMultiplayService,
 
 		ChartLoggerService,
 		FederationChart,
@@ -539,6 +542,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$ReversiService,
 		$PageService,
 		$WorldRoomService,
+		$WorldRoomMultiplayService,
 
 		$ChartLoggerService,
 		$FederationChart,
@@ -691,6 +695,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		ReversiService,
 		PageService,
 		WorldRoomService,
+		WorldRoomMultiplayService,
 
 		FederationChart,
 		NotesChart,
@@ -841,6 +846,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$ReversiService,
 		$PageService,
 		$WorldRoomService,
+		$WorldRoomMultiplayService,
 
 		$FederationChart,
 		$NotesChart,

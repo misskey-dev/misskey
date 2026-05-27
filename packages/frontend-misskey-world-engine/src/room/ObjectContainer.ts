@@ -151,7 +151,6 @@ export class ObjectContainer {
 
 		// meshじゃなくtransform nodeにしてパフォーマンス向上
 		this.subRoot = new BABYLON.TransformNode('__root__', this.scene);
-		console.log(this.root.position);
 		this.subRoot.parent = this.root;
 		this.subRoot.scaling.x = -1;
 		this.subRoot.scaling = this.subRoot.scaling.scale(WORLD_SCALE);// cmをmに

@@ -71,6 +71,8 @@ import { OBJECT_SCHEMA_DEFS } from 'misskey-world/src/room/object-schema-defs.js
 import XObjectCustomizeForm from './room.object-customize-form.vue';
 import XItem from './room.add-object-dialog.item.vue';
 import type { PreviewEngineControllerOptions } from '@/world/room/previewEngineController.js';
+import type { RawOptions } from 'misskey-world/src/room/object.js';
+import type { RoomAttachments } from 'misskey-world/src/room/type.js';
 import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import * as os from '@/os.js';

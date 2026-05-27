@@ -22,6 +22,7 @@ import { TIME_MAP, getMeshesBoundingBox, Timer, getYRotationDirection, FreeCamer
 import { EngineBase } from '../EngineBase.js';
 import { genId } from '../id.js';
 import { deepClone } from '../clone.js';
+import { PlayerContainer, type PlayerProfile, type PlayerState } from '../PlayerContainer.js';
 import { getObjectDef } from './object-defs.js';
 import { findMaterial, GRAPHICS_QUALITY, ModelManager, SYSTEM_HEYA_MESH_NAMES, SYSTEM_MESH_NAMES } from './utility.js';
 import { JapaneseEnvManager, MuseumEnvManager, SimpleEnvManager } from './env.js';
@@ -174,6 +175,10 @@ export class RoomEngine extends EngineBase<{
 		this._isSitting = v;
 		this.ev('changeSittingState', { isSitting: v });
 	}
+
+	private playerProfiles: Record<string, PlayerProfiles> = {};
+	private playerStates: Record<string, PlayerState> = {};
+	private playerContainers: PlayerContainer[] = [];
 
 	private inited = false;
 
@@ -1433,6 +1438,46 @@ export class RoomEngine extends EngineBase<{
 
 	private playSfxUrl(url: string, options: { volume: number; playbackRate: number }) {
 		this.ev('playSfxUrl', { url, options });
+	}
+
+	public updatePlayers(profiles: Record<string, PlayerProfile>, states: Record<string, PlayerState>) {
+		for (const playerContainer of this.playerContainers) {
+			if (profiles[playerContainer.id] == null) {
+				this.sr.disableSnapshotRendering();
+				playerContainer.destroy();
+				this.sr.enableSnapshotRendering();
+			}
+		}
+		this.playerContainers = this.playerContainers.filter(p => profiles[p.id] != null);
+
+		for (const [k, v] of Object.entries(profiles)) {
+			const playerContainer = this.playerContainers.find(p => p.id === k);
+			if (playerContainer == null) {
+				this.sr.disableSnapshotRendering();
+				const p = new PlayerContainer({
+					id: k,
+					profile: v,
+					state: states[k],
+					scene: this.scene,
+					sr: this.sr,
+				});
+				this.sr.enableSnapshotRendering();
+				this.playerContainers.push(p);
+			} else {
+				if (states[k] != null) {
+					playerContainer.applyState(states[k]);
+				}
+			}
+		}
+	}
+
+	public clearPlayers() {
+		for (const playerContainer of this.playerContainers) {
+			this.sr.disableSnapshotRendering();
+			playerContainer.destroy();
+			this.sr.enableSnapshotRendering();
+		}
+		this.playerContainers = [];
 	}
 
 	public resize() {

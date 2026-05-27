@@ -290,6 +290,18 @@ export type Channels = {
 			};
 		};
 	};
+	worldRoom: {
+		params: {
+			roomId: string;
+		};
+		events: {
+			entered: () => void;
+			sync: (payload: any) => void;
+		};
+		receives: {
+			update: any;
+		};
+	};
 };
 
 export type NoteUpdatedEvent = { id: Note['id'] } & ({
