@@ -1412,6 +1412,7 @@ nothingToConfigure: "No hi ha res a configurar"
 viewRenotedChannel: "Mirar el canal d'impulsos "
 previewingTheme: "Previsualització del tema"
 previewingThemeRestore: "Restaurar"
+accessToken: "Token d'accés"
 _imageEditing:
   _vars:
     caption: "Títol de l'arxiu"
