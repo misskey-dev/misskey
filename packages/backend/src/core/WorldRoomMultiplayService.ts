@@ -17,6 +17,9 @@ import { IdService } from '@/core/IdService.js';
 import type { MiUser } from '@/models/User.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { QueryService } from '@/core/QueryService.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import type { Packed } from '@/misc/json-schema.js';
 
 type PlayerState = {
 	position: [number, number, number],
@@ -39,11 +42,15 @@ export class WorldRoomMultiplayService {
 		private roleService: RoleService,
 		private queryService: QueryService,
 		private idService: IdService,
+		private globalEventService: GlobalEventService,
+		private userEntityService: UserEntityService,
 	) {
 	}
 
 	@bindThis
 	public async enter(userId: MiUser['id'], roomId: MiWorldRoom['id']) {
+		console.log('enter', { userId, roomId });
+
 		// TODO: atomicにやる
 		const currentPlayers = await this.redisClient.hlen(`worldRoom:${roomId}:players`);
 		if (currentPlayers < 10) {
@@ -54,6 +61,11 @@ export class WorldRoomMultiplayService {
 		} else {
 			throw new Error('Room is full.');
 		}
+
+		// TODO: 既に入っていたらスキップ
+		this.globalEventService.publishWorldRoomStream(roomId, 'enter', {
+			user: await this.userEntityService.pack(userId),
+		});
 	}
 
 	@bindThis
@@ -70,11 +82,17 @@ export class WorldRoomMultiplayService {
 	}
 
 	@bindThis
-	public async leave(userId: MiUser['id'], roomId: MiWorldRoom['id']) {
+	public async left(userId: MiUser['id'], roomId: MiWorldRoom['id']) {
+		console.log('left', { userId, roomId });
+
 		const redisPipeline = this.redisClient.pipeline();
 		redisPipeline.hdel(`worldRoom:${roomId}:players`, userId);
 		redisPipeline.hdel(`worldRoom:${roomId}:playerStates`, userId);
 		await redisPipeline.exec();
+
+		this.globalEventService.publishWorldRoomStream(roomId, 'left', {
+			userId,
+		});
 	}
 
 	@bindThis
@@ -96,5 +114,30 @@ export class WorldRoomMultiplayService {
 		// TODO: atomicにやる
 		this.heartbeat(userId, roomId);
 		return this.getPlayerStates(roomId);
+	}
+
+	@bindThis
+	public packPlayerProfile(user: Packed<'UserLite'>) {
+		return {
+			name: user.name,
+			username: user.username,
+			avatarUrl: user.avatarUrl,
+		};
+	}
+
+	@bindThis
+	public async getPlayerProfiles(roomId: MiWorldRoom['id'], userId?: MiUser['id']): Promise<Record<string, any>> {
+		let playerIds = await this.redisClient.hkeys(`worldRoom:${roomId}:players`);
+		playerIds = playerIds.filter(id => id !== userId);
+
+		const packedUsers = await this.userEntityService.packMany(playerIds);
+
+		const profiles: Record<string, any> = {};
+		for (const playerId of playerIds) {
+			const packedUser = packedUsers.find(u => u.id === playerId);
+			if (packedUser == null) continue;
+			profiles[playerId] = this.packPlayerProfile(packedUser);
+		}
+		return profiles;
 	}
 }

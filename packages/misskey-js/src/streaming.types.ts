@@ -295,8 +295,10 @@ export type Channels = {
 			roomId: string;
 		};
 		events: {
-			entered: () => void;
+			entered: (payload: { playerProfiles: any; }) => void;
 			sync: (payload: any) => void;
+			playerEntered: (payload: { id: string; profile: any; }) => void;
+			playerLeft: (payload: { id: string; }) => void;
 		};
 		receives: {
 			update: any;

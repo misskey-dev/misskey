@@ -10,7 +10,7 @@ import type { ShallowRef } from 'vue';
 import type { RoomStateObject } from 'misskey-world/src/room/object.js';
 import type { RoomEngine } from 'misskey-world-engine/src/room/engine.js';
 import type { RoomAttachments, RoomState } from 'misskey-world/src/room/type.js';
-import type { PlayerState } from 'misskey-world-engine/src/PlayerContainer.js';
+import type { PlayerProfile, PlayerState } from 'misskey-world-engine/src/PlayerContainer.js';
 import * as sound from '@/utility/sound.js';
 import { deepEqual } from '@/utility/deep-equal.js';
 import { deepClone } from '@/utility/clone.js';
@@ -221,5 +221,17 @@ export class RoomController extends EngineControllerBase<RoomEngine> {
 
 	public standUp() {
 		this.call('standUp');
+	}
+
+	public updatePlayerProfiles(profiles: Record<string, PlayerProfile>) {
+		this.call('updatePlayerProfiles', [profiles]);
+	}
+
+	public updatePlayerStates(states: Record<string, PlayerState>) {
+		this.call('updatePlayerStates', [states]);
+	}
+
+	public clearPlayers() {
+		this.call('clearPlayers');
 	}
 }

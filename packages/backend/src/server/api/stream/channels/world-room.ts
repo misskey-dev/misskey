@@ -49,7 +49,7 @@ export class WorldRoomChannel extends Channel {
 			return false;
 		}
 
-		//this.subscriber.on(`worldRoomStream:${this.roomId}`, this.onEvent);
+		this.subscriber.on(`worldRoomStream:${this.roomId}`, this.onEvent);
 
 		return true;
 	}
@@ -62,19 +62,37 @@ export class WorldRoomChannel extends Channel {
 
 		this.isEntered = true;
 
-		this.send('entered', {});
+		this.send('entered', {
+			playerProfiles: await this.worldRoomMultiplayService.getPlayerProfiles(this.roomId, this.user!.id),
+		});
 
 		this.intervalId = setInterval(async () => {
 			const states = await this.worldRoomMultiplayService.getPlayerStatesAndHeatbeat(this.user!.id, this.roomId);
-			// TODO: 自分自身のstateは抜く
+			delete states[this.user!.id];
 			this.send('sync', states);
-		}, 1000);
+		}, 100);
 	}
 
-	//@bindThis
-	//private async onEvent(data: GlobalEvents['worldRoom']['payload']) {
-	//	this.send(data.type, data.body);
-	//}
+	@bindThis
+	private async onEvent(data: GlobalEvents['worldRoom']['payload']) {
+		switch (data.type) {
+			case 'enter': {
+				if (data.body.user.id === this.user!.id) return; // 自分の入室は無視
+				this.send('playerEntered', {
+					id: data.body.user.id,
+					profile: this.worldRoomMultiplayService.packPlayerProfile(data.body.user.id),
+				});
+				break;
+			}
+			case 'left': {
+				if (data.body.userId === this.user!.id) return; // 自分の退室は無視
+				this.send('playerLeft', {
+					id: data.body.userId,
+				});
+				break;
+			}
+		}
+	}
 
 	@bindThis
 	public onMessage(type: string, body: any) {
@@ -89,9 +107,9 @@ export class WorldRoomChannel extends Channel {
 
 	@bindThis
 	public dispose() {
-		//this.subscriber.off(`worldRoomStream:${this.roomId}`, this.onEvent);
+		this.subscriber.off(`worldRoomStream:${this.roomId}`, this.onEvent);
 
 		clearInterval(this.intervalId);
-		this.worldRoomMultiplayService.leave(this.user!.id, this.roomId);
+		this.worldRoomMultiplayService.left(this.user!.id, this.roomId);
 	}
 }

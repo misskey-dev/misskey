@@ -6,7 +6,8 @@
 import { reactive, ref, shallowRef, triggerRef, watch } from 'vue';
 import { EventEmitter } from 'eventemitter3';
 import * as Misskey from 'misskey-js';
-import type { PlayerState } from 'misskey-world-engine/src/PlayerContainer.js';
+import type { PlayerProfile, PlayerState } from 'misskey-world-engine/src/PlayerContainer.js';
+import type { RoomController } from './controller.js';
 import { useStream } from '@/stream.js';
 import * as os from '@/os.js';
 import { withTimeout } from '@/utility/promise-timeout.js';
@@ -14,13 +15,18 @@ import { deepEqual } from '@/utility/deep-equal.js';
 
 export class Multiplayer {
 	public isOnline = ref(false);
+	private controller: RoomController;
 	private connection: Misskey.IChannelConnection<Misskey.Channels['worldRoom']> | null = null;
 	private roomId: string;
+	private playerProfiles: Record<string, PlayerProfile> = {};
 
-	constructor(roomId: string) {
+	constructor(roomId: string, controller: RoomController) {
 		this.roomId = roomId;
+		this.controller = controller;
 
 		this.onSync = this.onSync.bind(this);
+		this.onPlayerEntered = this.onPlayerEntered.bind(this);
+		this.onPlayerLeft = this.onPlayerLeft.bind(this);
 	}
 
 	public enter() {
@@ -28,8 +34,13 @@ export class Multiplayer {
 			this.connection = useStream().useChannel('worldRoom', {
 				roomId: this.roomId,
 			});
-			this.connection.once('entered', () => {
+			this.connection.once('entered', ({ playerProfiles }) => {
+				console.log('entered', playerProfiles);
+				this.playerProfiles = playerProfiles;
+				this.controller.updatePlayerProfiles(this.playerProfiles);
 				this.connection!.on('sync', this.onSync);
+				this.connection!.on('playerEntered', this.onPlayerEntered);
+				this.connection!.on('playerLeft', this.onPlayerLeft);
 				this.isOnline.value = true;
 				resolve();
 			});
@@ -42,7 +53,7 @@ export class Multiplayer {
 		});
 	}
 
-	public leave() {
+	public left() {
 		if (this.connection == null) return;
 		this.connection.dispose();
 		this.connection = null;
@@ -61,9 +72,20 @@ export class Multiplayer {
 
 	private onSync(states: Record<string, PlayerState>) {
 		console.log('sync', states);
+		this.controller.updatePlayerStates(states);
+	}
+
+	private onPlayerEntered(data: { id: string; profile: PlayerProfile; }) {
+		this.playerProfiles[data.id] = data.profile;
+		this.controller.updatePlayerProfiles(this.playerProfiles);
+	}
+
+	private onPlayerLeft(data: { id: string; }) {
+		delete this.playerProfiles[data.id];
+		this.controller.updatePlayerProfiles(this.playerProfiles);
 	}
 
 	public dispose() {
-		this.leave();
+		this.left();
 	}
 }

@@ -286,7 +286,7 @@ const roomControllerOptions = computed<RoomControllerOptions>(() => ({
 }));
 
 const controller = markRaw(new RoomController(deepClone(initialRoomState), roomControllerOptions.value));
-const multiplayer = markRaw(new Multiplayer(props.room.id));
+const multiplayer = markRaw(new Multiplayer(props.room.id, controller));
 
 onMounted(async () => {
 	// TODO: babylonに依存しないで判定する
@@ -349,7 +349,7 @@ onMounted(async () => {
 
 useInterval(() => {
 	multiplayer.updateState(controller.myPlayerState.value);
-}, 1000, { immediate: false, afterMounted: true });
+}, 100, { immediate: false, afterMounted: true });
 
 onDeactivated(() => {
 	controller.destroy();
@@ -657,7 +657,7 @@ function showOtherMenu(ev: PointerEvent) {
 }
 
 function leaveOnline() {
-	multiplayer.leave();
+	multiplayer.left();
 }
 
 function enterOnline() {

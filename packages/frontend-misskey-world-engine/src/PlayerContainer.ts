@@ -8,6 +8,7 @@ import { WORLD_SCALE } from 'misskey-world/src/utility.js';
 
 export type PlayerProfile = {
 	name: string;
+	username: string;
 	avatarUrl: string;
 };
 
@@ -65,7 +66,8 @@ export class PlayerContainer {
 		this.root.position.set(...state.position);
 		this.root.rotation.set(...state.rotation);
 		if (!forInit) {
-			this.sr.updateMesh(this.root.getChildMeshes());
+			const meshes = this.root.getChildMeshes();
+			if (meshes.length > 0) this.sr.updateMesh(meshes);
 		}
 	}
 
