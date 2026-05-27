@@ -50,6 +50,7 @@ export class RoomObjectPreviewEngine extends EngineBase<{
 		this.scene.autoClear = false;
 		this.scene.skipPointerMovePicking = true;
 		this.scene.skipFrustumClipping = true; // snapshot renderingでは全てのメッシュがアクティブになっている必要があるため
+		this.scene.clearColor = new BABYLON.Color4(0.03, 0.03, 0.03, 1);
 
 		this.sr = new BABYLON.SnapshotRenderingHelper(this.scene);
 
