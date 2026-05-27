@@ -34,9 +34,9 @@ export function useScrollPositionKeeper(scrollContainerRef: Ref<HTMLElement | nu
 			const scrollContainerRect = el.getBoundingClientRect();
 			const viewPosition = scrollContainerRect.top + scrollContainerRect.height / 2;
 
-			const anchorEls = el.querySelectorAll('[data-scroll-anchor]');
+			const anchorEls = el.querySelectorAll<HTMLElement>('[data-scroll-anchor]');
 			for (let i = anchorEls.length - 1; i > -1; i--) { // 下から見た方が速い
-				const anchorEl = anchorEls[i] as HTMLElement;
+				const anchorEl = anchorEls[i];
 				const anchorTop = anchorEl.getBoundingClientRect().top;
 				// 上端が viewPosition 以下の最初の要素（＝中央を跨ぐか、中央より上にある中で最も近いもの）を選択する
 				// 最下部スクロール時に min-height による空白に viewPosition が入った場合も最後のアイテムをキャプチャできる
@@ -63,9 +63,9 @@ export function useScrollPositionKeeper(scrollContainerRef: Ref<HTMLElement | nu
 		if (!anchorId) return;
 		const scrollContainer = scrollContainerRef.value;
 		if (!scrollContainer) return;
-		const scrollAnchorEl = scrollContainer.querySelector(`[data-scroll-anchor="${CSS.escape(anchorId)}"]`);
+		const scrollAnchorEl = scrollContainer.querySelector<HTMLElement>(`[data-scroll-anchor="${CSS.escape(anchorId)}"]`);
 		if (!scrollAnchorEl) return;
-		const anchorRect = (scrollAnchorEl as HTMLElement).getBoundingClientRect();
+		const anchorRect = scrollAnchorEl.getBoundingClientRect();
 		// anchorContentY: コンテンツ先頭からのアンカー要素上端の距離（scrollTopに依存しない）
 		const anchorContentY = scrollContainer.scrollTop + anchorRect.top - scrollContainer.getBoundingClientRect().top;
 		// キャプチャ時と同じ scrollTop になるよう直接セット（コンテナ高さ変化に依存しない）
