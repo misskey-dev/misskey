@@ -5,16 +5,11 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic.js';
-import { GridMaterial } from '@babylonjs/materials';
 import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
-import { camelToKebab } from 'misskey-world/src/utility.js';
-import { getMeshesBoundingBox, ArcRotateCameraManualInput } from '../utility.js';
-import { EngineBase } from '../EngineBase.js';
-import { deepClone } from '../clone.js';
-import { genId } from '../id.js';
-import { SYSTEM_MESH_NAMES, GRAPHICS_QUALITY } from './utility.js';
-import type { RawOptions } from './object.js';
-import type { PlayerContainer } from './PlayerContainer.js';
+import { ArcRotateCameraManualInput, getMeshesBoundingBox, GRAPHICS_QUALITY } from './utility.js';
+import { PlayerContainer, type PlayerProfile } from './PlayerContainer.js';
+import { EngineBase } from './EngineBase.js';
+import type { WorldAvatar } from 'misskey-world/src/types.js';
 
 export class AvatarPreviewEngine extends EngineBase<{
 	'loadingProgress': (ctx: { progress: number }) => void;
@@ -23,8 +18,8 @@ export class AvatarPreviewEngine extends EngineBase<{
 	private sr: BABYLON.SnapshotRenderingHelper;
 	private shadowGenerator: BABYLON.ShadowGenerator;
 	private camera: BABYLON.ArcRotateCamera;
+	private avatarOptions: WorldAvatar | null = null;
 	private playerContainer: PlayerContainer | null = null;
-	private objectOptions: RawOptions | null = null;
 	private envMapIndoor: BABYLON.CubeTexture;
 	private roomLight: BABYLON.SpotLight;
 	private pipeline: BABYLON.DefaultRenderingPipeline;
@@ -110,50 +105,36 @@ export class AvatarPreviewEngine extends EngineBase<{
 		});
 	}
 
-	public async loadObject(type: string) {
+	public async loadAvatar(profile: PlayerProfile) {
 		this.sr.disableSnapshotRendering();
-		this.clearObject();
+		this.clearAvatar();
 
-		this.objectContainer = new ObjectContainer({
-			id: id,
-			type: type,
-			position: new BABYLON.Vector3(0, 0, 0),
-			rotation: new BABYLON.Vector3(0, 0, 0),
-			options: this.objectOptions,
-			roomAttachments: { files: [] },
-			metadata: {},
+		this.playerContainer = new PlayerContainer({
+			id: '',
+			profile,
+			state: {
+				position: [0, 0, 0],
+				rotation: [0, 0, 0],
+			},
 			sr: this.sr,
-			getIsSrReady: () => true,
-			lightContainer: null,
-			graphicsQuality: this.graphicsQuality,
 			scene: this.scene,
 		});
-		this.objectContainer.registerMeshes = (meshes) => {
+		this.playerContainer.registerMeshes = (meshes) => {
 			for (const mesh of meshes) {
-				// シェイプキー(morph)を考慮してbounding boxを更新するために必要
-				mesh.refreshBoundingInfo({ applyMorph: true });
+				mesh.receiveShadows = true;
+				this.shadowGenerator.addShadowCaster(mesh);
 
-				if (SYSTEM_MESH_NAMES.some(n => mesh.name.includes(n))) {
-					mesh.receiveShadows = false;
-					mesh.isVisible = false;
-				} else {
-					if (def.receiveShadows !== false) mesh.receiveShadows = true;
-					if (def.castShadows !== false) {
-						this.shadowGenerator.addShadowCaster(mesh);
-					}
-
-					if (mesh.material) {
-						if (mesh.material instanceof BABYLON.MultiMaterial) {
-							for (const subMat of mesh.material.subMaterials) {
-								(subMat as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
-								(subMat as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
-								(subMat as BABYLON.PBRMaterial).anisotropy.isEnabled = false; // なんかきれいにレンダリングされないため
-							}
-						} else {
-							(mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
-							(mesh.material as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
-							(mesh.material as BABYLON.PBRMaterial).anisotropy.isEnabled = false; // なんかきれいにレンダリングされないため
+				if (mesh.material) {
+					if (mesh.material instanceof BABYLON.MultiMaterial) {
+						for (const subMat of mesh.material.subMaterials) {
+							(subMat as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
+							(subMat as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
+							(subMat as BABYLON.PBRMaterial).anisotropy.isEnabled = false; // なんかきれいにレンダリングされないため
 						}
+					} else {
+						(mesh.material as BABYLON.PBRMaterial).reflectionTexture = this.envMapIndoor;
+						(mesh.material as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
+						(mesh.material as BABYLON.PBRMaterial).anisotropy.isEnabled = false; // なんかきれいにレンダリングされないため
 					}
 				}
 
@@ -161,9 +142,9 @@ export class AvatarPreviewEngine extends EngineBase<{
 			}
 		};
 
-		await this.objectContainer.load();
+		await this.playerContainer.loadAvatar();
 
-		const boundingInfo = getMeshesBoundingBox(this.objectContainer.root.getChildMeshes().filter(m => m.isEnabled() && m.isVisible), true);
+		const boundingInfo = getMeshesBoundingBox(this.playerContainer.root.getChildMeshes().filter(m => m.isEnabled() && m.isVisible), true);
 
 		this.pipeline.removeCamera(this.camera);
 		this.camera.dispose();
@@ -184,21 +165,6 @@ export class AvatarPreviewEngine extends EngineBase<{
 			rotationSensitivity: 0.0005,
 		}));
 
-		if (def.placement === 'wall' || def.placement === 'side') {
-			this.camera.lowerBetaLimit = 0;
-			this.camera.upperBetaLimit = Math.PI;
-			this.zGridPreviewPlane.rotation = new BABYLON.Vector3(0, Math.PI, 0);
-		} else if (def.placement === 'ceiling' || def.placement === 'bottom') {
-			this.camera.lowerBetaLimit = (Math.PI / 2) - 0.1;
-			this.camera.upperBetaLimit = Math.PI;
-			this.camera.beta = Math.PI / 1.75;
-			this.zGridPreviewPlane.rotation = new BABYLON.Vector3(-Math.PI / 2, 0, 0);
-		} else {
-			this.camera.lowerBetaLimit = 0;
-			this.camera.upperBetaLimit = (Math.PI / 2) + 0.1;
-			this.zGridPreviewPlane.rotation = new BABYLON.Vector3(Math.PI / 2, 0, 0);
-		}
-
 		// zoom to fit
 		const size = boundingInfo.extendSize;
 		const distance = Math.max(size.x, size.y, size.z) * 2;
@@ -209,26 +175,25 @@ export class AvatarPreviewEngine extends EngineBase<{
 		this.sr.enableSnapshotRendering();
 
 		return {
-			id,
-			options: this.objectOptions,
+			options: this.avatarOptions,
 		};
 	}
 
-	public updateObjectOption(key: string, value: any, attachments?: RoomAttachments) {
-		if (this.objectOptions == null) return;
-		this.objectOptions[key] = value;
+	public updateObjectOption(key: string, value: any) {
+		if (this.avatarOptions == null) return;
+		this.avatarOptions[key] = value;
 
-		if (this.objectContainer != null) {
-			this.objectContainer.optionsUpdated(this.objectOptions, key, value, attachments ?? { files: [] });
+		if (this.playerContainer != null) {
+			this.playerContainer.updateAvatarOption(this.avatarOptions);
 		}
 	}
 
-	public clearObject() {
+	public clearAvatar() {
 		this.sr.disableSnapshotRendering();
-		if (this.objectContainer != null) {
-			this.objectContainer.destroy();
-			this.objectContainer = null;
-			this.objectOptions = null;
+		if (this.playerContainer != null) {
+			this.playerContainer.destroy();
+			this.playerContainer = null;
+			this.avatarOptions = null;
 		}
 		this.sr.enableSnapshotRendering();
 	}
@@ -252,6 +217,6 @@ export class AvatarPreviewEngine extends EngineBase<{
 
 	public destroy() {
 		super.destroy();
-		this.objectContainer?.destroy();
+		this.playerContainer?.destroy();
 	}
 }
