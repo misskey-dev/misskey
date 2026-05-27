@@ -16,7 +16,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><i class="ti ti-box"></i> カタログ</template>
 
 	<div :class="$style.root">
-		<div :class="$style.main">
+		<div v-if="!controller.isReady" :class="$style.loading">
+			<MkLoading/>
+		</div>
+		<div v-else :class="$style.main">
 			<div class="_spacer _gaps">
 				<MkInput v-model="searchKeyword" type="search" :placeholder="i18n.ts.search"></MkInput>
 				<MkFoldableSection v-if="recentlyUsedSchemas.length > 0" :expanded="true">
@@ -42,10 +45,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		>
 			<div v-show="showPreview" :class="$style.previewContainer" @click="selectedId = null">
 				<div :class="$style.preview" @click.stop>
-					<canvas ref="canvas" :class="$style.canvas"></canvas>
 					<MkButton :class="$style.unselectButton" small rounded iconOnly @click="selectedId = null"><i class="ti ti-x"></i></MkButton>
 					<MkButton v-if="selectedObjectSchema != null && Object.keys(selectedObjectSchema.options.schema).length > 0" :class="$style.customizeButton" small rounded iconOnly @click="showObjectOptions = !showObjectOptions"><i class="ti ti-tool"></i></MkButton>
-					<MkButton :class="$style.addButton" small rounded primary @click="ok"><i class="ti ti-plus"></i></MkButton>
+
+					<div :class="[$style.previewMain, { [$style.optionsOpened]: selectedObjectSchema != null && selectedInstanceId != null && showObjectOptions }]">
+						<canvas ref="canvas" :class="$style.canvas"></canvas>
+						<MkButton :class="$style.addButton" small rounded primary @click="ok"><i class="ti ti-plus"></i></MkButton>
+					</div>
 
 					<Transition
 						:enterActiveClass="prefer.s.animation ? $style.transition_options_enterActive : ''"
@@ -53,7 +59,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						:enterFromClass="prefer.s.animation ? $style.transition_options_enterFrom : ''"
 						:leaveToClass="prefer.s.animation ? $style.transition_options_leaveTo : ''"
 					>
-						<div v-if="selectedObjectSchema != null && selectedInstanceId != null && showObjectOptions" :class="$style.customize" class="_shadow">
+						<div v-if="selectedObjectSchema != null && selectedInstanceId != null && showObjectOptions" :class="$style.customize">
 							<XObjectCustomizeForm :addFileAttachment="addFileAttachment" :schema="selectedObjectSchema" :options="selectedObjectOptionsState" @update="(k, v) => updateObjectOption(k, v)"></XObjectCustomizeForm>
 						</div>
 					</Transition>
@@ -225,6 +231,14 @@ async function cancel() {
 	position: relative;
 }
 
+.loading {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	display: grid;
+	place-items: center;
+}
+
 .main {
 	height: 100%;
 	box-sizing: border-box;
@@ -259,16 +273,32 @@ async function cancel() {
 	bottom: 0;
 	left: 0;
 	width: 100%;
-	height: calc(100% - 30px);
+	/*height: calc(100% - 30px);*/
+	height: 100%;
 	z-index: 10;
-	border-radius: 16px 16px 0 0;
+	/*border-radius: 16px 16px 0 0;*/
 	overflow: clip;
+	container-type: size;
 	background: var(--MI_THEME-panel)
 }
 
-.canvas {
+.previewMain {
 	width: 100%;
 	height: 100%;
+	overflow: clip;
+	contain: strict;
+	transition: width 300ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.previewMain.optionsOpened {
+	width: calc(100% - 300px);
+}
+
+.canvas {
+	position: relative;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 100cqw;
+	height: 100cqh;
 	display: block;
 	touch-action: none;
 	background: #000;
@@ -282,12 +312,14 @@ async function cancel() {
 	position: absolute;
 	top: 10px;
 	left: 10px;
+	z-index: 2;
 }
 
 .customizeButton {
 	position: absolute;
 	top: 10px;
 	right: 10px;
+	z-index: 2;
 }
 
 .addButton {
@@ -302,16 +334,12 @@ async function cancel() {
 	position: absolute;
 	top: 0;
 	right: 0;
-	margin: 32px 8px 8px 8px;
-	max-height: stretch;
+	height: stretch;
 	width: 300px;
 	overflow: auto;
 	box-sizing: border-box;
-	padding: 16px;
-	border-radius: 12px;
-	background: color(from var(--MI_THEME-panel) srgb r g b / 0.5);
-	-webkit-backdrop-filter: blur(15px);
-	backdrop-filter: blur(15px);
+	padding: 32px 16px 16px 16px;
+	background: var(--MI_THEME-panel);
 }
 
 .transition_preview_enterActive,

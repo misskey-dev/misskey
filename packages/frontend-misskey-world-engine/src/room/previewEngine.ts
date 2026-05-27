@@ -163,13 +163,12 @@ export class RoomObjectPreviewEngine extends EngineBase<{
 			(this.camera.inputs.attached.manual as ArcRotateCameraManualInput).setRotationVector({ x: ev.x, y: ev.y });
 		});
 
-		if (_DEV_) { // SR状態確認用
-			const box = BABYLON.MeshBuilder.CreateBox('', { size: cm(10) }, this.scene);
-
-			setInterval(() => {
-				box.position = new BABYLON.Vector3(0, Math.random() * cm(10), 0);
-			}, 10);
-		}
+		//if (_DEV_) { // SR状態確認用
+		//	const box = BABYLON.MeshBuilder.CreateBox('', { size: cm(10) }, this.scene);
+		//	setInterval(() => {
+		//		box.position = new BABYLON.Vector3(0, Math.random() * cm(10), 0);
+		//	}, 10);
+		//}
 	}
 
 	public async loadObject(type: string) {
