@@ -18,6 +18,7 @@
 import * as BABYLON from '@babylonjs/core';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
 import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
+import { throttle } from 'throttle-debounce';
 import { TIME_MAP, getMeshesBoundingBox, Timer, getYRotationDirection, FreeCameraManualInput, remap } from '../utility.js';
 import { EngineBase } from '../EngineBase.js';
 import { genId } from '../id.js';
@@ -65,7 +66,7 @@ export class RoomEngine extends EngineBase<{
 	'changeSittingState': (ctx: { isSitting: boolean }) => void;
 	'changeGridSnapping': (ctx: { gridSnapping: { enabled: boolean; scale: number } }) => void;
 	'changeRoomState': (ctx: { roomState: RoomState }) => void;
-	'changeMyPlayerState': (ctx: { playerState: PlayerState }) => void;
+	'changeMyPlayerState': (ctx: PlayerState) => void;
 	'playSfxUrl': (ctx: {
 		url: string;
 		options: {
@@ -177,7 +178,7 @@ export class RoomEngine extends EngineBase<{
 		this.ev('changeSittingState', { isSitting: v });
 	}
 
-	private playerProfiles: Record<string, PlayerProfiles> = {};
+	private playerProfiles: Record<string, PlayerProfile> = {};
 	private playerStates: Record<string, PlayerState> = {};
 	private playerContainers: PlayerContainer[] = [];
 
@@ -498,6 +499,16 @@ export class RoomEngine extends EngineBase<{
 				(this.fixedCamera.inputs.attached.manual as FreeCameraManualInput).setRotationVector({ x: ev.x, y: ev.y });
 			}
 		});
+
+		this.timer.setInterval(() => {
+			const camera = this.scene.activeCamera!;
+			const myPos = camera.position;
+			const myRotation = camera.rotation;
+			this.ev('changeMyPlayerState', {
+				position: [myPos.x, myPos.y, myPos.z],
+				rotation: [myRotation.x, myRotation.y, myRotation.z],
+			});
+		}, 100);
 
 		this.inited = true;
 	}

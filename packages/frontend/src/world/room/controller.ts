@@ -108,7 +108,7 @@ export class RoomController extends EngineControllerBase<RoomEngine> {
 			}
 		});
 
-		engineEvents.on('changeMyPlayerState', ({ playerState }) => {
+		engineEvents.on('changeMyPlayerState', (playerState) => {
 			this.myPlayerState.value = playerState;
 		});
 

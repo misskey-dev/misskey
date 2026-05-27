@@ -60,7 +60,10 @@ export class WorldRoomMultiplayService {
 	public async heartbeat(userId: MiUser['id'], roomId: MiWorldRoom['id']) {
 		const exists = await this.redisClient.hexists(`worldRoom:${roomId}:players`, userId);
 		if (exists) {
-			await this.redisClient.hexpire(`worldRoom:${roomId}:players`, 30, 'FIELDS', 1, userId);
+			const redisPipeline = this.redisClient.pipeline();
+			redisPipeline.hexpire(`worldRoom:${roomId}:players`, 30, 'FIELDS', 1, userId);
+			redisPipeline.hexpire(`worldRoom:${roomId}:playerStates`, 30, 'FIELDS', 1, userId);
+			await redisPipeline.exec();
 		} else {
 			throw new Error('Not in room.');
 		}

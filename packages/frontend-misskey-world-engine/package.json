@@ -14,6 +14,7 @@
 		"esbuild": "0.28.0",
 		"execa": "9.6.1",
 		"nodemon": "3.1.14",
+		"throttle-debounce": "5.0.2",
 		"@types/tinycolor2": "1.4.6"
 	},
 	"files": [
@@ -24,6 +25,7 @@
 		"@babylonjs/inspector": "9.9.0",
 		"@babylonjs/loaders": "9.9.0",
 		"@babylonjs/materials": "9.9.0",
+		"@types/throttle-debounce": "5.0.2",
 		"eventemitter3": "5.0.4",
 		"seedrandom": "3.0.5",
 		"tinycolor2": "1.6.0",

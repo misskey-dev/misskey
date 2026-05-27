@@ -111,15 +111,3 @@ execa('pnpm', ['--filter', 'misskey-bubble-game', 'watch', '--no-clean'], {
 	stdout: process.stdout,
 	stderr: process.stderr,
 });
-
-execa('pnpm', ['--filter', 'misskey-world', 'watch', '--no-clean'], {
-	cwd: _dirname + '/../',
-	stdout: process.stdout,
-	stderr: process.stderr,
-});
-
-execa('pnpm', ['--filter', 'frontend-misskey-world-engine', 'watch', '--no-clean'], {
-	cwd: _dirname + '/../',
-	stdout: process.stdout,
-	stderr: process.stderr,
-});
