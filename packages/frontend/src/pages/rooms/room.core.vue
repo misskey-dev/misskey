@@ -89,7 +89,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, defineAsyncComponent, markRaw, nextTick, onActivated, onDeactivated, onMounted, onUnmounted, ref, shallowRef, triggerRef, useTemplateRef, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { cm, getHex, getRgb, WORLD_SCALE } from 'misskey-world/src/utility.js';
-import { GRAPHICS_QUALITY } from 'misskey-world-engine/src/room/utility.js';
+import { GRAPHICS_QUALITY } from 'misskey-world-engine/src/utility.js';
 import { OBJECT_SCHEMA_DEFS } from 'misskey-world/src/room/object-schema-defs.js';
 import { useInterval } from '@@/js/use-interval.js';
 import XObjectCustomizeForm from './room.object-customize-form.vue';
