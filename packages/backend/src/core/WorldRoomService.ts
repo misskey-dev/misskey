@@ -10,7 +10,7 @@ import {
 	MiDriveFile,
 	MiWorldRoom,
 } from '@/models/_.js';
-import type { WorldRoomsRepository } from '@/models/_.js';
+import type { DriveFilesRepository, WorldRoomsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import { IdService } from '@/core/IdService.js';
@@ -47,11 +47,49 @@ export class WorldRoomService {
 		@Inject(DI.worldRoomsRepository)
 		private worldRoomsRepository: WorldRoomsRepository,
 
+		@Inject(DI.driveFilesRepository)
+		private driveFilesRepository: DriveFilesRepository,
+
 		private roleService: RoleService,
 		private moderationLogService: ModerationLogService,
 		private queryService: QueryService,
 		private idService: IdService,
 	) {
+	}
+
+	@bindThis
+	public async validateDef(
+		me: MiUser,
+		def: MiWorldRoom['def'],
+	): Promise<boolean> {
+		// TODO: スキーマ検証(関係ないプロパティを入れたり不正な値を入れたりできないように)
+
+		const objectsLimit = 100; // TODO: ref role policy
+		if (def.installedObjects.length > objectsLimit) {
+			return false;
+		}
+
+		const attachedFilesLimit = 30; // TODO: ref role policy
+
+		const attachedFileIds = this.collectReferencedDriveFileIds(def);
+		if (attachedFileIds.size > attachedFilesLimit) {
+			return false;
+		}
+
+		const attachedFiles = attachedFileIds.size === 0 ? [] : await this.driveFilesRepository.findBy({ id: In([...attachedFileIds]), userId: me.id });
+		for (const file of attachedFiles) {
+			if (!file.type.startsWith('image/')) {
+				return false;
+			}
+			if (file.size > 5 * 1024 * 1024) {
+				return false;
+			}
+			if (Math.max(file.properties.width ?? 0, file.properties.height ?? 0) > 2048) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	@bindThis
@@ -117,7 +155,8 @@ export class WorldRoomService {
 		await this.worldRoomsRepository.delete(room.id);
 	}
 
-	collectReferencedDriveFileIds(roomState: MiWorldRoom['def']): Set<MiDriveFile['id']> {
+	@bindThis
+	public collectReferencedDriveFileIds(roomState: MiWorldRoom['def']): Set<MiDriveFile['id']> {
 		const fileIds = new Set<MiDriveFile['id']>();
 		for (const o of roomState.installedObjects) {
 			const def = driveFileReferencingOptions[o.type];
