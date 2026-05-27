@@ -5663,6 +5663,10 @@ export interface Locale extends ILocale {
      * 元に戻す
      */
     "previewingThemeRestore": string;
+    /**
+     * アクセストークン
+     */
+    "accessToken": string;
     "_imageEditing": {
         "_vars": {
             /**
