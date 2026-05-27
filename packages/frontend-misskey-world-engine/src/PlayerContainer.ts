@@ -5,11 +5,13 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { WORLD_SCALE } from 'misskey-world/src/utility.js';
+import type { WorldAvatar } from 'misskey-world/src/types.js';
 
 export type PlayerProfile = {
 	name: string;
 	username: string;
 	avatarUrl: string;
+	worldAvatar: WorldAvatar;
 };
 
 export type PlayerState = {

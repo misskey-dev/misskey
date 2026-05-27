@@ -7,22 +7,6 @@ import * as BABYLON from '@babylonjs/core';
 import { cm } from 'misskey-world/src/utility.js';
 import { applyMorphTargetsToMesh, getPlaneUvIndexes, Timer } from '../utility.js';
 
-export const GRAPHICS_QUALITY = {
-	HIGH: 1,
-	MEDIUM: 0,
-	LOW: -1,
-} as const;
-
-export function getLightRangeFactorByGraphicsQuality(quality: number) {
-	if (quality >= GRAPHICS_QUALITY.HIGH) {
-		return 1;
-	} else if (quality >= GRAPHICS_QUALITY.MEDIUM) {
-		return 0.5;
-	} else {
-		return 0.25;
-	}
-}
-
 export const SYSTEM_MESH_NAMES = ['__TOP__', '__SIDE__', '__BOTTOM__', '__PICK__', '__COLLISION__'];
 export const SYSTEM_HEYA_MESH_NAMES = ['__ROOM_WALL__', '__ROOM_SIDE__', '__ROOM_FLOOR__', '__ROOM_CEILING__', '__ROOM_TOP__', '__ROOM_BOTTOM__', '__COLLISION__'];
 
