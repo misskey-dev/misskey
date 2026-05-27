@@ -10,6 +10,7 @@ import type { PlayerState } from 'misskey-world-engine/src/PlayerContainer.js';
 import { useStream } from '@/stream.js';
 import * as os from '@/os.js';
 import { withTimeout } from '@/utility/promise-timeout.js';
+import { deepEqual } from '@/utility/deep-equal.js';
 
 export class Multiplayer {
 	public isOnline = ref(false);
@@ -48,9 +49,14 @@ export class Multiplayer {
 		this.isOnline.value = false;
 	}
 
+	private prevState: PlayerState | null = null;
+
 	public updateState(state: PlayerState) {
 		if (this.connection == null || !this.isOnline.value) return;
+		if (this.prevState != null && deepEqual(this.prevState, state)) return;
+
 		this.connection.send('update', state);
+		this.prevState = state;
 	}
 
 	private onSync(states: Record<string, PlayerState>) {

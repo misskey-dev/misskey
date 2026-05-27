@@ -91,6 +91,7 @@ import * as Misskey from 'misskey-js';
 import { cm, getHex, getRgb, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { GRAPHICS_QUALITY } from 'misskey-world-engine/src/room/utility.js';
 import { OBJECT_SCHEMA_DEFS } from 'misskey-world/src/room/object-schema-defs.js';
+import { useInterval } from '@@/js/use-interval.js';
 import XObjectCustomizeForm from './room.object-customize-form.vue';
 import XEnvOptions from './room.env-options.vue';
 import type { RoomControllerOptions } from '@/world/room/controller.js';
@@ -345,6 +346,10 @@ onMounted(async () => {
 	// canvasからフォーカスが外れていることに気づかずsとか押してしまうと検索画面が開かれてroomの状態が失われたりするので無効化
 	(window as any).disableGlobalHotkeys();
 });
+
+useInterval(() => {
+	multiplayer.updateState(controller.myPlayerState.value);
+}, 1000, { immediate: false, afterMounted: true });
 
 onDeactivated(() => {
 	controller.destroy();

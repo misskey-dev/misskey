@@ -10,6 +10,7 @@ import type { ShallowRef } from 'vue';
 import type { RoomStateObject } from 'misskey-world/src/room/object.js';
 import type { RoomEngine } from 'misskey-world-engine/src/room/engine.js';
 import type { RoomAttachments, RoomState } from 'misskey-world/src/room/type.js';
+import type { PlayerState } from 'misskey-world-engine/src/PlayerContainer.js';
 import * as sound from '@/utility/sound.js';
 import { deepEqual } from '@/utility/deep-equal.js';
 import { deepClone } from '@/utility/clone.js';
@@ -40,6 +41,10 @@ export class RoomController extends EngineControllerBase<RoomEngine> {
 		}[];
 	} | null>(null);
 	public roomState: ShallowRef<RoomState>;
+	public myPlayerState = shallowRef<PlayerState>({
+		position: [0, 0, 0],
+		rotation: [0, 0, 0],
+	});
 
 	constructor(roomState: RoomState, options: RoomControllerOptions) {
 		super(options);
@@ -103,6 +108,10 @@ export class RoomController extends EngineControllerBase<RoomEngine> {
 			}
 		});
 
+		engineEvents.on('changeMyPlayerState', ({ playerState }) => {
+			this.myPlayerState.value = playerState;
+		});
+
 		engineEvents.on('playSfxUrl', ({ url, options }) => {
 			sound.playUrl(url, options);
 		});
@@ -117,6 +126,10 @@ export class RoomController extends EngineControllerBase<RoomEngine> {
 		this.isRoomLightOn.value = true;
 		this.grabbing.value = null;
 		this.selected.value = null;
+		this.myPlayerState.value = {
+			position: [0, 0, 0],
+			rotation: [0, 0, 0],
+		};
 		await this.init(canvas, attachments);
 	}
 

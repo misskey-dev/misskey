@@ -13854,7 +13854,7 @@ export interface Locale extends ILocale {
              */
             "hangingTShirt": string;
             /**
-             * 正二十面体
+             * 正二十面体のオブジェ
              */
             "icosahedron": string;
             "_icosahedron": {

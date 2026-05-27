@@ -3717,7 +3717,7 @@ _miRoom:
       height: "高さ"
       width: "幅"
     hangingTShirt: "吊り下げTシャツ"
-    icosahedron: "正二十面体"
+    icosahedron: "正二十面体のオブジェ"
     _icosahedron:
       mat: "素材"
     ironFrameTable: "アイアンフレームテーブル"

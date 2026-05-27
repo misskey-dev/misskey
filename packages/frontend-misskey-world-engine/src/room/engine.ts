@@ -65,6 +65,7 @@ export class RoomEngine extends EngineBase<{
 	'changeSittingState': (ctx: { isSitting: boolean }) => void;
 	'changeGridSnapping': (ctx: { gridSnapping: { enabled: boolean; scale: number } }) => void;
 	'changeRoomState': (ctx: { roomState: RoomState }) => void;
+	'changeMyPlayerState': (ctx: { playerState: PlayerState }) => void;
 	'playSfxUrl': (ctx: {
 		url: string;
 		options: {
