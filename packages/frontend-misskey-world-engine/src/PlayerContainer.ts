@@ -70,6 +70,7 @@ export class PlayerContainer {
 				mat.emissiveTexture = avatarTex;
 				mat.roughness = 0;
 				mat.metallic = 0;
+				mat.backFaceCulling = false;
 				mesh.material = mat;
 			}
 		}

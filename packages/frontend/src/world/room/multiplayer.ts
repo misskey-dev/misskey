@@ -71,7 +71,6 @@ export class Multiplayer {
 	}
 
 	private onSync(states: Record<string, PlayerState>) {
-		console.log('sync', states);
 		this.controller.updatePlayerStates(states);
 	}
 

@@ -503,8 +503,8 @@ export class RoomEngine extends EngineBase<{
 
 		this.timer.setInterval(() => {
 			const camera = this.scene.activeCamera!;
-			const myPos = camera.position;
-			const myRotation = camera.rotation;
+			const myPos = camera.globalPosition;
+			const myRotation = camera.absoluteRotation.toEulerAngles();
 			this.ev('changeMyPlayerState', {
 				position: [myPos.x, myPos.y, myPos.z],
 				rotation: [myRotation.x, myRotation.y, myRotation.z],
