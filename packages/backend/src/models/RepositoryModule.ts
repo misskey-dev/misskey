@@ -85,6 +85,7 @@ import {
 	MiChatRoomInvitation,
 	MiChatApproval,
 	MiWorldRoom,
+	MiWorldAvatar,
 } from './_.js';
 import type { Provider } from '@nestjs/common';
 import type { DataSource } from 'typeorm';
@@ -551,6 +552,12 @@ const $worldRoomsRepository: Provider = {
 	inject: [DI.db],
 };
 
+const $worldAvatarsRepository: Provider = {
+	provide: DI.worldAvatarsRepository,
+	useFactory: (db: DataSource) => db.getRepository(MiWorldAvatar).extend(miRepository as MiRepository<MiWorldAvatar>),
+	inject: [DI.db],
+};
+
 @Module({
 	imports: [],
 	providers: [
@@ -631,6 +638,7 @@ const $worldRoomsRepository: Provider = {
 		$bubbleGameRecordsRepository,
 		$reversiGamesRepository,
 		$worldRoomsRepository,
+		$worldAvatarsRepository,
 	],
 	exports: [
 		$usersRepository,
@@ -710,6 +718,7 @@ const $worldRoomsRepository: Provider = {
 		$bubbleGameRecordsRepository,
 		$reversiGamesRepository,
 		$worldRoomsRepository,
+		$worldAvatarsRepository,
 	],
 })
 export class RepositoryModule {

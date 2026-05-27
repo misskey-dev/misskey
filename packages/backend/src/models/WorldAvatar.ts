@@ -7,11 +7,8 @@ import { Entity, Index, JoinColumn, Column, PrimaryColumn, ManyToOne } from 'typ
 import { id } from './util/id.js';
 import { MiUser } from './User.js';
 
-export const worldRoomVisibility = ['public', 'private'] as const;
-export type WorldRoomVisibility = typeof worldRoomVisibility[number];
-
-@Entity('world_room')
-export class MiWorldRoom {
+@Entity('world_avatar')
+export class MiWorldAvatar {
 	@PrimaryColumn(id())
 	public id: string;
 
@@ -25,11 +22,6 @@ export class MiWorldRoom {
 	})
 	public name: string;
 
-	@Column('varchar', {
-		length: 1024,
-	})
-	public description: string;
-
 	@Index()
 	@Column({
 		...id(),
@@ -42,27 +34,17 @@ export class MiWorldRoom {
 	@JoinColumn()
 	public user: MiUser | null;
 
-	@Column('integer', {
-		default: 0,
+	@Column('boolean', {
+		default: false,
 	})
-	public likedCount: number;
-
-	@Column('integer', {
-		default: 0,
-	})
-	public accessCount: number;
-
-	@Column('varchar', {
-		length: 128, default: 'public',
-	})
-	public visibility: WorldRoomVisibility;
+	public active: boolean;
 
 	@Column('jsonb', {
 		default: {},
 	})
 	public def: Record<string, any>;
 
-	constructor(data: Partial<MiWorldRoom>) {
+	constructor(data: Partial<MiWorldAvatar>) {
 		if (data == null) return;
 
 		for (const [k, v] of Object.entries(data)) {

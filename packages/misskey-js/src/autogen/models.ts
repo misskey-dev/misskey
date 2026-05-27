@@ -71,3 +71,5 @@ export type ChatRoomInvitation = components['schemas']['ChatRoomInvitation'];
 export type ChatRoomMembership = components['schemas']['ChatRoomMembership'];
 export type WorldRoomLite = components['schemas']['WorldRoomLite'];
 export type WorldRoomDetailed = components['schemas']['WorldRoomDetailed'];
+export type WorldAvatarLite = components['schemas']['WorldAvatarLite'];
+export type WorldAvatarDetailed = components['schemas']['WorldAvatarDetailed'];

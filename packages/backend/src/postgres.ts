@@ -88,6 +88,7 @@ import { MiReversiGame } from '@/models/ReversiGame.js';
 import { MiChatApproval } from '@/models/ChatApproval.js';
 import { MiSystemAccount } from '@/models/SystemAccount.js';
 import { MiWorldRoom } from '@/models/WorldRoom.js';
+import { MiWorldAvatar } from '@/models/WorldAvatar.js';
 
 pg.types.setTypeParser(20, Number);
 
@@ -256,6 +257,7 @@ export const entities = [
 	MiBubbleGameRecord,
 	MiReversiGame,
 	MiWorldRoom,
+	MiWorldAvatar,
 	...charts,
 ];
 

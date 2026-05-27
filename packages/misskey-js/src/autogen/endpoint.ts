@@ -661,6 +661,15 @@ import type {
 	V2AdminEmojiListRequest,
 	V2AdminEmojiListResponse,
 	VerifyEmailRequest,
+	WorldAvatarsCreateRequest,
+	WorldAvatarsCreateResponse,
+	WorldAvatarsDeleteRequest,
+	WorldAvatarsListRequest,
+	WorldAvatarsListResponse,
+	WorldAvatarsShowRequest,
+	WorldAvatarsShowResponse,
+	WorldAvatarsUpdateRequest,
+	WorldAvatarsUpdateResponse,
 	WorldRoomsCreateRequest,
 	WorldRoomsCreateResponse,
 	WorldRoomsDeleteRequest,
@@ -1107,6 +1116,11 @@ export type Endpoints = {
 	'users/update-memo': { req: UsersUpdateMemoRequest; res: EmptyResponse };
 	'v2/admin/emoji/list': { req: V2AdminEmojiListRequest; res: V2AdminEmojiListResponse };
 	'verify-email': { req: VerifyEmailRequest; res: EmptyResponse };
+	'world/avatars/create': { req: WorldAvatarsCreateRequest; res: WorldAvatarsCreateResponse };
+	'world/avatars/delete': { req: WorldAvatarsDeleteRequest; res: EmptyResponse };
+	'world/avatars/list': { req: WorldAvatarsListRequest; res: WorldAvatarsListResponse };
+	'world/avatars/show': { req: WorldAvatarsShowRequest; res: WorldAvatarsShowResponse };
+	'world/avatars/update': { req: WorldAvatarsUpdateRequest; res: WorldAvatarsUpdateResponse };
 	'world/rooms/create': { req: WorldRoomsCreateRequest; res: WorldRoomsCreateResponse };
 	'world/rooms/delete': { req: WorldRoomsDeleteRequest; res: EmptyResponse };
 	'world/rooms/list-by-user': { req: WorldRoomsListByUserRequest; res: WorldRoomsListByUserResponse };

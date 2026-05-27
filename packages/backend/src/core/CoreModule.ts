@@ -157,6 +157,8 @@ import { LoggerService } from './LoggerService.js';
 import { WorldRoomService } from './WorldRoomService.js';
 import { WorldRoomEntityService } from './entities/WorldRoomEntityService.js';
 import { WorldRoomMultiplayService } from './WorldRoomMultiplayService.js';
+import { WorldAvatarService } from './WorldAvatarService.js';
+import { WorldAvatarEntityService } from './entities/WorldAvatarEntityService.js';
 import type { Provider } from '@nestjs/common';
 
 //#region 文字列ベースでのinjection用(循環参照対応のため)
@@ -234,6 +236,7 @@ const $ReversiService: Provider = { provide: 'ReversiService', useExisting: Reve
 const $PageService: Provider = { provide: 'PageService', useExisting: PageService };
 const $WorldRoomService: Provider = { provide: 'WorldRoomService', useExisting: WorldRoomService };
 const $WorldRoomMultiplayService: Provider = { provide: 'WorldRoomMultiplayService', useExisting: WorldRoomMultiplayService };
+const $WorldAvatarService: Provider = { provide: 'WorldAvatarService', useExisting: WorldAvatarService };
 
 const $ChartLoggerService: Provider = { provide: 'ChartLoggerService', useExisting: ChartLoggerService };
 const $FederationChart: Provider = { provide: 'FederationChart', useExisting: FederationChart };
@@ -290,6 +293,7 @@ const $ReversiGameEntityService: Provider = { provide: 'ReversiGameEntityService
 const $MetaEntityService: Provider = { provide: 'MetaEntityService', useExisting: MetaEntityService };
 const $SystemWebhookEntityService: Provider = { provide: 'SystemWebhookEntityService', useExisting: SystemWebhookEntityService };
 const $WorldRoomEntityService: Provider = { provide: 'WorldRoomEntityService', useExisting: WorldRoomEntityService };
+const $WorldAvatarEntityService: Provider = { provide: 'WorldAvatarEntityService', useExisting: WorldAvatarEntityService };
 
 const $ApAudienceService: Provider = { provide: 'ApAudienceService', useExisting: ApAudienceService };
 const $ApDbResolverService: Provider = { provide: 'ApDbResolverService', useExisting: ApDbResolverService };
@@ -390,6 +394,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		PageService,
 		WorldRoomService,
 		WorldRoomMultiplayService,
+		WorldAvatarService,
 
 		ChartLoggerService,
 		FederationChart,
@@ -446,6 +451,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		MetaEntityService,
 		SystemWebhookEntityService,
 		WorldRoomEntityService,
+		WorldAvatarEntityService,
 
 		ApAudienceService,
 		ApDbResolverService,
@@ -543,6 +549,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$PageService,
 		$WorldRoomService,
 		$WorldRoomMultiplayService,
+		$WorldAvatarService,
 
 		$ChartLoggerService,
 		$FederationChart,
@@ -599,6 +606,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$MetaEntityService,
 		$SystemWebhookEntityService,
 		$WorldRoomEntityService,
+		$WorldAvatarEntityService,
 
 		$ApAudienceService,
 		$ApDbResolverService,
@@ -696,6 +704,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		PageService,
 		WorldRoomService,
 		WorldRoomMultiplayService,
+		WorldAvatarService,
 
 		FederationChart,
 		NotesChart,
@@ -751,6 +760,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		MetaEntityService,
 		SystemWebhookEntityService,
 		WorldRoomEntityService,
+		WorldAvatarEntityService,
 
 		ApAudienceService,
 		ApDbResolverService,
@@ -847,6 +857,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$PageService,
 		$WorldRoomService,
 		$WorldRoomMultiplayService,
+		$WorldAvatarService,
 
 		$FederationChart,
 		$NotesChart,
@@ -902,6 +913,7 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$MetaEntityService,
 		$SystemWebhookEntityService,
 		$WorldRoomEntityService,
+		$WorldAvatarEntityService,
 
 		$ApAudienceService,
 		$ApDbResolverService,

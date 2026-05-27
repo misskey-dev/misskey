@@ -85,6 +85,7 @@ import { MiUserPublickey } from '@/models/UserPublickey.js';
 import { MiUserSecurityKey } from '@/models/UserSecurityKey.js';
 import { MiWebhook } from '@/models/Webhook.js';
 import { MiWorldRoom } from '@/models/WorldRoom.js';
+import { MiWorldAvatar } from '@/models/WorldAvatar.js';
 import type { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity.js';
 
 export interface MiRepository<T extends ObjectLiteral> {
@@ -175,6 +176,7 @@ export {
 	MiBubbleGameRecord,
 	MiReversiGame,
 	MiWorldRoom,
+	MiWorldAvatar,
 };
 
 export type AbuseUserReportsRepository = Repository<MiAbuseUserReport> & MiRepository<MiAbuseUserReport>;
@@ -256,3 +258,4 @@ export type ChatApprovalsRepository = Repository<MiChatApproval> & MiRepository<
 export type BubbleGameRecordsRepository = Repository<MiBubbleGameRecord> & MiRepository<MiBubbleGameRecord>;
 export type ReversiGamesRepository = Repository<MiReversiGame> & MiRepository<MiReversiGame>;
 export type WorldRoomsRepository = Repository<MiWorldRoom> & MiRepository<MiWorldRoom>;
+export type WorldAvatarsRepository = Repository<MiWorldAvatar> & MiRepository<MiWorldAvatar>;
