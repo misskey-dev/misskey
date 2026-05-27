@@ -59,6 +59,21 @@ export class PlayerContainer {
 
 		subRootMesh.dispose();
 
+		const avatarTex = new BABYLON.Texture(this.profile.avatarUrl, this.scene, false, false);
+
+		for (const mesh of this.subRoot.getChildMeshes()) {
+			if (mesh.name.includes('__AVATAR__')) {
+				const mat = new BABYLON.PBRMaterial(`${mesh.name}-mat`, this.scene);
+				mat.albedoColor = new BABYLON.Color3(0.5, 0.5, 0.5);
+				mat.albedoTexture = avatarTex;
+				mat.emissiveColor = new BABYLON.Color3(0.5, 0.5, 0.5);
+				mat.emissiveTexture = avatarTex;
+				mat.roughness = 0;
+				mat.metallic = 0;
+				mesh.material = mat;
+			}
+		}
+
 		this.registerMeshes(this.subRoot.getChildMeshes());
 	}
 

@@ -79,6 +79,7 @@ export class RoomEngine extends EngineBase<{
 }> {
 	private useGlow: boolean;
 	public camera: BABYLON.UniversalCamera;
+	private cameraHeight = cm(130);
 	private fixedCamera: BABYLON.FreeCamera;
 	public objectContainers: Map<string, ObjectContainer> = new Map();
 	private envManager: EnvManager | null = null;
@@ -222,7 +223,7 @@ export class RoomEngine extends EngineBase<{
 
 		this.sr = new BABYLON.SnapshotRenderingHelper(this.scene);
 
-		this.camera = new BABYLON.FreeCamera('camera', new BABYLON.Vector3(0, cm(130), cm(0)), this.scene);
+		this.camera = new BABYLON.FreeCamera('camera', new BABYLON.Vector3(0, this.cameraHeight, cm(0)), this.scene);
 		this.camera.minZ = cm(1);
 		this.camera.maxZ = cm(1000);
 		this.camera.fov = 1;
