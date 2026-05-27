@@ -63,6 +63,7 @@ export class WorldRoomService {
 		def: MiWorldRoom['def'],
 	): Promise<boolean> {
 		// TODO: スキーマ検証(関係ないプロパティを入れたり不正な値を入れたりできないように)
+		// そのためにはJSON SchemaでRoomState/各objectのoptionsを定義する必要がある
 
 		const objectsLimit = 100; // TODO: ref role policy
 		if (def.installedObjects.length > objectsLimit) {
