@@ -1413,6 +1413,7 @@ nothingToConfigure: "設定項目はありません"
 viewRenotedChannel: "リノート先のチャンネルを見る"
 previewingTheme: "テーマのプレビュー中"
 previewingThemeRestore: "元に戻す"
+accessToken: "アクセストークン"
 
 _imageEditing:
   _vars:
