@@ -785,9 +785,8 @@ function showOtherMenu(ev: PointerEvent) {
 	right: 16px;
 	z-index: 1;
 	padding: 16px;
-	box-sizing: border-box;
 	width: 300px;
-	max-height: 100%;
+	max-height: calc(100% - 16px - 16px);
 	box-sizing: border-box;
 	overflow: auto;
 	border-radius: 12px;

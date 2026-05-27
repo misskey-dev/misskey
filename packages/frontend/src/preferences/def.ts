@@ -548,6 +548,9 @@ export const PREF_DEF = definePreferences({
 	'world.separateRenderingThread': {
 		default: true,
 	},
+	'world.room.advancedCustomize': {
+		default: false,
+	},
 
 	'experimental.stackingRouterView': {
 		default: false,

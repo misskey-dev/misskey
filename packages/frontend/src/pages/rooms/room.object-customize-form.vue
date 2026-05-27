@@ -22,12 +22,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInput :modelValue="getHex(options[k].color)" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) updateMaterialColor(k, c); }">
 					<template #label>{{ i18n.ts.color }}</template>
 				</MkInput>
-				<MkRange :continuousUpdate="true" :min="0" :max="1" :step="0.1" :modelValue="options[k].metallic" @update:modelValue="v => updateMaterialMetallic(k, v)">
-					<template #label>{{ i18n.ts._miRoom.material_metallic }}</template>
-				</MkRange>
-				<MkRange :continuousUpdate="true" :min="0" :max="1" :step="0.1" :modelValue="options[k].roughness" @update:modelValue="v => updateMaterialRoughness(k, v)">
-					<template #label>{{ i18n.ts._miRoom.material_roughness }}</template>
-				</MkRange>
+				<template v-if="advancedCustomize">
+					<MkRange :continuousUpdate="true" :min="0" :max="1" :step="0.1" :modelValue="options[k].metallic" @update:modelValue="v => updateMaterialMetallic(k, v)">
+						<template #label>{{ i18n.ts._miRoom.material_metallic }}</template>
+					</MkRange>
+					<MkRange :continuousUpdate="true" :min="0" :max="1" :step="0.1" :modelValue="options[k].roughness" @update:modelValue="v => updateMaterialRoughness(k, v)">
+						<template #label>{{ i18n.ts._miRoom.material_roughness }}</template>
+					</MkRange>
+				</template>
 			</div>
 			<div v-else-if="s.type === 'light'" class="_gaps_s">
 				<!-- debounce or throttleしないとカラーピッカー上で高速でなぞったときになぜか無限ループになる。ワーカーとの間でラグがあるため、少し前の値がまたmodelValueとしてフィードバックされてしまうためだと思われる -->
@@ -68,6 +70,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkRange :continuousUpdate="true" :min="0" :max="1000" :step="1" :modelValue="options[k]" @update:modelValue="v => emit('update', k, v)"></MkRange>
 			</div>
 		</MkFolder>
+
+		<MkSwitch v-model="advancedCustomize">{{ i18n.ts._miRoom.advancedCustomize }}</MkSwitch>
 	</div>
 </div>
 </template>
@@ -76,7 +80,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { } from 'vue';
 import * as Misskey from 'misskey-js';
 import { getHex, getRgb } from 'misskey-world/src/utility.js';
-import type { ObjectSchemaDef } from 'misskey-world/src/room/object.js';
+import type { ObjectSchemaDef, RawOptions } from 'misskey-world/src/room/object.js';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -88,6 +92,7 @@ import { chooseDriveFile } from '@/utility/drive.js';
 import MkRadios from '@/components/MkRadios.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import { OBJECT_UI_DEFS } from '@/world/room/object-ui-defs.js';
+import { prefer } from '@/preferences.js';
 
 const props = defineProps<{
 	schema: ObjectSchemaDef<any>;
@@ -98,6 +103,8 @@ const props = defineProps<{
 const emit = defineEmits<{
 	(ev: 'update', k: string, v: any): void;
 }>();
+
+const advancedCustomize = prefer.model('world.room.advancedCustomize');
 
 function changeImageType(k: string, type: string) {
 	emit('update', k, { ...props.options[k], type, driveFileId: type === '_custom_' ? props.options[k].driveFileId : null });
@@ -118,6 +125,13 @@ async function changeImage(k: string) {
 			os.alert({
 				type: 'error',
 				text: 'The file size exceeds the limit of 5MB.',
+			});
+			return;
+		}
+		if (Math.max(file.properties.width ?? 0, file.properties.height ?? 0) > 2048) {
+			os.alert({
+				type: 'error',
+				text: 'The image dimensions exceed the limit of 2048x2048 pixels.',
 			});
 			return;
 		}

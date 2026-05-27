@@ -13370,6 +13370,10 @@ export interface Locale extends ILocale {
          * 明るさ
          */
         "light_brightness": string;
+        /**
+         * 高度なアレンジ
+         */
+        "advancedCustomize": string;
         "_objects": {
             /**
              * リングシェードフロアランプ

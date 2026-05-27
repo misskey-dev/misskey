@@ -3583,6 +3583,7 @@ _miRoom:
   material_metallic: "光沢"
   material_roughness: "粗さ"
   light_brightness: "明るさ"
+  advancedCustomize: "高度なアレンジ"
 
   _objects:
     woodRingFloorLamp: "リングシェードフロアランプ"
