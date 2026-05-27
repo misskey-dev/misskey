@@ -5664,6 +5664,10 @@ export interface Locale extends ILocale {
      */
     "previewingThemeRestore": string;
     /**
+     * アクセストークン
+     */
+    "accessToken": string;
+    /**
      * 絵文字パレットを選択
      */
     "chooseEmojiPalette": string;
