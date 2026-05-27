@@ -13,7 +13,6 @@ import type { Ref } from 'vue';
 
 export function useScrollPositionKeeper(scrollContainerRef: Ref<HTMLElement | null | undefined>): void {
 	let anchorId: string | null = null;
-	let anchorIndex = 0;
 	// キャプチャ時のアンカー要素上端のコンテナ上端からの距離
 	let anchorContainerLocalY = 0;
 	let savedScrollTop = 0;
@@ -43,8 +42,6 @@ export function useScrollPositionKeeper(scrollContainerRef: Ref<HTMLElement | nu
 				// 最下部スクロール時に min-height による空白に viewPosition が入った場合も最後のアイテムをキャプチャできる
 				if (anchorTop <= viewPosition) {
 					anchorId = anchorEl.getAttribute('data-scroll-anchor');
-					const allWithSameId = el.querySelectorAll(`[data-scroll-anchor="${CSS.escape(anchorId!)}"]`);
-					anchorIndex = Array.from(allWithSameId).indexOf(anchorEl);
 					anchorContainerLocalY = anchorTop - scrollContainerRect.top;
 					break;
 				}
@@ -66,8 +63,7 @@ export function useScrollPositionKeeper(scrollContainerRef: Ref<HTMLElement | nu
 		if (!anchorId) return;
 		const scrollContainer = scrollContainerRef.value;
 		if (!scrollContainer) return;
-		const candidates = scrollContainer.querySelectorAll(`[data-scroll-anchor="${CSS.escape(anchorId)}"]`);
-		const scrollAnchorEl = candidates[anchorIndex] ?? candidates[candidates.length - 1];
+		const scrollAnchorEl = scrollContainer.querySelector(`[data-scroll-anchor="${CSS.escape(anchorId)}"]`);
 		if (!scrollAnchorEl) return;
 		const anchorRect = (scrollAnchorEl as HTMLElement).getBoundingClientRect();
 		// anchorContentY: コンテンツ先頭からのアンカー要素上端の距離（scrollTopに依存しない）
