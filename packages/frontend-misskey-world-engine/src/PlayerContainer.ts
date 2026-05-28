@@ -47,7 +47,8 @@ export class PlayerContainer {
 	public id: string;
 	private profile: PlayerProfile;
 	private root: BABYLON.TransformNode;
-	private modelRootContainerForAnim: BABYLON.TransformNode;
+	private subRootContainerForAnim: BABYLON.TransformNode;
+	private subRoot: BABYLON.TransformNode;
 	private modelRoot: BABYLON.TransformNode | null = null;
 	private sr: BABYLON.SnapshotRenderingHelper;
 	private scene: BABYLON.Scene;
@@ -63,8 +64,10 @@ export class PlayerContainer {
 
 		this.root = new BABYLON.TransformNode(`player:${this.id}`, params.scene);
 		this.root.rotationQuaternion = null;
-		this.modelRootContainerForAnim = new BABYLON.TransformNode(`player:${this.id}:modelRootContainerForAnim`, params.scene);
-		this.modelRootContainerForAnim.parent = this.root;
+		this.subRootContainerForAnim = new BABYLON.TransformNode(`player:${this.id}:subRootContainerForAnim`, params.scene);
+		this.subRootContainerForAnim.parent = this.root;
+		this.subRoot = new BABYLON.TransformNode(`player:${this.id}:subRoot`, params.scene);
+		this.subRoot.parent = this.subRootContainerForAnim;
 		if (params.state) this.applyState(params.state, true);
 	}
 
@@ -77,7 +80,7 @@ export class PlayerContainer {
 
 		// meshじゃなくtransform nodeにしてパフォーマンス向上
 		this.modelRoot = new BABYLON.TransformNode('__root__', this.scene);
-		this.modelRoot.parent = this.modelRootContainerForAnim;
+		this.modelRoot.parent = this.subRoot;
 		this.modelRoot.scaling.x = -1;
 		this.modelRoot.scaling = this.modelRoot.scaling.scale(WORLD_SCALE);// cmをmに
 
@@ -171,11 +174,11 @@ export class PlayerContainer {
 			{ frame: 90, value: cm(2) },
 			{ frame: 120, value: cm(0) },
 		]);
-		this.modelRootContainerForAnim.animations = [anim];
+		this.subRootContainerForAnim.animations = [anim];
 		this.animationObserver = this.scene.onAfterAnimationsObservable.add(() => {
-			this.sr.updateMesh(this.modelRootContainerForAnim.getChildMeshes(), false);
+			this.sr.updateMesh(this.subRootContainerForAnim.getChildMeshes(), false);
 		});
-		this.scene.beginAnimation(this.modelRootContainerForAnim, 0, 120, true);
+		this.scene.beginAnimation(this.subRootContainerForAnim, 0, 120, true);
 	}
 
 	private async loadAccessory(args: {
@@ -204,6 +207,8 @@ export class PlayerContainer {
 		};
 
 		await container.load();
+
+		container.root.parent = this.subRoot;
 
 		return container;
 	}

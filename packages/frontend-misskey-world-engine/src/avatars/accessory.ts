@@ -39,6 +39,6 @@ export function defineAccessorySchema<const OpSc extends AvatarAccessoryOptionsS
 	return def;
 }
 
-export function defineAccessory<const Schema extends AccessorySchemaDef<any>>(schema: Schema, def: Pick<AccessoryDef<Schema>, 'path' | 'createInstance'>): AccessoryDef<Schema> {
+export function defineAccessory<const Schema extends AccessorySchemaDef<any>>(schema: Schema, def: Pick<AvatarAccessoryDef<Schema>, 'path' | 'createInstance'>): AvatarAccessoryDef<Schema> {
 	return { ...schema, ...def };
 }
