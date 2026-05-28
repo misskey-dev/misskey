@@ -156,7 +156,7 @@ export class PlayerContainer {
 		// debug
 		this.profile.worldAvatar.accessories = [{
 			id: 'a',
-			type: 'mug',
+			type: 'mikan',
 			options: {},
 		}];
 

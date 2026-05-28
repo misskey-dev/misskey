@@ -41,56 +41,72 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<template #label>{{ i18n.ts.name }}</template>
 							</MkInput>
 
+							<MkSelect
+								:items="[
+									{ label: i18n.ts.default, value: 'default' },
+								]" :modelValue="avatar.type" @update:modelValue="v => { avatar.type = v; updateAvatarOption(); }"
+							>
+								<template #label>{{ i18n.ts.type }}</template>
+							</MkSelect>
+
+							<hr>
+
 							<MkFolder>
 								<template #label>{{ i18n.ts._miWorld._avatars._default.body }}</template>
 
-								<MkInput :modelValue="getHex(avatar.body.color)" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) avatar.body.color = c; updateAvatarOption(); }">
-									<template #label>{{ i18n.ts.color }}</template>
-								</MkInput>
+								<div class="_gaps_s">
+									<MkInput :modelValue="getHex(avatar.body.color)" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) avatar.body.color = c; updateAvatarOption(); }">
+										<template #label>{{ i18n.ts.color }}</template>
+									</MkInput>
+								</div>
 							</MkFolder>
 
 							<MkFolder>
 								<template #label>{{ i18n.ts._miWorld._avatars._default.eyes }}</template>
 
-								<MkSelect
-									:items="[
-										{ label: 'a', value: 'a' },
-										{ label: 'b', value: 'b' },
-										{ label: 'c', value: 'c' },
-										{ label: 'd', value: 'd' },
-										{ label: 'e', value: 'e' },
-										{ label: 'f', value: 'f' },
-										{ label: 'g', value: 'g' },
-									]" :modelValue="avatar.eyes.type" @update:modelValue="v => { avatar.eyes.type = v; updateAvatarOption(); }"
-								>
-									<template #label>{{ i18n.ts.type }}</template>
-								</MkSelect>
+								<div class="_gaps_s">
+									<MkSelect
+										:items="[
+											{ label: 'a', value: 'a' },
+											{ label: 'b', value: 'b' },
+											{ label: 'c', value: 'c' },
+											{ label: 'd', value: 'd' },
+											{ label: 'e', value: 'e' },
+											{ label: 'f', value: 'f' },
+											{ label: 'g', value: 'g' },
+										]" :modelValue="avatar.eyes.type" @update:modelValue="v => { avatar.eyes.type = v; updateAvatarOption(); }"
+									>
+										<template #label>{{ i18n.ts.type }}</template>
+									</MkSelect>
 
-								<MkInput :modelValue="getHex(avatar.eyes.color)" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) avatar.eyes.color = c; updateAvatarOption(); }">
-									<template #label>{{ i18n.ts.color }}</template>
-								</MkInput>
+									<MkInput :modelValue="getHex(avatar.eyes.color)" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) avatar.eyes.color = c; updateAvatarOption(); }">
+										<template #label>{{ i18n.ts.color }}</template>
+									</MkInput>
+								</div>
 							</MkFolder>
 
 							<MkFolder>
 								<template #label>{{ i18n.ts._miWorld._avatars._default.mouth }}</template>
 
-								<MkSelect
-									:items="[
-										{ label: i18n.ts.none, value: '_none_' },
-										{ label: 'a', value: 'a' },
-										{ label: 'b', value: 'b' },
-										{ label: 'c', value: 'c' },
-										{ label: 'd', value: 'd' },
-										{ label: 'e', value: 'e' },
-										{ label: 'f', value: 'f' },
-									]" :modelValue="avatar.mouth.type" @update:modelValue="v => { avatar.mouth.type = v; updateAvatarOption(); }"
-								>
-									<template #label>{{ i18n.ts.type }}</template>
-								</MkSelect>
+								<div class="_gaps_s">
+									<MkSelect
+										:items="[
+											{ label: i18n.ts.none, value: '_none_' },
+											{ label: 'a', value: 'a' },
+											{ label: 'b', value: 'b' },
+											{ label: 'c', value: 'c' },
+											{ label: 'd', value: 'd' },
+											{ label: 'e', value: 'e' },
+											{ label: 'f', value: 'f' },
+										]" :modelValue="avatar.mouth.type" @update:modelValue="v => { avatar.mouth.type = v; updateAvatarOption(); }"
+									>
+										<template #label>{{ i18n.ts.type }}</template>
+									</MkSelect>
 
-								<MkInput :modelValue="getHex(avatar.mouth.color)" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) avatar.mouth.color = c; updateAvatarOption(); }">
-									<template #label>{{ i18n.ts.color }}</template>
-								</MkInput>
+									<MkInput :modelValue="getHex(avatar.mouth.color)" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) avatar.mouth.color = c; updateAvatarOption(); }">
+										<template #label>{{ i18n.ts.color }}</template>
+									</MkInput>
+								</div>
 							</MkFolder>
 						</div>
 					</div>

@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { cm } from 'misskey-world/src/utility.js';
-import { mug_schema } from 'misskey-world/src/room/objects/mug.schema.js';
+import { mug_schema } from 'misskey-world/src/avatars/accessories/mug.schema.js';
 import { defineAccessory } from '../accessory.js';
 
 export const mug = defineAccessory(mug_schema, {

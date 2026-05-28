@@ -4,10 +4,12 @@
  */
 
 import { mug_schema } from './accessories/mug.schema.js';
+import { mikan_schema } from './accessories/mikan.schema.js';
 import type { AccessorySchemaDef } from './accessory.js';
 
 export const OBJECT_SCHEMA_DEFS = {
 	mug: mug_schema,
+	mikan: mikan_schema,
 } as Record<string, AccessorySchemaDef<any>>;
 
 export function getAccessorySchemaDef(type: string): AccessorySchemaDef {
