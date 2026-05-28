@@ -3570,6 +3570,12 @@ _miWorld:
   antialiasing: "アンチエイリアス"
   avatar: "アバター"
 
+  _avatars:
+    _default:
+      body: "ボディ"
+      eyes: "目"
+      mouth: "口"
+
 _miRoom:
   snapToGrid: "グリッドにスナップ"
   gridScale: "グリッドサイズ"

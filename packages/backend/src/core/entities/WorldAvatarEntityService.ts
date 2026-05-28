@@ -78,5 +78,16 @@ export class WorldAvatarEntityService {
 			.then(users => new Map(users.map(u => [u.id, u])));
 		return Promise.all(avatars.map(avatar => this.packLite(avatar, me, { packedUser: _userMap.get(avatar.userId) })));
 	}
+
+	@bindThis
+	public async packDetailedMany(
+		avatars: MiWorldAvatar[],
+		me?: { id: MiUser['id'] } | null | undefined,
+	) {
+		const _users = avatars.map(({ user, userId }) => user ?? userId);
+		const _userMap = await this.userEntityService.packMany(_users, me)
+			.then(users => new Map(users.map(u => [u.id, u])));
+		return Promise.all(avatars.map(avatar => this.packDetailed(avatar, me, { packedUser: _userMap.get(avatar.userId) })));
+	}
 }
 

@@ -20,6 +20,27 @@ export type PlayerState = {
 	sit?: string; // id
 };
 
+const DEFAULT_FACE_PARTS_EYES = {
+	'_none_': null,
+	'a': '/client-assets/world/avatars/eyes-a.png',
+	'b': '/client-assets/world/avatars/eyes-b.png',
+	'c': '/client-assets/world/avatars/eyes-c.png',
+	'd': '/client-assets/world/avatars/eyes-d.png',
+	'e': '/client-assets/world/avatars/eyes-e.png',
+	'f': '/client-assets/world/avatars/eyes-f.png',
+	'g': '/client-assets/world/avatars/eyes-g.png',
+};
+
+const DEFAULT_FACE_PARTS_MOUTH = {
+	'_none_': null,
+	'a': '/client-assets/world/avatars/mouth-a.png',
+	'b': '/client-assets/world/avatars/mouth-b.png',
+	'c': '/client-assets/world/avatars/mouth-c.png',
+	'd': '/client-assets/world/avatars/mouth-d.png',
+	'e': '/client-assets/world/avatars/mouth-e.png',
+	'f': '/client-assets/world/avatars/mouth-f.png',
+};
+
 export class PlayerContainer {
 	public id: string;
 	private profile: PlayerProfile;
@@ -67,9 +88,27 @@ export class PlayerContainer {
 
 		const avatarTex = new BABYLON.Texture(this.profile.avatarUrl, this.scene, false, false);
 
+		let eyesTex: BABYLON.Texture | null = null;
+		if (this.profile.worldAvatar.eyes.type in DEFAULT_FACE_PARTS_EYES) {
+			const eyesTexPath = DEFAULT_FACE_PARTS_EYES[this.profile.worldAvatar.eyes.type];
+			if (eyesTexPath) {
+				eyesTex = new BABYLON.Texture(eyesTexPath, this.scene, false, false);
+				eyesTex.hasAlpha = true;
+			}
+		}
+
+		let mouthTex: BABYLON.Texture | null = null;
+		if (this.profile.worldAvatar.mouth.type in DEFAULT_FACE_PARTS_MOUTH) {
+			const mouthTexPath = DEFAULT_FACE_PARTS_MOUTH[this.profile.worldAvatar.mouth.type];
+			if (mouthTexPath) {
+				mouthTex = new BABYLON.Texture(mouthTexPath, this.scene, false, false);
+				mouthTex.hasAlpha = true;
+			}
+		}
+
 		for (const mesh of this.modelRoot.getChildMeshes()) {
 			if (mesh.name.includes('__AVATAR__')) {
-				const mat = new BABYLON.PBRMaterial(`${mesh.name}-mat`, this.scene);
+				const mat = new BABYLON.PBRMaterial('', this.scene);
 				mat.albedoColor = new BABYLON.Color3(0.5, 0.5, 0.5);
 				mat.albedoTexture = avatarTex;
 				mat.emissiveColor = new BABYLON.Color3(0.5, 0.5, 0.5);
@@ -81,6 +120,26 @@ export class PlayerContainer {
 			}
 			if (mesh.name.includes('__BODY__')) {
 				mesh.material.albedoColor = new BABYLON.Color3(this.profile.worldAvatar.body.color[0], this.profile.worldAvatar.body.color[1], this.profile.worldAvatar.body.color[2]);
+			}
+			if (mesh.name.includes('__EYES__')) {
+				const mat = new BABYLON.PBRMaterial('', this.scene);
+				mat.albedoColor = new BABYLON.Color3(this.profile.worldAvatar.eyes.color[0], this.profile.worldAvatar.eyes.color[1], this.profile.worldAvatar.eyes.color[2]);
+				mat.albedoTexture = eyesTex;
+				mat.roughness = 1;
+				mat.metallic = 0;
+				mesh.material = mat;
+			}
+			if (mesh.name.includes('__MOUTH__')) {
+				if (mouthTex != null) {
+					const mat = new BABYLON.PBRMaterial('', this.scene);
+					mat.albedoColor = new BABYLON.Color3(this.profile.worldAvatar.mouth.color[0], this.profile.worldAvatar.mouth.color[1], this.profile.worldAvatar.mouth.color[2]);
+					mat.albedoTexture = mouthTex;
+					mat.roughness = 1;
+					mat.metallic = 0;
+					mesh.material = mat;
+				} else {
+					mesh.isVisible = false;
+				}
 			}
 		}
 
@@ -94,9 +153,6 @@ export class PlayerContainer {
 			{ frame: 90, value: cm(2) },
 			{ frame: 120, value: cm(0) },
 		]);
-		//const easing = new BABYLON.CubicEase();
-		//easing.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
-		//anim.setEasingFunction(easing);
 		this.modelRootContainerForAnim.animations = [anim];
 		this.animationObserver = this.scene.onAfterAnimationsObservable.add(() => {
 			this.sr.updateMesh(this.modelRootContainerForAnim.getChildMeshes(), false);

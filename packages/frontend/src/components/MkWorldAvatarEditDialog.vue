@@ -9,7 +9,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:width="1000"
 	:height="600"
 	:scroll="false"
-	:withOkButton="false"
+	:withOkButton="true"
+	@ok="ok"
 	@close="cancel()"
 	@closed="emit('closed')"
 >
@@ -35,9 +36,63 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:leaveToClass="prefer.s.animation ? $style.transition_options_leaveTo : ''"
 				>
 					<div v-if="showOptions" :class="$style.customize">
-						<MkInput :modelValue="getHex(avatar.body.color)" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) avatar.body.color = c; }">
-							<template #label>{{ i18n.ts.color }}</template>
-						</MkInput>
+						<div class="_gaps">
+							<MkInput v-model="avatarName">
+								<template #label>{{ i18n.ts.name }}</template>
+							</MkInput>
+
+							<MkFolder>
+								<template #label>{{ i18n.ts._miWorld._avatars._default.body }}</template>
+
+								<MkInput :modelValue="getHex(avatar.body.color)" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) avatar.body.color = c; }">
+									<template #label>{{ i18n.ts.color }}</template>
+								</MkInput>
+							</MkFolder>
+
+							<MkFolder>
+								<template #label>{{ i18n.ts._miWorld._avatars._default.eyes }}</template>
+
+								<MkSelect
+									:items="[
+										{ label: 'a', value: 'a' },
+										{ label: 'b', value: 'b' },
+										{ label: 'c', value: 'c' },
+										{ label: 'd', value: 'd' },
+										{ label: 'e', value: 'e' },
+										{ label: 'f', value: 'f' },
+										{ label: 'g', value: 'g' },
+									]" :modelValue="avatar.eyes.type" @update:modelValue="v => avatar.eyes.type = v"
+								>
+									<template #label>{{ i18n.ts.type }}</template>
+								</MkSelect>
+
+								<MkInput :modelValue="getHex(avatar.eyes.color)" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) avatar.eyes.color = c; }">
+									<template #label>{{ i18n.ts.color }}</template>
+								</MkInput>
+							</MkFolder>
+
+							<MkFolder>
+								<template #label>{{ i18n.ts._miWorld._avatars._default.mouth }}</template>
+
+								<MkSelect
+									:items="[
+										{ label: i18n.ts.none, value: '_none_' },
+										{ label: 'a', value: 'a' },
+										{ label: 'b', value: 'b' },
+										{ label: 'c', value: 'c' },
+										{ label: 'd', value: 'd' },
+										{ label: 'e', value: 'e' },
+										{ label: 'f', value: 'f' },
+									]" :modelValue="avatar.mouth.type" @update:modelValue="v => avatar.mouth.type = v"
+								>
+									<template #label>{{ i18n.ts.type }}</template>
+								</MkSelect>
+
+								<MkInput :modelValue="getHex(avatar.mouth.color)" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) avatar.mouth.color = c; }">
+									<template #label>{{ i18n.ts.color }}</template>
+								</MkInput>
+							</MkFolder>
+						</div>
 					</div>
 				</Transition>
 			</div>
@@ -49,11 +104,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick, shallowRef, computed, triggerRef, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
-import { OBJECT_SCHEMA_DEFS } from 'misskey-world/src/room/object-schema-defs.js';
 import { getHex, getRgb } from 'misskey-world/src/utility.js';
+import MkFolder from './MkFolder.vue';
 import type { Ref } from 'vue';
-import type { RawOptions } from 'misskey-world/src/room/object.js';
-import type { RoomAttachments } from 'misskey-world/src/room/type.js';
 import type { WorldAvatar } from 'misskey-world/src/types.js';
 import type { AvatarPreviewEngineControllerOptions } from '@/world/avatarPreviewEngineController.js';
 import { AvatarPreviewEngineController } from '@/world/avatarPreviewEngineController.js';
@@ -61,23 +114,26 @@ import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import * as os from '@/os.js';
 import MkButton from '@/components/MkButton.vue';
+import MkSelect from '@/components/MkSelect.vue';
 import { prefer } from '@/preferences.js';
 import { deepClone } from '@/utility/clone.js';
 import { store } from '@/store.js';
 import MkInput from '@/components/MkInput.vue';
 import { withTimeout } from '@/utility/promise-timeout.js';
-import { $i } from '@/i.js';
+import { ensureSignin } from '@/i.js';
+
+const $i = ensureSignin();
 
 const props = defineProps<{
 	graphicsQuality: number;
 	avatar: WorldAvatar | null;
+	name: string | null;
 }>();
 
 const emit = defineEmits<{
 	(ev: 'ok', ctx: {
-		id: string;
-		options: RawOptions;
-		attachments: RoomAttachments;
+		avatar: WorldAvatar;
+		name: string;
 	}): void;
 	(ev: 'cancel'): void;
 	(ev: 'closed'): void;
@@ -105,6 +161,8 @@ const avatar: Ref<WorldAvatar> = ref(props.avatar != null ? deepClone(props.avat
 	accessories: [],
 });
 
+const avatarName = ref(props.name ?? 'untitled');
+
 const avatarPreviewEngineControllerOptions = computed<AvatarPreviewEngineControllerOptions>(() => ({
 	graphicsQuality: props.graphicsQuality,
 	fps: null,
@@ -121,7 +179,7 @@ watch(avatar, () => {
 onMounted(async () => {
 	try {
 		await controller.init(canvas.value!, {
-			name: $i.name,
+			name: $i.name ?? $i.username,
 			username: $i.username,
 			avatarUrl: $i.avatarUrl,
 			worldAvatar: avatar.value,
@@ -143,24 +201,15 @@ onUnmounted(() => {
 	controller.destroy();
 });
 
-function updateObjectOption(k: string, v: any) {
-	controller.updateObjectOption(k, v, attachments);
-	selectedObjectOptionsState.value![k] = v;
-}
+//function updateAvatarOption(k: string, v: any) {
+//	avatar.value[k] = v;
+//	controller.updateAvatar(avatar.value);
+//}
 
 function ok() {
-	if (selectedId.value == null) return;
-
-	let recentlyUsed = store.s.recentlyUsedRoomObjects;
-	if (recentlyUsed.includes(selectedId.value)) recentlyUsed = recentlyUsed.filter(id => id !== selectedId.value);
-	recentlyUsed.unshift(selectedId.value);
-	if (recentlyUsed.length > 30) recentlyUsed.pop();
-	store.set('recentlyUsedRoomObjects', recentlyUsed);
-
 	emit('ok', {
-		id: selectedId.value,
-		options: deepClone(selectedObjectOptionsState.value!),
-		attachments: deepClone(attachments),
+		avatar: deepClone(avatar.value!),
+		name: avatarName.value,
 	});
 
 	dialog.value?.close();

@@ -13319,6 +13319,22 @@ export interface Locale extends ILocale {
          * アバター
          */
         "avatar": string;
+        "_avatars": {
+            "_default": {
+                /**
+                 * ボディ
+                 */
+                "body": string;
+                /**
+                 * 目
+                 */
+                "eyes": string;
+                /**
+                 * 口
+                 */
+                "mouth": string;
+            };
+        };
     };
     "_miRoom": {
         /**

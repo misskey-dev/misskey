@@ -829,11 +829,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								<template #icon><i class="ti ti-user"></i></template>
 								<template #label><SearchLabel>{{ i18n.ts._miWorld.avatar }}</SearchLabel></template>
 
-								<div class="_gaps">
-									<div class="_gaps_s">
-										<MkButton iconOnly rounded style="margin: 0 auto;" @click="createWorldAvatar"><i class="ti ti-plus"></i></MkButton>
-									</div>
-								</div>
+								<MkWorldAvatarManager/>
 							</MkFolder>
 						</SearchMarker>
 					</div>
@@ -970,6 +966,7 @@ import MkDisableSection from '@/components/MkDisableSection.vue';
 import FormLink from '@/components/form/link.vue';
 import MkLink from '@/components/MkLink.vue';
 import MkInfo from '@/components/MkInfo.vue';
+import MkWorldAvatarManager from '@/components/MkWorldAvatarManager.vue';
 import { store } from '@/store.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -1231,20 +1228,6 @@ function testNotification(): void {
 	smashTimer = window.setTimeout(() => {
 		smashCount = 0;
 	}, 300);
-}
-
-async function createWorldAvatar(ev: PointerEvent) {
-	const { dispose } = await os.popupAsyncWithDialog(import('../rooms/edit-world-avatar-dialog.vue').then(x => x.default), {
-		graphicsQuality: worldGraphicsQuality.value ?? 0,
-		avatar: null,
-	}, {
-		ok: async (res) => {
-			console.log(res);
-		},
-		closed: () => {
-			dispose();
-		},
-	});
 }
 
 const headerActions = computed(() => []);

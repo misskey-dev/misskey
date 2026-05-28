@@ -24,7 +24,7 @@ export const meta = {
 		items: {
 			type: 'object',
 			optional: false, nullable: false,
-			ref: 'WorldAvatarLite',
+			ref: 'WorldAvatarDetailed',
 		},
 	},
 
@@ -41,7 +41,7 @@ export const paramDef = {
 		sinceDate: { type: 'integer' },
 		untilDate: { type: 'integer' },
 	},
-	required: ['userId'],
+	required: [],
 } as const;
 
 @Injectable()
@@ -55,8 +55,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.gen(ps.untilDate!) : null);
 			const sinceId = ps.sinceId ?? (ps.sinceDate ? this.idService.gen(ps.sinceDate!) : null);
 
-			const avatars = await this.worldAvatarService.getMyAvatarsWithPagination(ps.userId, ps.limit, sinceId, untilId);
-			return this.worldAvatarEntityService.packLiteMany(avatars, me);
+			const avatars = await this.worldAvatarService.getMyAvatarsWithPagination(me.id, ps.limit, sinceId, untilId);
+			return this.worldAvatarEntityService.packDetailedMany(avatars, me);
 		});
 	}
 }
