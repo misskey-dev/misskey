@@ -1,13 +1,17 @@
 ## Unreleased
 
 ### General
--
+- Feat: ジョブキュー管理画面からキューの一時停止/再開ができるように
+- Feat: アンテナのタイムラインから個別のノートを削除できるように
 
 ### Client
 - Fix: URLプレビューのプレイヤーをウィンドウで開いたとき、プレイヤーが読み込まれるまでの間 `Invalid URL` と表示される問題を修正
+- Fix: 一部の実績が正しく表示されない問題を修正
+- Fix: アクセストークン発行時のダイアログのタイトルが「確認コード」となっているのを修正
 
 ### Server
--
+- Enhance: リモートノートクリーニングジョブのスキップ処理のパフォーマンス改善
+- Fix: backend バンドルで `@tensorflow/tfjs-node` を external に含めず、起動時に `@mapbox/node-pre-gyp` の `find()` が backend の package.json を誤検出して `is not node-pre-gyp ready` エラーを永続的に吐く問題を修正
 
 
 ## 2026.5.4
