@@ -6,13 +6,14 @@
 import * as BABYLON from '@babylonjs/core';
 import { camelToKebab, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { ModelExplorer, scaleMorph, Timer } from '../utility.js';
+import { convertRawOptions, type ConvertedOptions, type RawOptions } from '../mono.js';
 import { getAccessoryDef } from './accessory-defs.js';
 import type { AvatarAccessoryInstance } from './accessory.js';
 
 export class AccessoryContainer {
 	public id: string;
 	public type: string;
-	private options: Record<string, unknown>;
+	private options: ConvertedOptions;
 	public root: BABYLON.TransformNode;
 	private subRoot: BABYLON.TransformNode | null = null;
 	public instance: AvatarAccessoryInstance | null = null;
@@ -28,7 +29,7 @@ export class AccessoryContainer {
 	constructor(args: {
 		id: string;
 		type: string;
-		options: Record<string, unknown>;
+		options: RawOptions;
 		position: BABYLON.Vector3;
 		rotation: BABYLON.Vector3;
 		sr: BABYLON.SnapshotRenderingHelper;
@@ -39,7 +40,8 @@ export class AccessoryContainer {
 	}) {
 		this.id = args.id;
 		this.type = args.type;
-		this.options = args.options;
+		const def = getAccessoryDef(this.type);
+		this.options = convertRawOptions(def.options.schema, args.options, { files: [] });
 		this.sr = args.sr;
 		this.getIsSrReady = args.getIsSrReady;
 		this.lightContainer = args.lightContainer;

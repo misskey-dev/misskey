@@ -4,8 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { findMaterial, ModelExplorer, type Timer } from '../utility.js';
-import type { GetAvatarAccessoryOptionsSchemaValues, AccessorySchemaDef, AvatarAccessoryOptionsSchema } from 'misskey-world/src/avatars/accessory.js';
+import { ModelExplorer, type Timer } from '../utility.js';
+import type { AccessorySchemaDef } from 'misskey-world/src/avatars/accessory.js';
+import type { OptionsSchema } from 'misskey-world/src/mono.js';
+import type { ConvertedOptions, GetConvertedOptionsSchemaValues } from '../mono.js';
 
 export type AvatarAccessoryInstance<Options = any> = {
 	onOptionsUpdated?: <K extends keyof Options, V extends Options[K]>(kv: [K, V]) => void;
@@ -19,7 +21,7 @@ export type SnapshotRenderingHelperWrapper = {
 };
 
 export type AvatarAccessoryDef<Schema extends AccessorySchemaDef = AccessorySchemaDef> = Schema & {
-	path?: (options: string extends keyof Schema['options']['schema'] ? Record<string, unknown> : Readonly<GetAvatarAccessoryOptionsSchemaValues<Schema['options']['schema']>>) => string;
+	path?: (options: string extends keyof Schema['options']['schema'] ? ConvertedOptions : Readonly<GetConvertedOptionsSchemaValues<Schema['options']['schema']>>) => string;
 	createInstance: (args: {
 		scene: BABYLON.Scene;
 		// TODO: snapshot renderingの関心を隠蔽した方が綺麗かもしれない
@@ -27,15 +29,15 @@ export type AvatarAccessoryDef<Schema extends AccessorySchemaDef = AccessorySche
 		sr: SnapshotRenderingHelperWrapper;
 		lc: BABYLON.ClusteredLightContainer | null;
 		root: BABYLON.TransformNode;
-		options: string extends keyof Schema['options']['schema'] ? Record<string, unknown> : Readonly<GetAvatarAccessoryOptionsSchemaValues<Schema['options']['schema']>>;
+		options: string extends keyof Schema['options']['schema'] ? ConvertedOptions : Readonly<GetConvertedOptionsSchemaValues<Schema['options']['schema']>>;
 		model: ModelExplorer;
 		timer: Timer;
 		graphicsQuality: number;
 		reloadModel: () => void;
-	}) => AvatarAccessoryInstance<string extends keyof Schema['options']['schema'] ? Record<string, unknown> : GetAvatarAccessoryOptionsSchemaValues<Schema['options']['schema']>> | Promise<RoomAccessoryInstance<Schema['options']['schema'] extends undefined ? Record<string, unknown> : GetConvertedOptionsSchemaValues<Schema['options']['schema']>>>; // TODO: createInstanceをasyncにするのではなく、別にreadyみたいなものを返させる
+	}) => AvatarAccessoryInstance<string extends keyof Schema['options']['schema'] ? ConvertedOptions : GetConvertedOptionsSchemaValues<Schema['options']['schema']>> | Promise<AvatarAccessoryInstance<Schema['options']['schema'] extends undefined ? ConvertedOptions : GetConvertedOptionsSchemaValues<Schema['options']['schema']>>>; // TODO: createInstanceをasyncにするのではなく、別にreadyみたいなものを返させる
 };
 
-export function defineAccessorySchema<const OpSc extends AvatarAccessoryOptionsSchema>(def: AccessorySchemaDef<OpSc>): AccessorySchemaDef<OpSc> {
+export function defineAccessorySchema<const OpSc extends OptionsSchema>(def: AccessorySchemaDef<OpSc>): AccessorySchemaDef<OpSc> {
 	return def;
 }
 

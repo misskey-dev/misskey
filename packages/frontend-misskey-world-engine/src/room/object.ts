@@ -7,8 +7,9 @@ import * as BABYLON from '@babylonjs/core';
 import { createPlaneUvMapper } from '../utility.js';
 import type { Timer } from '../utility.js';
 import type { ModelManager } from './utility.js';
-import type { BooleanOptionSchema, ColorOptionSchema, EnumOptionSchema, ImageOptionSchema, LightOptionSchema, MaterialOptionSchema, NumberOptionSchema, ObjectSchemaDef, OptionsSchema, RangeOptionSchema, SeedOptionSchema, StringOptionSchema } from 'misskey-world/src/room/object.js';
-import type { RoomAttachments } from 'misskey-world/src/room/type.js';
+import type { ObjectSchemaDef } from 'misskey-world/src/room/object.js';
+import type { OptionsSchema } from 'misskey-world/src/mono.js';
+import type { ConvertedOptions, GetConvertedOptionsSchemaValues } from '../mono.js';
 
 export type RoomObjectInstance<Options = any> = {
 	onInited?: () => void;
@@ -19,32 +20,6 @@ export type RoomObjectInstance<Options = any> = {
 	primaryInteraction?: string | null;
 	resetTemporaryState?: () => void;
 	dispose: () => void;
-};
-
-export type RawOptions = Record<string, unknown> & {
-	readonly __brand: unique symbol;
-};
-
-export type ConvertedOptions = Record<string, unknown> & {
-	readonly __brand: unique symbol;
-};
-
-type RawImageValue<Presets extends string = string> = { type: Presets | null | '_custom_'; driveFileId?: string | null; fit?: 'cover' | 'contain' | 'stretch'; };
-
-type ConvertedImageValue<Presets extends string = string> = { type: Presets | null | '_custom_'; custom?: { url: string; } | null; fit?: 'cover' | 'contain' | 'stretch'; };
-type GetConvertedOptionsSchemaValues<T extends OptionsSchema> = {
-	[K in keyof T]:
-	T[K] extends NumberOptionSchema ? number :
-	T[K] extends BooleanOptionSchema ? boolean :
-	T[K] extends StringOptionSchema ? string :
-	T[K] extends ColorOptionSchema ? [number, number, number] :
-	T[K] extends MaterialOptionSchema ? { color: [number, number, number]; metallic: number; roughness: number; } :
-	T[K] extends LightOptionSchema ? { color: [number, number, number]; brightness: number; } :
-	T[K] extends EnumOptionSchema ? T[K]['enum'][number]['value'] :
-	T[K] extends RangeOptionSchema ? number :
-	T[K] extends ImageOptionSchema ? ConvertedImageValue<T[K]['presets'][number]['value']> :
-	T[K] extends SeedOptionSchema ? number :
-	never;
 };
 
 export type SnapshotRenderingHelperWrapper = {
@@ -79,26 +54,6 @@ export function defineObjectSchema<const OpSc extends OptionsSchema>(def: Object
 
 export function defineObject<const Schema extends ObjectSchemaDef<any>>(schema: Schema, def: Pick<ObjectDef<Schema>, 'path' | 'createInstance'>): ObjectDef<Schema> {
 	return { ...schema, ...def };
-}
-
-export function convertRawOptions<OpSc extends OptionsSchema>(schema: OpSc, raw: RawOptions, attachments: RoomAttachments): ConvertedOptions {
-	const converted = {} as ConvertedOptions;
-	for (const record of Object.entries(schema)) {
-		const k = record[0];
-		const v = raw[k];
-		if (record[1].type === 'image') {
-			const _v = v as unknown as RawImageValue;
-			const file = _v.type === '_custom_' ? attachments.files.find(f => f.id === _v.driveFileId) : null;
-			if (file != null && file.url.startsWith('http://syu-win.local:3000/')) { // debug
-				file.url = file.url.replace('http://syu-win.local:3000/', 'https://local-mi.syuilo.dev/');
-			}
-
-			converted[k] = { type: _v.type, custom: file != null ? { url: file.url } : null, fit: _v.fit } satisfies ConvertedImageValue;
-		} else {
-			converted[k] = v;
-		}
-	}
-	return converted;
 }
 
 export const createTextureManager = (targetMesh: BABYLON.Mesh, calcTargetAspect: () => number, scene: BABYLON.Scene) => {
