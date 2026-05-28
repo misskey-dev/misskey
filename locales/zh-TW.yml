@@ -1412,6 +1412,7 @@ nothingToConfigure: "無可設定的項目"
 viewRenotedChannel: "顯示轉發貼文者的頻道"
 previewingTheme: "正在預覽主題"
 previewingThemeRestore: "復原"
+accessToken: "存取權杖"
 _imageEditing:
   _vars:
     caption: "檔案標題"
