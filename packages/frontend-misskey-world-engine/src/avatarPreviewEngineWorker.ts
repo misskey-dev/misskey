@@ -5,6 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { AvatarPreviewEngine } from './avatarPreviewEngine.js';
+import type { PlayerProfile } from './PlayerContainer.js';
 
 let engine: AvatarPreviewEngine | null = null;
 let canvas: OffscreenCanvas | null = null;
@@ -19,6 +20,7 @@ onmessage = async (event) => {
 
 	switch (event.data?.type) {
 		case 'init': {
+			const profile = event.data.profile as PlayerProfile;
 			canvas = event.data.canvas as OffscreenCanvas;
 			const babylonEngine = new BABYLON.WebGPUEngine(canvas, { doNotHandleContextLost: true, powerPreference: 'low-power', antialias: true });
 			babylonEngine.compatibilityMode = false;
@@ -27,7 +29,7 @@ onmessage = async (event) => {
 			if (event.data.options.resolution === 2) babylonEngine.setHardwareScalingLevel(0.5);
 			if (event.data.options.resolution === 0.5) babylonEngine.setHardwareScalingLevel(2);
 
-			engine = new AvatarPreviewEngine({
+			engine = new AvatarPreviewEngine(profile, {
 				engine: babylonEngine,
 				...event.data.options,
 			});

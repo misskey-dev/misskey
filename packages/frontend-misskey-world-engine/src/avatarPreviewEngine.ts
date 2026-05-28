@@ -11,7 +11,7 @@ import { PlayerContainer, type PlayerProfile } from './PlayerContainer.js';
 import { EngineBase } from './EngineBase.js';
 import type { WorldAvatar } from 'misskey-world/src/types.js';
 
-export class AvatarPreviewEngine extends EngineBase<{
+export class AvatarPreviewEngine extends EngineBase<{ // PlayerPreviewEngineに改名した方がいいかもしれない
 	'loadingProgress': (ctx: { progress: number }) => void;
 	'contextlost': (ctx: { reason: string; message: string; }) => void;
 }> {
@@ -24,8 +24,9 @@ export class AvatarPreviewEngine extends EngineBase<{
 	private roomLight: BABYLON.SpotLight;
 	private pipeline: BABYLON.DefaultRenderingPipeline;
 	private graphicsQuality: number;
+	private profile: PlayerProfile;
 
-	constructor(options: {
+	constructor(profile: PlayerProfile, options: {
 		engine: BABYLON.WebGPUEngine;
 		graphicsQuality: number;
 		fps: number | null;
@@ -38,6 +39,7 @@ export class AvatarPreviewEngine extends EngineBase<{
 		registerBuiltInLoaders();
 
 		this.graphicsQuality = options.graphicsQuality;
+		this.profile = profile;
 
 		this.scene.autoClear = false;
 		this.scene.skipPointerMovePicking = true;
@@ -87,6 +89,8 @@ export class AvatarPreviewEngine extends EngineBase<{
 	}
 
 	public async init() {
+		this.startRenderLoop();
+
 		await this.scene.whenReadyAsync();
 		this.sr.enableSnapshotRendering();
 
@@ -103,14 +107,16 @@ export class AvatarPreviewEngine extends EngineBase<{
 		this.inputs.on('pointer', (ev) => {
 			(this.camera.inputs.attached.manual as ArcRotateCameraManualInput).setRotationVector({ x: ev.x, y: ev.y });
 		});
+
+		await this.load();
 	}
 
-	public async load(profile: PlayerProfile) {
+	private async load() {
 		this.sr.disableSnapshotRendering();
 
 		this.playerContainer = new PlayerContainer({
 			id: '',
-			profile,
+			profile: this.profile,
 			state: {
 				position: [0, 0, 0],
 				rotation: [0, 0, 0],

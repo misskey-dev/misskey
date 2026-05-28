@@ -5,13 +5,14 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { AvatarPreviewEngine } from './avatarPreviewEngine.js';
+import type { PlayerProfile } from './PlayerContainer.js';
 
 //BABYLON.RegisterStandardEngineExtensions();
 //BABYLON.RegisterEnginesExtensionsEngineRawTexture();
 //BABYLON.RegisterCollisionCoordinator();
 
 export async function createAvatarPreviewEngine(params: {
-	canvas: HTMLCanvasElement; options: { graphicsQuality: number; resolution: number; fps: number | null };
+	canvas: HTMLCanvasElement; options: { graphicsQuality: number; resolution: number; fps: number | null }; profile: PlayerProfile;
 }) {
 	const babylonEngine = new BABYLON.WebGPUEngine(params.canvas, { doNotHandleContextLost: true, powerPreference: 'low-power', antialias: true });
 	babylonEngine.compatibilityMode = false;
@@ -20,7 +21,7 @@ export async function createAvatarPreviewEngine(params: {
 	if (params.options.resolution === 2) babylonEngine.setHardwareScalingLevel(0.5);
 	if (params.options.resolution === 0.5) babylonEngine.setHardwareScalingLevel(2);
 
-	const engine = new AvatarPreviewEngine({
+	const engine = new AvatarPreviewEngine(params.profile, {
 		engine: babylonEngine,
 		...params.options,
 	});

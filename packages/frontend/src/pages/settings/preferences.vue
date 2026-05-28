@@ -1235,6 +1235,8 @@ function testNotification(): void {
 
 async function createWorldAvatar(ev: PointerEvent) {
 	const { dispose } = await os.popupAsyncWithDialog(import('../rooms/edit-world-avatar-dialog.vue').then(x => x.default), {
+		graphicsQuality: worldGraphicsQuality.value ?? 0,
+		avatar: null,
 	}, {
 		ok: async (res) => {
 			console.log(res);

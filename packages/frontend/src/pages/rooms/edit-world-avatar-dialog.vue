@@ -22,9 +22,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<div :class="$style.previewContainer">
 			<div :class="$style.preview">
-				<MkButton v-if="selectedObjectSchema != null && Object.keys(selectedObjectSchema.options.schema).length > 0" :class="$style.customizeButton" small rounded iconOnly @click="showObjectOptions = !showObjectOptions"><i class="ti ti-tool"></i></MkButton>
+				<MkButton :class="$style.customizeButton" small rounded iconOnly @click="showObjectOptions = !showObjectOptions"><i class="ti ti-tool"></i></MkButton>
 
-				<div :class="[$style.previewMain, { [$style.optionsOpened]: selectedObjectSchema != null && selectedInstanceId != null && showObjectOptions }]">
+				<div :class="[$style.previewMain]">
 					<canvas ref="canvas" :class="$style.canvas"></canvas>
 				</div>
 
@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:enterFromClass="prefer.s.animation ? $style.transition_options_enterFrom : ''"
 					:leaveToClass="prefer.s.animation ? $style.transition_options_leaveTo : ''"
 				>
-					<div v-if="selectedObjectSchema != null && selectedInstanceId != null && showObjectOptions" :class="$style.customize">
+					<div v-if="showObjectOptions" :class="$style.customize">
 					</div>
 				</Transition>
 			</div>
@@ -111,8 +111,7 @@ const controller = markRaw(new AvatarPreviewEngineController(avatarPreviewEngine
 
 onMounted(async () => {
 	try {
-		await controller.init(canvas.value!);
-		await controller.load({
+		await controller.init(canvas.value!, {
 			name: $i.name,
 			username: $i.username,
 			avatarUrl: $i.avatarUrl,

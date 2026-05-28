@@ -23,18 +23,18 @@ export class AvatarPreviewEngineController extends EngineControllerBase<AvatarPr
 		});
 	}
 
-	public async init(canvas: HTMLCanvasElement) {
+	public async init(canvas: HTMLCanvasElement, profile: PlayerProfile) {
 		await this._init_(canvas, {
 			createWorker: (offscreen) => new Promise((resolve) => {
 				import('misskey-world-engine/src/avatarPreviewEngineWorker?worker').then(({ default: PreviewEngineWorker }) => {
 					const worker = new PreviewEngineWorker();
-					worker.postMessage({ type: 'init', canvas: offscreen, options: this.options }, [offscreen]);
+					worker.postMessage({ type: 'init', canvas: offscreen, options: this.options, profile }, [offscreen]);
 					resolve(worker);
 				});
 			}),
 			createEngine: () => new Promise((resolve) => {
 				import('misskey-world-engine/src/avatarPreviewEngineNonWorker.js').then(({ createAvatarPreviewEngine }) => {
-					const engine = createAvatarPreviewEngine({ canvas, options: this.options });
+					const engine = createAvatarPreviewEngine({ canvas, options: this.options, profile });
 					resolve(engine);
 				});
 			}),
@@ -43,9 +43,5 @@ export class AvatarPreviewEngineController extends EngineControllerBase<AvatarPr
 
 	public updateAvatarOption(key: string, value: any) {
 		this.call('updateAvatarOption', [key, value]);
-	}
-
-	public load(profile: PlayerProfile) {
-		return this.callAndWaitReturn('load', [profile]);
 	}
 }
