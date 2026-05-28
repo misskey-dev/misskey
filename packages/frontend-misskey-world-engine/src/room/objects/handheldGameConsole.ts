@@ -4,8 +4,8 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { createTextureManager, defineObject } from '../object.js';
 import { handheldGameConsole_schema } from 'misskey-world/src/room/objects/handheldGameConsole.schema.js';
+import { createTextureManager, defineObject } from '../object.js';
 
 export const handheldGameConsole = defineObject(handheldGameConsole_schema, {
 	createInstance: async ({ scene, options, model }) => {
@@ -16,6 +16,8 @@ export const handheldGameConsole = defineObject(handheldGameConsole_schema, {
 		screenMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
 		screenMaterial.ambientColor = new BABYLON.Color3(0, 0, 0);
 		screenMaterial.albedoColor = new BABYLON.Color3(0, 0, 0);
+		screenMaterial.roughness = 0;
+		screenMaterial.metallic = 0;
 
 		const textureManager = createTextureManager(screenMesh, () => 20 / 10.4, scene);
 

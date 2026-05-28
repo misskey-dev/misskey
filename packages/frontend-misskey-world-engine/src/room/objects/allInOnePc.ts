@@ -32,6 +32,8 @@ export const allInOnePc = defineObject(allInOnePc_schema, {
 		screenMaterial.ambientColor = new BABYLON.Color3(0, 0, 0);
 		screenMaterial.albedoColor = new BABYLON.Color3(0, 0, 0);
 		screenMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
+		screenMaterial.roughness = 0;
+		screenMaterial.metallic = 0;
 
 		const textureManager = createTextureManager(screenMesh, () => 50 / 27.5, scene);
 

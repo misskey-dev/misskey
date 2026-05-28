@@ -13,6 +13,8 @@ export const djPlayer = defineObject(djPlayer_schema, {
 		const screenMesh = model.findMesh('__X_SCREEN__');
 		const screenMaterial = model.findMaterial('__X_SCREEN__');
 		screenMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
+		screenMaterial.roughness = 0;
+		screenMaterial.metallic = 0;
 
 		normalizeUvToSquare(screenMesh);
 

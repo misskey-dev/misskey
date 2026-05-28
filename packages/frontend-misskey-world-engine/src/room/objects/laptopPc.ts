@@ -4,10 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { createTextureManager, defineObject } from '../object.js';
 import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
-import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 import { laptopPc_schema } from 'misskey-world/src/room/objects/laptopPc.schema.js';
+import { createTextureManager, defineObject } from '../object.js';
+import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 
 export const laptopPc = defineObject(laptopPc_schema, {
 	createInstance: async ({ lc, sr, scene, options, model, graphicsQuality }) => {
@@ -32,6 +32,8 @@ export const laptopPc = defineObject(laptopPc_schema, {
 		screenMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
 		screenMaterial.ambientColor = new BABYLON.Color3(0, 0, 0);
 		screenMaterial.albedoColor = new BABYLON.Color3(0, 0, 0);
+		screenMaterial.roughness = 0;
+		screenMaterial.metallic = 0;
 
 		const textureManager = createTextureManager(screenMesh, () => 31 / 19, scene);
 
