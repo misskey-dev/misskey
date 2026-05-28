@@ -33,7 +33,7 @@ export const djPlayer = defineObject(djPlayer_schema, {
 			if (options.image.type === '_custom_') {
 				url = options.image.custom?.url ?? null;
 			} else if (options.image.type === 'waveform') {
-				url = '/client-assets/room/objects/dj-player/textures/display-waveform.png';
+				url = '/client-assets/world/objects/dj-player/textures/display-waveform.png';
 			}
 			return textureManager.change(url, options.image.fit).then((tex) => {
 				screenMaterial.emissiveTexture = tex;

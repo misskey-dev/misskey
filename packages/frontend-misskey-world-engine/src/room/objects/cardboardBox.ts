@@ -15,9 +15,9 @@ export const cardboardBox = defineObject(cardboardBox_schema, {
 
 		const applyVariation = () => {
 			if (options.variation === 'mikan') {
-				tex = new BABYLON.Texture('/client-assets/room/objects/cardboard-box/textures/mikan.png', scene, false, false);
+				tex = new BABYLON.Texture('/client-assets/world/objects/cardboard-box/textures/mikan.png', scene, false, false);
 			} else if (options.variation === 'aizon') {
-				tex = new BABYLON.Texture('/client-assets/room/objects/cardboard-box/textures/aizon.png', scene, false, false);
+				tex = new BABYLON.Texture('/client-assets/world/objects/cardboard-box/textures/aizon.png', scene, false, false);
 			}
 
 			if (tex != null) {

@@ -16,10 +16,10 @@ export const randomBooks = defineObject(randomBooks_schema, {
 
 		const applyVariation = () => {
 			if (options.variation === 'mix') {
-				const tex = new BABYLON.Texture('/client-assets/room/objects/random-books/textures/mix.png', scene, false, false);
+				const tex = new BABYLON.Texture('/client-assets/world/objects/random-books/textures/mix.png', scene, false, false);
 				bodyMesh.material.albedoTexture = tex;
 			} else if (options.variation === 'mix-plain') {
-				const tex = new BABYLON.Texture('/client-assets/room/objects/random-books/textures/mix-plain.png', scene, false, false);
+				const tex = new BABYLON.Texture('/client-assets/world/objects/random-books/textures/mix-plain.png', scene, false, false);
 				bodyMesh.material.albedoTexture = tex;
 			}
 		};

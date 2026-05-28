@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	class="_panel"
 	:class="[$style.root]"
 >
-	<img :class="$style.thumbnail" :src="`/client-assets/room/object-thumbs/${camelToKebab(def.id)}.png`"/>
+	<img :class="$style.thumbnail" :src="`/client-assets/world/object-thumbs/${camelToKebab(def.id)}.png`"/>
 	<div :class="$style.name"><MkCondensedLine :minScale="0.5">{{ OBJECT_UI_DEFS[def.id].name }}</MkCondensedLine></div>
 	<i v-if="Object.keys(def.options.schema).length > 0" :class="$style.customizable" class="ti ti-tool"></i>
 </div>

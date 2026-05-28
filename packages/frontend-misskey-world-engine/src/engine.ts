@@ -530,7 +530,7 @@ export class WorldEngine extends EngineBase<{
 		const emitter = new BABYLON.TransformNode('emitter', this.scene);
 		emitter.position = new BABYLON.Vector3(0, cm(-1000), 0);
 		const ps = new BABYLON.ParticleSystem('', 128, this.scene);
-		ps.particleTexture = new BABYLON.Texture('/client-assets/room/objects/lava-lamp/bubble.png');
+		ps.particleTexture = new BABYLON.Texture('/client-assets/world/objects/lava-lamp/bubble.png');
 		ps.emitter = emitter;
 		ps.isLocal = true;
 		ps.minEmitBox = new BABYLON.Vector3(cm(-1000), 0, cm(-1000));

@@ -21,12 +21,12 @@ export const issyoubin = defineObject(issyoubin_schema, {
 
 		const applyVariation = () => {
 			if (options.variation === 'misuki') {
-				const tex = new BABYLON.Texture('/client-assets/room/objects/issyoubin/textures/misuki.png', scene, false, false);
+				const tex = new BABYLON.Texture('/client-assets/world/objects/issyoubin/textures/misuki.png', scene, false, false);
 				labelMaterial.albedoTexture = tex;
 				bottleMaterial.albedoColor = new BABYLON.Color3(0.33, 0.06, 0);
 				bottleMaterial.alpha = 0.8;
 			} else if (options.variation === 'ai') {
-				const tex = new BABYLON.Texture('/client-assets/room/objects/issyoubin/textures/ai.png', scene, false, false);
+				const tex = new BABYLON.Texture('/client-assets/world/objects/issyoubin/textures/ai.png', scene, false, false);
 				labelMaterial.albedoTexture = tex;
 				bottleMaterial.albedoColor = new BABYLON.Color3(0.0, 0.5, 0.14);
 				bottleMaterial.alpha = 0.8;

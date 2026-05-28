@@ -55,7 +55,7 @@ export class AccessoryContainer {
 	public async load() {
 		const def = getAccessoryDef(this.type);
 
-		const filePath = def.path != null ? `/client-assets/world/avatar-accessories/${def.path(this.options)}.glb` : `/client-assets/world/avatar-accessories/${camelToKebab(this.type)}/${camelToKebab(this.type)}.glb`;
+		const filePath = def.path != null ? `/client-assets/world/objects/${def.path(this.options)}.glb` : `/client-assets/world/objects/${camelToKebab(this.type)}/${camelToKebab(this.type)}.glb`;
 		const loaderResult = await BABYLON.LoadAssetContainerAsync(filePath, this.scene);
 
 		// babylonによって自動で追加される右手系変換用ノード

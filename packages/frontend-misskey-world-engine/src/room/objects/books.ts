@@ -14,11 +14,11 @@ export const books = defineObject(books_schema, {
 
 		const applyVariation = () => {
 			const coverTexture =
-				options.variation === 'A' ? new BABYLON.Texture('/client-assets/room/objects/books/textures/a.png', scene, false, false) :
-				options.variation === 'B' ? new BABYLON.Texture('/client-assets/room/objects/books/textures/b.png', scene, false, false) :
-				options.variation === 'C' ? new BABYLON.Texture('/client-assets/room/objects/books/textures/c.png', scene, false, false) :
-				options.variation === 'D' ? new BABYLON.Texture('/client-assets/room/objects/books/textures/d.png', scene, false, false) :
-				new BABYLON.Texture('/client-assets/room/objects/books/textures/e.png', scene, false, false);
+				options.variation === 'A' ? new BABYLON.Texture('/client-assets/world/objects/books/textures/a.png', scene, false, false) :
+				options.variation === 'B' ? new BABYLON.Texture('/client-assets/world/objects/books/textures/b.png', scene, false, false) :
+				options.variation === 'C' ? new BABYLON.Texture('/client-assets/world/objects/books/textures/c.png', scene, false, false) :
+				options.variation === 'D' ? new BABYLON.Texture('/client-assets/world/objects/books/textures/d.png', scene, false, false) :
+				new BABYLON.Texture('/client-assets/world/objects/books/textures/e.png', scene, false, false);
 			coverMaterial.albedoTexture = coverTexture;
 		};
 
