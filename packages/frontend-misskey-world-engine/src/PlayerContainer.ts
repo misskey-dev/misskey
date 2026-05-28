@@ -4,7 +4,7 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { WORLD_SCALE } from 'misskey-world/src/utility.js';
+import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import type { WorldAvatar } from 'misskey-world/src/types.js';
 
 export type PlayerProfile = {
@@ -24,10 +24,12 @@ export class PlayerContainer {
 	public id: string;
 	private profile: PlayerProfile;
 	private root: BABYLON.TransformNode;
-	private subRoot: BABYLON.TransformNode | null = null;
+	private modelRootContainerForAnim: BABYLON.TransformNode;
+	private modelRoot: BABYLON.TransformNode | null = null;
 	private sr: BABYLON.SnapshotRenderingHelper;
 	private scene: BABYLON.Scene;
 	public registerMeshes: (meshes: BABYLON.Mesh[]) => void = () => {};
+	private animationObserver: BABYLON.Observer<BABYLON.Scene> | null = null;
 
 	constructor(params: { id: string; profile: PlayerProfile; state: PlayerState | null; sr: BABYLON.SnapshotRenderingHelper; scene: BABYLON.Scene; }) {
 		this.id = params.id;
@@ -37,6 +39,8 @@ export class PlayerContainer {
 
 		this.root = new BABYLON.TransformNode(`player:${this.id}`, params.scene);
 		this.root.rotationQuaternion = null;
+		this.modelRootContainerForAnim = new BABYLON.TransformNode(`player:${this.id}:modelRootContainerForAnim`, params.scene);
+		this.modelRootContainerForAnim.parent = this.root;
 		if (params.state) this.applyState(params.state, true);
 	}
 
@@ -45,25 +49,25 @@ export class PlayerContainer {
 		const loaderResult = await BABYLON.LoadAssetContainerAsync(filePath, this.scene);
 
 		// babylonによって自動で追加される右手系変換用ノード
-		const subRootMesh = loaderResult.meshes[0] as BABYLON.Mesh;
+		const modelRootMesh = loaderResult.meshes[0] as BABYLON.Mesh;
 
 		// meshじゃなくtransform nodeにしてパフォーマンス向上
-		this.subRoot = new BABYLON.TransformNode('__root__', this.scene);
-		this.subRoot.parent = this.root;
-		this.subRoot.scaling.x = -1;
-		this.subRoot.scaling = this.subRoot.scaling.scale(WORLD_SCALE);// cmをmに
+		this.modelRoot = new BABYLON.TransformNode('__root__', this.scene);
+		this.modelRoot.parent = this.modelRootContainerForAnim;
+		this.modelRoot.scaling.x = -1;
+		this.modelRoot.scaling = this.modelRoot.scaling.scale(WORLD_SCALE);// cmをmに
 
-		for (const m of subRootMesh.getChildren()) {
-			if (m.parent === subRootMesh) {
-				m.parent = this.subRoot;
+		for (const m of modelRootMesh.getChildren()) {
+			if (m.parent === modelRootMesh) {
+				m.parent = this.modelRoot;
 			}
 		}
 
-		subRootMesh.dispose();
+		modelRootMesh.dispose();
 
 		const avatarTex = new BABYLON.Texture(this.profile.avatarUrl, this.scene, false, false);
 
-		for (const mesh of this.subRoot.getChildMeshes()) {
+		for (const mesh of this.modelRoot.getChildMeshes()) {
 			if (mesh.name.includes('__AVATAR__')) {
 				const mat = new BABYLON.PBRMaterial(`${mesh.name}-mat`, this.scene);
 				mat.albedoColor = new BABYLON.Color3(0.5, 0.5, 0.5);
@@ -80,12 +84,29 @@ export class PlayerContainer {
 			}
 		}
 
-		this.registerMeshes(this.subRoot.getChildMeshes());
+		this.registerMeshes(this.modelRoot.getChildMeshes());
+
+		const anim = new BABYLON.Animation('', 'position.y', 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+		anim.setKeys([
+			{ frame: 0, value: cm(0) },
+			{ frame: 30, value: cm(-2) },
+			{ frame: 60, value: cm(0) },
+			{ frame: 90, value: cm(2) },
+			{ frame: 120, value: cm(0) },
+		]);
+		//const easing = new BABYLON.CubicEase();
+		//easing.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEINOUT);
+		//anim.setEasingFunction(easing);
+		this.modelRootContainerForAnim.animations = [anim];
+		this.animationObserver = this.scene.onAfterAnimationsObservable.add(() => {
+			this.sr.updateMesh(this.modelRootContainerForAnim.getChildMeshes(), false);
+		});
+		this.scene.beginAnimation(this.modelRootContainerForAnim, 0, 120, true);
 	}
 
 	public applyState(state: PlayerState, forInit = false) {
 		this.root.position.set(...state.position);
-		this.root.rotation.set(...state.rotation);
+		if (this.modelRoot) this.modelRoot.rotation.set(...state.rotation);
 		if (!forInit) {
 			const meshes = this.root.getChildMeshes();
 			if (meshes.length > 0) this.sr.updateMesh(meshes);
@@ -93,6 +114,9 @@ export class PlayerContainer {
 	}
 
 	public destroy() {
+		if (this.animationObserver != null) {
+			this.scene.onAfterAnimationsObservable.remove(this.animationObserver);
+		}
 		this.root.dispose();
 	}
 }
