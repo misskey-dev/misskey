@@ -711,3 +711,61 @@ export class ArcRotateCameraManualInput implements BABYLON.ICameraInput<BABYLON.
 	checkInputs() {
 	}
 }
+
+export function findMaterial(rootMesh: BABYLON.AbstractMesh | BABYLON.TransformNode, keyword: string, allowMultiMaterial = false): BABYLON.PBRMaterial {
+	for (const m of rootMesh.getChildMeshes()) {
+		if (m.material == null) continue;
+		if (m.material instanceof BABYLON.MultiMaterial) {
+			if (allowMultiMaterial && m.material.name.includes(keyword)) {
+				return m.material as BABYLON.MultiMaterial;
+			}
+
+			if ((m.material as BABYLON.MultiMaterial).subMaterials == null) continue;
+
+			for (const sm of (m.material as BABYLON.MultiMaterial).subMaterials) {
+				if (sm == null) continue;
+				if (sm.name.includes(keyword)) {
+					return sm as BABYLON.PBRMaterial;
+				}
+			}
+		} else {
+			if (m.material.name.includes(keyword)) {
+				return m.material as BABYLON.PBRMaterial;
+			}
+		}
+	}
+	throw new Error(`Material with keyword "${keyword}" not found`);
+}
+
+export class ModelExplorer {
+	public root: BABYLON.TransformNode;
+
+	constructor(root: BABYLON.TransformNode) {
+		this.root = root;
+	}
+
+	public findMesh(keyword: string) {
+		const mesh = this.root.getChildMeshes().find(m => m.name.includes(keyword));
+		if (mesh == null) {
+			throw new Error(`Mesh with keyword "${keyword}" not found for object ${this.root.metadata?.objectType}`);
+		}
+		return mesh as BABYLON.Mesh;
+	}
+
+	public findMeshes(keyword: string) {
+		const meshes = this.root.getChildMeshes().filter(m => m.name.includes(keyword));
+		return meshes as BABYLON.Mesh[];
+	}
+
+	public findMaterial(keyword: string) {
+		return findMaterial(this.root, keyword);
+	}
+
+	public findTransformNode(keyword: string) {
+		const node = this.root.getChildTransformNodes().find(n => n.name.includes(keyword));
+		if (node == null) {
+			throw new Error(`TransformNode with keyword "${keyword}" not found for object ${this.root.metadata?.objectType}`);
+		}
+		return node;
+	}
+}

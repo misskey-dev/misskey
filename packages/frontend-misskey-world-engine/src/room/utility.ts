@@ -5,7 +5,7 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { cm } from 'misskey-world/src/utility.js';
-import { applyMorphTargetsToMesh, getPlaneUvIndexes, GRAPHICS_QUALITY, Timer } from '../utility.js';
+import { applyMorphTargetsToMesh, findMaterial, getPlaneUvIndexes, GRAPHICS_QUALITY, Timer } from '../utility.js';
 
 export function getLightRangeFactorByGraphicsQuality(quality: number) {
 	if (quality >= GRAPHICS_QUALITY.HIGH) {
@@ -169,31 +169,6 @@ export function initTv(scene: BABYLON.Scene, screenMesh: BABYLON.Mesh, timer: Ti
 		dispose() {
 		},
 	};
-}
-
-export function findMaterial(rootMesh: BABYLON.AbstractMesh | BABYLON.TransformNode, keyword: string, allowMultiMaterial = false): BABYLON.PBRMaterial {
-	for (const m of rootMesh.getChildMeshes()) {
-		if (m.material == null) continue;
-		if (m.material instanceof BABYLON.MultiMaterial) {
-			if (allowMultiMaterial && m.material.name.includes(keyword)) {
-				return m.material as BABYLON.MultiMaterial;
-			}
-
-			if ((m.material as BABYLON.MultiMaterial).subMaterials == null) continue;
-
-			for (const sm of (m.material as BABYLON.MultiMaterial).subMaterials) {
-				if (sm == null) continue;
-				if (sm.name.includes(keyword)) {
-					return sm as BABYLON.PBRMaterial;
-				}
-			}
-		} else {
-			if (m.material.name.includes(keyword)) {
-				return m.material as BABYLON.PBRMaterial;
-			}
-		}
-	}
-	throw new Error(`Material with keyword "${keyword}" not found`);
 }
 
 export class ModelManager {

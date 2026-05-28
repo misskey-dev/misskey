@@ -5,6 +5,8 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
+import { AccessoryContainer } from './avatars/AccessoryContainer.js';
+import { getAccessoryDef } from './avatars/accessory-defs.js';
 import type { WorldAvatar } from 'misskey-world/src/types.js';
 
 export type PlayerProfile = {
@@ -51,6 +53,7 @@ export class PlayerContainer {
 	private scene: BABYLON.Scene;
 	public registerMeshes: (meshes: BABYLON.Mesh[]) => void = () => {};
 	private animationObserver: BABYLON.Observer<BABYLON.Scene> | null = null;
+	private accessoryContainers: AccessoryContainer[] = [];
 
 	constructor(params: { id: string; profile: PlayerProfile; state: PlayerState | null; sr: BABYLON.SnapshotRenderingHelper; scene: BABYLON.Scene; }) {
 		this.id = params.id;
@@ -86,7 +89,7 @@ export class PlayerContainer {
 
 		modelRootMesh.dispose();
 
-		const avatarTex = new BABYLON.Texture(this.profile.avatarUrl, this.scene, false, false);
+		//const avatarTex = new BABYLON.Texture(this.profile.avatarUrl, this.scene, false, false);
 
 		let eyesTex: BABYLON.Texture | null = null;
 		if (this.profile.worldAvatar.eyes.type in DEFAULT_FACE_PARTS_EYES) {
@@ -107,17 +110,17 @@ export class PlayerContainer {
 		}
 
 		for (const mesh of this.modelRoot.getChildMeshes()) {
-			if (mesh.name.includes('__AVATAR__')) {
-				const mat = new BABYLON.PBRMaterial('', this.scene);
-				mat.albedoColor = new BABYLON.Color3(0.5, 0.5, 0.5);
-				mat.albedoTexture = avatarTex;
-				mat.emissiveColor = new BABYLON.Color3(0.5, 0.5, 0.5);
-				mat.emissiveTexture = avatarTex;
-				mat.roughness = 0;
-				mat.metallic = 0;
-				mat.backFaceCulling = false;
-				mesh.material = mat;
-			}
+			//if (mesh.name.includes('__AVATAR__')) {
+			//	const mat = new BABYLON.PBRMaterial('', this.scene);
+			//	mat.albedoColor = new BABYLON.Color3(0.5, 0.5, 0.5);
+			//	mat.albedoTexture = avatarTex;
+			//	mat.emissiveColor = new BABYLON.Color3(0.5, 0.5, 0.5);
+			//	mat.emissiveTexture = avatarTex;
+			//	mat.roughness = 0;
+			//	mat.metallic = 0;
+			//	mat.backFaceCulling = false;
+			//	mesh.material = mat;
+			//}
 			if (mesh.name.includes('__BODY__')) {
 				mesh.material.albedoColor = new BABYLON.Color3(this.profile.worldAvatar.body.color[0], this.profile.worldAvatar.body.color[1], this.profile.worldAvatar.body.color[2]);
 			}
@@ -145,6 +148,21 @@ export class PlayerContainer {
 
 		this.registerMeshes(this.modelRoot.getChildMeshes());
 
+		// debug
+		this.profile.worldAvatar.accessories = [{
+			id: 'a',
+			type: 'mug',
+			options: {},
+		}];
+
+		this.accessoryContainers = await Promise.all(this.profile.worldAvatar.accessories.map(ac => this.loadAccessory({
+			type: ac.type,
+			id: ac.id,
+			position: new BABYLON.Vector3(0, cm(20), 0),
+			rotation: new BABYLON.Vector3(0, 0, 0),
+			options: ac.options,
+		})));
+
 		const anim = new BABYLON.Animation('', 'position.y', 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
 		anim.setKeys([
 			{ frame: 0, value: cm(0) },
@@ -160,6 +178,36 @@ export class PlayerContainer {
 		this.scene.beginAnimation(this.modelRootContainerForAnim, 0, 120, true);
 	}
 
+	private async loadAccessory(args: {
+		type: string;
+		id: string;
+		position: BABYLON.Vector3;
+		rotation: BABYLON.Vector3;
+		options: Record<string, unknown>;
+	}) {
+		const def = getAccessoryDef(args.type);
+
+		const container = new AccessoryContainer({
+			id: args.id,
+			type: args.type,
+			position: args.position.clone(),
+			rotation: args.rotation.clone(),
+			options: args.options,
+			sr: this.sr,
+			getIsSrReady: () => true,
+			lightContainer: this.lightContainer,
+			graphicsQuality: this.graphicsQuality,
+			scene: this.scene,
+		});
+		container.registerMeshes = (meshes) => {
+			this.registerMeshes(meshes);
+		};
+
+		await container.load();
+
+		return container;
+	}
+
 	public applyState(state: PlayerState, forInit = false) {
 		this.root.position.set(...state.position);
 		if (this.modelRoot) this.modelRoot.rotation.set(...state.rotation);
@@ -173,6 +221,10 @@ export class PlayerContainer {
 		if (this.animationObserver != null) {
 			this.scene.onAfterAnimationsObservable.remove(this.animationObserver);
 		}
+		for (const ac of this.accessoryContainers) {
+			ac.destroy();
+		}
+		this.accessoryContainers = [];
 		this.root.dispose();
 	}
 }

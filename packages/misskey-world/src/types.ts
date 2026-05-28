@@ -19,6 +19,10 @@ export type WorldAvatar = {
 		color: [number, number, number];
 	};
 	accessories: {
+		id: string;
 		type: string;
+		options: Record<string, unknown>;
+		position?: [number, number, number];
+		rotation?: [number, number, number];
 	}[];
 };
