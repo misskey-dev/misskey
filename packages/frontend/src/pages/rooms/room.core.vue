@@ -76,7 +76,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-if="controller.isReady.value && controller.isEditMode.value && controller.selected.value != null && !controller.grabbing.value" :key="controller.selected.value.objectId" :class="$style.overlayObjectInfoPanel">
 		<div style="margin-bottom: 8px; font-weight: bold; text-align: center;">{{ OBJECT_UI_DEFS[controller.selected.value.objectState.type].name }}</div>
 
-		<XObjectCustomizeForm :addFileAttachment="addFileAttachment" :schema="OBJECT_SCHEMA_DEFS[controller.selected.value.objectState.type]" :options="controller.selected.value.objectState.options" @update="(k, v) => updateObjectOption(k, v)"></XObjectCustomizeForm>
+		<MkWorldMonoOptionsForm
+			:uiDef="OBJECT_UI_DEFS[OBJECT_SCHEMA_DEFS[controller.selected.value.objectState.type].id]"
+			:addFileAttachment="addFileAttachment"
+			:schema="OBJECT_SCHEMA_DEFS[controller.selected.value.objectState.type].options.schema"
+			:options="controller.selected.value.objectState.options"
+			@update="(k, v) => updateObjectOption(k, v)"
+		/>
 	</div>
 
 	<div v-if="isRoomSettingsOpen && controller.isEditMode.value" class="_panel" :class="$style.overlayObjectInfoPanel">
@@ -92,10 +98,10 @@ import { cm, getHex, getRgb, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { GRAPHICS_QUALITY } from 'misskey-world-engine/src/utility.js';
 import { OBJECT_SCHEMA_DEFS } from 'misskey-world/src/room/object-schema-defs.js';
 import { useInterval } from '@@/js/use-interval.js';
-import XObjectCustomizeForm from './room.object-customize-form.vue';
 import XEnvOptions from './room.env-options.vue';
 import type { RoomControllerOptions } from '@/world/room/controller.js';
 import type { RoomState, RoomAttachments } from 'misskey-world/src/room/type.js';
+import MkWorldMonoOptionsForm from '@/components/MkWorldMonoOptionsForm.vue';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';

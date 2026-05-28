@@ -6,8 +6,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.root">
 	<div class="_gaps_s">
-		<MkFolder v-for="[k, s] in Object.entries(schema.options.schema)" :key="k">
-			<template #label>{{ OBJECT_UI_DEFS[schema.id].options[k].label }}</template>
+		<MkFolder v-for="[k, s] in Object.entries(schema)" :key="k">
+			<template #label>{{ uiDef.options[k].label }}</template>
 			<template #suffix>
 				<span v-if="s.type === 'color'" :style="{ color: getHex(options[k]) }">●</span>
 				<span v-else-if="s.type === 'material'" :style="{ color: getHex(options[k].color) }">●</span>
@@ -44,7 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkSwitch :modelValue="options[k]" @update:modelValue="v => emit('update', k, v)"></MkSwitch>
 			</div>
 			<div v-else-if="s.type === 'enum'">
-				<MkSelect :items="s.enum.map(e => ({ label: OBJECT_UI_DEFS[schema.id].options[k].enum[e.value].label, value: e.value }))" :modelValue="options[k]" @update:modelValue="v => emit('update', k, v)"></MkSelect>
+				<MkSelect :items="s.enum.map(e => ({ label: uiDef.options[k].enum[e.value].label, value: e.value }))" :modelValue="options[k]" @update:modelValue="v => emit('update', k, v)"></MkSelect>
 			</div>
 			<div v-else-if="s.type === 'string'">
 				<MkInput type="text" :modelValue="options[k]" @update:modelValue="v => emit('update', k, v)"></MkInput>
@@ -53,7 +53,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkRange :continuousUpdate="true" :min="s.min" :max="s.max" :step="s.step" :modelValue="options[k]" @update:modelValue="v => emit('update', k, v)"></MkRange>
 			</div>
 			<div v-else-if="s.type === 'image'" class="_gaps_s">
-				<MkSelect :items="[{ label: i18n.ts.none, value: null }, { label: i18n.ts.custom, value: '_custom_' }, ...(s.presets.length > 0 ? [{ type: 'divider' } as const] : []), ...s.presets.map(e => ({ label: OBJECT_UI_DEFS[schema.id].options[k].presets[e.value].label, value: e.value }))]" :modelValue="options[k].type" @update:modelValue="v => changeImageType(k, v)"></MkSelect>
+				<MkSelect :items="[{ label: i18n.ts.none, value: null }, { label: i18n.ts.custom, value: '_custom_' }, ...(s.presets.length > 0 ? [{ type: 'divider' } as const] : []), ...s.presets.map(e => ({ label: uiDef.options[k].presets[e.value].label, value: e.value }))]" :modelValue="options[k].type" @update:modelValue="v => changeImageType(k, v)"></MkSelect>
 
 				<div v-if="options[k].type === '_custom_'" class="_buttons">
 					<MkButton primary inline @click="changeImage(k)"><i class="ti ti-cloud"></i> {{ i18n.ts.choose }}...</MkButton>
@@ -80,7 +80,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { } from 'vue';
 import * as Misskey from 'misskey-js';
 import { getHex, getRgb } from 'misskey-world/src/utility.js';
-import type { ObjectSchemaDef, RawOptions } from 'misskey-world/src/room/object.js';
+import type { OptionsSchema, RawOptions } from 'misskey-world/src/mono.js';
+import type { GetOptionsSchemaUiDef } from '@/world/mono.js';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import MkSelect from '@/components/MkSelect.vue';
@@ -91,12 +92,12 @@ import MkRange from '@/components/MkRange.vue';
 import { chooseDriveFile } from '@/utility/drive.js';
 import MkRadios from '@/components/MkRadios.vue';
 import MkFolder from '@/components/MkFolder.vue';
-import { OBJECT_UI_DEFS } from '@/world/room/object-ui-defs.js';
 import { prefer } from '@/preferences.js';
 
 const props = defineProps<{
-	schema: ObjectSchemaDef<any>;
+	schema: OptionsSchema;
 	options: RawOptions;
+	uiDef: Record<string, GetOptionsSchemaUiDef<any>>;
 	addFileAttachment: ((file: Misskey.entities.DriveFile) => void);
 }>();
 

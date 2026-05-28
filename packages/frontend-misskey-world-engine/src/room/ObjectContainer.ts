@@ -6,10 +6,10 @@
 import * as BABYLON from '@babylonjs/core';
 import { camelToKebab, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { scaleMorph, Timer } from '../utility.js';
+import { convertRawOptions, type ConvertedOptions, type RawOptions } from '../mono.js';
 import { getObjectDef } from './object-defs.js';
 import { ModelManager, SYSTEM_MESH_NAMES } from './utility.js';
-import { convertRawOptions } from './object.js';
-import type { ConvertedOptions, RawOptions, RoomObjectInstance } from './object.js';
+import type { RoomObjectInstance } from './object.js';
 import type { RoomAttachments } from 'misskey-world/src/room/type.js';
 
 function mergeMeshes(meshes: BABYLON.Mesh[], root: BABYLON.Mesh, hasTexture: boolean) {

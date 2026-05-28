@@ -60,7 +60,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 						:leaveToClass="prefer.s.animation ? $style.transition_options_leaveTo : ''"
 					>
 						<div v-if="selectedObjectSchema != null && selectedInstanceId != null && showObjectOptions" :class="$style.customize">
-							<XObjectCustomizeForm :addFileAttachment="addFileAttachment" :schema="selectedObjectSchema" :options="selectedObjectOptionsState" @update="(k, v) => updateObjectOption(k, v)"></XObjectCustomizeForm>
+							<MkWorldMonoOptionsForm
+								:uiDef="OBJECT_UI_DEFS[selectedObjectSchema.id]"
+								:addFileAttachment="addFileAttachment"
+								:schema="selectedObjectSchema.options.schema"
+								:options="selectedObjectOptionsState"
+								@update="(k, v) => updateObjectOption(k, v)"
+							/>
 						</div>
 					</Transition>
 				</div>
@@ -74,11 +80,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick, shallowRef, computed, triggerRef, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import { OBJECT_SCHEMA_DEFS } from 'misskey-world/src/room/object-schema-defs.js';
-import XObjectCustomizeForm from './room.object-customize-form.vue';
 import XItem from './room.add-object-dialog.item.vue';
 import type { PreviewEngineControllerOptions } from '@/world/room/previewEngineController.js';
-import type { RawOptions } from 'misskey-world/src/room/object.js';
 import type { RoomAttachments } from 'misskey-world/src/room/type.js';
+import type { RawOptions } from 'misskey-world/src/mono.js';
+import MkWorldMonoOptionsForm from '@/components/MkWorldMonoOptionsForm.vue';
 import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import * as os from '@/os.js';
@@ -90,6 +96,7 @@ import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { PreviewEngineController } from '@/world/room/previewEngineController.js';
 import MkInput from '@/components/MkInput.vue';
 import { withTimeout } from '@/utility/promise-timeout.js';
+import { OBJECT_UI_DEFS } from '@/world/room/object-ui-defs.js';
 
 // TODO: instanceのidと紛らわしいのでid -> typeにする
 

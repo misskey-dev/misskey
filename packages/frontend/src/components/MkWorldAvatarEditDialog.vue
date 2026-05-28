@@ -113,7 +113,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 							<MkFolder v-for="a in avatar.accessories" :key="a.id">
 								<template #label>{{ AVATAR_ACCESSORY_UI_DEFS[a.type].name }}</template>
-								<XAccessory :schema="getAccessorySchemaDef(a.type)" :options="a.options" @update="(k, v) => { a.options[k] = v; updateAvatarOption(); }"/>
+								<MkWorldMonoOptionsForm
+									:uiDef="AVATAR_ACCESSORY_UI_DEFS[a.type]"
+									:schema="getAccessorySchemaDef(a.type).options.schema"
+									:options="a.options"
+									:addFileAttachment="() => {}"
+									@update="(k, v) => { a.options[k] = v; updateAvatarOption(); }"
+								/>
 							</MkFolder>
 
 							<MkButton primary rounded @click="addAccessory">Add accessory</MkButton>
@@ -133,10 +139,10 @@ import { getHex, getRgb } from 'misskey-world/src/utility.js';
 import { ACCESSORY_SCHEMA_DEFS, getAccessorySchemaDef } from 'misskey-world/src/avatars/accessory-schema-defs.js';
 import { throttle } from 'throttle-debounce';
 import MkFolder from './MkFolder.vue';
-import XAccessory from './MkWorldAvatarEditDialog.accessory.vue';
 import type { Ref } from 'vue';
 import type { WorldAvatar } from 'misskey-world/src/types.js';
 import type { AvatarPreviewEngineControllerOptions } from '@/world/avatarPreviewEngineController.js';
+import MkWorldMonoOptionsForm from '@/components/MkWorldMonoOptionsForm.vue';
 import { AvatarPreviewEngineController } from '@/world/avatarPreviewEngineController.js';
 import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
