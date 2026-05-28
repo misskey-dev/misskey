@@ -22,9 +22,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<div :class="$style.previewContainer">
 			<div :class="$style.preview">
-				<MkButton :class="$style.customizeButton" small rounded iconOnly @click="showObjectOptions = !showObjectOptions"><i class="ti ti-tool"></i></MkButton>
+				<MkButton :class="$style.customizeButton" small rounded iconOnly @click="showOptions = !showOptions"><i class="ti ti-tool"></i></MkButton>
 
-				<div :class="[$style.previewMain]">
+				<div :class="[$style.previewMain, { [$style.optionsOpened]: showOptions }]">
 					<canvas ref="canvas" :class="$style.canvas"></canvas>
 				</div>
 
@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:enterFromClass="prefer.s.animation ? $style.transition_options_enterFrom : ''"
 					:leaveToClass="prefer.s.animation ? $style.transition_options_leaveTo : ''"
 				>
-					<div v-if="showObjectOptions" :class="$style.customize">
+					<div v-if="showOptions" :class="$style.customize">
 						<MkInput :modelValue="getHex(avatar.body.color)" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) avatar.body.color = c; }">
 							<template #label>{{ i18n.ts.color }}</template>
 						</MkInput>
@@ -85,7 +85,7 @@ const emit = defineEmits<{
 
 const dialog = useTemplateRef('dialog');
 const canvas = useTemplateRef('canvas');
-const showObjectOptions = ref(false);
+const showOptions = ref(false);
 
 const avatar: Ref<WorldAvatar> = ref(props.avatar != null ? deepClone(props.avatar) : {
 	type: 'default',
