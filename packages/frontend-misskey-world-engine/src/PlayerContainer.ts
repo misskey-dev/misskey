@@ -69,6 +69,8 @@ export class PlayerContainer {
 		this.subRoot = new BABYLON.TransformNode(`player:${this.id}:subRoot`, params.scene);
 		this.subRoot.parent = this.subRootContainerForAnim;
 		if (params.state) this.applyState(params.state, true);
+
+		console.log('PlayerContainer created', this.id);
 	}
 
 	public async loadAvatar() {

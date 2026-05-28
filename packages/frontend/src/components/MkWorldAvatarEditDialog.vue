@@ -44,7 +44,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkFolder>
 								<template #label>{{ i18n.ts._miWorld._avatars._default.body }}</template>
 
-								<MkInput :modelValue="getHex(avatar.body.color)" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) avatar.body.color = c; }">
+								<MkInput :modelValue="getHex(avatar.body.color)" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) avatar.body.color = c; updateAvatarOption(); }">
 									<template #label>{{ i18n.ts.color }}</template>
 								</MkInput>
 							</MkFolder>
@@ -61,12 +61,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 										{ label: 'e', value: 'e' },
 										{ label: 'f', value: 'f' },
 										{ label: 'g', value: 'g' },
-									]" :modelValue="avatar.eyes.type" @update:modelValue="v => avatar.eyes.type = v"
+									]" :modelValue="avatar.eyes.type" @update:modelValue="v => { avatar.eyes.type = v; updateAvatarOption(); }"
 								>
 									<template #label>{{ i18n.ts.type }}</template>
 								</MkSelect>
 
-								<MkInput :modelValue="getHex(avatar.eyes.color)" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) avatar.eyes.color = c; }">
+								<MkInput :modelValue="getHex(avatar.eyes.color)" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) avatar.eyes.color = c; updateAvatarOption(); }">
 									<template #label>{{ i18n.ts.color }}</template>
 								</MkInput>
 							</MkFolder>
@@ -83,12 +83,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 										{ label: 'd', value: 'd' },
 										{ label: 'e', value: 'e' },
 										{ label: 'f', value: 'f' },
-									]" :modelValue="avatar.mouth.type" @update:modelValue="v => avatar.mouth.type = v"
+									]" :modelValue="avatar.mouth.type" @update:modelValue="v => { avatar.mouth.type = v; updateAvatarOption(); }"
 								>
 									<template #label>{{ i18n.ts.type }}</template>
 								</MkSelect>
 
-								<MkInput :modelValue="getHex(avatar.mouth.color)" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) avatar.mouth.color = c; }">
+								<MkInput :modelValue="getHex(avatar.mouth.color)" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) avatar.mouth.color = c; updateAvatarOption(); }">
 									<template #label>{{ i18n.ts.color }}</template>
 								</MkInput>
 							</MkFolder>
@@ -172,10 +172,6 @@ const avatarPreviewEngineControllerOptions = computed<AvatarPreviewEngineControl
 
 const controller = markRaw(new AvatarPreviewEngineController(avatarPreviewEngineControllerOptions.value));
 
-watch(avatar, () => {
-	controller.updateAvatar(avatar.value);
-}, { deep: true });
-
 onMounted(async () => {
 	try {
 		await controller.init(canvas.value!, {
@@ -201,10 +197,9 @@ onUnmounted(() => {
 	controller.destroy();
 });
 
-//function updateAvatarOption(k: string, v: any) {
-//	avatar.value[k] = v;
-//	controller.updateAvatar(avatar.value);
-//}
+function updateAvatarOption() {
+	controller.updateAvatar(avatar.value);
+}
 
 function ok() {
 	emit('ok', {

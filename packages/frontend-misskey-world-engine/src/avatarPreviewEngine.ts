@@ -9,6 +9,7 @@ import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { ArcRotateCameraManualInput, getMeshesBoundingBox, GRAPHICS_QUALITY } from './utility.js';
 import { PlayerContainer, type PlayerProfile } from './PlayerContainer.js';
 import { EngineBase } from './EngineBase.js';
+import { deepClone } from './clone.js';
 import type { WorldAvatar } from 'misskey-world/src/types.js';
 
 export class AvatarPreviewEngine extends EngineBase<{ // PlayerPreviewEngineに改名した方がいいかもしれない
@@ -39,7 +40,7 @@ export class AvatarPreviewEngine extends EngineBase<{ // PlayerPreviewEngineに�
 		registerBuiltInLoaders();
 
 		this.graphicsQuality = options.graphicsQuality;
-		this.profile = profile;
+		this.profile = deepClone(profile);
 
 		this.scene.autoClear = false;
 		this.scene.skipPointerMovePicking = true;
@@ -48,7 +49,16 @@ export class AvatarPreviewEngine extends EngineBase<{ // PlayerPreviewEngineに�
 
 		this.sr = new BABYLON.SnapshotRenderingHelper(this.scene);
 
-		this.camera = new BABYLON.ArcRotateCamera('camera', -Math.PI / 2, Math.PI / 2.5, cm(300), new BABYLON.Vector3(0, cm(90), 0), this.scene);
+		this.camera = new BABYLON.ArcRotateCamera('camera', Math.PI / 2, Math.PI / 2.5, cm(300), new BABYLON.Vector3(0, cm(90), 0), this.scene);
+		this.camera.minZ = cm(1);
+		this.camera.maxZ = cm(100000);
+		this.camera.fov = 0.5;
+		this.camera.lowerRadiusLimit = cm(50);
+		this.camera.upperRadiusLimit = cm(1000);
+		this.camera.inputs.clear();
+		this.camera.inputs.add(new ArcRotateCameraManualInput(this.scene, {
+			rotationSensitivity: 0.0005,
+		}));
 
 		this.envMapIndoor = BABYLON.CubeTexture.CreateFromPrefilteredData('/client-assets/room/indoor.env', this.scene);
 		this.envMapIndoor.boundingBoxSize = new BABYLON.Vector3(cm(500), cm(500), cm(500));
@@ -151,29 +161,12 @@ export class AvatarPreviewEngine extends EngineBase<{ // PlayerPreviewEngineに�
 
 		const boundingInfo = getMeshesBoundingBox(this.playerContainer.root.getChildMeshes().filter(m => m.isEnabled() && m.isVisible), true);
 
-		this.pipeline.removeCamera(this.camera);
-		this.camera.dispose();
-
-		this.camera = new BABYLON.ArcRotateCamera('camera', Math.PI / 2, Math.PI / 2.5, cm(300), new BABYLON.Vector3(0, cm(90), 0), this.scene);
-		this.camera.minZ = cm(1);
-		this.camera.maxZ = cm(100000);
-		this.camera.fov = 0.5;
-		this.camera.lowerRadiusLimit = cm(50);
-		this.camera.upperRadiusLimit = cm(1000);
-		//this.camera.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA;
 		this.camera.setTarget(new BABYLON.Vector3(0, boundingInfo.centerWorld.y, 0));
-		this.camera.inputs.clear();
-
-		this.camera.inputs.add(new ArcRotateCameraManualInput(this.scene, {
-			rotationSensitivity: 0.0005,
-		}));
 
 		// zoom to fit
 		const size = boundingInfo.extendSize;
 		const distance = Math.max(size.x, size.y, size.z) * 2;
-		this.camera.radius = distance * 3;
-
-		this.pipeline.addCamera(this.camera);
+		this.camera.radius = distance * 4;
 
 		this.sr.enableSnapshotRendering();
 	}
