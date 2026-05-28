@@ -131,6 +131,7 @@ import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick,
 import * as Misskey from 'misskey-js';
 import { getHex, getRgb } from 'misskey-world/src/utility.js';
 import { ACCESSORY_SCHEMA_DEFS, getAccessorySchemaDef } from 'misskey-world/src/avatars/accessory-schema-defs.js';
+import { throttle } from 'throttle-debounce';
 import MkFolder from './MkFolder.vue';
 import XAccessory from './MkWorldAvatarEditDialog.accessory.vue';
 import type { Ref } from 'vue';
@@ -226,8 +227,12 @@ onUnmounted(() => {
 	controller.destroy();
 });
 
-function updateAvatarOption() {
+const updateAvatarOptionThrottled = throttle(500, () => {
 	controller.updateAvatar(avatar.value);
+});
+
+function updateAvatarOption() {
+	updateAvatarOptionThrottled();
 }
 
 async function addAccessory() {
