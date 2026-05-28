@@ -6,6 +6,7 @@
 import { EngineControllerBase } from './engineControllerBase.js';
 import type { PlayerProfile } from 'misskey-world-engine/src/PlayerContainer.js';
 import type { AvatarPreviewEngine } from 'misskey-world-engine/src/avatarPreviewEngine.js';
+import type { WorldAvatar } from 'misskey-world/src/types.js';
 
 export type AvatarPreviewEngineControllerOptions = {
 	workerMode?: boolean;
@@ -41,7 +42,7 @@ export class AvatarPreviewEngineController extends EngineControllerBase<AvatarPr
 		});
 	}
 
-	public updateAvatarOption(key: string, value: any) {
-		this.call('updateAvatarOption', [key, value]);
+	public updateAvatar(avatar: WorldAvatar) {
+		this.call('updateAvatar', [avatar]);
 	}
 }

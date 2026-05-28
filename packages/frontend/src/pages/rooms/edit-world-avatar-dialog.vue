@@ -35,6 +35,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:leaveToClass="prefer.s.animation ? $style.transition_options_leaveTo : ''"
 				>
 					<div v-if="showObjectOptions" :class="$style.customize">
+						<MkInput :modelValue="getHex(avatar.body.color)" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) avatar.body.color = c; }">
+							<template #label>{{ i18n.ts.color }}</template>
+						</MkInput>
 					</div>
 				</Transition>
 			</div>
@@ -47,6 +50,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick, shallowRef, computed, triggerRef, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import { OBJECT_SCHEMA_DEFS } from 'misskey-world/src/room/object-schema-defs.js';
+import { getHex, getRgb } from 'misskey-world/src/utility.js';
+import type { Ref } from 'vue';
 import type { RawOptions } from 'misskey-world/src/room/object.js';
 import type { RoomAttachments } from 'misskey-world/src/room/type.js';
 import type { WorldAvatar } from 'misskey-world/src/types.js';
@@ -82,7 +87,7 @@ const dialog = useTemplateRef('dialog');
 const canvas = useTemplateRef('canvas');
 const showObjectOptions = ref(false);
 
-const avatar: WorldAvatar = props.avatar != null ? deepClone(props.avatar) : {
+const avatar: Ref<WorldAvatar> = ref(props.avatar != null ? deepClone(props.avatar) : {
 	type: 'default',
 	body: {
 		color: [0.8, 0.8, 0.8],
@@ -98,7 +103,7 @@ const avatar: WorldAvatar = props.avatar != null ? deepClone(props.avatar) : {
 		color: [0, 0, 0],
 	},
 	accessories: [],
-};
+});
 
 const avatarPreviewEngineControllerOptions = computed<AvatarPreviewEngineControllerOptions>(() => ({
 	graphicsQuality: props.graphicsQuality,
@@ -109,13 +114,17 @@ const avatarPreviewEngineControllerOptions = computed<AvatarPreviewEngineControl
 
 const controller = markRaw(new AvatarPreviewEngineController(avatarPreviewEngineControllerOptions.value));
 
+watch(avatar, () => {
+	controller.updateAvatar(avatar.value);
+}, { deep: true });
+
 onMounted(async () => {
 	try {
 		await controller.init(canvas.value!, {
 			name: $i.name,
 			username: $i.username,
 			avatarUrl: $i.avatarUrl,
-			worldAvatar: avatar,
+			worldAvatar: avatar.value,
 		});
 	} catch (err) {
 		console.error(err);

@@ -75,6 +75,9 @@ export class PlayerContainer {
 				mat.backFaceCulling = false;
 				mesh.material = mat;
 			}
+			if (mesh.name.includes('__BODY__')) {
+				mesh.material.albedoColor = new BABYLON.Color3(this.profile.worldAvatar.body.color[0], this.profile.worldAvatar.body.color[1], this.profile.worldAvatar.body.color[2]);
+			}
 		}
 
 		this.registerMeshes(this.subRoot.getChildMeshes());

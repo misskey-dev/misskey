@@ -178,19 +178,21 @@ export class AvatarPreviewEngine extends EngineBase<{ // PlayerPreviewEngineã«æ
 		this.pipeline.addCamera(this.camera);
 
 		this.sr.enableSnapshotRendering();
-
-		return {
-			options: this.avatarOptions,
-		};
 	}
 
-	public updateObjectOption(key: string, value: any) {
-		if (this.avatarOptions == null) return;
-		this.avatarOptions[key] = value;
-
+	public clearPlayer() {
+		this.sr.disableSnapshotRendering();
 		if (this.playerContainer != null) {
-			this.playerContainer.updateAvatarOption(this.avatarOptions);
+			this.playerContainer.destroy();
+			this.playerContainer = null;
 		}
+		this.sr.enableSnapshotRendering();
+	}
+
+	public async updateAvatar(value: WorldAvatar) {
+		this.profile.worldAvatar = value;
+		this.clearPlayer();
+		await this.load();
 	}
 
 	public cameraRotate(vector: { x: number; y: number; }) {
