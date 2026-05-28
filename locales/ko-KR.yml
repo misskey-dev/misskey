@@ -1412,6 +1412,7 @@ nothingToConfigure: "설정 항목이 없습니다."
 viewRenotedChannel: "리노트된 채널 보기"
 previewingTheme: "테마 미리보기 중"
 previewingThemeRestore: "복구"
+accessToken: "접근 토큰"
 _imageEditing:
   _vars:
     caption: "파일 설명"
