@@ -35,6 +35,24 @@ export class WorldAvatarService {
 	) {
 	}
 
+	public defaultAvatar = {
+		type: 'default',
+		body: {
+			color: [0.8, 0.8, 0.8],
+			roughness: 1,
+			metallic: 0,
+		},
+		eyes: {
+			type: 'a',
+			color: [0, 0, 0],
+		},
+		mouth: {
+			type: 'a',
+			color: [0, 0, 0],
+		},
+		accessories: [],
+	} satisfies MiWorldAvatar['def'];
+
 	@bindThis
 	public async validateDef(
 		me: MiUser,

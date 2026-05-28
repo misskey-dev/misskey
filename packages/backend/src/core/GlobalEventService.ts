@@ -176,6 +176,7 @@ export interface ChatEventTypes {
 export interface WorldRoomEventTypes {
 	enter: {
 		user: Packed<'UserLite'>;
+		avatar: Packed<'WorldAvatarLite'>['def'] | null;
 	};
 	left: {
 		userId: MiUser['id'];

@@ -10,7 +10,7 @@ import { DI } from '@/di-symbols.js';
 import {
 	MiWorldRoom,
 } from '@/models/_.js';
-import type { WorldRoomsRepository } from '@/models/_.js';
+import type { MiWorldAvatar, WorldRoomsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
 import { RoleService } from '@/core/RoleService.js';
 import { IdService } from '@/core/IdService.js';
@@ -20,6 +20,8 @@ import { QueryService } from '@/core/QueryService.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import type { Packed } from '@/misc/json-schema.js';
+import { WorldAvatarService } from '@/core/WorldAvatarService.js';
+import { WorldAvatarEntityService } from '@/core/entities/WorldAvatarEntityService.js';
 
 type PlayerState = {
 	position: [number, number, number],
@@ -44,6 +46,8 @@ export class WorldRoomMultiplayService {
 		private idService: IdService,
 		private globalEventService: GlobalEventService,
 		private userEntityService: UserEntityService,
+		private worldAvatarService: WorldAvatarService,
+		private worldAvatarEntityService: WorldAvatarEntityService,
 	) {
 	}
 
@@ -63,8 +67,10 @@ export class WorldRoomMultiplayService {
 		}
 
 		// TODO: 既に入っていたらスキップ
+		const avatar = await this.worldAvatarService.getActiveAvatarOfUser(userId);
 		this.globalEventService.publishWorldRoomStream(roomId, 'enter', {
 			user: await this.userEntityService.pack(userId),
+			avatar: avatar?.def,
 		});
 	}
 
@@ -117,11 +123,12 @@ export class WorldRoomMultiplayService {
 	}
 
 	@bindThis
-	public packPlayerProfile(user: Packed<'UserLite'>) {
+	public packPlayerProfile(user: Packed<'UserLite'>, avatar: Packed<'WorldAvatarLite'>['def'] | null) {
 		return {
 			name: user.name,
 			username: user.username,
 			avatarUrl: user.avatarUrl,
+			worldAvatar: avatar ?? this.worldAvatarService.defaultAvatar,
 		};
 	}
 
@@ -131,12 +138,13 @@ export class WorldRoomMultiplayService {
 		playerIds = playerIds.filter(id => id !== userId);
 
 		const packedUsers = await this.userEntityService.packMany(playerIds);
+		const avatars = await this.worldAvatarService.getActiveAvatarOfUsers(playerIds);
 
 		const profiles: Record<string, any> = {};
 		for (const playerId of playerIds) {
 			const packedUser = packedUsers.find(u => u.id === playerId);
 			if (packedUser == null) continue;
-			profiles[playerId] = this.packPlayerProfile(packedUser);
+			profiles[playerId] = this.packPlayerProfile(packedUser, avatars.find(a => a.userId === playerId)?.def ?? null);
 		}
 		return profiles;
 	}

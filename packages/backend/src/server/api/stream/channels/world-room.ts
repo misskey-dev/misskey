@@ -80,7 +80,7 @@ export class WorldRoomChannel extends Channel {
 				if (data.body.user.id === this.user!.id) return; // 自分の入室は無視
 				this.send('playerEntered', {
 					id: data.body.user.id,
-					profile: this.worldRoomMultiplayService.packPlayerProfile(data.body.user),
+					profile: this.worldRoomMultiplayService.packPlayerProfile(data.body.user, data.body.avatar),
 				});
 				break;
 			}
