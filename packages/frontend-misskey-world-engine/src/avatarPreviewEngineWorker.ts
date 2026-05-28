@@ -27,7 +27,7 @@ onmessage = async (event) => {
 			if (event.data.options.resolution === 2) babylonEngine.setHardwareScalingLevel(0.5);
 			if (event.data.options.resolution === 0.5) babylonEngine.setHardwareScalingLevel(2);
 
-			engine = new RoomObjectPreviewEngine({
+			engine = new AvatarPreviewEngine({
 				engine: babylonEngine,
 				...event.data.options,
 			});

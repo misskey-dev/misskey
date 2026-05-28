@@ -13315,6 +13315,10 @@ export interface Locale extends ILocale {
          * アンチエイリアス
          */
         "antialiasing": string;
+        /**
+         * アバター
+         */
+        "avatar": string;
     };
     "_miRoom": {
         /**

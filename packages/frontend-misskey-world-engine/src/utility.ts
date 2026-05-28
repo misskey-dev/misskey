@@ -11,16 +11,6 @@ export const GRAPHICS_QUALITY = {
 	LOW: -1,
 } as const;
 
-export function getLightRangeFactorByGraphicsQuality(quality: number) {
-	if (quality >= GRAPHICS_QUALITY.HIGH) {
-		return 1;
-	} else if (quality >= GRAPHICS_QUALITY.MEDIUM) {
-		return 0.5;
-	} else {
-		return 0.25;
-	}
-}
-
 export const TIME_MAP = {
 	0: 2,
 	1: 2,

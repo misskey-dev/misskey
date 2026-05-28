@@ -105,9 +105,8 @@ export class AvatarPreviewEngine extends EngineBase<{
 		});
 	}
 
-	public async loadAvatar(profile: PlayerProfile) {
+	public async load(profile: PlayerProfile) {
 		this.sr.disableSnapshotRendering();
-		this.clearAvatar();
 
 		this.playerContainer = new PlayerContainer({
 			id: '',
@@ -186,16 +185,6 @@ export class AvatarPreviewEngine extends EngineBase<{
 		if (this.playerContainer != null) {
 			this.playerContainer.updateAvatarOption(this.avatarOptions);
 		}
-	}
-
-	public clearAvatar() {
-		this.sr.disableSnapshotRendering();
-		if (this.playerContainer != null) {
-			this.playerContainer.destroy();
-			this.playerContainer = null;
-			this.avatarOptions = null;
-		}
-		this.sr.enableSnapshotRendering();
 	}
 
 	public cameraRotate(vector: { x: number; y: number; }) {

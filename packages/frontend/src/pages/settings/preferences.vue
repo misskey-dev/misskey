@@ -823,6 +823,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkSwitch>
 							</MkPreferenceContainer>
 						</SearchMarker>
+
+						<SearchMarker :keywords="['avatar']">
+							<MkFolder>
+								<template #icon><i class="ti ti-user"></i></template>
+								<template #label><SearchLabel>{{ i18n.ts._miWorld.avatar }}</SearchLabel></template>
+
+								<div class="_gaps">
+									<div class="_gaps_s">
+										<MkButton iconOnly rounded style="margin: 0 auto;" @click="createWorldAvatar"><i class="ti ti-plus"></i></MkButton>
+									</div>
+								</div>
+							</MkFolder>
+						</SearchMarker>
 					</div>
 				</MkFolder>
 			</SearchMarker>
@@ -1218,6 +1231,18 @@ function testNotification(): void {
 	smashTimer = window.setTimeout(() => {
 		smashCount = 0;
 	}, 300);
+}
+
+async function createWorldAvatar(ev: PointerEvent) {
+	const { dispose } = await os.popupAsyncWithDialog(import('../rooms/edit-world-avatar-dialog.vue').then(x => x.default), {
+	}, {
+		ok: async (res) => {
+			console.log(res);
+		},
+		closed: () => {
+			dispose();
+		},
+	});
 }
 
 const headerActions = computed(() => []);

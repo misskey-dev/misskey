@@ -20,8 +20,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkLoading/>
 		</div>
 
-		<div v-show="showPreview" :class="$style.previewContainer" @click="selectedId = null">
-			<div :class="$style.preview" @click.stop>
+		<div :class="$style.previewContainer">
+			<div :class="$style.preview">
 				<MkButton v-if="selectedObjectSchema != null && Object.keys(selectedObjectSchema.options.schema).length > 0" :class="$style.customizeButton" small rounded iconOnly @click="showObjectOptions = !showObjectOptions"><i class="ti ti-tool"></i></MkButton>
 
 				<div :class="[$style.previewMain, { [$style.optionsOpened]: selectedObjectSchema != null && selectedInstanceId != null && showObjectOptions }]">
@@ -47,11 +47,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick, shallowRef, computed, triggerRef, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import { OBJECT_SCHEMA_DEFS } from 'misskey-world/src/room/object-schema-defs.js';
-import XObjectCustomizeForm from './room.object-customize-form.vue';
-import XItem from './room.add-object-dialog.item.vue';
-import type { PreviewEngineControllerOptions } from '@/world/room/previewEngineController.js';
 import type { RawOptions } from 'misskey-world/src/room/object.js';
 import type { RoomAttachments } from 'misskey-world/src/room/type.js';
+import type { WorldAvatar } from 'misskey-world/src/types.js';
+import type { AvatarPreviewEngineControllerOptions } from '@/world/avatarPreviewEngineController.js';
+import { AvatarPreviewEngineController } from '@/world/avatarPreviewEngineController.js';
 import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
 import * as os from '@/os.js';
@@ -59,15 +59,13 @@ import MkButton from '@/components/MkButton.vue';
 import { prefer } from '@/preferences.js';
 import { deepClone } from '@/utility/clone.js';
 import { store } from '@/store.js';
-import MkFoldableSection from '@/components/MkFoldableSection.vue';
-import { PreviewEngineController } from '@/world/room/previewEngineController.js';
 import MkInput from '@/components/MkInput.vue';
 import { withTimeout } from '@/utility/promise-timeout.js';
-
-// TODO: instanceのidと紛らわしいのでid -> typeにする
+import { $i } from '@/i.js';
 
 const props = defineProps<{
 	graphicsQuality: number;
+	avatar: WorldAvatar | null;
 }>();
 
 const emit = defineEmits<{
@@ -82,39 +80,44 @@ const emit = defineEmits<{
 
 const dialog = useTemplateRef('dialog');
 const canvas = useTemplateRef('canvas');
-const selectedId = ref<string | null>(null);
-const showPreview = ref(false);
-const selectedInstanceId = ref<string | null>(null);
-const selectedObjectOptionsState = ref<RawOptions | null>(null);
-const selectedObjectSchema = computed(() => selectedId.value == null ? null : OBJECT_SCHEMA_DEFS[selectedId.value]);
 const showObjectOptions = ref(false);
-const searchKeyword = ref('');
 
-const attachments = {
-	files: [],
-} as RoomAttachments;
+const avatar: WorldAvatar = props.avatar != null ? deepClone(props.avatar) : {
+	type: 'default',
+	body: {
+		color: [0.8, 0.8, 0.8],
+		roughness: 1,
+		metallic: 0,
+	},
+	eyes: {
+		type: 'a',
+		color: [0, 0, 0],
+	},
+	mouth: {
+		type: 'a',
+		color: [0, 0, 0],
+	},
+	accessories: [],
+};
 
-function addFileAttachment(file: Misskey.entities.DriveFile) {
-	attachments.files.push(file);
-}
-
-const previewEngineControllerOptions = computed<PreviewEngineControllerOptions>(() => ({
+const avatarPreviewEngineControllerOptions = computed<AvatarPreviewEngineControllerOptions>(() => ({
 	graphicsQuality: props.graphicsQuality,
 	fps: null,
 	resolution: 1,
 	workerMode: prefer.s['world.separateRenderingThread'],
 }));
 
-const controller = markRaw(new PreviewEngineController(previewEngineControllerOptions.value));
-
-const recentlyUsedSchemas = computed(() => {
-	const recentlyUsed = store.s.recentlyUsedRoomObjects;
-	return recentlyUsed.map(id => OBJECT_SCHEMA_DEFS[id]).filter((def): def is typeof OBJECT_SCHEMA_DEFS[string] => def != null);
-});
+const controller = markRaw(new AvatarPreviewEngineController(avatarPreviewEngineControllerOptions.value));
 
 onMounted(async () => {
 	try {
 		await controller.init(canvas.value!);
+		await controller.load({
+			name: $i.name,
+			username: $i.username,
+			avatarUrl: $i.avatarUrl,
+			worldAvatar: avatar,
+		});
 	} catch (err) {
 		console.error(err);
 		os.alert({
@@ -130,42 +133,6 @@ onMounted(async () => {
 
 onUnmounted(() => {
 	controller.destroy();
-});
-
-watch(selectedId, (newId) => {
-	showObjectOptions.value = false;
-	showPreview.value = false;
-
-	if (!controller.isReady.value) return;
-
-	if (newId == null) {
-		controller.clearObject();
-		controller.pauseRender();
-		selectedInstanceId.value = null;
-		selectedObjectOptionsState.value = null;
-	} else {
-		const closeWaiting = os.waiting();
-		nextTick(() => {
-			try {
-				withTimeout(controller.loadObject(newId), 10000).then(res => {
-					selectedInstanceId.value = res.id;
-					selectedObjectOptionsState.value = deepClone(res.options);
-					controller.resumeRender();
-					closeWaiting();
-					showPreview.value = true;
-					nextTick(() => {
-						controller.resize();
-					});
-				}).catch(err => {
-					closeWaiting();
-					throw err;
-				});
-			} catch (err) {
-				closeWaiting();
-				throw err;
-			}
-		});
-	}
 });
 
 function updateObjectOption(k: string, v: any) {

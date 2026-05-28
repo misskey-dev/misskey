@@ -3568,6 +3568,7 @@ _miWorld:
   failedToInitialize: "初期化に失敗しました"
   crushed_description: "描画が継続できなくなりました。デバイスのリソース不足の可能性が考えられます。"
   antialiasing: "アンチエイリアス"
+  avatar: "アバター"
 
 _miRoom:
   snapToGrid: "グリッドにスナップ"

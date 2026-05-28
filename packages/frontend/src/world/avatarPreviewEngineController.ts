@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { EngineControllerBase } from './EngineControllerBase.js';
+import { EngineControllerBase } from './engineControllerBase.js';
+import type { PlayerProfile } from 'misskey-world-engine/src/PlayerContainer.js';
 import type { AvatarPreviewEngine } from 'misskey-world-engine/src/avatarPreviewEngine.js';
 
 export type AvatarPreviewEngineControllerOptions = {
@@ -44,11 +45,7 @@ export class AvatarPreviewEngineController extends EngineControllerBase<AvatarPr
 		this.call('updateAvatarOption', [key, value]);
 	}
 
-	public loadAvatar(type: string) {
-		return this.callAndWaitReturn('loadAvatar', [type]);
-	}
-
-	public clearAvatar() {
-		this.call('clearAvatar');
+	public load(profile: PlayerProfile) {
+		return this.callAndWaitReturn('load', [profile]);
 	}
 }
