@@ -9,7 +9,7 @@ import { mug_schema } from 'misskey-world/src/avatars/accessories/mug.schema.js'
 import { defineAccessory } from '../accessory.js';
 
 export const mug = defineAccessory(mug_schema, {
-	createInstance: ({ scene, root, sr }) => {
+	createInstance: ({ options, scene, root, sr, model }) => {
 		const emitter = new BABYLON.TransformNode('emitter', scene);
 		emitter.parent = root;
 		emitter.position = new BABYLON.Vector3(0, cm(5), 0);
@@ -35,7 +35,33 @@ export const mug = defineAccessory(mug_schema, {
 		ps.start();
 		sr.fixParticleSystem(ps);
 
+		const bodyMaterial = model.findMaterial('__X_MUG__');
+
+		const applyBodyMat = () => {
+			bodyMaterial.albedoColor = new BABYLON.Color3(options.bodyMat.color[0], options.bodyMat.color[1], options.bodyMat.color[2]);
+			bodyMaterial.roughness = options.bodyMat.roughness;
+			bodyMaterial.metallic = options.bodyMat.metallic;
+		};
+
+		applyBodyMat();
+
+		const liquidMaterial = model.findMaterial('__X_LIQUID__');
+
+		const applyLiquidMat = () => {
+			liquidMaterial.albedoColor = new BABYLON.Color3(options.liquidMat.color[0], options.liquidMat.color[1], options.liquidMat.color[2]);
+			liquidMaterial.roughness = options.liquidMat.roughness;
+			liquidMaterial.metallic = options.liquidMat.metallic;
+		};
+
+		applyLiquidMat();
+
 		return {
+			onOptionsUpdated: ([k, v]) => {
+				switch (k) {
+					case 'bodyMat': applyBodyMat(); break;
+					case 'liquidMat': applyLiquidMat(); break;
+				}
+			},
 			dispose: () => {
 				ps.stop();
 				emitter.dispose();

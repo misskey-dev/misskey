@@ -7,13 +7,13 @@ import { mug_schema } from './accessories/mug.schema.js';
 import { mikan_schema } from './accessories/mikan.schema.js';
 import type { AccessorySchemaDef } from './accessory.js';
 
-export const OBJECT_SCHEMA_DEFS = {
+export const ACCESSORY_SCHEMA_DEFS = {
 	mug: mug_schema,
 	mikan: mikan_schema,
 } as Record<string, AccessorySchemaDef<any>>;
 
 export function getAccessorySchemaDef(type: string): AccessorySchemaDef {
-	const def = OBJECT_SCHEMA_DEFS[type as keyof typeof OBJECT_SCHEMA_DEFS];
+	const def = ACCESSORY_SCHEMA_DEFS[type as keyof typeof ACCESSORY_SCHEMA_DEFS];
 	if (def == null) {
 		throw new Error(`Unrecognized accessory type: ${type}`);
 	}

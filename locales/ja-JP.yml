@@ -3569,12 +3569,21 @@ _miWorld:
   crushed_description: "描画が継続できなくなりました。デバイスのリソース不足の可能性が考えられます。"
   antialiasing: "アンチエイリアス"
   avatar: "アバター"
+  advancedCustomize: "高度なアレンジ"
+  attachAccessory: "アクセサリーを追加"
 
   _avatars:
     _default:
       body: "ボディ"
       eyes: "目"
       mouth: "口"
+
+  _avatarAccessories:
+    mug: "マグカップ"
+    _mug:
+      bodyMat: "コップの素材"
+      liquidMat: "液体の素材"
+    mikan: "みかん"
 
 _miRoom:
   snapToGrid: "グリッドにスナップ"
@@ -3779,6 +3788,9 @@ _miRoom:
     _monstera:
       potMat: "鉢の素材"
     mug: "マグカップ"
+    _mug:
+      bodyMat: "コップの素材"
+      liquidMat: "液体の素材"
     newtonsCradle: "ニュートンクレードル"
     _newtonsCradle:
       frameMat: "フレームの素材"

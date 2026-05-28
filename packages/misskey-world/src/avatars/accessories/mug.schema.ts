@@ -7,7 +7,17 @@ import { defineAccessorySchema } from '../accessory.js';
 export const mug_schema = defineAccessorySchema({
 	id: 'mug',
 	options: {
-		schema: {},
-		default: {},
+		schema: {
+			bodyMat: {
+				type: 'material',
+			},
+			liquidMat: {
+				type: 'material',
+			},
+		},
+		default: {
+			bodyMat: { color: [0.8, 0.8, 0.8], roughness: 0, metallic: 0 },
+			liquidMat: { color: [0.033, 0.013, 0.005], roughness: 0, metallic: 0 },
+		},
 	},
 });

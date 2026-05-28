@@ -153,13 +153,6 @@ export class PlayerContainer {
 
 		this.registerMeshes(this.modelRoot.getChildMeshes());
 
-		// debug
-		this.profile.worldAvatar.accessories = [{
-			id: 'a',
-			type: 'mikan',
-			options: {},
-		}];
-
 		this.accessoryContainers = await Promise.all(this.profile.worldAvatar.accessories.map(ac => this.loadAccessory({
 			type: ac.type,
 			id: ac.id,

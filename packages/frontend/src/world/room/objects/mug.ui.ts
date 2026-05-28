@@ -9,5 +9,12 @@ import { i18n } from '@/i18n.js';
 
 export const mug_ui = defineObjectUi<typeof mug_schema>({
 	name: i18n.ts._miRoom._objects.mug,
-	options: {},
+	options: {
+		bodyMat: {
+			label: i18n.ts._miRoom._objects._mug.bodyMat,
+		},
+		liquidMat: {
+			label: i18n.ts._miRoom._objects._mug.liquidMat,
+		},
+	},
 });

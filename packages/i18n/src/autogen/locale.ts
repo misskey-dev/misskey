@@ -13319,6 +13319,14 @@ export interface Locale extends ILocale {
          * アバター
          */
         "avatar": string;
+        /**
+         * 高度なアレンジ
+         */
+        "advancedCustomize": string;
+        /**
+         * アクセサリーを追加
+         */
+        "attachAccessory": string;
         "_avatars": {
             "_default": {
                 /**
@@ -13334,6 +13342,26 @@ export interface Locale extends ILocale {
                  */
                 "mouth": string;
             };
+        };
+        "_avatarAccessories": {
+            /**
+             * マグカップ
+             */
+            "mug": string;
+            "_mug": {
+                /**
+                 * コップの素材
+                 */
+                "bodyMat": string;
+                /**
+                 * 液体の素材
+                 */
+                "liquidMat": string;
+            };
+            /**
+             * みかん
+             */
+            "mikan": string;
         };
     };
     "_miRoom": {
@@ -14071,6 +14099,16 @@ export interface Locale extends ILocale {
              * マグカップ
              */
             "mug": string;
+            "_mug": {
+                /**
+                 * コップの素材
+                 */
+                "bodyMat": string;
+                /**
+                 * 液体の素材
+                 */
+                "liquidMat": string;
+            };
             /**
              * ニュートンクレードル
              */

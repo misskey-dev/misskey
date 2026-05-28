@@ -108,6 +108,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 									</MkInput>
 								</div>
 							</MkFolder>
+
+							<hr>
+
+							<MkFolder v-for="a in avatar.accessories" :key="a.id">
+								<template #label>{{ AVATAR_ACCESSORY_UI_DEFS[a.type].name }}</template>
+								<XAccessory :schema="getAccessorySchemaDef(a.type)" :options="a.options" @update="(k, v) => { a.options[k] = v; updateAvatarOption(); }"/>
+							</MkFolder>
+
+							<MkButton primary rounded @click="addAccessory">Add accessory</MkButton>
 						</div>
 					</div>
 				</Transition>
@@ -121,7 +130,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick, shallowRef, computed, triggerRef, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import { getHex, getRgb } from 'misskey-world/src/utility.js';
+import { ACCESSORY_SCHEMA_DEFS, getAccessorySchemaDef } from 'misskey-world/src/avatars/accessory-schema-defs.js';
 import MkFolder from './MkFolder.vue';
+import XAccessory from './MkWorldAvatarEditDialog.accessory.vue';
 import type { Ref } from 'vue';
 import type { WorldAvatar } from 'misskey-world/src/types.js';
 import type { AvatarPreviewEngineControllerOptions } from '@/world/avatarPreviewEngineController.js';
@@ -137,6 +148,8 @@ import { store } from '@/store.js';
 import MkInput from '@/components/MkInput.vue';
 import { withTimeout } from '@/utility/promise-timeout.js';
 import { ensureSignin } from '@/i.js';
+import { AVATAR_ACCESSORY_UI_DEFS } from '@/world/avatars/accessory-ui-defs.js';
+import { genId } from '@/utility/id.js';
 
 const $i = ensureSignin();
 
@@ -215,6 +228,22 @@ onUnmounted(() => {
 
 function updateAvatarOption() {
 	controller.updateAvatar(avatar.value);
+}
+
+async function addAccessory() {
+	const { canceled, result: type } = await os.select({
+		title: 'select',
+		items: Object.entries(ACCESSORY_SCHEMA_DEFS).map(([k, v]) => ({ label: AVATAR_ACCESSORY_UI_DEFS[k].name, value: k })),
+	});
+	if (canceled || type == null) return;
+
+	avatar.value!.accessories.push({
+		id: genId(),
+		type,
+		options: deepClone(ACCESSORY_SCHEMA_DEFS[type].options.default),
+	});
+
+	updateAvatarOption();
 }
 
 function ok() {
