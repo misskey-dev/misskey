@@ -7,6 +7,7 @@ import * as fs from 'node:fs';
 import type { IncomingMessage } from 'node:http';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { createAdaptorServer } from '@hono/node-server';
+import type { ServerType } from '@hono/node-server';
 import proxyAddr from '@fastify/proxy-addr';
 import { Hono } from 'hono';
 import { IsNull } from 'typeorm';
@@ -33,7 +34,7 @@ import { OAuth2ProviderService } from './oauth/OAuth2ProviderService.js';
 @Injectable()
 export class ServerService implements OnApplicationShutdown {
 	private logger: Logger;
-	#honoNodeServer: ReturnType<typeof createAdaptorServer> | null = null;
+	#honoNodeServer: ServerType | null = null;
 	#trustProxyChecker: ((address: string, hop: number) => boolean) | undefined;
 
 	constructor(
@@ -279,7 +280,7 @@ export class ServerService implements OnApplicationShutdown {
 	@bindThis
 	public async dispose(): Promise<void> {
 		await this.streamingApiServerService.detach();
-		if (this.#honoNodeServer != null) {
+		if (this.#honoNodeServer != null && this.#honoNodeServer.listening) {
 			await new Promise<void>((resolve, reject) => {
 				this.#honoNodeServer!.close((err) => {
 					if (err) {
