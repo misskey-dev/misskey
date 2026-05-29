@@ -3,22 +3,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import cluster from 'node:cluster';
 import * as fs from 'node:fs';
-import type { Socket } from 'node:net';
 import type { IncomingMessage } from 'node:http';
-import { fileURLToPath } from 'node:url';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { createAdaptorServer } from '@hono/node-server';
-import Fastify, { type FastifyInstance } from 'fastify';
 import proxyAddr from '@fastify/proxy-addr';
-import fastifyStatic from '@fastify/static';
-import fastifyRawBody from 'fastify-raw-body';
 import { Hono } from 'hono';
 import { IsNull } from 'typeorm';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
 import type { Config } from '@/config.js';
-import type { EmojisRepository, MiMeta, UserProfilesRepository, UsersRepository } from '@/models/_.js';
+import type { EmojisRepository, MiMeta, UsersRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
 import type Logger from '@/logger.js';
 import * as Acct from '@/misc/acct.js';
@@ -37,13 +30,10 @@ import { ClientServerService } from './web/ClientServerService.js';
 import { OpenApiServerService } from './api/openapi/OpenApiServerService.js';
 import { OAuth2ProviderService } from './oauth/OAuth2ProviderService.js';
 
-const _dirname = fileURLToPath(new URL('.', import.meta.url));
-
 @Injectable()
 export class ServerService implements OnApplicationShutdown {
 	private logger: Logger;
-	#fastify: FastifyInstance;
-	#legacyFastify: FastifyInstance | null = null;
+	#honoNodeServer: ReturnType<typeof createAdaptorServer> | null = null;
 	#trustProxyChecker: ((address: string, hop: number) => boolean) | undefined;
 
 	constructor(
@@ -55,9 +45,6 @@ export class ServerService implements OnApplicationShutdown {
 
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
-
-		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: UserProfilesRepository,
 
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
@@ -72,7 +59,6 @@ export class ServerService implements OnApplicationShutdown {
 		private fileServerService: FileServerService,
 		private healthServerService: HealthServerService,
 		private clientServerService: ClientServerService,
-		private globalEventService: GlobalEventService,
 		private loggerService: LoggerService,
 		private oauth2ProviderService: OAuth2ProviderService,
 	) {
@@ -81,33 +67,7 @@ export class ServerService implements OnApplicationShutdown {
 
 	@bindThis
 	public async launch(): Promise<void> {
-		const fastify = Fastify({
-			trustProxy: this.config.trustProxy,
-			logger: false,
-		});
-		this.#fastify = fastify;
 		this.#trustProxyChecker = this.createTrustProxyChecker();
-
-		const legacyFastify = Fastify({
-			trustProxy: this.config.trustProxy,
-			logger: false,
-		});
-		this.#legacyFastify = legacyFastify;
-
-		await legacyFastify.register(fastifyRawBody, {
-			global: false,
-			encoding: null,
-			runFirst: true,
-		});
-
-		legacyFastify.register(fastifyStatic, {
-			root: _dirname,
-			serve: false,
-		});
-
-		legacyFastify.register(this.oauth2ProviderService.createServer, { prefix: '/oauth' });
-		legacyFastify.register(this.oauth2ProviderService.createTokenServer, { prefix: '/oauth/token' });
-		await legacyFastify.ready();
 
 		const hono = new Hono<{ Variables: { ip: string; ips: string[] } }>();
 
@@ -247,115 +207,39 @@ export class ServerService implements OnApplicationShutdown {
 		hono.route('/', this.activityPubServerService.createServer());
 		hono.route('/', this.fileServerService.createServer());
 		hono.route('/', this.clientServerService.createServer());
+		hono.route('/oauth', this.oauth2ProviderService.createServer());
+		hono.route('/oauth/token', this.oauth2ProviderService.createTokenServer());
 
-		hono.all('*', async (ctx) => {
-			const requestUrl = new URL(ctx.req.url);
-			const method = ctx.req.method;
-			const body = method === 'GET' || method === 'HEAD'
-				? undefined
-				: Buffer.from(await ctx.req.raw.arrayBuffer());
-
-			const incoming = (ctx.env as { incoming?: IncomingMessage }).incoming;
-			const response = await legacyFastify.inject({
-				method: method as any,
-				url: `${requestUrl.pathname}${requestUrl.search}`,
-				headers: Object.fromEntries(ctx.req.raw.headers.entries()),
-				payload: body,
-				remoteAddress: incoming?.socket.remoteAddress,
-			} as any) as {
-				statusCode: number;
-				headers: Record<string, string | string[] | number | undefined>;
-				payload: string;
-			};
-
-			const headers = new Headers();
-			for (const [key, value] of Object.entries(response.headers)) {
-				if (Array.isArray(value)) {
-					for (const item of value) {
-						headers.append(key, String(item));
-					}
-				} else if (value != null) {
-					headers.set(key, String(value));
-				}
-			}
-
-			return new Response(response.payload, { status: response.statusCode, headers });
-		});
-
-		const honoNodeServer = createAdaptorServer({
+		this.#honoNodeServer = createAdaptorServer({
 			fetch: hono.fetch,
 			websocket: {
 				server: this.streamingApiServerService.createWebSocketServer(),
 			},
 		});
 
-		fastify.addHook('onRequest', async (request, reply) => {
-			reply.hijack();
-			await new Promise<void>((resolve, reject) => {
-				let settled = false;
-				const done = () => {
-					if (settled) return;
-					settled = true;
-					reply.raw.off('finish', done);
-					reply.raw.off('close', done);
-					reply.raw.off('error', onError);
-					resolve();
-				};
-				const onError = (error: Error) => {
-					if (settled) return;
-					settled = true;
-					reply.raw.off('finish', done);
-					reply.raw.off('close', done);
-					reply.raw.off('error', onError);
-					reject(error);
-				};
+		await this.listen();
+	}
 
-				reply.raw.on('finish', done);
-				reply.raw.on('close', done);
-				reply.raw.on('error', onError);
-
-				honoNodeServer.emit('request', request.raw, reply.raw);
-			});
-		});
-
-		fastify.server.on('upgrade', (request: IncomingMessage, socket: Socket, head: Buffer) => {
-			honoNodeServer.emit('upgrade', request, socket, head);
-		});
-
-		fastify.server.on('error', err => {
-			switch ((err as any).code) {
-				case 'EACCES':
-					this.logger.error(`You do not have permission to listen on port ${this.config.port}.`);
-					break;
-				case 'EADDRINUSE':
-					this.logger.error(`Port ${this.config.port} is already in use by another process.`);
-					break;
-				default:
-					this.logger.error(err);
-					break;
-			}
-
-			if (cluster.isWorker) {
-				process.send!('listenFailed');
-			} else {
-				process.exit(1);
-			}
-		});
-
-		if (this.config.socket) {
-			if (fs.existsSync(this.config.socket)) {
-				fs.unlinkSync(this.config.socket);
-			}
-			fastify.listen({ path: this.config.socket }, () => {
-				if (this.config.chmodSocket) {
-					fs.chmodSync(this.config.socket!, this.config.chmodSocket);
+	private listen() {
+		return new Promise<void>((resolve, reject) => {
+			if (this.config.socket) {
+				if (fs.existsSync(this.config.socket)) {
+					fs.unlinkSync(this.config.socket);
 				}
-			});
-		} else {
-			fastify.listen({ port: this.config.port, host: '0.0.0.0' });
-		}
-
-		await fastify.ready();
+				this.#honoNodeServer!.listen(this.config.socket, () => {
+					if (this.config.chmodSocket) {
+						fs.chmodSync(this.config.socket!, this.config.chmodSocket);
+					}
+					this.logger.info(`Server is listening on socket ${this.config.socket}`);
+					resolve();
+				});
+			} else {
+				this.#honoNodeServer!.listen(this.config.port, '0.0.0.0', () => {
+					this.logger.info(`Server is listening on port ${this.config.port}`);
+					resolve();
+				});
+			}
+		});
 	}
 
 	private createTrustProxyChecker(): ((address: string, hop: number) => boolean) | undefined {
@@ -395,18 +279,17 @@ export class ServerService implements OnApplicationShutdown {
 	@bindThis
 	public async dispose(): Promise<void> {
 		await this.streamingApiServerService.detach();
-		if (this.#legacyFastify != null) {
-			await this.#legacyFastify.close();
-			this.#legacyFastify = null;
+		if (this.#honoNodeServer != null) {
+			await new Promise<void>((resolve, reject) => {
+				this.#honoNodeServer!.close((err) => {
+					if (err) {
+						reject(err);
+					} else {
+						resolve();
+					}
+				});
+			});
 		}
-		await this.#fastify.close();
-	}
-
-	/**
-	 * Get the Fastify instance for testing.
-	 */
-	public get fastify(): FastifyInstance {
-		return this.#fastify;
 	}
 
 	@bindThis

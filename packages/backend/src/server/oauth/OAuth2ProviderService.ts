@@ -5,10 +5,11 @@
 
 import dns from 'node:dns/promises';
 import { Inject, Injectable } from '@nestjs/common';
+import { Hono } from 'hono';
+import type { Context as HonoContext } from 'hono';
 import * as htmlParser from 'node-html-parser';
 import httpLinkHeader from 'http-link-header';
 import ipaddr from 'ipaddr.js';
-import fastifyCors from '@fastify/cors';
 import { verifyChallenge } from 'pkce-challenge';
 import { permissions as kinds } from 'misskey-js';
 import {
@@ -35,7 +36,6 @@ import Logger from '@/logger.js';
 import { StatusError } from '@/misc/status-error.js';
 import { HtmlTemplateService } from '@/server/web/HtmlTemplateService.js';
 import { OAuthPage } from '@/server/web/views/oauth.js';
-import type { FastifyInstance, FastifyReply } from 'fastify';
 
 // TODO: Consider migrating to @node-oauth/oauth2-server once
 // https://github.com/node-oauth/node-oauth2-server/issues/180 is figured out.
@@ -290,9 +290,9 @@ function toRequestParameters(body: unknown): OAuthRequestParameters {
 	return body as OAuthRequestParameters;
 }
 
-function applyNoStore(reply: FastifyReply): void {
-	reply.header('Cache-Control', 'no-store');
-	reply.header('Pragma', 'no-cache');
+function applyNoStore(ctx: HonoContext): void {
+	ctx.header('Cache-Control', 'no-store');
+	ctx.header('Pragma', 'no-cache');
 }
 
 function createUnsupportedResponseTypeError(): OAuthProviderError {
@@ -321,10 +321,10 @@ function normalizeOAuthProviderError(error: unknown): OAuthProviderError {
 	return wrapped;
 }
 
-function sendOAuthProviderError(reply: FastifyReply, error: OAuthProviderError): void {
-	applyNoStore(reply);
-	reply.code(error.statusCode ?? error.status ?? 400);
-	reply.send({
+function sendOAuthProviderError(ctx: HonoContext, error: OAuthProviderError) {
+	applyNoStore(ctx);
+	ctx.status(error.statusCode ?? error.status ?? 400);
+	return ctx.json({
 		error: error.error,
 		...(error.expose && error.error_description ? { error_description: error.error_description } : {}),
 	});
@@ -342,41 +342,16 @@ function appendIssuer(payload: Record<string, string>, issuerUrl: string): Recor
 	};
 }
 
-function redirectWithQuery(reply: FastifyReply, redirectUriString: string, payload: Record<string, string>): void {
-	applyNoStore(reply);
+function redirectWithQuery(ctx: HonoContext, redirectUriString: string, payload: Record<string, string>) {
+	applyNoStore(ctx);
 
 	const redirectUri = new URL(redirectUriString);
 	for (const [key, value] of Object.entries(payload)) {
 		redirectUri.searchParams.set(key, value);
 	}
 
-	reply.code(302).redirect(redirectUri.toString());
-}
-
-function registerFormBodyParser(fastify: FastifyInstance): void {
-	if (fastify.hasContentTypeParser('application/x-www-form-urlencoded')) {
-		return;
-	}
-
-	fastify.addContentTypeParser('application/x-www-form-urlencoded', { parseAs: 'string' }, (_request, body, done) => {
-		try {
-			const parsed: OAuthRequestParameters = {};
-			for (const [key, value] of new URLSearchParams(typeof body === 'string' ? body : body.toString('utf8')).entries()) {
-				const current = parsed[key];
-				if (current == null) {
-					parsed[key] = value;
-				} else if (Array.isArray(current)) {
-					current.push(value);
-				} else {
-					parsed[key] = [current, value];
-				}
-			}
-
-			done(null, parsed);
-		} catch (error) {
-			done(error as Error, undefined);
-		}
-	});
+	ctx.status(302);
+	return ctx.redirect(redirectUri.toString());
 }
 
 @Injectable()
@@ -515,15 +490,14 @@ export class OAuth2ProviderService {
 	}
 
 	@bindThis
-	public async createServer(fastify: FastifyInstance): Promise<void> {
-		registerFormBodyParser(fastify);
-
-		fastify.get('/authorize', async (request, reply) => {
+	public createServer(): Hono {
+		const app = new Hono();
+		app.get('/authorize', async (ctx) => {
 			let validatedRedirectUri: string | undefined;
 			let state: string | undefined;
 
 			try {
-				const seed = await this.#resolveAuthorizationRequest(request.query as OAuthRequestParameters);
+				const seed = await this.#resolveAuthorizationRequest(ctx.req.query() as OAuthRequestParameters);
 				const { clientInfo } = seed;
 				validatedRedirectUri = seed.redirectUri;
 				state = seed.state;
@@ -537,8 +511,8 @@ export class OAuth2ProviderService {
 
 				this.#logger.info(`Rendering authorization page for "${clientInfo.name}"`);
 
-				applyNoStore(reply);
-				return await HtmlTemplateService.replyHtml(reply, OAuthPage({
+				applyNoStore(ctx);
+				return ctx.html(OAuthPage({
 					...await this.htmlTemplateService.getCommonData(),
 					transactionId,
 					clientName: clientInfo.name,
@@ -548,20 +522,19 @@ export class OAuth2ProviderService {
 			} catch (error) {
 				const OAuthProviderError = normalizeOAuthProviderError(error);
 				if (validatedRedirectUri && OAuthProviderError.allow_redirect && OAuthProviderError.error !== 'unsupported_response_type') {
-					redirectWithQuery(reply, validatedRedirectUri, appendIssuer({
+					return redirectWithQuery(ctx, validatedRedirectUri, appendIssuer({
 						error: OAuthProviderError.error,
 						...(state ? { state } : {}),
 					}, this.config.url));
-					return;
 				}
 
-				sendOAuthProviderError(reply, OAuthProviderError);
+				return sendOAuthProviderError(ctx, OAuthProviderError);
 			}
 		});
 
-		fastify.post('/decision', async (request, reply) => {
+		app.post('/decision', async (ctx) => {
 			try {
-				const body = toRequestParameters(request.body);
+				const body = toRequestParameters(await ctx.req.parseBody());
 				const transactionId = firstValue(body.transaction_id);
 				if (!transactionId) {
 					throw new InvalidRequestError('Missing transaction ID');
@@ -576,7 +549,7 @@ export class OAuth2ProviderService {
 				const cancel = !!firstValue(body.cancel);
 				this.#logger.info(`Received the decision. Cancel: ${cancel}`);
 				if (cancel) {
-					redirectWithQuery(reply, transaction.request.redirectUri, appendIssuer({
+					return redirectWithQuery(ctx, transaction.request.redirectUri, appendIssuer({
 						error: 'access_denied',
 						...(transaction.request.state ? { state: transaction.request.state } : {}),
 					}, this.config.url));
@@ -602,18 +575,18 @@ export class OAuth2ProviderService {
 					scopes: transaction.request.scopes,
 				});
 
-				redirectWithQuery(reply, transaction.request.redirectUri, appendIssuer({
+				return redirectWithQuery(ctx, transaction.request.redirectUri, appendIssuer({
 					code,
 					...(transaction.request.state ? { state: transaction.request.state } : {}),
 				}, this.config.url));
 			} catch (error) {
-				sendOAuthProviderError(reply, normalizeOAuthProviderError(error));
+				return sendOAuthProviderError(ctx, normalizeOAuthProviderError(error));
 			}
 		});
 
-		fastify.all('/*', async (_request, reply) => {
-			reply.code(404);
-			reply.send({
+		app.all('*', async (ctx) => {
+			ctx.status(404);
+			return ctx.json({
 				error: {
 					message: 'Unknown OAuth endpoint.',
 					code: 'UNKNOWN_OAUTH_ENDPOINT',
@@ -622,18 +595,17 @@ export class OAuth2ProviderService {
 				},
 			});
 		});
+
+		return app;
 	}
 
-	@bindThis
-	public async createTokenServer(fastify: FastifyInstance): Promise<void> {
-		registerFormBodyParser(fastify);
-		fastify.register(fastifyCors);
-
-		fastify.post('', async (request, reply) => {
-			applyNoStore(reply);
+	public createTokenServer(): Hono {
+		const app = new Hono();
+		app.post('', async (ctx) => {
+			applyNoStore(ctx);
 
 			try {
-				const body = toRequestParameters(request.body);
+				const body = toRequestParameters(await ctx.req.parseBody());
 				const grantType = firstValue(body.grant_type);
 				if (!grantType) {
 					throw new InvalidRequestError('grant_type is required');
@@ -705,14 +677,16 @@ export class OAuth2ProviderService {
 				granted.grantedToken = accessToken;
 				this.#logger.info(`Generated access token for ${granted.clientId} for user ${granted.userId}, with scope: [${granted.scopes}]`);
 
-				reply.send({
+				return ctx.json({
 					access_token: accessToken,
 					token_type: 'Bearer',
 					scope: granted.scopes.join(' '),
 				});
 			} catch (error) {
-				sendOAuthProviderError(reply, normalizeOAuthProviderError(error));
+				return sendOAuthProviderError(ctx, normalizeOAuthProviderError(error));
 			}
 		});
+
+		return app;
 	}
 }
