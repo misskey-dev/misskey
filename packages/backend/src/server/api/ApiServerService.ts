@@ -216,7 +216,7 @@ export class ApiServerService {
 
 		hono.get('/v1/instance/peers', async (ctx) => {
 			const instances = await this.instancesRepository.find({
-				select: ['host'],
+				select: { host: true },
 				where: {
 					suspensionState: 'none',
 				},

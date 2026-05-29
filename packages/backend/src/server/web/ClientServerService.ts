@@ -430,7 +430,7 @@ export class ClientServerService {
 				img: this.meta.bannerUrl ?? undefined,
 				title: this.meta.name ?? 'Misskey',
 				desc: this.meta.description ?? undefined,
-				...await this.htmlTemplateService.getCommonData(),
+				...(await this.htmlTemplateService.getCommonData()),
 				...data,
 			}));
 		};
@@ -439,7 +439,7 @@ export class ClientServerService {
 			ctx.header('Cache-Control', 'public, max-age=30');
 			return ctx.html(BaseEmbed({
 				title: this.meta.name ?? 'Misskey',
-				...await this.htmlTemplateService.getCommonData(),
+				...(await this.htmlTemplateService.getCommonData()),
 				...data,
 			}));
 		};
@@ -456,7 +456,7 @@ export class ClientServerService {
 				requireSigninToViewContents: false,
 			});
 
-			return user && await this.feedService.packFeed(user);
+			return user && (await this.feedService.packFeed(user));
 		};
 
 		// Atom
@@ -545,7 +545,7 @@ export class ClientServerService {
 					user: _user,
 					profile,
 					sub: ctx.req.param('sub'),
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 					clientCtxJson: htmlSafeJsonStringify({
 						user: _user,
 					}),
@@ -589,7 +589,11 @@ export class ClientServerService {
 					id: noteId,
 					visibility: In(['public', 'home']),
 				},
-				relations: ['user', 'reply', 'renote'],
+				relations: {
+					user: true,
+					reply: true,
+					renote: true,
+				},
 			});
 
 			if (
@@ -609,7 +613,7 @@ export class ClientServerService {
 				return ctx.html(NotePage({
 					note: _note,
 					profile,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 					clientCtxJson: htmlSafeJsonStringify({
 						note: _note,
 					}),
@@ -652,7 +656,7 @@ export class ClientServerService {
 				return ctx.html(PagePage({
 					page: _page,
 					profile,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 				}));
 			} else {
 				return await renderBase(ctx);
@@ -679,7 +683,7 @@ export class ClientServerService {
 				return ctx.html(FlashPage({
 					flash: _flash,
 					profile,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 				}));
 			} else {
 				return await renderBase(ctx);
@@ -706,7 +710,7 @@ export class ClientServerService {
 				return ctx.html(ClipPage({
 					clip: _clip,
 					profile,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 					clientCtxJson: htmlSafeJsonStringify({
 						clip: _clip,
 					}),
@@ -734,7 +738,7 @@ export class ClientServerService {
 				return ctx.html(GalleryPostPage({
 					galleryPost: _post,
 					profile,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 				}));
 			} else {
 				return await renderBase(ctx);
@@ -755,7 +759,7 @@ export class ClientServerService {
 				ctx.header('Cache-Control', 'public, max-age=15');
 				return ctx.html(ChannelPage({
 					channel: _channel,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 				}));
 			} else {
 				return await renderBase(ctx);
@@ -776,7 +780,7 @@ export class ClientServerService {
 				ctx.header('Cache-Control', 'public, max-age=3600');
 				return ctx.html(ReversiGamePage({
 					reversiGame: _game,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 				}));
 			} else {
 				return await renderBase(ctx);
@@ -798,7 +802,7 @@ export class ClientServerService {
 				ctx.header('Cache-Control', 'public, max-age=3600');
 				return ctx.html(AnnouncementPage({
 					announcement: _announcement,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 				}));
 			} else {
 				return await renderBase(ctx);
@@ -834,6 +838,8 @@ export class ClientServerService {
 
 			ctx.header('Cache-Control', 'public, max-age=3600');
 			return await renderEmbedBase(ctx, {
+				title: this.meta.name ?? 'Misskey',
+				...(await this.htmlTemplateService.getCommonData()),
 				embedCtxJson: htmlSafeJsonStringify({
 					user: _user,
 				}),
@@ -848,7 +854,11 @@ export class ClientServerService {
 				where: {
 					id: noteId,
 				},
-				relations: ['user', 'reply', 'renote'],
+				relations: {
+					user: true,
+					reply: true,
+					renote: true,
+				},
 			});
 
 			if (note == null) return;
@@ -859,6 +869,8 @@ export class ClientServerService {
 
 			ctx.header('Cache-Control', 'public, max-age=3600');
 			return await renderEmbedBase(ctx, {
+				title: this.meta.name ?? 'Misskey',
+				...(await this.htmlTemplateService.getCommonData()),
 				embedCtxJson: htmlSafeJsonStringify({
 					note: _note,
 				}),
@@ -879,6 +891,8 @@ export class ClientServerService {
 
 			ctx.header('Cache-Control', 'public, max-age=3600');
 			return await renderEmbedBase(ctx, {
+				title: this.meta.name ?? 'Misskey',
+				...(await this.htmlTemplateService.getCommonData()),
 				embedCtxJson: htmlSafeJsonStringify({
 					clip: _clip,
 				}),

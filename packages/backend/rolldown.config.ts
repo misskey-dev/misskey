@@ -66,6 +66,7 @@ export default defineConfig((args) => {
 		'@nestjs/microservices/microservices-module',
 		'@nestjs/microservices',
 		/^@napi-rs\/.*/,
+		'@tensorflow/tfjs-node',
 		'mock-aws-s3',
 		'aws-sdk',
 		'nock',
@@ -73,7 +74,6 @@ export default defineConfig((args) => {
 		'jsdom',
 		're2',
 		'ipaddr.js',
-		'oauth2orize',
 		'file-type',
 	];
 
