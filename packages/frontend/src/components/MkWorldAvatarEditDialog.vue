@@ -382,9 +382,10 @@ async function cancel() {
 	position: absolute;
 	top: 0;
 	right: 0;
-	height: stretch;
+	height: 100%;
 	width: 300px;
 	overflow: auto;
+	scrollbar-gutter: stable;
 	box-sizing: border-box;
 	padding: 32px 16px 16px 16px;
 	background: var(--MI_THEME-panel);
