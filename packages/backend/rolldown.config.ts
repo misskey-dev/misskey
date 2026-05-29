@@ -74,7 +74,6 @@ export default defineConfig((args) => {
 		'jsdom',
 		're2',
 		'ipaddr.js',
-		'oauth2orize',
 		'file-type',
 	];
 
