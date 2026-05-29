@@ -98,6 +98,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 											{ label: 'd', value: 'd' },
 											{ label: 'e', value: 'e' },
 											{ label: 'f', value: 'f' },
+											{ label: 'g', value: 'g' },
+											{ label: 'h', value: 'h' },
 										]" :modelValue="avatar.mouth.type" @update:modelValue="v => { avatar.mouth.type = v; updateAvatarOption(); }"
 									>
 										<template #label>{{ i18n.ts.type }}</template>
