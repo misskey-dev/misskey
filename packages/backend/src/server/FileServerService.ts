@@ -4,6 +4,7 @@
  */
 
 import { resolve } from 'node:path';
+import { promises as fsp } from 'node:fs';
 import { Inject, Injectable } from '@nestjs/common';
 import { Hono } from 'hono';
 import type { Context as HonoContext } from 'hono';
@@ -22,6 +23,7 @@ import { VideoProcessingService } from '@/core/VideoProcessingService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import { handleRequestRedirectToOmitSearch } from '@/misc/hono-middleware-handlers.js';
+import { bufferToWebStream } from './FileServerUtils.js';
 import { FileServerDriveHandler } from './file/FileServerDriveHandler.js';
 import { FileServerFileResolver } from './file/FileServerFileResolver.js';
 import { FileServerProxyHandler } from './file/FileServerProxyHandler.js';
@@ -115,8 +117,11 @@ export class FileServerService {
 		ctx.header('Cache-Control', 'max-age=300');
 
 		if (ctx.req.query('static') != null) {
-			await serveStatic({ path: resolve(this.assets, 'dummy.png') })(ctx, async () => {});
-			return ctx.res;
+			const fileBuffer = await fsp.readFile(resolve(this.assets, 'not-found.png'));
+			return ctx.body(bufferToWebStream(fileBuffer), 200, {
+				'Content-Type': 'image/png',
+				'Content-Length': fileBuffer.length.toString(),
+			});
 		}
 
 		if (err instanceof StatusError && (err.statusCode === 302 || err.isClientError)) {

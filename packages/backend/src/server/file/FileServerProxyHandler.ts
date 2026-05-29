@@ -8,7 +8,6 @@ import { Readable } from 'node:stream';
 import { resolve } from 'node:path';
 import sharp from 'sharp';
 import { sharpBmp } from '@misskey-dev/sharp-read-bmp';
-import { serveStatic } from '@hono/node-server/serve-static';
 import type { Config } from '@/config.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
 import { StatusError } from '@/misc/status-error.js';
@@ -64,8 +63,11 @@ export class FileServerProxyHandler {
 		if (file.kind === 'not-found') {
 			ctx.status(404);
 			ctx.header('Cache-Control', 'max-age=86400');
-			await serveStatic({ path: resolve(this.assetsPath, 'dummy.png') })(ctx, async () => {});
-			return ctx.res;
+			const fileBuffer = await fs.promises.readFile(resolve(this.assetsPath, 'not-found.png'));
+			return ctx.body(bufferToWebStream(fileBuffer), 200, {
+				'Content-Type': 'image/png',
+				'Content-Length': fileBuffer.length.toString(),
+			});
 		}
 
 		if (file.kind === 'unavailable') {
@@ -110,7 +112,7 @@ export class FileServerProxyHandler {
 	 */
 	private validateUserAgent(ctx: HonoContext) {
 		const ua = ctx.req.header('User-Agent');
-		if (ua == null) {
+		if (ua == null || ua.trim() === '') {
 			throw new StatusError('User-Agent is required', 400, 'User-Agent is required');
 		}
 		if (ua.toLowerCase().indexOf('misskey/') !== -1) {
