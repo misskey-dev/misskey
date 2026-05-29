@@ -4,7 +4,7 @@
  */
 
 import dns from 'node:dns/promises';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import * as htmlParser from 'node-html-parser';
 import httpLinkHeader from 'http-link-header';
 import ipaddr from 'ipaddr.js';
@@ -380,24 +380,26 @@ function registerFormBodyParser(fastify: FastifyInstance): void {
 }
 
 @Injectable()
-export class OAuth2ProviderService {
-	#authorizationTransactionCache = new MemoryKVCache<AuthorizationTransaction>(1000 * 60 * 5);
-	#grantCodeCache = new MemoryKVCache<AuthorizationCodeGrant>(1000 * 60 * 5);
+export class OAuth2ProviderService implements OnApplicationShutdown {
+	#authorizationTransactionCache: MemoryKVCache<AuthorizationTransaction>;
+	#grantCodeCache: MemoryKVCache<AuthorizationCodeGrant>;
 	#logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
-		private httpRequestService: HttpRequestService,
 		@Inject(DI.accessTokensRepository)
 		private accessTokensRepository: AccessTokensRepository,
-		private idService: IdService,
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
+		private idService: IdService,
+		private httpRequestService: HttpRequestService,
 		private cacheService: CacheService,
-		loggerService: LoggerService,
 		private htmlTemplateService: HtmlTemplateService,
+		loggerService: LoggerService,
 	) {
+		this.#authorizationTransactionCache = new MemoryKVCache<AuthorizationTransaction>(1000 * 60 * 5);
+		this.#grantCodeCache = new MemoryKVCache<AuthorizationCodeGrant>(1000 * 60 * 10);
 		this.#logger = loggerService.getLogger('oauth');
 	}
 
@@ -714,5 +716,16 @@ export class OAuth2ProviderService {
 				sendOAuthProviderError(reply, normalizeOAuthProviderError(error));
 			}
 		});
+	}
+
+	@bindThis
+	public dispose(): void {
+		this.#authorizationTransactionCache.dispose();
+		this.#grantCodeCache.dispose();
+	}
+
+	@bindThis
+	public onApplicationShutdown(signal?: string | undefined): void {
+		this.dispose();
 	}
 }
