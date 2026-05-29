@@ -7,6 +7,7 @@ import * as BABYLON from '@babylonjs/core';
 import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { AccessoryContainer } from './avatars/AccessoryContainer.js';
 import { getAccessoryDef } from './avatars/accessory-defs.js';
+import { Timer } from './utility.js';
 import type { WorldAvatar } from 'misskey-world/src/types.js';
 
 export type PlayerProfile = {
@@ -57,6 +58,7 @@ export class PlayerContainer {
 	public registerMeshes: (meshes: BABYLON.Mesh[]) => void = () => {};
 	private animationObserver: BABYLON.Observer<BABYLON.Scene> | null = null;
 	private accessoryContainers: AccessoryContainer[] = [];
+	private timer: Timer = new Timer();
 
 	constructor(params: { id: string; profile: PlayerProfile; state: PlayerState | null; sr: BABYLON.SnapshotRenderingHelper; scene: BABYLON.Scene; }) {
 		this.id = params.id;
@@ -98,6 +100,9 @@ export class PlayerContainer {
 
 		//const avatarTex = new BABYLON.Texture(this.profile.avatarUrl, this.scene, false, false);
 
+		const eyesBlinkTexture = new BABYLON.Texture('/client-assets/world/avatars/eyes-blink.png', this.scene, false, false);
+		eyesBlinkTexture.hasAlpha = true;
+
 		let eyesTex: BABYLON.Texture | null = null;
 		if (this.profile.worldAvatar.eyes.type in DEFAULT_FACE_PARTS_EYES) {
 			const eyesTexPath = DEFAULT_FACE_PARTS_EYES[this.profile.worldAvatar.eyes.type];
@@ -138,6 +143,28 @@ export class PlayerContainer {
 				mat.roughness = 1;
 				mat.metallic = 0;
 				mesh.material = mat;
+
+				const blink = () => {
+					if (mesh.isDisposed()) return;
+
+					this.sr.disableSnapshotRendering();
+					mat.albedoTexture = eyesBlinkTexture;
+					this.sr.enableSnapshotRendering();
+
+					this.timer.setTimeout(() => {
+						this.sr.disableSnapshotRendering();
+						mat.albedoTexture = eyesTex;
+						this.sr.enableSnapshotRendering();
+
+						this.timer.setTimeout(() => {
+							blink();
+						}, Math.random() * 10000);
+					}, 100);
+				};
+
+				this.timer.setTimeout(() => {
+					blink();
+				}, Math.random() * 10000);
 			}
 			if (mesh.name.includes('__MOUTH__')) {
 				if (mouthTex != null) {
@@ -220,6 +247,7 @@ export class PlayerContainer {
 	}
 
 	public destroy() {
+		this.timer.dispose();
 		if (this.animationObserver != null) {
 			this.scene.onAfterAnimationsObservable.remove(this.animationObserver);
 		}
