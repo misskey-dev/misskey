@@ -357,9 +357,6 @@ importers:
       ulid:
         specifier: 3.0.2
         version: 3.0.2
-      vary:
-        specifier: 1.1.2
-        version: 1.1.2
       web-push:
         specifier: 3.6.7
         version: 3.6.7
