@@ -23,9 +23,9 @@ export class OpenApiServerService {
 	public createServer(): Hono {
 		const hono = new Hono();
 
-		hono.get('/api-doc', async (ctx) => {
+		hono.get('/api-doc', (ctx) => {
 			ctx.header('Cache-Control', 'public, max-age=86400');
-			return ctx.html(await ApiDocPage());
+			return ctx.html(ApiDocPage());
 		});
 
 		hono.get('/api.json', (ctx) => {
