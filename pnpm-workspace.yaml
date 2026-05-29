@@ -54,6 +54,8 @@ minimumReleaseAgeExclude:
   - '@typescript/native-preview*'
   - pnpm
   - typeorm # そのうち消す
+  # Renovate security update: exifreader@4.39.0
+  - exifreader@4.39.0
 overrides:
   '@aiscript-dev/aiscript-languageserver': '-'
   chokidar: 5.0.0

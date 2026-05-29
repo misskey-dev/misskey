@@ -41,7 +41,7 @@
 		"date-fns": "4.1.0",
 		"eventemitter3": "5.0.4",
 		"execa": "9.6.1",
-		"exifreader": "4.38.1",
+		"exifreader": "4.39.0",
 		"frontend-shared": "workspace:*",
 		"i18n": "workspace:*",
 		"icons-subsetter": "workspace:*",
