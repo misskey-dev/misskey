@@ -433,7 +433,7 @@ function showSnappingMenu(ev: PointerEvent) {
 
 function updateObjectOption(k: string, v: any) {
 	// TODO: podtMrssageのコスト削減のためattachmentsは更新がある場合のみ送る
-	controller.updateObjectOption(controller.selected.value.objectId, k, v, attachments);
+	controller.updateObjectOption(controller.selected.value.objectId, k, deepClone(v), attachments);
 }
 
 async function addObject(ev: PointerEvent) {

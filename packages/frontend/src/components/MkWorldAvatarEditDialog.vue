@@ -35,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					:enterFromClass="prefer.s.animation ? $style.transition_options_enterFrom : ''"
 					:leaveToClass="prefer.s.animation ? $style.transition_options_leaveTo : ''"
 				>
-					<div v-if="showOptions" :class="$style.customize">
+					<div v-show="showOptions" :class="$style.customize">
 						<div class="_gaps">
 							<MkInput v-model="avatarName">
 								<template #label>{{ i18n.ts.name }}</template>
