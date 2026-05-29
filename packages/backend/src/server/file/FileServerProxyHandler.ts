@@ -64,10 +64,9 @@ export class FileServerProxyHandler {
 			ctx.status(404);
 			ctx.header('Cache-Control', 'max-age=86400');
 			const fileBuffer = await fs.promises.readFile(resolve(this.assetsPath, 'not-found.png'));
-			return ctx.body(bufferToWebStream(fileBuffer), 200, {
-				'Content-Type': 'image/png',
-				'Content-Length': fileBuffer.length.toString(),
-			});
+			ctx.header('Content-Type', 'image/png');
+			ctx.header('Content-Length', fileBuffer.length.toString());
+			return ctx.body(bufferToWebStream(fileBuffer));
 		}
 
 		if (file.kind === 'unavailable') {
