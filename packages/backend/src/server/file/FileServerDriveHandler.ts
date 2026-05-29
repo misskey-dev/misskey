@@ -16,7 +16,7 @@ import { VideoProcessingService } from '@/core/VideoProcessingService.js';
 import { bindThis } from '@/decorators.js';
 import { attachStreamCleanup, handleRangeRequest, setFileResponseHeaders, getSafeContentType, nodeStreamToWebStream, bufferToWebStream } from './FileServerUtils.js';
 import type { FileServerFileResolver } from './FileServerFileResolver.js';
-import type { Context as HonoContext, Handler } from 'hono';
+import type { Context as HonoContext } from 'hono';
 
 export class FileServerDriveHandler {
 	constructor(
@@ -27,7 +27,7 @@ export class FileServerDriveHandler {
 	) {}
 
 	@bindThis
-	public async handle(ctx: HonoContext): Promise<ReturnType<Handler>> {
+	public async handle(ctx: HonoContext): Promise<Response> {
 		const key = ctx.req.param('key');
 		if (key == null) {
 			return ctx.text('Bad Request', 400);
