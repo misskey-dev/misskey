@@ -8,7 +8,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import * as WebSocket from 'ws';
 import { Hono } from 'hono';
-import { upgradeWebSocket } from '@hono/node-server';
 import type { HttpBindings } from '@hono/node-server';
 import { DI } from '@/di-symbols.js';
 import type { MiAccessToken } from '@/models/_.js';
@@ -65,6 +64,7 @@ export class StreamingApiServerService {
 
 			const incoming = ctx.env.incoming;
 			if (incoming == null) {
+				console.error('IncomingMessage is null');
 				return ctx.body(null, 400);
 			}
 
@@ -112,7 +112,9 @@ export class StreamingApiServerService {
 				app,
 			});
 
-			return await upgradeWebSocket(ctx, {});
+			ctx.header('Upgrade', 'websocket');
+			ctx.header('Connection', 'Upgrade');
+			return ctx.body(null, 101);
 		});
 
 		return hono as unknown as Hono;
