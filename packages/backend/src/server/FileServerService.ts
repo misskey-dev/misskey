@@ -23,7 +23,7 @@ import { VideoProcessingService } from '@/core/VideoProcessingService.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import { handleRequestRedirectToOmitSearch } from '@/misc/hono-middleware-handlers.js';
-import { bufferToWebStream } from './FileServerUtils.js';
+import { bufferToWebStream } from './file/FileServerUtils.js';
 import { FileServerDriveHandler } from './file/FileServerDriveHandler.js';
 import { FileServerFileResolver } from './file/FileServerFileResolver.js';
 import { FileServerProxyHandler } from './file/FileServerProxyHandler.js';
