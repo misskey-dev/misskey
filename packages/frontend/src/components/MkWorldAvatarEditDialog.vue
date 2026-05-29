@@ -214,7 +214,7 @@ onMounted(async () => {
 			name: $i.name ?? $i.username,
 			username: $i.username,
 			avatarUrl: $i.avatarUrl,
-			worldAvatar: avatar.value,
+			worldAvatar: deepClone(avatar.value),
 		});
 	} catch (err) {
 		console.error(err);
@@ -234,7 +234,7 @@ onUnmounted(() => {
 });
 
 const updateAvatarOptionThrottled = throttle(500, () => {
-	controller.updateAvatar(avatar.value);
+	controller.updateAvatar(deepClone(avatar.value));
 });
 
 function updateAvatarOption() {
