@@ -64,17 +64,13 @@
 10. **ユーザーの明示指示なしに external service (GitHub comments / Slack / メール 等) へ送信しない**
 11. **secrets / 認証情報をリポジトリにコミットしない** (`.config/*.yml` の本番値、`.env` ファイル、API token、private key 等)
 
----
+### スキル呼び出し
 
-## スキル呼び出しの必須タイミング
+上流スキルの実行・事前知識・memory の内容に関わらず免除されない。
 
-以下の 3 スキルは **他スキルの実行・事前知識・memory の内容に関わらず免除されない**。該当フェーズに入ったら各エージェントの方式で必ず参照・実行すること。
-
-| タイミング | スキル |
-| --- | --- |
-| `packages/backend/` 配下のファイルを編集・追加する実装フェーズに入る前 | `working-on-backend` |
-| `packages/frontend/` 配下のファイルを編集・追加する実装フェーズに入る前 | `working-on-frontend` |
-| commit / PR 作成 / 作業をユーザーに返す直前 | `shipping-misskey-change` |
+12. **`working-on-backend` スキルを参照せずに `packages/backend/` 配下のファイルを編集・追加しない**
+13. **`working-on-frontend` スキルを参照せずに `packages/frontend/` 配下のファイルを編集・追加しない**
+14. **`shipping-misskey-change` スキルを参照せずに commit / PR 作成 / 作業をユーザーに返さない**
 
 ---
 
