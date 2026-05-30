@@ -26,8 +26,8 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(ev: 'done');
-	(ev: 'closed');
+	(ev: 'done'): void;
+	(ev: 'closed'): void;
 }>();
 
 function done() {

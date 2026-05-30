@@ -2209,6 +2209,14 @@ _widgets:
   clicker: "Pengeklik"
   birthdayFollowings: "Pengguna yang merayakan hari ulang tahunnya hari ini"
   chat: "Obrolan pengguna"
+_widgetOptions:
+  height: "Tinggi"
+  _button:
+    colored: "Diwarnai"
+  _clock:
+    size: "Ukuran"
+  _birthdayFollowings:
+    period: "Durasi"
 _cw:
   hide: "Sembunyikan"
   show: "Lihat konten"

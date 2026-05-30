@@ -43,7 +43,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private apResolverService: ApResolverService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
-			const resolver = this.apResolverService.createResolver();
+			const resolver = await this.apResolverService.createResolver();
 			const object = await resolver.resolve(ps.uri);
 			return object;
 		});

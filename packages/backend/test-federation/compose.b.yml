@@ -50,7 +50,7 @@ services:
     volumes:
       - type: bind
         source: ./volumes/db.b
-        target: /var/lib/postgresql/data
+        target: /var/lib/postgresql
         bind:
           create_host_path: true
 

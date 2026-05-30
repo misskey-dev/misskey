@@ -97,7 +97,7 @@ watch(code, () => {
 	miLocalStorage.setItem('scratchpad', code.value);
 });
 
-function stringifyUiProps(uiProps) {
+function stringifyUiProps(uiProps: AsUiComponent) {
 	return JSON.stringify(
 		{ ...uiProps, type: undefined, id: undefined },
 		(k, v) => typeof v === 'function' ? '<function>' : v,

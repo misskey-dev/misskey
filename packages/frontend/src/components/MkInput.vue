@@ -33,7 +33,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			@input="onInput"
 		>
 		<datalist v-if="datalist" :id="id">
-			<option v-for="data in datalist" :key="data" :value="data"/>
+			<option v-for="data in datalist" :key="data" :value="data"></option>
 		</datalist>
 		<div ref="suffixEl" :class="$style.suffix"><slot name="suffix"></slot></div>
 	</div>
@@ -53,7 +53,7 @@ type ModelValueType<T extends SupportedTypes> =
 
 <script lang="ts" setup generic="T extends SupportedTypes = 'text'">
 import { onMounted, onUnmounted, nextTick, ref, useTemplateRef, watch, computed, toRefs } from 'vue';
-import { debounce } from 'throttle-debounce';
+import { throttle, debounce } from 'throttle-debounce';
 import { useInterval } from '@@/js/use-interval.js';
 import type { InputHTMLAttributes } from 'vue';
 import type { SuggestionType } from '@/utility/autocomplete.js';
@@ -81,17 +81,19 @@ const props = defineProps<{
 	min?: number;
 	max?: number;
 	inline?: boolean;
-	debounce?: boolean;
+	debounce?: boolean | number;
+	throttle?: boolean | number;
 	manualSave?: boolean;
 	small?: boolean;
 	large?: boolean;
 }>();
 
 const emit = defineEmits<{
-	(ev: 'change', _ev: KeyboardEvent): void;
+	(ev: 'change', _ev: InputEvent): void;
 	(ev: 'keydown', _ev: KeyboardEvent): void;
 	(ev: 'enter', _ev: KeyboardEvent): void;
 	(ev: 'update:modelValue', value: ModelValueType<T>): void;
+	(ev: 'savingStateChange', saved: boolean, invalid: boolean): void;
 }>();
 
 const { modelValue } = toRefs(props);
@@ -111,10 +113,9 @@ const height =
 let autocompleteWorker: Autocomplete | null = null;
 
 const focus = () => inputEl.value?.focus();
-const onInput = (event: Event) => {
-	const ev = event as KeyboardEvent;
+const onInput = (event: InputEvent) => {
 	changed.value = true;
-	emit('change', ev);
+	emit('change', event);
 };
 const onKeydown = (ev: KeyboardEvent) => {
 	if (ev.isComposing || ev.key === 'Process' || ev.keyCode === 229) return;
@@ -135,7 +136,8 @@ const updated = () => {
 	}
 };
 
-const debouncedUpdated = debounce(1000, updated);
+const throttledUpdated = throttle(typeof props.throttle === 'number' ? props.throttle : 1000, updated);
+const debouncedUpdated = debounce(typeof props.debounce === 'number' ? props.debounce : 1000, updated);
 
 watch(modelValue, newValue => {
 	v.value = newValue;
@@ -143,7 +145,9 @@ watch(modelValue, newValue => {
 
 watch(v, () => {
 	if (!props.manualSave) {
-		if (props.debounce) {
+		if (props.throttle === true || typeof props.throttle === 'number') {
+			throttledUpdated();
+		} else if (props.debounce === true || typeof props.debounce === 'number') {
 			debouncedUpdated();
 		} else {
 			updated();
@@ -152,6 +156,10 @@ watch(v, () => {
 
 	invalid.value = inputEl.value?.validity.badInput ?? true;
 });
+
+watch([changed, invalid], ([newChanged, newInvalid]) => {
+	emit('savingStateChange', newChanged, newInvalid);
+}, { immediate: true });
 
 // このコンポーネントが作成された時、非表示状態である場合がある
 // 非表示状態だと要素の幅などは0になってしまうので、定期的に計算する

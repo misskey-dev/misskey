@@ -64,7 +64,7 @@ const isDragging = ref(false);
 
 const title = computed(() => `${props.file.name}\n${props.file.type} ${bytes(props.file.size)}`);
 
-function onContextmenu(ev: MouseEvent) {
+function onContextmenu(ev: PointerEvent) {
 	os.contextMenu(getDriveFileMenu(props.file, props.folder), ev);
 }
 

@@ -20,9 +20,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { useInterval } from '@@/js/use-interval.js';
 import MkPlusOneEffect from '@/components/MkPlusOneEffect.vue';
 import * as os from '@/os.js';
-import { useInterval } from '@@/js/use-interval.js';
 import * as game from '@/utility/clicker-game.js';
 import number from '@/filters/number.js';
 import { claimAchievement } from '@/utility/achievements.js';
@@ -32,7 +32,7 @@ const cookies = computed(() => saveData.value?.cookies);
 const cps = ref(0);
 const prevCookies = ref(0);
 
-function onClick(ev: MouseEvent) {
+function onClick(ev: PointerEvent) {
 	const x = ev.clientX;
 	const y = ev.clientY;
 	const { dispose } = os.popup(MkPlusOneEffect, { x, y }, {

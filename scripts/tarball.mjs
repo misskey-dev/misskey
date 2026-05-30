@@ -19,7 +19,7 @@ const ignore = [
 	// Exclude files you don't want to include in the tarball here
 ];
 
-export default async function build() {
+export async function buildTarball() {
 	const mkdirPromise = mkdir(resolve(cwd, 'built', 'tarball'), { recursive: true });
 	const pack = new Pack({ cwd, gzip: true });
 	const patterns = await walk({ path: cwd, ignoreFiles: ['.gitignore'] });

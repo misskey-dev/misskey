@@ -38,8 +38,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div class="_buttons">
 						<MkButton rounded @click="promoteAllJobs"><i class="ti ti-player-track-next"></i> Promote all jobs</MkButton>
 						<!-- <MkButton rounded @click="createJob"><i class="ti ti-plus"></i> Add job</MkButton> -->
-						<!-- <MkButton v-if="queueInfo.isPaused" rounded @click="resumeQueue"><i class="ti ti-player-play"></i> Resume queue</MkButton> -->
-						<!-- <MkButton v-else rounded danger @click="pauseQueue"><i class="ti ti-player-pause"></i> Pause queue</MkButton> -->
+						<MkButton v-if="queueInfo.isPaused" rounded @click="resumeQueue"><i class="ti ti-player-play"></i> Resume queue</MkButton>
+						<MkButton v-else rounded danger @click="pauseQueue"><i class="ti ti-player-pause"></i> Pause queue</MkButton>
 						<MkButton rounded danger @click="clearQueue"><i class="ti ti-trash"></i> Empty queue</MkButton>
 					</div>
 				</template>
@@ -97,7 +97,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #header>
 					<MkTabs
 						v-model:tab="jobState"
-						:class="$style.jobsTabs" :tabs="[{
+						:tabs="[{
 							key: 'all',
 							title: 'All',
 							icon: 'ti ti-code-asterisk',
@@ -292,6 +292,30 @@ async function promoteAllJobs() {
 	fetchJobs();
 }
 
+async function pauseQueue() {
+	if (tab.value === '-') return;
+
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		title: i18n.ts.areYouSure,
+	});
+	if (canceled) return;
+
+	await os.apiWithDialog('admin/queue/pause', { queue: tab.value });
+
+	fetchCurrentQueue();
+	fetchJobs();
+}
+
+async function resumeQueue() {
+	if (tab.value === '-') return;
+
+	await os.apiWithDialog('admin/queue/resume', { queue: tab.value });
+
+	fetchCurrentQueue();
+	fetchJobs();
+}
+
 async function removeJobs() {
 	if (tab.value === '-' || jobState.value === 'latest') return;
 
@@ -358,9 +382,5 @@ definePage(() => ({
 	gap: 8px;
 	font-size: 85%;
 	margin: 6px 0;
-}
-
-.jobsTabs {
-
 }
 </style>

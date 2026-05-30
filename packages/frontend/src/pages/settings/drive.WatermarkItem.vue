@@ -52,7 +52,7 @@ async function edit() {
 	});
 }
 
-function del(ev: MouseEvent) {
+function del(ev: PointerEvent) {
 	os.popupMenu([{
 		text: i18n.ts.delete,
 		action: () => {

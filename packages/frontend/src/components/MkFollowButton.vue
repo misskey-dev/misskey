@@ -81,7 +81,13 @@ function onFollowChange(user: Misskey.entities.UserDetailed) {
 }
 
 async function onClick() {
-	pleaseLogin({ openOnRemote: { type: 'web', path: `/@${props.user.username}@${props.user.host ?? host}` } });
+	const isLoggedIn = await pleaseLogin({
+		openOnRemote: {
+			type: 'web',
+			path: `/@${props.user.username}@${props.user.host ?? host}`,
+		},
+	});
+	if (!isLoggedIn) return;
 
 	wait.value = true;
 

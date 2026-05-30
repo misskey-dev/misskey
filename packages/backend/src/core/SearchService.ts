@@ -17,7 +17,7 @@ import { CacheService } from '@/core/CacheService.js';
 import { QueryService } from '@/core/QueryService.js';
 import { IdService } from '@/core/IdService.js';
 import { LoggerService } from '@/core/LoggerService.js';
-import type { Index, MeiliSearch } from 'meilisearch';
+import type { Index, Meilisearch } from 'meilisearch';
 
 type K = string;
 type V = string | number | boolean;
@@ -38,6 +38,8 @@ export type SearchOpts = {
 	userId?: MiNote['userId'] | null;
 	channelId?: MiNote['channelId'] | null;
 	host?: string | null;
+	rangeStartAt?: number | null;
+	rangeEndAt?: number | null;
 };
 
 export type SearchPagination = {
@@ -85,7 +87,7 @@ export class SearchService {
 		private config: Config,
 
 		@Inject(DI.meilisearch)
-		private meilisearch: MeiliSearch | null,
+		private meilisearch: Meilisearch | null,
 
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
@@ -187,11 +189,10 @@ export class SearchService {
 				return this.searchNoteByLike(q, me, opts, pagination);
 			}
 			case 'meilisearch': {
-				return this.searchNoteByMeiliSearch(q, me, opts, pagination);
+				return this.searchNoteByMeilisearch(q, me, opts, pagination);
 			}
 			default: {
-				// eslint-disable-next-line @typescript-eslint/no-unused-vars
-				const typeCheck: never = this.provider;
+				const _: never = this.provider;
 				return [];
 			}
 		}
@@ -233,6 +234,16 @@ export class SearchService {
 			}
 		}
 
+		if (opts.rangeStartAt != null) {
+			const date = this.idService.gen(opts.rangeStartAt - 1);
+			query.andWhere('note.id > :rangeStartAt', { rangeStartAt: date });
+		}
+
+		if (opts.rangeEndAt != null) {
+			const date = this.idService.gen(opts.rangeEndAt + 1);
+			query.andWhere('note.id < :rangeEndAt', { rangeEndAt: date });
+		}
+
 		this.queryService.generateVisibilityQuery(query, me);
 		this.queryService.generateBaseNoteFilteringQuery(query, me);
 
@@ -240,14 +251,14 @@ export class SearchService {
 	}
 
 	@bindThis
-	private async searchNoteByMeiliSearch(
+	private async searchNoteByMeilisearch(
 		q: string,
 		me: MiUser | null,
 		opts: SearchOpts,
 		pagination: SearchPagination,
 	): Promise<MiNote[]> {
 		if (!this.meilisearch || !this.meilisearchNoteIndex) {
-			throw new Error('MeiliSearch is not available');
+			throw new Error('Meilisearch is not available');
 		}
 
 		const filter: Q = {
@@ -259,10 +270,20 @@ export class SearchService {
 			k: 'createdAt',
 			v: this.idService.parse(pagination.untilId).date.getTime(),
 		});
+		if (opts.rangeEndAt) filter.qs.push({
+			op: '<=',
+			k: 'createdAt',
+			v: opts.rangeEndAt,
+		});
 		if (pagination.sinceId) filter.qs.push({
 			op: '>',
 			k: 'createdAt',
 			v: this.idService.parse(pagination.sinceId).date.getTime(),
+		});
+		if (opts.rangeStartAt) filter.qs.push({
+			op: '>=',
+			k: 'createdAt',
+			v: opts.rangeStartAt,
 		});
 		if (opts.userId) filter.qs.push({ op: '=', k: 'userId', v: opts.userId });
 		if (opts.channelId) filter.qs.push({ op: '=', k: 'channelId', v: opts.channelId });

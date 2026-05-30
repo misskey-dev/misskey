@@ -391,7 +391,7 @@ async function leaveRoom() {
 	router.push('/chat');
 }
 
-function showMenu(ev: MouseEvent) {
+function showMenu(ev: PointerEvent) {
 	const menuItems: MenuItem[] = [];
 
 	if (room.value) {

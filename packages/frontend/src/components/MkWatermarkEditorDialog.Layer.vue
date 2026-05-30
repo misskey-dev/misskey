@@ -387,7 +387,7 @@ onMounted(async () => {
 	}
 });
 
-function chooseFile(ev: MouseEvent) {
+function chooseFile(ev: PointerEvent) {
 	selectFile({
 		anchorElement: ev.currentTarget ?? ev.target,
 		multiple: false,

@@ -39,7 +39,7 @@ export const directives = {
 } as Record<string, Directive>;
 
 declare module 'vue' {
-	export interface ComponentCustomProperties {
+	export interface GlobalDirectives {
 		vUserPreview: typeof userPreviewDirective;
 		vGetSize: typeof getSizeDirective;
 		vRipple: typeof rippleDirective;

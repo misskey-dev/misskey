@@ -7,7 +7,7 @@ import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as yaml from 'js-yaml';
-import buildTarball from './tarball.mjs';
+import { buildTarball } from './tarball.mjs';
 
 const configDir = fileURLToPath(new URL('../.config', import.meta.url));
 const configPath = process.env.MISSKEY_CONFIG_YML

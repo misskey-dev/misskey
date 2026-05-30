@@ -3,7 +3,7 @@ import url from 'node:url';
 import path from 'node:path';
 import { execa } from 'execa';
 import locales from 'i18n';
-import { LocaleInliner } from '../frontend-builder/locale-inliner.js'
+import { LocaleInliner } from '../frontend-builder/locale-inliner.js';
 import { createLogger } from '../frontend-builder/logger';
 
 // requires node 21 or later

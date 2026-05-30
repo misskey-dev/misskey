@@ -50,6 +50,7 @@ const name = 'calendar';
 const widgetPropsDef = {
 	transparent: {
 		type: 'boolean',
+		label: i18n.ts._widgetOptions.transparent,
 		default: false,
 	},
 } satisfies FormWithDefault;

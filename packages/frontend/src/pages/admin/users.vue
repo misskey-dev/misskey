@@ -46,6 +46,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, markRaw, ref, watchEffect } from 'vue';
+import * as Misskey from 'misskey-js';
 import { defaultMemoryStorage } from '@/memory-storage';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
@@ -146,7 +147,7 @@ async function addUser() {
 	});
 }
 
-function show(user) {
+function show(user: Misskey.entities.UserDetailed) {
 	os.pageWindow(`/admin/user/${user.id}`);
 }
 
