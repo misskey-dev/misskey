@@ -192,7 +192,6 @@ export class RoomObjectPreviewEngine extends EngineBase<{
 			rotation: new BABYLON.Vector3(0, 0, 0),
 			options: this.objectOptions,
 			roomAttachments: { files: [] },
-			metadata: {},
 			sr: this.sr,
 			getIsSrReady: () => true,
 			lightContainer: null,

@@ -60,7 +60,6 @@ export class ObjectContainer {
 	private options: ConvertedOptions;
 	public root: BABYLON.TransformNode;
 	private subRoot: BABYLON.TransformNode | null = null;
-	private metadata: any;
 	public instance: RoomObjectInstance | null = null;
 	public model: ModelManager | null = null;
 	private scene: BABYLON.Scene;
@@ -79,7 +78,6 @@ export class ObjectContainer {
 		roomAttachments: RoomAttachments;
 		position: BABYLON.Vector3;
 		rotation: BABYLON.Vector3;
-		metadata: any;
 		sr: BABYLON.SnapshotRenderingHelper;
 		getIsSrReady: () => boolean;
 		lightContainer: BABYLON.ClusteredLightContainer;
@@ -95,12 +93,10 @@ export class ObjectContainer {
 		this.getIsSrReady = args.getIsSrReady;
 		this.lightContainer = args.lightContainer;
 		this.scene = args.scene;
-		this.metadata = args.metadata;
 		this.graphicsQuality = args.graphicsQuality;
 		this.root = new BABYLON.TransformNode(`object_${args.id}_${args.type}`, this.scene);
 		this.root.position = args.position;
 		this.root.rotation = args.rotation;
-		this.root.metadata = this.metadata;
 		if (args.sitChair != null) this.sitChair = args.sitChair;
 	}
 

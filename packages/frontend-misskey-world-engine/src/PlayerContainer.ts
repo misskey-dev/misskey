@@ -49,7 +49,7 @@ const DEFAULT_FACE_PARTS_MOUTH = {
 export class PlayerContainer {
 	public id: string;
 	private profile: PlayerProfile;
-	private root: BABYLON.TransformNode;
+	public root: BABYLON.TransformNode;
 	private subRootContainerForAnim: BABYLON.TransformNode;
 	private subRoot: BABYLON.TransformNode;
 	private modelRoot: BABYLON.TransformNode | null = null;

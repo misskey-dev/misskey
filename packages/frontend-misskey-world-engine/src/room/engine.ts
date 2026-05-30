@@ -465,30 +465,15 @@ export class RoomEngine extends EngineBase<{
 					const o = this.objectContainers.get(oid)!;
 					const boundingInfo = getMeshesBoundingBox(o.root.getChildMeshes().filter(m => m.isEnabled() && m.isVisible && !m.isDisposed()), true);
 					this.selectObject(oid);
+					this.look(boundingInfo.center);
+					return;
+				}
 
-					{ // camera animation
-						const animTarget = new BABYLON.Animation(
-							'',
-							'target',
-							60,
-							BABYLON.Animation.ANIMATIONTYPE_VECTOR3,
-							BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT,
-						);
-						const keys = [
-							{ frame: 0, value: this.camera.target.clone() },
-							{ frame: 30, value: boundingInfo.center.clone() },
-						];
-						animTarget.setKeys(keys);
-						const easing = new BABYLON.CubicEase();
-						easing.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
-						animTarget.setEasingFunction(easing);
-						this.camera.animations.push(animTarget);
-						this.scene.beginAnimation(this.camera, 0, 30, false, undefined, () => {
-							// 視点が動くとアウトラインが薄くなるのでリセット (babylonのバグ？)
-							this.sr.disableSnapshotRendering();
-							this.sr.enableSnapshotRendering();
-						});
-					}
+				const playerId = pickingInfo.pickedMesh.metadata.playerId;
+				if (playerId != null && this.playerContainers.some(c => c.id === playerId)) {
+					const c = this.playerContainers.find(c => c.id === playerId)!;
+					this.look(c.root.position);
+					return;
 				}
 			}
 		});
@@ -512,6 +497,30 @@ export class RoomEngine extends EngineBase<{
 		}, 100);
 
 		this.inited = true;
+	}
+
+	private look(pos: BABYLON.Vector3) {
+		const animTarget = new BABYLON.Animation(
+			'',
+			'target',
+			60,
+			BABYLON.Animation.ANIMATIONTYPE_VECTOR3,
+			BABYLON.Animation.ANIMATIONLOOPMODE_CONSTANT,
+		);
+		const keys = [
+			{ frame: 0, value: this.camera.target.clone() },
+			{ frame: 30, value: pos.clone() },
+		];
+		animTarget.setKeys(keys);
+		const easing = new BABYLON.CubicEase();
+		easing.setEasingMode(BABYLON.EasingFunction.EASINGMODE_EASEOUT);
+		animTarget.setEasingFunction(easing);
+		this.camera.animations.push(animTarget);
+		this.scene.beginAnimation(this.camera, 0, 30, false, undefined, () => {
+			// 視点が動くとアウトラインが薄くなるのでリセット (babylonのバグ？)
+			this.sr.disableSnapshotRendering();
+			this.sr.enableSnapshotRendering();
+		});
 	}
 
 	// TODO: 初回以外で呼び出すとエンジンがクラッシュするのを修正
@@ -613,7 +622,6 @@ export class RoomEngine extends EngineBase<{
 			rotation: args.rotation.clone(),
 			options: args.options,
 			roomAttachments: this.roomAttachments,
-			metadata,
 			sr: this.sr,
 			getIsSrReady: () => this.inited,
 			lightContainer: this.lightContainer,
@@ -623,6 +631,7 @@ export class RoomEngine extends EngineBase<{
 				this.sitChair(args.id);
 			},
 		});
+		container.root.metadata = metadata;
 		container.registerMeshes = (meshes) => {
 			if (this.selected?.objectId === args.id) {
 				this.highlightMeshes(meshes);
@@ -1484,6 +1493,7 @@ export class RoomEngine extends EngineBase<{
 							mesh.receiveShadows = false;
 							mesh.isVisible = false;
 						} else {
+							mesh.metadata = { isPlayer: true, playerId: k };
 							mesh.receiveShadows = true;
 							// TODO: メモリリークしそうだからいい感じにする
 							this.envManager.addShadowCaster(mesh);
