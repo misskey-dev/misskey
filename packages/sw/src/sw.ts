@@ -128,7 +128,7 @@ globalThis.addEventListener('fetch', ev => {
 
 	if (!isHTMLRequest) return;
 	ev.respondWith(respondToNavigation(ev.request));
-  //#endregion
+	//#endregion
 });
 
 globalThis.addEventListener('push', ev => {
