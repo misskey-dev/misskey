@@ -3256,6 +3256,8 @@ _search:
   pleaseEnterServerHost: "Introdueix l'adreça de la instància "
   pleaseSelectUser: "Selecciona un usuari"
   serverHostPlaceholder: "Ex: misskey.example.com"
+  postFrom: "Publicat el"
+  postTo: "Publicat el"
 _serverSetupWizard:
   installCompleted: "La instal·lació de Misskey ha finalitzat!"
   firstCreateAccount: "Primer crea un compte d'administrador."
