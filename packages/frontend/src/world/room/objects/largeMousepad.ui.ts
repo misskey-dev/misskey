@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineObjectUi } from '../defineObjectUi.js';
+import { defineFunitureUi } from '../defineFunitureUi.js';
 import type { largeMousepad_schema } from 'misskey-world/src/room/objects/largeMousepad.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const largeMousepad_ui = defineObjectUi<typeof largeMousepad_schema>({
+export const largeMousepad_ui = defineFunitureUi<typeof largeMousepad_schema>({
 	name: i18n.ts._miRoom._objects.largeMousepad,
 	options: {
 		image: {

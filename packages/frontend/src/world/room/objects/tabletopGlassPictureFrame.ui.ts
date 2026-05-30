@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineObjectUi } from '../defineObjectUi.js';
+import { defineFunitureUi } from '../defineFunitureUi.js';
 import type { tabletopGlassPictureFrame_schema } from 'misskey-world/src/room/objects/tabletopGlassPictureFrame.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const tabletopGlassPictureFrame_ui = defineObjectUi<typeof tabletopGlassPictureFrame_schema>({
+export const tabletopGlassPictureFrame_ui = defineFunitureUi<typeof tabletopGlassPictureFrame_schema>({
 	name: i18n.ts._miRoom._objects.tabletopGlassPictureFrame,
 	options: {
 		width: {

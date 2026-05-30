@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineObjectSchema } from '../object.js';
-export const custardPudding_schema = defineObjectSchema({
+import { defineFurnitureSchema } from '../object.js';
+export const custardPudding_schema = defineFurnitureSchema({
 	id: 'custardPudding',
 	options: {
 		schema: {},

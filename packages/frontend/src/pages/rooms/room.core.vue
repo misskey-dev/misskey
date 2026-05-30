@@ -28,7 +28,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<button v-tooltip="'照明切り替え'" :class="$style.topMenuButton" class="_button" @click="toggleLight"><i class="ti ti-bulb"></i></button>
 					<button v-if="controller.isEditMode.value" :class="$style.topMenuButton" class="_button" style="color: var(--MI_THEME-accent)" @click="exitEditMode"><i class="ti ti-paint"></i></button>
 					<button v-if="!controller.isEditMode.value" :class="$style.topMenuButton" class="_button" @click="enterEditMode"><i class="ti ti-paint"></i></button>
-					<button v-if="controller.isEditMode.value" :class="$style.topMenuButton" class="_button" @click="addObject"><i class="ti ti-plus"></i></button>
+					<button v-if="controller.isEditMode.value" :class="$style.topMenuButton" class="_button" @click="addFuniture"><i class="ti ti-plus"></i></button>
 					<button v-if="controller.isEditMode.value" :class="$style.topMenuButton" class="_button" @click="showSnappingMenu"><i class="ti ti-grid-4x4"></i></button>
 					<button v-if="controller.isEditMode.value && !isRoomSettingsOpen" :class="$style.topMenuButton" class="_button" @click="() => isRoomSettingsOpen = true"><i class="ti ti-home-cog"></i></button>
 					<button v-if="controller.isEditMode.value && isRoomSettingsOpen" :class="$style.topMenuButton" class="_button" style="color: var(--MI_THEME-accent)" @click="() => isRoomSettingsOpen = false"><i class="ti ti-home-cog"></i></button>
@@ -49,15 +49,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkButton v-if="controller.grabbing.value" v-tooltip="'Cancel (Q)'" iconOnly @click="cancelGrabbing"><i class="ti ti-x"></i></MkButton>
 				<MkButton v-if="controller.grabbing.value && !controller.grabbing.value.forInstall" v-tooltip="'Put (E)'" iconOnly @click="endGrabbing"><i class="ti ti-check"></i></MkButton>
 				<MkButton v-else-if="controller.grabbing.value && controller.grabbing.value.forInstall" v-tooltip="'Put (E)'" iconOnly @click="endGrabbing"><i class="ti ti-check"></i></MkButton>
-				<MkButton v-else-if="controller.selected.value != null" v-tooltip="'Grab (E)'" iconOnly @click="beginSelectedInstalledObjectGrabbing"><i class="ti ti-hand-grab"></i></MkButton>
+				<MkButton v-else-if="controller.selected.value != null" v-tooltip="'Grab (E)'" iconOnly @click="beginSelectedInstalledFunitureGrabbing"><i class="ti ti-hand-grab"></i></MkButton>
 
 				<MkButton v-if="controller.grabbing.value" iconOnly @click="controller.changeGrabbingRotation(Math.PI / 8)"><i class="ti ti-rotate-clockwise"></i></MkButton>
 				<MkButton v-if="controller.grabbing.value" iconOnly @click="controller.changeGrabbingRotation(-Math.PI / 8)"><i class="ti ti-rotate"></i></MkButton>
 				<MkButton v-if="controller.grabbing.value" iconOnly @click="controller.changeGrabbingDistance(10)"><i class="ti ti-arrows-maximize"></i></MkButton>
 				<MkButton v-if="controller.grabbing.value" iconOnly @click="controller.changeGrabbingDistance(-10)"><i class="ti ti-arrows-minimize"></i></MkButton>
 
-				<MkButton v-if="!controller.grabbing.value && controller.selected.value != null" @click="duplicateSelectedObject"><i class="ti ti-copy"></i></MkButton>
-				<MkButton v-if="!controller.grabbing.value && controller.selected.value != null" @click="removeSelectedObject"><i class="ti ti-trash"></i> (X)</MkButton>
+				<MkButton v-if="!controller.grabbing.value && controller.selected.value != null" @click="duplicateSelectedFuniture"><i class="ti ti-copy"></i></MkButton>
+				<MkButton v-if="!controller.grabbing.value && controller.selected.value != null" @click="removeSelectedFuniture"><i class="ti ti-trash"></i> (X)</MkButton>
 			</template>
 			<MkButton v-if="controller.isSitting.value" @click="controller.standUp()">降りる (Q)</MkButton>
 			<template v-if="controller.selected.value != null">
@@ -73,19 +73,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 
-	<div v-if="controller.isReady.value && controller.isEditMode.value && controller.selected.value != null && !controller.grabbing.value" :key="controller.selected.value.objectId" :class="$style.overlayObjectInfoPanel">
-		<div style="margin-bottom: 8px; font-weight: bold; text-align: center;">{{ OBJECT_UI_DEFS[controller.selected.value.objectState.type].name }}</div>
+	<div v-if="controller.isReady.value && controller.isEditMode.value && controller.selected.value != null && !controller.grabbing.value" :key="controller.selected.value.furnitureId" :class="$style.overlayFurnitureInfoPanel">
+		<div style="margin-bottom: 8px; font-weight: bold; text-align: center;">{{ FURNITURE_UI_DEFS[controller.selected.value.funitureState.type].name }}</div>
 
 		<MkWorldMonoOptionsForm
-			:uiDef="OBJECT_UI_DEFS[OBJECT_SCHEMA_DEFS[controller.selected.value.objectState.type].id]"
+			:uiDef="FURNITURE_UI_DEFS[FURNITURE_SCHEMA_DEFS[controller.selected.value.funitureState.type].id]"
 			:addFileAttachment="addFileAttachment"
-			:schema="OBJECT_SCHEMA_DEFS[controller.selected.value.objectState.type].options.schema"
-			:options="controller.selected.value.objectState.options"
-			@update="(k, v) => updateObjectOption(k, v)"
+			:schema="FURNITURE_SCHEMA_DEFS[controller.selected.value.funitureState.type].options.schema"
+			:options="controller.selected.value.funitureState.options"
+			@update="(k, v) => updateFurnitureOption(k, v)"
 		/>
 	</div>
 
-	<div v-if="isRoomSettingsOpen && controller.isEditMode.value" class="_panel" :class="$style.overlayObjectInfoPanel">
+	<div v-if="isRoomSettingsOpen && controller.isEditMode.value" class="_panel" :class="$style.overlayFurnitureInfoPanel">
 		<XEnvOptions :controller="controller" @changeEnvType="changeEnvType"/>
 	</div>
 </div>
@@ -96,7 +96,7 @@ import { computed, defineAsyncComponent, markRaw, nextTick, onActivated, onDeact
 import * as Misskey from 'misskey-js';
 import { cm, getHex, getRgb, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { GRAPHICS_QUALITY } from 'misskey-world-engine/src/utility.js';
-import { OBJECT_SCHEMA_DEFS } from 'misskey-world/src/room/object-schema-defs.js';
+import { FURNITURE_SCHEMA_DEFS } from 'misskey-world/src/room/object-schema-defs.js';
 import { useInterval } from '@@/js/use-interval.js';
 import XEnvOptions from './room.env-options.vue';
 import type { RoomControllerOptions } from '@/world/room/controller.js';
@@ -114,7 +114,7 @@ import { isTouchUsing } from '@/utility/touch.js';
 import { prefer } from '@/preferences.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { OBJECT_UI_DEFS } from '@/world/room/object-ui-defs.js';
+import { FURNITURE_UI_DEFS } from '@/world/room/object-ui-defs.js';
 import { Multiplayer } from '@/world/room/multiplayer.js';
 
 const roomSpecVersion = 0;
@@ -240,7 +240,7 @@ let latestSavedRoomState = deepClone(props.room.def) as unknown as RoomState;
 let initialRoomState = latestSavedRoomState;
 
 // 後方互換性のため
-for (const obj of initialRoomState.installedObjects) {
+for (const obj of initialRoomState.installedFurnitures) {
 	if (obj.options.customPicture != null) {
 		obj.options.image = {
 			type: null,
@@ -375,8 +375,8 @@ onUnmounted(() => {
 	window.removeEventListener('resize', resize);
 });
 
-function beginSelectedInstalledObjectGrabbing() {
-	controller.beginSelectedInstalledObjectGrabbing();
+function beginSelectedInstalledFunitureGrabbing() {
+	controller.beginSelectedInstalledFunitureGrabbing();
 	canvas.value!.focus();
 }
 
@@ -431,12 +431,12 @@ function showSnappingMenu(ev: PointerEvent) {
 	}], ev.currentTarget ?? ev.target);
 }
 
-function updateObjectOption(k: string, v: any) {
+function updateFurnitureOption(k: string, v: any) {
 	// TODO: podtMrssageのコスト削減のためattachmentsは更新がある場合のみ送る
-	controller.updateObjectOption(controller.selected.value.objectId, k, deepClone(v), attachments);
+	controller.updateFurnitureOption(controller.selected.value.furnitureId, k, deepClone(v), attachments);
 }
 
-async function addObject(ev: PointerEvent) {
+async function addFuniture(ev: PointerEvent) {
 	// 重いので止める
 	controller.pauseRender();
 	const { dispose } = await os.popupAsyncWithDialog(import('./room.add-object-dialog.vue').then(x => x.default), {
@@ -444,7 +444,7 @@ async function addObject(ev: PointerEvent) {
 	}, {
 		ok: async (res) => {
 			attachments.files.push(...res.attachments.files); // TODO: mergeAttachmentsみたいな関数を実装して使う
-			controller.addObject(res.id, res.options, attachments);
+			controller.addFuniture(res.id, res.options, attachments);
 			canvas.value!.focus();
 		},
 		closed: () => {
@@ -460,13 +460,13 @@ function changeEnvType(type: RoomState['env']['type']) {
 	refresh();
 }
 
-function duplicateSelectedObject() {
-	controller.duplicateSelectedObject();
+function duplicateSelectedFuniture() {
+	controller.duplicateSelectedFuniture();
 	canvas.value!.focus();
 }
 
-function removeSelectedObject() {
-	controller.removeSelectedObject();
+function removeSelectedFuniture() {
+	controller.removeSelectedFuniture();
 	canvas.value!.focus();
 }
 
@@ -808,7 +808,7 @@ function enterOnline() {
 	display: none;
 }
 
-.overlayObjectInfoPanel {
+.overlayFurnitureInfoPanel {
 	position: absolute;
 	top: 16px;
 	right: 16px;

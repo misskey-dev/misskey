@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineObjectUi } from '../defineObjectUi.js';
+import { defineFunitureUi } from '../defineFunitureUi.js';
 import type { aircon_schema } from 'misskey-world/src/room/objects/aircon.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const aircon_ui = defineObjectUi<typeof aircon_schema>({
+export const aircon_ui = defineFunitureUi<typeof aircon_schema>({
 	name: i18n.ts._miRoom._objects.aircon,
 	options: {},
 });

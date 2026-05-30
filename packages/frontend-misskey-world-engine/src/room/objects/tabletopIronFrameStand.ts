@@ -4,10 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../object.js';
+import { defineFuniture } from '../object.js';
 import { tabletopIronFrameStand_schema } from 'misskey-world/src/room/objects/tabletopIronFrameStand.schema.js';
 
-export const tabletopIronFrameStand = defineObject(tabletopIronFrameStand_schema, {
+export const tabletopIronFrameStand = defineFuniture(tabletopIronFrameStand_schema, {
 	createInstance: ({ options, model }) => {
 		const frameMaterial = model.findMaterial('__X_FRAME__');
 		const boardMaterial = model.findMaterial('__X_BOARD__');

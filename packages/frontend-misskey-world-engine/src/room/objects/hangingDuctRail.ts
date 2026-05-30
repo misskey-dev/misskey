@@ -4,10 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../object.js';
+import { defineFuniture } from '../object.js';
 import { hangingDuctRail_schema } from 'misskey-world/src/room/objects/hangingDuctRail.schema.js';
 
-export const hangingDuctRail = defineObject(hangingDuctRail_schema, {
+export const hangingDuctRail = defineFuniture(hangingDuctRail_schema, {
 	createInstance: async ({ options, model }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 

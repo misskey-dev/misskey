@@ -66,7 +66,7 @@ export class WorldRoomService {
 		// そのためにはJSON SchemaでRoomState/各objectのoptionsを定義する必要がある
 
 		const objectsLimit = 100; // TODO: ref role policy
-		if (def.installedObjects.length > objectsLimit) {
+		if (def.installedFurnitures.length > objectsLimit) {
 			return false;
 		}
 
@@ -159,7 +159,7 @@ export class WorldRoomService {
 	@bindThis
 	public collectReferencedDriveFileIds(roomState: MiWorldRoom['def']): Set<MiDriveFile['id']> {
 		const fileIds = new Set<MiDriveFile['id']>();
-		for (const o of roomState.installedObjects) {
+		for (const o of roomState.installedFurnitures) {
 			const def = driveFileReferencingOptions[o.type];
 			if (def == null) continue;
 			for (const key of def) {

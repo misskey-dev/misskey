@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineObjectSchema } from '../object.js';
-export const wallMirror_schema = defineObjectSchema({
+import { defineFurnitureSchema } from '../object.js';
+export const wallMirror_schema = defineFurnitureSchema({
 	id: 'wallMirror',
 	options: {
 		schema: {

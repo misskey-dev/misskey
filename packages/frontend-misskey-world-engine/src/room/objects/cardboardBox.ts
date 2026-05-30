@@ -4,10 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../object.js';
+import { defineFuniture } from '../object.js';
 import { cardboardBox_schema } from 'misskey-world/src/room/objects/cardboardBox.schema.js';
 
-export const cardboardBox = defineObject(cardboardBox_schema, {
+export const cardboardBox = defineFuniture(cardboardBox_schema, {
 	createInstance: ({ scene, options, model }) => {
 		const material = model.findMaterial('__X_BODY__');
 

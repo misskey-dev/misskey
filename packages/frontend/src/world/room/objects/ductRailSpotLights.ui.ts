@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineObjectUi } from '../defineObjectUi.js';
+import { defineFunitureUi } from '../defineFunitureUi.js';
 import type { ductRailSpotLights_schema } from 'misskey-world/src/room/objects/ductRailSpotLights.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const ductRailSpotLights_ui = defineObjectUi<typeof ductRailSpotLights_schema>({
+export const ductRailSpotLights_ui = defineFunitureUi<typeof ductRailSpotLights_schema>({
 	name: i18n.ts._miRoom._objects.ductRailSpotLights,
 	options: {
 		bodyMat: {

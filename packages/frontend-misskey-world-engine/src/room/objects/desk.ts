@@ -4,10 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../object.js';
+import { defineFuniture } from '../object.js';
 import { desk_schema } from 'misskey-world/src/room/objects/desk.schema.js';
 
-export const desk = defineObject(desk_schema, {
+export const desk = defineFuniture(desk_schema, {
 	createInstance: ({ options, model }) => {
 		const frameMaterial = model.findMaterial('__X_FRAME__');
 		const boardMaterial = model.findMaterial('__X_BOARD__');

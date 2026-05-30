@@ -219,7 +219,7 @@ definePage(() => ({
 	display: none;
 }
 
-.overlayObjectInfoPanel {
+.overlayFurnitureInfoPanel {
 	position: absolute;
 	top: 16px;
 	right: 16px;

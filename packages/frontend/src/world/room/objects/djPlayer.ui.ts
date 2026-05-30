@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineObjectUi } from '../defineObjectUi.js';
+import { defineFunitureUi } from '../defineFunitureUi.js';
 import type { djPlayer_schema } from 'misskey-world/src/room/objects/djPlayer.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const djPlayer_ui = defineObjectUi<typeof djPlayer_schema>({
+export const djPlayer_ui = defineFunitureUi<typeof djPlayer_schema>({
 	name: i18n.ts._miRoom._objects.djPlayer,
 	options: {
 		screenBrightness: {

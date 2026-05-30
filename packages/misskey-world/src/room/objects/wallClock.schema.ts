@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineObjectSchema } from '../object.js';
-export const wallClock_schema = defineObjectSchema({
+import { defineFurnitureSchema } from '../object.js';
+export const wallClock_schema = defineFurnitureSchema({
 	id: 'wallClock',
 	options: {
 		schema: {

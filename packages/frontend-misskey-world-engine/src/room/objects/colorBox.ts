@@ -4,10 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../object.js';
+import { defineFuniture } from '../object.js';
 import { colorBox_schema } from 'misskey-world/src/room/objects/colorBox.schema.js';
 
-export const colorBox = defineObject(colorBox_schema, {
+export const colorBox = defineFuniture(colorBox_schema, {
 	createInstance: ({ options, model }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 

@@ -5,7 +5,7 @@
 
 import type { GetRawOptionsSchemaValues, OptionsSchema, RawOptions } from '../mono.js';
 
-export type RoomStateObject = {
+export type RoomState_InstalledFurniture = {
 	id: string;
 	type: string;
 	position: [number, number, number];
@@ -13,12 +13,12 @@ export type RoomStateObject = {
 	options: RawOptions;
 
 	/**
-	 * 別のオブジェクトのID
+	 * 別の家具のID
 	 */
 	sticky?: string | null;
 };
 
-export type ObjectSchemaDef<OpSc extends OptionsSchema = OptionsSchema> = {
+export type FurnitureSchemaDef<OpSc extends OptionsSchema = OptionsSchema> = {
 	id: string;
 	options: {
 		schema: string extends keyof OpSc ? OptionsSchema : OpSc;
@@ -31,6 +31,6 @@ export type ObjectSchemaDef<OpSc extends OptionsSchema = OptionsSchema> = {
 	isChair?: boolean;
 };
 
-export function defineObjectSchema<const OpSc extends OptionsSchema>(def: ObjectSchemaDef<OpSc>): ObjectSchemaDef<OpSc> {
+export function defineFurnitureSchema<const OpSc extends OptionsSchema>(def: FurnitureSchemaDef<OpSc>): FurnitureSchemaDef<OpSc> {
 	return def;
 }

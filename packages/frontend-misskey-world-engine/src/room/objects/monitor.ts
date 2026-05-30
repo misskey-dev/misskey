@@ -6,11 +6,11 @@
 import * as BABYLON from '@babylonjs/core';
 import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { monitor_schema } from 'misskey-world/src/room/objects/monitor.schema.js';
-import { createTextureManager, defineObject } from '../object.js';
+import { createTextureManager, defineFuniture } from '../object.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 import { normalizeUvToSquare } from '../../utility.js';
 
-export const monitor = defineObject(monitor_schema, {
+export const monitor = defineFuniture(monitor_schema, {
 	createInstance: async ({ lc, scene, options, model, graphicsQuality }) => {
 		const matrix = model.root.getWorldMatrix(true);
 		const scale = new BABYLON.Vector3();

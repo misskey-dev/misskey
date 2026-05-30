@@ -4,10 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../object.js';
+import { defineFuniture } from '../object.js';
 import { keyboard_schema } from 'misskey-world/src/room/objects/keyboard.schema.js';
 
-export const keyboard = defineObject(keyboard_schema, {
+export const keyboard = defineFuniture(keyboard_schema, {
 	createInstance: ({ options, model }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 		const keyMaterial = model.findMaterial('__X_KEY__');

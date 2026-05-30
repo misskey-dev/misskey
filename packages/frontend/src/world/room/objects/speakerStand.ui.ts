@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineObjectUi } from '../defineObjectUi.js';
+import { defineFunitureUi } from '../defineFunitureUi.js';
 import type { speakerStand_schema } from 'misskey-world/src/room/objects/speakerStand.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const speakerStand_ui = defineObjectUi<typeof speakerStand_schema>({
+export const speakerStand_ui = defineFunitureUi<typeof speakerStand_schema>({
 	name: i18n.ts._miRoom._objects.speakerStand,
 	options: {
 		bodyMat: {

@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineObjectUi } from '../defineObjectUi.js';
+import { defineFunitureUi } from '../defineFunitureUi.js';
 import type { chair_schema } from 'misskey-world/src/room/objects/chair.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const chair_ui = defineObjectUi<typeof chair_schema>({
+export const chair_ui = defineFunitureUi<typeof chair_schema>({
 	name: i18n.ts._miRoom._objects.chair,
 	options: {
 		primaryMat: {

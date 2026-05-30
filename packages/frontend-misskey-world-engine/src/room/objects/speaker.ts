@@ -4,10 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../object.js';
+import { defineFuniture } from '../object.js';
 import { speaker_schema } from 'misskey-world/src/room/objects/speaker.schema.js';
 
-export const speaker = defineObject(speaker_schema, {
+export const speaker = defineFuniture(speaker_schema, {
 	createInstance: ({ options, model }) => {
 		const outerMaterial = model.findMaterial('__X_COVER__');
 		const innerMaterial = model.findMaterial('__X_BODY__');

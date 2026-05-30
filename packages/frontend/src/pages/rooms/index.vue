@@ -99,7 +99,7 @@ const initialRoomDef = {
 		},
 	},
 	roomLightColor: [1.0, 0.9, 0.8],
-	installedObjects: [],
+	installedFurnitures: [],
 	worldScale: WORLD_SCALE,
 } satisfies RoomState;
 

@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineObjectUi } from '../defineObjectUi.js';
+import { defineFunitureUi } from '../defineFunitureUi.js';
 import type { usedTissue_schema } from 'misskey-world/src/room/objects/usedTissue.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const usedTissue_ui = defineObjectUi<typeof usedTissue_schema>({
+export const usedTissue_ui = defineFunitureUi<typeof usedTissue_schema>({
 	name: i18n.ts._miRoom._objects.usedTissue,
 	options: {},
 });

@@ -4,10 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../object.js';
+import { defineFuniture } from '../object.js';
 import { ironFrameShelf_schema } from 'misskey-world/src/room/objects/ironFrameShelf.schema.js';
 
-export const ironFrameShelf = defineObject(ironFrameShelf_schema, {
+export const ironFrameShelf = defineFuniture(ironFrameShelf_schema, {
 	path: (options) => {
 		switch (options.height) {
 			case '5': return 'iron-frame-shelf/iron-frame-shelf-5';

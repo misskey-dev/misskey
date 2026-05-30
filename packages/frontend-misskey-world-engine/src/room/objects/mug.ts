@@ -6,10 +6,10 @@
 import * as BABYLON from '@babylonjs/core';
 import { cm } from 'misskey-world/src/utility.js';
 import { mug_schema } from 'misskey-world/src/room/objects/mug.schema.js';
-import { defineObject } from '../object.js';
+import { defineFuniture } from '../object.js';
 import { yuge } from '../utility.js';
 
-export const mug = defineObject(mug_schema, {
+export const mug = defineFuniture(mug_schema, {
 	createInstance: ({ options, scene, root, sr, model }) => {
 		const yugeDispose = yuge(scene, root, new BABYLON.Vector3(0, cm(5), 0), sr);
 

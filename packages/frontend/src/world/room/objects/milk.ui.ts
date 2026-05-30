@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineObjectUi } from '../defineObjectUi.js';
+import { defineFunitureUi } from '../defineFunitureUi.js';
 import type { milk_schema } from 'misskey-world/src/room/objects/milk.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const milk_ui = defineObjectUi<typeof milk_schema>({
+export const milk_ui = defineFunitureUi<typeof milk_schema>({
 	name: i18n.ts._miRoom._objects.milk,
 	options: {},
 });

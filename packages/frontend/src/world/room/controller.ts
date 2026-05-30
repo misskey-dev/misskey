@@ -7,7 +7,7 @@ import { ref, shallowRef } from 'vue';
 import { cm } from 'misskey-world/src/utility.js';
 import { EngineControllerBase } from '../EngineControllerBase.js';
 import type { ShallowRef } from 'vue';
-import type { RoomStateObject } from 'misskey-world/src/room/object.js';
+import type { RoomState_InstalledFurniture } from 'misskey-world/src/room/object.js';
 import type { RoomEngine } from 'misskey-world-engine/src/room/engine.js';
 import type { RoomAttachments, RoomState } from 'misskey-world/src/room/type.js';
 import type { PlayerProfile, PlayerState } from 'misskey-world-engine/src/PlayerContainer.js';
@@ -32,8 +32,8 @@ export class RoomController extends EngineControllerBase<RoomEngine> {
 	public grabbing = ref<{ forInstall: boolean } | null>(null);
 	public gridSnapping = ref({ enabled: true, scale: cm(4) });
 	public selected = shallowRef<{
-		objectId: string;
-		objectState: RoomStateObject;
+		furnitureId: string;
+		funitureState: RoomState_InstalledFurniture;
 		interacions: {
 			id: string;
 			label: string;
@@ -92,15 +92,15 @@ export class RoomController extends EngineControllerBase<RoomEngine> {
 			if (deepEqual(this.roomState.value, roomState)) return; // vueのリアクティビティが反応して無限ループになることがあるため
 			this.roomState.value = deepClone(roomState);
 			if (this.selected.value != null) {
-				const newSelected = roomState.installedObjects.find(o => o.id === this.selected.value.objectId);
+				const newSelected = roomState.installedFurnitures.find(o => o.id === this.selected.value.furnitureId);
 				if (newSelected) {
 					this.selected.value = {
-						objectId: newSelected.id,
+						furnitureId: newSelected.id,
 
 						// そのまま入れると「オブジェクト(newSelected)の内容」は変わってるけど「オブジェクトの参照」そのものは変化していないから、
 						// その状態で代入しようがtriggerRef呼ぼうがVueは「子に対しては」更新があったと見做してくれない(親から当該refをwatchする場合は発火する)っぽい(バグか仕様かは不明)
 						// そのため新しい参照にするためにdeepClone
-						objectState: deepClone(newSelected),
+						funitureState: deepClone(newSelected),
 					};
 				} else {
 					this.selected.value = null;
@@ -157,8 +157,8 @@ export class RoomController extends EngineControllerBase<RoomEngine> {
 		this.set('gridSnapping', gridSnapping);
 	}
 
-	public updateObjectOption(objectId: string, key: string, value: any, attachments?: RoomAttachments) {
-		this.call('updateObjectOption', deepClone([objectId, key, value, attachments])); // 場合によってはvueによって(postMessage不能な)proxy化された値が来ることも考えられるのでdeepClone
+	public updateFurnitureOption(furnitureId: string, key: string, value: any, attachments?: RoomAttachments) {
+		this.call('updateFurnitureOption', deepClone([furnitureId, key, value, attachments])); // 場合によってはvueによって(postMessage不能な)proxy化された値が来ることも考えられるのでdeepClone
 	}
 
 	// エラーになる
@@ -174,20 +174,20 @@ export class RoomController extends EngineControllerBase<RoomEngine> {
 		this.call('updateRoomLightColor', [color]);
 	}
 
-	public beginSelectedInstalledObjectGrabbing() {
-		this.call('beginSelectedInstalledObjectGrabbing');
+	public beginSelectedInstalledFunitureGrabbing() {
+		this.call('beginSelectedInstalledFunitureGrabbing');
 	}
 
-	public duplicateSelectedObject() {
-		this.call('duplicateSelectedObject');
+	public duplicateSelectedFuniture() {
+		this.call('duplicateSelectedFuniture');
 	}
 
-	public removeSelectedObject() {
-		this.call('removeSelectedObject');
+	public removeSelectedFuniture() {
+		this.call('removeSelectedFuniture');
 	}
 
-	public addObject(type: string, options: any, attachments?: RoomAttachments) {
-		this.call('addObject', deepClone([type, options, attachments])); // 場合によってはvueによって(postMessage不能な)proxy化された値が来ることも考えられるのでdeepClone
+	public addFuniture(type: string, options: any, attachments?: RoomAttachments) {
+		this.call('addFuniture', deepClone([type, options, attachments])); // 場合によってはvueによって(postMessage不能な)proxy化された値が来ることも考えられるのでdeepClone
 	}
 
 	public endGrabbing() {
@@ -216,7 +216,7 @@ export class RoomController extends EngineControllerBase<RoomEngine> {
 	}
 
 	public interact(id: string) {
-		this.call('interact', [this.selected.value!.objectId, id]);
+		this.call('interact', [this.selected.value!.furnitureId, id]);
 	}
 
 	public standUp() {

@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineObjectUi } from '../defineObjectUi.js';
+import { defineFunitureUi } from '../defineFunitureUi.js';
 import type { pictureFrame_schema } from 'misskey-world/src/room/objects/pictureFrame.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const pictureFrame_ui = defineObjectUi<typeof pictureFrame_schema>({
+export const pictureFrame_ui = defineFunitureUi<typeof pictureFrame_schema>({
 	name: i18n.ts._miRoom._objects.pictureFrame,
 	options: {
 		frameMat: {

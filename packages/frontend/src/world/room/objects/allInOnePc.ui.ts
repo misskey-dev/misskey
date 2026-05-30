@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineObjectUi } from '../defineObjectUi.js';
+import { defineFunitureUi } from '../defineFunitureUi.js';
 import type { allInOnePc_schema } from 'misskey-world/src/room/objects/allInOnePc.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const allInOnePc_ui = defineObjectUi<typeof allInOnePc_schema>({
+export const allInOnePc_ui = defineFunitureUi<typeof allInOnePc_schema>({
 	name: i18n.ts._miRoom._objects.allInOnePc,
 	options: {
 		bodyMat: {

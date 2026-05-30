@@ -115,7 +115,7 @@ import { woodRingFloorLamp } from './objects/woodRingFloorLamp.js';
 import { woodRingsPendantLight } from './objects/woodRingsPendantLight.js';
 import { woodSoundAbsorbingPanel } from './objects/woodSoundAbsorbingPanel.js';
 
-export const OBJECT_DEFS = [
+export const FUNITURE_DEFS = [
 	a4Case,
 	aircon,
 	allInOnePc,
@@ -225,12 +225,12 @@ export const OBJECT_DEFS = [
 	wireNet,
 	clippedPicture,
 	wireBasket,
-] as ObjectDef[];
+] as FurnitureDef[];
 
-export function getObjectDef(type: string): ObjectDef {
-	const def = OBJECT_DEFS.find(x => x.id === type) as ObjectDef | undefined;
+export function getFurnitureDef(type: string): FurnitureDef {
+	const def = FUNITURE_DEFS.find(x => x.id === type) as FurnitureDef | undefined;
 	if (def == null) {
-		throw new Error(`Unrecognized object type: ${type}`);
+		throw new Error(`Unrecognized funiture type: ${type}`);
 	}
 	return def;
 }

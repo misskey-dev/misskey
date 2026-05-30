@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineObject } from '../object.js';
+import { defineFuniture } from '../object.js';
 import { milk_schema } from 'misskey-world/src/room/objects/milk.schema.js';
 
-export const milk = defineObject(milk_schema, {
+export const milk = defineFuniture(milk_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

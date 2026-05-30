@@ -4,12 +4,12 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../object.js';
+import { defineFuniture } from '../object.js';
 import { cm, remap } from 'misskey-world/src/utility.js';
 import { createOverridedStates } from '../utility.js';
 import { blind_schema } from 'misskey-world/src/room/objects/blind.schema.js';
 
-export const blind = defineObject(blind_schema, {
+export const blind = defineFuniture(blind_schema, {
 	createInstance: ({ options, model }) => {
 		const temp = createOverridedStates({
 			angle: () => options.angle,

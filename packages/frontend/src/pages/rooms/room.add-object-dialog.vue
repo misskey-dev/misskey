@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkFoldableSection :expanded="true">
 					<template #header>{{ i18n.ts.all }}</template>
 					<div :class="$style.catalogItems">
-						<XItem v-for="def in OBJECT_SCHEMA_DEFS" :key="def.id" :def="def" :class="[$style.catalogItem]" @click="selectedId = def.id"/>
+						<XItem v-for="def in FURNITURE_SCHEMA_DEFS" :key="def.id" :def="def" :class="[$style.catalogItem]" @click="selectedId = def.id"/>
 					</div>
 				</MkFoldableSection>
 			</div>
@@ -46,9 +46,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-show="showPreview" :class="$style.previewContainer" @click="selectedId = null">
 				<div :class="$style.preview" @click.stop>
 					<MkButton :class="$style.unselectButton" small rounded iconOnly @click="selectedId = null"><i class="ti ti-x"></i></MkButton>
-					<MkButton v-if="selectedObjectSchema != null && Object.keys(selectedObjectSchema.options.schema).length > 0" :class="$style.customizeButton" small rounded iconOnly @click="showObjectOptions = !showObjectOptions"><i class="ti ti-tool"></i></MkButton>
+					<MkButton v-if="selectedFunitureSchema != null && Object.keys(selectedFunitureSchema.options.schema).length > 0" :class="$style.customizeButton" small rounded iconOnly @click="showFurnitureOptions = !showFurnitureOptions"><i class="ti ti-tool"></i></MkButton>
 
-					<div :class="[$style.previewMain, { [$style.optionsOpened]: selectedObjectSchema != null && selectedInstanceId != null && showObjectOptions }]">
+					<div :class="[$style.previewMain, { [$style.optionsOpened]: selectedFunitureSchema != null && selectedInstanceId != null && showFurnitureOptions }]">
 						<canvas ref="canvas" :class="$style.canvas"></canvas>
 						<MkButton :class="$style.addButton" small rounded primary @click="ok"><i class="ti ti-plus"></i></MkButton>
 					</div>
@@ -59,13 +59,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 						:enterFromClass="prefer.s.animation ? $style.transition_options_enterFrom : ''"
 						:leaveToClass="prefer.s.animation ? $style.transition_options_leaveTo : ''"
 					>
-						<div v-if="selectedObjectSchema != null && selectedInstanceId != null && showObjectOptions" :class="$style.customize">
+						<div v-if="selectedFunitureSchema != null && selectedInstanceId != null && showFurnitureOptions" :class="$style.customize">
 							<MkWorldMonoOptionsForm
-								:uiDef="OBJECT_UI_DEFS[selectedObjectSchema.id]"
+								:uiDef="FURNITURE_UI_DEFS[selectedFunitureSchema.id]"
 								:addFileAttachment="addFileAttachment"
-								:schema="selectedObjectSchema.options.schema"
-								:options="selectedObjectOptionsState"
-								@update="(k, v) => updateObjectOption(k, v)"
+								:schema="selectedFunitureSchema.options.schema"
+								:options="selectedFunitureOptionsState"
+								@update="(k, v) => updateFurnitureOption(k, v)"
 							/>
 						</div>
 					</Transition>
@@ -79,7 +79,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script setup lang="ts">
 import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick, shallowRef, computed, triggerRef, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
-import { OBJECT_SCHEMA_DEFS } from 'misskey-world/src/room/object-schema-defs.js';
+import { FURNITURE_SCHEMA_DEFS } from 'misskey-world/src/room/object-schema-defs.js';
 import XItem from './room.add-object-dialog.item.vue';
 import type { PreviewEngineControllerOptions } from '@/world/room/previewEngineController.js';
 import type { RoomAttachments } from 'misskey-world/src/room/type.js';
@@ -96,7 +96,7 @@ import MkFoldableSection from '@/components/MkFoldableSection.vue';
 import { PreviewEngineController } from '@/world/room/previewEngineController.js';
 import MkInput from '@/components/MkInput.vue';
 import { withTimeout } from '@/utility/promise-timeout.js';
-import { OBJECT_UI_DEFS } from '@/world/room/object-ui-defs.js';
+import { FURNITURE_UI_DEFS } from '@/world/room/object-ui-defs.js';
 
 // TODO: instanceのidと紛らわしいのでid -> typeにする
 
@@ -119,9 +119,9 @@ const canvas = useTemplateRef('canvas');
 const selectedId = ref<string | null>(null);
 const showPreview = ref(false);
 const selectedInstanceId = ref<string | null>(null);
-const selectedObjectOptionsState = ref<RawOptions | null>(null);
-const selectedObjectSchema = computed(() => selectedId.value == null ? null : OBJECT_SCHEMA_DEFS[selectedId.value]);
-const showObjectOptions = ref(false);
+const selectedFunitureOptionsState = ref<RawOptions | null>(null);
+const selectedFunitureSchema = computed(() => selectedId.value == null ? null : FURNITURE_SCHEMA_DEFS[selectedId.value]);
+const showFurnitureOptions = ref(false);
 const searchKeyword = ref('');
 
 const attachments = {
@@ -142,8 +142,8 @@ const previewEngineControllerOptions = computed<PreviewEngineControllerOptions>(
 const controller = markRaw(new PreviewEngineController(previewEngineControllerOptions.value));
 
 const recentlyUsedSchemas = computed(() => {
-	const recentlyUsed = store.s.recentlyUsedRoomObjects;
-	return recentlyUsed.map(id => OBJECT_SCHEMA_DEFS[id]).filter((def): def is typeof OBJECT_SCHEMA_DEFS[string] => def != null);
+	const recentlyUsed = store.s.recentlyUsedRoomFurnitures;
+	return recentlyUsed.map(id => FURNITURE_SCHEMA_DEFS[id]).filter((def): def is typeof FURNITURE_SCHEMA_DEFS[string] => def != null);
 });
 
 onMounted(async () => {
@@ -167,23 +167,23 @@ onUnmounted(() => {
 });
 
 watch(selectedId, (newId) => {
-	showObjectOptions.value = false;
+	showFurnitureOptions.value = false;
 	showPreview.value = false;
 
 	if (!controller.isReady.value) return;
 
 	if (newId == null) {
-		controller.clearObject();
+		controller.clearFurniture();
 		controller.pauseRender();
 		selectedInstanceId.value = null;
-		selectedObjectOptionsState.value = null;
+		selectedFunitureOptionsState.value = null;
 	} else {
 		const closeWaiting = os.waiting();
 		nextTick(() => {
 			try {
-				withTimeout(controller.loadObject(newId), 10000).then(res => {
+				withTimeout(controller.loadFuniture(newId), 10000).then(res => {
 					selectedInstanceId.value = res.id;
-					selectedObjectOptionsState.value = deepClone(res.options);
+					selectedFunitureOptionsState.value = deepClone(res.options);
 					controller.resumeRender();
 					closeWaiting();
 					showPreview.value = true;
@@ -202,23 +202,23 @@ watch(selectedId, (newId) => {
 	}
 });
 
-function updateObjectOption(k: string, v: any) {
-	controller.updateObjectOption(k, deepClone(v), attachments);
-	selectedObjectOptionsState.value![k] = v;
+function updateFurnitureOption(k: string, v: any) {
+	controller.updateFurnitureOption(k, deepClone(v), attachments);
+	selectedFunitureOptionsState.value![k] = v;
 }
 
 function ok() {
 	if (selectedId.value == null) return;
 
-	let recentlyUsed = store.s.recentlyUsedRoomObjects;
+	let recentlyUsed = store.s.recentlyUsedRoomFurnitures;
 	if (recentlyUsed.includes(selectedId.value)) recentlyUsed = recentlyUsed.filter(id => id !== selectedId.value);
 	recentlyUsed.unshift(selectedId.value);
 	if (recentlyUsed.length > 30) recentlyUsed.pop();
-	store.set('recentlyUsedRoomObjects', recentlyUsed);
+	store.set('recentlyUsedRoomFurnitures', recentlyUsed);
 
 	emit('ok', {
 		id: selectedId.value,
-		options: deepClone(selectedObjectOptionsState.value!),
+		options: deepClone(selectedFunitureOptionsState.value!),
 		attachments: deepClone(attachments),
 	});
 

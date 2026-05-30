@@ -4,10 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../object.js';
+import { defineFuniture } from '../object.js';
 import { wallClock_schema } from 'misskey-world/src/room/objects/wallClock.schema.js';
 
-export const wallClock = defineObject(wallClock_schema, {
+export const wallClock = defineFuniture(wallClock_schema, {
 	createInstance: ({ sr, timer, options, model }) => {
 		const hourHand = model.findMesh('HandH');
 		const minuteHand = model.findMesh('HandM');

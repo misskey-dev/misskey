@@ -4,11 +4,11 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../object.js';
+import { defineFuniture } from '../object.js';
 import { cm } from 'misskey-world/src/utility.js';
 import { aquarium_schema } from 'misskey-world/src/room/objects/aquarium.schema.js';
 
-export const aquarium = defineObject(aquarium_schema, {
+export const aquarium = defineFuniture(aquarium_schema, {
 	createInstance: ({ scene, root }) => {
 		return {
 			onInited: () => {

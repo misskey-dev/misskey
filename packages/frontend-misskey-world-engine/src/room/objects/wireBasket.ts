@@ -4,10 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../object.js';
+import { defineFuniture } from '../object.js';
 import { wireBasket_schema } from 'misskey-world/src/room/objects/wireBasket.schema.js';
 
-export const wireBasket = defineObject(wireBasket_schema, {
+export const wireBasket = defineFuniture(wireBasket_schema, {
 	createInstance: ({ options, model }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 

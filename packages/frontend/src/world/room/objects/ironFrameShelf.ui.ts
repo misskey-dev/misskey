@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineObjectUi } from '../defineObjectUi.js';
+import { defineFunitureUi } from '../defineFunitureUi.js';
 import type { ironFrameShelf_schema } from 'misskey-world/src/room/objects/ironFrameShelf.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const ironFrameShelf_ui = defineObjectUi<typeof ironFrameShelf_schema>({
+export const ironFrameShelf_ui = defineFunitureUi<typeof ironFrameShelf_schema>({
 	name: i18n.ts._miRoom._objects.ironFrameShelf,
 	options: {
 		height: {

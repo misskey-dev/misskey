@@ -4,10 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../object.js';
+import { defineFuniture } from '../object.js';
 import { wallShelf_schema } from 'misskey-world/src/room/objects/wallShelf.schema.js';
 
-export const wallShelf = defineObject(wallShelf_schema, {
+export const wallShelf = defineFuniture(wallShelf_schema, {
 	createInstance: ({ model, options }) => {
 		const applyStyle = () => {
 			const aMeshes = model.findMeshes('__X_VARIATION_A__');

@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineObjectUi } from '../defineObjectUi.js';
+import { defineFunitureUi } from '../defineFunitureUi.js';
 import type { wallMirror_schema } from 'misskey-world/src/room/objects/wallMirror.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const wallMirror_ui = defineObjectUi<typeof wallMirror_schema>({
+export const wallMirror_ui = defineFunitureUi<typeof wallMirror_schema>({
 	name: i18n.ts._miRoom._objects.wallMirror,
 	options: {
 		width: {

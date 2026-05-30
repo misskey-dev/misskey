@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineObjectUi } from '../defineObjectUi.js';
+import { defineFunitureUi } from '../defineFunitureUi.js';
 import type { miPlate_schema } from 'misskey-world/src/room/objects/miPlate.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const miPlate_ui = defineObjectUi<typeof miPlate_schema>({
+export const miPlate_ui = defineFunitureUi<typeof miPlate_schema>({
 	name: i18n.ts._miRoom._objects.miPlate,
 	options: {},
 });

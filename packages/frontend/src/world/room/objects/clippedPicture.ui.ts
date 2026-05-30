@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineObjectUi } from '../defineObjectUi.js';
+import { defineFunitureUi } from '../defineFunitureUi.js';
 import type { clippedPicture_schema } from 'misskey-world/src/room/objects/clippedPicture.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const clippedPicture_ui = defineObjectUi<typeof clippedPicture_schema>({
+export const clippedPicture_ui = defineFunitureUi<typeof clippedPicture_schema>({
 	name: i18n.ts._miRoom._objects.clippedPicture,
 	options: {
 		width: {

@@ -4,7 +4,7 @@
  */
 
 import { EngineControllerBase } from '../EngineControllerBase.js';
-import type { RoomObjectPreviewEngine } from 'misskey-world-engine/src/room/previewEngine.js';
+import type { RoomFurniturePreviewEngine } from 'misskey-world-engine/src/room/previewEngine.js';
 import type { RoomAttachments } from 'misskey-world/src/room/type.js';
 
 export type PreviewEngineControllerOptions = {
@@ -15,7 +15,7 @@ export type PreviewEngineControllerOptions = {
 };
 
 // 抽象化レイヤー
-export class PreviewEngineController extends EngineControllerBase<RoomObjectPreviewEngine> {
+export class PreviewEngineController extends EngineControllerBase<RoomFurniturePreviewEngine> {
 	constructor(options: PreviewEngineControllerOptions) {
 		super({
 			...options,
@@ -41,15 +41,15 @@ export class PreviewEngineController extends EngineControllerBase<RoomObjectPrev
 		});
 	}
 
-	public updateObjectOption(key: string, value: any, attachments?: RoomAttachments) {
-		this.call('updateObjectOption', [key, value, attachments]);
+	public updateFurnitureOption(key: string, value: any, attachments?: RoomAttachments) {
+		this.call('updateFurnitureOption', [key, value, attachments]);
 	}
 
-	public loadObject(type: string) {
-		return this.callAndWaitReturn('loadObject', [type]);
+	public loadFuniture(type: string) {
+		return this.callAndWaitReturn('loadFuniture', [type]);
 	}
 
-	public clearObject() {
-		this.call('clearObject');
+	public clearFurniture() {
+		this.call('clearFurniture');
 	}
 }

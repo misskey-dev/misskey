@@ -112,9 +112,9 @@ import { wireNet_schema } from './objects/wireNet.schema.js';
 import { woodRingFloorLamp_schema } from './objects/woodRingFloorLamp.schema.js';
 import { woodRingsPendantLight_schema } from './objects/woodRingsPendantLight.schema.js';
 import { woodSoundAbsorbingPanel_schema } from './objects/woodSoundAbsorbingPanel.schema.js';
-import type { ObjectSchemaDef } from './object.js';
+import type { FurnitureSchemaDef } from './object.js';
 
-export const OBJECT_SCHEMA_DEFS = {
+export const FURNITURE_SCHEMA_DEFS = {
 	a4Case: a4Case_schema,
 	aircon: aircon_schema,
 	allInOnePc: allInOnePc_schema,
@@ -223,12 +223,12 @@ export const OBJECT_SCHEMA_DEFS = {
 	wireNet: wireNet_schema,
 	clippedPicture: clippedPicture_schema,
 	wireBasket: wireBasket_schema,
-} as Record<string, ObjectSchemaDef<any>>;
+} as Record<string, FurnitureSchemaDef<any>>;
 
-export function getObjectSchemaDef(type: string): ObjectSchemaDef {
-	const def = OBJECT_SCHEMA_DEFS[type as keyof typeof OBJECT_SCHEMA_DEFS];
+export function getFurnitureSchemaDef(type: string): FurnitureSchemaDef {
+	const def = FURNITURE_SCHEMA_DEFS[type as keyof typeof FURNITURE_SCHEMA_DEFS];
 	if (def == null) {
-		throw new Error(`Unrecognized object type: ${type}`);
+		throw new Error(`Unrecognized furniture type: ${type}`);
 	}
 	return def;
 }

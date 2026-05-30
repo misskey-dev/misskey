@@ -552,13 +552,13 @@ export class WorldEngine extends EngineBase<{
 		ps.start();
 	}
 
-	public sitChair(objectId: string) {
+	public sitChair(furnitureId: string) {
 		this.isSitting = true;
-		this.fixedCamera.parent = this.objectMeshs.get(objectId);
+		this.fixedCamera.parent = this.objectMeshs.get(furnitureId);
 		this.fixedCamera.position = new BABYLON.Vector3(0, cm(120), 0);
 		this.fixedCamera.rotation = new BABYLON.Vector3(0, 0, 0);
 		this.scene.activeCamera = this.fixedCamera;
-		this.selectObject(null);
+		this.selectFuniture(null);
 	}
 
 	public standUp() {

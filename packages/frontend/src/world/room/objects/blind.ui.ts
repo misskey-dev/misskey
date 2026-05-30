@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineObjectUi } from '../defineObjectUi.js';
+import { defineFunitureUi } from '../defineFunitureUi.js';
 import type { blind_schema } from 'misskey-world/src/room/objects/blind.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const blind_ui = defineObjectUi<typeof blind_schema>({
+export const blind_ui = defineFunitureUi<typeof blind_schema>({
 	name: i18n.ts._miRoom._objects.blind,
 	options: {
 		blades: {

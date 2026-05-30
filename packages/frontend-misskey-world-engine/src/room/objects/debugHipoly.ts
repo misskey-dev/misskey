@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineObject } from '../object.js';
+import { defineFuniture } from '../object.js';
 import { debugHipoly_schema } from 'misskey-world/src/room/objects/debugHipoly.schema.js';
 
-export const debugHipoly = defineObject(debugHipoly_schema, {
+export const debugHipoly = defineFuniture(debugHipoly_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

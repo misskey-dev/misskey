@@ -4,10 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../object.js';
+import { defineFuniture } from '../object.js';
 import { cuboid_schema } from 'misskey-world/src/room/objects/cuboid.schema.js';
 
-export const cuboid = defineObject(cuboid_schema, {
+export const cuboid = defineFuniture(cuboid_schema, {
 	createInstance: async ({ scene, options, model }) => {
 		const mesh = model.findMesh('__X_BODY__');
 		const mat = model.findMaterial('__X_BODY__');

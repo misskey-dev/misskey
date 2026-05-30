@@ -6,10 +6,10 @@
 import * as BABYLON from '@babylonjs/core';
 import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { allInOnePc_schema } from 'misskey-world/src/room/objects/allInOnePc.schema.js';
-import { createTextureManager, defineObject } from '../object.js';
+import { createTextureManager, defineFuniture } from '../object.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 
-export const allInOnePc = defineObject(allInOnePc_schema, {
+export const allInOnePc = defineFuniture(allInOnePc_schema, {
 	createInstance: async ({ lc, scene, options, model, graphicsQuality }) => {
 		const matrix = model.root.getWorldMatrix(true);
 		const scale = new BABYLON.Vector3();

@@ -7,9 +7,9 @@ import * as BABYLON from '@babylonjs/core';
 import { camelToKebab, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { scaleMorph, Timer } from '../utility.js';
 import { convertRawOptions, type ConvertedOptions, type RawOptions } from '../mono.js';
-import { getObjectDef } from './object-defs.js';
+import { getFurnitureDef } from './object-defs.js';
 import { ModelManager, SYSTEM_MESH_NAMES } from './utility.js';
-import type { RoomObjectInstance } from './object.js';
+import type { RoomFunitureInstance } from './object.js';
 import type { RoomAttachments } from 'misskey-world/src/room/type.js';
 
 function mergeMeshes(meshes: BABYLON.Mesh[], root: BABYLON.Mesh, hasTexture: boolean) {
@@ -54,13 +54,13 @@ function mergeMeshes(meshes: BABYLON.Mesh[], root: BABYLON.Mesh, hasTexture: boo
 	return merged;
 }
 
-export class ObjectContainer {
+export class FurnitureContainer {
 	public id: string;
 	public type: string;
 	private options: ConvertedOptions;
 	public root: BABYLON.TransformNode;
 	private subRoot: BABYLON.TransformNode | null = null;
-	public instance: RoomObjectInstance | null = null;
+	public instance: RoomFunitureInstance | null = null;
 	public model: ModelManager | null = null;
 	private scene: BABYLON.Scene;
 	public registerMeshes: (meshes: BABYLON.Mesh[]) => void = () => {};
@@ -87,21 +87,21 @@ export class ObjectContainer {
 	}) {
 		this.id = args.id;
 		this.type = args.type;
-		const def = getObjectDef(this.type);
+		const def = getFurnitureDef(this.type);
 		this.options = convertRawOptions(def.options.schema, args.options, args.roomAttachments);
 		this.sr = args.sr;
 		this.getIsSrReady = args.getIsSrReady;
 		this.lightContainer = args.lightContainer;
 		this.scene = args.scene;
 		this.graphicsQuality = args.graphicsQuality;
-		this.root = new BABYLON.TransformNode(`object_${args.id}_${args.type}`, this.scene);
+		this.root = new BABYLON.TransformNode(`furniture_${args.id}_${args.type}`, this.scene);
 		this.root.position = args.position;
 		this.root.rotation = args.rotation;
 		if (args.sitChair != null) this.sitChair = args.sitChair;
 	}
 
 	public async load() {
-		const def = getObjectDef(this.type);
+		const def = getFurnitureDef(this.type);
 
 		const filePath = def.path != null ? `/client-assets/world/objects/${def.path(this.options)}.glb` : `/client-assets/world/objects/${camelToKebab(this.type)}/${camelToKebab(this.type)}.glb`;
 		const loaderResult = await BABYLON.LoadAssetContainerAsync(filePath, this.scene);
@@ -198,9 +198,9 @@ export class ObjectContainer {
 				//if (mesh.name.includes('__TOP__')) {
 				//	mesh.unfreezeWorldMatrix();
 				//	mesh.computeWorldMatrix(true);
-				//	const updateChildStickyObjectPosition = (objectId: string) => {
-				//		const stickyObjectIds = Array.from(this.roomState.installedObjects.filter(o => o.sticky === objectId)).map(o => o.id);
-				//		for (const soid of stickyObjectIds) {
+				//	const updateChildStickyObjectPosition = (furnitureId: string) => {
+				//		const stickyFunitureIds = Array.from(this.roomState.installedFurnitures.filter(o => o.sticky === furnitureId)).map(o => o.id);
+				//		for (const soid of stickyFunitureIds) {
 				//			const soMesh = this.objectEntities.get(soid)!.rootMesh;
 				//			soMesh.unfreezeWorldMatrix();
 				//			for (const m of soMesh.getChildMeshes()) {
@@ -249,7 +249,7 @@ export class ObjectContainer {
 
 	public optionsUpdated(options: RawOptions, key: string, value: any, roomAttachments: RoomAttachments) {
 		if (this.instance == null) return;
-		const def = getObjectDef(this.type);
+		const def = getFurnitureDef(this.type);
 		const convertedOptions = convertRawOptions(def.options.schema, options, roomAttachments);
 		this.options[key] = convertedOptions[key]; // 参照を切れさせないようにプロパティ個別にmutate
 		this.sr.disableSnapshotRendering();

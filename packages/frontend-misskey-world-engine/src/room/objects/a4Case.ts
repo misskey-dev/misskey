@@ -4,10 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../object.js';
+import { defineFuniture } from '../object.js';
 import { a4Case_schema } from 'misskey-world/src/room/objects/a4Case.schema.js';
 
-export const a4Case = defineObject(a4Case_schema, {
+export const a4Case = defineFuniture(a4Case_schema, {
 	createInstance: ({ options, model }) => {
 		const bodyMesh = model.findMesh('__X_BODY__');
 		const bodyMaterial = bodyMesh.material as BABYLON.PBRMaterial;

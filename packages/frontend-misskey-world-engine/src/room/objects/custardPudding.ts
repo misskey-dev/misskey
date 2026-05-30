@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineObject } from '../object.js';
+import { defineFuniture } from '../object.js';
 import { custardPudding_schema } from 'misskey-world/src/room/objects/custardPudding.schema.js';
 
-export const custardPudding = defineObject(custardPudding_schema, {
+export const custardPudding = defineFuniture(custardPudding_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

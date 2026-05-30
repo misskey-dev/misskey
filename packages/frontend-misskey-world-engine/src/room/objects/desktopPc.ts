@@ -4,12 +4,12 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../object.js';
+import { defineFuniture } from '../object.js';
 import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 import { desktopPc_schema } from 'misskey-world/src/room/objects/desktopPc.schema.js';
 
-export const desktopPc = defineObject(desktopPc_schema, {
+export const desktopPc = defineFuniture(desktopPc_schema, {
 	createInstance: ({ options, model, root, scene, lc, graphicsQuality }) => {
 		// TODO: graphicsQualityがLOWならそもそも追加しない
 		const light1 = new BABYLON.SpotLight('', new BABYLON.Vector3(0, cm(10), cm(22)), new BABYLON.Vector3(0, 0, 1), Math.PI / 1, 2, scene, lc != null);

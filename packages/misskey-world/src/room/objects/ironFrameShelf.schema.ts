@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineObjectSchema } from '../object.js';
+import { defineFurnitureSchema } from '../object.js';
 
-export const ironFrameShelf_schema = defineObjectSchema({
+export const ironFrameShelf_schema = defineFurnitureSchema({
 	id: 'ironFrameShelf',
 	options: {
 		schema: {

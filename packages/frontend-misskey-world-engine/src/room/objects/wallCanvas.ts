@@ -4,10 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { createTextureManager, defineObject } from '../object.js';
+import { createTextureManager, defineFuniture } from '../object.js';
 import { wallCanvas_schema } from 'misskey-world/src/room/objects/wallCanvas.schema.js';
 
-export const wallCanvas = defineObject(wallCanvas_schema, {
+export const wallCanvas = defineFuniture(wallCanvas_schema, {
 	createInstance: async ({ scene, options, model }) => {
 		const canvasMesh = model.findMesh('__X_CANVAS__');
 		canvasMesh.rotationQuaternion = null;

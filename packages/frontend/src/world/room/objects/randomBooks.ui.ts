@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineObjectUi } from '../defineObjectUi.js';
+import { defineFunitureUi } from '../defineFunitureUi.js';
 import type { randomBooks_schema } from 'misskey-world/src/room/objects/randomBooks.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const randomBooks_ui = defineObjectUi<typeof randomBooks_schema>({
+export const randomBooks_ui = defineFunitureUi<typeof randomBooks_schema>({
 	name: i18n.ts._miRoom._objects.randomBooks,
 	options: {
 		variation: {

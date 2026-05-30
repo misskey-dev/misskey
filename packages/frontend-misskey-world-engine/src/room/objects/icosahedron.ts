@@ -4,10 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../object.js';
+import { defineFuniture } from '../object.js';
 import { icosahedron_schema } from 'misskey-world/src/room/objects/icosahedron.schema.js';
 
-export const icosahedron = defineObject(icosahedron_schema, {
+export const icosahedron = defineFuniture(icosahedron_schema, {
 	createInstance: ({ options, model }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 

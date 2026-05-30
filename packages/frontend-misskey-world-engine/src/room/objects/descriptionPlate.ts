@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineObject } from '../object.js';
+import { defineFuniture } from '../object.js';
 import { descriptionPlate_schema } from 'misskey-world/src/room/objects/descriptionPlate.schema.js';
 
-export const descriptionPlate = defineObject(descriptionPlate_schema, {
+export const descriptionPlate = defineFuniture(descriptionPlate_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

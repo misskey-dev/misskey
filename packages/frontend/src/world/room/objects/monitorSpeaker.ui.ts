@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineObjectUi } from '../defineObjectUi.js';
+import { defineFunitureUi } from '../defineFunitureUi.js';
 import type { monitorSpeaker_schema } from 'misskey-world/src/room/objects/monitorSpeaker.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const monitorSpeaker_ui = defineObjectUi<typeof monitorSpeaker_schema>({
+export const monitorSpeaker_ui = defineFunitureUi<typeof monitorSpeaker_schema>({
 	name: i18n.ts._miRoom._objects.monitorSpeaker,
 	options: {
 		mat: {

@@ -4,9 +4,9 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { RoomObjectPreviewEngine } from './previewEngine.js';
+import { RoomFurniturePreviewEngine } from './previewEngine.js';
 
-let engine: RoomObjectPreviewEngine | null = null;
+let engine: RoomFurniturePreviewEngine | null = null;
 let canvas: OffscreenCanvas | null = null;
 
 //BABYLON.RegisterStandardEngineExtensions();
@@ -27,7 +27,7 @@ onmessage = async (event) => {
 			if (event.data.options.resolution === 2) babylonEngine.setHardwareScalingLevel(0.5);
 			if (event.data.options.resolution === 0.5) babylonEngine.setHardwareScalingLevel(2);
 
-			engine = new RoomObjectPreviewEngine({
+			engine = new RoomFurniturePreviewEngine({
 				engine: babylonEngine,
 				...event.data.options,
 			});

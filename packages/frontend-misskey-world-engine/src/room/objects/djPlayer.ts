@@ -5,10 +5,10 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { djPlayer_schema } from 'misskey-world/src/room/objects/djPlayer.schema.js';
-import { createTextureManager, defineObject } from '../object.js';
+import { createTextureManager, defineFuniture } from '../object.js';
 import { normalizeUvToSquare } from '../../utility.js';
 
-export const djPlayer = defineObject(djPlayer_schema, {
+export const djPlayer = defineFuniture(djPlayer_schema, {
 	createInstance: async ({ model, options, scene }) => {
 		const screenMesh = model.findMesh('__X_SCREEN__');
 		const screenMaterial = model.findMaterial('__X_SCREEN__');

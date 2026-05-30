@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineObjectUi } from '../defineObjectUi.js';
+import { defineFunitureUi } from '../defineFunitureUi.js';
 import type { a4Case_schema } from 'misskey-world/src/room/objects/a4Case.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const a4Case_ui = defineObjectUi<typeof a4Case_schema>({
+export const a4Case_ui = defineFunitureUi<typeof a4Case_schema>({
 	name: i18n.ts._miRoom._objects.a4Case,
 	options: {
 		mat: {

@@ -4,12 +4,12 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../object.js';
+import { defineFuniture } from '../object.js';
 import { getLightRangeFactorByGraphicsQuality, initTv } from '../utility.js';
 import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { tv_schema } from 'misskey-world/src/room/objects/tv.schema.js';
 
-export const tv = defineObject(tv_schema, {
+export const tv = defineFuniture(tv_schema, {
 	createInstance: ({ options, lc, model, scene, timer, graphicsQuality }) => {
 		const matrix = model.root.getWorldMatrix(true);
 		const scale = new BABYLON.Vector3();

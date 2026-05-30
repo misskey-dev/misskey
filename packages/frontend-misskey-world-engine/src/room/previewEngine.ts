@@ -12,21 +12,21 @@ import { getMeshesBoundingBox, ArcRotateCameraManualInput, GRAPHICS_QUALITY } fr
 import { EngineBase } from '../EngineBase.js';
 import { deepClone } from '../clone.js';
 import { genId } from '../id.js';
-import { getObjectDef } from './object-defs.js';
+import { getFurnitureDef } from './object-defs.js';
 import { SYSTEM_MESH_NAMES } from './utility.js';
-import { ObjectContainer } from './ObjectContainer.js';
+import { FurnitureContainer } from './FurnitureContainer.js';
 import type { RawOptions } from './object.js';
 import type { RoomAttachments } from 'misskey-world/src/room/type.js';
 
-export class RoomObjectPreviewEngine extends EngineBase<{
+export class RoomFurniturePreviewEngine extends EngineBase<{
 	'loadingProgress': (ctx: { progress: number }) => void;
 	'contextlost': (ctx: { reason: string; message: string; }) => void;
 }> {
 	private sr: BABYLON.SnapshotRenderingHelper;
 	private shadowGenerator: BABYLON.ShadowGenerator;
 	private camera: BABYLON.ArcRotateCamera;
-	private objectContainer: ObjectContainer | null = null;
-	private objectOptions: RawOptions | null = null;
+	private furnitureContainer: FurnitureContainer | null = null;
+	private furnitureOptions: RawOptions | null = null;
 	private envMapIndoor: BABYLON.CubeTexture;
 	private roomLight: BABYLON.SpotLight;
 	private zGridPreviewPlane: BABYLON.Mesh;
@@ -106,14 +106,14 @@ export class RoomObjectPreviewEngine extends EngineBase<{
 
 		if (_DEV_ && typeof window !== 'undefined') {
 			window.takeScreenshot = () => {
-				const def = getObjectDef(this.objectContainer.type);
+				const def = getFurnitureDef(this.furnitureContainer.type);
 
 				this.scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
 				this.scene.autoClear = true;
 				this.sr.disableSnapshotRendering();
 				this.pipeline.dispose();
 
-				const boundingInfo = getMeshesBoundingBox(this.objectContainer.root.getChildMeshes().filter(m => m.isEnabled() && m.isVisible));
+				const boundingInfo = getMeshesBoundingBox(this.furnitureContainer.root.getChildMeshes().filter(m => m.isEnabled() && m.isVisible));
 
 				const camera = new BABYLON.ArcRotateCamera('camera', Math.PI / 4, Math.PI / 2.5, cm(300), new BABYLON.Vector3(0, cm(90), 0), this.scene);
 				camera.inputs.clear();
@@ -140,7 +140,7 @@ export class RoomObjectPreviewEngine extends EngineBase<{
 				this.zGridPreviewPlane.isVisible = false;
 
 				window.setTimeout(() => {
-					BABYLON.Tools.CreateScreenshotUsingRenderTarget(this.engine, camera, { width: 256, height: 256 }, undefined, undefined, undefined, true, `${camelToKebab(this.objectContainer.type!)}.png`);
+					BABYLON.Tools.CreateScreenshotUsingRenderTarget(this.engine, camera, { width: 256, height: 256 }, undefined, undefined, undefined, true, `${camelToKebab(this.furnitureContainer.type!)}.png`);
 				}, 100);
 			};
 		}
@@ -172,25 +172,25 @@ export class RoomObjectPreviewEngine extends EngineBase<{
 		//}
 	}
 
-	public async loadObject(type: string) {
+	public async loadFuniture(type: string) {
 		this.sr.disableSnapshotRendering();
-		this.clearObject();
+		this.clearFurniture();
 
 		const id = genId();
-		const def = getObjectDef(type);
-		this.objectOptions = deepClone(def.options.default);
+		const def = getFurnitureDef(type);
+		this.furnitureOptions = deepClone(def.options.default);
 		for (const [key, value] of Object.entries(def.options.schema)) {
 			if (value.type === 'seed') {
-				this.objectOptions[key] = Math.floor(Math.random() * 1000);
+				this.furnitureOptions[key] = Math.floor(Math.random() * 1000);
 			}
 		}
 
-		this.objectContainer = new ObjectContainer({
+		this.furnitureContainer = new FurnitureContainer({
 			id: id,
 			type: type,
 			position: new BABYLON.Vector3(0, 0, 0),
 			rotation: new BABYLON.Vector3(0, 0, 0),
-			options: this.objectOptions,
+			options: this.furnitureOptions,
 			roomAttachments: { files: [] },
 			sr: this.sr,
 			getIsSrReady: () => true,
@@ -198,7 +198,7 @@ export class RoomObjectPreviewEngine extends EngineBase<{
 			graphicsQuality: this.graphicsQuality,
 			scene: this.scene,
 		});
-		this.objectContainer.registerMeshes = (meshes) => {
+		this.furnitureContainer.registerMeshes = (meshes) => {
 			for (const mesh of meshes) {
 				// シェイプキー(morph)を考慮してbounding boxを更新するために必要
 				mesh.refreshBoundingInfo({ applyMorph: true });
@@ -231,9 +231,9 @@ export class RoomObjectPreviewEngine extends EngineBase<{
 			}
 		};
 
-		await this.objectContainer.load();
+		await this.furnitureContainer.load();
 
-		const boundingInfo = getMeshesBoundingBox(this.objectContainer.root.getChildMeshes().filter(m => m.isEnabled() && m.isVisible), true);
+		const boundingInfo = getMeshesBoundingBox(this.furnitureContainer.root.getChildMeshes().filter(m => m.isEnabled() && m.isVisible), true);
 
 		this.pipeline.removeCamera(this.camera);
 		this.camera.dispose();
@@ -280,25 +280,25 @@ export class RoomObjectPreviewEngine extends EngineBase<{
 
 		return {
 			id,
-			options: this.objectOptions,
+			options: this.furnitureOptions,
 		};
 	}
 
-	public updateObjectOption(key: string, value: any, attachments?: RoomAttachments) {
-		if (this.objectOptions == null) return;
-		this.objectOptions[key] = value;
+	public updateFurnitureOption(key: string, value: any, attachments?: RoomAttachments) {
+		if (this.furnitureOptions == null) return;
+		this.furnitureOptions[key] = value;
 
-		if (this.objectContainer != null) {
-			this.objectContainer.optionsUpdated(this.objectOptions, key, value, attachments ?? { files: [] });
+		if (this.furnitureContainer != null) {
+			this.furnitureContainer.optionsUpdated(this.furnitureOptions, key, value, attachments ?? { files: [] });
 		}
 	}
 
-	public clearObject() {
+	public clearFurniture() {
 		this.sr.disableSnapshotRendering();
-		if (this.objectContainer != null) {
-			this.objectContainer.destroy();
-			this.objectContainer = null;
-			this.objectOptions = null;
+		if (this.furnitureContainer != null) {
+			this.furnitureContainer.destroy();
+			this.furnitureContainer = null;
+			this.furnitureOptions = null;
 		}
 		this.sr.enableSnapshotRendering();
 	}
@@ -322,6 +322,6 @@ export class RoomObjectPreviewEngine extends EngineBase<{
 
 	public destroy() {
 		super.destroy();
-		this.objectContainer?.destroy();
+		this.furnitureContainer?.destroy();
 	}
 }

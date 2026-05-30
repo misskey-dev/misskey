@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineObjectSchema } from '../object.js';
-export const djPlayer_schema = defineObjectSchema({
+import { defineFurnitureSchema } from '../object.js';
+export const djPlayer_schema = defineFurnitureSchema({
 	id: 'djPlayer',
 	options: {
 		schema: {

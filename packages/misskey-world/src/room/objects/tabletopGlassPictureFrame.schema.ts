@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineObjectSchema } from '../object.js';
-export const tabletopGlassPictureFrame_schema = defineObjectSchema({
+import { defineFurnitureSchema } from '../object.js';
+export const tabletopGlassPictureFrame_schema = defineFurnitureSchema({
 	id: 'tabletopGlassPictureFrame',
 	options: {
 		schema: {

@@ -4,7 +4,7 @@
  */
 
 import * as Misskey from 'misskey-js';
-import type { RoomStateObject } from './object.js';
+import type { RoomState_InstalledFurniture } from './object.js';
 
 export type RoomState = {
 	env: {
@@ -15,7 +15,7 @@ export type RoomState = {
 		options: JapaneseEnvOptions;
 	};
 	roomLightColor: [number, number, number];
-	installedObjects: RoomStateObject[];
+	installedFurnitures: RoomState_InstalledFurniture[];
 	worldScale: number;
 };
 

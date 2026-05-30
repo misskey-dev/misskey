@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineObject } from '../object.js';
+import { defineFuniture } from '../object.js';
 import { debugMetal_schema } from 'misskey-world/src/room/objects/debugMetal.schema.js';
 
-export const debugMetal = defineObject(debugMetal_schema, {
+export const debugMetal = defineFuniture(debugMetal_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

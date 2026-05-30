@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineObject } from '../object.js';
+import { defineFuniture } from '../object.js';
 import { letterCase_schema } from 'misskey-world/src/room/objects/letterCase.schema.js';
 
-export const letterCase = defineObject(letterCase_schema, {
+export const letterCase = defineFuniture(letterCase_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

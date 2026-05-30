@@ -4,12 +4,12 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { createTextureManager, defineObject } from '../object.js';
+import { createTextureManager, defineFuniture } from '../object.js';
 import { tabletopPictureFrame_schema } from 'misskey-world/src/room/objects/tabletopPictureFrame.schema.js';
 
 // NOTE: シェイプキーのnormalのエクスポートは無効にしないとmatを大きくしたときに面のレンダリングがグリッチする
 
-export const tabletopPictureFrame = defineObject(tabletopPictureFrame_schema, {
+export const tabletopPictureFrame = defineFuniture(tabletopPictureFrame_schema, {
 	createInstance: async ({ scene, options, model }) => {
 		const frameMesh = model.findMesh('__X_FRAME__');
 		frameMesh.rotationQuaternion = null;

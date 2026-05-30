@@ -4,12 +4,12 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../object.js';
+import { defineFuniture } from '../object.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 import { cm, remap, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { woodRingsPendantLight_schema } from 'misskey-world/src/room/objects/woodRingsPendantLight.schema.js';
 
-export const woodRingsPendantLight = defineObject(woodRingsPendantLight_schema, {
+export const woodRingsPendantLight = defineFuniture(woodRingsPendantLight_schema, {
 	createInstance: ({ lc, scene, options, model, graphicsQuality }) => {
 		const shadeMaterial = model.findMaterial('__X_SHADE__');
 

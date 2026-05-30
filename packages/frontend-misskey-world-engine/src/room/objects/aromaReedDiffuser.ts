@@ -5,9 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core';
 import { aromaReedDiffuser_schema } from 'misskey-world/src/room/objects/aromaReedDiffuser.schema.js';
-import { defineObject } from '../object.js';
+import { defineFuniture } from '../object.js';
 
-export const aromaReedDiffuser = defineObject(aromaReedDiffuser_schema, {
+export const aromaReedDiffuser = defineFuniture(aromaReedDiffuser_schema, {
 	createInstance: ({ options, model }) => {
 		const bottleMaterial = model.findMaterial('__X_BOTTLE__');
 		const oilMaterial = model.findMaterial('__X_OIL__');

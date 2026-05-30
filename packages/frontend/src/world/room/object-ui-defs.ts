@@ -112,9 +112,9 @@ import { wireNet_ui } from './objects/wireNet.ui.js';
 import { woodRingFloorLamp_ui } from './objects/woodRingFloorLamp.ui.js';
 import { woodRingsPendantLight_ui } from './objects/woodRingsPendantLight.ui.js';
 import { woodSoundAbsorbingPanel_ui } from './objects/woodSoundAbsorbingPanel.ui.js';
-import type { ObjectUiDef } from './defineObjectUi.js';
+import type { FurnitureUiDef } from './defineFunitureUi.js';
 
-export const OBJECT_UI_DEFS = {
+export const FURNITURE_UI_DEFS = {
 	a4Case: a4Case_ui,
 	aircon: aircon_ui,
 	allInOnePc: allInOnePc_ui,
@@ -223,12 +223,12 @@ export const OBJECT_UI_DEFS = {
 	wireNet: wireNet_ui,
 	clippedPicture: clippedPicture_ui,
 	wireBasket: wireBasket_ui,
-} as Record<string, ObjectUiDef>;
+} as Record<string, FurnitureUiDef>;
 
-export function getObjectUiDef(type: string): ObjectUiDef {
-	const def = OBJECT_UI_DEFS[type as keyof typeof OBJECT_UI_DEFS];
+export function getFurnitureUiDef(type: string): FurnitureUiDef {
+	const def = FURNITURE_UI_DEFS[type as keyof typeof FURNITURE_UI_DEFS];
 	if (def == null) {
-		throw new Error(`Unrecognized object type: ${type}`);
+		throw new Error(`Unrecognized furniture type: ${type}`);
 	}
 	return def;
 }

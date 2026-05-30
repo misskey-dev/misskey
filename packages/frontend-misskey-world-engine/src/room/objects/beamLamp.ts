@@ -4,12 +4,12 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { defineObject } from '../object.js';
+import { defineFuniture } from '../object.js';
 import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 import { beamLamp_schema } from 'misskey-world/src/room/objects/beamLamp.schema.js';
 
-export const beamLamp = defineObject(beamLamp_schema, {
+export const beamLamp = defineFuniture(beamLamp_schema, {
 	createInstance: ({ lc, root, scene, graphicsQuality }) => {
 		const light = new BABYLON.PointLight('beamLampLight', new BABYLON.Vector3(0, cm(10), 0), scene, lc != null);
 		light.parent = root;

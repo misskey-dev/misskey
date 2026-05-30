@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineObjectUi } from '../defineObjectUi.js';
+import { defineFunitureUi } from '../defineFunitureUi.js';
 import type { desk_schema } from 'misskey-world/src/room/objects/desk.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const desk_ui = defineObjectUi<typeof desk_schema>({
+export const desk_ui = defineFunitureUi<typeof desk_schema>({
 	name: i18n.ts._miRoom._objects.desk,
 	options: {
 		frameMat: {

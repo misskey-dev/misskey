@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineObjectUi } from '../defineObjectUi.js';
+import { defineFunitureUi } from '../defineFunitureUi.js';
 import type { tabletopCalendar_schema } from 'misskey-world/src/room/objects/tabletopCalendar.schema.js';
 import { i18n } from '@/i18n.js';
 
-export const tabletopCalendar_ui = defineObjectUi<typeof tabletopCalendar_schema>({
+export const tabletopCalendar_ui = defineFunitureUi<typeof tabletopCalendar_schema>({
 	name: i18n.ts._miRoom._objects.tabletopCalendar,
 	options: {},
 });

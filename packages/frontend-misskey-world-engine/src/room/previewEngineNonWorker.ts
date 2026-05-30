@@ -4,7 +4,7 @@
  */
 
 import * as BABYLON from '@babylonjs/core';
-import { RoomObjectPreviewEngine } from './previewEngine.js';
+import { RoomFurniturePreviewEngine } from './previewEngine.js';
 
 //BABYLON.RegisterStandardEngineExtensions();
 //BABYLON.RegisterEnginesExtensionsEngineRawTexture();
@@ -20,7 +20,7 @@ export async function createRoomPreviewEngine(params: {
 	if (params.options.resolution === 2) babylonEngine.setHardwareScalingLevel(0.5);
 	if (params.options.resolution === 0.5) babylonEngine.setHardwareScalingLevel(2);
 
-	const engine = new RoomObjectPreviewEngine({
+	const engine = new RoomFurniturePreviewEngine({
 		engine: babylonEngine,
 		...params.options,
 	});

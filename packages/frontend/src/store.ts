@@ -119,7 +119,7 @@ export const store = markRaw(new Pizzax('base', {
 		default: true,
 	},
 
-	recentlyUsedRoomObjects: {
+	recentlyUsedRoomFurnitures: {
 		where: 'device',
 		default: [] as string[],
 	},
