@@ -44,6 +44,7 @@ const DEFAULT_FACE_PARTS_MOUTH = {
 	'f': '/client-assets/world/avatars/mouth-f.png',
 	'g': '/client-assets/world/avatars/mouth-g.png',
 	'h': '/client-assets/world/avatars/mouth-h.png',
+	'i': '/client-assets/world/avatars/mouth-i.png',
 };
 
 export class PlayerContainer {
