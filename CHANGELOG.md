@@ -12,7 +12,7 @@
 ### Server
 - Enhance: リモートノートクリーニングジョブのスキップ処理のパフォーマンス改善
 - Fix: backend バンドルで `@tensorflow/tfjs-node` を external に含めず、起動時に `@mapbox/node-pre-gyp` の `find()` が backend の package.json を誤検出して `is not node-pre-gyp ready` エラーを永続的に吐く問題を修正
-
+- Fix: MemoryKVCacheのキャッシュGC処理において、更新されたキャッシュが期限切れにならないことがある問題を修正
 
 ## 2026.5.4
 
