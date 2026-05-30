@@ -63,10 +63,10 @@ async function onDelete() {
 ja-JP.yml の値に `<b>` / `<br>` / `<strong>` を含めて、表示側で v-html や `<Mfm>` で描画するパターンが多用されている。
 
 ```yaml
-# locales/ja-JP.yml:5
+# locales/ja-JP.yml
 poweredByMisskeyDescription: "{name}は、オープンソースのプラットフォーム<b>Misskey</b>のサーバーのひとつです。"
 
-# locales/ja-JP.yml:1375 (改行 + br)
+# locales/ja-JP.yml (改行 + br)
 driveAboutTip: "ドライブでは、過去に...<br>\nノートに添付する際に再利用したり...<br>\n<b>ファイルを削除すると...</b><br>\n..."
 ```
 
@@ -385,7 +385,7 @@ const text = files.length === 1
 各 yml ファイルの **トップレベル先頭** に置かれ、その言語自身の表記名を持つ。
 
 ```yaml
-# locales/ja-JP.yml:1
+# locales/ja-JP.yml (トップレベル先頭)
 _lang_: "日本語"
 ```
 
