@@ -6,6 +6,7 @@
 - Enhance: リンクプレビューで大きいカード表示に対応
 	- `twitter:card = summary_large_image` が設定されているサイトの場合、リンクカードを拡大して表示します（メディアの添付もあるなどの条件によっては拡大表示をしない場合があります）
 	- ユーザー側で無効化することも可能です
+- Feat: ノート検索で投稿日時の期間を条件に加えられるように(#16035)
 
 ### Client
 - Fix: URLプレビューのプレイヤーをウィンドウで開いたとき、プレイヤーが読み込まれるまでの間 `Invalid URL` と表示される問題を修正
@@ -14,6 +15,7 @@
 
 ### Server
 - Enhance: リモートノートクリーニングジョブのスキップ処理のパフォーマンス改善
+- Enhance: リモートノートクリーニングジョブの削除対象検索処理のパフォーマンス改善
 - Fix: backend バンドルで `@tensorflow/tfjs-node` を external に含めず、起動時に `@mapbox/node-pre-gyp` の `find()` が backend の package.json を誤検出して `is not node-pre-gyp ready` エラーを永続的に吐く問題を修正
 
 
