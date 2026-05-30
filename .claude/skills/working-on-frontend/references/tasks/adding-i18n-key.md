@@ -68,7 +68,7 @@ import { i18n } from '@/i18n.js';
 | パラメータ付き | `i18n.tsx.greeting({ name: userName })` |
 | Vue テンプレート内 | `{{ i18n.ts.save }}` / `{{ i18n.tsx.greeting({ name }) }}` |
 
-`i18n.ts` は型付き文字列、`i18n.tsx` は MessageFormat 関数 (パラメータあり値のみ存在)。
+`i18n.ts` は型付き文字列、`i18n.tsx` は `{name}` プレースホルダを埋め込む関数 (パラメータ付きキーのみ存在。ICU MessageFormat ではなく単純な文字列置換)。
 
 > HTML タグ埋め込み・computed によるリアクティブ参照・動的キー切替・ブラケット記法 (`i18n.ts['2fa']`) などの実装パターンは → [knowledge/i18n-usage.md §実装パターン](../knowledge/i18n-usage.md)
 

@@ -86,12 +86,12 @@ export class MyService {
 - **CoreModule** (`src/core/CoreModule.ts`) — Service 群を集約
 - **EndpointsModule** (`src/server/api/EndpointsModule.ts`) — endpoint-list.ts を `Object.entries()` で反復して NestJS provider (`provide: 'ep:<path>'`) を自動生成
 - **GlobalModule** (`src/GlobalModule.ts`) — Repository / Config / Redis / DataSource など低レベル依存
-- **QueueModule** (`src/queue/QueueModule.ts`) — BullMQ ジョブキュー
+- **QueueModule** (`src/core/QueueModule.ts`) — BullMQ ジョブキュー
 
 新規 endpoint 追加時に module への明示的な登録は不要 ([knowledge/endpoint-list.md](endpoint-list.md) 参照)。新規 Service 追加時は CoreModule (または該当 module) に provider 登録が必要。
 
 ## 既存例 (DI / 例外処理が綺麗な参考実装)
 
-- [endpoints/notes/create.ts](../../../../../packages/backend/src/server/api/endpoints/notes/create.ts) — 多数の DI 注入 + `meta.errors` + `try/catch` で業務エラー変換 + 末尾 `throw err;` の二段構え
-- [endpoints/i/pin.ts](../../../../../packages/backend/src/server/api/endpoints/i/pin.ts) — 同様の二段構え
+- [endpoints/notes/create.ts](../../../../../packages/backend/src/server/api/endpoints/notes/create.ts) — Service を型注入 (`NoteEntityService` / `NoteCreateService`) + `meta.errors` + `try/catch` で業務エラー変換 + 末尾 `throw err;` の二段構え
+- [endpoints/i/pin.ts](../../../../../packages/backend/src/server/api/endpoints/i/pin.ts) — `.catch(err => { ... throw err; })` で同様にエラー変換
 - [endpoints/notes/global-timeline.ts](../../../../../packages/backend/src/server/api/endpoints/notes/global-timeline.ts) — `RoleService.getUserPolicies()` で動的ポリシー判定

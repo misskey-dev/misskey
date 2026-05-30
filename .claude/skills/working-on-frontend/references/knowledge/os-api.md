@@ -6,8 +6,8 @@
 
 | 関数 | 用途 |
 |---|---|
-| `os.alert({ type, title?, text })` | 単方向アラート |
-| `os.confirm({ type, title, text })` | yes/no 確認 (`{ canceled }` を返す) |
+| `os.alert({ type?, title?, text? })` | 単方向アラート (全フィールド任意) |
+| `os.confirm({ type, title?, text? })` | yes/no 確認 (`type` 必須、`{ canceled }` を返す) |
 | `os.toast(message)` | 一時通知 |
 | `os.popup(component, props, handlers)` | 任意コンポーネントの非同期ポップアップ |
 | `os.popupMenu(items, anchor?)` | コンテキストメニュー |
@@ -27,7 +27,7 @@ await os.alert({
 });
 ```
 
-`type` は `'info'` / `'warning'` / `'error'` / `'question'` / `'success'`。
+`type` は `'info'` / `'warning'` / `'error'` / `'question'` / `'success'` / `'waiting'`。
 
 ### `os.confirm` (yes/no 確認)
 
@@ -75,10 +75,10 @@ const result = await os.apiWithDialog('notes/create', {
 	text: 'hello',
 });
 // 成功時: result は API レスポンス
-// 失敗時: 自動でエラーダイアログを表示 (例外を投げない)
+// 失敗時: 自動でエラーダイアログを表示。ただし promise 自体は reject されるので、await するなら try/catch が必要
 ```
 
-通常の `misskeyApi(...)` だと自前でエラーハンドリングが必要だが、`apiWithDialog` は失敗時に自動で `os.alert({ type: 'error', ... })` を表示してくれる。
+通常の `misskeyApi(...)` だと自前でエラーダイアログ表示が必要だが、`apiWithDialog` は失敗時に自動で `os.alert({ type: 'error', ... })` を表示してくれる。ただし返す promise は元の `misskeyApi(...)` と同一で **reject される** ([os.ts](../../../../../packages/frontend/src/os.ts) で `return promise`)。`await` する場合は依然 try/catch が要る (ダイアログ表示後に後続処理を止めたいだけなら catch して握りつぶす)。
 
 ## なぜブラウザ標準 UI を使わないか
 

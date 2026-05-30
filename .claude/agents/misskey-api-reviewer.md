@@ -119,7 +119,7 @@ BASE=$(git merge-base origin/develop HEAD)
 git diff --name-only "$BASE"...HEAD -- packages/misskey-js/src/autogen/
 ```
 
-差分ゼロなら `pnpm build-misskey-js-with-types` の実行漏れ。CI の `check-misskey-js-autogen` ジョブで必ず落ちるため Critical 扱い。
+差分ゼロなら `pnpm build-misskey-js-with-types` の実行漏れ。CI の `check-misskey-js-autogen` ワークフローで必ず落ちるため Critical 扱い。
 
 ### 8. e2e テスト (Major)
 

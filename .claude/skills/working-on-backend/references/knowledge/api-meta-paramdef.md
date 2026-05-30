@@ -273,8 +273,10 @@ properties: {
 | `requireFile: true` | requestBody が `multipart/form-data` になり `file: { type: 'string', format: 'binary' }` が追加される |
 | `errors` | examples (operation の `responses` 配下) |
 | `res` | response body schema |
+| `limit` | `429 Too many requests` レスポンスが `responses` に追加される |
+| `allowGet` | 同一 path に `get` operation が追加される (POST と両方が生える) |
 
-**OpenAPI に反映されない (内部のみ)**: `limit` / `requireModerator` / `requireAdmin` / `requiredRolePolicy` / `prohibitMoved` / `allowGet` / `cacheSec` / `stability`。
+**OpenAPI に反映されない (内部のみ)**: `requireModerator` / `requireAdmin` / `requiredRolePolicy` / `prohibitMoved` / `cacheSec` / `stability`。
 
 ## 落とし穴
 
@@ -282,7 +284,7 @@ PR レビューで頻発するミスを「**症状 → 原因 → 修正**」で
 
 ### 1. エンドポイントが 404 になる
 
-- **症状**: 開発サーバーで叩くと `{"error": {"code": "NO_SUCH_ENDPOINT", ...}}` または素の 404
+- **症状**: 開発サーバーで叩くと `{"error": {"code": "UNKNOWN_API_ENDPOINT", ...}}` (GET の catch-all 経由)、または素の 404 (POST など)
 - **原因**: [endpoint-list.ts](../../../../../packages/backend/src/server/api/endpoint-list.ts) への登録漏れ。エンドポイントは glob 自動収集されない
 - **修正**: → [knowledge/endpoint-list.md](endpoint-list.md)
 

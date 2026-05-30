@@ -72,7 +72,7 @@ block.ts / mute.ts / antennas.ts / clips.ts / move.ts / nodeinfo.ts / ...
 
 ## 共通 setup
 
-`packages/backend/test/setup.e2e.ts` が自動で `beforeAll` / `afterAll` を設定する。各テストファイルでは:
+`packages/backend/test/setup.e2e.ts` (vitest の `setupFiles`) が各テストファイル共通の `beforeAll` (テスト DB 初期化 + 環境リセット) を登録する。テストサーバーの起動/停止は別途 vitest の `globalSetup` (`test-server/entry.ts` の `setup()` / `teardown()`) が担う。各テストファイルでは自前の `beforeAll` でユーザーを用意する:
 
 ```ts
 import { describe, test, beforeAll, afterAll } from 'vitest';
@@ -143,7 +143,7 @@ const note = await post(alice, { text: 'hello' });
 
 ```ts
 const file = await uploadFile(alice);                                       // resources/192.jpg をアップロード
-const file2 = await uploadFile(alice, { path: 'sample.png' });              // resources/sample.png
+const file2 = await uploadFile(alice, { path: '192.png' });                 // resources/192.png
 const file3 = await uploadFile(alice, { blob: new Blob([...]) });           // 任意 Blob
 // file.body.id を fileIds に渡せる
 ```

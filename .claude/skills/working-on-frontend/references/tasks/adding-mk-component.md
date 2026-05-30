@@ -15,7 +15,7 @@
 | 配置先 | 用途 | 命名 |
 |---|---|---|
 | `packages/frontend/src/components/Mk<Name>.vue` | 通常の共有 UI コンポーネント | `Mk<Name>.vue` |
-| `packages/frontend/src/components/global/Mk<Name>.vue` | アプリ全域から `<script setup>` の自動 import で参照される基本部品 (`MkA` / `MkAvatar` / `MkAcct` 等) | `Mk<Name>.vue` (サブディレクトリ内でも `Mk` prefix 必須) |
+| `packages/frontend/src/components/global/Mk<Name>.vue` | `components/index.ts` で Vue グローバルコンポーネント登録 (`app.component`) され、import 無しで全テンプレートから使える基本部品 (`MkA` / `MkAvatar` / `MkAcct` 等) | `Mk<Name>.vue` (サブディレクトリ内でも `Mk` prefix 必須) |
 | `packages/frontend/src/components/grid/Mk<Name>.vue` | テーブル/グリッド系の部品セット | 同上 |
 | `packages/frontend/src/pages/<Name>.vue` | 単一ページ専用の UI (再利用しない) | `Mk` prefix **不要** |
 
@@ -47,7 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 ## 最小テンプレート
 
-[MkInfo.vue](../../../../../packages/frontend/src/components/MkInfo.vue) を参考にしたシンプルな表示コンポーネントの最小形:
+シンプルな表示コンポーネントの最小形を示す**合成例** (特定ファイルの写しではない)。実在する単純コンポーネントの例は [MkInfo.vue](../../../../../packages/frontend/src/components/MkInfo.vue) 等を参照:
 
 ```vue
 <!--

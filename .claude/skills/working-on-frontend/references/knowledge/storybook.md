@@ -10,7 +10,7 @@
 
 ## 基本: 単一 story (Default のみ)
 
-シンプルなコンポーネントならこれで十分。
+シンプルなコンポーネントならこれで十分。(以下の `MkColoredTag` は説明用の**架空のコンポーネント名**。実在しない。実物のパターンは `MkButton.stories.impl.ts` を参照。)
 
 ```ts
 /*
@@ -125,7 +125,7 @@ export const Default = {
 
 ## `argTypes` で controls を細かく制御
 
-string union を radio に / number を range に変えるとレビューが楽になる。
+string union を radio に / number を range に変えるとレビューが楽になる。(標準の Storybook 機能。現状リポジトリ内の `.stories.impl.ts` では実際には使われていないので必須ではない。)
 
 ```ts
 export const Default = {
@@ -186,6 +186,6 @@ pnpm --filter frontend storybook-dev    # http://localhost:6006
 pnpm --filter frontend build-storybook  # 静的ビルド
 ```
 
-新規 stories は Sidebar に自動で出る。出ない場合は `*.stories.impl.ts` のファイル名と SPDX ヘッダー以降に構文エラーが無いかを確認する。
+新規コンポーネントの stories が Sidebar に出ない場合、多くは [generate.tsx](../../../../../packages/frontend/.storybook/generate.tsx) の生成対象 **allowlist** に入っていないため。`src/{components,pages,...}/**/*.vue` の全体 glob はコメントアウトされており、対象は `globSync('src/components/global/Mk*.vue')` / `globSync('src/components/Mk[B-E]*.vue')` などの**明示列挙**になっている。`.stories.impl.ts` を併設しただけでは自動では出ないことがあるので、対象外なら generate.tsx に 1 行追加する。加えて、ファイル名 (`.stories.impl.ts`) と SPDX ヘッダー以降に構文エラーが無いかも確認する。
 
 Chromatic (`pnpm --filter frontend chromatic`) で視覚回帰チェックも行われる。

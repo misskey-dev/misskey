@@ -236,7 +236,7 @@ pnpm --filter backend test:e2e
 ```bash
 # 個別ファイルを高速にチェック
 pnpm exec eslint --fix packages/backend/src/server/api/endpoints/<category>/<name>.ts
-pnpm --filter backend typecheck      # tsgo --noEmit (全パッケージ)
+pnpm --filter backend typecheck      # tsgo --noEmit (backend のみ)
 
 # 一括 (PR 提出前)
 pnpm --filter backend lint

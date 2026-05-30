@@ -139,10 +139,10 @@ await queryRunner.query(`ALTER TABLE "user_profile" ALTER COLUMN "github" SET NO
 ```js
 await queryRunner.query(`ALTER TABLE "user_profile" ADD "room" jsonb NOT NULL DEFAULT '{}'`);          // オブジェクト
 await queryRunner.query(`ALTER TABLE "bubble_game_record" ADD "logs" jsonb NOT NULL DEFAULT '[]'`);     // 配列(JSON)
-await queryRunner.query(`ALTER TABLE "user_group" ADD "reads" character varying(32) array NOT NULL DEFAULT '{}'::varchar[]`); // PG 配列型
+await queryRunner.query(`ALTER TABLE "meta" ADD "pinnedUsers" character varying(256) array NOT NULL DEFAULT '{}'::varchar[]`); // PG 配列型
 ```
 
-参照: [migration/1565634203341-room.js](../../../../../packages/backend/migration/1565634203341-room.js), [migration/1704959805077-bubble-game-record.js](../../../../../packages/backend/migration/1704959805077-bubble-game-record.js)。`down` はいずれも `DROP COLUMN`。
+参照: [migration/1565634203341-room.js](../../../../../packages/backend/migration/1565634203341-room.js), [migration/1704959805077-bubble-game-record.js](../../../../../packages/backend/migration/1704959805077-bubble-game-record.js), [migration/1557476068003-PinnedUsers.js](../../../../../packages/backend/migration/1557476068003-PinnedUsers.js)。`down` はいずれも `DROP COLUMN`。
 
 ### 5. 安全な DROP と COMMENT
 
