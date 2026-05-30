@@ -457,7 +457,7 @@ export class RoomEngine extends EngineBase<{
 
 			// TODO: GPUPickerを使いたいが、なぜか一部のメッシュが反応しない
 			const pickingInfo = this.scene.pick(ev.x, ev.y,
-				(m) => m.name.includes('__PICK__') || (m.isVisible && m.isEnabled() && m.metadata?.objectId != null && this.objectContainers.has(m.metadata.objectId)));
+				(m) => m.name.includes('__PICK__') || m.metadata?.isPlayer || (m.isVisible && m.isEnabled() && m.metadata?.objectId != null && this.objectContainers.has(m.metadata.objectId)));
 
 			if (pickingInfo.pickedMesh != null) {
 				const oid = pickingInfo.pickedMesh.metadata.objectId;

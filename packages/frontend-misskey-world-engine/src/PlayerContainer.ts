@@ -239,7 +239,7 @@ export class PlayerContainer {
 
 	public applyState(state: PlayerState, forInit = false) {
 		this.root.position.set(...state.position);
-		if (this.modelRoot) this.modelRoot.rotation.set(...state.rotation);
+		this.subRoot.rotation.set(...state.rotation);
 		if (!forInit) {
 			const meshes = this.root.getChildMeshes();
 			if (meshes.length > 0) this.sr.updateMesh(meshes);
