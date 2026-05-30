@@ -67,6 +67,7 @@ export class RoomEngine extends EngineBase<{
 	'changeGridSnapping': (ctx: { gridSnapping: { enabled: boolean; scale: number } }) => void;
 	'changeRoomState': (ctx: { roomState: RoomState }) => void;
 	'changeMyPlayerState': (ctx: PlayerState) => void;
+	'playerPointed': (ctx: { playerId: string; }) => void;
 	'playSfxUrl': (ctx: {
 		url: string;
 		options: {
@@ -473,6 +474,7 @@ export class RoomEngine extends EngineBase<{
 				if (playerId != null && this.playerContainers.some(c => c.id === playerId)) {
 					const c = this.playerContainers.find(c => c.id === playerId)!;
 					this.look(c.root.position);
+					this.ev('playerPointed', { playerId });
 					return;
 				}
 			}
