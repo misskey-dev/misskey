@@ -8,7 +8,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vites
 import { mockDeep } from 'vitest-mock-extended';
 import { Test, TestingModule } from '@nestjs/testing';
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { AuthenticationResponseJSON } from '@simplewebauthn/types';
+import type { AuthenticationResponseJSON } from '@simplewebauthn/server';
 import { HttpHeader } from 'fastify/types/utils.js';
 import { MiUser } from '@/models/User.js';
 import { MiUserProfile, UserProfilesRepository, UsersRepository } from '@/models/_.js';

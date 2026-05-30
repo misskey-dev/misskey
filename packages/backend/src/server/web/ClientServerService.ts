@@ -71,7 +71,7 @@ export class ClientServerService {
 	private readonly clientAssets: string;
 	private readonly assets: string;
 	private readonly swAssets: string;
-	private readonly fluentEmojisDir: string;
+	private readonly fluentEmojiDir: string;
 	private readonly twemojiDir: string;
 	private readonly frontendViteOut: string;
 	private readonly frontendEmbedViteOut: string;
@@ -135,8 +135,8 @@ export class ClientServerService {
 		this.clientAssets = resolve(frontendRootdir, 'assets');
 		this.assets = resolve(this.config.rootDir, 'built/_frontend_dist_');
 		this.swAssets = resolve(this.config.rootDir, 'built/_sw_dist_');
-		this.fluentEmojisDir = resolve(this.config.rootDir, 'fluent-emojis/dist');
-		this.twemojiDir = resolve(backendRootdir, 'node_modules/@discordapp/twemoji/dist/svg');
+		this.fluentEmojiDir = resolve(backendRootdir, 'node_modules/@misskey-dev/emoji-assets/built/fluent-emoji');
+		this.twemojiDir = resolve(backendRootdir, 'node_modules/@misskey-dev/emoji-assets/built/twemoji');
 		this.frontendViteOut = resolve(this.config.rootDir, 'built/_frontend_vite_');
 		this.frontendEmbedViteOut = resolve(this.config.rootDir, 'built/_frontend_embed_vite_');
 		this.tarball = resolve(this.config.rootDir, 'built/tarball');
@@ -306,7 +306,7 @@ export class ClientServerService {
 
 			reply.header('Content-Security-Policy', 'default-src \'none\'; style-src \'unsafe-inline\'');
 
-			return reply.sendFile(path, this.fluentEmojisDir, {
+			return reply.sendFile(path, this.fluentEmojiDir, {
 				maxAge: ms('30 days'),
 			});
 		});
@@ -441,7 +441,7 @@ export class ClientServerService {
 				img: this.meta.bannerUrl ?? undefined,
 				title: this.meta.name ?? 'Misskey',
 				desc: this.meta.description ?? undefined,
-				...await this.htmlTemplateService.getCommonData(),
+				...(await this.htmlTemplateService.getCommonData()),
 				...data,
 			}));
 		};
@@ -458,7 +458,7 @@ export class ClientServerService {
 				requireSigninToViewContents: false,
 			});
 
-			return user && await this.feedService.packFeed(user);
+			return user && (await this.feedService.packFeed(user));
 		};
 
 		// Atom
@@ -541,7 +541,7 @@ export class ClientServerService {
 					user: _user,
 					profile,
 					sub: request.params.sub,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 					clientCtxJson: htmlSafeJsonStringify({
 						user: _user,
 					}),
@@ -579,7 +579,11 @@ export class ClientServerService {
 					id: request.params.note,
 					visibility: In(['public', 'home']),
 				},
-				relations: ['user', 'reply', 'renote'],
+				relations: {
+					user: true,
+					reply: true,
+					renote: true,
+				},
 			});
 
 			if (
@@ -599,7 +603,7 @@ export class ClientServerService {
 				return await HtmlTemplateService.replyHtml(reply, NotePage({
 					note: _note,
 					profile,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 					clientCtxJson: htmlSafeJsonStringify({
 						note: _note,
 					}),
@@ -639,7 +643,7 @@ export class ClientServerService {
 				return await HtmlTemplateService.replyHtml(reply, PagePage({
 					page: _page,
 					profile,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 				}));
 			} else {
 				return await renderBase(reply);
@@ -663,7 +667,7 @@ export class ClientServerService {
 				return await HtmlTemplateService.replyHtml(reply, FlashPage({
 					flash: _flash,
 					profile,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 				}));
 			} else {
 				return await renderBase(reply);
@@ -687,7 +691,7 @@ export class ClientServerService {
 				return await HtmlTemplateService.replyHtml(reply, ClipPage({
 					clip: _clip,
 					profile,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 					clientCtxJson: htmlSafeJsonStringify({
 						clip: _clip,
 					}),
@@ -712,7 +716,7 @@ export class ClientServerService {
 				return await HtmlTemplateService.replyHtml(reply, GalleryPostPage({
 					galleryPost: _post,
 					profile,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 				}));
 			} else {
 				return await renderBase(reply);
@@ -730,7 +734,7 @@ export class ClientServerService {
 				reply.header('Cache-Control', 'public, max-age=15');
 				return await HtmlTemplateService.replyHtml(reply, ChannelPage({
 					channel: _channel,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 				}));
 			} else {
 				return await renderBase(reply);
@@ -748,7 +752,7 @@ export class ClientServerService {
 				reply.header('Cache-Control', 'public, max-age=3600');
 				return await HtmlTemplateService.replyHtml(reply, ReversiGamePage({
 					reversiGame: _game,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 				}));
 			} else {
 				return await renderBase(reply);
@@ -767,7 +771,7 @@ export class ClientServerService {
 				reply.header('Cache-Control', 'public, max-age=3600');
 				return await HtmlTemplateService.replyHtml(reply, AnnouncementPage({
 					announcement: _announcement,
-					...await this.htmlTemplateService.getCommonData(),
+					...(await this.htmlTemplateService.getCommonData()),
 				}));
 			} else {
 				return await renderBase(reply);
@@ -803,7 +807,7 @@ export class ClientServerService {
 			reply.header('Cache-Control', 'public, max-age=3600');
 			return await HtmlTemplateService.replyHtml(reply, BaseEmbed({
 				title: this.meta.name ?? 'Misskey',
-				...await this.htmlTemplateService.getCommonData(),
+				...(await this.htmlTemplateService.getCommonData()),
 				embedCtxJson: htmlSafeJsonStringify({
 					user: _user,
 				}),
@@ -817,7 +821,11 @@ export class ClientServerService {
 				where: {
 					id: request.params.note,
 				},
-				relations: ['user', 'reply', 'renote'],
+				relations: {
+					user: true,
+					reply: true,
+					renote: true,
+				},
 			});
 
 			if (note == null) return;
@@ -829,7 +837,7 @@ export class ClientServerService {
 			reply.header('Cache-Control', 'public, max-age=3600');
 			return await HtmlTemplateService.replyHtml(reply, BaseEmbed({
 				title: this.meta.name ?? 'Misskey',
-				...await this.htmlTemplateService.getCommonData(),
+				...(await this.htmlTemplateService.getCommonData()),
 				embedCtxJson: htmlSafeJsonStringify({
 					note: _note,
 				}),
@@ -850,7 +858,7 @@ export class ClientServerService {
 			reply.header('Cache-Control', 'public, max-age=3600');
 			return await HtmlTemplateService.replyHtml(reply, BaseEmbed({
 				title: this.meta.name ?? 'Misskey',
-				...await this.htmlTemplateService.getCommonData(),
+				...(await this.htmlTemplateService.getCommonData()),
 				embedCtxJson: htmlSafeJsonStringify({
 					clip: _clip,
 				}),
@@ -863,7 +871,7 @@ export class ClientServerService {
 			reply.header('Cache-Control', 'public, max-age=3600');
 			return await HtmlTemplateService.replyHtml(reply, BaseEmbed({
 				title: this.meta.name ?? 'Misskey',
-				...await this.htmlTemplateService.getCommonData(),
+				...(await this.htmlTemplateService.getCommonData()),
 			}));
 		});
 
