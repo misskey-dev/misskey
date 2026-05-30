@@ -3256,6 +3256,8 @@ _search:
   pleaseEnterServerHost: "請輸入伺服器的主機名稱"
   pleaseSelectUser: "請選擇使用者"
   serverHostPlaceholder: "例：misskey.example.com"
+  postFrom: "發布時間 from"
+  postTo: "發布時間 to"
 _serverSetupWizard:
   installCompleted: "Misskey 的安裝已經完成了！"
   firstCreateAccount: "首先，請建立管理者帳戶。"
