@@ -101,4 +101,4 @@
 | 全体ビルド | `pnpm build` |
 | 開発サーバー (backend + frontend watch) | `pnpm dev` |
 
-> backend テスト (`test` / `test:e2e` / `test:fed`) 実行前に `.config/test.yml` が必要 (`cp .github/misskey/test.yml .config/test.yml` で作成)。
+> backend テスト (`test` / `test:e2e` / `test:fed`) 実行前に `.config/test.yml` が必要 (`ncp .github/misskey/test.yml .config/test.yml` または `cp .github/misskey/test.yml .config/test.yml` で作成)。
