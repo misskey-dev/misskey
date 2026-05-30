@@ -10,7 +10,7 @@
 
 ### コード・データ関連
 
-- **SPDX ヘッダー必須**: AGPL-3.0-only 管轄かつ SPDX CI 対象ディレクトリに新規 `.ts` / `.js` / `.cjs` / `.mjs` / `.scss` ファイルを追加する場合は冒頭に必ず付ける。詳細な対象判定は `.github/workflows/check-spdx-license-id.yml` を参照。
+- **SPDX ヘッダー必須**: AGPL-3.0-only 管轄かつ SPDX CI 対象ディレクトリに新規 `.ts` / `.js` / `.cjs` / `.mjs` / `.scss` / `.vue` / `.html` ファイルを追加する場合は冒頭に必ず付ける。詳細な対象判定は `.github/workflows/check-spdx-license-id.yml` を参照。
 
   ```text
   /*
