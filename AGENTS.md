@@ -66,9 +66,21 @@
 
 ---
 
+## スキル呼び出しの必須タイミング
+
+以下の 3 スキルは **他スキルの実行・事前知識・memory の内容に関わらず免除されない**。該当フェーズに入ったら各エージェントの方式で必ず参照・実行すること。
+
+| タイミング | スキル |
+| --- | --- |
+| `packages/backend/` 配下のファイルを編集・追加する実装フェーズに入る前 | `working-on-backend` |
+| `packages/frontend/` 配下のファイルを編集・追加する実装フェーズに入る前 | `working-on-frontend` |
+| commit / PR 作成 / 作業をユーザーに返す直前 | `shipping-misskey-change` |
+
+---
+
 ## 変更を出す前の最低チェック
 
-Claude Code は [.claude/skills/shipping-misskey-change/SKILL.md](.claude/skills/shipping-misskey-change/SKILL.md) を invoke することで自動展開される。Skills を読めない Codex / Copilot も以下を手で確認すること:
+各エージェントは [shipping-misskey-change スキル](.claude/skills/shipping-misskey-change/SKILL.md) を参照すること。スキルが利用できない環境でも、以下のチェックは必ず実施すること:
 
 1. **lint**: `pnpm lint` が通る (typecheck + eslint, 全パッケージ)
 2. **backend API 変更時**: `pnpm build-misskey-js-with-types` を実行し `packages/misskey-js/src/autogen/` の差分も commit に含めた
@@ -94,28 +106,3 @@ Claude Code は [.claude/skills/shipping-misskey-change/SKILL.md](.claude/skills
 | 開発サーバー (backend + frontend watch) | `pnpm dev` |
 
 > backend テスト (`test` / `test:e2e` / `test:fed`) 実行前に `.config/test.yml` が必要 (`cp .github/misskey/test.yml .config/test.yml` で作成)。
-
----
-
-## Claude Code 固有の補助ファイル
-
-`.claude/` 配下は Claude Code 固有の skill / agent を集約している (Codex / Copilot は読み飛ばしてよい)。Skills は description で自動索引されるため、トリガー条件に該当する作業時に Claude が自発的に呼び出す。
-
-- `.claude/skills/working-on-backend/` — `packages/backend/` 編集時に呼ばれる索引スキル
-- `.claude/skills/working-on-frontend/` — `packages/frontend/` 編集時に呼ばれる索引スキル
-- `.claude/skills/shipping-misskey-change/` — commit / PR 直前の最終チェックリスト
-- `.claude/agents/{misskey-api-reviewer,vue-component-reviewer}.md` — 専門レビューエージェント
-- `.claude/commands/{harness-audit,quality-gate}.md` — ECC (everything-claude-code) 由来 MIT コマンド
-- `.claude/settings.json` — Claude Code の有効プラグイン共有設定 (hook は意図的に登録しない)
-
-### スキル呼び出しの必須タイミング
-
-以下の 3 スキルは **他スキルの実行・事前知識・memory の内容に関わらず免除されない**。該当フェーズに入ったら必ず Skill ツールで呼び出すこと。
-
-| タイミング | 呼び出すスキル |
-| --- | --- |
-| `packages/backend/` 配下のファイルを編集・追加する実装フェーズに入る前 | `working-on-backend` |
-| `packages/frontend/` 配下のファイルを編集・追加する実装フェーズに入る前 | `working-on-frontend` |
-| commit / PR 作成 / 作業をユーザーに返す直前 | `shipping-misskey-change` |
-
-サードパーティ由来の出典は [.claude/THIRD_PARTY_LICENSES.md](.claude/THIRD_PARTY_LICENSES.md) を参照。
