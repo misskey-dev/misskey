@@ -55,7 +55,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const counts = new Map<string, number>();
 
 			for (const job of jobs) {
-				const host = new URL(job.data.signature.keyId).host;
+				const signature = job.data.signature ? 'version' in job.data.signature ? job.data.signature.value : job.data.signature : null;
+				const host = signature ? Array.isArray(signature) ? 'TODO' : new URL(signature.keyId).host : new URL(job.data.activity.actor).host;
 				counts.set(host, (counts.get(host) ?? 0) + 1);
 			}
 

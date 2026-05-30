@@ -156,6 +156,7 @@ export class FanoutTimelineEndpointService {
 				filter = (note) => {
 					if (!ps.ignoreAuthorFromUserSuspension) {
 						if (note.user!.isSuspended) return false;
+						if (note.user!.isRemoteSuspended) return false;
 					}
 					if (note.userId !== note.renoteUserId && note.renote?.user?.isSuspended) return false;
 					if (note.userId !== note.replyUserId && note.reply?.user?.isSuspended) return false;
