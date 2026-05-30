@@ -11,6 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<template #suffix>
 				<span v-if="s.type === 'color'" :style="{ color: getHex(options[k]) }">●</span>
 				<span v-else-if="s.type === 'material'" :style="{ color: getHex(options[k].color) }">●</span>
+				<span v-else-if="s.type === 'light'" :style="{ color: getHex(options[k].color) }">●</span>
 			</template>
 
 			<div v-if="s.type === 'color'">
