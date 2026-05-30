@@ -202,7 +202,7 @@ export class NotificationService implements OnApplicationShutdown {
 	}
 
 	// TODO
-	//const locales = await import('../../../../locales/index.js');
+	//const locales = await import('i18n');
 
 	// TODO: locale ファイルをクライアント用とサーバー用で分けたい
 
@@ -246,7 +246,8 @@ export class NotificationService implements OnApplicationShutdown {
 
 	private toXListId(id: string): string {
 		const { date, additional } = this.idService.parseFull(id);
-		return date.toString() + '-' + additional.toString();
+		// Redis Stream sequenceはunit64制約があるため、収まらない場合は下位64bitを取る
+		return date.toString() + '-' + BigInt.asUintN(64, additional).toString();
 	}
 
 	@bindThis
@@ -271,7 +272,7 @@ export class NotificationService implements OnApplicationShutdown {
 		let untilTime = untilId ? this.toXListId(untilId) : null;
 
 		let notifications: MiNotification[];
-		for (;;) {
+		for (; ;) {
 			let notificationsRes: [id: string, fields: string[]][];
 
 			// sinceidのみの場合は古い順、そうでない場合は新しい順。 QueryService.makePaginationQueryも参照

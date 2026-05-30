@@ -5,12 +5,13 @@
 
 import { Injectable, Inject } from '@nestjs/common';
 import { Not, IsNull, DataSource } from 'typeorm';
+import * as Redis from 'ioredis';
 import type { MiUser } from '@/models/User.js';
-import { AppLockService } from '@/core/AppLockService.js';
 import { DI } from '@/di-symbols.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import type { FollowingsRepository } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
+import { acquireChartInsertLock } from '@/misc/distributed-lock.js';
 import Chart from '../core.js';
 import { ChartLoggerService } from '../ChartLoggerService.js';
 import { name, schema } from './entities/per-user-following.js';
@@ -25,14 +26,16 @@ export default class PerUserFollowingChart extends Chart<typeof schema> { // esl
 		@Inject(DI.db)
 		private db: DataSource,
 
+		@Inject(DI.redis)
+		private redisClient: Redis.Redis,
+
 		@Inject(DI.followingsRepository)
 		private followingsRepository: FollowingsRepository,
 
-		private appLockService: AppLockService,
 		private userEntityService: UserEntityService,
 		private chartLoggerService: ChartLoggerService,
 	) {
-		super(db, (k) => appLockService.getChartInsertLock(k), chartLoggerService.logger, name, schema, true);
+		super(db, (k) => acquireChartInsertLock(redisClient, k), chartLoggerService.logger, name, schema, true);
 	}
 
 	protected async tickMajor(group: string): Promise<Partial<KVs<typeof schema>>> {

@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button :class="$style.closeButton" class="_button" @click="onClose"><i class="ti ti-x"></i></button>
 		</div>
 		<div :class="$style.content">
-			<MkSignin :autoSet="autoSet" :message="message" :openOnRemote="openOnRemote" @login="onLogin"/>
+			<MkSignin :autoSet="autoSet" :message="message" :openOnRemote="openOnRemote" :initialUsername="initialUsername" @login="onLogin"/>
 		</div>
 	</div>
 </MkModal>
@@ -34,10 +34,12 @@ withDefaults(defineProps<{
 	autoSet?: boolean;
 	message?: string,
 	openOnRemote?: OpenOnRemoteOptions,
+	initialUsername?: string;
 }>(), {
 	autoSet: false,
 	message: '',
 	openOnRemote: undefined,
+	initialUsername: undefined,
 });
 
 const emit = defineEmits<{

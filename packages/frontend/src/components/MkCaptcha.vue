@@ -7,8 +7,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 <div>
 	<span v-if="!available">Loading<MkEllipsis/></span>
 	<div v-if="props.provider == 'mcaptcha'">
-		<div id="mcaptcha__widget-container" class="m-captcha-style"></div>
-		<div ref="captchaEl"></div>
+		<iframe
+			v-if="mCaptchaIframeUrl != null"
+			ref="mCaptchaIframe"
+			:src="mCaptchaIframeUrl"
+			style="border: none; max-width: 320px; width: 100%; height: 100%; max-height: 80px;"
+		></iframe>
 	</div>
 	<div v-if="props.provider == 'testcaptcha'" style="background: #eee; border: solid 1px #888; padding: 8px; color: #000; max-width: 320px; display: flex; gap: 10px; align-items: center; box-shadow: 2px 2px 6px #0004; border-radius: 4px;">
 		<img src="/client-assets/testcaptcha.png" style="width: 60px; height: 60px; "/>
@@ -26,7 +30,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref, useTemplateRef, computed, onMounted, onBeforeUnmount, watch, onUnmounted } from 'vue';
+import { ref, useTemplateRef, computed, onMounted, onBeforeUnmount, watch, onUnmounted, nextTick } from 'vue';
+import type Reciever_typeReferenceOnly from '@mcaptcha/core-glue';
 import { store } from '@/store.js';
 
 // APIs provided by Captcha services
@@ -71,6 +76,19 @@ const available = ref(false);
 
 const captchaEl = useTemplateRef('captchaEl');
 const captchaWidgetId = ref<string | undefined>(undefined);
+
+let mCaptchaReciever: Reciever_typeReferenceOnly | null = null;
+const mCaptchaIframe = useTemplateRef('mCaptchaIframe');
+const mCaptchaRemoveState = ref(false);
+const mCaptchaIframeUrl = computed(() => {
+	if (props.provider === 'mcaptcha' && !mCaptchaRemoveState.value && props.instanceUrl && props.sitekey) {
+		const url = new URL('/widget', props.instanceUrl);
+		url.searchParams.set('sitekey', props.sitekey);
+		return url.toString();
+	}
+	return null;
+});
+
 const testcaptchaInput = ref('');
 const testcaptchaPassed = ref(false);
 
@@ -84,7 +102,7 @@ const variable = computed(() => {
 	}
 });
 
-const loaded = !!window[variable.value];
+const loaded = !!(window as any)[variable.value];
 
 const src = computed(() => {
 	switch (props.provider) {
@@ -98,7 +116,7 @@ const src = computed(() => {
 
 const scriptId = computed(() => `script-${props.provider}`);
 
-const captcha = computed<Captcha>(() => window[variable.value] || {} as unknown as Captcha);
+const captcha = computed<Captcha>(() => (window as any)[variable.value] ?? {} as unknown as Captcha);
 
 watch(() => [props.instanceUrl, props.sitekey, props.secretKey], async () => {
 	// 変更があったときはリフレッシュと再レンダリングをしておかないと、変更後の値で再検証が出来ない
@@ -129,8 +147,14 @@ function reset() {
 			if (_DEV_) console.warn(error);
 		}
 	}
+
 	testcaptchaPassed.value = false;
 	testcaptchaInput.value = '';
+
+	if (mCaptchaReciever != null) {
+		mCaptchaReciever.destroy();
+		mCaptchaReciever = null;
+	}
 }
 
 function remove() {
@@ -142,6 +166,10 @@ function remove() {
 			// ignore
 			if (_DEV_) console.warn(error);
 		}
+	}
+
+	if (props.provider === 'mcaptcha') {
+		mCaptchaRemoveState.value = true;
 	}
 }
 
@@ -160,32 +188,29 @@ async function requestRender() {
 			'error-callback': () => callback(undefined),
 		});
 	} else if (props.provider === 'mcaptcha' && props.instanceUrl && props.sitekey) {
-		const { default: Widget } = await import('@mcaptcha/vanilla-glue');
-		new Widget({
+		const { default: Reciever } = await import('@mcaptcha/core-glue');
+		mCaptchaReciever = new Reciever({
 			siteKey: {
-				instanceUrl: new URL(props.instanceUrl),
 				key: props.sitekey,
+				instanceUrl: new URL(props.instanceUrl),
 			},
+		}, (token: string) => {
+			callback(token);
 		});
+		mCaptchaReciever.listen();
+		mCaptchaRemoveState.value = false;
 	} else {
-		window.setTimeout(requestRender, 1);
+		window.setTimeout(requestRender, 50);
 	}
 }
 
 function clearWidget() {
-	if (props.provider === 'mcaptcha') {
-		const container = window.document.getElementById('mcaptcha__widget-container');
-		if (container) {
-			container.innerHTML = '';
-		}
-	} else {
-		reset();
-		remove();
+	reset();
+	remove();
 
-		if (captchaEl.value) {
-			// レンダリング先のコンテナの中身を掃除し、フォームが増殖するのを抑止
-			captchaEl.value.innerHTML = '';
-		}
+	if (captchaEl.value) {
+		// レンダリング先のコンテナの中身を掃除し、フォームが増殖するのを抑止
+		captchaEl.value.innerHTML = '';
 	}
 }
 

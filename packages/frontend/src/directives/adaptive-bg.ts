@@ -6,8 +6,8 @@
 import type { Directive } from 'vue';
 import { getBgColor } from '@/utility/get-bg-color.js';
 
-export default {
-	mounted(src, binding, vn) {
+export const adaptiveBgDirective = {
+	mounted(src) {
 		const parentBg = getBgColor(src.parentElement) ?? 'transparent';
 
 		const myBg = window.getComputedStyle(src).backgroundColor;
@@ -18,4 +18,4 @@ export default {
 			src.style.backgroundColor = myBg;
 		}
 	},
-} as Directive;
+} as Directive<HTMLElement>;

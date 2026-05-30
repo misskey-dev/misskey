@@ -25,11 +25,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 						<div class="_gaps_m">
 							<div><SearchText>{{ i18n.ts._sensitiveMediaDetection.description }}</SearchText></div>
 
-							<MkRadios v-model="sensitiveMediaDetectionForm.state.sensitiveMediaDetection">
-								<option value="none">{{ i18n.ts.none }}</option>
-								<option value="all">{{ i18n.ts.all }}</option>
-								<option value="local">{{ i18n.ts.localOnly }}</option>
-								<option value="remote">{{ i18n.ts.remoteOnly }}</option>
+							<MkRadios
+								v-model="sensitiveMediaDetectionForm.state.sensitiveMediaDetection"
+								:options="[
+									{ value: 'none', label: i18n.ts.none },
+									{ value: 'all', label: i18n.ts.all },
+									{ value: 'local', label: i18n.ts.localOnly },
+									{ value: 'remote', label: i18n.ts.remoteOnly },
+								]"
+							>
 							</MkRadios>
 
 							<SearchMarker :keywords="['sensitivity']">
@@ -194,7 +198,7 @@ const sensitiveMediaDetectionForm = useForm({
 			state.sensitiveMediaDetectionSensitivity === 2 ? 'medium' :
 			state.sensitiveMediaDetectionSensitivity === 3 ? 'high' :
 			state.sensitiveMediaDetectionSensitivity === 4 ? 'veryHigh' :
-			0,
+			null as never,
 		setSensitiveFlagAutomatically: state.setSensitiveFlagAutomatically,
 		enableSensitiveMediaDetectionForVideos: state.enableSensitiveMediaDetectionForVideos,
 	});

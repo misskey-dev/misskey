@@ -8,6 +8,30 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_spacer" style="--MI_SPACER-w: 700px; --MI_SPACER-min: 16px; --MI_SPACER-max: 32px;">
 		<SearchMarker path="/admin/branding" :label="i18n.ts.branding" :keywords="['branding']" icon="ti ti-paint">
 			<div class="_gaps_m">
+				<SearchMarker :keywords="['entrance', 'welcome', 'landing', 'front', 'home', 'page', 'style']">
+					<MkRadios
+						v-model="entrancePageStyle"
+						:options="[
+							{ value: 'classic' },
+							{ value: 'simple' },
+						]"
+					>
+						<template #label><SearchLabel>{{ i18n.ts._serverSettings.entrancePageStyle }}</SearchLabel></template>
+					</MkRadios>
+				</SearchMarker>
+
+				<SearchMarker :keywords="['timeline']">
+					<MkSwitch v-model="showTimelineForVisitor">
+						<template #label><SearchLabel>{{ i18n.ts._serverSettings.showTimelineForVisitor }}</SearchLabel></template>
+					</MkSwitch>
+				</SearchMarker>
+
+				<SearchMarker :keywords="['activity', 'activities']">
+					<MkSwitch v-model="showActivitiesForVisitor">
+						<template #label><SearchLabel>{{ i18n.ts._serverSettings.showActivitiesForVisitor }}</SearchLabel></template>
+					</MkSwitch>
+				</SearchMarker>
+
 				<SearchMarker :keywords="['icon', 'image']">
 					<MkInput v-model="iconUrl" type="url">
 						<template #prefix><i class="ti ti-link"></i></template>
@@ -131,6 +155,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
 import JSON5 from 'json5';
+import * as Misskey from 'misskey-js';
 import { host } from '@@/js/config.js';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
@@ -141,8 +166,17 @@ import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
 import MkColorInput from '@/components/MkColorInput.vue';
+import MkRadios from '@/components/MkRadios.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 
 const meta = await misskeyApi('admin/meta');
+
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+const entrancePageStyle = ref<Misskey.entities.MetaClientOptions['entrancePageStyle']>(meta.clientOptions.entrancePageStyle ?? 'classic');
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+const showTimelineForVisitor = ref<Misskey.entities.MetaClientOptions['showTimelineForVisitor']>(meta.clientOptions.showTimelineForVisitor ?? true);
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+const showActivitiesForVisitor = ref<Misskey.entities.MetaClientOptions['showActivitiesForVisitor']>(meta.clientOptions.showActivitiesForVisitor ?? true);
 
 const iconUrl = ref(meta.iconUrl);
 const app192IconUrl = ref(meta.app192IconUrl);
@@ -161,6 +195,11 @@ const manifestJsonOverride = ref(meta.manifestJsonOverride === '' ? '{}' : JSON.
 
 function save() {
 	os.apiWithDialog('admin/update-meta', {
+		clientOptions: {
+			entrancePageStyle: entrancePageStyle.value,
+			showTimelineForVisitor: showTimelineForVisitor.value,
+			showActivitiesForVisitor: showActivitiesForVisitor.value,
+		},
 		iconUrl: iconUrl.value,
 		app192IconUrl: app192IconUrl.value,
 		app512IconUrl: app512IconUrl.value,

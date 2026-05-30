@@ -224,6 +224,10 @@ export const packedRolePoliciesSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		canCreateChannel: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 		driveCapacityMb: {
 			type: 'integer',
 			optional: false, nullable: false,
@@ -314,6 +318,10 @@ export const packedRolePoliciesSchema = {
 			enum: ['available', 'readonly', 'unavailable'],
 		},
 		noteDraftLimit: {
+			type: 'integer',
+			optional: false, nullable: false,
+		},
+		scheduledNoteLimit: {
 			type: 'integer',
 			optional: false, nullable: false,
 		},

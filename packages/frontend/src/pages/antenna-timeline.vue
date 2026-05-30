@@ -19,7 +19,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, ref, useTemplateRef } from 'vue';
+import { computed, watch, ref, useTemplateRef, provide } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkStreamingNotesTimeline from '@/components/MkStreamingNotesTimeline.vue';
 import * as os from '@/os.js';
@@ -37,25 +37,14 @@ const props = defineProps<{
 const antenna = ref<Misskey.entities.Antenna | null>(null);
 const tlEl = useTemplateRef('tlEl');
 
-async function timetravel() {
-	const { canceled, result: date } = await os.inputDate({
-		title: i18n.ts.date,
-	});
-	if (canceled) return;
-
-	tlEl.value.timetravel(date);
-}
+provide('currentAntenna', antenna);
 
 function settings() {
 	router.push('/my/antennas/:antennaId', {
 		params: {
 			antennaId: props.antennaId,
-		}
+		},
 	});
-}
-
-function focus() {
-	tlEl.value.focus();
 }
 
 watch(() => props.antennaId, async () => {
@@ -65,10 +54,6 @@ watch(() => props.antennaId, async () => {
 }, { immediate: true });
 
 const headerActions = computed(() => antenna.value ? [{
-	icon: 'ti ti-calendar-time',
-	text: i18n.ts.jumpToSpecifiedDate,
-	handler: timetravel,
-}, {
 	icon: 'ti ti-settings',
 	text: i18n.ts.settings,
 	handler: settings,

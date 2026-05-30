@@ -174,6 +174,7 @@ export const packedPageSchema = {
 		font: {
 			type: 'string',
 			optional: false, nullable: false,
+			enum: ['serif', 'sans-serif'],
 		},
 		script: {
 			type: 'string',

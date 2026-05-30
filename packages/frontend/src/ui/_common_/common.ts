@@ -12,7 +12,7 @@ import { i18n } from '@/i18n.js';
 import { $i } from '@/i.js';
 
 function toolsMenuItems(): MenuItem[] {
-	return [{
+	const items: MenuItem[] = [{
 		type: 'link',
 		to: '/scratchpad',
 		text: i18n.ts.scratchpad,
@@ -27,20 +27,30 @@ function toolsMenuItems(): MenuItem[] {
 		to: '/clicker',
 		text: '🍪👈',
 		icon: 'ti ti-cookie',
-	}, ($i && ($i.isAdmin || $i.policies.canManageCustomEmojis)) ? {
-		type: 'link',
-		to: '/custom-emojis-manager',
-		text: i18n.ts.manageCustomEmojis,
-		icon: 'ti ti-icons',
-	} : undefined, ($i && ($i.isAdmin || $i.policies.canManageAvatarDecorations)) ? {
-		type: 'link',
-		to: '/avatar-decorations',
-		text: i18n.ts.manageAvatarDecorations,
-		icon: 'ti ti-sparkles',
-	} : undefined];
+	}];
+
+	if ($i && ($i.isAdmin || $i.policies.canManageCustomEmojis)) {
+		items.push({
+			type: 'link',
+			to: '/custom-emojis-manager',
+			text: i18n.ts.manageCustomEmojis,
+			icon: 'ti ti-icons',
+		});
+	}
+
+	if ($i && ($i.isAdmin || $i.policies.canManageAvatarDecorations)) {
+		items.push({
+			type: 'link' as const,
+			to: '/avatar-decorations',
+			text: i18n.ts.manageAvatarDecorations,
+			icon: 'ti ti-sparkles',
+		});
+	}
+
+	return items;
 }
 
-export function openInstanceMenu(ev: MouseEvent) {
+export function openInstanceMenu(ev: PointerEvent) {
 	const menuItems: MenuItem[] = [];
 
 	menuItems.push({
@@ -165,7 +175,7 @@ export function openInstanceMenu(ev: MouseEvent) {
 	});
 }
 
-export function openToolsMenu(ev: MouseEvent) {
+export function openToolsMenu(ev: PointerEvent) {
 	os.popupMenu(toolsMenuItems(), ev.currentTarget ?? ev.target, {
 		align: 'left',
 	});

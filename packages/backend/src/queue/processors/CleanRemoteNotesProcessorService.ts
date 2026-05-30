@@ -51,6 +51,17 @@ export class CleanRemoteNotesProcessorService {
 		skipped: boolean;
 		transientErrors: number;
 	}> {
+		const getConfig = () => {
+			return {
+				enabled: this.meta.enableRemoteNotesCleaning,
+				maxDuration: this.meta.remoteNotesCleaningMaxProcessingDurationInMinutes * 60 * 1000, // Convert minutes to milliseconds
+				// The date limit for the newest note to be considered for deletion.
+				// All notes newer than this limit will always be retained.
+				newestLimit: this.idService.gen(Date.now() - (1000 * 60 * 60 * 24 * this.meta.remoteNotesCleaningExpiryDaysForEachNotes)),
+			};
+		};
+
+		const initialConfig = getConfig();
 		if (!this.meta.enableRemoteNotesCleaning) {
 			this.logger.info('Remote notes cleaning is disabled, skipping...');
 			return {
@@ -64,13 +75,9 @@ export class CleanRemoteNotesProcessorService {
 
 		this.logger.info('cleaning remote notes...');
 
-		const maxDuration = this.meta.remoteNotesCleaningMaxProcessingDurationInMinutes * 60 * 1000; // Convert minutes to milliseconds
 		const startAt = Date.now();
 
 		//#region queries
-		// The date limit for the newest note to be considered for deletion.
-		// All notes newer than this limit will always be retained.
-		const newestLimit = this.idService.gen(Date.now() - (1000 * 60 * 60 * 24 * this.meta.remoteNotesCleaningExpiryDaysForEachNotes));
 
 		// The condition for removing the notes.
 		// The note must be:
@@ -86,12 +93,13 @@ export class CleanRemoteNotesProcessorService {
 			'note."userHost" IS NOT NULL',
 			'NOT EXISTS (SELECT 1 FROM user_note_pining WHERE "noteId" = note."id")',
 			'NOT EXISTS (SELECT 1 FROM note_favorite WHERE "noteId" = note."id")',
+			'NOT EXISTS (SELECT 1 FROM note_reaction INNER JOIN "user" ON note_reaction."userId" = "user".id WHERE note_reaction."noteId" = note."id" AND "user"."host" IS NULL)',
 		].join(' AND ');
 
 		const minId = (await this.notesRepository.createQueryBuilder('note')
 			.select('MIN(note.id)', 'minId')
 			.where({
-				id: LessThan(newestLimit),
+				id: LessThan(initialConfig.newestLimit),
 				userHost: Not(IsNull()),
 				replyId: IsNull(),
 				renoteId: IsNull(),
@@ -154,12 +162,12 @@ export class CleanRemoteNotesProcessorService {
 		// | fff | fff    | TRUE        |
 		// | ggg | ggg    | FALSE       |
 		//
-		const candidateNotesQuery = this.db.createQueryBuilder()
+		const candidateNotesQuery = ({ limit }: { limit: number }) => this.db.createQueryBuilder()
 			.select(`"${candidateNotesCteName}"."id"`, 'id')
 			.addSelect('unremovable."id" IS NULL', 'isRemovable')
 			.addSelect(`BOOL_OR("${candidateNotesCteName}"."isBase")`, 'isBase')
 			.addCommonTableExpression(
-				`((SELECT "base".* FROM (${candidateNotesQueryBase.orderBy('note.id', 'ASC').limit(currentLimit).getQuery()}) AS "base") UNION ${candidateNotesQueryInductive.getQuery()})`,
+				`((SELECT "base".* FROM (${candidateNotesQueryBase.orderBy('note.id', 'ASC').limit(limit).getQuery()}) AS "base") UNION ${candidateNotesQueryInductive.getQuery()})`,
 				candidateNotesCteName,
 				{ recursive: true },
 			)
@@ -177,6 +185,11 @@ export class CleanRemoteNotesProcessorService {
 		let lowThroughputWarned = false;
 		let transientErrors = 0;
 		for (;;) {
+			const { enabled, maxDuration, newestLimit } = getConfig();
+			if (!enabled) {
+				this.logger.info('Remote notes cleaning is disabled, processing stopped...');
+				break;
+			}
 			//#region check time
 			const batchBeginAt = Date.now();
 
@@ -204,13 +217,44 @@ export class CleanRemoteNotesProcessorService {
 			let noteIds = null;
 
 			try {
-				noteIds = await candidateNotesQuery.setParameters(
+				noteIds = await candidateNotesQuery({ limit: currentLimit }).setParameters(
 					{ newestLimit, cursorLeft },
 				).getRawMany<{ id: MiNote['id'], isRemovable: boolean, isBase: boolean }>();
 			} catch (e) {
-				if (currentLimit > minimumLimit && e instanceof QueryFailedError && e.driverError?.code === '57014') {
-					// Statement timeout (maybe suddenly hit a large note tree), reduce the limit and try again
-					// continuous failures will eventually converge to currentLimit == minimumLimit and then throw
+				if (e instanceof QueryFailedError && e.driverError?.code === '57014') {
+					// Statement timeout (maybe suddenly hit a large note tree), if possible, reduce the limit and try again
+					// if not possible, skip the current batch of notes and find the next root note
+					if (currentLimit <= minimumLimit) {
+						job.log('Local note tree complexity is too high, finding next root note...');
+
+						// This query is only used to advance the cursor past the offending range;
+						// it intentionally omits the heavy NOT EXISTS subqueries in `removalCriteria`
+						// (user_note_pining / note_favorite / note_reaction) which would otherwise
+						// hit the same statement_timeout that triggered this fallback path (#17057).
+						// Strict removability is re-evaluated by the next iteration's CTE query.
+						const idWindow = await this.notesRepository.createQueryBuilder('note')
+							.select('id')
+							.where('note.id > :cursorLeft')
+							.andWhere('note."id" < :newestLimit')
+							.andWhere('note."userHost" IS NOT NULL')
+							.andWhere({ replyId: IsNull(), renoteId: IsNull() })
+							.orderBy('note.id', 'ASC')
+							.limit(minimumLimit + 1)
+							.setParameters({ cursorLeft, newestLimit })
+							.getRawMany<{ id?: MiNote['id'] }>();
+
+						job.log(`Skipped note IDs: ${idWindow.slice(0, minimumLimit).map(id => id.id).join(', ')}`);
+
+						const lastId = idWindow.at(minimumLimit)?.id;
+
+						if (!lastId) {
+							job.log('No more notes to clean.');
+							break;
+						}
+
+						cursorLeft = lastId;
+						continue;
+					}
 					currentLimit = Math.max(minimumLimit, Math.floor(currentLimit * 0.25));
 					continue;
 				}

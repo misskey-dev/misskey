@@ -24,6 +24,7 @@ import {
 import gradient from 'chartjs-plugin-gradient';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import { MatrixController, MatrixElement } from 'chartjs-chart-matrix';
+import { themeManager } from '@/theme.js';
 import { store } from '@/store.js';
 import 'chartjs-adapter-date-fns';
 
@@ -50,7 +51,7 @@ export function initChart() {
 	);
 
 	// フォントカラー
-	Chart.defaults.color = getComputedStyle(window.document.documentElement).getPropertyValue('--MI_THEME-fg');
+	Chart.defaults.color = themeManager.currentCompiledTheme!.fg;
 
 	Chart.defaults.borderColor = store.s.darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
 

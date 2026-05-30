@@ -2,8 +2,8 @@ import * as fs from 'fs/promises';
 import url from 'node:url';
 import path from 'node:path';
 import { execa } from 'execa';
-import locales from '../../locales/index.js';
-import { LocaleInliner } from '../frontend-builder/locale-inliner.js'
+import locales from 'i18n';
+import { LocaleInliner } from '../frontend-builder/locale-inliner.js';
 import { createLogger } from '../frontend-builder/logger';
 
 // requires node 21 or later

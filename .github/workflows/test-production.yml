@@ -16,13 +16,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4.2.2
+    - uses: actions/checkout@v6.0.2
       with:
         submodules: true
     - name: Setup pnpm
-      uses: pnpm/action-setup@v4.1.0
+      uses: pnpm/action-setup@v6.0.3
     - name: Use Node.js
-      uses: actions/setup-node@v4.4.0
+      uses: actions/setup-node@v6.4.0
       with:
         node-version-file: '.node-version'
         cache: 'pnpm'

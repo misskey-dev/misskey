@@ -25,7 +25,7 @@ export class MiAuthSession {
 	})
 	public userId: MiUser['id'] | null;
 
-	@ManyToOne(type => MiUser, {
+	@ManyToOne(() => MiUser, {
 		onDelete: 'CASCADE',
 		nullable: true,
 	})
@@ -35,7 +35,7 @@ export class MiAuthSession {
 	@Column(id())
 	public appId: MiApp['id'];
 
-	@ManyToOne(type => MiApp, {
+	@ManyToOne(() => MiApp, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()

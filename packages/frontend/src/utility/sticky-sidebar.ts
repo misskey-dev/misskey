@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+/*
 export class StickySidebar {
 	private lastScrollTop = 0;
 	private container: HTMLElement;
@@ -53,3 +54,4 @@ export class StickySidebar {
 		this.lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
 	}
 }
+*/

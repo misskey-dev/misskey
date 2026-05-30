@@ -167,7 +167,7 @@ function onMouseenter() {
 		text: computed(() => {
 			return props.textConverter(finalValue.value);
 		}),
-		targetElement: thumbEl.value ?? undefined,
+		anchorElement: thumbEl.value ?? undefined,
 	}, {
 		closed: () => dispose(),
 	});
@@ -191,7 +191,7 @@ function onMousedown(ev: MouseEvent | TouchEvent) {
 		text: computed(() => {
 			return props.textConverter(finalValue.value);
 		}),
-		targetElement: thumbEl.value ?? undefined,
+		anchorElement: thumbEl.value ?? undefined,
 	}, {
 		closed: () => dispose(),
 	});

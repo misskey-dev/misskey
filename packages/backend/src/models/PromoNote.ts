@@ -13,7 +13,7 @@ export class MiPromoNote {
 	@PrimaryColumn(id())
 	public noteId: MiNote['id'];
 
-	@OneToOne(type => MiNote, {
+	@OneToOne(() => MiNote, {
 		onDelete: 'CASCADE',
 	})
 	@JoinColumn()

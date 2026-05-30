@@ -5,7 +5,7 @@
 
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable import/no-default-export */
-import { action } from '@storybook/addon-actions';
+import { action } from 'storybook/actions';
 import type { StoryObj } from '@storybook/vue3';
 import MkButton from './MkButton.vue';
 export const Default = {

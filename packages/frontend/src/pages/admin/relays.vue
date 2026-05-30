@@ -41,10 +41,10 @@ async function addRelay() {
 		type: 'url',
 		placeholder: i18n.ts.inboxUrl,
 	});
-	if (canceled) return;
+	if (canceled || inbox == null) return;
 	misskeyApi('admin/relays/add', {
 		inbox,
-	}).then((relay: any) => {
+	}).then(() => {
 		refresh();
 	}).catch((err: any) => {
 		os.alert({

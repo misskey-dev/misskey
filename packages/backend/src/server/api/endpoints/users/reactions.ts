@@ -28,7 +28,7 @@ export const meta = {
 		items: {
 			type: 'object',
 			optional: false, nullable: false,
-			ref: 'NoteReaction',
+			ref: 'NoteReactionWithNote',
 		},
 	},
 
@@ -120,7 +120,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				return true;
 			});
 
-			return await this.noteReactionEntityService.packMany(reactions, me, { withNote: true });
+			return await this.noteReactionEntityService.packManyWithNote(reactions, me);
 		});
 	}
 }

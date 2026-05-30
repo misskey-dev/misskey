@@ -66,7 +66,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 						.orWhere(':meIdAsList <@ note.visibleUserIds');
 				}))
 				// Avoid scanning primary key index
-				.orderBy('CONCAT(note.id)', 'DESC')
+				.orderBy('CONCAT(note.id)', (ps.sinceDate || ps.sinceId) ? 'ASC' : 'DESC')
 				.innerJoinAndSelect('note.user', 'user')
 				.leftJoinAndSelect('note.reply', 'reply')
 				.leftJoinAndSelect('note.renote', 'renote')

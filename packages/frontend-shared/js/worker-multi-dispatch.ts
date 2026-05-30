@@ -34,7 +34,7 @@ export class WorkerMultiDispatch<POST = unknown, RETURN = unknown> {
 	public postMessage(message: POST, options?: Transferable[] | StructuredSerializeOptions, useWorkerNumber: WorkerNumberGetter = this.getUseWorkerNumber) {
 		let workerNumber = useWorkerNumber(this.prevWorkerNumber, this.workers.length);
 		workerNumber = Math.abs(Math.round(workerNumber)) % this.workers.length;
-		if (_DEV_) console.log('WorkerMultiDispatch: Posting message to worker', workerNumber, useWorkerNumber);
+		// if (_DEV_) console.log('WorkerMultiDispatch: Posting message to worker', workerNumber, useWorkerNumber);
 		this.prevWorkerNumber = workerNumber;
 
 		// 不毛だがunionをoverloadに突っ込めない

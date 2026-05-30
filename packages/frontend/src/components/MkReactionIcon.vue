@@ -28,7 +28,7 @@ if (props.withTooltip) {
 		const { dispose } = os.popup(defineAsyncComponent(() => import('@/components/MkReactionTooltip.vue')), {
 			showing,
 			reaction: props.reaction.replace(/^:(\w+):$/, ':$1@.:'),
-			targetElement: elRef.value.$el,
+			anchorElement: elRef.value.$el,
 		}, {
 			closed: () => dispose(),
 		});
