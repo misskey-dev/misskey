@@ -205,7 +205,7 @@ async function init() {
 		}
 	}
 
-	const fileData = urlParams.get('file')
+	const fileData = urlParams.get('file');
 	if (fileData && fileData.startsWith('data:')) {
 		try {
 			const file = await window.fetch(fileData).then(res => res.blob());
