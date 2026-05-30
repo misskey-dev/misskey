@@ -96,7 +96,7 @@ import { computed, defineAsyncComponent, markRaw, nextTick, onActivated, onDeact
 import * as Misskey from 'misskey-js';
 import { cm, getHex, getRgb, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { GRAPHICS_QUALITY } from 'misskey-world-engine/src/utility.js';
-import { FURNITURE_SCHEMA_DEFS } from 'misskey-world/src/room/object-schema-defs.js';
+import { FURNITURE_SCHEMA_DEFS } from 'misskey-world/src/room/furniture-schema-defs.js';
 import { useInterval } from '@@/js/use-interval.js';
 import XEnvOptions from './room.env-options.vue';
 import type { RoomControllerOptions } from '@/world/room/controller.js';
@@ -114,7 +114,7 @@ import { isTouchUsing } from '@/utility/touch.js';
 import { prefer } from '@/preferences.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { FURNITURE_UI_DEFS } from '@/world/room/object-ui-defs.js';
+import { FURNITURE_UI_DEFS } from '@/world/room/furniture-ui-defs.js';
 import { Multiplayer } from '@/world/room/multiplayer.js';
 
 const roomSpecVersion = 0;
@@ -240,6 +240,10 @@ let latestSavedRoomState = deepClone(props.room.def) as unknown as RoomState;
 let initialRoomState = latestSavedRoomState;
 
 // 後方互換性のため
+if (initialRoomState.installedObjects != null) {
+	initialRoomState.installedFurnitures = initialRoomState.installedObjects;
+	delete initialRoomState.installedObjects;
+}
 for (const obj of initialRoomState.installedFurnitures) {
 	if (obj.options.customPicture != null) {
 		obj.options.image = {
@@ -439,7 +443,7 @@ function updateFurnitureOption(k: string, v: any) {
 async function addFuniture(ev: PointerEvent) {
 	// 重いので止める
 	controller.pauseRender();
-	const { dispose } = await os.popupAsyncWithDialog(import('./room.add-object-dialog.vue').then(x => x.default), {
+	const { dispose } = await os.popupAsyncWithDialog(import('./room.add-furniture-dialog.vue').then(x => x.default), {
 		graphicsQuality: graphicsQuality.value,
 	}, {
 		ok: async (res) => {

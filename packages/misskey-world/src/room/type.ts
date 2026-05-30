@@ -4,7 +4,7 @@
  */
 
 import * as Misskey from 'misskey-js';
-import type { RoomState_InstalledFurniture } from './object.js';
+import type { RoomState_InstalledFurniture } from './furniture.js';
 
 export type RoomState = {
 	env: {

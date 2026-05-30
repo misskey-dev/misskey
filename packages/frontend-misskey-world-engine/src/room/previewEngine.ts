@@ -12,10 +12,10 @@ import { getMeshesBoundingBox, ArcRotateCameraManualInput, GRAPHICS_QUALITY } fr
 import { EngineBase } from '../EngineBase.js';
 import { deepClone } from '../clone.js';
 import { genId } from '../id.js';
-import { getFurnitureDef } from './object-defs.js';
+import { getFurnitureDef } from './furniture-defs.js';
 import { SYSTEM_MESH_NAMES } from './utility.js';
 import { FurnitureContainer } from './FurnitureContainer.js';
-import type { RawOptions } from './object.js';
+import type { RawOptions } from './furniture.js';
 import type { RoomAttachments } from 'misskey-world/src/room/type.js';
 
 export class RoomFurniturePreviewEngine extends EngineBase<{

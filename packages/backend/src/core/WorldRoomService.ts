@@ -159,7 +159,8 @@ export class WorldRoomService {
 	@bindThis
 	public collectReferencedDriveFileIds(roomState: MiWorldRoom['def']): Set<MiDriveFile['id']> {
 		const fileIds = new Set<MiDriveFile['id']>();
-		for (const o of roomState.installedFurnitures) {
+		const installedFurnitures = roomState.installedFurnitures ?? roomState.installedObjects; // 後方互換性のため
+		for (const o of installedFurnitures) {
 			const def = driveFileReferencingOptions[o.type];
 			if (def == null) continue;
 			for (const key of def) {

@@ -1,0 +1,111 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import * as BABYLON from '@babylonjs/core';
+import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
+import { tabletopDigitalClock_schema } from 'misskey-world/src/room/furnitures/tabletopDigitalClock.schema.js';
+import { defineFuniture } from '../furniture.js';
+import { get7segMeshesOfCurrentTime } from '../../utility.js';
+
+export const tabletopDigitalClock = defineFuniture(tabletopDigitalClock_schema, {
+	createInstance: ({ sr, options, model, timer }) => {
+		const matrix = model.root.getWorldMatrix(true);
+		const scale = new BABYLON.Vector3();
+		matrix.decompose(scale);
+
+		//const light = new BABYLON.SpotLight('', new BABYLON.Vector3(0, cm(3), cm(1)), new BABYLON.Vector3(0, 0, 1), Math.PI / 1, 2, scene, lc != null);
+		//light.parent = root;
+		//light.intensity = 0.01 * WORLD_SCALE * WORLD_SCALE;
+		//light.range = cm(30);
+		//if (lc != null) lc.addLight(light);
+
+		const segmentMeshes = {
+			'1a': model.findMesh('__TIME_7SEG_1A__'),
+			'1b': model.findMesh('__TIME_7SEG_1B__'),
+			'1c': model.findMesh('__TIME_7SEG_1C__'),
+			'1d': model.findMesh('__TIME_7SEG_1D__'),
+			'1e': model.findMesh('__TIME_7SEG_1E__'),
+			'1f': model.findMesh('__TIME_7SEG_1F__'),
+			'1g': model.findMesh('__TIME_7SEG_1G__'),
+			'2a': model.findMesh('__TIME_7SEG_2A__'),
+			'2b': model.findMesh('__TIME_7SEG_2B__'),
+			'2c': model.findMesh('__TIME_7SEG_2C__'),
+			'2d': model.findMesh('__TIME_7SEG_2D__'),
+			'2e': model.findMesh('__TIME_7SEG_2E__'),
+			'2f': model.findMesh('__TIME_7SEG_2F__'),
+			'2g': model.findMesh('__TIME_7SEG_2G__'),
+			'3a': model.findMesh('__TIME_7SEG_3A__'),
+			'3b': model.findMesh('__TIME_7SEG_3B__'),
+			'3c': model.findMesh('__TIME_7SEG_3C__'),
+			'3d': model.findMesh('__TIME_7SEG_3D__'),
+			'3e': model.findMesh('__TIME_7SEG_3E__'),
+			'3f': model.findMesh('__TIME_7SEG_3F__'),
+			'3g': model.findMesh('__TIME_7SEG_3G__'),
+			'4a': model.findMesh('__TIME_7SEG_4A__'),
+			'4b': model.findMesh('__TIME_7SEG_4B__'),
+			'4c': model.findMesh('__TIME_7SEG_4C__'),
+			'4d': model.findMesh('__TIME_7SEG_4D__'),
+			'4e': model.findMesh('__TIME_7SEG_4E__'),
+			'4f': model.findMesh('__TIME_7SEG_4F__'),
+			'4g': model.findMesh('__TIME_7SEG_4G__'),
+		};
+
+		const colonMeshes = model.findMeshes('__TIME_7SEG_COLON__');
+
+		const defaultSegMeshDepth = colonMeshes[0].position.y; // セグメントを90度回して立てているためz軸が奥行きになっている
+
+		model.bakeExcludeMeshes = Object.values(segmentMeshes).concat(colonMeshes);
+
+		const bodyMesh = model.findMesh('__X_BODY__');
+		const bodyMaterial = bodyMesh.material as BABYLON.PBRMaterial;
+
+		const applyBodyMat = () => {
+			bodyMaterial.albedoColor = new BABYLON.Color3(options.bodyMat.color[0], options.bodyMat.color[1], options.bodyMat.color[2]);
+			bodyMaterial.roughness = options.bodyMat.roughness;
+			bodyMaterial.metallic = options.bodyMat.metallic;
+		};
+
+		const applyLcdColor = () => {
+			const mat = segmentMeshes['1a'].material as BABYLON.PBRMaterial;
+			const [r, g, b] = options.lcdColor;
+			mat.emissiveColor = new BABYLON.Color3(r, g, b);
+			//light.diffuse = new BABYLON.Color3(r, g, b);
+		};
+
+		return {
+			onInited: () => {
+				applyBodyMat();
+				applyLcdColor();
+
+				// TODO: 家具が撤去された後も呼ばれ続けるのをどうにかする
+				timer.setInterval(() => {
+					const onMeshes = get7segMeshesOfCurrentTime(segmentMeshes);
+
+					// 本当ならisVisibleで制御したいが、snapshot renderingではvisibilityはupdateMeshを呼んだとしても反映されないのと、もしsnapshot rendering開始時にisVisible: falseだったらドローコールが記録されずその後表示できないので、メッシュを後ろにずらすことで隠す
+					// https://forum.babylonjs.com/t/visibility-of-instancedmesh-is-not-reflected-under-fast-snapshot-rendering/63251/3?u=syuilo
+					// また、scalingを0にすることでも見た目上非表示にすることはできるが、なぜかその状態でsnapshot renderingが開始されるとその後にscaleを戻しても表示されなくなる(バグ？)
+					for (const mesh of Object.values(segmentMeshes)) {
+						const isVisible = onMeshes.includes(mesh);
+						mesh.position.y = isVisible ? defaultSegMeshDepth : defaultSegMeshDepth - (cm(2) / Math.abs(scale.y));
+					}
+					for (const mesh of colonMeshes) {
+						const isVisible = Date.now() % 2000 < 1000;
+						mesh.position.y = isVisible ? defaultSegMeshDepth : defaultSegMeshDepth - (cm(2) / Math.abs(scale.y));
+					}
+
+					sr.updateMesh([...Object.values(segmentMeshes), ...colonMeshes]);
+				}, 1000);
+			},
+			onOptionsUpdated: ([k, v]) => {
+				switch (k) {
+					case 'bodyMat': applyBodyMat(); break;
+					case 'lcdColor': applyLcdColor(); break;
+				}
+			},
+			interactions: {},
+			dispose: () => {},
+		};
+	},
+});
