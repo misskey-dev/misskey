@@ -1165,7 +1165,9 @@ export class RoomEngine extends EngineBase<{
 	}
 
 	public updateRoomLightColor(color: [number, number, number]) {
+		this.sr.disableSnapshotRendering();
 		this.envManager.updateRoomLightColor(new BABYLON.Color3(...color));
+		this.sr.enableSnapshotRendering();
 		this.roomState.roomLightColor = color;
 		this.ev('changeRoomState', { roomState: this.roomState });
 	}
