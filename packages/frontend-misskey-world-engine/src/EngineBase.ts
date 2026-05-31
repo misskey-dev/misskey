@@ -104,6 +104,10 @@ export abstract class EngineBase<EVs extends EngineBaseEvents> extends EventEmit
 		this.emit('ev', { type, ctx });
 	}
 
+	public async takeScreenshot() {
+		return await BABYLON.Tools.CreateScreenshotAsync(this.engine, this.scene.activeCamera!, { precision: 1 });
+	}
+
 	public abstract resize(): void;
 
 	public destroy() {

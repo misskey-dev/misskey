@@ -7,7 +7,7 @@ import { ref, shallowRef } from 'vue';
 import { cm } from 'misskey-world/src/utility.js';
 import { EngineControllerBase } from '../EngineControllerBase.js';
 import type { ShallowRef } from 'vue';
-import type { RoomState_InstalledFurniture } from 'misskey-world/src/room/object.js';
+import type { RoomState_InstalledFurniture } from 'misskey-world/src/room/furniture.js';
 import type { RoomEngine } from 'misskey-world-engine/src/room/engine.js';
 import type { RoomAttachments, RoomState } from 'misskey-world/src/room/type.js';
 import type { PlayerProfile, PlayerState } from 'misskey-world-engine/src/PlayerContainer.js';

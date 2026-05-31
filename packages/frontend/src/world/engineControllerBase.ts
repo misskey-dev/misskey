@@ -329,6 +329,10 @@ export abstract class EngineControllerBase<T extends EngineBase<EngineBaseEvents
 		this.call('resumeRender');
 	}
 
+	public takeScreenshot() {
+		return this.callAndWaitReturn('takeScreenshot');
+	}
+
 	public resize() {
 		if (this.canvas == null) return;
 		const width = this.canvas.clientWidth;

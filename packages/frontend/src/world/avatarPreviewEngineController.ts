@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { EngineControllerBase } from './engineControllerBase.js';
+import { EngineControllerBase } from './EngineControllerBase.js';
 import type { PlayerProfile } from 'misskey-world-engine/src/PlayerContainer.js';
 import type { AvatarPreviewEngine } from 'misskey-world-engine/src/avatarPreviewEngine.js';
 import type { WorldAvatar } from 'misskey-world/src/types.js';

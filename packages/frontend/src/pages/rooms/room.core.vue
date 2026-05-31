@@ -32,6 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<button v-if="controller.isEditMode.value" :class="$style.topMenuButton" class="_button" @click="showSnappingMenu"><i class="ti ti-grid-4x4"></i></button>
 					<button v-if="controller.isEditMode.value && !isRoomSettingsOpen" :class="$style.topMenuButton" class="_button" @click="() => isRoomSettingsOpen = true"><i class="ti ti-home-cog"></i></button>
 					<button v-if="controller.isEditMode.value && isRoomSettingsOpen" :class="$style.topMenuButton" class="_button" style="color: var(--MI_THEME-accent)" @click="() => isRoomSettingsOpen = false"><i class="ti ti-home-cog"></i></button>
+					<button :class="$style.topMenuButton" class="_button" @click="takeScreenshot"><i class="ti ti-camera"></i></button>
 				</template>
 				<button :class="$style.topMenuButton" class="_button" @click="showOtherMenu"><i class="ti ti-dots"></i></button>
 			</div>
@@ -516,6 +517,10 @@ async function refresh() {
 	canvasKey.value++;
 	await nextTick();
 	await controller.reset(canvas.value!, attachments, null, roomControllerOptions.value);
+}
+
+async function takeScreenshot() {
+	console.log(await controller.takeScreenshot());
 }
 
 // TODO: ちゃんと書く
