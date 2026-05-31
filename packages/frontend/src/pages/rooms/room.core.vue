@@ -133,14 +133,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</XOverlayPanel>
 
-	<XOverlayPanel v-if="isPlayerInfoOpen" :isNarrow="isNarrow" :title="room.name" @close="isPlayerInfoOpen = false">
+	<XOverlayPanel v-if="isPlayerInfoOpen && pointedPlayerInfo != null" :isNarrow="isNarrow" :title="room.name" @close="isPlayerInfoOpen = false">
 		<template #icon>
 			<i class="ti ti-user"></i>
 		</template>
 
-		<div class="_gaps_s">
-			<img v-if="pointedPlayerInfo.avatarUrl" :src="pointedPlayerInfo.avatarUrl" decoding="async"/>
+		<div v-if="pointedPlayerInfo.user != null">
+			<img v-if="pointedPlayerInfo.user.avatarUrl" :src="pointedPlayerInfo.user.avatarUrl" decoding="async"/>
 		</div>
+		<div v-else>anonymous</div>
 	</XOverlayPanel>
 </div>
 </template>
