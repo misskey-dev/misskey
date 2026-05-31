@@ -181,7 +181,7 @@ export class AvatarPreviewEngine extends EngineBase<{ // PlayerPreviewEngineã«æ
 	}
 
 	public async updateAvatar(value: WorldAvatar) {
-		this.profile.worldAvatar = value;
+		this.profile.avatar = value;
 		this.clearPlayer();
 		await this.load();
 	}

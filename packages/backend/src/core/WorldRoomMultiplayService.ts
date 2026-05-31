@@ -130,7 +130,7 @@ export class WorldRoomMultiplayService {
 				username: user.username,
 				avatarUrl: user.avatarUrl,
 			},
-			worldAvatar: avatar ?? this.worldAvatarService.defaultAvatar,
+			avatar: avatar ?? this.worldAvatarService.defaultAvatar,
 		};
 	}
 

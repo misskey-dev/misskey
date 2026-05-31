@@ -214,10 +214,12 @@ const controller = markRaw(new AvatarPreviewEngineController(avatarPreviewEngine
 onMounted(async () => {
 	try {
 		await controller.init(canvas.value!, {
-			name: $i.name ?? $i.username,
-			username: $i.username,
-			avatarUrl: $i.avatarUrl,
-			worldAvatar: deepClone(avatar.value),
+			user: {
+				name: $i.name ?? $i.username,
+				username: $i.username,
+				avatarUrl: $i.avatarUrl,
+			},
+			avatar: deepClone(avatar.value),
 		});
 	} catch (err) {
 		console.error(err);

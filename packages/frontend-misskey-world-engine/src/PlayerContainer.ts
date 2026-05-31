@@ -16,7 +16,7 @@ export type PlayerProfile = {
 		username: string;
 		avatarUrl: string;
 	} | null;
-	worldAvatar: WorldAvatar;
+	avatar: WorldAvatar;
 };
 
 export type PlayerState = {
@@ -107,8 +107,8 @@ export class PlayerContainer {
 		eyesBlinkTexture.hasAlpha = true;
 
 		let eyesTex: BABYLON.Texture | null = null;
-		if (this.profile.worldAvatar.eyes.type in DEFAULT_FACE_PARTS_EYES) {
-			const eyesTexPath = DEFAULT_FACE_PARTS_EYES[this.profile.worldAvatar.eyes.type];
+		if (this.profile.avatar.eyes.type in DEFAULT_FACE_PARTS_EYES) {
+			const eyesTexPath = DEFAULT_FACE_PARTS_EYES[this.profile.avatar.eyes.type];
 			if (eyesTexPath) {
 				eyesTex = new BABYLON.Texture(eyesTexPath, this.scene, false, false);
 				eyesTex.hasAlpha = true;
@@ -116,8 +116,8 @@ export class PlayerContainer {
 		}
 
 		let mouthTex: BABYLON.Texture | null = null;
-		if (this.profile.worldAvatar.mouth.type in DEFAULT_FACE_PARTS_MOUTH) {
-			const mouthTexPath = DEFAULT_FACE_PARTS_MOUTH[this.profile.worldAvatar.mouth.type];
+		if (this.profile.avatar.mouth.type in DEFAULT_FACE_PARTS_MOUTH) {
+			const mouthTexPath = DEFAULT_FACE_PARTS_MOUTH[this.profile.avatar.mouth.type];
 			if (mouthTexPath) {
 				mouthTex = new BABYLON.Texture(mouthTexPath, this.scene, false, false);
 				mouthTex.hasAlpha = true;
@@ -137,11 +137,11 @@ export class PlayerContainer {
 			//	mesh.material = mat;
 			//}
 			if (mesh.name.includes('__BODY__')) {
-				mesh.material.albedoColor = new BABYLON.Color3(this.profile.worldAvatar.body.color[0], this.profile.worldAvatar.body.color[1], this.profile.worldAvatar.body.color[2]);
+				mesh.material.albedoColor = new BABYLON.Color3(this.profile.avatar.body.color[0], this.profile.avatar.body.color[1], this.profile.avatar.body.color[2]);
 			}
 			if (mesh.name.includes('__EYES__')) {
 				const mat = new BABYLON.PBRMaterial('', this.scene);
-				mat.albedoColor = new BABYLON.Color3(this.profile.worldAvatar.eyes.color[0], this.profile.worldAvatar.eyes.color[1], this.profile.worldAvatar.eyes.color[2]);
+				mat.albedoColor = new BABYLON.Color3(this.profile.avatar.eyes.color[0], this.profile.avatar.eyes.color[1], this.profile.avatar.eyes.color[2]);
 				mat.albedoTexture = eyesTex;
 				mat.roughness = 1;
 				mat.metallic = 0;
@@ -172,7 +172,7 @@ export class PlayerContainer {
 			if (mesh.name.includes('__MOUTH__')) {
 				if (mouthTex != null) {
 					const mat = new BABYLON.PBRMaterial('', this.scene);
-					mat.albedoColor = new BABYLON.Color3(this.profile.worldAvatar.mouth.color[0], this.profile.worldAvatar.mouth.color[1], this.profile.worldAvatar.mouth.color[2]);
+					mat.albedoColor = new BABYLON.Color3(this.profile.avatar.mouth.color[0], this.profile.avatar.mouth.color[1], this.profile.avatar.mouth.color[2]);
 					mat.albedoTexture = mouthTex;
 					mat.roughness = 1;
 					mat.metallic = 0;
@@ -185,7 +185,7 @@ export class PlayerContainer {
 
 		this.registerMeshes(this.modelRoot.getChildMeshes());
 
-		this.accessoryContainers = await Promise.all(this.profile.worldAvatar.accessories.map(ac => this.loadAccessory({
+		this.accessoryContainers = await Promise.all(this.profile.avatar.accessories.map(ac => this.loadAccessory({
 			type: ac.type,
 			id: ac.id,
 			position: new BABYLON.Vector3(0, cm(20), 0),
