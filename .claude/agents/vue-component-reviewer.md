@@ -117,7 +117,7 @@ git diff "$BASE"...HEAD -- 'packages/frontend/src/**/*.vue' \
 ### 8. Storybook 併設 (Major)
 
 - 共有 `Mk*` コンポーネントを新規追加した場合、`Mk<Name>.stories.impl.ts` が同階層に併設されているか (サブディレクトリ含む。例: `components/global/MkAvatar.stories.impl.ts`, `components/grid/MkGrid.stories.impl.ts`)。
-- **ファイル名は `.stories.impl.ts` 固定** (`.stories.ts` は誤り)。
+- **ファイル名は `.stories.impl.ts` 固定** (`.stories.ts` は生成物なので手編集・コミット不可)。
 - 既存 [MkButton.stories.impl.ts](../../packages/frontend/src/components/MkButton.stories.impl.ts) を雛形例として参照する。
 
 検出 (新規追加された `Mk*.vue` をサブディレクトリ含めて拾う):

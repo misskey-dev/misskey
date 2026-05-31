@@ -12,7 +12,7 @@ Anthropic 公式の [Agent Skills ベストプラクティス](https://platform.
 
 - **SKILL.md 本体は 500 行以下** (理想は 30-80 行の索引)
 - 詳細は `references/tasks/` (手順) と `references/knowledge/` (規約・背景知識) に分離 (progressive disclosure)
-- リンクは **1 レベル深いリンクのみ** (SKILL.md → references の 1 段)
+- リンクは原則 **references への 1 段リンク** に留める (例外: 他 skill / agent への導線は可)
 - ファイルシステム上の references は読まれるまでゼロコンテキストコスト
 
 ECC (everything-claude-code) 由来の MIT スキルが含まれる場合は、ファイル冒頭の SPDX ヘッダー + [.claude/THIRD_PARTY_LICENSES.md](../THIRD_PARTY_LICENSES.md) §1 に出典を記載する。
