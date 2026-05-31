@@ -133,7 +133,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</XOverlayPanel>
 
-	<XOverlayPanel v-if="isPlayerInfoOpen && pointedPlayerInfo != null" :isNarrow="isNarrow" :title="room.name" @close="isPlayerInfoOpen = false">
+	<XOverlayPanel v-if="isPlayerInfoOpen && pointedPlayerInfo != null" :isNarrow="isNarrow" :title="pointedPlayerInfo.user != null ? (pointedPlayerInfo.user?.name ?? pointedPlayerInfo.user?.username) : '(anonymous)'" @close="isPlayerInfoOpen = false">
 		<template #icon>
 			<i class="ti ti-user"></i>
 		</template>

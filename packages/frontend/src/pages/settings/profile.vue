@@ -151,6 +151,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 		<hr>
 
+		<SearchMarker :keywords="['world', 'rooms', 'avatar', '3d']">
+			<MkFolder>
+				<template #icon><i class="ti ti-box"></i></template>
+				<template #label><SearchLabel>{{ i18n.ts.threeDAvatar }}</SearchLabel></template>
+				<template #caption>{{ i18n.ts.threeDAvatar_description }}</template>
+
+				<MkWorldAvatarManager/>
+			</MkFolder>
+		</SearchMarker>
+
 		<SearchMarker :keywords="['qrcode']">
 			<FormLink to="/qr">
 				<template #icon><i class="ti ti-qrcode"></i></template>
@@ -184,6 +194,7 @@ import { store } from '@/store.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import { genId } from '@/utility/id.js';
+import MkWorldAvatarManager from '@/components/MkWorldAvatarManager.vue';
 
 const $i = ensureSignin();
 

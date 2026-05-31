@@ -13282,6 +13282,14 @@ export interface Locale extends ILocale {
          */
         "mfm": string;
     };
+    /**
+     * 3Dアバター
+     */
+    "threeDAvatar": string;
+    /**
+     * MisskeyWorld / MisskeyRoomsで使用可能なアバターを作成できます。
+     */
+    "threeDAvatar_description": string;
     "_miWorld": {
         /**
          * 描画を別スレッドに分離

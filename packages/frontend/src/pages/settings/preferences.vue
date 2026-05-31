@@ -823,15 +823,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 								</MkSwitch>
 							</MkPreferenceContainer>
 						</SearchMarker>
-
-						<SearchMarker :keywords="['avatar']">
-							<MkFolder>
-								<template #icon><i class="ti ti-user"></i></template>
-								<template #label><SearchLabel>{{ i18n.ts._miWorld.avatar }}</SearchLabel></template>
-
-								<MkWorldAvatarManager/>
-							</MkFolder>
-						</SearchMarker>
 					</div>
 				</MkFolder>
 			</SearchMarker>
@@ -966,7 +957,6 @@ import MkDisableSection from '@/components/MkDisableSection.vue';
 import FormLink from '@/components/form/link.vue';
 import MkLink from '@/components/MkLink.vue';
 import MkInfo from '@/components/MkInfo.vue';
-import MkWorldAvatarManager from '@/components/MkWorldAvatarManager.vue';
 import { store } from '@/store.js';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
