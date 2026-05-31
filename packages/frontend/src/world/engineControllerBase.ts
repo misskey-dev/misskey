@@ -333,6 +333,30 @@ export abstract class EngineControllerBase<T extends EngineBase<EngineBaseEvents
 		return this.callAndWaitReturn('takeScreenshot');
 	}
 
+	public async downloadScreenshot() {
+		//const blob = await this.takeScreenshot();
+		const blob = await new Promise<Blob>((resolve, reject) => {
+			if (this.canvas == null) return reject(new Error('Canvas is not initialized'));
+			this.canvas.toBlob((blob) => {
+				if (blob == null) return reject(new Error('Failed to create blob from canvas'));
+				resolve(blob);
+			});
+		});
+
+		const url = URL.createObjectURL(blob);
+
+		const a = window.document.createElement('a');
+		a.href = url;
+		a.download = `misskey-world-${Date.now()}.png`;
+		a.style.display = 'none';
+
+		window.document.body.appendChild(a);
+		a.click();
+
+		window.document.body.removeChild(a);
+		URL.revokeObjectURL(url);
+	}
+
 	public resize() {
 		if (this.canvas == null) return;
 		const width = this.canvas.clientWidth;

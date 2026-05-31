@@ -520,7 +520,7 @@ async function refresh() {
 }
 
 async function takeScreenshot() {
-	console.log(await controller.takeScreenshot());
+	await controller.downloadScreenshot();
 }
 
 // TODO: ちゃんと書く
