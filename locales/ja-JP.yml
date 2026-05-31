@@ -3563,6 +3563,7 @@ _miWorld:
   separateRenderingThread: "描画を別スレッドに分離"
   separateRenderingThread_description: "有効にするとパフォーマンスが向上します。不安定になる場合は無効すると改善する可能性があります。"
   graphicsQuality: "グラフィックの品質"
+  graphicsSettings: "グラフィック設定"
   frameRate: "フレームレート"
   resolution: "解像度"
   failedToInitialize: "初期化に失敗しました"
@@ -3607,6 +3608,7 @@ _miRoom:
   exitEditMode: "エディットモードを終了"
   installFurniture: "家具を設置"
   roomCustomize: "部屋のカスタマイズ"
+  changeRoomName: "部屋名を編集"
 
   _objects:
     woodRingFloorLamp: "リングシェードフロアランプ"

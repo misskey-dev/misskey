@@ -582,66 +582,22 @@ function impor() {
 
 function showOtherMenu(ev: PointerEvent) {
 	os.popupMenu([{
-		type: 'radio',
-		text: i18n.ts._miWorld.graphicsQuality,
-		caption: graphicsQualityRaw.value == null ? i18n.ts.auto : graphicsQualityRaw.value === GRAPHICS_QUALITY.HIGH ? 'High' : graphicsQualityRaw.value === GRAPHICS_QUALITY.MEDIUM ? 'Medium' : 'Low',
-		options: [{
-			label: `${i18n.ts.auto} (${graphicsQualityAutoValue.value === GRAPHICS_QUALITY.HIGH ? 'High' : graphicsQualityAutoValue.value === GRAPHICS_QUALITY.MEDIUM ? 'Medium' : 'Low'})`,
-			value: null,
-		}, { type: 'divider' }, {
-			label: 'High',
-			value: GRAPHICS_QUALITY.HIGH,
-		}, {
-			label: 'Medium',
-			value: GRAPHICS_QUALITY.MEDIUM,
-		}, {
-			label: 'Low',
-			value: GRAPHICS_QUALITY.LOW,
-		}],
-		ref: graphicsQualityRaw,
-	}, {
-		type: 'radio',
-		text: i18n.ts._miWorld.frameRate,
-		caption: fpsRaw.value == null ? i18n.ts.auto : fpsRaw.value === 'max' ? 'Max' : `~${fpsRaw.value}fps`,
-		options: [{
-			label: `${i18n.ts.auto} (${fpsAutoValue.value}fps)`,
-			value: null,
-		}, { type: 'divider' }, {
-			label: 'Max',
-			value: 'max',
-		}, {
-			label: '~120fps',
-			value: '120',
-		}, {
-			label: '~60fps',
-			value: '60',
-		}, {
-			label: '~30fps',
-			value: '30',
-		}],
-		ref: fpsRaw,
-	}, {
-		type: 'radio',
-		text: i18n.ts._miWorld.resolution,
-		caption: resolutionRaw.value == null ? i18n.ts.auto : resolutionRaw.value + 'x',
-		options: [{
-			label: `${i18n.ts.auto} (${resolutionAutoValue.value}x)`,
-			value: null,
-		}, { type: 'divider' }, {
-			label: '2x',
-			value: 2,
-		}, {
-			label: '1x',
-			value: 1,
-		}, {
-			label: '0.5x',
-			value: 0.5,
-		}],
-		ref: resolutionRaw,
-	}, {
-		type: 'switch',
-		text: i18n.ts._miWorld.antialiasing,
-		ref: antialias,
+		text: i18n.ts._miRoom.changeRoomName,
+		icon: 'ti ti-forms',
+		action: async () => {
+			const { canceled, result } = await os.inputText({
+				title: i18n.ts.name,
+				default: props.room.name,
+			});
+			if (canceled) return;
+
+			os.apiWithDialog('world/rooms/update', {
+				roomId: props.room.id,
+				name: result,
+			}).then(() => {
+				props.room.name = result;
+			});
+		},
 	}, {
 		type: 'divider',
 	}, {
@@ -651,23 +607,72 @@ function showOtherMenu(ev: PointerEvent) {
 		text: 'Import',
 		action: impor,
 	}, {
-		text: 'Delete',
-		danger: true,
-		action: () => {
-			os.confirm({
-				type: 'warning',
-				title: i18n.ts.areYouSure,
-			}).then(({ canceled }) => {
-				if (canceled) return;
-
-				// TODO
-			});
-		},
-	}, {
 		type: 'divider',
 	}, {
-		text: 'Refresh',
-		action: refresh,
+		type: 'parent',
+		text: i18n.ts._miWorld.graphicsSettings,
+		children: [{
+			type: 'radio',
+			text: i18n.ts._miWorld.graphicsQuality,
+			caption: graphicsQualityRaw.value == null ? i18n.ts.auto : graphicsQualityRaw.value === GRAPHICS_QUALITY.HIGH ? 'High' : graphicsQualityRaw.value === GRAPHICS_QUALITY.MEDIUM ? 'Medium' : 'Low',
+			options: [{
+				label: `${i18n.ts.auto} (${graphicsQualityAutoValue.value === GRAPHICS_QUALITY.HIGH ? 'High' : graphicsQualityAutoValue.value === GRAPHICS_QUALITY.MEDIUM ? 'Medium' : 'Low'})`,
+				value: null,
+			}, { type: 'divider' }, {
+				label: 'High',
+				value: GRAPHICS_QUALITY.HIGH,
+			}, {
+				label: 'Medium',
+				value: GRAPHICS_QUALITY.MEDIUM,
+			}, {
+				label: 'Low',
+				value: GRAPHICS_QUALITY.LOW,
+			}],
+			ref: graphicsQualityRaw,
+		}, {
+			type: 'radio',
+			text: i18n.ts._miWorld.frameRate,
+			caption: fpsRaw.value == null ? i18n.ts.auto : fpsRaw.value === 'max' ? 'Max' : `~${fpsRaw.value}fps`,
+			options: [{
+				label: `${i18n.ts.auto} (${fpsAutoValue.value}fps)`,
+				value: null,
+			}, { type: 'divider' }, {
+				label: 'Max',
+				value: 'max',
+			}, {
+				label: '~120fps',
+				value: '120',
+			}, {
+				label: '~60fps',
+				value: '60',
+			}, {
+				label: '~30fps',
+				value: '30',
+			}],
+			ref: fpsRaw,
+		}, {
+			type: 'radio',
+			text: i18n.ts._miWorld.resolution,
+			caption: resolutionRaw.value == null ? i18n.ts.auto : resolutionRaw.value + 'x',
+			options: [{
+				label: `${i18n.ts.auto} (${resolutionAutoValue.value}x)`,
+				value: null,
+			}, { type: 'divider' }, {
+				label: '2x',
+				value: 2,
+			}, {
+				label: '1x',
+				value: 1,
+			}, {
+				label: '0.5x',
+				value: 0.5,
+			}],
+			ref: resolutionRaw,
+		}, {
+			type: 'switch',
+			text: i18n.ts._miWorld.antialiasing,
+			ref: antialias,
+		}],
 	}], ev.currentTarget ?? ev.target);
 }
 
@@ -768,6 +773,7 @@ function enterOnline() {
 	display: flex;
 	align-items: center;
 	gap: 16px;
+	pointer-events: none;
 }
 
 .topMenu {

@@ -13296,6 +13296,10 @@ export interface Locale extends ILocale {
          */
         "graphicsQuality": string;
         /**
+         * グラフィック設定
+         */
+        "graphicsSettings": string;
+        /**
          * フレームレート
          */
         "frameRate": string;
@@ -13450,6 +13454,10 @@ export interface Locale extends ILocale {
          * 部屋のカスタマイズ
          */
         "roomCustomize": string;
+        /**
+         * 部屋名を編集
+         */
+        "changeRoomName": string;
         "_objects": {
             /**
              * リングシェードフロアランプ

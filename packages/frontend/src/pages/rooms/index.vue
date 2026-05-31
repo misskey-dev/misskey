@@ -7,12 +7,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 <PageWithHeader :actions="headerActions" :tabs="headerTabs">
 	<div class="_spacer" style="--MI_SPACER-w: 700px;">
 		<MkButton gradate rounded @click="create">Create</MkButton>
+
+		<MkPagination v-slot="{items}" :paginator="paginator">
+			<div class="_gaps_s">
+				<div v-for="room in items" :key="room.id">
+					<MkA :to="'/rooms/' + room.id">
+						<div>{{ room.name }}</div>
+					</MkA>
+				</div>
+			</div>
+		</MkPagination>
 	</div>
 </PageWithHeader>
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import { WORLD_SCALE } from 'misskey-world/src/utility.js';
 import type { RoomState } from 'misskey-world/src/room/type.js';
@@ -23,8 +33,20 @@ import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { useRouter } from '@/router.js';
+import { Paginator } from '@/utility/paginator.js';
+import MkPagination from '@/components/MkPagination.vue';
+import MkLink from '@/components/MkLink.vue';
+
+const $i = ensureSignin();
 
 const router = useRouter();
+
+const paginator = markRaw(new Paginator('world/rooms/list-by-user', {
+	limit: 10,
+	params: {
+		userId: $i.id,
+	},
+}));
 
 const initialRoomDef = {
 	env: {
@@ -128,7 +150,7 @@ const headerActions = computed(() => [{
 const headerTabs = computed(() => []);
 
 definePage(() => ({
-	title: 'Room',
+	title: 'Rooms',
 	icon: 'ti ti-door',
 }));
 </script>
