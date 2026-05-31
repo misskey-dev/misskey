@@ -19,13 +19,15 @@ import { signout } from '@/signout.js';
 
 type AccountWithToken = Misskey.entities.MeDetailed & { token: string };
 
-export async function getAccounts(): Promise<{
+export type AccountData = {
 	host: string;
 	id: Misskey.entities.User['id'];
 	username: Misskey.entities.User['username'];
 	user?: Misskey.entities.MeDetailed | null;
 	token: string | null;
-}[]> {
+};
+
+export async function getAccounts(): Promise<AccountData[]> {
 	const tokens = store.s.accountTokens;
 	const accountInfos = store.s.accountInfos;
 	const accounts = prefer.s.accounts;
@@ -33,8 +35,8 @@ export async function getAccounts(): Promise<{
 		host,
 		id: user.id,
 		username: user.username,
-		user: accountInfos[host + '/' + user.id],
-		token: tokens[host + '/' + user.id] ?? null,
+		user: accountInfos[`${host}/${user.id}`],
+		token: tokens[`${host}/${user.id}`] ?? null,
 	}));
 }
 
@@ -53,8 +55,13 @@ export async function removeAccount(host: string, id: AccountWithToken['id']) {
 	const accountInfos = JSON.parse(JSON.stringify(store.s.accountInfos));
 	delete accountInfos[host + '/' + id];
 	store.set('accountInfos', accountInfos);
-
 	prefer.commit('accounts', prefer.s.accounts.filter(x => x[0] !== host || x[1].id !== id));
+}
+
+export async function removeAccountAssociatedData(host: string, id: AccountWithToken['id']) {
+	// 設定・状態を削除
+	prefer.clearAccountSettingsFromDevice(host, id);
+	await store.clearAccountDataFromDevice(id);
 }
 
 const isAccountDeleted = Symbol('isAccountDeleted');
@@ -162,14 +169,36 @@ export async function refreshCurrentAccount() {
 	});
 }
 
-export async function login(token: AccountWithToken['token'], redirect?: string) {
+export async function refreshAccounts() {
+	const accounts = await getAccounts();
+	for (const account of accounts) {
+		if (account.host === host && account.id === $i?.id) {
+			await refreshCurrentAccount();
+		} else if (account.token) {
+			try {
+				const user = await fetchAccount(account.token, account.id);
+				store.set('accountInfos', { ...store.s.accountInfos, [account.host + '/' + account.id]: user });
+			} catch (e) {
+				if (e === isAccountDeleted) {
+					await removeAccount(account.host, account.id);
+					await removeAccountAssociatedData(account.host, account.id);
+				}
+			}
+		}
+	}
+}
+
+export async function login(token: AccountWithToken['token'], redirect?: string, showWaiting = true) {
 	const showing = ref(true);
-	const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkWaitingDialog.vue')), {
-		success: false,
-		showing: showing,
-	}, {
-		closed: () => dispose(),
-	});
+
+	if (showWaiting) {
+		const { dispose } = popup(defineAsyncComponent(() => import('@/components/MkWaitingDialog.vue')), {
+			success: false,
+			showing: showing,
+		}, {
+			closed: () => dispose(),
+		});
+	}
 
 	const me = await fetchAccount(token, undefined, true).catch(reason => {
 		showing.value = false;
@@ -195,7 +224,7 @@ export async function login(token: AccountWithToken['token'], redirect?: string)
 }
 
 export async function switchAccount(host: string, id: string) {
-	const token = store.s.accountTokens[host + '/' + id];
+	const token = store.s.accountTokens[`${host}/${id}`];
 	if (token) {
 		login(token);
 	} else {

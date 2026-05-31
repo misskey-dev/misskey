@@ -8,11 +8,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_gaps">
 		<div class="_buttons">
 			<MkButton primary @click="addAccount"><i class="ti ti-plus"></i> {{ i18n.ts.addAccount }}</MkButton>
-			<!--<MkButton @click="refreshAllAccounts"><i class="ti ti-refresh"></i></MkButton>-->
+			<MkButton @click="refreshAllAccounts"><i class="ti ti-refresh"></i> {{ i18n.ts.reloadAccountsList }}</MkButton>
+			<MkButton danger @click="logoutFromAll"><i class="ti ti-power"></i> {{ i18n.ts.logoutFromAll }}</MkButton>
 		</div>
 
 		<template v-for="x in accounts" :key="x.host + x.id">
-			<MkUserCardMini v-if="x.user" :user="x.user" :class="$style.user" @click.prevent="showMenu(x.host, x.id, $event)"/>
+			<MkUserCardMini v-if="x.user" :user="x.user" :class="$style.user" @click.prevent="showMenu(x, $event)">
+				<template #nameSuffix>
+					<span v-if="x.id === $i?.id" :class="$style.currentAccountTag">{{ i18n.ts.loggingIn }}</span>
+				</template>
+			</MkUserCardMini>
+			<button v-else v-panel class="_button" :class="$style.unknownUser" @click="showMenu(x, $event)">
+				<div :class="$style.unknownUserAvatarMock"><i class="ti ti-user-question"></i></div>
+				<div>
+					<div :class="$style.unknownUserTitle">{{ i18n.ts.unknown }}<span v-if="x.id === $i?.id" :class="$style.currentAccountTag">{{ i18n.ts.loggingIn }}</span></div>
+					<div :class="$style.unknownUserSub">ID: <span class="_monospace">{{ x.id }}</span></div>
+				</div>
+			</button>
 		</template>
 	</div>
 </SearchMarker>
@@ -20,36 +32,73 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, computed } from 'vue';
-import * as Misskey from 'misskey-js';
+import { host as local } from '@@/js/config.js';
 import type { MenuItem } from '@/types/menu.js';
 import MkButton from '@/components/MkButton.vue';
 import * as os from '@/os.js';
-import { misskeyApi } from '@/utility/misskey-api.js';
 import { $i } from '@/i.js';
-import { switchAccount, removeAccount, login, getAccountWithSigninDialog, getAccountWithSignupDialog, getAccounts } from '@/accounts.js';
+import { switchAccount, removeAccount, removeAccountAssociatedData, getAccountWithSigninDialog, getAccountWithSignupDialog, getAccounts, refreshAccounts } from '@/accounts.js';
+import type { AccountData } from '@/accounts.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
-import { prefer } from '@/preferences.js';
+import { signout } from '@/signout.js';
 
-const accounts = await getAccounts();
+const accounts = ref<AccountData[]>([]);
+
+getAccounts().then((res) => {
+	accounts.value = res;
+});
 
 function refreshAllAccounts() {
-	// TODO
+	os.promiseDialog((async () => {
+		await refreshAccounts();
+		accounts.value = await getAccounts();
+	})());
 }
 
-function showMenu(host: string, id: string, ev: PointerEvent) {
-	let menu: MenuItem[];
+function showMenu(a: AccountData, ev: PointerEvent) {
+	const menu: MenuItem[] = [];
 
-	menu = [{
-		text: i18n.ts.switch,
-		icon: 'ti ti-switch-horizontal',
-		action: () => switchAccount(host, id),
-	}, {
-		text: i18n.ts.remove,
-		icon: 'ti ti-trash',
-		action: () => removeAccount(host, id),
-	}];
+	if ($i != null && $i.id === a.id && ($i.host ?? local) === a.host) {
+		menu.push({
+			text: i18n.ts.logout,
+			icon: 'ti ti-power',
+			danger: true,
+			action: async () => {
+				const { canceled } = await os.confirm({
+					type: 'warning',
+					title: i18n.ts.logoutConfirm,
+					text: i18n.ts.logoutWillClearClientData,
+				});
+				if (canceled) return;
+				signout();
+			},
+		});
+	} else {
+		menu.push({
+			text: i18n.ts.switch,
+			icon: 'ti ti-switch-horizontal',
+			action: () => switchAccount(a.host, a.id),
+		}, {
+			text: i18n.ts.logout,
+			icon: 'ti ti-power',
+			danger: true,
+			action: async () => {
+				const { canceled } = await os.confirm({
+					type: 'warning',
+					title: i18n.tsx.logoutFromOtherAccountConfirm({ username: `<plain>@${a.username}</plain>` }),
+					text: i18n.ts.logoutWillClearClientData,
+				});
+				if (canceled) return;
+				await os.promiseDialog((async () => {
+					await removeAccount(a.host, a.id);
+					await removeAccountAssociatedData(a.host, a.id);
+					accounts.value = await getAccounts();
+				})());
+			},
+		});
+	}
 
 	os.popupMenu(menu, ev.currentTarget ?? ev.target);
 }
@@ -64,20 +113,30 @@ function addAccount(ev: PointerEvent) {
 	}], ev.currentTarget ?? ev.target);
 }
 
-function addExistingAccount() {
-	getAccountWithSigninDialog().then((res) => {
-		if (res != null) {
-			os.success();
-		}
-	});
+async function addExistingAccount() {
+	const res = await getAccountWithSigninDialog();
+	if (res != null) {
+		os.success();
+	}
+	accounts.value = await getAccounts();
 }
 
-function createAccount() {
-	getAccountWithSignupDialog().then((res) => {
-		if (res != null) {
-			login(res.token);
-		}
+async function createAccount() {
+	const res = await getAccountWithSignupDialog();
+	if (res != null) {
+		os.success();
+	}
+	accounts.value = await getAccounts();
+}
+
+async function logoutFromAll() {
+	const { canceled } = await os.confirm({
+		type: 'warning',
+		title: i18n.ts.logoutConfirm,
+		text: i18n.ts.logoutWillClearClientData,
 	});
+	if (canceled) return;
+	signout(true);
 }
 
 const headerActions = computed(() => []);
@@ -93,6 +152,16 @@ definePage(() => ({
 <style lang="scss" module>
 .user {
 	cursor: pointer;
+}
+
+.currentAccountTag {
+	display: inline-block;
+	margin-left: 8px;
+	padding: 0 6px;
+	font-size: 0.8em;
+	background: var(--MI_THEME-accentedBg);
+	color: var(--MI_THEME-accent);
+	border-radius: calc(var(--MI-radius) / 2);
 }
 
 .unknownUser {

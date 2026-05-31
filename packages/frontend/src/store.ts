@@ -99,11 +99,11 @@ export const store = markRaw(new Pizzax('base', {
 	},
 	accountTokens: {
 		where: 'device',
-		default: {} as Record<string, string>, // host/userId, token
+		default: {} as Record<`${string}/${string}`, string>, // host/userId, token
 	},
 	accountInfos: {
 		where: 'device',
-		default: {} as Record<string, Misskey.entities.MeDetailed>, // host/userId, user
+		default: {} as Record<`${string}/${string}`, Misskey.entities.MeDetailed>, // host/userId, user
 	},
 
 	enablePreferencesAutoCloudBackup: {
