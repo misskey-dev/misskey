@@ -31,12 +31,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
-import { deviceKind } from '@/utility/device-kind.js';
-
-const isMobile = deviceKind === 'smartphone' || deviceKind === 'tablet';
 
 const props = defineProps<{
 	title: string;
+	isMobile: boolean;
 	acrylic?: boolean;
 }>();
 

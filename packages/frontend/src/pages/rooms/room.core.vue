@@ -53,6 +53,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.overlayBottom">
 		<div v-if="controller.isReady.value" class="_buttonsCenter _panel _shadow" :class="$style.overlayControls">
 			<template v-if="controller.isEditMode.value">
+				<MkButton v-if="controller.selected.value != null && isFurnitureSettingsOpen" v-tooltip.noDelay="'家具の設定'" iconOnly style="color: var(--MI_THEME-accent)" @click="isFurnitureSettingsOpen = false"><i class="ti ti-tool"></i></MkButton>
+				<MkButton v-if="controller.selected.value != null && !isFurnitureSettingsOpen" v-tooltip.noDelay="'家具の設定'" iconOnly @click="isFurnitureSettingsOpen = true"><i class="ti ti-tool"></i></MkButton>
+
 				<MkButton v-if="controller.grabbing.value" v-tooltip.noDelay="'Cancel (Q)'" iconOnly @click="cancelGrabbing"><i class="ti ti-x"></i></MkButton>
 				<MkButton v-if="controller.grabbing.value && !controller.grabbing.value.forInstall" v-tooltip.noDelay="'Put (E)'" iconOnly @click="endGrabbing"><i class="ti ti-check"></i></MkButton>
 				<MkButton v-else-if="controller.grabbing.value && controller.grabbing.value.forInstall" v-tooltip.noDelay="'Put (E)'" iconOnly @click="endGrabbing"><i class="ti ti-check"></i></MkButton>
@@ -80,7 +83,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 
-	<XOverlayPanel v-if="controller.isReady.value && controller.isEditMode.value && controller.selected.value != null && !controller.grabbing.value" :key="controller.selected.value.furnitureId" :title="FURNITURE_UI_DEFS[controller.selected.value.funitureState.type].name">
+	<XOverlayPanel v-if="controller.isReady.value && controller.isEditMode.value && controller.selected.value != null && !controller.grabbing.value && isFurnitureSettingsOpen" :key="controller.selected.value.furnitureId" :isMobile="isMobile" :title="FURNITURE_UI_DEFS[controller.selected.value.funitureState.type].name" @close="isFurnitureSettingsOpen = false">
 		<template #icon>
 			<i class="ti ti-box"></i>
 		</template>
@@ -94,7 +97,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		/>
 	</XOverlayPanel>
 
-	<XOverlayPanel v-if="isRoomSettingsOpen && controller.isEditMode.value" :title="i18n.ts._miRoom.roomCustomize" @close="isRoomSettingsOpen = false">
+	<XOverlayPanel v-if="isRoomSettingsOpen && controller.isEditMode.value" :isMobile="isMobile" :title="i18n.ts._miRoom.roomCustomize" @close="isRoomSettingsOpen = false">
 		<template #icon>
 			<i class="ti ti-home-cog"></i>
 		</template>
@@ -102,7 +105,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<XEnvOptions :controller="controller" @changeEnvType="changeEnvType"/>
 	</XOverlayPanel>
 
-	<XOverlayPanel v-if="isRoomInfoOpen" :title="room.name" @close="isRoomInfoOpen = false">
+	<XOverlayPanel v-if="isRoomInfoOpen" :isMobile="isMobile" :title="room.name" @close="isRoomInfoOpen = false">
 		<template #icon>
 			<i class="ti ti-info-circle"></i>
 		</template>
@@ -157,7 +160,9 @@ function resize() {
 const isRoomSettingsOpen = ref(false);
 const isModified = ref(false);
 const isRoomInfoOpen = ref(false);
+const isFurnitureSettingsOpen = ref(false);
 const isMyRoom = computed(() => props.room.userId === $i?.id);
+const isMobile = deviceKind === 'smartphone' || deviceKind === 'tablet';
 
 const graphicsQualityRaw = prefer.model('world.graphicsQuality');
 const graphicsQualityAutoValue = computed<number>(() => deviceKind !== 'desktop' ? GRAPHICS_QUALITY.LOW : GRAPHICS_QUALITY.MEDIUM);
@@ -323,6 +328,14 @@ const roomControllerOptions = computed<RoomControllerOptions>(() => ({
 
 const controller = markRaw(new RoomController(deepClone(initialRoomState), roomControllerOptions.value));
 const multiplayer = markRaw(new Multiplayer(props.room.id, controller));
+
+watch(controller.selected, () => {
+	if (controller.selected.value != null) {
+		if (!isMobile) {
+			isFurnitureSettingsOpen.value = true;
+		}
+	}
+});
 
 onMounted(async () => {
 	// TODO: babylonに依存しないで判定する
