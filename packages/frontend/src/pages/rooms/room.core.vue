@@ -139,9 +139,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</template>
 
 		<div class="_gaps_s">
-			<MkA :to="`${userPage(pointedPlayerInfo)}`" :behavior="'window'">
-				<MkUserCardMini :user="pointedPlayerInfo" :withChart="false"/>
-			</MkA>
+			<img v-if="pointedPlayerInfo.avatarUrl" :src="pointedPlayerInfo.avatarUrl" decoding="async"/>
 		</div>
 	</XOverlayPanel>
 </div>
@@ -400,7 +398,7 @@ watch([graphicsQuality, fps, resolution, antialias], () => {
 });
 
 controller.addListener('playerPointed', ({ playerId }) => {
-	pointedPlayerInfo.value = multiplayer.playerProfiles.value[playerId] ?? null;
+	pointedPlayerInfo.value = multiplayer.playerProfiles[playerId] ?? null;
 	isPlayerInfoOpen.value = true;
 });
 
@@ -905,7 +903,7 @@ function enterOnline() {
 	flex-wrap: wrap;
 	box-sizing: border-box;
 	width: max-content;
-	gap: 10px;
+	gap: 8px;
 	pointer-events: none;
 }
 
