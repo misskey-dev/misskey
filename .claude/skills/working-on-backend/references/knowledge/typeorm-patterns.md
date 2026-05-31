@@ -91,7 +91,7 @@ export class CompositeNoteIndex1745378064470 {
 
 - **行ごとに計算した値で埋めたい / 既定値を後で外したい場合** — 3 段に分ける: ①nullable で追加 → ②`UPDATE` でバックフィル (ケース 3 参照) → ③`ALTER COLUMN ... SET NOT NULL`。`down` は `DROP COLUMN` で良い。巨大テーブルでは ② の `UPDATE` と ③ の `SET NOT NULL` (全行スキャン) が長時間ロックし得る点に注意
 
-> エンティティ側で `@Column({ default: ... })` を付けると `migration:generate` が `DEFAULT` 付き DDL を出す。アプリ実行時に常に値を入れるので DB 既定値が不要なら、生成後に `DEFAULT` 句だけ手で外す判断もある (既存 migration には両スタイルある)。
+**補足:** エンティティ側で `@Column({ default: ... })` を付けると `migration:generate` が `DEFAULT` 付き DDL を出す。アプリ実行時に常に値を入れるので DB 既定値が不要なら、生成後に `DEFAULT` 句だけ手で外す判断もある (既存 migration には両スタイルある)。
 
 ### 2. enum 型の値の追加・変更
 

@@ -16,7 +16,6 @@
 |---|---|
 | エンティティ (`packages/backend/src/models/*.ts`) を `@Column` / `@Index` / `@Entity` 等で先に変更し、差分から自動生成したい | `typeorm migration:generate` (本ファイルの "A. 差分から自動生成") |
 | 手書き SQL / データ移行 / `CREATE INDEX CONCURRENTLY` など、エンティティ差分では表現できない変更 | `typeorm migration:create` で空雛形を作る (本ファイルの "B. 空雛形を作る") |
-| 列追加 1 本のような小規模変更で、既存ファイルをコピーした方が速い | 手書き (`Date.now()` で UNIX ms 取得 → `{ms}-{PascalName}.js` を新規作成) |
 
 迷ったら **まずエンティティを変更 → `migration:generate`** が原則。既存 migration (`packages/backend/migration/*.js`) のほぼすべてが `queryRunner.query(\`SQL...\`)` の raw SQL なので、CLI 出力でも手書きでもスタイルは揃う。
 
@@ -53,13 +52,14 @@ export class PascalCaseName1234567890123 {
 ## A. エンティティ差分から自動生成
 
 ```bash
-# リポジトリルートから実行 (推奨)
+# リポジトリルートから実行してよい。--filter backend exec が cwd を packages/backend に移すので、
+# 出力パス migration/<PascalName> と -d ormconfig.js は packages/backend/ 基準で解決される
 pnpm --filter backend exec typeorm migration:generate -d ormconfig.js -o --esm migration/<PascalName>
 ```
 
-> **CONTRIBUTING.md との違い**: CONTRIBUTING.md は `pnpm dlx typeorm ...` を案内しているが、`dlx` はパッケージを一時ダウンロードするため、バージョンが backend の依存関係と揃わない可能性がある。`pnpm --filter backend exec typeorm` はワークスペースにインストール済みの typeorm を使うため **こちらを推奨**。
->
-> **`-o --esm` について**: `-o` (`--outputJs`) は「TS ではなく JS を出力する」オプション、`--esm` は「ESM 形式 (`export class ...`) で出力する」オプション。Misskey の既存 migration はすべて ESM JS であるため **両方が必須**。`--esm` を省略すると CommonJS 形式の JS が生成されスタイルが揃わない。
+**CONTRIBUTING.md との違い**: CONTRIBUTING.md は `pnpm dlx typeorm ...` を案内しているが、`dlx` はパッケージを一時ダウンロードするため、バージョンが backend の依存関係と揃わない可能性がある。`pnpm --filter backend exec typeorm` はワークスペースにインストール済みの typeorm を使うため **こちらを推奨**。
+
+**`-o --esm` について**: `-o` (`--outputJs`) は「TS ではなく JS を出力する」オプション、`--esm` は「ESM 形式 (`export class ...`) で出力する」オプション。Misskey の既存 migration はすべて ESM JS であるため **両方が必須**。`--esm` を省略すると CommonJS 形式の JS が生成されスタイルが揃わない。
 
 ### 事前準備 (一括スクリプト)
 
@@ -88,7 +88,7 @@ pnpm --filter backend exec typeorm migration:create -o --esm migration/<PascalNa
 
 ローカル DB の起動とビルドは不要。空の `up` / `down` だけが生成される。
 
-> `-o --esm` を **必ず付ける**。これが無いと `<UnixMs>-<PascalName>.ts` (CommonJS / TS 出力) が生成されるが、Misskey の `ormconfig.js` は `migration/*.js` だけを読み、既存の他 migration も全て `export class ... { async up(queryRunner) {...} }` の ESM JS 形式なので、後で手作業で変換が必要になる。`-o --esm` を付ければそのまま `.js` ESM で出る。
+**注意:** `-o --esm` を **必ず付ける**。これが無いと `<UnixMs>-<PascalName>.ts` (CommonJS / TS 出力) が生成されるが、Misskey の `ormconfig.js` は `migration/*.js` だけを読み、既存の他 migration も全て `export class ... { async up(queryRunner) {...} }` の ESM JS 形式なので、後で手作業で変換が必要になる。`-o --esm` を付ければそのまま `.js` ESM で出る。
 
 ただし `migration:create` の雛形は **`name = '...'` プロパティを出力しない**ので、後段の SPDX 付与に加えて `name = '<PascalName><ms>'` を手で足し、`up`/`down` を埋める必要がある。雛形冒頭の `@typedef` / `@implements MigrationInterface` JSDoc は既存ファイルに無いので消して house style に揃える。
 

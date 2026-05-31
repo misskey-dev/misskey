@@ -60,7 +60,7 @@ endpoints.ts       上記カテゴリに収まらない雑多なもの
 block.ts / mute.ts / antennas.ts / clips.ts / move.ts / nodeinfo.ts / ...
 ```
 
-> **`admin.ts` は存在しない**。admin 系エンドポイントの e2e は `api.ts` (API レイヤ挙動として) または `endpoints.ts` (雑多枠) に置くのが現実的。
+**`admin.ts` は存在しない**。admin 系エンドポイントの e2e は `api.ts` (API レイヤ挙動として) または `endpoints.ts` (雑多枠) に置くのが現実的。
 
 ### 判断ルール
 
@@ -191,8 +191,19 @@ OAuth scope (`kind`) のテストに使う。
 
 ## ローカル DB / Redis
 
+backend の **テスト** と **開発** では用途別に別の compose ファイルを使う。ポートが異なるので混同すると接続できない。
+
+| 用途 | compose ファイル | host ポート (db / redis) |
+| --- | --- | --- |
+| テスト (`test` / `test:e2e` / `test:fed`) | [packages/backend/test/compose.yml](../../../../../packages/backend/test/compose.yml) | `54312` / `56312` ([.github/misskey/test.yml](../../../../../.github/misskey/test.yml) のポート設定と一致) |
+| 開発 (`pnpm dev` 等) | `compose.local-db.yml` (リポジトリルート) | `5432` / `6379` |
+
 ```bash
+# テスト用 DB / Redis (テスト時はこちら)
+docker compose -f packages/backend/test/compose.yml up -d
+
+# 開発用 DB / Redis (Misskey 本体は起動せず postgres / redis / meilisearch だけ立てる)
 docker compose -f compose.local-db.yml up -d
 ```
 
-backend テスト・開発の前提として、ローカルに PostgreSQL + Redis が立っている必要がある。CI もこれを起動してから走る。
+`compose.local-db.yml` は開発向け (標準ポート `5432` / `6379`) で、テスト用 DB (`test-misskey` / ポート `54312` / `56312`) とは別物。CI (`.github/workflows/test-backend.yml`) は docker compose ではなく GitHub Actions の `services:` で同じテスト用ポートの postgres / redis コンテナを立ててから走る。

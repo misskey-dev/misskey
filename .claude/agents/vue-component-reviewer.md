@@ -53,7 +53,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 - 共有 / 再利用コンポーネント (`packages/frontend/src/components/` 配下、サブディレクトリ含む) は `Mk` プレフィックス必須 (例: `MkButton.vue`, `global/MkAvatar.vue`, `grid/MkGrid.vue`)。
 - ページ固有のものは `pages/` 配下に置き、`Mk` プレフィックスは不要。
 
-> `<script setup>` SFC は named export を持たないため、「ファイル名と export 名の一致」を機械的に検査することはできない。SFC のデフォルトエクスポートはコンパイラ生成なので、ファイル名規約のみを基準にする。
+**補足:** `<script setup>` SFC は named export を持たないため、「ファイル名と export 名の一致」を機械的に検査することはできない。SFC のデフォルトエクスポートはコンパイラ生成なので、ファイル名規約のみを基準にする。
 
 ### 3. `<script>` タグ (Major)
 

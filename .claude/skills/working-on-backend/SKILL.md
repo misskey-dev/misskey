@@ -9,7 +9,7 @@ description: Use whenever editing or adding code under `packages/backend/` — i
 
 SKILL.md 本体は references への索引だけ。具体的な手順や規約は該当ファイルを Read すること (progressive disclosure)。
 
-> **他スキル実行後も免除されない。** `brainstorming` / `writing-plans` / その他アップストリームスキルを先に呼んでいても、`packages/backend/` に触れる実装フェーズに入る時点でこのスキルを呼ぶこと。
+**他スキル実行後も免除されない。** `brainstorming` / `writing-plans` / その他アップストリームスキルを先に呼んでいても、`packages/backend/` に触れる実装フェーズに入る時点でこのスキルを呼ぶこと。
 
 ## 作業別ワークフロー (tasks)
 

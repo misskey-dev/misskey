@@ -18,6 +18,7 @@ backend の API endpoint やスキーマ (`meta` / `paramDef` / `res`) を変更
 ## 実行コマンド
 
 ```bash
+# リポジトリルートから実行する
 pnpm build-misskey-js-with-types
 ```
 

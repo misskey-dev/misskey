@@ -48,7 +48,7 @@
 | 管理者必須 | (省略) | (省略) | `true` | **必須** (例: `'write:admin:emoji'`) |
 | Misskey 本体専用 (`secure: true`) | 任意 | 任意 | 任意 | **不要** (型 union で除外) |
 
-> **`secure: true` の例外**: [endpoints.ts](../../../../../packages/backend/src/server/api/endpoints.ts) の `secure: true` union variant は他の require* と独立しており、`kind` を要求しない。実例: [auth/accept.ts](../../../../../packages/backend/src/server/api/endpoints/auth/accept.ts) (`secure: true + requireCredential: true` で `kind` なし)、[i/export-user-lists.ts](../../../../../packages/backend/src/server/api/endpoints/i/export-user-lists.ts) も同様。サードパーティアプリから叩けないので OAuth scope の必要がない。
+**`secure: true` の例外**: [endpoints.ts](../../../../../packages/backend/src/server/api/endpoints.ts) の `secure: true` union variant は他の require* と独立しており、`kind` を要求しない。実例: [auth/accept.ts](../../../../../packages/backend/src/server/api/endpoints/auth/accept.ts) (`secure: true + requireCredential: true` で `kind` なし)、[i/export-user-lists.ts](../../../../../packages/backend/src/server/api/endpoints/i/export-user-lists.ts) も同様。サードパーティアプリから叩けないので OAuth scope の必要がない。
 
 加えて以下も使える:
 

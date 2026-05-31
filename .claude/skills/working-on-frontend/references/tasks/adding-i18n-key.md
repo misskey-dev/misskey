@@ -33,7 +33,7 @@ greeting: "こんにちは、{name}さん"
 - 既存セクション内に追加する場合は **周辺の既存配置・意味グループに合わせる** (例えば `_settings` は機能ブロック順に並んでおりアルファベット順ではない)。新セクション全体を末尾に追加するのは可
 - **HTML タグ (`<b>` `<br>` `<strong>` 等) や `:` `'` `&` を含む値は必ずダブルクォートで囲む** (未クォートだと YAML パース失敗)
 
-> ICU 非対応の代替戦略・予約キー `_lang_`・Storybook での挙動は → [knowledge/i18n-usage.md §制約と補足](../knowledge/i18n-usage.md)
+**詳細:** ICU 非対応の代替戦略・予約キー `_lang_`・Storybook での挙動は → [knowledge/i18n-usage.md §制約と補足](../knowledge/i18n-usage.md)
 
 ## ステップ 2: 型定義の自動再生成
 
@@ -70,7 +70,7 @@ import { i18n } from '@/i18n.js';
 
 `i18n.ts` は型付き文字列、`i18n.tsx` は `{name}` プレースホルダを埋め込む関数 (パラメータ付きキーのみ存在。ICU MessageFormat ではなく単純な文字列置換)。
 
-> HTML タグ埋め込み・computed によるリアクティブ参照・動的キー切替・ブラケット記法 (`i18n.ts['2fa']`) などの実装パターンは → [knowledge/i18n-usage.md §実装パターン](../knowledge/i18n-usage.md)
+**詳細:** HTML タグ埋め込み・computed によるリアクティブ参照・動的キー切替・ブラケット記法 (`i18n.ts['2fa']`) などの実装パターンは → [knowledge/i18n-usage.md §実装パターン](../knowledge/i18n-usage.md)
 
 ## ステップ 4: 検証
 
@@ -86,7 +86,7 @@ pnpm --filter frontend lint
 git diff --name-only develop -- 'locales/*.yml' | grep -v '^locales/ja-JP\.yml$'
 ```
 
-> `grep -v 'ja-JP.yml'` を **diff 本文** に当てると ja-JP.yml 単体の変更でも `+追加行` が素通りして必ず非空になる。`--name-only` でファイル名だけに絞ってから完全一致で除外するのが正しい。
+**注意:** `grep -v 'ja-JP.yml'` を **diff 本文** に当てると ja-JP.yml 単体の変更でも `+追加行` が素通りして必ず非空になる。`--name-only` でファイル名だけに絞ってから完全一致で除外するのが正しい。
 
 ユーザー影響のある UI 変更を伴う場合は [shipping-misskey-change スキル](../../../shipping-misskey-change/SKILL.md) で CHANGELOG エントリの判定をする。
 

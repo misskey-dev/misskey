@@ -50,7 +50,7 @@
  */
 ```
 
-> 注: `packages/misskey-js/src/autogen/` 配下にも diff が出るが、**misskey-js は MIT ライセンス** で別管理 (`packages/misskey-js/package.json:license` = MIT) なので SPDX ヘッダーは付けない / 不要。
+**注:** `packages/misskey-js/src/autogen/` 配下にも diff が出るが、**misskey-js は MIT ライセンス** で別管理 (`packages/misskey-js/package.json:license` = MIT) なので SPDX ヘッダーは付けない / 不要。
 
 ### 2.2 最小テンプレート (認証不要 read 系)
 
