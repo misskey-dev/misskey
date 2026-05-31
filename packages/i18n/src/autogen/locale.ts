@@ -13327,6 +13327,18 @@ export interface Locale extends ILocale {
          * アクセサリーを追加
          */
         "attachAccessory": string;
+        /**
+         * スクリーンショット
+         */
+        "takeScreenShot": string;
+        /**
+         * オンラインにする
+         */
+        "connectToOnline": string;
+        /**
+         * オフラインにする
+         */
+        "disconnectToOnline": string;
         "_avatars": {
             "_default": {
                 /**
@@ -13422,6 +13434,14 @@ export interface Locale extends ILocale {
          * 高度なアレンジ
          */
         "advancedCustomize": string;
+        /**
+         * エディットモードを始める
+         */
+        "enterEditMode": string;
+        /**
+         * エディットモードを終了
+         */
+        "exitEditMode": string;
         "_objects": {
             /**
              * リングシェードフロアランプ

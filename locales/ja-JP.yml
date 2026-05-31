@@ -3571,6 +3571,9 @@ _miWorld:
   avatar: "アバター"
   advancedCustomize: "高度なアレンジ"
   attachAccessory: "アクセサリーを追加"
+  takeScreenShot: "スクリーンショット"
+  connectToOnline: "オンラインにする"
+  disconnectToOnline: "オフラインにする"
 
   _avatars:
     _default:
@@ -3600,6 +3603,8 @@ _miRoom:
   material_roughness: "粗さ"
   light_brightness: "明るさ"
   advancedCustomize: "高度なアレンジ"
+  enterEditMode: "エディットモードを始める"
+  exitEditMode: "エディットモードを終了"
 
   _objects:
     woodRingFloorLamp: "リングシェードフロアランプ"

@@ -20,19 +20,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 	<div :class="$style.overlayTop">
 		<div :class="$style.topMain">
-			<div :class="$style.topMenu" class="_panel _shadow">
+			<div :class="$style.topMenu">
 				<template v-if="controller.isReady.value">
-					<button v-if="multiplayer.isOnline.value" :class="$style.topMenuButton" class="_button" style="color: var(--MI_THEME-accent)" @click="leaveOnline"><i class="ti ti-world"></i></button>
-					<button v-if="!multiplayer.isOnline.value" :class="$style.topMenuButton" class="_button" @click="enterOnline"><i class="ti ti-world"></i></button>
+					<button v-if="multiplayer.isOnline.value" v-tooltip.noDelay="i18n.ts._miWorld.disconnectToOnline" :class="$style.topMenuButton" class="_button" style="color: var(--MI_THEME-accent)" @click="leaveOnline"><i class="ti ti-world"></i></button>
+					<button v-if="!multiplayer.isOnline.value" v-tooltip.noDelay="i18n.ts._miWorld.connectToOnline" :class="$style.topMenuButton" class="_button" @click="enterOnline"><i class="ti ti-world"></i></button>
 
-					<button v-tooltip="'照明切り替え'" :class="$style.topMenuButton" class="_button" @click="toggleLight"><i class="ti ti-bulb"></i></button>
+					<button v-tooltip.noDelay="'照明切り替え'" :class="$style.topMenuButton" class="_button" @click="toggleLight"><i class="ti ti-bulb"></i></button>
 					<button v-if="controller.isEditMode.value" :class="$style.topMenuButton" class="_button" style="color: var(--MI_THEME-accent)" @click="exitEditMode"><i class="ti ti-paint"></i></button>
-					<button v-if="!controller.isEditMode.value" :class="$style.topMenuButton" class="_button" @click="enterEditMode"><i class="ti ti-paint"></i></button>
-					<button v-if="controller.isEditMode.value" :class="$style.topMenuButton" class="_button" @click="addFuniture"><i class="ti ti-plus"></i></button>
+					<button v-if="!controller.isEditMode.value" v-tooltip.noDelay="i18n.ts._miRoom.enterEditMode" :class="$style.topMenuButton" class="_button" @click="enterEditMode"><i class="ti ti-paint"></i></button>
+					<button v-if="controller.isEditMode.value" v-tooltip.noDelay="i18n.ts._miRoom.exitEditMode" :class="$style.topMenuButton" class="_button" @click="addFuniture"><i class="ti ti-plus"></i></button>
 					<button v-if="controller.isEditMode.value" :class="$style.topMenuButton" class="_button" @click="showSnappingMenu"><i class="ti ti-grid-4x4"></i></button>
 					<button v-if="controller.isEditMode.value && !isRoomSettingsOpen" :class="$style.topMenuButton" class="_button" @click="() => isRoomSettingsOpen = true"><i class="ti ti-home-cog"></i></button>
 					<button v-if="controller.isEditMode.value && isRoomSettingsOpen" :class="$style.topMenuButton" class="_button" style="color: var(--MI_THEME-accent)" @click="() => isRoomSettingsOpen = false"><i class="ti ti-home-cog"></i></button>
-					<button :class="$style.topMenuButton" class="_button" @click="takeScreenshot"><i class="ti ti-camera"></i></button>
+					<button v-tooltip.noDelay="i18n.ts._miWorld.takeScreenShot" :class="$style.topMenuButton" class="_button" @click="takeScreenshot"><i class="ti ti-camera"></i></button>
 				</template>
 				<button :class="$style.topMenuButton" class="_button" @click="showOtherMenu"><i class="ti ti-dots"></i></button>
 			</div>
@@ -47,10 +47,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.overlayBottom">
 		<div v-if="controller.isReady.value" class="_buttonsCenter _panel _shadow" :class="$style.overlayControls">
 			<template v-if="controller.isEditMode.value">
-				<MkButton v-if="controller.grabbing.value" v-tooltip="'Cancel (Q)'" iconOnly @click="cancelGrabbing"><i class="ti ti-x"></i></MkButton>
-				<MkButton v-if="controller.grabbing.value && !controller.grabbing.value.forInstall" v-tooltip="'Put (E)'" iconOnly @click="endGrabbing"><i class="ti ti-check"></i></MkButton>
-				<MkButton v-else-if="controller.grabbing.value && controller.grabbing.value.forInstall" v-tooltip="'Put (E)'" iconOnly @click="endGrabbing"><i class="ti ti-check"></i></MkButton>
-				<MkButton v-else-if="controller.selected.value != null" v-tooltip="'Grab (E)'" iconOnly @click="beginSelectedInstalledFunitureGrabbing"><i class="ti ti-hand-grab"></i></MkButton>
+				<MkButton v-if="controller.grabbing.value" v-tooltip.noDelay="'Cancel (Q)'" iconOnly @click="cancelGrabbing"><i class="ti ti-x"></i></MkButton>
+				<MkButton v-if="controller.grabbing.value && !controller.grabbing.value.forInstall" v-tooltip.noDelay="'Put (E)'" iconOnly @click="endGrabbing"><i class="ti ti-check"></i></MkButton>
+				<MkButton v-else-if="controller.grabbing.value && controller.grabbing.value.forInstall" v-tooltip.noDelay="'Put (E)'" iconOnly @click="endGrabbing"><i class="ti ti-check"></i></MkButton>
+				<MkButton v-else-if="controller.selected.value != null" v-tooltip.noDelay="'Grab (E)'" iconOnly @click="beginSelectedInstalledFunitureGrabbing"><i class="ti ti-hand-grab"></i></MkButton>
 
 				<MkButton v-if="controller.grabbing.value" iconOnly @click="controller.changeGrabbingRotation(Math.PI / 8)"><i class="ti ti-rotate-clockwise"></i></MkButton>
 				<MkButton v-if="controller.grabbing.value" iconOnly @click="controller.changeGrabbingRotation(-Math.PI / 8)"><i class="ti ti-rotate"></i></MkButton>
@@ -775,17 +775,27 @@ function enterOnline() {
 	display: flex;
 	box-sizing: border-box;
 	width: max-content;
+	gap: 10px;
 }
 
 .topMenuButton {
+	background: var(--MI_THEME-panel);
 	padding: 8px;
+	width: 60px;
+	box-sizing: border-box;
+	aspect-ratio: 1;
+	border-radius: 999px;
+	display: grid;
+	place-items: center;
 }
+/*
 .topMenuButton:first-child {
 	padding-left: 16px;
 }
 .topMenuButton:last-child {
 	padding-right: 16px;
 }
+	*/
 
 .modified {
 	display: flex;
