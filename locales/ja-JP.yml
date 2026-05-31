@@ -3610,6 +3610,10 @@ _miRoom:
   roomCustomize: "部屋のカスタマイズ"
   changeRoomName: "ルーム名を編集"
   roomInfo: "ルーム情報"
+  duplicate: "複製"
+  grab: "掴む"
+  furnitureCustomize: "家具のアレンジ"
+  uninstallFurniture: "しまう"
 
   _objects:
     woodRingFloorLamp: "リングシェードフロアランプ"
@@ -3893,7 +3897,7 @@ _miRoom:
     _tabletopDigitalClock:
       bodyMat: "本体の素材"
       lcdColor: "LCDの色"
-    tabletopFlag: "卓上フラッグ"
+    tabletopFlag: "卓上旗"
     _tabletopFlag:
       image: "画像"
     tabletopGlassPictureFrame: "卓上ガラス製フォトフレーム"

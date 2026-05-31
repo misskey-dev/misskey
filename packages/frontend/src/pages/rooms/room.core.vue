@@ -51,25 +51,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 
 	<div :class="$style.overlayBottom">
-		<div v-if="controller.isReady.value" class="_buttonsCenter" :class="$style.overlayControls">
+		<div v-if="controller.isReady.value" :class="$style.overlayControls">
 			<template v-if="controller.isEditMode.value">
 				<template v-if="controller.selected.value != null && controller.grabbing.value == null">
-					<button v-if="isFurnitureSettingsOpen" v-tooltip.noDelay="'家具の設定'" class="_button" :class="$style.floatingButton" style="color: var(--MI_THEME-accent)" @click="isFurnitureSettingsOpen = false"><i class="ti ti-tool"></i></button>
-					<button v-if="!isFurnitureSettingsOpen" v-tooltip.noDelay="'家具の設定'" class="_button" :class="$style.floatingButton" @click="isFurnitureSettingsOpen = true"><i class="ti ti-tool"></i></button>
+					<button v-if="isFurnitureSettingsOpen" v-tooltip.noDelay="i18n.ts._miRoom.furnitureCustomize" class="_button" :class="$style.floatingButton" style="color: var(--MI_THEME-accent)" @click="isFurnitureSettingsOpen = false"><i class="ti ti-tool"></i></button>
+					<button v-if="!isFurnitureSettingsOpen" v-tooltip.noDelay="i18n.ts._miRoom.furnitureCustomize" class="_button" :class="$style.floatingButton" @click="isFurnitureSettingsOpen = true"><i class="ti ti-tool"></i></button>
 				</template>
 
 				<button v-if="controller.grabbing.value" v-tooltip.noDelay="'Cancel (Q)'" class="_button" :class="$style.floatingButton" @click="cancelGrabbing"><i class="ti ti-x"></i></button>
 				<button v-if="controller.grabbing.value && !controller.grabbing.value.forInstall" v-tooltip.noDelay="'Put (E)'" class="_button" :class="$style.floatingButton" @click="endGrabbing"><i class="ti ti-check"></i></button>
 				<button v-else-if="controller.grabbing.value && controller.grabbing.value.forInstall" v-tooltip.noDelay="'Put (E)'" class="_button" :class="$style.floatingButton" @click="endGrabbing"><i class="ti ti-check"></i></button>
-				<button v-else-if="controller.selected.value != null" v-tooltip.noDelay="'Grab (E)'" class="_button" :class="$style.floatingButton" @click="beginSelectedInstalledFunitureGrabbing"><i class="ti ti-hand-grab"></i></button>
+				<button v-else-if="controller.selected.value != null" v-tooltip.noDelay="i18n.ts._miRoom.grab + ' (E)'" class="_button" :class="$style.floatingButton" @click="beginSelectedInstalledFunitureGrabbing"><i class="ti ti-hand-grab"></i></button>
 
 				<button v-if="controller.grabbing.value" class="_button" :class="$style.floatingButton" @click="controller.changeGrabbingRotation(Math.PI / 8)"><i class="ti ti-rotate-clockwise"></i></button>
 				<button v-if="controller.grabbing.value" class="_button" :class="$style.floatingButton" @click="controller.changeGrabbingRotation(-Math.PI / 8)"><i class="ti ti-rotate"></i></button>
 				<button v-if="controller.grabbing.value" class="_button" :class="$style.floatingButton" @click="controller.changeGrabbingDistance(10)"><i class="ti ti-arrows-maximize"></i></button>
 				<button v-if="controller.grabbing.value" class="_button" :class="$style.floatingButton" @click="controller.changeGrabbingDistance(-10)"><i class="ti ti-arrows-minimize"></i></button>
 
-				<button v-if="!controller.grabbing.value && controller.selected.value != null" class="_button" :class="$style.floatingButton" @click="duplicateSelectedFuniture"><i class="ti ti-copy"></i></button>
-				<button v-if="!controller.grabbing.value && controller.selected.value != null" class="_button" :class="$style.floatingButton" style="color: var(--MI_THEME-error)" @click="removeSelectedFuniture"><i class="ti ti-trash"></i></button>
+				<button v-if="!controller.grabbing.value && controller.selected.value != null" v-tooltip.noDelay="i18n.ts._miRoom.duplicate" class="_button" :class="$style.floatingButton" @click="duplicateSelectedFuniture"><i class="ti ti-copy"></i></button>
+				<button v-if="!controller.grabbing.value && controller.selected.value != null" v-tooltip.noDelay="i18n.ts._miRoom.uninstallFurniture" class="_button" :class="$style.floatingButton" style="color: var(--MI_THEME-error)" @click="removeSelectedFuniture"><i class="ti ti-trash"></i></button>
 			</template>
 			<template v-else>
 				<MkButton v-if="controller.isSitting.value" @click="controller.standUp()">降りる (Q)</MkButton>
@@ -884,6 +884,8 @@ function enterOnline() {
 .overlayControls {
 	margin: 16px auto;
 	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
 	box-sizing: border-box;
 	width: max-content;
 	pointer-events: auto;

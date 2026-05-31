@@ -13462,6 +13462,22 @@ export interface Locale extends ILocale {
          * ルーム情報
          */
         "roomInfo": string;
+        /**
+         * 複製
+         */
+        "duplicate": string;
+        /**
+         * 掴む
+         */
+        "grab": string;
+        /**
+         * 家具のアレンジ
+         */
+        "furnitureCustomize": string;
+        /**
+         * しまう
+         */
+        "uninstallFurniture": string;
         "_objects": {
             /**
              * リングシェードフロアランプ
@@ -14488,7 +14504,7 @@ export interface Locale extends ILocale {
                 "lcdColor": string;
             };
             /**
-             * 卓上フラッグ
+             * 卓上旗
              */
             "tabletopFlag": string;
             "_tabletopFlag": {
