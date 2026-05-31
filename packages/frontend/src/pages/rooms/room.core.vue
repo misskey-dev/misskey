@@ -139,7 +139,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</template>
 
 		<div v-if="pointedPlayerInfo.user != null">
-			<img v-if="pointedPlayerInfo.user.avatarUrl" :src="pointedPlayerInfo.user.avatarUrl" decoding="async"/>
+			<MkA :to="`/@${pointedPlayerInfo.user.username}`">
+				<img v-if="pointedPlayerInfo.user.avatarUrl" :class="$style.pointedPlayerInfoAvatar" :src="pointedPlayerInfo.user.avatarUrl" decoding="async"/>
+				<span>@{{ pointedPlayerInfo.user.username }}</span>
+			</MkA>
 		</div>
 		<div v-else>anonymous</div>
 	</XOverlayPanel>
@@ -939,6 +942,12 @@ function enterOnline() {
 }
 .overlayControls:empty {
 	display: none;
+}
+
+.pointedPlayerInfoAvatar {
+	width: 32px;
+	height: 32px;
+	border-radius: 100%;
 }
 
 .loading {
