@@ -13486,6 +13486,10 @@ export interface Locale extends ILocale {
          * しまう
          */
         "uninstallFurniture": string;
+        /**
+         * 家具の数
+         */
+        "furnituresCount": string;
         "_objects": {
             /**
              * リングシェードフロアランプ

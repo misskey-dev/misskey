@@ -132,6 +132,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkA :to="`${userPage(room.user)}`" :behavior="'window'">
 				<MkUserCardMini :user="room.user" :withChart="false"/>
 			</MkA>
+
+			<hr>
+
+			<div>
+				{{ i18n.ts._miRoom.furnituresCount }}: {{ controller.roomState.value.installedFurnitures.length }}
+			</div>
 		</div>
 	</XOverlayPanel>
 

@@ -3617,6 +3617,7 @@ _miRoom:
   grab: "掴む"
   furnitureCustomize: "家具のアレンジ"
   uninstallFurniture: "しまう"
+  furnituresCount: "家具の数"
 
   _objects:
     woodRingFloorLamp: "リングシェードフロアランプ"
