@@ -14,7 +14,7 @@
 - Enhance: リモートノートクリーニングジョブのスキップ処理のパフォーマンス改善
 - Enhance: リモートノートクリーニングジョブの削除対象検索処理のパフォーマンス改善
 - Fix: backend バンドルで `@tensorflow/tfjs-node` を external に含めず、起動時に `@mapbox/node-pre-gyp` の `find()` が backend の package.json を誤検出して `is not node-pre-gyp ready` エラーを永続的に吐く問題を修正
-
+- Fix: フォロワー限定投稿を指名投稿で引用した際に、引用した投稿の公開範囲が意図せず変更される問題を修正
 
 ## 2026.5.4
 
