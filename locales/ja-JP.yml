@@ -3605,6 +3605,8 @@ _miRoom:
   advancedCustomize: "高度なアレンジ"
   enterEditMode: "エディットモードを始める"
   exitEditMode: "エディットモードを終了"
+  installFurniture: "家具を設置"
+  roomCustomize: "部屋のカスタマイズ"
 
   _objects:
     woodRingFloorLamp: "リングシェードフロアランプ"

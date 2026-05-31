@@ -13442,6 +13442,14 @@ export interface Locale extends ILocale {
          * エディットモードを終了
          */
         "exitEditMode": string;
+        /**
+         * 家具を設置
+         */
+        "installFurniture": string;
+        /**
+         * 部屋のカスタマイズ
+         */
+        "roomCustomize": string;
         "_objects": {
             /**
              * リングシェードフロアランプ

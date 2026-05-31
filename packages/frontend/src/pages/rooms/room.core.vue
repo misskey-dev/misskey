@@ -26,11 +26,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<button v-if="!multiplayer.isOnline.value" v-tooltip.noDelay="i18n.ts._miWorld.connectToOnline" :class="$style.topMenuButton" class="_button" @click="enterOnline"><i class="ti ti-world"></i></button>
 
 					<button v-tooltip.noDelay="'照明切り替え'" :class="$style.topMenuButton" class="_button" @click="toggleLight"><i class="ti ti-bulb"></i></button>
-					<button v-if="controller.isEditMode.value" :class="$style.topMenuButton" class="_button" style="color: var(--MI_THEME-accent)" @click="exitEditMode"><i class="ti ti-paint"></i></button>
+					<button v-if="controller.isEditMode.value" v-tooltip.noDelay="i18n.ts._miRoom.exitEditMode" :class="$style.topMenuButton" class="_button" style="color: var(--MI_THEME-accent)" @click="exitEditMode"><i class="ti ti-paint"></i></button>
 					<button v-if="!controller.isEditMode.value" v-tooltip.noDelay="i18n.ts._miRoom.enterEditMode" :class="$style.topMenuButton" class="_button" @click="enterEditMode"><i class="ti ti-paint"></i></button>
-					<button v-if="controller.isEditMode.value" v-tooltip.noDelay="i18n.ts._miRoom.exitEditMode" :class="$style.topMenuButton" class="_button" @click="addFuniture"><i class="ti ti-plus"></i></button>
+					<button v-if="controller.isEditMode.value" v-tooltip.noDelay="i18n.ts._miRoom.installFurniture" :class="$style.topMenuButton" class="_button" @click="addFuniture"><i class="ti ti-plus"></i></button>
 					<button v-if="controller.isEditMode.value" :class="$style.topMenuButton" class="_button" @click="showSnappingMenu"><i class="ti ti-grid-4x4"></i></button>
-					<button v-if="controller.isEditMode.value && !isRoomSettingsOpen" :class="$style.topMenuButton" class="_button" @click="() => isRoomSettingsOpen = true"><i class="ti ti-home-cog"></i></button>
+					<button v-if="controller.isEditMode.value && !isRoomSettingsOpen" v-tooltip.noDelay="i18n.ts._miRoom.roomCustomize" :class="$style.topMenuButton" class="_button" @click="() => isRoomSettingsOpen = true"><i class="ti ti-home-cog"></i></button>
 					<button v-if="controller.isEditMode.value && isRoomSettingsOpen" :class="$style.topMenuButton" class="_button" style="color: var(--MI_THEME-accent)" @click="() => isRoomSettingsOpen = false"><i class="ti ti-home-cog"></i></button>
 					<button v-tooltip.noDelay="i18n.ts._miWorld.takeScreenShot" :class="$style.topMenuButton" class="_button" @click="takeScreenshot"><i class="ti ti-camera"></i></button>
 				</template>
@@ -776,6 +776,7 @@ function enterOnline() {
 	box-sizing: border-box;
 	width: max-content;
 	gap: 10px;
+	pointer-events: none;
 }
 
 .topMenuButton {
@@ -787,6 +788,7 @@ function enterOnline() {
 	border-radius: 999px;
 	display: grid;
 	place-items: center;
+	pointer-events: auto;
 }
 /*
 .topMenuButton:first-child {
