@@ -55,6 +55,7 @@ const emit = defineEmits<{
 	max-height: calc(100% - 16px - 16px);
 	box-sizing: border-box;
 	overflow: auto;
+	overscroll-behavior: contain;
 	border-radius: 12px;
 	background: var(--MI_THEME-panel);
 }
@@ -68,6 +69,7 @@ const emit = defineEmits<{
 	height: min(50%, 400px);
 	box-sizing: border-box;
 	overflow: auto;
+	overscroll-behavior: contain;
 	border-radius: 16px 16px 0 0;
 	background: var(--MI_THEME-panel);
 }
