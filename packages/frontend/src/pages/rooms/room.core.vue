@@ -132,6 +132,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkA>
 		</div>
 	</XOverlayPanel>
+
+	<XOverlayPanel v-if="isPlayerInfoOpen" :isNarrow="isNarrow" :title="room.name" @close="isPlayerInfoOpen = false">
+		<template #icon>
+			<i class="ti ti-user"></i>
+		</template>
+
+		<div class="_gaps_s">
+			<MkA :to="`${userPage(pointedPlayerInfo)}`" :behavior="'window'">
+				<MkUserCardMini :user="pointedPlayerInfo" :withChart="false"/>
+			</MkA>
+		</div>
+	</XOverlayPanel>
 </div>
 </template>
 
@@ -147,6 +159,7 @@ import XEnvOptions from './room.env-options.vue';
 import XOverlayPanel from './OverlayPanel.vue';
 import type { RoomControllerOptions } from '@/world/room/controller.js';
 import type { RoomState, RoomAttachments } from 'misskey-world/src/room/type.js';
+import type { PlayerProfile } from 'misskey-world-engine/src/PlayerContainer.js';
 import MkWorldMonoOptionsForm from '@/components/MkWorldMonoOptionsForm.vue';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
@@ -177,13 +190,14 @@ const canvas = useTemplateRef('canvas');
 
 const isMyRoom = computed(() => props.room.userId === $i?.id);
 const isNarrow = deviceKind === 'smartphone';
-
 const isModified = ref(false);
+const pointedPlayerInfo = ref<PlayerProfile | null>(null);
 
 const isMenuShowing = ref(!isNarrow);
 const isRoomSettingsOpen = ref(false);
 const isRoomInfoOpen = ref(false);
 const isFurnitureSettingsOpen = ref(false);
+const isPlayerInfoOpen = ref(false);
 
 watch(isFurnitureSettingsOpen, () => {
 	if (isFurnitureSettingsOpen.value) {
@@ -383,6 +397,11 @@ watch(controller.grabbing, () => {
 
 watch([graphicsQuality, fps, resolution, antialias], () => {
 	refresh();
+});
+
+controller.addListener('playerPointed', ({ playerId }) => {
+	pointedPlayerInfo.value = multiplayer.playerProfiles.value[playerId] ?? null;
+	isPlayerInfoOpen.value = true;
 });
 
 function resize() {

@@ -25,7 +25,9 @@ export type RoomControllerOptions = {
 };
 
 // 抽象化レイヤー
-export class RoomController extends EngineControllerBase<RoomEngine> {
+export class RoomController extends EngineControllerBase<RoomEngine, {
+	'playerPointed': { playerId: string; };
+}> {
 	public isSitting = ref(false);
 	public isEditMode = ref(false);
 	public isRoomLightOn = ref(true);
@@ -114,6 +116,10 @@ export class RoomController extends EngineControllerBase<RoomEngine> {
 
 		engineEvents.on('playSfxUrl', ({ url, options }) => {
 			sound.playUrl(url, options);
+		});
+
+		engineEvents.on('playerPointed', ({ playerId }) => {
+			this.emit('playerPointed', { playerId });
 		});
 	}
 

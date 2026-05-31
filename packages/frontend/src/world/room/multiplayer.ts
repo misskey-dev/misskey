@@ -18,7 +18,7 @@ export class Multiplayer {
 	private controller: RoomController;
 	private connection: Misskey.IChannelConnection<Misskey.Channels['worldRoom']> | null = null;
 	private roomId: string;
-	private playerProfiles: Record<string, PlayerProfile> = {};
+	public playerProfiles: Record<string, PlayerProfile> = {};
 
 	constructor(roomId: string, controller: RoomController) {
 		this.roomId = roomId;

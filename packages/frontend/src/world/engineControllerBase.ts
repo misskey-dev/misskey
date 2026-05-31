@@ -19,9 +19,11 @@ export type EngineControllerBaseOptions = {
 
 type EngineEventsOf<T> = T extends EngineBase<infer X> ? X : EngineBaseEvents;
 
+type ControllerEvents = EventEmitter.ValidEventTypes;
+
 // UIとエンジンの間に挟まり抽象化を行うレイヤー。
 // UIからは、エンジンが直で動いててもワーカーで動いてても同じように操作できるように見える
-export abstract class EngineControllerBase<T extends EngineBase<EngineBaseEvents>> {
+export abstract class EngineControllerBase<T extends EngineBase<EngineBaseEvents>, E extends EventEmitter.ValidEventTypes = EventEmitter.ValidEventTypes> extends EventEmitter<ControllerEvents & E> {
 	private worker: Worker | null = null;
 	private engine: T | null = null;
 	private canvas: HTMLCanvasElement | null = null;
@@ -34,6 +36,7 @@ export abstract class EngineControllerBase<T extends EngineBase<EngineBaseEvents
 	private destroyed = false;
 
 	constructor(options: EngineControllerBaseOptions) {
+		super();
 		this.options = options;
 	}
 
