@@ -125,9 +125,11 @@ export class WorldRoomMultiplayService {
 	@bindThis
 	public packPlayerProfile(user: Packed<'UserLite'>, avatar: Packed<'WorldAvatarLite'>['def'] | null) {
 		return {
-			name: user.name,
-			username: user.username,
-			avatarUrl: user.avatarUrl,
+			user: {
+				name: user.name,
+				username: user.username,
+				avatarUrl: user.avatarUrl,
+			},
 			worldAvatar: avatar ?? this.worldAvatarService.defaultAvatar,
 		};
 	}
