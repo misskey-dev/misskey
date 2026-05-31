@@ -4,7 +4,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<div :class="[$style.root, { [$style.isMobile]: isMobile, [$style.isDesktop]: !isMobile }]">
+<div :class="[$style.root, { [$style.isNarrow]: isNarrow, [$style.isWide]: !isNarrow }]">
 	<MkStickyContainer>
 		<template #header>
 			<div :class="$style.header">
@@ -34,7 +34,7 @@ import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, 
 
 const props = defineProps<{
 	title: string;
-	isMobile: boolean;
+	isNarrow: boolean;
 	acrylic?: boolean;
 }>();
 
@@ -45,7 +45,7 @@ const emit = defineEmits<{
 </script>
 
 <style lang="scss" module>
-.root.isDesktop {
+.root.isWide {
 	position: absolute;
 	top: 16px;
 	right: 16px;
@@ -60,7 +60,7 @@ const emit = defineEmits<{
 	contain: content;
 }
 
-.root.isMobile {
+.root.isNarrow {
 	position: absolute;
 	bottom: 0;
 	left: 0;

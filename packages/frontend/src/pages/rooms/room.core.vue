@@ -21,26 +21,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.overlayTop">
 		<div :class="$style.topMain">
 			<div :class="$style.topMenu">
-				<template v-if="controller.isReady.value">
-					<button v-if="multiplayer.isOnline.value" v-tooltip.noDelay="i18n.ts._miWorld.disconnectToOnline" :class="$style.floatingButton" class="_button" style="color: var(--MI_THEME-accent)" @click="leaveOnline"><i class="ti ti-world"></i></button>
-					<button v-if="!multiplayer.isOnline.value" v-tooltip.noDelay="i18n.ts._miWorld.connectToOnline" :class="$style.floatingButton" class="_button" @click="enterOnline"><i class="ti ti-world"></i></button>
-
-					<button v-tooltip.noDelay="'照明切り替え'" :class="$style.floatingButton" class="_button" @click="toggleLight"><i class="ti ti-bulb"></i></button>
-
-					<button v-if="controller.isEditMode.value" v-tooltip.noDelay="i18n.ts._miRoom.exitEditMode" :class="$style.floatingButton" class="_button" style="color: var(--MI_THEME-accent)" @click="exitEditMode"><i class="ti ti-paint"></i></button>
-					<button v-if="!controller.isEditMode.value && isMyRoom" v-tooltip.noDelay="i18n.ts._miRoom.enterEditMode" :class="$style.floatingButton" class="_button" @click="enterEditMode"><i class="ti ti-paint"></i></button>
-
-					<button v-if="controller.isEditMode.value" v-tooltip.noDelay="i18n.ts._miRoom.installFurniture" :class="$style.floatingButton" class="_button" @click="addFuniture"><i class="ti ti-plus"></i></button>
-					<button v-if="controller.isEditMode.value" :class="$style.floatingButton" class="_button" @click="showSnappingMenu"><i class="ti ti-grid-4x4"></i></button>
-					<button v-if="controller.isEditMode.value && !isRoomSettingsOpen" v-tooltip.noDelay="i18n.ts._miRoom.roomCustomize" :class="$style.floatingButton" class="_button" @click="() => isRoomSettingsOpen = true"><i class="ti ti-home-cog"></i></button>
-					<button v-if="controller.isEditMode.value && isRoomSettingsOpen" :class="$style.floatingButton" class="_button" style="color: var(--MI_THEME-accent)" @click="() => isRoomSettingsOpen = false"><i class="ti ti-home-cog"></i></button>
-
-					<button v-tooltip.noDelay="i18n.ts._miWorld.takeScreenShot" :class="$style.floatingButton" class="_button" @click="takeScreenshot"><i class="ti ti-camera"></i></button>
-
-					<button v-if="isRoomInfoOpen" v-tooltip.noDelay="i18n.ts._miRoom.roomInfo" :class="$style.floatingButton" class="_button" style="color: var(--MI_THEME-accent)" @click="isRoomInfoOpen = false"><i class="ti ti-info-circle"></i></button>
-					<button v-if="!isRoomInfoOpen" v-tooltip.noDelay="i18n.ts._miRoom.roomInfo" :class="$style.floatingButton" class="_button" @click="isRoomInfoOpen = true"><i class="ti ti-info-circle"></i></button>
+				<template v-if="isNarrow">
+					<button v-if="isMenuShowing" v-tooltip.noDelay="i18n.ts.menu" :class="$style.floatingButton" class="_button" style="color: var(--MI_THEME-accent)" @click="isMenuShowing = false"><i class="ti ti-menu"></i></button>
+					<button v-if="!isMenuShowing" v-tooltip.noDelay="i18n.ts.menu" :class="$style.floatingButton" class="_button" @click="isMenuShowing = true"><i class="ti ti-menu"></i></button>
 				</template>
-				<button v-tooltip.noDelay="i18n.ts.other" :class="$style.floatingButton" class="_button" @click="showOtherMenu"><i class="ti ti-dots"></i></button>
+
+				<template v-if="isMenuShowing">
+					<template v-if="controller.isReady.value">
+						<button v-if="multiplayer.isOnline.value" v-tooltip.noDelay="i18n.ts._miWorld.disconnectToOnline" :class="$style.floatingButton" class="_button" style="color: var(--MI_THEME-accent)" @click="leaveOnline"><i class="ti ti-world"></i></button>
+						<button v-if="!multiplayer.isOnline.value" v-tooltip.noDelay="i18n.ts._miWorld.connectToOnline" :class="$style.floatingButton" class="_button" @click="enterOnline"><i class="ti ti-world"></i></button>
+
+						<button v-tooltip.noDelay="'照明切り替え'" :class="$style.floatingButton" class="_button" @click="toggleLight"><i class="ti ti-bulb"></i></button>
+
+						<button v-if="controller.isEditMode.value" v-tooltip.noDelay="i18n.ts._miRoom.exitEditMode" :class="$style.floatingButton" class="_button" style="color: var(--MI_THEME-accent)" @click="exitEditMode"><i class="ti ti-paint"></i></button>
+						<button v-if="!controller.isEditMode.value && isMyRoom" v-tooltip.noDelay="i18n.ts._miRoom.enterEditMode" :class="$style.floatingButton" class="_button" @click="enterEditMode"><i class="ti ti-paint"></i></button>
+
+						<button v-if="controller.isEditMode.value" v-tooltip.noDelay="i18n.ts._miRoom.installFurniture" :class="$style.floatingButton" class="_button" @click="addFuniture"><i class="ti ti-plus"></i></button>
+						<button v-if="controller.isEditMode.value" :class="$style.floatingButton" class="_button" @click="showSnappingMenu"><i class="ti ti-grid-4x4"></i></button>
+						<button v-if="controller.isEditMode.value && !isRoomSettingsOpen" v-tooltip.noDelay="i18n.ts._miRoom.roomCustomize" :class="$style.floatingButton" class="_button" @click="() => isRoomSettingsOpen = true"><i class="ti ti-home-cog"></i></button>
+						<button v-if="controller.isEditMode.value && isRoomSettingsOpen" :class="$style.floatingButton" class="_button" style="color: var(--MI_THEME-accent)" @click="() => isRoomSettingsOpen = false"><i class="ti ti-home-cog"></i></button>
+
+						<button v-tooltip.noDelay="i18n.ts._miWorld.takeScreenShot" :class="$style.floatingButton" class="_button" @click="takeScreenshot"><i class="ti ti-camera"></i></button>
+
+						<button v-if="isRoomInfoOpen" v-tooltip.noDelay="i18n.ts._miRoom.roomInfo" :class="$style.floatingButton" class="_button" style="color: var(--MI_THEME-accent)" @click="isRoomInfoOpen = false"><i class="ti ti-info-circle"></i></button>
+						<button v-if="!isRoomInfoOpen" v-tooltip.noDelay="i18n.ts._miRoom.roomInfo" :class="$style.floatingButton" class="_button" @click="isRoomInfoOpen = true"><i class="ti ti-info-circle"></i></button>
+					</template>
+					<button v-tooltip.noDelay="i18n.ts.other" :class="$style.floatingButton" class="_button" @click="showOtherMenu"><i class="ti ti-dots"></i></button>
+				</template>
 			</div>
 			<div v-if="isModified" :class="$style.modified" class="_panel _shadow">
 				<span :class="$style.modifiedText">{{ i18n.ts._miRoom.thereAreUnsavedChanges }}</span>
@@ -87,7 +94,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 
-	<XOverlayPanel v-if="controller.isReady.value && controller.isEditMode.value && controller.selected.value != null && isFurnitureSettingsOpen" :key="controller.selected.value.furnitureId" :isMobile="isMobile" :title="FURNITURE_UI_DEFS[controller.selected.value.funitureState.type].name" @close="isFurnitureSettingsOpen = false">
+	<XOverlayPanel v-if="controller.isReady.value && controller.isEditMode.value && controller.selected.value != null && isFurnitureSettingsOpen" :key="controller.selected.value.furnitureId" :isNarrow="isNarrow" :title="FURNITURE_UI_DEFS[controller.selected.value.funitureState.type].name" @close="isFurnitureSettingsOpen = false">
 		<template #icon>
 			<i class="ti ti-box"></i>
 		</template>
@@ -101,7 +108,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		/>
 	</XOverlayPanel>
 
-	<XOverlayPanel v-if="isRoomSettingsOpen && controller.isEditMode.value" :isMobile="isMobile" :title="i18n.ts._miRoom.roomCustomize" @close="isRoomSettingsOpen = false">
+	<XOverlayPanel v-if="isRoomSettingsOpen && controller.isEditMode.value" :isNarrow="isNarrow" :title="i18n.ts._miRoom.roomCustomize" @close="isRoomSettingsOpen = false">
 		<template #icon>
 			<i class="ti ti-home-cog"></i>
 		</template>
@@ -109,7 +116,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<XEnvOptions :controller="controller" @changeEnvType="changeEnvType"/>
 	</XOverlayPanel>
 
-	<XOverlayPanel v-if="isRoomInfoOpen" :isMobile="isMobile" :title="room.name" @close="isRoomInfoOpen = false">
+	<XOverlayPanel v-if="isRoomInfoOpen" :isNarrow="isNarrow" :title="room.name" @close="isRoomInfoOpen = false">
 		<template #icon>
 			<i class="ti ti-info-circle"></i>
 		</template>
@@ -168,12 +175,12 @@ const props = defineProps<{
 const canvasKey = ref(0); // 一度ワーカーに渡したcanvasは再利用できないため作り直すためのkey
 const canvas = useTemplateRef('canvas');
 
-function resize() {
-	controller.resize();
-}
+const isMyRoom = computed(() => props.room.userId === $i?.id);
+const isNarrow = deviceKind === 'smartphone';
 
 const isModified = ref(false);
 
+const isMenuShowing = ref(!isNarrow);
 const isRoomSettingsOpen = ref(false);
 const isRoomInfoOpen = ref(false);
 const isFurnitureSettingsOpen = ref(false);
@@ -184,9 +191,6 @@ watch(isFurnitureSettingsOpen, () => {
 		isRoomInfoOpen.value = false;
 	}
 });
-
-const isMyRoom = computed(() => props.room.userId === $i?.id);
-const isMobile = deviceKind === 'smartphone' || deviceKind === 'tablet';
 
 const graphicsQualityRaw = prefer.model('world.graphicsQuality');
 const graphicsQualityAutoValue = computed<number>(() => deviceKind !== 'desktop' ? GRAPHICS_QUALITY.LOW : GRAPHICS_QUALITY.MEDIUM);
@@ -365,7 +369,7 @@ watch(controller.roomState, () => {
 
 watch(controller.selected, () => {
 	if (controller.selected.value != null) {
-		if (!isMobile) {
+		if (!isNarrow) {
 			isFurnitureSettingsOpen.value = true;
 		}
 	}
@@ -380,6 +384,10 @@ watch(controller.grabbing, () => {
 watch([graphicsQuality, fps, resolution, antialias], () => {
 	refresh();
 });
+
+function resize() {
+	controller.resize();
+}
 
 onMounted(async () => {
 	// TODO: babylonに依存しないで判定する
@@ -875,6 +883,7 @@ function enterOnline() {
 .topMenu {
 	margin: 16px;
 	display: flex;
+	flex-wrap: wrap;
 	box-sizing: border-box;
 	width: max-content;
 	gap: 10px;
