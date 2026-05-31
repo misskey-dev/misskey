@@ -605,7 +605,7 @@ function showOtherMenu(ev: PointerEvent) {
 		action: async () => {
 			os.post({
 				initialText: `${props.room.name} by @${props.room.user.username}
-${url}/rooms/${props.room.id}`,
+${url}/rooms/r/${props.room.id}`,
 				instant: true,
 			});
 		},

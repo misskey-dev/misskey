@@ -747,9 +747,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkFolder>
 			</SearchMarker>
 
-			<SearchMarker v-slot="slotProps" :keywords="['world', 'room']">
+			<SearchMarker v-slot="slotProps" :keywords="['world', 'rooms']">
 				<MkFolder :defaultOpen="slotProps.isParentOfTarget">
-					<template #label><SearchLabel>World / Room</SearchLabel></template>
+					<template #label><SearchLabel>World / Rooms</SearchLabel></template>
 					<template #icon><SearchIcon><i class="ti ti-buildings"></i></SearchIcon></template>
 
 					<div class="_gaps_m">

@@ -11,7 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkPagination v-slot="{items}" :paginator="paginator">
 			<div class="_gaps_s">
 				<div v-for="room in items" :key="room.id">
-					<MkA :to="'/rooms/' + room.id">
+					<MkA :to="'/rooms/r/' + room.id">
 						<div>{{ room.name }}</div>
 					</MkA>
 				</div>
@@ -132,7 +132,7 @@ async function create() {
 		visibility: 'public',
 	});
 
-	router.push('/rooms/:roomId', {
+	router.push('/rooms/r/:roomId', {
 		params: {
 			roomId: room.id,
 		},

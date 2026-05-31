@@ -601,7 +601,7 @@ export const ROUTE_DEF = [{
 	path: '/rooms',
 	component: page(() => import('@/pages/rooms/index.vue')),
 }, {
-	path: '/rooms/:roomId',
+	path: '/rooms/r/:roomId',
 	component: page(() => import('@/pages/rooms/room.vue')),
 }, {
 	path: '/debug',
