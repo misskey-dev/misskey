@@ -147,6 +147,7 @@ export class PlayerContainer {
 				mat.metallic = 0;
 				mesh.material = mat;
 
+				// TODO: SRを無効にせずに表現する方法を考える
 				const blink = () => {
 					if (mesh.isDisposed()) return;
 
@@ -165,9 +166,9 @@ export class PlayerContainer {
 					}, 100);
 				};
 
-				this.timer.setTimeout(() => {
-					blink();
-				}, Math.random() * 10000);
+				//this.timer.setTimeout(() => {
+				//	blink();
+				//}, Math.random() * 10000);
 			}
 			if (mesh.name.includes('__MOUTH__')) {
 				if (mouthTex != null) {
