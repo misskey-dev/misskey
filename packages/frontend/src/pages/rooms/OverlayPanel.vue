@@ -57,6 +57,7 @@ const emit = defineEmits<{
 	overscroll-behavior: contain;
 	border-radius: 12px;
 	background: var(--MI_THEME-panel);
+	contain: content;
 }
 
 .root.isMobile {
@@ -71,6 +72,7 @@ const emit = defineEmits<{
 	overscroll-behavior: contain;
 	border-radius: 16px 16px 0 0;
 	background: var(--MI_THEME-panel);
+	contain: content;
 }
 
 .header {

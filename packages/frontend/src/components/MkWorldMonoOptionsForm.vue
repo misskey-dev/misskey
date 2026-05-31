@@ -110,6 +110,10 @@ const advancedCustomize = prefer.model('world.room.advancedCustomize');
 
 function changeImageType(k: string, type: string) {
 	emit('update', k, { ...props.options[k], type, driveFileId: type === '_custom_' ? props.options[k].driveFileId : null });
+
+	if (type === '_custom_') {
+		changeImage(k);
+	}
 }
 
 async function changeImage(k: string) {

@@ -114,7 +114,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<i class="ti ti-info-circle"></i>
 		</template>
 
-		test
+		<div class="_gaps_s">
+			<div v-if="room.description">
+				<Mfm :text="room.description" :isNote="false"/>
+			</div>
+			<div v-else style="opacity: 0.5;">{{ i18n.ts.noDescription }}</div>
+
+			<MkA :to="`${userPage(room.user)}`" :behavior="'window'">
+				<MkUserCardMini :user="room.user" :withChart="false"/>
+			</MkA>
+		</div>
 	</XOverlayPanel>
 </div>
 </template>
@@ -147,6 +156,8 @@ import { miLocalStorage } from '@/local-storage.js';
 import { FURNITURE_UI_DEFS } from '@/world/room/furniture-ui-defs.js';
 import { Multiplayer } from '@/world/room/multiplayer.js';
 import { $i } from '@/i.js';
+import { userPage } from '@/filters/user.js';
+import MkUserCardMini from '@/components/MkUserCardMini.vue';
 
 const roomSpecVersion = 0;
 
@@ -161,10 +172,19 @@ function resize() {
 	controller.resize();
 }
 
-const isRoomSettingsOpen = ref(false);
 const isModified = ref(false);
+
+const isRoomSettingsOpen = ref(false);
 const isRoomInfoOpen = ref(false);
 const isFurnitureSettingsOpen = ref(false);
+
+watch(isFurnitureSettingsOpen, () => {
+	if (isFurnitureSettingsOpen.value) {
+		isRoomSettingsOpen.value = false;
+		isRoomInfoOpen.value = false;
+	}
+});
+
 const isMyRoom = computed(() => props.room.userId === $i?.id);
 const isMobile = deviceKind === 'smartphone' || deviceKind === 'tablet';
 
