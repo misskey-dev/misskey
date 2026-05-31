@@ -3256,6 +3256,8 @@ _search:
   pleaseEnterServerHost: "서버의 호스트를 입력해 주세요."
   pleaseSelectUser: "유저를 선택해주세요"
   serverHostPlaceholder: "예: misskey.example.com"
+  postFrom: "게시 날짜 from"
+  postTo: "게시 날짜 to"
 _serverSetupWizard:
   installCompleted: "Misskey의 설치가 완료됐습니다!"
   firstCreateAccount: "먼저 관리자 계정을 만듭시다."
