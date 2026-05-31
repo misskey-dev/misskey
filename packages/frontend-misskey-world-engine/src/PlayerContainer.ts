@@ -11,9 +11,11 @@ import { Timer } from './utility.js';
 import type { WorldAvatar } from 'misskey-world/src/types.js';
 
 export type PlayerProfile = {
-	name: string;
-	username: string;
-	avatarUrl: string;
+	user: {
+		name: string;
+		username: string;
+		avatarUrl: string;
+	} | null;
 	worldAvatar: WorldAvatar;
 };
 
