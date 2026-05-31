@@ -99,6 +99,7 @@ import { cm, getHex, getRgb, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { GRAPHICS_QUALITY } from 'misskey-world-engine/src/utility.js';
 import { FURNITURE_SCHEMA_DEFS } from 'misskey-world/src/room/furniture-schema-defs.js';
 import { useInterval } from '@@/js/use-interval.js';
+import { url } from '@@/js/config.js';
 import XEnvOptions from './room.env-options.vue';
 import type { RoomControllerOptions } from '@/world/room/controller.js';
 import type { RoomState, RoomAttachments } from 'misskey-world/src/room/type.js';
@@ -596,6 +597,16 @@ function showOtherMenu(ev: PointerEvent) {
 				name: result,
 			}).then(() => {
 				props.room.name = result;
+			});
+		},
+	}, {
+		text: i18n.ts.share,
+		icon: 'ti ti-share',
+		action: async () => {
+			os.post({
+				initialText: `${props.room.name} by @${props.room.user.username}
+${url}/rooms/${props.room.id}`,
+				instant: true,
 			});
 		},
 	}, {
