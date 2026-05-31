@@ -71,10 +71,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<button v-if="!controller.grabbing.value && controller.selected.value != null" class="_button" :class="$style.floatingButton" @click="duplicateSelectedFuniture"><i class="ti ti-copy"></i></button>
 				<button v-if="!controller.grabbing.value && controller.selected.value != null" class="_button" :class="$style.floatingButton" style="color: var(--MI_THEME-error)" @click="removeSelectedFuniture"><i class="ti ti-trash"></i></button>
 			</template>
-			<MkButton v-if="controller.isSitting.value" @click="controller.standUp()">降りる (Q)</MkButton>
-			<template v-if="controller.selected.value != null">
-				<template v-for="interaction in controller.selected.value.interacions" :key="interaction.id">
-					<MkButton inline @click="controller.interact(interaction.id)">{{ interaction.label }}{{ interaction.isPrimary ? ' (E)' : '' }}</MkButton>
+			<template v-else>
+				<MkButton v-if="controller.isSitting.value" @click="controller.standUp()">降りる (Q)</MkButton>
+				<template v-if="controller.selected.value != null">
+					<template v-for="interaction in controller.selected.value.interacions" :key="interaction.id">
+						<MkButton inline @click="controller.interact(interaction.id)">{{ interaction.label }}{{ interaction.isPrimary ? ' (E)' : '' }}</MkButton>
+					</template>
 				</template>
 			</template>
 		</div>
