@@ -50,7 +50,7 @@ const emit = defineEmits<{
 	top: 16px;
 	right: 16px;
 	z-index: 1;
-	width: 300px;
+	width: 350px;
 	max-height: calc(100% - 16px - 16px);
 	box-sizing: border-box;
 	overflow: auto;
