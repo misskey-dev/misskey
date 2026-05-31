@@ -806,6 +806,7 @@ function enterOnline() {
 	left: 0;
 	z-index: 1;
 	width: 100%;
+	pointer-events: none;
 }
 
 .overlayBottom {
@@ -859,6 +860,7 @@ function enterOnline() {
 	font-size: 90%;
 	gap: 1em;
 	padding: 8px 16px;
+	pointer-events: auto;
 }
 
 .modifiedText {
