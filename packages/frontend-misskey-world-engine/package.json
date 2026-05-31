@@ -21,10 +21,10 @@
 		"built"
 	],
 	"dependencies": {
-		"@babylonjs/core": "9.10.0",
-		"@babylonjs/inspector": "9.10.0",
-		"@babylonjs/loaders": "9.10.0",
-		"@babylonjs/materials": "9.10.0",
+		"@babylonjs/core": "9.10.1",
+		"@babylonjs/inspector": "9.10.1",
+		"@babylonjs/loaders": "9.10.1",
+		"@babylonjs/materials": "9.10.1",
 		"@types/throttle-debounce": "5.0.2",
 		"eventemitter3": "5.0.4",
 		"seedrandom": "3.0.5",

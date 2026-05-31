@@ -1173,17 +1173,17 @@ importers:
   packages/frontend-misskey-world-engine:
     dependencies:
       '@babylonjs/core':
-        specifier: 9.10.0
-        version: 9.10.0
+        specifier: 9.10.1
+        version: 9.10.1
       '@babylonjs/inspector':
-        specifier: 9.10.0
-        version: 9.10.0(24444c20d76daed063c52fbd141dc2f6)
+        specifier: 9.10.1
+        version: 9.10.1(8685befec93a2787cb88527bf507049a)
       '@babylonjs/loaders':
-        specifier: 9.10.0
-        version: 9.10.0(@babylonjs/core@9.10.0)(babylonjs-gltf2interface@9.6.0)
+        specifier: 9.10.1
+        version: 9.10.1(@babylonjs/core@9.10.1)(babylonjs-gltf2interface@9.6.0)
       '@babylonjs/materials':
-        specifier: 9.10.0
-        version: 9.10.0(@babylonjs/core@9.10.0)
+        specifier: 9.10.1
+        version: 9.10.1(@babylonjs/core@9.10.1)
       '@types/throttle-debounce':
         specifier: 5.0.2
         version: 5.0.2
@@ -1801,8 +1801,8 @@ packages:
     peerDependencies:
       '@babylonjs/core': ^9.0.0
 
-  '@babylonjs/core@9.10.0':
-    resolution: {integrity: sha512-BgRHSidUqV67Pi8hbyXUnntzJMIXcb09CBGJsNxsgu5vyZWxRtlN34IHVHHfKA95d/ZLrHZ/kXMsi2DG1aLR+Q==}
+  '@babylonjs/core@9.10.1':
+    resolution: {integrity: sha512-w7jhzzAHEh9hrCXtsQeUh7i8RL6x3PE+ExhBqVTn49GRfUdnzwhh3SPQgf0TKwGqelvBTA112TuIl6cENfzE2A==}
 
   '@babylonjs/gui-editor@9.7.0':
     resolution: {integrity: sha512-5LGB5SqxBbgB+V7k85rGNOD1aJUybT78yvRyUzR8dCJP6XkgRDMsNqcqqEWLCg7+1Z0XVRWvJLwu8QAA0XxbcA==}
@@ -1817,8 +1817,8 @@ packages:
     peerDependencies:
       '@babylonjs/core': ^9.0.0
 
-  '@babylonjs/inspector@9.10.0':
-    resolution: {integrity: sha512-ZqkHLgnU/w0lOpoEpnLJn6m9oZ4iHA/HhYbaiIkbBbg2BpsoWc/J76HPGKhyT8Q02hnfyl1mcOB6wwF5qhvg9w==}
+  '@babylonjs/inspector@9.10.1':
+    resolution: {integrity: sha512-viHF6u4ySj5dyGMeMm9vGc5SyD1s7fTP3J5WqYZSZT46NMNuk6LVHLxsSNqqRHGDTD0O4ekNhqHIf3/uEXMhCg==}
     hasBin: true
     peerDependencies:
       '@babylonjs/addons': ^9.0.0
@@ -1836,14 +1836,14 @@ packages:
       react-dom: '>=16.14.0 <20.0.0'
       usehooks-ts: ^3.1.1
 
-  '@babylonjs/loaders@9.10.0':
-    resolution: {integrity: sha512-4qC64XFy+F4SnXcn5b1wN2E3zz9cMRwat74wpmhH54UW3MvsUS06f+2f1Dw2gPhAMwogNW56zWxB1GY/MioJzQ==}
+  '@babylonjs/loaders@9.10.1':
+    resolution: {integrity: sha512-swnOC1mCK4T/o6SS3kmJiFl2KtZc9wZWwYVNIl5uq0f2so8VFkaSu3+FqAZwzwdzS+vXyan7fn+ZgVrSrTbQ9w==}
     peerDependencies:
       '@babylonjs/core': ^9.0.0
       babylonjs-gltf2interface: ^9.0.0
 
-  '@babylonjs/materials@9.10.0':
-    resolution: {integrity: sha512-CxOMnAJ+l4Zle8WF2JbtdpDBAk3grK+5tVnxbW0RohEfG5QCVZVjFCCTLCpyoTFLuFaIyOxsOIozfK7o1btsZw==}
+  '@babylonjs/materials@9.10.1':
+    resolution: {integrity: sha512-L6/k2liWZCgU5EmAEPc59EUpFDLumtWSBm9tHVubuXOr0JdTNR+Ot+hyk1uNHBI15ydOXexBletFbAlLnNuQOw==}
     peerDependencies:
       '@babylonjs/core': ^9.0.0
 
@@ -11830,32 +11830,32 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
 
-  '@babylonjs/addons@9.7.0(@babylonjs/core@9.10.0)':
+  '@babylonjs/addons@9.7.0(@babylonjs/core@9.10.1)':
     dependencies:
-      '@babylonjs/core': 9.10.0
+      '@babylonjs/core': 9.10.1
 
-  '@babylonjs/core@9.10.0': {}
+  '@babylonjs/core@9.10.1': {}
 
-  '@babylonjs/gui-editor@9.7.0(@babylonjs/core@9.10.0)(@babylonjs/gui@9.7.0(@babylonjs/core@9.10.0))(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)':
+  '@babylonjs/gui-editor@9.7.0(@babylonjs/core@9.10.1)(@babylonjs/gui@9.7.0(@babylonjs/core@9.10.1))(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)':
     dependencies:
-      '@babylonjs/core': 9.10.0
-      '@babylonjs/gui': 9.7.0(@babylonjs/core@9.10.0)
+      '@babylonjs/core': 9.10.1
+      '@babylonjs/gui': 9.7.0(@babylonjs/core@9.10.1)
       '@types/react': 19.2.14
       '@types/react-dom': 19.2.3(@types/react@19.2.14)
 
-  '@babylonjs/gui@9.7.0(@babylonjs/core@9.10.0)':
+  '@babylonjs/gui@9.7.0(@babylonjs/core@9.10.1)':
     dependencies:
-      '@babylonjs/core': 9.10.0
+      '@babylonjs/core': 9.10.1
 
-  '@babylonjs/inspector@9.10.0(24444c20d76daed063c52fbd141dc2f6)':
+  '@babylonjs/inspector@9.10.1(8685befec93a2787cb88527bf507049a)':
     dependencies:
-      '@babylonjs/addons': 9.7.0(@babylonjs/core@9.10.0)
-      '@babylonjs/core': 9.10.0
-      '@babylonjs/gui': 9.7.0(@babylonjs/core@9.10.0)
-      '@babylonjs/gui-editor': 9.7.0(@babylonjs/core@9.10.0)(@babylonjs/gui@9.7.0(@babylonjs/core@9.10.0))(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
-      '@babylonjs/loaders': 9.10.0(@babylonjs/core@9.10.0)(babylonjs-gltf2interface@9.6.0)
-      '@babylonjs/materials': 9.10.0(@babylonjs/core@9.10.0)
-      '@babylonjs/serializers': 9.7.0(@babylonjs/core@9.10.0)(babylonjs-gltf2interface@9.6.0)
+      '@babylonjs/addons': 9.7.0(@babylonjs/core@9.10.1)
+      '@babylonjs/core': 9.10.1
+      '@babylonjs/gui': 9.7.0(@babylonjs/core@9.10.1)
+      '@babylonjs/gui-editor': 9.7.0(@babylonjs/core@9.10.1)(@babylonjs/gui@9.7.0(@babylonjs/core@9.10.1))(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)
+      '@babylonjs/loaders': 9.10.1(@babylonjs/core@9.10.1)(babylonjs-gltf2interface@9.6.0)
+      '@babylonjs/materials': 9.10.1(@babylonjs/core@9.10.1)
+      '@babylonjs/serializers': 9.7.0(@babylonjs/core@9.10.1)(babylonjs-gltf2interface@9.6.0)
       '@fluentui-contrib/react-resize-handle': 0.8.4(@fluentui/react-components@9.73.8(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(scheduler@0.27.0))(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@fluentui-contrib/react-virtualizer': 1.0.0(@fluentui/react-shared-contexts@9.26.2(@types/react@19.2.14)(react@19.2.6))(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       '@fluentui/react-components': 9.73.8(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(scheduler@0.27.0)
@@ -11864,18 +11864,18 @@ snapshots:
       react-dom: 19.2.6(react@19.2.6)
       usehooks-ts: 3.1.1(react@19.2.6)
 
-  '@babylonjs/loaders@9.10.0(@babylonjs/core@9.10.0)(babylonjs-gltf2interface@9.6.0)':
+  '@babylonjs/loaders@9.10.1(@babylonjs/core@9.10.1)(babylonjs-gltf2interface@9.6.0)':
     dependencies:
-      '@babylonjs/core': 9.10.0
+      '@babylonjs/core': 9.10.1
       babylonjs-gltf2interface: 9.6.0
 
-  '@babylonjs/materials@9.10.0(@babylonjs/core@9.10.0)':
+  '@babylonjs/materials@9.10.1(@babylonjs/core@9.10.1)':
     dependencies:
-      '@babylonjs/core': 9.10.0
+      '@babylonjs/core': 9.10.1
 
-  '@babylonjs/serializers@9.7.0(@babylonjs/core@9.10.0)(babylonjs-gltf2interface@9.6.0)':
+  '@babylonjs/serializers@9.7.0(@babylonjs/core@9.10.1)(babylonjs-gltf2interface@9.6.0)':
     dependencies:
-      '@babylonjs/core': 9.10.0
+      '@babylonjs/core': 9.10.1
       babylonjs-gltf2interface: 9.6.0
 
   '@bcoe/v8-coverage@1.0.2': {}
