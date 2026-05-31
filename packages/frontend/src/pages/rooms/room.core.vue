@@ -122,6 +122,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</template>
 
 		<div class="_gaps_s">
+			<MkButton v-if="isMyRoom" @click="changeRoomName">{{ i18n.ts._miRoom.changeRoomName }}</MkButton>
+
 			<div v-if="room.description">
 				<Mfm :text="room.description" :isNote="false"/>
 			</div>
@@ -139,7 +141,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</template>
 
 		<div v-if="pointedPlayerInfo.user != null">
-			<MkA :to="`/@${pointedPlayerInfo.user.username}`">
+			<MkA :to="`/@${pointedPlayerInfo.user.username}`" :behavior="'window'">
 				<img v-if="pointedPlayerInfo.user.avatarUrl" :class="$style.pointedPlayerInfoAvatar" :src="pointedPlayerInfo.user.avatarUrl" decoding="async"/>
 				<span>@{{ pointedPlayerInfo.user.username }}</span>
 			</MkA>
@@ -679,23 +681,6 @@ function impor() {
 
 function showOtherMenu(ev: PointerEvent) {
 	os.popupMenu([{
-		text: i18n.ts._miRoom.changeRoomName,
-		icon: 'ti ti-forms',
-		action: async () => {
-			const { canceled, result } = await os.inputText({
-				title: i18n.ts.name,
-				default: props.room.name,
-			});
-			if (canceled) return;
-
-			os.apiWithDialog('world/rooms/update', {
-				roomId: props.room.id,
-				name: result,
-			}).then(() => {
-				props.room.name = result;
-			});
-		},
-	}, {
 		text: i18n.ts.share,
 		icon: 'ti ti-share',
 		action: async () => {
@@ -786,6 +771,21 @@ ${url}/rooms/r/${props.room.id}`,
 			ref: antialias,
 		}],
 	}], ev.currentTarget ?? ev.target);
+}
+
+async function changeRoomName() {
+	const { canceled, result } = await os.inputText({
+		title: i18n.ts.name,
+		default: props.room.name,
+	});
+	if (canceled) return;
+
+	os.apiWithDialog('world/rooms/update', {
+		roomId: props.room.id,
+		name: result,
+	}).then(() => {
+		props.room.name = result;
+	});
 }
 
 function leaveOnline() {
