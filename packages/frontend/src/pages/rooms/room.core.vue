@@ -22,25 +22,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<div :class="$style.topMain">
 			<div :class="$style.topMenu">
 				<template v-if="controller.isReady.value">
-					<button v-if="multiplayer.isOnline.value" v-tooltip.noDelay="i18n.ts._miWorld.disconnectToOnline" :class="$style.topMenuButton" class="_button" style="color: var(--MI_THEME-accent)" @click="leaveOnline"><i class="ti ti-world"></i></button>
-					<button v-if="!multiplayer.isOnline.value" v-tooltip.noDelay="i18n.ts._miWorld.connectToOnline" :class="$style.topMenuButton" class="_button" @click="enterOnline"><i class="ti ti-world"></i></button>
+					<button v-if="multiplayer.isOnline.value" v-tooltip.noDelay="i18n.ts._miWorld.disconnectToOnline" :class="$style.floatingButton" class="_button" style="color: var(--MI_THEME-accent)" @click="leaveOnline"><i class="ti ti-world"></i></button>
+					<button v-if="!multiplayer.isOnline.value" v-tooltip.noDelay="i18n.ts._miWorld.connectToOnline" :class="$style.floatingButton" class="_button" @click="enterOnline"><i class="ti ti-world"></i></button>
 
-					<button v-tooltip.noDelay="'照明切り替え'" :class="$style.topMenuButton" class="_button" @click="toggleLight"><i class="ti ti-bulb"></i></button>
+					<button v-tooltip.noDelay="'照明切り替え'" :class="$style.floatingButton" class="_button" @click="toggleLight"><i class="ti ti-bulb"></i></button>
 
-					<button v-if="controller.isEditMode.value" v-tooltip.noDelay="i18n.ts._miRoom.exitEditMode" :class="$style.topMenuButton" class="_button" style="color: var(--MI_THEME-accent)" @click="exitEditMode"><i class="ti ti-paint"></i></button>
-					<button v-if="!controller.isEditMode.value && isMyRoom" v-tooltip.noDelay="i18n.ts._miRoom.enterEditMode" :class="$style.topMenuButton" class="_button" @click="enterEditMode"><i class="ti ti-paint"></i></button>
+					<button v-if="controller.isEditMode.value" v-tooltip.noDelay="i18n.ts._miRoom.exitEditMode" :class="$style.floatingButton" class="_button" style="color: var(--MI_THEME-accent)" @click="exitEditMode"><i class="ti ti-paint"></i></button>
+					<button v-if="!controller.isEditMode.value && isMyRoom" v-tooltip.noDelay="i18n.ts._miRoom.enterEditMode" :class="$style.floatingButton" class="_button" @click="enterEditMode"><i class="ti ti-paint"></i></button>
 
-					<button v-if="controller.isEditMode.value" v-tooltip.noDelay="i18n.ts._miRoom.installFurniture" :class="$style.topMenuButton" class="_button" @click="addFuniture"><i class="ti ti-plus"></i></button>
-					<button v-if="controller.isEditMode.value" :class="$style.topMenuButton" class="_button" @click="showSnappingMenu"><i class="ti ti-grid-4x4"></i></button>
-					<button v-if="controller.isEditMode.value && !isRoomSettingsOpen" v-tooltip.noDelay="i18n.ts._miRoom.roomCustomize" :class="$style.topMenuButton" class="_button" @click="() => isRoomSettingsOpen = true"><i class="ti ti-home-cog"></i></button>
-					<button v-if="controller.isEditMode.value && isRoomSettingsOpen" :class="$style.topMenuButton" class="_button" style="color: var(--MI_THEME-accent)" @click="() => isRoomSettingsOpen = false"><i class="ti ti-home-cog"></i></button>
+					<button v-if="controller.isEditMode.value" v-tooltip.noDelay="i18n.ts._miRoom.installFurniture" :class="$style.floatingButton" class="_button" @click="addFuniture"><i class="ti ti-plus"></i></button>
+					<button v-if="controller.isEditMode.value" :class="$style.floatingButton" class="_button" @click="showSnappingMenu"><i class="ti ti-grid-4x4"></i></button>
+					<button v-if="controller.isEditMode.value && !isRoomSettingsOpen" v-tooltip.noDelay="i18n.ts._miRoom.roomCustomize" :class="$style.floatingButton" class="_button" @click="() => isRoomSettingsOpen = true"><i class="ti ti-home-cog"></i></button>
+					<button v-if="controller.isEditMode.value && isRoomSettingsOpen" :class="$style.floatingButton" class="_button" style="color: var(--MI_THEME-accent)" @click="() => isRoomSettingsOpen = false"><i class="ti ti-home-cog"></i></button>
 
-					<button v-tooltip.noDelay="i18n.ts._miWorld.takeScreenShot" :class="$style.topMenuButton" class="_button" @click="takeScreenshot"><i class="ti ti-camera"></i></button>
+					<button v-tooltip.noDelay="i18n.ts._miWorld.takeScreenShot" :class="$style.floatingButton" class="_button" @click="takeScreenshot"><i class="ti ti-camera"></i></button>
 
-					<button v-if="isRoomInfoOpen" v-tooltip.noDelay="i18n.ts._miRoom.roomInfo" :class="$style.topMenuButton" class="_button" style="color: var(--MI_THEME-accent)" @click="isRoomInfoOpen = false"><i class="ti ti-info-circle"></i></button>
-					<button v-if="!isRoomInfoOpen" v-tooltip.noDelay="i18n.ts._miRoom.roomInfo" :class="$style.topMenuButton" class="_button" @click="isRoomInfoOpen = true"><i class="ti ti-info-circle"></i></button>
+					<button v-if="isRoomInfoOpen" v-tooltip.noDelay="i18n.ts._miRoom.roomInfo" :class="$style.floatingButton" class="_button" style="color: var(--MI_THEME-accent)" @click="isRoomInfoOpen = false"><i class="ti ti-info-circle"></i></button>
+					<button v-if="!isRoomInfoOpen" v-tooltip.noDelay="i18n.ts._miRoom.roomInfo" :class="$style.floatingButton" class="_button" @click="isRoomInfoOpen = true"><i class="ti ti-info-circle"></i></button>
 				</template>
-				<button v-tooltip.noDelay="i18n.ts.other" :class="$style.topMenuButton" class="_button" @click="showOtherMenu"><i class="ti ti-dots"></i></button>
+				<button v-tooltip.noDelay="i18n.ts.other" :class="$style.floatingButton" class="_button" @click="showOtherMenu"><i class="ti ti-dots"></i></button>
 			</div>
 			<div v-if="isModified" :class="$style.modified" class="_panel _shadow">
 				<span :class="$style.modifiedText">{{ i18n.ts._miRoom.thereAreUnsavedChanges }}</span>
@@ -51,23 +51,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 
 	<div :class="$style.overlayBottom">
-		<div v-if="controller.isReady.value" class="_buttonsCenter _panel _shadow" :class="$style.overlayControls">
+		<div v-if="controller.isReady.value" class="_buttonsCenter" :class="$style.overlayControls">
 			<template v-if="controller.isEditMode.value">
-				<MkButton v-if="controller.selected.value != null && isFurnitureSettingsOpen" v-tooltip.noDelay="'家具の設定'" iconOnly style="color: var(--MI_THEME-accent)" @click="isFurnitureSettingsOpen = false"><i class="ti ti-tool"></i></MkButton>
-				<MkButton v-if="controller.selected.value != null && !isFurnitureSettingsOpen" v-tooltip.noDelay="'家具の設定'" iconOnly @click="isFurnitureSettingsOpen = true"><i class="ti ti-tool"></i></MkButton>
+				<template v-if="controller.selected.value != null && controller.grabbing.value == null">
+					<button v-if="isFurnitureSettingsOpen" v-tooltip.noDelay="'家具の設定'" class="_button" :class="$style.floatingButton" style="color: var(--MI_THEME-accent)" @click="isFurnitureSettingsOpen = false"><i class="ti ti-tool"></i></button>
+					<button v-if="!isFurnitureSettingsOpen" v-tooltip.noDelay="'家具の設定'" class="_button" :class="$style.floatingButton" @click="isFurnitureSettingsOpen = true"><i class="ti ti-tool"></i></button>
+				</template>
 
-				<MkButton v-if="controller.grabbing.value" v-tooltip.noDelay="'Cancel (Q)'" iconOnly @click="cancelGrabbing"><i class="ti ti-x"></i></MkButton>
-				<MkButton v-if="controller.grabbing.value && !controller.grabbing.value.forInstall" v-tooltip.noDelay="'Put (E)'" iconOnly @click="endGrabbing"><i class="ti ti-check"></i></MkButton>
-				<MkButton v-else-if="controller.grabbing.value && controller.grabbing.value.forInstall" v-tooltip.noDelay="'Put (E)'" iconOnly @click="endGrabbing"><i class="ti ti-check"></i></MkButton>
-				<MkButton v-else-if="controller.selected.value != null" v-tooltip.noDelay="'Grab (E)'" iconOnly @click="beginSelectedInstalledFunitureGrabbing"><i class="ti ti-hand-grab"></i></MkButton>
+				<button v-if="controller.grabbing.value" v-tooltip.noDelay="'Cancel (Q)'" class="_button" :class="$style.floatingButton" @click="cancelGrabbing"><i class="ti ti-x"></i></button>
+				<button v-if="controller.grabbing.value && !controller.grabbing.value.forInstall" v-tooltip.noDelay="'Put (E)'" class="_button" :class="$style.floatingButton" @click="endGrabbing"><i class="ti ti-check"></i></button>
+				<button v-else-if="controller.grabbing.value && controller.grabbing.value.forInstall" v-tooltip.noDelay="'Put (E)'" class="_button" :class="$style.floatingButton" @click="endGrabbing"><i class="ti ti-check"></i></button>
+				<button v-else-if="controller.selected.value != null" v-tooltip.noDelay="'Grab (E)'" class="_button" :class="$style.floatingButton" @click="beginSelectedInstalledFunitureGrabbing"><i class="ti ti-hand-grab"></i></button>
 
-				<MkButton v-if="controller.grabbing.value" iconOnly @click="controller.changeGrabbingRotation(Math.PI / 8)"><i class="ti ti-rotate-clockwise"></i></MkButton>
-				<MkButton v-if="controller.grabbing.value" iconOnly @click="controller.changeGrabbingRotation(-Math.PI / 8)"><i class="ti ti-rotate"></i></MkButton>
-				<MkButton v-if="controller.grabbing.value" iconOnly @click="controller.changeGrabbingDistance(10)"><i class="ti ti-arrows-maximize"></i></MkButton>
-				<MkButton v-if="controller.grabbing.value" iconOnly @click="controller.changeGrabbingDistance(-10)"><i class="ti ti-arrows-minimize"></i></MkButton>
+				<button v-if="controller.grabbing.value" class="_button" :class="$style.floatingButton" @click="controller.changeGrabbingRotation(Math.PI / 8)"><i class="ti ti-rotate-clockwise"></i></button>
+				<button v-if="controller.grabbing.value" class="_button" :class="$style.floatingButton" @click="controller.changeGrabbingRotation(-Math.PI / 8)"><i class="ti ti-rotate"></i></button>
+				<button v-if="controller.grabbing.value" class="_button" :class="$style.floatingButton" @click="controller.changeGrabbingDistance(10)"><i class="ti ti-arrows-maximize"></i></button>
+				<button v-if="controller.grabbing.value" class="_button" :class="$style.floatingButton" @click="controller.changeGrabbingDistance(-10)"><i class="ti ti-arrows-minimize"></i></button>
 
-				<MkButton v-if="!controller.grabbing.value && controller.selected.value != null" @click="duplicateSelectedFuniture"><i class="ti ti-copy"></i></MkButton>
-				<MkButton v-if="!controller.grabbing.value && controller.selected.value != null" @click="removeSelectedFuniture"><i class="ti ti-trash"></i> (X)</MkButton>
+				<button v-if="!controller.grabbing.value && controller.selected.value != null" class="_button" :class="$style.floatingButton" @click="duplicateSelectedFuniture"><i class="ti ti-copy"></i></button>
+				<button v-if="!controller.grabbing.value && controller.selected.value != null" class="_button" :class="$style.floatingButton" style="color: var(--MI_THEME-error)" @click="removeSelectedFuniture"><i class="ti ti-trash"></i></button>
 			</template>
 			<MkButton v-if="controller.isSitting.value" @click="controller.standUp()">降りる (Q)</MkButton>
 			<template v-if="controller.selected.value != null">
@@ -83,7 +85,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 
-	<XOverlayPanel v-if="controller.isReady.value && controller.isEditMode.value && controller.selected.value != null && !controller.grabbing.value && isFurnitureSettingsOpen" :key="controller.selected.value.furnitureId" :isMobile="isMobile" :title="FURNITURE_UI_DEFS[controller.selected.value.funitureState.type].name" @close="isFurnitureSettingsOpen = false">
+	<XOverlayPanel v-if="controller.isReady.value && controller.isEditMode.value && controller.selected.value != null && isFurnitureSettingsOpen" :key="controller.selected.value.furnitureId" :isMobile="isMobile" :title="FURNITURE_UI_DEFS[controller.selected.value.funitureState.type].name" @close="isFurnitureSettingsOpen = false">
 		<template #icon>
 			<i class="ti ti-box"></i>
 		</template>
@@ -329,12 +331,32 @@ const roomControllerOptions = computed<RoomControllerOptions>(() => ({
 const controller = markRaw(new RoomController(deepClone(initialRoomState), roomControllerOptions.value));
 const multiplayer = markRaw(new Multiplayer(props.room.id, controller));
 
+watch(controller.roomState, () => {
+	controller.roomState.value.worldScale = WORLD_SCALE;
+	miLocalStorage.setItem(`miWorldRoomTemp:${props.room.id}`, JSON.stringify({
+		date: Date.now(),
+		roomState: controller.roomState.value,
+		attachments,
+	} as RoomTemp));
+	isModified.value = true;
+});
+
 watch(controller.selected, () => {
 	if (controller.selected.value != null) {
 		if (!isMobile) {
 			isFurnitureSettingsOpen.value = true;
 		}
 	}
+});
+
+watch(controller.grabbing, () => {
+	if (controller.grabbing.value != null) {
+		isFurnitureSettingsOpen.value = false;
+	}
+});
+
+watch([graphicsQuality, fps, resolution, antialias], () => {
+	refresh();
 });
 
 onMounted(async () => {
@@ -364,16 +386,6 @@ onMounted(async () => {
 
 	window.addEventListener('resize', resize);
 
-	watch(controller.roomState, () => {
-		controller.roomState.value.worldScale = WORLD_SCALE;
-		miLocalStorage.setItem(`miWorldRoomTemp:${props.room.id}`, JSON.stringify({
-			date: Date.now(),
-			roomState: controller.roomState.value,
-			attachments,
-		} as RoomTemp));
-		isModified.value = true;
-	});
-
 	if (joyStickEl.value != null) {
 		const joyStick = new Joystick(joyStickEl.value!, { radiusPx: joyStickRadiusPx });
 		joyStick.on('start', (vector) => {
@@ -387,10 +399,6 @@ onMounted(async () => {
 			controller.setCameraJoystickMoveVector(vector);
 		});
 	}
-
-	watch([graphicsQuality, fps, resolution, antialias], () => {
-		refresh();
-	});
 
 	// canvasからフォーカスが外れていることに気づかずsとか押してしまうと検索画面が開かれてroomの状態が失われたりするので無効化
 	(window as any).disableGlobalHotkeys();
@@ -657,6 +665,11 @@ ${url}/rooms/r/${props.room.id}`,
 	}, {
 		type: 'divider',
 	}, {
+		text: 'a',
+		action: expor,
+	}, {
+		type: 'divider',
+	}, {
 		type: 'parent',
 		text: i18n.ts._miWorld.graphicsSettings,
 		children: [{
@@ -756,6 +769,18 @@ function enterOnline() {
 	}
 }
 
+.floatingButton {
+	background: var(--MI_THEME-panel);
+	padding: 8px;
+	width: 50px;
+	box-sizing: border-box;
+	aspect-ratio: 1;
+	border-radius: 999px;
+	display: grid;
+	place-items: center;
+	pointer-events: auto;
+}
+
 .joyStick {
 	position: relative;
 	width: 50%;
@@ -833,26 +858,6 @@ function enterOnline() {
 	gap: 10px;
 	pointer-events: none;
 }
-
-.topMenuButton {
-	background: var(--MI_THEME-panel);
-	padding: 8px;
-	width: 50px;
-	box-sizing: border-box;
-	aspect-ratio: 1;
-	border-radius: 999px;
-	display: grid;
-	place-items: center;
-	pointer-events: auto;
-}
-/*
-.topMenuButton:first-child {
-	padding-left: 16px;
-}
-.topMenuButton:last-child {
-	padding-right: 16px;
-}
-	*/
 
 .modified {
 	display: flex;
