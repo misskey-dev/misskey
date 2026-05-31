@@ -80,8 +80,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 	</div>
 
-	<div v-if="controller.isReady.value && controller.isEditMode.value && controller.selected.value != null && !controller.grabbing.value" :key="controller.selected.value.furnitureId" :class="$style.overlayFurnitureInfoPanel">
-		<div style="margin-bottom: 8px; font-weight: bold; text-align: center;">{{ FURNITURE_UI_DEFS[controller.selected.value.funitureState.type].name }}</div>
+	<XOverlayPanel v-if="controller.isReady.value && controller.isEditMode.value && controller.selected.value != null && !controller.grabbing.value" :key="controller.selected.value.furnitureId" :title="FURNITURE_UI_DEFS[controller.selected.value.funitureState.type].name">
+		<template #icon>
+			<i class="ti ti-box"></i>
+		</template>
 
 		<MkWorldMonoOptionsForm
 			:uiDef="FURNITURE_UI_DEFS[FURNITURE_SCHEMA_DEFS[controller.selected.value.funitureState.type].id]"
@@ -90,15 +92,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:options="controller.selected.value.funitureState.options"
 			@update="(k, v) => updateFurnitureOption(k, v)"
 		/>
-	</div>
+	</XOverlayPanel>
 
-	<div v-if="isRoomSettingsOpen && controller.isEditMode.value" class="_panel" :class="$style.overlayFurnitureInfoPanel">
+	<XOverlayPanel v-if="isRoomSettingsOpen && controller.isEditMode.value" :title="i18n.ts._miRoom.roomCustomize" @close="isRoomSettingsOpen = false">
+		<template #icon>
+			<i class="ti ti-home-cog"></i>
+		</template>
+
 		<XEnvOptions :controller="controller" @changeEnvType="changeEnvType"/>
-	</div>
+	</XOverlayPanel>
 
-	<div v-if="isRoomInfoOpen" :class="$style.overlayRoomInfoPanel">
-		<div style="margin-bottom: 8px; font-weight: bold; text-align: center;">{{ room.name }}</div>
-	</div>
+	<XOverlayPanel v-if="isRoomInfoOpen" :title="room.name" @close="isRoomInfoOpen = false">
+		<template #icon>
+			<i class="ti ti-info-circle"></i>
+		</template>
+
+		test
+	</XOverlayPanel>
 </div>
 </template>
 
@@ -111,6 +121,7 @@ import { FURNITURE_SCHEMA_DEFS } from 'misskey-world/src/room/furniture-schema-d
 import { useInterval } from '@@/js/use-interval.js';
 import { url } from '@@/js/config.js';
 import XEnvOptions from './room.env-options.vue';
+import XOverlayPanel from './OverlayPanel.vue';
 import type { RoomControllerOptions } from '@/world/room/controller.js';
 import type { RoomState, RoomAttachments } from 'misskey-world/src/room/type.js';
 import MkWorldMonoOptionsForm from '@/components/MkWorldMonoOptionsForm.vue';
@@ -857,36 +868,6 @@ function enterOnline() {
 }
 .overlayControls:empty {
 	display: none;
-}
-
-.overlayRoomInfoPanel {
-	position: absolute;
-	top: 16px;
-	right: 16px;
-	z-index: 1;
-	padding: 16px;
-	width: 300px;
-	max-height: calc(100% - 16px - 16px);
-	box-sizing: border-box;
-	overflow: auto;
-	border-radius: 12px;
-	background: var(--MI_THEME-panel);
-}
-
-.overlayFurnitureInfoPanel {
-	position: absolute;
-	top: 16px;
-	right: 16px;
-	z-index: 1;
-	padding: 16px;
-	width: 300px;
-	max-height: calc(100% - 16px - 16px);
-	box-sizing: border-box;
-	overflow: auto;
-	border-radius: 12px;
-	background: color(from var(--MI_THEME-panel) srgb r g b / 0.5);
-	-webkit-backdrop-filter: blur(15px);
-	backdrop-filter: blur(15px);
 }
 
 .loading {
