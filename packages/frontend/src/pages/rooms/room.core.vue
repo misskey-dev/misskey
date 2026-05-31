@@ -34,7 +34,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<button v-if="controller.isEditMode.value && isRoomSettingsOpen" :class="$style.topMenuButton" class="_button" style="color: var(--MI_THEME-accent)" @click="() => isRoomSettingsOpen = false"><i class="ti ti-home-cog"></i></button>
 					<button v-tooltip.noDelay="i18n.ts._miWorld.takeScreenShot" :class="$style.topMenuButton" class="_button" @click="takeScreenshot"><i class="ti ti-camera"></i></button>
 				</template>
-				<button :class="$style.topMenuButton" class="_button" @click="showOtherMenu"><i class="ti ti-dots"></i></button>
+				<button v-tooltip.noDelay="i18n.ts.other" :class="$style.topMenuButton" class="_button" @click="showOtherMenu"><i class="ti ti-dots"></i></button>
 			</div>
 			<div v-if="isModified" :class="$style.modified" class="_panel _shadow">
 				<span :class="$style.modifiedText">{{ i18n.ts._miRoom.thereAreUnsavedChanges }}</span>
@@ -781,7 +781,7 @@ function enterOnline() {
 .topMenuButton {
 	background: var(--MI_THEME-panel);
 	padding: 8px;
-	width: 60px;
+	width: 50px;
 	box-sizing: border-box;
 	aspect-ratio: 1;
 	border-radius: 999px;
