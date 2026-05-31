@@ -26,13 +26,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<button v-if="!multiplayer.isOnline.value" v-tooltip.noDelay="i18n.ts._miWorld.connectToOnline" :class="$style.topMenuButton" class="_button" @click="enterOnline"><i class="ti ti-world"></i></button>
 
 					<button v-tooltip.noDelay="'照明切り替え'" :class="$style.topMenuButton" class="_button" @click="toggleLight"><i class="ti ti-bulb"></i></button>
+
 					<button v-if="controller.isEditMode.value" v-tooltip.noDelay="i18n.ts._miRoom.exitEditMode" :class="$style.topMenuButton" class="_button" style="color: var(--MI_THEME-accent)" @click="exitEditMode"><i class="ti ti-paint"></i></button>
-					<button v-if="!controller.isEditMode.value" v-tooltip.noDelay="i18n.ts._miRoom.enterEditMode" :class="$style.topMenuButton" class="_button" @click="enterEditMode"><i class="ti ti-paint"></i></button>
+					<button v-if="!controller.isEditMode.value && isMyRoom" v-tooltip.noDelay="i18n.ts._miRoom.enterEditMode" :class="$style.topMenuButton" class="_button" @click="enterEditMode"><i class="ti ti-paint"></i></button>
+
 					<button v-if="controller.isEditMode.value" v-tooltip.noDelay="i18n.ts._miRoom.installFurniture" :class="$style.topMenuButton" class="_button" @click="addFuniture"><i class="ti ti-plus"></i></button>
 					<button v-if="controller.isEditMode.value" :class="$style.topMenuButton" class="_button" @click="showSnappingMenu"><i class="ti ti-grid-4x4"></i></button>
 					<button v-if="controller.isEditMode.value && !isRoomSettingsOpen" v-tooltip.noDelay="i18n.ts._miRoom.roomCustomize" :class="$style.topMenuButton" class="_button" @click="() => isRoomSettingsOpen = true"><i class="ti ti-home-cog"></i></button>
 					<button v-if="controller.isEditMode.value && isRoomSettingsOpen" :class="$style.topMenuButton" class="_button" style="color: var(--MI_THEME-accent)" @click="() => isRoomSettingsOpen = false"><i class="ti ti-home-cog"></i></button>
+
 					<button v-tooltip.noDelay="i18n.ts._miWorld.takeScreenShot" :class="$style.topMenuButton" class="_button" @click="takeScreenshot"><i class="ti ti-camera"></i></button>
+
+					<button v-if="isRoomInfoOpen" v-tooltip.noDelay="i18n.ts._miRoom.roomInfo" :class="$style.topMenuButton" class="_button" style="color: var(--MI_THEME-accent)" @click="isRoomInfoOpen = false"><i class="ti ti-info-circle"></i></button>
+					<button v-if="!isRoomInfoOpen" v-tooltip.noDelay="i18n.ts._miRoom.roomInfo" :class="$style.topMenuButton" class="_button" @click="isRoomInfoOpen = true"><i class="ti ti-info-circle"></i></button>
 				</template>
 				<button v-tooltip.noDelay="i18n.ts.other" :class="$style.topMenuButton" class="_button" @click="showOtherMenu"><i class="ti ti-dots"></i></button>
 			</div>
@@ -89,6 +95,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-if="isRoomSettingsOpen && controller.isEditMode.value" class="_panel" :class="$style.overlayFurnitureInfoPanel">
 		<XEnvOptions :controller="controller" @changeEnvType="changeEnvType"/>
 	</div>
+
+	<div v-if="isRoomInfoOpen" :class="$style.overlayRoomInfoPanel">
+		<div style="margin-bottom: 8px; font-weight: bold; text-align: center;">{{ room.name }}</div>
+	</div>
 </div>
 </template>
 
@@ -118,6 +128,7 @@ import { misskeyApi } from '@/utility/misskey-api.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { FURNITURE_UI_DEFS } from '@/world/room/furniture-ui-defs.js';
 import { Multiplayer } from '@/world/room/multiplayer.js';
+import { $i } from '@/i.js';
 
 const roomSpecVersion = 0;
 
@@ -134,6 +145,8 @@ function resize() {
 
 const isRoomSettingsOpen = ref(false);
 const isModified = ref(false);
+const isRoomInfoOpen = ref(false);
+const isMyRoom = computed(() => props.room.userId === $i?.id);
 
 const graphicsQualityRaw = prefer.model('world.graphicsQuality');
 const graphicsQualityAutoValue = computed<number>(() => deviceKind !== 'desktop' ? GRAPHICS_QUALITY.LOW : GRAPHICS_QUALITY.MEDIUM);
@@ -844,6 +857,20 @@ function enterOnline() {
 }
 .overlayControls:empty {
 	display: none;
+}
+
+.overlayRoomInfoPanel {
+	position: absolute;
+	top: 16px;
+	right: 16px;
+	z-index: 1;
+	padding: 16px;
+	width: 300px;
+	max-height: calc(100% - 16px - 16px);
+	box-sizing: border-box;
+	overflow: auto;
+	border-radius: 12px;
+	background: var(--MI_THEME-panel);
 }
 
 .overlayFurnitureInfoPanel {

@@ -13455,9 +13455,13 @@ export interface Locale extends ILocale {
          */
         "roomCustomize": string;
         /**
-         * 部屋名を編集
+         * ルーム名を編集
          */
         "changeRoomName": string;
+        /**
+         * ルーム情報
+         */
+        "roomInfo": string;
         "_objects": {
             /**
              * リングシェードフロアランプ

@@ -3608,7 +3608,8 @@ _miRoom:
   exitEditMode: "エディットモードを終了"
   installFurniture: "家具を設置"
   roomCustomize: "部屋のカスタマイズ"
-  changeRoomName: "部屋名を編集"
+  changeRoomName: "ルーム名を編集"
+  roomInfo: "ルーム情報"
 
   _objects:
     woodRingFloorLamp: "リングシェードフロアランプ"
