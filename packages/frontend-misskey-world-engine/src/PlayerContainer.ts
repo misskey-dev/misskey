@@ -189,7 +189,7 @@ export class PlayerContainer {
 		this.accessoryContainers = await Promise.all(this.profile.avatar.accessories.map(ac => this.loadAccessory({
 			type: ac.type,
 			id: ac.id,
-			position: new BABYLON.Vector3(0, cm(20), 0),
+			position: new BABYLON.Vector3(0, cm(19), 0),
 			rotation: new BABYLON.Vector3(0, 0, 0),
 			options: ac.options,
 		})));
