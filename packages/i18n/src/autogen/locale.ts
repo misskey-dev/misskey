@@ -13336,7 +13336,7 @@ export interface Locale extends ILocale {
          */
         "advancedCustomize": string;
         /**
-         * アクセサリーを追加
+         * アクセサリーをつける
          */
         "attachAccessory": string;
         /**
@@ -13344,11 +13344,15 @@ export interface Locale extends ILocale {
          */
         "takeScreenShot": string;
         /**
-         * オンラインにする
+         * オンラインメニュー
+         */
+        "onlineMenu": string;
+        /**
+         * オンラインに接続
          */
         "connectToOnline": string;
         /**
-         * オフラインにする
+         * オンラインから切断
          */
         "disconnectToOnline": string;
         "_avatars": {

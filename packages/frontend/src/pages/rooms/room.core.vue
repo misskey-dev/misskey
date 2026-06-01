@@ -28,8 +28,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<template v-if="isMenuShowing">
 					<template v-if="controller.isReady.value">
-						<button v-if="multiplayer.isOnline.value" v-tooltip.noDelay="i18n.ts._miWorld.disconnectToOnline" :class="$style.floatingButton" class="_button" style="color: var(--MI_THEME-accent)" @click="leaveOnline"><i class="ti ti-world"></i></button>
-						<button v-if="!multiplayer.isOnline.value" v-tooltip.noDelay="i18n.ts._miWorld.connectToOnline" :class="$style.floatingButton" class="_button" @click="enterOnline"><i class="ti ti-world"></i></button>
+						<button v-if="multiplayer.isOnline.value" v-tooltip.noDelay="i18n.ts._miWorld.onlineMenu" :class="$style.floatingButton" class="_button" style="color: var(--MI_THEME-accent)" @click="showOnlineMenu"><i class="ti ti-world"></i></button>
+						<button v-if="!multiplayer.isOnline.value" v-tooltip.noDelay="i18n.ts._miWorld.onlineMenu" :class="$style.floatingButton" class="_button" @click="showOnlineMenu"><i class="ti ti-world"></i></button>
 
 						<button v-tooltip.noDelay="'照明切り替え'" :class="$style.floatingButton" class="_button" @click="toggleLight"><i class="ti ti-bulb"></i></button>
 
@@ -682,6 +682,20 @@ function impor() {
 		reader.readAsText(file);
 	});
 	inputElem.click();
+}
+
+function showOnlineMenu(ev: PointerEvent) {
+	os.popupMenu([{
+		text: multiplayer.isOnline.value ? i18n.ts._miWorld.disconnectToOnline : i18n.ts._miWorld.connectToOnline,
+		danger: multiplayer.isOnline.value,
+		action: () => {
+			if (multiplayer.isOnline.value) {
+				leaveOnline();
+			} else {
+				enterOnline();
+			}
+		},
+	}], ev.currentTarget ?? ev.target);
 }
 
 function showOtherMenu(ev: PointerEvent) {

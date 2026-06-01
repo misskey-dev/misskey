@@ -3576,8 +3576,9 @@ _miWorld:
   advancedCustomize: "高度なアレンジ"
   attachAccessory: "アクセサリーをつける"
   takeScreenShot: "スクリーンショット"
-  connectToOnline: "オンラインにする"
-  disconnectToOnline: "オフラインにする"
+  onlineMenu: "オンラインメニュー"
+  connectToOnline: "オンラインに接続"
+  disconnectToOnline: "オンラインから切断"
 
   _avatars:
     _default:
