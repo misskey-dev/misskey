@@ -116,6 +116,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 							<MkFolder v-for="a in avatar.accessories" :key="a.id">
 								<template #label>{{ AVATAR_ACCESSORY_UI_DEFS[a.type].name }}</template>
+								<template #footer>
+									<MkButton v-tooltip="i18n.ts.detach" small rounded danger iconOnly @click="removeAccessory(a.id)"><i class="ti ti-trash"></i></MkButton>
+								</template>
+
 								<MkWorldMonoOptionsForm
 									:uiDef="AVATAR_ACCESSORY_UI_DEFS[a.type]"
 									:schema="getAccessorySchemaDef(a.type).options.schema"
@@ -261,6 +265,15 @@ async function addAccessory() {
 		type,
 		options: deepClone(ACCESSORY_SCHEMA_DEFS[type].options.default),
 	});
+
+	updateAvatarOption();
+}
+
+function removeAccessory(id: string) {
+	const idx = avatar.value!.accessories.findIndex(a => a.id === id);
+	if (idx === -1) return;
+
+	avatar.value!.accessories.splice(idx, 1);
 
 	updateAvatarOption();
 }
