@@ -721,10 +721,6 @@ export class RoomEngine extends EngineBase<{
 		(this.camera.inputs.attached.manual as FreeCameraManualInput).setMoveVector(dash ? { x: vector.x * 3, y: vector.y * 3 } : vector);
 	}
 
-	public cameraRotate(vector: { x: number; y: number; }) {
-		(this.camera.inputs.attached.manual as FreeCameraManualInput).setRotationVector(vector);
-	}
-
 	public cameraJoystickMove(vector: { x: number; y: number; }) {
 		(this.camera.inputs.attached.manual as FreeCameraManualInput).setMoveVector(vector);
 	}

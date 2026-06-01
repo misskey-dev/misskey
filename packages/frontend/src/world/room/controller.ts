@@ -5,7 +5,7 @@
 
 import { ref, shallowRef } from 'vue';
 import { cm } from 'misskey-world/src/utility.js';
-import { EngineControllerBase } from '../EngineControllerBase.js';
+import { EngineControllerBase, WASD } from '../EngineControllerBase.js';
 import type { ShallowRef } from 'vue';
 import type { RoomState_InstalledFurniture } from 'misskey-world/src/room/furniture.js';
 import type { RoomEngine } from 'misskey-world-engine/src/room/engine.js';
@@ -49,7 +49,11 @@ export class RoomController extends EngineControllerBase<RoomEngine, {
 	});
 
 	constructor(roomState: RoomState, options: RoomControllerOptions) {
-		super(options);
+		super(options, new WASD({
+			setCameraMoveVector: (vec, dash) => {
+				this.call('cameraMove', [vec, dash]);
+			},
+		}));
 		this.roomState = shallowRef(deepClone(roomState));
 	}
 
@@ -137,14 +141,6 @@ export class RoomController extends EngineControllerBase<RoomEngine, {
 			rotation: [0, 0, 0],
 		};
 		await this.init(canvas, attachments);
-	}
-
-	public setCameraMoveVector(vec: { x: number; y: number }, dash: boolean) {
-		this.call('cameraMove', [vec, dash]);
-	}
-
-	public setCameraRotateVector(vec: { x: number; y: number }) {
-		this.call('cameraRotate', [vec]);
 	}
 
 	public setCameraJoystickMoveVector(vec: { x: number; y: number }) {

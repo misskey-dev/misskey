@@ -303,10 +303,6 @@ export class RoomFurniturePreviewEngine extends EngineBase<{
 		this.sr.enableSnapshotRendering();
 	}
 
-	public cameraRotate(vector: { x: number; y: number; }) {
-		(this.camera.inputs.attached.manual as ArcRotateCameraManualInput).setRotationVector(vector);
-	}
-
 	public resize() {
 		// 一旦snapshot renderingを無効にしておかないとエラーが出る(babylonのバグ？)
 		// ~~...が、一旦無効にしたらしたで複数のマテリアルがそれぞれ入れ替わる(?)という謎の現象が発生するためコメントアウトしとく(エラー出てもレンダリングが止まったりするわけでもないし)~~
