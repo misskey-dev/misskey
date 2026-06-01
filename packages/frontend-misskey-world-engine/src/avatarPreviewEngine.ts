@@ -166,7 +166,7 @@ export class AvatarPreviewEngine extends EngineBase<{ // PlayerPreviewEngineã«æ
 		// zoom to fit
 		const size = boundingInfo.extendSize;
 		const distance = Math.max(size.x, size.y, size.z) * 2;
-		this.camera.radius = distance * 4;
+		this.camera.radius = distance * 5;
 
 		this.sr.enableSnapshotRendering();
 	}

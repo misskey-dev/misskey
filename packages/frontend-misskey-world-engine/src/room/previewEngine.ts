@@ -15,8 +15,8 @@ import { genId } from '../id.js';
 import { getFurnitureDef } from './furniture-defs.js';
 import { SYSTEM_MESH_NAMES } from './utility.js';
 import { FurnitureContainer } from './FurnitureContainer.js';
-import type { RawOptions } from './furniture.js';
 import type { RoomAttachments } from 'misskey-world/src/room/type.js';
+import type { RawOptions } from 'misskey-world/src/mono.js';
 
 export class RoomFurniturePreviewEngine extends EngineBase<{
 	'loadingProgress': (ctx: { progress: number }) => void;
@@ -272,7 +272,7 @@ export class RoomFurniturePreviewEngine extends EngineBase<{
 		// zoom to fit
 		const size = boundingInfo.extendSize;
 		const distance = Math.max(size.x, size.y, size.z) * 2;
-		this.camera.radius = distance * 3;
+		this.camera.radius = distance * 4;
 
 		this.pipeline.addCamera(this.camera);
 
