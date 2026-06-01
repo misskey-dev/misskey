@@ -3623,7 +3623,7 @@ _miRoom:
     bottom: "底面/下"
     side: "壁/側面"
 
-  _objects:
+  _furnitures:
     woodRingFloorLamp: "リングシェードフロアランプ"
     _woodRingFloorLamp:
       shadeMat: "シェードの素材"

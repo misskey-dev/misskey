@@ -8,10 +8,10 @@ import type { icosahedron_schema } from 'misskey-world/src/room/furnitures/icosa
 import { i18n } from '@/i18n.js';
 
 export const icosahedron_ui = defineFurnitureUi<typeof icosahedron_schema>({
-	name: i18n.ts._miRoom._objects.icosahedron,
+	name: i18n.ts._miRoom._furnitures.icosahedron,
 	options: {
 		mat: {
-			label: i18n.ts._miRoom._objects._icosahedron.mat,
+			label: i18n.ts._miRoom._furnitures._icosahedron.mat,
 		},
 	},
 });

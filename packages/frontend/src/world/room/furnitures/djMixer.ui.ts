@@ -8,6 +8,6 @@ import type { djMixer_schema } from 'misskey-world/src/room/furnitures/djMixer.s
 import { i18n } from '@/i18n.js';
 
 export const djMixer_ui = defineFurnitureUi<typeof djMixer_schema>({
-	name: i18n.ts._miRoom._objects.djMixer,
+	name: i18n.ts._miRoom._furnitures.djMixer,
 	options: {},
 });

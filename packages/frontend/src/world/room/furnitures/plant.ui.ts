@@ -8,6 +8,6 @@ import type { plant_schema } from 'misskey-world/src/room/furnitures/plant.schem
 import { i18n } from '@/i18n.js';
 
 export const plant_ui = defineFurnitureUi<typeof plant_schema>({
-	name: i18n.ts._miRoom._objects.plant,
+	name: i18n.ts._miRoom._furnitures.plant,
 	options: {},
 });

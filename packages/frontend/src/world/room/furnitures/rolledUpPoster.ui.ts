@@ -8,6 +8,6 @@ import type { rolledUpPoster_schema } from 'misskey-world/src/room/furnitures/ro
 import { i18n } from '@/i18n.js';
 
 export const rolledUpPoster_ui = defineFurnitureUi<typeof rolledUpPoster_schema>({
-	name: i18n.ts._miRoom._objects.rolledUpPoster,
+	name: i18n.ts._miRoom._furnitures.rolledUpPoster,
 	options: {},
 });

@@ -8,6 +8,6 @@ import type { custardPudding_schema } from 'misskey-world/src/room/furnitures/cu
 import { i18n } from '@/i18n.js';
 
 export const custardPudding_ui = defineFurnitureUi<typeof custardPudding_schema>({
-	name: i18n.ts._miRoom._objects.custardPudding,
+	name: i18n.ts._miRoom._furnitures.custardPudding,
 	options: {},
 });

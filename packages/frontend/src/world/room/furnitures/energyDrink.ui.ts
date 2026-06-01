@@ -8,6 +8,6 @@ import type { energyDrink_schema } from 'misskey-world/src/room/furnitures/energ
 import { i18n } from '@/i18n.js';
 
 export const energyDrink_ui = defineFurnitureUi<typeof energyDrink_schema>({
-	name: i18n.ts._miRoom._objects.energyDrink,
+	name: i18n.ts._miRoom._furnitures.energyDrink,
 	options: {},
 });

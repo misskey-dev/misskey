@@ -8,6 +8,6 @@ import type { tabletopCalendar_schema } from 'misskey-world/src/room/furnitures/
 import { i18n } from '@/i18n.js';
 
 export const tabletopCalendar_ui = defineFurnitureUi<typeof tabletopCalendar_schema>({
-	name: i18n.ts._miRoom._objects.tabletopCalendar,
+	name: i18n.ts._miRoom._furnitures.tabletopCalendar,
 	options: {},
 });

@@ -8,16 +8,16 @@ import type { clippedPicture_schema } from 'misskey-world/src/room/furnitures/cl
 import { i18n } from '@/i18n.js';
 
 export const clippedPicture_ui = defineFurnitureUi<typeof clippedPicture_schema>({
-	name: i18n.ts._miRoom._objects.clippedPicture,
+	name: i18n.ts._miRoom._furnitures.clippedPicture,
 	options: {
 		width: {
-			label: i18n.ts._miRoom._objects._clippedPicture.width,
+			label: i18n.ts._miRoom._furnitures._clippedPicture.width,
 		},
 		height: {
-			label: i18n.ts._miRoom._objects._clippedPicture.height,
+			label: i18n.ts._miRoom._furnitures._clippedPicture.height,
 		},
 		image: {
-			label: i18n.ts._miRoom._objects._clippedPicture.image,
+			label: i18n.ts._miRoom._furnitures._clippedPicture.image,
 		},
 	},
 });

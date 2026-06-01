@@ -8,10 +8,10 @@ import type { tabletopFlag_schema } from 'misskey-world/src/room/furnitures/tabl
 import { i18n } from '@/i18n.js';
 
 export const tabletopFlag_ui = defineFurnitureUi<typeof tabletopFlag_schema>({
-	name: i18n.ts._miRoom._objects.tabletopFlag,
+	name: i18n.ts._miRoom._furnitures.tabletopFlag,
 	options: {
 		image: {
-			label: i18n.ts._miRoom._objects._tabletopFlag.image,
+			label: i18n.ts._miRoom._furnitures._tabletopFlag.image,
 		},
 	},
 });

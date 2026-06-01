@@ -8,6 +8,6 @@ import type { facialTissue_schema } from 'misskey-world/src/room/furnitures/faci
 import { i18n } from '@/i18n.js';
 
 export const facialTissue_ui = defineFurnitureUi<typeof facialTissue_schema>({
-	name: i18n.ts._miRoom._objects.facialTissue,
+	name: i18n.ts._miRoom._furnitures.facialTissue,
 	options: {},
 });

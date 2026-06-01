@@ -8,6 +8,6 @@ import type { powerStrip_schema } from 'misskey-world/src/room/furnitures/powerS
 import { i18n } from '@/i18n.js';
 
 export const powerStrip_ui = defineFurnitureUi<typeof powerStrip_schema>({
-	name: i18n.ts._miRoom._objects.powerStrip,
+	name: i18n.ts._miRoom._furnitures.powerStrip,
 	options: {},
 });

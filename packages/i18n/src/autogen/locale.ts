@@ -13504,7 +13504,7 @@ export interface Locale extends ILocale {
              */
             "side": string;
         };
-        "_objects": {
+        "_furnitures": {
             /**
              * リングシェードフロアランプ
              */

@@ -8,16 +8,16 @@ import type { tabletopLcdButtonsController_schema } from 'misskey-world/src/room
 import { i18n } from '@/i18n.js';
 
 export const tabletopLcdButtonsController_ui = defineFurnitureUi<typeof tabletopLcdButtonsController_schema>({
-	name: i18n.ts._miRoom._objects.tabletopLcdButtonsController,
+	name: i18n.ts._miRoom._furnitures.tabletopLcdButtonsController,
 	options: {
 		bodyMat: {
-			label: i18n.ts._miRoom._objects._tabletopLcdButtonsController.bodyMat,
+			label: i18n.ts._miRoom._furnitures._tabletopLcdButtonsController.bodyMat,
 		},
 		screenBrightness: {
-			label: i18n.ts._miRoom._objects._tabletopLcdButtonsController.screenBrightness,
+			label: i18n.ts._miRoom._furnitures._tabletopLcdButtonsController.screenBrightness,
 		},
 		image: {
-			label: i18n.ts._miRoom._objects._tabletopLcdButtonsController.image,
+			label: i18n.ts._miRoom._furnitures._tabletopLcdButtonsController.image,
 		},
 	},
 });

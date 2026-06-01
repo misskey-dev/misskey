@@ -8,16 +8,16 @@ import type { djPlayer_schema } from 'misskey-world/src/room/furnitures/djPlayer
 import { i18n } from '@/i18n.js';
 
 export const djPlayer_ui = defineFurnitureUi<typeof djPlayer_schema>({
-	name: i18n.ts._miRoom._objects.djPlayer,
+	name: i18n.ts._miRoom._furnitures.djPlayer,
 	options: {
 		screenBrightness: {
-			label: i18n.ts._miRoom._objects._djPlayer.screenBrightness,
+			label: i18n.ts._miRoom._furnitures._djPlayer.screenBrightness,
 		},
 		image: {
-			label: i18n.ts._miRoom._objects._djPlayer.image,
+			label: i18n.ts._miRoom._furnitures._djPlayer.image,
 			presets: {
 				'waveform': {
-					label: i18n.ts._miRoom._objects._djPlayer['image:waveform'],
+					label: i18n.ts._miRoom._furnitures._djPlayer['image:waveform'],
 				},
 			},
 		},

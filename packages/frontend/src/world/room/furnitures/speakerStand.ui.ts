@@ -8,13 +8,13 @@ import type { speakerStand_schema } from 'misskey-world/src/room/furnitures/spea
 import { i18n } from '@/i18n.js';
 
 export const speakerStand_ui = defineFurnitureUi<typeof speakerStand_schema>({
-	name: i18n.ts._miRoom._objects.speakerStand,
+	name: i18n.ts._miRoom._furnitures.speakerStand,
 	options: {
 		bodyMat: {
-			label: i18n.ts._miRoom._objects._speakerStand.bodyMat,
+			label: i18n.ts._miRoom._furnitures._speakerStand.bodyMat,
 		},
 		height: {
-			label: i18n.ts._miRoom._objects._speakerStand.height,
+			label: i18n.ts._miRoom._furnitures._speakerStand.height,
 		},
 	},
 });

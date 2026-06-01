@@ -8,10 +8,10 @@ import type { ironFrameShelf_schema } from 'misskey-world/src/room/furnitures/ir
 import { i18n } from '@/i18n.js';
 
 export const ironFrameShelf_ui = defineFurnitureUi<typeof ironFrameShelf_schema>({
-	name: i18n.ts._miRoom._objects.ironFrameShelf,
+	name: i18n.ts._miRoom._furnitures.ironFrameShelf,
 	options: {
 		height: {
-			label: i18n.ts._miRoom._objects._ironFrameShelf.height,
+			label: i18n.ts._miRoom._furnitures._ironFrameShelf.height,
 			enum: {
 				'5': { label: '5' },
 				'4': { label: '4' },
@@ -19,13 +19,13 @@ export const ironFrameShelf_ui = defineFurnitureUi<typeof ironFrameShelf_schema>
 			},
 		},
 		frameMat: {
-			label: i18n.ts._miRoom._objects._ironFrameShelf.frameMat,
+			label: i18n.ts._miRoom._furnitures._ironFrameShelf.frameMat,
 		},
 		boardMat: {
-			label: i18n.ts._miRoom._objects._ironFrameShelf.boardMat,
+			label: i18n.ts._miRoom._furnitures._ironFrameShelf.boardMat,
 		},
 		width: {
-			label: i18n.ts._miRoom._objects._ironFrameShelf.width,
+			label: i18n.ts._miRoom._furnitures._ironFrameShelf.width,
 		},
 	},
 });

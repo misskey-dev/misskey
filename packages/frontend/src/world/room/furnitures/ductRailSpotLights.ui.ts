@@ -8,19 +8,19 @@ import type { ductRailSpotLights_schema } from 'misskey-world/src/room/furniture
 import { i18n } from '@/i18n.js';
 
 export const ductRailSpotLights_ui = defineFurnitureUi<typeof ductRailSpotLights_schema>({
-	name: i18n.ts._miRoom._objects.ductRailSpotLights,
+	name: i18n.ts._miRoom._furnitures.ductRailSpotLights,
 	options: {
 		bodyMat: {
-			label: i18n.ts._miRoom._objects._ductRailSpotLights.bodyMat,
+			label: i18n.ts._miRoom._furnitures._ductRailSpotLights.bodyMat,
 		},
 		light: {
-			label: i18n.ts._miRoom._objects._ductRailSpotLights.light,
+			label: i18n.ts._miRoom._furnitures._ductRailSpotLights.light,
 		},
 		angleV: {
-			label: i18n.ts._miRoom._objects._ductRailSpotLights.angleV,
+			label: i18n.ts._miRoom._furnitures._ductRailSpotLights.angleV,
 		},
 		angleH: {
-			label: i18n.ts._miRoom._objects._ductRailSpotLights.angleH,
+			label: i18n.ts._miRoom._furnitures._ductRailSpotLights.angleH,
 		},
 	},
 });

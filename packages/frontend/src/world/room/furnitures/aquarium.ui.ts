@@ -8,6 +8,6 @@ import type { aquarium_schema } from 'misskey-world/src/room/furnitures/aquarium
 import { i18n } from '@/i18n.js';
 
 export const aquarium_ui = defineFurnitureUi<typeof aquarium_schema>({
-	name: i18n.ts._miRoom._objects.aquarium,
+	name: i18n.ts._miRoom._furnitures.aquarium,
 	options: {},
 });

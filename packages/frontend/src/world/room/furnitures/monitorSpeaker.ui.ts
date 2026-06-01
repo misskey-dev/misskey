@@ -8,10 +8,10 @@ import type { monitorSpeaker_schema } from 'misskey-world/src/room/furnitures/mo
 import { i18n } from '@/i18n.js';
 
 export const monitorSpeaker_ui = defineFurnitureUi<typeof monitorSpeaker_schema>({
-	name: i18n.ts._miRoom._objects.monitorSpeaker,
+	name: i18n.ts._miRoom._furnitures.monitorSpeaker,
 	options: {
 		mat: {
-			label: i18n.ts._miRoom._objects._monitorSpeaker.mat,
+			label: i18n.ts._miRoom._furnitures._monitorSpeaker.mat,
 		},
 	},
 });

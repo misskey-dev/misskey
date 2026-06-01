@@ -8,6 +8,6 @@ import type { woodSoundAbsorbingPanel_schema } from 'misskey-world/src/room/furn
 import { i18n } from '@/i18n.js';
 
 export const woodSoundAbsorbingPanel_ui = defineFurnitureUi<typeof woodSoundAbsorbingPanel_schema>({
-	name: i18n.ts._miRoom._objects.woodSoundAbsorbingPanel,
+	name: i18n.ts._miRoom._furnitures.woodSoundAbsorbingPanel,
 	options: {},
 });

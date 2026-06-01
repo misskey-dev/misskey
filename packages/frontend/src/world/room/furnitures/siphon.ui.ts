@@ -8,6 +8,6 @@ import type { siphon_schema } from 'misskey-world/src/room/furnitures/siphon.sch
 import { i18n } from '@/i18n.js';
 
 export const siphon_ui = defineFurnitureUi<typeof siphon_schema>({
-	name: i18n.ts._miRoom._objects.siphon,
+	name: i18n.ts._miRoom._furnitures.siphon,
 	options: {},
 });

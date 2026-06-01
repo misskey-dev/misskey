@@ -8,10 +8,10 @@ import type { wireBasket_schema } from 'misskey-world/src/room/furnitures/wireBa
 import { i18n } from '@/i18n.js';
 
 export const wireBasket_ui = defineFurnitureUi<typeof wireBasket_schema>({
-	name: i18n.ts._miRoom._objects.wireBasket,
+	name: i18n.ts._miRoom._furnitures.wireBasket,
 	options: {
 		bodyMat: {
-			label: i18n.ts._miRoom._objects._wireBasket.bodyMat,
+			label: i18n.ts._miRoom._furnitures._wireBasket.bodyMat,
 		},
 	},
 });

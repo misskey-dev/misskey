@@ -8,22 +8,22 @@ import type { allInOnePc_schema } from 'misskey-world/src/room/furnitures/allInO
 import { i18n } from '@/i18n.js';
 
 export const allInOnePc_ui = defineFurnitureUi<typeof allInOnePc_schema>({
-	name: i18n.ts._miRoom._objects.allInOnePc,
+	name: i18n.ts._miRoom._furnitures.allInOnePc,
 	options: {
 		bodyMat: {
-			label: i18n.ts._miRoom._objects._allInOnePc.bodyMat,
+			label: i18n.ts._miRoom._furnitures._allInOnePc.bodyMat,
 		},
 		bezelMat: {
-			label: i18n.ts._miRoom._objects._allInOnePc.bezelMat,
+			label: i18n.ts._miRoom._furnitures._allInOnePc.bezelMat,
 		},
 		screenBrightness: {
-			label: i18n.ts._miRoom._objects._allInOnePc.screenBrightness,
+			label: i18n.ts._miRoom._furnitures._allInOnePc.screenBrightness,
 		},
 		image: {
-			label: i18n.ts._miRoom._objects._allInOnePc.image,
+			label: i18n.ts._miRoom._furnitures._allInOnePc.image,
 			presets: {
 				'desktop': {
-					label: i18n.ts._miRoom._objects._allInOnePc.image_desktop,
+					label: i18n.ts._miRoom._furnitures._allInOnePc.image_desktop,
 				},
 			},
 		},

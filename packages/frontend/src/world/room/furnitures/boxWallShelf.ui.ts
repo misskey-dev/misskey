@@ -8,19 +8,19 @@ import type { boxWallShelf_schema } from 'misskey-world/src/room/furnitures/boxW
 import { i18n } from '@/i18n.js';
 
 export const boxWallShelf_ui = defineFurnitureUi<typeof boxWallShelf_schema>({
-	name: i18n.ts._miRoom._objects.boxWallShelf,
+	name: i18n.ts._miRoom._furnitures.boxWallShelf,
 	options: {
 		width: {
-			label: i18n.ts._miRoom._objects._boxWallShelf.width,
+			label: i18n.ts._miRoom._furnitures._boxWallShelf.width,
 		},
 		height: {
-			label: i18n.ts._miRoom._objects._boxWallShelf.height,
+			label: i18n.ts._miRoom._furnitures._boxWallShelf.height,
 		},
 		bodyMat: {
-			label: i18n.ts._miRoom._objects._boxWallShelf.bodyMat,
+			label: i18n.ts._miRoom._furnitures._boxWallShelf.bodyMat,
 		},
 		withBack: {
-			label: i18n.ts._miRoom._objects._boxWallShelf.withBack,
+			label: i18n.ts._miRoom._furnitures._boxWallShelf.withBack,
 		},
 	},
 });

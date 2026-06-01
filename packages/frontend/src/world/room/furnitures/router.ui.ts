@@ -8,6 +8,6 @@ import type { router_schema } from 'misskey-world/src/room/furnitures/router.sch
 import { i18n } from '@/i18n.js';
 
 export const router_ui = defineFurnitureUi<typeof router_schema>({
-	name: i18n.ts._miRoom._objects.router,
+	name: i18n.ts._miRoom._furnitures.router,
 	options: {},
 });

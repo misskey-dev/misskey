@@ -8,10 +8,10 @@ import type { monstera_schema } from 'misskey-world/src/room/furnitures/monstera
 import { i18n } from '@/i18n.js';
 
 export const monstera_ui = defineFurnitureUi<typeof monstera_schema>({
-	name: i18n.ts._miRoom._objects.monstera,
+	name: i18n.ts._miRoom._furnitures.monstera,
 	options: {
 		potMat: {
-			label: i18n.ts._miRoom._objects._monstera.potMat,
+			label: i18n.ts._miRoom._furnitures._monstera.potMat,
 		},
 	},
 });

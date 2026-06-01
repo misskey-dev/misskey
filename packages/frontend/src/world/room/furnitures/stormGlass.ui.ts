@@ -8,6 +8,6 @@ import type { stormGlass_schema } from 'misskey-world/src/room/furnitures/stormG
 import { i18n } from '@/i18n.js';
 
 export const stormGlass_ui = defineFurnitureUi<typeof stormGlass_schema>({
-	name: i18n.ts._miRoom._objects.stormGlass,
+	name: i18n.ts._miRoom._furnitures.stormGlass,
 	options: {},
 });

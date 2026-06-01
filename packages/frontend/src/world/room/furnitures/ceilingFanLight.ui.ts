@@ -8,10 +8,10 @@ import type { ceilingFanLight_schema } from 'misskey-world/src/room/furnitures/c
 import { i18n } from '@/i18n.js';
 
 export const ceilingFanLight_ui = defineFurnitureUi<typeof ceilingFanLight_schema>({
-	name: i18n.ts._miRoom._objects.ceilingFanLight,
+	name: i18n.ts._miRoom._furnitures.ceilingFanLight,
 	options: {
 		shadeMat: {
-			label: i18n.ts._miRoom._objects._ceilingFanLight.shadeMat,
+			label: i18n.ts._miRoom._furnitures._ceilingFanLight.shadeMat,
 		},
 	},
 });

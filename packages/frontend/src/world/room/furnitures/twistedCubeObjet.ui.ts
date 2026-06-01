@@ -8,6 +8,6 @@ import type { twistedCubeObjet_schema } from 'misskey-world/src/room/furnitures/
 import { i18n } from '@/i18n.js';
 
 export const twistedCubeObjet_ui = defineFurnitureUi<typeof twistedCubeObjet_schema>({
-	name: i18n.ts._miRoom._objects.twistedCubeObjet,
+	name: i18n.ts._miRoom._furnitures.twistedCubeObjet,
 	options: {},
 });

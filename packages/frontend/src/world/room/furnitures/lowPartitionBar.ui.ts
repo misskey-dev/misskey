@@ -8,13 +8,13 @@ import type { lowPartitionBar_schema } from 'misskey-world/src/room/furnitures/l
 import { i18n } from '@/i18n.js';
 
 export const lowPartitionBar_ui = defineFurnitureUi<typeof lowPartitionBar_schema>({
-	name: i18n.ts._miRoom._objects.lowPartitionBar,
+	name: i18n.ts._miRoom._furnitures.lowPartitionBar,
 	options: {
 		bodyMat: {
-			label: i18n.ts._miRoom._objects._lowPartitionBar.bodyMat,
+			label: i18n.ts._miRoom._furnitures._lowPartitionBar.bodyMat,
 		},
 		width: {
-			label: i18n.ts._miRoom._objects._lowPartitionBar.width,
+			label: i18n.ts._miRoom._furnitures._lowPartitionBar.width,
 		},
 	},
 });

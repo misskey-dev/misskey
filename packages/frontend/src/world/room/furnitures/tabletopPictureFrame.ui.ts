@@ -8,31 +8,31 @@ import type { tabletopPictureFrame_schema } from 'misskey-world/src/room/furnitu
 import { i18n } from '@/i18n.js';
 
 export const tabletopPictureFrame_ui = defineFurnitureUi<typeof tabletopPictureFrame_schema>({
-	name: i18n.ts._miRoom._objects.tabletopPictureFrame,
+	name: i18n.ts._miRoom._furnitures.tabletopPictureFrame,
 	options: {
 		frameMat: {
-			label: i18n.ts._miRoom._objects._tabletopPictureFrame.frameMat,
+			label: i18n.ts._miRoom._furnitures._tabletopPictureFrame.frameMat,
 		},
 		width: {
-			label: i18n.ts._miRoom._objects._tabletopPictureFrame.width,
+			label: i18n.ts._miRoom._furnitures._tabletopPictureFrame.width,
 		},
 		height: {
-			label: i18n.ts._miRoom._objects._tabletopPictureFrame.height,
+			label: i18n.ts._miRoom._furnitures._tabletopPictureFrame.height,
 		},
 		frameThickness: {
-			label: i18n.ts._miRoom._objects._tabletopPictureFrame.frameThickness,
+			label: i18n.ts._miRoom._furnitures._tabletopPictureFrame.frameThickness,
 		},
 		depth: {
-			label: i18n.ts._miRoom._objects._tabletopPictureFrame.depth,
+			label: i18n.ts._miRoom._furnitures._tabletopPictureFrame.depth,
 		},
 		matHThickness: {
-			label: i18n.ts._miRoom._objects._tabletopPictureFrame.matHThickness,
+			label: i18n.ts._miRoom._furnitures._tabletopPictureFrame.matHThickness,
 		},
 		matVThickness: {
-			label: i18n.ts._miRoom._objects._tabletopPictureFrame.matVThickness,
+			label: i18n.ts._miRoom._furnitures._tabletopPictureFrame.matVThickness,
 		},
 		image: {
-			label: i18n.ts._miRoom._objects._tabletopPictureFrame.image,
+			label: i18n.ts._miRoom._furnitures._tabletopPictureFrame.image,
 		},
 	},
 });

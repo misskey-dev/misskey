@@ -8,10 +8,10 @@ import type { colorBox_schema } from 'misskey-world/src/room/furnitures/colorBox
 import { i18n } from '@/i18n.js';
 
 export const colorBox_ui = defineFurnitureUi<typeof colorBox_schema>({
-	name: i18n.ts._miRoom._objects.colorBox,
+	name: i18n.ts._miRoom._furnitures.colorBox,
 	options: {
 		mat: {
-			label: i18n.ts._miRoom._objects._colorBox.mat,
+			label: i18n.ts._miRoom._furnitures._colorBox.mat,
 		},
 	},
 });

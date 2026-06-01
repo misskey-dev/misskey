@@ -8,10 +8,10 @@ import type { largeMousepad_schema } from 'misskey-world/src/room/furnitures/lar
 import { i18n } from '@/i18n.js';
 
 export const largeMousepad_ui = defineFurnitureUi<typeof largeMousepad_schema>({
-	name: i18n.ts._miRoom._objects.largeMousepad,
+	name: i18n.ts._miRoom._furnitures.largeMousepad,
 	options: {
 		image: {
-			label: i18n.ts._miRoom._objects._largeMousepad.image,
+			label: i18n.ts._miRoom._furnitures._largeMousepad.image,
 		},
 	},
 });

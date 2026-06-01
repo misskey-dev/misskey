@@ -8,16 +8,16 @@ import type { wallGlassPictureFrame_schema } from 'misskey-world/src/room/furnit
 import { i18n } from '@/i18n.js';
 
 export const wallGlassPictureFrame_ui = defineFurnitureUi<typeof wallGlassPictureFrame_schema>({
-	name: i18n.ts._miRoom._objects.wallGlassPictureFrame,
+	name: i18n.ts._miRoom._furnitures.wallGlassPictureFrame,
 	options: {
 		width: {
-			label: i18n.ts._miRoom._objects._wallGlassPictureFrame.width,
+			label: i18n.ts._miRoom._furnitures._wallGlassPictureFrame.width,
 		},
 		height: {
-			label: i18n.ts._miRoom._objects._wallGlassPictureFrame.height,
+			label: i18n.ts._miRoom._furnitures._wallGlassPictureFrame.height,
 		},
 		image: {
-			label: i18n.ts._miRoom._objects._wallGlassPictureFrame.image,
+			label: i18n.ts._miRoom._furnitures._wallGlassPictureFrame.image,
 		},
 	},
 });

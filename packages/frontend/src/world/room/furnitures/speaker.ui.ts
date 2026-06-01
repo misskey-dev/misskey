@@ -8,13 +8,13 @@ import type { speaker_schema } from 'misskey-world/src/room/furnitures/speaker.s
 import { i18n } from '@/i18n.js';
 
 export const speaker_ui = defineFurnitureUi<typeof speaker_schema>({
-	name: i18n.ts._miRoom._objects.speaker,
+	name: i18n.ts._miRoom._furnitures.speaker,
 	options: {
 		outerMat: {
-			label: i18n.ts._miRoom._objects._speaker.outerMat,
+			label: i18n.ts._miRoom._furnitures._speaker.outerMat,
 		},
 		innerMat: {
-			label: i18n.ts._miRoom._objects._speaker.innerMat,
+			label: i18n.ts._miRoom._furnitures._speaker.innerMat,
 		},
 	},
 });

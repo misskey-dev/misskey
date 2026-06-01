@@ -8,22 +8,22 @@ import type { tabletopIronFrameStand_schema } from 'misskey-world/src/room/furni
 import { i18n } from '@/i18n.js';
 
 export const tabletopIronFrameStand_ui = defineFurnitureUi<typeof tabletopIronFrameStand_schema>({
-	name: i18n.ts._miRoom._objects.tabletopIronFrameStand,
+	name: i18n.ts._miRoom._furnitures.tabletopIronFrameStand,
 	options: {
 		frameMat: {
-			label: i18n.ts._miRoom._objects._tabletopIronFrameStand.frameMat,
+			label: i18n.ts._miRoom._furnitures._tabletopIronFrameStand.frameMat,
 		},
 		boardMat: {
-			label: i18n.ts._miRoom._objects._tabletopIronFrameStand.boardMat,
+			label: i18n.ts._miRoom._furnitures._tabletopIronFrameStand.boardMat,
 		},
 		width: {
-			label: i18n.ts._miRoom._objects._tabletopIronFrameStand.width,
+			label: i18n.ts._miRoom._furnitures._tabletopIronFrameStand.width,
 		},
 		depth: {
-			label: i18n.ts._miRoom._objects._tabletopIronFrameStand.depth,
+			label: i18n.ts._miRoom._furnitures._tabletopIronFrameStand.depth,
 		},
 		height: {
-			label: i18n.ts._miRoom._objects._tabletopIronFrameStand.height,
+			label: i18n.ts._miRoom._furnitures._tabletopIronFrameStand.height,
 		},
 	},
 });

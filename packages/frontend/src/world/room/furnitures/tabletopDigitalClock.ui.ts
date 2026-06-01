@@ -8,13 +8,13 @@ import type { tabletopDigitalClock_schema } from 'misskey-world/src/room/furnitu
 import { i18n } from '@/i18n.js';
 
 export const tabletopDigitalClock_ui = defineFurnitureUi<typeof tabletopDigitalClock_schema>({
-	name: i18n.ts._miRoom._objects.tabletopDigitalClock,
+	name: i18n.ts._miRoom._furnitures.tabletopDigitalClock,
 	options: {
 		bodyMat: {
-			label: i18n.ts._miRoom._objects._tabletopDigitalClock.bodyMat,
+			label: i18n.ts._miRoom._furnitures._tabletopDigitalClock.bodyMat,
 		},
 		lcdColor: {
-			label: i18n.ts._miRoom._objects._tabletopDigitalClock.lcdColor,
+			label: i18n.ts._miRoom._furnitures._tabletopDigitalClock.lcdColor,
 		},
 	},
 });

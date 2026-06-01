@@ -8,16 +8,16 @@ import type { hangingDuctRail_schema } from 'misskey-world/src/room/furnitures/h
 import { i18n } from '@/i18n.js';
 
 export const hangingDuctRail_ui = defineFurnitureUi<typeof hangingDuctRail_schema>({
-	name: i18n.ts._miRoom._objects.hangingDuctRail,
+	name: i18n.ts._miRoom._furnitures.hangingDuctRail,
 	options: {
 		width: {
-			label: i18n.ts._miRoom._objects._hangingDuctRail.width,
+			label: i18n.ts._miRoom._furnitures._hangingDuctRail.width,
 		},
 		height: {
-			label: i18n.ts._miRoom._objects._hangingDuctRail.height,
+			label: i18n.ts._miRoom._furnitures._hangingDuctRail.height,
 		},
 		bodyMat: {
-			label: i18n.ts._miRoom._objects._hangingDuctRail.bodyMat,
+			label: i18n.ts._miRoom._furnitures._hangingDuctRail.bodyMat,
 		},
 	},
 });

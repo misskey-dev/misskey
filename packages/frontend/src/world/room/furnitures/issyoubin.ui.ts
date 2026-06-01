@@ -8,10 +8,10 @@ import type { issyoubin_schema } from 'misskey-world/src/room/furnitures/issyoub
 import { i18n } from '@/i18n.js';
 
 export const issyoubin_ui = defineFurnitureUi<typeof issyoubin_schema>({
-	name: i18n.ts._miRoom._objects.issyoubin,
+	name: i18n.ts._miRoom._furnitures.issyoubin,
 	options: {
 		variation: {
-			label: i18n.ts._miRoom._objects._issyoubin.variation,
+			label: i18n.ts._miRoom._furnitures._issyoubin.variation,
 			enum: {
 				'misuki': {
 					label: 'A',

@@ -8,25 +8,25 @@ import type { desktopPc_schema } from 'misskey-world/src/room/furnitures/desktop
 import { i18n } from '@/i18n.js';
 
 export const desktopPc_ui = defineFurnitureUi<typeof desktopPc_schema>({
-	name: i18n.ts._miRoom._objects.desktopPc,
+	name: i18n.ts._miRoom._furnitures.desktopPc,
 	options: {
 		bodyMat: {
-			label: i18n.ts._miRoom._objects._desktopPc.bodyMat,
+			label: i18n.ts._miRoom._furnitures._desktopPc.bodyMat,
 		},
 		coverMat: {
-			label: i18n.ts._miRoom._objects._desktopPc.coverMat,
+			label: i18n.ts._miRoom._furnitures._desktopPc.coverMat,
 		},
 		inner1Mat: {
-			label: i18n.ts._miRoom._objects._desktopPc.inner1Mat,
+			label: i18n.ts._miRoom._furnitures._desktopPc.inner1Mat,
 		},
 		inner2Mat: {
-			label: i18n.ts._miRoom._objects._desktopPc.inner2Mat,
+			label: i18n.ts._miRoom._furnitures._desktopPc.inner2Mat,
 		},
 		inner3Mat: {
-			label: i18n.ts._miRoom._objects._desktopPc.inner3Mat,
+			label: i18n.ts._miRoom._furnitures._desktopPc.inner3Mat,
 		},
 		ledColor: {
-			label: i18n.ts._miRoom._objects._desktopPc.ledColor,
+			label: i18n.ts._miRoom._furnitures._desktopPc.ledColor,
 		},
 	},
 });

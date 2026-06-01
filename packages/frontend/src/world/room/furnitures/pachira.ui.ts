@@ -8,10 +8,10 @@ import type { pachira_schema } from 'misskey-world/src/room/furnitures/pachira.s
 import { i18n } from '@/i18n.js';
 
 export const pachira_ui = defineFurnitureUi<typeof pachira_schema>({
-	name: i18n.ts._miRoom._objects.pachira,
+	name: i18n.ts._miRoom._furnitures.pachira,
 	options: {
 		potMat: {
-			label: i18n.ts._miRoom._objects._pachira.potMat,
+			label: i18n.ts._miRoom._furnitures._pachira.potMat,
 		},
 	},
 });

@@ -8,13 +8,13 @@ import type { mug_schema } from 'misskey-world/src/room/furnitures/mug.schema.js
 import { i18n } from '@/i18n.js';
 
 export const mug_ui = defineFurnitureUi<typeof mug_schema>({
-	name: i18n.ts._miRoom._objects.mug,
+	name: i18n.ts._miRoom._furnitures.mug,
 	options: {
 		bodyMat: {
-			label: i18n.ts._miRoom._objects._mug.bodyMat,
+			label: i18n.ts._miRoom._furnitures._mug.bodyMat,
 		},
 		liquidMat: {
-			label: i18n.ts._miRoom._objects._mug.liquidMat,
+			label: i18n.ts._miRoom._furnitures._mug.liquidMat,
 		},
 	},
 });

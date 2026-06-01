@@ -8,13 +8,13 @@ import type { keyboard_schema } from 'misskey-world/src/room/furnitures/keyboard
 import { i18n } from '@/i18n.js';
 
 export const keyboard_ui = defineFurnitureUi<typeof keyboard_schema>({
-	name: i18n.ts._miRoom._objects.keyboard,
+	name: i18n.ts._miRoom._furnitures.keyboard,
 	options: {
 		bodyMat: {
-			label: i18n.ts._miRoom._objects._keyboard.bodyMat,
+			label: i18n.ts._miRoom._furnitures._keyboard.bodyMat,
 		},
 		keyMat: {
-			label: i18n.ts._miRoom._objects._keyboard.keyMat,
+			label: i18n.ts._miRoom._furnitures._keyboard.keyMat,
 		},
 	},
 });

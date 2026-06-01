@@ -8,6 +8,6 @@ import type { radiometer_schema } from 'misskey-world/src/room/furnitures/radiom
 import { i18n } from '@/i18n.js';
 
 export const radiometer_ui = defineFurnitureUi<typeof radiometer_schema>({
-	name: i18n.ts._miRoom._objects.radiometer,
+	name: i18n.ts._miRoom._furnitures.radiometer,
 	options: {},
 });

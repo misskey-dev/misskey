@@ -8,6 +8,6 @@ import type { hangingTShirt_schema } from 'misskey-world/src/room/furnitures/han
 import { i18n } from '@/i18n.js';
 
 export const hangingTShirt_ui = defineFurnitureUi<typeof hangingTShirt_schema>({
-	name: i18n.ts._miRoom._objects.hangingTShirt,
+	name: i18n.ts._miRoom._furnitures.hangingTShirt,
 	options: {},
 });

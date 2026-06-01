@@ -8,16 +8,16 @@ import type { tabletopGlassPictureFrame_schema } from 'misskey-world/src/room/fu
 import { i18n } from '@/i18n.js';
 
 export const tabletopGlassPictureFrame_ui = defineFurnitureUi<typeof tabletopGlassPictureFrame_schema>({
-	name: i18n.ts._miRoom._objects.tabletopGlassPictureFrame,
+	name: i18n.ts._miRoom._furnitures.tabletopGlassPictureFrame,
 	options: {
 		width: {
-			label: i18n.ts._miRoom._objects._tabletopGlassPictureFrame.width,
+			label: i18n.ts._miRoom._furnitures._tabletopGlassPictureFrame.width,
 		},
 		height: {
-			label: i18n.ts._miRoom._objects._tabletopGlassPictureFrame.height,
+			label: i18n.ts._miRoom._furnitures._tabletopGlassPictureFrame.height,
 		},
 		image: {
-			label: i18n.ts._miRoom._objects._tabletopGlassPictureFrame.image,
+			label: i18n.ts._miRoom._furnitures._tabletopGlassPictureFrame.image,
 		},
 	},
 });

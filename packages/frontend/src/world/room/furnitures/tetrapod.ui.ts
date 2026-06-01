@@ -8,6 +8,6 @@ import type { tetrapod_schema } from 'misskey-world/src/room/furnitures/tetrapod
 import { i18n } from '@/i18n.js';
 
 export const tetrapod_ui = defineFurnitureUi<typeof tetrapod_schema>({
-	name: i18n.ts._miRoom._objects.tetrapod,
+	name: i18n.ts._miRoom._furnitures.tetrapod,
 	options: {},
 });

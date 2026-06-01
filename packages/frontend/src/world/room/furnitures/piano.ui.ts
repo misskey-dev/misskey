@@ -8,10 +8,10 @@ import type { piano_schema } from 'misskey-world/src/room/furnitures/piano.schem
 import { i18n } from '@/i18n.js';
 
 export const piano_ui = defineFurnitureUi<typeof piano_schema>({
-	name: i18n.ts._miRoom._objects.piano,
+	name: i18n.ts._miRoom._furnitures.piano,
 	options: {
 		bodyMat: {
-			label: i18n.ts._miRoom._objects._piano.bodyMat,
+			label: i18n.ts._miRoom._furnitures._piano.bodyMat,
 		},
 	},
 });

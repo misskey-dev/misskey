@@ -8,6 +8,6 @@ import type { tableSalt_schema } from 'misskey-world/src/room/furnitures/tableSa
 import { i18n } from '@/i18n.js';
 
 export const tableSalt_ui = defineFurnitureUi<typeof tableSalt_schema>({
-	name: i18n.ts._miRoom._objects.tableSalt,
+	name: i18n.ts._miRoom._furnitures.tableSalt,
 	options: {},
 });

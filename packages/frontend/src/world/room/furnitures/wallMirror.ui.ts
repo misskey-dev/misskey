@@ -8,19 +8,19 @@ import type { wallMirror_schema } from 'misskey-world/src/room/furnitures/wallMi
 import { i18n } from '@/i18n.js';
 
 export const wallMirror_ui = defineFurnitureUi<typeof wallMirror_schema>({
-	name: i18n.ts._miRoom._objects.wallMirror,
+	name: i18n.ts._miRoom._furnitures.wallMirror,
 	options: {
 		width: {
-			label: i18n.ts._miRoom._objects._wallMirror.width,
+			label: i18n.ts._miRoom._furnitures._wallMirror.width,
 		},
 		height: {
-			label: i18n.ts._miRoom._objects._wallMirror.height,
+			label: i18n.ts._miRoom._furnitures._wallMirror.height,
 		},
 		frameThickness: {
-			label: i18n.ts._miRoom._objects._wallMirror.frameThickness,
+			label: i18n.ts._miRoom._furnitures._wallMirror.frameThickness,
 		},
 		frameMat: {
-			label: i18n.ts._miRoom._objects._wallMirror.frameMat,
+			label: i18n.ts._miRoom._furnitures._wallMirror.frameMat,
 		},
 	},
 });

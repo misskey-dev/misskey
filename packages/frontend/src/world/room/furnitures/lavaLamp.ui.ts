@@ -8,19 +8,19 @@ import type { lavaLamp_schema } from 'misskey-world/src/room/furnitures/lavaLamp
 import { i18n } from '@/i18n.js';
 
 export const lavaLamp_ui = defineFurnitureUi<typeof lavaLamp_schema>({
-	name: i18n.ts._miRoom._objects.lavaLamp,
+	name: i18n.ts._miRoom._furnitures.lavaLamp,
 	options: {
 		bodyMat: {
-			label: i18n.ts._miRoom._objects._lavaLamp.bodyMat,
+			label: i18n.ts._miRoom._furnitures._lavaLamp.bodyMat,
 		},
 		glassMat: {
-			label: i18n.ts._miRoom._objects._lavaLamp.glassMat,
+			label: i18n.ts._miRoom._furnitures._lavaLamp.glassMat,
 		},
 		lightColor: {
-			label: i18n.ts._miRoom._objects._lavaLamp.lightColor,
+			label: i18n.ts._miRoom._furnitures._lavaLamp.lightColor,
 		},
 		lavaColor: {
-			label: i18n.ts._miRoom._objects._lavaLamp.lavaColor,
+			label: i18n.ts._miRoom._furnitures._lavaLamp.lavaColor,
 		},
 	},
 });

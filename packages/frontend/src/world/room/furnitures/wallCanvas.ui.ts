@@ -8,16 +8,16 @@ import type { wallCanvas_schema } from 'misskey-world/src/room/furnitures/wallCa
 import { i18n } from '@/i18n.js';
 
 export const wallCanvas_ui = defineFurnitureUi<typeof wallCanvas_schema>({
-	name: i18n.ts._miRoom._objects.wallCanvas,
+	name: i18n.ts._miRoom._furnitures.wallCanvas,
 	options: {
 		width: {
-			label: i18n.ts._miRoom._objects._wallCanvas.width,
+			label: i18n.ts._miRoom._furnitures._wallCanvas.width,
 		},
 		height: {
-			label: i18n.ts._miRoom._objects._wallCanvas.height,
+			label: i18n.ts._miRoom._furnitures._wallCanvas.height,
 		},
 		image: {
-			label: i18n.ts._miRoom._objects._wallCanvas.image,
+			label: i18n.ts._miRoom._furnitures._wallCanvas.image,
 		},
 	},
 });

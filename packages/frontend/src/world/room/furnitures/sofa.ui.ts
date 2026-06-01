@@ -8,10 +8,10 @@ import type { sofa_schema } from 'misskey-world/src/room/furnitures/sofa.schema.
 import { i18n } from '@/i18n.js';
 
 export const sofa_ui = defineFurnitureUi<typeof sofa_schema>({
-	name: i18n.ts._miRoom._objects.sofa,
+	name: i18n.ts._miRoom._furnitures.sofa,
 	options: {
 		bodyMat: {
-			label: i18n.ts._miRoom._objects._sofa.bodyMat,
+			label: i18n.ts._miRoom._furnitures._sofa.bodyMat,
 		},
 	},
 });

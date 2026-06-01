@@ -8,19 +8,19 @@ import type { cuboid_schema } from 'misskey-world/src/room/furnitures/cuboid.sch
 import { i18n } from '@/i18n.js';
 
 export const cuboid_ui = defineFurnitureUi<typeof cuboid_schema>({
-	name: i18n.ts._miRoom._objects.cuboid,
+	name: i18n.ts._miRoom._furnitures.cuboid,
 	options: {
 		x: {
-			label: i18n.ts._miRoom._objects._cuboid.x,
+			label: i18n.ts._miRoom._furnitures._cuboid.x,
 		},
 		y: {
-			label: i18n.ts._miRoom._objects._cuboid.y,
+			label: i18n.ts._miRoom._furnitures._cuboid.y,
 		},
 		z: {
-			label: i18n.ts._miRoom._objects._cuboid.z,
+			label: i18n.ts._miRoom._furnitures._cuboid.z,
 		},
 		mat: {
-			label: i18n.ts._miRoom._objects._cuboid.mat,
+			label: i18n.ts._miRoom._furnitures._cuboid.mat,
 		},
 	},
 });

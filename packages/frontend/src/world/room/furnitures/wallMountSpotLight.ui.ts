@@ -8,19 +8,19 @@ import type { wallMountSpotLight_schema } from 'misskey-world/src/room/furniture
 import { i18n } from '@/i18n.js';
 
 export const wallMountSpotLight_ui = defineFurnitureUi<typeof wallMountSpotLight_schema>({
-	name: i18n.ts._miRoom._objects.wallMountSpotLight,
+	name: i18n.ts._miRoom._furnitures.wallMountSpotLight,
 	options: {
 		bodyMat: {
-			label: i18n.ts._miRoom._objects._wallMountSpotLight.bodyMat,
+			label: i18n.ts._miRoom._furnitures._wallMountSpotLight.bodyMat,
 		},
 		light: {
-			label: i18n.ts._miRoom._objects._wallMountSpotLight.light,
+			label: i18n.ts._miRoom._furnitures._wallMountSpotLight.light,
 		},
 		angleV: {
-			label: i18n.ts._miRoom._objects._wallMountSpotLight.angleV,
+			label: i18n.ts._miRoom._furnitures._wallMountSpotLight.angleV,
 		},
 		angleH: {
-			label: i18n.ts._miRoom._objects._wallMountSpotLight.angleH,
+			label: i18n.ts._miRoom._furnitures._wallMountSpotLight.angleH,
 		},
 	},
 });

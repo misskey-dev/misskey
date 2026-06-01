@@ -8,6 +8,6 @@ import type { milk_schema } from 'misskey-world/src/room/furnitures/milk.schema.
 import { i18n } from '@/i18n.js';
 
 export const milk_ui = defineFurnitureUi<typeof milk_schema>({
-	name: i18n.ts._miRoom._objects.milk,
+	name: i18n.ts._miRoom._furnitures.milk,
 	options: {},
 });

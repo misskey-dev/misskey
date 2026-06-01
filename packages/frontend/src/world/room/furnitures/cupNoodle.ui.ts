@@ -8,6 +8,6 @@ import type { cupNoodle_schema } from 'misskey-world/src/room/furnitures/cupNood
 import { i18n } from '@/i18n.js';
 
 export const cupNoodle_ui = defineFurnitureUi<typeof cupNoodle_schema>({
-	name: i18n.ts._miRoom._objects.cupNoodle,
+	name: i18n.ts._miRoom._furnitures.cupNoodle,
 	options: {},
 });

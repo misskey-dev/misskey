@@ -8,6 +8,6 @@ import type { usedTissue_schema } from 'misskey-world/src/room/furnitures/usedTi
 import { i18n } from '@/i18n.js';
 
 export const usedTissue_ui = defineFurnitureUi<typeof usedTissue_schema>({
-	name: i18n.ts._miRoom._objects.usedTissue,
+	name: i18n.ts._miRoom._furnitures.usedTissue,
 	options: {},
 });

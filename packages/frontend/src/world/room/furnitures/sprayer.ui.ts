@@ -8,6 +8,6 @@ import type { sprayer_schema } from 'misskey-world/src/room/furnitures/sprayer.s
 import { i18n } from '@/i18n.js';
 
 export const sprayer_ui = defineFurnitureUi<typeof sprayer_schema>({
-	name: i18n.ts._miRoom._objects.sprayer,
+	name: i18n.ts._miRoom._furnitures.sprayer,
 	options: {},
 });

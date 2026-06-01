@@ -8,6 +8,6 @@ import type { openedCardboardBox_schema } from 'misskey-world/src/room/furniture
 import { i18n } from '@/i18n.js';
 
 export const openedCardboardBox_ui = defineFurnitureUi<typeof openedCardboardBox_schema>({
-	name: i18n.ts._miRoom._objects.openedCardboardBox,
+	name: i18n.ts._miRoom._furnitures.openedCardboardBox,
 	options: {},
 });

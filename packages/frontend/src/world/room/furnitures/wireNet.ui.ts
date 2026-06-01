@@ -8,10 +8,10 @@ import type { wireNet_schema } from 'misskey-world/src/room/furnitures/wireNet.s
 import { i18n } from '@/i18n.js';
 
 export const wireNet_ui = defineFurnitureUi<typeof wireNet_schema>({
-	name: i18n.ts._miRoom._objects.wireNet,
+	name: i18n.ts._miRoom._furnitures.wireNet,
 	options: {
 		bodyMat: {
-			label: i18n.ts._miRoom._objects._wireNet.bodyMat,
+			label: i18n.ts._miRoom._furnitures._wireNet.bodyMat,
 		},
 	},
 });

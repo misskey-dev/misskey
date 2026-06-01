@@ -8,6 +8,6 @@ import type { curtain_schema } from 'misskey-world/src/room/furnitures/curtain.s
 import { i18n } from '@/i18n.js';
 
 export const curtain_ui = defineFurnitureUi<typeof curtain_schema>({
-	name: i18n.ts._miRoom._objects.curtain,
+	name: i18n.ts._miRoom._furnitures.curtain,
 	options: {},
 });

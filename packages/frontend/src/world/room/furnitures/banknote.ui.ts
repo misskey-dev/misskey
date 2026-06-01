@@ -8,6 +8,6 @@ import type { banknote_schema } from 'misskey-world/src/room/furnitures/banknote
 import { i18n } from '@/i18n.js';
 
 export const banknote_ui = defineFurnitureUi<typeof banknote_schema>({
-	name: i18n.ts._miRoom._objects.banknote,
+	name: i18n.ts._miRoom._furnitures.banknote,
 	options: {},
 });

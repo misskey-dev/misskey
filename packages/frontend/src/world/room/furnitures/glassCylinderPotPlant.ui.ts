@@ -8,6 +8,6 @@ import type { glassCylinderPotPlant_schema } from 'misskey-world/src/room/furnit
 import { i18n } from '@/i18n.js';
 
 export const glassCylinderPotPlant_ui = defineFurnitureUi<typeof glassCylinderPotPlant_schema>({
-	name: i18n.ts._miRoom._objects.glassCylinderPotPlant,
+	name: i18n.ts._miRoom._furnitures.glassCylinderPotPlant,
 	options: {},
 });

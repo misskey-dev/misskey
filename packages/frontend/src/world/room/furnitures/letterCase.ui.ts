@@ -8,6 +8,6 @@ import type { letterCase_schema } from 'misskey-world/src/room/furnitures/letter
 import { i18n } from '@/i18n.js';
 
 export const letterCase_ui = defineFurnitureUi<typeof letterCase_schema>({
-	name: i18n.ts._miRoom._objects.letterCase,
+	name: i18n.ts._miRoom._furnitures.letterCase,
 	options: {},
 });

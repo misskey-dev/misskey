@@ -8,6 +8,6 @@ import type { aircon_schema } from 'misskey-world/src/room/furnitures/aircon.sch
 import { i18n } from '@/i18n.js';
 
 export const aircon_ui = defineFurnitureUi<typeof aircon_schema>({
-	name: i18n.ts._miRoom._objects.aircon,
+	name: i18n.ts._miRoom._furnitures.aircon,
 	options: {},
 });

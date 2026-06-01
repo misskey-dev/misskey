@@ -8,16 +8,16 @@ import type { tapestry_schema } from 'misskey-world/src/room/furnitures/tapestry
 import { i18n } from '@/i18n.js';
 
 export const tapestry_ui = defineFurnitureUi<typeof tapestry_schema>({
-	name: i18n.ts._miRoom._objects.tapestry,
+	name: i18n.ts._miRoom._furnitures.tapestry,
 	options: {
 		width: {
-			label: i18n.ts._miRoom._objects._tapestry.width,
+			label: i18n.ts._miRoom._furnitures._tapestry.width,
 		},
 		height: {
-			label: i18n.ts._miRoom._objects._tapestry.height,
+			label: i18n.ts._miRoom._furnitures._tapestry.height,
 		},
 		image: {
-			label: i18n.ts._miRoom._objects._tapestry.image,
+			label: i18n.ts._miRoom._furnitures._tapestry.image,
 		},
 	},
 });

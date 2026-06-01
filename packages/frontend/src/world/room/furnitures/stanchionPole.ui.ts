@@ -8,13 +8,13 @@ import type { stanchionPole_schema } from 'misskey-world/src/room/furnitures/sta
 import { i18n } from '@/i18n.js';
 
 export const stanchionPole_ui = defineFurnitureUi<typeof stanchionPole_schema>({
-	name: i18n.ts._miRoom._objects.stanchionPole,
+	name: i18n.ts._miRoom._furnitures.stanchionPole,
 	options: {
 		bodyMat: {
-			label: i18n.ts._miRoom._objects._stanchionPole.bodyMat,
+			label: i18n.ts._miRoom._furnitures._stanchionPole.bodyMat,
 		},
 		ropeMat: {
-			label: i18n.ts._miRoom._objects._stanchionPole.ropeMat,
+			label: i18n.ts._miRoom._furnitures._stanchionPole.ropeMat,
 		},
 	},
 });

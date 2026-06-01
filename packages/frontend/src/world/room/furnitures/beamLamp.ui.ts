@@ -8,6 +8,6 @@ import type { beamLamp_schema } from 'misskey-world/src/room/furnitures/beamLamp
 import { i18n } from '@/i18n.js';
 
 export const beamLamp_ui = defineFurnitureUi<typeof beamLamp_schema>({
-	name: i18n.ts._miRoom._objects.beamLamp,
+	name: i18n.ts._miRoom._furnitures.beamLamp,
 	options: {},
 });

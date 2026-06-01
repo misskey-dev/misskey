@@ -8,16 +8,16 @@ import type { blind_schema } from 'misskey-world/src/room/furnitures/blind.schem
 import { i18n } from '@/i18n.js';
 
 export const blind_ui = defineFurnitureUi<typeof blind_schema>({
-	name: i18n.ts._miRoom._objects.blind,
+	name: i18n.ts._miRoom._furnitures.blind,
 	options: {
 		blades: {
-			label: i18n.ts._miRoom._objects._blind.blades,
+			label: i18n.ts._miRoom._furnitures._blind.blades,
 		},
 		angle: {
-			label: i18n.ts._miRoom._objects._blind.angle,
+			label: i18n.ts._miRoom._furnitures._blind.angle,
 		},
 		open: {
-			label: i18n.ts._miRoom._objects._blind.open,
+			label: i18n.ts._miRoom._furnitures._blind.open,
 		},
 	},
 });

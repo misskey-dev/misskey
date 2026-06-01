@@ -8,6 +8,6 @@ import type { pizza_schema } from 'misskey-world/src/room/furnitures/pizza.schem
 import { i18n } from '@/i18n.js';
 
 export const pizza_ui = defineFurnitureUi<typeof pizza_schema>({
-	name: i18n.ts._miRoom._objects.pizza,
+	name: i18n.ts._miRoom._furnitures.pizza,
 	options: {},
 });

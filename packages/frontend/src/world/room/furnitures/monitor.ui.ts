@@ -8,16 +8,16 @@ import type { monitor_schema } from 'misskey-world/src/room/furnitures/monitor.s
 import { i18n } from '@/i18n.js';
 
 export const monitor_ui = defineFurnitureUi<typeof monitor_schema>({
-	name: i18n.ts._miRoom._objects.monitor,
+	name: i18n.ts._miRoom._furnitures.monitor,
 	options: {
 		bodyMat: {
-			label: i18n.ts._miRoom._objects._monitor.bodyMat,
+			label: i18n.ts._miRoom._furnitures._monitor.bodyMat,
 		},
 		screenBrightness: {
-			label: i18n.ts._miRoom._objects._monitor.screenBrightness,
+			label: i18n.ts._miRoom._furnitures._monitor.screenBrightness,
 		},
 		image: {
-			label: i18n.ts._miRoom._objects._monitor.image,
+			label: i18n.ts._miRoom._furnitures._monitor.image,
 		},
 	},
 });

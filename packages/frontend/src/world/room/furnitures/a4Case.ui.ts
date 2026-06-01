@@ -8,10 +8,10 @@ import type { a4Case_schema } from 'misskey-world/src/room/furnitures/a4Case.sch
 import { i18n } from '@/i18n.js';
 
 export const a4Case_ui = defineFurnitureUi<typeof a4Case_schema>({
-	name: i18n.ts._miRoom._objects.a4Case,
+	name: i18n.ts._miRoom._furnitures.a4Case,
 	options: {
 		mat: {
-			label: i18n.ts._miRoom._objects._a4Case.mat,
+			label: i18n.ts._miRoom._furnitures._a4Case.mat,
 		},
 	},
 });

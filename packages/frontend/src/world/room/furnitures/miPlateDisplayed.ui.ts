@@ -8,6 +8,6 @@ import type { miPlateDisplayed_schema } from 'misskey-world/src/room/furnitures/
 import { i18n } from '@/i18n.js';
 
 export const miPlateDisplayed_ui = defineFurnitureUi<typeof miPlateDisplayed_schema>({
-	name: i18n.ts._miRoom._objects.miPlateDisplayed,
+	name: i18n.ts._miRoom._furnitures.miPlateDisplayed,
 	options: {},
 });

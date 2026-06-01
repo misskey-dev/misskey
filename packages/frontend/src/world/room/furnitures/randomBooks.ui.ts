@@ -8,27 +8,27 @@ import type { randomBooks_schema } from 'misskey-world/src/room/furnitures/rando
 import { i18n } from '@/i18n.js';
 
 export const randomBooks_ui = defineFurnitureUi<typeof randomBooks_schema>({
-	name: i18n.ts._miRoom._objects.randomBooks,
+	name: i18n.ts._miRoom._furnitures.randomBooks,
 	options: {
 		variation: {
-			label: i18n.ts._miRoom._objects._randomBooks.variation,
+			label: i18n.ts._miRoom._furnitures._randomBooks.variation,
 			enum: {
 				'mix': {
-					label: i18n.ts._miRoom._objects._randomBooks.variation_mix,
+					label: i18n.ts._miRoom._furnitures._randomBooks.variation_mix,
 				},
 				'mix-plain': {
-					label: i18n.ts._miRoom._objects._randomBooks.variation_mixPlain,
+					label: i18n.ts._miRoom._furnitures._randomBooks.variation_mixPlain,
 				},
 			},
 		},
 		count: {
-			label: i18n.ts._miRoom._objects._randomBooks.count,
+			label: i18n.ts._miRoom._furnitures._randomBooks.count,
 		},
 		stackVertically: {
-			label: i18n.ts._miRoom._objects._randomBooks.stackVertically,
+			label: i18n.ts._miRoom._furnitures._randomBooks.stackVertically,
 		},
 		seed: {
-			label: i18n.ts._miRoom._objects._randomBooks.seed,
+			label: i18n.ts._miRoom._furnitures._randomBooks.seed,
 		},
 	},
 });

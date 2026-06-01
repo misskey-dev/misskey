@@ -8,19 +8,19 @@ import type { woodRingsPendantLight_schema } from 'misskey-world/src/room/furnit
 import { i18n } from '@/i18n.js';
 
 export const woodRingsPendantLight_ui = defineFurnitureUi<typeof woodRingsPendantLight_schema>({
-	name: i18n.ts._miRoom._objects.woodRingsPendantLight,
+	name: i18n.ts._miRoom._furnitures.woodRingsPendantLight,
 	options: {
 		shadeMat: {
-			label: i18n.ts._miRoom._objects._woodRingsPendantLight.shadeMat,
+			label: i18n.ts._miRoom._furnitures._woodRingsPendantLight.shadeMat,
 		},
 		bodyMat: {
-			label: i18n.ts._miRoom._objects._woodRingsPendantLight.bodyMat,
+			label: i18n.ts._miRoom._furnitures._woodRingsPendantLight.bodyMat,
 		},
 		light: {
-			label: i18n.ts._miRoom._objects._woodRingsPendantLight.light,
+			label: i18n.ts._miRoom._furnitures._woodRingsPendantLight.light,
 		},
 		length: {
-			label: i18n.ts._miRoom._objects._woodRingsPendantLight.length,
+			label: i18n.ts._miRoom._furnitures._woodRingsPendantLight.length,
 		},
 	},
 });

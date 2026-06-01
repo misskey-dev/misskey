@@ -8,16 +8,16 @@ import type { poster_schema } from 'misskey-world/src/room/furnitures/poster.sch
 import { i18n } from '@/i18n.js';
 
 export const poster_ui = defineFurnitureUi<typeof poster_schema>({
-	name: i18n.ts._miRoom._objects.poster,
+	name: i18n.ts._miRoom._furnitures.poster,
 	options: {
 		width: {
-			label: i18n.ts._miRoom._objects._poster.width,
+			label: i18n.ts._miRoom._furnitures._poster.width,
 		},
 		height: {
-			label: i18n.ts._miRoom._objects._poster.height,
+			label: i18n.ts._miRoom._furnitures._poster.height,
 		},
 		image: {
-			label: i18n.ts._miRoom._objects._poster.image,
+			label: i18n.ts._miRoom._furnitures._poster.image,
 		},
 	},
 });

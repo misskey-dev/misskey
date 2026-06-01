@@ -8,10 +8,10 @@ import type { snakeplant_schema } from 'misskey-world/src/room/furnitures/snakep
 import { i18n } from '@/i18n.js';
 
 export const snakeplant_ui = defineFurnitureUi<typeof snakeplant_schema>({
-	name: i18n.ts._miRoom._objects.snakeplant,
+	name: i18n.ts._miRoom._furnitures.snakeplant,
 	options: {
 		potMat: {
-			label: i18n.ts._miRoom._objects._snakeplant.potMat,
+			label: i18n.ts._miRoom._furnitures._snakeplant.potMat,
 		},
 	},
 });

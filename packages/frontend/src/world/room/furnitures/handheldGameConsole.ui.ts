@@ -8,16 +8,16 @@ import type { handheldGameConsole_schema } from 'misskey-world/src/room/furnitur
 import { i18n } from '@/i18n.js';
 
 export const handheldGameConsole_ui = defineFurnitureUi<typeof handheldGameConsole_schema>({
-	name: i18n.ts._miRoom._objects.handheldGameConsole,
+	name: i18n.ts._miRoom._furnitures.handheldGameConsole,
 	options: {
 		bodyMat: {
-			label: i18n.ts._miRoom._objects._handheldGameConsole.bodyMat,
+			label: i18n.ts._miRoom._furnitures._handheldGameConsole.bodyMat,
 		},
 		screenBrightness: {
-			label: i18n.ts._miRoom._objects._handheldGameConsole.screenBrightness,
+			label: i18n.ts._miRoom._furnitures._handheldGameConsole.screenBrightness,
 		},
 		image: {
-			label: i18n.ts._miRoom._objects._handheldGameConsole.image,
+			label: i18n.ts._miRoom._furnitures._handheldGameConsole.image,
 		},
 	},
 });

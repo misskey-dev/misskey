@@ -8,6 +8,6 @@ import type { envelope_schema } from 'misskey-world/src/room/furnitures/envelope
 import { i18n } from '@/i18n.js';
 
 export const envelope_ui = defineFurnitureUi<typeof envelope_schema>({
-	name: i18n.ts._miRoom._objects.envelope,
+	name: i18n.ts._miRoom._furnitures.envelope,
 	options: {},
 });

@@ -8,10 +8,10 @@ import type { books_schema } from 'misskey-world/src/room/furnitures/books.schem
 import { i18n } from '@/i18n.js';
 
 export const books_ui = defineFurnitureUi<typeof books_schema>({
-	name: i18n.ts._miRoom._objects.books,
+	name: i18n.ts._miRoom._furnitures.books,
 	options: {
 		variation: {
-			label: i18n.ts._miRoom._objects._books.variation,
+			label: i18n.ts._miRoom._furnitures._books.variation,
 			enum: {
 				'A': {
 					label: 'A',
