@@ -8,12 +8,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_gaps">
 		<MkPagination v-slot="{items}" :paginator="paginator">
 			<div class="_gaps_s">
-				<div v-for="avatar in items" :key="avatar.id">
-					<div>{{ avatar.name }}</div>
-					<div>{{ avatar.active }}</div>
-					<MkButton small rounded iconOnly @click="editWorldAvatar($event, avatar)"><i class="ti ti-pencil"></i></MkButton>
-					<MkButton small rounded iconOnly @click="makeActive($event, avatar)"><i class="ti ti-check"></i></MkButton>
-				</div>
+				<MkFolder v-for="avatar in items" :key="avatar.id">
+					<template #label>{{ avatar.name }}</template>
+					<template #suffix>
+						<span v-if="avatar.active" style="color: var(--MI_THEME-accent);">{{ i18n.ts.inUse }}</span>
+					</template>
+
+					<div class="_buttons">
+						<MkButton small rounded @click="editWorldAvatar($event, avatar)"><i class="ti ti-pencil"></i> {{ i18n.ts.edit }}</MkButton>
+						<MkButton v-if="!avatar.active" small rounded primary @click="makeActive($event, avatar)"><i class="ti ti-check"></i> {{ i18n.ts.makeActive }}</MkButton>
+					</div>
+				</MkFolder>
 			</div>
 		</MkPagination>
 		<MkButton iconOnly rounded style="margin: 0 auto;" @click="createWorldAvatar"><i class="ti ti-plus"></i></MkButton>
@@ -31,6 +36,7 @@ import { prefer } from '@/preferences.js';
 import * as os from '@/os.js';
 import { Paginator } from '@/utility/paginator.js';
 import MkPagination from '@/components/MkPagination.vue';
+import MkFolder from '@/components/MkFolder.vue';
 
 const paginator = markRaw(new Paginator('world/avatars/list', {
 	limit: 10,
