@@ -3619,9 +3619,9 @@ _miRoom:
   uninstallFurniture: "しまう"
   furnituresCount: "家具の数"
   _furniturePlacement:
-    top: "床/上"
-    bottom: "底面/下"
-    side: "壁/側面"
+    top: "上面設置"
+    bottom: "下面設置"
+    side: "側面設置"
 
   _furnitures:
     woodRingFloorLamp: "リングシェードフロアランプ"

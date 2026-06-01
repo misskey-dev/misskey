@@ -13492,15 +13492,15 @@ export interface Locale extends ILocale {
         "furnituresCount": string;
         "_furniturePlacement": {
             /**
-             * 床/上
+             * 上面設置
              */
             "top": string;
             /**
-             * 底面/下
+             * 下面設置
              */
             "bottom": string;
             /**
-             * 壁/側面
+             * 側面設置
              */
             "side": string;
         };
