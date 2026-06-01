@@ -13490,6 +13490,10 @@ export interface Locale extends ILocale {
          * 家具の数
          */
         "furnituresCount": string;
+        /**
+         * 添付ファイル数
+         */
+        "attachedFilesCount": string;
         "_furniturePlacement": {
             /**
              * 上面設置

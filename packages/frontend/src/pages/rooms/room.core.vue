@@ -135,9 +135,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<hr>
 
-			<div>
-				{{ i18n.ts._miRoom.furnituresCount }}: {{ controller.roomState.value.installedFurnitures.length }}
-			</div>
+			<div>{{ i18n.ts._miRoom.furnituresCount }}: {{ controller.roomState.value.installedFurnitures.length }}</div>
+			<div>{{ i18n.ts._miRoom.attachedFilesCount }}: {{ attachments.files.length }}</div>
 		</div>
 	</XOverlayPanel>
 

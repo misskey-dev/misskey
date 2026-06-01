@@ -3618,6 +3618,7 @@ _miRoom:
   furnitureCustomize: "家具のアレンジ"
   uninstallFurniture: "しまう"
   furnituresCount: "家具の数"
+  attachedFilesCount: "添付ファイル数"
   _furniturePlacement:
     top: "上面設置"
     bottom: "下面設置"
