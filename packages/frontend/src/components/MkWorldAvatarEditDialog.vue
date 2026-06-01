@@ -125,7 +125,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 								/>
 							</MkFolder>
 
-							<MkButton primary rounded @click="addAccessory">Add accessory</MkButton>
+							<MkButton primary rounded style="margin: 0 auto;" @click="addAccessory"><i class="ti ti-plus"></i>{{ i18n.ts._miWorld.attachAccessory }}</MkButton>
 						</div>
 					</div>
 				</Transition>
