@@ -88,7 +88,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 		</div>
 
-		<MkVirtualJoystick v-if="useVirtualJoystick" :class="$style.joystick" @update="v => controller.setCameraJoystickMoveVector(v)"/>
+		<MkVirtualJoystick v-if="useVirtualJoystick && controller.isReady" :class="$style.joystick" @update="v => controller.setCameraJoystickMoveVector(v)"/>
 	</div>
 
 	<XOverlayPanel v-if="controller.isReady.value && controller.isEditMode.value && controller.selected.value != null && isFurnitureSettingsOpen" :key="controller.selected.value.furnitureId" :isNarrow="isNarrow" :title="FURNITURE_UI_DEFS[controller.selected.value.funitureState.type].name" @close="isFurnitureSettingsOpen = false">
