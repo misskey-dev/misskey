@@ -3256,6 +3256,8 @@ _search:
   pleaseEnterServerHost: "Introduce la dirección del servidor/Instancia"
   pleaseSelectUser: "Selecciona un usuario, por favor"
   serverHostPlaceholder: "Ejemplo: misskey.example.com"
+  postFrom: "Publicado desde"
+  postTo: "Publicado el"
 _serverSetupWizard:
   installCompleted: "¡La instalación de Misskey se ha completado!"
   firstCreateAccount: "Para comenzar, crea una cuenta de administrador"
