@@ -21,9 +21,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</div>
 		<div v-else :class="$style.main">
 			<div class="_spacer _gaps">
-				<MkInput v-model="searchKeyword" type="search" :placeholder="i18n.ts.search"></MkInput>
+				<MkInput v-model="searchKeyword" type="search" :placeholder="i18n.ts.search">
+					<template #prefix><i class="ti ti-search"></i></template>
+				</MkInput>
+				<MkFoldableSection v-if="searchResult.length > 0" :expanded="true">
+					<template #header><i class="ti ti-search"></i> {{ i18n.ts.searchResult }}</template>
+					<div :class="$style.catalogItems">
+						<XItem v-for="def in searchResult" :key="def.id" :def="def" :class="[$style.catalogItem]" @click="selectedId = def.id"/>
+					</div>
+				</MkFoldableSection>
 				<MkFoldableSection v-if="recentlyUsedSchemas.length > 0" :expanded="true">
-					<template #header>{{ i18n.ts.recentUsed }}</template>
+					<template #header><i class="ti ti-history"></i> {{ i18n.ts.recentUsed }}</template>
 					<div :class="$style.catalogItems">
 						<XItem v-for="def in recentlyUsedSchemas" :key="def.id" :def="def" :class="[$style.catalogItem]" @click="selectedId = def.id"/>
 					</div>
@@ -123,6 +131,7 @@ const selectedFunitureOptionsState = ref<RawOptions | null>(null);
 const selectedFunitureSchema = computed(() => selectedId.value == null ? null : FURNITURE_SCHEMA_DEFS[selectedId.value]);
 const showFurnitureOptions = ref(false);
 const searchKeyword = ref('');
+const searchResult = ref([]);
 
 const attachments = {
 	files: [],
@@ -144,6 +153,15 @@ const controller = markRaw(new PreviewEngineController(previewEngineControllerOp
 const recentlyUsedSchemas = computed(() => {
 	const recentlyUsed = store.s.recentlyUsedRoomFurnitures;
 	return recentlyUsed.map(id => FURNITURE_SCHEMA_DEFS[id]).filter((def): def is typeof FURNITURE_SCHEMA_DEFS[string] => def != null);
+});
+
+watch(searchKeyword, (newKeyword) => {
+	const kw = newKeyword.trim().toLowerCase();
+	if (kw === '') {
+		searchResult.value = [];
+	} else {
+		searchResult.value = Object.values(FURNITURE_SCHEMA_DEFS).filter(def => def.id.includes(kw) || FURNITURE_UI_DEFS[def.id].name.toLowerCase().includes(kw));
+	}
 });
 
 onMounted(async () => {

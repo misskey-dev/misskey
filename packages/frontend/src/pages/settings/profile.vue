@@ -154,8 +154,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<SearchMarker :keywords="['world', 'rooms', 'avatar', '3d']">
 			<MkFolder>
 				<template #icon><i class="ti ti-box"></i></template>
-				<template #label><SearchLabel>{{ i18n.ts.threeDAvatar }}</SearchLabel></template>
-				<template #caption>{{ i18n.ts.threeDAvatar_description }}</template>
+				<template #label><SearchLabel>{{ i18n.ts.worldAvatar }}</SearchLabel></template>
+				<template #caption>{{ i18n.ts.worldAvatar_description }}</template>
 
 				<MkWorldAvatarManager/>
 			</MkFolder>

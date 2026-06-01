@@ -31,6 +31,8 @@ const props = defineProps<{
 	border: 1px solid var(--border-color);
 	border-radius: 4px;
 	cursor: pointer;
+	content-visibility: auto;
+	contain-intrinsic-size: auto 200px;
 }
 .selected {
 	color: var(--MI_THEME-accent);

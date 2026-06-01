@@ -12,6 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div>{{ avatar.name }}</div>
 					<div>{{ avatar.active }}</div>
 					<MkButton small rounded iconOnly @click="editWorldAvatar($event, avatar)"><i class="ti ti-pencil"></i></MkButton>
+					<MkButton small rounded iconOnly @click="makeActive($event, avatar)"><i class="ti ti-check"></i></MkButton>
 				</div>
 			</div>
 		</MkPagination>
@@ -71,6 +72,14 @@ async function editWorldAvatar(ev: PointerEvent, item: Misskey.entities.WorldAva
 			dispose();
 		},
 	});
+}
+
+async function makeActive(ev: PointerEvent, item: Misskey.entities.WorldAvatarsListResponse[number]) {
+	await os.apiWithDialog('world/avatars/update', {
+		avatarId: item.id,
+		active: true,
+	});
+	paginator.reload();
 }
 </script>
 

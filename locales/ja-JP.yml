@@ -3559,8 +3559,8 @@ _qr:
   raw: "テキスト"
   mfm: "MFM"
 
-threeDAvatar: "3Dアバター"
-threeDAvatar_description: "MisskeyWorld / MisskeyRoomsで使用可能なアバターを作成できます。"
+worldAvatar: "Worldアバター"
+worldAvatar_description: "MisskeyWorld / MisskeyRoomsで使用可能な3Dアバターを作成できます。"
 
 _miWorld:
   separateRenderingThread: "描画を別スレッドに分離"
@@ -3618,6 +3618,10 @@ _miRoom:
   furnitureCustomize: "家具のアレンジ"
   uninstallFurniture: "しまう"
   furnituresCount: "家具の数"
+  _furniturePlacement:
+    top: "床/上"
+    bottom: "底面/下"
+    side: "壁/側面"
 
   _objects:
     woodRingFloorLamp: "リングシェードフロアランプ"

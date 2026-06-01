@@ -13283,13 +13283,13 @@ export interface Locale extends ILocale {
         "mfm": string;
     };
     /**
-     * 3Dアバター
+     * Worldアバター
      */
-    "threeDAvatar": string;
+    "worldAvatar": string;
     /**
-     * MisskeyWorld / MisskeyRoomsで使用可能なアバターを作成できます。
+     * MisskeyWorld / MisskeyRoomsで使用可能な3Dアバターを作成できます。
      */
-    "threeDAvatar_description": string;
+    "worldAvatar_description": string;
     "_miWorld": {
         /**
          * 描画を別スレッドに分離
@@ -13490,6 +13490,20 @@ export interface Locale extends ILocale {
          * 家具の数
          */
         "furnituresCount": string;
+        "_furniturePlacement": {
+            /**
+             * 床/上
+             */
+            "top": string;
+            /**
+             * 底面/下
+             */
+            "bottom": string;
+            /**
+             * 壁/側面
+             */
+            "side": string;
+        };
         "_objects": {
             /**
              * リングシェードフロアランプ
