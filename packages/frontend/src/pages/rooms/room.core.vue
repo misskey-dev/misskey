@@ -88,10 +88,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 		</div>
 
-		<div v-if="useVirtualJoystick" ref="joyStickEl" :class="$style.joyStick" :style="{ '--startXPx': (joyStickStartPos?.x ?? 0) + 'px', '--startYPx': (joyStickStartPos?.y ?? 0) + 'px', '--rPx': joyStickRadiusPx + 'px' }">
-			<div v-show="joyStickStartPos != null" :class="$style.joyStickRangeCircle"></div>
-			<div v-show="joyStickVec.x !== 0 || joyStickVec.y !== 0" :class="$style.joyStickPuck" :style="{ '--x': joyStickVec.x, '--y': joyStickVec.y }"></div>
-		</div>
+		<MkVirtualJoystick v-if="useVirtualJoystick" :class="$style.joystick" @update="v => controller.setCameraJoystickMoveVector(v)"/>
 	</div>
 
 	<XOverlayPanel v-if="controller.isReady.value && controller.isEditMode.value && controller.selected.value != null && isFurnitureSettingsOpen" :key="controller.selected.value.furnitureId" :isNarrow="isNarrow" :title="FURNITURE_UI_DEFS[controller.selected.value.funitureState.type].name" @close="isFurnitureSettingsOpen = false">
@@ -177,7 +174,6 @@ import { RoomController } from '@/world/room/controller.js';
 import { deepClone } from '@/utility/clone.js';
 import { deviceKind } from '@/utility/device-kind.js';
 import MkProgressBar from '@/components/MkProgressBar.vue';
-import { Joystick } from '@/world/joystick.js';
 import { isTouchUsing } from '@/utility/touch.js';
 import { prefer } from '@/preferences.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -187,6 +183,7 @@ import { Multiplayer } from '@/world/room/multiplayer.js';
 import { $i } from '@/i.js';
 import { userPage } from '@/filters/user.js';
 import MkUserCardMini from '@/components/MkUserCardMini.vue';
+import MkVirtualJoystick from '@/components/MkVirtualJoystick.vue';
 
 const roomSpecVersion = 0;
 
@@ -236,11 +233,6 @@ const antialias = prefer.model('world.antialias');
 
 const useVirtualJoystick = isTouchUsing && (deviceKind === 'smartphone' || deviceKind === 'tablet');
 //const useVirtualJoystick = true;
-
-const joyStickRadiusPx = 100;
-const joyStickEl = useTemplateRef('joyStickEl');
-const joyStickVec = ref({ x: 0, y: 0 });
-const joyStickStartPos = ref<{ x: number; y: number } | null>(null);
 
 let latestSavedRoomState = deepClone(props.room.def) as unknown as RoomState;
 let initialRoomState = latestSavedRoomState;
@@ -367,20 +359,6 @@ onMounted(async () => {
 	canvas.value!.focus();
 
 	window.addEventListener('resize', resize);
-
-	if (joyStickEl.value != null) {
-		const joyStick = new Joystick(joyStickEl.value!, { radiusPx: joyStickRadiusPx });
-		joyStick.on('start', (vector) => {
-			joyStickStartPos.value = vector;
-		});
-		joyStick.on('end', () => {
-			joyStickStartPos.value = null;
-		});
-		joyStick.on('updateVector', (vector) => {
-			joyStickVec.value = vector;
-			controller.setCameraJoystickMoveVector(vector);
-		});
-	}
 
 	// canvasからフォーカスが外れていることに気づかずsとか押してしまうと検索画面が開かれてroomの状態が失われたりするので無効化
 	(window as any).disableGlobalHotkeys();
@@ -775,48 +753,7 @@ function enterOnline() {
 	pointer-events: auto;
 }
 
-.joyStick {
-	position: relative;
-	width: 50%;
-	height: 100px;
-	box-sizing: border-box;
-	padding: 8px;
-	touch-action: none;
-	pointer-events: auto;
-}
-
-.joyStick::before {
-	content: '';
-	display: block;
-	width: 100%;
-	height: 100%;
-	border: solid 2px #fff;
-	border-radius: 16px;
-	pointer-events: none;
-}
-
-.joyStickRangeCircle {
-	position: absolute;
-	top: var(--startYPx);
-	left: var(--startXPx);
-	width: calc(var(--rPx) * 2);
-	height: calc(var(--rPx) * 2);
-	border: solid 2px rgba(255, 255, 255, 0.5);
-	border-radius: 100%;
-	transform: translate(-50%, -50%);
-	pointer-events: none;
-}
-
-.joyStickPuck {
-	position: absolute;
-	top: calc(var(--startYPx) + (var(--y) * var(--rPx)));
-	left: calc(var(--startXPx) + (var(--x) * var(--rPx)));
-	width: 30px;
-	height: 30px;
-	background: #fff;
-	border-radius: 100%;
-	transform: translate(-50%, -50%);
-	pointer-events: none;
+.joystick {
 }
 
 .overlayTop {
