@@ -361,8 +361,8 @@ importers:
         specifier: 1.6.0
         version: 1.6.0
       tmp:
-        specifier: 0.2.5
-        version: 0.2.5
+        specifier: 0.2.6
+        version: 0.2.6
       tsc-alias:
         specifier: 1.8.17
         version: 1.8.17
@@ -4765,7 +4765,7 @@ packages:
     engines: {node: '>= 14'}
 
   aiscript-vscode@https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/1dc7f60cda78d030dadfc518a33c472202b2ef67:
-    resolution: {gitHosted: true, tarball: https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/1dc7f60cda78d030dadfc518a33c472202b2ef67}
+    resolution: {gitHosted: true, integrity: sha512-S4eSTHasZz29AMlnU2/zdGP8zikiDiYfYW9kNooAfwVo8OghXdxKuTDDKDAjWsbBxa1+P4uQHa4BNk9MY74rJQ==, tarball: https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/1dc7f60cda78d030dadfc518a33c472202b2ef67}
     version: 0.1.16
     engines: {vscode: ^1.83.0}
 
@@ -9238,7 +9238,7 @@ packages:
     engines: {node: '>= 0.4'}
 
   storybook-addon-misskey-theme@https://codeload.github.com/misskey-dev/storybook-addon-misskey-theme/tar.gz/cf583db098365b2ccc81a82f63ca9c93bc32b640:
-    resolution: {gitHosted: true, tarball: https://codeload.github.com/misskey-dev/storybook-addon-misskey-theme/tar.gz/cf583db098365b2ccc81a82f63ca9c93bc32b640}
+    resolution: {gitHosted: true, integrity: sha512-QaH1uZSlApQ2CZPkHfhmNm89I92L02s3MdbUPG66TmAyqMaqzxd/AvobORBjtTZ0ymUSa3ii482dRXi+fFb19w==, tarball: https://codeload.github.com/misskey-dev/storybook-addon-misskey-theme/tar.gz/cf583db098365b2ccc81a82f63ca9c93bc32b640}
     version: 0.0.0
     peerDependencies:
       '@storybook/blocks': ^7.0.0-rc.4
@@ -9535,6 +9535,10 @@ packages:
 
   tmp@0.2.5:
     resolution: {integrity: sha512-voyz6MApa1rQGUxT3E+BK7/ROe8itEx7vD8/HEvt4xwXucvQ5G5oeEiHkmHZJuBO21RpOf+YYm9MOivj709jow==}
+    engines: {node: '>=14.14'}
+
+  tmp@0.2.6:
+    resolution: {integrity: sha512-5sJPdPjfI5Kx+qbrDesxkglRBxW//g7hCsqspEjwkewGvBMGIKMOTKzLt1hFVJzyadba3lDUN20O9qhvbQUSTA==}
     engines: {node: '>=14.14'}
 
   to-data-view@1.1.0:
@@ -10076,6 +10080,9 @@ packages:
 
   vue-component-type-helpers@3.2.9:
     resolution: {integrity: sha512-S3BiWYaLSzHxTpln665ELSrMR9UYmrIDUmhik7nVZxmJjTKL2/a+ew1hvGxksKelivm0ujjWfG1fYOiU/2e8rA==}
+
+  vue-component-type-helpers@3.3.2:
+    resolution: {integrity: sha512-l4Z2Y34m7nFMlx8vrslJaVtXxUpzgDMSESC7TakG/c5kwjYT/do+E0NcT2/vWDzaoIhsShg/2OKwX7Q4nbzC0g==}
 
   vue-demi@0.14.10:
     resolution: {integrity: sha512-nMZBOwuzabUO0nLgIcc6rycZEebF6eeUfaiQx9+WSk8e29IbLvPU9feI6tqW4kTo3hvoYAJkMh8n8D0fuISphg==}
@@ -13096,7 +13103,7 @@ snapshots:
       storybook: 10.4.0(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)(@testing-library/dom@10.4.0)(@types/react@19.2.14)(bufferutil@4.1.0)(prettier@3.8.3)(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(utf-8-validate@6.0.6)
       type-fest: 2.19.0
       vue: 3.5.34(typescript@5.9.3)
-      vue-component-type-helpers: 3.2.9
+      vue-component-type-helpers: 3.3.2
 
   '@stylistic/eslint-plugin@5.10.0(eslint@9.39.4)':
     dependencies:
@@ -19411,6 +19418,8 @@ snapshots:
 
   tmp@0.2.5: {}
 
+  tmp@0.2.6: {}
+
   to-data-view@1.1.0: {}
 
   to-regex-range@5.0.1:
@@ -19855,6 +19864,8 @@ snapshots:
   vue-component-type-helpers@2.2.12: {}
 
   vue-component-type-helpers@3.2.9: {}
+
+  vue-component-type-helpers@3.3.2: {}
 
   vue-demi@0.14.10(vue@3.5.34(typescript@5.9.3)):
     dependencies:
