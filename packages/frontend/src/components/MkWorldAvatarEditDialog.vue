@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 >
 	<template #header><i class="ti ti-user"></i> Avatar</template>
 
-	<div :class="$style.root">
+	<div :class="[$style.root, { [$style.isNarrow]: isNarrow, [$style.isWide]: !isNarrow }]">
 		<div v-if="!controller.isReady" :class="$style.loading">
 			<MkLoading/>
 		</div>
@@ -160,8 +160,11 @@ import { withTimeout } from '@/utility/promise-timeout.js';
 import { ensureSignin } from '@/i.js';
 import { AVATAR_ACCESSORY_UI_DEFS } from '@/world/avatars/accessory-ui-defs.js';
 import { genId } from '@/utility/id.js';
+import { deviceKind } from '@/utility/device-kind.js';
 
 const $i = ensureSignin();
+
+const isNarrow = deviceKind === 'smartphone' || window.innerWidth < 600;
 
 const props = defineProps<{
 	graphicsQuality: number;
@@ -340,16 +343,20 @@ async function cancel() {
 	height: 100%;
 	overflow: clip;
 	contain: strict;
-	transition: width 300ms cubic-bezier(0.23, 1, 0.32, 1);
+	transition: width 300ms cubic-bezier(0.23, 1, 0.32, 1), height 300ms cubic-bezier(0.23, 1, 0.32, 1);
 }
-.previewMain.optionsOpened {
+.root.isWide .previewMain.optionsOpened {
 	width: calc(100% - 300px);
+}
+.root.isNarrow .previewMain.optionsOpened {
+	height: 50%;
 }
 
 .canvas {
 	position: relative;
+	top: 50%;
 	left: 50%;
-	transform: translateX(-50%);
+	transform: translateX(-50%) translateY(-50%);
 	width: 100cqw;
 	height: 100cqh;
 	display: block;
@@ -385,35 +392,24 @@ async function cancel() {
 
 .customize {
 	position: absolute;
-	top: 0;
-	right: 0;
-	height: 100%;
-	width: 300px;
 	overflow: auto;
+	overscroll-behavior: contain;
 	scrollbar-gutter: stable;
 	box-sizing: border-box;
 	padding: 32px 16px 16px 16px;
 	background: var(--MI_THEME-panel);
 }
-
-.transition_preview_enterActive,
-.transition_preview_leaveActive {
-	opacity: 1;
-	transition: opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
+.root.isWide .customize {
+	top: 0;
+	right: 0;
+	width: 300px;
+	height: 100%;
 }
-.transition_preview_enterFrom,
-.transition_preview_leaveTo {
-	opacity: 0;
-}
-
-.transition_preview_enterActive .preview,
-.transition_preview_leaveActive .preview {
-	transform: translateX(0);
-	transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1);
-}
-.transition_preview_enterFrom .preview,
-.transition_preview_leaveTo .preview {
-	transform: translateY(200px);
+.root.isNarrow .customize {
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 50%;
 }
 
 .transition_options_enterActive,
@@ -422,9 +418,14 @@ async function cancel() {
 	transform: translateX(0);
 	transition: transform 300ms cubic-bezier(0.23, 1, 0.32, 1), opacity 300ms cubic-bezier(0.23, 1, 0.32, 1);
 }
-.transition_options_enterFrom,
-.transition_options_leaveTo {
+.root.isWide .transition_options_enterFrom,
+.root.isWide .transition_options_leaveTo {
 	opacity: 0;
 	transform: translateX(200px);
+}
+.root.isNarrow .transition_options_enterFrom,
+.root.isNarrow .transition_options_leaveTo {
+	opacity: 0;
+	transform: translateY(200px);
 }
 </style>
