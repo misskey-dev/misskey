@@ -4,15 +4,27 @@
  */
 
 import * as BABYLON from '@babylonjs/core/pure';
-//import '@babylonjs/core/Engines/WebGPU/Extensions/engine.rawTexture';
 
 export function registerBabylonRuntime(): void {
 	BABYLON.RegisterCoreEngineExtensions();
-	BABYLON.RegisterFullWebGPUEngineExtensions();
-	//BABYLON.RegisterEnginesWebGPUExtensionsEngineRawTexture();
+	BABYLON.RegisterStandardWebGPUEngineExtensions();
+	BABYLON.RegisterAbstractEngineAlpha();
+	BABYLON.RegisterAbstractEngineTexture();
+	BABYLON.RegisterAbstractEngineCubeTexture();
+	BABYLON.RegisterAbstractEngineQuery();
+	BABYLON.RegisterAbstractEngineTextureSelector();
+	BABYLON.RegisterAbstractEngineTimeQuery();
+	BABYLON.RegisterAbstractEngineViews();
+	BABYLON.RegisterEnginesWebGPUExtensionsEngineRawTexture();
+	BABYLON.RegisterEnginesWebGPUExtensionsEngineReadTexture();
+	BABYLON.RegisterEnginesWebGPUExtensionsEngineCubeTexture();
+	BABYLON.RegisterEnginesWebGPUExtensionsEngineRenderTargetCube();
+	BABYLON.RegisterEnginesWebGPUExtensionsEngineQuery();
+	BABYLON.RegisterEnginesWebGPUExtensionsEngineDynamicTexture();
 	BABYLON.RegisterBufferAlign();
 	BABYLON.RegisterCubeTexture();
 	BABYLON.RegisterStandardMaterial();
+	BABYLON.RegisterRay();
 	BABYLON.RegisterCollisionCoordinator();
 	BABYLON.RegisterPostProcessRenderPipelineManagerSceneComponent(
 		BABYLON.PostProcessRenderPipelineManager,
