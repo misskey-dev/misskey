@@ -57,11 +57,11 @@ export async function addToEmojiPalette(emoji: string) {
 			type: 'warning',
 			text: i18n.ts.emojiPaletteAlreadyAddedConfirm,
 			actions: [{
-				value: 'append',
-				text: i18n.ts.append,
-			}, {
 				value: 'prepend',
 				text: i18n.ts.prepend,
+			}, {
+				value: 'append',
+				text: i18n.ts.append,
 			}, {
 				value: 'doNothing',
 				text: i18n.ts.doNothing,
@@ -88,7 +88,7 @@ export async function addToEmojiPalette(emoji: string) {
 				return p;
 			}
 		}));
-		
+
 		os.success();
 	}
 }
