@@ -4,13 +4,11 @@
  */
 
 import * as BABYLON from '@babylonjs/core/pure';
-import '@babylonjs/core/Engines/WebGPU/Extensions/engine.rawTexture';
+import { registerBabylonRuntime } from '../babylonRuntime.js';
 import { RoomEngine } from './engine.js';
 import type { RoomState, RoomAttachments } from 'misskey-world/src/room/type.js';
 
-BABYLON.RegisterFullEngineExtensions();
-BABYLON.RegisterEnginesExtensionsEngineRawTexture();
-BABYLON.RegisterCollisionCoordinator();
+registerBabylonRuntime();
 
 export async function createRoomEngine(params: {
 	roomState: RoomState; roomAttachments: RoomAttachments; canvas: HTMLCanvasElement; options: { antialias: boolean; resolution: number; fov: number; graphicsQuality: number; fps: number | null; useVirtualJoystick?: boolean; };

@@ -4,16 +4,14 @@
  */
 
 import * as BABYLON from '@babylonjs/core/pure';
-import '@babylonjs/core/Engines/WebGPU/Extensions/engine.rawTexture';
 import { AvatarPreviewEngine } from './avatarPreviewEngine.js';
+import { registerBabylonRuntime } from './babylonRuntime.js';
 import type { PlayerProfile } from './PlayerContainer.js';
+
+registerBabylonRuntime();
 
 let engine: AvatarPreviewEngine | null = null;
 let canvas: OffscreenCanvas | null = null;
-
-BABYLON.RegisterFullEngineExtensions();
-BABYLON.RegisterEnginesExtensionsEngineRawTexture();
-BABYLON.RegisterCollisionCoordinator();
 
 // TODO: 他のWorkerと実装を共通化
 onmessage = async (event) => {

@@ -4,15 +4,13 @@
  */
 
 import * as BABYLON from '@babylonjs/core/pure';
-import '@babylonjs/core/Engines/WebGPU/Extensions/engine.rawTexture';
+import { registerBabylonRuntime } from '../babylonRuntime.js';
 import { RoomFurniturePreviewEngine } from './previewEngine.js';
+
+registerBabylonRuntime();
 
 let engine: RoomFurniturePreviewEngine | null = null;
 let canvas: OffscreenCanvas | null = null;
-
-BABYLON.RegisterFullEngineExtensions();
-BABYLON.RegisterEnginesExtensionsEngineRawTexture();
-BABYLON.RegisterCollisionCoordinator();
 
 // TODO: 他のWorkerと実装を共通化
 onmessage = async (event) => {

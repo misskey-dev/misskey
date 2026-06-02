@@ -4,12 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core/pure';
-import '@babylonjs/core/Engines/WebGPU/Extensions/engine.rawTexture';
+import { registerBabylonRuntime } from '../babylonRuntime.js';
 import { RoomFurniturePreviewEngine } from './previewEngine.js';
 
-BABYLON.RegisterFullEngineExtensions();
-BABYLON.RegisterEnginesExtensionsEngineRawTexture();
-BABYLON.RegisterCollisionCoordinator();
+registerBabylonRuntime();
 
 export async function createRoomPreviewEngine(params: {
 	canvas: HTMLCanvasElement; options: { graphicsQuality: number; resolution: number; fps: number | null };

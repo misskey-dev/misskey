@@ -4,13 +4,11 @@
  */
 
 import * as BABYLON from '@babylonjs/core/pure';
-import '@babylonjs/core/Engines/WebGPU/Extensions/engine.rawTexture';
 import { AvatarPreviewEngine } from './avatarPreviewEngine.js';
+import { registerBabylonRuntime } from './babylonRuntime.js';
 import type { PlayerProfile } from './PlayerContainer.js';
 
-BABYLON.RegisterFullEngineExtensions();
-BABYLON.RegisterEnginesExtensionsEngineRawTexture();
-BABYLON.RegisterCollisionCoordinator();
+registerBabylonRuntime();
 
 export async function createAvatarPreviewEngine(params: {
 	canvas: HTMLCanvasElement; options: { graphicsQuality: number; resolution: number; fps: number | null }; profile: PlayerProfile;
