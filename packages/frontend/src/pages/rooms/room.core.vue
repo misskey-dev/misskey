@@ -21,35 +21,41 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.overlayTop">
 		<div :class="$style.topMain">
 			<div :class="$style.topMenu">
-				<template v-if="isNarrow">
-					<button v-if="isMenuShowing" v-tooltip.noDelay="i18n.ts.menu" :class="$style.floatingButton" class="_button" style="color: var(--MI_THEME-accent)" @click="isMenuShowing = false"><i class="ti ti-menu"></i></button>
-					<button v-if="!isMenuShowing" v-tooltip.noDelay="i18n.ts.menu" :class="$style.floatingButton" class="_button" @click="isMenuShowing = true"><i class="ti ti-menu"></i></button>
-				</template>
-
-				<template v-if="isMenuShowing">
-					<template v-if="controller.isReady.value">
-						<button v-if="!controller.isEditMode.value && multiplayer.isOnline.value" v-tooltip.noDelay="i18n.ts._miWorld.onlineMenu" :class="$style.floatingButton" class="_button" style="color: var(--MI_THEME-accent)" @click="showOnlineMenu"><i class="ti ti-world"></i></button>
-						<button v-if="!controller.isEditMode.value && !multiplayer.isOnline.value" v-tooltip.noDelay="i18n.ts._miWorld.onlineMenu" :class="$style.floatingButton" class="_button" @click="showOnlineMenu"><i class="ti ti-world"></i></button>
-
-						<button v-if="!controller.isEditMode.value" v-tooltip.noDelay="i18n.ts._miWorld.character" :class="$style.floatingButton" class="_button" @click="showCharacterMenu"><i class="ti ti-man"></i></button>
-
-						<button v-tooltip.noDelay="'照明切り替え'" :class="$style.floatingButton" class="_button" @click="toggleLight"><i class="ti ti-bulb"></i></button>
-
-						<button v-if="!multiplayer.isOnline.value && controller.isEditMode.value" v-tooltip.noDelay="i18n.ts._miRoom.exitEditMode" :class="$style.floatingButton" class="_button" style="color: var(--MI_THEME-accent)" @click="exitEditMode"><i class="ti ti-paint"></i></button>
-						<button v-if="!multiplayer.isOnline.value && !controller.isEditMode.value && isMyRoom" v-tooltip.noDelay="i18n.ts._miRoom.enterEditMode" :class="$style.floatingButton" class="_button" @click="enterEditMode"><i class="ti ti-paint"></i></button>
-
-						<button v-if="controller.isEditMode.value" v-tooltip.noDelay="i18n.ts._miRoom.installFurniture" :class="$style.floatingButton" class="_button" @click="addFuniture"><i class="ti ti-plus"></i></button>
-						<button v-if="controller.isEditMode.value" :class="$style.floatingButton" class="_button" @click="showSnappingMenu"><i class="ti ti-grid-4x4"></i></button>
-						<button v-if="controller.isEditMode.value && !isRoomSettingsOpen" v-tooltip.noDelay="i18n.ts._miRoom.roomCustomize" :class="$style.floatingButton" class="_button" @click="() => isRoomSettingsOpen = true"><i class="ti ti-home-cog"></i></button>
-						<button v-if="controller.isEditMode.value && isRoomSettingsOpen" :class="$style.floatingButton" class="_button" style="color: var(--MI_THEME-accent)" @click="() => isRoomSettingsOpen = false"><i class="ti ti-home-cog"></i></button>
-
-						<button v-if="!controller.isEditMode.value" v-tooltip.noDelay="i18n.ts._miWorld.takeScreenShot" :class="$style.floatingButton" class="_button" @click="takeScreenshot"><i class="ti ti-camera"></i></button>
-
-						<button v-if="isRoomInfoOpen" v-tooltip.noDelay="i18n.ts._miRoom.roomInfo" :class="$style.floatingButton" class="_button" style="color: var(--MI_THEME-accent)" @click="isRoomInfoOpen = false"><i class="ti ti-info-circle"></i></button>
-						<button v-if="!isRoomInfoOpen" v-tooltip.noDelay="i18n.ts._miRoom.roomInfo" :class="$style.floatingButton" class="_button" @click="isRoomInfoOpen = true"><i class="ti ti-info-circle"></i></button>
+				<div :class="$style.topMenuRow">
+					<template v-if="isNarrow">
+						<button v-if="isMenuShowing" v-tooltip.noDelay="i18n.ts.menu" :class="$style.floatingButton" class="_button" style="color: var(--MI_THEME-accent)" @click="isMenuShowing = false"><i class="ti ti-menu"></i></button>
+						<button v-if="!isMenuShowing" v-tooltip.noDelay="i18n.ts.menu" :class="$style.floatingButton" class="_button" @click="isMenuShowing = true"><i class="ti ti-menu"></i></button>
 					</template>
-					<button v-tooltip.noDelay="i18n.ts.other" :class="$style.floatingButton" class="_button" @click="showOtherMenu"><i class="ti ti-dots"></i></button>
-				</template>
+
+					<template v-if="isMenuShowing">
+						<template v-if="controller.isReady.value">
+							<button v-if="!controller.isEditMode.value && multiplayer.isOnline.value" v-tooltip.noDelay="i18n.ts._miWorld.onlineMenu" :class="$style.floatingButton" class="_button" style="color: var(--MI_THEME-accent)" @click="showOnlineMenu"><i class="ti ti-world"></i></button>
+							<button v-if="!controller.isEditMode.value && !multiplayer.isOnline.value" v-tooltip.noDelay="i18n.ts._miWorld.onlineMenu" :class="$style.floatingButton" class="_button" @click="showOnlineMenu"><i class="ti ti-world"></i></button>
+
+							<button v-if="!controller.isEditMode.value" v-tooltip.noDelay="i18n.ts._miWorld.character" :class="$style.floatingButton" class="_button" @click="showCharacterMenu"><i class="ti ti-man"></i></button>
+
+							<button v-tooltip.noDelay="'照明切り替え'" :class="$style.floatingButton" class="_button" @click="toggleLight"><i class="ti ti-bulb"></i></button>
+
+							<button v-if="!controller.isEditMode.value" v-tooltip.noDelay="i18n.ts._miWorld.takeScreenShot" :class="$style.floatingButton" class="_button" @click="takeScreenshot"><i class="ti ti-camera"></i></button>
+
+							<button v-if="isRoomInfoOpen" v-tooltip.noDelay="i18n.ts._miRoom.roomInfo" :class="$style.floatingButton" class="_button" style="color: var(--MI_THEME-accent)" @click="isRoomInfoOpen = false"><i class="ti ti-info-circle"></i></button>
+							<button v-if="!isRoomInfoOpen" v-tooltip.noDelay="i18n.ts._miRoom.roomInfo" :class="$style.floatingButton" class="_button" @click="isRoomInfoOpen = true"><i class="ti ti-info-circle"></i></button>
+						</template>
+
+						<button v-tooltip.noDelay="i18n.ts.other" :class="$style.floatingButton" class="_button" @click="showOtherMenu"><i class="ti ti-dots"></i></button>
+					</template>
+				</div>
+				<div v-if="isMyRoom && isMenuShowing && controller.isReady.value" :class="$style.topMenuRow">
+					<button v-if="!multiplayer.isOnline.value && controller.isEditMode.value" v-tooltip.noDelay="i18n.ts._miRoom.exitEditMode" :class="$style.floatingButton" class="_button" style="color: var(--MI_THEME-accent)" @click="exitEditMode"><i class="ti ti-paint"></i></button>
+					<button v-if="!multiplayer.isOnline.value && !controller.isEditMode.value && isMyRoom" v-tooltip.noDelay="i18n.ts._miRoom.enterEditMode" :class="$style.floatingButton" class="_button" @click="enterEditMode"><i class="ti ti-paint"></i></button>
+
+					<template v-if="controller.isEditMode.value">
+						<button v-tooltip.noDelay="i18n.ts._miRoom.installFurniture" :class="$style.floatingButton" class="_button" @click="addFuniture"><i class="ti ti-plus"></i></button>
+						<button :class="$style.floatingButton" class="_button" @click="showSnappingMenu"><i class="ti ti-grid-4x4"></i></button>
+						<button v-if="!isRoomSettingsOpen" v-tooltip.noDelay="i18n.ts._miRoom.roomCustomize" :class="$style.floatingButton" class="_button" @click="() => isRoomSettingsOpen = true"><i class="ti ti-home-cog"></i></button>
+						<button v-if="isRoomSettingsOpen" :class="$style.floatingButton" class="_button" style="color: var(--MI_THEME-accent)" @click="() => isRoomSettingsOpen = false"><i class="ti ti-home-cog"></i></button>
+					</template>
+				</div>
 			</div>
 			<div v-if="isModified" :class="$style.modified" class="_panel _shadow">
 				<span :class="$style.modifiedText">{{ i18n.ts._miRoom.thereAreUnsavedChanges }}</span>
@@ -798,11 +804,15 @@ function enterOnline() {
 }
 
 .topMenu {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
 	margin: 16px;
+	pointer-events: none;
+}
+.topMenuRow {
 	display: flex;
 	flex-wrap: wrap;
-	box-sizing: border-box;
-	width: max-content;
 	gap: 8px;
 	pointer-events: none;
 }
