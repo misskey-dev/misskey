@@ -88,6 +88,7 @@ export async function addToEmojiPalette(emoji: string) {
 				return p;
 			}
 		}));
+		
 		os.success();
 	}
 }
