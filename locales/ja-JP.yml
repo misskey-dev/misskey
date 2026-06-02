@@ -3586,6 +3586,9 @@ _miWorld:
   onlineMenu: "オンラインメニュー"
   connectToOnline: "オンラインに接続"
   disconnectToOnline: "オンラインから切断"
+  character: "キャラクター"
+  sit: "座る"
+  lyingDown: "寝そべる"
 
   _avatars:
     _default:

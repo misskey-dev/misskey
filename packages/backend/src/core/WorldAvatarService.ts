@@ -70,7 +70,7 @@ export class WorldAvatarService {
 
 	@bindThis
 	public async findAvatarById(avatarId: MiWorldAvatar['id']) {
-		return this.worldAvatarsRepository.findOne({ where: { id: avatarId }, relations: ['user'] });
+		return this.worldAvatarsRepository.findOne({ where: { id: avatarId }, relations: { user: true } });
 	}
 
 	@bindThis

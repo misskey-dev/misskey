@@ -28,20 +28,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<template v-if="isMenuShowing">
 					<template v-if="controller.isReady.value">
-						<button v-if="multiplayer.isOnline.value" v-tooltip.noDelay="i18n.ts._miWorld.onlineMenu" :class="$style.floatingButton" class="_button" style="color: var(--MI_THEME-accent)" @click="showOnlineMenu"><i class="ti ti-world"></i></button>
-						<button v-if="!multiplayer.isOnline.value" v-tooltip.noDelay="i18n.ts._miWorld.onlineMenu" :class="$style.floatingButton" class="_button" @click="showOnlineMenu"><i class="ti ti-world"></i></button>
+						<button v-if="!controller.isEditMode.value && multiplayer.isOnline.value" v-tooltip.noDelay="i18n.ts._miWorld.onlineMenu" :class="$style.floatingButton" class="_button" style="color: var(--MI_THEME-accent)" @click="showOnlineMenu"><i class="ti ti-world"></i></button>
+						<button v-if="!controller.isEditMode.value && !multiplayer.isOnline.value" v-tooltip.noDelay="i18n.ts._miWorld.onlineMenu" :class="$style.floatingButton" class="_button" @click="showOnlineMenu"><i class="ti ti-world"></i></button>
+
+						<button v-if="!controller.isEditMode.value" v-tooltip.noDelay="i18n.ts._miWorld.character" :class="$style.floatingButton" class="_button" @click="showCharacterMenu"><i class="ti ti-man"></i></button>
 
 						<button v-tooltip.noDelay="'照明切り替え'" :class="$style.floatingButton" class="_button" @click="toggleLight"><i class="ti ti-bulb"></i></button>
 
-						<button v-if="controller.isEditMode.value" v-tooltip.noDelay="i18n.ts._miRoom.exitEditMode" :class="$style.floatingButton" class="_button" style="color: var(--MI_THEME-accent)" @click="exitEditMode"><i class="ti ti-paint"></i></button>
-						<button v-if="!controller.isEditMode.value && isMyRoom" v-tooltip.noDelay="i18n.ts._miRoom.enterEditMode" :class="$style.floatingButton" class="_button" @click="enterEditMode"><i class="ti ti-paint"></i></button>
+						<button v-if="!multiplayer.isOnline.value && controller.isEditMode.value" v-tooltip.noDelay="i18n.ts._miRoom.exitEditMode" :class="$style.floatingButton" class="_button" style="color: var(--MI_THEME-accent)" @click="exitEditMode"><i class="ti ti-paint"></i></button>
+						<button v-if="!multiplayer.isOnline.value && !controller.isEditMode.value && isMyRoom" v-tooltip.noDelay="i18n.ts._miRoom.enterEditMode" :class="$style.floatingButton" class="_button" @click="enterEditMode"><i class="ti ti-paint"></i></button>
 
 						<button v-if="controller.isEditMode.value" v-tooltip.noDelay="i18n.ts._miRoom.installFurniture" :class="$style.floatingButton" class="_button" @click="addFuniture"><i class="ti ti-plus"></i></button>
 						<button v-if="controller.isEditMode.value" :class="$style.floatingButton" class="_button" @click="showSnappingMenu"><i class="ti ti-grid-4x4"></i></button>
 						<button v-if="controller.isEditMode.value && !isRoomSettingsOpen" v-tooltip.noDelay="i18n.ts._miRoom.roomCustomize" :class="$style.floatingButton" class="_button" @click="() => isRoomSettingsOpen = true"><i class="ti ti-home-cog"></i></button>
 						<button v-if="controller.isEditMode.value && isRoomSettingsOpen" :class="$style.floatingButton" class="_button" style="color: var(--MI_THEME-accent)" @click="() => isRoomSettingsOpen = false"><i class="ti ti-home-cog"></i></button>
 
-						<button v-tooltip.noDelay="i18n.ts._miWorld.takeScreenShot" :class="$style.floatingButton" class="_button" @click="takeScreenshot"><i class="ti ti-camera"></i></button>
+						<button v-if="!controller.isEditMode.value" v-tooltip.noDelay="i18n.ts._miWorld.takeScreenShot" :class="$style.floatingButton" class="_button" @click="takeScreenshot"><i class="ti ti-camera"></i></button>
 
 						<button v-if="isRoomInfoOpen" v-tooltip.noDelay="i18n.ts._miRoom.roomInfo" :class="$style.floatingButton" class="_button" style="color: var(--MI_THEME-accent)" @click="isRoomInfoOpen = false"><i class="ti ti-info-circle"></i></button>
 						<button v-if="!isRoomInfoOpen" v-tooltip.noDelay="i18n.ts._miRoom.roomInfo" :class="$style.floatingButton" class="_button" @click="isRoomInfoOpen = true"><i class="ti ti-info-circle"></i></button>
@@ -66,8 +68,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 
 				<button v-if="controller.grabbing.value" v-tooltip.noDelay="'Cancel (Q)'" class="_button" :class="$style.floatingButton" @click="cancelGrabbing"><i class="ti ti-x"></i></button>
-				<button v-if="controller.grabbing.value && !controller.grabbing.value.forInstall" v-tooltip.noDelay="'Put (E)'" class="_button" :class="$style.floatingButton" @click="endGrabbing"><i class="ti ti-check"></i></button>
-				<button v-else-if="controller.grabbing.value && controller.grabbing.value.forInstall" v-tooltip.noDelay="'Put (E)'" class="_button" :class="$style.floatingButton" @click="endGrabbing"><i class="ti ti-check"></i></button>
+				<button v-if="controller.grabbing.value && !controller.grabbing.value.forInstall" v-tooltip.noDelay="'Put (E)'" class="_button" :class="$style.floatingButton" style="color: var(--MI_THEME-accent)" @click="endGrabbing"><i class="ti ti-check"></i></button>
+				<button v-else-if="controller.grabbing.value && controller.grabbing.value.forInstall" v-tooltip.noDelay="'Put (E)'" class="_button" :class="$style.floatingButton" style="color: var(--MI_THEME-accent)" @click="endGrabbing"><i class="ti ti-check"></i></button>
 				<button v-else-if="controller.selected.value != null" v-tooltip.noDelay="i18n.ts._miRoom.grab + ' (E)'" class="_button" :class="$style.floatingButton" @click="beginSelectedInstalledFunitureGrabbing"><i class="ti ti-hand-grab"></i></button>
 
 				<button v-if="controller.grabbing.value" class="_button" :class="$style.floatingButton" @click="controller.changeGrabbingRotation(Math.PI / 8)"><i class="ti ti-rotate-clockwise"></i></button>
@@ -587,6 +589,18 @@ function impor() {
 	inputElem.click();
 }
 
+function showCharacterMenu(ev: PointerEvent) {
+	os.popupMenu([{
+		text: i18n.ts._miWorld.sit,
+		action: () => {
+		},
+	}, {
+		text: i18n.ts._miWorld.lyingDown,
+		action: () => {
+		},
+	}], ev.currentTarget ?? ev.target);
+}
+
 function showOnlineMenu(ev: PointerEvent) {
 	os.popupMenu([{
 		text: multiplayer.isOnline.value ? i18n.ts._miWorld.disconnectToOnline : i18n.ts._miWorld.connectToOnline,
@@ -752,6 +766,7 @@ function enterOnline() {
 	display: grid;
 	place-items: center;
 	pointer-events: auto;
+	font-size: 15px;
 }
 
 .joystick {

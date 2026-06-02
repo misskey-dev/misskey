@@ -100,7 +100,7 @@ export class WorldRoomService {
 
 	@bindThis
 	public async findRoomById(roomId: MiWorldRoom['id']) {
-		return this.worldRoomsRepository.findOne({ where: { id: roomId }, relations: ['user'] });
+		return this.worldRoomsRepository.findOne({ where: { id: roomId }, relations: { user: true } });
 	}
 
 	@bindThis

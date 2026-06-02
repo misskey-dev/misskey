@@ -13383,6 +13383,18 @@ export interface Locale extends ILocale {
          * オンラインから切断
          */
         "disconnectToOnline": string;
+        /**
+         * キャラクター
+         */
+        "character": string;
+        /**
+         * 座る
+         */
+        "sit": string;
+        /**
+         * 寝そべる
+         */
+        "lyingDown": string;
         "_avatars": {
             "_default": {
                 /**

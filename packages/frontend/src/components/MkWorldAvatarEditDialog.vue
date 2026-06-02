@@ -14,7 +14,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@close="cancel()"
 	@closed="emit('closed')"
 >
-	<template #header><i class="ti ti-user"></i> {{ i18n.ts.worldAvatar }}</template>
+	<template #header><i class="ti ti-man"></i> {{ i18n.ts.worldAvatar }}</template>
 
 	<div :class="[$style.root, { [$style.isNarrow]: isNarrow, [$style.isWide]: !isNarrow }]">
 		<div v-if="!controller.isReady" :class="$style.loading">
