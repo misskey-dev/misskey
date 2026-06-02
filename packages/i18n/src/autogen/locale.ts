@@ -5676,9 +5676,17 @@ export interface Locale extends ILocale {
      */
     "addToEmojiPalette": string;
     /**
-     * この絵文字はすでにこの絵文字パレットに含まれています。削除しますか？
+     * この絵文字はすでにこの絵文字パレットに含まれています。追加しなおしますか？
      */
     "emojiPaletteAlreadyAddedConfirm": string;
+    /**
+     * 末尾に追加
+     */
+    "append": string;
+    /**
+     * 先頭に追加
+     */
+    "prepend": string;
     "_imageEditing": {
         "_vars": {
             /**

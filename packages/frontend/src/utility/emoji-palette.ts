@@ -53,14 +53,30 @@ export async function addToEmojiPalette(emoji: string) {
 		}));
 		os.success();
 	} else {
-		const { canceled } = await os.confirm({
+		const res = await os.actions({
 			type: 'warning',
 			text: i18n.ts.emojiPaletteAlreadyAddedConfirm,
+			actions: [{
+				value: 'append',
+				text: i18n.ts.append,
+			}, {
+				value: 'prepend',
+				text: i18n.ts.prepend,
+			}, {
+				value: 'doNothing',
+				text: i18n.ts.doNothing,
+			}],
 		});
 
-		if (canceled) return;
+		if (res.canceled || res.result === 'doNothing') return;
 
 		emojis = emojis.filter((e) => e !== emoji);
+
+		if (res.result === 'append') {
+			emojis.push(emoji);
+		} else if (res.result === 'prepend') {
+			emojis.unshift(emoji);
+		}
 
 		prefer.commit('emojiPalettes', prefer.s.emojiPalettes.map((p) => {
 			if (p.id === palette.id) {
