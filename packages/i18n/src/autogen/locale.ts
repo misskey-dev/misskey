@@ -13395,6 +13395,10 @@ export interface Locale extends ILocale {
          * 寝そべる
          */
         "lyingDown": string;
+        /**
+         * 立ち上がる
+         */
+        "standUp": string;
         "_avatars": {
             "_default": {
                 /**

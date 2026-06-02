@@ -3589,6 +3589,7 @@ _miWorld:
   character: "キャラクター"
   sit: "座る"
   lyingDown: "寝そべる"
+  standUp: "立ち上がる"
 
   _avatars:
     _default:
