@@ -1410,6 +1410,7 @@ zeroPadding: "Zero padding"
 nothingToConfigure: "No configurable options available"
 viewRenotedChannel: "Show renoted channel"
 previewingThemeRestore: "Restore"
+accessToken: "Access Token"
 _imageEditing:
   _vars:
     caption: "File caption"
@@ -2099,6 +2100,7 @@ _role:
     canSearchNotes: "Usage of note search"
     canSearchUsers: "User search"
     canUseTranslator: "Translator usage"
+    canCreateChannel: "Allow creating channels"
     avatarDecorationLimit: "Maximum number of avatar decorations"
     canImportAntennas: "Can import antennas"
     canImportBlocking: "Can import blocking"
