@@ -599,10 +599,14 @@ function showCharacterMenu(ev: PointerEvent) {
 	os.popupMenu([{
 		text: i18n.ts._miWorld.sit,
 		action: () => {
+			controller.sit();
+			canvas.value!.focus();
 		},
 	}, {
 		text: i18n.ts._miWorld.lyingDown,
 		action: () => {
+			controller.lyingDown();
+			canvas.value!.focus();
 		},
 	}], ev.currentTarget ?? ev.target);
 }

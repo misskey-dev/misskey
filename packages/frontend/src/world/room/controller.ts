@@ -222,6 +222,14 @@ export class RoomController extends EngineControllerBase<RoomEngine, {
 		this.call('interact', [this.selected.value!.furnitureId, id]);
 	}
 
+	public sit() {
+		this.call('sit');
+	}
+
+	public lyingDown() {
+		this.call('lyingDown');
+	}
+
 	public standUp() {
 		this.call('standUp');
 	}

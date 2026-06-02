@@ -14,6 +14,7 @@
 // TODO: pure barrel importが機能しない問題をbabylonに報告
 // TODO: meshをdiposeした際、scene.meshesやshadowmapのrenderlistからも明示的に削除しないとメモリリークするのかどうかbabylonのforumで尋ねる
 // TODO: 起動時、ひとつでもcustom imageの読み込みに失敗したら「一部の画像を読み込めませんでした」を出す
+// TODO: 座ると一升瓶のマテリアルがおかしくなる現象をbabylonに報告
 
 import * as BABYLON from '@babylonjs/core';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
@@ -1155,6 +1156,26 @@ export class RoomEngine extends EngineBase<{
 		this.fixedCamera.rotation = new BABYLON.Vector3(0, 0, 0);
 		this.scene.activeCamera = this.fixedCamera;
 		this.selectFuniture(null);
+	}
+
+	public sit() {
+		this.isSitting = true;
+		this.sr.disableSnapshotRendering();
+		this.fixedCamera.parent = null;
+		this.fixedCamera.position = new BABYLON.Vector3(this.camera.position.x, cm(80), this.camera.position.z);
+		this.fixedCamera.rotation = new BABYLON.Vector3(this.camera.rotation.x, this.camera.rotation.y, this.camera.rotation.z);
+		this.scene.activeCamera = this.fixedCamera;
+		this.sr.enableSnapshotRendering();
+	}
+
+	public lyingDown() {
+		this.isSitting = true;
+		this.sr.disableSnapshotRendering();
+		this.fixedCamera.parent = null;
+		this.fixedCamera.position = new BABYLON.Vector3(this.camera.position.x, cm(20), this.camera.position.z);
+		this.fixedCamera.rotation = new BABYLON.Vector3(-(Math.PI / 2) + 0.001, this.camera.rotation.y, this.camera.rotation.z);
+		this.scene.activeCamera = this.fixedCamera;
+		this.sr.enableSnapshotRendering();
 	}
 
 	public standUp() {
