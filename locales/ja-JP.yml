@@ -753,6 +753,8 @@ optional: "任意"
 createNewClip: "新しいクリップを作成"
 unclip: "クリップ解除"
 confirmToUnclipAlreadyClippedNote: "このノートはすでにクリップ「{name}」に含まれています。ノートをこのクリップから除外しますか？"
+removeFromAntenna: "このアンテナから削除"
+removeNoteFromAntennaConfirm: "「{name}」からこのノートを削除しますか？"
 public: "パブリック"
 private: "非公開"
 i18nInfo: "Misskeyは有志によって様々な言語に翻訳されています。{link}で翻訳に協力できます。"
@@ -1412,6 +1414,7 @@ nothingToConfigure: "設定項目はありません"
 viewRenotedChannel: "リノート先のチャンネルを見る"
 previewingTheme: "テーマのプレビュー中"
 previewingThemeRestore: "元に戻す"
+accessToken: "アクセストークン"
 choose: "選択"
 
 _imageEditing:
@@ -3356,6 +3359,8 @@ _search:
   pleaseEnterServerHost: "サーバーのホストを入力してください"
   pleaseSelectUser: "ユーザーを選択してください"
   serverHostPlaceholder: "例: misskey.example.com"
+  postFrom: "投稿日時from"
+  postTo: "投稿日時to"
 
 _serverSetupWizard:
   installCompleted: "Misskeyのインストールが完了しました！"
