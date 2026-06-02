@@ -764,6 +764,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 							</SearchMarker>
 						</div>
 
+						<SearchMarker :keywords="['fov', 'fieldofview']">
+							<MkPreferenceContainer k="world.fov">
+								<MkRange
+									v-model="worldFov"
+									:min="2"
+									:max="0.5"
+									:step="0.1"
+								>
+									<template #label><SearchLabel>{{ i18n.ts._miWorld.fov }}</SearchLabel></template>
+								</MkRange>
+							</MkPreferenceContainer>
+						</SearchMarker>
+
 						<SearchMarker :keywords="['graphics', 'quality']">
 							<MkPreferenceContainer k="world.graphicsQuality">
 								<MkSelect
@@ -777,11 +790,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 									]"
 								>
 									<template #label><SearchLabel>{{ i18n.ts._miWorld.graphicsQuality }}</SearchLabel></template>
+									<template #caption>{{ i18n.ts._miWorld.higherValuePerformanceNote }}</template>
 								</MkSelect>
 							</MkPreferenceContainer>
 						</SearchMarker>
 
-						<SearchMarker :keywords="['framerate', 'fps']">
+						<SearchMarker :keywords="['framerate', 'fps', 'limitation']">
 							<MkPreferenceContainer k="world.fps">
 								<MkSelect
 									v-model="worldFps"
@@ -794,7 +808,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 										{ label: '~30fps', value: '30' },
 									]"
 								>
-									<template #label><SearchLabel>{{ i18n.ts._miWorld.frameRate }}</SearchLabel></template>
+									<template #label><SearchLabel>{{ i18n.ts._miWorld.frameRateLimitation }}</SearchLabel></template>
+									<template #caption>{{ i18n.ts._miWorld.higherValuePerformanceNote }}</template>
 								</MkSelect>
 							</MkPreferenceContainer>
 						</SearchMarker>
@@ -812,6 +827,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 									]"
 								>
 									<template #label><SearchLabel>{{ i18n.ts._miWorld.resolution }}</SearchLabel></template>
+									<template #caption>{{ i18n.ts._miWorld.higherValuePerformanceNote }}</template>
 								</MkSelect>
 							</MkPreferenceContainer>
 						</SearchMarker>
@@ -1043,6 +1059,7 @@ const worldGraphicsQuality = prefer.model('world.graphicsQuality');
 const worldFps = prefer.model('world.fps');
 const worldResolution = prefer.model('world.resolution');
 const worldAntialias = prefer.model('world.antialias');
+const worldFov = prefer.model('world.fov');
 
 const fontSize = ref(miLocalStorage.getItem('fontSize') as '1' | '2' | '3' | null);
 const useSystemFont = ref(miLocalStorage.getItem('useSystemFont') != null);
@@ -1107,6 +1124,7 @@ watch([
 	worldFps,
 	worldResolution,
 	worldAntialias,
+	worldFov,
 ], () => {
 	suggestReload();
 });

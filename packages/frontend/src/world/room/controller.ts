@@ -21,6 +21,7 @@ export type RoomControllerOptions = {
 	fps: number | null;
 	resolution: number;
 	antialias: boolean;
+	fov: number;
 	useVirtualJoystick?: boolean;
 };
 

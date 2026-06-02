@@ -545,6 +545,9 @@ export const PREF_DEF = definePreferences({
 	'world.antialias': {
 		default: true,
 	},
+	'world.fov': {
+		default: 1,
+	},
 	'world.separateRenderingThread': {
 		default: true,
 	},

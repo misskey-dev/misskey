@@ -81,6 +81,7 @@ export class RoomEngine extends EngineBase<{
 	private useGlow: boolean;
 	public camera: BABYLON.UniversalCamera;
 	private cameraHeight = cm(130);
+	private fov: number;
 	private fixedCamera: BABYLON.FreeCamera;
 	public furnitureContainers: Map<string, FurnitureContainer> = new Map();
 	private envManager: EnvManager | null = null;
@@ -191,6 +192,7 @@ export class RoomEngine extends EngineBase<{
 		graphicsQuality: number;
 		fps: number | null;
 		antialias: boolean;
+		fov: number;
 		useVirtualJoystick?: boolean;
 	}) {
 		super({
@@ -208,6 +210,7 @@ export class RoomEngine extends EngineBase<{
 		this.roomAttachments = roomAttachments;
 		this.graphicsQuality = options.graphicsQuality;
 		this.useGlow = this.graphicsQuality >= GRAPHICS_QUALITY.MEDIUM;
+		this.fov = options.fov;
 		this.time = TIME_MAP[new Date().getHours() as keyof typeof TIME_MAP];
 
 		registerBuiltInLoaders();
@@ -227,7 +230,7 @@ export class RoomEngine extends EngineBase<{
 		this.camera = new BABYLON.FreeCamera('camera', new BABYLON.Vector3(0, this.cameraHeight, cm(0)), this.scene);
 		this.camera.minZ = cm(1);
 		this.camera.maxZ = cm(1000);
-		this.camera.fov = 1;
+		this.camera.fov = this.fov;
 		this.camera.ellipsoid = new BABYLON.Vector3(cm(15), cm(65), cm(15));
 		this.camera.checkCollisions = true;
 		this.camera.applyGravity = true;
@@ -434,10 +437,10 @@ export class RoomEngine extends EngineBase<{
 			} else {
 				if (this.scene.activeCamera === this.camera) {
 					this.camera.fov += ev.deltaY * 0.001;
-					this.camera.fov = Math.max(0.25, Math.min(1, this.camera.fov));
+					this.camera.fov = Math.max(0.25, Math.min(this.fov, this.camera.fov));
 				} else if (this.scene.activeCamera === this.fixedCamera) {
 					this.fixedCamera.fov += ev.deltaY * 0.001;
-					this.fixedCamera.fov = Math.max(0.25, Math.min(1, this.fixedCamera.fov));
+					this.fixedCamera.fov = Math.max(0.25, Math.min(this.fov, this.fixedCamera.fov));
 				}
 			}
 		});
@@ -447,7 +450,7 @@ export class RoomEngine extends EngineBase<{
 				this.changeGrabbingDistance(ev.delta * 0.1);
 			} else {
 				this.camera.fov += -ev.delta * 0.003;
-				this.camera.fov = Math.max(0.25, Math.min(1, this.camera.fov));
+				this.camera.fov = Math.max(0.25, Math.min(this.fov, this.camera.fov));
 			}
 		});
 

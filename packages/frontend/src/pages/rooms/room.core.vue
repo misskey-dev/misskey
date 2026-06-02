@@ -290,6 +290,7 @@ const roomControllerOptions = computed<RoomControllerOptions>(() => ({
 	resolution: resolution.value,
 	antialias: antialias.value,
 	useVirtualJoystick,
+	fov: prefer.s['world.fov'],
 	workerMode: prefer.s['world.separateRenderingThread'],
 }));
 
@@ -649,7 +650,7 @@ ${url}/rooms/r/${props.room.id}`,
 			ref: graphicsQualityRaw,
 		}, {
 			type: 'radio',
-			text: i18n.ts._miWorld.frameRate,
+			text: i18n.ts._miWorld.frameRateLimitation,
 			caption: fpsRaw.value == null ? i18n.ts.auto : fpsRaw.value === 'max' ? 'Max' : `~${fpsRaw.value}fps`,
 			options: [{
 				label: `${i18n.ts.auto} (${fpsAutoValue.value}fps)`,

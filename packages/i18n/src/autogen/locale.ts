@@ -13308,13 +13308,21 @@ export interface Locale extends ILocale {
          */
         "graphicsSettings": string;
         /**
-         * フレームレート
+         * フレームレート制限
          */
-        "frameRate": string;
+        "frameRateLimitation": string;
+        /**
+         * 高くすると体験が向上しますが、消費電力が増加するなどパフォーマンスに影響を与えます。
+         */
+        "higherValuePerformanceNote": string;
         /**
          * 解像度
          */
         "resolution": string;
+        /**
+         * 視野角
+         */
+        "fov": string;
         /**
          * 初期化に失敗しました
          */
