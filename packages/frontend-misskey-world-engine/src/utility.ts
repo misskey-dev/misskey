@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as BABYLON from '@babylonjs/core';
+import * as BABYLON from '@babylonjs/core/pure';
 
 export const GRAPHICS_QUALITY = {
 	HIGH: 1,

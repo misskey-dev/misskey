@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as BABYLON from '@babylonjs/core';
+import * as BABYLON from '@babylonjs/core/pure';
 import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { findMaterial, GRAPHICS_QUALITY } from '../utility.js';
 import { SYSTEM_HEYA_MESH_NAMES } from './utility.js';

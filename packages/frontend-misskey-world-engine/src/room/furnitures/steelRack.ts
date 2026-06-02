@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as BABYLON from '@babylonjs/core';
+import * as BABYLON from '@babylonjs/core/pure';
 import { steelRack_schema } from 'misskey-world/src/room/furnitures/steelRack.schema.js';
 import { cm, remap } from 'misskey-world/src/utility.js';
 import { defineFuniture } from '../furniture.js';

@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as BABYLON from '@babylonjs/core';
+import * as BABYLON from '@babylonjs/core/pure';
+import '@babylonjs/core/Engines/WebGPU/Extensions/engine.rawTexture';
 import { RoomEngine } from './engine.js';
 import type { RoomState, RoomAttachments } from 'misskey-world/src/room/type.js';
 
-//BABYLON.RegisterStandardEngineExtensions();
-//BABYLON.RegisterEnginesExtensionsEngineRawTexture();
-//BABYLON.RegisterCollisionCoordinator();
+BABYLON.RegisterFullEngineExtensions();
+BABYLON.RegisterEnginesExtensionsEngineRawTexture();
+BABYLON.RegisterCollisionCoordinator();
 
 export async function createRoomEngine(params: {
 	roomState: RoomState; roomAttachments: RoomAttachments; canvas: HTMLCanvasElement; options: { antialias: boolean; resolution: number; fov: number; graphicsQuality: number; fps: number | null; useVirtualJoystick?: boolean; };

@@ -16,7 +16,7 @@
 // TODO: 起動時、ひとつでもcustom imageの読み込みに失敗したら「一部の画像を読み込めませんでした」を出す
 // TODO: 座ると一升瓶のマテリアルがおかしくなる現象をbabylonに報告
 
-import * as BABYLON from '@babylonjs/core';
+import * as BABYLON from '@babylonjs/core/pure';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
 import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { throttle } from 'throttle-debounce';

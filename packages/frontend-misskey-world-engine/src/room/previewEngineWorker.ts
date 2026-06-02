@@ -3,15 +3,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as BABYLON from '@babylonjs/core';
+import * as BABYLON from '@babylonjs/core/pure';
+import '@babylonjs/core/Engines/WebGPU/Extensions/engine.rawTexture';
 import { RoomFurniturePreviewEngine } from './previewEngine.js';
 
 let engine: RoomFurniturePreviewEngine | null = null;
 let canvas: OffscreenCanvas | null = null;
 
-//BABYLON.RegisterStandardEngineExtensions();
-//BABYLON.RegisterEnginesExtensionsEngineRawTexture();
-//BABYLON.RegisterCollisionCoordinator();
+BABYLON.RegisterFullEngineExtensions();
+BABYLON.RegisterEnginesExtensionsEngineRawTexture();
+BABYLON.RegisterCollisionCoordinator();
 
 // TODO: 他のWorkerと実装を共通化
 onmessage = async (event) => {

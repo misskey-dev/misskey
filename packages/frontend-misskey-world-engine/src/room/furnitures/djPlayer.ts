@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as BABYLON from '@babylonjs/core';
+import * as BABYLON from '@babylonjs/core/pure';
 import { djPlayer_schema } from 'misskey-world/src/room/furnitures/djPlayer.schema.js';
 import { createTextureManager, defineFuniture } from '../furniture.js';
 import { normalizeUvToSquare } from '../../utility.js';
