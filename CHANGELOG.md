@@ -11,6 +11,7 @@
 - Fix: アクセストークン発行時のダイアログのタイトルが「確認コード」となっているのを修正
 - Fix: 一部のUI要素の色が正しく表示されない問題を修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/1243)
+- Fix: 「D」キーでダークモードを切り替える際にsyncDeviceDarkModeのチェックがバイパスされる問題を修正
 
 ### Server
 - Enhance: リモートノートクリーニングジョブのスキップ処理のパフォーマンス改善
