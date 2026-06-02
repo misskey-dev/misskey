@@ -450,8 +450,13 @@ export class RoomEngine extends EngineBase<{
 			if (this.grabbingCtx != null) {
 				this.changeGrabbingDistance(ev.delta * 0.1);
 			} else {
-				this.camera.fov += -ev.delta * 0.003;
-				this.camera.fov = Math.max(0.25, Math.min(this.fov, this.camera.fov));
+				if (this.scene.activeCamera === this.camera) {
+					this.camera.fov += -ev.delta * 0.003;
+					this.camera.fov = Math.max(0.25, Math.min(this.fov, this.camera.fov));
+				} else if (this.scene.activeCamera === this.fixedCamera) {
+					this.fixedCamera.fov += -ev.delta * 0.003;
+					this.fixedCamera.fov = Math.max(0.25, Math.min(this.fov, this.fixedCamera.fov));
+				}
 			}
 		});
 
