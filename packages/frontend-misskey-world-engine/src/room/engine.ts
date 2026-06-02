@@ -1162,7 +1162,7 @@ export class RoomEngine extends EngineBase<{
 		this.isSitting = true;
 		this.sr.disableSnapshotRendering();
 		this.fixedCamera.parent = null;
-		this.fixedCamera.position = new BABYLON.Vector3(this.camera.position.x, cm(80), this.camera.position.z);
+		this.fixedCamera.position = new BABYLON.Vector3(this.camera.position.x, cm(70), this.camera.position.z);
 		this.fixedCamera.rotation = new BABYLON.Vector3(this.camera.rotation.x, this.camera.rotation.y, this.camera.rotation.z);
 		this.scene.activeCamera = this.fixedCamera;
 		this.sr.enableSnapshotRendering();

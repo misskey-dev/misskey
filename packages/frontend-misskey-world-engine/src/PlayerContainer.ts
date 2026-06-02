@@ -166,9 +166,9 @@ export class PlayerContainer {
 					}, 100);
 				};
 
-				//this.timer.setTimeout(() => {
-				//	blink();
-				//}, Math.random() * 10000);
+				this.timer.setTimeout(() => {
+					blink();
+				}, Math.random() * 10000);
 			}
 			if (mesh.name.includes('__MOUTH__')) {
 				if (mouthTex != null) {
