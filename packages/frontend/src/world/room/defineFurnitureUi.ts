@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { FurnitureSchemaDef } from 'misskey-world/src/room/object.js';
+import type { FurnitureSchemaDef } from 'misskey-world/src/room/furniture.js';
 import type { GetOptionsSchemaUiDef } from '../mono.js';
 
 export type FurnitureUiDef<Schema extends FurnitureSchemaDef = FurnitureSchemaDef> = {
