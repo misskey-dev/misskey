@@ -6,13 +6,15 @@
 import cluster from 'node:cluster';
 import { envOption } from '@/env.js';
 import { loadConfig } from '@/config.js';
-import { jobQueue, server } from './common.js';
+import { initExtraThreadPool, jobQueue, server } from './common.js';
 
 /**
  * Init worker process
  */
 export async function workerMain() {
 	const config = loadConfig();
+
+	initExtraThreadPool(config);
 
 	if (config.sentryForBackend) {
 		const Sentry = await import('@sentry/node');

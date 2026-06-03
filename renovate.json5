@@ -3,6 +3,9 @@
 	extends: [
 		'config:recommended',
 	],
+	toolSettings: {
+		nodeMaxMemory: 4096,
+	},
 	timezone: 'Asia/Tokyo',
 	schedule: [
 		'* 0 * * *',

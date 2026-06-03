@@ -4,18 +4,22 @@
  */
 
 import dns from 'node:dns/promises';
-import { fileURLToPath } from 'node:url';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import * as htmlParser from 'node-html-parser';
 import httpLinkHeader from 'http-link-header';
 import ipaddr from 'ipaddr.js';
-import oauth2orize, { type OAuth2, AuthorizationError, ValidateFunctionArity2, OAuth2Req, MiddlewareRequest } from 'oauth2orize';
-import oauth2Pkce from 'oauth2orize-pkce';
 import fastifyCors from '@fastify/cors';
-import bodyParser from 'body-parser';
-import fastifyExpress from '@fastify/express';
 import { verifyChallenge } from 'pkce-challenge';
 import { permissions as kinds } from 'misskey-js';
+import {
+	AccessDeniedError,
+	InvalidGrantError,
+	InvalidRequestError,
+	InvalidScopeError,
+	OAuthProviderError,
+	UnsupportedGrantTypeError,
+	UnsupportedResponseTypeError,
+} from './errors.js';
 import { secureRndstr } from '@/misc/secure-rndstr.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import type { Config } from '@/config.js';
@@ -31,8 +35,7 @@ import Logger from '@/logger.js';
 import { StatusError } from '@/misc/status-error.js';
 import { HtmlTemplateService } from '@/server/web/HtmlTemplateService.js';
 import { OAuthPage } from '@/server/web/views/oauth.js';
-import type { ServerResponse } from 'node:http';
-import type { FastifyInstance } from 'fastify';
+import type { FastifyInstance, FastifyReply } from 'fastify';
 
 // TODO: Consider migrating to @node-oauth/oauth2-server once
 // https://github.com/node-oauth/node-oauth2-server/issues/180 is figured out.
@@ -46,7 +49,9 @@ function validateClientId(raw: string): URL {
 	const url = ((): URL => {
 		try {
 			return new URL(raw);
-		} catch { throw new AuthorizationError('client_id must be a valid URL', 'invalid_request'); }
+		} catch {
+			throw new InvalidRequestError('client_id must be a valid URL');
+		}
 	})();
 
 	// "Client identifier URLs MUST have either an https or http scheme"
@@ -56,7 +61,7 @@ function validateClientId(raw: string): URL {
 	// in Section 1.6 when the requested response type is "code" or "token"'
 	const allowedProtocols = process.env.NODE_ENV === 'test' ? ['http:', 'https:'] : ['https:'];
 	if (!allowedProtocols.includes(url.protocol)) {
-		throw new AuthorizationError('client_id must be a valid HTTPS URL', 'invalid_request');
+		throw new InvalidRequestError('client_id must be a valid HTTPS URL');
 	}
 
 	// "MUST contain a path component (new URL() implicitly adds one)"
@@ -64,19 +69,19 @@ function validateClientId(raw: string): URL {
 	// "MUST NOT contain single-dot or double-dot path segments,"
 	const segments = url.pathname.split('/');
 	if (segments.includes('.') || segments.includes('..')) {
-		throw new AuthorizationError('client_id must not contain dot path segments', 'invalid_request');
+		throw new InvalidRequestError('client_id must not contain dot path segments');
 	}
 
 	// ("MAY contain a query string component")
 
 	// "MUST NOT contain a fragment component"
 	if (url.hash) {
-		throw new AuthorizationError('client_id must not contain a fragment component', 'invalid_request');
+		throw new InvalidRequestError('client_id must not contain a fragment component');
 	}
 
 	// "MUST NOT contain a username or password component"
 	if (url.username || url.password) {
-		throw new AuthorizationError('client_id must not contain a username or a password', 'invalid_request');
+		throw new InvalidRequestError('client_id must not contain a username or a password');
 	}
 
 	// ("MAY contain a port")
@@ -84,7 +89,7 @@ function validateClientId(raw: string): URL {
 	// "host names MUST be domain names or a loopback interface and MUST NOT be
 	// IPv4 or IPv6 addresses except for IPv4 127.0.0.1 or IPv6 [::1]."
 	if (!url.hostname.match(/\.\w+$/) && !['localhost', '127.0.0.1', '[::1]'].includes(url.hostname)) {
-		throw new AuthorizationError('client_id must have a domain name as a host name', 'invalid_request');
+		throw new InvalidRequestError('client_id must have a domain name as a host name');
 	}
 
 	return url;
@@ -95,6 +100,45 @@ interface ClientInformation {
 	redirectUris: string[];
 	name: string;
 	logo: string | null;
+}
+
+interface OAuthRequestParameters {
+	[key: string]: string | string[] | undefined;
+}
+
+interface AuthorizationRequest {
+	clientId: string;
+	redirectUri: string;
+	state?: string;
+	scopes: string[];
+	codeChallenge: string;
+	codeChallengeMethod: string;
+}
+
+interface AuthorizationRequestSeed {
+	clientInfo: ClientInformation;
+	clientId: string;
+	redirectUri: string;
+	state?: string;
+	requestedScope: string[];
+	codeChallenge?: string;
+	codeChallengeMethod?: string;
+}
+
+interface AuthorizationTransaction {
+	client: ClientInformation;
+	request: AuthorizationRequest;
+}
+
+interface AuthorizationCodeGrant {
+	clientId: string;
+	userId: string;
+	redirectUri: string;
+	codeChallenge: string;
+	scopes: string[];
+	grantedToken?: string;
+	revoked?: boolean;
+	used?: boolean;
 }
 
 function parseMicroformats(doc: htmlParser.HTMLElement, baseUrl: string, id: string): { name: string | null; logo: string | null; } {
@@ -139,7 +183,7 @@ async function discoverClientInformation(logger: Logger, httpRequestService: Htt
 		// redirect_uris discovered after resolving any relative URLs."
 		const linkHeader = res.headers.get('link');
 		if (linkHeader) {
-			redirectUris.push(...httpLinkHeader.parse(linkHeader).get('rel', 'redirect_uri').map(r => r.uri));
+			redirectUris.push(...httpLinkHeader.parse(linkHeader).get('rel', 'redirect_uri').map(link => link.uri));
 		}
 
 		const contentType = res.headers.get('content-type');
@@ -163,13 +207,13 @@ async function discoverClientInformation(logger: Logger, httpRequestService: Htt
 			// "The authorization server MUST verify that the client_id in the document matches the
 			// client_id of the URL where the document was retrieved."
 			if (json.client_id !== id) {
-				throw new AuthorizationError('client_id in the document does not match the client_id URL', 'invalid_request');
+				throw new InvalidRequestError('client_id in the document does not match the client_id URL');
 			}
 
 			// https://indieauth.spec.indieweb.org/#client-metadata-li-1
 			// "The client_uri MUST be a prefix of the client_id."
 			if (!json.client_uri || !id.startsWith(json.client_uri)) {
-				throw new AuthorizationError('client_uri is not a prefix of client_id', 'invalid_request');
+				throw new InvalidRequestError('client_uri is not a prefix of client_id');
 			}
 
 			if (typeof json.client_name === 'string') {
@@ -213,218 +257,247 @@ async function discoverClientInformation(logger: Logger, httpRequestService: Htt
 			logo,
 		};
 	} catch (err) {
-		console.error(err);
 		logger.error('Error while fetching client information', { err });
 		if (err instanceof StatusError) {
-			throw new AuthorizationError('Failed to fetch client information', 'invalid_request');
-		} else if (err instanceof AuthorizationError) {
-			throw err;
-		} else {
-			throw new AuthorizationError('Failed to parse client information', 'server_error');
+			throw new InvalidRequestError('Failed to fetch client information');
 		}
+		if (err instanceof OAuthProviderError) {
+			throw err;
+		}
+
+		const wrapped = new InvalidRequestError('Failed to parse client information');
+		wrapped.status = 500;
+		wrapped.statusCode = 500;
+		wrapped.error = 'server_error';
+		throw wrapped;
 	}
 }
 
-type OmitFirstElement<T extends unknown[]> = T extends [unknown, ...(infer R)]
-	? R
-	: [];
-
-interface OAuthParsedRequest extends OAuth2Req {
-	codeChallenge: string;
-	codeChallengeMethod: string;
+function firstValue(value: string | string[] | undefined): string | undefined {
+	return Array.isArray(value) ? value[0] : value;
 }
 
-interface OAuthHttpResponse extends ServerResponse {
-	redirect(location: string): void;
+function normalizeScope(scope: string | string[] | undefined): string[] {
+	const raw = Array.isArray(scope) ? scope : scope != null ? [scope] : [];
+	return raw.flatMap(value => value.split(/\s+/)).filter(Boolean);
 }
 
-interface OAuth2DecisionRequest extends MiddlewareRequest {
-	body: {
-		transaction_id: string;
-		cancel: boolean;
-		login_token: string;
+function toRequestParameters(body: unknown): OAuthRequestParameters {
+	if (body == null || typeof body !== 'object' || Array.isArray(body)) {
+		return {};
 	}
+
+	return body as OAuthRequestParameters;
 }
 
-function getQueryMode(issuerUrl: string): oauth2orize.grant.Options['modes'] {
+function applyNoStore(reply: FastifyReply): void {
+	reply.header('Cache-Control', 'no-store');
+	reply.header('Pragma', 'no-cache');
+}
+
+function createUnsupportedResponseTypeError(): OAuthProviderError {
+	const error = new UnsupportedResponseTypeError();
+	error.status = 501;
+	error.statusCode = 501;
+	return error;
+}
+
+function createForbiddenAccessDenied(description: string): OAuthProviderError {
+	const error = new AccessDeniedError(description);
+	error.status = 403;
+	error.statusCode = 403;
+	return error;
+}
+
+function normalizeOAuthProviderError(error: unknown): OAuthProviderError {
+	if (error instanceof OAuthProviderError) {
+		return error;
+	}
+
+	const wrapped = new InvalidRequestError('request is invalid');
+	if (error instanceof Error) {
+		wrapped.error_description = error.message;
+	}
+	return wrapped;
+}
+
+function sendOAuthProviderError(reply: FastifyReply, error: OAuthProviderError): void {
+	applyNoStore(reply);
+	reply.code(error.statusCode ?? error.status ?? 400);
+	reply.send({
+		error: error.error,
+		...(error.expose && error.error_description ? { error_description: error.error_description } : {}),
+	});
+}
+
+function appendIssuer(payload: Record<string, string>, issuerUrl: string): Record<string, string> {
 	return {
-		query: (txn, res, params): void => {
-			// https://datatracker.ietf.org/doc/html/rfc9207#name-response-parameter-iss
-			// "In authorization responses to the client, including error responses,
-			// an authorization server supporting this specification MUST indicate its
-			// identity by including the iss parameter in the response."
-			params.iss = issuerUrl;
+		...payload,
 
-			const parsed = new URL(txn.redirectURI);
-			for (const [key, value] of Object.entries(params)) {
-				parsed.searchParams.append(key, value as string);
-			}
-
-			return (res as OAuthHttpResponse).redirect(parsed.toString());
-		},
+		// https://datatracker.ietf.org/doc/html/rfc9207#name-response-parameter-iss
+		// "In authorization responses to the client, including error responses,
+		// an authorization server supporting this specification MUST indicate its
+		// identity by including the iss parameter in the response."
+		iss: issuerUrl,
 	};
 }
 
-/**
- * Maps the transaction ID and the oauth/authorize parameters.
- *
- * Flow:
- * 1. oauth/authorize endpoint will call store() to store the parameters
- *    and puts the generated transaction ID to the dialog page
- * 2. oauth/decision will call load() to retrieve the parameters and then remove()
- */
-class OAuth2Store {
-	#cache = new MemoryKVCache<OAuth2>(1000 * 60 * 5); // expires after 5min
+function redirectWithQuery(reply: FastifyReply, redirectUriString: string, payload: Record<string, string>): void {
+	applyNoStore(reply);
 
-	load(req: OAuth2DecisionRequest, cb: (err: Error | null, txn?: OAuth2) => void): void {
-		const { transaction_id } = req.body;
-		if (!transaction_id) {
-			cb(new AuthorizationError('Missing transaction ID', 'invalid_request'));
-			return;
+	const redirectUri = new URL(redirectUriString);
+	for (const [key, value] of Object.entries(payload)) {
+		redirectUri.searchParams.set(key, value);
+	}
+
+	reply.code(302).redirect(redirectUri.toString());
+}
+
+function registerFormBodyParser(fastify: FastifyInstance): void {
+	if (fastify.hasContentTypeParser('application/x-www-form-urlencoded')) {
+		return;
+	}
+
+	fastify.addContentTypeParser('application/x-www-form-urlencoded', { parseAs: 'string' }, (_request, body, done) => {
+		try {
+			const parsed: OAuthRequestParameters = {};
+			for (const [key, value] of new URLSearchParams(typeof body === 'string' ? body : body.toString('utf8')).entries()) {
+				const current = parsed[key];
+				if (current == null) {
+					parsed[key] = value;
+				} else if (Array.isArray(current)) {
+					current.push(value);
+				} else {
+					parsed[key] = [current, value];
+				}
+			}
+
+			done(null, parsed);
+		} catch (error) {
+			done(error as Error, undefined);
 		}
-		const loaded = this.#cache.get(transaction_id);
-		if (!loaded) {
-			cb(new AuthorizationError('Invalid or expired transaction ID', 'access_denied'));
-			return;
-		}
-		cb(null, loaded);
-	}
-
-	store(req: OAuth2DecisionRequest, oauth2: OAuth2, cb: (err: Error | null, transactionID?: string) => void): void {
-		const transactionId = secureRndstr(128);
-		this.#cache.set(transactionId, oauth2);
-		cb(null, transactionId);
-	}
-
-	remove(req: OAuth2DecisionRequest, tid: string, cb: () => void): void {
-		this.#cache.delete(tid);
-		cb();
-	}
+	});
 }
 
 @Injectable()
-export class OAuth2ProviderService {
-	#server = oauth2orize.createServer({
-		store: new OAuth2Store(),
-	});
+export class OAuth2ProviderService implements OnApplicationShutdown {
+	#authorizationTransactionCache: MemoryKVCache<AuthorizationTransaction>;
+	#grantCodeCache: MemoryKVCache<AuthorizationCodeGrant>;
 	#logger: Logger;
 
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
-		private httpRequestService: HttpRequestService,
 		@Inject(DI.accessTokensRepository)
-		accessTokensRepository: AccessTokensRepository,
-		idService: IdService,
+		private accessTokensRepository: AccessTokensRepository,
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
+		private idService: IdService,
+		private httpRequestService: HttpRequestService,
 		private cacheService: CacheService,
-		loggerService: LoggerService,
 		private htmlTemplateService: HtmlTemplateService,
+		loggerService: LoggerService,
 	) {
+		this.#authorizationTransactionCache = new MemoryKVCache<AuthorizationTransaction>(1000 * 60 * 5);
+		this.#grantCodeCache = new MemoryKVCache<AuthorizationCodeGrant>(1000 * 60 * 5);
 		this.#logger = loggerService.getLogger('oauth');
+	}
 
-		const grantCodeCache = new MemoryKVCache<{
-			clientId: string,
-			userId: string,
-			redirectUri: string,
-			codeChallenge: string,
-			scopes: string[],
+	async #resolveAuthorizationRequest(params: OAuthRequestParameters): Promise<AuthorizationRequestSeed> {
+		const clientId = firstValue(params.client_id);
+		const redirectUriValue = firstValue(params.redirect_uri);
+		const responseType = firstValue(params.response_type);
+		const state = firstValue(params.state);
+		const codeChallenge = firstValue(params.code_challenge);
+		const codeChallengeMethod = firstValue(params.code_challenge_method);
+		const requestedScope = normalizeScope(params.scope);
 
-			// fields to prevent multiple code use
-			grantedToken?: string,
-			revoked?: boolean,
-			used?: boolean,
-		}>(1000 * 60 * 5); // expires after 5m
+		this.#logger.info(`Validating authorization parameters, with client_id: ${clientId}, redirect_uri: ${redirectUriValue}, scope: ${requestedScope.join(' ')}`);
 
-		// https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics
-		// "Authorization servers MUST support PKCE [RFC7636]."
-		this.#server.grant(oauth2Pkce.extensions());
-		this.#server.grant(oauth2orize.grant.code({
-			modes: getQueryMode(config.url),
-		}, (client, redirectUri, token, ares, areq, locals, done) => {
-			(async (): Promise<OmitFirstElement<Parameters<typeof done>>> => {
-				this.#logger.info(`Checking the user before sending authorization code to ${client.id}`);
+		if (responseType !== 'code') {
+			throw createUnsupportedResponseTypeError();
+		}
 
-				if (!token) {
-					throw new AuthorizationError('No user', 'invalid_request');
-				}
-				const user = await this.cacheService.localUserByNativeTokenCache.fetch(token,
-					() => this.usersRepository.findOneBy({ token }) as Promise<MiLocalUser | null>);
-				if (!user) {
-					throw new AuthorizationError('No such user', 'invalid_request');
-				}
+		if (!clientId) {
+			throw new InvalidRequestError('client_id must be provided');
+		}
 
-				this.#logger.info(`Sending authorization code on behalf of user ${user.id} to ${client.id} through ${redirectUri}, with scope: [${areq.scope}]`);
+		const clientUrl = validateClientId(clientId);
 
-				const code = secureRndstr(128);
-				grantCodeCache.set(code, {
-					clientId: client.id,
-					userId: user.id,
-					redirectUri,
-					codeChallenge: (areq as OAuthParsedRequest).codeChallenge,
-					scopes: areq.scope,
-				});
-				return [code];
-			})().then(args => done(null, ...args), err => done(err));
-		}));
-		this.#server.exchange(oauth2orize.exchange.authorizationCode((client, code, redirectUri, body, authInfo, done) => {
-			(async (): Promise<OmitFirstElement<Parameters<typeof done>> | undefined> => {
-				this.#logger.info('Checking the received authorization code for the exchange');
-				const granted = grantCodeCache.get(code);
-				if (!granted) {
-					return;
-				}
+		// https://indieauth.spec.indieweb.org/#client-information-discovery
+		// "the server may want to resolve the domain name first and avoid fetching the document
+		// if the IP address is within the loopback range defined by [RFC5735]
+		// or any other implementation-specific internal IP address."
+		if (process.env.NODE_ENV !== 'test' || process.env.MISSKEY_TEST_CHECK_IP_RANGE === '1') {
+			const lookup = await dns.lookup(clientUrl.hostname);
+			if (ipaddr.parse(lookup.address).range() !== 'unicast') {
+				throw new InvalidRequestError('client_id resolves to disallowed IP range.');
+			}
+		}
 
-				// https://datatracker.ietf.org/doc/html/rfc6749.html#section-4.1.2
-				// "If an authorization code is used more than once, the authorization server
-				// MUST deny the request and SHOULD revoke (when possible) all tokens
-				// previously issued based on that authorization code."
-				if (granted.used) {
-					this.#logger.info(`Detected multiple code use from ${granted.clientId} for user ${granted.userId}. Revoking the code.`);
-					grantCodeCache.delete(code);
-					granted.revoked = true;
-					if (granted.grantedToken) {
-						await accessTokensRepository.delete({ token: granted.grantedToken });
-					}
-					return;
-				}
-				granted.used = true;
+		// Find client information from the remote.
+		const clientInfo = await discoverClientInformation(this.#logger, this.httpRequestService, clientUrl.href);
 
-				// https://datatracker.ietf.org/doc/html/rfc6749.html#section-4.1.3
-				if (body.client_id !== granted.clientId) return;
-				if (redirectUri !== granted.redirectUri) return;
+		// Require the redirect URI to be included in an explicit list, per
+		// https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics#section-4.1.3
+		if (!redirectUriValue || !clientInfo.redirectUris.includes(redirectUriValue)) {
+			throw new InvalidRequestError('Invalid redirect_uri');
+		}
 
-				// https://datatracker.ietf.org/doc/html/rfc7636.html#section-4.6
-				if (!body.code_verifier) return;
-				if (!(await verifyChallenge(body.code_verifier as string, granted.codeChallenge))) return;
+		return {
+			clientInfo,
+			clientId: clientInfo.id,
+			redirectUri: redirectUriValue,
+			state,
+			requestedScope,
+			codeChallenge,
+			codeChallengeMethod,
+		};
+	}
 
-				const accessToken = secureRndstr(128);
-				const now = new Date();
+	#finalizeAuthorizationRequest(seed: AuthorizationRequestSeed): AuthorizationRequest {
+		const scopes = [...new Set(seed.requestedScope)].filter(scope => (<readonly string[]>kinds).includes(scope));
+		if (!seed.requestedScope.length || !scopes.length) {
+			throw new InvalidScopeError('`scope` parameter has no known scope', seed.requestedScope.join(' '));
+		}
 
-				// NOTE: we don't have a setup for automatic token expiration
-				await accessTokensRepository.insert({
-					id: idService.gen(now.getTime()),
-					lastUsedAt: now,
-					userId: granted.userId,
-					token: accessToken,
-					hash: accessToken,
-					name: granted.clientId,
-					permission: granted.scopes,
-				});
+		// Require PKCE parameters.
+		// Recommended by https://indieauth.spec.indieweb.org/#authorization-request, but also prevents downgrade attack:
+		// https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics#name-pkce-downgrade-attack
+		if (typeof seed.codeChallenge !== 'string') {
+			throw new InvalidRequestError('`code_challenge` parameter is required');
+		}
+		if (seed.codeChallengeMethod !== 'S256') {
+			throw new InvalidRequestError('`code_challenge_method` parameter must be set as S256');
+		}
 
-				if (granted.revoked) {
-					this.#logger.info('Canceling the token as the authorization code was revoked in parallel during the process.');
-					await accessTokensRepository.delete({ token: accessToken });
-					return;
-				}
+		return {
+			clientId: seed.clientId,
+			redirectUri: seed.redirectUri,
+			state: seed.state,
+			scopes,
+			codeChallenge: seed.codeChallenge,
+			codeChallengeMethod: seed.codeChallengeMethod,
+		};
+	}
 
-				granted.grantedToken = accessToken;
-				this.#logger.info(`Generated access token for ${granted.clientId} for user ${granted.userId}, with scope: [${granted.scopes}]`);
+	async #findUserByLoginToken(loginToken: string): Promise<MiLocalUser> {
+		const user = await this.cacheService.localUserByNativeTokenCache.fetch(loginToken,
+			() => this.usersRepository.findOneBy({ token: loginToken }) as Promise<MiLocalUser | null>);
+		if (!user) {
+			throw new InvalidRequestError('No such user');
+		}
 
-				return [accessToken, undefined, { scope: granted.scopes.join(' ') }];
-			})().then(args => done(null, ...args ?? []), err => done(err));
-		}));
+		return user;
+	}
+
+	async #revokeGrantCode(granted: AuthorizationCodeGrant, code: string): Promise<void> {
+		this.#logger.info(`Detected multiple code use from ${granted.clientId} for user ${granted.userId}. Revoking the code.`);
+		this.#grantCodeCache.delete(code);
+		granted.revoked = true;
+		if (granted.grantedToken) {
+			await this.accessTokensRepository.delete({ token: granted.grantedToken });
+		}
 	}
 
 	// https://datatracker.ietf.org/doc/html/rfc8414.html
@@ -445,97 +518,101 @@ export class OAuth2ProviderService {
 
 	@bindThis
 	public async createServer(fastify: FastifyInstance): Promise<void> {
+		registerFormBodyParser(fastify);
+
 		fastify.get('/authorize', async (request, reply) => {
-			const oauth2 = (request.raw as MiddlewareRequest).oauth2;
-			if (!oauth2) {
-				throw new Error('Unexpected lack of authorization information');
+			let validatedRedirectUri: string | undefined;
+			let state: string | undefined;
+
+			try {
+				const seed = await this.#resolveAuthorizationRequest(request.query as OAuthRequestParameters);
+				const { clientInfo } = seed;
+				validatedRedirectUri = seed.redirectUri;
+				state = seed.state;
+				const authorizationRequest = this.#finalizeAuthorizationRequest(seed);
+
+				const transactionId = secureRndstr(128);
+				this.#authorizationTransactionCache.set(transactionId, {
+					client: clientInfo,
+					request: authorizationRequest,
+				});
+
+				this.#logger.info(`Rendering authorization page for "${clientInfo.name}"`);
+
+				applyNoStore(reply);
+				return await HtmlTemplateService.replyHtml(reply, OAuthPage({
+					...await this.htmlTemplateService.getCommonData(),
+					transactionId,
+					clientName: clientInfo.name,
+					clientLogo: clientInfo.logo ?? undefined,
+					scope: authorizationRequest.scopes,
+				}));
+			} catch (error) {
+				const OAuthProviderError = normalizeOAuthProviderError(error);
+				if (validatedRedirectUri && OAuthProviderError.allow_redirect && OAuthProviderError.error !== 'unsupported_response_type') {
+					redirectWithQuery(reply, validatedRedirectUri, appendIssuer({
+						error: OAuthProviderError.error,
+						...(state ? { state } : {}),
+					}, this.config.url));
+					return;
+				}
+
+				sendOAuthProviderError(reply, OAuthProviderError);
 			}
-
-			this.#logger.info(`Rendering authorization page for "${oauth2.client.name}"`);
-
-			reply.header('Cache-Control', 'no-store');
-			return await HtmlTemplateService.replyHtml(reply, OAuthPage({
-				...await this.htmlTemplateService.getCommonData(),
-				transactionId: oauth2.transactionID,
-				clientName: oauth2.client.name,
-				clientLogo: oauth2.client.logo ?? undefined,
-				scope: oauth2.req.scope,
-			}));
 		});
-		fastify.post('/decision', async () => { });
 
-		await fastify.register(fastifyExpress);
-		fastify.use('/authorize', this.#server.authorize(((areq, done) => {
-			(async (): Promise<Parameters<typeof done>> => {
-				// This should return client/redirectURI AND the error, or
-				// the handler can't send error to the redirection URI
-
-				const { codeChallenge, codeChallengeMethod, clientID, redirectURI, scope } = areq as OAuthParsedRequest;
-
-				this.#logger.info(`Validating authorization parameters, with client_id: ${clientID}, redirect_uri: ${redirectURI}, scope: ${scope}`);
-
-				const clientUrl = validateClientId(clientID);
-
-				// https://indieauth.spec.indieweb.org/#client-information-discovery
-				// "the server may want to resolve the domain name first and avoid fetching the document
-				// if the IP address is within the loopback range defined by [RFC5735]
-				// or any other implementation-specific internal IP address."
-				if (process.env.NODE_ENV !== 'test' || process.env.MISSKEY_TEST_CHECK_IP_RANGE === '1') {
-					const lookup = await dns.lookup(clientUrl.hostname);
-					if (ipaddr.parse(lookup.address).range() !== 'unicast') {
-						throw new AuthorizationError('client_id resolves to disallowed IP range.', 'invalid_request');
-					}
+		fastify.post('/decision', async (request, reply) => {
+			try {
+				const body = toRequestParameters(request.body);
+				const transactionId = firstValue(body.transaction_id);
+				if (!transactionId) {
+					throw new InvalidRequestError('Missing transaction ID');
 				}
 
-				// Find client information from the remote.
-				const clientInfo = await discoverClientInformation(this.#logger, this.httpRequestService, clientUrl.href);
+				const transaction = this.#authorizationTransactionCache.get(transactionId);
+				if (!transaction) {
+					throw createForbiddenAccessDenied('Invalid or expired transaction ID');
+				}
+				this.#authorizationTransactionCache.delete(transactionId);
 
-				// Require the redirect URI to be included in an explicit list, per
-				// https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics#section-4.1.3
-				if (!clientInfo.redirectUris.includes(redirectURI)) {
-					throw new AuthorizationError('Invalid redirect_uri', 'invalid_request');
+				const cancel = !!firstValue(body.cancel);
+				this.#logger.info(`Received the decision. Cancel: ${cancel}`);
+				if (cancel) {
+					redirectWithQuery(reply, transaction.request.redirectUri, appendIssuer({
+						error: 'access_denied',
+						...(transaction.request.state ? { state: transaction.request.state } : {}),
+					}, this.config.url));
+					return;
 				}
 
-				try {
-					const scopes = [...new Set(scope)].filter(s => (<readonly string[]>kinds).includes(s));
-					if (!scopes.length) {
-						throw new AuthorizationError('`scope` parameter has no known scope', 'invalid_scope');
-					}
-					areq.scope = scopes;
-
-					// Require PKCE parameters.
-					// Recommended by https://indieauth.spec.indieweb.org/#authorization-request, but also prevents downgrade attack:
-					// https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics#name-pkce-downgrade-attack
-					if (typeof codeChallenge !== 'string') {
-						throw new AuthorizationError('`code_challenge` parameter is required', 'invalid_request');
-					}
-					if (codeChallengeMethod !== 'S256') {
-						throw new AuthorizationError('`code_challenge_method` parameter must be set as S256', 'invalid_request');
-					}
-				} catch (err) {
-					return [err as Error, clientInfo, redirectURI];
+				const loginToken = firstValue(body.login_token);
+				if (!loginToken) {
+					throw new InvalidRequestError('No user');
 				}
 
-				return [null, clientInfo, redirectURI];
-			})().then(args => done(...args), err => done(err));
-		}) as ValidateFunctionArity2));
-		fastify.use('/authorize', this.#server.errorHandler({
-			mode: 'indirect',
-			modes: getQueryMode(this.config.url),
-		}));
-		fastify.use('/authorize', this.#server.errorHandler());
+				this.#logger.info(`Checking the user before sending authorization code to ${transaction.client.id}`);
+				const user = await this.#findUserByLoginToken(loginToken);
 
-		fastify.use('/decision', bodyParser.urlencoded({ extended: false }));
-		fastify.use('/decision', this.#server.decision((req, done) => {
-			const { body } = req as OAuth2DecisionRequest;
-			this.#logger.info(`Received the decision. Cancel: ${!!body.cancel}`);
-			req.user = body.login_token;
-			done(null, undefined);
-		}));
-		fastify.use('/decision', this.#server.errorHandler());
+				this.#logger.info(`Sending authorization code on behalf of user ${user.id} to ${transaction.client.id} through ${transaction.request.redirectUri}, with scope: [${transaction.request.scopes}]`);
 
-		// Return 404 for any unknown paths under /oauth so that clients can know
-		// whether a certain endpoint is supported or not.
+				const code = secureRndstr(128);
+				this.#grantCodeCache.set(code, {
+					clientId: transaction.client.id,
+					userId: user.id,
+					redirectUri: transaction.request.redirectUri,
+					codeChallenge: transaction.request.codeChallenge,
+					scopes: transaction.request.scopes,
+				});
+
+				redirectWithQuery(reply, transaction.request.redirectUri, appendIssuer({
+					code,
+					...(transaction.request.state ? { state: transaction.request.state } : {}),
+				}, this.config.url));
+			} catch (error) {
+				sendOAuthProviderError(reply, normalizeOAuthProviderError(error));
+			}
+		});
+
 		fastify.all('/*', async (_request, reply) => {
 			reply.code(404);
 			reply.send({
@@ -551,14 +628,104 @@ export class OAuth2ProviderService {
 
 	@bindThis
 	public async createTokenServer(fastify: FastifyInstance): Promise<void> {
+		registerFormBodyParser(fastify);
 		fastify.register(fastifyCors);
-		fastify.post('', async () => { });
 
-		await fastify.register(fastifyExpress);
-		// Clients may use JSON or urlencoded
-		fastify.use('', bodyParser.urlencoded({ extended: false }));
-		fastify.use('', bodyParser.json({ strict: true }));
-		fastify.use('', this.#server.token());
-		fastify.use('', this.#server.errorHandler());
+		fastify.post('', async (request, reply) => {
+			applyNoStore(reply);
+
+			try {
+				const body = toRequestParameters(request.body);
+				const grantType = firstValue(body.grant_type);
+				if (!grantType) {
+					throw new InvalidRequestError('grant_type is required');
+				}
+				if (grantType !== 'authorization_code') {
+					throw new UnsupportedGrantTypeError();
+				}
+
+				const code = firstValue(body.code);
+				const clientId = firstValue(body.client_id);
+				const redirectUriValue = firstValue(body.redirect_uri);
+				const codeVerifier = firstValue(body.code_verifier);
+
+				this.#logger.info('Checking the received authorization code for the exchange');
+				if (!code) {
+					throw new InvalidGrantError('grant request is invalid');
+				}
+
+				const granted = this.#grantCodeCache.get(code);
+				if (!granted) {
+					throw new InvalidGrantError('grant request is invalid');
+				}
+
+				// https://datatracker.ietf.org/doc/html/rfc6749.html#section-4.1.2
+				// "If an authorization code is used more than once, the authorization server
+				// MUST deny the request and SHOULD revoke (when possible) all tokens
+				// previously issued based on that authorization code."
+				if (granted.used) {
+					await this.#revokeGrantCode(granted, code);
+					throw new InvalidGrantError('grant request is invalid');
+				}
+				granted.used = true;
+
+				// https://datatracker.ietf.org/doc/html/rfc6749.html#section-4.1.3
+				if (clientId !== granted.clientId || redirectUriValue !== granted.redirectUri) {
+					throw new InvalidGrantError('grant request is invalid');
+				}
+
+				// https://datatracker.ietf.org/doc/html/rfc7636.html#section-4.6
+				if (!codeVerifier) {
+					throw new InvalidGrantError('grant request is invalid');
+				}
+
+				const challengeResult = await verifyChallenge(codeVerifier, granted.codeChallenge);
+				if (!challengeResult) {
+					throw new InvalidGrantError('grant request is invalid');
+				}
+
+				const accessToken = secureRndstr(128);
+				const now = new Date();
+
+				// NOTE: we don't have a setup for automatic token expiration
+				await this.accessTokensRepository.insert({
+					id: this.idService.gen(now.getTime()),
+					lastUsedAt: now,
+					userId: granted.userId,
+					token: accessToken,
+					hash: accessToken,
+					name: granted.clientId,
+					permission: granted.scopes,
+				});
+
+				if (granted.revoked) {
+					this.#logger.info('Canceling the token as the authorization code was revoked in parallel during the process.');
+					await this.accessTokensRepository.delete({ token: accessToken });
+					throw new InvalidGrantError('grant request is invalid');
+				}
+
+				granted.grantedToken = accessToken;
+				this.#logger.info(`Generated access token for ${granted.clientId} for user ${granted.userId}, with scope: [${granted.scopes}]`);
+
+				reply.send({
+					access_token: accessToken,
+					token_type: 'Bearer',
+					scope: granted.scopes.join(' '),
+				});
+			} catch (error) {
+				sendOAuthProviderError(reply, normalizeOAuthProviderError(error));
+			}
+		});
+	}
+
+	@bindThis
+	public dispose(): void {
+		this.#authorizationTransactionCache.dispose();
+		this.#grantCodeCache.dispose();
+	}
+
+	@bindThis
+	public onApplicationShutdown(signal?: string | undefined): void {
+		this.dispose();
 	}
 }
