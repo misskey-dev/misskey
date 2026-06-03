@@ -36,12 +36,11 @@ export class FileServerDriveHandler {
 		const file = await this.fileResolver.resolveFileByAccessKey(key);
 
 		if (file.kind === 'not-found') {
-			ctx.status(404);
-			ctx.header('Cache-Control', 'max-age=86400');
+			ctx.header('Cache-Control', 'public, max-age=0');
 			const fileBuffer = await fsp.readFile(resolve(this.assetsPath, 'dummy.png'));
 			ctx.header('Content-Type', 'image/png');
 			ctx.header('Content-Length', fileBuffer.length.toString());
-			return ctx.body(bufferToWebStream(fileBuffer));
+			return ctx.body(bufferToWebStream(fileBuffer), 404);
 		}
 
 		if (file.kind === 'unavailable') {
