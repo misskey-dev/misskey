@@ -49,6 +49,7 @@
 		"eslint-plugin-vue": "10.9.1",
 		"happy-dom": "20.9.0",
 		"intersection-observer": "0.12.2",
+		"lightningcss": "1.32.0",
 		"micromatch": "4.0.8",
 		"msw": "2.14.6",
 		"prettier": "3.8.3",
