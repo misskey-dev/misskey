@@ -55,6 +55,7 @@ export type CustomMadoriEnvOptions = {
 	units: ({
 		type: 'floor';
 		walls: Record<'n' | 's' | 'w' | 'e', {
+			type?: null | 'window';
 			material: string;
 			withBeam?: boolean;
 			beamMaterial?: string;

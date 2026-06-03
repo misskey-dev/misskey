@@ -939,18 +939,18 @@ export class CustomMadoriEnvManager extends EnvManager<CustomMadoriEnvOptions> {
 			return [x, z];
 		}
 
-		function postToIndex(x: number, z: number): number {
+		function posToIndex(x: number, z: number): number {
 			if (x < 0 || z < 0 || x >= options.dimension[0] || z >= options.dimension[1]) return -1;
 			return x + (options.dimension[0] * z);
 		}
 
-		const unitDef = options.units[postToIndex(x, z)];
+		const unitDef = options.units[posToIndex(x, z)];
 		if (unitDef == null) return;
 
-		const unitNDef = options.units[postToIndex(x, z + 1)];
-		const unitSDef = options.units[postToIndex(x, z - 1)];
-		const unitWDef = options.units[postToIndex(x + 1, z)];
-		const unitEDef = options.units[postToIndex(x - 1, z)];
+		const unitNDef = options.units[posToIndex(x, z + 1)];
+		const unitSDef = options.units[posToIndex(x, z - 1)];
+		const unitWDef = options.units[posToIndex(x + 1, z)];
+		const unitEDef = options.units[posToIndex(x - 1, z)];
 
 		const shiftedX = x - (options.dimension[0] / 2) + 0.5;
 

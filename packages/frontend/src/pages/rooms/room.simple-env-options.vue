@@ -100,7 +100,7 @@ import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, 
 import { getHex, getRgb } from 'misskey-world/src/utility.js';
 import XWallOption from './room.simple-env-wall-options.vue';
 import XPillarOption from './room.simple-env-pillar-options.vue';
-import type { SimpleEnvOptions } from 'misskey-world/src/room/type.js';
+import type { SimpleEnvOptions } from 'misskey-world/src/room/env.js';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import MkSelect from '@/components/MkSelect.vue';

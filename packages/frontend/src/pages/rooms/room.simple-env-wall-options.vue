@@ -47,7 +47,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import { getHex, getRgb } from 'misskey-world/src/utility.js';
-import type { SimpleEnvOptions } from 'misskey-world/src/room/type.js';
+import type { SimpleEnvOptions } from 'misskey-world/src/room/env.js';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
 import MkSelect from '@/components/MkSelect.vue';

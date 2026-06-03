@@ -25,6 +25,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template v-if="controller.roomState.value.env.type === 'simple'">
 			<XDefaultEnvOptions :options="controller.roomState.value.env.options" @update="v => controller.updateEnvOptions(v)"></XDefaultEnvOptions>
 		</template>
+		<template v-else-if="controller.roomState.value.env.type === 'customMadori'">
+			<XCustomMadoriEnvOptions :options="controller.roomState.value.env.options" @update="v => controller.updateEnvOptions(v)"></XCustomMadoriEnvOptions>
+		</template>
 	</div>
 </div>
 </template>
@@ -35,6 +38,7 @@ import { getHex, getRgb } from 'misskey-world/src/utility.js';
 import XWallOption from './room.simple-env-wall-options.vue';
 import XPillarOption from './room.simple-env-pillar-options.vue';
 import XDefaultEnvOptions from './room.simple-env-options.vue';
+import XCustomMadoriEnvOptions from './room.custom-madori-env-options.vue';
 import type { RoomController } from '@/world/room/controller.js';
 import { i18n } from '@/i18n.js';
 import MkButton from '@/components/MkButton.vue';
