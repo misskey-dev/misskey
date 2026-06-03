@@ -13,13 +13,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	group="pageBlocks"
 	@update:modelValue="v => emit('update:modelValue', v)"
 >
-	<template #default="{ item, dragStart }">
+	<template #default="{ item, pointerStart }">
 		<div>
 			<!-- divが無いとエラーになる -->
 			<component
 				:is="getComponent(item.type)"
 				:modelValue="item"
-				:dragStartCallback="dragStart"
+				:pointerStartCallback="pointerStart"
 				@update:modelValue="updateItem"
 				@remove="() => removeItem(item)"
 			/>
@@ -29,12 +29,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import type { Component } from 'vue';
 import * as Misskey from 'misskey-js';
 import XSection from './els/page-editor.el.section.vue';
 import XText from './els/page-editor.el.text.vue';
 import XImage from './els/page-editor.el.image.vue';
 import XNote from './els/page-editor.el.note.vue';
+import type { Component } from 'vue';
 import MkDraggable from '@/components/MkDraggable.vue';
 
 function getComponent(type: Misskey.entities.Page['content'][number]['type']): Component {

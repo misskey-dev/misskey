@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button v-if="removable" class="_button" @click="remove()">
 				<i class="ti ti-trash"></i>
 			</button>
-			<button v-if="draggable" class="drag-handle _button" tabindex="-1" :draggable="true" @dragstart.stop="dragStartCallback">
+			<button v-if="draggable" class="drag-handle _button" tabindex="-1" @pointerdown.stop="pointerStartCallback">
 				<i class="ti ti-menu-2"></i>
 			</button>
 			<button class="_button" @click="toggleContent(!showBody)">
@@ -34,7 +34,7 @@ const props = withDefaults(defineProps<{
 	expanded?: boolean;
 	removable?: boolean;
 	draggable?: boolean;
-	dragStartCallback?: (ev: DragEvent) => void;
+	pointerStartCallback?: (ev: PointerEvent) => void;
 }>(), {
 	expanded: true,
 	removable: true,
@@ -111,6 +111,8 @@ function remove() {
 
 			.drag-handle {
 				cursor: move;
+				// MkDraggable のハンドル: ブラウザのジェスチャを抑止
+				touch-action: none;
 			}
 		}
 	}

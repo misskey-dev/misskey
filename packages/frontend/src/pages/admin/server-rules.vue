@@ -18,11 +18,11 @@ SPDX-License-Identifier: AGPL-3.0-only
 				withGaps
 				manualDragStart
 			>
-				<template #default="{ item, index, dragStart }">
+				<template #default="{ item, index, pointerStart }">
 					<div :class="$style.item">
 						<div :class="$style.itemHeader">
 							<div :class="$style.itemNumber">{{ index + 1 }}</div>
-							<span :class="$style.itemHandle" :draggable="true" @dragstart.stop="dragStart"><i class="ti ti-menu"></i></span>
+							<span :class="$style.itemHandle" @pointerdown.stop="pointerStart"><i class="ti ti-menu"></i></span>
 							<button class="_button" :class="$style.itemRemove" @click="remove(item.id)"><i class="ti ti-x"></i></button>
 						</div>
 						<MkInput :modelValue="item.text" @update:modelValue="serverRules[index].text = $event"/>
@@ -85,6 +85,8 @@ function remove(id: string): void {
 	align-items: center;
 	justify-content: center;
 	cursor: move;
+	// MkDraggable のハンドル: ブラウザのジェスチャを抑止
+	touch-action: none;
 }
 
 .itemNumber {

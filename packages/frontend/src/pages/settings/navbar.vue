@@ -14,12 +14,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 					direction="vertical"
 					manualDragStart
 				>
-					<template #default="{ item, dragStart }">
+					<template #default="{ item, pointerStart }">
 						<div
 							v-if="item.type === '-' || navbarItemDef[item.type]"
 							:class="$style.item"
 						>
-							<button class="_button" :class="$style.itemHandle" tabindex="-1" :draggable="true" @dragstart.stop="dragStart"><i class="ti ti-menu"></i></button>
+							<button class="_button" :class="$style.itemHandle" tabindex="-1" @pointerdown.stop="pointerStart"><i class="ti ti-menu"></i></button>
 							<i class="ti-fw" :class="[$style.itemIcon, navbarItemDef[item.type]?.icon]"></i><span :class="$style.itemText">{{ navbarItemDef[item.type]?.title ?? i18n.ts.divider }}</span>
 							<button class="_button" :class="$style.itemRemove" @click="removeItem(item.id)"><i class="ti ti-x"></i></button>
 						</div>
@@ -162,5 +162,7 @@ definePage(() => ({
 	height: 32px;
 	margin: 0 8px;
 	opacity: 0.5;
+	// MkDraggable のハンドル: ブラウザのジェスチャを抑止
+	touch-action: none;
 }
 </style>
