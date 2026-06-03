@@ -785,6 +785,10 @@ export class CustomMadoriEnvManager extends EnvManager<CustomMadoriEnvOptions> {
 	private wallBeamMaterials: Record<string, BABYLON.PBRMaterial> = {};
 	private pillarMaterials: Record<string, BABYLON.PBRMaterial> = {};
 	private ceilingMaterials: Record<string, BABYLON.PBRMaterial> = {};
+	private beamMesh: BABYLON.Mesh | null = null;
+	private baseboardMesh: BABYLON.Mesh | null = null;
+	private wallARootNode: BABYLON.TransformNode | null = null;
+	private wallBRootNode: BABYLON.TransformNode | null = null;
 	private skybox: BABYLON.Mesh | null = null;
 	private skyboxMat: BABYLON.StandardMaterial | null = null;
 	private roomLight: BABYLON.DirectionalLight | null = null;
@@ -921,6 +925,10 @@ export class CustomMadoriEnvManager extends EnvManager<CustomMadoriEnvOptions> {
 
 		this.floorRootNode = this.loaderResult.transformNodes.find(t => t.name.includes('__FLOOR__'))!;
 		this.wallRootNode = this.loaderResult.transformNodes.find(t => t.name.includes('__WALL__'))!;
+		this.beamMesh = this.loaderResult.meshes.find(m => m.name.includes('__BEAM__')) as BABYLON.Mesh;
+		this.baseboardMesh = this.loaderResult.meshes.find(m => m.name.includes('__BASEBOARD__')) as BABYLON.Mesh;
+		this.wallARootNode = this.loaderResult.transformNodes.find(t => t.name.includes('__WALL_A__'))!;
+		this.wallBRootNode = this.loaderResult.transformNodes.find(t => t.name.includes('__WALL_B__'))!;
 
 		const baseboardMaterial = findMaterial(this.rootNode, '__BASEBOARD__');
 		//baseboardMaterial.metadata.disableEnvMap = true;
@@ -969,45 +977,59 @@ export class CustomMadoriEnvManager extends EnvManager<CustomMadoriEnvOptions> {
 		ceilingMesh.material = unitDef.ceiling?.material != null && this.ceilingMaterials[unitDef.ceiling.material] != null ? this.ceilingMaterials[unitDef.ceiling.material] : defaultCeilingMaterial;
 		const defaultWallMaterial = this.wallMaterials[options.wallMaterials[0].id];
 
-		if (unitNDef == null) {
-			const wallDef = unitDef.walls?.n ?? {};
-			const unitWallRootNode = this.wallRootNode.clone(`unit_${x}_${z}_wall_n`, unitRoot)!;
-			unitWallRootNode.scaling = new BABYLON.Vector3(-WORLD_SCALE, WORLD_SCALE, WORLD_SCALE);
-			unitWallRootNode.rotation = new BABYLON.Vector3(0, Math.PI, 0);
-			unitWallRootNode.position = new BABYLON.Vector3(0, 0, cm(50));
-			unitWallRootNode.getChildMeshes().find(m => m.name.includes('__WALL__'))!.material = wallDef.material != null && this.wallMaterials[wallDef.material] != null ? this.wallMaterials[wallDef.material] : defaultWallMaterial;
-			unitWallRootNode.getChildMeshes().find(m => m.name.includes('__BEAM__'))!.isVisible = wallDef.withBeam;
-			unitWallRootNode.getChildMeshes().find(m => m.name.includes('__BASEBOARD__'))!.isVisible = wallDef.withBaseboard;
-		}
-		if (unitSDef == null) {
-			const wallDef = unitDef.walls?.s ?? {};
-			const unitWallRootNode = this.wallRootNode.clone(`unit_${x}_${z}_wall_s`, unitRoot)!;
-			unitWallRootNode.scaling = new BABYLON.Vector3(-WORLD_SCALE, WORLD_SCALE, WORLD_SCALE);
-			unitWallRootNode.position = new BABYLON.Vector3(0, 0, cm(-50));
-			unitWallRootNode.getChildMeshes().find(m => m.name.includes('__WALL__'))!.material = wallDef.material != null && this.wallMaterials[wallDef.material] != null ? this.wallMaterials[wallDef.material] : defaultWallMaterial;
-			unitWallRootNode.getChildMeshes().find(m => m.name.includes('__BEAM__'))!.isVisible = wallDef.withBeam;
-			unitWallRootNode.getChildMeshes().find(m => m.name.includes('__BASEBOARD__'))!.isVisible = wallDef.withBaseboard;
-		}
-		if (unitWDef == null) {
-			const wallDef = unitDef.walls?.w ?? {};
-			const unitWallRootNode = this.wallRootNode.clone(`unit_${x}_${z}_wall_w`, unitRoot)!;
-			unitWallRootNode.scaling = new BABYLON.Vector3(-WORLD_SCALE, WORLD_SCALE, WORLD_SCALE);
-			unitWallRootNode.rotation = new BABYLON.Vector3(0, -Math.PI / 2, 0);
-			unitWallRootNode.position = new BABYLON.Vector3(cm(50), 0, 0);
-			unitWallRootNode.getChildMeshes().find(m => m.name.includes('__WALL__'))!.material = wallDef.material != null && this.wallMaterials[wallDef.material] != null ? this.wallMaterials[wallDef.material] : defaultWallMaterial;
-			unitWallRootNode.getChildMeshes().find(m => m.name.includes('__BEAM__'))!.isVisible = wallDef.withBeam;
-			unitWallRootNode.getChildMeshes().find(m => m.name.includes('__BASEBOARD__'))!.isVisible = wallDef.withBaseboard;
-		}
-		if (unitEDef == null) {
-			const wallDef = unitDef.walls?.e ?? {};
-			const unitWallRootNode = this.wallRootNode.clone(`unit_${x}_${z}_wall_e`, unitRoot)!;
-			unitWallRootNode.scaling = new BABYLON.Vector3(-WORLD_SCALE, WORLD_SCALE, WORLD_SCALE);
-			unitWallRootNode.rotation = new BABYLON.Vector3(0, Math.PI / 2, 0);
-			unitWallRootNode.position = new BABYLON.Vector3(cm(-50), 0, 0);
-			unitWallRootNode.getChildMeshes().find(m => m.name.includes('__WALL__'))!.material = wallDef.material != null && this.wallMaterials[wallDef.material] != null ? this.wallMaterials[wallDef.material] : defaultWallMaterial;
-			unitWallRootNode.getChildMeshes().find(m => m.name.includes('__BEAM__'))!.isVisible = wallDef.withBeam;
-			unitWallRootNode.getChildMeshes().find(m => m.name.includes('__BASEBOARD__'))!.isVisible = wallDef.withBaseboard;
-		}
+		const createWall = (dir: 'n' | 's' | 'w' | 'e') => {
+			const wallDef = unitDef.walls?.[dir] ?? {};
+			const wallRootNode = this.wallRootNode.clone(`unit_${x}_${z}_wall_${dir}`, unitRoot)!;
+			wallRootNode.scaling = new BABYLON.Vector3(-WORLD_SCALE, WORLD_SCALE, WORLD_SCALE);
+
+			switch (dir) {
+				case 'n':
+					wallRootNode.rotation = new BABYLON.Vector3(0, Math.PI, 0);
+					wallRootNode.position = new BABYLON.Vector3(0, 0, cm(50));
+					break;
+				case 's':
+					wallRootNode.position = new BABYLON.Vector3(0, 0, cm(-50));
+					break;
+				case 'w':
+					wallRootNode.rotation = new BABYLON.Vector3(0, -Math.PI / 2, 0);
+					wallRootNode.position = new BABYLON.Vector3(cm(50), 0, 0);
+					break;
+				case 'e':
+					wallRootNode.rotation = new BABYLON.Vector3(0, Math.PI / 2, 0);
+					wallRootNode.position = new BABYLON.Vector3(cm(-50), 0, 0);
+					break;
+			}
+
+			const beamMesh = wallRootNode.getChildMeshes().find(m => m.name.includes('__BEAM__'));
+			beamMesh.isVisible = wallDef.withBeam === true;
+
+			const baseboardMesh = wallRootNode.getChildMeshes().find(m => m.name.includes('__BASEBOARD__'));
+			baseboardMesh.isVisible = wallDef.withBaseboard === true;
+
+			switch (wallDef.type) {
+				case 'window': {
+					const wallNode = this.wallBRootNode.clone('', wallRootNode)!;
+					const wallMesh = wallNode.getChildMeshes().find(m => m.name.includes('__WALL__'))!;
+					wallMesh.material = wallDef.material != null && this.wallMaterials[wallDef.material] != null ? this.wallMaterials[wallDef.material] : defaultWallMaterial;
+					break;
+				}
+				case 'door': {
+					//wallMeshOriginal = this.wallAMesh;
+					break;
+				}
+				default: {
+					const wallNode = this.wallARootNode.clone('', wallRootNode)!;
+					const wallMesh = wallNode.getChildMeshes().find(m => m.name.includes('__WALL__'))!;
+					wallMesh.material = wallDef.material != null && this.wallMaterials[wallDef.material] != null ? this.wallMaterials[wallDef.material] : defaultWallMaterial;
+					break;
+				}
+			}
+		};
+
+		if (unitNDef == null) createWall('n');
+		if (unitSDef == null) createWall('s');
+		if (unitWDef == null) createWall('w');
+		if (unitEDef == null) createWall('e');
 
 		for (const mesh of unitRoot.getChildMeshes()) {
 			this.meshes.push(mesh);
