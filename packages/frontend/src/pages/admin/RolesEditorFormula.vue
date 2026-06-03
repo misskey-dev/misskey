@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.header">
 		<MkSelect v-model="typeModelForMkSelect" :items="typeDef" :class="$style.typeSelect">
 		</MkSelect>
-		<button v-if="draggable" class="_button" :class="$style.dragHandle" :draggable="true" @dragstart.stop="dragStartCallback">
+		<button v-if="draggable" class="_button" :class="$style.dragHandle" :draggable="true" @dragstart.stop="dragStartCallback" @touchstart.passive="touchStartCallback">
 			<i class="ti ti-menu-2"></i>
 		</button>
 		<button v-if="draggable" class="_button" :class="$style.remove" @click="removeSelf">
@@ -25,12 +25,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			manualDragStart
 			group="roleFormula"
 		>
-			<template #default="{ item, dragStart }">
+			<template #default="{ item, dragStart, touchStart }">
 				<div :class="$style.item">
 					<!-- divが無いとエラーになる -->
 					<RolesEditorFormula
 						:modelValue="item"
 						:dragStartCallback="dragStart"
+						:touchStartCallback="touchStart"
 						draggable
 						@update:modelValue="updated => childValuesItemUpdated(updated)"
 						@remove="removeChildItem(item.id)"
@@ -79,6 +80,7 @@ const props = defineProps<{
 	modelValue: Misskey.entities.Role['condFormula'];
 	draggable?: boolean;
 	dragStartCallback?: (ev: DragEvent) => void;
+	touchStartCallback?: (ev: TouchEvent) => void;
 }>();
 
 const v = ref(deepClone(props.modelValue));

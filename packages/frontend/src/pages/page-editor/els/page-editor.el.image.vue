@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
-<XContainer :draggable="true" :dragStartCallback="dragStartCallback" @remove="() => emit('remove')">
+<XContainer :draggable="true" :dragStartCallback="dragStartCallback" :touchStartCallback="touchStartCallback" @remove="() => emit('remove')">
 	<template #header><i class="ti ti-photo"></i> {{ i18n.ts._pages.blocks.image }}</template>
 	<template #func>
 		<button @click="choose()">
@@ -31,6 +31,7 @@ import { chooseDriveFile } from '@/utility/drive.js';
 
 const props = defineProps<{
 	dragStartCallback?: (ev: DragEvent) => void;
+	touchStartCallback?: (ev: TouchEvent) => void;
 	modelValue: Misskey.entities.PageBlock & { type: 'image' };
 }>();
 

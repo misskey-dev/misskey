@@ -47,9 +47,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 						manualDragStart
 						@update:modelValue="v => pinnedNoteIds = v.map(x => x.id)"
 					>
-						<template #default="{ item, dragStart }">
+						<template #default="{ item, dragStart, touchStart }">
 							<div :class="$style.pinnedNote">
-								<button class="_button" :class="$style.pinnedNoteHandle" tabindex="-1" :draggable="true" @dragstart.stop="dragStart"><i class="ti ti-menu"></i></button>
+								<button class="_button" :class="$style.pinnedNoteHandle" tabindex="-1" :draggable="true" @dragstart.stop="dragStart" @touchstart.passive="touchStart"><i class="ti ti-menu"></i></button>
 								{{ item.id }}
 								<button class="_button" :class="$style.pinnedNoteRemove" @click="removePinnedNote(item.id)"><i class="ti ti-x"></i></button>
 							</div>
