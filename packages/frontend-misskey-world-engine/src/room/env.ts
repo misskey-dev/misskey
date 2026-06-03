@@ -777,6 +777,7 @@ export class CustomMadoriEnvManager extends EnvManager<CustomMadoriEnvOptions> {
 	private loaderResult: BABYLON.ISceneLoaderAsyncResult | null = null;
 	private meshes: BABYLON.Mesh[] = [];
 	private rootNode: BABYLON.TransformNode;
+	private unitRootNodes: (BABYLON.TransformNode | null)[] = [];
 	private floorRootNode: BABYLON.TransformNode | null = null;
 	private wallRootNode: BABYLON.TransformNode | null = null;
 	private floorMaterials: Record<string, BABYLON.PBRMaterial> = {};
@@ -1010,6 +1011,8 @@ export class CustomMadoriEnvManager extends EnvManager<CustomMadoriEnvOptions> {
 		}
 
 		this.registerMeshes(unitRoot.getChildMeshes());
+
+		return unitRoot;
 	}
 
 	public setTime(time: number) {
@@ -1059,9 +1062,15 @@ export class CustomMadoriEnvManager extends EnvManager<CustomMadoriEnvOptions> {
 	public applyOptions(options: CustomMadoriEnvOptions) {
 		// TODO: 返り値をpromiseにしてちゃんとテクスチャが読み終わってからresolveする
 
+		for (const n of this.unitRootNodes) {
+			if (n != null) n.dispose();
+		}
+		this.unitRootNodes = [];
+
 		for (let z = 0; z < options.dimension[1]; z++) {
 			for (let x = 0; x < options.dimension[0]; x++) {
-				this.createUnit(options, x, z);
+				const node = this.createUnit(options, x, z);
+				this.unitRootNodes.push(node);
 			}
 		}
 	}

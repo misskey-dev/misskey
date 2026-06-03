@@ -60,7 +60,7 @@ export type CustomMadoriEnvOptions = {
 			withBeam?: boolean;
 			beamMaterial?: string;
 			withBaseboard?: boolean;
-		}>;
+		} | undefined>;
 		pillars: Record<'nw' | 'ne' | 'sw' | 'se', {
 			material: string;
 			show?: boolean;

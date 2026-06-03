@@ -8,13 +8,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div class="_gaps">
 		<div :class="$style.cells" :style="cellsStyle">
 			<div
-				v-for="(unit, i) in options.units"
+				v-for="(_, i) in options.units"
 				:key="i"
 				:class="[$style.cell, {
-					[$style.cell_active]: activeUnitIndex === i,
-					[$style.cell_empty]: unit == null,
+					[$style.cell_active]: activeCellIndex === i,
+					[$style.cell_empty]: options.units[cellIndexToUnitIndex(i)] == null,
 				}]"
-				@click="activeUnitIndex = i"
+				@click="activeCellIndex = i"
 			>
 			</div>
 		</div>
@@ -36,6 +36,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import { getHex, getRgb } from 'misskey-world/src/utility.js';
+import { throttle } from 'throttle-debounce';
 import XWallOption from './room.simple-env-wall-options.vue';
 import XPillarOption from './room.simple-env-pillar-options.vue';
 import type { CustomMadoriEnvOptions } from 'misskey-world/src/room/env.js';
@@ -62,6 +63,11 @@ function posToIndex(x: number, z: number): number {
 	return x + (dimensions[0] * z);
 }
 
+const cellIndexToUnitIndex = (index: number) => {
+	const [x, z] = indexToPos(index);
+	return posToIndex(x, dimensions[1] - 1 - z);
+};
+
 const props = defineProps<{
 	options: CustomMadoriEnvOptions;
 }>();
@@ -77,11 +83,15 @@ const cellsStyle = computed(() => {
 	};
 });
 
-const activeUnitIndex = ref<number | null>(null);
+const activeCellIndex = ref<number | null>(null);
+const activeUnitIndex = computed(() => {
+	if (activeCellIndex.value == null) return null;
+	return cellIndexToUnitIndex(activeCellIndex.value);
+});
 
-function update(v: Partial<CustomMadoriEnvOptions>) {
+const update = throttle(1000, (v: Partial<CustomMadoriEnvOptions>) => {
 	emit('update', { ...props.options, ...v });
-}
+});
 
 function updateUnitType(index: number, type: 'floor' | null) {
 	const units = deepClone(props.options.units);
