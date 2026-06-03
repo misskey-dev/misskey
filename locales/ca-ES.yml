@@ -2088,6 +2088,7 @@ _role:
     driveCapacity: "Capacitat del disc"
     maxFileSize: "Mida màxima de l'arxiu que es pot carregar"
     maxFileSize_caption: "Pot haver-hi la possibilitat que existeixin altres opcions de configuració de l'etapa anterior, com podria ser el proxy invers i la CDN."
+    maxFileSize_caption2: "La configuració de la mida màxima de fitxer per a tot el servidor és {max}. Per permetre la pujada de fitxers més grans, si us plau, canvieu aquesta opció al fitxer de configuració de Misskey."
     alwaysMarkNsfw: "Marca sempre els fitxers com a sensibles"
     canUpdateBioMedia: "Permet l'edició d'una icona o un bàner"
     pinMax: "Nombre màxim de notes fixades"
