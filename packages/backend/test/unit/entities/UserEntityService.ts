@@ -23,6 +23,7 @@ import { DI } from '@/di-symbols.js';
 import { AvatarDecorationService } from '@/core/AvatarDecorationService.js';
 import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { NotificationEntityService } from '@/core/entities/NotificationEntityService.js';
 import { PageEntityService } from '@/core/entities/PageEntityService.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { AnnouncementService } from '@/core/AnnouncementService.js';
@@ -145,6 +146,7 @@ describe('UserEntityService', () => {
 				UserEntityService,
 				ApPersonService,
 				NoteEntityService,
+				NotificationEntityService,
 				PageEntityService,
 				CustomEmojiService,
 				AnnouncementService,
