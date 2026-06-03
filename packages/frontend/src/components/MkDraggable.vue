@@ -73,10 +73,12 @@ import { genId } from '@/utility/id.js';
 /**
  * default スロットの `pointerStart` を `manualDragStart=true` のハンドル要素に配線する場合、
  * そのハンドル要素には CSS で `touch-action: none` を指定すること。
- * Pointer Events 仕様 (§11.1) によりブラウザは pointerdown の瞬間にジェスチャ判定を確定する
+ * Pointer Events 仕様 (*1) によりブラウザは pointerdown の瞬間にジェスチャ判定を確定する
  * ため、JS から後で touch-action を書き換えても間に合わない。touch-action: none を予め
  * 指定しておかないと、ハンドルを掴んでから指を縦に動かした瞬間にブラウザがスクロール
  * ジェスチャを始めて pointercancel を投げてくる。
+ *
+ * *1 https://www.w3.org/TR/pointerevents3/#determining-supported-direct-manipulation-behavior
  */
 const slots = defineSlots<{
 	default(props: { item: T; index: number; pointerStart: (ev: PointerEvent) => void }): any;
