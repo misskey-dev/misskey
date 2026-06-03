@@ -63,8 +63,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				try {
 					await this.userAuthService.twoFactorAuthenticate(profile, token);
-				} catch (_) {
-					throw new ApiError(meta.errors.invalidCredential);
+				} catch (e) {
+					if (e instanceof UserAuthService.AuthenticationFailedError) {
+						throw new ApiError(meta.errors.invalidCredential);
+					}
+					throw e;
 				}
 			}
 
