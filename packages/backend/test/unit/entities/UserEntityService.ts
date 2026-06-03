@@ -25,6 +25,8 @@ import { ApPersonService } from '@/core/activitypub/models/ApPersonService.js';
 import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { NotificationEntityService } from '@/core/entities/NotificationEntityService.js';
 import { PageEntityService } from '@/core/entities/PageEntityService.js';
+import { RoleEntityService } from '@/core/entities/RoleEntityService.js';
+import { ChatEntityService } from '@/core/entities/ChatEntityService.js';
 import { CustomEmojiService } from '@/core/CustomEmojiService.js';
 import { AnnouncementService } from '@/core/AnnouncementService.js';
 import { RoleService } from '@/core/RoleService.js';
@@ -148,6 +150,8 @@ describe('UserEntityService', () => {
 				NoteEntityService,
 				NotificationEntityService,
 				PageEntityService,
+				RoleEntityService,
+				ChatEntityService,
 				CustomEmojiService,
 				AnnouncementService,
 				RoleService,
