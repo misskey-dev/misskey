@@ -499,7 +499,7 @@ export class ClientServerService {
 			const feed = await getFeed(user);
 
 			if (feed) {
-				ctx.header('Content-Type', 'application/json; charset=utf-8');
+				ctx.header('Content-Type', 'application/json');
 				return ctx.json(feed.json1());
 			} else {
 				ctx.status(404);

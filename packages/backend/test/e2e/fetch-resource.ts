@@ -18,9 +18,10 @@ const PREFER_HTML = 'text/html, */*';
 const UNSPECIFIED = '*/*';
 
 // Response Content-Type in lowercase
-const AP = 'application/activity+json; charset=utf-8';
+// https://www.rfc-editor.org/rfc/rfc8259.html#section-8.1 - "JSON text exchanged between systems that are not part of a closed ecosystem MUST be encoded using UTF-8"
+const AP = 'application/activity+json';
 const HTML = 'text/html; charset=utf-8';
-const JSON_UTF8 = 'application/json; charset=utf-8';
+const JSON_UTF8 = 'application/json';
 
 describe('Webリソース', () => {
 	let alice: misskey.entities.SignupResponse;
@@ -106,7 +107,7 @@ describe('Webリソース', () => {
 		{ path: '/cli', type: HTML },
 		{ path: '/flush', type: HTML },
 		{ path: '/robots.txt', type: 'text/plain; charset=UTF-8' },
-		{ path: '/favicon.ico', type: 'image/vnd.microsoft.icon' },
+		{ path: '/favicon.ico', type: 'image/x-icon' },
 		{ path: '/opensearch.xml', type: 'application/opensearchdescription+xml' },
 		{ path: '/apple-touch-icon.png', type: 'image/png' },
 		{ path: '/twemoji/2764.svg', type: 'image/svg+xml' },
@@ -137,7 +138,7 @@ describe('Webリソース', () => {
 	describe.each([
 		{ ext: 'rss', type: 'application/rss+xml; charset=utf-8' },
 		{ ext: 'atom', type: 'application/atom+xml; charset=utf-8' },
-		{ ext: 'json', type: 'application/json; charset=utf-8' },
+		{ ext: 'json', type: 'application/json' },
 	])('/@:username.$ext', ({ ext, type }) => {
 		const path = (username: string): string => `/@${username}.${ext}`;
 

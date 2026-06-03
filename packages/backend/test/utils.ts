@@ -100,7 +100,7 @@ export const api = async <E extends keyof misskey.Endpoints, P extends misskey.E
 		redirect: 'manual',
 	});
 
-	const body = res.headers.get('content-type') === 'application/json; charset=utf-8'
+	const body = res.headers.get('content-type') === 'application/json'
 		? await res.json() as misskey.api.SwitchCaseResponseType<E, P>
 		: null;
 
@@ -474,8 +474,8 @@ export const simpleGet = async (path: string, accept = '*/*', cookie: any = unde
 	});
 
 	const jsonTypes = [
-		'application/json; charset=utf-8',
-		'application/activity+json; charset=utf-8',
+		'application/json',
+		'application/activity+json',
 	];
 	const htmlTypes = [
 		'text/html; charset=utf-8',

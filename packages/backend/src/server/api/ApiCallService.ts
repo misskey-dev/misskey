@@ -269,7 +269,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		} else {
 			// 文字列を返す場合は、JSON.stringify通さないとJSONと認識されない
 			if (typeof x === 'string') {
-				ctx.header('Content-Type', 'application/json; charset=utf-8');
+				ctx.header('Content-Type', 'application/json');
 				return ctx.body(JSON.stringify(x));
 			}
 

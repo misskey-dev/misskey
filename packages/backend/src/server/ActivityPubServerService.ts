@@ -34,8 +34,8 @@ import { vary } from '@/misc/hono-vary.js';
 import type { Context as HonoContext } from 'hono';
 import type { FindOptionsWhere } from 'typeorm';
 
-const ACTIVITY_JSON = 'application/activity+json; charset=utf-8';
-const LD_JSON = 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8';
+const ACTIVITY_JSON = 'application/activity+json';
+const LD_JSON = 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"';
 
 @Injectable()
 export class ActivityPubServerService {

@@ -115,7 +115,7 @@ export class ApiServerService {
 
 		if (typeof result === 'string') {
 			if (ctx.res.headers.get('Content-Type') == null) {
-				ctx.header('Content-Type', 'application/json; charset=utf-8');
+				ctx.header('Content-Type', 'application/json');
 			}
 			return ctx.body(result, status as never);
 		}
