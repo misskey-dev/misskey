@@ -2088,6 +2088,7 @@ _role:
     driveCapacity: "Capienza del Drive"
     maxFileSize: "Dimensione massima del file caricabile"
     maxFileSize_caption: "Potrebbero esserci altre impostazioni nella fase precedente, come reverse proxy o CDN."
+    maxFileSize_caption2: "La dimensione massima dei file caricabili sul server è {max}. Per consentire il caricamento di file più grandi, aumenta la dimensione nel file di configurazione Misskey."
     alwaysMarkNsfw: "Impostare sempre come esplicito (NSFW)"
     canUpdateBioMedia: "Può aggiornare foto profilo e di testata"
     pinMax: "Quantità massima di Note in primo piano"
