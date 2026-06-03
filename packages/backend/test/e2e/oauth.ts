@@ -21,7 +21,9 @@ import {
 } from 'simple-oauth2';
 import pkceChallenge from 'pkce-challenge';
 import * as htmlParser from 'node-html-parser';
-import Fastify, { type FastifyInstance, type FastifyReply } from 'fastify';
+import { Hono } from 'hono';
+import type { Handler } from 'hono';
+import { serve } from '@hono/node-server';
 import { api, port, sendEnvUpdateRequest, signup } from '../utils.js';
 import type * as misskey from 'misskey-js';
 
@@ -155,28 +157,30 @@ async function assertDirectError(response: Response, status: number, error: stri
 }
 
 describe('OAuth', () => {
-	let fastify: FastifyInstance;
+	let hono: Hono;
+	let honoServer: ReturnType<typeof serve>;
 
 	let alice: misskey.entities.SignupResponse;
 	let bob: misskey.entities.SignupResponse;
 
-	let sender: (reply: FastifyReply) => void;
+	let sender: Handler;
 
 	beforeAll(async () => {
 		alice = await signup({ username: 'alice' });
 		bob = await signup({ username: 'bob' });
 
-		fastify = Fastify();
-		fastify.get('/', async (request, reply) => {
-			sender(reply);
+		hono = new Hono();
+		hono.get('/', sender);
+		honoServer = serve({
+			fetch: hono.fetch,
+			port: clientPort,
 		});
-		await fastify.listen({ port: clientPort });
 	}, 1000 * 60 * 2);
 
 	beforeEach(async () => {
 		await sendEnvUpdateRequest({ key: 'MISSKEY_TEST_CHECK_IP_RANGE', value: '' });
-		sender = (reply): void => {
-			reply.send(`
+		sender = (ctx) => {
+			return ctx.html(`
 				<!DOCTYPE html>
 				<link rel="redirect_uri" href="/redirect" />
 				<div class="h-app"><a href="/" class="u-url p-name">Misklient
@@ -185,7 +189,7 @@ describe('OAuth', () => {
 	});
 
 	afterAll(async () => {
-		await fastify.close();
+		honoServer.close();
 	});
 
 	test('Full flow', async () => {
@@ -813,9 +817,8 @@ describe('OAuth', () => {
 		// https://indieauth.spec.indieweb.org/#client-information-discovery
 		describe('JSON client metadata (11 July 2024)', () => {
 			test('Read JSON document', async () => {
-				sender = (reply): void => {
-					reply.header('content-type', 'application/json');
-					reply.send({
+				sender = (ctx) => {
+					return ctx.json({
 						client_id: `http://127.0.0.1:${clientPort}/`,
 						client_uri: `http://127.0.0.1:${clientPort}/`,
 						client_name: 'Misklient JSON',
@@ -840,10 +843,9 @@ describe('OAuth', () => {
 			});
 
 			test('Merge Link header redirect_uri with JSON redirect_uris', async () => {
-				sender = (reply): void => {
-					reply.header('Link', '</redirect2>; rel="redirect_uri"');
-					reply.header('content-type', 'application/json');
-					reply.send({
+				sender = (ctx) => {
+					ctx.header('Link', '</redirect2>; rel="redirect_uri"');
+					return ctx.json({
 						client_id: `http://127.0.0.1:${clientPort}/`,
 						client_uri: `http://127.0.0.1:${clientPort}/`,
 						client_name: 'Misklient JSON',
@@ -873,9 +875,8 @@ describe('OAuth', () => {
 			});
 
 			test('Reject when client_id does not match retrieved URL', async () => {
-				sender = (reply): void => {
-					reply.header('content-type', 'application/json');
-					reply.send({
+				sender = (ctx) => {
+					return ctx.json({
 						client_id: `http://127.0.0.1:${clientPort}/mismatch`,
 						client_uri: `http://127.0.0.1:${clientPort}/`,
 						redirect_uris: ['/redirect'],
@@ -894,9 +895,8 @@ describe('OAuth', () => {
 			});
 
 			test('Reject when client_uri is not a prefix of client_id', async () => {
-				sender = (reply): void => {
-					reply.header('content-type', 'application/json');
-					reply.send({
+				sender = (ctx) => {
+					return ctx.json({
 						client_id: `http://127.0.0.1:${clientPort}/`,
 						client_uri: `http://127.0.0.1:${clientPort}/no-prefix/`,
 						redirect_uris: ['/redirect'],
@@ -915,9 +915,8 @@ describe('OAuth', () => {
 			});
 
 			test('Reject when JSON metadata has no redirect_uris and no Link header', async () => {
-				sender = (reply): void => {
-					reply.header('content-type', 'application/json');
-					reply.send({
+				sender = (ctx) => {
+					return ctx.json({
 						client_id: `http://127.0.0.1:${clientPort}/`,
 						client_uri: `http://127.0.0.1:${clientPort}/`,
 						client_name: 'Misklient JSON',
@@ -939,31 +938,31 @@ describe('OAuth', () => {
 		// https://indieauth.spec.indieweb.org/20220212/#client-information-discovery
 		describe('HTML link client metadata (12 Feb 2022)', () => {
 			describe('Redirection', () => {
-				const tests: Record<string, (reply: FastifyReply) => void> = {
-					'Read HTTP header': reply => {
-						reply.header('Link', '</redirect>; rel="redirect_uri"');
-						reply.send(`
+				const tests: Record<string, Handler> = {
+					'Read HTTP header': (ctx) => {
+						ctx.header('Link', '</redirect>; rel="redirect_uri"');
+						return ctx.html(`
 							<!DOCTYPE html>
 							<div class="h-app"><a href="/" class="u-url p-name">Misklient
 						`);
 					},
-					'Mixed links': reply => {
-						reply.header('Link', '</redirect>; rel="redirect_uri"');
-						reply.send(`
+					'Mixed links': (ctx) => {
+						ctx.header('Link', '</redirect>; rel="redirect_uri"');
+						return ctx.html(`
 							<!DOCTYPE html>
 							<link rel="redirect_uri" href="/redirect2" />
 							<div class="h-app"><a href="/" class="u-url p-name">Misklient
 						`);
 					},
-					'Multiple items in Link header': reply => {
-						reply.header('Link', '</redirect2>; rel="redirect_uri",</redirect>; rel="redirect_uri"');
-						reply.send(`
+					'Multiple items in Link header': (ctx) => {
+						ctx.header('Link', '</redirect2>; rel="redirect_uri",</redirect>; rel="redirect_uri"');
+						return ctx.html(`
 							<!DOCTYPE html>
 							<div class="h-app"><a href="/" class="u-url p-name">Misklient
 						`);
 					},
-					'Multiple items in HTML': reply => {
-						reply.send(`
+					'Multiple items in HTML': (ctx) => {
+						return ctx.html(`
 							<!DOCTYPE html>
 							<link rel="redirect_uri" href="/redirect2" />
 							<link rel="redirect_uri" href="/redirect" />
@@ -990,8 +989,8 @@ describe('OAuth', () => {
 				}
 
 				test('No item', async () => {
-					sender = (reply): void => {
-						reply.send(`
+					sender = (ctx) => {
+						return ctx.html(`
 							<!DOCTYPE html>
 							<div class="h-app"><a href="/" class="u-url p-name">Misklient
 						`);
@@ -1028,9 +1027,9 @@ describe('OAuth', () => {
 			});
 
 			test('Missing name', async () => {
-				sender = (reply): void => {
-					reply.header('Link', '</redirect>; rel="redirect_uri"');
-					reply.send();
+				sender = (ctx) => {
+					ctx.header('Link', '</redirect>; rel="redirect_uri"');
+					return ctx.body(null, 204);
 				};
 
 				const client = new AuthorizationCode(clientConfig);
@@ -1047,16 +1046,15 @@ describe('OAuth', () => {
 			});
 
 			test('With Logo', async () => {
-				sender = (reply): void => {
-					reply.header('Link', '</redirect>; rel="redirect_uri"');
-					reply.send(`
+				sender = (ctx) => {
+					ctx.header('Link', '</redirect>; rel="redirect_uri"');
+					return ctx.html(`
 						<!DOCTYPE html>
 						<div class="h-app">
 							<a href="/" class="u-url p-name">Misklient</a>
 							<img src="/logo.png" class="u-logo" />
 						</div>
 					`);
-					reply.send();
 				};
 
 				const client = new AuthorizationCode(clientConfig);
@@ -1075,13 +1073,12 @@ describe('OAuth', () => {
 			});
 
 			test('Missing Logo', async () => {
-				sender = (reply): void => {
-					reply.header('Link', '</redirect>; rel="redirect_uri"');
-					reply.send(`
+				sender = (ctx) => {
+					ctx.header('Link', '</redirect>; rel="redirect_uri"');
+					return ctx.html(`
 						<!DOCTYPE html>
 						<div class="h-app"><a href="/" class="u-url p-name">Misklient
 					`);
-					reply.send();
 				};
 
 				const client = new AuthorizationCode(clientConfig);
@@ -1100,13 +1097,12 @@ describe('OAuth', () => {
 			});
 
 			test('Mismatching URL in h-app', async () => {
-				sender = (reply): void => {
-					reply.header('Link', '</redirect>; rel="redirect_uri"');
-					reply.send(`
+				sender = (ctx) => {
+					ctx.header('Link', '</redirect>; rel="redirect_uri"');
+					return ctx.html(`
 						<!DOCTYPE html>
 						<div class="h-app"><a href="/foo" class="u-url p-name">Misklient
 					`);
-					reply.send();
 				};
 
 				const client = new AuthorizationCode(clientConfig);
