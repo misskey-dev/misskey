@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 
-		<div v-if="activeUnitIndex != null">
+		<div v-if="activeUnitIndex != null" :key="activeUnitIndex" class="_gaps_s">
 			<MkSelect
 				:items="[
 					{ label: 'Empty', value: null },
@@ -35,6 +35,32 @@ SPDX-License-Identifier: AGPL-3.0-only
 			>
 				<template #label>type</template>
 			</MkSelect>
+
+			<MkFolder defaultOpen>
+				<template #label>Walls</template>
+
+				<div class="_gaps_s">
+					<MkFolder>
+						<template #label>Wall N</template>
+						<XWallOption :options="_units[activeUnitIndex]?.walls?.n" @update="v => { updateWalls({ ..._units[activeUnitIndex]?.walls, n: v }); }"></XWallOption>
+					</MkFolder>
+
+					<MkFolder>
+						<template #label>Wall S</template>
+						<XWallOption :options="_units[activeUnitIndex]?.walls?.s" @update="v => { updateWalls({ ..._units[activeUnitIndex]?.walls, s: v }); }"></XWallOption>
+					</MkFolder>
+
+					<MkFolder>
+						<template #label>Wall W</template>
+						<XWallOption :options="_units[activeUnitIndex]?.walls?.w" @update="v => { updateWalls({ ..._units[activeUnitIndex]?.walls, w: v }); }"></XWallOption>
+					</MkFolder>
+
+					<MkFolder>
+						<template #label>Wall E</template>
+						<XWallOption :options="_units[activeUnitIndex]?.walls?.e" @update="v => { updateWalls({ ..._units[activeUnitIndex]?.walls, e: v }); }"></XWallOption>
+					</MkFolder>
+				</div>
+			</MkFolder>
 		</div>
 	</div>
 </div>
@@ -44,7 +70,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import { getHex, getRgb } from 'misskey-world/src/utility.js';
 import { throttle } from 'throttle-debounce';
-import XWallOption from './room.simple-env-wall-options.vue';
+import XWallOption from './room.custom-madori-env-wall-options.vue';
 import XPillarOption from './room.simple-env-pillar-options.vue';
 import type { CustomMadoriEnvOptions } from 'misskey-world/src/room/env.js';
 import { i18n } from '@/i18n.js';
@@ -123,6 +149,17 @@ function onCellPointerover(e: PointerEvent, cellIndex: number) {
 	if (unitIndex === -1) return;
 
 	updateUnitType(unitIndex, cellEditMode.value === 'pen' ? 'floor' : null);
+}
+
+function updateWalls(walls: CustomMadoriEnvOptions['units'][number]['walls']) {
+	if (activeUnitIndex.value == null) return;
+	const unit = _units.value[activeUnitIndex.value];
+	if (unit == null) return;
+	_units.value[activeUnitIndex.value] = {
+		...unit,
+		walls,
+	};
+	update({ units: _units.value });
 }
 </script>
 

@@ -35,6 +35,14 @@ export type SimpleEnvOptions = {
 
 export type MuseumEnvOptions = any;
 
+export type CustomMadoriEnvWall = {
+	type?: null | 'window';
+	material?: string;
+	withBeam?: boolean;
+	beamMaterial?: string;
+	withBaseboard?: boolean;
+};
+
 export type CustomMadoriEnvOptions = {
 	dimension: [number, number];
 	wallMaterials: {
@@ -54,13 +62,7 @@ export type CustomMadoriEnvOptions = {
 	}[];
 	units: ({
 		type: 'floor';
-		walls?: Record<'n' | 's' | 'w' | 'e', {
-			type?: null | 'window';
-			material?: string;
-			withBeam?: boolean;
-			beamMaterial?: string;
-			withBaseboard?: boolean;
-		} | undefined>;
+		walls?: Record<'n' | 's' | 'w' | 'e', CustomMadoriEnvWall | undefined>;
 		pillars?: Record<'nw' | 'ne' | 'sw' | 'se', {
 			material?: string;
 			show?: boolean;
