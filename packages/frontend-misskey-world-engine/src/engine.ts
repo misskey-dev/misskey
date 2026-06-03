@@ -7,6 +7,7 @@ import * as BABYLON from '@babylonjs/core/pure';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
 import tinycolor from 'tinycolor2';
 import Hls from 'hls.js';
+import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { RecyvlingTextGrid, Timer, createPlaneUvMapper, randomRange } from './utility.js';
 import { TIME_MAP } from './utility.js';
 import { EngineBase } from './EngineBase.js';
@@ -157,24 +158,6 @@ export class WorldEngine extends EngineBase<{
 
 			if (SNAPSHOT_RENDERING) {
 				this.sr.updateMeshesForEffectLayer(this.gl);
-			}
-		}
-
-		if (_DEV_) {
-			// snapshot renderingかつglow layerが有効だとなんかクラッシュする
-			if (!(SNAPSHOT_RENDERING && USE_GLOW)) {
-				//const axes = new AxesViewer(this.scene, 30);
-				//axes.xAxis.position = new BABYLON.Vector3(0, 30, 0);
-				//axes.yAxis.position = new BABYLON.Vector3(0, 30, 0);
-				//axes.zAxis.position = new BABYLON.Vector3(0, 30, 0);
-			}
-
-			if (!IN_WEB_WORKER) {
-				(window as any).showBabylonInspector = () => {
-					import('@babylonjs/inspector').then(({ ShowInspector }) => {
-						ShowInspector(this.scene);
-					});
-				};
 			}
 		}
 	}

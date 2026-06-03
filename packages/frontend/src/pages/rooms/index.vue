@@ -25,6 +25,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import { WORLD_SCALE } from 'misskey-world/src/utility.js';
+import { getDefaultSimpleEnvOptions } from 'misskey-world/src/room/env.js';
 import type { RoomState } from 'misskey-world/src/room/type.js';
 import { definePage } from '@/page.js';
 import { i18n } from '@/i18n.js';
@@ -51,74 +52,7 @@ const paginator = markRaw(new Paginator('world/rooms/list-by-user', {
 const initialRoomDef = {
 	env: {
 		type: 'simple',
-		options: {
-			dimension: [300, 300],
-			window: 'demado',
-			walls: {
-				n: {
-					material: null,
-					color: [0.9, 0.9, 0.9],
-					withBeam: false,
-					beamMaterial: null,
-					beamColor: [0.8, 0.8, 0.8],
-					withBaseboard: true,
-				},
-				e: {
-					material: null,
-					color: [0.9, 0.9, 0.9],
-					withBeam: false,
-					beamMaterial: null,
-					beamColor: [0.8, 0.8, 0.8],
-					withBaseboard: true,
-				},
-				s: {
-					material: null,
-					color: [0.9, 0.9, 0.9],
-					withBeam: false,
-					beamMaterial: null,
-					beamColor: [0.8, 0.8, 0.8],
-					withBaseboard: true,
-				},
-				w: {
-					material: null,
-					color: [0.9, 0.9, 0.9],
-					withBeam: false,
-					beamMaterial: null,
-					beamColor: [0.8, 0.8, 0.8],
-					withBaseboard: true,
-				},
-			},
-			pillars: {
-				nw: {
-					material: null,
-					color: [0.9, 0.9, 0.9],
-					show: false,
-				},
-				ne: {
-					material: null,
-					color: [0.9, 0.9, 0.9],
-					show: false,
-				},
-				sw: {
-					material: null,
-					color: [0.9, 0.9, 0.9],
-					show: false,
-				},
-				se: {
-					material: null,
-					color: [0.9, 0.9, 0.9],
-					show: false,
-				},
-			},
-			flooring: {
-				material: 'wood',
-				color: [0.9, 0.9, 0.9],
-			},
-			ceiling: {
-				material: null,
-				color: [0.9, 0.9, 0.9],
-			},
-		},
+		options: getDefaultSimpleEnvOptions(),
 	},
 	roomLightColor: [1.0, 0.9, 0.8],
 	installedFurnitures: [],

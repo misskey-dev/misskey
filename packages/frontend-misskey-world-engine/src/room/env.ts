@@ -9,35 +9,7 @@ import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { findMaterial, GRAPHICS_QUALITY } from '../utility.js';
 import { SYSTEM_HEYA_MESH_NAMES } from './utility.js';
 import type { RoomEngine } from './engine.js';
-import type { SimpleEnvOptions, JapaneseEnvOptions, MuseumEnvOptions, CustomMadoriEnvOptions } from 'misskey-world/src/room/type.js';
-
-//export interface EnvManager<T = any> {
-//	constructor(registerMeshes?: ((meshes: BABYLON.AbstractMesh[]) => void) | null): void;
-//	load: (options: T, scene: BABYLON.Scene) => Promise<void>;
-//	applyOptions: (options: T) => void;
-//	dispose: () => void;
-//}
-
-const registerMeshes = (meshes: BABYLON.AbstractMesh[]) => {
-	for (const m of meshes) {
-		if (SYSTEM_HEYA_MESH_NAMES.some(name => m.name.includes(name))) {
-			m.isPickable = false;
-			m.receiveShadows = false;
-			m.isVisible = false;
-			m.checkCollisions = false;
-			if (m.name.includes('__COLLISION__')) {
-				m.checkCollisions = true;
-			}
-			continue;
-		}
-
-		m.isPickable = false;
-		m.checkCollisions = false;
-		if (m.material != null) {
-			(m.material as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
-		}
-	}
-};
+import type { SimpleEnvOptions, JapaneseEnvOptions, MuseumEnvOptions, CustomMadoriEnvOptions } from 'misskey-world/src/room/env.js';
 
 export abstract class EnvManager<T = any> {
 	protected engine: RoomEngine;
@@ -65,6 +37,29 @@ export abstract class EnvManager<T = any> {
 	public removeShadowCaster(mesh: BABYLON.AbstractMesh) {
 		for (const shadowGen of this.shadowGenerators) {
 			shadowGen.removeShadowCaster(mesh);
+		}
+	}
+
+	protected registerMeshes(meshes: BABYLON.AbstractMesh[]) {
+		for (const mesh of meshes) {
+			if (!this.engine.scene.meshes.includes(mesh)) this.engine.scene.addMesh(mesh);
+
+			if (SYSTEM_HEYA_MESH_NAMES.some(name => mesh.name.includes(name))) {
+				mesh.isPickable = false;
+				mesh.receiveShadows = false;
+				mesh.isVisible = false;
+				mesh.checkCollisions = false;
+				if (mesh.name.includes('__COLLISION__')) {
+					mesh.checkCollisions = true;
+				}
+				continue;
+			}
+
+			mesh.isPickable = false;
+			mesh.checkCollisions = false;
+			if (mesh.material != null) {
+				(mesh.material as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
+			}
 		}
 	}
 
@@ -431,7 +426,7 @@ export class SimpleEnvManager extends EnvManager<SimpleEnvOptions> {
 			this.floorMaterial.freeze();
 		}
 
-		registerMeshes(this.meshes);
+		this.registerMeshes(this.meshes);
 	}
 
 	public dispose() {
@@ -617,7 +612,7 @@ export class JapaneseEnvManager extends EnvManager<JapaneseEnvOptions> {
 	}
 
 	public applyOptions(options: SimpleEnvOptions) {
-		registerMeshes(this.meshes);
+		this.registerMeshes(this.meshes);
 	}
 
 	public dispose() {
@@ -773,7 +768,7 @@ export class MuseumEnvManager extends EnvManager<MuseumEnvOptions> {
 	}
 
 	public applyOptions(options: MuseumEnvOptions) {
-		registerMeshes(this.meshes);
+		this.registerMeshes(this.meshes);
 	}
 
 	public dispose() {
@@ -800,32 +795,37 @@ export class MuseumEnvManager extends EnvManager<MuseumEnvOptions> {
 export class CustomMadoriEnvManager extends EnvManager<CustomMadoriEnvOptions> {
 	private loaderResult: BABYLON.ISceneLoaderAsyncResult | null = null;
 	private meshes: BABYLON.Mesh[] = [];
+	private rootNode: BABYLON.TransformNode;
 	private floorRootNode: BABYLON.TransformNode | null = null;
+	private wallRootNode: BABYLON.TransformNode | null = null;
 	private ceilingMaterial: BABYLON.PBRMaterial | null = null;
 	private floorMaterial: BABYLON.PBRMaterial | null = null;
 	private skybox: BABYLON.Mesh | null = null;
 	private skyboxMat: BABYLON.StandardMaterial | null = null;
-	private roomLight: BABYLON.SpotLight | null = null;
-	private sunLight: BABYLON.DirectionalLight | null = null;
+	private roomLight: BABYLON.DirectionalLight | null = null;
 	public envMapIndoor: BABYLON.CubeTexture | null = null;
-	public maxCameraZ = cm(1000);
+	public maxCameraZ = cm(3000);
 
 	constructor(engine: RoomEngine) {
 		super(engine);
+
+		this.rootNode = new BABYLON.TransformNode('customMadoriRoot', this.engine.scene);
+		//this.rootNode.scaling = new BABYLON.Vector3(WORLD_SCALE, WORLD_SCALE, WORLD_SCALE);
 	}
 
 	public async load(options: CustomMadoriEnvOptions) {
-		this.skybox = BABYLON.MeshBuilder.CreateBox('skybox', { size: cm(1000) }, this.engine.scene);
+		this.skybox = BABYLON.MeshBuilder.CreateBox('skybox', { size: cm(3000) }, this.engine.scene);
 		this.skyboxMat = new BABYLON.StandardMaterial('skyboxMat', this.engine.scene);
 		this.skyboxMat.backFaceCulling = false;
 		this.skyboxMat.disableLighting = true;
 		this.skybox.material = this.skyboxMat;
 		this.skybox.infiniteDistance = true;
 
-		this.roomLight = new BABYLON.SpotLight('env:RoomLight', new BABYLON.Vector3(0, cm(249), 0), new BABYLON.Vector3(0, -1, 0), 16, 8, this.engine.scene);
+		this.roomLight = new BABYLON.DirectionalLight('env:RoomLight', new BABYLON.Vector3(0, -1, 0), this.engine.scene);
+		this.roomLight.position = new BABYLON.Vector3(0, cm(300), 0);
 		this.roomLight.diffuse = new BABYLON.Color3(...this.engine.roomState.roomLightColor);
 		this.roomLight.shadowMinZ = cm(10);
-		this.roomLight.shadowMaxZ = cm(300);
+		this.roomLight.shadowMaxZ = cm(500);
 		this.roomLight.radius = cm(30);
 
 		if (this.engine.graphicsQuality >= GRAPHICS_QUALITY.MEDIUM) {
@@ -842,32 +842,20 @@ export class CustomMadoriEnvManager extends EnvManager<CustomMadoriEnvOptions> {
 			this.shadowGenerators.push(shadowGeneratorForRoomLight);
 		}
 
-		if (this.engine.graphicsQuality >= GRAPHICS_QUALITY.MEDIUM) {
-			this.sunLight = new BABYLON.DirectionalLight('env:SunLight', new BABYLON.Vector3(0.2, -1, -1), this.engine.scene);
-			this.sunLight.position = new BABYLON.Vector3(cm(-20), cm(1000), cm(1000));
-			this.sunLight.shadowMinZ = cm(1000);
-			this.sunLight.shadowMaxZ = cm(2000);
-
-			const shadowGeneratorForSunLight = new BABYLON.ShadowGenerator(this.engine.graphicsQuality <= GRAPHICS_QUALITY.MEDIUM ? 1024 : 2048, this.sunLight);
-			shadowGeneratorForSunLight.forceBackFacesOnly = true;
-			shadowGeneratorForSunLight.bias = 0.00001;
-			shadowGeneratorForSunLight.usePercentageCloserFiltering = true;
-			shadowGeneratorForSunLight.usePoissonSampling = true;
-			if (this.engine.graphicsQuality <= GRAPHICS_QUALITY.MEDIUM) {
-				shadowGeneratorForSunLight.getShadowMap().refreshRate = 60; // 効いてなさそう babylonのバグ？
-			}
-			this.shadowGenerators.push(shadowGeneratorForSunLight);
-		}
-
-		this.loaderResult = await BABYLON.ImportMeshAsync('/client-assets/room/envs/custom-madori/units.glb', this.engine.scene);
+		this.loaderResult = await BABYLON.LoadAssetContainerAsync('/client-assets/room/envs/custom-madori/units.glb', this.engine.scene);
 
 		this.envMapIndoor = BABYLON.CubeTexture.CreateFromPrefilteredData('/client-assets/room/indoor.env', this.engine.scene);
 		this.envMapIndoor.boundingBoxSize = new BABYLON.Vector3(cm(500), cm(500), cm(500));
 
 		this.meshes = this.loaderResult.meshes.filter(m => m instanceof BABYLON.Mesh);
-		this.meshes[0].scaling = this.meshes[0].scaling.scale(WORLD_SCALE);
 		this.meshes[0].rotationQuaternion = null;
 		this.meshes[0].rotation = new BABYLON.Vector3(0, 0, 0);
+
+		for (const m of this.meshes[0].getChildren()) {
+			if (m.parent === this.meshes[0]) {
+				m.parent = this.rootNode;
+			}
+		}
 
 		// instanced mesh を通常の mesh に変換 (そうしないとマテリアルが共有される)
 		for (const mesh of this.loaderResult.meshes) {
@@ -889,55 +877,15 @@ export class CustomMadoriEnvManager extends EnvManager<CustomMadoriEnvOptions> {
 			}
 		}
 
-		this.floorRootNode = this.loaderResult.transformNodes.find(t => t.name.includes('__FLOOR__'));
+		this.floorRootNode = this.loaderResult.transformNodes.find(t => t.name.includes('__FLOOR__'))!;
+		this.wallRootNode = this.loaderResult.transformNodes.find(t => t.name.includes('__WALL__'))!;
 
-		const wallMaterial = findMaterial(this.meshes[0], '__WALL__');
-		//wallMaterial.metadata.disableEnvMap = true;
-		this.wallMaterials = {
-			n: wallMaterial.clone('wallNMaterial'),
-			s: wallMaterial.clone('wallSMaterial'),
-			w: wallMaterial.clone('wallWMaterial'),
-			e: wallMaterial.clone('wallEMaterial'),
-		};
-
-		const beamMaterial = findMaterial(this.meshes[0], '__BEAM__');
-		//beamMaterial.metadata.disableEnvMap = true;
-		this.wallBeamMaterials = {
-			n: beamMaterial.clone('wallNBeamMaterial'),
-			s: beamMaterial.clone('wallSBeamMaterial'),
-			w: beamMaterial.clone('wallWBeamMaterial'),
-			e: beamMaterial.clone('wallEBeamMaterial'),
-		};
-
-		const pillarMaterial = findMaterial(this.meshes[0], '__PILLAR__');
-		//pillarMaterial.metadata.disableEnvMap = true;
-		this.pillarMaterials = {
-			nw: pillarMaterial.clone('pillarNWMaterial'),
-			ne: pillarMaterial.clone('pillarNEMaterial'),
-			sw: pillarMaterial.clone('pillarSWMaterial'),
-			se: pillarMaterial.clone('pillarSEMaterial'),
-		};
-
-		for (const [k, v] of Object.entries(this.wallRoots)) {
-			for (const m of v.getChildMeshes().filter(m => m.material === wallMaterial)) {
-				m.material = this.wallMaterials[k];
-			}
-			for (const m of v.getChildMeshes().filter(m => m.material === beamMaterial)) {
-				m.material = this.wallBeamMaterials[k];
-			}
-		}
-		for (const [k, v] of Object.entries(this.pillarRoots)) {
-			for (const m of v.getChildMeshes().filter(m => m.material === pillarMaterial)) {
-				m.material = this.pillarMaterials[k];
-			}
-		}
-
-		this.ceilingMaterial = findMaterial(this.meshes[0], '__CEILING__');
+		this.ceilingMaterial = findMaterial(this.rootNode, '__CEILING__');
 		//this.ceilingMaterial.metadata.disableEnvMap = true;
-		this.floorMaterial = findMaterial(this.meshes[0], '__FLOOR__');
+		this.floorMaterial = findMaterial(this.rootNode, '__FLOOR__');
 		//this.floorMaterial.metadata.disableEnvMap = true;
 
-		const baseboardMaterial = findMaterial(this.meshes[0], '__BASEBOARD__');
+		const baseboardMaterial = findMaterial(this.rootNode, '__BASEBOARD__');
 		//baseboardMaterial.metadata.disableEnvMap = true;
 
 		for (const mesh of this.meshes) {
@@ -962,14 +910,68 @@ export class CustomMadoriEnvManager extends EnvManager<CustomMadoriEnvOptions> {
 	}
 
 	private createUnit(options: CustomMadoriEnvOptions, x: number, z: number) {
-		const defIndex = x + (options.dimension[0] * z);
-		const unitDef = options.units[defIndex];
+		function indexToPos(index: number): [number, number] {
+			const z = Math.floor(index / options.dimension[0]);
+			const x = index % options.dimension[0];
+			return [x, z];
+		}
+
+		function postToIndex(x: number, z: number): number {
+			if (x < 0 || z < 0 || x >= options.dimension[0] || z >= options.dimension[1]) return -1;
+			return x + (options.dimension[0] * z);
+		}
+
+		const unitDef = options.units[postToIndex(x, z)];
 		if (unitDef == null) return;
 
-		const unitRoot = new BABYLON.TransformNode(`unit_${x}_${z}`, this.engine.scene);
-		unitRoot.position = new BABYLON.Vector3(cm(100 * x), 0, cm(100 * z));
+		const unitNDef = options.units[postToIndex(x, z + 1)];
+		const unitSDef = options.units[postToIndex(x, z - 1)];
+		const unitWDef = options.units[postToIndex(x + 1, z)];
+		const unitEDef = options.units[postToIndex(x - 1, z)];
 
-		this.floorRootNode.clone(`floor_${x}_${z}`, unitRoot);
+		const shiftedX = x - (options.dimension[0] / 2) + 0.5;
+
+		const unitRoot = new BABYLON.TransformNode(`unit_${x}_${z}`, this.engine.scene);
+		unitRoot.parent = this.rootNode;
+		unitRoot.position = new BABYLON.Vector3(cm(100) * shiftedX, 0, cm(100) * z);
+
+		const unitFloorRootNode = this.floorRootNode.clone(`unit_${x}_${z}_floor`)!;
+		unitFloorRootNode.parent = unitRoot;
+		unitFloorRootNode.scaling = new BABYLON.Vector3(-WORLD_SCALE, WORLD_SCALE, WORLD_SCALE);
+
+		if (unitNDef == null) {
+			const unitWallRootNode = this.wallRootNode.clone(`unit_${x}_${z}_wall_n`)!;
+			unitWallRootNode.parent = unitRoot;
+			unitWallRootNode.scaling = new BABYLON.Vector3(-WORLD_SCALE, WORLD_SCALE, WORLD_SCALE);
+			unitWallRootNode.rotation = new BABYLON.Vector3(0, Math.PI, 0);
+			unitWallRootNode.position = new BABYLON.Vector3(0, 0, cm(50));
+		}
+		if (unitSDef == null) {
+			const unitWallRootNode = this.wallRootNode.clone(`unit_${x}_${z}_wall_s`)!;
+			unitWallRootNode.parent = unitRoot;
+			unitWallRootNode.scaling = new BABYLON.Vector3(-WORLD_SCALE, WORLD_SCALE, WORLD_SCALE);
+			unitWallRootNode.position = new BABYLON.Vector3(0, 0, cm(-50));
+		}
+		if (unitWDef == null) {
+			const unitWallRootNode = this.wallRootNode.clone(`unit_${x}_${z}_wall_w`)!;
+			unitWallRootNode.parent = unitRoot;
+			unitWallRootNode.scaling = new BABYLON.Vector3(-WORLD_SCALE, WORLD_SCALE, WORLD_SCALE);
+			unitWallRootNode.rotation = new BABYLON.Vector3(0, -Math.PI / 2, 0);
+			unitWallRootNode.position = new BABYLON.Vector3(cm(50), 0, 0);
+		}
+		if (unitEDef == null) {
+			const unitWallRootNode = this.wallRootNode.clone(`unit_${x}_${z}_wall_e`)!;
+			unitWallRootNode.parent = unitRoot;
+			unitWallRootNode.scaling = new BABYLON.Vector3(-WORLD_SCALE, WORLD_SCALE, WORLD_SCALE);
+			unitWallRootNode.rotation = new BABYLON.Vector3(0, Math.PI / 2, 0);
+			unitWallRootNode.position = new BABYLON.Vector3(cm(-50), 0, 0);
+		}
+
+		for (const mesh of unitRoot.getChildMeshes()) {
+			this.meshes.push(mesh);
+		}
+
+		this.registerMeshes(unitRoot.getChildMeshes());
 	}
 
 	public setTime(time: number) {
@@ -996,8 +998,8 @@ export class CustomMadoriEnvManager extends EnvManager<CustomMadoriEnvOptions> {
 
 	public turnOnRoomLight(): void {
 		if (this.roomLight == null) return;
-		this.roomLight.intensity = 18 * WORLD_SCALE * WORLD_SCALE;
-		if (this.envMapIndoor != null) this.envMapIndoor.level = 0.6;
+		this.roomLight.intensity = 0.0005 * WORLD_SCALE * WORLD_SCALE;
+		if (this.envMapIndoor != null) this.envMapIndoor.level = 0.2;
 		for (const m of this.engine.scene.materials) {
 			if (m.metadata?.disableEnvMap) {
 				m.ambientColor = new BABYLON.Color3(0.5, 0.5, 0.5);
@@ -1019,148 +1021,16 @@ export class CustomMadoriEnvManager extends EnvManager<CustomMadoriEnvOptions> {
 	public applyOptions(options: CustomMadoriEnvOptions) {
 		// TODO: 返り値をpromiseにしてちゃんとテクスチャが読み終わってからresolveする
 
-		for (const type of ['n', 's', 'w', 'e'] as const) {
-			const wallRoot = this.wallRoots[type];
-			const wallOptions = options.walls[type];
-
-			for (const mesh of wallRoot.getChildMeshes()) {
-				if (mesh.name.includes('__BEAM__')) {
-					mesh.setEnabled(wallOptions.withBeam);
-				} else if (mesh.name.includes('__BASEBOARD__')) {
-					mesh.setEnabled(wallOptions.withBaseboard);
-				}
-			}
-
-			{
-				const targetMaterial = this.wallMaterials[type];
-
-				targetMaterial.unfreeze();
-				targetMaterial.albedoColor = new BABYLON.Color3(...wallOptions.color);
-
-				const texPath = wallOptions.material === 'wood' ? '/client-assets/room/textures/wall-wood2.png'
-					: wallOptions.material === 'concrete' ? '/client-assets/room/textures/concrete1.png'
-					: null;
-
-				if (texPath != null) {
-					const tex = new BABYLON.Texture(texPath, this.meshes[0].getScene(), false, false);
-					targetMaterial.albedoTexture = tex;
-				} else {
-					targetMaterial.albedoTexture = null;
-				}
-
-				targetMaterial.freeze();
-			}
-
-			{
-				const targetMaterial = this.wallBeamMaterials[type];
-
-				targetMaterial.unfreeze();
-				targetMaterial.albedoColor = new BABYLON.Color3(...wallOptions.beamColor);
-
-				const texPath = wallOptions.beamMaterial === 'wood' ? '/client-assets/room/textures/wall-wood2.png'
-					: wallOptions.beamMaterial === 'concrete' ? '/client-assets/room/textures/concrete1.png'
-					: null;
-
-				if (texPath != null) {
-					const tex = new BABYLON.Texture(texPath, this.meshes[0].getScene(), false, false);
-					targetMaterial.albedoTexture = tex;
-				} else {
-					targetMaterial.albedoTexture = null;
-				}
-
-				targetMaterial.freeze();
+		for (let z = 0; z < options.dimension[1]; z++) {
+			for (let x = 0; x < options.dimension[0]; x++) {
+				this.createUnit(options, x, z);
 			}
 		}
-
-		for (const type of ['nw', 'ne', 'sw', 'se'] as const) {
-			const pillarRoot = this.pillarRoots[type];
-			const pillarOptions = options.pillars[type];
-
-			let isEnabled = pillarOptions.show;
-			if (!isEnabled) {
-				// 梁同士が直交することは許さない(z-fightingが発生する)ので柱を強制追加
-				if (type === 'nw') {
-					isEnabled = options.walls.n.withBeam && options.walls.w.withBeam;
-				} else if (type === 'ne') {
-					isEnabled = options.walls.n.withBeam && options.walls.e.withBeam;
-				} else if (type === 'sw') {
-					isEnabled = options.walls.s.withBeam && options.walls.w.withBeam;
-				} else if (type === 'se') {
-					isEnabled = options.walls.s.withBeam && options.walls.e.withBeam;
-				}
-			}
-			pillarRoot.setEnabled(isEnabled);
-
-			const targetMaterial = this.pillarMaterials[type];
-
-			targetMaterial.unfreeze();
-			targetMaterial.albedoColor = new BABYLON.Color3(...pillarOptions.color);
-
-			const texPath = pillarOptions.material === 'wood' ? '/client-assets/room/textures/wall-wood2.png'
-				: pillarOptions.material === 'concrete' ? '/client-assets/room/textures/concrete1.png'
-				: null;
-
-			if (texPath != null) {
-				const tex = new BABYLON.Texture(texPath, this.meshes[0].getScene(), false, false);
-				targetMaterial.albedoTexture = tex;
-			} else {
-				targetMaterial.albedoTexture = null;
-			}
-
-			targetMaterial.freeze();
-		}
-
-		{
-			this.ceilingMaterial.unfreeze();
-			this.ceilingMaterial.albedoColor = new BABYLON.Color3(...options.ceiling.color);
-
-			const texPath = options.ceiling.material === 'wood' ? '/client-assets/room/textures/ceiling-wood.png'
-				: options.ceiling.material === 'concrete' ? '/client-assets/room/textures/concrete3.png'
-				: null;
-
-			if (texPath != null) {
-				const tex = new BABYLON.Texture(texPath, this.meshes[0].getScene(), false, false);
-				this.ceilingMaterial.albedoTexture = tex;
-			} else {
-				this.ceilingMaterial.albedoTexture = null;
-			}
-
-			this.ceilingMaterial.freeze();
-		}
-
-		{
-			this.floorMaterial.unfreeze();
-			this.floorMaterial.albedoColor = new BABYLON.Color3(...options.flooring.color);
-
-			const texPath = options.flooring.material === 'wood' ? '/client-assets/room/textures/flooring-wood.png'
-				: options.flooring.material === 'concrete' ? '/client-assets/room/textures/concrete3.png'
-				: null;
-
-			if (texPath != null) {
-				const tex = new BABYLON.Texture(texPath, this.meshes[0].getScene(), false, false);
-				this.floorMaterial.albedoTexture = tex;
-			} else {
-				this.floorMaterial.albedoTexture = null;
-			}
-
-			this.floorMaterial.freeze();
-		}
-
-		registerMeshes(this.meshes);
 	}
 
 	public dispose() {
 		for (const m of this.meshes) {
 			m.dispose(false, true);
-		}
-		for (const m of Object.values(this.wallMaterials ?? {})) {
-			m.dispose();
-		}
-		for (const m of Object.values(this.wallBeamMaterials ?? {})) {
-			m.dispose();
-		}
-		for (const m of Object.values(this.pillarMaterials ?? {})) {
-			m.dispose();
 		}
 		this.skybox?.dispose();
 		this.skyboxMat?.dispose();

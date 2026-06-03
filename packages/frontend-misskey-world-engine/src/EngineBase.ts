@@ -6,6 +6,8 @@
 import * as BABYLON from '@babylonjs/core/pure';
 import EventEmitter from 'eventemitter3';
 
+const IN_WEB_WORKER = typeof window === 'undefined';
+
 export type EngineBaseEvents = {
 	'loadingProgress': (ctx: { progress: number }) => void;
 	'contextlost': (ctx: { reason: string; message: string; }) => void;
@@ -17,7 +19,7 @@ export abstract class EngineBase<EVs extends EngineBaseEvents> extends EventEmit
 	declare _eventTypes?: EVs;
 
 	protected engine: BABYLON.WebGPUEngine;
-	protected scene: BABYLON.Scene;
+	public scene: BABYLON.Scene;
 	protected fps: number | null = null;
 	protected disposed = false;
 
@@ -52,6 +54,14 @@ export abstract class EngineBase<EVs extends EngineBaseEvents> extends EventEmit
 		});
 
 		this.scene = new BABYLON.Scene(this.engine);
+
+		if (!IN_WEB_WORKER) {
+			(window as any).showBabylonInspector = () => {
+				import('@babylonjs/inspector').then(({ ShowInspector }) => {
+					ShowInspector(this.scene);
+				});
+			};
+		}
 	}
 
 	private currentRafId: number | null = null;

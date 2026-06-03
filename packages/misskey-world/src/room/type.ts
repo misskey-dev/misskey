@@ -5,6 +5,7 @@
 
 import * as Misskey from 'misskey-js';
 import type { RoomState_InstalledFurniture } from './furniture.js';
+import type { CustomMadoriEnvOptions, JapaneseEnvOptions, MuseumEnvOptions, SimpleEnvOptions } from './env.js';
 
 export type RoomState = {
 	env: {
@@ -13,6 +14,12 @@ export type RoomState = {
 	} | {
 		type: 'japanese';
 		options: JapaneseEnvOptions;
+	} | {
+		type: 'museum';
+		options: MuseumEnvOptions;
+	} | {
+		type: 'customMadori';
+		options: CustomMadoriEnvOptions;
 	};
 	roomLightColor: [number, number, number];
 	installedFurnitures: RoomState_InstalledFurniture[];
@@ -22,64 +29,4 @@ export type RoomState = {
 // TODO: addFileみたいなメソッドを持つクラス化して引き回させた方が便利かもしれない
 export type RoomAttachments = {
 	files: Misskey.entities.DriveFile[];
-};
-
-export type JapaneseEnvOptions = {
-	window: 'none' | 'kosidakamado' | 'demado' | 'hakidasimado';
-};
-
-export type SimpleEnvOptions = {
-	dimension: [number, number];
-	window: 'none' | 'kosidakamado' | 'demado' | 'hakidasimado';
-	walls: Record<'n' | 's' | 'w' | 'e', {
-		material: null | 'wood' | 'concrete';
-		color: [number, number, number];
-		withBeam: boolean;
-		beamMaterial: null | 'wood' | 'concrete';
-		beamColor: [number, number, number];
-		withBaseboard: boolean;
-	}>;
-	pillars: Record<'nw' | 'ne' | 'sw' | 'se', {
-		material: null | 'wood' | 'concrete';
-		color: [number, number, number];
-		show: boolean;
-	}>;
-	flooring: {
-		material: null | 'wood' | 'concrete';
-		color: [number, number, number];
-	};
-	ceiling: {
-		material: null | 'wood' | 'concrete';
-		color: [number, number, number];
-	};
-};
-
-export type MuseumEnvOptions = any;
-
-export type CustomMadoriEnvOptions = {
-	dimension: [number, number];
-	units: ({
-		type: 'floor';
-		walls: Record<'n' | 's' | 'w' | 'e', {
-			material: null | 'wood' | 'concrete';
-			color: [number, number, number];
-			withBeam: boolean;
-			beamMaterial: null | 'wood' | 'concrete';
-			beamColor: [number, number, number];
-			withBaseboard: boolean;
-		}>;
-		pillars: Record<'nw' | 'ne' | 'sw' | 'se', {
-			material: null | 'wood' | 'concrete';
-			color: [number, number, number];
-			show: boolean;
-		}>;
-		flooring: {
-			material: null | 'wood' | 'concrete';
-			color: [number, number, number];
-		};
-		ceiling: {
-			material: null | 'wood' | 'concrete';
-			color: [number, number, number];
-		};
-	} | null)[];
 };

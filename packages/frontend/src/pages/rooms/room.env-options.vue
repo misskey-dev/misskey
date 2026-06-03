@@ -11,6 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				{ label: 'Simple', value: 'simple' },
 				{ label: 'Japanese', value: 'japanese' },
 				{ label: 'Museum', value: 'museum' },
+				{ label: 'Custom madori', value: 'customMadori' },
 			]" :modelValue="controller.roomState.value.env.type" @update:modelValue="v => emit('changeEnvType', v)"
 		>
 			<template #label>Env type</template>

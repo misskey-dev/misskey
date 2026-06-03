@@ -26,14 +26,15 @@ import { genId } from '../id.js';
 import { deepClone } from '../clone.js';
 import { PlayerContainer, type PlayerProfile, type PlayerState } from '../PlayerContainer.js';
 import { getFurnitureDef } from './furniture-defs.js';
-import { SYSTEM_HEYA_MESH_NAMES, SYSTEM_MESH_NAMES } from './utility.js';
-import { JapaneseEnvManager, MuseumEnvManager, SimpleEnvManager } from './env.js';
+import { SYSTEM_MESH_NAMES } from './utility.js';
+import { CustomMadoriEnvManager, JapaneseEnvManager, MuseumEnvManager, SimpleEnvManager } from './env.js';
 import { FurnitureContainer } from './FurnitureContainer.js';
-import type { FurnitureDef, RawOptions } from './furniture.js';
+import type { FurnitureDef } from './furniture.js';
 import type { GridMaterial } from '@babylonjs/materials';
 import type { EnvManager } from './env.js';
-import type { RoomState_InstalledFurniture } from 'misskey-world/src/room/object.js';
+import type { RoomState_InstalledFurniture } from 'misskey-world/src/room/furniture.js';
 import type { RoomAttachments, RoomState } from 'misskey-world/src/room/type.js';
+import type { RawOptions } from 'misskey-world/src/mono.js';
 
 const BAKE_TRANSFORM = false; // 実験的
 const IGNORE_FUNITURES: string[] = ['aquarium']; // for debug
@@ -535,8 +536,9 @@ export class RoomEngine extends EngineBase<{
 	}
 
 	// TODO: 初回以外で呼び出すとエンジンがクラッシュするのを修正
-	public async changeEnvType(type: RoomState['env']['type'], forInit = false) {
+	public async changeEnvType(type: RoomState['env']['type'], options, forInit = false) {
 		this.roomState.env.type = type;
+		this.roomState.env.options = options;
 
 		if (!forInit) {
 			this.sr.disableSnapshotRendering();
@@ -546,11 +548,17 @@ export class RoomEngine extends EngineBase<{
 		let envManager: EnvManager;
 
 		if (this.roomState.env.type === 'simple') {
-			envManager = new SimpleEnvManager(this);
+			const manager = new SimpleEnvManager(this);
+			envManager = manager;
 		} else if (this.roomState.env.type === 'japanese') {
-			envManager = new JapaneseEnvManager(this);
+			const manager = new JapaneseEnvManager(this);
+			envManager = manager;
 		} else if (this.roomState.env.type === 'museum') {
-			envManager = new MuseumEnvManager(this);
+			const manager = new MuseumEnvManager(this);
+			envManager = manager;
+		} else if (this.roomState.env.type === 'customMadori') {
+			const manager = new CustomMadoriEnvManager(this);
+			envManager = manager;
 		}
 
 		await envManager.load(this.roomState.env.options);
@@ -587,7 +595,7 @@ export class RoomEngine extends EngineBase<{
 	}
 
 	private async loadEnv() {
-		await this.changeEnvType(this.roomState.env.type, true);
+		await this.changeEnvType(this.roomState.env.type, this.roomState.env.options, true);
 	}
 
 	private async loadFuniture(args: {

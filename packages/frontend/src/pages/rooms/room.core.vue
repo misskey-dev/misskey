@@ -169,6 +169,7 @@ import { GRAPHICS_QUALITY } from 'misskey-world-engine/src/utility.js';
 import { FURNITURE_SCHEMA_DEFS } from 'misskey-world/src/room/furniture-schema-defs.js';
 import { useInterval } from '@@/js/use-interval.js';
 import { url } from '@@/js/config.js';
+import { getDefaultCustomMadoriEnvOptions, getDefaultJapaneseEnvOptions, getDefaultMuseumEnvOptions, getDefaultSimpleEnvOptions } from 'misskey-world/src/room/env.js';
 import XEnvOptions from './room.env-options.vue';
 import XOverlayPanel from './OverlayPanel.vue';
 import type { RoomControllerOptions } from '@/world/room/controller.js';
@@ -475,7 +476,14 @@ async function addFuniture(ev: PointerEvent) {
 }
 
 function changeEnvType(type: RoomState['env']['type']) {
+	const defaultOptions =
+		type === 'simple' ? getDefaultSimpleEnvOptions() :
+		type === 'japanese' ? getDefaultJapaneseEnvOptions() :
+		type === 'museum' ? getDefaultMuseumEnvOptions() :
+		type === 'customMadori' ? getDefaultCustomMadoriEnvOptions() :
+		{};
 	controller.roomState.value.env.type = type;
+	controller.roomState.value.env.options = defaultOptions;
 	triggerRef(controller.roomState);
 	refresh();
 }
