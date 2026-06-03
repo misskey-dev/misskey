@@ -15,7 +15,7 @@
 
 ### 取り込んだファイル
 
-| `.claude/` 内のパス | 上流パス | 上流 frontmatter `origin` | Misskey での改変 |
+| `.claude/` 内のパス | 上流パス | 上流由来 | Misskey での改変 |
 |---|---|---|---|
 | `skills/context-budget/SKILL.md` | `skills/context-budget/SKILL.md` | ECC | description を日本語化、Misskey 固有メモを追記 |
 | `commands/harness-audit.md` | `commands/harness-audit.md` | ECC | scripts 依存の自動採点を、Claude が `pnpm`/`git`/`grep` で手動採点する版に書き換え。Misskey 固有の評価軸 (SPDX / endpoint-list / migration / locales) を組み込み |
@@ -61,7 +61,7 @@ Misskey 本体は **AGPL-3.0-only** で配布されているが、`.claude/` 配
 - MIT が要求する条件 (copyright notice + license text の保持) を本ファイル + 各ファイル冒頭の SPDX/出典コメントで満たしている
 - Misskey 全体の配布物としては AGPL-3.0-only で扱われるが、`.claude/` 配下の MIT ファイルは個別に MIT として識別可能
 
-`.ts` / `.js` / `.vue` / `.scss` の SPDX 義務化 ([AGENTS.md §1](../AGENTS.md#1-spdx-ヘッダー必須)) は Misskey 本体コード向けで、`.claude/` 配下の `.md` / `.sh` には適用されない。
+`.ts` / `.js` / `.vue` / `.scss` の SPDX 義務化 ([AGENTS.md](../AGENTS.md) の「絶対にやってはいけない事」§コード・データ関連) は Misskey 本体コード向けで、`.claude/` 配下の `.md` / `.sh` には適用されない。
 
 ---
 
@@ -73,4 +73,4 @@ Misskey 本体は **AGPL-3.0-only** で配布されているが、`.claude/` 配
 2. 各ファイル冒頭に SPDX ヘッダ + 出典コメントを追加
 3. 本ファイル §1 のテーブルに 1 行追記
 4. 必要なら新しいセクションでライセンス全文を同梱
-5. AGENTS.md からの参照を確認 (現状の [AGENTS.md §ツール固有の補助ファイル](../AGENTS.md) で `THIRD_PARTY_LICENSES.md` を案内済。CLAUDE.md は `@AGENTS.md` 経由で読み込むので個別の追記は不要)
+5. 本ファイルへの導線を確認 (`.claude/skills/README.md` / `.claude/commands/README.md` 等の各 README から本ファイルへリンクされている)。なお [CLAUDE.md](../CLAUDE.md) が `.claude/` 配下全体を「Claude Code 固有の補助」として案内しており本ファイルもそこに含まれる。CLAUDE.md は `@AGENTS.md` を取り込むだけなので AGENTS.md への個別追記は不要
