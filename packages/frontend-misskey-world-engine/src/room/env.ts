@@ -799,7 +799,7 @@ export class CustomMadoriEnvManager extends EnvManager<CustomMadoriEnvOptions> {
 	private floorRootNode: BABYLON.TransformNode | null = null;
 	private wallRootNode: BABYLON.TransformNode | null = null;
 	private ceilingMaterial: BABYLON.PBRMaterial | null = null;
-	private floorMaterial: BABYLON.PBRMaterial | null = null;
+	private floorMaterials: Record<string, BABYLON.PBRMaterial> = {};
 	private skybox: BABYLON.Mesh | null = null;
 	private skyboxMat: BABYLON.StandardMaterial | null = null;
 	private roomLight: BABYLON.DirectionalLight | null = null;
@@ -840,6 +840,23 @@ export class CustomMadoriEnvManager extends EnvManager<CustomMadoriEnvOptions> {
 			//shadowGeneratorForRoomLight.useContactHardeningShadow = true;
 			//shadowGeneratorForRoomLight.contactHardeningLightSizeUVRatio = 0.01;
 			this.shadowGenerators.push(shadowGeneratorForRoomLight);
+		}
+
+		for (const materialDef of options.flooringMaterials) {
+			const mat = new BABYLON.PBRMaterial(`flooring_${materialDef.id}`, this.engine.scene);
+			mat.albedoColor = new BABYLON.Color3(...materialDef.color);
+
+			const texPath = materialDef.texture === 'wood' ? '/client-assets/room/textures/flooring-wood.png'
+				: materialDef.texture === 'concrete' ? '/client-assets/room/textures/concrete3.png'
+				: null;
+
+			if (texPath != null) {
+				const tex = new BABYLON.Texture(texPath, this.engine.scene, false, false);
+				mat.albedoTexture = tex;
+			}
+
+			mat.freeze();
+			this.floorMaterials[materialDef.id] = mat;
 		}
 
 		this.loaderResult = await BABYLON.LoadAssetContainerAsync('/client-assets/room/envs/custom-madori/units.glb', this.engine.scene);
@@ -924,6 +941,8 @@ export class CustomMadoriEnvManager extends EnvManager<CustomMadoriEnvOptions> {
 		const unitDef = options.units[postToIndex(x, z)];
 		if (unitDef == null) return;
 
+		const floorMaterial = this.floorMaterials[unitDef.flooring.material];
+
 		const unitNDef = options.units[postToIndex(x, z + 1)];
 		const unitSDef = options.units[postToIndex(x, z - 1)];
 		const unitWDef = options.units[postToIndex(x + 1, z)];
@@ -938,6 +957,8 @@ export class CustomMadoriEnvManager extends EnvManager<CustomMadoriEnvOptions> {
 		const unitFloorRootNode = this.floorRootNode.clone(`unit_${x}_${z}_floor`)!;
 		unitFloorRootNode.parent = unitRoot;
 		unitFloorRootNode.scaling = new BABYLON.Vector3(-WORLD_SCALE, WORLD_SCALE, WORLD_SCALE);
+		const flooringMesh = unitFloorRootNode.getChildMeshes().find(m => m.name.includes('__X_FLOOR__'));
+		flooringMesh.material = floorMaterial;
 
 		if (unitNDef == null) {
 			const unitWallRootNode = this.wallRootNode.clone(`unit_${x}_${z}_wall_n`)!;

@@ -37,28 +37,38 @@ export type MuseumEnvOptions = any;
 
 export type CustomMadoriEnvOptions = {
 	dimension: [number, number];
+	wallMaterials: {
+		id: string;
+		texture: null | 'wood' | 'concrete';
+		color: [number, number, number];
+	}[];
+	flooringMaterials: {
+		id: string;
+		texture: null | 'wood' | 'concrete';
+		color: [number, number, number];
+	}[];
+	ceilingMaterials: {
+		id: string;
+		texture: null | 'wood' | 'concrete';
+		color: [number, number, number];
+	}[];
 	units: ({
 		type: 'floor';
 		walls: Record<'n' | 's' | 'w' | 'e', {
-			material: null | 'wood' | 'concrete';
-			color: [number, number, number];
-			withBeam: boolean;
-			beamMaterial: null | 'wood' | 'concrete';
-			beamColor: [number, number, number];
-			withBaseboard: boolean;
+			material: string;
+			withBeam?: boolean;
+			beamMaterial?: string;
+			withBaseboard?: boolean;
 		}>;
 		pillars: Record<'nw' | 'ne' | 'sw' | 'se', {
-			material: null | 'wood' | 'concrete';
-			color: [number, number, number];
-			show: boolean;
+			material: string;
+			show?: boolean;
 		}>;
 		flooring: {
-			material: null | 'wood' | 'concrete';
-			color: [number, number, number];
+			material: string;
 		};
 		ceiling: {
-			material: null | 'wood' | 'concrete';
-			color: [number, number, number];
+			material: string;
 		};
 	} | null)[];
 };
@@ -147,10 +157,45 @@ export function getDefaultMuseumEnvOptions(): MuseumEnvOptions {
 export function getDefaultCustomMadoriEnvOptions(): CustomMadoriEnvOptions {
 	const units = Array.from({ length: 15 * 15 }, () => ({
 		type: 'floor',
+		walls: {
+			n: {
+				material: '0',
+			},
+			e: {
+				material: '0',
+			},
+			s: {
+				material: '0',
+			},
+			w: {
+				material: '0',
+			},
+		},
+		flooring: {
+			material: '0',
+		},
+		ceiling: {
+			material: '0',
+		},
 	}));
 
 	return {
 		dimension: [15, 15],
+		wallMaterials: [{
+			id: '0',
+			texture: null,
+			color: [0.8, 0.8, 0.8],
+		}],
+		flooringMaterials: [{
+			id: '0',
+			texture: 'wood',
+			color: [0.8, 0.8, 0.8],
+		}],
+		ceilingMaterials: [{
+			id: '0',
+			texture: null,
+			color: [0.8, 0.8, 0.8],
+		}],
 		units: units,
 	};
 }
