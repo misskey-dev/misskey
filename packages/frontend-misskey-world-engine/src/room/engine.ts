@@ -543,35 +543,14 @@ export class RoomEngine extends EngineBase<{
 			this.pauseRender();
 		}
 
-		const onMeshUpdatedCallback = (meshes: BABYLON.AbstractMesh[]) => {
-			for (const m of meshes) {
-				if (SYSTEM_HEYA_MESH_NAMES.some(name => m.name.includes(name))) {
-					m.isPickable = false;
-					m.receiveShadows = false;
-					m.isVisible = false;
-					m.checkCollisions = false;
-					if (m.name.includes('__COLLISION__')) {
-						m.checkCollisions = true;
-					}
-					continue;
-				}
-
-				m.isPickable = false;
-				m.checkCollisions = false;
-				if (m.material != null) {
-					(m.material as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
-				}
-			}
-		};
-
 		let envManager: EnvManager;
 
 		if (this.roomState.env.type === 'simple') {
-			envManager = new SimpleEnvManager(this, onMeshUpdatedCallback);
+			envManager = new SimpleEnvManager(this);
 		} else if (this.roomState.env.type === 'japanese') {
-			envManager = new JapaneseEnvManager(this, onMeshUpdatedCallback);
+			envManager = new JapaneseEnvManager(this);
 		} else if (this.roomState.env.type === 'museum') {
-			envManager = new MuseumEnvManager(this, onMeshUpdatedCallback);
+			envManager = new MuseumEnvManager(this);
 		}
 
 		await envManager.load(this.roomState.env.options);

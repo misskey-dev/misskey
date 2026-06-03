@@ -55,3 +55,31 @@ export type SimpleEnvOptions = {
 };
 
 export type MuseumEnvOptions = any;
+
+export type CustomMadoriEnvOptions = {
+	dimension: [number, number];
+	units: ({
+		type: 'floor';
+		walls: Record<'n' | 's' | 'w' | 'e', {
+			material: null | 'wood' | 'concrete';
+			color: [number, number, number];
+			withBeam: boolean;
+			beamMaterial: null | 'wood' | 'concrete';
+			beamColor: [number, number, number];
+			withBaseboard: boolean;
+		}>;
+		pillars: Record<'nw' | 'ne' | 'sw' | 'se', {
+			material: null | 'wood' | 'concrete';
+			color: [number, number, number];
+			show: boolean;
+		}>;
+		flooring: {
+			material: null | 'wood' | 'concrete';
+			color: [number, number, number];
+		};
+		ceiling: {
+			material: null | 'wood' | 'concrete';
+			color: [number, number, number];
+		};
+	} | null)[];
+};
