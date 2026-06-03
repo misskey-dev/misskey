@@ -6,10 +6,10 @@
 import { createMiddleware } from 'hono/factory';
 
 export const handleRequestRedirectToOmitSearch = createMiddleware(async (c, next) => {
-	const index = c.req.url.indexOf('?');
-	if (~index) {
-		return c.redirect(c.req.url.slice(0, index), 301);
+	if (c.req.url.includes('?')) {
+		return c.redirect(c.req.path, 301);
 	}
+
 	await next();
 	return;
 });

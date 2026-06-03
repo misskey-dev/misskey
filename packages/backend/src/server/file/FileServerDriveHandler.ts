@@ -38,7 +38,7 @@ export class FileServerDriveHandler {
 		if (file.kind === 'not-found') {
 			ctx.status(404);
 			ctx.header('Cache-Control', 'max-age=86400');
-			const fileBuffer = await fsp.readFile(resolve(this.assetsPath, 'not-found.png'));
+			const fileBuffer = await fsp.readFile(resolve(this.assetsPath, 'dummy.png'));
 			ctx.header('Content-Type', 'image/png');
 			ctx.header('Content-Length', fileBuffer.length.toString());
 			return ctx.body(bufferToWebStream(fileBuffer));
