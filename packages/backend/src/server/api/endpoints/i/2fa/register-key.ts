@@ -24,10 +24,10 @@ export const meta = {
 			id: '652f899f-66d4-490e-993e-6606c8ec04c3',
 		},
 
-		incorrectPassword: {
-			message: 'Incorrect password.',
-			code: 'INCORRECT_PASSWORD',
-			id: '38769596-efe2-4faf-9bec-abbb3f2cd9ba',
+		invalidCredential: {
+			message: 'Invalid credential.',
+			code: 'INVALID_CREDENTIAL',
+			id: 'a1189f08-e4a2-462e-b5de-647c312efadb',
 		},
 
 		twoFactorNotEnabled: {
@@ -76,19 +76,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> {
 
 			if (profile.twoFactorEnabled) {
 				if (token == null) {
-					throw new Error('authentication failed');
+					throw new ApiError(meta.errors.invalidCredential);
 				}
 
 				try {
 					await this.userAuthService.twoFactorAuthenticate(profile, token);
 				} catch (_) {
-					throw new Error('authentication failed');
+					throw new ApiError(meta.errors.invalidCredential);
 				}
 			}
 
 			const passwordMatched = await bcrypt.compare(ps.password, profile.password ?? '');
 			if (!passwordMatched) {
-				throw new ApiError(meta.errors.incorrectPassword);
+				throw new ApiError(meta.errors.invalidCredential);
 			}
 
 			if (!profile.twoFactorEnabled) {

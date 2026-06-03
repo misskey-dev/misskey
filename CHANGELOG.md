@@ -129,6 +129,8 @@
 - Fix: Startup and shutdown failures (port-in-use, socket permission denied, plugin timeouts, leaked WebSocket connections) are now reported through the misskey logger instead of an UnhandledPromiseRejectionWarning stack trace
 - Fix: リモートのノートに対するメンション数制限が、サーバーが解決できたユーザー数ベースで行われていた問題を修正
 - Fix: セキュリティに関する修正
+- Fix: 誤ったワンタイムパスワードを入力した際に500エラーが返される問題を修正
+- Enhance: 認証系エンドポイントのパスワード・TOTP検証エラーをINVALID_CREDENTIALに統合
 
 ## 2026.5.4
 
