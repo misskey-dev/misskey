@@ -20,10 +20,10 @@ export const meta = {
 	secure: true,
 
 	errors: {
-		incorrectPassword: {
-			message: 'Incorrect password.',
-			code: 'INCORRECT_PASSWORD',
-			id: '78d6c839-20c9-4c66-b90a-fc0542168b48',
+		invalidCredential: {
+			message: 'Invalid credential.',
+			code: 'INVALID_CREDENTIAL',
+			id: '4ccb213e-227e-4c18-8ddb-f2dddb31a9d0',
 		},
 	},
 
@@ -67,19 +67,19 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (profile.twoFactorEnabled) {
 				if (token == null) {
-					throw new Error('authentication failed');
+					throw new ApiError(meta.errors.invalidCredential);
 				}
 
 				try {
 					await this.userAuthService.twoFactorAuthenticate(profile, token);
 				} catch (_) {
-					throw new Error('authentication failed');
+					throw new ApiError(meta.errors.invalidCredential);
 				}
 			}
 
 			const passwordMatched = await bcrypt.compare(ps.password, profile.password ?? '');
 			if (!passwordMatched) {
-				throw new ApiError(meta.errors.incorrectPassword);
+				throw new ApiError(meta.errors.invalidCredential);
 			}
 
 			// Generate user's secret key

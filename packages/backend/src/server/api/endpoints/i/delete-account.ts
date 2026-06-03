@@ -9,12 +9,21 @@ import type { UsersRepository, UserProfilesRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DeleteAccountService } from '@/core/DeleteAccountService.js';
 import { DI } from '@/di-symbols.js';
+import { ApiError } from '@/server/api/error.js';
 import { UserAuthService } from '@/core/UserAuthService.js';
 
 export const meta = {
 	requireCredential: true,
 
 	secure: true,
+
+	errors: {
+		invalidCredential: {
+			message: 'Invalid credential.',
+			code: 'INVALID_CREDENTIAL',
+			id: 'd5af1163-2248-404f-a3d9-7b8c9e019723',
+		},
+	},
 } as const;
 
 export const paramDef = {
@@ -44,13 +53,13 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (profile.twoFactorEnabled) {
 				if (token == null) {
-					throw new Error('authentication failed');
+					throw new ApiError(meta.errors.invalidCredential);
 				}
 
 				try {
 					await this.userAuthService.twoFactorAuthenticate(profile, token);
 				} catch (_) {
-					throw new Error('authentication failed');
+					throw new ApiError(meta.errors.invalidCredential);
 				}
 			}
 
@@ -61,7 +70,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const passwordMatched = await bcrypt.compare(ps.password, profile.password!);
 			if (!passwordMatched) {
-				throw new Error('incorrect password');
+				throw new ApiError(meta.errors.invalidCredential);
 			}
 
 			await this.deleteAccountService.deleteAccount(me);
