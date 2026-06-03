@@ -59,6 +59,14 @@ export abstract class EnvManager<T = any> {
 			mesh.checkCollisions = false;
 			if (mesh.material != null) {
 				(mesh.material as BABYLON.PBRMaterial).useGLTFLightFalloff = true; // Clustered Lightingではphysical falloffを持つマテリアルはアーチファクトが発生する https://doc.babylonjs.com/features/featuresDeepDive/lights/clusteredLighting/#materials-with-a-physical-falloff-may-cause-artefacts
+
+				if (mesh.material instanceof BABYLON.MultiMaterial) {
+					for (const subMat of mesh.material.subMaterials) {
+						subMat.reflectionTexture = this.envMapIndoor;
+					}
+				} else if (mesh.material instanceof BABYLON.PBRMaterial) {
+					mesh.material.reflectionTexture = this.envMapIndoor;
+				}
 			}
 		}
 	}
@@ -237,15 +245,6 @@ export class SimpleEnvManager extends EnvManager<SimpleEnvOptions> {
 
 			if (mesh.material !== this.floorMaterial) { // 床は他の何にも影を落とさないことが確定している
 				this.addShadowCaster(mesh);
-			}
-
-			const mat = mesh.material;
-			if (mat instanceof BABYLON.MultiMaterial) {
-				for (const subMat of mat.subMaterials) {
-					subMat.reflectionTexture = this.envMapIndoor;
-				}
-			} else if (mat instanceof BABYLON.PBRMaterial) {
-				mat.reflectionTexture = this.envMapIndoor;
 			}
 		}
 
@@ -553,15 +552,6 @@ export class JapaneseEnvManager extends EnvManager<JapaneseEnvOptions> {
 			mesh.receiveShadows = true;
 
 			this.addShadowCaster(mesh);
-
-			const mat = mesh.material;
-			if (mat instanceof BABYLON.MultiMaterial) {
-				for (const subMat of mat.subMaterials) {
-					subMat.reflectionTexture = this.envMapIndoor;
-				}
-			} else if (mat instanceof BABYLON.PBRMaterial) {
-				mat.reflectionTexture = this.envMapIndoor;
-			}
 		}
 
 		await this.applyOptions(options);
@@ -714,15 +704,6 @@ export class MuseumEnvManager extends EnvManager<MuseumEnvOptions> {
 			if (SYSTEM_HEYA_MESH_NAMES.some(name => mesh.name.includes(name))) continue;
 			mesh.receiveShadows = true;
 			//this.addShadowCaster(mesh);
-
-			const mat = mesh.material;
-			if (mat instanceof BABYLON.MultiMaterial) {
-				for (const subMat of mat.subMaterials) {
-					subMat.reflectionTexture = this.envMapIndoor;
-				}
-			} else if (mat instanceof BABYLON.PBRMaterial) {
-				mat.reflectionTexture = this.envMapIndoor;
-			}
 		}
 
 		await this.applyOptions(options);
@@ -845,6 +826,8 @@ export class CustomMadoriEnvManager extends EnvManager<CustomMadoriEnvOptions> {
 		for (const materialDef of options.flooringMaterials) {
 			const mat = new BABYLON.PBRMaterial(`flooring_${materialDef.id}`, this.engine.scene);
 			mat.albedoColor = new BABYLON.Color3(...materialDef.color);
+			mat.metallic = 0;
+			mat.roughness = 1;
 
 			const texPath = materialDef.texture === 'wood' ? '/client-assets/room/textures/flooring-wood.png'
 				: materialDef.texture === 'concrete' ? '/client-assets/room/textures/concrete3.png'
@@ -855,7 +838,7 @@ export class CustomMadoriEnvManager extends EnvManager<CustomMadoriEnvOptions> {
 				mat.albedoTexture = tex;
 			}
 
-			mat.freeze();
+			//mat.freeze();
 			this.floorMaterials[materialDef.id] = mat;
 		}
 
@@ -911,15 +894,6 @@ export class CustomMadoriEnvManager extends EnvManager<CustomMadoriEnvOptions> {
 
 			if (mesh.material !== this.floorMaterial) { // 床は他の何にも影を落とさないことが確定している
 				this.addShadowCaster(mesh);
-			}
-
-			const mat = mesh.material;
-			if (mat instanceof BABYLON.MultiMaterial) {
-				for (const subMat of mat.subMaterials) {
-					subMat.reflectionTexture = this.envMapIndoor;
-				}
-			} else if (mat instanceof BABYLON.PBRMaterial) {
-				mat.reflectionTexture = this.envMapIndoor;
 			}
 		}
 
