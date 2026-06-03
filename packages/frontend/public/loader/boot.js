@@ -135,51 +135,6 @@
 		document.head.appendChild(css);
 	}
 
-	function escapeHtml(s) {
-		return String(s)
-			.replace(/&/g, '&amp;')
-			.replace(/</g, '&lt;')
-			.replace(/>/g, '&gt;')
-			.replace(/"/g, '&quot;')
-			.replace(/'/g, '&#39;');
-	}
-
-	function safeToString(v) {
-		try {
-			if (v == null) return String(v);
-			if (typeof v.toString === 'function') {
-				const s = v.toString();
-				if (typeof s === 'string') return s;
-			}
-			// Object.create(null) 等 toString を持たないオブジェクト向けの最終フォールバック
-			return Object.prototype.toString.call(v);
-		} catch {
-			return '[unserializable]';
-		}
-	}
-
-	function safeJsonStringify(v) {
-		// 兄弟関係で同じ参照が現れる (`{a: x, b: x}`) ケースを循環と誤検出しないよう、
-		// 祖先パスのみを追跡する。replacer 内の this はその値を保持する親オブジェクトを指す
-		// 仕様 (https://tc39.es/ecma262/#sec-json.stringify) を利用して、今回の親より下の
-		// 祖先をスタックから巻き戻してから判定する。
-		const ancestors = [];
-		try {
-			return JSON.stringify(v, function (_key, value) {
-				if (typeof value === 'bigint') return value.toString() + 'n';
-				if (typeof value !== 'object' || value === null) return value;
-				while (ancestors.length > 0 && ancestors[ancestors.length - 1] !== this) {
-					ancestors.pop();
-				}
-				if (ancestors.includes(value)) return '[Circular]';
-				ancestors.push(value);
-				return value;
-			}) ?? '';
-		} catch {
-			return '';
-		}
-	}
-
 	async function renderError(code, details) {
 		if (renderErrorRunning) return;
 		renderErrorRunning = true;
@@ -245,47 +200,44 @@
 		let errorsElement = document.getElementById('errors');
 
 		if (!errorsElement) {
-			// 補間値は HTML エスケープ済み (XSS 対策)。
-			// messages は localStorage 由来で origin scoped だが、frontend-embed 側と
-			// 防御方針を揃えるためここでも一律エスケープする。
 			document.body.innerHTML = `
 			<svg class="icon-warning" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
 				<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
 				<path d="M12 9v2m0 4v.01"></path>
 				<path d="M5 19h14a2 2 0 0 0 1.84 -2.75l-7.1 -12.25a2 2 0 0 0 -3.5 0l-7.1 12.25a2 2 0 0 0 1.75 2.75"></path>
 			</svg>
-			<h1>${escapeHtml(messages.title)}</h1>
+			<h1>${messages.title}</h1>
 			<button class="button-big" onclick="location.reload(true);">
-				<span class="button-label-big">${escapeHtml(messages.reload)}</span>
+				<span class="button-label-big">${messages?.reload}</span>
 			</button>
-			<p><b>${escapeHtml(messages.solution)}</b></p>
-			<p>${escapeHtml(messages.solution1)}</p>
-			<p>${escapeHtml(messages.solution2)}</p>
-			<p>${escapeHtml(messages.solution3)}</p>
-			<p>${escapeHtml(messages.solution4)}</p>
+			<p><b>${messages.solution}</b></p>
+			<p>${messages.solution1}</p>
+			<p>${messages.solution2}</p>
+			<p>${messages.solution3}</p>
+			<p>${messages.solution4}</p>
 			<details style="color: #86b300;">
-				<summary>${escapeHtml(messages.otherOption)}</summary>
-				<a href="${escapeHtml(safeModeUrl.toString())}">
+				<summary>${messages.otherOption}</summary>
+				<a href="${safeModeUrl}">
 					<button class="button-small">
-						<span class="button-label-small">${escapeHtml(messages.otherOption4)}</span>
+						<span class="button-label-small">${messages.otherOption4}</span>
 					</button>
 				</a>
 				<br>
 				<a href="/flush">
 					<button class="button-small">
-						<span class="button-label-small">${escapeHtml(messages.otherOption1)}</span>
+						<span class="button-label-small">${messages.otherOption1}</span>
 					</button>
 				</a>
 				<br>
 				<a href="/cli">
 					<button class="button-small">
-						<span class="button-label-small">${escapeHtml(messages.otherOption2)}</span>
+						<span class="button-label-small">${messages.otherOption2}</span>
 					</button>
 				</a>
 				<br>
 				<a href="/bios">
 					<button class="button-small">
-						<span class="button-label-small">${escapeHtml(messages.otherOption3)}</span>
+						<span class="button-label-small">${messages.otherOption3}</span>
 					</button>
 				</a>
 			</details>
@@ -296,14 +248,12 @@
 		}
 		const detailsElement = document.createElement('details');
 		detailsElement.id = 'errorInfo';
-		// details は循環参照や toString 不在、BigInt 等で throw する可能性があるため安全化する
-		// (XSS 対策として HTML エスケープも行う)
 		detailsElement.innerHTML = `
 		<br>
 		<summary>
-			<code>ERROR CODE: ${escapeHtml(code)}</code>
+			<code>ERROR CODE: ${code}</code>
 		</summary>
-		<code>${escapeHtml(safeToString(details))} ${escapeHtml(safeJsonStringify(details))}</code>`;
+		<code>${details.toString()} ${JSON.stringify(details)}</code>`;
 		errorsElement.appendChild(detailsElement);
 		addStyle(`
 		* {
