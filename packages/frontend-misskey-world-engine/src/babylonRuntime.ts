@@ -6,8 +6,21 @@
 import * as BABYLON from '@babylonjs/core/pure';
 
 export function registerBabylonRuntime(): void {
-	BABYLON.RegisterFullEngineExtensions();
-	BABYLON.RegisterFullWebGPUEngineExtensions();
+	BABYLON.RegisterStandardEngineExtensions();
+	BABYLON.RegisterStandardWebGPUEngineExtensions();
+	BABYLON.RegisterAbstractEngineAlpha();
+	BABYLON.RegisterAbstractEngineTexture();
+	BABYLON.RegisterAbstractEngineCubeTexture();
+	BABYLON.RegisterAbstractEngineQuery();
+	BABYLON.RegisterAbstractEngineTextureSelector();
+	BABYLON.RegisterAbstractEngineTimeQuery();
+	BABYLON.RegisterAbstractEngineViews();
+	BABYLON.RegisterEnginesWebGPUExtensionsEngineRawTexture();
+	BABYLON.RegisterEnginesWebGPUExtensionsEngineReadTexture();
+	BABYLON.RegisterEnginesWebGPUExtensionsEngineCubeTexture();
+	BABYLON.RegisterEnginesWebGPUExtensionsEngineRenderTargetCube();
+	BABYLON.RegisterEnginesWebGPUExtensionsEngineQuery();
+	BABYLON.RegisterEnginesWebGPUExtensionsEngineDynamicTexture();
 	BABYLON.RegisterBufferAlign();
 	BABYLON.RegisterCubeTexture();
 	BABYLON.RegisterStandardMaterial();

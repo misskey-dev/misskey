@@ -54,14 +54,6 @@ export abstract class EngineBase<EVs extends EngineBaseEvents> extends EventEmit
 		});
 
 		this.scene = new BABYLON.Scene(this.engine);
-
-		if (!IN_WEB_WORKER) {
-			(window as any).showBabylonInspector = () => {
-				import('@babylonjs/inspector').then(({ ShowInspector }) => {
-					ShowInspector(this.scene);
-				});
-			};
-		}
 	}
 
 	private currentRafId: number | null = null;
