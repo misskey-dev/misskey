@@ -28,6 +28,12 @@ export const meta = {
 	},
 
 	errors: {
+		incorrectPassword: {
+			message: 'Incorrect password.',
+			code: 'INCORRECT_PASSWORD',
+			id: 'e54c1d7e-e7d6-4103-86b6-0a95069b4ad3',
+		},
+
 		invalidCredential: {
 			message: 'Invalid credential.',
 			code: 'INVALID_CREDENTIAL',
@@ -98,7 +104,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const passwordMatched = await bcrypt.compare(ps.password, profile.password!);
 			if (!passwordMatched) {
-				throw new ApiError(meta.errors.invalidCredential);
+				if (profile.twoFactorEnabled) {
+					throw new ApiError(meta.errors.invalidCredential);
+				}
+				throw new ApiError(meta.errors.incorrectPassword);
 			}
 
 			if (ps.email != null) {
