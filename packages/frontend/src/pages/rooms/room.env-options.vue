@@ -23,10 +23,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkInput>
 
 		<template v-if="controller.roomState.value.env.type === 'simple'">
-			<XDefaultEnvOptions :options="controller.roomState.value.env.options" @update="v => controller.updateEnvOptions(v)"></XDefaultEnvOptions>
+			<XDefaultEnvOptions :options="controller.roomState.value.env.options" @update="v => updateEnvOptions(v)"></XDefaultEnvOptions>
 		</template>
 		<template v-else-if="controller.roomState.value.env.type === 'customMadori'">
-			<XCustomMadoriEnvOptions :options="controller.roomState.value.env.options" @update="v => controller.updateEnvOptions(v)"></XCustomMadoriEnvOptions>
+			<XCustomMadoriEnvOptions :options="controller.roomState.value.env.options" @update="v => updateEnvOptions(v)"></XCustomMadoriEnvOptions>
 		</template>
 	</div>
 </div>
@@ -35,6 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import { getHex, getRgb } from 'misskey-world/src/utility.js';
+import { throttle } from 'throttle-debounce';
 import XWallOption from './room.simple-env-wall-options.vue';
 import XPillarOption from './room.simple-env-pillar-options.vue';
 import XDefaultEnvOptions from './room.simple-env-options.vue';
@@ -57,6 +58,9 @@ const emit = defineEmits<{
 	(ev: 'changeEnvType', value: string): void;
 }>();
 
+const updateEnvOptions = throttle(1000, (v: any) => {
+	props.controller.updateEnvOptions(v);
+});
 </script>
 
 <style lang="scss" module>

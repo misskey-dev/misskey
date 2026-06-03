@@ -6,15 +6,22 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.root">
 	<div class="_gaps">
+		<div class="_buttons">
+			<MkButton mini iconOnly :primary="cellEditMode === null" @click="cellEditMode = null"><i class="ti ti-pointer"></i></MkButton>
+			<MkButton mini iconOnly :primary="cellEditMode === 'pen'" @click="cellEditMode = 'pen'"><i class="ti ti-pencil"></i></MkButton>
+			<MkButton mini iconOnly :primary="cellEditMode === 'eraser'" @click="cellEditMode = 'eraser'"><i class="ti ti-eraser"></i></MkButton>
+		</div>
+
 		<div :class="$style.cells" :style="cellsStyle">
 			<div
-				v-for="(_, i) in options.units"
+				v-for="(_, i) in _units"
 				:key="i"
 				:class="[$style.cell, {
 					[$style.cell_active]: activeCellIndex === i,
-					[$style.cell_empty]: options.units[cellIndexToUnitIndex(i)] == null,
+					[$style.cell_empty]: _units[cellIndexToUnitIndex(i)] == null,
 				}]"
-				@click="activeCellIndex = i"
+				@click="() => { if (cellEditMode === null) activeCellIndex = i; }"
+				@pointerover="onCellPointerover($event, i)"
 			>
 			</div>
 		</div>
@@ -24,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				:items="[
 					{ label: 'Empty', value: null },
 					{ label: 'Floor', value: 'floor' },
-				]" :modelValue="options.units[activeUnitIndex]?.type ?? null" @update:modelValue="v => updateUnitType(activeUnitIndex!, v)"
+				]" :modelValue="_units[activeUnitIndex]?.type ?? null" @update:modelValue="v => updateUnitType(activeUnitIndex!, v)"
 			>
 				<template #label>type</template>
 			</MkSelect>
@@ -89,20 +96,33 @@ const activeUnitIndex = computed(() => {
 	return cellIndexToUnitIndex(activeCellIndex.value);
 });
 
-const update = throttle(1000, (v: Partial<CustomMadoriEnvOptions>) => {
+const cellEditMode = ref<null | 'pen' | 'eraser'>(null);
+const _units = ref(deepClone(props.options.units));
+
+function update(v: Partial<CustomMadoriEnvOptions>) {
 	emit('update', { ...props.options, ...v });
-});
+}
 
 function updateUnitType(index: number, type: 'floor' | null) {
-	const units = deepClone(props.options.units);
 	if (type == null) {
-		units[index] = null;
+		_units.value[index] = null;
 	} else if (type === 'floor') {
-		units[index] = {
+		_units.value[index] = {
 			type: 'floor',
 		};
 	}
-	update({ units });
+	update({ units: _units.value });
+}
+
+function onCellPointerover(e: PointerEvent, cellIndex: number) {
+	if (cellEditMode.value == null) return;
+	console.log(e.buttons);
+	if (e.buttons !== 1) return;
+
+	const unitIndex = cellIndexToUnitIndex(cellIndex);
+	if (unitIndex === -1) return;
+
+	updateUnitType(unitIndex, cellEditMode.value === 'pen' ? 'floor' : null);
 }
 </script>
 

@@ -54,22 +54,22 @@ export type CustomMadoriEnvOptions = {
 	}[];
 	units: ({
 		type: 'floor';
-		walls: Record<'n' | 's' | 'w' | 'e', {
+		walls?: Record<'n' | 's' | 'w' | 'e', {
 			type?: null | 'window';
-			material: string;
+			material?: string;
 			withBeam?: boolean;
 			beamMaterial?: string;
 			withBaseboard?: boolean;
 		} | undefined>;
-		pillars: Record<'nw' | 'ne' | 'sw' | 'se', {
-			material: string;
+		pillars?: Record<'nw' | 'ne' | 'sw' | 'se', {
+			material?: string;
 			show?: boolean;
 		}>;
-		flooring: {
-			material: string;
+		flooring?: {
+			material?: string;
 		};
-		ceiling: {
-			material: string;
+		ceiling?: {
+			material?: string;
 		};
 	} | null)[];
 };
