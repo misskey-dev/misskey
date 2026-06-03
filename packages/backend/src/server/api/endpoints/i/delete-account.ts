@@ -18,6 +18,12 @@ export const meta = {
 	secure: true,
 
 	errors: {
+		incorrectPassword: {
+			message: 'Incorrect password.',
+			code: 'INCORRECT_PASSWORD',
+			id: '9d72604c-9d55-4511-9b96-de11900925c7',
+		},
+
 		invalidCredential: {
 			message: 'Invalid credential.',
 			code: 'INVALID_CREDENTIAL',
@@ -70,7 +76,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			const passwordMatched = await bcrypt.compare(ps.password, profile.password!);
 			if (!passwordMatched) {
-				throw new ApiError(meta.errors.invalidCredential);
+				if (profile.twoFactorEnabled) {
+					throw new ApiError(meta.errors.invalidCredential);
+				}
+				throw new ApiError(meta.errors.incorrectPassword);
 			}
 
 			await this.deleteAccountService.deleteAccount(me);
