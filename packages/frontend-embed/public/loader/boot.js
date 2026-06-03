@@ -7,6 +7,12 @@
 
 // ブロックの中に入れないと、定義した変数がブラウザのグローバルスコープに登録されてしまい邪魔なので
 (async () => {
+	// renderError 自身が throw すると、それが unhandledrejection を再発火させて
+	// onunhandledrejection ハンドラから renderError が再呼び出しされる無限ループに陥り、
+	// メインスレッドを焼き尽くしてエラー画面が操作不能になる。
+	// それを防ぐための再入ガード。
+	let renderErrorRunning = false;
+
 	window.onerror = (e) => {
 		console.error(e);
 		renderError('SOMETHING_HAPPENED');
@@ -80,38 +86,64 @@
 		document.head.appendChild(css);
 	}
 
+	function escapeHtml(s) {
+		return String(s)
+			.replace(/&/g, '&amp;')
+			.replace(/</g, '&lt;')
+			.replace(/>/g, '&gt;')
+			.replace(/"/g, '&quot;')
+			.replace(/'/g, '&#39;');
+	}
+
 	async function renderError(code) {
+		if (renderErrorRunning) return;
+		renderErrorRunning = true;
+		try {
+			await renderErrorImpl(code);
+		} catch (e) {
+			try { console.error('renderError failed', e); } catch { /* noop */ }
+		} finally {
+			renderErrorRunning = false;
+		}
+	}
+
+	async function renderErrorImpl(code) {
 		// Cannot set property 'innerHTML' of null を回避
 		if (document.readyState === 'loading') {
 			await new Promise(resolve => window.addEventListener('DOMContentLoaded', resolve));
 		}
 
 		let messages = null;
-		const bootloaderLocales = localStorage.getItem('bootloaderLocales');
-		if (bootloaderLocales) {
-			messages = JSON.parse(bootloaderLocales);
-		}
-		if (!messages) {
-			// older version of misskey does not store bootloaderLocales, stores locale as a whole
-			const legacyLocale = localStorage.getItem('locale');
-			if (legacyLocale) {
-				const parsed = JSON.parse(legacyLocale);
-				messages = {
-					...(parsed._bootErrors ?? {}),
-					reload: parsed.reload,
-				};
+		try {
+			const bootloaderLocales = localStorage.getItem('bootloaderLocales');
+			if (bootloaderLocales) {
+				messages = JSON.parse(bootloaderLocales);
 			}
+		} catch { /* localStorage / JSON.parse の失敗は無視 */ }
+		if (!messages) {
+			try {
+				// older version of misskey does not store bootloaderLocales, stores locale as a whole
+				const legacyLocale = localStorage.getItem('locale');
+				if (legacyLocale) {
+					const parsed = JSON.parse(legacyLocale);
+					messages = {
+						...(parsed._bootErrors ?? {}),
+						reload: parsed.reload,
+					};
+				}
+			} catch { /* localStorage / JSON.parse の失敗は無視 */ }
 		}
 		if (!messages) messages = {};
 
 		const title = messages?.title || 'Failed to initialize Misskey';
 		const reload = messages?.reload || 'Reload';
 
+		// 補間値は HTML エスケープ済み (XSS 対策)
 		document.body.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 9v4" /><path d="M12 16v.01" /></svg>
-		<div class="message">${title}</div>
-		<div class="submessage">Error Code: ${code}</div>
+		<div class="message">${escapeHtml(title)}</div>
+		<div class="submessage">Error Code: ${escapeHtml(code)}</div>
 		<button onclick="location.reload(!0)">
-			<div>${reload}</div>
+			<div>${escapeHtml(reload)}</div>
 		</button>`;
 		addStyle(`
 		#misskey_app,
