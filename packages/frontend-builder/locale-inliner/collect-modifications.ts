@@ -134,6 +134,9 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 			if (node.type === 'FunctionDeclaration'
 				|| node.type === 'FunctionExpression'
 				|| node.type === 'ArrowFunctionExpression') {
+				if (node.id?.name === localI18nIdentifier) {
+					isSupported = false;
+				}
 				for (const id of node.params.flatMap(x => declsOfPattern(x))) {
 					if (id === localI18nIdentifier) {
 						isSupported = false;
