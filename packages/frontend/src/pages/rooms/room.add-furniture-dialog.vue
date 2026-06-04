@@ -24,6 +24,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkInput v-model="searchKeyword" type="search" :placeholder="i18n.ts.search">
 					<template #prefix><i class="ti ti-search"></i></template>
 				</MkInput>
+				<div class="_buttons">
+					<MkButton v-tooltip="i18n.ts._miRoom._furniturePlacement.top" :primary="placementFilter === 'top'" small iconOnly @click="placementFilter = placementFilter === 'top' ? null : 'top'"><i class="ti ti-transition-bottom"></i></MkButton>
+					<MkButton v-tooltip="i18n.ts._miRoom._furniturePlacement.side" :primary="placementFilter === 'side'" small iconOnly @click="placementFilter = placementFilter === 'side' ? null : 'side'"><i class="ti ti-transition-left"></i></MkButton>
+					<MkButton v-tooltip="i18n.ts._miRoom._furniturePlacement.bottom" :primary="placementFilter === 'bottom'" small iconOnly @click="placementFilter = placementFilter === 'bottom' ? null : 'bottom'"><i class="ti ti-transition-top"></i></MkButton>
+				</div>
+
 				<MkFoldableSection v-if="searchResult.length > 0" :expanded="true">
 					<template #header><i class="ti ti-search"></i> {{ i18n.ts.searchResult }}</template>
 					<div :class="$style.catalogItems">
@@ -92,6 +98,7 @@ import XItem from './room.add-furniture-dialog.item.vue';
 import type { PreviewEngineControllerOptions } from '@/world/room/previewEngineController.js';
 import type { RoomAttachments } from 'misskey-world/src/room/type.js';
 import type { RawOptions } from 'misskey-world/src/mono.js';
+import type { FurnitureSchemaDef } from 'misskey-world/src/room/furniture.js';
 import MkWorldMonoOptionsForm from '@/components/MkWorldMonoOptionsForm.vue';
 import { i18n } from '@/i18n.js';
 import MkModalWindow from '@/components/MkModalWindow.vue';
@@ -106,6 +113,7 @@ import MkInput from '@/components/MkInput.vue';
 import { withTimeout } from '@/utility/promise-timeout.js';
 import { FURNITURE_UI_DEFS } from '@/world/room/furniture-ui-defs.js';
 import { deviceKind } from '@/utility/device-kind.js';
+import MkRadios from '@/components/MkRadios.vue';
 
 // TODO: instanceのidと紛らわしいのでid -> typeにする
 
@@ -134,7 +142,8 @@ const selectedFunitureOptionsState = ref<RawOptions | null>(null);
 const selectedFunitureSchema = computed(() => selectedId.value == null ? null : FURNITURE_SCHEMA_DEFS[selectedId.value]);
 const showFurnitureOptions = ref(false);
 const searchKeyword = ref('');
-const searchResult = ref([]);
+const searchResult = ref<FurnitureSchemaDef<any>[]>([]);
+const placementFilter = ref<'top' | 'side' | 'bottom' | null>(null);
 
 const attachments = {
 	files: [],
@@ -158,12 +167,27 @@ const recentlyUsedSchemas = computed(() => {
 	return recentlyUsed.map(id => FURNITURE_SCHEMA_DEFS[id]).filter((def): def is typeof FURNITURE_SCHEMA_DEFS[string] => def != null);
 });
 
-watch(searchKeyword, (newKeyword) => {
-	const kw = newKeyword.trim().toLowerCase();
-	if (kw === '') {
+watch([searchKeyword, placementFilter], () => {
+	const kw = searchKeyword.value.trim().toLowerCase();
+	if (kw === '' && placementFilter.value == null) {
 		searchResult.value = [];
-	} else {
-		searchResult.value = Object.values(FURNITURE_SCHEMA_DEFS).filter(def => def.id.includes(kw) || FURNITURE_UI_DEFS[def.id].name.toLowerCase().includes(kw));
+		return;
+	}
+
+	searchResult.value = Object.values(FURNITURE_SCHEMA_DEFS);
+
+	if (kw !== '') {
+		searchResult.value = searchResult.value.filter(def => (def.id.includes(kw) || FURNITURE_UI_DEFS[def.id].name.toLowerCase().includes(kw)) && (placementFilter.value == null || def.placement === placementFilter.value));
+	}
+
+	if (placementFilter.value != null) {
+		if (placementFilter.value === 'top') {
+			searchResult.value = searchResult.value.filter(def => def.placement === 'top' || def.placement === 'floor');
+		} else if (placementFilter.value === 'side') {
+			searchResult.value = searchResult.value.filter(def => def.placement === 'side' || def.placement === 'wall');
+		} else if (placementFilter.value === 'bottom') {
+			searchResult.value = searchResult.value.filter(def => def.placement === 'bottom' || def.placement === 'ceiling');
+		}
 	}
 });
 
