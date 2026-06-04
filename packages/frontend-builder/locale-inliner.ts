@@ -74,6 +74,10 @@ export class LocaleInliner {
 			const fileLogger = this.logger.prefixed(`${chunk.fileName} (${chunk.chunkName}): `);
 			chunk.modifications = collectModifications(chunk.sourceCode, chunk.fileName, fileLogger, this);
 		}
+
+		if (!this.chunks.flatMap(x => x.modifications ?? []).some(x => x.type === 'localized')) {
+			throw new Error('No localizations are inlined! this should mean locale inliner is not working well!');
+		}
 	}
 
 	#detectI18nFacadeChunk() {
