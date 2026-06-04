@@ -16,7 +16,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template #header><i class="ti ti-box"></i> カタログ</template>
 
 	<div :class="[$style.root, { [$style.isNarrow]: isNarrow, [$style.isWide]: !isNarrow }]">
-		<div v-if="!controller.isReady" :class="$style.loading">
+		<div v-if="!controller.isReady.value" :class="$style.loading">
 			<MkLoading/>
 		</div>
 		<div v-else :class="$style.main">
