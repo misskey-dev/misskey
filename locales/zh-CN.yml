@@ -1415,6 +1415,11 @@ viewRenotedChannel: "查看转帖所属频道"
 previewingTheme: "正在预览主题"
 previewingThemeRestore: "还原"
 accessToken: "访问令牌"
+chooseEmojiPalette: "选择表情符号选择器"
+addToEmojiPalette: "添加至表情符号选择器"
+emojiPaletteAlreadyAddedConfirm: "此表情符号已存在于此表情符号选择器中。要再次添加吗？"
+append: "加到最后"
+prepend: "加到最前"
 _imageEditing:
   _vars:
     caption: "文件标题"
@@ -3257,6 +3262,8 @@ _search:
   pleaseEnterServerHost: "请填写服务器的主机名称"
   pleaseSelectUser: "请选择用户"
   serverHostPlaceholder: "如：misskey.example.com"
+  postFrom: "起始日期"
+  postTo: "终止日期"
 _serverSetupWizard:
   installCompleted: "Misskey 安装完成！"
   firstCreateAccount: "首先，创建一个管理员帐户。"
