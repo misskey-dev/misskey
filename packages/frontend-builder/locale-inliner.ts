@@ -9,7 +9,7 @@ import MagicString from 'magic-string';
 import { collectModifications } from './locale-inliner/collect-modifications.js';
 import { applyWithLocale } from './locale-inliner/apply-with-locale.js';
 import { blankLogger } from './logger.js';
-import { detectI18nFacadeChunk } from "./locale-inliner/facade-chunk-detection.js";
+import { detectI18nFacadeChunk } from './locale-inliner/facade-chunk-detection.js';
 import type { Logger } from './logger.js';
 import type { Locale } from 'i18n';
 import type { Manifest as ViteManifest } from 'vite';
@@ -87,7 +87,7 @@ export class LocaleInliner {
 		if (chunk == null) throw new Error(`i18n script file '${this.i18nFile}' not found`);
 		if (chunk.sourceCode == null) throw new Error(`Source code for '${this.i18nFile}' not loaded`);
 		const fileLogger = this.logger.prefixed(`${chunk.fileName} (${chunk.chunkName}): `);
-		const facadeInfo = detectI18nFacadeChunk(chunk.sourceCode, chunk.fileName, this.i18nFile, fileLogger);
+		const facadeInfo = detectI18nFacadeChunk(chunk.sourceCode, chunk.fileName, fileLogger);
 		if (facadeInfo != null) {
 			const i18nSymbol = facadeInfo.nameMap[this.i18nSymbol];
 			if (i18nSymbol == null) throw new Error(`Facade module for i18n file does not map ${this.i18nSymbol}. mapping: ${JSON.stringify(facadeInfo.nameMap)}`);

@@ -5,7 +5,7 @@
 
 import { parseAst } from 'rolldown/parseAst';
 import * as estreeWalker from 'estree-walker';
-import { assertNever, assertType } from '../utils.js';
+import { assertNever } from '../utils.js';
 import type { ESTree } from 'rolldown/utils';
 import type { LocaleInliner, TextModification } from '../locale-inliner.js';
 import type { Logger } from '../logger.js';
@@ -141,7 +141,7 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 			if (node.type === 'ImportDeclaration') this.skip();
 
 			if (node.type === 'Identifier') {
-				assertType<ESTree.ObjectProperty | ESTree.MemberExpression | ESTree.ExportSpecifier>(parent);
+				if (parent == null) throw new Error();
 				if (parent.type === 'Property' && !parent.computed && property === 'key') return; // we don't care 'id' part of { id: expr }
 				if (parent.type === 'MemberExpression' && !parent.computed && property === 'property') return; // we don't care 'id' part of { id: expr }
 				if (parent.type === 'ExportSpecifier' && property === 'exported') return; // we don't care 'id' part of { id: expr }
@@ -305,10 +305,10 @@ function lineCol(sourceCode: string, node: ESTree.Node): string {
 	return `(${line}:${col})`;
 }
 
-function findFunctionScopeDecls(node: ESTree.Function | ESTree.ArrowFunctionExpression): string[] {
-	if (node.body == null) return [];
+function findFunctionScopeDecls(fn: ESTree.Function | ESTree.ArrowFunctionExpression): string[] {
+	if (fn.body == null) return [];
 	const decls: string[] = [];
-	walk(node.body, {
+	walk(fn.body, {
 		enter(node) {
 			// The only function-scoped symbol declaration in strict mode is 'var'
 			// If it's non-strict mode, function declaration will also in function scope.
@@ -327,10 +327,10 @@ function findFunctionScopeDecls(node: ESTree.Function | ESTree.ArrowFunctionExpr
 	return decls;
 }
 
-function findBlockScopeDecls(node: ESTree.BlockStatement): string[] {
+function findBlockScopeDecls(block: ESTree.BlockStatement): string[] {
 	const decls: string[] = [];
 
-	for (const body of node.body) {
+	for (const body of block.body) {
 		walk(body, {
 			enter(node) {
 				if (node.type === 'VariableDeclaration' && node.kind !== 'var') {

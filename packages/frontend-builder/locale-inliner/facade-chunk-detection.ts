@@ -1,19 +1,17 @@
+import path from 'node:path';
 import { parseAst } from 'rolldown/parseAst';
 import type { Logger } from '../logger.js';
-import type { LocaleInliner } from '../locale-inliner.js';
 import type { ESTree as RolldownESTree } from 'rolldown/utils';
-import path from "node:path";
 
 interface FacadeInfo {
 	fileName: string,
 	// facade export name => internal name
-	nameMap: Record<string, string>,
+	nameMap: Partial<Record<string, string>>,
 }
 
 export function detectI18nFacadeChunk(
 	sourceCode: string,
 	fileName: string,
-	filePath: string,
 	fileLogger: Logger,
 ): FacadeInfo | null {
 	let programNode: RolldownESTree.Program;
@@ -61,7 +59,7 @@ export function detectI18nFacadeChunk(
 
 	return {
 		fileName: sourceName,
-		nameMap
+		nameMap,
 	};
 }
 
