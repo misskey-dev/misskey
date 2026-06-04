@@ -5,7 +5,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <template>
 <!-- eslint-disable vue/no-mutating-props -->
-<XContainer :draggable="true" :dragStartCallback="dragStartCallback" @remove="() => emit('remove')">
+<XContainer :draggable="true" :pointerStartCallback="pointerStartCallback" @remove="() => emit('remove')">
 	<template #header><i class="ti ti-align-left"></i> {{ i18n.ts._pages.blocks.text }}</template>
 
 	<section>
@@ -22,7 +22,7 @@ import { i18n } from '@/i18n.js';
 import { Autocomplete } from '@/utility/autocomplete.js';
 
 const props = defineProps<{
-	dragStartCallback?: (ev: DragEvent) => void;
+	pointerStartCallback?: (ev: PointerEvent) => void;
 	modelValue: Misskey.entities.PageBlock & { type: 'text' }
 }>();
 

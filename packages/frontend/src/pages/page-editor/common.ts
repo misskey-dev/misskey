@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { i18n } from '@/i18n.js';
 import type { MkSelectItem } from '@/components/MkSelect.vue';
+import { i18n } from '@/i18n.js';
 
 export function getPageBlockList() {
 	return [
