@@ -132,6 +132,15 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 					}
 				}
 			}
+			if (node.type === 'FunctionDeclaration'
+				|| node.type === 'FunctionExpression'
+				|| node.type === 'ArrowFunctionExpression') {
+				for (const id of node.params.flatMap(x => declsOfPattern(x))) {
+					if (id === localI18nIdentifier) {
+						isSupported = false;
+					}
+				}
+			}
 		},
 	});
 
