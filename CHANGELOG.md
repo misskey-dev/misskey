@@ -15,6 +15,7 @@
 - Fix: 一部のUI要素の色が正しく表示されない問題を修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/1243)
 - Fix: 「D」キーでダークモードを切り替える際にsyncDeviceDarkModeのチェックがバイパスされる問題を修正
+- Fix: パスキー登録完了時の認証ダイアログの入力値が使われていない問題を修正
 
 ### Server
 - Enhance: リモートノートクリーニングジョブのスキップ処理のパフォーマンス改善
