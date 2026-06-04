@@ -483,6 +483,7 @@ onBeforeUnmount(() => {
 	max-height: 28px;
 	margin: 0 8px 0 0;
 	border-radius: 100%;
+	object-fit: cover;
 }
 
 .userName {
