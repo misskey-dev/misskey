@@ -92,7 +92,7 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 		},
 	});
 
-	const importSpecifierResult = findImportSpecifier(programNode, inliner.i18nFileName, 'i18n');
+	const importSpecifierResult = findImportSpecifier(programNode, inliner.i18nFileName, inliner.i18nSymbol);
 
 	switch (importSpecifierResult.type) {
 		case 'no-import':
@@ -141,7 +141,7 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 		return modifications;
 	}
 
-	fileLogger.debug(`imports i18n as ${localI18nIdentifier}`);
+	fileLogger.debug(`imports ${inliner.i18nSymbol} /*i18n*/ as ${localI18nIdentifier}`);
 
 	// In case of substitution failure, we will preserve the import statement
 	// otherwise we will remove it.
