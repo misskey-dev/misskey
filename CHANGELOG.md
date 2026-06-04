@@ -16,6 +16,7 @@
 - Fix: 一部のUI要素の色が正しく表示されない問題を修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/1243)
 - Fix: 「D」キーでダークモードを切り替える際にsyncDeviceDarkModeのチェックがバイパスされる問題を修正
+- Fix: メンションのサジェスト時に表示されるアイコン表示が画像サイズ次第で崩れる問題を修正
 
 ### Server
 - Enhance: リモートノートクリーニングジョブのスキップ処理のパフォーマンス改善
