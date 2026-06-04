@@ -14766,6 +14766,14 @@ export interface Locale extends ILocale {
                  * フレームの素材
                  */
                 "frameMat": string;
+                /**
+                 * 文字盤の素材
+                 */
+                "faceMat": string;
+                /**
+                 * 針の素材
+                 */
+                "handsMat": string;
             };
             /**
              * ガラスの壁掛けフォトフレーム

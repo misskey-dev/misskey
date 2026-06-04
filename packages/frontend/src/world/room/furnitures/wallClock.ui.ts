@@ -13,5 +13,11 @@ export const wallClock_ui = defineFurnitureUi<typeof wallClock_schema>({
 		frameMat: {
 			label: i18n.ts._miRoom._furnitures._wallClock.frameMat,
 		},
+		faceMat: {
+			label: i18n.ts._miRoom._furnitures._wallClock.faceMat,
+		},
+		handsMat: {
+			label: i18n.ts._miRoom._furnitures._wallClock.handsMat,
+		},
 	},
 });

@@ -3969,6 +3969,8 @@ _miRoom:
     wallClock: "壁掛け時計"
     _wallClock:
       frameMat: "フレームの素材"
+      faceMat: "文字盤の素材"
+      handsMat: "針の素材"
     wallGlassPictureFrame: "ガラスの壁掛けフォトフレーム"
     _wallGlassPictureFrame:
       height: "高さ"
