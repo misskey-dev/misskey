@@ -241,6 +241,9 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 			if (node.property.type === 'Literal' && typeof node.property.value === 'string') {
 				id = node.property.value;
 			}
+			if (node.property.type === 'TemplateLiteral' && node.property.quasis.length === 1) {
+				id = node.property.quasis[0].value.cooked;
+			}
 		} else {
 			if (node.property.type === 'Identifier') {
 				id = node.property.name;
