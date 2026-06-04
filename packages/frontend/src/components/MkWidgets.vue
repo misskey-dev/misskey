@@ -17,6 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			:modelValue="props.widgets"
 			direction="vertical"
 			withGaps
+			longPress
 			group="MkWidgets"
 			@update:modelValue="v => emit('updateWidgets', v)"
 		>

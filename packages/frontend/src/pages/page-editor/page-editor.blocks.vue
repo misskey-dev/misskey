@@ -13,13 +13,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 	group="pageBlocks"
 	@update:modelValue="v => emit('update:modelValue', v)"
 >
-	<template #default="{ item, dragStart }">
+	<template #default="{ item, dragStart, touchStart }">
 		<div>
 			<!-- divが無いとエラーになる -->
 			<component
 				:is="getComponent(item.type)"
 				:modelValue="item"
 				:dragStartCallback="dragStart"
+				:touchStartCallback="touchStart"
 				@update:modelValue="updateItem"
 				@remove="() => removeItem(item)"
 			/>
