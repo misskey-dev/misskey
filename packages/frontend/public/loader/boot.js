@@ -7,13 +7,21 @@
 
 // ブロックの中に入れないと、定義した変数がブラウザのグローバルスコープに登録されてしまい邪魔なので
 (async () => {
+	// renderError 自身が throw すると、それが unhandledrejection を再発火させて
+	// onunhandledrejection ハンドラから renderError が再呼び出しされる無限ループに陥り、
+	// メインスレッドを焼き尽くしてエラー画面が操作不能になる。
+	// それを防ぐための再入ガード。
+	let renderErrorRunning = false;
+
 	window.onerror = (e) => {
 		console.error(e);
 		renderError('SOMETHING_HAPPENED', e);
 	};
 	window.onunhandledrejection = (e) => {
 		console.error(e);
-		renderError('SOMETHING_HAPPENED_IN_PROMISE', e.reason || e);
+		// e.reason は falsy 値 (0, '', null 等) で reject される可能性があるため
+		// `||` ではなく in 演算子で存在確認する
+		renderError('SOMETHING_HAPPENED_IN_PROMISE', 'reason' in e ? e.reason : e);
 	};
 
 	let forceError = localStorage.getItem('forceError');
@@ -128,26 +136,46 @@
 	}
 
 	async function renderError(code, details) {
+		if (renderErrorRunning) return;
+		renderErrorRunning = true;
+		try {
+			await renderErrorImpl(code, details);
+		} catch (e) {
+			try { console.error('renderError failed', e); } catch { /* noop */ }
+		} finally {
+			renderErrorRunning = false;
+		}
+	}
+
+	async function renderErrorImpl(code, details) {
 		// Cannot set property 'innerHTML' of null を回避
 		if (document.readyState === 'loading') {
 			await new Promise(resolve => window.addEventListener('DOMContentLoaded', resolve));
 		}
 
+		// 既にエラー画面が描画済みなら、同じ id を二重に挿入しないよう抜ける
+		// (連発するエラーは console.error 済み)
+		if (document.getElementById('errorInfo')) return;
+
 		let messages = null;
-		const bootloaderLocales = localStorage.getItem('bootloaderLocales');
-		if (bootloaderLocales) {
-			messages = JSON.parse(bootloaderLocales);
-		}
-		if (!messages) {
-			// older version of misskey does not store bootloaderLocales, stores locale as a whole
-			const legacyLocale = localStorage.getItem('locale');
-			if (legacyLocale) {
-				const parsed = JSON.parse(legacyLocale);
-				messages = {
-					...(parsed._bootErrors ?? {}),
-					reload: parsed.reload,
-				};
+		try {
+			const bootloaderLocales = localStorage.getItem('bootloaderLocales');
+			if (bootloaderLocales) {
+				messages = JSON.parse(bootloaderLocales);
 			}
+		} catch { /* localStorage / JSON.parse の失敗は無視 */ }
+		if (!messages) {
+			try {
+				// older version of misskey does not store bootloaderLocales, stores locale as a whole
+				const legacyLocale = localStorage.getItem('locale');
+				if (legacyLocale) {
+					const parsed = JSON.parse(legacyLocale);
+					messages = {
+						...(parsed._bootErrors ?? {}),
+						reload: parsed.reload,
+					};
+				}
+			} catch { /* localStorage / JSON.parse の失敗は無視 */ }
 		}
 		if (!messages) messages = {};
 
