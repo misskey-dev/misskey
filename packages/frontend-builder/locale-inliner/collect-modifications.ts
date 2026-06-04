@@ -122,9 +122,8 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 	// Check if the identifier is already declared in the file.
 	// If it is, we may overwrite it and cause issues so we skip inlining
 	let isSupported = true;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	(estreeWalker.walk as any)(programNode, {
-		enter(node: ESTree.Node) {
+	walk(programNode, {
+		enter(node) {
 			if (node.type === 'VariableDeclaration') {
 				for (const id of node.declarations.flatMap(x => declsOfPattern(x.id))) {
 					if (id === localI18nIdentifier) {
@@ -159,7 +158,7 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 	const toSkip = new Set();
 	toSkip.add(i18nImport);
 	walk(programNode, {
-		enter(this: WalkerContext, node: ESTree.Node, parent: ESTree.Node | null, property: string | number | symbol | null | undefined) {
+		enter(this: WalkerContext, node, parent, property) {
 			if (toSkip.has(node)) {
 				// This is the import specifier, skip processing it
 				this.skip();
