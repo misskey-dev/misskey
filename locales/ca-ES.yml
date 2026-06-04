@@ -1415,6 +1415,11 @@ viewRenotedChannel: "Mirar el canal d'impulsos "
 previewingTheme: "Previsualització del tema"
 previewingThemeRestore: "Restaurar"
 accessToken: "Token d'accés"
+chooseEmojiPalette: "Selecciona el calaix d'emojis"
+addToEmojiPalette: "Afegeix al calaix d'emojis"
+emojiPaletteAlreadyAddedConfirm: "Aquest emoji ja està inclòs en aquest calaix d'emojis. Vols afegir-lo de nou?"
+append: "Afegeix al final"
+prepend: "Afegeix al principi"
 _imageEditing:
   _vars:
     caption: "Títol de l'arxiu"
