@@ -16,7 +16,7 @@ interface WalkerContext {
 }
 
 const walk = estreeWalker.walk as {
-	(node: ESTree.Program, callback: {
+	(node: ESTree.Node, callback: {
 		enter?: (this: WalkerContext, node: ESTree.Node, parent: ESTree.Node | null, property: string | number | symbol | null | undefined) => void;
 	}): void;
 };
@@ -119,44 +119,13 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 	const i18nImport = importSpecifierResult.importNode;
 	const localI18nIdentifier = importSpecifierResult.localI18nIdentifier;
 
-	// Check if the identifier is already declared in the file.
-	// If it is, we may overwrite it and cause issues so we skip inlining
-	let isSupported = true;
-	walk(programNode, {
-		enter(node) {
-			if (node.type === 'VariableDeclaration') {
-				for (const id of node.declarations.flatMap(x => declsOfPattern(x.id))) {
-					if (id === localI18nIdentifier) {
-						isSupported = false;
-					}
-				}
-			}
-			if (node.type === 'FunctionDeclaration'
-				|| node.type === 'FunctionExpression'
-				|| node.type === 'ArrowFunctionExpression') {
-				if (node.id?.name === localI18nIdentifier) {
-					isSupported = false;
-				}
-				for (const id of node.params.flatMap(x => declsOfPattern(x))) {
-					if (id === localI18nIdentifier) {
-						isSupported = false;
-					}
-				}
-			}
-		},
-	});
-
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	if (!isSupported) {
-		fileLogger.error(`Duplicated identifier "${localI18nIdentifier}" in variable declaration. Skipping inlining.`);
-		return modifications;
-	}
-
 	fileLogger.debug(`imports ${inliner.i18nSymbol} /*i18n*/ as ${localI18nIdentifier}`);
 
 	// In case of substitution failure, we will preserve the import statement
 	// otherwise we will remove it.
 	let preserveI18nImport = false;
+
+	const codeModifications: TextModification[] = [];
 
 	const toSkip = new Set();
 	toSkip.add(i18nImport);
@@ -177,6 +146,7 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 				if (parent.type === 'MemberExpression' && !parent.computed && property === 'property') return; // we don't care 'id' part of { id: expr }
 				if (parent.type === 'ExportSpecifier' && property === 'exported') return; // we don't care 'id' part of { id: expr }
 				if (node.name === localI18nIdentifier) {
+					// the use of identifier is either direct reference to i18n, or unsupported conflict of the identifier, which should report error.
 					fileLogger.error(`${lineCol(sourceCode, node)}: Using i18n identifier "${localI18nIdentifier}" directly. Skipping inlining.`);
 					preserveI18nImport = true;
 				}
@@ -188,7 +158,7 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 					else fileLogger.debug(`${lineCol(sourceCode, node)}: found i18n property access ${i18nPath.join('.')}`);
 					// it's i18n.ts.propertyAccess
 					// i18n.ts.* will always be resolved to string or object containing strings
-					modifications.push({
+					codeModifications.push({
 						type: 'localized',
 						begin: node.start,
 						end: node.end,
@@ -200,7 +170,7 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 					// it's parameterized locale substitution (`i18n.tsx.property(parameters)`)
 					// we expect the parameter to be an object literal
 					fileLogger.debug(`${lineCol(sourceCode, node)}: found i18n function access (object) ${i18nPath.join('.')}`);
-					modifications.push({
+					codeModifications.push({
 						type: 'parameterized-function',
 						begin: node.start,
 						end: node.end,
@@ -209,9 +179,41 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 					});
 					this.skip();
 				}
-			} else if (node.type === 'ArrowFunctionExpression') {
+			}
+
+			// Scope check
+			if (node.type === 'FunctionDeclaration'
+				|| node.type === 'FunctionExpression'
+				|| node.type === 'ArrowFunctionExpression') {
+				// if i18n is introduced as the Named Function Expression, interior of the function does not matter
+				if (node.id?.name === localI18nIdentifier) this.skip();
 				// If there is 'i18n' in the parameters, we care interior of the function
 				if (node.params.flatMap(param => declsOfPattern(param)).includes(localI18nIdentifier)) this.skip();
+
+				// We find var declation inside the function and if there are
+				if (findFunctionScopeDecls(node).includes(localI18nIdentifier)) this.skip();
+			}
+
+			if (node.type === 'BlockStatement') {
+				// We find block-scope declaration inside the block, or from parent node if the block is part of for statement or catch clause
+				if (findBlockScopeDecls(node).includes(localI18nIdentifier)) this.skip();
+			}
+
+			// statements and clauses introduces new variables in variable scope
+			if (node.type === 'CatchClause') {
+				if (node.param != null) {
+					if (declsOfPattern(node.param).includes(localI18nIdentifier)) this.skip();
+				}
+			} else if (node.type === 'ForStatement') {
+				if (node.init?.type === 'VariableDeclaration') {
+					if (node.init.declarations.flatMap(x => declsOfPattern(x.id)).includes(localI18nIdentifier)) this.skip();
+				}
+			} else if (node.type === 'ForInStatement' || node.type === 'ForOfStatement') {
+				if (node.left.type === 'VariableDeclaration') {
+					if (node.left.declarations.flatMap(x => declsOfPattern(x.id)).includes(localI18nIdentifier)) this.skip();
+				} else {
+					if (declsOfPattern(node.left).includes(localI18nIdentifier)) this.skip();
+				}
 			}
 		},
 	});
@@ -219,7 +221,7 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 	if (!preserveI18nImport) {
 		fileLogger.debug('removing i18n import statement');
-		modifications.push({
+		codeModifications.push({
 			type: 'delete',
 			begin: i18nImport.start,
 			end: i18nImport.end,
@@ -257,10 +259,10 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 		return [...parentAccess, id];
 	}
 
-	return modifications;
+	return [...modifications, ...codeModifications];
 }
 
-function declsOfPattern(pattern: ESTree.BindingPattern | ESTree.ParamPattern | null): string[] {
+function declsOfPattern(pattern: ESTree.BindingPattern | ESTree.ParamPattern | ESTree.ArrayAssignmentTarget | ESTree.ObjectAssignmentTarget | ESTree.AssignmentTargetMaybeDefault | ESTree.AssignmentTargetRest | null): string[] {
 	if (pattern == null) return [];
 	switch (pattern.type) {
 		case 'Identifier':
@@ -282,6 +284,12 @@ function declsOfPattern(pattern: ESTree.BindingPattern | ESTree.ParamPattern | n
 			return declsOfPattern(pattern.argument);
 		case 'AssignmentPattern':
 			return declsOfPattern(pattern.left);
+		case 'MemberExpression':
+		case 'TSAsExpression':
+		case 'TSSatisfiesExpression':
+		case 'TSTypeAssertion':
+		case 'TSNonNullExpression':
+			return []; // not introducing new symbol
 		case 'TSParameterProperty':
 			throw new Error();
 		default:
@@ -295,6 +303,61 @@ function lineCol(sourceCode: string, node: ESTree.Node): string {
 	const line = lines.length;
 	const col = lines[lines.length - 1].length + 1; // +1 for 1-based index
 	return `(${line}:${col})`;
+}
+
+function findFunctionScopeDecls(node: ESTree.Function | ESTree.ArrowFunctionExpression): string[] {
+	if (node.body == null) return [];
+	const decls: string[] = [];
+	walk(node.body, {
+		enter(node) {
+			// The only function-scoped symbol declaration in strict mode is 'var'
+			// If it's non-strict mode, function declaration will also in function scope.
+			if (node.type === 'VariableDeclaration' && node.kind === 'var') {
+				decls.push(...node.declarations.flatMap(x => declsOfPattern(x.id)));
+			}
+
+			if (node.type === 'FunctionDeclaration'
+				|| node.type === 'FunctionExpression'
+				|| node.type === 'ArrowFunctionExpression') {
+				// The function makes new inner scope
+				this.skip();
+			}
+		},
+	});
+	return decls;
+}
+
+function findBlockScopeDecls(node: ESTree.BlockStatement): string[] {
+	const decls: string[] = [];
+
+	for (const body of node.body) {
+		walk(body, {
+			enter(node) {
+				if (node.type === 'VariableDeclaration' && node.kind !== 'var') {
+					decls.push(...node.declarations.flatMap(x => declsOfPattern(x.id)));
+				} else if (node.type === 'FunctionDeclaration') {
+					if (node.id != null) decls.push(node.id.name);
+				} else if (node.type === 'ClassDeclaration') {
+					if (node.id != null) decls.push(node.id.name);
+				}
+
+				if (
+					node.type === 'FunctionDeclaration'
+					|| node.type === 'FunctionExpression'
+					|| node.type === 'ArrowFunctionExpression'
+					|| node.type === 'BlockStatement'
+					|| node.type === 'CatchClause'
+					|| node.type === 'ForStatement'
+					|| node.type === 'ForInStatement'
+					|| node.type === 'ForOfStatement'
+				) {
+					// The function makes new inner scope
+					this.skip();
+				}
+			},
+		});
+	}
+	return decls;
 }
 
 //region checker functions
