@@ -168,6 +168,13 @@ export class FanoutTimelineEndpointService {
 			let readFromRedis = 0;
 			let lastSuccessfulRate = 1; // rateをキャッシュする？
 
+			// Redis 上に「上位 limit 件範囲を満たす素材」があるか
+			// (= 歯抜けなしと見なせるか) を early return 条件に組み込む。
+			// redisResultIds.length < ps.limit の場合は歯抜けまたはキャッシュ未飽和なので、
+			// ループ内で limit 件を満たしても early return せず、最終 dbFallback で
+			// 全範囲を取り直して上位 limit 件を再構築する (歯抜け範囲のスキップを防ぐ)。
+			const hasFullRedisCache = redisResultIds.length >= ps.limit;
+
 			while ((redisResultIds.length - readFromRedis) !== 0) {
 				const remainingToRead = ps.limit - redisTimeline.length;
 
@@ -181,7 +188,7 @@ export class FanoutTimelineEndpointService {
 				redisTimeline.push(...gotFromDb);
 				lastSuccessfulRate = gotFromDb.length / noteIds.length;
 
-				if (ps.allowPartial ? redisTimeline.length !== 0 : redisTimeline.length >= ps.limit) {
+				if (ps.allowPartial ? redisTimeline.length !== 0 : (redisTimeline.length >= ps.limit && hasFullRedisCache)) {
 					// 十分Redisからとれた
 					return redisTimeline.slice(0, ps.limit);
 				}
