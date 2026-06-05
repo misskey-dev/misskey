@@ -1415,6 +1415,11 @@ viewRenotedChannel: "리노트된 채널 보기"
 previewingTheme: "테마 미리보기 중"
 previewingThemeRestore: "복구"
 accessToken: "접근 토큰"
+chooseEmojiPalette: "이모지 팔레트 선택"
+addToEmojiPalette: "이모지 팔레트에 추가"
+emojiPaletteAlreadyAddedConfirm: "이 이모지는 이미 이 이모지 팔레트에 포함돼있습니다. 다시 추가하시겠습니까?"
+append: "맨뒤에 추가"
+prepend: "맨앞에 추가"
 _imageEditing:
   _vars:
     caption: "파일 설명"
