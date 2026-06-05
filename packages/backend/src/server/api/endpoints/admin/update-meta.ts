@@ -777,12 +777,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			// 中はデータプレーンが FTTL を読み書きしないため、push と purge の競合・MetaService
 			// キャッシュ伝播ラグ・大規模インスタンスでの HTTP タイムアウト等を一掃できる。
 			// 過渡期中に enableFanoutTimeline をさらに変更するリクエストは 409 で拒否する。
-			if (ps.enableFanoutTimeline !== undefined && ps.enableFanoutTimeline !== before.enableFanoutTimeline) {
-				if (!before.fanoutTimelineActive) {
-					throw new ApiError(meta.errors.fanoutTimelineTransitionInProgress);
+			if (ps.enableFanoutTimeline !== undefined) {
+				if (ps.enableFanoutTimeline !== before.enableFanoutTimeline) {
+					// 過渡期 = enableFanoutTimeline と fanoutTimelineActive が乖離している状態
+					// (purge ジョブ進行中)。stable な OFF/OFF や ON/ON からのトグルは受理する。
+					if (before.enableFanoutTimeline !== before.fanoutTimelineActive) {
+						throw new ApiError(meta.errors.fanoutTimelineTransitionInProgress);
+					}
+					set.fanoutTimelineActive = false;
 				}
 				set.enableFanoutTimeline = ps.enableFanoutTimeline;
-				set.fanoutTimelineActive = false;
 			}
 
 			await this.metaService.update(set);

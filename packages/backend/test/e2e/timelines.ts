@@ -9,13 +9,14 @@
 // pnpm jest -- e2e/timelines.ts
 
 import * as assert from 'assert';
-import { describe, beforeAll, test } from 'vitest';
+import { describe, beforeAll, afterAll, test } from 'vitest';
 import { setTimeout } from 'node:timers/promises';
 import { entities } from 'misskey-js';
 import { Redis } from 'ioredis';
 import { SignupResponse, Note } from 'misskey-js/entities.js';
-import { api, initTestDb, post, randomString, sendEnvUpdateRequest, signup, uploadUrl, UserToken } from '../utils.js';
+import { api, initTestDb, post, randomString, sendEnvUpdateRequest, signup, startJobQueue, uploadUrl, UserToken } from '../utils.js';
 import { loadConfig } from '@/config.js';
+import type { INestApplicationContext } from '@nestjs/common';
 
 function genHost() {
 	return randomString() + '.example.com';
@@ -3335,6 +3336,18 @@ describe('Timelines', () => {
 	// BullMQ の purgeFanoutTimelines ジョブが Redis 上の list:* をパージしてから
 	// fanoutTimelineActive=true に戻す。過渡期中はデータプレーンが FTTL を一切触らない。
 	describe('FTT toggle purge', () => {
+		// E2E ランナー (test-server/entry.ts) ではジョブキューワーカーがデフォルト無効。
+		// 過渡期解消には purgeFanoutTimelines ジョブの完走が必要なので、ここだけ起動する。
+		let queue: INestApplicationContext;
+
+		beforeAll(async () => {
+			queue = await startJobQueue();
+		}, 1000 * 60 * 2);
+
+		afterAll(async () => {
+			await queue.close();
+		});
+
 		// 直前のトグルが起こしたパージジョブが完走するまで待つ。
 		// `enableFanoutTimeline === fanoutTimelineActive` になったらジョブは終わって
 		// データプレーンが新しい状態に切り替わっている。
