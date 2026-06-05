@@ -109,7 +109,7 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 			});
 			return modifications;
 		case 'unexpected-specifiers':
-			fileLogger.info(`Importing ${inliner.i18nFileName} found but with unexpected specifiers. Skipping inlining.`);
+			fileLogger.error(`Importing ${inliner.i18nFileName} found but with unexpected specifiers. Skipping inlining.`);
 			return modifications;
 		case 'specifier':
 			fileLogger.debug(`Found import i18n as ${importSpecifierResult.localI18nIdentifier}`);
