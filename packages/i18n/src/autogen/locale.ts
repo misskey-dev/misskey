@@ -13562,6 +13562,20 @@ export interface Locale extends ILocale {
         };
         "_furnitures": {
             /**
+             * はにわ
+             */
+            "haniwa": string;
+            "_haniwa": {
+                /**
+                 * 本体の素材
+                 */
+                "bodyMat": string;
+                /**
+                 * 中身の色
+                 */
+                "insideColor": string;
+            };
+            /**
              * リングシェードフロアランプ
              */
             "woodRingFloorLamp": string;

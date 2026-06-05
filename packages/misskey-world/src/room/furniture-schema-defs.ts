@@ -112,6 +112,7 @@ import { wireNet_schema } from './furnitures/wireNet.schema.js';
 import { woodRingFloorLamp_schema } from './furnitures/woodRingFloorLamp.schema.js';
 import { woodRingsPendantLight_schema } from './furnitures/woodRingsPendantLight.schema.js';
 import { woodSoundAbsorbingPanel_schema } from './furnitures/woodSoundAbsorbingPanel.schema.js';
+import { haniwa_schema } from './furnitures/haniwa.schema.js';
 import type { FurnitureSchemaDef } from './furniture.js';
 
 export const FURNITURE_SCHEMA_DEFS = {
@@ -223,6 +224,7 @@ export const FURNITURE_SCHEMA_DEFS = {
 	wireNet: wireNet_schema,
 	clippedPicture: clippedPicture_schema,
 	wireBasket: wireBasket_schema,
+	haniwa: haniwa_schema,
 } as Record<string, FurnitureSchemaDef<any>>;
 
 export function getFurnitureSchemaDef(type: string): FurnitureSchemaDef {

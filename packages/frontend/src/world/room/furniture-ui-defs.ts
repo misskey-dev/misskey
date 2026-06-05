@@ -112,6 +112,7 @@ import { wireNet_ui } from './furnitures/wireNet.ui.js';
 import { woodRingFloorLamp_ui } from './furnitures/woodRingFloorLamp.ui.js';
 import { woodRingsPendantLight_ui } from './furnitures/woodRingsPendantLight.ui.js';
 import { woodSoundAbsorbingPanel_ui } from './furnitures/woodSoundAbsorbingPanel.ui.js';
+import { haniwa_ui } from './furnitures/haniwa.ui.js';
 import type { FurnitureUiDef } from './defineFurnitureUi.js';
 
 export const FURNITURE_UI_DEFS = {
@@ -223,6 +224,7 @@ export const FURNITURE_UI_DEFS = {
 	wireNet: wireNet_ui,
 	clippedPicture: clippedPicture_ui,
 	wireBasket: wireBasket_ui,
+	haniwa: haniwa_ui,
 } as Record<string, FurnitureUiDef>;
 
 export function getFurnitureUiDef(type: string): FurnitureUiDef {

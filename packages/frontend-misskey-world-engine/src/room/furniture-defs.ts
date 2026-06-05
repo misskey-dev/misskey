@@ -114,6 +114,7 @@ import { wireNet } from './furnitures/wireNet.js';
 import { woodRingFloorLamp } from './furnitures/woodRingFloorLamp.js';
 import { woodRingsPendantLight } from './furnitures/woodRingsPendantLight.js';
 import { woodSoundAbsorbingPanel } from './furnitures/woodSoundAbsorbingPanel.js';
+import { haniwa } from './furnitures/haniwa.js';
 
 export const FUNITURE_DEFS = [
 	a4Case,
@@ -225,6 +226,7 @@ export const FUNITURE_DEFS = [
 	wireNet,
 	clippedPicture,
 	wireBasket,
+	haniwa,
 ] as FurnitureDef[];
 
 export function getFurnitureDef(type: string): FurnitureDef {

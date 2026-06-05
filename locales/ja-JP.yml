@@ -3638,6 +3638,10 @@ _miRoom:
     side: "側面設置"
 
   _furnitures:
+    haniwa: "はにわ"
+    _haniwa:
+      bodyMat: "本体の素材"
+      insideColor: "中身の色"
     woodRingFloorLamp: "リングシェードフロアランプ"
     _woodRingFloorLamp:
       shadeMat: "シェードの素材"
