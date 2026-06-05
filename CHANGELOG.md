@@ -18,6 +18,7 @@
 - Fix: 「D」キーでダークモードを切り替える際にsyncDeviceDarkModeのチェックがバイパスされる問題を修正
 
 ### Server
+- Fix: 管理画面で `enableFanoutTimeline` を切り替えるとタイムラインにギャップが生じノートが取りこぼされる問題を修正 (過渡期フラグ `fanoutTimelineActive` を導入し、トグル中は BullMQ ジョブで Redis 上の `list:*` をパージしてからデータプレーンを切り替える方式に変更。過渡期中はデータプレーンが FTTL を一切使用せず DB 直行となり、過渡期中の `enableFanoutTimeline` 再変更は 409 で拒否される)
 - Enhance: リモートノートクリーニングジョブのスキップ処理のパフォーマンス改善
 - Fix: PerUserDriveChart がシステム所有ファイル (userId が null) の更新で `"group"` の非NULL制約違反によりクラッシュする問題を修正 (#17498)
 - Enhance: リモートノートクリーニングジョブの削除対象検索処理のパフォーマンス改善

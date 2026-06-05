@@ -579,6 +579,17 @@ export class MiMeta {
 	})
 	public enableFanoutTimeline: boolean;
 
+	/**
+	 * `enableFanoutTimeline` をトグルした直後の過渡期 (Redis 上の list:* キャッシュを
+	 * BullMQ ジョブで purge している間) は false になり、データプレーンは FTTL を一切
+	 * 読み書きしない (= OFF と同じ挙動)。purge ジョブ完了で true に戻る。
+	 * 過渡期中の `enableFanoutTimeline` 変更は admin endpoint 側で 409 で拒否する。
+	 */
+	@Column('boolean', {
+		default: true,
+	})
+	public fanoutTimelineActive: boolean;
+
 	@Column('boolean', {
 		default: true,
 	})

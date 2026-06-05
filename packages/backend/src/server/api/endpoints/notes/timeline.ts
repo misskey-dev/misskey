@@ -77,7 +77,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const untilId = ps.untilId ?? (ps.untilDate ? this.idService.gen(ps.untilDate!) : null);
 			const sinceId = ps.sinceId ?? (ps.sinceDate ? this.idService.gen(ps.sinceDate!) : null);
 
-			if (!this.serverSettings.enableFanoutTimeline) {
+			if (!this.serverSettings.enableFanoutTimeline || !this.serverSettings.fanoutTimelineActive) {
 				const timeline = await this.getFromDb({
 					untilId,
 					sinceId,

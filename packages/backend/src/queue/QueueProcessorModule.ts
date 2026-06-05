@@ -20,6 +20,7 @@ import { CleanChartsProcessorService } from './processors/CleanChartsProcessorSe
 import { CleanProcessorService } from './processors/CleanProcessorService.js';
 import { CheckModeratorsActivityProcessorService } from './processors/CheckModeratorsActivityProcessorService.js';
 import { CleanRemoteNotesProcessorService } from './processors/CleanRemoteNotesProcessorService.js';
+import { PurgeFanoutTimelinesProcessorService } from './processors/PurgeFanoutTimelinesProcessorService.js';
 import { CleanRemoteFilesProcessorService } from './processors/CleanRemoteFilesProcessorService.js';
 import { DeleteAccountProcessorService } from './processors/DeleteAccountProcessorService.js';
 import { DeleteDriveFilesProcessorService } from './processors/DeleteDriveFilesProcessorService.js';
@@ -87,6 +88,7 @@ import { RelationshipProcessorService } from './processors/RelationshipProcessor
 		CheckExpiredMutingsProcessorService,
 		CheckModeratorsActivityProcessorService,
 		CleanRemoteNotesProcessorService,
+		PurgeFanoutTimelinesProcessorService,
 		QueueProcessorService,
 	],
 	exports: [

@@ -100,7 +100,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchList);
 			}
 
-			if (!this.serverSettings.enableFanoutTimeline) {
+			if (!this.serverSettings.enableFanoutTimeline || !this.serverSettings.fanoutTimelineActive) {
 				const timeline = await this.getFromDb(list, {
 					untilId,
 					sinceId,

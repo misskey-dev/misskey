@@ -464,7 +464,7 @@ export class ActivityPubServerService {
 		const partOf = `${this.config.url}/users/${userId}/outbox`;
 
 		if (page) {
-			const notes = this.meta.enableFanoutTimeline ? await this.fanoutTimelineEndpointService.getMiNotes({
+			const notes = (this.meta.enableFanoutTimeline && this.meta.fanoutTimelineActive) ? await this.fanoutTimelineEndpointService.getMiNotes({
 				sinceId: sinceId ?? null,
 				untilId: untilId ?? null,
 				limit: limit,

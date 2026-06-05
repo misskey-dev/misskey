@@ -1043,7 +1043,9 @@ export class NoteCreateService implements OnApplicationShutdown {
 
 	@bindThis
 	private async pushToTl(note: MiNote, user: { id: MiUser['id']; host: MiUser['host']; }) {
-		if (!this.meta.enableFanoutTimeline) return;
+		// fanoutTimelineActive=false は admin がトグルを切り替えた直後の過渡期。
+		// その間は FTTL への push を止め、データプレーンは DB のみで動かす。
+		if (!this.meta.enableFanoutTimeline || !this.meta.fanoutTimelineActive) return;
 
 		const r = this.redisForTimelines.pipeline();
 

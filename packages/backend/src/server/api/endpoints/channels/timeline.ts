@@ -88,7 +88,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (me) this.activeUsersChart.read(me);
 
-			if (!this.serverSettings.enableFanoutTimeline) {
+			if (!this.serverSettings.enableFanoutTimeline || !this.serverSettings.fanoutTimelineActive) {
 				return await this.noteEntityService.packMany(await this.getFromDb({ untilId, sinceId, limit: ps.limit, channelId: channel.id }, me), me);
 			}
 
