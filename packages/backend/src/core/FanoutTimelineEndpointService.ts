@@ -168,13 +168,6 @@ export class FanoutTimelineEndpointService {
 			let readFromRedis = 0;
 			let lastSuccessfulRate = 1; // rateをキャッシュする？
 
-			// Redis 上に「上位 limit 件範囲を満たす素材」があるか
-			// (= 歯抜けなしと見なせるか) を early return 条件に組み込む。
-			// redisResultIds.length < ps.limit の場合は歯抜けまたはキャッシュ未飽和なので、
-			// ループ内で limit 件を満たしても early return せず、最終 dbFallback で
-			// 全範囲を取り直して上位 limit 件を再構築する (歯抜け範囲のスキップを防ぐ)。
-			const hasFullRedisCache = redisResultIds.length >= ps.limit;
-
 			while ((redisResultIds.length - readFromRedis) !== 0) {
 				const remainingToRead = ps.limit - redisTimeline.length;
 
@@ -188,21 +181,28 @@ export class FanoutTimelineEndpointService {
 				redisTimeline.push(...gotFromDb);
 				lastSuccessfulRate = gotFromDb.length / noteIds.length;
 
-				if (ps.allowPartial ? redisTimeline.length !== 0 : (redisTimeline.length >= ps.limit && hasFullRedisCache)) {
-					// 十分Redisからとれた
+				// allowPartial のみ早期 return 許可。
+				// それ以外は Redis 上位 limit 件範囲内の歯抜け検出が原理的に不可能なため
+				// (Redis 内に存在しない歯抜け ID の有無を Redis データだけからは判別できない)、
+				// 常に最終 dbFallback の全範囲取り直しに進ませて上位 limit 件を正しく再構築する。
+				if (ps.allowPartial && redisTimeline.length !== 0) {
 					return redisTimeline.slice(0, ps.limit);
+				}
+				if (redisTimeline.length >= ps.limit) {
+					break;
 				}
 			}
 
-			// まだ足りない分はDBにフォールバック
-			// Redisの最古/最新を境界に使うと、Redis上に飛び石の歯抜け
-			// (3分ガードでpushが拒否されたノート、TTL evict、LREM等)があった場合に、
-			// その歯抜け範囲のノートがDBクエリにも含まれず取りこぼされる。
-			// そのためps.untilId/ps.sinceIdの全範囲をDBに問い合わせ、
-			// Redis由来のノートと重複排除した上で再ソートする。
+			// 常に最終 dbFallback で全範囲を取り直し、Redis 由来と dedupe + sort + slice する。
+			// Redis 最古/最新を境界に使うと、Redis 上の飛び石歯抜け
+			// (3分ガード拒否, TTL evict, LREM 等) や、Redis ループでの古い ID 消費による
+			// ページネーション境界のずれで取りこぼしが発生するため、ps.untilId/ps.sinceId の
+			// 全範囲を引いて上位 limit 件を再構築する。
+			// gotFromDb にも filter を適用するのは、Redis 経由のフィルタ (excludeReplies,
+			// excludeNoFiles, ミュート/ブロック等) を DB 由来のノートにも揃えるため。
 			const gotFromDb = await ps.dbFallback(ps.untilId, ps.sinceId, ps.limit);
 			const seen = new Set(redisTimeline.map(n => n.id));
-			const merged = [...redisTimeline, ...gotFromDb.filter(n => !seen.has(n.id))];
+			const merged = [...redisTimeline, ...gotFromDb.filter(n => !seen.has(n.id) && filter(n))];
 			merged.sort((a, b) => idCompare(a.id, b.id));
 			return merged.slice(0, ps.limit);
 		}
