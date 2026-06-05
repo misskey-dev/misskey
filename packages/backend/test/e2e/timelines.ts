@@ -3326,4 +3326,99 @@ describe('Timelines', () => {
 		// TODO: リノートミュート済みユーザーのテスト
 		// TODO: ページネーションのテスト
 	});
+
+	// FanoutTimelineEndpointServiceの最終DBフォールバックがRedis最古を境界に使うため、
+	// Redis上に飛び石の歯抜け (3分ガードでpushが拒否されたノート, TTL evict, LREM等)
+	// があると、その歯抜け範囲のノートがDBクエリにも含まれず取りこぼされる問題に対する回帰テスト。
+	describe('FTT Redis gap fallback', () => {
+		beforeAll(async () => {
+			await api('admin/update-meta', { enableFanoutTimeline: true }, root);
+		}, 1000 * 60 * 2);
+
+		test('Home TL: Redis上のhomeTimeline FTTに飛び石の歯抜けがあっても、DBの全ノートを取りこぼさず返す', async () => {
+			const alice = await signup();
+
+			// alwaysIncludeMyNotes対象 = 自分宛投稿でHTLを埋める
+			const noteIds: string[] = [];
+			for (let i = 0; i < 20; i++) {
+				const n = await post(alice, { text: `seed ${i}` });
+				noteIds.push(n.id);
+			}
+			await setTimeout(500);
+
+			// Redis FTTから中間7件をLREMで抜いて飛び石歯抜けを作る
+			// (本番では3分ガード拒否, TTL evict, 編集起因のID変動などで自然発生する状態)
+			const gapTargets = noteIds.slice(5, 12);
+			for (const id of gapTargets) {
+				await redisForTimelines.lrem(`list:homeTimeline:${alice.id}`, 1, id);
+			}
+
+			const res = await api('notes/timeline', { limit: 20 }, alice);
+			const returnedIds = (res.body as Note[]).map(n => n.id);
+
+			// 期待: DBに存在する全20件が返る (Redis歯抜けにかかわらず取りこぼし0)
+			for (const id of noteIds) {
+				assert.ok(returnedIds.includes(id), `missing ${id} in HTL result`);
+			}
+			assert.strictEqual(returnedIds.length, 20);
+		});
+
+		test('Channel TL: Redis上のchannelTimeline FTTに飛び石の歯抜けがあっても、DBの全ノートを取りこぼさず返す', async () => {
+			const alice = await signup();
+			const channel = await createChannel('fttl-gap-' + randomString(), alice);
+
+			const noteIds: string[] = [];
+			for (let i = 0; i < 20; i++) {
+				const n = await post(alice, { text: `seed ${i}`, channelId: channel.id });
+				noteIds.push(n.id);
+			}
+			await setTimeout(500);
+
+			const gapTargets = noteIds.slice(5, 12);
+			for (const id of gapTargets) {
+				await redisForTimelines.lrem(`list:channelTimeline:${channel.id}`, 1, id);
+			}
+
+			const res = await api('channels/timeline', { channelId: channel.id, limit: 20 });
+			const returnedIds = (res.body as Note[]).map(n => n.id);
+
+			for (const id of noteIds) {
+				assert.ok(returnedIds.includes(id), `missing ${id} in channel TL result`);
+			}
+			assert.strictEqual(returnedIds.length, 20);
+		});
+
+		test('Channel TL: 連続ページネーションで歯抜けを横断しても全60件を取りこぼさず取得できる', async () => {
+			const alice = await signup();
+			const channel = await createChannel('fttl-gap-paginate-' + randomString(), alice);
+
+			const noteIds: string[] = [];
+			for (let i = 0; i < 60; i++) {
+				const n = await post(alice, { text: `seed ${i}`, channelId: channel.id });
+				noteIds.push(n.id);
+			}
+			await setTimeout(500);
+
+			// Redis FTT 60件のうち中間7件を抜く (noteIdsは古い順なので新しい側から数えてindex 13-19)
+			const gapTargets = noteIds.slice(40, 47);
+			for (const id of gapTargets) {
+				await redisForTimelines.lrem(`list:channelTimeline:${channel.id}`, 1, id);
+			}
+
+			const seenIds = new Set<string>();
+			let untilId: string | undefined;
+			for (let page = 0; page < 6; page++) {
+				const res = await api('channels/timeline', { channelId: channel.id, limit: 20, ...(untilId ? { untilId } : {}) });
+				const ids = (res.body as Note[]).map(n => n.id);
+				if (ids.length === 0) break;
+				for (const id of ids) seenIds.add(id);
+				untilId = ids[ids.length - 1];
+			}
+
+			for (const id of noteIds) {
+				assert.ok(seenIds.has(id), `missing ${id} after pagination`);
+			}
+			assert.strictEqual(seenIds.size, 60);
+		});
+	});
 });

@@ -18,6 +18,7 @@
 - Fix: 「D」キーでダークモードを切り替える際にsyncDeviceDarkModeのチェックがバイパスされる問題を修正
 
 ### Server
+- Fix: FTT (Fanout Timeline) 上に飛び石の歯抜けがあるとき、 タイムラインAPI が DB に存在するノートを取りこぼす問題を修正
 - Enhance: リモートノートクリーニングジョブのスキップ処理のパフォーマンス改善
 - Fix: PerUserDriveChart がシステム所有ファイル (userId が null) の更新で `"group"` の非NULL制約違反によりクラッシュする問題を修正 (#17498)
 - Enhance: リモートノートクリーニングジョブの削除対象検索処理のパフォーマンス改善

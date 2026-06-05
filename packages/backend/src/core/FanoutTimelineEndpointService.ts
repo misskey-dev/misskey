@@ -188,18 +188,16 @@ export class FanoutTimelineEndpointService {
 			}
 
 			// まだ足りない分はDBにフォールバック
-			const remainingToRead = ps.limit - redisTimeline.length;
-			let dbUntil: string | null;
-			let dbSince: string | null;
-			if (ascending) {
-				dbUntil = ps.untilId;
-				dbSince = noteIds[noteIds.length - 1];
-			} else {
-				dbUntil = noteIds[noteIds.length - 1];
-				dbSince = ps.sinceId;
-			}
-			const gotFromDb = await ps.dbFallback(dbUntil, dbSince, remainingToRead);
-			return [...redisTimeline, ...gotFromDb];
+			// Redisの最古/最新を境界に使うと、Redis上に飛び石の歯抜け
+			// (3分ガードでpushが拒否されたノート、TTL evict、LREM等)があった場合に、
+			// その歯抜け範囲のノートがDBクエリにも含まれず取りこぼされる。
+			// そのためps.untilId/ps.sinceIdの全範囲をDBに問い合わせ、
+			// Redis由来のノートと重複排除した上で再ソートする。
+			const gotFromDb = await ps.dbFallback(ps.untilId, ps.sinceId, ps.limit);
+			const seen = new Set(redisTimeline.map(n => n.id));
+			const merged = [...redisTimeline, ...gotFromDb.filter(n => !seen.has(n.id))];
+			merged.sort((a, b) => idCompare(a.id, b.id));
+			return merged.slice(0, ps.limit);
 		}
 
 		return await ps.dbFallback(ps.untilId, ps.sinceId, ps.limit);
