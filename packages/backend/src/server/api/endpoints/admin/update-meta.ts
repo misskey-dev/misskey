@@ -797,7 +797,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				await this.queueService.createPurgeFanoutTimelinesJob(after.enableFanoutTimeline);
 			}
 
-			this.moderationLogService.log(me, 'updateServerSettings', {
+			await this.moderationLogService.log(me, 'updateServerSettings', {
 				before,
 				after,
 			});
