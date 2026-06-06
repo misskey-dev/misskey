@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as BABYLON from '@babylonjs/core/pure';
+import * as BABYLON from '@babylonjs/core/pure.js';
 import { ModelExplorer, type Timer } from '../utility.js';
 import type { AccessorySchemaDef } from 'misskey-world/src/avatars/accessory.js';
 import type { OptionsSchema } from 'misskey-world/src/mono.js';

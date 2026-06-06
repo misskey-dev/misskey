@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as BABYLON from '@babylonjs/core/pure';
+import * as BABYLON from '@babylonjs/core/pure.js';
 import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic.js';
 import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { ArcRotateCameraManualInput, getMeshesBoundingBox, GRAPHICS_QUALITY } from './utility.js';

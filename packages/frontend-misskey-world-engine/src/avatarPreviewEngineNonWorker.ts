@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as BABYLON from '@babylonjs/core/pure';
+import * as BABYLON from '@babylonjs/core/pure.js';
 import { AvatarPreviewEngine } from './avatarPreviewEngine.js';
 import { registerBabylonRuntime } from './babylonRuntime.js';
 import type { PlayerProfile } from './PlayerContainer.js';

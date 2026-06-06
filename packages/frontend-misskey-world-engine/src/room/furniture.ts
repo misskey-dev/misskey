@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as BABYLON from '@babylonjs/core/pure';
+import * as BABYLON from '@babylonjs/core/pure.js';
 import { createPlaneUvMapper } from '../utility.js';
 import type { Timer } from '../utility.js';
 import type { ModelManager } from './utility.js';

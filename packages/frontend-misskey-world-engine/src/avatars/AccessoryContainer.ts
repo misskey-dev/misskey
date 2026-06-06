@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as BABYLON from '@babylonjs/core/pure';
+import * as BABYLON from '@babylonjs/core/pure.js';
 import { camelToKebab, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { ModelExplorer, scaleMorph, Timer } from '../utility.js';
 import { convertRawOptions, type ConvertedOptions, type RawOptions } from '../mono.js';

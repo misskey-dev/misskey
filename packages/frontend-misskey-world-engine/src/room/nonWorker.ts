@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as BABYLON from '@babylonjs/core/pure';
+import * as BABYLON from '@babylonjs/core/pure.js';
 import { registerBabylonRuntime } from '../babylonRuntime.js';
 import { RoomEngine } from './engine.js';
 import type { RoomState, RoomAttachments } from 'misskey-world/src/room/type.js';

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as BABYLON from '@babylonjs/core/pure';
+import * as BABYLON from '@babylonjs/core/pure.js';
 import { mikan_schema } from 'misskey-world/src/avatars/accessories/mikan.schema.js';
 import { defineAccessory } from '../accessory.js';
 

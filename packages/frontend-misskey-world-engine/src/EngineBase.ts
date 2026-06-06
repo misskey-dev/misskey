@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as BABYLON from '@babylonjs/core/pure';
+import * as BABYLON from '@babylonjs/core/pure.js';
 import EventEmitter from 'eventemitter3';
 
 const IN_WEB_WORKER = typeof window === 'undefined';

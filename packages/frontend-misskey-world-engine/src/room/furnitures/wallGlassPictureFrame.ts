@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as BABYLON from '@babylonjs/core/pure';
+import * as BABYLON from '@babylonjs/core/pure.js';
 import { createTextureManager, defineFuniture } from '../furniture.js';
 import { remap } from 'misskey-world/src/utility.js';
 import { wallGlassPictureFrame_schema } from 'misskey-world/src/room/furnitures/wallGlassPictureFrame.schema.js';

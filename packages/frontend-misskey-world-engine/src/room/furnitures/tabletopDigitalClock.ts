@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import * as BABYLON from '@babylonjs/core/pure';
+import * as BABYLON from '@babylonjs/core/pure.js';
 import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { tabletopDigitalClock_schema } from 'misskey-world/src/room/furnitures/tabletopDigitalClock.schema.js';
 import { defineFuniture } from '../furniture.js';
