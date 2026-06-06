@@ -34,8 +34,6 @@
 		"generate-api-json": "pnpm compile-config && node ./scripts/generate_api_json.js"
 	},
 	"optionalDependencies": {
-		"@tensorflow/tfjs": "4.22.0",
-		"@tensorflow/tfjs-node": "4.22.0",
 		"bufferutil": "4.1.0",
 		"slacc-android-arm-eabi": "0.1.5",
 		"slacc-android-arm64": "0.1.5",
@@ -119,7 +117,6 @@
 		"node-fetch": "3.3.2",
 		"node-html-parser": "7.1.0",
 		"nodemailer": "8.0.10",
-		"nsfwjs": "4.3.0",
 		"os-utils": "0.0.14",
 		"otpauth": "9.5.1",
 		"pg": "8.21.0",

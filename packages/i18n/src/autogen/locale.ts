@@ -8390,6 +8390,42 @@ export interface Locale extends ILocale {
          * 静止画に加えて動画も解析するようにします。サーバーの負荷が少し増えます。
          */
         "analyzeVideosDescription": string;
+        /**
+         * センシティブメディアの判定は外部サービス (sensitive-detector) に分離されました。この機能を利用するには、別途サイドカーサービスをセットアップし、下記の接続先を設定する必要があります。接続先が未設定の場合、判定は行われません (非センシティブ扱い)。
+         */
+        "externalServiceInfo": string;
+        /**
+         * 判定サービスの接続先URL
+         */
+        "apiUrl": string;
+        /**
+         * sensitive-detector サービスのベースURL (例: http://localhost:3009)。空欄の場合、センシティブ判定は行われません。
+         */
+        "apiUrlDescription": string;
+        /**
+         * APIキー
+         */
+        "apiKey": string;
+        /**
+         * 判定サービス側で認証 (Bearerトークン) を設定している場合に入力します。設定していない場合は空欄のままにしてください。
+         */
+        "apiKeyDescription": string;
+        /**
+         * タイムアウト (ミリ秒)
+         */
+        "timeout": string;
+        /**
+         * 判定リクエスト1回あたりのタイムアウト時間です。
+         */
+        "timeoutDescription": string;
+        /**
+         * 1リクエストあたりの最大画像数
+         */
+        "maxImagesPerRequest": string;
+        /**
+         * 動画など複数フレームを判定する際、1回のリクエストにまとめて送る画像の最大枚数です。これを超える分は分割して順次送信されます。
+         */
+        "maxImagesPerRequestDescription": string;
     };
     "_emailUnavailable": {
         /**

@@ -16,7 +16,6 @@ allowBuilds:
   '@parcel/watcher': true
   '@sentry/profiling-node': true
   '@sentry-internal/node-cpu-profiler': true
-  '@tensorflow/tfjs-node': true
   bufferutil: true
   canvas: true
   core-js: true
