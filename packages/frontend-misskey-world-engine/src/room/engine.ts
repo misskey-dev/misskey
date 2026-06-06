@@ -17,7 +17,7 @@
 // TODO: 座ると一升瓶のマテリアルがおかしくなる現象をbabylonに報告
 
 import * as BABYLON from '@babylonjs/core/pure.js';
-import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
+import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic.js';
 import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { TIME_MAP, getMeshesBoundingBox, Timer, getYRotationDirection, FreeCameraManualInput, remap, GRAPHICS_QUALITY } from '../utility.js';
 import { EngineBase } from '../EngineBase.js';

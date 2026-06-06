@@ -4,7 +4,7 @@
  */
 
 import * as BABYLON from '@babylonjs/core/pure.js';
-import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic';
+import { registerBuiltInLoaders } from '@babylonjs/loaders/dynamic.js';
 import tinycolor from 'tinycolor2';
 import Hls from 'hls.js';
 import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
