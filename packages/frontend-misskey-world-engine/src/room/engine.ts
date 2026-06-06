@@ -12,6 +12,7 @@
 // TODO: 一升瓶を選択するとエラーが出る現象をbabylonに報告
 // TODO: dj-playerを選択するとエラーが出る現象をbabylonに報告
 // TODO: pure barrel importが機能しない問題をbabylonに報告
+// TODO: pure barrel importだとアニメーションが機能しない問題をbabylonに報告
 // TODO: meshをdiposeした際、scene.meshesやshadowmapのrenderlistからも明示的に削除しないとメモリリークするのかどうかbabylonのforumで尋ねる
 // TODO: 起動時、ひとつでもcustom imageの読み込みに失敗したら「一部の画像を読み込めませんでした」を出す
 // TODO: 座ると一升瓶のマテリアルがおかしくなる現象をbabylonに報告
