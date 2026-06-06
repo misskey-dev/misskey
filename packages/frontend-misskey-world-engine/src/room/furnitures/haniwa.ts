@@ -21,10 +21,10 @@ export const haniwa = defineFuniture(haniwa_schema, {
 		applyBodyMat();
 
 		const applyInsideColor = () => {
-			insideMaterial.emissiveColor = new BABYLON.Color3(options.insideColor.color[0], options.insideColor.color[1], options.insideColor.color[2]);
+			insideMaterial.emissiveColor = new BABYLON.Color3(options.insideColor[0], options.insideColor[1], options.insideColor[2]);
 		};
 
-		applyInsideMat();
+		applyInsideColor();
 
 		return {
 			onOptionsUpdated: ([k, v]) => {
