@@ -82,6 +82,12 @@ export const FILE_TYPE_BROWSERSAFE = [
 	// backward compatibility
 	'audio/x-flac',
 	'audio/vnd.wave',
+
+	// テキストはブラウザでそのまま表示する
+	// charset 未指定だと iOS Safari 等で UTF-8 ファイルが文字化けするため
+	// getSafeContentType 側で charset=utf-8 を補う (UTF-8 以外のテキストは依然として化ける可能性あり)
+	// content sniffing による XSS を防ぐため setSafeContentTypeHeader 側で nosniff も常時付与する
+	'text/plain',
 ];
 /*
 https://github.com/sindresorhus/file-type/blob/main/supported.js
