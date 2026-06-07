@@ -113,6 +113,7 @@ import { woodRingFloorLamp_ui } from './furnitures/woodRingFloorLamp.ui.js';
 import { woodRingsPendantLight_ui } from './furnitures/woodRingsPendantLight.ui.js';
 import { woodSoundAbsorbingPanel_ui } from './furnitures/woodSoundAbsorbingPanel.ui.js';
 import { haniwa_ui } from './furnitures/haniwa.ui.js';
+import { ceilingFan_ui } from './furnitures/ceilingFan.ui.js';
 import type { FurnitureUiDef } from './defineFurnitureUi.js';
 
 export const FURNITURE_UI_DEFS = {
@@ -130,6 +131,7 @@ export const FURNITURE_UI_DEFS = {
 	cactusS: cactusS_ui,
 	cardboardBox: cardboardBox_ui,
 	ceilingFanLight: ceilingFanLight_ui,
+	ceilingFan: ceilingFan_ui,
 	chair: chair_ui,
 	coffeeCup: coffeeCup_ui,
 	colorBox: colorBox_ui,

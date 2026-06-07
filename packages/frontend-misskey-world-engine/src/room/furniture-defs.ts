@@ -115,6 +115,7 @@ import { woodRingFloorLamp } from './furnitures/woodRingFloorLamp.js';
 import { woodRingsPendantLight } from './furnitures/woodRingsPendantLight.js';
 import { woodSoundAbsorbingPanel } from './furnitures/woodSoundAbsorbingPanel.js';
 import { haniwa } from './furnitures/haniwa.js';
+import { ceilingFan } from './furnitures/ceilingFan.js';
 
 export const FUNITURE_DEFS = [
 	a4Case,
@@ -131,6 +132,7 @@ export const FUNITURE_DEFS = [
 	cactusS,
 	cardboardBox,
 	ceilingFanLight,
+	ceilingFan,
 	chair,
 	coffeeCup,
 	colorBox,
