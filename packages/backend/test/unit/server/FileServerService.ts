@@ -97,6 +97,13 @@ describe('FileServerService', () => {
 		storedPaths.push(dest);
 	}
 
+	function writeInternalBuffer(key: string, content: Buffer) {
+		const dest = internalStorageService.resolvePath(key);
+		fs.mkdirSync(path.dirname(dest), { recursive: true });
+		fs.writeFileSync(dest, content);
+		storedPaths.push(dest);
+	}
+
 	async function insertDriveFile(params: {
 		accessKey: string;
 		thumbnailAccessKey?: string | null;
@@ -319,6 +326,52 @@ describe('FileServerService', () => {
 			expect(res.headers['content-type']).toBe('image/png');
 			expect(res.headers['content-length']).toBe(String(dummySize));
 			expect(res.headers['content-disposition'] ?? '').toMatch(/^inline;/);
+			expect(res.headers['x-content-type-options']).toBe('nosniff');
+		});
+
+		test('GET /files/:key text/plain は charset=utf-8 が補われる', async () => {
+			const accessKey = randomString();
+			writeInternalBuffer(accessKey, textBuffer);
+			await insertDriveFile({
+				accessKey,
+				storedInternal: true,
+				isLink: false,
+				name: 'note.txt',
+				type: 'text/plain',
+				size: textBuffer.length,
+			});
+
+			const res = await fastify.inject({
+				method: 'GET',
+				url: `/files/${accessKey}`,
+			});
+
+			expect(res.statusCode).toBe(200);
+			expect(res.headers['content-type']).toBe('text/plain; charset=utf-8');
+			expect(res.headers['x-content-type-options']).toBe('nosniff');
+			expect(res.headers['content-disposition'] ?? '').toMatch(/^inline;/);
+		});
+
+		test('GET /files/:key text/plain で既存の charset は維持される', async () => {
+			const accessKey = randomString();
+			writeInternalBuffer(accessKey, textBuffer);
+			await insertDriveFile({
+				accessKey,
+				storedInternal: true,
+				isLink: false,
+				name: 'note.txt',
+				type: 'text/plain; charset=Shift_JIS',
+				size: textBuffer.length,
+			});
+
+			const res = await fastify.inject({
+				method: 'GET',
+				url: `/files/${accessKey}`,
+			});
+
+			expect(res.statusCode).toBe(200);
+			expect(res.headers['content-type']).toBe('text/plain; charset=Shift_JIS');
+			expect(res.headers['x-content-type-options']).toBe('nosniff');
 		});
 
 		test('GET /files/:key Range で部分配信する', async () => {
@@ -499,6 +552,7 @@ describe('FileServerService', () => {
 			expect(res.headers['cache-control']).toBe('max-age=31536000, immutable');
 			expect(res.headers['content-length']).toBe(String(dummyBuffer.length));
 			expect(res.headers['content-disposition'] ?? '').toContain('remote.png');
+			expect(res.headers['x-content-type-options']).toBe('nosniff');
 		});
 
 		test('GET /files/:key 外部リンクを Range で部分配信する', async () => {
