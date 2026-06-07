@@ -7,6 +7,8 @@ import { Readable } from 'node:stream';
 import { Inject, Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { Hono } from 'hono';
+import { TrieRouter } from 'hono/router/trie-router';
+import type { Handler, MiddlewareHandler } from 'hono';
 import { bodyLimit } from 'hono/body-limit';
 import { cors } from 'hono/cors';
 import { HttpStatusError } from '@/misc/http-status-error.js';
@@ -21,6 +23,7 @@ import { SignupApiService } from './SignupApiService.js';
 import { SigninApiService } from './SigninApiService.js';
 import { SigninWithPasskeyApiService } from './SigninWithPasskeyApiService.js';
 import type { ApiContext, ApiMultipartData } from './ApiServerTypes.js';
+import type { IEndpoint } from './endpoints.js';
 
 @Injectable()
 export class ApiServerService {
@@ -138,11 +141,15 @@ export class ApiServerService {
 
 	@bindThis
 	public createServer(): Hono<{ Variables: { ip: string; ips: string[] } }> {
-		const hono = new Hono<{ Variables: { ip: string; ips: string[] } }>();
+		const hono = new Hono<{ Variables: { ip: string; ips: string[] } }>({
+			router: new TrieRouter(),
+		});
+
 		const jsonBodyLimit = bodyLimit({
 			maxSize: 1024 * 1024,
 			onError: (ctx) => ctx.body(null, 413),
 		});
+
 		const multipartBodyLimit = bodyLimit({
 			maxSize: this.config.maxFileSize,
 			onError: (ctx) => ctx.body(null, 413),
@@ -157,37 +164,46 @@ export class ApiServerService {
 			await next();
 		});
 
+		hono.use('*', async (ctx, next) => {
+			const contentType = ctx.req.header('Content-Type') || '';
+
+			if (contentType.includes('multipart/form-data')) {
+				return await multipartBodyLimit(ctx, next);
+			} else {
+				return await jsonBodyLimit(ctx, next);
+			}
+		});
+
 		for (const endpoint of endpoints) {
-			const ep = {
-				name: endpoint.name,
-				meta: endpoint.meta,
-				params: endpoint.params,
-				exec: this.moduleRef.get('ep:' + endpoint.name, { strict: false }).exec,
+			const handler = async (ctx: ApiContext) => {
+				if (ctx.req.method === 'GET' && !endpoint.meta.allowGet) {
+					return ctx.body(null, 405);
+				}
+
+				const exec = this.moduleRef.get('ep:' + endpoint.name, { strict: false }).exec;
+				const ep = {
+					name: endpoint.name,
+					meta: endpoint.meta,
+					params: endpoint.params,
+					exec,
+				} satisfies IEndpoint & { exec: any };
+
+				const parsedBody = ctx.req.method === 'GET' ? undefined : await this.parseJsonBody(ctx);
+				if (parsedBody instanceof Response) return parsedBody;
+
+				return await this.apiCallService.handleRequest(ep, ctx, parsedBody);
 			};
 
-			if (endpoint.meta.requireFile) {
-				hono.all('/' + endpoint.name, multipartBodyLimit, async (ctx) => {
-					if (ctx.req.method === 'GET' && !endpoint.meta.allowGet) {
-						return ctx.body(null, 405);
-					}
+			const registerRoute = (path: string, handler: Handler) => {
+				hono.post(path, handler);
 
-					const multipart = await this.parseMultipartBody(ctx);
-					if (multipart instanceof Response) return multipart;
+				// GET が許可されている場合のみ GET も登録
+				if (endpoint.meta.allowGet) {
+					hono.get(path, handler);
+				}
+			};
 
-					return await this.apiCallService.handleMultipartRequest(ep, ctx, multipart);
-				});
-			} else {
-				hono.all('/' + endpoint.name, jsonBodyLimit, async (ctx) => {
-					if (ctx.req.method === 'GET' && !endpoint.meta.allowGet) {
-						return ctx.body(null, 405);
-					}
-
-					const parsedBody = ctx.req.method === 'GET' ? undefined : await this.parseJsonBody(ctx);
-					if (parsedBody instanceof Response) return parsedBody;
-
-					return await this.apiCallService.handleRequest(ep, ctx, parsedBody);
-				});
-			}
+			registerRoute('/' + endpoint.name, handler);
 		}
 
 		hono.post('/signup', jsonBodyLimit, async (ctx) => {
