@@ -1415,6 +1415,11 @@ viewRenotedChannel: "リノート先のチャンネルを見る"
 previewingTheme: "テーマのプレビュー中"
 previewingThemeRestore: "元に戻す"
 accessToken: "アクセストークン"
+chooseEmojiPalette: "絵文字パレットを選択"
+addToEmojiPalette: "絵文字パレットに追加"
+emojiPaletteAlreadyAddedConfirm: "この絵文字はすでにこの絵文字パレットに含まれています。追加しなおしますか？"
+append: "末尾に追加"
+prepend: "先頭に追加"
 
 _imageEditing:
   _vars:

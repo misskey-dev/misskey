@@ -194,9 +194,11 @@ export function getConfig(): UserConfig {
 							name: 'photoswipe',
 							test: /node_modules[\\/]photoswipe/,
 						}, {
-							// dependencies of i18n.ts
-							name: 'config',
-							test: /@@[\\/]js[\\/]config\.js/,
+							// split each i18n related module to each distinct module, deny hoisting
+							name: 'i18n',
+							test: /i18n\.ts/,
+							minSize: 0,
+							maxSize: 1,
 						}],
 					},
 					entryFileNames: `scripts/${localesHash}-[hash:8].js`,
