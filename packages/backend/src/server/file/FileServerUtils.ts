@@ -49,11 +49,59 @@ export function attachStreamCleanup(data: IImageStreamable['data'], cleanup: () 
 	}
 }
 
+// RFC 7231 の MIME token 相当の文字集合 (ヘッダインジェクション防止のため厳しめに制限)
+const MIME_TOKEN_RE = /^[\w.+-]+$/;
+
+/**
+ * MIME タイプからパラメータを除いたベース部分を小文字化して返す
+ */
+export function getBaseMime(mime: string): string {
+	return mime.split(';', 1)[0].trim().toLowerCase();
+}
+
+/**
+ * ベース MIME がブラウザセーフかどうかを判定する
+ * (パラメータ部 `; charset=...` は無視する)
+ */
+export function isBrowserSafeMime(mime: string): boolean {
+	return FILE_TYPE_BROWSERSAFE.includes(getBaseMime(mime));
+}
+
 /**
  * MIME タイプがブラウザセーフかどうかに応じて Content-Type を返す
+ * - パラメータ (例: `; charset=utf-8`) が付いていてもベース MIME で判定する
+ * - text/plain で charset 未指定の場合は utf-8 を補う (iOS Safari 等の自動判定対策)
+ *   ただし UTF-8 以外のテキストファイル (Shift_JIS 等) は依然として化ける可能性あり (既知の制約)
+ * - パラメータ key/value は MIME token に合致しないものを捨て、ヘッダインジェクションを防ぐ
  */
 export function getSafeContentType(mime: string): string {
-	return FILE_TYPE_BROWSERSAFE.includes(mime) ? mime : 'application/octet-stream';
+	const segments = mime.split(';');
+	const base = (segments[0] ?? '').trim().toLowerCase();
+	if (!FILE_TYPE_BROWSERSAFE.includes(base)) return 'application/octet-stream';
+
+	const params: string[] = [];
+	let hasCharset = false;
+	for (const seg of segments.slice(1)) {
+		const eq = seg.indexOf('=');
+		if (eq < 0) continue;
+		const k = seg.slice(0, eq).trim().toLowerCase();
+		const v = seg.slice(eq + 1).trim();
+		if (!MIME_TOKEN_RE.test(k) || !MIME_TOKEN_RE.test(v)) continue;
+		if (k === 'charset') hasCharset = true;
+		params.push(`${k}=${v}`);
+	}
+	if (base === 'text/plain' && !hasCharset) params.push('charset=utf-8');
+
+	return params.length > 0 ? `${base}; ${params.join('; ')}` : base;
+}
+
+/**
+ * Content-Type と X-Content-Type-Options: nosniff を一緒に設定する
+ * (text/plain などを inline 配信する経路で content sniffing による XSS を防ぐため)
+ */
+export function setSafeContentTypeHeader(reply: FastifyReply, mime: string): void {
+	reply.header('Content-Type', getSafeContentType(mime));
+	reply.header('X-Content-Type-Options', 'nosniff');
 }
 
 /**
@@ -91,7 +139,7 @@ export function setFileResponseHeaders(
 	reply: FastifyReply,
 	options: FileResponseOptions,
 ): void {
-	reply.header('Content-Type', getSafeContentType(options.mime));
+	setSafeContentTypeHeader(reply, options.mime);
 	reply.header('Cache-Control', options.cacheControl ?? 'max-age=31536000, immutable');
 	reply.header('Content-Disposition', contentDisposition('inline', options.filename));
 	if (options.size !== undefined) {
