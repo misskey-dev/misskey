@@ -35,7 +35,7 @@ export class ChannelFollowingService implements OnModuleInit {
 			memoryCacheLifetime: 1000 * 60, // 1m
 			fetcher: (key) => this.channelFollowingsRepository.find({
 				where: { followerId: key },
-				select: ['followeeId'],
+				select: { followeeId: true },
 			}).then(xs => new Set(xs.map(x => x.followeeId))),
 			toRedisConverter: (value) => JSON.stringify(Array.from(value)),
 			fromRedisConverter: (value) => new Set(JSON.parse(value)),
