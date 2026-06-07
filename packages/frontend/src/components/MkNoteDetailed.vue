@@ -343,7 +343,11 @@ const urls = parsed ? extractUrlFromMfm(parsed).filter((url) => appearNote.renot
 const showTicker = (prefer.s.instanceTicker === 'always') || (prefer.s.instanceTicker === 'remote' && appearNote.user.instance);
 const conversation = ref<Misskey.entities.Note[]>([]);
 const replies = ref<Misskey.entities.Note[]>([]);
-const canRenote = computed(() => ['public', 'home'].includes(appearNote.visibility) || appearNote.userId === $i?.id);
+const canRenote = computed(() =>
+	(['public', 'home'].includes(appearNote.visibility) || appearNote.userId === $i?.id) &&
+	!appearNote.moderationRenoteLock &&
+	(!appearNote.userRenoteLock || appearNote.userId === $i?.id),
+);
 
 useGlobalEvent('noteDeleted', (noteId) => {
 	if (noteId === note.id || noteId === appearNote.id) {
@@ -632,6 +636,13 @@ function blur() {
 
 const repliesLoaded = ref(false);
 
+<<<<<<< Updated upstream
+=======
+if (note.repliesCount > 0) {
+	loadReplies();
+}
+
+>>>>>>> Stashed changes
 function loadReplies() {
 	repliesLoaded.value = true;
 	misskeyApi('notes/children', {

@@ -2522,6 +2522,7 @@ _permissions:
   "write:admin:unsuspend-user": "ユーザーの凍結を解除する"
   "write:admin:meta": "インスタンスのメタデータを操作する"
   "write:admin:user-note": "モデレーションノートを操作する"
+  "write:admin:note-renote-lock": "ノートのリノートロックを操作する"
   "write:admin:roles": "ロールを操作する"
   "read:admin:roles": "ロールを見る"
   "write:admin:relays": "リレーを操作する"
@@ -3076,6 +3077,8 @@ _moderationLogTypes:
   deleteGalleryPost: "ギャラリーの投稿を削除"
   deleteChatRoom: "ダイレクトメッセージのグループを削除"
   updateProxyAccountDescription: "プロキシアカウントの説明を更新"
+  lockNoteRenote: "ノートのリノートをロック"
+  unlockNoteRenote: "ノートのリノートのロックを解除"
 
 _fileViewer:
   title: "ファイルの詳細"
@@ -3534,6 +3537,13 @@ _imageEffector:
     circle: "円形"
 
 drafts: "下書き"
+_renoteLock:
+  lockRenoteByOthersInPost: "他の人によるリノートを禁止"
+  prohibitRenote: "リノートを禁止する"
+  allowRenote: "リノートを許可する"
+  lockByModeration: "リノートをロックする (モデレーション)"
+  unlockByModeration: "リノートのロックを解除する (モデレーション)"
+
 _drafts:
   select: "下書きを選択"
   cannotCreateDraftAnymore: "下書きの作成可能数を超えています。"

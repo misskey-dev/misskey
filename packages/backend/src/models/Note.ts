@@ -99,6 +99,18 @@ export class MiNote {
 	})
 	public reactionAcceptance: typeof noteReactionAcceptances[number];
 
+	@Column('boolean', {
+		default: false,
+		comment: 'Whether the note owner has locked renotes by others (the owner can still renote).',
+	})
+	public userRenoteLock: boolean;
+
+	@Column('boolean', {
+		default: false,
+		comment: 'Whether a moderator has locked renotes of this note (nobody, including the owner, can renote).',
+	})
+	public moderationRenoteLock: boolean;
+
 	@Column('smallint', {
 		default: 0,
 	})

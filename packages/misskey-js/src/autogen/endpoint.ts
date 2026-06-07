@@ -74,6 +74,8 @@ import type {
 	AdminInviteListRequest,
 	AdminInviteListResponse,
 	AdminMetaResponse,
+	AdminNotesRenoteLockCreateRequest,
+	AdminNotesRenoteLockDeleteRequest,
 	AdminPromoCreateRequest,
 	AdminQueueClearRequest,
 	AdminQueueDeliverDelayedResponse,
@@ -530,6 +532,8 @@ import type {
 	NotesReactionsResponse,
 	NotesReactionsCreateRequest,
 	NotesReactionsDeleteRequest,
+	NotesRenoteLockCreateRequest,
+	NotesRenoteLockDeleteRequest,
 	NotesRenotesRequest,
 	NotesRenotesResponse,
 	NotesRepliesRequest,
@@ -720,6 +724,8 @@ export type Endpoints = {
 	'admin/invite/create': { req: AdminInviteCreateRequest; res: AdminInviteCreateResponse };
 	'admin/invite/list': { req: AdminInviteListRequest; res: AdminInviteListResponse };
 	'admin/meta': { req: EmptyRequest; res: AdminMetaResponse };
+	'admin/notes/renote-lock/create': { req: AdminNotesRenoteLockCreateRequest; res: EmptyResponse };
+	'admin/notes/renote-lock/delete': { req: AdminNotesRenoteLockDeleteRequest; res: EmptyResponse };
 	'admin/promo/create': { req: AdminPromoCreateRequest; res: EmptyResponse };
 	'admin/queue/clear': { req: AdminQueueClearRequest; res: EmptyResponse };
 	'admin/queue/deliver-delayed': { req: EmptyRequest; res: AdminQueueDeliverDelayedResponse };
@@ -1016,6 +1022,8 @@ export type Endpoints = {
 	'notes/reactions': { req: NotesReactionsRequest; res: NotesReactionsResponse };
 	'notes/reactions/create': { req: NotesReactionsCreateRequest; res: EmptyResponse };
 	'notes/reactions/delete': { req: NotesReactionsDeleteRequest; res: EmptyResponse };
+	'notes/renote-lock/create': { req: NotesRenoteLockCreateRequest; res: EmptyResponse };
+	'notes/renote-lock/delete': { req: NotesRenoteLockDeleteRequest; res: EmptyResponse };
 	'notes/renotes': { req: NotesRenotesRequest; res: NotesRenotesResponse };
 	'notes/replies': { req: NotesRepliesRequest; res: NotesRepliesResponse };
 	'notes/search': { req: NotesSearchRequest; res: NotesSearchResponse };

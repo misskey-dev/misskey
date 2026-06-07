@@ -206,6 +206,14 @@ export const packedNoteSchema = {
 			optional: false, nullable: true,
 			enum: ['likeOnly', 'likeOnlyForRemote', 'nonSensitiveOnly', 'nonSensitiveOnlyForLocalLikeOnlyForRemote', null],
 		},
+		userRenoteLock: {
+			type: 'boolean',
+			optional: true, nullable: false,
+		},
+		moderationRenoteLock: {
+			type: 'boolean',
+			optional: true, nullable: false,
+		},
 		reactionEmojis: {
 			type: 'object',
 			optional: false, nullable: false,

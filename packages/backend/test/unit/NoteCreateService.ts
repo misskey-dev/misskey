@@ -38,6 +38,8 @@ describe('NoteCreateService', () => {
 			user: null,
 			localOnly: false,
 			reactionAcceptance: null,
+			userRenoteLock: false,
+			moderationRenoteLock: false,
 			renoteCount: 0,
 			repliesCount: 0,
 			clippedCount: 0,

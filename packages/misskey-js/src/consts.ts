@@ -103,6 +103,7 @@ export const permissions = [
 	'write:admin:unsuspend-user',
 	'write:admin:meta',
 	'write:admin:user-note',
+	'write:admin:note-renote-lock',
 	'write:admin:roles',
 	'read:admin:roles',
 	'write:admin:relays',
@@ -188,6 +189,8 @@ export const moderationLogTypes = [
 	'deleteGalleryPost',
 	'deleteChatRoom',
 	'updateProxyAccountDescription',
+	'lockNoteRenote',
+	'unlockNoteRenote',
 ] as const;
 
 export const rolePolicies = [
@@ -530,5 +533,17 @@ export type ModerationLogPayloads = {
 	updateProxyAccountDescription: {
 		before: string | null;
 		after: string | null;
+	}
+	lockNoteRenote: {
+		noteId: string;
+		noteUserId: string;
+		noteUserUsername: string;
+		noteUserHost: string | null;
+	}
+	unlockNoteRenote: {
+		noteId: string;
+		noteUserId: string;
+		noteUserUsername: string;
+		noteUserHost: string | null;
 	}
 };

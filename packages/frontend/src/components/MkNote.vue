@@ -16,11 +16,34 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div v-if="isRenote" :class="$style.renote">
 		<div v-if="note.channel" :class="$style.colorBar" :style="{ background: note.channel.color }"></div>
 		<MkAvatar :class="$style.renoteAvatar" :user="note.user" link preview/>
+<<<<<<< Updated upstream
 		<i class="ti ti-repeat" style="margin-right: 4px;"></i>
 		<I18n :src="i18n.ts.renotedBy" tag="span" :class="$style.renoteText">
 			<template #user>
 				<MkA v-user-preview="note.userId" :class="$style.renoteUserName" :to="userPage(note.user)">
 					<MkUserName :user="note.user"/>
+=======
+		<div :class="$style.renoteContent">
+			<i class="ti ti-repeat" style="margin-right: 4px;"></i>
+			<I18n :src="i18n.ts.renotedBy" tag="span" :class="$style.renoteText">
+				<template #user>
+					<MkA v-user-preview="note.userId" :class="$style.renoteUserName" :to="userPage(note.user)">
+						<div style="display:inline-flex; flex-wrap:nowrap; align-items: center;">
+							<MkUserName :user="note.user"/>
+							<MkInstanceTicker v-if="showTickerRenote " :host="note.user.host" :instance="note.user.instance"/>
+						</div>
+						<!-- <span v-if="note.user.instance" :style="{backgroundColor: note.user.instance?.themeColor}">
+							<img v-if="note.user.instance.faviconUrl" style="height: 1em;" :src="note.user.instance.faviconUrl"/>
+							<span v-else>@</span>{{ note.user.instance.name }}
+						</span> -->
+					</MkA>
+				</template>
+			</I18n>
+
+			<div class="renoted-from-channel" style="line-height: normal;margin-top:-4px;">
+				<MkA v-if="note.channel" style="text-decoration: underline; margin-left: 16px; font-size: 12px; line-height: 12px;" :to="`/channels/${note.channelId}`">
+					<i class="ti ti-device-tv"></i>{{ note.channel.name }}
+>>>>>>> Stashed changes
 				</MkA>
 			</template>
 		</I18n>
@@ -315,7 +338,16 @@ const showSoftWordMutedWord = computed(() => prefer.s.showSoftWordMutedWord);
 const translation = ref<Misskey.entities.NotesTranslateResponse | null>(null);
 const translating = ref(false);
 const showTicker = (prefer.s.instanceTicker === 'always') || (prefer.s.instanceTicker === 'remote' && appearNote.user.instance);
+<<<<<<< Updated upstream
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.visibility) || (appearNote.visibility === 'followers' && appearNote.userId === $i?.id));
+=======
+const showTickerRenote = (prefer.s.instanceTicker === 'always') || (prefer.s.instanceTicker === 'remote' && appearNote.user.instance);
+const canRenote = computed(() =>
+	(['public', 'home'].includes(appearNote.visibility) || (appearNote.visibility === 'followers' && appearNote.userId === $i?.id)) &&
+	!appearNote.moderationRenoteLock &&
+	(!appearNote.userRenoteLock || appearNote.userId === $i?.id),
+);
+>>>>>>> Stashed changes
 const renoteCollapsed = ref(
 	prefer.s.collapseRenotes && isRenote && (
 		($i && ($i.id === note.userId || $i.id === appearNote.userId)) || // `||` must be `||`! See https://github.com/misskey-dev/misskey/issues/13131

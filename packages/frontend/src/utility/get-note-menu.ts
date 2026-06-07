@@ -373,6 +373,28 @@ export function getNoteMenu(props: {
 			action: copyContent,
 		}, getCopyNoteLinkMenu(appearNote, i18n.ts.copyLink));
 
+<<<<<<< Updated upstream
+=======
+		if (timemachineAvailable) {
+			menuItems.push({
+				icon: 'ti ti-clock-bolt',
+				text: i18n.ts.jumpToTimemachine,
+				action: () => {
+				// ノートの作成時刻から1分後の時刻を計算
+					const noteDate = new Date(new Date(appearNote.createdAt).getTime() + 60000);
+					const year = noteDate.getFullYear();
+					const month = String(noteDate.getMonth() + 1).padStart(2, '0');
+					const day = String(noteDate.getDate()).padStart(2, '0');
+					const hours = String(noteDate.getHours()).padStart(2, '0');
+					const minutes = String(noteDate.getMinutes()).padStart(2, '0');
+					const seconds = String(noteDate.getSeconds()).padStart(2, '0');
+					const gotoParam = `${year}${month}${day}${hours}${minutes}${seconds}`;
+					os.pageWindow(`/timemachine?goto=${gotoParam}`);
+				},
+			});
+		}
+
+>>>>>>> Stashed changes
 		if (link) {
 			menuItems.push({
 				icon: 'ti ti-link',
@@ -503,6 +525,49 @@ export function getNoteMenu(props: {
 						});
 					}
 					return channelChildMenu;
+				},
+			});
+		}
+
+		if (appearNote.userId === $i.id) {
+			menuItems.push({ type: 'divider' });
+			menuItems.push(appearNote.userRenoteLock ? {
+				icon: 'ti ti-repeat',
+				text: i18n.ts._renoteLock.allowRenote,
+				action: () => {
+					misskeyApi('notes/renote-lock/delete', { noteId: appearNote.id }).then(() => {
+						appearNote.userRenoteLock = false;
+					});
+				},
+			} : {
+				icon: 'ti ti-repeat-off',
+				text: i18n.ts._renoteLock.prohibitRenote,
+				action: () => {
+					misskeyApi('notes/renote-lock/create', { noteId: appearNote.id }).then(() => {
+						appearNote.userRenoteLock = true;
+					});
+				},
+			});
+		}
+
+		if ($i.isModerator || $i.isAdmin) {
+			menuItems.push({ type: 'divider' });
+			menuItems.push(appearNote.moderationRenoteLock ? {
+				icon: 'ti ti-lock-open',
+				text: i18n.ts._renoteLock.unlockByModeration,
+				action: () => {
+					os.apiWithDialog('admin/notes/renote-lock/delete', { noteId: appearNote.id }).then(() => {
+						appearNote.moderationRenoteLock = false;
+					});
+				},
+			} : {
+				icon: 'ti ti-lock',
+				text: i18n.ts._renoteLock.lockByModeration,
+				danger: true,
+				action: () => {
+					os.apiWithDialog('admin/notes/renote-lock/create', { noteId: appearNote.id }).then(() => {
+						appearNote.moderationRenoteLock = true;
+					});
 				},
 			});
 		}

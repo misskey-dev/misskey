@@ -82,6 +82,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<span v-else-if="log.type === 'deleteFlash'">: @{{ log.info.flashUserUsername }}</span>
 		<span v-else-if="log.type === 'deleteGalleryPost'">: @{{ log.info.postUserUsername }}</span>
 		<span v-else-if="log.type === 'deleteChatRoom'">: @{{ log.info.room.name }}</span>
+		<span v-else-if="log.type === 'lockNoteRenote'">: @{{ log.info.noteUserUsername }}{{ log.info.noteUserHost ? '@' + log.info.noteUserHost : '' }}</span>
+		<span v-else-if="log.type === 'unlockNoteRenote'">: @{{ log.info.noteUserUsername }}{{ log.info.noteUserHost ? '@' + log.info.noteUserHost : '' }}</span>
 	</template>
 	<template #icon>
 		<i v-if="log.type === 'updateServerSettings'" class="ti ti-settings"></i>

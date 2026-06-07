@@ -593,6 +593,28 @@ declare module '../api.js' {
     ): Promise<SwitchCaseResponseType<E, P>>;
 
     /**
+     * Lock renotes of the note for everyone, including the author.
+     * 
+     * **Credential required**: *Yes* / **Permission**: *write:admin:note-renote-lock*
+     */
+    request<E extends 'admin/notes/renote-lock/create', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * Unlock renotes of the note that were locked by moderation.
+     * 
+     * **Credential required**: *Yes* / **Permission**: *write:admin:note-renote-lock*
+     */
+    request<E extends 'admin/notes/renote-lock/delete', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
      * No description provided.
      * 
      * **Credential required**: *Yes* / **Permission**: *write:admin:promo*
@@ -3885,6 +3907,28 @@ declare module '../api.js' {
      * **Credential required**: *Yes* / **Permission**: *write:reactions*
      */
     request<E extends 'notes/reactions/delete', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * Lock renotes of the note by others. The author can still renote it.
+     * 
+     * **Credential required**: *Yes* / **Permission**: *write:notes*
+     */
+    request<E extends 'notes/renote-lock/create', P extends Endpoints[E]['req']>(
+      endpoint: E,
+      params: P,
+      credential?: string | null,
+    ): Promise<SwitchCaseResponseType<E, P>>;
+
+    /**
+     * Unlock renotes of the note by others.
+     * 
+     * **Credential required**: *Yes* / **Permission**: *write:notes*
+     */
+    request<E extends 'notes/renote-lock/delete', P extends Endpoints[E]['req']>(
       endpoint: E,
       params: P,
       credential?: string | null,

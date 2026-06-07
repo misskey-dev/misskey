@@ -159,6 +159,99 @@ describe('Note', () => {
 		assert.strictEqual(res.body.createdNote.text, null);
 	});
 
+	test('リノートロックされたノートは他人がpure renoteできない', async () => {
+		const alicePost = await post(alice, {
+			text: 'test',
+			userRenoteLock: true,
+		});
+
+		const res = await api('notes/create', {
+			renoteId: alicePost.id,
+		}, bob);
+
+		assert.strictEqual(res.status, 400);
+		assert.strictEqual(castAsError(res.body).error.code, 'RENOTE_LOCKED_BY_AUTHOR');
+		assert.strictEqual(castAsError(res.body).error.id, 'a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d');
+	});
+
+	test('リノートロックされたノートでも本人はpure renoteできる', async () => {
+		const alicePost = await post(alice, {
+			text: 'test',
+			userRenoteLock: true,
+		});
+
+		const res = await api('notes/create', {
+			renoteId: alicePost.id,
+		}, alice);
+
+		assert.strictEqual(res.status, 200);
+		assert.strictEqual(res.body.createdNote.renoteId, alicePost.id);
+	});
+
+	test('リノートロックされたノートでも引用renoteはできる', async () => {
+		const alicePost = await post(alice, {
+			text: 'test',
+			userRenoteLock: true,
+		});
+
+		const res = await api('notes/create', {
+			text: 'quote',
+			renoteId: alicePost.id,
+		}, bob);
+
+		assert.strictEqual(res.status, 200);
+		assert.strictEqual(res.body.createdNote.renoteId, alicePost.id);
+		assert.strictEqual(res.body.createdNote.text, 'quote');
+	});
+
+	test('notes/renote-lock/create で投稿後にリノートをロックできる', async () => {
+		const alicePost = await post(alice, {
+			text: 'test',
+		});
+
+		const lockRes = await api('notes/renote-lock/create', {
+			noteId: alicePost.id,
+		}, alice);
+		assert.strictEqual(lockRes.status, 204);
+
+		const res = await api('notes/create', {
+			renoteId: alicePost.id,
+		}, bob);
+		assert.strictEqual(res.status, 400);
+		assert.strictEqual(castAsError(res.body).error.code, 'RENOTE_LOCKED_BY_AUTHOR');
+	});
+
+	test('notes/renote-lock/delete でリノートロックを解除できる', async () => {
+		const alicePost = await post(alice, {
+			text: 'test',
+			userRenoteLock: true,
+		});
+
+		const unlockRes = await api('notes/renote-lock/delete', {
+			noteId: alicePost.id,
+		}, alice);
+		assert.strictEqual(unlockRes.status, 204);
+
+		const res = await api('notes/create', {
+			renoteId: alicePost.id,
+		}, bob);
+		assert.strictEqual(res.status, 200);
+		assert.strictEqual(res.body.createdNote.renoteId, alicePost.id);
+	});
+
+	test('他人のノートのリノートロックは操作できない', async () => {
+		const alicePost = await post(alice, {
+			text: 'test',
+		});
+
+		const res = await api('notes/renote-lock/create', {
+			noteId: alicePost.id,
+		}, bob);
+		assert.strictEqual(res.status, 400);
+		assert.ok(res.body);
+		assert.strictEqual(castAsError(res.body).error.code, 'ACCESS_DENIED');
+	});
+
 	test('visibility: followersでrenoteできる', async () => {
 		const createRes = await api('notes/create', {
 			text: 'test',

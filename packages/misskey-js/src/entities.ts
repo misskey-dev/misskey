@@ -211,6 +211,12 @@ export type ModerationLog = {
 } | {
 	type: 'updateProxyAccountDescription';
 	info: ModerationLogPayloads['updateProxyAccountDescription'];
+} | {
+	type: 'lockNoteRenote';
+	info: ModerationLogPayloads['lockNoteRenote'];
+} | {
+	type: 'unlockNoteRenote';
+	info: ModerationLogPayloads['unlockNoteRenote'];
 });
 
 export type ServerStats = {

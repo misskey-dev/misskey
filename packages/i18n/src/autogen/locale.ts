@@ -2341,6 +2341,14 @@ export interface Locale extends ILocale {
      */
     "showFixedPostFormInChannel": string;
     /**
+     * チャンネルページでローカルタイムラインへの投稿ボタンを表示する
+     */
+    "showLocalTimelinePostButtonInChannel": string;
+    /**
+     * オフの場合、チャンネルページではチャンネル投稿ボタンのみを表示します。
+     */
+    "showLocalTimelinePostButtonInChannelDescription": string;
+    /**
      * フォローする際、デフォルトで返信をTLに含むようにする
      */
     "withRepliesByDefaultForNewlyFollowed": string;
@@ -6336,6 +6344,10 @@ export interface Locale extends ILocale {
          */
         "forceBackup": string;
     };
+    /**
+     * アンテナからノートを消す
+     */
+    "removeNoteFromAntenna": string;
     "_accountSettings": {
         /**
          * コンテンツの表示にログインを必須にする
@@ -9599,6 +9611,10 @@ export interface Locale extends ILocale {
          */
         "write:admin:user-note": string;
         /**
+         * ノートのリノートロックを操作する
+         */
+        "write:admin:note-renote-lock": string;
+        /**
          * ロールを操作する
          */
         "write:admin:roles": string;
@@ -11604,6 +11620,14 @@ export interface Locale extends ILocale {
          * プロキシアカウントの説明を更新
          */
         "updateProxyAccountDescription": string;
+        /**
+         * ノートのリノートをロック
+         */
+        "lockNoteRenote": string;
+        /**
+         * ノートのリノートのロックを解除
+         */
+        "unlockNoteRenote": string;
     };
     "_fileViewer": {
         /**
@@ -13194,6 +13218,28 @@ export interface Locale extends ILocale {
      * 下書き
      */
     "drafts": string;
+    "_renoteLock": {
+        /**
+         * 他の人によるリノートを禁止
+         */
+        "lockRenoteByOthersInPost": string;
+        /**
+         * リノートを禁止する
+         */
+        "prohibitRenote": string;
+        /**
+         * リノートを許可する
+         */
+        "allowRenote": string;
+        /**
+         * リノートをロックする (モデレーション)
+         */
+        "lockByModeration": string;
+        /**
+         * リノートのロックを解除する (モデレーション)
+         */
+        "unlockByModeration": string;
+    };
     "_drafts": {
         /**
          * 下書きを選択

@@ -485,6 +485,24 @@ export type paths = {
          */
         post: operations['admin___meta'];
     };
+    '/admin/notes/renote-lock/create': {
+        /**
+         * admin/notes/renote-lock/create
+         * @description Lock renotes of the note for everyone, including the author.
+         *
+         *     **Credential required**: *Yes* / **Permission**: *write:admin:note-renote-lock*
+         */
+        post: operations['admin___notes___renote-lock___create'];
+    };
+    '/admin/notes/renote-lock/delete': {
+        /**
+         * admin/notes/renote-lock/delete
+         * @description Unlock renotes of the note that were locked by moderation.
+         *
+         *     **Credential required**: *Yes* / **Permission**: *write:admin:note-renote-lock*
+         */
+        post: operations['admin___notes___renote-lock___delete'];
+    };
     '/admin/promo/create': {
         /**
          * admin/promo/create
@@ -958,6 +976,15 @@ export type paths = {
          *     **Credential required**: *Yes* / **Permission**: *write:account*
          */
         post: operations['antennas___delete'];
+    };
+    '/antennas/delete-note': {
+        /**
+         * antennas/delete-note
+         * @description No description provided.
+         *
+         *     **Credential required**: *Yes* / **Permission**: *write:account*
+         */
+        post: operations['antennas___delete-note'];
     };
     '/antennas/list': {
         /**
@@ -3191,6 +3218,24 @@ export type paths = {
          */
         post: operations['notes___reactions___delete'];
     };
+    '/notes/renote-lock/create': {
+        /**
+         * notes/renote-lock/create
+         * @description Lock renotes of the note by others. The author can still renote it.
+         *
+         *     **Credential required**: *Yes* / **Permission**: *write:notes*
+         */
+        post: operations['notes___renote-lock___create'];
+    };
+    '/notes/renote-lock/delete': {
+        /**
+         * notes/renote-lock/delete
+         * @description Unlock renotes of the note by others.
+         *
+         *     **Credential required**: *Yes* / **Permission**: *write:notes*
+         */
+        post: operations['notes___renote-lock___delete'];
+    };
     '/notes/renotes': {
         /**
          * notes/renotes
@@ -4498,6 +4543,8 @@ export type components = {
             localOnly?: boolean;
             /** @enum {string|null} */
             reactionAcceptance: 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote' | null;
+            userRenoteLock?: boolean;
+            moderationRenoteLock?: boolean;
             reactionEmojis: {
                 [key: string]: string;
             };
@@ -9611,6 +9658,132 @@ export interface operations {
             };
         };
     };
+    'admin___notes___renote-lock___create': {
+        requestBody: {
+            content: {
+                'application/json': {
+                    /** Format: misskey:id */
+                    noteId: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK (without any results) */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+            };
+            /** @description Client error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Authentication error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Forbidden error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description I'm Ai */
+            418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
+    'admin___notes___renote-lock___delete': {
+        requestBody: {
+            content: {
+                'application/json': {
+                    /** Format: misskey:id */
+                    noteId: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK (without any results) */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+            };
+            /** @description Client error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Authentication error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Forbidden error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description I'm Ai */
+            418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
     admin___promo___create: {
         requestBody: {
             content: {
@@ -13423,6 +13596,71 @@ export interface operations {
                 'application/json': {
                     /** Format: misskey:id */
                     antennaId: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK (without any results) */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+            };
+            /** @description Client error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Authentication error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Forbidden error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description I'm Ai */
+            418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
+    'antennas___delete-note': {
+        requestBody: {
+            content: {
+                'application/json': {
+                    /** Format: misskey:id */
+                    antennaId: string;
+                    /** Format: misskey:id */
+                    noteId: string;
                 };
             };
         };
@@ -20865,7 +21103,7 @@ export interface operations {
                 };
                 content: {
                     'application/json': {
-                        emojis: components['schemas']['EmojiSimple'][];
+                        emojis: components['schemas']['EmojiDetailed'][];
                     };
                 };
             };
@@ -29503,6 +29741,8 @@ export interface operations {
                      */
                     reactionAcceptance?: null | 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote';
                     /** @default false */
+                    userRenoteLock?: boolean;
+                    /** @default false */
                     noExtractMentions?: boolean;
                     /** @default false */
                     noExtractHashtags?: boolean;
@@ -30935,6 +31175,132 @@ export interface operations {
             };
         };
     };
+    'notes___renote-lock___create': {
+        requestBody: {
+            content: {
+                'application/json': {
+                    /** Format: misskey:id */
+                    noteId: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK (without any results) */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+            };
+            /** @description Client error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Authentication error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Forbidden error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description I'm Ai */
+            418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
+    'notes___renote-lock___delete': {
+        requestBody: {
+            content: {
+                'application/json': {
+                    /** Format: misskey:id */
+                    noteId: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK (without any results) */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+            };
+            /** @description Client error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Authentication error */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Forbidden error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description I'm Ai */
+            418: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    'application/json': components['schemas']['Error'];
+                };
+            };
+        };
+    };
     notes___renotes: {
         requestBody: {
             content: {
@@ -31112,6 +31478,8 @@ export interface operations {
                      * @default null
                      */
                     channelId?: string | null;
+                    /** @default null */
+                    searchFrom?: string | null;
                 };
             };
         };
