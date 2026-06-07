@@ -208,7 +208,6 @@ export class ServerService implements OnApplicationShutdown {
 		hono.route('/', this.fileServerService.createServer());
 		hono.route('/', this.clientServerService.createServer());
 		hono.route('/oauth', this.oauth2ProviderService.createServer());
-		hono.route('/oauth/token', this.oauth2ProviderService.createTokenServer());
 
 		this.#honoNodeServer = createAdaptorServer({
 			fetch: hono.fetch,

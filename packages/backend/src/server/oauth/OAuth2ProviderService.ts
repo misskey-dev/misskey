@@ -586,24 +586,7 @@ export class OAuth2ProviderService implements OnApplicationShutdown {
 			}
 		});
 
-		app.all('*', async (ctx) => {
-			ctx.status(404);
-			return ctx.json({
-				error: {
-					message: 'Unknown OAuth endpoint.',
-					code: 'UNKNOWN_OAUTH_ENDPOINT',
-					id: 'aa49e620-26cb-4e28-aad6-8cbcb58db147',
-					kind: 'client',
-				},
-			});
-		});
-
-		return app;
-	}
-
-	public createTokenServer(): Hono {
-		const app = new Hono();
-		app.post('', async (ctx) => {
+		app.post('/token', async (ctx) => {
 			applyNoStore(ctx);
 
 			try {
@@ -687,6 +670,18 @@ export class OAuth2ProviderService implements OnApplicationShutdown {
 			} catch (error) {
 				return sendOAuthProviderError(ctx, normalizeOAuthProviderError(error));
 			}
+		});
+
+		app.all('*', async (ctx) => {
+			ctx.status(404);
+			return ctx.json({
+				error: {
+					message: 'Unknown OAuth endpoint.',
+					code: 'UNKNOWN_OAUTH_ENDPOINT',
+					id: 'aa49e620-26cb-4e28-aad6-8cbcb58db147',
+					kind: 'client',
+				},
+			});
 		});
 
 		return app;
