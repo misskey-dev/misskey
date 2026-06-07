@@ -4,8 +4,8 @@
  */
 
 import * as BABYLON from '@babylonjs/core/pure.js';
-import { defineFuniture } from '../furniture.js';
 import { ceilingFanLight_schema } from 'misskey-world/src/room/furnitures/ceilingFanLight.schema.js';
+import { defineFuniture } from '../furniture.js';
 
 export const ceilingFanLight = defineFuniture(ceilingFanLight_schema, {
 	createInstance: ({ options, sr, scene, model }) => {
@@ -19,7 +19,17 @@ export const ceilingFanLight = defineFuniture(ceilingFanLight_schema, {
 
 		applyShadeMat();
 
-		const rotor = model.findMesh('Rotor');
+		const bodyMaterial = model.findMaterial('__X_BODY__');
+
+		const applyBodyMat = () => {
+			bodyMaterial.albedoColor = new BABYLON.Color3(options.bodyMat.color[0], options.bodyMat.color[1], options.bodyMat.color[2]);
+			bodyMaterial.roughness = options.bodyMat.roughness;
+			bodyMaterial.metallic = options.bodyMat.metallic;
+		};
+
+		applyBodyMat();
+
+		const rotor = model.findMesh('__X_ROTOR__');
 		model.bakeExcludeMeshes = [rotor, ...rotor.getChildMeshes()];
 
 		let animationObserver: BABYLON.Observer<BABYLON.Scene>;
@@ -41,6 +51,7 @@ export const ceilingFanLight = defineFuniture(ceilingFanLight_schema, {
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
 					case 'shadeMat': applyShadeMat(); break;
+					case 'bodyMat': applyBodyMat(); break;
 				}
 			},
 			interactions: {},

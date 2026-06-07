@@ -13,5 +13,8 @@ export const ceilingFanLight_ui = defineFurnitureUi<typeof ceilingFanLight_schem
 		shadeMat: {
 			label: i18n.ts._miRoom._furnitures._ceilingFanLight.shadeMat,
 		},
+		bodyMat: {
+			label: i18n.ts._miRoom._furnitures._ceilingFanLight.bodyMat,
+		},
 	},
 });

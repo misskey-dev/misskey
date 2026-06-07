@@ -3700,6 +3700,7 @@ _miRoom:
     ceilingFanLight: "シーリングファンライト"
     _ceilingFanLight:
       shadeMat: "シェードの素材"
+      bodyMat: "本体の素材"
     chair: "椅子"
     _chair:
       primaryMat: "メインの素材"

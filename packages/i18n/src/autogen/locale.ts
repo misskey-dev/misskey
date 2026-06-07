@@ -13782,6 +13782,10 @@ export interface Locale extends ILocale {
                  * シェードの素材
                  */
                 "shadeMat": string;
+                /**
+                 * 本体の素材
+                 */
+                "bodyMat": string;
             };
             /**
              * 椅子
