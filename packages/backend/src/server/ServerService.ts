@@ -204,7 +204,6 @@ export class ServerService implements OnApplicationShutdown {
 		hono.route('/', this.nodeinfoServerService.createServer());
 		hono.route('/', this.wellKnownServerService.createServer());
 		hono.route('/healthz', this.healthServerService.createServer());
-		hono.route('/', this.streamingApiServerService.createServer());
 		hono.route('/', this.activityPubServerService.createServer());
 		hono.route('/', this.fileServerService.createServer());
 		hono.route('/', this.clientServerService.createServer());
@@ -213,9 +212,17 @@ export class ServerService implements OnApplicationShutdown {
 
 		this.#honoNodeServer = createAdaptorServer({
 			fetch: hono.fetch,
-			websocket: {
-				server: this.streamingApiServerService.createWebSocketServer(),
-			},
+		});
+
+		// WebSocket
+		this.#honoNodeServer.on('upgrade', (req, socket, head) => {
+			const url = new URL(req.url ?? '', `http://${req.headers['host'] ?? 'localhost'}`);
+
+			if (url.pathname === '/streaming') {
+				this.streamingApiServerService.handleUpgrade(req, socket, head);
+			} else {
+				socket.destroy();
+			}
 		});
 
 		await this.listen();

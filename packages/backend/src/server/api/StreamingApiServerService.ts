@@ -7,8 +7,7 @@ import { EventEmitter } from 'events';
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
 import * as WebSocket from 'ws';
-import { Hono } from 'hono';
-import type { HttpBindings } from '@hono/node-server';
+import * as net from 'node:net';
 import { DI } from '@/di-symbols.js';
 import type { MiAccessToken } from '@/models/_.js';
 import { bindThis } from '@/decorators.js';
@@ -51,73 +50,71 @@ export class StreamingApiServerService {
 	}
 
 	@bindThis
-	public createServer(): Hono {
+	public async handleUpgrade(req: http.IncomingMessage, socket: net.Socket, head: Buffer): Promise<void> {
 		this.initialize();
 
-		const hono = new Hono<{ Bindings: HttpBindings }>();
+		const url = new URL(req.url ?? '', `http://${req.headers['host'] ?? 'localhost'}`);
 
-		hono.get('/streaming', async (ctx, next) => {
-			if (ctx.req.header('upgrade')?.toLowerCase() !== 'websocket') {
-				await next();
+		// https://datatracker.ietf.org/doc/html/rfc6750.html#section-2.1
+		// Note that the standard WHATWG WebSocket API does not support setting any headers,
+		// but non-browser apps may still be able to set it.
+		const authorization = req.headers['authorization'];
+		const token = (typeof authorization === 'string' && authorization.startsWith('Bearer '))
+			? authorization.slice(7)
+			: url.searchParams.get('i');
+
+		let user: MiLocalUser | null = null;
+		let app: MiAccessToken | null = null;
+
+		try {
+			[user, app] = await this.authenticateService.authenticate(token);
+
+			if (app !== null && !app.permission.some(p => p === 'read:account')) {
+				socket.write(
+					'HTTP/1.1 401 Unauthorized\r\n' +
+					'WWW-Authenticate: Bearer realm="Misskey", error="invalid_token", error_description="Your app does not have necessary permissions to use websocket API."\r\n' +
+					'Connection: close\r\n\r\n'
+				);
+				socket.destroy();
 				return;
 			}
-
-			const incoming = ctx.env.incoming;
-			if (incoming == null) {
-				console.error('IncomingMessage is null');
-				return ctx.body(null, 400);
+		} catch (e) {
+			if (e instanceof AuthenticationError) {
+				socket.write(
+					'HTTP/1.1 401 Unauthorized\r\n' +
+					'WWW-Authenticate: Bearer realm="Misskey", error="invalid_token", error_description="Failed to authenticate"\r\n' +
+					'Connection: close\r\n\r\n'
+				);
+			} else {
+				socket.write('HTTP/1.1 500 Internal Server Error\r\nConnection: close\r\n\r\n');
 			}
+			socket.destroy();
+			return;
+		}
 
-			// https://datatracker.ietf.org/doc/html/rfc6750.html#section-2.1
-			// Note that the standard WHATWG WebSocket API does not support setting any headers,
-			// but non-browser apps may still be able to set it.
-			const authorization = ctx.req.header('authorization');
-			const token = authorization?.startsWith('Bearer ')
-				? authorization.slice(7)
-				: ctx.req.query('i');
+		if (user?.isSuspended) {
+			socket.write('HTTP/1.1 403 Forbidden\r\nConnection: close\r\n\r\n');
+			socket.destroy();
+			return;
+		}
 
-			let user: MiLocalUser | null = null;
-			let app: MiAccessToken | null = null;
+		const contextId = ContextIdFactory.create();
+		this.moduleRef.registerRequestByContextId<ConnectionRequest>({
+			user,
+			token: app,
+		}, contextId);
+		const stream = await this.moduleRef.create(MainStreamConnection, contextId);
+		await stream.init();
 
-			try {
-				[user, app] = await this.authenticateService.authenticate(token);
-
-				if (app !== null && !app.permission.some(p => p === 'read:account')) {
-					throw new AuthenticationError('Your app does not have necessary permissions to use websocket API.');
-				}
-			} catch (e) {
-				if (e instanceof AuthenticationError) {
-					ctx.header('WWW-Authenticate', 'Bearer realm="Misskey", error="invalid_token", error_description="Failed to authenticate"');
-					return ctx.body(null, 401);
-				}
-
-				return ctx.body(null, 500);
-			}
-
-			if (user?.isSuspended) {
-				return ctx.body(null, 403);
-			}
-
-			const contextId = ContextIdFactory.create();
-			this.moduleRef.registerRequestByContextId<ConnectionRequest>({
-				user,
-				token: app,
-			}, contextId);
-			const stream = await this.moduleRef.create(MainStreamConnection, contextId);
-			await stream.init();
-
-			this.#pendingConnections.set(incoming, {
-				stream,
-				user,
-				app,
-			});
-
-			ctx.header('Upgrade', 'websocket');
-			ctx.header('Connection', 'Upgrade');
-			return ctx.body(null, 101);
+		this.#pendingConnections.set(req, {
+			stream,
+			user,
+			app,
 		});
 
-		return hono as unknown as Hono;
+		this.#wss!.handleUpgrade(req, socket, head, (ws) => {
+			this.#wss!.emit('connection', ws, req);
+		});
 	}
 
 	@bindThis
