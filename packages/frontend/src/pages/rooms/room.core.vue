@@ -170,6 +170,7 @@ import { FURNITURE_SCHEMA_DEFS } from 'misskey-world/src/room/furniture-schema-d
 import { useInterval } from '@@/js/use-interval.js';
 import { url } from '@@/js/config.js';
 import { getDefaultCustomMadoriEnvOptions, getDefaultJapaneseEnvOptions, getDefaultMuseumEnvOptions, getDefaultSimpleEnvOptions } from 'misskey-world/src/room/env.js';
+import { throttle } from 'throttle-debounce';
 import XEnvOptions from './room.env-options.vue';
 import XOverlayPanel from './OverlayPanel.vue';
 import type { RoomControllerOptions } from '@/world/room/controller.js';
@@ -452,10 +453,10 @@ function showSnappingMenu(ev: PointerEvent) {
 	}], ev.currentTarget ?? ev.target);
 }
 
-function updateFurnitureOption(k: string, v: any) {
+const updateFurnitureOption = throttle(100, (k: string, v: any) => {
 	// TODO: podtMrssageのコスト削減のためattachmentsは更新がある場合のみ送る
 	controller.updateFurnitureOption(controller.selected.value.furnitureId, k, deepClone(v), attachments);
-}
+});
 
 async function addFuniture(ev: PointerEvent) {
 	// 重いので止める

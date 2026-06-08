@@ -94,6 +94,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, useTemplateRef, watch, onMounted, onUnmounted, reactive, nextTick, shallowRef, computed, triggerRef, markRaw } from 'vue';
 import * as Misskey from 'misskey-js';
 import { FURNITURE_SCHEMA_DEFS } from 'misskey-world/src/room/furniture-schema-defs.js';
+import { throttle } from 'throttle-debounce';
 import XItem from './room.add-furniture-dialog.item.vue';
 import type { PreviewEngineControllerOptions } from '@/world/room/previewEngineController.js';
 import type { RoomAttachments } from 'misskey-world/src/room/type.js';
@@ -247,10 +248,10 @@ watch(selectedId, (newId) => {
 	}
 });
 
-function updateFurnitureOption(k: string, v: any) {
+const updateFurnitureOption = throttle(100, (k: string, v: any) => {
 	controller.updateFurnitureOption(k, deepClone(v), attachments);
 	selectedFunitureOptionsState.value![k] = v;
-}
+});
 
 function ok() {
 	if (selectedId.value == null) return;
