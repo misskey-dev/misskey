@@ -14746,7 +14746,7 @@ export interface Locale extends ILocale {
                 "width": string;
             };
             /**
-             * 波消ブロック
+             * 波消ブロックの置物
              */
             "tetrapod": string;
             /**

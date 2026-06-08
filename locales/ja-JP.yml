@@ -3963,7 +3963,7 @@ _miRoom:
       height: "高さ"
       image: "画像"
       width: "幅"
-    tetrapod: "波消ブロック"
+    tetrapod: "波消ブロックの置物"
     tv: "テレビ"
     _tv:
       bodyMat: "本体の素材"
