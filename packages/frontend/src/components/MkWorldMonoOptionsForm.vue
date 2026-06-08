@@ -15,14 +15,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</template>
 
 			<div v-if="s.type === 'color'">
-				<!-- debounce or throttleしないとカラーピッカー上で高速でなぞったときになぜか無限ループになる。ワーカーとの間でラグがあるため、少し前の値がまたmodelValueとしてフィードバックされてしまうためだと思われる -->
-				<MkInput :modelValue="getHex(options[k])" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) emit('update', k, c); }"></MkInput>
+				<div :class="$style.controls">
+					<div :class="$style.controlsInput">
+						<!-- debounce or throttleしないとカラーピッカー上で高速でなぞったときになぜか無限ループになる。ワーカーとの間でラグがあるため、少し前の値がまたmodelValueとしてフィードバックされてしまうためだと思われる -->
+						<MkInput :modelValue="getHex(options[k])" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) emit('update', k, c); }"></MkInput>
+					</div>
+					<MkButton rounded iconOnly @click="showColorMenu(k, $event)"><i class="ti ti-dots"></i></MkButton>
+				</div>
 			</div>
 			<div v-else-if="s.type === 'material'" class="_gaps_s">
-				<!-- debounce or throttleしないとカラーピッカー上で高速でなぞったときになぜか無限ループになる。ワーカーとの間でラグがあるため、少し前の値がまたmodelValueとしてフィードバックされてしまうためだと思われる -->
-				<MkInput :modelValue="getHex(options[k].color)" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) updateMaterialColor(k, c); }">
-					<template #label>{{ i18n.ts.color }}</template>
-				</MkInput>
+				<div :class="$style.controls">
+					<div :class="$style.controlsInput">
+						<!-- debounce or throttleしないとカラーピッカー上で高速でなぞったときになぜか無限ループになる。ワーカーとの間でラグがあるため、少し前の値がまたmodelValueとしてフィードバックされてしまうためだと思われる -->
+						<MkInput :modelValue="getHex(options[k].color)" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) updateMaterialColor(k, c); }">
+							<template #label>{{ i18n.ts.color }}</template>
+						</MkInput>
+					</div>
+					<MkButton rounded iconOnly @click="showColorMenu(k, $event)"><i class="ti ti-dots"></i></MkButton>
+				</div>
+
 				<template v-if="advancedCustomize">
 					<MkRange :continuousUpdate="true" :min="0" :max="1" :step="0.1" :modelValue="options[k].metallic" @update:modelValue="v => updateMaterialMetallic(k, v)">
 						<template #label>{{ i18n.ts._miRoom.material_metallic }}</template>
@@ -33,10 +44,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</template>
 			</div>
 			<div v-else-if="s.type === 'light'" class="_gaps_s">
-				<!-- debounce or throttleしないとカラーピッカー上で高速でなぞったときになぜか無限ループになる。ワーカーとの間でラグがあるため、少し前の値がまたmodelValueとしてフィードバックされてしまうためだと思われる -->
-				<MkInput :modelValue="getHex(options[k].color)" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) updateLightColor(k, c); }">
-					<template #label>{{ i18n.ts.color }}</template>
-				</MkInput>
+				<div :class="$style.controls">
+					<div :class="$style.controlsInput">
+						<!-- debounce or throttleしないとカラーピッカー上で高速でなぞったときになぜか無限ループになる。ワーカーとの間でラグがあるため、少し前の値がまたmodelValueとしてフィードバックされてしまうためだと思われる -->
+						<MkInput :modelValue="getHex(options[k].color)" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) updateLightColor(k, c); }">
+							<template #label>{{ i18n.ts.color }}</template>
+						</MkInput>
+					</div>
+					<MkButton rounded iconOnly @click="showColorMenu(k, $event)"><i class="ti ti-dots"></i></MkButton>
+				</div>
 				<MkRange :continuousUpdate="true" :min="0" :max="1" :step="0.1" :modelValue="options[k].brightness" @update:modelValue="v => updateLightBrightness(k, v)">
 					<template #label>{{ i18n.ts._miRoom.light_brightness }}</template>
 				</MkRange>
@@ -94,6 +110,7 @@ import { chooseDriveFile } from '@/utility/drive.js';
 import MkRadios from '@/components/MkRadios.vue';
 import MkFolder from '@/components/MkFolder.vue';
 import { prefer } from '@/preferences.js';
+import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 
 const props = defineProps<{
 	schema: OptionsSchema;
@@ -176,9 +193,48 @@ function updateLightColor(k: string, color: { r: number; g: number; b: number })
 function updateLightBrightness(k: string, brightness: number) {
 	emit('update', k, { ...props.options[k], brightness });
 }
+
+function showColorMenu(k: string, ev: PointerEvent) {
+	os.popupMenu([{
+		text: i18n.ts.copy,
+		icon: 'ti ti-copy',
+		action: () => {
+			if (props.schema[k].type === 'color') {
+				copyToClipboard(getHex(props.options[k]));
+			} else if (props.schema[k].type === 'material' || props.schema[k].type === 'light') {
+				copyToClipboard(getHex(props.options[k].color));
+			}
+		},
+	}, {
+		text: i18n.ts.paste,
+		icon: 'ti ti-clipboard',
+		action: async () => {
+			const text = await navigator.clipboard.readText();
+			const c = getRgb(text);
+			if (c == null) return;
+			if (props.schema[k].type === 'color') {
+				emit('update', k, c);
+			} else if (props.schema[k].type === 'material' || props.schema[k].type === 'light') {
+				emit('update', k, { ...props.options[k], color: c });
+			}
+		},
+	}], ev.currentTarget ?? ev.target);
+}
 </script>
 
 <style lang="scss" module>
 .root {
+}
+
+.controls {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 8px;
+}
+.controlsInput {
+	width: 100%;
+	border-right: solid 1px var(--MI_THEME-divider);
+	padding-right: 8px;
 }
 </style>
