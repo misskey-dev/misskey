@@ -192,6 +192,7 @@ export class SimpleEnvManager extends EnvManager<SimpleEnvOptions> {
 
 		const originalCeilingRoot = this.loaderResult.transformNodes.find(t => t.name.includes('__CEILING__'))!;
 		originalCeilingRoot.scaling = new BABYLON.Vector3(-WORLD_SCALE, WORLD_SCALE, WORLD_SCALE);
+		originalCeilingRoot.position.y = cm(250);
 		originalCeilingRoot.parent = this.rootNode;
 		for (const child of originalCeilingRoot.getChildMeshes()) {
 			if (child.material.name.includes('__CEILING__')) {
