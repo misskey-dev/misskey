@@ -39,14 +39,14 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkRange from '@/components/MkRange.vue';
 
 const props = defineProps<{
-	options: SimpleEnvOptions['pillars']['nw' | 'ne' | 'sw' | 'se'];
+	options: SimpleEnvOptions['pillars']['zp_xp' | 'zp_xn' | 'zn_xp' | 'zn_xn'];
 }>();
 
 const emit = defineEmits<{
-	(ev: 'update', v: SimpleEnvOptions['pillars']['nw' | 'ne' | 'sw' | 'se']): void;
+	(ev: 'update', v: SimpleEnvOptions['pillars']['zp_xp' | 'zp_xn' | 'zn_xp' | 'zn_xn']): void;
 }>();
 
-function update(v: Partial<SimpleEnvOptions['pillars']['nw' | 'ne' | 'sw' | 'se']>) {
+function update(v: Partial<SimpleEnvOptions['pillars']['zp_xp' | 'zp_xn' | 'zn_xp' | 'zn_xn']>) {
 	emit('update', { ...props.options, ...v });
 }
 </script>

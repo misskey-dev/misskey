@@ -10,7 +10,7 @@ export type JapaneseEnvOptions = {
 export type SimpleEnvOptions = {
 	dimension: [number, number];
 	window: 'none' | 'kosidakamado' | 'demado' | 'hakidasimado';
-	walls: Record<'n' | 's' | 'w' | 'e', {
+	walls: Record<'zPositive' | 'zNegative' | 'xPositive' | 'xNegative', {
 		material: null | 'wood' | 'concrete';
 		color: [number, number, number];
 		withBeam: boolean;
@@ -18,7 +18,7 @@ export type SimpleEnvOptions = {
 		beamColor: [number, number, number];
 		withBaseboard: boolean;
 	}>;
-	pillars: Record<'nw' | 'ne' | 'sw' | 'se', {
+	pillars: Record<'zp_xp' | 'zp_xn' | 'zn_xp' | 'zn_xn', {
 		material: null | 'wood' | 'concrete';
 		color: [number, number, number];
 		show: boolean;
@@ -62,8 +62,8 @@ export type CustomMadoriEnvOptions = {
 	}[];
 	units: ({
 		type: 'floor';
-		walls?: Record<'n' | 's' | 'w' | 'e', CustomMadoriEnvWall | undefined>;
-		pillars?: Record<'nw' | 'ne' | 'sw' | 'se', {
+		walls?: Record<'zPositive' | 'zNegative' | 'xPositive' | 'xNegative', CustomMadoriEnvWall | undefined>;
+		pillars?: Record<'zp_xp' | 'zp_xn' | 'zn_xp' | 'zn_xn', {
 			material?: string;
 			show?: boolean;
 		}>;
@@ -81,7 +81,7 @@ export function getDefaultSimpleEnvOptions(): SimpleEnvOptions {
 		dimension: [300, 300],
 		window: 'demado',
 		walls: {
-			n: {
+			zPositive: {
 				material: null,
 				color: [0.9, 0.9, 0.9],
 				withBeam: false,
@@ -89,7 +89,7 @@ export function getDefaultSimpleEnvOptions(): SimpleEnvOptions {
 				beamColor: [0.8, 0.8, 0.8],
 				withBaseboard: true,
 			},
-			e: {
+			zNegative: {
 				material: null,
 				color: [0.9, 0.9, 0.9],
 				withBeam: false,
@@ -97,7 +97,7 @@ export function getDefaultSimpleEnvOptions(): SimpleEnvOptions {
 				beamColor: [0.8, 0.8, 0.8],
 				withBaseboard: true,
 			},
-			s: {
+			xPositive: {
 				material: null,
 				color: [0.9, 0.9, 0.9],
 				withBeam: false,
@@ -105,7 +105,7 @@ export function getDefaultSimpleEnvOptions(): SimpleEnvOptions {
 				beamColor: [0.8, 0.8, 0.8],
 				withBaseboard: true,
 			},
-			w: {
+			xNegative: {
 				material: null,
 				color: [0.9, 0.9, 0.9],
 				withBeam: false,
@@ -115,22 +115,22 @@ export function getDefaultSimpleEnvOptions(): SimpleEnvOptions {
 			},
 		},
 		pillars: {
-			nw: {
+			zp_xp: {
 				material: null,
 				color: [0.9, 0.9, 0.9],
 				show: false,
 			},
-			ne: {
+			zp_xn: {
 				material: null,
 				color: [0.9, 0.9, 0.9],
 				show: false,
 			},
-			sw: {
+			zn_xp: {
 				material: null,
 				color: [0.9, 0.9, 0.9],
 				show: false,
 			},
-			se: {
+			zn_xn: {
 				material: null,
 				color: [0.9, 0.9, 0.9],
 				show: false,
@@ -161,16 +161,16 @@ export function getDefaultCustomMadoriEnvOptions(): CustomMadoriEnvOptions {
 	const units = Array.from({ length: 15 * 15 }, () => ({
 		type: 'floor',
 		walls: {
-			n: {
+			zPositive: {
 				material: '0',
 			},
-			e: {
+			zNegative: {
 				material: '0',
 			},
-			s: {
+			xPositive: {
 				material: '0',
 			},
-			w: {
+			xNegative: {
 				material: '0',
 			},
 		},

@@ -11,23 +11,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<div class="_gaps_s">
 				<MkFolder>
-					<template #label>Wall N</template>
-					<XWallOption :options="options.walls.n" @update="v => { update({ walls: { ...options.walls, n: v } }); }"></XWallOption>
+					<template #label>Wall S</template>
+					<XWallOption :options="options.walls.zPositive" @update="v => { update({ walls: { ...options.walls, zPositive: v } }); }"></XWallOption>
 				</MkFolder>
 
 				<MkFolder>
-					<template #label>Wall S</template>
-					<XWallOption :options="options.walls.s" @update="v => { update({ walls: { ...options.walls, s: v } }); }"></XWallOption>
+					<template #label>Wall N</template>
+					<XWallOption :options="options.walls.zNegative" @update="v => { update({ walls: { ...options.walls, zNegative: v } }); }"></XWallOption>
 				</MkFolder>
 
 				<MkFolder>
 					<template #label>Wall W</template>
-					<XWallOption :options="options.walls.w" @update="v => { update({ walls: { ...options.walls, w: v } }); }"></XWallOption>
+					<XWallOption :options="options.walls.xPositive" @update="v => { update({ walls: { ...options.walls, xPositive: v } }); }"></XWallOption>
 				</MkFolder>
 
 				<MkFolder>
 					<template #label>Wall E</template>
-					<XWallOption :options="options.walls.e" @update="v => { update({ walls: { ...options.walls, e: v } }); }"></XWallOption>
+					<XWallOption :options="options.walls.xNegative" @update="v => { update({ walls: { ...options.walls, xNegative: v } }); }"></XWallOption>
 				</MkFolder>
 			</div>
 		</MkFolder>
@@ -37,23 +37,23 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 			<div class="_gaps_s">
 				<MkFolder>
-					<template #label>Pillar NW</template>
-					<XPillarOption :options="options.pillars.nw" @update="v => { update({ pillars: { ...options.pillars, nw: v } }); }"></XPillarOption>
-				</MkFolder>
-
-				<MkFolder>
-					<template #label>Pillar NE</template>
-					<XPillarOption :options="options.pillars.ne" @update="v => { update({ pillars: { ...options.pillars, ne: v } }); }"></XPillarOption>
-				</MkFolder>
-
-				<MkFolder>
 					<template #label>Pillar SW</template>
-					<XPillarOption :options="options.pillars.sw" @update="v => { update({ pillars: { ...options.pillars, sw: v } }); }"></XPillarOption>
+					<XPillarOption :options="options.pillars.zp_xp" @update="v => { update({ pillars: { ...options.pillars, zp_xp: v } }); }"></XPillarOption>
 				</MkFolder>
 
 				<MkFolder>
 					<template #label>Pillar SE</template>
-					<XPillarOption :options="options.pillars.se" @update="v => { update({ pillars: { ...options.pillars, se: v } }); }"></XPillarOption>
+					<XPillarOption :options="options.pillars.zp_xn" @update="v => { update({ pillars: { ...options.pillars, zp_xn: v } }); }"></XPillarOption>
+				</MkFolder>
+
+				<MkFolder>
+					<template #label>Pillar NW</template>
+					<XPillarOption :options="options.pillars.zn_xp" @update="v => { update({ pillars: { ...options.pillars, zn_xp: v } }); }"></XPillarOption>
+				</MkFolder>
+
+				<MkFolder>
+					<template #label>Pillar NE</template>
+					<XPillarOption :options="options.pillars.zn_xn" @update="v => { update({ pillars: { ...options.pillars, zn_xn: v } }); }"></XPillarOption>
 				</MkFolder>
 			</div>
 		</MkFolder>

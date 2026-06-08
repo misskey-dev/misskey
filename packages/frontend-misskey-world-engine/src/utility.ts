@@ -769,3 +769,18 @@ export class ModelExplorer {
 		return node;
 	}
 }
+
+export function treeClone(source: BABYLON.TransformNode) {
+	const clonedRoot = source.clone(source.name, null, true)!;
+
+	for (const child of source.getChildren()) {
+		if (child instanceof BABYLON.TransformNode) {
+			const clonedChild = treeClone(child);
+			clonedChild.parent = clonedRoot;
+		} else {
+			child.clone(child.name, clonedRoot);
+		}
+	}
+
+	return clonedRoot;
+}

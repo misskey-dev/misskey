@@ -194,10 +194,10 @@ export class CustomMadoriEnvManager extends EnvManager<CustomMadoriEnvOptions> {
 		const unitDef = options.units[posToIndex(x, z)];
 		if (unitDef == null) return;
 
-		const unitNDef = options.units[posToIndex(x, z + 1)];
-		const unitSDef = options.units[posToIndex(x, z - 1)];
-		const unitWDef = options.units[posToIndex(x + 1, z)];
-		const unitEDef = options.units[posToIndex(x - 1, z)];
+		const unitZPositiveDef = options.units[posToIndex(x, z + 1)];
+		const unitZNegativeDef = options.units[posToIndex(x, z - 1)];
+		const unitXPositiveDef = options.units[posToIndex(x + 1, z)];
+		const unitXNegativeDef = options.units[posToIndex(x - 1, z)];
 
 		const shiftedX = x - (options.dimension[0] / 2) + 0.5;
 
@@ -215,24 +215,24 @@ export class CustomMadoriEnvManager extends EnvManager<CustomMadoriEnvOptions> {
 		ceilingMesh.material = unitDef.ceiling?.material != null && this.ceilingMaterials[unitDef.ceiling.material] != null ? this.ceilingMaterials[unitDef.ceiling.material] : defaultCeilingMaterial;
 		const defaultWallMaterial = this.wallMaterials[options.wallMaterials[0].id];
 
-		const createWall = (dir: 'n' | 's' | 'w' | 'e') => {
+		const createWall = (dir: 'zPositive' | 'zNegative' | 'xPositive' | 'xNegative') => {
 			const wallDef = unitDef.walls?.[dir] ?? {};
 			const wallRootNode = this.wallRootNode.clone(`unit_${x}_${z}_wall_${dir}`, unitRoot)!;
 			wallRootNode.scaling = new BABYLON.Vector3(-WORLD_SCALE, WORLD_SCALE, WORLD_SCALE);
 
 			switch (dir) {
-				case 'n':
+				case 'zPositive':
 					wallRootNode.rotation = new BABYLON.Vector3(0, Math.PI, 0);
 					wallRootNode.position = new BABYLON.Vector3(0, 0, cm(50));
 					break;
-				case 's':
+				case 'zNegative':
 					wallRootNode.position = new BABYLON.Vector3(0, 0, cm(-50));
 					break;
-				case 'w':
+				case 'xPositive':
 					wallRootNode.rotation = new BABYLON.Vector3(0, -Math.PI / 2, 0);
 					wallRootNode.position = new BABYLON.Vector3(cm(50), 0, 0);
 					break;
-				case 'e':
+				case 'xNegative':
 					wallRootNode.rotation = new BABYLON.Vector3(0, Math.PI / 2, 0);
 					wallRootNode.position = new BABYLON.Vector3(cm(-50), 0, 0);
 					break;
@@ -264,10 +264,10 @@ export class CustomMadoriEnvManager extends EnvManager<CustomMadoriEnvOptions> {
 			}
 		};
 
-		if (unitNDef == null) createWall('n');
-		if (unitSDef == null) createWall('s');
-		if (unitWDef == null) createWall('w');
-		if (unitEDef == null) createWall('e');
+		if (unitZPositiveDef == null) createWall('zPositive');
+		if (unitZNegativeDef == null) createWall('zNegative');
+		if (unitXPositiveDef == null) createWall('xPositive');
+		if (unitXNegativeDef == null) createWall('xNegative');
 
 		for (const mesh of unitRoot.getChildMeshes()) {
 			this.meshes.push(mesh);

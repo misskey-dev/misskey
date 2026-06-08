@@ -57,14 +57,14 @@ import MkSwitch from '@/components/MkSwitch.vue';
 import MkRange from '@/components/MkRange.vue';
 
 const props = defineProps<{
-	options: SimpleEnvOptions['walls']['n' | 's' | 'w' | 'e'];
+	options: SimpleEnvOptions['walls']['zPositive' | 'zNegative' | 'xPositive' | 'xNegative'];
 }>();
 
 const emit = defineEmits<{
-	(ev: 'update', v: SimpleEnvOptions['walls']['n' | 's' | 'w' | 'e']): void;
+	(ev: 'update', v: SimpleEnvOptions['walls']['zPositive' | 'zNegative' | 'xPositive' | 'xNegative']): void;
 }>();
 
-function update(v: Partial<SimpleEnvOptions['walls']['n' | 's' | 'w' | 'e']>) {
+function update(v: Partial<SimpleEnvOptions['walls']['zPositive' | 'zNegative' | 'xPositive' | 'xNegative']>) {
 	emit('update', { ...props.options, ...v });
 }
 </script>
