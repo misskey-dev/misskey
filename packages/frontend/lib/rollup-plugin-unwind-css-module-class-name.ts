@@ -282,7 +282,7 @@ export function unwindCssModuleClassName(ast: ESTree.Node, magicString: Rolldown
 							start: childNode.start,
 							end: childNode.end,
 						});
-					}
+					},
 				});
 				/* This region inlined the reference identifier of the class name in the render function into the actual literal, as in the following code.
 				 *
