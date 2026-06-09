@@ -228,6 +228,15 @@ export const ROUTE_DEF = [{
 	path: '/user-polls',
 	component: page(() => import('@/pages/user-polls.vue')),
 }, {
+	path: '/rankings',
+	component: page(() => import('@/pages/rankings.vue')),
+}, {
+	path: '/emoji-proposals',
+	component: page(() => import('@/pages/emoji-proposals.vue')),
+}, {
+	path: '/challenges',
+	component: page(() => import('@/pages/challenges.vue')),
+}, {
 	path: '/invite',
 	name: 'invite',
 	component: page(() => import('@/pages/invite.vue')),
@@ -436,6 +445,22 @@ export const ROUTE_DEF = [{
 		path: '/user-polls',
 		name: 'user-polls',
 		component: page(() => import('@/pages/admin/user-polls.vue')),
+	}, {
+		path: '/bulk-notify',
+		name: 'bulk-notify',
+		component: page(() => import('@/pages/admin/bulk-notify.vue')),
+	}, {
+		path: '/emoji-proposals',
+		name: 'emoji-proposals',
+		component: page(() => import('@/pages/admin/emoji-proposals.vue')),
+	}, {
+		path: '/challenges',
+		name: 'challenges-admin',
+		component: page(() => import('@/pages/admin/challenges.vue')),
+	}, {
+		path: '/user-activity',
+		name: 'user-activity',
+		component: page(() => import('@/pages/admin/user-activity.vue')),
 	}, {
 		path: '/ads',
 		name: 'ads',

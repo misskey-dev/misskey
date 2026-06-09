@@ -71,6 +71,21 @@ export const navbarItemDef = reactive<{
 		show: computed(() => $i != null),
 		to: '/user-polls',
 	},
+	rankings: {
+		title: i18n.ts.rankings,
+		icon: 'ti ti-trophy',
+		to: '/rankings',
+	},
+	emojiProposals: {
+		title: i18n.ts.emojiProposals,
+		icon: 'ti ti-mood-smile',
+		to: '/emoji-proposals',
+	},
+	challenges: {
+		title: i18n.ts.challenges,
+		icon: 'ti ti-flag',
+		to: '/challenges',
+	},
 	search: {
 		title: i18n.ts.search,
 		icon: 'ti ti-search',

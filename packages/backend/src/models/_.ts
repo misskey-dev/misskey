@@ -85,6 +85,9 @@ import { MiUserPublickey } from '@/models/UserPublickey.js';
 import { MiUserSecurityKey } from '@/models/UserSecurityKey.js';
 import { MiUserPoll } from '@/models/UserPoll.js';
 import { MiUserPollVote } from '@/models/UserPollVote.js';
+import { MiEmojiProposal } from '@/models/EmojiProposal.js';
+import { MiEmojiProposalVote } from '@/models/EmojiProposalVote.js';
+import { MiCommunityChallenge } from '@/models/CommunityChallenge.js';
 import { MiWebhook } from '@/models/Webhook.js';
 import type { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity.js';
 
@@ -177,6 +180,9 @@ export {
 	MiReversiGame,
 	MiUserPoll,
 	MiUserPollVote,
+	MiEmojiProposal,
+	MiEmojiProposalVote,
+	MiCommunityChallenge,
 };
 
 export type AbuseUserReportsRepository = Repository<MiAbuseUserReport> & MiRepository<MiAbuseUserReport>;
@@ -259,3 +265,6 @@ export type BubbleGameRecordsRepository = Repository<MiBubbleGameRecord> & MiRep
 export type ReversiGamesRepository = Repository<MiReversiGame> & MiRepository<MiReversiGame>;
 export type UserPollsRepository = Repository<MiUserPoll> & MiRepository<MiUserPoll>;
 export type UserPollVotesRepository = Repository<MiUserPollVote> & MiRepository<MiUserPollVote>;
+export type EmojiProposalsRepository = Repository<MiEmojiProposal> & MiRepository<MiEmojiProposal>;
+export type EmojiProposalVotesRepository = Repository<MiEmojiProposalVote> & MiRepository<MiEmojiProposalVote>;
+export type CommunityChallengesRepository = Repository<MiCommunityChallenge> & MiRepository<MiCommunityChallenge>;

@@ -4,9 +4,19 @@
 
 ### Client
 - Feat: ユーザー投票機能を追加。管理者が質問・選択肢・期限・匿名設定を指定して投票を作成・配布でき、ユーザーはナビゲーションや通知から投票できるように
+- Feat: インスタンス内ランキング機能を追加。週間・月間・全期間のノート数・リアクション受信数・フォロワー増加数を表示
+- Feat: カスタム絵文字提案・投票機能を追加。ユーザーが絵文字を提案し賛成票を投じることができ、管理者が承認・却下できるように
+- Feat: コミュニティチャレンジ機能を追加。管理者がハッシュタグ付きのチャレンジを作成し、ユーザーの参加を促せるように
+- Feat: 管理者向け一斉通知機能を追加。全ユーザーまたは登録日時でフィルタしたユーザーに通知を一括送信できるように
+- Feat: 管理者向けユーザー活動レポート機能を追加。ユーザーのノート数・リアクション・フォロー状況・日別投稿推移を確認できるように
 
 ### Server
 - Feat: ユーザー投票 API を追加 (`admin/user-polls/*`, `user-polls`, `user-polls/vote`)
+- Feat: インスタンス内ランキング API を追加 (`rankings`)
+- Feat: カスタム絵文字提案・投票 API を追加 (`emoji-proposals`, `emoji-proposals/propose`, `emoji-proposals/vote`, `admin/emoji-proposals/*`)
+- Feat: コミュニティチャレンジ API を追加 (`challenges`, `admin/challenges/*`)
+- Feat: 一斉通知 API を追加 (`admin/bulk-notify`)
+- Feat: ユーザー活動レポート API を追加 (`admin/user-activity`)
 
 ## 2026.6.0
 

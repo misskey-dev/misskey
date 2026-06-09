@@ -93,5 +93,8 @@ export const DI = {
 	noteDraftsRepository: Symbol('noteDraftsRepository'),
 	userPollsRepository: Symbol('userPollsRepository'),
 	userPollVotesRepository: Symbol('userPollVotesRepository'),
+	emojiProposalsRepository: Symbol('emojiProposalsRepository'),
+	emojiProposalVotesRepository: Symbol('emojiProposalVotesRepository'),
+	communityChallengesRepository: Symbol('communityChallengesRepository'),
 	//#endregion
 };

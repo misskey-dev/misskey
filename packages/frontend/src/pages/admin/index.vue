@@ -167,6 +167,26 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		to: '/admin/user-polls',
 		active: currentPage.value?.route.name === 'user-polls',
 	}, {
+		icon: 'ti ti-bell-ringing',
+		text: i18n.ts.bulkNotify,
+		to: '/admin/bulk-notify',
+		active: currentPage.value?.route.name === 'bulk-notify',
+	}, {
+		icon: 'ti ti-mood-smile',
+		text: i18n.ts.emojiProposals,
+		to: '/admin/emoji-proposals',
+		active: currentPage.value?.route.name === 'emoji-proposals',
+	}, {
+		icon: 'ti ti-flag',
+		text: i18n.ts.challenges,
+		to: '/admin/challenges',
+		active: currentPage.value?.route.name === 'challenges-admin',
+	}, {
+		icon: 'ti ti-activity',
+		text: i18n.ts.userActivity,
+		to: '/admin/user-activity',
+		active: currentPage.value?.route.name === 'user-activity',
+	}, {
 		icon: 'ti ti-ad',
 		text: i18n.ts.ads,
 		to: '/admin/ads',
