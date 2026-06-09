@@ -170,6 +170,12 @@ export function openInstanceMenu(ev: PointerEvent) {
 		to: '/about-misskey',
 	});
 
+	menuItems.push({
+		type: 'link',
+		text: i18n.ts.aboutRickskey,
+		to: '/about-rickskey',
+	});
+
 	os.popupMenu(menuItems, ev.currentTarget ?? ev.target, {
 		align: 'left',
 	});

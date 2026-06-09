@@ -157,6 +157,52 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<SearchLabel>{{ i18n.ts.qr }}</SearchLabel>
 			</FormLink>
 		</SearchMarker>
+
+		<SearchMarker :keywords="['status', 'カスタムステータス']">
+			<MkFolder>
+				<template #icon><i class="ti ti-mood-happy"></i></template>
+				<template #label><SearchLabel>{{ i18n.ts.customStatus }}</SearchLabel></template>
+
+				<div class="_gaps_s">
+					<div v-if="currentStatus" style="display: flex; align-items: center; gap: 10px; padding: 8px 0;">
+						<span style="font-size: 1.4em;">{{ currentStatus.emoji ?? '💬' }}</span>
+						<span>{{ currentStatus.text }}</span>
+						<span v-if="currentStatus.expiresAt" style="font-size: 0.8em; color: var(--MI_THEME-fgTransparent);">
+							〜{{ new Date(currentStatus.expiresAt).toLocaleString() }}
+						</span>
+						<MkButton small danger style="margin-left: auto;" @click="clearStatus">
+							<i class="ti ti-x"></i>
+						</MkButton>
+					</div>
+
+					<div style="display: flex; gap: 8px; align-items: flex-end;">
+						<MkInput v-model="statusEmoji" style="width: 80px;" placeholder="😊">
+							<template #label>{{ i18n.ts._customStatus.statusEmoji }}</template>
+						</MkInput>
+						<MkInput v-model="statusText" style="flex: 1;" :placeholder="i18n.ts._customStatus.statusText">
+							<template #label>{{ i18n.ts._customStatus.statusText }}</template>
+						</MkInput>
+					</div>
+
+					<div style="display: flex; flex-wrap: wrap; gap: 6px;">
+						<button
+							v-for="p in statusPresets"
+							:key="p.text"
+							style="background: var(--MI_THEME-buttonBg); border: none; border-radius: 999px; padding: 4px 12px; font-size: 0.85em; cursor: pointer; color: var(--MI_THEME-fg);"
+							@click="statusEmoji = p.emoji; statusText = p.text"
+						>{{ p.emoji }} {{ p.text }}</button>
+					</div>
+
+					<MkInput v-model="statusExpiresAt" type="datetime-local">
+						<template #label>{{ i18n.ts._customStatus.expiresAt }}</template>
+					</MkInput>
+
+					<MkButton primary :disabled="!statusText.trim()" @click="saveStatus">
+						<i class="ti ti-check"></i> {{ i18n.ts._customStatus.setStatus }}
+					</MkButton>
+				</div>
+			</MkFolder>
+		</SearchMarker>
 	</div>
 </SearchMarker>
 </template>
@@ -367,6 +413,49 @@ function changeBanner(ev: PointerEvent) {
 const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
+
+// カスタムステータス
+type StatusData = { emoji: string | null; text: string; expiresAt: string | null } | null;
+const currentStatus = ref<StatusData>(($i as any).status ?? null);
+const statusEmoji = ref('');
+const statusText = ref('');
+const statusExpiresAt = ref('');
+
+const statusPresets = [
+	{ emoji: '💻', text: '作業中' },
+	{ emoji: '🎮', text: 'ゲーム中' },
+	{ emoji: '😴', text: '寝てます' },
+	{ emoji: '🍜', text: 'ごはん中' },
+	{ emoji: '📖', text: '読書中' },
+	{ emoji: '🎵', text: '音楽鑑賞中' },
+	{ emoji: '🚂', text: '移動中' },
+	{ emoji: '🤔', text: '考え中' },
+];
+
+async function saveStatus() {
+	await os.apiWithDialog('i/update-status', {
+		statusEmoji: statusEmoji.value.trim() || null,
+		statusText: statusText.value.trim() || null,
+		statusExpiresAt: statusExpiresAt.value ? new Date(statusExpiresAt.value).toISOString() : null,
+	});
+	currentStatus.value = {
+		emoji: statusEmoji.value.trim() || null,
+		text: statusText.value.trim(),
+		expiresAt: statusExpiresAt.value ? new Date(statusExpiresAt.value).toISOString() : null,
+	};
+	statusEmoji.value = '';
+	statusText.value = '';
+	statusExpiresAt.value = '';
+}
+
+async function clearStatus() {
+	await os.apiWithDialog('i/update-status', {
+		statusEmoji: null,
+		statusText: null,
+		statusExpiresAt: null,
+	});
+	currentStatus.value = null;
+}
 
 definePage(() => ({
 	title: i18n.ts.profile,

@@ -84,6 +84,11 @@ import {
 	MiChatRoomMembership,
 	MiChatRoomInvitation,
 	MiChatApproval,
+	MiUserPoll,
+	MiUserPollVote,
+	MiEmojiProposal,
+	MiEmojiProposalVote,
+	MiCommunityChallenge,
 } from './_.js';
 import type { Provider } from '@nestjs/common';
 import type { DataSource } from 'typeorm';
@@ -544,6 +549,36 @@ const $reversiGamesRepository: Provider = {
 	inject: [DI.db],
 };
 
+const $userPollsRepository: Provider = {
+	provide: DI.userPollsRepository,
+	useFactory: (db: DataSource) => db.getRepository(MiUserPoll).extend(miRepository as MiRepository<MiUserPoll>),
+	inject: [DI.db],
+};
+
+const $userPollVotesRepository: Provider = {
+	provide: DI.userPollVotesRepository,
+	useFactory: (db: DataSource) => db.getRepository(MiUserPollVote).extend(miRepository as MiRepository<MiUserPollVote>),
+	inject: [DI.db],
+};
+
+const $emojiProposalsRepository: Provider = {
+	provide: DI.emojiProposalsRepository,
+	useFactory: (db: DataSource) => db.getRepository(MiEmojiProposal).extend(miRepository as MiRepository<MiEmojiProposal>),
+	inject: [DI.db],
+};
+
+const $emojiProposalVotesRepository: Provider = {
+	provide: DI.emojiProposalVotesRepository,
+	useFactory: (db: DataSource) => db.getRepository(MiEmojiProposalVote).extend(miRepository as MiRepository<MiEmojiProposalVote>),
+	inject: [DI.db],
+};
+
+const $communityChallengesRepository: Provider = {
+	provide: DI.communityChallengesRepository,
+	useFactory: (db: DataSource) => db.getRepository(MiCommunityChallenge).extend(miRepository as MiRepository<MiCommunityChallenge>),
+	inject: [DI.db],
+};
+
 @Module({
 	imports: [],
 	providers: [
@@ -623,6 +658,11 @@ const $reversiGamesRepository: Provider = {
 		$chatApprovalsRepository,
 		$bubbleGameRecordsRepository,
 		$reversiGamesRepository,
+		$userPollsRepository,
+		$userPollVotesRepository,
+		$emojiProposalsRepository,
+		$emojiProposalVotesRepository,
+		$communityChallengesRepository,
 	],
 	exports: [
 		$usersRepository,
@@ -701,6 +741,11 @@ const $reversiGamesRepository: Provider = {
 		$chatApprovalsRepository,
 		$bubbleGameRecordsRepository,
 		$reversiGamesRepository,
+		$userPollsRepository,
+		$userPollVotesRepository,
+		$emojiProposalsRepository,
+		$emojiProposalVotesRepository,
+		$communityChallengesRepository,
 	],
 })
 export class RepositoryModule {

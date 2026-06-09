@@ -621,6 +621,7 @@ export const packedMeDetailedOnlySchema = {
 				login: { optional: true, ...notificationRecieveConfig },
 				createToken: { optional: true, ...notificationRecieveConfig },
 				exportCompleted: { optional: true, ...notificationRecieveConfig },
+				userPoll: { optional: true, ...notificationRecieveConfig },
 			},
 		},
 		emailNotificationTypes: {

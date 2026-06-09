@@ -139,6 +139,11 @@ export type MiNotification = {
 	 */
 	appAccessTokenId: MiAccessToken['id'] | null;
 } | {
+	type: 'userPoll';
+	id: string;
+	createdAt: string;
+	pollId: string;
+} | {
 	type: 'test';
 	id: string;
 	createdAt: string;

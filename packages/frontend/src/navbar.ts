@@ -65,6 +65,38 @@ export const navbarItemDef = reactive<{
 		indicated: computed(() => $i != null && $i.hasUnreadAnnouncement),
 		to: '/announcements',
 	},
+	userPolls: {
+		title: i18n.ts.userPolls,
+		icon: 'ti ti-chart-bar',
+		show: computed(() => $i != null),
+		to: '/user-polls',
+	},
+	rankings: {
+		title: i18n.ts.rankings,
+		icon: 'ti ti-trophy',
+		to: '/rankings',
+	},
+	emojiProposals: {
+		title: i18n.ts.emojiProposals,
+		icon: 'ti ti-mood-smile',
+		to: '/emoji-proposals',
+	},
+	challenges: {
+		title: i18n.ts.challenges,
+		icon: 'ti ti-flag',
+		to: '/challenges',
+	},
+	shorts: {
+		title: i18n.ts.shorts,
+		icon: 'ti ti-player-play',
+		to: '/shorts',
+	},
+	myAnalytics: {
+		title: i18n.ts.myAnalytics,
+		icon: 'ti ti-chart-line',
+		show: computed(() => $i != null),
+		to: '/my/analytics',
+	},
 	search: {
 		title: i18n.ts.search,
 		icon: 'ti ti-search',

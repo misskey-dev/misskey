@@ -285,6 +285,21 @@ export class MiUser {
 	})
 	public token: string | null;
 
+	@Column('varchar', {
+		length: 64, nullable: true,
+	})
+	public statusEmoji: string | null;
+
+	@Column('varchar', {
+		length: 150, nullable: true,
+	})
+	public statusText: string | null;
+
+	@Column('timestamp with time zone', {
+		nullable: true,
+	})
+	public statusExpiresAt: Date | null;
+
 	constructor(data: Partial<MiUser>) {
 		if (data == null) return;
 

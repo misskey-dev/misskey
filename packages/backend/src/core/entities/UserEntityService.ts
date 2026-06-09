@@ -500,6 +500,11 @@ export class UserEntityService implements OnModuleInit {
 			}))) : [],
 			isBot: user.isBot,
 			isCat: user.isCat,
+			status: (user.statusText && (!user.statusExpiresAt || user.statusExpiresAt > new Date())) ? {
+				emoji: user.statusEmoji ?? null,
+				text: user.statusText,
+				expiresAt: user.statusExpiresAt ? user.statusExpiresAt.toISOString() : null,
+			} : null,
 			requireSigninToViewContents: user.requireSigninToViewContents === false ? undefined : true,
 			makeNotesFollowersOnlyBefore: user.makeNotesFollowersOnlyBefore ?? undefined,
 			makeNotesHiddenBefore: user.makeNotesHiddenBefore ?? undefined,

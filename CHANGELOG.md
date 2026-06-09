@@ -1,3 +1,31 @@
+## Unreleased
+
+### General
+
+### Client
+- Feat: ユーザー投票機能を追加。管理者が質問・選択肢・期限・匿名設定を指定して投票を作成・配布でき、ユーザーはナビゲーションや通知から投票できるように
+- Feat: インスタンス内ランキング機能を追加。週間・月間・全期間のノート数・リアクション受信数・フォロワー増加数を表示
+- Feat: カスタム絵文字提案・投票機能を追加。ユーザーが絵文字を提案し賛成票を投じることができ、管理者が承認・却下できるように
+- Feat: コミュニティチャレンジ機能を追加。管理者がハッシュタグ付きのチャレンジを作成し、ユーザーの参加を促せるように
+- Feat: 管理者向け一斉通知機能を追加。全ユーザーまたは登録日時でフィルタしたユーザーに通知を一括送信できるように
+- Feat: 管理者向けユーザー活動レポート機能を追加。ユーザーのノート数・リアクション・フォロー状況・日別投稿推移を確認できるように
+- Feat: カスタムステータス機能を追加。絵文字＋テキスト＋有効期限で自分の状態を設定でき、プロフィール等に表示される
+- Feat: 日替わりお題機能を追加。管理者がハッシュタグ付きのお題を設定し、ウィジェットとしてホームに表示。参加者数もリアルタイム表示
+- Feat: マイアナリティクス機能を追加 (`/my/analytics`)。自分のノート数・リアクション・フォロワー増加を日別・週別グラフで確認できるように
+- Feat: ショートフィード機能を追加 (`/shorts`)。縦型・正方形の動画が添付されたノートをショートフィードとして閲覧できるように
+
+### Server
+- Feat: ユーザー投票 API を追加 (`admin/user-polls/*`, `user-polls`, `user-polls/vote`)
+- Feat: インスタンス内ランキング API を追加 (`rankings`)
+- Feat: カスタム絵文字提案・投票 API を追加 (`emoji-proposals`, `emoji-proposals/propose`, `emoji-proposals/vote`, `admin/emoji-proposals/*`)
+- Feat: コミュニティチャレンジ API を追加 (`challenges`, `admin/challenges/*`)
+- Feat: 一斉通知 API を追加 (`admin/bulk-notify`)
+- Feat: ユーザー活動レポート API を追加 (`admin/user-activity`)
+- Feat: カスタムステータス API を追加 (`i/update-status`)。ユーザーテーブルに `statusEmoji`/`statusText`/`statusExpiresAt` カラムを追加
+- Feat: 日替わりお題 API を追加 (`daily-prompt`)。CommunityChallenge に `isDailyPrompt` フラグを追加
+- Feat: マイアナリティクス API を追加 (`my/analytics`)
+- Feat: ショート動画フィード API を追加 (`shorts`)。縦型・正方形の動画ファイルを添付したノートを返す
+
 ## 2026.6.0
 
 ### General

@@ -23,6 +23,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				[$style.t_mention]: notification.type === 'mention',
 				[$style.t_quote]: notification.type === 'quote',
 				[$style.t_pollEnded]: notification.type === 'pollEnded',
+				[$style.t_userPoll]: notification.type === 'userPoll',
 				[$style.t_scheduledNotePosted]: notification.type === 'scheduledNotePosted',
 				[$style.t_scheduledNotePostFailed]: notification.type === 'scheduledNotePostFailed',
 				[$style.t_achievementEarned]: notification.type === 'achievementEarned',
@@ -41,6 +42,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<i v-else-if="notification.type === 'mention'" class="ti ti-at"></i>
 			<i v-else-if="notification.type === 'quote'" class="ti ti-quote"></i>
 			<i v-else-if="notification.type === 'pollEnded'" class="ti ti-chart-arrows"></i>
+			<i v-else-if="notification.type === 'userPoll'" class="ti ti-chart-bar"></i>
 			<i v-else-if="notification.type === 'scheduledNotePosted'" class="ti ti-send"></i>
 			<i v-else-if="notification.type === 'scheduledNotePostFailed'" class="ti ti-alert-triangle"></i>
 			<i v-else-if="notification.type === 'achievementEarned'" class="ti ti-medal"></i>
@@ -64,6 +66,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div :class="$style.tail">
 		<header :class="$style.header">
 			<span v-if="notification.type === 'pollEnded'">{{ i18n.ts._notification.pollEnded }}</span>
+			<span v-else-if="notification.type === 'userPoll'">{{ i18n.ts._notification.userPollArrived }}</span>
 			<span v-else-if="notification.type === 'scheduledNotePosted'">{{ i18n.ts._notification.scheduledNotePosted }}</span>
 			<span v-else-if="notification.type === 'scheduledNotePostFailed'">{{ i18n.ts._notification.scheduledNotePostFailed }}</span>
 			<span v-else-if="notification.type === 'note'">{{ i18n.ts._notification.newNote }}: <MkUserName :user="notification.note.user"/></span>
@@ -103,6 +106,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</MkA>
 			<MkA v-else-if="notification.type === 'note'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
 				<Mfm :text="getNoteSummary(notification.note)" :plain="true" :nowrap="true" :author="notification.note.user"/>
+			</MkA>
+			<MkA v-else-if="notification.type === 'userPoll'" :class="$style.text" to="/user-polls">
+				{{ i18n.ts.userPolls }}
 			</MkA>
 			<MkA v-else-if="notification.type === 'pollEnded'" :class="$style.text" :to="notePage(notification.note)" :title="getNoteSummary(notification.note)">
 				<i class="ti ti-quote" :class="$style.quote"></i>
@@ -346,6 +352,11 @@ function getActualReactedUsersCount(notification: Misskey.entities.Notification)
 
 .t_pollEnded {
 	background: var(--eventOther);
+	pointer-events: none;
+}
+
+.t_userPoll {
+	background: var(--MI_THEME-accent);
 	pointer-events: none;
 }
 
