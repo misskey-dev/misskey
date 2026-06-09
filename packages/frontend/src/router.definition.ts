@@ -81,6 +81,10 @@ export const ROUTE_DEF = [{
 		name: 'profile',
 		component: page(() => import('@/pages/settings/profile.vue')),
 	}, {
+		path: '/custom-status',
+		name: 'custom-status',
+		component: page(() => import('@/pages/settings/custom-status.vue')),
+	}, {
 		path: '/avatar-decoration',
 		name: 'avatarDecoration',
 		component: page(() => import('@/pages/settings/avatar-decoration.vue')),
@@ -236,6 +240,12 @@ export const ROUTE_DEF = [{
 }, {
 	path: '/challenges',
 	component: page(() => import('@/pages/challenges.vue')),
+}, {
+	path: '/shorts',
+	component: page(() => import('@/pages/shorts.vue')),
+}, {
+	path: '/my/analytics',
+	component: page(() => import('@/pages/my/analytics.vue')),
 }, {
 	path: '/invite',
 	name: 'invite',

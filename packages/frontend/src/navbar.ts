@@ -86,6 +86,17 @@ export const navbarItemDef = reactive<{
 		icon: 'ti ti-flag',
 		to: '/challenges',
 	},
+	shorts: {
+		title: i18n.ts.shorts,
+		icon: 'ti ti-player-play',
+		to: '/shorts',
+	},
+	myAnalytics: {
+		title: i18n.ts.myAnalytics,
+		icon: 'ti ti-chart-line',
+		show: computed(() => $i != null),
+		to: '/my/analytics',
+	},
 	search: {
 		title: i18n.ts.search,
 		icon: 'ti ti-search',

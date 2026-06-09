@@ -465,3 +465,7 @@ export * as 'emoji-proposals' from './endpoints/emoji-proposals.js';
 export * as 'emoji-proposals/propose' from './endpoints/emoji-proposals/propose.js';
 export * as 'emoji-proposals/vote' from './endpoints/emoji-proposals/vote.js';
 export * as 'challenges' from './endpoints/challenges.js';
+export * as 'i/update-status' from './endpoints/i/update-status.js';
+export * as 'daily-prompt' from './endpoints/daily-prompt.js';
+export * as 'my/analytics' from './endpoints/my/analytics.js';
+export * as 'shorts' from './endpoints/shorts.js';

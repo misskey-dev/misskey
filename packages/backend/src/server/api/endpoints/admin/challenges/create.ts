@@ -31,6 +31,7 @@ export const paramDef = {
 		description: { type: 'string', maxLength: 2048, nullable: true, default: null },
 		hashtag: { type: 'string', minLength: 1, maxLength: 128 },
 		deadline: { type: 'string', format: 'date-time', nullable: true, default: null },
+		isDailyPrompt: { type: 'boolean', default: false },
 	},
 	required: ['title', 'hashtag'],
 } as const;
@@ -52,6 +53,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				hashtag: ps.hashtag.replace(/^#/, ''),
 				deadline: ps.deadline ? new Date(ps.deadline) : null,
 				isActive: true,
+				isDailyPrompt: ps.isDailyPrompt ?? false,
 			});
 
 			return { id: challenge.id };

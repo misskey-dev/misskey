@@ -9,6 +9,10 @@
 - Feat: コミュニティチャレンジ機能を追加。管理者がハッシュタグ付きのチャレンジを作成し、ユーザーの参加を促せるように
 - Feat: 管理者向け一斉通知機能を追加。全ユーザーまたは登録日時でフィルタしたユーザーに通知を一括送信できるように
 - Feat: 管理者向けユーザー活動レポート機能を追加。ユーザーのノート数・リアクション・フォロー状況・日別投稿推移を確認できるように
+- Feat: カスタムステータス機能を追加。絵文字＋テキスト＋有効期限で自分の状態を設定でき、プロフィール等に表示される
+- Feat: 日替わりお題機能を追加。管理者がハッシュタグ付きのお題を設定し、ウィジェットとしてホームに表示。参加者数もリアルタイム表示
+- Feat: マイアナリティクス機能を追加 (`/my/analytics`)。自分のノート数・リアクション・フォロワー増加を日別・週別グラフで確認できるように
+- Feat: ショートフィード機能を追加 (`/shorts`)。縦型・正方形の動画が添付されたノートをショートフィードとして閲覧できるように
 
 ### Server
 - Feat: ユーザー投票 API を追加 (`admin/user-polls/*`, `user-polls`, `user-polls/vote`)
@@ -17,6 +21,10 @@
 - Feat: コミュニティチャレンジ API を追加 (`challenges`, `admin/challenges/*`)
 - Feat: 一斉通知 API を追加 (`admin/bulk-notify`)
 - Feat: ユーザー活動レポート API を追加 (`admin/user-activity`)
+- Feat: カスタムステータス API を追加 (`i/update-status`)。ユーザーテーブルに `statusEmoji`/`statusText`/`statusExpiresAt` カラムを追加
+- Feat: 日替わりお題 API を追加 (`daily-prompt`)。CommunityChallenge に `isDailyPrompt` フラグを追加
+- Feat: マイアナリティクス API を追加 (`my/analytics`)
+- Feat: ショート動画フィード API を追加 (`shorts`)。縦型・正方形の動画ファイルを添付したノートを返す
 
 ## 2026.6.0
 

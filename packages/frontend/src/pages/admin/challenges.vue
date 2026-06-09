@@ -24,6 +24,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkInput v-model="newDeadline" type="datetime-local">
 						<template #label>{{ i18n.ts._challenge.deadline }}</template>
 					</MkInput>
+					<MkSwitch v-model="newIsDailyPrompt">
+						{{ i18n.ts._dailyPrompt.isDailyPrompt }}
+					</MkSwitch>
 					<MkButton primary :disabled="!canCreate" @click="createChallenge">
 						<i class="ti ti-send"></i> {{ i18n.ts._challenge.createChallenge }}
 					</MkButton>
@@ -73,6 +76,7 @@ import * as os from '@/os.js';
 import MkButton from '@/components/MkButton.vue';
 import MkInput from '@/components/MkInput.vue';
 import MkTextarea from '@/components/MkTextarea.vue';
+import MkSwitch from '@/components/MkSwitch.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkLoading from '@/pages/_loading_.vue';
 import FormSection from '@/components/form/section.vue';
@@ -91,6 +95,7 @@ const newTitle = ref('');
 const newDescription = ref('');
 const newHashtag = ref('');
 const newDeadline = ref('');
+const newIsDailyPrompt = ref(false);
 
 const canCreate = computed(() =>
 	newTitle.value.trim().length > 0 &&
@@ -107,11 +112,13 @@ async function createChallenge() {
 		description: newDescription.value.trim() || null,
 		hashtag: newHashtag.value.trim().replace(/^#/, ''),
 		deadline: newDeadline.value ? new Date(newDeadline.value).toISOString() : null,
+		isDailyPrompt: newIsDailyPrompt.value,
 	});
 	newTitle.value = '';
 	newDescription.value = '';
 	newHashtag.value = '';
 	newDeadline.value = '';
+	newIsDailyPrompt.value = false;
 	await load();
 }
 

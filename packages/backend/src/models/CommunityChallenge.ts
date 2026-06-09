@@ -50,6 +50,12 @@ export class MiCommunityChallenge {
 	})
 	public isActive: boolean;
 
+	@Index()
+	@Column('boolean', {
+		default: false,
+	})
+	public isDailyPrompt: boolean;
+
 	constructor(data: Partial<MiCommunityChallenge>) {
 		if (data == null) return;
 		for (const [k, v] of Object.entries(data)) {
