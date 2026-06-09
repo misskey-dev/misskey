@@ -73,6 +73,12 @@ export class InboxProcessorService implements OnApplicationShutdown {
 		this.logger.debug(JSON.stringify(info, null, 2));
 		//#endregion
 
+		// Activities without an actor are invalid; skip them cleanly instead of
+		// throwing a TypeError deep inside getApId(activity.actor).
+		if (activity.actor == null) {
+			throw new Bull.UnrecoverableError('skip: activity has no actor');
+		}
+
 		const host = this.utilityService.toPuny(new URL(signature.keyId).hostname);
 
 		if (!this.utilityService.isFederationAllowedHost(host)) {
