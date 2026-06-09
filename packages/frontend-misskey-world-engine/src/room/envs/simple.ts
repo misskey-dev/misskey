@@ -261,6 +261,8 @@ export class SimpleEnvManager extends EnvManager<SimpleEnvOptions> {
 
 				if (texPath != null) {
 					const tex = new BABYLON.Texture(texPath, this.engine.scene, false, false);
+					tex.wrapU = BABYLON.Texture.WRAP_ADDRESSMODE;
+					tex.wrapV = BABYLON.Texture.WRAP_ADDRESSMODE;
 					targetMaterial.albedoTexture = tex;
 				} else {
 					targetMaterial.albedoTexture = null;

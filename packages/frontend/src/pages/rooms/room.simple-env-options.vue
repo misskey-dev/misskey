@@ -6,6 +6,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <div :class="$style.root">
 	<div class="_gaps">
+		<MkSelect
+			:items="[
+				{ label: '腰高窓', value: 'kosidakamado' },
+				{ label: '出窓', value: 'demado' },
+			]" :modelValue="options.window" @update:modelValue="v => { update({ window: v }); }"
+		>
+			<template #label>window</template>
+		</MkSelect>
+
 		<MkFolder>
 			<template #label>Walls</template>
 
