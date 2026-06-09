@@ -267,6 +267,26 @@ for (const obj of initialRoomState.installedFurnitures) {
 		obj.type = 'ironFrameShelf';
 	}
 }
+if (initialRoomState.env.options.walls.n != null) {
+	initialRoomState.env.options.walls.zPositive = initialRoomState.env.options.walls.s;
+	initialRoomState.env.options.walls.zNegative = initialRoomState.env.options.walls.n;
+	initialRoomState.env.options.walls.xPositive = initialRoomState.env.options.walls.w;
+	initialRoomState.env.options.walls.xNegative = initialRoomState.env.options.walls.e;
+	delete initialRoomState.env.options.walls.n;
+	delete initialRoomState.env.options.walls.s;
+	delete initialRoomState.env.options.walls.w;
+	delete initialRoomState.env.options.walls.e;
+}
+if (initialRoomState.env.options.pillars.nw != null) {
+	initialRoomState.env.options.pillars.zp_xp = initialRoomState.env.options.pillars.sw;
+	initialRoomState.env.options.pillars.zp_xn = initialRoomState.env.options.pillars.se;
+	initialRoomState.env.options.pillars.zn_xp = initialRoomState.env.options.pillars.nw;
+	initialRoomState.env.options.pillars.zn_xn = initialRoomState.env.options.pillars.ne;
+	delete initialRoomState.env.options.pillars.nw;
+	delete initialRoomState.env.options.pillars.ne;
+	delete initialRoomState.env.options.pillars.sw;
+	delete initialRoomState.env.options.pillars.se;
+}
 
 let latestSavedAttachments = {
 	files: deepClone(props.room.attachedFiles),

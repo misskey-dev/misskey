@@ -98,7 +98,7 @@ export class SimpleEnvManager extends EnvManager<SimpleEnvOptions> {
 
 		const wallMaterial = new BABYLON.PBRMaterial('wallMaterial', this.engine.scene);
 		wallMaterial.albedoColor = new BABYLON.Color3(0.8, 0.8, 0.8);
-		wallMaterial.roughness = 1;
+		wallMaterial.roughness = 0.7;
 		wallMaterial.metallic = 0;
 		this.wallMaterials = {
 			zPositive: wallMaterial.clone('wallZPositiveMaterial'),
@@ -125,16 +125,16 @@ export class SimpleEnvManager extends EnvManager<SimpleEnvOptions> {
 
 		this.ceilingMaterial = new BABYLON.PBRMaterial('ceilingMaterial', this.engine.scene);
 		this.ceilingMaterial.albedoColor = new BABYLON.Color3(0.8, 0.8, 0.8);
-		this.ceilingMaterial.roughness = 1;
+		this.ceilingMaterial.roughness = 0.7;
 		this.ceilingMaterial.metallic = 0;
 		this.floorMaterial = new BABYLON.PBRMaterial('floorMaterial', this.engine.scene);
 		this.floorMaterial.albedoColor = new BABYLON.Color3(0.8, 0.8, 0.8);
-		this.floorMaterial.roughness = 1;
+		this.floorMaterial.roughness = 0.7;
 		this.floorMaterial.metallic = 0;
 
 		const baseboardMaterial = new BABYLON.PBRMaterial('baseboardMaterial', this.engine.scene);
 		baseboardMaterial.albedoColor = new BABYLON.Color3(0.8, 0.8, 0.8);
-		baseboardMaterial.roughness = 1;
+		baseboardMaterial.roughness = 0.7;
 		baseboardMaterial.metallic = 0;
 
 		this.skybox = BABYLON.MeshBuilder.CreateBox('skybox', { size: cm(1000) }, this.engine.scene);
