@@ -339,7 +339,7 @@ selectFiles: "Pilih berkas"
 selectFolder: "Pilih folder"
 unselectFolder: "Membatalkan seleksi folder"
 selectFolders: "Pilih folder"
-fileNotSelected: "Tidak ada berkas yang dipilih"
+fileNotSelected: "Tidak ada berkas yang terpilih"
 renameFile: "Ubah nama berkas"
 folderName: "Nama folder"
 createFolder: "Buat folder"
@@ -1522,6 +1522,7 @@ _serverSettings:
   remoteNotesCleaning_description: "Ketika diaktifkan, note yang tidak terpakai dan kadaluarsa dari instansi luar akan dibersihkan secara berkala untuk mencegah membengkaknya database."
   inquiryUrlDescription: "Cantumkan URL untuk menghubungi pengelola peladen atau laman web berisikan informasi kontak."
   proxyRemoteFiles: "Berkas proksi remote"
+  proxyRemoteFiles_description: "Ketika dinyalakan, peladen akan berperan sebagai proksi menyajikan berkas secara remote. Ini dapat berguna untuk membuat keluku gambar dan melindungi privasi pengguna."
 _accountMigration:
   moveFrom: "Pindahkan akun lain ke akun ini"
   moveFromSub: "Buat alias ke akun lain"
@@ -1837,6 +1838,9 @@ _role:
     canManageCustomEmojis: "Dapat mengelola Emoji kustom"
     canManageAvatarDecorations: "Kelola dekorasi avatar"
     driveCapacity: "Kapasitas Drive"
+    maxFileSize: "Ukuran berkas maksimal yang dapat diunggah"
+    maxFileSize_caption: "Proksi terbalik, CDN, dan komponen antarmuka-depan bisa memiliki pengaturan tersendiri."
+    maxFileSize_caption2: "Ukuran berkas maksimal di keseluruhan peladen adalah {max}. Untuk memperbolehkan unggahan berkas yang lebih besar dari ini, silahkan mengubah pengaturan ini di dalam berkas pengaturan Misskey."
     alwaysMarkNsfw: "Selalu tandai berkas sebagai NSFW"
     pinMax: "Jumlah maksimal catatan yang disematkan"
     antennaMax: "Jumlah maksimum antena"
@@ -1854,6 +1858,7 @@ _role:
     avatarDecorationLimit: "Jumlah maksimum dekorasi avatar yang dapat diterapkan"
     canImportAntennas: "Izinkan mengimpor antena"
     canImportUserLists: "Izinkan mengimpor senarai"
+    uploadableFileTypes: "Jenis berkas yang dapat diunggah"
     noteDraftLimit: "Jumlah dari draf yang dapat dibuat dari sisi peladen"
   _condition:
     roleAssignedTo: "Ditugaskan ke peran manual"
@@ -2762,6 +2767,8 @@ _search:
   searchScopeAll: "Semua"
   searchScopeLocal: "Lokal"
   searchScopeUser: "Pengguna spesifik"
+_uploader:
+  allowedTypes: "Jenis berkas yang dapat diunggah"
 _watermarkEditor:
   driveFileTypeWarn: "Berkas ini tidak didukung"
   opacity: "Opasitas"
