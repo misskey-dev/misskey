@@ -21,6 +21,7 @@ export class SimpleEnvManager extends EnvManager<SimpleEnvOptions> {
 	private wallMaterials: Record<'zPositive' | 'zNegative' | 'xPositive' | 'xNegative', BABYLON.PBRMaterial>;
 	private wallBeamMaterials: Record<'zPositive' | 'zNegative' | 'xPositive' | 'xNegative', BABYLON.PBRMaterial>;
 	private pillarRoots: Record<'zp_xp' | 'zp_xn' | 'zn_xp' | 'zn_xn', BABYLON.TransformNode>;
+	private pillarScalingContainers: Record<'zp_xp' | 'zp_xn' | 'zn_xp' | 'zn_xn', BABYLON.TransformNode>;
 	private pillarMaterials: Record<'zp_xp' | 'zp_xn' | 'zn_xp' | 'zn_xn', BABYLON.PBRMaterial>;
 	private ceilingMaterial: BABYLON.PBRMaterial;
 	private floorMaterial: BABYLON.PBRMaterial;
@@ -71,8 +72,28 @@ export class SimpleEnvManager extends EnvManager<SimpleEnvOptions> {
 			zn_xp: new BABYLON.TransformNode('pillarRootZnXp', this.engine.scene),
 			zn_xn: new BABYLON.TransformNode('pillarRootZnXn', this.engine.scene),
 		};
-		for (const v of Object.values(this.pillarRoots)) {
-			v.parent = this.rootNode;
+		this.pillarRoots.zp_xp.parent = this.rootNode;
+		this.pillarRoots.zp_xp.position = new BABYLON.Vector3(cm(150), 0, cm(150));
+		this.pillarRoots.zp_xp.rotation.y = -Math.PI / 2;
+		this.pillarRoots.zp_xn.parent = this.rootNode;
+		this.pillarRoots.zp_xn.position = new BABYLON.Vector3(-cm(150), 0, cm(150));
+		this.pillarRoots.zp_xn.rotation.y = Math.PI;
+		this.pillarRoots.zn_xp.parent = this.rootNode;
+		this.pillarRoots.zn_xp.position = new BABYLON.Vector3(cm(150), 0, -cm(150));
+		this.pillarRoots.zn_xp.rotation.y = 0;
+		this.pillarRoots.zn_xn.parent = this.rootNode;
+		this.pillarRoots.zn_xn.position = new BABYLON.Vector3(-cm(150), 0, -cm(150));
+		this.pillarRoots.zn_xn.rotation.y = Math.PI / 2;
+
+		this.pillarScalingContainers = {
+			zp_xp: new BABYLON.TransformNode('pillarScalingContainerZpXp', this.engine.scene),
+			zp_xn: new BABYLON.TransformNode('pillarScalingContainerZpXn', this.engine.scene),
+			zn_xp: new BABYLON.TransformNode('pillarScalingContainerZnXp', this.engine.scene),
+			zn_xn: new BABYLON.TransformNode('pillarScalingContainerZnXn', this.engine.scene),
+		};
+		for (const [k, v] of Object.entries(this.pillarScalingContainers)) {
+			v.parent = this.pillarRoots[k as keyof typeof this.pillarRoots];
+			v.scaling = new BABYLON.Vector3(-WORLD_SCALE, WORLD_SCALE, WORLD_SCALE);
 		}
 
 		const wallMaterial = new BABYLON.PBRMaterial('wallMaterial', this.engine.scene);
@@ -213,6 +234,14 @@ export class SimpleEnvManager extends EnvManager<SimpleEnvOptions> {
 				this.removeShadowCaster(mesh);
 			}
 		}
+		for (const type of ['zp_xp', 'zp_xn', 'zn_xp', 'zn_xn'] as const) {
+			const pillarRoot = this.pillarScalingContainers[type];
+			for (const mesh of pillarRoot.getChildMeshes()) {
+				mesh.dispose();
+				this.engine.scene.removeMesh(mesh);
+				this.removeShadowCaster(mesh);
+			}
+		}
 
 		// TODO: 返り値をpromiseにしてちゃんとテクスチャが読み終わってからresolveする
 
@@ -293,7 +322,7 @@ export class SimpleEnvManager extends EnvManager<SimpleEnvOptions> {
 		}
 
 		for (const type of ['zp_xp', 'zp_xn', 'zn_xp', 'zn_xn'] as const) {
-			const pillarRoot = this.pillarRoots[type];
+			const pillarRoot = this.pillarScalingContainers[type];
 			const pillarOptions = options.pillars[type];
 
 			let isEnabled = pillarOptions.show;
@@ -309,25 +338,38 @@ export class SimpleEnvManager extends EnvManager<SimpleEnvOptions> {
 					isEnabled = options.walls.zNegative.withBeam && options.walls.xNegative.withBeam;
 				}
 			}
-			pillarRoot.setEnabled(isEnabled);
+			if (!isEnabled) continue;
 
-			const targetMaterial = this.pillarMaterials[type];
-
-			targetMaterial.unfreeze();
-			targetMaterial.albedoColor = new BABYLON.Color3(...pillarOptions.color);
-
-			const texPath = pillarOptions.material === 'wood' ? '/client-assets/room/textures/wall-wood2.png'
-				: pillarOptions.material === 'concrete' ? '/client-assets/room/textures/concrete1.png'
-				: null;
-
-			if (texPath != null) {
-				const tex = new BABYLON.Texture(texPath, this.engine.scene, false, false);
-				targetMaterial.albedoTexture = tex;
-			} else {
-				targetMaterial.albedoTexture = null;
+			const originalRoot = this.loaderResult!.transformNodes.find(t => t.name.includes('__PILLAR__'))!;
+			for (const child of treeClone(originalRoot).getChildren()) {
+				child.parent = pillarRoot;
 			}
 
-			targetMaterial.freeze();
+			for (const child of pillarRoot.getChildMeshes()) {
+				if (child.material.name.includes('__PILLAR__')) {
+					child.material = this.pillarMaterials[type];
+				}
+			}
+
+			{
+				const targetMaterial = this.pillarMaterials[type];
+
+				targetMaterial.unfreeze();
+				targetMaterial.albedoColor = new BABYLON.Color3(...pillarOptions.color);
+
+				const texPath = pillarOptions.material === 'wood' ? '/client-assets/room/textures/wall-wood2.png'
+					: pillarOptions.material === 'concrete' ? '/client-assets/room/textures/concrete1.png'
+					: null;
+
+				if (texPath != null) {
+					const tex = new BABYLON.Texture(texPath, this.engine.scene, false, false);
+					targetMaterial.albedoTexture = tex;
+				} else {
+					targetMaterial.albedoTexture = null;
+				}
+
+				targetMaterial.freeze();
+			}
 		}
 
 		{
