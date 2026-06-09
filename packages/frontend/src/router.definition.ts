@@ -225,6 +225,9 @@ export const ROUTE_DEF = [{
 	path: '/about-rickskey',
 	component: page(() => import('@/pages/about-rickskey.vue')),
 }, {
+	path: '/user-polls',
+	component: page(() => import('@/pages/user-polls.vue')),
+}, {
 	path: '/invite',
 	name: 'invite',
 	component: page(() => import('@/pages/invite.vue')),
@@ -429,6 +432,10 @@ export const ROUTE_DEF = [{
 		path: '/announcements',
 		name: 'announcements',
 		component: page(() => import('@/pages/admin/announcements.vue')),
+	}, {
+		path: '/user-polls',
+		name: 'user-polls',
+		component: page(() => import('@/pages/admin/user-polls.vue')),
 	}, {
 		path: '/ads',
 		name: 'ads',

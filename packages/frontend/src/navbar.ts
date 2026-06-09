@@ -65,6 +65,12 @@ export const navbarItemDef = reactive<{
 		indicated: computed(() => $i != null && $i.hasUnreadAnnouncement),
 		to: '/announcements',
 	},
+	userPolls: {
+		title: i18n.ts.userPolls,
+		icon: 'ti ti-chart-bar',
+		show: computed(() => $i != null),
+		to: '/user-polls',
+	},
 	search: {
 		title: i18n.ts.search,
 		icon: 'ti ti-search',

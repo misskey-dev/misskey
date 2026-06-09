@@ -1,3 +1,13 @@
+## Unreleased
+
+### General
+
+### Client
+- Feat: ユーザー投票機能を追加。管理者が質問・選択肢・期限・匿名設定を指定して投票を作成・配布でき、ユーザーはナビゲーションや通知から投票できるように
+
+### Server
+- Feat: ユーザー投票 API を追加 (`admin/user-polls/*`, `user-polls`, `user-polls/vote`)
+
 ## 2026.6.0
 
 ### General

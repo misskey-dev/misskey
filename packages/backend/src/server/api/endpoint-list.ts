@@ -27,6 +27,10 @@ export * as 'admin/announcements/create' from './endpoints/admin/announcements/c
 export * as 'admin/announcements/delete' from './endpoints/admin/announcements/delete.js';
 export * as 'admin/announcements/list' from './endpoints/admin/announcements/list.js';
 export * as 'admin/announcements/update' from './endpoints/admin/announcements/update.js';
+export * as 'admin/user-polls/create' from './endpoints/admin/user-polls/create.js';
+export * as 'admin/user-polls/list' from './endpoints/admin/user-polls/list.js';
+export * as 'admin/user-polls/delete' from './endpoints/admin/user-polls/delete.js';
+export * as 'admin/user-polls/results' from './endpoints/admin/user-polls/results.js';
 export * as 'admin/avatar-decorations/create' from './endpoints/admin/avatar-decorations/create.js';
 export * as 'admin/avatar-decorations/delete' from './endpoints/admin/avatar-decorations/delete.js';
 export * as 'admin/avatar-decorations/list' from './endpoints/admin/avatar-decorations/list.js';
@@ -447,3 +451,5 @@ export * as 'chat/rooms/invitations/outbox' from './endpoints/chat/rooms/invitat
 export * as 'chat/history' from './endpoints/chat/history.js';
 export * as 'chat/read-all' from './endpoints/chat/read-all.js';
 export * as 'v2/admin/emoji/list' from './endpoints/v2/admin/emoji/list.js';
+export * as 'user-polls' from './endpoints/user-polls.js';
+export * as 'user-polls/vote' from './endpoints/user-polls/vote.js';
