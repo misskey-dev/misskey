@@ -51,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div v-else-if="polls.length === 0">
 						<MkInfo>{{ i18n.ts._userPoll.noPollsYet }}</MkInfo>
 					</div>
-					<div v-else v-for="poll in polls" :key="poll.id" v-panel style="padding: 16px; border-radius: var(--MI-radius);">
+					<div v-for="poll in polls" v-else :key="poll.id" v-panel style="padding: 16px; border-radius: var(--MI-radius);">
 						<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
 							<div class="_gaps_s" style="flex: 1;">
 								<div style="font-weight: bold;">{{ poll.question }}</div>
@@ -108,7 +108,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						></div>
 					</div>
 				</div>
-				<MkButton @click="resultsDialog = null" style="width: 100%;">
+				<MkButton style="width: 100%;" @click="resultsDialog = null">
 					{{ i18n.ts.close }}
 				</MkButton>
 			</div>

@@ -28,8 +28,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div v-for="(choice, index) in poll.choices" :key="index">
 						<MkButton
 							:primary="selectedChoice[poll.id] === index"
-							@click="selectChoice(poll.id, index)"
 							style="width: 100%; text-align: left;"
+							@click="selectChoice(poll.id, index)"
 						>
 							{{ choice }}
 						</MkButton>
