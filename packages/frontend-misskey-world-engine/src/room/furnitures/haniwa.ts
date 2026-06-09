@@ -12,6 +12,8 @@ export const haniwa = defineFuniture(haniwa_schema, {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 		const insideMaterial = model.findMaterial('__X_INSIDE__');
 
+		insideMaterial.emissiveIntensity = 1;
+
 		const applyBodyMat = () => {
 			bodyMaterial.albedoColor = new BABYLON.Color3(options.bodyMat.color[0], options.bodyMat.color[1], options.bodyMat.color[2]);
 			bodyMaterial.roughness = options.bodyMat.roughness;
