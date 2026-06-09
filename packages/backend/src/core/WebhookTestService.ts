@@ -63,6 +63,9 @@ function generateDummyUser(override?: Partial<MiUser>): MiUser {
 		uri: null,
 		followersUri: null,
 		token: null,
+		statusEmoji: null,
+		statusText: null,
+		statusExpiresAt: null,
 		...override,
 	};
 }

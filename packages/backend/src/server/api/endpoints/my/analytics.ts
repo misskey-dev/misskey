@@ -78,7 +78,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			const topNoteDetails = await Promise.all(topNotesRaw.map(async r => {
 				const note = await this.notesRepository.findOne({
 					where: { id: r.noteId },
-					select: ['id', 'text', 'visibility'],
+					select: { id: true, text: true, visibility: true },
 				});
 				if (!note) return null;
 				return {

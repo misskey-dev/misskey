@@ -9766,6 +9766,46 @@ export interface Locale extends ILocale {
          * ダイレクトメッセージを閲覧する
          */
         "read:chat": string;
+        /**
+         * 一括通知を送信する
+         */
+        "write:admin:bulk-notify": string;
+        /**
+         * チャレンジを管理する
+         */
+        "write:admin:challenges": string;
+        /**
+         * チャレンジ一覧を閲覧する
+         */
+        "read:admin:challenges": string;
+        /**
+         * 絵文字提案を管理する
+         */
+        "write:admin:emoji-proposals": string;
+        /**
+         * ユーザーアクティビティを閲覧する
+         */
+        "read:admin:user-activity": string;
+        /**
+         * ユーザー投票を管理する
+         */
+        "write:admin:user-polls": string;
+        /**
+         * ユーザー投票を閲覧する
+         */
+        "read:admin:user-polls": string;
+        /**
+         * 絵文字を提案する
+         */
+        "write:emoji-proposals": string;
+        /**
+         * ユーザー投票を閲覧する
+         */
+        "read:user-polls": string;
+        /**
+         * ユーザー投票に投票する
+         */
+        "write:user-polls": string;
     };
     "_auth": {
         /**
@@ -11089,6 +11129,10 @@ export interface Locale extends ILocale {
              * 連携アプリからの通知
              */
             "app": string;
+            /**
+             * 新しいユーザー投票
+             */
+            "userPoll": string;
         };
         "_actions": {
             /**

@@ -66,12 +66,9 @@ import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
 import { useRouter } from '@/router.js';
-import MkAvatar from '@/components/MkAvatar.vue';
-import MkUserName from '@/components/MkUserName.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkLoading from '@/pages/_loading_.vue';
 import MkButton from '@/components/MkButton.vue';
-import Mfm from '@/components/Mfm.vue';
 
 const router = useRouter();
 
@@ -106,7 +103,7 @@ async function loadMore() {
 }
 
 function openNote(note: Misskey.entities.Note) {
-	router.push(`/notes/${note.id}`);
+	router.push('/notes/:noteId/:initialTab?', { params: { noteId: note.id } });
 }
 
 onMounted(() => load());

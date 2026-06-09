@@ -134,6 +134,16 @@ export const permissions = [
 	'write:report-abuse',
 	'write:chat',
 	'read:chat',
+	'write:admin:bulk-notify',
+	'write:admin:challenges',
+	'read:admin:challenges',
+	'write:admin:emoji-proposals',
+	'read:admin:user-activity',
+	'write:admin:user-polls',
+	'read:admin:user-polls',
+	'write:emoji-proposals',
+	'read:user-polls',
+	'write:user-polls',
 ] as const;
 
 export const moderationLogTypes = [

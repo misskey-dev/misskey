@@ -77,8 +77,6 @@ import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { definePage } from '@/page.js';
 import MkButton from '@/components/MkButton.vue';
-import MkAvatar from '@/components/MkAvatar.vue';
-import MkUserName from '@/components/MkUserName.vue';
 import MkLoading from '@/pages/_loading_.vue';
 
 type RankEntry = { user: any; count: number };

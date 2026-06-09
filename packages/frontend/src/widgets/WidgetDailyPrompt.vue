@@ -36,21 +36,33 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
-import { useWidgetPropsManager, type Widget, type WidgetComponentEmits, type WidgetComponentExpose, type WidgetComponentProps } from './widget.js';
+import { useWidgetPropsManager, type WidgetComponentEmits, type WidgetComponentExpose, type WidgetComponentProps } from './widget.js';
+import type { FormWithDefault, GetFormResultType } from '@/utility/form.js';
 import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { useRouter } from '@/router.js';
 import MkButton from '@/components/MkButton.vue';
 import MkLoading from '@/pages/_loading_.vue';
 
-const props = defineProps<WidgetComponentProps<Record<string, never>>>();
-const emit = defineEmits<WidgetComponentEmits<Record<string, never>>>();
+const name = 'dailyPrompt';
+
+const widgetPropsDef = {
+	transparent: {
+		type: 'boolean' as const,
+		label: 'transparent',
+		default: false,
+	},
+} satisfies FormWithDefault;
+
+type WidgetProps = GetFormResultType<typeof widgetPropsDef>;
+
+const props = defineProps<WidgetComponentProps<WidgetProps>>();
+const emit = defineEmits<WidgetComponentEmits<WidgetProps>>();
 
 const router = useRouter();
 
-const widgetPropsDef = {};
 const { widgetProps, configure } = useWidgetPropsManager(
-	'dailyPrompt',
+	name,
 	widgetPropsDef,
 	props,
 	emit,
@@ -81,12 +93,16 @@ async function load() {
 
 function joinPrompt() {
 	if (!prompt.value) return;
-	router.push(`/search?query=%23${encodeURIComponent(prompt.value.hashtag)}`);
+	router.push('/search', { query: `#${prompt.value.hashtag}` });
 }
 
 onMounted(load);
 
-defineExpose<WidgetComponentExpose>({ configure });
+defineExpose<WidgetComponentExpose>({
+	name,
+	configure,
+	id: props.widget ? props.widget.id : null,
+});
 </script>
 
 <style lang="scss" module>

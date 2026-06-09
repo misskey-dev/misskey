@@ -2564,6 +2564,16 @@ _permissions:
   "write:report-abuse": "違反を報告する"
   "write:chat": "ダイレクトメッセージを操作する"
   "read:chat": "ダイレクトメッセージを閲覧する"
+  "write:admin:bulk-notify": "一括通知を送信する"
+  "write:admin:challenges": "チャレンジを管理する"
+  "read:admin:challenges": "チャレンジ一覧を閲覧する"
+  "write:admin:emoji-proposals": "絵文字提案を管理する"
+  "read:admin:user-activity": "ユーザーアクティビティを閲覧する"
+  "write:admin:user-polls": "ユーザー投票を管理する"
+  "read:admin:user-polls": "ユーザー投票を閲覧する"
+  "write:emoji-proposals": "絵文字を提案する"
+  "read:user-polls": "ユーザー投票を閲覧する"
+  "write:user-polls": "ユーザー投票に投票する"
 
 _auth:
   shareAccessTitle: "アプリへのアクセス許可"
@@ -2930,6 +2940,7 @@ _notification:
     createToken: "アクセストークンの作成"
     test: "通知のテスト"
     app: "連携アプリからの通知"
+    userPoll: "新しいユーザー投票"
 
   _actions:
     followBack: "フォローバック"

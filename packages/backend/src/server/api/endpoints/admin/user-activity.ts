@@ -99,7 +99,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 					where: { userId: user.id },
 					order: { id: 'DESC' },
 					take: 10,
-					select: ['id', 'text', 'visibility'],
+					select: { id: true, text: true, visibility: true },
 				}),
 				this.signinsRepository.find({
 					where: { userId: user.id },

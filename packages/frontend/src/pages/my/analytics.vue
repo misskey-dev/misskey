@@ -135,7 +135,7 @@ async function load() {
 }
 
 function openNote(noteId: string) {
-	router.push(`/notes/${noteId}`);
+	router.push('/notes/:noteId/:initialTab?', { params: { noteId } });
 }
 
 onMounted(load);
