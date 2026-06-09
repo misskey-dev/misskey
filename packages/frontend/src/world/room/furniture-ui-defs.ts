@@ -114,6 +114,7 @@ import { woodRingsPendantLight_ui } from './furnitures/woodRingsPendantLight.ui.
 import { woodSoundAbsorbingPanel_ui } from './furnitures/woodSoundAbsorbingPanel.ui.js';
 import { haniwa_ui } from './furnitures/haniwa.ui.js';
 import { ceilingFan_ui } from './furnitures/ceilingFan.ui.js';
+import { downlight_ui } from './furnitures/downlight.ui.js';
 import type { FurnitureUiDef } from './defineFurnitureUi.js';
 
 export const FURNITURE_UI_DEFS = {
@@ -227,6 +228,7 @@ export const FURNITURE_UI_DEFS = {
 	clippedPicture: clippedPicture_ui,
 	wireBasket: wireBasket_ui,
 	haniwa: haniwa_ui,
+	downlight: downlight_ui,
 } as Record<string, FurnitureUiDef>;
 
 export function getFurnitureUiDef(type: string): FurnitureUiDef {

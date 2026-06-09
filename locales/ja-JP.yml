@@ -3908,6 +3908,10 @@ _miRoom:
       angleV: "縦方向の角度"
       bodyMat: "本体の素材"
       light: "照明"
+    downlight: "ダウンライト"
+    _downlight:
+      bodyMat: "本体の素材"
+      light: "照明"
     sprayer: "霧吹き"
     stanchionPole: "スタンションポール"
     _stanchionPole:

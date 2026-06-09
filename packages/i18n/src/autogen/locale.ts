@@ -14544,6 +14544,20 @@ export interface Locale extends ILocale {
                 "light": string;
             };
             /**
+             * ダウンライト
+             */
+            "downlight": string;
+            "_downlight": {
+                /**
+                 * 本体の素材
+                 */
+                "bodyMat": string;
+                /**
+                 * 照明
+                 */
+                "light": string;
+            };
+            /**
              * 霧吹き
              */
             "sprayer": string;
