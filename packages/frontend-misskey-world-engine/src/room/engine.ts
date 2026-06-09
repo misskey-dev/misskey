@@ -1179,12 +1179,12 @@ export class RoomEngine extends EngineBase<{
 		this.fixedCamera.parent = null;
 	}
 
-	public updateRoomLightColor(color: [number, number, number]) {
-		this.sr.disableSnapshotRendering();
-		this.envManager.updateRoomLightColor(new BABYLON.Color3(...color));
-		this.sr.enableSnapshotRendering();
-		this.roomState.roomLightColor = color;
+	public updateLightSettings(light: RoomState['light']) {
+		this.roomState.light = light;
 		this.ev('changeRoomState', { roomState: this.roomState });
+		this.sr.disableSnapshotRendering();
+		this.envManager.applyRoomLight();
+		this.sr.enableSnapshotRendering();
 	}
 
 	public turnOnRoomLight(forInit = false) {

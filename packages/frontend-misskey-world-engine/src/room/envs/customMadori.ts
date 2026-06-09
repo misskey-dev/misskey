@@ -50,10 +50,11 @@ export class CustomMadoriEnvManager extends EnvManager<CustomMadoriEnvOptions> {
 
 		this.roomLight = new BABYLON.DirectionalLight('env:RoomLight', new BABYLON.Vector3(0, -1, 0), this.engine.scene);
 		this.roomLight.position = new BABYLON.Vector3(0, cm(300), 0);
-		this.roomLight.diffuse = new BABYLON.Color3(...this.engine.roomState.roomLightColor);
 		this.roomLight.shadowMinZ = cm(10);
 		this.roomLight.shadowMaxZ = cm(500);
 		this.roomLight.radius = cm(30);
+
+		this.applyRoomLight();
 
 		if (this.engine.graphicsQuality >= GRAPHICS_QUALITY.MEDIUM) {
 			const shadowGeneratorForRoomLight = new BABYLON.ShadowGenerator(this.engine.graphicsQuality <= GRAPHICS_QUALITY.MEDIUM ? 1024 : 2048, this.roomLight);
@@ -295,29 +296,14 @@ export class CustomMadoriEnvManager extends EnvManager<CustomMadoriEnvOptions> {
 		}
 	}
 
-	public updateRoomLightColor(color: BABYLON.Color3): void {
+	public applyRoomLight(): void {
 		if (this.roomLight == null) return;
-		this.roomLight.diffuse = color;
-	}
-
-	public turnOnRoomLight(): void {
-		if (this.roomLight == null) return;
-		this.roomLight.intensity = 0.0005 * WORLD_SCALE * WORLD_SCALE;
-		if (this.envMapIndoor != null) this.envMapIndoor.level = 0.2;
+		this.roomLight.diffuse = new BABYLON.Color3(...this.engine.roomState.light.color);
+		this.roomLight.intensity = 0.0005 * WORLD_SCALE * WORLD_SCALE * this.engine.roomState.light.brightness * (this.isRoomLightOn ? 1 : 0);
+		if (this.envMapIndoor != null) this.envMapIndoor.level = 0.025 + (0.575 * this.engine.roomState.light.brightness * (this.isRoomLightOn ? 1 : 0));
 		for (const m of this.engine.scene.materials) {
 			if (m.metadata?.disableEnvMap) {
-				m.ambientColor = new BABYLON.Color3(0.5, 0.5, 0.5);
-			}
-		}
-	}
-
-	public turnOffRoomLight(): void {
-		if (this.roomLight == null) return;
-		this.roomLight.intensity = 0;
-		if (this.envMapIndoor != null) this.envMapIndoor.level = 0.025;
-		for (const m of this.engine.scene.materials) {
-			if (m.metadata?.disableEnvMap) {
-				m.ambientColor = new BABYLON.Color3(0.025, 0.025, 0.025);
+				m.ambientColor = this.isRoomLightOn ? new BABYLON.Color3(0.5, 0.5, 0.5) : new BABYLON.Color3(0.025, 0.025, 0.025);
 			}
 		}
 	}

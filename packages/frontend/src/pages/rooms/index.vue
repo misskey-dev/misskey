@@ -54,7 +54,10 @@ const initialRoomDef = {
 		type: 'simple',
 		options: getDefaultSimpleEnvOptions(),
 	},
-	roomLightColor: [1.0, 0.9, 0.8],
+	light: {
+		color: [1.0, 0.9, 0.8],
+		brightness: 1,
+	},
 	installedFurnitures: [],
 	worldScale: WORLD_SCALE,
 } satisfies RoomState;

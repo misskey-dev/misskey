@@ -21,7 +21,10 @@ export type RoomState = {
 		type: 'customMadori';
 		options: CustomMadoriEnvOptions;
 	};
-	roomLightColor: [number, number, number];
+	light: {
+		color: [number, number, number];
+		brightness: number;
+	};
 	installedFurnitures: RoomState_InstalledFurniture[];
 	worldScale: number;
 };

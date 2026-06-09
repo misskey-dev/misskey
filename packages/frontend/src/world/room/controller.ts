@@ -173,8 +173,8 @@ export class RoomController extends EngineControllerBase<RoomEngine, {
 		this.call('updateEnvOptions', [options]);
 	}
 
-	public updateRoomLightColor(color: [number, number, number]) {
-		this.call('updateRoomLightColor', [color]);
+	public updateLightSettings(light: RoomState['light']) {
+		this.call('updateLightSettings', [light]);
 	}
 
 	public beginSelectedInstalledFunitureGrabbing() {

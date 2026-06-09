@@ -18,9 +18,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</MkSelect>
 
 		<!-- debounce or throttleしないとカラーピッカー上で高速でなぞったときになぜか無限ループになる。ワーカーとの間でラグがあるため、少し前の値がまたmodelValueとしてフィードバックされてしまうためだと思われる -->
-		<MkInput :modelValue="getHex(controller.roomState.value.roomLightColor)" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) controller.updateRoomLightColor(c); }">
+		<MkInput :modelValue="getHex(controller.roomState.value.light.color)" type="color" :throttle="300" @update:modelValue="v => { const c = getRgb(v); if (c != null) controller.updateLightSettings({ ...controller.roomState.value.light, color: c }); }">
 			<template #label>light color</template>
 		</MkInput>
+
+		<MkRange :modelValue="controller.roomState.value.light.brightness" :min="0" :max="1" :step="0.1" continuousUpdate @update:modelValue="v => controller.updateLightSettings({ ...controller.roomState.value.light, brightness: v })">
+			<template #label>light brightness</template>
+		</MkRange>
 
 		<template v-if="controller.roomState.value.env.type === 'simple'">
 			<XDefaultEnvOptions :options="controller.roomState.value.env.options" @update="v => updateEnvOptions(v)"></XDefaultEnvOptions>
@@ -36,8 +40,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, defineAsyncComponent, nextTick, onMounted, onUnmounted, ref, shallowRef, useTemplateRef, watch } from 'vue';
 import { getHex, getRgb } from 'misskey-world/src/utility.js';
 import { throttle } from 'throttle-debounce';
-import XWallOption from './room.simple-env-wall-options.vue';
-import XPillarOption from './room.simple-env-pillar-options.vue';
 import XDefaultEnvOptions from './room.simple-env-options.vue';
 import XCustomMadoriEnvOptions from './room.custom-madori-env-options.vue';
 import type { RoomController } from '@/world/room/controller.js';

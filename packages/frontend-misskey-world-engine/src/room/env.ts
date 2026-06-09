@@ -16,6 +16,7 @@ export abstract class EnvManager<T = any> {
 	public abstract envMapIndoor: BABYLON.CubeTexture | null;
 	public abstract maxCameraZ: number;
 	protected shadowGenerators: BABYLON.ShadowGenerator[] = [];
+	protected isRoomLightOn = true;
 
 	constructor(engine: RoomEngine) {
 		this.engine = engine;
@@ -24,9 +25,17 @@ export abstract class EnvManager<T = any> {
 	abstract load(options: T, scene: BABYLON.Scene, engine: RoomEngine): Promise<void>;
 	abstract applyOptions(options: T): void;
 	abstract setTime(time: number): void;
-	abstract updateRoomLightColor(color: BABYLON.Color3): void;
-	abstract turnOnRoomLight(): void;
-	abstract turnOffRoomLight(): void;
+	abstract applyRoomLight(): void;
+
+	public turnOnRoomLight() {
+		this.isRoomLightOn = true;
+		this.applyRoomLight();
+	}
+
+	public turnOffRoomLight() {
+		this.isRoomLightOn = false;
+		this.applyRoomLight();
+	}
 
 	public addShadowCaster(mesh: BABYLON.AbstractMesh) {
 		for (const shadowGen of this.shadowGenerators) {

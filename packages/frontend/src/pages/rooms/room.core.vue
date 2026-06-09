@@ -252,6 +252,13 @@ if (initialRoomState.installedObjects != null) {
 	initialRoomState.installedFurnitures = initialRoomState.installedObjects;
 	delete initialRoomState.installedObjects;
 }
+if (initialRoomState.roomLightColor != null) {
+	initialRoomState.light = {
+		color: initialRoomState.roomLightColor,
+		brightness: 1,
+	};
+	delete initialRoomState.roomLightColor;
+}
 for (const obj of initialRoomState.installedFurnitures) {
 	if (obj.options.customPicture != null) {
 		obj.options.image = {

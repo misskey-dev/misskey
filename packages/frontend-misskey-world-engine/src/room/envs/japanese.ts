@@ -9,7 +9,7 @@ import { findMaterial, GRAPHICS_QUALITY } from '../../utility.js';
 import { SYSTEM_HEYA_MESH_NAMES } from '../utility.js';
 import { EnvManager } from '../env.js';
 import type { RoomEngine } from '../engine.js';
-import type { SimpleEnvOptions, JapaneseEnvOptions } from 'misskey-world/src/room/env.js';
+import type { JapaneseEnvOptions } from 'misskey-world/src/room/env.js';
 
 export class JapaneseEnvManager extends EnvManager<JapaneseEnvOptions> {
 	private loaderResult: BABYLON.ISceneLoaderAsyncResult | null = null;
@@ -34,10 +34,11 @@ export class JapaneseEnvManager extends EnvManager<JapaneseEnvOptions> {
 		this.skybox.infiniteDistance = true;
 
 		this.roomLight = new BABYLON.SpotLight('env:RoomLight', new BABYLON.Vector3(0, cm(249), 0), new BABYLON.Vector3(0, -1, 0), 16, 8, this.engine.scene);
-		this.roomLight.diffuse = new BABYLON.Color3(...this.engine.roomState.roomLightColor);
 		this.roomLight.shadowMinZ = cm(10);
 		this.roomLight.shadowMaxZ = cm(300);
 		this.roomLight.radius = cm(30);
+
+		this.applyRoomLight();
 
 		if (this.engine.graphicsQuality >= GRAPHICS_QUALITY.MEDIUM) {
 			const shadowGeneratorForRoomLight = new BABYLON.ShadowGenerator(this.engine.graphicsQuality <= GRAPHICS_QUALITY.MEDIUM ? 1024 : 2048, this.roomLight);
@@ -127,34 +128,19 @@ export class JapaneseEnvManager extends EnvManager<JapaneseEnvOptions> {
 		}
 	}
 
-	public updateRoomLightColor(color: BABYLON.Color3): void {
+	public applyRoomLight(): void {
 		if (this.roomLight == null) return;
-		this.roomLight.diffuse = color;
-	}
-
-	public turnOnRoomLight(): void {
-		if (this.roomLight == null) return;
-		this.roomLight.intensity = 18 * WORLD_SCALE * WORLD_SCALE;
-		if (this.envMapIndoor != null) this.envMapIndoor.level = 0.6;
+		this.roomLight.diffuse = new BABYLON.Color3(...this.engine.roomState.light.color);
+		this.roomLight.intensity = 18 * WORLD_SCALE * WORLD_SCALE * this.engine.roomState.light.brightness * (this.isRoomLightOn ? 1 : 0);
+		if (this.envMapIndoor != null) this.envMapIndoor.level = 0.025 + (0.575 * this.engine.roomState.light.brightness * (this.isRoomLightOn ? 1 : 0));
 		for (const m of this.engine.scene.materials) {
 			if (m.metadata?.disableEnvMap) {
-				m.ambientColor = new BABYLON.Color3(0.5, 0.5, 0.5);
+				m.ambientColor = this.isRoomLightOn ? new BABYLON.Color3(0.5, 0.5, 0.5) : new BABYLON.Color3(0.025, 0.025, 0.025);
 			}
 		}
 	}
 
-	public turnOffRoomLight(): void {
-		if (this.roomLight == null) return;
-		this.roomLight.intensity = 0;
-		if (this.envMapIndoor != null) this.envMapIndoor.level = 0.025;
-		for (const m of this.engine.scene.materials) {
-			if (m.metadata?.disableEnvMap) {
-				m.ambientColor = new BABYLON.Color3(0.025, 0.025, 0.025);
-			}
-		}
-	}
-
-	public applyOptions(options: SimpleEnvOptions) {
+	public applyOptions(options: JapaneseEnvOptions) {
 		this.registerMeshes(this.meshes);
 	}
 
