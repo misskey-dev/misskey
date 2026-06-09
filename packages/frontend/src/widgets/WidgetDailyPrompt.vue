@@ -39,7 +39,7 @@ import { ref, onMounted } from 'vue';
 import { useWidgetPropsManager, type Widget, type WidgetComponentEmits, type WidgetComponentExpose, type WidgetComponentProps } from './widget.js';
 import { i18n } from '@/i18n.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { useRouter } from '@/router/supplier.js';
+import { useRouter } from '@/router.js';
 import MkButton from '@/components/MkButton.vue';
 import MkLoading from '@/pages/_loading_.vue';
 

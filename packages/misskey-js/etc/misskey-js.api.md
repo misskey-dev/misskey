@@ -146,10 +146,31 @@ type AdminAvatarDecorationsListResponse = operations['admin___avatar-decorations
 type AdminAvatarDecorationsUpdateRequest = operations['admin___avatar-decorations___update']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminBulkNotifyRequest = operations['admin___bulk-notify']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminBulkNotifyResponse = operations['admin___bulk-notify']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type AdminCaptchaCurrentResponse = operations['admin___captcha___current']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type AdminCaptchaSaveRequest = operations['admin___captcha___save']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminChallengesCreateRequest = operations['admin___challenges___create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminChallengesCreateResponse = operations['admin___challenges___create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminChallengesDeleteRequest = operations['admin___challenges___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminChallengesListRequest = operations['admin___challenges___list']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminChallengesListResponse = operations['admin___challenges___list']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type AdminDeleteAccountRequest = operations['admin___delete-account']['requestBody']['content']['application/json'];
@@ -204,6 +225,12 @@ type AdminEmojiListRequest = operations['admin___emoji___list']['requestBody']['
 
 // @public (undocumented)
 type AdminEmojiListResponse = operations['admin___emoji___list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminEmojiProposalsApproveRequest = operations['admin___emoji-proposals___approve']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminEmojiProposalsRejectRequest = operations['admin___emoji-proposals___reject']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type AdminEmojiRemoveAliasesBulkRequest = operations['admin___emoji___remove-aliases-bulk']['requestBody']['content']['application/json'];
@@ -458,6 +485,33 @@ type AdminUpdateProxyAccountResponse = operations['admin___update-proxy-account'
 type AdminUpdateUserNoteRequest = operations['admin___update-user-note']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type AdminUserActivityRequest = operations['admin___user-activity']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminUserActivityResponse = operations['admin___user-activity']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminUserPollsCreateRequest = operations['admin___user-polls___create']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminUserPollsCreateResponse = operations['admin___user-polls___create']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminUserPollsDeleteRequest = operations['admin___user-polls___delete']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminUserPollsListRequest = operations['admin___user-polls___list']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminUserPollsListResponse = operations['admin___user-polls___list']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type AdminUserPollsResultsRequest = operations['admin___user-polls___results']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type AdminUserPollsResultsResponse = operations['admin___user-polls___results']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type Announcement = components['schemas']['Announcement'];
 
 // @public (undocumented)
@@ -625,6 +679,12 @@ type BubbleGameRankingResponse = operations['bubble-game___ranking']['responses'
 
 // @public (undocumented)
 type BubbleGameRegisterRequest = operations['bubble-game___register']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChallengesRequest = operations['challenges']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ChallengesResponse = operations['challenges']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type Channel = components['schemas']['Channel'];
@@ -1269,6 +1329,9 @@ type ClipsUpdateRequest = operations['clips___update']['requestBody']['content']
 type ClipsUpdateResponse = operations['clips___update']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type DailyPromptResponse = operations['daily-prompt']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type DateString = string;
 
 // @public (undocumented)
@@ -1403,6 +1466,21 @@ type EmojiDetailed = components['schemas']['EmojiDetailed'];
 
 // @public (undocumented)
 type EmojiDetailedAdmin = components['schemas']['EmojiDetailedAdmin'];
+
+// @public (undocumented)
+type EmojiProposalsProposeRequest = operations['emoji-proposals___propose']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type EmojiProposalsProposeResponse = operations['emoji-proposals___propose']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type EmojiProposalsRequest = operations['emoji-proposals']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type EmojiProposalsResponse = operations['emoji-proposals']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type EmojiProposalsVoteRequest = operations['emoji-proposals___vote']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type EmojiRequest = operations['emoji']['requestBody']['content']['application/json'];
@@ -1568,14 +1646,23 @@ declare namespace entities {
         AdminAvatarDecorationsListRequest,
         AdminAvatarDecorationsListResponse,
         AdminAvatarDecorationsUpdateRequest,
+        AdminBulkNotifyRequest,
+        AdminBulkNotifyResponse,
         AdminCaptchaCurrentResponse,
         AdminCaptchaSaveRequest,
+        AdminChallengesCreateRequest,
+        AdminChallengesCreateResponse,
+        AdminChallengesDeleteRequest,
+        AdminChallengesListRequest,
+        AdminChallengesListResponse,
         AdminDeleteAccountRequest,
         AdminDeleteAllFilesOfAUserRequest,
         AdminDriveFilesRequest,
         AdminDriveFilesResponse,
         AdminDriveShowFileRequest,
         AdminDriveShowFileResponse,
+        AdminEmojiProposalsApproveRequest,
+        AdminEmojiProposalsRejectRequest,
         AdminEmojiAddRequest,
         AdminEmojiAddResponse,
         AdminEmojiAddAliasesBulkRequest,
@@ -1672,6 +1759,15 @@ declare namespace entities {
         AdminUpdateProxyAccountRequest,
         AdminUpdateProxyAccountResponse,
         AdminUpdateUserNoteRequest,
+        AdminUserActivityRequest,
+        AdminUserActivityResponse,
+        AdminUserPollsCreateRequest,
+        AdminUserPollsCreateResponse,
+        AdminUserPollsDeleteRequest,
+        AdminUserPollsListRequest,
+        AdminUserPollsListResponse,
+        AdminUserPollsResultsRequest,
+        AdminUserPollsResultsResponse,
         AnnouncementsRequest,
         AnnouncementsResponse,
         AnnouncementsShowRequest,
@@ -1711,6 +1807,8 @@ declare namespace entities {
         BubbleGameRankingRequest,
         BubbleGameRankingResponse,
         BubbleGameRegisterRequest,
+        ChallengesRequest,
+        ChallengesResponse,
         ChannelsCreateRequest,
         ChannelsCreateResponse,
         ChannelsFavoriteRequest,
@@ -1814,6 +1912,7 @@ declare namespace entities {
         ClipsUnfavoriteRequest,
         ClipsUpdateRequest,
         ClipsUpdateResponse,
+        DailyPromptResponse,
         DriveResponse,
         DriveFilesRequest,
         DriveFilesResponse,
@@ -1853,6 +1952,11 @@ declare namespace entities {
         EmailAddressAvailableResponse,
         EmojiRequest,
         EmojiResponse,
+        EmojiProposalsRequest,
+        EmojiProposalsResponse,
+        EmojiProposalsProposeRequest,
+        EmojiProposalsProposeResponse,
+        EmojiProposalsVoteRequest,
         EmojisResponse,
         EndpointRequest,
         EndpointResponse,
@@ -2000,6 +2104,7 @@ declare namespace entities {
         IUpdateResponse,
         IUpdateEmailRequest,
         IUpdateEmailResponse,
+        IUpdateStatusRequest,
         IWebhooksCreateRequest,
         IWebhooksCreateResponse,
         IWebhooksDeleteRequest,
@@ -2021,6 +2126,8 @@ declare namespace entities {
         MuteDeleteRequest,
         MuteListRequest,
         MuteListResponse,
+        MyAnalyticsRequest,
+        MyAnalyticsResponse,
         MyAppsRequest,
         MyAppsResponse,
         NotesRequest,
@@ -2098,6 +2205,8 @@ declare namespace entities {
         PingResponse,
         PinnedUsersResponse,
         PromoReadRequest,
+        RankingsRequest,
+        RankingsResponse,
         RenoteMuteCreateRequest,
         RenoteMuteDeleteRequest,
         RenoteMuteListRequest,
@@ -2124,6 +2233,8 @@ declare namespace entities {
         RolesUsersRequest,
         RolesUsersResponse,
         ServerInfoResponse,
+        ShortsRequest,
+        ShortsResponse,
         StatsResponse,
         SwRegisterRequest,
         SwRegisterResponse,
@@ -2134,6 +2245,9 @@ declare namespace entities {
         SwUpdateRegistrationResponse,
         TestRequest,
         TestResponse,
+        UserPollsRequest,
+        UserPollsResponse,
+        UserPollsVoteRequest,
         UsernameAvailableRequest,
         UsernameAvailableResponse,
         UsersRequest,
@@ -2827,6 +2941,9 @@ type IUpdateRequest = operations['i___update']['requestBody']['content']['applic
 type IUpdateResponse = operations['i___update']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
+type IUpdateStatusRequest = operations['i___update-status']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
 type IWebhooksCreateRequest = operations['i___webhooks___create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -3066,6 +3183,12 @@ type MuteListResponse = operations['mute___list']['responses']['200']['content']
 type Muting = components['schemas']['Muting'];
 
 // @public (undocumented)
+type MyAnalyticsRequest = operations['my___analytics']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type MyAnalyticsResponse = operations['my___analytics']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type MyAppsRequest = operations['my___apps']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -3286,7 +3409,7 @@ type Notification_2 = components['schemas']['Notification'];
 type NotificationsCreateRequest = operations['notifications___create']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-export const notificationTypes: readonly ["note", "follow", "mention", "reply", "renote", "quote", "reaction", "pollEnded", "scheduledNotePosted", "scheduledNotePostFailed", "receiveFollowRequest", "followRequestAccepted", "app", "roleAssigned", "chatRoomInvitationReceived", "achievementEarned", "exportCompleted", "test", "login", "createToken"];
+export const notificationTypes: readonly ["note", "follow", "mention", "reply", "renote", "quote", "reaction", "pollEnded", "scheduledNotePosted", "scheduledNotePostFailed", "receiveFollowRequest", "followRequestAccepted", "app", "roleAssigned", "chatRoomInvitationReceived", "achievementEarned", "exportCompleted", "test", "login", "createToken", "userPoll"];
 
 // @public (undocumented)
 export function nyaize(text: string): string;
@@ -3400,6 +3523,12 @@ type QueueStatsLog = QueueStats[];
 
 // @public (undocumented)
 export const queueTypes: readonly ["system", "endedPollNotification", "postScheduledNote", "deliver", "inbox", "db", "relationship", "objectStorage", "userWebhookDeliver", "systemWebhookDeliver"];
+
+// @public (undocumented)
+type RankingsRequest = operations['rankings']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type RankingsResponse = operations['rankings']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type RenoteMuteCreateRequest = operations['renote-mute___create']['requestBody']['content']['application/json'];
@@ -3546,6 +3675,12 @@ type ServerStats = {
 
 // @public (undocumented)
 type ServerStatsLog = ServerStats[];
+
+// @public (undocumented)
+type ShortsRequest = operations['shorts']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type ShortsResponse = operations['shorts']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type Signin = components['schemas']['Signin'];
@@ -3732,6 +3867,15 @@ type UsernameAvailableRequest = operations['username___available']['requestBody'
 
 // @public (undocumented)
 type UsernameAvailableResponse = operations['username___available']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UserPollsRequest = operations['user-polls']['requestBody']['content']['application/json'];
+
+// @public (undocumented)
+type UserPollsResponse = operations['user-polls']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
+type UserPollsVoteRequest = operations['user-polls___vote']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
 type UsersAchievementsRequest = operations['users___achievements']['requestBody']['content']['application/json'];

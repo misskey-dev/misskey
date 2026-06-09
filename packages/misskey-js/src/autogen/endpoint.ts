@@ -35,14 +35,23 @@ import type {
 	AdminAvatarDecorationsListRequest,
 	AdminAvatarDecorationsListResponse,
 	AdminAvatarDecorationsUpdateRequest,
+	AdminBulkNotifyRequest,
+	AdminBulkNotifyResponse,
 	AdminCaptchaCurrentResponse,
 	AdminCaptchaSaveRequest,
+	AdminChallengesCreateRequest,
+	AdminChallengesCreateResponse,
+	AdminChallengesDeleteRequest,
+	AdminChallengesListRequest,
+	AdminChallengesListResponse,
 	AdminDeleteAccountRequest,
 	AdminDeleteAllFilesOfAUserRequest,
 	AdminDriveFilesRequest,
 	AdminDriveFilesResponse,
 	AdminDriveShowFileRequest,
 	AdminDriveShowFileResponse,
+	AdminEmojiProposalsApproveRequest,
+	AdminEmojiProposalsRejectRequest,
 	AdminEmojiAddRequest,
 	AdminEmojiAddResponse,
 	AdminEmojiAddAliasesBulkRequest,
@@ -139,6 +148,15 @@ import type {
 	AdminUpdateProxyAccountRequest,
 	AdminUpdateProxyAccountResponse,
 	AdminUpdateUserNoteRequest,
+	AdminUserActivityRequest,
+	AdminUserActivityResponse,
+	AdminUserPollsCreateRequest,
+	AdminUserPollsCreateResponse,
+	AdminUserPollsDeleteRequest,
+	AdminUserPollsListRequest,
+	AdminUserPollsListResponse,
+	AdminUserPollsResultsRequest,
+	AdminUserPollsResultsResponse,
 	AnnouncementsRequest,
 	AnnouncementsResponse,
 	AnnouncementsShowRequest,
@@ -178,6 +196,8 @@ import type {
 	BubbleGameRankingRequest,
 	BubbleGameRankingResponse,
 	BubbleGameRegisterRequest,
+	ChallengesRequest,
+	ChallengesResponse,
 	ChannelsCreateRequest,
 	ChannelsCreateResponse,
 	ChannelsFavoriteRequest,
@@ -281,6 +301,7 @@ import type {
 	ClipsUnfavoriteRequest,
 	ClipsUpdateRequest,
 	ClipsUpdateResponse,
+	DailyPromptResponse,
 	DriveResponse,
 	DriveFilesRequest,
 	DriveFilesResponse,
@@ -320,6 +341,11 @@ import type {
 	EmailAddressAvailableResponse,
 	EmojiRequest,
 	EmojiResponse,
+	EmojiProposalsRequest,
+	EmojiProposalsResponse,
+	EmojiProposalsProposeRequest,
+	EmojiProposalsProposeResponse,
+	EmojiProposalsVoteRequest,
 	EmojisResponse,
 	EndpointRequest,
 	EndpointResponse,
@@ -469,6 +495,7 @@ import type {
 	IUpdateResponse,
 	IUpdateEmailRequest,
 	IUpdateEmailResponse,
+	IUpdateStatusRequest,
 	IWebhooksCreateRequest,
 	IWebhooksCreateResponse,
 	IWebhooksDeleteRequest,
@@ -490,6 +517,8 @@ import type {
 	MuteDeleteRequest,
 	MuteListRequest,
 	MuteListResponse,
+	MyAnalyticsRequest,
+	MyAnalyticsResponse,
 	MyAppsRequest,
 	MyAppsResponse,
 	NotesRequest,
@@ -567,6 +596,8 @@ import type {
 	PingResponse,
 	PinnedUsersResponse,
 	PromoReadRequest,
+	RankingsRequest,
+	RankingsResponse,
 	RenoteMuteCreateRequest,
 	RenoteMuteDeleteRequest,
 	RenoteMuteListRequest,
@@ -593,6 +624,8 @@ import type {
 	RolesUsersRequest,
 	RolesUsersResponse,
 	ServerInfoResponse,
+	ShortsRequest,
+	ShortsResponse,
 	StatsResponse,
 	SwRegisterRequest,
 	SwRegisterResponse,
@@ -603,6 +636,9 @@ import type {
 	SwUpdateRegistrationResponse,
 	TestRequest,
 	TestResponse,
+	UserPollsRequest,
+	UserPollsResponse,
+	UserPollsVoteRequest,
 	UsernameAvailableRequest,
 	UsernameAvailableResponse,
 	UsersRequest,
@@ -688,14 +724,20 @@ export type Endpoints = {
 	'admin/avatar-decorations/delete': { req: AdminAvatarDecorationsDeleteRequest; res: EmptyResponse };
 	'admin/avatar-decorations/list': { req: AdminAvatarDecorationsListRequest; res: AdminAvatarDecorationsListResponse };
 	'admin/avatar-decorations/update': { req: AdminAvatarDecorationsUpdateRequest; res: EmptyResponse };
+	'admin/bulk-notify': { req: AdminBulkNotifyRequest; res: AdminBulkNotifyResponse };
 	'admin/captcha/current': { req: EmptyRequest; res: AdminCaptchaCurrentResponse };
 	'admin/captcha/save': { req: AdminCaptchaSaveRequest; res: EmptyResponse };
+	'admin/challenges/create': { req: AdminChallengesCreateRequest; res: AdminChallengesCreateResponse };
+	'admin/challenges/delete': { req: AdminChallengesDeleteRequest; res: EmptyResponse };
+	'admin/challenges/list': { req: AdminChallengesListRequest; res: AdminChallengesListResponse };
 	'admin/delete-account': { req: AdminDeleteAccountRequest; res: EmptyResponse };
 	'admin/delete-all-files-of-a-user': { req: AdminDeleteAllFilesOfAUserRequest; res: EmptyResponse };
 	'admin/drive/clean-remote-files': { req: EmptyRequest; res: EmptyResponse };
 	'admin/drive/cleanup': { req: EmptyRequest; res: EmptyResponse };
 	'admin/drive/files': { req: AdminDriveFilesRequest; res: AdminDriveFilesResponse };
 	'admin/drive/show-file': { req: AdminDriveShowFileRequest; res: AdminDriveShowFileResponse };
+	'admin/emoji-proposals/approve': { req: AdminEmojiProposalsApproveRequest; res: EmptyResponse };
+	'admin/emoji-proposals/reject': { req: AdminEmojiProposalsRejectRequest; res: EmptyResponse };
 	'admin/emoji/add': { req: AdminEmojiAddRequest; res: AdminEmojiAddResponse };
 	'admin/emoji/add-aliases-bulk': { req: AdminEmojiAddAliasesBulkRequest; res: EmptyResponse };
 	'admin/emoji/copy': { req: AdminEmojiCopyRequest; res: AdminEmojiCopyResponse };
@@ -768,6 +810,11 @@ export type Endpoints = {
 	'admin/update-meta': { req: AdminUpdateMetaRequest; res: EmptyResponse };
 	'admin/update-proxy-account': { req: AdminUpdateProxyAccountRequest; res: AdminUpdateProxyAccountResponse };
 	'admin/update-user-note': { req: AdminUpdateUserNoteRequest; res: EmptyResponse };
+	'admin/user-activity': { req: AdminUserActivityRequest; res: AdminUserActivityResponse };
+	'admin/user-polls/create': { req: AdminUserPollsCreateRequest; res: AdminUserPollsCreateResponse };
+	'admin/user-polls/delete': { req: AdminUserPollsDeleteRequest; res: EmptyResponse };
+	'admin/user-polls/list': { req: AdminUserPollsListRequest; res: AdminUserPollsListResponse };
+	'admin/user-polls/results': { req: AdminUserPollsResultsRequest; res: AdminUserPollsResultsResponse };
 	'announcements': { req: AnnouncementsRequest; res: AnnouncementsResponse };
 	'announcements/show': { req: AnnouncementsShowRequest; res: AnnouncementsShowResponse };
 	'antennas/create': { req: AntennasCreateRequest; res: AntennasCreateResponse };
@@ -790,6 +837,7 @@ export type Endpoints = {
 	'blocking/list': { req: BlockingListRequest; res: BlockingListResponse };
 	'bubble-game/ranking': { req: BubbleGameRankingRequest; res: BubbleGameRankingResponse };
 	'bubble-game/register': { req: BubbleGameRegisterRequest; res: EmptyResponse };
+	'challenges': { req: ChallengesRequest; res: ChallengesResponse };
 	'channels/create': { req: ChannelsCreateRequest; res: ChannelsCreateResponse };
 	'channels/favorite': { req: ChannelsFavoriteRequest; res: EmptyResponse };
 	'channels/featured': { req: EmptyRequest; res: ChannelsFeaturedResponse };
@@ -854,6 +902,7 @@ export type Endpoints = {
 	'clips/show': { req: ClipsShowRequest; res: ClipsShowResponse };
 	'clips/unfavorite': { req: ClipsUnfavoriteRequest; res: EmptyResponse };
 	'clips/update': { req: ClipsUpdateRequest; res: ClipsUpdateResponse };
+	'daily-prompt': { req: EmptyRequest; res: DailyPromptResponse };
 	'drive': { req: EmptyRequest; res: DriveResponse };
 	'drive/files': { req: DriveFilesRequest; res: DriveFilesResponse };
 	'drive/files/attached-chat-messages': { req: DriveFilesAttachedChatMessagesRequest; res: DriveFilesAttachedChatMessagesResponse };
@@ -876,6 +925,9 @@ export type Endpoints = {
 	'drive/stream': { req: DriveStreamRequest; res: DriveStreamResponse };
 	'email-address/available': { req: EmailAddressAvailableRequest; res: EmailAddressAvailableResponse };
 	'emoji': { req: EmojiRequest; res: EmojiResponse };
+	'emoji-proposals': { req: EmojiProposalsRequest; res: EmojiProposalsResponse };
+	'emoji-proposals/propose': { req: EmojiProposalsProposeRequest; res: EmojiProposalsProposeResponse };
+	'emoji-proposals/vote': { req: EmojiProposalsVoteRequest; res: EmptyResponse };
 	'emojis': { req: EmptyRequest; res: EmojisResponse };
 	'endpoint': { req: EndpointRequest; res: EndpointResponse };
 	'endpoints': { req: EmptyRequest; res: EndpointsResponse };
@@ -977,6 +1029,7 @@ export type Endpoints = {
 	'i/unpin': { req: IUnpinRequest; res: IUnpinResponse };
 	'i/update': { req: IUpdateRequest; res: IUpdateResponse };
 	'i/update-email': { req: IUpdateEmailRequest; res: IUpdateEmailResponse };
+	'i/update-status': { req: IUpdateStatusRequest; res: EmptyResponse };
 	'i/webhooks/create': { req: IWebhooksCreateRequest; res: IWebhooksCreateResponse };
 	'i/webhooks/delete': { req: IWebhooksDeleteRequest; res: EmptyResponse };
 	'i/webhooks/list': { req: EmptyRequest; res: IWebhooksListResponse };
@@ -992,6 +1045,7 @@ export type Endpoints = {
 	'mute/create': { req: MuteCreateRequest; res: EmptyResponse };
 	'mute/delete': { req: MuteDeleteRequest; res: EmptyResponse };
 	'mute/list': { req: MuteListRequest; res: MuteListResponse };
+	'my/analytics': { req: MyAnalyticsRequest; res: MyAnalyticsResponse };
 	'my/apps': { req: MyAppsRequest; res: MyAppsResponse };
 	'notes': { req: NotesRequest; res: NotesResponse };
 	'notes/children': { req: NotesChildrenRequest; res: NotesChildrenResponse };
@@ -1044,6 +1098,7 @@ export type Endpoints = {
 	'ping': { req: EmptyRequest; res: PingResponse };
 	'pinned-users': { req: EmptyRequest; res: PinnedUsersResponse };
 	'promo/read': { req: PromoReadRequest; res: EmptyResponse };
+	'rankings': { req: RankingsRequest; res: RankingsResponse };
 	'renote-mute/create': { req: RenoteMuteCreateRequest; res: EmptyResponse };
 	'renote-mute/delete': { req: RenoteMuteDeleteRequest; res: EmptyResponse };
 	'renote-mute/list': { req: RenoteMuteListRequest; res: RenoteMuteListResponse };
@@ -1063,12 +1118,15 @@ export type Endpoints = {
 	'roles/show': { req: RolesShowRequest; res: RolesShowResponse };
 	'roles/users': { req: RolesUsersRequest; res: RolesUsersResponse };
 	'server-info': { req: EmptyRequest; res: ServerInfoResponse };
+	'shorts': { req: ShortsRequest; res: ShortsResponse };
 	'stats': { req: EmptyRequest; res: StatsResponse };
 	'sw/register': { req: SwRegisterRequest; res: SwRegisterResponse };
 	'sw/show-registration': { req: SwShowRegistrationRequest; res: SwShowRegistrationResponse };
 	'sw/unregister': { req: SwUnregisterRequest; res: EmptyResponse };
 	'sw/update-registration': { req: SwUpdateRegistrationRequest; res: SwUpdateRegistrationResponse };
 	'test': { req: TestRequest; res: TestResponse };
+	'user-polls': { req: UserPollsRequest; res: UserPollsResponse };
+	'user-polls/vote': { req: UserPollsVoteRequest; res: EmptyResponse };
 	'username/available': { req: UsernameAvailableRequest; res: UsernameAvailableResponse };
 	'users': { req: UsersRequest; res: UsersResponse };
 	'users/achievements': { req: UsersAchievementsRequest; res: UsersAchievementsResponse };

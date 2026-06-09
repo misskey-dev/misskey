@@ -1149,6 +1149,46 @@ export interface Locale extends ILocale {
      */
     "announcements": string;
     /**
+     * ユーザー投票
+     */
+    "userPolls": string;
+    /**
+     * インスタンス内ランキング
+     */
+    "rankings": string;
+    /**
+     * カスタム絵文字提案
+     */
+    "emojiProposals": string;
+    /**
+     * コミュニティチャレンジ
+     */
+    "challenges": string;
+    /**
+     * 一斉通知
+     */
+    "bulkNotify": string;
+    /**
+     * ユーザー活動レポート
+     */
+    "userActivity": string;
+    /**
+     * カスタムステータス
+     */
+    "customStatus": string;
+    /**
+     * 今日のお題
+     */
+    "dailyPrompt": string;
+    /**
+     * マイアナリティクス
+     */
+    "myAnalytics": string;
+    /**
+     * ショート
+     */
+    "shorts": string;
+    /**
      * 画像URL
      */
     "imageUrl": string;
@@ -1828,6 +1868,10 @@ export interface Locale extends ILocale {
      * Misskeyについて
      */
     "aboutMisskey": string;
+    /**
+     * Rickskeyについて
+     */
+    "aboutRickskey": string;
     /**
      * 管理者
      */
@@ -9952,6 +9996,10 @@ export interface Locale extends ILocale {
          * ダイレクトメッセージ
          */
         "chat": string;
+        /**
+         * 今日のお題
+         */
+        "dailyPrompt": string;
     };
     "_widgetOptions": {
         /**
@@ -10868,6 +10916,10 @@ export interface Locale extends ILocale {
          * アンケートの結果が出ました
          */
         "pollEnded": string;
+        /**
+         * 新しいユーザー投票が届きました
+         */
+        "userPollArrived": string;
         /**
          * 予約ノートが投稿されました
          */
@@ -13321,5 +13373,497 @@ export interface Locale extends ILocale {
          * MFM
          */
         "mfm": string;
+    };
+    "_userPoll": {
+        /**
+         * 投票を作成
+         */
+        "createPoll": string;
+        /**
+         * 質問
+         */
+        "question": string;
+        /**
+         * 選択肢
+         */
+        "choices": string;
+        /**
+         * 選択肢を追加
+         */
+        "addChoice": string;
+        /**
+         * 選択肢を削除
+         */
+        "removeChoice": string;
+        /**
+         * 匿名投票
+         */
+        "isAnonymous": string;
+        /**
+         * 有効にすると、誰が何に投票したかは管理者にも表示されません
+         */
+        "isAnonymousDescription": string;
+        /**
+         * 締め切り日時
+         */
+        "deadline": string;
+        /**
+         * 締め切りなし
+         */
+        "noDeadline": string;
+        /**
+         * 投票する
+         */
+        "vote": string;
+        /**
+         * 投票済み
+         */
+        "voted": string;
+        /**
+         * 投票結果
+         */
+        "results": string;
+        /**
+         * 総投票数: {n}票
+         */
+        "totalVotes": ParameterizedString<"n">;
+        /**
+         * {n}票
+         */
+        "votes": ParameterizedString<"n">;
+        /**
+         * 投票はありません
+         */
+        "noPollsYet": string;
+        /**
+         * 未投票の投票はありません
+         */
+        "noUnvotedPolls": string;
+        /**
+         * 投票を作成しました
+         */
+        "pollCreated": string;
+        /**
+         * すでに投票済みです
+         */
+        "alreadyVoted": string;
+        /**
+         * この投票は終了しています
+         */
+        "pollClosed": string;
+        /**
+         * 投票を削除
+         */
+        "deletePoll": string;
+        /**
+         * この投票を削除しますか？
+         */
+        "confirmDelete": string;
+        /**
+         * 投票数
+         */
+        "voteCount": string;
+        /**
+         * 状態
+         */
+        "status": string;
+        /**
+         * 受付中
+         */
+        "active": string;
+        /**
+         * 終了
+         */
+        "closed": string;
+        /**
+         * 投票管理
+         */
+        "managePolls": string;
+        /**
+         * 結果を見る
+         */
+        "viewResults": string;
+        /**
+         * 選択肢 {n}
+         */
+        "choiceIndex": ParameterizedString<"n">;
+        /**
+         * {p}%
+         */
+        "percentage": ParameterizedString<"p">;
+        /**
+         * 締め切り: {date}
+         */
+        "deadline_": ParameterizedString<"date">;
+        /**
+         * 匿名
+         */
+        "anonymous": string;
+        /**
+         * 記名
+         */
+        "notAnonymous": string;
+    };
+    "_rankings": {
+        /**
+         * インスタンス内ランキング
+         */
+        "title": string;
+        /**
+         * 期間
+         */
+        "period": string;
+        /**
+         * 週間
+         */
+        "weekly": string;
+        /**
+         * 月間
+         */
+        "monthly": string;
+        /**
+         * 全期間
+         */
+        "alltime": string;
+        /**
+         * ノート数
+         */
+        "notes": string;
+        /**
+         * リアクション受信数
+         */
+        "reactions": string;
+        /**
+         * フォロワー増加数
+         */
+        "followers": string;
+        /**
+         * {n}位
+         */
+        "rank": ParameterizedString<"n">;
+        /**
+         * データがありません
+         */
+        "noData": string;
+    };
+    "_emojiProposal": {
+        /**
+         * カスタム絵文字提案
+         */
+        "title": string;
+        /**
+         * 提案する
+         */
+        "propose": string;
+        /**
+         * 絵文字名 (英数字・アンダースコアのみ)
+         */
+        "emojiName": string;
+        /**
+         * 画像URL
+         */
+        "imageUrl": string;
+        /**
+         * カテゴリ (任意)
+         */
+        "category": string;
+        /**
+         * 説明 (任意)
+         */
+        "description": string;
+        /**
+         * 賛成票: {n}
+         */
+        "voteCount": ParameterizedString<"n">;
+        /**
+         * 賛成する
+         */
+        "vote": string;
+        /**
+         * 賛成済み
+         */
+        "voted": string;
+        /**
+         * 状態
+         */
+        "status": string;
+        /**
+         * 審査中
+         */
+        "pending": string;
+        /**
+         * 承認済み
+         */
+        "approved": string;
+        /**
+         * 却下
+         */
+        "rejected": string;
+        /**
+         * 承認
+         */
+        "approve": string;
+        /**
+         * 却下
+         */
+        "reject": string;
+        /**
+         * 提案はありません
+         */
+        "noProposalsYet": string;
+        /**
+         * この提案を承認しますか？
+         */
+        "confirmApprove": string;
+        /**
+         * この提案を却下しますか？
+         */
+        "confirmReject": string;
+        /**
+         * すでに賛成済みです
+         */
+        "alreadyVoted": string;
+        /**
+         * フィルター
+         */
+        "filter": string;
+    };
+    "_challenge": {
+        /**
+         * コミュニティチャレンジ
+         */
+        "title": string;
+        /**
+         * チャレンジを作成
+         */
+        "createChallenge": string;
+        /**
+         * タイトル
+         */
+        "challengeTitle": string;
+        /**
+         * 説明 (任意)
+         */
+        "description": string;
+        /**
+         * ハッシュタグ (# なしで入力)
+         */
+        "hashtag": string;
+        /**
+         * 締め切り日時 (任意)
+         */
+        "deadline": string;
+        /**
+         * 参加者数: {n}人
+         */
+        "participants": ParameterizedString<"n">;
+        /**
+         * 開催中
+         */
+        "active": string;
+        /**
+         * 終了
+         */
+        "closed": string;
+        /**
+         * チャレンジはありません
+         */
+        "noChallengesYet": string;
+        /**
+         * チャレンジを削除
+         */
+        "deleteChallenge": string;
+        /**
+         * このチャレンジを削除しますか？
+         */
+        "confirmDelete": string;
+        /**
+         * チャレンジ管理
+         */
+        "manageChallenges": string;
+        /**
+         * 参加する（ノートに #{hashtag} を付けて投稿しよう！）
+         */
+        "joinChallenge": ParameterizedString<"hashtag">;
+    };
+    "_bulkNotify": {
+        /**
+         * 一斉通知
+         */
+        "title": string;
+        /**
+         * 通知タイトル
+         */
+        "notificationTitle": string;
+        /**
+         * 通知本文
+         */
+        "notificationBody": string;
+        /**
+         * ロールでフィルター (空欄=全員)
+         */
+        "filterByRole": string;
+        /**
+         * 登録日時 (以降)
+         */
+        "sinceCreatedAt": string;
+        /**
+         * 登録日時 (以前)
+         */
+        "untilCreatedAt": string;
+        /**
+         * 送信
+         */
+        "send": string;
+        /**
+         * {n}人に送信しました
+         */
+        "sent": ParameterizedString<"n">;
+    };
+    "_userActivity": {
+        /**
+         * ユーザー活動レポート
+         */
+        "title": string;
+        /**
+         * 集計期間 (日数)
+         */
+        "period": string;
+        /**
+         * 総ノート数
+         */
+        "notesCount": string;
+        /**
+         * リアクション送信数
+         */
+        "reactionsGiven": string;
+        /**
+         * リアクション受信数
+         */
+        "reactionsReceived": string;
+        /**
+         * フォロワー数
+         */
+        "followersCount": string;
+        /**
+         * フォロー数
+         */
+        "followingCount": string;
+        /**
+         * 最近のノート
+         */
+        "recentNotes": string;
+        /**
+         * 最近のサインイン
+         */
+        "recentSignins": string;
+        /**
+         * 日別ノート投稿数
+         */
+        "dailyActivity": string;
+    };
+    "_customStatus": {
+        /**
+         * ステータスを設定
+         */
+        "setStatus": string;
+        /**
+         * ステータスをクリア
+         */
+        "clearStatus": string;
+        /**
+         * 絵文字
+         */
+        "statusEmoji": string;
+        /**
+         * テキスト (最大150文字)
+         */
+        "statusText": string;
+        /**
+         * 有効期限 (任意)
+         */
+        "expiresAt": string;
+        /**
+         * 無期限
+         */
+        "noExpiry": string;
+        /**
+         * 現在のステータス
+         */
+        "currentStatus": string;
+    };
+    "_dailyPrompt": {
+        /**
+         * 今日のお題
+         */
+        "todaysPrompt": string;
+        /**
+         * 本日のお題はまだ設定されていません
+         */
+        "noPromptToday": string;
+        /**
+         * 参加者: {n}人
+         */
+        "participants": ParameterizedString<"n">;
+        /**
+         * #{hashtag} で参加しよう！
+         */
+        "joinPrompt": ParameterizedString<"hashtag">;
+        /**
+         * 日替わりお題として設定
+         */
+        "isDailyPrompt": string;
+    };
+    "_myAnalytics": {
+        /**
+         * マイアナリティクス
+         */
+        "title": string;
+        /**
+         * 集計期間 (日数)
+         */
+        "period": string;
+        /**
+         * 総ノート数
+         */
+        "totalNotes": string;
+        /**
+         * リアクション受信数
+         */
+        "totalReactionsReceived": string;
+        /**
+         * フォロワー数
+         */
+        "followersCount": string;
+        /**
+         * リアクションを多く受けたノート
+         */
+        "topNotes": string;
+        /**
+         * 日別投稿数
+         */
+        "dailyNotes": string;
+        /**
+         * フォロワー増加 (週別)
+         */
+        "followerHistory": string;
+        /**
+         * データがありません
+         */
+        "noData": string;
+    };
+    "_shorts": {
+        /**
+         * ショートフィード
+         */
+        "title": string;
+        /**
+         * 縦型・正方形の動画投稿
+         */
+        "description": string;
+        /**
+         * ショート動画はまだありません
+         */
+        "noShorts": string;
     };
 }
