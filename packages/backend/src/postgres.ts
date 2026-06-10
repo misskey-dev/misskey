@@ -87,6 +87,11 @@ import { MiBubbleGameRecord } from '@/models/BubbleGameRecord.js';
 import { MiReversiGame } from '@/models/ReversiGame.js';
 import { MiChatApproval } from '@/models/ChatApproval.js';
 import { MiSystemAccount } from '@/models/SystemAccount.js';
+import { MiUserPoll } from '@/models/UserPoll.js';
+import { MiUserPollVote } from '@/models/UserPollVote.js';
+import { MiEmojiProposal } from '@/models/EmojiProposal.js';
+import { MiEmojiProposalVote } from '@/models/EmojiProposalVote.js';
+import { MiCommunityChallenge } from '@/models/CommunityChallenge.js';
 
 pg.types.setTypeParser(20, Number);
 
@@ -254,6 +259,11 @@ export const entities = [
 	MiChatApproval,
 	MiBubbleGameRecord,
 	MiReversiGame,
+	MiUserPoll,
+	MiUserPollVote,
+	MiEmojiProposal,
+	MiEmojiProposalVote,
+	MiCommunityChallenge,
 	...charts,
 ];
 
