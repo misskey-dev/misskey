@@ -4031,3 +4031,6 @@ _miRoom:
       frameMat: "フレームの素材"
       height: "段数"
       width: "幅"
+    kakejiku: "掛軸"
+    _kakejiku:
+      image: "画像"

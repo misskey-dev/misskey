@@ -14991,6 +14991,16 @@ export interface Locale extends ILocale {
                  */
                 "width": string;
             };
+            /**
+             * 掛軸
+             */
+            "kakejiku": string;
+            "_kakejiku": {
+                /**
+                 * 画像
+                 */
+                "image": string;
+            };
         };
     };
 }

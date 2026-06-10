@@ -115,6 +115,7 @@ import { woodSoundAbsorbingPanel_schema } from './furnitures/woodSoundAbsorbingP
 import { haniwa_schema } from './furnitures/haniwa.schema.js';
 import { ceilingFan_schema } from './furnitures/ceilingFan.schema.js';
 import { downlight_schema } from './furnitures/downlight.schema.js';
+import { kakejiku_schema } from './furnitures/kakejiku.schema.js';
 import type { FurnitureSchemaDef } from './furniture.js';
 
 export const FURNITURE_SCHEMA_DEFS = {
@@ -229,6 +230,7 @@ export const FURNITURE_SCHEMA_DEFS = {
 	wireBasket: wireBasket_schema,
 	haniwa: haniwa_schema,
 	downlight: downlight_schema,
+	kakejiku: kakejiku_schema,
 } as Record<string, FurnitureSchemaDef<any>>;
 
 export function getFurnitureSchemaDef(type: string): FurnitureSchemaDef {

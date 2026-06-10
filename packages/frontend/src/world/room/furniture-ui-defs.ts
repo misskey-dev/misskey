@@ -115,6 +115,7 @@ import { woodSoundAbsorbingPanel_ui } from './furnitures/woodSoundAbsorbingPanel
 import { haniwa_ui } from './furnitures/haniwa.ui.js';
 import { ceilingFan_ui } from './furnitures/ceilingFan.ui.js';
 import { downlight_ui } from './furnitures/downlight.ui.js';
+import { kakejiku_ui } from './furnitures/kakejiku.ui.js';
 import type { FurnitureUiDef } from './defineFurnitureUi.js';
 
 export const FURNITURE_UI_DEFS = {
@@ -229,6 +230,7 @@ export const FURNITURE_UI_DEFS = {
 	wireBasket: wireBasket_ui,
 	haniwa: haniwa_ui,
 	downlight: downlight_ui,
+	kakejiku: kakejiku_ui,
 } as Record<string, FurnitureUiDef>;
 
 export function getFurnitureUiDef(type: string): FurnitureUiDef {

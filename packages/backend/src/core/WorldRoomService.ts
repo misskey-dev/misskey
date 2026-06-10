@@ -36,6 +36,7 @@ const driveFileReferencingOptions = {
 	laptopPc: ['image'],
 	handheldGameConsole: ['image'],
 	largeMousepad: ['image'],
+	kakejiku: ['image'],
 } as Record<string, string[]>;
 
 @Injectable()
