@@ -1,3 +1,14 @@
+## Unreleased
+
+### General
+-
+
+### Client
+-
+
+### Server
+- Enhance: ActivityPub の画像添付に width/height を含めるように
+
 ## 2026.6.0
 
 ### General
