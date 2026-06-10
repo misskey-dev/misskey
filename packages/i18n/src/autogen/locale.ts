@@ -13438,6 +13438,16 @@ export interface Locale extends ILocale {
              * みかん
              */
             "mikan": string;
+            /**
+             * ボルト
+             */
+            "bolt": string;
+            "_bolt": {
+                /**
+                 * 素材
+                 */
+                "mat": string;
+            };
         };
     };
     "_miRoom": {

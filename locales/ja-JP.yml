@@ -3604,6 +3604,9 @@ _miWorld:
       bodyMat: "コップの素材"
       liquidMat: "液体の素材"
     mikan: "みかん"
+    bolt: "ボルト"
+    _bolt:
+      mat: "素材"
 
 _miRoom:
   snapToGrid: "グリッドにスナップ"

@@ -5,11 +5,13 @@
 
 import { mug } from './accessories/mug.js';
 import { mikan } from './accessories/mikan.js';
+import { bolt } from './accessories/bolt.js';
 import type { AvatarAccessoryDef } from './accessory.js';
 
 export const AVATAR_ACCESSORY_DEFS = [
 	mug,
 	mikan,
+	bolt,
 ] as AvatarAccessoryDef[];
 
 export function getAccessoryDef(type: string): AvatarAccessoryDef {
