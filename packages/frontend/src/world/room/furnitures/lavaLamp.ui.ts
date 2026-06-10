@@ -13,9 +13,6 @@ export const lavaLamp_ui = defineFurnitureUi<typeof lavaLamp_schema>({
 		bodyMat: {
 			label: i18n.ts._miRoom._furnitures._lavaLamp.bodyMat,
 		},
-		glassMat: {
-			label: i18n.ts._miRoom._furnitures._lavaLamp.glassMat,
-		},
 		lightColor: {
 			label: i18n.ts._miRoom._furnitures._lavaLamp.lightColor,
 		},

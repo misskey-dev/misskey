@@ -11,9 +11,6 @@ export const lavaLamp_schema = defineFurnitureSchema({
 			bodyMat: {
 				type: 'material',
 			},
-			glassMat: {
-				type: 'material',
-			},
 			lightColor: {
 				type: 'color',
 			},
@@ -23,7 +20,6 @@ export const lavaLamp_schema = defineFurnitureSchema({
 		},
 		default: {
 			bodyMat: { color: [0.8, 0.8, 0.8], roughness: 0.5, metallic: 0.7 },
-			glassMat: { color: [0.8, 0, 0.1], roughness: 0, metallic: 0 },
 			lightColor: [1, 0.175, 0.175],
 			lavaColor: [1, 0.5, 0.2],
 		},

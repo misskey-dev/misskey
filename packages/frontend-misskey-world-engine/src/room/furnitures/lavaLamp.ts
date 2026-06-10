@@ -8,11 +8,16 @@ import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { defineFuniture } from '../furniture.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 
+const mix = (a: number, b: number, t: number) => a * (1 - t) + b * t;
+
 export const lavaLamp = defineFuniture(lavaLamp_schema, {
 	createInstance: ({ options, lc, scene, sr, root, model, graphicsQuality }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 		const glassMaterial = model.findMaterial('__X_GLASS__');
+		glassMaterial.roughness = 0;
+		glassMaterial.metallic = 0.3;
 		const lightMaterial = model.findMaterial('__X_LIGHT__');
+		lightMaterial.emissiveIntensity = 5;
 
 		const applyBodyMat = () => {
 			bodyMaterial.albedoColor = new BABYLON.Color3(options.bodyMat.color[0], options.bodyMat.color[1], options.bodyMat.color[2]);
@@ -21,14 +26,6 @@ export const lavaLamp = defineFuniture(lavaLamp_schema, {
 		};
 
 		applyBodyMat();
-
-		const applyGlassMat = () => {
-			glassMaterial.albedoColor = new BABYLON.Color3(options.glassMat.color[0], options.glassMat.color[1], options.glassMat.color[2]);
-			glassMaterial.roughness = options.glassMat.roughness;
-			glassMaterial.metallic = options.glassMat.metallic;
-		};
-
-		applyGlassMat();
 
 		// TODO: graphicsQualityがLOWならそもそも追加しない
 		const light = new BABYLON.PointLight('lavaLampLight', new BABYLON.Vector3(0, cm(11), 0), scene, lc != null);
@@ -40,23 +37,25 @@ export const lavaLamp = defineFuniture(lavaLamp_schema, {
 
 		const applyLightColor = () => {
 			const [r, g, b] = options.lightColor;
-			lightMaterial.emissiveColor = new BABYLON.Color3(r, g, b);
+			lightMaterial.emissiveColor = new BABYLON.Color3(mix(r, 1, 0.1), mix(g, 1, 0.1), mix(b, 1, 0.1));
 			light.diffuse = new BABYLON.Color3(r, g, b);
+			glassMaterial.albedoColor = new BABYLON.Color3(r, g, b);
 		};
 
 		applyLightColor();
 
 		const lavaMat = new BABYLON.PBRMaterial('lavaLampLightMat', scene);
 		lavaMat.disableLighting = true;
-		const sphere = BABYLON.MeshBuilder.CreateSphere('lavaLampLightSphere', { diameter: cm(4) }, scene);
+		lavaMat.emissiveIntensity = 10;
+		const sphere = BABYLON.MeshBuilder.CreateSphere('', { diameter: cm(4) }, scene);
 		sphere.parent = root;
 		sphere.position = new BABYLON.Vector3(0, cm(15), 0);
 		sphere.material = lavaMat;
-		const sphere2 = BABYLON.MeshBuilder.CreateSphere('lavaLampLightSphere2', { diameter: cm(3) }, scene);
+		const sphere2 = BABYLON.MeshBuilder.CreateSphere('', { diameter: cm(3) }, scene);
 		sphere2.parent = root;
 		sphere2.position = new BABYLON.Vector3(0, cm(15), 0);
 		sphere2.material = lavaMat;
-		const sphere3 = BABYLON.MeshBuilder.CreateSphere('lavaLampLightSphere3', { diameter: cm(2) }, scene);
+		const sphere3 = BABYLON.MeshBuilder.CreateSphere('', { diameter: cm(2) }, scene);
 		sphere3.parent = root;
 		sphere3.position = new BABYLON.Vector3(0, cm(15), 0);
 		sphere3.material = lavaMat;
@@ -121,7 +120,6 @@ export const lavaLamp = defineFuniture(lavaLamp_schema, {
 			onOptionsUpdated: ([k, v]) => {
 				switch (k) {
 					case 'bodyMat': applyBodyMat(); break;
-					case 'glassMat': applyGlassMat(); break;
 					case 'lightColor': applyLightColor(); break;
 					case 'lavaColor': applyLavaColor(); break;
 				}
