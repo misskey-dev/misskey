@@ -159,7 +159,9 @@ export function createPlaneUvMapper(mesh: BABYLON.Mesh) {
 	const uvs = mesh.getVerticesData(BABYLON.VertexBuffer.UVKind)!;
 	const originalUvs = uvs.slice();
 
-	return (srcAspect: number, targetAspect: number, method: 'cover' | 'contain' | 'stretch') => {
+	return (srcAspect: number, targetAspect: number, method: 'cover' | 'contain' | 'stretch', rotation: 0 | 1 | 2 | 3) => {
+		srcAspect = rotation === 1 || rotation === 3 ? 1 / srcAspect : srcAspect;
+		const rad = rotation === 0 ? 0 : rotation === 1 ? -Math.PI / 2 : rotation === 2 ? Math.PI : Math.PI / 2;
 		let uScale = 1;
 		let vScale = 1;
 		const ratio = targetAspect / srcAspect;
@@ -175,8 +177,8 @@ export function createPlaneUvMapper(mesh: BABYLON.Mesh) {
 
 		// (0,0)を隅ではなく中心として扱いたいので0.5引いて計算してから最後に0.5足す
 		for (let i = 0; i < uvs.length; i += 2) {
-			uvs[i] = ((originalUvs[i] - 0.5) * uScale) + 0.5;
-			uvs[i + 1] = ((originalUvs[i + 1] - 0.5) * vScale) + 0.5;
+			uvs[i] = (((originalUvs[i] - 0.5) * uScale * Math.cos(rad)) - ((originalUvs[i + 1] - 0.5) * vScale * Math.sin(rad))) + 0.5;
+			uvs[i + 1] = (((originalUvs[i] - 0.5) * uScale * Math.sin(rad)) + ((originalUvs[i + 1] - 0.5) * vScale * Math.cos(rad))) + 0.5;
 		}
 
 		mesh.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);

@@ -1416,6 +1416,7 @@ previewingTheme: "テーマのプレビュー中"
 previewingThemeRestore: "元に戻す"
 accessToken: "アクセストークン"
 choose: "選択"
+rotate: "回転"
 
 _imageEditing:
   _vars:

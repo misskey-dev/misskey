@@ -4,8 +4,8 @@
  */
 
 import * as BABYLON from '@babylonjs/core/pure.js';
-import { createTextureManager, defineFuniture } from '../furniture.js';
 import { tabletopFlag_schema } from 'misskey-world/src/room/furnitures/tabletopFlag.schema.js';
+import { createTextureManager, defineFuniture } from '../furniture.js';
 
 export const tabletopFlag = defineFuniture(tabletopFlag_schema, {
 	createInstance: async ({ model, options, scene }) => {
@@ -20,7 +20,7 @@ export const tabletopFlag = defineFuniture(tabletopFlag_schema, {
 			if (options.image.type === '_custom_') {
 				url = options.image.custom?.url ?? null;
 			}
-			return textureManager.change(url, options.image.fit).then((tex) => {
+			return textureManager.change(url, options.image.fit, options.image.rotation).then((tex) => {
 				flagMaterial.albedoTexture = tex;
 			});
 		};

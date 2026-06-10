@@ -4,9 +4,9 @@
  */
 
 import * as BABYLON from '@babylonjs/core/pure.js';
-import { createTextureManager, defineFuniture } from '../furniture.js';
 import { remap } from 'misskey-world/src/utility.js';
 import { tapestry_schema } from 'misskey-world/src/room/furnitures/tapestry.schema.js';
+import { createTextureManager, defineFuniture } from '../furniture.js';
 
 export const tapestry = defineFuniture(tapestry_schema, {
 	createInstance: async ({ scene, options, model }) => {
@@ -37,7 +37,7 @@ export const tapestry = defineFuniture(tapestry_schema, {
 			ropeMesh.morphTargetManager!.getTargetByName('Height')!.influence = options.height;
 			model.updated();
 
-			textureManager.applyFit();
+			textureManager.calcUv();
 		};
 
 		applySize();
@@ -48,7 +48,7 @@ export const tapestry = defineFuniture(tapestry_schema, {
 			if (options.image.type === '_custom_') {
 				url = options.image.custom?.url ?? null;
 			}
-			return textureManager.change(url, options.image.fit).then((tex) => {
+			return textureManager.change(url, options.image.fit, options.image.rotation).then((tex) => {
 				pictureMaterial.albedoTexture = tex;
 			});
 		};

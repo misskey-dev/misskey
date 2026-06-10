@@ -53,7 +53,7 @@ export const allInOnePc = defineFuniture(allInOnePc_schema, {
 			} else if (options.image.type === 'desktop') {
 				url = '/assets/objects/all-in-one-pc/desktop.png';
 			}
-			return textureManager.change(url, options.image.fit).then((tex) => {
+			return textureManager.change(url, options.image.fit, options.image.rotation).then((tex) => {
 				screenMaterial.emissiveTexture = tex;
 			});
 		};

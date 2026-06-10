@@ -4,9 +4,9 @@
  */
 
 import * as BABYLON from '@babylonjs/core/pure.js';
-import { createTextureManager, defineFuniture } from '../furniture.js';
 import { remap } from 'misskey-world/src/utility.js';
 import { wallGlassPictureFrame_schema } from 'misskey-world/src/room/furnitures/wallGlassPictureFrame.schema.js';
+import { createTextureManager, defineFuniture } from '../furniture.js';
 
 export const wallGlassPictureFrame = defineFuniture(wallGlassPictureFrame_schema, {
 	createInstance: async ({ scene, options, model }) => {
@@ -33,7 +33,7 @@ export const wallGlassPictureFrame = defineFuniture(wallGlassPictureFrame_schema
 			}
 			model.updated();
 
-			textureManager.applyFit();
+			textureManager.calcUv();
 		};
 
 		applySize();
@@ -44,7 +44,7 @@ export const wallGlassPictureFrame = defineFuniture(wallGlassPictureFrame_schema
 			if (options.image.type === '_custom_') {
 				url = options.image.custom?.url ?? null;
 			}
-			return textureManager.change(url, options.image.fit).then((tex) => {
+			return textureManager.change(url, options.image.fit, options.image.rotation).then((tex) => {
 				pictureMaterial.albedoTexture = tex;
 			});
 		};

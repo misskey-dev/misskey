@@ -46,7 +46,7 @@ export const tv = defineFuniture(tv_schema, {
 		applyScreenBrightness();
 
 		//const updateUv = createPlaneUvMapper(screenMesh);
-		//const applyFit = () => {
+		//const calcUv = () => {
 		//	const tex = screenMaterial.emissiveTexture;
 		//	if (tex == null) return;
 		//	const srcAspect = 16 / 9;
@@ -54,7 +54,7 @@ export const tv = defineFuniture(tv_schema, {
 		//	updateUv(srcAspect, targetAspect, 'cover');
 		//	model.updated();
 		//};
-		//applyFit();
+		//calcUv();
 
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 

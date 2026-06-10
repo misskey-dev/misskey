@@ -13,9 +13,9 @@ export type ConvertedOptions = Record<string, unknown> & {
 	readonly __brand: unique symbol;
 };
 
-type RawImageValue<Presets extends string = string> = { type: Presets | null | '_custom_'; driveFileId?: string | null; fit?: 'cover' | 'contain' | 'stretch'; };
+type RawImageValue<Presets extends string = string> = { type: Presets | null | '_custom_'; driveFileId?: string | null; fit?: 'cover' | 'contain' | 'stretch'; rotation?: 0 | 1 | 2 | 3; };
 
-type ConvertedImageValue<Presets extends string = string> = { type: Presets | null | '_custom_'; custom?: { url: string; } | null; fit?: 'cover' | 'contain' | 'stretch'; };
+type ConvertedImageValue<Presets extends string = string> = { type: Presets | null | '_custom_'; custom?: { url: string; } | null; fit?: 'cover' | 'contain' | 'stretch'; rotation?: 0 | 1 | 2 | 3; };
 export type GetConvertedOptionsSchemaValues<T extends OptionsSchema> = {
 	[K in keyof T]:
 	T[K] extends NumberOptionSchema ? number :
@@ -43,7 +43,7 @@ export function convertRawOptions<OpSc extends OptionsSchema>(schema: OpSc, raw:
 				file.url = file.url.replace('http://syu-win.local:3000/', 'https://local-mi.syuilo.dev/');
 			}
 
-			converted[k] = { type: _v.type, custom: file != null ? { url: file.url } : null, fit: _v.fit } satisfies ConvertedImageValue;
+			converted[k] = { type: _v.type, custom: file != null ? { url: file.url } : null, fit: _v.fit, rotation: _v.rotation } satisfies ConvertedImageValue;
 		} else {
 			converted[k] = v;
 		}

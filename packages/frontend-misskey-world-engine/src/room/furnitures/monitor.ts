@@ -50,7 +50,7 @@ export const monitor = defineFuniture(monitor_schema, {
 			if (options.image.type === '_custom_') {
 				url = options.image.custom?.url ?? null;
 			}
-			return textureManager.change(url, options.image.fit).then((tex) => {
+			return textureManager.change(url, options.image.fit, options.image.rotation).then((tex) => {
 				screenMaterial.emissiveTexture = tex;
 			});
 		};

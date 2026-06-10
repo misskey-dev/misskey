@@ -26,7 +26,7 @@ export const wallCanvas = defineFuniture(wallCanvas_schema, {
 			canvasMesh.morphTargetManager!.getTargetByName('Height')!.influence = options.height;
 			model.updated();
 
-			textureManager.applyFit();
+			textureManager.calcUv();
 		};
 
 		applySize();
@@ -37,7 +37,7 @@ export const wallCanvas = defineFuniture(wallCanvas_schema, {
 			if (options.image.type === '_custom_') {
 				url = options.image.custom?.url ?? null;
 			}
-			return textureManager.change(url, options.image.fit).then((tex) => {
+			return textureManager.change(url, options.image.fit, options.image.rotation).then((tex) => {
 				canvasMaterial.albedoTexture = tex;
 			});
 		};

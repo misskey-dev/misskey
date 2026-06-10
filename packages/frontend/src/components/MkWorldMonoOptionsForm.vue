@@ -82,6 +82,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkRadios :options="[{ label: i18n.ts._miRoom.imageFit_cover, value: 'cover' }, { label: i18n.ts._miRoom.imageFit_contain, value: 'contain' }, { label: i18n.ts._miRoom.imageFit_stretch, value: 'stretch' }]" :modelValue="options[k].fit ?? 'cover'" @update:modelValue="v => changeImageFit(k, v)">
 					<template #label>{{ i18n.ts._miRoom.imageFit }}</template>
 				</MkRadios>
+
+				<hr>
+
+				<MkButton inline @click="changeImageRotation(k)"><i class="ti ti-corner-down-left"></i> {{ i18n.ts.rotate }}</MkButton>
 			</div>
 			<div v-else-if="s.type === 'seed'">
 				<MkRange :continuousUpdate="true" :min="0" :max="1000" :step="1" :modelValue="options[k]" @update:modelValue="v => emit('update', k, v)"></MkRange>
@@ -172,6 +176,10 @@ function clearImage(k: string) {
 
 function changeImageFit(k: string, fit: string) {
 	emit('update', k, { ...props.options[k], fit });
+}
+
+function changeImageRotation(k: string) {
+	emit('update', k, { ...props.options[k], rotation: ((props.options[k].rotation ?? 0) + 1) % 4 });
 }
 
 function updateMaterialColor(k: string, color: { r: number; g: number; b: number }) {

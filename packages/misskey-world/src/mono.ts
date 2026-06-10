@@ -61,7 +61,7 @@ export type RawOptions = Record<string, unknown> & {
 	readonly __brand: unique symbol;
 };
 
-type RawImageValue<Presets extends string = string> = { type: Presets | null | '_custom_'; driveFileId?: string | null; fit?: 'cover' | 'contain' | 'stretch'; };
+type RawImageValue<Presets extends string = string> = { type: Presets | null | '_custom_'; driveFileId?: string | null; fit?: 'cover' | 'contain' | 'stretch'; rotation?: 0 | 1 | 2 | 3; };
 export type GetRawOptionsSchemaValues<T extends OptionsSchema> = {
 	[K in keyof T]:
 	T[K] extends NumberOptionSchema ? number :

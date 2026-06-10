@@ -35,7 +35,7 @@ export const djPlayer = defineFuniture(djPlayer_schema, {
 			} else if (options.image.type === 'waveform') {
 				url = '/client-assets/world/objects/dj-player/textures/display-waveform.png';
 			}
-			return textureManager.change(url, options.image.fit).then((tex) => {
+			return textureManager.change(url, options.image.fit, options.image.rotation).then((tex) => {
 				screenMaterial.emissiveTexture = tex;
 			});
 		};

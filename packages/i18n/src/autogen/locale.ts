@@ -5679,6 +5679,10 @@ export interface Locale extends ILocale {
      * 選択
      */
     "choose": string;
+    /**
+     * 回転
+     */
+    "rotate": string;
     "_imageEditing": {
         "_vars": {
             /**

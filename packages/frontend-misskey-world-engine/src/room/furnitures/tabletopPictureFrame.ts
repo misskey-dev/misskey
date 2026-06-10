@@ -49,7 +49,7 @@ export const tabletopPictureFrame = defineFuniture(tabletopPictureFrame_schema, 
 			matMesh.isVisible = options.matHThickness > 0 || options.matVThickness > 0;
 			model.updated();
 
-			textureManager.applyFit();
+			textureManager.calcUv();
 		};
 
 		applyMatThickness();
@@ -83,7 +83,7 @@ export const tabletopPictureFrame = defineFuniture(tabletopPictureFrame_schema, 
 			if (options.image.type === '_custom_') {
 				url = options.image.custom?.url ?? null;
 			}
-			return textureManager.change(url, options.image.fit).then((tex) => {
+			return textureManager.change(url, options.image.fit, options.image.rotation).then((tex) => {
 				pictureMaterial.albedoTexture = tex;
 			});
 		};

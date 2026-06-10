@@ -62,17 +62,15 @@ export const createTextureManager = (targetMesh: BABYLON.Mesh, calcTargetAspect:
 
 	const updateUv = createPlaneUvMapper(targetMesh);
 
-	const applyFit = (method?: 'cover' | 'contain' | 'stretch') => {
+	const calcUv = (method?: 'cover' | 'contain' | 'stretch', rotation?: 0 | 1 | 2 | 3) => {
 		if (currentTexture == null) return;
-
-		const srcAspect = currentTexture.getSize().width / currentTexture.getSize().height;
-
-		updateUv(srcAspect, calcTargetAspect(), method ?? 'cover');
+		const srcSize = currentTexture.getSize();
+		updateUv(srcSize.width / srcSize.height, calcTargetAspect(), method ?? 'cover', rotation ?? 0);
 	};
 
-	const change = (url: string | null, fit?: 'cover' | 'contain' | 'stretch') => new Promise<BABYLON.Texture | null>((resolve) => {
+	const change = (url: string | null, fit?: 'cover' | 'contain' | 'stretch', rotation?: 0 | 1 | 2 | 3) => new Promise<BABYLON.Texture | null>((resolve) => {
 		if (currentUrl === url) {
-			applyFit(fit);
+			calcUv(fit, rotation);
 			resolve(currentTexture);
 			return;
 		}
@@ -91,7 +89,7 @@ export const createTextureManager = (targetMesh: BABYLON.Mesh, calcTargetAspect:
 			currentTexture!.level = 1;
 			currentTexture!.wrapU = BABYLON.Texture.MIRROR_ADDRESSMODE;
 			currentTexture!.wrapV = BABYLON.Texture.MIRROR_ADDRESSMODE;
-			applyFit(fit);
+			calcUv(fit, rotation);
 			resolve(currentTexture);
 		}, (message, exception) => {
 			console.warn('Failed to load texture:', message, exception);
@@ -103,7 +101,7 @@ export const createTextureManager = (targetMesh: BABYLON.Mesh, calcTargetAspect:
 
 	return {
 		change,
-		applyFit,
+		calcUv,
 		dispose: () => {
 			if (currentTexture != null) {
 				currentTexture.dispose();
