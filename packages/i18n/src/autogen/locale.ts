@@ -13493,7 +13493,7 @@ export interface Locale extends ILocale {
          */
         "imageFit_contain": string;
         /**
-         * 引き伸ばす
+         * 伸縮
          */
         "imageFit_stretch": string;
         /**
