@@ -220,10 +220,6 @@ export class MemoryKVCache<T> {
 	 * @deprecated これを直接呼び出すべきではない。InternalEventなどで変更を全てのプロセス/マシンに通知するべき
 	 */
 	public set(key: string, value: T): void {
-		// Delete before re-inserting so the Map preserves insertion order for gc().
-		// Without this, an updated key stays at its original position, which breaks
-		// the "oldest-first" assumption that gc() relies on to stop early.
-		//this.cache.delete(key);
 		this.cache.set(key, {
 			date: Date.now(),
 			value,
@@ -303,12 +299,8 @@ export class MemoryKVCache<T> {
 		const now = Date.now();
 
 		for (const [key, { date }] of this.cache.entries()) {
-			// The map is ordered from oldest to youngest.
-			// We can stop once we find an entry that's still active, because all following entries must *also* be active.
 			const age = now - date;
-			if (age < this.lifetime) break;
-
-			this.cache.delete(key);
+			if (age >= this.lifetime) this.cache.delete(key);
 		}
 	}
 

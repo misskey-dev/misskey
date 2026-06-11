@@ -6,7 +6,7 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { MemoryKVCache, MemorySingleCache } from '@/misc/cache.js';
 
-describe.skip('misc:MemoryKVCache', () => {
+describe('misc:MemoryKVCache', () => {
 	beforeEach(() => {
 		vi.useFakeTimers();
 	});
@@ -71,9 +71,9 @@ describe.skip('misc:MemoryKVCache', () => {
 		});
 
 		// Regression test for https://github.com/misskey-dev/misskey/issues/15500
-		// set() previously did NOT delete-before-reinsert, so updated keys kept their
-		// original insertion position. gc() would then stop early at the updated key
-		// (whose timestamp looked fresh) and leave subsequent, truly-expired keys alive.
+		// Updated keys keep their original insertion position in Map. gc() must not
+		// assume that entries are ordered from oldest to youngest, otherwise it can
+		// stop early at an updated key and leave later, truly-expired keys alive.
 		// The key observable symptom is that gc() fails to *remove* the expired entry
 		// from the Map — get() has its own expiry check so it returns undefined either
 		// way, but the stale entry keeps consuming memory.
@@ -85,9 +85,9 @@ describe.skip('misc:MemoryKVCache', () => {
 			cache.set('a', 'v1');
 			cache.set('b', 'v1');
 
-			// Advance time and update 'a' — without the fix, 'a' stays at position 0
-			// in the Map, so gc() sees it as fresh first and breaks early, leaving 'b'
-			// (which is also expired) still in the Map (though get() would hide it).
+			// Advance time and update 'a'. It stays at position 0 in the Map, so a
+			// gc() implementation that stops at the first fresh entry would leave 'b'
+			// in the Map even though get() would hide it as expired.
 			vi.advanceTimersByTime(500);
 			cache.set('a', 'v2'); // refresh 'a'; 'b' is still at t=0
 
@@ -110,6 +110,24 @@ describe.skip('misc:MemoryKVCache', () => {
 			expect(() => cache.gc()).not.toThrow();
 			cache.dispose();
 		});
+	});
+
+	test('set does not cause active entries iteration to revisit the same key', () => {
+		const cache = new MemoryKVCache<{ id: string }>(1000);
+		cache.set('key', { id: 'user-1' });
+
+		let iterations = 0;
+		for (const [key, { value }] of cache.entries) {
+			iterations++;
+			if (value.id === 'user-1') {
+				cache.set(key, value);
+			}
+
+			expect(iterations).toBeLessThan(3);
+		}
+
+		expect(iterations).toBe(1);
+		cache.dispose();
 	});
 
 	describe('fetch()', () => {
