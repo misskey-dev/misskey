@@ -46,7 +46,7 @@ export const lavaLamp = defineFuniture(lavaLamp_schema, {
 
 		const lavaMat = new BABYLON.PBRMaterial('lavaLampLightMat', scene);
 		lavaMat.disableLighting = true;
-		lavaMat.emissiveIntensity = 10;
+		lavaMat.emissiveIntensity = 1;
 		const sphere = BABYLON.MeshBuilder.CreateSphere('', { diameter: cm(4) }, scene);
 		sphere.parent = root;
 		sphere.position = new BABYLON.Vector3(0, cm(15), 0);
