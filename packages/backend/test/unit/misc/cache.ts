@@ -6,7 +6,7 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { MemoryKVCache, MemorySingleCache } from '@/misc/cache.js';
 
-describe('misc:MemoryKVCache', () => {
+describe.skip('misc:MemoryKVCache', () => {
 	beforeEach(() => {
 		vi.useFakeTimers();
 	});

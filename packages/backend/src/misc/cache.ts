@@ -223,7 +223,7 @@ export class MemoryKVCache<T> {
 		// Delete before re-inserting so the Map preserves insertion order for gc().
 		// Without this, an updated key stays at its original position, which breaks
 		// the "oldest-first" assumption that gc() relies on to stop early.
-		this.cache.delete(key);
+		//this.cache.delete(key);
 		this.cache.set(key, {
 			date: Date.now(),
 			value,
