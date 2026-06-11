@@ -56,7 +56,7 @@ minimumReleaseAgeExclude:
   - slacc-win32-x64-msvc
   - '@typescript/native-preview*'
   - pnpm
-  - typeorm # そのうち消す
+  - '@types/archiver' # そのうち消す
 overrides:
   '@aiscript-dev/aiscript-languageserver': '-'
   chokidar: 5.0.0

@@ -10,8 +10,8 @@
 	"devDependencies": {
 		"@types/node": "24.12.4",
 		"@types/tinycolor2": "1.4.6",
-		"@typescript-eslint/eslint-plugin": "8.59.3",
-		"@typescript-eslint/parser": "8.59.3",
+		"@typescript-eslint/eslint-plugin": "8.60.0",
+		"@typescript-eslint/parser": "8.60.0",
 		"eslint-plugin-vue": "10.9.1",
 		"vue-eslint-parser": "10.4.0"
 	},
@@ -23,8 +23,8 @@
 		"i18n": "workspace:*",
 		"json5": "2.2.3",
 		"misskey-js": "workspace:*",
-		"shiki": "4.0.2",
+		"shiki": "4.1.0",
 		"tinycolor2": "1.6.0",
-		"vue": "3.5.34"
+		"vue": "3.5.35"
 	}
 }

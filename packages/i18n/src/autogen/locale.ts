@@ -5683,6 +5683,26 @@ export interface Locale extends ILocale {
      * 回転
      */
     "rotate": string;
+    /**
+     * 絵文字パレットを選択
+     */
+    "chooseEmojiPalette": string;
+    /**
+     * 絵文字パレットに追加
+     */
+    "addToEmojiPalette": string;
+    /**
+     * この絵文字はすでにこの絵文字パレットに含まれています。追加しなおしますか？
+     */
+    "emojiPaletteAlreadyAddedConfirm": string;
+    /**
+     * 末尾に追加
+     */
+    "append": string;
+    /**
+     * 先頭に追加
+     */
+    "prepend": string;
     "_imageEditing": {
         "_vars": {
             /**

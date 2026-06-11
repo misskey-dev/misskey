@@ -46,6 +46,7 @@ export type ItemOption<T extends OptionValue = OptionValue> = {
 	type?: 'option';
 	value: T;
 	label: string;
+	caption?: string;
 };
 
 export type ItemGroup<T extends OptionValue = OptionValue> = {
@@ -183,6 +184,7 @@ function show() {
 			for (const option of item.items) {
 				menu.push({
 					text: option.label,
+					caption: option.caption,
 					active: computed(() => model.value === option.value),
 					action: () => {
 						model.value = option.value as ModelTChecked;
@@ -196,6 +198,7 @@ function show() {
 		} else {
 			menu.push({
 				text: item.label,
+				caption: item.caption,
 				active: computed(() => model.value === item.value),
 				action: () => {
 					model.value = item.value as ModelTChecked;
