@@ -303,6 +303,53 @@ const TEXT_TEXTURE_CHAR_WIDTH_MAP = {
 	'+': 0.6,
 };
 
+export function createTextMesh(text: string, options: {
+	size: number;
+	material: BABYLON.StandardMaterial;
+}) {
+	const meshes: BABYLON.Mesh[] = [];
+
+	let totalWidth = 0;
+	for (let i = 0; i < text.length; i++) {
+		const char = text[i];
+		//const charWidth = TEXT_TEXTURE_CHAR_WIDTH_MAP[char] ?? 1;
+		const charWidth = 1;
+		totalWidth += options.size * charWidth;
+	}
+
+	let xPos = -totalWidth / 2;
+	for (let i = 0; i < text.length; i++) {
+		const char = text[i];
+		const index = TEXT_TEXTURE_CHAR_MAP[char];
+		//const charWidth = TEXT_TEXTURE_CHAR_WIDTH_MAP[char] ?? 1;
+		const charWidth = 1;
+		const x = index % TEXT_TEXTURE_CHAR_COLS;
+		const y = Math.floor(index / TEXT_TEXTURE_CHAR_COLS);
+
+		const plane = BABYLON.MeshBuilder.CreatePlane('plane', {
+			//width: options.size * charWidth,
+			//height: options.size,
+			size: options.size,
+			sideOrientation: BABYLON.Mesh.DOUBLESIDE,
+			updatable: true,
+		});
+		const uvs = plane.getVerticesData(BABYLON.VertexBuffer.UVKind);
+		uvs[0] = uvs[6] = x / TEXT_TEXTURE_CHAR_COLS;
+		uvs[1] = uvs[3] = (y + 1) / TEXT_TEXTURE_CHAR_ROWS;
+		uvs[2] = uvs[4] = (x + 1) / TEXT_TEXTURE_CHAR_COLS;
+		uvs[5] = uvs[7] = y / TEXT_TEXTURE_CHAR_ROWS;
+		plane.updateVerticesData(BABYLON.VertexBuffer.UVKind, uvs);
+		plane.material = options.material;
+		xPos += (options.size * charWidth);
+		plane.position = new BABYLON.Vector3(xPos - (options.size / 2), 0, 0);
+		meshes.push(plane);
+	}
+
+	const merged = BABYLON.Mesh.MergeMeshes(meshes, true, false, undefined, false, false);
+
+	return merged!;
+}
+
 export class RecyvlingText {
 	public maxChars: number;
 	public size: number;

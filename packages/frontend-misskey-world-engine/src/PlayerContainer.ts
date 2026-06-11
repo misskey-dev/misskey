@@ -7,7 +7,7 @@ import * as BABYLON from '@babylonjs/core/pure.js';
 import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { AccessoryContainer } from './avatars/AccessoryContainer.js';
 import { getAccessoryDef } from './avatars/accessory-defs.js';
-import { Timer } from './utility.js';
+import { createTextMesh, Timer } from './utility.js';
 import type { WorldAvatar } from 'misskey-world/src/types.js';
 
 export type PlayerProfile = {
@@ -75,6 +75,25 @@ export class PlayerContainer {
 		this.subRootContainerForAnim.parent = this.root;
 		this.subRoot = new BABYLON.TransformNode(`player:${this.id}:subRoot`, params.scene);
 		this.subRoot.parent = this.subRootContainerForAnim;
+
+		const usernameLabelTex = new BABYLON.Texture('/client-assets/world/chars-black.png', this.scene, false, false);
+		usernameLabelTex.level = 1;
+		const usernameLabelMaterial = new BABYLON.StandardMaterial('usernameLabelMaterial', this.scene);
+		usernameLabelMaterial.roughness = 1;
+		usernameLabelMaterial.diffuseColor = new BABYLON.Color3(1, 1, 1);
+		usernameLabelMaterial.diffuseTexture = usernameLabelTex;
+		usernameLabelMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
+		usernameLabelMaterial.emissiveTexture = usernameLabelTex;
+		usernameLabelMaterial.disableLighting = true;
+		const usernameLabelMesh = createTextMesh(this.profile.user?.username ?? '(anonymous)', {
+			size: cm(5),
+			material: usernameLabelMaterial,
+		});
+		usernameLabelMesh.parent = this.subRoot;
+		usernameLabelMesh.position.y = cm(50);
+		usernameLabelMesh.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
+		this.scene.addMesh(usernameLabelMesh);
+
 		if (params.state) this.applyState(params.state, true);
 
 		console.log('PlayerContainer created', this.id);
