@@ -8,12 +8,27 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import type { UserProfilesRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
+import { ApiError } from '@/server/api/error.js';
 import { UserAuthService } from '@/core/UserAuthService.js';
 
 export const meta = {
 	requireCredential: true,
 
 	secure: true,
+
+	errors: {
+		incorrectPassword: {
+			message: 'Incorrect password.',
+			code: 'INCORRECT_PASSWORD',
+			id: 'd46ffe5c-200b-4471-aca2-4d0ef197368f',
+		},
+
+		invalidCredential: {
+			message: 'Invalid credential.',
+			code: 'INVALID_CREDENTIAL',
+			id: '1e5d4005-3eb0-43f8-b466-87ad864b9fd6',
+		},
+	},
 } as const;
 
 export const paramDef = {
@@ -40,20 +55,26 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (profile.twoFactorEnabled) {
 				if (token == null) {
-					throw new Error('authentication failed');
+					throw new ApiError(meta.errors.invalidCredential);
 				}
 
 				try {
 					await this.userAuthService.twoFactorAuthenticate(profile, token);
-				} catch (_) {
-					throw new Error('authentication failed');
+				} catch (e) {
+					if (e instanceof UserAuthService.AuthenticationFailedError) {
+						throw new ApiError(meta.errors.invalidCredential);
+					}
+					throw e;
 				}
 			}
 
 			const passwordMatched = await bcrypt.compare(ps.currentPassword, profile.password!);
 
 			if (!passwordMatched) {
-				throw new Error('incorrect password');
+				if (profile.twoFactorEnabled) {
+					throw new ApiError(meta.errors.invalidCredential);
+				}
+				throw new ApiError(meta.errors.incorrectPassword);
 			}
 
 			// Generate hash of password

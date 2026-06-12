@@ -14,6 +14,8 @@ import type { MiLocalUser } from '@/models/User.js';
 
 @Injectable()
 export class UserAuthService {
+	public static AuthenticationFailedError = class extends Error {};
+
 	constructor(
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
@@ -38,7 +40,7 @@ export class UserAuthService {
 			});
 
 			if (delta === null) {
-				throw new Error('authentication failed');
+				throw new UserAuthService.AuthenticationFailedError();
 			}
 		}
 	}
