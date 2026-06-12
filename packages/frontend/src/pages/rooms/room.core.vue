@@ -276,7 +276,7 @@ for (const obj of initialRoomState.installedFurnitures) {
 		obj.type = 'ironFrameShelf';
 	}
 }
-if (initialRoomState.env.options.walls.n != null) {
+if (initialRoomState.env.type === 'simple' && initialRoomState.env.options.walls.n != null) {
 	initialRoomState.env.options.walls.zPositive = initialRoomState.env.options.walls.s;
 	initialRoomState.env.options.walls.zNegative = initialRoomState.env.options.walls.n;
 	initialRoomState.env.options.walls.xPositive = initialRoomState.env.options.walls.w;
@@ -286,7 +286,7 @@ if (initialRoomState.env.options.walls.n != null) {
 	delete initialRoomState.env.options.walls.w;
 	delete initialRoomState.env.options.walls.e;
 }
-if (initialRoomState.env.options.pillars.nw != null) {
+if (initialRoomState.env.type === 'simple' && initialRoomState.env.options.pillars.nw != null) {
 	initialRoomState.env.options.pillars.zp_xp = initialRoomState.env.options.pillars.sw;
 	initialRoomState.env.options.pillars.zp_xn = initialRoomState.env.options.pillars.se;
 	initialRoomState.env.options.pillars.zn_xp = initialRoomState.env.options.pillars.nw;
