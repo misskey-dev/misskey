@@ -11,7 +11,19 @@ import type { RoomState, RoomAttachments } from 'misskey-world/src/room/type.js'
 registerBabylonRuntime();
 
 export async function createRoomEngine(params: {
-	roomState: RoomState; roomAttachments: RoomAttachments; canvas: HTMLCanvasElement; options: { antialias: boolean; resolution: number; fov: number; graphicsQuality: number; fps: number | null; useVirtualJoystick?: boolean; };
+	roomState: RoomState;
+	roomAttachments: RoomAttachments;
+	canvas: HTMLCanvasElement;
+	options: {
+		antialias: boolean;
+		resolution: number;
+		fov: number;
+		graphicsQuality: number;
+		fps: number | null;
+		useVirtualJoystick?: boolean;
+		showUsernameOnAvatar: boolean;
+		show2dAvatarOnAvatar: boolean;
+	};
 }) {
 	const babylonEngine = new BABYLON.WebGPUEngine(params.canvas, { doNotHandleContextLost: true, powerPreference: 'high-performance', antialias: params.options.antialias });
 	babylonEngine.compatibilityMode = false;

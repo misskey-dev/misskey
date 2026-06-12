@@ -754,11 +754,18 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 					<div class="_gaps_m">
 						<div class="_gaps_s">
-							<SearchMarker :keywords="['rendering', 'thread']">
-								<MkPreferenceContainer k="world.separateRenderingThread">
-									<MkSwitch v-model="worldSeparateRenderingThread">
-										<template #label><SearchLabel>{{ i18n.ts._miWorld.separateRenderingThread }}</SearchLabel></template>
-										<template #caption>{{ i18n.ts._miWorld.separateRenderingThread_description }}</template>
+							<SearchMarker :keywords="['username']">
+								<MkPreferenceContainer k="world.showUsernameOnAvatar">
+									<MkSwitch v-model="worldShowUsernameOnAvatar">
+										<template #label><SearchLabel>{{ i18n.ts._miWorld.showUsernameOnAvatar }}</SearchLabel></template>
+									</MkSwitch>
+								</MkPreferenceContainer>
+							</SearchMarker>
+
+							<SearchMarker :keywords="['avatar', 'icon']">
+								<MkPreferenceContainer k="world.show2dAvatarOnAvatar">
+									<MkSwitch v-model="worldShow2dAvatarOnAvatar">
+										<template #label><SearchLabel>{{ i18n.ts._miWorld.show2dAvatarOnAvatar }}</SearchLabel></template>
 									</MkSwitch>
 								</MkPreferenceContainer>
 							</SearchMarker>
@@ -836,6 +843,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 							<MkPreferenceContainer k="world.antialias">
 								<MkSwitch v-model="worldAntialias">
 									<template #label><SearchLabel>{{ i18n.ts._miWorld.antialiasing }}</SearchLabel></template>
+								</MkSwitch>
+							</MkPreferenceContainer>
+						</SearchMarker>
+
+						<SearchMarker :keywords="['rendering', 'thread']">
+							<MkPreferenceContainer k="world.separateRenderingThread">
+								<MkSwitch v-model="worldSeparateRenderingThread">
+									<template #label><SearchLabel>{{ i18n.ts._miWorld.separateRenderingThread }}</SearchLabel></template>
+									<template #caption>{{ i18n.ts._miWorld.separateRenderingThread_description }}</template>
 								</MkSwitch>
 							</MkPreferenceContainer>
 						</SearchMarker>
@@ -1060,6 +1076,8 @@ const worldFps = prefer.model('world.fps');
 const worldResolution = prefer.model('world.resolution');
 const worldAntialias = prefer.model('world.antialias');
 const worldFov = prefer.model('world.fov');
+const worldShowUsernameOnAvatar = prefer.model('world.showUsernameOnAvatar');
+const worldShow2dAvatarOnAvatar = prefer.model('world.show2dAvatarOnAvatar');
 
 const fontSize = ref(miLocalStorage.getItem('fontSize') as '1' | '2' | '3' | null);
 const useSystemFont = ref(miLocalStorage.getItem('useSystemFont') != null);

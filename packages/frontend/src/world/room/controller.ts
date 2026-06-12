@@ -23,6 +23,8 @@ export type RoomControllerOptions = {
 	antialias: boolean;
 	fov: number;
 	useVirtualJoystick?: boolean;
+	showUsernameOnAvatar: boolean;
+	show2dAvatarOnAvatar: boolean;
 };
 
 // 抽象化レイヤー
@@ -244,5 +246,9 @@ export class RoomController extends EngineControllerBase<RoomEngine, {
 
 	public clearPlayers() {
 		this.call('clearPlayers');
+	}
+
+	public updateAvatarDisplayOptions(options: { showUsername: boolean; show2dAvatar: boolean }) {
+		this.call('updateAvatarDisplayOptions', [options]);
 	}
 }

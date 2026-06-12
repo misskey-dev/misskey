@@ -3597,6 +3597,8 @@ _miWorld:
   sit: "座る"
   lyingDown: "寝そべる"
   standUp: "立ち上がる"
+  showUsernameOnAvatar: "アバターにユーザー名を表示"
+  show2dAvatarOnAvatar: "アバターにユーザーアイコンを表示"
 
   _avatars:
     _default:

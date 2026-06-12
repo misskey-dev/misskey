@@ -13427,6 +13427,14 @@ export interface Locale extends ILocale {
          * 立ち上がる
          */
         "standUp": string;
+        /**
+         * アバターにユーザー名を表示
+         */
+        "showUsernameOnAvatar": string;
+        /**
+         * アバターにユーザーアイコンを表示
+         */
+        "show2dAvatarOnAvatar": string;
         "_avatars": {
             "_default": {
                 /**

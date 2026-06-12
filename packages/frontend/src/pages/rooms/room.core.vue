@@ -240,6 +240,8 @@ const resolutionAutoValue = computed<number>(() => deviceKind !== 'desktop' ? 0.
 const resolution = computed<number>(() => resolutionRaw.value ?? resolutionAutoValue.value);
 
 const antialias = prefer.model('world.antialias');
+const showUsernameOnAvatar = prefer.model('world.showUsernameOnAvatar');
+const show2dAvatarOnAvatar = prefer.model('world.show2dAvatarOnAvatar');
 
 const useVirtualJoystick = isTouchUsing && (deviceKind === 'smartphone' || deviceKind === 'tablet');
 //const useVirtualJoystick = true;
@@ -329,6 +331,8 @@ const roomControllerOptions = computed<RoomControllerOptions>(() => ({
 	useVirtualJoystick,
 	fov: prefer.s['world.fov'],
 	workerMode: prefer.s['world.separateRenderingThread'],
+	showUsernameOnAvatar: showUsernameOnAvatar.value,
+	show2dAvatarOnAvatar: show2dAvatarOnAvatar.value,
 }));
 
 const controller = markRaw(new RoomController(deepClone(initialRoomState), roomControllerOptions.value));
@@ -360,6 +364,13 @@ watch(controller.grabbing, () => {
 
 watch([graphicsQuality, fps, resolution, antialias], () => {
 	refresh();
+});
+
+watch([showUsernameOnAvatar, show2dAvatarOnAvatar], () => {
+	controller.updateAvatarDisplayOptions({
+		showUsername: showUsernameOnAvatar.value,
+		show2dAvatar: show2dAvatarOnAvatar.value,
+	});
 });
 
 controller.addListener('playerPointed', ({ playerId }) => {
@@ -650,6 +661,7 @@ function showCharacterMenu(ev: PointerEvent) {
 function showOnlineMenu(ev: PointerEvent) {
 	os.popupMenu([{
 		text: multiplayer.isOnline.value ? i18n.ts._miWorld.disconnectToOnline : i18n.ts._miWorld.connectToOnline,
+		icon: multiplayer.isOnline.value ? 'ti ti-world-off' : 'ti ti-world',
 		danger: multiplayer.isOnline.value,
 		action: () => {
 			if (multiplayer.isOnline.value) {
@@ -658,6 +670,21 @@ function showOnlineMenu(ev: PointerEvent) {
 				enterOnline();
 			}
 		},
+	}, {
+		type: 'divider',
+	}, {
+		type: 'parent',
+		text: i18n.ts.settings,
+		icon: 'ti ti-settings',
+		children: [{
+			type: 'switch',
+			text: i18n.ts._miWorld.showUsernameOnAvatar,
+			ref: showUsernameOnAvatar,
+		}, {
+			type: 'switch',
+			text: i18n.ts._miWorld.show2dAvatarOnAvatar,
+			ref: show2dAvatarOnAvatar,
+		}],
 	}], ev.currentTarget ?? ev.target);
 }
 

@@ -187,8 +187,9 @@ export class RoomEngine extends EngineBase<{
 	}
 
 	private playerProfiles: Record<string, PlayerProfile> = {};
-	private playerStates: Record<string, PlayerState> = {};
 	private playerContainers: PlayerContainer[] = [];
+	private showUsernameOnAvatar: boolean;
+	private show2dAvatarOnAvatar: boolean;
 
 	private inited = false;
 
@@ -199,6 +200,8 @@ export class RoomEngine extends EngineBase<{
 		antialias: boolean;
 		fov: number;
 		useVirtualJoystick?: boolean;
+		showUsernameOnAvatar: boolean;
+		show2dAvatarOnAvatar: boolean;
 	}) {
 		super({
 			engine: options.engine,
@@ -216,6 +219,8 @@ export class RoomEngine extends EngineBase<{
 		this.graphicsQuality = options.graphicsQuality;
 		this.useGlow = this.graphicsQuality >= GRAPHICS_QUALITY.MEDIUM;
 		this.fov = options.fov;
+		this.showUsernameOnAvatar = options.showUsernameOnAvatar;
+		this.show2dAvatarOnAvatar = options.show2dAvatarOnAvatar;
 		this.time = TIME_MAP[new Date().getHours() as keyof typeof TIME_MAP];
 
 		registerBuiltInLoaders();
@@ -1504,8 +1509,8 @@ export class RoomEngine extends EngineBase<{
 					state: states[k],
 					scene: this.scene,
 					sr: this.sr,
-					showUsername: true,
-					show2dAvatar: true,
+					showUsername: this.showUsernameOnAvatar,
+					show2dAvatar: this.show2dAvatarOnAvatar,
 				});
 				// TODO: loadFunitureのものとある程度共通化
 				p.registerMeshes = (meshes) => {
@@ -1568,12 +1573,23 @@ export class RoomEngine extends EngineBase<{
 	}
 
 	public clearPlayers() {
+		this.sr.disableSnapshotRendering();
 		for (const playerContainer of this.playerContainers) {
-			this.sr.disableSnapshotRendering();
 			playerContainer.destroy();
-			this.sr.enableSnapshotRendering();
 		}
+		this.sr.enableSnapshotRendering();
 		this.playerContainers = [];
+	}
+
+	public updateAvatarDisplayOptions(options: { showUsername: boolean; show2dAvatar: boolean }) {
+		this.showUsernameOnAvatar = options.showUsername;
+		this.show2dAvatarOnAvatar = options.show2dAvatar;
+
+		this.sr.disableSnapshotRendering();
+		for (const playerContainer of this.playerContainers) {
+			playerContainer.updateUserInfoDisplayOptions(options);
+		}
+		this.sr.enableSnapshotRendering();
 	}
 
 	public resize() {
