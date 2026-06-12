@@ -11,11 +11,11 @@
 	"dependencies": {
 		"i18n": "workspace:*",
 		"esbuild": "0.28.0",
-		"idb-keyval": "6.2.2",
+		"idb-keyval": "6.2.4",
 		"misskey-js": "workspace:*"
 	},
 	"devDependencies": {
-		"@typescript-eslint/parser": "8.59.0",
+		"@typescript-eslint/parser": "8.60.0",
 		"@typescript/lib-webworker": "npm:@types/serviceworker@0.0.74",
 		"eslint-plugin-import": "2.32.0",
 		"nodemon": "3.1.14"

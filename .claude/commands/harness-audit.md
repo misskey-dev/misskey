@@ -34,8 +34,8 @@ Misskey リポジトリの `.claude/` 構成を 7 カテゴリで採点し、改
 | 1 | Tool Coverage | skill / agent / command の数、欠けているワークフロー段、重複なし |
 | 2 | Context Efficiency | frontmatter description の冗長度、SKILL.md の長さ分布、重複情報、CLAUDE.md の肥大化 |
 | 3 | Quality Gates | Stop / PreToolUse / PostToolUse hook の整備、`/quality-gate` 等の完了前ゲートの有無、自動 lint/typecheck |
-| 4 | Memory Persistence | docs/* の同期状態を評価。プロジェクト側 `.claude/memory/` は未採用方針 (auto-memory はユーザーホーム側で自動運用) のため、ここを採点起点にせず既定 5/10 から開始する |
-| 5 | Eval Coverage | testing.md の網羅、Misskey 固有の e2e/fed/Storybook/Cypress 適用ガイド |
+| 4 | Memory Persistence | `.claude/skills/*/SKILL.md` と `references/` の同期状態を評価。プロジェクト側 `.claude/memory/` は未採用方針 (auto-memory はユーザーホーム側で自動運用) のため、ここを採点起点にせず既定 5/10 から開始する |
+| 5 | Eval Coverage | `working-on-backend` / `working-on-frontend` の testing リファレンス (backend-testing.md / frontend-testing.md) の網羅、Misskey 固有の e2e/fed/Storybook/Cypress 適用ガイド |
 | 6 | Security Guardrails | SPDX 規約適用、migration 不変性ルール、ja-JP.yml 限定編集ルール、secrets 検出 |
 | 7 | Cost Efficiency | enabledPlugins の重複・過剰、context-budget の整備、MCP 過剰登録なし |
 
@@ -111,7 +111,7 @@ Tool Coverage:        9/10   (skills 5, agents 2, commands 5 — 偏りなし)
 Context Efficiency:   8/10   (description 平均 3-5 行、肥大なし)
 Quality Gates:        5/10   (Stop hook 共有設定に未登録 / `/quality-gate` あり)
 Memory Persistence:   5/10   (プロジェクト側 memory/ 未採用方針 = 既定値)
-Eval Coverage:        7/10   (testing.md 網羅、Storybook 一部抜け)
+Eval Coverage:        7/10   (backend/frontend testing リファレンス網羅、Storybook 一部抜け)
 Security Guardrails:  10/10  (SPDX 100%, locales OK, migrations clean)
 Cost Efficiency:      8/10   (context-budget 導入済 / MCP 0)
 
@@ -126,7 +126,7 @@ Top 3 Actions:
 2) [Quality Gates] backend の console.log 3 件を logger に置換。
    git grep "console\.log" packages/backend/src
 3) [Cost Efficiency] enabledPlugins から未使用のものを外す。
-   .claude/docs/plugins.md と照合。
+   `.claude/settings.json` の `enabledPlugins` と実プロジェクト利用状況を照合。
 
 Suggested next skills to apply:
 - /quality-gate で完了前に lint + unit test を回す
