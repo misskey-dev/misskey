@@ -133,6 +133,8 @@ export class AvatarPreviewEngine extends EngineBase<{ // PlayerPreviewEngineã«æ
 			},
 			sr: this.sr,
 			scene: this.scene,
+			showUsername: false,
+			show2dAvatar: false,
 		});
 		this.playerContainer.registerMeshes = (meshes) => {
 			for (const mesh of meshes) {

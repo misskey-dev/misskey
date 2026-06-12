@@ -551,6 +551,12 @@ export const PREF_DEF = definePreferences({
 	'world.separateRenderingThread': {
 		default: true,
 	},
+	'world.showUsernameOnAvatar': {
+		default: true,
+	},
+	'world.show2dAvatarOnAvatar': {
+		default: false,
+	},
 	'world.room.advancedCustomize': {
 		default: false,
 	},

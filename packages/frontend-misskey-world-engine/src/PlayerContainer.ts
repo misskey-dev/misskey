@@ -49,6 +49,8 @@ const DEFAULT_FACE_PARTS_MOUTH = {
 	'i': '/client-assets/world/avatars/mouth-i.png',
 };
 
+let usernameLabelMaterial: BABYLON.StandardMaterial | null = null;
+
 export class PlayerContainer {
 	public id: string;
 	private profile: PlayerProfile;
@@ -62,8 +64,12 @@ export class PlayerContainer {
 	private animationObserver: BABYLON.Observer<BABYLON.Scene> | null = null;
 	private accessoryContainers: AccessoryContainer[] = [];
 	private timer: Timer = new Timer();
+	private showUsername: boolean;
+	private show2dAvatar: boolean;
+	private usernameLabelMesh: BABYLON.Mesh | null = null;
+	private twodAvatarMesh: BABYLON.Mesh | null = null;
 
-	constructor(params: { id: string; profile: PlayerProfile; state: PlayerState | null; sr: BABYLON.SnapshotRenderingHelper; scene: BABYLON.Scene; }) {
+	constructor(params: { id: string; profile: PlayerProfile; state: PlayerState | null; sr: BABYLON.SnapshotRenderingHelper; scene: BABYLON.Scene; showUsername: boolean; show2dAvatar: boolean; }) {
 		this.id = params.id;
 		this.profile = params.profile;
 		this.sr = params.sr;
@@ -76,27 +82,11 @@ export class PlayerContainer {
 		this.subRoot = new BABYLON.TransformNode(`player:${this.id}:subRoot`, params.scene);
 		this.subRoot.parent = this.subRootContainerForAnim;
 
-		const usernameLabelTex = new BABYLON.Texture('/client-assets/world/chars-black.png', this.scene, false, false);
-		usernameLabelTex.level = 1;
-		const usernameLabelMaterial = new BABYLON.StandardMaterial('usernameLabelMaterial', this.scene);
-		usernameLabelMaterial.roughness = 1;
-		usernameLabelMaterial.diffuseColor = new BABYLON.Color3(1, 1, 1);
-		usernameLabelMaterial.diffuseTexture = usernameLabelTex;
-		usernameLabelMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
-		usernameLabelMaterial.emissiveTexture = usernameLabelTex;
-		usernameLabelMaterial.disableLighting = true;
-		const usernameLabelMesh = createTextMesh(this.profile.user?.username ?? '(anonymous)', {
-			size: cm(5),
-			material: usernameLabelMaterial,
-		});
-		usernameLabelMesh.parent = this.subRoot;
-		usernameLabelMesh.position.y = cm(50);
-		usernameLabelMesh.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
-		this.scene.addMesh(usernameLabelMesh);
+		this.showUsername = params.showUsername;
+		this.show2dAvatar = params.show2dAvatar;
+		this.applyInfoMesh();
 
 		if (params.state) this.applyState(params.state, true);
-
-		console.log('PlayerContainer created', this.id);
 	}
 
 	public async loadAvatar() {
@@ -120,8 +110,6 @@ export class PlayerContainer {
 
 		modelRootMesh.dispose();
 
-		//const avatarTex = new BABYLON.Texture(this.profile.avatarUrl, this.scene, false, false);
-
 		const eyesBlinkTexture = new BABYLON.Texture('/client-assets/world/avatars/eyes-blink.png', this.scene, false, false);
 		eyesBlinkTexture.hasAlpha = true;
 
@@ -144,17 +132,6 @@ export class PlayerContainer {
 		}
 
 		for (const mesh of this.modelRoot.getChildMeshes()) {
-			//if (mesh.name.includes('__AVATAR__')) {
-			//	const mat = new BABYLON.PBRMaterial('', this.scene);
-			//	mat.albedoColor = new BABYLON.Color3(0.5, 0.5, 0.5);
-			//	mat.albedoTexture = avatarTex;
-			//	mat.emissiveColor = new BABYLON.Color3(0.5, 0.5, 0.5);
-			//	mat.emissiveTexture = avatarTex;
-			//	mat.roughness = 0;
-			//	mat.metallic = 0;
-			//	mat.backFaceCulling = false;
-			//	mesh.material = mat;
-			//}
 			if (mesh.name.includes('__BODY__')) {
 				mesh.material.albedoColor = new BABYLON.Color3(this.profile.avatar.body.color[0], this.profile.avatar.body.color[1], this.profile.avatar.body.color[2]);
 			}
@@ -260,6 +237,71 @@ export class PlayerContainer {
 		return container;
 	}
 
+	private applyInfoMesh() {
+		if (this.showUsername ) {
+			if (this.usernameLabelMesh == null) {
+				if (usernameLabelMaterial == null) {
+					const usernameLabelTex = new BABYLON.Texture('/client-assets/world/chars-black.png', this.scene, false, false);
+					usernameLabelMaterial = new BABYLON.StandardMaterial('usernameLabelMaterial', this.scene);
+					usernameLabelMaterial.roughness = 1;
+					usernameLabelMaterial.diffuseColor = new BABYLON.Color3(1, 1, 1);
+					usernameLabelMaterial.diffuseTexture = usernameLabelTex;
+					usernameLabelMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
+					usernameLabelMaterial.emissiveTexture = usernameLabelTex;
+					usernameLabelMaterial.disableLighting = true;
+				}
+
+				this.usernameLabelMesh = createTextMesh(this.profile.user?.username ?? '(anonymous)', {
+					size: cm(5),
+					material: usernameLabelMaterial,
+				});
+				this.usernameLabelMesh.parent = this.subRoot;
+				this.usernameLabelMesh.position.y = cm(40);
+				this.usernameLabelMesh.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
+				this.scene.addMesh(this.usernameLabelMesh);
+			}
+		} else {
+			if (this.usernameLabelMesh != null) {
+				this.usernameLabelMesh.dispose();
+				this.scene.removeMesh(this.usernameLabelMesh);
+				this.usernameLabelMesh = null;
+			}
+		}
+
+		if (this.show2dAvatar && this.profile.user?.avatarUrl != null) {
+			if (this.twodAvatarMesh == null) {
+				const twodAvatarTex = new BABYLON.Texture(this.profile.user.avatarUrl, this.scene, false, true);
+				const twodAvatarMat = new BABYLON.StandardMaterial('twodAvatarMat', this.scene);
+				twodAvatarMat.roughness = 1;
+				twodAvatarMat.diffuseColor = new BABYLON.Color3(0.5, 0.5, 0.5);
+				twodAvatarMat.diffuseTexture = twodAvatarTex;
+				twodAvatarMat.emissiveColor = new BABYLON.Color3(0.5, 0.5, 0.5);
+				twodAvatarMat.emissiveTexture = twodAvatarTex;
+				twodAvatarMat.disableLighting = true;
+				twodAvatarMat.backFaceCulling = false;
+
+				this.twodAvatarMesh = BABYLON.MeshBuilder.CreatePlane('twodAvatar', { size: cm(10) }, this.scene);
+				this.twodAvatarMesh.material = twodAvatarMat;
+				this.twodAvatarMesh.parent = this.subRoot;
+				this.twodAvatarMesh.position.y = cm(40) + cm(7.5);
+				this.twodAvatarMesh.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
+				this.scene.addMesh(this.twodAvatarMesh);
+			}
+		} else {
+			if (this.twodAvatarMesh != null) {
+				this.twodAvatarMesh.dispose(false, true);
+				this.scene.removeMesh(this.twodAvatarMesh);
+				this.twodAvatarMesh = null;
+			}
+		}
+	}
+
+	public updateUserInfoDisplayOptions(options: { showUsername: boolean; show2dAvatar: boolean; }) {
+		this.showUsername = options.showUsername;
+		this.show2dAvatar = options.show2dAvatar;
+		this.applyInfoMesh();
+	}
+
 	public applyState(state: PlayerState, forInit = false) {
 		this.root.position.set(...state.position);
 		this.subRoot.rotation.set(...state.rotation);
@@ -278,6 +320,16 @@ export class PlayerContainer {
 			ac.destroy();
 		}
 		this.accessoryContainers = [];
+		if (this.usernameLabelMesh != null) {
+			this.usernameLabelMesh.dispose();
+			this.scene.removeMesh(this.usernameLabelMesh);
+			this.usernameLabelMesh = null;
+		}
+		if (this.twodAvatarMesh != null) {
+			this.twodAvatarMesh.dispose(false, true);
+			this.scene.removeMesh(this.twodAvatarMesh);
+			this.twodAvatarMesh = null;
+		}
 		this.root.dispose();
 	}
 }

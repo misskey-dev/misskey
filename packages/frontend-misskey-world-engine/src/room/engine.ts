@@ -1504,6 +1504,8 @@ export class RoomEngine extends EngineBase<{
 					state: states[k],
 					scene: this.scene,
 					sr: this.sr,
+					showUsername: true,
+					show2dAvatar: true,
 				});
 				// TODO: loadFunitureのものとある程度共通化
 				p.registerMeshes = (meshes) => {
