@@ -54,6 +54,8 @@ minimumReleaseAgeExclude:
   - '@typescript/native-preview*'
   - pnpm
   - '@types/archiver' # そのうち消す
+  # Renovate security update: esbuild@0.28.1
+  - esbuild@0.28.1
 overrides:
   '@aiscript-dev/aiscript-languageserver': '-'
   chokidar: 5.0.0

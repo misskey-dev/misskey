@@ -10,7 +10,7 @@
 	},
 	"dependencies": {
 		"i18n": "workspace:*",
-		"esbuild": "0.28.0",
+		"esbuild": "0.28.1",
 		"idb-keyval": "6.2.4",
 		"misskey-js": "workspace:*"
 	},
