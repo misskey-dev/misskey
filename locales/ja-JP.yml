@@ -3767,6 +3767,7 @@ _miRoom:
       bodyMat: "本体の素材"
       light: "照明"
     ductTape: "ガムテープ"
+    herbarium: "ハーバリウム"
     electronicDisplayBoard: "電光掲示板"
     _electronicDisplayBoard:
       frameMat: "フレームの素材"

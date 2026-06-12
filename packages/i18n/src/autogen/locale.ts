@@ -14032,6 +14032,10 @@ export interface Locale extends ILocale {
              */
             "ductTape": string;
             /**
+             * ハーバリウム
+             */
+            "herbarium": string;
+            /**
              * 電光掲示板
              */
             "electronicDisplayBoard": string;

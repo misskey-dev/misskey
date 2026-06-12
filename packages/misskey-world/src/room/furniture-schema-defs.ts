@@ -116,6 +116,7 @@ import { haniwa_schema } from './furnitures/haniwa.schema.js';
 import { ceilingFan_schema } from './furnitures/ceilingFan.schema.js';
 import { downlight_schema } from './furnitures/downlight.schema.js';
 import { kakejiku_schema } from './furnitures/kakejiku.schema.js';
+import { herbarium_schema } from './furnitures/herbarium.schema.js';
 import type { FurnitureSchemaDef } from './furniture.js';
 
 export const FURNITURE_SCHEMA_DEFS = {
@@ -231,6 +232,7 @@ export const FURNITURE_SCHEMA_DEFS = {
 	haniwa: haniwa_schema,
 	downlight: downlight_schema,
 	kakejiku: kakejiku_schema,
+	herbarium: herbarium_schema,
 } as Record<string, FurnitureSchemaDef<any>>;
 
 export function getFurnitureSchemaDef(type: string): FurnitureSchemaDef {

@@ -118,6 +118,7 @@ import { haniwa } from './furnitures/haniwa.js';
 import { ceilingFan } from './furnitures/ceilingFan.js';
 import { downlight } from './furnitures/downlight.js';
 import { kakejiku } from './furnitures/kakejiku.js';
+import { herbarium } from './furnitures/herbarium.js';
 import type { FurnitureDef } from './furniture.js';
 
 export const FUNITURE_DEFS = [
@@ -234,6 +235,7 @@ export const FUNITURE_DEFS = [
 	haniwa,
 	downlight,
 	kakejiku,
+	herbarium,
 ] as FurnitureDef[];
 
 export function getFurnitureDef(type: string): FurnitureDef {
