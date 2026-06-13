@@ -54,7 +54,7 @@
 	},
 	"dependencies": {
 		"cssnano": "8.0.1",
-		"esbuild": "0.28.0",
+		"esbuild": "0.28.1",
 		"execa": "9.6.1",
 		"ignore-walk": "8.0.0",
 		"js-yaml": "4.1.1",
