@@ -62,12 +62,9 @@ export class CustomMadoriEnvManager extends EnvManager<CustomMadoriEnvOptions> {
 			shadowGeneratorForRoomLight.bias = 0.0005;
 			shadowGeneratorForRoomLight.usePercentageCloserFiltering = true;
 			shadowGeneratorForRoomLight.filteringQuality = BABYLON.ShadowGenerator.QUALITY_HIGH;
-			if (this.engine.graphicsQuality <= GRAPHICS_QUALITY.MEDIUM) {
-				shadowGeneratorForRoomLight.getShadowMap().refreshRate = 60; // 効いてなさそう babylonのバグ？
-			}
 			//shadowGeneratorForRoomLight.useContactHardeningShadow = true;
 			//shadowGeneratorForRoomLight.contactHardeningLightSizeUVRatio = 0.01;
-			this.shadowGenerators.push(shadowGeneratorForRoomLight);
+			this.registerShadowGenerator(shadowGeneratorForRoomLight);
 		}
 
 		for (const materialDef of options.flooringMaterials) {

@@ -67,11 +67,8 @@ export class MuseumEnvManager extends EnvManager<MuseumEnvOptions> {
 			shadowGeneratorForRoomLight.normalBias = 0.005;
 			shadowGeneratorForRoomLight.usePercentageCloserFiltering = true;
 			shadowGeneratorForRoomLight.filteringQuality = BABYLON.ShadowGenerator.QUALITY_HIGH;
-			if (this.engine.graphicsQuality <= GRAPHICS_QUALITY.MEDIUM) {
-				shadowGeneratorForRoomLight.getShadowMap().refreshRate = 60;
-			}
 			//this.shadowGeneratorForRoomLight.useContactHardeningShadow = true;
-			this.shadowGenerators.push(shadowGeneratorForRoomLight);
+			this.registerShadowGenerator(shadowGeneratorForRoomLight);
 		}
 
 		for (const node of this.meshes.filter(mesh => mesh.name.includes('__LIGHT__'))) {

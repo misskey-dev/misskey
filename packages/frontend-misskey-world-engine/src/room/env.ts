@@ -14,7 +14,7 @@ export abstract class EnvManager<T = any> {
 	protected engine: RoomEngine;
 	public abstract envMapIndoor: BABYLON.CubeTexture | null;
 	public abstract maxCameraZ: number;
-	protected shadowGenerators: BABYLON.ShadowGenerator[] = [];
+	private shadowGenerators: BABYLON.ShadowGenerator[] = [];
 	protected isRoomLightOn = true;
 
 	constructor(engine: RoomEngine) {
@@ -36,6 +36,24 @@ export abstract class EnvManager<T = any> {
 		this.applyRoomLight();
 	}
 
+	protected registerShadowGenerator(shadowGenerator: BABYLON.ShadowGenerator) {
+		this.shadowGenerators.push(shadowGenerator);
+
+		const shadowMap = shadowGenerator.getShadowMap()!;
+		shadowMap.refreshRate = BABYLON.RenderTargetTexture.REFRESHRATE_RENDER_ONCE;
+
+		// https://forum.babylonjs.com/t/is-it-intentional-that-the-shadow-map-refresh-rate-is-ignored-under-fast-snapshot-rendering/63523
+		const objectRenderer = shadowMap._objectRenderer;
+		const originalShouldRender = objectRenderer.shouldRender.bind(objectRenderer);
+		objectRenderer.shouldRender = function () {
+			if (this._engine.snapshotRendering) {
+				return this.refreshRate !== BABYLON.RenderTargetTexture.REFRESHRATE_RENDER_ONCE;
+			}
+
+			return originalShouldRender();
+		};
+	}
+
 	public addShadowCaster(mesh: BABYLON.AbstractMesh) {
 		for (const shadowGen of this.shadowGenerators) {
 			shadowGen.addShadowCaster(mesh);
@@ -46,6 +64,24 @@ export abstract class EnvManager<T = any> {
 		for (const shadowGen of this.shadowGenerators) {
 			shadowGen.removeShadowCaster(mesh);
 		}
+	}
+
+	public async renderShadow() {
+		this.engine.sr.disableSnapshotRendering();
+
+		for (const shadowGen of this.shadowGenerators) {
+			const shadowMap = shadowGen.getShadowMap()!;
+			shadowMap.refreshRate = 1;
+		}
+
+		await new Promise(resolve => setTimeout(resolve, 1));
+
+		for (const shadowGen of this.shadowGenerators) {
+			const shadowMap = shadowGen.getShadowMap()!;
+			shadowMap.refreshRate = BABYLON.RenderTargetTexture.REFRESHRATE_RENDER_ONCE;
+		}
+
+		this.engine.sr.enableSnapshotRendering();
 	}
 
 	protected registerMeshes(meshes: BABYLON.AbstractMesh[]) {

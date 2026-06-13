@@ -46,12 +46,9 @@ export class JapaneseEnvManager extends EnvManager<JapaneseEnvOptions> {
 			shadowGeneratorForRoomLight.bias = 0.0005;
 			shadowGeneratorForRoomLight.usePercentageCloserFiltering = true;
 			shadowGeneratorForRoomLight.filteringQuality = BABYLON.ShadowGenerator.QUALITY_HIGH;
-			if (this.engine.graphicsQuality <= GRAPHICS_QUALITY.MEDIUM) {
-				shadowGeneratorForRoomLight.getShadowMap().refreshRate = 60;
-			}
 			//shadowGeneratorForRoomLight.useContactHardeningShadow = true;
 			//shadowGeneratorForRoomLight.contactHardeningLightSizeUVRatio = 0.01;
-			this.shadowGenerators.push(shadowGeneratorForRoomLight);
+			this.registerShadowGenerator(shadowGeneratorForRoomLight);
 		}
 
 		if (this.engine.graphicsQuality >= GRAPHICS_QUALITY.MEDIUM) {
@@ -65,10 +62,7 @@ export class JapaneseEnvManager extends EnvManager<JapaneseEnvOptions> {
 			shadowGeneratorForSunLight.bias = 0.00001;
 			shadowGeneratorForSunLight.usePercentageCloserFiltering = true;
 			shadowGeneratorForSunLight.usePoissonSampling = true;
-			if (this.engine.graphicsQuality <= GRAPHICS_QUALITY.MEDIUM) {
-				shadowGeneratorForSunLight.getShadowMap().refreshRate = 60;
-			}
-			this.shadowGenerators.push(shadowGeneratorForSunLight);
+			this.registerShadowGenerator(shadowGeneratorForSunLight);
 		}
 
 		this.loaderResult = await BABYLON.ImportMeshAsync('/client-assets/room/envs/japanese/japanese.glb', this.engine.scene);

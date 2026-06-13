@@ -22,4 +22,5 @@ export const ceilingFan_schema = defineFurnitureSchema({
 	},
 	placement: 'ceiling',
 	hasCollisions: false,
+	castShadows: false,
 });

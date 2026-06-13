@@ -1134,6 +1134,8 @@ export class RoomEngine extends EngineBase<{
 			this.grabbingCtx.onDone?.();
 		}
 		this.grabbingCtx = null;
+
+		this.envManager.renderShadow();
 	}
 
 	public interact(oid: string, iid: string | null = null) {
@@ -1369,6 +1371,8 @@ export class RoomEngine extends EngineBase<{
 		this.selectFuniture(null);
 		this.isEditMode = false;
 
+		await this.envManager.renderShadow();
+
 		await this.bake();
 	}
 
@@ -1515,14 +1519,11 @@ export class RoomEngine extends EngineBase<{
 				// TODO: loadFunitureのものとある程度共通化
 				p.registerMeshes = (meshes) => {
 					for (const mesh of meshes) {
+						mesh.receiveShadows = false;
 						if (SYSTEM_MESH_NAMES.some(n => mesh.name.includes(n))) {
-							mesh.receiveShadows = false;
 							mesh.isVisible = false;
 						} else {
 							mesh.metadata = { isPlayer: true, playerId: k };
-							mesh.receiveShadows = true;
-							// TODO: メモリリークしそうだからいい感じにする
-							this.envManager.addShadowCaster(mesh);
 
 							//if (mesh.material) (mesh.material as BABYLON.PBRMaterial).ambientColor = new BABYLON.Color3(0.2, 0.2, 0.2);
 							if (mesh.material) {

@@ -157,12 +157,9 @@ export class SimpleEnvManager extends EnvManager<SimpleEnvOptions> {
 			shadowGeneratorForRoomLight.bias = 0.0005;
 			shadowGeneratorForRoomLight.usePercentageCloserFiltering = true;
 			shadowGeneratorForRoomLight.filteringQuality = BABYLON.ShadowGenerator.QUALITY_HIGH;
-			if (this.engine.graphicsQuality <= GRAPHICS_QUALITY.MEDIUM) {
-				shadowGeneratorForRoomLight.getShadowMap().refreshRate = 60; // 効いてなさそう babylonのバグ？
-			}
 			//shadowGeneratorForRoomLight.useContactHardeningShadow = true;
 			//shadowGeneratorForRoomLight.contactHardeningLightSizeUVRatio = 0.01;
-			this.shadowGenerators.push(shadowGeneratorForRoomLight);
+			this.registerShadowGenerator(shadowGeneratorForRoomLight);
 		}
 
 		if (this.engine.graphicsQuality >= GRAPHICS_QUALITY.MEDIUM) {
@@ -176,10 +173,7 @@ export class SimpleEnvManager extends EnvManager<SimpleEnvOptions> {
 			shadowGeneratorForSunLight.bias = 0.00001;
 			shadowGeneratorForSunLight.usePercentageCloserFiltering = true;
 			shadowGeneratorForSunLight.usePoissonSampling = true;
-			if (this.engine.graphicsQuality <= GRAPHICS_QUALITY.MEDIUM) {
-				shadowGeneratorForSunLight.getShadowMap().refreshRate = 60; // 効いてなさそう babylonのバグ？
-			}
-			this.shadowGenerators.push(shadowGeneratorForSunLight);
+			this.registerShadowGenerator(shadowGeneratorForSunLight);
 		}
 
 		this.envMapIndoor = BABYLON.CubeTexture.CreateFromPrefilteredData('/client-assets/room/indoor.env', this.engine.scene);
