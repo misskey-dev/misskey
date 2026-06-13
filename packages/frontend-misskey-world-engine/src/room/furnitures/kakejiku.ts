@@ -22,6 +22,8 @@ export const kakejiku = defineFuniture(kakejiku_schema, {
 			let url: string | null = null;
 			if (options.image.type === '_custom_') {
 				url = options.image.custom?.url ?? null;
+			} else if (options.image.type === 'kitsuaishinsei') {
+				url = '/client-assets/world/objects/kakejiku/images/kitsuaishinsei.png';
 			}
 			return textureManager.change(url, options.image.fit, options.image.rotation).then((tex) => {
 				imageMaterial.albedoTexture = tex;

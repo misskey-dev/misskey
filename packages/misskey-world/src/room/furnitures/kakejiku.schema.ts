@@ -10,11 +10,13 @@ export const kakejiku_schema = defineFurnitureSchema({
 		schema: {
 			image: {
 				type: 'image',
-				presets: [],
+				presets: [{
+					value: 'kitsuaishinsei',
+				}],
 			},
 		},
 		default: {
-			image: { type: null },
+			image: { type: 'kitsuaishinsei' },
 		},
 	},
 	placement: 'side',

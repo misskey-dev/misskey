@@ -12,6 +12,11 @@ export const kakejiku_ui = defineFurnitureUi<typeof kakejiku_schema>({
 	options: {
 		image: {
 			label: i18n.ts._miRoom._furnitures._kakejiku.image,
+			presets: {
+				'kitsuaishinsei': {
+					label: i18n.ts._miRoom._furnitures._kakejiku['image:kitsuaishinsei'],
+				},
+			},
 		},
 	},
 });

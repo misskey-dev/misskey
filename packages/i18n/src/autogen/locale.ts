@@ -15032,6 +15032,10 @@ export interface Locale extends ILocale {
                  * 画像
                  */
                 "image": string;
+                /**
+                 * 喫藍心整
+                 */
+                "image:kitsuaishinsei": string;
             };
         };
     };
