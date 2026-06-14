@@ -1445,6 +1445,8 @@ export class RoomEngine extends EngineBase<{
 		this.ev('changeRoomState', { roomState: this.roomState });
 		this.selected = null;
 
+		this.envManager.renderShadow();
+
 		this.playSfxUrl('/client-assets/room/sfx/remove.mp3', {
 			volume: 1,
 			playbackRate: 1,
@@ -1484,6 +1486,7 @@ export class RoomEngine extends EngineBase<{
 		this.roomState.env.options = options;
 		this.sr.disableSnapshotRendering();
 		this.envManager.applyOptions(options);
+		this.envManager.renderShadow();
 		this.sr.enableSnapshotRendering();
 		this.ev('changeRoomState', { roomState: this.roomState });
 	}
