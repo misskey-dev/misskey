@@ -54,6 +54,14 @@ function enableFunitureCollision(meshes: BABYLON.Mesh[]) {
 	}
 }
 
+// TODO: 回転を考慮
+function intersectBoundingBoxes(bb1: { min: BABYLON.Vector3; max: BABYLON.Vector3; }, bb2: { min: BABYLON.Vector3; max: BABYLON.Vector3; }) {
+	if (bb1.max.x < bb2.min.x || bb1.min.x > bb2.max.x) return false;
+	if (bb1.max.y < bb2.min.y || bb1.min.y > bb2.max.y) return false;
+	if (bb1.max.z < bb2.min.z || bb1.min.z > bb2.max.z) return false;
+	return true;
+}
+
 export class RoomEngine extends EngineBase<{
 	'changeSelectedState': (ctx: {
 		selected: {
@@ -777,6 +785,12 @@ export class RoomEngine extends EngineBase<{
 		}
 		this.sr.updateMesh(arrowMesh);
 
+		const bb = grabbing.mesh.getHierarchyBoundingVectors(true);
+		// shift coordinate to center
+		const rootPos = grabbing.mesh.getAbsolutePosition();
+		bb.min.subtractInPlace(rootPos);
+		bb.max.subtractInPlace(rootPos);
+
 		let stickyOtherFuniture: string | null = null;
 		let sticky = false;
 
@@ -853,7 +867,27 @@ export class RoomEngine extends EngineBase<{
 				// 下に向かってレイを飛ばす
 				const ray = new BABYLON.Ray(pos, new BABYLON.Vector3(0, -1, 0), cm(1000));
 				const hit = placement === 'top' ? this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_FLOOR__') || m.name.includes('__ROOM_TOP__') || m.name.includes('__TOP__'))) : this.scene.pickWithRay(ray, (m) => isCollisionTarget(m) && (m.name.includes('__ROOM_FLOOR__')));
+
 				if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
+					//const newBb = {
+					//	min: bb.min.add(hit.pickedPoint),
+					//	max: bb.max.add(hit.pickedPoint),
+					//};
+					//let collidedAnotherBb = false;
+					//for (const c of this.furnitureContainers.values()) {
+					//	if (c.id === grabbing.furnitureId) continue;
+					//	if (hit.pickedMesh.metadata?.furnitureId != null) { // TODO: sitkcy先が同じ家具かどうかではなく、同じ家具の同じ面かどうかを判定しないと同じ家具の異なる棚にある家具同士で干渉することになる
+					//		const def = this.roomState.installedFurnitures.find(o => o.id === c.id);
+					//		if (def.sticky !== hit.pickedMesh.metadata.furnitureId) continue;
+					//	}
+					//	const cBb = c.boundingBox;
+					//	if (intersectBoundingBoxes(newBb, cBb)) {
+					//		collidedAnotherBb = true;
+					//		break;
+					//	}
+					//}
+					//if (collidedAnotherBb) continue;
+
 					sticky = true;
 					newPos = hit.pickedPoint;
 					stickyOtherFuniture = hit.pickedMesh.metadata?.furnitureId ?? null;
@@ -1042,6 +1076,8 @@ export class RoomEngine extends EngineBase<{
 				removeStickyParentRecursively(selectedFuniture);
 				this.sr.enableSnapshotRendering();
 
+				this.furnitureContainers.get(selectedFuniture.metadata.furnitureId)!.calcBoundingBox();
+
 				this.envManager.renderShadow();
 			},
 			onDone: () => { // todo: sticky状態などを引数でもらうようにしたい
@@ -1086,6 +1122,8 @@ export class RoomEngine extends EngineBase<{
 					};
 					removeStickyParentRecursively(selectedFuniture);
 
+					this.furnitureContainers.get(selectedFuniture.metadata.furnitureId)!.calcBoundingBox();
+
 					this.envManager.renderShadow();
 
 					const pos = selectedFuniture.position.clone();
@@ -1101,6 +1139,14 @@ export class RoomEngine extends EngineBase<{
 
 		this.gridPlane.isVisible = true;
 
+		//for (const furniture of this.furnitureContainers.values()) {
+		//	console.log(furniture.type, 'min', furniture.boundingBox.min, 'max', furniture.boundingBox.max);
+		//	const minSphere = BABYLON.MeshBuilder.CreateSphere('', { diameter: cm(1) }, this.scene);
+		//	minSphere.position = furniture.boundingBox.min;
+		//	const maxSphere = BABYLON.MeshBuilder.CreateSphere('', { diameter: cm(1) }, this.scene);
+		//	maxSphere.position = furniture.boundingBox.max;
+		//}
+
 		this.sr.enableSnapshotRendering();
 
 		const stopHandleGrabbing = this.timer.setInterval(() => {
@@ -1109,7 +1155,7 @@ export class RoomEngine extends EngineBase<{
 				return;
 			}
 			this.handleGrabbing();
-		}, 100);
+		}, 10);
 
 		this.playSfxUrl('/client-assets/room/sfx/grab.mp3', {
 			volume: 1,
@@ -1310,6 +1356,8 @@ export class RoomEngine extends EngineBase<{
 					this.envManager.renderShadow();
 				});
 
+				container.calcBoundingBox();
+
 				this.roomState.installedFurnitures.push({
 					id,
 					type,
@@ -1333,7 +1381,7 @@ export class RoomEngine extends EngineBase<{
 				return;
 			}
 			this.handleGrabbing();
-		}, 100);
+		}, 10);
 
 		this.playSfxUrl('/client-assets/room/sfx/grab.mp3', {
 			volume: 1,

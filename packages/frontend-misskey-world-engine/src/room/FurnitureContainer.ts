@@ -70,6 +70,10 @@ export class FurnitureContainer {
 	private graphicsQuality: number;
 	private timer: Timer = new Timer();
 	private sitChair: () => void = () => {};
+	public boundingBox: {
+		min: BABYLON.Vector3;
+		max: BABYLON.Vector3;
+	} | null = null;
 
 	constructor(args: {
 		id: string;
@@ -217,6 +221,13 @@ export class FurnitureContainer {
 		});
 
 		this.instance.onInited?.();
+
+		this.calcBoundingBox();
+	}
+
+	public calcBoundingBox() {
+		// TODO: モーフ最大適用後のサイズが取得されてしまうのを直す
+		this.boundingBox = this.subRoot.getHierarchyBoundingVectors(true);
 	}
 
 	public interact(iid: string | null = null) {
