@@ -21,7 +21,7 @@ export abstract class EnvManager<T = any> {
 		this.engine = engine;
 	}
 
-	abstract load(options: T, scene: BABYLON.Scene, engine: RoomEngine): Promise<void>;
+	abstract load(options: T): Promise<void>;
 	abstract applyOptions(options: T): void;
 	abstract setTime(time: number): void;
 	abstract applyRoomLight(): void;

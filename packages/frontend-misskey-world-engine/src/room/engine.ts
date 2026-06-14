@@ -556,17 +556,15 @@ export class RoomEngine extends EngineBase<{
 		let envManager: EnvManager;
 
 		if (this.roomState.env.type === 'simple') {
-			const manager = new SimpleEnvManager(this);
-			envManager = manager;
+			envManager = new SimpleEnvManager(this);
 		} else if (this.roomState.env.type === 'japanese') {
-			const manager = new JapaneseEnvManager(this);
-			envManager = manager;
+			envManager = new JapaneseEnvManager(this);
 		} else if (this.roomState.env.type === 'museum') {
-			const manager = new MuseumEnvManager(this);
-			envManager = manager;
+			envManager = new MuseumEnvManager(this);
 		} else if (this.roomState.env.type === 'customMadori') {
-			const manager = new CustomMadoriEnvManager(this);
-			envManager = manager;
+			envManager = new CustomMadoriEnvManager(this);
+		} else {
+			throw new Error(`Unrecognized env type: ${this.roomState.env.type}`);
 		}
 
 		await envManager.load(this.roomState.env.options);
