@@ -299,12 +299,8 @@ export class MemoryKVCache<T> {
 		const now = Date.now();
 
 		for (const [key, { date }] of this.cache.entries()) {
-			// The map is ordered from oldest to youngest.
-			// We can stop once we find an entry that's still active, because all following entries must *also* be active.
 			const age = now - date;
-			if (age < this.lifetime) break;
-
-			this.cache.delete(key);
+			if (age >= this.lifetime) this.cache.delete(key);
 		}
 	}
 
