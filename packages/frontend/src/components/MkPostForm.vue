@@ -719,6 +719,7 @@ function clear() {
 	poll.value = null;
 	quoteId.value = null;
 	scheduledAt.value = null;
+	uploader.items.value = [];
 }
 
 function onKeydown(ev: KeyboardEvent) {
