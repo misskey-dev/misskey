@@ -886,7 +886,7 @@ export class RoomEngine extends EngineBase<{
 			grabbing.mesh.position = newPos;
 			grabbing.mesh.rotation = newRotation;
 
-			this.sr.updateMesh(grabbing.mesh.getChildMeshes());
+			this.sr.updateMesh(grabbing.mesh.getChildMeshes().filter(m => m.isEnabled())); // disabledなmeshを除外しておかないと、後々unbakeMeshのsetEnabled(true)が呼ばれたときにエンジンがクラッシュする
 		}
 
 		// 浮動小数点数のわずかな誤差が出るため0.01cm以下の変動は無視する
@@ -1059,7 +1059,7 @@ export class RoomEngine extends EngineBase<{
 				selectedFuniture.animations.push(placement === 'side' || placement === 'wall' ? this.putAnimH : this.putAnimV);
 				const animating = Promise.withResolvers<void>();
 				const animationObserver = this.scene.onAfterAnimationsObservable.add(() => {
-					this.sr.updateMesh(selectedFuniture.getChildMeshes(), true);
+					this.sr.updateMesh(selectedFuniture.getChildMeshes().filter(m => m.isEnabled()), true);
 				});
 				this.scene.beginAnimation(selectedFuniture, 0, 60, false, 3, () => { animating.resolve(); });
 
@@ -1300,7 +1300,7 @@ export class RoomEngine extends EngineBase<{
 				// put animation
 				container.root.animations.push(def.placement === 'side' || def.placement === 'wall' ? this.putAnimH : this.putAnimV);
 				const animationObserver = this.scene.onAfterAnimationsObservable.add(() => {
-					this.sr.updateMesh(container.root.getChildMeshes(), true);
+					this.sr.updateMesh(container.root.getChildMeshes().filter(m => m.isEnabled()), true); // disabledなmeshを除外しておかないと、後々unbakeMeshのsetEnabled(true)が呼ばれたときにエンジンがクラッシュする
 				});
 				this.scene.beginAnimation(container.root, 0, 60, false, 3, () => {
 					this.scene.onAfterAnimationsObservable.remove(animationObserver);
