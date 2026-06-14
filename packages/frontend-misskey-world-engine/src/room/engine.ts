@@ -1041,6 +1041,8 @@ export class RoomEngine extends EngineBase<{
 				};
 				removeStickyParentRecursively(selectedFuniture);
 				this.sr.enableSnapshotRendering();
+
+				this.envManager.renderShadow();
 			},
 			onDone: () => { // todo: sticky状態などを引数でもらうようにしたい
 				grabbingEnded = true;
@@ -1083,6 +1085,8 @@ export class RoomEngine extends EngineBase<{
 						}
 					};
 					removeStickyParentRecursively(selectedFuniture);
+
+					this.envManager.renderShadow();
 
 					const pos = selectedFuniture.position.clone();
 					const rotation = selectedFuniture.rotation.clone();
@@ -1132,8 +1136,6 @@ export class RoomEngine extends EngineBase<{
 			this.grabbingCtx.onDone?.();
 		}
 		this.grabbingCtx = null;
-
-		this.envManager.renderShadow();
 	}
 
 	public interact(oid: string, iid: string | null = null) {
@@ -1304,6 +1306,8 @@ export class RoomEngine extends EngineBase<{
 				});
 				this.scene.beginAnimation(container.root, 0, 60, false, 3, () => {
 					this.scene.onAfterAnimationsObservable.remove(animationObserver);
+
+					this.envManager.renderShadow();
 				});
 
 				this.roomState.installedFurnitures.push({
