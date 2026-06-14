@@ -28,6 +28,7 @@
 - Fix: PerUserDriveChart がシステム所有ファイル (userId が null) の更新で `"group"` の非NULL制約違反によりクラッシュする問題を修正 (#17498)
 - Fix: センシティブメディア自動検出周りの依存関係・ファイルの解決に失敗する問題を修正
 - Fix: フォロワー限定投稿を指名投稿で引用した際に、引用した投稿の公開範囲が意図せず変更される問題を修正
+- Fix: Startup and shutdown failures (port-in-use, socket permission denied, plugin timeouts, leaked WebSocket connections) are now reported through the misskey logger instead of an UnhandledPromiseRejectionWarning stack trace
 
 ## 2026.5.4
 
