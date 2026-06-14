@@ -2473,6 +2473,10 @@ export interface Locale extends ILocale {
      */
     "scratchpadDescription": string;
     /**
+     * エラー時にスクリプト全体を停止する
+     */
+    "abortOnError": string;
+    /**
      * UIインスペクター
      */
     "uiInspector": string;
