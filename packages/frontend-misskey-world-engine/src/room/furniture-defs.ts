@@ -121,7 +121,7 @@ import { kakejiku } from './furnitures/kakejiku.js';
 import { herbarium } from './furnitures/herbarium.js';
 import type { FurnitureDef } from './furniture.js';
 
-export const FUNITURE_DEFS = [
+export const FURNITURE_DEFS = [
 	a4Case,
 	aircon,
 	allInOnePc,
@@ -239,7 +239,7 @@ export const FUNITURE_DEFS = [
 ] as FurnitureDef[];
 
 export function getFurnitureDef(type: string): FurnitureDef {
-	const def = FUNITURE_DEFS.find(x => x.id === type) as FurnitureDef | undefined;
+	const def = FURNITURE_DEFS.find(x => x.id === type) as FurnitureDef | undefined;
 	if (def == null) {
 		throw new Error(`Unrecognized furniture type: ${type}`);
 	}

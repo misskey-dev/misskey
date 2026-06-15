@@ -60,9 +60,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div v-show="showPreview" :class="$style.previewContainer" @click="selectedId = null">
 				<div :class="$style.preview" @click.stop>
 					<MkButton :class="$style.unselectButton" small rounded iconOnly @click="selectedId = null"><i class="ti ti-x"></i></MkButton>
-					<MkButton v-if="selectedFunitureSchema != null && Object.keys(selectedFunitureSchema.options.schema).length > 0" :class="$style.customizeButton" small rounded iconOnly @click="showFurnitureOptions = !showFurnitureOptions"><i class="ti ti-tool"></i></MkButton>
+					<MkButton v-if="selectedFurnitureSchema != null && Object.keys(selectedFurnitureSchema.options.schema).length > 0" :class="$style.customizeButton" small rounded iconOnly @click="showFurnitureOptions = !showFurnitureOptions"><i class="ti ti-tool"></i></MkButton>
 
-					<div :class="[$style.previewMain, { [$style.optionsOpened]: selectedFunitureSchema != null && selectedInstanceId != null && showFurnitureOptions }]">
+					<div :class="[$style.previewMain, { [$style.optionsOpened]: selectedFurnitureSchema != null && selectedInstanceId != null && showFurnitureOptions }]">
 						<canvas ref="canvas" :class="$style.canvas"></canvas>
 						<MkButton :class="$style.addButton" small rounded primary @click="ok"><i class="ti ti-plus"></i></MkButton>
 					</div>
@@ -73,12 +73,12 @@ SPDX-License-Identifier: AGPL-3.0-only
 						:enterFromClass="prefer.s.animation ? $style.transition_options_enterFrom : ''"
 						:leaveToClass="prefer.s.animation ? $style.transition_options_leaveTo : ''"
 					>
-						<div v-if="selectedFunitureSchema != null && selectedInstanceId != null && showFurnitureOptions" :class="$style.customize">
+						<div v-if="selectedFurnitureSchema != null && selectedInstanceId != null && showFurnitureOptions" :class="$style.customize">
 							<MkWorldMonoOptionsForm
-								:uiDef="FURNITURE_UI_DEFS[selectedFunitureSchema.id]"
+								:uiDef="FURNITURE_UI_DEFS[selectedFurnitureSchema.id]"
 								:addFileAttachment="addFileAttachment"
-								:schema="selectedFunitureSchema.options.schema"
-								:options="selectedFunitureOptionsState"
+								:schema="selectedFurnitureSchema.options.schema"
+								:options="selectedFurnitureOptionsState"
 								@update="(k, v) => updateFurnitureOption(k, v)"
 							/>
 						</div>
@@ -139,8 +139,8 @@ const canvas = useTemplateRef('canvas');
 const selectedId = ref<string | null>(null);
 const showPreview = ref(false);
 const selectedInstanceId = ref<string | null>(null);
-const selectedFunitureOptionsState = ref<RawOptions | null>(null);
-const selectedFunitureSchema = computed(() => selectedId.value == null ? null : FURNITURE_SCHEMA_DEFS[selectedId.value]);
+const selectedFurnitureOptionsState = ref<RawOptions | null>(null);
+const selectedFurnitureSchema = computed(() => selectedId.value == null ? null : FURNITURE_SCHEMA_DEFS[selectedId.value]);
 const showFurnitureOptions = ref(false);
 const searchKeyword = ref('');
 const searchResult = ref<FurnitureSchemaDef<any>[]>([]);
@@ -222,14 +222,14 @@ watch(selectedId, (newId) => {
 		controller.clearFurniture();
 		controller.pauseRender();
 		selectedInstanceId.value = null;
-		selectedFunitureOptionsState.value = null;
+		selectedFurnitureOptionsState.value = null;
 	} else {
 		const closeWaiting = os.waiting();
 		nextTick(() => {
 			try {
 				withTimeout(controller.loadFurniture(newId), 10000).then(res => {
 					selectedInstanceId.value = res.id;
-					selectedFunitureOptionsState.value = deepClone(res.options);
+					selectedFurnitureOptionsState.value = deepClone(res.options);
 					controller.resumeRender();
 					closeWaiting();
 					showPreview.value = true;
@@ -250,7 +250,7 @@ watch(selectedId, (newId) => {
 
 const updateFurnitureOption = throttle(100, (k: string, v: any) => {
 	controller.updateFurnitureOption(k, deepClone(v), attachments);
-	selectedFunitureOptionsState.value![k] = v;
+	selectedFurnitureOptionsState.value![k] = v;
 });
 
 function ok() {
@@ -264,7 +264,7 @@ function ok() {
 
 	emit('ok', {
 		id: selectedId.value,
-		options: deepClone(selectedFunitureOptionsState.value!),
+		options: deepClone(selectedFurnitureOptionsState.value!),
 		attachments: deepClone(attachments),
 	});
 

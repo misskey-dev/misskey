@@ -40,7 +40,7 @@ import type { RoomAttachments, RoomState } from 'misskey-world/src/room/type.js'
 import type { RawOptions } from 'misskey-world/src/mono.js';
 
 const BAKE_TRANSFORM = false; // 実験的
-const IGNORE_FUNITURES: string[] = ['aquarium']; // for debug
+const IGNORE_FURNITURES: string[] = ['aquarium']; // for debug
 const IN_WEB_WORKER = typeof window === 'undefined';
 
 function enableFurnitureCollision(meshes: BABYLON.Mesh[]) {
@@ -377,7 +377,7 @@ export class RoomEngine extends EngineBase<{
 	public async init() {
 		await this.loadEnv();
 
-		const furnitures = this.roomState.installedFurnitures.filter(o => !IGNORE_FUNITURES.includes(o.type));
+		const furnitures = this.roomState.installedFurnitures.filter(o => !IGNORE_FURNITURES.includes(o.type));
 		let loadedCount = 0;
 
 		if (this.roomState.worldScale !== WORLD_SCALE) {

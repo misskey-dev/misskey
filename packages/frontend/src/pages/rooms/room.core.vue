@@ -84,7 +84,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<button v-if="controller.grabbing.value" class="_button" :class="$style.floatingButton" @click="controller.changeGrabbingDistance(-10)"><i class="ti ti-arrows-minimize"></i></button>
 
 				<button v-if="!controller.grabbing.value && controller.selected.value != null" v-tooltip.noDelay="i18n.ts._miRoom.duplicate" class="_button" :class="$style.floatingButton" @click="duplicateSelectedFurniture"><i class="ti ti-copy"></i></button>
-				<button v-if="!controller.grabbing.value && controller.selected.value != null" v-tooltip.noDelay="i18n.ts._miRoom.uninstallFurniture" class="_button" :class="$style.floatingButton" style="color: var(--MI_THEME-error)" @click="removeSelectedFuniture"><i class="ti ti-trash"></i></button>
+				<button v-if="!controller.grabbing.value && controller.selected.value != null" v-tooltip.noDelay="i18n.ts._miRoom.uninstallFurniture" class="_button" :class="$style.floatingButton" style="color: var(--MI_THEME-error)" @click="removeSelectedFurniture"><i class="ti ti-trash"></i></button>
 			</template>
 			<template v-else>
 				<MkButton v-if="controller.isSitting.value" @click="controller.standUp()">{{ i18n.ts._miWorld.standUp }} (Q)</MkButton>
@@ -536,8 +536,8 @@ function duplicateSelectedFurniture() {
 	canvas.value!.focus();
 }
 
-function removeSelectedFuniture() {
-	controller.removeSelectedFuniture();
+function removeSelectedFurniture() {
+	controller.removeSelectedFurniture();
 	canvas.value!.focus();
 }
 
