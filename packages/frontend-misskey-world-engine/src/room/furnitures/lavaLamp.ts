@@ -5,12 +5,12 @@
 import * as BABYLON from '@babylonjs/core/pure.js';
 import { lavaLamp_schema } from 'misskey-world/src/room/furnitures/lavaLamp.schema.js';
 import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
-import { defineFuniture } from '../furniture.js';
+import { defineFurniture } from '../furniture.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 
 const mix = (a: number, b: number, t: number) => a * (1 - t) + b * t;
 
-export const lavaLamp = defineFuniture(lavaLamp_schema, {
+export const lavaLamp = defineFurniture(lavaLamp_schema, {
 	createInstance: ({ options, lc, scene, sr, root, model, graphicsQuality }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 		const glassMaterial = model.findMaterial('__X_GLASS__');

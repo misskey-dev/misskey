@@ -4,11 +4,11 @@
  */
 
 import * as BABYLON from '@babylonjs/core/pure.js';
-import { createTextureManager, defineFuniture } from '../furniture.js';
+import { createTextureManager, defineFurniture } from '../furniture.js';
 import { remap } from 'misskey-world/src/utility.js';
 import { tabletopGlassPictureFrame_schema } from 'misskey-world/src/room/furnitures/tabletopGlassPictureFrame.schema.js';
 
-export const tabletopGlassPictureFrame = defineFuniture(tabletopGlassPictureFrame_schema, {
+export const tabletopGlassPictureFrame = defineFurniture(tabletopGlassPictureFrame_schema, {
 	createInstance: async ({ scene, options, model }) => {
 		const pictureMesh = model.findMesh('__X_PICTURE__');
 		const frameMesh = model.findMesh('__X_FRAME__');

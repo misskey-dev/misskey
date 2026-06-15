@@ -4,10 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core/pure.js';
-import { defineFuniture } from '../furniture.js';
+import { defineFurniture } from '../furniture.js';
 import { bed_schema } from 'misskey-world/src/room/furnitures/bed.schema.js';
 
-export const bed = defineFuniture(bed_schema, {
+export const bed = defineFurniture(bed_schema, {
 	createInstance: ({ options, model }) => {
 		const bodyMesh = model.findMesh('__X_BODY__');
 		const bodyMaterial = bodyMesh.material as BABYLON.PBRMaterial;

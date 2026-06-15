@@ -5,10 +5,10 @@
 
 import * as BABYLON from '@babylonjs/core/pure.js';
 import { electronicDisplayBoard_schema } from 'misskey-world/src/room/furnitures/electronicDisplayBoard.schema.js';
-import { defineFuniture } from '../furniture.js';
+import { defineFurniture } from '../furniture.js';
 import { RecyvlingTextGrid } from '../../utility.js';
 
-export const electronicDisplayBoard = defineFuniture(electronicDisplayBoard_schema, {
+export const electronicDisplayBoard = defineFurniture(electronicDisplayBoard_schema, {
 	createInstance: async ({ scene, options, model, timer }) => {
 		const frameMaterial = model.findMaterial('__X_BODY__');
 

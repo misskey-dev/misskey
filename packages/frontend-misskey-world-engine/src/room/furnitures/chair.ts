@@ -4,10 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core/pure.js';
-import { defineFuniture } from '../furniture.js';
+import { defineFurniture } from '../furniture.js';
 import { chair_schema } from 'misskey-world/src/room/furnitures/chair.schema.js';
 
-export const chair = defineFuniture(chair_schema, {
+export const chair = defineFurniture(chair_schema, {
 	createInstance: ({ model, options, sitChair }) => {
 		const primaryMaterial = model.findMaterial('__X_PRIMARY__');
 		const secondaryMaterial = model.findMaterial('__X_SECONDARY__');

@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import * as BABYLON from '@babylonjs/core/pure.js';
-import { defineFuniture } from '../furniture.js';
+import { defineFurniture } from '../furniture.js';
 import { book_schema } from 'misskey-world/src/room/furnitures/book.schema.js';
 
-export const book = defineFuniture(book_schema, {
+export const book = defineFurniture(book_schema, {
 	createInstance: ({ options, model }) => {
 		const bodyMesh = model.findMesh('__X_BODY__');
 

@@ -11,7 +11,7 @@ import type { FurnitureSchemaDef } from 'misskey-world/src/room/object.js';
 import type { OptionsSchema } from 'misskey-world/src/mono.js';
 import type { ConvertedOptions, GetConvertedOptionsSchemaValues } from '../mono.js';
 
-export type RoomFunitureInstance<Options = any> = {
+export type RoomFurnitureInstance<Options = any> = {
 	onInited?: () => void;
 	onOptionsUpdated?: <K extends keyof Options, V extends Options[K]>(kv: [K, V]) => void;
 	interactions: Record<string, {
@@ -45,14 +45,14 @@ export type FurnitureDef<Schema extends FurnitureSchemaDef = FurnitureSchemaDef>
 		stickyMarkerMeshUpdated?: (mesh: BABYLON.Mesh) => void;
 		sitChair?: () => void;
 		reloadModel: () => void;
-	}) => RoomFunitureInstance<string extends keyof Schema['options']['schema'] ? ConvertedOptions : GetConvertedOptionsSchemaValues<Schema['options']['schema']>> | Promise<RoomFunitureInstance<Schema['options']['schema'] extends undefined ? ConvertedOptions : GetConvertedOptionsSchemaValues<Schema['options']['schema']>>>; // TODO: createInstanceをasyncにするのではなく、別にreadyみたいなものを返させる
+	}) => RoomFurnitureInstance<string extends keyof Schema['options']['schema'] ? ConvertedOptions : GetConvertedOptionsSchemaValues<Schema['options']['schema']>> | Promise<RoomFurnitureInstance<Schema['options']['schema'] extends undefined ? ConvertedOptions : GetConvertedOptionsSchemaValues<Schema['options']['schema']>>>; // TODO: createInstanceをasyncにするのではなく、別にreadyみたいなものを返させる
 };
 
 export function defineFurnitureSchema<const OpSc extends OptionsSchema>(def: FurnitureSchemaDef<OpSc>): FurnitureSchemaDef<OpSc> {
 	return def;
 }
 
-export function defineFuniture<const Schema extends FurnitureSchemaDef<any>>(schema: Schema, def: Pick<FurnitureDef<Schema>, 'path' | 'createInstance'>): FurnitureDef<Schema> {
+export function defineFurniture<const Schema extends FurnitureSchemaDef<any>>(schema: Schema, def: Pick<FurnitureDef<Schema>, 'path' | 'createInstance'>): FurnitureDef<Schema> {
 	return { ...schema, ...def };
 }
 

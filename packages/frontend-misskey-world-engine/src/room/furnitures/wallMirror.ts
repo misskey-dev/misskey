@@ -4,10 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core/pure.js';
-import { defineFuniture } from '../furniture.js';
+import { defineFurniture } from '../furniture.js';
 import { wallMirror_schema } from 'misskey-world/src/room/furnitures/wallMirror.schema.js';
 
-export const wallMirror = defineFuniture(wallMirror_schema, {
+export const wallMirror = defineFurniture(wallMirror_schema, {
 	createInstance: async ({ options, model }) => {
 		const frameMaterial = model.findMaterial('__X_FRAME__');
 		const frameMesh = model.findMesh('__X_FRAME__');

@@ -6,10 +6,10 @@
 import * as BABYLON from '@babylonjs/core/pure.js';
 import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { tabletopDigitalClock_schema } from 'misskey-world/src/room/furnitures/tabletopDigitalClock.schema.js';
-import { defineFuniture } from '../furniture.js';
+import { defineFurniture } from '../furniture.js';
 import { get7segMeshesOfCurrentTime } from '../../utility.js';
 
-export const tabletopDigitalClock = defineFuniture(tabletopDigitalClock_schema, {
+export const tabletopDigitalClock = defineFurniture(tabletopDigitalClock_schema, {
 	createInstance: ({ sr, options, model, timer }) => {
 		const matrix = model.root.getWorldMatrix(true);
 		const scale = new BABYLON.Vector3();

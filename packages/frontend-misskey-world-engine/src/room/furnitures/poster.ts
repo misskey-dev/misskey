@@ -4,11 +4,11 @@
  */
 
 import * as BABYLON from '@babylonjs/core/pure.js';
-import { createTextureManager, defineFuniture } from '../furniture.js';
+import { createTextureManager, defineFurniture } from '../furniture.js';
 import { remap } from 'misskey-world/src/utility.js';
 import { poster_schema } from 'misskey-world/src/room/furnitures/poster.schema.js';
 
-export const poster = defineFuniture(poster_schema, {
+export const poster = defineFurniture(poster_schema, {
 	createInstance: async ({ scene, options, model }) => {
 		const pictureMesh = model.findMesh('__X_PICTURE__');
 		pictureMesh.rotationQuaternion = null;

@@ -4,10 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core/pure.js';
-import { defineFuniture } from '../furniture.js';
+import { defineFurniture } from '../furniture.js';
 import { stanchionPole_schema } from 'misskey-world/src/room/furnitures/stanchionPole.schema.js';
 
-export const stanchionPole = defineFuniture(stanchionPole_schema, {
+export const stanchionPole = defineFurniture(stanchionPole_schema, {
 	createInstance: ({ options, model }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 

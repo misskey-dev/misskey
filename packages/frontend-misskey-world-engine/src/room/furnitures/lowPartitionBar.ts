@@ -4,10 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core/pure.js';
-import { defineFuniture } from '../furniture.js';
+import { defineFurniture } from '../furniture.js';
 import { lowPartitionBar_schema } from 'misskey-world/src/room/furnitures/lowPartitionBar.schema.js';
 
-export const lowPartitionBar = defineFuniture(lowPartitionBar_schema, {
+export const lowPartitionBar = defineFurniture(lowPartitionBar_schema, {
 	createInstance: ({ options, model }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 

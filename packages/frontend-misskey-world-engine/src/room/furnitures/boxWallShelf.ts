@@ -4,10 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core/pure.js';
-import { defineFuniture } from '../furniture.js';
+import { defineFurniture } from '../furniture.js';
 import { boxWallShelf_schema } from 'misskey-world/src/room/furnitures/boxWallShelf.schema.js';
 
-export const boxWallShelf = defineFuniture(boxWallShelf_schema, {
+export const boxWallShelf = defineFurniture(boxWallShelf_schema, {
 	createInstance: async ({ scene, options, model }) => {
 		const backMesh = model.findMesh('__X_BACK__');
 		const bodyMaterial = model.findMaterial('__X_BODY__');

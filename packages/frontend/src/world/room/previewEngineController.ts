@@ -45,8 +45,8 @@ export class PreviewEngineController extends EngineControllerBase<RoomFurnitureP
 		this.call('updateFurnitureOption', [key, value, attachments]);
 	}
 
-	public loadFuniture(type: string) {
-		return this.callAndWaitReturn('loadFuniture', [type]);
+	public loadFurniture(type: string) {
+		return this.callAndWaitReturn('loadFurniture', [type]);
 	}
 
 	public clearFurniture() {

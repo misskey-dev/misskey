@@ -4,10 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core/pure.js';
-import { createTextureManager, defineFuniture } from '../furniture.js';
+import { createTextureManager, defineFurniture } from '../furniture.js';
 import { largeMousepad_schema } from 'misskey-world/src/room/furnitures/largeMousepad.schema.js';
 
-export const largeMousepad = defineFuniture(largeMousepad_schema, {
+export const largeMousepad = defineFurniture(largeMousepad_schema, {
 	createInstance: async ({ scene, options, model }) => {
 		const padMesh = model.findMesh('__X_PAD__');
 		const padMaterial = model.findMaterial('__X_PAD__');

@@ -5,9 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core/pure.js';
 import { wallClock_schema } from 'misskey-world/src/room/furnitures/wallClock.schema.js';
-import { defineFuniture } from '../furniture.js';
+import { defineFurniture } from '../furniture.js';
 
-export const wallClock = defineFuniture(wallClock_schema, {
+export const wallClock = defineFurniture(wallClock_schema, {
 	createInstance: ({ sr, timer, options, model }) => {
 		const hourHand = model.findMesh('__X_HAND_H__');
 		const minuteHand = model.findMesh('__X_HAND_M__');

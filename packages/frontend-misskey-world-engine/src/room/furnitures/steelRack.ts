@@ -6,9 +6,9 @@
 import * as BABYLON from '@babylonjs/core/pure.js';
 import { steelRack_schema } from 'misskey-world/src/room/furnitures/steelRack.schema.js';
 import { cm, remap } from 'misskey-world/src/utility.js';
-import { defineFuniture } from '../furniture.js';
+import { defineFurniture } from '../furniture.js';
 
-export const steelRack = defineFuniture(steelRack_schema, {
+export const steelRack = defineFurniture(steelRack_schema, {
 	path: (options) => {
 		switch (options.widthAndDepthVariation) {
 			case '60-35': return 'steel-rack/60-35';

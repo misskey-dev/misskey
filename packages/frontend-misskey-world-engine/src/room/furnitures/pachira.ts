@@ -4,10 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core/pure.js';
-import { defineFuniture } from '../furniture.js';
+import { defineFurniture } from '../furniture.js';
 import { pachira_schema } from 'misskey-world/src/room/furnitures/pachira.schema.js';
 
-export const pachira = defineFuniture(pachira_schema, {
+export const pachira = defineFurniture(pachira_schema, {
 	createInstance: ({ options, model }) => {
 		const potMaterial = model.findMaterial('__X_POT__');
 

@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineFuniture } from '../furniture.js';
+import { defineFurniture } from '../furniture.js';
 import { glassCylinderPotPlant_schema } from 'misskey-world/src/room/furnitures/glassCylinderPotPlant.schema.js';
 
-export const glassCylinderPotPlant = defineFuniture(glassCylinderPotPlant_schema, {
+export const glassCylinderPotPlant = defineFurniture(glassCylinderPotPlant_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

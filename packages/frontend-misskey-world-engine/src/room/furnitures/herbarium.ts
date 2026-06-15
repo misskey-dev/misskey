@@ -4,9 +4,9 @@
  */
 
 import { herbarium_schema } from 'misskey-world/src/room/furnitures/herbarium.schema.js';
-import { defineFuniture } from '../furniture.js';
+import { defineFurniture } from '../furniture.js';
 
-export const herbarium = defineFuniture(herbarium_schema, {
+export const herbarium = defineFurniture(herbarium_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

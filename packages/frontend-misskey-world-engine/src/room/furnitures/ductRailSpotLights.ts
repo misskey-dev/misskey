@@ -4,12 +4,12 @@
  */
 
 import * as BABYLON from '@babylonjs/core/pure.js';
-import { defineFuniture } from '../furniture.js';
+import { defineFurniture } from '../furniture.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 import { cm, remap, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { ductRailSpotLights_schema } from 'misskey-world/src/room/furnitures/ductRailSpotLights.schema.js';
 
-export const ductRailSpotLights = defineFuniture(ductRailSpotLights_schema, {
+export const ductRailSpotLights = defineFurniture(ductRailSpotLights_schema, {
 	createInstance: ({ lc, scene, options, model, graphicsQuality }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 

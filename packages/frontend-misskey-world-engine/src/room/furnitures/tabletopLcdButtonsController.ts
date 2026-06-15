@@ -5,10 +5,10 @@
 
 import * as BABYLON from '@babylonjs/core/pure.js';
 import { tabletopLcdButtonsController_schema } from 'misskey-world/src/room/furnitures/tabletopLcdButtonsController.schema.js';
-import { createTextureManager, defineFuniture } from '../furniture.js';
+import { createTextureManager, defineFurniture } from '../furniture.js';
 import { normalizeUvToSquare } from '../../utility.js';
 
-export const tabletopLcdButtonsController = defineFuniture(tabletopLcdButtonsController_schema, {
+export const tabletopLcdButtonsController = defineFurniture(tabletopLcdButtonsController_schema, {
 	createInstance: async ({ model, options, scene }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 		const screenMesh = model.findMesh('__X_SCREEN__');

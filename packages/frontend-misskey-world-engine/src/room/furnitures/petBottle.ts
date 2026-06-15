@@ -4,10 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core/pure.js';
-import { defineFuniture } from '../furniture.js';
+import { defineFurniture } from '../furniture.js';
 import { petBottle_schema } from 'misskey-world/src/room/furnitures/petBottle.schema.js';
 
-export const petBottle = defineFuniture(petBottle_schema, {
+export const petBottle = defineFurniture(petBottle_schema, {
 	createInstance: ({ model, options, scene }) => {
 		const capMesh = model.findMesh('__X_CAP__');
 		const liquidMesh = model.findMesh('__X_LIQUID__');

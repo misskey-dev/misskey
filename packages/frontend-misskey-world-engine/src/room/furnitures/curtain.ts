@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineFuniture } from '../furniture.js';
+import { defineFurniture } from '../furniture.js';
 import { curtain_schema } from 'misskey-world/src/room/furnitures/curtain.schema.js';
 
-export const curtain = defineFuniture(curtain_schema, {
+export const curtain = defineFurniture(curtain_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

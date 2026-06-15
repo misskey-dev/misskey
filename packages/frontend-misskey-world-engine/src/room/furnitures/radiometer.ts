@@ -4,10 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core/pure.js';
-import { defineFuniture } from '../furniture.js';
+import { defineFurniture } from '../furniture.js';
 import { radiometer_schema } from 'misskey-world/src/room/furnitures/radiometer.schema.js';
 
-export const radiometer = defineFuniture(radiometer_schema, {
+export const radiometer = defineFurniture(radiometer_schema, {
 	createInstance: ({ sr, scene, model }) => {
 		const vanes = model.findTransformNode('__X_VANES__');
 		model.bakeExcludeMeshes = [...vanes.getChildMeshes()];

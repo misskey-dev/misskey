@@ -43,7 +43,7 @@ const BAKE_TRANSFORM = false; // 実験的
 const IGNORE_FUNITURES: string[] = ['aquarium']; // for debug
 const IN_WEB_WORKER = typeof window === 'undefined';
 
-function enableFunitureCollision(meshes: BABYLON.Mesh[]) {
+function enableFurnitureCollision(meshes: BABYLON.Mesh[]) {
 	for (const mesh of meshes) {
 		if (mesh.name.includes('__COLLISION__')) {
 			mesh.checkCollisions = true;
@@ -66,7 +66,7 @@ export class RoomEngine extends EngineBase<{
 	'changeSelectedState': (ctx: {
 		selected: {
 			furnitureId: string;
-			funitureState: RoomState_InstalledFurniture;
+			furnitureState: RoomState_InstalledFurniture;
 			interacions: {
 				id: string;
 				label: string;
@@ -102,7 +102,7 @@ export class RoomEngine extends EngineBase<{
 	// TODO: たぶんオブジェクト内の値のmutateはsetで検知できないので、そのような操作を実際に行うようになった & それを検知する必要性が出てきたら専用の設定関数などを新設してそれを使わせる
 	private _grabbingCtx: {
 		furnitureId: string;
-		funitureType: string;
+		furnitureType: string;
 		forInstall: boolean;
 		mesh: BABYLON.TransformNode;
 		originalDiffOfPosition: BABYLON.Vector3;
@@ -110,7 +110,7 @@ export class RoomEngine extends EngineBase<{
 		distance: number;
 		rotation: number;
 		ghost: BABYLON.TransformNode;
-		descendantStickyFunitureIds: string[];
+		descendantStickyFurnitureIds: string[];
 		onMove?: (info: { position: BABYLON.Vector3; rotation: BABYLON.Vector3; stickyFurnitureId: string | null; stickyPlaneId: string | null; }) => void;
 		onCancel?: () => void;
 		onDone?: () => void;
@@ -127,8 +127,8 @@ export class RoomEngine extends EngineBase<{
 	private _selected: {
 		furnitureId: string;
 		furnitureContainer: RoomEngine['furnitureContainers'] extends Map<string, infer V> ? V : never;
-		funitureState: RoomState_InstalledFurniture;
-		funitureDef: FurnitureDef;
+		furnitureState: RoomState_InstalledFurniture;
+		furnitureDef: FurnitureDef;
 	} | null = null;
 	get selected() {
 		return this._selected;
@@ -141,7 +141,7 @@ export class RoomEngine extends EngineBase<{
 		}
 		this.ev('changeSelectedState', { selected: {
 			furnitureId: v.furnitureId,
-			funitureState: v.funitureState,
+			furnitureState: v.furnitureState,
 			interacions: Object.entries(v.furnitureContainer.instance.interactions).map(([interactionId, interactionInfo]) => ({
 				id: interactionId,
 				label: interactionInfo.label,
@@ -377,11 +377,11 @@ export class RoomEngine extends EngineBase<{
 	public async init() {
 		await this.loadEnv();
 
-		const funitures = this.roomState.installedFurnitures.filter(o => !IGNORE_FUNITURES.includes(o.type));
+		const furnitures = this.roomState.installedFurnitures.filter(o => !IGNORE_FUNITURES.includes(o.type));
 		let loadedCount = 0;
 
 		if (this.roomState.worldScale !== WORLD_SCALE) {
-			for (const o of funitures) {
+			for (const o of furnitures) {
 				o.position = [
 					remap(o.position[0], 0, this.roomState.worldScale, 0, WORLD_SCALE),
 					remap(o.position[1], 0, this.roomState.worldScale, 0, WORLD_SCALE),
@@ -392,7 +392,7 @@ export class RoomEngine extends EngineBase<{
 			this.ev('changeRoomState', { roomState: this.roomState });
 		}
 
-		await Promise.all(funitures.map(o => this.loadFuniture({
+		await Promise.all(furnitures.map(o => this.loadFurniture({
 			id: o.id,
 			type: o.type,
 			position: new BABYLON.Vector3(...o.position),
@@ -400,7 +400,7 @@ export class RoomEngine extends EngineBase<{
 			options: o.options,
 		}).then(() => {
 			loadedCount++;
-			this.ev('loadingProgress', { progress: loadedCount / funitures.length });
+			this.ev('loadingProgress', { progress: loadedCount / furnitures.length });
 		})));
 
 		// 不具合のもと
@@ -427,7 +427,7 @@ export class RoomEngine extends EngineBase<{
 					if (this.grabbingCtx != null) {
 						this.endGrabbing();
 					} else {
-						this.beginSelectedInstalledFunitureGrabbing();
+						this.beginSelectedInstalledFurnitureGrabbing();
 					}
 				} else if (this.selected != null) {
 					this.interact(this.selected.furnitureId);
@@ -480,7 +480,7 @@ export class RoomEngine extends EngineBase<{
 		this.inputs.on('click', (ev) => {
 			if (this.grabbingCtx != null) return;
 
-			this.selectFuniture(null);
+			this.selectFurniture(null);
 
 			// TODO: GPUPickerを使いたいが、なぜか一部のメッシュが反応しない
 			const pickingInfo = this.scene.pick(ev.x, ev.y,
@@ -491,7 +491,7 @@ export class RoomEngine extends EngineBase<{
 				if (oid != null && this.furnitureContainers.has(oid)) {
 					const o = this.furnitureContainers.get(oid)!;
 					const boundingInfo = getMeshesBoundingBox(o.root.getChildMeshes().filter(m => m.isEnabled() && m.isVisible && !m.isDisposed()), true);
-					this.selectFuniture(oid);
+					this.selectFurniture(oid);
 					this.look(boundingInfo.center);
 					return;
 				}
@@ -612,7 +612,7 @@ export class RoomEngine extends EngineBase<{
 		await this.changeEnvType(this.roomState.env.type, this.roomState.env.options, true);
 	}
 
-	private async loadFuniture(args: {
+	private async loadFurniture(args: {
 		type: string;
 		id: string;
 		position: BABYLON.Vector3;
@@ -622,9 +622,9 @@ export class RoomEngine extends EngineBase<{
 		const def = getFurnitureDef(args.type);
 
 		const metadata = {
-			isFuniture: true,
+			isFurniture: true,
 			furnitureId: args.id,
-			funitureType: args.type,
+			furnitureType: args.type,
 		};
 
 		const container = new FurnitureContainer({
@@ -701,7 +701,7 @@ export class RoomEngine extends EngineBase<{
 			}
 
 			if (def.hasCollisions) {
-				enableFunitureCollision(meshes);
+				enableFurnitureCollision(meshes);
 			}
 
 			/* なんかバグる
@@ -719,7 +719,7 @@ export class RoomEngine extends EngineBase<{
 		container!.model!.bakeMesh();
 
 		if (def.hasCollisions) {
-			enableFunitureCollision(container.root.getChildMeshes());
+			enableFurnitureCollision(container.root.getChildMeshes());
 		}
 
 		this.furnitureContainers.set(args.id, container);
@@ -735,7 +735,7 @@ export class RoomEngine extends EngineBase<{
 		(this.camera.inputs.attached.manual as FreeCameraManualInput).setMoveVector(vector);
 	}
 
-	public selectFuniture(furnitureId: string | null) {
+	public selectFurniture(furnitureId: string | null) {
 		this.sr.disableSnapshotRendering(); // snapshot rendering中にbake/unbakeするとエラーになる。なおこのメソッドは参照カウント方式な点に留意
 
 		const currentSelected = this.selected;
@@ -754,8 +754,8 @@ export class RoomEngine extends EngineBase<{
 				this.selected = {
 					furnitureId,
 					furnitureContainer: container,
-					funitureState: state,
-					funitureDef: getFurnitureDef(state.type),
+					furnitureState: state,
+					furnitureDef: getFurnitureDef(state.type),
 				};
 			}
 		}
@@ -769,7 +769,7 @@ export class RoomEngine extends EngineBase<{
 		if (this.grabbingCtx == null) return;
 		const grabbing = this.grabbingCtx;
 
-		const placement = getFurnitureDef(grabbing.funitureType).placement;
+		const placement = getFurnitureDef(grabbing.furnitureType).placement;
 
 		const dir = this.camera.getDirection(BABYLON.Axis.Z).scale(this.scene.useRightHandedSystem ? -1 : 1);
 		let newPos = this.camera.position.add(dir.scale(grabbing.distance)).add(grabbing.originalDiffOfPosition);
@@ -791,14 +791,14 @@ export class RoomEngine extends EngineBase<{
 		bb.min.subtractInPlace(rootPos);
 		bb.max.subtractInPlace(rootPos);
 
-		let stickyOtherFuniture: string | null = null;
+		let stickyOtherFurniture: string | null = null;
 		let stickyPlaneId: string | null = null;
 		let sticky = false;
 
 		const isCollisionTarget = (m: BABYLON.AbstractMesh) => {
 			return m.metadata?.furnitureId !== grabbing.furnitureId &&
 				!m.metadata?.isGhost &&
-				!grabbing.descendantStickyFunitureIds.includes(m.metadata?.furnitureId);
+				!grabbing.descendantStickyFurnitureIds.includes(m.metadata?.furnitureId);
 		};
 
 		const pos = new BABYLON.Vector3(this.camera.position.x, this.camera.position.y, this.camera.position.z);
@@ -820,7 +820,7 @@ export class RoomEngine extends EngineBase<{
 					newRotation.y = targetRotationY;
 					newRotation.z = grabbing.originalDiffOfRotation.z + grabbing.rotation;
 					newPos = hit.pickedPoint;
-					stickyOtherFuniture = hit.pickedMesh.metadata?.furnitureId ?? null;
+					stickyOtherFurniture = hit.pickedMesh.metadata?.furnitureId ?? null;
 					stickyPlaneId = hit.pickedMesh.name.includes('<') ? hit.pickedMesh.name.split('<')[1].split('>')[0] : null;
 
 					if (this.gridSnapping.enabled) {
@@ -851,7 +851,7 @@ export class RoomEngine extends EngineBase<{
 				if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
 					sticky = true;
 					newPos = hit.pickedPoint;
-					stickyOtherFuniture = hit.pickedMesh.metadata?.furnitureId ?? null;
+					stickyOtherFurniture = hit.pickedMesh.metadata?.furnitureId ?? null;
 					stickyPlaneId = hit.pickedMesh.name.includes('<') ? hit.pickedMesh.name.split('<')[1].split('>')[0] : null;
 
 					if (this.gridSnapping.enabled) {
@@ -893,7 +893,7 @@ export class RoomEngine extends EngineBase<{
 
 					sticky = true;
 					newPos = hit.pickedPoint;
-					stickyOtherFuniture = hit.pickedMesh.metadata?.furnitureId ?? null;
+					stickyOtherFurniture = hit.pickedMesh.metadata?.furnitureId ?? null;
 					stickyPlaneId = hit.pickedMesh.name.includes('<') ? hit.pickedMesh.name.split('<')[1].split('>')[0] : null;
 
 					if (this.gridSnapping.enabled) {
@@ -946,7 +946,7 @@ export class RoomEngine extends EngineBase<{
 		grabbing.onMove?.({
 			position: newPos,
 			rotation: newRotation,
-			stickyFurnitureId: stickyOtherFuniture,
+			stickyFurnitureId: stickyOtherFurniture,
 			stickyPlaneId: stickyPlaneId,
 		});
 	}
@@ -997,21 +997,21 @@ export class RoomEngine extends EngineBase<{
 		this.sr.enableSnapshotRendering(); // このメソッドは参照カウント方式な点に留意
 	}
 
-	public beginSelectedInstalledFunitureGrabbing() {
+	public beginSelectedInstalledFurnitureGrabbing() {
 		if (this.selected == null) return;
 
 		this.sr.disableSnapshotRendering();
 
-		const selectedFuniture = this.selected.furnitureContainer.root;
+		const selectedFurniture = this.selected.furnitureContainer.root;
 		this.clearHighlight();
 
-		const initialPosition = selectedFuniture.position.clone();
-		const initialRotation = selectedFuniture.rotation.clone();
+		const initialPosition = selectedFurniture.position.clone();
+		const initialRotation = selectedFurniture.rotation.clone();
 
 		// 子から先に適用していく
 		const setStickyParentRecursively = (mesh: BABYLON.AbstractMesh) => {
-			const stickyFunitureIds = Array.from(this.roomState.installedFurnitures.filter(o => o.sticky === mesh.metadata.furnitureId)).map(o => o.id);
-			for (const soid of stickyFunitureIds) {
+			const stickyFurnitureIds = Array.from(this.roomState.installedFurnitures.filter(o => o.sticky === mesh.metadata.furnitureId)).map(o => o.id);
+			for (const soid of stickyFurnitureIds) {
 				const soMesh = this.furnitureContainers.get(soid)!.root;
 				setStickyParentRecursively(soMesh);
 				soMesh.setParent(mesh);
@@ -1021,27 +1021,27 @@ export class RoomEngine extends EngineBase<{
 				}
 			}
 		};
-		setStickyParentRecursively(selectedFuniture);
+		setStickyParentRecursively(selectedFurniture);
 
-		const descendantStickyFunitureIds: string[] = [];
-		const collectDescendantStickyFunitureIds = (parentId: string) => {
+		const descendantStickyFurnitureIds: string[] = [];
+		const collectDescendantStickyFurnitureIds = (parentId: string) => {
 			const childIds = Array.from(this.roomState.installedFurnitures.filter(o => o.sticky === parentId)).map(o => o.id);
 			for (const cid of childIds) {
-				descendantStickyFunitureIds.push(cid);
-				collectDescendantStickyFunitureIds(cid);
+				descendantStickyFurnitureIds.push(cid);
+				collectDescendantStickyFurnitureIds(cid);
 			}
 		};
-		collectDescendantStickyFunitureIds(selectedFuniture.metadata.furnitureId);
+		collectDescendantStickyFurnitureIds(selectedFurniture.metadata.furnitureId);
 
-		const placement = getFurnitureDef(selectedFuniture.metadata.funitureType).placement;
+		const placement = getFurnitureDef(selectedFurniture.metadata.furnitureType).placement;
 
 		if (placement === 'top') {
 			// stickyな場合にsticky先とのレイの距離が0になりstickyされていない初期状態でgrabbingが始まってしまうのでちょっと浮かす
-			selectedFuniture.position.y += cm(1);
+			selectedFurniture.position.y += cm(1);
 		}
 
-		const distance = BABYLON.Vector3.Distance(this.camera.position, selectedFuniture.position);
-		const ghost = this.createGhost(selectedFuniture);
+		const distance = BABYLON.Vector3.Distance(this.camera.position, selectedFurniture.position);
+		const ghost = this.createGhost(selectedFurniture);
 
 		const dir = this.camera.getDirection(BABYLON.Axis.Z).scale(this.scene.useRightHandedSystem ? -1 : 1);
 
@@ -1050,16 +1050,16 @@ export class RoomEngine extends EngineBase<{
 		let grabbingEnded = false;
 
 		this.grabbingCtx = {
-			furnitureId: selectedFuniture.metadata.furnitureId,
-			funitureType: selectedFuniture.metadata.funitureType,
+			furnitureId: selectedFurniture.metadata.furnitureId,
+			furnitureType: selectedFurniture.metadata.furnitureType,
 			forInstall: false,
-			mesh: selectedFuniture,
-			originalDiffOfPosition: selectedFuniture.position.subtract(this.camera.position.add(dir.scale(distance))),
-			originalDiffOfRotation: selectedFuniture.rotation.subtract(this.camera.rotation),
+			mesh: selectedFurniture,
+			originalDiffOfPosition: selectedFurniture.position.subtract(this.camera.position.add(dir.scale(distance))),
+			originalDiffOfRotation: selectedFurniture.rotation.subtract(this.camera.rotation),
 			distance: distance,
 			rotation: 0,
 			ghost: ghost,
-			descendantStickyFunitureIds,
+			descendantStickyFurnitureIds,
 			onMove: (info) => {
 				stickyFurnitureId = info.stickyFurnitureId;
 				stickyPlaneId = info.stickyPlaneId;
@@ -1067,23 +1067,23 @@ export class RoomEngine extends EngineBase<{
 			onCancel: () => {
 				grabbingEnded = true;
 				this.sr.disableSnapshotRendering();
-				selectedFuniture.position = initialPosition.clone();
-				selectedFuniture.rotation = initialRotation.clone();
+				selectedFurniture.position = initialPosition.clone();
+				selectedFurniture.rotation = initialRotation.clone();
 
 				// 親から先に外していく
 				const removeStickyParentRecursively = (mesh: BABYLON.Mesh) => {
-					const stickyFunitureIds = Array.from(this.roomState.installedFurnitures.filter(o => o.sticky === mesh.metadata.furnitureId)).map(o => o.id);
-					for (const soid of stickyFunitureIds) {
+					const stickyFurnitureIds = Array.from(this.roomState.installedFurnitures.filter(o => o.sticky === mesh.metadata.furnitureId)).map(o => o.id);
+					for (const soid of stickyFurnitureIds) {
 						const soMesh = this.furnitureContainers.get(soid)!.root;
 						soMesh.setParent(null);
 
 						removeStickyParentRecursively(soMesh);
 					}
 				};
-				removeStickyParentRecursively(selectedFuniture);
+				removeStickyParentRecursively(selectedFurniture);
 				this.sr.enableSnapshotRendering();
 
-				this.furnitureContainers.get(selectedFuniture.metadata.furnitureId)!.calcBoundingBox();
+				this.furnitureContainers.get(selectedFurniture.metadata.furnitureId)!.calcBoundingBox();
 
 				this.envManager.renderShadow();
 			},
@@ -1092,7 +1092,7 @@ export class RoomEngine extends EngineBase<{
 
 				// 場合によってはなぜかSRが効かなくなる
 				//const putParticleSystem = this.getPutParticleSystem();
-				//putParticleSystem.emitter = selectedFuniture.position.clone();
+				//putParticleSystem.emitter = selectedFurniture.position.clone();
 				//putParticleSystem.start();
 
 				this.playSfxUrl('/client-assets/room/sfx/put.mp3', {
@@ -1101,12 +1101,12 @@ export class RoomEngine extends EngineBase<{
 				});
 
 				// put animation
-				selectedFuniture.animations.push(placement === 'side' || placement === 'wall' ? this.putAnimH : this.putAnimV);
+				selectedFurniture.animations.push(placement === 'side' || placement === 'wall' ? this.putAnimH : this.putAnimV);
 				const animating = Promise.withResolvers<void>();
 				const animationObserver = this.scene.onAfterAnimationsObservable.add(() => {
-					this.sr.updateMesh(selectedFuniture.getChildMeshes().filter(m => m.isEnabled()), true);
+					this.sr.updateMesh(selectedFurniture.getChildMeshes().filter(m => m.isEnabled()), true);
 				});
-				this.scene.beginAnimation(selectedFuniture, 0, 60, false, 3, () => { animating.resolve(); });
+				this.scene.beginAnimation(selectedFurniture, 0, 60, false, 3, () => { animating.resolve(); });
 
 				// TODO: アニメーションの完了まで親子関係の解除を遅延するため、一瞬「grabbingが終わっているのに親子関係が解除されていない」状態が発生する。その間に新たにgrabbingを開始するなどの別の操作が発生すると不具合のもとになるのでそれを防止する仕組みを作る
 				animating.promise.then(() => {
@@ -1114,8 +1114,8 @@ export class RoomEngine extends EngineBase<{
 
 					// 親から先に外していく
 					const removeStickyParentRecursively = (mesh: BABYLON.Mesh) => {
-						const stickyFunitureIds = Array.from(this.roomState.installedFurnitures.filter(o => o.sticky === mesh.metadata.furnitureId)).map(o => o.id);
-						for (const soid of stickyFunitureIds) {
+						const stickyFurnitureIds = Array.from(this.roomState.installedFurnitures.filter(o => o.sticky === mesh.metadata.furnitureId)).map(o => o.id);
+						for (const soid of stickyFurnitureIds) {
 							const soMesh = this.furnitureContainers.get(soid)!.root;
 							soMesh.setParent(null);
 
@@ -1127,18 +1127,18 @@ export class RoomEngine extends EngineBase<{
 							removeStickyParentRecursively(soMesh);
 						}
 					};
-					removeStickyParentRecursively(selectedFuniture);
+					removeStickyParentRecursively(selectedFurniture);
 
-					this.furnitureContainers.get(selectedFuniture.metadata.furnitureId)!.calcBoundingBox();
+					this.furnitureContainers.get(selectedFurniture.metadata.furnitureId)!.calcBoundingBox();
 
 					this.envManager.renderShadow();
 
-					const pos = selectedFuniture.position.clone();
-					const rotation = selectedFuniture.rotation.clone();
-					this.roomState.installedFurnitures.find(o => o.id === selectedFuniture.metadata.furnitureId)!.sticky = stickyFurnitureId;
-					this.roomState.installedFurnitures.find(o => o.id === selectedFuniture.metadata.furnitureId)!.stickyPlaneId = stickyPlaneId;
-					this.roomState.installedFurnitures.find(o => o.id === selectedFuniture.metadata.furnitureId)!.position = [pos.x, pos.y, pos.z];
-					this.roomState.installedFurnitures.find(o => o.id === selectedFuniture.metadata.furnitureId)!.rotation = [rotation.x, rotation.y, rotation.z];
+					const pos = selectedFurniture.position.clone();
+					const rotation = selectedFurniture.rotation.clone();
+					this.roomState.installedFurnitures.find(o => o.id === selectedFurniture.metadata.furnitureId)!.sticky = stickyFurnitureId;
+					this.roomState.installedFurnitures.find(o => o.id === selectedFurniture.metadata.furnitureId)!.stickyPlaneId = stickyPlaneId;
+					this.roomState.installedFurnitures.find(o => o.id === selectedFurniture.metadata.furnitureId)!.position = [pos.x, pos.y, pos.z];
+					this.roomState.installedFurnitures.find(o => o.id === selectedFurniture.metadata.furnitureId)!.rotation = [rotation.x, rotation.y, rotation.z];
 
 					this.ev('changeRoomState', { roomState: this.roomState });
 				});
@@ -1211,7 +1211,7 @@ export class RoomEngine extends EngineBase<{
 		this.fixedCamera.position = new BABYLON.Vector3(0, cm(120), 0);
 		this.fixedCamera.rotation = new BABYLON.Vector3(0, 0, 0);
 		this.scene.activeCamera = this.fixedCamera;
-		this.selectFuniture(null);
+		this.selectFurniture(null);
 	}
 
 	public sit() {
@@ -1284,18 +1284,18 @@ export class RoomEngine extends EngineBase<{
 		return root;
 	}
 
-	public async addFuniture(type: string, _options?: RawOptions, attachments?: RoomAttachments) {
+	public async addFurniture(type: string, _options?: RawOptions, attachments?: RoomAttachments) {
 		if (!this.isEditMode) return;
 		if (this.grabbingCtx != null) return;
 
 		if (attachments != null) this.roomAttachments = attachments;
-		this.selectFuniture(null);
+		this.selectFurniture(null);
 
 		const id = genId();
 		const def = getFurnitureDef(type);
 		const options = _options != null ? deepClone(_options) : deepClone(def.options.default);
 
-		const container = await this.loadFuniture({
+		const container = await this.loadFurniture({
 			id: id,
 			type,
 			position: new BABYLON.Vector3(0, 0, 0),
@@ -1318,7 +1318,7 @@ export class RoomEngine extends EngineBase<{
 
 		this.grabbingCtx = {
 			furnitureId: id,
-			funitureType: type,
+			furnitureType: type,
 			forInstall: true,
 			mesh: container.root,
 			originalDiffOfPosition: new BABYLON.Vector3(0, 0, 0),
@@ -1326,7 +1326,7 @@ export class RoomEngine extends EngineBase<{
 			distance: distance,
 			rotation: 0,
 			ghost: ghost,
-			descendantStickyFunitureIds: [],
+			descendantStickyFurnitureIds: [],
 			onMove: (info) => {
 				stickyFurnitureId = info.stickyFurnitureId;
 				stickyPlaneId = info.stickyPlaneId;
@@ -1339,7 +1339,7 @@ export class RoomEngine extends EngineBase<{
 				grabbingEnded = true;
 
 				if (def.hasCollisions) {
-					enableFunitureCollision(container.root.getChildMeshes());
+					enableFurnitureCollision(container.root.getChildMeshes());
 				}
 
 				const pos = container.root.position.clone();
@@ -1429,7 +1429,7 @@ export class RoomEngine extends EngineBase<{
 	}
 
 	public async exitEditMode() {
-		this.selectFuniture(null);
+		this.selectFurniture(null);
 		this.isEditMode = false;
 
 		await this.envManager.renderShadow();
@@ -1464,7 +1464,7 @@ export class RoomEngine extends EngineBase<{
 		reflectionProbe.renderList = [];
 		//reflectionProbe.dispose();
 
-		for (const mesh of this.scene.meshes.filter(m => (m instanceof BABYLON.Mesh || m instanceof BABYLON.InstancedMesh) && m.isEnabled() && m.isVisible && m.material && m.metadata?.isFuniture)) {
+		for (const mesh of this.scene.meshes.filter(m => (m instanceof BABYLON.Mesh || m instanceof BABYLON.InstancedMesh) && m.isEnabled() && m.isVisible && m.material && m.metadata?.isFurniture)) {
 			if (mesh.material) {
 				mesh.material.unfreeze();
 				if (mesh.material instanceof BABYLON.MultiMaterial) {
@@ -1482,15 +1482,15 @@ export class RoomEngine extends EngineBase<{
 			*/
 	}
 
-	public duplicateSelectedFuniture() {
+	public duplicateSelectedFurniture() {
 		if (this.selected == null) return;
 
-		const funitureState = this.selected.funitureState;
+		const furnitureState = this.selected.furnitureState;
 
-		this.addFuniture(funitureState.type, deepClone(funitureState.options));
+		this.addFurniture(furnitureState.type, deepClone(furnitureState.options));
 	}
 
-	public removeSelectedFuniture() {
+	public removeSelectedFurniture() {
 		if (this.selected == null) return;
 
 		const furnitureId = this.selected.furnitureId;
@@ -1581,7 +1581,7 @@ export class RoomEngine extends EngineBase<{
 					showUsername: this.showUsernameOnAvatar,
 					show2dAvatar: this.show2dAvatarOnAvatar,
 				});
-				// TODO: loadFunitureのものとある程度共通化
+				// TODO: loadFurnitureのものとある程度共通化
 				p.registerMeshes = (meshes) => {
 					for (const mesh of meshes) {
 						mesh.receiveShadows = false;

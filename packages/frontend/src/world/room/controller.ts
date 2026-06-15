@@ -38,7 +38,7 @@ export class RoomController extends EngineControllerBase<RoomEngine, {
 	public gridSnapping = ref({ enabled: true, scale: cm(4) });
 	public selected = shallowRef<{
 		furnitureId: string;
-		funitureState: RoomState_InstalledFurniture;
+		furnitureState: RoomState_InstalledFurniture;
 		interacions: {
 			id: string;
 			label: string;
@@ -109,7 +109,7 @@ export class RoomController extends EngineControllerBase<RoomEngine, {
 						// そのまま入れると「オブジェクト(newSelected)の内容」は変わってるけど「オブジェクトの参照」そのものは変化していないから、
 						// その状態で代入しようがtriggerRef呼ぼうがVueは「子に対しては」更新があったと見做してくれない(親から当該refをwatchする場合は発火する)っぽい(バグか仕様かは不明)
 						// そのため新しい参照にするためにdeepClone
-						funitureState: deepClone(newSelected),
+						furnitureState: deepClone(newSelected),
 					};
 				} else {
 					this.selected.value = null;
@@ -179,20 +179,20 @@ export class RoomController extends EngineControllerBase<RoomEngine, {
 		this.call('updateLightSettings', [light]);
 	}
 
-	public beginSelectedInstalledFunitureGrabbing() {
-		this.call('beginSelectedInstalledFunitureGrabbing');
+	public beginSelectedInstalledFurnitureGrabbing() {
+		this.call('beginSelectedInstalledFurnitureGrabbing');
 	}
 
-	public duplicateSelectedFuniture() {
-		this.call('duplicateSelectedFuniture');
+	public duplicateSelectedFurniture() {
+		this.call('duplicateSelectedFurniture');
 	}
 
-	public removeSelectedFuniture() {
-		this.call('removeSelectedFuniture');
+	public removeSelectedFurniture() {
+		this.call('removeSelectedFurniture');
 	}
 
-	public addFuniture(type: string, options: any, attachments?: RoomAttachments) {
-		this.call('addFuniture', deepClone([type, options, attachments])); // 場合によってはvueによって(postMessage不能な)proxy化された値が来ることも考えられるのでdeepClone
+	public addFurniture(type: string, options: any, attachments?: RoomAttachments) {
+		this.call('addFurniture', deepClone([type, options, attachments])); // 場合によってはvueによって(postMessage不能な)proxy化された値が来ることも考えられるのでdeepClone
 	}
 
 	public endGrabbing() {

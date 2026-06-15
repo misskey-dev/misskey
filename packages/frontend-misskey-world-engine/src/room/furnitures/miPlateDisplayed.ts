@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineFuniture } from '../furniture.js';
+import { defineFurniture } from '../furniture.js';
 import { miPlateDisplayed_schema } from 'misskey-world/src/room/furnitures/miPlateDisplayed.schema.js';
 
-export const miPlateDisplayed = defineFuniture(miPlateDisplayed_schema, {
+export const miPlateDisplayed = defineFurniture(miPlateDisplayed_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

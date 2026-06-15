@@ -5,9 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core/pure.js';
 import { tabletopFlag_schema } from 'misskey-world/src/room/furnitures/tabletopFlag.schema.js';
-import { createTextureManager, defineFuniture } from '../furniture.js';
+import { createTextureManager, defineFurniture } from '../furniture.js';
 
-export const tabletopFlag = defineFuniture(tabletopFlag_schema, {
+export const tabletopFlag = defineFurniture(tabletopFlag_schema, {
 	createInstance: async ({ model, options, scene }) => {
 		const flagMesh = model.findMesh('__X_FLAG__');
 		const flagMaterial = model.findMaterial('__X_FLAG__');

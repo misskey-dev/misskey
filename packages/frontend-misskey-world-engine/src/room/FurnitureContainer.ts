@@ -9,7 +9,7 @@ import { scaleMorph, Timer } from '../utility.js';
 import { convertRawOptions, type ConvertedOptions, type RawOptions } from '../mono.js';
 import { getFurnitureDef } from './furniture-defs.js';
 import { ModelManager, SYSTEM_MESH_NAMES } from './utility.js';
-import type { RoomFunitureInstance } from './furniture.js';
+import type { RoomFurnitureInstance } from './furniture.js';
 import type { RoomAttachments } from 'misskey-world/src/room/type.js';
 
 function mergeMeshes(meshes: BABYLON.Mesh[], root: BABYLON.Mesh, hasTexture: boolean) {
@@ -60,7 +60,7 @@ export class FurnitureContainer {
 	private options: ConvertedOptions;
 	public root: BABYLON.TransformNode;
 	private subRoot: BABYLON.TransformNode | null = null;
-	public instance: RoomFunitureInstance | null = null;
+	public instance: RoomFurnitureInstance | null = null;
 	public model: ModelManager | null = null;
 	private scene: BABYLON.Scene;
 	public registerMeshes: (meshes: BABYLON.Mesh[]) => void = () => {};
@@ -203,8 +203,8 @@ export class FurnitureContainer {
 				//	mesh.unfreezeWorldMatrix();
 				//	mesh.computeWorldMatrix(true);
 				//	const updateChildStickyObjectPosition = (furnitureId: string) => {
-				//		const stickyFunitureIds = Array.from(this.roomState.installedFurnitures.filter(o => o.sticky === furnitureId)).map(o => o.id);
-				//		for (const soid of stickyFunitureIds) {
+				//		const stickyFurnitureIds = Array.from(this.roomState.installedFurnitures.filter(o => o.sticky === furnitureId)).map(o => o.id);
+				//		for (const soid of stickyFurnitureIds) {
 				//			const soMesh = this.objectEntities.get(soid)!.rootMesh;
 				//			soMesh.unfreezeWorldMatrix();
 				//			for (const m of soMesh.getChildMeshes()) {

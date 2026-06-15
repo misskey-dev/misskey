@@ -6,10 +6,10 @@
 import * as BABYLON from '@babylonjs/core/pure.js';
 import { cm, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { allInOnePc_schema } from 'misskey-world/src/room/furnitures/allInOnePc.schema.js';
-import { createTextureManager, defineFuniture } from '../furniture.js';
+import { createTextureManager, defineFurniture } from '../furniture.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 
-export const allInOnePc = defineFuniture(allInOnePc_schema, {
+export const allInOnePc = defineFurniture(allInOnePc_schema, {
 	createInstance: async ({ lc, scene, options, model, graphicsQuality }) => {
 		const matrix = model.root.getWorldMatrix(true);
 		const scale = new BABYLON.Vector3();

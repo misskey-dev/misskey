@@ -4,10 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core/pure.js';
-import { defineFuniture } from '../furniture.js';
+import { defineFurniture } from '../furniture.js';
 import { cuboid_schema } from 'misskey-world/src/room/furnitures/cuboid.schema.js';
 
-export const cuboid = defineFuniture(cuboid_schema, {
+export const cuboid = defineFurniture(cuboid_schema, {
 	createInstance: async ({ scene, options, model }) => {
 		const mesh = model.findMesh('__X_BODY__');
 		const mat = model.findMaterial('__X_BODY__');

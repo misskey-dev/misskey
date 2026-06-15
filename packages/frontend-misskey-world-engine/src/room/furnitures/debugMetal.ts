@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineFuniture } from '../furniture.js';
+import { defineFurniture } from '../furniture.js';
 import { debugMetal_schema } from 'misskey-world/src/room/furnitures/debugMetal.schema.js';
 
-export const debugMetal = defineFuniture(debugMetal_schema, {
+export const debugMetal = defineFurniture(debugMetal_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

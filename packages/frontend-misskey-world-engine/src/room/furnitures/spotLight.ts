@@ -4,12 +4,12 @@
  */
 
 import * as BABYLON from '@babylonjs/core/pure.js';
-import { defineFuniture } from '../furniture.js';
+import { defineFurniture } from '../furniture.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 import { cm, remap, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { spotLight_schema } from 'misskey-world/src/room/furnitures/spotLight.schema.js';
 
-export const spotLight = defineFuniture(spotLight_schema, {
+export const spotLight = defineFurniture(spotLight_schema, {
 	createInstance: ({ lc, scene, options, model, graphicsQuality }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 

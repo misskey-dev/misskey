@@ -4,10 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core/pure.js';
-import { defineFuniture } from '../furniture.js';
+import { defineFurniture } from '../furniture.js';
 import { newtonsCradle_schema } from 'misskey-world/src/room/furnitures/newtonsCradle.schema.js';
 
-export const newtonsCradle = defineFuniture(newtonsCradle_schema, {
+export const newtonsCradle = defineFurniture(newtonsCradle_schema, {
 	createInstance: ({ options, model }) => {
 		const frameMaterial = model.findMaterial('__X_FRAME__');
 

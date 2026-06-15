@@ -172,7 +172,7 @@ export class RoomFurniturePreviewEngine extends EngineBase<{
 		//}
 	}
 
-	public async loadFuniture(type: string) {
+	public async loadFurniture(type: string) {
 		this.sr.disableSnapshotRendering();
 		this.clearFurniture();
 

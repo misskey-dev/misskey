@@ -190,7 +190,7 @@ export class ModelManager {
 	public findMesh(keyword: string) {
 		const mesh = this.root.getChildMeshes().find(m => m.name.includes(keyword));
 		if (mesh == null) {
-			throw new Error(`Mesh with keyword "${keyword}" not found for furniture ${this.root.metadata?.funitureType}`);
+			throw new Error(`Mesh with keyword "${keyword}" not found for furniture ${this.root.metadata?.furnitureType}`);
 		}
 		return mesh as BABYLON.Mesh;
 	}
@@ -207,7 +207,7 @@ export class ModelManager {
 	public findTransformNode(keyword: string) {
 		const node = this.root.getChildTransformNodes().find(n => n.name.includes(keyword));
 		if (node == null) {
-			throw new Error(`TransformNode with keyword "${keyword}" not found for furniture ${this.root.metadata?.funitureType}`);
+			throw new Error(`TransformNode with keyword "${keyword}" not found for furniture ${this.root.metadata?.furnitureType}`);
 		}
 		return node;
 	}

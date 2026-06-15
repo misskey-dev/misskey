@@ -541,7 +541,7 @@ export class WorldEngine extends EngineBase<{
 		this.fixedCamera.position = new BABYLON.Vector3(0, cm(120), 0);
 		this.fixedCamera.rotation = new BABYLON.Vector3(0, 0, 0);
 		this.scene.activeCamera = this.fixedCamera;
-		this.selectFuniture(null);
+		this.selectFurniture(null);
 	}
 
 	public standUp() {

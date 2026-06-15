@@ -6,10 +6,10 @@
 import * as BABYLON from '@babylonjs/core/pure.js';
 import { cm, remap, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { downlight_schema } from 'misskey-world/src/room/furnitures/downlight.schema.js';
-import { defineFuniture } from '../furniture.js';
+import { defineFurniture } from '../furniture.js';
 import { getLightRangeFactorByGraphicsQuality } from '../utility.js';
 
-export const downlight = defineFuniture(downlight_schema, {
+export const downlight = defineFurniture(downlight_schema, {
 	createInstance: ({ lc, scene, options, model, graphicsQuality }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 		const lightMaterial = model.findMaterial('__X_LIGHT__');

@@ -5,11 +5,11 @@
 
 import * as BABYLON from '@babylonjs/core/pure.js';
 import seedrandom from 'seedrandom';
-import { defineFuniture } from '../furniture.js';
+import { defineFurniture } from '../furniture.js';
 import { cm, remap, WORLD_SCALE } from 'misskey-world/src/utility.js';
 import { randomBooks_schema } from 'misskey-world/src/room/furnitures/randomBooks.schema.js';
 
-export const randomBooks = defineFuniture(randomBooks_schema, {
+export const randomBooks = defineFurniture(randomBooks_schema, {
 	createInstance: ({ options, model, scene }) => {
 		const bodyMesh = model.findMesh('__X_BODY__');
 		bodyMesh.isVisible = false;

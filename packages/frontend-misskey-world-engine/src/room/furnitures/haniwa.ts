@@ -5,9 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core/pure.js';
 import { haniwa_schema } from 'misskey-world/src/room/furnitures/haniwa.schema.js';
-import { defineFuniture } from '../furniture.js';
+import { defineFurniture } from '../furniture.js';
 
-export const haniwa = defineFuniture(haniwa_schema, {
+export const haniwa = defineFurniture(haniwa_schema, {
 	createInstance: ({ options, model }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 		const insideMaterial = model.findMaterial('__X_INSIDE__');

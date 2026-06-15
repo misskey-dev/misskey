@@ -6,9 +6,9 @@
 import * as BABYLON from '@babylonjs/core/pure.js';
 import { remap } from 'misskey-world/src/utility.js';
 import { tapestry_schema } from 'misskey-world/src/room/furnitures/tapestry.schema.js';
-import { createTextureManager, defineFuniture } from '../furniture.js';
+import { createTextureManager, defineFurniture } from '../furniture.js';
 
-export const tapestry = defineFuniture(tapestry_schema, {
+export const tapestry = defineFurniture(tapestry_schema, {
 	createInstance: async ({ scene, options, model }) => {
 		const pictureMesh = model.findMesh('__X_PICTURE__');
 		pictureMesh.rotationQuaternion = null;

@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { defineFuniture } from '../furniture.js';
+import { defineFurniture } from '../furniture.js';
 import { powerStrip_schema } from 'misskey-world/src/room/furnitures/powerStrip.schema.js';
 
-export const powerStrip = defineFuniture(powerStrip_schema, {
+export const powerStrip = defineFurniture(powerStrip_schema, {
 	createInstance: () => {
 		return {
 			interactions: {},

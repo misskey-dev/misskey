@@ -5,9 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core/pure.js';
 import { handheldGameConsole_schema } from 'misskey-world/src/room/furnitures/handheldGameConsole.schema.js';
-import { createTextureManager, defineFuniture } from '../furniture.js';
+import { createTextureManager, defineFurniture } from '../furniture.js';
 
-export const handheldGameConsole = defineFuniture(handheldGameConsole_schema, {
+export const handheldGameConsole = defineFurniture(handheldGameConsole_schema, {
 	createInstance: async ({ scene, options, model }) => {
 		const screenMesh = model.findMesh('__X_SCREEN__');
 

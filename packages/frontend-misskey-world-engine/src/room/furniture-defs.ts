@@ -241,7 +241,7 @@ export const FUNITURE_DEFS = [
 export function getFurnitureDef(type: string): FurnitureDef {
 	const def = FUNITURE_DEFS.find(x => x.id === type) as FurnitureDef | undefined;
 	if (def == null) {
-		throw new Error(`Unrecognized funiture type: ${type}`);
+		throw new Error(`Unrecognized furniture type: ${type}`);
 	}
 	return def;
 }

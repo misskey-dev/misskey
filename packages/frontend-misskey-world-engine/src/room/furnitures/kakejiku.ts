@@ -5,9 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core/pure.js';
 import { kakejiku_schema } from 'misskey-world/src/room/furnitures/kakejiku.schema.js';
-import { createTextureManager, defineFuniture } from '../furniture.js';
+import { createTextureManager, defineFurniture } from '../furniture.js';
 
-export const kakejiku = defineFuniture(kakejiku_schema, {
+export const kakejiku = defineFurniture(kakejiku_schema, {
 	createInstance: async ({ scene, options, model }) => {
 		const imageMesh = model.findMesh('__X_IMAGE__');
 		imageMesh.rotationQuaternion = null;

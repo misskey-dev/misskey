@@ -4,10 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core/pure.js';
-import { defineFuniture } from '../furniture.js';
+import { defineFurniture } from '../furniture.js';
 import { piano_schema } from 'misskey-world/src/room/furnitures/piano.schema.js';
 
-export const piano = defineFuniture(piano_schema, {
+export const piano = defineFurniture(piano_schema, {
 	createInstance: ({ options, model }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 

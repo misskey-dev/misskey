@@ -4,10 +4,10 @@
  */
 
 import * as BABYLON from '@babylonjs/core/pure.js';
-import { defineFuniture } from '../furniture.js';
+import { defineFurniture } from '../furniture.js';
 import { wireNet_schema } from 'misskey-world/src/room/furnitures/wireNet.schema.js';
 
-export const wireNet = defineFuniture(wireNet_schema, {
+export const wireNet = defineFurniture(wireNet_schema, {
 	createInstance: ({ options, model }) => {
 		const bodyMaterial = model.findMaterial('__X_BODY__');
 

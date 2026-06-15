@@ -5,9 +5,9 @@
 
 import * as BABYLON from '@babylonjs/core/pure.js';
 import { ceilingFan_schema } from 'misskey-world/src/room/furnitures/ceilingFan.schema.js';
-import { defineFuniture } from '../furniture.js';
+import { defineFurniture } from '../furniture.js';
 
-export const ceilingFan = defineFuniture(ceilingFan_schema, {
+export const ceilingFan = defineFurniture(ceilingFan_schema, {
 	createInstance: ({ options, sr, scene, model }) => {
 		const shadeMaterial = model.findMaterial('__X_SHADE__');
 
