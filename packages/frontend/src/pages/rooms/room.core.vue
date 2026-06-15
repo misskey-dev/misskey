@@ -99,16 +99,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<MkVirtualJoystick v-if="useVirtualJoystick && controller.isReady.value" :class="$style.joystick" @update="v => controller.setCameraJoystickMoveVector(v)"/>
 	</div>
 
-	<XOverlayPanel v-if="controller.isReady.value && controller.isEditMode.value && controller.selected.value != null && isFurnitureSettingsOpen" :key="controller.selected.value.furnitureId" :isNarrow="isNarrow" :title="FURNITURE_UI_DEFS[controller.selected.value.funitureState.type].name" @close="isFurnitureSettingsOpen = false">
+	<XOverlayPanel v-if="controller.isReady.value && controller.isEditMode.value && controller.selected.value != null && isFurnitureSettingsOpen" :key="controller.selected.value.furnitureId" :isNarrow="isNarrow" :title="FURNITURE_UI_DEFS[controller.selected.value.furnitureState.type].name" @close="isFurnitureSettingsOpen = false">
 		<template #icon>
 			<i class="ti ti-box"></i>
 		</template>
 
 		<MkWorldMonoOptionsForm
-			:uiDef="FURNITURE_UI_DEFS[FURNITURE_SCHEMA_DEFS[controller.selected.value.funitureState.type].id]"
+			:uiDef="FURNITURE_UI_DEFS[FURNITURE_SCHEMA_DEFS[controller.selected.value.furnitureState.type].id]"
 			:addFileAttachment="addFileAttachment"
-			:schema="FURNITURE_SCHEMA_DEFS[controller.selected.value.funitureState.type].options.schema"
-			:options="controller.selected.value.funitureState.options"
+			:schema="FURNITURE_SCHEMA_DEFS[controller.selected.value.furnitureState.type].options.schema"
+			:options="controller.selected.value.furnitureState.options"
 			@update="(k, v) => updateFurnitureOption(k, v)"
 		/>
 	</XOverlayPanel>
