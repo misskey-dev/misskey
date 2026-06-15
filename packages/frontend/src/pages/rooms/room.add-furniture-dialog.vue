@@ -227,7 +227,7 @@ watch(selectedId, (newId) => {
 		const closeWaiting = os.waiting();
 		nextTick(() => {
 			try {
-				withTimeout(controller.loadFuniture(newId), 10000).then(res => {
+				withTimeout(controller.loadFurniture(newId), 10000).then(res => {
 					selectedInstanceId.value = res.id;
 					selectedFunitureOptionsState.value = deepClone(res.options);
 					controller.resumeRender();
