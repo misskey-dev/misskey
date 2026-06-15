@@ -8423,7 +8423,7 @@ export interface Locale extends ILocale {
          */
         "maxImagesPerRequest": string;
         /**
-         * 動画など複数フレームを判定する際、1回のリクエストにまとめて送る画像の最大枚数です。これを超える分は分割して順次送信されます。
+         * 動画など複数フレームを判定する際、1回のリクエストにまとめて送る画像の最大枚数です。これを超える分は分割して順次送信されます。sensitive-detector 側の maxParts 設定（デフォルト: 10）を超えないように設定してください。超えた場合、そのチャンクは全件非センシティブ扱いとなります。
          */
         "maxImagesPerRequestDescription": string;
     };
