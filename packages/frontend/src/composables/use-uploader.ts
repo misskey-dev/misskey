@@ -767,6 +767,11 @@ export function useUploader(options: {
 		abortAll();
 	}
 
+	function reset() {
+		dispose();
+		items.value = [];
+	}
+
 	onUnmounted(() => {
 		dispose();
 	});
@@ -777,6 +782,7 @@ export function useUploader(options: {
 		removeItem,
 		abortAll,
 		dispose,
+		reset,
 		upload,
 		getMenu,
 		uploading: computed(() => items.value.some(item => item.uploading)),
