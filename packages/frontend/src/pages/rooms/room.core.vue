@@ -83,7 +83,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<button v-if="controller.grabbing.value" class="_button" :class="$style.floatingButton" @click="controller.changeGrabbingDistance(10)"><i class="ti ti-arrows-maximize"></i></button>
 				<button v-if="controller.grabbing.value" class="_button" :class="$style.floatingButton" @click="controller.changeGrabbingDistance(-10)"><i class="ti ti-arrows-minimize"></i></button>
 
-				<button v-if="!controller.grabbing.value && controller.selected.value != null" v-tooltip.noDelay="i18n.ts._miRoom.duplicate" class="_button" :class="$style.floatingButton" @click="duplicateSelectedFuniture"><i class="ti ti-copy"></i></button>
+				<button v-if="!controller.grabbing.value && controller.selected.value != null" v-tooltip.noDelay="i18n.ts._miRoom.duplicate" class="_button" :class="$style.floatingButton" @click="duplicateSelectedFurniture"><i class="ti ti-copy"></i></button>
 				<button v-if="!controller.grabbing.value && controller.selected.value != null" v-tooltip.noDelay="i18n.ts._miRoom.uninstallFurniture" class="_button" :class="$style.floatingButton" style="color: var(--MI_THEME-error)" @click="removeSelectedFuniture"><i class="ti ti-trash"></i></button>
 			</template>
 			<template v-else>
@@ -531,8 +531,8 @@ function changeEnvType(type: RoomState['env']['type']) {
 	refresh();
 }
 
-function duplicateSelectedFuniture() {
-	controller.duplicateSelectedFuniture();
+function duplicateSelectedFurniture() {
+	controller.duplicateSelectedFurniture();
 	canvas.value!.focus();
 }
 
