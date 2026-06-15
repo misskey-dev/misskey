@@ -32,8 +32,8 @@ importers:
         specifier: 8.5.15
         version: 8.5.15
       tar:
-        specifier: 7.5.15
-        version: 7.5.15
+        specifier: 7.5.16
+        version: 7.5.16
       terser:
         specifier: 5.48.0
         version: 5.48.0
@@ -4648,7 +4648,7 @@ packages:
     engines: {node: '>= 14'}
 
   aiscript-vscode@https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/1dc7f60cda78d030dadfc518a33c472202b2ef67:
-    resolution: {gitHosted: true, tarball: https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/1dc7f60cda78d030dadfc518a33c472202b2ef67}
+    resolution: {gitHosted: true, integrity: sha512-S4eSTHasZz29AMlnU2/zdGP8zikiDiYfYW9kNooAfwVo8OghXdxKuTDDKDAjWsbBxa1+P4uQHa4BNk9MY74rJQ==, tarball: https://codeload.github.com/aiscript-dev/aiscript-vscode/tar.gz/1dc7f60cda78d030dadfc518a33c472202b2ef67}
     version: 0.1.16
     engines: {vscode: ^1.83.0}
 
@@ -9149,7 +9149,7 @@ packages:
     engines: {node: '>= 0.4'}
 
   storybook-addon-misskey-theme@https://codeload.github.com/misskey-dev/storybook-addon-misskey-theme/tar.gz/cf583db098365b2ccc81a82f63ca9c93bc32b640:
-    resolution: {gitHosted: true, tarball: https://codeload.github.com/misskey-dev/storybook-addon-misskey-theme/tar.gz/cf583db098365b2ccc81a82f63ca9c93bc32b640}
+    resolution: {gitHosted: true, integrity: sha512-QaH1uZSlApQ2CZPkHfhmNm89I92L02s3MdbUPG66TmAyqMaqzxd/AvobORBjtTZ0ymUSa3ii482dRXi+fFb19w==, tarball: https://codeload.github.com/misskey-dev/storybook-addon-misskey-theme/tar.gz/cf583db098365b2ccc81a82f63ca9c93bc32b640}
     version: 0.0.0
     peerDependencies:
       '@storybook/blocks': ^7.0.0-rc.4
@@ -9359,6 +9359,10 @@ packages:
 
   tar@7.5.15:
     resolution: {integrity: sha512-dzGK0boVlC4W5QFuQN1EFSl3bIDYsk7Tj40U6eIBnK2k/8ml7TZ5agbI5j5+qnoVcAA+rNtBml8SEiLxZpNqRQ==}
+    engines: {node: '>=18'}
+
+  tar@7.5.16:
+    resolution: {integrity: sha512-56adEpPMouktRlBLXiaYFFzZ/3+JXa8P9n7WbR+ibIjtviN55mEaOkiysCnPnWm+7kkui1Dn8J9l+g6zV8731w==}
     engines: {node: '>=18'}
 
   taskkill@5.0.0:
@@ -18972,6 +18976,14 @@ snapshots:
     optional: true
 
   tar@7.5.15:
+    dependencies:
+      '@isaacs/fs-minipass': 4.0.1
+      chownr: 3.0.0
+      minipass: 7.1.3
+      minizlib: 3.1.0
+      yallist: 5.0.0
+
+  tar@7.5.16:
     dependencies:
       '@isaacs/fs-minipass': 4.0.1
       chownr: 3.0.0

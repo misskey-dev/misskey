@@ -56,6 +56,8 @@ minimumReleaseAgeExclude:
   - '@types/archiver' # そのうち消す
   - esbuild # 脆弱性対応。そのうち消す
   - '@esbuild/*' # 脆弱性対応。そのうち消す
+  # Renovate security update: tar@7.5.16
+  - tar@7.5.16
 overrides:
   '@aiscript-dev/aiscript-languageserver': '-'
   chokidar: 5.0.0
