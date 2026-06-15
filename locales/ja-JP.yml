@@ -2185,7 +2185,7 @@ _sensitiveMediaDetection:
   timeout: "タイムアウト (ミリ秒)"
   timeoutDescription: "判定リクエスト1回あたりのタイムアウト時間です。"
   maxImagesPerRequest: "1リクエストあたりの最大画像数"
-  maxImagesPerRequestDescription: "動画など複数フレームを判定する際、1回のリクエストにまとめて送る画像の最大枚数です。これを超える分は分割して順次送信されます。"
+  maxImagesPerRequestDescription: "動画など複数フレームを判定する際、1回のリクエストにまとめて送る画像の最大枚数です。これを超える分は分割して順次送信されます。sensitive-detector 側の maxParts 設定（デフォルト: 10）を超えないように設定してください。超えた場合、そのチャンクは全件非センシティブ扱いとなります。"
 
 _emailUnavailable:
   used: "既に使用されています"

@@ -100,8 +100,8 @@ export const paramDef = {
 		enableSensitiveMediaDetectionForVideos: { type: 'boolean' },
 		sensitiveMediaDetectionApiUrl: { type: 'string', nullable: true },
 		sensitiveMediaDetectionApiKey: { type: 'string', nullable: true },
-		sensitiveMediaDetectionTimeout: { type: 'integer' },
-		sensitiveMediaDetectionMaxImagesPerRequest: { type: 'integer' },
+		sensitiveMediaDetectionTimeout: { type: 'integer', minimum: 1 },
+		sensitiveMediaDetectionMaxImagesPerRequest: { type: 'integer', minimum: 1 },
 		maintainerName: { type: 'string', nullable: true },
 		maintainerEmail: { type: 'string', nullable: true },
 		langs: {
