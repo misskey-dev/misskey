@@ -275,6 +275,10 @@ for (const obj of initialRoomState.installedFurnitures) {
 	} else if (obj.type === 'ironFrameShelf3') {
 		obj.type = 'ironFrameShelf';
 	}
+	if (obj.sticky != null) {
+		obj.stickyFurnitureId = obj.sticky;
+		delete obj.sticky;
+	}
 }
 if (initialRoomState.env.type === 'simple' && initialRoomState.env.options.walls.n != null) {
 	initialRoomState.env.options.walls.zPositive = initialRoomState.env.options.walls.s;

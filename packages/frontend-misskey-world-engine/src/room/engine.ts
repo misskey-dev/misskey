@@ -791,7 +791,7 @@ export class RoomEngine extends EngineBase<{
 		bb.min.subtractInPlace(rootPos);
 		bb.max.subtractInPlace(rootPos);
 
-		let stickyOtherFurniture: string | null = null;
+		let stickyFurnitureId: string | null = null;
 		let stickyPlaneId: string | null = null;
 		let sticky = false;
 
@@ -820,7 +820,7 @@ export class RoomEngine extends EngineBase<{
 					newRotation.y = targetRotationY;
 					newRotation.z = grabbing.originalDiffOfRotation.z + grabbing.rotation;
 					newPos = hit.pickedPoint;
-					stickyOtherFurniture = hit.pickedMesh.metadata?.furnitureId ?? null;
+					stickyFurnitureId = hit.pickedMesh.metadata?.furnitureId ?? null;
 					stickyPlaneId = hit.pickedMesh.name.includes('<') ? hit.pickedMesh.name.split('<')[1].split('>')[0] : null;
 
 					if (this.gridSnapping.enabled) {
@@ -851,7 +851,7 @@ export class RoomEngine extends EngineBase<{
 				if (hit != null && hit.pickedPoint != null && hit.pickedMesh != null) {
 					sticky = true;
 					newPos = hit.pickedPoint;
-					stickyOtherFurniture = hit.pickedMesh.metadata?.furnitureId ?? null;
+					stickyFurnitureId = hit.pickedMesh.metadata?.furnitureId ?? null;
 					stickyPlaneId = hit.pickedMesh.name.includes('<') ? hit.pickedMesh.name.split('<')[1].split('>')[0] : null;
 
 					if (this.gridSnapping.enabled) {
@@ -893,7 +893,7 @@ export class RoomEngine extends EngineBase<{
 
 					sticky = true;
 					newPos = hit.pickedPoint;
-					stickyOtherFurniture = hit.pickedMesh.metadata?.furnitureId ?? null;
+					stickyFurnitureId = hit.pickedMesh.metadata?.furnitureId ?? null;
 					stickyPlaneId = hit.pickedMesh.name.includes('<') ? hit.pickedMesh.name.split('<')[1].split('>')[0] : null;
 
 					if (this.gridSnapping.enabled) {
@@ -946,7 +946,7 @@ export class RoomEngine extends EngineBase<{
 		grabbing.onMove?.({
 			position: newPos,
 			rotation: newRotation,
-			stickyFurnitureId: stickyOtherFurniture,
+			stickyFurnitureId: stickyFurnitureId,
 			stickyPlaneId: stickyPlaneId,
 		});
 	}
@@ -1010,7 +1010,7 @@ export class RoomEngine extends EngineBase<{
 
 		// 子から先に適用していく
 		const setStickyParentRecursively = (mesh: BABYLON.AbstractMesh) => {
-			const stickyFurnitureIds = Array.from(this.roomState.installedFurnitures.filter(o => o.sticky === mesh.metadata.furnitureId)).map(o => o.id);
+			const stickyFurnitureIds = Array.from(this.roomState.installedFurnitures.filter(o => o.stickyFurnitureId === mesh.metadata.furnitureId)).map(o => o.id);
 			for (const soid of stickyFurnitureIds) {
 				const soMesh = this.furnitureContainers.get(soid)!.root;
 				setStickyParentRecursively(soMesh);
@@ -1025,7 +1025,7 @@ export class RoomEngine extends EngineBase<{
 
 		const descendantStickyFurnitureIds: string[] = [];
 		const collectDescendantStickyFurnitureIds = (parentId: string) => {
-			const childIds = Array.from(this.roomState.installedFurnitures.filter(o => o.sticky === parentId)).map(o => o.id);
+			const childIds = Array.from(this.roomState.installedFurnitures.filter(o => o.stickyFurnitureId === parentId)).map(o => o.id);
 			for (const cid of childIds) {
 				descendantStickyFurnitureIds.push(cid);
 				collectDescendantStickyFurnitureIds(cid);
@@ -1072,7 +1072,7 @@ export class RoomEngine extends EngineBase<{
 
 				// 親から先に外していく
 				const removeStickyParentRecursively = (mesh: BABYLON.Mesh) => {
-					const stickyFurnitureIds = Array.from(this.roomState.installedFurnitures.filter(o => o.sticky === mesh.metadata.furnitureId)).map(o => o.id);
+					const stickyFurnitureIds = Array.from(this.roomState.installedFurnitures.filter(o => o.stickyFurnitureId === mesh.metadata.furnitureId)).map(o => o.id);
 					for (const soid of stickyFurnitureIds) {
 						const soMesh = this.furnitureContainers.get(soid)!.root;
 						soMesh.setParent(null);
@@ -1114,7 +1114,7 @@ export class RoomEngine extends EngineBase<{
 
 					// 親から先に外していく
 					const removeStickyParentRecursively = (mesh: BABYLON.Mesh) => {
-						const stickyFurnitureIds = Array.from(this.roomState.installedFurnitures.filter(o => o.sticky === mesh.metadata.furnitureId)).map(o => o.id);
+						const stickyFurnitureIds = Array.from(this.roomState.installedFurnitures.filter(o => o.stickyFurnitureId === mesh.metadata.furnitureId)).map(o => o.id);
 						for (const soid of stickyFurnitureIds) {
 							const soMesh = this.furnitureContainers.get(soid)!.root;
 							soMesh.setParent(null);
@@ -1135,7 +1135,7 @@ export class RoomEngine extends EngineBase<{
 
 					const pos = selectedFurniture.position.clone();
 					const rotation = selectedFurniture.rotation.clone();
-					this.roomState.installedFurnitures.find(o => o.id === selectedFurniture.metadata.furnitureId)!.sticky = stickyFurnitureId;
+					this.roomState.installedFurnitures.find(o => o.id === selectedFurniture.metadata.furnitureId)!.stickyFurnitureId = stickyFurnitureId;
 					this.roomState.installedFurnitures.find(o => o.id === selectedFurniture.metadata.furnitureId)!.stickyPlaneId = stickyPlaneId;
 					this.roomState.installedFurnitures.find(o => o.id === selectedFurniture.metadata.furnitureId)!.position = [pos.x, pos.y, pos.z];
 					this.roomState.installedFurnitures.find(o => o.id === selectedFurniture.metadata.furnitureId)!.rotation = [rotation.x, rotation.y, rotation.z];
@@ -1373,7 +1373,7 @@ export class RoomEngine extends EngineBase<{
 					type,
 					position: [pos.x, pos.y, pos.z],
 					rotation: [rotation.x, rotation.y, rotation.z],
-					sticky: stickyFurnitureId,
+					stickyFurnitureId: stickyFurnitureId,
 					stickyPlaneId,
 					options,
 				});
@@ -1498,8 +1498,8 @@ export class RoomEngine extends EngineBase<{
 		this.furnitureContainers.get(furnitureId)?.destroy();
 		this.furnitureContainers.delete(furnitureId);
 		this.roomState.installedFurnitures = this.roomState.installedFurnitures.filter(o => o.id !== furnitureId);
-		for (const o of this.roomState.installedFurnitures.filter(o => o.sticky === furnitureId)) {
-			o.sticky = null;
+		for (const o of this.roomState.installedFurnitures.filter(o => o.stickyFurnitureId === furnitureId)) {
+			o.stickyFurnitureId = null;
 			o.stickyPlaneId = null;
 		}
 		this.ev('changeRoomState', { roomState: this.roomState });

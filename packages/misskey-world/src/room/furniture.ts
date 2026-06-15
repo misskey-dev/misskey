@@ -15,7 +15,7 @@ export type RoomState_InstalledFurniture = {
 	/**
 	 * 別の家具のID
 	 */
-	sticky?: string | null;
+	stickyFurnitureId?: string | null;
 	stickyPlaneId?: string | null;
 };
 
