@@ -76,7 +76,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<button v-if="controller.grabbing.value" v-tooltip.noDelay="'Cancel (Q)'" class="_button" :class="$style.floatingButton" @click="cancelGrabbing"><i class="ti ti-x"></i></button>
 				<button v-if="controller.grabbing.value && !controller.grabbing.value.forInstall" v-tooltip.noDelay="'Put (E)'" class="_button" :class="$style.floatingButton" style="color: var(--MI_THEME-accent)" @click="endGrabbing"><i class="ti ti-check"></i></button>
 				<button v-else-if="controller.grabbing.value && controller.grabbing.value.forInstall" v-tooltip.noDelay="'Put (E)'" class="_button" :class="$style.floatingButton" style="color: var(--MI_THEME-accent)" @click="endGrabbing"><i class="ti ti-check"></i></button>
-				<button v-else-if="controller.selected.value != null" v-tooltip.noDelay="i18n.ts._miRoom.grab + ' (E)'" class="_button" :class="$style.floatingButton" @click="beginSelectedInstalledFunitureGrabbing"><i class="ti ti-hand-grab"></i></button>
+				<button v-else-if="controller.selected.value != null" v-tooltip.noDelay="i18n.ts._miRoom.grab + ' (E)'" class="_button" :class="$style.floatingButton" @click="beginSelectedInstalledFurnitureGrabbing"><i class="ti ti-hand-grab"></i></button>
 
 				<button v-if="controller.grabbing.value" class="_button" :class="$style.floatingButton" @click="controller.changeGrabbingRotation(Math.PI / 8)"><i class="ti ti-rotate-clockwise"></i></button>
 				<button v-if="controller.grabbing.value" class="_button" :class="$style.floatingButton" @click="controller.changeGrabbingRotation(-Math.PI / 8)"><i class="ti ti-rotate"></i></button>
@@ -439,8 +439,8 @@ onUnmounted(() => {
 	window.removeEventListener('resize', resize);
 });
 
-function beginSelectedInstalledFunitureGrabbing() {
-	controller.beginSelectedInstalledFunitureGrabbing();
+function beginSelectedInstalledFurnitureGrabbing() {
+	controller.beginSelectedInstalledFurnitureGrabbing();
 	canvas.value!.focus();
 }
 
