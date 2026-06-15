@@ -111,7 +111,7 @@ export class RoomEngine extends EngineBase<{
 		rotation: number;
 		ghost: BABYLON.TransformNode;
 		descendantStickyFunitureIds: string[];
-		onMove?: (info: { position: BABYLON.Vector3; rotation: BABYLON.Vector3; sticky: string | null; }) => void;
+		onMove?: (info: { position: BABYLON.Vector3; rotation: BABYLON.Vector3; stickyFurnitureId: string | null; stickyPlaneId: string | null; }) => void;
 		onCancel?: () => void;
 		onDone?: () => void;
 	} | null = null;
@@ -792,6 +792,7 @@ export class RoomEngine extends EngineBase<{
 		bb.max.subtractInPlace(rootPos);
 
 		let stickyOtherFuniture: string | null = null;
+		let stickyPlaneId: string | null = null;
 		let sticky = false;
 
 		const isCollisionTarget = (m: BABYLON.AbstractMesh) => {
@@ -820,6 +821,7 @@ export class RoomEngine extends EngineBase<{
 					newRotation.z = grabbing.originalDiffOfRotation.z + grabbing.rotation;
 					newPos = hit.pickedPoint;
 					stickyOtherFuniture = hit.pickedMesh.metadata?.furnitureId ?? null;
+					stickyPlaneId = hit.pickedMesh.name.includes('<') ? hit.pickedMesh.name.split('<')[1].split('>')[0] : null;
 
 					if (this.gridSnapping.enabled) {
 						newPos.y = Math.round(newPos.y / this.gridSnapping.scale) * this.gridSnapping.scale;
@@ -850,6 +852,7 @@ export class RoomEngine extends EngineBase<{
 					sticky = true;
 					newPos = hit.pickedPoint;
 					stickyOtherFuniture = hit.pickedMesh.metadata?.furnitureId ?? null;
+					stickyPlaneId = hit.pickedMesh.name.includes('<') ? hit.pickedMesh.name.split('<')[1].split('>')[0] : null;
 
 					if (this.gridSnapping.enabled) {
 						newPos.x = Math.round(newPos.x / this.gridSnapping.scale) * this.gridSnapping.scale;
@@ -891,6 +894,7 @@ export class RoomEngine extends EngineBase<{
 					sticky = true;
 					newPos = hit.pickedPoint;
 					stickyOtherFuniture = hit.pickedMesh.metadata?.furnitureId ?? null;
+					stickyPlaneId = hit.pickedMesh.name.includes('<') ? hit.pickedMesh.name.split('<')[1].split('>')[0] : null;
 
 					if (this.gridSnapping.enabled) {
 						newPos.x = Math.round(newPos.x / this.gridSnapping.scale) * this.gridSnapping.scale;
@@ -942,7 +946,8 @@ export class RoomEngine extends EngineBase<{
 		grabbing.onMove?.({
 			position: newPos,
 			rotation: newRotation,
-			sticky: stickyOtherFuniture,
+			stickyFurnitureId: stickyOtherFuniture,
+			stickyPlaneId: stickyPlaneId,
 		});
 	}
 
@@ -1040,7 +1045,8 @@ export class RoomEngine extends EngineBase<{
 
 		const dir = this.camera.getDirection(BABYLON.Axis.Z).scale(this.scene.useRightHandedSystem ? -1 : 1);
 
-		let sticky: string | null;
+		let stickyFurnitureId: string | null;
+		let stickyPlaneId: string | null;
 		let grabbingEnded = false;
 
 		this.grabbingCtx = {
@@ -1055,7 +1061,8 @@ export class RoomEngine extends EngineBase<{
 			ghost: ghost,
 			descendantStickyFunitureIds,
 			onMove: (info) => {
-				sticky = info.sticky;
+				stickyFurnitureId = info.stickyFurnitureId;
+				stickyPlaneId = info.stickyPlaneId;
 			},
 			onCancel: () => {
 				grabbingEnded = true;
@@ -1128,7 +1135,8 @@ export class RoomEngine extends EngineBase<{
 
 					const pos = selectedFuniture.position.clone();
 					const rotation = selectedFuniture.rotation.clone();
-					this.roomState.installedFurnitures.find(o => o.id === selectedFuniture.metadata.furnitureId)!.sticky = sticky;
+					this.roomState.installedFurnitures.find(o => o.id === selectedFuniture.metadata.furnitureId)!.sticky = stickyFurnitureId;
+					this.roomState.installedFurnitures.find(o => o.id === selectedFuniture.metadata.furnitureId)!.stickyPlaneId = stickyPlaneId;
 					this.roomState.installedFurnitures.find(o => o.id === selectedFuniture.metadata.furnitureId)!.position = [pos.x, pos.y, pos.z];
 					this.roomState.installedFurnitures.find(o => o.id === selectedFuniture.metadata.furnitureId)!.rotation = [rotation.x, rotation.y, rotation.z];
 
@@ -1304,7 +1312,8 @@ export class RoomEngine extends EngineBase<{
 		const ghost = this.createGhost(container.root);
 		const distance = cm(50);
 
-		let sticky: string | null;
+		let stickyFurnitureId: string | null;
+		let stickyPlaneId: string | null;
 		let grabbingEnded = false;
 
 		this.grabbingCtx = {
@@ -1319,7 +1328,8 @@ export class RoomEngine extends EngineBase<{
 			ghost: ghost,
 			descendantStickyFunitureIds: [],
 			onMove: (info) => {
-				sticky = info.sticky;
+				stickyFurnitureId = info.stickyFurnitureId;
+				stickyPlaneId = info.stickyPlaneId;
 			},
 			onCancel: () => {
 				grabbingEnded = true;
@@ -1363,7 +1373,8 @@ export class RoomEngine extends EngineBase<{
 					type,
 					position: [pos.x, pos.y, pos.z],
 					rotation: [rotation.x, rotation.y, rotation.z],
-					sticky,
+					sticky: stickyFurnitureId,
+					stickyPlaneId,
 					options,
 				});
 
@@ -1489,6 +1500,7 @@ export class RoomEngine extends EngineBase<{
 		this.roomState.installedFurnitures = this.roomState.installedFurnitures.filter(o => o.id !== furnitureId);
 		for (const o of this.roomState.installedFurnitures.filter(o => o.sticky === furnitureId)) {
 			o.sticky = null;
+			o.stickyPlaneId = null;
 		}
 		this.ev('changeRoomState', { roomState: this.roomState });
 		this.selected = null;

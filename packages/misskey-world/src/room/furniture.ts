@@ -16,6 +16,7 @@ export type RoomState_InstalledFurniture = {
 	 * 別の家具のID
 	 */
 	sticky?: string | null;
+	stickyPlaneId?: string | null;
 };
 
 export type FurnitureSchemaDef<OpSc extends OptionsSchema = OptionsSchema> = {
