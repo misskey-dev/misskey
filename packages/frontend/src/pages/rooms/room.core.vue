@@ -50,7 +50,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<button v-if="!multiplayer.isOnline.value && !controller.isEditMode.value && isMyRoom" v-tooltip.noDelay="i18n.ts._miRoom.enterEditMode" :class="$style.floatingButton" class="_button" @click="enterEditMode"><i class="ti ti-paint"></i></button>
 
 					<template v-if="controller.isEditMode.value">
-						<button v-tooltip.noDelay="i18n.ts._miRoom.installFurniture" :class="$style.floatingButton" class="_button" @click="addFuniture"><i class="ti ti-plus"></i></button>
+						<button v-tooltip.noDelay="i18n.ts._miRoom.installFurniture" :class="$style.floatingButton" class="_button" @click="addFurniture"><i class="ti ti-plus"></i></button>
 						<button :class="$style.floatingButton" class="_button" @click="showSnappingMenu"><i class="ti ti-grid-4x4"></i></button>
 						<button v-if="!isRoomSettingsOpen" v-tooltip.noDelay="i18n.ts._miRoom.roomCustomize" :class="$style.floatingButton" class="_button" @click="() => isRoomSettingsOpen = true"><i class="ti ti-home-cog"></i></button>
 						<button v-if="isRoomSettingsOpen" :class="$style.floatingButton" class="_button" style="color: var(--MI_THEME-accent)" @click="() => isRoomSettingsOpen = false"><i class="ti ti-home-cog"></i></button>
@@ -500,7 +500,7 @@ const updateFurnitureOption = throttle(100, (k: string, v: any) => {
 	controller.updateFurnitureOption(controller.selected.value.furnitureId, k, deepClone(v), attachments);
 });
 
-async function addFuniture(ev: PointerEvent) {
+async function addFurniture(ev: PointerEvent) {
 	// 重いので止める
 	controller.pauseRender();
 	const { dispose } = await os.popupAsyncWithDialog(import('./room.add-furniture-dialog.vue').then(x => x.default), {
@@ -508,7 +508,7 @@ async function addFuniture(ev: PointerEvent) {
 	}, {
 		ok: async (res) => {
 			attachments.files.push(...res.attachments.files); // TODO: mergeAttachmentsみたいな関数を実装して使う
-			controller.addFuniture(res.id, res.options, attachments);
+			controller.addFurniture(res.id, res.options, attachments);
 			canvas.value!.focus();
 		},
 		closed: () => {
