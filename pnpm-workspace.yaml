@@ -57,6 +57,8 @@ minimumReleaseAgeExclude:
   - '@typescript/native-preview*'
   - pnpm
   - '@types/archiver' # そのうち消す
+  - esbuild # 脆弱性対応。そのうち消す
+  - '@esbuild/*' # 脆弱性対応。そのうち消す
 overrides:
   '@aiscript-dev/aiscript-languageserver': '-'
   chokidar: 5.0.0
