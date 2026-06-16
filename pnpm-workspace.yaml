@@ -56,6 +56,8 @@ minimumReleaseAgeExclude:
   - '@types/archiver' # そのうち消す
   - esbuild # 脆弱性対応。そのうち消す
   - '@esbuild/*' # 脆弱性対応。そのうち消す
+  # Renovate security update: vite@8.0.16
+  - vite@8.0.16
 overrides:
   '@aiscript-dev/aiscript-languageserver': '-'
   chokidar: 5.0.0
