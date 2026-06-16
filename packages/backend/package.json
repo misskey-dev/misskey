@@ -191,7 +191,7 @@
 		"eslint-plugin-import": "2.32.0",
 		"execa": "9.6.1",
 		"fkill": "10.0.3",
-		"js-yaml": "4.1.1",
+		"js-yaml": "4.2.0",
 		"pid-port": "2.1.1",
 		"rolldown": "1.0.3",
 		"simple-oauth2": "5.1.0",
