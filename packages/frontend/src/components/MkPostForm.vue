@@ -236,7 +236,7 @@ const uploader = useUploader({
 });
 
 onUnmounted(() => {
-	uploader.dispose();
+	uploader.reset();
 });
 
 uploader.events.on('itemUploaded', ctx => {
