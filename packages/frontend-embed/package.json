@@ -14,7 +14,6 @@
 		"@rollup/pluginutils": "5.4.0",
 		"@vitejs/plugin-vue": "6.0.7",
 		"buraha": "0.0.1",
-		"estree-walker": "3.0.3",
 		"frontend-shared": "workspace:*",
 		"i18n": "workspace:*",
 		"icons-subsetter": "workspace:*",

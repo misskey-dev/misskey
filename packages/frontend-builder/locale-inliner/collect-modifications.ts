@@ -4,22 +4,11 @@
  */
 
 import { parseAst } from 'rolldown/parseAst';
-import * as estreeWalker from 'estree-walker';
+import { walk } from 'oxc-walker';
 import { assertNever } from '../utils.js';
 import type { ESTree } from 'rolldown/utils';
 import type { LocaleInliner, TextModification } from '../locale-inliner.js';
 import type { Logger } from '../logger.js';
-
-// WalkerContext is not exported from estree-walker, so we define it here
-interface WalkerContext {
-	skip: () => void;
-}
-
-const walk = estreeWalker.walk as {
-	(node: ESTree.Node, callback: {
-		enter?: (this: WalkerContext, node: ESTree.Node, parent: ESTree.Node | null, property: string | number | symbol | null | undefined) => void;
-	}): void;
-};
 
 export function collectModifications(sourceCode: string, fileName: string, fileLogger: Logger, inliner: LocaleInliner): TextModification[] {
 	if (sourceCode === '') return [];
@@ -42,7 +31,7 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 	// 2) replace all `localStorage.getItem("lang")` with `localeName` variable
 	// 3) replace all `await window.fetch(`/assets/locales/${d}.${x}.json`).then(u=>u.json())` with `localeJson` variable
 	walk(programNode, {
-		enter(this: WalkerContext, node: ESTree.Node) {
+		enter(this, node) {
 			if (node.type === 'Literal' && typeof node.value === 'string' && node.raw) {
 				if (node.raw.substring(1).startsWith(inliner.scriptsDir)) {
 					// we find `scripts/\w+\.js` literal and replace 'scripts' part with locale code
@@ -130,12 +119,14 @@ export function collectModifications(sourceCode: string, fileName: string, fileL
 	const toSkip = new Set();
 	toSkip.add(i18nImport);
 	walk(programNode, {
-		enter(this: WalkerContext, node, parent, property) {
+		enter(this, node, parent, ctx) {
 			if (toSkip.has(node)) {
 				// This is the import specifier, skip processing it
 				this.skip();
 				return;
 			}
+
+			const property = ctx.key;
 
 			// We don't care original name part of the import declaration
 			if (node.type === 'ImportDeclaration') this.skip();

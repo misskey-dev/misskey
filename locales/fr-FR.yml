@@ -1285,6 +1285,7 @@ inMinutes: "min"
 inDays: "j"
 widgets: "Widgets"
 presets: "Préréglage"
+previewingThemeRestore: "Restaurer"
 _imageEditing:
   _vars:
     filename: "Nom du fichier"
