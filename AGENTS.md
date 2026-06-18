@@ -63,14 +63,16 @@
 9. **ユーザーの明示指示なしに PR を merge / close / force-push しない**
 10. **ユーザーの明示指示なしに external service (GitHub comments / Slack / メール 等) へ送信しない**
 11. **secrets / 認証情報をリポジトリにコミットしない** (`.config/*.yml` の本番値、`.env` ファイル、API token、private key 等)
+12. **脆弱性報告を通常の Issue / PR 経由で行わない** (脆弱性報告を行う場合のルールは `creating-issues-and-prs` スキルを参照すること)
 
 ### スキル呼び出し
 
 上流スキルの実行・事前知識・memory の内容に関わらず免除されない。
 
-12. **`working-on-backend` スキルを参照せずに `packages/backend/` 配下のファイルを編集・追加しない**
-13. **`working-on-frontend` スキルを参照せずに `packages/frontend/` 配下のファイルを編集・追加しない**
-14. **`shipping-misskey-change` スキルを参照せずに commit / PR 作成 / 作業をユーザーに返さない**
+13. **`working-on-backend` スキルを参照せずに `packages/backend/` 配下のファイルを編集・追加しない**
+14. **`working-on-frontend` スキルを参照せずに `packages/frontend/` 配下のファイルを編集・追加しない**
+15. **`shipping-misskey-change` スキルを参照せずに commit / PR 作成 / 作業をユーザーに返さない**
+16. **`creating-issues-and-prs` スキルを参照せずに Issue / PR を起票しない** (脆弱性報告のルールも含む)
 
 ---
 
