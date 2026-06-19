@@ -58,7 +58,13 @@ describe('getSafeContentType', () => {
 	test('大文字 base MIME も小文字に正規化されて許可される', () => {
 		expect(getSafeContentType('TEXT/PLAIN')).toBe('text/plain; charset=utf-8');
 	});
-	test('text/plain 以外には charset は補われない', () => {
+	test('text/csv も charset=utf-8 が補われる', () => {
+		expect(getSafeContentType('text/csv')).toBe('text/csv; charset=utf-8');
+	});
+	test('text/csv で既存 charset があれば維持する', () => {
+		expect(getSafeContentType('text/csv; charset=Shift_JIS')).toBe('text/csv; charset=Shift_JIS');
+	});
+	test('image 等の非 text/* には charset は補われない', () => {
 		expect(getSafeContentType('image/png')).toBe('image/png');
 	});
 	test('image/png のパラメータも保持される', () => {
@@ -73,5 +79,14 @@ describe('getSafeContentType', () => {
 	});
 	test('空のパラメータ片は捨てる', () => {
 		expect(getSafeContentType('text/plain;;charset=utf-8')).toBe('text/plain; charset=utf-8');
+	});
+	test('クォート付き charset 値はクォートを剥がして保持する', () => {
+		expect(getSafeContentType('text/plain; charset="utf-8"')).toBe('text/plain; charset=utf-8');
+	});
+	test('クォート付き Shift_JIS もクォートを剥がして保持する', () => {
+		expect(getSafeContentType('text/plain; charset="Shift_JIS"')).toBe('text/plain; charset=Shift_JIS');
+	});
+	test('クォート内に不正文字がある場合は捨てる', () => {
+		expect(getSafeContentType('text/plain; charset="utf-8; evil=x"')).toBe('text/plain; charset=utf-8');
 	});
 });
