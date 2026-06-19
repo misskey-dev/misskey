@@ -18,7 +18,7 @@ import type { MiRemoteUser, MiUser } from '@/models/User.js';
 import { MiDriveFile } from '@/models/DriveFile.js';
 import { IdService } from '@/core/IdService.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
-import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
+import { isBrowserSafeMime } from '@/const.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { contentDisposition } from '@/misc/content-disposition.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
@@ -165,7 +165,7 @@ export class DriveService {
 
 			// 拡張子からContent-Typeを設定してそうな挙動を示すオブジェクトストレージ (upcloud?) も存在するので、
 			// 許可されているファイル形式でしかURLに拡張子をつけない
-			if (!FILE_TYPE_BROWSERSAFE.includes(type)) {
+			if (!isBrowserSafeMime(type)) {
 				ext = '';
 			}
 
@@ -374,8 +374,12 @@ export class DriveService {
 	@bindThis
 	private async upload(key: string, stream: fs.ReadStream | Buffer, type: string, ext?: string | null, filename?: string) {
 		if (type === 'image/apng') type = 'image/png';
-		if (!FILE_TYPE_BROWSERSAFE.includes(type)) type = 'application/octet-stream';
+		if (!isBrowserSafeMime(type)) type = 'application/octet-stream';
 
+		// NOTE: S3 から直接配信される場合、ここで設定した ContentType がそのまま使われる。
+		// Misskey の FileServer 経由なら setSafeContentTypeHeader が nosniff や charset=utf-8 を付与するが、
+		// S3 直接配信ではそれらのヘッダが付かない。ただし S3 URL は Misskey とは別オリジンのため
+		// セッション窃取等のリスクは低い (type も file-type ライブラリ由来の bare MIME)。
 		const params = {
 			Bucket: this.meta.objectStorageBucket,
 			Key: key,
