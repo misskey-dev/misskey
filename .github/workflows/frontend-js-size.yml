@@ -133,14 +133,6 @@ jobs:
             return value.replace(/\.0+$/, '').replace(/(\.\d*?)0+$/, '$1');
           }
 
-          function formatPercent(diff, beforeSize) {
-            if (diff == null || beforeSize == null) return null;
-            if (diff === 0) return '0%';
-            if (beforeSize === 0) return null;
-            const sign = diff > 0 ? '+' : '-';
-            return `${sign}${Math.round(Math.abs(diff) / beforeSize * 100)}%`;
-          }
-
           function formatMathText(text) {
             return text
               .replaceAll('\\', '\\\\')
@@ -158,18 +150,13 @@ jobs:
             return `$\\color{${color}}{\\text{${formatMathText(text)}}}$`;
           }
 
-          function formatDiffPercent(beforeSize, diff) {
-            if (diff == null) return '-';
-            const percent = formatPercent(diff, beforeSize);
-            if (diff === 0) return `${percent}`;
-            const text = `${percent}`;
+          function formatDiffPercent(beforeSize, afterSize) {
+            if (beforeSize == null || beforeSize === 0 || afterSize == null || afterSize === 0) return '-';
+            const diff = afterSize - beforeSize;
+            if (diff === 0) return `0%`;
+            const percent = Math.round(diff / beforeSize * 100);
             const color = diff > 0 ? 'orange' : 'green';
-            return `$\\color{${color}}{\\text{${formatMathText(text)}}}$`;
-          }
-
-          function sizeDiff(beforeSize, afterSize) {
-            if (beforeSize == null && afterSize == null) return null;
-            return (afterSize ?? 0) - (beforeSize ?? 0);
+            return `$\\color{${color}}{\\text{${formatMathText(percent)}}}$`;
           }
 
           function escapeCell(value) {
@@ -291,34 +278,36 @@ jobs:
               .filter((key) => after.chunks[key] == null);
           }
 
-          function compareRows(keys, before, after) {
+          function getChunkComparisonRows(keys, before, after) {
             return keys.map((key) => {
               const beforeEntry = before.chunks[key];
               const afterEntry = after.chunks[key];
-              const beforeSize = beforeEntry?.size ?? null;
-              const afterSize = afterEntry?.size ?? null;
+              const beforeSize = beforeEntry?.size ?? 0;
+              const afterSize = afterEntry?.size ?? 0;
               return {
                 key,
-                name: entryDisplayName(afterEntry ?? beforeEntry),
+                name: entryDisplayName(beforeEntry ?? afterEntry),
+                chunkFile: beforeEntry?.file ?? afterEntry?.file,
                 beforeSize,
                 afterSize,
-                diff: sizeDiff(beforeSize, afterSize),
-                sortSize: Math.max(beforeSize ?? 0, afterSize ?? 0),
+                sortSize: Math.max(beforeSize, afterSize),
               };
             });
           }
 
-          function markdownTable(rows, emptyMessage = '_No JavaScript chunks found._') {
-            if (rows.length === 0) {
-              return emptyMessage;
-            }
+          function markdownTable(rows, total) {
+            if (rows.length === 0) return '_No data_';
 
             const lines = [
               '| Chunk | Before | After | Diff | Diff (%) |',
               '| --- | ---: | ---: | ---: | ---: |',
             ];
+            if (total != null) {
+              lines.push(`| (total) | ${formatBytes(total.beforeSize)} | ${formatBytes(total.afterSize)} | ${formatDiff(total.afterSize - total.beforeSize)} | ${formatDiffPercent(total.beforeSize, total.afterSize)} |`);
+              lines.push('| | | | | |');
+            }
             for (const row of rows) {
-              lines.push(`| \`${escapeCell(row.name)}\` | ${formatBytes(row.beforeSize)} | ${formatBytes(row.afterSize)} | ${formatDiff(row.diff)} | ${formatDiffPercent(row.beforeSize, row.diff)} |`);
+              lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(row.chunkFile)}\` </details> | ${formatBytes(row.beforeSize)} | ${formatBytes(row.afterSize)} | ${formatDiff(row.afterSize - row.beforeSize)} | ${formatDiffPercent(row.beforeSize, row.afterSize)} |`);
             }
             return lines.join('\n');
           }
@@ -329,46 +318,23 @@ jobs:
               return {
                 key,
                 name: entryDisplayName(entry),
+                chunkFile: entry.file,
                 size: entry.size,
               };
             });
           }
 
-          function markdownChunkTable(rows, emptyMessage = '_No JavaScript chunks found._') {
-            if (rows.length === 0) {
-              return emptyMessage;
-            }
+          function markdownChunkTable(rows) {
+            if (rows.length === 0) return '_No data_';
 
             const lines = [
               '| Chunk | Size |',
               '| --- | ---: |',
             ];
             for (const row of rows) {
-              lines.push(`| \`${escapeCell(row.name)}\` | ${formatBytes(row.size)} |`);
+              lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(row.chunkFile)}\` </details> | ${formatBytes(row.size)} |`);
             }
             return lines.join('\n');
-          }
-
-          function topKeys(keys, before, after) {
-            return compareRows(keys, before, after)
-              .sort((a, b) => b.sortSize - a.sortSize || a.name.localeCompare(b.name))
-              .slice(0, 30)
-              .map((row) => row.key);
-          }
-
-          function compareDiffRows(a, b) {
-            return Math.abs(b.diff ?? 0) - Math.abs(a.diff ?? 0)
-              || (b.diff ?? 0) - (a.diff ?? 0)
-              || b.sortSize - a.sortSize
-              || a.name.localeCompare(b.name);
-          }
-
-          function diffKeys(keys, before, after) {
-            return compareRows(keys, before, after)
-              .filter((row) => row.diff !== 0 && row.diff != null)
-              .sort(compareDiffRows)
-              .slice(0, 30)
-              .map((row) => row.key);
           }
 
           const beforeDir = process.argv[2];
@@ -381,11 +347,20 @@ jobs:
           const after = await collectReport(afterDir);
 
           const commonChunkKeys = commonKeys(before, after);
-          const topRows = compareRows(topKeys(commonChunkKeys, before, after), before, after)
-            .sort((a, b) => b.sortSize - a.sortSize || a.name.localeCompare(b.name));
+          const comparisonRows = getChunkComparisonRows(commonChunkKeys, before, after);
 
-          const diffRows = compareRows(diffKeys(commonChunkKeys, before, after), before, after)
-            .sort(compareDiffRows);
+          const diffRows = comparisonRows
+            .filter((row) => row.beforeSize !== row.afterSize)
+            .sort((a, b) => Math.abs(b.afterSize - b.beforeSize) - Math.abs(a.afterSize - a.beforeSize)
+              || (b.afterSize - b.beforeSize) - (a.afterSize - a.beforeSize)
+              || b.sortSize - a.sortSize
+              || a.name.localeCompare(b.name))
+            .slice(0, 30);
+
+          const diffTotal = {
+            beforeSize: comparisonRows.reduce((sum, row) => sum + row.beforeSize, 0),
+            afterSize: comparisonRows.reduce((sum, row) => sum + row.afterSize, 0),
+          };
 
           const addedRows = chunkRows(addedKeys(before, after), after)
             .sort((a, b) => b.size - a.size || a.name.localeCompare(b.name));
@@ -397,8 +372,17 @@ jobs:
             ...before.startupKeys,
             ...after.startupKeys,
           ]);
-          const startupRows = compareRows([...startupKeys].filter((key) => before.chunks[key] != null && after.chunks[key] != null), before, after)
+          const startupComparisonRows = getChunkComparisonRows([...startupKeys], before, after);
+          const startupRows = startupComparisonRows
             .sort((a, b) => b.sortSize - a.sortSize || a.name.localeCompare(b.name));
+          const startupTotal = {
+            beforeSize: startupComparisonRows.reduce((sum, row) => sum + row.beforeSize, 0),
+            afterSize: startupComparisonRows.reduce((sum, row) => sum + row.afterSize, 0),
+          };
+
+          const largeRows = comparisonRows
+            .sort((a, b) => b.sortSize - a.sortSize || a.name.localeCompare(b.name))
+            .slice(0, 30);
 
           const body = [
             marker,
@@ -407,28 +391,28 @@ jobs:
             '<details open>',
             `<summary>Diffs</summary>`,
             '',
-            markdownTable(diffRows, '_No chunk size changes found._'),
+            markdownTable(diffRows, diffTotal),
             '',
             '</details>',
             '',
             '<details>',
             `<summary>Added (${addedRows.length})</summary>`,
             '',
-            markdownChunkTable(addedRows, '_No chunks added._'),
+            markdownChunkTable(addedRows),
             '',
             '</details>',
             '',
             '<details>',
             `<summary>Removed (${removedRows.length})</summary>`,
             '',
-            markdownChunkTable(removedRows, '_No chunks removed._'),
+            markdownChunkTable(removedRows),
             '',
             '</details>',
             '',
             '<details>',
             `<summary>Startup</summary>`,
             '',
-            markdownTable(startupRows),
+            markdownTable(startupRows, startupTotal),
             '',
             `_Only ${locale} localized chunks are reported. Size comparison tables include chunks that exist in both builds. Added and removed chunks are listed separately. Top 10 is sorted by max(before, after) size. Diff top 10 is sorted by absolute size diff. Startup chunks are the Vite entry for \`src/_boot_.ts\` and its static imports._`,
             '',
@@ -437,7 +421,7 @@ jobs:
             '<details>',
             `<summary>Largest</summary>`,
             '',
-            markdownTable(topRows),
+            markdownTable(largeRows),
             '',
             '</details>',
             '',
