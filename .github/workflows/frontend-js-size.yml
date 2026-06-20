@@ -330,14 +330,18 @@ jobs:
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
+          mkdir -p frontend-js-size-report
           node .github/tmp/frontend-js-size-report.mjs before after frontend-js-size-report.md
-          cat frontend-js-size-report.md >> "$GITHUB_STEP_SUMMARY"
+          mv frontend-js-size-report.md frontend-js-size-report/report.md
+          printf '%s\n' "$PR_NUMBER" > frontend-js-size-report/pr-number.txt
+          cat frontend-js-size-report/report.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload size report
         uses: actions/upload-artifact@v7
         with:
           name: frontend-js-size-report
-          path: frontend-js-size-report.md
+          path: frontend-js-size-report/
           if-no-files-found: error
           retention-days: 1
