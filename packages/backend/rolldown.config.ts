@@ -1,5 +1,5 @@
 import { defineConfig } from 'rolldown';
-import { version } from '@misskey-dev/summaly';
+import { version as summalyVersion } from '@misskey-dev/summaly';
 import type { Plugin, ExternalOption } from 'rolldown';
 import { execa, execaNode } from 'execa';
 import type { ResultPromise } from 'execa';
@@ -87,7 +87,7 @@ export default defineConfig((args) => {
 
 	const define: Record<string, string> = {
 		// Summalyのバージョンを埋め込む
-		'_SUMMALY_VERSION_': JSON.stringify(version),
+		'_SUMMALY_VERSION_': JSON.stringify(summalyVersion),
 	};
 
 	if (isE2E) {
