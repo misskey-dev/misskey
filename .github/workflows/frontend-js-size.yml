@@ -156,7 +156,7 @@ jobs:
             if (diff === 0) return `0%`;
             const percent = Math.round(diff / beforeSize * 100);
             const color = diff > 0 ? 'orange' : 'green';
-            return `$\\color{${color}}{\\text{${formatMathText(percent)}}}$`;
+            return `$\\color{${color}}{\\text{${formatMathText(percent.toString())}}}$`;
           }
 
           function escapeCell(value) {
