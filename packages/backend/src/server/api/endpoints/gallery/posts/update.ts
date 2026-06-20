@@ -10,6 +10,7 @@ import type { DriveFilesRepository, GalleryPostsRepository } from '@/models/_.js
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import { GalleryPostEntityService } from '@/core/entities/GalleryPostEntityService.js';
 import { DI } from '@/di-symbols.js';
+import { ApiError } from '../../../error.js';
 
 export const meta = {
 	tags: ['gallery'],
@@ -32,7 +33,17 @@ export const meta = {
 	},
 
 	errors: {
+		noSuchPost: {
+			message: 'No such post.',
+			code: 'NO_SUCH_POST',
+			id: '0b95e661-4216-45c9-a65b-7a1fdb879e47',
+		},
 
+		accessDenied: {
+			message: 'Access denied.',
+			code: 'ACCESS_DENIED',
+			id: 'b4fb0c3d-7b51-4073-8820-5cd8b49bc08f',
+		},
 	},
 } as const;
 
@@ -62,6 +73,16 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private galleryPostEntityService: GalleryPostEntityService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
+			const post = await this.galleryPostsRepository.findOneBy({ id: ps.postId });
+
+			if (post == null) {
+				throw new ApiError(meta.errors.noSuchPost);
+			}
+
+			if (post.userId !== me.id) {
+				throw new ApiError(meta.errors.accessDenied);
+			}
+
 			let files: Array<MiDriveFile> | undefined;
 
 			if (ps.fileIds) {
@@ -77,10 +98,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				}
 			}
 
-			await this.galleryPostsRepository.update({
-				id: ps.postId,
-				userId: me.id,
-			}, {
+			await this.galleryPostsRepository.update(post.id, {
 				updatedAt: new Date(),
 				title: ps.title,
 				description: ps.description,
@@ -88,9 +106,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				fileIds: files ? files.map(file => file.id) : undefined,
 			});
 
-			const post = await this.galleryPostsRepository.findOneByOrFail({ id: ps.postId });
+			const updatedPost = await this.galleryPostsRepository.findOneByOrFail({ id: post.id });
 
-			return await this.galleryPostEntityService.pack(post, me);
+			return await this.galleryPostEntityService.pack(updatedPost, me);
 		});
 	}
 }
