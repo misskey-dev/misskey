@@ -125,8 +125,8 @@ importers:
         specifier: 1.2.0
         version: 1.2.0
       '@misskey-dev/summaly':
-        specifier: 5.5.0
-        version: 5.5.0
+        specifier: 5.5.1
+        version: 5.5.1
       '@napi-rs/canvas':
         specifier: 1.0.0
         version: 1.0.0
@@ -743,8 +743,8 @@ importers:
         specifier: 17.0.3
         version: 17.0.3
       '@misskey-dev/summaly':
-        specifier: 5.5.0
-        version: 5.5.0
+        specifier: 5.5.1
+        version: 5.5.1
       '@rollup/plugin-json':
         specifier: 6.1.0
         version: 6.1.0(rollup@4.61.1)
@@ -1045,8 +1045,8 @@ importers:
         specifier: 17.0.3
         version: 17.0.3
       '@misskey-dev/summaly':
-        specifier: 5.5.0
-        version: 5.5.0
+        specifier: 5.5.1
+        version: 5.5.1
       '@tabler/icons-webfont':
         specifier: 3.35.0
         version: 3.35.0
@@ -2475,8 +2475,8 @@ packages:
   '@misskey-dev/sharp-read-bmp@1.2.0':
     resolution: {integrity: sha512-er4pRakXzHYfEgOFAFfQagqDouG+wLm+kwNq1I30oSdIHDa0wM3KjFpfIGQ25Fks4GcmOl1s7Zh6xoQu5dNjTw==}
 
-  '@misskey-dev/summaly@5.5.0':
-    resolution: {integrity: sha512-MIYUUvyROmWjdjgjgxPojEW55HV2cP9wTtvYLqBgQN+e0Qzaz5zmhsi0AZ6LQLVbbB7VZy5Kd8XmMUoXbJLLGw==}
+  '@misskey-dev/summaly@5.5.1':
+    resolution: {integrity: sha512-CfpVtmFgltjNS1FAS5+bOluKAF/irZuQnUxAw66ydnp/uesiNNu62ltf9gEgwutT5S+itGtlnP87AOx6DDn/1A==}
 
   '@msgpackr-extract/msgpackr-extract-darwin-arm64@3.0.4':
     resolution: {integrity: sha512-LCkGo6JDfaBhgST7UpPWgNgLINpcpabaHfyz5OBx75nUYxBsaEPxjnyNjWpeb/xBup/682QnBfRBy2/LvPutZQ==}
@@ -11300,7 +11300,7 @@ snapshots:
       decode-ico: 0.4.1
       sharp: 0.33.5
 
-  '@misskey-dev/summaly@5.5.0':
+  '@misskey-dev/summaly@5.5.1':
     dependencies:
       chardet: 2.1.1
       cheerio: 1.2.0
