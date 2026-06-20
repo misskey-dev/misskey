@@ -156,7 +156,7 @@ jobs:
             if (diff === 0) return `0%`;
             const percent = Math.round(diff / beforeSize * 100);
             const color = diff > 0 ? 'orange' : 'green';
-            return `$\\color{${color}}{\\text{${formatMathText(percent.toString())}}}$`;
+            return `$\\color{${color}}{\\text{${formatMathText(percent.toString() + '%')}}}$`;
           }
 
           function escapeCell(value) {
@@ -374,7 +374,10 @@ jobs:
           ]);
           const startupComparisonRows = getChunkComparisonRows([...startupKeys], before, after);
           const startupRows = startupComparisonRows
-            .sort((a, b) => b.sortSize - a.sortSize || a.name.localeCompare(b.name));
+            .sort((a, b) => Math.abs(b.afterSize - b.beforeSize) - Math.abs(a.afterSize - a.beforeSize)
+              || (b.afterSize - b.beforeSize) - (a.afterSize - a.beforeSize)
+              || b.sortSize - a.sortSize
+              || a.name.localeCompare(b.name));
           const startupTotal = {
             beforeSize: startupComparisonRows.reduce((sum, row) => sum + row.beforeSize, 0),
             afterSize: startupComparisonRows.reduce((sum, row) => sum + row.afterSize, 0),
