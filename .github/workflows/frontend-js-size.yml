@@ -137,6 +137,11 @@ jobs:
             return `${sign}${formatBytes(Math.abs(diff))}`;
           }
 
+          function sizeDiff(beforeSize, afterSize) {
+            if (beforeSize == null && afterSize == null) return null;
+            return (afterSize ?? 0) - (beforeSize ?? 0);
+          }
+
           function escapeCell(value) {
             return String(value).replaceAll('|', '\\|').replaceAll('\n', '<br>');
           }
@@ -251,19 +256,19 @@ jobs:
                 file: entryDisplayName(afterEntry ?? beforeEntry),
                 beforeSize,
                 afterSize,
-                diff: beforeSize == null || afterSize == null ? null : afterSize - beforeSize,
+                diff: sizeDiff(beforeSize, afterSize),
                 sortSize: Math.max(beforeSize ?? 0, afterSize ?? 0),
               };
             });
           }
 
-          function markdownTable(rows) {
+          function markdownTable(rows, emptyMessage = '_No JavaScript chunks found._') {
             if (rows.length === 0) {
-              return '_No JavaScript chunks found._';
+              return emptyMessage;
             }
 
             const lines = [
-              '| File | Size (before) | Size (after) | Size (diff) |',
+              '| File | Before | After | Diff |',
               '| --- | ---: | ---: | ---: |',
             ];
             for (const row of rows) {
@@ -283,6 +288,25 @@ jobs:
               .map((row) => row.key);
           }
 
+          function compareDiffRows(a, b) {
+            return Math.abs(b.diff ?? 0) - Math.abs(a.diff ?? 0)
+              || (b.diff ?? 0) - (a.diff ?? 0)
+              || b.sortSize - a.sortSize
+              || a.file.localeCompare(b.file);
+          }
+
+          function topDiffKeys(before, after) {
+            const allKeys = new Set([
+              ...Object.keys(before.chunks),
+              ...Object.keys(after.chunks),
+            ]);
+            return compareRows([...allKeys], before, after)
+              .filter((row) => row.diff !== 0 && row.diff != null)
+              .sort(compareDiffRows)
+              .slice(0, topLimit)
+              .map((row) => row.key);
+          }
+
           const beforeDir = process.argv[2];
           const afterDir = process.argv[3];
           const outFile = process.argv[4];
@@ -295,6 +319,9 @@ jobs:
           const topRows = compareRows(unionTopKeys(before, after), before, after)
             .sort((a, b) => b.sortSize - a.sortSize || a.file.localeCompare(b.file));
 
+          const diffRows = compareRows(topDiffKeys(before, after), before, after)
+            .sort(compareDiffRows);
+
           const startupKeys = new Set([
             ...before.startupKeys,
             ...after.startupKeys,
@@ -304,21 +331,23 @@ jobs:
 
           const body = [
             marker,
-            '## Frontend JavaScript size',
+            '## Frontend size report',
             '',
-            `Compared locale: \`${locale}\``,
-            `Before: \`${beforeSha}\``,
-            `After: \`${afterSha}\``,
+            '### Top 10 largest chunk diffs',
             '',
-            '### Top 10 largest JS chunks',
+            markdownTable(diffRows, '_No JavaScript chunk size changes found._'),
             '',
+            '### Top 10 largest chunks',
+            '<details>',
             markdownTable(topRows),
+            '</details>',
             '',
-            '### Startup JS chunks',
-            '',
+            '### Startup chunks',
+            '<details>',
             markdownTable(startupRows),
             '',
-            '_Top 10 is sorted by max(before, after) size. Startup chunks are the Vite entry for `src/_boot_.ts` and its static imports._',
+            '_Top 10 is sorted by max(before, after) size. Diff top 10 is sorted by absolute size diff, with missing chunks compared against 0 B. Startup chunks are the Vite entry for `src/_boot_.ts` and its static imports._',
+            '</details>',
             '',
           ].join('\n');
 
