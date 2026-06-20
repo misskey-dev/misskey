@@ -92,7 +92,6 @@ jobs:
 
           const marker = '<!-- misskey-frontend-js-size -->';
           const locale = process.env.FRONTEND_JS_SIZE_LOCALE || 'ja-JP';
-          const topLimit = 10;
 
           function normalizePath(filePath) {
             return filePath.split(path.sep).join('/');
@@ -155,7 +154,7 @@ jobs:
             if (diff === 0) return '0 B';
             const sign = diff > 0 ? '+' : '-';
             const text = `${sign}${formatBytes(Math.abs(diff))}`;
-            const color = diff > 0 ? 'orange' : 'cyan';
+            const color = diff > 0 ? 'orange' : 'green';
             return `$\\color{${color}}{\\text{${formatMathText(text)}}}$`;
           }
 
@@ -163,9 +162,8 @@ jobs:
             if (diff == null) return '-';
             const percent = formatPercent(diff, beforeSize);
             if (diff === 0) return `${percent}`;
-            const sign = diff > 0 ? '+' : '-';
-            const text = `${sign}${percent}`;
-            const color = diff > 0 ? 'orange' : 'cyan';
+            const text = `${percent}`;
+            const color = diff > 0 ? 'orange' : 'green';
             return `$\\color{${color}}{\\text{${formatMathText(text)}}}$`;
           }
 
@@ -354,7 +352,7 @@ jobs:
           function topKeys(keys, before, after) {
             return compareRows(keys, before, after)
               .sort((a, b) => b.sortSize - a.sortSize || a.name.localeCompare(b.name))
-              .slice(0, topLimit)
+              .slice(0, 30)
               .map((row) => row.key);
           }
 
@@ -365,11 +363,11 @@ jobs:
               || a.name.localeCompare(b.name);
           }
 
-          function topDiffKeys(keys, before, after) {
+          function diffKeys(keys, before, after) {
             return compareRows(keys, before, after)
               .filter((row) => row.diff !== 0 && row.diff != null)
               .sort(compareDiffRows)
-              .slice(0, topLimit)
+              .slice(0, 30)
               .map((row) => row.key);
           }
 
@@ -386,7 +384,7 @@ jobs:
           const topRows = compareRows(topKeys(commonChunkKeys, before, after), before, after)
             .sort((a, b) => b.sortSize - a.sortSize || a.name.localeCompare(b.name));
 
-          const diffRows = compareRows(topDiffKeys(commonChunkKeys, before, after), before, after)
+          const diffRows = compareRows(diffKeys(commonChunkKeys, before, after), before, after)
             .sort(compareDiffRows);
 
           const addedRows = chunkRows(addedKeys(before, after), after)
@@ -404,39 +402,42 @@ jobs:
 
           const body = [
             marker,
-            `## Frontend size report (${locale})`,
+            `## Frontend chunk size report (${locale})`,
             '',
-            '### Top 10 largest chunk diffs',
+            '<details open>',
+            `<summary>Diffs</summary>`,
             '',
             markdownTable(diffRows, '_No chunk size changes found._'),
             '',
-            '### Top 10 largest chunks',
-            '<details>',
-            '',
-            markdownTable(topRows),
-            '',
             '</details>',
             '',
-            `### Added chunks (${addedRows.length})`,
             '<details>',
+            `<summary>Added (${addedRows.length})</summary>`,
             '',
             markdownChunkTable(addedRows, '_No chunks added._'),
             '',
             '</details>',
             '',
-            `### Removed chunks (${removedRows.length})`,
             '<details>',
+            `<summary>Removed (${removedRows.length})</summary>`,
             '',
             markdownChunkTable(removedRows, '_No chunks removed._'),
             '',
             '</details>',
             '',
-            '### Startup chunks',
             '<details>',
+            `<summary>Startup</summary>`,
             '',
             markdownTable(startupRows),
             '',
             `_Only ${locale} localized chunks are reported. Size comparison tables include chunks that exist in both builds. Added and removed chunks are listed separately. Top 10 is sorted by max(before, after) size. Diff top 10 is sorted by absolute size diff. Startup chunks are the Vite entry for \`src/_boot_.ts\` and its static imports._`,
+            '',
+            '</details>',
+            '',
+            '<details>',
+            `<summary>Largest</summary>`,
+            '',
+            markdownTable(topRows),
             '',
             '</details>',
             '',
