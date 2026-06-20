@@ -139,7 +139,7 @@ jobs:
             if (diff === 0) return '0%';
             if (beforeSize === 0) return null;
             const sign = diff > 0 ? '+' : '-';
-            return `${sign}${stripTrailingZeros((Math.abs(diff) / beforeSize * 100).toFixed(1))}%`;
+            return `${sign}${Math.round(Math.abs(diff) / beforeSize * 100)}%`;
           }
 
           function formatMathText(text) {
@@ -150,12 +150,21 @@ jobs:
               .replaceAll('%', '\\\\%');
           }
 
-          function formatDiff(beforeSize, diff) {
+          function formatDiff(diff) {
+            if (diff == null) return '-';
+            if (diff === 0) return '0 B';
+            const sign = diff > 0 ? '+' : '-';
+            const text = `${sign}${formatBytes(Math.abs(diff))}`;
+            const color = diff > 0 ? 'orange' : 'cyan';
+            return `$\\color{${color}}{\\text{${formatMathText(text)}}}$`;
+          }
+
+          function formatDiffPercent(beforeSize, diff) {
             if (diff == null) return '-';
             const percent = formatPercent(diff, beforeSize);
-            if (diff === 0) return percent == null ? '0 B' : `0 B (${percent})`;
+            if (diff === 0) return `${percent}`;
             const sign = diff > 0 ? '+' : '-';
-            const text = `${sign}${formatBytes(Math.abs(diff))}${percent == null ? '' : ` (${percent})`}`;
+            const text = `${sign}${percent}`;
             const color = diff > 0 ? 'orange' : 'cyan';
             return `$\\color{${color}}{\\text{${formatMathText(text)}}}$`;
           }
@@ -307,11 +316,11 @@ jobs:
             }
 
             const lines = [
-              '| Chunk | Before | After | Diff |',
-              '| --- | ---: | ---: | ---: |',
+              '| Chunk | Before | After | Diff | Diff (%) |',
+              '| --- | ---: | ---: | ---: | ---: |',
             ];
             for (const row of rows) {
-              lines.push(`| \`${escapeCell(row.name)}\` | ${formatBytes(row.beforeSize)} | ${formatBytes(row.afterSize)} | ${formatDiff(row.beforeSize, row.diff)} |`);
+              lines.push(`| \`${escapeCell(row.name)}\` | ${formatBytes(row.beforeSize)} | ${formatBytes(row.afterSize)} | ${formatDiff(row.diff)} | ${formatDiffPercent(row.beforeSize, row.diff)} |`);
             }
             return lines.join('\n');
           }
