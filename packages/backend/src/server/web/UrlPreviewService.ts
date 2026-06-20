@@ -21,6 +21,7 @@ import type { FastifyRequest, FastifyReply } from 'fastify';
 export class UrlPreviewService implements OnApplicationShutdown {
 	private logger: Logger;
 	private summaryCache: MemoryLRUKVCache<SummalyResult>;
+	private readonly summalyDefaultUserAgent: string;
 
 	constructor(
 		@Inject(DI.config)
@@ -34,6 +35,7 @@ export class UrlPreviewService implements OnApplicationShutdown {
 	) {
 		this.logger = this.loggerService.getLogger('url-preview');
 		this.summaryCache = new MemoryLRUKVCache<SummalyResult>(1000 * 60 * 60, 100); // 1h, 100件
+		this.summalyDefaultUserAgent = `SummalyBot/${_SUMMALY_VERSION_} (${this.config.url}; +https://github.com/misskey-dev/summaly/blob/master/README.md)`;
 	}
 
 	@bindThis
@@ -136,7 +138,7 @@ export class UrlPreviewService implements OnApplicationShutdown {
 			followRedirects: this.meta.urlPreviewAllowRedirect,
 			lang: lang ?? 'ja-JP',
 			agent: agent,
-			userAgent: this.meta.urlPreviewUserAgent ?? undefined,
+			userAgent: this.meta.urlPreviewUserAgent ?? this.summalyDefaultUserAgent,
 			operationTimeout: this.meta.urlPreviewTimeout,
 			contentLengthLimit: this.meta.urlPreviewMaximumContentLength,
 			contentLengthRequired: this.meta.urlPreviewRequireContentLength,
@@ -149,7 +151,7 @@ export class UrlPreviewService implements OnApplicationShutdown {
 			url: url,
 			lang: lang ?? 'ja-JP',
 			followRedirects: this.meta.urlPreviewAllowRedirect,
-			userAgent: this.meta.urlPreviewUserAgent ?? undefined,
+			userAgent: this.meta.urlPreviewUserAgent ?? this.summalyDefaultUserAgent,
 			operationTimeout: this.meta.urlPreviewTimeout,
 			contentLengthLimit: this.meta.urlPreviewMaximumContentLength,
 			contentLengthRequired: this.meta.urlPreviewRequireContentLength,
