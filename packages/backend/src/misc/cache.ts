@@ -205,11 +205,12 @@ export class RedisSingleCache<T> {
 }
 
 export class MemoryKVCache<T> {
-	protected readonly cache = new Map<string, { date: number; value: T; }>();
+	private readonly cache = new Map<string, { date: number; value: T; }>();
 	private readonly gcIntervalHandle = setInterval(() => this.gc(), 1000 * 60 * 3); // 3m
 
 	constructor(
-		protected readonly lifetime: number,
+		private readonly lifetime: number,
+		private readonly limit: number = Infinity,
 	) {}
 
 	@bindThis
@@ -218,6 +219,25 @@ export class MemoryKVCache<T> {
 	 * @deprecated これを直接呼び出すべきではない。InternalEventなどで変更を全てのプロセス/マシンに通知するべき
 	 */
 	public set(key: string, value: T): void {
+		if (this.limit <= 0) {
+			throw new Error('Limit must be greater than 0');
+		}
+
+		if (this.limit !== Infinity) {
+			this.gc();
+
+			// 挿入順を更新して LRU を保つため、同一キーは一度削除する
+			this.cache.delete(key);
+
+			while (this.cache.size >= this.limit) {
+				const oldestKey = this.cache.keys().next().value;
+				if (oldestKey == null) {
+					throw new Error('Cache is empty but size exceeds the limit');
+				}
+				this.cache.delete(oldestKey);
+			}
+		}
+
 		this.cache.set(key, {
 			date: Date.now(),
 			value,
@@ -231,6 +251,11 @@ export class MemoryKVCache<T> {
 		if ((Date.now() - cached.date) > this.lifetime) {
 			this.cache.delete(key);
 			return undefined;
+		}
+		if (this.limit !== Infinity) {
+			// access 順を更新して LRU を保つ
+			this.cache.delete(key);
+			this.cache.set(key, cached);
 		}
 		return cached.value;
 	}
@@ -309,34 +334,6 @@ export class MemoryKVCache<T> {
 
 	public get entries() {
 		return this.cache.entries();
-	}
-}
-
-export class MemoryLRUKVCache<T> extends MemoryKVCache<T> {
-	constructor(
-		lifetime: number,
-		private readonly limit: number,
-	) {
-		if (limit <= 0) {
-			throw new Error('Limit must be greater than 0');
-		}
-
-		super(lifetime);
-	}
-
-	@bindThis
-	public set(key: string, value: T): void {
-		while (this.cache.size >= this.limit) {
-			// 古い順から削除していく
-			const oldestKey = this.cache.keys().next().value;
-			if (oldestKey == null) {
-				throw new Error('Cache is empty but size exceeds the limit');
-			}
-			this.cache.delete(oldestKey);
-		}
-		// 挿入順を更新するために一度削除してから再挿入する
-		this.cache.delete(key);
-		super.set(key, value);
 	}
 }
 

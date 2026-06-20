@@ -10,7 +10,7 @@ import type { Config } from '@/config.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
 import type Logger from '@/logger.js';
 import { query } from '@/misc/prelude/url.js';
-import { MemoryLRUKVCache } from '@/misc/cache.js';
+import { MemoryKVCache } from '@/misc/cache.js';
 import { LoggerService } from '@/core/LoggerService.js';
 import { bindThis } from '@/decorators.js';
 import { ApiError } from '@/server/api/error.js';
@@ -20,7 +20,7 @@ import type { FastifyRequest, FastifyReply } from 'fastify';
 @Injectable()
 export class UrlPreviewService implements OnApplicationShutdown {
 	private logger: Logger;
-	private summaryCache: MemoryLRUKVCache<SummalyResult>;
+	private summaryCache: MemoryKVCache<SummalyResult>;
 	private readonly summalyDefaultUserAgent: string;
 
 	constructor(
@@ -34,7 +34,7 @@ export class UrlPreviewService implements OnApplicationShutdown {
 		private loggerService: LoggerService,
 	) {
 		this.logger = this.loggerService.getLogger('url-preview');
-		this.summaryCache = new MemoryLRUKVCache<SummalyResult>(1000 * 60 * 60, 100); // 1h, 100件
+		this.summaryCache = new MemoryKVCache<SummalyResult>(1000 * 60 * 60, 100); // 1h, 100件
 		this.summalyDefaultUserAgent = `SummalyBot/${_SUMMALY_VERSION_} (${this.config.url}; +https://github.com/misskey-dev/summaly/blob/master/README.md)`;
 	}
 
