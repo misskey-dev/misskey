@@ -185,7 +185,6 @@ jobs:
           }
 
           async function resolveBuiltFile(outDir, file) {
-            const originalPath = path.join(outDir, file);
             if (file.startsWith('scripts/')) {
               const localizedFile = file.slice('scripts/'.length);
               const localizedPath = path.join(outDir, locale, localizedFile);
@@ -195,9 +194,11 @@ jobs:
                   relativePath: `${locale}/${localizedFile}`,
                 };
               }
+
+              throw new Error(`Expected ${locale} localized chunk for ${file}, but ${localizedPath} was not found.`);
             }
             return {
-              absolutePath: originalPath,
+              absolutePath: path.join(outDir, file),
               relativePath: file,
             };
           }
@@ -224,18 +225,20 @@ jobs:
               byFile.add(builtFile.relativePath);
             }
 
-            for await (const fullPath of walk(outDir)) {
-              if (!fullPath.endsWith('.js')) continue;
-              const relativePath = normalizePath(path.relative(outDir, fullPath));
-              if (byFile.has(relativePath)) continue;
-              if (relativePath.startsWith('scripts/') || relativePath.startsWith(`${locale}/`)) continue;
-              const size = await fileSize(fullPath);
-              byKey.set(relativePath, {
-                key: relativePath,
-                displayName: relativePath,
-                file: relativePath,
-                size,
-              });
+            const localeDir = path.join(outDir, locale);
+            if (await exists(localeDir)) {
+              for await (const fullPath of walk(localeDir)) {
+                if (!fullPath.endsWith('.js')) continue;
+                const relativePath = normalizePath(path.relative(outDir, fullPath));
+                if (byFile.has(relativePath)) continue;
+                const size = await fileSize(fullPath);
+                byKey.set(relativePath, {
+                  key: relativePath,
+                  displayName: relativePath,
+                  file: relativePath,
+                  size,
+                });
+              }
             }
 
             return {
@@ -243,6 +246,21 @@ jobs:
               chunks: Object.fromEntries(byKey),
               startupKeys: [...collectStartupKeys(manifest)],
             };
+          }
+
+          function commonKeys(before, after) {
+            return Object.keys(before.chunks)
+              .filter((key) => after.chunks[key] != null);
+          }
+
+          function addedKeys(before, after) {
+            return Object.keys(after.chunks)
+              .filter((key) => before.chunks[key] == null);
+          }
+
+          function removedKeys(before, after) {
+            return Object.keys(before.chunks)
+              .filter((key) => after.chunks[key] == null);
           }
 
           function compareRows(keys, before, after) {
@@ -277,12 +295,34 @@ jobs:
             return lines.join('\n');
           }
 
-          function unionTopKeys(before, after) {
-            const allKeys = new Set([
-              ...Object.keys(before.chunks),
-              ...Object.keys(after.chunks),
-            ]);
-            return compareRows([...allKeys], before, after)
+          function chunkRows(keys, report) {
+            return keys.map((key) => {
+              const entry = report.chunks[key];
+              return {
+                key,
+                file: entryDisplayName(entry),
+                size: entry.size,
+              };
+            });
+          }
+
+          function markdownChunkTable(rows, emptyMessage = '_No JavaScript chunks found._') {
+            if (rows.length === 0) {
+              return emptyMessage;
+            }
+
+            const lines = [
+              '| File | Size |',
+              '| --- | ---: |',
+            ];
+            for (const row of rows) {
+              lines.push(`| ${escapeCell(row.file)} | ${formatBytes(row.size)} |`);
+            }
+            return lines.join('\n');
+          }
+
+          function topKeys(keys, before, after) {
+            return compareRows(keys, before, after)
               .sort((a, b) => b.sortSize - a.sortSize || a.file.localeCompare(b.file))
               .slice(0, topLimit)
               .map((row) => row.key);
@@ -295,12 +335,8 @@ jobs:
               || a.file.localeCompare(b.file);
           }
 
-          function topDiffKeys(before, after) {
-            const allKeys = new Set([
-              ...Object.keys(before.chunks),
-              ...Object.keys(after.chunks),
-            ]);
-            return compareRows([...allKeys], before, after)
+          function topDiffKeys(keys, before, after) {
+            return compareRows(keys, before, after)
               .filter((row) => row.diff !== 0 && row.diff != null)
               .sort(compareDiffRows)
               .slice(0, topLimit)
@@ -316,22 +352,29 @@ jobs:
           const before = await collectReport(beforeDir);
           const after = await collectReport(afterDir);
 
-          const topRows = compareRows(unionTopKeys(before, after), before, after)
+          const commonChunkKeys = commonKeys(before, after);
+          const topRows = compareRows(topKeys(commonChunkKeys, before, after), before, after)
             .sort((a, b) => b.sortSize - a.sortSize || a.file.localeCompare(b.file));
 
-          const diffRows = compareRows(topDiffKeys(before, after), before, after)
+          const diffRows = compareRows(topDiffKeys(commonChunkKeys, before, after), before, after)
             .sort(compareDiffRows);
+
+          const addedRows = chunkRows(addedKeys(before, after), after)
+            .sort((a, b) => b.size - a.size || a.file.localeCompare(b.file));
+
+          const removedRows = chunkRows(removedKeys(before, after), before)
+            .sort((a, b) => b.size - a.size || a.file.localeCompare(b.file));
 
           const startupKeys = new Set([
             ...before.startupKeys,
             ...after.startupKeys,
           ]);
-          const startupRows = compareRows([...startupKeys], before, after)
+          const startupRows = compareRows([...startupKeys].filter((key) => before.chunks[key] != null && after.chunks[key] != null), before, after)
             .sort((a, b) => b.sortSize - a.sortSize || a.file.localeCompare(b.file));
 
           const body = [
             marker,
-            '## Frontend size report',
+            `## Frontend size report (${locale})`,
             '',
             '### Top 10 largest chunk diffs',
             '',
@@ -344,12 +387,26 @@ jobs:
             '',
             '</details>',
             '',
+            '### Added chunks',
+            '<details>',
+            '',
+            markdownChunkTable(addedRows, '_No JavaScript chunks added._'),
+            '',
+            '</details>',
+            '',
+            '### Removed chunks',
+            '<details>',
+            '',
+            markdownChunkTable(removedRows, '_No JavaScript chunks removed._'),
+            '',
+            '</details>',
+            '',
             '### Startup chunks',
             '<details>',
             '',
             markdownTable(startupRows),
             '',
-            '_Top 10 is sorted by max(before, after) size. Diff top 10 is sorted by absolute size diff, with missing chunks compared against 0 B. Startup chunks are the Vite entry for `src/_boot_.ts` and its static imports._',
+            `_Only ${locale} localized chunks are reported. Size comparison tables include chunks that exist in both builds. Added and removed chunks are listed separately. Top 10 is sorted by max(before, after) size. Diff top 10 is sorted by absolute size diff. Startup chunks are the Vite entry for \`src/_boot_.ts\` and its static imports._`,
             '',
             '</details>',
             '',
