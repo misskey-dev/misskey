@@ -126,15 +126,38 @@ jobs:
           function formatBytes(size) {
             if (size == null) return '-';
             if (size < 1024) return `${size} B`;
-            if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KiB`;
-            return `${(size / 1024 / 1024).toFixed(2)} MiB`;
+            if (size < 1024 * 1024) return `${stripTrailingZeros((size / 1024).toFixed(1))} KiB`;
+            return `${stripTrailingZeros((size / 1024 / 1024).toFixed(2))} MiB`;
           }
 
-          function formatDiff(diff) {
-            if (diff == null) return '-';
-            if (diff === 0) return '0 B';
+          function stripTrailingZeros(value) {
+            return value.replace(/\.0+$/, '').replace(/(\.\d*?)0+$/, '$1');
+          }
+
+          function formatPercent(diff, beforeSize) {
+            if (diff == null || beforeSize == null) return null;
+            if (diff === 0) return '0%';
+            if (beforeSize === 0) return null;
             const sign = diff > 0 ? '+' : '-';
-            return `${sign}${formatBytes(Math.abs(diff))}`;
+            return `${sign}${stripTrailingZeros((Math.abs(diff) / beforeSize * 100).toFixed(1))}%`;
+          }
+
+          function formatMathText(text) {
+            return text
+              .replaceAll('\\', '\\\\')
+              .replaceAll('{', '\\{')
+              .replaceAll('}', '\\}')
+              .replaceAll('%', '\\%');
+          }
+
+          function formatDiff(beforeSize, diff) {
+            if (diff == null) return '-';
+            const percent = formatPercent(diff, beforeSize);
+            if (diff === 0) return percent == null ? '0 B' : `0 B (${percent})`;
+            const sign = diff > 0 ? '+' : '-';
+            const text = `${sign}${formatBytes(Math.abs(diff))}${percent == null ? '' : ` (${percent})`}`;
+            const color = diff > 0 ? 'orange' : 'cyan';
+            return `$\\color{${color}}{\\text{${formatMathText(text)}}}$`;
           }
 
           function sizeDiff(beforeSize, afterSize) {
@@ -148,9 +171,13 @@ jobs:
 
           function entryDisplayName(entry) {
             if (!entry) return '';
-            return entry.displayName === entry.file
+            return entry.displayName === entry.file || entry.hasOriginalFileName
               ? entry.displayName
               : `${entry.displayName} (${entry.file})`;
+          }
+
+          function hasOriginalFileName(key, chunk) {
+            return chunk.src != null || (key.startsWith('src/') && /\.(?:m?[jt]sx?|vue)$/.test(key));
           }
 
           function findEntryKey(manifest) {
@@ -220,6 +247,7 @@ jobs:
                 key: stableKey,
                 displayName,
                 file: builtFile.relativePath,
+                hasOriginalFileName: hasOriginalFileName(key, chunk),
                 size,
               });
               byFile.add(builtFile.relativePath);
@@ -290,7 +318,7 @@ jobs:
               '| --- | ---: | ---: | ---: |',
             ];
             for (const row of rows) {
-              lines.push(`| ${escapeCell(row.file)} | ${formatBytes(row.beforeSize)} | ${formatBytes(row.afterSize)} | ${formatDiff(row.diff)} |`);
+              lines.push(`| ${escapeCell(row.file)} | ${formatBytes(row.beforeSize)} | ${formatBytes(row.afterSize)} | ${formatDiff(row.beforeSize, row.diff)} |`);
             }
             return lines.join('\n');
           }
