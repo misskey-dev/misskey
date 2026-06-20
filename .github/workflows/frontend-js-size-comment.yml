@@ -32,7 +32,7 @@ permissions:
   actions: read
   contents: read
   issues: write
-  pull-requests: read
+  pull-requests: write
 
 jobs:
   comment:
@@ -148,6 +148,7 @@ jobs:
         if: github.event_name == 'workflow_run' || steps.find-report-run.outputs.run-id != ''
         uses: actions/github-script@v9
         with:
+          github-token: ${{ secrets.FRONTEND_JS_SIZE_COMMENT_TOKEN || github.token }}
           script: |
             const fs = require('node:fs');
             const path = require('node:path');
