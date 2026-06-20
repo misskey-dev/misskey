@@ -1,0 +1,86 @@
+name: Frontend JS size comment
+
+on:
+  workflow_run:
+    workflows:
+      - Frontend JS size
+    types:
+      - completed
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+  pull-requests: read
+
+jobs:
+  comment:
+    name: Comment frontend JS size
+    if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download size report
+        uses: actions/download-artifact@v8
+        with:
+          name: frontend-js-size-report
+          path: frontend-js-size-report
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Comment on pull request
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const fs = require('node:fs');
+
+            const marker = '<!-- misskey-frontend-js-size -->';
+            const body = fs.readFileSync('frontend-js-size-report/frontend-js-size-report.md', 'utf8');
+            if (!body.includes(marker)) {
+              core.setFailed('The frontend JS size report is missing the expected marker.');
+              return;
+            }
+
+            const { owner, repo } = context.repo;
+            const workflowRun = context.payload.workflow_run;
+            let issue_number = workflowRun.pull_requests?.[0]?.number;
+
+            if (issue_number == null) {
+              const { data: pullRequests } = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+                owner,
+                repo,
+                commit_sha: workflowRun.head_sha,
+              });
+              issue_number = pullRequests.find((pr) => pr.head.sha === workflowRun.head_sha)?.number
+                ?? pullRequests[0]?.number;
+            }
+
+            if (issue_number == null) {
+              core.info(`No pull request found for workflow run ${workflowRun.id}.`);
+              return;
+            }
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number,
+              per_page: 100,
+            });
+            const previous = comments.find((comment) =>
+              comment.user?.type === 'Bot' && comment.body?.includes(marker));
+
+            if (previous) {
+              await github.rest.issues.updateComment({
+                owner,
+                repo,
+                comment_id: previous.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number,
+                body,
+              });
+            }
