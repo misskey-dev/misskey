@@ -147,7 +147,7 @@ jobs:
               .replaceAll('\\', '\\\\')
               .replaceAll('{', '\\{')
               .replaceAll('}', '\\}')
-              .replaceAll('%', '\\%');
+              .replaceAll('%', '\\\\%');
           }
 
           function formatDiff(beforeSize, diff) {
@@ -171,13 +171,7 @@ jobs:
 
           function entryDisplayName(entry) {
             if (!entry) return '';
-            return entry.displayName === entry.file || entry.hasOriginalFileName
-              ? entry.displayName
-              : `${entry.displayName} (${entry.file})`;
-          }
-
-          function hasOriginalFileName(key, chunk) {
-            return chunk.src != null || (key.startsWith('src/') && /\.(?:m?[jt]sx?|vue)$/.test(key));
+            return entry.displayName || entry.file;
           }
 
           function findEntryKey(manifest) {
@@ -247,7 +241,6 @@ jobs:
                 key: stableKey,
                 displayName,
                 file: builtFile.relativePath,
-                hasOriginalFileName: hasOriginalFileName(key, chunk),
                 size,
               });
               byFile.add(builtFile.relativePath);
@@ -299,7 +292,7 @@ jobs:
               const afterSize = afterEntry?.size ?? null;
               return {
                 key,
-                file: entryDisplayName(afterEntry ?? beforeEntry),
+                name: entryDisplayName(afterEntry ?? beforeEntry),
                 beforeSize,
                 afterSize,
                 diff: sizeDiff(beforeSize, afterSize),
@@ -314,11 +307,11 @@ jobs:
             }
 
             const lines = [
-              '| File | Before | After | Diff |',
+              '| Chunk | Before | After | Diff |',
               '| --- | ---: | ---: | ---: |',
             ];
             for (const row of rows) {
-              lines.push(`| ${escapeCell(row.file)} | ${formatBytes(row.beforeSize)} | ${formatBytes(row.afterSize)} | ${formatDiff(row.beforeSize, row.diff)} |`);
+              lines.push(`| \`${escapeCell(row.name)}\` | ${formatBytes(row.beforeSize)} | ${formatBytes(row.afterSize)} | ${formatDiff(row.beforeSize, row.diff)} |`);
             }
             return lines.join('\n');
           }
@@ -328,7 +321,7 @@ jobs:
               const entry = report.chunks[key];
               return {
                 key,
-                file: entryDisplayName(entry),
+                name: entryDisplayName(entry),
                 size: entry.size,
               };
             });
@@ -340,18 +333,18 @@ jobs:
             }
 
             const lines = [
-              '| File | Size |',
+              '| Chunk | Size |',
               '| --- | ---: |',
             ];
             for (const row of rows) {
-              lines.push(`| ${escapeCell(row.file)} | ${formatBytes(row.size)} |`);
+              lines.push(`| \`${escapeCell(row.name)}\` | ${formatBytes(row.size)} |`);
             }
             return lines.join('\n');
           }
 
           function topKeys(keys, before, after) {
             return compareRows(keys, before, after)
-              .sort((a, b) => b.sortSize - a.sortSize || a.file.localeCompare(b.file))
+              .sort((a, b) => b.sortSize - a.sortSize || a.name.localeCompare(b.name))
               .slice(0, topLimit)
               .map((row) => row.key);
           }
@@ -360,7 +353,7 @@ jobs:
             return Math.abs(b.diff ?? 0) - Math.abs(a.diff ?? 0)
               || (b.diff ?? 0) - (a.diff ?? 0)
               || b.sortSize - a.sortSize
-              || a.file.localeCompare(b.file);
+              || a.name.localeCompare(b.name);
           }
 
           function topDiffKeys(keys, before, after) {
@@ -382,23 +375,23 @@ jobs:
 
           const commonChunkKeys = commonKeys(before, after);
           const topRows = compareRows(topKeys(commonChunkKeys, before, after), before, after)
-            .sort((a, b) => b.sortSize - a.sortSize || a.file.localeCompare(b.file));
+            .sort((a, b) => b.sortSize - a.sortSize || a.name.localeCompare(b.name));
 
           const diffRows = compareRows(topDiffKeys(commonChunkKeys, before, after), before, after)
             .sort(compareDiffRows);
 
           const addedRows = chunkRows(addedKeys(before, after), after)
-            .sort((a, b) => b.size - a.size || a.file.localeCompare(b.file));
+            .sort((a, b) => b.size - a.size || a.name.localeCompare(b.name));
 
           const removedRows = chunkRows(removedKeys(before, after), before)
-            .sort((a, b) => b.size - a.size || a.file.localeCompare(b.file));
+            .sort((a, b) => b.size - a.size || a.name.localeCompare(b.name));
 
           const startupKeys = new Set([
             ...before.startupKeys,
             ...after.startupKeys,
           ]);
           const startupRows = compareRows([...startupKeys].filter((key) => before.chunks[key] != null && after.chunks[key] != null), before, after)
-            .sort((a, b) => b.sortSize - a.sortSize || a.file.localeCompare(b.file));
+            .sort((a, b) => b.sortSize - a.sortSize || a.name.localeCompare(b.name));
 
           const body = [
             marker,
@@ -406,7 +399,7 @@ jobs:
             '',
             '### Top 10 largest chunk diffs',
             '',
-            markdownTable(diffRows, '_No JavaScript chunk size changes found._'),
+            markdownTable(diffRows, '_No chunk size changes found._'),
             '',
             '### Top 10 largest chunks',
             '<details>',
@@ -415,17 +408,17 @@ jobs:
             '',
             '</details>',
             '',
-            '### Added chunks',
+            `### Added chunks (${addedRows.length})`,
             '<details>',
             '',
-            markdownChunkTable(addedRows, '_No JavaScript chunks added._'),
+            markdownChunkTable(addedRows, '_No chunks added._'),
             '',
             '</details>',
             '',
-            '### Removed chunks',
+            `### Removed chunks (${removedRows.length})`,
             '<details>',
             '',
-            markdownChunkTable(removedRows, '_No JavaScript chunks removed._'),
+            markdownChunkTable(removedRows, '_No chunks removed._'),
             '',
             '</details>',
             '',
