@@ -31,7 +31,16 @@ import { prefer } from '@/preferences.js';
 import { $i } from '@/i.js';
 import { launchPlugins } from '@/plugin.js';
 
-export async function common(createVue: () => Promise<App<Element>>) {
+type CommonBootResult = {
+	aborted: true;
+} | {
+	aborted: false;
+	isClientUpdated: boolean;
+	lastVersion: string | null;
+	app: App<Element>;
+};
+
+export async function common(createVue: () => Promise<App<Element>>): Promise<CommonBootResult> {
 	console.info(`Misskey v${version}`);
 
 	if (_DEV_) {
@@ -327,6 +336,12 @@ export async function common(createVue: () => Promise<App<Element>>) {
 		console.error('Failed to launch plugins:', error);
 	}
 
+	// もし、ここまでの処理でエラースクリーンが出ていた場合はマウントしない
+	// （Vue側のインタフェースと干渉して操作不能になることがあるため）
+	if (window.errored) {
+		return { aborted: true };
+	}
+
 	app.mount(rootEl);
 
 	// boot.jsのやつを解除
@@ -359,6 +374,7 @@ export async function common(createVue: () => Promise<App<Element>>) {
 	//#endregion
 
 	return {
+		aborted: false,
 		isClientUpdated,
 		lastVersion,
 		app,
