@@ -20,6 +20,7 @@ on:
       - pnpm-lock.yaml
       - pnpm-workspace.yaml
       - .node-version
+      - .github/scripts/frontend-bundle-visualizer-report.mjs
       - .github/workflows/frontend-bundle-visualizer.yml
       - .github/workflows/frontend-bundle-visualizer-comment.yml
 
@@ -64,12 +65,16 @@ jobs:
       - name: Build frontend visualizer
         env:
           FRONTEND_BUNDLE_VISUALIZER: 'true'
-          FRONTEND_BUNDLE_VISUALIZER_TEMPLATE: markdown
-          FRONTEND_BUNDLE_VISUALIZER_FILE: ${{ runner.temp }}/frontend-bundle-visualizer/report.md
+          FRONTEND_BUNDLE_VISUALIZER_TEMPLATE: raw-data
+          FRONTEND_BUNDLE_VISUALIZER_FILE: ${{ runner.temp }}/frontend-bundle-visualizer/stats.json
         run: pnpm --filter frontend run build
+
+      - name: Generate visualizer report
+        run: node .github/scripts/frontend-bundle-visualizer-report.mjs "$RUNNER_TEMP/frontend-bundle-visualizer/stats.json" "$RUNNER_TEMP/frontend-bundle-visualizer/report.md"
 
       - name: Check visualizer report
         run: |
+          test -s "$RUNNER_TEMP/frontend-bundle-visualizer/stats.json"
           test -s "$RUNNER_TEMP/frontend-bundle-visualizer/report.md"
           cat "$RUNNER_TEMP/frontend-bundle-visualizer/report.md" >> "$GITHUB_STEP_SUMMARY"
 

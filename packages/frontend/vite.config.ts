@@ -27,10 +27,16 @@ const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.s
 function getBundleVisualizerPlugin(): PluginOption[] {
 	if (process.env.FRONTEND_BUNDLE_VISUALIZER !== 'true') return [];
 
-	const template = process.env.FRONTEND_BUNDLE_VISUALIZER_TEMPLATE === 'markdown' ? 'markdown' : 'treemap';
+	const template = process.env.FRONTEND_BUNDLE_VISUALIZER_TEMPLATE === 'markdown'
+		? 'markdown'
+		: process.env.FRONTEND_BUNDLE_VISUALIZER_TEMPLATE === 'raw-data'
+			? 'raw-data'
+			: 'treemap';
 	const defaultFilename = template === 'markdown'
 		? path.resolve(__dirname, '../../built/_frontend_bundle_visualizer_/report.md')
-		: path.resolve(__dirname, '../../built/_frontend_bundle_visualizer_/stats.html');
+		: template === 'raw-data'
+			? path.resolve(__dirname, '../../built/_frontend_bundle_visualizer_/stats.json')
+			: path.resolve(__dirname, '../../built/_frontend_bundle_visualizer_/stats.html');
 
 	return [
 		visualizer({

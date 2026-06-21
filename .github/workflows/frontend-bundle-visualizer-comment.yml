@@ -23,6 +23,11 @@ jobs:
     if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout report generator
+        uses: actions/checkout@v6.0.2
+        with:
+          persist-credentials: false
+
       - name: Download visualizer report
         uses: actions/download-artifact@v8
         with:
@@ -31,6 +36,9 @@ jobs:
           github-token: ${{ github.token }}
           repository: ${{ github.repository }}
           run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Generate visualizer report
+        run: node .github/scripts/frontend-bundle-visualizer-report.mjs "$RUNNER_TEMP/frontend-bundle-visualizer/stats.json" "$RUNNER_TEMP/frontend-bundle-visualizer/report.md"
 
       - name: Comment on pull request
         uses: actions/github-script@v9
