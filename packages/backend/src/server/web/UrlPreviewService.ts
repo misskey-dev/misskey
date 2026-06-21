@@ -4,7 +4,6 @@
  */
 
 import { Inject, Injectable } from '@nestjs/common';
-import { version } from '@misskey-dev/summaly';
 import type { SummalyResult } from '@misskey-dev/summaly';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
@@ -33,7 +32,7 @@ export class UrlPreviewService {
 		private loggerService: LoggerService,
 	) {
 		this.logger = this.loggerService.getLogger('url-preview');
-		this.summalyDefaultUserAgent = `SummalyBot/${version} (${this.config.url}; +https://github.com/misskey-dev/summaly/blob/master/README.md)`;
+		this.summalyDefaultUserAgent = `SummalyBot/${_SUMMALY_VERSION_} (${this.config.url}; +https://github.com/misskey-dev/summaly/blob/master/README.md)`;
 	}
 
 	@bindThis
