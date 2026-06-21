@@ -2,7 +2,8 @@ import path from 'path';
 import pluginVue from '@vitejs/plugin-vue';
 import pluginGlsl from 'vite-plugin-glsl';
 import { replacePlugin } from 'rolldown/plugins';
-import type { UserConfig } from 'vite';
+import { visualizer } from 'rollup-plugin-visualizer';
+import type { PluginOption, UserConfig } from 'vite';
 import { defineConfig } from 'vite';
 import * as yaml from 'js-yaml';
 import { promises as fsp } from 'fs';
@@ -22,6 +23,26 @@ const url = process.env.NODE_ENV === 'development' ? (yaml.load(await fsp.readFi
 const host = url ? (new URL(url)).hostname : undefined;
 
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
+
+function getBundleVisualizerPlugin(): PluginOption[] {
+	if (process.env.FRONTEND_BUNDLE_VISUALIZER !== 'true') return [];
+
+	const template = process.env.FRONTEND_BUNDLE_VISUALIZER_TEMPLATE === 'markdown' ? 'markdown' : 'treemap';
+	const defaultFilename = template === 'markdown'
+		? path.resolve(__dirname, '../../built/_frontend_bundle_visualizer_/report.md')
+		: path.resolve(__dirname, '../../built/_frontend_bundle_visualizer_/stats.html');
+
+	return [
+		visualizer({
+			filename: process.env.FRONTEND_BUNDLE_VISUALIZER_FILE ?? defaultFilename,
+			title: 'Misskey frontend bundle visualizer',
+			template,
+			gzipSize: true,
+			brotliSize: true,
+			projectRoot: path.resolve(__dirname, '../..'),
+		}) as PluginOption,
+	];
+}
 
 /**
  * 検索インデックスの生成設定
@@ -129,6 +150,7 @@ export function getConfig(): UserConfig {
 					}),
 				]
 				: [],
+			...getBundleVisualizerPlugin(),
 		],
 
 		resolve: {
