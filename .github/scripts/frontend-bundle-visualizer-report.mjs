@@ -30,11 +30,11 @@ function formatNumber(value) {
 }
 
 function formatPercent(value) {
-	return `${value.toFixed(1)}%`;
+	return `${Math.round(value)}%`;
 }
 
 function sharePercent(value, total) {
-	if (total === 0) return '0.0%';
+	if (total === 0) return '0%';
 	return formatPercent((value / total) * 100);
 }
 
@@ -43,7 +43,7 @@ function formatMathText(text) {
 		.replaceAll('\\', '\\\\')
 		.replaceAll('{', '\\{')
 		.replaceAll('}', '\\}')
-		.replaceAll('%', '\\\\%');
+		.replaceAll('%', '\\%');
 }
 
 function formatColoredDiff(text, diff) {
