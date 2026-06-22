@@ -255,7 +255,7 @@ defineExpose({
 		max-height: clamp(
 			64px,
 			50cqh,
-			min(360px, 50vh)
+			min(360px, calc(50 * var(--MI-vh)))
 		);
 
 		&.n116_9 {

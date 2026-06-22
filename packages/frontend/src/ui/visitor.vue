@@ -85,7 +85,7 @@ onMounted(() => {
 <style lang="scss" module>
 .root {
 	display: flex;
-	height: 100dvh;
+	height: var(--MI-100dvh);
 	overflow: clip;
 }
 
@@ -144,6 +144,6 @@ onMounted(() => {
 .content {
 	display: flex;
 	flex-direction: column;
-	height: 100dvh;
+	height: var(--MI-100dvh);
 }
 </style>

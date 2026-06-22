@@ -240,7 +240,7 @@ if ($i) {
 	top: 0;
 	left: 0;
 	z-index: 1001;
-	height: 100dvh;
+	height: var(--MI-100dvh);
 }
 
 .widgetsDrawerBg {
@@ -253,7 +253,7 @@ if ($i) {
 	left: 0;
 	z-index: 1001;
 	width: 310px;
-	height: 100dvh;
+	height: var(--MI-100dvh);
 	padding: var(--MI-margin) var(--MI-margin) calc(var(--MI-margin) + env(safe-area-inset-bottom, 0px)) !important;
 	box-sizing: border-box;
 	overflow: auto;

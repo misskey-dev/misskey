@@ -12,8 +12,12 @@ export function calcPopupPosition(el: HTMLElement, props: {
 	x?: number;
 	y?: number;
 }): { top: number; left: number; transformOrigin: string; } {
-	const contentWidth = el.offsetWidth;
-	const contentHeight = el.offsetHeight;
+	const rootStyle = getComputedStyle(document.documentElement);
+	const scaleValue = rootStyle.getPropertyValue('--MI-scale').trim();
+	const scale = Number.parseFloat(scaleValue) || 1;
+	const contentRect = el.getBoundingClientRect();
+	const contentWidth = contentRect.width;
+	const contentHeight = contentRect.height;
 
 	let rect: DOMRect;
 
@@ -26,14 +30,14 @@ export function calcPopupPosition(el: HTMLElement, props: {
 		let top: number;
 
 		if (props.anchorElement) {
-			left = rect.left + window.scrollX + (props.anchorElement.offsetWidth / 2);
+			left = rect.left + window.scrollX + (rect.width / 2);
 			top = (rect.top + window.scrollY - contentHeight) - props.innerMargin;
 		} else {
 			left = props.x!;
 			top = (props.y! - contentHeight) - props.innerMargin;
 		}
 
-		left -= (el.offsetWidth / 2);
+		left -= (contentWidth / 2);
 
 		if (left + contentWidth - window.scrollX > window.innerWidth) {
 			left = window.innerWidth - contentWidth + window.scrollX - 1;
@@ -51,14 +55,14 @@ export function calcPopupPosition(el: HTMLElement, props: {
 		let top: number;
 
 		if (props.anchorElement) {
-			left = rect.left + window.scrollX + (props.anchorElement.offsetWidth / 2);
-			top = (rect.top + window.scrollY + props.anchorElement.offsetHeight) + props.innerMargin;
+			left = rect.left + window.scrollX + (rect.width / 2);
+			top = (rect.bottom + window.scrollY) + props.innerMargin;
 		} else {
 			left = props.x!;
 			top = (props.y!) + props.innerMargin;
 		}
 
-		left -= (el.offsetWidth / 2);
+		left -= (contentWidth / 2);
 
 		if (left + contentWidth - window.scrollX > window.innerWidth) {
 			left = window.innerWidth - contentWidth + window.scrollX - 1;
@@ -77,13 +81,13 @@ export function calcPopupPosition(el: HTMLElement, props: {
 
 		if (props.anchorElement) {
 			left = (rect.left + window.scrollX - contentWidth) - props.innerMargin;
-			top = rect.top + window.scrollY + (props.anchorElement.offsetHeight / 2);
+			top = rect.top + window.scrollY + (rect.height / 2);
 		} else {
 			left = (props.x! - contentWidth) - props.innerMargin;
 			top = props.y!;
 		}
 
-		top -= (el.offsetHeight / 2);
+		top -= (contentHeight / 2);
 
 		if (top + contentHeight - window.scrollY > window.innerHeight) {
 			top = window.innerHeight - contentHeight + window.scrollY - 1;
@@ -101,7 +105,7 @@ export function calcPopupPosition(el: HTMLElement, props: {
 		let top = 0; // TSを黙らすためとりあえず初期値を0に
 
 		if (props.anchorElement) {
-			left = (rect.left + props.anchorElement.offsetWidth + window.scrollX) + props.innerMargin;
+			left = (rect.right + window.scrollX) + props.innerMargin;
 
 			if (props.align === 'top') {
 				top = rect.top + window.scrollY;
@@ -109,13 +113,13 @@ export function calcPopupPosition(el: HTMLElement, props: {
 			} else if (props.align === 'bottom') {
 				// TODO
 			} else { // center
-				top = rect.top + window.scrollY + (props.anchorElement.offsetHeight / 2);
-				top -= (el.offsetHeight / 2);
+				top = rect.top + window.scrollY + (rect.height / 2);
+				top -= (contentHeight / 2);
 			}
 		} else {
 			left = props.x! + props.innerMargin;
 			top = props.y!;
-			top -= (el.offsetHeight / 2);
+			top -= (contentHeight / 2);
 		}
 
 		if (top + contentHeight - window.scrollY > window.innerHeight) {
@@ -141,16 +145,16 @@ export function calcPopupPosition(el: HTMLElement, props: {
 				// ツールチップを上に向かって表示するスペースがなければ下に向かって出す
 				if (top - window.scrollY < 0) {
 					const [left, top] = calcPosWhenBottom();
-					return { left, top, transformOrigin: 'center top' };
+					return { left: left / scale, top: top / scale, transformOrigin: 'center top' };
 				}
 
-				return { left, top, transformOrigin: 'center bottom' };
+				return { left: left / scale, top: top / scale, transformOrigin: 'center bottom' };
 			}
 
 			case 'bottom': {
 				const [left, top] = calcPosWhenBottom();
 				// TODO: ツールチップを下に向かって表示するスペースがなければ上に向かって出す
-				return { left, top, transformOrigin: 'center top' };
+				return { left: left / scale, top: top / scale, transformOrigin: 'center top' };
 			}
 
 			case 'left': {
@@ -159,16 +163,16 @@ export function calcPopupPosition(el: HTMLElement, props: {
 				// ツールチップを左に向かって表示するスペースがなければ右に向かって出す
 				if (left - window.scrollX < 0) {
 					const [left, top] = calcPosWhenRight();
-					return { left, top, transformOrigin: 'left center' };
+					return { left: left / scale, top: top / scale, transformOrigin: 'left center' };
 				}
 
-				return { left, top, transformOrigin: 'right center' };
+				return { left: left / scale, top: top / scale, transformOrigin: 'right center' };
 			}
 
 			case 'right': {
 				const [left, top] = calcPosWhenRight();
 				// TODO: ツールチップを右に向かって表示するスペースがなければ左に向かって出す
-				return { left, top, transformOrigin: 'left center' };
+				return { left: left / scale, top: top / scale, transformOrigin: 'left center' };
 			}
 		}
 	};

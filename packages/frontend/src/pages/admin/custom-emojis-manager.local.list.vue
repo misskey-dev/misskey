@@ -610,7 +610,7 @@ const headerActions = computed<PageHeaderItem[]>(() => [{
 }
 
 .main {
-	height: calc(100vh - var(--MI-stickyTop) - var(--MI-stickyBottom));
+	height: calc(var(--MI-100vh) - var(--MI-stickyTop) - var(--MI-stickyBottom));
 	overflow: scroll;
 }
 

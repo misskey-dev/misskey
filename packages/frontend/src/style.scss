@@ -37,16 +37,43 @@ html {
 	color: var(--MI_THEME-fg);
 	accent-color: var(--MI_THEME-accent);
 
+	--MI-scale: 1;
+	--MI-vh: calc(1vh / var(--MI-scale));
+	--MI-vw: calc(1vw / var(--MI-scale));
+	--MI-100vh: calc(100vh / var(--MI-scale));
+	--MI-100vw: calc(100vw / var(--MI-scale));
+	--MI-svh: calc(1svh / var(--MI-scale));
+	--MI-svw: calc(1svw / var(--MI-scale));
+	--MI-100svh: calc(100svh / var(--MI-scale));
+	--MI-100svw: calc(100svw / var(--MI-scale));
+	--MI-dvh: calc(1dvh / var(--MI-scale));
+	--MI-dvw: calc(1dvw / var(--MI-scale));
+	--MI-100dvh: calc(100dvh / var(--MI-scale));
+	--MI-100dvw: calc(100dvw / var(--MI-scale));
+	zoom: var(--MI-scale);
+
+	&.f--3 {
+		--MI-scale: 0.8;
+	}
+
+	&.f--2 {
+		--MI-scale: 0.85;
+	}
+
+	&.f--1 {
+		--MI-scale: 0.9;
+	}
+
 	&.f-1 {
-		font-size: 15px;
+		--MI-scale: 1.1;
 	}
 
 	&.f-2 {
-		font-size: 16px;
+		--MI-scale: 1.15;
 	}
 
 	&.f-3 {
-		font-size: 17px;
+		--MI-scale: 1.2;
 	}
 
 	&.useSystemFont {

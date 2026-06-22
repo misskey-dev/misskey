@@ -128,7 +128,7 @@ function onContextmenu(ev: PointerEvent) {
 $widgets-hide-threshold: 1090px;
 
 .root {
-	height: 100dvh;
+	height: var(--MI-100dvh);
 	overflow: clip;
 	contain: strict;
 	display: flex;

@@ -62,6 +62,13 @@ function getFixedContainer(el: Element | null): Element | null {
 	}
 }
 
+function getRootScale(): number {
+	const rootStyle = getComputedStyle(window.document.documentElement);
+	const scaleValue = rootStyle.getPropertyValue('--MI-scale').trim();
+	const scale = Number.parseFloat(scaleValue);
+	return Number.isFinite(scale) && scale > 0 ? scale : 1;
+}
+
 type ModalTypes = 'popup' | 'dialog' | 'drawer';
 
 const props = withDefaults(defineProps<{
@@ -159,7 +166,7 @@ function onBgClick() {
 }
 
 if (type.value === 'drawer') {
-	maxHeight.value = window.innerHeight / 1.5;
+	maxHeight.value = (window.innerHeight / 1.5) / getRootScale();
 }
 
 const keymap = {
@@ -178,6 +185,8 @@ const align = () => {
 	if (type.value === 'dialog') return;
 
 	if (content.value == null) return;
+
+	const scale = getRootScale();
 
 	const anchorRect = props.anchorElement.getBoundingClientRect();
 
@@ -219,16 +228,16 @@ const align = () => {
 		if (top + height > ((window.innerHeight - SCROLLBAR_THICKNESS) - MARGIN)) {
 			if (props.noOverlap && props.anchor.x === 'center') {
 				if (underSpace >= (upperSpace / 3)) {
-					maxHeight.value = underSpace;
+					maxHeight.value = underSpace / scale;
 				} else {
-					maxHeight.value = upperSpace;
+					maxHeight.value = upperSpace / scale;
 					top = (upperSpace + MARGIN) - height;
 				}
 			} else {
 				top = ((window.innerHeight - SCROLLBAR_THICKNESS) - MARGIN) - height;
 			}
 		} else {
-			maxHeight.value = underSpace;
+			maxHeight.value = underSpace / scale;
 		}
 	} else {
 		// 画面から横にはみ出る場合
@@ -243,16 +252,16 @@ const align = () => {
 		if (top + height - window.scrollY > ((window.innerHeight - SCROLLBAR_THICKNESS) - MARGIN)) {
 			if (props.noOverlap && props.anchor.x === 'center') {
 				if (underSpace >= (upperSpace / 3)) {
-					maxHeight.value = underSpace;
+					maxHeight.value = underSpace / scale;
 				} else {
-					maxHeight.value = upperSpace;
+					maxHeight.value = upperSpace / scale;
 					top = window.scrollY + ((upperSpace + MARGIN) - height);
 				}
 			} else {
 				top = ((window.innerHeight - SCROLLBAR_THICKNESS) - MARGIN) - height + window.scrollY - 1;
 			}
 		} else {
-			maxHeight.value = underSpace;
+			maxHeight.value = underSpace / scale;
 		}
 	}
 
@@ -281,8 +290,8 @@ const align = () => {
 
 	transformOrigin.value = `${transformOriginX} ${transformOriginY}`;
 
-	content.value.style.left = left + 'px';
-	content.value.style.top = top + 'px';
+	content.value.style.left = (left / scale) + 'px';
+	content.value.style.top = (top / scale) + 'px';
 };
 
 const onOpened = () => {
