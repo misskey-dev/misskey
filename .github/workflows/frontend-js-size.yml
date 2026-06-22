@@ -91,7 +91,7 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           mkdir -p frontend-js-size-report
-          node .github/scripts/frontend-js-size.mjs before after frontend-js-size-report.md
+          node after/.github/scripts/frontend-js-size.mjs before after frontend-js-size-report.md
           mv frontend-js-size-report.md frontend-js-size-report/report.md
           printf '%s\n' "$PR_NUMBER" > frontend-js-size-report/pr-number.txt
           cat frontend-js-size-report/report.md >> "$GITHUB_STEP_SUMMARY"
