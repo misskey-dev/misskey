@@ -190,7 +190,7 @@ jobs:
             const headShaPath = path.join(reportDir, 'head-sha.txt');
             const workflowRun = context.payload.workflow_run;
             const pullRequest = context.payload.pull_request;
-            const headSha = workflowRun?.head_sha ?? pullRequest?.head?.sha ?? null;
+            const eventHeadSha = workflowRun?.head_sha ?? pullRequest?.head?.sha ?? null;
             const { owner, repo } = context.repo;
 
             if (!fs.existsSync(jsSizeReportPath)) {
@@ -205,10 +205,10 @@ jobs:
             const artifactHeadSha = fs.existsSync(headShaPath)
               ? fs.readFileSync(headShaPath, 'utf8').trim()
               : null;
-            if (headSha != null && artifactHeadSha != null && artifactHeadSha !== headSha) {
-              core.setFailed(`The artifact head SHA (${artifactHeadSha}) does not match the workflow head SHA (${headSha}).`);
-              return;
+            if (eventHeadSha != null && artifactHeadSha != null && artifactHeadSha !== eventHeadSha) {
+              core.info(`The artifact head SHA (${artifactHeadSha}) differs from the event head SHA (${eventHeadSha}). Using artifact metadata for PR validation.`);
             }
+            const reportHeadSha = artifactHeadSha ?? eventHeadSha;
 
             const artifactPrNumber = fs.existsSync(prNumberPath)
               ? Number(fs.readFileSync(prNumberPath, 'utf8').trim())
@@ -228,29 +228,44 @@ jobs:
                 }
               }
 
-              const pullRequestsForCommit = await github.paginate(github.rest.repos.listPullRequestsAssociatedWithCommit, {
-                owner,
-                repo,
-                commit_sha: headSha,
-                per_page: 100,
-              });
-              for (const pullRequest of pullRequestsForCommit) {
-                associatedPullRequests.set(pullRequest.number, pullRequest);
+              if (reportHeadSha != null) {
+                const pullRequestsForCommit = await github.paginate(github.rest.repos.listPullRequestsAssociatedWithCommit, {
+                  owner,
+                  repo,
+                  commit_sha: reportHeadSha,
+                  per_page: 100,
+                });
+                for (const pullRequest of pullRequestsForCommit) {
+                  associatedPullRequests.set(pullRequest.number, pullRequest);
+                }
               }
 
               if (Number.isInteger(artifactPrNumber) && associatedPullRequests.has(artifactPrNumber)) {
                 issue_number = artifactPrNumber;
+              } else if (Number.isInteger(artifactPrNumber) && associatedPullRequests.size === 0) {
+                issue_number = artifactPrNumber;
               } else if (!Number.isInteger(artifactPrNumber) && associatedPullRequests.size === 1) {
                 issue_number = [...associatedPullRequests.keys()][0];
               } else if (Number.isInteger(artifactPrNumber)) {
-                core.setFailed(`The artifact pull request number (${artifactPrNumber}) is not associated with ${headSha}.`);
+                core.setFailed(`The artifact pull request number (${artifactPrNumber}) is not associated with ${reportHeadSha}.`);
                 return;
               } else {
-                core.setFailed(`Could not determine the pull request associated with ${headSha}.`);
+                core.setFailed(`Could not determine the pull request associated with ${reportHeadSha}.`);
                 return;
               }
             } else {
               core.setFailed('Could not determine the pull request event for this report.');
+              return;
+            }
+
+            const currentPullRequest = await github.rest.pulls.get({
+              owner,
+              repo,
+              pull_number: issue_number,
+            });
+            const currentHeadSha = currentPullRequest.data.head?.sha;
+            if (reportHeadSha != null && currentHeadSha != null && reportHeadSha !== currentHeadSha) {
+              core.info(`The report head SHA (${reportHeadSha}) is not the current pull request head SHA (${currentHeadSha}). Skipping stale frontend bundle report.`);
               return;
             }
 
