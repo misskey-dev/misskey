@@ -274,23 +274,13 @@ const allChunkKeys = [
 const comparisonRows = getChunkComparisonRows(commonChunkKeys, before, after);
 const allComparisonRows = getChunkComparisonRows(allChunkKeys, before, after);
 
-const changedRows = allComparisonRows
-	.filter((row) => row.changeType !== 'unchanged');
-const diffRows = [
-	...changedRows
-		.filter((row) => row.changeType === 'updated')
-		.sort(compareComparisonRows)
-		.slice(0, 30),
-	...changedRows
-		.filter((row) => row.changeType !== 'updated')
-		.sort(compareComparisonRows),
-].sort(compareComparisonRows);
+const changedRows = allComparisonRows.filter((row) => row.changeType !== 'unchanged');
 const diffSummary = summarizeChanges(changedRows);
-
 const diffTotal = {
 	beforeSize: allComparisonRows.reduce((sum, row) => sum + row.beforeSize, 0),
 	afterSize: allComparisonRows.reduce((sum, row) => sum + row.afterSize, 0),
 };
+const diffRows = changedRows.sort(compareComparisonRows).slice(0, 30); // TODO: 実際に30を超えて切り捨てられたrowがあった場合はその旨をmarkdown内に表示するようにする
 
 const startupKeys = new Set([
 	...before.startupKeys,
