@@ -219,13 +219,14 @@ const afterData = JSON.parse(await readFile(afterFile, 'utf8'));
 const before = collectReport(beforeData);
 const after = collectReport(afterData);
 const lines = [
-	'# Bundle Report',
+	'# Frontend Bundle Report',
 	'',
 	...renderSummaryTable(before, after),
 	'',
 	...renderMetricTable(before, after),
 	'',
-	'## Top 10',
+	'<details>',
+	'<summary>Top 10</summary>',
 	'',
 ];
 
@@ -235,7 +236,13 @@ for (const row of after.hotModules.slice(0, 10)) {
 
 lines.push(
 	'',
-	'## Hot Modules (Self Size)',
+	'</details>',
+);
+
+lines.push(
+	'',
+	'<details>',
+	'<summary>Hot Modules (Self Size)</summary>',
 	'',
 	'| Module | Bundles | Rendered | Share | Gzip | Brotli | Imports | Imported By |',
 	'|---|---:|---:|---:|---:|---:|---:|---:|',
@@ -244,5 +251,10 @@ lines.push(
 for (const row of after.hotModules.slice(0, 15)) {
 	lines.push(`| ${tableCode(row.id)} | ${row.bundles} | ${formatBytes(row.renderedLength)} | ${sharePercent(row.renderedLength, after.metrics.renderedLength)} | ${formatBytes(row.gzipLength)} | ${formatBytes(row.brotliLength)} | ${row.importedCount} | ${row.importedByCount} |`);
 }
+
+lines.push(
+	'',
+	'</details>',
+);
 
 await writeFile(outputFile, `${lines.join('\n')}\n`);
