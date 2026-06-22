@@ -175,7 +175,7 @@ function renderSummaryTable(before, after) {
 		'bundles',
 		'modules',
 		'entries',
-		'externals',
+		//'externals',
 		'staticImports',
 		'dynamicImports',
 	];
