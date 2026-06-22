@@ -10,7 +10,7 @@ import * as crypto from 'node:crypto';
 import cbor from 'cbor';
 import * as OTPAuth from 'otpauth';
 import { loadConfig } from '@/config.js';
-import { api, signup } from '../utils.js';
+import { api, signup, sendEnvUpdateRequest } from '../utils.js';
 import type {
 	AuthenticationResponseJSON,
 	AuthenticatorAssertionResponseJSON,
@@ -20,7 +20,7 @@ import type {
 	RegistrationResponseJSON,
 } from '@simplewebauthn/server';
 import type * as misskey from 'misskey-js';
-import { describe, beforeAll, test } from 'vitest';
+import { describe, beforeAll, beforeEach, test } from 'vitest';
 
 describe('2要素認証', () => {
 	let alice: misskey.entities.SignupResponse;
@@ -180,6 +180,10 @@ describe('2要素認証', () => {
 	beforeAll(async () => {
 		alice = await signup({ username, password });
 	}, 1000 * 60 * 2);
+
+	beforeEach(async () => {
+		await sendEnvUpdateRequest({ key: 'MISSKEY_TEST_CHECK_DUPLICATED_TOTP', value: '' });
+	});
 
 	test('が設定でき、OTPでログインできる。', async () => {
 		const registerResponse = await api('i/2fa/register', {
@@ -480,6 +484,34 @@ describe('2要素認証', () => {
 		assert.strictEqual(signinResponse.status, 200);
 		assert.strictEqual(signinResponse.body.finished, true);
 		assert.notEqual(signinResponse.body.i, undefined);
+
+		// 後片付け
+		await api('i/2fa/unregister', {
+			password,
+			token: otpToken(registerResponse.body.secret),
+		}, alice);
+	});
+
+	test('のTOTPトークンは一度使うと同じトークンは再利用できない。', async () => {
+		await sendEnvUpdateRequest({ key: 'MISSKEY_TEST_CHECK_DUPLICATED_TOTP', value: '1' });
+
+		const registerResponse = await api('i/2fa/register', {
+			password,
+		}, alice);
+		assert.strictEqual(registerResponse.status, 200);
+
+		const doneResponse = await api('i/2fa/done', {
+			token: otpToken(registerResponse.body.secret),
+		}, alice);
+		assert.strictEqual(doneResponse.status, 200);
+
+		const signinResponse = await api('signin-flow', {
+			...signinParam(),
+			token: otpToken(registerResponse.body.secret),
+		});
+		assert.strictEqual(signinResponse.status, 500);
+
+		await sendEnvUpdateRequest({ key: 'MISSKEY_TEST_CHECK_DUPLICATED_TOTP', value: '' });
 
 		// 後片付け
 		await api('i/2fa/unregister', {

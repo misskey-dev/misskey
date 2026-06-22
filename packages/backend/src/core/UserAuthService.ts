@@ -56,7 +56,7 @@ export class UserAuthService {
 				throw new Error('authentication failed');
 			}
 
-			if (process.env.NODE_ENV !== 'test') {
+			if (process.env.NODE_ENV !== 'test' || process.env.MISSKEY_TEST_CHECK_DUPLICATED_TOTP === '1') {
 				// 4. totp.counter() を用い、同じタイムスタンプから基準ステップを取得
 				const currentStep = totp.counter({ timestamp: now });
 				const step = currentStep + delta;
