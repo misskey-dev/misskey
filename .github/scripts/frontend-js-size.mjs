@@ -271,7 +271,7 @@ const allChunkKeys = [
 	...addedKeys(before, after),
 	...removedKeys(before, after),
 ];
-const comparisonRows = getChunkComparisonRows(commonChunkKeys, before, after);
+//const comparisonRows = getChunkComparisonRows(commonChunkKeys, before, after);
 const allComparisonRows = getChunkComparisonRows(allChunkKeys, before, after);
 
 const changedRows = allComparisonRows.filter((row) => row.changeType !== 'unchanged');
@@ -295,9 +295,9 @@ const startupTotal = {
 	afterSize: startupComparisonRows.reduce((sum, row) => sum + row.afterSize, 0),
 };
 
-const largeRows = comparisonRows
-	.sort((a, b) => b.sortSize - a.sortSize || a.name.localeCompare(b.name))
-	.slice(0, 30);
+//const largeRows = comparisonRows
+//	.sort((a, b) => b.sortSize - a.sortSize || a.name.localeCompare(b.name))
+//	.slice(0, 30);
 
 const body = [
 	marker,
@@ -319,13 +319,13 @@ const body = [
 	'',
 	'</details>',
 	'',
-	'<details>',
-	`<summary>Largest</summary>`,
-	'',
-	markdownTable(largeRows),
-	'',
-	'</details>',
-	'',
+	//'<details>',
+	//`<summary>Largest</summary>`,
+	//'',
+	//markdownTable(largeRows),
+	//'',
+	//'</details>',
+	//'',
 ].join('\n');
 
 await fs.writeFile(outFile, body);
