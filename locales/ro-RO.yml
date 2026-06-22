@@ -1216,6 +1216,7 @@ surrender: "Anulează"
 copyPreferenceId: "Copiază ID-ul preferințelor"
 information: "Despre"
 presets: "Presetate"
+previewingThemeRestore: "Restabilește"
 _imageEditing:
   _vars:
     filename: "Nume fișier"

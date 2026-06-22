@@ -492,7 +492,7 @@ export class NoteEntityService implements OnModuleInit {
 
 		this.treatVisibility(packed);
 
-		if (!opts.skipHide && await this.shouldHideNote(packed, meId)) {
+		if (!opts.skipHide && (await this.shouldHideNote(packed, meId))) {
 			this.hideNote(packed);
 		}
 
@@ -514,7 +514,11 @@ export class NoteEntityService implements OnModuleInit {
 			where: {
 				id: srcId,
 			},
-			relations: ['renote', 'reply', 'channel'],
+			relations: {
+				renote: true,
+				reply: true,
+				channel: true,
+			},
 		});
 
 		const channel = deletedNote.channelId
@@ -705,7 +709,11 @@ export class NoteEntityService implements OnModuleInit {
 	private findNoteOrFail(id: string): Promise<MiNote> {
 		return this.notesRepository.findOneOrFail({
 			where: { id },
-			relations: ['user', 'renote', 'reply'],
+			relations: {
+				user: true,
+				renote: true,
+				reply: true,
+			},
 		});
 	}
 
