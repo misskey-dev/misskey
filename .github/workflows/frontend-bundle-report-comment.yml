@@ -104,6 +104,9 @@ jobs:
                 });
                 const report = artifacts.find((artifact) => artifact.name === artifactName && !artifact.expired);
                 if (report) return { done: true, run };
+
+                core.info(`Frontend bundle report run ${run.id} did not produce ${artifactName}.`);
+                return { done: true, run: null };
               }
 
               return { done: false, run: null };
@@ -126,8 +129,30 @@ jobs:
 
             core.warning(`Timed out waiting for ${artifactName} from ${workflow_id} for ${headSha}.`);
 
-      - name: Download bundle report from workflow_run
+      - name: Find bundle report artifact
         if: github.event_name == 'workflow_run'
+        id: find-report-artifact
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const artifactName = 'frontend-bundle-report';
+            const { owner, repo } = context.repo;
+            const artifacts = await github.paginate(github.rest.actions.listWorkflowRunArtifacts, {
+              owner,
+              repo,
+              run_id: context.payload.workflow_run.id,
+              per_page: 100,
+            });
+            const report = artifacts.find((artifact) => artifact.name === artifactName && !artifact.expired);
+            if (report) {
+              core.setOutput('exists', 'true');
+            } else {
+              core.info(`Workflow run ${context.payload.workflow_run.id} did not produce ${artifactName}.`);
+              core.setOutput('exists', 'false');
+            }
+
+      - name: Download bundle report from workflow_run
+        if: github.event_name == 'workflow_run' && steps.find-report-artifact.outputs.exists == 'true'
         uses: actions/download-artifact@v8
         with:
           name: frontend-bundle-report
@@ -147,7 +172,7 @@ jobs:
           run-id: ${{ steps.find-report-run.outputs.run-id }}
 
       - name: Comment on pull request
-        if: github.event_name == 'workflow_run' || steps.find-report-run.outputs.run-id != ''
+        if: (github.event_name == 'workflow_run' && steps.find-report-artifact.outputs.exists == 'true') || steps.find-report-run.outputs.run-id != ''
         uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.FRONTEND_BUNDLE_REPORT_COMMENT_TOKEN || secrets.FRONTEND_JS_SIZE_COMMENT_TOKEN || secrets.FRONTEND_BUNDLE_VISUALIZER_COMMENT_TOKEN || github.token }}
