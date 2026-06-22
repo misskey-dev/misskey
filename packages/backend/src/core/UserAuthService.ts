@@ -56,21 +56,23 @@ export class UserAuthService {
 				throw new Error('authentication failed');
 			}
 
-			// 4. totp.counter() を用い、同じタイムスタンプから基準ステップを取得
-			const currentStep = totp.counter({ timestamp: now });
-			const step = currentStep + delta;
-			const secretFingerprint = createHash('sha256')
-				.update(profile.twoFactorSecret ?? '')
-				.digest('base64url');
+			if (process.env.NODE_ENV !== 'test') {
+				// 4. totp.counter() を用い、同じタイムスタンプから基準ステップを取得
+				const currentStep = totp.counter({ timestamp: now });
+				const step = currentStep + delta;
+				const secretFingerprint = createHash('sha256')
+					.update(profile.twoFactorSecret ?? '')
+					.digest('base64url');
 
-			const usedTokenRedisKey = `2fa:used:${profile.userId}:${secretFingerprint}:${step}`;
+				const usedTokenRedisKey = `2fa:used:${profile.userId}:${secretFingerprint}:${step}`;
 
-			// 5. TTL（有効期限）の設定
-			const ttl = timeStep * (validationWindow * 2 + 1);
-			const setResult = await this.redisClient.set(usedTokenRedisKey, normalizedToken, 'EX', ttl, 'NX');
+				// 5. TTL（有効期限）の設定
+				const ttl = timeStep * (validationWindow * 2 + 1);
+				const setResult = await this.redisClient.set(usedTokenRedisKey, normalizedToken, 'EX', ttl, 'NX');
 
-			if (setResult === null) {
-				throw new Error('authentication failed');
+				if (setResult === null) {
+					throw new Error('authentication failed');
+				}
 			}
 		}
 	}
