@@ -1743,6 +1743,8 @@ _serverSettings:
   fanoutTimelineDbFallback: "Fallback to database"
   fanoutTimelineDbFallbackDescription: "When enabled, the timeline will fall back to the database for additional queries if the timeline is not cached. Disabling it further reduces the server load by eliminating the fallback process, but limits the range of timelines that can be retrieved."
   reactionsBufferingDescription: "When enabled, performance during reaction creation will be greatly improved, reducing the load on the database. However, Redis memory usage will increase."
+  deliverReactionsToRelays: "Deliver reactions to relays"
+  deliverReactionsToRelaysDescription: "When enabled, Like activities on public notes are also delivered to relay servers, so federated servers receiving notes via relay will also receive reactions. Reactions are more frequent than notes, so this can be disabled to reduce the load on relays and downstream servers."
   remoteNotesCleaning: "Automatic cleanup of remote notes"
   remoteNotesCleaning_description: "When enabled, unused and outdated remote notes will be periodically cleaned up to prevent database bloat."
   remoteNotesCleaningMaxProcessingDuration: "Maximum cleanup processing time"

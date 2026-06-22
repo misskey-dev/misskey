@@ -9509,6 +9509,7 @@ export interface operations {
                         perUserHomeTimelineCacheMax: number;
                         perUserListTimelineCacheMax: number;
                         enableReactionsBuffering: boolean;
+                        deliverReactionsToRelays: boolean;
                         notesPerOneAd: number;
                         backgroundImageUrl: string | null;
                         deeplAuthKey: string | null;
@@ -12984,6 +12985,7 @@ export interface operations {
                     perUserHomeTimelineCacheMax?: number;
                     perUserListTimelineCacheMax?: number;
                     enableReactionsBuffering?: boolean;
+                    deliverReactionsToRelays?: boolean;
                     notesPerOneAd?: number;
                     silencedHosts?: string[] | null;
                     mediaSilencedHosts?: string[] | null;

@@ -403,6 +403,10 @@ export const meta = {
 				type: 'boolean',
 				optional: false, nullable: false,
 			},
+			deliverReactionsToRelays: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
 			notesPerOneAd: {
 				type: 'number',
 				optional: false, nullable: false,
@@ -731,6 +735,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				perUserHomeTimelineCacheMax: instance.perUserHomeTimelineCacheMax,
 				perUserListTimelineCacheMax: instance.perUserListTimelineCacheMax,
 				enableReactionsBuffering: instance.enableReactionsBuffering,
+				deliverReactionsToRelays: instance.deliverReactionsToRelays,
 				notesPerOneAd: instance.notesPerOneAd,
 				summalyProxy: instance.urlPreviewSummaryProxyUrl,
 				urlPreviewEnabled: instance.urlPreviewEnabled,
