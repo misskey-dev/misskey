@@ -644,46 +644,6 @@ export async function sendEnvResetRequest() {
 	}
 }
 
-export async function sendTimeAdvanceRequest(params: { ms: number }): Promise<number> {
-	const res = await fetch(
-		`http://localhost:${port + 1000}/time/advance`,
-		{
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(params),
-		},
-	);
-
-	if (res.status !== 200) {
-		throw new Error('server time advance failed.');
-	}
-
-	const body = await res.json() as { now: number };
-	return body.now;
-}
-
-export async function sendTimeResetRequest(): Promise<number> {
-	const res = await fetch(
-		`http://localhost:${port + 1000}/time/reset`,
-		{
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({}),
-		},
-	);
-
-	if (res.status !== 200) {
-		throw new Error('server time reset failed.');
-	}
-
-	const body = await res.json() as { now: number };
-	return body.now;
-}
-
 // 与えられた値を強制的にエラーとみなす。この関数は型安全性を破壊するため、異常系のアサーション以外で用いられるべきではない。
 // FIXME(misskey-js): misskey-jsがエラー情報を公開するようになったらこの関数を廃止する
 export function castAsError(obj: Record<string, unknown>): { error: ApiError } {
