@@ -171,69 +171,65 @@ function collectReport(data) {
 }
 
 function renderSummaryTable(before, after) {
+	const summary = [
+		'bundles',
+		'modules',
+		'entries',
+		'externals',
+		'staticImports',
+		'dynamicImports',
+	];
+
 	const metrics = [
-		{ key: 'bundles', label: 'Bundles' },
-		{ key: 'modules', label: 'Modules' },
-		{ key: 'entries', label: 'Entries' },
-		{ key: 'externals', label: 'Externals' },
-		{ key: 'staticImports', label: 'Static' },
-		{ key: 'dynamicImports', label: 'Dynamic' },
+		'renderedLength',
+		'gzipLength',
+		'brotliLength',
 	];
 
 	return [
 		`<table>`,
 		`<thead>`,
-		`<tr><th></th><th colspan="4"></th><th colspan="2">Imports</th></tr>`,
 		`<tr>`,
-		`<th></th>`,
-		...metrics.map((metric) => `<th>${metric.label}</th>`),
+		`<th rowspan="2"></th>`,
+		`<th rowspan="2">Bundles</th>`,
+		`<th rowspan="2">Modules</th>`,
+		`<th rowspan="2">Entries</th>`,
+		`<th colspan="2">Imports</th>`,
+		`<th colspan="3">Size</th>`,
+		`</tr>`,
+		`<tr>`,
+		`<th>Static</th>`,
+		`<th>Dynamic</th>`,
+		`<th>Rendered</th>`,
+		`<th>Gzip</th>`,
+		`<th>Brotli</th>`,
 		`</tr>`,
 		`</thead>`,
 		`<tbody>`,
 		`<tr>`,
 		`<th><b>Before</b></th>`,
-		...metrics.map((metric) => `<td>${formatNumber(before.summary[metric.key])}</td>`),
+		...summary.map((key) => `<td>${formatNumber(before.summary[key])}</td>`),
+		...metrics.map((key) => `<td>${formatBytes(before.metrics[key])}</td>`),
 		`</tr>`,
 		`<tr>`,
 		`<th><b>After</b></th>`,
-		...metrics.map((metric) => `<td>${formatNumber(after.summary[metric.key])}</td>`),
+		...summary.map((key) => `<td>${formatNumber(after.summary[key])}</td>`),
+		...metrics.map((key) => `<td>${formatBytes(after.metrics[key])}</td>`),
 		`</tr>`,
-		`<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`,
+		`<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`,
 		`<tr>`,
 		`<th><b>Diff</b></th>`,
-		...metrics.map((metric) => `<td>${formatDiff(before.summary[metric.key], after.summary[metric.key], formatNumber)}</td>`),
+		...summary.map((key) => `<td>${formatDiff(before.summary[key], after.summary[key], formatNumber)}</td>`),
+		...metrics.map((key) => `<td>${formatDiff(before.metrics[key], after.metrics[key], formatBytes)}</td>`),
 		`</tr>`,
 		`<tr>`,
 		`<th><b>Diff (%)</b></th>`,
-		...metrics.map((metric) => `<td>${formatDiffPercent(before.summary[metric.key], after.summary[metric.key])}</td>`),
+		...summary.map((key) => `<td>${formatDiffPercent(before.summary[key], after.summary[key])}</td>`),
+		...metrics.map((key) => `<td>${formatDiffPercent(before.metrics[key], after.metrics[key])}</td>`),
 		`</tr>`,
 		`</tbody>`,
 		`</table>`,
 	];
-}
-
-function renderMetricTable(before, after) {
-	const metrics = [
-		{ key: 'renderedLength', label: 'Rendered size' },
-	];
-	if (before.options.gzip || after.options.gzip) {
-		metrics.push({ key: 'gzipLength', label: 'Gzip size' });
-	}
-	if (before.options.brotli || after.options.brotli) {
-		metrics.push({ key: 'brotliLength', label: 'Brotli size' });
-	}
-
-	const lines = [
-		'| Metric | Before | After | Diff | Diff (%) |',
-		'|---|---:|---:|---:|---:|',
-	];
-	for (const metric of metrics) {
-		const beforeValue = before.metrics[metric.key];
-		const afterValue = after.metrics[metric.key];
-		lines.push(`| ${metric.label} | ${formatBytes(beforeValue)} | ${formatBytes(afterValue)} | ${formatDiff(beforeValue, afterValue, formatBytes)} | ${formatDiffPercent(beforeValue, afterValue)} |`);
-	}
-
-	return lines;
 }
 
 const beforeData = JSON.parse(await readFile(beforeFile, 'utf8'));
@@ -241,11 +237,9 @@ const afterData = JSON.parse(await readFile(afterFile, 'utf8'));
 const before = collectReport(beforeData);
 const after = collectReport(afterData);
 const lines = [
-	'# Frontend Bundle Report',
+	'## Frontend Bundle Report',
 	'',
 	...renderSummaryTable(before, after),
-	'',
-	...renderMetricTable(before, after),
 	'',
 	'<details>',
 	'<summary>Top 10</summary>',
