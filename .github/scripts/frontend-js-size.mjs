@@ -189,6 +189,13 @@ function removedKeys(before, after) {
 		.filter((key) => after.chunks[key] == null);
 }
 
+function rowChangeType(beforeEntry, afterEntry, beforeSize, afterSize) {
+	if (beforeEntry == null) return 'added';
+	if (afterEntry == null) return 'removed';
+	if (beforeSize !== afterSize) return 'updated';
+	return 'unchanged';
+}
+
 function getChunkComparisonRows(keys, before, after) {
 	return keys.map((key) => {
 		const beforeEntry = before.chunks[key];
@@ -201,9 +208,29 @@ function getChunkComparisonRows(keys, before, after) {
 			chunkFile: beforeEntry?.file ?? afterEntry?.file,
 			beforeSize,
 			afterSize,
+			changeType: rowChangeType(beforeEntry, afterEntry, beforeSize, afterSize),
 			sortSize: Math.max(beforeSize, afterSize),
 		};
 	});
+}
+
+function summarizeChanges(rows) {
+	return {
+		updated: rows.filter((row) => row.changeType === 'updated').length,
+		added: rows.filter((row) => row.changeType === 'added').length,
+		removed: rows.filter((row) => row.changeType === 'removed').length,
+	};
+}
+
+function formatChangeSummary(label, summary) {
+	return `${label} (${summary.updated} updated, ${summary.added} added, ${summary.removed} removed)`;
+}
+
+function compareComparisonRows(a, b) {
+	return Math.abs(b.afterSize - b.beforeSize) - Math.abs(a.afterSize - a.beforeSize)
+		|| (b.afterSize - b.beforeSize) - (a.afterSize - a.beforeSize)
+		|| b.sortSize - a.sortSize
+		|| a.name.localeCompare(b.name);
 }
 
 function markdownTable(rows, total) {
@@ -218,32 +245,13 @@ function markdownTable(rows, total) {
 		lines.push('| | | | | |');
 	}
 	for (const row of rows) {
-		lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(row.chunkFile)}\` </details> | ${formatBytes(row.beforeSize)} | ${formatBytes(row.afterSize)} | ${formatDiff(row.afterSize - row.beforeSize)} | ${formatDiffPercent(row.beforeSize, row.afterSize)} |`);
-	}
-	return lines.join('\n');
-}
-
-function chunkRows(keys, report) {
-	return keys.map((key) => {
-		const entry = report.chunks[key];
-		return {
-			key,
-			name: entryDisplayName(entry),
-			chunkFile: entry.file,
-			size: entry.size,
-		};
-	});
-}
-
-function markdownChunkTable(rows) {
-	if (rows.length === 0) return '_No data_';
-
-	const lines = [
-		'| Chunk | Size |',
-		'| --- | ---: |',
-	];
-	for (const row of rows) {
-		lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(row.chunkFile)}\` </details> | ${formatBytes(row.size)} |`);
+		if (row.changeType === 'added') {
+			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(row.chunkFile)}\` </details> | ${formatBytes(row.beforeSize)} | ${formatBytes(row.afterSize)} | ${formatDiff(row.afterSize - row.beforeSize)} | $\\color{orange}{\\text{(+)}}$ |`);
+		} else if (row.changeType === 'removed') {
+			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(row.chunkFile)}\` </details> | ${formatBytes(row.beforeSize)} | ${formatBytes(row.afterSize)} | ${formatDiff(row.afterSize - row.beforeSize)} | $\\color{green}{\\text{(-)}}$ |`);
+		} else {
+			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(row.chunkFile)}\` </details> | ${formatBytes(row.beforeSize)} | ${formatBytes(row.afterSize)} | ${formatDiff(row.afterSize - row.beforeSize)} | ${formatDiffPercent(row.beforeSize, row.afterSize)} |`);
+		}
 	}
 	return lines.join('\n');
 }
@@ -258,26 +266,31 @@ const before = await collectReport(beforeDir);
 const after = await collectReport(afterDir);
 
 const commonChunkKeys = commonKeys(before, after);
+const allChunkKeys = [
+	...commonChunkKeys,
+	...addedKeys(before, after),
+	...removedKeys(before, after),
+];
 const comparisonRows = getChunkComparisonRows(commonChunkKeys, before, after);
+const allComparisonRows = getChunkComparisonRows(allChunkKeys, before, after);
 
-const diffRows = comparisonRows
-	.filter((row) => row.beforeSize !== row.afterSize)
-	.sort((a, b) => Math.abs(b.afterSize - b.beforeSize) - Math.abs(a.afterSize - a.beforeSize)
-		|| (b.afterSize - b.beforeSize) - (a.afterSize - a.beforeSize)
-		|| b.sortSize - a.sortSize
-		|| a.name.localeCompare(b.name))
-	.slice(0, 30);
+const changedRows = allComparisonRows
+	.filter((row) => row.changeType !== 'unchanged');
+const diffRows = [
+	...changedRows
+		.filter((row) => row.changeType === 'updated')
+		.sort(compareComparisonRows)
+		.slice(0, 30),
+	...changedRows
+		.filter((row) => row.changeType !== 'updated')
+		.sort(compareComparisonRows),
+].sort(compareComparisonRows);
+const diffSummary = summarizeChanges(changedRows);
 
 const diffTotal = {
-	beforeSize: comparisonRows.reduce((sum, row) => sum + row.beforeSize, 0),
-	afterSize: comparisonRows.reduce((sum, row) => sum + row.afterSize, 0),
+	beforeSize: allComparisonRows.reduce((sum, row) => sum + row.beforeSize, 0),
+	afterSize: allComparisonRows.reduce((sum, row) => sum + row.afterSize, 0),
 };
-
-const addedRows = chunkRows(addedKeys(before, after), after)
-	.sort((a, b) => b.size - a.size || a.name.localeCompare(b.name));
-
-const removedRows = chunkRows(removedKeys(before, after), before)
-	.sort((a, b) => b.size - a.size || a.name.localeCompare(b.name));
 
 const startupKeys = new Set([
 	...before.startupKeys,
@@ -285,10 +298,8 @@ const startupKeys = new Set([
 ]);
 const startupComparisonRows = getChunkComparisonRows([...startupKeys], before, after);
 const startupRows = startupComparisonRows
-	.sort((a, b) => Math.abs(b.afterSize - b.beforeSize) - Math.abs(a.afterSize - a.beforeSize)
-		|| (b.afterSize - b.beforeSize) - (a.afterSize - a.beforeSize)
-		|| b.sortSize - a.sortSize
-		|| a.name.localeCompare(b.name));
+	.sort(compareComparisonRows);
+const startupSummary = summarizeChanges(startupComparisonRows);
 const startupTotal = {
 	beforeSize: startupComparisonRows.reduce((sum, row) => sum + row.beforeSize, 0),
 	afterSize: startupComparisonRows.reduce((sum, row) => sum + row.afterSize, 0),
@@ -300,31 +311,17 @@ const largeRows = comparisonRows
 
 const body = [
 	marker,
-	`## Frontend chunk report (${locale})`,
+	`## Frontend Chunk Report`,
 	'',
 	'<details open>',
-	`<summary>Diffs</summary>`,
+	`<summary>${formatChangeSummary('Diffs', diffSummary)}</summary>`,
 	'',
 	markdownTable(diffRows, diffTotal),
 	'',
 	'</details>',
 	'',
 	'<details>',
-	`<summary>Added (${addedRows.length})</summary>`,
-	'',
-	markdownChunkTable(addedRows),
-	'',
-	'</details>',
-	'',
-	'<details>',
-	`<summary>Removed (${removedRows.length})</summary>`,
-	'',
-	markdownChunkTable(removedRows),
-	'',
-	'</details>',
-	'',
-	'<details>',
-	`<summary>Startup</summary>`,
+	`<summary>${formatChangeSummary('Startup', startupSummary)}</summary>`,
 	'',
 	markdownTable(startupRows, startupTotal),
 	'',
