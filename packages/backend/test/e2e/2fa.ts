@@ -500,16 +500,17 @@ describe('2要素認証', () => {
 		}, alice);
 		assert.strictEqual(registerResponse.status, 200);
 
+		const sharedOtpToken = otpToken(registerResponse.body.secret);
 		const doneResponse = await api('i/2fa/done', {
-			token: otpToken(registerResponse.body.secret),
+			token: sharedOtpToken,
 		}, alice);
 		assert.strictEqual(doneResponse.status, 200);
 
 		const signinResponse = await api('signin-flow', {
 			...signinParam(),
-			token: otpToken(registerResponse.body.secret),
+			token: sharedOtpToken,
 		});
-		assert.strictEqual(signinResponse.status, 500);
+		assert.strictEqual(signinResponse.status, 403);
 
 		await sendEnvUpdateRequest({ key: 'MISSKEY_TEST_CHECK_DUPLICATED_TOTP', value: '' });
 
