@@ -43,7 +43,7 @@ function formatMathText(text) {
 		.replaceAll('\\', '\\\\')
 		.replaceAll('{', '\\{')
 		.replaceAll('}', '\\}')
-		.replaceAll('%', '\\%');
+		.replaceAll('%', '\\\\%');
 }
 
 function formatColoredDiff(text, diff) {
@@ -183,10 +183,11 @@ function renderSummaryTable(before, after) {
 	return [
 		`| | ${metrics.map((metric) => metric.label).join(' | ')} |`,
 		`|---|${metrics.map(() => '---:').join('|')}|`,
-		`| Before | ${metrics.map((metric) => formatNumber(before.summary[metric.key])).join(' | ')} |`,
-		`| After | ${metrics.map((metric) => formatNumber(after.summary[metric.key])).join(' | ')} |`,
-		`| Diff | ${metrics.map((metric) => formatDiff(before.summary[metric.key], after.summary[metric.key], formatNumber)).join(' | ')} |`,
-		`| Diff (%) | ${metrics.map((metric) => formatDiffPercent(before.summary[metric.key], after.summary[metric.key])).join(' | ')} |`,
+		`| **Before** | ${metrics.map((metric) => formatNumber(before.summary[metric.key])).join(' | ')} |`,
+		`| **After** | ${metrics.map((metric) => formatNumber(after.summary[metric.key])).join(' | ')} |`,
+		'| | | | | | | |',
+		`| **Diff** | ${metrics.map((metric) => formatDiff(before.summary[metric.key], after.summary[metric.key], formatNumber)).join(' | ')} |`,
+		`| **Diff (%)** | ${metrics.map((metric) => formatDiffPercent(before.summary[metric.key], after.summary[metric.key])).join(' | ')} |`,
 	];
 }
 
