@@ -30,7 +30,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 		</template>
 		<div v-if="(!thin_ && narrow && !hideTitle) || (actions && actions.length > 0)" :class="$style.buttons">
 			<template v-for="action in actions">
-				<button v-tooltip.noDelay="action.text" class="_button" :class="[$style.button, { [$style.highlighted]: action.highlighted }]" @click.stop="action.handler" @touchstart="preventDrag"><i :class="action.icon"></i></button>
+				<button v-tooltip.noDelay="action.text" class="_button" :class="[$style.button, { [$style.highlighted]: action.highlighted }]" @click.stop="action.handler" @pointerdown="preventDrag"><i :class="action.icon"></i></button>
 			</template>
 		</div>
 	</div>
@@ -89,7 +89,9 @@ const show = computed(() => {
 	return !hideTitle.value || hasTabs.value || hasActions.value;
 });
 
-const preventDrag = (ev: TouchEvent) => {
+const preventDrag = (ev: PointerEvent) => {
+	// マウス操作には影響させない
+	if (ev.pointerType === 'mouse') return;
 	ev.stopPropagation();
 };
 

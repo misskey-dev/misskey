@@ -55,7 +55,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</div>
 			</div>
 
-			<div ref="containerEl" :class="[$style.gameContainer, { [$style.gameOver]: isGameOver && !replaying }]" @contextmenu.stop.prevent @click.stop.prevent="onClick" @touchmove.stop.prevent="onTouchmove" @touchend="onTouchend" @mousemove="onMousemove">
+			<div
+				ref="containerEl"
+				:class="[$style.gameContainer, { [$style.gameOver]: isGameOver && !replaying }]"
+				@contextmenu.stop.prevent
+				@click.stop.prevent
+				@pointerdown="onPointerdown"
+				@pointermove.stop.prevent="onPointermove"
+				@pointerup.stop.prevent="onPointerup"
+				@pointercancel.stop.prevent="onPointercancel"
+			>
 				<img v-if="store.s.darkMode" src="/client-assets/drop-and-fusion/frame-dark.svg" :class="$style.mainFrameImg"/>
 				<img v-else src="/client-assets/drop-and-fusion/frame-light.svg" :class="$style.mainFrameImg"/>
 				<canvas ref="canvasEl" :class="$style.canvas"></canvas>
@@ -729,30 +738,120 @@ async function start() {
 	}, 1500);
 }
 
-function onClick(ev: PointerEvent) {
-	if (!containerElRect) return;
-	if (replaying.value) return;
-	const x = (ev.clientX - containerElRect.left) / viewScale;
-	game.drop(x);
+const MOUSE_CLICK_MOVE_THRESHOLD_PX = 6;
+
+let activePointerId: number | null = null;
+let activePointerType: PointerEvent['pointerType'] | null = null;
+let pointerDownClientX: number | null = null;
+let pointerDownClientY: number | null = null;
+let pointerMovedBeyondThreshold = false;
+
+function cleanupPointerInteraction(ev?: PointerEvent) {
+	if (ev) {
+		const el = ev.currentTarget as HTMLElement | null;
+		try {
+			if (el?.hasPointerCapture(ev.pointerId)) {
+				el.releasePointerCapture(ev.pointerId);
+			}
+		} catch {
+			// ignore
+		}
+	}
+	activePointerId = null;
+	activePointerType = null;
+	pointerDownClientX = null;
+	pointerDownClientY = null;
+	pointerMovedBeyondThreshold = false;
 }
 
-function onTouchend(ev: TouchEvent) {
+function onPointerdown(ev: PointerEvent) {
 	if (!containerElRect) return;
 	if (replaying.value) return;
-	const x = (ev.changedTouches[0].clientX - containerElRect.left) / viewScale;
-	game.drop(x);
+	if (!ev.isPrimary) return;
+	if (ev.pointerType === 'mouse' && ev.button !== 0) return;
+
+	activePointerId = ev.pointerId;
+	activePointerType = ev.pointerType;
+	pointerDownClientX = ev.clientX;
+	pointerDownClientY = ev.clientY;
+	pointerMovedBeyondThreshold = false;
+	if (ev.pointerType !== 'mouse') {
+		// touch/pen: スクロールや疑似clickを抑止
+		ev.preventDefault();
+	}
+
+	const el = ev.currentTarget as HTMLElement | null;
+	try {
+		el?.setPointerCapture(ev.pointerId);
+	} catch {
+		// ignore
+	}
+
+	// touch/pen は触れた時点でも位置追従させる
+	if (ev.pointerType !== 'mouse') {
+		const x = (ev.clientX - containerElRect.left);
+		moveDropper(containerElRect, x);
+	}
 }
 
-function onMousemove(ev: MouseEvent) {
+function onPointermove(ev: PointerEvent) {
 	if (!containerElRect) return;
+
+	// mouse はホバーだけでも追従
+	if (ev.pointerType === 'mouse' && (activePointerId == null || ev.pointerId !== activePointerId)) {
+		const x = (ev.clientX - containerElRect.left);
+		moveDropper(containerElRect, x);
+		return;
+	}
+
+	if (activePointerId == null) return;
+	if (ev.pointerId !== activePointerId) return;
+	if (!pointerMovedBeyondThreshold && pointerDownClientX != null && pointerDownClientY != null) {
+		const dx = ev.clientX - pointerDownClientX;
+		const dy = ev.clientY - pointerDownClientY;
+		if ((dx * dx) + (dy * dy) > (MOUSE_CLICK_MOVE_THRESHOLD_PX * MOUSE_CLICK_MOVE_THRESHOLD_PX)) {
+			pointerMovedBeyondThreshold = true;
+		}
+	}
 	const x = (ev.clientX - containerElRect.left);
 	moveDropper(containerElRect, x);
 }
 
-function onTouchmove(ev: TouchEvent) {
+function onPointerup(ev: PointerEvent) {
 	if (!containerElRect) return;
-	const x = (ev.touches[0].clientX - containerElRect.left);
-	moveDropper(containerElRect, x);
+	if (replaying.value) {
+		cleanupPointerInteraction(ev);
+		return;
+	}
+	if (activePointerId == null) {
+		cleanupPointerInteraction(ev);
+		return;
+	}
+	if (ev.pointerId !== activePointerId) return;
+
+	const x = (ev.clientX - containerElRect.left) / viewScale;
+	const pointerType = activePointerType;
+	const moved = pointerMovedBeyondThreshold;
+	cleanupPointerInteraction(ev);
+
+	if (pointerType === 'mouse') {
+		// マウスは「クリック相当」のときだけdrop（ドラッグ終了ではdropしない）
+		if (moved) return;
+		game.drop(x);
+		return;
+	}
+
+	// touch/pen は離した位置でdrop
+	game.drop(x);
+}
+
+function onPointercancel(ev: PointerEvent) {
+	if (activePointerId == null) {
+		cleanupPointerInteraction(ev);
+		return;
+	}
+	if (ev.pointerId !== activePointerId) return;
+	cleanupPointerInteraction(ev);
 }
 
 function moveDropper(rect: DOMRect, x: number) {
@@ -1383,6 +1482,7 @@ definePage(() => ({
 .gameContainer {
 	position: relative;
 	margin-top: -20px;
+	touch-action: none;
 }
 
 .stock {
