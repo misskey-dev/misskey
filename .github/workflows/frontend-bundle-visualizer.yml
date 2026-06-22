@@ -37,50 +37,94 @@ jobs:
     name: Build frontend bundle visualizer
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout base
+        uses: actions/checkout@v6.0.2
+        with:
+          repository: ${{ github.event.pull_request.base.repo.full_name }}
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: before
+          submodules: true
+
       - name: Checkout pull request
         uses: actions/checkout@v6.0.2
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.event.pull_request.head.sha }}
+          path: after
           submodules: true
+
+      - name: Backport visualizer tooling to base if needed
+        shell: bash
+        run: |
+          if ! grep -q 'FRONTEND_BUNDLE_VISUALIZER' before/packages/frontend/vite.config.ts; then
+            cp after/packages/frontend/package.json before/packages/frontend/package.json
+            cp after/packages/frontend/vite.config.ts before/packages/frontend/vite.config.ts
+            cp after/pnpm-lock.yaml before/pnpm-lock.yaml
+          fi
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v6.0.3
+        with:
+          package_json_file: after/package.json
 
       - name: Setup Node.js
         uses: actions/setup-node@v6.4.0
         with:
-          node-version-file: .node-version
+          node-version-file: after/.node-version
           cache: pnpm
+          cache-dependency-path: |
+            before/pnpm-lock.yaml
+            after/pnpm-lock.yaml
 
-      - name: Install dependencies
+      - name: Install dependencies for base
+        working-directory: before
         run: pnpm i --frozen-lockfile
 
-      - name: Build frontend dependencies
+      - name: Build frontend dependencies for base
+        working-directory: before
         run: pnpm --filter "frontend^..." run build
 
       - name: Prepare visualizer output
         run: mkdir -p "$RUNNER_TEMP/frontend-bundle-visualizer"
 
-      - name: Build frontend visualizer
+      - name: Build frontend visualizer for base
+        working-directory: before
         env:
           FRONTEND_BUNDLE_VISUALIZER: 'true'
           FRONTEND_BUNDLE_VISUALIZER_TEMPLATE: raw-data
-          FRONTEND_BUNDLE_VISUALIZER_FILE: ${{ runner.temp }}/frontend-bundle-visualizer/stats.json
+          FRONTEND_BUNDLE_VISUALIZER_FILE: ${{ runner.temp }}/frontend-bundle-visualizer/before-stats.json
+        run: pnpm --filter frontend run build
+
+      - name: Install dependencies for pull request
+        working-directory: after
+        run: pnpm i --frozen-lockfile
+
+      - name: Build frontend dependencies for pull request
+        working-directory: after
+        run: pnpm --filter "frontend^..." run build
+
+      - name: Build frontend visualizer for pull request
+        working-directory: after
+        env:
+          FRONTEND_BUNDLE_VISUALIZER: 'true'
+          FRONTEND_BUNDLE_VISUALIZER_TEMPLATE: raw-data
+          FRONTEND_BUNDLE_VISUALIZER_FILE: ${{ runner.temp }}/frontend-bundle-visualizer/after-stats.json
         run: pnpm --filter frontend run build
 
       - name: Generate visualizer report
-        run: node .github/scripts/frontend-bundle-visualizer-report.mjs "$RUNNER_TEMP/frontend-bundle-visualizer/stats.json" "$RUNNER_TEMP/frontend-bundle-visualizer/report.md"
+        run: node after/.github/scripts/frontend-bundle-visualizer-report.mjs "$RUNNER_TEMP/frontend-bundle-visualizer/before-stats.json" "$RUNNER_TEMP/frontend-bundle-visualizer/after-stats.json" "$RUNNER_TEMP/frontend-bundle-visualizer/report.md"
 
       - name: Check visualizer report
         run: |
-          test -s "$RUNNER_TEMP/frontend-bundle-visualizer/stats.json"
+          test -s "$RUNNER_TEMP/frontend-bundle-visualizer/before-stats.json"
+          test -s "$RUNNER_TEMP/frontend-bundle-visualizer/after-stats.json"
           test -s "$RUNNER_TEMP/frontend-bundle-visualizer/report.md"
           cat "$RUNNER_TEMP/frontend-bundle-visualizer/report.md" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Write report metadata
         run: |
           printf '%s\n' "${{ github.event.pull_request.number }}" > "$RUNNER_TEMP/frontend-bundle-visualizer/pr-number.txt"
+          printf '%s\n' "${{ github.event.pull_request.base.sha }}" > "$RUNNER_TEMP/frontend-bundle-visualizer/base-sha.txt"
           printf '%s\n' "${{ github.event.pull_request.head.sha }}" > "$RUNNER_TEMP/frontend-bundle-visualizer/head-sha.txt"
           printf '%s\n' "${{ github.event.pull_request.html_url }}" > "$RUNNER_TEMP/frontend-bundle-visualizer/pr-url.txt"
 

@@ -1,14 +1,14 @@
 import { readFile, writeFile } from 'node:fs/promises';
 
-const inputFile = process.argv[2];
-const outputFile = process.argv[3];
+const [beforeFile, afterFile, outputFile] = process.argv.slice(2);
 
-if (inputFile == null || outputFile == null) {
-	console.error('Usage: node .github/scripts/frontend-bundle-visualizer-report.mjs <stats.json> <report.md>');
+if (beforeFile == null || afterFile == null || outputFile == null) {
+	console.error('Usage: node .github/scripts/frontend-bundle-visualizer-report.mjs <before-stats.json> <after-stats.json> <report.md>');
 	process.exit(1);
 }
 
 const byteFormatter = new Intl.NumberFormat('en-US');
+const numberFormatter = new Intl.NumberFormat('en-US');
 
 function formatBytes(value) {
 	if (!Number.isFinite(value) || value <= 0) return '0 B';
@@ -25,6 +25,10 @@ function formatBytes(value) {
 	return `${byteFormatter.format(Number(size.toFixed(maximumFractionDigits)))} ${units[unitIndex]}`;
 }
 
+function formatNumber(value) {
+	return numberFormatter.format(value);
+}
+
 function formatPercent(value) {
 	return `${value.toFixed(1)}%`;
 }
@@ -32,6 +36,38 @@ function formatPercent(value) {
 function sharePercent(value, total) {
 	if (total === 0) return '0.0%';
 	return formatPercent((value / total) * 100);
+}
+
+function formatMathText(text) {
+	return text
+		.replaceAll('\\', '\\\\')
+		.replaceAll('{', '\\{')
+		.replaceAll('}', '\\}')
+		.replaceAll('%', '\\\\%');
+}
+
+function formatColoredDiff(text, diff) {
+	const color = diff > 0 ? 'orange' : 'green';
+	return `$\\color{${color}}{\\text{${formatMathText(text)}}}$`;
+}
+
+function formatDiff(before, after, formatter) {
+	const diff = after - before;
+	if (diff === 0) return formatter(0);
+
+	const sign = diff > 0 ? '+' : '-';
+	return formatColoredDiff(`${sign}${formatter(Math.abs(diff))}`, diff);
+}
+
+function formatDiffPercent(before, after) {
+	if (before === 0 && after === 0) return '0%';
+	if (before === 0) return '-';
+
+	const diff = after - before;
+	if (diff === 0) return '0%';
+
+	const sign = diff > 0 ? '+' : '-';
+	return formatColoredDiff(`${sign}${formatPercent(Math.abs(diff / before) * 100)}`, diff);
 }
 
 function tableCell(value) {
@@ -52,96 +88,149 @@ function tableCode(value) {
 	return tableCell(code(value));
 }
 
-const data = JSON.parse(await readFile(inputFile, 'utf8'));
-const nodeParts = data.nodeParts ?? {};
-const nodeMetas = Object.values(data.nodeMetas ?? {});
-const moduleRows = [];
-const bundleMap = new Map();
+function collectReport(data) {
+	const nodeParts = data.nodeParts ?? {};
+	const nodeMetas = Object.values(data.nodeMetas ?? {});
+	const moduleRows = [];
+	const bundleMap = new Map();
 
-for (const meta of nodeMetas) {
-	const row = {
-		id: meta.id,
-		bundles: 0,
-		renderedLength: 0,
-		gzipLength: 0,
-		brotliLength: 0,
-		importedByCount: meta.importedBy?.length ?? 0,
-		importedCount: meta.imported?.length ?? 0,
-		parts: [],
-	};
-
-	for (const [bundleId, partUid] of Object.entries(meta.moduleParts ?? {})) {
-		const part = nodeParts[partUid];
-		if (part == null) continue;
-
-		row.bundles += 1;
-		row.renderedLength += part.renderedLength;
-		row.gzipLength += part.gzipLength;
-		row.brotliLength += part.brotliLength;
-		row.parts.push({ bundleId, ...part });
-
-		const bundle = bundleMap.get(bundleId) ?? {
-			id: bundleId,
-			modules: 0,
+	for (const meta of nodeMetas) {
+		const row = {
+			id: meta.id,
+			bundles: 0,
 			renderedLength: 0,
 			gzipLength: 0,
 			brotliLength: 0,
+			importedByCount: meta.importedBy?.length ?? 0,
+			importedCount: meta.imported?.length ?? 0,
 		};
-		bundle.modules += 1;
-		bundle.renderedLength += part.renderedLength;
-		bundle.gzipLength += part.gzipLength;
-		bundle.brotliLength += part.brotliLength;
-		bundleMap.set(bundleId, bundle);
-	}
 
-	if (row.bundles > 0) {
-		moduleRows.push(row);
-	}
-}
+		for (const [bundleId, partUid] of Object.entries(meta.moduleParts ?? {})) {
+			const part = nodeParts[partUid];
+			if (part == null) continue;
 
-const bundleRows = [...bundleMap.values()].sort((a, b) => b.renderedLength - a.renderedLength);
-const hotModules = [...moduleRows].sort((a, b) => b.renderedLength - a.renderedLength);
+			row.bundles += 1;
+			row.renderedLength += part.renderedLength;
+			row.gzipLength += part.gzipLength;
+			row.brotliLength += part.brotliLength;
 
-let staticImports = 0;
-let dynamicImports = 0;
-for (const meta of nodeMetas) {
-	for (const imported of meta.imported ?? []) {
-		if (imported.dynamic) {
-			dynamicImports += 1;
-		} else {
-			staticImports += 1;
+			const bundle = bundleMap.get(bundleId) ?? {
+				id: bundleId,
+				modules: 0,
+				renderedLength: 0,
+				gzipLength: 0,
+				brotliLength: 0,
+			};
+			bundle.modules += 1;
+			bundle.renderedLength += part.renderedLength;
+			bundle.gzipLength += part.gzipLength;
+			bundle.brotliLength += part.brotliLength;
+			bundleMap.set(bundleId, bundle);
+		}
+
+		if (row.bundles > 0) {
+			moduleRows.push(row);
 		}
 	}
+
+	let staticImports = 0;
+	let dynamicImports = 0;
+	for (const meta of nodeMetas) {
+		for (const imported of meta.imported ?? []) {
+			if (imported.dynamic) {
+				dynamicImports += 1;
+			} else {
+				staticImports += 1;
+			}
+		}
+	}
+
+	const bundleRows = [...bundleMap.values()].sort((a, b) => b.renderedLength - a.renderedLength);
+	const hotModules = [...moduleRows].sort((a, b) => b.renderedLength - a.renderedLength);
+	const totalRendered = moduleRows.reduce((sum, row) => sum + row.renderedLength, 0);
+	const totalGzip = moduleRows.reduce((sum, row) => sum + row.gzipLength, 0);
+	const totalBrotli = moduleRows.reduce((sum, row) => sum + row.brotliLength, 0);
+
+	return {
+		options: data.options ?? {},
+		summary: {
+			bundles: bundleRows.length,
+			modules: moduleRows.length,
+			entries: nodeMetas.filter((meta) => meta.isEntry).length,
+			externals: nodeMetas.filter((meta) => meta.isExternal).length,
+			staticImports,
+			dynamicImports,
+		},
+		metrics: {
+			renderedLength: totalRendered,
+			gzipLength: totalGzip,
+			brotliLength: totalBrotli,
+		},
+		hotModules,
+	};
 }
 
-const totalRendered = moduleRows.reduce((sum, row) => sum + row.renderedLength, 0);
-const totalGzip = moduleRows.reduce((sum, row) => sum + row.gzipLength, 0);
-const totalBrotli = moduleRows.reduce((sum, row) => sum + row.brotliLength, 0);
-const entries = nodeMetas.filter((meta) => meta.isEntry).length;
-const externals = nodeMetas.filter((meta) => meta.isExternal).length;
+function renderSummaryTable(before, after) {
+	const metrics = [
+		{ key: 'bundles', label: 'Bundles' },
+		{ key: 'modules', label: 'Modules' },
+		{ key: 'entries', label: 'Entries' },
+		{ key: 'externals', label: 'Externals' },
+		{ key: 'staticImports', label: 'Static Imports' },
+		{ key: 'dynamicImports', label: 'Dynamic Imports' },
+	];
 
+	return [
+		`| | ${metrics.map((metric) => metric.label).join(' | ')} |`,
+		`|---|${metrics.map(() => '---:').join('|')}|`,
+		`| Before | ${metrics.map((metric) => formatNumber(before.summary[metric.key])).join(' | ')} |`,
+		`| After | ${metrics.map((metric) => formatNumber(after.summary[metric.key])).join(' | ')} |`,
+		`| Diff | ${metrics.map((metric) => formatDiff(before.summary[metric.key], after.summary[metric.key], formatNumber)).join(' | ')} |`,
+		`| Diff (%) | ${metrics.map((metric) => formatDiffPercent(before.summary[metric.key], after.summary[metric.key])).join(' | ')} |`,
+	];
+}
+
+function renderMetricTable(before, after) {
+	const metrics = [
+		{ key: 'renderedLength', label: 'Rendered size' },
+	];
+	if (before.options.gzip || after.options.gzip) {
+		metrics.push({ key: 'gzipLength', label: 'Gzip size' });
+	}
+	if (before.options.brotli || after.options.brotli) {
+		metrics.push({ key: 'brotliLength', label: 'Brotli size' });
+	}
+
+	const lines = [
+		'| Metric | Before | After | Diff | Diff (%) |',
+		'|---|---:|---:|---:|---:|',
+	];
+	for (const metric of metrics) {
+		const beforeValue = before.metrics[metric.key];
+		const afterValue = after.metrics[metric.key];
+		lines.push(`| ${metric.label} | ${formatBytes(beforeValue)} | ${formatBytes(afterValue)} | ${formatDiff(beforeValue, afterValue, formatBytes)} | ${formatDiffPercent(beforeValue, afterValue)} |`);
+	}
+
+	return lines;
+}
+
+const beforeData = JSON.parse(await readFile(beforeFile, 'utf8'));
+const afterData = JSON.parse(await readFile(afterFile, 'utf8'));
+const before = collectReport(beforeData);
+const after = collectReport(afterData);
 const lines = [
 	'# Bundle Report',
 	'',
-	'| Bundles | Modules | Entries | Externals | Static Imports | Dynamic Imports |',
-	'|---:|---:|---:|---:|---:|---:|',
-	`| ${bundleRows.length} | ${moduleRows.length} | ${entries} | ${externals} | ${staticImports} | ${dynamicImports} |`,
+	...renderSummaryTable(before, after),
 	'',
-	'| Metric | Total |',
-	'|---|---:|',
-	`| Rendered size | ${formatBytes(totalRendered)} |`,
+	...renderMetricTable(before, after),
+	'',
+	'## Top 10',
+	'',
 ];
 
-if (data.options?.gzip) {
-	lines.push(`| Gzip size | ${formatBytes(totalGzip)} |`);
-}
-if (data.options?.brotli) {
-	lines.push(`| Brotli size | ${formatBytes(totalBrotli)} |`);
-}
-
-lines.push('', '## Top 10', '');
-for (const row of hotModules.slice(0, 10)) {
-	lines.push(`- ${code(row.id)}: ${sharePercent(row.renderedLength, totalRendered)} (${formatBytes(row.renderedLength)})`);
+for (const row of after.hotModules.slice(0, 10)) {
+	lines.push(`- ${code(row.id)}: ${sharePercent(row.renderedLength, after.metrics.renderedLength)} (${formatBytes(row.renderedLength)})`);
 }
 
 lines.push(
@@ -152,8 +241,8 @@ lines.push(
 	'|---|---:|---:|---:|---:|---:|---:|---:|',
 );
 
-for (const row of hotModules.slice(0, 15)) {
-	lines.push(`| ${tableCode(row.id)} | ${row.bundles} | ${formatBytes(row.renderedLength)} | ${sharePercent(row.renderedLength, totalRendered)} | ${formatBytes(row.gzipLength)} | ${formatBytes(row.brotliLength)} | ${row.importedCount} | ${row.importedByCount} |`);
+for (const row of after.hotModules.slice(0, 15)) {
+	lines.push(`| ${tableCode(row.id)} | ${row.bundles} | ${formatBytes(row.renderedLength)} | ${sharePercent(row.renderedLength, after.metrics.renderedLength)} | ${formatBytes(row.gzipLength)} | ${formatBytes(row.brotliLength)} | ${row.importedCount} | ${row.importedByCount} |`);
 }
 
 await writeFile(outputFile, `${lines.join('\n')}\n`);
