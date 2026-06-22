@@ -1,6 +1,7 @@
 import { portToPid } from 'pid-port';
 import fkill from 'fkill';
 import Fastify from 'fastify';
+import * as lolex from '@sinonjs/fake-timers';
 import { NestFactory } from '@nestjs/core';
 import { MainModule } from '@/MainModule.js';
 import { ServerService } from '@/server/ServerService.js';
@@ -10,11 +11,22 @@ import { INestApplicationContext } from '@nestjs/common';
 
 const config = loadConfig();
 const originEnv = JSON.stringify(process.env);
+const originalDateNow = Date.now.bind(Date);
 
 process.env.NODE_ENV = 'test';
 
 let app: INestApplicationContext;
 let serverService: ServerService;
+let baseNowMs = originalDateNow();
+const clock = lolex.install({
+	toFake: Object.keys(lolex.timers).filter((key) => !['nextTick', 'queueMicrotask'].includes(key)) as lolex.FakeMethod[],
+	now: baseNowMs,
+});
+
+function resetFakeTime() {
+	baseNowMs = originalDateNow();
+	clock.setSystemTime(baseNowMs);
+}
 
 /**
  * テスト用のサーバインスタンスを起動する
@@ -84,6 +96,7 @@ async function startControllerEndpoints(port = config.port + 1000) {
 
 	fastify.post<{ Body: { key?: string, value?: string } }>('/env-reset', async (req, res) => {
 		process.env = JSON.parse(originEnv);
+		resetFakeTime();
 
 		await serverService.dispose();
 		await app.close();
@@ -99,6 +112,31 @@ async function startControllerEndpoints(port = config.port + 1000) {
 		await serverService.launch();
 
 		res.code(200).send({ success: true });
+	});
+
+	fastify.post<{ Body: { ms?: number } }>('/time/advance', async (req, res) => {
+		if (typeof req.body.ms !== 'number' || !Number.isFinite(req.body.ms)) {
+			res.code(400).send({ success: false });
+			return;
+		}
+
+		clock.setSystemTime(Date.now() + req.body.ms);
+
+		res.code(200).send({
+			success: true,
+			now: Date.now(),
+			offsetMs: Date.now() - baseNowMs,
+		});
+	});
+
+	fastify.post('/time/reset', async (_req, res) => {
+		resetFakeTime();
+
+		res.code(200).send({
+			success: true,
+			now: Date.now(),
+			offsetMs: Date.now() - baseNowMs,
+		});
 	});
 
 	await fastify.listen({ port: port, host: 'localhost' });
