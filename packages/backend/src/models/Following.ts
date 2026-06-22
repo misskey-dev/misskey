@@ -9,7 +9,8 @@ import { MiUser } from './User.js';
 
 @Entity('following')
 @Index(['followerId', 'followeeId'], { unique: true })
-@Index(['followeeId', 'followerHost', 'isFollowerHibernated'])
+@Index(['followerId', 'followeeId', 'isFollowerSuspended'])
+@Index(['followeeId', 'followerHost', 'isFollowerSuspended', 'isFollowerHibernated'])
 export class MiFollowing {
 	@PrimaryColumn(id())
 	public id: string;
@@ -44,6 +45,11 @@ export class MiFollowing {
 		default: false,
 	})
 	public isFollowerHibernated: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
+	public isFollowerSuspended: boolean;
 
 	// タイムラインにその人のリプライまで含めるかどうか
 	@Column('boolean', {
