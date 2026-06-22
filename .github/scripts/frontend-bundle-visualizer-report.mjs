@@ -43,7 +43,7 @@ function formatMathText(text) {
 		.replaceAll('\\', '\\\\')
 		.replaceAll('{', '\\{')
 		.replaceAll('}', '\\}')
-		.replaceAll('%', '\\\\%');
+		.replaceAll('%', '\\%');
 }
 
 function formatColoredDiff(text, diff) {
