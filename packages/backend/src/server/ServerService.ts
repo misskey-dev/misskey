@@ -4,6 +4,7 @@
  */
 
 import * as fs from 'node:fs';
+import cluster from 'node:cluster';
 import type { IncomingMessage } from 'node:http';
 import { Inject, Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { createAdaptorServer } from '@hono/node-server';

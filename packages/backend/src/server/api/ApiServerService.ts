@@ -95,7 +95,7 @@ export class ApiServerService {
 
 			return {
 				filename: file.name,
-				file: Readable.fromWeb(file.stream() as globalThis.ReadableStream<Uint8Array>),
+				file: Readable.fromWeb(file.stream()),
 				truncated: false,
 				fields,
 			};
@@ -279,8 +279,6 @@ export class ApiServerService {
 			ctx.header('Clear-Site-Data', '"cache", "prefetchCache", "prerenderCache", "executionContexts"');
 			return ctx.body(null, 204);
 		});
-
-		hono.all('/clear-browser-cache', (ctx) => ctx.body(null, 405));
 
 		// Make sure any unknown path under /api returns HTTP 404 Not Found,
 		// because otherwise ClientServerService will return the base client HTML
