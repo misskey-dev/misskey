@@ -91,10 +91,20 @@ process.on('message', msg => {
 	if (msg === 'gc') {
 		if (global.gc != null) {
 			logger.info('Manual GC triggered');
-			global.gc();
+			for (let i = 0; i < 3; i++) {
+				global.gc();
+			}
 			if (process.send != null) process.send('gc ok');
 		} else {
 			logger.warn('Manual GC requested but gc is not available. Start the process with --expose-gc to enable this feature.');
+			if (process.send != null) process.send('gc unavailable');
+		}
+	} else if (msg === 'memory usage') {
+		if (process.send != null) {
+			process.send({
+				type: 'memory usage',
+				value: process.memoryUsage(),
+			});
 		}
 	}
 });
