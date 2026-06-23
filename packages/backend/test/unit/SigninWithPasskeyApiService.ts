@@ -20,7 +20,7 @@ import { RateLimiterService } from '@/server/api/RateLimiterService.js';
 import { WebAuthnService } from '@/core/WebAuthnService.js';
 import { SigninService } from '@/server/api/SigninService.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-import type { ApiContext, ApiEnv } from '@/server/api/ApiServerTypes.js';
+import type { ApiEnv } from '@/server/api/ApiServerTypes.js';
 
 class FakeLimiter {
 	public async limit() {
@@ -42,6 +42,7 @@ const dummyContextMiddleware = createMiddleware<ApiEnv>(async (ctx, next) => {
 
 describe('SigninWithPasskeyApiService', () => {
 	let app: TestingModule;
+	let honoApp: Hono<ApiEnv>;
 	let passkeyApiService: SigninWithPasskeyApiService;
 	let usersRepository: UsersRepository;
 	let userProfilesRepository: UserProfilesRepository;
@@ -64,15 +65,6 @@ describe('SigninWithPasskeyApiService', () => {
 		return userProfile;
 	}
 
-	async function createHonoApp() {
-		const honoApp = new Hono();
-		honoApp.get('/', dummyContextMiddleware, async (ctx) => {
-			const json = await ctx.req.json();
-			return passkeyApiService.signin(ctx, json);
-		});
-		return honoApp;
-	}
-
 	beforeAll(async () => {
 		app = await Test.createTestingModule({
 			imports: [GlobalModule, CoreModule],
@@ -91,6 +83,12 @@ describe('SigninWithPasskeyApiService', () => {
 		userProfilesRepository = app.get<UserProfilesRepository>(DI.userProfilesRepository);
 		webAuthnService = app.get<WebAuthnService>(WebAuthnService);
 		idService = app.get<IdService>(IdService);
+
+		honoApp = new Hono();
+		honoApp.post('/signin-with-passkey', dummyContextMiddleware, async (ctx) => {
+			const json = await ctx.req.json();
+			return passkeyApiService.signin(ctx, json);
+		});
 	});
 
 	beforeEach(async () => {
@@ -118,8 +116,7 @@ describe('SigninWithPasskeyApiService', () => {
 
 	describe('Get Passkey Options', () => {
 		it('Should return passkey Auth Options', async () => {
-			const honoApp = await createHonoApp();
-			const res = await honoApp.request('/', {
+			const res = await honoApp.request('/signin-with-passkey', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: '{}',
@@ -132,8 +129,7 @@ describe('SigninWithPasskeyApiService', () => {
 	});
 	describe('Try Passkey Auth', () => {
 		it('Should Success', async () => {
-			const honoApp = await createHonoApp();
-			const res = await honoApp.request('/', {
+			const res = await honoApp.request('/signin-with-passkey', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ context: 'auth-context', credential: { dummy: [] } as unknown as AuthenticationResponseJSON }),
@@ -144,8 +140,7 @@ describe('SigninWithPasskeyApiService', () => {
 		});
 
 		it('Should return 400 Without Auth Context', async () => {
-			const honoApp = await createHonoApp();
-			const res = await honoApp.request('/', {
+			const res = await honoApp.request('/signin-with-passkey', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ credential: { dummy: [] } as unknown as AuthenticationResponseJSON }),
@@ -156,12 +151,11 @@ describe('SigninWithPasskeyApiService', () => {
 		});
 
 		it('Should return 403 When Challenge Verify fail', async () => {
-			const honoApp = await createHonoApp();
 			vi.spyOn(webAuthnService, 'verifySignInWithPasskeyAuthentication')
 				.mockImplementation(async () => {
 					throw new IdentifiableError('THIS_ERROR_CODE_SHOULD_BE_FORWARDED');
 				});
-			const res = await honoApp.request('/', {
+			const res = await honoApp.request('/signin-with-passkey', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ context: 'misskey-1234', credential: { dummy: [] } as unknown as AuthenticationResponseJSON }),
@@ -172,11 +166,10 @@ describe('SigninWithPasskeyApiService', () => {
 		});
 
 		it('Should return 403 When The user not Enabled Passwordless login', async () => {
-			const honoApp = await createHonoApp();
 			const userId = await FakeWebauthnVerify();
 			const data = { userId: userId, usePasswordLessLogin: false };
 			await userProfilesRepository.update({ userId: userId }, data);
-			const res = await honoApp.request('/', {
+			const res = await honoApp.request('/signin-with-passkey', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ context: 'misskey-1234', credential: { dummy: [] } as unknown as AuthenticationResponseJSON }),
