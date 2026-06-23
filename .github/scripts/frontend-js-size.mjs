@@ -49,7 +49,7 @@ function formatMathText(text) {
 		.replaceAll('\\', '\\\\')
 		.replaceAll('{', '\\{')
 		.replaceAll('}', '\\}')
-		.replaceAll('%', '\\\\%');
+		.replaceAll('%', '\\%');
 }
 
 function formatDiff(diff) {
@@ -58,7 +58,7 @@ function formatDiff(diff) {
 	const sign = diff > 0 ? '+' : '-';
 	const text = `${sign}${formatBytes(Math.abs(diff))}`;
 	const color = diff > 0 ? 'orange' : 'green';
-	return `$\\color{${color}}{\\text{${formatMathText(text)}}}$`;
+	return `$\\color{${color}}{\\text{${formatMathText(text).replaceAll('\\%', '\\\\%')}}}$`;
 }
 
 function formatDiffPercent(beforeSize, afterSize) {
@@ -67,7 +67,7 @@ function formatDiffPercent(beforeSize, afterSize) {
 	if (diff === 0) return `0%`;
 	const percent = Math.round(diff / beforeSize * 100);
 	const color = diff > 0 ? 'orange' : 'green';
-	return `$\\color{${color}}{\\text{${formatMathText(percent.toString() + '%')}}}$`;
+	return `$\\color{${color}}{\\text{${formatMathText(percent.toString() + '%').replaceAll('\\%', '\\\\%')}}}$`;
 }
 
 function escapeCell(value) {
