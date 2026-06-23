@@ -411,7 +411,7 @@ function chunkMarkdownTable(rows, total) {
 		'| --- | ---: | ---: | ---: | ---: |',
 	];
 	if (total != null) {
-		lines.push(`| (total) | ${formatBytes(total.beforeSize)} | ${formatBytes(total.afterSize)} | ${formatBytesDiff(total.beforeSize, total.afterSize)} | ${formatDiffPercent(total.beforeSize, total.afterSize)} |`);
+		lines.push(`| (total) | ${formatBytes(total.beforeSize)} | ${formatBytes(total.afterSize)} | ${formatBytesDiff(total.beforeSize, total.afterSize)} | ${formatDiffPercent(total.beforeSize, total.afterSize).replaceAll('\\%', '\\\\%')} |`);
 		lines.push('| | | | | |');
 	}
 	for (const row of rows) {
