@@ -464,14 +464,14 @@ function renderFrontendChunkReport(before, after) {
 
 	return [
 		'<details open>',
-		`<summary>${formatChunkChangeSummary('Diffs', diffSummary)}</summary>`,
+		`<summary>${formatChunkChangeSummary('Chunk size diff', diffSummary)}</summary>`,
 		'',
 		chunkMarkdownTable(diffRows, diffTotal),
 		'',
 		'</details>',
 		'',
 		'<details>',
-		`<summary>${formatChunkChangeSummary('Startup', startupSummary)}</summary>`,
+		`<summary>${formatChunkChangeSummary('Startup chunk size', startupSummary)}</summary>`,
 		'',
 		chunkMarkdownTable(startupRows, startupTotal),
 		'',
@@ -493,11 +493,12 @@ function renderFrontendBundleReport(before, after) {
 	const lines = [
 		...renderVisualizerSummaryTable(before, after),
 		'',
-		'<details>',
-		'<summary>Top 10</summary>',
-		'',
+		//'<details>',
+		//'<summary>Top 10</summary>',
+		//'',
 	];
 
+	/*
 	for (const row of after.hotModules.slice(0, 10)) {
 		lines.push(`- ${code(row.id)}: ${sharePercent(row.renderedLength, after.metrics.renderedLength)} (${formatBytes(row.renderedLength)})`);
 	}
@@ -524,6 +525,7 @@ function renderFrontendBundleReport(before, after) {
 		'',
 		'</details>',
 	);
+	*/
 
 	return lines.join('\n');
 }
@@ -538,11 +540,11 @@ const afterStats = JSON.parse(await fs.readFile(afterStatsFile, 'utf8'));
 const body = [
 	marker,
 	'',
-	`## Frontend Chunk Report`,
+	`## Frontend Bundle Report`,
 	'',
 	renderFrontendChunkReport(before, after),
 	'',
-	'## Frontend Bundle Report',
+	'## Bundle Stats',
 	'',
 	renderFrontendBundleReport(collectVisualizerReport(beforeStats), collectVisualizerReport(afterStats)),
 ].join('\n');
