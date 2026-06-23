@@ -117,14 +117,14 @@ jobs:
         env:
           RES: ${{ steps.compare.outputs.res }}
         run: |
-          HEADER="## Backend memory usage comparison"
+          HEADER="## Backend Memory Usage Report"
           FOOTER="[See workflow logs for details](https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})"
 
           echo "$HEADER" > ./output.md
           echo >> ./output.md
 
           table() {
-            echo "| Metric | base (MB) | head (MB) | Diff (MB) | Diff (%) |" >> ./output.md
+            echo "| Metric | Base | Head | Δ | Δ (%) |" >> ./output.md
             echo "|--------|------:|------:|------:|------:|" >> ./output.md
 
             line() {
@@ -143,15 +143,6 @@ jobs:
                 DIFF_PERCENT="+$DIFF_PERCENT"
               fi
 
-              # highlight the most useful process and OS memory metrics
-              if [ "$2" = "HeapUsed" ] || [ "$2" = "Pss" ]; then
-                METRIC="**${METRIC}**"
-                BASE="**${BASE}**"
-                HEAD="**${HEAD}**"
-                DIFF="**${DIFF}**"
-                DIFF_PERCENT="**${DIFF_PERCENT}**"
-              fi
-
               echo "| ${METRIC} | ${BASE} MB | ${HEAD} MB | ${DIFF} MB | ${DIFF_PERCENT}% |" >> ./output.md
             }
 
@@ -162,17 +153,17 @@ jobs:
             line $1 Private_Dirty
           }
 
-          echo "### Before GC" >> ./output.md
-          table beforeGc
-          echo >> ./output.md
+          #echo "### Before GC" >> ./output.md
+          #table beforeGc
+          #echo >> ./output.md
 
           echo "### After GC" >> ./output.md
           table afterGc
           echo >> ./output.md
 
-          echo "### After Request" >> ./output.md
-          table afterRequest
-          echo >> ./output.md
+          #echo "### After Request" >> ./output.md
+          #table afterRequest
+          #echo >> ./output.md
 
           # Determine if this is a significant change (more than 5% increase)
           WARNING_METRIC=$(echo "$RES" | jq -r 'if .afterGc.Pss != null then "Pss" elif .afterGc.VmRSS != null then "VmRSS" else empty end')
