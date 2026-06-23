@@ -1,9 +1,9 @@
 import { readFile, writeFile } from 'node:fs/promises';
 
-const [baseFile, headFile, outputFile] = process.argv.slice(2);
+const [baseFile, headFile, outputFile, baseJsFootprintFile, headJsFootprintFile] = process.argv.slice(2);
 
 if (baseFile == null || headFile == null || outputFile == null) {
-	console.error('Usage: node .github/scripts/backend-memory-report.mjs <base-memory.json> <head-memory.json> <report.md>');
+	console.error('Usage: node .github/scripts/backend-memory-report.mjs <base-memory.json> <head-memory.json> <report.md> [base-js-footprint.json head-js-footprint.json]');
 	process.exit(1);
 }
 
@@ -32,6 +32,13 @@ function formatNumber(value) {
 
 function formatMemory(valueKiB) {
 	return `${formatNumber(valueKiB / 1024)} MB`;
+}
+
+function formatBytes(value) {
+	if (!Number.isFinite(value)) return '-';
+	if (value < 1024) return `${formatNumber(value)} B`;
+	if (value < 1024 * 1024) return `${formatNumber(value / 1024)} KiB`;
+	return `${formatNumber(value / 1024 / 1024)} MiB`;
 }
 
 function formatPercent(value) {
@@ -174,8 +181,216 @@ function measurementSummary(base, head) {
 	return `_Sample count: base ${baseCount}, head ${headCount}. Values are medians; ± is median absolute deviation._`;
 }
 
+function formatPlainDiff(baseValue, headValue, formatter = formatNumber) {
+	const diff = headValue - baseValue;
+	if (diff === 0) return formatter(0);
+
+	const sign = diff > 0 ? '+' : '-';
+	return `${sign}${formatter(Math.abs(diff))}`;
+}
+
+function formatPlainDiffPercent(baseValue, headValue) {
+	const diff = headValue - baseValue;
+	if (diff === 0) return '0%';
+	if (baseValue <= 0) return '-';
+
+	const sign = diff > 0 ? '+' : '-';
+	return `${sign}${formatPercent(Math.abs((diff * 100) / baseValue))}`;
+}
+
+function getJsFootprintValue(report, phase, key) {
+	const value = report?.[phase]?.totals?.[key];
+	return Number.isFinite(value) ? value : null;
+}
+
+function renderJsFootprintMetricTable(base, head) {
+	const metricRows = [
+		['Loaded JS modules', 'loadedJsModules', formatNumber],
+		['Loaded JS source', 'loadedJsSourceBytes', formatBytes],
+		['Loaded JS gzip estimate', 'loadedJsGzipBytes', formatBytes],
+		['AST nodes', 'astNodeCount', formatNumber],
+		['Functions', 'functionCount', formatNumber],
+		['Classes', 'classCount', formatNumber],
+		['String literals', 'stringLiteralBytes', formatBytes],
+		['External packages loaded', 'externalPackageCount', formatNumber],
+		['Native addon packages', 'nativeAddonPackageCount', formatNumber],
+	];
+
+	const lines = [
+		'| Metric | Base | Head | Δ | Δ (%) |',
+		'| --- | ---: | ---: | ---: | ---: |',
+	];
+
+	for (const [title, key, formatter] of metricRows) {
+		const baseValue = getJsFootprintValue(base, 'afterRequest', key);
+		const headValue = getJsFootprintValue(head, 'afterRequest', key);
+		if (baseValue == null || headValue == null) continue;
+
+		lines.push(`| ${title} | ${formatter(baseValue)} | ${formatter(headValue)} | ${formatPlainDiff(baseValue, headValue, formatter)} | ${formatPlainDiffPercent(baseValue, headValue)} |`);
+	}
+
+	return lines.join('\n');
+}
+
+function renderJsFootprintPhaseTable(base, head) {
+	const lines = [
+		'| Phase | Base modules | Head modules | Δ modules | Base source | Head source | Δ source |',
+		'| --- | ---: | ---: | ---: | ---: | ---: | ---: |',
+	];
+
+	for (const [phase, title] of [['startup', 'Startup'], ['afterRequest', 'After warmup requests']]) {
+		const baseModules = getJsFootprintValue(base, phase, 'loadedJsModules');
+		const headModules = getJsFootprintValue(head, phase, 'loadedJsModules');
+		const baseSource = getJsFootprintValue(base, phase, 'loadedJsSourceBytes');
+		const headSource = getJsFootprintValue(head, phase, 'loadedJsSourceBytes');
+		if (baseModules == null || headModules == null || baseSource == null || headSource == null) continue;
+
+		lines.push(`| ${title} | ${formatNumber(baseModules)} | ${formatNumber(headModules)} | ${formatPlainDiff(baseModules, headModules)} | ${formatBytes(baseSource)} | ${formatBytes(headSource)} | ${formatPlainDiff(baseSource, headSource, formatBytes)} |`);
+	}
+
+	return lines.join('\n');
+}
+
+function packageMap(report) {
+	const map = new Map();
+	for (const packageSummary of report?.afterRequest?.packages ?? []) {
+		if (packageSummary?.category !== 'external' || typeof packageSummary.name !== 'string') continue;
+		map.set(packageSummary.name, packageSummary);
+	}
+	return map;
+}
+
+function packageDisplayName(packageSummary) {
+	if (packageSummary.version == null) return packageSummary.name;
+	return `${packageSummary.name} ${packageSummary.version}`;
+}
+
+function renderNewExternalPackages(base, head) {
+	const basePackages = packageMap(base);
+	const headPackages = packageMap(head);
+	const newPackages = [...headPackages.values()]
+		.filter(packageSummary => !basePackages.has(packageSummary.name))
+		.toSorted((a, b) => b.sourceBytes - a.sourceBytes)
+		.slice(0, 10);
+
+	if (newPackages.length === 0) return null;
+
+	const lines = [
+		'#### Newly Loaded External Packages',
+		'',
+		'| Package | Loaded JS | Modules | Notes |',
+		'| --- | ---: | ---: | --- |',
+	];
+
+	for (const packageSummary of newPackages) {
+		lines.push(`| ${packageDisplayName(packageSummary)} | ${formatBytes(packageSummary.sourceBytes)} | ${formatNumber(packageSummary.modules)} | ${packageSummary.nativeAddon ? 'native addon' : ''} |`);
+	}
+
+	return lines.join('\n');
+}
+
+function renderLargestPackageIncreases(base, head) {
+	const basePackages = packageMap(base);
+	const headPackages = packageMap(head);
+	const increases = [...headPackages.values()]
+		.map(headPackage => {
+			const basePackage = basePackages.get(headPackage.name);
+			const baseSourceBytes = basePackage?.sourceBytes ?? 0;
+			const baseModules = basePackage?.modules ?? 0;
+			return {
+				...headPackage,
+				baseSourceBytes,
+				baseModules,
+				sourceDiff: headPackage.sourceBytes - baseSourceBytes,
+				moduleDiff: headPackage.modules - baseModules,
+			};
+		})
+		.filter(packageSummary => packageSummary.sourceDiff > 0)
+		.toSorted((a, b) => b.sourceDiff - a.sourceDiff)
+		.slice(0, 10);
+
+	if (increases.length === 0) return null;
+
+	const lines = [
+		'#### Largest Package Increases',
+		'',
+		'| Package | Base | Head | Δ | Modules Δ |',
+		'| --- | ---: | ---: | ---: | ---: |',
+	];
+
+	for (const packageSummary of increases) {
+		lines.push(`| ${packageDisplayName(packageSummary)} | ${formatBytes(packageSummary.baseSourceBytes)} | ${formatBytes(packageSummary.sourceBytes)} | ${formatPlainDiff(packageSummary.baseSourceBytes, packageSummary.sourceBytes, formatBytes)} | ${formatPlainDiff(packageSummary.baseModules, packageSummary.modules)} |`);
+	}
+
+	return lines.join('\n');
+}
+
+function moduleMap(report) {
+	const map = new Map();
+	for (const moduleSummary of report?.afterRequest?.modules ?? []) {
+		if (typeof moduleSummary.path !== 'string') continue;
+		map.set(moduleSummary.path, moduleSummary);
+	}
+	return map;
+}
+
+function renderNewLoadedModules(base, head) {
+	const baseModules = moduleMap(base);
+	const headModules = moduleMap(head);
+	const newModules = [...headModules.values()]
+		.filter(moduleSummary => !baseModules.has(moduleSummary.path))
+		.toSorted((a, b) => b.sourceBytes - a.sourceBytes)
+		.slice(0, 10);
+
+	if (newModules.length === 0) return null;
+
+	const lines = [
+		'#### Largest Newly Loaded Modules',
+		'',
+		'| Module | Package | Loaded JS |',
+		'| --- | --- | ---: |',
+	];
+
+	for (const moduleSummary of newModules) {
+		lines.push(`| \`${moduleSummary.path}\` | ${moduleSummary.package} | ${formatBytes(moduleSummary.sourceBytes)} |`);
+	}
+
+	return lines.join('\n');
+}
+
+function renderJsFootprintSection(base, head) {
+	if (base == null || head == null) return null;
+
+	const lines = [
+		'### Runtime Loaded JS Footprint',
+		'',
+		'_Measured in a separate backend startup with loader tracing after the same warmup requests. This does not affect the memory table above._',
+		'',
+		renderJsFootprintMetricTable(base, head),
+		'',
+		'#### Load Phase Breakdown',
+		'',
+		renderJsFootprintPhaseTable(base, head),
+		'',
+	];
+
+	for (const block of [
+		renderNewExternalPackages(base, head),
+		renderLargestPackageIncreases(base, head),
+		renderNewLoadedModules(base, head),
+	]) {
+		if (block == null) continue;
+		lines.push(block);
+		lines.push('');
+	}
+
+	return lines.join('\n');
+}
+
 const base = JSON.parse(await readFile(baseFile, 'utf8'));
 const head = JSON.parse(await readFile(headFile, 'utf8'));
+const baseJsFootprint = baseJsFootprintFile == null ? null : JSON.parse(await readFile(baseJsFootprintFile, 'utf8'));
+const headJsFootprint = headJsFootprintFile == null ? null : JSON.parse(await readFile(headJsFootprintFile, 'utf8'));
 const lines = [
 	'## Backend Memory Usage Report',
 	'',
@@ -190,6 +405,12 @@ if (summary != null) {
 for (const phase of phases) {
 	lines.push(`### ${phase.title}`);
 	lines.push(renderTable(base, head, phase.key));
+	lines.push('');
+}
+
+const jsFootprintSection = renderJsFootprintSection(baseJsFootprint, headJsFootprint);
+if (jsFootprintSection != null) {
+	lines.push(jsFootprintSection);
 	lines.push('');
 }
 
