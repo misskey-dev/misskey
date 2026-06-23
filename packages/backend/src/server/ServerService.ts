@@ -31,6 +31,7 @@ import { HealthServerService } from './HealthServerService.js';
 import { ClientServerService } from './web/ClientServerService.js';
 import { OpenApiServerService } from './api/openapi/OpenApiServerService.js';
 import { OAuth2ProviderService } from './oauth/OAuth2ProviderService.js';
+import { ApiEnv } from './api/ApiServerTypes.js';
 
 @Injectable()
 export class ServerService implements OnApplicationShutdown {
@@ -71,7 +72,7 @@ export class ServerService implements OnApplicationShutdown {
 	public async launch(): Promise<void> {
 		this.#trustProxyChecker = this.createTrustProxyChecker();
 
-		const hono = new Hono<{ Variables: { ip: string; ips: string[] } }>();
+		const hono = new Hono<ApiEnv>();
 
 		hono.use(async (ctx, next) => {
 			const incoming = (ctx.env as { incoming?: IncomingMessage }).incoming;

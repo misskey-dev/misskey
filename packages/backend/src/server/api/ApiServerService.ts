@@ -22,7 +22,7 @@ import { ApiCallService } from './ApiCallService.js';
 import { SignupApiService } from './SignupApiService.js';
 import { SigninApiService } from './SigninApiService.js';
 import { SigninWithPasskeyApiService } from './SigninWithPasskeyApiService.js';
-import type { ApiContext, ApiMultipartData } from './ApiServerTypes.js';
+import type { ApiContext, ApiEnv, ApiMultipartData } from './ApiServerTypes.js';
 import type { IEndpoint } from './endpoints.js';
 
 @Injectable()
@@ -135,8 +135,8 @@ export class ApiServerService {
 	}
 
 	@bindThis
-	public createServer(): Hono<{ Variables: { ip: string; ips: string[] } }> {
-		const hono = new Hono<{ Variables: { ip: string; ips: string[] } }>({
+	public createServer(): Hono<ApiEnv> {
+		const hono = new Hono<ApiEnv>({
 			router: new TrieRouter(),
 		});
 

@@ -6,7 +6,9 @@
 import { Readable } from 'node:stream';
 import type { Context } from 'hono';
 
-export type ApiContext = Context<{ Variables: { ip: string; ips: string[] } }>;
+export type ApiEnv = { Variables: { ip: string; ips: string[] } };
+
+export type ApiContext = Context<ApiEnv>;
 
 export interface ApiMultipartData {
 	filename: string;
