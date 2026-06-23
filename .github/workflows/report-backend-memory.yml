@@ -11,9 +11,14 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     permissions:
+      actions: read
+      contents: read
       pull-requests: write
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v6.0.2
+
       - name: Download artifact
         uses: actions/github-script@v9
         with:
@@ -48,131 +53,9 @@ jobs:
         run: cat ./artifacts/memory-base.json
       - name: Output head
         run: cat ./artifacts/memory-head.json
-      - name: Compare memory usage
-        id: compare
-        run: |
-          BASE_MEMORY=$(cat ./artifacts/memory-base.json)
-          HEAD_MEMORY=$(cat ./artifacts/memory-head.json)
-
-          variation() {
-            calc() {
-              BASE=$(echo "$BASE_MEMORY" | jq -r ".${1}.${2} // empty")
-              HEAD=$(echo "$HEAD_MEMORY" | jq -r ".${1}.${2} // empty")
-
-              if [ -z "$BASE" ] || [ -z "$HEAD" ]; then
-                echo "null"
-                return
-              fi
-
-              DIFF=$((HEAD - BASE))
-              if [ "$BASE" -gt 0 ]; then
-                DIFF_PERCENT=$(awk -v diff="$DIFF" -v base="$BASE" 'BEGIN { printf "%.2f", (diff * 100) / base }')
-              else
-                DIFF_PERCENT=0.00
-              fi
-
-              # Convert KB to MB for readability
-              BASE_MB=$(awk -v value="$BASE" 'BEGIN { printf "%.2f", value / 1024 }')
-              HEAD_MB=$(awk -v value="$HEAD" 'BEGIN { printf "%.2f", value / 1024 }')
-              DIFF_MB=$(awk -v value="$DIFF" 'BEGIN { printf "%.2f", value / 1024 }')
-
-              JSON=$(jq -c -n \
-                --argjson base "$BASE_MB" \
-                --argjson head "$HEAD_MB" \
-                --argjson diff "$DIFF_MB" \
-                --argjson diff_percent "$DIFF_PERCENT" \
-                '{base: $base, head: $head, diff: $diff, diff_percent: $diff_percent}')
-
-              echo "$JSON"
-            }
-
-            JSON=$(jq -c -n \
-              --argjson HeapUsed "$(calc $1 HeapUsed)" \
-              --argjson HeapTotal "$(calc $1 HeapTotal)" \
-              --argjson External "$(calc $1 External)" \
-              --argjson ArrayBuffers "$(calc $1 ArrayBuffers)" \
-              --argjson Pss "$(calc $1 Pss)" \
-              --argjson Private_Dirty "$(calc $1 Private_Dirty)" \
-              --argjson Private_Clean "$(calc $1 Private_Clean)" \
-              --argjson Shared_Dirty "$(calc $1 Shared_Dirty)" \
-              --argjson Shared_Clean "$(calc $1 Shared_Clean)" \
-              --argjson VmRSS "$(calc $1 VmRSS)" \
-              --argjson VmHWM "$(calc $1 VmHWM)" \
-              --argjson VmSize "$(calc $1 VmSize)" \
-              --argjson VmData "$(calc $1 VmData)" \
-              '{HeapUsed: $HeapUsed, HeapTotal: $HeapTotal, External: $External, ArrayBuffers: $ArrayBuffers, Pss: $Pss, Private_Dirty: $Private_Dirty, Private_Clean: $Private_Clean, Shared_Dirty: $Shared_Dirty, Shared_Clean: $Shared_Clean, VmRSS: $VmRSS, VmHWM: $VmHWM, VmSize: $VmSize, VmData: $VmData}')
-
-            echo "$JSON"
-          }
-
-          JSON=$(jq -c -n \
-            --argjson beforeGc "$(variation beforeGc)" \
-            --argjson afterGc "$(variation afterGc)" \
-            --argjson afterRequest "$(variation afterRequest)" \
-            '{beforeGc: $beforeGc, afterGc: $afterGc, afterRequest: $afterRequest}')
-
-          echo "res=$JSON" >> "$GITHUB_OUTPUT"
       - id: build-comment
         name: Build memory comment
-        env:
-          RES: ${{ steps.compare.outputs.res }}
-        run: |
-          HEADER="## Backend Memory Usage Report"
-          FOOTER="[See workflow logs for details](https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})"
-
-          echo "$HEADER" > ./output.md
-          echo >> ./output.md
-
-          table() {
-            echo "| Metric | Base | Head | Δ | Δ (%) |" >> ./output.md
-            echo "|--------|------:|------:|------:|------:|" >> ./output.md
-
-            line() {
-              if [ "$(echo "$RES" | jq -r ".${1}.${2} == null")" = "true" ]; then
-                return
-              fi
-
-              METRIC=$2
-              BASE=$(echo "$RES" | jq -r ".${1}.${2}.base")
-              HEAD=$(echo "$RES" | jq -r ".${1}.${2}.head")
-              DIFF=$(echo "$RES" | jq -r ".${1}.${2}.diff")
-              DIFF_PERCENT=$(echo "$RES" | jq -r ".${1}.${2}.diff_percent")
-
-              if (( $(echo "$DIFF_PERCENT > 0" | bc -l) )); then
-                DIFF="+$DIFF"
-                DIFF_PERCENT="+$DIFF_PERCENT"
-              fi
-
-              echo "| ${METRIC} | ${BASE} MB | ${HEAD} MB | ${DIFF} MB | ${DIFF_PERCENT}% |" >> ./output.md
-            }
-
-            line $1 HeapUsed
-            line $1 HeapTotal
-            line $1 External
-            line $1 Pss
-            line $1 Private_Dirty
-          }
-
-          #echo "### Before GC" >> ./output.md
-          #table beforeGc
-          #echo >> ./output.md
-
-          echo "### After GC" >> ./output.md
-          table afterGc
-          echo >> ./output.md
-
-          #echo "### After Request" >> ./output.md
-          #table afterRequest
-          #echo >> ./output.md
-
-          # Determine if this is a significant change (more than 5% increase)
-          WARNING_METRIC=$(echo "$RES" | jq -r 'if .afterGc.Pss != null then "Pss" elif .afterGc.VmRSS != null then "VmRSS" else empty end')
-          if [ -n "$WARNING_METRIC" ] && [ "$(echo "$RES" | jq -r ".afterGc.${WARNING_METRIC}.diff_percent | tonumber > 5")" = "true" ]; then
-            echo "⚠️ **Warning**: Memory usage (${WARNING_METRIC}) has increased by more than 5%. Please verify this is not an unintended change." >> ./output.md
-            echo >> ./output.md
-          fi
-
-          echo "$FOOTER" >> ./output.md
+        run: node .github/scripts/backend-memory-report.mjs ./artifacts/memory-base.json ./artifacts/memory-head.json ./output.md
       - uses: thollander/actions-comment-pull-request@v3
         with:
           pr-number: ${{ steps.load-pr-num.outputs.pr-number }}
