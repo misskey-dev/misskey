@@ -9,6 +9,7 @@ on:
     paths:
       - packages/backend/**
       - packages/misskey-js/**
+      - .github/scripts/backend-memory-report.mjs
       - .github/workflows/get-backend-memory.yml
       - .github/workflows/report-backend-memory.yml
 
