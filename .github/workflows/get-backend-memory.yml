@@ -85,62 +85,11 @@ jobs:
     - name: Build head
       working-directory: head
       run: pnpm build
-    - name: Measure base memory usage
-      working-directory: base
-      run: |
-        node --input-type=module <<'EOF'
-        import { createRequire } from 'node:module';
-        import { join } from 'node:path';
-
-        const require = createRequire(join(process.cwd(), 'packages/backend/package.json'));
-        const pg = require('pg');
-        const Redis = require('ioredis');
-
-        const postgres = new pg.Client({
-          host: '127.0.0.1',
-          port: 54312,
-          database: 'postgres',
-          user: 'postgres',
-        });
-        await postgres.connect();
-        await postgres.query('DROP DATABASE IF EXISTS "test-misskey" WITH (FORCE)');
-        await postgres.query('CREATE DATABASE "test-misskey"');
-        await postgres.end();
-
-        const redis = new Redis({ host: '127.0.0.1', port: 56312 });
-        await redis.flushall();
-        redis.disconnect();
-        EOF
-        pnpm --filter backend migrate
-        node packages/backend/scripts/measure-memory.mjs > ../memory-base.json
-    - name: Measure head memory usage
-      working-directory: head
-      run: |
-        node --input-type=module <<'EOF'
-        import { createRequire } from 'node:module';
-        import { join } from 'node:path';
-
-        const require = createRequire(join(process.cwd(), 'packages/backend/package.json'));
-        const pg = require('pg');
-        const Redis = require('ioredis');
-
-        const postgres = new pg.Client({
-          host: '127.0.0.1',
-          port: 54312,
-          database: 'postgres',
-          user: 'postgres',
-        });
-        await postgres.connect();
-        await postgres.query('DROP DATABASE IF EXISTS "test-misskey" WITH (FORCE)');
-        await postgres.query('CREATE DATABASE "test-misskey"');
-        await postgres.end();
-
-        const redis = new Redis({ host: '127.0.0.1', port: 56312 });
-        await redis.flushall();
-        redis.disconnect();
-        EOF
-        pnpm --filter backend migrate
-        node packages/backend/scripts/measure-memory.mjs > ../memory-head.json
+    - name: Measure backend memory usage
+      env:
+        MK_MEMORY_COMPARE_ROUNDS: 5
+        MK_MEMORY_COMPARE_WARMUP_ROUNDS: 1
+      run: node head/.github/scripts/measure-backend-memory-comparison.mjs base head memory-base.json memory-head.json
     - name: Upload Artifact
       uses: actions/upload-artifact@v7
       with:
