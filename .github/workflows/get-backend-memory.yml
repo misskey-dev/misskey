@@ -88,8 +88,12 @@ jobs:
       working-directory: base
       run: |
         node --input-type=module <<'EOF'
-        import pg from 'pg';
-        import Redis from 'ioredis';
+        import { createRequire } from 'node:module';
+        import { join } from 'node:path';
+
+        const require = createRequire(join(process.cwd(), 'packages/backend/package.json'));
+        const pg = require('pg');
+        const Redis = require('ioredis');
 
         const postgres = new pg.Client({
           host: '127.0.0.1',
@@ -112,8 +116,12 @@ jobs:
       working-directory: head
       run: |
         node --input-type=module <<'EOF'
-        import pg from 'pg';
-        import Redis from 'ioredis';
+        import { createRequire } from 'node:module';
+        import { join } from 'node:path';
+
+        const require = createRequire(join(process.cwd(), 'packages/backend/package.json'));
+        const pg = require('pg');
+        const Redis = require('ioredis');
 
         const postgres = new pg.Client({
           host: '127.0.0.1',
