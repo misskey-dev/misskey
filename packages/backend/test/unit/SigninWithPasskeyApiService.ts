@@ -87,7 +87,7 @@ describe('SigninWithPasskeyApiService', () => {
 		honoApp = new Hono();
 		honoApp.post('/signin-with-passkey', dummyContextMiddleware, async (ctx) => {
 			const json = await ctx.req.json();
-			return passkeyApiService.signin(ctx, json);
+			return ctx.json(await passkeyApiService.signin(ctx, json));
 		});
 	});
 
