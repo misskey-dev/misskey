@@ -228,6 +228,27 @@ export class ServerService implements OnApplicationShutdown {
 	}
 
 	private listen() {
+		const handleListenError = (err: unknown): void => {
+			switch ((err as NodeJS.ErrnoException).code) {
+				case 'EACCES':
+					this.logger.error(`You do not have permission to listen on ${this.config.socket ?? `port ${this.config.port}`}.`);
+					break;
+				case 'EADDRINUSE':
+					this.logger.error(`${this.config.socket ?? `Port ${this.config.port}`} is already in use by another process.`);
+					break;
+				default:
+					this.logger.error(err as Error);
+					break;
+			}
+
+			if (cluster.isWorker) {
+				process.send!('listenFailed');
+			} else {
+				// disableClustering
+				process.exit(1);
+			}
+		};
+
 		return new Promise<void>((resolve, reject) => {
 			if (this.config.socket) {
 				if (fs.existsSync(this.config.socket)) {
@@ -246,6 +267,8 @@ export class ServerService implements OnApplicationShutdown {
 					resolve();
 				});
 			}
+		}).catch((err) => {
+			handleListenError(err);
 		});
 	}
 
@@ -287,7 +310,7 @@ export class ServerService implements OnApplicationShutdown {
 	public async dispose(): Promise<void> {
 		await this.streamingApiServerService.detach();
 		if (this.#honoNodeServer != null && this.#honoNodeServer.listening) {
-			await new Promise<void>((resolve, reject) => {
+			const close = () => new Promise<void>((resolve, reject) => {
 				this.#honoNodeServer!.close((err) => {
 					if (err) {
 						reject(err);
@@ -296,6 +319,11 @@ export class ServerService implements OnApplicationShutdown {
 					}
 				});
 			});
+
+			await Promise.race([
+				close(),
+				new Promise<void>(resolve => setTimeout(resolve, 5_000)),
+			]).catch(err => this.logger.error('Server close failed', err as Error));
 		}
 	}
 

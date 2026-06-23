@@ -24,10 +24,10 @@
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"devDependencies": {
-		"@types/node": "24.12.4",
-		"@typescript-eslint/eslint-plugin": "8.60.0",
-		"@typescript-eslint/parser": "8.60.0",
-		"esbuild": "0.28.0",
+		"@types/node": "24.13.1",
+		"@typescript-eslint/eslint-plugin": "8.61.0",
+		"@typescript-eslint/parser": "8.61.0",
+		"esbuild": "0.28.1",
 		"execa": "9.6.1",
 		"nodemon": "3.1.14"
 	},

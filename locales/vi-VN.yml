@@ -1226,6 +1226,7 @@ inMinutes: "phút"
 inDays: "ngày"
 widgets: "Tiện ích"
 presets: "Mẫu thiết lập"
+previewingThemeRestore: "Khôi phục"
 _imageEditing:
   _vars:
     filename: "Tên tập tin"

@@ -2,7 +2,8 @@ import path from 'path';
 import pluginVue from '@vitejs/plugin-vue';
 import pluginGlsl from 'vite-plugin-glsl';
 import { replacePlugin } from 'rolldown/plugins';
-import type { UserConfig } from 'vite';
+import { visualizer } from 'rollup-plugin-visualizer';
+import type { PluginOption, UserConfig } from 'vite';
 import { defineConfig } from 'vite';
 import * as yaml from 'js-yaml';
 import { promises as fsp } from 'fs';
@@ -22,6 +23,32 @@ const url = process.env.NODE_ENV === 'development' ? (yaml.load(await fsp.readFi
 const host = url ? (new URL(url)).hostname : undefined;
 
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
+
+function getBundleVisualizerPlugin(): PluginOption[] {
+	if (process.env.FRONTEND_BUNDLE_VISUALIZER !== 'true') return [];
+
+	const template = process.env.FRONTEND_BUNDLE_VISUALIZER_TEMPLATE === 'markdown'
+		? 'markdown'
+		: process.env.FRONTEND_BUNDLE_VISUALIZER_TEMPLATE === 'raw-data'
+			? 'raw-data'
+			: 'treemap';
+	const defaultFilename = template === 'markdown'
+		? path.resolve(__dirname, '../../built/_frontend_bundle_visualizer_/report.md')
+		: template === 'raw-data'
+			? path.resolve(__dirname, '../../built/_frontend_bundle_visualizer_/stats.json')
+			: path.resolve(__dirname, '../../built/_frontend_bundle_visualizer_/stats.html');
+
+	return [
+		visualizer({
+			filename: process.env.FRONTEND_BUNDLE_VISUALIZER_FILE ?? defaultFilename,
+			title: 'Misskey frontend bundle visualizer',
+			template,
+			gzipSize: true,
+			brotliSize: true,
+			projectRoot: path.resolve(__dirname, '../..'),
+		}) as PluginOption,
+	];
+}
 
 /**
  * 検索インデックスの生成設定
@@ -129,6 +156,7 @@ export function getConfig(): UserConfig {
 					}),
 				]
 				: [],
+			...getBundleVisualizerPlugin(),
 		],
 
 		resolve: {
@@ -194,11 +222,10 @@ export function getConfig(): UserConfig {
 							name: 'photoswipe',
 							test: /node_modules[\\/]photoswipe/,
 						}, {
-							// split each i18n related module to each distinct module, deny hoisting
+							// split i18n related module to distinct module
 							name: 'i18n',
-							test: /i18n\.ts/,
-							minSize: 0,
-							maxSize: 1,
+							includeDependenciesRecursively: false,
+							test: /i18n\.ts|locale\.ts/,
 						}],
 					},
 					entryFileNames: `scripts/${localesHash}-[hash:8].js`,

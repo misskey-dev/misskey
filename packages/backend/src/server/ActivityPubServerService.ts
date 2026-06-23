@@ -191,7 +191,15 @@ export class ActivityPubServerService {
 			}
 		}
 
-		this.queueService.inbox(body, signature);
+		// Reject structurally invalid activities (e.g. missing actor) here instead
+		// of letting them fail deep inside the inbox processor. An actor-less
+		// activity can never be authenticated, so there is no point enqueueing it.
+		if (typeof body !== 'object' || body == null || !('actor' in body) || body.actor == null) {
+			return ctx.body(null, 400);
+		}
+
+		this.queueService.inbox(body as IActivity, signature);
+
 		return ctx.body(null, 202);
 	}
 

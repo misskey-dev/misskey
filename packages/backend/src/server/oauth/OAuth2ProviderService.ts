@@ -273,8 +273,9 @@ async function discoverClientInformation(logger: Logger, httpRequestService: Htt
 	}
 }
 
-function firstValue(value: string | string[] | undefined): string | undefined {
-	return Array.isArray(value) ? value[0] : value;
+function firstValue(value: unknown | unknown[] | undefined): string | undefined {
+	const firstElement = Array.isArray(value) ? value[0] : value;
+	return typeof firstElement === 'string' ? firstElement : undefined;
 }
 
 function normalizeScope(scope: string | string[] | undefined): string[] {
@@ -282,12 +283,39 @@ function normalizeScope(scope: string | string[] | undefined): string[] {
 	return raw.flatMap(value => value.split(/\s+/)).filter(Boolean);
 }
 
+function parseUrlEncodedParameters(rawBody: string): OAuthRequestParameters {
+	const parsed: OAuthRequestParameters = {};
+	for (const [key, value] of new URLSearchParams(rawBody).entries()) {
+		const current = parsed[key];
+		if (current == null) {
+			parsed[key] = value;
+		} else if (Array.isArray(current)) {
+			current.push(value);
+		} else {
+			parsed[key] = [current, value];
+		}
+	}
+
+	return parsed;
+}
+
 function toRequestParameters(body: unknown): OAuthRequestParameters {
+	if (typeof body === 'string') {
+		return parseUrlEncodedParameters(body);
+	}
+
+	if (body instanceof URLSearchParams) {
+		return parseUrlEncodedParameters(body.toString());
+	}
+
 	if (body == null || typeof body !== 'object' || Array.isArray(body)) {
 		return {};
 	}
 
-	return body as OAuthRequestParameters;
+	return Object.fromEntries(Object.entries(body).filter(([_, value]) => (
+		typeof value === 'string' ||
+		(Array.isArray(value) && value.every(v => typeof v === 'string'))
+	)));
 }
 
 function applyNoStore(ctx: HonoContext): void {
@@ -590,6 +618,7 @@ export class OAuth2ProviderService implements OnApplicationShutdown {
 			applyNoStore(ctx);
 
 			try {
+				// TODO: Ensure support application/json
 				const body = toRequestParameters(await ctx.req.parseBody());
 				const grantType = firstValue(body.grant_type);
 				if (!grantType) {
