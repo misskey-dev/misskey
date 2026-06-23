@@ -101,8 +101,8 @@ importers:
         specifier: 5.1.0
         version: 5.1.0
       '@hono/node-server':
-        specifier: 2.0.4
-        version: 2.0.4(hono@4.12.23)
+        specifier: 2.0.6
+        version: 2.0.6(hono@4.12.27)
       '@misskey-dev/emoji-assets':
         specifier: 17.0.3
         version: 17.0.3
@@ -209,8 +209,8 @@ importers:
         specifier: 15.0.5
         version: 15.0.5
       hono:
-        specifier: 4.12.23
-        version: 4.12.23
+        specifier: 4.12.27
+        version: 4.12.27
       hpagent:
         specifier: 1.2.0
         version: 1.2.0
@@ -2125,8 +2125,8 @@ packages:
   '@hexagon/base64@1.1.28':
     resolution: {integrity: sha512-lhqDEAvWixy3bZ+UOYbPwUbBkwBq5C1LAJ/xPC8Oi+lL54oyakv/npbA0aU2hgCsx/1NUd4IBvV03+aUBWxerw==}
 
-  '@hono/node-server@2.0.4':
-    resolution: {integrity: sha512-Ut3y0dMMPWy6bZ2kVfx25EOVbZlm15dhF4mOsezMlhpNHy+4MkU1qN9Y6lnruYi4wPmFzimGX2X7LF/FwHli4A==}
+  '@hono/node-server@2.0.6':
+    resolution: {integrity: sha512-7DeRlKG57JDBNZ5Qj2jwVdgwQy4b0tLubRLl3zCf91/rCf9i7p1V5FtW/yWibm1uUHE493ts9ZXH/7g/LQWl+g==}
     engines: {node: '>=20'}
     peerDependencies:
       hono: ^4
@@ -4200,6 +4200,10 @@ packages:
     resolution: {integrity: sha512-9QTQpZ5Iin4CdIodfbDQFSeiSJKidgYJYug1P9CC2xWgUTvlmixViqDZNciMjwLBZyJnG4tGmPl97rVAFb1AJg==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
+  '@typescript-eslint/types@8.61.1':
+    resolution: {integrity: sha512-G+CRlPqLv7Bz1IZVs03x5K59F1veqL0EJUROAdGhKsEq8qOiRiZbI+HUojPq5l0fEGOKModD9br6lObhB8zkoA==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
   '@typescript-eslint/typescript-estree@8.61.0':
     resolution: {integrity: sha512-42zatd5qSvvcV1JdDBCLxYRznvP4eIHpPoZXdkPFnAmanA4FuZ5dibSnCBggY8hQnqajPpoGjXFdZ7fIJKQnlA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
@@ -6263,8 +6267,8 @@ packages:
     resolution: {integrity: sha512-Xwwo44whKBVCYoliBQwaPvtd/2tYFkRQtXDWj1nackaV2JPXx3L0+Jvd8/qCJ2p+ML0/XVkJ2q+Mr+UVdpJK5w==}
     engines: {node: '>=12.0.0'}
 
-  hono@4.12.23:
-    resolution: {integrity: sha512-eIaZ9qDgu7XV0pxOCrg7/WhnQ6Ivm22UcxhXx/A3dcbqbbYgBEkc6e/J/s7j2tS96zoB0S9VBdLwQNCWwUo4LA==}
+  hono@4.12.27:
+    resolution: {integrity: sha512-1yrb/+w6HWQJrUCLkJ2IF5jNIPvvFkblV5RNOYl6bV+OA6p9GLcMpHFFGTosSvHvcAUibuUukRqhlYI4z32C7Q==}
     engines: {node: '>=16.9.0'}
 
   hosted-git-info@2.8.9:
@@ -10927,9 +10931,9 @@ snapshots:
 
   '@hexagon/base64@1.1.28': {}
 
-  '@hono/node-server@2.0.4(hono@4.12.23)':
+  '@hono/node-server@2.0.6(hono@4.12.27)':
     dependencies:
-      hono: 4.12.23
+      hono: 4.12.27
 
   '@humanfs/core@0.19.2':
     dependencies:
@@ -12460,7 +12464,7 @@ snapshots:
   '@stylistic/eslint-plugin@5.10.0(eslint@9.39.4)':
     dependencies:
       '@eslint-community/eslint-utils': 4.9.1(eslint@9.39.4)
-      '@typescript-eslint/types': 8.61.0
+      '@typescript-eslint/types': 8.61.1
       eslint: 9.39.4
       eslint-visitor-keys: 4.2.1
       espree: 10.4.0
@@ -12908,7 +12912,7 @@ snapshots:
   '@typescript-eslint/project-service@8.61.0(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/tsconfig-utils': 8.61.0(typescript@5.9.3)
-      '@typescript-eslint/types': 8.61.0
+      '@typescript-eslint/types': 8.61.1
       debug: 4.4.3(supports-color@10.2.2)
       typescript: 5.9.3
     transitivePeerDependencies:
@@ -12936,6 +12940,8 @@ snapshots:
       - supports-color
 
   '@typescript-eslint/types@8.61.0': {}
+
+  '@typescript-eslint/types@8.61.1': {}
 
   '@typescript-eslint/typescript-estree@8.61.0(typescript@5.9.3)':
     dependencies:
@@ -15409,7 +15415,7 @@ snapshots:
 
   highlight.js@11.11.1: {}
 
-  hono@4.12.23: {}
+  hono@4.12.27: {}
 
   hosted-git-info@2.8.9: {}
 
