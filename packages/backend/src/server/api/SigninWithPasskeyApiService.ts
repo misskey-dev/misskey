@@ -24,7 +24,6 @@ import type { IdentifiableError } from '@/misc/identifiable-error.js';
 import { RateLimiterService } from './RateLimiterService.js';
 import { SigninService } from './SigninService.js';
 import type { AuthenticationResponseJSON } from '@simplewebauthn/server';
-import { headersToObject } from './ApiServerTypes.js';
 import type { ApiContext } from './ApiServerTypes.js';
 
 @Injectable()
@@ -76,7 +75,7 @@ export class SigninWithPasskeyApiService {
 				id: this.idService.gen(),
 				userId: userId,
 				ip: ctx.var.ip,
-				headers: headersToObject(ctx.req.raw.headers) as any,
+				headers: ctx.req.header() as any,
 				success: false,
 			});
 			return error(status ?? 500, failure ?? { id: '4e30e80c-e338-45a0-8c8f-44455efa3b76' });

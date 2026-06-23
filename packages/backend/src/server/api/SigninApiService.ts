@@ -29,7 +29,6 @@ import { HttpStatusError } from '@/misc/http-status-error.js';
 import { RateLimiterService } from './RateLimiterService.js';
 import { SigninService } from './SigninService.js';
 import type { AuthenticationResponseJSON } from '@simplewebauthn/server';
-import { headersToObject } from './ApiServerTypes.js';
 import type { ApiContext } from './ApiServerTypes.js';
 
 @Injectable()
@@ -171,7 +170,7 @@ export class SigninApiService {
 				id: this.idService.gen(),
 				userId: user.id,
 				ip: ctx.var.ip,
-				headers: headersToObject(ctx.req.raw.headers) as any,
+				headers: ctx.req.header() as any,
 				success: false,
 			});
 

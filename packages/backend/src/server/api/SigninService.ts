@@ -14,7 +14,6 @@ import { SigninEntityService } from '@/core/entities/SigninEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { EmailService } from '@/core/EmailService.js';
 import { NotificationService } from '@/core/NotificationService.js';
-import { headersToObject } from './ApiServerTypes.js';
 import type { ApiContext } from './ApiServerTypes.js';
 
 @Injectable()
@@ -43,7 +42,7 @@ export class SigninService {
 				id: this.idService.gen(),
 				userId: user.id,
 				ip: ctx.var.ip,
-				headers: headersToObject(ctx.req.raw.headers) as any,
+				headers: ctx.req.header() as any,
 				success: true,
 			});
 

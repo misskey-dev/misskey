@@ -23,7 +23,6 @@ import { ApiLoggerService } from './ApiLoggerService.js';
 import { AuthenticateService, AuthenticationError } from './AuthenticateService.js';
 import type { OnApplicationShutdown } from '@nestjs/common';
 import type { IEndpointMeta, IEndpoint } from './endpoints.js';
-import { headersToObject } from './ApiServerTypes.js';
 import type { ApiContext, ApiMultipartData } from './ApiServerTypes.js';
 
 const accessDenied = {
@@ -162,13 +161,12 @@ export class ApiCallService implements OnApplicationShutdown {
 		ctx: ApiContext,
 		bodyData?: Record<string, unknown>,
 	): Promise<Response> {
-		const request = ctx.req.raw;
-		const body = request.method === 'GET'
+		const body = ctx.req.method === 'GET'
 			? ctx.req.query()
 			: bodyData;
 
 		// https://datatracker.ietf.org/doc/html/rfc6750.html#section-2.1 (case sensitive)
-		const authorization = request.headers.get('authorization');
+		const authorization = ctx.req.header('authorization');
 		const token = authorization?.startsWith('Bearer ')
 			? authorization.slice(7)
 			: body?.['i'];
@@ -178,8 +176,8 @@ export class ApiCallService implements OnApplicationShutdown {
 
 		try {
 			const [user, app] = await this.authenticateService.authenticate(token);
-			const res = await this.call(endpoint, user, app, body, null, request, ctx.var.ip);
-			if (request.method === 'GET' && endpoint.meta.cacheSec && !token && !user) {
+			const res = await this.call(endpoint, user, app, body, null, ctx);
+			if (ctx.req.method === 'GET' && endpoint.meta.cacheSec && !token && !user) {
 				ctx.header('Cache-Control', `public, max-age=${endpoint.meta.cacheSec}`);
 			}
 			if (user) {
@@ -219,7 +217,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		}
 
 		// https://datatracker.ietf.org/doc/html/rfc6750.html#section-2.1 (case sensitive)
-		const authorization = ctx.req.raw.headers.get('authorization');
+		const authorization = ctx.req.header('authorization');
 		const token = authorization?.startsWith('Bearer ')
 			? authorization.slice(7)
 			: fields['i'];
@@ -232,7 +230,7 @@ export class ApiCallService implements OnApplicationShutdown {
 			const res = await this.call(endpoint, user, app, fields, {
 				name: multipartData.filename,
 				path: path,
-			}, ctx.req.raw, ctx.var.ip);
+			}, ctx);
 			if (user) {
 				this.logIp(ctx.var.ip, user);
 			}
@@ -309,14 +307,15 @@ export class ApiCallService implements OnApplicationShutdown {
 			name: string;
 			path: string;
 		} | null,
-		request: Request,
-		ip: string,
+		ctx: ApiContext,
 	) {
 		const isSecure = user != null && token == null;
 
 		if (ep.meta.secure && !isSecure) {
 			throw new ApiError(accessDenied);
 		}
+
+		const ip = ctx.var.ip;
 
 		if (ep.meta.limit) {
 			let limitActor: string | null = null;
@@ -426,7 +425,7 @@ export class ApiCallService implements OnApplicationShutdown {
 		}
 
 		// Cast non JSON input
-		if ((ep.meta.requireFile || request.method === 'GET') && ep.params.properties) {
+		if ((ep.meta.requireFile || ctx.req.method === 'GET') && ep.params.properties) {
 			for (const k of Object.keys(ep.params.properties)) {
 				const param = ep.params.properties![k];
 				if (['boolean', 'number', 'integer'].includes(param.type ?? '') && typeof data[k] === 'string') {
@@ -450,10 +449,10 @@ export class ApiCallService implements OnApplicationShutdown {
 		if (this.Sentry != null) {
 			return await this.Sentry.startSpan({
 				name: 'API: ' + ep.name,
-			}, () => ep.exec(data, user, token, file, ip, headersToObject(request.headers))
+			}, () => ep.exec(data, user, token, file, ip, ctx.req.header())
 				.catch((err: Error) => this.#onExecError(ep, data, err, user?.id)));
 		} else {
-			return await ep.exec(data, user, token, file, ip, headersToObject(request.headers))
+			return await ep.exec(data, user, token, file, ip, ctx.req.header())
 				.catch((err: Error) => this.#onExecError(ep, data, err, user?.id));
 		}
 	}

@@ -14,7 +14,3 @@ export interface ApiMultipartData {
 	truncated: boolean;
 	fields: Record<string, unknown>;
 }
-
-export function headersToObject(headers: Headers): Record<string, string> {
-	return Object.fromEntries(headers.entries());
-}
