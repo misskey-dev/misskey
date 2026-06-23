@@ -23,8 +23,9 @@ const __dirname = dirname(__filename);
 const SAMPLE_COUNT = 3; // Number of samples to measure
 const STARTUP_TIMEOUT = 120000; // 120 seconds timeout for server startup
 const MEMORY_SETTLE_TIME = 10000; // Wait 10 seconds after startup for memory to settle
+const IPC_TIMEOUT = 30000; // 30 seconds timeout for IPC responses
 
-const keys = {
+const procStatusKeys = {
 	VmPeak: 0,
 	VmSize: 0,
 	VmHWM: 0,
@@ -37,30 +38,152 @@ const keys = {
 	VmSwap: 0,
 };
 
-async function getMemoryUsage(pid) {
-	const status = await fs.readFile(`/proc/${pid}/status`, 'utf-8');
+const smapsRollupKeys = {
+	Pss: 0,
+	Shared_Clean: 0,
+	Shared_Dirty: 0,
+	Private_Clean: 0,
+	Private_Dirty: 0,
+	Swap: 0,
+	SwapPss: 0,
+};
 
+const runtimeKeys = {
+	HeapTotal: 0,
+	HeapUsed: 0,
+	External: 0,
+	ArrayBuffers: 0,
+};
+
+const memoryKeys = {
+	...procStatusKeys,
+	...smapsRollupKeys,
+	...runtimeKeys,
+};
+
+const phases = ['beforeGc', 'afterGc', 'afterRequest'];
+
+function parseMemoryFile(content, keys, path, required) {
 	const result = {};
 	for (const key of Object.keys(keys)) {
-		const match = status.match(new RegExp(`${key}:\\s+(\\d+)\\s+kB`));
+		const match = content.match(new RegExp(`${key}:\\s+(\\d+)\\s+kB`));
 		if (match) {
 			result[key] = parseInt(match[1], 10);
-		} else {
-			throw new Error(`Failed to parse ${key} from /proc/${pid}/status`);
+		} else if (required) {
+			throw new Error(`Failed to parse ${key} from ${path}`);
+		}
+	}
+	return result;
+}
+
+function bytesToKiB(value) {
+	return Math.round(value / 1024);
+}
+
+async function getMemoryUsage(pid) {
+	const path = `/proc/${pid}/status`;
+	const status = await fs.readFile(path, 'utf-8');
+
+	return parseMemoryFile(status, procStatusKeys, path, true);
+}
+
+async function getSmapsRollupMemoryUsage(pid) {
+	const path = `/proc/${pid}/smaps_rollup`;
+	try {
+		const smapsRollup = await fs.readFile(path, 'utf-8');
+		return parseMemoryFile(smapsRollup, smapsRollupKeys, path, false);
+	} catch (err) {
+		if (err.code === 'ENOENT' || err.code === 'EACCES') {
+			process.stderr.write(`Failed to read ${path}: ${err.message}\n`);
+			return {};
+		}
+		throw err;
+	}
+}
+
+function waitForMessage(serverProcess, predicate, description, timeout = IPC_TIMEOUT) {
+	return new Promise((resolve, reject) => {
+		const timer = globalThis.setTimeout(() => {
+			serverProcess.off('message', onMessage);
+			reject(new Error(`Timed out waiting for ${description}`));
+		}, timeout);
+
+		const onMessage = (message) => {
+			if (!predicate(message)) return;
+			globalThis.clearTimeout(timer);
+			serverProcess.off('message', onMessage);
+			resolve(message);
+		};
+
+		serverProcess.on('message', onMessage);
+	});
+}
+
+async function getRuntimeMemoryUsage(serverProcess) {
+	const response = waitForMessage(
+		serverProcess,
+		message => message != null && typeof message === 'object' && message.type === 'memory usage',
+		'memory usage',
+	);
+
+	serverProcess.send('memory usage');
+
+	const message = await response;
+	const memoryUsage = message.value;
+
+	return {
+		HeapTotal: bytesToKiB(memoryUsage.heapTotal),
+		HeapUsed: bytesToKiB(memoryUsage.heapUsed),
+		External: bytesToKiB(memoryUsage.external),
+		ArrayBuffers: bytesToKiB(memoryUsage.arrayBuffers),
+	};
+}
+
+async function getAllMemoryUsage(serverProcess) {
+	const pid = serverProcess.pid;
+	return {
+		...await getMemoryUsage(pid),
+		...await getSmapsRollupMemoryUsage(pid),
+		...await getRuntimeMemoryUsage(serverProcess),
+	};
+}
+
+function median(values) {
+	const sorted = values.toSorted((a, b) => a - b);
+	const center = Math.floor(sorted.length / 2);
+	if (sorted.length % 2 === 1) return sorted[center];
+	return Math.round((sorted[center - 1] + sorted[center]) / 2);
+}
+
+function summarizeResults(results) {
+	const summary = {};
+
+	for (const phase of phases) {
+		summary[phase] = {};
+		for (const key of Object.keys(memoryKeys)) {
+			const values = results
+				.map(result => result[phase][key])
+				.filter(value => Number.isFinite(value));
+
+			if (values.length > 0) {
+				summary[phase][key] = median(values);
+			}
 		}
 	}
 
-	return result;
+	return summary;
 }
 
 async function measureMemory() {
 	// Start the Misskey backend server using fork to enable IPC
-	const serverProcess = fork(join(__dirname, '../built/entry.js'), ['expose-gc'], {
+	const serverProcess = fork(join(__dirname, '../built/entry.js'), [], {
 		cwd: join(__dirname, '..'),
 		env: {
 			...process.env,
 			NODE_ENV: 'production',
 			MK_DISABLE_CLUSTERING: '1',
+			MK_ONLY_SERVER: '1',
+			MK_NO_DAEMONS: '1',
 		},
 		stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
 		execArgv: [...process.execArgv, '--expose-gc'],
@@ -90,15 +213,18 @@ async function measureMemory() {
 	});
 
 	async function triggerGc() {
-		const ok = new Promise((resolve) => {
-			serverProcess.once('message', (message) => {
-				if (message === 'gc ok') resolve();
-			});
-		});
+		const ok = waitForMessage(
+			serverProcess,
+			message => message === 'gc ok' || message === 'gc unavailable',
+			'GC completion',
+		);
 
 		serverProcess.send('gc');
 
-		await ok;
+		const message = await ok;
+		if (message === 'gc unavailable') {
+			throw new Error('GC is unavailable. Start the process with --expose-gc to enable this feature.');
+		}
 
 		await setTimeout(1000);
 	}
@@ -139,13 +265,11 @@ async function measureMemory() {
 	// Wait for memory to settle
 	await setTimeout(MEMORY_SETTLE_TIME);
 
-	const pid = serverProcess.pid;
-
-	const beforeGc = await getMemoryUsage(pid);
+	const beforeGc = await getAllMemoryUsage(serverProcess);
 
 	await triggerGc();
 
-	const afterGc = await getMemoryUsage(pid);
+	const afterGc = await getAllMemoryUsage(serverProcess);
 
 	// create some http requests to simulate load
 	const REQUEST_COUNT = 10;
@@ -155,7 +279,7 @@ async function measureMemory() {
 
 	await triggerGc();
 
-	const afterRequest = await getMemoryUsage(pid);
+	const afterRequest = await getAllMemoryUsage(serverProcess);
 
 	// Stop the server
 	serverProcess.kill('SIGTERM');
@@ -187,35 +311,21 @@ async function measureMemory() {
 }
 
 async function main() {
-	// 直列の方が時間的に分散されて正確そうだから直列でやる
 	const results = [];
 	for (let i = 0; i < SAMPLE_COUNT; i++) {
+		process.stderr.write(`Starting sample ${i + 1}/${SAMPLE_COUNT}\n`);
 		const res = await measureMemory();
 		results.push(res);
 	}
 
-	// Calculate averages
-	const beforeGc = structuredClone(keys);
-	const afterGc = structuredClone(keys);
-	const afterRequest = structuredClone(keys);
-	for (const res of results) {
-		for (const key of Object.keys(keys)) {
-			beforeGc[key] += res.beforeGc[key];
-			afterGc[key] += res.afterGc[key];
-			afterRequest[key] += res.afterRequest[key];
-		}
-	}
-	for (const key of Object.keys(keys)) {
-		beforeGc[key] = Math.round(beforeGc[key] / SAMPLE_COUNT);
-		afterGc[key] = Math.round(afterGc[key] / SAMPLE_COUNT);
-		afterRequest[key] = Math.round(afterRequest[key] / SAMPLE_COUNT);
-	}
+	const summary = summarizeResults(results);
 
 	const result = {
 		timestamp: new Date().toISOString(),
-		beforeGc,
-		afterGc,
-		afterRequest,
+		sampleCount: SAMPLE_COUNT,
+		aggregation: 'median',
+		...summary,
+		samples: results,
 	};
 
 	// Output as JSON to stdout
