@@ -21,9 +21,10 @@ const phases = [
 const metrics = [
 	'HeapUsed',
 	'HeapTotal',
-	'External',
 	'Pss',
 	'Private_Dirty',
+	'VmRSS',
+	'External',
 ];
 
 function formatNumber(value) {
@@ -32,11 +33,6 @@ function formatNumber(value) {
 
 function formatMemory(valueKiB) {
 	return `${formatNumber(valueKiB / 1024)} MB`;
-}
-
-function formatMemoryWithSpread(valueKiB, spreadKiB) {
-	if (spreadKiB == null) return formatMemory(valueKiB);
-	return `${formatMemory(valueKiB)} ± ${formatMemory(spreadKiB)}`;
 }
 
 function formatPercent(value) {
@@ -115,7 +111,7 @@ function renderTable(base, head, phase) {
 		const baseSpread = getSampleSpread(base, phase, metric);
 		const headSpread = getSampleSpread(head, phase, metric);
 
-		lines.push(`| ${metric} | ${formatMemoryWithSpread(baseValue, baseSpread)} | ${formatMemoryWithSpread(headValue, headSpread)} | ${formatDiff(baseValue, headValue)} | ${formatDiffPercent(baseValue, headValue)} |`);
+		lines.push(`| ${metric} | ${formatMemory(baseValue)} <br> ± ${formatMemory(baseSpread)} | ${formatMemory(headValue)} <br> ± ${formatMemory(headSpread)} | ${formatDiff(baseValue, headValue)} | ${formatDiffPercent(baseValue, headValue)} |`);
 	}
 
 	return lines.join('\n');
