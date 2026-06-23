@@ -20,7 +20,6 @@ const phases = [
 
 const metrics = [
 	'HeapUsed',
-	'HeapTotal',
 	'Pss',
 	'Private_Dirty',
 	'VmRSS',
