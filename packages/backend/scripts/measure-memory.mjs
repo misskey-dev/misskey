@@ -20,10 +20,21 @@ import * as fs from 'node:fs/promises';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const SAMPLE_COUNT = 3; // Number of samples to measure
-const STARTUP_TIMEOUT = 120000; // 120 seconds timeout for server startup
-const MEMORY_SETTLE_TIME = 10000; // Wait 10 seconds after startup for memory to settle
-const IPC_TIMEOUT = 30000; // 30 seconds timeout for IPC responses
+function readIntegerEnv(name, defaultValue, min) {
+	const rawValue = process.env[name];
+	if (rawValue == null || rawValue === '') return defaultValue;
+	if (!/^\d+$/.test(rawValue)) throw new Error(`${name} must be an integer`);
+
+	const value = Number(rawValue);
+	if (!Number.isSafeInteger(value) || value < min) throw new Error(`${name} must be >= ${min}`);
+	return value;
+}
+
+const SAMPLE_COUNT = readIntegerEnv('MK_MEMORY_SAMPLE_COUNT', 3, 1); // Number of samples to measure
+const STARTUP_TIMEOUT = readIntegerEnv('MK_MEMORY_STARTUP_TIMEOUT_MS', 120000, 1); // Timeout for server startup
+const MEMORY_SETTLE_TIME = readIntegerEnv('MK_MEMORY_SETTLE_TIME_MS', 10000, 0); // Wait after startup for memory to settle
+const IPC_TIMEOUT = readIntegerEnv('MK_MEMORY_IPC_TIMEOUT_MS', 30000, 1); // Timeout for IPC responses
+const REQUEST_COUNT = readIntegerEnv('MK_MEMORY_REQUEST_COUNT', 10, 0);
 
 const procStatusKeys = {
 	VmPeak: 0,
@@ -272,7 +283,6 @@ async function measureMemory() {
 	const afterGc = await getAllMemoryUsage(serverProcess);
 
 	// create some http requests to simulate load
-	const REQUEST_COUNT = 10;
 	await Promise.all(
 		Array.from({ length: REQUEST_COUNT }).map(() => createRequest()),
 	);
@@ -324,6 +334,12 @@ async function main() {
 		timestamp: new Date().toISOString(),
 		sampleCount: SAMPLE_COUNT,
 		aggregation: 'median',
+		measurement: {
+			startupTimeoutMs: STARTUP_TIMEOUT,
+			memorySettleTimeMs: MEMORY_SETTLE_TIME,
+			ipcTimeoutMs: IPC_TIMEOUT,
+			requestCount: REQUEST_COUNT,
+		},
 		...summary,
 		samples: results,
 	};
