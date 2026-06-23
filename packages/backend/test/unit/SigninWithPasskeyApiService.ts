@@ -20,7 +20,7 @@ import { RateLimiterService } from '@/server/api/RateLimiterService.js';
 import { WebAuthnService } from '@/core/WebAuthnService.js';
 import { SigninService } from '@/server/api/SigninService.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-import type { ApiEnv } from '@/server/api/ApiServerTypes.js';
+import type { ApiContext, ApiEnv } from '@/server/api/ApiServerTypes.js';
 
 class FakeLimiter {
 	public async limit() {
@@ -65,7 +65,7 @@ describe('SigninWithPasskeyApiService', () => {
 	}
 
 	async function createHonoApp() {
-		const honoApp = new Hono<ApiEnv>();
+		const honoApp = new Hono();
 		honoApp.get('/', dummyContextMiddleware, async (ctx) => {
 			const json = await ctx.req.json();
 			return passkeyApiService.signin(ctx, json);
