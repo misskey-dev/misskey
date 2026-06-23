@@ -71,7 +71,7 @@ function formatColoredDiff(text, diff) {
 	if (diff === 0) return text;
 	const color = diff > 0 ? 'orange' : 'green';
 	const sign = diff > 0 ? '+' : '-';
-	return `$\\color{${color}}{\\text{${sign}${escapeLatex(text).replaceAll('\\%', '\\\\%')}}}$`;
+	return `$\\color{${color}}{\\text{${sign}${escapeLatex(text)}}}$`;
 }
 
 function formatNumberDiff(before, after) {
@@ -80,8 +80,9 @@ function formatNumberDiff(before, after) {
 	return formatColoredDiff(formatNumber(Math.abs(diff)), diff);
 }
 
-function formatBytesDiff(diff) {
-	if (diff == null) return '-';
+function formatBytesDiff(before, after) {
+	if (before == null || after == null) return '-';
+	const diff = after - before;
 	if (diff === 0) return '0 B';
 	return formatColoredDiff(formatBytes(Math.abs(diff)), diff);
 }
@@ -410,16 +411,16 @@ function chunkMarkdownTable(rows, total) {
 		'| --- | ---: | ---: | ---: | ---: |',
 	];
 	if (total != null) {
-		lines.push(`| (total) | ${formatBytes(total.beforeSize)} | ${formatBytes(total.afterSize)} | ${formatBytesDiff(total.afterSize - total.beforeSize)} | ${formatDiffPercent(total.beforeSize, total.afterSize)} |`);
+		lines.push(`| (total) | ${formatBytes(total.beforeSize)} | ${formatBytes(total.afterSize)} | ${formatBytesDiff(total.beforeSize, total.afterSize)} | ${formatDiffPercent(total.beforeSize, total.afterSize)} |`);
 		lines.push('| | | | | |');
 	}
 	for (const row of rows) {
 		if (row.changeType === 'added') {
-			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(row.chunkFile)}\` </details> | ${formatBytes(row.beforeSize)} | ${formatBytes(row.afterSize)} | ${formatBytesDiff(row.afterSize - row.beforeSize)} | $\\color{orange}{\\text{(+)}}$ |`);
+			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(row.chunkFile)}\` </details> | ${formatBytes(row.beforeSize)} | ${formatBytes(row.afterSize)} | ${formatBytesDiff(row.beforeSize, row.afterSize)} | $\\color{orange}{\\text{(+)}}$ |`);
 		} else if (row.changeType === 'removed') {
-			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(row.chunkFile)}\` </details> | ${formatBytes(row.beforeSize)} | ${formatBytes(row.afterSize)} | ${formatBytesDiff(row.afterSize - row.beforeSize)} | $\\color{green}{\\text{(-)}}$ |`);
+			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(row.chunkFile)}\` </details> | ${formatBytes(row.beforeSize)} | ${formatBytes(row.afterSize)} | ${formatBytesDiff(row.beforeSize, row.afterSize)} | $\\color{green}{\\text{(-)}}$ |`);
 		} else {
-			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(row.chunkFile)}\` </details> | ${formatBytes(row.beforeSize)} | ${formatBytes(row.afterSize)} | ${formatBytesDiff(row.afterSize - row.beforeSize)} | ${formatDiffPercent(row.beforeSize, row.afterSize)} |`);
+			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(row.chunkFile)}\` </details> | ${formatBytes(row.beforeSize)} | ${formatBytes(row.afterSize)} | ${formatBytesDiff(row.beforeSize, row.afterSize)} | ${formatDiffPercent(row.beforeSize, row.afterSize).replaceAll('\\%', '\\\\%')} |`);
 		}
 	}
 	return lines.join('\n');
