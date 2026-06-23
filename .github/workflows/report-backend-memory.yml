@@ -158,16 +158,8 @@ jobs:
             line $1 HeapUsed
             line $1 HeapTotal
             line $1 External
-            line $1 ArrayBuffers
             line $1 Pss
             line $1 Private_Dirty
-            line $1 Private_Clean
-            line $1 Shared_Dirty
-            line $1 Shared_Clean
-            line $1 VmRSS
-            line $1 VmHWM
-            line $1 VmSize
-            line $1 VmData
           }
 
           echo "### Before GC" >> ./output.md
