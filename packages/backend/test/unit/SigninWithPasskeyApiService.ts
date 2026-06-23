@@ -5,6 +5,8 @@
 
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockDeep } from 'vitest-mock-extended';
+import { Hono } from 'hono';
+import { createMiddleware } from 'hono/factory';
 import { Test, TestingModule } from '@nestjs/testing';
 import type { AuthenticationResponseJSON } from '@simplewebauthn/server';
 import { MiUser } from '@/models/User.js';
@@ -18,7 +20,7 @@ import { RateLimiterService } from '@/server/api/RateLimiterService.js';
 import { WebAuthnService } from '@/core/WebAuthnService.js';
 import { SigninService } from '@/server/api/SigninService.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
-import type { ApiContext } from '@/server/api/ApiServerTypes.js';
+import type { ApiEnv } from '@/server/api/ApiServerTypes.js';
 
 class FakeLimiter {
 	public async limit() {
@@ -32,22 +34,11 @@ class FakeSigninService {
 	}
 }
 
-class DummyContext {
-	public statusCode: number;
-	public var = { ip: '0.0.0.0', ips: ['0.0.0.0'] };
-	public req = {
-		raw: {
-			headers: new Headers({ accept: 'application/json' }),
-		},
-	};
-	status(num: number): void {
-		this.statusCode = num;
-	}
-	header(_key: string, _value: string): void {
-	}
-	constructor(public body: {credential?: any, context?: string} = {}) {
-	}
-}
+const dummyContextMiddleware = createMiddleware<ApiEnv>(async (ctx, next) => {
+	ctx.set('ip', '0.0.0.0');
+	ctx.set('ips', ['0.0.0.0']);
+	await next();
+});
 
 describe('SigninWithPasskeyApiService', () => {
 	let app: TestingModule;
@@ -71,6 +62,15 @@ describe('SigninWithPasskeyApiService', () => {
 			.save({ ...data },
 			);
 		return userProfile;
+	}
+
+	async function createHonoApp() {
+		const honoApp = new Hono<ApiEnv>();
+		honoApp.get('/', dummyContextMiddleware, async (ctx) => {
+			const json = await ctx.req.json();
+			return passkeyApiService.signin(ctx, json);
+		});
+		return honoApp;
 	}
 
 	beforeAll(async () => {
@@ -118,49 +118,71 @@ describe('SigninWithPasskeyApiService', () => {
 
 	describe('Get Passkey Options', () => {
 		it('Should return passkey Auth Options', async () => {
-			const ctx = new DummyContext({}) as unknown as ApiContext;
-			const res_body = await passkeyApiService.signin(ctx, {});
-			expect((ctx as unknown as DummyContext).statusCode).toBe(200);
-			expect((res_body as any).option).toBeDefined();
+			const honoApp = await createHonoApp();
+			const res = await honoApp.request('/', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: '{}',
+			});
+			expect(res.status).toBe(200);
+			const res_body = await res.json();
+			expect(res_body).toHaveProperty('option');
 			expect(typeof (res_body as any).context).toBe('string');
 		});
 	});
 	describe('Try Passkey Auth', () => {
 		it('Should Success', async () => {
-			const credential = { dummy: [] } as unknown as AuthenticationResponseJSON;
-			const ctx = new DummyContext({ context: 'auth-context', credential }) as unknown as ApiContext;
-			const res_body = await passkeyApiService.signin(ctx, { context: 'auth-context', credential });
+			const honoApp = await createHonoApp();
+			const res = await honoApp.request('/', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ context: 'auth-context', credential: { dummy: [] } as unknown as AuthenticationResponseJSON }),
+			});
+			expect(res.status).toBe(200);
+			const res_body = await res.json();
 			expect((res_body as any).signinResponse).toBeDefined();
 		});
 
 		it('Should return 400 Without Auth Context', async () => {
-			const credential = { dummy: [] } as unknown as AuthenticationResponseJSON;
-			const ctx = new DummyContext({ credential }) as unknown as ApiContext;
-			const res_body = await passkeyApiService.signin(ctx, { credential });
-			expect((ctx as unknown as DummyContext).statusCode).toBe(400);
+			const honoApp = await createHonoApp();
+			const res = await honoApp.request('/', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ credential: { dummy: [] } as unknown as AuthenticationResponseJSON }),
+			});
+			expect(res.status).toBe(400);
+			const res_body = await res.json();
 			expect((res_body as any).error?.id).toStrictEqual('1658cc2e-4495-461f-aee4-d403cdf073c1');
 		});
 
 		it('Should return 403 When Challenge Verify fail', async () => {
-			const credential = { dummy: [] } as unknown as AuthenticationResponseJSON;
-			const ctx = new DummyContext({ context: 'misskey-1234', credential }) as unknown as ApiContext;
+			const honoApp = await createHonoApp();
 			vi.spyOn(webAuthnService, 'verifySignInWithPasskeyAuthentication')
 				.mockImplementation(async () => {
 					throw new IdentifiableError('THIS_ERROR_CODE_SHOULD_BE_FORWARDED');
 				});
-			const res_body = await passkeyApiService.signin(ctx, { context: 'misskey-1234', credential });
-			expect((ctx as unknown as DummyContext).statusCode).toBe(403);
+			const res = await honoApp.request('/', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ context: 'misskey-1234', credential: { dummy: [] } as unknown as AuthenticationResponseJSON }),
+			});
+			expect(res.status).toBe(403);
+			const res_body = await res.json();
 			expect((res_body as any).error?.id).toStrictEqual('THIS_ERROR_CODE_SHOULD_BE_FORWARDED');
 		});
 
 		it('Should return 403 When The user not Enabled Passwordless login', async () => {
-			const credential = { dummy: [] } as unknown as AuthenticationResponseJSON;
-			const ctx = new DummyContext({ context: 'misskey-1234', credential }) as unknown as ApiContext;
+			const honoApp = await createHonoApp();
 			const userId = await FakeWebauthnVerify();
 			const data = { userId: userId, usePasswordLessLogin: false };
 			await userProfilesRepository.update({ userId: userId }, data);
-			const res_body = await passkeyApiService.signin(ctx, { context: 'misskey-1234', credential });
-			expect((ctx as unknown as DummyContext).statusCode).toBe(403);
+			const res = await honoApp.request('/', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ context: 'misskey-1234', credential: { dummy: [] } as unknown as AuthenticationResponseJSON }),
+			});
+			expect(res.status).toBe(403);
+			const res_body = await res.json();
 			expect((res_body as any).error?.id).toStrictEqual('2d84773e-f7b7-4d0b-8f72-bb69b584c912');
 		});
 	});
