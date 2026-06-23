@@ -150,8 +150,9 @@ export class AiService {
 				method: 'POST',
 				headers,
 				body: form,
-				// サイドカーは管理者が指定する内部サービスなのでプロキシを迂回しローカルアドレスを許可する。
-				agent: (u) => this.httpRequestService.getAgentByUrl(u, true, true),
+				// 外部サービスとして通常の proxy / private address 制限を適用する。
+				// サイドカーへの private network 接続は allowedPrivateNetworks 等で明示的に許可する。
+				agent: (u) => this.httpRequestService.getAgentByUrl(u),
 				signal: controller.signal,
 			});
 

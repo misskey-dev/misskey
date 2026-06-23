@@ -8399,7 +8399,7 @@ export interface Locale extends ILocale {
          */
         "apiUrl": string;
         /**
-         * sensitive-detector サービスのベースURL (例: http://localhost:3009)。空欄の場合、センシティブ判定は行われません。
+         * sensitive-detector サービスのベースURL (例: http://localhost:3009)。プライベートネットワーク上のサービスに接続する場合は、設定ファイルの allowedPrivateNetworks で接続先ネットワークを許可してください。プロキシを使用している場合は、proxyBypassHosts も設定してください。空欄の場合、センシティブ判定は行われません。
          */
         "apiUrlDescription": string;
         /**

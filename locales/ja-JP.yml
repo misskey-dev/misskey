@@ -2179,7 +2179,7 @@ _sensitiveMediaDetection:
   analyzeVideosDescription: "静止画に加えて動画も解析するようにします。サーバーの負荷が少し増えます。"
   externalServiceInfo: "センシティブメディアの判定は外部サービス (sensitive-detector) に分離されました。この機能を利用するには、別途サイドカーサービスをセットアップし、下記の接続先を設定する必要があります。接続先が未設定の場合、判定は行われません (非センシティブ扱い)。"
   apiUrl: "判定サービスの接続先URL"
-  apiUrlDescription: "sensitive-detector サービスのベースURL (例: http://localhost:3009)。空欄の場合、センシティブ判定は行われません。"
+  apiUrlDescription: "sensitive-detector サービスのベースURL (例: http://localhost:3009)。プライベートネットワーク上のサービスに接続する場合は、設定ファイルの allowedPrivateNetworks で接続先ネットワークを許可してください。プロキシを使用している場合は、proxyBypassHosts も設定してください。空欄の場合、センシティブ判定は行われません。"
   apiKey: "APIキー"
   apiKeyDescription: "判定サービス側で認証 (Bearerトークン) を設定している場合に入力します。設定していない場合は空欄のままにしてください。"
   timeout: "タイムアウト (ミリ秒)"

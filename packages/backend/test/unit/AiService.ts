@@ -16,6 +16,8 @@ vi.mock('node-fetch', () => ({ default: fetchMock }));
 
 const { AiService } = await import('@/core/AiService.js');
 
+let getAgentByUrlMock: ReturnType<typeof vi.fn>;
+
 const DEFAULT_META = {
 	sensitiveMediaDetectionApiUrl: 'http://localhost:3009' as string | null,
 	sensitiveMediaDetectionApiKey: null as string | null,
@@ -25,7 +27,8 @@ const DEFAULT_META = {
 
 function makeService(metaOverrides: Partial<typeof DEFAULT_META> = {}): AiServiceType {
 	const meta = { ...DEFAULT_META, ...metaOverrides } as unknown as MiMeta;
-	const httpRequestService = { getAgentByUrl: () => undefined } as unknown as HttpRequestService;
+	getAgentByUrlMock = vi.fn(() => undefined);
+	const httpRequestService = { getAgentByUrl: getAgentByUrlMock } as unknown as HttpRequestService;
 	const loggerService = {
 		getLogger: () => ({ warn: () => {}, error: () => {}, info: () => {} }),
 	} as unknown as LoggerService;
@@ -65,6 +68,17 @@ describe('AiService', () => {
 		]);
 		expect(fetchMock).toHaveBeenCalledTimes(1);
 		expect(fetchMock.mock.calls[0][0]).toBe('http://localhost:3009/v1/detect-images');
+	});
+
+	test('外部サービス: 通常の outbound agent を使用する', async () => {
+		fetchMock.mockResolvedValue(okResponse([{ success: true, predictions: neutral() }]));
+		const svc = makeService({ sensitiveMediaDetectionApiUrl: 'https://detector.example.com' });
+
+		await svc.detectSensitiveMany([buf('a')]);
+
+		const requestOptions = fetchMock.mock.calls[0][1] as { agent: (url: URL) => unknown };
+		requestOptions.agent(new URL('https://detector.example.com/v1/detect-images'));
+		expect(getAgentByUrlMock).toHaveBeenCalledWith(expect.any(URL));
 	});
 
 	test('detectSensitive: 単一画像はバッチの先頭を返す', async () => {
