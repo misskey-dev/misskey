@@ -44,7 +44,7 @@ function formatNumber(value) {
 	return numberFormatter.format(value);
 }
 
-function formatBytes(size) {
+function formatBytes(value) {
 	if (!Number.isFinite(value) || value <= 0) return '0 B';
 
 	const units = ['B', 'KiB', 'MiB', 'GiB'];
