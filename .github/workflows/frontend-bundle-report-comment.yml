@@ -26,7 +26,6 @@ on:
       - pnpm-workspace.yaml
       - .node-version
       - .github/scripts/frontend-js-size.mjs
-      - .github/scripts/frontend-bundle-visualizer-report.mjs
       - .github/workflows/frontend-bundle-report.yml
       - .github/workflows/frontend-bundle-report-comment.yml
 
@@ -185,7 +184,6 @@ jobs:
             const reportMarkers = [jsSizeMarker, visualizerMarker];
             const reportDir = path.join(process.env.RUNNER_TEMP, 'frontend-bundle-report');
             const jsSizeReportPath = path.join(reportDir, 'frontend-js-size-report.md');
-            const visualizerReportPath = path.join(reportDir, 'frontend-bundle-visualizer-report.md');
             const prNumberPath = path.join(reportDir, 'pr-number.txt');
             const headShaPath = path.join(reportDir, 'head-sha.txt');
             const workflowRun = context.payload.workflow_run;
@@ -195,10 +193,6 @@ jobs:
 
             if (!fs.existsSync(jsSizeReportPath)) {
               core.setFailed('The frontend bundle report artifact does not contain frontend-js-size-report.md.');
-              return;
-            }
-            if (!fs.existsSync(visualizerReportPath)) {
-              core.setFailed('The frontend bundle report artifact does not contain frontend-bundle-visualizer-report.md.');
               return;
             }
 
@@ -274,11 +268,7 @@ jobs:
               core.setFailed('The frontend JS size report is missing the expected marker.');
               return;
             }
-            const visualizerReport = fs.readFileSync(visualizerReportPath, 'utf8').trim();
-            let body = [
-              jsSizeReport,
-              visualizerReport,
-            ].join('\n\n') + '\n';
+            let body = `${jsSizeReport}\n`;
 
             const maxCommentLength = 65_000;
             if (body.length > maxCommentLength) {
