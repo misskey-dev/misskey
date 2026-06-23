@@ -207,11 +207,11 @@ function renderJsFootprintMetricTable(base, head) {
 	const metricRows = [
 		['Loaded JS modules', 'loadedJsModules', formatNumber],
 		['Loaded JS source', 'loadedJsSourceBytes', formatBytes],
-		['Loaded JS gzip estimate', 'loadedJsGzipBytes', formatBytes],
-		['AST nodes', 'astNodeCount', formatNumber],
-		['Functions', 'functionCount', formatNumber],
-		['Classes', 'classCount', formatNumber],
-		['String literals', 'stringLiteralBytes', formatBytes],
+		//['Loaded JS gzip estimate', 'loadedJsGzipBytes', formatBytes],
+		//['AST nodes', 'astNodeCount', formatNumber],
+		//['Functions', 'functionCount', formatNumber],
+		//['Classes', 'classCount', formatNumber],
+		//['String literals', 'stringLiteralBytes', formatBytes],
 		['External packages loaded', 'externalPackageCount', formatNumber],
 		['Native addon packages', 'nativeAddonPackageCount', formatNumber],
 	];
@@ -363,8 +363,6 @@ function renderJsFootprintSection(base, head) {
 
 	const lines = [
 		'### Runtime Loaded JS Footprint',
-		'',
-		'_Measured in a separate backend startup with loader tracing after the same warmup requests. This does not affect the memory table above._',
 		'',
 		renderJsFootprintMetricTable(base, head),
 		'',
