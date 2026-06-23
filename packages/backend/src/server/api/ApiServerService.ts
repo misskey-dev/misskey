@@ -8,7 +8,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { Hono } from 'hono';
 import { TrieRouter } from 'hono/router/trie-router';
-import type { Handler, MiddlewareHandler } from 'hono';
+import type { Handler } from 'hono';
 import { bodyLimit } from 'hono/body-limit';
 import { cors } from 'hono/cors';
 import { HttpStatusError } from '@/misc/http-status-error.js';
@@ -165,6 +165,10 @@ export class ApiServerService {
 		});
 
 		hono.use('*', async (ctx, next) => {
+			if (ctx.req.method === 'GET') {
+				return await next();
+			}
+
 			const contentType = ctx.req.header('Content-Type') || '';
 
 			if (contentType.includes('multipart/form-data')) {
@@ -188,10 +192,18 @@ export class ApiServerService {
 					exec,
 				} satisfies IEndpoint & { exec: any };
 
-				const parsedBody = ctx.req.method === 'GET' ? undefined : await this.parseJsonBody(ctx);
-				if (parsedBody instanceof Response) return parsedBody;
+				if (endpoint.meta.requireFile) {
+					const multipartData = await this.parseMultipartBody(ctx);
+					if (multipartData instanceof Response) return multipartData;
+					if (multipartData == null) return ctx.body(null, 400);
 
-				return await this.apiCallService.handleRequest(ep, ctx, parsedBody);
+					return await this.apiCallService.handleMultipartRequest(ep, ctx, multipartData);
+				} else {
+					const parsedBody = ctx.req.method === 'GET' ? undefined : await this.parseJsonBody(ctx);
+					if (parsedBody instanceof Response) return parsedBody;
+
+					return await this.apiCallService.handleRequest(ep, ctx, parsedBody);
+				}
 			};
 
 			const registerRoute = (path: string, handler: Handler) => {
