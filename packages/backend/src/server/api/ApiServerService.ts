@@ -50,13 +50,8 @@ export class ApiServerService {
 
 	@bindThis
 	private async parseJsonBody(ctx: ApiContext): Promise<Record<string, unknown> | Response> {
-		const text = await ctx.req.text();
-		if (text === '') {
-			return {};
-		}
-
 		try {
-			const parsed = JSON.parse(text) as unknown;
+			const parsed = await ctx.req.json();
 			if (parsed == null || Array.isArray(parsed) || typeof parsed !== 'object') {
 				return ctx.body(null, 400);
 			}
