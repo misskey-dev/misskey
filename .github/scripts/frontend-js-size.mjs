@@ -1,8 +1,15 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and misskey-project
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 
 const marker = '<!-- misskey-frontend-js-size -->';
 const locale = process.env.FRONTEND_JS_SIZE_LOCALE || 'ja-JP';
+const byteFormatter = new Intl.NumberFormat('en-US');
+const numberFormatter = new Intl.NumberFormat('en-US');
 
 function normalizePath(filePath) {
 	return filePath.split(path.sep).join('/');
@@ -33,45 +40,86 @@ async function* walk(dir) {
 	}
 }
 
-function formatBytes(size) {
-	if (size == null) return '-';
-	if (size < 1024) return `${size} B`;
-	if (size < 1024 * 1024) return `${stripTrailingZeros((size / 1024).toFixed(1))} KiB`;
-	return `${stripTrailingZeros((size / 1024 / 1024).toFixed(2))} MiB`;
+function formatNumber(value) {
+	return numberFormatter.format(value);
 }
 
-function stripTrailingZeros(value) {
-	return value.replace(/\.0+$/, '').replace(/(\.\d*?)0+$/, '$1');
+function formatBytes(value) {
+	if (!Number.isFinite(value) || value <= 0) return '0 B';
+
+	const units = ['B', 'KiB', 'MiB', 'GiB'];
+	let unitIndex = 0;
+	let size = value;
+	while (size >= 1024 && unitIndex < units.length - 1) {
+		size /= 1024;
+		unitIndex += 1;
+	}
+
+	const maximumFractionDigits = size >= 10 || unitIndex === 0 ? 0 : 1;
+	return `${byteFormatter.format(Number(size.toFixed(maximumFractionDigits)))} ${units[unitIndex]}`;
 }
 
-function formatMathText(text) {
+function escapeLatex(text) {
 	return text
 		.replaceAll('\\', '\\\\')
 		.replaceAll('{', '\\{')
 		.replaceAll('}', '\\}')
-		.replaceAll('%', '\\\\%');
+		.replaceAll('%', '\\%');
 }
 
-function formatDiff(diff) {
-	if (diff == null) return '-';
-	if (diff === 0) return '0 B';
+function formatColoredDiff(text, diff) {
+	if (diff === 0) return text;
+	const color = diff > 0 ? 'orange' : 'green';
 	const sign = diff > 0 ? '+' : '-';
-	const text = `${sign}${formatBytes(Math.abs(diff))}`;
-	const color = diff > 0 ? 'orange' : 'green';
-	return `$\\color{${color}}{\\text{${formatMathText(text)}}}$`;
+	return `$\\color{${color}}{\\text{${sign}${escapeLatex(text)}}}$`;
 }
 
-function formatDiffPercent(beforeSize, afterSize) {
-	if (beforeSize == null || beforeSize === 0 || afterSize == null || afterSize === 0) return '-';
-	const diff = afterSize - beforeSize;
+function formatNumberDiff(before, after) {
+	if (before == null || after == null) return '-';
+	const diff = after - before;
+	return formatColoredDiff(formatNumber(Math.abs(diff)), diff);
+}
+
+function formatBytesDiff(before, after) {
+	if (before == null || after == null) return '-';
+	const diff = after - before;
+	if (diff === 0) return '0 B';
+	return formatColoredDiff(formatBytes(Math.abs(diff)), diff);
+}
+
+function formatDiffPercent(before, after) {
+	if (before == null || before === 0 || after == null || after === 0) return '-';
+	const diff = after - before;
 	if (diff === 0) return `0%`;
-	const percent = Math.round(diff / beforeSize * 100);
-	const color = diff > 0 ? 'orange' : 'green';
-	return `$\\color{${color}}{\\text{${formatMathText(percent.toString() + '%')}}}$`;
+	const percent = Math.round(diff / before * 100);
+	return formatColoredDiff(`${percent}%`, diff);
+}
+
+function sharePercent(value, total) {
+	if (total === 0) return '0%';
+	return Math.round((value / total) * 100) + '%';
 }
 
 function escapeCell(value) {
 	return String(value).replaceAll('|', '\\|').replaceAll('\n', '<br>');
+}
+
+function tableCell(value) {
+	return String(value).replaceAll('|', '\\|').replaceAll('\r', ' ').replaceAll('\n', ' ');
+}
+
+function code(value) {
+	const sanitized = String(value).replaceAll('\r', ' ').replaceAll('\n', ' ');
+	const backtickRuns = sanitized.match(/`+/g) ?? [];
+	const fenceLength = Math.max(1, ...backtickRuns.map((run) => run.length + 1));
+	const fence = '`'.repeat(fenceLength);
+	const padding = sanitized.startsWith('`') || sanitized.endsWith('`') ? ' ' : '';
+
+	return `${fence}${padding}${sanitized}${padding}${fence}`;
+}
+
+function tableCode(value) {
+	return tableCell(code(value));
 }
 
 function entryDisplayName(entry) {
@@ -174,26 +222,148 @@ async function collectReport(repoDir) {
 	};
 }
 
-function commonKeys(before, after) {
-	return Object.keys(before.chunks)
-		.filter((key) => after.chunks[key] != null);
+function collectVisualizerReport(data) {
+	const nodeParts = data.nodeParts ?? {};
+	const nodeMetas = Object.values(data.nodeMetas ?? {});
+	const moduleRows = [];
+	const bundleMap = new Map();
+
+	for (const meta of nodeMetas) {
+		const row = {
+			id: meta.id,
+			bundles: 0,
+			renderedLength: 0,
+			gzipLength: 0,
+			brotliLength: 0,
+			importedByCount: meta.importedBy?.length ?? 0,
+			importedCount: meta.imported?.length ?? 0,
+		};
+
+		for (const [bundleId, partUid] of Object.entries(meta.moduleParts ?? {})) {
+			const part = nodeParts[partUid];
+			if (part == null) continue;
+
+			row.bundles += 1;
+			row.renderedLength += part.renderedLength;
+			row.gzipLength += part.gzipLength;
+			row.brotliLength += part.brotliLength;
+
+			const bundle = bundleMap.get(bundleId) ?? {
+				id: bundleId,
+				modules: 0,
+				renderedLength: 0,
+				gzipLength: 0,
+				brotliLength: 0,
+			};
+			bundle.modules += 1;
+			bundle.renderedLength += part.renderedLength;
+			bundle.gzipLength += part.gzipLength;
+			bundle.brotliLength += part.brotliLength;
+			bundleMap.set(bundleId, bundle);
+		}
+
+		if (row.bundles > 0) {
+			moduleRows.push(row);
+		}
+	}
+
+	let staticImports = 0;
+	let dynamicImports = 0;
+	for (const meta of nodeMetas) {
+		for (const imported of meta.imported ?? []) {
+			if (imported.dynamic) {
+				dynamicImports += 1;
+			} else {
+				staticImports += 1;
+			}
+		}
+	}
+
+	const bundleRows = [...bundleMap.values()].sort((a, b) => b.renderedLength - a.renderedLength);
+	const hotModules = [...moduleRows].sort((a, b) => b.renderedLength - a.renderedLength);
+	const totalRendered = moduleRows.reduce((sum, row) => sum + row.renderedLength, 0);
+	const totalGzip = moduleRows.reduce((sum, row) => sum + row.gzipLength, 0);
+	const totalBrotli = moduleRows.reduce((sum, row) => sum + row.brotliLength, 0);
+
+	return {
+		options: data.options ?? {},
+		summary: {
+			bundles: bundleRows.length,
+			modules: moduleRows.length,
+			entries: nodeMetas.filter((meta) => meta.isEntry).length,
+			externals: nodeMetas.filter((meta) => meta.isExternal).length,
+			staticImports,
+			dynamicImports,
+		},
+		metrics: {
+			renderedLength: totalRendered,
+			gzipLength: totalGzip,
+			brotliLength: totalBrotli,
+		},
+		hotModules,
+	};
 }
 
-function addedKeys(before, after) {
-	return Object.keys(after.chunks)
-		.filter((key) => before.chunks[key] == null);
-}
+function renderVisualizerSummaryTable(before, after) {
+	const summary = [
+		'bundles',
+		'modules',
+		'entries',
+		//'externals',
+		'staticImports',
+		'dynamicImports',
+	];
 
-function removedKeys(before, after) {
-	return Object.keys(before.chunks)
-		.filter((key) => after.chunks[key] == null);
-}
+	const metrics = [
+		'renderedLength',
+		'gzipLength',
+		'brotliLength',
+	];
 
-function rowChangeType(beforeEntry, afterEntry, beforeSize, afterSize) {
-	if (beforeEntry == null) return 'added';
-	if (afterEntry == null) return 'removed';
-	if (beforeSize !== afterSize) return 'updated';
-	return 'unchanged';
+	return [
+		`<table>`,
+		`<thead>`,
+		`<tr>`,
+		`<th rowspan="2"></th>`,
+		`<th rowspan="2">Bundles</th>`,
+		`<th rowspan="2">Modules</th>`,
+		`<th rowspan="2">Entries</th>`,
+		`<th colspan="2">Imports</th>`,
+		`<th colspan="3">Size</th>`,
+		`</tr>`,
+		`<tr>`,
+		`<th>Static</th>`,
+		`<th>Dynamic</th>`,
+		`<th>Rendered</th>`,
+		`<th>Gzip</th>`,
+		`<th>Brotli</th>`,
+		`</tr>`,
+		`</thead>`,
+		`<tbody>`,
+		`<tr>`,
+		`<th><b>Before</b></th>`,
+		...summary.map((key) => `<td>${formatNumber(before.summary[key])}</td>`),
+		...metrics.map((key) => `<td>${formatBytes(before.metrics[key])}</td>`),
+		`</tr>`,
+		`<tr>`,
+		`<th><b>After</b></th>`,
+		...summary.map((key) => `<td>${formatNumber(after.summary[key])}</td>`),
+		...metrics.map((key) => `<td>${formatBytes(after.metrics[key])}</td>`),
+		`</tr>`,
+		`<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`,
+		`<tr>`,
+		`<th><b>Δ</b></th>`,
+		...summary.map((key) => `<td>${formatNumberDiff(before.summary[key], after.summary[key])}</td>`),
+		...metrics.map((key) => `<td>${formatBytesDiff(before.metrics[key], after.metrics[key])}</td>`),
+		`</tr>`,
+		`<tr>`,
+		`<th><b>Δ (%)</b></th>`,
+		...summary.map((key) => `<td>${formatDiffPercent(before.summary[key], after.summary[key])}</td>`),
+		...metrics.map((key) => `<td>${formatDiffPercent(before.metrics[key], after.metrics[key])}</td>`),
+		`</tr>`,
+		`</tbody>`,
+		`</table>`,
+	];
 }
 
 function getChunkComparisonRows(keys, before, after) {
@@ -208,13 +378,13 @@ function getChunkComparisonRows(keys, before, after) {
 			chunkFile: beforeEntry?.file ?? afterEntry?.file,
 			beforeSize,
 			afterSize,
-			changeType: rowChangeType(beforeEntry, afterEntry, beforeSize, afterSize),
+			changeType: beforeEntry == null ? 'added' : afterEntry == null ? 'removed' : beforeSize !== afterSize ? 'updated' : 'unchanged',
 			sortSize: Math.max(beforeSize, afterSize),
 		};
 	});
 }
 
-function summarizeChanges(rows) {
+function summarizeChunkChanges(rows) {
 	return {
 		updated: rows.filter((row) => row.changeType === 'updated').length,
 		added: rows.filter((row) => row.changeType === 'added').length,
@@ -222,18 +392,18 @@ function summarizeChanges(rows) {
 	};
 }
 
-function formatChangeSummary(label, summary) {
+function formatChunkChangeSummary(label, summary) {
 	return `${label} (${summary.updated} updated, ${summary.added} added, ${summary.removed} removed)`;
 }
 
-function compareComparisonRows(a, b) {
+function compareChunkComparisonRows(a, b) {
 	return Math.abs(b.afterSize - b.beforeSize) - Math.abs(a.afterSize - a.beforeSize)
 		|| (b.afterSize - b.beforeSize) - (a.afterSize - a.beforeSize)
 		|| b.sortSize - a.sortSize
 		|| a.name.localeCompare(b.name);
 }
 
-function markdownTable(rows, total) {
+function chunkMarkdownTable(rows, total) {
 	if (rows.length === 0) return '_No data_';
 
 	const lines = [
@@ -241,91 +411,142 @@ function markdownTable(rows, total) {
 		'| --- | ---: | ---: | ---: | ---: |',
 	];
 	if (total != null) {
-		lines.push(`| (total) | ${formatBytes(total.beforeSize)} | ${formatBytes(total.afterSize)} | ${formatDiff(total.afterSize - total.beforeSize)} | ${formatDiffPercent(total.beforeSize, total.afterSize)} |`);
+		lines.push(`| (total) | ${formatBytes(total.beforeSize)} | ${formatBytes(total.afterSize)} | ${formatBytesDiff(total.beforeSize, total.afterSize)} | ${formatDiffPercent(total.beforeSize, total.afterSize).replaceAll('\\%', '\\\\%')} |`);
 		lines.push('| | | | | |');
 	}
 	for (const row of rows) {
 		if (row.changeType === 'added') {
-			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(row.chunkFile)}\` </details> | ${formatBytes(row.beforeSize)} | ${formatBytes(row.afterSize)} | ${formatDiff(row.afterSize - row.beforeSize)} | $\\color{orange}{\\text{(+)}}$ |`);
+			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(row.chunkFile)}\` </details> | ${formatBytes(row.beforeSize)} | ${formatBytes(row.afterSize)} | ${formatBytesDiff(row.beforeSize, row.afterSize)} | $\\color{orange}{\\text{(+)}}$ |`);
 		} else if (row.changeType === 'removed') {
-			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(row.chunkFile)}\` </details> | ${formatBytes(row.beforeSize)} | ${formatBytes(row.afterSize)} | ${formatDiff(row.afterSize - row.beforeSize)} | $\\color{green}{\\text{(-)}}$ |`);
+			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(row.chunkFile)}\` </details> | ${formatBytes(row.beforeSize)} | ${formatBytes(row.afterSize)} | ${formatBytesDiff(row.beforeSize, row.afterSize)} | $\\color{green}{\\text{(-)}}$ |`);
 		} else {
-			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(row.chunkFile)}\` </details> | ${formatBytes(row.beforeSize)} | ${formatBytes(row.afterSize)} | ${formatDiff(row.afterSize - row.beforeSize)} | ${formatDiffPercent(row.beforeSize, row.afterSize)} |`);
+			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(row.chunkFile)}\` </details> | ${formatBytes(row.beforeSize)} | ${formatBytes(row.afterSize)} | ${formatBytesDiff(row.beforeSize, row.afterSize)} | ${formatDiffPercent(row.beforeSize, row.afterSize).replaceAll('\\%', '\\\\%')} |`);
 		}
 	}
 	return lines.join('\n');
 }
 
-const beforeDir = process.argv[2];
-const afterDir = process.argv[3];
-const outFile = process.argv[4];
-const beforeSha = process.env.BASE_SHA;
-const afterSha = process.env.HEAD_SHA;
+function renderFrontendChunkReport(before, after) {
+	const commonChunkKeys = Object.keys(before.chunks).filter((key) => after.chunks[key] != null);
+	const addedChunkKeys = Object.keys(after.chunks).filter((key) => before.chunks[key] == null);
+	const removedChunkKeys = Object.keys(before.chunks).filter((key) => after.chunks[key] == null);
+	const allChunkKeys = [
+		...commonChunkKeys,
+		...addedChunkKeys,
+		...removedChunkKeys,
+	];
+	//const comparisonRows = getChunkComparisonRows(commonChunkKeys, before, after);
+	const allComparisonRows = getChunkComparisonRows(allChunkKeys, before, after);
 
+	const changedRows = allComparisonRows.filter((row) => row.changeType !== 'unchanged');
+	const diffSummary = summarizeChunkChanges(changedRows);
+	const diffTotal = {
+		beforeSize: allComparisonRows.reduce((sum, row) => sum + row.beforeSize, 0),
+		afterSize: allComparisonRows.reduce((sum, row) => sum + row.afterSize, 0),
+	};
+	const diffRows = changedRows.sort(compareChunkComparisonRows).slice(0, 30); // TODO: 実際に30を超えて切り捨てられたrowがあった場合はその旨をmarkdown内に表示するようにする
+
+	const startupKeys = new Set([
+		...before.startupKeys,
+		...after.startupKeys,
+	]);
+	const startupComparisonRows = getChunkComparisonRows([...startupKeys], before, after);
+	const startupRows = startupComparisonRows.sort(compareChunkComparisonRows);
+	const startupSummary = summarizeChunkChanges(startupComparisonRows);
+	const startupTotal = {
+		beforeSize: startupComparisonRows.reduce((sum, row) => sum + row.beforeSize, 0),
+		afterSize: startupComparisonRows.reduce((sum, row) => sum + row.afterSize, 0),
+	};
+
+	//const largeRows = comparisonRows
+	//	.sort((a, b) => b.sortSize - a.sortSize || a.name.localeCompare(b.name))
+	//	.slice(0, 30);
+
+	return [
+		'<details open>',
+		`<summary>${formatChunkChangeSummary('Chunk size diff', diffSummary)}</summary>`,
+		'',
+		chunkMarkdownTable(diffRows, diffTotal),
+		'',
+		'</details>',
+		'',
+		'<details>',
+		`<summary>${formatChunkChangeSummary('Startup chunk size', startupSummary)}</summary>`,
+		'',
+		chunkMarkdownTable(startupRows, startupTotal),
+		'',
+		`_Startup chunks are the Vite entry for \`src/_boot_.ts\` and its static imports._`,
+		'',
+		'</details>',
+		'',
+		//'<details>',
+		//`<summary>Largest</summary>`,
+		//'',
+		//markdownTable(largeRows),
+		//'',
+		//'</details>',
+		//'',
+	].join('\n');
+}
+
+function renderFrontendBundleReport(before, after) {
+	const lines = [
+		...renderVisualizerSummaryTable(before, after),
+		'',
+		//'<details>',
+		//'<summary>Top 10</summary>',
+		//'',
+	];
+
+	/*
+	for (const row of after.hotModules.slice(0, 10)) {
+		lines.push(`- ${code(row.id)}: ${sharePercent(row.renderedLength, after.metrics.renderedLength)} (${formatBytes(row.renderedLength)})`);
+	}
+
+	lines.push(
+		'',
+		'</details>',
+	);
+
+	lines.push(
+		'',
+		'<details>',
+		'<summary>Hot Modules (Self Size)</summary>',
+		'',
+		'| Module | Bundles | Rendered | Share | Gzip | Brotli | Imports | Imported By |',
+		'|---|---:|---:|---:|---:|---:|---:|---:|',
+	);
+
+	for (const row of after.hotModules.slice(0, 15)) {
+		lines.push(`| ${tableCode(row.id)} | ${row.bundles} | ${formatBytes(row.renderedLength)} | ${sharePercent(row.renderedLength, after.metrics.renderedLength)} | ${formatBytes(row.gzipLength)} | ${formatBytes(row.brotliLength)} | ${row.importedCount} | ${row.importedByCount} |`);
+	}
+
+	lines.push(
+		'',
+		'</details>',
+	);
+	*/
+
+	return lines.join('\n');
+}
+
+const args = process.argv.slice(2);
+const [beforeDir, afterDir, beforeStatsFile, afterStatsFile, outFile] = args;
 const before = await collectReport(beforeDir);
 const after = await collectReport(afterDir);
-
-const commonChunkKeys = commonKeys(before, after);
-const allChunkKeys = [
-	...commonChunkKeys,
-	...addedKeys(before, after),
-	...removedKeys(before, after),
-];
-//const comparisonRows = getChunkComparisonRows(commonChunkKeys, before, after);
-const allComparisonRows = getChunkComparisonRows(allChunkKeys, before, after);
-
-const changedRows = allComparisonRows.filter((row) => row.changeType !== 'unchanged');
-const diffSummary = summarizeChanges(changedRows);
-const diffTotal = {
-	beforeSize: allComparisonRows.reduce((sum, row) => sum + row.beforeSize, 0),
-	afterSize: allComparisonRows.reduce((sum, row) => sum + row.afterSize, 0),
-};
-const diffRows = changedRows.sort(compareComparisonRows).slice(0, 30); // TODO: 実際に30を超えて切り捨てられたrowがあった場合はその旨をmarkdown内に表示するようにする
-
-const startupKeys = new Set([
-	...before.startupKeys,
-	...after.startupKeys,
-]);
-const startupComparisonRows = getChunkComparisonRows([...startupKeys], before, after);
-const startupRows = startupComparisonRows
-	.sort(compareComparisonRows);
-const startupSummary = summarizeChanges(startupComparisonRows);
-const startupTotal = {
-	beforeSize: startupComparisonRows.reduce((sum, row) => sum + row.beforeSize, 0),
-	afterSize: startupComparisonRows.reduce((sum, row) => sum + row.afterSize, 0),
-};
-
-//const largeRows = comparisonRows
-//	.sort((a, b) => b.sortSize - a.sortSize || a.name.localeCompare(b.name))
-//	.slice(0, 30);
+const beforeStats = JSON.parse(await fs.readFile(beforeStatsFile, 'utf8'));
+const afterStats = JSON.parse(await fs.readFile(afterStatsFile, 'utf8'));
 
 const body = [
 	marker,
-	`## Frontend Chunk Report`,
 	'',
-	'<details open>',
-	`<summary>${formatChangeSummary('Diffs', diffSummary)}</summary>`,
+	`## Frontend Bundle Report`,
 	'',
-	markdownTable(diffRows, diffTotal),
+	renderFrontendChunkReport(before, after),
 	'',
-	'</details>',
+	'## Bundle Stats',
 	'',
-	'<details>',
-	`<summary>${formatChangeSummary('Startup', startupSummary)}</summary>`,
-	'',
-	markdownTable(startupRows, startupTotal),
-	'',
-	`_Startup chunks are the Vite entry for \`src/_boot_.ts\` and its static imports._`,
-	'',
-	'</details>',
-	'',
-	//'<details>',
-	//`<summary>Largest</summary>`,
-	//'',
-	//markdownTable(largeRows),
-	//'',
-	//'</details>',
-	//'',
+	renderFrontendBundleReport(collectVisualizerReport(beforeStats), collectVisualizerReport(afterStats)),
 ].join('\n');
 
 await fs.writeFile(outFile, body);
