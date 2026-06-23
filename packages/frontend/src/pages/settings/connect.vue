@@ -93,7 +93,7 @@ async function generateToken() {
 
 			os.alert({
 				type: 'success',
-				title: i18n.ts.token,
+				title: i18n.ts.accessToken,
 				text: token,
 			});
 		},

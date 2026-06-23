@@ -770,6 +770,18 @@ export class QueueService {
 	}
 
 	@bindThis
+	public async queuePause(queueType: typeof QUEUE_TYPES[number]) {
+		const queue = this.getQueue(queueType);
+		await queue.pause();
+	}
+
+	@bindThis
+	public async queueResume(queueType: typeof QUEUE_TYPES[number]) {
+		const queue = this.getQueue(queueType);
+		await queue.resume();
+	}
+
+	@bindThis
 	public async queueRetryJob(queueType: typeof QUEUE_TYPES[number], jobId: string) {
 		const queue = this.getQueue(queueType);
 		const job = await queue.getJob(jobId);

@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import cors from '@fastify/cors';
 import multipart from '@fastify/multipart';
 import { ModuleRef } from '@nestjs/core';
-import { AuthenticationResponseJSON } from '@simplewebauthn/types';
+import type { AuthenticationResponseJSON } from '@simplewebauthn/server';
 import type { Config } from '@/config.js';
 import type { InstancesRepository, AccessTokensRepository } from '@/models/_.js';
 import { DI } from '@/di-symbols.js';
@@ -145,7 +145,7 @@ export class ApiServerService {
 
 		fastify.get('/v1/instance/peers', async (request, reply) => {
 			const instances = await this.instancesRepository.find({
-				select: ['host'],
+				select: { host: true },
 				where: {
 					suspensionState: 'none',
 				},

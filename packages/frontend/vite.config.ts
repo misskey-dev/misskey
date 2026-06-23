@@ -1,8 +1,9 @@
 import path from 'path';
-import pluginReplace from '@rollup/plugin-replace';
 import pluginVue from '@vitejs/plugin-vue';
 import pluginGlsl from 'vite-plugin-glsl';
-import type { UserConfig } from 'vite';
+import { replacePlugin } from 'rolldown/plugins';
+import { visualizer } from 'rollup-plugin-visualizer';
+import type { PluginOption, UserConfig } from 'vite';
 import { defineConfig } from 'vite';
 import * as yaml from 'js-yaml';
 import { promises as fsp } from 'fs';
@@ -11,16 +12,43 @@ import locales from 'i18n';
 import meta from '../../package.json';
 import packageInfo from './package.json' with { type: 'json' };
 import pluginUnwindCssModuleClassName from './lib/rollup-plugin-unwind-css-module-class-name.js';
-import pluginJson5 from './vite.json5.js';
+import pluginJson5 from './lib/vite-plugin-json5.js';
 import type { Options as SearchIndexOptions } from './lib/vite-plugin-create-search-index.js';
 import pluginCreateSearchIndex from './lib/vite-plugin-create-search-index.js';
 import pluginWatchLocales from './lib/vite-plugin-watch-locales.js';
 import { pluginRemoveUnrefI18n } from '../frontend-builder/rollup-plugin-remove-unref-i18n.js';
+import { Features } from 'lightningcss';
 
-const url = process.env.NODE_ENV === 'development' ? yaml.load(await fsp.readFile('../../.config/default.yml', 'utf-8')).url : null;
+const url = process.env.NODE_ENV === 'development' ? (yaml.load(await fsp.readFile('../../.config/default.yml', 'utf-8')) as any).url : null;
 const host = url ? (new URL(url)).hostname : undefined;
 
 const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.svg', '.sass', '.scss', '.css', '.vue'];
+
+function getBundleVisualizerPlugin(): PluginOption[] {
+	if (process.env.FRONTEND_BUNDLE_VISUALIZER !== 'true') return [];
+
+	const template = process.env.FRONTEND_BUNDLE_VISUALIZER_TEMPLATE === 'markdown'
+		? 'markdown'
+		: process.env.FRONTEND_BUNDLE_VISUALIZER_TEMPLATE === 'raw-data'
+			? 'raw-data'
+			: 'treemap';
+	const defaultFilename = template === 'markdown'
+		? path.resolve(__dirname, '../../built/_frontend_bundle_visualizer_/report.md')
+		: template === 'raw-data'
+			? path.resolve(__dirname, '../../built/_frontend_bundle_visualizer_/stats.json')
+			: path.resolve(__dirname, '../../built/_frontend_bundle_visualizer_/stats.html');
+
+	return [
+		visualizer({
+			filename: process.env.FRONTEND_BUNDLE_VISUALIZER_FILE ?? defaultFilename,
+			title: 'Misskey frontend bundle visualizer',
+			template,
+			gzipSize: true,
+			brotliSize: true,
+			projectRoot: path.resolve(__dirname, '../..'),
+		}) as PluginOption,
+	];
+}
 
 /**
  * 検索インデックスの生成設定
@@ -121,14 +149,14 @@ export function getConfig(): UserConfig {
 			pluginGlsl({ minify: true }),
 			...process.env.NODE_ENV === 'production'
 				? [
-					pluginReplace({
+					replacePlugin({
+						'isChromatic()': JSON.stringify(false),
+					}, {
 						preventAssignment: true,
-						values: {
-							'isChromatic()': JSON.stringify(false),
-						},
 					}),
 				]
 				: [],
+			...getBundleVisualizerPlugin(),
 		],
 
 		resolve: {
@@ -138,12 +166,14 @@ export function getConfig(): UserConfig {
 				'@@/': __dirname + '/../frontend-shared/',
 				'/client-assets/': __dirname + '/assets/',
 				'/static-assets/': __dirname + '/../backend/assets/',
-				'/fluent-emojis/': __dirname + '/../../fluent-emojis/dist/',
-				'/fluent-emoji/': __dirname + '/../../fluent-emojis/dist/',
+				'/fluent-emoji/': '@misskey-dev/emoji-assets/fluent-emoji/',
 			},
 		},
 
 		css: {
+			lightningcss: {
+				exclude: Features.LightDark,
+			},
 			modules: {
 				generateScopedName(name, filename, _css): string {
 					const id = (path.relative(__dirname, filename.split('?')[0]) + '-' + name).replace(/[\\\/\.\?&=]/g, '-').replace(/(src-|vue-)/g, '');
@@ -152,11 +182,6 @@ export function getConfig(): UserConfig {
 					} else {
 						return id;
 					}
-				},
-			},
-			preprocessorOptions: {
-				scss: {
-					api: 'modern-compiler',
 				},
 			},
 		},
@@ -173,12 +198,15 @@ export function getConfig(): UserConfig {
 
 		build: {
 			target: [
-				'chrome116',
-				'firefox116',
-				'safari16',
+				'chrome130',
+				'firefox132',
+				'safari18.2',
 			],
 			manifest: 'manifest.json',
-			rollupOptions: {
+			rolldownOptions: {
+				experimental: {
+					nativeMagicString: true,
+				},
 				input: {
 					i18n: './src/i18n.ts',
 					entry: './src/_boot_.ts',
@@ -186,11 +214,19 @@ export function getConfig(): UserConfig {
 				external: externalPackages.map(p => p.match),
 				preserveEntrySignatures: 'allow-extension',
 				output: {
-					manualChunks: {
-						vue: ['vue'],
-						photoswipe: ['photoswipe', 'photoswipe/lightbox', 'photoswipe/style.css'],
-						// dependencies of i18n.ts
-						'config': ['@@/js/config.js'],
+					codeSplitting: {
+						groups: [{
+							name: 'vue',
+							test: /node_modules[\\/]vue/,
+						}, {
+							name: 'photoswipe',
+							test: /node_modules[\\/]photoswipe/,
+						}, {
+							// split i18n related module to distinct module
+							name: 'i18n',
+							includeDependenciesRecursively: false,
+							test: /i18n\.ts|locale\.ts/,
+						}],
 					},
 					entryFileNames: `scripts/${localesHash}-[hash:8].js`,
 					chunkFileNames: `scripts/${localesHash}-[hash:8].js`,

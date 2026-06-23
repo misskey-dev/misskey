@@ -30,9 +30,9 @@ import { bindThis } from '@/decorators.js';
 import { IActivity } from '@/core/activitypub/type.js';
 import { isQuote, isRenote } from '@/misc/is-renote.js';
 import * as Acct from '@/misc/acct.js';
+import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
 import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions, FastifyBodyParser } from 'fastify';
 import type { FindOptionsWhere } from 'typeorm';
-import { FanoutTimelineEndpointService } from '@/core/FanoutTimelineEndpointService.js';
 
 const ACTIVITY_JSON = 'application/activity+json; charset=utf-8';
 const LD_JSON = 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8';
@@ -131,6 +131,7 @@ export class ActivityPubServerService {
 		if (signature.params.headers.indexOf('digest') === -1) {
 			// Digest not found.
 			reply.code(401);
+			return;
 		} else {
 			const digest = request.headers.digest;
 
@@ -173,7 +174,17 @@ export class ActivityPubServerService {
 			}
 		}
 
-		this.queueService.inbox(request.body as IActivity, signature);
+		const body = request.body;
+
+		// Reject structurally invalid activities (e.g. missing actor) here instead
+		// of letting them fail deep inside the inbox processor. An actor-less
+		// activity can never be authenticated, so there is no point enqueueing it.
+		if (typeof body !== 'object' || body == null || !('actor' in body) || body.actor == null) {
+			reply.code(400);
+			return;
+		}
+
+		this.queueService.inbox(body as IActivity, signature);
 
 		reply.code(202);
 	}
@@ -776,6 +787,8 @@ export class ActivityPubServerService {
 			}
 
 			const acct = Acct.parse(request.params.acct);
+			// normalize acct host
+			if (this.utilityService.isSelfHost(acct.host)) acct.host = null;
 
 			const user = await this.usersRepository.findOneBy({
 				usernameLower: acct.username.toLowerCase(),

@@ -64,7 +64,7 @@ defineProps<{
 const params = defineModel<Record<string, any>>({ required: true });
 
 function getHex(c: ImageEffectorRGB) {
-	return `#${c.map(x => (x * 255).toString(16).padStart(2, '0')).join('')}`;
+	return `#${c.map(x => Math.round(x * 255).toString(16).padStart(2, '0')).join('')}`;
 }
 
 function getRgb(hex: string | number): ImageEffectorRGB | null {
