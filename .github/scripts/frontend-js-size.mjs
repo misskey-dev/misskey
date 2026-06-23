@@ -365,21 +365,6 @@ function renderVisualizerSummaryTable(before, after) {
 	];
 }
 
-function commonChunkKeys(before, after) {
-	return Object.keys(before.chunks)
-		.filter((key) => after.chunks[key] != null);
-}
-
-function addedChunkKeys(before, after) {
-	return Object.keys(after.chunks)
-		.filter((key) => before.chunks[key] == null);
-}
-
-function removedChunkKeys(before, after) {
-	return Object.keys(before.chunks)
-		.filter((key) => after.chunks[key] == null);
-}
-
 function getChunkComparisonRows(keys, before, after) {
 	return keys.map((key) => {
 		const beforeEntry = before.chunks[key];
@@ -441,11 +426,13 @@ function chunkMarkdownTable(rows, total) {
 }
 
 function renderFrontendChunkReport(before, after) {
-	const commonChunkKeys = commonChunkKeys(before, after);
+	const commonChunkKeys = Object.keys(before.chunks).filter((key) => after.chunks[key] != null);
+	const addedChunkKeys = Object.keys(after.chunks).filter((key) => before.chunks[key] == null);
+	const removedChunkKeys = Object.keys(before.chunks).filter((key) => after.chunks[key] == null);
 	const allChunkKeys = [
 		...commonChunkKeys,
-		...addedChunkKeys(before, after),
-		...removedChunkKeys(before, after),
+		...addedChunkKeys,
+		...removedChunkKeys,
 	];
 	//const comparisonRows = getChunkComparisonRows(commonChunkKeys, before, after);
 	const allComparisonRows = getChunkComparisonRows(allChunkKeys, before, after);
