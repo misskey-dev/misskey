@@ -618,8 +618,16 @@ export class OAuth2ProviderService implements OnApplicationShutdown {
 			applyNoStore(ctx);
 
 			try {
-				// TODO: Ensure support application/json
-				const body = toRequestParameters(await ctx.req.parseBody());
+				let rawBody: unknown;
+				if (ctx.req.header('content-type')?.startsWith('application/json')) {
+					rawBody = await ctx.req.json();
+				} else if (ctx.req.header('content-type')?.startsWith('application/x-www-form-urlencoded')) {
+					rawBody = await ctx.req.parseBody();
+				} else {
+					throw new InvalidRequestError('Unsupported content type');
+				}
+				const body = toRequestParameters(rawBody);
+
 				const grantType = firstValue(body.grant_type);
 				if (!grantType) {
 					throw new InvalidRequestError('grant_type is required');
