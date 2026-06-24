@@ -37,6 +37,28 @@ const heapSnapshotCategories = [
 	'Other non-JS objects',
 ];
 
+const heapSnapshotCategoriesColors = {
+	'Total': 'gray',
+	'Code': 'orange',
+	'Strings': 'red',
+	'JS arrays': 'cyan',
+	'Typed arrays': 'green',
+	'System objects': 'yellow',
+	'Other JS objects': 'violet',
+	'Other non-JS objects': 'pink',
+};
+
+const heapSnapshotCategoriesColorsHex = {
+	'Total': '#888888',
+	'Code': '#f28e2c',
+	'Strings': '#e15759',
+	'JS arrays': '#76b7b2',
+	'Typed arrays': '#59a14f',
+	'System objects': '#edc949',
+	'Other JS objects': '#af7aa1',
+	'Other non-JS objects': '#ff9da7',
+};
+
 function formatNumber(value) {
 	return numberFormatter.format(value);
 }
@@ -265,6 +287,60 @@ function getHeapSnapshotCategoryValue(report, phase, category) {
 	return Number.isFinite(value) ? value : null;
 }
 
+function escapeCsvValue(value) {
+	return `"${String(value).replaceAll('"', '""')}"`;
+}
+
+function renderHeapSnapshotSankey(report, phase, title) {
+	const total = getHeapSnapshotCategoryValue(report, phase, 'Total');
+	if (total == null || total <= 0) return null;
+
+	const categories = heapSnapshotCategories
+		.filter(category => category !== 'Total')
+		.map(category => {
+			const value = getHeapSnapshotCategoryValue(report, phase, category);
+			if (value == null || value <= 0) return null;
+			return {
+				category,
+				value,
+			};
+		})
+		.filter(value => value != null);
+
+	if (categories.length === 0) return null;
+
+	const nodeColors = {
+		[title]: heapSnapshotCategoriesColorsHex.Total,
+	};
+	for (const { category } of categories) {
+		nodeColors[category] = heapSnapshotCategoriesColorsHex[category];
+	}
+
+	const lines = [
+		`<details><summary>${title} heap snapshot composition</summary>`,
+		'',
+		'```mermaid',
+		`%%{init: ${JSON.stringify({
+			sankey: {
+				linkColor: 'target',
+				nodeAlignment: 'left',
+				nodeColors,
+			},
+		})}}%%`,
+		'sankey',
+	];
+
+	for (const { category, value } of categories) {
+		lines.push(`${escapeCsvValue(title)},${escapeCsvValue(category)},${value}`);
+	}
+
+	lines.push('```');
+	lines.push('');
+	lines.push('</details>');
+
+	return lines.join('\n');
+}
+
 function formatHeapSnapshotCategoryLabel(category, baseValue, headValue, baseTotal, headTotal) {
 	if (category === 'Total' || baseTotal == null || headTotal == null || baseTotal <= 0 || headTotal <= 0) return `**${category}**`;
 
@@ -347,7 +423,7 @@ function renderHeapSnapshotTable(base, head, phase) {
 		const deltaMedian = summary == null ? '-' : `${formatDeltaBytes(summary.median)}<br>${formatDeltaPercent(summary.median, baseValue)}`;
 		const categoryLabel = formatHeapSnapshotCategoryLabel(category, baseValue, headValue, baseTotal, headTotal);
 
-		lines.push(`| ${categoryLabel} | ${formatBytes(baseValue)} <br> ± ${baseSpread == null ? '-' : formatBytes(baseSpread)} | ${formatBytes(headValue)} <br> ± ${headSpread == null ? '-' : formatBytes(headSpread)} | ${deltaMedian} | ${summary?.mad == null ? '-' : formatBytes(summary.mad)} | ${summary == null ? '-' : formatDeltaBytes(summary.min)} | ${summary == null ? '-' : formatDeltaBytes(summary.max)} |`);
+		lines.push(`| $\\color{${heapSnapshotCategoriesColors[category]}}{\\rule{8pt}{8pt}}$ ${categoryLabel} | ${formatBytes(baseValue)} <br> ± ${baseSpread == null ? '-' : formatBytes(baseSpread)} | ${formatBytes(headValue)} <br> ± ${headSpread == null ? '-' : formatBytes(headSpread)} | ${deltaMedian} | ${summary?.mad == null ? '-' : formatBytes(summary.mad)} | ${summary == null ? '-' : formatDeltaBytes(summary.min)} | ${summary == null ? '-' : formatDeltaBytes(summary.max)} |`);
 		if (category === 'Total') {
 			lines.push('| | | | | | | |');
 		}
@@ -367,6 +443,15 @@ function renderHeapSnapshotSection(base, head) {
 		table,
 		'',
 	];
+
+	for (const graph of [
+		renderHeapSnapshotSankey(base, 'afterRequest', 'Base'),
+		renderHeapSnapshotSankey(head, 'afterRequest', 'Head'),
+	]) {
+		if (graph == null) continue;
+		lines.push(graph);
+		lines.push('');
+	}
 
 	return lines.join('\n');
 }
