@@ -11,6 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	:preferType="prefer.s.emojiPickerStyle"
 	:hasInteractionWithOtherFocusTrappedEls="true"
 	:transparentBg="true"
+	:keepAlignment="true"
 	:manualShowing="manualShowing"
 	:anchorElement="anchorElement"
 	@click="modal?.close()"
