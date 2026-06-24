@@ -183,15 +183,15 @@ function renderTable(base, head, phase) {
 
 function renderPairedDeltaTable(base, head, phase) {
 	const lines = [
-		'| Metric | Δ median | Δ MAD | Δ min | Δ max | Samples |',
-		'| --- | ---: | ---: | ---: | ---: | ---: |',
+		'| Metric | Δ median | Δ MAD | Δ min | Δ max |',
+		'| --- | ---: | ---: | ---: | ---: |',
 	];
 
 	for (const metric of metrics) {
 		const summary = pairedDeltaSummary(base, head, phase, metric);
 		if (summary == null) continue;
 
-		lines.push(`| ${metric} | ${formatDeltaMemory(summary.median)} | ${summary.mad == null ? '-' : formatMemory(summary.mad)} | ${formatDeltaMemory(summary.min)} | ${formatDeltaMemory(summary.max)} | ${formatNumber(summary.samples)} |`);
+		lines.push(`| ${metric} | ${formatDeltaMemory(summary.median)} | ${summary.mad == null ? '-' : formatMemory(summary.mad)} | ${formatDeltaMemory(summary.min)} | ${formatDeltaMemory(summary.max)} |`);
 	}
 
 	if (lines.length === 2) return null;
@@ -439,11 +439,15 @@ function renderJsFootprintSection(base, head) {
 	const lines = [
 		'### Runtime Loaded JS Footprint',
 		'',
+		'<details><summary>Click to show</summary>',
+		'',
 		renderJsFootprintMetricTable(base, head),
 		'',
 		'#### Load Phase Breakdown',
 		'',
 		renderJsFootprintPhaseTable(base, head),
+		'',
+		'</details>',
 		'',
 	];
 
@@ -469,11 +473,11 @@ const lines = [
 	'',
 ];
 
-const summary = measurementSummary(base, head);
-if (summary != null) {
-	lines.push(summary);
-	lines.push('');
-}
+//const summary = measurementSummary(base, head);
+//if (summary != null) {
+//	lines.push(summary);
+//	lines.push('');
+//}
 
 for (const phase of phases) {
 	lines.push(`### ${phase.title}`);
