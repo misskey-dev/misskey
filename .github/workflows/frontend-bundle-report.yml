@@ -101,7 +101,6 @@ jobs:
         working-directory: before
         env:
           FRONTEND_BUNDLE_VISUALIZER: 'true'
-          FRONTEND_BUNDLE_VISUALIZER_TEMPLATE: raw-data
           FRONTEND_BUNDLE_VISUALIZER_FILE: ${{ runner.temp }}/frontend-bundle-report/before-stats.json
         run: pnpm --filter frontend run build
 
@@ -120,9 +119,19 @@ jobs:
         working-directory: after
         env:
           FRONTEND_BUNDLE_VISUALIZER: 'true'
-          FRONTEND_BUNDLE_VISUALIZER_TEMPLATE: raw-data
           FRONTEND_BUNDLE_VISUALIZER_FILE: ${{ runner.temp }}/frontend-bundle-report/after-stats.json
+          FRONTEND_BUNDLE_VISUALIZER_HTML_FILE: ${{ runner.temp }}/frontend-bundle-report/frontend-bundle-visualizer.html
         run: pnpm --filter frontend run build
+
+      - name: Upload bundle visualizer
+        if: steps.check-base-visualizer.outputs.supported == 'true'
+        id: upload-bundle-visualizer
+        uses: actions/upload-artifact@v7
+        with:
+          name: frontend-bundle-visualizer
+          path: ${{ runner.temp }}/frontend-bundle-report/frontend-bundle-visualizer.html
+          if-no-files-found: error
+          retention-days: 7
 
       - name: Generate report markdown
         if: steps.check-base-visualizer.outputs.supported == 'true'
@@ -131,6 +140,9 @@ jobs:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
+          FRONTEND_BUNDLE_REPORT_ARTIFACT_URL: ${{ steps.upload-bundle-visualizer.outputs.artifact-url }}
+          FRONTEND_BUNDLE_REPORT_ARTIFACT_NAME: frontend-bundle-visualizer
+          FRONTEND_BUNDLE_REPORT_HTML_FILE: frontend-bundle-visualizer.html
         run: |
           REPORT_DIR="$RUNNER_TEMP/frontend-bundle-report"
           node after/.github/scripts/frontend-js-size.mjs before after "$REPORT_DIR/before-stats.json" "$REPORT_DIR/after-stats.json" "$REPORT_DIR/frontend-js-size-report.md"
@@ -145,6 +157,7 @@ jobs:
           REPORT_DIR="$RUNNER_TEMP/frontend-bundle-report"
           test -s "$REPORT_DIR/before-stats.json"
           test -s "$REPORT_DIR/after-stats.json"
+          test -s "$REPORT_DIR/frontend-bundle-visualizer.html"
           test -s "$REPORT_DIR/frontend-js-size-report.md"
           cat "$REPORT_DIR/frontend-js-size-report.md" >> "$GITHUB_STEP_SUMMARY"
 

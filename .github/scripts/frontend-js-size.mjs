@@ -530,6 +530,13 @@ function renderFrontendBundleReport(before, after) {
 	return lines.join('\n');
 }
 
+function renderVisualizerArtifactLink() {
+	const artifactUrl = process.env.FRONTEND_BUNDLE_REPORT_ARTIFACT_URL;
+	const artifactName = process.env.FRONTEND_BUNDLE_REPORT_ARTIFACT_NAME || 'frontend-bundle-report';
+	const htmlFile = process.env.FRONTEND_BUNDLE_REPORT_HTML_FILE || 'frontend-bundle-visualizer.html';
+	return `> [Bundle visualizer HTML](${artifactUrl}) is included in the ${code(artifactName)} artifact as ${code(htmlFile)}.`;
+}
+
 const args = process.argv.slice(2);
 const [beforeDir, afterDir, beforeStatsFile, afterStatsFile, outFile] = args;
 const before = await collectReport(beforeDir);
@@ -547,6 +554,8 @@ const body = [
 	'## Bundle Stats',
 	'',
 	renderFrontendBundleReport(collectVisualizerReport(beforeStats), collectVisualizerReport(afterStats)),
+	'',
+	renderVisualizerArtifactLink(),
 ].join('\n');
 
 await fs.writeFile(outFile, body);
