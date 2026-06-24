@@ -103,6 +103,64 @@ function getSampleSpread(report, phase, metric) {
 	return median(values.map(value => Math.abs(value - center)));
 }
 
+function mad(values) {
+	if (values.length < 2) return null;
+
+	const center = median(values);
+	return median(values.map(value => Math.abs(value - center)));
+}
+
+function getSamplesByRound(report) {
+	const samplesByRound = new Map();
+	if (!Array.isArray(report?.samples)) return samplesByRound;
+
+	for (const sample of report.samples) {
+		if (!Number.isInteger(sample?.round) || sample.round <= 0) continue;
+		samplesByRound.set(sample.round, sample);
+	}
+
+	return samplesByRound;
+}
+
+function getPairedDeltaValues(base, head, phase, metric) {
+	const baseSamplesByRound = getSamplesByRound(base);
+	const headSamplesByRound = getSamplesByRound(head);
+	const values = [];
+
+	for (const [round, baseSample] of baseSamplesByRound) {
+		const headSample = headSamplesByRound.get(round);
+		if (headSample == null) continue;
+
+		const baseValue = getMemoryValue(baseSample, phase, metric);
+		const headValue = getMemoryValue(headSample, phase, metric);
+		if (baseValue == null || headValue == null) continue;
+
+		values.push(headValue - baseValue);
+	}
+
+	return values;
+}
+
+function formatDeltaMemory(diffKiB) {
+	if (diffKiB === 0) return formatMemory(0);
+
+	const sign = diffKiB > 0 ? '+' : '-';
+	return formatColoredDiff(`${sign}${formatMemory(Math.abs(diffKiB))}`, diffKiB);
+}
+
+function pairedDeltaSummary(base, head, phase, metric) {
+	const values = getPairedDeltaValues(base, head, phase, metric);
+	if (values.length === 0) return null;
+
+	return {
+		median: median(values),
+		mad: mad(values),
+		min: Math.min(...values),
+		max: Math.max(...values),
+		samples: values.length,
+	};
+}
+
 function renderTable(base, head, phase) {
 	const lines = [
 		'| Metric | Base | Head | Δ | Δ (%) |',
@@ -120,6 +178,23 @@ function renderTable(base, head, phase) {
 		lines.push(`| ${metric} | ${formatMemory(baseValue)} <br> ± ${formatMemory(baseSpread)} | ${formatMemory(headValue)} <br> ± ${formatMemory(headSpread)} | ${formatDiff(baseValue, headValue)} | ${formatDiffPercent(baseValue, headValue)} |`);
 	}
 
+	return lines.join('\n');
+}
+
+function renderPairedDeltaTable(base, head, phase) {
+	const lines = [
+		'| Metric | Δ median | Δ MAD | Δ min | Δ max | Samples |',
+		'| --- | ---: | ---: | ---: | ---: | ---: |',
+	];
+
+	for (const metric of metrics) {
+		const summary = pairedDeltaSummary(base, head, phase, metric);
+		if (summary == null) continue;
+
+		lines.push(`| ${metric} | ${formatDeltaMemory(summary.median)} | ${summary.mad == null ? '-' : formatMemory(summary.mad)} | ${formatDeltaMemory(summary.min)} | ${formatDeltaMemory(summary.max)} | ${formatNumber(summary.samples)} |`);
+	}
+
+	if (lines.length === 2) return null;
 	return lines.join('\n');
 }
 
@@ -404,6 +479,14 @@ for (const phase of phases) {
 	lines.push(`### ${phase.title}`);
 	lines.push(renderTable(base, head, phase.key));
 	lines.push('');
+
+	const pairedDeltaTable = renderPairedDeltaTable(base, head, phase.key);
+	if (pairedDeltaTable != null) {
+		lines.push('#### Paired Delta Summary');
+		lines.push('');
+		lines.push(pairedDeltaTable);
+		lines.push('');
+	}
 }
 
 const jsFootprintSection = renderJsFootprintSection(baseJsFootprint, headJsFootprint);
