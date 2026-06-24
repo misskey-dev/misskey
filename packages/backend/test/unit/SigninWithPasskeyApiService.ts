@@ -6,7 +6,6 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { mockDeep } from 'vitest-mock-extended';
 import { Hono } from 'hono';
-import { createMiddleware } from 'hono/factory';
 import { Test, TestingModule } from '@nestjs/testing';
 import type { AuthenticationResponseJSON } from '@simplewebauthn/server';
 import { MiUser } from '@/models/User.js';
@@ -20,6 +19,7 @@ import { RateLimiterService } from '@/server/api/RateLimiterService.js';
 import { WebAuthnService } from '@/core/WebAuthnService.js';
 import { SigninService } from '@/server/api/SigninService.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
+import { dummyContextMiddleware } from '../utils.js';
 import type { ApiEnv } from '@/server/api/ApiServerTypes.js';
 
 class FakeLimiter {
@@ -33,12 +33,6 @@ class FakeSigninService {
 		return true;
 	}
 }
-
-const dummyContextMiddleware = createMiddleware<ApiEnv>(async (ctx, next) => {
-	ctx.set('ip', '0.0.0.0');
-	ctx.set('ips', ['0.0.0.0']);
-	await next();
-});
 
 describe('SigninWithPasskeyApiService', () => {
 	let app: TestingModule;

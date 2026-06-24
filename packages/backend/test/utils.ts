@@ -15,6 +15,8 @@ import { DataSource } from 'typeorm';
 import { type Response } from 'node-fetch';
 import { serve, type ServerType } from '@hono/node-server';
 import { Hono } from 'hono';
+import { createMiddleware } from 'hono/factory';
+import type { ApiEnv } from '@/server/api/ApiServerTypes.js';
 import { entities } from '@/postgres.js';
 import { loadConfig } from '@/config.js';
 import type * as misskey from 'misskey-js';
@@ -721,3 +723,9 @@ export async function captureWebhook<T = SystemWebhookPayload>(postAction: () =>
 
 	return JSON.parse(result) as T;
 }
+
+export const dummyContextMiddleware = createMiddleware<ApiEnv>(async (ctx, next) => {
+	ctx.set('ip', '0.0.0.0');
+	ctx.set('ips', ['0.0.0.0']);
+	await next();
+});
