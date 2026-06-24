@@ -536,7 +536,7 @@ const before = await collectReport(beforeDir);
 const after = await collectReport(afterDir);
 const beforeStats = JSON.parse(await fs.readFile(beforeStatsFile, 'utf8'));
 const afterStats = JSON.parse(await fs.readFile(afterStatsFile, 'utf8'));
-const visualizerArtifactLink = `> [Bundle visualizer HTML](${process.env.FRONTEND_BUNDLE_REPORT_ARTIFACT_URL}) is included in the ${code('frontend-bundle-visualizer')} artifact as ${code('frontend-bundle-visualizer.html')}.`;
+const visualizerArtifactLink = `[Download detailed HTML](${process.env.FRONTEND_BUNDLE_REPORT_ARTIFACT_URL})`;
 
 const body = [
 	marker,
