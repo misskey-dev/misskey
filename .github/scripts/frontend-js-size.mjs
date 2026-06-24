@@ -530,7 +530,7 @@ function renderFrontendBundleReport(before, after) {
 	return lines.join('\n');
 }
 
-const visualizerTreemapLimit = 20;
+const visualizerTreemapLimit = 30;
 
 function mermaidTreemapLabel(value) {
 	const label = String(value)
@@ -541,6 +541,13 @@ function mermaidTreemapLabel(value) {
 		.replaceAll('\n', ' ')
 		.trim();
 	return label === '' ? '(unknown)' : label;
+}
+
+function mermaidTreemapModuleLabel(id) {
+	const normalizedId = String(id).replaceAll('\\', '/');
+	const filePath = normalizedId.split(/[?#]/, 1)[0];
+	const fileName = path.posix.basename(filePath);
+	return mermaidTreemapLabel(fileName || normalizedId);
 }
 
 function renderVisualizerTreemap(label, report) {
@@ -556,7 +563,7 @@ function renderVisualizerTreemap(label, report) {
 	];
 
 	for (const row of rows) {
-		lines.push(`  "${mermaidTreemapLabel(row.id)}": ${Math.round(row.renderedLength)}`);
+		lines.push(`  "${mermaidTreemapModuleLabel(row.id)}": ${Math.round(row.renderedLength)}`);
 	}
 	if (otherRendered > 0) {
 		lines.push(`  "Other": ${Math.round(otherRendered)}`);
