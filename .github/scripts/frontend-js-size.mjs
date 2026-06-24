@@ -91,7 +91,7 @@ function formatDiffPercent(before, after) {
 	if (before == null || before === 0 || after == null || after === 0) return '-';
 	const diff = after - before;
 	if (diff === 0) return `0%`;
-	const percent = Math.round(diff / before * 100);
+	const percent = Math.abs(Math.round(diff / before * 100));
 	return formatColoredDiff(`${percent}%`, diff);
 }
 
