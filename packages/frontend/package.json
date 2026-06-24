@@ -72,7 +72,7 @@
 	},
 	"devDependencies": {
 		"@misskey-dev/emoji-assets": "17.0.3",
-		"@misskey-dev/summaly": "5.3.0",
+		"@misskey-dev/summaly": "5.5.1",
 		"@rollup/plugin-json": "6.1.0",
 		"@rollup/pluginutils": "5.4.0",
 		"@storybook/addon-essentials": "8.6.18",
@@ -129,6 +129,7 @@
 		"react": "19.2.7",
 		"react-dom": "19.2.7",
 		"rolldown": "1.1.0",
+		"rollup-plugin-visualizer": "7.0.1",
 		"sass-embedded": "1.100.0",
 		"seedrandom": "3.0.5",
 		"start-server-and-test": "3.0.9",

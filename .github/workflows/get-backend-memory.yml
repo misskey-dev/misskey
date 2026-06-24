@@ -9,22 +9,15 @@ on:
     paths:
       - packages/backend/**
       - packages/misskey-js/**
+      - .github/scripts/backend-memory-report.mjs
       - .github/workflows/get-backend-memory.yml
+      - .github/workflows/report-backend-memory.yml
 
 jobs:
   get-memory-usage:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-
-    strategy:
-      matrix:
-        memory-json-name: [memory-base.json, memory-head.json]
-        include:
-          - memory-json-name: memory-base.json
-            ref: ${{ github.base_ref }}
-          - memory-json-name: memory-head.json
-            ref: refs/pull/${{ github.event.number }}/merge
 
     services:
       postgres:
@@ -40,37 +33,70 @@ jobs:
           - 56312:6379
 
     steps:
-    - uses: actions/checkout@v6.0.2
+    - name: Checkout base
+      uses: actions/checkout@v6.0.2
       with:
-        ref: ${{ matrix.ref }}
+        ref: ${{ github.base_ref }}
+        path: base
+        submodules: true
+    - name: Checkout head
+      uses: actions/checkout@v6.0.2
+      with:
+        ref: refs/pull/${{ github.event.number }}/merge
+        path: head
         submodules: true
     - name: Setup pnpm
       uses: pnpm/action-setup@v6.0.3
+      with:
+        package_json_file: head/package.json
     - name: Use Node.js
       uses: actions/setup-node@v6.4.0
       with:
-        node-version-file: '.node-version'
+        node-version-file: 'head/.node-version'
         cache: 'pnpm'
-    - run: pnpm i --frozen-lockfile
-    - name: Check pnpm-lock.yaml
+        cache-dependency-path: |
+          base/pnpm-lock.yaml
+          head/pnpm-lock.yaml
+    - name: Install base dependencies
+      working-directory: base
+      run: pnpm i --frozen-lockfile
+    - name: Check base pnpm-lock.yaml
+      working-directory: base
       run: git diff --exit-code pnpm-lock.yaml
-    - name: Copy Configure
-      run: cp .github/misskey/test.yml .config/default.yml
-    - name: Compile Configure
-      run: pnpm compile-config
-    - name: Build
-      run: pnpm build
-    - name: Run migrations
-      run: pnpm --filter backend migrate
-    - name: Measure memory usage
+    - name: Configure base
+      working-directory: base
       run: |
-        # Start the server and measure memory usage
-        node packages/backend/scripts/measure-memory.mjs > ${{ matrix.memory-json-name }}
+        cp .github/misskey/test.yml .config/default.yml
+        pnpm compile-config
+    - name: Build base
+      working-directory: base
+      run: pnpm build
+    - name: Install head dependencies
+      working-directory: head
+      run: pnpm i --frozen-lockfile
+    - name: Check head pnpm-lock.yaml
+      working-directory: head
+      run: git diff --exit-code pnpm-lock.yaml
+    - name: Configure head
+      working-directory: head
+      run: |
+        cp .github/misskey/test.yml .config/default.yml
+        pnpm compile-config
+    - name: Build head
+      working-directory: head
+      run: pnpm build
+    - name: Measure backend memory usage
+      env:
+        MK_MEMORY_COMPARE_ROUNDS: 5
+        MK_MEMORY_COMPARE_WARMUP_ROUNDS: 1
+      run: node head/.github/scripts/measure-backend-memory-comparison.mjs base head memory-base.json memory-head.json
     - name: Upload Artifact
       uses: actions/upload-artifact@v7
       with:
-        name: memory-artifact-${{ matrix.memory-json-name }}
-        path: ${{ matrix.memory-json-name }}
+        name: memory-artifact-results
+        path: |
+          memory-base.json
+          memory-head.json
 
   save-pr-number:
     runs-on: ubuntu-latest
