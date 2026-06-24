@@ -56,9 +56,6 @@ jobs:
         submodules: true
     - name: Setup pnpm
       uses: pnpm/action-setup@v6.0.3
-    - name: Get current date
-      id: current-date
-      run: echo "today=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
     - name: Install FFmpeg
       run: |
         sudo apt install -y ffmpeg
