@@ -443,12 +443,10 @@ function renderJsFootprintSection(base, head) {
 		'',
 		renderJsFootprintMetricTable(base, head),
 		'',
-		'#### Load Phase Breakdown',
-		'',
-		renderJsFootprintPhaseTable(base, head),
-		'',
-		'</details>',
-		'',
+		//'#### Load Phase Breakdown',
+		//'',
+		//renderJsFootprintPhaseTable(base, head),
+		//'',
 	];
 
 	for (const block of [
@@ -460,6 +458,9 @@ function renderJsFootprintSection(base, head) {
 		lines.push(block);
 		lines.push('');
 	}
+
+	lines.push('</details>');
+	lines.push('');
 
 	return lines.join('\n');
 }
