@@ -1,4 +1,22 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(pnpm lint)",
+      "Bash(pnpm --filter backend lint)",
+      "Bash(pnpm --filter frontend lint)",
+      "Bash(pnpm --filter frontend-embed lint)",
+      "Bash(pnpm --filter frontend-shared lint)",
+      "Bash(pnpm --filter frontend-builder lint)",
+      "Bash(pnpm --filter misskey-js lint)",
+      "Bash(pnpm --filter backend check-migrations)",
+      "Bash(pnpm build-misskey-js-with-types)",
+      "Bash(pnpm --filter backend test)",
+      "Bash(pnpm --filter frontend test)",
+      "Bash(pnpm --filter backend typecheck)",
+      "Bash(pnpm --filter frontend typecheck)",
+      "Bash(pnpm build)"
+    ]
+  },
   "enabledPlugins": {
     "frontend-design@claude-plugins-official": true,
     "superpowers@claude-plugins-official": true,
