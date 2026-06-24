@@ -10,16 +10,14 @@
       "Bash(pnpm --filter misskey-js lint)",
       "Bash(pnpm --filter backend check-migrations)",
       "Bash(pnpm build-misskey-js-with-types)",
-			"Bash(cp .github/misskey/test.yml .config/test.yml)",
+      "Bash(cp .github/misskey/test.yml .config/test.yml)",
       "Bash(ncp .github/misskey/test.yml .config/test.yml)",
-			"Bash(ncp .github/misskey/test.yml .config/test.yml && pnpm backend-unit-test 2>&1)",
       "Bash(pnpm --filter backend test*)",
-      "Bash(pnpm --filter backend test:e2e)",
-      "Bash(pnpm --filter backend test:fed)",
+      "Bash(pnpm backend-unit-test)",
       "Bash(pnpm --filter frontend test)",
       "Bash(pnpm --filter backend typecheck)",
       "Bash(pnpm --filter frontend typecheck)",
-      "Bash(pnpm build)"
+      "Bash(pnpm build )"
     ]
   },
   "enabledPlugins": {
