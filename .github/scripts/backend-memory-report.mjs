@@ -8,7 +8,7 @@ if (baseFile == null || headFile == null || outputFile == null) {
 }
 
 const numberFormatter = new Intl.NumberFormat('en-US', {
-	maximumFractionDigits: 2,
+	maximumFractionDigits: 1,
 });
 
 const phases = [
@@ -265,6 +265,14 @@ function getHeapSnapshotCategoryValue(report, phase, category) {
 	return Number.isFinite(value) ? value : null;
 }
 
+function formatHeapSnapshotCategoryLabel(category, baseValue, headValue, baseTotal, headTotal) {
+	if (category === 'Total' || baseTotal == null || headTotal == null || baseTotal <= 0 || headTotal <= 0) return `**${category}**`;
+
+	const basePercent = formatPercent((baseValue * 100) / baseTotal);
+	const headPercent = formatPercent((headValue * 100) / headTotal);
+	return `**${category}**<br>${basePercent} → ${headPercent}`;
+}
+
 function getHeapSnapshotSampleValues(report, phase, category) {
 	if (!Array.isArray(report?.samples)) return [];
 
@@ -325,6 +333,8 @@ function renderHeapSnapshotTable(base, head, phase) {
 		'| Metric | Base | Head | Δ median | Δ MAD | Δ min | Δ max |',
 		'| --- | ---: | ---: | ---: | ---: | ---: | ---: |',
 	];
+	const baseTotal = getHeapSnapshotCategoryValue(base, phase, 'Total');
+	const headTotal = getHeapSnapshotCategoryValue(head, phase, 'Total');
 
 	for (const category of heapSnapshotCategories) {
 		const baseValue = getHeapSnapshotCategoryValue(base, phase, category);
@@ -335,8 +345,9 @@ function renderHeapSnapshotTable(base, head, phase) {
 		const headSpread = getHeapSnapshotSampleSpread(head, phase, category);
 		const summary = pairedHeapSnapshotDeltaSummary(base, head, phase, category);
 		const deltaMedian = summary == null ? '-' : `${formatDeltaBytes(summary.median)}<br>${formatDeltaPercent(summary.median, baseValue)}`;
+		const categoryLabel = formatHeapSnapshotCategoryLabel(category, baseValue, headValue, baseTotal, headTotal);
 
-		lines.push(`| **${category}** | ${formatBytes(baseValue)} <br> ± ${baseSpread == null ? '-' : formatBytes(baseSpread)} | ${formatBytes(headValue)} <br> ± ${headSpread == null ? '-' : formatBytes(headSpread)} | ${deltaMedian} | ${summary?.mad == null ? '-' : formatBytes(summary.mad)} | ${summary == null ? '-' : formatDeltaBytes(summary.min)} | ${summary == null ? '-' : formatDeltaBytes(summary.max)} |`);
+		lines.push(`| ${categoryLabel} | ${formatBytes(baseValue)} <br> ± ${baseSpread == null ? '-' : formatBytes(baseSpread)} | ${formatBytes(headValue)} <br> ± ${headSpread == null ? '-' : formatBytes(headSpread)} | ${deltaMedian} | ${summary?.mad == null ? '-' : formatBytes(summary.mad)} | ${summary == null ? '-' : formatDeltaBytes(summary.min)} | ${summary == null ? '-' : formatDeltaBytes(summary.max)} |`);
 		if (category === 'Total') {
 			lines.push('| | | | | | | |');
 		}
