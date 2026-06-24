@@ -530,19 +530,13 @@ function renderFrontendBundleReport(before, after) {
 	return lines.join('\n');
 }
 
-function renderVisualizerArtifactLink() {
-	const artifactUrl = process.env.FRONTEND_BUNDLE_REPORT_ARTIFACT_URL;
-	const artifactName = process.env.FRONTEND_BUNDLE_REPORT_ARTIFACT_NAME || 'frontend-bundle-report';
-	const htmlFile = process.env.FRONTEND_BUNDLE_REPORT_HTML_FILE || 'frontend-bundle-visualizer.html';
-	return `> [Bundle visualizer HTML](${artifactUrl}) is included in the ${code(artifactName)} artifact as ${code(htmlFile)}.`;
-}
-
 const args = process.argv.slice(2);
 const [beforeDir, afterDir, beforeStatsFile, afterStatsFile, outFile] = args;
 const before = await collectReport(beforeDir);
 const after = await collectReport(afterDir);
 const beforeStats = JSON.parse(await fs.readFile(beforeStatsFile, 'utf8'));
 const afterStats = JSON.parse(await fs.readFile(afterStatsFile, 'utf8'));
+const visualizerArtifactLink = `> [Bundle visualizer HTML](${process.env.FRONTEND_BUNDLE_REPORT_ARTIFACT_URL}) is included in the ${code('frontend-bundle-visualizer')} artifact as ${code('frontend-bundle-visualizer.html')}.`;
 
 const body = [
 	marker,
@@ -555,7 +549,7 @@ const body = [
 	'',
 	renderFrontendBundleReport(collectVisualizerReport(beforeStats), collectVisualizerReport(afterStats)),
 	'',
-	renderVisualizerArtifactLink(),
+	visualizerArtifactLink,
 ].join('\n');
 
 await fs.writeFile(outFile, body);

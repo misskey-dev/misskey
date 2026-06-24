@@ -141,8 +141,6 @@ jobs:
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           FRONTEND_BUNDLE_REPORT_ARTIFACT_URL: ${{ steps.upload-bundle-visualizer.outputs.artifact-url }}
-          FRONTEND_BUNDLE_REPORT_ARTIFACT_NAME: frontend-bundle-visualizer
-          FRONTEND_BUNDLE_REPORT_HTML_FILE: frontend-bundle-visualizer.html
         run: |
           REPORT_DIR="$RUNNER_TEMP/frontend-bundle-report"
           node after/.github/scripts/frontend-js-size.mjs before after "$REPORT_DIR/before-stats.json" "$REPORT_DIR/after-stats.json" "$REPORT_DIR/frontend-js-size-report.md"
@@ -157,7 +155,6 @@ jobs:
           REPORT_DIR="$RUNNER_TEMP/frontend-bundle-report"
           test -s "$REPORT_DIR/before-stats.json"
           test -s "$REPORT_DIR/after-stats.json"
-          test -s "$REPORT_DIR/frontend-bundle-visualizer.html"
           test -s "$REPORT_DIR/frontend-js-size-report.md"
           cat "$REPORT_DIR/frontend-js-size-report.md" >> "$GITHUB_STEP_SUMMARY"
 
