@@ -67,7 +67,8 @@ jobs:
     - name: Check base pnpm-lock.yaml
       working-directory: base
       run: git diff --exit-code pnpm-lock.yaml
-    - name: Copy Configure
+    - name: Configure base
+      working-directory: base
       run: cp .github/misskey/test.yml .config/default.yml
     - name: Build base
       working-directory: base
