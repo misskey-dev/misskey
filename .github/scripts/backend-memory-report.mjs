@@ -27,6 +27,7 @@ const metrics = [
 ];
 
 const heapSnapshotCategories = [
+	'Total',
 	'Code',
 	'Strings',
 	'JS arrays',
@@ -34,7 +35,6 @@ const heapSnapshotCategories = [
 	'System objects',
 	'Other JS objects',
 	'Other non-JS objects',
-	'Total',
 ];
 
 function formatNumber(value) {
@@ -54,6 +54,14 @@ function formatBytes(value) {
 
 function formatPercent(value) {
 	return `${formatNumber(value)}%`;
+}
+
+function formatDeltaPercent(diff, baseValue) {
+	if (diff === 0) return '0%';
+	if (baseValue <= 0) return '-';
+
+	const sign = diff > 0 ? '+' : '-';
+	return formatColoredDiff(`${sign}${formatPercent(Math.abs((diff * 100) / baseValue))}`, diff);
 }
 
 function formatMathText(text) {
@@ -142,14 +150,6 @@ function formatDeltaMemory(diffKiB) {
 	return formatColoredDiff(`${sign}${formatMemory(Math.abs(diffKiB))}`, diffKiB);
 }
 
-function formatDeltaMemoryWithPercent(diffKiB, baseKiB) {
-	if (diffKiB === 0) return `${formatMemory(0)} (0%)`;
-
-	const sign = diffKiB > 0 ? '+' : '-';
-	const percent = baseKiB > 0 ? ` (${sign}${formatPercent(Math.abs((diffKiB * 100) / baseKiB))})` : '';
-	return formatColoredDiff(`${sign}${formatMemory(Math.abs(diffKiB))}${percent}`, diffKiB);
-}
-
 function pairedDeltaSummary(base, head, phase, metric) {
 	const values = getPairedDeltaValues(base, head, phase, metric);
 	if (values.length === 0) return null;
@@ -177,8 +177,9 @@ function renderTable(base, head, phase) {
 		const baseSpread = getSampleSpread(base, phase, metric);
 		const headSpread = getSampleSpread(head, phase, metric);
 		const summary = pairedDeltaSummary(base, head, phase, metric);
+		const deltaMedian = summary == null ? '-' : `${formatDeltaMemory(summary.median)}<br>${formatDeltaPercent(summary.median, baseValue)}`;
 
-		lines.push(`| ${metric} | ${formatMemory(baseValue)} <br> ± ${formatMemory(baseSpread)} | ${formatMemory(headValue)} <br> ± ${formatMemory(headSpread)} | ${summary == null ? '-' : formatDeltaMemoryWithPercent(summary.median, baseValue)} | ${summary?.mad == null ? '-' : formatMemory(summary.mad)} | ${summary == null ? '-' : formatDeltaMemory(summary.min)} | ${summary == null ? '-' : formatDeltaMemory(summary.max)} |`);
+		lines.push(`| **${metric}** | ${formatMemory(baseValue)} <br> ± ${formatMemory(baseSpread)} | ${formatMemory(headValue)} <br> ± ${formatMemory(headSpread)} | ${deltaMedian} | ${summary?.mad == null ? '-' : formatMemory(summary.mad)} | ${summary == null ? '-' : formatDeltaMemory(summary.min)} | ${summary == null ? '-' : formatDeltaMemory(summary.max)} |`);
 	}
 
 	return lines.join('\n');
@@ -306,14 +307,6 @@ function formatDeltaBytes(diffBytes) {
 	return formatColoredDiff(`${sign}${formatBytes(Math.abs(diffBytes))}`, diffBytes);
 }
 
-function formatDeltaBytesWithPercent(diffBytes, baseBytes) {
-	if (diffBytes === 0) return `${formatBytes(0)} (0%)`;
-
-	const sign = diffBytes > 0 ? '+' : '-';
-	const percent = baseBytes > 0 ? ` (${sign}${formatPercent(Math.abs((diffBytes * 100) / baseBytes))})` : '';
-	return formatColoredDiff(`${sign}${formatBytes(Math.abs(diffBytes))}${percent}`, diffBytes);
-}
-
 function pairedHeapSnapshotDeltaSummary(base, head, phase, category) {
 	const values = getPairedHeapSnapshotDeltaValues(base, head, phase, category);
 	if (values.length === 0) return null;
@@ -329,7 +322,7 @@ function pairedHeapSnapshotDeltaSummary(base, head, phase, category) {
 
 function renderHeapSnapshotTable(base, head, phase) {
 	const lines = [
-		'| Category | Base | Head | Δ median | Δ MAD | Δ min | Δ max |',
+		'| Metric | Base | Head | Δ median | Δ MAD | Δ min | Δ max |',
 		'| --- | ---: | ---: | ---: | ---: | ---: | ---: |',
 	];
 
@@ -341,8 +334,12 @@ function renderHeapSnapshotTable(base, head, phase) {
 		const baseSpread = getHeapSnapshotSampleSpread(base, phase, category);
 		const headSpread = getHeapSnapshotSampleSpread(head, phase, category);
 		const summary = pairedHeapSnapshotDeltaSummary(base, head, phase, category);
+		const deltaMedian = summary == null ? '-' : `${formatDeltaBytes(summary.median)}<br>${formatDeltaPercent(summary.median, baseValue)}`;
 
-		lines.push(`| ${category} | ${formatBytes(baseValue)} <br> ± ${baseSpread == null ? '-' : formatBytes(baseSpread)} | ${formatBytes(headValue)} <br> ± ${headSpread == null ? '-' : formatBytes(headSpread)} | ${summary == null ? '-' : formatDeltaBytesWithPercent(summary.median, baseValue)} | ${summary?.mad == null ? '-' : formatBytes(summary.mad)} | ${summary == null ? '-' : formatDeltaBytes(summary.min)} | ${summary == null ? '-' : formatDeltaBytes(summary.max)} |`);
+		lines.push(`| **${category}** | ${formatBytes(baseValue)} <br> ± ${baseSpread == null ? '-' : formatBytes(baseSpread)} | ${formatBytes(headValue)} <br> ± ${headSpread == null ? '-' : formatBytes(headSpread)} | ${deltaMedian} | ${summary?.mad == null ? '-' : formatBytes(summary.mad)} | ${summary == null ? '-' : formatDeltaBytes(summary.min)} | ${summary == null ? '-' : formatDeltaBytes(summary.max)} |`);
+		if (category === 'Total') {
+			lines.push('| | | | | | | |');
+		}
 	}
 
 	if (lines.length === 2) return null;
@@ -391,7 +388,7 @@ function renderJsFootprintMetricTable(base, head) {
 		const headValue = getJsFootprintValue(head, 'afterRequest', key);
 		if (baseValue == null || headValue == null) continue;
 
-		lines.push(`| ${title} | ${formatter(baseValue)} | ${formatter(headValue)} | ${formatPlainDiff(baseValue, headValue, formatter)} | ${formatPlainDiffPercent(baseValue, headValue)} |`);
+		lines.push(`| **${title}** | ${formatter(baseValue)} | ${formatter(headValue)} | ${formatPlainDiff(baseValue, headValue, formatter)} | ${formatPlainDiffPercent(baseValue, headValue)} |`);
 	}
 
 	return lines.join('\n');
