@@ -9,6 +9,16 @@ import { writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 
 const phases = ['beforeGc', 'afterGc', 'afterRequest'];
+const heapSnapshotCategories = [
+	'Code',
+	'Strings',
+	'JS arrays',
+	'Typed arrays',
+	'System objects',
+	'Other JS objects',
+	'Other non-JS objects',
+	'Total',
+];
 
 const [baseDirArg, headDirArg, baseOutputArg, headOutputArg] = process.argv.slice(2);
 
@@ -121,6 +131,31 @@ function summarizeSamples(samples) {
 
 			if (values.length > 0) summary[phase][key] = median(values);
 		}
+
+		const heapSnapshotCategoryValues = {};
+		for (const category of heapSnapshotCategories) {
+			const values = samples
+				.map(sample => sample[phase]?.heapSnapshot?.categories?.[category])
+				.filter(value => Number.isFinite(value));
+
+			if (values.length > 0) heapSnapshotCategoryValues[category] = median(values);
+		}
+
+		const heapSnapshotNodeCountValues = {};
+		for (const category of heapSnapshotCategories) {
+			const values = samples
+				.map(sample => sample[phase]?.heapSnapshot?.nodeCounts?.[category])
+				.filter(value => Number.isFinite(value));
+
+			if (values.length > 0) heapSnapshotNodeCountValues[category] = median(values);
+		}
+
+		if (Object.keys(heapSnapshotCategoryValues).length > 0) {
+			summary[phase].heapSnapshot = {
+				categories: heapSnapshotCategoryValues,
+				nodeCounts: heapSnapshotNodeCountValues,
+			};
+		}
 	}
 
 	return summary;
@@ -138,12 +173,15 @@ async function measureRepo(label, repoDir, round, orderIndex) {
 	});
 
 	process.stderr.write(`[${label}] Measuring memory\n`);
+	const measureEnv = {
+		...process.env,
+		MK_MEMORY_SAMPLE_COUNT: '1',
+	};
+	if (round <= 0) measureEnv.MK_MEMORY_HEAP_SNAPSHOT = '0';
+
 	const stdout = await run('node', ['packages/backend/scripts/measure-memory.mjs'], {
 		cwd: repoDir,
-		env: {
-			...process.env,
-			MK_MEMORY_SAMPLE_COUNT: '1',
-		},
+		env: measureEnv,
 	});
 
 	const report = JSON.parse(stdout);
