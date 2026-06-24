@@ -1,7 +1,7 @@
 ## Unreleased
 
 ### General
--
+- Feat: コントロールパネルから二要素認証を解除できるように
 
 ### Client
 -
