@@ -26,6 +26,17 @@ const metrics = [
 	'External',
 ];
 
+const heapSnapshotCategories = [
+	'Code',
+	'Strings',
+	'JS arrays',
+	'Typed arrays',
+	'System objects',
+	'Other JS objects',
+	'Other non-JS objects',
+	'Total',
+];
+
 function formatNumber(value) {
 	return numberFormatter.format(value);
 }
@@ -273,6 +284,143 @@ function formatPlainDiffPercent(baseValue, headValue) {
 	return `${sign}${formatPercent(Math.abs((diff * 100) / baseValue))}`;
 }
 
+function getHeapSnapshotCategoryValue(report, phase, category) {
+	const value = report?.[phase]?.heapSnapshot?.categories?.[category];
+	return Number.isFinite(value) ? value : null;
+}
+
+function getHeapSnapshotSampleValues(report, phase, category) {
+	if (!Array.isArray(report?.samples)) return [];
+
+	return report.samples
+		.map(sample => getHeapSnapshotCategoryValue(sample, phase, category))
+		.filter(value => Number.isFinite(value));
+}
+
+function getHeapSnapshotSampleSpread(report, phase, category) {
+	const values = getHeapSnapshotSampleValues(report, phase, category);
+	if (values.length < 2) return null;
+
+	const center = median(values);
+	return median(values.map(value => Math.abs(value - center)));
+}
+
+function formatDiffBytes(baseBytes, headBytes) {
+	const diff = headBytes - baseBytes;
+	if (diff === 0) return formatBytes(0);
+
+	const sign = diff > 0 ? '+' : '-';
+	return formatColoredDiff(`${sign}${formatBytes(Math.abs(diff))}`, diff);
+}
+
+function formatDiffBytesPercent(baseBytes, headBytes) {
+	const diff = headBytes - baseBytes;
+	if (diff === 0) return '0%';
+	if (baseBytes <= 0) return '-';
+
+	const sign = diff > 0 ? '+' : '-';
+	return formatColoredDiff(`${sign}${formatPercent(Math.abs((diff * 100) / baseBytes))}`, diff);
+}
+
+function getPairedHeapSnapshotDeltaValues(base, head, phase, category) {
+	const baseSamplesByRound = getSamplesByRound(base);
+	const headSamplesByRound = getSamplesByRound(head);
+	const values = [];
+
+	for (const [round, baseSample] of baseSamplesByRound) {
+		const headSample = headSamplesByRound.get(round);
+		if (headSample == null) continue;
+
+		const baseValue = getHeapSnapshotCategoryValue(baseSample, phase, category);
+		const headValue = getHeapSnapshotCategoryValue(headSample, phase, category);
+		if (baseValue == null || headValue == null) continue;
+
+		values.push(headValue - baseValue);
+	}
+
+	return values;
+}
+
+function formatDeltaBytes(diffBytes) {
+	if (diffBytes === 0) return formatBytes(0);
+
+	const sign = diffBytes > 0 ? '+' : '-';
+	return formatColoredDiff(`${sign}${formatBytes(Math.abs(diffBytes))}`, diffBytes);
+}
+
+function pairedHeapSnapshotDeltaSummary(base, head, phase, category) {
+	const values = getPairedHeapSnapshotDeltaValues(base, head, phase, category);
+	if (values.length === 0) return null;
+
+	return {
+		median: median(values),
+		mad: mad(values),
+		min: Math.min(...values),
+		max: Math.max(...values),
+		samples: values.length,
+	};
+}
+
+function renderHeapSnapshotTable(base, head, phase) {
+	const lines = [
+		'| Category | Base | Head | Δ | Δ (%) |',
+		'| --- | ---: | ---: | ---: | ---: |',
+	];
+
+	for (const category of heapSnapshotCategories) {
+		const baseValue = getHeapSnapshotCategoryValue(base, phase, category);
+		const headValue = getHeapSnapshotCategoryValue(head, phase, category);
+		if (baseValue == null || headValue == null) continue;
+
+		const baseSpread = getHeapSnapshotSampleSpread(base, phase, category);
+		const headSpread = getHeapSnapshotSampleSpread(head, phase, category);
+
+		lines.push(`| ${category} | ${formatBytes(baseValue)} <br> ± ${baseSpread == null ? '-' : formatBytes(baseSpread)} | ${formatBytes(headValue)} <br> ± ${headSpread == null ? '-' : formatBytes(headSpread)} | ${formatDiffBytes(baseValue, headValue)} | ${formatDiffBytesPercent(baseValue, headValue)} |`);
+	}
+
+	if (lines.length === 2) return null;
+	return lines.join('\n');
+}
+
+function renderHeapSnapshotPairedDeltaTable(base, head, phase) {
+	const lines = [
+		'| Category | Δ median | Δ MAD | Δ min | Δ max |',
+		'| --- | ---: | ---: | ---: | ---: |',
+	];
+
+	for (const category of heapSnapshotCategories) {
+		const summary = pairedHeapSnapshotDeltaSummary(base, head, phase, category);
+		if (summary == null) continue;
+
+		lines.push(`| ${category} | ${formatDeltaBytes(summary.median)} | ${summary.mad == null ? '-' : formatBytes(summary.mad)} | ${formatDeltaBytes(summary.min)} | ${formatDeltaBytes(summary.max)} |`);
+	}
+
+	if (lines.length === 2) return null;
+	return lines.join('\n');
+}
+
+function renderHeapSnapshotSection(base, head) {
+	const table = renderHeapSnapshotTable(base, head, 'afterRequest');
+	if (table == null) return null;
+
+	const lines = [
+		'### V8 Heap Snapshot Statistics',
+		'',
+		table,
+		'',
+	];
+
+	const pairedDeltaTable = renderHeapSnapshotPairedDeltaTable(base, head, 'afterRequest');
+	if (pairedDeltaTable != null) {
+		lines.push('#### Paired Delta Summary');
+		lines.push('');
+		lines.push(pairedDeltaTable);
+		lines.push('');
+	}
+
+	return lines.join('\n');
+}
+
 function getJsFootprintValue(report, phase, key) {
 	const value = report?.[phase]?.totals?.[key];
 	return Number.isFinite(value) ? value : null;
@@ -492,6 +640,12 @@ for (const phase of phases) {
 		lines.push(pairedDeltaTable);
 		lines.push('');
 	}
+}
+
+const heapSnapshotSection = renderHeapSnapshotSection(base, head);
+if (heapSnapshotSection != null) {
+	lines.push(heapSnapshotSection);
+	lines.push('');
 }
 
 const jsFootprintSection = renderJsFootprintSection(baseJsFootprint, headJsFootprint);

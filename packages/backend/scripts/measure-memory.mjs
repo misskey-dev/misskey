@@ -14,6 +14,7 @@ import { fork } from 'node:child_process';
 import { setTimeout } from 'node:timers/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { tmpdir } from 'node:os';
 import * as http from 'node:http';
 import * as fs from 'node:fs/promises';
 
@@ -30,11 +31,21 @@ function readIntegerEnv(name, defaultValue, min) {
 	return value;
 }
 
+function readBooleanEnv(name, defaultValue) {
+	const rawValue = process.env[name];
+	if (rawValue == null || rawValue === '') return defaultValue;
+	if (rawValue === '1' || rawValue === 'true') return true;
+	if (rawValue === '0' || rawValue === 'false') return false;
+	throw new Error(`${name} must be one of: 1, 0, true, false`);
+}
+
 const SAMPLE_COUNT = readIntegerEnv('MK_MEMORY_SAMPLE_COUNT', 3, 1); // Number of samples to measure
 const STARTUP_TIMEOUT = readIntegerEnv('MK_MEMORY_STARTUP_TIMEOUT_MS', 120000, 1); // Timeout for server startup
 const MEMORY_SETTLE_TIME = readIntegerEnv('MK_MEMORY_SETTLE_TIME_MS', 10000, 0); // Wait after startup for memory to settle
 const IPC_TIMEOUT = readIntegerEnv('MK_MEMORY_IPC_TIMEOUT_MS', 30000, 1); // Timeout for IPC responses
 const REQUEST_COUNT = readIntegerEnv('MK_MEMORY_REQUEST_COUNT', 10, 0);
+const HEAP_SNAPSHOT = readBooleanEnv('MK_MEMORY_HEAP_SNAPSHOT', false);
+const HEAP_SNAPSHOT_TIMEOUT = readIntegerEnv('MK_MEMORY_HEAP_SNAPSHOT_TIMEOUT_MS', 120000, 1);
 
 const procStatusKeys = {
 	VmPeak: 0,
@@ -74,6 +85,45 @@ const memoryKeys = {
 
 const phases = ['beforeGc', 'afterGc', 'afterRequest'];
 
+const heapSnapshotCategories = [
+	'Code',
+	'Strings',
+	'JS arrays',
+	'Typed arrays',
+	'System objects',
+	'Other JS objects',
+	'Other non-JS objects',
+	'Total',
+];
+
+const typedArrayNames = new Set([
+	'ArrayBuffer',
+	'SharedArrayBuffer',
+	'DataView',
+	'Int8Array',
+	'Uint8Array',
+	'Uint8ClampedArray',
+	'Int16Array',
+	'Uint16Array',
+	'Int32Array',
+	'Uint32Array',
+	'Float16Array',
+	'Float32Array',
+	'Float64Array',
+	'BigInt64Array',
+	'BigUint64Array',
+	'system / JSArrayBufferData',
+]);
+
+const otherJsNodeTypes = new Set([
+	'object',
+	'closure',
+	'regexp',
+	'number',
+	'symbol',
+	'bigint',
+]);
+
 function parseMemoryFile(content, keys, path, required) {
 	const result = {};
 	for (const key of Object.keys(keys)) {
@@ -89,6 +139,76 @@ function parseMemoryFile(content, keys, path, required) {
 
 function bytesToKiB(value) {
 	return Math.round(value / 1024);
+}
+
+function createEmptyHeapSnapshotCategoryMap() {
+	return Object.fromEntries(heapSnapshotCategories.map(category => [category, 0]));
+}
+
+function isTypedArrayNode(type, name) {
+	return typedArrayNames.has(name) ||
+		(type === 'native' && (name.includes('ArrayBuffer') || name.includes('TypedArray')));
+}
+
+function isSystemNode(type, name) {
+	return type === 'hidden' ||
+		type === 'synthetic' ||
+		type === 'object shape' ||
+		name.startsWith('system /') ||
+		name.startsWith('(system ');
+}
+
+function classifyHeapSnapshotNode(type, name) {
+	if (type === 'code') return 'Code';
+	if (type === 'string' || type === 'concatenated string' || type === 'sliced string') return 'Strings';
+	if (isTypedArrayNode(type, name)) return 'Typed arrays';
+	if (type === 'array' || (type === 'object' && name === 'Array')) return 'JS arrays';
+	if (isSystemNode(type, name)) return 'System objects';
+	if (otherJsNodeTypes.has(type)) return 'Other JS objects';
+	return 'Other non-JS objects';
+}
+
+function analyzeHeapSnapshot(snapshot) {
+	const meta = snapshot?.snapshot?.meta;
+	const nodes = snapshot?.nodes;
+	const strings = snapshot?.strings;
+	if (meta == null || !Array.isArray(nodes) || !Array.isArray(strings)) {
+		throw new Error('Invalid heap snapshot format');
+	}
+
+	const nodeFields = meta.node_fields;
+	if (!Array.isArray(nodeFields)) throw new Error('Invalid heap snapshot node fields');
+
+	const typeOffset = nodeFields.indexOf('type');
+	const nameOffset = nodeFields.indexOf('name');
+	const selfSizeOffset = nodeFields.indexOf('self_size');
+	if (typeOffset < 0 || nameOffset < 0 || selfSizeOffset < 0) {
+		throw new Error('Heap snapshot is missing required node fields');
+	}
+
+	const nodeTypeNames = meta.node_types?.[typeOffset];
+	if (!Array.isArray(nodeTypeNames)) throw new Error('Invalid heap snapshot node types');
+
+	const fieldCount = nodeFields.length;
+	const categories = createEmptyHeapSnapshotCategoryMap();
+	const nodeCounts = createEmptyHeapSnapshotCategoryMap();
+
+	for (let offset = 0; offset < nodes.length; offset += fieldCount) {
+		const type = nodeTypeNames[nodes[offset + typeOffset]] ?? 'unknown';
+		const name = strings[nodes[offset + nameOffset]] ?? '';
+		const selfSize = nodes[offset + selfSizeOffset] ?? 0;
+		const category = classifyHeapSnapshotNode(type, name);
+
+		categories[category] += selfSize;
+		categories.Total += selfSize;
+		nodeCounts[category]++;
+		nodeCounts.Total++;
+	}
+
+	return {
+		categories,
+		nodeCounts,
+	};
 }
 
 async function getMemoryUsage(pid) {
@@ -150,6 +270,39 @@ async function getRuntimeMemoryUsage(serverProcess) {
 	};
 }
 
+async function getHeapSnapshotStatistics(serverProcess) {
+	if (!HEAP_SNAPSHOT) return null;
+
+	const snapshotPath = join(tmpdir(), `misskey-backend-heap-${process.pid}-${serverProcess.pid}-${Date.now()}.heapsnapshot`);
+	const response = waitForMessage(
+		serverProcess,
+		message => message != null && typeof message === 'object' && (message.type === 'heap snapshot' || message.type === 'heap snapshot error'),
+		'heap snapshot',
+		HEAP_SNAPSHOT_TIMEOUT,
+	);
+
+	serverProcess.send({
+		type: 'heap snapshot',
+		path: snapshotPath,
+	});
+
+	const message = await response;
+	if (message.type === 'heap snapshot error') {
+		throw new Error(`Failed to write heap snapshot: ${message.message}`);
+	}
+
+	const writtenPath = typeof message.path === 'string' ? message.path : snapshotPath;
+
+	try {
+		const snapshot = JSON.parse(await fs.readFile(writtenPath, 'utf-8'));
+		return analyzeHeapSnapshot(snapshot);
+	} finally {
+		await fs.unlink(writtenPath).catch(err => {
+			process.stderr.write(`Failed to delete heap snapshot ${writtenPath}: ${err.message}\n`);
+		});
+	}
+}
+
 async function getAllMemoryUsage(serverProcess) {
 	const pid = serverProcess.pid;
 	return {
@@ -179,6 +332,31 @@ function summarizeResults(results) {
 			if (values.length > 0) {
 				summary[phase][key] = median(values);
 			}
+		}
+
+		const heapSnapshotCategoryValues = {};
+		for (const category of heapSnapshotCategories) {
+			const values = results
+				.map(result => result[phase]?.heapSnapshot?.categories?.[category])
+				.filter(value => Number.isFinite(value));
+
+			if (values.length > 0) heapSnapshotCategoryValues[category] = median(values);
+		}
+
+		const heapSnapshotNodeCountValues = {};
+		for (const category of heapSnapshotCategories) {
+			const values = results
+				.map(result => result[phase]?.heapSnapshot?.nodeCounts?.[category])
+				.filter(value => Number.isFinite(value));
+
+			if (values.length > 0) heapSnapshotNodeCountValues[category] = median(values);
+		}
+
+		if (Object.keys(heapSnapshotCategoryValues).length > 0) {
+			summary[phase].heapSnapshot = {
+				categories: heapSnapshotCategoryValues,
+				nodeCounts: heapSnapshotNodeCountValues,
+			};
 		}
 	}
 
@@ -290,6 +468,8 @@ async function measureMemory() {
 	await triggerGc();
 
 	const afterRequest = await getAllMemoryUsage(serverProcess);
+	const heapSnapshot = await getHeapSnapshotStatistics(serverProcess);
+	if (heapSnapshot != null) afterRequest.heapSnapshot = heapSnapshot;
 
 	// Stop the server
 	serverProcess.kill('SIGTERM');
@@ -339,6 +519,10 @@ async function main() {
 			memorySettleTimeMs: MEMORY_SETTLE_TIME,
 			ipcTimeoutMs: IPC_TIMEOUT,
 			requestCount: REQUEST_COUNT,
+			heapSnapshot: {
+				enabled: HEAP_SNAPSHOT,
+				timeoutMs: HEAP_SNAPSHOT_TIMEOUT,
+			},
 		},
 		...summary,
 		samples: results,
