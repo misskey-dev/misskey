@@ -91,7 +91,7 @@ function formatDiffPercent(before, after) {
 	if (before == null || before === 0 || after == null || after === 0) return '-';
 	const diff = after - before;
 	if (diff === 0) return `0%`;
-	const percent = Math.round(diff / before * 100);
+	const percent = Math.abs(Math.round(diff / before * 100));
 	return formatColoredDiff(`${percent}%`, diff);
 }
 
@@ -536,6 +536,7 @@ const before = await collectReport(beforeDir);
 const after = await collectReport(afterDir);
 const beforeStats = JSON.parse(await fs.readFile(beforeStatsFile, 'utf8'));
 const afterStats = JSON.parse(await fs.readFile(afterStatsFile, 'utf8'));
+const visualizerArtifactLink = `[Download detailed HTML](${process.env.FRONTEND_BUNDLE_REPORT_ARTIFACT_URL})`;
 
 const body = [
 	marker,
@@ -547,6 +548,8 @@ const body = [
 	'## Bundle Stats',
 	'',
 	renderFrontendBundleReport(collectVisualizerReport(beforeStats), collectVisualizerReport(afterStats)),
+	'',
+	visualizerArtifactLink,
 ].join('\n');
 
 await fs.writeFile(outFile, body);

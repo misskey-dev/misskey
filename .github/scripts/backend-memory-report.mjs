@@ -1,9 +1,9 @@
 import { readFile, writeFile } from 'node:fs/promises';
 
-const [baseFile, headFile, outputFile] = process.argv.slice(2);
+const [baseFile, headFile, outputFile, baseJsFootprintFile, headJsFootprintFile] = process.argv.slice(2);
 
 if (baseFile == null || headFile == null || outputFile == null) {
-	console.error('Usage: node .github/scripts/backend-memory-report.mjs <base-memory.json> <head-memory.json> <report.md>');
+	console.error('Usage: node .github/scripts/backend-memory-report.mjs <base-memory.json> <head-memory.json> <report.md> [base-js-footprint.json head-js-footprint.json]');
 	process.exit(1);
 }
 
@@ -26,12 +26,30 @@ const metrics = [
 	'External',
 ];
 
+const heapSnapshotCategories = [
+	'Code',
+	'Strings',
+	'JS arrays',
+	'Typed arrays',
+	'System objects',
+	'Other JS objects',
+	'Other non-JS objects',
+	'Total',
+];
+
 function formatNumber(value) {
 	return numberFormatter.format(value);
 }
 
 function formatMemory(valueKiB) {
 	return `${formatNumber(valueKiB / 1024)} MB`;
+}
+
+function formatBytes(value) {
+	if (!Number.isFinite(value)) return '-';
+	if (value < 1024) return `${formatNumber(value)} B`;
+	if (value < 1024 * 1024) return `${formatNumber(value / 1024)} KiB`;
+	return `${formatNumber(value / 1024 / 1024)} MiB`;
 }
 
 function formatPercent(value) {
@@ -96,6 +114,64 @@ function getSampleSpread(report, phase, metric) {
 	return median(values.map(value => Math.abs(value - center)));
 }
 
+function mad(values) {
+	if (values.length < 2) return null;
+
+	const center = median(values);
+	return median(values.map(value => Math.abs(value - center)));
+}
+
+function getSamplesByRound(report) {
+	const samplesByRound = new Map();
+	if (!Array.isArray(report?.samples)) return samplesByRound;
+
+	for (const sample of report.samples) {
+		if (!Number.isInteger(sample?.round) || sample.round <= 0) continue;
+		samplesByRound.set(sample.round, sample);
+	}
+
+	return samplesByRound;
+}
+
+function getPairedDeltaValues(base, head, phase, metric) {
+	const baseSamplesByRound = getSamplesByRound(base);
+	const headSamplesByRound = getSamplesByRound(head);
+	const values = [];
+
+	for (const [round, baseSample] of baseSamplesByRound) {
+		const headSample = headSamplesByRound.get(round);
+		if (headSample == null) continue;
+
+		const baseValue = getMemoryValue(baseSample, phase, metric);
+		const headValue = getMemoryValue(headSample, phase, metric);
+		if (baseValue == null || headValue == null) continue;
+
+		values.push(headValue - baseValue);
+	}
+
+	return values;
+}
+
+function formatDeltaMemory(diffKiB) {
+	if (diffKiB === 0) return formatMemory(0);
+
+	const sign = diffKiB > 0 ? '+' : '-';
+	return formatColoredDiff(`${sign}${formatMemory(Math.abs(diffKiB))}`, diffKiB);
+}
+
+function pairedDeltaSummary(base, head, phase, metric) {
+	const values = getPairedDeltaValues(base, head, phase, metric);
+	if (values.length === 0) return null;
+
+	return {
+		median: median(values),
+		mad: mad(values),
+		min: Math.min(...values),
+		max: Math.max(...values),
+		samples: values.length,
+	};
+}
+
 function renderTable(base, head, phase) {
 	const lines = [
 		'| Metric | Base | Head | Δ | Δ (%) |',
@@ -113,6 +189,23 @@ function renderTable(base, head, phase) {
 		lines.push(`| ${metric} | ${formatMemory(baseValue)} <br> ± ${formatMemory(baseSpread)} | ${formatMemory(headValue)} <br> ± ${formatMemory(headSpread)} | ${formatDiff(baseValue, headValue)} | ${formatDiffPercent(baseValue, headValue)} |`);
 	}
 
+	return lines.join('\n');
+}
+
+function renderPairedDeltaTable(base, head, phase) {
+	const lines = [
+		'| Metric | Δ median | Δ MAD | Δ min | Δ max |',
+		'| --- | ---: | ---: | ---: | ---: |',
+	];
+
+	for (const metric of metrics) {
+		const summary = pairedDeltaSummary(base, head, phase, metric);
+		if (summary == null) continue;
+
+		lines.push(`| ${metric} | ${formatDeltaMemory(summary.median)} | ${summary.mad == null ? '-' : formatMemory(summary.mad)} | ${formatDeltaMemory(summary.min)} | ${formatDeltaMemory(summary.max)} |`);
+	}
+
+	if (lines.length === 2) return null;
 	return lines.join('\n');
 }
 
@@ -174,22 +267,390 @@ function measurementSummary(base, head) {
 	return `_Sample count: base ${baseCount}, head ${headCount}. Values are medians; ± is median absolute deviation._`;
 }
 
+function formatPlainDiff(baseValue, headValue, formatter = formatNumber) {
+	const diff = headValue - baseValue;
+	if (diff === 0) return formatter(0);
+
+	const sign = diff > 0 ? '+' : '-';
+	return `${sign}${formatter(Math.abs(diff))}`;
+}
+
+function formatPlainDiffPercent(baseValue, headValue) {
+	const diff = headValue - baseValue;
+	if (diff === 0) return '0%';
+	if (baseValue <= 0) return '-';
+
+	const sign = diff > 0 ? '+' : '-';
+	return `${sign}${formatPercent(Math.abs((diff * 100) / baseValue))}`;
+}
+
+function getHeapSnapshotCategoryValue(report, phase, category) {
+	const value = report?.[phase]?.heapSnapshot?.categories?.[category];
+	return Number.isFinite(value) ? value : null;
+}
+
+function getHeapSnapshotSampleValues(report, phase, category) {
+	if (!Array.isArray(report?.samples)) return [];
+
+	return report.samples
+		.map(sample => getHeapSnapshotCategoryValue(sample, phase, category))
+		.filter(value => Number.isFinite(value));
+}
+
+function getHeapSnapshotSampleSpread(report, phase, category) {
+	const values = getHeapSnapshotSampleValues(report, phase, category);
+	if (values.length < 2) return null;
+
+	const center = median(values);
+	return median(values.map(value => Math.abs(value - center)));
+}
+
+function formatDiffBytes(baseBytes, headBytes) {
+	const diff = headBytes - baseBytes;
+	if (diff === 0) return formatBytes(0);
+
+	const sign = diff > 0 ? '+' : '-';
+	return formatColoredDiff(`${sign}${formatBytes(Math.abs(diff))}`, diff);
+}
+
+function formatDiffBytesPercent(baseBytes, headBytes) {
+	const diff = headBytes - baseBytes;
+	if (diff === 0) return '0%';
+	if (baseBytes <= 0) return '-';
+
+	const sign = diff > 0 ? '+' : '-';
+	return formatColoredDiff(`${sign}${formatPercent(Math.abs((diff * 100) / baseBytes))}`, diff);
+}
+
+function getPairedHeapSnapshotDeltaValues(base, head, phase, category) {
+	const baseSamplesByRound = getSamplesByRound(base);
+	const headSamplesByRound = getSamplesByRound(head);
+	const values = [];
+
+	for (const [round, baseSample] of baseSamplesByRound) {
+		const headSample = headSamplesByRound.get(round);
+		if (headSample == null) continue;
+
+		const baseValue = getHeapSnapshotCategoryValue(baseSample, phase, category);
+		const headValue = getHeapSnapshotCategoryValue(headSample, phase, category);
+		if (baseValue == null || headValue == null) continue;
+
+		values.push(headValue - baseValue);
+	}
+
+	return values;
+}
+
+function formatDeltaBytes(diffBytes) {
+	if (diffBytes === 0) return formatBytes(0);
+
+	const sign = diffBytes > 0 ? '+' : '-';
+	return formatColoredDiff(`${sign}${formatBytes(Math.abs(diffBytes))}`, diffBytes);
+}
+
+function pairedHeapSnapshotDeltaSummary(base, head, phase, category) {
+	const values = getPairedHeapSnapshotDeltaValues(base, head, phase, category);
+	if (values.length === 0) return null;
+
+	return {
+		median: median(values),
+		mad: mad(values),
+		min: Math.min(...values),
+		max: Math.max(...values),
+		samples: values.length,
+	};
+}
+
+function renderHeapSnapshotTable(base, head, phase) {
+	const lines = [
+		'| Category | Base | Head | Δ | Δ (%) |',
+		'| --- | ---: | ---: | ---: | ---: |',
+	];
+
+	for (const category of heapSnapshotCategories) {
+		const baseValue = getHeapSnapshotCategoryValue(base, phase, category);
+		const headValue = getHeapSnapshotCategoryValue(head, phase, category);
+		if (baseValue == null || headValue == null) continue;
+
+		const baseSpread = getHeapSnapshotSampleSpread(base, phase, category);
+		const headSpread = getHeapSnapshotSampleSpread(head, phase, category);
+
+		lines.push(`| ${category} | ${formatBytes(baseValue)} <br> ± ${baseSpread == null ? '-' : formatBytes(baseSpread)} | ${formatBytes(headValue)} <br> ± ${headSpread == null ? '-' : formatBytes(headSpread)} | ${formatDiffBytes(baseValue, headValue)} | ${formatDiffBytesPercent(baseValue, headValue)} |`);
+	}
+
+	if (lines.length === 2) return null;
+	return lines.join('\n');
+}
+
+function renderHeapSnapshotPairedDeltaTable(base, head, phase) {
+	const lines = [
+		'| Category | Δ median | Δ MAD | Δ min | Δ max |',
+		'| --- | ---: | ---: | ---: | ---: |',
+	];
+
+	for (const category of heapSnapshotCategories) {
+		const summary = pairedHeapSnapshotDeltaSummary(base, head, phase, category);
+		if (summary == null) continue;
+
+		lines.push(`| ${category} | ${formatDeltaBytes(summary.median)} | ${summary.mad == null ? '-' : formatBytes(summary.mad)} | ${formatDeltaBytes(summary.min)} | ${formatDeltaBytes(summary.max)} |`);
+	}
+
+	if (lines.length === 2) return null;
+	return lines.join('\n');
+}
+
+function renderHeapSnapshotSection(base, head) {
+	const table = renderHeapSnapshotTable(base, head, 'afterRequest');
+	if (table == null) return null;
+
+	const lines = [
+		'### V8 Heap Snapshot Statistics',
+		'',
+		table,
+		'',
+	];
+
+	const pairedDeltaTable = renderHeapSnapshotPairedDeltaTable(base, head, 'afterRequest');
+	if (pairedDeltaTable != null) {
+		lines.push('#### Paired Delta Summary');
+		lines.push('');
+		lines.push(pairedDeltaTable);
+		lines.push('');
+	}
+
+	return lines.join('\n');
+}
+
+function getJsFootprintValue(report, phase, key) {
+	const value = report?.[phase]?.totals?.[key];
+	return Number.isFinite(value) ? value : null;
+}
+
+function renderJsFootprintMetricTable(base, head) {
+	const metricRows = [
+		['Loaded JS modules', 'loadedJsModules', formatNumber],
+		['Loaded JS source', 'loadedJsSourceBytes', formatBytes],
+		//['Loaded JS gzip estimate', 'loadedJsGzipBytes', formatBytes],
+		//['AST nodes', 'astNodeCount', formatNumber],
+		//['Functions', 'functionCount', formatNumber],
+		//['Classes', 'classCount', formatNumber],
+		//['String literals', 'stringLiteralBytes', formatBytes],
+		['External packages loaded', 'externalPackageCount', formatNumber],
+		['Native addon packages', 'nativeAddonPackageCount', formatNumber],
+	];
+
+	const lines = [
+		'| Metric | Base | Head | Δ | Δ (%) |',
+		'| --- | ---: | ---: | ---: | ---: |',
+	];
+
+	for (const [title, key, formatter] of metricRows) {
+		const baseValue = getJsFootprintValue(base, 'afterRequest', key);
+		const headValue = getJsFootprintValue(head, 'afterRequest', key);
+		if (baseValue == null || headValue == null) continue;
+
+		lines.push(`| ${title} | ${formatter(baseValue)} | ${formatter(headValue)} | ${formatPlainDiff(baseValue, headValue, formatter)} | ${formatPlainDiffPercent(baseValue, headValue)} |`);
+	}
+
+	return lines.join('\n');
+}
+
+function renderJsFootprintPhaseTable(base, head) {
+	const lines = [
+		'| Phase | Base modules | Head modules | Δ modules | Base source | Head source | Δ source |',
+		'| --- | ---: | ---: | ---: | ---: | ---: | ---: |',
+	];
+
+	for (const [phase, title] of [['startup', 'Startup'], ['afterRequest', 'After warmup requests']]) {
+		const baseModules = getJsFootprintValue(base, phase, 'loadedJsModules');
+		const headModules = getJsFootprintValue(head, phase, 'loadedJsModules');
+		const baseSource = getJsFootprintValue(base, phase, 'loadedJsSourceBytes');
+		const headSource = getJsFootprintValue(head, phase, 'loadedJsSourceBytes');
+		if (baseModules == null || headModules == null || baseSource == null || headSource == null) continue;
+
+		lines.push(`| ${title} | ${formatNumber(baseModules)} | ${formatNumber(headModules)} | ${formatPlainDiff(baseModules, headModules)} | ${formatBytes(baseSource)} | ${formatBytes(headSource)} | ${formatPlainDiff(baseSource, headSource, formatBytes)} |`);
+	}
+
+	return lines.join('\n');
+}
+
+function packageMap(report) {
+	const map = new Map();
+	for (const packageSummary of report?.afterRequest?.packages ?? []) {
+		if (packageSummary?.category !== 'external' || typeof packageSummary.name !== 'string') continue;
+		map.set(packageSummary.name, packageSummary);
+	}
+	return map;
+}
+
+function packageDisplayName(packageSummary) {
+	if (packageSummary.version == null) return packageSummary.name;
+	return `${packageSummary.name} ${packageSummary.version}`;
+}
+
+function renderNewExternalPackages(base, head) {
+	const basePackages = packageMap(base);
+	const headPackages = packageMap(head);
+	const newPackages = [...headPackages.values()]
+		.filter(packageSummary => !basePackages.has(packageSummary.name))
+		.toSorted((a, b) => b.sourceBytes - a.sourceBytes)
+		.slice(0, 10);
+
+	if (newPackages.length === 0) return null;
+
+	const lines = [
+		'#### Newly Loaded External Packages',
+		'',
+		'| Package | Loaded JS | Modules | Notes |',
+		'| --- | ---: | ---: | --- |',
+	];
+
+	for (const packageSummary of newPackages) {
+		lines.push(`| ${packageDisplayName(packageSummary)} | ${formatBytes(packageSummary.sourceBytes)} | ${formatNumber(packageSummary.modules)} | ${packageSummary.nativeAddon ? 'native addon' : ''} |`);
+	}
+
+	return lines.join('\n');
+}
+
+function renderLargestPackageIncreases(base, head) {
+	const basePackages = packageMap(base);
+	const headPackages = packageMap(head);
+	const increases = [...headPackages.values()]
+		.map(headPackage => {
+			const basePackage = basePackages.get(headPackage.name);
+			const baseSourceBytes = basePackage?.sourceBytes ?? 0;
+			const baseModules = basePackage?.modules ?? 0;
+			return {
+				...headPackage,
+				baseSourceBytes,
+				baseModules,
+				sourceDiff: headPackage.sourceBytes - baseSourceBytes,
+				moduleDiff: headPackage.modules - baseModules,
+			};
+		})
+		.filter(packageSummary => packageSummary.sourceDiff > 0)
+		.toSorted((a, b) => b.sourceDiff - a.sourceDiff)
+		.slice(0, 10);
+
+	if (increases.length === 0) return null;
+
+	const lines = [
+		'#### Largest Package Increases',
+		'',
+		'| Package | Base | Head | Δ | Modules Δ |',
+		'| --- | ---: | ---: | ---: | ---: |',
+	];
+
+	for (const packageSummary of increases) {
+		lines.push(`| ${packageDisplayName(packageSummary)} | ${formatBytes(packageSummary.baseSourceBytes)} | ${formatBytes(packageSummary.sourceBytes)} | ${formatPlainDiff(packageSummary.baseSourceBytes, packageSummary.sourceBytes, formatBytes)} | ${formatPlainDiff(packageSummary.baseModules, packageSummary.modules)} |`);
+	}
+
+	return lines.join('\n');
+}
+
+function moduleMap(report) {
+	const map = new Map();
+	for (const moduleSummary of report?.afterRequest?.modules ?? []) {
+		if (typeof moduleSummary.path !== 'string') continue;
+		map.set(moduleSummary.path, moduleSummary);
+	}
+	return map;
+}
+
+function renderNewLoadedModules(base, head) {
+	const baseModules = moduleMap(base);
+	const headModules = moduleMap(head);
+	const newModules = [...headModules.values()]
+		.filter(moduleSummary => !baseModules.has(moduleSummary.path))
+		.toSorted((a, b) => b.sourceBytes - a.sourceBytes)
+		.slice(0, 10);
+
+	if (newModules.length === 0) return null;
+
+	const lines = [
+		'#### Largest Newly Loaded Modules',
+		'',
+		'| Module | Package | Loaded JS |',
+		'| --- | --- | ---: |',
+	];
+
+	for (const moduleSummary of newModules) {
+		lines.push(`| \`${moduleSummary.path}\` | ${moduleSummary.package} | ${formatBytes(moduleSummary.sourceBytes)} |`);
+	}
+
+	return lines.join('\n');
+}
+
+function renderJsFootprintSection(base, head) {
+	if (base == null || head == null) return null;
+
+	const lines = [
+		'### Runtime Loaded JS Footprint',
+		'',
+		'<details><summary>Click to show</summary>',
+		'',
+		renderJsFootprintMetricTable(base, head),
+		'',
+		//'#### Load Phase Breakdown',
+		//'',
+		//renderJsFootprintPhaseTable(base, head),
+		//'',
+	];
+
+	for (const block of [
+		renderNewExternalPackages(base, head),
+		renderLargestPackageIncreases(base, head),
+		renderNewLoadedModules(base, head),
+	]) {
+		if (block == null) continue;
+		lines.push(block);
+		lines.push('');
+	}
+
+	lines.push('</details>');
+	lines.push('');
+
+	return lines.join('\n');
+}
+
 const base = JSON.parse(await readFile(baseFile, 'utf8'));
 const head = JSON.parse(await readFile(headFile, 'utf8'));
+const baseJsFootprint = baseJsFootprintFile == null ? null : JSON.parse(await readFile(baseJsFootprintFile, 'utf8'));
+const headJsFootprint = headJsFootprintFile == null ? null : JSON.parse(await readFile(headJsFootprintFile, 'utf8'));
 const lines = [
 	'## Backend Memory Usage Report',
 	'',
 ];
 
-const summary = measurementSummary(base, head);
-if (summary != null) {
-	lines.push(summary);
-	lines.push('');
-}
+//const summary = measurementSummary(base, head);
+//if (summary != null) {
+//	lines.push(summary);
+//	lines.push('');
+//}
 
 for (const phase of phases) {
 	lines.push(`### ${phase.title}`);
 	lines.push(renderTable(base, head, phase.key));
+	lines.push('');
+
+	const pairedDeltaTable = renderPairedDeltaTable(base, head, phase.key);
+	if (pairedDeltaTable != null) {
+		lines.push('#### Paired Delta Summary');
+		lines.push('');
+		lines.push(pairedDeltaTable);
+		lines.push('');
+	}
+}
+
+const heapSnapshotSection = renderHeapSnapshotSection(base, head);
+if (heapSnapshotSection != null) {
+	lines.push(heapSnapshotSection);
+	lines.push('');
+}
+
+const jsFootprintSection = renderJsFootprintSection(baseJsFootprint, headJsFootprint);
+if (jsFootprintSection != null) {
+	lines.push(jsFootprintSection);
 	lines.push('');
 }
 
