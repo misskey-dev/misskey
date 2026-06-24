@@ -91,7 +91,7 @@ function formatDiffPercent(before, after) {
 	if (before == null || before === 0 || after == null || after === 0) return '-';
 	const diff = after - before;
 	if (diff === 0) return `0%`;
-	const percent = Math.round(diff / before * 100);
+	const percent = Math.abs(Math.round(diff / before * 100));
 	return formatColoredDiff(`${percent}%`, diff);
 }
 
@@ -411,7 +411,7 @@ function chunkMarkdownTable(rows, total) {
 		'| --- | ---: | ---: | ---: | ---: |',
 	];
 	if (total != null) {
-		lines.push(`| (total) | ${formatBytes(total.beforeSize)} | ${formatBytes(total.afterSize)} | ${formatBytesDiff(total.beforeSize, total.afterSize)} | ${formatDiffPercent(total.beforeSize, total.afterSize)} |`);
+		lines.push(`| (total) | ${formatBytes(total.beforeSize)} | ${formatBytes(total.afterSize)} | ${formatBytesDiff(total.beforeSize, total.afterSize)} | ${formatDiffPercent(total.beforeSize, total.afterSize).replaceAll('\\%', '\\\\%')} |`);
 		lines.push('| | | | | |');
 	}
 	for (const row of rows) {
@@ -464,14 +464,14 @@ function renderFrontendChunkReport(before, after) {
 
 	return [
 		'<details open>',
-		`<summary>${formatChunkChangeSummary('Diffs', diffSummary)}</summary>`,
+		`<summary>${formatChunkChangeSummary('Chunk size diff', diffSummary)}</summary>`,
 		'',
 		chunkMarkdownTable(diffRows, diffTotal),
 		'',
 		'</details>',
 		'',
 		'<details>',
-		`<summary>${formatChunkChangeSummary('Startup', startupSummary)}</summary>`,
+		`<summary>${formatChunkChangeSummary('Startup chunk size', startupSummary)}</summary>`,
 		'',
 		chunkMarkdownTable(startupRows, startupTotal),
 		'',
@@ -493,11 +493,12 @@ function renderFrontendBundleReport(before, after) {
 	const lines = [
 		...renderVisualizerSummaryTable(before, after),
 		'',
-		'<details>',
-		'<summary>Top 10</summary>',
-		'',
+		//'<details>',
+		//'<summary>Top 10</summary>',
+		//'',
 	];
 
+	/*
 	for (const row of after.hotModules.slice(0, 10)) {
 		lines.push(`- ${code(row.id)}: ${sharePercent(row.renderedLength, after.metrics.renderedLength)} (${formatBytes(row.renderedLength)})`);
 	}
@@ -524,6 +525,7 @@ function renderFrontendBundleReport(before, after) {
 		'',
 		'</details>',
 	);
+	*/
 
 	return lines.join('\n');
 }
@@ -534,17 +536,20 @@ const before = await collectReport(beforeDir);
 const after = await collectReport(afterDir);
 const beforeStats = JSON.parse(await fs.readFile(beforeStatsFile, 'utf8'));
 const afterStats = JSON.parse(await fs.readFile(afterStatsFile, 'utf8'));
+const visualizerArtifactLink = `> [Bundle visualizer HTML](${process.env.FRONTEND_BUNDLE_REPORT_ARTIFACT_URL}) is included in the ${code('frontend-bundle-visualizer')} artifact as ${code('frontend-bundle-visualizer.html')}.`;
 
 const body = [
 	marker,
 	'',
-	`## Frontend Chunk Report`,
+	`## Frontend Bundle Report`,
 	'',
 	renderFrontendChunkReport(before, after),
 	'',
-	'## Frontend Bundle Report',
+	'## Bundle Stats',
 	'',
 	renderFrontendBundleReport(collectVisualizerReport(beforeStats), collectVisualizerReport(afterStats)),
+	'',
+	visualizerArtifactLink,
 ].join('\n');
 
 await fs.writeFile(outFile, body);
