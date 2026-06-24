@@ -81,11 +81,11 @@ jobs:
       run: |
         for i in {1..3}; do
           echo "Attempt $i: Installing FFmpeg..."
-          curl -s -L https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz -o ffmpeg.tar.xz && \
+          curl -f -s -L https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz -o ffmpeg.tar.xz && \
           tar -xf ffmpeg.tar.xz && \
-          mv ffmpeg-*-static/ffmpeg /usr/local/bin/ && \
-          mv ffmpeg-*-static/ffprobe /usr/local/bin/ && \
-          rm -rf ffmpeg.tar.xz ffmpeg-*-static/ && \
+          mv ffmpeg-master-latest-linux64-gpl/bin/ffmpeg /usr/local/bin/ && \
+          mv ffmpeg-master-latest-linux64-gpl/bin/ffprobe /usr/local/bin/ && \
+          rm -rf ffmpeg.tar.xz ffmpeg-master-latest-linux64-gpl/ && \
           break || sleep 10
           if [ $i -eq 3 ]; then
             echo "Failed to install FFmpeg after 3 attempts"
