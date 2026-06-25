@@ -296,14 +296,22 @@ function getHeapSnapshotBreakdownEntries(report, phase, category) {
 		.toSorted((a, b) => b[1] - a[1]);
 }
 
+const heapSnapshotSankeyChildMinRatio = 0.3;
+const heapSnapshotSankeyParentMinPercent = 10;
+
 function escapeCsvValue(value) {
 	return `"${String(value).replaceAll('"', '""')}"`;
 }
 
-function formatSankeyValue(value) {
+function formatSankeyPercentValue(value) {
 	const rounded = Math.round(value * 100) / 100;
+	if (rounded === 0 && value > 0) return '0.01';
 	if (Number.isInteger(rounded)) return String(rounded);
 	return rounded.toFixed(2).replace(/0+$/, '').replace(/\.$/, '');
+}
+
+function formatHeapSnapshotSankeyChildLabel(label) {
+	return String(label).replace(/^[^:]+:\s*/, '');
 }
 
 function renderHeapSnapshotSankey(report, phase, title) {
@@ -317,11 +325,30 @@ function renderHeapSnapshotSankey(report, phase, title) {
 			if (value == null || value <= 0) return null;
 			const breakdownEntries = getHeapSnapshotBreakdownEntries(report, phase, category);
 			const breakdownTotal = breakdownEntries.reduce((sum, [, childValue]) => sum + childValue, 0);
+			const percent = (value * 100) / total;
+			const childEntries = [];
+			let otherPercent = 0;
+
+			if (breakdownTotal > 0 && percent > heapSnapshotSankeyParentMinPercent) {
+				for (const [childName, childValue] of breakdownEntries) {
+					const childRatio = childValue / breakdownTotal;
+					const childPercent = percent * childRatio;
+					if (childRatio >= heapSnapshotSankeyChildMinRatio) {
+						childEntries.push([formatHeapSnapshotSankeyChildLabel(childName), childPercent]);
+					} else {
+						otherPercent += childPercent;
+					}
+				}
+
+				if (childEntries.length > 0 && otherPercent > 0) {
+					childEntries.push(['Other', otherPercent]);
+				}
+			}
+
 			return {
 				category,
-				value,
-				breakdownTotal,
-				breakdownEntries,
+				percent,
+				childEntries,
 			};
 		})
 		.filter(value => value != null);
@@ -331,12 +358,12 @@ function renderHeapSnapshotSankey(report, phase, title) {
 	const nodeColors = {
 		[title]: heapSnapshotCategoriesColorsHex.Total,
 	};
-	for (const { category, breakdownEntries } of categories) {
+	for (const { category, childEntries } of categories) {
 		const categoryColor = heapSnapshotCategoriesColorsHex[category] ?? heapSnapshotCategoriesColorsHex.Total;
 		nodeColors[category] = categoryColor;
 
-		for (const [childName] of breakdownEntries) {
-			nodeColors[`${category}: ${childName}`] = categoryColor;
+		for (const [childName] of childEntries) {
+			nodeColors[childName] = categoryColor;
 		}
 	}
 
@@ -354,12 +381,11 @@ function renderHeapSnapshotSankey(report, phase, title) {
 		'sankey-beta',
 	];
 
-	for (const { category, value, breakdownTotal, breakdownEntries } of categories) {
-		lines.push(`${escapeCsvValue(title)},${escapeCsvValue(category)},${formatSankeyValue(value)}`);
+	for (const { category, percent, childEntries } of categories) {
+		lines.push(`${escapeCsvValue(title)},${escapeCsvValue(category)},${formatSankeyPercentValue(percent)}`);
 
-		for (const [childName, childValue] of breakdownEntries) {
-			const normalizedValue = breakdownTotal > 0 ? childValue * value / breakdownTotal : childValue;
-			lines.push(`${escapeCsvValue(category)},${escapeCsvValue(`${category}: ${childName}`)},${formatSankeyValue(normalizedValue)}`);
+		for (const [childName, childPercent] of childEntries) {
+			lines.push(`${escapeCsvValue(category)},${escapeCsvValue(childName)},${formatSankeyPercentValue(childPercent)}`);
 		}
 	}
 
