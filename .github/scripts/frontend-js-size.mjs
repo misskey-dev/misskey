@@ -599,7 +599,7 @@ const beforeStats = JSON.parse(await fs.readFile(beforeStatsFile, 'utf8'));
 const afterStats = JSON.parse(await fs.readFile(afterStatsFile, 'utf8'));
 const beforeVisualizerReport = collectVisualizerReport(beforeStats);
 const afterVisualizerReport = collectVisualizerReport(afterStats);
-const visualizerArtifactLink = `[Download detailed HTML](${process.env.FRONTEND_BUNDLE_REPORT_ARTIFACT_URL})`;
+const visualizerArtifactLink = `[Open detailed HTML](${process.env.FRONTEND_BUNDLE_REPORT_ARTIFACT_URL})`;
 
 const body = [
 	marker,
