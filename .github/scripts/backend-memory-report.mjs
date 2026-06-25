@@ -373,9 +373,15 @@ function renderHeapSnapshotSankey(report, phase, title) {
 		'```mermaid',
 		`%%{init: ${JSON.stringify({
 			sankey: {
+				showValues: false,
 				linkColor: 'target',
-				nodeAlignment: 'left',
-				nodeColors,
+				labelStyle: 'outlined',
+				nodeAlignment: 'center',
+				nodePadding: 10,
+				nodeColors: {
+					...nodeColors,
+					'Other': '#888888',
+				},
 			},
 		})}}%%`,
 		'sankey-beta',
