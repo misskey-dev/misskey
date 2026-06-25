@@ -8,7 +8,7 @@ if (baseFile == null || headFile == null || outputFile == null) {
 }
 
 const numberFormatter = new Intl.NumberFormat('en-US', {
-	maximumFractionDigits: 2,
+	maximumFractionDigits: 1,
 });
 
 const phases = [
@@ -25,6 +25,39 @@ const metrics = [
 	'VmRSS',
 	'External',
 ];
+
+const heapSnapshotCategories = [
+	'Total',
+	'Code',
+	'Strings',
+	'JS arrays',
+	'Typed arrays',
+	'System objects',
+	'Other JS objects',
+	'Other non-JS objects',
+];
+
+const heapSnapshotCategoriesColors = {
+	'Total': 'gray',
+	'Code': 'orange',
+	'Strings': 'red',
+	'JS arrays': 'cyan',
+	'Typed arrays': 'green',
+	'System objects': 'yellow',
+	'Other JS objects': 'violet',
+	'Other non-JS objects': 'pink',
+};
+
+const heapSnapshotCategoriesColorsHex = {
+	'Total': '#888888',
+	'Code': '#f28e2c',
+	'Strings': '#e15759',
+	'JS arrays': '#76b7b2',
+	'Typed arrays': '#59a14f',
+	'System objects': '#edc949',
+	'Other JS objects': '#af7aa1',
+	'Other non-JS objects': '#ff9da7',
+};
 
 function formatNumber(value) {
 	return numberFormatter.format(value);
@@ -45,6 +78,14 @@ function formatPercent(value) {
 	return `${formatNumber(value)}%`;
 }
 
+function formatDeltaPercent(diff, baseValue) {
+	if (diff === 0) return '0%';
+	if (baseValue <= 0) return '-';
+
+	const sign = diff > 0 ? '+' : '-';
+	return formatColoredDiff(`${sign}${formatPercent(Math.abs((diff * 100) / baseValue))}`, diff);
+}
+
 function formatMathText(text) {
 	return text
 		.replaceAll('\\', '\\\\')
@@ -56,23 +97,6 @@ function formatMathText(text) {
 function formatColoredDiff(text, diff) {
 	const color = diff > 0 ? 'orange' : 'green';
 	return `$\\color{${color}}{\\text{${formatMathText(text).replaceAll('\\%', '\\\\%')}}}$`;
-}
-
-function formatDiff(baseKiB, headKiB) {
-	const diff = headKiB - baseKiB;
-	if (diff === 0) return formatMemory(0);
-
-	const sign = diff > 0 ? '+' : '-';
-	return formatColoredDiff(`${sign}${formatMemory(Math.abs(diff))}`, diff);
-}
-
-function formatDiffPercent(baseKiB, headKiB) {
-	const diff = headKiB - baseKiB;
-	if (diff === 0) return '0%';
-	if (baseKiB <= 0) return '-';
-
-	const sign = diff > 0 ? '+' : '-';
-	return formatColoredDiff(`${sign}${formatPercent(Math.abs((diff * 100) / baseKiB))}`, diff);
 }
 
 function getMemoryValue(report, phase, metric) {
@@ -163,8 +187,8 @@ function pairedDeltaSummary(base, head, phase, metric) {
 
 function renderTable(base, head, phase) {
 	const lines = [
-		'| Metric | Base | Head | Δ | Δ (%) |',
-		'| --- | ---: | ---: | ---: | ---: |',
+		'| Metric | Base | Head | Δ median | Δ MAD | Δ min | Δ max |',
+		'| --- | ---: | ---: | ---: | ---: | ---: | ---: |',
 	];
 
 	for (const metric of metrics) {
@@ -174,27 +198,12 @@ function renderTable(base, head, phase) {
 
 		const baseSpread = getSampleSpread(base, phase, metric);
 		const headSpread = getSampleSpread(head, phase, metric);
-
-		lines.push(`| ${metric} | ${formatMemory(baseValue)} <br> ± ${formatMemory(baseSpread)} | ${formatMemory(headValue)} <br> ± ${formatMemory(headSpread)} | ${formatDiff(baseValue, headValue)} | ${formatDiffPercent(baseValue, headValue)} |`);
-	}
-
-	return lines.join('\n');
-}
-
-function renderPairedDeltaTable(base, head, phase) {
-	const lines = [
-		'| Metric | Δ median | Δ MAD | Δ min | Δ max |',
-		'| --- | ---: | ---: | ---: | ---: |',
-	];
-
-	for (const metric of metrics) {
 		const summary = pairedDeltaSummary(base, head, phase, metric);
-		if (summary == null) continue;
+		const deltaMedian = summary == null ? '-' : `${formatDeltaMemory(summary.median)}<br>${formatDeltaPercent(summary.median, baseValue)}`;
 
-		lines.push(`| ${metric} | ${formatDeltaMemory(summary.median)} | ${summary.mad == null ? '-' : formatMemory(summary.mad)} | ${formatDeltaMemory(summary.min)} | ${formatDeltaMemory(summary.max)} |`);
+		lines.push(`| **${metric}** | ${formatMemory(baseValue)} <br> ± ${formatMemory(baseSpread)} | ${formatMemory(headValue)} <br> ± ${formatMemory(headSpread)} | ${deltaMedian} | ${summary?.mad == null ? '-' : formatMemory(summary.mad)} | ${summary == null ? '-' : formatDeltaMemory(summary.min)} | ${summary == null ? '-' : formatDeltaMemory(summary.max)} |`);
 	}
 
-	if (lines.length === 2) return null;
 	return lines.join('\n');
 }
 
@@ -273,6 +282,241 @@ function formatPlainDiffPercent(baseValue, headValue) {
 	return `${sign}${formatPercent(Math.abs((diff * 100) / baseValue))}`;
 }
 
+function getHeapSnapshotCategoryValue(report, phase, category) {
+	const value = report?.[phase]?.heapSnapshot?.categories?.[category];
+	return Number.isFinite(value) ? value : null;
+}
+
+function getHeapSnapshotBreakdownEntries(report, phase, category) {
+	const breakdown = report?.[phase]?.heapSnapshot?.breakdowns?.[category];
+	if (breakdown == null || typeof breakdown !== 'object') return [];
+
+	return Object.entries(breakdown)
+		.filter(([, value]) => Number.isFinite(value) && value > 0)
+		.toSorted((a, b) => b[1] - a[1]);
+}
+
+const heapSnapshotSankeyChildMinRatio = 0.3;
+const heapSnapshotSankeyParentMinPercent = 10;
+
+function escapeCsvValue(value) {
+	return `"${String(value).replaceAll('"', '""')}"`;
+}
+
+function formatSankeyPercentValue(value) {
+	const rounded = Math.round(value * 100) / 100;
+	if (rounded === 0 && value > 0) return '0.01';
+	if (Number.isInteger(rounded)) return String(rounded);
+	return rounded.toFixed(2).replace(/0+$/, '').replace(/\.$/, '');
+}
+
+function formatHeapSnapshotSankeyChildLabel(label) {
+	return String(label).replace(/^[^:]+:\s*/, '');
+}
+
+function renderHeapSnapshotSankey(report, phase, title) {
+	const total = getHeapSnapshotCategoryValue(report, phase, 'Total');
+	if (total == null || total <= 0) return null;
+
+	const categories = heapSnapshotCategories
+		.filter(category => category !== 'Total')
+		.map(category => {
+			const value = getHeapSnapshotCategoryValue(report, phase, category);
+			if (value == null || value <= 0) return null;
+			const breakdownEntries = getHeapSnapshotBreakdownEntries(report, phase, category);
+			const breakdownTotal = breakdownEntries.reduce((sum, [, childValue]) => sum + childValue, 0);
+			const percent = (value * 100) / total;
+			const childEntries = [];
+			let otherPercent = 0;
+
+			if (breakdownTotal > 0 && percent > heapSnapshotSankeyParentMinPercent) {
+				for (const [childName, childValue] of breakdownEntries) {
+					const childRatio = childValue / breakdownTotal;
+					const childPercent = percent * childRatio;
+					if (childRatio >= heapSnapshotSankeyChildMinRatio) {
+						childEntries.push([formatHeapSnapshotSankeyChildLabel(childName), childPercent]);
+					} else {
+						otherPercent += childPercent;
+					}
+				}
+
+				if (childEntries.length > 0 && otherPercent > 0) {
+					childEntries.push(['Other', otherPercent]);
+				}
+			}
+
+			return {
+				category,
+				percent,
+				childEntries,
+			};
+		})
+		.filter(value => value != null);
+
+	if (categories.length === 0) return null;
+
+	const nodeColors = {
+		[title]: heapSnapshotCategoriesColorsHex.Total,
+	};
+	for (const { category, childEntries } of categories) {
+		const categoryColor = heapSnapshotCategoriesColorsHex[category] ?? heapSnapshotCategoriesColorsHex.Total;
+		nodeColors[category] = categoryColor;
+
+		for (const [childName] of childEntries) {
+			nodeColors[childName] = categoryColor;
+		}
+	}
+
+	const lines = [
+		`<details><summary>${title} heap snapshot composition</summary>`,
+		'',
+		'```mermaid',
+		`%%{init: ${JSON.stringify({
+			sankey: {
+				showValues: false,
+				linkColor: 'target',
+				labelStyle: 'outlined',
+				nodeAlignment: 'center',
+				nodePadding: 10,
+				nodeColors: {
+					...nodeColors,
+					'Other': '#888888',
+				},
+			},
+		})}}%%`,
+		'sankey-beta',
+	];
+
+	for (const { category, percent, childEntries } of categories) {
+		lines.push(`${escapeCsvValue(title)},${escapeCsvValue(category)},${formatSankeyPercentValue(percent)}`);
+
+		for (const [childName, childPercent] of childEntries) {
+			lines.push(`${escapeCsvValue(category)},${escapeCsvValue(childName)},${formatSankeyPercentValue(childPercent)}`);
+		}
+	}
+
+	lines.push('```');
+	lines.push('');
+	lines.push('</details>');
+
+	return lines.join('\n');
+}
+
+function formatHeapSnapshotCategoryLabel(category, baseValue, headValue, baseTotal, headTotal) {
+	if (category === 'Total' || baseTotal == null || headTotal == null || baseTotal <= 0 || headTotal <= 0) return `**${category}**`;
+
+	const basePercent = formatPercent((baseValue * 100) / baseTotal);
+	const headPercent = formatPercent((headValue * 100) / headTotal);
+	return `**${category}**<br>${basePercent} → ${headPercent}`;
+}
+
+function getHeapSnapshotSampleValues(report, phase, category) {
+	if (!Array.isArray(report?.samples)) return [];
+
+	return report.samples
+		.map(sample => getHeapSnapshotCategoryValue(sample, phase, category))
+		.filter(value => Number.isFinite(value));
+}
+
+function getHeapSnapshotSampleSpread(report, phase, category) {
+	const values = getHeapSnapshotSampleValues(report, phase, category);
+	if (values.length < 2) return null;
+
+	const center = median(values);
+	return median(values.map(value => Math.abs(value - center)));
+}
+
+function getPairedHeapSnapshotDeltaValues(base, head, phase, category) {
+	const baseSamplesByRound = getSamplesByRound(base);
+	const headSamplesByRound = getSamplesByRound(head);
+	const values = [];
+
+	for (const [round, baseSample] of baseSamplesByRound) {
+		const headSample = headSamplesByRound.get(round);
+		if (headSample == null) continue;
+
+		const baseValue = getHeapSnapshotCategoryValue(baseSample, phase, category);
+		const headValue = getHeapSnapshotCategoryValue(headSample, phase, category);
+		if (baseValue == null || headValue == null) continue;
+
+		values.push(headValue - baseValue);
+	}
+
+	return values;
+}
+
+function formatDeltaBytes(diffBytes) {
+	if (diffBytes === 0) return formatBytes(0);
+
+	const sign = diffBytes > 0 ? '+' : '-';
+	return formatColoredDiff(`${sign}${formatBytes(Math.abs(diffBytes))}`, diffBytes);
+}
+
+function pairedHeapSnapshotDeltaSummary(base, head, phase, category) {
+	const values = getPairedHeapSnapshotDeltaValues(base, head, phase, category);
+	if (values.length === 0) return null;
+
+	return {
+		median: median(values),
+		mad: mad(values),
+		min: Math.min(...values),
+		max: Math.max(...values),
+		samples: values.length,
+	};
+}
+
+function renderHeapSnapshotTable(base, head, phase) {
+	const lines = [
+		'| Metric | Base | Head | Δ median | Δ MAD | Δ min | Δ max |',
+		'| --- | ---: | ---: | ---: | ---: | ---: | ---: |',
+	];
+	const baseTotal = getHeapSnapshotCategoryValue(base, phase, 'Total');
+	const headTotal = getHeapSnapshotCategoryValue(head, phase, 'Total');
+
+	for (const category of heapSnapshotCategories) {
+		const baseValue = getHeapSnapshotCategoryValue(base, phase, category);
+		const headValue = getHeapSnapshotCategoryValue(head, phase, category);
+		if (baseValue == null || headValue == null) continue;
+
+		const baseSpread = getHeapSnapshotSampleSpread(base, phase, category);
+		const headSpread = getHeapSnapshotSampleSpread(head, phase, category);
+		const summary = pairedHeapSnapshotDeltaSummary(base, head, phase, category);
+		const deltaMedian = summary == null ? '-' : `${formatDeltaBytes(summary.median)}<br>${formatDeltaPercent(summary.median, baseValue)}`;
+		const categoryLabel = formatHeapSnapshotCategoryLabel(category, baseValue, headValue, baseTotal, headTotal);
+
+		lines.push(`| $\\color{${heapSnapshotCategoriesColors[category]}}{\\rule{8pt}{8pt}}$ ${categoryLabel} | ${formatBytes(baseValue)} <br> ± ${baseSpread == null ? '-' : formatBytes(baseSpread)} | ${formatBytes(headValue)} <br> ± ${headSpread == null ? '-' : formatBytes(headSpread)} | ${deltaMedian} | ${summary?.mad == null ? '-' : formatBytes(summary.mad)} | ${summary == null ? '-' : formatDeltaBytes(summary.min)} | ${summary == null ? '-' : formatDeltaBytes(summary.max)} |`);
+		if (category === 'Total') {
+			lines.push('| | | | | | | |');
+		}
+	}
+
+	if (lines.length === 2) return null;
+	return lines.join('\n');
+}
+
+function renderHeapSnapshotSection(base, head) {
+	const table = renderHeapSnapshotTable(base, head, 'afterRequest');
+	if (table == null) return null;
+
+	const lines = [
+		'### V8 Heap Snapshot Statistics',
+		'',
+		table,
+		'',
+	];
+
+	for (const graph of [
+		renderHeapSnapshotSankey(base, 'afterRequest', 'Base'),
+		renderHeapSnapshotSankey(head, 'afterRequest', 'Head'),
+	]) {
+		if (graph == null) continue;
+		lines.push(graph);
+		lines.push('');
+	}
+
+	return lines.join('\n');
+}
+
 function getJsFootprintValue(report, phase, key) {
 	const value = report?.[phase]?.totals?.[key];
 	return Number.isFinite(value) ? value : null;
@@ -301,7 +545,7 @@ function renderJsFootprintMetricTable(base, head) {
 		const headValue = getJsFootprintValue(head, 'afterRequest', key);
 		if (baseValue == null || headValue == null) continue;
 
-		lines.push(`| ${title} | ${formatter(baseValue)} | ${formatter(headValue)} | ${formatPlainDiff(baseValue, headValue, formatter)} | ${formatPlainDiffPercent(baseValue, headValue)} |`);
+		lines.push(`| **${title}** | ${formatter(baseValue)} | ${formatter(headValue)} | ${formatPlainDiff(baseValue, headValue, formatter)} | ${formatPlainDiffPercent(baseValue, headValue)} |`);
 	}
 
 	return lines.join('\n');
@@ -443,12 +687,10 @@ function renderJsFootprintSection(base, head) {
 		'',
 		renderJsFootprintMetricTable(base, head),
 		'',
-		'#### Load Phase Breakdown',
-		'',
-		renderJsFootprintPhaseTable(base, head),
-		'',
-		'</details>',
-		'',
+		//'#### Load Phase Breakdown',
+		//'',
+		//renderJsFootprintPhaseTable(base, head),
+		//'',
 	];
 
 	for (const block of [
@@ -461,6 +703,9 @@ function renderJsFootprintSection(base, head) {
 		lines.push('');
 	}
 
+	lines.push('</details>');
+	lines.push('');
+
 	return lines.join('\n');
 }
 
@@ -469,7 +714,7 @@ const head = JSON.parse(await readFile(headFile, 'utf8'));
 const baseJsFootprint = baseJsFootprintFile == null ? null : JSON.parse(await readFile(baseJsFootprintFile, 'utf8'));
 const headJsFootprint = headJsFootprintFile == null ? null : JSON.parse(await readFile(headJsFootprintFile, 'utf8'));
 const lines = [
-	'## Backend Memory Usage Report',
+	'## ⚙️ Backend Memory Usage Report',
 	'',
 ];
 
@@ -483,14 +728,12 @@ for (const phase of phases) {
 	lines.push(`### ${phase.title}`);
 	lines.push(renderTable(base, head, phase.key));
 	lines.push('');
+}
 
-	const pairedDeltaTable = renderPairedDeltaTable(base, head, phase.key);
-	if (pairedDeltaTable != null) {
-		lines.push('#### Paired Delta Summary');
-		lines.push('');
-		lines.push(pairedDeltaTable);
-		lines.push('');
-	}
+const heapSnapshotSection = renderHeapSnapshotSection(base, head);
+if (heapSnapshotSection != null) {
+	lines.push(heapSnapshotSection);
+	lines.push('');
 }
 
 const jsFootprintSection = renderJsFootprintSection(baseJsFootprint, headJsFootprint);
