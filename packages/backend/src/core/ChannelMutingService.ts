@@ -34,7 +34,7 @@ export class ChannelMutingService {
 			memoryCacheLifetime: 1000 * 60, // 1m
 			fetcher: (userId) => this.channelMutingRepository.find({
 				where: { userId: userId },
-				select: ['channelId'],
+				select: { channelId: true },
 			}).then(xs => new Set(xs.map(x => x.channelId))),
 			toRedisConverter: (value) => JSON.stringify(Array.from(value)),
 			fromRedisConverter: (value) => new Set(JSON.parse(value)),

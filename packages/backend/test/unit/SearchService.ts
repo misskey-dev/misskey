@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { afterAll, afterEach, beforeAll, describe, expect, test } from '@jest/globals';
+import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest';
 import { Test, TestingModule } from '@nestjs/testing';
-import type { Index, MeiliSearch } from 'meilisearch';
+import type { Index, Meilisearch } from 'meilisearch';
 import { type Config, loadConfig } from '@/config.js';
 import { GlobalModule } from '@/GlobalModule.js';
 import { CoreModule } from '@/core/CoreModule.js';
@@ -284,6 +284,131 @@ describe('SearchService', () => {
 				expect(remoteResult.map(note => note.id)).toEqual([remoteNote.id]);
 			});
 
+			describe('date range', () => {
+				test('filters notes after rangeStartAt', async () => {
+					const ctx = getCtx();
+					const me = await createUser(ctx, { username: 'me', usernameLower: 'me', host: null });
+					const author = await createUser(ctx, { username: 'author', usernameLower: 'author', host: null });
+
+					const t1 = Date.now() - 3000;
+					const t2 = Date.now() - 2000;
+					const t3 = Date.now() - 1000;
+
+					await createNote(ctx, author, { text: 'hello old' }, t1);
+					const note2 = await createNote(ctx, author, { text: 'hello middle' }, t2);
+					const note3 = await createNote(ctx, author, { text: 'hello new' }, t3);
+
+					const result = await ctx.service.searchNote('hello', me, { rangeStartAt: t2 }, { limit: 10 });
+					expect(result.map(note => note.id)).toEqual([note3.id, note2.id]);
+				});
+
+				test('filters notes before rangeEndAt', async () => {
+					const ctx = getCtx();
+					const me = await createUser(ctx, { username: 'me', usernameLower: 'me', host: null });
+					const author = await createUser(ctx, { username: 'author', usernameLower: 'author', host: null });
+
+					const t1 = Date.now() - 3000;
+					const t2 = Date.now() - 2000;
+					const t3 = Date.now() - 1000;
+
+					const note1 = await createNote(ctx, author, { text: 'hello old' }, t1);
+					const note2 = await createNote(ctx, author, { text: 'hello middle' }, t2);
+					await createNote(ctx, author, { text: 'hello new' }, t3);
+
+					const result = await ctx.service.searchNote('hello', me, { rangeEndAt: t2 }, { limit: 10 });
+					expect(result.map(note => note.id)).toEqual([note2.id, note1.id]);
+				});
+
+				test('filters notes between rangeStartAt and rangeEndAt', async () => {
+					const ctx = getCtx();
+					const me = await createUser(ctx, { username: 'me', usernameLower: 'me', host: null });
+					const author = await createUser(ctx, { username: 'author', usernameLower: 'author', host: null });
+
+					const t1 = Date.now() - 4000;
+					const t2 = Date.now() - 3000;
+					const t3 = Date.now() - 2000;
+					const t4 = Date.now() - 1000;
+
+					await createNote(ctx, author, { text: 'hello old' }, t1);
+					const note2 = await createNote(ctx, author, { text: 'hello middle' }, t2);
+					const note3 = await createNote(ctx, author, { text: 'hello newer' }, t3);
+					await createNote(ctx, author, { text: 'hello new' }, t4);
+
+					const result = await ctx.service.searchNote('hello', me, { rangeStartAt: t2, rangeEndAt: t3 }, { limit: 10 });
+					expect(result.map(note => note.id)).toEqual([note3.id, note2.id]);
+				});
+
+				test('keeps pagination within date range when sinceId and untilId are outside range', async () => {
+					const ctx = getCtx();
+					const me = await createUser(ctx, { username: 'me', usernameLower: 'me', host: null });
+					const author = await createUser(ctx, { username: 'author', usernameLower: 'author', host: null });
+
+					const t1 = Date.now() - 8000;
+					const t2 = Date.now() - 7000;
+					const t3 = Date.now() - 6000;
+					const t4 = Date.now() - 5000;
+					const t5 = Date.now() - 4000;
+					const t6 = Date.now() - 3000;
+					const t7 = Date.now() - 2000;
+					const t8 = Date.now() - 1000;
+
+					await createNote(ctx, author, { text: 'hello outside oldest' }, t1);
+					const sinceCursor = await createNote(ctx, author, { text: 'hello since cursor before range' }, t2);
+					const beforeRange = await createNote(ctx, author, { text: 'hello before range but after since' }, t3);
+					const note4 = await createNote(ctx, author, { text: 'hello range old' }, t4);
+					const note5 = await createNote(ctx, author, { text: 'hello range middle' }, t5);
+					const note6 = await createNote(ctx, author, { text: 'hello range new' }, t6);
+					const afterRange = await createNote(ctx, author, { text: 'hello after range but before until' }, t7);
+					const untilCursor = await createNote(ctx, author, { text: 'hello until cursor after range' }, t8);
+
+					const result = await ctx.service.searchNote(
+						'hello',
+						me,
+						{ rangeStartAt: t4, rangeEndAt: t6 },
+						{ limit: 10, sinceId: sinceCursor.id, untilId: untilCursor.id },
+					);
+					const resultIds = result.map(note => note.id);
+					expect(resultIds).toEqual([note6.id, note5.id, note4.id]);
+					expect(resultIds).not.toContain(beforeRange.id);
+					expect(resultIds).not.toContain(afterRange.id);
+				});
+
+				test('uses sinceId and untilId as pagination boundaries inside date range', async () => {
+					const ctx = getCtx();
+					const me = await createUser(ctx, { username: 'me', usernameLower: 'me', host: null });
+					const author = await createUser(ctx, { username: 'author', usernameLower: 'author', host: null });
+
+					const t1 = Date.now() - 8000;
+					const t2 = Date.now() - 7000;
+					const t3 = Date.now() - 6000;
+					const t4 = Date.now() - 5000;
+					const t5 = Date.now() - 4000;
+					const t6 = Date.now() - 3000;
+					const t7 = Date.now() - 2000;
+					const t8 = Date.now() - 1000;
+
+					await createNote(ctx, author, { text: 'hello before range' }, t1);
+					const rangeOldest = await createNote(ctx, author, { text: 'hello range oldest' }, t2);
+					const sinceCursor = await createNote(ctx, author, { text: 'hello since cursor in range' }, t3);
+					const note4 = await createNote(ctx, author, { text: 'hello page old' }, t4);
+					const note5 = await createNote(ctx, author, { text: 'hello page new' }, t5);
+					const untilCursor = await createNote(ctx, author, { text: 'hello until cursor in range' }, t6);
+					const rangeNewest = await createNote(ctx, author, { text: 'hello range newest' }, t7);
+					await createNote(ctx, author, { text: 'hello after range' }, t8);
+
+					const result = await ctx.service.searchNote(
+						'hello',
+						me,
+						{ rangeStartAt: t2, rangeEndAt: t7 },
+						{ limit: 10, sinceId: sinceCursor.id, untilId: untilCursor.id },
+					);
+					const resultIds = result.map(note => note.id);
+					expect(resultIds).toEqual([note5.id, note4.id]);
+					expect(resultIds).not.toContain(rangeOldest.id);
+					expect(resultIds).not.toContain(rangeNewest.id);
+				});
+			});
+
 			describe('muting and blocking', () => {
 				test('filters out muted users', async () => {
 					const ctx = getCtx();
@@ -416,7 +541,7 @@ describe('SearchService', () => {
 
 	describe('meilisearch', () => {
 		let ctx: TestContext;
-		let meilisearch: MeiliSearch;
+		let meilisearch: Meilisearch;
 		let meilisearchIndex: Index;
 		let meiliConfig: Config;
 
@@ -438,7 +563,7 @@ describe('SearchService', () => {
 			};
 
 			ctx = await buildContext(meiliConfig);
-			meilisearch = ctx.app.get(DI.meilisearch) as MeiliSearch;
+			meilisearch = ctx.app.get(DI.meilisearch) as Meilisearch;
 			meilisearchIndex = meilisearch.index(`${meiliConfig.meilisearch!.index}---notes`);
 
 			const settingsTask = await meilisearchIndex.updateSettings(meilisearchSettings);

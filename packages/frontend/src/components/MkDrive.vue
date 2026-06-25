@@ -69,6 +69,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					v-for="(f, i) in foldersPaginator.items.value"
 					:key="f.id"
 					v-anim="i"
+					:data-scroll-anchor="f.id"
 					:folder="f"
 					:selectMode="select === 'folder'"
 					:isSelected="selectedFolders.some(x => x.id === f.id)"
@@ -80,7 +81,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					@dragend="isDragSource = false"
 				/>
 			</div>
-			<MkButton v-if="foldersPaginator.canFetchOlder.value" primary rounded @click="foldersPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
+			<MkButton v-if="foldersPaginator.canFetchOlder.value" :class="$style.loadMore" primary rounded @click="foldersPaginator.fetchOlder()">{{ i18n.ts.loadMore }}</MkButton>
 
 			<template v-if="shouldBeGroupedByDate">
 				<MkStickyContainer v-for="(item, i) in filesTimeline" :key="`${item.date.getFullYear()}/${item.date.getMonth() + 1}`">
@@ -101,6 +102,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					>
 						<XFile
 							v-for="file in item.items" :key="file.id"
+							:data-scroll-anchor="file.id"
 							:file="file"
 							:folder="folder"
 							:isSelected="selectedFiles.some(x => x.id === file.id)"
@@ -123,6 +125,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			>
 				<XFile
 					v-for="file in filesPaginator.items.value" :key="file.id"
+					:data-scroll-anchor="file.id"
 					:file="file"
 					:folder="folder"
 					:isSelected="selectedFiles.some(x => x.id === file.id)"

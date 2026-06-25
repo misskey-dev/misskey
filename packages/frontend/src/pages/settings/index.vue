@@ -51,9 +51,11 @@ import { enableAutoBackup, getPreferencesProfileMenu } from '@/preferences/utili
 import { store } from '@/store.js';
 import { signout } from '@/signout.js';
 import { genSearchIndexes } from '@/utility/inapp-search.js';
-import { enableStoragePersistence, storagePersisted, storagePersistenceSupported, skipStoragePersistence } from '@/utility/storage.js';
+import { enableStoragePersistence, getStoragePersistenceStatusRef, storagePersistenceSupported, skipStoragePersistence } from '@/utility/storage.js';
 
 const searchIndex = await import('search-index:settings').then(({ searchIndexes }) => genSearchIndexes(searchIndexes));
+
+const storagePersisted = await getStoragePersistenceStatusRef();
 
 const indexInfo = {
 	title: i18n.ts.settings,

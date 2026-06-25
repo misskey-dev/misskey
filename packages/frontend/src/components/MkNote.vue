@@ -263,8 +263,9 @@ const emit = defineEmits<{
 
 const inTimeline = inject<boolean>('inTimeline', false);
 const tl_withSensitive = inject<Ref<boolean>>('tl_withSensitive', ref(true));
-const inChannel = inject('inChannel', null);
+const inChannel = inject(DI.inChannel, null);
 const currentClip = inject<Ref<Misskey.entities.Clip> | null>('currentClip', null);
+const currentAntenna = inject<Ref<Misskey.entities.Antenna | null> | null>('currentAntenna', null);
 
 let note = deepClone(props.note);
 
@@ -606,7 +607,7 @@ function onContextmenu(ev: PointerEvent): void {
 		ev.preventDefault();
 		react();
 	} else {
-		const { menu, cleanup } = getNoteMenu({ note: note, translating, translation, currentClip: currentClip?.value });
+		const { menu, cleanup } = getNoteMenu({ note: note, translating, translation, currentClip: currentClip?.value, currentAntenna: currentAntenna?.value ?? undefined });
 		os.contextMenu(menu, ev).then(focus).finally(cleanup);
 	}
 }
@@ -616,7 +617,7 @@ function showMenu(): void {
 		return;
 	}
 
-	const { menu, cleanup } = getNoteMenu({ note: note, translating, translation, currentClip: currentClip?.value });
+	const { menu, cleanup } = getNoteMenu({ note: note, translating, translation, currentClip: currentClip?.value, currentAntenna: currentAntenna?.value ?? undefined });
 	os.popupMenu(menu, menuButton.value).then(focus).finally(cleanup);
 }
 
@@ -650,23 +651,35 @@ async function showRenoteMenu() {
 		};
 	}
 
-	const renoteDetailsMenu: MenuItem = {
+	const renoteDetailsMenu: MenuItem[] = [{
 		type: 'link',
 		text: i18n.ts.renoteDetails,
 		icon: 'ti ti-info-circle',
 		to: notePage(note),
-	};
+	}];
+
+	if (
+		props.note.channelId != null &&
+		(inChannel == null || props.note.channelId !== inChannel.value)
+	) {
+		renoteDetailsMenu.push({
+			type: 'link',
+			text: i18n.ts.viewRenotedChannel,
+			icon: 'ti ti-device-tv',
+			to: `/channels/${props.note.channelId}`,
+		});
+	}
 
 	if (isMyRenote) {
 		os.popupMenu([
-			renoteDetailsMenu,
+			...renoteDetailsMenu,
 			getCopyNoteLinkMenu(note, i18n.ts.copyLinkRenote),
 			{ type: 'divider' },
 			getUnrenote(),
 		], renoteTime.value);
 	} else {
 		os.popupMenu([
-			renoteDetailsMenu,
+			...renoteDetailsMenu,
 			getCopyNoteLinkMenu(note, i18n.ts.copyLinkRenote),
 			{ type: 'divider' },
 			getAbuseNoteMenu(note, i18n.ts.reportAbuseRenote),

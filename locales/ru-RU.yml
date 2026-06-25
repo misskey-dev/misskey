@@ -1332,7 +1332,9 @@ overrideByAccount: "Переопределить этим аккаунтом"
 untitled: "Без названия"
 noName: "Имя не указано"
 skip: "Пропустить"
+restore: "Восстановить"
 syncBetweenDevices: "Синхронизировать между устройствами"
+paste: "вставить"
 postForm: "Форма отправки"
 textCount: "Количество символов"
 information: "Описание"
@@ -1348,6 +1350,7 @@ frame: "Рамки"
 presets: "Шаблоны"
 zeroPadding: "Без отступов"
 nothingToConfigure: "Нечего менять"
+previewingThemeRestore: "Восстановить"
 _imageEditing:
   _vars:
     caption: "Описание файла"
@@ -2395,6 +2398,8 @@ _imageEffector:
     opacity: "Непрозрачность"
     lightness: "Осветление"
 drafts: "Черновик"
+_drafts:
+  restore: "Восстановить"
 _qr:
   showTabTitle: "Отображение"
   raw: "Текст"
