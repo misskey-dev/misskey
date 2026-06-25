@@ -120,7 +120,9 @@ function summarizeSamples(samples: MemoryReport['samples']) {
 	const summary = {} as MemoryReport['summary'];
 
 	for (const phase of phases) {
-		summary[phase] = {} as typeof summary[typeof phase];
+		summary[phase] = {
+			memoryUsage: {},
+		};
 
 		const metricKeys = new Set<string>();
 		for (const sample of samples) {
