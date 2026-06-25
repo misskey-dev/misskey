@@ -13,21 +13,17 @@ import { gzipSync } from 'node:zlib';
 import * as fs from 'node:fs/promises';
 import * as fsSync from 'node:fs';
 import * as http from 'node:http';
+import * as util from './utility.mts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const [repoDirArg, outputFileArg] = process.argv.slice(2);
 
-if (repoDirArg == null || outputFileArg == null) {
-	console.error('Usage: node .github/scripts/backend-js-footprint.mjs <repo-dir> <output.json>');
-	process.exit(1);
-}
-
-const STARTUP_TIMEOUT = readIntegerEnv('MK_JS_FOOTPRINT_STARTUP_TIMEOUT_MS', 120000, 1);
-const SETTLE_TIME = readIntegerEnv('MK_JS_FOOTPRINT_SETTLE_TIME_MS', 10000, 0);
-const REQUEST_COUNT = readIntegerEnv('MK_JS_FOOTPRINT_REQUEST_COUNT', 10, 0);
-const MAX_TABLE_ITEMS = readIntegerEnv('MK_JS_FOOTPRINT_MAX_ITEMS', 20, 1);
+const STARTUP_TIMEOUT = util.readIntegerEnv('MK_JS_FOOTPRINT_STARTUP_TIMEOUT_MS', 120000, 1);
+const SETTLE_TIME = util.readIntegerEnv('MK_JS_FOOTPRINT_SETTLE_TIME_MS', 10000, 0);
+const REQUEST_COUNT = util.readIntegerEnv('MK_JS_FOOTPRINT_REQUEST_COUNT', 10, 0);
+const MAX_TABLE_ITEMS = util.readIntegerEnv('MK_JS_FOOTPRINT_MAX_ITEMS', 20, 1);
 
 const repoDir = resolve(repoDirArg);
 const outputFile = resolve(outputFileArg);
@@ -40,22 +36,6 @@ const jsExtensions = new Set(['.js', '.mjs', '.cjs']);
 const fileMetricCache = new Map();
 const packageInfoCache = new Map();
 const nativePackageNames = new Set();
-
-function readIntegerEnv(name, defaultValue, min) {
-	const rawValue = process.env[name];
-	if (rawValue == null || rawValue === '') return defaultValue;
-	if (!/^\d+$/.test(rawValue)) throw new Error(`${name} must be an integer`);
-
-	const value = Number(rawValue);
-	if (!Number.isSafeInteger(value) || value < min) throw new Error(`${name} must be >= ${min}`);
-	return value;
-}
-
-function commandName(command) {
-	if (process.platform !== 'win32') return command;
-	if (command === 'pnpm') return 'pnpm.cmd';
-	return command;
-}
 
 function isInside(parent, child) {
 	const rel = relative(parent, child);
@@ -439,7 +419,6 @@ function summarizeRecords(records, phase) {
 	totals.nativeAddonPackageCount = externalPackages.filter(packageSummary => packageSummary.nativeAddon).length;
 
 	return {
-		phase,
 		totals: {
 			...totals,
 			loadedJsSourceKiB: bytesToKiB(totals.loadedJsSourceBytes),
@@ -499,7 +478,7 @@ async function measureFootprint() {
 		await waitForServerReady(serverProcess);
 		await setTimeout(SETTLE_TIME);
 
-		const startup = summarizeRecords(await readTraceRecords(), 'startup');
+		//const startup = summarizeRecords(await readTraceRecords(), 'startup');
 
 		await Promise.all(
 			Array.from({ length: REQUEST_COUNT }).map(() => createRequest()),
@@ -517,8 +496,10 @@ async function measureFootprint() {
 				requestCount: REQUEST_COUNT,
 				cpus: cpus().length,
 			},
-			startup,
-			afterRequest,
+			phases: {
+				//startup,
+				afterRequest,
+			},
 		};
 	} finally {
 		await stopServer(serverProcess);

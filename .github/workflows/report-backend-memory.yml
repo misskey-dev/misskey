@@ -59,7 +59,7 @@ jobs:
         run: cat ./artifacts/js-footprint-head.json
       - id: build-comment
         name: Build memory comment
-        run: node .github/scripts/backend-memory-report.mjs ./artifacts/memory-base.json ./artifacts/memory-head.json ./output.md ./artifacts/js-footprint-base.json ./artifacts/js-footprint-head.json
+        run: node .github/scripts/backend-memory-report.mts ./artifacts/memory-base.json ./artifacts/memory-head.json ./output.md ./artifacts/js-footprint-base.json ./artifacts/js-footprint-head.json
       - uses: thollander/actions-comment-pull-request@v3
         with:
           pr-number: ${{ steps.load-pr-num.outputs.pr-number }}
