@@ -5,7 +5,6 @@
 
 import { Injectable, Inject } from '@nestjs/common';
 import fetch from 'node-fetch';
-import FormData from 'form-data';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
@@ -138,10 +137,11 @@ export class AiService {
 		try {
 			const form = new FormData();
 			for (let i = 0; i < chunk.length; i++) {
-				form.append(`image${i}`, chunk[i], { filename: `${i}.png`, contentType: 'image/png' });
+				form.append(`image${i}`, new Blob([chunk[i]], { type: 'image/png' }), `${i}.png`);
 			}
 
-			const headers: Record<string, string> = { ...form.getHeaders() };
+			// content-type (boundary 付き) は node-fetch が FormData から自動設定する
+			const headers: Record<string, string> = {};
 			if (apiKey != null && apiKey !== '') {
 				headers['Authorization'] = `Bearer ${apiKey}`;
 			}
