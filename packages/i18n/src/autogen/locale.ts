@@ -9387,6 +9387,10 @@ export interface Locale extends ILocale {
          */
         "write:account": string;
         /**
+         * メールアドレスを見る
+         */
+        "read:email": string;
+        /**
          * ブロックを見る
          */
         "read:blocks": string;

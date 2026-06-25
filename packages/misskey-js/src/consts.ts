@@ -50,6 +50,7 @@ export const followersVisibilities = ['public', 'followers', 'private'] as const
 export const permissions = [
 	'read:account',
 	'write:account',
+	'read:email',
 	'read:blocks',
 	'write:blocks',
 	'read:drive',

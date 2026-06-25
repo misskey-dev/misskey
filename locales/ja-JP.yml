@@ -2469,6 +2469,7 @@ _2fa:
 _permissions:
   "read:account": "アカウントの情報を見る"
   "write:account": "アカウントの情報を変更する"
+  "read:email": "メールアドレスを見る"
   "read:blocks": "ブロックを見る"
   "write:blocks": "ブロックを操作する"
   "read:drive": "ドライブを見る"

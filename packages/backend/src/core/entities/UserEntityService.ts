@@ -408,6 +408,7 @@ export class UserEntityService implements OnModuleInit {
 		options?: {
 			schema?: S,
 			includeSecrets?: boolean,
+			includeEmail?: boolean,
 			userProfile?: MiUserProfile,
 			userRelations?: Map<MiUser['id'], UserRelation>,
 			userMemos?: Map<MiUser['id'], string | null>,
@@ -417,6 +418,7 @@ export class UserEntityService implements OnModuleInit {
 		const opts = Object.assign({
 			schema: 'UserLite',
 			includeSecrets: false,
+			includeEmail: false,
 		}, options);
 
 		const user = typeof src === 'object' ? src : await this.usersRepository.findOneByOrFail({ id: src });
@@ -621,9 +623,12 @@ export class UserEntityService implements OnModuleInit {
 				policies: this.roleService.getUserPolicies(user.id),
 			} : {}),
 
-			...(opts.includeSecrets ? {
+			...(opts.includeEmail ? {
 				email: profile!.email,
 				emailVerified: profile!.emailVerified,
+			} : {}),
+
+			...(opts.includeSecrets ? {
 				securityKeysList: profile!.twoFactorEnabled
 					? this.userSecurityKeysRepository.find({
 						where: {

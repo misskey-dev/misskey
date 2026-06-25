@@ -48,6 +48,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	) {
 		super(meta, paramDef, async (ps, user, token) => {
 			const isSecure = token == null;
+			const includeEmail = isSecure || token.permission.includes('read:email');
 
 			const now = new Date();
 			const today = `${now.getFullYear()}/${now.getMonth() + 1}/${now.getDate()}`;
@@ -74,6 +75,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			return await this.userEntityService.pack(userProfile.user!, userProfile.user!, {
 				schema: 'MeDetailed',
 				includeSecrets: isSecure,
+				includeEmail,
 				userProfile,
 			});
 		});
