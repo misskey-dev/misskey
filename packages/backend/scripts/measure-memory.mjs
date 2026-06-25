@@ -46,6 +46,7 @@ const IPC_TIMEOUT = readIntegerEnv('MK_MEMORY_IPC_TIMEOUT_MS', 30000, 1); // Tim
 const REQUEST_COUNT = readIntegerEnv('MK_MEMORY_REQUEST_COUNT', 10, 0);
 const HEAP_SNAPSHOT = readBooleanEnv('MK_MEMORY_HEAP_SNAPSHOT', false);
 const HEAP_SNAPSHOT_TIMEOUT = readIntegerEnv('MK_MEMORY_HEAP_SNAPSHOT_TIMEOUT_MS', 120000, 1);
+const HEAP_SNAPSHOT_BREAKDOWN_TOP_N = readIntegerEnv('MK_MEMORY_HEAP_SNAPSHOT_BREAKDOWN_TOP_N', 6, 1);
 
 const procStatusKeys = {
 	VmPeak: 0,
@@ -168,6 +169,84 @@ function classifyHeapSnapshotNode(type, name) {
 	return 'Other non-JS objects';
 }
 
+function addValue(map, key, value) {
+	map[key] = (map[key] ?? 0) + value;
+}
+
+function sanitizeHeapSnapshotBreakdownLabel(value, fallback = 'unknown') {
+	const label = String(value ?? '').replace(/\s+/g, ' ').trim();
+	if (label === '') return fallback;
+	if (label.length <= 80) return label;
+	return `${label.slice(0, 77)}...`;
+}
+
+function classifyHeapSnapshotBreakdown(category, type, name) {
+	if (category === 'Strings') return type;
+
+	if (category === 'JS arrays') {
+		if (type === 'array') return 'array nodes';
+		if (type === 'object' && name === 'Array') return 'Array objects';
+		return sanitizeHeapSnapshotBreakdownLabel(`${type}: ${name}`);
+	}
+
+	if (category === 'Typed arrays') {
+		if (name === 'system / JSArrayBufferData') return 'ArrayBuffer data';
+		if (name === 'Uint8Array') return 'Uint8Array / Buffer';
+		if (typedArrayNames.has(name)) return name;
+		if (type === 'native' && name.includes('ArrayBuffer')) return 'native ArrayBuffer';
+		if (type === 'native' && name.includes('TypedArray')) return 'native TypedArray';
+		return sanitizeHeapSnapshotBreakdownLabel(`${type}: ${name}`);
+	}
+
+	if (category === 'System objects') {
+		if (name.startsWith('system /')) return sanitizeHeapSnapshotBreakdownLabel(name);
+		if (name.startsWith('(system ')) return sanitizeHeapSnapshotBreakdownLabel(name);
+		return sanitizeHeapSnapshotBreakdownLabel(`${type}: ${name}`, type);
+	}
+
+	if (category === 'Other JS objects') {
+		if (type === 'object') return sanitizeHeapSnapshotBreakdownLabel(`object: ${name}`, 'object: unknown');
+		return type;
+	}
+
+	if (category === 'Other non-JS objects') {
+		if (type === 'native') return sanitizeHeapSnapshotBreakdownLabel(`native: ${name}`, 'native: unknown');
+		return sanitizeHeapSnapshotBreakdownLabel(`${type}: ${name}`, type);
+	}
+
+	if (category === 'Code') {
+		const lowerName = name.toLowerCase();
+		if (lowerName.includes('bytecode')) return 'bytecode';
+		if (lowerName.includes('builtin')) return 'builtins';
+		if (lowerName.includes('regexp')) return 'regexp code';
+		if (lowerName.includes('stub')) return 'stubs';
+		return sanitizeHeapSnapshotBreakdownLabel(`code: ${name}`, 'code: unknown');
+	}
+
+	return sanitizeHeapSnapshotBreakdownLabel(`${type}: ${name}`, type);
+}
+
+function collapseHeapSnapshotBreakdown(breakdowns) {
+	const collapsed = {};
+
+	for (const [category, children] of Object.entries(breakdowns)) {
+		const entries = Object.entries(children)
+			.filter(([, value]) => value > 0)
+			.toSorted((a, b) => b[1] - a[1]);
+
+		const topEntries = entries.slice(0, HEAP_SNAPSHOT_BREAKDOWN_TOP_N);
+		const otherValue = entries
+			.slice(HEAP_SNAPSHOT_BREAKDOWN_TOP_N)
+			.reduce((sum, [, value]) => sum + value, 0);
+
+		const categoryBreakdown = Object.fromEntries(topEntries);
+		if (otherValue > 0) categoryBreakdown.Other = otherValue;
+		if (Object.keys(categoryBreakdown).length > 0) collapsed[category] = categoryBreakdown;
+	}
+
+	return collapsed;
+}
+
 function analyzeHeapSnapshot(snapshot) {
 	const meta = snapshot?.snapshot?.meta;
 	const nodes = snapshot?.nodes;
@@ -192,6 +271,11 @@ function analyzeHeapSnapshot(snapshot) {
 	const fieldCount = nodeFields.length;
 	const categories = createEmptyHeapSnapshotCategoryMap();
 	const nodeCounts = createEmptyHeapSnapshotCategoryMap();
+	const breakdowns = Object.fromEntries(
+		heapSnapshotCategories
+			.filter(category => category !== 'Total')
+			.map(category => [category, {}]),
+	);
 
 	for (let offset = 0; offset < nodes.length; offset += fieldCount) {
 		const type = nodeTypeNames[nodes[offset + typeOffset]] ?? 'unknown';
@@ -203,11 +287,13 @@ function analyzeHeapSnapshot(snapshot) {
 		categories.Total += selfSize;
 		nodeCounts[category]++;
 		nodeCounts.Total++;
+		addValue(breakdowns[category], classifyHeapSnapshotBreakdown(category, type, name), selfSize);
 	}
 
 	return {
 		categories,
 		nodeCounts,
+		breakdowns: collapseHeapSnapshotBreakdown(breakdowns),
 	};
 }
 
@@ -319,6 +405,36 @@ function median(values) {
 	return Math.round((sorted[center - 1] + sorted[center]) / 2);
 }
 
+function summarizeHeapSnapshotBreakdowns(results, phase) {
+	const breakdowns = {};
+
+	for (const category of heapSnapshotCategories) {
+		if (category === 'Total') continue;
+
+		const childKeys = new Set();
+		for (const result of results) {
+			for (const childKey of Object.keys(result[phase]?.heapSnapshot?.breakdowns?.[category] ?? {})) {
+				childKeys.add(childKey);
+			}
+		}
+
+		const categoryBreakdown = {};
+		for (const childKey of childKeys) {
+			const values = results
+				.map(result => result[phase]?.heapSnapshot?.breakdowns?.[category]?.[childKey])
+				.filter(value => Number.isFinite(value));
+
+			if (values.length > 0) categoryBreakdown[childKey] = median(values);
+		}
+
+		if (Object.keys(categoryBreakdown).length > 0) {
+			breakdowns[category] = collapseHeapSnapshotBreakdown({ [category]: categoryBreakdown })[category] ?? categoryBreakdown;
+		}
+	}
+
+	return breakdowns;
+}
+
 function summarizeResults(results) {
 	const summary = {};
 
@@ -353,9 +469,12 @@ function summarizeResults(results) {
 		}
 
 		if (Object.keys(heapSnapshotCategoryValues).length > 0) {
+			const heapSnapshotBreakdowns = summarizeHeapSnapshotBreakdowns(results, phase);
+
 			summary[phase].heapSnapshot = {
 				categories: heapSnapshotCategoryValues,
 				nodeCounts: heapSnapshotNodeCountValues,
+				...(Object.keys(heapSnapshotBreakdowns).length > 0 ? { breakdowns: heapSnapshotBreakdowns } : {}),
 			};
 		}
 	}
@@ -522,6 +641,7 @@ async function main() {
 			heapSnapshot: {
 				enabled: HEAP_SNAPSHOT,
 				timeoutMs: HEAP_SNAPSHOT_TIMEOUT,
+				breakdownTopN: HEAP_SNAPSHOT_BREAKDOWN_TOP_N,
 			},
 		},
 		...summary,
