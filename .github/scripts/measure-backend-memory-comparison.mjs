@@ -37,6 +37,8 @@ function readIntegerEnv(name, defaultValue, min) {
 	return value;
 }
 
+const HEAP_SNAPSHOT_BREAKDOWN_TOP_N = readIntegerEnv('MK_MEMORY_HEAP_SNAPSHOT_BREAKDOWN_TOP_N', 6, 1);
+
 function commandName(command) {
 	if (process.platform !== 'win32') return command;
 	if (command === 'pnpm') return 'pnpm.cmd';
@@ -111,6 +113,51 @@ function median(values) {
 	return Math.round((sorted[center - 1] + sorted[center]) / 2);
 }
 
+function summarizeHeapSnapshotBreakdowns(samples, phase) {
+	const breakdowns = {};
+
+	for (const category of heapSnapshotCategories) {
+		if (category === 'Total') continue;
+
+		const childKeys = new Set();
+		for (const sample of samples) {
+			for (const childKey of Object.keys(sample[phase]?.heapSnapshot?.breakdowns?.[category] ?? {})) {
+				childKeys.add(childKey);
+			}
+		}
+
+		const categoryBreakdown = {};
+		for (const childKey of childKeys) {
+			const values = samples
+				.map(sample => sample[phase]?.heapSnapshot?.breakdowns?.[category]?.[childKey])
+				.filter(value => Number.isFinite(value));
+
+			if (values.length > 0) categoryBreakdown[childKey] = median(values);
+		}
+
+		if (Object.keys(categoryBreakdown).length > 0) {
+			breakdowns[category] = collapseHeapSnapshotBreakdown(categoryBreakdown);
+		}
+	}
+
+	return breakdowns;
+}
+
+function collapseHeapSnapshotBreakdown(breakdown) {
+	const entries = Object.entries(breakdown)
+		.filter(([, value]) => value > 0)
+		.toSorted((a, b) => b[1] - a[1]);
+
+	const topEntries = entries.slice(0, HEAP_SNAPSHOT_BREAKDOWN_TOP_N);
+	const otherValue = entries
+		.slice(HEAP_SNAPSHOT_BREAKDOWN_TOP_N)
+		.reduce((sum, [, value]) => sum + value, 0);
+
+	const collapsed = Object.fromEntries(topEntries);
+	if (otherValue > 0) collapsed.Other = otherValue;
+	return collapsed;
+}
+
 function summarizeSamples(samples) {
 	const summary = {};
 
@@ -151,9 +198,12 @@ function summarizeSamples(samples) {
 		}
 
 		if (Object.keys(heapSnapshotCategoryValues).length > 0) {
+			const heapSnapshotBreakdowns = summarizeHeapSnapshotBreakdowns(samples, phase);
+
 			summary[phase].heapSnapshot = {
 				categories: heapSnapshotCategoryValues,
 				nodeCounts: heapSnapshotNodeCountValues,
+				...(Object.keys(heapSnapshotBreakdowns).length > 0 ? { breakdowns: heapSnapshotBreakdowns } : {}),
 			};
 		}
 	}

@@ -287,8 +287,23 @@ function getHeapSnapshotCategoryValue(report, phase, category) {
 	return Number.isFinite(value) ? value : null;
 }
 
+function getHeapSnapshotBreakdownEntries(report, phase, category) {
+	const breakdown = report?.[phase]?.heapSnapshot?.breakdowns?.[category];
+	if (breakdown == null || typeof breakdown !== 'object') return [];
+
+	return Object.entries(breakdown)
+		.filter(([, value]) => Number.isFinite(value) && value > 0)
+		.toSorted((a, b) => b[1] - a[1]);
+}
+
 function escapeCsvValue(value) {
 	return `"${String(value).replaceAll('"', '""')}"`;
+}
+
+function formatSankeyValue(value) {
+	const rounded = Math.round(value * 100) / 100;
+	if (Number.isInteger(rounded)) return String(rounded);
+	return rounded.toFixed(2).replace(/0+$/, '').replace(/\.$/, '');
 }
 
 function renderHeapSnapshotSankey(report, phase, title) {
@@ -300,9 +315,13 @@ function renderHeapSnapshotSankey(report, phase, title) {
 		.map(category => {
 			const value = getHeapSnapshotCategoryValue(report, phase, category);
 			if (value == null || value <= 0) return null;
+			const breakdownEntries = getHeapSnapshotBreakdownEntries(report, phase, category);
+			const breakdownTotal = breakdownEntries.reduce((sum, [, childValue]) => sum + childValue, 0);
 			return {
 				category,
 				value,
+				breakdownTotal,
+				breakdownEntries,
 			};
 		})
 		.filter(value => value != null);
@@ -312,8 +331,13 @@ function renderHeapSnapshotSankey(report, phase, title) {
 	const nodeColors = {
 		[title]: heapSnapshotCategoriesColorsHex.Total,
 	};
-	for (const { category } of categories) {
-		nodeColors[category] = heapSnapshotCategoriesColorsHex[category];
+	for (const { category, breakdownEntries } of categories) {
+		const categoryColor = heapSnapshotCategoriesColorsHex[category] ?? heapSnapshotCategoriesColorsHex.Total;
+		nodeColors[category] = categoryColor;
+
+		for (const [childName] of breakdownEntries) {
+			nodeColors[`${category}: ${childName}`] = categoryColor;
+		}
 	}
 
 	const lines = [
@@ -327,11 +351,16 @@ function renderHeapSnapshotSankey(report, phase, title) {
 				nodeColors,
 			},
 		})}}%%`,
-		'sankey',
+		'sankey-beta',
 	];
 
-	for (const { category, value } of categories) {
-		lines.push(`${escapeCsvValue(title)},${escapeCsvValue(category)},${value}`);
+	for (const { category, value, breakdownTotal, breakdownEntries } of categories) {
+		lines.push(`${escapeCsvValue(title)},${escapeCsvValue(category)},${formatSankeyValue(value)}`);
+
+		for (const [childName, childValue] of breakdownEntries) {
+			const normalizedValue = breakdownTotal > 0 ? childValue * value / breakdownTotal : childValue;
+			lines.push(`${escapeCsvValue(category)},${escapeCsvValue(`${category}: ${childName}`)},${formatSankeyValue(normalizedValue)}`);
+		}
 	}
 
 	lines.push('```');
@@ -653,7 +682,7 @@ const head = JSON.parse(await readFile(headFile, 'utf8'));
 const baseJsFootprint = baseJsFootprintFile == null ? null : JSON.parse(await readFile(baseJsFootprintFile, 'utf8'));
 const headJsFootprint = headJsFootprintFile == null ? null : JSON.parse(await readFile(headJsFootprintFile, 'utf8'));
 const lines = [
-	'## Backend Memory Usage Report',
+	'## ⚙️ Backend Memory Usage Report',
 	'',
 ];
 
