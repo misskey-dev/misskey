@@ -3,19 +3,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/**
- * This script starts the Misskey backend server, waits for it to be ready,
- * measures memory usage, and outputs the result as JSON.
- *
- * Usage: node scripts/measure-memory.mjs
- */
-
-import { fork } from 'node:child_process';
+import { ChildProcess, fork } from 'node:child_process';
 import { setTimeout } from 'node:timers/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
-import * as http from 'node:http';
+//import * as http from 'node:http';
 import * as fs from 'node:fs/promises';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -48,43 +41,8 @@ const HEAP_SNAPSHOT = readBooleanEnv('MK_MEMORY_HEAP_SNAPSHOT', false);
 const HEAP_SNAPSHOT_TIMEOUT = readIntegerEnv('MK_MEMORY_HEAP_SNAPSHOT_TIMEOUT_MS', 120000, 1);
 const HEAP_SNAPSHOT_BREAKDOWN_TOP_N = readIntegerEnv('MK_MEMORY_HEAP_SNAPSHOT_BREAKDOWN_TOP_N', 6, 1);
 
-const procStatusKeys = {
-	VmPeak: 0,
-	VmSize: 0,
-	VmHWM: 0,
-	VmRSS: 0,
-	VmData: 0,
-	VmStk: 0,
-	VmExe: 0,
-	VmLib: 0,
-	VmPTE: 0,
-	VmSwap: 0,
-};
-
-const smapsRollupKeys = {
-	Pss: 0,
-	Shared_Clean: 0,
-	Shared_Dirty: 0,
-	Private_Clean: 0,
-	Private_Dirty: 0,
-	Swap: 0,
-	SwapPss: 0,
-};
-
-const runtimeKeys = {
-	HeapTotal: 0,
-	HeapUsed: 0,
-	External: 0,
-	ArrayBuffers: 0,
-};
-
-const memoryKeys = {
-	...procStatusKeys,
-	...smapsRollupKeys,
-	...runtimeKeys,
-};
-
-const phases = ['beforeGc', 'afterGc', 'afterRequest'];
+const procStatusKeys = ['VmPeak', 'VmSize', 'VmHWM', 'VmRSS', 'VmData', 'VmStk', 'VmExe', 'VmLib', 'VmPTE', 'VmSwap'] as const;
+const smapsRollupKeys = ['Pss', 'Shared_Clean', 'Shared_Dirty', 'Private_Clean', 'Private_Dirty', 'Swap', 'SwapPss'] as const;
 
 const heapSnapshotCategories = [
 	'Code',
@@ -125,9 +83,10 @@ const otherJsNodeTypes = new Set([
 	'bigint',
 ]);
 
-function parseMemoryFile(content, keys, path, required) {
-	const result = {};
-	for (const key of Object.keys(keys)) {
+function parseMemoryFile<KS extends readonly string[]>(content: string, keys: KS, path: string, required: boolean): Record<KS[number], number> {
+	const result = {} as Record<KS[number], number>;
+	for (const _key of keys) {
+		const key = _key as KS[number];
 		const match = content.match(new RegExp(`${key}:\\s+(\\d+)\\s+kB`));
 		if (match) {
 			result[key] = parseInt(match[1], 10);
@@ -138,7 +97,7 @@ function parseMemoryFile(content, keys, path, required) {
 	return result;
 }
 
-function bytesToKiB(value) {
+function bytesToKiB(value: number) {
 	return Math.round(value / 1024);
 }
 
@@ -167,10 +126,6 @@ function classifyHeapSnapshotNode(type, name) {
 	if (isSystemNode(type, name)) return 'System objects';
 	if (otherJsNodeTypes.has(type)) return 'Other JS objects';
 	return 'Other non-JS objects';
-}
-
-function addValue(map, key, value) {
-	map[key] = (map[key] ?? 0) + value;
 }
 
 function sanitizeHeapSnapshotBreakdownLabel(value, fallback = 'unknown') {
@@ -277,6 +232,10 @@ function analyzeHeapSnapshot(snapshot) {
 			.map(category => [category, {}]),
 	);
 
+	function addValue(map: Record<string, number>, key: string, value: number) {
+		map[key] = (map[key] ?? 0) + value;
+	}
+
 	for (let offset = 0; offset < nodes.length; offset += fieldCount) {
 		const type = nodeTypeNames[nodes[offset + typeOffset]] ?? 'unknown';
 		const name = strings[nodes[offset + nameOffset]] ?? '';
@@ -297,25 +256,16 @@ function analyzeHeapSnapshot(snapshot) {
 	};
 }
 
-async function getMemoryUsage(pid) {
+async function getMemoryUsage(pid: number) {
 	const path = `/proc/${pid}/status`;
 	const status = await fs.readFile(path, 'utf-8');
-
 	return parseMemoryFile(status, procStatusKeys, path, true);
 }
 
-async function getSmapsRollupMemoryUsage(pid) {
+async function getSmapsRollupMemoryUsage(pid: number) {
 	const path = `/proc/${pid}/smaps_rollup`;
-	try {
-		const smapsRollup = await fs.readFile(path, 'utf-8');
-		return parseMemoryFile(smapsRollup, smapsRollupKeys, path, false);
-	} catch (err) {
-		if (err.code === 'ENOENT' || err.code === 'EACCES') {
-			process.stderr.write(`Failed to read ${path}: ${err.message}\n`);
-			return {};
-		}
-		throw err;
-	}
+	const smapsRollup = await fs.readFile(path, 'utf-8');
+	return parseMemoryFile(smapsRollup, smapsRollupKeys, path, false);
 }
 
 function waitForMessage(serverProcess, predicate, description, timeout = IPC_TIMEOUT) {
@@ -336,7 +286,7 @@ function waitForMessage(serverProcess, predicate, description, timeout = IPC_TIM
 	});
 }
 
-async function getRuntimeMemoryUsage(serverProcess) {
+async function getRuntimeMemoryUsage(serverProcess: ChildProcess) {
 	const response = waitForMessage(
 		serverProcess,
 		message => message != null && typeof message === 'object' && message.type === 'memory usage',
@@ -356,7 +306,7 @@ async function getRuntimeMemoryUsage(serverProcess) {
 	};
 }
 
-async function getHeapSnapshotStatistics(serverProcess) {
+async function getHeapSnapshotStatistics(serverProcess: ChildProcess) {
 	if (!HEAP_SNAPSHOT) return null;
 
 	const snapshotPath = join(tmpdir(), `misskey-backend-heap-${process.pid}-${serverProcess.pid}-${Date.now()}.heapsnapshot`);
@@ -389,97 +339,13 @@ async function getHeapSnapshotStatistics(serverProcess) {
 	}
 }
 
-async function getAllMemoryUsage(serverProcess) {
-	const pid = serverProcess.pid;
+async function getAllMemoryUsage(serverProcess: ChildProcess) {
+	const pid = serverProcess.pid!;
 	return {
 		...await getMemoryUsage(pid),
 		...await getSmapsRollupMemoryUsage(pid),
 		...await getRuntimeMemoryUsage(serverProcess),
 	};
-}
-
-function median(values) {
-	const sorted = values.toSorted((a, b) => a - b);
-	const center = Math.floor(sorted.length / 2);
-	if (sorted.length % 2 === 1) return sorted[center];
-	return Math.round((sorted[center - 1] + sorted[center]) / 2);
-}
-
-function summarizeHeapSnapshotBreakdowns(results, phase) {
-	const breakdowns = {};
-
-	for (const category of heapSnapshotCategories) {
-		if (category === 'Total') continue;
-
-		const childKeys = new Set();
-		for (const result of results) {
-			for (const childKey of Object.keys(result[phase]?.heapSnapshot?.breakdowns?.[category] ?? {})) {
-				childKeys.add(childKey);
-			}
-		}
-
-		const categoryBreakdown = {};
-		for (const childKey of childKeys) {
-			const values = results
-				.map(result => result[phase]?.heapSnapshot?.breakdowns?.[category]?.[childKey])
-				.filter(value => Number.isFinite(value));
-
-			if (values.length > 0) categoryBreakdown[childKey] = median(values);
-		}
-
-		if (Object.keys(categoryBreakdown).length > 0) {
-			breakdowns[category] = collapseHeapSnapshotBreakdown({ [category]: categoryBreakdown })[category] ?? categoryBreakdown;
-		}
-	}
-
-	return breakdowns;
-}
-
-function summarizeResults(results) {
-	const summary = {};
-
-	for (const phase of phases) {
-		summary[phase] = {};
-		for (const key of Object.keys(memoryKeys)) {
-			const values = results
-				.map(result => result[phase][key])
-				.filter(value => Number.isFinite(value));
-
-			if (values.length > 0) {
-				summary[phase][key] = median(values);
-			}
-		}
-
-		const heapSnapshotCategoryValues = {};
-		for (const category of heapSnapshotCategories) {
-			const values = results
-				.map(result => result[phase]?.heapSnapshot?.categories?.[category])
-				.filter(value => Number.isFinite(value));
-
-			if (values.length > 0) heapSnapshotCategoryValues[category] = median(values);
-		}
-
-		const heapSnapshotNodeCountValues = {};
-		for (const category of heapSnapshotCategories) {
-			const values = results
-				.map(result => result[phase]?.heapSnapshot?.nodeCounts?.[category])
-				.filter(value => Number.isFinite(value));
-
-			if (values.length > 0) heapSnapshotNodeCountValues[category] = median(values);
-		}
-
-		if (Object.keys(heapSnapshotCategoryValues).length > 0) {
-			const heapSnapshotBreakdowns = summarizeHeapSnapshotBreakdowns(results, phase);
-
-			summary[phase].heapSnapshot = {
-				categories: heapSnapshotCategoryValues,
-				nodeCounts: heapSnapshotNodeCountValues,
-				...(Object.keys(heapSnapshotBreakdowns).length > 0 ? { breakdowns: heapSnapshotBreakdowns } : {}),
-			};
-		}
-	}
-
-	return summary;
 }
 
 async function measureMemory() {
@@ -537,25 +403,25 @@ async function measureMemory() {
 		await setTimeout(1000);
 	}
 
-	function createRequest() {
-		return new Promise((resolve, reject) => {
-			const req = http.request({
-				host: 'localhost',
-				port: 61812,
-				path: '/api/meta',
-				method: 'POST',
-			}, (res) => {
-				res.on('data', () => { });
-				res.on('end', () => {
-					resolve();
-				});
-			});
-			req.on('error', (err) => {
-				reject(err);
-			});
-			req.end();
-		});
-	}
+	//function createRequest() {
+	//	return new Promise((resolve, reject) => {
+	//		const req = http.request({
+	//			host: 'localhost',
+	//			port: 61812,
+	//			path: '/api/meta',
+	//			method: 'POST',
+	//		}, (res) => {
+	//			res.on('data', () => { });
+	//			res.on('end', () => {
+	//				resolve();
+	//			});
+	//		});
+	//		req.on('error', (err) => {
+	//			reject(err);
+	//		});
+	//		req.end();
+	//	});
+	//}
 
 	// Wait for server to be ready or timeout
 	const startupStartTime = Date.now();
@@ -573,22 +439,22 @@ async function measureMemory() {
 	// Wait for memory to settle
 	await setTimeout(MEMORY_SETTLE_TIME);
 
-	const beforeGc = await getAllMemoryUsage(serverProcess);
+	//const beforeGc = await getAllMemoryUsage(serverProcess);
 
 	await triggerGc();
 
-	const afterGc = await getAllMemoryUsage(serverProcess);
+	const memoryUsageAfterGC = await getAllMemoryUsage(serverProcess);
 
-	// create some http requests to simulate load
-	await Promise.all(
-		Array.from({ length: REQUEST_COUNT }).map(() => createRequest()),
-	);
+	//// create some http requests to simulate load
+	//await Promise.all(
+	//	Array.from({ length: REQUEST_COUNT }).map(() => createRequest()),
+	//);
 
-	await triggerGc();
+	//await triggerGc();
 
-	const afterRequest = await getAllMemoryUsage(serverProcess);
-	const heapSnapshot = await getHeapSnapshotStatistics(serverProcess);
-	if (heapSnapshot != null) afterRequest.heapSnapshot = heapSnapshot;
+	//const afterRequest = await getAllMemoryUsage(serverProcess);
+
+	const heapSnapshotAfterGc = await getHeapSnapshotStatistics(serverProcess);
 
 	// Stop the server
 	serverProcess.kill('SIGTERM');
@@ -611,13 +477,35 @@ async function measureMemory() {
 
 	const result = {
 		timestamp: new Date().toISOString(),
-		beforeGc,
-		afterGc,
-		afterRequest,
+		phases: {
+			//beforeGc,
+			afterGc: {
+				memoryUsage: memoryUsageAfterGC,
+				heapSnapshot: heapSnapshotAfterGc,
+			},
+			//afterRequest,
+		},
 	};
 
 	return result;
 }
+
+export type MemoryReportRaw = {
+	timestamp: string;
+	sampleCount: number;
+	measurement: {
+		startupTimeoutMs: number;
+		memorySettleTimeMs: number;
+		ipcTimeoutMs: number;
+		requestCount: number;
+		heapSnapshot: {
+			enabled: boolean;
+			timeoutMs: number;
+			breakdownTopN: number;
+		};
+	};
+	samples: Awaited<ReturnType<typeof measureMemory>>[];
+};
 
 async function main() {
 	const results = [];
@@ -627,12 +515,9 @@ async function main() {
 		results.push(res);
 	}
 
-	const summary = summarizeResults(results);
-
-	const result = {
+	const result: MemoryReportRaw = {
 		timestamp: new Date().toISOString(),
 		sampleCount: SAMPLE_COUNT,
-		aggregation: 'median',
 		measurement: {
 			startupTimeoutMs: STARTUP_TIMEOUT,
 			memorySettleTimeMs: MEMORY_SETTLE_TIME,
@@ -644,7 +529,6 @@ async function main() {
 				breakdownTopN: HEAP_SNAPSHOT_BREAKDOWN_TOP_N,
 			},
 		},
-		...summary,
 		samples: results,
 	};
 
