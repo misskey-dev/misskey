@@ -91,7 +91,7 @@ function formatDiffPercent(before, after) {
 	if (before == null || before === 0 || after == null || after === 0) return '-';
 	const diff = after - before;
 	if (diff === 0) return `0%`;
-	const percent = Math.round(diff / before * 100);
+	const percent = Math.abs(Math.round(diff / before * 100));
 	return formatColoredDiff(`${percent}%`, diff);
 }
 
@@ -530,23 +530,93 @@ function renderFrontendBundleReport(before, after) {
 	return lines.join('\n');
 }
 
+const visualizerTreemapLimit = 50;
+
+function mermaidTreemapLabel(value) {
+	const label = String(value)
+		.replaceAll('\\', '/')
+		.replaceAll('"', "'")
+		.replaceAll('`', "'")
+		.replaceAll('\r', ' ')
+		.replaceAll('\n', ' ')
+		.trim();
+	return label === '' ? '(unknown)' : label;
+}
+
+function mermaidTreemapModuleLabel(id) {
+	const normalizedId = String(id).replaceAll('\\', '/');
+	const filePath = normalizedId.split(/[?#]/, 1)[0];
+	const fileName = path.posix.basename(filePath);
+	return mermaidTreemapLabel(fileName || normalizedId);
+}
+
+function renderVisualizerTreemap(label, report) {
+	const rows = report.hotModules
+		.filter((row) => row.renderedLength > 0)
+		.slice(0, visualizerTreemapLimit);
+	const topRendered = rows.reduce((sum, row) => sum + row.renderedLength, 0);
+	const otherRendered = Math.max(0, report.metrics.renderedLength - topRendered);
+	const lines = [
+		'```mermaid',
+		`%%{init: ${JSON.stringify({
+			treemap: {
+				diagramPadding: 0,
+				padding: 0,
+				nodeHeight: 70,
+			},
+		})}}%%`,
+		'treemap-beta',
+		`"${mermaidTreemapLabel(label)}"`,
+	];
+
+	for (const row of rows) {
+		lines.push(`  "${mermaidTreemapModuleLabel(row.id)}": ${Math.round(row.renderedLength)}`);
+	}
+	if (otherRendered > 0) {
+		lines.push(`  "Other": ${Math.round(otherRendered)}`);
+	}
+
+	lines.push('```');
+	return lines.join('\n');
+}
+
+function renderVisualizerTreemapDetails(label, report, open = false) {
+	return [
+		`<details${open ? ' open' : ''}>`,
+		`<summary>${label} rendered size treemap (top ${visualizerTreemapLimit} + Other)</summary>`,
+		'',
+		renderVisualizerTreemap(label, report),
+		'',
+		'</details>',
+	].join('\n');
+}
+
 const args = process.argv.slice(2);
 const [beforeDir, afterDir, beforeStatsFile, afterStatsFile, outFile] = args;
 const before = await collectReport(beforeDir);
 const after = await collectReport(afterDir);
 const beforeStats = JSON.parse(await fs.readFile(beforeStatsFile, 'utf8'));
 const afterStats = JSON.parse(await fs.readFile(afterStatsFile, 'utf8'));
+const beforeVisualizerReport = collectVisualizerReport(beforeStats);
+const afterVisualizerReport = collectVisualizerReport(afterStats);
+const visualizerArtifactLink = `[Download detailed HTML](${process.env.FRONTEND_BUNDLE_REPORT_ARTIFACT_URL})`;
 
 const body = [
 	marker,
 	'',
-	`## Frontend Bundle Report`,
+	`## 📦 Frontend Bundle Report`,
 	'',
 	renderFrontendChunkReport(before, after),
 	'',
 	'## Bundle Stats',
 	'',
-	renderFrontendBundleReport(collectVisualizerReport(beforeStats), collectVisualizerReport(afterStats)),
+	renderFrontendBundleReport(beforeVisualizerReport, afterVisualizerReport),
+	'',
+	renderVisualizerTreemapDetails('Before', beforeVisualizerReport),
+	'',
+	renderVisualizerTreemapDetails('After', afterVisualizerReport),
+	'',
+	visualizerArtifactLink,
 ].join('\n');
 
 await fs.writeFile(outFile, body);

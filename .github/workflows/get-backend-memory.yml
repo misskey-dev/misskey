@@ -10,6 +10,10 @@ on:
       - packages/backend/**
       - packages/misskey-js/**
       - .github/scripts/backend-memory-report.mjs
+      - .github/scripts/measure-backend-memory-comparison.mjs
+      - .github/scripts/backend-js-footprint.mjs
+      - .github/scripts/backend-js-footprint-loader.mjs
+      - .github/scripts/backend-js-footprint-require.cjs
       - .github/workflows/get-backend-memory.yml
       - .github/workflows/report-backend-memory.yml
 
@@ -89,7 +93,12 @@ jobs:
       env:
         MK_MEMORY_COMPARE_ROUNDS: 5
         MK_MEMORY_COMPARE_WARMUP_ROUNDS: 1
+        MK_MEMORY_HEAP_SNAPSHOT: 1
       run: node head/.github/scripts/measure-backend-memory-comparison.mjs base head memory-base.json memory-head.json
+    - name: Measure backend loaded JS footprint
+      run: |
+        node head/.github/scripts/backend-js-footprint.mjs base js-footprint-base.json
+        node head/.github/scripts/backend-js-footprint.mjs head js-footprint-head.json
     - name: Upload Artifact
       uses: actions/upload-artifact@v7
       with:
@@ -97,6 +106,8 @@ jobs:
         path: |
           memory-base.json
           memory-head.json
+          js-footprint-base.json
+          js-footprint-head.json
 
   save-pr-number:
     runs-on: ubuntu-latest
