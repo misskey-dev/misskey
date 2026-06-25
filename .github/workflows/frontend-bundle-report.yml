@@ -131,6 +131,7 @@ jobs:
           name: frontend-bundle-visualizer
           path: ${{ runner.temp }}/frontend-bundle-report/frontend-bundle-visualizer.html
           if-no-files-found: error
+          archive: false
           retention-days: 7
 
       - name: Generate report markdown
