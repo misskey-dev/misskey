@@ -623,7 +623,7 @@ export class UserEntityService implements OnModuleInit {
 				policies: this.roleService.getUserPolicies(user.id),
 			} : {}),
 
-			...(opts.includeEmail ? {
+			...(opts.includeSecrets || opts.includeEmail ? {
 				email: profile!.email,
 				emailVerified: profile!.emailVerified,
 			} : {}),
