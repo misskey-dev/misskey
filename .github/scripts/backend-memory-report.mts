@@ -5,7 +5,7 @@
 
 import { readFile, writeFile } from 'node:fs/promises';
 import * as util from './utility.mts';
-import { type MemoryReport } from './measure-backend-memory-comparison.mts';
+import type { MemoryReport } from './measure-backend-memory-comparison.mts';
 
 const [baseFile, headFile, outputFile, baseJsFootprintFile, headJsFootprintFile] = process.argv.slice(2);
 
