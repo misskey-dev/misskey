@@ -530,7 +530,7 @@ function renderFrontendBundleReport(before, after) {
 	return lines.join('\n');
 }
 
-const visualizerTreemapLimit = 30;
+const visualizerTreemapLimit = 50;
 
 function mermaidTreemapLabel(value) {
 	const label = String(value)
@@ -558,6 +558,13 @@ function renderVisualizerTreemap(label, report) {
 	const otherRendered = Math.max(0, report.metrics.renderedLength - topRendered);
 	const lines = [
 		'```mermaid',
+		`%%{init: ${JSON.stringify({
+			treemap: {
+				diagramPadding: 0,
+				padding: 0,
+				nodeHeight: 70,
+			},
+		})}}%%`,
 		'treemap-beta',
 		`"${mermaidTreemapLabel(label)}"`,
 	];
@@ -597,7 +604,7 @@ const visualizerArtifactLink = `[Download detailed HTML](${process.env.FRONTEND_
 const body = [
 	marker,
 	'',
-	`## Frontend Bundle Report`,
+	`## 📦 Frontend Bundle Report`,
 	'',
 	renderFrontendChunkReport(before, after),
 	'',
@@ -607,7 +614,7 @@ const body = [
 	'',
 	renderVisualizerTreemapDetails('Before', beforeVisualizerReport),
 	'',
-	renderVisualizerTreemapDetails('After', afterVisualizerReport, true),
+	renderVisualizerTreemapDetails('After', afterVisualizerReport),
 	'',
 	visualizerArtifactLink,
 ].join('\n');
