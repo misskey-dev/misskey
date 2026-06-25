@@ -10,16 +10,6 @@ import * as util from './utility.mts';
 import type { MemoryReportRaw } from '../../packages/backend/scripts/measure-memory.mts';
 
 const phases = ['afterGc'] as const;
-export const heapSnapshotCategories = [
-	'Total',
-	'Code',
-	'Strings',
-	'JS arrays',
-	'Typed arrays',
-	'System objects',
-	'Other JS objects',
-	'Other non-JS objects',
-] as const;
 
 export type MemoryReport = {
 	timestamp: string;
@@ -39,9 +29,9 @@ export type MemoryReport = {
 	summary: Record<typeof phases[number], {
 		memoryUsage: Record<string, number>;
 		heapSnapshot?: {
-			categories: Record<typeof heapSnapshotCategories[number], number>;
-			nodeCounts: Record<typeof heapSnapshotCategories[number], number>;
-			breakdowns?: Record<typeof heapSnapshotCategories[number], Record<string, number>>;
+			categories: Record<typeof util.heapSnapshotCategories[number], number>;
+			nodeCounts: Record<typeof util.heapSnapshotCategories[number], number>;
+			breakdowns?: Record<typeof util.heapSnapshotCategories[number], Record<string, number>>;
 		};
 	}>;
 	samples: (MemoryReportRaw['samples'][number] & {
@@ -82,9 +72,9 @@ async function resetState(repoDir: string) {
 }
 
 function summarizeHeapSnapshotBreakdowns(samples: MemoryReport['samples'], phase: typeof phases[number]) {
-	const breakdowns = {} as Record<typeof heapSnapshotCategories[number], Record<string, number>>;
+	const breakdowns = {} as Record<typeof util.heapSnapshotCategories[number], Record<string, number>>;
 
-	for (const category of heapSnapshotCategories) {
+	for (const category of util.heapSnapshotCategories) {
 		if (category === 'Total') continue;
 
 		const childKeys = new Set<string>();
@@ -144,8 +134,8 @@ function summarizeSamples(samples: MemoryReport['samples']) {
 			summary[phase].memoryUsage[key] = util.median(values);
 		}
 
-		const heapSnapshotCategoryValues = {} as Record<typeof heapSnapshotCategories[number], number>;
-		for (const category of heapSnapshotCategories) {
+		const heapSnapshotCategoryValues = {} as Record<typeof util.heapSnapshotCategories[number], number>;
+		for (const category of util.heapSnapshotCategories) {
 			const values = samples
 				.map(sample => sample.phases[phase].heapSnapshot?.categories?.[category])
 				.filter(value => Number.isFinite(value)) as number[];
@@ -153,8 +143,8 @@ function summarizeSamples(samples: MemoryReport['samples']) {
 			if (values.length > 0) heapSnapshotCategoryValues[category] = util.median(values);
 		}
 
-		const heapSnapshotNodeCountValues = {} as Record<typeof heapSnapshotCategories[number], number>;
-		for (const category of heapSnapshotCategories) {
+		const heapSnapshotNodeCountValues = {} as Record<typeof util.heapSnapshotCategories[number], number>;
+		for (const category of util.heapSnapshotCategories) {
 			const values = samples
 				.map(sample => sample.phases[phase].heapSnapshot?.nodeCounts?.[category])
 				.filter(value => Number.isFinite(value)) as number[];

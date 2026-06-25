@@ -5,7 +5,7 @@
 
 import { readFile, writeFile } from 'node:fs/promises';
 import * as util from './utility.mts';
-import { heapSnapshotCategories, type MemoryReport } from './measure-backend-memory-comparison.mts';
+import { type MemoryReport } from './measure-backend-memory-comparison.mts';
 
 const [baseFile, headFile, outputFile, baseJsFootprintFile, headJsFootprintFile] = process.argv.slice(2);
 
@@ -190,12 +190,12 @@ function formatPlainDelta(baseValue: number, headValue: number, formatter = util
 	return `${sign}${formatter(Math.abs(delta))}`;
 }
 
-function getHeapSnapshotCategoryValue(report: MemoryReport, phase: typeof memoryReportPhases[number]['key'], category: typeof heapSnapshotCategories[number]) {
+function getHeapSnapshotCategoryValue(report: MemoryReport, phase: typeof memoryReportPhases[number]['key'], category: typeof util.heapSnapshotCategories[number]) {
 	const value = report.summary[phase]?.heapSnapshot?.categories?.[category];
 	return Number.isFinite(value) ? value : null;
 }
 
-function getHeapSnapshotCategoryValueFromSample(sample: MemoryReport['samples'][number], phase: typeof memoryReportPhases[number]['key'], category: typeof heapSnapshotCategories[number]) {
+function getHeapSnapshotCategoryValueFromSample(sample: MemoryReport['samples'][number], phase: typeof memoryReportPhases[number]['key'], category: typeof util.heapSnapshotCategories[number]) {
 	const value = sample.phases[phase]?.heapSnapshot?.categories?.[category];
 	return Number.isFinite(value) ? value : null;
 }
@@ -222,7 +222,7 @@ function renderHeapSnapshotSankey(report: MemoryReport, phase: typeof memoryRepo
 	const total = getHeapSnapshotCategoryValue(report, phase, 'Total');
 	if (total == null || total <= 0) return null;
 
-	function getHeapSnapshotBreakdownEntries(category: typeof heapSnapshotCategories[number]) {
+	function getHeapSnapshotBreakdownEntries(category: typeof util.heapSnapshotCategories[number]) {
 		const breakdown = report.summary[phase].heapSnapshot?.breakdowns?.[category];
 		if (breakdown == null || typeof breakdown !== 'object') return [];
 
@@ -231,7 +231,7 @@ function renderHeapSnapshotSankey(report: MemoryReport, phase: typeof memoryRepo
 			.toSorted((a, b) => b[1] - a[1]);
 	}
 
-	const categories = heapSnapshotCategories
+	const categories = util.heapSnapshotCategories
 		.filter(category => category !== 'Total')
 		.map(category => {
 			const value = getHeapSnapshotCategoryValue(report, phase, category);
@@ -315,7 +315,7 @@ function renderHeapSnapshotSankey(report: MemoryReport, phase: typeof memoryRepo
 	return lines.join('\n');
 }
 
-function pairedHeapSnapshotDeltaSummary(base: MemoryReport, head: MemoryReport, phase: typeof memoryReportPhases[number]['key'], category: typeof heapSnapshotCategories[number]) {
+function pairedHeapSnapshotDeltaSummary(base: MemoryReport, head: MemoryReport, phase: typeof memoryReportPhases[number]['key'], category: typeof util.heapSnapshotCategories[number]) {
 	const baseSamplesByRound = getSamplesByRound(base);
 	const headSamplesByRound = getSamplesByRound(head);
 	const values = [] as number[];
@@ -356,7 +356,7 @@ function renderHeapSnapshotTable(base: MemoryReport, head: MemoryReport, phase: 
 		return `**${category}**<br>${basePercent} → ${headPercent}`;
 	}
 
-	function getHeapSnapshotSampleSpread(report: MemoryReport, phase: typeof memoryReportPhases[number]['key'], category: typeof heapSnapshotCategories[number]) {
+	function getHeapSnapshotSampleSpread(report: MemoryReport, phase: typeof memoryReportPhases[number]['key'], category: typeof util.heapSnapshotCategories[number]) {
 		const values = report.samples
 			.map(sample => getHeapSnapshotCategoryValueFromSample(sample, phase, category))
 			.filter(value => Number.isFinite(value)) as number[];
@@ -366,7 +366,7 @@ function renderHeapSnapshotTable(base: MemoryReport, head: MemoryReport, phase: 
 		return util.median(values.map(value => Math.abs(value - center)));
 	}
 
-	for (const category of heapSnapshotCategories) {
+	for (const category of util.heapSnapshotCategories) {
 		const baseValue = getHeapSnapshotCategoryValue(base, phase, category);
 		const headValue = getHeapSnapshotCategoryValue(head, phase, category);
 		if (baseValue == null || headValue == null) continue;

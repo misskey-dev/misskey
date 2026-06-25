@@ -13,16 +13,17 @@ import { gzipSync } from 'node:zlib';
 import * as fs from 'node:fs/promises';
 import * as fsSync from 'node:fs';
 import * as http from 'node:http';
+import * as util from './utility.mts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const [repoDirArg, outputFileArg] = process.argv.slice(2);
 
-const STARTUP_TIMEOUT = readIntegerEnv('MK_JS_FOOTPRINT_STARTUP_TIMEOUT_MS', 120000, 1);
-const SETTLE_TIME = readIntegerEnv('MK_JS_FOOTPRINT_SETTLE_TIME_MS', 10000, 0);
-const REQUEST_COUNT = readIntegerEnv('MK_JS_FOOTPRINT_REQUEST_COUNT', 10, 0);
-const MAX_TABLE_ITEMS = readIntegerEnv('MK_JS_FOOTPRINT_MAX_ITEMS', 20, 1);
+const STARTUP_TIMEOUT = util.readIntegerEnv('MK_JS_FOOTPRINT_STARTUP_TIMEOUT_MS', 120000, 1);
+const SETTLE_TIME = util.readIntegerEnv('MK_JS_FOOTPRINT_SETTLE_TIME_MS', 10000, 0);
+const REQUEST_COUNT = util.readIntegerEnv('MK_JS_FOOTPRINT_REQUEST_COUNT', 10, 0);
+const MAX_TABLE_ITEMS = util.readIntegerEnv('MK_JS_FOOTPRINT_MAX_ITEMS', 20, 1);
 
 const repoDir = resolve(repoDirArg);
 const outputFile = resolve(outputFileArg);

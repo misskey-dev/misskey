@@ -9,6 +9,7 @@ on:
     paths:
       - packages/backend/**
       - packages/misskey-js/**
+      - .github/scripts/utility.mts
       - .github/scripts/backend-memory-report.mts
       - .github/scripts/measure-backend-memory-comparison.mts
       - .github/scripts/backend-js-footprint.mjs

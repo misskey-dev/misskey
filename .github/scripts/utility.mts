@@ -7,6 +7,17 @@ import { spawn } from 'node:child_process';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 
+export const heapSnapshotCategories = [
+	'Total',
+	'Code',
+	'Strings',
+	'JS arrays',
+	'Typed arrays',
+	'System objects',
+	'Other JS objects',
+	'Other non-JS objects',
+] as const;
+
 export function median(values: number[]) {
 	const sorted = values.toSorted((a, b) => a - b);
 	const center = Math.floor(sorted.length / 2);

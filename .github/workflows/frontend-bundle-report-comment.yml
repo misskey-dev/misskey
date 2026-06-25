@@ -25,6 +25,7 @@ on:
       - pnpm-lock.yaml
       - pnpm-workspace.yaml
       - .node-version
+      - .github/scripts/utility.mts
       - .github/scripts/frontend-js-size.mts
       - .github/workflows/frontend-bundle-report.yml
       - .github/workflows/frontend-bundle-report-comment.yml
