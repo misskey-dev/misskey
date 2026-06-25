@@ -8,7 +8,7 @@ process.env.NODE_ENV = 'test';
 import * as assert from 'assert';
 import { beforeAll, beforeEach, describe, test } from 'vitest';
 import { inspect } from 'node:util';
-import { api, post, role, signup, successfulApiCall, uploadFile } from '../utils.js';
+import { api, createAppToken, post, role, signup, successfulApiCall, uploadFile } from '../utils.js';
 import type * as misskey from 'misskey-js';
 import { DEFAULT_POLICIES } from '@/core/RoleService.js';
 
@@ -409,6 +409,29 @@ describe('ユーザー', () => {
 		const expected = meDetailed(userNoNote, true);
 		expected.loggedInDays = 1; // iはloggedInDaysを更新する
 		assert.deepStrictEqual(response, expected);
+	});
+
+	test('token with read:email should return email, emailVerfied but no securityKeysList', async () => {
+		const token = await createAppToken(userNoNote, ['read:account', 'read:email']);
+		const response = await successfulApiCall({
+			endpoint: 'i',
+			parameters: {},
+			user: { token },
+		});
+		assert.notStrictEqual(response.email, undefined);
+		assert.notStrictEqual(response.emailVerified, undefined);
+		assert.strictEqual(response.securityKeysList, undefined);
+	});
+
+	test('token without read:email should not return email, emailVerified', async () => {
+		const token = await createAppToken(userNoNote, ['read:account']);
+		const response = await successfulApiCall({
+			endpoint: 'i',
+			parameters: {},
+			user: { token },
+		});
+		assert.strictEqual(response.email, undefined);
+		assert.strictEqual(response.emailVerified, undefined);
 	});
 
 	//#endregion
