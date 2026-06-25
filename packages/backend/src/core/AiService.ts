@@ -140,7 +140,8 @@ export class AiService {
 				form.append(`image${i}`, new Blob([chunk[i]], { type: 'image/png' }), `${i}.png`);
 			}
 
-			// content-type (boundary 付き) は node-fetch が FormData から自動設定する
+			// Content-Type は FormData から boundary 付きで自動設定させるため、手動設定はしない。
+			// 手動指定すると boundary の欠落・不一致で multipart として読めなくなる。
 			const headers: Record<string, string> = {};
 			if (apiKey != null && apiKey !== '') {
 				headers['Authorization'] = `Bearer ${apiKey}`;
