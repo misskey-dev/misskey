@@ -157,7 +157,10 @@ describe('2要素認証', () => {
 		const privateKey = crypto.createPrivateKey(pemToSign);
 		const signature = crypto.createSign('SHA256')
 			.update(Buffer.concat([authenticatorData, hashedclientDataJSON]))
-			.sign(privateKey);
+			.sign({
+				key: privateKey,
+				dsaEncoding: 'der',
+			});
 		return {
 			username,
 			password,
