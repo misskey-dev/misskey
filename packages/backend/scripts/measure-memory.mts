@@ -258,14 +258,14 @@ async function getSmapsRollupMemoryUsage(pid: number) {
 	return parseMemoryFile(smapsRollup, smapsRollupKeys, path, false);
 }
 
-function waitForMessage(serverProcess, predicate, description, timeout = IPC_TIMEOUT) {
+function waitForMessage(serverProcess: ChildProcess, predicate: (message: any) => boolean, description: string, timeout = IPC_TIMEOUT) {
 	return new Promise((resolve, reject) => {
 		const timer = globalThis.setTimeout(() => {
 			serverProcess.off('message', onMessage);
 			reject(new Error(`Timed out waiting for ${description}`));
 		}, timeout);
 
-		const onMessage = (message) => {
+		const onMessage = (message: any) => {
 			if (!predicate(message)) return;
 			globalThis.clearTimeout(timer);
 			serverProcess.off('message', onMessage);
