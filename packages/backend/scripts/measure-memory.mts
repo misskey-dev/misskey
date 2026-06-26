@@ -10,7 +10,7 @@ import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
 //import * as http from 'node:http';
 import * as fs from 'node:fs/promises';
-import { heapSnapshotCategories, type HeapSnapshotData } from '../../../.github/scripts/heap-snapshot-util.mts';
+import { heapSnapshotCategory, type HeapSnapshotData } from '../../../.github/scripts/heap-snapshot-util.mts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -104,14 +104,14 @@ function isSystemNode(type, name) {
 		name.startsWith('(system ');
 }
 
-function classifyHeapSnapshotNode(type, name) {
-	if (type === 'code') return 'Code';
-	if (type === 'string' || type === 'concatenated string' || type === 'sliced string') return 'Strings';
-	if (isTypedArrayNode(type, name)) return 'Typed arrays';
-	if (type === 'array' || (type === 'object' && name === 'Array')) return 'JS arrays';
-	if (isSystemNode(type, name)) return 'System objects';
-	if (otherJsNodeTypes.has(type)) return 'Other JS objects';
-	return 'Other non-JS objects';
+function classifyHeapSnapshotNode(type, name): keyof typeof heapSnapshotCategory {
+	if (type === 'code') return 'code';
+	if (type === 'string' || type === 'concatenated string' || type === 'sliced string') return 'strings';
+	if (isTypedArrayNode(type, name)) return 'typedArrays';
+	if (type === 'array' || (type === 'object' && name === 'Array')) return 'jsArrays';
+	if (isSystemNode(type, name)) return 'systemObjects';
+	if (otherJsNodeTypes.has(type)) return 'otherJsObjects';
+	return 'otherNonJsObjects';
 }
 
 function sanitizeHeapSnapshotBreakdownLabel(value, fallback = 'unknown') {
@@ -210,15 +210,15 @@ function analyzeHeapSnapshot(snapshot) {
 	if (!Array.isArray(nodeTypeNames)) throw new Error('Invalid heap snapshot node types');
 
 	function createEmptyHeapSnapshotCategoryMap() {
-		return Object.fromEntries(heapSnapshotCategories.map(category => [category, 0])) as Record<typeof heapSnapshotCategories[number], number>;
+		return Object.fromEntries(Object.keys(heapSnapshotCategory).map(category => [category, 0])) as Record<keyof typeof heapSnapshotCategory, number>;
 	}
 
 	const fieldCount = nodeFields.length;
 	const categories = createEmptyHeapSnapshotCategoryMap();
 	const nodeCounts = createEmptyHeapSnapshotCategoryMap();
 	const breakdowns = Object.fromEntries(
-		heapSnapshotCategories
-			.filter(category => category !== 'Total')
+		(Object.keys(heapSnapshotCategory) as (keyof typeof heapSnapshotCategory)[])
+			.filter(category => category !== 'total')
 			.map(category => [category, {}]),
 	);
 
@@ -233,9 +233,9 @@ function analyzeHeapSnapshot(snapshot) {
 		const category = classifyHeapSnapshotNode(type, name);
 
 		categories[category] += selfSize;
-		categories.Total += selfSize;
+		categories.total += selfSize;
 		nodeCounts[category]++;
-		nodeCounts.Total++;
+		nodeCounts.total++;
 		addValue(breakdowns[category], classifyHeapSnapshotBreakdown(category, type, name), selfSize);
 	}
 
