@@ -13,6 +13,7 @@
   - Docker Image は Node.js 26.4.0-trixie に更新されています。
 
 ### General
+- Feat: コントロールパネルから二要素認証を解除できるように
 
 ### Client
 -
