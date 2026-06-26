@@ -2489,6 +2489,14 @@ export interface Locale extends ILocale {
      */
     "updateRemoteUser": string;
     /**
+     * 二要素認証を解除
+     */
+    "unsetMfa": string;
+    /**
+     * 二要素認証を解除しますか？
+     */
+    "unsetMfaConfirm": string;
+    /**
      * アイコンを解除
      */
     "unsetUserAvatar": string;
@@ -9615,6 +9623,10 @@ export interface Locale extends ILocale {
          */
         "write:admin:suspend-user": string;
         /**
+         * ユーザーの二要素認証を解除する
+         */
+        "write:admin:unset-mfa": string;
+        /**
          * ユーザーのアバターを削除する
          */
         "write:admin:unset-user-avatar": string;
@@ -11584,6 +11596,10 @@ export interface Locale extends ILocale {
          * アイコンデコレーションを削除
          */
         "deleteAvatarDecoration": string;
+        /**
+         * ユーザーの二要素認証を解除
+         */
+        "unsetMfa": string;
         /**
          * ユーザーのアイコンを解除
          */
