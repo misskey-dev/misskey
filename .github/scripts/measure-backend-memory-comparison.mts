@@ -69,10 +69,10 @@ async function resetState(repoDir: string) {
 }
 
 function summarizeHeapSnapshotBreakdowns(samples: MemoryReport['samples'], phase: typeof phases[number]) {
-	const breakdowns = {} as Record<typeof heapSnapshotUtil.heapSnapshotCategories[number], Record<string, number>>;
+	const breakdowns = {} as Record<keyof typeof heapSnapshotUtil.heapSnapshotCategory, Record<string, number>>;
 
-	for (const category of heapSnapshotUtil.heapSnapshotCategories) {
-		if (category === 'Total') continue;
+	for (const category of Object.keys(heapSnapshotUtil.heapSnapshotCategory) as (keyof typeof heapSnapshotUtil.heapSnapshotCategory)[]) {
+		if (category === 'total') continue;
 
 		const childKeys = new Set<string>();
 		for (const sample of samples) {
@@ -133,8 +133,8 @@ function summarizeSamples(samples: MemoryReport['samples']) {
 			summary[phase].memoryUsage[key] = util.median(values);
 		}
 
-		const heapSnapshotCategoryValues = {} as Record<typeof heapSnapshotUtil.heapSnapshotCategories[number], number>;
-		for (const category of heapSnapshotUtil.heapSnapshotCategories) {
+		const heapSnapshotCategoryValues = {} as Record<keyof typeof heapSnapshotUtil.heapSnapshotCategory, number>;
+		for (const category of Object.keys(heapSnapshotUtil.heapSnapshotCategory) as (keyof typeof heapSnapshotUtil.heapSnapshotCategory)[]) {
 			const values = samples
 				.map(sample => sample.phases[phase].heapSnapshot?.categories?.[category])
 				.filter(value => Number.isFinite(value)) as number[];
@@ -142,8 +142,8 @@ function summarizeSamples(samples: MemoryReport['samples']) {
 			if (values.length > 0) heapSnapshotCategoryValues[category] = util.median(values);
 		}
 
-		const heapSnapshotNodeCountValues = {} as Record<typeof heapSnapshotUtil.heapSnapshotCategories[number], number>;
-		for (const category of heapSnapshotUtil.heapSnapshotCategories) {
+		const heapSnapshotNodeCountValues = {} as Record<keyof typeof heapSnapshotUtil.heapSnapshotCategory, number>;
+		for (const category of Object.keys(heapSnapshotUtil.heapSnapshotCategory) as (keyof typeof heapSnapshotUtil.heapSnapshotCategory)[]) {
 			const values = samples
 				.map(sample => sample.phases[phase].heapSnapshot?.nodeCounts?.[category])
 				.filter(value => Number.isFinite(value)) as number[];

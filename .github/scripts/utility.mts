@@ -17,7 +17,7 @@ export function median(values: number[]) {
 }
 
 export function mad(values: number[]) {
-	if (values.length < 2) return null;
+	if (values.length < 2) throw new Error('Not enough samples to calculate MAD');
 
 	const center = median(values);
 	return median(values.map(value => Math.abs(value - center)));
@@ -111,7 +111,7 @@ export function formatNumber(value: number) {
 
 export function formatBytes(value: number) {
 	if (value === 0) return '0 B';
-	const units = ['B', 'KiB', 'MiB', 'GiB'];
+	const units = ['B', 'KB', 'MB', 'GB'];
 	let unitIndex = 0;
 	let size = value;
 	while (size >= 1024 && unitIndex < units.length - 1) {
