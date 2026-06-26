@@ -121,16 +121,16 @@ function sanitizeHeapSnapshotBreakdownLabel(value, fallback = 'unknown') {
 	return `${label.slice(0, 77)}...`;
 }
 
-function classifyHeapSnapshotBreakdown(category, type, name) {
-	if (category === 'Strings') return type;
+function classifyHeapSnapshotBreakdown(category: keyof typeof heapSnapshotCategory, type, name) {
+	if (category === 'strings') return type;
 
-	if (category === 'JS arrays') {
+	if (category === 'jsArrays') {
 		if (type === 'array') return 'array nodes';
 		if (type === 'object' && name === 'Array') return 'Array objects';
 		return sanitizeHeapSnapshotBreakdownLabel(`${type}: ${name}`);
 	}
 
-	if (category === 'Typed arrays') {
+	if (category === 'typedArrays') {
 		if (name === 'system / JSArrayBufferData') return 'ArrayBuffer data';
 		if (name === 'Uint8Array') return 'Uint8Array / Buffer';
 		if (typedArrayNames.has(name)) return name;
@@ -139,23 +139,23 @@ function classifyHeapSnapshotBreakdown(category, type, name) {
 		return sanitizeHeapSnapshotBreakdownLabel(`${type}: ${name}`);
 	}
 
-	if (category === 'System objects') {
+	if (category === 'systemObjects') {
 		if (name.startsWith('system /')) return sanitizeHeapSnapshotBreakdownLabel(name);
 		if (name.startsWith('(system ')) return sanitizeHeapSnapshotBreakdownLabel(name);
 		return sanitizeHeapSnapshotBreakdownLabel(`${type}: ${name}`, type);
 	}
 
-	if (category === 'Other JS objects') {
+	if (category === 'otherJsObjects') {
 		if (type === 'object') return sanitizeHeapSnapshotBreakdownLabel(`object: ${name}`, 'object: unknown');
 		return type;
 	}
 
-	if (category === 'Other non-JS objects') {
+	if (category === 'otherNonJsObjects') {
 		if (type === 'native') return sanitizeHeapSnapshotBreakdownLabel(`native: ${name}`, 'native: unknown');
 		return sanitizeHeapSnapshotBreakdownLabel(`${type}: ${name}`, type);
 	}
 
-	if (category === 'Code') {
+	if (category === 'code') {
 		const lowerName = name.toLowerCase();
 		if (lowerName.includes('bytecode')) return 'bytecode';
 		if (lowerName.includes('builtin')) return 'builtins';
