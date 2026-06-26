@@ -73,18 +73,18 @@ export function renderHeapSnapshotTable(base: HeapSnapshotReport, head: HeapSnap
 	const headTotal = getHeapSnapshotCategoryValue(head, 'Total');
 
 	function formatHeapSnapshotCategoryLabel(category: typeof heapSnapshotCategories[number], baseValue: number, headValue: number, baseTotal: number, headTotal: number) {
-		if (category === 'Total' || baseTotal == null || headTotal == null || baseTotal <= 0 || headTotal <= 0) return `**${category}**`;
-
-		const basePercent = util.formatPercent((baseValue * 100) / baseTotal);
-		const headPercent = util.formatPercent((headValue * 100) / headTotal);
-		return `**${category}**<br>${basePercent} → ${headPercent}`;
+		return `**${category}**`;
+		//if (category === 'Total') return `**${category}**`;
+		//const basePercent = util.formatPercent((baseValue * 100) / baseTotal);
+		//const headPercent = util.formatPercent((headValue * 100) / headTotal);
+		//return `**${category}**<br>${basePercent} → ${headPercent}`;
 	}
 
 	function getHeapSnapshotSampleSpread(report: HeapSnapshotReport, category: typeof heapSnapshotCategories[number]) {
 		const values = report.samples
 			.map(sample => getHeapSnapshotCategoryValueFromSample(sample, category))
 			.filter(value => Number.isFinite(value)) as number[];
-		if (values.length < 2) return null;
+		if (values.length < 2) throw new Error(`Not enough samples for category ${category}`);
 
 		const center = util.median(values);
 		return util.median(values.map(value => Math.abs(value - center)));
@@ -99,10 +99,12 @@ export function renderHeapSnapshotTable(base: HeapSnapshotReport, head: HeapSnap
 		const headSpread = getHeapSnapshotSampleSpread(head, category);
 		const summary = util.pairedDeltaSummary(base.samples, head.samples, (sample) => getHeapSnapshotCategoryValueFromSample(sample, category));
 		const percent = summary.median * 100 / baseValue;
-		const deltaMedian = summary == null ? '-' : `${util.formatDeltaBytes(summary.median)}<br>${util.formatDeltaPercent(percent).replaceAll('\\%', '\\\\%')}`;
+		const deltaMedian = category === 'Total' ? `${util.formatDeltaBytes(summary.median)}<br>${util.formatDeltaPercent(percent).replaceAll('\\%', '\\\\%')}` :  util.formatDeltaBytes(summary.median);
+		const baseText = category === 'Total' ? `${util.formatBytes(baseValue)} <br> ± ${util.formatBytes(baseSpread)}` : util.formatBytes(baseValue);
+		const headText = category === 'Total' ? `${util.formatBytes(headValue)} <br> ± ${util.formatBytes(headSpread)}` : util.formatBytes(headValue);
 		const categoryLabel = formatHeapSnapshotCategoryLabel(category, baseValue, headValue, baseTotal, headTotal);
 
-		lines.push(`| $\\color{${heapSnapshotCategoriesColors[category]}}{\\rule{8pt}{8pt}}$ ${categoryLabel} | ${util.formatBytes(baseValue)} <br> ± ${baseSpread == null ? '-' : util.formatBytes(baseSpread)} | ${util.formatBytes(headValue)} <br> ± ${headSpread == null ? '-' : util.formatBytes(headSpread)} | ${deltaMedian} | ${summary?.mad == null ? '-' : util.formatBytes(summary.mad)} | ${summary == null ? '-' : util.formatDeltaBytes(summary.min)} | ${summary == null ? '-' : util.formatDeltaBytes(summary.max)} |`);
+		lines.push(`| $\\color{${heapSnapshotCategoriesColors[category]}}{\\rule{8pt}{8pt}}$ ${categoryLabel} | ${baseText} | ${headText} | ${deltaMedian} | ${util.formatBytes(summary.mad)} | ${util.formatDeltaBytes(summary.min)} | ${util.formatDeltaBytes(summary.max)} |`);
 		if (category === 'Total') {
 			lines.push('| | | | | | | |');
 		}
