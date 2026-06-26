@@ -27,27 +27,29 @@ const extensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json', '.json5', '.s
 function getBundleVisualizerPlugin(): PluginOption[] {
 	if (process.env.FRONTEND_BUNDLE_VISUALIZER !== 'true') return [];
 
-	const template = process.env.FRONTEND_BUNDLE_VISUALIZER_TEMPLATE === 'markdown'
-		? 'markdown'
-		: process.env.FRONTEND_BUNDLE_VISUALIZER_TEMPLATE === 'raw-data'
-			? 'raw-data'
-			: 'treemap';
-	const defaultFilename = template === 'markdown'
-		? path.resolve(__dirname, '../../built/_frontend_bundle_visualizer_/report.md')
-		: template === 'raw-data'
-			? path.resolve(__dirname, '../../built/_frontend_bundle_visualizer_/stats.json')
-			: path.resolve(__dirname, '../../built/_frontend_bundle_visualizer_/stats.html');
-
-	return [
+	const visualizerOptions = {
+		title: 'Misskey frontend bundle visualizer',
+		gzipSize: true,
+		brotliSize: true,
+		projectRoot: path.resolve(__dirname, '../..'),
+	};
+	const plugins = [
 		visualizer({
-			filename: process.env.FRONTEND_BUNDLE_VISUALIZER_FILE ?? defaultFilename,
-			title: 'Misskey frontend bundle visualizer',
-			template,
-			gzipSize: true,
-			brotliSize: true,
-			projectRoot: path.resolve(__dirname, '../..'),
+			...visualizerOptions,
+			filename: process.env.FRONTEND_BUNDLE_VISUALIZER_FILE,
+			template: 'raw-data',
 		}) as PluginOption,
 	];
+
+	if (process.env.FRONTEND_BUNDLE_VISUALIZER_HTML_FILE != null) {
+		plugins.push(visualizer({
+			...visualizerOptions,
+			filename: process.env.FRONTEND_BUNDLE_VISUALIZER_HTML_FILE,
+			template: 'treemap',
+		}) as PluginOption);
+	}
+
+	return plugins;
 }
 
 /**

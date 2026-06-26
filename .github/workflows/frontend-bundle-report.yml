@@ -20,8 +20,8 @@ on:
       - pnpm-lock.yaml
       - pnpm-workspace.yaml
       - .node-version
-      - .github/scripts/frontend-js-size.mjs
-      - .github/scripts/frontend-bundle-visualizer-report.mjs
+      - .github/scripts/utility.mts
+      - .github/scripts/frontend-js-size.mts
       - .github/workflows/frontend-bundle-report.yml
       - .github/workflows/frontend-bundle-report-comment.yml
 
@@ -56,21 +56,25 @@ jobs:
           path: after
           submodules: true
 
-      - name: Backport visualizer tooling to base if needed
+      - name: Check base visualizer support
+        id: check-base-visualizer
         shell: bash
         run: |
-          if ! grep -q 'FRONTEND_BUNDLE_VISUALIZER' before/packages/frontend/vite.config.ts; then
-            cp after/packages/frontend/package.json before/packages/frontend/package.json
-            cp after/packages/frontend/vite.config.ts before/packages/frontend/vite.config.ts
-            cp after/pnpm-lock.yaml before/pnpm-lock.yaml
+          if grep -q 'FRONTEND_BUNDLE_VISUALIZER' before/packages/frontend/vite.config.ts; then
+            echo 'supported=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'supported=false' >> "$GITHUB_OUTPUT"
+            echo 'Base commit does not support frontend bundle visualizer. Skipping frontend bundle report.' >> "$GITHUB_STEP_SUMMARY"
           fi
 
       - name: Setup pnpm
+        if: steps.check-base-visualizer.outputs.supported == 'true'
         uses: pnpm/action-setup@v6.0.3
         with:
           package_json_file: after/package.json
 
       - name: Setup Node.js
+        if: steps.check-base-visualizer.outputs.supported == 'true'
         uses: actions/setup-node@v6.4.0
         with:
           node-version-file: after/.node-version
@@ -80,67 +84,84 @@ jobs:
             after/pnpm-lock.yaml
 
       - name: Install dependencies for base
+        if: steps.check-base-visualizer.outputs.supported == 'true'
         working-directory: before
         run: pnpm i --frozen-lockfile
 
       - name: Build frontend dependencies for base
+        if: steps.check-base-visualizer.outputs.supported == 'true'
         working-directory: before
         run: pnpm --filter "frontend^..." run build
 
       - name: Prepare report output
+        if: steps.check-base-visualizer.outputs.supported == 'true'
         run: mkdir -p "$RUNNER_TEMP/frontend-bundle-report"
 
       - name: Build frontend report for base
+        if: steps.check-base-visualizer.outputs.supported == 'true'
         working-directory: before
         env:
           FRONTEND_BUNDLE_VISUALIZER: 'true'
-          FRONTEND_BUNDLE_VISUALIZER_TEMPLATE: raw-data
           FRONTEND_BUNDLE_VISUALIZER_FILE: ${{ runner.temp }}/frontend-bundle-report/before-stats.json
         run: pnpm --filter frontend run build
 
       - name: Install dependencies for pull request
+        if: steps.check-base-visualizer.outputs.supported == 'true'
         working-directory: after
         run: pnpm i --frozen-lockfile
 
       - name: Build frontend dependencies for pull request
+        if: steps.check-base-visualizer.outputs.supported == 'true'
         working-directory: after
         run: pnpm --filter "frontend^..." run build
 
       - name: Build frontend report for pull request
+        if: steps.check-base-visualizer.outputs.supported == 'true'
         working-directory: after
         env:
           FRONTEND_BUNDLE_VISUALIZER: 'true'
-          FRONTEND_BUNDLE_VISUALIZER_TEMPLATE: raw-data
           FRONTEND_BUNDLE_VISUALIZER_FILE: ${{ runner.temp }}/frontend-bundle-report/after-stats.json
+          FRONTEND_BUNDLE_VISUALIZER_HTML_FILE: ${{ runner.temp }}/frontend-bundle-report/frontend-bundle-visualizer.html
         run: pnpm --filter frontend run build
 
+      - name: Upload bundle visualizer
+        if: steps.check-base-visualizer.outputs.supported == 'true'
+        id: upload-bundle-visualizer
+        uses: actions/upload-artifact@v7
+        with:
+          name: frontend-bundle-visualizer
+          path: ${{ runner.temp }}/frontend-bundle-report/frontend-bundle-visualizer.html
+          if-no-files-found: error
+          archive: false
+          retention-days: 7
+
       - name: Generate report markdown
+        if: steps.check-base-visualizer.outputs.supported == 'true'
         shell: bash
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
+          FRONTEND_BUNDLE_REPORT_ARTIFACT_URL: ${{ steps.upload-bundle-visualizer.outputs.artifact-url }}
         run: |
           REPORT_DIR="$RUNNER_TEMP/frontend-bundle-report"
-          node after/.github/scripts/frontend-js-size.mjs before after "$REPORT_DIR/frontend-js-size-report.md"
-          node after/.github/scripts/frontend-bundle-visualizer-report.mjs "$REPORT_DIR/before-stats.json" "$REPORT_DIR/after-stats.json" "$REPORT_DIR/frontend-bundle-visualizer-report.md"
+          node after/.github/scripts/frontend-js-size.mts before after "$REPORT_DIR/before-stats.json" "$REPORT_DIR/after-stats.json" "$REPORT_DIR/frontend-js-size-report.md"
           printf '%s\n' "$PR_NUMBER" > "$REPORT_DIR/pr-number.txt"
           printf '%s\n' "$BASE_SHA" > "$REPORT_DIR/base-sha.txt"
           printf '%s\n' "$HEAD_SHA" > "$REPORT_DIR/head-sha.txt"
           printf '%s\n' "${{ github.event.pull_request.html_url }}" > "$REPORT_DIR/pr-url.txt"
 
       - name: Check report
+        if: steps.check-base-visualizer.outputs.supported == 'true'
         run: |
           REPORT_DIR="$RUNNER_TEMP/frontend-bundle-report"
           test -s "$REPORT_DIR/before-stats.json"
           test -s "$REPORT_DIR/after-stats.json"
           test -s "$REPORT_DIR/frontend-js-size-report.md"
-          test -s "$REPORT_DIR/frontend-bundle-visualizer-report.md"
           cat "$REPORT_DIR/frontend-js-size-report.md" >> "$GITHUB_STEP_SUMMARY"
-          printf '\n\n' >> "$GITHUB_STEP_SUMMARY"
-          cat "$REPORT_DIR/frontend-bundle-visualizer-report.md" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload bundle report
+        if: steps.check-base-visualizer.outputs.supported == 'true'
         uses: actions/upload-artifact@v7
         with:
           name: frontend-bundle-report
