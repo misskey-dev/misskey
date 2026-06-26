@@ -124,7 +124,7 @@
 		"qrcode": "1.5.4",
 		"random-seed": "0.3.0",
 		"ratelimiter": "3.4.1",
-		"re2": "1.24.1",
+		"re2": "1.25.0",
 		"reflect-metadata": "0.2.2",
 		"rename": "1.0.4",
 		"rss-parser": "3.13.0",
