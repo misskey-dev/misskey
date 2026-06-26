@@ -86,8 +86,7 @@ watch([() => props.reactions, () => props.maxNumber], ([newSource, maxNumber]) =
 	for (let i = 0; i < _reactions.value.length; i++) {
 		const reaction = _reactions.value[i][0];
 		if (reaction in newSource && newSource[reaction] !== 0) {
-			_reactions.value[i][1] = newSource[reaction];
-			newReactions.push(_reactions.value[i]);
+			newReactions.push([reaction, newSource[reaction]]);
 		}
 	}
 
