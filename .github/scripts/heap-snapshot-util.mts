@@ -55,13 +55,7 @@ export type HeapSnapshotReport = {
 };
 
 function getHeapSnapshotCategoryValue(report: HeapSnapshotReport, category: typeof heapSnapshotCategories[number]) {
-	const value = report.summary.categories[category];
-	return Number.isFinite(value) ? value : null;
-}
-
-function getHeapSnapshotCategoryValueFromSample(sample: HeapSnapshotReport['samples'][number], category: typeof heapSnapshotCategories[number]) {
-	const value = sample.data.categories[category];
-	return Number.isFinite(value) ? value : null;
+	return report.summary.categories[category];
 }
 
 export function renderHeapSnapshotTable(base: HeapSnapshotReport, head: HeapSnapshotReport) {
@@ -72,17 +66,9 @@ export function renderHeapSnapshotTable(base: HeapSnapshotReport, head: HeapSnap
 	const baseTotal = getHeapSnapshotCategoryValue(base, 'Total');
 	const headTotal = getHeapSnapshotCategoryValue(head, 'Total');
 
-	function formatHeapSnapshotCategoryLabel(category: typeof heapSnapshotCategories[number], baseValue: number, headValue: number, baseTotal: number, headTotal: number) {
-		return `**${category}**`;
-		//if (category === 'Total') return `**${category}**`;
-		//const basePercent = util.formatPercent((baseValue * 100) / baseTotal);
-		//const headPercent = util.formatPercent((headValue * 100) / headTotal);
-		//return `**${category}**<br>${basePercent} → ${headPercent}`;
-	}
-
 	function getHeapSnapshotSampleSpread(report: HeapSnapshotReport, category: typeof heapSnapshotCategories[number]) {
 		const values = report.samples
-			.map(sample => getHeapSnapshotCategoryValueFromSample(sample, category))
+			.map(sample => sample.data.categories[category])
 			.filter(value => Number.isFinite(value)) as number[];
 		if (values.length < 2) throw new Error(`Not enough samples for category ${category}`);
 
@@ -93,18 +79,20 @@ export function renderHeapSnapshotTable(base: HeapSnapshotReport, head: HeapSnap
 	for (const category of heapSnapshotCategories) {
 		const baseValue = getHeapSnapshotCategoryValue(base, category);
 		const headValue = getHeapSnapshotCategoryValue(head, category);
-		if (baseValue == null || headValue == null) continue;
-
 		const baseSpread = getHeapSnapshotSampleSpread(base, category);
 		const headSpread = getHeapSnapshotSampleSpread(head, category);
-		const summary = util.pairedDeltaSummary(base.samples, head.samples, (sample) => getHeapSnapshotCategoryValueFromSample(sample, category));
+		const summary = util.pairedDeltaSummary(base.samples, head.samples, (sample) => sample.data.categories[category]);
 		const percent = summary.median * 100 / baseValue;
 		const deltaMedian = category === 'Total' ? `${util.formatDeltaBytes(summary.median)}<br>${util.formatDeltaPercent(percent).replaceAll('\\%', '\\\\%')}` :  util.formatDeltaBytes(summary.median);
 		const baseText = category === 'Total' ? `${util.formatBytes(baseValue)} <br> ± ${util.formatBytes(baseSpread)}` : util.formatBytes(baseValue);
 		const headText = category === 'Total' ? `${util.formatBytes(headValue)} <br> ± ${util.formatBytes(headSpread)}` : util.formatBytes(headValue);
-		const categoryLabel = formatHeapSnapshotCategoryLabel(category, baseValue, headValue, baseTotal, headTotal);
+		const basePercent = util.formatPercent((baseValue * 100) / baseTotal);
+		const headPercent = util.formatPercent((headValue * 100) / headTotal);
+		const metricText = category === 'Total'
+			? `$\\color{${heapSnapshotCategoriesColors[category]}}{\\rule{8pt}{8pt}}$ **${category}**`
+			: `<details><summary>$\\color{${heapSnapshotCategoriesColors[category]}}{\\rule{8pt}{8pt}}$ **${category}**</summary>${basePercent} → ${headPercent}</details>`;
 
-		lines.push(`| $\\color{${heapSnapshotCategoriesColors[category]}}{\\rule{8pt}{8pt}}$ ${categoryLabel} | ${baseText} | ${headText} | ${deltaMedian} | ${util.formatBytes(summary.mad)} | ${util.formatDeltaBytes(summary.min)} | ${util.formatDeltaBytes(summary.max)} |`);
+		lines.push(`| ${metricText} | ${baseText} | ${headText} | ${deltaMedian} | ${util.formatBytes(summary.mad)} | ${util.formatDeltaBytes(summary.min)} | ${util.formatDeltaBytes(summary.max)} |`);
 		if (category === 'Total') {
 			lines.push('| | | | | | | |');
 		}

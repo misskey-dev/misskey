@@ -476,67 +476,6 @@ function renderFrontendBundleReport(before: ReturnType<typeof collectVisualizerR
 	return lines.join('\n');
 }
 
-const visualizerTreemapLimit = 50;
-
-function mermaidTreemapLabel(value: string) {
-	const label = String(value)
-		.replaceAll('\\', '/')
-		.replaceAll('"', "'")
-		.replaceAll('`', "'")
-		.replaceAll('\r', ' ')
-		.replaceAll('\n', ' ')
-		.trim();
-	return label === '' ? '(unknown)' : label;
-}
-
-function mermaidTreemapModuleLabel(id: string) {
-	const normalizedId = String(id).replaceAll('\\', '/');
-	const filePath = normalizedId.split(/[?#]/, 1)[0];
-	const fileName = path.posix.basename(filePath);
-	return mermaidTreemapLabel(fileName || normalizedId);
-}
-
-function renderVisualizerTreemap(label: string, report: ReturnType<typeof collectVisualizerReport>) {
-	const rows = report.hotModules
-		.filter((row) => row.renderedLength > 0)
-		.slice(0, visualizerTreemapLimit);
-	const topRendered = rows.reduce((sum, row) => sum + row.renderedLength, 0);
-	const otherRendered = Math.max(0, report.metrics.renderedLength - topRendered);
-	const lines = [
-		'```mermaid',
-		`%%{init: ${JSON.stringify({
-			treemap: {
-				diagramPadding: 0,
-				padding: 0,
-				nodeHeight: 70,
-			},
-		})}}%%`,
-		'treemap-beta',
-		`"${mermaidTreemapLabel(label)}"`,
-	];
-
-	for (const row of rows) {
-		lines.push(`  "${mermaidTreemapModuleLabel(row.id)}": ${Math.round(row.renderedLength)}`);
-	}
-	if (otherRendered > 0) {
-		lines.push(`  "Other": ${Math.round(otherRendered)}`);
-	}
-
-	lines.push('```');
-	return lines.join('\n');
-}
-
-function renderVisualizerTreemapDetails(label: string, report: ReturnType<typeof collectVisualizerReport>, open = false) {
-	return [
-		`<details${open ? ' open' : ''}>`,
-		`<summary>${label} rendered size treemap (top ${visualizerTreemapLimit} + Other)</summary>`,
-		'',
-		renderVisualizerTreemap(label, report),
-		'',
-		'</details>',
-	].join('\n');
-}
-
 const args = process.argv.slice(2);
 const [beforeDir, afterDir, beforeStatsFile, afterStatsFile, outFile] = args;
 const before = await collectReport(beforeDir);
@@ -545,7 +484,7 @@ const beforeStats = JSON.parse(await fs.readFile(beforeStatsFile, 'utf8')) as Vi
 const afterStats = JSON.parse(await fs.readFile(afterStatsFile, 'utf8')) as VisualizerReport;
 const beforeVisualizerReport = collectVisualizerReport(beforeStats);
 const afterVisualizerReport = collectVisualizerReport(afterStats);
-const visualizerArtifactLink = `[Open detailed HTML](${process.env.FRONTEND_BUNDLE_REPORT_ARTIFACT_URL})`;
+const visualizerArtifactLink = `[Open treemap HTML](${process.env.FRONTEND_BUNDLE_REPORT_ARTIFACT_URL})`;
 
 const body = [
 	marker,
@@ -557,10 +496,6 @@ const body = [
 	'## Bundle Stats',
 	'',
 	renderFrontendBundleReport(beforeVisualizerReport, afterVisualizerReport),
-	'',
-	renderVisualizerTreemapDetails('Before', beforeVisualizerReport),
-	'',
-	renderVisualizerTreemapDetails('After', afterVisualizerReport),
 	'',
 	visualizerArtifactLink,
 ].join('\n');
