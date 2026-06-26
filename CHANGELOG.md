@@ -1,4 +1,10 @@
-## Unreleased
+## 2026.6.1
+
+### Note
+- センシティブメディアの判定 (NSFW検出) が、本体に内蔵された nsfwjs による推論から、外部サービス [sensitive-detector](https://github.com/misskey-dev/sensitive-detector) への HTTP 呼び出し方式に変更されました。
+	- これに伴い、本体から `nsfwjs` / `@tensorflow/tfjs` / `@tensorflow/tfjs-node` および同梱の NSFW 判定モデルが削除され、インストール要件 (ネイティブ ML スタック) が緩和されました。
+	- **センシティブ判定機能を利用しているサーバーは対応が必要です。** 別途 [sensitive-detector](https://github.com/misskey-dev/sensitive-detector) サービスを立ち上げ、コントロールパネルの「モデレーション > センシティブなメディアの検出」で接続先 URL を設定してください。接続先が未設定の場合、センシティブ判定は行われません (すべて非センシティブ扱い)。
+	- 画像の正規化・動画フレームの抽出・しきい値判定・集約は引き続き本体側で行われ、外部サービスには正規化済み画像の推論のみを委譲します。
 
 ### General
 -
@@ -7,7 +13,7 @@
 -
 
 ### Server
--
+- Enhance: センシティブメディアの判定を外部サービス ([sensitive-detector](https://github.com/misskey-dev/sensitive-detector)) に分離し、`nsfwjs` / `@tensorflow/tfjs(-node)` の同梱と NSFW 判定モデルを廃止 (#16804)
 
 
 ## 2026.6.0
