@@ -78,8 +78,5 @@
 		"pnpm": "11.5.2",
 		"start-server-and-test": "3.0.9",
 		"typescript": "5.9.3"
-	},
-	"optionalDependencies": {
-		"@tensorflow/tfjs-core": "4.22.0"
 	}
 }
