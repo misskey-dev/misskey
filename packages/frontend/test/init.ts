@@ -19,6 +19,26 @@ updateI18n(locales['en-US']);
 // XXX: misskey-js panics if WebSocket is not defined
 vi.stubGlobal('WebSocket', class WebSocket extends EventTarget { static CLOSING = 2; });
 
+// XXX: localStorageがない場合がある
+const localStorageMock = (() => {
+	const store = new Map<string, string>();
+	return {
+		getItem(key: string) {
+			return store.get(key) ?? null;
+		},
+		setItem(key: string, value: string) {
+			store.set(key, value);
+		},
+		removeItem(key: string) {
+			store.delete(key);
+		},
+		clear() {
+			store.clear();
+		},
+	};
+})();
+vi.stubGlobal('localStorage', localStorageMock);
+
 export const preferState: Record<string, unknown> = {
 
 	// なんかtestがうまいこと動かないのでここに書く
