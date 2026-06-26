@@ -2,22 +2,18 @@
   "permissions": {
     "allow": [
       "Bash(pnpm lint)",
-      "Bash(pnpm --filter backend lint)",
-      "Bash(pnpm --filter frontend lint)",
-      "Bash(pnpm --filter frontend-embed lint)",
-      "Bash(pnpm --filter frontend-shared lint)",
-      "Bash(pnpm --filter frontend-builder lint)",
-      "Bash(pnpm --filter misskey-js lint)",
+      "Bash(pnpm --filter * lint)",
       "Bash(pnpm --filter backend check-migrations)",
+      "Bash(pnpm --filter * typecheck)",
+			"Bash(pnpm build)",
       "Bash(pnpm build-misskey-js-with-types)",
       "Bash(cp .github/misskey/test.yml .config/test.yml)",
       "Bash(ncp .github/misskey/test.yml .config/test.yml)",
-      "Bash(pnpm --filter backend test*)",
       "Bash(pnpm backend-unit-test)",
-      "Bash(pnpm --filter frontend test)",
-      "Bash(pnpm --filter backend typecheck)",
-      "Bash(pnpm --filter frontend typecheck)",
-      "Bash(pnpm build )"
+			"Bash(pnpm --filter backend test)",
+      "Bash(pnpm --filter backend test:e2e)",
+      "Bash(pnpm --filter backend test:fed)",
+      "Bash(pnpm --filter frontend test)"
     ]
   },
   "enabledPlugins": {
