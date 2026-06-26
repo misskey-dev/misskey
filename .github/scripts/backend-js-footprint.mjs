@@ -42,10 +42,6 @@ function isInside(parent, child) {
 	return rel === '' || (!rel.startsWith('..') && !rel.includes(`..${sep}`));
 }
 
-function normalizePath(filePath) {
-	return filePath.split(sep).join('/');
-}
-
 function bytesToKiB(value) {
 	return Math.round(value / 1024);
 }
@@ -128,7 +124,7 @@ async function stopServer(serverProcess) {
 }
 
 function getPackageNameFromPath(filePath) {
-	const normalized = normalizePath(filePath);
+	const normalized = util.normalizePath(filePath);
 	const marker = '/node_modules/';
 	const index = normalized.lastIndexOf(marker);
 	if (index === -1) return null;
@@ -248,7 +244,7 @@ function readFileMetrics(filePath) {
 	const packageInfo = readPackageInfo(filePath);
 	const metric = {
 		path: filePath,
-		displayPath: normalizePath(relative(repoDir, filePath)),
+		displayPath: util.normalizePath(relative(repoDir, filePath)),
 		sourceBytes: source.byteLength,
 		gzipBytes: gzipSync(source).byteLength,
 		...astMetrics,
