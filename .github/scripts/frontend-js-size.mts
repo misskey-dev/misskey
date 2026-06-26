@@ -5,129 +5,54 @@
 
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
+import * as util from './utility.mts';
 
 const marker = '<!-- misskey-frontend-js-size -->';
-const locale = process.env.FRONTEND_JS_SIZE_LOCALE || 'ja-JP';
-const byteFormatter = new Intl.NumberFormat('en-US');
-const numberFormatter = new Intl.NumberFormat('en-US');
 
-function normalizePath(filePath) {
-	return filePath.split(path.sep).join('/');
-}
+const locale = process.env.FRONTEND_JS_SIZE_LOCALE ?? 'ja-JP';
 
-async function exists(filePath) {
-	try {
-		await fs.access(filePath);
-		return true;
-	} catch {
-		return false;
-	}
-}
+//function sharePercent(value, total) {
+//	if (total === 0) return '0%';
+//	return Math.round((value / total) * 100) + '%';
+//}
 
-async function fileSize(filePath) {
-	const stat = await fs.stat(filePath);
-	return stat.size;
-}
-
-async function* walk(dir) {
-	for (const entry of await fs.readdir(dir, { withFileTypes: true })) {
-		const fullPath = path.join(dir, entry.name);
-		if (entry.isDirectory()) {
-			yield* walk(fullPath);
-		} else if (entry.isFile()) {
-			yield fullPath;
-		}
-	}
-}
-
-function formatNumber(value) {
-	return numberFormatter.format(value);
-}
-
-function formatBytes(value) {
-	if (!Number.isFinite(value) || value <= 0) return '0 B';
-
-	const units = ['B', 'KiB', 'MiB', 'GiB'];
-	let unitIndex = 0;
-	let size = value;
-	while (size >= 1024 && unitIndex < units.length - 1) {
-		size /= 1024;
-		unitIndex += 1;
-	}
-
-	const maximumFractionDigits = size >= 10 || unitIndex === 0 ? 0 : 1;
-	return `${byteFormatter.format(Number(size.toFixed(maximumFractionDigits)))} ${units[unitIndex]}`;
-}
-
-function escapeLatex(text) {
-	return text
-		.replaceAll('\\', '\\\\')
-		.replaceAll('{', '\\{')
-		.replaceAll('}', '\\}')
-		.replaceAll('%', '\\%');
-}
-
-function formatColoredDiff(text, diff) {
-	if (diff === 0) return text;
-	const color = diff > 0 ? 'orange' : 'green';
-	const sign = diff > 0 ? '+' : '-';
-	return `$\\color{${color}}{\\text{${sign}${escapeLatex(text)}}}$`;
-}
-
-function formatNumberDiff(before, after) {
-	if (before == null || after == null) return '-';
-	const diff = after - before;
-	return formatColoredDiff(formatNumber(Math.abs(diff)), diff);
-}
-
-function formatBytesDiff(before, after) {
-	if (before == null || after == null) return '-';
-	const diff = after - before;
-	if (diff === 0) return '0 B';
-	return formatColoredDiff(formatBytes(Math.abs(diff)), diff);
-}
-
-function formatDiffPercent(before, after) {
-	if (before == null || before === 0 || after == null || after === 0) return '-';
-	const diff = after - before;
-	if (diff === 0) return `0%`;
-	const percent = Math.abs(Math.round(diff / before * 100));
-	return formatColoredDiff(`${percent}%`, diff);
-}
-
-function sharePercent(value, total) {
-	if (total === 0) return '0%';
-	return Math.round((value / total) * 100) + '%';
-}
-
-function escapeCell(value) {
+function escapeCell(value: string) {
 	return String(value).replaceAll('|', '\\|').replaceAll('\n', '<br>');
 }
 
-function tableCell(value) {
-	return String(value).replaceAll('|', '\\|').replaceAll('\r', ' ').replaceAll('\n', ' ');
-}
+//function tableCell(value) {
+//	return String(value).replaceAll('|', '\\|').replaceAll('\r', ' ').replaceAll('\n', ' ');
+//}
 
-function code(value) {
-	const sanitized = String(value).replaceAll('\r', ' ').replaceAll('\n', ' ');
-	const backtickRuns = sanitized.match(/`+/g) ?? [];
-	const fenceLength = Math.max(1, ...backtickRuns.map((run) => run.length + 1));
-	const fence = '`'.repeat(fenceLength);
-	const padding = sanitized.startsWith('`') || sanitized.endsWith('`') ? ' ' : '';
+//function code(value) {
+//	const sanitized = String(value).replaceAll('\r', ' ').replaceAll('\n', ' ');
+//	const backtickRuns = sanitized.match(/`+/g) ?? [];
+//	const fenceLength = Math.max(1, ...backtickRuns.map((run) => run.length + 1));
+//	const fence = '`'.repeat(fenceLength);
+//	const padding = sanitized.startsWith('`') || sanitized.endsWith('`') ? ' ' : '';
+//
+//	return `${fence}${padding}${sanitized}${padding}${fence}`;
+//}
 
-	return `${fence}${padding}${sanitized}${padding}${fence}`;
-}
+//function tableCode(value) {
+//	return tableCell(code(value));
+//}
 
-function tableCode(value) {
-	return tableCell(code(value));
-}
+type Manifest = Record<string, { file?: string; src?: string; name?: string; isEntry?: boolean; imports?: string[] }>;
 
-function entryDisplayName(entry) {
+type FileEntry = {
+	key: string;
+	displayName: string;
+	file: string;
+	size: number;
+};
+
+function entryDisplayName(entry: FileEntry) {
 	if (!entry) return '';
 	return entry.displayName || entry.file;
 }
 
-function findEntryKey(manifest) {
+function findEntryKey(manifest: Manifest) {
 	const entries = Object.entries(manifest);
 	return entries.find(([key, chunk]) => key === 'src/_boot_.ts' || chunk.src === 'src/_boot_.ts')?.[0]
 		?? entries.find(([, chunk]) => chunk.name === 'entry' && chunk.isEntry)?.[0]
@@ -135,16 +60,16 @@ function findEntryKey(manifest) {
 		?? null;
 }
 
-function stableChunkKey(manifestKey, chunk) {
+function stableChunkKey(manifestKey: string, chunk: Manifest[string]) {
 	return chunk.src ?? (chunk.name ? `chunk:${chunk.name}` : manifestKey);
 }
 
-function collectStartupKeys(manifest) {
+function collectStartupKeys(manifest: Manifest) {
 	const entryKey = findEntryKey(manifest);
-	const keys = new Set();
+	const keys = new Set<string>();
 	if (entryKey == null) return keys;
 
-	function visit(key) {
+	function visit(key: string) {
 		if (keys.has(key)) return;
 		const chunk = manifest[key];
 		if (!chunk || !chunk.file?.endsWith('.js')) return;
@@ -158,11 +83,11 @@ function collectStartupKeys(manifest) {
 	return keys;
 }
 
-async function resolveBuiltFile(outDir, file) {
+async function resolveBuiltFile(outDir: string, file: string) {
 	if (file.startsWith('scripts/')) {
 		const localizedFile = file.slice('scripts/'.length);
 		const localizedPath = path.join(outDir, locale, localizedFile);
-		if (await exists(localizedPath)) {
+		if (await util.fileExists(localizedPath)) {
 			return {
 				absolutePath: localizedPath,
 				relativePath: `${locale}/${localizedFile}`,
@@ -177,17 +102,17 @@ async function resolveBuiltFile(outDir, file) {
 	};
 }
 
-async function collectReport(repoDir) {
+async function collectReport(repoDir: string) {
 	const outDir = path.join(repoDir, 'built/_frontend_vite_');
 	const manifestPath = path.join(outDir, 'manifest.json');
-	const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf8'));
-	const byKey = new Map();
-	const byFile = new Set();
+	const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf8')) as Manifest;
+	const byKey = new Map<string, FileEntry>();
+	const byFile = new Set<string>();
 
 	for (const [key, chunk] of Object.entries(manifest)) {
 		if (!chunk.file?.endsWith('.js')) continue;
 		const builtFile = await resolveBuiltFile(outDir, chunk.file);
-		const size = await fileSize(builtFile.absolutePath);
+		const size = await util.fileSize(builtFile.absolutePath);
 		const stableKey = stableChunkKey(key, chunk);
 		const displayName = chunk.src ?? chunk.name ?? key;
 		byKey.set(stableKey, {
@@ -200,12 +125,12 @@ async function collectReport(repoDir) {
 	}
 
 	const localeDir = path.join(outDir, locale);
-	if (await exists(localeDir)) {
-		for await (const fullPath of walk(localeDir)) {
+	if (await util.fileExists(localeDir)) {
+		for await (const fullPath of util.traverseDirectory(localeDir)) {
 			if (!fullPath.endsWith('.js')) continue;
-			const relativePath = normalizePath(path.relative(outDir, fullPath));
+			const relativePath = util.normalizePath(path.relative(outDir, fullPath));
 			if (byFile.has(relativePath)) continue;
-			const size = await fileSize(fullPath);
+			const size = await util.fileSize(fullPath);
 			byKey.set(relativePath, {
 				key: relativePath,
 				displayName: relativePath,
@@ -222,7 +147,28 @@ async function collectReport(repoDir) {
 	};
 }
 
-function collectVisualizerReport(data) {
+type VisualizerReport = {
+	nodeParts?: Record<string, {
+		renderedLength: number;
+		gzipLength: number;
+		brotliLength: number;
+	}>;
+	nodeMetas?: Record<string, {
+		id: string;
+		isEntry?: boolean;
+		isExternal?: boolean;
+		importedBy?: string[];
+		imported?: { id: string; dynamic?: boolean }[];
+		moduleParts?: Record<string, string>;
+		renderedLength: number;
+		gzipLength: number;
+		brotliLength: number;
+	}>;
+	options?: Record<string, unknown>;
+};
+
+
+function collectVisualizerReport(data: VisualizerReport) {
 	const nodeParts = data.nodeParts ?? {};
 	const nodeMetas = Object.values(data.nodeMetas ?? {});
 	const moduleRows = [];
@@ -304,7 +250,7 @@ function collectVisualizerReport(data) {
 	};
 }
 
-function renderVisualizerSummaryTable(before, after) {
+function renderVisualizerSummaryTable(before: ReturnType<typeof collectVisualizerReport>, after: ReturnType<typeof collectVisualizerReport>) {
 	const summary = [
 		'bundles',
 		'modules',
@@ -312,13 +258,13 @@ function renderVisualizerSummaryTable(before, after) {
 		//'externals',
 		'staticImports',
 		'dynamicImports',
-	];
+	] as const;
 
 	const metrics = [
 		'renderedLength',
 		'gzipLength',
 		'brotliLength',
-	];
+	] as const;
 
 	return [
 		`<table>`,
@@ -342,31 +288,31 @@ function renderVisualizerSummaryTable(before, after) {
 		`<tbody>`,
 		`<tr>`,
 		`<th><b>Before</b></th>`,
-		...summary.map((key) => `<td>${formatNumber(before.summary[key])}</td>`),
-		...metrics.map((key) => `<td>${formatBytes(before.metrics[key])}</td>`),
+		...summary.map((key) => `<td>${util.formatNumber(before.summary[key])}</td>`),
+		...metrics.map((key) => `<td>${util.formatBytes(before.metrics[key])}</td>`),
 		`</tr>`,
 		`<tr>`,
 		`<th><b>After</b></th>`,
-		...summary.map((key) => `<td>${formatNumber(after.summary[key])}</td>`),
-		...metrics.map((key) => `<td>${formatBytes(after.metrics[key])}</td>`),
+		...summary.map((key) => `<td>${util.formatNumber(after.summary[key])}</td>`),
+		...metrics.map((key) => `<td>${util.formatBytes(after.metrics[key])}</td>`),
 		`</tr>`,
 		`<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`,
 		`<tr>`,
 		`<th><b>Δ</b></th>`,
-		...summary.map((key) => `<td>${formatNumberDiff(before.summary[key], after.summary[key])}</td>`),
-		...metrics.map((key) => `<td>${formatBytesDiff(before.metrics[key], after.metrics[key])}</td>`),
+		...summary.map((key) => `<td>${util.calcAndFormatDeltaNumber(before.summary[key], after.summary[key])}</td>`),
+		...metrics.map((key) => `<td>${util.calcAndFormatDeltaBytes(before.metrics[key], after.metrics[key])}</td>`),
 		`</tr>`,
 		`<tr>`,
 		`<th><b>Δ (%)</b></th>`,
-		...summary.map((key) => `<td>${formatDiffPercent(before.summary[key], after.summary[key])}</td>`),
-		...metrics.map((key) => `<td>${formatDiffPercent(before.metrics[key], after.metrics[key])}</td>`),
+		...summary.map((key) => `<td>${util.calcAndFormatDeltaPercent(before.summary[key], after.summary[key])}</td>`),
+		...metrics.map((key) => `<td>${util.calcAndFormatDeltaPercent(before.metrics[key], after.metrics[key])}</td>`),
 		`</tr>`,
 		`</tbody>`,
 		`</table>`,
 	];
 }
 
-function getChunkComparisonRows(keys, before, after) {
+function getChunkComparisonRows(keys: string[], before: Awaited<ReturnType<typeof collectReport>>, after: Awaited<ReturnType<typeof collectReport>>) {
 	return keys.map((key) => {
 		const beforeEntry = before.chunks[key];
 		const afterEntry = after.chunks[key];
@@ -384,7 +330,7 @@ function getChunkComparisonRows(keys, before, after) {
 	});
 }
 
-function summarizeChunkChanges(rows) {
+function summarizeChunkChanges(rows: ReturnType<typeof getChunkComparisonRows>) {
 	return {
 		updated: rows.filter((row) => row.changeType === 'updated').length,
 		added: rows.filter((row) => row.changeType === 'added').length,
@@ -392,18 +338,18 @@ function summarizeChunkChanges(rows) {
 	};
 }
 
-function formatChunkChangeSummary(label, summary) {
+function formatChunkChangeSummary(label: string, summary: ReturnType<typeof summarizeChunkChanges>) {
 	return `${label} (${summary.updated} updated, ${summary.added} added, ${summary.removed} removed)`;
 }
 
-function compareChunkComparisonRows(a, b) {
+function compareChunkComparisonRows(a: ReturnType<typeof getChunkComparisonRows>[number], b: ReturnType<typeof getChunkComparisonRows>[number]) {
 	return Math.abs(b.afterSize - b.beforeSize) - Math.abs(a.afterSize - a.beforeSize)
 		|| (b.afterSize - b.beforeSize) - (a.afterSize - a.beforeSize)
 		|| b.sortSize - a.sortSize
 		|| a.name.localeCompare(b.name);
 }
 
-function chunkMarkdownTable(rows, total) {
+function chunkMarkdownTable(rows: ReturnType<typeof getChunkComparisonRows>, total?: { beforeSize: number; afterSize: number }) {
 	if (rows.length === 0) return '_No data_';
 
 	const lines = [
@@ -411,22 +357,22 @@ function chunkMarkdownTable(rows, total) {
 		'| --- | ---: | ---: | ---: | ---: |',
 	];
 	if (total != null) {
-		lines.push(`| (total) | ${formatBytes(total.beforeSize)} | ${formatBytes(total.afterSize)} | ${formatBytesDiff(total.beforeSize, total.afterSize)} | ${formatDiffPercent(total.beforeSize, total.afterSize).replaceAll('\\%', '\\\\%')} |`);
+		lines.push(`| (total) | ${util.formatBytes(total.beforeSize)} | ${util.formatBytes(total.afterSize)} | ${util.calcAndFormatDeltaBytes(total.beforeSize, total.afterSize)} | ${util.calcAndFormatDeltaPercent(total.beforeSize, total.afterSize).replaceAll('\\%', '\\\\%')} |`);
 		lines.push('| | | | | |');
 	}
 	for (const row of rows) {
 		if (row.changeType === 'added') {
-			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(row.chunkFile)}\` </details> | ${formatBytes(row.beforeSize)} | ${formatBytes(row.afterSize)} | ${formatBytesDiff(row.beforeSize, row.afterSize)} | $\\color{orange}{\\text{(+)}}$ |`);
+			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(row.chunkFile)}\` </details> | ${util.formatBytes(row.beforeSize)} | ${util.formatBytes(row.afterSize)} | ${util.calcAndFormatDeltaBytes(row.beforeSize, row.afterSize)} | $\\color{orange}{\\text{(+)}}$ |`);
 		} else if (row.changeType === 'removed') {
-			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(row.chunkFile)}\` </details> | ${formatBytes(row.beforeSize)} | ${formatBytes(row.afterSize)} | ${formatBytesDiff(row.beforeSize, row.afterSize)} | $\\color{green}{\\text{(-)}}$ |`);
+			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(row.chunkFile)}\` </details> | ${util.formatBytes(row.beforeSize)} | ${util.formatBytes(row.afterSize)} | ${util.calcAndFormatDeltaBytes(row.beforeSize, row.afterSize)} | $\\color{green}{\\text{(-)}}$ |`);
 		} else {
-			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(row.chunkFile)}\` </details> | ${formatBytes(row.beforeSize)} | ${formatBytes(row.afterSize)} | ${formatBytesDiff(row.beforeSize, row.afterSize)} | ${formatDiffPercent(row.beforeSize, row.afterSize).replaceAll('\\%', '\\\\%')} |`);
+			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(row.chunkFile)}\` </details> | ${util.formatBytes(row.beforeSize)} | ${util.formatBytes(row.afterSize)} | ${util.calcAndFormatDeltaBytes(row.beforeSize, row.afterSize)} | ${util.calcAndFormatDeltaPercent(row.beforeSize, row.afterSize).replaceAll('\\%', '\\\\%')} |`);
 		}
 	}
 	return lines.join('\n');
 }
 
-function renderFrontendChunkReport(before, after) {
+function renderFrontendChunkReport(before: Awaited<ReturnType<typeof collectReport>>, after: Awaited<ReturnType<typeof collectReport>>) {
 	const commonChunkKeys = Object.keys(before.chunks).filter((key) => after.chunks[key] != null);
 	const addedChunkKeys = Object.keys(after.chunks).filter((key) => before.chunks[key] == null);
 	const removedChunkKeys = Object.keys(before.chunks).filter((key) => after.chunks[key] == null);
@@ -489,7 +435,7 @@ function renderFrontendChunkReport(before, after) {
 	].join('\n');
 }
 
-function renderFrontendBundleReport(before, after) {
+function renderFrontendBundleReport(before: ReturnType<typeof collectVisualizerReport>, after: ReturnType<typeof collectVisualizerReport>) {
 	const lines = [
 		...renderVisualizerSummaryTable(before, after),
 		'',
@@ -530,24 +476,91 @@ function renderFrontendBundleReport(before, after) {
 	return lines.join('\n');
 }
 
+const visualizerTreemapLimit = 50;
+
+function mermaidTreemapLabel(value: string) {
+	const label = String(value)
+		.replaceAll('\\', '/')
+		.replaceAll('"', "'")
+		.replaceAll('`', "'")
+		.replaceAll('\r', ' ')
+		.replaceAll('\n', ' ')
+		.trim();
+	return label === '' ? '(unknown)' : label;
+}
+
+function mermaidTreemapModuleLabel(id: string) {
+	const normalizedId = String(id).replaceAll('\\', '/');
+	const filePath = normalizedId.split(/[?#]/, 1)[0];
+	const fileName = path.posix.basename(filePath);
+	return mermaidTreemapLabel(fileName || normalizedId);
+}
+
+function renderVisualizerTreemap(label: string, report: ReturnType<typeof collectVisualizerReport>) {
+	const rows = report.hotModules
+		.filter((row) => row.renderedLength > 0)
+		.slice(0, visualizerTreemapLimit);
+	const topRendered = rows.reduce((sum, row) => sum + row.renderedLength, 0);
+	const otherRendered = Math.max(0, report.metrics.renderedLength - topRendered);
+	const lines = [
+		'```mermaid',
+		`%%{init: ${JSON.stringify({
+			treemap: {
+				diagramPadding: 0,
+				padding: 0,
+				nodeHeight: 70,
+			},
+		})}}%%`,
+		'treemap-beta',
+		`"${mermaidTreemapLabel(label)}"`,
+	];
+
+	for (const row of rows) {
+		lines.push(`  "${mermaidTreemapModuleLabel(row.id)}": ${Math.round(row.renderedLength)}`);
+	}
+	if (otherRendered > 0) {
+		lines.push(`  "Other": ${Math.round(otherRendered)}`);
+	}
+
+	lines.push('```');
+	return lines.join('\n');
+}
+
+function renderVisualizerTreemapDetails(label: string, report: ReturnType<typeof collectVisualizerReport>, open = false) {
+	return [
+		`<details${open ? ' open' : ''}>`,
+		`<summary>${label} rendered size treemap (top ${visualizerTreemapLimit} + Other)</summary>`,
+		'',
+		renderVisualizerTreemap(label, report),
+		'',
+		'</details>',
+	].join('\n');
+}
+
 const args = process.argv.slice(2);
 const [beforeDir, afterDir, beforeStatsFile, afterStatsFile, outFile] = args;
 const before = await collectReport(beforeDir);
 const after = await collectReport(afterDir);
-const beforeStats = JSON.parse(await fs.readFile(beforeStatsFile, 'utf8'));
-const afterStats = JSON.parse(await fs.readFile(afterStatsFile, 'utf8'));
-const visualizerArtifactLink = `[Download detailed HTML](${process.env.FRONTEND_BUNDLE_REPORT_ARTIFACT_URL})`;
+const beforeStats = JSON.parse(await fs.readFile(beforeStatsFile, 'utf8')) as VisualizerReport;
+const afterStats = JSON.parse(await fs.readFile(afterStatsFile, 'utf8')) as VisualizerReport;
+const beforeVisualizerReport = collectVisualizerReport(beforeStats);
+const afterVisualizerReport = collectVisualizerReport(afterStats);
+const visualizerArtifactLink = `[Open detailed HTML](${process.env.FRONTEND_BUNDLE_REPORT_ARTIFACT_URL})`;
 
 const body = [
 	marker,
 	'',
-	`## Frontend Bundle Report`,
+	`## 📦 Frontend Bundle Report`,
 	'',
 	renderFrontendChunkReport(before, after),
 	'',
 	'## Bundle Stats',
 	'',
-	renderFrontendBundleReport(collectVisualizerReport(beforeStats), collectVisualizerReport(afterStats)),
+	renderFrontendBundleReport(beforeVisualizerReport, afterVisualizerReport),
+	'',
+	renderVisualizerTreemapDetails('Before', beforeVisualizerReport),
+	'',
+	renderVisualizerTreemapDetails('After', afterVisualizerReport),
 	'',
 	visualizerArtifactLink,
 ].join('\n');

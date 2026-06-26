@@ -20,7 +20,8 @@ on:
       - pnpm-lock.yaml
       - pnpm-workspace.yaml
       - .node-version
-      - .github/scripts/frontend-js-size.mjs
+      - .github/scripts/utility.mts
+      - .github/scripts/frontend-js-size.mts
       - .github/workflows/frontend-bundle-report.yml
       - .github/workflows/frontend-bundle-report-comment.yml
 
@@ -131,6 +132,7 @@ jobs:
           name: frontend-bundle-visualizer
           path: ${{ runner.temp }}/frontend-bundle-report/frontend-bundle-visualizer.html
           if-no-files-found: error
+          archive: false
           retention-days: 7
 
       - name: Generate report markdown
@@ -143,7 +145,7 @@ jobs:
           FRONTEND_BUNDLE_REPORT_ARTIFACT_URL: ${{ steps.upload-bundle-visualizer.outputs.artifact-url }}
         run: |
           REPORT_DIR="$RUNNER_TEMP/frontend-bundle-report"
-          node after/.github/scripts/frontend-js-size.mjs before after "$REPORT_DIR/before-stats.json" "$REPORT_DIR/after-stats.json" "$REPORT_DIR/frontend-js-size-report.md"
+          node after/.github/scripts/frontend-js-size.mts before after "$REPORT_DIR/before-stats.json" "$REPORT_DIR/after-stats.json" "$REPORT_DIR/frontend-js-size-report.md"
           printf '%s\n' "$PR_NUMBER" > "$REPORT_DIR/pr-number.txt"
           printf '%s\n' "$BASE_SHA" > "$REPORT_DIR/base-sha.txt"
           printf '%s\n' "$HEAD_SHA" > "$REPORT_DIR/head-sha.txt"
