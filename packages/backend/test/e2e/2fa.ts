@@ -160,7 +160,7 @@ describe('2要素認証', () => {
 			.update(Buffer.concat([authenticatorData, hashedclientDataJSON]))
 			.sign({
 				key: privateKey,
-				dsaEncoding: 'der',
+				dsaEncoding: 'ieee-p1363',
 			});
 		return {
 			username,
