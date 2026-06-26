@@ -1,4 +1,4 @@
-## Unreleased
+## 2026.6.1
 
 ### Note
 - センシティブメディアの判定 (NSFW検出) が、本体に内蔵された nsfwjs による推論から、外部サービス [sensitive-detector](https://github.com/misskey-dev/sensitive-detector) への HTTP 呼び出し方式に変更されました。
