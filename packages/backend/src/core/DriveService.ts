@@ -18,7 +18,7 @@ import type { MiRemoteUser, MiUser } from '@/models/User.js';
 import { MiDriveFile } from '@/models/DriveFile.js';
 import { IdService } from '@/core/IdService.js';
 import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
-import { isBrowserSafeMime } from '@/const.js';
+import { isBrowserSafeMime, getBaseMime } from '@/const.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { contentDisposition } from '@/misc/content-disposition.js';
 import { GlobalEventService } from '@/core/GlobalEventService.js';
@@ -376,10 +376,13 @@ export class DriveService {
 		if (type === 'image/apng') type = 'image/png';
 		if (!isBrowserSafeMime(type)) type = 'application/octet-stream';
 
-		// NOTE: S3 から直接配信される場合、ここで設定した ContentType がそのまま使われる。
-		// Misskey の FileServer 経由なら setSafeContentTypeHeader が nosniff や charset=utf-8 を付与するが、
-		// S3 直接配信ではそれらのヘッダが付かない。ただし S3 URL は Misskey とは別オリジンのため
-		// セッション窃取等のリスクは低い (type も file-type ライブラリ由来の bare MIME)。
+		// S3 から直接配信される場合、ここで設定した ContentType がそのまま使われる。
+		// text/* で charset 未指定だとブラウザが OS ロケールに基づくエンコーディングで解釈し
+		// UTF-8 ファイルが文字化けするため、charset=utf-8 を補う。
+		if (getBaseMime(type).startsWith('text/') && !type.includes('charset=')) {
+			type = `${type}; charset=utf-8`;
+		}
+
 		const params = {
 			Bucket: this.meta.objectStorageBucket,
 			Key: key,
