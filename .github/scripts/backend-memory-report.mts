@@ -106,10 +106,6 @@ function getSamplesByRound(report: MemoryReport) {
 	return samplesByRound;
 }
 
-function formatDeltaMemory(diffKiB: number) {
-	return util.formatColoredDelta(formatMemoryMb(Math.abs(diffKiB)), diffKiB);
-}
-
 function pairedDeltaSummary(base: MemoryReport, head: MemoryReport, phase: typeof memoryReportPhases[number]['key'], metric: typeof metrics[number]) {
 	const baseSamplesByRound = getSamplesByRound(base);
 	const headSamplesByRound = getSamplesByRound(head);
@@ -141,6 +137,10 @@ function renderMainTableForPhase(base: MemoryReport, head: MemoryReport, phase: 
 		'| --- | ---: | ---: | ---: | ---: | ---: | ---: |',
 	];
 
+	function formatDeltaMemory(diffKiB: number) {
+		return util.formatColoredDelta(formatMemoryMb(Math.abs(diffKiB)), diffKiB);
+	}
+
 	for (const metric of metrics) {
 		const baseValue = getMemoryValue(base, phase, metric);
 		const headValue = getMemoryValue(head, phase, metric);
@@ -155,14 +155,6 @@ function renderMainTableForPhase(base: MemoryReport, head: MemoryReport, phase: 
 	}
 
 	return lines.join('\n');
-}
-
-function getDiffPercent(base: MemoryReport, head: MemoryReport, phase: typeof memoryReportPhases[number]['key'], metric: typeof metrics[number]) {
-	const baseValue = getMemoryValue(base, phase, metric);
-	const headValue = getMemoryValue(head, phase, metric);
-	if (baseValue == null || headValue == null || baseValue <= 0) return null;
-
-	return ((headValue - baseValue) * 100) / baseValue;
 }
 
 /*
@@ -199,17 +191,6 @@ function escapeCsvValue(value: string) {
 	return `"${String(value).replaceAll('"', '""')}"`;
 }
 
-function formatSankeyPercentValue(value: number) {
-	const rounded = Math.round(value * 100) / 100;
-	if (rounded === 0 && value > 0) return '0.01';
-	if (Number.isInteger(rounded)) return String(rounded);
-	return rounded.toFixed(2).replace(/0+$/, '').replace(/\.$/, '');
-}
-
-function formatHeapSnapshotSankeyChildLabel(label: string) {
-	return String(label).replace(/^[^:]+:\s*/, '');
-}
-
 function renderHeapSnapshotSankey(report: MemoryReport, phase: typeof memoryReportPhases[number]['key'], title: string) {
 	const total = getHeapSnapshotCategoryValue(report, phase, 'Total');
 	if (total == null || total <= 0) return null;
@@ -221,6 +202,17 @@ function renderHeapSnapshotSankey(report: MemoryReport, phase: typeof memoryRepo
 		return Object.entries(breakdown)
 			.filter(([, value]) => Number.isFinite(value) && value > 0)
 			.toSorted((a, b) => b[1] - a[1]);
+	}
+
+	function formatHeapSnapshotSankeyChildLabel(label: string) {
+		return String(label).replace(/^[^:]+:\s*/, '');
+	}
+
+	function formatSankeyPercentValue(value: number) {
+		const rounded = Math.round(value * 100) / 100;
+		if (rounded === 0 && value > 0) return '0.01';
+		if (Number.isInteger(rounded)) return String(rounded);
+		return rounded.toFixed(2).replace(/0+$/, '').replace(/\.$/, '');
 	}
 
 	const categories = util.heapSnapshotCategories
@@ -635,6 +627,14 @@ function getWarningMetric(base: MemoryReport, head: MemoryReport) {
 		}
 	}
 	return null;
+}
+
+function getDiffPercent(base: MemoryReport, head: MemoryReport, phase: typeof memoryReportPhases[number]['key'], metric: typeof metrics[number]) {
+	const baseValue = getMemoryValue(base, phase, metric);
+	const headValue = getMemoryValue(head, phase, metric);
+	if (baseValue == null || headValue == null || baseValue <= 0) return null;
+
+	return ((headValue - baseValue) * 100) / baseValue;
 }
 
 function isBeyondSampleNoise(base: MemoryReport, head: MemoryReport, phase: typeof memoryReportPhases[number]['key'], metric: typeof metrics[number]) {
