@@ -7,43 +7,21 @@
 
 import * as util from './utility.mts';
 
-export const heapSnapshotCategories = [
-	'Total',
-	'Code',
-	'Strings',
-	'JS arrays',
-	'Typed arrays',
-	'System objects',
-	'Other JS objects',
-	'Other non-JS objects',
-] as const;
-
-const heapSnapshotCategoriesColors = {
-	'Total': 'gray',
-	'Code': 'orange',
-	'Strings': 'red',
-	'JS arrays': 'cyan',
-	'Typed arrays': 'green',
-	'System objects': 'yellow',
-	'Other JS objects': 'violet',
-	'Other non-JS objects': 'pink',
-} as const satisfies Record<typeof heapSnapshotCategories[number], string>;
-
-const heapSnapshotCategoriesColorsHex = {
-	'Total': '#888888',
-	'Code': '#f28e2c',
-	'Strings': '#e15759',
-	'JS arrays': '#76b7b2',
-	'Typed arrays': '#59a14f',
-	'System objects': '#edc949',
-	'Other JS objects': '#af7aa1',
-	'Other non-JS objects': '#ff9da7',
-} as const satisfies Record<typeof heapSnapshotCategories[number], string>;
+export const heapSnapshotCategory = {
+	total: { label: 'Total', color: 'gray', colorHex: '#888888' },
+	code: { label: 'Code', color: 'orange', colorHex: '#f28e2c' },
+	strings: { label: 'Strings', color: 'red', colorHex: '#e15759' },
+	jsArrays: { label: 'JS arrays', color: 'cyan', colorHex: '#76b7b2' },
+	typedArrays: { label: 'Typed arrays', color: 'green', colorHex: '#59a14f' },
+	systemObjects: { label: 'System objects', color: 'yellow', colorHex: '#edc949' },
+	otherJsObjects: { label: 'Other JS objs', color: 'violet', colorHex: '#af7aa1' },
+	otherNonJsObjects: { label: 'Other non-JS objs', color: 'pink', colorHex: '#ff9da7' },
+} as const satisfies Record<string, { label: string; color: string; colorHex: string }>;
 
 export type HeapSnapshotData = {
-	categories: Record<typeof heapSnapshotCategories[number], number>;
-	nodeCounts: Record<typeof heapSnapshotCategories[number], number>;
-	breakdowns?: Record<typeof heapSnapshotCategories[number], Record<string, number>>;
+	categories: Record<keyof typeof heapSnapshotCategory, number>;
+	nodeCounts: Record<keyof typeof heapSnapshotCategory, number>;
+	breakdowns?: Record<keyof typeof heapSnapshotCategory, Record<string, number>>;
 };
 
 export type HeapSnapshotReport = {
@@ -54,7 +32,7 @@ export type HeapSnapshotReport = {
 	}[];
 };
 
-function getHeapSnapshotCategoryValue(report: HeapSnapshotReport, category: typeof heapSnapshotCategories[number]) {
+function getHeapSnapshotCategoryValue(report: HeapSnapshotReport, category: keyof typeof heapSnapshotCategory) {
 	return report.summary.categories[category];
 }
 
@@ -63,10 +41,10 @@ export function renderHeapSnapshotTable(base: HeapSnapshotReport, head: HeapSnap
 		'| Metric | Base | Head | Δ median | Δ MAD | Δ min | Δ max |',
 		'| --- | ---: | ---: | ---: | ---: | ---: | ---: |',
 	];
-	const baseTotal = getHeapSnapshotCategoryValue(base, 'Total');
-	const headTotal = getHeapSnapshotCategoryValue(head, 'Total');
+	const baseTotal = getHeapSnapshotCategoryValue(base, 'total');
+	const headTotal = getHeapSnapshotCategoryValue(head, 'total');
 
-	function getHeapSnapshotSampleSpread(report: HeapSnapshotReport, category: typeof heapSnapshotCategories[number]) {
+	function getHeapSnapshotSampleSpread(report: HeapSnapshotReport, category: keyof typeof heapSnapshotCategory) {
 		const values = report.samples
 			.map(sample => sample.data.categories[category])
 			.filter(value => Number.isFinite(value)) as number[];
@@ -76,25 +54,29 @@ export function renderHeapSnapshotTable(base: HeapSnapshotReport, head: HeapSnap
 		return util.median(values.map(value => Math.abs(value - center)));
 	}
 
-	for (const category of heapSnapshotCategories) {
+	for (const category of Object.keys(heapSnapshotCategory) as (keyof typeof heapSnapshotCategory)[]) {
 		const baseValue = getHeapSnapshotCategoryValue(base, category);
 		const headValue = getHeapSnapshotCategoryValue(head, category);
 		const baseSpread = getHeapSnapshotSampleSpread(base, category);
 		const headSpread = getHeapSnapshotSampleSpread(head, category);
 		const summary = util.pairedDeltaSummary(base.samples, head.samples, (sample) => sample.data.categories[category]);
 		const percent = summary.median * 100 / baseValue;
-		const deltaMedian = category === 'Total' ? `${util.formatDeltaBytes(summary.median)}<br>${util.formatDeltaPercent(percent).replaceAll('\\%', '\\\\%')}` :  util.formatDeltaBytes(summary.median);
-		const baseText = category === 'Total' ? `${util.formatBytes(baseValue)} <br> ± ${util.formatBytes(baseSpread)}` : util.formatBytes(baseValue);
-		const headText = category === 'Total' ? `${util.formatBytes(headValue)} <br> ± ${util.formatBytes(headSpread)}` : util.formatBytes(headValue);
-		const basePercent = util.formatPercent((baseValue * 100) / baseTotal);
-		const headPercent = util.formatPercent((headValue * 100) / headTotal);
-		const metricText = category === 'Total'
-			? `$\\color{${heapSnapshotCategoriesColors[category]}}{\\rule{8pt}{8pt}}$ **${category}**`
-			: `<details><summary>$\\color{${heapSnapshotCategoriesColors[category]}}{\\rule{8pt}{8pt}}$ **${category}**</summary>${basePercent} → ${headPercent}</details>`;
 
-		lines.push(`| ${metricText} | ${baseText} | ${headText} | ${deltaMedian} | ${util.formatBytes(summary.mad)} | ${util.formatDeltaBytes(summary.min)} | ${util.formatDeltaBytes(summary.max)} |`);
-		if (category === 'Total') {
+		if (category === 'total') {
+			const deltaMedian = `${util.formatDeltaBytes(summary.median)}<br>${util.formatDeltaPercent(percent).replaceAll('\\%', '\\\\%')}`;
+			const baseText = `${util.formatBytes(baseValue)} <br> ± ${util.formatBytes(baseSpread)}`;
+			const headText = `${util.formatBytes(headValue)} <br> ± ${util.formatBytes(headSpread)}`;
+			const metricText = `$\\color{${heapSnapshotCategory[category].color}}{\\rule{8pt}{8pt}}$ **${heapSnapshotCategory[category].label}**`;
+			lines.push(`| ${metricText} | ${baseText} | ${headText} | ${deltaMedian} | ${util.formatBytes(summary.mad)} | ${util.formatDeltaBytes(summary.min)} | ${util.formatDeltaBytes(summary.max)} |`);
 			lines.push('| | | | | | | |');
+		} else {
+			const deltaMedian = util.formatDeltaBytes(summary.median);
+			const baseText = util.formatBytes(baseValue);
+			const headText = util.formatBytes(headValue);
+			const basePercent = util.formatPercent((baseValue * 100) / baseTotal);
+			const headPercent = util.formatPercent((headValue * 100) / headTotal);
+			const metricText = `<details><summary>$\\color{${heapSnapshotCategory[category].color}}{\\rule{8pt}{8pt}}$ **${heapSnapshotCategory[category].label}**</summary>${basePercent} → ${headPercent}</details>`;
+			lines.push(`| ${metricText} | ${baseText} | ${headText} | ${deltaMedian} | ${util.formatBytes(summary.mad)} | ${util.formatDeltaBytes(summary.min)} | ${util.formatDeltaBytes(summary.max)} |`);
 		}
 	}
 
@@ -110,10 +92,10 @@ function escapeCsvValue(value: string) {
 }
 
 export function renderHeapSnapshotSankey(report: HeapSnapshotReport, title: string) {
-	const total = getHeapSnapshotCategoryValue(report, 'Total');
+	const total = getHeapSnapshotCategoryValue(report, 'total');
 	if (total == null || total <= 0) return null;
 
-	function getHeapSnapshotBreakdownEntries(category: typeof heapSnapshotCategories[number]) {
+	function getHeapSnapshotBreakdownEntries(category: keyof typeof heapSnapshotCategory) {
 		const breakdown = report.summary.breakdowns?.[category];
 		if (breakdown == null || typeof breakdown !== 'object') return [];
 
@@ -133,8 +115,8 @@ export function renderHeapSnapshotSankey(report: HeapSnapshotReport, title: stri
 		return rounded.toFixed(2).replace(/0+$/, '').replace(/\.$/, '');
 	}
 
-	const categories = heapSnapshotCategories
-		.filter(category => category !== 'Total')
+	const categories = (Object.keys(heapSnapshotCategory) as (keyof typeof heapSnapshotCategory)[])
+		.filter(category => category !== 'total')
 		.map(category => {
 			const value = getHeapSnapshotCategoryValue(report, category);
 			if (value == null || value <= 0) return null;
@@ -171,10 +153,10 @@ export function renderHeapSnapshotSankey(report: HeapSnapshotReport, title: stri
 	if (categories.length === 0) return null;
 
 	const nodeColors = {
-		[title]: heapSnapshotCategoriesColorsHex.Total,
+		[title]: heapSnapshotCategory.total.colorHex,
 	} as Record<string, string>;
 	for (const { category, childEntries } of categories) {
-		const categoryColor = heapSnapshotCategoriesColorsHex[category] ?? heapSnapshotCategoriesColorsHex.Total;
+		const categoryColor = heapSnapshotCategory[category].colorHex;
 		nodeColors[category] = categoryColor;
 
 		for (const [childName] of childEntries) {
@@ -203,10 +185,10 @@ export function renderHeapSnapshotSankey(report: HeapSnapshotReport, title: stri
 	];
 
 	for (const { category, percent, childEntries } of categories) {
-		lines.push(`${escapeCsvValue(title)},${escapeCsvValue(category)},${formatSankeyPercentValue(percent)}`);
+		lines.push(`${escapeCsvValue(title)},${escapeCsvValue(heapSnapshotCategory[category].label)},${formatSankeyPercentValue(percent)}`);
 
 		for (const [childName, childPercent] of childEntries) {
-			lines.push(`${escapeCsvValue(category)},${escapeCsvValue(childName)},${formatSankeyPercentValue(childPercent)}`);
+			lines.push(`${escapeCsvValue(heapSnapshotCategory[category].label)},${escapeCsvValue(childName)},${formatSankeyPercentValue(childPercent)}`);
 		}
 	}
 
