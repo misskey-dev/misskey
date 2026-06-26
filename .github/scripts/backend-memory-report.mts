@@ -149,7 +149,7 @@ function renderMainTableForPhase(base: MemoryReport, head: MemoryReport, phase: 
 		const headSpread = getSampleSpread(head, phase, metric);
 		const summary = pairedDeltaSummary(base, head, phase, metric);
 		const percent = summary.median * 100 / baseValue;
-		const deltaMedian = summary == null ? '-' : `${formatDeltaMemory(summary.median)}<br>${util.formatDeltaPercent(percent)}`;
+		const deltaMedian = summary == null ? '-' : `${formatDeltaMemory(summary.median)}<br>${util.formatDeltaPercent(percent).replaceAll('\\%', '\\\\%')}`;
 
 		lines.push(`| **${metric}** | ${formatMemoryMb(baseValue)} <br> ± ${formatMemoryMb(baseSpread)} | ${formatMemoryMb(headValue)} <br> ± ${formatMemoryMb(headSpread)} | ${deltaMedian} | ${summary?.mad == null ? '-' : formatMemoryMb(summary.mad)} | ${summary == null ? '-' : formatDeltaMemory(summary.min)} | ${summary == null ? '-' : formatDeltaMemory(summary.max)} |`);
 	}
@@ -181,14 +181,6 @@ function measurementSummary(base, head) {
 	return `_Sample count: base ${baseCount}, head ${headCount}. Values are medians; ± is median absolute deviation._`;
 }
 */
-
-function formatPlainDelta(baseValue: number, headValue: number, formatter = util.formatNumber) {
-	const delta = headValue - baseValue;
-	if (delta === 0) return formatter(0);
-
-	const sign = delta > 0 ? '+' : '-';
-	return `${sign}${formatter(Math.abs(delta))}`;
-}
 
 function getHeapSnapshotCategoryValue(report: MemoryReport, phase: typeof memoryReportPhases[number]['key'], category: typeof util.heapSnapshotCategories[number]) {
 	const value = report.summary[phase]?.heapSnapshot?.categories?.[category];
@@ -375,7 +367,7 @@ function renderHeapSnapshotTable(base: MemoryReport, head: MemoryReport, phase: 
 		const headSpread = getHeapSnapshotSampleSpread(head, phase, category);
 		const summary = pairedHeapSnapshotDeltaSummary(base, head, phase, category);
 		const percent = summary.median * 100 / baseValue;
-		const deltaMedian = summary == null ? '-' : `${util.formatDeltaBytes(summary.median)}<br>${util.formatDeltaPercent(percent)}`;
+		const deltaMedian = summary == null ? '-' : `${util.formatDeltaBytes(summary.median)}<br>${util.formatDeltaPercent(percent).replaceAll('\\%', '\\\\%')}`;
 		const categoryLabel = formatHeapSnapshotCategoryLabel(category, baseValue, headValue, baseTotal, headTotal);
 
 		lines.push(`| $\\color{${heapSnapshotCategoriesColors[category]}}{\\rule{8pt}{8pt}}$ ${categoryLabel} | ${util.formatBytes(baseValue)} <br> ± ${baseSpread == null ? '-' : util.formatBytes(baseSpread)} | ${util.formatBytes(headValue)} <br> ± ${headSpread == null ? '-' : util.formatBytes(headSpread)} | ${deltaMedian} | ${summary?.mad == null ? '-' : util.formatBytes(summary.mad)} | ${summary == null ? '-' : util.formatDeltaBytes(summary.min)} | ${summary == null ? '-' : util.formatDeltaBytes(summary.max)} |`);
@@ -439,7 +431,7 @@ function renderJsFootprintMetricTable(base: RuntimeLoadedJsFootprintReport, head
 		const headValue = getJsFootprintValue(head, 'afterRequest', key);
 		if (baseValue == null || headValue == null) continue;
 
-		lines.push(`| **${title}** | ${formatter(baseValue)} | ${formatter(headValue)} | ${formatPlainDelta(baseValue, headValue, formatter)} | ${util.calcAndFormatDeltaPercent(baseValue, headValue)} |`);
+		lines.push(`| **${title}** | ${formatter(baseValue)} | ${formatter(headValue)} | ${util.formatColoredDelta(formatter(headValue - baseValue), headValue - baseValue)} | ${util.calcAndFormatDeltaPercent(baseValue, headValue).replaceAll('\\%', '\\\\%')} |`);
 	}
 
 	return lines.join('\n');
@@ -534,7 +526,7 @@ function renderLargestPackageIncreases(base: RuntimeLoadedJsFootprintReport, hea
 	];
 
 	for (const packageSummary of increases) {
-		lines.push(`| ${packageDisplayName(packageSummary)} | ${util.formatBytes(packageSummary.baseSourceBytes)} | ${util.formatBytes(packageSummary.sourceBytes)} | ${formatPlainDelta(packageSummary.baseSourceBytes, packageSummary.sourceBytes, util.formatBytes)} | ${formatPlainDelta(packageSummary.baseModules, packageSummary.modules)} |`);
+		lines.push(`| ${packageDisplayName(packageSummary)} | ${util.formatBytes(packageSummary.baseSourceBytes)} | ${util.formatBytes(packageSummary.sourceBytes)} | ${util.formatColoredDelta(util.formatBytes(packageSummary.sourceBytes - packageSummary.baseSourceBytes), packageSummary.sourceBytes - packageSummary.baseSourceBytes)} | ${util.formatColoredDelta(util.formatNumber(packageSummary.modules - packageSummary.baseModules), packageSummary.modules - packageSummary.baseModules)} |`);
 	}
 
 	return lines.join('\n');
