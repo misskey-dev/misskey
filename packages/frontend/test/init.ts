@@ -14,8 +14,6 @@ import { updateI18n } from '@/i18n.js';
 const fetchMocker = createFetchMock(vi);
 fetchMocker.enableMocks();
 
-updateI18n(locales['en-US']);
-
 // XXX: misskey-js panics if WebSocket is not defined
 vi.stubGlobal('WebSocket', class WebSocket extends EventTarget { static CLOSING = 2; });
 
@@ -38,6 +36,9 @@ const localStorageMock = (() => {
 	};
 })();
 vi.stubGlobal('localStorage', localStorageMock);
+
+// 中でlocalStorageを使うので上と順番を変えてはいけない
+updateI18n(locales['en-US']);
 
 export const preferState: Record<string, unknown> = {
 
