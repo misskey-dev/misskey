@@ -67,14 +67,6 @@ export default defineConfig((args) => {
 		'@nestjs/microservices/microservices-module',
 		'@nestjs/microservices',
 		/^@napi-rs\/.*/,
-		// @tensorflow/tfjs-node はネイティブバインディングを持つため external 必須 (#17501)。
-		// あわせて nsfwjs と @tensorflow/* 全体を external にする。bundle 内の nsfwjs が
-		// 抱える @tensorflow/tfjs-core と、external な tfjs-node が使う tfjs-core が
-		// 別インスタンスに分裂すると、tfjs-node が登録する file:// IOHandler を nsfwjs 側が
-		// 共有できず、モデル読み込みが HTTP handler(node-fetch) にフォールバックして
-		// 「URL scheme "file" is not supported」で失敗するため。
-		/^@tensorflow\/.*/,
-		'nsfwjs',
 		'mock-aws-s3',
 		'aws-sdk',
 		'nock',
