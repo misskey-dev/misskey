@@ -10,6 +10,7 @@ import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
 //import * as http from 'node:http';
 import * as fs from 'node:fs/promises';
+import { heapSnapshotCategories, type HeapSnapshotData } from '../../../.github/scripts/heap-snapshot-util.mts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -43,17 +44,6 @@ const HEAP_SNAPSHOT_BREAKDOWN_TOP_N = readIntegerEnv('MK_MEMORY_HEAP_SNAPSHOT_BR
 
 const procStatusKeys = ['VmPeak', 'VmSize', 'VmHWM', 'VmRSS', 'VmData', 'VmStk', 'VmExe', 'VmLib', 'VmPTE', 'VmSwap'] as const;
 const smapsRollupKeys = ['Pss', 'Shared_Clean', 'Shared_Dirty', 'Private_Clean', 'Private_Dirty', 'Swap', 'SwapPss'] as const;
-
-const heapSnapshotCategories = [
-	'Code',
-	'Strings',
-	'JS arrays',
-	'Typed arrays',
-	'System objects',
-	'Other JS objects',
-	'Other non-JS objects',
-	'Total',
-];
 
 const typedArrayNames = new Set([
 	'ArrayBuffer',
@@ -99,10 +89,6 @@ function parseMemoryFile<KS extends readonly string[]>(content: string, keys: KS
 
 function bytesToKiB(value: number) {
 	return Math.round(value / 1024);
-}
-
-function createEmptyHeapSnapshotCategoryMap() {
-	return Object.fromEntries(heapSnapshotCategories.map(category => [category, 0]));
 }
 
 function isTypedArrayNode(type, name) {
@@ -181,8 +167,8 @@ function classifyHeapSnapshotBreakdown(category, type, name) {
 	return sanitizeHeapSnapshotBreakdownLabel(`${type}: ${name}`, type);
 }
 
-function collapseHeapSnapshotBreakdown(breakdowns) {
-	const collapsed = {};
+function collapseHeapSnapshotBreakdown(breakdowns: Record<string, Record<string, number>>) {
+	const collapsed = {} as Record<string, Record<string, number>>;
 
 	for (const [category, children] of Object.entries(breakdowns)) {
 		const entries = Object.entries(children)
@@ -222,6 +208,10 @@ function analyzeHeapSnapshot(snapshot) {
 
 	const nodeTypeNames = meta.node_types?.[typeOffset];
 	if (!Array.isArray(nodeTypeNames)) throw new Error('Invalid heap snapshot node types');
+
+	function createEmptyHeapSnapshotCategoryMap() {
+		return Object.fromEntries(heapSnapshotCategories.map(category => [category, 0])) as Record<typeof heapSnapshotCategories[number], number>;
+	}
 
 	const fieldCount = nodeFields.length;
 	const categories = createEmptyHeapSnapshotCategoryMap();
@@ -306,7 +296,7 @@ async function getRuntimeMemoryUsage(serverProcess: ChildProcess) {
 	};
 }
 
-async function getHeapSnapshotStatistics(serverProcess: ChildProcess) {
+async function getHeapSnapshotStatistics(serverProcess: ChildProcess): Promise<HeapSnapshotData | null> {
 	if (!HEAP_SNAPSHOT) return null;
 
 	const snapshotPath = join(tmpdir(), `misskey-backend-heap-${process.pid}-${serverProcess.pid}-${Date.now()}.heapsnapshot`);
