@@ -79,7 +79,7 @@ jobs:
             echo '```diff' >> ./output.md
             cat ./api.json.diff >> ./output.md
             echo '```' >> ./output.md
-            echo '</details>' >> .output.md
+            echo '</details>' >> ./output.md
           fi
 
           echo "$FOOTER" >> ./output.md
