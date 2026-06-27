@@ -4,7 +4,7 @@
  */
 
 import * as fs from 'node:fs';
-import sharp from 'sharp';
+import { sharp } from 'sharp';
 import { sharpBmp } from '@misskey-dev/sharp-read-bmp';
 import type { Config } from '@/config.js';
 import { FILE_TYPE_BROWSERSAFE } from '@/const.js';
