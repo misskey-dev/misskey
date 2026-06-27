@@ -16,7 +16,8 @@
 - Feat: コントロールパネルから二要素認証を解除できるように
 
 ### Client
--
+- 2025.4.0 以前の設定情報の移行処理が削除されました
+	- 2025.4.0 から直接 2026.6.0 以上にアップデートする場合は設定が移行されませんので注意してください。移行したい場合は一度 2026.5.1 を経由してください。
 
 ### Server
 - Enhance: センシティブメディアの判定を外部サービス ([sensitive-detector](https://github.com/misskey-dev/sensitive-detector)) に分離し、`nsfwjs` / `@tensorflow/tfjs(-node)` の同梱と NSFW 判定モデルを廃止 (#16804)

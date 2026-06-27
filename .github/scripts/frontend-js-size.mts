@@ -299,13 +299,13 @@ function renderVisualizerSummaryTable(before: ReturnType<typeof collectVisualize
 		`<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`,
 		`<tr>`,
 		`<th><b>Δ</b></th>`,
-		...summary.map((key) => `<td>${util.calcAndFormatDeltaNumber(before.summary[key], after.summary[key])}</td>`),
-		...metrics.map((key) => `<td>${util.calcAndFormatDeltaBytes(before.metrics[key], after.metrics[key])}</td>`),
+		...summary.map((key) => `<td>${util.calcAndFormatDeltaNumber(before.summary[key], after.summary[key], 0)}</td>`),
+		...metrics.map((key) => `<td>${util.calcAndFormatDeltaBytes(before.metrics[key], after.metrics[key], 1000)}</td>`),
 		`</tr>`,
 		`<tr>`,
 		`<th><b>Δ (%)</b></th>`,
-		...summary.map((key) => `<td>${util.calcAndFormatDeltaPercent(before.summary[key], after.summary[key])}</td>`),
-		...metrics.map((key) => `<td>${util.calcAndFormatDeltaPercent(before.metrics[key], after.metrics[key])}</td>`),
+		...summary.map((key) => `<td>${util.calcAndFormatDeltaPercent(before.summary[key], after.summary[key], 0.1)}</td>`),
+		...metrics.map((key) => `<td>${util.calcAndFormatDeltaPercent(before.metrics[key], after.metrics[key], 0.1)}</td>`),
 		`</tr>`,
 		`</tbody>`,
 		`</table>`,
@@ -357,16 +357,16 @@ function chunkMarkdownTable(rows: ReturnType<typeof getChunkComparisonRows>, tot
 		'| --- | ---: | ---: | ---: | ---: |',
 	];
 	if (total != null) {
-		lines.push(`| (total) | ${util.formatBytes(total.beforeSize)} | ${util.formatBytes(total.afterSize)} | ${util.calcAndFormatDeltaBytes(total.beforeSize, total.afterSize)} | ${util.calcAndFormatDeltaPercent(total.beforeSize, total.afterSize).replaceAll('\\%', '\\\\%')} |`);
+		lines.push(`| (total) | ${util.formatBytes(total.beforeSize)} | ${util.formatBytes(total.afterSize)} | ${util.calcAndFormatDeltaBytes(total.beforeSize, total.afterSize, 1000)} | ${util.calcAndFormatDeltaPercent(total.beforeSize, total.afterSize, 0.1).replaceAll('\\%', '\\\\%')} |`);
 		lines.push('| | | | | |');
 	}
 	for (const row of rows) {
 		if (row.changeType === 'added') {
-			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(row.chunkFile)}\` </details> | ${util.formatBytes(row.beforeSize)} | ${util.formatBytes(row.afterSize)} | ${util.calcAndFormatDeltaBytes(row.beforeSize, row.afterSize)} | $\\color{orange}{\\text{(+)}}$ |`);
+			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(row.chunkFile)}\` </details> | ${util.formatBytes(row.beforeSize)} | ${util.formatBytes(row.afterSize)} | ${util.calcAndFormatDeltaBytes(row.beforeSize, row.afterSize, 1000)} | $\\color{orange}{\\text{( + )}}$ |`);
 		} else if (row.changeType === 'removed') {
-			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(row.chunkFile)}\` </details> | ${util.formatBytes(row.beforeSize)} | ${util.formatBytes(row.afterSize)} | ${util.calcAndFormatDeltaBytes(row.beforeSize, row.afterSize)} | $\\color{green}{\\text{(-)}}$ |`);
+			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(row.chunkFile)}\` </details> | ${util.formatBytes(row.beforeSize)} | ${util.formatBytes(row.afterSize)} | ${util.calcAndFormatDeltaBytes(row.beforeSize, row.afterSize, 1000)} | $\\color{green}{\\text{( - )}}$ |`);
 		} else {
-			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(row.chunkFile)}\` </details> | ${util.formatBytes(row.beforeSize)} | ${util.formatBytes(row.afterSize)} | ${util.calcAndFormatDeltaBytes(row.beforeSize, row.afterSize)} | ${util.calcAndFormatDeltaPercent(row.beforeSize, row.afterSize).replaceAll('\\%', '\\\\%')} |`);
+			lines.push(`| <details><summary>\`${escapeCell(row.name)}\`</summary> \`${escapeCell(row.chunkFile)}\` </details> | ${util.formatBytes(row.beforeSize)} | ${util.formatBytes(row.afterSize)} | ${util.calcAndFormatDeltaBytes(row.beforeSize, row.afterSize, 1000)} | ${util.calcAndFormatDeltaPercent(row.beforeSize, row.afterSize, 0.1).replaceAll('\\%', '\\\\%')} |`);
 		}
 	}
 	return lines.join('\n');
