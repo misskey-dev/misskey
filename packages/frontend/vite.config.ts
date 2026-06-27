@@ -1,5 +1,4 @@
 /// <reference types="vitest/config" />
-
 import path from 'path';
 import pluginVue from '@vitejs/plugin-vue';
 import pluginGlsl from 'vite-plugin-glsl';
@@ -265,6 +264,7 @@ export function getConfig(): UserConfig {
 
 		test: {
 			environment: 'happy-dom',
+			setupFiles: ['./test/init.ts'],
 			deps: {
 				optimizer: {
 					web: {

@@ -29,7 +29,7 @@
 	],
 	"devDependencies": {
 		"@types/js-yaml": "4.0.9",
-		"@types/node": "24.13.2",
+		"@types/node": "26.0.0",
 		"@typescript-eslint/eslint-plugin": "8.61.1",
 		"@typescript-eslint/parser": "8.61.1",
 		"chokidar": "5.0.0",

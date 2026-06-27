@@ -11,7 +11,7 @@
 		"lint": "pnpm typecheck && pnpm eslint"
 	},
 	"devDependencies": {
-		"@types/node": "24.13.2",
+		"@types/node": "26.0.0",
 		"@types/wawoff2": "1.0.2",
 		"@typescript-eslint/eslint-plugin": "8.61.1",
 		"@typescript-eslint/parser": "8.61.1"

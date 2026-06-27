@@ -4,7 +4,7 @@
 	"private": true,
 	"type": "module",
 	"engines": {
-		"node": "^22.22.2 || ^24.10.0 || ^26.4.0"
+		"node": "^22.22.2 || ^24.17.0 || ^26.4.0"
 	},
 	"scripts": {
 		"start": "pnpm compile-config && node ./built/entry.js",
@@ -160,7 +160,7 @@
 		"@types/jsonld": "1.5.15",
 		"@types/mime-types": "3.0.1",
 		"@types/ms": "2.1.0",
-		"@types/node": "24.13.2",
+		"@types/node": "26.0.0",
 		"@types/nodemailer": "8.0.1",
 		"@types/pg": "8.20.0",
 		"@types/qrcode": "1.5.6",
@@ -181,7 +181,7 @@
 		"@typescript-eslint/parser": "8.61.1",
 		"@vitest/coverage-v8": "4.1.9",
 		"aws-sdk-client-mock": "4.1.0",
-		"cbor": "10.0.12",
+		"cbor2": "2.3.0",
 		"cross-env": "10.1.0",
 		"eslint-plugin-import": "2.32.0",
 		"execa": "9.6.1",

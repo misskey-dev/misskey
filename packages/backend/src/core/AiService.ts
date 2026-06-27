@@ -137,7 +137,8 @@ export class AiService {
 		try {
 			const form = new FormData();
 			for (let i = 0; i < chunk.length; i++) {
-				form.append(`image${i}`, new Blob([chunk[i]], { type: 'image/png' }), `${i}.png`);
+				const image = Uint8Array.from(chunk[i]);
+				form.append(`image${i}`, new Blob([image], { type: 'image/png' }), `${i}.png`);
 			}
 
 			// Content-Type は FormData から boundary 付きで自動設定させるため、手動設定はしない。
