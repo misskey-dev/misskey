@@ -15,7 +15,7 @@ allowBuilds:
   '@nestjs/core': true
   '@parcel/watcher': true
   '@sentry/profiling-node': true
-  '@sentry-internal/node-cpu-profiler': true
+  '@sentry/node-cpu-profiler': true
   bufferutil: true
   canvas: true
   core-js: true

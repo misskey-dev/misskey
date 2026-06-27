@@ -114,7 +114,7 @@
 		"nested-property": "4.0.0",
 		"node-fetch": "3.3.2",
 		"node-html-parser": "7.1.0",
-		"nodemailer": "8.0.11",
+		"nodemailer": "9.0.1",
 		"os-utils": "0.0.14",
 		"otpauth": "9.5.1",
 		"pg": "8.22.0",

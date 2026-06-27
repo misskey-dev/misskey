@@ -35,7 +35,7 @@
 		"chartjs-chart-matrix": "3.0.4",
 		"chartjs-plugin-gradient": "0.6.1",
 		"chartjs-plugin-zoom": "2.2.0",
-		"chromatic": "16.10.1",
+		"chromatic": "17.5.0",
 		"compare-versions": "6.1.1",
 		"cropperjs": "2.1.1",
 		"date-fns": "4.4.0",
