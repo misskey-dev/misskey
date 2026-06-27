@@ -37,17 +37,17 @@
 		"directory": "packages/misskey-js"
 	},
 	"devDependencies": {
-		"@microsoft/api-extractor": "7.58.8",
-		"@types/node": "24.13.1",
-		"@typescript-eslint/eslint-plugin": "8.61.0",
-		"@typescript-eslint/parser": "8.61.0",
-		"@vitest/coverage-v8": "4.1.8",
+		"@microsoft/api-extractor": "7.58.9",
+		"@types/node": "24.13.2",
+		"@typescript-eslint/eslint-plugin": "8.61.1",
+		"@typescript-eslint/parser": "8.61.1",
+		"@vitest/coverage-v8": "4.1.9",
 		"esbuild": "0.28.1",
 		"execa": "9.6.1",
 		"ncp": "2.0.0",
 		"nodemon": "3.1.14",
 		"tsd": "0.33.0",
-		"vitest": "4.1.8",
+		"vitest": "4.1.9",
 		"vitest-websocket-mock": "0.5.0"
 	},
 	"files": [
