@@ -7,7 +7,7 @@ process.env.NODE_ENV = 'test';
 
 import * as assert from 'assert';
 import * as crypto from 'node:crypto';
-import cbor from 'cbor';
+import { encode as encodeToCbor } from 'cbor2';
 import * as OTPAuth from 'otpauth';
 import { loadConfig } from '@/config.js';
 import { api, signup, sendEnvUpdateRequest } from '../utils.js';
@@ -70,7 +70,7 @@ describe('2要素認証', () => {
 		credential: RegistrationResponseJSON,
 	} => {
 		// A COSE encoded public key
-		const credentialPublicKey = cbor.encode(new Map<number, unknown>([
+		const credentialPublicKey = encodeToCbor(new Map<number, unknown>([
 			[-1, coseEc2CrvP256],
 			[-2, Buffer.from(coseEc2X, 'hex')],
 			[-3, Buffer.from(coseEc2Y, 'hex')],
@@ -107,7 +107,7 @@ describe('2要素認証', () => {
 						origin: config.scheme + '://' + config.host,
 						androidPackageName: 'org.mozilla.firefox',
 					}), 'utf-8').toString('base64url'),
-					attestationObject: Buffer.from(cbor.encode({
+					attestationObject: Buffer.from(encodeToCbor({
 						fmt: 'none',
 						attStmt: {},
 						authData,
