@@ -9,6 +9,11 @@
 # You can set url from an environment variable instead.
 url: https://example.tld/
 
+# Use a seperate hostname for federation. All users on this
+# instance will appear with this host instead of the one with
+# the misskey web url if set.
+#localHost: 'example.tld'
+
 # ONCE YOU HAVE STARTED THE INSTANCE, DO NOT CHANGE THE
 # URL SETTINGS AFTER THAT!
 

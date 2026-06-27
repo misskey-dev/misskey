@@ -26,13 +26,14 @@ export class UtilityService {
 
 	@bindThis
 	public getFullApAccount(username: string, host: string | null): string {
-		return host ? `${username}@${this.toPuny(host)}` : `${username}@${this.toPuny(this.config.host)}`;
+		return host ? `${username}@${this.toPuny(host)}` : `${username}@${this.toPuny(this.config.localHost)}`;
 	}
 
 	@bindThis
 	public isSelfHost(host: string | null): boolean {
 		if (host == null) return true;
-		return this.toPuny(this.config.host) === this.toPuny(host);
+		return (this.toPuny(this.config.localHost) === this.toPuny(host)) ||
+			(this.toPuny(this.config.host) === this.toPuny(host));
 	}
 
 	@bindThis

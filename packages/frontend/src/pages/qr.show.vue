@@ -29,7 +29,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import tinycolor from 'tinycolor2';
 import QRCodeStyling from 'qr-code-styling';
 import { computed, ref, shallowRef, watch, onMounted, onUnmounted, useTemplateRef } from 'vue';
-import { url, host } from '@@/js/config.js';
+import { url, localHost } from '@@/js/config.js';
 import type { Directive } from 'vue';
 import { instance } from '@/instance.js';
 import { ensureSignin } from '@/i.js';
@@ -40,7 +40,7 @@ import { i18n } from '@/i18n.js';
 
 const $i = ensureSignin();
 
-const acct = computed(() => `@${$i.username}@${host}`);
+const acct = computed(() => `@${$i.username}@${localHost}`);
 const userProfileUrl = computed(() => userPage($i, undefined, true));
 const shareData = computed(() => ({
 	title: i18n.tsx._qr.shareTitle({ name: userName($i), acct: acct.value }),

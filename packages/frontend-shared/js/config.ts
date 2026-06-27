@@ -5,11 +5,13 @@
 
 // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 const address = new URL(window.document.querySelector<HTMLMetaElement>('meta[property="instance_url"]')?.content || window.location.href);
+const theLocalHost = window.document.querySelector<HTMLMetaElement>('meta[property="local_host"]')?.content;
 const siteName = window.document.querySelector<HTMLMetaElement>('meta[property="og:site_name"]')?.content;
 
 export const host = address.host;
 export const hostname = address.hostname;
 export const url = address.origin;
+export const localHost = theLocalHost ?? host;
 export const port = address.port;
 export const apiUrl = window.location.origin + '/api';
 export const wsOrigin = window.location.origin;

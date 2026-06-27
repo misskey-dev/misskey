@@ -7,7 +7,7 @@ import { h, provide } from 'vue';
 import type { VNode, SetupContext } from 'vue';
 import * as mfm from 'mfm-js';
 import * as Misskey from 'misskey-js';
-import { host } from '@@/js/config.js';
+import { localHost } from '@@/js/config.js';
 import EmUrl from '@/components/EmUrl.vue';
 import EmTime from '@/components/EmTime.vue';
 import EmLink from '@/components/EmLink.vue';
@@ -347,7 +347,7 @@ export default function (props: MfmProps, { emit }: { emit: SetupContext<MfmEven
 			case 'mention': {
 				return [h(EmMention, {
 					key: Math.random(),
-					host: (token.props.host == null && props.author && props.author.host != null ? props.author.host : token.props.host) ?? host,
+					host: (token.props.host == null && props.author && props.author.host != null ? props.author.host : token.props.host) ?? localHost,
 					username: token.props.username,
 				})];
 			}
