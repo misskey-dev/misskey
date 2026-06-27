@@ -170,7 +170,7 @@ function renderSummaryTable(base: BrowserMetricsReport, head: BrowserMetricsRepo
 	const rows = [
 		//metricRow('Scenario duration', base, head, summary => summary.durationMs, sample => sample.durationMs, formatMs),
 		metricRow('Requests', base, head, summary => summary.network.requestCount, sample => sample.network.requestCount, util.formatNumber),
-		metricRow('Failed requests', base, head, summary => summary.network.failedRequestCount, sample => sample.network.failedRequestCount, util.formatNumber),
+		//metricRow('Failed requests', base, head, summary => summary.network.failedRequestCount, sample => sample.network.failedRequestCount, util.formatNumber),
 		metricRow('Encoded network', base, head, summary => summary.network.totalEncodedBytes, sample => sample.network.totalEncodedBytes, util.formatBytes),
 		metricRow('Decoded body', base, head, summary => summary.network.totalDecodedBodyBytes, sample => sample.network.totalDecodedBodyBytes, util.formatBytes),
 		metricRow('Same-origin encoded', base, head, summary => summary.network.sameOriginEncodedBytes, sample => sample.network.sameOriginEncodedBytes, util.formatBytes),
@@ -188,7 +188,7 @@ function renderSummaryTable(base: BrowserMetricsReport, head: BrowserMetricsRepo
 		//metricRow('JS heap used', base, head, summary => summary.performance.runtimeHeap?.usedSize ?? getMetric(summary, 'JSHeapUsedSize'), sample => sample.performance.runtimeHeap?.usedSize ?? getMetric(sample, 'JSHeapUsedSize'), util.formatBytes),
 		//metricRow('JS heap total', base, head, summary => summary.performance.runtimeHeap?.totalSize ?? getMetric(summary, 'JSHeapTotalSize'), sample => sample.performance.runtimeHeap?.totalSize ?? getMetric(sample, 'JSHeapTotalSize'), util.formatBytes),
 		//metricRow('V8 heap snapshot total', base, head, summary => summary.heapSnapshot.categories.total, sample => sample.heapSnapshot.categories.total, util.formatBytes),
-		metricRow('DOM elements', base, head, summary => summary.performance.webVitals.domElements, sample => sample.performance.webVitals.domElements, util.formatNumber),
+		//metricRow('DOM elements', base, head, summary => summary.performance.webVitals.domElements, sample => sample.performance.webVitals.domElements, util.formatNumber),
 		//metricRow('CDP nodes', base, head, summary => getMetric(summary, 'Nodes'), sample => getMetric(sample, 'Nodes'), util.formatNumber),
 		//metricRow('JS event listeners', base, head, summary => getMetric(summary, 'JSEventListeners'), sample => getMetric(sample, 'JSEventListeners'), util.formatNumber),
 		//metricRow('Layout count', base, head, summary => getMetric(summary, 'LayoutCount'), sample => getMetric(sample, 'LayoutCount'), util.formatNumber),
@@ -298,10 +298,6 @@ function toHeapSnapshotReport(report: BrowserMetricsReport): HeapSnapshotReport 
 	};
 }
 
-function renderHeadHeapSankey(head: BrowserMetricsReport) {
-	return heapSnapshotUtil.renderHeapSnapshotSankey(toHeapSnapshotReport(head), 'Head browser');
-}
-
 export function renderFrontendBrowserReport(base: BrowserMetricsReport, head: BrowserMetricsReport, options: {
 	headHeapSnapshotUrl?: string;
 } = {}) {
@@ -329,16 +325,17 @@ export function renderFrontendBrowserReport(base: BrowserMetricsReport, head: Br
 		'',
 		heapSnapshotTable ?? '_No V8 heap snapshot data._',
 		'',
-		...(headHeapSnapshotUrl != null && headHeapSnapshotUrl !== '' ? [`[Download representative head heap snapshot](${headHeapSnapshotUrl})`, ''] : []),
+		heapSnapshotUtil.renderHeapSnapshotSankey(toHeapSnapshotReport(head), 'Head'),
+		'',
+		`[Download representative head heap snapshot](${headHeapSnapshotUrl})`,
 		'</details>',
 		'',
 	];
 
 	for (const section of [
-		renderHeadHeapSankey(head),
-		renderLargestRequests(head, 'Largest representative head requests'),
-		renderFailedRequests(base, 'Failed representative base requests'),
-		renderFailedRequests(head, 'Failed representative head requests'),
+		//renderLargestRequests(head, 'Largest representative head requests'),
+		//renderFailedRequests(base, 'Failed representative base requests'),
+		//renderFailedRequests(head, 'Failed representative head requests'),
 	]) {
 		if (section == null) continue;
 		lines.push(section, '');
