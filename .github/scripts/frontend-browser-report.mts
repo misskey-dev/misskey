@@ -102,9 +102,9 @@ function formatSecondsAsMs(value: number | null | undefined) {
 	return formatMs(value * 1_000);
 }
 
-function formatDelta(value: number, formatter: (value: number) => string) {
-	if (value === 0) return formatter(0);
-	return util.formatColoredDelta(formatter(Math.abs(value)), value);
+function formatDelta(delta: number, formatter: (value: number) => string, colorThreshold = 0) {
+	if (delta === 0) return formatter(0);
+	return util.formatColoredDelta(delta, v => formatter(v), colorThreshold);
 }
 
 function finiteValues(values: (number | null | undefined)[]) {
@@ -213,14 +213,37 @@ function renderResourceTypeTable(base: BrowserMetricsReport, head: BrowserMetric
 	])].filter(key => base.summary.network.byResourceType[key] != null || head.summary.network.byResourceType[key] != null);
 
 	const lines = [
-		'| Type | Base reqs | Head reqs | Δ reqs | Base encoded | Head encoded | Δ encoded |',
-		'| --- | ---: | ---: | ---: | ---: | ---: | ---: |',
+		'<table>',
+		'<thead>',
+		'<tr>',
+		'<th rowspan="2">Type</th>',
+		'<th colspan="3">Requests</th>',
+		'<th colspan="3">Encoded bytes</th>',
+		'</tr>',
+		'<tr>',
+		'<th>Base</th>',
+		'<th>Head</th>',
+		'<th>Δ</th>',
+		'<th>Base</th>',
+		'<th>Head</th>',
+		'<th>Δ</th>',
+		'</tr>',
+		'</thead>',
+		'<tbody>',
 	];
 
 	for (const key of keys) {
 		const baseRow = base.summary.network.byResourceType[key] ?? { requests: 0, encodedBytes: 0 };
 		const headRow = head.summary.network.byResourceType[key] ?? { requests: 0, encodedBytes: 0 };
-		lines.push(`| **${key}** | ${util.formatNumber(baseRow.requests)} | ${util.formatNumber(headRow.requests)} | ${formatDelta(headRow.requests - baseRow.requests, util.formatNumber)} | ${util.formatBytes(baseRow.encodedBytes)} | ${util.formatBytes(headRow.encodedBytes)} | ${formatDelta(headRow.encodedBytes - baseRow.encodedBytes, util.formatBytes)} |`);
+		lines.push('<tr>');
+		lines.push(`<td><b>${key}</b></td>`);
+		lines.push(`<td style="text-align:right">${util.formatNumber(baseRow.requests)}</td>`);
+		lines.push(`<td style="text-align:right">${util.formatNumber(headRow.requests)}</td>`);
+		lines.push(`<td style="text-align:right">${formatDelta(headRow.requests - baseRow.requests, util.formatNumber)}</td>`);
+		lines.push(`<td style="text-align:right">${util.formatBytes(baseRow.encodedBytes)}</td>`);
+		lines.push(`<td style="text-align:right">${util.formatBytes(headRow.encodedBytes)}</td>`);
+		lines.push(`<td style="text-align:right">${formatDelta(headRow.encodedBytes - baseRow.encodedBytes, util.formatBytes)}</td>`);
+		lines.push('</tr>');
 	}
 
 	return lines.join('\n');
@@ -300,11 +323,11 @@ export function renderFrontendBrowserReport(base: BrowserMetricsReport, head: Br
 		? `${base.sampleCount} samples per side`
 		: `${base.sampleCount} base sample(s), ${head.sampleCount} head sample(s)`;
 	const lines = [
-		'## Frontend Browser Metrics',
+		'## 🖥 Frontend Browser Metrics',
 		'',
 		renderSummaryTable(base, head),
 		'',
-		`_Measured ${sampleSummary} with fresh headless Chrome profiles, browser cache disabled, service workers bypassed, and forced V8 GC before each heap snapshot. Base/Head values are medians; Δ median is the median of paired Head - Base sample deltas; percent uses Δ median / Base median; ± and Δ MAD are median absolute deviations. Scenario: sign up, dismiss the initial account setup dialog, create the first timeline note, then wait until that note is visible._`,
+		`> Measured ${sampleSummary} with fresh headless Chrome profiles, browser cache disabled, service workers bypassed, and forced V8 GC before each heap snapshot. Base/Head values are medians; Δ median is the median of paired Head - Base sample deltas; percent uses Δ median / Base median; ± and Δ MAD are median absolute deviations. Scenario: sign up, dismiss the initial account setup dialog, create the first timeline note, then wait until that note is visible.`,
 		'',
 		'<details>',
 		'<summary>Requests by resource type</summary>',
