@@ -56,7 +56,7 @@
 		"cssnano": "8.0.2",
 		"esbuild": "0.28.1",
 		"execa": "9.6.1",
-		"ignore-walk": "8.0.0",
+		"ignore-walk": "9.0.0",
 		"js-yaml": "4.2.0",
 		"postcss": "8.5.15",
 		"tar": "7.5.16",
