@@ -23,7 +23,6 @@ const [repoDirArg, outputFileArg] = process.argv.slice(2);
 const STARTUP_TIMEOUT = util.readIntegerEnv('MK_JS_FOOTPRINT_STARTUP_TIMEOUT_MS', 120000, 1);
 const SETTLE_TIME = util.readIntegerEnv('MK_JS_FOOTPRINT_SETTLE_TIME_MS', 10000, 0);
 const REQUEST_COUNT = util.readIntegerEnv('MK_JS_FOOTPRINT_REQUEST_COUNT', 10, 0);
-const MAX_TABLE_ITEMS = util.readIntegerEnv('MK_JS_FOOTPRINT_MAX_ITEMS', 20, 1);
 
 const repoDir = resolve(repoDirArg);
 const outputFile = resolve(outputFileArg);
@@ -389,7 +388,7 @@ function summarizeRecords(records, phase) {
 			stringLiteralKiB: bytesToKiB(totals.stringLiteralBytes),
 		},
 		packages: [...packages.values()].toSorted((a, b) => b.sourceBytes - a.sourceBytes),
-		modules: modules.toSorted((a, b) => b.sourceBytes - a.sourceBytes).slice(0, MAX_TABLE_ITEMS),
+		modules: modules.toSorted((a, b) => b.sourceBytes - a.sourceBytes),
 	};
 }
 
