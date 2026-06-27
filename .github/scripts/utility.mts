@@ -94,11 +94,12 @@ export function escapeLatex(text: string) {
 		.replaceAll('%', '\\%');
 }
 
-export function formatColoredDelta(text: string, delta: number) {
-	if (delta === 0) return text;
-	const color = delta > 0 ? 'orange' : 'green';
+export function formatColoredDelta(delta: number, text: (value: number) => string, colorThreshold = 0) {
+	if (delta === 0) return text(0);
 	const sign = delta > 0 ? '+' : '-';
-	return `$\\color{${color}}{\\text{${sign}${escapeLatex(text)}}}$`;
+	if (Math.abs(delta) < colorThreshold) return `$\\text{${sign}${escapeLatex(text(Math.abs(delta)))}}$`;
+	const color = delta > 0 ? 'orange' : 'green';
+	return `$\\color{${color}}{\\text{${sign}${escapeLatex(text(Math.abs(delta)))}}}$`;
 }
 
 const numberFormatter = new Intl.NumberFormat('en-US', {
@@ -114,8 +115,8 @@ export function formatBytes(value: number) {
 	const units = ['B', 'KB', 'MB', 'GB'];
 	let unitIndex = 0;
 	let size = value;
-	while (size >= 1024 && unitIndex < units.length - 1) {
-		size /= 1024;
+	while (size >= 1000 && unitIndex < units.length - 1) {
+		size /= 1000;
 		unitIndex += 1;
 	}
 
@@ -123,35 +124,34 @@ export function formatBytes(value: number) {
 	return `${numberFormatter.format(Number(size.toFixed(maximumFractionDigits)))} ${units[unitIndex]}`;
 }
 
-export function calcAndFormatDeltaNumber(before: number, after: number) {
+export function calcAndFormatDeltaNumber(before: number, after: number, colorThreshold = 0) {
 	if (before == null || after == null) return '-';
 	const delta = after - before;
-	return formatColoredDelta(formatNumber(Math.abs(delta)), delta);
+	return formatColoredDelta(delta, v => formatNumber(v), colorThreshold);
 }
 
-export function formatDeltaBytes(deltaBytes: number) {
-	return formatColoredDelta(formatBytes(Math.abs(deltaBytes)), deltaBytes);
+export function formatDeltaBytes(deltaBytes: number, colorThreshold = 0) {
+	return formatColoredDelta(deltaBytes, v => formatBytes(v), colorThreshold);
 }
 
-export function calcAndFormatDeltaBytes(before: number, after: number) {
+export function calcAndFormatDeltaBytes(before: number, after: number, colorThreshold = 0) {
 	if (before == null || after == null) return '-';
 	const delta = after - before;
-	return formatDeltaBytes(delta);
+	return formatDeltaBytes(delta, colorThreshold);
 }
 
 export function formatPercent(value: number) {
 	return `${formatNumber(value)}%`;
 }
 
-export function formatDeltaPercent(deltaPercent: number) {
-	if (deltaPercent === 0) return '0%';
-	return formatColoredDelta(formatPercent(Math.abs(deltaPercent)), deltaPercent);
+export function formatDeltaPercent(deltaPercent: number, colorThreshold = 0) {
+	return formatColoredDelta(deltaPercent, v => formatPercent(v), colorThreshold);
 }
 
-export function calcAndFormatDeltaPercent(before: number, after: number) {
+export function calcAndFormatDeltaPercent(before: number, after: number, colorThreshold = 0) {
 	if (before == null || before === 0 || after == null || after === 0) return '-';
 	const delta = after - before;
-	return formatDeltaPercent(delta / before * 100);
+	return formatDeltaPercent(delta / before * 100, colorThreshold);
 }
 
 export function commandName(command: string) {
