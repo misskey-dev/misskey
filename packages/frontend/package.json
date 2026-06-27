@@ -136,7 +136,7 @@
 		"storybook": "10.4.6",
 		"storybook-addon-misskey-theme": "github:misskey-dev/storybook-addon-misskey-theme",
 		"tsx": "4.22.4",
-		"vite": "8.0.16",
+		"vite": "8.1.0",
 		"vite-plugin-glsl": "1.6.0",
 		"vite-plugin-turbosnap": "1.0.3",
 		"vitest": "4.1.9",

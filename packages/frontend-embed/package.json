@@ -55,7 +55,7 @@
 		"sass-embedded": "1.100.0",
 		"start-server-and-test": "3.0.11",
 		"tsx": "4.22.4",
-		"vite": "8.0.16",
+		"vite": "8.1.0",
 		"vite-plugin-turbosnap": "1.0.3",
 		"vue-component-type-helpers": "3.3.5",
 		"vue-eslint-parser": "10.4.1",
