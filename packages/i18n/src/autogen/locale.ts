@@ -5696,7 +5696,7 @@ export interface Locale extends ILocale {
      */
     "urlPreviewSensitiveList": string;
     /**
-     * スペースで区切るとAND指定になり、改行で区切るとOR指定になります。スラッシュで囲むと正規表現になります。一致した場合、サムネイルがぼかされて表示されます。
+     * スペースで区切るとAND指定になり、改行で区切るとOR指定になります。スラッシュで囲むと正規表現になります。一致した場合、サムネイルが表示されなくなります。
      */
     "urlPreviewSensitiveListDescription": string;
     "_imageEditing": {
