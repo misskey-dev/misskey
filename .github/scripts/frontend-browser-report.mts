@@ -149,7 +149,7 @@ function metricRow(
 	const percent = summary == null || baseValue === 0 ? null : summary.median * 100 / baseValue;
 	const deltaMedian = summary == null
 		? '-'
-		: `${formatDelta(summary.median, formatter)}<br>${percent == null ? '-' : util.formatDeltaPercent(percent).replaceAll('\\%', '\\\\%')}`;
+		: `${formatDelta(summary.median, formatter)}<br>${percent == null ? '-' : util.formatDeltaPercent(percent, 0.1).replaceAll('\\%', '\\\\%')}`;
 
 	return `| **${label}** | ${formatValueWithSpread(base, baseValue, getSampleValue, formatter)} | ${formatValueWithSpread(head, headValue, getSampleValue, formatter)} | ${deltaMedian} | ${summary == null ? '-' : formatter(summary.mad)} | ${summary == null ? '-' : formatDelta(summary.min, formatter)} | ${summary == null ? '-' : formatDelta(summary.max, formatter)} |`;
 }
@@ -237,12 +237,12 @@ function renderResourceTypeTable(base: BrowserMetricsReport, head: BrowserMetric
 		const headRow = head.summary.network.byResourceType[key] ?? { requests: 0, encodedBytes: 0 };
 		lines.push('<tr>');
 		lines.push(`<td><b>${key}</b></td>`);
-		lines.push(`<td style="text-align:right">${util.formatNumber(baseRow.requests)}</td>`);
-		lines.push(`<td style="text-align:right">${util.formatNumber(headRow.requests)}</td>`);
-		lines.push(`<td style="text-align:right">${formatDelta(headRow.requests - baseRow.requests, util.formatNumber)}</td>`);
-		lines.push(`<td style="text-align:right">${util.formatBytes(baseRow.encodedBytes)}</td>`);
-		lines.push(`<td style="text-align:right">${util.formatBytes(headRow.encodedBytes)}</td>`);
-		lines.push(`<td style="text-align:right">${formatDelta(headRow.encodedBytes - baseRow.encodedBytes, util.formatBytes)}</td>`);
+		lines.push(`<td align="right">${util.formatNumber(baseRow.requests)}</td>`);
+		lines.push(`<td align="right">${util.formatNumber(headRow.requests)}</td>`);
+		lines.push(`<td align="right">${formatDelta(headRow.requests - baseRow.requests, util.formatNumber)}</td>`);
+		lines.push(`<td align="right">${util.formatBytes(baseRow.encodedBytes)}</td>`);
+		lines.push(`<td align="right">${util.formatBytes(headRow.encodedBytes)}</td>`);
+		lines.push(`<td align="right">${formatDelta(headRow.encodedBytes - baseRow.encodedBytes, util.formatBytes)}</td>`);
 		lines.push('</tr>');
 	}
 
