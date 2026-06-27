@@ -6,6 +6,7 @@
 import * as fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
+import { load as loadYaml } from 'js-yaml';
 import { type FastifyServerOptions } from 'fastify';
 import type * as Sentry from '@sentry/node';
 import type * as SentryVue from '@sentry/vue';
@@ -235,23 +236,22 @@ const configDir = resolve(rootDir, '.config');
 /** Path of built directory */
 const projectBuiltDir = resolve(rootDir, 'built');
 
-const compiledConfigFilePathForTest = resolve(projectBuiltDir, '._config_.json');
-
-export const compiledConfigFilePath = fs.existsSync(compiledConfigFilePathForTest)
-	? compiledConfigFilePathForTest
-	: resolve(projectBuiltDir, '.config.json');
+/**
+ * Path of configuration file
+ */
+export const path = process.env.MISSKEY_CONFIG_YML
+	? resolve(configDir, process.env.MISSKEY_CONFIG_YML)
+	: process.env.NODE_ENV === 'test'
+		? resolve(configDir, 'test.yml')
+		: resolve(configDir, 'default.yml');
 
 export function loadConfig(): Config {
-	if (!fs.existsSync(compiledConfigFilePath)) {
-		throw new Error('Compiled configuration file not found. Try running \'pnpm compile-config\'.');
-	}
-
 	const meta = JSON.parse(fs.readFileSync(resolve(projectBuiltDir, 'meta.json'), 'utf-8'));
 
 	const frontendManifestExists = fs.existsSync(resolve(projectBuiltDir, '_frontend_vite_/manifest.json'));
 	const frontendEmbedManifestExists = fs.existsSync(resolve(projectBuiltDir, '_frontend_embed_vite_/manifest.json'));
 
-	const config = JSON.parse(fs.readFileSync(compiledConfigFilePath, 'utf-8')) as Source;
+	const config = loadYaml(fs.readFileSync(path, 'utf-8')) as Source;
 
 	const url = tryCreateUrl(config.url ?? process.env.MISSKEY_URL ?? '');
 	const version = meta.version;

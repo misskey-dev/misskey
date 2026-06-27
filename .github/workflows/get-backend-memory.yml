@@ -70,9 +70,7 @@ jobs:
       run: git diff --exit-code pnpm-lock.yaml
     - name: Configure base
       working-directory: base
-      run: |
-        cp .github/misskey/test.yml .config/default.yml
-        pnpm compile-config
+      run: cp .github/misskey/test.yml .config/default.yml
     - name: Build base
       working-directory: base
       run: pnpm build
@@ -84,9 +82,7 @@ jobs:
       run: git diff --exit-code pnpm-lock.yaml
     - name: Configure head
       working-directory: head
-      run: |
-        cp .github/misskey/test.yml .config/default.yml
-        pnpm compile-config
+      run: cp .github/misskey/test.yml .config/default.yml
     - name: Build head
       working-directory: head
       run: pnpm build

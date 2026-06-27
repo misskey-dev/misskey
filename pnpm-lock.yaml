@@ -26,8 +26,8 @@ importers:
         specifier: 9.0.0
         version: 9.0.0
       js-yaml:
-        specifier: 4.2.0
-        version: 4.2.0
+        specifier: 5.1.0
+        version: 5.1.0
       postcss:
         specifier: 8.5.15
         version: 8.5.15
@@ -44,9 +44,6 @@ importers:
       '@misskey-dev/eslint-plugin':
         specifier: 2.1.0
         version: 2.1.0(@eslint/compat@2.0.5(eslint@9.39.4))(@stylistic/eslint-plugin@5.10.0(eslint@9.39.4))(@typescript-eslint/eslint-plugin@8.61.1(@typescript-eslint/parser@8.61.1(eslint@9.39.4)(typescript@5.9.3))(eslint@9.39.4)(typescript@5.9.3))(@typescript-eslint/parser@8.61.1(eslint@9.39.4)(typescript@5.9.3))(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.61.1(eslint@9.39.4)(typescript@5.9.3))(eslint@9.39.4))(eslint@9.39.4)(globals@17.6.0)
-      '@types/js-yaml':
-        specifier: 4.0.9
-        version: 4.0.9
       '@types/node':
         specifier: 26.0.0
         version: 26.0.0
@@ -236,6 +233,9 @@ importers:
       is-svg:
         specifier: 6.1.0
         version: 6.1.0
+      js-yaml:
+        specifier: 5.1.0
+        version: 5.1.0
       json5:
         specifier: 2.2.3
         version: 2.2.3
@@ -396,9 +396,6 @@ importers:
       '@types/http-link-header':
         specifier: 1.0.7
         version: 1.0.7
-      '@types/js-yaml':
-        specifier: 4.0.9
-        version: 4.0.9
       '@types/jsonld':
         specifier: 1.5.15
         version: 1.5.15
@@ -486,9 +483,6 @@ importers:
       fkill:
         specifier: 10.0.3
         version: 10.0.3
-      js-yaml:
-        specifier: 4.2.0
-        version: 4.2.0
       pid-port:
         specifier: 2.1.1
         version: 2.1.1
@@ -1167,12 +1161,9 @@ importers:
   packages/i18n:
     dependencies:
       js-yaml:
-        specifier: 4.2.0
-        version: 4.2.0
+        specifier: 5.1.0
+        version: 5.1.0
     devDependencies:
-      '@types/js-yaml':
-        specifier: 4.0.9
-        version: 4.0.9
       '@types/node':
         specifier: 26.0.0
         version: 26.0.0
@@ -4024,9 +4015,6 @@ packages:
   '@types/insert-text-at-cursor@0.3.2':
     resolution: {integrity: sha512-S80ZeMGJ1YMwF/CwvvGNCoWS0klVpJmjtyEL1kbYgYXRMPMEfNWXXnnnLQaim3FNp6tJzOhy/yeQXInfC6o1sA==}
 
-  '@types/js-yaml@4.0.9':
-    resolution: {integrity: sha512-k4MGaQl5TGo/iipqb2UDG2UwjXziSWkh0uysQelTlJpX1qGlpUZYm8PnO4DxG1qBomtJUdYJ6qR6xdIah10JLg==}
-
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
 
@@ -6670,6 +6658,10 @@ packages:
 
   js-yaml@4.2.0:
     resolution: {integrity: sha512-ePWsvanv0DWuDRsW8dnt+R4jQ31SCRCQ7hhNcPXZPsoBZiemuZNYGf7adZdqX2D86j6rvKp3RpCxVTSb8WQlOw==}
+    hasBin: true
+
+  js-yaml@5.1.0:
+    resolution: {integrity: sha512-s8VA5jkR8f22S3NAXmhKPFqGUduqZGlsufabVOgN14iTdw/RXcym7bKkbwjxLK9Yw2lEvvmJjFp119+KPeo8Kg==}
     hasBin: true
 
   jsbn@0.1.1:
@@ -12609,8 +12601,6 @@ snapshots:
 
   '@types/insert-text-at-cursor@0.3.2': {}
 
-  '@types/js-yaml@4.0.9': {}
-
   '@types/json-schema@7.0.15': {}
 
   '@types/json5@0.0.29': {}
@@ -15595,6 +15585,10 @@ snapshots:
       argparse: 2.0.1
 
   js-yaml@4.2.0:
+    dependencies:
+      argparse: 2.0.1
+
+  js-yaml@5.1.0:
     dependencies:
       argparse: 2.0.1
 
