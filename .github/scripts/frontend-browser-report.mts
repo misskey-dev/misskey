@@ -7,7 +7,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
 import * as util from './utility.mts';
 import * as heapSnapshotUtil from './heap-snapshot-util.mts';
-import type { HeapSnapshotData } from './heap-snapshot-util.mts';
+import type { HeapSnapshotData, HeapSnapshotReport } from './heap-snapshot-util.mts';
 
 export type BrowserMeasurement = {
 	label: string;
@@ -249,26 +249,6 @@ function renderResourceTypeTable(base: BrowserMetricsReport, head: BrowserMetric
 	return lines.join('\n');
 }
 
-function renderHeapSnapshotTable(base: BrowserMetricsReport, head: BrowserMetricsReport) {
-	const lines = [
-		'| Category | Base median | Head median | Δ median | Δ MAD | Base nodes | Head nodes |',
-		'| --- | ---: | ---: | ---: | ---: | ---: | ---: |',
-	];
-
-	for (const category of Object.keys(heapSnapshotUtil.heapSnapshotCategory) as (keyof typeof heapSnapshotUtil.heapSnapshotCategory)[]) {
-		const baseValue = base.summary.heapSnapshot.categories[category];
-		const headValue = head.summary.heapSnapshot.categories[category];
-		const baseNodeCount = base.summary.heapSnapshot.nodeCounts[category];
-		const headNodeCount = head.summary.heapSnapshot.nodeCounts[category];
-		const categoryInfo = heapSnapshotUtil.heapSnapshotCategory[category];
-		const summary = pairedDelta(base, head, sample => sample.heapSnapshot.categories[category]);
-		const metricText = `$\\color{${categoryInfo.color}}{\\rule{8pt}{8pt}}$ **${categoryInfo.label}**`;
-		lines.push(`| ${metricText} | ${util.formatBytes(baseValue)} | ${util.formatBytes(headValue)} | ${summary == null ? '-' : formatDelta(summary.median, util.formatBytes)} | ${summary == null ? '-' : util.formatBytes(summary.mad)} | ${util.formatNumber(baseNodeCount)} | ${util.formatNumber(headNodeCount)} |`);
-	}
-
-	return lines.join('\n');
-}
-
 function renderLargestRequests(report: BrowserMetricsReport, title: string) {
 	if (report.summary.network.largestRequests.length === 0) return null;
 
@@ -305,14 +285,18 @@ function renderFailedRequests(report: BrowserMetricsReport, title: string) {
 	return lines.join('\n');
 }
 
-function renderHeadHeapSankey(head: BrowserMetricsReport) {
-	return heapSnapshotUtil.renderHeapSnapshotSankey({
-		summary: head.summary.heapSnapshot,
-		samples: head.samples.map(sample => ({
+function toHeapSnapshotReport(report: BrowserMetricsReport): HeapSnapshotReport {
+	return {
+		summary: report.summary.heapSnapshot,
+		samples: report.samples.map(sample => ({
 			round: sample.round,
 			data: sample.heapSnapshot,
 		})),
-	}, 'Head browser');
+	};
+}
+
+function renderHeadHeapSankey(head: BrowserMetricsReport) {
+	return heapSnapshotUtil.renderHeapSnapshotSankey(toHeapSnapshotReport(head), 'Head browser');
 }
 
 export function renderFrontendBrowserReport(base: BrowserMetricsReport, head: BrowserMetricsReport, options: {
@@ -322,6 +306,7 @@ export function renderFrontendBrowserReport(base: BrowserMetricsReport, head: Br
 	const sampleSummary = base.sampleCount === head.sampleCount
 		? `${base.sampleCount} samples per side`
 		: `${base.sampleCount} base sample(s), ${head.sampleCount} head sample(s)`;
+	const heapSnapshotTable = heapSnapshotUtil.renderHeapSnapshotTable(toHeapSnapshotReport(base), toHeapSnapshotReport(head));
 	const lines = [
 		'## 🖥 Frontend Browser Metrics',
 		'',
@@ -339,7 +324,7 @@ export function renderFrontendBrowserReport(base: BrowserMetricsReport, head: Br
 		'<details>',
 		'<summary>V8 heap snapshot statistics</summary>',
 		'',
-		renderHeapSnapshotTable(base, head),
+		heapSnapshotTable ?? '_No V8 heap snapshot data._',
 		'',
 		...(headHeapSnapshotUrl != null && headHeapSnapshotUrl !== '' ? [`[Download representative head heap snapshot](${headHeapSnapshotUrl})`, ''] : []),
 		'</details>',
