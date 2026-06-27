@@ -27,6 +27,9 @@ on:
       - .node-version
       - .github/scripts/utility.mts
       - .github/scripts/frontend-js-size.mts
+      - .github/scripts/frontend-browser-report.mts
+      - .github/scripts/heap-snapshot-util.mts
+      - .github/scripts/measure-frontend-browser-comparison.mts
       - .github/workflows/frontend-bundle-report.yml
       - .github/workflows/frontend-bundle-report-comment.yml
 
@@ -181,8 +184,6 @@ jobs:
             const path = require('node:path');
 
             const jsSizeMarker = '<!-- misskey-frontend-js-size -->';
-            const visualizerMarker = '<!-- misskey-frontend-bundle-visualizer -->';
-            const reportMarkers = [jsSizeMarker, visualizerMarker];
             const reportDir = path.join(process.env.RUNNER_TEMP, 'frontend-bundle-report');
             const jsSizeReportPath = path.join(reportDir, 'frontend-js-size-report.md');
             const prNumberPath = path.join(reportDir, 'pr-number.txt');
@@ -291,7 +292,7 @@ jobs:
               per_page: 100,
             });
             const previousReports = comments.filter((comment) =>
-              comment.user?.type === 'Bot' && reportMarkers.some((reportMarker) => comment.body?.includes(reportMarker)));
+              comment.user?.type === 'Bot' && comment.body?.includes(jsSizeMarker));
 
             if (previousReports.length > 0) {
               const [previous, ...duplicates] = previousReports;

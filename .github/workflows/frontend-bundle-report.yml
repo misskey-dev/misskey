@@ -22,10 +22,14 @@ on:
       - .node-version
       - .github/scripts/utility.mts
       - .github/scripts/frontend-js-size.mts
+      - .github/scripts/frontend-browser-report.mts
+      - .github/scripts/heap-snapshot-util.mts
+      - .github/scripts/measure-frontend-browser-comparison.mts
       - .github/workflows/frontend-bundle-report.yml
       - .github/workflows/frontend-bundle-report-comment.yml
 
 permissions:
+  actions: read
   contents: read
   pull-requests: read
 
@@ -36,7 +40,11 @@ concurrency:
 jobs:
   report:
     name: Build frontend bundle report
+    needs:
+      - browser-report
     runs-on: ubuntu-latest
+    outputs:
+      supported: ${{ steps.check-base-visualizer.outputs.supported }}
     env:
       FRONTEND_JS_SIZE_LOCALE: ja-JP
     steps:
@@ -135,6 +143,13 @@ jobs:
           archive: false
           retention-days: 7
 
+      - name: Download browser metrics
+        if: steps.check-base-visualizer.outputs.supported == 'true'
+        uses: actions/download-artifact@v8
+        with:
+          name: frontend-browser-report-part
+          path: ${{ runner.temp }}/frontend-browser-report
+
       - name: Generate report markdown
         if: steps.check-base-visualizer.outputs.supported == 'true'
         shell: bash
@@ -143,9 +158,13 @@ jobs:
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           FRONTEND_BUNDLE_REPORT_ARTIFACT_URL: ${{ steps.upload-bundle-visualizer.outputs.artifact-url }}
+          FRONTEND_BROWSER_HEAD_HEAP_SNAPSHOT_ARTIFACT_URL: ${{ needs.browser-report.outputs.head-heap-snapshot-url }}
         run: |
           REPORT_DIR="$RUNNER_TEMP/frontend-bundle-report"
-          node after/.github/scripts/frontend-js-size.mts before after "$REPORT_DIR/before-stats.json" "$REPORT_DIR/after-stats.json" "$REPORT_DIR/frontend-js-size-report.md"
+          BROWSER_REPORT_DIR="$RUNNER_TEMP/frontend-browser-report"
+          test -s "$BROWSER_REPORT_DIR/before-browser.json"
+          test -s "$BROWSER_REPORT_DIR/after-browser.json"
+          node after/.github/scripts/frontend-js-size.mts before after "$REPORT_DIR/before-stats.json" "$REPORT_DIR/after-stats.json" "$BROWSER_REPORT_DIR/before-browser.json" "$BROWSER_REPORT_DIR/after-browser.json" "$REPORT_DIR/frontend-js-size-report.md"
           printf '%s\n' "$PR_NUMBER" > "$REPORT_DIR/pr-number.txt"
           printf '%s\n' "$BASE_SHA" > "$REPORT_DIR/base-sha.txt"
           printf '%s\n' "$HEAD_SHA" > "$REPORT_DIR/head-sha.txt"
@@ -166,5 +185,116 @@ jobs:
         with:
           name: frontend-bundle-report
           path: ${{ runner.temp }}/frontend-bundle-report/
+          if-no-files-found: error
+          retention-days: 7
+
+  browser-report:
+    name: Measure frontend browser metrics
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    outputs:
+      head-heap-snapshot-url: ${{ steps.upload-browser-head-heap-snapshot.outputs.artifact-url }}
+
+    services:
+      postgres:
+        image: postgres:18
+        ports:
+          - 54312:5432
+        env:
+          POSTGRES_DB: test-misskey
+          POSTGRES_HOST_AUTH_METHOD: trust
+      redis:
+        image: redis:8
+        ports:
+          - 56312:6379
+
+    steps:
+      - name: Checkout base
+        uses: actions/checkout@v6.0.2
+        with:
+          repository: ${{ github.event.pull_request.base.repo.full_name }}
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: before
+          submodules: true
+
+      - name: Checkout pull request
+        uses: actions/checkout@v6.0.2
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: after
+          submodules: true
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6.0.3
+        with:
+          package_json_file: after/package.json
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6.4.0
+        with:
+          node-version-file: after/.node-version
+          cache: pnpm
+          cache-dependency-path: |
+            before/pnpm-lock.yaml
+            after/pnpm-lock.yaml
+
+      - name: Install dependencies for base
+        working-directory: before
+        run: pnpm i --frozen-lockfile
+
+      - name: Configure base
+        working-directory: before
+        run: cp .github/misskey/test.yml .config
+
+      - name: Build base
+        working-directory: before
+        run: pnpm build
+
+      - name: Install dependencies for pull request
+        working-directory: after
+        run: pnpm i --frozen-lockfile
+
+      - name: Configure pull request
+        working-directory: after
+        run: cp .github/misskey/test.yml .config
+
+      - name: Build pull request
+        working-directory: after
+        run: pnpm build
+
+      - name: Measure frontend browser metrics
+        shell: bash
+        env:
+          FRONTEND_BROWSER_METRICS_SCENARIO_TIMEOUT_MS: 120000
+          FRONTEND_BROWSER_METRICS_SETTLE_MS: 1000
+        run: |
+          REPORT_DIR="$RUNNER_TEMP/frontend-browser-report"
+          mkdir -p "$REPORT_DIR"
+          node after/.github/scripts/measure-frontend-browser-comparison.mts before after "$REPORT_DIR/before-browser.json" "$REPORT_DIR/after-browser.json" "$REPORT_DIR/head-heap-snapshot.heapsnapshot"
+
+      - name: Upload browser head heap snapshot
+        id: upload-browser-head-heap-snapshot
+        uses: actions/upload-artifact@v7
+        with:
+          name: frontend-browser-head-heap-snapshot
+          path: ${{ runner.temp }}/frontend-browser-report/head-heap-snapshot.heapsnapshot
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Check browser metrics
+        shell: bash
+        run: |
+          REPORT_DIR="$RUNNER_TEMP/frontend-browser-report"
+          test -s "$REPORT_DIR/before-browser.json"
+          test -s "$REPORT_DIR/after-browser.json"
+
+      - name: Upload browser report part
+        uses: actions/upload-artifact@v7
+        with:
+          name: frontend-browser-report-part
+          path: |
+            ${{ runner.temp }}/frontend-browser-report/before-browser.json
+            ${{ runner.temp }}/frontend-browser-report/after-browser.json
           if-no-files-found: error
           retention-days: 7

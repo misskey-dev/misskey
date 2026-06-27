@@ -6,6 +6,7 @@
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import * as util from './utility.mts';
+import { renderFrontendBrowserReport, type BrowserMeasurement } from './frontend-browser-report.mts';
 
 const marker = '<!-- misskey-frontend-js-size -->';
 
@@ -477,11 +478,17 @@ function renderFrontendBundleReport(before: ReturnType<typeof collectVisualizerR
 }
 
 const args = process.argv.slice(2);
-const [beforeDir, afterDir, beforeStatsFile, afterStatsFile, outFile] = args;
+const [beforeDir, afterDir, beforeStatsFile, afterStatsFile, beforeBrowserMetricsFile, afterBrowserMetricsFile, outFile] = args;
+if (beforeDir == null || afterDir == null || beforeStatsFile == null || afterStatsFile == null || beforeBrowserMetricsFile == null || afterBrowserMetricsFile == null || outFile == null) {
+	throw new Error('Usage: node frontend-js-size.mts <before-dir> <after-dir> <before-stats.json> <after-stats.json> <before-browser.json> <after-browser.json> <output.md>');
+}
+
 const before = await collectReport(beforeDir);
 const after = await collectReport(afterDir);
 const beforeStats = JSON.parse(await fs.readFile(beforeStatsFile, 'utf8')) as VisualizerReport;
 const afterStats = JSON.parse(await fs.readFile(afterStatsFile, 'utf8')) as VisualizerReport;
+const beforeBrowserMetrics = JSON.parse(await fs.readFile(beforeBrowserMetricsFile, 'utf8')) as BrowserMeasurement;
+const afterBrowserMetrics = JSON.parse(await fs.readFile(afterBrowserMetricsFile, 'utf8')) as BrowserMeasurement;
 const beforeVisualizerReport = collectVisualizerReport(beforeStats);
 const afterVisualizerReport = collectVisualizerReport(afterStats);
 const visualizerArtifactLink = `[Open treemap HTML](${process.env.FRONTEND_BUNDLE_REPORT_ARTIFACT_URL})`;
@@ -496,6 +503,10 @@ const body = [
 	'## Bundle Stats',
 	'',
 	renderFrontendBundleReport(beforeVisualizerReport, afterVisualizerReport),
+	'',
+	renderFrontendBrowserReport(beforeBrowserMetrics, afterBrowserMetrics, {
+		headHeapSnapshotUrl: process.env.FRONTEND_BROWSER_HEAD_HEAP_SNAPSHOT_ARTIFACT_URL,
+	}),
 	'',
 	visualizerArtifactLink,
 ].join('\n');
