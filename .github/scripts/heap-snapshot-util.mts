@@ -63,20 +63,20 @@ export function renderHeapSnapshotTable(base: HeapSnapshotReport, head: HeapSnap
 		const percent = summary.median * 100 / baseValue;
 
 		if (category === 'total') {
-			const deltaMedian = `${util.formatDeltaBytes(summary.median)}<br>${util.formatDeltaPercent(percent).replaceAll('\\%', '\\\\%')}`;
+			const deltaMedian = `${util.formatDeltaBytes(summary.median, 1000)}<br>${util.formatDeltaPercent(percent, 0.1).replaceAll('\\%', '\\\\%')}`;
 			const baseText = `${util.formatBytes(baseValue)} <br> ± ${util.formatBytes(baseSpread)}`;
 			const headText = `${util.formatBytes(headValue)} <br> ± ${util.formatBytes(headSpread)}`;
 			const metricText = `$\\color{${heapSnapshotCategory[category].color}}{\\rule{8pt}{8pt}}$ **${heapSnapshotCategory[category].label}**`;
-			lines.push(`| ${metricText} | ${baseText} | ${headText} | ${deltaMedian} | ${util.formatBytes(summary.mad)} | ${util.formatDeltaBytes(summary.min)} | ${util.formatDeltaBytes(summary.max)} |`);
+			lines.push(`| ${metricText} | ${baseText} | ${headText} | ${deltaMedian} | ${util.formatBytes(summary.mad)} | ${util.formatDeltaBytes(summary.min, 1000)} | ${util.formatDeltaBytes(summary.max, 1000)} |`);
 			lines.push('| | | | | | | |');
 		} else {
-			const deltaMedian = util.formatDeltaBytes(summary.median);
+			const deltaMedian = util.formatDeltaBytes(summary.median, 1000);
 			const baseText = util.formatBytes(baseValue);
 			const headText = util.formatBytes(headValue);
 			const basePercent = util.formatPercent((baseValue * 100) / baseTotal);
 			const headPercent = util.formatPercent((headValue * 100) / headTotal);
 			const metricText = `<details><summary>$\\color{${heapSnapshotCategory[category].color}}{\\rule{8pt}{8pt}}$ **${heapSnapshotCategory[category].label}**</summary>${basePercent} → ${headPercent}</details>`;
-			lines.push(`| ${metricText} | ${baseText} | ${headText} | ${deltaMedian} | ${util.formatBytes(summary.mad)} | ${util.formatDeltaBytes(summary.min)} | ${util.formatDeltaBytes(summary.max)} |`);
+			lines.push(`| ${metricText} | ${baseText} | ${headText} | ${deltaMedian} | ${util.formatBytes(summary.mad)} | ${util.formatDeltaBytes(summary.min, 1000)} | ${util.formatDeltaBytes(summary.max, 1000)} |`);
 		}
 	}
 
