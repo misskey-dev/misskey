@@ -7,7 +7,7 @@ import { randomUUID } from 'node:crypto';
 import { resolve } from 'node:path';
 import { Inject, Injectable } from '@nestjs/common';
 import ms from 'ms';
-import { sharp } from 'sharp';
+import sharp from 'sharp';
 import { In, IsNull } from 'typeorm';
 import fastifyStatic from '@fastify/static';
 import fastifyProxy from '@fastify/http-proxy';
