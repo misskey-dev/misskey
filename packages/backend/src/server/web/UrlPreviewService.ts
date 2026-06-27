@@ -5,7 +5,6 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import type { SummalyResult } from '@misskey-dev/summaly';
-import RE2 from 're2';
 import { DI } from '@/di-symbols.js';
 import type { Config } from '@/config.js';
 import { HttpRequestService } from '@/core/HttpRequestService.js';
@@ -98,11 +97,11 @@ export class UrlPreviewService {
 			summary.icon = this.wrap(summary.icon);
 			summary.thumbnail = this.wrap(summary.thumbnail);
 
+			// Cache 1day
+			reply.header('Cache-Control', 'max-age=86400, immutable');
+
 			const includeDenyList = this.utilityService.isKeyWordIncluded(summary.url, this.meta.urlPreviewSensitiveList);
 			if (includeDenyList) summary.sensitive = true;
-
-			// Cache 7days
-			reply.header('Cache-Control', 'max-age=604800, immutable');
 
 			return summary;
 		} catch (err) {
