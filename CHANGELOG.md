@@ -15,7 +15,8 @@
 
 ### General
 - Feat: コントロールパネルから二要素認証を解除できるように
-- Feat: 条件に一致したURLプレビューのサムネイルを隠すことができるように
+- Feat: 条件に一致したURLプレビューのサムネイルを隠すことができるように  
+  (Based on https://github.com/MisskeyIO/misskey/pull/214)
 
 ### Client
 - 2025.4.0 以前の設定情報の移行処理が削除されました
