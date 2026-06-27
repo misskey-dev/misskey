@@ -54,7 +54,7 @@ const metrics = [
 
 function formatMemoryMb(valueKiB: number | null | undefined) {
 	if (valueKiB == null) return '-';
-	return `${util.formatNumber(valueKiB / 1024)} MB`;
+	return `${util.formatNumber(valueKiB / 1000)} MB`;
 }
 
 function getMemoryValue(report: MemoryReport, phase: typeof memoryReportPhases[number]['key'], metric: typeof metrics[number]) {
