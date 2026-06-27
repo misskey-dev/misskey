@@ -97,11 +97,12 @@ export class UrlPreviewService {
 			summary.icon = this.wrap(summary.icon);
 			summary.thumbnail = this.wrap(summary.thumbnail);
 
+			if (summary.sensitive !== true) {
+				summary.sensitive = this.utilityService.isKeyWordIncluded(summary.url, this.meta.urlPreviewSensitiveList);
+			}
+
 			// Cache 1day
 			reply.header('Cache-Control', 'max-age=86400, immutable');
-
-			const includeDenyList = this.utilityService.isKeyWordIncluded(summary.url, this.meta.urlPreviewSensitiveList);
-			if (includeDenyList) summary.sensitive = true;
 
 			return summary;
 		} catch (err) {
