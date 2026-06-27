@@ -144,7 +144,7 @@ function renderHeapSnapshotSection(base: MemoryReport, head: MemoryReport) {
 	];
 
 	for (const graph of [
-		heapSnapshotUtil.renderHeapSnapshotSankey(baseHeapSnapshotReport, 'Base'),
+		//heapSnapshotUtil.renderHeapSnapshotSankey(baseHeapSnapshotReport, 'Base'),
 		heapSnapshotUtil.renderHeapSnapshotSankey(headHeapSnapshotReport, 'Head'),
 	]) {
 		if (graph == null) continue;
@@ -374,6 +374,10 @@ if (heapSnapshotSection != null) {
 	lines.push('');
 }
 
+const artifactUrl = process.env.MK_MEMORY_HEAP_SNAPSHOT_ARTIFACT_URL_HEAD!.trim();
+lines.push(`[Download representative V8 heap snapshot (head)](${artifactUrl})`);
+lines.push('');
+
 const jsFootprintSection = renderJsFootprintSection(baseJsFootprint, headJsFootprint);
 if (jsFootprintSection != null) {
 	lines.push(jsFootprintSection);
@@ -420,6 +424,6 @@ if (warningMetric != null && warningDiffPercent != null && warningDiffPercent > 
 	lines.push('');
 }
 
-lines.push(`[See workflow logs for details](https://github.com/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID})`);
+//lines.push(`[See workflow logs for details](https://github.com/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID})`);
 
 await writeFile(outputFile, `${lines.join('\n')}\n`);

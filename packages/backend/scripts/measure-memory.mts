@@ -41,6 +41,7 @@ const REQUEST_COUNT = readIntegerEnv('MK_MEMORY_REQUEST_COUNT', 10, 0);
 const HEAP_SNAPSHOT = readBooleanEnv('MK_MEMORY_HEAP_SNAPSHOT', false);
 const HEAP_SNAPSHOT_TIMEOUT = readIntegerEnv('MK_MEMORY_HEAP_SNAPSHOT_TIMEOUT_MS', 120000, 1);
 const HEAP_SNAPSHOT_BREAKDOWN_TOP_N = readIntegerEnv('MK_MEMORY_HEAP_SNAPSHOT_BREAKDOWN_TOP_N', 6, 1);
+const HEAP_SNAPSHOT_SAVE_PATH = process.env.MK_MEMORY_HEAP_SNAPSHOT_SAVE_PATH;
 
 const procStatusKeys = ['VmPeak', 'VmSize', 'VmHWM', 'VmRSS', 'VmData', 'VmStk', 'VmExe', 'VmLib', 'VmPTE', 'VmSwap'] as const;
 const smapsRollupKeys = ['Pss', 'Shared_Clean', 'Shared_Dirty', 'Private_Clean', 'Private_Dirty', 'Swap', 'SwapPss'] as const;
@@ -320,6 +321,11 @@ async function getHeapSnapshotStatistics(serverProcess: ChildProcess): Promise<H
 	const writtenPath = typeof message.path === 'string' ? message.path : snapshotPath;
 
 	try {
+		if (HEAP_SNAPSHOT_SAVE_PATH != null && HEAP_SNAPSHOT_SAVE_PATH !== '') {
+			await fs.mkdir(dirname(HEAP_SNAPSHOT_SAVE_PATH), { recursive: true });
+			await fs.copyFile(writtenPath, HEAP_SNAPSHOT_SAVE_PATH);
+		}
+
 		const snapshot = JSON.parse(await fs.readFile(writtenPath, 'utf-8'));
 		return analyzeHeapSnapshot(snapshot);
 	} finally {

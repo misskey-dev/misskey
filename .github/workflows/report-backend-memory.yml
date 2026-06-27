@@ -33,9 +33,26 @@ jobs:
       - name: Load PR Number
         id: load-pr-num
         run: echo "pr-number=$(cat artifacts/pr_number)" >> "$GITHUB_OUTPUT"
+      - name: Find head heap snapshot artifact
+        id: find-heap-snapshot-artifact
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const run_id = context.payload.workflow_run.id;
+            const artifacts = await github.paginate(github.rest.actions.listWorkflowRunArtifacts, {
+              owner,
+              repo,
+              run_id,
+            });
+            const artifact = artifacts.find(artifact => artifact.name === 'backend-memory-head-heap-snapshot');
+            if (artifact == null) return;
+            core.setOutput('url', `https://github.com/${owner}/${repo}/actions/runs/${run_id}/artifacts/${artifact.id}`);
 
       - id: build-comment
         name: Build memory comment
+        env:
+          MK_MEMORY_HEAP_SNAPSHOT_ARTIFACT_URL_HEAD: ${{ steps.find-heap-snapshot-artifact.outputs.url }}
         run: node .github/scripts/backend-memory-report.mts ./artifacts/memory-base.json ./artifacts/memory-head.json ./output.md ./artifacts/js-footprint-base.json ./artifacts/js-footprint-head.json
       - uses: thollander/actions-comment-pull-request@v3
         with:
