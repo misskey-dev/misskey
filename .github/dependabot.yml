@@ -37,6 +37,3 @@ updates:
     typescript-eslint:
       patterns:
         - "@typescript-eslint/*"
-    tensorflow:
-      patterns:
-        - "@tensorflow/*"
