@@ -146,8 +146,10 @@ function metricRow(
 	if (baseValue == null || headValue == null || !Number.isFinite(baseValue) || !Number.isFinite(headValue)) return null;
 
 	const summary = pairedDelta(base, head, getSampleValue);
-	const medianDelta = summary?.median ?? (headValue - baseValue);
-	const deltaMedian = `${formatDelta(medianDelta, formatter)}<br>${util.calcAndFormatDeltaPercent(baseValue, headValue).replaceAll('\\%', '\\\\%')}`;
+	const percent = summary == null || baseValue === 0 ? null : summary.median * 100 / baseValue;
+	const deltaMedian = summary == null
+		? '-'
+		: `${formatDelta(summary.median, formatter)}<br>${percent == null ? '-' : util.formatDeltaPercent(percent).replaceAll('\\%', '\\\\%')}`;
 
 	return `| **${label}** | ${formatValueWithSpread(base, baseValue, getSampleValue, formatter)} | ${formatValueWithSpread(head, headValue, getSampleValue, formatter)} | ${deltaMedian} | ${summary == null ? '-' : formatter(summary.mad)} | ${summary == null ? '-' : formatDelta(summary.min, formatter)} | ${summary == null ? '-' : formatDelta(summary.max, formatter)} |`;
 }
@@ -238,7 +240,7 @@ function renderHeapSnapshotTable(base: BrowserMetricsReport, head: BrowserMetric
 		const categoryInfo = heapSnapshotUtil.heapSnapshotCategory[category];
 		const summary = pairedDelta(base, head, sample => sample.heapSnapshot.categories[category]);
 		const metricText = `$\\color{${categoryInfo.color}}{\\rule{8pt}{8pt}}$ **${categoryInfo.label}**`;
-		lines.push(`| ${metricText} | ${util.formatBytes(baseValue)} | ${util.formatBytes(headValue)} | ${formatDelta(summary?.median ?? (headValue - baseValue), util.formatBytes)} | ${summary == null ? '-' : util.formatBytes(summary.mad)} | ${util.formatNumber(baseNodeCount)} | ${util.formatNumber(headNodeCount)} |`);
+		lines.push(`| ${metricText} | ${util.formatBytes(baseValue)} | ${util.formatBytes(headValue)} | ${summary == null ? '-' : formatDelta(summary.median, util.formatBytes)} | ${summary == null ? '-' : util.formatBytes(summary.mad)} | ${util.formatNumber(baseNodeCount)} | ${util.formatNumber(headNodeCount)} |`);
 	}
 
 	return lines.join('\n');
@@ -302,7 +304,7 @@ export function renderFrontendBrowserReport(base: BrowserMetricsReport, head: Br
 		'',
 		renderSummaryTable(base, head),
 		'',
-		`_Measured ${sampleSummary} with fresh headless Chrome profiles, browser cache disabled, service workers bypassed, and forced V8 GC before each heap snapshot. Values are medians; ± is median absolute deviation. Scenario: sign up, dismiss the initial account setup dialog, create the first timeline note, then wait until that note is visible._`,
+		`_Measured ${sampleSummary} with fresh headless Chrome profiles, browser cache disabled, service workers bypassed, and forced V8 GC before each heap snapshot. Base/Head values are medians; Δ median is the median of paired Head - Base sample deltas; percent uses Δ median / Base median; ± and Δ MAD are median absolute deviations. Scenario: sign up, dismiss the initial account setup dialog, create the first timeline note, then wait until that note is visible._`,
 		'',
 		'<details>',
 		'<summary>Requests by resource type</summary>',
