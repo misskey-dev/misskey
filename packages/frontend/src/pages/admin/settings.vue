@@ -401,7 +401,6 @@ import MkFolder from '@/components/MkFolder.vue';
 import { useForm } from '@/composables/use-form.js';
 import MkFormFooter from '@/components/MkFormFooter.vue';
 import MkRadios from '@/components/MkRadios.vue';
-import Search from '../search.vue';
 
 const meta = await misskeyApi('admin/meta');
 
