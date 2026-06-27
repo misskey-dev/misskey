@@ -107,11 +107,11 @@ describe('2要素認証', () => {
 						origin: config.scheme + '://' + config.host,
 						androidPackageName: 'org.mozilla.firefox',
 					}), 'utf-8').toString('base64url'),
-					attestationObject: cbor.encode({
+					attestationObject: Buffer.from(cbor.encode({
 						fmt: 'none',
 						attStmt: {},
 						authData,
-					}).toString('base64url'),
+					})).toString('base64url'),
 				},
 				clientExtensionResults: {},
 				type: 'public-key',
