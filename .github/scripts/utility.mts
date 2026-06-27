@@ -114,8 +114,8 @@ export function formatBytes(value: number) {
 	const units = ['B', 'KB', 'MB', 'GB'];
 	let unitIndex = 0;
 	let size = value;
-	while (size >= 1024 && unitIndex < units.length - 1) {
-		size /= 1024;
+	while (size >= 1000 && unitIndex < units.length - 1) {
+		size /= 1000;
 		unitIndex += 1;
 	}
 
