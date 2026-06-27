@@ -284,20 +284,34 @@ async function launchChrome(label: string): Promise<ChromeHandle> {
 	throw new Error('Timed out waiting for Chrome DevTools Protocol');
 }
 
-async function closeChrome(handle: ChromeHandle) {
-	handle.process.kill();
+async function waitForProcessExit(child: ChildProcessWithoutNullStreams) {
 	await new Promise<void>(resolvePromise => {
-		if (handle.process.exitCode != null) {
+		if (child.exitCode != null) {
 			resolvePromise();
 			return;
 		}
-		handle.process.once('exit', () => resolvePromise());
-		setTimeout(() => {
-			handle.process.kill('SIGKILL');
+		const killTimer = setTimeout(() => {
+			child.kill('SIGKILL');
 			resolvePromise();
 		}, 5_000).unref();
+		child.once('exit', () => {
+			clearTimeout(killTimer);
+			resolvePromise();
+		});
 	});
-	await rm(handle.userDataDir, { recursive: true, force: true });
+}
+
+async function closeChrome(handle: ChromeHandle) {
+	if (handle.process.exitCode == null) {
+		handle.process.kill();
+	}
+	await waitForProcessExit(handle.process);
+	await rm(handle.userDataDir, {
+		recursive: true,
+		force: true,
+		maxRetries: 10,
+		retryDelay: 200,
+	});
 }
 
 async function connectPage(port: number) {
