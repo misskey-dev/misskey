@@ -148,15 +148,15 @@ export class AntennaService implements OnApplicationShutdown {
 		} else if (antenna.src === 'users') {
 			const accts = antenna.users.map(x => {
 				const { username, host } = Acct.parse(x);
-				return this.utilityService.getFullApAccount(username, host).toLowerCase();
+				return this.utilityService.getFullApAccount({ username, host }).toLowerCase();
 			});
-			if (!accts.includes(this.utilityService.getFullApAccount(noteUser.username, noteUser.host).toLowerCase())) return false;
+			if (!accts.includes(this.utilityService.getFullApAccount(noteUser).toLowerCase())) return false;
 		} else if (antenna.src === 'users_blacklist') {
 			const accts = antenna.users.map(x => {
 				const { username, host } = Acct.parse(x);
-				return this.utilityService.getFullApAccount(username, host).toLowerCase();
+				return this.utilityService.getFullApAccount({ username, host }).toLowerCase();
 			});
-			if (accts.includes(this.utilityService.getFullApAccount(noteUser.username, noteUser.host).toLowerCase())) return false;
+			if (accts.includes(this.utilityService.getFullApAccount(noteUser).toLowerCase())) return false;
 		}
 
 		const keywords = antenna.keywords
@@ -225,11 +225,11 @@ export class AntennaService implements OnApplicationShutdown {
 		// There is a possibility for users to add the srcUser to their antennas, but it's low, so we don't check it.
 
 		// Get MiAntenna[] from cache and filter to select antennas with the src user is in the users list
-		const srcUserAcct = this.utilityService.getFullApAccount(src.username, src.host).toLowerCase();
+		const srcUserAcct = this.utilityService.getFullApAccount(src).toLowerCase();
 		const antennasToMigrate = (await this.getAntennas()).filter(antenna => {
 			return antenna.users.some(user => {
 				const { username, host } = Acct.parse(user);
-				return this.utilityService.getFullApAccount(username, host).toLowerCase() === srcUserAcct;
+				return this.utilityService.getFullApAccount({ username, host }).toLowerCase() === srcUserAcct;
 			});
 		});
 

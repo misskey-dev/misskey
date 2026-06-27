@@ -191,6 +191,10 @@ export const packedUserLiteSchema = {
 				},
 			},
 		},
+		acct: {
+			type: 'string',
+			nullable: true, optional: false,
+		},
 	},
 } as const;
 

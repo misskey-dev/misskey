@@ -35,7 +35,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import { host } from '@@/js/config.js';
 import * as os from '@/os.js';
@@ -66,6 +66,10 @@ const hasPendingFollowRequestFromYou = ref(props.user.hasPendingFollowRequestFro
 const wait = ref(false);
 const connection = useStream().useChannel('main');
 
+const acct = computed(() => {
+	return Misskey.acct.fromUser(props.user);
+});
+
 if (props.user.isFollowing == null && $i) {
 	misskeyApi('users/show', {
 		userId: props.user.id,
@@ -84,7 +88,7 @@ async function onClick() {
 	const isLoggedIn = await pleaseLogin({
 		openOnRemote: {
 			type: 'web',
-			path: `/@${props.user.username}@${props.user.host ?? host}`,
+			path: `/@${acct.value.username}@${acct.value.host ?? host}`,
 		},
 	});
 	if (!isLoggedIn) return;
