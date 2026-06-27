@@ -153,9 +153,10 @@ export function getConfig(): UserConfig {
 							name: 'vue',
 							test: /node_modules[\\/]vue/,
 						}, {
-							// dependencies of i18n.ts
-							name: 'config',
-							test: /@@[\\/]js[\\/]config\.js/,
+							// split i18n related module to distinct module
+							name: 'i18n',
+							includeDependenciesRecursively: false,
+							test: /i18n\.ts|locale\.ts/,
 						}],
 					},
 					entryFileNames: `scripts/${localesHash}-[hash:8].js`,

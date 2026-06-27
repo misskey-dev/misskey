@@ -1355,6 +1355,7 @@ widgets: "ウィジェット"
 deviceInfoDescription: "なんか技術的なことで分からんこと聞くときは、下の情報も一緒に書いてもらえると、こっちも分かりやすいし、はよ直ると思います。"
 youAreAdmin: "あんた、管理者やで"
 presets: "プリセット"
+previewingThemeRestore: "元に戻す"
 _imageEditing:
   _vars:
     filename: "ファイル名"
