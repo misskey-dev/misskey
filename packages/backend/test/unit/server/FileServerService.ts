@@ -213,6 +213,7 @@ describe('FileServerService', () => {
 		const loggerService = new LoggerService();
 		const aiService = {
 			detectSensitive: async () => null,
+			detectSensitiveMany: async (sources: Buffer[]) => sources.map(() => null),
 		} as unknown as AiService;
 		const fileInfoService = new FileInfoService(aiService, loggerService);
 		const httpRequestService = new HttpRequestService(config);

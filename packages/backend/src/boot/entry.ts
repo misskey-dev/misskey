@@ -9,6 +9,7 @@
 
 import cluster from 'node:cluster';
 import { EventEmitter } from 'node:events';
+import { writeHeapSnapshot } from 'node:v8';
 import chalk from 'chalk';
 import Xev from 'xev';
 import Logger from '@/logger.js';
@@ -105,6 +106,21 @@ process.on('message', msg => {
 				type: 'memory usage',
 				value: process.memoryUsage(),
 			});
+		}
+	} else if (msg != null && typeof msg === 'object' && 'type' in msg && msg.type === 'heap snapshot' && 'path' in msg && typeof msg.path === 'string') {
+		if (process.send != null) {
+			try {
+				const path = writeHeapSnapshot(msg.path);
+				process.send({
+					type: 'heap snapshot',
+					path,
+				});
+			} catch (err) {
+				process.send({
+					type: 'heap snapshot error',
+					message: err instanceof Error ? err.message : String(err),
+				});
+			}
 		}
 	}
 });

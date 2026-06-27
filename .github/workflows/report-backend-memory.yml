@@ -19,43 +19,41 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6.0.2
 
-      - name: Download artifact
-        uses: actions/github-script@v9
+      - name: Download artifacts
+        uses: actions/download-artifact@v8
         with:
-          script: |
-            const fs = require('fs');
-            let allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              run_id: context.payload.workflow_run.id,
-            });
-            let matchArtifacts = allArtifacts.data.artifacts.filter((artifact) => {
-              return artifact.name.startsWith("memory-artifact-") || artifact.name == "memory-artifact"
-            });
-            await Promise.all(matchArtifacts.map(async (artifact) => {
-              let download = await github.rest.actions.downloadArtifact({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                artifact_id: artifact.id,
-                archive_format: 'zip',
-              });
-              await fs.promises.writeFile(`${process.env.GITHUB_WORKSPACE}/${artifact.name}.zip`, Buffer.from(download.data));
-            }));
-      - name: Extract all artifacts
-        run: |
-          find . -mindepth 1 -maxdepth 1 -type f -name '*.zip' -exec unzip {} -d artifacts ';'
-          ls -la artifacts/
+          pattern: memory-artifact-*
+          path: artifacts
+          merge-multiple: true
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ github.event.workflow_run.id }}
+      - name: Check artifacts
+        run: ls -lh artifacts/
       - name: Load PR Number
         id: load-pr-num
         run: echo "pr-number=$(cat artifacts/pr_number)" >> "$GITHUB_OUTPUT"
+      - name: Find head heap snapshot artifact
+        id: find-heap-snapshot-artifact
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const run_id = context.payload.workflow_run.id;
+            const artifacts = await github.paginate(github.rest.actions.listWorkflowRunArtifacts, {
+              owner,
+              repo,
+              run_id,
+            });
+            const artifact = artifacts.find(artifact => artifact.name === 'backend-memory-head-heap-snapshot');
+            if (artifact == null) return;
+            core.setOutput('url', `https://github.com/${owner}/${repo}/actions/runs/${run_id}/artifacts/${artifact.id}`);
 
-      - name: Output base
-        run: cat ./artifacts/memory-base.json
-      - name: Output head
-        run: cat ./artifacts/memory-head.json
       - id: build-comment
         name: Build memory comment
-        run: node .github/scripts/backend-memory-report.mjs ./artifacts/memory-base.json ./artifacts/memory-head.json ./output.md
+        env:
+          MK_MEMORY_HEAP_SNAPSHOT_ARTIFACT_URL_HEAD: ${{ steps.find-heap-snapshot-artifact.outputs.url }}
+        run: node .github/scripts/backend-memory-report.mts ./artifacts/memory-base.json ./artifacts/memory-head.json ./output.md ./artifacts/js-footprint-base.json ./artifacts/js-footprint-head.json
       - uses: thollander/actions-comment-pull-request@v3
         with:
           pr-number: ${{ steps.load-pr-num.outputs.pr-number }}
