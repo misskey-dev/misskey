@@ -9,12 +9,16 @@ import { DI } from '@/di-symbols.js';
 import type { MiUser } from '@/models/User.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
 import { IdService } from '@/core/IdService.js';
-import type { MiHashtag } from '@/models/Hashtag.js';
+import { MiHashtag } from '@/models/Hashtag.js';
 import type { HashtagsRepository, MiMeta } from '@/models/_.js';
 import { UserEntityService } from '@/core/entities/UserEntityService.js';
 import { bindThis } from '@/decorators.js';
 import { FeaturedService } from '@/core/FeaturedService.js';
 import { UtilityService } from '@/core/UtilityService.js';
+import { isDuplicateKeyValueError } from '@/misc/is-duplicate-key-value-error.js';
+import Logger from '../logger.js';
+
+const logger = new Logger('hashtag/create');
 
 @Injectable()
 export class HashtagService {
@@ -60,19 +64,71 @@ export class HashtagService {
 		// TODO: サンプリング
 		this.updateHashtagsRanking(tag, user.id);
 
-		const index = await this.hashtagsRepository.findOneBy({ name: tag });
+		{
+			const index = await this.hashtagsRepository.findOneBy({ name: tag });
 
-		if (index == null && !inc) return;
+			if (index == null && inc) {
+				try {
+					if (isUserAttached) {
+						await this.hashtagsRepository.insert({
+							id: this.idService.gen(),
+							name: tag,
+							mentionedUserIds: [],
+							mentionedUsersCount: 0,
+							mentionedLocalUserIds: [],
+							mentionedLocalUsersCount: 0,
+							mentionedRemoteUserIds: [],
+							mentionedRemoteUsersCount: 0,
+							attachedUserIds: [user.id],
+							attachedUsersCount: 1,
+							attachedLocalUserIds: this.userEntityService.isLocalUser(user) ? [user.id] : [],
+							attachedLocalUsersCount: this.userEntityService.isLocalUser(user) ? 1 : 0,
+							attachedRemoteUserIds: this.userEntityService.isRemoteUser(user) ? [user.id] : [],
+							attachedRemoteUsersCount: this.userEntityService.isRemoteUser(user) ? 1 : 0,
+						} as MiHashtag);
+					} else {
+						await this.hashtagsRepository.insert({
+							id: this.idService.gen(),
+							name: tag,
+							mentionedUserIds: [user.id],
+							mentionedUsersCount: 1,
+							mentionedLocalUserIds: this.userEntityService.isLocalUser(user) ? [user.id] : [],
+							mentionedLocalUsersCount: this.userEntityService.isLocalUser(user) ? 1 : 0,
+							mentionedRemoteUserIds: this.userEntityService.isRemoteUser(user) ? [user.id] : [],
+							mentionedRemoteUsersCount: this.userEntityService.isRemoteUser(user) ? 1 : 0,
+							attachedUserIds: [],
+							attachedUsersCount: 0,
+							attachedLocalUserIds: [],
+							attachedLocalUsersCount: 0,
+							attachedRemoteUserIds: [],
+							attachedRemoteUsersCount: 0,
+						} as MiHashtag);
+					}
+					return;
+				} catch (err) {
+					if (isDuplicateKeyValueError(err)) {
+						logger.info(`Duplicate insertion detected. Falling back to update. #${tag}`);
+					} else {
+						throw err;
+					}
+				}
+			}
+		}
 
-		if (index != null) {
-			const q = this.hashtagsRepository.createQueryBuilder('tag').update()
-				.where('name = :name', { name: tag });
+		await this.hashtagsRepository.manager.transaction(async transactionalEntityManager => {
+			const index = await transactionalEntityManager
+				.createQueryBuilder(MiHashtag, 'tag')
+				.setLock('pessimistic_write')
+				.where('name = :name', { name: tag })
+				.getOne();
+
+			if (index == null) return;
 
 			const set = {} as any;
 
 			if (isUserAttached) {
 				if (inc) {
-				// 自分が初めてこのタグを使ったなら
+					// 自分が初めてこのタグを使ったなら
 					if (!index.attachedUserIds.some(id => id === user.id)) {
 						set.attachedUserIds = () => `array_append("attachedUserIds", '${user.id}')`;
 						set.attachedUsersCount = () => '"attachedUsersCount" + 1';
@@ -117,46 +173,15 @@ export class HashtagService {
 			}
 
 			if (Object.keys(set).length > 0) {
-				q.set(set);
-				q.execute();
+				await transactionalEntityManager
+					.getRepository(MiHashtag)
+					.createQueryBuilder()
+					.update()
+					.where('id = :id', { id: index.id })
+					.set(set)
+					.execute();
 			}
-		} else {
-			if (isUserAttached) {
-				this.hashtagsRepository.insert({
-					id: this.idService.gen(),
-					name: tag,
-					mentionedUserIds: [],
-					mentionedUsersCount: 0,
-					mentionedLocalUserIds: [],
-					mentionedLocalUsersCount: 0,
-					mentionedRemoteUserIds: [],
-					mentionedRemoteUsersCount: 0,
-					attachedUserIds: [user.id],
-					attachedUsersCount: 1,
-					attachedLocalUserIds: this.userEntityService.isLocalUser(user) ? [user.id] : [],
-					attachedLocalUsersCount: this.userEntityService.isLocalUser(user) ? 1 : 0,
-					attachedRemoteUserIds: this.userEntityService.isRemoteUser(user) ? [user.id] : [],
-					attachedRemoteUsersCount: this.userEntityService.isRemoteUser(user) ? 1 : 0,
-				} as MiHashtag);
-			} else {
-				this.hashtagsRepository.insert({
-					id: this.idService.gen(),
-					name: tag,
-					mentionedUserIds: [user.id],
-					mentionedUsersCount: 1,
-					mentionedLocalUserIds: this.userEntityService.isLocalUser(user) ? [user.id] : [],
-					mentionedLocalUsersCount: this.userEntityService.isLocalUser(user) ? 1 : 0,
-					mentionedRemoteUserIds: this.userEntityService.isRemoteUser(user) ? [user.id] : [],
-					mentionedRemoteUsersCount: this.userEntityService.isRemoteUser(user) ? 1 : 0,
-					attachedUserIds: [],
-					attachedUsersCount: 0,
-					attachedLocalUserIds: [],
-					attachedLocalUsersCount: 0,
-					attachedRemoteUserIds: [],
-					attachedRemoteUsersCount: 0,
-				} as MiHashtag);
-			}
-		}
+		});
 	}
 
 	@bindThis
