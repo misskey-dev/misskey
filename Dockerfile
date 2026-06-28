@@ -2,6 +2,9 @@
 
 ARG NODE_VERSION=26.4.0-trixie
 
+# Get static binary of ffmpeg
+FROM mwader/static-ffmpeg:8.1 AS ffmpeg-bin
+
 # build assets & compile TypeScript
 
 FROM --platform=$BUILDPLATFORM node:${NODE_VERSION} AS native-builder
@@ -78,7 +81,7 @@ ENV PNPM_CONFIG_VERIFY_DEPS_BEFORE_RUN=false
 
 RUN apt-get update \
 	&& apt-get install -y --no-install-recommends \
-	ffmpeg tini curl libjemalloc-dev libjemalloc2 \
+	tini curl libjemalloc-dev libjemalloc2 \
 	&& ln -s /usr/lib/$(uname -m)-linux-gnu/libjemalloc.so.2 /usr/local/lib/libjemalloc.so \
 	&& groupadd -g "${GID}" misskey \
 	&& useradd -l -u "${UID}" -g "${GID}" -m -d /misskey misskey \
@@ -86,6 +89,9 @@ RUN apt-get update \
 	&& find / -type d -path /sys -prune -o -type d -path /proc -prune -o -type f -perm /g+s -ignore_readdir_race -exec chmod g-s {} \; \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists
+
+COPY --from=ffmpeg-bin /ffmpeg /usr/local/bin/
+COPY --from=ffmpeg-bin /ffprobe /usr/local/bin/
 
 # add package.json to add pnpm
 COPY ./package.json ./package.json
