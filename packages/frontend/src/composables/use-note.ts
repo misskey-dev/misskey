@@ -430,6 +430,7 @@ export function useNote(
 
 	// フォーカス制御
 	function focus() { els.rootEl?.value?.focus(); }
+
 	function blur() { els.rootEl?.value?.blur(); }
 
 	return {
