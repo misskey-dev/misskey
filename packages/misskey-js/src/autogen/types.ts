@@ -34287,6 +34287,7 @@ export interface operations {
                         originalNotesCount: number;
                         usersCount: number;
                         originalUsersCount: number;
+                        reactionsCount: number;
                         instances: number;
                         driveUsageLocal: number;
                         driveUsageRemote: number;
