@@ -161,7 +161,8 @@ onUnmounted(() => {
 	align-items: center;
 	height: var(--height);
 
-	&:not(.slim) .tabs {
+	.tabs:first-child,
+	&:not(.slim) > :not(.titleContainer) ~ .tabs {
 		margin-left: auto;
 		padding: 0 12px;
 	}
