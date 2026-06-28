@@ -546,7 +546,7 @@ export const meta = {
 			},
 			urlPreviewSensitiveList: {
 				type: 'array',
-				optional: true, nullable: false,
+				optional: false, nullable: false,
 				items: {
 					type: 'string',
 					optional: false, nullable: false,
