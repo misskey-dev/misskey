@@ -147,6 +147,7 @@ jobs:
           name: frontend-browser-metrics-detailed-html
           path: ${{ runner.temp }}/frontend-browser-metrics-report/frontend-browser-detailed-html.html
           if-no-files-found: error
+          archive: false
           retention-days: 7
 
       - name: Generate browser metrics report
