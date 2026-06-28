@@ -171,22 +171,31 @@ async function launchChrome(label: string): Promise<ChromeHandle> {
 	child.stdout.on('data', data => process.stderr.write(`[chrome:${label}] ${data}`));
 	child.stderr.on('data', data => process.stderr.write(`[chrome:${label}] ${data}`));
 
-	const startedAt = Date.now();
-	while (Date.now() - startedAt < 30_000) {
-		if (child.exitCode != null) throw new Error(`Chrome exited early with code ${child.exitCode}`);
-		try {
-			await fetchJson(`http://127.0.0.1:${port}/json/version`);
-			return {
-				process: child,
-				port,
-				userDataDir,
-			};
-		} catch {
-			await util.sleep(250);
+	try {
+		const startedAt = Date.now();
+		while (Date.now() - startedAt < 30_000) {
+			if (child.exitCode != null) throw new Error(`Chrome exited early with code ${child.exitCode}`);
+			try {
+				await fetchJson(`http://127.0.0.1:${port}/json/version`);
+				return {
+					process: child,
+					port,
+					userDataDir,
+				};
+			} catch {
+				await util.sleep(250);
+			}
 		}
-	}
 
-	throw new Error('Timed out waiting for Chrome DevTools Protocol');
+		throw new Error('Timed out waiting for Chrome DevTools Protocol');
+	} catch (err) {
+		await closeChrome({
+			process: child,
+			port,
+			userDataDir,
+		});
+		throw err;
+	}
 }
 
 async function closeChrome(handle: ChromeHandle) {
