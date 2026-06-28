@@ -189,6 +189,19 @@ async function launchChrome(label: string): Promise<ChromeHandle> {
 	throw new Error('Timed out waiting for Chrome DevTools Protocol');
 }
 
+async function closeChrome(handle: ChromeHandle) {
+	if (handle.process.exitCode == null) {
+		handle.process.kill();
+	}
+	await waitForProcessExit(handle.process);
+	await rm(handle.userDataDir, {
+		recursive: true,
+		force: true,
+		maxRetries: 10,
+		retryDelay: 200,
+	});
+}
+
 type CdpResponse<T = any> = {
 	id?: number;
 	method?: string;
@@ -302,14 +315,19 @@ export class Chrome {
 
 	static async create(label: string, options: ChromeOptions): Promise<Chrome> {
 		const chromeHandle = await launchChrome(label);
-		const url = await fetchJson<{ webSocketDebuggerUrl: string }>(
-			`http://127.0.0.1:${chromeHandle.port}/json/new?${encodeURIComponent('about:blank')}`,
-			{ method: 'PUT' },
-		).catch(async () => await fetchJson<{ webSocketDebuggerUrl: string }>(
-			`http://127.0.0.1:${chromeHandle.port}/json/new?${encodeURIComponent('about:blank')}`,
-		));
-		const cdpClient = await CdpClient.connect(url.webSocketDebuggerUrl);
-		return new Chrome(chromeHandle, cdpClient, options);
+		try {
+			const url = await fetchJson<{ webSocketDebuggerUrl: string }>(
+				`http://127.0.0.1:${chromeHandle.port}/json/new?${encodeURIComponent('about:blank')}`,
+				{ method: 'PUT' },
+			).catch(async () => await fetchJson<{ webSocketDebuggerUrl: string }>(
+				`http://127.0.0.1:${chromeHandle.port}/json/new?${encodeURIComponent('about:blank')}`,
+			));
+			const cdpClient = await CdpClient.connect(url.webSocketDebuggerUrl);
+			return new Chrome(chromeHandle, cdpClient, options);
+		} catch (err) {
+			await closeChrome(chromeHandle);
+			throw err;
+		}
 	}
 
 	public async enableNetworkTracking() {
@@ -513,16 +531,7 @@ export class Chrome {
 
 	public async close() {
 		this.cdp.close();
-		if (this.handle.process.exitCode == null) {
-			this.handle.process.kill();
-		}
-		await waitForProcessExit(this.handle.process);
-		await rm(this.handle.userDataDir, {
-			recursive: true,
-			force: true,
-			maxRetries: 10,
-			retryDelay: 200,
-		});
+		await closeChrome(this.handle);
 	}
 }
 

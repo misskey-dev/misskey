@@ -414,12 +414,11 @@ function summarizeSamples(label: 'base' | 'head', samples: BrowserMeasurementSam
 }
 
 async function measureSample(label: 'base' | 'head', round: number, heapSnapshotSavePath?: string) {
-	let chrome: Chrome | null = null;
+	await prepareInstance();
+
+	const chrome = await Chrome.create(label, { scenarioTimeoutMs });
 
 	try {
-		await prepareInstance();
-
-		chrome = await Chrome.create(label, { scenarioTimeoutMs });
 		await chrome.enableNetworkTracking();
 
 		const startedAt = Date.now();
@@ -442,7 +441,7 @@ async function measureSample(label: 'base' | 'head', round: number, heapSnapshot
 
 		return measurement;
 	} finally {
-		if (chrome != null) await chrome.close();
+		await chrome.close();
 	}
 }
 
