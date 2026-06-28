@@ -9,7 +9,7 @@ import { join, resolve } from 'node:path';
 import * as util from './utility.mts';
 import * as heapSnapshotUtil from './heap-snapshot-util.mts';
 import { Chrome, summarizeNetwork } from './chrome.mts';
-import type { BrowserMeasurement, NetworkSummary } from './chrome.mts';
+import type { BrowserMeasurement, NetworkRequest, NetworkSummary } from './chrome.mts';
 
 const [baseDirArg, headDirArg, baseOutputArg, headOutputArg, headHeapSnapshotOutputArg] = process.argv.slice(2);
 
@@ -23,6 +23,7 @@ const headHeapSnapshotWorkDir = resolve('frontend-browser-head-heap-snapshots');
 
 type BrowserMeasurementSample = BrowserMeasurement & {
 	round: number;
+	networkRequests: NetworkRequest[];
 };
 
 type BrowserMetricsReport = {
@@ -319,6 +320,7 @@ async function measureSample(label: 'base' | 'head', round: number, heapSnapshot
 		const startedAt = Date.now();
 		await runSignupAndPostScenario(chrome);
 		const durationMs = Date.now() - startedAt;
+		await chrome.waitForNetworkDetails();
 		const performance = await chrome.collectPerformance();
 		const heapSnapshotRaw = await chrome.takeHeapSnapshot(heapSnapshotSavePath);
 		const heapSnapshot = heapSnapshotUtil.analyzeHeapSnapshot(heapSnapshotRaw, { breakdownTopN: heapSnapshotBreakdownTopN });
@@ -330,6 +332,7 @@ async function measureSample(label: 'base' | 'head', round: number, heapSnapshot
 			scenario: 'fresh browser signup, first timeline note, after the note becomes visible',
 			durationMs,
 			network: summarizeNetwork(chrome.networkRequests, baseUrl),
+			networkRequests: chrome.networkRequests,
 			performance,
 			heapSnapshot,
 		};

@@ -23,6 +23,7 @@ on:
       - .node-version
       - .github/misskey/test.yml
       - .github/scripts/utility.mts
+      - .github/scripts/frontend-browser-detailed-html.mts
       - .github/scripts/frontend-browser-report.mts
       - .github/scripts/heap-snapshot-util.mts
       - .github/scripts/measure-frontend-browser-comparison.mts
@@ -131,6 +132,23 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
+      - name: Generate browser detailed html
+        shell: bash
+        run: |
+          REPORT_DIR="$RUNNER_TEMP/frontend-browser-metrics-report"
+          test -s "$REPORT_DIR/before-browser.json"
+          test -s "$REPORT_DIR/after-browser.json"
+          node after/.github/scripts/frontend-browser-detailed-html.mts "$REPORT_DIR/before-browser.json" "$REPORT_DIR/after-browser.json" "$REPORT_DIR/frontend-browser-detailed-html.html"
+
+      - name: Upload browser detailed html
+        id: upload-browser-detailed-html
+        uses: actions/upload-artifact@v7
+        with:
+          name: frontend-browser-metrics-detailed-html
+          path: ${{ runner.temp }}/frontend-browser-metrics-report/frontend-browser-detailed-html.html
+          if-no-files-found: error
+          retention-days: 7
+
       - name: Generate browser metrics report
         shell: bash
         env:
@@ -138,6 +156,7 @@ jobs:
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           FRONTEND_BROWSER_HEAD_HEAP_SNAPSHOT_ARTIFACT_URL: ${{ steps.upload-browser-head-heap-snapshot.outputs.artifact-url }}
+          FRONTEND_BROWSER_DETAILED_HTML_ARTIFACT_URL: ${{ steps.upload-browser-detailed-html.outputs.artifact-url }}
         run: |
           REPORT_DIR="$RUNNER_TEMP/frontend-browser-metrics-report"
           test -s "$REPORT_DIR/before-browser.json"
@@ -153,6 +172,7 @@ jobs:
         run: |
           REPORT_DIR="$RUNNER_TEMP/frontend-browser-metrics-report"
           test -s "$REPORT_DIR/frontend-browser-metrics-report.md"
+          test -s "$REPORT_DIR/frontend-browser-detailed-html.html"
           test -s "$REPORT_DIR/pr-number.txt"
           test -s "$REPORT_DIR/head-sha.txt"
           cat "$REPORT_DIR/frontend-browser-metrics-report.md" >> "$GITHUB_STEP_SUMMARY"

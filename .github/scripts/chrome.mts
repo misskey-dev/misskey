@@ -16,14 +16,23 @@ type ChromeHandle = {
 	userDataDir: string;
 };
 
-type NetworkRequest = {
+export type NetworkRequest = {
 	requestId: string;
 	url: string;
 	method: string;
 	resourceType: string;
 	startedAt: number;
+	documentUrl?: string;
+	requestHeaders?: Record<string, string>;
+	requestBody?: string;
+	hasRequestBody: boolean;
 	status?: number;
+	statusText?: string;
 	mimeType?: string;
+	responseHeaders?: Record<string, string>;
+	protocol?: string;
+	remoteIPAddress?: string;
+	remotePort?: number;
 	encodedDataLength: number;
 	decodedBodyLength: number;
 	fromDiskCache: boolean;
@@ -234,6 +243,15 @@ function selectorReadyExpression(selector: string, options: { visible?: boolean;
 	})()`;
 }
 
+function normalizeHeaders(headers: Record<string, unknown> | undefined) {
+	if (headers == null) return undefined;
+	const normalized = {} as Record<string, string>;
+	for (const [key, value] of Object.entries(headers)) {
+		normalized[key] = String(value);
+	}
+	return normalized;
+}
+
 class CdpClient {
 	private nextId = 1;
 	private callbacks = new Map<number, {
@@ -315,6 +333,7 @@ export class Chrome {
 	public cdp: CdpClient;
 	public networkRequests: NetworkRequest[] = [];
 	private scenarioTimeoutMs: number;
+	private pendingNetworkDetailReads: Promise<void>[] = [];
 
 	constructor(handle: ChromeHandle, cdpClient: CdpClient, options: ChromeOptions) {
 		this.handle = handle;
@@ -351,6 +370,18 @@ export class Chrome {
 	public async enableNetworkTracking() {
 		const requests = new Map<string, NetworkRequest>();
 
+		const readRequestBody = (row: NetworkRequest) => {
+			if (!row.hasRequestBody || row.requestBody != null) return;
+			const pending = this.cdp.send<{ postData: string }>('Network.getRequestPostData', {
+				requestId: row.requestId,
+			}).then(result => {
+				row.requestBody = result.postData;
+			}).catch(() => {
+				// Some requests expose hasPostData but no longer have retrievable body data.
+			});
+			this.pendingNetworkDetailReads.push(pending);
+		};
+
 		this.cdp.on('Network.requestWillBeSent', params => {
 			if (params.request?.url == null) return;
 			const row: NetworkRequest = {
@@ -359,6 +390,10 @@ export class Chrome {
 				method: params.request.method ?? 'GET',
 				resourceType: params.type ?? 'Other',
 				startedAt: params.timestamp ?? 0,
+				documentUrl: params.documentURL,
+				requestHeaders: normalizeHeaders(params.request.headers),
+				requestBody: typeof params.request.postData === 'string' ? params.request.postData : undefined,
+				hasRequestBody: params.request.hasPostData === true || typeof params.request.postData === 'string',
 				encodedDataLength: 0,
 				decodedBodyLength: 0,
 				fromDiskCache: false,
@@ -374,7 +409,13 @@ export class Chrome {
 			const row = requests.get(params.requestId);
 			if (row == null) return;
 			row.status = params.response?.status;
+			row.statusText = params.response?.statusText;
 			row.mimeType = params.response?.mimeType;
+			row.responseHeaders = normalizeHeaders(params.response?.headers);
+			row.protocol = params.response?.protocol;
+			row.remoteIPAddress = params.response?.remoteIPAddress;
+			row.remotePort = params.response?.remotePort;
+			row.requestHeaders ??= normalizeHeaders(params.response?.requestHeaders);
 			row.fromDiskCache = params.response?.fromDiskCache === true;
 			row.fromServiceWorker = params.response?.fromServiceWorker === true;
 		});
@@ -391,6 +432,7 @@ export class Chrome {
 			if (row == null) return;
 			row.finished = true;
 			row.encodedDataLength = Math.max(row.encodedDataLength, params.encodedDataLength ?? 0);
+			readRequestBody(row);
 		});
 
 		this.cdp.on('Network.loadingFailed', params => {
@@ -399,6 +441,7 @@ export class Chrome {
 			row.failed = true;
 			row.finished = true;
 			row.errorText = params.errorText;
+			readRequestBody(row);
 		});
 
 		await this.cdp.send('Network.enable');
@@ -407,6 +450,15 @@ export class Chrome {
 		await this.cdp.send('Page.enable');
 		await this.cdp.send('Runtime.enable');
 		await this.cdp.send('Performance.enable');
+	}
+
+	public async waitForNetworkDetails() {
+		let settledCount = 0;
+		while (settledCount < this.pendingNetworkDetailReads.length) {
+			const pending = this.pendingNetworkDetailReads.slice(settledCount);
+			settledCount = this.pendingNetworkDetailReads.length;
+			await Promise.allSettled(pending);
+		}
 	}
 
 	public async evaluate<T>(expression: string, timeoutMs = 30_000): Promise<T> {

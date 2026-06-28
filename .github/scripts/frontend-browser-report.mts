@@ -8,6 +8,7 @@ import { pathToFileURL } from 'node:url';
 import * as util from './utility.mts';
 import * as heapSnapshotUtil from './heap-snapshot-util.mts';
 import type { HeapSnapshotData, HeapSnapshotReport } from './heap-snapshot-util.mts';
+import { NetworkRequest } from './chrome.mts';
 
 export type BrowserMeasurement = {
 	label: string;
@@ -69,6 +70,7 @@ export type BrowserMeasurement = {
 
 export type BrowserMeasurementSample = BrowserMeasurement & {
 	round: number;
+	networkRequests?: NetworkRequest[];
 };
 
 export type BrowserMetricsReport = {
@@ -125,33 +127,25 @@ function formatValueWithSpread(report: BrowserMetricsReport, value: number, getS
 	return `${formatter(value)}<br>± ${formatter(spread)}`;
 }
 
-function pairedDelta(reportBase: BrowserMetricsReport, reportHead: BrowserMetricsReport, getValue: (sample: BrowserMeasurementSample) => number | null | undefined) {
-	try {
-		return util.pairedDeltaSummary(reportBase.samples, reportHead.samples, sample => getValue(sample) ?? null);
-	} catch {
-		return null;
-	}
-}
-
 function metricRow(
 	label: string,
 	base: BrowserMetricsReport,
 	head: BrowserMetricsReport,
-	getSummaryValue: (summary: BrowserMeasurement) => number | null | undefined,
-	getSampleValue: (sample: BrowserMeasurementSample) => number | null | undefined,
+	getSummaryValue: (summary: BrowserMeasurement) => number,
+	getSampleValue: (sample: BrowserMeasurementSample) => number,
 	formatter: (value: number) => string,
 ) {
 	const baseValue = getSummaryValue(base.summary);
 	const headValue = getSummaryValue(head.summary);
 	if (baseValue == null || headValue == null || !Number.isFinite(baseValue) || !Number.isFinite(headValue)) return null;
 
-	const summary = pairedDelta(base, head, getSampleValue);
-	const percent = summary == null || baseValue === 0 ? null : summary.median * 100 / baseValue;
-	const deltaMedian = summary == null
-		? '-'
-		: `${formatDelta(summary.median, formatter)}<br>${percent == null ? '-' : util.formatDeltaPercent(percent, 0.1).replaceAll('\\%', '\\\\%')}`;
+	const summary = util.pairedDeltaSummary(base.samples, head.samples, sample => getSampleValue(sample));
+	const percent = baseValue === 0 ? null : summary.median * 100 / baseValue;
+	//const deltaMedian = `${formatDelta(summary.median, formatter)}<br>${percent == null ? '-' : util.formatDeltaPercent(percent, 0.1).replaceAll('\\%', '\\\\%')}`;
+	const deltaMedian = formatDelta(summary.median, formatter);
 
-	return `| **${label}** | ${formatValueWithSpread(base, baseValue, getSampleValue, formatter)} | ${formatValueWithSpread(head, headValue, getSampleValue, formatter)} | ${deltaMedian} | ${summary == null ? '-' : formatter(summary.mad)} | ${summary == null ? '-' : formatDelta(summary.min, formatter)} | ${summary == null ? '-' : formatDelta(summary.max, formatter)} |`;
+	//return `| **${label}** | ${formatValueWithSpread(base, baseValue, getSampleValue, formatter)} | ${formatValueWithSpread(head, headValue, getSampleValue, formatter)} | ${deltaMedian} | ${summary == null ? '-' : formatter(summary.mad)} | ${summary == null ? '-' : formatDelta(summary.min, formatter)} | ${summary == null ? '-' : formatDelta(summary.max, formatter)} |`;
+	return `| **${label}** | ${formatter(baseValue)} | ${formatter(headValue)} | ${deltaMedian} | ${summary == null ? '-' : formatter(summary.mad)} | ${summary == null ? '-' : formatDelta(summary.min, formatter)} | ${summary == null ? '-' : formatDelta(summary.max, formatter)} |`;
 }
 
 function resourceTypeBytes(report: BrowserMeasurement, resourceTypes: string[]) {
@@ -300,8 +294,10 @@ function toHeapSnapshotReport(report: BrowserMetricsReport): HeapSnapshotReport 
 
 export function renderFrontendBrowserReport(base: BrowserMetricsReport, head: BrowserMetricsReport, options: {
 	headHeapSnapshotUrl?: string;
+	detailedHtmlUrl?: string;
 } = {}) {
 	const headHeapSnapshotUrl = options.headHeapSnapshotUrl;
+	const detailedHtmlUrl = options.detailedHtmlUrl;
 	const sampleSummary = base.sampleCount === head.sampleCount
 		? `${base.sampleCount} samples per side`
 		: `${base.sampleCount} base sample(s), ${head.sampleCount} head sample(s)`;
@@ -311,8 +307,10 @@ export function renderFrontendBrowserReport(base: BrowserMetricsReport, head: Br
 		'',
 		renderSummaryTable(base, head),
 		'',
-		`> Measured ${sampleSummary} with fresh headless Chrome profiles, browser cache disabled, service workers bypassed, and forced V8 GC before each heap snapshot. Base/Head values are medians; Δ median is the median of paired Head - Base sample deltas; percent uses Δ median / Base median; ± and Δ MAD are median absolute deviations. Scenario: sign up, dismiss the initial account setup dialog, create the first timeline note, then wait until that note is visible.`,
-		'',
+		//`> Measured ${sampleSummary} with fresh headless Chrome profiles, browser cache disabled, service workers bypassed, and forced V8 GC before each heap snapshot. Base/Head values are medians; Δ median is the median of paired Head - Base sample deltas; percent uses Δ median / Base median; ± and Δ MAD are median absolute deviations. Scenario: sign up, dismiss the initial account setup dialog, create the first timeline note, then wait until that note is visible.`,
+		//'',
+		detailedHtmlUrl == null || detailedHtmlUrl === '' ? null : `[View details](${detailedHtmlUrl})`,
+		detailedHtmlUrl == null || detailedHtmlUrl === '' ? null : '',
 		'<details>',
 		'<summary>Requests by resource type</summary>',
 		'',
@@ -341,7 +339,7 @@ export function renderFrontendBrowserReport(base: BrowserMetricsReport, head: Br
 		lines.push(section, '');
 	}
 
-	return lines.join('\n').trimEnd() + '\n';
+	return lines.filter(line => line != null).join('\n').trimEnd() + '\n';
 }
 
 async function main() {
@@ -354,6 +352,7 @@ async function main() {
 	const head = JSON.parse(await readFile(headFile, 'utf8')) as BrowserMetricsReport;
 	await writeFile(outputFile, renderFrontendBrowserReport(base, head, {
 		headHeapSnapshotUrl: process.env.FRONTEND_BROWSER_HEAD_HEAP_SNAPSHOT_ARTIFACT_URL,
+		detailedHtmlUrl: process.env.FRONTEND_BROWSER_DETAILED_HTML_ARTIFACT_URL,
 	}));
 }
 
