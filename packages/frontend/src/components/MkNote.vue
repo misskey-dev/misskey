@@ -144,7 +144,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<button v-else :class="$style.footerButton" class="_button" disabled>
 					<i class="ti ti-ban"></i>
 				</button>
-				<button ref="reactButton" :class="$style.footerButton" class="_button" @click="toggleReact()">
+				<button ref="reactButton" :class="$style.footerButton" class="_button" @click="handleToggleReact()">
 					<i v-if="appearNote.reactionAcceptance === 'likeOnly' && $appearNote.myReaction != null" class="ti ti-heart-filled" style="color: var(--MI_THEME-love);"></i>
 					<i v-else-if="$appearNote.myReaction != null" class="ti ti-minus" style="color: var(--MI_THEME-accent);"></i>
 					<i v-else-if="appearNote.reactionAcceptance === 'likeOnly'" class="ti ti-heart"></i>
@@ -192,58 +192,38 @@ SPDX-License-Identifier: AGPL-3.0-only
 		MkDateSeparatedList uses TransitionGroup which requires single element in the child elements
 		so MkNote create empty div instead of no elements
 	-->
-</div>
+	</div>
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, ref, useTemplateRef, provide } from 'vue';
-import * as mfm from 'mfm-js';
-import * as Misskey from 'misskey-js';
-import { isLink } from '@@/js/is-link.js';
-import { shouldCollapsed } from '@@/js/collapsed.js';
-import { host } from '@@/js/config.js';
+import { inject, ref, useTemplateRef, provide, computed } from 'vue';
 import type { Ref } from 'vue';
-import type { MenuItem } from '@/types/menu.js';
-import type { OpenOnRemoteOptions } from '@/utility/please-login.js';
+import * as Misskey from 'misskey-js';
+import { $i } from '@/i.js';
+import { useNote } from '@/composables/use-note.js';
+import { prefer } from '@/preferences.js';
+import { i18n } from '@/i18n.js';
+import { userPage } from '@/filters/user.js';
+import { noteEvents } from '@/composables/use-note-capture.js';
+import { getNoteSummary } from '@/utility/get-note-summary.js';
+import { isEnabledUrlPreview } from '@/utility/url-preview.js';
+import { focusPrev, focusNext } from '@/utility/focus.js';
+import { misskeyApi } from '@/utility/misskey-api.js';
+import number from '@/filters/number.js';
+import * as sound from '@/utility/sound.js';
+import { DI } from '@/di.js';
 import type { Keymap } from '@/utility/hotkey.js';
+
+// コンポーネント外部の依存関係
 import MkNoteSub from '@/components/MkNoteSub.vue';
 import MkNoteHeader from '@/components/MkNoteHeader.vue';
 import MkNoteSimple from '@/components/MkNoteSimple.vue';
 import MkReactionsViewer from '@/components/MkReactionsViewer.vue';
-import MkReactionsViewerDetails from '@/components/MkReactionsViewer.details.vue';
 import MkMediaList from '@/components/MkMediaList.vue';
 import MkCwButton from '@/components/MkCwButton.vue';
 import MkPoll from '@/components/MkPoll.vue';
-import MkUsersTooltip from '@/components/MkUsersTooltip.vue';
 import MkUrlPreview from '@/components/MkUrlPreview.vue';
 import MkInstanceTicker from '@/components/MkInstanceTicker.vue';
-import { pleaseLogin } from '@/utility/please-login.js';
-import { checkWordMute } from '@/utility/check-word-mute.js';
-import { notePage } from '@/filters/note.js';
-import { userPage } from '@/filters/user.js';
-import number from '@/filters/number.js';
-import * as os from '@/os.js';
-import * as sound from '@/utility/sound.js';
-import { misskeyApi, misskeyApiGet } from '@/utility/misskey-api.js';
-import { reactionPicker } from '@/utility/reaction-picker.js';
-import { extractUrlFromMfm } from '@/utility/extract-url-from-mfm.js';
-import { $i } from '@/i.js';
-import { i18n } from '@/i18n.js';
-import { getAbuseNoteMenu, getCopyNoteLinkMenu, getNoteClipMenu, getNoteMenu, getRenoteMenu } from '@/utility/get-note-menu.js';
-import { noteEvents, useNoteCapture } from '@/composables/use-note-capture.js';
-import { deepClone } from '@/utility/clone.js';
-import { useTooltip } from '@/composables/use-tooltip.js';
-import { claimAchievement } from '@/utility/achievements.js';
-import { getNoteSummary } from '@/utility/get-note-summary.js';
-import MkRippleEffect from '@/components/MkRippleEffect.vue';
-import { showMovedDialog } from '@/utility/show-moved-dialog.js';
-import { isEnabledUrlPreview } from '@/utility/url-preview.js';
-import { focusPrev, focusNext } from '@/utility/focus.js';
-import { getAppearNote } from '@/utility/get-appear-note.js';
-import { prefer } from '@/preferences.js';
-import { getPluginHandlers } from '@/plugin.js';
-import { DI } from '@/di.js';
-import { globalEvents } from '@/events.js';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
@@ -254,48 +234,21 @@ const props = withDefaults(defineProps<{
 	mock: false,
 });
 
-provide(DI.mock, props.mock);
-
 const emit = defineEmits<{
 	(ev: 'reaction', emoji: string): void;
 	(ev: 'removeReaction', emoji: string): void;
 }>();
 
+provide(DI.mock, props.mock);
+
+// 周辺コンテキストのインジェクト
 const inTimeline = inject<boolean>('inTimeline', false);
 const tl_withSensitive = inject<Ref<boolean>>('tl_withSensitive', ref(true));
 const inChannel = inject(DI.inChannel, null);
 const currentClip = inject<Ref<Misskey.entities.Clip> | null>('currentClip', null);
 const currentAntenna = inject<Ref<Misskey.entities.Antenna | null> | null>('currentAntenna', null);
 
-let note = deepClone(props.note);
-
-// plugin
-const noteViewInterruptors = getPluginHandlers('note_view_interruptor');
-const hideByPlugin = ref(false);
-if (noteViewInterruptors.length > 0) {
-	let result: Misskey.entities.Note | null = deepClone(note);
-	for (const interruptor of noteViewInterruptors) {
-		try {
-			result = interruptor.handler(result!) as Misskey.entities.Note | null;
-		} catch (err) {
-			console.error(err);
-		}
-	}
-	if (result == null) {
-		hideByPlugin.value = true;
-	} else {
-		note = result as Misskey.entities.Note;
-	}
-}
-
-const isRenote = Misskey.note.isPureRenote(note);
-const appearNote = getAppearNote(note) ?? note;
-const { $note: $appearNote, subscribe: subscribeManuallyToNoteCapture } = useNoteCapture({
-	note: appearNote,
-	parentNote: note,
-	mock: props.mock,
-});
-
+// Template Refsの定義
 const rootEl = useTemplateRef('rootEl');
 const menuButton = useTemplateRef('menuButton');
 const renoteButton = useTemplateRef('renoteButton');
@@ -303,113 +256,52 @@ const renoteTime = useTemplateRef('renoteTime');
 const reactButton = useTemplateRef('reactButton');
 const clipButton = useTemplateRef('clipButton');
 const galleryEl = useTemplateRef('galleryEl');
-const isMyRenote = $i && ($i.id === note.userId);
-const showContent = ref(false);
-const parsed = computed(() => appearNote.text ? mfm.parse(appearNote.text) : null);
-const urls = computed(() => parsed.value ? extractUrlFromMfm(parsed.value).filter((url) => appearNote.renote?.url !== url && appearNote.renote?.uri !== url) : null);
-const isLong = shouldCollapsed(appearNote, urls.value ?? []);
-const collapsed = ref(appearNote.cw == null && isLong);
-const muted = ref(checkMute(appearNote, $i?.mutedWords));
-const hardMuted = ref(props.withHardMute && checkMute(appearNote, $i?.hardMutedWords, true));
-const showSoftWordMutedWord = computed(() => prefer.s.showSoftWordMutedWord);
-const translation = ref<Misskey.entities.NotesTranslateResponse | null>(null);
-const translating = ref(false);
-const showTicker = (prefer.s.instanceTicker === 'always') || (prefer.s.instanceTicker === 'remote' && appearNote.user.instance);
-const canRenote = computed(() => ['public', 'home'].includes(appearNote.visibility) || (appearNote.visibility === 'followers' && appearNote.userId === $i?.id));
-const renoteCollapsed = ref(
-	prefer.s.collapseRenotes && isRenote && (
-		($i && ($i.id === note.userId || $i.id === appearNote.userId)) || // `||` must be `||`! See https://github.com/misskey-dev/misskey/issues/13131
-		($appearNote.myReaction != null)
-	),
-);
 
-const pleaseLoginContext = computed<OpenOnRemoteOptions>(() => ({
-	type: 'lookup',
-	url: `https://${host}/notes/${appearNote.id}`,
-}));
+// コンポーサブルの呼び出し
+const {
+	note,
+	appearNote,
+	$appearNote,
+	hideByPlugin,
+	isRenote,
+	showContent,
+	translating,
+	translation,
+	muted,
+	hardMuted,
+	collapsed,
+	renoteCollapsed,
+	parsed,
+	urls,
+	isLong,
+	showTicker,
+	canRenote,
 
-/* eslint-disable no-redeclare */
-/** checkOnlyでは純粋なワードミュート結果をbooleanで返却する */
-function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly: true): boolean;
-function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly?: false): Array<string | string[]> | false | 'sensitiveMute';
+	renote,
+	reply,
+	react,
+	toggleReact,
+	onContextmenu,
+	showMenu,
+	clip,
+	showRenoteMenu,
+	blur,
+} = useNote(props, {
+	rootEl,
+	menuButton,
+	renoteButton,
+	renoteTime,
+	reactButton,
+	clipButton,
+}, {
+	inTimeline,
+	tl_withSensitive,
+	inChannel,
+	currentClip,
+	currentAntenna,
+});
 
-function checkMute(noteToCheck: Misskey.entities.Note, mutedWords: Array<string | string[]> | undefined | null, checkOnly = false): Array<string | string[]> | boolean | 'sensitiveMute' {
-	if (mutedWords != null) {
-		const result = checkWordMute(noteToCheck, $i, mutedWords);
-		if (Array.isArray(result)) {
-			return checkOnly ? (result.length > 0) : result;
-		}
-
-		const replyResult = noteToCheck.reply && checkWordMute(noteToCheck.reply, $i, mutedWords);
-		if (Array.isArray(replyResult)) {
-			return checkOnly ? (replyResult.length > 0) : replyResult;
-		}
-
-		const renoteResult = noteToCheck.renote && checkWordMute(noteToCheck.renote, $i, mutedWords);
-		if (Array.isArray(renoteResult)) {
-			return checkOnly ? (renoteResult.length > 0) : renoteResult;
-		}
-	}
-
-	if (checkOnly) return false;
-
-	if (inTimeline && tl_withSensitive.value === false && noteToCheck.files?.some((v) => v.isSensitive)) {
-		return 'sensitiveMute';
-	}
-
-	return false;
-}
-/* eslint-enable no-redeclare */
-
-const keymap = {
-	'r': () => {
-		if (renoteCollapsed.value) return;
-		reply();
-	},
-	'e|a|plus': () => {
-		if (renoteCollapsed.value) return;
-		react();
-	},
-	'q': () => {
-		if (renoteCollapsed.value) return;
-		renote();
-	},
-	'm': () => {
-		if (renoteCollapsed.value) return;
-		showMenu();
-	},
-	'c': () => {
-		if (renoteCollapsed.value) return;
-		if (!prefer.s.showClipButtonInNoteFooter) return;
-		clip();
-	},
-	'o': () => {
-		if (renoteCollapsed.value) return;
-		galleryEl.value?.openGallery();
-	},
-	'v|enter': () => {
-		if (renoteCollapsed.value) {
-			renoteCollapsed.value = false;
-		} else if (appearNote.cw != null) {
-			showContent.value = !showContent.value;
-		} else if (isLong) {
-			collapsed.value = !collapsed.value;
-		}
-	},
-	'esc': {
-		allowRepeat: true,
-		callback: () => blur(),
-	},
-	'up|k|shift+tab': {
-		allowRepeat: true,
-		callback: () => focusBefore(),
-	},
-	'down|j|tab': {
-		allowRepeat: true,
-		callback: () => focusAfter(),
-	},
-} as const satisfies Keymap;
-
+// provide
 provide(DI.mfmEmojiReactCallback, (reaction) => {
 	sound.playMisskeySfx('reaction');
 	misskeyApi('notes/reactions/create', {
@@ -423,290 +315,20 @@ provide(DI.mfmEmojiReactCallback, (reaction) => {
 	});
 });
 
-if (!props.mock) {
-	useTooltip(renoteButton, async (showing) => {
-		const renotes = await misskeyApi('notes/renotes', {
-			noteId: appearNote.id,
-			limit: 11,
-		});
+// コンポーネント固有の設定参照
+const showSoftWordMutedWord = computed(() => prefer.s.showSoftWordMutedWord);
 
-		const users = renotes.map(x => x.user);
-
-		if (users.length < 1 || renoteButton.value == null) return;
-
-		const { dispose } = os.popup(MkUsersTooltip, {
-			showing,
-			users,
-			count: appearNote.renoteCount,
-			anchorElement: renoteButton.value,
-		}, {
-			closed: () => dispose(),
-		});
-	});
-
-	if (appearNote.reactionAcceptance === 'likeOnly') {
-		useTooltip(reactButton, async (showing) => {
-			const reactions = await misskeyApiGet('notes/reactions', {
-				noteId: appearNote.id,
-				limit: 10,
-				_cacheKey_: $appearNote.reactionCount,
-			});
-
-			const users = reactions.map(x => x.user);
-
-			if (users.length < 1) return;
-
-			const { dispose } = os.popup(MkReactionsViewerDetails, {
-				showing,
-				reaction: '❤️',
-				users,
-				count: $appearNote.reactionCount,
-				anchorElement: reactButton.value!,
-			}, {
-				closed: () => dispose(),
-			});
-		});
-	}
-}
-
-async function renote() {
-	if (props.mock) return;
-
-	const isLoggedIn = await pleaseLogin({ openOnRemote: pleaseLoginContext.value });
-	if (!isLoggedIn) return;
-
-	showMovedDialog();
-
-	const { menu } = getRenoteMenu({ note: note, renoteButton, mock: props.mock });
-	os.popupMenu(menu, renoteButton.value);
-
-	subscribeManuallyToNoteCapture();
-}
-
-async function reply() {
-	if (props.mock) return;
-
-	const isLoggedIn = await pleaseLogin({ openOnRemote: pleaseLoginContext.value });
-	if (!isLoggedIn) return;
-
-	os.post({
-		reply: appearNote,
-		channel: appearNote.channel,
-	}).then(() => {
-		focus();
-	});
-}
-
-async function react() {
-	const isLoggedIn = await pleaseLogin({ openOnRemote: pleaseLoginContext.value });
-	if (!isLoggedIn) return;
-
-	showMovedDialog();
-	if (appearNote.reactionAcceptance === 'likeOnly') {
-		sound.playMisskeySfx('reaction');
-
-		if (props.mock) {
-			return;
+// Mock対応用の個別ハンドリング（タイムライン固有）
+function handleToggleReact() {
+	toggleReact((reaction) => {
+		if ($appearNote.myReaction === reaction) {
+			emit('removeReaction', reaction);
+		} else {
+			emit('reaction', reaction);
+			$appearNote.reactions[reaction] = 1;
+			$appearNote.reactionCount++;
+			$appearNote.myReaction = reaction;
 		}
-
-		misskeyApi('notes/reactions/create', {
-			noteId: appearNote.id,
-			reaction: '❤️',
-		}).then(() => {
-			noteEvents.emit(`reacted:${appearNote.id}`, {
-				userId: $i!.id,
-				reaction: '❤️',
-			});
-		});
-		const el = reactButton.value;
-		if (el && prefer.s.animation) {
-			const rect = el.getBoundingClientRect();
-			const x = rect.left + (el.offsetWidth / 2);
-			const y = rect.top + (el.offsetHeight / 2);
-			const { dispose } = os.popup(MkRippleEffect, { x, y }, {
-				end: () => dispose(),
-			});
-		}
-	} else {
-		blur();
-		reactionPicker.show(reactButton.value ?? null, note, async (reaction) => {
-			if (prefer.s.confirmOnReact) {
-				const confirm = await os.confirm({
-					type: 'question',
-					text: i18n.tsx.reactAreYouSure({ emoji: reaction.replace('@.', '') }),
-				});
-
-				if (confirm.canceled) return;
-			}
-
-			sound.playMisskeySfx('reaction');
-
-			if (props.mock) {
-				emit('reaction', reaction);
-				$appearNote.reactions[reaction] = 1;
-				$appearNote.reactionCount++;
-				$appearNote.myReaction = reaction;
-				return;
-			}
-
-			misskeyApi('notes/reactions/create', {
-				noteId: appearNote.id,
-				reaction: reaction,
-			}).then(() => {
-				noteEvents.emit(`reacted:${appearNote.id}`, {
-					userId: $i!.id,
-					reaction: reaction,
-				});
-			});
-
-			if (appearNote.text && appearNote.text.length > 100 && (Date.now() - new Date(appearNote.createdAt).getTime() < 1000 * 3)) {
-				claimAchievement('reactWithoutRead');
-			}
-		}, () => {
-			focus();
-		});
-	}
-}
-
-function undoReact(): void {
-	const oldReaction = $appearNote.myReaction;
-	if (!oldReaction) return;
-
-	if (props.mock) {
-		emit('removeReaction', oldReaction);
-		return;
-	}
-
-	misskeyApi('notes/reactions/delete', {
-		noteId: appearNote.id,
-	}).then(() => {
-		noteEvents.emit(`unreacted:${appearNote.id}`, {
-			userId: $i!.id,
-			reaction: oldReaction,
-		});
-	});
-}
-
-function toggleReact() {
-	if ($appearNote.myReaction == null) {
-		react();
-	} else {
-		undoReact();
-	}
-}
-
-function onContextmenu(ev: PointerEvent): void {
-	if (props.mock) {
-		return;
-	}
-
-	if (ev.target && isLink(ev.target as HTMLElement)) return;
-	if (window.getSelection()?.toString() !== '') return;
-
-	if (prefer.s.useReactionPickerForContextMenu) {
-		ev.preventDefault();
-		react();
-	} else {
-		const { menu, cleanup } = getNoteMenu({ note: note, translating, translation, currentClip: currentClip?.value, currentAntenna: currentAntenna?.value ?? undefined });
-		os.contextMenu(menu, ev).then(focus).finally(cleanup);
-	}
-}
-
-function showMenu(): void {
-	if (props.mock) {
-		return;
-	}
-
-	const { menu, cleanup } = getNoteMenu({ note: note, translating, translation, currentClip: currentClip?.value, currentAntenna: currentAntenna?.value ?? undefined });
-	os.popupMenu(menu, menuButton.value).then(focus).finally(cleanup);
-}
-
-async function clip(): Promise<void> {
-	if (props.mock) {
-		return;
-	}
-
-	os.popupMenu(await getNoteClipMenu({ note: note, currentClip: currentClip?.value }), clipButton.value).then(focus);
-}
-
-async function showRenoteMenu() {
-	if (props.mock) {
-		return;
-	}
-	const isLoggedIn = await pleaseLogin({ openOnRemote: pleaseLoginContext.value });
-	if (!isLoggedIn) return;
-
-	function getUnrenote(): MenuItem {
-		return {
-			text: i18n.ts.unrenote,
-			icon: 'ti ti-trash',
-			danger: true,
-			action: () => {
-				misskeyApi('notes/delete', {
-					noteId: note.id,
-				}).then(() => {
-					globalEvents.emit('noteDeleted', note.id);
-				});
-			},
-		};
-	}
-
-	const renoteDetailsMenu: MenuItem[] = [{
-		type: 'link',
-		text: i18n.ts.renoteDetails,
-		icon: 'ti ti-info-circle',
-		to: notePage(note),
-	}];
-
-	if (
-		props.note.channelId != null &&
-		(inChannel == null || props.note.channelId !== inChannel.value)
-	) {
-		renoteDetailsMenu.push({
-			type: 'link',
-			text: i18n.ts.viewRenotedChannel,
-			icon: 'ti ti-device-tv',
-			to: `/channels/${props.note.channelId}`,
-		});
-	}
-
-	if (isMyRenote) {
-		os.popupMenu([
-			...renoteDetailsMenu,
-			getCopyNoteLinkMenu(note, i18n.ts.copyLinkRenote),
-			{ type: 'divider' },
-			getUnrenote(),
-		], renoteTime.value);
-	} else {
-		os.popupMenu([
-			...renoteDetailsMenu,
-			getCopyNoteLinkMenu(note, i18n.ts.copyLinkRenote),
-			{ type: 'divider' },
-			getAbuseNoteMenu(note, i18n.ts.reportAbuseRenote),
-			...(($i?.isModerator || $i?.isAdmin) ? [getUnrenote()] : []),
-		], renoteTime.value);
-	}
-}
-
-function focus() {
-	rootEl.value?.focus();
-}
-
-function blur() {
-	rootEl.value?.blur();
-}
-
-function focusBefore() {
-	focusPrev(rootEl.value);
-}
-
-function focusAfter() {
-	focusNext(rootEl.value);
-}
-
-function readPromo() {
-	misskeyApi('promo/read', {
-		noteId: appearNote.id,
 	});
 }
 
@@ -717,6 +339,28 @@ function emitUpdReaction(emoji: string, delta: number) {
 		emit('reaction', emoji);
 	}
 }
+
+// キーボードショートカットマップ
+const keymap = {
+	'r': () => { if (!renoteCollapsed.value) reply(); },
+	'e|a|plus': () => { if (!renoteCollapsed.value) react(); },
+	'q': () => { if (!renoteCollapsed.value) renote(); },
+	'm': () => { if (!renoteCollapsed.value) showMenu(); },
+	'c': () => { if (!renoteCollapsed.value && prefer.s.showClipButtonInNoteFooter) clip(); },
+	'o': () => { if (!renoteCollapsed.value) galleryEl.value?.openGallery(); },
+	'v|enter': () => {
+		if (renoteCollapsed.value) {
+			renoteCollapsed.value = false;
+		} else if (appearNote.cw != null) {
+			showContent.value = !showContent.value;
+		} else if (isLong.value) {
+			collapsed.value = !collapsed.value;
+		}
+	},
+	'esc': { allowRepeat: true, callback: () => blur() },
+	'up|k|shift+tab': { allowRepeat: true, callback: () => focusPrev(rootEl.value) },
+	'down|j|tab': { allowRepeat: true, callback: () => focusNext(rootEl.value) },
+} as const satisfies Keymap;
 </script>
 
 <style lang="scss" module>
