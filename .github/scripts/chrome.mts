@@ -4,11 +4,11 @@
  */
 
 import { spawn, spawnSync, type ChildProcessWithoutNullStreams } from 'node:child_process';
-import { copyFile, mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import * as util from './utility.mts';
-import { heapSnapshotCategory, HeapSnapshotData } from './heap-snapshot-util.mts';
+import type { HeapSnapshotData } from './heap-snapshot-util.mts';
 
 type ChromeHandle = {
 	process: ChildProcessWithoutNullStreams;
@@ -336,6 +336,15 @@ export class Chrome {
 		} catch (err) {
 			await closeChrome(chromeHandle);
 			throw err;
+		}
+	}
+
+	static async with<T>(label: string, options: ChromeOptions, callback: (chrome: Chrome) => T | Promise<T>): Promise<T> {
+		const chrome = await Chrome.create(label, options);
+		try {
+			return await callback(chrome);
+		} finally {
+			await chrome.close();
 		}
 	}
 

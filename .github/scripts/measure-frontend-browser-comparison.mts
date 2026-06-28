@@ -7,8 +7,9 @@ import { spawn, spawnSync, type ChildProcessWithoutNullStreams } from 'node:chil
 import { copyFile, mkdir, rm, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import * as util from './utility.mts';
-import { heapSnapshotCategory, type HeapSnapshotData } from './heap-snapshot-util.mts';
-import { BrowserMeasurement, Chrome, NetworkSummary, summarizeNetwork } from './chrome.mts';
+import * as heapSnapshotUtil from './heap-snapshot-util.mts';
+import { Chrome, summarizeNetwork } from './chrome.mts';
+import type { BrowserMeasurement, NetworkSummary } from './chrome.mts';
 
 const [baseDirArg, headDirArg, baseOutputArg, headOutputArg, headHeapSnapshotOutputArg] = process.argv.slice(2);
 
@@ -17,7 +18,7 @@ const serverReadyTimeoutMs = util.readIntegerEnv('FRONTEND_BROWSER_METRICS_SERVE
 const scenarioTimeoutMs = util.readIntegerEnv('FRONTEND_BROWSER_METRICS_SCENARIO_TIMEOUT_MS', 90_000, 1);
 const settleMs = util.readIntegerEnv('FRONTEND_BROWSER_METRICS_SETTLE_MS', 1_000, 0);
 const sampleCount = util.readIntegerEnv('FRONTEND_BROWSER_METRICS_SAMPLE_COUNT', 5, 1);
-const heapSnapshotBreakdownTopN = util.readIntegerEnv('FRONTEND_BROWSER_HEAP_SNAPSHOT_BREAKDOWN_TOP_N', 8, 1);
+const heapSnapshotBreakdownTopN = util.readIntegerEnv('FRONTEND_BROWSER_HEAP_SNAPSHOT_BREAKDOWN_TOP_N', heapSnapshotUtil.defaultHeapSnapshotBreakdownTopN, 1);
 const headHeapSnapshotWorkDir = resolve('frontend-browser-head-heap-snapshots');
 
 type BrowserMeasurementSample = BrowserMeasurement & {
@@ -170,33 +171,6 @@ async function runSignupAndPostScenario(chrome: Chrome) {
 	await util.sleep(settleMs);
 }
 
-function emptyHeapSnapshotData(): HeapSnapshotData {
-	const categories = {} as HeapSnapshotData['categories'];
-	const nodeCounts = {} as HeapSnapshotData['nodeCounts'];
-	for (const category of Object.keys(heapSnapshotCategory) as (keyof typeof heapSnapshotCategory)[]) {
-		categories[category] = 0;
-		nodeCounts[category] = 0;
-	}
-	return {
-		categories,
-		nodeCounts,
-		breakdowns: {} as HeapSnapshotData['breakdowns'],
-	};
-}
-
-function collapseBreakdown(entries: Map<string, number>) {
-	const sorted = [...entries]
-		.filter(([, value]) => value > 0)
-		.toSorted((a, b) => b[1] - a[1]);
-	const topEntries = sorted.slice(0, heapSnapshotBreakdownTopN);
-	const otherValue = sorted
-		.slice(heapSnapshotBreakdownTopN)
-		.reduce((sum, [, value]) => sum + value, 0);
-	const collapsed = Object.fromEntries(topEntries);
-	if (otherValue > 0) collapsed.Other = otherValue;
-	return collapsed;
-}
-
 function finiteMedian(values: (number | null | undefined)[], defaultValue = 0) {
 	const finiteValues = values.filter(value => Number.isFinite(value)) as number[];
 	if (finiteValues.length === 0) return defaultValue;
@@ -300,90 +274,13 @@ function summarizePerformanceSamples(samples: BrowserMeasurementSample[]): Brows
 	};
 }
 
-function categorizeHeapNode(type: string, name: string): keyof typeof heapSnapshotCategory {
-	if (/^(ArrayBuffer|SharedArrayBuffer|DataView|(?:Big)?(?:Int|Uint|Float)(?:8|16|32|64)?(?:Clamped)?Array)$/u.test(name)) return 'typedArrays';
-	if (type === 'code' || type === 'closure') return 'code';
-	if (type === 'string' || type === 'concatenated string' || type === 'sliced string' || type === 'symbol') return 'strings';
-	if (type === 'array') return 'jsArrays';
-	if (type === 'hidden' || type === 'synthetic' || type === 'object shape') return 'systemObjects';
-	if (type === 'native') return 'otherNonJsObjects';
-	if (type === 'object' || type === 'regexp' || type === 'number' || type === 'bigint') return 'otherJsObjects';
-	return 'otherNonJsObjects';
-}
-
-function summarizeHeapSnapshot(snapshot: any): HeapSnapshotData {
-	const result = emptyHeapSnapshotData();
-	const nodeFields = snapshot.snapshot.meta.node_fields as string[];
-	const nodeTypes = snapshot.snapshot.meta.node_types as unknown[][];
-	const nodes = snapshot.nodes as number[];
-	const strings = snapshot.strings as string[];
-	const fieldCount = nodeFields.length;
-	const typeOffset = nodeFields.indexOf('type');
-	const nameOffset = nodeFields.indexOf('name');
-	const selfSizeOffset = nodeFields.indexOf('self_size');
-	const typeNames = nodeTypes[typeOffset] as string[];
-	const breakdownMaps = {} as Record<keyof typeof heapSnapshotCategory, Map<string, number>>;
-
-	for (const category of Object.keys(heapSnapshotCategory) as (keyof typeof heapSnapshotCategory)[]) {
-		if (category !== 'total') breakdownMaps[category] = new Map();
-	}
-
-	for (let offset = 0; offset < nodes.length; offset += fieldCount) {
-		const type = typeNames[nodes[offset + typeOffset]] ?? 'unknown';
-		const name = strings[nodes[offset + nameOffset]] ?? '';
-		const selfSize = nodes[offset + selfSizeOffset] ?? 0;
-		const category = categorizeHeapNode(type, name);
-
-		result.categories.total += selfSize;
-		result.nodeCounts.total += 1;
-		result.categories[category] += selfSize;
-		result.nodeCounts[category] += 1;
-
-		const label = `${type}: ${name || '(anonymous)'}`;
-		breakdownMaps[category].set(label, (breakdownMaps[category].get(label) ?? 0) + selfSize);
-	}
-
-	result.breakdowns = {} as HeapSnapshotData['breakdowns'];
-	for (const [category, entries] of Object.entries(breakdownMaps) as [keyof typeof heapSnapshotCategory, Map<string, number>][]) {
-		const collapsed = collapseBreakdown(entries);
-		if (Object.keys(collapsed).length > 0) {
-			result.breakdowns[category] = collapsed;
-		}
-	}
-
-	return result;
-}
-
 function summarizeHeapSnapshotSamples(samples: BrowserMeasurementSample[]) {
-	const summary = emptyHeapSnapshotData();
-
-	for (const category of Object.keys(heapSnapshotCategory) as (keyof typeof heapSnapshotCategory)[]) {
-		summary.categories[category] = finiteMedian(samples.map(sample => sample.heapSnapshot.categories[category]));
-		summary.nodeCounts[category] = finiteMedian(samples.map(sample => sample.heapSnapshot.nodeCounts[category]));
-	}
-
-	summary.breakdowns = {} as HeapSnapshotData['breakdowns'];
-	for (const category of Object.keys(heapSnapshotCategory) as (keyof typeof heapSnapshotCategory)[]) {
-		if (category === 'total') continue;
-
-		const childKeys = new Set<string>();
-		for (const sample of samples) {
-			for (const childKey of Object.keys(sample.heapSnapshot.breakdowns?.[category] ?? {})) {
-				childKeys.add(childKey);
-			}
-		}
-
-		const childValues = new Map<string, number>();
-		for (const childKey of childKeys) {
-			childValues.set(childKey, finiteMedian(samples.map(sample => sample.heapSnapshot.breakdowns?.[category]?.[childKey])));
-		}
-
-		const collapsed = collapseBreakdown(childValues);
-		if (Object.keys(collapsed).length > 0) {
-			summary.breakdowns[category] = collapsed;
-		}
-	}
-
+	const summary = heapSnapshotUtil.summarizeHeapSnapshotDataSamples(
+		samples,
+		sample => sample.heapSnapshot,
+		{ breakdownTopN: heapSnapshotBreakdownTopN },
+	);
+	if (summary == null) throw new Error('No heap snapshot samples');
 	return summary;
 }
 
@@ -416,9 +313,7 @@ function summarizeSamples(label: 'base' | 'head', samples: BrowserMeasurementSam
 async function measureSample(label: 'base' | 'head', round: number, heapSnapshotSavePath?: string) {
 	await prepareInstance();
 
-	const chrome = await Chrome.create(label, { scenarioTimeoutMs });
-
-	try {
+	return await Chrome.with(label, { scenarioTimeoutMs }, async chrome => {
 		await chrome.enableNetworkTracking();
 
 		const startedAt = Date.now();
@@ -426,7 +321,7 @@ async function measureSample(label: 'base' | 'head', round: number, heapSnapshot
 		const durationMs = Date.now() - startedAt;
 		const performance = await chrome.collectPerformance();
 		const heapSnapshotRaw = await chrome.takeHeapSnapshot(heapSnapshotSavePath);
-		const heapSnapshot = summarizeHeapSnapshot(heapSnapshotRaw);
+		const heapSnapshot = heapSnapshotUtil.analyzeHeapSnapshot(heapSnapshotRaw, { breakdownTopN: heapSnapshotBreakdownTopN });
 		const measurement: BrowserMeasurementSample = {
 			label,
 			round,
@@ -440,9 +335,7 @@ async function measureSample(label: 'base' | 'head', round: number, heapSnapshot
 		};
 
 		return measurement;
-	} finally {
-		await chrome.close();
-	}
+	});
 }
 
 function headHeapSnapshotPath(round: number) {
