@@ -304,6 +304,23 @@ export function useNote(
 		}
 	}
 
+	async function reactViaMfmEmoji(reaction: string) {
+		if (props.mock) return;
+		const isLoggedIn = await pleaseLogin({ openOnRemote: pleaseLoginContext.value });
+		if (!isLoggedIn) return;
+		showMovedDialog();
+		sound.playMisskeySfx('reaction');
+		misskeyApi('notes/reactions/create', {
+			noteId: appearNote.id,
+			reaction: reaction,
+		}).then(() => {
+			noteEvents.emit(`reacted:${appearNote.id}`, {
+				userId: $i!.id,
+				reaction: reaction,
+			});
+		});
+	}
+
 	function undoReact(): void {
 		const oldReaction = $appearNote.myReaction;
 		if (!oldReaction) return;
@@ -443,6 +460,7 @@ export function useNote(
 		renote,
 		reply,
 		react,
+		reactViaMfmEmoji,
 		toggleReact,
 		onContextmenu,
 		showMenu,

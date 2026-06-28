@@ -239,7 +239,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { inject, ref, useTemplateRef, markRaw, computed } from 'vue';
+import { inject, provide, ref, useTemplateRef, markRaw, computed } from 'vue';
 import * as Misskey from 'misskey-js';
 import { useNote } from '@/composables/use-note.js';
 import { prefer } from '@/preferences.js';
@@ -308,6 +308,7 @@ const {
 	renote,
 	reply,
 	react,
+	reactViaMfmEmoji,
 	toggleReact,
 	onContextmenu,
 	showMenu,
@@ -325,7 +326,10 @@ const {
 	inChannel,
 });
 
-// 3. 詳細画面（Detailed）固有の状態定義
+// provide
+provide(DI.mfmEmojiReactCallback, reactViaMfmEmoji);
+
+// MkNoteDetailed固有
 const tab = ref(props.initialTab);
 const reactionTabType = ref<string | null>(null);
 
@@ -370,7 +374,7 @@ function loadConversation() {
 	});
 }
 
-// 4. キーボードショートカットマップ
+// キーボードショートカットマップ
 const keymap = {
 	'r': () => reply(),
 	'e|a|plus': () => react(),

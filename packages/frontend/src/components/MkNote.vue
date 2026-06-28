@@ -280,6 +280,7 @@ const {
 	renote,
 	reply,
 	react,
+	reactViaMfmEmoji,
 	toggleReact,
 	onContextmenu,
 	showMenu,
@@ -302,23 +303,11 @@ const {
 });
 
 // provide
-provide(DI.mfmEmojiReactCallback, (reaction) => {
-	sound.playMisskeySfx('reaction');
-	misskeyApi('notes/reactions/create', {
-		noteId: appearNote.id,
-		reaction: reaction,
-	}).then(() => {
-		noteEvents.emit(`reacted:${appearNote.id}`, {
-			userId: $i!.id,
-			reaction: reaction,
-		});
-	});
-});
+provide(DI.mfmEmojiReactCallback, reactViaMfmEmoji);
 
-// コンポーネント固有の設定参照
+// MkNote固有
 const showSoftWordMutedWord = computed(() => prefer.s.showSoftWordMutedWord);
 
-// Mock対応用の個別ハンドリング（タイムライン固有）
 function handleToggleReact() {
 	toggleReact((reaction) => {
 		if ($appearNote.myReaction === reaction) {
