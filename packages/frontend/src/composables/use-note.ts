@@ -62,6 +62,22 @@ export interface UseNoteOptions {
 	currentAntenna?: Ref<Misskey.entities.Antenna | null> | null;
 }
 
+/* eslint-disable no-redeclare */
+export function calculateMuteStatus(
+	noteToCheck: Misskey.entities.Note,
+	user: typeof $i,
+	inTimeline: boolean,
+	tl_withSensitive: boolean,
+	checkOnly: true,
+): boolean;
+export function calculateMuteStatus(
+	noteToCheck: Misskey.entities.Note,
+	user: typeof $i,
+	inTimeline: boolean,
+	tl_withSensitive: boolean,
+	checkOnly?: false,
+): Array<string | string[]> | false | 'sensitiveMute';
+
 export function calculateMuteStatus(
 	noteToCheck: Misskey.entities.Note,
 	user: typeof $i,
@@ -88,6 +104,7 @@ export function calculateMuteStatus(
 
 	return false;
 }
+/* eslint-enable no-redeclare */
 
 /** MkNote, MkNoteDetailedの共通ロジック */
 export function useNote(
@@ -169,7 +186,10 @@ export function useNote(
 	if (!props.mock) {
 		if (els.renoteButton != null) {
 			useTooltip(els.renoteButton, async (showing) => {
-				const renotes = await misskeyApi('notes/renotes', { noteId: appearNote.id, limit: 11 });
+				const renotes = await misskeyApi('notes/renotes', {
+					noteId: appearNote.id,
+					limit: 11,
+				});
 				const users = renotes.map(x => x.user);
 				if (users.length < 1 || els.renoteButton!.value == null) return;
 				const { dispose } = os.popup(MkUsersTooltip, {
@@ -185,7 +205,11 @@ export function useNote(
 
 		if (appearNote.reactionAcceptance === 'likeOnly' && els.reactButton != null) {
 			useTooltip(els.reactButton, async (showing) => {
-				const reactions = await misskeyApiGet('notes/reactions', { noteId: appearNote.id, limit: 10, _cacheKey_: $appearNote.reactionCount });
+				const reactions = await misskeyApiGet('notes/reactions', {
+					noteId: appearNote.id,
+					limit: 10,
+					_cacheKey_: $appearNote.reactionCount,
+				});
 				const users = reactions.map(x => x.user);
 				if (users.length < 1 || els.reactButton!.value == null) return;
 				const { dispose } = os.popup(MkReactionsViewerDetails, {
@@ -208,7 +232,11 @@ export function useNote(
 		if (!isLoggedIn) return;
 		showMovedDialog();
 		if (els.renoteButton == null) return;
-		const { menu } = getRenoteMenu({ note: rawNote, renoteButton: els.renoteButton, mock: props.mock });
+		const { menu } = getRenoteMenu({
+			note: rawNote,
+			renoteButton: els.renoteButton,
+			mock: props.mock,
+		});
 		os.popupMenu(menu, els.renoteButton.value);
 		subscribeManuallyToNoteCapture();
 	}
@@ -217,7 +245,12 @@ export function useNote(
 		if (props.mock) return;
 		const isLoggedIn = await pleaseLogin({ openOnRemote: pleaseLoginContext.value });
 		if (!isLoggedIn) return;
-		os.post({ reply: appearNote, channel: appearNote.channel }).then(() => { focus(); });
+		os.post({
+			reply: appearNote,
+			channel: appearNote.channel,
+		}).then(() => {
+			focus();
+		});
 	}
 
 	async function react(customCallback?: (reaction: string) => void) {
@@ -228,18 +261,29 @@ export function useNote(
 		if (appearNote.reactionAcceptance === 'likeOnly') {
 			sound.playMisskeySfx('reaction');
 			if (props.mock) return;
-			misskeyApi('notes/reactions/create', { noteId: appearNote.id, reaction: '❤️' }).then(() => {
+			misskeyApi('notes/reactions/create', {
+				noteId: appearNote.id,
+				reaction: '❤️',
+			}).then(() => {
 				noteEvents.emit(`reacted:${appearNote.id}`, { userId: $i!.id, reaction: '❤️' });
 			});
 			if (els.reactButton != null && els.reactButton.value != null && prefer.s.animation) {
 				const rect = els.reactButton.value.getBoundingClientRect();
-				const { dispose } = os.popup(MkRippleEffect, { x: rect.left + (els.reactButton.value.offsetWidth / 2), y: rect.top + (els.reactButton.value.offsetHeight / 2) }, { end: () => dispose() });
+				const { dispose } = os.popup(MkRippleEffect, {
+					x: rect.left + (els.reactButton.value.offsetWidth / 2),
+					y: rect.top + (els.reactButton.value.offsetHeight / 2),
+				}, {
+					end: () => dispose(),
+				});
 			}
 		} else {
 			blur();
 			reactionPicker.show(els.reactButton?.value ?? null, rawNote, async (reaction) => {
 				if (prefer.s.confirmOnReact) {
-					const confirm = await os.confirm({ type: 'question', text: i18n.tsx.reactAreYouSure({ emoji: reaction.replace('@.', '') }) });
+					const confirm = await os.confirm({
+						type: 'question',
+						text: i18n.tsx.reactAreYouSure({ emoji: reaction.replace('@.', '') }),
+					});
 					if (confirm.canceled) return;
 				}
 				sound.playMisskeySfx('reaction');
@@ -247,7 +291,10 @@ export function useNote(
 					if (customCallback) customCallback(reaction);
 					return;
 				}
-				misskeyApi('notes/reactions/create', { noteId: appearNote.id, reaction: reaction }).then(() => {
+				misskeyApi('notes/reactions/create', {
+					noteId: appearNote.id,
+					reaction: reaction,
+				}).then(() => {
 					noteEvents.emit(`reacted:${appearNote.id}`, { userId: $i!.id, reaction: reaction });
 				});
 				if (appearNote.text && appearNote.text.length > 100 && (Date.now() - new Date(appearNote.createdAt).getTime() < 1000 * 3)) {
@@ -287,20 +334,35 @@ export function useNote(
 			ev.preventDefault();
 			react();
 		} else {
-			const { menu, cleanup } = getNoteMenu({ note: rawNote, translating, translation, currentClip: currentClip?.value, currentAntenna: currentAntenna?.value ?? undefined });
+			const { menu, cleanup } = getNoteMenu({
+				note: rawNote,
+				translating,
+				translation,
+				currentClip: currentClip?.value,
+				currentAntenna: currentAntenna?.value ?? undefined,
+			});
 			os.contextMenu(menu, ev).then(focus).finally(cleanup);
 		}
 	}
 
 	function showMenu(): void {
 		if (props.mock || els.menuButton == null) return;
-		const { menu, cleanup } = getNoteMenu({ note: rawNote, translating, translation, currentClip: currentClip?.value, currentAntenna: currentAntenna?.value ?? undefined });
+		const { menu, cleanup } = getNoteMenu({
+			note: rawNote,
+			translating,
+			translation,
+			currentClip: currentClip?.value,
+			currentAntenna: currentAntenna?.value ?? undefined,
+		});
 		os.popupMenu(menu, els.menuButton.value).then(focus).finally(cleanup);
 	}
 
 	async function clip(): Promise<void> {
 		if (props.mock) return;
-		os.popupMenu(await getNoteClipMenu({ note: rawNote, currentClip: currentClip?.value }), els.clipButton?.value).then(focus);
+		os.popupMenu(await getNoteClipMenu({
+			note: rawNote,
+			currentClip: currentClip?.value,
+		}), els.clipButton?.value).then(focus);
 	}
 
 	async function showRenoteMenu() {
@@ -317,16 +379,35 @@ export function useNote(
 			},
 		});
 
-		const renoteDetailsMenu: MenuItem[] = [{ type: 'link', text: i18n.ts.renoteDetails, icon: 'ti ti-info-circle', to: notePage(rawNote) }];
+		const menuItems: MenuItem[] = [{
+			type: 'link',
+			text: i18n.ts.renoteDetails,
+			icon: 'ti ti-info-circle',
+			to: notePage(rawNote),
+		}];
+
 		if (props.note.channelId != null && (inChannel == null || props.note.channelId !== inChannel.value)) {
-			renoteDetailsMenu.push({ type: 'link', text: i18n.ts.viewRenotedChannel, icon: 'ti ti-device-tv', to: `/channels/${props.note.channelId}` });
+			menuItems.push({
+				type: 'link',
+				text: i18n.ts.viewRenotedChannel,
+				icon: 'ti ti-device-tv',
+				to: `/channels/${props.note.channelId}`,
+			});
 		}
 
-		const baseMenu: MenuItem[] = [...renoteDetailsMenu, getCopyNoteLinkMenu(rawNote, i18n.ts.copyLinkRenote), { type: 'divider'}];
+		menuItems.push(getCopyNoteLinkMenu(rawNote, i18n.ts.copyLinkRenote));
+		menuItems.push({ type: 'divider' });
+
 		if (isMyRenote.value) {
-			os.popupMenu([...baseMenu, getUnrenote()], els.renoteTime?.value);
+			menuItems.push(getUnrenote());
+			os.popupMenu(menuItems, els.renoteTime?.value);
 		} else {
-			os.popupMenu([...baseMenu, getAbuseNoteMenu(rawNote, i18n.ts.reportAbuseRenote), ...(($i?.isModerator || $i?.isAdmin) ? [getUnrenote()] : [])], els.renoteTime?.value);
+			menuItems.push(getAbuseNoteMenu(rawNote, i18n.ts.reportAbuseRenote));
+			if ($i?.isModerator || $i?.isAdmin) {
+				menuItems.push(getUnrenote());
+			}
+
+			os.popupMenu(menuItems, els.renoteTime?.value);
 		}
 	}
 
