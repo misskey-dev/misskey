@@ -7,7 +7,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
 import * as util from './utility.mts';
 import type { BrowserMeasurementSample, BrowserMetricsReport } from './frontend-browser-report.mts';
-import { NetworkRequest } from './chrome.mts';
+import type { NetworkRequest } from './chrome.mts';
 
 type DiffDirection = 'added' | 'removed';
 

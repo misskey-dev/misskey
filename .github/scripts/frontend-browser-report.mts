@@ -8,7 +8,7 @@ import { pathToFileURL } from 'node:url';
 import * as util from './utility.mts';
 import * as heapSnapshotUtil from './heap-snapshot-util.mts';
 import type { HeapSnapshotData, HeapSnapshotReport } from './heap-snapshot-util.mts';
-import { NetworkRequest } from './chrome.mts';
+import type { NetworkRequest } from './chrome.mts';
 
 export type BrowserMeasurement = {
 	label: string;
