@@ -31,7 +31,7 @@ import { unisonReload } from '@/utility/unison-reload.js';
 import { isBirthday } from '@/utility/is-birthday.js';
 
 export async function mainBoot() {
-	const { isClientUpdated, lastVersion } = await common(async () => {
+	const res = await common(async () => {
 		let uiStyle = ui;
 		const searchParams = new URLSearchParams(window.location.search);
 
@@ -60,6 +60,12 @@ export async function mainBoot() {
 
 		return createApp(rootComponent);
 	});
+
+	if (res.aborted) {
+		return;
+	}
+
+	const { isClientUpdated, lastVersion } = res;
 
 	reactionPicker.init();
 	emojiPicker.init();
