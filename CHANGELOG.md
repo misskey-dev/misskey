@@ -1,10 +1,17 @@
 ## 2026.6.1
 
 ### Note
+
+**今回のリリースではMisskeyの各種動作要件が変更されます。必ずアップグレード前にお使いの環境をご確認ください。**
+
 - センシティブメディアの判定 (NSFW検出) が、本体に内蔵された nsfwjs による推論から、外部サービス [sensitive-detector](https://github.com/misskey-dev/sensitive-detector) への HTTP 呼び出し方式に変更されました。
 	- これに伴い、本体から `nsfwjs` / `@tensorflow/tfjs` / `@tensorflow/tfjs-node` および同梱の NSFW 判定モデルが削除され、インストール要件 (ネイティブ ML スタック) が緩和されました。
 	- **センシティブ判定機能を利用しているサーバーは対応が必要です。** 別途 [sensitive-detector](https://github.com/misskey-dev/sensitive-detector) サービスを立ち上げ、コントロールパネルの「モデレーション > センシティブなメディアの検出」で接続先 URL を設定してください。接続先が未設定の場合、センシティブ判定は行われません (すべて非センシティブ扱い)。
 	- 画像の正規化・動画フレームの抽出・しきい値判定・集約は引き続き本体側で行われ、外部サービスには正規化済み画像の推論のみを委譲します。
+- Node.js v24, v26 をサポートしました。**Node.js v22 でも動作しますが、次のリリースで v22 のサポートを終了する予定です。**
+  - Node.js のセキュリティアップデートに伴い、最低動作バージョンを 22.22.2 / 24.17.0 / 26.4.0 に引き上げました。
+  - Docker Image は Node.js 26.4.0-trixie に更新されています。
+- バックエンドで画像処理に用いているライブラリ sharp のシステム要件の変更により、**SSE4.2 命令セットをサポートしていない x86_64 CPU では Misskey が正しく動作しなくなります**。仮想マシンに Misskey をデプロイしている場合や、古いハードウェアをお使いの場合は、アップデート前にお使いの環境をご確認ください。
 
 ### General
 - Feat: コントロールパネルから二要素認証を解除できるように
@@ -16,7 +23,8 @@
 
 ### Server
 - Enhance: センシティブメディアの判定を外部サービス ([sensitive-detector](https://github.com/misskey-dev/sensitive-detector)) に分離し、`nsfwjs` / `@tensorflow/tfjs(-node)` の同梱と NSFW 判定モデルを廃止 (#16804)
-
+- Enhance: Node.js 22.23.0以降、24.17.0以降、26.4.0以降をサポートするように
+- Enhance: Docker Image の Node.js を 26.4.0 に、Debian を trixie (v13) に更新
 
 ## 2026.6.0
 

@@ -54,7 +54,7 @@ const metrics = [
 
 function formatMemoryMb(valueKiB: number | null | undefined) {
 	if (valueKiB == null) return '-';
-	return `${util.formatNumber(valueKiB / 1024)} MB`;
+	return `${util.formatNumber(valueKiB / 1000)} MB`;
 }
 
 function getMemoryValue(report: MemoryReport, phase: typeof memoryReportPhases[number]['key'], metric: typeof metrics[number]) {
@@ -79,8 +79,8 @@ function renderMainTableForPhase(base: MemoryReport, head: MemoryReport, phase: 
 		'| --- | ---: | ---: | ---: | ---: | ---: | ---: |',
 	];
 
-	function formatDeltaMemory(diffKiB: number) {
-		return util.formatColoredDelta(formatMemoryMb(Math.abs(diffKiB)), diffKiB);
+	function formatDeltaMemory(deltaKiB: number) {
+		return util.formatColoredDelta(deltaKiB, v => formatMemoryMb(v), 100); // 0.1 MB threshold
 	}
 
 	for (const metric of metrics) {
@@ -91,7 +91,7 @@ function renderMainTableForPhase(base: MemoryReport, head: MemoryReport, phase: 
 		const headSpread = getSampleSpread(head, phase, metric);
 		const summary = util.pairedDeltaSummary(base.samples, head.samples, (sample) => getMemoryValueFromSample(sample, phase, metric));
 		const percent = summary.median * 100 / baseValue;
-		const deltaMedian = summary == null ? '-' : `${formatDeltaMemory(summary.median)}<br>${util.formatDeltaPercent(percent).replaceAll('\\%', '\\\\%')}`;
+		const deltaMedian = summary == null ? '-' : `${formatDeltaMemory(summary.median)}<br>${util.formatDeltaPercent(percent, 0.1).replaceAll('\\%', '\\\\%')}`;
 
 		lines.push(`| **${metric}** | ${formatMemoryMb(baseValue)} <br> ± ${formatMemoryMb(baseSpread)} | ${formatMemoryMb(headValue)} <br> ± ${formatMemoryMb(headSpread)} | ${deltaMedian} | ${summary?.mad == null ? '-' : formatMemoryMb(summary.mad)} | ${summary == null ? '-' : formatDeltaMemory(summary.min)} | ${summary == null ? '-' : formatDeltaMemory(summary.max)} |`);
 	}
@@ -144,7 +144,7 @@ function renderHeapSnapshotSection(base: MemoryReport, head: MemoryReport) {
 	];
 
 	for (const graph of [
-		heapSnapshotUtil.renderHeapSnapshotSankey(baseHeapSnapshotReport, 'Base'),
+		//heapSnapshotUtil.renderHeapSnapshotSankey(baseHeapSnapshotReport, 'Base'),
 		heapSnapshotUtil.renderHeapSnapshotSankey(headHeapSnapshotReport, 'Head'),
 	]) {
 		if (graph == null) continue;
@@ -183,7 +183,7 @@ function renderJsFootprintMetricTable(base: RuntimeLoadedJsFootprintReport, head
 		const headValue = getJsFootprintValue(head, 'afterRequest', key);
 		if (baseValue == null || headValue == null) continue;
 
-		lines.push(`| **${title}** | ${formatter(baseValue)} | ${formatter(headValue)} | ${util.formatColoredDelta(formatter(headValue - baseValue), headValue - baseValue)} | ${util.calcAndFormatDeltaPercent(baseValue, headValue).replaceAll('\\%', '\\\\%')} |`);
+		lines.push(`| **${title}** | ${formatter(baseValue)} | ${formatter(headValue)} | ${util.formatColoredDelta(headValue - baseValue, v => formatter(v))} | ${util.calcAndFormatDeltaPercent(baseValue, headValue).replaceAll('\\%', '\\\\%')} |`);
 	}
 
 	return lines.join('\n');
@@ -278,7 +278,7 @@ function renderLargestPackageIncreases(base: RuntimeLoadedJsFootprintReport, hea
 	];
 
 	for (const packageSummary of increases) {
-		lines.push(`| ${packageDisplayName(packageSummary)} | ${util.formatBytes(packageSummary.baseSourceBytes)} | ${util.formatBytes(packageSummary.sourceBytes)} | ${util.formatColoredDelta(util.formatBytes(packageSummary.sourceBytes - packageSummary.baseSourceBytes), packageSummary.sourceBytes - packageSummary.baseSourceBytes)} | ${util.formatColoredDelta(util.formatNumber(packageSummary.modules - packageSummary.baseModules), packageSummary.modules - packageSummary.baseModules)} |`);
+		lines.push(`| ${packageDisplayName(packageSummary)} | ${util.formatBytes(packageSummary.baseSourceBytes)} | ${util.formatBytes(packageSummary.sourceBytes)} | ${util.formatColoredDelta(packageSummary.sourceBytes - packageSummary.baseSourceBytes, v => util.formatBytes(v))} | ${util.formatColoredDelta(packageSummary.modules - packageSummary.baseModules, v => util.formatNumber(v))} |`);
 	}
 
 	return lines.join('\n');
@@ -374,6 +374,10 @@ if (heapSnapshotSection != null) {
 	lines.push('');
 }
 
+const artifactUrl = process.env.MK_MEMORY_HEAP_SNAPSHOT_ARTIFACT_URL_HEAD!.trim();
+lines.push(`[Download representative V8 heap snapshot (head)](${artifactUrl})`);
+lines.push('');
+
 const jsFootprintSection = renderJsFootprintSection(baseJsFootprint, headJsFootprint);
 if (jsFootprintSection != null) {
 	lines.push(jsFootprintSection);
@@ -402,15 +406,15 @@ function isBeyondSampleNoise(base: MemoryReport, head: MemoryReport, phase: type
 	const headValue = getMemoryValue(head, phase, metric);
 	if (baseValue == null || headValue == null) return false;
 
-	const diff = headValue - baseValue;
-	if (diff <= 0) return false;
+	const delta = headValue - baseValue;
+	if (delta <= 0) return false;
 
 	const baseSpread = getSampleSpread(base, phase, metric);
 	const headSpread = getSampleSpread(head, phase, metric);
 	if (baseSpread == null || headSpread == null) return true;
 
 	const combinedSpread = Math.hypot(baseSpread, headSpread);
-	return diff > combinedSpread * 3;
+	return delta > combinedSpread * 3;
 }
 
 const warningMetric = getWarningMetric(base, head);
@@ -420,6 +424,6 @@ if (warningMetric != null && warningDiffPercent != null && warningDiffPercent > 
 	lines.push('');
 }
 
-lines.push(`[See workflow logs for details](https://github.com/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID})`);
+//lines.push(`[See workflow logs for details](https://github.com/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID})`);
 
 await writeFile(outputFile, `${lines.join('\n')}\n`);

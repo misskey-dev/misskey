@@ -4,7 +4,7 @@
  */
 
 import { createRequire } from 'node:module';
-import { writeFile } from 'node:fs/promises';
+import { copyFile, rm, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import * as util from './utility.mts';
 import * as heapSnapshotUtil from './heap-snapshot-util.mts';
@@ -39,6 +39,8 @@ export type MemoryReport = {
 const [baseDirArg, headDirArg, baseOutputArg, headOutputArg] = process.argv.slice(2);
 
 const HEAP_SNAPSHOT_BREAKDOWN_TOP_N = util.readIntegerEnv('MK_MEMORY_HEAP_SNAPSHOT_BREAKDOWN_TOP_N', 6, 1);
+const HEAD_HEAP_SNAPSHOT_WORK_DIR = resolve('head-heap-snapshots');
+const HEAD_HEAP_SNAPSHOT_OUTPUT_PATH = resolve('head-heap-snapshot.heapsnapshot');
 
 async function resetState(repoDir: string) {
 	const require = createRequire(join(repoDir, 'packages/backend/package.json'));
@@ -165,7 +167,7 @@ function summarizeSamples(samples: MemoryReport['samples']) {
 	return summary;
 }
 
-async function measureRepo(label: string, repoDir: string, round: number) {
+async function measureRepo(label: string, repoDir: string, round: number, options: { heapSnapshotSavePath?: string } = {}) {
 	process.stderr.write(`[${label}] Resetting database and Redis\n`);
 	await resetState(repoDir);
 
@@ -182,6 +184,7 @@ async function measureRepo(label: string, repoDir: string, round: number) {
 		MK_MEMORY_SAMPLE_COUNT: '1',
 	} as NodeJS.ProcessEnv;
 	if (round <= 0) measureEnv.MK_MEMORY_HEAP_SNAPSHOT = '0';
+	if (options.heapSnapshotSavePath != null) measureEnv.MK_MEMORY_HEAP_SNAPSHOT_SAVE_PATH = options.heapSnapshotSavePath;
 
 	const stdout = await util.run('node', ['packages/backend/scripts/measure-memory.mts'], {
 		cwd: repoDir,
@@ -194,6 +197,40 @@ async function measureRepo(label: string, repoDir: string, round: number) {
 	return sample;
 }
 
+function headHeapSnapshotPath(round: number) {
+	return join(HEAD_HEAP_SNAPSHOT_WORK_DIR, `round-${round}.heapsnapshot`);
+}
+
+function selectRepresentativeHeadHeapSnapshotRound(samples: MemoryReport['samples'], summary: MemoryReport['summary']) {
+	const medianTotal = summary.afterGc.heapSnapshot?.categories?.total;
+	if (medianTotal == null || !Number.isFinite(medianTotal)) return null;
+
+	let selected: { round: number; distance: number } | null = null;
+	for (const sample of samples) {
+		const total = sample.phases.afterGc.heapSnapshot?.categories?.total;
+		if (total == null || !Number.isFinite(total)) continue;
+
+		const distance = Math.abs(total - medianTotal);
+		if (selected == null || distance < selected.distance || (distance === selected.distance && sample.round < selected.round)) {
+			selected = {
+				round: sample.round,
+				distance,
+			};
+		}
+	}
+
+	return selected?.round ?? null;
+}
+
+async function saveRepresentativeHeadHeapSnapshot(samples: MemoryReport['samples'], summary: MemoryReport['summary']) {
+	const round = selectRepresentativeHeadHeapSnapshotRound(samples, summary);
+	if (round == null) return;
+
+	await copyFile(headHeapSnapshotPath(round), HEAD_HEAP_SNAPSHOT_OUTPUT_PATH);
+	process.stderr.write(`Selected head heap snapshot round ${round} for artifact\n`);
+	await rm(HEAD_HEAP_SNAPSHOT_WORK_DIR, { recursive: true, force: true });
+}
+
 async function main() {
 	const baseDir = resolve(baseDirArg);
 	const headDir = resolve(headDirArg);
@@ -202,6 +239,9 @@ async function main() {
 	const rounds = util.readIntegerEnv('MK_MEMORY_COMPARE_ROUNDS', 5, 1);
 	const warmupRounds = util.readIntegerEnv('MK_MEMORY_COMPARE_WARMUP_ROUNDS', 1, 0);
 	const startedAt = new Date().toISOString();
+
+	await rm(HEAD_HEAP_SNAPSHOT_WORK_DIR, { recursive: true, force: true });
+	await rm(HEAD_HEAP_SNAPSHOT_OUTPUT_PATH, { force: true });
 
 	const reports = {
 		base: {
@@ -225,14 +265,24 @@ async function main() {
 		const order = round % 2 === 1 ? ['base', 'head'] as const : ['head', 'base'] as const;
 		process.stderr.write(`Starting measurement round ${round}/${rounds}: ${order.join(' -> ')}\n`);
 
-		for (const [orderIndex, label] of order.entries()) {
-			const sample = await measureRepo(label, reports[label].dir, round);
+		for (const label of order) {
+			const shouldSaveHeadHeapSnapshot = label === 'head';
+			const options = shouldSaveHeadHeapSnapshot
+				? { heapSnapshotSavePath: headHeapSnapshotPath(round) }
+				: {};
+			const sample = await measureRepo(label, reports[label].dir, round, options);
 			reports[label].samples.push({
 				...sample,
 				round,
 			});
 		}
 	}
+
+	const summaries = {
+		base: summarizeSamples(reports.base.samples),
+		head: summarizeSamples(reports.head.samples),
+	};
+	await saveRepresentativeHeadHeapSnapshot(reports.head.samples, summaries.head);
 
 	for (const label of ['base', 'head'] as const) {
 		const report = {
@@ -245,7 +295,7 @@ async function main() {
 				warmupRounds,
 				startedAt,
 			},
-			summary: summarizeSamples(reports[label].samples),
+			summary: summaries[label],
 			samples: reports[label].samples,
 		};
 
