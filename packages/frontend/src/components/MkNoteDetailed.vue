@@ -381,7 +381,8 @@ const keymap = {
 	'q': () => renote(),
 	'm': () => showMenu(),
 	'c': () => {
-		if (prefer.s.showClipButtonInNoteFooter) clip();
+		if (!prefer.s.showClipButtonInNoteFooter) return;
+		clip();
 	},
 	'o': () => {
 		galleryEl.value?.openGallery();
@@ -391,7 +392,10 @@ const keymap = {
 			showContent.value = !showContent.value;
 		}
 	},
-	'esc': { allowRepeat: true, callback: () => blur() },
+	'esc': {
+		allowRepeat: true,
+		callback: () => blur(),
+	},
 } as const satisfies Keymap;
 </script>
 

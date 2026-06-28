@@ -331,12 +331,31 @@ function emitUpdReaction(emoji: string, delta: number) {
 
 // キーボードショートカットマップ
 const keymap = {
-	'r': () => { if (!renoteCollapsed.value) reply(); },
-	'e|a|plus': () => { if (!renoteCollapsed.value) react(); },
-	'q': () => { if (!renoteCollapsed.value) renote(); },
-	'm': () => { if (!renoteCollapsed.value) showMenu(); },
-	'c': () => { if (!renoteCollapsed.value && prefer.s.showClipButtonInNoteFooter) clip(); },
-	'o': () => { if (!renoteCollapsed.value) galleryEl.value?.openGallery(); },
+	'r': () => {
+		if (renoteCollapsed.value) return;
+		reply();
+	},
+	'e|a|plus': () => {
+		if (renoteCollapsed.value) return;
+		react();
+	},
+	'q': () => {
+		if (renoteCollapsed.value) return;
+		renote();
+	},
+	'm': () => {
+		if (renoteCollapsed.value) return;
+		showMenu();
+	},
+	'c': () => {
+		if (renoteCollapsed.value) return;
+		if (!prefer.s.showClipButtonInNoteFooter) return;
+		clip();
+	},
+	'o': () => {
+		if (renoteCollapsed.value) return;
+		galleryEl.value?.openGallery();
+	},
 	'v|enter': () => {
 		if (renoteCollapsed.value) {
 			renoteCollapsed.value = false;
@@ -346,9 +365,18 @@ const keymap = {
 			collapsed.value = !collapsed.value;
 		}
 	},
-	'esc': { allowRepeat: true, callback: () => blur() },
-	'up|k|shift+tab': { allowRepeat: true, callback: () => focusPrev(rootEl.value) },
-	'down|j|tab': { allowRepeat: true, callback: () => focusNext(rootEl.value) },
+	'esc': {
+		allowRepeat: true,
+		callback: () => blur(),
+	},
+	'up|k|shift+tab': {
+		allowRepeat: true,
+		callback: () => focusPrev(rootEl.value),
+	},
+	'down|j|tab': {
+		allowRepeat: true,
+		callback: () => focusNext(rootEl.value),
+	},
 } as const satisfies Keymap;
 </script>
 
