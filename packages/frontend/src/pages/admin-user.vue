@@ -98,6 +98,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 					<div>
 						<MkButton v-if="user.host == null" inline style="margin-right: 8px;" @click="resetPassword"><i class="ti ti-key"></i> {{ i18n.ts.resetPassword }}</MkButton>
+						<MkButton v-if="user.host == null" inline @click="unsetMfa"><i class="ti ti-shield"></i> {{ i18n.ts.unsetMfa }}</MkButton>
 					</div>
 
 					<MkFolder>
@@ -334,12 +335,26 @@ async function resetPassword() {
 	if (confirm.canceled) {
 		return;
 	} else {
-		const { password } = await misskeyApi('admin/reset-password', {
+		const { password } = await os.apiWithDialog('admin/reset-password', {
 			userId: user.value.id,
 		});
 		os.alert({
 			type: 'success',
 			text: i18n.tsx.newPasswordIs({ password }),
+		});
+	}
+}
+
+async function unsetMfa() {
+	const confirm = await os.confirm({
+		type: 'warning',
+		text: i18n.ts.unsetMfaConfirm,
+	});
+	if (confirm.canceled) {
+		return;
+	} else {
+		await os.apiWithDialog('admin/unset-mfa', {
+			userId: user.value.id,
 		});
 	}
 }
