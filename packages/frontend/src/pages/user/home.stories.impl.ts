@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
- 
+
 import { expect, waitFor, within } from '@storybook/test';
 import { HttpResponse, http } from 'msw';
 import { userDetailed } from '../../../.storybook/fakes.js';
