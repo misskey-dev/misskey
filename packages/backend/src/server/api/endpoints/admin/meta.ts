@@ -238,6 +238,22 @@ export const meta = {
 				type: 'boolean',
 				optional: false, nullable: false,
 			},
+			sensitiveMediaDetectionApiUrl: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			sensitiveMediaDetectionApiKey: {
+				type: 'string',
+				optional: false, nullable: true,
+			},
+			sensitiveMediaDetectionTimeout: {
+				type: 'number',
+				optional: false, nullable: false,
+			},
+			sensitiveMediaDetectionMaxImagesPerRequest: {
+				type: 'number',
+				optional: false, nullable: false,
+			},
 			proxyAccountId: {
 				type: 'string',
 				optional: false, nullable: false,
@@ -686,6 +702,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				sensitiveMediaDetectionSensitivity: instance.sensitiveMediaDetectionSensitivity,
 				setSensitiveFlagAutomatically: instance.setSensitiveFlagAutomatically,
 				enableSensitiveMediaDetectionForVideos: instance.enableSensitiveMediaDetectionForVideos,
+				sensitiveMediaDetectionApiUrl: instance.sensitiveMediaDetectionApiUrl,
+				sensitiveMediaDetectionApiKey: instance.sensitiveMediaDetectionApiKey,
+				sensitiveMediaDetectionTimeout: instance.sensitiveMediaDetectionTimeout,
+				sensitiveMediaDetectionMaxImagesPerRequest: instance.sensitiveMediaDetectionMaxImagesPerRequest,
 				proxyAccountId: proxy.id,
 				email: instance.email,
 				smtpSecure: instance.smtpSecure,
