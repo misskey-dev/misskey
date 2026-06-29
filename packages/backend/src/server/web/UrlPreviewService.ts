@@ -81,23 +81,28 @@ export class UrlPreviewService implements OnApplicationShutdown {
 			: `Getting preview of ${url}@${lang} ...`);
 
 		try {
-			const summary = await this.summaryCache.fetchMaybe(
-				`${url}@${lang ?? '_DEFAULT_'}`,
-				async () => {
-					const result = await (this.meta.urlPreviewSummaryProxyUrl ? this.fetchSummaryFromProxy(url, lang) : this.fetchSummary(url, lang));
-					if (!result.url.startsWith('http://') && !result.url.startsWith('https://')) {
-						return undefined;
-					}
-					if (result.player.url && !result.player.url.startsWith('http://') && !result.player.url.startsWith('https://')) {
-						return undefined;
-					}
+			const fetcher = async () => {
+				const result = await (
+					this.meta.urlPreviewSummaryProxyUrl
+					? this.fetchSummaryFromProxy(url, lang)
+					: this.fetchSummary(url, lang)
+				);
 
-					result.icon = this.wrap(result.icon);
-					result.thumbnail = this.wrap(result.thumbnail);
+				if (!result.url.startsWith('http://') && !result.url.startsWith('https://')) {
+					return undefined;
+				}
 
-					return result;
-				},
-			);
+				if (result.player.url && !result.player.url.startsWith('http://') && !result.player.url.startsWith('https://')) {
+					return undefined;
+				}
+
+				result.icon = this.wrap(result.icon);
+				result.thumbnail = this.wrap(result.thumbnail);
+
+				return result;
+			};
+
+			const summary = await this.summaryCache.fetchMaybe(`${url}@${lang ?? '_DEFAULT_'}`, fetcher);
 
 			if (summary == null) {
 				throw new Error('Invalid summary');
