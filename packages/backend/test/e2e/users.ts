@@ -128,7 +128,7 @@ describe('ユーザー', () => {
 			preventAiLearning: user.preventAiLearning,
 			isExplorable: user.isExplorable,
 			isDeleted: user.isDeleted,
-			hiddenRoleIds: (user as any).hiddenRoleIds ?? [],
+			hiddenRoleIds: user.hiddenRoleIds ?? [],
 			twoFactorBackupCodesStock: user.twoFactorBackupCodesStock,
 			hideOnlineStatus: user.hideOnlineStatus,
 			hasUnreadSpecifiedNotes: user.hasUnreadSpecifiedNotes,
@@ -662,7 +662,7 @@ describe('ユーザー', () => {
 			isModerator: rolePublic.isModerator,
 			isAdministrator: rolePublic.isAdministrator,
 			asBadge: rolePublic.asBadge,
-			isPublicDisplayRequired: (rolePublic as any).isPublicDisplayRequired,
+			isPublicDisplayRequired: rolePublic.isPublicDisplayRequired,
 			displayOrder: rolePublic.displayOrder,
 		}]);
 	});
@@ -683,7 +683,7 @@ describe('ユーザー', () => {
 			isModerator: roleBadge.isModerator,
 			isAdministrator: roleBadge.isAdministrator,
 			asBadge: roleBadge.asBadge,
-			isPublicDisplayRequired: (roleBadge as any).isPublicDisplayRequired,
+			isPublicDisplayRequired: roleBadge.isPublicDisplayRequired,
 			displayOrder: roleBadge.displayOrder,
 		}]);
 	});
@@ -692,7 +692,7 @@ describe('ユーザー', () => {
 		const visibleRole = await role(root, { isPublic: true, name: 'Hideable Role' });
 		const secondVisibleRole = await role(root, { isPublic: true, name: 'Second Hideable Role' });
 		const privateRole = await role(root, { isPublic: false, name: 'Private Role' });
-		const forcedRole = await role(root, { isPublic: true, isPublicDisplayRequired: true, name: 'Forced Role' } as any);
+		const forcedRole = await role(root, { isPublic: true, isPublicDisplayRequired: true, name: 'Forced Role' });
 		const unassignedRole = await role(root, { isPublic: true, name: 'Unassigned Role' });
 
 		await api('admin/roles/assign', { userId: user.id, roleId: visibleRole.id }, root);
@@ -711,11 +711,11 @@ describe('ユーザー', () => {
 					forcedRole.id,
 					visibleRole.id,
 				],
-			} as any,
+			},
 			user,
 		});
 
-		assert.deepStrictEqual((response as any).hiddenRoleIds, [secondVisibleRole.id, visibleRole.id]);
+		assert.deepStrictEqual(response.hiddenRoleIds, [secondVisibleRole.id, visibleRole.id]);
 	});
 	test('をID指定のリスト形式で取得することができる（空）', async () => {
 		const parameters = { userIds: [] };

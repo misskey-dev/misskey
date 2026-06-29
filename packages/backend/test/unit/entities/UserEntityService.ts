@@ -73,6 +73,10 @@ describe('UserEntityService', () => {
 		let rolesRepository: RolesRepository;
 		let roleAssignmentsRepository: RoleAssignmentsRepository;
 		let roleService: RoleService;
+		type RoleServiceCacheController = {
+			rolesCache: { delete(): void };
+			roleAssignmentByUserIdCache: { delete(userId: MiUser['id']): void };
+		};
 
 		async function createUser(userData: Partial<MiUser> = {}, profileData: Partial<MiUserProfile> = {}) {
 			const un = secureRndstr(16);
@@ -105,7 +109,7 @@ describe('UserEntityService', () => {
 				})
 				.then(x => rolesRepository.findOneByOrFail(x.identifiers[0]));
 
-			(roleService as any).rolesCache.delete();
+			(roleService as unknown as RoleServiceCacheController).rolesCache.delete();
 			return role;
 		}
 
@@ -116,7 +120,7 @@ describe('UserEntityService', () => {
 				roleId: role.id,
 			});
 
-			(roleService as any).roleAssignmentByUserIdCache.delete(user.id);
+			(roleService as unknown as RoleServiceCacheController).roleAssignmentByUserIdCache.delete(user.id);
 		}
 
 		async function memo(writer: MiUser, target: MiUser, memo: string) {
@@ -309,7 +313,7 @@ describe('UserEntityService', () => {
 			});
 			const updatedMe = await usersRepository.findOneByOrFail({ id: me.id });
 
-			const actual = await service.pack(updatedMe, updatedMe, { schema: 'MeDetailed' }) as any;
+			const actual = await service.pack(updatedMe, updatedMe, { schema: 'MeDetailed' });
 
 			expect(actual.hiddenRoleIds).toEqual([secondVisibleRole.id, visibleRole.id]);
 		});
@@ -328,14 +332,14 @@ describe('UserEntityService', () => {
 			await usersRepository.update(target.id, { hiddenRoleIds: [hiddenRole.id, forcedRole.id] });
 			const updatedTarget = await usersRepository.findOneByOrFail({ id: target.id });
 
-			const normalView = await service.pack(updatedTarget, viewer, { schema: 'UserDetailed' }) as any;
-			const moderatorView = await service.pack(updatedTarget, moderator, { schema: 'UserDetailed' }) as any;
+			const normalView = await service.pack(updatedTarget, viewer, { schema: 'UserDetailed' });
+			const moderatorView = await service.pack(updatedTarget, moderator, { schema: 'UserDetailed' });
 
-			expect(normalView.roles.map((role: any) => role.id)).toEqual([visibleRole.id, forcedRole.id]);
-			expect(normalView.badgeRoles.map((role: any) => role.id)).toEqual([visibleRole.id, forcedRole.id]);
-			expect(normalView.badgeRoles.every((role: any) => typeof role.id === 'string')).toBe(true);
-			expect(moderatorView.roles.map((role: any) => role.id)).toEqual([hiddenRole.id, visibleRole.id, forcedRole.id]);
-			expect(moderatorView.badgeRoles.map((role: any) => role.id)).toEqual([hiddenRole.id, visibleRole.id, forcedRole.id]);
+			expect(normalView.roles.map(role => role.id)).toEqual([visibleRole.id, forcedRole.id]);
+			expect(normalView.badgeRoles?.map(role => role.id)).toEqual([visibleRole.id, forcedRole.id]);
+			expect(normalView.badgeRoles?.every(role => typeof role.id === 'string')).toBe(true);
+			expect(moderatorView.roles.map(role => role.id)).toEqual([hiddenRole.id, visibleRole.id, forcedRole.id]);
+			expect(moderatorView.badgeRoles?.map(role => role.id)).toEqual([hiddenRole.id, visibleRole.id, forcedRole.id]);
 		});
 
 		test('alsoKnownAs as string does not throw', async () => {
