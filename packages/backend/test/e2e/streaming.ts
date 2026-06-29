@@ -769,7 +769,7 @@ describe('Streaming', () => {
 				]);
 
 				await new Promise(r => setTimeout(r, 1000));
-					ws.close();
+				ws.close();
 
 				assert.strictEqual(received.includes('#foo'), false);
 				assert.strictEqual(received.includes('#bar'), false);
@@ -813,7 +813,7 @@ describe('Streaming', () => {
 				]);
 
 				await new Promise(r => setTimeout(r, 1000));
-					ws.close();
+				ws.close();
 
 				assert.strictEqual(received.includes('#foo'), false);
 				assert.strictEqual(received.includes('#bar'), false);
