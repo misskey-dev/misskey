@@ -124,6 +124,7 @@ export class UrlPreviewService implements OnApplicationShutdown {
 		}
 	}
 
+	@bindThis
 	private async fetchSummary(url: string, lang?: string): Promise<SummalyResult> {
 		const { summaly } = await import('@misskey-dev/summaly');
 
@@ -141,6 +142,7 @@ export class UrlPreviewService implements OnApplicationShutdown {
 		});
 	}
 
+	@bindThis
 	private fetchSummaryFromProxy(url: string, lang?: string): Promise<SummalyResult> {
 		const proxy = this.meta.urlPreviewSummaryProxyUrl!;
 		const queryStr = query({
