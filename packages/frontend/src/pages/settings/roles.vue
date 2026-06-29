@@ -17,7 +17,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 						@update:modelValue="value => updateRoleDisplay(role, value)"
 					>
 						<template #label>{{ i18n.ts._roleDisplay.title }}</template>
-						<template #caption v-if="role.isPublicDisplayRequired">{{ i18n.ts._roleDisplay.alwaysShownByAdmin }}</template>
+						<template v-if="role.isPublicDisplayRequired" #caption>{{ i18n.ts._roleDisplay.alwaysShownByAdmin }}</template>
 					</MkSwitch>
 				</div>
 			</div>
