@@ -116,8 +116,11 @@ export class HashtagService {
 		}
 
 		await this.hashtagsRepository.manager.transaction(async transactionalEntityManager => {
-			const index = await transactionalEntityManager
-				.createQueryBuilder(MiHashtag, 'tag')
+			const transactionalHashtagRepository = transactionalEntityManager
+				.getRepository(MiHashtag);
+
+			const index = await transactionalHashtagRepository
+				.createQueryBuilder()
 				.setLock('pessimistic_write')
 				.where('name = :name', { name: tag })
 				.getOne();
@@ -173,8 +176,7 @@ export class HashtagService {
 			}
 
 			if (Object.keys(set).length > 0) {
-				await transactionalEntityManager
-					.getRepository(MiHashtag)
+				await transactionalHashtagRepository
 					.createQueryBuilder()
 					.update()
 					.where('id = :id', { id: index.id })
