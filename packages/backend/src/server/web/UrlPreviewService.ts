@@ -125,19 +125,15 @@ export class UrlPreviewService implements OnApplicationShutdown {
 	}
 
 	private async fetchSummary(url: string, lang?: string): Promise<SummalyResult> {
-		const agent = this.config.proxy
-			? {
-				http: this.httpRequestService.httpAgent,
-				https: this.httpRequestService.httpsAgent,
-			}
-			: undefined;
-
 		const { summaly } = await import('@misskey-dev/summaly');
 
 		return summaly(url, {
 			followRedirects: this.meta.urlPreviewAllowRedirect,
 			lang: lang ?? 'ja-JP',
-			agent: agent,
+			agent: {
+				http: this.httpRequestService.httpAgent,
+				https: this.httpRequestService.httpsAgent,
+			},
 			userAgent: this.meta.urlPreviewUserAgent ?? this.summalyDefaultUserAgent,
 			operationTimeout: this.meta.urlPreviewTimeout,
 			contentLengthLimit: this.meta.urlPreviewMaximumContentLength,
