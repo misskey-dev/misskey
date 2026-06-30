@@ -5,6 +5,7 @@
 
 import { Inject, Injectable } from '@nestjs/common';
 import * as Redis from 'ioredis';
+import { DataSource } from 'typeorm';
 import { DI } from '@/di-symbols.js';
 import type { MiUser } from '@/models/User.js';
 import { normalizeForSearch } from '@/misc/normalize-for-search.js';
@@ -23,6 +24,9 @@ const logger = new Logger('hashtag/create');
 @Injectable()
 export class HashtagService {
 	constructor(
+		@Inject(DI.db)
+		private db: DataSource,
+
 		@Inject(DI.meta)
 		private meta: MiMeta,
 
@@ -115,7 +119,7 @@ export class HashtagService {
 			}
 		}
 
-		await this.hashtagsRepository.manager.transaction(async transactionalEntityManager => {
+		await this.db.transaction(async transactionalEntityManager => {
 			const transactionalHashtagRepository = transactionalEntityManager
 				.getRepository(MiHashtag);
 
