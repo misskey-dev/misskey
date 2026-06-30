@@ -61,9 +61,7 @@ misskeyApiGet('federation/instances', {
 
 <style lang="scss" module>
 .root {
-	height: 100cqh;
-	overflow: auto;
-	overscroll-behavior: contain;
+	min-height: 100cqh;
 }
 
 .bg {
@@ -72,6 +70,7 @@ misskeyApiGet('federation/instances', {
 	right: 0;
 	width: 80vw; // 100%からshapeの幅を引いている
 	height: 100vh;
+	pointer-events: none;
 }
 
 .tl {
@@ -98,6 +97,7 @@ misskeyApiGet('federation/instances', {
 	left: 0;
 	width: 100vw;
 	height: 100vh;
+	pointer-events: none;
 	background: var(--MI_THEME-accent);
 	clip-path: polygon(0% 0%, 45% 0%, 20% 100%, 0% 100%);
 }
@@ -107,6 +107,7 @@ misskeyApiGet('federation/instances', {
 	left: 0;
 	width: 100vw;
 	height: 100vh;
+	pointer-events: none;
 	background: var(--MI_THEME-accent);
 	clip-path: polygon(0% 0%, 25% 0%, 35% 100%, 0% 100%);
 	opacity: 0.5;

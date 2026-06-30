@@ -25,9 +25,7 @@ import { instance as meta } from '@/instance.js';
 
 <style lang="scss" module>
 .root {
-	height: 100cqh;
-	overflow: auto;
-	overscroll-behavior: contain;
+	min-height: 100cqh;
 }
 
 .bg {
@@ -36,6 +34,7 @@ import { instance as meta } from '@/instance.js';
 	right: 0;
 	width: 100vw;
 	height: 100vh;
+	pointer-events: none;
 }
 
 .logoWrapper {
