@@ -11,7 +11,7 @@ import { isSameScope, PreferencesManager } from '@/preferences/manager.js';
 import { store } from '@/store.js';
 import { $i } from '@/i.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
-import { TAB_ID } from '@/tab-id.js';
+import { TAB_ID } from '@/tab.js';
 
 // クラウド同期用グループ名
 const syncGroup = 'default';
