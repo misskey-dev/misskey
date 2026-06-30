@@ -39,19 +39,19 @@ jobs:
 
     steps:
     - name: Checkout base
-      uses: actions/checkout@v6.0.2
+      uses: actions/checkout@v6.0.3
       with:
         ref: ${{ github.base_ref }}
         path: base
         submodules: true
     - name: Checkout head
-      uses: actions/checkout@v6.0.2
+      uses: actions/checkout@v6.0.3
       with:
         ref: refs/pull/${{ github.event.number }}/merge
         path: head
         submodules: true
     - name: Setup pnpm
-      uses: pnpm/action-setup@v6.0.3
+      uses: pnpm/action-setup@v6.0.9
       with:
         package_json_file: head/package.json
     - name: Use Node.js

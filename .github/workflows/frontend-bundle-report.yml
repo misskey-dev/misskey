@@ -41,7 +41,7 @@ jobs:
       FRONTEND_JS_SIZE_LOCALE: ja-JP
     steps:
       - name: Checkout base
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v6.0.3
         with:
           repository: ${{ github.event.pull_request.base.repo.full_name }}
           ref: ${{ github.event.pull_request.base.sha }}
@@ -49,7 +49,7 @@ jobs:
           submodules: true
 
       - name: Checkout pull request
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v6.0.3
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.event.pull_request.head.sha }}
@@ -69,7 +69,7 @@ jobs:
 
       - name: Setup pnpm
         if: steps.check-base-visualizer.outputs.supported == 'true'
-        uses: pnpm/action-setup@v6.0.3
+        uses: pnpm/action-setup@v6.0.9
         with:
           package_json_file: after/package.json
 
