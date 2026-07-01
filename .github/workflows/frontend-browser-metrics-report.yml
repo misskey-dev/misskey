@@ -1,0 +1,194 @@
+name: frontend-browser-metrics-report
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+    paths:
+      - packages/frontend/**
+      - packages/frontend-shared/**
+      - packages/frontend-builder/**
+      - packages/backend/**
+      - packages/i18n/**
+      - packages/icons-subsetter/**
+      - packages/misskey-js/**
+      - packages/misskey-reversi/**
+      - packages/misskey-bubble-game/**
+      - package.json
+      - pnpm-lock.yaml
+      - pnpm-workspace.yaml
+      - .node-version
+      - .github/misskey/test.yml
+      - .github/scripts/utility.mts
+      - .github/scripts/frontend-browser-detailed-html.mts
+      - .github/scripts/frontend-browser-report.mts
+      - .github/scripts/heap-snapshot-util.mts
+      - .github/scripts/measure-frontend-browser-comparison.mts
+      - .github/workflows/frontend-browser-metrics-report.yml
+      - .github/workflows/frontend-browser-metrics-report-comment.yml
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: frontend-browser-metrics-report-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  report:
+    name: Measure frontend browser metrics
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    services:
+      postgres:
+        image: postgres:18
+        ports:
+          - 54312:5432
+        env:
+          POSTGRES_DB: test-misskey
+          POSTGRES_HOST_AUTH_METHOD: trust
+      redis:
+        image: redis:8
+        ports:
+          - 56312:6379
+
+    steps:
+      - name: Checkout base
+        uses: actions/checkout@v6.0.2
+        with:
+          repository: ${{ github.event.pull_request.base.repo.full_name }}
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: before
+          submodules: true
+
+      - name: Checkout pull request
+        uses: actions/checkout@v6.0.2
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: after
+          submodules: true
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6.0.3
+        with:
+          package_json_file: after/package.json
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6.4.0
+        with:
+          node-version-file: after/.node-version
+          cache: pnpm
+          cache-dependency-path: |
+            before/pnpm-lock.yaml
+            after/pnpm-lock.yaml
+
+      - name: Install dependencies for base
+        working-directory: before
+        run: pnpm i --frozen-lockfile
+
+      - name: Configure base
+        working-directory: before
+        run: cp .github/misskey/test.yml .config
+
+      - name: Build base
+        working-directory: before
+        run: pnpm build
+
+      - name: Install dependencies for pull request
+        working-directory: after
+        run: pnpm i --frozen-lockfile
+
+      - name: Configure pull request
+        working-directory: after
+        run: cp .github/misskey/test.yml .config
+
+      - name: Build pull request
+        working-directory: after
+        run: pnpm build
+
+      - name: Measure frontend browser metrics
+        shell: bash
+        env:
+          FRONTEND_BROWSER_METRICS_SAMPLE_COUNT: 5
+          FRONTEND_BROWSER_METRICS_SCENARIO_TIMEOUT_MS: 120000
+          FRONTEND_BROWSER_METRICS_SETTLE_MS: 1000
+        run: |
+          REPORT_DIR="$RUNNER_TEMP/frontend-browser-metrics-report"
+          mkdir -p "$REPORT_DIR"
+          node after/.github/scripts/measure-frontend-browser-comparison.mts before after "$REPORT_DIR/before-browser.json" "$REPORT_DIR/after-browser.json" "$REPORT_DIR/head-heap-snapshot.heapsnapshot"
+
+      - name: Upload browser head heap snapshot
+        id: upload-browser-head-heap-snapshot
+        uses: actions/upload-artifact@v7
+        with:
+          name: frontend-browser-metrics-head-heap-snapshot
+          path: ${{ runner.temp }}/frontend-browser-metrics-report/head-heap-snapshot.heapsnapshot
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Generate browser detailed html
+        shell: bash
+        run: |
+          REPORT_DIR="$RUNNER_TEMP/frontend-browser-metrics-report"
+          test -s "$REPORT_DIR/before-browser.json"
+          test -s "$REPORT_DIR/after-browser.json"
+          node after/.github/scripts/frontend-browser-detailed-html.mts "$REPORT_DIR/before-browser.json" "$REPORT_DIR/after-browser.json" "$REPORT_DIR/frontend-browser-detailed-html.html"
+
+      - name: Upload browser detailed html
+        id: upload-browser-detailed-html
+        uses: actions/upload-artifact@v7
+        with:
+          name: frontend-browser-metrics-detailed-html
+          path: ${{ runner.temp }}/frontend-browser-metrics-report/frontend-browser-detailed-html.html
+          if-no-files-found: error
+          archive: false
+          retention-days: 7
+
+      - name: Generate browser metrics report
+        shell: bash
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          FRONTEND_BROWSER_HEAD_HEAP_SNAPSHOT_ARTIFACT_URL: ${{ steps.upload-browser-head-heap-snapshot.outputs.artifact-url }}
+          FRONTEND_BROWSER_DETAILED_HTML_ARTIFACT_URL: ${{ steps.upload-browser-detailed-html.outputs.artifact-url }}
+        run: |
+          REPORT_DIR="$RUNNER_TEMP/frontend-browser-metrics-report"
+          test -s "$REPORT_DIR/before-browser.json"
+          test -s "$REPORT_DIR/after-browser.json"
+          node after/.github/scripts/frontend-browser-report.mts "$REPORT_DIR/before-browser.json" "$REPORT_DIR/after-browser.json" "$REPORT_DIR/frontend-browser-metrics-report.md"
+          printf '%s\n' "$PR_NUMBER" > "$REPORT_DIR/pr-number.txt"
+          printf '%s\n' "$BASE_SHA" > "$REPORT_DIR/base-sha.txt"
+          printf '%s\n' "$HEAD_SHA" > "$REPORT_DIR/head-sha.txt"
+          printf '%s\n' "${{ github.event.pull_request.html_url }}" > "$REPORT_DIR/pr-url.txt"
+
+      - name: Check browser metrics report
+        shell: bash
+        run: |
+          REPORT_DIR="$RUNNER_TEMP/frontend-browser-metrics-report"
+          test -s "$REPORT_DIR/frontend-browser-metrics-report.md"
+          test -s "$REPORT_DIR/frontend-browser-detailed-html.html"
+          test -s "$REPORT_DIR/pr-number.txt"
+          test -s "$REPORT_DIR/head-sha.txt"
+          cat "$REPORT_DIR/frontend-browser-metrics-report.md" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload browser metrics report
+        uses: actions/upload-artifact@v7
+        with:
+          name: frontend-browser-metrics-report
+          path: |
+            ${{ runner.temp }}/frontend-browser-metrics-report/before-browser.json
+            ${{ runner.temp }}/frontend-browser-metrics-report/after-browser.json
+            ${{ runner.temp }}/frontend-browser-metrics-report/frontend-browser-metrics-report.md
+            ${{ runner.temp }}/frontend-browser-metrics-report/pr-number.txt
+            ${{ runner.temp }}/frontend-browser-metrics-report/base-sha.txt
+            ${{ runner.temp }}/frontend-browser-metrics-report/head-sha.txt
+            ${{ runner.temp }}/frontend-browser-metrics-report/pr-url.txt
+          if-no-files-found: error
+          retention-days: 7
