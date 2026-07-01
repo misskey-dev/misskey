@@ -38,6 +38,29 @@ describe('misc:MemoryKVCache', () => {
 		cache.dispose();
 	});
 
+	test('keeps current behavior when limit is omitted', () => {
+		const cache = new MemoryKVCache<number>(1000 * 60);
+		cache.set('a', 1);
+		cache.set('b', 2);
+		cache.set('c', 3);
+		expect(cache.get('a')).toBe(1);
+		expect(cache.get('b')).toBe(2);
+		expect(cache.get('c')).toBe(3);
+		cache.dispose();
+	});
+
+	test('evicts least recently used entry when limit is reached', () => {
+		const cache = new MemoryKVCache<number>(1000 * 60, 2);
+		cache.set('a', 1);
+		cache.set('b', 2);
+		expect(cache.get('a')).toBe(1);
+		cache.set('c', 3);
+		expect(cache.get('a')).toBe(1);
+		expect(cache.get('b')).toBeUndefined();
+		expect(cache.get('c')).toBe(3);
+		cache.dispose();
+	});
+
 	describe('gc()', () => {
 		test('removes expired entries', () => {
 			const cache = new MemoryKVCache<string>(1000);
